@@ -51,7 +51,7 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
 !     TYPRUP : TYPES DES PARAMETRES
 ! ----------------------------------------------
 !
-    if ((option.eq.'CALC_G'.and.cas.eq.'2D'.and.typfis.ne.'FISSURE') .or.&
+    if (((option.eq.'CALC_G'.or.option.eq.'CALC_GTP').and.cas.eq.'2D'.and.typfis.ne.'FISSURE') .or.&
         (option.eq.'CALC_G_GLOB')) then
         nbprup = 3
         if (lmelas) then
@@ -67,7 +67,7 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
         endif
         noprup(3) = 'G'
         typrup(3) = 'R'
-        elseif(option.eq.'CALC_G'.and.cas.eq.'3D_LOCAL'.and.&
+        elseif((option.eq.'CALC_G'.or.option.eq.'CALC_GTP').and.cas.eq.'3D_LOCAL'.and.&
      &       typfis.eq.'FISSURE')then
         nbprup = 6
         noprup(1) = 'NUME_FOND'
@@ -82,8 +82,8 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
         typrup(5) = 'R'
         noprup(6) = 'G'
         typrup(6) = 'R'
-        elseif(option.eq.'CALC_G'.and.cas.eq.'2D'.and. typfis.eq.'FISSURE'&
-    )then
+        elseif((option.eq.'CALC_G'.or.option.eq.'CALC_GTP').and.cas.eq.'2D'&
+     &         .and. typfis.eq.'FISSURE')then
         nbprup = 4
         noprup(1) = 'NUME_FOND'
         typrup(1) = 'I'
@@ -93,7 +93,7 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
         typrup(3) = 'R'
         noprup(4) = 'G'
         typrup(4) = 'R'
-        elseif(option.eq.'CALC_G'.and.cas.eq.'3D_LOCAL'.and.&
+        elseif((option.eq.'CALC_G'.or.option.eq.'CALC_GTP').and.cas.eq.'3D_LOCAL'.and.&
      &       typfis.ne.'FISSURE') then
         nbprup = 5
         if (lmelas) then

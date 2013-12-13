@@ -48,7 +48,8 @@ subroutine cgvedo(ndim, option)
 !     VERIFICATION DE L'OPTION (NORMALEMENT, C'EST FAIT DANS LE CAPY)
     bool = option .eq. 'CALC_G' .or. option .eq. 'CALC_G_GLOB' .or. option .eq. 'CALC_K_G' .or.&
            option .eq. 'K_G_MODA' .or. option .eq. 'G_BILI' .or. option .eq. 'G_BILI_GLOB' .or.&
-           option .eq. 'G_MAX' .or. option .eq. 'G_MAX_GLOB' .or. option .eq. 'CALC_K_MAX'
+           option .eq. 'G_MAX' .or. option .eq. 'G_MAX_GLOB' .or. option .eq. 'CALC_K_MAX' .or.&
+           option .eq. 'CALC_GTP'
     ASSERT(bool)
 !
 !     CERTAINES OPTIONS NE S'UTILISENT (OU NE SONT PROGRAMMEES) QU'EN 3D

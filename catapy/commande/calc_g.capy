@@ -116,7 +116,8 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                                      "G_MAX_GLOB",
                                      "G_BILI",
                                      "G_BILI_GLOB",
-                                     "CALC_K_MAX"),
+                                     "CALC_K_MAX",
+                                     "CALC_GTP"),
                              ),
 
          b_g_max    =BLOC(condition="(OPTION=='G_MAX') or (OPTION=='G_MAX_GLOB')",
@@ -133,7 +134,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                                 ),
          ),
 
-        b_cal_contrainte =BLOC(condition="(COMPORTEMENT!=None and (OPTION=='CALC_G' or OPTION=='CALC_G_GLOB'))",
+        b_cal_contrainte =BLOC(condition="(COMPORTEMENT!=None and (OPTION=='CALC_G' or OPTION=='CALC_GTP' or OPTION=='CALC_G_GLOB'))",
           CALCUL_CONTRAINTE =SIMP(statut='f',typ='TXM',into=("NON",),),
          ),
 

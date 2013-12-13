@@ -222,7 +222,8 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 !
         call vecini(3*2, 0.d0, forrep)
 !
-        if ((option.eq.'CALC_K_G') .or. (option.eq.'CALC_G')) then
+        if ((option.eq.'CALC_K_G') .or. (option.eq.'CALC_G')&
+        .or. (option .eq. 'CALC_GTP')) then
 !
 !         CALCUL DE LA PRESSION AUX POINTS DE GAUSS
             pres = 0.d0
@@ -245,8 +246,8 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
                 forrep(2,2) = forrep(2,2)+ cisa * (-nd(1))
             endif
 !
-            elseif ((option.eq.'CALC_K_G_F') .or. (option.eq.'CALC_G_F'))&
-        then
+            elseif ((option.eq.'CALC_K_G_F') .or. (option.eq.'CALC_G_F')&
+            .or. (option .eq. 'CALC_GTP_F'))then
 !
 !         VALEUR DE LA PRESSION
             xg(ndim+1) = zr(itemps)
@@ -355,11 +356,13 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
             do 400 i = 1, ndim
                 do 410 j = 1, ndim
                     do 411 ino = 1, nnop
-                        if ((option.eq.'CALC_K_G') .or. ( option.eq.'CALC_G')) then
+                        if ((option.eq.'CALC_K_G') .or. ( option.eq.'CALC_G').or.&
+                        ( option.eq.'CALC_GTP')) then
                             dpredi(i,j) = dpredi(i,j) + he(ilev) * dfdi(ino,j) * zr(ipres-1+ino) &
                                           &* nd(i)
                         endif
-                        if ((option.eq.'CALC_K_G_F') .or. ( option.eq.'CALC_G_F')) then
+                        if ((option.eq.'CALC_K_G_F') .or. ( option.eq.'CALC_G_F').or.&
+                        ( option.eq.'CALC_GTP_F')) then
                             dpredi(i,j) = dpredi(i,j) + he(ilev) * dfdi(ino,j) * presn(ino) * nd(&
                                           &i)
                         endif

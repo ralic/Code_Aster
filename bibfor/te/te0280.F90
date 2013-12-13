@@ -85,7 +85,7 @@ subroutine te0280(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
-    if ((option.eq.'CALC_G_F') .or. (option.eq.'CALC_G_GLOB_F')) then
+    if ((option.eq.'CALC_G_F') .or. (option.eq.'CALC_G_GLOB_F').or. (option.eq.'CALC_GTP_F')) then
         fonc = .true.
         call jevech('PFF2D3D', 'L', iforf)
         call jevech('PPRESSF', 'L', ipref)

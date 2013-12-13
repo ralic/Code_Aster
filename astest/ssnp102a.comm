@@ -267,22 +267,26 @@ THET4=CALC_THETA(       MODELE=MO,
 G1=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET1,SYME='OUI'),
+            OPTION='CALC_GTP',
              );
 
 
 G2=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET2,SYME='OUI'),
+            OPTION='CALC_GTP',
              );
 
 G3=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET3,SYME='OUI'),
+            OPTION='CALC_GTP',
              );
 
 G4=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET4,SYME='OUI'),
+            OPTION='CALC_GTP',
              );
 
 #

@@ -25,6 +25,8 @@ subroutine te0027(option, nomte)
 !
 !      OPTION : 'CALC_G'          (LOCAL,CHARGES REELLES)
 !               'CALC_G_F'        (LOCAL,CHARGES FONCTIONS)
+!               'CALC_GTP'        (LOCAL,CHARGES REELLES)
+!               'CALC_GTP_F'      (LOCAL,CHARGES FONCTIONS)
 !               'CALC_G_GLOB'     (GLOBAL,CHARGES REELLES)
 !               'CALC_G_GLOB_F'   (GLOBAL,CHARGES FONCTIONS)
 !
@@ -130,7 +132,7 @@ subroutine te0027(option, nomte)
     matcod = zi(imate)
 ! RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
 ! CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
-    if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_G_GLOB_F') then
+    if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_G_GLOB_F'.or. option .eq. 'CALC_GTP_F') then
         fonc = .true.
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
@@ -163,8 +165,8 @@ subroutine te0027(option, nomte)
     call tecach('ONN', 'PPESANR', 'L', iret, iad=ipesa)
     call tecach('ONN', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONN', 'PSIGINR', 'L', iret, iad=isigi)
-    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F' .or. option .eq. 'CALC_G_GLOB'&
-        .or. option .eq. 'CALC_G_GLOB_F') then
+    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F' .or. option .eq. 'CALC_G_GLOB'.or.&
+     &  option .eq. 'CALC_G_GLOB_F'.or. option .eq. 'CALC_GTP'.or. option .eq. 'CALC_GTP_F') then
         call tecach('ONN', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONN', 'PACCELE', 'L', iret, iad=iaccel)
     endif

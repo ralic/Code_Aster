@@ -7,6 +7,7 @@ subroutine gverlc(resu, compor, iord0)
 #include "asterfort/cesexi.h"
 #include "asterfort/cesred.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -54,7 +55,7 @@ subroutine gverlc(resu, compor, iord0)
     integer :: nbma, iadr, iadc, ima, cldc, celasto, cdefdiffat, cdefnook,cdefdifal
     character(len=8) :: noma, nomail
     character(len=6) :: lcham(3)
-    character(len=16) :: valk(3)
+    character(len=16) :: valk(3),option
     character(len=19) :: chresu, chcalc, chtmp
     character(len=19) :: compor_resu
 !
@@ -110,11 +111,15 @@ subroutine gverlc(resu, compor, iord0)
         call jeveuo(chresu//'.CESL', 'L', jresl)
         call jeveuo(chresu//'.CESK', 'L', jresk)
     endif
-
 !
 !     SI LA CARTE DE COMPORTEMENT (RESULTAT) N'EXISTE PAS,
 !     CELA SIGNIFIE QUE LA SD RESULTAT A ETE PRODUITE PAR MECA_STATIQUE
 !     ET QUE LA LOI DE COMPORTEMENT EST 'ELAS'.
+!
+    call getvtx(' ', 'OPTION', scal=option)
+    if (option.eq.'CALC_GTP') then
+        call utmess('A', 'RUPTURE1_48')
+    endif
     if (iret .ne. 0) then
 !
 ! ----- No COMPOR <CARTE> in result: isotropic elastic only. If not -> alarm
@@ -133,6 +138,9 @@ subroutine gverlc(resu, compor, iord0)
                     if (cldc .eq. 0) then
                         call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
                         cldc=1
+                    endif
+                    if (option.eq.'CALC_GTP')then
+                        call utmess('F', 'RUPTURE1_40', nk=1, valk=valk)
                     endif
                     goto 999
                 endif
@@ -160,16 +168,21 @@ subroutine gverlc(resu, compor, iord0)
         if (iadr .gt. 0) then
 !!            if (zk16(jresv+iadr-1+2)(1:9) .eq. 'COMP_INCR') then
                 if (zk16(jresv+iadr-1)(1:4) .eq. 'VMIS') then
-                    if (celasto .eq. 0) then
+                    if ((celasto .eq. 0).and.(option.ne.'CALC_GTP')) then
                       call utmess('A', 'RUPTURE1_47')
                       celasto=1
                     end if
                 else
                     if ((zk16(jresv+iadr-1)(1:4) .ne. 'ELAS') .and. &
-                         (celasto .eq. 0)) then
+                         (celasto .eq. 0).and.(option.ne.'CALC_GTP')) then
                        call utmess('F', 'RUPTURE1_47')
                        celasto=1
                     endif
+!                    Si option= GTP et resolution en ELAS_XXX ---> Erreur Fatal
+                    if ((option.eq.'CALC_GTP').and.(zk16(jresv+iadr-1)(1:4) .eq. 'ELAS'))then
+                        valk(1)= zk16(jresv+iadr-1)
+                        call utmess('F', 'RUPTURE1_40', nk=1,valk=valk)
+                    end if
                 endif
 !!            endif
         endif
@@ -227,6 +240,9 @@ subroutine gverlc(resu, compor, iord0)
                     if (cldc .eq. 0) then
                        call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
                        cldc = 1
+                    endif
+                    if ((option.eq.'CALC_G').and.(valk(2)(1:4).ne.'ELAS'))then
+                        call utmess('F', 'RUPTURE1_49', nk=2, valk=valk)
                     endif
                     if (zk16(jresv+iadr-1+1) .eq. zk16(jcalv+iadc-1+1)) then
                         if  (zk16(jcalv+iadc-1+1)(1:5) .ne.'PETIT') then

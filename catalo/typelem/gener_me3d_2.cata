@@ -115,6 +115,13 @@ OPTION__
                                 CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  ZVARCPG  PVARCPR
                                 DDL_MECA PVITESS
                           OUT__ EGTHETA  PGTHETA
+    CALC_GTP         280  IN__  DDL_MECA PACCELE  DDL_MECA PDEPLAR  NFORCER  PFR2D3D  NGEOMER  PGEOMER
+                                EPRESNO  PPRESSR  DDL_MECA PTHETAR  ZVARCPG  PVARCPR  DDL_MECA PVITESS
+                          OUT__ EGTHETA  PGTHETA
+    CALC_GTP_F       280  IN__  DDL_MECA PACCELE  DDL_MECA PDEPLAR  CFORCEF  PFF2D3D  NGEOMER  PGEOMER
+                                CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  ZVARCPG  PVARCPR
+                                DDL_MECA PVITESS
+                          OUT__ EGTHETA  PGTHETA                          
     CALC_G_GLOB      280  IN__  DDL_MECA PACCELE  DDL_MECA PDEPLAR  NFORCER  PFR2D3D  NGEOMER  PGEOMER
                                 EPRESNO  PPRESSR  DDL_MECA PTHETAR  ZVARCPG  PVARCPR  DDL_MECA PVITESS
                           OUT__ EGTHETA  PGTHETA

@@ -126,7 +126,11 @@ OPTION__
     CALC_G            -1  IN__  ZVARCPG  PVARCPR  
                           OUT__ XXXXXX   XXXXXX   
     CALC_G_F          -1  IN__  ZVARCPG  PVARCPR  
+                          OUT__ XXXXXX   XXXXXX
+    CALC_GTP          -1  IN__  ZVARCPG  PVARCPR  
                           OUT__ XXXXXX   XXXXXX   
+    CALC_GTP_F        -1  IN__  ZVARCPG  PVARCPR  
+                          OUT__ XXXXXX   XXXXXX                             
     CALC_G_GLOB       -1  IN__  ZVARCPG  PVARCPR  
                           OUT__ XXXXXX   XXXXXX   
     CALC_G_GLOB_F     -1  IN__  ZVARCPG  PVARCPR  

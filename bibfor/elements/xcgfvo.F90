@@ -33,7 +33,8 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
 !    BUT : CALCUL DES CHARGES VOLUMIQUES AUX NOEUD DE L'ELEM PARENT
-!         POUR LES OPTIONS CALC_G, CALC_G_F, CALC_K_G ET CALC_K_G_F
+!         POUR LES OPTIONS CALC_G, CALC_G_F, CALC_K_G, CALC_K_G_F
+!                          CALC_GTP ET CALC_GTP_F
 !
 !
 ! IN  OPTION : OPTION DE CALCUL
@@ -61,10 +62,12 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
     call jevech('PMATERC', 'L', imate)
 !
 !     PARAMETRES DES FORCES VOLUMIQUES
-    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_K_G') then
+    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_K_G'&
+    .or. option .eq. 'CALC_GTP') then
         fonc=.false.
         call jevech('PFRVOLU', 'L', iforc)
-    else if (option.eq.'CALC_G_F'.or. option.eq.'CALC_K_G_F') then
+    else if (option.eq.'CALC_G_F'.or. option.eq.'CALC_K_G_F'&
+    .or. option .eq. 'CALC_GTP_F') then
         fonc=.true.
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)

@@ -257,6 +257,18 @@ La récupération des contraintes à partir de la SD Résultat n'est permise que
 Veillez à ne pas vous servir de FISSURE avec le mot-clé CALCUL_CONTRAINTE.
 """),
 
+40: _(u"""
+L'option de calcul CALC_GTP n'est fonctionnelle qu'avec une relation de type VMIS_XXXX_XXXX
+lors de la résolution.
+Comme loi de comportement, vous utilisez une relation de type : %(k1)s lors de la résolution mécanique.
+"""),
+
+41: _(u"""
+Attention, dans CALC_G vous utilisez le mot clef RELATION.
+La relation est normalement récupéré a partir du calcul mécanique dans
+MECA_STATIQUE ou STAT_NON_LINE.
+"""),
+
 42: _(u"""
  Lois de comportement différentes au moins pour la maille %(k3)s :
  - loi de comportement extraite de la SD Résultat   : %(k1)s
@@ -318,9 +330,21 @@ Vous demandez un calcul de G en post-traitement d'un calcul élastoplastique. Ce
 si votre CHARGEMENT est MONOTONE PROPORTIONNEL.
 Si tel est le cas, renseignez, dans CALC_G, l'option RELATION = ELAS_VMIS_XXX pour un calcul de G.
 Si votre chargement n'est pas monotone proportionnel, il faut renseigner, dans CALC_G, 
-l'option RELATION=VMIS_XXX, et dans ce cas vous calculerez GTP (modèle en cours de validation).
+l'option OPTION=CALC_GTP et dans ce cas, vous calculerez GTP.
+(modèle issue de la recherche interne EDF R&D, en cours de validation.)
 """),
 
+
+48: _(u"""
+Attention vous utilisez l'option de calcul CALC_GTP qui est issue de la recherche interne EDF.
+(En cours de validation.)
+Le défaut doit alors être régularisé par une zone cohésive ou une entaille.
+"""),
+
+49: _(u"""
+Vous ne pouvez pas utiliser CALC_G avec comme relation de comportement: %(k2)s ,alors que lors
+de la résolution du Problème mécanique vous utilisez une relation de comportement de type: %(k1)s
+"""),
 
 51: _(u"""
 PROPA_FISS / METHODE = 'MAILLAGE' : les noeuds définissant la fissure initiale ne sont

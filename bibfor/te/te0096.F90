@@ -28,6 +28,8 @@ subroutine te0096(option, nomte)
 !
 !   OPTION : 'CALC_G'     (G AVEC CHARGES REELLES)
 !            'CALC_G_F'   (G AVEC CHARGES FONCTIONS)
+!            'CALC_GTP'     (G AVEC CHARGES REELLES)
+!            'CALC_GTP_F'   (G AVEC CHARGES FONCTIONS)
 !
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
@@ -157,7 +159,7 @@ subroutine te0096(option, nomte)
 !
 ! RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
 ! CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
-    if (option .eq. 'CALC_G_F') then
+    if (option .eq. 'CALC_G_F'.or. option .eq. 'CALC_GTP_F') then
         fonc = .true.
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
@@ -192,7 +194,8 @@ subroutine te0096(option, nomte)
 !      WRITE(6,*)'EPSINI',EPSINI
 !      WRITE(6,*)'IEPSF',IEPSF
 !      WRITE(6,*)'IEPSR',IEPSR
-    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F') then
+    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F'.or. option .eq. 'CALC_GTP_F'&
+    .or. option .eq. 'CALC_GTP') then
         call tecach('ONN', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONN', 'PACCELE', 'L', iret, iad=iaccel)
     endif

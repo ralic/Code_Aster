@@ -125,6 +125,13 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
         endif
     endif
 !
+!  -Si Comportement dans CALC_G(alors RELATION est renseigne) ---> emission d'un message d'alarme !
+!    normalement le comportement est recupere dans Meca_stat ou stat_non_line.
+!
+   if (nbcomp .gt. 0) then
+       call utmess('A', 'RUPTURE1_41')
+   end if
+!
 ! - Check is CALG_G COMPOR <CARTE> is coherent with result COMPOR <CARTE>
 !
     call gverlc(resu, compor, iord0)
