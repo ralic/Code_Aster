@@ -18,13 +18,7 @@ subroutine op0001()
 ! ======================================================================
 !
 !-----------------------------------------------------------------------
-!                                     EDF / DER / IMA / MMN / I75 / PS
-!
-!           O P E R A T E U R    M A I L L A G E
-!
-!                 ---  OPERATEUR NUMERO 1 ---
-!
-!                                                      2 / 90
+!           operateur    LIRE_MAILLAGE
 !-----------------------------------------------------------------------
 !
 !       COODSC          NOM DE L OBJET CHAMP DE GEOMETRIE (DESCRIPTEUR)
@@ -68,8 +62,8 @@ subroutine op0001()
 !
 ! ----- DECLARATIONS
 !
-    integer :: i, n1, iaux, niv, ifl, ifm, ioc, itout, ivgrm, ibid
-    integer :: iadime, nbnoeu, nbmail, nbcoor, nbcgrm
+    integer :: i, n1, iaux, niv, ifl, ifm, ioc, itout, ibid
+    integer :: nbnoeu, nbmail, nbcoor, nbcgrm
     integer :: nbval, iret, infmed
     character(len=8) :: nomu, totm, fmt, veri
     character(len=16) :: concep
@@ -78,7 +72,10 @@ subroutine op0001()
     real(kind=8) :: dtol
     integer :: ilng
     integer :: iarg
-!
+    character(len=80), pointer :: tgrm(:) => null()
+    integer, pointer :: dime(:) => null()
+
+!---------------------------------------------------------------------------------------
     call jemarq()
     vecgrm = '&&OP0001.VECGRM'
 !
@@ -98,7 +95,7 @@ subroutine op0001()
         call getvtx(' ', 'NOM_MED', scal=nomamd, nbret=iaux)
         if (iaux .eq. 0) then
 !                   12345678901234567890123456789012
-            nomamd = '                                '//'                      '
+            nomamd = ' '
         endif
         call getvis(' ', 'INFO_MED', scal=infmed, nbret=iaux)
 !
@@ -106,11 +103,11 @@ subroutine op0001()
 !
         call getfac('RENOMME', nbcgrm)
         if (nbcgrm .gt. 0) then
-            call wkvect(vecgrm, 'V V K80', nbcgrm*2, ivgrm)
+            call wkvect(vecgrm, 'V V K80', nbcgrm*2, vk80=tgrm)
             do 100 i = 1, nbcgrm
-                call getvtx('RENOMME', 'NOM_MED', iocc=i, scal=zk80(ivgrm- 1+i*2-1), nbret=ibid)
-                call getvtx('RENOMME', 'NOM', iocc=i, scal=zk80(ivgrm-1+i* 2), nbret=ibid)
-                ilng = lxlgut(zk80(ivgrm-1+i*2))
+                call getvtx('RENOMME', 'NOM_MED', iocc=i, scal=tgrm(i*2-1), nbret=ibid)
+                call getvtx('RENOMME', 'NOM', iocc=i, scal=tgrm(i*2), nbret=ibid)
+                ilng = lxlgut(tgrm(i*2))
                 ASSERT(ilng.gt.0 .and. ilng.le.8)
 100          continue
         endif
@@ -161,10 +158,10 @@ subroutine op0001()
 !
 ! --- CREATION DE L'OBJET .DIME :
 !     -------------------------
-    call wkvect(nomu//'.DIME', 'G V I', 6, iadime)
-    zi(iadime-1+1)= nbnoeu
-    zi(iadime-1+3)= nbmail
-    zi(iadime-1+6)= nbcoor
+    call wkvect(nomu//'.DIME', 'G V I', 6, vi=dime)
+    dime(1)= nbnoeu
+    dime(3)= nbmail
+    dime(6)= nbcoor
 !
 ! --- CARACTERISTIQUES GEOMETRIQUES :
 !     -----------------------------

@@ -1,4 +1,5 @@
-subroutine jeveuo(nomlu, cel, jctab)
+subroutine jeveuo(nomlu, cel, jadr, &
+             & vl,vi,vi4,vr,vc,vk8,vk16,vk24,vk32,vk80)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +18,9 @@ subroutine jeveuo(nomlu, cel, jctab)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=C1002
-    implicit none
-!
+! aslint: disable=C1308
+      use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
+      implicit none
 #include "jeveux.h"
 #include "jeveux_private.h"
 #include "asterfort/jjallc.h"
@@ -27,12 +29,30 @@ subroutine jeveuo(nomlu, cel, jctab)
 #include "asterfort/jjvern.h"
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
-    integer :: jctab
-    character(len=*) :: nomlu, cel
-!     ==================================================================
+#include "asterfort/jelira.h"
+#include "asterfort/jgetlmx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jgetptc.h"
+
+    character(len=*), intent(in) :: nomlu
+    character(len=*), intent(in) :: cel
+    integer, optional :: jadr
+
+    logical,           pointer, optional, intent(inout) :: vl(:)
+    integer,           pointer, optional, intent(inout) :: vi(:)
+    integer(kind=4),   pointer, optional, intent(inout) :: vi4(:)
+    real(kind=8),      pointer, optional, intent(inout) :: vr(:)
+    complex(kind=8),   pointer, optional, intent(inout) :: vc(:)
+    character(len=8),  pointer, optional, intent(inout) :: vk8(:)
+    character(len=16), pointer, optional, intent(inout) :: vk16(:)
+    character(len=24), pointer, optional, intent(inout) :: vk24(:)
+    character(len=32), pointer, optional, intent(inout) :: vk32(:)
+    character(len=80), pointer, optional, intent(inout) :: vk80(:)
+
+
+!   ==================================================================
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
-!     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibacol, iblono, inat, inatb, ixdeso, ixiadd, ixlono
     integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
@@ -58,9 +78,13 @@ subroutine jeveuo(nomlu, cel, jctab)
     character(len=32) :: noml32
     integer :: icre, iret
     integer :: iddeso, idiadd, idlono
-    parameter    (  iddeso = 1 , idiadd = 2  ,&
-     &               idlono = 8   )
-!     ==================================================================
+    parameter    (  iddeso = 1 , idiadd = 2  , idlono = 8   )
+
+    integer :: jad, n1, jctab
+    character(len=8) :: ktyp
+    type(c_ptr) :: pc
+
+!   ==================================================================
     noml32 = nomlu
     noml8 = noml32(25:32)
     kcel = cel
@@ -100,7 +124,7 @@ subroutine jeveuo(nomlu, cel, jctab)
                         .false., jctab)
             goto 1000
         else
-            if (noml8 .ne. '        ') then
+            if (noml8 .ne. ' ') then
                 inat = 3
                 call jjcroc(noml8, icre)
 !            ------ CAS D'UN OBJET DE COLLECTION  ------
@@ -134,4 +158,77 @@ subroutine jeveuo(nomlu, cel, jctab)
         endif
     endif
 1000 continue
+
+
+!     -- cas : on demande l'adresse :
+!     --------------------------------
+      jad=jctab
+      if (present(jadr)) then
+          jadr=jad
+          goto 999
+      endif
+
+
+!     -- cas : on demande un pointeur sur un vecteur :
+!     ------------------------------------------------
+      call jgetlmx(noml32,n1)
+      call jelira(noml32,'TYPELONG',cval=ktyp)
+
+
+      if (present(vl)) then
+          ASSERT(ktyp.eq.'L')
+          call jgetptc(jad,pc,vl=zl(1))
+          call c_f_pointer(pc,vl,[n1])
+
+      elseif (present(vi)) then
+          ASSERT(ktyp.eq.'I')
+          call jgetptc(jad,pc,vi=zi(1))
+          call c_f_pointer(pc,vi,[n1])
+
+      elseif (present(vi4)) then
+          ASSERT(ktyp.eq.'S')
+          call jgetptc(jad,pc,vi4=zi4(1))
+          call c_f_pointer(pc,vi4,[n1])
+
+      elseif (present(vr)) then
+          ASSERT(ktyp.eq.'R')
+          call jgetptc(jad,pc,vr=zr(1))
+          call c_f_pointer(pc,vr,[n1])
+
+      elseif (present(vc)) then
+          ASSERT(ktyp.eq.'C')
+          call jgetptc(jad,pc,vc=zc(1))
+          call c_f_pointer(pc,vc,[n1])
+
+      elseif (present(vk8)) then
+          ASSERT(ktyp.eq.'K8')
+          call jgetptc(jad,pc,vk8=zk8(1))
+          call c_f_pointer(pc,vk8,[n1])
+
+      elseif (present(vk16)) then
+          ASSERT(ktyp.eq.'K16')
+          call jgetptc(jad,pc,vk16=zk16(1))
+          call c_f_pointer(pc,vk16,[n1])
+
+      elseif (present(vk24)) then
+          ASSERT(ktyp.eq.'K24')
+          call jgetptc(jad,pc,vk24=zk24(1))
+          call c_f_pointer(pc,vk24,[n1])
+
+      elseif (present(vk32)) then
+          ASSERT(ktyp.eq.'K32')
+          call jgetptc(jad,pc,vk32=zk32(1))
+          call c_f_pointer(pc,vk32,[n1])
+
+      elseif (present(vk80)) then
+          ASSERT(ktyp.eq.'K80')
+          call jgetptc(jad,pc,vk80=zk80(1))
+          call c_f_pointer(pc,vk80,[n1])
+
+      else
+          ASSERT(.false.)
+      endif
+
+999   continue
+
 end subroutine

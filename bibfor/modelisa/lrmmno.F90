@@ -65,8 +65,6 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    character(len=6) :: nompro
-    parameter ( nompro = 'LRMMNO' )
 !
     integer :: ednoeu
     parameter (ednoeu=3)
@@ -77,15 +75,20 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
     integer :: codret
     integer :: iaux
-    integer :: jcoord, jcoorl
     integer :: ntgeo
-    integer :: jcoods, jcoorf
+    integer :: ibid
     integer :: jnomno
 !
     character(len=4) :: dimesp
     character(len=15) :: saux15
     character(len=8) :: saux08
     character(len=64) :: nomamd
+
+    real(kind=8), pointer :: tcoord(:) => null()
+    real(kind=8), pointer :: tcoorl(:) => null()
+    character(len=16), pointer :: nomno(:) => null()
+    character(len=24), pointer :: tcoorf(:) => null()
+    integer, pointer :: tcoods(:) => null()
 !
 !     ------------------------------------------------------------------
     call jemarq()
@@ -106,8 +109,8 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !          DONNE UN NOM PAR DEFAUT FORME AVEC LE PREFIXE 'N' SUIVI DE
 !          LEUR NUMERO
 !
-    call wkvect('&&'//nompro//'.NOMNOE', 'V V K16', nbnoeu, jnomno)
-    call as_mmhear(fid, nomamd, zk16(jnomno), ednoeu, typnoe,&
+    call wkvect('&&LRMMNO.NOMNOE', 'V V K16', nbnoeu, vk16=nomno)
+    call as_mmhear(fid, nomamd, nomno(1), ednoeu, typnoe,&
                    codret)
 !
     if (codret .ne. 0) then
@@ -115,13 +118,13 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !        PLUS DE 10 MILLIONS DE NOEUDS, ON PASSE EN BASE 36
             do 11 , iaux = 1 , nbnoeu
             call codlet(iaux, 'G', saux15)
-            zk16(jnomno+iaux-1) = 'N'//saux15
+            nomno(iaux) = 'N'//saux15
 11          continue
         else
 !        MOINS DE 10 MILLIONS DE NOEUDS, ON RESTE EN BASE 10
             do 12 , iaux = 1 , nbnoeu
             call codent(iaux, 'G', saux15)
-            zk16(jnomno+iaux-1) = 'N'//saux15
+            nomno(iaux) = 'N'//saux15
 12          continue
         endif
         codret = 0
@@ -132,7 +135,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
     call jecreo(nomnoe, 'G N K8')
     call jeecra(nomnoe, 'NOMMAX', nbnoeu)
     do 13 , iaux = 1 , nbnoeu
-    call jecroc(jexnom(nomnoe, zk16(jnomno+iaux-1)(1:8)))
+    call jecroc(jexnom(nomnoe, nomno(iaux)(1:8)))
     13 end do
 !
 !====
@@ -141,9 +144,8 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
 ! 2.1. ==> CREATION DU TABLEAU DES COORDONNEES
 !    LA DIMENSION DU PROBLEME PHYSIQUE EST VARIABLE (1,2,3), MAIS
-!    ASTER STOCKE TOUJOURS 3 COORDONNEES PAR NOEUDS.
-!
-    call wkvect(coordo, 'G V R', nbnoeu*3, jcoord)
+!   Aster stocke toujours 3 coordonnees par noeud.
+    call wkvect(coordo, 'G V R', nbnoeu*3, vr=tcoord)
     call codent(ndim, 'G', dimesp)
     call jeecra(coordo, 'DOCU', cval=dimesp)
 !
@@ -158,7 +160,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
     if (ndim .eq. 3) then
 !
-        call as_mmhcor(fid, nomamd, zr(jcoord), edfuin, codret)
+        call as_mmhcor(fid, nomamd, tcoord, edfuin, codret)
         if (codret .ne. 0) then
             saux08='mmhcor'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -170,9 +172,9 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
     else
 !
-        call wkvect('&&'//nompro//'.COORL', 'V V R', nbnoeu*ndim, jcoorl)
+        call wkvect('&&LRMMNO.COORL', 'V V R', nbnoeu*ndim, vr=tcoorl)
 !
-        call as_mmhcor(fid, nomamd, zr(jcoorl), edfuin, codret)
+        call as_mmhcor(fid, nomamd, tcoorl, edfuin, codret)
         if (codret .ne. 0) then
             saux08='mmhcor'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -180,15 +182,15 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
         if (ndim .eq. 2) then
             do 221 , iaux = 0,nbnoeu-1
-            zr(jcoord+3*iaux) = zr(jcoorl+2*iaux)
-            zr(jcoord+3*iaux+1) = zr(jcoorl+2*iaux+1)
-            zr(jcoord+3*iaux+2) = 0.d0
+            tcoord(3*iaux+1) = tcoorl(2*iaux+1)
+            tcoord(3*iaux+2) = tcoorl(2*iaux+2)
+            tcoord(3*iaux+3) = 0.d0
 221          continue
         else
             do 222 , iaux = 0,nbnoeu-1
-            zr(jcoord+3*iaux) = zr(jcoorl+iaux)
-            zr(jcoord+3*iaux+1) = 0.d0
-            zr(jcoord+3*iaux+2) = 0.d0
+            tcoord(3*iaux+1) = tcoorl(iaux+1)
+            tcoord(3*iaux+2) = 0.d0
+            tcoord(3*iaux+3) = 0.d0
 222          continue
         endif
 !
@@ -197,23 +199,23 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 ! 2.3. ==> OBJET DESCRIPTEUR DU CHAMP DES COORDONNEES DES NOEUDS
 ! -   RECUPERATION DU NUMERO IDENTIFIANT LE TYPE DE CHAM_NO GEOMETRIE
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
-    call wkvect(coodsc, 'G V I', 3, jcoods)
+    call wkvect(coodsc, 'G V I', 3, vi=tcoods)
     call jeecra(coodsc, 'DOCU', 0, 'CHNO')
-    zi(jcoods) = ntgeo
-    zi(jcoods+1) = -3
-    zi(jcoods+2) = 14
+    tcoods(1) = ntgeo
+    tcoods(2) = -3
+    tcoods(3) = 14
 !
 ! -   OBJET REFE COORDONNEES DES NOEUDS
-    call wkvect(cooref, 'G V K24', 4, jcoorf)
-    zk24(jcoorf) = nomu
+    call wkvect(cooref, 'G V K24', 4, vk24=tcoorf)
+    tcoorf(1) = nomu
 !
 !====
 ! 3. LA FIN
 !====
 !
 !     MENAGE
-    call jedetr('&&'//nompro//'.NOMNOE')
-    call jedetr('&&'//nompro//'.COORL')
+    call jedetr('&&LRMMNO.NOMNOE')
+    call jedetr('&&LRMMNO.COORL')
 !
     call jedema()
 !

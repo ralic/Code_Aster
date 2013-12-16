@@ -129,7 +129,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=19) :: ligrel
     character(len=24) :: valk(2)
-    integer :: iachii, iachik, iachix, iadsgd, nbproc, jparal
+    integer :: iachii, iachik, iachix, iadsgd, nbproc
     integer :: ialiel, iamaco, iamloc, iamsco, ianoop, ianote, iaobtr
     integer :: iaopds, iaopmo, iaopno, iaoppa, iaoptt, ima, rang, ifm
     integer :: niv
@@ -141,14 +141,19 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     character(len=32) :: phemod
     integer :: opt, afaire
     integer :: iel, numc
-    integer :: i, ipar, nin2, nin3, nou2, nou3, jtypma, jprti, jprtk
+    integer :: i, ipar, nin2, nin3, nou2, nou3
     character(len=1) :: base2
     character(len=8) :: nompar, exiele, k8bid, partit, tych
     character(len=10) :: k10b
     character(len=16) :: k16bid, cmde
     character(len=20) :: k20b1, k20b2, k20b3, k20b4
     mpi_int :: mrank, msize
-!
+    integer, pointer :: prti(:) => null()
+    character(len=8), pointer :: typma(:) => null()
+    integer, pointer :: numsd(:) => null()
+    character(len=24), pointer :: prtk(:) => null()
+    logical, pointer :: paral(:) => null()
+!----------------------------------------------------------------------
 !
 !   -- FONCTIONS FORMULES :
 !   NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
@@ -194,7 +199,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !     -----------------------------------------------------------------
     call debca1(option, ligrel, nin)
 !
-    call jeveuo('&CATA.TE.TYPEMA', 'L', jtypma)
+    call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typma)
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), opt)
 !
 !     -- POUR SAVOIR L'UNITE LOGIQUE OU ECRIRE LE FICHIER ".CODE" :
@@ -221,17 +226,17 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-        call jeveuo(partit//'.PRTI', 'L', jprti)
-        if (zi(jprti) .ne. nbproc) then
-            vali(1)=zi(jprti)
+        call jeveuo(partit//'.PRTI', 'L', vi=prti)
+        if (prti(1) .ne. nbproc) then
+            vali(1)=prti(1)
             vali(2)=nbproc
             call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
         endif
 !
-        call jeveuo(partit//'.PRTK', 'L', jprtk)
-        ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
+        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+        ldgrel=prtk(1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
+            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=numsd)
             call jelira(partit//'.NUPROC.MAILLE', 'LONMAX', n1)
         endif
     endif
@@ -247,7 +252,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     do j = 1, nbgr
         nute=typele(ligrel,j)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
-        nomtm=zk8(jtypma-1+nute)
+        nomtm=typma(nute)
         numc=nucalc(opt,nute,0)
 !
 !        -- SI LE NUMERO DU TEOOIJ EST NEGATIF :
@@ -367,7 +372,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
         nute=typele(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
-        nomtm=zk8(jtypma-1+nute)
+        nomtm=typma(nute)
         call dismoi('PHEN_MODE', nomte, 'TYPE_ELEM', repk=phemod)
         pheno=phemod(1:16)
         modeli=phemod(17:32)
@@ -388,23 +393,23 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !         -- SI CALCUL DISTRIBUE , ON VA REMPLIR
 !         -- LE VECTEUR AUXILIAIRE '&CALCUL.PARALLELE'
             if (ldist) then
-                call wkvect('&CALCUL.PARALLELE', 'V V L', nbelgr, jparal)
+                call wkvect('&CALCUL.PARALLELE', 'V V L', nbelgr, vl=paral)
                 do iel = 1, nbelgr
                     ima=numail(igr,iel)
                     if (ldist) then
                         if (.not.ldgrel) then
                             if (ima .lt. 0) then
                                 if (rang .eq. 0) then
-                                    zl(jparal-1+iel)=.true.
+                                    paral(iel)=.true.
                                 endif
                             else if (ima.gt.0) then
-                                if (zi(jnumsd-1+ima) .eq. rang) then
-                                    zl(jparal-1+iel)=.true.
+                                if (numsd(ima) .eq. rang) then
+                                    paral(iel)=.true.
                                 endif
                             endif
                         else
 !                           -- SI LDGREL, ON EST SUR LE BON PROC :
-                            zl(jparal-1+iel)=.true.
+                            paral(iel)=.true.
                         endif
                     endif
                 end do

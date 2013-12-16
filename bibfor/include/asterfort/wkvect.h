@@ -15,11 +15,25 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine wkvect(nom, carac, dim, ldec)
-        character(len=*) :: nom
-        character(len=*) :: carac
-        integer :: dim
-        integer :: ldec
-    end subroutine wkvect
-end interface
+          interface
+            subroutine wkvect(nom,carac,dim,jadr,vl,vi,vi4,vr,vc,vk8,   &
+     &vk16,vk24,vk32,vk80)
+
+    character(len=*), intent(in) :: nom
+    character(len=*), intent(in) :: carac
+    integer, intent(in) :: dim
+    integer, intent(out), optional :: jadr
+
+    logical,           pointer, optional, intent(inout) :: vl(:)
+    integer,           pointer, optional, intent(inout) :: vi(:)
+    integer(kind=4),   pointer, optional, intent(inout) :: vi4(:)
+    real(kind=8),      pointer, optional, intent(inout) :: vr(:)
+    complex(kind=8),   pointer, optional, intent(inout) :: vc(:)
+    character(len=8),  pointer, optional, intent(inout) :: vk8(:)
+    character(len=16), pointer, optional, intent(inout) :: vk16(:)
+    character(len=24), pointer, optional, intent(inout) :: vk24(:)
+    character(len=32), pointer, optional, intent(inout) :: vk32(:)
+    character(len=80), pointer, optional, intent(inout) :: vk80(:)
+
+            end subroutine wkvect
+          end interface
