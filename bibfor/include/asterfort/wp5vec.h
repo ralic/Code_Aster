@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine wp5vec(opt, nbfreq, nbvect, neq, vp,&
-                      vecp, mxresf, resufi, resufr, vauc)
+    subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
+                      mxresf, resufi, resufr, vauc)
         integer :: mxresf
         integer :: neq
-        character(len=*) :: opt
         integer :: nbfreq
         integer :: nbvect
         complex(kind=8) :: vp(*)

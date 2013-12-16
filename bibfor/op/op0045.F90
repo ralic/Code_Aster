@@ -1418,8 +1418,8 @@ subroutine op0045()
                             maxitr, ifm, niv, priram, abs(alpha),&
                             nconv, flage, zc(lauc), zr(laur), solveu)
                 nfreq = nconv / 2
-                call wp5vec(optiof, nfreq, nconv, neq, zc(ldsor),&
-                            zc(lvec), mxresf, zi(lresui), zr(lresur), zc(lauc))
+                call wp5vec(nfreq, nconv, neq, zc(ldsor), zc(lvec), &
+                            mxresf, zi(lresui), zr(lresur), zc(lauc))
                 do imet = 1, nfreq
                     zi(lresui-1+mxresf+imet) = izero
                     zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+ imet))
