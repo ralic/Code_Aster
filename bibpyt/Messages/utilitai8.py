@@ -289,4 +289,25 @@ de type valide
   Nombre de vecteurs de projection modale        = %(i2)d
 """),
 
+
+67 : _(u"""
+ Les cartes n'utilisent pas la même grandeur.
+"""),
+
+68 : _(u"""
+ Les cartes n'utilisent pas le même maillage.
+"""),
+
+69 : _(u"""
+ Les cartes n'ont pas le même nombre de composantes sur la maille %(k1)s.
+"""),
+
+70 : _(u"""
+ Les cartes n'ont pas activé la même composante sur la maille %(k1)s.
+"""),
+
+71 : _(u"""
+ Les cartes n'ont pas la même valeur sur la maille %(k1)s.
+"""),
+
 }
