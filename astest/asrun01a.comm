@@ -1,0 +1,140 @@
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+# person_in_charge: mathieu.courtois at edf.fr
+#
+# This file must be kept as the exact copy of that included with asrun
+# except the keyword CODE.
+
+"""
+Jeu de données pour changer le format d'un maillage et
+lancer MACR_INFO_MAIL en option.
+
+Les unités attendues sont :
+   70 : fichier de paramètres
+   71 : maillage en entrée
+   72 : maillage en sortie
+
+Le fichier de paramètres contient les variables suivantes :
+   format_in/out : 'aster', 'gmsh', 'gibi', 'ideas', 'med'
+   info_mail     : 1 / 0
+   info_cmd      : 1 / 2 niveau d'info des commandes
+"""
+
+import os
+
+fpara = 'fort.70'
+unite_in    = 71
+unite_out   = 72
+
+opts_debut = {}
+
+# -----------------------------------------------------------------------------
+# version de Code_Aster
+if hasattr(aster, '__version__'):
+   tv = aster.__version__.split('.')
+   if len(tv) < 3:
+      tv.extend(['x']*(3-len(tv)))
+   elif len(tv) > 3:
+      tv = tv[:3]
+   vers = '%2s.%2s.%2s' % tuple(tv)
+else:
+   vers = ' 6. x. y'
+
+if vers < ' 8. 2. 0' :
+   raise aster.error, """ <meshtool> doesn't work before version 8.2"""
+
+if vers >= ' 9. 2.18':
+    opts_debut['IGNORE_ALARM'] = 'SUPERVIS_1'
+
+# -----------------------------------------------------------------------------
+# lecture du fichier de paramètres
+if os.path.exists(fpara):
+   s_para = open(fpara, 'r').read()
+   print """
+# ========================================= #
+#           FICHIER DE PARAMETRES           #
+
+%s
+# ========================================= #
+""" % s_para
+   execfile(fpara)
+else:
+   raise aster.error, """ <meshtool> File not found : %s
+            It should have been created by meshtool script...""" % fpara
+
+# -----------------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), 
+      PAR_LOT='NON',
+      **opts_debut)
+
+unite_mail = 20
+if format_in in ('aster', 'med'):
+   # lecture directe du fichier IN
+   unite_mail = unite_in
+
+# -----------------------------------------------------------------------------
+# conversion du maillage
+if format_in == 'gibi':
+   PRE_GIBI(UNITE_GIBI=unite_in,
+            UNITE_MAILLAGE=unite_mail)
+elif format_in == 'gmsh':
+   PRE_GMSH(UNITE_GMSH=unite_in,
+            UNITE_MAILLAGE=unite_mail)
+elif format_in == 'ideas':
+   PRE_IDEAS(UNITE_IDEAS=unite_in,
+             UNITE_MAILLAGE=unite_mail)
+
+# -----------------------------------------------------------------------------
+# lecture directe
+if format_in == 'med':
+   ma = LIRE_MAILLAGE(UNITE=unite_mail,
+                      FORMAT='MED',
+                      INFO=info_cmd)
+else:
+   ma = LIRE_MAILLAGE(UNITE=unite_mail,
+                      INFO=info_cmd)
+
+# -----------------------------------------------------------------------------
+# sortie du maillage
+if format_out == "gibi":
+   format_out = "castem"
+format_out = format_out.upper()
+
+IMPR_RESU(FORMAT=format_out,
+          UNITE=unite_out,
+          RESU=_F(MAILLAGE=ma),
+          INFO=info_cmd)
+
+# -----------------------------------------------------------------------------
+# analyse du maillage par homard
+aster.onFatalError('EXCEPTION')
+if info_mail:
+   # options
+   opts_info_mail = { 'LANGUE' : lang }
+   if vers >= '11. 3.17':
+      opts_info_mail['ELEMENTS_ACCEPTES'] = 'IGNORE_PYRA'
+   elif vers >= ' 8. 3. 0':
+      opts_info_mail['ELEMENTS_NON_HOMARD'] = 'IGNORER'
+   try:
+      MACR_INFO_MAIL(MAILLAGE=ma,
+                     **opts_info_mail)
+   except (aster.FatalError, aster.error), msg:
+      print """Erreur lors de l'appel à HOMARD..."""
+      print msg
+
+aster.onFatalError('ABORT')
+
+FIN()

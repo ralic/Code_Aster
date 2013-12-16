@@ -1,0 +1,5 @@
+format_in = 'aster'
+format_out = 'med'
+info_mail = 1
+info_cmd = 1
+lang = 'ENGLISH'
