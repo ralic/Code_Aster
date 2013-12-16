@@ -46,8 +46,9 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) :: mater, nomf, novarc, ktyp
+    character(len=8) :: mater, nomf, novarc
     character(len=10) :: nomrc
+    character(len=16) :: ktyp
     character(len=24) :: quest2, nomobj(100)
     character(len=19) :: nomcar2
     logical :: trouve

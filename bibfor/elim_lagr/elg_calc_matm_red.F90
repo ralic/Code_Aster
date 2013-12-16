@@ -1,6 +1,5 @@
 subroutine elg_calc_matm_red(matas1, matas2, bas1)
     implicit none
-! aslint: disable=W0104
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -76,8 +76,6 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
     integer :: codret
     integer :: iaux
     integer :: ntgeo
-    integer :: ibid
-    integer :: jnomno
 !
     character(len=4) :: dimesp
     character(len=15) :: saux15
@@ -100,9 +98,9 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !====
 !
     if (infmed .ge. 3) then
-        write (ifm,1001) nbnoeu
+        write (ifm,101) nbnoeu
     endif
-    1001 format('LECTURE DES',i10,' NOEUDS',/)
+ 101 format('LECTURE DES',i10,' NOEUDS',/)
 !
 ! 1.1. ==> LECTURE DU NOM DANS LE FICHIER
 !          SI LE FICHIER NE CONTIENT PAS DE NOMMAGE DES NOEUDS, ON LEUR

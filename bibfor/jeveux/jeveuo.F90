@@ -122,7 +122,7 @@ subroutine jeveuo(nomlu, cel, jadr, &
             lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
             call jxlocs(zi, genri, ltypi, lonoi, iblono,&
                         .false., jctab)
-            goto 1000
+            goto 100
         else
             if (noml8 .ne. ' ') then
                 inat = 3
@@ -157,7 +157,7 @@ subroutine jeveuo(nomlu, cel, jadr, &
             jctab = jctab + long(jlong(iclaco)+ixdeso) * (idatoc-1)
         endif
     endif
-1000 continue
+100   continue
 
 
 !     -- cas : on demande l'adresse :

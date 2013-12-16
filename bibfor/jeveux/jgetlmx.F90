@@ -30,9 +30,9 @@ subroutine jgetlmx(nomlu, ival)
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 !     ------------------------------------------------------------------
-    integer :: iadmi, ib, ibacol, ibnum, ic, id, ipgcex
-    integer :: is, iu, ixdeso, ixiadd
-    integer :: ixiadm, ixlong, ixlono, ixluti, ixnom, ixnum, jcara
+    integer :: ib, ibacol, ic, id, ipgcex
+    integer :: ixdeso, ixiadd
+    integer :: ixlong, ixlono, ixluti, ixnom, ixnum, jcara
     integer :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jlong
     integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
     integer :: ltypi, n
@@ -55,10 +55,10 @@ subroutine jgetlmx(nomlu, ival)
      &                          idnom  = 5 ,             idlong = 7 ,&
      &             idlono = 8 , idluti = 9 ,idnum  = 10 )
 !     ------------------------------------------------------------------
-    character(len=32) :: nom32, noml32
+    character(len=32) :: noml32
     character(len=1) :: genri
     integer :: icre, iret
-    logical :: lconst, llong, lcol
+    logical :: lconst, lcol
 ! DEB ------------------------------------------------------------------
 !
     ipgcex = ipgc

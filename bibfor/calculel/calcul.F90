@@ -135,7 +135,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     integer :: niv
     integer :: ier, illiel, ilmaco, ilmloc, ilmsco, ilopmo
     integer :: ilopno, iret, iuncod, j, lgco
-    integer :: npario, nbobmx, nparin, jnumsd, n1
+    integer :: npario, nbobmx, nparin, n1
     integer :: vali(4)
     integer :: nbobtr, nval
     character(len=32) :: phemod
@@ -426,7 +426,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                 k20b2 = option
                 k20b3 = nomte
                 k20b4 = cmde
-                write (iuncod, 1000) k10b, k20b1, k20b2, k20b3, k20b4
+                write (iuncod, 101) k10b, k20b1, k20b2, k20b3, k20b4
             endif
 !
 !         6.3 PREPARATION DES CHAMPS "IN"
@@ -498,6 +498,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
     call jedema()
 !
-    1000 format(1x,a10,a20,1x,a20,a20,a20)
+101 format(1x,a10,a20,1x,a20,a20,a20)
 !
 end subroutine
