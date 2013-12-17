@@ -1,0 +1,188 @@
+# -*- coding: iso-8859-1 -*-
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+###
+### GEOM component
+###
+
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(salome.myStudy)
+import math
+import SALOMEDS
+
+P1 = geompy.MakeVertex(0, 0, 0)
+P2 = geompy.MakeVertex(250, 0, 0)
+P3 = geompy.MakeVertex(250, 50, 0)
+P4 = geompy.MakeVertex(0, 50, 0)
+P5 = geompy.MakeVertex(25, 170, 0)
+P6 = geompy.MakeVertex(30, 170, 0)
+P7 = geompy.MakeVertex(35, 170, 0)
+P8 = geompy.MakeVertex(215, 170, 0)
+P9 = geompy.MakeVertex(220, 170, 0)
+P10 = geompy.MakeVertex(225, 170, 0)
+P11 = geompy.MakeVertex(125, 80, 0)
+P12 = geompy.MakeVertex(125, 75, 0)
+P13 = geompy.MakeVertex(125, 70, 0)
+
+Line_1 = geompy.MakeLineTwoPnt(P1, P2)
+Line_2 = geompy.MakeLineTwoPnt(P2, P3)
+Line_3 = geompy.MakeLineTwoPnt(P3, P4)
+Line_4 = geompy.MakeLineTwoPnt(P4, P1)
+Arc_1 = geompy.MakeArc(P5, P13, P10)
+Arc_2 = geompy.MakeArc(P6, P12, P9)
+Arc_3 = geompy.MakeArc(P7, P11, P8)
+Line_5 = geompy.MakeLineTwoPnt(P5, P6)
+Line_6 = geompy.MakeLineTwoPnt(P6, P7)
+Line_7 = geompy.MakeLineTwoPnt(P8, P9)
+Line_8 = geompy.MakeLineTwoPnt(P9, P10)
+
+BLOC = geompy.MakeFaceWires([Line_1, Line_2, Line_3, Line_4], 1)
+RING_INF = geompy.MakeFaceWires([Arc_1, Arc_2, Line_5, Line_8], 1)
+RING_SUP = geompy.MakeFaceWires([Arc_2, Arc_3, Line_6, Line_7], 1)
+
+RING = geompy.MakeShell([RING_INF, RING_SUP])
+BLOC_1 = geompy.MakeShell([BLOC])
+RING_BLOC = geompy.MakeCompound([RING, BLOC_1])
+
+DEPL = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(DEPL, [12, 8, 19, 15])
+SCO1 = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(SCO1, [28])
+SCO2 = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(SCO2, [5])
+BLOC_2 = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["FACE"])
+geompy.UnionIDs(BLOC_2, [21])
+BAINF = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["FACE"])
+geompy.UnionIDs(BAINF, [3])
+BASUP = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["FACE"])
+geompy.UnionIDs(BASUP, [13])
+SU1 = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(SU1, [23])
+LAT = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(LAT, [26, 30])
+SANS = geompy.CreateGroup(RING_BLOC, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(SANS, [6, 7])
+
+geompy.addToStudy( P1, 'P1' )
+geompy.addToStudy( P2, 'P2' )
+geompy.addToStudy( P3, 'P3' )
+geompy.addToStudy( P4, 'P4' )
+geompy.addToStudy( P5, 'P5' )
+geompy.addToStudy( P6, 'P6' )
+geompy.addToStudy( P7, 'P7' )
+geompy.addToStudy( P8, 'P8' )
+geompy.addToStudy( P9, 'P9' )
+geompy.addToStudy( P10, 'P10' )
+geompy.addToStudy( P11, 'P11' )
+geompy.addToStudy( P12, 'P12' )
+geompy.addToStudy( P13, 'P13' )
+geompy.addToStudy( Line_1, 'Line_1' )
+geompy.addToStudy( Line_2, 'Line_2' )
+geompy.addToStudy( Line_3, 'Line_3' )
+geompy.addToStudy( Line_4, 'Line_4' )
+geompy.addToStudy( Arc_1, 'Arc_1' )
+geompy.addToStudy( Arc_2, 'Arc_2' )
+geompy.addToStudy( Arc_3, 'Arc_3' )
+geompy.addToStudy( Line_5, 'Line_5' )
+geompy.addToStudy( Line_6, 'Line_6' )
+geompy.addToStudy( Line_7, 'Line_7' )
+geompy.addToStudy( Line_8, 'Line_8' )
+geompy.addToStudy( BLOC, 'BLOC' )
+geompy.addToStudy( RING_INF, 'RING_INF' )
+geompy.addToStudy( RING_SUP, 'RING_SUP' )
+geompy.addToStudy( BLOC_1, 'BLOC' )
+geompy.addToStudy( RING, 'RING' )
+geompy.addToStudy( RING_BLOC, 'RING_BLOC' )
+geompy.addToStudyInFather( RING_BLOC, DEPL, 'DEPL' )
+geompy.addToStudyInFather( RING_BLOC, SCO1, 'SCO1' )
+geompy.addToStudyInFather( RING_BLOC, SCO2, 'SCO2' )
+geompy.addToStudyInFather( RING_BLOC, BLOC_2, 'BLOC' )
+geompy.addToStudyInFather( RING_BLOC, BAINF, 'BAINF' )
+geompy.addToStudyInFather( RING_BLOC, BASUP, 'BASUP' )
+geompy.addToStudyInFather( RING_BLOC, SU1, 'SU1' )
+geompy.addToStudyInFather( RING_BLOC, LAT, 'LAT' )
+geompy.addToStudyInFather( RING_BLOC, SANS, 'SANS' )
+
+###
+### SMESH component
+###
+
+nb_long=30
+nb_haut=6
+#nb_long=10
+#nb_haut=2
+nb_ring=1
+
+import SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(salome.myStudy)
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+import NETGENPlugin
+
+RING_BLOC_1 = smesh.Mesh(RING_BLOC)
+Regular_1D = RING_BLOC_1.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(nb_long)
+Nb_Segments_1.SetDistrType( 0 )
+Quadrangle_2D = RING_BLOC_1.Quadrangle(algo=smeshBuilder.QUADRANGLE)
+Quadrangle_Parameters_1 = Quadrangle_2D.QuadrangleParameters(StdMeshers.QUAD_STANDARD)
+isDone = RING_BLOC_1.Compute()
+Regular_1D_1 = RING_BLOC_1.Segment(geom=LAT)
+Nb_Segments_2 = Regular_1D_1.NumberOfSegments(nb_haut)
+Nb_Segments_2.SetDistrType( 0 )
+isDone = RING_BLOC_1.Compute()
+Regular_1D_2 = RING_BLOC_1.Segment(geom=DEPL)
+Nb_Segments_3 = Regular_1D_2.NumberOfSegments(nb_ring)
+Nb_Segments_3.SetDistrType( 0 )
+isDone = RING_BLOC_1.Compute()
+
+DEPL_1 = RING_BLOC_1.GroupOnGeom(DEPL,'CL_DEPL',SMESH.EDGE)
+DEPL_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+SCO1_1 = RING_BLOC_1.GroupOnGeom(SCO1,'SCO1',SMESH.EDGE)
+SCO1_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+SCO2_1 = RING_BLOC_1.GroupOnGeom(SCO2,'SCO2',SMESH.EDGE)
+SCO2_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+SU1_1 = RING_BLOC_1.GroupOnGeom(SU1,'SU1',SMESH.EDGE)
+SU1_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+BLOC_3 = RING_BLOC_1.GroupOnGeom(BLOC_2,'BLOC',SMESH.FACE)
+BLOC_3.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+BAINF_1 = RING_BLOC_1.GroupOnGeom(BAINF,'BAINF',SMESH.FACE)
+BAINF_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+BASUP_1 = RING_BLOC_1.GroupOnGeom(BASUP,'BASUP',SMESH.FACE)
+BASUP_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+DEPL_1.SetName( 'DEPL' )
+SANS_1 = RING_BLOC_1.GroupOnGeom(SANS,'SANS',SMESH.NODE)
+SANS_1.SetColor( SALOMEDS.Color( 0, 0.666667, 1 ))
+PA = RING_BLOC_1.CreateEmptyGroup( SMESH.NODE, 'PA' )
+nbAdd = PA.Add( [ 170 ] )
+PB = RING_BLOC_1.CreateEmptyGroup( SMESH.NODE, 'PB' )
+nbAdd = PB.Add( [ 162 ] )
+SubMesh_1 = Regular_1D_1.GetSubMesh()
+SubMesh_2 = Regular_1D_2.GetSubMesh()
+
+## set object names
+smesh.SetName(RING_BLOC_1.GetMesh(), 'RING_BLOC')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Quadrangle_Parameters_1, 'Quadrangle Parameters_1')
+smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+smesh.SetName(Nb_Segments_3, 'Nb. Segments_3')
+smesh.SetName(DEPL_1, 'DEPL')
+smesh.SetName(SCO1_1, 'SCO1')
+smesh.SetName(SCO2_1, 'SCO2')
+smesh.SetName(SU1_1, 'SU1')
+smesh.SetName(BLOC_3, 'BLOC')
+smesh.SetName(BAINF_1, 'BAINF')
+smesh.SetName(BASUP_1, 'BASUP')
+smesh.SetName(SANS_1, 'SANS')
+smesh.SetName(PA, 'PA')
+smesh.SetName(PB, 'PB')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+
