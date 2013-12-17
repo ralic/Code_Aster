@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ntfcma(jmat, ifon)
+    subroutine ntfcma(compo, jmat, ifon)
+        character(len=*) :: compo
         integer :: jmat
         integer :: ifon(3)
     end subroutine ntfcma

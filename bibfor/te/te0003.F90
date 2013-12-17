@@ -505,7 +505,7 @@ subroutine te0003(option, nomte)
         endif
     else if (phenom.eq.'THER_NL') then
         lnonli = .true.
-        call ntfcma(zi(imate), ifon)
+        call ntfcma(phenom, zi(imate), ifon)
         call utmess('A', 'ELEMENTS4_91')
     else
         call utmess('F', 'ELEMENTS2_63')

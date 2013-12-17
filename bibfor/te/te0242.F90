@@ -116,7 +116,7 @@ subroutine te0242(option, nomte)
 !
 ! ----- TERME DE RIGIDITE : 2EME FAMILLE DE PTS DE GAUSS ---------
 !
-            call ntfcma(zi(imate), ifon)
+            call ntfcma(zk16(icomp), zi(imate), ifon)
             do 101 kp = 1, npg
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, coorse,&
@@ -150,7 +150,7 @@ subroutine te0242(option, nomte)
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
 405              continue
 !
-            call ntfcma(zi(imate), ifon)
+            call ntfcma(zk16(icomp), zi(imate), ifon)
             do 401 kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&

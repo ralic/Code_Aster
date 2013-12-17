@@ -1,4 +1,4 @@
-subroutine ntfcma(jmat, ifon)
+subroutine ntfcma(compo, jmat, ifon)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,11 @@ subroutine ntfcma(jmat, ifon)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer :: imate, ifon(3)
+    character(len=*) :: compo
 ! ----------------------------------------------------------------------
 !     OBTENTION DES ADRESSES DES FONCTIONS BETA ET LAMBDA DANS LE
 !     MATERIAU CODE IMATE
+! IN  COMPO  : NOM DU COMPORTEMENT CHERCHE
 ! IN  IMATE  : ADRESSE DU MATERIAU CODE
 ! OUT IFON   : ADRESSE RELATIVE DES PARAMETRES BETA ET LAMBDA
 !      IFON(1) : ADRESSE RELATIVE DU PARAMETRE BETA OU -1 SI BETA ABSENT
@@ -39,6 +41,7 @@ subroutine ntfcma(jmat, ifon)
 !
 !-----------------------------------------------------------------------
     integer :: idf, jmat, lfct, lmat
+    character(len=16) :: valk(2), compo2
 !-----------------------------------------------------------------------
     parameter        ( lmat = 7 , lfct = 9 )
 ! DEB ------------------------------------------------------------------
@@ -47,65 +50,78 @@ subroutine ntfcma(jmat, ifon)
     nbmat=zi(jmat)
     ASSERT(nbmat.eq.1)
     imate = jmat+zi(jmat+nbmat+1)
+!    
+    if(compo(1:7).ne.'THER_NL' .and. compo(1:9).ne.'THER_HYDR'&
+                               .and. compo.ne. ' ') ASSERT(.false.)
 !
-    do 10 k = 1, zi(imate+1)
-        if ('THER_NL ' .eq. zk16(zi(imate)+k-1)(1:8)) then
-            ipi = zi(imate+2+k-1)
-            goto 11
+    if (compo.eq. ' ')then
+        do  k = 1, zi(imate+1)
+            if ('THER_NL' .eq. zk16(zi(imate)+k-1)(1:7)) then
+                ipi = zi(imate+2+k-1)
+                compo2 = 'THER_NL'
+                goto 11
+            endif
+        end do
+        do  k = 1, zi(imate+1)
+            if ('THER_HYDR' .eq. zk16(zi(imate)+k-1)(1:9)) then
+                ipi = zi(imate+2+k-1)
+                compo2 = 'THER_HYDR'
+                goto 11
+            endif
+        end do
+    else
+        do  k = 1, zi(imate+1)
+            if (compo(1:9) .eq. zk16(zi(imate)+k-1)(1:9)) then
+                ipi = zi(imate+2+k-1)
+                compo2 = compo
+                goto 11
+            endif
+        end do
+    endif
+    do  k = 1, zi(imate+1)
+        if ('THER_ ' .eq. zk16(zi(imate)+k-1)(1:5)) then
+            valk(1) = zk16(zi(imate)+k-1)
+            valk(2) = compo
+            if (compo.eq. ' ')then
+                call utmess('F', 'ELEMENTS2_65',sk=valk(1))
+            else
+                call utmess('F', 'ELEMENTS2_64',nk=2, valk=valk)
+            endif
         endif
-10  end do
-    goto 35
+    end do
+    if (compo.eq. ' ')then
+        call utmess('F', 'ELEMENTS2_66')
+    else
+        call utmess('F', 'ELEMENTS2_63',sk=compo)
+    endif
 11  continue
     idf = zi(ipi)+zi(ipi+1)
-    do 20 k = 1, zi(ipi+2)
+    do k = 1, zi(ipi+2)
         if ('BETA    ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
             ifon(1) = ipi+lmat-1+lfct*(k-1)
             goto 25
         endif
-20  end do
+    end do
     call utmess('F', 'MODELISA5_44')
 25  continue
-    do 30 k = 1, zi(ipi+2)
+    do k = 1, zi(ipi+2)
         if ('LAMBDA  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
             ifon(2) = ipi+lmat-1+lfct*(k-1)
-            goto 75
+            goto 35
         endif
-30  end do
+    end do
     call utmess('F', 'MODELISA5_45')
 35  continue
-    do 40 k = 1, zi(imate+1)
-        if ('THER_HYDR ' .eq. zk16(zi(imate)+k-1)(1:9)) then
-            ipi = zi(imate+2+k-1)
-            goto 41
-        endif
-40  end do
-    call utmess('F', 'ELEMENTS2_63')
-41  continue
-    idf = zi(ipi)+zi(ipi+1)
-    do 50 k = 1, zi(ipi+2)
-        if ('BETA    ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
-            ifon(1) = ipi+lmat-1+lfct*(k-1)
-            goto 55
-        endif
-50  end do
-    call utmess('F', 'MODELISA5_44')
-55  continue
-    do 60 k = 1, zi(ipi+2)
-        if ('LAMBDA  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
-            ifon(2) = ipi+lmat-1+lfct*(k-1)
-            goto 65
-        endif
-60  end do
-    call utmess('F', 'MODELISA5_45')
-65  continue
-    do 70 k = 1, zi(ipi+2)
-        if ('AFFINITE  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
-            ifon(3) = ipi+lmat-1+lfct*(k-1)
-            goto 75
-        endif
-70  end do
-    call utmess('F', 'MODELISA5_47')
-75  continue
+    if (compo2(1:9).eq.'THER_HYDR')then
+        do k = 1, zi(ipi+2)
+            if ('AFFINITE  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
+                ifon(3) = ipi+lmat-1+lfct*(k-1)
+                goto 45
+            endif
+        end do
+        call utmess('F', 'MODELISA5_47')
+45      continue
+    endif
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

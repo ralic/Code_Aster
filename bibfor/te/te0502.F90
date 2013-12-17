@@ -62,7 +62,7 @@ subroutine te0502(option, nomte)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PMATTTR', 'E', imattt)
 !
-    call ntfcma(zi(imate), ifon)
+    call ntfcma(' ',zi(imate), ifon)
     nbvf = zi(ifon(1))
     jvalf = zi(ifon(1) + 2)
     xr = 0.d0

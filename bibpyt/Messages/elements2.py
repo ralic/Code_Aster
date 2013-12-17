@@ -151,11 +151,27 @@ cata_msg = {
 """),
 
 63 : _(u"""
- ! comportement non trouve !
+ On ne trouve pas le comportement %(k1)s dans le matériau fourni.
+"""),
+
+64 : _(u"""
+ Le matériau contient le comportement thermique %(k1)s alors que l'on attend le comportement %(k2)s.
+"""),
+
+65 : _(u"""
+ Le matériau contient le comportement thermique %(k1)s alors que l'on attend un des comportements suivants :
+ - THER_NL
+ - THER_HYDR
+"""),
+
+66 : _(u"""
+ On ne trouve pas l'un des comportements suivants dans le matériau :
+ - THER_NL
+ - THER_HYDR
 """),
 
 72 : _(u"""
-  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC') est déconseillée pour les éléments de type plaque. 
+  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC') est déconseillée pour les éléments de type plaque.
      Les grandes rotations ne sont pas modélisées correctement.
   -> Risque & Conseil :
      En présence de grands déplacements et grandes rotations, il est préférable

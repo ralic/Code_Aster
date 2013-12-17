@@ -112,7 +112,7 @@ subroutine te0244(option, nomte)
     deltat = zr(itemps+1)
     theta = zr(itemps+2)
     if (zk16(icomp)(1:5) .ne. 'SECH_') then
-        call ntfcma(zi(imate), ifon)
+        call ntfcma(zk16(icomp), zi(imate), ifon)
     endif
 !====
 ! 1.4 PREALABLES LIES A L'HYDRATATION

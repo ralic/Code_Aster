@@ -86,7 +86,7 @@ subroutine te0283(option, nomte)
 !
     if (zk16(icomp) (1:5) .eq. 'THER_') then
 !
-        call ntfcma(zi(imate), ifon)
+        call ntfcma(zk16(icomp), zi(imate), ifon)
 !----
 !   INITIALISATION THER_HYDR
 !----

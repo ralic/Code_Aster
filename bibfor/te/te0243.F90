@@ -107,7 +107,7 @@ subroutine te0243(option, nomte)
     khi = zr(itemps+3)
 !
     if (zk16(icomp)(1:5) .ne. 'SECH_') then
-        call ntfcma(zi(imate), ifon)
+        call ntfcma(zk16(icomp), zi(imate), ifon)
     endif
 !
 !
@@ -188,7 +188,7 @@ subroutine te0243(option, nomte)
                     coorse(2*(i-1)+j) = zr(igeom-1+2*(c(ise,i)-1)+j)
 405              continue
 !
-            call ntfcma(zi(imate), ifon)
+            call ntfcma(zk16(icomp), zi(imate), ifon)
             do 401 kp = 1, npg2
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&

@@ -1,19 +1,19 @@
 # TITRE THERMO-HYDRATATION D'UN CYLINDRE DE BETON 3D HEXA20 PENTA15 TETRA10
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS TEST TPNL301B
 # person_in_charge: jessica.haelewyn at edf.fr
@@ -83,7 +83,9 @@ BETON=DEFI_MATERIAU(THER_HYDR=_F(LAMBDA=COND,
                                  BETA=ENTH,
                                  AFFINITE=AFF,
                                  CHALHYDR=1.4904e5,),);
-
+BETON_NL=DEFI_MATERIAU(THER_NL=_F(LAMBDA=COND,
+                                 BETA=ENTH,
+                                 ),);
 # -------------------------------------------------
 #   Definition des temps caracteristiques
 # ------------------------------------------------
@@ -129,13 +131,16 @@ LINST=DEFI_LIST_REEL(DEBUT=-1.0,
                                  _F(JUSQU_A=t730h,
                                     PAS=10,),),);
 # ---------------------------------------------------------------------------------
-#   Calcul Hydrique 
+#   Calcul Hydrique
 # ---------------------------------------------------------------------------------
 #Champ de temperature
 
 CHMATTH=AFFE_MATERIAU(MAILLAGE=MAIL2,
                       AFFE=_F(TOUT='OUI',
                               MATER=BETON,),);
+CHMAT_NL=AFFE_MATERIAU(MAILLAGE=MAIL2,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=BETON_NL,),);
 
 TEMP_INT=DEFI_FONCTION(NOM_PARA='INST',VALE=(-1000.0,40.0,
                              tps_10an,40.0,
@@ -167,7 +172,7 @@ matline=AFFE_MATERIAU(MAILLAGE=MAIL2,
                               MATER=line,),);
 
 THINI=THER_NON_LINE(MODELE=MODELETH,
-                    CHAM_MATER=CHMATTH,
+                    CHAM_MATER=CHMAT_NL,
                     EXCIT=_F(CHARGE=CL_THER,),
                     INCREMENT=_F(LIST_INST=LINIT,),
                     ETAT_INIT=_F(STATIONNAIRE='OUI',),);

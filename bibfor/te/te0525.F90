@@ -67,7 +67,7 @@ subroutine te0525(option, nomte)
     call jevech('PVECTTR', 'E', ivectt)
     call jevech('PRESIDU', 'E', iveres)
 !
-    call ntfcma(zi(imate), ifon)
+    call ntfcma(' ',zi(imate), ifon)
     nbvf = zi(ifon(1))
     jvalf = zi(ifon(1)+2)
     xr = 0.d0

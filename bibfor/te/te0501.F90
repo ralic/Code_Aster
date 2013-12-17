@@ -54,7 +54,7 @@ subroutine te0501(option, nomte)
     call jevech('PTEMPEI', 'L', itempi)
     call jevech('PMATTTR', 'E', imattt)
 !
-    call ntfcma(zi(imate), ifon)
+    call ntfcma(' ',zi(imate), ifon)
     do 101 kp = 1, npg
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&

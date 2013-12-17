@@ -74,7 +74,7 @@ subroutine te0279(option, nomte)
 !
     if (zk16(icomp) (1:5) .eq. 'THER_') then
 !
-        call ntfcma(zi(imate), ifon)
+        call ntfcma(zk16(icomp), zi(imate), ifon)
 !
         do 40 kp = 1, npg
             l = (kp-1)*nno
