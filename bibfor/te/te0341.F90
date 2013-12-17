@@ -79,9 +79,9 @@ subroutine te0341(option, nomte)
         call jevech('PCAGNBA', 'L', isect)
         a = zr(isect)
 !
-        call terefe('SIGM_REFE', 'MECA_INTERFACE', sigref)
-        call terefe('DEPL_REFE', 'MECA_INTERFACE', depref)
-        call terefe('EFFORT_REFE', 'MECA_BARRE', forref)
+        call terefe('SIGM_REFE', 'MECA_CG', sigref)
+        call terefe('DEPL_REFE', 'MECA_CG', depref)
+        call terefe('EFFORT_REFE', 'MECA_CG', forref)
 !
         call cgfore(ndim, nno1, nno2, npg, zr(iw),&
                     zr(ivf1), zr(ivf2), zr(idf1), a, zr(igeom),&

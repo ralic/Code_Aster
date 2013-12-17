@@ -2,6 +2,7 @@ subroutine te0446(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/dxbsig.h"
@@ -11,6 +12,7 @@ subroutine te0446(option, nomte)
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "blas/dcopy.h"
@@ -50,11 +52,13 @@ subroutine te0446(option, nomte)
     integer :: icompo, i, i1, i2, j, k, ivectu, ipg, npg
     integer :: icontm, iretc
     integer :: nno, igeom
-    integer :: ndim, iret
+    integer :: ndim, iret, ind
     integer :: jcara
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24)
     real(kind=8) :: effgt(32), effort(32)
+    real(kind=8) :: effref,momref
     real(kind=8) :: alpha, beta, t2ev(4), t2ve(4), c, s
+    real(kind=8) :: foref, moref
     logical :: reactu
 !
     if (option.eq.'FORC_NODA') then
@@ -124,7 +128,8 @@ subroutine te0446(option, nomte)
         endif
 !
 ! --- CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma)
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigma,&
+                    option)
 !
 ! --- AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', ivectu)
@@ -136,6 +141,54 @@ subroutine te0446(option, nomte)
                 zr(ivectu+k-1) = bsigma(k)
             end do
         end do
+    else if (option.eq.'REFE_FORC_NODA')then
+!     -------------------------------------
+!
+        call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+        call jevech('PGEOMER', 'L', igeom)
+!
+        if (nno .eq. 3) then
+            call dxtpgl(zr(igeom), pgl)
+        else if (nno.eq.4) then
+            call dxqpgl(zr(igeom), pgl, 'S', iret)
+        endif
+!
+        call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
+
+        call terefe('EFFORT_REFE', 'MECA_COQUE', foref)
+        call terefe('MOMENT_REFE', 'MECA_COQUE', moref)
+!
+        ind=8
+        do i = 1, nno
+            do j = 1,3
+                effgt((i-1)*ind+j) = foref
+                effgt((i-1)*ind+3+j) = moref
+            effgt((i-1)*ind+7) = foref
+            effgt((i-1)*ind+8) = foref
+            enddo
+        enddo
+!
+! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigma,&
+                    option)
+!
+! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
+        call jevech('PVECTUR', 'E', ivectu)
+        k=0
+       do  i = 1, nno
+            effref=(abs(bsigma(k+1))+abs(bsigma(k+2))+abs(bsigma(k+3)))/3.d0
+            momref=(abs(bsigma(k+4))+abs(bsigma(k+5))+abs(bsigma(k+6)))/3.d0
+            ASSERT(abs(effref).gt.r8prem())
+            ASSERT(abs(momref).gt.r8prem())
+            do  j = 1, 6
+                k=k+1
+                if (j.lt.4) then
+                    zr(ivectu+k-1) = effref
+                else
+                    zr(ivectu+k-1) = momref
+                endif
+            enddo
+        enddo
     else
         ASSERT(.false.)
     endif

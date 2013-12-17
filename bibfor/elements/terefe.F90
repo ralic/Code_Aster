@@ -69,6 +69,8 @@ subroutine terefe(nomref, typele, valref)
             index = 1
         else if (typele.eq.'MECA_INCO') then
             index = 1
+        else if (typele.eq.'MECA_CG') then
+            index = 1
         else
             ASSERT(.false.)
         endif
@@ -119,6 +121,10 @@ subroutine terefe(nomref, typele, valref)
             index = 1
         else if (typele.eq.'MECA_POUTRE') then
             index = 1
+        else if (typele.eq.'MECA_COQUE') then
+            index = 1
+        else if (typele.eq.'MECA_CG') then
+            index = 2
         else
             ASSERT(.false.)
         endif
@@ -127,12 +133,16 @@ subroutine terefe(nomref, typele, valref)
             index = 2
         else if (typele.eq.'MECA_POUTRE') then
             index = 2
+        else if (typele.eq.'MECA_COQUE') then
+            index = 2
         else
             ASSERT(.false.)
         endif
     else if (nomref.eq.'DEPL_REFE') then
         if (typele .eq. 'MECA_INTERFACE') then
             index = 2
+        else if (typele.eq.'MECA_CG') then
+            index = 4
         else
             ASSERT(.false.)
         endif

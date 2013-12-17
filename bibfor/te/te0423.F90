@@ -40,6 +40,7 @@ subroutine te0423(option, nomte)
     integer :: i, jgeom, jcaco, jvecg, iret
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: bsigma(24), sigt(32)
+    character(len=16) :: optio2
 ! ----------------------------------------------------------------------
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
@@ -71,7 +72,9 @@ subroutine te0423(option, nomte)
 ! --- CALCUL DES EFFORTS INTERNES D'ORIGINE THERMIQUE
 ! --- (I.E. SOMME_VOL(BT_SIG))
 !     ------------------------
-    call dxbsig(nomte, xyzl, pgl, sigt, bsigma)
+    optio2 = 'FORC_NODA'
+    call dxbsig(nomte, xyzl, pgl, sigt, bsigma,&
+                optio2)
 !
 ! --- AFFECTATION DU VECTEUR DES FORCES ELEMENTAIRES EN SORTIE DU TE
 !     --------------------------------------------------------------

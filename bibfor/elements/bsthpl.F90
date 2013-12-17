@@ -40,7 +40,7 @@ subroutine bsthpl(nomte, bsigth, indith)
 !     ------------------------------------------------------------------
     integer :: i, jgeom, nno, iret
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), sigth(32), zero
-    character(len=16) :: typele
+    character(len=16) :: typele, option
 !     ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :
@@ -85,7 +85,9 @@ subroutine bsthpl(nomte, bsigth, indith)
 !
 ! --- CALCUL DE BT*SIGTH :
 !     ------------------
-    call dxbsig(typele, xyzl, pgl, sigth, bsigth)
+    option = 'FORC_NODA'
+    call dxbsig(typele, xyzl, pgl, sigth, bsigth,&
+                option)
 !
 !
 end subroutine

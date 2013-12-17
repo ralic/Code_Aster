@@ -56,7 +56,7 @@ MODE_LOCAL__
     CCAGNBA  = CAGNBA   ELEM__         (A1       )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    EREFCO   = PREC     ELEM__         (SIGM     DEPL)
+    EREFCO   = PREC     ELEM__         (SIGM     EFFORT  MOMENT    DEPL    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )

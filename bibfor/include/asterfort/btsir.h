@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
-                      option)
-        character(len=16) :: nomte
-        real(kind=8) :: xyzl(3, 1)
-        real(kind=8) :: pgl(3, 3)
+    subroutine btsir(lonlig, loncol, jacgau, bmat, sigma,&
+                     bsigma)
+        integer :: loncol
+        integer :: lonlig
+        real(kind=8) :: jacgau
+        real(kind=8) :: bmat(loncol, 1)
         real(kind=8) :: sigma(1)
         real(kind=8) :: bsigma(1)
-        character(len=16) :: option
-    end subroutine dxbsig
+    end subroutine btsir
 end interface

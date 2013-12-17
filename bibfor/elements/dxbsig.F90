@@ -1,4 +1,5 @@
-subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma)
+subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
+                  option)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,13 +18,15 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/btsir.h"
 #include "asterfort/btsig.h"
 #include "asterfort/dxbmat.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
-    character(len=16) :: nomte
+    character(len=16) :: nomte, option
     real(kind=8) :: xyzl(3, 1), pgl(3, 3)
     real(kind=8) :: sigma(1), bsigma(1)
 !     ------------------------------------------------------------------
@@ -103,8 +106,15 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma)
 !  --        CALCUL DU PRODUIT (BT)*(SIGMA)*JACOBIEN*POIDS
 !          ---------------------------------------------
 !
-        call btsig(lgligb, nbsig, jacgau, bmat, sigma(1+8*(igau-1)),&
-                   bsiloc)
+        if (option .eq. 'FORC_NODA') then
+            call btsig(lgligb, nbsig, jacgau, bmat, sigma(1+8*(igau-1)),&
+                       bsiloc)
+        elseif (option .eq. 'REFE_FORC_NODA') then
+            call btsir(lgligb, nbsig, jacgau, bmat, sigma(1+8*(igau-1)),&
+                       bsiloc)
+        else
+            ASSERT(.false.)
+        endif
 30  end do
 !
 ! --- PERMUTATION DES COMPOSANTES EN BETA_X ET  BETA_Y

@@ -97,6 +97,7 @@ MODE_LOCAL__
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     EPRESNF  = PRES_F   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
+    EREFCO   = PREC     ELEM__         (EFFORT    MOMENT)
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (NXX      NYY      NXY      MXX      MYY      MXY
                                         QX       QY       )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (NXX      NYY      NXY      MXX      MYY      MXY
@@ -267,8 +268,8 @@ OPTION__
                                 CTEMPSR  PINSTPR  CITERAT  PITERAT  CMATERC  PMATERC  ZVARCPG  PVARCMR
                                 ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                           OUT__ ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    REFE_FORC_NODA    -1  IN__
-                          OUT__ XXXXXX   XXXXXX
+    REFE_FORC_NODA   446  IN__  NGEOMER  PGEOMER  EREFCO   PREFCO
+                          OUT__ MVECTUR  PVECTUR
     REPERE_LOCAL     134  IN__  CCACOQU  PCACOQU  NGEOMER  PGEOMER
                           OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     REPE_GENE        442  IN__  CCAORIE  PANGREP  CCACOQU  PCACOQU  EDEFGPG  PDGGAIN  EDEFGPC  PDGGAINC

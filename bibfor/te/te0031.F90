@@ -28,11 +28,14 @@ subroutine te0031(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/t3grig.h"
 #include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
+!
+#include "asterc/r8prem.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -67,6 +70,7 @@ subroutine te0031(option, nomte)
 !        LINEAIRE          KIRCHOFF  (MINCE)        DKT
 !
 !        FORC_NODA
+!        REFE_FORC_NODA
 !          -----------------------------------------------------------
 !                                              TRIANGLE
 !        NON LINEAIRE      KIRCHOFF  (MINCE)        DKT
@@ -88,8 +92,10 @@ subroutine te0031(option, nomte)
     integer :: ibid, n1, n2, ni
 !
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24), effgt(32)
+    real(kind=8) :: effref,momref
     real(kind=8) :: vecloc(24), ener(3), matp(24, 24), matv(300)
     real(kind=8) :: epi(1), eptot, r8bid=0.d0, valr(2)
+    real(kind=8) :: foref, moref
 !
     character(len=2) :: val
     character(len=3) :: num
@@ -112,6 +118,7 @@ subroutine te0031(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdx, jgano)
 !
+    if (option.ne.'REFE_FORC_NODA')then
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
     call cosiro(nomte, 'PCONTMR', 'L', 'UI', 'G',&
                 ibid, 'S')
@@ -120,6 +127,8 @@ subroutine te0031(option, nomte)
 !
     jnbspi=0
     call tecach('NNN', 'PNBSP_I', 'L', iret1, iad=jnbspi)
+    endif
+
 !
     lcqhom=.false.
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option(1:9) .eq.&
@@ -368,7 +377,8 @@ subroutine te0031(option, nomte)
                     effgt)
 !
 ! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma)
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, &
+                    option)
 !
 ! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', jvect)
@@ -379,6 +389,41 @@ subroutine te0031(option, nomte)
                 zr(jvect+k-1)=bsigma(k)
 110          continue
 120      continue
+!
+    else if (option.eq.'REFE_FORC_NODA')then
+!     -------------------------------------
+        call terefe('EFFORT_REFE', 'MECA_COQUE', foref)
+        call terefe('MOMENT_REFE', 'MECA_COQUE', moref)
+!
+        ind=8
+        do i = 1, nno
+            do j = 1,3
+                effgt((i-1)*ind+j) = foref
+                effgt((i-1)*ind+3+j) = moref
+            enddo
+        enddo
+!
+! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigma,&
+                    option)
+!
+! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
+        call jevech('PVECTUR', 'E', jvect)
+        k=0
+        do  i = 1, nno
+            effref=(abs(bsigma(k+1))+abs(bsigma(k+2))+abs(bsigma(k+3)))/3.d0
+            momref=(abs(bsigma(k+4))+abs(bsigma(k+5))+abs(bsigma(k+6)))/3.d0
+            ASSERT(abs(effref).gt.r8prem())
+            ASSERT(abs(momref).gt.r8prem())
+            do  j = 1, 6
+                k=k+1
+                if (j.lt.4) then
+                    zr(jvect+k-1) = effref
+                else
+                    zr(jvect+k-1) = momref
+                endif
+            enddo
+        enddo
     else
 !C OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
@@ -389,7 +434,10 @@ subroutine te0031(option, nomte)
         zi(jcret)=codret(1)
     endif
 !
+    if (option.ne.'REFE_FORC_NODA')then
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
-    call cosiro(nomte, 'PCONTPR', 'E', 'IU', 'G',&
+        call cosiro(nomte, 'PCONTPR', 'E', 'IU', 'G',&
                 ibid, 'R')
+    endif
+!
 end subroutine

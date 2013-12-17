@@ -1,4 +1,4 @@
-subroutine btsig(lonlig, loncol, jacgau, bmat, sigma,&
+subroutine btsir(lonlig, loncol, jacgau, bmat, sigma,&
                  bsigma)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ subroutine btsig(lonlig, loncol, jacgau, bmat, sigma,&
     real(kind=8) :: jacgau, bmat(loncol, 1), sigma(1), bsigma(1)
     real(kind=8) :: valbsi
 !-----------------------------------------------------------------------
-! --- CALCUL DU PRODUIT (BT)*(SIGMA) ,
+! --- CALCUL DU PRODUIT (BT)*(SIGMA) EN VALEUR ABSOLUE POUR REFE_FORC_NODA
 ! --- AVEC LES NOTATIONS DE LA ROUTINE , CA DONNE :
 ! ---       (BSIGMA) = (BMAT)*(SIGMA)*JACGAU
 !     ------------------------------------------------------------------
@@ -38,9 +38,8 @@ subroutine btsig(lonlig, loncol, jacgau, bmat, sigma,&
     do 10 i = 1, lonlig
         valbsi = 0.0d0
         do 20 j = 1, loncol
-            valbsi = valbsi + bmat(j,i)*sigma(j)
+            valbsi = valbsi + abs(bmat(j,i)*sigma(j))
 20      continue
-!
         bsigma(i) = bsigma(i) + valbsi*jacgau
 10  end do
 !
