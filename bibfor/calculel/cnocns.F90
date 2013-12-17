@@ -19,6 +19,7 @@ subroutine cnocns(cnoz, basez, cnsz)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
+#include "asterc/cheksd.h"
 #include "asterfort/assert.h"
 #include "asterfort/cmpcha.h"
 #include "asterfort/cnscre.h"
@@ -30,7 +31,7 @@ subroutine cnocns(cnoz, basez, cnsz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-!
+
     character(len=*) :: cnoz, cnsz, basez
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_NO (CNOZ) EN CHAM_NO_S (CNSZ)
@@ -46,37 +47,45 @@ subroutine cnocns(cnoz, basez, cnsz)
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: cno, cns, profcn
-    integer :: nec, gd, ncmpmx, nbno, jcorr1, jrefe, jvale, kcmp
+    integer :: nec, gd, ncmpmx, nbno, jcorr1, jrefe, jvale, kcmp, ierr
     integer :: iadg, icmp, jprno, jnueq, ino, ncmp, ncmp1, jcnsl, jcnsv
     integer :: ival, ico, ieq, icmp1, jnocmp, jdesc, jcorr2
+    logical :: sdveri
 !     ------------------------------------------------------------------
-!
+
     call jemarq()
     cno = cnoz
     cns = cnsz
     base = basez
-!
-!
+
+!   -- verification de la SD cno ? (debug) :
+    sdveri=.false.
+    if (sdveri) then
+        call cheksd(cno,'sd_cham_no',ierr)
+        ASSERT(ierr.eq.0)
+    endif
+
+
 !     -- SI CNS EXISTE DEJA, ON LE DETRUIT :
     call detrsd('CHAM_NO_S', cns)
-!
+
     call dismoi('NOM_MAILLA', cno, 'CHAM_NO', repk=ma)
     call dismoi('NOM_GD', cno, 'CHAM_NO', repk=nomgd)
-!
+
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
-!
+
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('NUM_GD', nomgd, 'GRANDEUR', repi=gd)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-!
+
     call jeveuo(cno//'.REFE', 'L', jrefe)
     call jeveuo(cno//'.VALE', 'L', jvale)
     call jeveuo(cno//'.DESC', 'L', jdesc)
-!
+
 !------------------------------------------------------------------
 !     1- ON ALLOUE CNS :
 !     ------------------
-!
+
 !     1.1 CALCUL DE NCMP1 ET ZK8(JNOCMP) :
 !         NCMP1: NOMBRE DE CMPS PORTEES PAR CNO
 !         ZK8(JNOCMP): LISTES DES CMPS PORTEES PAR CNO
@@ -86,20 +95,20 @@ subroutine cnocns(cnoz, basez, cnsz)
     call jeveuo('&&CNOCNS.NOM_CMP', 'L', jnocmp)
     call jeveuo('&&CNOCNS.CORR1', 'L', jcorr1)
     call jeveuo('&&CNOCNS.CORR2', 'L', jcorr2)
-!
-!
+
+
 !     1.2 ALLOCATION DE CNS :
 !     -------------------------------------------
     call cnscre(ma, nomgd, ncmp1, zk8(jnocmp), base,&
                 cns)
-!
-!
+
+
 !------------------------------------------------------------------
 !     2- REMPLISSAGE DE CNS.CNSL ET CNS.CNSV :
 !     -------------------------------------------
     call jeveuo(cns//'.CNSL', 'E', jcnsl)
     call jeveuo(cns//'.CNSV', 'E', jcnsv)
-!
+
 !     -- CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
     if (zi(jdesc-1+2) .lt. 0) then
         profcn = ' '
@@ -107,7 +116,7 @@ subroutine cnocns(cnoz, basez, cnsz)
     else
         call dismoi('PROF_CHNO', cno, 'CHAM_NO', repk=profcn)
     endif
-!
+
 !     2.1 CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
 !     ---------------------------------------------------
     if (profcn .eq. ' ') then
@@ -115,7 +124,7 @@ subroutine cnocns(cnoz, basez, cnsz)
             do icmp1 = 1, ncmp1
                 zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.
                 ieq = (ino-1)*ncmp1 + icmp1
-!
+
                 if (tsca .eq. 'R') then
                     zr(jcnsv-1+ieq) = zr(jvale-1+ieq)
                 else if (tsca.eq.'I') then
@@ -131,8 +140,8 @@ subroutine cnocns(cnoz, basez, cnsz)
                 endif
             end do
         end do
-!
-!
+
+
 !     2.2 CAS DES CHAM_NO A PROF-CHNO
 !     ---------------------------------------------------
     else
@@ -140,7 +149,7 @@ subroutine cnocns(cnoz, basez, cnsz)
         call jeveuo(jexnum(profcn//'.PRNO', 1), 'L', jprno)
         call jeveuo(profcn//'.NUEQ', 'L', jnueq)
         do ino = 1, nbno
-!
+
 !         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
 !         IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
 !         IADG : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
@@ -148,7 +157,7 @@ subroutine cnocns(cnoz, basez, cnsz)
             if (ncmp .eq. 0) goto 80
             ival = zi(jprno-1+ (ino-1)* (nec+2)+1)
             iadg = jprno - 1 + (ino-1)* (nec+2) + 3
-!
+
             ico = 0
             do kcmp = 1, ncmp1
                 icmp=zi(jcorr2-1+kcmp)
@@ -157,9 +166,9 @@ subroutine cnocns(cnoz, basez, cnsz)
                     ieq = zi(jnueq-1+ival-1+ico)
                     icmp1 = zi(jcorr1-1+icmp)
 !             ASSERT(ICMP1.EQ.KCMP)  COUTEUX ?
-!
+
                     zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.
-!
+
                     if (tsca .eq. 'R') then
                         zr(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zr(jvale-1+ ieq)
                     else if (tsca.eq.'I') then
@@ -178,8 +187,15 @@ subroutine cnocns(cnoz, basez, cnsz)
  80         continue
         end do
     endif
+
+!   -- verification de la SD cns :
+    if (sdveri)  then
+        call cheksd(cns,'sd_cham_no_s',ierr)
+        ASSERT(ierr.eq.0)
+    endif
+
 !------------------------------------------------------------------
-!
+
     call jedetr('&&CNOCNS.TMP_NUCMP')
     call jedetr('&&CNOCNS.NOM_CMP')
     call jedetr('&&CNOCNS.CORR1')

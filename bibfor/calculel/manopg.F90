@@ -20,6 +20,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
+#include "asterc/cheksd.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
@@ -32,7 +33,9 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jedupo.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/initel.h"
+#include "asterfort/jedup1.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -86,14 +89,13 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !
 !-----------------------------------------------------------------------
 !
-!     ------------------------------------------------------------------
     integer :: nbpgmx, nbnomx, nbfamx, nbflmx
     parameter (nbpgmx=27,nbnomx=27,nbfamx=20,nbflmx=20)
     integer :: nbma, ima, jcesd, jcesl, jcesv, iad, jnbpg
     integer :: ilcnx1, nbpgf(nbfamx), k, jfpgl, jpnlfp
     integer :: nec, kfpg, ndim, nno, nnos, nbfpg, npg, kp, ino
     integer :: jceld, nbgrel, nel, nute, imolo, jmolo, jecono
-    integer :: igr, iel, jmaref, lont1
+    integer :: igr, iel, jmaref, lont1, ier
     integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
     integer :: nblfpg, jnolfp, nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
@@ -204,8 +206,13 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
             end do
         endif
     end do
-    call jedupo(ligrel//'.LGRF', 'V', ligre1//'.LGRF', .false.)
-    call jedupo(ligrel//'.NBNO', 'V', ligre1//'.NBNO', .false.)
+    call jedup1(ligrel//'.LGRF', 'V', ligre1//'.LGRF')
+    call jedup1(ligrel//'.NBNO', 'V', ligre1//'.NBNO')
+    call jedup1(ligrel//'.NEMA', 'V', ligre1//'.NEMA')
+    call cormgi('V',ligre1)
+    call initel(ligre1)
+
+
 !
 !
 !
@@ -389,6 +396,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !
     call detrsd('CHAMP', celmod)
     call detrsd('CHAMP', chsgeo)
+
     call detrsd('LIGREL', ligre1)
     call jedetr(obnbpg)
     call jedetr(obnbno)

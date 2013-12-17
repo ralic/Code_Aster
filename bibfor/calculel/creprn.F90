@@ -110,7 +110,6 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     nbsma = 0
     nbssa = 0
 !
-    ASSERT(ligrel.ne.'&MAILLA')
 !
     call dismoi('EXI_ELEM', ligrel, 'LIGREL', repk=exiel)
     call dismoi('NB_SS_ACTI', ligrel, 'LIGREL', repi=nbssa)
@@ -169,12 +168,18 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     if (iret .gt. 0) then
         call jeveuo(noma//'.CONNEX', 'L', iamaco)
         call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilmaco)
+    else
+        iamaco=1
+        ilmaco=1
     endif
 !
     call jeexin(ligrel(1:19)//'.NEMA', iret)
     if (iret .gt. 0) then
         call jeveuo(ligrel(1:19)//'.NEMA', 'L', iamsco)
         call jeveuo(jexatr(ligrel(1:19)//'.NEMA', 'LONCUM'), 'L', ilmsco)
+    else
+        iamsco=1
+        ilmsco=1
     endif
 !
 !
@@ -186,45 +191,43 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     else
         call jeveuo(prnm, 'L', iaprnm)
     endif
-!
-!
-! --- ALLOCATION DE PRNS (POUR UN LIGREL CONTENANT DES NOEUDS TARDIFS):
-!     ----------------------------------------------------------------
-    if (ligrel .ne. '&MAILLA') then
-        call dismoi('NB_NO_SUP', ligrel, 'LIGREL', repi=nbnoms)
-    endif
+
+
+! - allocation de prns (pour un ligrel contenant des noeuds tardifs):
+!   ----------------------------------------------------------------
+    call dismoi('NB_NO_SUP', ligrel, 'LIGREL', repi=nbnoms)
     call jeexin(prns, iret)
     if (iret .eq. 0) then
         if (nbnoms .gt. 0) call wkvect(prns, base//' V I', nbnoms*nec, iaprns)
     else
         call jeveuo(prns, 'L', iaprns)
     endif
-!
-!
-! --- TRAITEMENT DES ELEMENTS FINIS CLASSIQUES :
-!     ----------------------------------------
+
+
+! - traitement des elements finis classiques :
+!   ----------------------------------------
     if (exiel(1:3) .eq. 'NON') goto 90
     call jeveuo(ligrel(1:19)//'.LIEL', 'L', ialiel)
     call jeveuo(jexatr(ligrel(1:19)//'.LIEL', 'LONCUM'), 'L', illiel)
-!
+
     do igr = 1, nbgrel(ligrel)
 !
-! ---   CALCUL DE IMODE (MODE_LOCAL) :
+! ---   calcul de imode (mode_local) :
 !       ------------------------------
         ite = typele(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
         call jenonu(jexnom('&CATA.TE.NOMMOLOC', nomte//moloc), imode)
-!
-!
+
+
         if (imode .gt. 0) then
             nnoe = nbno(imode)
             nel = nbelem(ligrel,igr)
             do j = 1, nel
                 numa = numail(igr,j)
                 if (numa .gt. 0) then
-!
-! ---          IL S'AGIT D'UNE MAILLE PHYSIQUE DU MAILLAGE :
-!              -------------------------------------------
+
+!                   -- il s'agit d'une maille physique du maillage :
+!                   ------------------------------------------------
                     do k = 1, nnoe
                         nunoel = numglm(numa,k)
                         do l = 1, nec
@@ -236,9 +239,9 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                         end do
                     end do
                 else
-!
-! ---          IL S'AGIT D'UNE MAILLE TARDIVE :
-!              ------------------------------
+
+!                   -- il s'agit d'une maille tardive :
+!                   -----------------------------------
                     numa = -numa
                     do k = 1, nnoe
                         nunoel = numgls(numa,k)
@@ -259,18 +262,18 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
             end do
         endif
     end do
-!
+
  90 continue
-!
-!
+
+
 ! --- BOUCLE SUR LES SUPERELEMENTS :
 !     ----------------------------
     if (nbssa .gt. 0) then
 !
         call jeveuo(ligrel//'.SSSA', 'L', iasssa)
 !
-! ---   LE SEUL DDL PORTE PAR UN NOEUD DE LAGRANGE EST 'LAGR' :
-!       ----------------------------------------------------
+! ---   le seul ddl porte par un noeud de lagrange est 'lagr' :
+!       -------------------------------------------------------
         call jeveuo(noma//'.NOMACR', 'L', ianmcr)
 !
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iancmp)
@@ -299,19 +302,18 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                     inold = zi(iaconx-1+3* (i-1)+2)
                     if (ino .gt. nm) then
 !
-! ---        CAS D'UN NOEUD DE LAGRANGE :
-!            --------------------------
+! ---                   CAS D'UN NOEUD DE LAGRANGE :
+!                       --------------------------
                         zi(iaprnm-1+nec* (ino-1)+1) = ior(zi(iaprnm-1+ nec* (ino- 1)+1), icodla)
+
                     else if (inold.gt.0) then
 !
-! ---        CAS D'UN NOEUD PHYSIQUE DU MAILLAGE :
-!            -----------------------------------
+! ---                   CAS D'UN NOEUD PHYSIQUE DU MAILLAGE :
+!                       -----------------------------------
                         do iec = 1, nec
                             zi(iaprnm-1+nec* (ino-1)+iec) = ior(&
-                                                            zi(iaprnm-1+ nec* (ino-1)+iec),&
-                                                            zi(&
-                                                            iaprno-1+ ( nec+2)* (inold-1)+2+ iec)&
-                                                            )
+                                        zi(iaprnm-1+ nec* (ino-1)+iec),&
+                                        zi(iaprno-1+ ( nec+2)* (inold-1)+2+ iec))
                         end do
                     else
                         call utmess('F', 'CALCULEL2_24')
@@ -320,7 +322,6 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
             endif
         end do
     endif
-    call jedetr('&MAILLA            .NOMA')
 !
     call jedema()
 !

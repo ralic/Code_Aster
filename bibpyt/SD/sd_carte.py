@@ -38,12 +38,13 @@ class sd_carte(sd_titre):
         if not self.exists() : return
         noma=self.NOMA.get_stripped()
 
-        # faut-il vÃ©rifier le sd_maillage de chaque sd_carte ?   AJACOT_PB  (meme question que pour sd_cham_no)
-        #  - cela risque de couter cher
-        #  - cela pose un problÃ¨me "import circulaire" avec sd_maillage -> sd_carte => import ici
-        # from SD.sd_maillage import sd_maillage
-        # sd2=sd_maillage(noma[0]); sd2.check(checker)
-        # Rem : si on vÃ©rifie le sd_maillage, il me semble que sdll503a se plante (RuntimeError: maximum recursion depth exceeded)
+        from SD.sd_maillage import sd_maillage
+        sd2=sd_maillage(noma[0])
+        # Rem : si on vérifie le sd_maillage, sdll503a se plante (RuntimeError: maximum recursion depth exceeded)
+        # sd2.check(checker)
+        # => On se contente de vérifier existence d'un objet particulier de la sd_maillage :
+        assert sd2.DIME.exists
+
 
     def check_DESC(self,checker):
         if not self.exists() : return
@@ -56,9 +57,13 @@ class sd_carte(sd_titre):
         assert n_gd_edit  > 0 , desc
 
         assert n_gd_edit  <= n_gd_max , desc
+        exi_lima=0
         for kedit in range(n_gd_edit) :
             code=desc[3+2*kedit]
             assert abs(code) in (1,2,3) , (code, kedit, desc)
+            if abs(code)==3 : exi_lima=1
+        if exi_lima : assert self.LIMA.exists
+
 
     def check_VALE(self,checker):
         if not self.exists() : return
