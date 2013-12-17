@@ -17,8 +17,8 @@ subroutine wkvect(nom, carac, dim, jadr, &
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+! aslint: disable=W1304
     use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
-! aslint: disable=C1308
     implicit none
 
 #include "jeveux.h"

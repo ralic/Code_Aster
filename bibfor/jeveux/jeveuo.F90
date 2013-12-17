@@ -17,8 +17,7 @@ subroutine jeveuo(nomlu, cel, jadr, &
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
-! aslint: disable=C1002
-! aslint: disable=C1308
+! aslint: disable=W0405,C1002,W1304
       use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
       implicit none
 #include "jeveux.h"
