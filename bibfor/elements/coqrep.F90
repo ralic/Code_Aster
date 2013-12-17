@@ -3,7 +3,9 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
+
     real(kind=8) :: pgl(3, 3), t2iu(*), t2ui(*), alpha, beta, c, s
 !     ---------------------------------------------------
 ! ======================================================================
@@ -40,8 +42,10 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     dx = cos(beta)*cos(alpha)
     dy = cos(beta)*sin(alpha)
     dz = -sin(beta)
-!
-!
+!   On vérifie que n = pgl(3,1:3) n'est pas de norme nulle
+    norm = sqrt(dot_product(pgl(3,1:3),pgl(3,1:3)))
+    ASSERT( norm.gt.r8prem() )
+!   
     ps = dx*pgl(3,1) + dy*pgl(3,2) + dz*pgl(3,3)
     pjdx = dx - ps*pgl(3,1)
     pjdy = dy - ps*pgl(3,2)
@@ -69,6 +73,6 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     t2ui(2) = - s
     t2ui(3) = s
     t2ui(4) = c
-    !
+!
 !
 end subroutine

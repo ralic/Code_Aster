@@ -50,7 +50,7 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 !     -----------------------------
 !-----------------------------------------------------------------------
     integer :: i, idec, igau, ino, j, k, nb2
-    integer :: npgsn
+    integer :: npgsr
     real(kind=8) :: alpha, beta, c
     real(kind=8) :: s
     real(kind=8) :: r8bid4(4)
@@ -59,15 +59,13 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 !
 ! --- NOMBRE DE POINTS D'INTEGRATION DE L'ELEMENT (SOUS-INTEGRE) :
 !     ----------------------------------------------------------
-    npgsn= zilzi(4)
+    npgsr=zilzi(3)
 !
 ! --- RECUPERATION DES ANGLES DETERMINANT LE REPERE UTILISATEUR
 ! --- PAR RAPPORT AU REPERE GLOBAL :
 !     ============================
     alpha = alpha * r8dgrd()
     beta = beta * r8dgrd()
-!
-!
 !
 ! --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
 ! --- AUX NOEUDS DE L'ELEMENT AU REPERE UTILISATEUR :
@@ -118,7 +116,7 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION DE L'ELEMENT (SOUS-INTEGRE) :
 !     --------------------------------------------------------------
-    do 40 igau = 1, npgsn
+    do 40 igau = 1, npgsr
 !
 ! ---   RECUPERATION DE LA MATRICE DE PASSAGE AU POINT D'INTEGRATION
 ! ---   COURANT :

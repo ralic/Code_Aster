@@ -55,6 +55,8 @@ subroutine c3drep(nomte, epais, alpha, beta, coord,&
 !
 !     -- POUR REMPLIR LZR+2000+... :
 !     -- QUELLE VALEUR POUR IND ? FICHE ???
+! ind=0 => calcul aux points d'intégration réduite
+! ind=1 => calcul aux points d'intégration normale
     ind =0
     k = 0
     do 110 intsr = 1, npgsr
