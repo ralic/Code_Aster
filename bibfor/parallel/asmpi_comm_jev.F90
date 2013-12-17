@@ -7,13 +7,14 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 ! ARGUMENTS D'APPELS
 ! IN OPTMPI :
 !      /'MPI_SUM' == 'ALLREDUCE + SUM'
+!      /'MPI_MAX' == 'ALLREDUCE + MAX'
+!      /'MPI_MIN' == 'ALLREDUCE + MIN'
 !      /'REDUCE'  == 'REDUCE + SUM' : TOUS -> 0
 !      /'BCAST'   == 'BCAST'        : 0    -> TOUS
 !
 ! IN NOMJEV : K24 : NOM JEVEUX DU VECTEUR A COMMUNIQUER
 !----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
-! CORPS DU PROGRAMME
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -32,24 +33,12 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! DECLARATION PARAMETRES D'APPELS
 #include "aster_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
-#include "asterc/asmpi_allreduce_r.h"
-#include "asterc/asmpi_allreduce_c.h"
-#include "asterc/asmpi_allreduce_i.h"
-#include "asterc/asmpi_allreduce_i4.h"
-#include "asterc/asmpi_bcast_r.h"
-#include "asterc/asmpi_bcast_i.h"
-#include "asterc/asmpi_bcast_i4.h"
-#include "asterc/asmpi_reduce_r.h"
-#include "asterc/asmpi_reduce_c.h"
-#include "asterc/asmpi_reduce_i.h"
-#include "asterc/asmpi_reduce_i4.h"
-#include "asterfort/asmpi_check.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -63,131 +52,59 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
-#include "blas/dcopy.h"
-#include "blas/zcopy.h"
+#include "asterfort/jxveri.h"
 !
+! DECLARATION PARAMETRES D'APPELS
     character(len=*) :: optmpi
     character(len=24) :: nomjev
 !
 #ifdef _USE_MPI
 #include "mpif.h"
 #include "aster_mpif.h"
+
 ! DECLARATION VARIABLES LOCALES
-    integer :: jnomjv, iexi
-    integer :: ibid
-    integer :: jtrav, k
-    integer :: iobj, nbobj, nlong, iret
-    mpi_int :: iermpi, lint, lint4, lr8, lc8, nbpro4, mpicou, nbv
+    integer :: jnomjv, iexi, bcrank, ibid
+    integer :: iobj, nbobj, nlong
+    mpi_int :: nbpro4, mpicou, nbv
     mpi_int, parameter :: pr0=0
     character(len=1) :: typsca, xous
-    character(len=8) :: kbid
-    character(len=24) :: notrav
+    character(len=8) :: kbid,stock
+    logical :: unseul
 !
 ! ---------------------------------------------------------------------
     call jemarq()
-! --- COMMUNICATEUR MPI DE TRAVAIL
+
+
+!   -- s'il n'y a qu'un seul proc, il n'y a rien a faire :
+!   ------------------------------------------------------
     call asmpi_comm('GET', mpicou)
-! --- COMPTEUR
-    call uttcpu('CPU.CMPI.1', 'DEBUT', ' ')
-!
-!     -- INITIALISATIONS :
-!     --------------------
-    if (loisem() .eq. 8) then
-        lint=MPI_INTEGER8
-    else
-        lint=MPI_INTEGER
-    endif
-    lint4=MPI_INTEGER4
-    lr8 = MPI_DOUBLE_PRECISION
-    lc8 = MPI_DOUBLE_COMPLEX
-!
-    notrav='&&MPICM2.TRAV'
-!
-!     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
     call asmpi_info(mpicou, size=nbpro4)
     if (nbpro4 .eq. 1) goto 999
-!
-!     -- VERIFICATION RENDEZ-VOUS
-    iret=1
-    call asmpi_check(nbpro4, iret)
-    if (iret .ne. 0) then
-        call utmess('I', 'APPELMPI_83', sk=optmpi)
-        goto 999
-    endif
-!
-    if (optmpi .eq. 'BCAST') then
-!     ---------------------------------
-        call jelira(nomjev, 'XOUS', ibid, xous)
-        ASSERT(xous.eq.'S')
-        call jelira(nomjev, 'TYPE', ibid, typsca)
-        call jelira(nomjev, 'LONMAX', nlong, kbid)
-        nbv = to_mpi_int(nlong)
-!
-        call jeveuo(nomjev, 'E', jnomjv)
-!
-        if (typsca .eq. 'R') then
-            call asmpi_bcast_r(zr(jnomjv), nbv, pr0, mpicou)
-        else if (typsca.eq.'I') then
-            call asmpi_bcast_i(zi(jnomjv), nbv, pr0, mpicou)
-        else if (typsca.eq.'S') then
-            call asmpi_bcast_i4(zi4(jnomjv), nbv, pr0, mpicou)
-        else
-            ASSERT(.false.)
-        endif
-!
-    else if (optmpi.eq.'REDUCE') then
-!     ---------------------------------
-        call jelira(nomjev, 'XOUS', ibid, xous)
-        ASSERT(xous.eq.'S')
-        call jelira(nomjev, 'TYPE', ibid, typsca)
-        call jelira(nomjev, 'LONMAX', nlong, kbid)
-        nbv = to_mpi_int(nlong)
-!
-        call jeveuo(nomjev, 'E', jnomjv)
-!
-        if (typsca .eq. 'R') then
-            call wkvect(notrav, 'V V R', nlong, jtrav)
-            call dcopy(nlong, zr(jnomjv), 1, zr(jtrav), 1)
-            call asmpi_reduce_r(zr(jtrav), zr(jnomjv), nbv, MPI_SUM4, pr0,&
-                                mpicou)
-        else if (typsca.eq.'C') then
-            call wkvect(notrav, 'V V C', nlong, jtrav)
-            call zcopy(nlong, zc(jnomjv), 1, zc(jtrav), 1)
-            call asmpi_reduce_c(zc(jtrav), zc(jnomjv), nbv, MPI_SUM4, pr0,&
-                                mpicou)
-        else if (typsca.eq.'I') then
-            call wkvect(notrav, 'V V I', nlong, jtrav)
-            do k=1,nlong
-                zi(jtrav-1+k)=zi(jnomjv-1+k)
-            enddo
-            call asmpi_reduce_i(zi(jtrav), zi(jnomjv), nbv, MPI_SUM4, pr0,&
-                                mpicou)
-        else if (typsca.eq.'S') then
-            call wkvect(notrav, 'V V S', nlong, jtrav)
-            do k=1,nlong
-                zi4(jtrav-1+k)=zi4(jnomjv-1+k)
-            enddo
-            call asmpi_reduce_i4(zi4(jtrav), zi4(jnomjv), nbv, MPI_SUM4, pr0,&
-                                mpicou)
-        else
-            ASSERT(.false.)
-        endif
-        call jedetr(notrav)
-!
-    else if (optmpi.eq.'MPI_SUM') then
-!     -----------------------------------
-!       REDUCTION + DIFFUSION DE L'OBJET JEVEUX NOMJEV
-!       REMARQUE : NOMJEV PEUT ETRE UNE COLLECTION
-        call jelira(nomjev, 'TYPE', ibid, typsca)
-        call jelira(nomjev, 'XOUS', ibid, xous)
-        if (xous .eq. 'X') then
-            call jelira(nomjev, 'NMAXOC', nbobj, kbid)
-        else
+
+
+    call jelira(nomjev, 'XOUS', ibid, xous)
+    ASSERT(xous.eq.'S'.or. xous.eq.'X')
+    call jelira(nomjev, 'TYPE', ibid, typsca)
+
+    if (xous .eq. 'X') then
+        call jelira(nomjev, 'NMAXOC', nbobj, kbid)
+        call jelira(nomjev, 'STOCKAGE', cval=stock)
+        unseul=.false.
+        if (stock.eq.'CONTIG') then
             nbobj=1
+            unseul=.true.
         endif
-!
-        do 10, iobj = 1,nbobj
-        if (xous .eq. 'S') then
+    else
+        nbobj=1
+        unseul=.true.
+    endif
+
+
+    bcrank=0
+
+    do 10, iobj = 1,nbobj
+        if (unseul) then
+            ASSERT (nbobj.eq.1)
             call jeveuo(nomjev, 'E', jnomjv)
             call jelira(nomjev, 'LONMAX', nlong, kbid)
         else
@@ -196,44 +113,26 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
             call jeveuo(jexnum(nomjev, iobj), 'E', jnomjv)
             call jelira(jexnum(nomjev, iobj), 'LONMAX', nlong, kbid)
         endif
-!
+
         nbv = to_mpi_int(nlong)
-!
+
         if (typsca .eq. 'R') then
-            call wkvect(notrav, 'V V R', nlong, jtrav)
-            call dcopy(nlong, zr(jnomjv), 1, zr(jtrav), 1)
-            call asmpi_allreduce_r(zr(jtrav), zr(jnomjv), nbv, MPI_SUM4, mpicou)
+            call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vr=zr(jnomjv))
         else if (typsca.eq.'C') then
-            call wkvect(notrav, 'V V C', nlong, jtrav)
-            call zcopy(nlong, zc(jnomjv), 1, zc(jtrav), 1)
-            call asmpi_allreduce_c(zc(jtrav), zc(jnomjv), nbv, MPI_SUM4, mpicou)
+            call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vc=zc(jnomjv))
         else if (typsca.eq.'I') then
-            call wkvect(notrav, 'V V I', nlong, jtrav)
-            do k=1,nlong
-                zi(jtrav-1+k)=zi(jnomjv-1+k)
-            enddo
-            call asmpi_allreduce_i(zi(jtrav), zi(jnomjv), nbv, MPI_SUM4, mpicou)
+            call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vi=zi(jnomjv))
         else if (typsca.eq.'S') then
-            call wkvect(notrav, 'V V S', nlong, jtrav)
-            do k=1,nlong
-                zi4(jtrav-1+k)=zi4(jnomjv-1+k)
-            enddo
-            call asmpi_allreduce_i4(zi4(jtrav), zi4(jnomjv), nbv, MPI_SUM4, mpicou)
+            call asmpi_comm_vect(optmpi, typsca, nlong, bcrank, vi4=zi4(jnomjv))
         else
             ASSERT(.false.)
         endif
-        call jedetr(notrav)
-!
+
         if (xous .eq. 'X') call jelibe(jexnum(nomjev, iobj))
-10      continue
-!
-    else
-        ASSERT(.false.)
-    endif
-!
-999  continue
-! --- COMPTEUR
-    call uttcpu('CPU.CMPI.1', 'FIN', ' ')
+10  continue
+
+
+999 continue
     call jedema()
 #else
     character(len=1) :: kdummy

@@ -77,8 +77,8 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 #include "asterc/asmpi_send_i4.h"
 ! DECLARATION VARIABLES LOCALES
     character(len=2) :: typsc1
-    integer :: iret, nbv
-    mpi_int :: iermpi, lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
+    integer :: nbv
+    mpi_int :: lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
     mpi_int :: mpicou
     logical :: scal
     real(kind=8) :: wkr(1)

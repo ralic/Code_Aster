@@ -149,7 +149,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                 if (idecal .lt. 0) ASSERT(.false.)
                 i8=neq*zi(jlcom+i-1)
                 if (i .eq. icom1) call dcopy(i8, zr(jlbufs), 1, zr(jlbuff), 1)
-                call asmpi_comm_vect('BCASTP', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
+                call asmpi_comm_vect('BCAST', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
                 call dcopy(i8, zr(jlbuff), 1, vectr(1+idecal*neq), 1)
 115          continue
             call jedetr(k24bus)
@@ -191,7 +191,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- DE TAILLE =< SIZBMPI POUR EVITER LES PBS DE CONTENTIONS
 !       --- MEMOIRE ET LES LIMITES DES ENTIERS COURTS MPI.
         do 116 i = 1, nconvg
-            call asmpi_comm_vect('BCASTP', 'R', nbval=neq, bcrank=0, vr=vectr(1+(i-1)*neq))
+            call asmpi_comm_vect('BCAST', 'R', nbval=neq, bcrank=0, vr=vectr(1+(i-1)*neq))
 116      continue
 !       --- ON COMMUNIQUE LES PETITS OBJETS SUIVANTS
         call asmpi_comm_vect('BCAST', 'R', nbval=nbparr*mxresf, bcrank=0, vr=resur)

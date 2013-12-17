@@ -393,9 +393,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !
 !       -- BROADCAST DE SOLU A TOUS LES PROC
         if (ltypr) then
-            call asmpi_comm_vect('BCASTP', 'R', nbval=nnbsol, bcrank=0, vr=rsolu)
+            call asmpi_comm_vect('BCAST', 'R', nbval=nnbsol, bcrank=0, vr=rsolu)
         else
-            call asmpi_comm_vect('BCASTP', 'C', nbval=nnbsol, bcrank=0, vc=csolu)
+            call asmpi_comm_vect('BCAST', 'C', nbval=nnbsol, bcrank=0, vc=csolu)
         endif
 !
 !       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :

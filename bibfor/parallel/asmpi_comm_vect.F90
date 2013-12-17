@@ -1,5 +1,5 @@
 subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
-                           vr, vc, sci, scr, scc)
+                           vi4, vr, vc, sci, sci4, scr, scc)
 ! person_in_charge: jacques.pellet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -24,45 +24,35 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !
 ! Arguments d'appels
 ! in optmpi :
-!       /'MPI_MAX'  == 'ALLREDUCE + MAX' (seulement 'R'/'I')
-!       /'MPI_MIN'  == 'ALLREDUCE + MIN' (seulement 'R'/'I')
+!       /'MPI_MAX'  == 'ALLREDUCE + MAX' (interdit pour typsca= 'C')
+!       /'MPI_MIN'  == 'ALLREDUCE + MIN' (interdit pour typsca= 'C')
 !       /'MPI_SUM'  == 'ALLREDUCE + SUM'
 !
-!       /'REDUCE'   == 'REDUCE + SUM' : tous -> 0
+!       /'REDUCE'   == 'REDUCE + SUM'      : tous -> 0
 !       /'BCAST'    == 'BCAST'             : proc de rang=bcrank -> tous
-!       /'BCASTP'   == 'BCAST' par paquets : proc de rang=bcrank -> tous
 !
-! in    typsca : /'I' /'R' /'C'
+! in    typsca : /'I' /'S' /'R' /'C'
 ! in    nbval  : longueur du vecteur v* (optionnel, 1 si absent)
 ! in    bcrank : rang du processus mpi d'ou emane le bcast
-!                                         (si optmpi='bcast'/'bcastp')
 !-si nbval > 1:
 ! inout vi(*)  : vecteur d'entiers a echanger    (si typsca='I')
+! inout vi4(*) : vecteur d'entiers a echanger    (si typsca='S')
 ! inout vr(*)  : vecteur de reels a echanger     (si typsca='R')
 ! inout vc(*)  : vecteur de complexes a echanger (si typsca='C')
 !-si nbval == 1:
 ! inout sci    : entier a echanger    (si typsca='I')
+! inout sci4   : entier a echanger    (si typsca='S')
 ! inout scr    : reel a echanger      (si typsca='R')
 ! inout scc    : complexe a echanger  (si typsca='C')
 !----------------------------------------------------------------------
     implicit none
-! DECLARATION PARAMETRES D'APPELS
+
 #include "aster_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
-#include "asterc/asmpi_allreduce_r.h"
-#include "asterc/asmpi_allreduce_c.h"
-#include "asterc/asmpi_allreduce_i.h"
-#include "asterc/asmpi_allreduce_i4.h"
-#include "asterc/asmpi_bcast_r.h"
-#include "asterc/asmpi_bcast_c.h"
-#include "asterc/asmpi_bcast_i.h"
-#include "asterc/asmpi_reduce_r.h"
-#include "asterc/asmpi_reduce_c.h"
-#include "asterc/asmpi_reduce_i.h"
-#include "asterc/asmpi_reduce_i4.h"
+#include "asterfort/asmpi_comm_mvect.h"
 #include "asterfort/asmpi_check.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -72,301 +62,154 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jxveri.h"
+
     character(len=*), intent(in) :: optmpi
     character(len=*), intent(in) :: typsca
     integer, intent(in), optional :: nbval
     integer, intent(in), optional :: bcrank
     integer, intent(inout), optional :: vi(*)
+    integer(kind=4), intent(inout), optional :: vi4(*)
     real(kind=8), intent(inout), optional :: vr(*)
     complex(kind=8), intent(inout), optional :: vc(*)
     integer, intent(inout), optional :: sci
+    integer(kind=4), intent(inout), optional :: sci4
     real(kind=8), intent(inout), optional :: scr
     complex(kind=8), intent(inout), optional :: scc
-!
+
 #ifdef _USE_MPI
 #include "mpif.h"
 #include "aster_mpif.h"
-! DECLARATION VARIABLES LOCALES
+
     character(len=1) :: typsc1
-    integer :: vi2(1000), wki(1)
-    real(kind=8) :: vr2(1000), wkr(1)
-    complex(kind=8) :: vc2(1000), wkc(1)
-    integer :: k, jtrav, iret, sizbmpi, nbcast, imain, irest, nbv
-    mpi_int :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8, bcrank4, proc
-    mpi_int, parameter :: pr0=0
+!   attention : tpetit doit etre le meme dans asmpi_comm_mvect.F90
+    integer, parameter :: tpetit=1000
+    integer :: iret, nbv
+    integer :: km,nbm,nbv1,nbv2,nbv3,idecal,jtrav
+    real(kind=8) :: taill1, taillmax
+    mpi_int :: nbpro4, mpicou, proc
     logical :: scal
 ! ---------------------------------------------------------------------
     call jemarq()
-! --- COMMUNICATEUR MPI DE TRAVAIL
+
+!   -- communicateur mpi de travail :
     call asmpi_comm('GET', mpicou)
-! --- COMPTEUR
+!   -- compteur de temps CPU :
     call uttcpu('CPU.CMPI.1', 'DEBUT', ' ')
-!
-!
-!     -- INITIALISATIONS :
-!     --------------------
-!     TAILLE MAX DES PAQUETS SI OPTMPI='BCASTP'
-    sizbmpi=1d+6
-    if (loisem() .eq. 8) then
-        lint=MPI_INTEGER8
-    else
-        lint=MPI_INTEGER
-    endif
-    lr8 = MPI_DOUBLE_PRECISION
-    lc8 = MPI_DOUBLE_COMPLEX
-!
-!     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
+
+!   -- s'il n'y a qu'un seul proc, il n'y a rien a faire :
     call asmpi_info(mpicou, rank=proc, size=nbpro4)
     if (nbpro4 .eq. 1) goto 999
-!
-!     -- VERIFICATION RENDEZ-VOUS
+
+
+!   -- verification rendez-vous
     iret=1
     call asmpi_check(nbpro4, iret)
     if (iret .ne. 0) then
         call utmess('I', 'APPELMPI_83', sk=optmpi)
         goto 999
     endif
-!
-!     -- SCALAIRE :
-!     -------------
+
+
+!   -- Calcul de scal, nbv, typsc1 :
+!   ---------------------------------------
     typsc1=typsca
-    scal = present(sci) .or. present(scr) .or. present(scc)
+    scal = present(sci) .or. present(sci4).or. present(scr) .or. present(scc)
     if (.not. scal) then
         ASSERT(present(nbval))
         nbv = nbval
     else
         nbv = 1
     endif
-    ASSERT(typsc1.eq.'I' .or. typsc1.eq.'R' .or. typsc1.eq.'C')
-    ASSERT(typsc1.ne.'I' .or. present(vi) .or. present(sci))
+    ASSERT(typsc1.eq.'R' .or. typsc1.eq.'C' .or. typsc1.eq.'I' .or. typsc1.eq.'S')
     ASSERT(typsc1.ne.'R' .or. present(vr) .or. present(scr))
     ASSERT(typsc1.ne.'C' .or. present(vc) .or. present(scc))
-    nbv4=nbv
-!
-!     -- CHOIX OPERATION MPI  :
-!     ---------------------------
-    if (optmpi .eq. 'MPI_MAX') then
-        lopmpi=MPI_MAX4
-        ASSERT(typsc1 .ne. 'C')
-    else if (optmpi.eq.'MPI_MIN') then
-        lopmpi=MPI_MIN4
-        ASSERT(typsc1 .ne. 'C')
-    else
-        lopmpi=MPI_SUM4
-    endif
-!
-!     -- SI REDUCE OU ALLREDUCE, IL FAUT UN 2EME BUFFER
-!        - SI NBV <= 1000 : ON UTILISE UN TABLEAU STATIQUE
-!        - SINON ON ALLOUE UN TABLEAU JEVEUX
-!     ------------------------------------------------------
+    ASSERT(typsc1.ne.'I' .or. present(vi) .or. present(sci))
+    ASSERT(typsc1.ne.'S' .or. present(vi4) .or. present(sci4))
+
+
+!   -- calcul de : nbm  : nombre de "morceaux"
+!   ----------------------------------------------------------
+    ! taillmax : la taille maximale des "morceaux" (en Mo) :
+    taillmax=10.d0
+    taill1=dble(8*nbv)/(1.e6)
+    if (typsc1.eq.'C') taill1=taill1*2
+    if (typsc1.eq.'S') taill1=taill1/2
+    nbm=int(taill1/taillmax)+1
+
+
+!   -- calcul (ou modification) de :
+!     nbm  : nombre de morceaux (+1)
+!     nbv1 : nombre d'elements pour les morceaux [1:nbm-1]
+!     nbv2 : nombre d'elements pour le dernier morceau (reste)
+!   ----------------------------------------------------------
+    nbv1=nbv/nbm
+    nbv2=nbv-(nbm*nbv1)
+    nbm=nbm+1
+
+    ASSERT(nbv1.gt.0)
+    ASSERT(nbv1.ge.nbv2)
+
+
+!   -- allocation d'un vecteur de travail :
+!   ---------------------------------------
+    jtrav=0
     if (optmpi .ne. 'BCAST') then
-        ASSERT(nbv.gt.0)
-!
-        if (scal) then
+        if (nbv1 .gt. tpetit) then
             if (typsc1 .eq. 'R') then
-                vr2(1) = scr
-            else if (typsc1.eq.'I') then
-                vi2(1) = sci
+                call wkvect('&&ASMPI_COMM_VECT.TRAV', 'V V R', nbv1, jtrav)
             else if (typsc1.eq.'C') then
-                vc2(1) = scc
-            else
-                ASSERT(.false.)
-            endif
-        else if (nbv .le. 1000) then
-            if (typsc1 .eq. 'R') then
-                do 1 k = 1, nbv
-                    vr2(k)=vr(k)
- 1              continue
+                call wkvect('&&ASMPI_COMM_VECT.TRAV', 'V V C', nbv1, jtrav)
             else if (typsc1.eq.'I') then
-                do 2 k = 1, nbv
-                    vi2(k)=vi(k)
- 2              continue
-            else if (typsc1.eq.'C') then
-                do 3 k = 1, nbv
-                    vc2(k)=vc(k)
- 3              continue
-            else
-                ASSERT(.false.)
-            endif
-        else
-            if (typsc1 .eq. 'R') then
-                call wkvect('&&MPICM1.TRAV', 'V V R', nbv, jtrav)
-                do 6 k = 1, nbv
-                    zr(jtrav-1+k)=vr(k)
- 6              continue
-            else if (typsc1.eq.'I') then
-                call wkvect('&&MPICM1.TRAV', 'V V I', nbv, jtrav)
-                do 7 k = 1, nbv
-                    zi(jtrav-1+k)=vi(k)
- 7              continue
-            else if (typsc1.eq.'C') then
-                call wkvect('&&MPICM1.TRAV', 'V V C', nbv, jtrav)
-                do 8 k = 1, nbv
-                    zc(jtrav-1+k)=vc(k)
- 8              continue
+                call wkvect('&&ASMPI_COMM_VECT.TRAV', 'V V I', nbv1, jtrav)
+            else if (typsc1.eq.'S') then
+                call wkvect('&&ASMPI_COMM_VECT.TRAV', 'V V S', nbv1, jtrav)
             else
                 ASSERT(.false.)
             endif
         endif
     endif
-!
-!
-    if (optmpi .eq. 'BCAST') then
-!     ---------------------------------
-        ASSERT(present(bcrank))
-        ASSERT(nbv > 1)
-        bcrank4 = to_mpi_int(bcrank)
-        if (typsc1 .eq. 'R') then
-            call asmpi_bcast_r(vr, nbv4, bcrank4, mpicou)
-        else if (typsc1.eq.'I') then
-            call asmpi_bcast_i(vi, nbv4, bcrank4, mpicou)
-        else if (typsc1.eq.'C') then
-            call asmpi_bcast_c(vc, nbv4, bcrank4, mpicou)
+
+
+!   -- boucle sur les morceaux :
+!   ----------------------------
+    idecal=1
+    do km=1,nbm
+        if (km.lt.nbm) then
+            nbv3=nbv1
+        else
+            nbv3=nbv2
+        endif
+        if (nbv3.eq.0) goto 10
+
+        if (present(sci)) then
+            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, sci=sci)
+        elseif (present(sci4)) then
+            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, sci4=sci4)
+        elseif (present(scr)) then
+            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, scr=scr)
+        elseif (present(scc)) then
+            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, scc=scc)
+        elseif (present(vi)) then
+            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, vi=vi(idecal))
+        elseif (present(vi4)) then
+            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, vi4=vi4(idecal))
+        elseif (present(vr)) then
+            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, vr=vr(idecal))
+        elseif (present(vc)) then
+            call  asmpi_comm_mvect(optmpi, typsca, nbv3, jtrav, bcrank, vc=vc(idecal))
         else
             ASSERT(.false.)
         endif
-!
-    else if (optmpi.eq.'BCASTP') then
-!     ---------------------------------
-!       --- ON COMMUNIQUE EN SOUS-PAQUETS DE TAILLE =< sizbmpi
-!       --- POUR EVITER LES PBS DE CONTENTIONS MEMOIRE ET LES LIMITES
-!       --- DE REPRESENTATIONS DES ENTIERS DS LA BIBLI MPI.
-        ASSERT(present(bcrank))
-        ASSERT(nbv > 1)
-        nbcast=nbv/sizbmpi
-        imain=nbcast*sizbmpi
-        irest=nbv-imain
-        bcrank4 = to_mpi_int(bcrank)
-!       IF (NBCAST.GT.0)
-!     &    WRITE(6,*)'<MPICM1 + BCASTP> TYPSC1/NBV/NBCAST/sizbmpi: ',
-!     &    TYPSC1,NBV,NBCAST,sizbmpi
-        if (typsc1 .eq. 'R') then
-            nbv4=sizbmpi
-            do 11 k = 1, nbcast
-                call asmpi_bcast_r(vr(1+(k-1)*sizbmpi), nbv4, bcrank4, mpicou)
-11          continue
-            nbv4=irest
-            if (irest .ne. 0) then
-                call asmpi_bcast_r(vr(1+imain), nbv4, bcrank4, mpicou)
-            endif
-!
-        else if (typsc1.eq.'I') then
-            nbv4=sizbmpi
-            do 12 k = 1, nbcast
-                call asmpi_bcast_i(vi(1+(k-1)*sizbmpi), nbv4, bcrank4, mpicou)
-12          continue
-            nbv4=irest
-            if (irest .ne. 0) then
-                call asmpi_bcast_i(vi(1+imain), nbv4, bcrank4, mpicou)
-            endif
-!
-        else if (typsc1.eq.'C') then
-            nbv4=sizbmpi
-            do 13 k = 1, nbcast
-                call asmpi_bcast_c(vc(1+(k-1)*sizbmpi), nbv4, bcrank4, mpicou)
-13          continue
-            nbv4=irest
-            if (irest .ne. 0) then
-                call asmpi_bcast_c(vc(1+imain), nbv4, bcrank4, mpicou)
-            endif
-!
-        else
-            ASSERT(.false.)
-        endif
-!
-    else if (optmpi.eq.'REDUCE') then
-!     ---------------------------------
-        if (typsc1 .eq. 'R') then
-            if (scal) then
-                call asmpi_reduce_r(vr2, wkr, nbv4, lopmpi, pr0,&
-                                    mpicou)
-                if (proc .eq. pr0) then
-                    scr = wkr(1)
-                endif
-            else if (nbv .le. 1000) then
-                call asmpi_reduce_r(vr2, vr, nbv4, lopmpi, pr0,&
-                                    mpicou)
-            else
-                call asmpi_reduce_r(zr(jtrav), vr, nbv4, lopmpi, pr0,&
-                                    mpicou)
-            endif
-!
-        else if (typsc1.eq.'I') then
-            if (scal) then
-                call asmpi_reduce_i(vi2, wki, nbv4, lopmpi, pr0,&
-                                    mpicou)
-                if (proc .eq. pr0) then
-                    sci = wki(1)
-                endif
-            else if (nbv .le. 1000) then
-                call asmpi_reduce_i(vi2, vi, nbv4, lopmpi, pr0,&
-                                    mpicou)
-            else
-                call asmpi_reduce_i(zi(jtrav), vi, nbv4, lopmpi, pr0,&
-                                    mpicou)
-            endif
-        else if (typsc1.eq.'C') then
-            if (scal) then
-                call asmpi_reduce_c(vc2, wkc, nbv4, lopmpi, pr0,&
-                                    mpicou)
-                if (proc .eq. pr0) then
-                    scc = wkc(1)
-                endif
-            else if (nbv .le. 1000) then
-                call asmpi_reduce_c(vc2, vc, nbv4, lopmpi, pr0,&
-                                    mpicou)
-            else
-                call asmpi_reduce_c(zc(jtrav), vc, nbv4, lopmpi, pr0,&
-                                    mpicou)
-            endif
-        else
-            ASSERT(.false.)
-        endif
-!
-!
-    else if (optmpi(1:4).eq.'MPI_') then
-!     ---------------------------------
-        if (typsc1 .eq. 'R') then
-            if (scal) then
-                call asmpi_allreduce_r(vr2, wkr, nbv4, lopmpi, mpicou)
-                scr = wkr(1)
-            else if (nbv .le. 1000) then
-                call asmpi_allreduce_r(vr2, vr, nbv4, lopmpi, mpicou)
-            else
-                call asmpi_allreduce_r(zr(jtrav), vr, nbv4, lopmpi, mpicou)
-            endif
-        else if (typsc1.eq.'I') then
-            if (scal) then
-                call asmpi_allreduce_i(vi2, wki, nbv4, lopmpi, mpicou)
-                sci = wki(1)
-            else if (nbv .le. 1000) then
-                call asmpi_allreduce_i(vi2, vi, nbv4, lopmpi, mpicou)
-            else
-                call asmpi_allreduce_i(zi(jtrav), vi, nbv4, lopmpi, mpicou)
-            endif
-        else if (typsc1.eq.'C') then
-            if (scal) then
-                call asmpi_allreduce_c(vc2, wkc, nbv4, lopmpi, mpicou)
-                scc = wkc(1)
-            else if (nbv .le. 1000) then
-                call asmpi_allreduce_c(vc2, vc, nbv4, lopmpi, mpicou)
-            else
-                call asmpi_allreduce_c(zc(jtrav), vc, nbv4, lopmpi, mpicou)
-            endif
-        else
-            ASSERT(.false.)
-        endif
-!
-    else
-        ASSERT(.false.)
-    endif
-!
-    if (optmpi .ne. 'BCAST' .and. nbv .gt. 1000) call jedetr('&&MPICM1.TRAV')
-!
+        idecal=idecal+nbv3
+10      continue
+    enddo
+    call jedetr('&&ASMPI_COMM_VECT.TRAV')
+
 999  continue
-! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'FIN', ' ')
     call jedema()
+
 #else
     character(len=1) :: kdummy
     integer :: idummy
