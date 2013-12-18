@@ -5,7 +5,7 @@ Example of configuration to use non-standard paths
 """
 
 def configure(self):
-    from Options import options as opts
+    opts = self.options
     self.env.append_value('LIBPATH', [
         '/opt/aster/public/hdf5-1.8.8/lib',
         '/opt/aster/public/med-3.0.6/lib',

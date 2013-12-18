@@ -22,11 +22,10 @@ def options(self):
                     help='Embed MUMPS libraries as static library')
 
 def configure(self):
-    from Options import options as opts
     try:
         self.check_mumps()
     except Errors.ConfigurationError:
-        if opts.enable_mumps == True:
+        if self.options.enable_mumps == True:
             raise
     else:
         self.define('_HAVE_MUMPS', 1)
@@ -35,7 +34,7 @@ def configure(self):
 ###############################################################################
 @Configure.conf
 def check_mumps(self):
-    from Options import options as opts
+    opts = self.options
     if opts.enable_mumps == False:
         raise Errors.ConfigurationError('MUMPS disabled')
     self.get_mumps_version()
@@ -56,7 +55,7 @@ def check_mumps(self):
 
 @Configure.conf
 def check_mumps_libs(self):
-    from Options import options as opts
+    opts = self.options
     check_mumps = partial(self.check_cc, uselib_store='MUMPS', use='MPI',
                           mandatory=True)
     if opts.embed_all or opts.embed_mumps:
@@ -73,7 +72,7 @@ def detect_last_includes(self):
     exist = set([osp.dirname(i.srcpath()) for i in incs])
     mpi = [i for i in exist if i.endswith('_mpi')]
     incdirs = list(exist.difference(mpi))
-    if self.env.HAVE_MPI:
+    if self.get_define('HAVE_MPI'):
         incdirs = mpi
     regexp = re.escape(pattern) + '(?P<vers>[0-9]+\.[0-9]+\.[0-9]+)(?:|_mpi)'
     allvers = re.compile(regexp).findall(' '.join(incdirs))
@@ -83,13 +82,9 @@ def detect_last_includes(self):
 
 @Configure.conf
 def get_mumps_version(self):
-    from Options import options as opts
     self.start_msg('Getting mumps version')
     try:
-        if opts.mumps_version:
-            ret = opts.mumps_version
-        else:
-            ret = self.detect_last_includes()
+        ret = self.options.mumps_version or self.detect_last_includes()
         # if C include is available
         #incdir = osp.abspath('bibfor/include_mumps-%s/' % ret)
         #frag = '\n'.join(('#include <stdio.h>', '#include <zmumps_c.h>',

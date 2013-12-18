@@ -12,7 +12,7 @@ waf install -p
 YAMMROOT = '/home/aster/yamm/V7_3_0/'
 
 def configure(self):
-    from Options import options as opts
+    opts = self.options
     self.env['ADDMEM'] = 300
     self.env.append_value('OPT_ENV', [
         '. /home/aster/etc/codeaster/profile.sh',

@@ -33,7 +33,6 @@ def configure_pythonpath(self):
 @Configure.conf
 def check_python(self):
     self.load('python')
-    self.check_tool('python')
     self.check_python_version((2, 6, 0))
     self.check_python_headers()
 

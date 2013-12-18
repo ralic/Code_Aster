@@ -21,7 +21,7 @@ def options(self):
 @TaskGen.feature('test')
 def runtest(self):
     """Run a testcase by calling as_run"""
-    from Options import options as opts
+    opts = self.options
     if not _has_asrun():
         Logs.error("'as_run' not found, please check your $PATH")
         return

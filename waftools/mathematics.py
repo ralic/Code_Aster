@@ -39,16 +39,14 @@ def options(self):
                     help='Embed math libraries as static library')
 
 def configure(self):
-    from Options import options as opts
-
     # always check for libpthread, libm
     self.check_cc(uselib_store='MATH', lib='pthread')
     self.check_cc(uselib_store='MATH', lib='m')
-    if opts.maths_libs in (None, 'auto'):
+    if self.options.maths_libs in (None, 'auto'):
         # try MKL first, then automatic blas/lapack
         if not self.detect_mkl():
             self.detect_math_lib()
-    elif opts.maths_libs:
+    elif self.options.maths_libs:
         self.check_opts_math_lib()
     self.check_libm_after_files()
     self.check_math_libs_call()
@@ -56,7 +54,7 @@ def configure(self):
 ###############################################################################
 @Configure.conf
 def check_opts_math_lib(self):
-    from Options import options as opts
+    opts = self.options
     embed = opts.embed_math or opts.embed_all
     check_lib = lambda lib: self.check_cc(**{
         'mandatory':True, 'uselib_store':'MATH', 'use':'MPI',
@@ -94,7 +92,7 @@ def check_libm_after_files(self):
 def detect_mkl(self):
     """Try to use MKL if ifort was detected"""
     var = 'OPTLIB_FLAGS_MATH'
-    from Options import options as opts
+    opts = self.options
     embed = opts.embed_math or opts.embed_all
     if self.env.FC_NAME != 'IFORT':
         return
@@ -103,7 +101,7 @@ def detect_mkl(self):
     # first: out of the box (OPTLIB_FLAGS as provided)
     totest = ['']
     # http://software.intel.com/en-us/articles/intel-mkl-link-line-advisor/
-    if self.env.HAVE_MPI:
+    if self.get_define('HAVE_MPI'):
         totest.append('-mkl=cluster')
         scalapack = ['-lmkl_scalapack' + suffix or '_core']   # ia32: mkl_scalapack_core
         blacs = ['-lblacs_intelmpi' + suffix]
@@ -138,8 +136,8 @@ def detect_mkl(self):
 
 @Configure.conf
 def detect_math_lib(self):
-    from Options import options as opts
-    embed = opts.embed_math or (opts.embed_all and not self.env.HAVE_MPI)
+    opts = self.options
+    embed = opts.embed_math or (opts.embed_all and not self.get_define('HAVE_MPI'))
     varlib = ('ST' if embed else '') + 'LIB_MATH'
     self.start_msg('Detecting math libraries')
 
@@ -151,7 +149,7 @@ def detect_math_lib(self):
         self.check_math_libs('lapack', list(LAPACK) + lapacklibs, embed)
 
     # parallel
-    if self.env.HAVE_MPI:
+    if self.get_define('HAVE_MPI'):
         # scalapack
         libs = list(SCALAPACK)
         libs = ['-'.join(n) for n in product(libs, ['mpi', 'openmpi'])] + libs
@@ -165,7 +163,7 @@ def detect_math_lib(self):
     self.check_math_libs('optional', OPTIONAL_DEPS, embed, optional=True)
 
     self.end_msg(self.env[varlib])
-    if self.env.HAVE_MPI and embed:
+    if self.get_define('HAVE_MPI') and embed:
         msg = "WARNING:\n"\
               "    Static link with MPI libraries is not recommended.\n"\
               "    Remove the option --embed-maths in case of link error.\n"\

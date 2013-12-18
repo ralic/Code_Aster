@@ -14,7 +14,7 @@ YAMMROOT = '/aster/yamm/V7_3_0/'
 import intel
 
 def configure(self):
-    from Options import options as opts
+    opts = self.options
 
     intel.configure(self)
 

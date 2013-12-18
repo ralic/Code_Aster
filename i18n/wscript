@@ -60,9 +60,8 @@ def configure(self):
         self.end_msg('done (%s)' % tools)
 
 def build(self):
-    from Options import options as opts
     src = self.path.get_src().parent
-    if opts.install_i18n and self.env.enable_i18n:
+    if self.options.install_i18n and self.env.enable_i18n:
         # search language files ??/aster_messages.po
         langs = [i for i in self.path.listdir() \
                    if osp.isfile(osp.join(self.path.abspath(), i, 'aster_messages.po'))]

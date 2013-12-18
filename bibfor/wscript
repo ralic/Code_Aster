@@ -10,7 +10,6 @@ def options(self):
     self.load('compiler_fc')
 
 def configure(self):
-    from Options import options as opts
     self.add_os_flags('FORFLAGS', 'FCFLAGS')
     self.add_os_flags('FORLINKFLAGS', 'FCLINKFLAGS')
     self.add_os_flags('FORINCLUDES', 'INCLUDES')
@@ -23,7 +22,7 @@ def configure(self):
         self.env.append_value('INCLUDES', paths)
     if self.get_define('HAVE_MUMPS'):
         vers = eval(self.get_define('MUMPS_VERSION'))
-        suffix = opts.parallel and '_mpi' or ''
+        suffix = self.options.parallel and '_mpi' or ''
         ant = 'bibfor/include_mumps-%s%s' % (vers, suffix)
         dirs = [d.abspath() for d in self.srcnode.ant_glob(ant, src=True, dir=True)]
         self.env.append_value('INCLUDES', dirs)

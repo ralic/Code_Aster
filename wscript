@@ -82,8 +82,6 @@ def options(self):
     self.recurse('i18n')
 
 def configure(self):
-    from Options import options as opts
-
     self.setenv('default')
 
     self.load('use_config', tooldir='waftools')
@@ -136,17 +134,17 @@ def configure(self):
     self.recurse('i18n')
     self.load('legacy', tooldir='waftools')
     # keep compatibility for as_run
-    if self.env.HAVE_MPI:
+    if self.get_define('HAVE_MPI'):
         self.env.ASRUN_MPI_VERSION = 1
     # variants
     self.check_optimization_options()
     # only install tests during release install
     self.setenv('release')
-    self.env.install_tests = opts.install_tests
+    self.env.install_tests = self.options.install_tests
     self.write_config_headers()
 
 def build(self):
-    from Options import options as opts
+    self.env.install_tests = self.options.install_tests or self.env.install_tests
     get_srcs = self.path.get_src().ant_glob
     if not self.variant:
         self.fatal('Call "waf build_debug" or "waf build_release", and read ' \
@@ -158,7 +156,7 @@ def build(self):
     self.recurse('bibpyt')
     self.recurse('i18n')
     lsub = ['materiau', 'datg', 'catapy', 'catalo']
-    if opts.install_tests or self.env.install_tests:
+    if self.env.install_tests:
         lsub.extend(['astest', '../validation/astest'])
     for optional in lsub:
         if osp.exists(osp.join(optional, 'wscript')):

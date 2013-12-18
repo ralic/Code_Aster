@@ -3,7 +3,7 @@
 import sys
 import os.path as osp
 
-from waflib import Configure, Errors, Context
+from waflib import Configure, Errors, Context, Logs
 
 DEFAULT_DIR = 'wafcfg'
 sys.path.append(osp.abspath(DEFAULT_DIR))
@@ -21,16 +21,15 @@ def options(self):
                           'may be an url')
 
 def configure(self):
-    from Options import options as opts
     try:
         self.check_use_config()
     except Errors.ConfigurationError:
-        if opts.use_config is not None:
+        if self.options.use_config is not None:
             raise
 
 @Configure.conf
 def check_use_config(self):
-    from Options import options as opts
+    opts = self.options
     self.start_msg('Checking for custom configuration')
     use_cfg = opts.use_config
     if use_cfg is None:
@@ -46,12 +45,24 @@ def check_use_config(self):
         )
     tooldir = use_dir + ' ' + DEFAULT_DIR
     for cfg in use_cfg.split(','):
-        self.load_mixing_local_remote(cfg, tooldir=tooldir)
+        try:
+            self.load_mixing_local_remote(cfg, tooldir=tooldir)
+        except ImportError, exc:
+            if 'No module named Options' in str(exc):
+                self.fatal(OPTS_MSG)
+            raise
     # revert
     Context.remote_repo, Context.remote_locs, opts.download = _saved
     self.end_msg(use_cfg, 'YELLOW')
 
-
+OPTS_MSG = """
+The module 'Options' does not exist anymore.
+Use 'self.options' instead where 'self' is the 'Configure' object.
+For example, replace:
+    from Options import options as opts
+by:
+    opts = self.options
+"""
 
 # because 'load' method fills 'tooldir' dict entry even if the tool was
 # just downloaded in waflib/extras/

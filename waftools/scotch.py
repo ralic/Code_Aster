@@ -18,11 +18,10 @@ def options(self):
                     help='Embed SCOTCH libraries as static library')
 
 def configure(self):
-    from Options import options as opts
     try:
         self.check_scotch()
     except Errors.ConfigurationError:
-        if opts.enable_scotch == True:
+        if self.options.enable_scotch == True:
             raise
         self.define('_DISABLE_SCOTCH', 1)
         self.undefine('HAVE_SCOTCH')
@@ -34,7 +33,7 @@ def configure(self):
 
 @Configure.conf
 def check_scotch(self):
-    from Options import options as opts
+    opts = self.options
     if opts.enable_scotch == False:
         raise Errors.ConfigurationError('SCOTCH disabled')
 
@@ -58,7 +57,7 @@ def check_scotch(self):
 
 @Configure.conf
 def check_scotch_libs(self):
-    from Options import options as opts
+    opts = self.options
     check_scotch = partial(self.check_cc, mandatory=True, uselib_store='SCOTCH', use='MPI')
     if opts.embed_all or opts.embed_scotch:
         check_lib = lambda lib: check_scotch(stlib=lib)
@@ -68,7 +67,6 @@ def check_scotch_libs(self):
 
 @Configure.conf
 def check_scotch_headers(self):
-    from Options import options as opts
     self.start_msg('Checking for header scotch.h')
     headers = 'stdio.h stdlib.h scotch.h'
     try:

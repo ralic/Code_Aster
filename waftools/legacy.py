@@ -17,8 +17,7 @@ def options(self):
                     help='do not create legacy files')
 
 def configure(self):
-    from Options import options as opts
-    self.env.legacy = opts.legacy
+    self.env.legacy = self.options.legacy
 
 def build(self):
     if not self.env.legacy:
@@ -45,11 +44,9 @@ class create_config_txt(Task.Task):
             'ASTERDATADIR', 'OPT_ENV', 'install_tests']
 
     def run(self):
-        from Options import options as opts
         bld = self.generator.bld
         src = bld.srcnode.abspath()
-        install_tests = self.env.install_tests or opts.install_tests
-        dico = _env2dict(src, self.env, install_tests)
+        dico = _env2dict(src, self.env, self.env.install_tests)
         cfg = self.outputs[0].abspath()
         open(cfg, 'w').write(TMPL_CONFIG_TXT % dico)
 
@@ -60,17 +57,15 @@ class create_profile(Task.Task):
             'ASTERDATADIR', 'OPT_ENV', 'install_tests']
 
     def run(self):
-        from Options import options as opts
         bld = self.generator.bld
         src = bld.srcnode.abspath()
-        install_tests = self.env.install_tests or opts.install_tests
-        dico = _env2dict(src, self.env, install_tests)
+        dico = _env2dict(src, self.env, self.env.install_tests)
         cfg = self.outputs[0].abspath()
         open(cfg, 'w').write(TMPL_PROFILE % dico)
 
 def _env2dict(src, env, install_tests):
     """build dict informations"""
-    env = env.copy()
+    env = env.derive()
     env['LD_LIBRARY_PATH'] = os.environ.get('LD_LIBRARY_PATH', '').split(os.pathsep)
     ld_path = list(chain(*[Utils.to_list(env[name])
                    for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH') if env[name]]))

@@ -7,7 +7,7 @@ Use automatically MPI wrappers if opt.parallel was previously set.
 """
 
 def configure(self):
-    from Options import options as opts
+    opts = self.options
     mpi = 'mpi' if opts.parallel else ''
     self.env['FC'] = mpi + 'ifort'
     self.env['CC'] = mpi + 'icc'

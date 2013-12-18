@@ -13,7 +13,7 @@ import aster4
 YAMMROOT = aster4.YAMMROOT
 
 def configure(self):
-    from Options import options as opts
+    opts = self.options
     
     # parallel must be set before calling intel.configure() to use MPI wrappers
     opts.parallel = True

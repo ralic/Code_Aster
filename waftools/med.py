@@ -33,7 +33,7 @@ def options(self):
                     help='disable the HDF5 and MED support')
 
 def configure(self):
-    from Options import options as opts
+    opts = self.options
     try:
         self.check_hdf5()
     except Errors.ConfigurationError:
@@ -61,7 +61,7 @@ def configure(self):
 
 @Configure.conf
 def check_hdf5(self):
-    from Options import options as opts
+    opts = self.options
     if opts.enable_hdf5 == False:
         raise Errors.ConfigurationError('HDF5 disabled')
 
@@ -76,7 +76,7 @@ def check_hdf5(self):
 
 @Configure.conf
 def check_hdf5_libs(self):
-    from Options import options as opts
+    opts = self.options
     check_hdf5 = partial(self.check_cc, mandatory=True, uselib_store='HDF5', use='HDF5 MATH')
     if opts.embed_all or opts.embed_hdf5:
         check_lib = lambda lib: check_hdf5(stlib=lib)
@@ -122,7 +122,6 @@ int main(void){
 
 @Configure.conf
 def check_hdf5_api(self):
-    from Options import options as opts
     fragv18 = "#include <hdf5.h>\nint main(){hid_t st=0;H5Eclear(st);return 0;}"
 
     self.start_msg('Checking for API hdf5 v18')
@@ -142,7 +141,7 @@ def check_hdf5_api(self):
 
 @Configure.conf
 def check_med(self):
-    from Options import options as opts
+    opts = self.options
     if opts.enable_med == False:
         raise Errors.ConfigurationError('MED disabled')
 
@@ -157,7 +156,7 @@ def check_med(self):
 
 @Configure.conf
 def check_med_libs(self):
-    from Options import options as opts
+    opts = self.options
     check_med = partial(self.check_cc, features='cxx cxxprogram',
                         mandatory=True, uselib_store='MED', use='MED HDF5')
     if opts.embed_all or opts.embed_med:

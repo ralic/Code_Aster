@@ -21,13 +21,12 @@ def options(self):
 
 
 def configure(self):
-    from Options import options as opts
     try:
         self.env.stash()
         self.check_petsc()
     except Errors.ConfigurationError:
         self.env.revert()
-        if opts.enable_petsc == True:
+        if self.options.enable_petsc == True:
             raise
     else:
         self.define('_HAVE_PETSC', 1)
@@ -36,8 +35,7 @@ def configure(self):
 ###############################################################################
 @Configure.conf
 def check_petsc(self):
-    from Options import options as opts
-
+    opts = self.options
     if opts.enable_petsc == False:
         raise Errors.ConfigurationError('PETSC disabled')
 
@@ -53,7 +51,7 @@ def check_petsc(self):
 
 @Configure.conf
 def check_petsc_libs(self, optlibs):
-    from Options import options as opts
+    opts = self.options
     keylib = ('st' if opts.embed_all or opts.embed_scotch else '') + 'lib'
     for lib in Utils.to_list(opts.petsc_libs):
         self.check_cc(uselib_store='PETSC', use='MPI', mandatory=True, **{ keylib: lib})
@@ -62,7 +60,6 @@ def check_petsc_libs(self, optlibs):
 
 @Configure.conf
 def check_petsc_headers(self):
-    from Options import options as opts
     check = partial(self.check, header_name='petsc.h', uselib='PETSC')
 
     self.start_msg('Checking for header petsc.h')

@@ -16,8 +16,7 @@ def options(self):
                     help='Build a parallel version with mpi')
 
 def configure(self):
-    from Options import options as opts
-    if opts.parallel:
+    if self.options.parallel:
         default = ['mpicc', 'mpicxx', 'mpif90']
     else:
         default = [''] * 3
@@ -34,17 +33,16 @@ def configure(self):
 
 @Configure.conf
 def load_compilers(self):
-    self.env.stash()          # Store a snapshot of the environment
-    self.load_compilers_mpi() #   |
-    if not self.env.HAVE_MPI: #   |
-        self.env.revert()     # <-'
+    self.env.stash()                    # Store a snapshot of the environment
+    self.load_compilers_mpi()           #   |
+    if not self.get_define('HAVE_MPI'): #   |
+        self.env.revert()               # <-'
         self.load('compiler_cc')
         self.load('compiler_cxx')
         self.load('compiler_fc')
 
 @Configure.conf
 def load_compilers_mpi(self):
-    from Options import options as opts
     check = partial(self.check_cfg, args='--showme:compile --showme:link -show',
                     package='', uselib_store='MPI', mandatory=False)
     cc = os.environ.get('CC')
@@ -55,7 +53,7 @@ def load_compilers_mpi(self):
         self.env.append_unique('CXXNAME', osp.basename(cxx))
         self.env.append_unique('FCNAME', osp.basename(fc))
         self.check_mpi()
-    elif opts.parallel:
+    elif self.options.parallel:
         self.fatal("Unable to configure the parallel environment")
 
 @Configure.conf
@@ -81,7 +79,7 @@ def check_sizeof_mpi_int(self):
     """Check size of MPI_Fint"""
     define = 'MPI_INT_SIZE'
     err_msg = 'unexpected value for sizeof(MPI_Fint): %(size)s'
-    if self.env.HAVE_MPI:
+    if self.get_define('HAVE_MPI'):
         fragment = '\n'.join([
             '#include <stdio.h>',
             '#include "mpi.h"',

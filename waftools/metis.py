@@ -18,11 +18,10 @@ def options(self):
                     help='Embed METIS libraries as static library')
 
 def configure(self):
-    from Options import options as opts
     try:
         self.check_metis()
     except Errors.ConfigurationError:
-        if opts.enable_metis == True:
+        if self.options.enable_metis == True:
             raise
     else:
         self.define('_HAVE_METIS', 1)
@@ -31,7 +30,7 @@ def configure(self):
 ###############################################################################
 @Configure.conf
 def check_metis(self):
-    from Options import options as opts
+    opts = self.options
     if opts.enable_metis == False:
         raise Errors.ConfigurationError('METIS disabled')
     if opts.metis_libs is None:
@@ -42,7 +41,7 @@ def check_metis(self):
 
 @Configure.conf
 def check_metis_libs(self):
-    from Options import options as opts
+    opts = self.options
     check_metis = partial(self.check_cc, uselib_store='METIS', mandatory=True)
     if opts.embed_all or opts.embed_metis:
         check = lambda lib: check_metis(stlib=lib)

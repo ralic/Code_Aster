@@ -18,7 +18,7 @@ def options(self):
                     help='build each aster component as a shared python module')
 
 def configure(self):
-    from Options import options as opts
+    opts = self.options
     # C config
     self.add_os_flags('CFLAGS', 'CFLAGS')
     self.add_os_flags('CLINKFLAGS', 'LINKFLAGS')
@@ -36,7 +36,7 @@ def configure(self):
         self.env.append_value('LINKFLAGS', ['-nofor_main'])
         if opts.embed_all or opts.embed_aster:
             self.env.append_value('LINKFLAGS', ['-static-intel'])
-            if self.env.HAVE_MPI:
+            if self.get_define('HAVE_MPI'):
                 self.env.append_value('LINKFLAGS', ['-static_mpi'])
     self.check_cflags()
     self.check_bibc_depends()
@@ -58,15 +58,16 @@ def build(self):
     # symbols shall be stored in libaster.so. To do so, we define
     # _WITHOUT_PYMOD_.
     #
+    from waflib.Tools.c_config import DEFKEYS
     get_srcs = self.path.get_src().ant_glob
 
     env = self.all_envs[self.variant]
-    buildenv = env.copy()
+    buildenv = env.derive()
 
     # order is important
     adds = []
     for deps in ('MED', 'HDF5', 'MUMPS', 'METIS', 'SCOTCH', 'PETSC'):
-        if buildenv['HAVE_' + deps]:
+        if 'HAVE_' + deps in buildenv[DEFKEYS]:
             adds.append(deps)
     uses = adds + ['MATH', 'MPI', 'OPENMP', 'CLIB', 'SYS']
 
@@ -98,7 +99,7 @@ def build_as_shared(self, uses, shenv):
           target = 'aster',
           source = get_srcs('**/*.c', excl=['supervis/python.c']),
          defines = '_WITHOUT_PYMOD_',
-             env = shenv.copy(),
+             env = shenv.derive(),
              use = ['PYEMBED', 'NUMPY', 'asterbibfor'] + uses,
     )
 
@@ -109,7 +110,7 @@ def build_as_shared(self, uses, shenv):
           target = '../bibpyt/aster_core',
             name = 'aster_core',
           source = get_srcs('**/astercore_module.c'),
-             env = shenv.copy(),
+             env = shenv.derive(),
              use = ['asterlib'],
     )
 
@@ -118,7 +119,7 @@ def build_as_shared(self, uses, shenv):
           target = '../bibpyt/aster',
             name = 'astermodule',
           source = get_srcs('**/astermodule.c'),
-             env = shenv.copy(),
+             env = shenv.derive(),
              use = ['asterlib'] + uses,
     )
 
@@ -127,7 +128,7 @@ def build_as_shared(self, uses, shenv):
           target = '../bibpyt/aster_fonctions',
             name = 'aster_fonctions',
           source = get_srcs('**/fonctions_module.c'),
-             env = shenv.copy(),
+             env = shenv.derive(),
              use = ['NUMPY'],
     )
 
@@ -137,7 +138,7 @@ def build_as_shared(self, uses, shenv):
               target = '../bibpyt/med_aster',
                 name = 'med_aster',
               source = get_srcs('**/med_aster_module.c'),
-                 env = shenv.copy(),
+                 env = shenv.derive(),
                  use = ['asterlib', 'MPI', 'OPENMP', 'MED', 'HDF5', 'MATH'],
         )
 
@@ -156,7 +157,7 @@ def build_as_embeded(self, uses, stenv):
             name = 'asterexec',
           source = get_srcs(['**/*.c'], excl=excl),
          defines = ['_MAIN_=%s' % main],
-             env = stenv.copy(),
+             env = stenv.derive(),
              use = ['NUMPY', 'asterbibfor']
                    + uses,
         )

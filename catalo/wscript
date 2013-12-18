@@ -113,8 +113,7 @@ def build_cata_ele(self, ojb, install_path):
     tsk = self.do_install(elem.abspath(), install_path)
 
 def exec_pyaster(self, pyfile, args, **kwargs):
-    '''Execute aster depending on the configuration'''
-    from Options import options as opts
+    """Execute aster depending on the configuration"""
     env = self.all_envs[self.variant]
     environ = os.environ.copy()
     cmdenv = []
