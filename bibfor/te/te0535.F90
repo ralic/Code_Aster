@@ -258,10 +258,6 @@ subroutine te0535(option, nomte)
 ! ---       POSITION, POIDS X JACOBIEN ET MATRICE B ET G
             call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi,&
                         wi, b, gg)
-            print*,'xi ',xi
-            print*,'wi ',wi
-            print*,'b ',b
-            print*,'gg ',gg
 ! ---       DEFORMATIONS '-' ET INCREMENT DE DEFORMATION PAR FIBRE
 !           MOINS --> M
             call pmfdge(b, gg, deplm, alicom, dege)
