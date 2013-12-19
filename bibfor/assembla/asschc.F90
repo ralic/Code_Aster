@@ -56,15 +56,18 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     character(len=8) :: gd
     character(len=14) :: nu
     character(len=19) :: mat, nomch
-    integer :: jrefa, jnequ, neq, numgd, iddes, nec, jccid, idprno
-    integer :: nelim, jafci, nimp, imp, ino, iddl, ieq, ich, imatd, jnugl
+    integer ::   neq, numgd, iddes, nec, jccid, idprno
+    integer :: nelim, jafci, nimp, imp, ino, iddl, ieq, ich, imatd
+    integer, pointer :: nugl(:) => null()
+    integer, pointer :: nequ(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------------
 !
     call jemarq()
     mat = matas
-    call jeveuo(mat//'.REFA', 'E', jrefa)
+    call jeveuo(mat//'.REFA', 'E', vk24=refa)
     nu = nomnu
-    ASSERT(zk24(jrefa-1+2).eq.nu)
+    ASSERT(refa(2).eq.nu)
     if (nbchc .eq. 0) goto 40
 !
 !     -- IL N'Y A PEUT-ETRE AUCUN DDL A ELIMINER (CHAR_CINE VIDES) :
@@ -78,11 +81,11 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
 !
 !
     call jeexin(nu//'.NUML.DELG', imatd)
-    call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
+    call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
     if (imatd .ne. 0) then
-        call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
+        call jeveuo(nu//'.NUML.NUGL', 'L', vi=nugl)
     endif
-    neq = zi(jnequ)
+    neq = nequ(1)
     call dismoi('NOM_GD', nu, 'NUME_DDL', repk=gd)
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', numgd), 'L', iddes)
@@ -116,13 +119,13 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     nelim=0
     do ieq = 1, neq
         if (imatd .ne. 0) then
-            if (zi(jnugl+ieq-1) .eq. 0) goto 30
+            if (nugl(ieq) .eq. 0) goto 30
         endif
         if (zi(jccid-1+ieq) .eq. 1) nelim=nelim+1
  30     continue
     end do
     zi(jccid-1+neq+1) = nelim
-    if (nelim .gt. 0) zk24(jrefa-1+3)='ELIML'
+    if (nelim .gt. 0) refa(3)='ELIML'
 !
 !
  40 continue

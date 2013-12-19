@@ -60,22 +60,25 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     integer :: ndim
 ! ----------------------------------------------------------------------
     integer :: ntgeo, ipo, ipg, nuno2
-    integer :: ibid, nbno2p, nno2, ino2p
+    integer ::  nbno2p, nno2, ino2p
     integer :: k, j1, j4, ipoi1, ipy5, ipy13
     integer :: nbma, nbpt, nbcmp, nbmamo
     integer :: ima, ipt, icmp, iad, iadime
-    integer :: jtypma, jdimt, jpo2, nbtrou, jlitr
-    integer :: jcesd, jcesl, jcesv, iatypm
+    integer ::  jdimt, jpo2, nbtrou, jlitr
+    integer :: jcesd, jcesl,  iatypm
     character(len=8) :: nom, mail2, noma
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc, limato, litrou
     real(kind=8) :: xmoy(3), rayo
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
 !
 !     -- RECUPERATION DU NOM DU MAILLAGE 2
     call dismoi('NOM_MAILLA', moa2, 'MODELE', repk=mail2)
-    call jeveuo(mail2//'.TYPMAIL', 'L', jtypma)
+    call jeveuo(mail2//'.TYPMAIL', 'L', vi=typmail)
 !
 !     -- RECUPERATION DU CHAMP DE COORDONNEES DU MAILLAGE 2
     chgeom=mail2//'.COORDO'
@@ -111,7 +114,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESL', 'L', jcesl)
-    call jeveuo(ces//'.CESV', 'E', jcesv)
+    call jeveuo(ces//'.CESV', 'E', vr=cesv)
     nbma=zi(jcesd-1+1)
 !
 !     2.1 MODIFICATION DES COORDONNEES DE CERTAINS PG (PYRAM/FPG27)
@@ -120,7 +123,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5'), ipy5)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), ipy13)
     do ima = 1, nbma
-        if (zi(jtypma-1+ima) .eq. ipy5 .or. zi(jtypma-1+ima) .eq. ipy13) then
+        if (typmail(ima) .eq. ipy5 .or. typmail(ima) .eq. ipy13) then
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             if (nbpt .eq. 27) then
                 do icmp = 1, 3
@@ -132,7 +135,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
                         call cesexi('C', jcesd, jcesl, ima, ipt,&
                                     1, icmp, iad)
                         ASSERT(iad.gt.0)
-                        xmoy(icmp)=xmoy(icmp)+zr(jcesv-1+iad)
+                        xmoy(icmp)=xmoy(icmp)+cesv(iad)
                     end do
                 end do
                 do icmp = 1, 3
@@ -145,8 +148,8 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
                         call cesexi('C', jcesd, jcesl, ima, ipt,&
                                     1, icmp, iad)
                         ASSERT(iad.gt.0)
-                        rayo=zr(jcesv-1+iad)-xmoy(icmp)
-                        zr(jcesv-1+iad)=zr(jcesv-1+iad)-0.6d0*rayo
+                        rayo=cesv(iad)-xmoy(icmp)
+                        cesv(iad)=cesv(iad)-0.6d0*rayo
                     end do
                 end do
             endif
@@ -167,7 +170,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !
     ipo=1
     do ima = 1, nbma
-        call jeveuo(jexnum('&CATA.TM.TMDIM', zi(jtypma-1+ima)), 'L', jdimt)
+        call jeveuo(jexnum('&CATA.TM.TMDIM', typmail(ima)), 'L', jdimt)
         if (zi(jdimt) .eq. ndim) then
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             if (nbpt .eq. 0) goto 100
@@ -219,7 +222,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jecrec(ma2p//'.CONNEX', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbno2p)
     call jeecra(ma2p//'.CONNEX', 'LONT', nbno2p, ' ')
-    call jeveuo(ma2p//'.CONNEX', 'E', ibid)
+    call jeveuo(ma2p//'.CONNEX', 'E', vi=connex)
 !
     call wkvect(ma2p//'.TYPMAIL', 'V V I', nbno2p, iatypm)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ipoi1)
@@ -231,7 +234,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
         call jecroc(jexnum(ma2p//'.CONNEX', ima))
         call jeecra(jexnum(ma2p//'.CONNEX', ima), 'LONMAX', nno2)
         nuno2=nuno2+1
-        zi(ibid-1+nuno2)=nuno2
+        connex(nuno2)=nuno2
     end do
 !
 !
@@ -251,7 +254,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
         nbpt=zi(jcesd-1+5+4*(ima-1)+1)
         nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
         if (nbpt .eq. 0) goto 160
-        call jeveuo(jexnum('&CATA.TM.TMDIM', zi(jtypma-1+ima)), 'L', jdimt)
+        call jeveuo(jexnum('&CATA.TM.TMDIM', typmail(ima)), 'L', jdimt)
 !
         if (zi(jdimt) .eq. ndim) then
             ASSERT(nbcmp.ge.3)
@@ -261,7 +264,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 1, icmp, iad)
                     if (iad .gt. 0) then
-                        zr(j1-1+3*(ino2p-1)+icmp)=zr(jcesv-1+iad)
+                        zr(j1-1+3*(ino2p-1)+icmp)=cesv(iad)
                     endif
                 end do
             end do

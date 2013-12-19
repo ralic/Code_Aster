@@ -47,11 +47,13 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: ibid, nbno, jcnsk, jcnsd, ino
+    integer :: ibid, nbno,   ino
     integer :: i, k, jcnsl, jcnsv, ncmp
     character(len=3) :: tsca
     character(len=8) :: nomgd
     character(len=19) :: cns
+    character(len=8), pointer :: cnsk(:) => null()
+    integer, pointer :: cnsd(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -60,14 +62,14 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
     call cnscre(maz, nomgdz, ncmpz, licmp, 'V',&
                 cns)
 !
-    call jeveuo(cns//'.CNSK', 'L', jcnsk)
-    call jeveuo(cns//'.CNSD', 'L', jcnsd)
+    call jeveuo(cns//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cns//'.CNSD', 'L', vi=cnsd)
     call jeveuo(cns//'.CNSV', 'E', jcnsv)
     call jeveuo(cns//'.CNSL', 'E', jcnsl)
 !
-    nomgd = zk8(jcnsk-1+2)
-    nbno = zi(jcnsd-1+1)
-    ncmp = zi(jcnsd-1+2)
+    nomgd = cnsk(2)
+    nbno = cnsd(1)
+    ncmp = cnsd(2)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !

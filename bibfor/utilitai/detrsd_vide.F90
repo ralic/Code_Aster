@@ -39,9 +39,10 @@ subroutine detrsd_vide(typesd, nomsd)
 !  Resultat:
 !     on detruit tous les objets jeveux correspondant a cette SD.
 ! ----------------------------------------------------------------------
-    integer ::  ngedit, iexi, jdesc
+    integer ::  ngedit, iexi
     character(len=19) :: carte
     character(len=24) :: typ2sd
+    integer, pointer :: desc(:) => null()
 !
 ! -DEB------------------------------------------------------------------
 !
@@ -54,8 +55,8 @@ subroutine detrsd_vide(typesd, nomsd)
         carte=nomsd
         call jeexin(carte//'.DESC', iexi)
         if (iexi.eq.0) goto 999
-        call jeveuo(carte//'.DESC', 'L', jdesc)
-        ngedit=zi(jdesc-1+3)
+        call jeveuo(carte//'.DESC', 'L', vi=desc)
+        ngedit=desc(3)
         if (ngedit.eq.0) then
             call detrsd('CHAMP',carte)
         endif

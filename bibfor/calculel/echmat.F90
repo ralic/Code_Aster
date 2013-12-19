@@ -53,21 +53,23 @@ subroutine echmat(matz, ldist, rmin, rmax)
 ! ---------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jsmdi, nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
-    integer :: jcol, nlong, jrefa, jvalm1
+    integer ::  nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
+    integer :: jcol, nlong,  jvalm1
     character(len=1) ::  ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19
     real(kind=8) :: rdiag
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: smdi(:) => null()
 !=================================================================
     call jemarq()
 !
     mat19=matz
-    call jeveuo(mat19//'.REFA', 'L', jrefa)
-    nonu=zk24(jrefa-1+2)(1:14)
+    call jeveuo(mat19//'.REFA', 'L', vk24=refa)
+    nonu=refa(2)(1:14)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', n)
-    call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
-    nz=zi(jsmdi-1+n)
+    call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
+    nz=smdi(n)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     ASSERT(nz.le.nsmhc)
@@ -101,9 +103,9 @@ subroutine echmat(matz, ldist, rmin, rmax)
     endif
 !
     if (ktyp .eq. 'R') then
-        rdiag=abs(zr(jvalm1-1+zi(jsmdi+jcol-1)))
+        rdiag=abs(zr(jvalm1-1+smdi(jcol)))
     else
-        rdiag=abs(zc(jvalm1-1+zi(jsmdi+jcol-1)))
+        rdiag=abs(zc(jvalm1-1+smdi(jcol)))
     endif
     if (rdiag .gt. rmax) rmax=rdiag
     if (rdiag .eq. 0.d0) goto 10

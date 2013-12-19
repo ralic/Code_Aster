@@ -46,7 +46,7 @@ subroutine eclpgr()
     real(kind=8) :: prec
     integer :: ibid, iret, i, iains1, iains2
     integer :: nbsy, np, nc, isy
-    integer :: nbordr, iordr, jordr
+    integer :: nbordr, iordr
     integer :: mxsy, iret2
     parameter(mxsy=15)
     character(len=8) :: mo1, ma1, ma2, kbid, resu, evo1, crit
@@ -54,6 +54,7 @@ subroutine eclpgr()
     character(len=16) :: typre2
     character(len=19) :: ligrel, ch1, ch2, prchno
     character(len=24) :: nomfpg, valk(2)
+    integer, pointer :: nume_ordre(:) => null()
 ! DEB -----------------------------------------------------------------
 !
     call jemarq()
@@ -86,7 +87,7 @@ subroutine eclpgr()
     if (nbordr .eq. 0) then
         call utmess('F', 'CALCULEL2_38')
     endif
-    call jeveuo('&&ECLPGR.NUME_ORDRE', 'L', jordr)
+    call jeveuo('&&ECLPGR.NUME_ORDRE', 'L', vi=nume_ordre)
 !
     if (resu .ne. evo1) call rscrsd('G', resu, typres, nbordr)
 !
@@ -108,7 +109,7 @@ subroutine eclpgr()
         nomsy2 = nomsy1
 !
         do i = 1, nbordr
-            iordr=zi(jordr+i-1)
+            iordr=nume_ordre(i)
             call rsexch(' ', evo1, nomsy1, iordr, ch1,&
                         iret)
             if (iret .gt. 0) goto 10
@@ -140,7 +141,7 @@ subroutine eclpgr()
 !       -- ON RECOPIE LE PARAMETRE "INST" :
 !       -----------------------------------
     do i = 1, nbordr
-        iordr=zi(jordr+i-1)
+        iordr=nume_ordre(i)
         call rsadpa(evo1, 'L', 1, 'INST', iordr,&
                     0, sjv=iains1, styp=kbid)
         call rsadpa(resu, 'E', 1, 'INST', iordr,&

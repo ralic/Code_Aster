@@ -93,9 +93,11 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     character(len=19) :: matemp, mat1, matres, mati
     character(len=24) :: valk(2)
 !     -----------------------------------------------------------------
-    integer :: jrefar, jrefa1, jrefai, ier, idlima, ier1
-    integer :: i, lres, nbloc, jrefa, lgbloc
+    integer :: jrefar,  jrefai, ier, idlima, ier1
+    integer :: i, lres, nbloc,  lgbloc
     logical :: reutil, symr, symi, matd
+    character(len=24), pointer :: refa1(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -192,14 +194,14 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !
 ! --- VERIF. DE LA COHERENCE DES NUMEROTATIONS DES MATRICES A COMBINER
 !     ------------------------------------------------------------------
-    call jeveuo(mat1//'.REFA', 'L', jrefa1)
+    call jeveuo(mat1//'.REFA', 'L', vk24=refa1)
     ier1 = 0
     do i = 2, nbcomb
         mati=limat(i)
         call jeveuo(mati//'.REFA', 'L', jrefai)
-        if (zk24(jrefa1-1+2) .ne. zk24(jrefai-1+2)) ier1 = 1
-        if (zk24(jrefa1-1+2) .ne. zk24(jrefai-1+2)) ier1 = 1
-        if (zk24(jrefa1-1+1) .ne. zk24(jrefai-1+1)) then
+        if (refa1(2) .ne. zk24(jrefai-1+2)) ier1 = 1
+        if (refa1(2) .ne. zk24(jrefai-1+2)) ier1 = 1
+        if (refa1(1) .ne. zk24(jrefai-1+1)) then
             call utmess('F', 'ALGELINE2_9')
         endif
         if (elim .eq. 'ELIM=') then
@@ -243,14 +245,14 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !
 ! --- DDL ELIMINES :
 !     ===================
-    call jeveuo(matemp//'.REFA', 'L', jrefa)
+    call jeveuo(matemp//'.REFA', 'L', vk24=refa)
     call jedetr(matemp//'.CCID')
     call jedetr(matemp//'.CCVA')
     call jedetr(matemp//'.CCLL')
     call jedetr(matemp//'.CCII')
     call jedup1(mat1//'.CCID', bas2, matemp//'.CCID')
     call jeexin(matemp//'.CCID', ier)
-    if (ier .gt. 0) zk24(jrefa-1+3)='ELIML'
+    if (ier .gt. 0) refa(3)='ELIML'
 !
 !
 ! --- CONSTRUCTION DU DESCRIPTEUR DE LA MATRICE RESULTAT :

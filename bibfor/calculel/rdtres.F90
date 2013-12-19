@@ -62,8 +62,8 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !                 IMA_RE -> IMA
 !-------------------------------------------------------------------
 !
-    integer :: i, nbordr, nbpara, jpa, nbac, nbpa, iad1, iad2, j
-    integer :: iret, nbsym, isym, iordr, jordr, n1, j1, ima2, ima1
+    integer :: i, nbordr, nbpara,  nbac, nbpa, iad1, iad2, j
+    integer :: iret, nbsym, isym, iordr,  n1, j1, ima2, ima1
     integer :: nbgrel, igr, jcorrm, iel, nbma1, nbma2, jcoinv, cret
     integer :: ite, jmail2
     real(kind=8) :: prec
@@ -71,6 +71,8 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     character(len=8) :: model1, crit, type, model2, kchml
     character(len=19) :: chp, chpre, ligrel
     logical :: acceno, redpos
+    integer, pointer :: nume_ordre(:) => null()
+    character(len=16), pointer :: noms_para(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -175,7 +177,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     if (nbordr .eq. 0) then
         call utmess('F', 'CALCULEL4_62', sk=resu1)
     endif
-    call jeveuo('&&RDTRES.NUME_ORDRE', 'L', jordr)
+    call jeveuo('&&RDTRES.NUME_ORDRE', 'L', vi=nume_ordre)
     call gettco(resu1, typres)
     call rscrsd('V', resu2, typres, nbordr)
 !
@@ -190,7 +192,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     do isym = 1, nbsym
         redpos=.true.
         do i = 1, nbordr
-            iordr=zi(jordr+i-1)
+            iordr=nume_ordre(i)
             call rsexch(' ', resu1, nomsym(isym), iordr, chp,&
                         iret)
             if (iret .gt. 0) goto 40
@@ -217,11 +219,11 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !     ------------------------------------
     call rsnopa(resu1, 2, '&&RDTRES.NOMS_PARA', nbac, nbpa)
     nbpara=nbac+nbpa
-    call jeveuo('&&RDTRES.NOMS_PARA', 'L', jpa)
+    call jeveuo('&&RDTRES.NOMS_PARA', 'L', vk16=noms_para)
     do i = 1, nbordr
-        iordr=zi(jordr+i-1)
+        iordr=nume_ordre(i)
         do j = 1, nbpara
-            nopara=zk16(jpa-1+j)
+            nopara=noms_para(j)
 !
 !         -- CERTAINS PARAMETRES NE DOIVENT PAS ETRE RECOPIES:
             if (nopara .eq. 'CARAELEM') goto 60

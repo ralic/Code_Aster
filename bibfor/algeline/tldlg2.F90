@@ -86,12 +86,13 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     character(len=40) :: infobl
     complex(kind=8) :: cbid
     integer :: ndeci, isingu, nom, neq, typvar, typsym
-    integer :: lmatb, ndigi2, npivot, jdelg, ksing, nmrav, jksing
+    integer :: lmatb, ndigi2, npivot,  ksing, nmrav, jksing
     integer :: ifm, niv
     integer :: pass, ieq, jeq, krig, jpomr, lxsol
     integer :: lcine
     integer :: jdigs, jrefab, jccid
     real(kind=8) :: epsb, d1, moydia
+    integer, pointer :: delg(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
@@ -104,7 +105,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     typsym=zi(lmat+4)
     noma19=zk24(nom)(1:19)
     call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
-    call jeveuo(nu//'.NUME.DELG', 'L', jdelg)
+    call jeveuo(nu//'.NUME.DELG', 'L', vi=delg)
     ASSERT(nu.ne.' ')
     metres='MULT_FRONT'
     renum='METIS'
@@ -217,7 +218,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
         isingu=zi(jksing-1+ksing)
         ASSERT(isingu.gt.0 .and. isingu.le.neq)
 !       -- CE SERAIT BIZARRE QUE ISINGU SOIT UN DDL DE LAGRANGE :
-        ASSERT(zi(jdelg-1+isingu).eq.0)
+        ASSERT(delg(isingu).eq.0)
         zi(jpomr-1+isingu)=ksing
         if (niv .ge. 2) then
             write (ifm,*)'<TLDLG2> PIVOT NUL A LA LIGNE ',isingu

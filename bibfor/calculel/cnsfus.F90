@@ -68,7 +68,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
 !     ------------------------------------------------------------------
     integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c, nbno
-    integer :: jcn3d, jcn3v, jcn3l, jcn3c
+    integer :: jcn3d, jcn3v, jcn3l
     integer :: jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1, jnucmp
     integer :: ino, coefi, k1, k3
@@ -78,6 +78,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     real(kind=8) :: coefr
     complex(kind=8) :: coefc
     logical :: cumul
+    character(len=8), pointer :: cn3c(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -145,7 +146,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     call cnscre(ma, nomgd, ncmp3, zk8(jlicmp), base,&
                 cns3)
     call jeveuo(cns3//'.CNSD', 'L', jcn3d)
-    call jeveuo(cns3//'.CNSC', 'L', jcn3c)
+    call jeveuo(cns3//'.CNSC', 'L', vk8=cn3c)
     call jeveuo(cns3//'.CNSV', 'E', jcn3v)
     call jeveuo(cns3//'.CNSL', 'E', jcn3l)
 !
@@ -171,7 +172,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
         do icmp1 = 1, ncmp1
             nocmp = zk8(jcn1c-1+icmp1)
-            icmp3 = indik8(zk8(jcn3c),nocmp,1,ncmp3)
+            icmp3 = indik8(cn3c,nocmp,1,ncmp3)
             ASSERT(icmp3.ne.0)
 !
             do ino = 1, nbno

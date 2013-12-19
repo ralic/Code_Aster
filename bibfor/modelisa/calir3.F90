@@ -40,8 +40,10 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
 ! ======================================================================
 !
     real(kind=8) :: rbid, epais
-    integer :: ino2, nuno2, jgeom2, k, ncmp, jcnsd, jcnsv, jcnsl, ibid
+    integer :: ino2, nuno2, jgeom2, k, ncmp,   jcnsl, ibid
     character(len=19) :: chnorm, csnorm
+    integer, pointer :: cnsd(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -52,10 +54,10 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
 !
     csnorm='&&CALIR3.CSNORM'
     call cnocns(chnorm, 'V', csnorm)
-    call jeveuo(csnorm//'.CNSD', 'L', jcnsd)
+    call jeveuo(csnorm//'.CNSD', 'L', vi=cnsd)
     call jeveuo(csnorm//'.CNSL', 'L', jcnsl)
-    call jeveuo(csnorm//'.CNSV', 'L', jcnsv)
-    ncmp=zi(jcnsd-1+2)
+    call jeveuo(csnorm//'.CNSV', 'L', vr=cnsv)
+    ncmp=cnsd(2)
     ASSERT(ncmp.eq.3)
     ASSERT(ncmp.eq.3)
 !
@@ -69,7 +71,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
         call utmess('F', 'CHAMPS_2', sk=chnorm)
     endif
     ASSERT(zl(jcnsl-1+3*(nuno2-1)+k))
-    zr(jlisv1-1+3*(nuno2-1)+k)=zr(jcnsv-1+3*(nuno2-1)+k)*&
+    zr(jlisv1-1+3*(nuno2-1)+k)=cnsv(3*(nuno2-1)+k)*&
             epais
 10  continue
     20 end do

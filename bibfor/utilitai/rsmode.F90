@@ -45,7 +45,7 @@ subroutine rsmode(resu)
 !
 !    IN/JXVAR : RESU  NOM DU CONCEPT SD_RESULTAT
 !-----------------------------------------------------------------------
-    integer :: iret, neq, iordr, isymb, jordr, k, krang
+    integer :: iret, neq, iordr, isymb,  k, krang
     integer :: nbnosy, nbordr, iexi, nbval, jliprf
     character(len=1) :: kbid, typ1
     character(len=8) :: resu8, nomgd, ma1, ma2
@@ -54,6 +54,7 @@ subroutine rsmode(resu)
     character(len=16) :: nomsym
     character(len=19) :: prchno, champt, nomcha, prchn1
     character(len=24) :: valk(5)
+    integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
 !
 !
@@ -74,7 +75,7 @@ subroutine rsmode(resu)
 !
     champt='&&RSMODE.CHAMPT'
 !
-    call jeveuo(resu19//'.ORDR', 'L', jordr)
+    call jeveuo(resu19//'.ORDR', 'L', vi=ordr)
     call jelira(resu19//'.ORDR', 'LONUTI', nbordr)
     call jelira(resu19//'.DESC', 'NOMUTI', nbnosy)
 !
@@ -82,7 +83,7 @@ subroutine rsmode(resu)
         call jenuno(jexnum(resu19//'.DESC', isymb), nomsym)
 !
         do krang = 1, nbordr
-            iordr=zi(jordr-1+krang)
+            iordr=ordr(krang)
             call rsexch(' ', resu, nomsym, iordr, nomcha,&
                         iret)
             if (iret .ne. 0) goto 30

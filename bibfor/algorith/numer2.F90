@@ -58,13 +58,14 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 !----------------------------------------------------------------------
 !
 !
-    integer :: islvk, i, jlligr, jnslv
+    integer ::  i, jlligr, jnslv
 !
     logical :: l1, l2, l3, l4
     character(len=19) :: solve2
     character(len=2) :: bas2
     character(len=14) :: nu1, nu2
     character(len=24) :: lligr, method
+    character(len=24), pointer :: slvk(:) => null()
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -76,8 +77,8 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 !
     call detrsd('NUME_DDL', nu1)
 !
-    call jeveuo(solve2//'.SLVK', 'L', islvk)
-    method = zk24(islvk+3)
+    call jeveuo(solve2//'.SLVK', 'L', vk24=slvk)
+    method = slvk(4)
 !
 !
     lligr = '&&NUMER2.LISTE_LIGREL'
@@ -89,7 +90,7 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
     call nueffe(lligr, bas2, nu1, method, moloc,&
                 solve2, nequa)
 !
-    if (zk24(islvk-1+10)(1:3) .eq. 'OUI') then
+    if (slvk(10)(1:3) .eq. 'OUI') then
         call nugllo(nu1, bas2, solve2)
     endif
 !

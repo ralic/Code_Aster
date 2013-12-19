@@ -47,9 +47,10 @@ subroutine contex(nomop, nompar)
 !
 !
     character(len=8) :: nompa2, nomail, nomgd
-    integer :: jclibr, jdesop, iapara, nbin, nbou, iadzi, iazk24
+    integer ::  jdesop, iapara, nbin, nbou, iadzi, iazk24
     integer :: nblig, indic, k, itrou, iopt, igd, jdsgd
     logical :: lopt, lpara, lgd
+    character(len=80), pointer :: comlibr(:) => null()
 !
 !
     call tecael(iadzi, iazk24)
@@ -57,7 +58,7 @@ subroutine contex(nomop, nompar)
 !
     call utmess('I', 'ELEMENT_15', sk=nomail)
 !
-    call jeveuo('&CATA.CL.COMLIBR', 'L', jclibr)
+    call jeveuo('&CATA.CL.COMLIBR', 'L', vk80=comlibr)
 !
     nompa2=nompar
     igd=0
@@ -84,7 +85,7 @@ subroutine contex(nomop, nompar)
         indic=zi(jdesop-1+4+nbin+nbou+2)
         if (nblig .gt. 0) then
             do 10,k=indic,indic-1+nblig
-            call utmess('I', 'ELEMENT_17', sk=zk80(jclibr-1+k))
+            call utmess('I', 'ELEMENT_17', sk=comlibr(k))
 10          continue
         endif
     endif
@@ -113,7 +114,7 @@ subroutine contex(nomop, nompar)
         endif
         if (nblig .gt. 0) then
             do 20,k=indic,indic-1+nblig
-            call utmess('I', 'ELEMENT_17', sk=zk80(jclibr-1+k))
+            call utmess('I', 'ELEMENT_17', sk=comlibr(k))
 20          continue
         endif
     endif
@@ -133,7 +134,7 @@ subroutine contex(nomop, nompar)
             indic=zi(jdsgd-1+7)
             if (nblig .gt. 0) then
                 do 30,k=indic,indic-1+nblig
-                call utmess('I', 'ELEMENT_17', sk=zk80(jclibr-1+k))
+                call utmess('I', 'ELEMENT_17', sk=comlibr(k))
 30              continue
             endif
         endif

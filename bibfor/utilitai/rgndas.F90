@@ -48,13 +48,15 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 ! OUT : LIGREL : NOM DU LIGREL SI LE NOEUD EST 'B' OU 'C' (BLANC SINON)
 ! OUT : INFOBL : INFORMATIONS COMPLEMENTAIRES
 ! ----------------------------------------------------------------------
-    integer :: gd, nec, jprno, jnueq, ico
-    integer :: jdesc, nlili, i, ilo, nbno, ino, ideb, ncmp
+    integer :: gd, nec, jprno,  ico
+    integer ::  nlili, i, ilo, nbno, ino, ideb, ncmp
     integer :: icmp, iieq, nuno, nucmp, ncmpmx, iadg1, jrefe
     integer :: inocmp, nuddl, neq, nusst, nulia, jdeeq, jorig, iexi
     character(len=8) :: noma, nomno2, nomcm2, modgen, kn1, kn2
     character(len=19) :: nume
     logical :: trouve, lnuge
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: nueq(:) => null()
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -82,7 +84,7 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', inocmp)
         call jeveuo(nume//'.DEEQ', 'L', jdeeq)
-        call jeveuo(nume//'.NUEQ', 'L', jnueq)
+        call jeveuo(nume//'.NUEQ', 'L', vi=nueq)
 !
 !       -- 1.1 CAS FACILE : DDL PHYSIQUE :
         nuno=zi(jdeeq-1+2*(ieq-1)+1)
@@ -111,7 +113,7 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
                 ideb=zi(jprno-1+(ino-1)*(nec+2)+1)
                 ncmp=zi(jprno-1+(ino-1)*(nec+2)+2)
                 do icmp = 1, ncmp
-                    iieq=zi(jnueq-1+ideb-1+icmp)
+                    iieq=nueq(ideb-1+icmp)
                     if (ieq .eq. iieq) then
                         trouve=.true.
                         nuno=ino
@@ -164,8 +166,8 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
         tyddl='D'
         ligrel=' '
         infobl=' '
-        call jeveuo(nume//'.DESC', 'L', jdesc)
-        ASSERT(zi(jdesc).eq.2)
+        call jeveuo(nume//'.DESC', 'L', vi=desc)
+        ASSERT(desc(1).eq.2)
         call jeveuo(nume//'.DEEQ', 'L', jdeeq)
         call jelira(nume//'.DEEQ', 'LONMAX', neq)
         neq=neq/2

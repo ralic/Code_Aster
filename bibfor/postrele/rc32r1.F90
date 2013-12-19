@@ -34,7 +34,7 @@ subroutine rc32r1(nomres)
 !     ------------------------------------------------------------------
 !
     integer :: ibid, npar2, npar1, npar4, npar6, im, ig, is, i3, nbsigr
-    integer :: valei(3), jnumgr, jnsitu, jnsg, jvale, jpmpb, nbgr, ioc, numgr
+    integer :: valei(3), jnumgr,  jnsg, jvale, jpmpb, nbgr, ioc, numgr
     integer :: is1, is2, jreas, jress, n1, jseigr, jcombi, ioc1, ioc2, iocs, ii
     integer :: npar0
     parameter    ( npar0 = 35, npar2 = 7, npar1 = 11, npar4 = 15,&
@@ -46,6 +46,7 @@ subroutine rc32r1(nomres)
     character(len=16) :: nopar2(npar2), nopar1(npar1), nopar4(npar4)
     character(len=16) :: nopar6(npar6), nopar0(npar0)
     character(len=24) :: k24b, k24c, k24t
+    integer, pointer :: situ_numero(:) => null()
 !     ------------------------------------------------------------------
     data lieu   / 'ORIG' , 'EXTR' /
 !
@@ -98,7 +99,7 @@ subroutine rc32r1(nomres)
     call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
     call jeveuo('&&RC3200.SITU_SEISME', 'L', jseigr)
 !
-    call jeveuo('&&RC3200.SITU_NUMERO', 'L', jnsitu)
+    call jeveuo('&&RC3200.SITU_NUMERO', 'L', vi=situ_numero)
     call jeveuo('&&RC3200.SITU_COMBINABLE', 'L', jcombi)
 !
 !     ------------------------------------------------------------------
@@ -149,14 +150,14 @@ subroutine rc32r1(nomres)
             valek(2) = 'AVEC'
             do 104 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
-                valei(2) = zi(jnsitu+ioc-1)
+                valei(2) = situ_numero(ioc)
                 call tbajli(nomres, npar4, nopar4, valei, zr(jreas- 1+10*(is-1)+1),&
                             [c16b], valek, 0)
 104          continue
             valek(2) = 'SANS'
             do 106 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
-                valei(2) = zi(jnsitu+ioc-1)
+                valei(2) = situ_numero(ioc)
                 call tbajli(nomres, npar4, nopar4, valei, zr(jress- 1+10*(is-1)+1),&
                             [c16b], valek, 0)
 106          continue
@@ -180,12 +181,12 @@ subroutine rc32r1(nomres)
                 ioc1 = zi(jnsg+is1-1)
                 if (.not.zl(jcombi+ioc1-1)) goto 122
                 if (ioc1 .eq. iocs) goto 122
-                valei(2) = zi(jnsitu+ioc1-1)
+                valei(2) = situ_numero(ioc1)
                 do 124 is2 = is1 + 1, nbsigr
                     ioc2 = zi(jnsg+is2-1)
                     if (.not.zl(jcombi+ioc2-1)) goto 124
                     if (ioc2 .eq. iocs) goto 124
-                    valei(3) = zi(jnsitu+ioc2-1)
+                    valei(3) = situ_numero(ioc2)
 !
                     valek(2) = 'AVEC'
                     call tbajli(nomres, npar1, nopar1, valei, zr(jreas+ii),&

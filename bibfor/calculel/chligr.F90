@@ -72,11 +72,12 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
     character(len=4) :: tych
     character(len=19) :: ces, chelv
     character(len=19) :: ligr1, ligr2
-    integer :: ibid, iret, nncp, jcelk, nbma
+    integer :: ibid, iret, nncp,  nbma
     character(len=19) :: chel2, chel1, optio, param
     character(len=24) :: valk(2)
     character(len=8) :: noma
     character(len=16) :: nomgd
+    character(len=24), pointer :: celk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,8 +110,8 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
 !
 ! --- VERIFICATIONS SI CHAMP ELGA
 !
-    call jeveuo(chel1//'.CELK', 'L', jcelk)
-    if (zk24(jcelk-1+3) .eq. 'ELGA') then
+    call jeveuo(chel1//'.CELK', 'L', vk24=celk)
+    if (celk(3) .eq. 'ELGA') then
         chelv = '&&CHLIGR.CHELVIDE'
         call alchml(ligr2, optio, param, 'V', chelv,&
                     iret, ' ')

@@ -62,7 +62,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !     ------------------------------------------------------------------
     integer :: ibid, gd, incmp
     integer :: vali(2)
-    integer :: iacelk, jceld, nec, icmp, ncmpmx, iancmp, ima
+    integer ::   nec, icmp, ncmpmx, iancmp, ima
     integer :: ino, iaconx, nbno, ipo, nupo2, igr, iel
     integer :: imolo, jmolo, ispt, jlpt, jlcupt, nbpt, ipt, ico
     integer :: k, iadg, kcmp, cumu, nbspt, adiel, lgcata, ncdyn
@@ -72,6 +72,8 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     character(len=16) :: nomcmd
     character(len=19) :: noligr, chm19z, ncmp
     logical :: diff, trouve, nogran
+    integer, pointer :: celd(:) => null()
+    character(len=24), pointer :: celk(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -89,8 +91,8 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     nonoez = nonoeu(1:8)
     nommaz = nomma(1:8)
     ncmp = '&&UTCHDL.N_CMP'
-    call jeveuo(chm19z//'.CELK', 'L', iacelk)
-    noligr = zk24(iacelk) (1:19)
+    call jeveuo(chm19z//'.CELK', 'L', vk24=celk)
+    noligr = celk(1) (1:19)
     trouve = .false.
     nogran = .false.
 !
@@ -101,8 +103,8 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !     CALL CELVER(CHM19Z,'NBSPT_1','STOP',IBID)
 !
 !
-    call jeveuo(chm19z//'.CELD', 'L', jceld)
-    gd = zi(jceld)
+    call jeveuo(chm19z//'.CELD', 'L', vi=celd)
+    gd = celd(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     nec = nbec(gd)
 !
@@ -179,15 +181,15 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         valk(2) = noligr
         call utmess(aof, 'UTILITAI5_34', nk=2, valk=valk)
     endif
-    nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
-    adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
-    ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
+    nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
+    adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
+    ncdyn = celd(celd(4+igr)+4+4* (iel-1)+2)
 !
 !
 !
 !     6. CALCUL DE IDDL :
 !     ------------------------------------------
-    imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+    imolo = celd(celd(4+igr)+2)
     if (imolo .le. 0) then
         call utmess(aof, 'UTILITAI5_35', sk=nomaiz)
     endif
@@ -287,7 +289,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !   6.2 CAS : NOMGD = VARI_R :
 !   ----------------------------
     else
-        lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
+        lgcata = celd(celd(4+igr)+3)
         ASSERT(zi(jmolo-1+4).le.10000)
         nbpt = mod(zi(jmolo-1+4),10000)
         ASSERT(nbpt.eq.lgcata)

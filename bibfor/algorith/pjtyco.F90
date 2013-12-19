@@ -61,13 +61,14 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !
 !
     integer :: i, ie, iret
-    integer :: jordr, nbordr
+    integer ::  nbordr
     integer :: iordr, isym, nbsym
     logical :: acceno
     real(kind=8) :: prec
     character(len=4) :: tych
     character(len=8) :: crit
     character(len=16) :: nomsym(200)
+    integer, pointer :: nume_ordre(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -109,7 +110,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
             call utmess('F', 'CALCULEL4_62', sk=resuin)
         endif
 !
-        call jeveuo('&&PJXXCO.NUME_ORDRE', 'L', jordr)
+        call jeveuo('&&PJXXCO.NUME_ORDRE', 'L', vi=nume_ordre)
         call rsutc4(resuin, ' ', 1, 200, nomsym,&
                     nbsym, acceno)
 !
@@ -117,7 +118,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !       -- DETERMINATION DE LNOEU
         do isym = 1, nbsym
             do i = 1, nbordr
-                iordr=zi(jordr+i-1)
+                iordr=nume_ordre(i)
                 call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
                             iret)
 !
@@ -137,7 +138,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !       -- DETERMINATION DE LELNO
         do isym = 1, nbsym
             do i = 1, nbordr
-                iordr=zi(jordr+i-1)
+                iordr=nume_ordre(i)
                 call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
                             iret)
 !
@@ -157,7 +158,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !       -- DETERMINATION DE LELEM
         do isym = 1, nbsym
             do i = 1, nbordr
-                iordr=zi(jordr+i-1)
+                iordr=nume_ordre(i)
                 call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
                             iret)
 !
@@ -177,7 +178,7 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 !       -- DETERMINATION DE LELGA
         do isym = 1, nbsym
             do i = 1, nbordr
-                iordr=zi(jordr+i-1)
+                iordr=nume_ordre(i)
                 call rsexch(' ', resuin, nomsym(isym), iordr, cham1,&
                             iret)
 !

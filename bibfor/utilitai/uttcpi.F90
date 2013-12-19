@@ -43,7 +43,7 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! ----------------------------------------------------------------------
 ! REMARQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
     logical :: ljev
-    integer :: indi, jvalms, k, jnoml, nbfois, jvalmi
+    integer :: indi, jvalms, k,  nbfois, jvalmi
     integer :: rang, nbproc, npromx, i1
     parameter (npromx=1000)
     character(len=8) :: numes
@@ -58,6 +58,7 @@ subroutine uttcpi(nommes, ifm, typimp)
     parameter (indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)
+    character(len=80), pointer :: nomlon(:) => null()
     mpi_int :: mrank, msize
     common /mestp1/ mtpniv,mtpsta
     common /mestp2/ snolon
@@ -148,8 +149,8 @@ subroutine uttcpi(nommes, ifm, typimp)
 !
 !     -- NOMMEL, NUMES :
     if (ljev) then
-        call jeveuo('&&UTTCPU.NOMLON', 'L', jnoml)
-        nommel=zk80(jnoml-1+indi)(1:50)
+        call jeveuo('&&UTTCPU.NOMLON', 'L', vk80=nomlon)
+        nommel=nomlon(indi)(1:50)
     else
         nommel=snolon(indi)(1:50)
     endif

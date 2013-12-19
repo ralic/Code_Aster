@@ -67,8 +67,8 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     real(kind=8) :: lsna, lsta, lsnb, lstb, lstc
     real(kind=8) :: a(ndim), b(ndim), ab(ndim), c(ndim), ac(ndim)
     real(kind=8) :: cmin(ndim), longar, m(ndim), rbid(ndim)
-    integer :: nmaenr, kk, jgrp(4*nfiss), jcoor, nbma, indptf(3)
-    integer :: jlsn, jlst, jmasup, jtmdim, jtypma, jconx1, jconx2
+    integer :: nmaenr, kk, jgrp(4*nfiss),  nbma, indptf(3)
+    integer ::   jmasup,   jconx1, jconx2
     integer :: nbcoup, nbcou2, ibid, ifiss, itypma, jtab, jnbpt, jnbpt2
     integer :: nmasup, ndime, nbar, nbheav, jstnl(nfiss), jstnv(nfiss)
     integer :: ino, ino2, nngl, nnot(3), nno, nno2, ima, ima2, ifis
@@ -80,6 +80,11 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     character(len=19) :: clsn, clst, cnxinv, cstn(nfiss), maicon(nfiss)
     character(len=24) :: grp(4*nfiss)
     logical :: lcont
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: vlsn(:) => null()
+    real(kind=8), pointer :: lst(:) => null()
+    integer, pointer :: tmdim(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,9 +103,9 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
         cstn(ifiss)='&&XTYELE.STN'//ch2
         maicon(ifiss)='&&XTYELE.CONT'//ch2
     end do
-    call jeveuo(noma(1:8)//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
-    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', jtypma)
+    call jeveuo(noma(1:8)//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
+    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', vi=typmail)
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
@@ -148,8 +153,8 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     do ifiss = 1, nfiss
         call cnocns(fiss(ifiss)//'.LNNO', 'V', clsn)
         call cnocns(fiss(ifiss)//'.LTNO', 'V', clst)
-        call jeveuo(clsn//'.CNSV', 'L', jlsn)
-        call jeveuo(clst//'.CNSV', 'L', jlst)
+        call jeveuo(clsn//'.CNSV', 'L', vr=vlsn)
+        call jeveuo(clst//'.CNSV', 'L', vr=lst)
 !
 ! --- BOUCLE SUR LES GRP
 !
@@ -164,7 +169,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                     ima = zi(jgrp(4*(ifiss-1)+kk)-1+i)
 !
                     zi(jnbpt-1+ima) = zi(jnbpt-1+ima)+1
-                    itypma=zi(jtypma-1+ima)
+                    itypma=typmail(ima)
 !
                     if (zi(jtab-1+5*(ima-1)+4) .eq. 0) then
 ! --- BLINDAGE DANS LE CAS DU MULTI-HEAVISIDE
@@ -186,7 +191,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 !
                     if (contac .ge. 1) then
 ! --- PAS DE CONTACT POUR LES MAILLE DE BORD
-                        ndime= zi(jtmdim-1+itypma)
+                        ndime= tmdim(itypma)
                         if (ndime .ne. ndim) goto 110
 !
                         maxlsn=-1*r8maem()
@@ -199,8 +204,8 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                             1)-1)
                             nunob=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,&
                             2)-1)
-                            lsna=zr(jlsn-1+nunoa)
-                            lsnb=zr(jlsn-1+nunob)
+                            lsna=vlsn(nunoa)
+                            lsnb=vlsn(nunob)
                             stna=zi(jstnv(ifiss)-1+nunoa)
                             stnb=zi(jstnv(ifiss)-1+nunob)
                             if (lsna .lt. minlsn) minlsn=lsna
@@ -232,7 +237,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                             do ino = 1, nno
                                 nngl=zi(jconx1-1+zi(jconx2+ima-1)+ino-&
                                 1)
-                                lsn = zr(jlsn-1+nngl)
+                                lsn = vlsn(nngl)
                                 if (lsn .eq. 0) then
 ! --- LE NOEUD EST COUPÉ SI LE MAX DE LSN DE SA CONNECTIVITÉ
 ! --- EST STRICTEMENT POSITIF
@@ -246,7 +251,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                         do ino2 = 1, nno2
                                             nngl=zi(jconx1-1+zi(jconx2+&
                                         ima2-1)+ino2-1)
-                                            lsn = zr(jlsn-1+nngl)
+                                            lsn = vlsn(nngl)
                                             if (lsn .gt. maxlsn) maxlsn=lsn
                                         end do
                                     end do
@@ -264,7 +269,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                 else if (typma(1:4).eq.'PYRA') then
                                     nngl=zi(jconx1-1+zi(jconx2+ima-1)+&
                                     5-1)
-                                    lsn = zr(jlsn-1+nngl)
+                                    lsn = vlsn(nngl)
                                     if (lsn .eq. 0 .and. nbcoup .eq. 3 .or. nbcoup .eq. 4) &
                                     lcont=.true.
                                 else if (typma(1:5).eq.'PENTA') then
@@ -272,7 +277,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                     do ino = 1, 3
                                         nngl=zi(jconx1-1+zi(jconx2+&
                                         ima-1)+ino-1)
-                                        lsn = zr(jlsn-1+nngl)
+                                        lsn = vlsn(nngl)
                                         if (lsn .eq. 0) then
                                             nbcou2 = nbcou2+1
                                         endif
@@ -298,17 +303,17 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                             1)-1)
                             nunob=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,&
                             2)-1)
-                            lsna=zr(jlsn-1+nunoa)
-                            lsnb=zr(jlsn-1+nunob)
-                            lsta=zr(jlst-1+nunoa)
-                            lstb=zr(jlst-1+nunob)
+                            lsna=vlsn(nunoa)
+                            lsnb=vlsn(nunob)
+                            lsta=lst(nunoa)
+                            lstb=lst(nunob)
                             if (lsna .eq. 0.d0 .or. lsnb .eq. 0.d0) then
                                 if (lsna .eq. 0.d0 .and. lsta .lt. minlst) minlst=lsta
                                 if (lsnb .eq. 0.d0 .and. lstb .lt. minlst) minlst=lstb
                             else if ((lsna*lsnb).lt.0.d0) then
                                 do k = 1, ndim
-                                    a(k)=zr(jcoor-1+3*(nunoa-1)+k)
-                                    b(k)=zr(jcoor-1+3*(nunob-1)+k)
+                                    a(k)=vale(3*(nunoa-1)+k)
+                                    b(k)=vale(3*(nunob-1)+k)
                                     ab(k)=b(k)-a(k)
                                     c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
                                     ac(k)=c(k)-a(k)
@@ -337,11 +342,11 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                             do ino = 1, nno
                                 nngl=zi(jconx1-1+zi(jconx2+ima-1)+ino-&
                                 1)
-                                zr(ilsn-1+ino) = zr(jlsn-1+nngl)
-                                zr(ilst-1+ino) = zr(jlst-1+nngl)
+                                zr(ilsn-1+ino) = vlsn(nngl)
+                                zr(ilst-1+ino) = lst(nngl)
                                 do j = 1, ndim
                                     zr(igeom-1+ndim*(ino-1)+j) =&
-                                    zr(jcoor-1+3*(nngl-1)+j)
+                                    vale(3*(nngl-1)+j)
                                 end do
                             end do
 ! --- BOUCLE SUR LES FACES

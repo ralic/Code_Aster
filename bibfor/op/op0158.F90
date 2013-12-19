@@ -38,11 +38,11 @@ subroutine op0158()
     character(len=19) :: mass
     character(len=16) :: concep, nomcmd
     character(len=8) :: matass, matfac
-    integer :: jrefa
 !
     character(len=16) :: metres
     integer :: ibid, ifm
     integer :: niv
+    character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -59,9 +59,9 @@ subroutine op0158()
         call utmess('F', 'ALGELINE4_1')
     endif
 !
-    call jeveuo(mass//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(mass, 'ELIMF')
-    ASSERT(zk24(jrefa-1+3).ne.'ELIML')
+    call jeveuo(mass//'.REFA', 'L', vk24=refa)
+    if (refa(3) .eq. 'ELIML') call mtmchc(mass, 'ELIMF')
+    ASSERT(refa(3).ne.'ELIML')
 !
 !
     call titre()

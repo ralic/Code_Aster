@@ -49,7 +49,7 @@ subroutine cesver(cesz)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcesk, jcesd, jcesv, jcesl, jcesc, iad
+    integer ::  jcesd, jcesv, jcesl,  iad
     integer :: nbma, ima, ncmp, ipt, isp, nbpt, icmp, ima1
     character(len=24) :: valk(3)
     character(len=8) :: ma, nomgd, nomma, typces
@@ -57,20 +57,22 @@ subroutine cesver(cesz)
     character(len=19) :: ces
     real(kind=8) :: rmi1, rma1, rmi2, rma2, rdisp, rdispx, r1, rmax, valr(3)
     logical :: lexima
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
     ces = cesz
 !
-    call jeveuo(ces//'.CESK', 'L', jcesk)
+    call jeveuo(ces//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESC', 'L', jcesc)
+    call jeveuo(ces//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces//'.CESV', 'L', jcesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
 !
-    ma = zk8(jcesk-1+1)
-    nomgd = zk8(jcesk-1+2)
-    typces = zk8(jcesk-1+3)
+    ma = cesk(1)
+    nomgd = cesk(2)
+    typces = cesk(3)
     nbma = zi(jcesd-1+1)
     ncmp = zi(jcesd-1+2)
 !
@@ -142,7 +144,7 @@ subroutine cesver(cesz)
             valr(3)=100.d0*rdispx/rmax
             call jenuno(jexnum(ma//'.NOMMAI', ima1), nomma)
             valk(1)=nomma
-            valk(2)=zk8(jcesc-1+icmp)
+            valk(2)=cesc(icmp)
             valk(3)=nomgd
             call utmess('A', 'CALCULEL_26', nk=3, valk=valk, nr=3,&
                         valr=valr)

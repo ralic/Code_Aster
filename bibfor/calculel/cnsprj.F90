@@ -62,13 +62,21 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
     character(len=8) :: ma1, ma2, nomgd, nomcmp, nomno2
     character(len=16) :: corres
     character(len=19) :: cns1, cns2
-    integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d
-    integer :: jcns2c, jcns2l, jcns2v, jcns2k, jcns2d
-    integer :: nbno1, ncmp, jxxk1, iaconb, iaconu, iacocf, gd, nbno2
+    integer ::  jcns1l, jcns1v
+    integer :: jcns2c, jcns2l, jcns2v, jcns2k
+    integer :: nbno1, ncmp,     gd, nbno2
     integer :: idecal, ino2, icmp, ico1, ico2, ino1, nuno1, kalarm
     real(kind=8) :: v1, v2, coef1, coetot, vrmoy
     complex(kind=8) :: v1c, v2c, vcmoy
     logical :: lexact
+    integer, pointer :: pjef_nu(:) => null()
+    character(len=8), pointer :: cns1k(:) => null()
+    integer, pointer :: pjef_nb(:) => null()
+    character(len=8), pointer :: cns1c(:) => null()
+    character(len=24), pointer :: pjxx_k1(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    integer, pointer :: cns1d(:) => null()
+    integer, pointer :: cns2d(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -84,16 +92,16 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !     1- RECUPERATION DES OBJETS ET INFORMATIONS DE CNS1 :
 !     ----------------------------------------------------
 !
-    call jeveuo(cns1//'.CNSK', 'L', jcns1k)
-    call jeveuo(cns1//'.CNSD', 'L', jcns1d)
-    call jeveuo(cns1//'.CNSC', 'L', jcns1c)
+    call jeveuo(cns1//'.CNSK', 'L', vk8=cns1k)
+    call jeveuo(cns1//'.CNSD', 'L', vi=cns1d)
+    call jeveuo(cns1//'.CNSC', 'L', vk8=cns1c)
     call jeveuo(cns1//'.CNSV', 'L', jcns1v)
     call jeveuo(cns1//'.CNSL', 'L', jcns1l)
 !
-    ma1 = zk8(jcns1k-1+1)
-    nomgd = zk8(jcns1k-1+2)
-    nbno1 = zi(jcns1d-1+1)
-    ncmp = zi(jcns1d-1+2)
+    ma1 = cns1k(1)
+    nomgd = cns1k(2)
+    nbno1 = cns1d(1)
+    ncmp = cns1d(2)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
@@ -101,12 +109,12 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !------------------------------------------------------------------
 !     2- RECUPERATION DES OBJETS ET INFORMATIONS DE CORRES :
 !     ----------------------------------------------------
-    call jeveuo(corres//'.PJXX_K1', 'L', jxxk1)
-    call jeveuo(corres//'.PJEF_NB', 'L', iaconb)
-    call jeveuo(corres//'.PJEF_NU', 'L', iaconu)
-    call jeveuo(corres//'.PJEF_CF', 'L', iacocf)
+    call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
+    call jeveuo(corres//'.PJEF_NB', 'L', vi=pjef_nb)
+    call jeveuo(corres//'.PJEF_NU', 'L', vi=pjef_nu)
+    call jeveuo(corres//'.PJEF_CF', 'L', vr=pjef_cf)
 !
-    ma2 = zk24(jxxk1-1+2)
+    ma2 = pjxx_k1(2)
 !
 !
 !------------------------------------------------------------------
@@ -119,7 +127,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !
     endif
 !     TEST SUR IDENTITE DES 2 MAILLAGES
-    ASSERT(zk24(jxxk1-1+1).eq.ma1)
+    ASSERT(pjxx_k1(1).eq.ma1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
@@ -131,22 +139,22 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !     4- ALLOCATION DE CNS2 :
 !     ------------------------
     call detrsd('CHAM_NO_S', cns2)
-    call cnscre(ma2, nomgd, ncmp, zk8(jcns1c), base,&
+    call cnscre(ma2, nomgd, ncmp, cns1c, base,&
                 cns2)
     call jeveuo(cns2//'.CNSK', 'L', jcns2k)
-    call jeveuo(cns2//'.CNSD', 'L', jcns2d)
+    call jeveuo(cns2//'.CNSD', 'L', vi=cns2d)
     call jeveuo(cns2//'.CNSC', 'L', jcns2c)
     call jeveuo(cns2//'.CNSV', 'E', jcns2v)
     call jeveuo(cns2//'.CNSL', 'E', jcns2l)
 !
-    nbno2 = zi(jcns2d-1+1)
+    nbno2 = cns2d(1)
 !
 !------------------------------------------------------------------
 !     5- CALCUL DES VALEURS DE CNS2 :
 !     -------------------------------
     idecal = 0
     do ino2 = 1, nbno2
-        nbno1 = zi(iaconb-1+ino2)
+        nbno1 = pjef_nb(ino2)
         if (nbno1 .eq. 0) goto 50
         do icmp = 1, ncmp
 !
@@ -160,8 +168,8 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
             vcmoy = dcmplx(0.d0,0.d0)
             coetot = 0.d0
             do ino1 = 1, nbno1
-                nuno1 = zi(iaconu+idecal-1+ino1)
-                coef1 = zr(iacocf+idecal-1+ino1)
+                nuno1 = pjef_nu(1+idecal-1+ino1)
+                coef1 = pjef_cf(1+idecal-1+ino1)
                 if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
                     ico1 = ico1 + 1
                     if (coef1 .gt. 0.d0) then
@@ -185,7 +193,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
             if (coetot .lt. 1.d-3 .and. kalarm .le. 6) then
                 kalarm=kalarm+1
                 call jenuno(jexnum(ma2//'.NOMNOE', ino2), nomno2)
-                nomcmp=zk8(jcns1c-1+icmp)
+                nomcmp=cns1c(icmp)
                 valk(1)=nomgd
                 valk(2)=nomno2
                 valk(3)=nomcmp
@@ -220,8 +228,8 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
             if (tsca .eq. 'R') then
                 v2 = 0.d0
                 do ino1 = 1, nbno1
-                    nuno1 = zi(iaconu+idecal-1+ino1)
-                    coef1 = zr(iacocf+idecal-1+ino1)
+                    nuno1 = pjef_nu(1+idecal-1+ino1)
+                    coef1 = pjef_cf(1+idecal-1+ino1)
                     if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
                         if (lexact .or. coef1 .gt. 0) then
                             v1 = zr(jcns1v-1+ (nuno1-1)*ncmp+icmp)
@@ -234,8 +242,8 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
             else if (tsca.eq.'C') then
                 v2c = dcmplx(0.d0,0.d0)
                 do ino1 = 1, nbno1
-                    nuno1 = zi(iaconu+idecal-1+ino1)
-                    coef1 = zr(iacocf+idecal-1+ino1)
+                    nuno1 = pjef_nu(1+idecal-1+ino1)
+                    coef1 = pjef_cf(1+idecal-1+ino1)
                     if (zl(jcns1l-1+ (nuno1-1)*ncmp+icmp)) then
                         if (lexact .or. coef1 .gt. 0) then
                             v1c = zc(jcns1v-1+ (nuno1-1)*ncmp+icmp)

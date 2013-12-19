@@ -72,7 +72,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbma, n1, k
-    integer :: jce3d, jce3v, jce3l, jce3c, vali(3)
+    integer :: jce3d, jce3v, jce3l,  vali(3)
     integer :: jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1, jnucmp, jnbpt, jnbsp, jnbcmp, jcrcmp
     integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, coefi, ncmp
@@ -82,6 +82,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     real(kind=8) :: coefr
     complex(kind=8) :: coefc
     logical :: cumul
+    character(len=8), pointer :: ce3c(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !        CALL IMPRSD('CHAMP',LICHS(1),6,'cesfus in 1')
@@ -271,7 +272,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     call cescre(base, ces3, typces, ma, nomgd,&
                 ncmp3, zk8(jlicmp), zi(jnbpt), zi(jnbsp), zi(jnbcmp))
     call jeveuo(ces3//'.CESD', 'L', jce3d)
-    call jeveuo(ces3//'.CESC', 'L', jce3c)
+    call jeveuo(ces3//'.CESC', 'L', vk8=ce3c)
     call jeveuo(ces3//'.CESV', 'E', jce3v)
     call jeveuo(ces3//'.CESL', 'E', jce3l)
 !
@@ -299,7 +300,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
-            icmp3 = indik8(zk8(jce3c),nocmp,1,ncmp3)
+            icmp3 = indik8(ce3c,nocmp,1,ncmp3)
             do ima = 1, nbma
                 nbpt = zi(jce3d-1+5+4* (ima-1)+1)
                 nbsp = zi(jce3d-1+5+4* (ima-1)+2)

@@ -60,9 +60,10 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     character(len=24) :: vrcplu, vrcref
     integer :: jcesd, jcesl, jcesv, nbma, nbpt, nbsp, icmp
     integer :: jcrsd, jcrsl, jcrsv, ima, ipt, isp, iad, iad2
-    integer :: imamax, imamin, jnom, jvarc, iref
+    integer :: imamax, imamin, jnom,  iref
     real(kind=8) :: valmin, valmax, valr(2)
     real(kind=8) :: valeur, valref
+    character(len=8), pointer :: cvrcvarc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -100,7 +101,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 !     RECUPERATION DES NOMS DES VARC
     call jelira(mate(1:8)//'.CVRCNOM', 'LONMAX', ival=nbcmp2)
     call jeveuo(mate(1:8)//'.CVRCNOM', 'L', jnom)
-    call jeveuo(mate(1:8)//'.CVRCVARC', 'L', jvarc)
+    call jeveuo(mate(1:8)//'.CVRCVARC', 'L', vk8=cvrcvarc)
 !
     nbma = zi(jcesd-1+1)
 !
@@ -110,7 +111,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     imamin=0
     imamax=0
     iref=0
-    if (zk8(jvarc-1+icmp) .eq. 'TEMP' .or. zk8(jvarc-1+icmp) .eq. 'SECH') then
+    if (cvrcvarc(icmp) .eq. 'TEMP' .or. cvrcvarc(icmp) .eq. 'SECH') then
         iref=1
     endif
 !
@@ -155,7 +156,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 40  continue
     if (imamax .gt. 0) then
         valk(2)=zk8(jnom-1+icmp)
-        valk(1)=zk8(jvarc-1+icmp)
+        valk(1)=cvrcvarc(icmp)
         valr(1)=valmax
         valr(2)=valmin
         call jenuno(jexnum(mailla//'.NOMMAI', imamax), valk(3))

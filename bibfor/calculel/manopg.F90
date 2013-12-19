@@ -91,13 +91,13 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !
     integer :: nbpgmx, nbnomx, nbfamx, nbflmx
     parameter (nbpgmx=27,nbnomx=27,nbfamx=20,nbflmx=20)
-    integer :: nbma, ima, jcesd, jcesl, jcesv, iad, jnbpg
-    integer :: ilcnx1, nbpgf(nbfamx), k, jfpgl, jpnlfp
+    integer :: nbma, ima, jcesd, jcesl,  iad, jnbpg
+    integer :: ilcnx1, nbpgf(nbfamx), k, jfpgl
     integer :: nec, kfpg, ndim, nno, nnos, nbfpg, npg, kp, ino
-    integer :: jceld, nbgrel, nel, nute, imolo, jmolo, jecono
+    integer ::  nbgrel, nel, nute, imolo, jmolo, jecono
     integer :: igr, iel, jmaref, lont1, ier
     integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
-    integer :: nblfpg, jnolfp, nuflpg, nufgpg, jliel, jliel1
+    integer :: nblfpg,  nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
     character(len=3) :: exixfm
     character(len=8) :: ma, fapg(nbfamx), nomgd, famil, elrefe, param
@@ -109,6 +109,10 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     real(kind=8) :: xno(3*nbnomx), xpg(3*nbpgmx), vol, ff(nbnomx)
     real(kind=8) :: poipg(nbnomx)
     logical :: econom
+    integer, pointer :: nolocfpg(:) => null()
+    integer, pointer :: celd(:) => null()
+    character(len=32), pointer :: pnlocfpg(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -127,9 +131,9 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call dismoi('PHENOMENE', ligrel, 'LIGREL', repk=pheno)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
-    call jeveuo('&CATA.TE.PNLOCFPG', 'L', jpnlfp)
+    call jeveuo('&CATA.TE.PNLOCFPG', 'L', vk32=pnlocfpg)
     call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg)
-    call jeveuo('&CATA.TE.NOLOCFPG', 'L', jnolfp)
+    call jeveuo('&CATA.TE.NOLOCFPG', 'L', vi=nolocfpg)
 !
 !
 !     0.1 CALCUL DE '&&MANOPG.ECONO' ET '&&MANOPG.CHSGEO'
@@ -246,14 +250,14 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
         valk(2) = option
         call utmess('F', 'CALCULEL7_7', nk=2, valk=valk)
     endif
-    call jeveuo(celmod//'.CELD', 'L', jceld)
+    call jeveuo(celmod//'.CELD', 'L', vi=celd)
 !
 !
 !     4. REMPLISSAGE DE MNOGA :
 !     ---------------------------------------------------------------
     call jeveuo(mnoga//'.CESD', 'L', jcesd)
     call jeveuo(mnoga//'.CESL', 'E', jcesl)
-    call jeveuo(mnoga//'.CESV', 'E', jcesv)
+    call jeveuo(mnoga//'.CESV', 'E', vr=cesv)
 !
 !
     do igr = 1, nbgrel
@@ -262,7 +266,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
         nel = nbelem(ligrel,igr)
         nute = typele(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
-        imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+        imolo = celd(celd(4+igr)+2)
         if (imolo .eq. 0) goto 1
 !
         call jeveuo(jexnum(ligre1//'.LIEL', igr), 'L', jliel1)
@@ -287,8 +291,8 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
             do k = 1, nbfam
                 lielrf(k)=elrefe
                 noflpg = nomte//elrefe//zk8(jfpgl-1+k)
-                nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
-                nufgpg = zi(jnolfp-1+nuflpg)
+                nuflpg = indk32(pnlocfpg,noflpg,1,nblfpg)
+                nufgpg = nolocfpg(nuflpg)
                 call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
                 ASSERT(elrefe.eq.nofpg(1:8))
                 lifapg(k)=nofpg(9:16)
@@ -343,7 +347,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !           -- SI CE N'EST PAS UNE MAILLE DE REFERENCE :
                 if (zi(jmaref-1+ima) .lt. 0) then
                     zl(jcesl-1+iad0-1+1) = .true.
-                    zr(jcesv-1+iad0-1+1) = zi(jmaref-1+ima)
+                    cesv(iad0-1+1) = zi(jmaref-1+ima)
                     goto 3
                 endif
                 ASSERT(zi(jmaref-1+ima).eq.ima)
@@ -353,11 +357,11 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                 if (kfam .eq. 1) then
                     zl(jcesl-1+iad0-1+1) = .true.
                     zl(jcesl-1+iad0-1+2) = .true.
-                    zr(jcesv-1+iad0-1+1) = nno
-                    zr(jcesv-1+iad0-1+2) = npg
+                    cesv(iad0-1+1) = nno
+                    cesv(iad0-1+2) = npg
                 else
-                    ASSERT(nint(zr(jcesv-1+iad0-1+1)).eq.nno)
-                    zr(jcesv-1+iad0-1+2) = zr(jcesv-1+iad0-1+2) + npg
+                    ASSERT(nint(cesv(iad0-1+1)).eq.nno)
+                    cesv(iad0-1+2) = cesv(iad0-1+2) + npg
                 endif
 !
                 call cesexi('C', jcesd, jcesl, ima, 1,&
@@ -382,7 +386,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                     endif
                     do ino = 1, nno
                         zl(jcesl-1+iad-1+nno*(kp-1)+ino) = .true.
-                        zr(jcesv-1+iad-1+nno*(kp-1)+ino) = ff(ino)
+                        cesv(iad-1+nno*(kp-1)+ino) = ff(ino)
                     end do
                 end do
 !

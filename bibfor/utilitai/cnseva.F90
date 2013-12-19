@@ -54,9 +54,9 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jfd, jfc, jfv, jfl, jfk
-    integer :: jpd, jpc, jpv, jpl, jpk
-    integer :: jrd, jrc, jrv, jrl, jrk
+    integer ::    jfl
+    integer :: jpd, jpc, jpv, jpl
+    integer :: jrd, jrc,  jrl, jrk
     integer :: nbno, k, ino, ncmp, nbpu, ier, nbpumx
     integer :: k2, ncmp2, ipara, jad1, ibid
     parameter (nbpumx=50)
@@ -66,6 +66,12 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
     character(len=19) :: f, p, r
     character(len=24) :: valk
     real(kind=8) :: x, valpu(nbpumx)
+    integer, pointer :: fd(:) => null()
+    character(len=8), pointer :: fc(:) => null()
+    character(len=8), pointer :: fk(:) => null()
+    character(len=8), pointer :: pk(:) => null()
+    character(len=8), pointer :: fv(:) => null()
+    real(kind=8), pointer :: rv(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -73,16 +79,16 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !     1- RECUPERATIONS D'INFOS DANS LE CHAMP DE FONCTIONS :
 !     ------------------------------------------------------------
     f = cnsf
-    call jeveuo(f//'.CNSK', 'L', jfk)
-    call jeveuo(f//'.CNSD', 'L', jfd)
-    call jeveuo(f//'.CNSC', 'L', jfc)
-    call jeveuo(f//'.CNSV', 'L', jfv)
+    call jeveuo(f//'.CNSK', 'L', vk8=fk)
+    call jeveuo(f//'.CNSD', 'L', vi=fd)
+    call jeveuo(f//'.CNSC', 'L', vk8=fc)
+    call jeveuo(f//'.CNSV', 'L', vk8=fv)
     call jeveuo(f//'.CNSL', 'L', jfl)
 !
-    ma = zk8(jfk-1+1)
-    nomgdf = zk8(jfk-1+2)
-    nbno = zi(jfd-1+1)
-    ncmp = zi(jfd-1+2)
+    ma = fk(1)
+    nomgdf = fk(2)
+    nbno = fd(1)
+    ncmp = fd(2)
 !
     call dismoi('TYPE_SCA', nomgdf, 'GRANDEUR', repk=tsca)
     if (tsca .ne. 'K8') then
@@ -95,12 +101,12 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !     ------------------------------------------------------------
     r = cnsr
     nomgdr = nomgdf(1:4)//'_R'
-    call cnscre(ma, nomgdr, ncmp, zk8(jfc), 'V',&
+    call cnscre(ma, nomgdr, ncmp, fc, 'V',&
                 r)
     call jeveuo(r//'.CNSK', 'L', jrk)
     call jeveuo(r//'.CNSD', 'L', jrd)
     call jeveuo(r//'.CNSC', 'L', jrc)
-    call jeveuo(r//'.CNSV', 'E', jrv)
+    call jeveuo(r//'.CNSV', 'E', vr=rv)
     call jeveuo(r//'.CNSL', 'E', jrl)
 !
 !
@@ -109,13 +115,13 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
     call wkvect('&&CNSEVA.JAD1', 'V V I', 4*npara, jad1)
     do ipara = 1, npara
         p = lpara(ipara)
-        call jeveuo(p//'.CNSK', 'L', jpk)
+        call jeveuo(p//'.CNSK', 'L', vk8=pk)
         call jeveuo(p//'.CNSD', 'L', jpd)
         call jeveuo(p//'.CNSC', 'L', jpc)
         call jeveuo(p//'.CNSV', 'L', jpv)
         call jeveuo(p//'.CNSL', 'L', jpl)
-        ma2 = zk8(jpk-1+1)
-        nomgd2 = zk8(jpk-1+2)
+        ma2 = pk(1)
+        nomgd2 = pk(2)
 !
         call dismoi('TYPE_SCA', nomgd2, 'GRANDEUR', repk=tsca)
         if (tsca .ne. 'R') then
@@ -141,7 +147,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
         do ino = 1, nbno
             if (zl(jfl-1+ (ino-1)*ncmp+k)) then
                 zl(jrl-1+ (ino-1)*ncmp+k) = .true.
-                fo = zk8(jfv-1+ (ino-1)*ncmp+k)
+                fo = fv((ino-1)*ncmp+k)
                 if (fo .eq. ' ') goto 40
 !
 !           4.1 FABRICATION DE LA LISTE DES PARAMETRES POUR FOINTE:
@@ -186,7 +192,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !
 !           4.3 STOCKAGE DU RESULTAT :
 !           --------------------------
-                zr(jrv-1+ (ino-1)*ncmp+k) = x
+                rv((ino-1)*ncmp+k) = x
 !
             endif
  40         continue

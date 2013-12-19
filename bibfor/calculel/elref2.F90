@@ -41,21 +41,23 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
 !   SI NOMTE A PLUS D'ELREFE QUE DIM => ERREUR <F>
 !----------------------------------------------------------------------
 !
-    integer :: nute, jnbelr, jnoelr, ntrou, iad, k
+    integer :: nute,   ntrou, iad, k
+    character(len=8), pointer :: noelrefe(:) => null()
+    integer, pointer :: nbelrefe(:) => null()
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', nomte), nute)
     ASSERT(nute.gt.0)
 !
-    call jeveuo('&CATA.TE.NBELREFE', 'L', jnbelr)
-    call jeveuo('&CATA.TE.NOELREFE', 'L', jnoelr)
+    call jeveuo('&CATA.TE.NBELREFE', 'L', vi=nbelrefe)
+    call jeveuo('&CATA.TE.NOELREFE', 'L', vk8=noelrefe)
 !
-    ntrou = zi(jnbelr-1+2* (nute-1)+1)
-    iad = zi(jnbelr-1+2* (nute-1)+2)
+    ntrou = nbelrefe(2* (nute-1)+1)
+    iad = nbelrefe(2* (nute-1)+2)
 !
     ASSERT(ntrou.le.dim)
 !
     do 10,k = 1,ntrou
-    lielrf(k) = zk8(jnoelr-1+iad-1+k)
+    lielrf(k) = noelrefe(iad-1+k)
     10 end do
 !
 !

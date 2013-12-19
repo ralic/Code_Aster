@@ -39,7 +39,7 @@ subroutine cestas(cesz)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcesk, jcesd, jcesv, jcesl, jcesc, nbma
+    integer ::  jcesd, jcesv, jcesl,  nbma
     integer :: jce2d, jce2v, jce2l
     integer :: jnbpt, jnbsp, jnbcmp, icmp
     integer :: ima, ipt, isp, nbpt, nbsp, iad, iad2
@@ -48,23 +48,25 @@ subroutine cestas(cesz)
     character(len=8) :: ma, nomgd, typces
     character(len=3) :: tsca
     character(len=19) :: ces, ces2
+    character(len=8), pointer :: cesc(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
 !
     ces = cesz
 !
-    call jeveuo(ces//'.CESK', 'L', jcesk)
+    call jeveuo(ces//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESC', 'L', jcesc)
+    call jeveuo(ces//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces//'.CESL', 'L', jcesl)
     call jeveuo(ces//'.CESV', 'L', jcesv)
 !
     call jelira(ces//'.CESK', 'CLAS', cval=base)
 !
-    ma = zk8(jcesk-1+1)
-    nomgd = zk8(jcesk-1+2)
-    typces = zk8(jcesk-1+3)
+    ma = cesk(1)
+    nomgd = cesk(2)
+    typces = cesk(3)
 !
     nbma = zi(jcesd-1+1)
     ncmp = zi(jcesd-1+2)
@@ -115,7 +117,7 @@ subroutine cestas(cesz)
 !     --------------------------
     ces2 = '&&CESTAS.CES2'
     call cescre(base, ces2, typces, ma, nomgd,&
-                ncmp, zk8(jcesc), zi(jnbpt), zi(jnbsp), zi(jnbcmp))
+                ncmp, cesc, zi(jnbpt), zi(jnbsp), zi(jnbcmp))
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESV', 'E', jce2v)
     call jeveuo(ces2//'.CESL', 'E', jce2l)

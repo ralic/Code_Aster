@@ -67,9 +67,9 @@ subroutine detrsd(typesd, nomsd)
 ! ----------------------------------------------------------------------
     complex(kind=8) :: cbid
 !
-    integer :: iret, iad, long, i, nbch, jrelr, ibid
+    integer :: iret, iad, long, i, nbch,  ibid
     integer :: ityobj, inomsd, nblg, nbpa, nblp, n1
-    integer :: jltns, iexi, jrefa
+    integer ::  iexi
     character(len=8) :: metres, k8
     character(len=12) :: vge
     character(len=14) :: nu, com
@@ -78,6 +78,9 @@ subroutine detrsd(typesd, nomsd)
     character(len=19) :: ligrel, nuage, ligret, mltf, stock, k19, matel, liste
     character(len=24) :: typobj, knomsd
     logical :: lbid
+    character(len=24), pointer :: ltns(:) => null()
+    character(len=24), pointer :: relr(:) => null()
+    character(len=24), pointer :: refa(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! -DEB------------------------------------------------------------------
@@ -239,10 +242,10 @@ subroutine detrsd(typesd, nomsd)
         k19 = nomsd
         call jeexin(k19//'.LTNS', iret)
         if (iret .eq. 0) goto 70
-        call jeveuo(k19//'.LTNS', 'L', jltns)
+        call jeveuo(k19//'.LTNS', 'L', vk24=ltns)
         call jelira(k19//'.LTNS', 'LONMAX', n1)
         do i = 1, n1
-            call detrs2('TABLE', zk24(jltns-1+i))
+            call detrs2('TABLE', ltns(i))
         end do
         call jedetr(k19//'.LTNS')
         call jedetr(k19//'.LTNT')
@@ -355,9 +358,9 @@ subroutine detrsd(typesd, nomsd)
 !       -- DESTRUCTION DE L'EVENTUELLE MATRICE RéDUITE (ELIM_LAGR) :
         call jeexin(matas//'.REFA', iexi)
         if (iexi .gt. 0) then
-            call jeveuo(matas//'.REFA', 'L', jrefa)
-            if (zk24(jrefa-1+19) .ne. ' ') then
-                call detrs2('MATR_ASSE', zk24(jrefa-1+19)(1:19))
+            call jeveuo(matas//'.REFA', 'L', vk24=refa)
+            if (refa(19) .ne. ' ') then
+                call detrs2('MATR_ASSE', refa(19)(1:19))
             endif
         endif
 !
@@ -572,9 +575,9 @@ subroutine detrsd(typesd, nomsd)
         call jeexin(matel//'.RELR', iret)
         if (iret .le. 0) goto 61
         call jelira(matel//'.RELR', 'LONUTI', nbch)
-        if (nbch .gt. 0) call jeveuo(matel//'.RELR', 'L', jrelr)
+        if (nbch .gt. 0) call jeveuo(matel//'.RELR', 'L', vk24=relr)
         do i = 1, nbch
-            champ=zk24(jrelr-1+i)(1:19)
+            champ=relr(i)(1:19)
             call assde1(champ)
         end do
  61     continue

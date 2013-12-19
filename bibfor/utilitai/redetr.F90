@@ -41,10 +41,11 @@ subroutine redetr(matelz)
 !     IN/OUT  : MATELZ = NOM DE LA SD MATR_ELEM A NETTOYER
 !
 !
-    integer :: jrelr, iret1, iexi, iexiav, jtemp, jadet
+    integer ::  iret1, iexi, iexiav, jtemp, jadet
     integer :: izero, ico, k, nb1, nbdet, nb1av
     logical :: ldetr
     character(len=19) :: matele, resuel
+    character(len=24), pointer :: relr(:) => null()
 !
     call jemarq()
 !
@@ -61,7 +62,7 @@ subroutine redetr(matelz)
     ASSERT(iexi.eq.iexiav)
     if (iexi .eq. 0) goto 60
 !
-    call jeveuo(matele//'.RELR', 'E', jrelr)
+    call jeveuo(matele//'.RELR', 'E', vk24=relr)
     call jelira(matele//'.RELR', 'LONUTI', nb1)
 !
 !     -- LE MATR_ELEM DOIT CONTENIR LE MEME NOMBRE DE RESUELEM
@@ -89,7 +90,7 @@ subroutine redetr(matelz)
 !                J'ESPERE QU'ILS N'ARRIVERONT JAMAIS
     do 10,k=1,nb1
     zi(jadet-1+k)=0
-    resuel=zk24(jrelr-1+k)(1:19)
+    resuel=relr(k)(1:19)
     if (resuel .eq. ' ') then
         ASSERT(.false.)
         zi(jadet-1+k)=1
@@ -134,9 +135,9 @@ subroutine redetr(matelz)
     if (zi(jadet-1+k) .eq. 3) then
         ico=ico+1
         if (ico .gt. nbdet) goto 31
-        resuel = zk24(jrelr-1+k)(1:19)
+        resuel = relr(k)(1:19)
         call detrsd('RESUELEM', resuel)
-        zk24(jrelr-1+k) = ' '
+        relr(k) = ' '
     endif
     30 end do
 31  continue
@@ -145,7 +146,7 @@ subroutine redetr(matelz)
 !        SOIENT "VRAIS"
     ico=0
     do 40,k=1,nb1
-    resuel=zk24(jrelr-1+k)(1:19)
+    resuel=relr(k)(1:19)
     if (resuel .ne. ' ') then
         ico=ico+1
         zk24(jtemp-1+ico) = resuel
@@ -155,7 +156,7 @@ subroutine redetr(matelz)
 !
     call jeecra(matele//'.RELR', 'LONUTI', ico)
     do 50,k=1,ico
-    zk24(jrelr-1+k) = zk24(jtemp-1+k)
+    relr(k) = zk24(jtemp-1+k)
     50 end do
 !
 60  continue

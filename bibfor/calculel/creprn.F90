@@ -68,8 +68,8 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
 ! -----  VARIABLES LOCALES
     character(len=*) :: ligrez, molocz, basez, prnmz, prnsz
-    integer :: gd, i, iaconx, ialiel, iamaco, iamail, iamsco, jmoloc, iancmp
-    integer :: ianmcr, iaprnm, iaprno, iaprns, iasssa, icmp
+    integer :: gd, i,   iamaco, iamail, iamsco, jmoloc, iancmp
+    integer ::  iaprnm, iaprno, iaprns,  icmp
     integer :: icodla, iec, igr, illiel, ilmaco, ilmsco
     integer :: ima, imode, ino, inold, iret, ite, j, k, l, lgncmp, nbnm
     integer :: nbnoms, nbsma, nbssa, nec, nel, nl, nm, nnoe, numa, nunoel
@@ -82,10 +82,14 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     character(len=16) :: phenom
     character(len=19) :: ligrel
     character(len=24) :: prnm, prns
+    integer, pointer :: liel(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: sssa(:) => null()
+    integer, pointer :: conx(:) => null()
 !
 ! -----  FONCTIONS FORMULES
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
 #define numglm(ima,ino) zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
@@ -207,7 +211,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 ! - traitement des elements finis classiques :
 !   ----------------------------------------
     if (exiel(1:3) .eq. 'NON') goto 90
-    call jeveuo(ligrel(1:19)//'.LIEL', 'L', ialiel)
+    call jeveuo(ligrel(1:19)//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel(1:19)//'.LIEL', 'LONCUM'), 'L', illiel)
 
     do igr = 1, nbgrel(ligrel)
@@ -270,11 +274,11 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !     ----------------------------
     if (nbssa .gt. 0) then
 !
-        call jeveuo(ligrel//'.SSSA', 'L', iasssa)
+        call jeveuo(ligrel//'.SSSA', 'L', vi=sssa)
 !
 ! ---   le seul ddl porte par un noeud de lagrange est 'lagr' :
 !       -------------------------------------------------------
-        call jeveuo(noma//'.NOMACR', 'L', ianmcr)
+        call jeveuo(noma//'.NOMACR', 'L', vk8=vnomacr)
 !
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iancmp)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', lgncmp)
@@ -289,17 +293,17 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         icodla = lshift(1,icmp)
 !
         do ima = 1, nbsma
-            nomacr = zk8(ianmcr-1+ima)
+            nomacr = vnomacr(ima)
             call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
-            call jeveuo(nomacr//'.CONX', 'L', iaconx)
+            call jeveuo(nomacr//'.CONX', 'L', vi=conx)
             call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprno)
-            if (zi(iasssa-1+ima) .eq. 1) then
+            if (sssa(ima) .eq. 1) then
                 call jeveuo(jexnum(noma//'.SUPMAIL', ima), 'L', iamail)
                 call jelira(jexnum(noma//'.SUPMAIL', ima), 'LONMAX', nbnm)
 !
                 do i = 1, nbnm
                     ino = zi(iamail-1+i)
-                    inold = zi(iaconx-1+3* (i-1)+2)
+                    inold = conx(3* (i-1)+2)
                     if (ino .gt. nm) then
 !
 ! ---                   CAS D'UN NOEUD DE LAGRANGE :

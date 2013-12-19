@@ -62,7 +62,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 ! ......................................................................
 !
 !
-    integer :: jpara, n1, n2, n3, n4, iex, jlcha, jinfc, jfcha, ncha
+    integer :: jpara, n1, n2, n3, n4, iex,    ncha
     integer :: ilu, isd, nchalu, nchasd, lchalu, fchalu, vali(2)
 !
     character(len=6) :: nompro
@@ -70,6 +70,9 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
     character(len=16) :: type, nomcmd
     character(len=19) :: kcha, kfon
     character(len=24) :: excisd, valk(4)
+    character(len=24), pointer :: fcha(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
+    integer, pointer :: infc(:) => null()
 !
     parameter(nompro='RSLESD')
 !
@@ -277,10 +280,10 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !
     if (excisd .ne. ' ') then
         excit = excisd(1:19)
-        call jeveuo(excit(1:19)//'.LCHA', 'L', jlcha)
-        call jeveuo(excit(1:19)//'.INFC', 'L', jinfc)
-        call jeveuo(excit(1:19)//'.FCHA', 'L', jfcha)
-        nchasd = zi(jinfc)
+        call jeveuo(excit(1:19)//'.LCHA', 'L', vk24=lcha)
+        call jeveuo(excit(1:19)//'.INFC', 'L', vi=infc)
+        call jeveuo(excit(1:19)//'.FCHA', 'L', vk24=fcha)
+        nchasd = infc(1)
     endif
 !
 !--- VERIFICATIONS DES CHARGEMENTS
@@ -300,7 +303,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
 !
         do 40 ilu = 1, nchalu
             do 20 isd = 1, nchasd
-                if (zk8(lchalu-1+ilu) .eq. zk24(jlcha-1+isd)(1:8)) goto 30
+                if (zk8(lchalu-1+ilu) .eq. lcha(isd)(1:8)) goto 30
 20          continue
             call utmess('A', 'UTILITAI4_40')
 30          continue
@@ -311,7 +314,7 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         if (nomcmd .ne. 'POST_ELEM') then
             do 70 ilu = 1, nchalu
                 do 50 isd = 1, nchasd
-                    foncsd = zk24(jfcha-1+isd)(1:8)
+                    foncsd = fcha(isd)(1:8)
                     if (foncsd(1:2) .eq. '&&') foncsd = ' '
                     if (zk8(fchalu-1+ilu) .eq. foncsd) goto 60
 50              continue
@@ -326,13 +329,13 @@ subroutine rslesd(result, nuord, modele, materi, carele,&
         if (nomcmd .ne. 'POST_ELEM') then
             do 80 ilu = 1, nchalu
                 do 90 isd = 1, nchasd
-                    if (zk8(lchalu-1+ilu) .eq. zk24(jlcha-1+isd)(1:8)) then
-                        foncsd = zk24(jfcha-1+isd)(1:8)
+                    if (zk8(lchalu-1+ilu) .eq. lcha(isd)(1:8)) then
+                        foncsd = fcha(isd)(1:8)
                         if (foncsd(1:2) .eq. '&&') foncsd = ' '
                         if (zk8(fchalu-1+ilu) .eq. foncsd) goto 95
                         valk(1)=zk8(lchalu-1+ilu)
                         valk(2)=zk8(fchalu-1+ilu)
-                        valk(3)=zk24(jlcha-1+isd)(1:8)
+                        valk(3)=lcha(isd)(1:8)
                         valk(4)=foncsd
                         call utmess('A', 'CALCULEL6_66', nk=4, valk=valk)
                     endif

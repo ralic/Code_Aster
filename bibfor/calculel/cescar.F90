@@ -42,8 +42,8 @@ subroutine cescar(cesz, cartz, basz)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jce1k, jce1d, jce1c, jce1l, jce1v, nbmam, ncmp, ncmpmx
-    integer :: jncmp, jvalv, iad1, kcmp, ncmpma, nbpt, nbsp, ima
+    integer ::  jce1d,  jce1l, jce1v, nbmam, ncmp, ncmpmx
+    integer ::  jvalv, iad1, kcmp, ncmpma, nbpt, nbsp, ima
     integer :: jlima, k, jvals, nbpaqu, nbcmps, jnoms, vali(3)
     logical :: idprec, premie
     character(len=1) :: base
@@ -51,6 +51,9 @@ subroutine cescar(cesz, cartz, basz)
     character(len=3) :: tsca
     character(len=19) :: cart, ces1
     character(len=24) :: valk(3)
+    character(len=8), pointer :: vncmp(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !      CALL IMPRSD('CHAMP',CESZ,6,'AJOCOT CESCAR IN')
@@ -63,14 +66,14 @@ subroutine cescar(cesz, cartz, basz)
 !
 !     1- RECUPERATION D'INFORMATIONS DANS CES1 :
 !     ------------------------------------------
-    call jeveuo(ces1//'.CESK', 'L', jce1k)
+    call jeveuo(ces1//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces1//'.CESD', 'L', jce1d)
-    call jeveuo(ces1//'.CESC', 'L', jce1c)
+    call jeveuo(ces1//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces1//'.CESV', 'L', jce1v)
     call jeveuo(ces1//'.CESL', 'L', jce1l)
 !
-    ma=zk8(jce1k-1+1)
-    nomgd=zk8(jce1k-1+2)
+    ma=cesk(1)
+    nomgd=cesk(2)
     nbmam=zi(jce1d-1+1)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -78,7 +81,7 @@ subroutine cescar(cesz, cartz, basz)
 !
 !
     call alcart(base, cart, ma, nomgd)
-    call jeveuo(cart//'.NCMP', 'E', jncmp)
+    call jeveuo(cart//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(cart//'.VALV', 'E', jvalv)
 !
     call wkvect('&&CESCAR.LIMA', 'V V I', nbmam, jlima)
@@ -118,7 +121,7 @@ subroutine cescar(cesz, cartz, basz)
             ASSERT(iad1.ne.0)
             if (iad1 .gt. 0) then
                 ncmpma=ncmpma+1
-                zk8(jncmp-1+ncmpma)=zk8(jce1c-1+kcmp)
+                vncmp(ncmpma)=cesc(kcmp)
 !
                 if (tsca .eq. 'R') then
                     zr(jvalv-1+ncmpma)=zr(jce1v-1+iad1)
@@ -154,7 +157,7 @@ subroutine cescar(cesz, cartz, basz)
 !         -- LA MAILLE EST-ELLE COMME LA MAILLE SAUVEGARDEE ?
             if (ncmpma .ne. nbcmps) goto 30
             do k = 1, nbcmps
-                if (zk8(jnoms-1+k) .ne. zk8(jncmp-1+k)) goto 30
+                if (zk8(jnoms-1+k) .ne. vncmp(k)) goto 30
                 if (tsca .eq. 'R') then
                     if (zr(jvals-1+k) .ne. zr(jvalv-1+k)) goto 30
                 else if (tsca.eq.'C') then
@@ -189,7 +192,7 @@ subroutine cescar(cesz, cartz, basz)
 !          -----------------------------------------------------
             if (.not.premie) then
                 do k = 1, nbcmps
-                    zk8(jncmp-1+k)=zk8(jnoms-1+k)
+                    vncmp(k)=zk8(jnoms-1+k)
                     if (tsca .eq. 'R') then
                         zr(jvalv-1+k)=zr(jvals-1+k)
                     else if (tsca.eq.'C') then
@@ -220,7 +223,7 @@ subroutine cescar(cesz, cartz, basz)
                     ASSERT(iad1.ne.0)
                     if (iad1 .gt. 0) then
                         ncmpma=ncmpma+1
-                        zk8(jncmp-1+ncmpma)=zk8(jce1c-1+kcmp)
+                        vncmp(ncmpma)=cesc(kcmp)
 !
                         if (tsca .eq. 'R') then
                             zr(jvalv-1+ncmpma)=zr(jce1v-1+iad1)
@@ -246,7 +249,7 @@ subroutine cescar(cesz, cartz, basz)
             premie=.false.
             nbcmps=ncmpma
             do k = 1, nbcmps
-                zk8(jnoms-1+k)=zk8(jncmp-1+k)
+                zk8(jnoms-1+k)=vncmp(k)
                 if (tsca .eq. 'R') then
                     zr(jvals-1+k)=zr(jvalv-1+k)
                 else if (tsca.eq.'C') then
@@ -281,7 +284,7 @@ subroutine cescar(cesz, cartz, basz)
 !
 !     -- IL NE FAUT PAS OUBLIER LE DERNIER PAQUET :
     do k = 1, nbcmps
-        zk8(jncmp-1+k)=zk8(jnoms-1+k)
+        vncmp(k)=zk8(jnoms-1+k)
         if (tsca .eq. 'R') then
             zr(jvalv-1+k)=zr(jvals-1+k)
         else if (tsca.eq.'C') then

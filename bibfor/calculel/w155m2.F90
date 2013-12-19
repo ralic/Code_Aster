@@ -58,10 +58,14 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     integer :: iret, nbma, nbmat, numa, kma
     integer :: nbpt, kpt, kcmp, nncp, jlite
     integer :: iad1, iad4, jlima, ncmp
-    integer :: jce2l, jce2d, jce2v, jce3k, jce3l, jce3d, jce3v, jce3c
-    integer :: jce4l, jce4c, jce4d, jce4v, nbspmx, nucmp
+    integer :: jce2l, jce2d, jce2v, jce3k, jce3l, jce3d
+    integer :: jce4l,  jce4d,  nbspmx, nucmp
     integer :: isp, nbsp, ksp, nusec, nucou, nufib, posic, posis, kcmp2
     real(kind=8) :: val, vmima
+    character(len=8), pointer :: ce3c(:) => null()
+    character(len=8), pointer :: ce4c(:) => null()
+    real(kind=8), pointer :: ce3v(:) => null()
+    real(kind=8), pointer :: ce4v(:) => null()
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -113,9 +117,9 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     call celces(chin, 'V', ces3)
     call jeveuo(ces3//'.CESK', 'L', jce3k)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
-    call jeveuo(ces3//'.CESC', 'L', jce3c)
+    call jeveuo(ces3//'.CESC', 'L', vk8=ce3c)
     call jeveuo(ces3//'.CESL', 'L', jce3l)
-    call jeveuo(ces3//'.CESV', 'L', jce3v)
+    call jeveuo(ces3//'.CESV', 'L', vr=ce3v)
     call jelira(ces3//'.CESC', 'LONMAX', ncmp)
 !
 !
@@ -124,11 +128,11 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     ces4='&&W155M2.CES4'
     call celces(chextr, 'V', ces4)
     call jeveuo(ces4//'.CESD', 'L', jce4d)
-    call jeveuo(ces4//'.CESV', 'L', jce4v)
+    call jeveuo(ces4//'.CESV', 'L', vr=ce4v)
     call jeveuo(ces4//'.CESL', 'L', jce4l)
-    call jeveuo(ces4//'.CESC', 'L', jce4c)
+    call jeveuo(ces4//'.CESC', 'L', vk8=ce4c)
     do kcmp = 1, ncmp
-        if (zk8(jce3c-1+kcmp) .eq. nocmp) then
+        if (ce3c(kcmp) .eq. nocmp) then
             nucmp=kcmp
             goto 20
 !
@@ -154,7 +158,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
                 call cesexi('C', jce3d, jce3l, numa, kpt,&
                             ksp, nucmp, iad1)
                 if (iad1 .gt. 0) then
-                    val=zr(jce3v-1+iad1)
+                    val=ce3v(iad1)
                     if (tymaxi(5:8) .eq. '_ABS') val=abs(val)
                     if (ksp .eq. 1) then
                         vmima=val
@@ -187,23 +191,23 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
                             1, kcmp2, iad4)
                 ASSERT(iad4.gt.0)
                 if (kcmp2 .eq. 1) then
-                    ASSERT(zk8(jce4c-1+kcmp2).eq.'VAL')
-                    zr(jce4v-1+iad4)=vmima
+                    ASSERT(ce4c(kcmp2).eq.'VAL')
+                    ce4v(iad4)=vmima
                 else if (kcmp2.eq.2) then
-                    ASSERT(zk8(jce4c-1+kcmp2).eq.'NUCOU')
-                    zr(jce4v-1+iad4)=dble(nucou)
+                    ASSERT(ce4c(kcmp2).eq.'NUCOU')
+                    ce4v(iad4)=dble(nucou)
                 else if (kcmp2.eq.3) then
-                    ASSERT(zk8(jce4c-1+kcmp2).eq.'NUSECT')
-                    zr(jce4v-1+iad4)=dble(nusec)
+                    ASSERT(ce4c(kcmp2).eq.'NUSECT')
+                    ce4v(iad4)=dble(nusec)
                 else if (kcmp2.eq.4) then
-                    ASSERT(zk8(jce4c-1+kcmp2).eq.'NUFIBR')
-                    zr(jce4v-1+iad4)=dble(nufib)
+                    ASSERT(ce4c(kcmp2).eq.'NUFIBR')
+                    ce4v(iad4)=dble(nufib)
                 else if (kcmp2.eq.5) then
-                    ASSERT(zk8(jce4c-1+kcmp2).eq.'POSIC')
-                    zr(jce4v-1+iad4)=dble(posic)
+                    ASSERT(ce4c(kcmp2).eq.'POSIC')
+                    ce4v(iad4)=dble(posic)
                 else if (kcmp2.eq.6) then
-                    ASSERT(zk8(jce4c-1+kcmp2).eq.'POSIS')
-                    zr(jce4v-1+iad4)=dble(posis)
+                    ASSERT(ce4c(kcmp2).eq.'POSIS')
+                    ce4v(iad4)=dble(posis)
                 else
                     ASSERT(.false.)
                 endif

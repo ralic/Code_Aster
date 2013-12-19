@@ -43,29 +43,32 @@ subroutine cnsimp(cnsz, unite)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcnsk, jcnsd, jcnsv, jcnsl, jcnsc
+    integer ::   jcnsv, jcnsl
     integer :: nbno, k, ino, ncmp, ncmpu, jlval, ik, licmpu(997)
     character(len=8) :: ma, nomgd, nomno
     character(len=3) :: tsca
     character(len=19) :: cns
     character(len=40) :: fmt1, fmt2
     logical :: exicmp
+    character(len=8), pointer :: cnsk(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    integer, pointer :: cnsd(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
 !
     cns = cnsz
 !
-    call jeveuo(cns//'.CNSK', 'L', jcnsk)
-    call jeveuo(cns//'.CNSD', 'L', jcnsd)
-    call jeveuo(cns//'.CNSC', 'L', jcnsc)
+    call jeveuo(cns//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cns//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(cns//'.CNSC', 'L', vk8=cnsc)
     call jeveuo(cns//'.CNSV', 'L', jcnsv)
     call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
-    ma = zk8(jcnsk-1+1)
-    nomgd = zk8(jcnsk-1+2)
-    nbno = zi(jcnsd-1+1)
-    ncmp = zi(jcnsd-1+2)
+    ma = cnsk(1)
+    nomgd = cnsk(2)
+    nbno = cnsd(1)
+    ncmp = cnsd(2)
 !
 !
 !     1- CALCUL DE NCMPU  : NB CMPS UTILISEES DANS LE CHAMP
@@ -119,7 +122,7 @@ subroutine cnsimp(cnsz, unite)
     write (unite,*) ' '
     write (unite,*) ' GRANDEUR: ',nomgd
     write (unite,*) ' '
-    write (unite,fmt1) 'NOEUD', (zk8(jcnsc-1+licmpu(ik)),ik=1,ncmpu)
+    write (unite,fmt1) 'NOEUD', (cnsc(licmpu(ik)),ik=1,ncmpu)
 !
 !
 !     4- ECRITURE DES VALEURS :

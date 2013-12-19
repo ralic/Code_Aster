@@ -64,10 +64,12 @@ subroutine pjefco(moa1, moa2, corres, base)
     character(len=16) :: tymocl(5), motcle(5)
     character(len=24) :: geom2, geom1
     integer :: n1, nbocc, iocc, nbno2, nbma1
-    integer :: iagno2, iagma1, iexi
+    integer ::   iexi
 !
     logical :: ldmax, dbg
     real(kind=8) :: distma
+    integer, pointer :: limanu1(:) => null()
+    integer, pointer :: linonu2(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
     ASSERT(base.eq.'V')
@@ -180,7 +182,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
             call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc,&
                         3, motcle, tymocl, '&&PJEFCO.LIMANU1', nbma1)
-            call jeveuo('&&PJEFCO.LIMANU1', 'L', iagma1)
+            call jeveuo('&&PJEFCO.LIMANU1', 'L', vi=limanu1)
 !
 !           -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 :
 !           ----------------------------------------------
@@ -196,7 +198,7 @@ subroutine pjefco(moa1, moa2, corres, base)
             tymocl(5) = 'TOUT'
             call reliem(' ', noma2, 'NU_NOEUD', 'VIS_A_VIS', iocc,&
                         5, motcle, tymocl, '&&PJEFCO.LINONU2', nbno2)
-            call jeveuo('&&PJEFCO.LINONU2', 'L', iagno2)
+            call jeveuo('&&PJEFCO.LINONU2', 'L', vi=linonu2)
 !
 !           PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2]
 !           --------------------------------------------
@@ -209,20 +211,20 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
             call detrsd('CORRESP_2_MAILLA', corre1)
             if (ncas .eq. '2D') then
-                call pj2dco('PARTIE', moa1, moa2, nbma1, zi(iagma1),&
-                            nbno2, zi(iagno2), geom1, geom2, corre1,&
+                call pj2dco('PARTIE', moa1, moa2, nbma1, limanu1,&
+                            nbno2, linonu2, geom1, geom2, corre1,&
                             ldmax, distma)
             else if (ncas.eq.'3D') then
-                call pj3dco('PARTIE', moa1, moa2, nbma1, zi(iagma1),&
-                            nbno2, zi(iagno2), geom1, geom2, corre1,&
+                call pj3dco('PARTIE', moa1, moa2, nbma1, limanu1,&
+                            nbno2, linonu2, geom1, geom2, corre1,&
                             ldmax, distma)
             else if (ncas.eq.'2.5D') then
-                call pj4dco('PARTIE', moa1, moa2, nbma1, zi(iagma1),&
-                            nbno2, zi(iagno2), geom1, geom2, corre1,&
+                call pj4dco('PARTIE', moa1, moa2, nbma1, limanu1,&
+                            nbno2, linonu2, geom1, geom2, corre1,&
                             ldmax, distma, ' ')
             else if (ncas.eq.'1.5D') then
-                call pj6dco('PARTIE', moa1, moa2, nbma1, zi(iagma1),&
-                            nbno2, zi(iagno2), geom1, geom2, corre1,&
+                call pj6dco('PARTIE', moa1, moa2, nbma1, limanu1,&
+                            nbno2, linonu2, geom1, geom2, corre1,&
                             ldmax, distma)
             else
                 ASSERT(.false.)

@@ -52,7 +52,9 @@ subroutine ascima(infcha, nu, matass, cumul)
     character(len=4) :: cumul
     character(len=8) ::  charge
     character(len=19) :: infch2
-    integer :: iret, iret1, iret2, iret3, ich, ncharg, jlcha, jinfc, jlchci, ier
+    integer :: iret, iret1, iret2, iret3, ich, ncharg,   jlchci, ier
+    integer, pointer :: infc(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -70,10 +72,10 @@ subroutine ascima(infcha, nu, matass, cumul)
         call jeexin(infch2//'.LCHA', iret)
         if (iret .eq. 0) goto 9999
 !
-        call jeveuo(infch2//'.LCHA', 'L', jlcha)
-        call jeveuo(infch2//'.INFC', 'L', jinfc)
+        call jeveuo(infch2//'.LCHA', 'L', vk24=lcha)
+        call jeveuo(infch2//'.INFC', 'L', vi=infc)
 !
-        ncharg = zi(jinfc)
+        ncharg = infc(1)
         if (ncharg .eq. 0) goto 9999
         call wkvect('&&ASCIMA.LCHCI', 'V V K24', ncharg, jlchci)
 !
@@ -81,14 +83,14 @@ subroutine ascima(infcha, nu, matass, cumul)
         do 1 ich = 1, ncharg
 !
 !         -- CAS DES SD_CHAR_CINE :
-            if (zi(jinfc+ich) .lt. 0) then
+            if (infc(ich+1) .lt. 0) then
                 nchci = nchci+1
-                zk24(jlchci-1+nchci) = zk24(jlcha-1+ich)
+                zk24(jlchci-1+nchci) = lcha(ich)
 !
 !         -- CAS DES SD_CHAR_MECA POUVANT CONTENIR UNE SD_CHAR_CINE :
-            else if (zi(jinfc+ich).ge.0) then
-                ASSERT(zk24(jlcha-1+ich)(9:24).eq.' ')
-                charge=zk24(jlcha-1+ich)(1:8)
+            else if (infc(ich+1).ge.0) then
+                ASSERT(lcha(ich)(9:24).eq.' ')
+                charge=lcha(ich)(1:8)
                 call jeexin(charge//'.ELIM      .AFCK', ier)
                 if (ier .gt. 0) then
                     nchci = nchci+1

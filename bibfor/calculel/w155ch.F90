@@ -66,9 +66,11 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     integer :: iret, nbma, nbmat, numa, jnbpt, kma
     integer :: nbpt, ksp1, ksp2, kpt, kcmp, nncp
     integer :: iad1, iad2, iad4, jlima, ncmp
-    integer :: jce2l, jce2d, jce2v, jce3k, jce3l, jce3d, jce3v, jce3c
+    integer :: jce2l, jce2d, jce2v,  jce3l, jce3d, jce3v
     integer :: jce4l, jce4d, jce4v, jce5l, jce5d, jce5v, nbspmx
     real(kind=8) :: c1, c2
+    character(len=8), pointer :: cesc(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -136,13 +138,13 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !     3. CHIN -> CES3 :
 !     ------------------
     call celces(chin, 'V', ces3)
-    call jeveuo(ces3//'.CESK', 'L', jce3k)
+    call jeveuo(ces3//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
-    call jeveuo(ces3//'.CESC', 'L', jce3c)
+    call jeveuo(ces3//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces3//'.CESL', 'L', jce3l)
     call jeveuo(ces3//'.CESV', 'L', jce3v)
     call jelira(ces3//'.CESC', 'LONMAX', ncmp)
-    typces=zk8(jce3k-1+3)
+    typces=cesk(3)
     call wkvect('&&W155CH.NBPT', 'V V I', nbmat, jnbpt)
     do kma = 1, nbma
         numa=zi(jlima-1+kma)
@@ -156,7 +158,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !     4. ALLOCATION ET CALCUL DE CHEXTR :
 !     ------------------------------------
     call cescre('V', ces4, typces, ma, nomgd,&
-                ncmp, zk8(jce3c), zi(jnbpt), [-1], [-ncmp])
+                ncmp, cesc, zi(jnbpt), [-1], [-ncmp])
     call jeveuo(ces4//'.CESD', 'L', jce4d)
     call jeveuo(ces4//'.CESV', 'L', jce4v)
     call jeveuo(ces4//'.CESL', 'L', jce4l)

@@ -58,17 +58,22 @@ subroutine celces(celz, basez, cesz)
     character(len=8) :: ma, nomgd
     character(len=19) :: cel, ces, ligrel
     logical :: diff
-    integer :: nec, gd, ncmpmx, nbma, jcorr1, jcelv, jceld
-    integer :: iadg, icmp, ncmp, jcesl, jcesv, jcorr2, kcmp
-    integer :: ieq, icmp1, igr, iel, ialiel, illiel, ierr
+    integer :: nec, gd, ncmpmx, nbma,  jcelv
+    integer :: iadg, icmp, ncmp, jcesl, jcesv,  kcmp
+    integer :: ieq, icmp1, igr, iel,  illiel, ierr
     integer :: jcelk, nbpt, nbgr, imolo, jmolo, k, nbgr2
     integer :: ipt, numa, iad, jnbpt, jnbspt, jnbcmp, vali(2)
     integer :: nptmx, nbel, ncmpm, nbspt, ncdyn, ncdymx, lgcata
-    integer :: ico, adiel, ispt, jcesd, jlpt, jlcupt, cumu, jnocmp
+    integer :: ico, adiel, ispt, jcesd, jlpt, jlcupt, cumu
     character(len=24) :: valk(2)
     logical :: sdveri
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: celd(:) => null()
+    integer, pointer :: corr1(:) => null()
+    character(len=8), pointer :: nom_cmp(:) => null()
+    integer, pointer :: corr2(:) => null()
 
-#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
 
     call jemarq()
@@ -115,10 +120,10 @@ subroutine celces(celz, basez, cesz)
 !     -------------------------------------------------------
     call jeveuo(cel//'.CELK', 'L', jcelk)
     call jeveuo(cel//'.CELV', 'L', jcelv)
-    call jeveuo(cel//'.CELD', 'L', jceld)
-    call jeveuo(ligrel//'.LIEL', 'L', ialiel)
+    call jeveuo(cel//'.CELD', 'L', vi=celd)
+    call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
-    nbgr = zi(jceld-1+2)
+    nbgr = celd(2)
 
     call jelira(ligrel//'.LIEL', 'NUTIOC', nbgr2)
     if (nbgr2 .ne. nbgr) then
@@ -140,9 +145,9 @@ subroutine celces(celz, basez, cesz)
 !     -----------------------------------------------------------------
     call cmpcha(cel, '&&CELCES.NOM_CMP', '&&CELCES.CORR1', '&&CELCES.CORR2', ncmp,&
                 ncmpmx)
-    call jeveuo('&&CELCES.NOM_CMP', 'L', jnocmp)
-    call jeveuo('&&CELCES.CORR1', 'L', jcorr1)
-    call jeveuo('&&CELCES.CORR2', 'L', jcorr2)
+    call jeveuo('&&CELCES.NOM_CMP', 'L', vk8=nom_cmp)
+    call jeveuo('&&CELCES.CORR1', 'L', vi=corr1)
+    call jeveuo('&&CELCES.CORR2', 'L', vi=corr2)
 
 
 !     1.4 CALCUL DE  NBPT(IMA), NBSPT(IMA), NBCMP(IMA)
@@ -160,7 +165,7 @@ subroutine celces(celz, basez, cesz)
 
     do igr = 1, nbgr
         nbel = nbelem(ligrel,igr)
-        imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+        imolo = celd(celd(4+igr)+2)
         if (imolo .eq. 0) goto 90
 
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
@@ -194,17 +199,17 @@ subroutine celces(celz, basez, cesz)
             zi(jnbpt-1+numa) = nbpt
 
 !         -- NOMBRE DE SOUS-POINTS:
-            nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
+            nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
             zi(jnbspt-1+numa) = nbspt
 
 !         -- NOMBRE DE CMPS:
-            ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
+            ncdyn = celd(celd(4+igr)+4+4* (iel-1)+2)
             ncdyn = max(ncdyn,1)
             ncdymx = max(ncdymx,ncdyn)
             if (nomgd(1:5) .eq. 'VARI_') then
                 zi(jnbcmp-1+numa) = ncdyn
             else
-                zi(jnbcmp-1+numa) = zi(jcorr1-1+ncmpm)
+                zi(jnbcmp-1+numa) = corr1(ncmpm)
             endif
 
  80         continue
@@ -220,7 +225,7 @@ subroutine celces(celz, basez, cesz)
     call dismoi('TYPE_CHAMP', cel, 'CHAM_ELEM', repk=typces)
     if (nomgd(1:5) .eq. 'VARI_') ncmp = -ncdymx
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, zk8(jnocmp), zi(jnbpt), zi(jnbspt), zi(jnbcmp))
+                ncmp, nom_cmp, zi(jnbpt), zi(jnbspt), zi(jnbcmp))
 
 !======================================================================
 
@@ -236,7 +241,7 @@ subroutine celces(celz, basez, cesz)
         call wkvect('&&CELCES.LONG_PT', 'V V I', nptmx, jlpt)
         call wkvect('&&CELCES.LONG_PT_CUMU', 'V V I', nptmx, jlcupt)
         do igr = 1, nbgr
-            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 170
 
 
@@ -253,7 +258,7 @@ subroutine celces(celz, basez, cesz)
                 if (diff) k = ipt
                 iadg = jmolo - 1 + 4 + (k-1)*nec + 1
                 do kcmp = 1, ncmp
-                    icmp = zi(jcorr2-1+kcmp)
+                    icmp = corr2(kcmp)
                     if (exisdg(zi(iadg),icmp)) ico = ico + 1
                 end do
                 zi(jlpt-1+ipt) = ico
@@ -272,18 +277,18 @@ subroutine celces(celz, basez, cesz)
                 iadg = jmolo - 1 + 4 + (k-1)*nec + 1
                 ico = 0
                 do kcmp = 1, ncmp
-                    icmp = zi(jcorr2-1+kcmp)
+                    icmp = corr2(kcmp)
                     if (exisdg(zi(iadg),icmp)) then
                         ico = ico + 1
-                        icmp1 = zi(jcorr1-1+icmp)
+                        icmp1 = corr1(icmp)
                         ASSERT(icmp1.eq.kcmp)
 
                         do iel = 1, nbel
                             numa = numail(igr,iel)
                             if (numa .lt. 0) goto 140
 
-                            nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
-                            adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
+                            nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
+                            adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
 
                             do ispt = 1, nbspt
                                 call cesexi('S', jcesd, jcesl, numa, ipt,&
@@ -325,11 +330,11 @@ subroutine celces(celz, basez, cesz)
 !       -- CAS DE VARI_* :
 !       -------------------
         do igr = 1, nbgr
-            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 220
 
 
-            lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
+            lgcata = celd(celd(4+igr)+3)
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
             diff = (zi(jmolo-1+4).gt.10000)
             ASSERT(.not.diff)
@@ -341,9 +346,9 @@ subroutine celces(celz, basez, cesz)
                 numa = numail(igr,iel)
                 if (numa .lt. 0) goto 210
 
-                nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
-                ncdyn = max(zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+ 2),1)
-                adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
+                nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
+                ncdyn = max(celd(celd(4+igr)+4+4* (iel-1)+ 2),1)
+                adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
                 do ipt = 1, nbpt
                     do ispt = 1, nbspt
                         do icmp = 1, ncdyn

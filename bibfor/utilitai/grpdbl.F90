@@ -43,12 +43,13 @@ subroutine grpdbl(maz, typgz)
 ! ----------------------------------------------------------------------
 !
     integer :: igr, nbgr, ie, nbe, jgroup, nue, nbno, nbma
-    integer :: jlent, k, jdime, nbent, jgrou2
+    integer :: jlent, k,  nbent, jgrou2
     integer :: imax, nelim, lnew, jnew, je, kk
     character(len=4) ::  clas
     character(len=8) :: ma, typgr
     character(len=9) :: ptrn
     character(len=24) :: nomgr, nvnogr, nvptno
+    integer, pointer :: dime(:) => null()
 ! -DEB------------------------------------------------------------------
 !
     call jemarq()
@@ -67,9 +68,9 @@ subroutine grpdbl(maz, typgz)
         nvptno='&&GRPDBL.PTRNOMMAI'
     endif
 !
-    call jeveuo(ma//'.DIME', 'L', jdime)
-    nbno=zi(jdime-1+1)
-    nbma=zi(jdime-1+3)
+    call jeveuo(ma//'.DIME', 'L', vi=dime)
+    nbno=dime(1)
+    nbma=dime(3)
     if (typgr .eq. 'GROUPENO') then
         nbent=nbno
     else

@@ -61,32 +61,40 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     character(len=4) :: typcoe, typval
     character(len=8) :: nono, nocmp, mailla, typeci
     character(len=8) :: kbid, modele
-    integer :: nelim, irela, nbterm, jrlsu, jrlnt, jrlco, jrldd
-    integer :: jrlpo, jrltc, jrlnr, nbrela, jrlno, ibid, indsur
+    integer :: nelim, irela, nbterm,   jrlco
+    integer ::    nbrela,  ibid, indsur
     integer :: nucmp, jafci, jafck, jafcv, ideca1, nuno
-    integer :: jrltv, jrlbe, ier, nelim1, ico, jncmp, nbcmp, jprnm
+    integer ::  jrlbe, ier, nelim1, ico, jncmp, nbcmp, jprnm
     integer :: nucmp2, icmp, nbec, ndumin
     logical :: elim
     real(kind=8) :: rcoef
+    character(len=8), pointer :: rldd(:) => null()
+    character(len=8), pointer :: rltc(:) => null()
+    character(len=8), pointer :: rltv(:) => null()
+    integer, pointer :: rlpo(:) => null()
+    integer, pointer :: rlnt(:) => null()
+    character(len=8), pointer :: rlno(:) => null()
+    integer, pointer :: rlsu(:) => null()
+    integer, pointer :: rlnr(:) => null()
 !
 !
     call jemarq()
 !
-    call jeveuo(lisrel//'.RLSU', 'E', jrlsu)
-    call jeveuo(lisrel//'.RLNR', 'L', jrlnr)
-    call jeveuo(lisrel//'.RLNT', 'L', jrlnt)
+    call jeveuo(lisrel//'.RLSU', 'E', vi=rlsu)
+    call jeveuo(lisrel//'.RLNR', 'L', vi=rlnr)
+    call jeveuo(lisrel//'.RLNT', 'L', vi=rlnt)
     call jeveuo(lisrel//'.RLCO', 'L', jrlco)
-    call jeveuo(lisrel//'.RLDD', 'L', jrldd)
-    call jeveuo(lisrel//'.RLNO', 'L', jrlno)
-    call jeveuo(lisrel//'.RLPO', 'L', jrlpo)
-    call jeveuo(lisrel//'.RLTC', 'L', jrltc)
-    call jeveuo(lisrel//'.RLTV', 'L', jrltv)
+    call jeveuo(lisrel//'.RLDD', 'L', vk8=rldd)
+    call jeveuo(lisrel//'.RLNO', 'L', vk8=rlno)
+    call jeveuo(lisrel//'.RLPO', 'L', vi=rlpo)
+    call jeveuo(lisrel//'.RLTC', 'L', vk8=rltc)
+    call jeveuo(lisrel//'.RLTV', 'L', vk8=rltv)
     call jeveuo(lisrel//'.RLBE', 'L', jrlbe)
 !
-    nbrela=zi(jrlnr)
+    nbrela=rlnr(1)
     ASSERT(nbrela.gt.0)
-    typcoe=zk8(jrltc)(1:4)
-    typval=zk8(jrltv)(1:4)
+    typcoe=rltc(1)(1:4)
+    typval=rltv(1)(1:4)
 !
 !
     if (getexm(' ','METHODE') .eq. 1) then
@@ -105,13 +113,13 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
 !     -------------------------------------------------------
     nelim=0
     do irela = 1, nbrela
-        indsur=zi(jrlsu-1+irela)
+        indsur=rlsu(irela)
         if (indsur .ne. 1) then
             ASSERT(indsur.eq.0)
-            nbterm=zi(jrlnt+irela-1)
+            nbterm=rlnt(irela)
             if (nbterm .eq. 1) then
                 nelim=nelim+1
-                zi(jrlsu-1+irela)=2
+                rlsu(irela)=2
             endif
         endif
     end do
@@ -127,11 +135,11 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
 !
     ico=0
     do irela = 1, nbrela
-        indsur=zi(jrlsu-1+irela)
+        indsur=rlsu(irela)
         if (indsur .eq. 2) then
             ico=ico+1
             if (ico .gt. nelim) then
-                zi(jrlsu-1+irela)=0
+                rlsu(irela)=0
             else
             endif
         endif
@@ -207,10 +215,10 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     call jeveuo(modele//'.MODELE    .PRNM', 'L', jprnm)
 !
     do irela = 1, nbrela
-        if (zi(jrlsu-1+irela) .ne. 2) goto 21
+        if (rlsu(irela) .ne. 2) goto 21
 !
         ico=ico+1
-        ideca1=zi(jrlpo-1+irela)-zi(jrlnt-1+irela)+1
+        ideca1=rlpo(irela)-rlnt(irela)+1
 !
 !       -- ON VERIFIE QUE LE COEFFICIENT EST BIEN 1. :
         if (typcoe .eq. 'REEL') then
@@ -220,8 +228,8 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
         endif
         ASSERT(abs(rcoef-1.d0).lt.1.d-4)
 !
-        nono=zk8(jrlno-1+ideca1)
-        nocmp=zk8(jrldd-1+ideca1)
+        nono=rlno(ideca1)
+        nocmp=rldd(ideca1)
         call jenonu(jexnom(mailla//'.NOMNOE', nono), nuno)
         nucmp=indik8(zk8(jncmp),nocmp,1,nbcmp)
         ASSERT(nucmp.gt.0)
@@ -261,8 +269,8 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     nbdual=0
     nbsurc=0
     do irela = 1, nbrela
-        if (zi(jrlsu-1+irela) .eq. 0) nbdual=nbdual+1
-        if (zi(jrlsu-1+irela) .eq. 1) nbsurc=nbsurc+1
+        if (rlsu(irela) .eq. 0) nbdual=nbdual+1
+        if (rlsu(irela) .eq. 1) nbsurc=nbsurc+1
     end do
 !
     call jedema()

@@ -72,8 +72,9 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     integer :: k
     character(len=8) :: matk8
     character(len=19) :: tlima2(150), solve2, matas, matel, infc19
-    integer :: ilicoe, i, jslvk, iret, ibid, idbgav, ilimat
+    integer :: ilicoe, i,  iret, ibid, idbgav, ilimat
     integer :: jrefa
+    character(len=24), pointer :: slvk(:) => null()
 !DEB-------------------------------------------------------------------
     call jemarq()
     call jedbg2(idbgav, 0)
@@ -113,8 +114,8 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     call wkvect('&&ASMATR.LMATEL', 'V V K24', nbmat, ilimat)
     matsym = typmat(nbmat,tlima2)
 !
-    call jeveuo(solve2//'.SLVK', 'L', jslvk)
-    syme = zk24(jslvk+5-1)(1:3)
+    call jeveuo(solve2//'.SLVK', 'L', vk24=slvk)
+    syme = slvk(5)(1:3)
     if (syme .eq. 'OUI') then
         do i = 1, nbmat
             call dismoi('TYPE_MATRICE', tlima2(i), 'MATR_ELEM', repk=symel)
@@ -138,7 +139,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !
 !     -- VERIFICATIONS :
 !     ------------------
-    metres = zk24(jslvk)
+    metres = slvk(1)
     if ((metres.eq.'GCPC') .and. (matsym.eq.'N')) then
         call utmess('F', 'ASSEMBLA_1', sk=matsym)
     endif

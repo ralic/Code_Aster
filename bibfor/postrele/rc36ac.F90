@@ -88,7 +88,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
     integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi, jpresa
     integer :: jpresb, jmomea, jmomeb, jnbocc, i1, nbth1, jth1, nbth2, nbcrs
-    integer :: nbcin, nbcca, jnsitu, jchmat, jmat, jcesd, jcesv, jcesl, jcinv
+    integer :: nbcin, nbcca,  jchmat, jmat, jcesd, jcesv, jcesl, jcinv
     integer :: jcind, jccav, jccad, im, ima, nbpt, decrs, decin, decca, ipt, ino
     integer :: adrm, nbm, icmp, jconx1, jconx2, jfact, jnumgr, jpassa, npass
     integer :: ifm, niv, iocs, iad, jseigr, ioc2, jcinl, jccal, nbp12, nbp23
@@ -101,6 +101,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
     character(len=8) :: k8b, nommat, noeud, valk(7), kbid
     character(len=24) :: momepi, momepj, nommai, nomnoe, connex, matepi, matepj
     real(kind=8) :: typeke, spmeca, spther
+    integer, pointer :: situ_numero(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -112,7 +113,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
     call jeveuo(connex, 'L', jconx1)
     call jeveuo(jexatr(connex, 'LONCUM'), 'L', jconx2)
 !
-    call jeveuo('&&RC3600.SITU_NUMERO', 'L', jnsitu)
+    call jeveuo('&&RC3600.SITU_NUMERO', 'L', vi=situ_numero)
     call jelira('&&RC3600.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3600.SITU_NUME_GROUP', 'L', jnumgr)
     call jeveuo('&&RC3600.SITU_SEISME', 'L', jseigr)
@@ -408,7 +409,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                 call jeveuo(jexnum('&&RC3600.LES_GROUPES', numgr), 'L', jnsg)
                 if (niv .ge. 2) then
                     write (ifm,3004)
-                    write (ifm,3002) (zi(jnsitu+zi(jnsg+i1-1)-1),i1=1,&
+                    write (ifm,3002) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,&
                     nbsigr)
                 endif
 !

@@ -45,13 +45,15 @@ subroutine pjngch(cham1z, cham2z, corres, base)
 !  CORRES: IN/JXIN  SD_CORRESP_2_MAILLA
 !  BASE  : IN    G/V : BASE DE CREATION POUR CHAM2
 !----------------------------------------------------------------------
-    integer :: ibid, nx, jxxk1, jngi1, jngi2, ieq, nbocc, nbeq, ioc, jvale
+    integer :: ibid, nx,  jngi1, jngi2, ieq, nbocc, nbeq, ioc
     integer :: nb1, nb2, idec1, idec2, jlno1, jlno2
     character(len=1) :: type
     character(len=8) :: noma1, noma2, cnref, noma3, k8
     character(len=16) :: corr16, method
     character(len=19) :: nuage1, nuage2, cham1, cham2
     character(len=24) :: lno1, lno2
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: pjxx_k1(:) => null()
 !
 !
 !----------------------------------------------------------------------
@@ -60,11 +62,11 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     cham1=cham1z
     cham2=cham2z
 !
-    call jeveuo(corr16//'.PJXX_K1', 'L', jxxk1)
-    noma1=zk24(jxxk1-1+1)
-    noma2=zk24(jxxk1-1+2)
-    method=zk24(jxxk1-1+3)
-    cnref=zk24(jxxk1-1+4)
+    call jeveuo(corr16//'.PJXX_K1', 'L', vk24=pjxx_k1)
+    noma1=pjxx_k1(1)
+    noma2=pjxx_k1(2)
+    method=pjxx_k1(3)
+    cnref=pjxx_k1(4)
     ASSERT(method(1:10).eq.'NUAGE_DEG_')
 !
     call chpver('F', cham1, 'NOEU', '*', ibid)
@@ -90,10 +92,10 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     call jelira(cham2//'.VALE', 'LONMAX', nbeq)
     call jelira(cham2//'.VALE', 'TYPE', cval=type)
     ASSERT(type.eq.'R')
-    call jeveuo(cham2//'.VALE', 'E', jvale)
+    call jeveuo(cham2//'.VALE', 'E', vr=vale)
     if (type .eq. 'R') then
         do ieq = 0, nbeq-1
-            zr(jvale+ieq)=0.d0
+            vale(ieq+1)=0.d0
         end do
     else
         ASSERT(.false.)

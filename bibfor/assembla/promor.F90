@@ -60,14 +60,14 @@ subroutine promor(nuz, base)
     character(len=14) :: nu
     logical :: ldist, ldgrel, lmadis
     character(len=19) :: nomlig
-    integer :: iconx1, iconx2, ili, iadlie, iel, iadnem
+    integer ::  iconx2, ili,  iel
     integer :: idprn1
     integer :: idprn2, ifm, niv, iret, ibid, nnoe, jnueq
     integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1
     integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
-    integer :: iasssa, iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
-    integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma, itypel, jnvge
-    integer :: nnov, numav, kvois, rang, jnumsd, imd, jsmh1, jprtk
+    integer ::  iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
+    integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma, itypel
+    integer :: nnov, numav, kvois, rang,  imd, jsmh1
 !
     character(len=8) :: partit
     real(kind=8) :: valr(2), rcoef, requ
@@ -77,6 +77,13 @@ subroutine promor(nuz, base)
     parameter(nvoima=100,nscoma=4)
     integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2), nbproc
+    integer, pointer :: maille(:) => null()
+    integer, pointer :: adne(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: adli(:) => null()
+    character(len=24), pointer :: prtk(:) => null()
+    character(len=16), pointer :: nvge(:) => null()
+    integer, pointer :: sssa(:) => null()
     mpi_int :: mrank, msize
 !
 !-----------------------------------------------------------------------
@@ -87,7 +94,7 @@ subroutine promor(nuz, base)
 !     MAILLAGE
 !     ZZCONX(IMAIL,J) = NUMERO DANS LA NUMEROTATION DU MAILLAGE
 !         DU NOEUD J DE LA MAILLE IMAIL
-#define zzconx(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
+#define zzconx(imail,j) connex(zi(iconx2+imail-1)+j-1)
 !
 !---- NBRE DE NOEUDS DE LA MAILLE IMAIL DU MAILLAGE
 !
@@ -100,25 +107,25 @@ subroutine promor(nuz, base)
 !          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
-#define zzliel(ili,igrel,j) zi(zi(iadlie+3*(ili-1)+1)-1+ \
-    zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
+#define zzliel(ili,igrel,j) zi(adli(1+3*(ili-1)+1)-1+ \
+    zi(adli(1+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
-#define zzngel(ili) zi(iadlie+3*(ili-1))
+#define zzngel(ili) adli(1+3*(ili-1))
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
-#define zznsup(ili,iel) zi(zi(iadnem+3*(ili-1)+2)+iel)- \
-    zi(zi(iadnem+3*(ili-1)+2)+iel-1)-1
+#define zznsup(ili,iel) zi(adne(1+3*(ili-1)+2)+iel)- \
+    zi(adne(1+3*(ili-1)+2)+iel-1)-1
 !
 !---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE TEMP.
 !     .MATAS.LILI(DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
-#define zznelg(ili,igrel) zi(zi(iadlie+3*(ili-1)+2)+igrel)- \
-    zi(zi(iadlie+3*(ili-1)+2)+igrel-1)-1
+#define zznelg(ili,igrel) zi(adli(1+3*(ili-1)+2)+igrel)- \
+    zi(adli(1+3*(ili-1)+2)+igrel-1)-1
 !
 !---- NBRE D ELEMENTS SUPPLEMENTAIRE (.NEMA) DU LIGREL ILI DU
 !     REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -127,8 +134,8 @@ subroutine promor(nuz, base)
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
 !
-#define zznema(ili,iel,j) zi(zi(iadnem+3*(ili-1)+1)-1+ \
-    zi(zi(iadnem+3*(ili-1)+2)+iel-1)+j-1)
+#define zznema(ili,iel,j) zi(adne(1+3*(ili-1)+1)-1+ \
+    zi(adne(1+3*(ili-1)+2)+iel-1)+j-1)
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS NU.LILI DE LA S.D. NUME_DDL ET A LEURS ADRESSES
@@ -164,16 +171,16 @@ subroutine promor(nuz, base)
     ldgrel=.false.
     if (partit .ne. ' ') then
         ldist=.true.
-        call jeveuo(partit//'.PRTK', 'L', jprtk)
-        ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
+        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+        ldgrel=prtk(1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
+            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
         endif
     endif
 !
     call jeexin(ma//'.CONNEX', iret)
     if (iret .gt. 0) then
-        call jeveuo(ma//'.CONNEX', 'L', iconx1)
+        call jeveuo(ma//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', iconx2)
     endif
 !
@@ -183,13 +190,13 @@ subroutine promor(nuz, base)
         call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbss)
         if (nbss .gt. 0) then
             call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
-            call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
+            call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
         endif
     endif
 !
 !
-    call jeveuo(nu//'     .ADNE', 'E', iadnem)
-    call jeveuo(nu//'     .ADLI', 'E', iadlie)
+    call jeveuo(nu//'     .ADNE', 'E', vi=adne)
+    call jeveuo(nu//'     .ADLI', 'E', vi=adli)
 !
 !     -- CAS MATR_DISTRIBUE='OUI' => LMADIS=.TRUE.
     call jeexin(nu//'.NUML.DELG', imd)
@@ -283,7 +290,7 @@ subroutine promor(nuz, base)
                     if (numa .gt. 0) then
 !             -- MAILLES DU MAILLAGE :
                         if (lmadis .and. ldist .and. .not.ldgrel) then
-                            if (zi(jnumsd+numa-1) .ne. rang) goto 70
+                            if (maille(numa) .ne. rang) goto 70
                         endif
 !
                         nnoe=zznbne(numa)
@@ -357,8 +364,8 @@ subroutine promor(nuz, base)
 !       ----------------------------------------------------
         else if (exivf.eq.'OUI') then
             call jeveuo(nomlig//'.REPE', 'L', jrepe)
-            call jeveuo(nomlig//'.NVGE', 'L', jnvge)
-            vge=zk16(jnvge-1+1)(1:12)
+            call jeveuo(nomlig//'.NVGE', 'L', vk16=nvge)
+            vge=nvge(1)(1:12)
             call jeveuo(vge//'.PTVOIS', 'L', jptvoi)
             call jeveuo(vge//'.ELVOIS', 'L', jelvoi)
             do igr = 1, zzngel(ili)
@@ -434,7 +441,7 @@ subroutine promor(nuz, base)
  90     continue
         if (nbss .gt. 0) then
             do ima = 1, nbsma
-                if (zi(iasssa-1+ima) .eq. 0) goto 130
+                if (sssa(ima) .eq. 0) goto 130
                 nddlt=0
                 call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
                 call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)

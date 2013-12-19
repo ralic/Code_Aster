@@ -41,16 +41,18 @@ function modat2(iopt, ite, nompar)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: iopte, ianblc, joptte, lgco
+    integer :: iopte,   lgco
     integer :: nucalc, nbpar, k, joptmo, joptno
+    integer, pointer :: nbligcol(:) => null()
+    integer, pointer :: optte(:) => null()
 ! ----------------------------------------------------------------------
 !
     modat2 = 0
 !
-    call jeveuo('&CATA.TE.OPTTE', 'L', joptte)
-    call jeveuo('&CATA.TE.NBLIGCOL', 'L', ianblc)
-    lgco = zi(ianblc-1+1)
-    iopte = zi(joptte-1+ (ite-1)*lgco+iopt)
+    call jeveuo('&CATA.TE.OPTTE', 'L', vi=optte)
+    call jeveuo('&CATA.TE.NBLIGCOL', 'L', vi=nbligcol)
+    lgco = nbligcol(1)
+    iopte = optte((ite-1)*lgco+iopt)
 !
 !
     if (iopte .eq. 0) goto 20

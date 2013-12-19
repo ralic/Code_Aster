@@ -41,15 +41,19 @@ subroutine matimp(matz, ific, typimz)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: iligl, jcoll, kterm, n, nz, jrefa, jsmdi, nsmdi, jsmhc, nsmhc
+    integer :: iligl, jcoll, kterm, n, nz,   nsmdi, jsmhc, nsmhc
     integer :: jdelg, n1, nvale, jvale, nlong, jval2, nuno, nucmp, k, jcmp
-    integer :: jdeeq, jrefn, iligg, jcolg, jnlogl, coltmp
+    integer ::   iligg, jcolg, jnlogl, coltmp
     character(len=8) :: nomgd, nocmp, noma, nono, typimp
     character(len=14) :: nonu
     character(len=1) :: ktyp
     character(len=19) :: mat19
     logical :: ltypr, lsym, lmd
     real(kind=8) :: dble, dimag
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: smdi(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !
 !     ------------------------------------------------------------------
     call jemarq()
@@ -58,14 +62,14 @@ subroutine matimp(matz, ific, typimz)
     mat19 = matz
     typimp=typimz
 !
-    call jeveuo(mat19//'.REFA', 'L', jrefa)
-    noma=zk24(jrefa-1+1)
-    nonu=zk24(jrefa-1+2)
+    call jeveuo(mat19//'.REFA', 'L', vk24=refa)
+    noma=refa(1)
+    nonu=refa(2)
 !
     lmd=.false.
-    if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') lmd=.true.
+    if (refa(11) .eq. 'MATR_DISTR') lmd=.true.
 !
-    call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
+    call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
@@ -82,7 +86,7 @@ subroutine matimp(matz, ific, typimz)
 !     --- CALCUL DE N
     n=nsmdi
 !     --- CALCUL DE NZ
-    nz=zi(jsmdi-1+n)
+    nz=smdi(n)
 !
     ASSERT(nz.le.nsmhc)
     call jelira(mat19//'.VALM', 'NMAXOC', nvale)
@@ -145,7 +149,7 @@ subroutine matimp(matz, ific, typimz)
     do 1,kterm=1,nz
 !
 !       --- PARTIE TRIANGULAIRE SUPERIEURE
-    if (zi(jsmdi-1+jcoll) .lt. kterm) jcoll=jcoll+1
+    if (smdi(jcoll) .lt. kterm) jcoll=jcoll+1
     iligl=zi4(jsmhc-1+kterm)
     if (lmd) then
         iligg=zi(jnlogl+iligl-1)
@@ -199,15 +203,15 @@ subroutine matimp(matz, ific, typimz)
         write(ific,*) 'DESCRIPTION DES EQUATIONS :'
         write(ific,*) ' '
         write(ific,*) '   NUM_EQUA NOEUD    CMP'
-        call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
-        call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
+        call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
+        call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
         call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1)
-        nomgd=zk24(jrefn-1+2)
+        nomgd=refn(2)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
         ASSERT(n1.eq.2*n)
         do 2, k=1,n
-        nuno=zi(jdeeq-1+2*(k-1)+1)
-        nucmp=zi(jdeeq-1+2*(k-1)+2)
+        nuno=deeq(2*(k-1)+1)
+        nucmp=deeq(2*(k-1)+2)
         if (nuno .gt. 0 .and. nucmp .gt. 0) then
             call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
             nocmp=zk8(jcmp-1+nucmp)

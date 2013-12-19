@@ -50,8 +50,9 @@ subroutine chvepg(chel1, chel2)
     character(len=8) :: noma, nommai
     integer :: nbma, ima
     integer :: iret1, iret2, ibid
-    integer :: j1, j2
     character(len=16) :: fpg1, fpg2
+    character(len=16), pointer :: fapg1(:) => null()
+    character(len=16), pointer :: fapg2(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,12 +76,12 @@ subroutine chvepg(chel1, chel2)
 !
 ! --- VERIFIER LA COHERENCE DES FAMILLES DE POINTS DE GAUSS
 !
-    call jeveuo('&&CHVEPG.FAPG1', 'L', j1)
-    call jeveuo('&&CHVEPG.FAPG2', 'L', j2)
+    call jeveuo('&&CHVEPG.FAPG1', 'L', vk16=fapg1)
+    call jeveuo('&&CHVEPG.FAPG2', 'L', vk16=fapg2)
     call jelira('&&CHVEPG.FAPG1', 'LONMAX', nbma)
     do ima = 1, nbma
-        fpg1 = zk16(j1-1+ima)
-        fpg2 = zk16(j2-1+ima)
+        fpg1 = fapg1(ima)
+        fpg2 = fapg2(ima)
         if ((fpg1.ne.' ') .and. (fpg2.ne.' ') .and. (fpg2.ne.fpg1)) then
             call jenuno(jexnum(noma//'.NOMMAI', ima), nommai)
             valk(1) = noma

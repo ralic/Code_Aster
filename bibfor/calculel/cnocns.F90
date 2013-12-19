@@ -47,10 +47,15 @@ subroutine cnocns(cnoz, basez, cnsz)
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: cno, cns, profcn
-    integer :: nec, gd, ncmpmx, nbno, jcorr1, jrefe, jvale, kcmp, ierr
-    integer :: iadg, icmp, jprno, jnueq, ino, ncmp, ncmp1, jcnsl, jcnsv
-    integer :: ival, ico, ieq, icmp1, jnocmp, jdesc, jcorr2
+    integer :: nec, gd, ncmpmx, nbno,  jrefe, jvale, kcmp, ierr
+    integer :: iadg, icmp, jprno,  ino, ncmp, ncmp1, jcnsl, jcnsv
+    integer :: ival, ico, ieq, icmp1
     logical :: sdveri
+    integer, pointer :: corr1(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: corr2(:) => null()
+    character(len=8), pointer :: nom_cmp(:) => null()
 !     ------------------------------------------------------------------
 
     call jemarq()
@@ -80,7 +85,7 @@ subroutine cnocns(cnoz, basez, cnsz)
 
     call jeveuo(cno//'.REFE', 'L', jrefe)
     call jeveuo(cno//'.VALE', 'L', jvale)
-    call jeveuo(cno//'.DESC', 'L', jdesc)
+    call jeveuo(cno//'.DESC', 'L', vi=desc)
 
 !------------------------------------------------------------------
 !     1- ON ALLOUE CNS :
@@ -92,14 +97,14 @@ subroutine cnocns(cnoz, basez, cnsz)
 !     -------------------------------------------
     call cmpcha(cno, '&&CNOCNS.NOM_CMP', '&&CNOCNS.CORR1', '&&CNOCNS.CORR2', ncmp1,&
                 ncmpmx)
-    call jeveuo('&&CNOCNS.NOM_CMP', 'L', jnocmp)
-    call jeveuo('&&CNOCNS.CORR1', 'L', jcorr1)
-    call jeveuo('&&CNOCNS.CORR2', 'L', jcorr2)
+    call jeveuo('&&CNOCNS.NOM_CMP', 'L', vk8=nom_cmp)
+    call jeveuo('&&CNOCNS.CORR1', 'L', vi=corr1)
+    call jeveuo('&&CNOCNS.CORR2', 'L', vi=corr2)
 
 
 !     1.2 ALLOCATION DE CNS :
 !     -------------------------------------------
-    call cnscre(ma, nomgd, ncmp1, zk8(jnocmp), base,&
+    call cnscre(ma, nomgd, ncmp1, nom_cmp, base,&
                 cns)
 
 
@@ -110,7 +115,7 @@ subroutine cnocns(cnoz, basez, cnsz)
     call jeveuo(cns//'.CNSV', 'E', jcnsv)
 
 !     -- CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
-    if (zi(jdesc-1+2) .lt. 0) then
+    if (desc(2) .lt. 0) then
         profcn = ' '
 !     -- CAS DES CHAM_NO A PROF_CHNO:
     else
@@ -147,7 +152,7 @@ subroutine cnocns(cnoz, basez, cnsz)
     else
         call dismoi('PROF_CHNO', cno, 'CHAM_NO', repk=profcn)
         call jeveuo(jexnum(profcn//'.PRNO', 1), 'L', jprno)
-        call jeveuo(profcn//'.NUEQ', 'L', jnueq)
+        call jeveuo(profcn//'.NUEQ', 'L', vi=nueq)
         do ino = 1, nbno
 
 !         NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
@@ -160,11 +165,11 @@ subroutine cnocns(cnoz, basez, cnsz)
 
             ico = 0
             do kcmp = 1, ncmp1
-                icmp=zi(jcorr2-1+kcmp)
+                icmp=corr2(kcmp)
                 if (exisdg(zi(iadg),icmp)) then
                     ico = ico + 1
-                    ieq = zi(jnueq-1+ival-1+ico)
-                    icmp1 = zi(jcorr1-1+icmp)
+                    ieq = nueq(ival-1+ico)
+                    icmp1 = corr1(icmp)
 !             ASSERT(ICMP1.EQ.KCMP)  COUTEUX ?
 
                     zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.

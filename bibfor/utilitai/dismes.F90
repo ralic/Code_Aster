@@ -42,11 +42,13 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, gd, jcesd, jcesk
+    integer :: iret, gd
     character(len=8) :: nogd
     character(len=19) :: nomob
     character(len=24) :: questl
     character(len=32) :: repk
+    integer, pointer :: cesd(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
@@ -63,24 +65,24 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
         goto 9999
     endif
 !
-    call jeveuo(nomob//'.CESD', 'L', jcesd)
-    call jeveuo(nomob//'.CESK', 'L', jcesk)
-    nogd = zk8(jcesk-1+2)
+    call jeveuo(nomob//'.CESD', 'L', vi=cesd)
+    call jeveuo(nomob//'.CESK', 'L', vk8=cesk)
+    nogd = cesk(2)
     call jenonu(jexnom('&CATA.GD.NOMGD', nogd), gd)
 !
     if (questi .eq. 'TYPE_CHAMP') then
-        if (zk8(jcesk-1+3) .eq. 'ELEM') then
+        if (cesk(3) .eq. 'ELEM') then
             repk = 'CESE'
-        else if (zk8(jcesk-1+3).eq.'ELGA') then
+        else if (cesk(3).eq.'ELGA') then
             repk = 'CESG'
-        else if (zk8(jcesk-1+3).eq.'ELNO') then
+        else if (cesk(3).eq.'ELNO') then
             repk = 'CESN'
         else
             ASSERT(.false.)
         endif
 !
     else if (questi .eq. 'NOM_MAILLA') then
-        repk=zk8(jcesk-1+1)
+        repk=cesk(1)
 !
     else if (questl(1:6) .eq. 'NUM_GD') then
         repi = gd
@@ -89,7 +91,7 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
         repk = nogd
 !
     else if (questi .eq. 'MXNBSP') then
-        repi=zi(jcesd-1+4)
+        repi=cesd(4)
 !
     else if (questi .eq. 'TYPE_SCA') then
         call dismgd(questi, nogd, repi, repk, ierd)

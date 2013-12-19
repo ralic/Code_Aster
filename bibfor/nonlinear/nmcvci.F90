@@ -44,10 +44,12 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     character(len=24) :: l2cnci(2), cncinm, cncinp
     character(len=8) :: char1
     real(kind=8) :: instap, coefr(2)
-    integer :: jdlci, neq, ieq, neq2, jcncim, iret, j1, jinfc, ichar
+    integer ::  neq, ieq, neq2,  iret, j1, jinfc, ichar
     integer :: nbchar, iexi, jlchar
     character(len=1) :: typch(2)
     logical :: lvcine
+    integer, pointer :: dlci(:) => null()
+    real(kind=8), pointer :: cncim(:) => null()
 !----------------------------------------------------------------------
 !
     call jemarq()
@@ -98,17 +100,17 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
 !     ---------------------
     call ascavc(charge, infoch, fomult, numedd, instap,&
                 cncinp)
-    call jeveuo(cncinp(1:19)//'.DLCI', 'L', jdlci)
+    call jeveuo(cncinp(1:19)//'.DLCI', 'L', vi=dlci)
 !
 !
 !     CALCUL DE UIMP- : C'EST U- LA OU ON IMPOSE LE DEPLACEMENT
 !                       ET 0. AILLEURS
 !     ---------------------------------------------------------
     call copisd('CHAMP_GD', 'V', depmoi, cncinm)
-    call jeveuo(cncinm(1:19)//'.VALE', 'E', jcncim)
+    call jeveuo(cncinm(1:19)//'.VALE', 'E', vr=cncim)
     do 1, ieq=1,neq
-    if (zi(jdlci-1+ieq) .eq. 0) then
-        zr(jcncim-1+ieq)=0.d0
+    if (dlci(ieq) .eq. 0) then
+        cncim(ieq)=0.d0
     endif
     1 end do
 !

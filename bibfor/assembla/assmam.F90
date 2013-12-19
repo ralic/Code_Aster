@@ -112,21 +112,27 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     logical :: lmasym, lmesym, ldgrel
 !
     integer :: admodl, i
-    integer :: iad, jdesc
+    integer ::  jdesc
     integer :: jadli, jadne, jnueq, jnulo1, jnulo2
     integer :: jposd1, jposd2, jtmp2, lgtmp2
     integer :: ibid, iconx1, iconx2, idbgav
-    integer :: jlres, jprn1, jprn2, jresl, jrsvi
+    integer ::  jprn1, jprn2, jresl, jrsvi
     integer :: iel, ier, ifm, igr
     integer :: ilima, ilimat, ilimo, ilinu
     integer :: imat, jnumsd, iresu
     integer :: iret, itbloc
-    integer :: jrefa, jsmde, jsmdi, jsmhc, jvalm(2)
+    integer :: jrefa,  jsmdi, jsmhc, jvalm(2)
     integer :: lcmodl, mode, n1, nbelm
-    integer :: nblc, nbnomx, nbnoss, nbresu, jnvge
+    integer :: nblc, nbnomx, nbnoss, nbresu
     integer :: ncmp, nbvel, nec, nel, nequ, nbproc, vali(4)
-    integer :: niv, nlili, nmxcmp, nnoe, jptvoi, jelvoi, jprti, jprtk
+    integer :: niv, nlili, nmxcmp, nnoe, jptvoi, jelvoi
     integer :: nugd, rang, ieq, idia, ellagr, jrepe, itypel, imatd, iexi
+    character(len=24), pointer :: prtk(:) => null()
+    integer, pointer :: smde(:) => null()
+    character(len=24), pointer :: noli(:) => null()
+    integer, pointer :: prti(:) => null()
+    character(len=24), pointer :: relr(:) => null()
+    character(len=16), pointer :: nvge(:) => null()
 !
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
@@ -294,14 +300,14 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-        call jeveuo(partit//'.PRTI', 'L', jprti)
-        if (zi(jprti) .ne. nbproc) then
-            vali(1)=zi(jprti)
+        call jeveuo(partit//'.PRTI', 'L', vi=prti)
+        if (prti(1) .ne. nbproc) then
+            vali(1)=prti(1)
             vali(2)=nbproc
             call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
         endif
-        call jeveuo(partit//'.PRTK', 'L', jprtk)
-        ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
+        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+        ldgrel=prtk(1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
         endif
@@ -399,10 +405,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     zk24(jrefa-1+10)='NOEU'
 !
 !
-    call jeveuo(nu14//'.SMOS.SMDE', 'L', jsmde)
-    nequ=zi(jsmde-1+1)
-    itbloc=zi(jsmde-1+2)
-    ASSERT(zi(jsmde-1+3).eq.1)
+    call jeveuo(nu14//'.SMOS.SMDE', 'L', vi=smde)
+    nequ=smde(1)
+    itbloc=smde(2)
+    ASSERT(smde(3).eq.1)
     if (lmasym) then
         nblc=1
     else
@@ -474,12 +480,12 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         if (iret .eq. 0) goto 80
 !
         call jelira(matel//'.RELR', 'LONUTI', nbresu)
-        if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', jlres)
+        if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', vk24=relr)
 !
 !           BOUCLE SUR LES RESU_ELEM
 !           ==========================
         do iresu = 1, nbresu
-            resu=zk24(jlres+iresu-1)(1:19)
+            resu=relr(iresu)(1:19)
             call jeexin(resu//'.DESC', ier)
             if (ier .eq. 0) goto 70
 !
@@ -499,15 +505,15 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !
 !                   -- NOM DU LIGREL
-            call jeveuo(resu//'.NOLI', 'L', iad)
-            ligre1=zk24(iad)(1:19)
+            call jeveuo(resu//'.NOLI', 'L', vk24=noli)
+            ligre1=noli(1)(1:19)
 !
             call dismoi('EXI_VF', ligre1, 'LIGREL', repk=exivf)
             if (exivf .eq. 'OUI') then
                 ASSERT(.not.lmasym)
                 call jeveuo(ligre1//'.REPE', 'L', jrepe)
-                call jeveuo(ligre1//'.NVGE', 'L', jnvge)
-                vge=zk16(jnvge-1+1)(1:12)
+                call jeveuo(ligre1//'.NVGE', 'L', vk16=nvge)
+                vge=nvge(1)(1:12)
                 call jeveuo(vge//'.PTVOIS', 'L', jptvoi)
                 call jeveuo(vge//'.ELVOIS', 'L', jelvoi)
             endif

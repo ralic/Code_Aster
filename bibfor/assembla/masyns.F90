@@ -42,7 +42,8 @@ subroutine masyns(matas)
     character(len=*) :: matas
     character(len=1) :: base, ktyp
     character(len=19) :: mat19
-    integer :: jrefa, i, nbloc, lgbloc, jvalmi, jvalms, jvalma
+    integer ::  i, nbloc, lgbloc, jvalmi, jvalms, jvalma
+    character(len=24), pointer :: refa(:) => null()
 !
 !---------------------------------------------------------------------
     call jemarq()
@@ -51,9 +52,9 @@ subroutine masyns(matas)
     call jelira(mat19//'.VALM', 'CLAS', cval=base)
     call jelira(mat19//'.VALM', 'TYPE', cval=ktyp)
     ASSERT(ktyp.eq.'R'.or.ktyp.eq.'C')
-    call jeveuo(mat19//'.REFA', 'E', jrefa)
-    ASSERT(zk24(jrefa-1+9).eq.'MS')
-    zk24(jrefa-1+9)='MR'
+    call jeveuo(mat19//'.REFA', 'E', vk24=refa)
+    ASSERT(refa(9).eq.'MS')
+    refa(9)='MR'
 !
     call jelira(mat19//'.VALM', 'NMAXOC', nbloc)
     ASSERT(nbloc.eq.1)

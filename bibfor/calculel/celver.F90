@@ -55,9 +55,10 @@ subroutine celver(celz, typver, arret, iret)
     character(len=8) :: tsca, nomgd
     character(len=3) :: knan
     character(len=19) :: cel
-    integer :: jceld, kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
+    integer ::  kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
     integer :: imolo, inan, nb1, k, jcelv
     logical :: lnan
+    integer, pointer :: celd(:) => null()
 !
 !     ------------------------------------------------------------------
     call jemarq()
@@ -69,19 +70,19 @@ subroutine celver(celz, typver, arret, iret)
         call utmess('F', 'CALCULEL_47', sk=cel)
     endif
 !
-    call jeveuo(cel//'.CELD', 'L', jceld)
+    call jeveuo(cel//'.CELD', 'L', vi=celd)
 !
 !
     if (typver .eq. 'NBVARI_CST') then
 !     --------------------------------
-        ngrel = zi(jceld-1+2)
+        ngrel = celd(2)
         iprem = 0
         do igr = 1, ngrel
-            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 20
-            nel = zi(jceld-1+zi(jceld-1+4+igr)+1)
+            nel = celd(celd(4+igr)+1)
             do iel = 1, nel
-                ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
+                ncdyn = celd(celd(4+igr)+4+4* (iel-1)+2)
                 iprem = iprem + 1
                 if (iprem .eq. 1) then
                     ncdyn1 = ncdyn
@@ -101,7 +102,7 @@ subroutine celver(celz, typver, arret, iret)
 !
     else if (typver.eq.'NBSPT_1') then
 !     --------------------------------
-        mxspt = zi(jceld-1+3)
+        mxspt = celd(3)
         if (mxspt .gt. 1) then
             if (arret .ne. 'COOL') then
                 call utmess('F', 'CALCULEL_49', sk=cel)

@@ -41,7 +41,8 @@ subroutine rsutro(nomsd, iordg, iordr, ierr)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: jordr, nbordr
+    integer ::  nbordr
+    integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ierr = 0
@@ -54,8 +55,8 @@ subroutine rsutro(nomsd, iordg, iordr, ierr)
     else if (iordg.gt.nbordr) then
         ierr = 20
     else
-        call jeveuo(nomd2//'.ORDR', 'L', jordr)
-        iordr = zi(jordr+iordg-1)
+        call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
+        iordr = ordr(iordg)
     endif
 !
     call jedema()

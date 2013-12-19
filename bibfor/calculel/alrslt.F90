@@ -66,11 +66,13 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: gd, descgd, code, i, iret1, iret2, iret, jcelk, jnoli
+    integer :: gd, descgd, code, i, iret1, iret2, iret
     character(len=19) :: nochou, dcel
     character(len=8) :: nompar
     character(len=8) :: kbi1, kbi2
     character(len=16) :: nomopt
+    character(len=24), pointer :: noli(:) => null()
+    character(len=24), pointer :: celk(:) => null()
 !
 !
     call jenuno(jexnum('&CATA.OP.NOMOPT', iopt), nomopt)
@@ -97,8 +99,8 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
                         iret, dcel)
 !           -- les cham_elems sont incomplets si ldist
             if (ldist) then
-                call jeveuo(nochou//'.CELK', 'E', jcelk)
-                zk24(jcelk-1+7)='MPI_INCOMPLET'
+                call jeveuo(nochou//'.CELK', 'E', vk24=celk)
+                celk(7)='MPI_INCOMPLET'
             endif
 !
         else
@@ -107,8 +109,8 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
             call alresl(iopt, ligrel, nochou, nompar, base)
 !        -- LES RESU_ELEMS SONT INCOMPLETS EN LDIST
             if (ldist) then
-                call jeveuo(nochou//'.NOLI', 'E', jnoli)
-                zk24(jnoli-1+3)='MPI_INCOMPLET'
+                call jeveuo(nochou//'.NOLI', 'E', vk24=noli)
+                noli(3)='MPI_INCOMPLET'
             endif
         endif
     end do

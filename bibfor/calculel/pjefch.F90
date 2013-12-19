@@ -46,7 +46,8 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
     character(len=4) :: tych, tychv
     character(len=1) :: base
     character(len=*) :: prol0
-    integer :: iret, ibid, jcelk, nncp
+    integer :: iret, ibid,  nncp
+    character(len=24), pointer :: celk(:) => null()
 !
 !
     ch0s = '&&PJEFCH'//'.CH0S'
@@ -116,8 +117,8 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
                     'A', iret)
 !
     else if ((tych.eq.'ELEM') .or. (tych.eq.'ELNO')) then
-        call jeveuo(ch1//'.CELK', 'L', jcelk)
-        option = zk24(jcelk-1+2)
+        call jeveuo(ch1//'.CELK', 'L', vk24=celk)
+        option = celk(2)
         if (ligrel .eq. ' ') then
             call utmess('F', 'CALCULEL4_73')
         endif

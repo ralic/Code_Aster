@@ -51,14 +51,18 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     integer :: nbecmx
     parameter(nbecmx=10)
     integer :: icodla(nbecmx), icodge(nbecmx)
-    integer :: i1, i2, iaconx, iad1, iad11, iad2, iad21
-    integer :: jsupma, jnmacr, jnueq, jnulo1, jprno, jposd1
+    integer :: i1, i2,  iad1, iad11, iad2, iad21
+    integer :: jsupma,   jnulo1, jprno, jposd1
     integer :: iec, ima, inold, nbterm, jprn1, jprn2
-    integer :: jresl, jsmdi, jsmhc, jsssa, jvalm(2), k1
+    integer :: jresl, jsmdi, jsmhc,  jvalm(2), k1
     integer :: k2, n1, nugd, iancmp, lgncmp, icmp
     integer :: nbsma, nbssa, ncmp, nbvel, nddl1, nddl2, jtmp2, lgtmp2
     integer :: nec, nm, nmxcmp, nnoe, i, jec
     integer :: lshift
+    integer, pointer :: conx(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: sssa(:) => null()
+    integer, pointer :: nueq(:) => null()
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
@@ -85,12 +89,12 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     call dismoi('NB_NO_MAILLA', mo, 'MODELE', repi=nm)
     call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
-    call jeveuo(ma//'.NOMACR', 'L', jnmacr)
-    call jeveuo(mo//'.MODELE    .SSSA', 'L', jsssa)
+    call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
+    call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
 !
     call jeveuo(nu14//'.SMOS.SMDI', 'L', jsmdi)
     call jeveuo(nu14//'.SMOS.SMHC', 'L', jsmhc)
-    call jeveuo(nu14//'.NUME.NUEQ', 'L', jnueq)
+    call jeveuo(nu14//'.NUME.NUEQ', 'L', vi=nueq)
     call jeveuo(nu14//'.NUME.PRNO', 'L', jprn1)
     call jeveuo(jexatr(nu14//'.NUME.PRNO', 'LONCUM'), 'L', jprn2)
 !
@@ -119,7 +123,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     do ima = 1, nbsma
 !             -- BOUCLE SUR LES MACRO-ELEMENTS :
 !             ----------------------------------
-        if (zi(jsssa-1+ima) .eq. 0) goto 90
+        if (sssa(ima) .eq. 0) goto 90
 !
         call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', jsupma)
         call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
@@ -129,9 +133,9 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
         call ssvalm(' ', optio, mo, ma, ima,&
                     jresl, nbvel)
 !
-        nomacr=zk8(jnmacr-1+ima)
+        nomacr=vnomacr(ima)
         call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
-        call jeveuo(nomacr//'.CONX', 'L', iaconx)
+        call jeveuo(nomacr//'.CONX', 'L', vi=conx)
         call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', jprno)
 !
         do k1 = 1, nnoe
@@ -142,7 +146,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
                 end do
 !
             else
-                inold=zi(iaconx-1+3*(k1-1)+2)
+                inold=conx(3*(k1-1)+2)
                 do iec = 1, nec
                     icodge(iec)=zi(jprno-1+(nec+2)*(inold-1)+2+iec)
                 end do
@@ -158,8 +162,8 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
                     iad2=numlo1(k2,1)
                     nddl2=numlo1(k2,2)
                     do i2 = 1, nddl2
-                        iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
-                        iad21=zi(jnueq-1+iad2+posdd1(k2,i2)-1)
+                        iad11=nueq(iad1+posdd1(k1,i1)-1)
+                        iad21=nueq(iad2+posdd1(k2,i2)-1)
                         call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                                     jsmdi, iad11, iad21)
                     end do
@@ -168,8 +172,8 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
                 iad2=numlo1(k2,1)
                 nddl2=numlo1(k2,2)
                 do i2 = 1, i1
-                    iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
-                    iad21=zi(jnueq-1+iad2+posdd1(k2,i2)-1)
+                    iad11=nueq(iad1+posdd1(k1,i1)-1)
+                    iad21=nueq(iad2+posdd1(k2,i2)-1)
                     call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                                 jsmdi, iad11, iad21)
                 end do

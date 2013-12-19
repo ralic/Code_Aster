@@ -49,10 +49,9 @@ subroutine afvarc(chmat, nomail, nomode)
 ! ----------------------------------------------------------------------
     integer :: n1, n2, nboccv, nbma, k, ncmp
     integer :: ifac, nbfac, nmxfac, nmxcmp, nbvarc, nbtou, jma
-    integer :: iocc, jncmp1, jncmp2, jvalv1, jvalv2, kvarc, nbcvrc
+    integer :: iocc,     kvarc, nbcvrc
     integer :: jcvnom, jcvvar, jcvcmp, jcvgd, itrou, nbm1, nbgm1
     integer :: nref, nbdetr, nbgdut, nbgdmx, ico, jadetr
-    integer :: jvale, jdesc
 !
     character(len=8) :: k8b, typmcl(2), nomgd
     character(len=8) :: nomgd2, chamgd, evol, nocmp1, nocmp2, finst, evouch
@@ -65,6 +64,12 @@ subroutine afvarc(chmat, nomail, nomode)
     character(len=8) :: nocvrc
     real(kind=8) :: vrcref(nmxcmp), rcmp(10), vref
     logical :: errgd, ldetr, lautr
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: valv1(:) => null()
+    character(len=16), pointer :: valv2(:) => null()
+    character(len=8), pointer :: ncmp1(:) => null()
+    character(len=8), pointer :: ncmp2(:) => null()
+    character(len=16), pointer :: vale(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -135,19 +140,19 @@ subroutine afvarc(chmat, nomail, nomode)
         cart2 = chmat//'.'//livarc(kvarc)//'.2'
         call alcart('G', cart1, nomail, 'NEUT_R')
         call alcart('G', cart2, nomail, 'NEUT_K16')
-        call jeveuo(cart1//'.NCMP', 'E', jncmp1)
-        call jeveuo(cart1//'.VALV', 'E', jvalv1)
-        call jeveuo(cart2//'.NCMP', 'E', jncmp2)
-        call jeveuo(cart2//'.VALV', 'E', jvalv2)
+        call jeveuo(cart1//'.NCMP', 'E', vk8=ncmp1)
+        call jeveuo(cart1//'.VALV', 'E', vr=valv1)
+        call jeveuo(cart2//'.NCMP', 'E', vk8=ncmp2)
+        call jeveuo(cart2//'.VALV', 'E', vk16=valv2)
         nocmp1 = 'X'
         do k = 1, nmxcmp
             call codent(k, 'G', nocmp1(2:8))
-            zk8(jncmp1-1+k) = nocmp1
+            ncmp1(k) = nocmp1
         end do
         nocmp2 = 'Z'
         do k = 1, 7
             call codent(k, 'G', nocmp2(2:8))
-            zk8(jncmp2-1+k) = nocmp2
+            ncmp2(k) = nocmp2
         end do
 !
 !
@@ -256,21 +261,21 @@ subroutine afvarc(chmat, nomail, nomode)
 !
 !         2.4 ECRITURE DANS LES CARTES :
 !         ------------------------------------------------------------
-            zk16(jvalv2-1+1) = livarc(kvarc)
+            valv2(1) = livarc(kvarc)
             if (evouch .eq. 'CHAMP') then
-                zk16(jvalv2-1+2) = 'CHAMP'
-                zk16(jvalv2-1+3) = chamgd
-                zk16(jvalv2-1+4) = ' '
-                zk16(jvalv2-1+5) = ' '
-                zk16(jvalv2-1+6) = ' '
-                zk16(jvalv2-1+7) = ' '
+                valv2(2) = 'CHAMP'
+                valv2(3) = chamgd
+                valv2(4) = ' '
+                valv2(5) = ' '
+                valv2(6) = ' '
+                valv2(7) = ' '
             else if (evouch.eq.'EVOL') then
-                zk16(jvalv2-1+2) = 'EVOL'
-                zk16(jvalv2-1+3) = evol
-                zk16(jvalv2-1+4) = nomcha
-                zk16(jvalv2-1+5) = prolga
-                zk16(jvalv2-1+6) = proldr
-                zk16(jvalv2-1+7) = finst
+                valv2(2) = 'EVOL'
+                valv2(3) = evol
+                valv2(4) = nomcha
+                valv2(5) = prolga
+                valv2(6) = proldr
+                valv2(7) = finst
             else if (evouch.eq.'VIDE') then
 !           -- ON AFFECTE UNE CARTE CONTENANT DES R8NNEM :
                 call gcncon('_', knumer)
@@ -282,15 +287,15 @@ subroutine afvarc(chmat, nomail, nomode)
                 call mecact('G', carvid, 'MAILLA', nomail, nomgd,&
                             ncmp=ncmp, lnomcmp=zk8(jcvcmp+nbcvrc), vr=rcmp)
 !
-                zk16(jvalv2-1+2) = 'CHAMP'
-                zk16(jvalv2-1+3) = carvid(1:16)
-                zk16(jvalv2-1+4) = ' '
-                zk16(jvalv2-1+5) = ' '
-                zk16(jvalv2-1+6) = ' '
-                zk16(jvalv2-1+7) = ' '
+                valv2(2) = 'CHAMP'
+                valv2(3) = carvid(1:16)
+                valv2(4) = ' '
+                valv2(5) = ' '
+                valv2(6) = ' '
+                valv2(7) = ' '
             endif
             do k = 1, ncmp
-                zr(jvalv1-1+k) = vrcref(k)
+                valv1(k) = vrcref(k)
             end do
 !
 !         TOUT='OUI' PAR DEFAUT :
@@ -343,22 +348,22 @@ subroutine afvarc(chmat, nomail, nomode)
 !     -------------------------------------------
     ldetr=.true.
     cart2 = chmat//'.TEMP    .2'
-    call jeveuo(cart2//'.DESC', 'L', jdesc)
-    call jeveuo(cart2//'.VALE', 'L', jvale)
+    call jeveuo(cart2//'.DESC', 'L', vi=desc)
+    call jeveuo(cart2//'.VALE', 'L', vk16=vale)
     call jelira(jexnom('&CATA.GD.NOMCMP', 'NEUT_K16'), 'LONMAX', ncmp)
-    nbgdmx=zi(jdesc-1+2)
-    nbgdut=zi(jdesc-1+3)
+    nbgdmx=desc(2)
+    nbgdut=desc(3)
     call jelira(chmat//'.TEMP    .2.VALE', 'LONMAX', n1)
     ASSERT(n1.eq.nbgdmx*ncmp)
 !     3.2 ON PARCOURT LES SD STOCKEES DANS LA CARTE ET ON REGARDE S'IL
 !         EXISTE D'AUTRES CMPS QUE TEMP ET LAGR :  LAUTR=.TRUE.
 !     --------------------------------------------------------------
     do k = 1, nbgdut
-        k16a=zk16(jvale-1+ncmp*(k-1)+1)
+        k16a=vale(ncmp*(k-1)+1)
         ASSERT(k16a.eq.'TEMP')
-        k16a=zk16(jvale-1+ncmp*(k-1)+2)
-        k16b=zk16(jvale-1+ncmp*(k-1)+3)
-        k16c=zk16(jvale-1+ncmp*(k-1)+4)
+        k16a=vale(ncmp*(k-1)+2)
+        k16b=vale(ncmp*(k-1)+3)
+        k16c=vale(ncmp*(k-1)+4)
         call afva01(k16a, k16b, k16c, lautr)
         if (lautr) then
             ldetr=.false.

@@ -53,10 +53,12 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 ! ----------------------------------------------------------------------
 !
     integer :: i1, i2, i3, i4, i5, i6, ib
-    integer :: j1, j2, j3, k, npara
+    integer ::   j3, k, npara
     character(len=16) :: typ2sd
     character(len=19) :: ch, chs, matr
     character(len=17) :: table
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 !
 ! -DEB------------------------------------------------------------------
 !
@@ -116,12 +118,12 @@ subroutine imprsd(typesd, nomsd, ific, titre)
     else if (typ2sd.eq.'TABLE') then
 !     --------------------------------------
         table=nomsd
-        call jeveuo(table//'  .TBNP', 'L', j1)
-        call jeveuo(table//'  .TBLP', 'L', j2)
-        npara=zi(j1)
+        call jeveuo(table//'  .TBNP', 'L', vi=tbnp)
+        call jeveuo(table//'  .TBLP', 'L', vk24=tblp)
+        npara=tbnp(1)
         call wkvect('&&IMPRSD.LIPARA', 'V V K16', npara, j3)
         do 1, k=1,npara
-        zk16(j3-1+k)=zk24(j2-1+4*(k-1)+1)
+        zk16(j3-1+k)=tblp(4*(k-1)+1)
  1      continue
         call tbimpr(table, 'ASTER', ific, npara, zk16(j3),&
                     0, '1PE12.5')

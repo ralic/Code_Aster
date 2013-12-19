@@ -97,8 +97,9 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
 !
     integer :: nno1, nno2, nma1, nma2, i, k, j
     integer :: ima, nbno, ino, nuno, ino2, kk, ima1
-    integer :: ialim1, iad, long, ialin1, iacnx1, ilcnx1, ialin2
+    integer :: ialim1, iad, long, ialin1,  ilcnx1, ialin2
     integer :: iexi
+    integer, pointer :: connex(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -236,13 +237,13 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
 !     3 : NOEUDS UTILES DE MOA1 :
 !     ---------------------------
     call wkvect('&&PJXXCO.LINO1', 'V V I', nno1, ialin1)
-    call jeveuo(ma1//'.CONNEX', 'L', iacnx1)
+    call jeveuo(ma1//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 100
         nbno=zi(ilcnx1+ima)-zi(ilcnx1-1+ima)
         do ino = 1, nbno
-            nuno=zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+            nuno=connex(1+zi(ilcnx1-1+ima)-2+ino)
             zi(ialin1-1+nuno)=1
         end do
 100     continue

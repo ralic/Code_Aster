@@ -44,13 +44,21 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcnsk1, jcnsd1, jcnsv1, jcnsl1, jcnsc1
-    integer :: jcnsk2, jcnsd2, jcnsv2, jcnsl2, jcnsc2
+    integer ::    jcnsl1
+    integer ::    jcnsl2
     integer :: nbno, k, ino, ncmp, nbno1, nbno2, ncmp1, ncmp2
     character(len=8) :: ma1, nomgd1, ma2, nomgd2
     character(len=3) :: tsca1
     character(len=19) :: cns1, cns2
     real(kind=8) :: x1, x2
+    character(len=8), pointer :: cnsk1(:) => null()
+    character(len=8), pointer :: cnsk2(:) => null()
+    character(len=8), pointer :: cnsc1(:) => null()
+    character(len=8), pointer :: cnsc2(:) => null()
+    real(kind=8), pointer :: cnsv1(:) => null()
+    real(kind=8), pointer :: cnsv2(:) => null()
+    integer, pointer :: cnsd1(:) => null()
+    integer, pointer :: cnsd2(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -58,28 +66,28 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
     cns1=cns1z
     cns2=cns2z
 !
-    call jeveuo(cns1//'.CNSK', 'L', jcnsk1)
-    call jeveuo(cns1//'.CNSD', 'L', jcnsd1)
-    call jeveuo(cns1//'.CNSC', 'L', jcnsc1)
-    call jeveuo(cns1//'.CNSV', 'L', jcnsv1)
+    call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk1)
+    call jeveuo(cns1//'.CNSD', 'L', vi=cnsd1)
+    call jeveuo(cns1//'.CNSC', 'L', vk8=cnsc1)
+    call jeveuo(cns1//'.CNSV', 'L', vr=cnsv1)
     call jeveuo(cns1//'.CNSL', 'L', jcnsl1)
 !
-    ma1=zk8(jcnsk1-1+1)
-    nomgd1=zk8(jcnsk1-1+2)
-    nbno1=zi(jcnsd1-1+1)
-    ncmp1=zi(jcnsd1-1+2)
+    ma1=cnsk1(1)
+    nomgd1=cnsk1(2)
+    nbno1=cnsd1(1)
+    ncmp1=cnsd1(2)
 !
 !
-    call jeveuo(cns2//'.CNSK', 'L', jcnsk2)
-    call jeveuo(cns2//'.CNSD', 'L', jcnsd2)
-    call jeveuo(cns2//'.CNSC', 'L', jcnsc2)
-    call jeveuo(cns2//'.CNSV', 'L', jcnsv2)
+    call jeveuo(cns2//'.CNSK', 'L', vk8=cnsk2)
+    call jeveuo(cns2//'.CNSD', 'L', vi=cnsd2)
+    call jeveuo(cns2//'.CNSC', 'L', vk8=cnsc2)
+    call jeveuo(cns2//'.CNSV', 'L', vr=cnsv2)
     call jeveuo(cns2//'.CNSL', 'L', jcnsl2)
 !
-    ma2=zk8(jcnsk2-1+1)
-    nomgd2=zk8(jcnsk2-1+2)
-    nbno2=zi(jcnsd2-1+1)
-    ncmp2=zi(jcnsd2-1+2)
+    ma2=cnsk2(1)
+    nomgd2=cnsk2(2)
+    nbno2=cnsd2(1)
+    ncmp2=cnsd2(2)
 !
 !     -- COHERENCE DES 2 CHAMPS :
     ASSERT(ma1.eq.ma2)
@@ -95,7 +103,7 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
     ASSERT(tsca1.eq.'R')
 !
     do k = 1, ncmp
-        ASSERT(zk8(jcnsc1-1+k).eq.zk8(jcnsc2-1+k))
+        ASSERT(cnsc1(k).eq.cnsc2(k))
     end do
 !
 !
@@ -111,8 +119,8 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
                     goto 40
 !
                 endif
-                x1=zr(jcnsv1-1+(ino-1)*ncmp+k)
-                x2=zr(jcnsv2-1+(ino-1)*ncmp+k)
+                x1=cnsv1((ino-1)*ncmp+k)
+                x2=cnsv2((ino-1)*ncmp+k)
                 pscal=pscal+x1*x2
             else
                 if (zl(jcnsl2-1+(ino-1)*ncmp+k)) then

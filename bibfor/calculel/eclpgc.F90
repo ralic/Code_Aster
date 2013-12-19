@@ -103,11 +103,11 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     logical :: lvari
     integer :: numa, jnofpg, kk
     integer :: k, te, npg1, npoini, ideca2
-    integer :: igr, jmaco, jcmaco, jliel, jcliel, jcnsl2
+    integer :: igr,  jcmaco,  jcliel, jcnsl2
     integer :: ibid, nbpg, ino, nbgr, inogl, kse
-    integer :: iamol1, jcelv1, jcnsv2, mxcmp
+    integer :: iamol1,  jcnsv2, mxcmp
     integer :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
-    integer :: iipg, jceld1, jcelk1, moloc1, ncmpmx
+    integer :: iipg, jceld1,  moloc1, ncmpmx
     parameter(mxcmp=100)
     integer :: nuddl(mxcmp), mxvari, iel, ncmp, jnocmp, jcorr1
     character(len=8) :: ma2, nomg1, nomg2, elrefa, fapg
@@ -115,13 +115,17 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     character(len=16) :: optio, param
     character(len=19) :: ligrel, ch1, ch2s, ch2, prchno, ch1b
     character(len=24) :: valk(2), nomfpg
+    character(len=24), pointer :: celk(:) => null()
+    real(kind=8), pointer :: celv(:) => null()
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: connex(:) => null()
 !     FONCTIONS FORMULES :
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
 #define nbnoma(ima) zi(jcmaco-1+ima+1)-zi(jcmaco-1+ima)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-#define numglm(ima,ino) zi(jmaco-1+zi(jcmaco+ima-1)+ino-1)
-#define numail(igr,iel) zi(jliel-1+zi(jcliel+igr-1)+iel-1)
+#define numglm(ima,ino) connex(zi(jcmaco+ima-1)+ino-1)
+#define numail(igr,iel) liel(zi(jcliel+igr-1)+iel-1)
 ! DEB -----------------------------------------------------------------
     call jemarq()
 !
@@ -146,13 +150,13 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     endif
 !
 !     -- PROJECTION SUR LE LIGREL REDUIT SI NECESSAIRE :
-    call jeveuo(ch1b//'.CELK', 'L', jcelk1)
-    if (zk24(jcelk1-1+3)(1:4) .ne. 'ELGA') then
+    call jeveuo(ch1b//'.CELK', 'L', vk24=celk)
+    if (celk(3)(1:4) .ne. 'ELGA') then
         call utmess('F', 'CALCULEL2_41')
     endif
-    if (zk24(jcelk1-1+1)(1:19) .ne. ligrel) then
-        optio=zk24(jcelk1-1+2)
-        param=zk24(jcelk1-1+6)
+    if (celk(1)(1:19) .ne. ligrel) then
+        optio=celk(2)
+        param=celk(6)
         call chligr(ch1b, ligrel, optio, param, 'V',&
                     '&&ECLPGC.CH1B2')
         ch1b='&&ECLPGC.CH1B2'
@@ -161,7 +165,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     call jeexin(ch1b//'.CELD', ibid)
     if (ibid .eq. 0) goto 90
 !
-    call jeveuo(ch1b//'.CELV', 'L', jcelv1)
+    call jeveuo(ch1b//'.CELV', 'L', vr=celv)
     call jeveuo(ch1b//'.CELD', 'L', jceld1)
     call jeveuo(ch1b//'.CELD', 'L', jceld1)
 !     -- MXVARI : NOMBRE MAXI DE VXX SI VARI_R
@@ -212,9 +216,9 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !     -- REMPLISSAGE DU CHAM_NO :
 !     ---------------------------
     call jeveuo(nomfpg, 'L', jnofpg)
-    call jeveuo(ligrel//'.LIEL', 'L', jliel)
+    call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', jcliel)
-    call jeveuo(ma2//'.CONNEX', 'L', jmaco)
+    call jeveuo(ma2//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', jcmaco)
     ima=0
     nbgr=nbgrel(ligrel)
@@ -299,7 +303,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
                         zl(jcnsl2-1+ideca2)=.true.
                         adiel=zi(jceld1-1+zi(jceld1-1+4+igr)+4+4*(iel-&
                         1)+4)
-                        zr(jval2)=zr(jcelv1-1+adiel-1+nddl*(iipg-1)+&
+                        zr(jval2)=celv(adiel-1+nddl*(iipg-1)+&
                         iddl)
                     end do
                 end do

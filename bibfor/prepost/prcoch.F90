@@ -45,12 +45,15 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     character(len=24) :: valk
     character(len=19) :: celz, cesz
     character(len=8) :: nomma, k8bid, nogd, tsca
-    integer :: jcesd, jcesl, jcesc, jcesv, jcesk, ncmpmx, icmp, numcmp
+    integer :: jcesd, jcesl,  jcesv, jcesk, ncmpmx, icmp, numcmp
     integer :: nbma, ima, nbpt, nbsp, ipt, isp, iad, jval, jma, jpo, jsp
     integer :: ival, iret, itrma, itrno, igr, nbtrou, itbma, lma, nbval
-    integer :: jcnsd, jcnsl, jcnsc, jcnsv, nbno, ino, jno, nbn, in
+    integer ::  jcnsl,  jcnsv, nbno, ino, jno, nbn, in
     integer :: jcmp, cmpmin, cmpmax
     logical :: ltopo
+    character(len=8), pointer :: cnsc(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !
 !
     call jemarq()
@@ -152,13 +155,13 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
         call jeveuo(cesz//'.CESD', 'L', jcesd)
         call jeveuo(cesz//'.CESL', 'L', jcesl)
-        call jeveuo(cesz//'.CESC', 'L', jcesc)
+        call jeveuo(cesz//'.CESC', 'L', vk8=cesc)
         call jeveuo(cesz//'.CESV', 'L', jcesv)
 !
         ncmpmx = zi(jcesd-1+2)
 !
         do icmp = 1, ncmpmx
-            if (zk8(jcesc-1+icmp) .eq. nocmp) then
+            if (cesc(icmp) .eq. nocmp) then
                 numcmp=icmp
                 goto 6
             endif
@@ -300,18 +303,18 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !
 ! -- 2EME ETAPE : RECUPERATION DU NUMCMP QUI NOUS INTERESSE
 !
-        call jeveuo(cesz//'.CNSD', 'L', jcnsd)
-        call jeveuo(cesz//'.CNSC', 'L', jcnsc)
+        call jeveuo(cesz//'.CNSD', 'L', vi=cnsd)
+        call jeveuo(cesz//'.CNSC', 'L', vk8=cnsc)
         call jeveuo(cesz//'.CNSL', 'L', jcnsl)
         call jeveuo(cesz//'.CNSV', 'L', jcnsv)
 !
-        ncmpmx = zi(jcnsd-1+2)
+        ncmpmx = cnsd(2)
 !
         if (numcmp .lt. 0) then
             goto 60
         endif
         do icmp = 1, ncmpmx
-            if (zk8(jcnsc-1+icmp) .eq. nocmp) then
+            if (cnsc(icmp) .eq. nocmp) then
                 numcmp=icmp
                 goto 60
             endif
@@ -328,7 +331,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !                   ET CREATION DES VECTEURS
 !
         nbval=0
-        nbno = zi(jcnsd-1+1)
+        nbno = cnsd(1)
 !
         if (numcmp .lt. 0) then
             do icmp = 1, ncmpmx
@@ -387,7 +390,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     endif
                     if (ltopo) then
                         zi(jno-1+ival)=ino
-                        if (numcmp .lt. 0) zk8(jcmp-1+ival)=zk8(jcnsc-1+ icmp)
+                        if (numcmp .lt. 0) zk8(jcmp-1+ival)=cnsc(icmp)
                     endif
                 endif
             end do

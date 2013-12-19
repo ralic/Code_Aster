@@ -50,7 +50,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcesk, jcesd, jcesv, jcesl, jcesc, iad, jconx1, jconx2
+    integer ::  jcesd, jcesv, jcesl,  iad,  jconx2
     integer :: nbma, k, ima, ncmp, jlval, ipt, isp, nbpt, nbsp, ino, iret
     integer :: ik, ncmpu, licmpu(997), nbmai, im
     character(len=8) :: ma, nomgd, nomma, poin, spoin, typces
@@ -58,26 +58,29 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
     character(len=19) :: ces
     character(len=60) :: fmt, fmt1
     logical :: exicmp
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
+    integer, pointer :: connex(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
     ces = cesz
 !
-    call jeveuo(ces//'.CESK', 'L', jcesk)
+    call jeveuo(ces//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESC', 'L', jcesc)
+    call jeveuo(ces//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces//'.CESV', 'L', jcesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
 !
-    ma = zk8(jcesk-1+1)
-    nomgd = zk8(jcesk-1+2)
-    typces = zk8(jcesk-1+3)
+    ma = cesk(1)
+    nomgd = cesk(2)
+    typces = cesk(3)
     nbma = zi(jcesd-1+1)
     ncmp = zi(jcesd-1+2)
 !
     call jeexin(ma//'.CONNEX', iret)
     ASSERT(iret.ne.0)
-    call jeveuo(ma//'.CONNEX', 'L', jconx1)
+    call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !
@@ -144,7 +147,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
     write (unite,*) ' GRANDEUR: ',nomgd
     write (unite,*) ' '
     write (unite,fmt1) 'MAILLE','POINT','SOUS_POINT',&
-     &  (zk8(jcesc-1+licmpu(ik)),ik=1,ncmpu)
+     &  (cesc(licmpu(ik)),ik=1,ncmpu)
 !
 !
 !     4- ECRITURE DES VALEURS :
@@ -216,7 +219,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !
 !
                 if (typces .eq. 'ELNO') then
-                    ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
+                    ino = connex(zi(jconx2+ima-1)+ipt-1)
                     call jenuno(jexnum(ma//'.NOMNOE', ino), poin)
                 else
                     write (poin,'(I8)') ipt

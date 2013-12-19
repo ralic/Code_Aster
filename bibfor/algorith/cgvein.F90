@@ -52,12 +52,13 @@ subroutine cgvein(resu, compor, iord0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, jcalv, jcald, jcall, jcalk, jadmat, jcvvar
+    integer :: iret, jcalv, jcald, jcall, jcalk, jadmat
     integer :: nvacr, ivarc, nbma, iadc, ima
     character(len=8) :: noma, chmat, k8b
     character(len=16) :: k16ldc
     character(len=19) :: chcalc, chtmp
     logical :: exivrc, exitem, lldcok
+    character(len=8), pointer :: cvrcvarc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,9 +74,9 @@ subroutine cgvein(resu, compor, iord0)
 !
     if (exivrc) then
         call jelira(chmat// '.CVRCVARC', 'LONMAX', ival=nvacr)
-        call jeveuo(chmat// '.CVRCVARC', 'L', jcvvar)
+        call jeveuo(chmat// '.CVRCVARC', 'L', vk8=cvrcvarc)
         do ivarc = 1, nvacr
-            exitem = zk8(jcvvar-1+ivarc) .eq. 'TEMP    '
+            exitem = cvrcvarc(ivarc) .eq. 'TEMP    '
             if (exitem) exit
         enddo
     endif

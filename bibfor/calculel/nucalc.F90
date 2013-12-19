@@ -46,7 +46,8 @@ function nucalc(opt, te, memoir)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: optmod, jj, ianblc
+    integer :: optmod, jj
+    integer, pointer :: nbligcol(:) => null()
 !
 ! DEB-------------------------------------------------------------------
     ASSERT(memoir.eq.0 .or. memoir.eq.1)
@@ -54,8 +55,8 @@ function nucalc(opt, te, memoir)
         call jeveuo('&CATA.TE.OPTTE', 'L', iaoptt)
         call jeveuo('&CATA.TE.OPTMOD', 'L', iaopmo)
         call jeveuo(jexatr('&CATA.TE.OPTMOD', 'LONCUM'), 'L', ilopmo)
-        call jeveuo('&CATA.TE.NBLIGCOL', 'L', ianblc)
-        lgco = zi(ianblc-1+1)
+        call jeveuo('&CATA.TE.NBLIGCOL', 'L', vi=nbligcol)
+        lgco = nbligcol(1)
     endif
 !
 !     JJ = IOPTTE(OPT,TE)

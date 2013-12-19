@@ -63,7 +63,7 @@ subroutine elg_apelim(kptsc, lqr)
 !================================================================
 !
 !     VARIABLES LOCALES
-    integer :: ifm, niv, jslvk
+    integer :: ifm, niv
     character(len=19) :: nomat, nosolv, rigi1
     character(len=14) :: nonu
     character(len=16) :: concep, nomcmd
@@ -74,7 +74,7 @@ subroutine elg_apelim(kptsc, lqr)
     IS :: isnvco, istout
     integer :: clag1, clag2, cphys, nbphys, nblag, i1, j1, nbelig
     PetscInt :: n1, n2, nterm
-    integer :: nbeq, ilag1, ilag2, iphys, ie, ldelg, nnzt, contr
+    integer :: nbeq, ilag1, ilag2, iphys, ie,  nnzt, contr
     integer :: nzrow, valrow, indnz, indcon, indlib
     integer :: ctemp, redem, nvcont, nbnvco, ifull, nbred
     integer :: ilig, jcol, ico, kterm, ieq, k, kptscr, ktrou
@@ -82,6 +82,8 @@ subroutine elg_apelim(kptsc, lqr)
     character(len=8) :: k8b
     PetscInt, allocatable :: irow(:), indred_1(:), indred_2(:)
     real(kind=8), allocatable :: vrow(:)
+    integer, pointer :: delg(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
     mpi_int :: mpicow
 !----------------------------------------------------------------
     call jemarq()
@@ -99,10 +101,10 @@ subroutine elg_apelim(kptsc, lqr)
     nosolv = nosols(kptsc)
     nonu = nonus(kptsc)
 !
-    call jeveuo(nosolv//'.SLVK', 'L', jslvk)
+    call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
 !
 !     -- ON NE VEUT PAS DE MATRICE DISTRIBUEE :
-    lmd = zk24(jslvk-1+10)(1:3).eq.'OUI'
+    lmd = slvk(10)(1:3).eq.'OUI'
     ASSERT(.not.lmd)
 !
 !
@@ -158,18 +160,18 @@ subroutine elg_apelim(kptsc, lqr)
 !
 !--   Reperage des ddls : physique, lagrange_1 et lagrange_2 :
     call dismoi('NB_EQUA', nonu, 'NUME_DDL', repi=nbeq)
-    call jeveuo(nonu//'.NUME.DELG', 'L', ldelg)
+    call jeveuo(nonu//'.NUME.DELG', 'L', vi=delg)
     clag1=0
     clag2=0
     cphys=0
     do i1 = 1, nbeq
-        if (zi(ldelg+i1-1) .eq. 0) then
+        if (delg(i1) .eq. 0) then
             cphys=cphys+1
         endif
-        if (zi(ldelg+i1-1) .eq. -1) then
+        if (delg(i1) .eq. -1) then
             clag1=clag1+1
         endif
-        if (zi(ldelg+i1-1) .eq. -2) then
+        if (delg(i1) .eq. -2) then
             clag2=clag2+1
         endif
     end do
@@ -190,15 +192,15 @@ subroutine elg_apelim(kptsc, lqr)
     clag2=0
     cphys=0
     do i1 = 1, nbeq
-        if (zi(ldelg+i1-1) .eq. 0) then
+        if (delg(i1) .eq. 0) then
             zi4(iphys+cphys)=i1-1
             cphys=cphys+1
         endif
-        if (zi(ldelg+i1-1) .eq. -1) then
+        if (delg(i1) .eq. -1) then
             zi4(ilag1+clag1)=i1-1
             clag1=clag1+1
         endif
-        if (zi(ldelg+i1-1) .eq. -2) then
+        if (delg(i1) .eq. -2) then
             zi4(ilag2+clag2)=i1-1
             clag2=clag2+1
         endif
@@ -240,7 +242,7 @@ subroutine elg_apelim(kptsc, lqr)
                          melim(ke)%tfinal, ierr)
 !
     do i1 = 1, nbeq
-        if (zi(ldelg+i1-1) .eq. 0) then
+        if (delg(i1) .eq. 0) then
             call MatSetValues(melim(ke)%tfinal, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
                               [1.d0], INSERT_VALUES, ierr)
         else

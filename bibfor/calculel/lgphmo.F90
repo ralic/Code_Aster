@@ -45,10 +45,12 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
 !
 !
-    integer :: nbgrel, nbma, nbtm, jtyma, jlitm, ima, tm
-    integer :: te, jliel, igr, ico, jphmod, kmod, jlgrf
+    integer :: nbgrel, nbma, nbtm,  jlitm, ima, tm
+    integer :: te,  igr, ico, jphmod, kmod, jlgrf
     integer :: nbel
     character(len=19) :: ligr19, phen1
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: typmail(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -64,11 +66,11 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !     -- ON PARCOURT LA CONNECTIVITE POUR DETERMINER LES ENSEMBLES DE
 !        DE MAILLES DE MEME TYPE
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
-    call jeveuo(ma//'.TYPMAIL', 'L', jtyma)
+    call jeveuo(ma//'.TYPMAIL', 'L', vi=typmail)
     call wkvect('&&LGPHMO.LITM', 'V V I', nbtm, jlitm)
     nbel=0
     do ima = 1, nbma
-        tm= zi(jtyma-1+ima)
+        tm= typmail(ima)
         ASSERT(tm.gt.0)
         te= zi(jphmod-1+tm)
         if (te .gt. 0) then
@@ -90,7 +92,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     call jecrec(ligr19//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbgrel)
     call jeecra(ligr19//'.LIEL', 'LONT', nbel+nbgrel, ' ')
-    call jeveuo(ligr19//'.LIEL', 'E', jliel)
+    call jeveuo(ligr19//'.LIEL', 'E', vi=liel)
 !
     igr=0
     ico=0
@@ -101,17 +103,17 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
             ASSERT(te.gt.0)
             nbel=0
             do ima = 1, nbma
-                if (zi(jtyma-1+ima) .eq. tm) then
+                if (typmail(ima) .eq. tm) then
                     nbel=nbel+1
                     ico=ico+1
-                    zi(jliel-1+ico)=ima
+                    liel(ico)=ima
                 endif
             end do
             ASSERT(nbel.gt.0)
             call jecroc(jexnum(ligr19//'.LIEL', igr))
             call jeecra(jexnum(ligr19//'.LIEL', igr), 'LONMAX', nbel+1)
             ico=ico+1
-            zi(jliel-1+ico)=te
+            liel(ico)=te
         endif
     end do
 !

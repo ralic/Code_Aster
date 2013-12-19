@@ -54,17 +54,25 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     character(len=19) :: cns1, ces2, cel2
     character(len=19) :: cham1s, dcel
     character(len=24) :: valk(5)
-    integer :: jpo, ipo, nbma
-    integer :: jce2c, jce2l, jce2v, jce2d, jce2k, icmp2
+    integer ::  ipo, nbma
+    integer ::  jce2l,  jce2d, jce2k, icmp2
 !
     integer :: jcesk, jcesd, jcesv, jcesl
 !
-    integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d
+    integer ::  jcns1l
     integer :: nbno1, nbmax, ncmp1, ncmp2
     integer :: iad2, nval
     integer :: iad, nbpt, nbsp, icmp1
 !
-    integer :: ima, ipt, isp, jcesc, jlgrf
+    integer :: ima, ipt, isp, jcesc
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
+    integer, pointer :: pjef_el(:) => null()
+    character(len=8), pointer :: ce2c(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    real(kind=8), pointer :: ce2v(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -77,16 +85,16 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
 !     1- RECUPERATION D'INFORMATIONS DANS CNS1 :
 !     ------------------------------------------
-    call jeveuo(cns1//'.CNSK', 'L', jcns1k)
-    call jeveuo(cns1//'.CNSD', 'L', jcns1d)
-    call jeveuo(cns1//'.CNSC', 'L', jcns1c)
-    call jeveuo(cns1//'.CNSV', 'L', jcns1v)
+    call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cns1//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(cns1//'.CNSC', 'L', vk8=cnsc)
+    call jeveuo(cns1//'.CNSV', 'L', vr=cnsv)
     call jeveuo(cns1//'.CNSL', 'L', jcns1l)
     call jelira(cns1//'.CNSC', 'LONMAX', ncmp1)
 !
-    nomgd = zk8(jcns1k-1+2)
-    nbno1 = zi(jcns1d-1+1)
-    nbmax = zi(jcns1d-1+2)
+    nomgd = cnsk(2)
+    nbno1 = cnsd(1)
+    nbmax = cnsd(2)
 !
 !
 !------------------------------------------------------------------
@@ -107,8 +115,8 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     call jeveuo(cham1s//'.CESV', 'L', jcesv)
     call jeveuo(cham1s//'.CESL', 'L', jcesl)
 !
-    call jeveuo(ligrel//'.LGRF', 'L', jlgrf)
-    ma = zk8(jlgrf-1+1)
+    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+    ma = lgrf(1)
 !
 !
 !
@@ -178,8 +186,8 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     call detrsd('CHAM_ELEM', cel2)
 !
     call jeveuo(ces2//'.CESD', 'L', jce2d)
-    call jeveuo(ces2//'.CESC', 'L', jce2c)
-    call jeveuo(ces2//'.CESV', 'E', jce2v)
+    call jeveuo(ces2//'.CESC', 'L', vk8=ce2c)
+    call jeveuo(ces2//'.CESV', 'E', vr=ce2v)
     call jeveuo(ces2//'.CESL', 'E', jce2l)
     call jeveuo(ces2//'.CESK', 'L', jce2k)
     call jelira(ces2//'.CESC', 'LONMAX', ncmp2)
@@ -192,23 +200,23 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !------------------------------------------------------------------
 !     3- REMPLISSAGE DES VALEURS DE CES2 :
 !     -------------------------------
-    call jeveuo(corres//'.PJEF_EL', 'L', jpo)
+    call jeveuo(corres//'.PJEF_EL', 'L', vi=pjef_el)
 !
     do icmp1 = 1, ncmp1
-        icmp2 = indik8( zk8(jce2c),zk8(jcns1c-1+icmp1), 1, ncmp2 )
+        icmp2 = indik8( ce2c,cnsc(icmp1), 1, ncmp2 )
         if (icmp2 .eq. 0) goto 92
-        ASSERT(zk8(jce2c-1+icmp2).eq.zk8(jcns1c-1+icmp1))
+        ASSERT(ce2c(icmp2).eq.cnsc(icmp1))
 !       -- nbno1 est le nombre de pseudo-noeuds du maillage 2
         do ipo = 1, nbno1
-            ima=zi(jpo-1+2*ipo-1)
-            ipt= zi(jpo-1+2*ipo)
+            ima=pjef_el(2*ipo-1)
+            ipt= pjef_el(2*ipo)
             call cesexi('C', jce2d, jce2l, ima, ipt,&
                         1, icmp2, iad2)
             ASSERT(iad2.le.0)
             iad2=-iad2
             if (iad2 .eq. 0) goto 98
 !
-            zr(jce2v-1+iad2)=zr(jcns1v+(ipo-1)*ncmp1+icmp1-1)
+            ce2v(iad2)=cnsv(1+(ipo-1)*ncmp1+icmp1-1)
             zl(jce2l-1+iad2)=.true.
  98         continue
         end do

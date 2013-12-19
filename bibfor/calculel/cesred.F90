@@ -79,14 +79,16 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !
 !-----------------------------------------------------------------------
     logical :: loter
-    integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2, jexma
-    integer :: jce2d, jce2v, jce2l, jce2c, jnbpt, jnbsp, jnbcmp, nbpt
+    integer ::  jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2, jexma
+    integer :: jce2d, jce2v, jce2l,  jnbpt, jnbsp, jnbcmp, nbpt
     integer :: kma, isp, iad1, iad2, jce3c, nbsp, ipt
     integer :: ncmpmx, ncmp1, icmp1, icmp2, icmp3
     integer :: ima
     character(len=8) :: ma, nomgd, nocmp, typces
     character(len=3) :: tsca
     character(len=19) :: ces1, ces2
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=8), pointer :: ce2c(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -102,15 +104,15 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !
 !     1- RECUPERATION D'INFORMATIONS DANS CES1 :
 !     ------------------------------------------
-    call jeveuo(ces1//'.CESK', 'L', jce1k)
+    call jeveuo(ces1//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces1//'.CESD', 'L', jce1d)
     call jeveuo(ces1//'.CESC', 'L', jce1c)
     call jeveuo(ces1//'.CESV', 'L', jce1v)
     call jeveuo(ces1//'.CESL', 'L', jce1l)
 !
-    ma = zk8(jce1k-1+1)
-    nomgd = zk8(jce1k-1+2)
-    typces = zk8(jce1k-1+3)
+    ma = cesk(1)
+    nomgd = cesk(2)
+    typces = cesk(3)
     nbmam = zi(jce1d-1+1)
     ncmp1 = zi(jce1d-1+2)
 !
@@ -188,7 +190,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     endif
 !
     call jeveuo(ces2//'.CESD', 'L', jce2d)
-    call jeveuo(ces2//'.CESC', 'L', jce2c)
+    call jeveuo(ces2//'.CESC', 'L', vk8=ce2c)
     call jeveuo(ces2//'.CESV', 'E', jce2v)
     call jeveuo(ces2//'.CESL', 'E', jce2l)
 !
@@ -216,7 +218,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !     5- REMPLISSAGE DES OBJETS .CESL ET .CESV :
 !     ------------------------------------------
     do icmp2 = 1, ncmp2
-        nocmp = zk8(jce2c-1+icmp2)
+        nocmp = ce2c(icmp2)
         icmp1 = knindi(8,nocmp,zk8(jce1c),ncmp1)
         if (icmp1 .eq. 0) goto 80
 !

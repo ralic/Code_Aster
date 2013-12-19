@@ -48,13 +48,14 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
 !
 !
     integer :: irang, i, j, k, jtach, iadin, iadou, ire1
-    integer :: jordr, iundf, iordr
+    integer ::  iundf, iordr
     real(kind=8) :: rundf
     character(len=3) :: type
     character(len=16) :: nomsym
     character(len=16) :: nopara
     character(len=19) :: nomsdr
     character(len=19) :: chamin, nomch1, nomch2
+    integer, pointer :: ordr(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -139,12 +140,12 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
 !     3. -- ON COMPACTE LES NUME_ORDRE ARCHIVES :
 !     -------------------------------------------
     call jeecra(nomsdr//'.ORDR', 'LONUTI', nbarch)
-    call jeveuo(nomsdr//'.ORDR', 'E', jordr)
+    call jeveuo(nomsdr//'.ORDR', 'E', vi=ordr)
     irang=0
     do 80 i = 1, nbrang
         if (nuarch(i) .eq. 0) goto 80
         irang=irang+1
-        zi(jordr+irang-1)=nuordr(i)
+        ordr(irang)=nuordr(i)
 80  end do
     ASSERT(irang.eq.nbarch)
 !
@@ -152,7 +153,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
 !     4. -- ON MET A "ZERO" LES IRANG INUTILISES :
 !     -------------------------------------------------
     do 100 irang = nbarch+1, nbrang
-        zi(jordr+irang-1)=iundf
+        ordr(irang)=iundf
         do 90 j = 1, nbpara
             nopara=nompar(j)
             call extrs3(nomsdr, nopara, irang, 'E', 1,&
@@ -185,7 +186,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
         call jenuno(jexnum(nomsdr//'.DESC', i), nomsym)
         call jeveuo(jexnum(nomsdr//'.TACH', i), 'E', jtach)
         do 41 j = 1, nbarch
-            iordr=zi(jordr-1+j)
+            iordr=ordr(j)
             nomch1=zk24(jtach-1+j)
             if (nomch1 .eq. ' ') goto 41
             call rsutch(nomsdr, nomsym, iordr, nomch2, .false.)

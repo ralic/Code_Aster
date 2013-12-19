@@ -39,20 +39,21 @@ subroutine rsexpa(resu, icode, nompar, iret)
 ! OUT : IRET   : = 0  LE NOM SYMBOLIQUE N'EXISTE PAS
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: nbac, nbpa, lpout
+    integer :: nbac, nbpa
 !
 !-----------------------------------------------------------------------
     integer :: ipa, ire1
+    character(len=16), pointer :: nom_par(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     iret=0
 !
     call rsnopa(resu, icode, '&&RSEXPA.NOM_PAR', nbac, nbpa)
     call jeexin('&&RSEXPA.NOM_PAR', ire1)
-    if (ire1 .gt. 0) call jeveuo('&&RSEXPA.NOM_PAR', 'E', lpout)
+    if (ire1 .gt. 0) call jeveuo('&&RSEXPA.NOM_PAR', 'E', vk16=nom_par)
     if ((nbac+nbpa) .ne. 0) then
         do 10 ipa = 1, nbac+nbpa
-            if (nompar .eq. zk16(lpout-1+ipa)) then
+            if (nompar .eq. nom_par(ipa)) then
                 iret=100
             endif
 10      continue

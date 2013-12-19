@@ -83,7 +83,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
 !
 !
-    integer :: ibid, ie, jxxk1, iret, jordr, nbordr, i, iordr, tmod(1)
+    integer :: ibid, ie,  iret, jordr, nbordr, i, iordr, tmod(1)
     integer :: iains1, iains2, nbsym, isym, ico, ind, nbmax
     parameter (nbmax=50)
     integer :: ipar, ipar1, ipar2
@@ -98,6 +98,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     integer :: iexi, jpara, ier, inume
     real(kind=8) :: r8b, prec
     complex(kind=8) :: c16b
+    character(len=24), pointer :: pjxx_k1(:) => null()
 !
 !
 ! DEB -----------------------------------------------------------------
@@ -150,9 +151,9 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         prol0 = 'OUI'
 !
     else
-        call jeveuo(corres//'.PJXX_K1', 'L', jxxk1)
+        call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
         if (method .ne. 'SOUS_POINT') then
-            if (zk24(jxxk1-1+2) .ne. ma2) then
+            if (pjxx_k1(2) .ne. ma2) then
                 call utmess('F', 'CALCULEL4_60')
             endif
         endif

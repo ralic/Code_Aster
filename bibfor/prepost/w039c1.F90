@@ -52,12 +52,14 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
 !
 !
-    integer :: iret, jptma, ima, nbma, izone, nuzone
-    integer :: jcesv, jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi
+    integer :: iret,  ima, nbma, izone, nuzone
+    integer ::  jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi
     integer :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit, jzones, kzone, kcmp
     character(len=19) :: cart1, cel2, ces2
     character(len=64) :: nommed
     character(len=8) :: kbid, ma, tsca, nomgd, modele, typech, sdcarm
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: ptma(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -160,16 +162,16 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
     call etenca(cart1, ligrel, iret)
     ASSERT(iret.eq.0)
-    call jeveuo(cart1//'.PTMA', 'L', jptma)
+    call jeveuo(cart1//'.PTMA', 'L', vi=ptma)
 !
     ces2='&&W039C1.CES2'
     call cescre('V', ces2, 'ELEM', ma, 'NEUT_R',&
                 1, 'X1', [-1], [-1], [-1])
     call jeveuo(ces2//'.CESD', 'L', jcesd)
-    call jeveuo(ces2//'.CESV', 'E', jcesv)
+    call jeveuo(ces2//'.CESV', 'E', vr=cesv)
     call jeveuo(ces2//'.CESL', 'E', jcesl)
     do ima = 1, nbma
-        izone=zi(jptma-1+ima)
+        izone=ptma(ima)
         if (izone .gt. 0) then
             nuzone=zi(jzones-1+izone)
             ASSERT(nuzone.gt.0)
@@ -177,7 +179,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
                         1, 1, iad)
             ASSERT(iad.le.0)
             zl(jcesl-1-iad)=.true.
-            zr(jcesv-1-iad)=dble(nuzone)
+            cesv(1-1-iad)=dble(nuzone)
         endif
     end do
 

@@ -49,12 +49,13 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !       NOMOBJ(K) == "RSADPA(NOPARA,IORDR)"
 !  - CETTE ROUTINE NE FAIT PAS JEMARQ/JEDEMA POUR NE PAS
 !    INVALIDER L'ADRESSE JEVEUX JADD
-    integer :: kk, jordr, jpara, i1, jtava, l1
+    integer :: kk,  jpara, i1, jtava, l1
     character(len=8) :: k8b, tsca
     character(len=5) :: nom1
     character(len=24) :: nomk24
     character(len=16) :: nompar
     character(len=19) :: noms2
+    integer, pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
 !
     noms2 = nomsd
@@ -83,13 +84,13 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
         endif
     endif
 !
-    call jeveuo(noms2//'.ORDR', 'L', jordr)
+    call jeveuo(noms2//'.ORDR', 'L', vi=ordr)
     call jelira(noms2//'.ORDR', 'LONUTI', n1)
 !
     call wkvect(nomk24, 'V V '//tsca, n1, j1)
 !
     do 1 kk = 1, n1
-        call rsadpa(noms2, 'L', 1, nompar, zi(jordr-1+kk),&
+        call rsadpa(noms2, 'L', 1, nompar, ordr(kk),&
                     0, sjv=jpara, styp=k8b)
         if (tsca .eq. 'R') then
             zr(j1-1+kk)=zr(jpara)

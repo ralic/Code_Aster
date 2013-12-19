@@ -68,13 +68,19 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     character(len=8) :: ma1, ma2, nomgd
     character(len=16) :: corres
     character(len=19) :: ces1, ces2
-    integer :: jce1c, jce1l, jce1v, jce1k, jce1d
+    integer ::  jce1l, jce1v, jce1k, jce1d
     integer :: jce2c, jce2l, jce2v, jce2d, ifm, niv
-    integer :: nbno1, jxxk1, iaconb, iaconu, iacocf, gd, nbno2
-    integer :: ncmpmx, iad1, iad2, ima1, ima2, jdecal, nbmam2, iacom1
-    integer :: idecal, ino2, icmp, ico, ino1, nuno2, iacnx2, ilcnx2
+    integer :: nbno1,   iaconu,  gd, nbno2
+    integer :: ncmpmx, iad1, iad2, ima1, ima2, jdecal, nbmam2
+    integer :: idecal, ino2, icmp, ico, ino1, nuno2,  ilcnx2
     real(kind=8) :: v1, v2, coef1
     complex(kind=8) :: v1c, v2c
+    integer, pointer :: pjef_nb(:) => null()
+    integer, pointer :: connex(:) => null()
+    character(len=24), pointer :: pjxx_k1(:) => null()
+    character(len=8), pointer :: ce1c(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    integer, pointer :: pjef_m1(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -115,7 +121,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !     ------------------------------------------
     call jeveuo(ces1//'.CESK', 'L', jce1k)
     call jeveuo(ces1//'.CESD', 'L', jce1d)
-    call jeveuo(ces1//'.CESC', 'L', jce1c)
+    call jeveuo(ces1//'.CESC', 'L', vk8=ce1c)
     call jeveuo(ces1//'.CESV', 'L', jce1v)
     call jeveuo(ces1//'.CESL', 'L', jce1l)
 !
@@ -128,13 +134,13 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !------------------------------------------------------------------
 !     2- RECUPERATION DES OBJETS ET INFORMATIONS DE CORRES :
 !     ----------------------------------------------------
-    call jeveuo(corres//'.PJXX_K1', 'L', jxxk1)
-    call jeveuo(corres//'.PJEF_NB', 'L', iaconb)
-    call jeveuo(corres//'.PJEF_M1', 'L', iacom1)
+    call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
+    call jeveuo(corres//'.PJEF_NB', 'L', vi=pjef_nb)
+    call jeveuo(corres//'.PJEF_M1', 'L', vi=pjef_m1)
     call jeveuo(corres//'.PJEF_NU', 'L', iaconu)
-    call jeveuo(corres//'.PJEF_CF', 'L', iacocf)
+    call jeveuo(corres//'.PJEF_CF', 'L', vr=pjef_cf)
 !
-    ma2 = zk24(jxxk1-1+2)
+    ma2 = pjxx_k1(2)
 !
 !------------------------------------------------------------------
 !     3- QUELQUES VERIFS :
@@ -153,7 +159,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !
     endif
 !     TEST SUR IDENTITE DES 2 MAILLAGES
-    ASSERT(zk24(jxxk1-1+1).eq.ma1)
+    ASSERT(pjxx_k1(1).eq.ma1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) then
@@ -166,7 +172,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !     -----------------------------
     call detrsd('CHAM_ELEM_S', ces2)
     call cescre(base, ces2, 'ELNO', ma2, nomgd,&
-                ncmpmx, zk8(jce1c), [0], [-1], [-ncmpmx])
+                ncmpmx, ce1c, [0], [-1], [-ncmpmx])
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESC', 'L', jce2c)
     call jeveuo(ces2//'.CESV', 'E', jce2v)
@@ -186,20 +192,20 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     idecal = 0
 !
     do ino2 = 1, nbno2
-        nbno1 = zi(iaconb-1+ino2)
+        nbno1 = pjef_nb(ino2)
         zi(jdecal-1+ino2) = idecal
         idecal = idecal + nbno1
     end do
-    call jeveuo(ma2//'.CONNEX', 'L', iacnx2)
+    call jeveuo(ma2//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', ilcnx2)
 !
 !
     do ima2 = 1, nbmam2
         nbno2 = zi(jce2d-1+5+4* (ima2-1)+1)
         do ino2 = 1, nbno2
-            nuno2 = zi(iacnx2+zi(ilcnx2-1+ima2)-2+ino2)
-            nbno1 = zi(iaconb-1+nuno2)
-            ima1 = zi(iacom1-1+nuno2)
+            nuno2 = connex(1+zi(ilcnx2-1+ima2)-2+ino2)
+            nbno1 = pjef_nb(nuno2)
+            ima1 = pjef_m1(nuno2)
             idecal = zi(jdecal-1+nuno2)
             do icmp = 1, ncmpmx
 ! ================================================================
@@ -211,7 +217,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
                 do ino1 = 1, nbno1
                     call cesexi('C', jce1d, jce1l, ima1, ino1,&
                                 1, icmp, iad1)
-                    coef1 = zr(iacocf+idecal-1+ino1)
+                    coef1 = pjef_cf(1+idecal-1+ino1)
                     if (iad1 .gt. 0) ico = ico + 1
                 end do
                 if (ico .eq. 0) goto 50
@@ -225,7 +231,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
                 if (tsca .eq. 'R') then
                     v2 = 0.d0
                     do ino1 = 1, nbno1
-                        coef1 = zr(iacocf+idecal-1+ino1)
+                        coef1 = pjef_cf(1+idecal-1+ino1)
                         call cesexi('C', jce1d, jce1l, ima1, ino1,&
                                     1, icmp, iad1)
                         ASSERT(iad1.gt.0)
@@ -237,7 +243,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
                 else if (tsca.eq.'C') then
                     v2c = dcmplx(0.d0,0.d0)
                     do ino1 = 1, nbno1
-                        coef1 = zr(iacocf+idecal-1+ino1)
+                        coef1 = pjef_cf(1+idecal-1+ino1)
                         call cesexi('C', jce1d, jce1l, ima1, ino1,&
                                     1, icmp, iad1)
                         ASSERT(iad1.gt.0)

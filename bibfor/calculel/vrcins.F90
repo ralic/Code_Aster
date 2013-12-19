@@ -55,13 +55,14 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     integer :: iret, ichs, nbchs, jlissd, jlisch, jcesd, jcesv, jcesl
     integer :: jcvcmp, jcesc, nbcmp, kcmp, kcvrc
     integer :: nbma, ima, nbpt, nbsp, ipt, isp, iad, iad1
-    integer :: jcvvar, jce1d, jce1l, jce1v, jcesvi, nncp, n1, k
+    integer ::  jce1d, jce1l, jce1v, jcesvi, nncp, n1, k
     real(kind=8) :: valeur, rundef
     character(len=19) :: chvars, ligrmo, chs
     character(len=8) :: valk(4)
     logical :: avrc, dbg
     integer :: ibid, nbcvrc
     character(len=8) :: modele, chmat, carele, varc1, varc2, nocmp1, nocmp2
+    character(len=8), pointer :: cvrcvarc(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -104,7 +105,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     call jeveuo(chmat//'.LISTE_CH', 'L', jlisch)
     call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs)
     call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
-    call jeveuo(chmat//'.CVRCVARC', 'L', jcvvar)
+    call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jeveuo(chmat//'.CVRCCMP', 'L', jcvcmp)
     call jelira(chmat//'.CVRCCMP', 'LONMAX', nbcvrc)
 !
@@ -133,7 +134,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !
 !         -- CALCUL DE KCVRC :
     do 3,kcvrc=1,nbcvrc
-    varc2=zk8(jcvvar-1+kcvrc)
+    varc2=cvrcvarc(kcvrc)
     nocmp2=zk8(jcvcmp-1+kcvrc)
     if ((varc1.eq.varc2) .and. (nocmp1.eq.nocmp2)) goto 4
  3  continue

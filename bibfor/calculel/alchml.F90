@@ -91,9 +91,13 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
     integer :: gd, jcelk, iopt, iprem, nel, iel, lgcata, nbspt
     integer :: ncdyn, lgchel
     integer :: ibid, modmx, iamolo, itych, itych1, neltot
-    integer :: ialiel, illiel, jdcesd, jdcesc, jdcesk, jdcesv, jdcesl
+    integer ::  illiel, jdcesd,    jdcesl
     integer :: ima, ncmpv2, kk, ityplo, nbpoin
     logical :: lmult
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -108,7 +112,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !
     ngrel = nbgrel(ligrel)
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
-    call jeveuo(ligrel//'.LIEL', 'L', ialiel)
+    call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
 !
@@ -152,15 +156,15 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !     3.1 SI CHAMP ETENDU : ON RECUPERE QUELQUES ADRESSES :
 !     --------------------------------------------------------
     if (lmult) then
-        call jeveuo(dcel//'.CESK', 'L', jdcesk)
-        call jeveuo(dcel//'.CESC', 'L', jdcesc)
+        call jeveuo(dcel//'.CESK', 'L', vk8=cesk)
+        call jeveuo(dcel//'.CESC', 'L', vk8=cesc)
         call jeveuo(dcel//'.CESD', 'L', jdcesd)
         call jeveuo(dcel//'.CESL', 'L', jdcesl)
-        call jeveuo(dcel//'.CESV', 'L', jdcesv)
+        call jeveuo(dcel//'.CESV', 'L', vi=cesv)
 !
 !
 !       -- QUELQUES VERIFICATIONS :
-        ma2 = zk8(jdcesk-1+1)
+        ma2 = cesk(1)
         if (ma2 .ne. ma) then
             valk(1) = ma2
             valk(2) = ma
@@ -170,12 +174,12 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
         ASSERT(zi(jdcesd-1+3).eq.1)
         ASSERT(zi(jdcesd-1+4).eq.1)
 !
-        kbid = zk8(jdcesk-1+2)
+        kbid = cesk(2)
         ASSERT(kbid.eq.'DCEL_I')
 !
-        kbid = zk8(jdcesc-1+1)
+        kbid = cesc(1)
         ASSERT(kbid.eq.'NPG_DYN')
-        kbid = zk8(jdcesc-1+2)
+        kbid = cesc(2)
         ASSERT(kbid.eq.'NCMP_DYN')
     endif
 !
@@ -247,7 +251,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !
 !           -- CAS D'UN CHAM_ELEM ETENDU :
                 if (lmult) then
-                    ima = zi(ialiel-1+zi(illiel+igrel-1)+iel-1)
+                    ima = liel(zi(illiel+igrel-1)+iel-1)
 !
 !             -- SI LA MAILLE APPARTIENT AU MAILLAGE, ON SE SERT
 !                DE DCEL, SINON ON ARRETE LE CODE:
@@ -256,7 +260,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
                         call cesexi('C', jdcesd, jdcesl, ima, 1,&
                                     1, 1, kk)
                         if (kk .gt. 0) then
-                            nbspt = max(zi(jdcesv-1+kk),1)
+                            nbspt = max(cesv(kk),1)
                         else
                             nbspt = 1
                         endif
@@ -265,7 +269,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
                         if (nomgd .eq. 'VARI_R') then
                             call cesexi('C', jdcesd, jdcesl, ima, 1,&
                                         1, 2, kk)
-                            if (kk .gt. 0) ncdyn = zi(jdcesv-1+kk)
+                            if (kk .gt. 0) ncdyn = cesv(kk)
                         endif
 !
 !             -- CAS DES MAILLES TARDIVES :

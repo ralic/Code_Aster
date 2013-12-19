@@ -50,12 +50,13 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !             - LE NOM DU LIGREL EST OBTENU PAR GNOMSD
 !     -----------------------------------------------------------------
 !
-    integer :: n1, nbma, nocc, nbmat, iocc, jnuma, jlima1
+    integer :: n1, nbma, nocc, nbmat, iocc, jnuma
     integer :: k, numa, jlima
     character(len=8) :: modele, noma, k8bid
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=19) :: ligrmo
     character(len=24) :: noojb
+    integer, pointer :: lima1(:) => null()
 !     -----------------------------------------------------------------
 !
     motfac=motfaz
@@ -100,9 +101,9 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
         call reliem(modele, noma, 'NU_MAILLE', motfac, iocc,&
                     2, motcle(1), typmcl(1), '&&EXLIM3.LIMA1', nbma)
         ASSERT(nbma.gt.0)
-        call jeveuo('&&EXLIM3.LIMA1', 'L', jlima1)
+        call jeveuo('&&EXLIM3.LIMA1', 'L', vi=lima1)
         do k = 1, nbma
-            numa=zi(jlima1-1+k)
+            numa=lima1(k)
             zi(jnuma-1+numa)=1
         end do
         call jedetr('&&EXLIM3.LIMA1')

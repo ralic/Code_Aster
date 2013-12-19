@@ -51,7 +51,8 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, itrou, jordr, jtach, nbordr
+    integer :: i, ibid, itrou,  jtach, nbordr
+    integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nbtrou = 0
@@ -61,7 +62,7 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
     if (noms2 .eq. ' ') goto 20
 !
     call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
-    call jeveuo(nomd2//'.ORDR', 'L', jordr)
+    call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
     call jenonu(jexnom(nomd2//'.DESC', noms2), ibid)
     call jeveuo(jexnum(nomd2//'.TACH', ibid), 'L', jtach)
     itrou = 0
@@ -72,7 +73,7 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
             if (nbvale .eq. 0) goto 10
             itrou = itrou + 1
             if (itrou .le. nbvale) then
-                tabord(itrou) = zi(jordr+i)
+                tabord(itrou) = ordr(1+i)
                 tabnom(itrou) = chextr
             endif
         endif

@@ -53,12 +53,13 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
 !             ELLE NE DOIT ETRE APPELEE QUE DANS TEST_RESU
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, numa, iad1, jcesc, jcesd, jcesl
+    integer :: iret, numa, iad1,  jcesd, jcesl
     integer :: jcesv, kcmp, nbcmp
     character(len=1) :: typsca
     character(len=4) :: type
     character(len=19) :: cart19, ces
     character(len=8) :: ma, nomail
+    character(len=8), pointer :: cesc(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -84,12 +85,12 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
     ASSERT(iret.eq.0)
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESC', 'L', jcesc)
+    call jeveuo(ces//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces//'.CESV', 'L', jcesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
 !
     call jelira(ces//'.CESC', 'LONMAX', nbcmp)
-    kcmp = indik8(zk8(jcesc),nocmp,1,nbcmp)
+    kcmp = indik8(cesc,nocmp,1,nbcmp)
     if (kcmp .eq. 0) then
         call utmess('F', 'CALCULEL3_5', sk=nocmp)
     endif

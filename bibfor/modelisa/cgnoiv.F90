@@ -48,13 +48,14 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 ! -------------------------------------------------------
 !
     integer :: n1, k, nbnot, ino, jtrav, ncmp
-    integer :: jlisno, jcn2v, jcn2l, jcn2k
+    integer :: jlisno, jcn2v, jcn2l
     character(len=3) :: tsca
     character(len=8) :: nocmp, noma, ma1, nomgd
     character(len=16) :: motfac
     character(len=19) :: cham19, cns1, cns2
     character(len=24) :: lisnoi, valk(5)
     real(kind=8) :: valr(2), vmin, vmax, v1
+    character(len=8), pointer :: cnsk(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -88,10 +89,10 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     call cnsred(cns1, 0, [0], ncmp, nocmp,&
                 'V', cns2)
 !
-    call jeveuo(cns2//'.CNSK', 'L', jcn2k)
+    call jeveuo(cns2//'.CNSK', 'L', vk8=cnsk)
     call jeveuo(cns2//'.CNSV', 'L', jcn2v)
     call jeveuo(cns2//'.CNSL', 'L', jcn2l)
-    nomgd=zk8(jcn2k-1+2)
+    nomgd=cnsk(2)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
 !

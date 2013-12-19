@@ -82,12 +82,13 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !
     integer :: p1, p2, p3, p4, jm3d, nbmat, im1, im2
     integer :: ima, numa, nnoe, ino, nbm, i, k, indi, nnoem, nnoe1
-    integer :: ifm, niv, ipos, itypma, nutyma
+    integer :: ifm, niv, ipos,  nutyma
     integer :: lisnoe(27), indmai
     logical :: first
     character(len=8) :: k8b, nomail, type
     character(len=16) :: oper, k16b
     character(len=24) :: nomavo, valk(4)
+    integer, pointer :: typmail(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
@@ -98,7 +99,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !
     call jeveuo(jexatr(mail//'.CONNEX', 'LONCUM'), 'L', p2)
     call jeveuo(mail//'.CONNEX', 'L', p1)
-    call jeveuo(mail//'.TYPMAIL', 'L', itypma)
+    call jeveuo(mail//'.TYPMAIL', 'L', vi=typmail)
 !
 ! --- CREATION DE NOMOB1:
 !     -------------------
@@ -117,7 +118,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !     ------------------
     do 100 ima = 1, nlima
         numa = lima(ima)
-        nutyma=zi(itypma+numa-1)
+        nutyma=typmail(numa)
         nnoe = zi(p2+numa)-zi(p2-1+numa)
         ASSERT(nnoe .le. 27)
         do 80 ino = 1, nnoe

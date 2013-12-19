@@ -74,12 +74,13 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !
 !
-    integer :: nbvec, jvec, ityp, neq, jass, i, ibid, iret, icha
+    integer :: nbvec,  ityp, neq, jass, i, ibid, iret, icha
     integer :: n1, jvacha
     logical :: bidon
     character(len=4) :: tych
     character(len=8) :: modele, newnom, vacha8
     character(len=19) :: chamno, resuel, vecele
+    character(len=24), pointer :: relr(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -97,7 +98,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
         call utmess('F', 'ALGORITH_13', sk=vecele)
     endif
     call jelira(vecele//'.RELR', 'LONUTI', nbvec)
-    call jeveuo(vecele//'.RELR', 'E', jvec)
+    call jeveuo(vecele//'.RELR', 'E', vk24=relr)
 !
 !
 !     2. DESTRUCTION ET RE-ALLOCATION DE VACHAR :
@@ -140,7 +141,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     if (typres .eq. 'C') ityp = 2
 !
     do i = 1, nbvec
-        resuel = zk24(jvec-1+i)(1:19)
+        resuel = relr(i)(1:19)
 !       CALL UTIMS2('ASASVE 1',I,RESUEL,1,' ')
 !
         call corich('L', resuel, ibid, icha)
@@ -181,8 +182,8 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !     DESTRUCTION DU VECT_ELEM :
 !     -----------------------------------
     do i = 1, nbvec
-        call corich('S', zk24(jvec+i-1) (1:19), ibid, ibid)
-        call detrsd('CHAMP_GD', zk24(jvec+i-1))
+        call corich('S', relr(i) (1:19), ibid, ibid)
+        call detrsd('CHAMP_GD', relr(i))
     end do
     call jedetr(vecele//'.RELR')
     call jedetr(vecele//'.RERR')

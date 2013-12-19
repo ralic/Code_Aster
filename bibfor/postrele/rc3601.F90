@@ -64,19 +64,20 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
     integer :: nbsigr, jnsg, is1, ioc1, is2, ioc2, inds, ifm, niv, jcombi
     integer :: jpresa, jpresb, jmomea, jmomeb, jnbocc, nbth1, jth1, nbth2, jth2
     integer :: jchmat, jmsa, ndim, jnoc, nscy, ns, jmsn, nbsig2, i1, i2, indi
-    integer :: jist, jnsitu, nbsitu
+    integer :: jist,  nbsitu
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij, ug, sn, sp, smm, mpi(3), mpj(3)
     real(kind=8) :: mqi(3), mqj(3), mse(3), matpi(14), matpj(14), matqi(14)
     real(kind=8) :: matqj(14), matse(14)
     character(len=24) :: momepi, momepj, momeqi, momeqj, matepi, matepj, mateqi
     character(len=24) :: mateqj
     real(kind=8) :: typeke, spmeca, spther
+    integer, pointer :: situ_numero(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
     call infniv(ifm, niv)
 !
-    call jeveuo('&&RC3600.SITU_NUMERO', 'L', jnsitu)
+    call jeveuo('&&RC3600.SITU_NUMERO', 'L', vi=situ_numero)
     call jeveuo('&&RC3600.SITU_COMBINABLE', 'L', jcombi)
     call jeveuo('&&RC3600.SITU_PRES_A', 'L', jpresa)
     call jeveuo('&&RC3600.SITU_PRES_B', 'L', jpresb)
@@ -91,7 +92,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
     call jeveuo(jexnum('&&RC3600.LES_GROUPES', ig), 'L', jnsg)
     if (niv .ge. 2) then
         write (ifm,1000) ig,nbsigr
-        write (ifm,1002) (zi(jnsitu+zi(jnsg+i1-1)-1),i1=1,nbsigr)
+        write (ifm,1002) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,nbsigr)
     endif
 !
     if (iocs .eq. 0) then

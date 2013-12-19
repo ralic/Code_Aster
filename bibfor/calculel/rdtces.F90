@@ -48,13 +48,15 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 !
 !     ------------------------------------------------------------------
     integer :: jcorrm, nbma2, jnbpt, jnbsp, jnbcmp
-    integer :: jce1k, jce1d, jce1v, jce1l, jce1c, ima1, ima2, nbpt, nbsp, iad1
+    integer ::  jce1d, jce1v, jce1l,  ima1, ima2, nbpt, nbsp, iad1
     integer :: jce2d, jce2v, jce2l, jce2c
     integer :: ipt, isp, iad2
     integer :: ncmp, icmp
     character(len=8) :: nomgd, typces
     character(len=3) :: tsca
     logical :: isvide
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=8), pointer :: ce1c(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -65,14 +67,14 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 !
 !     1- RECUPERATION D'INFORMATIONS DANS CES1 :
 !     ------------------------------------------
-    call jeveuo(ces1//'.CESK', 'L', jce1k)
+    call jeveuo(ces1//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces1//'.CESD', 'L', jce1d)
-    call jeveuo(ces1//'.CESC', 'L', jce1c)
+    call jeveuo(ces1//'.CESC', 'L', vk8=ce1c)
     call jeveuo(ces1//'.CESV', 'L', jce1v)
     call jeveuo(ces1//'.CESL', 'L', jce1l)
 !
-    nomgd=zk8(jce1k-1+2)
-    typces=zk8(jce1k-1+3)
+    nomgd=cesk(2)
+    typces=cesk(3)
     ncmp=zi(jce1d-1+2)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -104,7 +106,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 !     3- CREATION DE CES2 :
 !     ---------------------------------------
     call cescre(base, ces2, typces, ma2, nomgd,&
-                ncmp, zk8(jce1c), zi(jnbpt), zi(jnbsp), zi(jnbcmp))
+                ncmp, ce1c, zi(jnbpt), zi(jnbsp), zi(jnbcmp))
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESC', 'L', jce2c)
     call jeveuo(ces2//'.CESV', 'E', jce2v)

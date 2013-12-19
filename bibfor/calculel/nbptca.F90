@@ -53,9 +53,10 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: iret, nbma, ima, jcesd, jnbpt, jnbno, iacnx1, ilcnx1, nbno
+    integer :: iret, nbma, ima,  jnbpt, jnbno, iacnx1, ilcnx1, nbno
     character(len=8) :: ma
     character(len=19) :: cel, ces
+    integer, pointer :: cesd(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     cel = '&&NBPTCA.CEL'
@@ -74,9 +75,9 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 !       - IL N'Y A RIEN A FAIRE : NBPT(IMA)=0
     else
         call celces(cel, 'V', ces)
-        call jeveuo(ces//'.CESD', 'L', jcesd)
+        call jeveuo(ces//'.CESD', 'L', vi=cesd)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = zi(jcesd-1+5+4* (ima-1)+1)
+            zi(jnbpt-1+ima) = cesd(5+4* (ima-1)+1)
             nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
             zi(jnbno-1+ima) = nbno
         end do

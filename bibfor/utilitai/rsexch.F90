@@ -60,7 +60,8 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
     character(len=16) :: noms2
     character(len=19) :: nomd2, chext2, chext3
     character(len=24) :: valk(3)
-    integer :: iexi, irang, isymb, jtach, nbordr, nbormx, jordr
+    integer :: iexi, irang, isymb, jtach, nbordr, nbormx
+    integer, pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
     icode = -99
@@ -107,8 +108,8 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
 !       -- ON VERIFIE QUE LE NOUVEAU IORDR EST PLUS GRAND
 !          QUE L'ANCIEN PLUS GRAND :
         if (nbordr .ge. 1) then
-            call jeveuo(nomd2//'.ORDR', 'L', jordr)
-            if (iordr .le. zi(jordr-1+nbordr)) then
+            call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
+            if (iordr .le. ordr(nbordr)) then
                 icode=102
                 goto 10
             endif

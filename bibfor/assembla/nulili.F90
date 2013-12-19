@@ -42,7 +42,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: igds, nec, nlili, nbelm, iadnem, iadlie, jligr2, k
+    integer :: igds, nec, nlili, nbelm,   jligr2, k
     character(len=*) :: lligr
     character(len=24) :: lili
     character(len=*) :: molocz
@@ -104,6 +104,8 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
     integer :: iad, ifm, igr
     integer :: illigr, iligr, iret
     integer :: nbgr, nbsup, ncmp, niv, nligr, jmoloc, imode, ite
+    integer, pointer :: adli(:) => null()
+    integer, pointer :: adne(:) => null()
 !
 !----------------------------------------------------------------------
     call infniv(ifm, niv)
@@ -140,10 +142,10 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !---- CREATION DES OBJETS .ADNE ET .ADLI SUR 'V'
     call jecreo(prefix//'.ADNE', ' V V I')
     call jeecra(prefix//'.ADNE', 'LONMAX', 3*nlili)
-    call jeveuo(prefix//'.ADNE', 'E', iadnem)
+    call jeveuo(prefix//'.ADNE', 'E', vi=adne)
     call jecreo(prefix//'.ADLI', ' V V I')
     call jeecra(prefix//'.ADLI', 'LONMAX', 3*nlili)
-    call jeveuo(prefix//'.ADLI', 'E', iadlie)
+    call jeveuo(prefix//'.ADLI', 'E', vi=adli)
 !
 !---- CHARGEMENT DE LILI, ADNE, ADLI
 !
@@ -187,31 +189,31 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !---- ADNE(3*(ILIGR)+1)=NBRE DE MAILLES SUP DU LIGREL NOMLI
 !
             call jelira(nomli(1:19)//'.NEMA', 'NUTIOC', nbsup)
-            zi(iadnem+3* (iligr)) = nbsup
+            adne(1+3* (iligr)) = nbsup
             call jeveut(nomli(1:19)//'.NEMA', 'L', iad)
-            zi(iadnem+3* (iligr)+1) = iad
+            adne(1+3* (iligr)+1) = iad
             call jeveut(jexatr(nomli(1:19)//'.NEMA', 'LONCUM'), 'L', iad)
-            zi(iadnem+3* (iligr)+2) = iad
+            adne(1+3* (iligr)+2) = iad
         else
-            zi(iadnem+3* (iligr)) = 0
-            zi(iadnem+3* (iligr)+1) = 2**30
-            zi(iadnem+3* (iligr)+2) = 2**30
+            adne(1+3* (iligr)) = 0
+            adne(1+3* (iligr)+1) = 2**30
+            adne(1+3* (iligr)+2) = 2**30
         endif
 !
 !---- ADLI(3*(ILIGR)+1)=NBRE DE MAILLES DU LIGREL NOMLI
 !
         call jelira(nomli(1:19)//'.LIEL', 'NUTIOC', nbgr)
-        zi(iadlie+3* (iligr)) = nbgr
+        adli(1+3* (iligr)) = nbgr
         call jeveut(nomli(1:19)//'.LIEL', 'L', iad)
-        zi(iadlie+3* (iligr)+1) = iad
+        adli(1+3* (iligr)+1) = iad
         call jeveut(jexatr(nomli(1:19)//'.LIEL', 'LONCUM'), 'L', iad)
-        zi(iadlie+3* (iligr)+2) = iad
+        adli(1+3* (iligr)+2) = iad
  10     continue
     end do
 !
 !
     call dismoi('NB_MA_MAILLA', mailla(1:8), 'MAILLAGE', repi=nbelm)
-    zi(iadnem) = nbelm
+    adne(1) = nbelm
 !
 !
 !---- CALCUL DE : NOMGDS, IGDS, NEC , NCMP

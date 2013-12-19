@@ -48,13 +48,14 @@ subroutine rsmena(resu)
 ! 0.3. ==> VARIABLES LOCALES
 !
     integer :: n1, n2, k, jlist, nbcon, ibid, nbordr, jordr, jcoche
-    integer :: i, nbnosy, jtach, j, iret, i1, jrs24, tord(1)
+    integer :: i, nbnosy, jtach, j, iret, i1,  tord(1)
     character(len=8) :: kbid, tych, res8
     character(len=16) :: nomsym
     character(len=19) :: res19, noco19
     character(len=24) :: cham, noobj
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
+    character(len=24), pointer :: rs24(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     res19=resu
@@ -155,12 +156,12 @@ subroutine rsmena(resu)
 !
 !     2.2 ON "COCHE" LES  LISTE_CHARGE REFERENCES :
     call jelira(res19//'.RS24', 'LONMAX', n1)
-    call jeveuo(res19//'.RS24', 'L', jrs24)
+    call jeveuo(res19//'.RS24', 'L', vk24=rs24)
     call wkvect('&&RSMENA.COCHE', 'V V I', nbcon, jcoche)
 !
     do i = 1, n1
-        if (zk24(jrs24+i-1)(14:19) .ne. '.EXCIT') goto 70
-        noco19=zk24(jrs24+i-1)(1:19)
+        if (rs24(i)(14:19) .ne. '.EXCIT') goto 70
+        noco19=rs24(i)(1:19)
         call jenonu(jexnom('&&RSMENA.DICO', noco19), i1)
         ASSERT(i1.gt.0 .and. i1.le.nbcon)
         zi(jcoche-1+i1)=1

@@ -58,14 +58,19 @@ subroutine celcel(transf, cel1, base, cel2)
 !
 !     ------------------------------------------------------------------
     integer :: ima, ipt, ispt, icmp, nbma, ibid
-    integer :: jcesd1, jcesl1, jcesv1, jcesc1, jcesk1
-    integer :: jcesd2, jcesl2, jcesv2, jceld2, nbgrel, igrel, debugr, nbel
+    integer :: jcesd1, jcesl1,  jcesc1
+    integer :: jcesd2, jcesl2,   nbgrel, igrel, debugr, nbel
     integer :: nbpt, nbspt, ncmp2, iad1, iad2, imolo, nbspmx, iel, nbsp
-    integer :: ncmpg, nbvamx, jnbpt, jnbspt, jcelk1, nncp, ico
+    integer :: ncmpg, nbvamx, jnbpt, jnbspt,  nncp, ico
     character(len=19) :: ces1, ces2, ligrel, cel11, cel22
     character(len=16) :: optini, nompar
     character(len=8) :: ma, nomgd, typces, kbid
     character(len=24) :: valk(3)
+    integer, pointer :: celd(:) => null()
+    character(len=24), pointer :: celk(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    real(kind=8), pointer :: cesv1(:) => null()
+    real(kind=8), pointer :: cesv2(:) => null()
 ! -DEB------------------------------------------------------------------
     call jemarq()
 !
@@ -87,15 +92,15 @@ subroutine celcel(transf, cel1, base, cel2)
         call celces(cel1, 'V', ces1)
         call jeveuo(ces1//'.CESD', 'L', jcesd1)
         call jeveuo(ces1//'.CESL', 'L', jcesl1)
-        call jeveuo(ces1//'.CESV', 'L', jcesv1)
+        call jeveuo(ces1//'.CESV', 'L', vr=cesv1)
         call jeveuo(ces1//'.CESC', 'L', jcesc1)
-        call jeveuo(ces1//'.CESK', 'L', jcesk1)
+        call jeveuo(ces1//'.CESK', 'L', vk8=cesk)
 !
 !       2- ON ALLOUE UN CHAM_ELEM_S PLUS GROS: CES2
 !       -------------------------------------------
         ces2 = '&&CELCEL.CES2'
-        ma = zk8(jcesk1-1+1)
-        typces = zk8(jcesk1-1+3)
+        ma = cesk(1)
+        typces = cesk(3)
         nbma = zi(jcesd1-1+1)
         ncmpg = zi(jcesd1-1+2)
         nbvamx = zi(jcesd1-1+5)
@@ -117,7 +122,7 @@ subroutine celcel(transf, cel1, base, cel2)
                     -nbvamx, kbid, zi(jnbpt), zi(jnbspt), [-nbvamx])
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
-        call jeveuo(ces2//'.CESV', 'E', jcesv2)
+        call jeveuo(ces2//'.CESV', 'E', vr=cesv2)
 !
 !
 !
@@ -140,10 +145,10 @@ subroutine celcel(transf, cel1, base, cel2)
                         ASSERT(iad2.lt.0)
                         zl(jcesl2-1-iad2) = .true.
                         if (iad1 .gt. 0) then
-                            zr(jcesv2-1-iad2) = zr(jcesv1-1+iad1)
+                            cesv2(1-1-iad2) = cesv1(iad1)
 !
                         else
-                            zr(jcesv2-1-iad2) = 0.d0
+                            cesv2(1-1-iad2) = 0.d0
                         endif
                     end do
                 end do
@@ -155,10 +160,10 @@ subroutine celcel(transf, cel1, base, cel2)
 !       4- ON TRANSFORME CES2 EN CHAM_ELEM : CEL2
 !       -------------------------------------------
         cel11 = cel1
-        call jeveuo(cel11//'.CELK', 'L', jcelk1)
-        ligrel = zk24(jcelk1-1+1)
-        optini = zk24(jcelk1-1+2)
-        nompar = zk24(jcelk1-1+6)
+        call jeveuo(cel11//'.CELK', 'L', vk24=celk)
+        ligrel = celk(1)
+        optini = celk(2)
+        nompar = celk(6)
         call cescel(ces2, ligrel, optini, nompar, 'NON',&
                     nncp, base, cel2, 'F', ibid)
 !
@@ -176,24 +181,24 @@ subroutine celcel(transf, cel1, base, cel2)
 !
         call copisd('CHAMP_GD', base, cel1, cel2)
         cel22 = cel2
-        call jeveuo(cel22//'.CELD', 'E', jceld2)
-        nbgrel = zi(jceld2-1+2)
+        call jeveuo(cel22//'.CELD', 'E', vi=celd)
+        nbgrel = celd(2)
 !
 !       -- ON MET A ZERO LE MODE LOCAL DES GRELS QUI ONT DES
 !          SOUS-POINTS :
         ico=0
         do igrel = 1, nbgrel
-            debugr = zi(jceld2-1+4+igrel)
-            nbel = zi(jceld2-1+debugr+1)
-            imolo = zi(jceld2-1+debugr+2)
+            debugr = celd(4+igrel)
+            nbel = celd(debugr+1)
+            imolo = celd(debugr+2)
             if (imolo .gt. 0) then
                 nbspmx = 0
                 do iel = 1, nbel
-                    nbsp = zi(jceld2-1+debugr+4+4* (iel-1)+1)
+                    nbsp = celd(debugr+4+4* (iel-1)+1)
                     nbspmx = max(nbspmx,nbsp)
                 end do
                 if (nbspmx .gt. 1) then
-                    zi(jceld2-1+debugr+2) = 0
+                    celd(debugr+2) = 0
                 else
                     ico=ico+1
                 endif

@@ -98,13 +98,13 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !
     logical :: dbg
 !     ------------------------------------------------------------------
-    integer :: icmp, nec, jcesk, jcesd, jcesv, jcesl, gd
-    integer :: jnucm2, jnucm1, jcesc, i
+    integer :: icmp, nec,  jcesd, jcesv, jcesl, gd
+    integer :: jnucm2, jnucm1,  i
     integer :: ncmpmx, ncmp1, jcmpgd, icmp1, k, iopt, iadg
     integer :: jcelv, neq, nbvces, jcopi, nbvcop, nbvaco
-    integer :: igr, iel, ialiel, illiel, jceld, nbgr, imolo, jmolo
+    integer :: igr, iel,  illiel,  nbgr, imolo, jmolo
     integer :: nbpt, ico, ipt, numa, iad, ieq, iad2
-    integer :: jdceld, jdcell, jdcelv, ima, nbma, nbspt, ispt, icmpmx
+    integer :: jdceld, jdcell,  ima, nbma, nbspt, ispt, icmpmx
     integer :: adiel, jlpt, jlcupt, lgcata, ncdyn, cumu, nbel, nptmx
     integer :: nbsp, nbcmp, isp, nbpt2, vali(2), inan
     logical :: diff, prol, prol2
@@ -117,8 +117,13 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     character(len=24) :: valk(5), messag
     character(len=3) :: prol0
     real(kind=8) :: rnan
+    character(len=8), pointer :: cesc(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: dcelv(:) => null()
+    integer, pointer :: celd(:) => null()
 !
-#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -167,9 +172,9 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !     -- SI CEL EXISTE DEJA, ON LE DETRUIT :
     call detrsd('CHAM_ELEM', cel)
 !
-    call jeveuo(ces//'.CESK', 'L', jcesk)
+    call jeveuo(ces//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESC', 'L', jcesc)
+    call jeveuo(ces//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces//'.CESV', 'L', jcesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
 !     -- OBJET .COPI TEMPORAIRE POUR VERIFIER QUE TOUTES LES
@@ -177,9 +182,9 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     call jelira(ces//'.CESV', 'LONMAX', nbvces)
     call wkvect('&&CESCEL.COPI', 'V V I', nbvces, jcopi)
 !
-    ma = zk8(jcesk-1+1)
-    nomgd = zk8(jcesk-1+2)
-    typces = zk8(jcesk-1+3)
+    ma = cesk(1)
+    nomgd = cesk(2)
+    typces = cesk(3)
     if (nomgd .eq. 'VAR2_R') nomgd = 'VARI_R'
 !
     nbma = zi(jcesd-1+1)
@@ -199,7 +204,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
         call wkvect('&&CESCEL.NUCM2', 'V V I', ncmpmx, jnucm2)
 !
         do icmp1 = 1, ncmp1
-            nomcmp = zk8(jcesc-1+icmp1)
+            nomcmp = cesc(icmp1)
             icmp = indik8(zk8(jcmpgd),nomcmp,1,ncmpmx)
             if (icmp .eq. 0) then
                 valk(1) = nomcmp
@@ -221,7 +226,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     if (nomgd .eq. 'VARI_R') then
         ncmpmx = 0
         do icmp1 = 1, ncmp1
-            nomcmp = zk8(jcesc-1+icmp1)
+            nomcmp = cesc(icmp1)
             read (nomcmp(2:8),'(I7)') icmp
             ncmpmx = max(ncmpmx,icmp)
         end do
@@ -229,7 +234,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
         call wkvect('&&CESCEL.NUCM1', 'V V I', ncmp1, jnucm1)
         call wkvect('&&CESCEL.NUCM2', 'V V I', ncmpmx, jnucm2)
         do icmp1 = 1, ncmp1
-            nomcmp = zk8(jcesc-1+icmp1)
+            nomcmp = cesc(icmp1)
             read (nomcmp(2:8),'(I7)') icmp
             zi(jnucm2-1+icmp) = icmp1
             zi(jnucm1-1+icmp1) = icmp
@@ -281,7 +286,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     call cescre('V', dcel, 'ELEM', ma, 'DCEL_I',&
                 2, licmp, [-1], [-1], [-2])
     call jeveuo(dcel//'.CESD', 'L', jdceld)
-    call jeveuo(dcel//'.CESV', 'E', jdcelv)
+    call jeveuo(dcel//'.CESV', 'E', vi=dcelv)
     call jeveuo(dcel//'.CESL', 'E', jdcell)
     do ima = 1, nbma
 !       -- NBRE DE SOUS-POINTS :
@@ -289,7 +294,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
                     1, 1, iad)
         ASSERT(iad.lt.0)
         zl(jdcell-1-iad) = .true.
-        zi(jdcelv-1-iad) = zi(jcesd-1+5+4* (ima-1)+2)
+        dcelv(1-1-iad) = zi(jcesd-1+5+4* (ima-1)+2)
 !
 !       -- NBRE DE CMPS "DYNAMIQUES" (POUR VARI_R) :
         call cesexi('C', jdceld, jdcell, ima, 1,&
@@ -311,10 +316,10 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
                     end do
                 end do
             end do
-            zi(jdcelv-1-iad) = icmpmx
+            dcelv(1-1-iad) = icmpmx
 !
         else
-            zi(jdcelv-1-iad) = 0
+            dcelv(1-1-iad) = 0
         endif
     end do
 !
@@ -336,9 +341,9 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !     ===================================================
     call jeveuo(cel//'.CELV', 'E', jcelv)
     call jelira(cel//'.CELV', 'LONMAX', neq)
-    call jeveuo(cel//'.CELD', 'L', jceld)
-    nbgr = zi(jceld-1+2)
-    call jeveuo(ligrel//'.LIEL', 'L', ialiel)
+    call jeveuo(cel//'.CELD', 'L', vi=celd)
+    nbgr = celd(2)
+    call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
 !
 !
@@ -390,7 +395,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !       3.2.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL :
         nptmx = zi(jcesd-1+3)
         do igr = 1, nbgr
-            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 90
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
             nbpt = mod(zi(jmolo-1+4),10000)
@@ -403,7 +408,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !
 !       3.2.2 BOUCLE SUR LES GREL DU LIGREL
         do igr = 1, nbgr
-            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 170
 !
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
@@ -486,9 +491,9 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
                             endif
 !
 !
-                            nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
+                            nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
                             nbspt = max(nbspt,1)
-                            adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
+                            adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
                             do ispt = 1, nbspt
 !
 !
@@ -552,7 +557,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !     ---------------------------------------------------
     else
         do igr = 1, nbgr
-            imolo = zi(jceld-1+zi(jceld-1+4+igr)+2)
+            imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 220
 !
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
@@ -560,17 +565,17 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !         CAS (ZI(JMOLO-1+4).GT.10000) RESTE A PROGRAMMER
             ASSERT(.not.diff)
             nbpt = mod(zi(jmolo-1+4),10000)
-            lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
+            lgcata = celd(celd(4+igr)+3)
             ASSERT(nbpt.eq.lgcata)
             nbel = nbelem(ligrel,igr)
 !
 !
             do iel = 1, nbel
 !
-                nbspt = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+1)
+                nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
                 nbspt = max(nbspt,1)
-                ncdyn = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+2)
-                adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
+                ncdyn = celd(celd(4+igr)+4+4* (iel-1)+2)
+                adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
                 numa = numail(igr,iel)
 !
 !           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?

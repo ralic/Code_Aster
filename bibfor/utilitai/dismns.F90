@@ -41,11 +41,12 @@ subroutine dismns(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, gd, jcnsk
+    integer :: iret, gd
     character(len=8) :: nogd
     character(len=19) :: nomob
     character(len=24) :: questl
     character(len=32) :: repk
+    character(len=8), pointer :: cnsk(:) => null()
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
@@ -63,15 +64,15 @@ subroutine dismns(questi, nomobz, repi, repkz, ierd)
         goto 9999
     endif
 !
-    call jeveuo(nomob//'.CNSK', 'L', jcnsk)
-    nogd = zk8(jcnsk-1+2)
+    call jeveuo(nomob//'.CNSK', 'L', vk8=cnsk)
+    nogd = cnsk(2)
     call jenonu(jexnom('&CATA.GD.NOMGD', nogd), gd)
 !
     if (questi .eq. 'TYPE_CHAMP') then
         repk = 'CNOS'
 !
     else if (questi .eq. 'NOM_MAILLA') then
-        repk=zk8(jcnsk-1+1)
+        repk=cnsk(1)
 !
     else if (questl(1:6) .eq. 'NUM_GD') then
         repi = gd

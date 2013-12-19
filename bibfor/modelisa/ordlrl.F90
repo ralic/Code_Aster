@@ -78,11 +78,17 @@ subroutine ordlrl(charge, lisrel, nomgd)
     integer :: idecal, in, indmax, ino
     integer :: inocc, inom, inorel, ipntr1, ipntr2, ipntrl, irela, irela1
     integer :: irela2
-    integer :: jnoma, jprnm, jrlco, jrlco1, jrlco2, jrlcoc, jrlcof, jrlcor
+    integer ::  jprnm, jrlco, jrlco1, jrlco2, jrlcoc, jrlcof, jrlcor
     integer :: jrldd
-    integer :: jrlno, idnoe1, idnoe2, idnoeu, jrlnr, jrlnt, jrlpo, jrlsu, jrltc
+    integer :: jrlno, idnoe1, idnoe2, idnoeu
     integer :: nbcmp, nbec, nbrela, nbtema, nbter1, nbter2, nbterm
     integer :: nddla, nidrel
+    integer, pointer :: rlnt(:) => null()
+    character(len=8), pointer :: rltc(:) => null()
+    integer, pointer :: rlsu(:) => null()
+    integer, pointer :: rlpo(:) => null()
+    integer, pointer :: rlnr(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
 !
     call jemarq()
 !
@@ -93,8 +99,8 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
     ligrmo=mod(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma=zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma=lgrf(1)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
@@ -113,25 +119,25 @@ subroutine ordlrl(charge, lisrel, nomgd)
     call jeveuo(lisrel//'.RLCO', 'E', jrlco)
     call jeveuo(lisrel//'.RLDD', 'E', jrldd)
     call jeveuo(lisrel//'.RLNO', 'E', jrlno)
-    call jeveuo(lisrel//'.RLNT', 'E', jrlnt)
-    call jeveuo(lisrel//'.RLPO', 'E', jrlpo)
-    call jeveuo(lisrel//'.RLSU', 'E', jrlsu)
-    call jeveuo(lisrel//'.RLTC', 'L', jrltc)
+    call jeveuo(lisrel//'.RLNT', 'E', vi=rlnt)
+    call jeveuo(lisrel//'.RLPO', 'E', vi=rlpo)
+    call jeveuo(lisrel//'.RLSU', 'E', vi=rlsu)
+    call jeveuo(lisrel//'.RLTC', 'L', vk8=rltc)
 !
 ! --- TYPE DE VALEUR DES COEFFICIENTS DES RELATIONS ---
 !
-    typcoe=zk8(jrltc)(1:4)
+    typcoe=rltc(1)(1:4)
 !
 ! --- NOMBRE DE RELATIONS DE LA LISTE_RELA
 !
-    call jeveuo(lisrel//'.RLNR', 'L', jrlnr)
-    nbrela=zi(jrlnr)
+    call jeveuo(lisrel//'.RLNR', 'L', vi=rlnr)
+    nbrela=rlnr(1)
 !
 ! --- NOMBRE DE TERMES  MAX IMPLIQUES DANS UNE RELATION
 !
     nbtema=0
     do irela = 1, nbrela
-        if (nbtema .lt. zi(jrlnt+irela-1)) nbtema=zi(jrlnt+irela-1)
+        if (nbtema .lt. rlnt(irela)) nbtema=rlnt(irela)
     end do
 !
 ! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
@@ -167,8 +173,8 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !        LES COMPARER PLUS FACILEMENT ET DETECTER LES DOUBLONS
 !     ----------------------------------------------------------
     do irela = 1, nbrela
-        ipntrl=zi(jrlpo+irela-1)
-        nbterm=zi(jrlnt+irela-1)
+        ipntrl=rlpo(irela)
+        nbterm=rlnt(irela)
         idecal=ipntrl-nbterm
         jrlcof=jrlco+idecal
         idnoeu=jrlno+idecal
@@ -245,9 +251,9 @@ subroutine ordlrl(charge, lisrel, nomgd)
     call jecreo('&&ORDLRL.KIDREL', 'V N K16')
     call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela)
     do irela1 = nbrela, 1, -1
-        nbter1=zi(jrlnt+irela1-1)
+        nbter1=rlnt(irela1)
         if (nbter1 .le. 1) then
-            ipntr1=zi(jrlpo+irela1-1)
+            ipntr1=rlpo(irela1)
             ideca1=ipntr1-nbter1
             idnoe1=jrlno+ideca1
             iddl1=jrldd+ideca1
@@ -256,7 +262,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
             if (nidrel .eq. 0) then
                 call jecroc(jexnom('&&ORDLRL.KIDREL', kidrel))
             else
-                zi(jrlsu+irela1-1)=1
+                rlsu(irela1)=1
             endif
         endif
     end do
@@ -267,9 +273,9 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !     3. IDENTIFICATION DES RELATIONS REDONDANTES A PLUSIEURS TERMES
 !     ----------------------------------------------------------------
     do irela1 = nbrela, 2, -1
-        nbter1=zi(jrlnt+irela1-1)
+        nbter1=rlnt(irela1)
         if (nbter1 .eq. 1) goto 170
-        ipntr1=zi(jrlpo+irela1-1)
+        ipntr1=rlpo(irela1)
         ideca1=ipntr1-nbter1
         jrlco1=jrlco+ideca1
         idnoe1=jrlno+ideca1
@@ -294,8 +300,8 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !       -----------------------------------
         if (typcoe .eq. 'COMP') then
             do irela2 = 1, irela1-1
-                nbter2=zi(jrlnt+irela2-1)
-                ipntr2=zi(jrlpo+irela2-1)
+                nbter2=rlnt(irela2)
+                ipntr2=rlpo(irela2)
                 ideca2=ipntr2-nbter2
                 jrlco2=jrlco+ideca2
                 idnoe2=jrlno+ideca2
@@ -324,7 +330,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 110                     continue
                     enddo
 120                 continue
-                    if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
+                    if (icomp .eq. 0) rlsu(irela2)=1
                 endif
             enddo
 !
@@ -333,8 +339,8 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !       -----------------------------------
         else if (typcoe .eq. 'REEL') then
             do irela2 = 1, irela1-1
-                nbter2=zi(jrlnt+irela2-1)
-                ipntr2=zi(jrlpo+irela2-1)
+                nbter2=rlnt(irela2)
+                ipntr2=rlpo(irela2)
                 ideca2=ipntr2-nbter2
                 jrlco2=jrlco+ideca2
                 idnoe2=jrlno+ideca2
@@ -363,7 +369,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 140                     continue
                     enddo
 150                 continue
-                    if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
+                    if (icomp .eq. 0) rlsu(irela2)=1
                 endif
             enddo
         else

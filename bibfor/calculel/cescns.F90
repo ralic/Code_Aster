@@ -74,11 +74,13 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
 !     ------------------------------------------------------------------
     integer :: ima, ncmp, icmp, jcnsl, jcnsv, ispt
     integer :: jcesd, jcesv, jcesl, nbma, iret, nbno
-    integer :: ino, nuno, nbpt, iad1, ilcnx1, iacnx1
-    integer :: jcesk, jcesc, nbnot, jnbno, ieq, nbsp
+    integer :: ino, nuno, nbpt, iad1, ilcnx1
+    integer :: jcesk,  nbnot, jnbno, ieq, nbsp
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: ces, cns, ces1
+    character(len=8), pointer :: cesc(:) => null()
+    integer, pointer :: connex(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -105,7 +107,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
     call exisd('CHAM_ELEM_S', ces1, iret)
     ASSERT(iret.gt.0)
     call jeveuo(ces1//'.CESK', 'L', jcesk)
-    call jeveuo(ces1//'.CESC', 'L', jcesc)
+    call jeveuo(ces1//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces1//'.CESD', 'L', jcesd)
     call jeveuo(ces1//'.CESV', 'L', jcesv)
     call jeveuo(ces1//'.CESL', 'L', jcesl)
@@ -116,7 +118,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnot)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-    call jeveuo(ma//'.CONNEX', 'L', iacnx1)
+    call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     call jelira(ces1//'.CESC', 'LONMAX', ncmp)
 !
@@ -138,7 +140,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
 !     3- ALLOCATION DE CNS :
 !     -------------------------------------------
     if (nomgd .eq. 'VARI_R') nomgd = 'VAR2_R'
-    call cnscre(ma, nomgd, ncmp, zk8(jcesc), base,&
+    call cnscre(ma, nomgd, ncmp, cesc, base,&
                 cns)
 !
 !
@@ -163,7 +165,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
                                 1, icmp, iad1)
                     if (iad1 .le. 0) goto 10
 !
-                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                     ieq = (nuno-1)*ncmp + icmp
                     zl(jcnsl-1+ieq) = .true.
                     if (tsca .eq. 'R') then
@@ -183,7 +185,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
                         call cesexi('C', jcesd, jcesl, ima, ino,&
                                     ispt, icmp, iad1)
                         if (iad1 .le. 0) goto 60
-                        nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                        nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                         ieq = (nuno-1)*ncmp + icmp
                         zl(jcnsl-1+ieq) = .false.
  60                     continue

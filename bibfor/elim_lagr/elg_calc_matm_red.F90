@@ -61,13 +61,15 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     character(len=19) :: ligrmo
     integer :: ibid, ico, kdiag, neq2, nnz2
     integer :: ilig, jcol, jnzcol, jsmdi2, ndiag, k, jsmhc2
-    integer :: jvalm2, jrefa2, j1, ier, ieq1, ieq2, nbnl, nbno
-    integer :: nbnom, jdeeq1, jdeeq2, jprno2, nec, icmp, icmpav, ino, inoav
+    integer :: jvalm2,  j1, ier, ieq1, ieq2, nbnl, nbno
+    integer :: nbnom,  jdeeq2, jprno2, nec, icmp, icmpav, ino, inoav
     integer :: k1ec, k2ec, k3ec, k3ecav
     integer, allocatable :: nbddl(:), nueq(:), dejavu(:)
     PetscInt :: ierr, n1, nterm
     PetscInt, allocatable :: irow(:)
     real(kind=8), allocatable :: vrow(:)
+    integer, pointer :: deeq(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------
     call jemarq()
 !
@@ -87,17 +89,17 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 !
 !     2.1 On corrige MATAS2.REFA :
 !     -----------------------------
-    call jeveuo(matas2//'.REFA', 'E', jrefa2)
-    zk24(jrefa2-1+2)=nu2
-    ASSERT(zk24(jrefa2-1+8).eq.'ASSE')
+    call jeveuo(matas2//'.REFA', 'E', vk24=refa)
+    refa(2)=nu2
+    ASSERT(refa(8).eq.'ASSE')
 !     -- pour l'instant, on ne traite que les matrices symétriques :
-    if (zk24(jrefa2-1+9) .ne. 'MS') call utmess('F', 'ELIMLAGR_5')
-    if (zk24(jrefa2-1+10) .ne. 'NOEU') call utmess('F', 'ELIMLAGR_6')
-    ASSERT(zk24(jrefa2-1+11).eq.'MPI_COMPLET')
+    if (refa(9) .ne. 'MS') call utmess('F', 'ELIMLAGR_5')
+    if (refa(10) .ne. 'NOEU') call utmess('F', 'ELIMLAGR_6')
+    ASSERT(refa(11).eq.'MPI_COMPLET')
 !
 !     -- la matrice MATAS2 n'est pas concernée par ELIM_LAGR :
-    zk24(jrefa2-1+19)=' '
-    zk24(jrefa2-1+20)=matas1
+    refa(19)=' '
+    refa(20)=matas1
 !
 !
 !     2.2 On calcule MATAS2.VALM, NU2.NUME.SMDI et NU2.SMOS.SMHC :
@@ -232,14 +234,14 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 !
 !     nu2.DEEQ :
 !     ----------
-    call jeveuo(nu1//'.NUME.DEEQ', 'L', jdeeq1)
+    call jeveuo(nu1//'.NUME.DEEQ', 'L', vi=deeq)
     call jedetr(nu2//'.NUME.DEEQ')
     call wkvect(nu2//'.NUME.DEEQ', bas1//' V I', 2*neq2, jdeeq2)
     do ieq2 = 1, neq2
         ieq1=melim(ke)%indred(ieq2)
-        ASSERT(zi(jdeeq1-1+2*(ieq1-1)+1).gt.0)
-        zi(jdeeq2-1+2*(ieq2-1)+1)=zi(jdeeq1-1+2*(ieq1-1)+1)
-        zi(jdeeq2-1+2*(ieq2-1)+2)=zi(jdeeq1-1+2*(ieq1-1)+2)
+        ASSERT(deeq(2*(ieq1-1)+1).gt.0)
+        zi(jdeeq2-1+2*(ieq2-1)+1)=deeq(2*(ieq1-1)+1)
+        zi(jdeeq2-1+2*(ieq2-1)+2)=deeq(2*(ieq1-1)+2)
     enddo
 !
 !     nu2.PRNO (calculé à partir de .DEEQ):

@@ -39,11 +39,11 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 !     OUT    VNO    VECTEUR DES VALEURS AUX NOEUDS
 !----------------------------------------------------------------------
     integer :: ino, isp, ipg, icmp, nno, nno2, iadzi, iazk24, npg, jmat, ima
-    integer :: iatyma
     integer :: vali(2)
     real(kind=8) :: s
     character(len=8) :: ma, typema
     character(len=24) :: valk(2)
+    integer, pointer :: typmail(:) => null()
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -59,8 +59,8 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 !          ELEMENTS LINEAIRES
         ima = zi(iadzi)
         ma = zk24(iazk24)(1:8)
-        call jeveuo(ma//'.TYPMAIL', 'L', iatyma)
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+ima)), typema)
+        call jeveuo(ma//'.TYPMAIL', 'L', vi=typmail)
+        call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typema)
         valk (1) = zk24(iazk24-1+3)(1:8)
         valk (2) = typema
         vali (1) = nno2

@@ -64,7 +64,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: iret, i, nbtu, jltn1, jltn2
+    integer :: iret, i, nbtu
     character(len=1) :: bas2
     character(len=8) :: k81, k82
     character(len=12) :: k121, k122
@@ -73,6 +73,8 @@ subroutine copisd(typesd, base, sd1, sd2)
     character(len=19) :: ch1, ch2, sdr1, k191, k192
     character(len=24) :: x1, x2
     integer :: j1, iexi
+    character(len=24), pointer :: ltn1(:) => null()
+    character(len=24), pointer :: ltn2(:) => null()
 !
 !
 ! DEB-------------------------------------------------------------------
@@ -357,11 +359,11 @@ subroutine copisd(typesd, base, sd1, sd2)
             call jedup1(k191//'.LTNS', bas2, k192//'.LTNS')
             call jedup1(k191//'.LTNT', bas2, k192//'.LTNT')
             call jelira(k191//'.LTNT', 'LONUTI', nbtu)
-            call jeveuo(k191//'.LTNS', 'L', jltn1)
-            call jeveuo(k192//'.LTNS', 'E', jltn2)
+            call jeveuo(k191//'.LTNS', 'L', vk24=ltn1)
+            call jeveuo(k192//'.LTNS', 'E', vk24=ltn2)
             k192(1:8) = k192
             do i = 1, nbtu
-                k191 = zk24(jltn1+i-1)(1:19)
+                k191 = ltn1(i)(1:19)
                 k192(9:19) = k191(9:19)
                 call exisd('TABLE', k191, iret)
                 if (iret .ne. 0) then
@@ -369,7 +371,7 @@ subroutine copisd(typesd, base, sd1, sd2)
                 else
                     call utmess('F', 'UTILITAI_41', sk=k191)
                 endif
-                zk24(jltn2+i-1) = k192
+                ltn2(i) = k192
             end do
         endif
 !

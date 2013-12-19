@@ -79,7 +79,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
     integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi, jpresa
     integer :: jpresb, jnbocc, im, jnumgr, npass, ifm, niv, iocs, jseigr, jresu
-    integer :: jnsitu, nsitup, nsituq, iret, i1, jfact, i, j, jreas, jress
+    integer ::  nsitup, nsituq, iret, i1, jfact, i, j, jreas, jress
     integer :: jreca, jrecs, ndim, nbp12, nbp23, nbp13
     real(kind=8) :: ppi, ppj, snmax, spmax, samax, utot, saltij(2), typeke, ug
     real(kind=8) :: pmbmax, fuij(2), mpi(12), mpj(12), sm, sn, snet, sp(2), smm
@@ -89,6 +89,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
     logical :: seisme, cfait
     character(len=4) :: lieu(2)
     character(len=24) :: k24as, k24ss, k24ca, k24cs, k24fu
+    integer, pointer :: situ_numero(:) => null()
 !
     data lieu / 'ORIG' , 'EXTR' /
 ! DEB ------------------------------------------------------------------
@@ -96,7 +97,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
     call infniv(ifm, niv)
 !
-    call jeveuo('&&RC3200.SITU_NUMERO', 'L', jnsitu)
+    call jeveuo('&&RC3200.SITU_NUMERO', 'L', vi=situ_numero)
     call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
     call jeveuo('&&RC3200.SITU_SEISME', 'L', jseigr)
@@ -199,7 +200,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
             if (niv .ge. 2) then
                 write (ifm,3000) numgr,nbsigr
-                write (ifm,3002) (zi(jnsitu+zi(jnsg+i1-1)-1),i1=1,&
+                write (ifm,3002) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,&
                 nbsigr)
             endif
             call jecroc(jexnum(k24as, ig))
@@ -299,7 +300,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 endif
                 if (niv .ge. 2) write (ifm,2000) ig, ioc1
 !
-                nsitup = zi(jnsitu+ioc1-1)
+                nsitup = situ_numero(ioc1)
 !
                 nocc = zi(jnbocc+2*ioc1-2)
 !
@@ -440,7 +441,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
             if (niv .ge. 2) then
                 write (ifm,3004)
-                write (ifm,3002) (zi(jnsitu+zi(jnsg+i1-1)-1),i1=1,&
+                write (ifm,3002) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,&
                 nbsigr)
             endif
 !

@@ -38,13 +38,14 @@ subroutine w18imp(ligrel, noma, nomo)
 !     ------------------------------------------------------------------
 !
     integer :: ifm, numvec, nbgrel, i, nmgrel, numail, jdli, nutypm
-    integer :: ntypoi, jdtm, nutype, jc, j, numnoe
+    integer :: ntypoi,  nutype, jc, j, numnoe
     integer :: jdnw, k, niv, iexi, nbte, jnbele, jmodli, jtypma
     integer :: jtypel, nbele
     character(len=8) :: typema, nomail, tabmai(8)
     character(len=16) :: typele, typemo
     character(len=24) :: nommai, nomnoe
     character(len=32) :: phemod
+    integer, pointer :: typmail(:) => null()
 !
     nommai=noma//'.NOMMAI'
     nomnoe=noma//'.NOMNOE'
@@ -59,7 +60,7 @@ subroutine w18imp(ligrel, noma, nomo)
 !
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
     call jeveuo(ligrel//'.LIEL', 'L', jdli)
-    call jeveuo(noma//'.TYPMAIL', 'L', jdtm)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
     call jeexin(nomo//'.MODELE    .NEMA', iexi)
     jdnw=0
     if (iexi .gt. 0) call jeveuo(nomo//'.MODELE    .NEMA', 'L', jdnw)
@@ -90,7 +91,7 @@ subroutine w18imp(ligrel, noma, nomo)
             if (numail .lt. 0) then
                 nutypm=ntypoi
             else
-                nutypm=zi(jdtm+numail-1)
+                nutypm=typmail(numail)
             endif
             call jenuno(jexnum('&CATA.TM.NOMTM', nutypm), typema)
 !
@@ -138,7 +139,7 @@ subroutine w18imp(ligrel, noma, nomo)
             if (numail .lt. 0) then
                 nutypm=ntypoi
             else
-                nutypm=zi(jdtm+numail-1)
+                nutypm=typmail(numail)
             endif
             nutype=zi(jdli+numvec+nmgrel-2)
             call jenuno(jexnum('&CATA.TM.NOMTM', nutypm), typema)

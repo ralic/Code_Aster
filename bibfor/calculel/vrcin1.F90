@@ -88,7 +88,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !
     real(kind=8) :: instev
 !
-    integer :: n1, ibid, nbma, jcesd1, jcesl1, jcesv1, iad, lonk80, jcvvar
+    integer :: n1, ibid, nbma, jcesd1, jcesl1, jcesv1, iad, lonk80
     integer :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
     integer :: nbcvrc, jcvgd, jlisch, nval1
     character(len=8) :: varc, mailla, tysd, proldr, prolga, nomevo, finst
@@ -99,6 +99,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     character(len=19) :: ces1, cns1, nomch
     character(len=24) :: valk(3)
     character(len=80) :: k80, k80pre
+    character(len=8), pointer :: cvrcvarc(:) => null()
     save nval1
 ! ----------------------------------------------------------------------
 !
@@ -109,7 +110,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
     ligrmo=modele//'.MODELE'
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
-    call jeveuo(chmat//'.CVRCVARC', 'L', jcvvar)
+    call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jeveuo(chmat//'.CVRCGD', 'L', jcvgd)
 !
 !     INITIALISATION
@@ -127,8 +128,8 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         lonk80=5
         call wkvect('&&VRCIN1.LK80', 'V V K80', lonk80, jlk80)
         do k = 1, nbcvrc
-            if (zk8(jcvvar-1+k) .eq. varc) goto 1
-            varc=zk8(jcvvar-1+k)
+            if (cvrcvarc(k) .eq. varc) goto 1
+            varc=cvrcvarc(k)
             cart2 = chmat//'.'//varc//'.2'
             ces1='&&VRCIN1.CES1'
             call carces(cart2, 'ELEM', ' ', 'V', ces1,&
@@ -279,7 +280,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !         2.2 PASSAGE AUX POINTS DE GAUSS => CHS
 !         --------------------------------------
 !         -- VERIFICATION DE NOMCH :
-        itrou=indik8(zk8(jcvvar),varc,1,nbcvrc)
+        itrou=indik8(cvrcvarc,varc,1,nbcvrc)
         ASSERT(itrou.gt.0)
         nomgd=zk8(jcvgd-1+itrou)
         call dismoi('NOM_GD', nomch, 'CHAMP', repk=nomgd2)

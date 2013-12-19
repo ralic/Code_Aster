@@ -60,14 +60,14 @@ subroutine calirc(chargz)
 !-----------------------------------------------------------------------
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
-    integer :: ibid, jnoma, nnomx, idmax, idnomn, idcoef, idnomd, igeom
-    integer :: idirec, idimen, iagma1, iagno2, nbma1, nbno2, nbno2t
+    integer :: ibid,  nnomx, idmax, idnomn, idcoef, idnomd, igeom
+    integer :: idirec, idimen,  iagno2, nbma1, nbno2, nbno2t
     integer :: nno1, i, indire, lno
-    integer :: jconb, jconu, jcocf, jcom1, idecal
+    integer :: jconb, jconu, jcocf,  idecal
     integer :: jconb1, jconu1, jcocf1, jcom11, ideca1
     integer :: jconb2, jconu2, jcocf2, jcom12, ideca2
-    integer :: nbtyp, nddl2, nbma2, idmai2, jlistk, jdim, ndim1
-    integer :: jnunoe, jnorm, idim, ij, ima1, jlisv1
+    integer :: nbtyp, nddl2, nbma2,  jlistk, jdim, ndim1
+    integer ::  jnorm, idim, ij, ima1, jlisv1
     integer :: kno2, kkno2, jnu2bs, jelim, jcoor
     logical :: lrota, dnor
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
@@ -91,6 +91,11 @@ subroutine calirc(chargz)
     logical :: l_angl_naut
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
+    integer, pointer :: limanu1(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: ln(:) => null()
+    integer, pointer :: limanu2(:) => null()
+    integer, pointer :: com1(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ----------------------------------------------------------------------
 !
@@ -123,8 +128,8 @@ subroutine calirc(chargz)
 !
     call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mo)
     ligrmo=mo//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma=zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma=lgrf(1)
 !
     call dismoi('DIM_GEOM', mo, 'MODELE', repi=igeom)
     if (.not.(igeom.eq.2.or.igeom.eq.3)) then
@@ -201,7 +206,7 @@ subroutine calirc(chargz)
         tymocl(2)='GROUP_MA'
         call reliem(mo, noma, 'NU_MAILLE', motfac, iocc,&
                     2, motcle, tymocl, '&&CALIRC.LIMANU1', nbma1)
-        call jeveuo('&&CALIRC.LIMANU1', 'L', iagma1)
+        call jeveuo('&&CALIRC.LIMANU1', 'L', vi=limanu1)
 !
 !
 !        1.2 RECUPERATION DES NOEUD_ESCL
@@ -237,19 +242,19 @@ subroutine calirc(chargz)
                 valk(2)=motcle(2)
                 call utmess('F', 'MODELISA8_49', nk=2, valk=valk)
             endif
-            call jeveuo('&&CALIRC.LIMANU2', 'L', idmai2)
+            call jeveuo('&&CALIRC.LIMANU2', 'L', vi=limanu2)
 !
 ! ---        CREATION DU TABLEAU DES NUMEROS DES NOEUDS '&&NBNLMA.LN'
 ! ---        ET DES NOMBRES D'OCCURENCES DE CES NOEUDS '&&NBNLMA.NBN'
 ! ---        DES MAILLES DE PEAU MAILLE_ESCL :
 !            -------------------------------
-            call nbnlma(noma, nbma2, zi(idmai2), nbtyp, listyp,&
+            call nbnlma(noma, nbma2, limanu2, nbtyp, listyp,&
                         nbno2)
 !
 ! ---        CALCUL DES NORMALES EN CHAQUE NOEUD :
 !            -----------------------------------
             call wkvect('&&CALIRC.LISTK', 'V V K8', 1, jlistk)
-            call jeveuo('&&NBNLMA.LN', 'L', jnunoe)
+            call jeveuo('&&NBNLMA.LN', 'L', vi=ln)
 !
 ! ---        CREATION DU TABLEAU D'INDIRECTION ENTRE LES INDICES
 ! ---        DU TABLEAU DES NORMALES ET LES NUMEROS DES NOEUDS :
@@ -258,11 +263,11 @@ subroutine calirc(chargz)
             call jelira('&&NBNLMA.LN', 'LONUTI', lno)
 !
             do i = 1, lno
-                zi(indire+zi(jnunoe+i-1)-1)=i
+                zi(indire+ln(i)-1)=i
             end do
 !
-            call canort(noma, nbma2, zi(idmai2), ndim, nbno2,&
-                        zi(jnunoe), 1)
+            call canort(noma, nbma2, limanu2, ndim, nbno2,&
+                        ln, 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
             call jedupo('&&NBNLMA.LN', 'V', '&&CALIRC.LINONU2', .false.)
             call jeveuo('&&CALIRC.LINONU2', 'L', iagno2)
@@ -322,25 +327,25 @@ subroutine calirc(chargz)
 !       --------------------------------------------------------
         if (ndim .eq. 2) then
             ASSERT((typrac.eq.' ') .or. (typrac.eq.'MASSIF'))
-            call pj2dco('PARTIE', mo, mo, nbma1, zi(iagma1),&
+            call pj2dco('PARTIE', mo, mo, nbma1, limanu1,&
                         nbno2, zi( iagno2), ' ', geom2, corres,&
                         .false., rbid)
         else if (ndim.eq.3) then
             if ((typrac.eq.' ') .or. (typrac.eq.'MASSIF')) then
-                call pj3dco('PARTIE', mo, mo, nbma1, zi(iagma1),&
+                call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
                             .false., rbid)
                 elseif (typrac.eq.'COQUE' .or. typrac.eq.'MASSIF_COQUE')&
             then
-                call pj4dco('PARTIE', mo, mo, nbma1, zi(iagma1),&
+                call pj4dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
                             .false., rbid, 'NON')
             else if (typrac.eq.'COQUE_MASSIF') then
-                call pj3dco('PARTIE', mo, mo, nbma1, zi(iagma1),&
+                call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
                             .false., rbid)
                 call wkvect('&&CALIRC.LISV1', 'V V R', 3*nnomx, jlisv1)
-                call calir3(mo, nbma1, zi(iagma1), nbno2, zi(iagno2),&
+                call calir3(mo, nbma1, limanu1, nbno2, zi(iagno2),&
                             geom2, corre1, corre2, jlisv1, iocc)
             else
                 ASSERT(.false.)
@@ -349,7 +354,7 @@ subroutine calirc(chargz)
         endif
 !
         call jeveuo(corres//'.PJEF_NB', 'L', jconb)
-        call jeveuo(corres//'.PJEF_M1', 'L', jcom1)
+        call jeveuo(corres//'.PJEF_M1', 'L', vi=com1)
         call jeveuo(corres//'.PJEF_NU', 'L', jconu)
         call jeveuo(corres//'.PJEF_CF', 'L', jcocf)
 !
@@ -386,7 +391,7 @@ subroutine calirc(chargz)
 !           -- ON BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE :
                 do ino2 = 1, nbno2t
 !             IMA1: MAILLE A CONNECTER A INO2
-                    ima1=zi(jcom1-1+ino2)
+                    ima1=com1(ino2)
 !             -- SI IMA1=0, C'EST QUE INO2 NE FAIT PAS PARTIE
 !                DES NOEUDS ESCLAVES
                     if (ima1 .eq. 0) goto 140

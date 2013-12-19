@@ -45,12 +45,13 @@ subroutine op0159()
     character(len=19) :: vci19, secm19, csol19, mat19
     character(len=8) :: matr
     character(len=3) :: type, typ1
-    integer :: lmat, nimpo, idvalc, jrefa, neq1, jval2, jtrav
+    integer :: lmat, nimpo, idvalc,  neq1, jval2, jtrav
     integer :: ifm, niv, neq, jvals, nb, imd, ier
 !
     character(len=8) :: xsol, secmbr, vcine
     character(len=16) :: concep, nomcmd, metres
     complex(kind=8) :: cbid
+    character(len=24), pointer :: refa(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !     ------------------------------------------------------------------
     call jemarq()
@@ -111,8 +112,8 @@ subroutine op0159()
         endif
     endif
 !
-    call jeveuo(mat19//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
+    call jeveuo(mat19//'.REFA', 'L', vk24=refa)
+    if (refa(11) .eq. 'MATR_DISTR') then
         imd=1
     else
         imd=0

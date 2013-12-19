@@ -55,9 +55,12 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
     character(len=1) :: kbid
     character(len=14) :: nu1, nu2
     character(len=19) :: matas2
-    integer :: jrefa1, ibid
+    integer ::  ibid
     integer :: neq1, neq2, icob, icoc, ieq1, ieq2
-    integer :: jsolu2, jdelg1, jconl1
+    integer :: jsolu2
+    character(len=24), pointer :: refa(:) => null()
+    real(kind=8), pointer :: conl(:) => null()
+    integer, pointer :: delg(:) => null()
     PetscInt :: ierr
     PetscInt :: n1, n2, n3
     PetscScalar :: xx(1), m1
@@ -68,8 +71,8 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !----------------------------------------------------------------
     call jemarq()
 !
-    call jeveuo(matas1//'.REFA', 'L', jrefa1)
-    matas2=zk24(jrefa1-1+19)(1:19)
+    call jeveuo(matas1//'.REFA', 'L', vk24=refa)
+    matas2=refa(19)(1:19)
     ASSERT(matas2.ne.' ')
 !
     call dismoi('NOM_NUME_DDL', matas1, 'MATR_ASSE', repk=nu1)
@@ -98,18 +101,18 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !     ------------------------------------------------
     call VecGetArray(melim(ke)%vecb, xx, xidxb, ierr)
     call VecGetArray(melim(ke)%vecc, xx, xidxc, ierr)
-    call jeveuo(nu1//'.NUME.DELG', 'L', jdelg1)
-    call jeveuo(matas1//'.CONL', 'L', jconl1)
+    call jeveuo(nu1//'.NUME.DELG', 'L', vi=delg)
+    call jeveuo(matas1//'.CONL', 'L', vr=conl)
 !
     icob=0
     icoc=0
     do ieq1 = 1, neq1
-        if (zi(jdelg1+ieq1-1) .eq. 0) then
+        if (delg(ieq1) .eq. 0) then
             icob=icob+1
             xx(xidxb+icob)=secm(ieq1)
-        else if (zi(jdelg1+ieq1-1) .eq. -1) then
+        else if (delg(ieq1) .eq. -1) then
             icoc=icoc+1
-            xx(xidxc+icoc)=secm(ieq1)*zr(jconl1+ieq1-1)
+            xx(xidxc+icoc)=secm(ieq1)*conl(ieq1)
         endif
     end do
     call VecRestoreArray(melim(ke)%vecb, xx, xidxb, ierr)

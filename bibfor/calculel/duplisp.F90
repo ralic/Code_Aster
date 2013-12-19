@@ -59,14 +59,17 @@ subroutine duplisp(celssp, celasp, carel, base)
     character(len=16) :: option
     character(len=8) :: nompar,mailla,nomgd,tsca
     integer :: igr,ier,numa,icmp,isp,ipt,nbpt,nbsp,nbelgr
-    integer :: ialiel, illiel, mxnbsp,mxvari,nbspt1,nbspt2
+    integer ::  illiel, mxnbsp,mxvari,nbspt1,nbspt2
     integer :: ispt1,ispt2,iret,nbgr,imolo,lgcata,jmolo,iel,ncdyn
-    integer :: ieq1,ieq2, adiel1, adiel2,jcelv1,jcelv2,jceld1,jceld2
+    integer :: ieq1,ieq2, adiel1, adiel2,jcelv1,jcelv2
     integer :: nbel, nbcmp
     character(len=24) :: valk(2)
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: celd1(:) => null()
+    integer, pointer :: celd2(:) => null()
     logical diff
 
-#   define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#   define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !------------------------------------------------------------------
 
     call jemarq()
@@ -103,19 +106,19 @@ subroutine duplisp(celssp, celasp, carel, base)
 !   3. duplication des valeurs de cel1 dans cel2:
 !   ---------------------------------------------
     call jeveuo(cel1//'.CELV', 'L', jcelv1)
-    call jeveuo(cel1//'.CELD', 'L', jceld1)
+    call jeveuo(cel1//'.CELD', 'L', vi=celd1)
     call jeveuo(cel2//'.CELV', 'E', jcelv2)
-    call jeveuo(cel2//'.CELD', 'E', jceld2)
+    call jeveuo(cel2//'.CELD', 'E', vi=celd2)
 
-    call jeveuo(ligrel//'.LIEL', 'L', ialiel)
+    call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
 
-    nbgr = zi(jceld1-1+2)
+    nbgr = celd1(2)
     do igr = 1, nbgr
-        imolo = zi(jceld1-1+zi(jceld1-1+4+igr)+2)
+        imolo = celd1(celd1(4+igr)+2)
         if (imolo .eq. 0) goto 220
 
-        lgcata = zi(jceld1-1+zi(jceld1-1+4+igr)+3)
+        lgcata = celd1(celd1(4+igr)+3)
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
         diff = (zi(jmolo-1+4).gt.10000)
         ASSERT(.not.diff)
@@ -128,13 +131,13 @@ subroutine duplisp(celssp, celasp, carel, base)
             numa = numail(igr,iel)
             if (numa .lt. 0) goto 210
 
-            nbspt1 = zi(jceld1-1+zi(jceld1-1+4+igr)+4+4* (iel-1)+1)
-            nbspt2 = zi(jceld2-1+zi(jceld2-1+4+igr)+4+4* (iel-1)+1)
-            adiel1 = zi(jceld1-1+zi(jceld1-1+4+igr)+4+4* (iel-1)+4)
-            adiel2 = zi(jceld2-1+zi(jceld2-1+4+igr)+4+4* (iel-1)+4)
-            ncdyn = zi(jceld1-1+zi(jceld1-1+4+igr)+4+4* (iel-1)+ 2)
+            nbspt1 = celd1(celd1(4+igr)+4+4* (iel-1)+1)
+            nbspt2 = celd2(celd2(4+igr)+4+4* (iel-1)+1)
+            adiel1 = celd1(celd1(4+igr)+4+4* (iel-1)+4)
+            adiel2 = celd2(celd2(4+igr)+4+4* (iel-1)+4)
+            ncdyn = celd1(celd1(4+igr)+4+4* (iel-1)+ 2)
 !           -- cel2 a ete alloue avec ncdyn=0. Il faut corriger :
-            zi(jceld2-1+zi(jceld2-1+4+igr)+4+4* (iel-1)+ 2)=ncdyn
+            celd2(celd2(4+igr)+4+4* (iel-1)+ 2)=ncdyn
             ncdyn=max(ncdyn,1)
 
             do ipt = 1, nbpt

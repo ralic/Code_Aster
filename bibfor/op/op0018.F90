@@ -81,13 +81,14 @@ subroutine op0018()
     logical :: lmail, lnoeu, laxis
     integer :: i, i2d, i3d, ibid, ico, idim, idim2, ifm, ii, imodel, imodl
     integer :: ioc, j, jdef, jdgm, jdgn, jdli, jdma, jdma2, jdnb, jdef2
-    integer :: jlgrf, jdno, jdnw, jdpm, jdtm, jmut, jmut2, jnut, jtmdim
+    integer :: jlgrf, jdno, jdnw, jdpm, jdtm, jmut, jmut2, jnut
     integer :: lonlie, lonnem, nbgrel, nbgrma, nbgrno, nbmaaf, nbmail
     integer :: nbmpaf, nbmpcf, nbnoaf, nbnoeu, nbnpaf, nbnpcf, nboc
     integer :: nboc2, nbv, ndgm, ndgn, ndma, ndmax, ndmax1, ndmax2, ndno
     integer :: ngm, ngn, niv, nma, nmgrel, nmo, nno, nph, nto, ntypoi, nugrel
     integer :: numail, numnoe, numsup, numvec, nutype, nutypm, idim3
     integer :: iarg
+    integer, pointer :: tmdim(:) => null()
 !     ------------------------------------------------------------------
 !
 !
@@ -221,7 +222,7 @@ subroutine op0018()
     call wkvect('&&OP0018.MAILLE3', 'V V I', nbmail, jdma2)
     call wkvect('&&OP0018.NOEUD', 'V V I', nbnoeu, jnut)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntypoi)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 !
 !
@@ -272,7 +273,7 @@ subroutine op0018()
                         zi(jdma2+numail-1)=zi(jdpm+nutypm-1)
                     endif
                     zi(jmut+numail-1)=1
-                    if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail-1)= 1
+                    if (tmdim(nutypm) .eq. d2) zi(jmut2+numail-1)= 1
                 end do
             endif
 !
@@ -289,7 +290,7 @@ subroutine op0018()
                             zi(jdma2+numail-1)=zi(jdpm+nutypm-1)
                         endif
                         zi(jmut+numail-1)=1
-                        if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail- 1)=1
+                        if (tmdim(nutypm) .eq. d2) zi(jmut2+numail- 1)=1
                     end do
                 end do
             endif
@@ -304,7 +305,7 @@ subroutine op0018()
                         zi(jdma2+numail-1)=zi(jdpm+nutypm-1)
                     endif
                     zi(jmut+numail-1)=1
-                    if (zi(jtmdim-1+nutypm) .eq. d2) zi(jmut2+numail-1)= 1
+                    if (tmdim(nutypm) .eq. d2) zi(jmut2+numail-1)= 1
                 end do
             endif
 !

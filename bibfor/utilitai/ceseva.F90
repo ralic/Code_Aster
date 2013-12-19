@@ -56,9 +56,9 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !  ON NE TRAITE QUE LES FONCTIONS REELLES F : R * R(* R,...) -> R
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: jfd, jfc, jfv, jfl, jfk
-    integer :: jpd, jpc, jpv, jpl, jpk
-    integer :: jrd, jrc, jrv, jrl, jrk
+    integer :: jfd,   jfl
+    integer :: jpd, jpc, jpv, jpl
+    integer :: jrd, jrc,  jrl, jrk
     integer :: nbma, k, ima, ncmp, nbpu, ier, nbpumx, ibid
     integer :: ncmp2, ipara, jad1, ncmpmx, nspmx, nptmx
     integer :: k2, iadf, iadr, iadp, nbpt, nbsp, ipt, isp, jnompu, jvalpu
@@ -68,6 +68,11 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     character(len=19) :: f, p, r
     character(len=24) :: valk
     real(kind=8) :: x
+    character(len=8), pointer :: fv(:) => null()
+    real(kind=8), pointer :: rv(:) => null()
+    character(len=8), pointer :: fc(:) => null()
+    character(len=8), pointer :: fk(:) => null()
+    character(len=8), pointer :: pk(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -80,15 +85,15 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !     1- RECUPERATIONS D'INFOS DANS LE CHAMP DE FONCTIONS :
 !     ------------------------------------------------------------
     f = cesf
-    call jeveuo(f//'.CESK', 'L', jfk)
+    call jeveuo(f//'.CESK', 'L', vk8=fk)
     call jeveuo(f//'.CESD', 'L', jfd)
-    call jeveuo(f//'.CESC', 'L', jfc)
-    call jeveuo(f//'.CESV', 'L', jfv)
+    call jeveuo(f//'.CESC', 'L', vk8=fc)
+    call jeveuo(f//'.CESV', 'L', vk8=fv)
     call jeveuo(f//'.CESL', 'L', jfl)
 !
-    ma = zk8(jfk-1+1)
-    nomgdf = zk8(jfk-1+2)
-    typces = zk8(jfk-1+3)
+    ma = fk(1)
+    nomgdf = fk(2)
+    typces = fk(3)
     nbma = zi(jfd-1+1)
     ncmp = zi(jfd-1+2)
     nptmx = zi(jfd-1+3)
@@ -106,11 +111,11 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     r = cesr
     nomgdr = nomgdf(1:4)//'_R'
     call cescre('V', r, typces, ma, nomgdr,&
-                ncmp, zk8(jfc), [-nptmx], [-nspmx], [-ncmpmx])
+                ncmp, fc, [-nptmx], [-nspmx], [-ncmpmx])
     call jeveuo(r//'.CESK', 'L', jrk)
     call jeveuo(r//'.CESD', 'L', jrd)
     call jeveuo(r//'.CESC', 'L', jrc)
-    call jeveuo(r//'.CESV', 'E', jrv)
+    call jeveuo(r//'.CESV', 'E', vr=rv)
     call jeveuo(r//'.CESL', 'E', jrl)
 !
 !
@@ -119,13 +124,13 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     call wkvect('&&CESEVA.JAD1', 'V V I', 4*npara, jad1)
     do ipara = 1, npara
         p = lpara(ipara)
-        call jeveuo(p//'.CESK', 'L', jpk)
+        call jeveuo(p//'.CESK', 'L', vk8=pk)
         call jeveuo(p//'.CESD', 'L', jpd)
         call jeveuo(p//'.CESC', 'L', jpc)
         call jeveuo(p//'.CESV', 'L', jpv)
         call jeveuo(p//'.CESL', 'L', jpl)
-        ma2 = zk8(jpk-1+1)
-        nomgd2 = zk8(jpk-1+2)
+        ma2 = pk(1)
+        nomgd2 = pk(2)
 !
         call dismoi('TYPE_SCA', nomgd2, 'GRANDEUR', repk=tsca)
         if (tsca .ne. 'R') then
@@ -155,7 +160,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
                                 isp, k, iadf)
                     if (iadf .le. 0) goto 40
 !
-                    fo = zk8(jfv-1+iadf)
+                    fo = fv(iadf)
 !
                     call cesexi('C', jrd, jrl, ima, ipt,&
                                 isp, k, iadr)
@@ -215,7 +220,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !
 !           4.3 STOCKAGE DU RESULTAT :
 !           --------------------------
-                    zr(jrv-1-iadr) = x
+                    rv(1-1-iadr) = x
 !
  40                 continue
                 end do

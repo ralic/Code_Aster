@@ -72,13 +72,16 @@ subroutine celfpg(celz, nomobj, iret)
     character(len=16) :: nofpg
     character(len=19) :: cel, ligrel, ligrsv
     character(len=24) :: nomosv
-    integer :: jobj, nbma, jcelv, jceld, nec
-    integer :: igr, iel, ialiel, illiel
-    integer :: jcelk, nbgr, imolo, jmolo, numa, nbel, kfpg
+    integer :: jobj, nbma, jcelv,  nec
+    integer :: igr, iel,  illiel
+    integer ::  nbgr, imolo, jmolo, numa, nbel, kfpg
     integer :: iexi
+    character(len=24), pointer :: celk(:) => null()
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: celd(:) => null()
     save ligrsv,nomosv
 !
-#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -86,8 +89,8 @@ subroutine celfpg(celz, nomobj, iret)
     iret=0
 !
 !     -- SI CE N'EST PAS UN CHAMP ELGA, IL N'Y A RIEN A FAIRE :
-    call jeveuo(cel//'.CELK', 'L', jcelk)
-    if (zk24(jcelk-1+3) .ne. 'ELGA') goto 30
+    call jeveuo(cel//'.CELK', 'L', vk24=celk)
+    if (celk(3) .ne. 'ELGA') goto 30
 !
 !
 !     1 CALCUL DE LIGREL,NBMA,NEC :
@@ -102,10 +105,10 @@ subroutine celfpg(celz, nomobj, iret)
 !     2 RECUPERATION DES OBJETS DU CHAM_ELEM ET DU LIGREL :
 !     -------------------------------------------------------
     call jeveuo(cel//'.CELV', 'L', jcelv)
-    call jeveuo(cel//'.CELD', 'L', jceld)
-    call jeveuo(ligrel//'.LIEL', 'L', ialiel)
+    call jeveuo(cel//'.CELD', 'L', vi=celd)
+    call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
-    nbgr=zi(jceld-1+2)
+    nbgr=celd(2)
 !
 !
 !     3 REPLISSAGE DE NOMOBJ :
@@ -126,7 +129,7 @@ subroutine celfpg(celz, nomobj, iret)
 !
     do igr = 1, nbgr
         nbel=nbelem(ligrel,igr)
-        imolo=zi(jceld-1+zi(jceld-1+4+igr)+2)
+        imolo=celd(celd(4+igr)+2)
         if (imolo .eq. 0) goto 20
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
         kfpg=zi(jmolo-1+4+nec+1)

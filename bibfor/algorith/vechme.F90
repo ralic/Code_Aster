@@ -75,7 +75,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     parameter (nchinx=42)
     integer :: nbchmx
     parameter (nbchmx=18)
-    integer :: jlchin, isigi
+    integer :: jlchin
     integer :: ier, jchar, jinf
     integer :: ibid, iret, nchar, k, icha, ii, iexis
     integer :: numchm, nchin
@@ -92,6 +92,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     character(len=24) :: lchin(nchinx)
     character(len=24) :: charge, infcha
     logical :: bidon, lxfem
+    character(len=8), pointer :: vale(:) => null()
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
      &     '.F1D1D','.PESAN','.ROTAT','.PRESS','.FELEC','.FCO3D',&
@@ -265,9 +266,9 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
                         lpain(1) = 'P'//nompaf(k)
                     else if (numchm.eq.55) then
                         option = 'FORC_NODA'
-                        call jeveuo(ligrch(1:13)//'.SIINT.VALE', 'L', isigi)
+                        call jeveuo(ligrch(1:13)//'.SIINT.VALE', 'L', vk8=vale)
                         lpain(1) = 'PCONTMR'
-                        lchin(1) = zk8(isigi)
+                        lchin(1) = vale(1)
                         nchin = nchin + 1
                         lpain(nchin) = 'PDEPLMR'
                         lchin(nchin) = ' '

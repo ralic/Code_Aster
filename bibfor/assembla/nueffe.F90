@@ -90,18 +90,23 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     character(len=24) :: lili, nnli, psuiv, lsuiv, vsuiv, num21, nuno, nomli
     character(len=24) :: derli, num2, dsclag, exi1, newn, oldn
     integer :: nbno, ilim, itypel
-    integer :: i, iad, iadlie, iadnem, ianueq, ibid, icddlb
+    integer :: i, iad,   ianueq,  icddlb
     integer :: icer1, icer2, iconx1, iconx2, iddlag, iderli, idlgns
     integer :: idnbno, idnequ, idnocm, idprn1, idprn2, idref
     integer :: iec, iel, iexi1, ifm, igr, ilag, ilag2, ilag3
     integer :: ili, ilsuiv, inewn, ino, inulag, inum2, inum21
-    integer :: inuno1, inuno2, ioldn, iprnm, iprns, ipsuiv, ire, iret
+    integer :: inuno1, inuno2, ioldn, iprnm,  ipsuiv, ire, iret
     integer :: ivsuiv, j, j1, jnulag, jprno, k, l, l1, l2, long, n0
     integer :: n0re, n1, n1m1re, n1re, n2, n21, n3, nbcmp, nbn, nbnl
     integer :: nbnom, nbnonu, nbnore, ncmp, nddl1, nddlb
     integer :: nel, niv, nlag, nma, nn
     integer :: ns, numa, nunoel
-    integer :: islvk, vali(4)
+    integer ::  vali(4)
+    integer, pointer :: adli(:) => null()
+    integer, pointer :: bid(:) => null()
+    integer, pointer :: adne(:) => null()
+    integer, pointer :: qrns(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !
 !     NBNOM  : NOMBRE DE NOEUDS DU MAILLAGE
 !     DERLI  : NOM DE L'OBJET NU.DERLI CREE SUR 'V'
@@ -131,26 +136,26 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
-#define zzliel(ili,igrel,j) zi(zi(iadlie+3*(ili-1)+1)-1+ zi(zi(iadlie+3*(ili-1)+2)+igrel-1)+j-1)
+#define zzliel(ili,igrel,j) zi(adli(1+3*(ili-1)+1)-1+ zi(adli(1+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
-#define zzngel(ili) zi(iadlie+3* (ili-1))
+#define zzngel(ili) adli(1+3* (ili-1))
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
-#define zznsup(ili,iel) zi(zi(iadnem+3* (ili-1)+2)+iel) - zi(zi(iadnem+3*(ili-1)+2)+iel-1 ) - 1
+#define zznsup(ili,iel) zi(adne(1+3* (ili-1)+2)+iel) - zi(adne(1+3*(ili-1)+2)+iel-1 ) - 1
 !
 !---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
-#define zznelg(ili,igrel) zi(zi(iadlie+3*(ili-1)+2)+igrel) - zi(zi(iadlie+3*(ili-1)+2)+igrel-1) - 1
+#define zznelg(ili,igrel) zi(adli(1+3*(ili-1)+2)+igrel) - zi(adli(1+3*(ili-1)+2)+igrel-1) - 1
 !
 !---- NBRE D ELEMENTS SUPPLEMENTAIRE (.NEMA) DU LIGREL ILI DE .LILI
 !
-#define zznels(ili) zi(iadnem+3* (ili-1))
+#define zznels(ili) adne(1+3* (ili-1))
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL
@@ -162,7 +167,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !     ZZNEMA(ILI,IEL,ZZNELS(ILI)+1)=NUMERO DU TYPE_MAILLE DE LA MAILLE
 !                                   IEL DU LIGREL ILI
 !
-#define zznema(ili,iel,j) zi( zi( iadnem+3* (ili-1)+1)-1+ zi(zi(iadnem+3* (ili-1)+2)+iel-1 )+j-1 )
+#define zznema(ili,iel,j) zi( adne(1+3* (ili-1)+1)-1+ zi(adne(1+3* (ili-1)+2)+iel-1 )+j-1 )
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL ET A LEURS ADRESSES
@@ -224,8 +229,8 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     call nulili(lligr, lili, base(2:2), moloc, nomgds,&
                 igds, mailla, nec, ncmp, nlili)
 !
-    call jeveuo(nu//'     .ADLI', 'E', iadlie)
-    call jeveuo(nu//'     .ADNE', 'E', iadnem)
+    call jeveuo(nu//'     .ADLI', 'E', vi=adli)
+    call jeveuo(nu//'     .ADNE', 'E', vi=adne)
     call jeexin(mailla(1:8)//'.CONNEX', iret)
     if (iret .gt. 0) then
         call jeveuo(mailla(1:8)//'.CONNEX', 'L', iconx1)
@@ -836,8 +841,8 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     do ili = 2, nlili
         call jenuno(jexnum(lili, ili), nomli)
         call jeveuo(nomli(1:19)//'.QRNM', 'L', iprnm)
-        call jeveuo(nomli(1:19)//'.NBNO', 'L', ibid)
-        if (zi(ibid) .gt. 0) call jeveuo(nomli(1:19)//'.QRNS', 'L', iprns)
+        call jeveuo(nomli(1:19)//'.NBNO', 'L', vi=bid)
+        if (bid(1) .gt. 0) call jeveuo(nomli(1:19)//'.QRNS', 'L', vi=qrns)
 !
         do igr = 1, zzngel(ili)
             nel = zznelg(ili,igr)
@@ -889,7 +894,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                             endif
 !
                             do l = 1, nec
-                                iec = zi(iprns+nec* (nunoel-1)+l-1)
+                                iec = qrns(1+nec* (nunoel-1)+l-1)
                                 zi(izzprn(ili,nunoel,l+2)) = ior(zzprno( ili, nunoel, l+2), iec)
                             end do
 !
@@ -956,9 +961,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
     zk24(idref+1) = nomgds
     call jeexin(solveu(1:19)//'.SLVK', iret)
     if (iret .gt. 0) then
-        call jeveuo(solveu(1:19)//'.SLVK', 'L', islvk)
-        zk24(idref+2) = zk24(islvk)
-        zk24(idref+3) = zk24(islvk+5)
+        call jeveuo(solveu(1:19)//'.SLVK', 'L', vk24=slvk)
+        zk24(idref+2) = slvk(1)
+        zk24(idref+3) = slvk(6)
     endif
 !
 !

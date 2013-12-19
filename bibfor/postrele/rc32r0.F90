@@ -34,7 +34,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: npar0, npar1, npar2, im, ig, is, nbsigr, valei(2), jnumgr, jnsitu
+    integer :: npar0, npar1, npar2, im, ig, is, nbsigr, valei(2), jnumgr
     integer :: jnsg, jpmpba, jpmpbs, nbgr, ioc, numgr, jvale, ibid, n1
     parameter    ( npar0 = 15 , npar1 = 7 , npar2 = 10 )
     real(kind=8) :: valer(5)
@@ -43,6 +43,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     character(len=8) :: valek(3), typar0(npar0), typar1(npar1), typtab
     character(len=16) :: nopar0(npar0), nopar1(npar1), nopar2(npar2)
     character(len=24) :: k24a, k24s
+    integer, pointer :: situ_numero(:) => null()
 !     ------------------------------------------------------------------
     data lieu   / 'ORIG' , 'EXTR' /
 !
@@ -67,7 +68,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
 !
-    call jeveuo('&&RC3200.SITU_NUMERO', 'L', jnsitu)
+    call jeveuo('&&RC3200.SITU_NUMERO', 'L', vi=situ_numero)
 !
 !     -----------------------------------------------------------------
 !
@@ -135,7 +136,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
             valek(2) = 'AVEC'
             do 204 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
-                valei(2) = zi(jnsitu+ioc-1)
+                valei(2) = situ_numero(ioc)
 !
                 call tbajli(nomres, npar2, nopar2, valei, zr(jpmpba- 1+10*(is-1)+1),&
                             [c16b], valek, 0)
@@ -144,7 +145,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
             valek(2) = 'SANS'
             do 206 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
-                valei(2) = zi(jnsitu+ioc-1)
+                valei(2) = situ_numero(ioc)
 !
                 call tbajli(nomres, npar2, nopar2, valei, zr(jpmpbs- 1+10*(is-1)+1),&
                             [c16b], valek, 0)

@@ -54,17 +54,18 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 !
     integer :: n1, iret, iad, ichs, nbchs, isp, ipt, jlissd, jcesvi
     integer :: k, k2, nbma, ncmp, icmp, jcesl2, jcesv2, jcesd2
-    integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc, jcvvar
+    integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc
     integer :: jdcld, jdcll, jdclv, jcesk, jcesk2
     character(len=16) :: tysd1, tysd2, nosd1, nosd2, nosy1, nosy2
     character(len=8) :: varc
     character(len=19) :: dceli, celmod, cart2, ces2, ligrmo
     character(len=24) :: valk(5)
+    character(len=8), pointer :: cvrcvarc(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jeveuo(chmat//'.CVRCVARC', 'L', jcvvar)
+    call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
     ligrmo=modele//'.MODELE'
 !
@@ -126,9 +127,9 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 !        LES CVRC SUIVANTES (DE LA MEME VARC)
     varc=' '
     do 1, k=1,nbcvrc
-    if (zk8(jcvvar-1+k) .eq. varc) goto 1
+    if (cvrcvarc(k) .eq. varc) goto 1
 !
-    varc=zk8(jcvvar-1+k)
+    varc=cvrcvarc(k)
     cart2 = chmat//'.'//varc//'.2'
     ces2='&&VRCIN2.CES2'
     call carces(cart2, 'ELEM', ' ', 'V', ces2,&
@@ -151,7 +152,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 !       -- CALCUL DE NCMP (NOMBRE DE CVRC DANS VARC)
     ncmp=0
     do 69, k2=k,nbcvrc
-    if (zk8(jcvvar-1+k2) .eq. varc) ncmp=ncmp+1
+    if (cvrcvarc(k2) .eq. varc) ncmp=ncmp+1
 69  continue
 !
     do 70,ima = 1,nbma

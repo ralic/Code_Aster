@@ -35,9 +35,10 @@ subroutine aidtyp(impr)
 #include "asterfort/wkvect.h"
     character(len=16) :: nophen, note, noop, nomodl
     character(len=80) :: ligne
-    integer :: impr, nbtm, nbphen, iaopte, nbte, nbop, ianbop, ianbte, ianot2
+    integer :: impr, nbtm, nbphen,  nbte, nbop, ianbop, ianbte, ianot2
     integer :: ianop2, iop, iphen, nbmodl, imodl, iamodl, itm, ite, ioptte
     integer :: iaopmo, nucalc
+    integer, pointer :: optte(:) => null()
 !
 !
     call jemarq()
@@ -49,7 +50,7 @@ subroutine aidtyp(impr)
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
-    call jeveuo('&CATA.TE.OPTTE', 'L', iaopte)
+    call jeveuo('&CATA.TE.OPTTE', 'L', vi=optte)
     call jelira('&CATA.TE.NOMTE', 'NOMUTI', nbte)
     call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop)
 !
@@ -102,7 +103,7 @@ subroutine aidtyp(impr)
     write(impr,'(A80)') ligne
     do 10,ite=1,nbte
     do 101,iop=1,nbop
-    ioptte= zi(iaopte-1+nbop*(ite-1)+iop)
+    ioptte= optte(nbop*(ite-1)+iop)
     if (ioptte .eq. 0) goto 101
     call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
     nucalc= zi(iaopmo)

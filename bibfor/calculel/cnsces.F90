@@ -75,15 +75,23 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ima, ncmp, icmp, jcnsk, jcnsl, jcnsc, jcnsv
-    integer :: jcesd, jcesv, jcesl, nbma, iret, nbsp, nbno, ico
+    integer :: ima, ncmp, icmp,  jcnsl
+    integer :: jcesd,  jcesl, nbma, iret, nbsp, nbno, ico
     integer :: iad, jnbpt, nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
-    integer :: jcemd, jnbsp, ilcnx1, iacnx1, nbpg, ipg, imaref
-    integer :: mnogal, mnogad, mnogav, mnogak
+    integer ::  jnbsp, ilcnx1,  nbpg, ipg, imaref
+    integer :: mnogal, mnogad
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: ces, cesmod, cns, mnoga
     real(kind=8) :: v, v1
+    real(kind=8), pointer :: cesv(:) => null()
+    real(kind=8), pointer :: nmnogav(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    integer, pointer :: connex(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    integer, pointer :: cemd(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -98,17 +106,17 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !        NOMGD : NOM DE LA GRANDEUR
 !        NCMP  : NOMBRE DE CMPS DANS CNS
 !     ------------------------------------------
-    call jeveuo(cns//'.CNSK', 'L', jcnsk)
-    call jeveuo(cns//'.CNSC', 'L', jcnsc)
-    call jeveuo(cns//'.CNSV', 'L', jcnsv)
+    call jeveuo(cns//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cns//'.CNSC', 'L', vk8=cnsc)
+    call jeveuo(cns//'.CNSV', 'L', vr=cnsv)
     call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
-    ma = zk8(jcnsk-1+1)
-    nomgd = zk8(jcnsk-1+2)
+    ma = cnsk(1)
+    nomgd = cnsk(2)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R')
-    call jeveuo(ma//'.CONNEX', 'L', iacnx1)
+    call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     call jelira(cns//'.CNSC', 'LONMAX', ncmp)
 !
@@ -128,10 +136,10 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     ASSERT((typces.ne.'ELGA') .or. (iret.gt.0))
 !
     if (iret .gt. 0) then
-        call jeveuo(cesmod//'.CESD', 'L', jcemd)
+        call jeveuo(cesmod//'.CESD', 'L', vi=cemd)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
-            zi(jnbsp-1+ima) = zi(jcemd-1+5+4* (ima-1)+2)
+            zi(jnbpt-1+ima) = cemd(5+4* (ima-1)+1)
+            zi(jnbsp-1+ima) = cemd(5+4* (ima-1)+2)
         end do
     endif
 !
@@ -153,10 +161,10 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !     5- CREATION DE CES :
 !     ---------------------------------------
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, zk8(jcnsc), zi(jnbpt), zi(jnbsp), [-ncmp])
+                ncmp, cnsc, zi(jnbpt), zi(jnbsp), [-ncmp])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESV', 'E', jcesv)
+    call jeveuo(ces//'.CESV', 'E', vr=cesv)
     call jeveuo(ces//'.CESL', 'E', jcesl)
 !
 !
@@ -176,7 +184,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
                 ico = 0
                 do ino = 1, nbno
-                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
                 end do
                 if (ico .ne. nbno) goto 90
@@ -184,9 +192,9 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !         -- CALCUL DE LA MOYENNE ARITHMETIQUE :
                 v = 0.d0
                 do ino = 1, nbno
-                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) then
-                        v = v + zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
+                        v = v + cnsv((nuno-1)*ncmp+icmp)
                     endif
                 end do
                 v = v/nbno
@@ -198,7 +206,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                                     isp, icmp, iad)
                         ASSERT(iad.lt.0)
                         zl(jcesl-1-iad) = .true.
-                        zr(jcesv-1-iad) = v
+                        cesv(1-1-iad) = v
                     end do
                 end do
  90             continue
@@ -219,21 +227,21 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
                 ico = 0
                 do ino = 1, nbno
-                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
                 end do
                 if (ico .ne. nbno) goto 140
 !
                 do ino = 1, nbno
-                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                     if (.not.zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) goto 130
-                    v = zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
+                    v = cnsv((nuno-1)*ncmp+icmp)
                     do isp = 1, nbsp
                         call cesexi('C', jcesd, jcesl, ima, ino,&
                                     isp, icmp, iad)
                         ASSERT(iad.lt.0)
                         zl(jcesl-1-iad) = .true.
-                        zr(jcesv-1-iad) = v
+                        cesv(1-1-iad) = v
                     end do
 130                 continue
                 end do
@@ -245,27 +253,27 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     else if (typces.eq.'ELGA') then
 !     --------------------------
         mnoga = mnogaz
-        call jeveuo(mnoga//'.CESK', 'L', mnogak)
+        call jeveuo(mnoga//'.CESK', 'L', vk8=cesk)
         call jeveuo(mnoga//'.CESD', 'L', mnogad)
         call jeveuo(mnoga//'.CESL', 'L', mnogal)
-        call jeveuo(mnoga//'.CESV', 'L', mnogav)
-        ASSERT(zk8(mnogak).eq.ma)
+        call jeveuo(mnoga//'.CESV', 'L', vr=nmnogav)
+        ASSERT(cesk(1).eq.ma)
 !
         do ima = 1, nbma
             call cesexi('C', mnogad, mnogal, ima, 1,&
                         1, 1, iad)
             if (iad .le. 0) goto 210
-            if (nint(zr(mnogav-1+iad)) .gt. 0) then
+            if (nint(nmnogav(iad)) .gt. 0) then
                 imaref=ima
             else
-                imaref=-nint(zr(mnogav-1+iad))
+                imaref=-nint(nmnogav(iad))
             endif
             call cesexi('C', mnogad, mnogal, imaref, 1,&
                         1, 1, iad)
             if (iad .le. 0) goto 210
 !
-            nbno2 = nint(zr(mnogav-1+iad))
-            nbpg2 = nint(zr(mnogav-1+iad+1))
+            nbno2 = nint(nmnogav(iad))
+            nbpg2 = nint(nmnogav(iad+1))
 !
             nbpg = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = zi(jcesd-1+5+4* (ima-1)+2)
@@ -279,7 +287,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !           - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
                 ico = 0
                 do ino = 1, nbno
-                    nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
+                    nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) ico = ico + 1
                 end do
                 if (ico .ne. nbno) goto 200
@@ -287,9 +295,9 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                 do ipg = 1, nbpg
                     v = 0.d0
                     do ino = 1, nbno
-                        nuno = zi(iacnx1+zi(ilcnx1-1+ima)-2+ino)
-                        v1 = zr(jcnsv-1+ (nuno-1)*ncmp+icmp)
-                        v = v + v1*zr(mnogav-1+iad+1+nbno* (ipg-1)+ ino)
+                        nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
+                        v1 = cnsv((nuno-1)*ncmp+icmp)
+                        v = v + v1*nmnogav(iad+1+nbno* (ipg-1)+ ino)
                     end do
 !
                     do isp = 1, nbsp
@@ -297,7 +305,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                                     isp, icmp, iad1)
                         ASSERT(iad1.lt.0)
                         zl(jcesl-1-iad1) = .true.
-                        zr(jcesv-1-iad1) = v
+                        cesv(1-1-iad1) = v
                     end do
                 end do
 !

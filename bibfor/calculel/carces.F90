@@ -67,12 +67,17 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !
 !     ------------------------------------------------------------------
     integer :: ima, iret, nec, ncmpmx, jdesc, jvale, ngrmx, ncmp
-    integer :: jptma, jcesd, jcesc, jcesv, jcesl, nbma, ient, debgd, deb1, ico
-    integer :: cmp, ieq, iad, cmp2, jnocmp, jcorr1, jnbpt, nbpt, ipt
-    integer :: jcemd, jnbsp, jconx2, isp, nbsp, jcorr2, kcmp
+    integer ::  jcesd, jcesc, jcesv, jcesl, nbma, ient, debgd, deb1, ico
+    integer :: cmp, ieq, iad, cmp2,   jnbpt, nbpt, ipt
+    integer ::  jnbsp, jconx2, isp, nbsp,  kcmp
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: cart, ces, cesmod
+    integer, pointer :: cemd(:) => null()
+    integer, pointer :: corr1(:) => null()
+    integer, pointer :: ptma(:) => null()
+    character(len=8), pointer :: nom_cmp(:) => null()
+    integer, pointer :: corr2(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -97,10 +102,10 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !
     call exisd('CHAM_ELEM_S', cesmod, iret)
     if (iret .gt. 0) then
-        call jeveuo(cesmod//'.CESD', 'L', jcemd)
+        call jeveuo(cesmod//'.CESD', 'L', vi=cemd)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
-            zi(jnbsp-1+ima) = zi(jcemd-1+5+4* (ima-1)+2)
+            zi(jnbpt-1+ima) = cemd(5+4* (ima-1)+1)
+            zi(jnbsp-1+ima) = cemd(5+4* (ima-1)+2)
         end do
     else
         do ima = 1, nbma
@@ -136,7 +141,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     if (iret .eq. 1 .and. kstop .eq. 'A') then
         call utmess('A', 'CALCULEL_38')
     endif
-    call jeveuo(cart//'.PTMA', 'L', jptma)
+    call jeveuo(cart//'.PTMA', 'L', vi=ptma)
 !
 !
 !
@@ -149,15 +154,15 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !     -----------------------------------------------------------------
     call cmpcha(cart, '&&CARCES.NOM_CMP', '&&CARCES.CORR1', '&&CARCES.CORR2', ncmp,&
                 ncmpmx)
-    call jeveuo('&&CARCES.NOM_CMP', 'L', jnocmp)
-    call jeveuo('&&CARCES.CORR1', 'L', jcorr1)
-    call jeveuo('&&CARCES.CORR2', 'L', jcorr2)
+    call jeveuo('&&CARCES.NOM_CMP', 'L', vk8=nom_cmp)
+    call jeveuo('&&CARCES.CORR1', 'L', vi=corr1)
+    call jeveuo('&&CARCES.CORR2', 'L', vi=corr2)
 !
 !
 !     5- CREATION DE CES :
 !     ---------------------------------------
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, zk8(jnocmp), zi(jnbpt), zi(jnbsp), [-ncmp])
+                ncmp, nom_cmp, zi(jnbpt), zi(jnbsp), [-ncmp])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESC', 'L', jcesc)
@@ -169,7 +174,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !     6- REMPLISSAGE DES OBJETS .CESL ET .CESV :
 !     ------------------------------------------
     do ima = 1, nbma
-        ient = zi(jptma-1+ima)
+        ient = ptma(ima)
         if (ient .eq. 0) goto 120
 !
         deb1 = (ient-1)*ncmpmx + 1
@@ -179,12 +184,12 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !
         ico = 0
         do kcmp = 1, ncmp
-            cmp = zi(jcorr2-1+kcmp)
+            cmp = corr2(kcmp)
             if (.not. (exisdg(zi(jdesc-1+debgd),cmp))) goto 110
             ico = ico + 1
             ieq = deb1 - 1 + ico
 !
-            cmp2 = zi(jcorr1-1+cmp)
+            cmp2 = corr1(cmp)
             ASSERT(cmp2.gt.0)
             ASSERT(cmp2.le.ncmp)
 !

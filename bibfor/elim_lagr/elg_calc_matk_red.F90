@@ -54,8 +54,9 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
     character(len=19) :: matas1, matas2, solve1
     character(len=1) :: ktyp
     mpi_int :: rang, nbproc
-    integer :: iret, jrefa1, ibid, iexi
+    integer :: iret,  ibid, iexi
     real(kind=8) :: rbid(1)
+    character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------
     call jemarq()
     matas1=mat1z
@@ -73,14 +74,14 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
 !
 !
 !   -- mise a jour de matas1.refa(19):
-    call jeveuo(matas1//'.REFA', 'E', jrefa1)
-    if (zk24(jrefa1-1+19) .ne. ' ') then
+    call jeveuo(matas1//'.REFA', 'E', vk24=refa)
+    if (refa(19) .ne. ' ') then
 ! ce n'est peut etre pas tres normal de reduire une matrice qui
 ! a deja ete reduite ...
         ASSERT(.false.)
-        call detrsd('MATR_ASSE', zk24(jrefa1-1+19))
+        call detrsd('MATR_ASSE', refa(19))
     endif
-    zk24(jrefa1-1+19)=matas2
+    refa(19)=matas2
 !
 !
 !     1. CALCUL DANS PETSC DES MATRICES NECESSAIRES :

@@ -54,7 +54,7 @@ subroutine rscopi(base, sd1, sd2)
 !-----------------------------------------------------------------------
 !
     integer ::  i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
-    integer :: iatava, jordr
+    integer :: iatava
     logical :: dejfai
     character(len=1) :: bas2
     character(len=4) :: type, typacc
@@ -62,6 +62,7 @@ subroutine rscopi(base, sd1, sd2)
     character(len=16) :: nopara, nomsy
     character(len=19) :: sdr1, sdr2, ch1, ch2
     character(len=24) :: nompar
+    integer, pointer :: ordr(:) => null()
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -72,7 +73,7 @@ subroutine rscopi(base, sd1, sd2)
     sdr2 = sd2
     call jelira(sdr1//'.DESC', 'NOMMAX', nbcham)
     call jelira(sdr1//'.ORDR', 'LONUTI', nbordr)
-    call jeveuo(sdr1//'.ORDR', 'L', jordr)
+    call jeveuo(sdr1//'.ORDR', 'L', vi=ordr)
 !
 !     --- LE .DESC, .NOVA, .TAVA, .ORDR ---
 !
@@ -96,13 +97,13 @@ subroutine rscopi(base, sd1, sd2)
         call jenuno(jexnum(sdr1//'.DESC', i), nomsy)
         call jecroc(jexnum(sdr2//'.TACH', i))
         do 10 j = 0, nbordr - 1
-            call rsexch(' ', sd1, nomsy, zi(jordr+j), ch1,&
+            call rsexch(' ', sd1, nomsy, ordr(1+j), ch1,&
                         iret)
             if (iret .eq. 0) then
-                call rsexch(' ', sd2, nomsy, zi(jordr+j), ch2,&
+                call rsexch(' ', sd2, nomsy, ordr(1+j), ch2,&
                             iret)
                 call copich(bas2, ch1, ch2)
-                call rsnoch(sd2, nomsy, zi(jordr+j))
+                call rsnoch(sd2, nomsy, ordr(1+j))
             endif
 10      continue
 20  continue

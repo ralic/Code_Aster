@@ -75,11 +75,11 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: iddes, nec, ivvale, jnueq, jprno, icoor, ichcin, jafci
+    integer :: iddes, nec, ivvale,  jprno,  ichcin, jafci
     integer :: jafcv, nbimp, nimp, n, ni, nddl, nn, nueq, ier
-    integer :: neq, numgd, idtyp, jdlci, jafck
-    integer :: jcn1k, jcn1d, jcn1c, jcn1v, jcn1l, icmp, icmp1, ino, jnocmp
-    integer :: nbcmp1, jdeeq, imaill, vali(1)
+    integer :: neq, numgd,  jdlci
+    integer :: jcn1k,    jcn1l, icmp, icmp1, ino, jnocmp
+    integer :: nbcmp1,  imaill, vali(1)
     character(len=1) :: typval
     character(len=4) :: phen
     logical :: fonc
@@ -89,6 +89,14 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
     character(len=16) :: nomp(4)
     character(len=19) :: vcine, charci, cnoimp, cnsimp
     character(len=24) :: vvale, valk(4)
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: afck(:) => null()
+    integer, pointer :: vnueq(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: deeq(:) => null()
+    character(len=8), pointer :: typegd(:) => null()
 !----------------------------------------------------------------------
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
@@ -110,8 +118,8 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
     call dismoi('NOM_GD', nu, 'NUME_DDL', repk=gd)
     call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=nomma)
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
-    call jeveuo('&CATA.GD.TYPEGD', 'L', idtyp)
-    typval = zk8(idtyp-1+numgd)
+    call jeveuo('&CATA.GD.TYPEGD', 'L', vk8=typegd)
+    typval = typegd(numgd)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', numgd), 'L', iddes)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', jnocmp)
     nec = zi(iddes+2 )
@@ -121,20 +129,20 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
     call wkvect(vcine//'.DLCI', 'V V I', neq, jdlci)
 !
     call jeveuo(vvale, 'E', ivvale)
-    call jeveuo(nu//'.NUME.NUEQ', 'L', jnueq)
-    call jeveuo(nu//'.NUME.DEEQ', 'L', jdeeq)
+    call jeveuo(nu//'.NUME.NUEQ', 'L', vi=vnueq)
+    call jeveuo(nu//'.NUME.DEEQ', 'L', vi=deeq)
     call jenonu(jexnom(nu//'.NUME.LILI', '&MAILLA'), imaill)
     call jeveuo(jexnum(nu//'.NUME.PRNO', imaill), 'L', jprno)
-    call jeveuo(nomma//'.COORDO    .VALE', 'L', icoor)
+    call jeveuo(nomma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !
 ! --- BOUCLE SUR LES CHARGES CINEMATIQUES :
     do ichcin = 1, nbchci
         charci = lchci(ichcin)
-        call jeveuo(charci//'.AFCK', 'L', jafck)
-        phen=zk8(jafck-1+1)(1:4)
-        fonc=zk8(jafck-1+1)(5:7).eq.'_FT'
-        evoim=zk8(jafck-1+3)
+        call jeveuo(charci//'.AFCK', 'L', vk8=afck)
+        phen=afck(1)(1:4)
+        fonc=afck(1)(5:7).eq.'_FT'
+        evoim=afck(3)
         call jeveuo(charci//'.AFCI', 'L', jafci)
         if (evoim .eq. ' ') call jeveuo(charci//'.AFCV', 'L', jafcv)
 !
@@ -156,11 +164,11 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
             call cnocns(cnoimp, 'V', cnsimp)
             call detrsd('CHAMP', cnoimp)
             call jeveuo(cnsimp//'.CNSK', 'L', jcn1k)
-            call jeveuo(cnsimp//'.CNSD', 'L', jcn1d)
-            call jeveuo(cnsimp//'.CNSC', 'L', jcn1c)
+            call jeveuo(cnsimp//'.CNSD', 'L', vi=cnsd)
+            call jeveuo(cnsimp//'.CNSC', 'L', vk8=cnsc)
             call jelira(cnsimp//'.CNSC', 'LONMAX', nbcmp1)
-            ASSERT(nbcmp1.eq.zi(jcn1d-1+2))
-            call jeveuo(cnsimp//'.CNSV', 'L', jcn1v)
+            ASSERT(nbcmp1.eq.cnsd(2))
+            call jeveuo(cnsimp//'.CNSV', 'L', vr=cnsv)
             call jeveuo(cnsimp//'.CNSL', 'L', jcn1l)
             valk(1)=evoim
         endif
@@ -182,25 +190,25 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !           -- NDDL : NUMERO DE LA COMPOSANTE (POUR LE NOEUD NI)
                 nddl = zi(n+2)
                 nn = (nec+2)*(ni-1)
-                nueq =zi(jnueq-1+ zi(jprno+nn)+nddl-1)
+                nueq =vnueq(zi(jprno+nn)+nddl-1)
 !
 !
 !           -- CAS EVOL_IMPO (CNSIMP):
 !           ----------------------------------
                 if (evoim .ne. ' ') then
-                    ino=zi(jdeeq-1+2*(nueq-1)+1)
-                    icmp=zi(jdeeq-1+2*(nueq-1)+2)
+                    ino=deeq(2*(nueq-1)+1)
+                    icmp=deeq(2*(nueq-1)+2)
                     ASSERT(ino.eq.ni)
                     nocmp=zk8(jnocmp-1+icmp)
                     vali(1)=ino
                     valk(2)=nocmp
-                    icmp1=indik8(zk8(jcn1c),nocmp,1,nbcmp1)
+                    icmp1=indik8(cnsc,nocmp,1,nbcmp1)
                     ASSERT(icmp1.gt.0)
                     if (.not.zl(jcn1l-1+(ino-1)*nbcmp1+icmp1)) then
                         call utmess('F', 'CALCULEL_2', nk=2, valk=valk, si=vali(1),&
                                     sr=valr(1))
                     endif
-                    res = zr(jcn1v-1+(ino-1)*nbcmp1+icmp1)
+                    res = cnsv((ino-1)*nbcmp1+icmp1)
                     zr(ivvale-1+nueq) = res
 !
 !
@@ -219,9 +227,9 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                     nomp(3)='Y'
                     nomp(4)='Z'
                     valp(1)=inst
-                    valp(2)=zr(icoor+3*(ni-1)+0)
-                    valp(3)=zr(icoor+3*(ni-1)+1)
-                    valp(4)=zr(icoor+3*(ni-1)+2)
+                    valp(2)=vale(1+3*(ni-1)+0)
+                    valp(3)=vale(1+3*(ni-1)+1)
+                    valp(4)=vale(1+3*(ni-1)+2)
                     call fointe('F ', nomf, 4, nomp, valp,&
                                 res, ier)
                     zr(ivvale-1+nueq) = res
@@ -244,7 +252,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                 ni = zi(n+1)
                 nddl = zi(n+2)
                 nn = (nec+2)*(ni-1)
-                nueq =zi(jnueq-1+ zi(jprno+nn)+nddl-1)
+                nueq =vnueq(zi(jprno+nn)+nddl-1)
                 zc(ivvale-1+nueq) = zc(jafcv-1+nimp)
                 zi(jdlci-1+nueq) = 1
             end do

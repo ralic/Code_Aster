@@ -55,9 +55,10 @@ subroutine copich(base, ch1z, ch2z)
     character(len=16) :: concep, cmd
     character(len=19) :: prno, prno2, prno3, ch1, ch2
     character(len=24) :: noojb
-    integer :: iret1, iret2, jad
+    integer :: iret1, iret2
     integer :: nuprf
     logical :: leco
+    character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -104,12 +105,12 @@ subroutine copich(base, ch1z, ch2z)
                         call codent(nuprf-1, 'D0', prno3(15:19))
                         if (idensd('PROF_CHNO',prno,prno3)) leco= .true.
                     endif
-                    call jeveuo(ch2//'.REFE', 'E', jad)
+                    call jeveuo(ch2//'.REFE', 'E', vk24=refe)
                     if (leco) then
-                        zk24(jad-1+2)=prno3
+                        refe(2)=prno3
                     else
                         call copisd('PROF_CHNO', base, prno, prno2)
-                        zk24(jad-1+2)=prno2
+                        refe(2)=prno2
                     endif
                 endif
             endif

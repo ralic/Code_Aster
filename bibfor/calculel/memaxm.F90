@@ -76,13 +76,15 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     integer :: iret
     integer :: longt
     character(len=8) :: kmpic, typ1, nomgd, tsca, tych
-    integer :: jcesd, jcesl, jcesc, jcesv, nel, iel, nbpt, nbsspt, ncmp
-    integer :: ipt, isp, icmp, ncp, iicmp, iadr1, jcesk
+    integer :: jcesd, jcesl,  jcesv, nel, iel, nbpt, nbsspt, ncmp
+    integer :: ipt, isp, icmp, ncp, iicmp, iadr1
     integer :: iadr2, iel1
     real(kind=8) :: valr, vmima
     character(len=19) :: chams, cham19
     integer :: tncomp(nbcmp)
     logical :: copi, lmax, labs, lreel
+    character(len=8), pointer :: cesc(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -109,11 +111,11 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 !
     call jeveuo(chams//'.CESD', 'L', jcesd)
     call jeveuo(chams//'.CESL', 'L', jcesl)
-    call jeveuo(chams//'.CESC', 'L', jcesc)
-    call jeveuo(chams//'.CESK', 'L', jcesk)
+    call jeveuo(chams//'.CESC', 'L', vk8=cesc)
+    call jeveuo(chams//'.CESK', 'L', vk8=cesk)
     call jeveuo(chams//'.CESV', 'L', jcesv)
 !
-    nomgd=zk8(jcesk-1+2)
+    nomgd=cesk(2)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
     lreel=tsca.eq.'R'
@@ -145,7 +147,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     ncmp=zi(jcesd-1+2)
     do icmp = 1, ncmp
         do iicmp = 1, nbcmp
-            if (lcmp(iicmp) .eq. zk8(jcesc-1+icmp)) then
+            if (lcmp(iicmp) .eq. cesc(icmp)) then
                 tncomp(iicmp)=icmp
             endif
         end do
@@ -157,7 +159,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 !     RECUPERE L'INDEX DE LA COMPOSANTE A TESTER DANS LE CHAMP
     ncp=0
     do icmp = 1, ncmp
-        if (zk8(jcesc-1+icmp) .eq. nocmp) ncp=icmp
+        if (cesc(icmp) .eq. nocmp) ncp=icmp
     end do
 !
 !     -- CAS : TOUTES LES MAILLES :

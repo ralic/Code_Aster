@@ -86,16 +86,21 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     character(len=24) :: noojb
     character(len=24) :: valk(3)
 !     -----------------------------------------------------------------
-    integer :: icmp, nec, jcnsk, jcnsd, jcnsv, jcnsl, gd, iexi, ncmp, jcorr2
-    integer :: reste, iec, code, nbno, jnucmp, jnucm1, jcnsc, jrefn
+    integer :: icmp, nec,   jcnsv, jcnsl, gd, iexi, ncmp, jcorr2
+    integer :: reste, iec, code, nbno, jnucmp, jnucm1
     integer :: ncmpmx, jrefe, ncmp1, neq2, jcmpgd, icmp1, k, ieq2, iexi2, nbec
-    integer :: jprn2, ino, idg2, ico, jdesc, jdeeq, jvale, iret, n1
+    integer :: jprn2, ino, idg2, ico, jdesc,  jvale, iret, n1
     integer :: lshift, nuprf
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
     logical :: lpchno
     character(len=3) :: tsca
     character(len=19) :: cns, cno, prchno, messag, prnoav
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
 !
@@ -106,16 +111,16 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     cno=cnoz
 !     CALL UTIMSD(6,2,.TRUE.,.TRUE.,CNS,1,' ')
 !
-    call jeveuo(cns//'.CNSK', 'L', jcnsk)
-    call jeveuo(cns//'.CNSD', 'L', jcnsd)
-    call jeveuo(cns//'.CNSC', 'L', jcnsc)
+    call jeveuo(cns//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cns//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(cns//'.CNSC', 'L', vk8=cnsc)
     call jeveuo(cns//'.CNSV', 'L', jcnsv)
     call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
-    ma=zk8(jcnsk-1+1)
-    nomgd=zk8(jcnsk-1+2)
-    nbno=zi(jcnsd-1+1)
-    ncmp1=zi(jcnsd-1+2)
+    ma=cnsk(1)
+    nomgd=cnsk(2)
+    nbno=cnsd(1)
+    ncmp1=cnsd(2)
 !
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -135,7 +140,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
     do icmp1 = 1, ncmp1
-        nomcmp=zk8(jcnsc-1+icmp1)
+        nomcmp=cnsc(icmp1)
         icmp=indik8(zk8(jcmpgd),nomcmp,1,ncmpmx)
         ASSERT(icmp.gt.0)
         zi(jnucmp-1+icmp)=icmp1
@@ -161,10 +166,10 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
             call jeexin(prchno//'.REFN', iexi2)
             if (iexi2 .gt. 0) then
 !         -- SI PRCHNO VIENT D'UN NUME_EQUA, ON PEUT VERIFIER :
-                call jeveuo(prchno//'.REFN', 'L', jrefn)
-                if ((zk24(jrefn-1+1).ne.ma) .or. (zk24(jrefn-1+2) .ne.nomgd)) then
+                call jeveuo(prchno//'.REFN', 'L', vk24=refn)
+                if ((refn(1).ne.ma) .or. (refn(2) .ne.nomgd)) then
 !             -- ON ACCEPTE : DEPL_R / DEPL_C
-                    if ((nomgd(1:5).eq.'DEPL_') .and. (zk24(jrefn-1+2) (1:5).eq.'DEPL_')) then
+                    if ((nomgd(1:5).eq.'DEPL_') .and. (refn(2) (1:5).eq.'DEPL_')) then
                     else
                         call utmess('F', 'CALCULEL4_6', nk=2, valk=valk)
                     endif
@@ -273,12 +278,12 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !     6- ON CREE ET ON REMPLIT LE .VALE :
 !     -----------------------------------
     call jelira(prchno//'.NUEQ', 'LONMAX', neq2)
-    call jeveuo(prchno//'.DEEQ', 'L', jdeeq)
+    call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
     call wkvect(cno//'.VALE', base//' V '//tsca, neq2, jvale)
 !
     do ieq2 = 1, neq2
-        ino=zi(jdeeq-1+2*(ieq2-1)+1)
-        icmp=zi(jdeeq-1+2*(ieq2-1)+2)
+        ino=deeq(2*(ieq2-1)+1)
+        icmp=deeq(2*(ieq2-1)+2)
         if (ino*icmp .gt. 0) then
             nomcmp=zk8(jcmpgd-1+icmp)
             icmp1=zi(jnucmp-1+icmp)

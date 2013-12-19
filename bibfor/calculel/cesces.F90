@@ -73,9 +73,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     integer :: ima, ncmp, icmp
     integer :: jcesd, jcesv, jcesl, nbma, iret, nbsp, nbno, ico
     integer :: iad, jnbpt, ino, isp, nbpg2, nbno2, iad1, jnbcmp
-    integer :: jcemd, jnbsp, ilcnx1, iacnx1, nbpg, ipg, jbref
-    integer :: mnogal, mnogad, mnogav, mnogak, nbno1, imaref
-    integer :: jces1k, jces1d, jces1l, jces1v, jces1c
+    integer ::  jnbsp, ilcnx1, iacnx1, nbpg, ipg
+    integer :: mnogal, mnogad,   nbno1, imaref
+    integer ::  jces1d, jces1l, jces1v
     integer :: nbpt, nbpt1, nbsp1, ipt, ipt1, nbv
     character(len=4) :: typce1
     character(len=8) :: ma, nomgd
@@ -84,6 +84,12 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     character(len=24) :: celfpg
     real(kind=8) :: vr, v1r
     complex(kind=8) :: vc, v1c
+    integer, pointer :: cemd(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
+    character(len=8), pointer :: bref(:) => null()
+    character(len=8), pointer :: ces1k(:) => null()
+    character(len=8), pointer :: nmnogak(:) => null()
+    real(kind=8), pointer :: nmnogav(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -105,14 +111,14 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !     --------------------------------------------------------------
     call exisd('CHAM_ELEM_S', ces1, iret)
     ASSERT(iret.gt.0)
-    call jeveuo(ces1//'.CESK', 'L', jces1k)
-    call jeveuo(ces1//'.CESC', 'L', jces1c)
+    call jeveuo(ces1//'.CESK', 'L', vk8=ces1k)
+    call jeveuo(ces1//'.CESC', 'L', vk8=cesc)
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESV', 'L', jces1v)
     call jeveuo(ces1//'.CESL', 'L', jces1l)
-    ma = zk8(jces1k-1+1)
-    nomgd = zk8(jces1k-1+2)
-    typce1 = zk8(jces1k-1+3)
+    ma = ces1k(1)
+    nomgd = ces1k(2)
+    typce1 = ces1k(3)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
@@ -135,8 +141,8 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     if ((typce1.eq.'ELNO') .and. (typces.eq.'ELGA')) then
         call exisd('CHAM_ELEM_S', mnoga, iret)
         ASSERT(iret.gt.0)
-        call jeveuo(mnoga//'.CESK', 'L', jbref)
-        ASSERT(ma.eq.zk8(jbref-1+1))
+        call jeveuo(mnoga//'.CESK', 'L', vk8=bref)
+        ASSERT(ma.eq.bref(1))
     endif
 !
 !
@@ -165,9 +171,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
         call exisd('CHAM_ELEM_S', cesmod, iret)
 !       TEST ARGUMENT CESMOD OBLIGATOIRE
         ASSERT(iret.gt.0)
-        call jeveuo(cesmod//'.CESD', 'L', jcemd)
+        call jeveuo(cesmod//'.CESD', 'L', vi=cemd)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
+            zi(jnbpt-1+ima) = cemd(5+4* (ima-1)+1)
             zi(jnbsp-1+ima) = zi(jces1d-1+5+4* (ima-1)+2)
             zi(jnbcmp-1+ima) = zi(jces1d-1+5+4* (ima-1)+3)
         end do
@@ -180,7 +186,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !     5. CREATION DE CES2 :
 !     ---------------------------------------
     call cescre(base, ces2, typces, ma, nomgd,&
-                ncmp, zk8(jces1c), zi(jnbpt), zi(jnbsp), zi(jnbcmp))
+                ncmp, cesc, zi(jnbpt), zi(jnbsp), zi(jnbcmp))
 !
     call jeveuo(ces2//'.CESD', 'L', jcesd)
     call jeveuo(ces2//'.CESV', 'E', jcesv)
@@ -195,27 +201,27 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     if ((typce1.eq.'ELNO') .and. (typces.eq.'ELGA')) then
 !     ------------------------------------------------------
         mnoga = mnogaz
-        call jeveuo(mnoga//'.CESK', 'L', mnogak)
+        call jeveuo(mnoga//'.CESK', 'L', vk8=nmnogak)
         call jeveuo(mnoga//'.CESD', 'L', mnogad)
         call jeveuo(mnoga//'.CESL', 'L', mnogal)
-        call jeveuo(mnoga//'.CESV', 'L', mnogav)
-        ASSERT(zk8(mnogak).eq.ma)
+        call jeveuo(mnoga//'.CESV', 'L', vr=nmnogav)
+        ASSERT(nmnogak(1).eq.ma)
 !
         do ima = 1, nbma
             call cesexi('C', mnogad, mnogal, ima, 1,&
                         1, 1, iad)
             if (iad .le. 0) goto 90
-            if (nint(zr(mnogav-1+iad)) .gt. 0) then
+            if (nint(nmnogav(iad)) .gt. 0) then
                 imaref=ima
             else
-                imaref=-nint(zr(mnogav-1+iad))
+                imaref=-nint(nmnogav(iad))
             endif
             call cesexi('C', mnogad, mnogal, imaref, 1,&
                         1, 1, iad)
             if (iad .le. 0) goto 90
 !
-            nbno2 = nint(zr(mnogav-1+iad))
-            nbpg2 = nint(zr(mnogav-1+iad+1))
+            nbno2 = nint(nmnogav(iad))
+            nbpg2 = nint(nmnogav(iad+1))
 !
             nbpg = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = zi(jcesd-1+5+4* (ima-1)+2)
@@ -246,7 +252,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
                                 call cesexi('C', jces1d, jces1l, ima, ino,&
                                             isp, icmp, iad1)
                                 v1r = zr(jces1v-1+iad1)
-                                vr = vr + v1r*zr(mnogav-1+iad+1+nbno* (ipg-1)+ino)
+                                vr = vr + v1r*nmnogav(iad+1+nbno* (ipg-1)+ino)
                             end do
 !
                             call cesexi('C', jcesd, jcesl, ima, ipg,&
@@ -263,7 +269,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
                                 call cesexi('C', jces1d, jces1l, ima, ino,&
                                             isp, icmp, iad1)
                                 v1c = zc(jces1v-1+iad1)
-                                vc = vc + v1c*zr(mnogav-1+iad+1+nbno* (ipg-1)+ino)
+                                vc = vc + v1c*nmnogav(iad+1+nbno* (ipg-1)+ino)
                             end do
 !
                             call cesexi('C', jcesd, jcesl, ima, ipg,&

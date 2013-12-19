@@ -76,7 +76,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
     integer :: nbsigr, nbsig2, jnsg, is1, ioc1, is2, ioc2, inds, jcombi, jpresa
     integer :: jpresb, jnbocc, ifm, niv, i1, i2, ndim, jnoc, nscy, ns, jmsn
-    integer :: jnsitu, nsitup, nsituq, indi, jist, i, icas, icss, nbsitu, i4
+    integer ::  nsitup, nsituq, indi, jist, i, icas, icss, nbsitu, i4
     integer :: jmfu, jmfub, jmfus, nbthep, nbtheq
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij(2), salijs(2), ug, sn, sp(2), smm
     real(kind=8) :: sns, sps(2), spp, sqq(2), sqqs(2), mpi(12), mpj(12), mqi(12)
@@ -93,10 +93,11 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     logical :: endur, cmax, meca
     integer :: nocc
     real(kind=8) :: nadm(1)
+    integer, pointer :: situ_numero(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
-    call jeveuo('&&RC3200.SITU_NUMERO', 'L', jnsitu)
+    call jeveuo('&&RC3200.SITU_NUMERO', 'L', vi=situ_numero)
     call jeveuo('&&RC3200.SITU_COMBINABLE', 'L', jcombi)
     call jeveuo('&&RC3200.SITU_PRES_A', 'L', jpresa)
     call jeveuo('&&RC3200.SITU_PRES_B', 'L', jpresb)
@@ -146,7 +147,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         ns = zi(jnbocc+2*(nbsitu+iocs)-2)
         nscy = zi(jnbocc+2*(nbsitu+iocs)-1)
         ppi = 0.d0
-        nsitup = zi(jnsitu+zi(jnsg+is1-1)-1)
+        nsitup = situ_numero(1+zi(jnsg+is1-1)-1)
         call rcmo02('S', nsitup, mse)
         call rcma02('A', iocs, matpi)
         nsituq = 0
@@ -230,9 +231,9 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
         i1 = i1 + 1
         zi(jnoc-1+i1) = zi(jnbocc+2*ioc1-2)
-        zi(jist-1+i1) = zi(jnsitu+ioc1-1)
+        zi(jist-1+i1) = situ_numero(ioc1)
 !
-        nsitup = zi(jnsitu+ioc1-1)
+        nsitup = situ_numero(ioc1)
         nsituq = 0
         ppi = zr(jpresa+ioc1-1)
         call rcmo02('A', nsitup, mpi)
@@ -414,7 +415,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             if (ioc2 .gt. nbsitu) goto 10
             i2 = i2 + 1
 !
-            nsituq = zi(jnsitu+ioc2-1)
+            nsituq = situ_numero(ioc2)
 !
             pqi = zr(jpresa+ioc2-1)
             call rcmo02('A', nsituq, mqi)

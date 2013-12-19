@@ -41,12 +41,14 @@ subroutine assma1(matas, ldist)
     character(len=*) :: matas
 !---------------------------------------------------------------
     logical :: lmnsy, exilag, ldist
-    integer :: jsmdi, nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
-    integer :: ilig, jcol, kterm, nlong, jrefa, nvale, jvalm1, jvalm2, jconl
+    integer ::  nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
+    integer :: ilig, jcol, kterm, nlong,  nvale, jvalm1, jvalm2, jconl
     character(len=1) :: ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19
     real(kind=8) :: rmin, rmax, rcoef
+    integer, pointer :: smdi(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !=================================================================
     call jemarq()
 !
@@ -63,11 +65,11 @@ subroutine assma1(matas, ldist)
 !    *  QUELQUES VERIFICATIONS DE COHERENCE
 ! ---------------------------------------------------------------
     mat19=matas
-    call jeveuo(mat19//'.REFA', 'L', jrefa)
-    nonu=zk24(jrefa-1+2)(1:14)
+    call jeveuo(mat19//'.REFA', 'L', vk24=refa)
+    nonu=refa(2)(1:14)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', n)
-    call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
-    nz=zi(jsmdi-1+n)
+    call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
+    nz=smdi(n)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     ASSERT(nz.le.nsmhc)
@@ -141,7 +143,7 @@ subroutine assma1(matas, ldist)
 ! ---------------------------------------------------------------
     jcol=1
     do kterm = 1, nz
-        if (zi(jsmdi-1+jcol) .lt. kterm) jcol=jcol+1
+        if (smdi(jcol) .lt. kterm) jcol=jcol+1
         ilig=zi4(jsmhc-1+kterm)
         if (zi(jdelgl-1+jcol)+zi(jdelgl-1+ilig) .lt. 0) then
             if (ktyp .eq. 'R') then

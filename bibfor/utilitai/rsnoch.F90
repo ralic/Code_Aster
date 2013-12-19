@@ -53,7 +53,8 @@ subroutine rsnoch(nomsd, nomsy, iordr)
     character(len=19) :: nomd2, chnote
     character(len=24) :: valk(2)
     character(len=8) :: repk
-    integer :: normax, iretou, nordr, irang, jordr, iret, ibid, jtach
+    integer :: normax, iretou, nordr, irang,  iret, ibid, jtach
+    integer, pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -72,13 +73,13 @@ subroutine rsnoch(nomsd, nomsy, iordr)
             call utmess('F', 'UTILITAI4_42')
         endif
         call jeecra(nomd2//'.ORDR', 'LONUTI', irang)
-        call jeveuo(nomd2//'.ORDR', 'E', jordr)
+        call jeveuo(nomd2//'.ORDR', 'E', vi=ordr)
 !       -- ON VERIFIE QUE LE NOUVEAU IORDR EST SUPERIEUR
 !          AU DERNIER IORDR DEJA STOCKE (IORDR CROISSANTS) :
         if (irang .gt. 1) then
-            ASSERT(zi(jordr+irang-2).lt.iordr)
+            ASSERT(ordr(1+irang-2).lt.iordr)
         endif
-        zi(jordr-1+irang) = iordr
+        ordr(irang) = iordr
     else
         irang = iretou
     endif

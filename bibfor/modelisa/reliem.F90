@@ -74,14 +74,16 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 ! ----------------------------------------------------------------------
     character(len=24) :: litrou
     integer :: jno, jma, kno, kma, iacnex, iem, nem, numno, nno, nma, nbenc
-    integer :: ibid, ient, jprnm
-    integer :: itrno, itrma, ima, ino, nbma, nbno, nbnoma, imo, ier, jmodel
+    integer :: ibid, ient
+    integer :: itrno, itrma, ima, ino, nbma, nbno, nbnoma, imo, ier
     integer :: lma, lno, itbma, itbno, iret, inoem, ntou, k, ifm, niv
     character(len=8) :: type2, oui, noent, nomgd
     character(len=16) :: motfac, motcle, typmcl, phenom
     character(len=19) :: ligrel
     character(len=24) :: karg
     integer :: iarg
+    integer, pointer :: maille(:) => null()
+    integer, pointer :: prnm(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -121,7 +123,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     if (nbma .gt. 0) then
         call wkvect('&&RELIEM.INDIC_MAILLE', 'V V S', max(nbma, 1), itrma)
-        if (modele .ne. ' ') call jeveuo(modele//'.MAILLE', 'L', jmodel)
+        if (modele .ne. ' ') call jeveuo(modele//'.MAILLE', 'L', vi=maille)
     endif
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     call wkvect('&&RELIEM.INDIC_NOEUD', 'V V S', nbno, itrno)
@@ -151,7 +153,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                 if (type2 .eq. 'MAILLE') then
                     do k = 1, nbma
                         if (modele .ne. ' ') then
-                            if (zi(jmodel-1+k) .ne. 0) then
+                            if (maille(k) .ne. 0) then
                                 zi4(itrma-1+k) = 1
                             endif
                         else
@@ -301,7 +303,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             ier = 0
             do ima = 1, nbma
                 if (zi4(itrma-1+ima) .ne. 0) then
-                    if (zi(jmodel-1+ima) .eq. 0) then
+                    if (maille(ima) .eq. 0) then
                         ier = ier + 1
                         call jenuno(jexnum(ma//'.NOMMAI', ima), noent)
                         write (ifm,*) ' MAILLE : ',noent
@@ -361,12 +363,12 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             call dismoi('NOM_GD', phenom, 'PHENOMENE', repk=nomgd)
             call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbenc)
             call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
-            call jeveuo(ligrel//'.PRNM', 'L', jprnm)
+            call jeveuo(ligrel//'.PRNM', 'L', vi=prnm)
             ier = 0
             do ino = 1, nbno
                 if (zi4(itrno-1+ino) .ne. 0) then
                     do ient = 1, nbenc
-                        if (zi(jprnm-1+nbenc*(ino-1)+ient) .ne. 0) goto 191
+                        if (prnm(nbenc*(ino-1)+ient) .ne. 0) goto 191
                     end do
 !             LE NOEUD NE PORTE AUCUNE COMPOSANTE DE LA GRANDEUR
 !             ASSOCIEE AU PHENOMENE

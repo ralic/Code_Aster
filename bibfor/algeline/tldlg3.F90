@@ -98,12 +98,16 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     character(len=24) :: kpiv
     character(len=40) :: infobl, valk(7)
     integer :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
-    integer :: ifm, niv, jrefa, nom, neq, iscbl, iscdi, lliai, iretp, npvnez
+    integer :: ifm, niv,  nom, neq,   lliai, iretp, npvnez
     integer :: typvar, typsym, nbbloc, ilfin1
-    integer :: ieq3, isingu, ischc, ieq, ndeci, jdigs, npivot
+    integer :: ieq3, isingu,  ieq, ndeci, jdigs, npivot
     integer :: ndeci1, ndeci2, ieq4, nzero, vali(2), ipiv
     real(kind=8) :: eps, dmax, dmin, d1
     complex(kind=8) :: cbid
+    integer, pointer :: schc(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: scdi(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     nom=zi(lmat+1)
@@ -124,14 +128,14 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     endif
 !
 !     -- DDLS ELIMINES :
-    call jeveuo(noma19//'.REFA', 'L', jrefa)
-    ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
-    if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(noma19, 'ELIMF')
-    ASSERT(zk24(jrefa-1+3).ne.'ELIML')
+    call jeveuo(noma19//'.REFA', 'L', vk24=refa)
+    ASSERT(refa(3).ne.'ELIMF')
+    if (refa(3) .eq. 'ELIML') call mtmchc(noma19, 'ELIMF')
+    ASSERT(refa(3).ne.'ELIML')
 !
     call dismoi('NOM_NUME_DDL', noma19, 'MATR_ASSE', repk=nu)
     ASSERT(nu.ne.' ')
-    ASSERT(zk24(jrefa-1+2)(1:14).eq.nu)
+    ASSERT(refa(2)(1:14).eq.nu)
 !
     call infdbg('FACTOR', ifm, niv)
     if (niv .eq. 2) then
@@ -175,24 +179,24 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
         call jelira(noma19//'.UALF', 'NMAXOC', nbbloc)
 !
         stolci=nu//'.SLCS'
-        call jeveuo(stolci//'.SCDI', 'L', iscdi)
-        call jeveuo(stolci//'.SCBL', 'L', iscbl)
-        call jeveuo(stolci//'.SCHC', 'L', ischc)
+        call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
+        call jeveuo(stolci//'.SCBL', 'L', vi=scbl)
+        call jeveuo(stolci//'.SCHC', 'L', vi=schc)
         if (typvar .eq. 1) then
             if (typsym .eq. 1) then
-                call tldlr8(noma19, zi(ischc), zi(iscdi), zi(iscbl), npivot,&
+                call tldlr8(noma19, schc, scdi, scbl, npivot,&
                             neq, nbbloc, ildeb, ilfin1, eps)
             else if (typsym.eq.0) then
-                call tldur8(noma19, zi(ischc), zi(iscdi), zi(iscbl), npivot,&
+                call tldur8(noma19, schc, scdi, scbl, npivot,&
                             neq, nbbloc/2, ildeb, ilfin1, eps)
             endif
 !
         else if (typvar.eq.2) then
             if (typsym .eq. 1) then
-                call tldlc8(noma19, zi(ischc), zi(iscdi), zi(iscbl), npivot,&
+                call tldlc8(noma19, schc, scdi, scbl, npivot,&
                             neq, nbbloc, ildeb, ilfin1, eps)
             else if (typsym.eq.0) then
-                call tlduc8(noma19, zi(ischc), zi(iscdi), zi(iscbl), npivot,&
+                call tlduc8(noma19, schc, scdi, scbl, npivot,&
                             neq, nbbloc/2, ildeb, ilfin1, eps)
             endif
         endif

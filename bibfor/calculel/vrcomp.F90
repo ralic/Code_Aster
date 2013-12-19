@@ -87,19 +87,28 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
 !
     character(len=24) :: valk(3)
 !     ------------------------------------------------------------------
-    integer :: jdceld, jdcelv, jdcell, jdcelk
-    integer :: jce2d, jce2v, jce2l, jce2k
+    integer :: jdceld,  jdcell
+    integer :: jce2d,  jce2l, jce2k
     integer :: iad1, iad2, nbma, nbspp, nbspm, ncmpp, ncmpm
     integer :: ima, kma
-    integer :: iadp, jcoppl, jcoppd, jcoppv, jcoppk, ip
-    integer :: iadm, jcopml, jcopmd, jcopmv, jcopmk, im
-    integer :: vali(5), tounul, k, nbpgm, n1, jrepp, jrepm
+    integer :: iadp, jcoppl, jcoppd,   ip
+    integer :: iadm, jcopml, jcopmd,   im
+    integer :: vali(5), tounul, k, nbpgm, n1
     character(len=8) :: noma, nomail, nomma2, nomma1
     character(len=16) :: relcop, relcom
     character(len=19) :: dcel, ces2, copm, copp, coto, lig19p, lig19m
     character(len=48) :: comp1, comp2
     character(len=1) :: stop_erre
     logical :: modif, exip, exim
+    integer, pointer :: repm(:) => null()
+    integer, pointer :: repp(:) => null()
+    real(kind=8), pointer :: ce2v(:) => null()
+    character(len=16), pointer :: copmv(:) => null()
+    character(len=16), pointer :: coppv(:) => null()
+    integer, pointer :: dcelv(:) => null()
+    character(len=8), pointer :: copmk(:) => null()
+    character(len=8), pointer :: coppk(:) => null()
+    character(len=8), pointer :: dcelk(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -148,19 +157,19 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
     call detrsd('CHAM_ELEM_S', coto)
 !
     call jeveuo(copp//'.CESD', 'L', jcoppd)
-    call jeveuo(copp//'.CESV', 'L', jcoppv)
+    call jeveuo(copp//'.CESV', 'L', vk16=coppv)
     call jeveuo(copp//'.CESL', 'L', jcoppl)
-    call jeveuo(copp//'.CESK', 'L', jcoppk)
+    call jeveuo(copp//'.CESK', 'L', vk8=coppk)
 !
 !
 !     DANS COMPOP, ON RECUPERE LE CHAM_ELEM_S DE DCEL_I :
 !     ----------------------------------------------------------------
     dcel=compop
     call jeveuo(dcel//'.CESD', 'L', jdceld)
-    call jeveuo(dcel//'.CESV', 'L', jdcelv)
+    call jeveuo(dcel//'.CESV', 'L', vi=dcelv)
     call jeveuo(dcel//'.CESL', 'L', jdcell)
-    call jeveuo(dcel//'.CESK', 'L', jdcelk)
-    noma=zk8(jdcelk-1+1)
+    call jeveuo(dcel//'.CESK', 'L', vk8=dcelk)
+    noma=dcelk(1)
     nbma=zi(jdceld-1+1)
 !
 !
@@ -170,12 +179,12 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
 !     IL FAUT REGARDER SI ELLE EST DANS LE MODELE.
 !     -----------------------------------------------------------------
     lig19p=ligrep
-    call jeveuo(lig19p//'.REPE', 'L', jrepp)
+    call jeveuo(lig19p//'.REPE', 'L', vi=repp)
     call jelira(lig19p//'.REPE', 'LONMAX', n1)
     ASSERT(n1.eq.2*nbma)
 !
     call dismoi('NOM_LIGREL', varmoi, 'CHAM_ELEM', repk=lig19m)
-    call jeveuo(lig19m//'.REPE', 'L', jrepm)
+    call jeveuo(lig19m//'.REPE', 'L', vi=repm)
     call jelira(lig19m//'.REPE', 'LONMAX', n1)
 !
 !
@@ -186,7 +195,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
     call celces(varmoi, 'V', ces2)
     call cestas(ces2)
     call jeveuo(ces2//'.CESD', 'L', jce2d)
-    call jeveuo(ces2//'.CESV', 'L', jce2v)
+    call jeveuo(ces2//'.CESV', 'L', vr=ce2v)
     call jeveuo(ces2//'.CESL', 'L', jce2l)
     call jeveuo(ces2//'.CESK', 'L', jce2k)
 !
@@ -199,32 +208,32 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
         call detrsd('CHAM_ELEM_S', coto)
 !
         call jeveuo(copm//'.CESD', 'L', jcopmd)
-        call jeveuo(copm//'.CESV', 'L', jcopmv)
+        call jeveuo(copm//'.CESV', 'L', vk16=copmv)
         call jeveuo(copm//'.CESL', 'L', jcopml)
-        call jeveuo(copm//'.CESK', 'L', jcopmk)
+        call jeveuo(copm//'.CESK', 'L', vk8=copmk)
 !
-        ASSERT(zk8(jcopmk-1+1).eq.zk8(jcoppk-1+1))
+        ASSERT(copmk(1).eq.coppk(1))
     endif
 !
 !
 !     1.  SI COMPOM EST DONNE, ON VERIFIE LES NOMS DES COMPORTEMENTS :
 !     ---------------------------------------------------------------
     if (compom .ne. ' ') then
-        ASSERT(noma.eq.zk8(jcopmk-1+1))
+        ASSERT(noma.eq.copmk(1))
 !
         kma=0
         do ima = 1, nbma
-            exim=zi(jrepm-1+2*(ima-1)+1).gt.0
-            exip=zi(jrepp-1+2*(ima-1)+1).gt.0
+            exim=repm(2*(ima-1)+1).gt.0
+            exip=repp(2*(ima-1)+1).gt.0
             kma=kma+1
             call cesexi('C', jcopmd, jcopml, ima, 1,&
                         1, 1, iadm)
             call cesexi('C', jcoppd, jcoppl, ima, 1,&
                         1, 1, iadp)
             if (iadp .gt. 0) then
-                relcop=zk16(jcoppv-1+iadp)
+                relcop=coppv(iadp)
                 if (iadm .le. 0) goto 60
-                relcom=zk16(jcopmv-1+iadm)
+                relcom=copmv(iadm)
 !
 !           -- SI RELCOP=RELCOM C'EST OK :
                 if (relcom .eq. relcop) goto 10
@@ -258,8 +267,8 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
 !     2.  ON VERIFIE LES NOMBRES DE SOUS-POINTS ET DE CMPS :
 !     ------------------------------------------------------------
     do ima = 1, nbma
-        exim=zi(jrepm-1+2*(ima-1)+1).gt.0
-        exip=zi(jrepp-1+2*(ima-1)+1).gt.0
+        exim=repm(2*(ima-1)+1).gt.0
+        exip=repp(2*(ima-1)+1).gt.0
         call cesexi('C', jdceld, jdcell, ima, 1,&
                     1, 1, iad1)
         call cesexi('C', jdceld, jdcell, ima, 1,&
@@ -278,8 +287,8 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
             ncmpp=0
         else
             ASSERT(iad2.gt.0)
-            nbspp=zi(jdcelv-1+iad1)
-            ncmpp=zi(jdcelv-1+iad2)
+            nbspp=dcelv(iad1)
+            ncmpp=dcelv(iad2)
         endif
         nbpgm=zi(jce2d-1+5+4*(ima-1)+1)
         nbspm=zi(jce2d-1+5+4*(ima-1)+2)
@@ -308,7 +317,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
 !
 !         -- CE N'EST PAS GRAVE SI COMPOR "+" = 'ELAS' :
             ASSERT(iadp.gt.0)
-            relcop=zk16(jcoppv-1+iadp)
+            relcop=coppv(iadp)
             if (relcop .eq. 'ELAS' .or. relcop .eq. 'SANS') goto 30
 !
 !         -- CE N'EST PAS GRAVE SI COMPOR "-" = 'ELAS' :
@@ -316,7 +325,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
                 call cesexi('C', jcopmd, jcopml, ima, 1,&
                             1, 1, iadm)
                 ASSERT(iadm.gt.0)
-                relcom=zk16(jcopmv-1+iadm)
+                relcom=copmv(iadm)
                 if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS' .or. relcom .eq. 'KIT_CG') &
                 goto 30
             else
@@ -328,7 +337,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
                     ASSERT(iad2.gt.0)
                     tounul=0
                     do k = 1, nbpgm*nbspp
-                        if (zr(jce2v-1+iad2+k-1) .ne. 0.d0) tounul=1
+                        if (ce2v(iad2+k-1) .ne. 0.d0) tounul=1
                     end do
                     if (tounul .eq. 0) goto 30
                 endif

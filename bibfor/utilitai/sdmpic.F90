@@ -44,7 +44,10 @@ subroutine sdmpic(typesd, nomsd)
     character(len=24) :: noms2, types2
     character(len=19) :: k19
     character(len=8) :: kmpic
-    integer :: ifm, niv, jcelk, iexi, jrefa, jnoli
+    integer :: ifm, niv,  iexi
+    character(len=24), pointer :: noli(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: celk(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -60,8 +63,8 @@ subroutine sdmpic(typesd, nomsd)
         call dismoi('MPI_COMPLET', k19, 'CHAM_ELEM', repk=kmpic)
         if (kmpic .eq. 'OUI') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.CELV')
-        call jeveuo(k19//'.CELK', 'E', jcelk)
-        zk24(jcelk-1+7)='MPI_COMPLET'
+        call jeveuo(k19//'.CELK', 'E', vk24=celk)
+        celk(7)='MPI_COMPLET'
 !
 !
     else if (types2.eq.'RESUELEM') then
@@ -69,8 +72,8 @@ subroutine sdmpic(typesd, nomsd)
         call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
         if (kmpic .eq. 'OUI') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
-        call jeveuo(k19//'.NOLI', 'E', jnoli)
-        zk24(jnoli-1+3)='MPI_COMPLET'
+        call jeveuo(k19//'.NOLI', 'E', vk24=noli)
+        noli(3)='MPI_COMPLET'
 !
 !
     else if (types2.eq.'MATR_ASSE') then
@@ -82,8 +85,8 @@ subroutine sdmpic(typesd, nomsd)
         call jeexin(k19//'.CCVA', iexi)
         if (iexi .gt. 0) call asmpi_comm_jev('MPI_SUM', k19//'.CCVA')
 !
-        call jeveuo(k19//'.REFA', 'E', jrefa)
-        zk24(jrefa-1+11)='MPI_COMPLET'
+        call jeveuo(k19//'.REFA', 'E', vk24=refa)
+        refa(11)='MPI_COMPLET'
 !
     else
         ASSERT(.false.)

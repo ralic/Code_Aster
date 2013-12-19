@@ -56,9 +56,13 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     character(len=14) :: nu1, nu2
     character(len=19) :: matas2
     real(kind=8) :: val
-    integer :: jrefa1, ibid
+    integer ::  ibid
     integer :: neq1, neq2, ico, ieq2
-    integer :: k1, k2, jdelg1, jdlg2, jconl1
+    integer :: k1, k2
+    real(kind=8), pointer :: conl(:) => null()
+    integer, pointer :: delg(:) => null()
+    integer, pointer :: dlg2(:) => null()
+    character(len=24), pointer :: refa(:) => null()
     PetscInt :: ierr
     PetscInt :: n1, n2, n3
     PetscScalar :: xx(1), p1
@@ -69,17 +73,17 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !----------------------------------------------------------------
     call jemarq()
 !
-    call jeveuo(matas1//'.REFA', 'L', jrefa1)
-    matas2=zk24(jrefa1-1+19)(1:19)
+    call jeveuo(matas1//'.REFA', 'L', vk24=refa)
+    matas2=refa(19)(1:19)
     ASSERT(matas2.ne.' ')
 !
     call dismoi('NOM_NUME_DDL', matas1, 'MATR_ASSE', repk=nu1)
     call dismoi('NOM_NUME_DDL', matas2, 'MATR_ASSE', repk=nu2)
     call dismoi('NB_EQUA', nu1, 'NUME_DDL', repi=neq1)
     call dismoi('NB_EQUA', nu2, 'NUME_DDL', repi=neq2)
-    call jeveuo(nu1//'.NUME.DELG', 'L', jdelg1)
+    call jeveuo(nu1//'.NUME.DELG', 'L', vi=delg)
     call nudlg2(nu1)
-    call jeveuo(nu1//'.NUME.DLG2', 'L', jdlg2)
+    call jeveuo(nu1//'.NUME.DLG2', 'L', vi=dlg2)
 !
 ! à faire ....
     ASSERT(nsecm.eq.1)
@@ -119,7 +123,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     call VecGetArray(x1, xx, xidx, ierr)
     ico=0
     do k1 = 1, neq1
-        if (zi(jdelg1+k1-1) .eq. 0) then
+        if (delg(k1) .eq. 0) then
             ico=ico+1
             rsolu1(k1)=xx(xidx+ico)
         endif
@@ -131,16 +135,16 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !     -- on recopie VLAG dans RSOLU1 :
 !        remarque : il faut diviser VLAG par 2 (2 lagranges)
 !                   Lagrange "1"  et "2" :
-    call jeveuo(matas1//'.CONL', 'L', jconl1)
+    call jeveuo(matas1//'.CONL', 'L', vr=conl)
     call VecGetArray(vlag, xx, xidx, ierr)
     ico=0
     do k1 = 1, neq1
-        if (zi(jdelg1+k1-1) .eq. -1) then
+        if (delg(k1) .eq. -1) then
             ico=ico+1
-            val=xx(xidx+ico)*zr(jconl1+k1-1)/2.d0
+            val=xx(xidx+ico)*conl(k1)/2.d0
             rsolu1(k1)=val
 ! k2 lagrange "2" associé au lagrange "1" k1
-            k2=zi(jdlg2-1+k1)
+            k2=dlg2(k1)
             ASSERT(k2.gt.0)
             rsolu1(k2)=val
         endif

@@ -62,7 +62,7 @@ subroutine cesgno(ces1, celfpg, base, ces2)
     integer :: ima, ncmp, icmp, ino, isp, nno
     integer :: nbma, iret
     integer :: npg, ipg, nujni, nbobj
-    integer :: jces1k, jces1d, jces1l, jces1v, jces1c, iad1, nbpt1, nbsp1
+    integer ::  jces1d, jces1l, jces1v, jces1c, iad1, nbpt1, nbsp1
     integer :: jces2d, jces2l, jces2v, iad2, nbpt2, nbsp2
     integer :: jmat, jganol, ivfl, jdfd2l, jcoopl, ipoidl, npgl, lonfam
     integer :: ifam, decal, jvr, idfdel, nufpg, avance, jnofpg
@@ -72,6 +72,7 @@ subroutine cesgno(ces1, celfpg, base, ces2)
     character(len=24) :: liobj(10)
     real(kind=8) :: vrpg(nbpgmx), vrno(nbnomx), sr
     complex(kind=8) :: vcpg(nbpgmx), vcno(nbnomx), sc
+    character(len=8), pointer :: cesk(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -89,13 +90,13 @@ subroutine cesgno(ces1, celfpg, base, ces2)
 !     --------------------------------------------------------------
     call exisd('CHAM_ELEM_S', ces1, iret)
     ASSERT(iret.gt.0)
-    call jeveuo(ces1//'.CESK', 'L', jces1k)
+    call jeveuo(ces1//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces1//'.CESC', 'L', jces1c)
     call jeveuo(ces1//'.CESD', 'L', jces1d)
     call jeveuo(ces1//'.CESV', 'L', jces1v)
     call jeveuo(ces1//'.CESL', 'L', jces1l)
-    ma = zk8(jces1k-1+1)
-    nomgd = zk8(jces1k-1+2)
+    ma = cesk(1)
+    nomgd = cesk(2)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call jelira(ces1//'.CESC', 'LONMAX', ncmp)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)

@@ -84,12 +84,14 @@ subroutine debca1(nomop, ligrel, nin)
     common /carr01/timed1,timef1,td1,tf1
 ! -------------------------------------------------------------------
 ! VARIABLES LOCALES :
-    integer :: iret, ier, opt, ianblc, nbscmx, nbpara
-    integer :: nnomx, nbopt, nbte, i, jnvge
+    integer :: iret, ier, opt,  nbscmx, nbpara
+    integer :: nnomx, nbopt, nbte, i
     character(len=16) :: nomop2, nomte
     character(len=3) :: bevois, exivf, exiele
     character(len=12) :: vge
     real(kind=8) :: rundef
+    integer, pointer :: nbligcol(:) => null()
+    character(len=16), pointer :: nvge(:) => null()
 ! -------------------------------------------------------------------
 !
     call dismoi('EXI_ELEM', ligrel, 'LIGREL', repk=exiele)
@@ -106,8 +108,8 @@ subroutine debca1(nomop, ligrel, nin)
 !     INITIALISATION DU COMMON CAII02 :
 !     ---------------------------------
     call jeveuo('&CATA.TE.OPTTE', 'L', iaoptt)
-    call jeveuo('&CATA.TE.NBLIGCOL', 'L', ianblc)
-    lgco=zi(ianblc-1+1)
+    call jeveuo('&CATA.TE.NBLIGCOL', 'L', vi=nbligcol)
+    lgco=nbligcol(1)
     call jeveuo('&CATA.TE.OPTMOD', 'L', iaopmo)
     call jeveuo(jexatr('&CATA.TE.OPTMOD', 'LONCUM'), 'L', ilopmo)
     call jeveuo('&CATA.TE.OPTNOM', 'L', iaopno)
@@ -182,8 +184,8 @@ subroutine debca1(nomop, ligrel, nin)
         call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
         call jeexin(ligrel//'.NVGE', ier)
         if (ier .ne. 0) then
-            call jeveuo(ligrel//'.NVGE', 'L', jnvge)
-            vge=zk16(jnvge-1+1)
+            call jeveuo(ligrel//'.NVGE', 'L', vk16=nvge)
+            vge=nvge(1)
             call jeveuo(vge//'.PTVOIS', 'L', jptvoi)
             call jeveuo(vge//'.ELVOIS', 'L', jelvoi)
         else

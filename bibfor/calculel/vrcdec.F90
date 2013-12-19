@@ -44,10 +44,11 @@ subroutine vrcdec()
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
 !
-    integer :: jtmfpg, kfpgl, kpgmat, nbpg
+    integer ::  kfpgl, kpgmat, nbpg
     integer :: nuflpg, nufgpg, k
     character(len=8) :: fapg, elrefe
     character(len=32) :: noflpg
+    integer, pointer :: tmfpg(:) => null()
 ! ---------------------------------------------------------------
 !
 !
@@ -59,7 +60,7 @@ subroutine vrcdec()
         goto 9999
     endif
 !
-    call jeveuo('&CATA.TM.TMFPG', 'L', jtmfpg)
+    call jeveuo('&CATA.TM.TMFPG', 'L', vi=tmfpg)
     call jeveuo(jexnum('&CATA.TE.FPG_LISTE', kfpgl), 'L', jfpgl)
     call jelira(jexnum('&CATA.TE.FPG_LISTE', kfpgl), 'LONMAX', nfpg)
     nfpg=nfpg-1
@@ -73,7 +74,7 @@ subroutine vrcdec()
     nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
     nufgpg = zi(jnolfp-1+nuflpg)
     ASSERT(nufgpg.gt.0)
-    nbpg=zi(jtmfpg-1+nufgpg)
+    nbpg=tmfpg(nufgpg)
     kpgmat=kpgmat+nbpg
     1 end do
 !

@@ -52,10 +52,12 @@ subroutine vrcom2(compop, varmoi, ligrep)
     integer :: ima, iret
     integer :: iadp, jcoppl, jcoppd, jcoppv
     integer :: action
-    integer :: jcev1d, jcev1v, jcev1l
-    integer :: jcev2d, jcev2v, jcev2l, nncp, ibid
+    integer :: jcev1d,  jcev1l
+    integer :: jcev2d,  jcev2l, nncp, ibid
     character(len=19) :: cesv1, cesv2, coto, copp
     character(len=19) :: varplu
+    real(kind=8), pointer :: cev1v(:) => null()
+    real(kind=8), pointer :: cev2v(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -74,7 +76,7 @@ subroutine vrcom2(compop, varmoi, ligrep)
     call celces(varmoi, 'V', cesv1)
     call cestas(cesv1)
     call jeveuo(cesv1//'.CESD', 'L', jcev1d)
-    call jeveuo(cesv1//'.CESV', 'L', jcev1v)
+    call jeveuo(cesv1//'.CESV', 'L', vr=cev1v)
     call jeveuo(cesv1//'.CESL', 'L', jcev1l)
     nbma=zi(jcev1d-1+1)
 !
@@ -93,7 +95,7 @@ subroutine vrcom2(compop, varmoi, ligrep)
 !     3- ON RECOPIE DE CESV1 VERS CESV2 :
 !     -----------------------------------
     call jeveuo(cesv2//'.CESD', 'L', jcev2d)
-    call jeveuo(cesv2//'.CESV', 'E', jcev2v)
+    call jeveuo(cesv2//'.CESV', 'E', vr=cev2v)
     call jeveuo(cesv2//'.CESL', 'E', jcev2l)
 !
     coto='&&VRCOM2.COTO'
@@ -151,10 +153,10 @@ subroutine vrcom2(compop, varmoi, ligrep)
                             call cesexi('S', jcev1d, jcev1l, ima, ipg,&
                                         isp, icm, iad1)
                             ASSERT(iad1.gt.0)
-                            zr(jcev2v-1+iad2)=zr(jcev1v-1+iad1)
+                            cev2v(iad2)=cev1v(iad1)
 !
                     else
-                        zr(jcev2v-1+iad2)=0.d0
+                        cev2v(iad2)=0.d0
                     endif
                 end do
             end do

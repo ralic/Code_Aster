@@ -43,27 +43,31 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
 !
 !     ------------------------------------------------------------------
     integer :: nbno1, nbno2, jcorrn
-    integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c
-    integer :: jcn2d, jcn2v, jcn2l, jcn2c
+    integer ::   jcn1v, jcn1l
+    integer ::  jcn2v, jcn2l, jcn2c
     integer :: ncmp, icmp
     integer :: ino2, ino1
     character(len=8) :: nomgd
     character(len=3) :: tsca
+    integer, pointer :: cn1d(:) => null()
+    integer, pointer :: cn2d(:) => null()
+    character(len=8), pointer :: cn1c(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
     ASSERT(cns2.ne.' ')
     ASSERT(cns1.ne.cns2)
 !
-    call jeveuo(cns1//'.CNSK', 'L', jcn1k)
-    call jeveuo(cns1//'.CNSD', 'L', jcn1d)
-    call jeveuo(cns1//'.CNSC', 'L', jcn1c)
+    call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cns1//'.CNSD', 'L', vi=cn1d)
+    call jeveuo(cns1//'.CNSC', 'L', vk8=cn1c)
     call jeveuo(cns1//'.CNSV', 'L', jcn1v)
     call jeveuo(cns1//'.CNSL', 'L', jcn1l)
 !
-    nomgd=zk8(jcn1k-1+2)
-    nbno1=zi(jcn1d-1+1)
-    ncmp=zi(jcn1d-1+2)
+    nomgd=cnsk(2)
+    nbno1=cn1d(1)
+    ncmp=cn1d(2)
     ASSERT(ncmp.gt.0)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -72,13 +76,13 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
 !
 !     1- CREATION DE CNS2 :
 !     ---------------------------------------
-    call cnscre(ma2, nomgd, ncmp, zk8(jcn1c), base,&
+    call cnscre(ma2, nomgd, ncmp, cn1c, base,&
                 cns2)
-    call jeveuo(cns2//'.CNSD', 'L', jcn2d)
+    call jeveuo(cns2//'.CNSD', 'L', vi=cn2d)
     call jeveuo(cns2//'.CNSC', 'L', jcn2c)
     call jeveuo(cns2//'.CNSV', 'E', jcn2v)
     call jeveuo(cns2//'.CNSL', 'E', jcn2l)
-    nbno2=zi(jcn2d-1+1)
+    nbno2=cn2d(1)
     ASSERT(nbno2.gt.0)
     ASSERT(nbno2.le.nbno1)
 !

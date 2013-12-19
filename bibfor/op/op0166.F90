@@ -55,7 +55,6 @@ subroutine op0166()
 #include "asterfort/utmess.h"
     integer :: iret
     integer :: ie, n1, n2, n3
-    integer :: jpjk1
     logical :: isole
     logical :: lnoeu, lelno, lelem, lelga
     character(len=4) :: tychv, typcal
@@ -66,6 +65,7 @@ subroutine op0166()
     character(len=19) :: ligre1, ligre2
     character(len=24) :: valk(4)
     integer :: nbocc
+    character(len=24), pointer :: pjxx_k1(:) => null()
 !
 !
 !
@@ -257,10 +257,10 @@ subroutine op0166()
     if (typcal .eq. '2') then
         lcorre(1)=corru
         lcorre(2)=' '
-        call jeveuo(corru//'.PJXX_K1', 'L', jpjk1)
+        call jeveuo(corru//'.PJXX_K1', 'L', vk24=pjxx_k1)
 !        -- LES MOA1 ET MOA2 STOCKES SONT LES MAILLAGES
-        moa1=zk24(jpjk1-1+1)(1:8)
-        moa2=zk24(jpjk1-1+2)(1:8)
+        moa1=pjxx_k1(1)(1:8)
+        moa2=pjxx_k1(2)(1:8)
         if (moa1 .ne. nomare) then
             valk(1) = moa1
             valk(2) = norein

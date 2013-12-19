@@ -59,12 +59,13 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     integer :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
-    integer :: ichci, ibid, ifm, niv, neq, ieq, jdlci2, jdlci, ieqmul
+    integer :: ichci, ibid, ifm, niv, neq, ieq, jdlci2,  ieqmul
     character(len=8) :: newnom, nomno, nomcmp, tyddl
     character(len=19) :: charci, chamno, vci2, ligrel
     character(len=24) :: vachci, valk(2), infobl
     character(len=8) :: charge
     integer :: ier
+    integer, pointer :: dlci(:) => null()
     data chamno/'&&ASCAVC.???????'/
     data vachci/'&&ASCAVC.LISTE_CI'/
     data charci/'&&ASCAVC.LISTE_CHI'/
@@ -134,15 +135,15 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
                     call calvci(chamno, numedd, 1, charge//'.ELIM', inst,&
                                 'V')
                 endif
-                call jeveuo(chamno//'.DLCI', 'L', jdlci)
+                call jeveuo(chamno//'.DLCI', 'L', vi=dlci)
 !           --- COMBINAISON DES DLCI (OBJET CONTENANT DES 0 OU DES 1),
 !           --- LES 1 ETANT POUR LES DDL CONTRAINT
 !           --- LE RESTE DE L OBJECT VCI2 EST CREE PAR ASCOVA
                 do ieq = 1, neq
 !             -- ON REGARDE SI UN DDL N'EST PAS ELIMINE PLUSIEURS FOIS:
-                    if (zi(jdlci2-1+ieq) .gt. 0 .and. zi(jdlci-1+ieq) .gt. 0) ieqmul=ieq
+                    if (zi(jdlci2-1+ieq) .gt. 0 .and. dlci(ieq) .gt. 0) ieqmul=ieq
 !
-                    zi(jdlci2-1+ieq)=max(zi(jdlci2-1+ieq),zi(jdlci-1+&
+                    zi(jdlci2-1+ieq)=max(zi(jdlci2-1+ieq),dlci(&
                     ieq))
                 end do
             endif

@@ -78,11 +78,21 @@ subroutine aflrch(lisrez, chargz)
     real(kind=8) :: beta
     integer :: i, icmp, iddl, idecal, ifm, igrel
     integer :: in, indsur, inema, inema0, ino, inom, ipntrl, irela
-    integer :: iret, j, jnbno, jncmp1, jncmp2, jnoma, jprnm, jrlbe, jrlco
-    integer :: jrlcof, jrldd, jrlla, jrlno, idnoeu, jrlnr, jrlnt, jrlpo
-    integer :: jrlsu, jrltc, jrltv, jvale1, jvale2, jvalv1, jvalv2, kddl
+    integer :: iret, j,     jprnm, jrlbe, jrlco
+    integer :: jrlcof, jrldd,  jrlno, idnoeu,   jrlpo
+    integer ::    jvale1, jvale2, jvalv1, jvalv2, kddl
     integer :: nbcmp, nbec, nbnema, nbrela, nbteli, nbterm, nddla
     integer :: niv, numel, nunewm, nbdual, nbsurc, iexi
+    character(len=8), pointer :: ncmp1(:) => null()
+    character(len=8), pointer :: ncmp2(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: rlnr(:) => null()
+    character(len=8), pointer :: rltc(:) => null()
+    character(len=8), pointer :: rlla(:) => null()
+    integer, pointer :: rlnt(:) => null()
+    integer, pointer :: rlsu(:) => null()
+    integer, pointer :: nbno(:) => null()
+    character(len=8), pointer :: rltv(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
     call jemarq()
     lisrel=lisrez
@@ -95,8 +105,8 @@ subroutine aflrch(lisrez, chargz)
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
     ligrmo=mod(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma=zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma=lgrf(1)
     call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
 !
     if (typcha(1:4) .eq. 'MECA') then
@@ -138,16 +148,16 @@ subroutine aflrch(lisrez, chargz)
         ASSERT(.false.)
     endif
 !
-    call jeveuo(lisrel//'.RLTC', 'L', jrltc)
-    typcoe=zk8(jrltc)(1:4)
+    call jeveuo(lisrel//'.RLTC', 'L', vk8=rltc)
+    typcoe=rltc(1)(1:4)
 !
 ! --- TYPE DES VALEURS AU SECOND MEMBRE DES RELATIONS
-    call jeveuo(lisrel//'.RLTV', 'L', jrltv)
-    typval=zk8(jrltv)(1:4)
+    call jeveuo(lisrel//'.RLTV', 'L', vk8=rltv)
+    typval=rltv(1)(1:4)
 !
 ! --- NOMBRE DE RELATIONS DE LA LISTE DE RELATIONS
-    call jeveuo(lisrel//'.RLNR', 'L', jrlnr)
-    nbrela=zi(jrlnr)
+    call jeveuo(lisrel//'.RLNR', 'L', vi=rlnr)
+    nbrela=rlnr(1)
 !
 ! --- NOMBRE TOTAL DE TERMES IMPLIQUES DANS LES RELATIONS
 ! --- DE LA LISTE DE RELATIONS (SERT AU REDIMENSIONNEMENT
@@ -191,16 +201,16 @@ subroutine aflrch(lisrez, chargz)
     call jeexin(ca1//'.DESC', iret)
     ASSERT(iret.gt.0)
 !
-    call jeveuo(ca1//'.NCMP', 'E', jncmp1)
+    call jeveuo(ca1//'.NCMP', 'E', vk8=ncmp1)
     call jeveuo(ca1//'.VALV', 'E', jvalv1)
     call jeveuo(ca1//'.VALE', 'E', jvale1)
-    call jeveuo(ca2//'.NCMP', 'E', jncmp2)
+    call jeveuo(ca2//'.NCMP', 'E', vk8=ncmp2)
     call jeveuo(ca2//'.VALV', 'E', jvalv2)
     call jeveuo(ca2//'.VALE', 'E', jvale2)
 !
 !
     numel=0
-    call jeveuo(ligrch//'.NBNO', 'E', jnbno)
+    call jeveuo(ligrch//'.NBNO', 'E', vi=nbno)
     call dismoi('NB_MA_SUP', ligrch, 'LIGREL', repi=inema)
     call dismoi('NB_GREL', ligrch, 'LIGREL', repi=igrel)
 !
@@ -208,20 +218,20 @@ subroutine aflrch(lisrez, chargz)
     call jeveuo(lisrel//'.RLCO', 'L', jrlco)
     call jeveuo(lisrel//'.RLDD', 'L', jrldd)
     call jeveuo(lisrel//'.RLNO', 'L', jrlno)
-    call jeveuo(lisrel//'.RLNT', 'L', jrlnt)
+    call jeveuo(lisrel//'.RLNT', 'L', vi=rlnt)
     call jeveuo(lisrel//'.RLPO', 'L', jrlpo)
-    call jeveuo(lisrel//'.RLSU', 'L', jrlsu)
+    call jeveuo(lisrel//'.RLSU', 'L', vi=rlsu)
     call jeveuo(lisrel//'.RLBE', 'L', jrlbe)
-    call jeveuo(lisrel//'.RLLA', 'L', jrlla)
+    call jeveuo(lisrel//'.RLLA', 'L', vk8=rlla)
 !
 !
 !
     do irela = 1, nbrela
-        indsur=zi(jrlsu+irela-1)
+        indsur=rlsu(irela)
         if (indsur .ne. 0) goto 60
 !
         ipntrl=zi(jrlpo+irela-1)
-        nbterm=zi(jrlnt+irela-1)
+        nbterm=rlnt(irela)
         if (typval .eq. 'REEL') then
             beta=zr(jrlbe+irela-1)
         else if (typval.eq.'COMP') then
@@ -238,7 +248,7 @@ subroutine aflrch(lisrez, chargz)
 !
         numel=0
         inema0=inema
-        zi(jnbno)=zi(jnbno)+2
+        nbno(1)=nbno(1)+2
         do ino = 1, nbterm
             nomnoe=zk8(idnoeu+ino-1)
             call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
@@ -263,8 +273,8 @@ subroutine aflrch(lisrez, chargz)
             if (numel .ne. 0) then
                 igrel=igrel+1
                 call noligr(ligrch, igrel, numel, 1, [in],&
-                            ['        '], 3, 1, inema, zi(jnbno),&
-                            zk8(jrlla+irela-1))
+                            ['        '], 3, 1, inema, nbno,&
+                            rlla(irela))
             else
                 call utmess('F', 'CHARGES2_33', sk=nomnoe)
             endif
@@ -275,8 +285,8 @@ subroutine aflrch(lisrez, chargz)
 !       --  STOCKAGE DANS LES CARTES CA1 ET CA2
         nbnema=inema-inema0
         ASSERT(nbnema.eq.nbterm)
-        zk8(jncmp1)='A1'
-        zk8(jncmp2)='C'
+        ncmp1(1)='A1'
+        ncmp2(1)='C'
         do j = 1, nbnema
             if (typcoe .eq. 'COMP') then
                 zc(jvalv1)=zc(jrlcof-1+j)
@@ -323,10 +333,10 @@ subroutine aflrch(lisrez, chargz)
         call utmess('I', 'CHARGES2_34')
 !
         do irela = 1, nbrela
-            indsur=zi(jrlsu+irela-1)
+            indsur=rlsu(irela)
             if (indsur .eq. 1) then
                 ipntrl=zi(jrlpo+irela-1)
-                nbterm=zi(jrlnt+irela-1)
+                nbterm=rlnt(irela)
                 if (typval .eq. 'REEL') then
                     beta=zr(jrlbe+irela-1)
                 else if (typval.eq.'COMP') then
@@ -341,7 +351,7 @@ subroutine aflrch(lisrez, chargz)
                 idnoeu=jrlno+idecal
                 iddl=jrldd+idecal
                 call impre2(lisrel//'.RLCO', lisrel//'.RLDD', lisrel// '.RLNO', lisrel//'.RLBE',&
-                            zi(jrlsu+irela-1), zi(jrlpo+ irela-1), zi(jrlnt+irela-1), typcoe,&
+                            rlsu(irela), zi(jrlpo+ irela-1), rlnt(irela), typcoe,&
                             typval, irela)
             endif
         enddo

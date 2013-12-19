@@ -58,8 +58,11 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
     integer :: iocc
 !---------------- VARIABLES LOCALES  --------------------------
     character(len=8) :: moa, nomo1, noma1, cdim1
-    integer :: ndim, iagma1, nbma1, ditopo, typm1, dim1, jtypm1
-    integer :: nb1, kma, jtmdim, jrepe, n1, iexi
+    integer :: ndim, iagma1, nbma1, ditopo, typm1, dim1
+    integer :: nb1, kma,   n1, iexi
+    integer, pointer :: repe(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    integer, pointer :: typmail(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -72,7 +75,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
         nomo1=' '
         noma1=moa
     endif
-    call jeveuo(noma1//'.TYPMAIL', 'L', jtypm1)
+    call jeveuo(noma1//'.TYPMAIL', 'L', vi=typmail)
 !
 !
 !     -- SI L'UTILISATEUR A UTILISE  CAS_FIGURE :
@@ -94,7 +97,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
     else
         call dismoi('NB_MA_MAILLA', noma1, 'MAILLAGE', repi=nb1)
         if (nomo1 .ne. ' ') then
-            call jeveuo(nomo1//'.MODELE    .REPE', 'L', jrepe)
+            call jeveuo(nomo1//'.MODELE    .REPE', 'L', vi=repe)
         endif
 !
         call wkvect('&&PJEFCA.LIMA1', 'V V I', nb1, iagma1)
@@ -102,7 +105,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
         do kma = 1, nb1
             if (nomo1 .ne. ' ') then
 !          -- SI C'EST UNE MAILLE DU MODELE :
-                if (zi(jrepe-1+2*(kma-1)+1) .gt. 0) then
+                if (repe(2*(kma-1)+1) .gt. 0) then
                     nbma1=nbma1+1
                     zi(iagma1-1+nbma1)=kma
                 endif
@@ -127,14 +130,14 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !
 !     DETERMINATION DU CAS DE FIGURE : 2D, 3D , 2.5D OU 1.5D :
 !     --------------------------------------------------------
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 !     -- ON PARCOURT LES MAILLES DE LIMA1 POUR DETERMINER
 !        LA PLUS GRANDE DIMENSION TOPOLOGIQUE : 3,2,1 : DITOPO
     ditopo=0
     do kma = 1, nbma1
-        typm1=zi(jtypm1-1+zi(iagma1-1+kma))
-        dim1=zi(jtmdim-1+typm1)
+        typm1=typmail(zi(iagma1-1+kma))
+        dim1=tmdim(typm1)
         ditopo=max(ditopo,dim1)
     end do
 !

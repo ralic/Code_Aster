@@ -24,13 +24,13 @@ function mailla(ligrel)
 #include "asterfort/jeveuo.h"
     character(len=19) :: ligrel
 !
-    integer :: noma
+    character(len=8), pointer :: lgrf(:) => null()
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call jeveuo(ligrel//'.LGRF', 'L', noma)
-    mailla = zk8(noma-1+1)
+    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+    mailla = lgrf(1)
     call jedema()
 end function

@@ -38,7 +38,8 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
 ! ----------------------------------------------------------------------
 !
     character(len=19) :: nomd2
-    integer :: nbordr, jordr, i, debut, milieu, fin, diff, maxit
+    integer :: nbordr,  i, debut, milieu, fin, diff, maxit
+    integer, pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -51,11 +52,11 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
         irang = 0
         goto 20
     endif
-    call jeveuo(nomd2//'.ORDR', 'L', jordr)
+    call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
 !
 !     --- ON REGARDE SI .ORDR(K)==K POUR EVITER UNE RECHERCHE
     if ((iordr.ge.1) .and. (iordr.le.nbordr)) then
-        if (zi(jordr-1+iordr) .eq. iordr) then
+        if (ordr(iordr) .eq. iordr) then
             irang = iordr
             goto 20
         endif
@@ -63,7 +64,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
 !
 !     --- ON REGARDE SI .ORDR(K+1)==K POUR EVITER UNE RECHERCHE
     if ((iordr.ge.0) .and. (iordr.le.nbordr-1)) then
-        if (zi(jordr-1+iordr+1) .eq. iordr) then
+        if (ordr(iordr+1) .eq. iordr) then
             irang = iordr + 1
             goto 20
         endif
@@ -72,7 +73,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
 !
 !     --- S'IL N'Y A QU'UN NUMERO D'ORDRE C'EST FACILE :
     if (nbordr .eq. 1) then
-        if (zi(jordr) .eq. iordr) then
+        if (ordr(1) .eq. iordr) then
             irang = 1
         else
             irang = 0
@@ -91,10 +92,10 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
     do 10 i = 1, maxit
         diff = (fin-debut)/2
         milieu = debut+diff
-        if (zi(jordr+milieu) .eq. iordr) then
+        if (ordr(milieu+1) .eq. iordr) then
             irang = milieu+1
             goto 20
-        else if (zi(jordr+milieu).gt.iordr) then
+        else if (ordr(milieu+1).gt.iordr) then
             fin = milieu-1
         else
             debut = milieu+1
@@ -102,7 +103,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
         if (debut .ge. fin) then
             diff = (fin-debut)/2
             milieu = debut+diff
-            if (zi(jordr+milieu) .eq. iordr) irang = milieu+1
+            if (ordr(milieu+1) .eq. iordr) irang = milieu+1
             goto 20
         endif
 10  end do

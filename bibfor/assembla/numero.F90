@@ -63,13 +63,14 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: nchar, nblig, iret, jchar, jlligr, k, jtypch
+    integer :: nchar, nblig, iret, jchar, jlligr, k
     integer :: ifm, niv
     integer :: ier
     integer :: nequag
     character(len=8) :: nomcha, modele
     character(len=19) :: infcha
     character(len=24) :: lcharg, lligr, nomlig
+    character(len=8), pointer :: type(:) => null()
 !
 ! RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)
@@ -107,8 +108,8 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
         nomcha = zk24(jchar+k-1)(1:8)
         call jeexin(nomcha(1:8)//'.TYPE', ier)
         if (ier .gt. 0) then
-            call jeveuo(nomcha(1:8)//'.TYPE', 'L', jtypch)
-            nomlig = nomcha(1:8)//'.CH'//zk8(jtypch) (1:2)// '.LIGRE.LIEL'
+            call jeveuo(nomcha(1:8)//'.TYPE', 'L', vk8=type)
+            nomlig = nomcha(1:8)//'.CH'//type(1) (1:2)// '.LIGRE.LIEL'
             call jeexin(nomlig, iret)
         else
             iret=0

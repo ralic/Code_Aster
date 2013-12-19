@@ -42,7 +42,8 @@ subroutine op0069()
     character(len=16) :: concep, nomcmd
     character(len=14) :: nu1, nu2
     character(len=3) :: kellag
-    integer ::  ifm, niv, jrefa, jslvk, jnslv, iautre
+    integer ::  ifm, niv, jrefa, jslvk,  iautre
+    character(len=24), pointer :: nslv(:) => null()
 !   ------------------------------------------------------------------
     call jemarq()
 !
@@ -119,8 +120,8 @@ subroutine op0069()
 !   ------------------------------------------------------------------------
     call jeveuo(matred//'.REFA', 'L', jrefa)
     nu2= zk24(jrefa-1+2)
-    call jeveuo(nu2//'.NSLV', 'E', jnslv)
-    zk24(jnslv-1+1)=solv2
+    call jeveuo(nu2//'.NSLV', 'E', vk24=nslv)
+    nslv(1)=solv2
 !
 !
     call jedema()

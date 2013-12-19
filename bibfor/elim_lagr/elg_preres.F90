@@ -37,7 +37,9 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     character(len=19) :: matas2, solve2
-    integer :: jslvk2, jrefa2, npvneg
+    integer ::   npvneg
+    character(len=24), pointer :: slvk(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !
 !
     call jemarq()
@@ -51,10 +53,10 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
 !   -- ON DUPLIQUE SOLVE1 EN CHANGEANT ELIM_LAGR: OUI -> NON
     call gcncon('_', solve2)
     call copisd('SOLVEUR', 'V', solve1, solve2)
-    call jeveuo(solve2//'.SLVK', 'L', jslvk2)
-    zk24(jslvk2-1+13)='NON'
-    call jeveuo(matas2//'.REFA', 'E', jrefa2)
-    zk24(jrefa2-1+7)=solve2
+    call jeveuo(solve2//'.SLVK', 'L', vk24=slvk)
+    slvk(13)='NON'
+    call jeveuo(matas2//'.REFA', 'E', vk24=refa)
+    refa(7)=solve2
 !
 !   --  ON APPELLE PRERE1 AVEC MATAS2 ET SOLVE2 :
     call prere1(' ', base, iret, matpre, matas2,&

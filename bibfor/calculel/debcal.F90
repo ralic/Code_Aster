@@ -77,7 +77,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
     integer :: ianoop, ianote, nbobtr, iaobtr, nbobmx
     integer :: ibid, nbpara, iret, j
     integer :: jpar, igd, nec, ncmpmx, iii, num
-    integer :: iarefe, ianbno, jproli, ianueq, iret1
+    integer ::   jproli, ianueq, iret1
     integer :: iret2
     character(len=8) :: k8bi, typsca
     character(len=4) :: knum, tych
@@ -92,6 +92,8 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 !
 !
     integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: nbno(:) => null()
     common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !-----------------------------------------------------------------------
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
@@ -298,12 +300,12 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
         if (zk8(iachik-1+2*(i-1)+1)(1:4) .eq. 'CHNO') then
             num=zi(desc-1+2)
             if (num .gt. 0) then
-                call jeveuo(chin//'.REFE', 'L', iarefe)
-                noprno=zk24(iarefe-1+2)(1:19)//'.PRNO'
+                call jeveuo(chin//'.REFE', 'L', vk24=refe)
+                noprno=refe(2)(1:19)//'.PRNO'
                 call jeveuo(jexnum(noprno, 1), 'L', iii)
                 zi(iachii-1+11*(i-1)+8)=iii
-                call jeveuo(ligrel//'.NBNO', 'L', ianbno)
-                if (zi(ianbno-1+1) .gt. 0) then
+                call jeveuo(ligrel//'.NBNO', 'L', vi=nbno)
+                if (nbno(1) .gt. 0) then
                     call jenonu(jexnom(noprno(1:19)//'.LILI', ligrel//'      '), jproli)
                     if (jproli .eq. 0) then
                         zi(iachii-1+11*(i-1)+9)=isnnem()

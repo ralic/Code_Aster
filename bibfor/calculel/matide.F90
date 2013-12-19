@@ -52,9 +52,9 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !
 !
 !     ------------------------------------------------------------------
-    integer :: ilig, jcol, kterm, n, nz, jrefa, jsmdi, nsmdi, jsmhc, nsmhc
+    integer :: ilig, jcol, kterm, n, nz,   nsmdi, jsmhc, nsmhc
     integer :: jdelg, n1, nvale, jvale, nlong, jval2, nucmp, k, jcmp
-    integer :: jdeeq, jrefn, kcmp, jlddl, jllag
+    integer ::   kcmp, jlddl, jllag
     character(len=8) :: nomgd, nocmp
     character(len=14) :: nonu
     character(len=1) :: ktyp
@@ -62,16 +62,20 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     logical :: ltypr, lsym, eliml, elimc
     real(kind=8) :: kmax
     complex(kind=8) :: ckmax
+    integer, pointer :: smdi(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: deeq(:) => null()
 !
 !     ------------------------------------------------------------------
     call jemarq()
 !
     mat19=matz
 !
-    call jeveuo(mat19//'.REFA', 'L', jrefa)
-    nonu=zk24(jrefa-1+2)
+    call jeveuo(mat19//'.REFA', 'L', vk24=refa)
+    nonu=refa(2)
 !
-    call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
+    call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
@@ -81,7 +85,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !     --- CALCUL DE N
     n=nsmdi
 !     --- CALCUL DE NZ
-    nz=zi(jsmdi-1+n)
+    nz=smdi(n)
 !
     ASSERT(nz.le.nsmhc)
     call jelira(mat19//'.VALM', 'NMAXOC', nvale)
@@ -110,14 +114,14 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     call wkvect('&&MATIDE.LDDLELIM', 'V V I', n, jlddl)
     call wkvect('&&MATIDE.LLAG', 'V V I', n, jllag)
 !
-    call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
-    call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
+    call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
+    call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
     call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1)
-    nomgd=zk24(jrefn-1+2)
+    nomgd=refn(2)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     ASSERT(n1.eq.2*n)
     do 20,k=1,n
-    nucmp=zi(jdeeq-1+2*(k-1)+2)
+    nucmp=deeq(2*(k-1)+2)
     if (nucmp .gt. 0) then
         nocmp=zk8(jcmp-1+nucmp)
         do 10,kcmp=1,nbcmp
@@ -171,7 +175,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     endif
 !
     do 30,kterm=1,nz
-    if (zi(jsmdi-1+jcol) .lt. kterm) jcol=jcol+1
+    if (smdi(jcol) .lt. kterm) jcol=jcol+1
     ilig=zi4(jsmhc-1+kterm)
     elimc=.false.
     eliml=.false.

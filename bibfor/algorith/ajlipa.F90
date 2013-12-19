@@ -56,13 +56,16 @@ subroutine ajlipa(modelz, base)
     character(len=19) :: ligrmo, partit1
     character(len=24) :: k24b, kdis
 !
-    integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma, jmail
+    integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma
     integer :: idd, nbmasd, i2, nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
     integer :: iexi
-    integer :: icobis, jfdim, dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
-    integer :: nbgrel, jrepe, jfref, jprti, jprtk, nbsma
+    integer :: icobis,  dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
+    integer :: nbgrel, jrepe,  jprti, jprtk, nbsma
 !
     logical :: plein0
+    integer, pointer :: fdim(:) => null()
+    character(len=8), pointer :: fref(:) => null()
+    integer, pointer :: maille(:) => null()
 !
     mpi_int :: mrank, msize
     data k24b /' '/
@@ -144,7 +147,7 @@ subroutine ajlipa(modelz, base)
 !
 !     CREATION DE LA PARTITION :
 !     ----------------------------------------------------
-    call jeveuo(modele//'.MAILLE', 'L', jmail)
+    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
     call jelira(modele//'.MAILLE', 'LONMAX', nbma)
     call wkvect(partit//'.PRTI', base//' V I', 1, jprti)
     zi(jprti-1+1)=nbproc
@@ -158,7 +161,7 @@ subroutine ajlipa(modelz, base)
         nbmamo = 0
         do ima = 1, nbma
             zi(jnumsd-1+ima) = -999
-            if (zi(jmail-1+ima) .ne. 0) nbmamo = nbmamo+1
+            if (maille(ima) .ne. 0) nbmamo = nbmamo+1
         end do
     endif
 !
@@ -176,8 +179,8 @@ subroutine ajlipa(modelz, base)
 !     -- VERIFICATION POUR LE CAS DU PARTITIONNEMENT EN SOUS-DOMAINES :
 !     -----------------------------------------------------------------
     if (kdis .eq. 'SOUS_DOMAINE') then
-        call jeveuo(partit1//'.FREF', 'L', jfref)
-        mopart = zk8(jfref-1+1)
+        call jeveuo(partit1//'.FREF', 'L', vk8=fref)
+        mopart = fref(1)
         if (modele .ne. mopart) then
             valk(1) = partit1(1:8)
             valk(2) = modele
@@ -190,8 +193,8 @@ subroutine ajlipa(modelz, base)
 !        PAR RAPPORT AU NOMBRE DE PROCESSEURS
 !     ---------------------------------------------------------------
     if (kdis .eq. 'SOUS_DOMAINE') then
-        call jeveuo(partit1//'.FDIM', 'L', jfdim)
-        nbsd = zi(jfdim-1+1)
+        call jeveuo(partit1//'.FDIM', 'L', vi=fdim)
+        nbsd = fdim(1)
 !       IL FAUT AU MOINS UN SD PAR PROC HORS PROC0
         if (((nbsd-dist0).lt.(nbproc-1)) .and. (dist0.gt.0)) then
             call utmess('F', 'ALGORITH16_99')
@@ -264,7 +267,7 @@ subroutine ajlipa(modelz, base)
         nbpro1 = nbproc
         plein0 = .false.
         do ima = 1, nbma
-            if (zi(jmail-1+ima) .eq. 0) goto 40
+            if (maille(ima) .eq. 0) goto 40
             ico = ico+1
             krang = mod(ico,nbpro1)
             if (plein0) krang = krang+1
@@ -292,7 +295,7 @@ subroutine ajlipa(modelz, base)
         krang = 0
         ico = 0
         do ima = 1, nbma
-            if (zi(jmail-1+ima) .eq. 0) goto 50
+            if (maille(ima) .eq. 0) goto 50
             ico = ico+1
 !         -- ON CHANGE DE PROC :
             if (ico .gt. nmpp) then

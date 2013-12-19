@@ -41,7 +41,8 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
 !     TYCHV = NOEU OU ' ', SI TYCHV = NOEU CH2Z SERA UN CHAM_NO
     character(len=4) :: tychv
     character(len=*) :: prol0
-    integer :: iret, jxxk1
+    integer :: iret
+    character(len=24), pointer :: pjxx_k1(:) => null()
 !
 !
     call jemarq()
@@ -54,8 +55,8 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
 !
 !     -- GLUTE MODIFICATION STRUCTURALE : (SI CORRES=' ')
     if (corres .ne. ' ') then
-        call jeveuo(corres//'.PJXX_K1', 'L', jxxk1)
-        method=zk24(jxxk1-1+3)
+        call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
+        method=pjxx_k1(3)
     else
         method='COLLOCATION'
     endif
