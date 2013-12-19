@@ -29,7 +29,7 @@ subroutine utpsgl(nn, nc, p, sg, sl)
 !IN   I   NC   NOMBRE DE COMPOSANTES
 !IN   R   P    MATRICE DE PASSAGE 3D DE GLOBAL A LOCAL
 !IN   R   SG   NN*NC COMPOSANTES DE LA TRIANGULAIRE SG DANS GLOBAL
-!OUT  R   SL   NN*NC COMPOSANTES DE LA TRIANGULAIRE SL DANS LOCALL
+!OUT  R   SL   NN*NC COMPOSANTES DE LA TRIANGULAIRE SL DANS LOCAL
 !     ------------------------------------------------------------------
     real(kind=8) :: r(9), zero
     real(kind=8) :: ml14(14, 14), mr14(14, 14), mtr14(14, 14), mv14(14, 14)
@@ -73,9 +73,9 @@ subroutine utpsgl(nn, nc, p, sg, sl)
                                               )*p(n, 3&
                                               )&
                                               )
-50                          continue
-40                      continue
-30                  continue
+ 50                         continue
+ 40                     continue
+ 30                 continue
                 else
 !             --------- BLOC EXTRA - DIAGONAL
                     do 60 m = 1, 3
@@ -91,27 +91,27 @@ subroutine utpsgl(nn, nc, p, sg, sl)
                                               )*p(n, 3&
                                               )&
                                               )
-80                          continue
-70                      continue
-60                  continue
+ 80                         continue
+ 70                     continue
+ 60                 continue
                 endif
-20          continue
-10      continue
+ 20         continue
+ 10     continue
 !
     else if (mod(nc,3) .eq. 1) then
         do 202 i = 1, 14
             do 204 j = 1, 14
                 mtr14(i,j) = 0.d0
-204          continue
-202      continue
+204         continue
+202     continue
         do 200 i = 1, 3
             do 210 j = 1, 3
                 mtr14(i ,j ) = p(i,j)
                 mtr14(i+3 ,j+3 ) = p(i,j)
                 mtr14(i+7 ,j+7 ) = p(i,j)
                 mtr14(i+10,j+10) = p(i,j)
-210          continue
-200      continue
+210         continue
+200     continue
         mtr14( 7, 7) = 1.d0
         mtr14( 14, 14) = 1.d0
         call tmat(14, mtr14, mr14)
@@ -124,16 +124,16 @@ subroutine utpsgl(nn, nc, p, sg, sl)
         do 302 i = 1, 16
             do 304 j = 1, 16
                 mtr16(i,j) = 0.d0
-304          continue
-302      continue
+304         continue
+302     continue
         do 300 i = 1, 3
             do 310 j = 1, 3
                 mtr16(i ,j ) = p(i,j)
                 mtr16(i+3 ,j+3 ) = p(i,j)
                 mtr16(i+8 ,j+8 ) = p(i,j)
                 mtr16(i+11,j+11) = p(i,j)
-310          continue
-300      continue
+310         continue
+300     continue
         mtr16( 7, 7) = 1.d0
         mtr16( 8, 8) = 1.d0
         mtr16( 15, 15) = 1.d0

@@ -243,7 +243,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-5.8067682138118E-05,
+                  VALE_CALC=-5.8067601959822E-05,
                   VALE_REFE=-5.8017857142857143E-05,
                   PRECISION=2.E-3,),
           )

@@ -66,7 +66,7 @@ subroutine op0191()
     complex(kind=8) :: lcoec(2)
     character(len=8) :: crit, tych, nomma, modele
     character(len=8) :: carele, k8bid, exipla, exicoq
-    character(len=16) :: concep, nomcmd, option, tysd, type, repere
+    character(len=16) :: concep, nomcmd, option, tysd, type, type_cham, repere
     character(len=19) :: knum, resuou, kbid, resuin
     character(len=19) :: chams1, chams0, chafus, chs(2), ligrel
     character(len=24) :: nompar, champ0, champ1
@@ -92,7 +92,7 @@ subroutine op0191()
     if (nbnosy .eq. 0) goto 999
 !
 ! LE CONCEPT EST REENTRANT SI REPERE =
-!            'COQUE_INTR_UTIL' OU 'COQUE_UTIL_INTR'
+!            'COQUE_INTR_UTIL' OU 'COQUE_UTIL_INTR' ou 'COQUE_UTIL_CYL'
 !
 ! DANS CE CAS ON CREE UNE SD RESULTAT TEMPORAIRE POUR LES CALCULS
 ! ET ENSUITE ON SURCHARGE RESUIN PAR LES CHAMPS MODIFIES
@@ -137,7 +137,7 @@ subroutine op0191()
     do ioc = 1, nocc
 !
         call getvtx('MODI_CHAM', 'NOM_CHAM', iocc=ioc, scal=option, nbret=n0)
-        call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type, nbret=n0)
+        call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type_cham, nbret=n0)
         call getvtx('MODI_CHAM', 'NOM_CMP', iocc=ioc, nbval=0, nbret=n1)
         nbcmp = - n1
 !
@@ -164,8 +164,8 @@ subroutine op0191()
                 call dismoi('EXI_PLAQUE', modele, 'MODELE', repk=exipla)
                 call dismoi('EXI_COQUE', modele, 'MODELE', repk=exicoq)
                 if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
-                    ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D')) .and.&
-                    ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) then
+                    ((type_cham.eq.'TENS_2D').or.(type_cham.eq.'TENS_3D')) .and.&
+                    ( repere.eq.'UTILISATEUR')) then
                     call utmess('F', 'ALGORITH3_7')
                 endif
             endif
@@ -174,10 +174,10 @@ subroutine op0191()
 ! ----- (CHAM_NO OU CHAM_ELEM)
 !
             if (tych(1:4) .eq. 'NOEU') then
-                call chrpno(champ1, repere, nbcmp, ioc, type)
+                call chrpno(champ1, repere, nbcmp, ioc, type_cham)
             else if (tych(1:2).eq.'EL') then
-                call chrpel(champ1, repere, nbcmp, ioc, type,&
-                            option, modele, carele, champ0)
+                call chrpel(champ1, repere, nbcmp, ioc, type_cham,&
+                            option, modele, carele)
             else
                 valk(1) = tych
                 valk(2) = champ1

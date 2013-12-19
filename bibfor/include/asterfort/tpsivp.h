@@ -15,8 +15,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine te0442(option, nomte)
-        character(len=16), intent(in) :: option
-        character(len=16), intent(in) :: nomte
-    end subroutine te0442
+    subroutine tpsivp(p, sigmav)
+        real(kind=8), dimension(:, :), intent(in) :: p
+        real(kind=8), dimension(:), intent(inout) :: sigmav
+    end subroutine tpsivp
 end interface

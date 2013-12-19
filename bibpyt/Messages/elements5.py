@@ -197,4 +197,8 @@ OPTION MASS_INER : la masse volumique RHO doit être non nulle
   multiple de 3 (si le champ est complet).
 """),
 
+55 : _(u"""
+  Le changement de repère : %(k1)s sur les coques n'est pas traité pour les champs de type : %(k2)s. 
+"""),
+
 }

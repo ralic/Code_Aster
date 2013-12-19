@@ -41,6 +41,7 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     dy = cos(beta)*sin(alpha)
     dz = -sin(beta)
 !
+!
     ps = dx*pgl(3,1) + dy*pgl(3,2) + dz*pgl(3,3)
     pjdx = dx - ps*pgl(3,1)
     pjdy = dy - ps*pgl(3,2)
@@ -56,6 +57,9 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     c = pjdx*pgl(1,1) + pjdy*pgl(1,2) + pjdz*pgl(1,3)
     s = pjdx*pgl(2,1) + pjdy*pgl(2,2) + pjdz*pgl(2,3)
 !
+    c=c/sqrt(c**2+s**2)
+    s=s/sqrt(c**2+s**2)
+!
     t2iu(1) = c
     t2iu(2) = s
     t2iu(3) = - s
@@ -65,5 +69,6 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     t2ui(2) = - s
     t2ui(3) = s
     t2ui(4) = c
+    !
 !
 end subroutine

@@ -52,7 +52,8 @@ MODE_LOCAL__
     CCACOQU  = CACOQU   ELEM__         (EP       ALPHA    BETA     CTOR     EXCENT   INERTIE  )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
                                         TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR )
-    CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     REP)
+    CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     REP      AXE_X    AXE_Y    AXE_Z    
+                                        O_X      O_Y      O_Z      )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT[9]   )
@@ -274,7 +275,7 @@ OPTION__
                           OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
     REPE_GENE        442  IN__  CCAORIE  PANGREP  CCACOQU  PCACOQU  EDEFGPG  PDGGAIN  EDEFGPC  PDGGAINC
                                 EDEFGNO  PDGNOIN  EDEFGNC  PDGNOINC EEFGEPGR PEFGAIN  EEFGEPGC PEFGAINC
-                                EEFGENOR PEFNOIN  EEFGENOC PEFNOINC NGEOMER  PGEOMER
+                                EEFGENOR PEFNOIN  EEFGENOC PEFNOINC NGEOMER  PGEOMER  
                           OUT__ EDEFGPG  PDGGAOUT EDEFGPC  PDGGAOUC EDEFGNO  PDGNOOUT EDEFGNC  PDGNOOUC
                                 EEFGEPGR PEFGAOUT EEFGEPGC PEFGAOUC EEFGENOR PEFNOOUT EEFGENOC PEFNOOUC
     RICE_TRACEY       -1  IN__

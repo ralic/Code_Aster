@@ -15,8 +15,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine te0442(option, nomte)
-        character(len=16), intent(in) :: option
-        character(len=16), intent(in) :: nomte
-    end subroutine te0442
+    subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
+                      ipaxe)
+!
+        integer, intent(in) :: ndim
+        real(kind=8), dimension(:), intent(in) :: x, axe_z, orig
+        real(kind=8), dimension(:, :), intent(inout) :: pgcyl
+        integer, intent(inout), optional :: ipaxe
+!
+    end subroutine cylrep
 end interface

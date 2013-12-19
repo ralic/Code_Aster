@@ -65,11 +65,6 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
  L'axe z n'a pas de sens en 2D. Le mot-clé AXE_Z est inutile.
 """),
 
-12 : _(u"""
- le noeud se trouve sur l'axe du repère cylindrique.
- on prend le noeud moyen des centres géométriques.
-"""),
-
 13 : _(u"""
   -> Lors du passage au repère cylindrique, un noeud a été localisé sur l'axe
      du repère cylindrique. Code_Aster utilise dans ce cas le centre de gravité de

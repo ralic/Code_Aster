@@ -27,20 +27,20 @@ subroutine dxsiro(ne, t2iu, tensav, tensap)
 !     ------------------------------------------------------------------
 !     IN  NE    I      NOMBRE DE POINTS (OU SOUS-POINTS) A TRAITER
 !     IN  T2IU  R  2,2  MATRICE DE PASSAGE (OBTENUE PAR COQREP) :
-!                       T2UI : INTRINSEQUE -> UTILISATEUR
-!                       T2IU : UTILISATEUR -> INTRINSEQUE
+!                       T2IU : INTRINSEQUE -> UTILISATEUR
+!                       T2UI : UTILISATEUR -> INTRINSEQUE
 !     IN  TENSAV R    *   XX  YY  ZZ  XY  XZ  YZ
 !     OUT TENSAP R    *   XX  YY  ZZ  XY  XZ  YZ
 !
 !  REMARQUE : ON PEUT APPELER CETTE ROUTINE AVEC UN TABLEAU EN IN/OUT
 !     ------------------------------------------------------------------
-    real(kind=8) :: sigmav(2,2), sigmap(2,2), tampon(2)
+    real(kind=8) :: sigmav(2, 2), sigmap(2, 2), tampon(2)
     real(kind=8) :: xab(2, 2)
 !-----------------------------------------------------------------------
     integer :: i
 !-----------------------------------------------------------------------
 !
-    do 120 i = 1, ne
+    do i = 1, ne
         sigmav(1,1) = tensav(1+6*(i-1))
         sigmav(2,1) = tensav(4+6*(i-1))
         sigmav(1,2) = tensav(4+6*(i-1))
@@ -59,6 +59,6 @@ subroutine dxsiro(ne, t2iu, tensav, tensap)
         tensap(5+6*(i-1)) = tampon(1) * t2iu(1,1) + tampon(2) * t2iu( 2,1)
         tensap(6+6*(i-1)) = tampon(1) * t2iu(1,2) + tampon(2) * t2iu( 2,2)
 !
-120  end do
+    enddo
 !
 end subroutine

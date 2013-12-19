@@ -14,9 +14,23 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
+!
 interface
-    subroutine te0442(option, nomte)
-        character(len=16), intent(in) :: option
-        character(len=16), intent(in) :: nomte
-    end subroutine te0442
+    subroutine dsymm(side, uplo, m, n, alpha,&
+                     a, lda, b, ldb, beta,&
+                     c, ldc)
+        integer, intent(in) :: ldc
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        character(len=1), intent(in) :: side
+        character(len=1), intent(in) :: uplo
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        real(kind=8), intent(in) :: alpha
+        real(kind=8), intent(in) :: a(lda, *)
+        real(kind=8), intent(in) :: b(ldb, *)
+        real(kind=8), intent(in) :: beta
+        real(kind=8), intent(inout) :: c(ldc, *)
+    end subroutine dsymm
 end interface

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,9 +15,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine chrpan(modele, carte, chelem)
-        character(len=*) :: modele
-        character(len=*) :: carte
-        character(len=*) :: chelem
+    subroutine chrpan(modele, carte, option, chelem)
+        character(len=*), intent(in) :: modele
+        character(len=*), intent(in) :: carte
+        character(len=*), intent(in) :: option
+        character(len=*), intent(in) :: chelem
     end subroutine chrpan
 end interface

@@ -1,6 +1,7 @@
 subroutine te0042(option, nomte)
     implicit none
 #include "jeveux.h"
+#include "asterfort/tpsivp.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
@@ -107,7 +108,7 @@ subroutine te0042(option, nomte)
     else
         do 10 i = 1, nbterm
             mat(i) = zr(ldis+i-1)
-10      continue
+ 10     continue
     endif
 !
 !     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
@@ -142,11 +143,11 @@ subroutine te0042(option, nomte)
     if (nno .eq. 1) then
         do 50 i = 1, neq
             zr(jeffo+i-1) = flr(i)
-50      continue
+ 50     continue
     else
         do 60 i = 1, nc
             zr(jeffo+i-1) = -flr(i)
             zr(jeffo+i+nc-1) = flr(i+nc)
-60      continue
+ 60     continue
     endif
 end subroutine

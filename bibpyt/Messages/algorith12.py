@@ -166,9 +166,6 @@ cata_msg = {
  Seule la première valeur de l'angle nautique est retenue :  %(r1)f
 """),
 
-44 : _(u"""
- noeud sur l'axe Z noeud :  %(k1)s
-"""),
 
 49 : _(u"""
  problème: sous-structure inconnue

@@ -27,18 +27,17 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='VIROLE',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DKT',),);
-
-MODI_MAILLAGE(reuse =MAIL,
+#Normale vers l'intérieur du cylindre
+MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='VIROLE',
-                                      VECT_NORM=(-1.0,0.0,0.0),
-                                      GROUP_NO='A1',),
-                   );
-
+                                      VECT_NORM=(-1.0,0.0,0.0,),
+                                      GROUP_NO='A1',),);
+# On définit un repère utilisateur sans signification physique
 CARAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
-                       COQUE=_F(GROUP_MA='VIROLE',
-                                EPAIS=4.E-2,
-                                ANGL_REP=(0.0,-90.0),),);
+                      COQUE=_F(GROUP_MA='VIROLE',
+                               EPAIS=4.E-2,
+                               ANGL_REP=(-90.0,20.0,),),);
 
 ACIER1=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
                             NU=0.3,),);
@@ -49,7 +48,7 @@ ACIER2=DEFI_MATERIAU(     ELAS_ORTH=_F(  E_L = 4.E10,
                                        G_TN = 0.35E10,
 #                                       NU_LT = 0.075)
 # Attention la convention sur NU_LT pour les coques multicouches
-# est diffrente de la convention Aster pour ELAS_ORTH
+# est différente de la convention Aster pour ELAS_ORTH
 # ici NU_TL / E_T = NU_LT / E_L
 # alors que pour ELAS_ORTH :
 #     NU_TL / E_L = NU_LT / E_T
@@ -97,10 +96,22 @@ ELAS1=MECA_STATIQUE(MODELE=MODMECA,
 CALC_CHAMP(reuse=ELAS1,RESULTAT=ELAS1,CONTRAINTE=('SIGM_ELNO'))
 
 
-ELAS1C1M=POST_CHAMP(RESULTAT=ELAS1,
-                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                   NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+E1CYL=MODI_REPERE(RESULTAT=ELAS1,
+                  NUME_ORDRE=1,
+                  MODI_CHAM=(
+                  _F(NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP=('SIXX','SIYY','SIZZ', 
+                           'SIXY','SIXZ','SIYZ',), 
+                  TYPE_CHAM='TENS_3D',),),
+                  REPERE='COQUE_UTIL_CYL', 
+                  AFFE=_F(ORIGINE = (0.0, 0.0, 0.0,),
+                          AXE_Z =(0.0, 0.0, 1.0,),
+                              GROUP_MA='VIROLE',),);
+      
+E1CYLC1M=POST_CHAMP(RESULTAT=E1CYL, 
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1, 
+                                  NIVE_COUCHE='MOY',),);
 R = 5.7;
 L = 16.0;
 E = 210000000000.0;
@@ -167,14 +178,23 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A1',
                   REFERENCE='ANALYTIQUE',
-                  RESULTAT=ELAS1C1M,
+                  RESULTAT=E1CYLC1M,
                   NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP='SIYY',
-                  VALE_CALC= 2.13711825E+06,
-                  VALE_REFE=2.137500E6,
+                  NOM_CMP='SIZZ',
+                  VALE_CALC= 2.1356538287685E+06,
+                  VALE_REFE= 2.137500E6,
                   MAILLE='M1',),
           )
-
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=E1CYLC1M,
+                  NOM_CHAM='SIGM_ELNO',
+                  NOM_CMP='SIZZ',
+                  VALE_CALC= 2.1356538287685E+06,
+                  VALE_REFE= 2.137500E6,
+                  MAILLE='M1',),
+          )
 # CAS ORTHOTROPE : SOLUTION ANALYTIQUE AUSSI
 
 NuLT = 0.075
@@ -182,19 +202,23 @@ ET = 2.1E11
 
 DZMAX2 = (-NuLT*P*R*L)/ET/h/2.
 
+# Vecteur définissant le repère utilisateur de la coque = ez
+CARAEL2=AFFE_CARA_ELEM(MODELE=MODMECA,
+                      COQUE=_F(GROUP_MA='VIROLE',
+                               EPAIS=4.E-2,
+                               ANGL_REP=(0.0,-90.0,),),);
 ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT2,
-                    CARA_ELEM=CARAEL,
+                    CARA_ELEM=CARAEL2,
                     EXCIT=(_F(CHARGE=BLOCAGE,),
                            _F(CHARGE=PH,),),);
 
-CALC_CHAMP(reuse=ELAS2,RESULTAT=ELAS2,CONTRAINTE=('SIGM_ELNO'))
-
-
-ELAS2C1M=POST_CHAMP(RESULTAT=ELAS2,
-                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                   NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+CALC_CHAMP(reuse=ELAS2,RESULTAT=ELAS2,CONTRAINTE=('SIGM_ELNO'));
+      
+ELAS2C1M=POST_CHAMP(RESULTAT=ELAS2, 
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1, 
+                                  NIVE_COUCHE='MOY',),);
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A3',
                   REFERENCE='ANALYTIQUE',
@@ -253,9 +277,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS2C1M,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIYY',
-                  VALE_CALC= 2.13666493E+06,
+                  VALE_CALC=2.13666493E+06,
                   VALE_REFE=2.137500E6,
+                  PRECISION=1.1E-03,
                   MAILLE='M1',),
           )
-
 FIN();

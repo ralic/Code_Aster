@@ -715,10 +715,10 @@ TMYA6_G1=CALC_TABLE(reuse =TMYA6_G1,
 SUM_MY = FORMULE(VALE='MYA2+MYA4+MYA6',
                  NOM_PARA=('MYA2','MYA4','MYA6',),);
 
-D_REL_MY = FORMULE(VALE='(MYG-MY)/MY',
+D_REL_MY = FORMULE(VALE='MY and (MYG-MY)/MY',
                    NOM_PARA=('MY','MYG',),);
 
-D_REL_RX = FORMULE(VALE='(RXG-RX)/RX',
+D_REL_RX = FORMULE(VALE='RX and (RXG-RX)/RX',
                    NOM_PARA=('RX','RXG',),);
 
 TMY_R1=CALC_TABLE(TABLE=TMYA2_R1,
@@ -1633,6 +1633,7 @@ D_RX_2=CALC_TABLE(TABLE=TRX_R2,
                           _F(OPERATION='OPER',
                              FORMULE=D_REL_RX,
                              NOM_PARA='RXG_RX',),),);
+
 
 DETRUIRE(CONCEPT=_F(NOM=(TRX_R2,TRX_G2,),),);
 
