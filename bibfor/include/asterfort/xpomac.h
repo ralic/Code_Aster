@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
                       maxfem, nivgrm, cns1, cns2, ces1,&
                       ces2, cesvi1, cesvi2, resuco, comps1,&
-                      comps2)
+                      comps2, pre1)
         character(len=8) :: malini
         character(len=24) :: mailc
         character(len=24) :: listno
@@ -36,5 +36,6 @@ interface
         character(len=8) :: resuco
         character(len=19) :: comps1
         character(len=19) :: comps2
+        logical :: pre1
     end subroutine xpomac
-end interface
+end interface 

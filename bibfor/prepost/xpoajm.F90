@@ -8,7 +8,8 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                   iacoo2, iad9, ninter, iainc, elrefp,&
                   jlsn, jlst, typma, igeom, jfisno,&
                   contac, cmp, nbcmp, nfh, nfe,&
-                  ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca)
+                  ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
+                  pre1)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,10 +56,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     character(len=8) :: maxfem, elrefp, typma
     integer :: jtypm2, itypse, nnm, inm, inmtot, nbmac, jdirgr
     integer :: jcnse, im, n, nnose, jdirno, he(nfiss), jnivgr, iagma, ngrm
-    logical :: opmail, lmeca
-!
-!
-!   ON AJOUTE UNE NOUVELLE MAILLE AU NOUVEAU MAILLAGE X-FEM
+    logical :: opmail, lmeca, pre1
 !
 !   IN
 !
@@ -162,7 +160,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 !         NIVEAU DE REMPLISSAGE DU GROUP_MA
             zi(jnivgr-1+ig2) = zi(jnivgr-1+ig2) + 1
             zi(iagma2-1+ zi(jnivgr-1+ig2)) = nbmac + inmtot
-110      continue
+110     continue
     endif
     do 410 j = 1, nnose
         ino = zi(jcnse-1+nnose*(im-1)+j)
@@ -171,15 +169,15 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
             if (zi(jdirno-1+(2+nfiss)*(i-1)+1) .eq. ino) then
                 lnoeud = .true.
                 do 430 ifiss = 1, nfiss
-                    lnoeud = lnoeud .and. zi(jdirno-1+(2+nfiss)*(i-1)+ 2+ifiss) .eq. he(ifiss)
-430              continue
+                    lnoeud = lnoeud.and. zi(jdirno-1+(2+nfiss)*(i-1)+ 2+ifiss).eq.he(ifiss)
+430             continue
 ! --- IL APPARTIENT A LA LISTE, ON L'ATTACHE À LA MAILLE
                 if (lnoeud) then
                     if (opmail) zi(iacon2-1+j)=zi(jdirno-1+(2+nfiss)*( i-1)+2)
                     goto 410
                 endif
             endif
-420      continue
+420     continue
         if (ino .lt. 1000) then
             iad = iacoo1
         else if (ino.gt.1000.and.ino.lt.2000) then
@@ -211,10 +209,10 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                         ndim, cmp, nbcmp, nfh, nfe,&
                         ddlc, ima, jconq1, jconq2, jcnsv1,&
                         jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                        nnn, contac, lmeca)
+                        nnn, contac, lmeca, pre1)
         endif
 !
-410  end do
+410 continue
 !
     call jedema()
 end subroutine

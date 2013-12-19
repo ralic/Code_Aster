@@ -523,4 +523,10 @@ cata_msg={
      commande (pour STAT_NON_LINE par exemple).
 
 """),
+78: _(u"""
+  -> Erreur, pour une modélisation %(i1)d, on ne peut définir que des interfaces,
+     l'introduction de fissures dans le modèle n'est pas possible.
+
+"""),
+
 }

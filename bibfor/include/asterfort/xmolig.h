@@ -15,9 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xmolig(liel1, trav)
         character(len=24) :: liel1
         character(len=24) :: trav
     end subroutine xmolig
-end interface
+end interface 

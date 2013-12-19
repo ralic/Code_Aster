@@ -1,7 +1,7 @@
 subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
                   maxfem, nivgrm, cns1, cns2, ces1,&
                   ces2, cesvi1, cesvi2, resuco, comps1,&
-                  comps2)
+                  comps2, pre1)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,6 +72,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !
     integer :: jdirma, jmac, iret, nbno, jdirno, ino, i
     integer :: nbma, ima, jno, ier, jnivgr
+    logical :: pre1
     character(len=8) :: k8b
     character(len=16) :: k16b, nomcmd
     character(len=24) :: dirmai, dirnoe
@@ -137,7 +138,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !       ET TRAITEMENT DES GROUPES, COMPORTEMENT....
         call xpoco2(malini, zi(jdirno), nbno, zi(jdirma), nbma,&
                     cns1, cns2, ces1, ces2, cesvi1,&
-                    cesvi2, resuco, comps1, comps2)
+                    cesvi2, resuco, comps1, comps2, pre1)
 !
     endif
 !

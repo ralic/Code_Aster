@@ -50,6 +50,7 @@ subroutine op0196()
 #include "asterfort/xpomac.h"
 #include "asterfort/xpomax.h"
 #include "asterfort/xposep.h"
+#include "asterfort/xxishm.h"
     integer :: jlicha, nbordr, ior, jord, iord, jinst1, jinst2, nbcham
     integer :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv, ic
     integer :: jmod, mftot, nftot, nfcomf, ngfon
@@ -59,8 +60,8 @@ subroutine op0196()
     character(len=16) :: tysd, nomcha
     character(len=19) :: cns1, cns2, ces1, ces2, cel2, ch, cesvi1, cesvi2, k19
     character(len=19) :: comps1, comps2
-    character(len=24) :: mailx, mailc, licham, ordr, listno, logrma, k24, listgr
-    character(len=24) :: k24b
+    character(len=24) :: mailx, mailc, licham, ordr, listno, logrma, k24, listgr, k24b
+    logical :: pre1
 !
     call jemarq()
     call infmaj()
@@ -93,6 +94,13 @@ subroutine op0196()
     call xposep(mo, malini, mailc, mailx, nsetot,&
                 nnntot, ncotot, logrma, listgr)
 !
+!     PRE1=.FALSE. :
+!     ON NE POST TRAITE PAS SUR DES ELEMENTS HM-XFEM
+!     PRE1=.TRUE. :
+!     ON POST TRAITE SUR DES ELEMENTS HM-XFEM --> ATTENTION AUX DDLs DE
+!     PRESSION
+!
+    pre1=xxishm(mailc,mailx,mo)
 !
 !     CREATION DE LA NOUVELLE SD RESULTAT
     ordr=resuco//'           .ORDR'
@@ -125,7 +133,8 @@ subroutine op0196()
                     nnntot+ nftot, ncotot+nfcomf, listno, cns1, cns2,&
                     ces1, ces2, cel2, cesvi1, cesvi2,&
                     ior, resuco, nbnoc, nbmac, logrma,&
-                    k24, maxfem, ibid, comps1, comps2)
+                    k24, maxfem, ibid, comps1, comps2,&
+                    pre1)
 !
 !       ----------------------------------------------------------------
 !       4. TRAITEMENT DES MAILLES DE MAILC
@@ -136,7 +145,7 @@ subroutine op0196()
         call xpomac(malini, mailc, listno, nbnoc, nbmac,&
                     maxfem, k24, cns1, cns2, ces1,&
                     ces2, cesvi1, cesvi2, resuco, comps1,&
-                    comps2)
+                    comps2, pre1)
 !
 !       ----------------------------------------------------------------
 !       5. TRAITEMENT DES MAILLES DE MAILX
@@ -148,7 +157,7 @@ subroutine op0196()
                     k2b, k24b, maxfem, cns1, cns2,&
                     ces1, ces2, cesvi1, cesvi2, listgr,&
                     k24, k24, resuco, ibid, comps1,&
-                    comps2)
+                    comps2, pre1)
 !
 !       ----------------------------------------------------------------
 !       6. ENREGISTREMENT DES CHAMPS DE SORTIES
@@ -187,7 +196,7 @@ subroutine op0196()
 !
             endif
             call rsnoch(resux, nomcha, iord)
-20      continue
+ 20     continue
 !
 !       CARTE DU COMPORTEMENT
         call rsexch(' ', resuco, 'COMPORTEMENT', iord, k19,&

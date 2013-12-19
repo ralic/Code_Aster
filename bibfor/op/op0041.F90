@@ -101,7 +101,7 @@ subroutine op0041()
     character(len=19) :: cnsltg, cnslng, grltg, grlng
     character(len=19) :: ltno, lnno, grltno, grlnno, stnor, stno, info, ltnofa
     character(len=19) :: lnnofa, grltfa, grlnfa
-    character(len=24) :: lismae, lisnoe, pheno
+    character(len=24) :: lismae, lisnoe, pheno, poro
     logical :: grille, ldmax, goinop
     character(len=8) :: fisgri
 !
@@ -213,6 +213,12 @@ subroutine op0041()
     zk16(jinfo-1+2) = chadis
     zk16(jinfo-1+3) = '      '
 !
+! --- SI ON EST EN HM-XFEM, ON AUTORISE UNIQUEMENT LA PRESENCE D'INTERFACES
+!
+    call dismoi('EXI_THM', nomo, 'MODELE', repk=poro)
+    if (poro .eq. 'OUI' .and. typdis .eq. 'FISSURE') then
+        call utmess('F', 'XFEM_78', sk='HM-XFEM')
+    endif
 !
 ! --- MOT-CLEFS DEFINITION FISSURE
 !

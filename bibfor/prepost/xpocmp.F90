@@ -1,6 +1,6 @@
 subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
                   jconx2, ndim, nfh, nfe, ddlc,&
-                  nbcmp, cmp, lmeca)
+                  nbcmp, cmp, lmeca, pre1)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 #include "asterfort/jeveuo.h"
     integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(nbcmp)
     integer :: ddlc
-    logical :: lmeca
+    logical :: lmeca, pre1, press
     character(len=8) :: elrefp
     character(len=19) :: cns1
 !
@@ -70,8 +70,8 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
         ino=zi(jconx1-1+zi(jconx2+ima-1)+j-1)
         do 111 icmp = 1, nbcmp
             exist(j,icmp)= zl(jcnsl1-1+(ino-1)*nbcmp + icmp)
-111      continue
-110  end do
+111     continue
+110 continue
 !
 !     ON REGARDE LES COMPOSANTES ACTIVES EN CHAQUE NOEUD
     ipos = 0
@@ -80,6 +80,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
     nfe = 0
     ddlc=0
     contas=.true.
+    press=.true.
     call elelin(1, elrefp, k8bid, ibid, nnos)
 !
     do 21 i = 1, nbcmp
@@ -88,20 +89,33 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
         if (nomcmp(1:4) .eq. 'LAGS') then
             do 22 k = 1, nnos
                 if (.not. exist(k,i)) contas=.false.
-22          continue
+ 22         continue
             if (contas) goto 1
+        endif
+!
+        if (nomcmp(1:4) .eq. 'PRE1') then
+            do 23 k = 1, nnos
+                if (.not. exist(k,i)) press=.false.
+ 23         continue
+            if (press) goto 1
         endif
 !
         do 24,j=1,n
         if (.not.exist(j,i)) goto 21
-24      continue
+ 24     continue
 !
- 1      continue
+  1     continue
 !
         if (nomcmp(1:1) .eq. 'D' .or. nomcmp(1:1) .eq. 'T') then
             ipos = ipos +1
             ndc = ndc +1
             cmp(ipos)=i
+        endif
+        if (pre1) then
+            if (nomcmp(1:4) .eq. 'PRE1') then
+                ipos=ipos +1
+                cmp(ipos)=i
+            endif
         endif
         if (nomcmp(1:1) .eq. 'H') then
             ipos = ipos +1
@@ -120,7 +134,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
             cmp(ipos)=i
         endif
 !
-21  end do
+ 21 continue
 !
     if (lmeca) then
 !       CAS DE LA MECANIQUE

@@ -53,6 +53,7 @@ subroutine op0187()
     character(len=24) :: mailx, mailc, listno, k24b, logrma, dirgrm, listgr
     character(len=24) :: nivgrm
     character(len=24) :: nogrfi
+    logical :: pre1
 !
     call jemarq()
     call infmaj()
@@ -104,7 +105,8 @@ subroutine op0187()
                 nnntot+nftot, ncotot+nfcomf, listno, k19b, k19b,&
                 k19b, k19b, k19b, k19b, k19b,&
                 ibid, k8b, nbnoc, nbmac, logrma,&
-                dirgrm, maxfem, ngfon, k19b, k19b)
+                dirgrm, maxfem, ngfon, k19b, k19b,&
+                pre1)
 !
 !     ------------------------------------------------------------------
 !     4. TRAITEMENT DES MAILLES DE MAILC
@@ -123,7 +125,7 @@ subroutine op0187()
     call xpomac(malini, mailc, listno, nbnoc, nbmac,&
                 maxfem, nivgrm, k19b, k19b, k19b,&
                 k19b, k19b, k19b, k8b, k19b,&
-                k19b)
+                k19b, pre1)
 !
 !     ------------------------------------------------------------------
 !     5. TRAITEMENT DES MAILLES DE MAILX
@@ -135,7 +137,7 @@ subroutine op0187()
                 prefno, nogrfi, maxfem, k19b, k19b,&
                 k19b, k19b, k19b, k19b, listgr,&
                 dirgrm, nivgrm, k8b, ngfon, k19b,&
-                k19b)
+                k19b, pre1)
 !
 !     ------------------------------------------------------------------
 !     6. TRAITEMENT DES FONDS DE FISSURE

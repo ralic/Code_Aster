@@ -15,12 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                       prefno, nogrfi, maxfem, cns1, cns2,&
                       ces1, ces2, cesvi1, cesvi2, listgr,&
                       dirgrm, nivgrm, resuco, ngfon, comps1,&
-                      comps2)
+                      comps2, pre1)
         character(len=8) :: mo
         character(len=8) :: malini
         character(len=24) :: mailx
@@ -42,5 +42,6 @@ interface
         integer :: ngfon
         character(len=19) :: comps1
         character(len=19) :: comps2
+        logical :: pre1
     end subroutine xpomax
-end interface
+end interface 

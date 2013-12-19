@@ -2,7 +2,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                   nnntot, ncotot, listno, cns1, cns2,&
                   ces1, ces2, cel2, cesvi1, cesvi2,&
                   ior, resuco, nbnoc, nbmac, logrma,&
-                  dirgrm, maxfem, ngfon, comps1, comps2)
+                  dirgrm, maxfem, ngfon, comps1, comps2,&
+                  pre1)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,8 +102,9 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     integer :: jcnsk2, jcnsd2, jcnsc2, jdirgr
     integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
     integer :: jresd1, jresc1, nbcmp
+    logical :: pre1
     character(len=3) :: tsca
-    character(len=8) :: k8b, ldep3(6), ldep2(4), ltemp(1)
+    character(len=8) :: k8b, ldep3(6), ldep2(4), ltemp(1), ldep1(3), ldep4(4)
     character(len=16) :: k16b, nomcmd
     character(len=19) :: coord2, ligrel, chn1, chsig1
     character(len=19) :: nomgd
@@ -110,6 +112,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     character(len=24) :: comp1
     data          ldep3/ 'DX','DY','DZ','LAGS_C','LAGS_F1','LAGS_F2'/
     data          ldep2/ 'DX','DY',     'LAGS_C','LAGS_F1'          /
+    data          ldep1/ 'DX','DY','PRE1'                           /
+    data          ldep4/ 'DX','DY','DZ','PRE1'                      /
     data          ltemp/ 'TEMP'                                     /
 !
     call jemarq()
@@ -264,14 +268,26 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
 !       CREATION D'UN CHAMP SIMPLE : CNS2
         if (xismec()) then
-!         CAS DE LA MECANIQUE
-            if (ndim .eq. 2) then
-                call cnscre(maxfem, 'DEPL_R', 2*ndim, ldep2, 'V',&
-                            cns2)
+            if (pre1) then
+!         CAS DE L'HYDRO-MECANIQUE
+                if (ndim .eq. 2) then
+                    call cnscre(maxfem, 'DEPL_R', ndim+1, ldep1, 'V',&
+                                cns2)
+                else
+                    ASSERT(ndim.eq.3)
+                    call cnscre(maxfem, 'DEPL_R', ndim+1, ldep4, 'V',&
+                                cns2)
+                endif
             else
-                ASSERT(ndim.eq.3)
-                call cnscre(maxfem, 'DEPL_R', 2*ndim, ldep3, 'V',&
-                            cns2)
+!         CAS DE LA MECANIQUE
+                if (ndim .eq. 2) then
+                    call cnscre(maxfem, 'DEPL_R', 2*ndim, ldep2, 'V',&
+                                cns2)
+                else
+                    ASSERT(ndim.eq.3)
+                    call cnscre(maxfem, 'DEPL_R', 2*ndim, ldep3, 'V',&
+                                cns2)
+                endif
             endif
         else
 !         CAS DE LA THERMIQUE
@@ -289,12 +305,21 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
         zi(jcnsd2-1+1)=nbno2
         if (xismec()) then
-!         CAS DE LA MECANIQUE
-            zi(jcnsd2-1+2)=2*ndim
-            do i = 1, 2*ndim
-                if (ndim .eq. 3) zk8(jcnsc2-1+i)=ldep3(i)
-                if (ndim .eq. 2) zk8(jcnsc2-1+i)=ldep2(i)
-            end do
+            if (pre1) then
+!           CAS DE L'HYDRO-MECANIQUE
+                zi(jcnsd2-1+2)=ndim+1
+                do i = 1, ndim+1
+                    if (ndim .eq. 2) zk8(jcnsc2-1+i)=ldep1(i)
+                    if (ndim .eq. 3) zk8(jcnsc2-1+i)=ldep4(i)
+                end do
+            else
+!           CAS DE LA MECANIQUE
+                zi(jcnsd2-1+2)=2*ndim
+                do i = 1, 2*ndim
+                    if (ndim .eq. 3) zk8(jcnsc2-1+i)=ldep3(i)
+                    if (ndim .eq. 2) zk8(jcnsc2-1+i)=ldep2(i)
+                end do
+            endif
         else
 !         CAS DE LA THERMIQUE
             zi(jcnsd2-1+2)=1

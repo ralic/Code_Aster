@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
                       npg, jcesd1, jcesd2, jcvid1, jcvid2,&
                       ima, ndim, ndime, iadc, iadv,&
@@ -43,4 +43,4 @@ interface
         integer :: jcvil2
         integer :: jcviv2
     end subroutine xpoajc
-end interface
+end interface 

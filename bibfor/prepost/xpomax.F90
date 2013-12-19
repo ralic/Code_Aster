@@ -2,7 +2,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                   prefno, nogrfi, maxfem, cns1, cns2,&
                   ces1, ces2, cesvi1, cesvi2, listgr,&
                   dirgrm, nivgrm, resuco, ngfon, comps1,&
-                  comps2)
+                  comps2, pre1)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,9 +116,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     character(len=8) :: typma, noma
     character(len=16) :: tysd, k16b, nomcmd, notype
     character(len=19) :: chs(11)
-    character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, fisno, hea
-    character(len=24) :: nogno
-    logical :: opmail, lmeca
+    character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, fisno, hea, nogno
+    logical :: opmail, lmeca, pre1
     integer :: iad9, irese, nnose, tabse(6), ncomp
     integer :: iviex, iret, jtypma, jconq1, jconq2, jcnsk1, jxc
     integer :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2
@@ -435,7 +434,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
             nbcmp = zi(jcnsd1-1+2)
             call xpocmp(elrefp, cns1, ima, n, jconx1,&
                         jconx2, ndim, nfh, nfe, ddlc,&
-                        nbcmp, cmp, lmeca)
+                        nbcmp, cmp, lmeca, pre1)
 !
             if (tysd(1:9) .ne. 'MODE_MECA' .and. tysd(1:9) .ne. 'EVOL_THER') then
                 call cesexi('C', jcesd1, jcesl1, ima, 1,&
@@ -554,7 +553,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                         iacoo2, iad9+jcesv(9)-1, ninter, jcesv( 11)+iad11-1, elrefp,&
                         jlsn, jlst, typma, igeom, jfisno,&
                         zi(jxc), cmp, nbcmp, nfh, nfe,&
-                        ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca)
+                        ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
+                        pre1)
             if (.not.opmail) then
                 if (tysd(1:9) .ne. 'MODE_MECA' .and. tysd(1:9) .ne. 'EVOL_THER') then
 !

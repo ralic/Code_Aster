@@ -1,6 +1,6 @@
 subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                   cns1, cns2, ces1, ces2, cesvi1,&
-                  cesvi2, resuco, comps1, comps2)
+                  cesvi2, resuco, comps1, comps2, pre1)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,12 +64,14 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
     integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2
     integer :: ima, npg1, ncmp1, npg2, ncmp2, ipg, icmp, ima2, npgv1, npgv2
     integer :: ncmv1, ncmv2, ndimc, idecv2, idecl2
-    logical :: lmeca
+    logical :: lmeca, pre1
     character(len=16) :: tysd
     integer :: iviex, iret
 !
     integer :: jresd1, jresv1, jresl1, iadr1
     integer :: jresd2, jresv2, jresl2, iadr2
+    integer :: jcnsl1
+    logical :: exist(nbno, 7)
 !
 !
     call jemarq()
@@ -84,12 +86,14 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
     call jeveuo(cns2//'.CNSV', 'E', jcnsv2)
     call jeveuo(cns2//'.CNSL', 'E', jcnsl2)
 !
+    call jeveuo(cns1//'.CNSL', 'L', jcnsl1)
+!
 !     NBCMP : NBRE DE CMP MAX PAR NOEUDS DU CHAM_NO_S CNS1
     nbcmp = zi(jcnsd1-1+2)
 !
-!     VERIF QUE LES 2 PREMIERES COMPOSANTES DU CHAMP DEP1 SONT DX DY
-!     OU QUE LA PREMIERE COMPOSANTES DE CE CHAMP EST TEMP
-    ASSERT((zk8(jcnsc1-1+1).eq.'DX'.and.zk8(jcnsc1-1+2).eq.'DY') .or. (zk8(jcnsc1-1+1).eq.'TEMP'))
+!     VERIF QUE LES 2 PREMIERES COMPOSANTES DU CHAMP DEP1 ou DEP4
+!     SONT DX DY OU QUE LA PREMIERE COMPOSANTES DE CE CHAMP EST TEMP
+      ASSERT((zk8(jcnsc1-1+1).eq.'DX'.and.zk8(jcnsc1-1+2).eq.'DY') .or. (zk8(jcnsc1-1+1).eq.'TEMP'))
 !
     lmeca = xismec()
 !     RQ : "NDIMC" CORRESPOND AU NOMBRE DE COMPOSANTE VECTORIELLE DU
@@ -101,21 +105,53 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
         ndimc = 1
     endif
 !
-    do i = 1, nbno
-        if (dirno(i) .ne. 0) then
-            if (lmeca) then
-                idecv2 = jcnsv2-1+2*ndimc*(dirno(i)-1)
-                idecl2 = jcnsl2-1+2*ndimc*(dirno(i)-1)
-            else
-                idecv2 = jcnsv2-1+ndimc*(dirno(i)-1)
-                idecl2 = jcnsl2-1+ndimc*(dirno(i)-1)
-            endif
-            do j = 1, ndimc
-                zr(idecv2+j)= zr(jcnsv1-1+nbcmp*(i-1)+j)
-                zl(idecl2+j)=.true.
+    if (pre1) then
+!       INDICATEUR QUI NOUS SERT POUR RECUPERER LA PRESSION SUR
+!       LES NOEUDS SOMMETS UNIQUEMENT
+        do i = 1, nbno
+            do icmp = 1, nbcmp
+                exist(i,icmp)= zl(jcnsl1-1+(i-1)*nbcmp + icmp)
             end do
-        endif
-    end do
+        end do
+!
+        do i = 1, nbno
+            if (dirno(i) .ne. 0) then
+                idecv2 = jcnsv2-1+(ndimc+1)*(dirno(i)-1)
+                idecl2 = jcnsl2-1+(ndimc+1)*(dirno(i)-1)
+                do j = 1, ndimc
+                    zr(idecv2+j)= zr(jcnsv1-1+nbcmp*(i-1)+j)
+                    zl(idecl2+j)=.true.
+                end do
+                if (ndim .eq. 2) then
+                  if (exist(i,3)) then
+                    zr(idecv2+3)= zr(jcnsv1-1+nbcmp*(i-1)+3)
+                    zl(idecl2+3)=.true.
+                  endif
+                else if (ndim .eq. 3) then
+                  if (exist(i,4)) then
+                    zr(idecv2+4)= zr(jcnsv1-1+nbcmp*(i-1)+4)
+                    zl(idecl2+4)=.true.
+                  endif
+                endif
+            endif
+        end do
+    else
+        do i = 1, nbno
+            if (dirno(i) .ne. 0) then
+                if (lmeca) then
+                    idecv2 = jcnsv2-1+2*ndimc*(dirno(i)-1)
+                    idecl2 = jcnsl2-1+2*ndimc*(dirno(i)-1)
+                else
+                    idecv2 = jcnsv2-1+ndimc*(dirno(i)-1)
+                    idecl2 = jcnsl2-1+ndimc*(dirno(i)-1)
+                endif
+                do j = 1, ndimc
+                    zr(idecv2+j)= zr(jcnsv1-1+nbcmp*(i-1)+j)
+                    zl(idecl2+j)=.true.
+                end do
+            endif
+        end do
+    endif
 !
     call gettco(resuco, tysd)
 !

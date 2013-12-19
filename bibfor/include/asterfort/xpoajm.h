@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                       n, nnose, prefno, jdirno, nnm,&
                       inm, inmtot, nbmac, he, jnivgr,&
@@ -26,7 +26,8 @@ interface
                       iacoo2, iad9, ninter, iainc, elrefp,&
                       jlsn, jlst, typma, igeom, jfisno,&
                       contac, cmp, nbcmp, nfh, nfe,&
-                      ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca)
+                      ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
+                      pre1)
         integer :: nfiss
         character(len=8) :: maxfem
         integer :: jtypm2
@@ -82,5 +83,6 @@ interface
         integer :: jcnsv2
         integer :: jcnsl2
         logical :: lmeca
+        logical :: pre1
     end subroutine xpoajm
-end interface
+end interface 

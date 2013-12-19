@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                       cns1, cns2, ces1, ces2, cesvi1,&
-                      cesvi2, resuco, comps1, comps2)
+                      cesvi2, resuco, comps1, comps2, pre1)
         integer :: nbma
         integer :: nbno
         character(len=8) :: malini
@@ -33,5 +33,6 @@ interface
         character(len=8) :: resuco
         character(len=19) :: comps1
         character(len=19) :: comps2
+        logical :: pre1
     end subroutine xpoco2
-end interface
+end interface 

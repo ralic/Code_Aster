@@ -18,6 +18,8 @@ subroutine te0037(option, nomte)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xhmddl.h"
+#include "asterfort/xhmini.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xteddl.h"
@@ -60,19 +62,18 @@ subroutine te0037(option, nomte)
 !.......................................................................
 !
 !
-    character(len=8) :: elref, typma, fpg, elc, nompar(4), lag, elrefc
+    character(len=8) :: elref, typma, fpg, elc, nompar(4), lag, elrefc, enr
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ier, ddlm
     integer :: igeom, ipres, itemps, ires, iadzi, iazk24
     integer :: jlst, jptint, jaint, jcface, jlonch, jstno, jbasec, contac
     integer :: i, j, ninter, nface, cface(5, 3), ifa, nli, in(3), nfiss, jfisno
-    integer :: ar(12, 3), nbar, fac(6, 4), nbf, ibid2(12, 3), ibid, cpt, ino
-    integer :: ilev
+    integer :: ar(12, 3), nbar, fac(6, 4), nbf, ibid2(12, 3), ibid, cpt, ino, ilev
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf
-    real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2)
+    real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
-    logical :: lbid, axi
-    integer :: compt
+    logical :: lbid, pre1, axi
+    integer :: compt, nddlm, nddls
     real(kind=8) :: thet
     data    he / -1.d0 , 1.d0/
 !
@@ -91,8 +92,13 @@ subroutine te0037(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
+    pre1=.false.
     axi = lteatt(' ','AXIS','OUI')
 !
+     call teattr(nomte, 'C', 'THM', enr, ibid)
+    if (enr .eq. 'OUI') then
+        pre1=.true.
+    endif
 !
 !-----------------------------------------------------------------------
 !     RECUPERATION DES ENTREES / SORTIE
@@ -121,12 +127,24 @@ subroutine te0037(option, nomte)
     call jevech('PVECTUR', 'E', ires)
 !
 !
-!
-!
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-    call xteini(nomte, nfh, nfe, singu, ddlc,&
-                nnom, ddls, nddl, ddlm, nfiss,&
-                contac)
+!     SI PRE1=.FALSE. -> MODELISATION MECA XFEM CLASSIQUE
+!     SI PRE1=.TRUE.  -> MODELISATION HM XFEM
+    if (pre1) then
+        call xhmini(nomte, nfh, ddls, ddlm)
+!
+        nfiss = 1
+        contac = 0
+        singu = 0
+        nddls = ddls + 1
+        nddlm = ddlm
+        nnom = nno - nnos
+        nddl = nnos*nddls + nnom*nddlm
+    else
+        call xteini(nomte, nfh, nfe, singu, ddlc,&
+                    nnom, ddls, nddl, ddlm, nfiss,&
+                    contac)
+    endif
 !
     call tecael(iadzi, iazk24)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
@@ -144,9 +162,6 @@ subroutine te0037(option, nomte)
         endif
         fpg='MASS'
     endif
-!
-!
-!
 !
 !     PARAMETRES PROPRES A X-FEM
     call jevech('PLST', 'L', jlst)
@@ -171,7 +186,6 @@ subroutine te0037(option, nomte)
     end do
 !
     call jevech('PGEOMER', 'L', igeom)
-!
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES FACETTES
@@ -206,15 +220,15 @@ subroutine te0037(option, nomte)
                     cpt=0
                     do ino = 1, 2
                         if (in(1) .eq. ar(i,ino) .or. in(2) .eq. ar(i,ino)) cpt=cpt+1
-                    end do
+                     end do
                     if (cpt .eq. 2) then
                         mult=0.5d0
                         goto 104
                     endif
-                end do
+                 end do
             endif
         endif
-104     continue
+104    continue
 !
         call elref4(elc, fpg, ibid, nnof, ibid,&
                     npgf, ipoidf, ivff, idfdef, ibid)
@@ -253,9 +267,9 @@ subroutine te0037(option, nomte)
 !         CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
             if (axi) then
                 r = 0.d0
-                do 1000 ino = 1, nno
+                do ino = 1, nno
                     r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-1000            continue
+                end do
                 ASSERT(r.ge.0d0)
 !              ATTENTION : LE POIDS N'EST PAS X R
 !              CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
@@ -325,58 +339,88 @@ subroutine te0037(option, nomte)
             endif
 !
 !         CALCUL EFFECTIF DU SECOND MEMBRE SUR LES DEUX LEVRES
-            do ilev = 1, 2
+            if (pre1) then
+                do ilev = 1, 2
+                    pos=0
+                    do ino = 1, nno
 !
-                pos=0
-                do ino = 1, nno
+!               TERME CLASSIQUE
+                        do j = 1, ndim
+                            pos=pos+1
+                            zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev)*jac*ff(ino)*mult
+                        end do
 !
-!             TERME CLASSIQUE
-                    do j = 1, ndim
-                        pos=pos+1
-                        zr(ires-1+pos) = zr(ires-1+pos) + forrep(j, ilev) * jac * ff(ino) * mult
+!               ON ZAPPE LES TERMES DE PRESSION SI ON EST SUR UN
+!               NOEUD SOMMET
+                        if (ino .le. nnos) pos=pos+1
+!
+!               TERME HEAVISIDE
+                        do j = 1, nfh*ndim
+                            pos=pos+1
+                            zr(ires-1+pos) = zr(ires-1+pos) + he(ilev) *forrep(j,ilev)*jac*ff(ino&
+                                             &)*mult
+                        end do
                     end do
-!
-!             TERME HEAVISIDE
-                    do j = 1, nfh*ndim
-                        pos=pos+1
-                        zr(ires-1+pos) = zr(ires-1+pos) + he(ilev) * forrep(j,ilev) * jac * ff(in&
-                                         &o) * mult
-                    end do
-!
-!             TERME SINGULIER
-                    do j = 1, singu*ndim
-                        pos=pos+1
-                        zr(ires-1+pos) = zr(ires-1+pos) + rr(ilev) * forrep(j,ilev) * jac * ff(in&
-                                         &o) * mult
-                    end do
-!
-!             ON SAUTE LES POSITIONS DES DDLS ASYMPTOTIQUES E2, E3, E4
-                    pos = pos + (nfe-1) * ndim * singu
-!
-!             ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
-!
-                    if (contac .eq. 3) then
-                        if (ino .le. nnos) pos = pos + ddlc
-                    else
-                        pos = pos + ddlc
-                    endif
-!
                 end do
+            else
+                do ilev = 1, 2
 !
-            end do
+                    pos=0
+                    do ino = 1, nno
 !
+!               TERME CLASSIQUE
+                        do j = 1, ndim
+                            pos=pos+1
+                            zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev) * jac * ff(ino) * m&
+                                             &ult
+                        end do
+!
+!               TERME HEAVISIDE
+                        do j = 1, nfh*ndim
+                            pos=pos+1
+                            zr(ires-1+pos) = zr(ires-1+pos) + he(ilev) * forrep(j,ilev) * jac * f&
+                                             &f(ino) * mult
+                        end do
+!
+!               TERME SINGULIER
+                        do j = 1, singu*ndim
+                            pos=pos+1
+                            zr(ires-1+pos) = zr(ires-1+pos) + rr(ilev) * forrep(j,ilev) * jac * f&
+                                             &f(ino) * mult
+                        end do
+!
+!               ON SAUTE LES POSITIONS DES DDLS ASYMPTOTIQUES E2, E3, E4
+                        pos = pos + (nfe-1) * ndim * singu
+!
+!               ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
+!
+                        if (contac .eq. 3) then
+                            if (ino .le. nnos) pos = pos + ddlc
+                        else
+                            pos = pos + ddlc
+                        endif
+!
+                    end do
+                end do
+            endif
         end do
     end do
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
-    call teattr(nomte, 'C', 'XLAG', lag, ibid)
-    if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
-        nno = nnos
+    if (pre1) then
+        call xhmddl(ndim, nddls, nddl, nno, nnos,&
+                    zi(jstno), .false., option, nomte, mat,&
+                    zr(ires), nddlm)
+    else
+        call teattr(nomte, 'C', 'XLAG', lag, ibid)
+        if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
+            nno = nnos
+        endif
+        call xteddl(ndim, nfh, nfe, ddls, nddl,&
+                    nno, nnos, zi(jstno), .false., lbid,&
+                    option, nomte, ddlm,&
+                    nfiss, jfisno, vect=zr(ires))
     endif
-    call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nno, nnos, zi(jstno), .false., lbid,&
-                option, nomte, ddlm,&
-                nfiss, jfisno, vect=zr(ires))
 !
 !
 999 continue

@@ -1,0 +1,86 @@
+subroutine xitghm(modint, mecani, press1, ndim, nno,&
+                  nnos, nnom, npi, npg, nddls,&
+                  nddlm, dimuel, ddld, ddlm, nnop,&
+                  nnops, nnopm, ipoids, ivf, idfde)
+    implicit none
+!
+#   include "asterfort/elref4.h"
+#   include "asterfort/elref5.h"
+    integer :: mecani(5), press1(7)
+    integer :: ndim, nnos, nno, nnom
+    integer :: npi, npg, nddls, nddlm, dimuel
+    integer :: ibid, ipoids, ivf, idfde
+    character(len=3) :: modint
+!
+! DECLARATION POUR XFEM
+    integer :: ddld, ddlm
+    integer :: nnop, nnops, nnopm
+    character(len=8) :: fami(3), elrese(3)
+!
+    data    elrese /'SE3','TR6','T10'/
+    data    fami   /'BID','XINT','XINT'/
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! ======================================================================
+! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
+! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
+! ======================================================================
+! MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
+! NNO       NB DE NOEUDS DU SOUS ELEMENT
+! NNOS      NB DE NOEUDS SOMMETS DU SOUS ELEMENT
+! NNOM      NB DE NOEUDS MILIEUX DU SOUS ELEMENT
+! NNOP      NB DE NOEUDS DE L'ELEMENT PARENT
+! NNOS      NB DE NOEUDS SOMMETS DE L'ELEMENT PARENT
+! NNOM      NB DE NOEUDS MILIEUX DE L'ELEMENT PARENT
+! NDDLS     NB DE DDL SUR LES SOMMETS
+! NDDLM     NB DE DDL SUR LES MILIEUX DE FACE OU D ARETE - QU EN EF
+! NPI       NB DE POINTS D'INTEGRATION DE L'ELEMENT
+! NPG       NB DE POINTS DE GAUSS     POUR CLASSIQUE(=NPI)
+!                 SOMMETS             POUR LUMPEE   (=NPI=NNOS)
+!                 POINTS DE GAUSS     POUR REDUITE  (<NPI)
+! NDIM      DIMENSION DE L'ESPACE
+! IPOIDS    POIDS D'INTEGRATION DU SS-ELEMENT QUADRATIQUE
+! IVF       FONCTION DE FORME DU SS-ELEMENT QUADRATIQUE
+! IDFDE     DERIVES DES FONCTIONS DE FORME DU SS-ELEMENT QUADRATIQUE
+! =====================================================================
+! ======================================================================
+! --- DONNEES POUR XFEM ------------------------------------------------
+! ======================================================================
+!     RECUPERATION DES NOEUDS DE L'ELEMENT PARENT QUADRATIQUE
+    call elref4(' ', 'RIGI', ndim, nnop, nnops,&
+                ibid, ibid, ibid, ibid, ibid)
+!
+!     RECUPERATION DES PTS DE GAUSS, DES NOEUDS ET FF DES SS-ELEMENTS
+    call elref5(elrese(ndim), fami(ndim), ibid, nno, nnos,&
+                npi, ipoids, ibid, ivf, idfde,&
+                ibid, ibid)
+!
+! ======================================================================
+! --- POUR METHODES CLASSIQUE ET LUMPEE NPG=NPI
+! ======================================================================
+    npg = npi
+    nddls = mecani(1)*ddld + press1(1)
+    nddlm = mecani(1)*ddlm
+    nnopm = nnop - nnops
+    dimuel = nnops*nddls + nnopm*nddlm
+    nnom = nno - nnos
+! ======================================================================
+! --- POUR METHODE REDUITE NPI = NPG+NNOS ------------------------------
+! ======================================================================
+    if (modint .eq. 'RED') npg= npi-nnops
+end subroutine

@@ -116,7 +116,7 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
         val=0.d0
         do 20 ipg = 1, npg1
             val =val + zr(jcesv1-1+iadc-1+idecal+ncmp1*(ipg-1)+icmp)
-20      continue
+ 20     continue
         val = val/npg1
         do 35 ipt = 1, npg2
             call cesexi('C', jcesd2, jcesl2, nbmac +inmtot, ipt,&
@@ -124,8 +124,8 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
             ASSERT(iad2.gt.0)
             zl(jcesl2-1+iad2) = .true.
             zr(jcesv2-1+iad2) = val
-35      continue
-30  end do
+ 35     continue
+ 30 continue
 !
     if (ncmv1 .ne. 0) then
         do 50 icmp = 1, ncmv1
@@ -134,7 +134,7 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
             do 40 ipg = 1, npg1
                 val =val + zr(jcviv1-1+iadv-1+idcalv+ncmv1*(ipg-1)+&
                 icmp)
-40          continue
+ 40         continue
             val = val/npg1
             do 45 ipt = 1, npg2
                 call cesexi('C', jcvid2, jcvil2, nbmac +inmtot, ipt,&
@@ -143,10 +143,10 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
                 iad2 = -iad2
                 zl(jcvil2-1+iad2) = .true.
                 zr(jcviv2-1+iad2) = val
-45          continue
-50      continue
+ 45         continue
+ 50     continue
     endif
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

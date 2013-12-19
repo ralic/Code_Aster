@@ -15,14 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                       ninter, iainc, typma, co, igeom,&
                       jdirno, nfiss, jfisno, he, ndime,&
                       ndim, cmp, nbcmp, nfh, nfe,&
                       ddlc, ima, jconx1, jconx2, jcnsv1,&
                       jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                      nnn, contac, lmeca)
+                      nnn, contac, lmeca, pre1)
         integer :: nbcmp
         integer :: nfiss
         integer :: nnop
@@ -56,5 +56,6 @@ interface
         integer :: nnn
         integer :: contac
         logical :: lmeca
+        logical :: pre1
     end subroutine xpoajd
-end interface
+end interface 

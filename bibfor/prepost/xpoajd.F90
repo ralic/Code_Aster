@@ -4,7 +4,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                   ndim, cmp, nbcmp, nfh, nfe,&
                   ddlc, ima, jconx1, jconx2, jcnsv1,&
                   jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                  nnn, contac, lmeca)
+                  nnn, contac, lmeca, pre1)
 ! aslint: disable=W1306,W1504
     implicit none
 !
@@ -93,13 +93,15 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !
 !
 !
-    character(len=8) :: elrefc
+    character(len=8) :: elrefc, elref2
+    integer :: nnops
     real(kind=8) :: ff(nnop), ffc(nnop), fe(4), crilsn, minlsn
     real(kind=8) :: r, theta, chpri(3), lagrs(3)
+    real(kind=8) :: ff2(4), press
     integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
-    integer :: nnol, ngl(8), ibid, ifiss, fiss
+    integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8)
     integer :: lact(8), nlact
-    logical :: lpint, lcont
+    logical :: lpint, lcont, pre1
     parameter    (crilsn = 1.d-4)
 !
 !     ------------------------------------------------------------------
@@ -113,14 +115,14 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         lpint = .false.
         do 10 ifiss = 1, nfiss
             if (lsn(ifiss) .eq. 0.d0) lpint = .true.
-10      continue
+ 10     continue
     else if (ino.gt.1000.and.ino.lt.2000) then
         lpint = .true.
     else if (ino.gt.2000) then
         lpint = .false.
         do 20 ifiss = 1, nfiss
             if (abs(lsn(ifiss)) .lt. crilsn) lpint = .true.
-20      continue
+ 20     continue
     endif
 !
     if (lpint) then
@@ -131,7 +133,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                 minlsn = abs(lsn(ifiss))
                 fiss = ifiss
             endif
-50      continue
+ 50     continue
         if (he(fiss) .eq. 1) then
             lpint = .false.
         endif
@@ -145,13 +147,24 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !
     zi(jdirno-1+(2+nfiss)*(inn-1)+1) = ino
     zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc + inntot
-    do 30 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
         zi(jdirno-1+(2+nfiss)*(inn-1)+2+ifiss) = he(ifiss)
-30  end do
+    end do
 !
 !     FF : FONCTIONS DE FORMES AU NOEUD SOMMET OU D'INTERSECTION
     call xpoffo(ndim, ndime, elrefp, nnop, igeom,&
                 co, ff)
+!
+    if (pre1) then
+!       ON RECUPERE L'ELEMENT LINEAIRE ASSOCIE A L'ELEMENT PARENT
+!       QUADRATIQUE ET LE NOMBRE DE NOEUDS SOMMETS
+        call elelin(3, elrefp, elref2, ibid, nnops)
+!
+!       FF : FONCTIONS DE FORME AUX NOEUDS SOMMETS POUR INTERPOLER LE
+!       CHAMP PRIMAL CORRESPONDANT À LA PRESSION POUR LE CAS HM-XFEM
+        call xpoffo(ndim, ndime, elref2, nnops, igeom,&
+                    co, ff2)
+    endif
 !
 !     RQ : "NDIMC" CORRESPOND AU NOMBRE DE COMPOSANTE VECTORIELLE DU
 !     CHAMP PRIMAL (DEPL EN MECA -> NDIM CMP / TEMP EN THERMIQUE
@@ -180,36 +193,74 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !
 !     CALCUL DE L'APPROXIMATION DU CHAMP PRIMAL "CHPRI" (DEPLACEMENT
 !     EN MECA / TEMPERATURE EN THERMIQUE)
-    do 100 j = 1, nnop
+    if (pre1) then
+        do 70 j = 1, nnop
 !
-!       ADRESSE DE LA 1ERE CMP DU CHAMP PRIMAL DU NOEUD INO
-        iad=jcnsv1-1+nbcmp*(zi(jconx1-1+zi(jconx2+ima-1)+j-1)-1)
+!         ADRESSE DE LA 1ERE CMP DU CHAMP PRIMAL DU NOEUD INO
+            iad=jcnsv1-1+nbcmp*(zi(jconx1-1+zi(jconx2+ima-1)+j-1)-1)
 !
-        ipos=0
+            ipos=0
 !
-!       DDLS CLASSIQUES
-        do 110 i = 1, ndimc
+!         DDLS CLASSIQUES POUR LES DEPLACEMENTS
+            do 80 i = 1, ndimc
+                ipos=ipos+1
+                chpri(i) = chpri(i) + ff(j)*zr(iad+cmp(ipos))
+ 80         continue
+!
+!         ON ZAPPE LA POSITION DES DDLS DE PRESSION QUELQUE SOIT LA
+!         NATURE DU NOEUD
             ipos=ipos+1
-            chpri(i) = chpri(i) + ff(j) * zr(iad+cmp(ipos))
-110      continue
 !
-!       DDLS HEAVISIDE
-        do 120 ig = 1, nfh
-            do 130 i = 1, ndimc
+!         DDLS HEAVISIDE POUR LES DEPLACEMENTS
+            do 85 ig = 1, nfh
+                do 90 i = 1, ndimc
+                    ipos=ipos+1
+                    chpri(i) = chpri(i) + he(zi(jfisno-1+(j-1)*nfh+ig) ) *ff(j)*zr(iad+cmp(ipos))
+ 90             continue
+ 85         continue
+!
+            press=0.d0
+!         ON TRAITE ICI LES DDLS DE PRESSION (NOEUDS SOMMETS UNIQUEMENT)
+            do 93 i = 1, nnops
+                npr(i)=zi(jconx1-1+zi(jconx2+ima-1)+i-1)
+ 93         continue
+!
+            do 95 i = 1, nnops
+                press = press + ff2(i)*zr(jcnsv1-1+nbcmp*(npr(i)-1)+ cmp(ndim+1))
+ 95         continue
+ 70     continue
+    else
+        do 100 j = 1, nnop
+!
+!         ADRESSE DE LA 1ERE CMP DU CHAMP PRIMAL DU NOEUD INO
+            iad=jcnsv1-1+nbcmp*(zi(jconx1-1+zi(jconx2+ima-1)+j-1)-1)
+!
+            ipos=0
+!
+!         DDLS CLASSIQUES
+            do 110 i = 1, ndimc
                 ipos=ipos+1
-                chpri(i) = chpri(i) + he(zi(jfisno-1+(j-1)*nfh+ig)) * ff(j) * zr(iad+cmp(ipos))
-130          continue
-120      continue
+                chpri(i) = chpri(i) + ff(j) * zr(iad+cmp(ipos))
+110         continue
 !
-!       DDL ENRICHIS EN FOND DE FISSURE
-        do 140 ig = 1, nfe
-            do 150 i = 1, ndimc
-                ipos=ipos+1
-                chpri(i) = chpri(i) + fe(ig) * ff(j) * zr(iad+cmp( ipos))
-150          continue
-140      continue
+!         DDLS HEAVISIDE
+            do 120 ig = 1, nfh
+                do 130 i = 1, ndimc
+                    ipos=ipos+1
+                    chpri(i) = chpri(i) + he(zi(jfisno-1+(j-1)*nfh+ig) ) * ff(j) * zr(iad+cmp(ipo&
+                               &s))
+130             continue
+120         continue
 !
-100  end do
+!         DDL ENRICHIS EN FOND DE FISSURE
+            do 140 ig = 1, nfe
+                do 150 i = 1, ndimc
+                    ipos=ipos+1
+                    chpri(i) = chpri(i) + fe(ig) * ff(j) * zr(iad+cmp( ipos))
+150             continue
+140         continue
+100     continue
+    endif
 !
 !     CALCUL DES LAGRANGES DE CONTACT FROTTEMENT
 !     SEULEMENT POUR LES POINTS D'INTERSECTION
@@ -232,37 +283,49 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         call xmoffc(lact, nlact, nnol, ff, ffc)
         do 200 j = 1, nnol
             ngl(j)=zi(jconx1-1+zi(jconx2+ima-1)+j-1)
-200      continue
+200     continue
 !
         do 310 i = 1, ddlc
 ! --- CALCUL AVEC LES FF DE CONTACT FFC, LINÉAIRES ET MODIFIÉES
             do 330 j = 1, nnol
                 lagrs(i)=lagrs(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
                 +cmp((1+nfh+nfe)*ndim+i))*ffc(j)
-330          continue
-310      continue
+330         continue
+310     continue
     endif
 !
 !       ECRITURE DANS LE .VALE2 POUR LE NOEUD INO2
     ino2 = nbnoc + inntot
-    if (lmeca) then
-!       POUR LA MECA
-        idecv2 = jcnsv2-1+2*ndimc*(ino2-1)
-        idecl2 = jcnsl2-1+2*ndimc*(ino2-1)
+    if (pre1) then
+        idecv2 = jcnsv2-1+(ndimc+1)*(ino2-1)
+        idecl2 = jcnsl2-1+(ndimc+1)*(ino2-1)
+        do 300 i = 1, ndimc
+            zr(idecv2+i)=chpri(i)
+            zl(idecl2+i)=.true.
+300     continue
+!       ADRESSAGE DANS LE TABLEAU ZR DES DDLS DE PRESSIONS
+        zr(idecv2+ndimc+1)=press
+        zl(idecl2+ndimc+1)=.true.
     else
-!       POUR LA THERMIQUE
-        idecv2 = jcnsv2-1+ndimc*(ino2-1)
-        idecl2 = jcnsl2-1+ndimc*(ino2-1)
-    endif
-    do 400 i = 1, ndimc
-        zr(idecv2+i)=chpri(i)
-        zl(idecl2+i)=.true.
-        if (lpint .and. lcont) then
-!         POUR LES LAGRANGES DE CONTACT EN MECA
-            zr(idecv2+ndimc+i)=lagrs(i)
-            zl(idecl2+ndimc+i)=.true.
+        if (lmeca) then
+!         POUR LA MECA
+            idecv2 = jcnsv2-1+2*ndimc*(ino2-1)
+            idecl2 = jcnsl2-1+2*ndimc*(ino2-1)
+        else
+!         POUR LA THERMIQUE
+            idecv2 = jcnsv2-1+ndimc*(ino2-1)
+            idecl2 = jcnsl2-1+ndimc*(ino2-1)
         endif
-400  end do
+        do 400 i = 1, ndimc
+            zr(idecv2+i)=chpri(i)
+            zl(idecl2+i)=.true.
+            if (lpint .and. lcont) then
+!           POUR LES LAGRANGES DE CONTACT EN MECA
+                zr(idecv2+ndimc+i)=lagrs(i)
+                zl(idecl2+ndimc+i)=.true.
+            endif
+400     continue
+    endif
 !
     call jedema()
 !

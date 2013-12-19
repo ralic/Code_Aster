@@ -893,6 +893,64 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH4C
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH4C
 %-------------------------------------------------------------------
+%ajout des elements 2d HM_XFEM non affectables par AFFE_MODELE
+       MODELISATION__ 'D_PLAN_HM_XH'       DIM__ 2 2   CODE__ 'DXH'
+              ATTRIBUT__  THM=OUI  D_PLAN=OUI
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8_XH
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6_XH
+              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_XH
+              
+       MODELISATION__ 'D_PLAN_HM_XH_SI'    DIM__ 2 2   CODE__ 'DXI'
+              ATTRIBUT__  THM=OUI  D_PLAN=OUI
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8M_XH
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6M_XH
+              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_XH
+
+       MODELISATION__ 'D_PLAN_HM_XH_D'     DIM__ 2 2   CODE__ 'DXJ'
+              ATTRIBUT__  THM=OUI  D_PLAN=OUI
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8D_XH
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6D_XH
+              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_XH
+
+       MODELISATION__ 'D_PLAN_HM_XH_S'     DIM__ 2 2   CODE__ 'DXK'
+              ATTRIBUT__  THM=OUI   D_PLAN=OUI
+              MAILLE__ QUAD8     ELEMENT__ HM_DPQ8S_XH
+              MAILLE__ TRIA6     ELEMENT__ HM_DPTR6S_XH
+              MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_XH
+%-------------------------------------------------------------------
+%ajout des elements 3d HM_XFEM non affectables par AFFE_MODELE
+       MODELISATION__ '3D_HM_XH'       DIM__ 3 3   CODE__ '3XH'
+              ATTRIBUT__  THM=OUI
+              MAILLE__ TETRA10   ELEMENT__ HM_TETRA10_XH
+              MAILLE__ PENTA15   ELEMENT__ HM_PENTA15_XH
+              MAILLE__ HEXA20    ELEMENT__ HM_HEXA20_XH
+              MAILLE__ QUAD8     ELEMENT__ HM_FACE8_XH
+              MAILLE__ TRIA6     ELEMENT__ HM_FACE6_XH
+
+       MODELISATION__ '3D_HM_XH_SI'    DIM__ 3 3   CODE__ '3XI'
+              ATTRIBUT__  THM=OUI
+              MAILLE__ TETRA10   ELEMENT__ HM_TETRA10M_XH
+              MAILLE__ PENTA15   ELEMENT__ HM_PENTA15M_XH
+              MAILLE__ HEXA20    ELEMENT__ HM_HEXA20M_XH
+              MAILLE__ QUAD8     ELEMENT__ HM_FACE8_XH
+              MAILLE__ TRIA6     ELEMENT__ HM_FACE6_XH
+
+       MODELISATION__ '3D_HM_XH_D'     DIM__ 3 3   CODE__ '3XJ'
+              ATTRIBUT__  THM=OUI
+              MAILLE__ TETRA10   ELEMENT__ HM_TETRA10D_XH
+              MAILLE__ PENTA15   ELEMENT__ HM_PENTA15D_XH
+              MAILLE__ HEXA20    ELEMENT__ HM_HEXA20D_XH
+              MAILLE__ QUAD8     ELEMENT__ HM_FACE8_XH
+              MAILLE__ TRIA6     ELEMENT__ HM_FACE6_XH
+
+       MODELISATION__ '3D_HM_XH_S'     DIM__ 3 3   CODE__ '3XK'
+              ATTRIBUT__  THM=OUI
+              MAILLE__ TETRA10   ELEMENT__ HM_TETRA10S_XH
+              MAILLE__ PENTA15   ELEMENT__ HM_PENTA15S_XH
+              MAILLE__ HEXA20    ELEMENT__ HM_HEXA20S_XH
+              MAILLE__ QUAD8     ELEMENT__ HM_FACE8_XH
+              MAILLE__ TRIA6     ELEMENT__ HM_FACE6_XH
+%-------------------------------------------------------------------
 
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'
               ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI   TYPMOD=C_PLAN

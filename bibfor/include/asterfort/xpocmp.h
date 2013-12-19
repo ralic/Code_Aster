@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
                       jconx2, ndim, nfh, nfe, ddlc,&
-                      nbcmp, cmp, lmeca)
+                      nbcmp, cmp, lmeca, pre1)
         integer :: nbcmp
         integer :: n
         character(len=8) :: elrefp
@@ -32,5 +32,6 @@ interface
         integer :: ddlc
         integer :: cmp(nbcmp)
         logical :: lmeca
+        logical :: pre1
     end subroutine xpocmp
-end interface
+end interface 

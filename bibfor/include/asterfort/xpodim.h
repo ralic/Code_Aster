@@ -15,12 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                       nnntot, ncotot, listno, cns1, cns2,&
                       ces1, ces2, cel2, cesvi1, cesvi2,&
                       ior, resuco, nbnoc, nbmac, logrma,&
-                      dirgrm, maxfem, ngfon, comps1, comps2)
+                      dirgrm, maxfem, ngfon, comps1, comps2,&
+                      pre1)
         character(len=8) :: malini
         character(len=24) :: mailc
         character(len=8) :: modvis
@@ -46,5 +47,6 @@ interface
         integer :: ngfon
         character(len=19) :: comps1
         character(len=19) :: comps2
+        logical :: pre1
     end subroutine xpodim
-end interface
+end interface 
