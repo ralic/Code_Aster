@@ -402,7 +402,7 @@ def imprime_ojb(file,capy):
 
     #=========================================================================================
     # XXUTIL:
-    # Bouts de code povant servir aux développeurs pour générer des fichiers pratiques pour les scripts :
+    # Bouts de code pouvant servir aux développeurs pour générer des fichiers pratiques pour les scripts :
     # Ces bouts de code sont placés ici, après le "degenerise" et avant les "del cata"
     xxut1=False
     if xxut1 :
@@ -1120,15 +1120,16 @@ def get_liattr(capy,cata):
 
     dicattr={}
 
-    # attributs définis pour toute la modélisation :
-    # pour les type_element appartenant à plusieurs modélisations,
-    # c'est la dernière modélisation qui impose sa loi (dans quel ordre ?).
-    # si cette loi est embetante, il faut redéfinir l'attribut au niveau du type_element
+    # Attributs définis pour toute la modélisation :
+    # Remarque : pour les type_element appartenant à plusieurs modélisations,
+    #    si un attribut doit avoir plusieurs valeurs différentes, on lui
+    #    affecte la valeur "###" (qui veut dire plusieurs) ou (-999 si c'est un entier)
+    #    Si c'est embetant, il faut redéfinir l'attribut au niveau du type_element
 
     lattr_AUTO=['ALIAS8','DIM_TOPO_MODELI','DIM_COOR_MODELI','DIM_TOPO_MAILLE','PRINCIPAL','BORD','DISCRET']
     for (ph,lmod,codph) in capy.ph.l_pheno:
         for (mod,laffe,codmod,(d1,d2),lattrib) in lmod:
-                # la modélisation inclut-elle le type_element note ?
+            # la modélisation inclut-elle le type_element note ?
             trouve=0
             for (tyma,tyel) in laffe:
                 if tyel==note : trouve=1
@@ -1138,10 +1139,26 @@ def get_liattr(capy,cata):
                 assert d1 in (-1,0,1,2,3) ,d1
                 assert d2 in (0,1,2,3)    ,d2
                 # On ajoute les attributs définis AUTOMATIQUEMENT (ceux de lattr_AUTO) :
-                dicattr['ALIAS8']=str(codph)[1:3]+str(codmod)[1:4]+str(codtma)[1:4]
-                dicattr['DIM_TOPO_MAILLE']=str(dimtma)
-                dicattr['DIM_TOPO_MODELI']=str(d1)
-                dicattr['DIM_COOR_MODELI']=str(d2)
+
+                # Si les attributs automatiques existent deja, c'est que l'element est partage.
+                # On verifie alors la coherence dse informations
+                if not dicattr.has_key('ALIAS8') :
+                    dicattr['DIM_TOPO_MAILLE']=str(dimtma)
+                    dicattr['DIM_TOPO_MODELI']=str(d1)
+                    dicattr['DIM_COOR_MODELI']=str(d2)
+                    dicattr['ALIAS8']=str(codph)[1:3]+str(codmod)[1:4]+str(codtma)[1:4]
+
+                else:
+                    if dicattr['DIM_TOPO_MAILLE'] != str(dimtma) : ERR.mess('E',"DIM_TOPO_MAILLE mal defini (plusieurs)")
+                    if dicattr['DIM_TOPO_MODELI'] != str(d1) : ERR.mess('E',"DIM_TOPO_MODELI mal defini (plusieurs)")
+                    if dicattr['DIM_COOR_MODELI'] != str(d2) : ERR.mess('E',"DIM_COOR_MODELI mal defini (plusieurs)")
+                    if dicattr['ALIAS8'][5:] != str(codtma)[1:4] : ERR.mess('E',"code type_maille mal defini (plusieurs)")
+
+                    alias8=dicattr['ALIAS8']
+                    if alias8[:2] != str(codph)[1:3] : alias8='##'+alias8[2:]
+                    if alias8[2:5] != str(codmod)[1:4] : alias8=alias8[:2]+'###'+alias8[5:]
+                    dicattr['ALIAS8']=alias8
+
 
                 # le cas d1 == -1 est particulier : il est réservé aux modélisations discrètes DIS_xxx
                 if d1 == -1 :
@@ -1150,7 +1167,8 @@ def get_liattr(capy,cata):
                 else :
                     dicattr['DISCRET']='NON'
                     if  d1 > d2  : ERR.mess('E',"Pb. pour les dimensions DIM__ x y de la modelisation:"+mod)
-                    if dimtma > d1 : ERR.mess('E',"Pb. pour la dimension de la maille:"+tyma+ "de la modelisation:"+mod)
+                    if dimtma > d1 : ERR.mess('E',"Pb. pour la dimension de la maille:"+tyma+
+                                     "de la modelisation:"+mod)
                     if dimtma ==  d1 :
                         dicattr['PRINCIPAL']='OUI'
                         dicattr['BORD']='NON'
@@ -1171,7 +1189,8 @@ def get_liattr(capy,cata):
     if lattrib :
         for k in range(len(lattrib)) :
             no_attr =lattrib[k][0]
-            if no_attr in lattr_AUTO and dicattr.has_key(no_attr) : ERR.mess('E',"Il est interdit de redéfinir l'attribut:"+no_attr)
+            if no_attr in lattr_AUTO and dicattr.has_key(no_attr) : ERR.mess('E',
+                "Il est interdit de redéfinir l'attribut:"+no_attr)
             val_attr=lattrib[k][1]
             dicattr[no_attr]=val_attr
 
