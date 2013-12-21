@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import os.path as osp
+import re
 from functools import partial
 from waflib import Options, Configure, Logs, Utils, Errors
 
@@ -38,6 +39,7 @@ def check_metis(self):
     if opts.metis_libs:
         self.check_metis_libs()
     self.check_metis_headers()
+    self.check_metis_version()
 
 @Configure.conf
 def check_metis_libs(self):
@@ -62,3 +64,38 @@ def check_metis_headers(self):
         raise
     else:
         self.end_msg('yes')
+
+@Configure.conf
+def check_metis_version(self):
+    fragment = r'''
+#include <stdio.h>
+#include <metis.h>
+int main(void){
+#ifdef METISTITLE
+/* metis 4 */
+    printf("METISTITLE: %s", METISTITLE);
+    return 0;
+#endif
+#if defined(METIS_VER_MAJOR) && defined(METIS_VER_MINOR) && defined(METIS_VER_SUBMINOR)
+    printf("METISVER: %d.%d.%d", METIS_VER_MAJOR, METIS_VER_MINOR, METIS_VER_SUBMINOR);
+    return 0;
+#endif
+/* unexpected */
+    return 1;
+}'''
+    self.start_msg('Checking metis version')
+    try:
+        ret = self.check_cc(fragment=fragment, use='METIS',
+                            mandatory=True, execute=True, define_ret=True)
+        mat4 = re.search('METISTITLE: *METIS *(?P<vers>[0-9]+\.[0-9]+\.\w+) ', ret)
+        mat5 = re.search('METISVER: *(?P<vers>[0-9]+\.[0-9]+\.\w+)', ret)
+        vers = (mat4 and mat4.group('vers')) or (mat5 and mat5.group('vers'))
+        major = int(vers.split('.')[0])
+        if major != 4:
+            self.end_msg('unsupported metis version: %s' % vers, 'RED')
+            raise Errors.ConfigurationError
+    except:
+        self.end_msg('can not get version', 'RED')
+        raise
+    else:
+        self.end_msg(vers)
