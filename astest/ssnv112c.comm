@@ -35,7 +35,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_GD'));
+                       MODELISATION='D_PLAN_INCO_UPG'));
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.4999,

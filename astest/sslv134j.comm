@@ -43,7 +43,7 @@ MO[0]=AFFE_MODELE(             MAILLAGE=M,
                                   VERIF='MAILLE',
                                  AFFE=_F(  GROUP_MA = 'MAIL',
                                         PHENOMENE = 'MECANIQUE',
-                                        MODELISATION = '3D_INCO', ))
+                                        MODELISATION = '3D_INCO_UPG', ))
 
 MO[1]=AFFE_MODELE(             MAILLAGE=M,
                                   VERIF='MAILLE',

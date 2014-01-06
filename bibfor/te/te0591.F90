@@ -45,7 +45,6 @@ subroutine te0591(option, nomte)
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     integer :: igeom, icontm, iddlm, icompo, imate, ivectu
     character(len=8) :: lielrf(10), typmod(2)
-    character(len=24) :: valk
 ! ----------------------------------------------------------------------
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
@@ -78,21 +77,11 @@ subroutine te0591(option, nomte)
 ! - CALCUL DES FORCES INTERIEURES
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
 !
-        if (.not.lteatt(' ','INCO','C3PD')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
-!
         call nifnpd(ndim, nno1, nno2, nno3, npg,&
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
                     vu, vg, vp, typmod, zr(igeom),&
                     zr(icontm), zr(iddlm), zr(ivectu))
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
-!
-        if (.not.lteatt(' ','INCO','C3LG')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
 !
         call jevech('PMATERC', 'L', imate)
         call nifnlg(ndim, nno1, nno2, nno3, npg,&
@@ -100,11 +89,6 @@ subroutine te0591(option, nomte)
                     idf2, vu, vg, vp, typmod,&
                     zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
     else if (zk16(icompo+2) (1:10).eq.'SIMO_MIEHE') then
-!
-        if (.not.lteatt(' ','INCO','C3SM')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
 !
         call jevech('PMATERC', 'L', imate)
         call nifnsm(ndim, nno1, nno2, nno3, npg,&

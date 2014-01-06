@@ -40,7 +40,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_INCO',),);
+                       MODELISATION='3D_INCO_UPG',),);
 
 M=MODI_MAILLAGE(reuse =M,
                 MAILLAGE=M,

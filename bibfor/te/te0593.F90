@@ -46,7 +46,6 @@ subroutine te0593(option, nomte)
     integer :: igeom, ivectu, icompo
     real(kind=8) :: sigref, epsref
     character(len=8) :: lielrf(10), typmod(2)
-    character(len=24) :: valk
 ! ----------------------------------------------------------------------
 !
 !
@@ -80,32 +79,17 @@ subroutine te0593(option, nomte)
 ! - CALCUL DE REFE_FORC_NODA
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
 !
-        if (.not.lteatt(' ','INCO','C3PD')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
-!
         call nirfpd(ndim, nno1, nno2, nno3, npg,&
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
                     vu, vg, vp, typmod, zr(igeom),&
                     sigref, epsref, zr( ivectu))
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
 !
-        if (.not.lteatt(' ','INCO','C3LG')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
-!
         call nirfgd(ndim, nno1, nno2, nno3, npg,&
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
                     vu, vg, vp, typmod, zr(igeom),&
                     sigref, epsref, zr( ivectu))
     else if (zk16(icompo+2) (1:10).eq.'SIMO_MIEHE') then
-!
-        if (.not.lteatt(' ','INCO','C3SM')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
 !
         call nirfgd(ndim, nno1, nno2, nno3, npg,&
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&

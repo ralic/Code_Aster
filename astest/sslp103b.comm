@@ -95,12 +95,12 @@ K1K2 = [None]*2
 
 MODP[0]=AFFE_MODELE( MAILLAGE=M,
                   AFFE=_F(  TOUT = 'OUI',
-                         MODELISATION = 'D_PLAN_INCO',
+                         MODELISATION = 'D_PLAN_INCO_UPG',
                          PHENOMENE = 'MECANIQUE') )
 
 MODP[1]=AFFE_MODELE( MAILLAGE=M,
                   AFFE=_F(  TOUT = 'OUI',
-                         MODELISATION = 'D_PLAN_INCO',
+                         MODELISATION = 'D_PLAN_INCO_UPG',
                          PHENOMENE = 'MECANIQUE') )
 
 for i in range(2):

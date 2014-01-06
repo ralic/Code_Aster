@@ -63,7 +63,7 @@ DEFI_GROUP( reuse=MA, MAILLAGE=MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('VOL1','VOL2','FACESUP',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_INCO',),);
+                       MODELISATION='3D_INCO_UPG',),);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                           NU=0.3,

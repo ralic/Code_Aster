@@ -26,7 +26,7 @@ MA=LIRE_MAILLAGE(FORMAT='MED',);
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA='SURF',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO',),);
+                       MODELISATION='D_PLAN_INCO_UPG',),);
 YOUNG=200000.0
 SIGY=200.0
 

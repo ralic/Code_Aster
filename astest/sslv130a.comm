@@ -41,7 +41,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
                AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_INCO',),);
+                       MODELISATION='3D_INCO_UPG',),);
 
 M=MODI_MAILLAGE(reuse =M,
                 MAILLAGE=M,
@@ -93,7 +93,7 @@ EVOL=CALC_CHAMP(reuse =EVOL,
 
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
-#        POUR UN  SOLIDE INCOMPRESSIBLE NU = 0.5 3D_INCO
+#        POUR UN  SOLIDE INCOMPRESSIBLE NU = 0.5 3D_INCO_UPG
 #---------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',

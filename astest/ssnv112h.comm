@@ -18,7 +18,7 @@
 # CYLINDRE CREUX EN INCOMPRESSIBLE (NU=0.4999)
 # SOUS DEPLACEMENT RADIAL (6.E-5m)
 #
-# MODELISATION : ELEMENTS MECANIQUE PLAN_INCO (TRIA6 QUAD8)
+# MODELISATION : ELEMENTS MECANIQUE PLAN_INCO_UPG (TRIA6 QUAD8)
 # MAILLAGE     : ALIBABA > ASTER
 # ----------------------------------------------------------------------
 # GROUPES DE NOEUDS ET MAILLES: A B C D E F
@@ -35,7 +35,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_LOG'));
+                       MODELISATION='D_PLAN_INCO_UPG'));
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.4999,

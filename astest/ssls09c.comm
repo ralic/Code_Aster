@@ -28,7 +28,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED');
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA='SURF',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_INCO'));
+                           MODELISATION='AXIS_INCO_UPG'));
 
 #
 # DEFINITION DU MATERIAU

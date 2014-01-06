@@ -33,7 +33,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
 MODELE=AFFE_MODELE(  MAILLAGE=MAIL,
                      AFFE=_F(  TOUT = 'OUI',
                                PHENOMENE = 'MECANIQUE',
-                               MODELISATION = '3D_INCO')  )
+                               MODELISATION = '3D_INCO_UPG')  )
 
 #
 # DEFINITION DU MATERIAU

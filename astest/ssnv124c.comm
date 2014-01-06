@@ -35,7 +35,7 @@ MA=DEFI_GROUP(reuse =MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS_INCO',),);
+                       MODELISATION='AXIS_INCO_UPG',),);
 
 CM=DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0,
                               SY=10,),);

@@ -1,4 +1,4 @@
-# TITRE TEST DES OPTIONS RIGI_MECA ET MASS_MECA DES ELEMENTS INCO_GD ET INCO_LOG EN AXIS
+# TITRE TEST DES OPTIONS RIGI_MECA ET MASS_MECA DES ELEMENTS INCO EN AXIS
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,12 +35,12 @@ CHMAT_Q=AFFE_MATERIAU(MAILLAGE=MAIL_Q,
 MODELUPG=AFFE_MODELE(MAILLAGE=MAIL_Q,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='AXIS_INCO_GD',),);
+                             MODELISATION='AXIS_INCO_UPG',),);
 
 MODELUPQ=AFFE_MODELE(MAILLAGE=MAIL_Q,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='AXIS_INCO_LOG',),);
+                             MODELISATION='AXIS_INCO_UPG',),);
 
 MODELUPL=AFFE_MODELE(MAILLAGE=MAIL_Q,
                      AFFE=_F(TOUT='OUI',

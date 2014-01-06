@@ -44,7 +44,7 @@ MA = DEFI_GROUP(reuse = MA,
 MO=AFFE_MODELE(   MAILLAGE=MA,
                          AFFE=_F(  TOUT = 'OUI',
                                 PHENOMENE = 'MECANIQUE',
-                                MODELISATION = 'AXIS_INCO')
+                                MODELISATION = 'AXIS_INCO_UPG')
                   )
 
 INCOMP = AFFE_CHAR_MECA(

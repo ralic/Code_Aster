@@ -37,7 +37,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
                AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_INCO_GD'));
+                       MODELISATION='3D_INCO_UPG'));
 
 M=MODI_MAILLAGE(reuse =M,
                 MAILLAGE=M,

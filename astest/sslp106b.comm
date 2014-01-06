@@ -23,7 +23,7 @@ MA=LIRE_MAILLAGE(FORMAT='MED',);
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO',),);
+                       MODELISATION='D_PLAN_INCO_UPG',),);
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,

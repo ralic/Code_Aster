@@ -39,7 +39,7 @@ MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO',),);
+                       MODELISATION='D_PLAN_INCO_UPG',),);
 
 L_INST1=DEFI_LIST_REEL(DEBUT=0.,
                        INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,),);

@@ -71,11 +71,9 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_FAISCEAU",     # RESP. : VOLDOIRE F.VOLDOIRE
                                   "3D_FLUI_ABSO",    # RESP. : DEVESA G.DEVESA
                                   "3D_FLUIDE",       # RESP. : GREFFET N.GREFFET
-                                  "3D_INCO",         # RESP. : SFAYOLLE S.FAYOLLE
-                                  "3D_INCO_UP",      # RESP. : SFAYOLLE S.FAYOLLE
+                                  "3D_INCO_UPG",     # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_INCO_OSGS",    # RESP. : SFAYOLLE S.FAYOLLE
-                                  "3D_INCO_GD",      # RESP. : SFAYOLLE S.FAYOLLE
-                                  "3D_INCO_LOG",     # RESP. : SFAYOLLE S.FAYOLLE
+                                  "3D_INCO_UP",      # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_INCO_LUP",     # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_SI",           # RESP. : DESROCHES X.DESROCHES
                                   "3D_GRAD_EPSI",    # RESP. : MICHEL S.MICHEL
@@ -89,11 +87,9 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_FLUI_STRU",  # RESP. : GREFFET N.GREFFET
                                   "AXIS_FLUIDE",     # RESP. : GREFFET N.GREFFET
                                   "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
-                                  "AXIS_INCO",       # RESP. : SFAYOLLE S.FAYOLLE
-                                  "AXIS_INCO_UP",    # RESP. : SFAYOLLE S.FAYOLLE
+                                  "AXIS_INCO_UPG",   # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_INCO_OSGS",  # RESP. : SFAYOLLE S.FAYOLLE
-                                  "AXIS_INCO_GD",    # RESP. : SFAYOLLE S.FAYOLLE
-                                  "AXIS_INCO_LOG",   # RESP. : SFAYOLLE S.FAYOLLE
+                                  "AXIS_INCO_UP",    # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_INCO_LUP",   # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
@@ -125,11 +121,9 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "PLAN_INTERFACE_S",# RESP. : LAVERNE J.LAVERNE
                                   "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "D_PLAN_ABSO",     # RESP. : DEVESA G.DEVESA
-                                  "D_PLAN_INCO",     # RESP. : SFAYOLLE S.FAYOLLE
-                                  "D_PLAN_INCO_UP",  # RESP. : SFAYOLLE S.FAYOLLE
+                                  "D_PLAN_INCO_UPG", # RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_INCO_OSGS",# RESP. : SFAYOLLE S.FAYOLLE
-                                  "D_PLAN_INCO_GD",  # RESP. : SFAYOLLE S.FAYOLLE
-                                  "D_PLAN_INCO_LOG", # RESP. : SFAYOLLE S.FAYOLLE
+                                  "D_PLAN_INCO_UP",  # RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_INCO_LUP", # RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
                                   "DIS_T",           # RESP. : FLEJOU J.L.FLEJOU

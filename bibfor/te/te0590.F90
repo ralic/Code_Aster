@@ -56,7 +56,6 @@ subroutine te0590(option, nomte)
     integer :: ivectu, icontp, ivarip, imatuu, nddl
     real(kind=8) :: angmas(7), bary(3)
     character(len=8) :: lielrf(10), typmod(2)
-    character(len=24) :: valk
 !
 !     POUR TGVERI
     real(kind=8) :: sdepl(135), svect(135), scont(6*27), smatr(18225)
@@ -139,11 +138,6 @@ subroutine te0590(option, nomte)
 ! - PETITES DEFORMATIONS
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
 !
-        if (.not.lteatt(' ','INCO','C3PD')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
-!
 ! - PARAMETRES EN SORTIE
         if (rigi) then
             call jevech('PMATUUR', 'E', imatuu)
@@ -159,11 +153,6 @@ subroutine te0590(option, nomte)
                     rigi, zr(ivectu), zr(imatuu), codret)
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
 !
-        if (.not.lteatt(' ','INCO','C3LG')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
-!
 ! - PARAMETRES EN SORTIE
         if (rigi) then
             call nmtstm(zk16(icompo), imatuu, matsym)
@@ -178,11 +167,6 @@ subroutine te0590(option, nomte)
                     zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), resi,&
                     rigi, zr(ivectu), zr(imatuu), matsym, codret)
     else if (zk16(icompo+2) (1:10).eq.'SIMO_MIEHE') then
-!
-        if (.not.lteatt(' ','INCO','C3SM')) then
-            valk = zk16(icompo+2)
-            call utmess('F', 'MODELISA10_17', sk=valk)
-        endif
 !
 ! - PARAMETRES EN SORTIE
         typmod(2) = 'INCO'
