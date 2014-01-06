@@ -52,7 +52,6 @@ subroutine crvrc2()
     character(len=16) :: type, oper
     character(len=19) :: ligrel, chout, resu1, chtemp
     character(len=24) :: chcara(18), lchin(10)
-    logical :: exicar
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -93,7 +92,7 @@ subroutine crvrc2()
     endif
 !
     paout = 'PTEMPCR'
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
     call exlima('PREP_VRC2', 1, 'G', modele, ligrel)
 !
@@ -106,28 +105,28 @@ subroutine crvrc2()
 !
 !     -- BOUCLE SUR LES INSTANTS :
 !     --------------------------------
-    do 10,kinst = 1,nbinst
-    iordr = zi(jordr1+kinst-1)
-    call rsexch('F', resu1, 'TEMP', iordr, chtemp,&
-                iret)
-    lchin(2) = chtemp
+    do kinst = 1,nbinst
+        iordr = zi(jordr1+kinst-1)
+        call rsexch('F', resu1, 'TEMP', iordr, chtemp,&
+                    iret)
+        lchin(2) = chtemp
 !
-    call rsexch(' ', resu, 'TEMP', iordr, chout,&
-                iret)
-    call cesvar(carele, ' ', ligrel, chout)
-    call calcul('S', 'PREP_VRC', ligrel, nbin, lchin,&
-                lpain, 1, chout, paout, 'G',&
-                'OUI')
-    call detrsd('CHAM_ELEM_S', chout)
-    call rsnoch(resu, 'TEMP', iordr)
-    call rsadpa(resu1, 'L', 1, 'INST', iordr,&
-                0, sjv=jinst, styp=kbid)
-    vinst=zr(jinst)
-    call rsadpa(resu, 'E', 1, 'INST', iordr,&
-                0, sjv=jinst, styp=kbid)
-    zr(jinst) = vinst
+        call rsexch(' ', resu, 'TEMP', iordr, chout,&
+                    iret)
+        call cesvar(carele, ' ', ligrel, chout)
+        call calcul('S', 'PREP_VRC', ligrel, nbin, lchin,&
+                    lpain, 1, chout, paout, 'G',&
+                    'OUI')
+        call detrsd('CHAM_ELEM_S', chout)
+        call rsnoch(resu, 'TEMP', iordr)
+        call rsadpa(resu1, 'L', 1, 'INST', iordr,&
+                    0, sjv=jinst, styp=kbid)
+        vinst=zr(jinst)
+        call rsadpa(resu, 'E', 1, 'INST', iordr,&
+                    0, sjv=jinst, styp=kbid)
+        zr(jinst) = vinst
 !
-    10 end do
+    end do
 !
 !
 20  continue

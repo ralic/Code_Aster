@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mecara(cara, exicar, chcara)
-        character(len=*) :: cara
-        logical :: exicar
-        character(len=*) :: chcara(18)
+    subroutine mecara(cara_elem, chcara, exicar)
+        character(len=*), intent(in) :: cara_elem
+        character(len=*), intent(inout) :: chcara(18)
+        logical, optional, intent(out) :: exicar
     end subroutine mecara
 end interface

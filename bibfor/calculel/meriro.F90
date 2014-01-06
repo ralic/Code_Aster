@@ -1,5 +1,5 @@
 subroutine meriro(modele, cara, nchar, lchar, mate,&
-                  exitim, time, compor, matel)
+                  time, compor, matel)
     implicit none
 !
 ! ======================================================================
@@ -40,7 +40,6 @@ subroutine meriro(modele, cara, nchar, lchar, mate,&
     character(len=19) :: matel
     character(len=24) :: mate, compor
     real(kind=8) :: time
-    logical :: exitim
     integer :: nchar
 ! ----------------------------------------------------------------------
 !
@@ -67,7 +66,6 @@ subroutine meriro(modele, cara, nchar, lchar, mate,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    logical :: exicar
     character(len=2) :: codret
     character(len=8) :: lpain(10), lpaout(1)
     character(len=16) :: option
@@ -89,13 +87,13 @@ subroutine meriro(modele, cara, nchar, lchar, mate,&
     call megeom(modele, chgeom)
 !
     nbro = 0
-    do 10 icha = 1, nchar
+    do icha = 1, nchar
         call exisd('CHAMP_GD', lchar(icha)//'.CHME.ROTAT', iret)
         if (iret .ne. 0) then
             chrota = lchar(icha)//'.CHME.ROTAT.DESC'
             nbro = nbro + 1
         endif
-10  end do
+    end do
 !
     if (nbro .ne. 1) then
         call utmess('F', 'CALCULEL3_71')
@@ -103,7 +101,7 @@ subroutine meriro(modele, cara, nchar, lchar, mate,&
 !
     call vrcins(modele, mate, cara, time, chvarc,&
                 codret)
-    call mecara(cara, exicar, chcara)
+    call mecara(cara, chcara)
 !
     call jeexin(matel//'.RERR', iret)
     if (iret .gt. 0) then

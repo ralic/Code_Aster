@@ -90,7 +90,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     lchin(2)=chgeom
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
-    call mecara(carele(1:8), exicar, chcara)
+    call mecara(carele(1:8), chcara, exicar)
 !
     if (exicar) then
         lpain(3)='PCACOQU'

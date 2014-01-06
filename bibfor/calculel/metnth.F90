@@ -70,7 +70,6 @@ subroutine metnth(modele, lchar, cara, mate, time,&
     character(len=24) :: chvite, ligrmo, carte, convch, carele
     integer :: iret, ilires
     integer :: nchar, jchar
-    logical :: exicar
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -92,7 +91,7 @@ subroutine metnth(modele, lchar, cara, mate, time,&
     endif
 !
     call megeom(modele, chgeom)
-    call mecara(cara, exicar, chcara)
+    call mecara(cara, chcara)
 !
     call jeexin(metrnl, iret)
     if (iret .eq. 0) then
@@ -109,7 +108,7 @@ subroutine metnth(modele, lchar, cara, mate, time,&
 !
     lpaout(1) = 'PMATTTR'
     lchout(1) = metrnl(1:8)//'.ME000'
-    do 10 ichar = 1, nchar
+    do ichar = 1, nchar
         nomcha = zk24(jchar+ichar-1) (1:8)
         convch = nomcha//'.CHTH'//'.CONVE'//'.VALE'
         call jeexin(convch, iret)
@@ -157,7 +156,7 @@ subroutine metnth(modele, lchar, cara, mate, time,&
             call reajre(metrnl, lchout(1), 'V')
 !
         endif
-10  end do
+    end do
 !
     call jedema()
 !

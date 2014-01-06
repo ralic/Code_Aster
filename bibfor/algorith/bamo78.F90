@@ -99,7 +99,6 @@ subroutine bamo78(nomres, trange, typres)
     integer :: jtrgen, tmod(1)
     complex(kind=8) :: calpha, cbid
     character(len=24) :: mate, compor, carele
-    logical :: exicar
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
     logical :: lcumu(2), lcoc(2)
@@ -322,7 +321,7 @@ subroutine bamo78(nomres, trange, typres)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
     compor = mate(1:8)//'.COMPOR'
     call megeom(modele, chgeom)
-    call mecara(carele(1:8), exicar, chcara)
+    call mecara(carele(1:8), chcara)
 !     --- ON CREE UN CHAMP D'HARMONIQUE DE FOURIER (CARTE CSTE) ---
     call meharm(modele, nh, chharm)
     do iarch = 1, nbinst

@@ -50,7 +50,6 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
 !     ------------------------------------------------------------------
     character(len=8) :: nomo, noma, nomacr, exiele
     character(len=24) :: chgeom, chharm
-    logical :: exicar
 !
 !-----------------------------------------------------------------------
     integer :: ianmcr, iasssa, ier, ima, iexi, nbsma
@@ -133,7 +132,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
     if (iret .eq. 1) goto 40
 !
     call megeom(nomo, chgeom)
-    call mecara(cara, exicar, chcara)
+    call mecara(cara, chcara)
 !     --- ON CREE UN CHAMP D'HARMONIQUE DE FOURIER (CARTE CSTE) ---
     call meharm(nomo, nh, chharm)
 !

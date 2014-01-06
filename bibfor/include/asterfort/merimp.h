@@ -16,22 +16,25 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine merimp(modele, carele, mate, comref, compor,&
-                      carcri, iterat, sddyna, valinc, solalg,&
-                      caco3d, nbin, lpain, lchin)
-        integer :: nbin
-        character(len=24) :: modele
-        character(len=24) :: carele
-        character(len=*) :: mate
-        character(len=24) :: comref
-        character(len=24) :: compor
-        character(len=24) :: carcri
-        integer :: iterat
-        character(len=19) :: sddyna
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=24) :: caco3d
-        character(len=8) :: lpain(nbin)
-        character(len=19) :: lchin(nbin)
+    subroutine merimp(model    , cara_elem, mate  , varc_refe, compor,&
+                      carcri   , acti_func, iterat, sddyna   , hval_incr, &
+                      hval_algo, caco3d   , mxchin, nbin     , lpain    , &
+                      lchin)
+        integer, intent(in) :: iterat
+        character(len=*), intent(in) :: mate
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: cara_elem
+        character(len=24), intent(in) :: compor
+        character(len=24), intent(in) :: varc_refe
+        integer, intent(in) :: acti_func(*)
+        character(len=24), intent(in) :: carcri
+        character(len=24), intent(in) :: caco3d
+        character(len=19), intent(in) :: hval_incr(*)
+        character(len=19), intent(in) :: hval_algo(*)
+        integer, intent(in) :: mxchin
+        character(len=8), intent(inout) :: lpain(mxchin)
+        character(len=19), intent(inout) :: lchin(mxchin)
+        integer, intent(out) :: nbin
     end subroutine merimp
 end interface

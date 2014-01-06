@@ -34,6 +34,9 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
 !  -> OPTIONS : - CHAR_MECA_TEMP_R
 !               - CHAR_THER_PARO_F
 !               - CHAR_THER_PARO_R
+!               - FULL_MECA
+!               - RIGI_MECA_*
+!               - RAPH_MECA
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,7 +53,10 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
 !
 ! ----------------------------------------------------------------------
 !
-    if (option(1:16) .eq. 'CHAR_MECA_TEMP_R') then
+    if ((option(1:16) .eq. 'CHAR_MECA_TEMP_R').or. &
+        (option(1:9) .eq. 'FULL_MECA') .or. &
+        (option(1:9) .eq. 'RAPH_MECA') .or. &
+        (option(1:9) .eq. 'RIGI_MECA')) then
 !
         nbadd = 10
         ASSERT(nchin+nbadd .le. mxchin)

@@ -80,7 +80,6 @@ subroutine merit3(modele, nchar, lchar, mate, cara,&
     character(len=24) :: lchin(7), lchout(1), chgeom, chcara(18)
     character(len=24) :: chvite, ligrmo, carte, convch
     integer :: iret, ilires
-    logical :: exicar
 !
 !
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
@@ -93,7 +92,7 @@ subroutine merit3(modele, nchar, lchar, mate, cara,&
     endif
 !
     call megeom(modele, chgeom)
-    call mecara(cara, exicar, chcara)
+    call mecara(cara, chcara)
 !
     call jeexin(matel//'.RERR', iret)
     if (iret .gt. 0) then

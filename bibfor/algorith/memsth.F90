@@ -48,7 +48,6 @@ subroutine memsth(modele, carele, mate, inst, memass)
     character(len=19) :: chvarc, stano, pintto, cnseto, heavto
     character(len=19) :: loncha, basloc, lsn, lst
     integer :: iret, ilires
-    logical :: exicar
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -56,7 +55,7 @@ subroutine memsth(modele, carele, mate, inst, memass)
 !
     call jemarq()
     call megeom(modele, chgeom)
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
     call jeexin(memass, iret)
     if (iret .eq. 0) then

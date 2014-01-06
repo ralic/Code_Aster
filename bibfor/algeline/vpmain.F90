@@ -1,4 +1,4 @@
-subroutine vpmain(modele, mate, cara, xmastr, nbpara)
+subroutine vpmain(modele, mate, cara, xmastr)
 ! aslint: disable=
     implicit   none
 #include "jeveux.h"
@@ -35,14 +35,13 @@ subroutine vpmain(modele, mate, cara, xmastr, nbpara)
 !     CALCUL DE LA MASSE DU MODELE
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, nb, i, iorig, icage, nbpara
+    integer :: mxvale, nb, i, iorig, icage
     parameter (mxvale=16)
     real(kind=8) :: rbi3(3), zmas(mxvale)
     character(len=8) :: lpain(15), lpaout(5)
     character(len=19) :: chelem
     character(len=24) :: lchin(15), lchout(1), mateco
     character(len=24) :: chgeom, chcara(18), ligrmo, compor
-    logical :: lret
 !
 !     ------------------------------------------------------------------
 !
@@ -51,7 +50,7 @@ subroutine vpmain(modele, mate, cara, xmastr, nbpara)
     call megeom(modele, chgeom)
     ASSERT(chgeom.ne.' ')
 !
-    call mecara(cara, lret, chcara)
+    call mecara(cara, chcara)
 !
     ligrmo = modele(1:8)//'.MODELE'
 !
@@ -101,9 +100,9 @@ subroutine vpmain(modele, mate, cara, xmastr, nbpara)
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
 !
-    do 33 i = 1, mxvale
+    do i = 1, mxvale
         zmas(i)=0.d0
-33  end do
+    end do
 !
     iorig=0
     icage=0

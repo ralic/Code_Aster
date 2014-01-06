@@ -1,5 +1,5 @@
 subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
-                  exitim, time, matelz, nh, basez)
+                  time, matelz, nh, basez)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=*) :: modelz, caraz, matelz, lchar(*), mate, basez
     character(len=19) :: matel
     real(kind=8) :: time
-    logical :: exitim, lfonc
+    logical :: lfonc
     integer :: nchar
 ! ----------------------------------------------------------------------
 !
@@ -95,13 +95,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !        LCHAR(ICHA)//'.CHME.EVOL.CHAR'
 !
 ! ----------------------------------------------------------------------
-!
-!     FONCTIONS EXTERNES:
-!     -------------------
-!
-!     VARIABLES LOCALES:
-!     ------------------
-    logical :: exicar
+
     character(len=1) :: base
     character(len=2) :: codret
     integer :: nbin
@@ -152,7 +146,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !        ET CHAM_MATER :
 !
     call megeom(modele, chgeom)
-    call mecara(cara, exicar, chcara)
+    call mecara(cara, chcara)
 !
 !     LES CHAMPS "IN" PRIS DANS CARA_ELEM SONT NUMEROTES DE 21 A 32 :
 !     ---------------------------------------------------------------

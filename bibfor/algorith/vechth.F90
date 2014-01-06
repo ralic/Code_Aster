@@ -86,7 +86,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
     character(len=24) :: ligrel(3), lchin(nchinx), resuel, chgeom, chcara(18)
     character(len=24) :: modele, charge, infoch, carele, inst, chtn, mate
     character(len=24) :: vecele, ligcal
-    logical :: bidon, exicar
+    logical :: bidon
 ! ----------------------------------------------------------------------
     integer :: nbchmx
     parameter (nbchmx=6)
@@ -115,10 +115,10 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
     mate = matez
     inst = instz
     chtn = chtnz
-    do 10 i = 1, nchinx
+    do i = 1, nchinx
         lpain(i) = '        '
         lchin(i) = '                        '
-10  end do
+    end do
 !
 !====
 ! 1.2 PREALABLES LIES AUX CHARGES
@@ -171,7 +171,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
 ! LISTE DE CHARGES ZK24(JCHAR)
     call megeom(modele(1:8), chgeom)
 ! RECHERCHE DES NOMS DES CARAELEM CHCARA DANS LA CARTE CARELE(1:8)
-    call mecara(carele(1:8), exicar, chcara)
+    call mecara(carele(1:8), chcara)
 !
 !====
 ! 3. PREPARATION DES CALCULS ELEMENTAIRES
@@ -220,7 +220,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
 ! 4. BOUCLE SUR LES AFFE_CHAR_THER ==================================
 !====
     ilve = 0
-    do 70 icha = 1, nchar
+    do icha = 1, nchar
 !
 !====
 ! 4.1 PREALABLES LIES AUX TYPES DE CL DE CET AFFE_CHAR_THER
@@ -246,7 +246,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
 !====
 !
             if (niv .eq. 2) write (ifm,* ) '     BOUCLE SUR LES TYPES DE CHARGES'
-            do 50 k = 1, nbchmx
+            do k = 1, nbchmx
 !
 ! ACCES A LA DESCRIPTION '.DESC' DES CHTH.NOMCHP(K) ET CHTH.COEFH DE LA
 ! CHARGE NOMCHA POUR DEFINIR LES CHAMPS LOCAUX DE LA CARTE DE CHARGEMENT
@@ -330,10 +330,10 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
                     if (niv .eq. 2) then
                         write (ifm,*) '     K              :',k
                         write (ifm,*) '     OPTION         :',option
-                        do 30 i = 1, nchin
+                        do i = 1, nchin
                             write (ifm,*) '     LPAIN/LCHIN    :',lpain(i),' ',&
      &              lchin(i)
-30                      continue
+                        end do
                     endif
                     call calcul('S', option, ligcal, nchin, lchin,&
                                 lpain, 1, resuel, paout, 'V',&
@@ -344,8 +344,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
                     zk24(jlve-1+ilve) = resuel
 !
                 endif
-! FIN IF IRET
-50          continue
+            end do
 !
 !=====
 ! 4.10 FIN BOUCLE SUR LES NBCHMX CL NEUMANN POSSIBLES =======
@@ -354,7 +353,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
 ! FIN TEST SUR NUMCHM
         endif
 !
-70  end do
+    end do
 !
 !====
 ! 6. FIN BOUCLE SUR LES CHARGES ========================================

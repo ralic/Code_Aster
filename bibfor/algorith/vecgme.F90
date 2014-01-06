@@ -75,7 +75,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     character(len=19) :: resuel, resufv(1), depmoi, depdel, vites
     integer :: ibid, iret, nchar, ilve, jchar, jinf, k, icha, numchm
     integer :: jlchin, ier
-    logical :: exicar, bidon
+    logical :: bidon
     integer :: nbchmx, ii, somme
     parameter (nbchmx=7)
     integer :: nbopt(nbchmx), tab(nbchmx)
@@ -127,7 +127,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     ligrel = ligrmo
 !
     call megeom(modele(1:8), chgeom)
-    call mecara(carele(1:8), exicar, chcara)
+    call mecara(carele(1:8), chcara)
 !
     chtime = '&&VECHME.CH_INST_R'
     call mecact('V', chtime, 'LIGREL', ligrel, 'INST_R  ',&

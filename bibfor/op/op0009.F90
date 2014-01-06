@@ -124,7 +124,7 @@ subroutine op0009()
 !
     else if (suropt.eq.'RIGI_ROTA') then
         call meriro(modele, cara, ncha, zk8(icha), mate,&
-                    exitim, time, compor, matel)
+                    time, compor, matel)
 !
     else if (suropt.eq.'MECA_GYRO') then
         call meamgy(modele, mate, cara, compor, matel,&
@@ -206,7 +206,7 @@ subroutine op0009()
         call jelira(matel//'.RELR', 'LONMAX', nbresu)
         call jeveuo(matel//'.RELR', 'L', jrelr)
         do iresu = 1, nbresu
-            resuel=zk24(jrelr+iresu-1)
+            resuel=zk24(jrelr+iresu-1)(1:19)
             call jeexin(resuel//'.RESL', iexi)
             if (iexi .eq. 0) goto 101
             call dismoi('MPI_COMPLET', resuel, 'RESUELEM', repk=kmpic)

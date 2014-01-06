@@ -55,7 +55,6 @@ subroutine crvrc1()
     character(len=16) :: type, oper
     character(len=19) :: ligrmo, chout, chinst
     character(len=24) :: chcara(18), lchin(10)
-    logical :: exicar
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -101,7 +100,7 @@ subroutine crvrc1()
     ligrmo = modele//'.MODELE'
     paout = 'PTEMPCR'
     chinst = '&&CRVRC1.CHINST'
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
     lpain(1) = 'PNBSP_I'
     lchin(1) = chcara(1) (1:8)//'.CANBSP'
@@ -115,24 +114,24 @@ subroutine crvrc1()
 !
 !     -- BOUCLE SUR LES INSTANTS :
 !     --------------------------------
-    do 10,kinst = 1,nbinst
-    vinst = zr(jlinst-1+kinst)
-    call mecact('V', chinst, 'MODELE', ligrmo, 'INST_R',&
-                ncmp=1, nomcmp='INST', sr=vinst)
-    call rsexch(' ', resu, 'TEMP', kinst, chout,&
-                iret)
+    do kinst = 1,nbinst
+        vinst = zr(jlinst-1+kinst)
+        call mecact('V', chinst, 'MODELE', ligrmo, 'INST_R',&
+                    ncmp=1, nomcmp='INST', sr=vinst)
+        call rsexch(' ', resu, 'TEMP', kinst, chout,&
+                    iret)
 !
-    call cesvar(carele, ' ', ligrmo, chout)
-    call calcul('S', 'PREP_VRC', ligrmo, nbin, lchin,&
-                lpain, 1, chout, paout, 'G',&
-                'OUI')
-    call detrsd('CHAM_ELEM_S', chout)
-    call rsnoch(resu, 'TEMP', kinst)
-    call rsadpa(resu, 'E', 1, 'INST', kinst,&
-                0, sjv=jinst, styp=kbid)
-    zr(jinst) = vinst
-    call detrsd('CHAMP', chinst)
-    10 end do
+        call cesvar(carele, ' ', ligrmo, chout)
+        call calcul('S', 'PREP_VRC', ligrmo, nbin, lchin,&
+                    lpain, 1, chout, paout, 'G',&
+                    'OUI')
+        call detrsd('CHAM_ELEM_S', chout)
+        call rsnoch(resu, 'TEMP', kinst)
+        call rsadpa(resu, 'E', 1, 'INST', kinst,&
+                    0, sjv=jinst, styp=kbid)
+        zr(jinst) = vinst
+        call detrsd('CHAMP', chinst)
+    end do
 !
 !
     call jedetr('&&CRVRC1.LINST')

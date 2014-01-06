@@ -48,7 +48,6 @@ subroutine op0008()
     integer :: ibid, ich, icha, ncha, nh
     integer :: n1, n3, n4, n5, n7, n9, iresu, jrelr, iexi, nbresu
     real(kind=8) :: time, tps(6), vcmpth(4)
-    logical :: exitim
     character(len=8) :: matez, modele, cara, k8bid, kmpic
     character(len=8) :: nomcmp(6), mo1, materi, ncmpth(4)
     character(len=16) :: type, oper, suropt
@@ -109,8 +108,6 @@ subroutine op0008()
     endif
 !
     call getvr8(' ', 'INST', scal=time, nbret=n7)
-    exitim = .false.
-    if (n7 .eq. 1) exitim = .true.
     call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n9)
     if (n9 .eq. 0) nh = 0
 !
@@ -149,7 +146,7 @@ subroutine op0008()
 !        -- TRAITEMENT DES ELEMENTS FINIS CLASSIQUES (.RELR)
 !           (ET CREATION DE L'OBJET .RERR).
         call me2mme(modele, ncha, zk8(icha), mate, cara,&
-                    exitim, time, matel, nh, 'G')
+                    time, matel, nh, 'G')
 !
 !        -- TRAITEMENT DES SOUS-STRUCTURES EVENTUELLES. (.RELC):
         call ss2mme(modele, 'SOUS_STRUC', matel, 'G')

@@ -131,7 +131,7 @@ subroutine sschge(nomacr)
 !       -- CALCULS VECTEURS ELEMENTAIRES DU CHARGEMENT :
 !       ------------------------------------------------
         call me2mme(nomo, -n1, zk8(ialich+1), mate, cara,&
-                    .true., time, vecel, 0, base)
+                    time, vecel, 0, base)
         call ss2mm2(nomo, vecel, nomcas)
 !
 !        -- ASSEMBLAGE:

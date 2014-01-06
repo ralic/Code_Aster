@@ -58,7 +58,6 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: exicar
     character(len=8) :: nomcmp(3)
     character(len=19) :: ligrmo
     character(len=19) :: chgeom, chcara(18), chtime
@@ -77,7 +76,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
 !
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
 ! --- CREATION DE LA CARTE DES INSTANTS
 !

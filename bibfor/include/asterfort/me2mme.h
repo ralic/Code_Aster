@@ -17,13 +17,12 @@
 !
 interface
     subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
-                      exitim, time, matelz, nh, basez)
+                      time, matelz, nh, basez)
         character(len=*) :: modelz
         integer :: nchar
         character(len=*) :: lchar(*)
         character(len=*) :: mate
         character(len=*) :: caraz
-        logical :: exitim
         real(kind=8) :: time
         character(len=*) :: matelz
         integer :: nh

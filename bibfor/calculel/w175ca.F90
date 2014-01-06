@@ -36,12 +36,11 @@ subroutine w175ca(modele, carele, chfer1, chefge, chfer2)
     character(len=16) :: option
     character(len=19) :: chcara(18)
     character(len=19) :: lchin(15), lchout(1), ligrel
-    logical :: exicar
 !
     call exlim3('AFFE', 'G', modele, ligrel)
     option = 'FERRAILLAGE'
 !
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
     lpain(1) = 'PCACOQU'
     lchin(1) = chcara(7)

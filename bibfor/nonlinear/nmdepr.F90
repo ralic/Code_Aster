@@ -54,8 +54,6 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
 !                            3 - PRESSION
 !
     real(kind=8) :: valr
-!
-    logical :: exicar
     integer :: ibid, ier, jchar, jfnoe, nbcham
     integer :: vali
     character(len=8) :: fnocal, lpain(6), paout
@@ -129,10 +127,10 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         call megeom(modele, chgeom)
 !
         lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
+        lchin(1) = chgeom(1:19)
         if (option .eq. 'CHAR_MECA_FR3D3D') lpain(2)='PFR3D3D'
         if (option .eq. 'CHAR_MECA_FR2D2D') lpain(2)='PFR2D2D'
-        lchin(2) = chfnoe
+        lchin(2) = chfnoe(1:19)
         paout = 'PVECTUR'
 !
         call corich('E', resufv(1), icha, ibid)
@@ -185,7 +183,7 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
         call megeom(modele, chgeom)
 !
         lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
+        lchin(1) = chgeom(1:19)
         if (option .eq. 'CHAR_MECA_FR2D3D') lpain(2) = 'PFR2D3D'
         if (option .eq. 'CHAR_MECA_FR1D2D') lpain(2) = 'PFR1D2D'
         lchin(2) = chfnoe
@@ -226,18 +224,18 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
  30 continue
     if (option .eq. 'CHAR_MECA_PRES_R') then
         call megeom(modele, chgeom)
-        call mecara(carele, exicar, chcara)
+        call mecara(carele, chcara)
 !
         lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
+        lchin(1) = chgeom(1:19)
         lpain(2) = 'PPRESSR'
         lchin(2) = chfnoe
         lpain(3) = 'PCACOQU'
-        lchin(3) = chcara(7)
+        lchin(3) = chcara(7)(1:19)
         lpain(4) = 'PCAGEPO'
-        lchin(4) = chcara(5)
+        lchin(4) = chcara(5)(1:19)
         lpain(5) = 'PCAORIE'
-        lchin(5) = chcara(1)
+        lchin(5) = chcara(1)(1:19)
         lpain(6) = 'PNBSP_I'
         lchin(6) = chcara(1) (1:8)//'.CANBSP'
         paout = 'PVECTUR'

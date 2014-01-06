@@ -58,7 +58,6 @@ subroutine merxth(modele, charge, infcha, carele, mate,&
     character(len=24) :: ligrel(2), lchin(10), lchout(1)
     character(len=24) :: chgeom, chcara(18)
     integer :: iret, nchar, ilires, icha, jchar, jinf
-    logical :: exicar
 ! ----------------------------------------------------------------------
     integer :: nbchmx
     parameter (nbchmx=5)
@@ -82,7 +81,7 @@ subroutine merxth(modele, charge, infcha, carele, mate,&
     endif
 !
     call megeom(modele, chgeom)
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
     call jeexin(merigi, iret)
     if (iret .eq. 0) then

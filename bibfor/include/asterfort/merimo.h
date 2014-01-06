@@ -16,26 +16,26 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine merimo(base, modele, carele, mate, comref,&
-                      compor, carcri, iterat, fonact, sddyna,&
-                      valinc, solalg, merigi, vefint, optioz,&
-                      tabret, codere)
-        character(len=1) :: base
-        character(len=24) :: modele
-        character(len=24) :: carele
-        character(len=*) :: mate
-        character(len=24) :: comref
-        character(len=24) :: compor
-        character(len=24) :: carcri
-        integer :: iterat
-        integer :: fonact(*)
-        character(len=19) :: sddyna
-        character(len=19) :: valinc(*)
-        character(len=19) :: solalg(*)
-        character(len=19) :: merigi
-        character(len=19) :: vefint
-        character(len=*) :: optioz
-        logical :: tabret(0:10)
-        character(len=24) :: codere
+    subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
+                      compor   , carcri   , iterat   , acti_func, sddyna   ,&
+                      hval_incr, hval_algo, merigi   , vefint   , optioz   ,&
+                      tabret   , codere)
+        character(len=1), intent(in) :: base
+        integer, intent(in) :: iterat
+        character(len=*), intent(in) :: mate
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: cara_elem
+        character(len=24), intent(in) :: compor
+        character(len=24), intent(in) :: varc_refe
+        integer, intent(in) :: acti_func(*)
+        character(len=24), intent(in) :: carcri
+        character(len=19), intent(in) :: hval_incr(*)
+        character(len=19), intent(in) :: hval_algo(*)
+        character(len=*), intent(in) :: optioz
+        character(len=24), intent(in) :: codere
+        character(len=19), intent(in) :: merigi
+        character(len=19), intent(in) :: vefint
+        logical, intent(out) :: tabret(0:10)
     end subroutine merimo
 end interface

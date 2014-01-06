@@ -91,7 +91,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     character(len=19) :: lchout, resufv(3), vecele
     character(len=24) :: lchin(nchinx)
     character(len=24) :: charge, infcha
-    logical :: exicar, bidon, lxfem
+    logical :: bidon, lxfem
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
      &     '.F1D1D','.PESAN','.ROTAT','.PRESS','.FELEC','.FCO3D',&
@@ -159,7 +159,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 ! --- CARTES GEOMETRIE ET CARA_ELEM
 !
     call megeom(modele, chgeom)
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
 ! --- CARTE INSTANTS
 !

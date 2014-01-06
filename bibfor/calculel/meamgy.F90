@@ -50,7 +50,6 @@ subroutine meamgy(modele, mate, cara, compor, matel,&
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    logical :: exicar
     character(len=8) :: lpain(12), lpaout(1)
     character(len=16) :: option
     character(len=19) :: chvarc
@@ -84,8 +83,7 @@ subroutine meamgy(modele, mate, cara, compor, matel,&
  10 continue
 !
 !    CHAMP DE CARACTERISTIQUES ELEMENTAIRES
-    call mecara(cara, exicar, chcara)
-!    if (.not.exicar) call u2mess('F', 'CALCULEL2_94')
+    call mecara(cara, chcara)
 !
 !
     lpaout(1) = 'PMATUNS'

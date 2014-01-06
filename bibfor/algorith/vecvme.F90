@@ -69,7 +69,6 @@ subroutine vecvme(optio2, modelz, carelz, mate, compor,&
     character(len=24) :: vechvp, cnchvp, vrcplu, modele, carele
     character(len=19) :: vecel, chvref
     integer :: i, ibid, iret, jlve, jchtp, jchvp, jtp, jyp, lonch
-    logical :: exicar
     data cnchvp/' '/
     data typres/'R'/
 !
@@ -94,7 +93,7 @@ subroutine vecvme(optio2, modelz, carelz, mate, compor,&
     ligrmo = modele(1:8)//'.MODELE'
 !
     call megeom(modele(1:8), chgeom)
-    call mecara(carele(1:8), exicar, chcara)
+    call mecara(carele(1:8), chcara)
 !
 !    VARIABLE DE COMMANDE DE REFERENCE
     call vrcref(modele(1:8), mate(1:8), carele(1:8), chvref)

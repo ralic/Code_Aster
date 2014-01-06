@@ -59,7 +59,6 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
     character(len=24) :: ligrmo, lchin(7), lchout(4)
     character(len=24) :: chvite, convch, chgeom, chcara(18)
     integer :: iret, jvites
-    logical :: exicar
 !
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -79,7 +78,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
     endif
 !
     call megeom(modele, chgeom)
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
     lpaout(1) = 'PVECTTR'
     lpaout(2) = 'PLAGRP '
@@ -105,7 +104,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
     lchout(2) = chlapp
     lpain(7) = 'PVITESR'
 !
-    do 10 ichar = 1, nchar
+    do ichar = 1, nchar
         nomcha = zk24(jchar+ichar-1) (1:8)
         convch = nomcha//'.CHTH'//'.CONVE'//'.VALE'
         call jeexin(convch, iret)
@@ -117,7 +116,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
             call jeveuo(convch, 'L', jvites)
             chvite = zk8(jvites)
         endif
-10  end do
+    end do
     if (iconv .eq. 0) then
         call utmess('F', 'CALCULEL5_38')
     endif
@@ -139,7 +138,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
     lpaout(1) = 'PRESIDU'
     lpain(2) = 'PFLUXNL'
     if (nchar .gt. 0) then
-        do 20 icha = 1, nchar
+        do icha = 1, nchar
             lchin(2) = zk24(jchar+icha-1) (1:8)//'.CHTH.FLUNL.DESC'
             call jeexin(lchin(2), iret)
             if (iret .ne. 0) then
@@ -171,8 +170,8 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
                             'OUI')
                 call reajre(veres, lchout(1), 'V')
             endif
-20      continue
+        end do
     endif
-! FIN ------------------------------------------------------------------
+!
     call jedema()
 end subroutine

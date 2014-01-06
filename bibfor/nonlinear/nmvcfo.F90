@@ -69,7 +69,7 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
     character(len=19) :: lchout(mxnbou), lchin(mxnbin)
 !
     logical :: exitem, exihyd, exisec, exiepa
-    logical :: exicar, lbid, lxfem
+    logical :: lbid, lxfem
     integer :: nbres, iret
     character(len=6) :: masque
     character(len=8) :: modele
@@ -104,7 +104,7 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
 !
-    call mecara(carele(1:8), exicar, chcara)
+    call mecara(carele(1:8), chcara)
 !
 ! --- LECTURE DES VARIABLES DE COMMANDE EN T+ ET VAL. DE REF
 !

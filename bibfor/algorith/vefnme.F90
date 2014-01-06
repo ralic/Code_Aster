@@ -94,7 +94,6 @@ subroutine vefnme(option, base, model, mate, carele,&
     character(len=19) :: numhar, tpsmoi, tpsplu, ligrel_local, ligrel
     character(len=19) :: chgeom, chcara(18), vecele
     character(len=16) :: optio2
-    logical :: lbid
     integer :: ibid, iret
     real(kind=8) :: instm, instp
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
@@ -155,7 +154,7 @@ subroutine vefnme(option, base, model, mate, carele,&
 !
 ! - <CARTE> for structural elements
 !
-    call mecara(carele(1:8), lbid, chcara)
+    call mecara(carele(1:8), chcara)
 !
 ! - <CARTE> for Fourier mode
 !

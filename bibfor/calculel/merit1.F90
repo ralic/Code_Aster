@@ -73,7 +73,6 @@ subroutine merit1(modele, nchar, lchar, mate, cara,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    logical :: exicar
     character(len=8) :: lpain(6), lpaout(1)
     character(len=16) :: option
     character(len=24) :: chgeom, chharm, lchin(6), lchout(1)
@@ -87,7 +86,7 @@ subroutine merit1(modele, nchar, lchar, mate, cara,&
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
 !        ET CHAM_MATER :
     call megeom(modele, chgeom)
-    call mecara(cara, exicar, chcara)
+    call mecara(cara, chcara)
     call meharm(modele, nh, chharm)
 !
     call jeexin(matel//'.RERR', iret)

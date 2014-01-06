@@ -16,6 +16,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1501
+
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -92,7 +94,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 ! nb max de points (noeuds|gauss) par élément
     integer, parameter :: nptmax = 30
     integer, dimension(6) :: permvec
-    logical :: exi_cmp, exicar
+    logical :: exi_cmp
     real(kind=8) :: valr, xnormr
     real(kind=8), dimension(3) :: xbary, angnot
     real(kind=8), dimension(3) :: orig, axez, vectx, vecty, angrep
@@ -475,7 +477,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
        then
         !
         call megeom(modele, chgeom)
-        call mecara(carele, exicar, chcara)
+        call mecara(carele, chcara)
         !
         if (( type_cham(1:10) .eq. 'COQUE_GENE' ) .and. ( repere(1:14).eq.'COQUE_UTIL_CYL')) then
             call utmess('F', 'ELEMENTS5_55', nk=2, valk=(/'COQUE_UTIL_CYL', 'COQUE_GENE    '/))

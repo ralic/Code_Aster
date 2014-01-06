@@ -65,7 +65,6 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 !
     real(kind=8) :: valr
 !
-    logical :: exicar
     integer :: ibid, ier, jchar, jfnoe, nbcham
     integer :: vali
     character(len=8) :: fnocal, k8bid
@@ -136,7 +135,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 110 continue
     if (option .eq. 'CHAR_MECA_SR1D1D') then
         call megeom(modele, chgeom)
-        call mecara(carele, exicar, chcara)
+        call mecara(carele, chcara)
 !
 !       NOM DE CONCEPT
         resu = '&&MNVGME.RESU_PROJE'
@@ -192,7 +191,6 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 !       ON REMET DANS RESU LE NOM DU MAILLAGE INITIAL
         call jeveuo(resu//'.REFE', 'E', kvale)
         zk24(kvale) = noma2
-!CC        CALL DETRSD('MAILLAGE',MADEF)
         call jedetc('V', madef, 1)
 !
 !       CONSTRUCTION DU CHAMP DE VITESSE RELATIVE
@@ -208,19 +206,19 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
         endif
 !
         lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
+        lchin(1) = chgeom(1:19)
         lpain(2) = 'PVITER'
         lchin(2) = resu
         lpain(3) = 'PVENTCX'
-        lchin(3) = chcara(14)
+        lchin(3) = chcara(14)(1:19)
         lpain(4) = 'PDEPLMR'
-        lchin(4) = depmoi
+        lchin(4) = depmoi(1:19)
         lpain(5) = 'PDEPLPR'
-        lchin(5) = depdel
+        lchin(5) = depdel(1:19)
         lpain(6) = 'PCAGNPO'
-        lchin(6) = chcara(6)
+        lchin(6) = chcara(6)(1:19)
         lpain(7) = 'PCAORIE'
-        lchin(7) = chcara(1)
+        lchin(7) = chcara(1)(1:19)
 !
         paout = 'PVECTUR'
 !

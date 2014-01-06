@@ -59,7 +59,6 @@ subroutine verstp(modele, charge, infcha, carele, mate,&
     character(len=24) :: chgeom, chcara(18)
     integer :: iret, jinf
     integer :: icha, jchar, nchar
-    logical :: exicar
 !
 !-----------------------------------------------------------------------
     integer :: ibid
@@ -77,7 +76,7 @@ subroutine verstp(modele, charge, infcha, carele, mate,&
     endif
 !
     call megeom(modele, chgeom)
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
     lpaout(1) = 'PRESIDU'
     lchout(1) = '&&VERSTP.???????'

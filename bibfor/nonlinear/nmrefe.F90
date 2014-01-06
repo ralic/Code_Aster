@@ -81,7 +81,6 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     parameter    (nbsig=10)
     character(len=8) :: sigere(nbsig)
 !
-    logical :: lbid
     character(len=19) :: vecele
     character(len=19) :: ligrmo, verefe, carte
     character(len=24) :: chgeom
@@ -123,7 +122,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
 !
 ! --- CARTE POUR LES CARA. ELEM.
 !
-    call mecara(carele(1:8), lbid, chcara)
+    call mecara(carele(1:8), chcara)
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !

@@ -76,7 +76,6 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
     character(len=16) :: option
     character(len=24) :: ligrel(2), lchin(5), lchout(1), chgeom, chcara(18)
     integer :: iret, ilires, icha
-    logical :: exicar
 ! ----------------------------------------------------------------------
     integer :: nbchmx
 !-----------------------------------------------------------------------
@@ -99,7 +98,7 @@ subroutine merit2(modele, nchar, lchar, cara, time,&
     endif
 !
     call megeom(modele, chgeom)
-    call mecara(cara, exicar, chcara)
+    call mecara(cara, chcara)
 !
     call jeexin(matel//'.RERR', iret)
     if (iret .gt. 0) then

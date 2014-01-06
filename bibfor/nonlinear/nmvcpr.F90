@@ -135,7 +135,7 @@ subroutine nmvcpr(modelz, numedd, mate, carele, comref,&
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
 !
-    call mecara(carele(1:8), lbid, chcara)
+    call mecara(carele(1:8), chcara)
 !
 ! --- PREPARATION DES VECT_ELEM  (CINQ VARIABLES DE COMM EN DUR !)
 !

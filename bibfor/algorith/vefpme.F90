@@ -72,7 +72,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     character(len=24) :: chgeom, chcara(18), chtime, ligrel
     character(len=24) :: ligrmo, ligrch, lchin(27), lchout(1)
     character(len=24) :: charge, infcha
-    logical :: exicar, bidon
+    logical :: bidon
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
      &   '.F1D1D','.PRESS','.FCO3D','.FCO2D','.FLUX','.PESAN','.VEASS','.EFOND'/
@@ -113,7 +113,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     if (bidon) goto 99
 !
     call megeom(modele, chgeom)
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
     chtime = '&&VEFPME.CH_INST_R'
     nomcmp(1) = 'INST   '

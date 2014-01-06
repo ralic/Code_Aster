@@ -17,6 +17,7 @@ subroutine op0037()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1501
 !     OPERATEUR DE NORMALISATION DES MODES
 !     ------------------------------------------------------------------
 !
@@ -319,7 +320,7 @@ subroutine op0037()
         lmasin=.false.
         goto 100
     endif
-    call vpmain(modele, mate, cara, xmastr, nbpara)
+    call vpmain(modele, mate, cara, xmastr)
     if (xmastr .le. r8prem()) then
         lmasin = .false.
         call utmess('I', 'ALGELINE5_58')

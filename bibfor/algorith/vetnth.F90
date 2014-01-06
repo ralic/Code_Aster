@@ -84,7 +84,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
     character(len=24) :: modele, carele, matcod, inst, chtn, vecel, vecei
     character(len=24) :: compor, tmpchi, tmpchf, chhy, ligrmo, lchin(nchinx)
     character(len=24) :: chgeom, lchout(nchoux), chcara(18)
-    logical :: exicar, lnlin
+    logical :: lnlin
 !
     chvarc = '&&NXACMV.CHVARC'
 !
@@ -94,10 +94,10 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
 ! 1.1 PREALABLES LIES AUX OPTIONS
 !====
     call infniv(ifm, niv)
-    do 10 i = 1, nchinx
+    do i = 1, nchinx
         lpain(i) = '        '
         lchin(i) = '                        '
-10  end do
+    end do
     call jemarq()
     newnom = '.0000000'
     option = optioz
@@ -152,7 +152,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
 ! RECHERCHE DU CHAMP DE GEOMETRIE CHGEOM ASSOCIE AU MODELE
     call megeom(modele, chgeom)
 ! RECHERCHE DES NOMS DES CARAELEM CHCARA DANS LA CARTE CARELE
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 ! TEST D'EXISTENCE DE L'OBJET JEVEUX VECEL
     call jeexin(vecel, iret)
     if (iret .eq. 0) then

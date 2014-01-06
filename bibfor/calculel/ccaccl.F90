@@ -1,6 +1,6 @@
-subroutine ccaccl(option, modele, resuin, mateco, carael,&
-                  ligrel, typesd, nbpain, lipain, lichin,&
-                  lichou, codret)
+subroutine ccaccl(option, modele, mateco, carael, ligrel, &
+                  typesd, nbpain, lipain, lichin, lichou, &
+                  codret)
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
@@ -20,7 +20,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 #include "asterfort/utmess.h"
 !
     integer :: nbpain, codret
-    character(len=8) :: modele, resuin, mateco, carael
+    character(len=8) :: modele, mateco, carael
     character(len=8) :: lipain(*)
     character(len=16) :: option, typesd
     character(len=24) :: lichin(*), ligrel, lichou(2)
@@ -86,7 +86,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
 !
-    call mecara(carael, exicar, chcara)
+    call mecara(carael, chcara, exicar)
     if (exicar) then
         do ipara = 1, nbpain
             curpar=lipain(ipara)
@@ -121,7 +121,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 !     -- POUR CETTE OPTION ON A BESOIN DE COMPOR :
         do ipara = 1, nbpain
             curpar=lipain(ipara)
-            if (curpar .eq. 'PCOMPOR') compor=lichin(ipara)
+            if (curpar .eq. 'PCOMPOR') compor=lichin(ipara)(1:19)
         end do
         call exisd('CARTE', compor, iret2)
         if (iret2 .ne. 1) then

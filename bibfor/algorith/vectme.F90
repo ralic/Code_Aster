@@ -55,7 +55,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
     character(len=19) :: vecele, resuel, chvref, chsith
     character(len=24) :: chgeom, chcara(18), chtime, ligrmo, vrcplu
     character(len=24) :: lchin(mxnbin), lchout(mxnbou), modele, carele
-    logical :: exicar, ltemp, lbid, lxfem
+    logical :: ltemp, lbid, lxfem
 !
     call jemarq()
     newnom = '.0000000'
@@ -75,7 +75,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
 !     -- S'IL N'Y A PAS DE TEMPERATURE, IL N'Y A RIEN A FAIRE :
 !     ---------------------------------------------------------
     call nmvcd2('TEMP', mate, ltemp, lbid)
-    if (.not.ltemp) goto 9999
+    if (.not.ltemp) goto 999
 !
 !     -- S'AGIT-IL D'UN MODELE X-FEM
     call exixfe(modele, iret)
@@ -91,7 +91,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
     ligrmo = modele(1:8)//'.MODELE'
 !
     call megeom(modele(1:8), chgeom)
-    call mecara(carele(1:8), exicar, chcara)
+    call mecara(carele(1:8), chcara)
 !
     option = 'CHAR_MECA_TEMP_R'
 !
@@ -132,10 +132,10 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
     lpain(17) = 'PCOMPOR'
     lchin(17) = compor
     nbin = 17
-    do 100 ich = nbin+1, mxnbin
+    do ich = nbin+1, mxnbin
         lchin(ich) = ' '
         lpain(ich) = ' '
-100  end do
+    end do
 !
 !     -- CHAMPS IN SPECIFIQUE A X-FEM
     if (lxfem) then
@@ -179,7 +179,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
         call detrsd('CHAM_ELEM', chsith)
     endif
 !
-9999  continue
+999 continue
     vecelz = vecele//'.RELR'
 !
     call jedema()

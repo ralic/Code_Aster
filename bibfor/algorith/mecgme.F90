@@ -90,7 +90,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     character(len=24) :: ligrmo, ligrch, evolch
     integer :: iret, ier, i, k, icha, inum
     integer :: somme
-    logical :: lbid, prem
+    logical :: prem
     integer :: jchar, jinf, jlme
     integer :: nchar, numchm, nbchme
     integer :: ifm, niv
@@ -159,7 +159,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
 !
-    call mecara(carele(1:8), lbid, chcara)
+    call mecara(carele(1:8), chcara)
 !
 ! --- CHAMP POUR LES INSTANTS
 !

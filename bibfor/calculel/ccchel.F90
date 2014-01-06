@@ -87,7 +87,7 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
                 lichin, iret)
 !
     if (iret .ne. 0) then
-        goto 9999
+        goto 999
     endif
 !
     call cclpco(option, resuou, numord, nbpaou, lipaou,&
@@ -99,15 +99,15 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
                     lischa, modele, nbpain, lipain, lichin,&
                     suropt, iret)
         if (iret .ne. 0) then
-            goto 9999
+            goto 999
         endif
     endif
 !
-    call ccaccl(option, modele, resuin, mateco(1:8), carael,&
-                ligrel, typesd, nbpain, lipain, lichin,&
-                lichou, iret)
+    call ccaccl(option, modele, mateco(1:8), carael, ligrel, &
+                typesd, nbpain, lipain, lichin, lichou, &
+                iret)
     if (iret .ne. 0) then
-        goto 9999
+        goto 999
     endif
 !     FIN DES CAS PARTICULIERS
 !
@@ -119,6 +119,6 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
 !
     call detrsd('CHAM_ELEM', '&&CALCOP.INT_0')
 !
-9999  continue
+999 continue
 !
 end subroutine

@@ -1,27 +1,10 @@
-subroutine merimo(base, modele, carele, mate, comref,&
-                  compor, carcri, iterat, fonact, sddyna,&
-                  valinc, solalg, merigi, vefint, optioz,&
-                  tabret, codere)
-! ----------------------------------------------------------------------
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
+                  compor   , carcri   , iterat   , acti_func, sddyna   ,&
+                  hval_incr, hval_algo, merigi   , vefint   , optioz   ,&
+                  tabret   , codere)
 !
     implicit none
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -40,111 +23,108 @@ subroutine merimo(base, modele, carele, mate, comref,&
 #include "asterfort/nmiret.h"
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
-    integer :: iterat
-    logical :: tabret(0:10)
-    integer :: fonact(*)
-    character(len=*) :: mate, optioz
-    character(len=1) :: base
-    character(len=19) :: sddyna
-    character(len=24) :: modele, carele, compor, comref
-    character(len=24) :: carcri, codere
-    character(len=19) :: merigi, vefint
-    character(len=19) :: solalg(*), valinc(*)
 !
-! ----------------------------------------------------------------------
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-! CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE
-! CALCUL DES VECTEURS ELEMENTAIRES DES FORCES INTERNES
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-! ----------------------------------------------------------------------
+    character(len=1), intent(in) :: base
+    integer, intent(in) :: iterat
+    character(len=*), intent(in) :: mate
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: compor
+    character(len=24), intent(in) :: varc_refe
+    integer, intent(in) :: acti_func(*)
+    character(len=24), intent(in) :: carcri
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_algo(*)
+    character(len=*), intent(in) :: optioz
+    character(len=24), intent(in) :: codere
+    character(len=19), intent(in) :: merigi
+    character(len=19), intent(in) :: vefint
+    logical, intent(out) :: tabret(0:10)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Nonlinear mechanics (algorithm)
+!
+! Computation of rigidity matrix and internal forces
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  BASE   : BASE 'V' OU 'G' OU SONT CREES LES OBJETS EN SORTIE
-! IN  MODELE : NOM DU MODELE
-! IN  CARELE : CARACTERISTIQUES DES POUTRES ET COQUES
-! IN  MATE   : CHAMP DE MATERIAU CODE
-! IN  COMPOR : TYPE DE RELATION DE COMPORTEMENT
-! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
-! IN  OPTION : OPTION DEMANDEE
-! IN  ITERAT : NUMERO D'ITERATION INTERNE
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! IN  COMREF : VALEURS DE REF DES VAR DE COMMANDE (TREF, ...)
-! OUT MERIGI : MATRICES ELEMENTAIRES DE RIGIDITE
-! OUT VEFINT : VECTEURS ELEMENTAIRES DES FORCES INTERIEURES
-! OUT CODERE : CHAM_ELEM CODE RETOUR ERREUR INTEGRATION LDC
-! OUT TABRET : TABLEAU RESUMANT LES CODES RETOURS DU TE
-!                    TABRET(0) = .TRUE. UN CODE RETOUR NON NUL EXISTE
-!                    TABRET(I) = .TRUE. CODE RETOUR I RENCONTRE
-!                                SINON .FALSE.
-!                    I VALANT DE 1 A 10
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: mxchout, mxchin
+    parameter    (mxchout=9, mxchin=56)
+    character(len=8) :: lpaout(mxchout), lpain(mxchin)
+    character(len=19) :: lchout(mxchout), lchin(mxchin)
 !
-!
-!
-    integer :: nbout, nbin
-    parameter    (nbout=9, nbin=56)
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
-!
-    logical :: lmacr
+    logical :: l_macr_elem 
     logical :: matrix, vector, codint, conext
-    integer :: ires, iarefe, iret
+    integer :: ires, iarefe, iret, nbin, nbout
     character(len=24) :: caco3d
     character(len=24) :: ligrmo
     character(len=19) :: sigext, sigplu, varplu, strplu
     character(len=16) :: option
     logical :: debug
     integer :: ifmdbg, nivdbg
+    integer :: ich_matrixs, ich_matrixn, ich_vector, ich_codret
 !
-    data caco3d/'&&MERIMO.CARA_ROTA_FICTI'/
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
     option = optioz
-    ligrmo = modele(1:8)//'.MODELE'
+    ligrmo = model(1:8)//'.MODELE'
+    caco3d = '&&MERIMO.CARA_ROTA_FICTI'
     if (nivdbg .ge. 2) then
         debug = .true.
     else
         debug = .false.
     endif
-    do 10 iret = 0, 10
+    do iret = 0, 10
         tabret(iret) = .false.
-10  end do
+    end do
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Active functionnalites
 !
-    lmacr = isfonc(fonact,'MACR_ELEM_STAT')
+    l_macr_elem = isfonc(acti_func, 'MACR_ELEM_STAT')
 !
-! --- INITIALISATION DES CHAMPS POUR CALCUL
+! - Get fields from hat-variables
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
-                lchout)
+    call nmchex(hval_incr, 'VALINC', 'SIGEXT', sigext)
+    call nmchex(hval_incr, 'VALINC', 'SIGPLU', sigplu)
+    call nmchex(hval_incr, 'VALINC', 'VARPLU', varplu)
+    call nmchex(hval_incr, 'VALINC', 'STRPLU', strplu)
 !
-! --- DECOMPACTION VARIABLES CHAPEAUX
+! - Input fields
 !
-    call nmchex(valinc, 'VALINC', 'SIGEXT', sigext)
-    call nmchex(valinc, 'VALINC', 'SIGPLU', sigplu)
-    call nmchex(valinc, 'VALINC', 'VARPLU', varplu)
-    call nmchex(valinc, 'VALINC', 'STRPLU', strplu)
+    call merimp(model    , cara_elem, mate  , varc_refe, compor,&
+                carcri   , acti_func, iterat, sddyna   , hval_incr, &
+                hval_algo, caco3d   , mxchin, nbin     , lpain    , &
+                lchin)
 !
-! --- PREPARATION DES CHAMPS D'ENTREE POUR RIGIDITE TANGENTE (MERIMO)
-!
-    call merimp(modele, carele, mate, comref, compor,&
-                carcri, iterat, sddyna, valinc, solalg,&
-                caco3d, nbin, lpain, lchin)
-!
-! --- TYPE DE SORTIES:
-! --- MATRIX: MATRICE TANGENTE
-! --- VECTOR: FORCES INTERIEURES
-! --- CODINT: CODE RETOUR ERREUR INTEG. LDC
+! - Output fields
 !
     if (option(1:9) .eq. 'FULL_MECA') then
         matrix = .true.
@@ -175,8 +155,6 @@ subroutine merimo(base, modele, carele, mate, comref,&
         ASSERT(.false.)
     endif
 !
-! --- AFFICHAGE
-!
     if (nivdbg .ge. 2) then
         write (ifmdbg,*) '<CALCUL> ... OPTION: ',option
         if (matrix) then
@@ -193,17 +171,17 @@ subroutine merimo(base, modele, carele, mate, comref,&
         endif
     endif
 !
-! --- PREPARATION DES MATR_ELEM ET VECT_ELEM
+! - Prepare vector and matrix
 !
     if (matrix) then
         call jeexin(merigi//'.RELR', iret)
         if (iret .eq. 0) then
             call jeexin(merigi//'.RERR', ires)
             if (ires .eq. 0) then
-                call memare(base, merigi, modele(1:8), mate, carele,&
+                call memare(base, merigi, model(1:8), mate, cara_elem,&
                             'RIGI_MECA')
             endif
-            if (lmacr) then
+            if (l_macr_elem) then
                 call jeveuo(merigi//'.RERR', 'E', iarefe)
                 zk24(iarefe-1+3) = 'OUI_SOUS_STRUC'
             endif
@@ -215,43 +193,54 @@ subroutine merimo(base, modele, carele, mate, comref,&
     if (vector) then
         call jeexin(vefint//'.RELR', iret)
         if (iret .eq. 0) then
-            call memare(base, vefint, modele(1:8), mate, carele,&
+            call memare(base, vefint, model(1:8), mate, cara_elem,&
                         'CHAR_MECA')
         endif
         call jedetr(vefint//'.RELR')
         call reajre(vefint, ' ', base)
     endif
 !
-! --- CHAMPS DE SORTIE
-!
-    lpaout(4) = 'PCONTPR'
-    lchout(4) = sigplu(1:19)
-    lpaout(5) = 'PVARIPR'
-    lchout(5) = varplu(1:19)
-    lpaout(7) = 'PCACO3D'
-    lchout(7) = caco3d(1:19)
-    lpaout(9) = 'PSTRXPR'
-    lchout(9) = strplu(1:19)
+    lpaout(1) = 'PCONTPR'
+    lchout(1) = sigplu(1:19)
+    lpaout(2) = 'PVARIPR'
+    lchout(2) = varplu(1:19)
+    lpaout(3) = 'PCACO3D'
+    lchout(3) = caco3d(1:19)
+    lpaout(4) = 'PSTRXPR'
+    lchout(4) = strplu(1:19)
+    nbout = 4
     if (matrix) then
-        lpaout(1) = 'PMATUUR'
-        lchout(1) = merigi(1:15)//'.M01'
-        lpaout(2) = 'PMATUNS'
-        lchout(2) = merigi(1:15)//'.M02'
+        nbout = nbout+1
+        lpaout(nbout) = 'PMATUUR'
+        lchout(nbout) = merigi(1:15)//'.M01'
+        ich_matrixs = nbout
+        nbout = nbout+1
+        lpaout(nbout) = 'PMATUNS'
+        lchout(nbout) = merigi(1:15)//'.M02'
+        ich_matrixn = nbout
     endif
     if (vector) then
-        lpaout(3) = 'PVECTUR'
-        lchout(3) = vefint(1:15)//'.R01'
+        nbout = nbout+1
+        lpaout(nbout) = 'PVECTUR'
+        lchout(nbout) = vefint(1:15)//'.R01'
+        ich_vector = nbout 
     endif
     if (codint) then
-        lpaout(6) = 'PCODRET'
-        lchout(6) = codere(1:19)
+        nbout = nbout+1
+        lpaout(nbout) = 'PCODRET'
+        lchout(nbout) = codere(1:19)
+        ich_codret = nbout
     endif
     if (conext) then
-        lpaout(8) = 'PCONTXR'
-        lchout(8) = sigext(1:19)
+        nbout = nbout+1
+        lpaout(nbout) = 'PCONTXR'
+        lchout(nbout) = sigext(1:19)
     endif
 !
-! --- APPEL A CALCUL
+    ASSERT(nbout.le.mxchout)
+    ASSERT(nbin.le.mxchin)
+!
+! - Compute
 !
     if (debug) then
         call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
@@ -262,23 +251,22 @@ subroutine merimo(base, modele, carele, mate, comref,&
                 lpain, nbout, lchout, lpaout, base,&
                 'NON')
 !
-! --- SAUVEGARDE MATR_ELEM/VECT_ELEM
+! - Save
 !
     if (matrix) then
-        call reajre(merigi, lchout(1), base)
-        call reajre(merigi, lchout(2), base)
-!       -- DESTRUCTION DES RESUELEM NULS :
+        call reajre(merigi, lchout(ich_matrixs), base)
+        call reajre(merigi, lchout(ich_matrixn), base)
         call redetr(merigi)
     endif
 !
     if (vector) then
-        call reajre(vefint, lchout(3), base)
+        call reajre(vefint, lchout(ich_vector), base)
     endif
 !
-! --- SAUVEGARDE CODE RETOUR ERREUR
+! - Errors
 !
     if (codint) then
-        call nmiret(lchout(6), tabret)
+        call nmiret(lchout(ich_codret), tabret)
     endif
 !
     call jedema()

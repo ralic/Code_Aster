@@ -130,9 +130,6 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     real(kind=8) :: prec
     real(kind=8) :: tbgrca(3)
 !
-!
-    logical :: exicar
-!
     character(len=24) :: valkm(2)
 !
 !
@@ -267,7 +264,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                 call medom1(modele, mate, cara, kcha, nchar,&
                             ctyp, resuco, iordr)
                 call jeveuo(kcha//'.LCHA', 'L', jcha)
-                call mecara(cara, exicar, chcara)
+                call mecara(cara, chcara)
                 call rsexc2(1, 1, resuco, 'DEPL', iordr,&
                             chamgd, option, iret)
                 if (iret .gt. 0) goto 150

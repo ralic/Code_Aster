@@ -99,7 +99,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
     character(len=24) :: chgeom, chharm, nompar
     character(len=24) :: lesopt, blan24
     character(len=24) :: ligrel, ligrmo
-    logical :: exicar, evol
+    logical :: evol
     real(kind=8) :: zero
     parameter(zero=0.d0)
 !
@@ -238,7 +238,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                 iordr=zi(jordr+iaux-1)
                 call medom1(modele, mate, cara, kcha, nchar,&
                             ctyp, resuco, iordr)
-                call mecara(cara, exicar, chcara)
+                call mecara(cara, chcara)
 ! RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
                 call jenonu(jexnom(resuco//'           .NOVA', 'PARM_THETA'), iad)
                 if (iad .eq. 0) then

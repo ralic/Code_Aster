@@ -56,7 +56,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
     character(len=19) :: chvarc, stano, pintto, cnseto, heavto, loncha, basloc
     character(len=19) :: lsn, lst, pinter, ainter, cface, longco, baseco
     integer :: iret, nchar, ilires, icha, jchar, jinf
-    logical :: exicar, lxfem
+    logical :: lxfem
 ! ----------------------------------------------------------------------
     integer :: nbchmx
 !-----------------------------------------------------------------------
@@ -81,7 +81,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
     endif
 !
     call megeom(modele, chgeom)
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
 !
 !  ON INITIALISE LE NUMERO D'HARMONIQUE A -1 POUR EMETTRE UN MESSAGE
 !  FATAL S'IL Y A DES ELEMENTS DE FOURIER DANS LE MODELE

@@ -59,7 +59,6 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
     character(len=24) :: ligrmo, lchin(7), lchout(1), chgeom, chcara(18)
     integer :: iret, ifm, niv, exicha, nchin, i, nchar, jchar, jinf, icha, ibid
     integer :: jlvn
-    logical :: exicar
 !
 !====
 ! 1.1 PREALABLES LIES AUX OPTIONS
@@ -67,10 +66,10 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
     call jemarq()
     call infniv(ifm, niv)
 !
-    do 10 i = 1, 6
+    do i = 1, 6
         lpain(i) = '        '
         lchin(i) = '                        '
-10  end do
+    end do
 !====
 ! 1.2 PREALABLES LIES AUX CHARGES
 !====
@@ -94,7 +93,7 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
 !====
 !
     call megeom(modele, chgeom)
-    call mecara(carele, exicar, chcara)
+    call mecara(carele, chcara)
     call jeexin(lvechn, iret)
     if (iret .eq. 0) then
         call wkvect(lvechn, 'V V K24', 2*nchar, jlvn)
@@ -137,7 +136,7 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
 !====
 !
     if (nchar .gt. 0) then
-        do 60 icha = 1, nchar
+        do icha = 1, nchar
 !
 ! NOM DE LA CHARGE
             nomcha = zk24(jchar+icha-1) (1:8)
@@ -176,10 +175,10 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
 !====
                     if (niv .eq. 2) then
                         write (ifm,*) '     OPTION         :',option
-                        do 20 i = 1, nchin
+                        do i = 1, nchin
                             write (ifm,*) '     LPAIN/LCHIN    :',lpain(i),' ',&
      &              lchin(i)
-20                      continue
+                        end do
                     endif
                     call calcul('S', option, ligrmo, nchin, lchin,&
                                 lpain, 1, lchout, lpaout, 'V',&
@@ -219,10 +218,10 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
 !====
                     if (niv .eq. 2) then
                         write (ifm,*) '     OPTION         :',option
-                        do 30 i = 1, nchin
+                        do i = 1, nchin
                             write (ifm,*) '     LPAIN/LCHIN    :',lpain(i),' ',&
      &              lchin(i)
-30                      continue
+                        end do
                     endif
                     call calcul('S', option, ligrmo, nchin, lchin,&
                                 lpain, 1, lchout, lpaout, 'V',&
@@ -258,10 +257,10 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
 !====
                     if (niv .eq. 2) then
                         write (ifm,*) '     OPTION         :',option
-                        do 25 i = 1, nchin
+                        do i = 1, nchin
                             write (ifm,*) '     LPAIN/LCHIN    :',lpain(i),' ',&
      &              lchin(i)
-25                      continue
+                        end do
                     endif
                     call calcul('S', option, ligrmo, nchin, lchin,&
                                 lpain, 1, lchout, lpaout, 'V',&
@@ -277,7 +276,7 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
 !
 ! 5. FIN DE BOUCLE SUR LES CHARGES
 !====
-60      continue
+        end do
 ! FIN DU IF NCHAR
     endif
 !
