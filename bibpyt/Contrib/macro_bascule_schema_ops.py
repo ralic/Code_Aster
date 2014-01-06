@@ -163,7 +163,7 @@ def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
   #
 
   # alarme de DYNA_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes a tort
-  MasquerAlarme('COMPOR1_70')
+  MasquerAlarme('COMPOR4_70')
 
   if SCHEMA_INIT=='IMPLICITE':
        dincri1=copy.copy(dincri)
@@ -332,5 +332,5 @@ def macro_bascule_schema_ops (self,MODELE,CHAM_MATER,CARA_ELEM,
             if (not bool): break
             j = j + 1
   #
-  RetablirAlarme('COMPOR1_70')
+  RetablirAlarme('COMPOR4_70')
   return ier

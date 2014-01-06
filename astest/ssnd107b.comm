@@ -22,8 +22,6 @@ from Contrib.veri_matr_tang import VERI_MATR_TANG
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       IGNORE_ALARM='COMPOR1_70',DEBUG=_F(SDVERI='OUI'))
 
-# L'ALARME COMPOR1_70 EST EMISE CAR ON MET ITER_INTE_MAXI POUR TOUS LES COMPORTEMENTS TESTES, MEME
-# CEUX QUI SONT RESOLUS ANALYTIQUEMENT
 
 compor=[]
 compor.append(['VMIS_CINE_LINE','GDEF_LOG'])
@@ -92,7 +90,6 @@ npasrota=5
 nbincr=4
 angle_degres=45.0
 reaciter=1
-iterintemaxi=100
 Rota2=[None]*len(compor)*nbincr
 Trac2=[None]*len(compor)*nbincr
 Ftra2=[None]*len(compor)*nbincr
@@ -138,7 +135,6 @@ for icomp,comp in enumerate(compor) :
                               EXCIT=_F(CHARGE=clim_tra,FONC_MULT=F_trac,),
                               COMPORTEMENT=_F(RELATION=comp[0],
                                            DEFORMATION=comp[1],
-                                           ITER_INTE_MAXI=iterintemaxi,
                                            TYPE_MATR_TANG='VERIFICATION'),
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,PREDICTION='ELASTIQUE',),
@@ -165,7 +161,7 @@ for icomp,comp in enumerate(compor) :
                            EXCIT=(_F(CHARGE=Rota2[icl],TYPE_CHARGE='DIDI',),
                                   _F(CHARGE=ClFixe),),
                            COMPORTEMENT=_F(RELATION=comp[0],DEFORMATION=comp[1],
-                                        ITER_INTE_MAXI=iterintemaxi),
+                           ),
                            ETAT_INIT=_F(EVOL_NOLI=resu[icomp],),
                            INCREMENT=_F(LIST_INST=DEFLIST2,),
                            NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,PREDICTION='ELASTIQUE',),
@@ -188,7 +184,7 @@ for icomp,comp in enumerate(compor) :
         resu[icomp]=STAT_NON_LINE(reuse = resu[icomp],MODELE=modele,CHAM_MATER=mat,
                            EXCIT=(_F(CHARGE=Trac2[icl],TYPE_CHARGE='DIDI',FONC_MULT=Ftra2[icl]),),
                            COMPORTEMENT=_F(RELATION=comp[0], DEFORMATION=comp[1],
-                                        ITER_INTE_MAXI=iterintemaxi,TYPE_MATR_TANG='VERIFICATION'),
+                                        TYPE_MATR_TANG='VERIFICATION'),
                            ETAT_INIT=_F(EVOL_NOLI=resu[icomp]),
                            INCREMENT=_F(LIST_INST=DEFLIST2,INST_FIN=tfintrac),
                            NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,PREDICTION='ELASTIQUE',),

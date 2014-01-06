@@ -52,7 +52,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   from Noyau.N_types import is_sequence
 
   # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes a tort
-  MasquerAlarme('COMPOR1_70')
+  MasquerAlarme('COMPOR4_70')
 
 # -- Tests de cohérence
   __fonczero = DEFI_FONCTION(NOM_PARA = 'INST',
@@ -845,5 +845,5 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                        _F(OPERATION='COMB',TABLE=__REP_INV ,NOM_PARA=('INST'), ),
                        _F(OPERATION='COMB',TABLE=__REP_VARI,NOM_PARA=('INST'), ),))
 
-  RetablirAlarme('COMPOR1_70')
+  RetablirAlarme('COMPOR4_70')
   return ier

@@ -61,7 +61,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   self.DeclareOut('RES',self.sd)
 
   # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes a tort
-  MasquerAlarme('COMPOR1_70')
+  MasquerAlarme('COMPOR4_70')
 
   # -------------------------------------------------------------
   # 1. CREATION DES MOTS-CLES ET CONCEPTS POUR LES STAT_NON_LINE
@@ -714,5 +714,5 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   else :
     raise Exception("erreur de programmation, adher different de OUI et NON")
 
-  RetablirAlarme('COMPOR1_70')
+  RetablirAlarme('COMPOR4_70')
   return ier

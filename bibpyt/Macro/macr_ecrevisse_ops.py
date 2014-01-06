@@ -91,7 +91,7 @@ def macr_ecrevisse_ops(self, reuse,
     self.DeclareOut('MECANIC', self.sd)
 
     # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes a tort
-    MasquerAlarme('COMPOR1_70')
+    MasquerAlarme('COMPOR4_70')
 
     IsPoursuite = False
     IsInit = True
@@ -696,5 +696,5 @@ def macr_ecrevisse_ops(self, reuse,
                            _F(NOM=DEBIECR0),),
                  INFO=1,)
 
-    RetablirAlarme('COMPOR1_70')
+    RetablirAlarme('COMPOR4_70')
     return ier
