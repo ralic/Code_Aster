@@ -14,9 +14,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#ifdef _HAVE_MUMPS
 interface
     subroutine smumps(cmpsk)
 #       include "smumps_struc.h"
         type (smumps_struc) :: cmpsk
     end subroutine smumps
 end interface
+#endif
