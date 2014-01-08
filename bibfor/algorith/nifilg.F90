@@ -48,7 +48,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), vff3(nno3, npg)
     real(kind=8) :: instm, instp
     real(kind=8) :: geomi(ndim, nno1), ddlm(*), ddld(*), angmas(*)
-    real(kind=8) :: sigm(2*ndim, npg), sigp(2*ndim, npg)
+    real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
     real(kind=8) :: crit(*)
@@ -108,6 +108,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: r, w, wp, dff1(nno1, 4)
     real(kind=8) :: presm(27), presd(27)
     real(kind=8) :: gonfm(27), gonfd(27)
+    real(kind=8) :: sigm_ldc(2*ndim), sigp_ldc(2*ndim)
     real(kind=8) :: gm, gd, gp, pm, pd, pp
     real(kind=8) :: fm(3, 3), jm, ftm(3, 3), corm, epsm(6), epsml(6)
     real(kind=8) :: fp(3, 3), jp, ftp(3, 3), corp, epsp(6), deps(6)
@@ -180,24 +181,19 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
     do g = 1, npg
 !
 ! - CALCUL DES DEFORMATIONS
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, deplm, fm, epsm)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, deplp, fp, epsp)
-        call dfdmip(ndim, nno1, axi, geomp, g,&
-                    iw, vff1(1, g), idff1, r, wp,&
-                    dff1)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplm, fm, epsm)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplp, fp, epsp)
+        call dfdmip(ndim, nno1, axi, geomp, g, iw, vff1(1, g), idff1, r, wp, dff1)
 !
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
-                    lij)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
 !
-        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2)) - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2)&
-             &) + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
-        jp = fp(1,1)*(fp(2,2)*fp(3,3)-fp(2,3)*fp(3,2)) - fp(2,1)*(fp(1,2)*fp(3,3)-fp(1,3)*fp(3,2)&
-             &) + fp(3,1)*(fp(1,2)*fp(2,3)-fp(1,3)*fp(2,2))
+        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2))&
+           - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2))&
+           + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
+        jp = fp(1,1)*(fp(2,2)*fp(3,3)-fp(2,3)*fp(3,2))&
+           - fp(2,1)*(fp(1,2)*fp(3,3)-fp(1,3)*fp(3,2))&
+           + fp(3,1)*(fp(1,2)*fp(2,3)-fp(1,3)*fp(2,2))
 !
         if (jp .le. 0.d0) then
             codret = 1
@@ -214,9 +210,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
         pp = pm+pd
 !
 ! - CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
-        call nirela(2, jp, gm, gp, am,&
-                    ap, bp, boa, aa, bb,&
-                    daa, dbb, dboa, d2boa)
+        call nirela(2, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa)
 !
 ! - CALCUL DES DEFORMATIONS ENRICHIES
         corm = (am/jm)**(1.d0/3.d0)
@@ -233,23 +227,24 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
         call r8inir(6, 0.d0, tp, 1)
         call r8inir(6, 0.d0, taup, 1)
 !
-        call prelog(ndim, lgpg, vim(1, g), gn, lamb,&
-                    logl, ftm, ftp, epsml, deps,&
-                    tn, resi, cod(g))
+        call prelog(ndim, lgpg, vim(1, g), gn, lamb, logl, ftm, ftp, epsml, deps, tn, resi, cod(g))
 !
-        call nmcomp('RIGI', g, 1, ndim, typmod,&
-                    mate, compor, crit, instm, instp,&
-                    6, epsml, deps, 6, tn,&
-                    vim(1, g), option, angmas, 10, tampon,&
-                    tp, vip(1, g), 36, dtde, 1,&
-                    rbid, cod(g))
+        call nmcomp('RIGI', g, 1, ndim, typmod, mate, compor, crit, instm, instp,&
+                    6, epsml, deps, 6, tn, vim(1, g), option, angmas, 10, tampon,&
+                    tp, vip(1, g), 36, dtde, 1, rbid, cod(g))
 !
 ! - DSIDEP = 2dS/dC = dS/dE_GL
-        call poslog(resi, rigi, tn, tp, ftm,&
-                    lgpg, vip(1, g), ndim, ftp, g,&
-                    dtde, sigm(1, g), .false., 'RIGI', mate,&
-                    instp, angmas, gn, lamb, logl,&
-                    sigp( 1, g), dsidep, pk2m, pk2, cod(g))
+!
+        do ia = 1, 3
+            sigm_ldc(ia) = sigm(ia,g) + sigm(2*ndim+1,g)
+        end do
+        do ia = 4, 2*ndim
+            sigm_ldc(ia) = sigm(ia,g)
+        end do
+!
+        call poslog(resi, rigi, tn, tp, ftm, lgpg, vip(1, g), ndim, ftp, g,&
+                    dtde, sigm_ldc, .false., 'RIGI', mate, instp, angmas, gn, lamb, logl,&
+                    sigp_ldc, dsidep, pk2m, pk2, cod(g))
 !
         if (cod(g) .eq. 1) then
             codret = 1
@@ -261,15 +256,19 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
         if (resi) then
-            call dscal(2*ndim, exp(gp), sigp(1, g), 1)
-            call dcopy(2*ndim, sigp(1, g), 1, taup, 1)
-            call dscal(2*ndim, 1.d0/jp, sigp(1, g), 1)
+            call dscal(2*ndim, exp(gp), sigp_ldc, 1)
+            call dcopy(2*ndim, sigp_ldc, 1, taup, 1)
 !
 ! - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0
             do ia = 1, 6
                 taudv(ia) = taup(ia) - tauhy*kr(ia)
             end do
+!
+            do ia = 1, 2*ndim
+                sigp(ia,g) = (taudv(ia) + pp*bb*kr(ia))/jp
+            end do
+            sigp(2*ndim+1,g) = (tauhy - pp*bb)/jp
 !
 ! - VECTEUR FINT:U
             do na = 1, nno1
@@ -306,7 +305,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
             if (resi) then
                 call dcopy(9, ftp, 1, ftr, 1)
             else
-                call dcopy(2*ndim, sigm(1, g), 1, taup, 1)
+                call dcopy(2*ndim, sigm_ldc, 1, taup, 1)
                 call dscal(2*ndim, jm, taup, 1)
                 call dcopy(9, ftm, 1, ftr, 1)
             endif
@@ -364,10 +363,8 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
 !
 ! - RIGIDITE GEOMETRIQUE
                                     do jb = 1, ndu
-                                        t1 = t1 - dff1(&
-                                             na, lij(ia, ib))*dff1(nb,&
-                                             lij(ib, jb)) *tauldc(vij(ia, jb)&
-                                             )
+                                        t1 = t1 - dff1(na, lij(ia, ib))*dff1(nb,lij(ib, jb))&
+                                                 *tauldc(vij(ia, jb))
                                     end do
                                     matr(kk) = matr(kk) + w*t1
                                 endif

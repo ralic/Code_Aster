@@ -127,6 +127,7 @@ VECTEUR__
 
 MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
     VMATUUR = MDEP_R NDEPLAR  NDEPLAR
 
 OPTION__
@@ -213,14 +214,14 @@ OPTION__
                                 DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                 CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                 ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
-                          OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
-                                MVECTUR  PVECTUR
+                          OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
+                                ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     FULL_MECA_ELAS   590  IN__  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                 DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                 CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                 ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
-                          OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
-                                MVECTUR  PVECTUR
+                          OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
+                                ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     GRAD_NEUT9_R     398  IN__  NGEOMER  PGEOMER  N9NEUT_R PNEUTER
                           OUT__ G27NEUTR PGNEUTR
     G_BILI            95  IN__  NDEPLAR  PDEPLAU  NDEPLAR  PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -281,7 +282,7 @@ OPTION__
                                 DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                 CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                 ZVARIPG  PVARIMR
-                          OUT__ MMATUUR  PMATUUR
+                          OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR
     RIGI_MECA_GE      -1  IN__
                           OUT__ XXXXXX   XXXXXX
     RIGI_MECA_RO      -1  IN__
@@ -290,7 +291,7 @@ OPTION__
                                 DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                 CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                 ZVARIPG  PVARIMR
-                          OUT__ MMATUUR  PMATUUR
+                          OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR
     SIEF_ELGA         97  IN__  CCAMASS  PCAMASS  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                 ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                           OUT__ ECONTPC  PCONTRC  ECONTPG  PCONTRR
@@ -304,6 +305,8 @@ OPTION__
                           OUT__ ESIGMPC  PSIGMC   ESIGMPG  PSIGMR
     SIGM_ELNO          4  IN__  ESIGMPG  PCONTRR
                           OUT__ ESIGMNC  PSIEFNOC ESIGMNO  PSIEFNOR
+    SYME_MDNS_R      222  IN__  MMATUNS  PNOSYM
+                          OUT__ MMATUUR  PSYM
     TOU_INI_ELGA      99  IN__
                           OUT__ EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ESOURCR  PSOUR_R
                                 ZVARIPG  PVARI_R

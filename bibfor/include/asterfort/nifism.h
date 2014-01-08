@@ -49,9 +49,9 @@ interface
         real(kind=8) :: ddlm(*)
         real(kind=8) :: ddld(*)
         real(kind=8) :: angmas(*)
-        real(kind=8) :: sigm(2*ndim, npg)
+        real(kind=8) :: sigm(2*ndim+1, npg)
         real(kind=8) :: vim(lgpg, npg)
-        real(kind=8) :: sigp(2*ndim, npg)
+        real(kind=8) :: sigp(2*ndim+1, npg)
         real(kind=8) :: vip(lgpg, npg)
         logical :: resi
         logical :: rigi

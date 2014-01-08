@@ -51,12 +51,9 @@ subroutine te0591(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.3)
-    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos,&
-                npg, iw, ivf3, idf3, jgn)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos, npg, iw, ivf3, idf3, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
@@ -70,9 +67,7 @@ subroutine te0591(option, nomte)
     endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, nno2,&
-                nno3, 0, vu, vg, vp,&
-                vpi)
+    call niinit(nomte, typmod, ndim, nno1, nno2, nno3, 0, vu, vg, vp, vpi)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCONTMR', 'L', icontm)

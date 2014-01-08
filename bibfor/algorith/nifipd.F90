@@ -156,13 +156,9 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg,&
 ! - CALCUL DES DEFORMATIONS
         call r8inir(6, 0.d0, epsm, 1)
         call r8inir(6, 0.d0, deps, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, deplm, fm, epsm)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, depld, fm, deps)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplm, fm, epsm)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, depld, fm, deps)
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT AU POINT DE GAUSS
         gm = ddot(nno2,vff2(1,g),1,gonfm,1)
@@ -228,12 +224,9 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg,&
         end do
 !
 ! - APPEL A LA LOI DE COMPORTEMENT
-        call nmcomp('RIGI', g, 1, ndim, typmod,&
-                    mate, compor, crit, instm, instp,&
-                    6, epsm, deps, 6, sigmam,&
-                    vim(1, g), option, angmas, 10, tampon,&
-                    sigma, vip(1, g), 36, dsidep, 1,&
-                    rbid, cod(g))
+        call nmcomp('RIGI', g, 1, ndim, typmod, mate, compor, crit, instm, instp,&
+                    6, epsm, deps, 6, sigmam, vim(1, g), option, angmas, 10, tampon,&
+                    sigma, vip(1, g), 36, dsidep, 1, rbid, cod(g))
 !
         if (cod(g) .eq. 1) then
             codret = 1

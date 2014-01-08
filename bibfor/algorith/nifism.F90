@@ -45,7 +45,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), vff3(nno3, npg)
     real(kind=8) :: instm, instp
     real(kind=8) :: geomi(ndim, nno1), ddlm(*), ddld(*), angmas(*)
-    real(kind=8) :: sigm(2*ndim, npg), sigp(2*ndim, npg)
+    real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
     real(kind=8) :: crit(*)
@@ -107,6 +107,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: r, w, wm, wp, dff1(nno1, 4), dff2(nno2, 3)
     real(kind=8) :: presm(27), presd(27)
     real(kind=8) :: gonfm(27), gonfd(27)
+    real(kind=8) :: sigm_ldc(2*ndim)
     real(kind=8) :: gm, gd, gp, pm, pd, pp
     real(kind=8) :: fm(3, 3), jm, ftm(3, 3), corm, epsm(6)
     real(kind=8) :: fd(3, 3), jd, jp, ftd(3, 3), cord, epsd(6)
@@ -131,9 +132,9 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 !
 ! - INITIALISATION
 !
-    rac2 = sqrt(2.d0)
     axi = typmod(1).eq.'AXIS'
     nddl = nno1*ndim + nno2 + nno3
+    rac2 = sqrt(2.d0)
     ndu = ndim
     if (axi) ndu = 3
 !
@@ -174,27 +175,20 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
         nonloc = k2ret(1).eq.0 .and. c(1).ne.0.d0
 !
 ! - CALCUL DES DEFORMATIONS
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, deplm, fm, epsm)
-        call dfdmip(ndim, nno1, axi, geomm, g,&
-                    iw, vff1(1, g), idff1, r, wm,&
-                    dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, depld, fd, epsd)
-        call dfdmip(ndim, nno1, axi, geomp, g,&
-                    iw, vff1(1, g), idff1, r, wp,&
-                    dff1)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplm, fm, epsm)
+        call dfdmip(ndim, nno1, axi, geomm, g, iw, vff1(1, g), idff1, r, wm, dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, depld, fd, epsd)
+        call dfdmip(ndim, nno1, axi, geomp, g, iw, vff1(1, g), idff1, r, wp, dff1)
 !
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
-                    lij)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
 !
-        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2)) - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2)&
-             &) + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
-        jd = fd(1,1)*(fd(2,2)*fd(3,3)-fd(2,3)*fd(3,2)) - fd(2,1)*(fd(1,2)*fd(3,3)-fd(1,3)*fd(3,2)&
-             &) + fd(3,1)*(fd(1,2)*fd(2,3)-fd(1,3)*fd(2,2))
+        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2))&
+           - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2))&
+           + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
+        jd = fd(1,1)*(fd(2,2)*fd(3,3)-fd(2,3)*fd(3,2))&
+           - fd(2,1)*(fd(1,2)*fd(3,3)-fd(1,3)*fd(3,2))&
+           + fd(3,1)*(fd(1,2)*fd(2,3)-fd(1,3)*fd(2,2))
         jp = jm*jd
 !
 ! - CALCUL DE LA PRESSION ET DU GONFLEMENT AU POINT DE GAUSS
@@ -207,9 +201,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
         pp = pm+pd
 !
 ! - CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
-        call nirela(1, jp, gm, gp, am,&
-                    ap, bp, boa, aa, bb,&
-                    daa, dbb, dboa, d2boa)
+        call nirela(1, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa)
 !
 ! - PERTINENCE DES GRANDEURS
         if (jd .le. 1.d-2 .or. jd .gt. 1.d2) then
@@ -223,9 +215,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DU GRADIENT DU GONFLEMENT POUR LA REGULARISATION
         if (nonloc) then
-            call dfdmip(ndim, nno2, axi, geomi, g,&
-                        iw, vff2(1, g), idff2, r, w,&
-                        dff2)
+            call dfdmip(ndim, nno2, axi, geomi, g, iw, vff2(1, g), idff2, r, w, dff2)
             do ia = 1, ndim
                 gradgp(ia) = ddot(&
                              nno2, dff2(1,ia), 1, gonfm, 1) + ddot(nno2, dff2(1,ia), 1, gonfd, 1)
@@ -247,12 +237,16 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 ! - POUR LES LOIS QUI NE RESPECTENT PAS ENCORE LA NOUVELLE INTERFACE
 ! - ET QUI UTILISENT ENCORE LA CONTRAINTE EN T-
 !
-        call nmcomp('RIGI', g, 1, 3, typmod,&
-                    mate, compor, crit, instm, instp,&
-                    9, ftm, ftd, 6, sigm(1, g),&
-                    vim(1, g), option, angmas, 10, tampon,&
-                    taup, vip( 1, g), 54, dsidep, 1,&
-                    rbid, cod(g))
+        do ia = 1, 3
+            sigm_ldc(ia) = sigm(ia,g) + sigm(2*ndim+1,g)
+        end do
+        do ia = 4, 2*ndim
+            sigm_ldc(ia) = sigm(ia,g)*rac2
+        end do
+!
+        call nmcomp('RIGI', g, 1, 3, typmod, mate, compor, crit, instm, instp,&
+                    9, ftm, ftd, 6, sigm_ldc, vim(1, g), option, angmas, 10, tampon,&
+                    taup, vip( 1, g), 54, dsidep, 1, rbid, cod(g))
 !
         if (cod(g) .eq. 1) then
             codret = 1
@@ -275,15 +269,16 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
         if (resi) then
-! - CONTRAINTE DE CAUCHY A PARTIR DE KIRCHHOFF
-            call dcopy(2*ndim, taup, 1, sigp(1, g), 1)
-            call dscal(2*ndim, 1.d0/jp, sigp(1, g), 1)
-!
 ! - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0
             do ia = 1, 6
                 taudv(ia) = taup(ia) - tauhy*kr(ia)
             end do
+!
+            do ia = 1, 2*ndim
+                sigp(ia,g) = (taudv(ia) + pp*bb*kr(ia))/jp
+            end do
+            sigp(2*ndim+1,g) = (tauhy - pp*bb)/jp
 !
 ! - VECTEUR FINT:U
             do na = 1, nno1
@@ -326,7 +321,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 ! - MATRICE TANGENTE
         if (rigi) then
             if (.not. resi) then
-                call dcopy(2*ndim, sigm(1, g), 1, taup, 1)
+                call dcopy(2*ndim, sigm_ldc, 1, taup, 1)
                 call dscal(2*ndim, jm, taup, 1)
             endif
 !
@@ -467,7 +462,6 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 ! - TERME K:PP = 0.D0      KPP(NNO3,NNO3)
 !
             end do
-!
         endif
     end do
 !

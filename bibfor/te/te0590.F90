@@ -67,12 +67,9 @@ subroutine te0590(option, nomte)
 ! - FONCTIONS DE FORME
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.3)
-    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos,&
-                npg, iw, ivf3, idf3, jgn)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos, npg, iw, ivf3, idf3, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
     nddl = nno1*ndim + nno2 + nno3
     matsym = .true.
 !
@@ -90,9 +87,7 @@ subroutine te0590(option, nomte)
     codret = 0
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, nno2,&
-                nno3, 0, vu, vg, vp,&
-                vpi)
+    call niinit(nomte, typmod, ndim, nno1, nno2, nno3, 0, vu, vg, vp, vpi)
 !
 ! - OPTION
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
@@ -111,8 +106,7 @@ subroutine te0590(option, nomte)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
 !
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
-                itab=jtab)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
 ! - ORIENTATION DU MASSIF
