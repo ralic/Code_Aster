@@ -21,10 +21,10 @@ def configure(self):
     try:
         self.check_scotch()
     except Errors.ConfigurationError:
-        if self.options.enable_scotch == True:
-            raise
         self.define('_DISABLE_SCOTCH', 1)
         self.undefine('HAVE_SCOTCH')
+        if self.options.enable_scotch == True:
+            raise
     else:
         self.define('HAVE_SCOTCH', 1)
         self.undefine('_DISABLE_SCOTCH')

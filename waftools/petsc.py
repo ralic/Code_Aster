@@ -27,6 +27,8 @@ def configure(self):
         self.check_petsc()
     except Errors.ConfigurationError:
         self.env.revert()
+        self.define('_DISABLE_PETSC', 1)
+        self.undefine('HAVE_PETSC')
         if self.options.enable_petsc == True:
             raise
     else:

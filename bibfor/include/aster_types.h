@@ -24,15 +24,24 @@
 #define aster_int integer(kind=aster_int_kind)
 #define to_aster_int(a) int(a, ASTER_INT_SIZE)
 !
+#ifdef _DISABLE_MED
+#   define MED_INT_SIZE 4
+#endif
 #define med_int_kind MED_INT_SIZE
 #define med_int integer(kind=med_int_kind)
 #define to_med_int(a) int(a, MED_INT_SIZE)
 !
+#ifndef _USE_MPI
+#   define MPI_INT_SIZE 4
+#endif
 #define mpi_int_kind MPI_INT_SIZE
 #define mpi_int integer(kind=mpi_int_kind)
 #define mpi_bool logical(kind=mpi_int_kind)
 #define to_mpi_int(a) int(a, MPI_INT_SIZE)
 !
+#ifdef _DISABLE_MUMPS
+#   define MUMPS_INT_SIZE 4
+#endif
 #define mumps_int_kind MUMPS_INT_SIZE
 #define mumps_int integer(kind=mumps_int_kind)
 #define to_mumps_int(a) int(a, MUMPS_INT_SIZE)

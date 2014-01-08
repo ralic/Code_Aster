@@ -77,8 +77,6 @@ def check_openmp(self):
 @Configure.conf
 def check_sizeof_mpi_int(self):
     """Check size of MPI_Fint"""
-    define = 'MPI_INT_SIZE'
-    err_msg = 'unexpected value for sizeof(MPI_Fint): %(size)s'
     if self.get_define('HAVE_MPI'):
         fragment = '\n'.join([
             '#include <stdio.h>',
@@ -89,11 +87,7 @@ def check_sizeof_mpi_int(self):
             '    return 0;',
             '}',
             ''])
-        self.code_checker(define, self.check_cc, fragment,
+        self.code_checker('MPI_INT_SIZE', self.check_cc, fragment,
                           'Checking size of MPI_Fint integers',
-                          err_msg,
+                          'unexpected value for sizeof(MPI_Fint): %(size)s',
                           into=(4, 8))
-    else:
-        self.set_define_from_env(define,
-                                 'Setting size of MPI_Fint integers',
-                                 err_msg, into=(4, 8), default=4)

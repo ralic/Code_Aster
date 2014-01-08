@@ -22,6 +22,8 @@ def configure(self):
     try:
         self.check_metis()
     except Errors.ConfigurationError:
+        self.define('_DISABLE_METIS', 1)
+        self.undefine('HAVE_METIS')
         if self.options.enable_metis == True:
             raise
     else:
