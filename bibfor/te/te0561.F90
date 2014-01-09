@@ -63,11 +63,10 @@ subroutine te0561(option, nomte)
         typmod(1) = 'AXIS    '
     else if (lteatt(' ','D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN  '
-    else if (nomte(1:4).eq.'MNVG') then
+    else if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
         typmod(1) = '3D      '
     else
-!       NOM D'ELEMENT ILLICITE
-        ASSERT(nomte(1:4).eq.'MNVG')
+        ASSERT(.false.)
     endif
 !
     typmod(2) = 'GDVARINO'

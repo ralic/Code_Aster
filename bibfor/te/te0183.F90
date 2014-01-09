@@ -43,15 +43,15 @@ subroutine te0183(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ii, ino, ivitn, j, jno, mater
+    integer :: i, ino, ivitn, j, jno, mater
     integer :: nddl
-    real(kind=8) :: r8b, rho(1)
+    real(kind=8) ::  rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfdx, jgano)
     idfdy = idfdx + 1
 !
-    nddl = 4*nno
+    nddl = nno
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVITENC', 'L', ivitn)
@@ -63,10 +63,9 @@ subroutine te0183(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [r8b],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
-    if (nomte(6:7) .ne. 'MX') nddl = nno
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
@@ -110,22 +109,10 @@ subroutine te0183(option, nomte)
 !
         jac = sqrt(nx*nx + ny*ny + nz*nz)
 !
-        if (nomte(6:7) .eq. 'MX') then
-!
-            do 203 i = 1, nno
-!
-                ii = 4*i-3
-!
-                zc(ivectt+ii-1) = zc(ivectt+ii-1) + jac * zr(ipoids+ ipg-1) * zc(ivitn+ipg-1) * z&
-                                  &r(ivf+ldec+i-1) *rho(1)
-203          continue
-        else
-!
-            do 103 i = 1, nno
-                zc(ivectt+i-1) = zc(ivectt+i-1) + jac * zr(ipoids+ipg- 1) * zc(ivitn+ipg-1) * zr(&
-                                 &ivf+ldec+i-1) *rho(1)
-103          continue
-        endif
+        do 103 i = 1, nno
+            zc(ivectt+i-1) = zc(ivectt+i-1) + jac * zr(ipoids+ipg- 1) * zc(ivitn+ipg-1) * zr(&
+                             &ivf+ldec+i-1) *rho(1)
+103     continue
 !
 101  continue
 end subroutine

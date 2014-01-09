@@ -2,6 +2,7 @@ subroutine dimthm(nomte, ndlno, ndlnm, ndim)
     implicit none
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
     integer :: ndlno, ndlnm, ndim
     integer :: iaux
     character(len=16) :: nomte
@@ -31,9 +32,7 @@ subroutine dimthm(nomte, ndlno, ndlnm, ndim)
 !     NDDLNO NOMBRE DE DDL DES NOEUDS EXTREMITE DE SEGMENTS
 !     NDDLM  NOMBRE DE DDL DES NOEUDS MILIEU DE SEGMENTS OU FACE
     iaux = lxlgut(nomte)
-    elsufm= (( nomte(iaux-4:iaux).eq.'_SUDM').or.&
-     &        ( nomte(iaux-4:iaux).eq.'_SUDA' ).or.&
-     &        ( nomte(iaux-3:iaux).eq.'_SUC' ))
+    elsufm= lteatt(nomte,'MODTHM','SUSHI')
 !
     if (elsufm) then
 ! ======================================================================
@@ -41,73 +40,73 @@ subroutine dimthm(nomte, ndlno, ndlnm, ndim)
 ! ======================================================================
         ndlno = 0
         ndlnm = 2
-    else if (nomte(1:5).eq.'THHM_') then
+    else if (lteatt(nomte,'MODTHM','THHM')) then
 ! ======================================================================
 ! --- SI MODELISATION = THHM -------------------------------------------
 ! ======================================================================
         ndlno = ndim+3
         ndlnm = ndim
-    else if (nomte(1:5).eq.'THH2M') then
+    else if (lteatt(nomte,'MODTHM','THH2M')) then
 ! ======================================================================
 ! --- SI MODELISATION = THH2M ------------------------------------------
 ! ======================================================================
         ndlno = ndim +3
         ndlnm = ndim
-    else if (nomte(1:2).eq.'HM') then
+    else if (lteatt(nomte,'MODTHM','HM')) then
 ! ======================================================================
 ! --- SI MODELISATION = HM ---------------------------------------------
 ! ======================================================================
         ndlno = ndim+1
         ndlnm = ndim
-    else if (nomte(1:3).eq.'HHM') then
+    else if (lteatt(nomte,'MODTHM','HHM')) then
 ! ======================================================================
 ! --- SI MODELISATION = HHM --------------------------------------------
 ! ======================================================================
         ndlno = ndim+2
         ndlnm = ndim
-    else if (nomte(1:4).eq.'HH2M') then
+    else if (lteatt(nomte,'MODTHM','HH2M')) then
 ! ======================================================================
 ! --- SI MODELISATION = HH2M -------------------------------------------
 ! ======================================================================
         ndlno = ndim+2
         ndlnm = ndim
-    else if (nomte(1:4).eq.'THH_') then
+    else if (lteatt(nomte,'MODTHM','THH')) then
 ! ======================================================================
 ! --- SI MODELISATION = THH --------------------------------------------
 ! ======================================================================
         ndlno = 3
         ndlnm = 0
-    else if (nomte(1:5).eq.'THH2_') then
+    else if (lteatt(nomte,'MODTHM','THH2')) then
 ! ======================================================================
 ! --- SI MODELISATION = THH2 -------------------------------------------
 ! ======================================================================
         ndlno = 3
         ndlnm = 0
-    else if (nomte(1:3).eq.'HH_') then
+    else if (lteatt(nomte,'MODTHM','HH')) then
 ! ======================================================================
 ! --- SI MODELISATION = HH_ -------------------------------------------
 ! ======================================================================
         ndlno = 2
         ndlnm = 0
-    else if (nomte(1:2).eq.'H_') then
+    else if (lteatt(nomte,'MODTHM','H')) then
 ! ======================================================================
 ! --- SI MODELISATION = H_ --------------------------------------------
 ! ======================================================================
         ndlno = 1
         ndlnm = 0
-    else if (nomte(1:4).eq.'HH2_') then
+    else if (lteatt(nomte,'MODTHM','HH2')) then
 ! ======================================================================
 ! --- SI MODELISATION = HH2 -------------------------------------------
 ! ======================================================================
         ndlno = 2
         ndlnm = 0
-    else if (nomte(1:4).eq.'THV_') then
+    else if (lteatt(nomte,'MODTHM','THV')) then
 ! ======================================================================
 ! --- SI MODELISATION = THV --------------------------------------------
 ! ======================================================================
         ndlno = 2
         ndlnm = 0
-    else if (nomte(1:4).eq.'THM_') then
+    else if (lteatt(nomte,'MODTHM','THM')) then
 ! ======================================================================
 ! --- SI MODELISATION = THM --------------------------------------------
 ! ======================================================================

@@ -26,7 +26,8 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
 #include "asterfort/gtria3.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
-    character(len=16) :: nomte, option
+    character(len=16) :: nomte
+    character(len=*) ::  option
     real(kind=8) :: xyzl(3, 1), pgl(3, 3)
     real(kind=8) :: sigma(1), bsigma(1)
 !     ------------------------------------------------------------------
@@ -77,7 +78,7 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
         call gquad4(xyzl, cara)
 !
     else
-        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte)
     endif
 !
 ! --- INITIALISATIONS :

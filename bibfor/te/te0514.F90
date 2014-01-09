@@ -24,6 +24,7 @@ subroutine te0514(option, nomte)
 #include "asterfort/xdecqv.h"
 #include "asterfort/xdivte.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/lteatt.h"
 !
     character(len=16) :: option, nomte
 !
@@ -102,7 +103,7 @@ subroutine te0514(option, nomte)
 !     PAR EXEMPLE, POUR LES ELEMENT DE BORDS D'UN MAILLAGE 3D :
 !     NDIME = 2 ALORS QUE NDIM = 3
 !
- 
+
 ! calcul du nombre maximum de points milieux crees par le sous-decoupage
     if (ndime .eq. 3) then
         pmmax=63
@@ -123,7 +124,7 @@ subroutine te0514(option, nomte)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
 !
 !     MODELISATION AXISYMETRIQUE AVEC ELEMENTS QUADRATIQUES INTERDITE
-    if (nomte(3:4) .eq. 'AX' .and. .not.iselli(elp)) then
+    if (lteatt(' ','AXIS','OUI') .and. .not.iselli(elp)) then
         call utmess('F', 'XFEM_76')
     endif
 !
@@ -447,10 +448,10 @@ subroutine te0514(option, nomte)
 !   pour chaque noeud central
     do 401 j=1, nnc
       deja=.false.
-!     recuperation des coordonnees de refrence du noeud central courant 
-      do 23 k=1,ndim     
+!     recuperation des coordonnees de refrence du noeud central courant
+      do 23 k=1,ndim
          xg(k)=nmil(k,j)
-23    continue   
+23    continue
 !     pour chaque noued de chaque sous-tetra
       do 400 i = 1, nit*nnose
 !       si le noeud courant du sous-tetra courant est le noeud central courant
@@ -469,13 +470,13 @@ subroutine te0514(option, nomte)
           zi(jout2-1+i)=3000+npm
         endif
 400   continue
-401 continue 
+401 continue
 !
 !     ARCHIVAGE DE LONCHAM POINTS MILIEUX
 !
     if (.not.iselli(elp)) then
       zi(jout4-1+4)=npm
     endif
-!   
+!
     call jedema()
 end subroutine

@@ -54,19 +54,14 @@ subroutine te0543(option, nomte)
 !
 ! - TYPE DE MODELISATION
 !
-    if (lteatt(' ','AXIS','OUI')) then
-        typmod(1) = 'AXIS    '
-    else if (nomte(1:5).eq.'MECA_') then
-        typmod(1) = '3D      '
-    else if (nomte(1:5).eq.'MGCA_') then
-        typmod(1) = '3D      '
+    if (lteatt(' ','DIM_TOPO_MODELI','3')) then
+        typmod(1) = '3D'
+    else if (lteatt(' ','AXIS','OUI')) then
+        typmod(1) = 'AXIS'
     else if (lteatt(' ','C_PLAN','OUI')) then
-        typmod(1) = 'C_PLAN  '
+        typmod(1) = 'C_PLAN'
     else if (lteatt(' ','D_PLAN','OUI')) then
-        typmod(1) = 'D_PLAN  '
-    else
-!       NOM D'ELEMENT ILLICITE
-        ASSERT(nomte(1:5).eq.'MECA_')
+        typmod(1) = 'D_PLAN'
     endif
 !
     typmod(2) = 'DEPLA'

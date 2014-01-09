@@ -6,6 +6,7 @@ subroutine te0122(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/tecach.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -40,18 +41,16 @@ subroutine te0122(option, nomte)
     character(len=8) :: lielrf(10)
 !     ------------------------------------------------------------------
 !
-    jlin2d = ((nomte(1:7) .eq.'MFPLQU4' ).or. (nomte(1:7) .eq.'MFAXQU4' ) )
+    jlin2d = ((nomte.eq.'MFPLQU4' ).or. (nomte.eq.'MFAXQU4' ))
 !
-    jlin3d = ( (nomte(1:10).eq.'MEFI_HEXA8' ) .or. (nomte(1:11).eq.'MEFI_PENTA6' ) )
+    jlin3d = ((nomte.eq.'MEFI_HEXA8' ) .or. (nomte.eq.'MEFI_PENTA6' ))
 !
-    jquad = (&
-            (nomte(1:7) .eq.'MFPLQU8' ) .or. (nomte(1:11).eq.'MEFI_HEXA20' ) .or.&
-            (nomte(1:12).eq.'MEFI_PENTA15')&
-            )
+    jquad = ((nomte.eq.'MFPLQU8' ) .or. (nomte.eq.'MEFI_HEXA20' ) .or. (nomte.eq.'MEFI_PENTA15'))
 !
-    jhm = nomte(1:6).eq.'EJHYME'
+    jhm = lteatt(nomte,'TYPMOD2','EJ_HYME')
 !
-    interf = ( (nomte(1:4).eq.'EIPL') .or. (nomte(1:4).eq.'EIAX') .or. (nomte(1:5).eq.'MEEI_') )
+    interf = lteatt(nomte,'TYPMOD2','INTERFAC')
+
 !
     quadra = (jquad.or.jhm.or.interf)
 !

@@ -7,6 +7,7 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
 #include "asterfort/ptgy01.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
 !
     integer :: icdmat
     character(len=*) :: nomte
@@ -44,10 +45,12 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, alfinv
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2
+    logical :: euler
 !     ------------------------------------------------------------------
 !
     zero = 0.d0
     deux = 2.d0
+    euler=lteatt(nomte,'EULER','OUI')
 !
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -81,18 +84,16 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
 !        --- POUTRE DROITE D'EULER A 6 DDL ---
         istruc = 1
         alfinv = zero
-        else if (nomte.eq.'MECA_POU_D_T'.or. nomte.eq.'MECA_POU_D_TG' )&
-    then
+    else if (nomte.eq.'MECA_POU_D_T'.or. nomte.eq.'MECA_POU_D_TG' ) then
 !        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         istruc = 1
         alfinv = deux/(alfay+alfaz)
-        else if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM'&
-    ) then
+    else if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM' ) then
 !        --- POUTRE DROITE MULTI-FIBRES---
         istruc = 1
         itype = 0
         call pmfitx(icdmat, 2, casect, rbid)
-!   ON DIVISE PAR RHO
+!       ON DIVISE PAR RHO
         a = casect(1)/rho
         xiy = casect(5)/rho
         xiz = casect(4)/rho
@@ -116,15 +117,15 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
         xiz=(xiz+xiz2)/deux
         alfay=(alfay+alfay2)/deux
         alfaz=(alfaz+alfaz2)/deux
-        if (nomte(1:12) .eq. 'MECA_POU_D_E') then
+        if (euler) then
             alfinv = zero
         else
             alfinv = deux/(alfay+alfaz)
         endif
     else if (itype.eq.0) then
-        if (nomte(1:12) .eq. 'MECA_POU_D_E') then
+        if (euler) then
             alfinv = zero
-        else if (nomte(1:12).eq.'MECA_POU_D_T') then
+        else
             alfinv = deux/(alfay+alfaz)
         endif
     endif

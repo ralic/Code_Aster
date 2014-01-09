@@ -29,6 +29,7 @@ subroutine te0430(option, nomte)
 #include "asterfort/tecael.h"
 #include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/verift.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -57,7 +58,7 @@ subroutine te0430(option, nomte)
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !
-    lexc = (nomte(1:4).eq.'MEGC')
+    lexc = (lteatt(' ','CODMOD','GRC'))
     materi = ' '
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS

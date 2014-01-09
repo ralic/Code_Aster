@@ -144,7 +144,7 @@ subroutine ef0231(nomte)
             endif
 !
             c=e/(1.d0-nu*nu)
-            if (nomte(3:4) .eq. 'CX') then
+            if (nomte.eq.'MECXSE3') then
                 ep22=(e22+x3*k22)/(1.d0+(correc*cosa*x3/r))
                 effopg(6*(kp-1)+1)=effopg(6*(kp-1)+1)+ zr(ipoids-1+ip)&
                 *(h/2.d0)* (c*(ep11+nu*ep22)-epsthe)

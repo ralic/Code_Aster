@@ -6,6 +6,7 @@ subroutine te0472(option, nomte)
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/vff2dn.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! ======================================================================
@@ -161,8 +162,8 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = THHM, THH OU THH2 ------------------------------
 ! ======================================================================
-            if (nomte(1:4) .eq. 'THHM' .or. nomte(1:4) .eq. 'THH_' .or. nomte(1:4) .eq.&
-                'THH2') then
+            if (lteatt(nomte,'MODTHM','THHM').or.lteatt(nomte,'MODTHM','THH').or. &
+                lteatt(nomte,'MODTHM','THH2')) then
                 napre1 = 0
                 napre2 = 1
                 natemp = 2
@@ -190,7 +191,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = THHM, OU THH2M ---------------------------------
 ! ======================================================================
-                if (nomte(1:4) .eq. 'THHM' .or. nomte(1:5) .eq. 'THH2M') then
+                if (lteatt(nomte,'MODTHM','THHM').or.lteatt(nomte,'MODTHM','THH2M')) then
                     do 30 i = 1, nno2
                         l = 5* (i-1) - 1
                         zr(ires+l+3) = zr(ires+l+3) - poids*deltat* flu1*zr(ivf2+kk+i-1)
@@ -209,8 +210,8 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = HH, OU HH2 -------------------------------------
 ! ======================================================================
-            if ((nomte(1:3).eq.'HH_' ) .or. (nomte(1:4).eq.'HH2_') .or.&
-                (nomte(1:9).eq.'DHH2S3_SU') .or. (nomte(1:9) .eq.'DHH2S3_VF')) then
+            if (lteatt(nomte,'MODTHM','HH').or.lteatt(nomte,'MODTHM','HH2').or. &
+                lteatt(nomte,'MODTHM','SUSHI')) then
                 napre1 = 0
                 napre2 = 1
                 if (iopt .eq. 1) then
@@ -232,7 +233,7 @@ subroutine te0472(option, nomte)
                                 flu2, iret)
                 endif
 !
-                if ((nomte(1:9).eq.'DHH2S3_SU') .or. (nomte(1:9) .eq.'DHH2S3_VF')) then
+                if (lteatt(nomte,'MODTHM','SUSHI')) then
 ! ======================================================================
 ! --- SI TE = DHH2S3_SU ------------------------------------------------
 ! ======================================================================
@@ -254,7 +255,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = THV --------------------------------------------
 ! ======================================================================
-            if (nomte(1:4) .eq. 'THV_') then
+            if (lteatt(nomte,'MODTHM','THV')) then
                 napre1 = 0
                 natemp = 1
                 if (iopt .eq. 1) then
@@ -286,7 +287,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = H ---------------------------------------------
 ! ======================================================================
-            if (nomte(1:2) .eq. 'H_') then
+            if (lteatt(' ','CODMOD','DHA')) then
                 napre1 = 0
                 if (iopt .eq. 1) then
                     flu1 = zr(iflux+ (kp-1)+napre1)
@@ -311,7 +312,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = HM ---------------------------------------------
 ! ======================================================================
-            if (nomte(1:2) .eq. 'HM') then
+            if (lteatt(nomte,'MODTHM','HM')) then
                 napre1 = 0
                 if (iopt .eq. 1) then
                     flu1 = zr(iflux+ (kp-1)+napre1)
@@ -340,7 +341,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = HHM OU HH2M ------------------------------------
 ! ======================================================================
-            if ((nomte(1:3).eq.'HHM') .or. (nomte(1:4).eq.'HH2M')) then
+            if (lteatt(nomte,'MODTHM','HHM').or.lteatt(nomte,'MODTHM','HH2M')) then
                 napre1 = 0
                 napre2 = 1
                 if (iopt .eq. 1) then
@@ -370,7 +371,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = THM --------------------------------------------
 ! ======================================================================
-            if (nomte(1:3) .eq. 'THM') then
+            if (lteatt(nomte,'MODTHM','THM')) then
                 napre1 = 0
                 natemp = 1
                 if (iopt .eq. 1) then

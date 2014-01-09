@@ -149,7 +149,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         endif
 !
         call jevech('PMATERC', 'L', lmate)
-        if (nomte(1:13) .eq. 'MECA_POU_D_EM' .or. nomte(1:14) .eq. 'MECA_POU_D_TGM') then
+        if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM') then
             if (ist .eq. 1) then
                 call pmfitx(zi(lmate), 2, casect, r8bid)
             else
@@ -186,7 +186,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 !
 !        ---UN CAS DE CHARGE DE PESANTEUR SE PASSE EN REPERE GLOBAL ---
 !        --- PASSAGE REPERE LOCAL DU VECTEUR FORCE ---
-        if (nomte(1:12) .eq. 'MECA_POU_C_T') then
+        if (nomte.eq.'MECA_POU_C_T') then
             call utpvgl(nnoc, ncc, pgl1, q(1), qq(1))
             call utpvgl(nnoc, ncc, pgl2, q(7), qq(7))
         else
@@ -349,7 +349,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     endif
 !     --- PASSAGE REPERE LOCAL DU VECTEUR FORCE  ---
     if (global .or. normal .or. okvent) then
-        if (nomte(1:12) .eq. 'MECA_POU_C_T') then
+        if (nomte.eq.'MECA_POU_C_T') then
             call utpvgl(nnoc, ncc, pgl1, q(1), qq(1))
             call utpvgl(nnoc, ncc, pgl2, q(7), qq(7))
         else

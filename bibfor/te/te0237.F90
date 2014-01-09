@@ -213,7 +213,7 @@ subroutine te0237(option, nomte)
                     c1=e/(1.d0+nu)
                     c2=c1/(1.d0-nu)
 !
-                    if (nomte(3:4) .eq. 'CX') then
+                    if (nomte.eq.'MECXSE3') then
                         si11=c2*(ep11+nu*ep22)-epsthe
                         si22=c2*(ep22+nu*ep11)-epsthe
                     else if (nomte.eq.'METDSE3 ') then

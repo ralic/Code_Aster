@@ -40,11 +40,13 @@ subroutine te0281(option, nomte)
 #include "asterfort/rcdiff.h"
 #include "asterfort/rcfode.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/uttgel.h"
 !
     character(len=16) :: nomte, option
 !
 !
     integer :: icodre(1)
+    character(len=2) :: typgeo
     real(kind=8) :: beta, dbeta, lambda, theta, deltat, tpg, dfdx(27)
     real(kind=8) :: dfdy(27), dfdz(27), poids, dtpgdx, dtpgdy, dtpgdz, dlambd
     real(kind=8) :: tpgbuf, tpsec, diff, chal(1), hydrpg(27)
@@ -58,7 +60,8 @@ subroutine te0281(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    if ((lteatt(' ','LUMPE','OUI')) .and. (nomte(6:10).ne.'PYRAM')) then
+    call uttgel(nomte, typgeo)
+    if ((lteatt(' ','LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
         call elref4(' ', 'NOEU', ndim, nno, nnos,&
                     npg2, ipoid2, ivf2, idfde2, jgano)
     else

@@ -70,10 +70,10 @@ subroutine te0037(option, nomte)
     integer :: i, j, ninter, nface, cface(5, 3), ifa, nli, in(3), nfiss, jfisno
     integer :: ar(12, 3), nbar, fac(6, 4), nbf, ibid2(12, 3), ibid, cpt, ino, ilev
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf
+    integer :: compt, nddlm, nddls, iret
     real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
     logical :: lbid, pre1, axi
-    integer :: compt, nddlm, nddls
     real(kind=8) :: thet
     data    he / -1.d0 , 1.d0/
 !
@@ -92,13 +92,10 @@ subroutine te0037(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    pre1=.false.
     axi = lteatt(' ','AXIS','OUI')
 !
-     call teattr(nomte, 'C', 'THM', enr, ibid)
-    if (enr .eq. 'OUI') then
-        pre1=.true.
-    endif
+    call teattr(nomte, 'C', 'MODTHM', enr, iret)
+    pre1=(iret.eq.0)
 !
 !-----------------------------------------------------------------------
 !     RECUPERATION DES ENTREES / SORTIE
@@ -127,7 +124,7 @@ subroutine te0037(option, nomte)
     call jevech('PVECTUR', 'E', ires)
 !
 !
-!     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
+!   INITIALISATION DES DIMENSIONS DES DDLS X-FEM
 !     SI PRE1=.FALSE. -> MODELISATION MECA XFEM CLASSIQUE
 !     SI PRE1=.TRUE.  -> MODELISATION HM XFEM
     if (pre1) then

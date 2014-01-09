@@ -30,6 +30,7 @@ subroutine te0432(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
+#include "asterfort/lteatt.h"
 #include "blas/ddot.h"
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -60,7 +61,7 @@ subroutine te0432(option, nomte)
     logical :: lexc, ldiag
 !
 !
-    lexc = (nomte(1:4).eq.'MEGC')
+    lexc = (lteatt(' ','CODMOD','GRC'))
     ldiag = (option(1:10).eq.'MASS_MECA_')
 !
 !

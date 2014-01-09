@@ -22,6 +22,7 @@ subroutine te0447(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !
 !
@@ -45,7 +46,7 @@ subroutine te0447(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 !
     ncmp = 2*ndim
-    axi = nomte(3:4).eq.'AX'
+    axi = lteatt(' ','AXIS','OUI')
     grand = .false.
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)

@@ -186,9 +186,9 @@ subroutine te0409(option, nomte)
     q4g    = .false.
     leul   = .false.
 !
-    if (nomte(1:8) .eq. 'MEDKTG3 ' .or. nomte(1:8) .eq. 'MET3GG3 ') then
+    if (nomte.eq.'MEDKTG3' .or. nomte.eq.'MET3GG3') then
         t3g = .true.
-    else if(nomte(1:8).eq.'MEDKQG4 ' .or. nomte(1:8).eq.'MEQ4GG4 ') then
+    else if(nomte.eq.'MEDKQG4' .or. nomte.eq.'MEQ4GG4') then
         q4g = .true.
     else
         valk(1) = nomte
@@ -196,7 +196,7 @@ subroutine te0409(option, nomte)
         call utmess('F', 'CALCULEL3_27', nk=2, valk=valk)
     endif
 !
-    if (nomte(1:8) .eq. 'MEQ4GG4 ' .or. nomte(1:8) .eq. 'MET3GG3 ') then
+    if (nomte.eq.'MEQ4GG4' .or. nomte.eq.'MET3GG3') then
         q4gg = .true.
         nbsig = 8
     endif
@@ -371,22 +371,22 @@ subroutine te0409(option, nomte)
             icpg = (ipg-1)*nbcont
             icpv = (ipg-1)*nbvari
 !
-            if (nomte(1:8) .eq. 'MEDKTG3 ') then
+            if (nomte.eq.'MEDKTG3') then
                 call dxtbm(carat3(9), bm)
                 call dktbf(qsi, eta, carat3, bf)
                 poids = zr(ipoids+ipg-1)*carat3(7)
-            else if (nomte(1:8).eq.'MEDKQG4 ') then
+            else if (nomte.eq.'MEDKQG4') then
                 call jquad4(xyzl, qsi, eta, jacob)
                 call dxqbm(qsi, eta, jacob(2), bm)
                 call dkqbf(qsi, eta, jacob(2), caraq4, bf)
                 poids = zr(ipoids+ipg-1)*jacob(1)
-            else if (nomte(1:8).eq.'MEQ4GG4 ') then
+            else if (nomte.eq.'MEQ4GG4') then
                 call jquad4(xyzl, qsi, eta, jacob)
                 call dxqbm(qsi, eta, jacob(2), bm)
                 call dsqbfb(qsi, eta, jacob(2), bf)
                 call q4gbc(qsi, eta, jacob(2), caraq4, bc)
                 poids = zr(ipoids+ipg-1)*jacob(1)
-            else if (nomte(1:8).eq.'MET3GG3 ') then
+            else if (nomte.eq.'MET3GG3') then
                 call dxtbm(carat3(9), bm)
                 call dstbfb(carat3(9), bf)
                 call t3gbc(xyzl, qsi, eta, bc)

@@ -81,7 +81,7 @@ subroutine dxefnt(nomte, pgl, sigt)
              nomte.eq.'MEDSQU4 ' .or. nomte.eq.'MEQ4QU4 ') then
         nno = 4
     else
-        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte)
     endif
 !
 !===============================================================

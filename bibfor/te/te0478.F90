@@ -97,8 +97,8 @@ subroutine te0478(option, nomte)
 !
 ! == TUYAUX ==
 !
-        elseif((nomte(1:8).eq.'MET3SEG3').or. (nomte(1:8).eq.'MET3SEG4')&
-    .or.(nomte(1:8).eq.'MET6SEG3')) then
+        elseif((nomte.eq.'MET3SEG3').or. (nomte.eq.'MET3SEG4')&
+    .or.(nomte.eq.'MET6SEG3')) then
 !       NOMBRE DE COUCHES ET NOMBRE DE SECTIONS
         call jevech('PNBSP_I', 'L', inbf)
         nbcou = zi(inbf )
@@ -148,8 +148,8 @@ subroutine te0478(option, nomte)
 !
 ! == COQUE(2D) ==
 !
-        elseif((nomte(1:7).eq.'METCSE3').or. (nomte(1:7).eq.'MECXSE3')&
-    .or.(nomte(1:7).eq.'METDSE3')) then
+        elseif((nomte.eq.'METCSE3').or. (nomte.eq.'MECXSE3')&
+    .or.(nomte.eq.'METDSE3')) then
 !
         ASSERT(ndim.eq.2)
 !

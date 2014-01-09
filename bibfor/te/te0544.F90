@@ -51,15 +51,14 @@ subroutine te0544(option, nomte)
 ! - TYPE DE MODELISATION
     typmod(2) = 'GRADEPSI'
 !
-    if (nomte(1:5) .eq. 'MGCA_') then
+    if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
         typmod(1) = '3D'
     else if (lteatt(' ','C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN'
     else if (lteatt(' ','D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN'
     else
-!       NOM D'ELEMENT ILLICITE
-        ASSERT(nomte(1:5).eq.'MGCA_')
+        ASSERT(.false.)
     endif
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS POUR LES DEFO GENERALISEES

@@ -17,7 +17,7 @@
 !
 interface
     subroutine modthm(nomte, modint)
-        character(len=16) :: nomte
-        character(len=3) :: modint
+        character(len=16), intent(in)  :: nomte
+        character(len=3), intent(out)  :: modint
     end subroutine modthm
 end interface

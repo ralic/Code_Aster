@@ -47,7 +47,7 @@ subroutine te0103(option, nomte)
     integer :: idfde, igeom, itemps, ipoids, ivf, i, j, icoefh, ier, nbv, ind
 !
 !
-    if (nomte .ne. 'THCPSE3 ' .and. nomte .ne. 'THCASE3 ' .and. nomte .ne. 'THCOSE3 ' .and.&
+    if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and.&
         nomte .ne. 'THCOSE2 ') then
         call elref4(' ', 'MASS', ndim, nno, nnos,&
                     npg2, ipoids, ivf, idfde, jgano)
@@ -102,8 +102,8 @@ subroutine te0103(option, nomte)
 !
 ! --- CAS DES COQUES SURFACIQUES :
 !     --------------------------
-    if (nomte(1:8) .ne. 'THCPSE3 ' .and. nomte(1:8) .ne. 'THCASE3 ' .and. nomte(1:8) .ne.&
-        'THCOSE3 ' .and. nomte(1:8) .ne. 'THCOSE2 ') then
+    if (nomte.ne.'THCPSE3' .and. nomte.ne.'THCASE3' .and. nomte.ne.'THCOSE3'&
+         .and. nomte.ne.'THCOSE2') then
 !
 ! --- DETERMINATION DES COORDONNEES COOR2D DES NOEUDS DE L'ELEMENT
 ! --- DANS LE REPERE DE L'ELEMENT :
@@ -191,7 +191,7 @@ subroutine te0103(option, nomte)
 !
 ! --- CAS DES COQUES LINEIQUES (EN CONTRAINTES PLANES ET AXI) :
 !     -------------------------------------------------------
-        else if (nomte(1:8).eq.'THCPSE3 ' .or. nomte(1:8).eq.'THCASE3 ')&
+        else if (nomte.eq.'THCPSE3' .or. nomte.eq.'THCASE3')&
     then
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
@@ -275,7 +275,7 @@ subroutine te0103(option, nomte)
 !
 ! --- CAS DES COQUES LINEIQUES (AUTRES QUE CONTRAINTES PLANES ET AXI) :
 !     --------------------------------------------------------------
-        else if (nomte(1:8).eq.'THCOSE3 ' .or. nomte(1:8).eq.'THCOSE2 ')&
+        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
     then
 !
         call jevete('&INEL.'//nomte(1:8)//'.DEMR', ' ', mzr)
@@ -372,7 +372,7 @@ subroutine te0103(option, nomte)
             matn(2,1) = matn(1,2)
             matn(2,2) = poi2*h*zr(ivf-1+k+2)**2
 !
-            if (nomte(1:8) .eq. 'THCOSE3 ') then
+            if (nomte.eq.'THCOSE3') then
                 matn(1,3) = poi2*h*zr(ivf-1+k+1)*zr(ivf-1+k+3)
                 matn(2,3) = poi2*h*zr(ivf-1+k+2)*zr(ivf-1+k+3)
                 matn(3,1) = matn(1,3)
@@ -422,7 +422,7 @@ subroutine te0103(option, nomte)
             rigith(6,5) = rigith(5,6)
             rigith(6,6) = rigith(6,6) + matn(2,2)*matp(3,3)
 !
-            if (nomte(1:8) .eq. 'THCOSE3 ') then
+            if (nomte.eq.'THCOSE3') then
 !
                 rigith(1,7) = rigith(1,7) + matn(1,3)*matp(1,1)
                 rigith(1,8) = rigith(1,8) + matn(1,3)*matp(1,2)

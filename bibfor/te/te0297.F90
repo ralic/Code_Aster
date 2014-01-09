@@ -16,6 +16,7 @@ subroutine te0297(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/xcgfvo.h"
 #include "asterfort/xsifel.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/xsifle.h"
 #include "asterfort/xteini.h"
     character(len=16) :: option, nomte
@@ -114,7 +115,7 @@ subroutine te0297(option, nomte)
     call jevech('PGTHETA', 'E', igthet)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ier)
-    if ((ier.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
+    if ((ier.eq.0) .and. (.not.lteatt(' ','AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHC'.or.enr.eq.'XHT'.or.enr.eq.'XT')&
          .and..not.iselli(elrefp))&
     call jevech('PPMILTO', 'L', jpmilt)

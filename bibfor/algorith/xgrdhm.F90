@@ -4,6 +4,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
     implicit none
 !
 #   include "asterfort/teattr.h"
+#   include "asterfort/assert.h"
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: dimdef, dimcon, ier
     integer :: ndim, nmec, np1, np2, i
@@ -88,11 +89,13 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
-    call teattr(nomte, 'S', 'THM', enr, ier)
-    if (enr .eq. 'OUI') then
+    call teattr(nomte, 'C', 'MODTHM', enr, ier)
+    if (ier .eq. 0) then
         mecani(1) = 1
         press1(1) = 1
         press1(2) = 1
+    else
+        ASSERT(.false.)
     endif
 ! =====================================================================
 ! --- ON VERIFIE LA NATURE DE L'ELEMENT HM-XFEM -----------------------

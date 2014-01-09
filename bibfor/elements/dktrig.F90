@@ -118,7 +118,7 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig,&
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(3, 6, pgl, zr(jdepg), depl)
         call dxtloe(flex, memb, mefl, ctor, coupmf, depl, ener)
-        call bsthpl(nomte(1:8), bsigth, indith)
+        call bsthpl(nomte, bsigth, indith)
         if (indith) then
             do i = 1, 18
                 enerth = enerth + depl(i)*bsigth(i)

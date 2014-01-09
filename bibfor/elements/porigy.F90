@@ -7,6 +7,7 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 #include "asterfort/ptgy02.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
 !
     integer :: icdmat
     character(len=*) :: nomte
@@ -44,10 +45,13 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, xjx, alfay, alfaz, alfinv
     real(kind=8) :: a2, xiy2, xiz2, xjx2, alfay2, alfaz2
+    logical :: euler
 !     ------------------------------------------------------------------
 !
     zero = 0.d0
     deux = 2.d0
+    euler=lteatt(nomte,'EULER','OUI')
+
 !
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -83,17 +87,16 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 !        --- POUTRE DROITE D'EULER A 6 DDL ---
         istruc = 1
         alfinv = zero
-    else if (nomte(1:12).eq.'MECA_POU_D_T') then
+    else if (nomte.eq.'MECA_POU_D_T') then
 !        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         istruc = 1
         alfinv = deux/(alfay+alfaz)
-        elseif (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM'&
-    ) then
+        elseif (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM' ) then
 !        --- POUTRE DROITE MULTI-FIBRES---
         itype = 0
         istruc = 1
         alfinv = zero
-!   ON MET RHO=1, il est utilisé dans PMFITX
+!       ON MET RHO=1, il est utilisé dans PMFITX
         rho = 1.d0
         call pmfitx(icdmat, 2, casect, rbid)
         a = casect(1)
@@ -122,7 +125,7 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
         alfay=(alfay+alfay2)/deux
         alfaz=(alfaz+alfaz2)/deux
         xjx=(xjx+xjx2)/deux
-        if (nomte(1:12) .eq. 'MECA_POU_D_E') then
+        if (euler) then
             alfinv = zero
         else
             alfinv = deux/(alfay+alfaz)

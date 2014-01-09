@@ -19,6 +19,8 @@ subroutine te0141(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/vecma.h"
+#include "asterfort/lteatt.h"
+
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -204,31 +206,23 @@ subroutine te0141(option, nomte)
     if (option .eq. 'M_GAMMA') then
         call jevech('PACCELR', 'L', iacce)
         call jevech('PVECTUR', 'E', ivect)
-        if (nomte(1:12) .eq. 'MECA_POU_D_E' .or. nomte(1:12) .eq. 'MECA_POU_D_T') then
-            call matrot(zr(lorien), pgl)
-            call utpslg(nno, nc, pgl, mlv, matv)
-!
-        else if (nomte.eq.'MECA_POU_C_T') then
+        if (nomte.eq.'MECA_POU_C_T') then
             call jevech('PCAARPO', 'L', lrcou)
             rad = zr(lrcou)
             angarc = zr(lrcou+1)
             angs2 = trigom('ASIN',xl/ (deux*rad))
             call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
             call chgrep('LG', pgl1, pgl2, mlv, matv)
-!
         else
-            ch16 = nomte
-            call utmess('F', 'ELEMENTS2_42', sk=ch16)
+            call matrot(zr(lorien), pgl)
+            call utpslg(nno, nc, pgl, mlv, matv)
         endif
         call vecma(matv, nbv, matp, ntc)
         call pmavec('ZERO', ntc, matp, zr(iacce), zr(ivect))
     else
         call jevech('PMATUUR', 'E', lmat)
 !
-        if (nomte(1:12) .eq. 'MECA_POU_D_E' .or. nomte(1:12) .eq. 'MECA_POU_D_T') then
-            call matrot(zr(lorien), pgl)
-            call utpslg(nno, nc, pgl, mlv, zr(lmat))
-        else if (nomte.eq.'MECA_POU_C_T') then
+        if (nomte.eq.'MECA_POU_C_T') then
             call jevech('PGEOMER', 'L', lx)
             call jevech('PCAARPO', 'L', lrcou)
             rad = zr(lrcou)
@@ -237,8 +231,8 @@ subroutine te0141(option, nomte)
             call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
             call chgrep('LG', pgl1, pgl2, mlv, zr(lmat))
         else
-            ch16 = nomte
-            call utmess('F', 'ELEMENTS2_42', sk=ch16)
+            call matrot(zr(lorien), pgl)
+            call utpslg(nno, nc, pgl, mlv, zr(lmat))
         endif
     endif
 !

@@ -8,6 +8,8 @@ subroutine porigi(nomte, e, xnu, klv)
 #include "asterfort/ptka10.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
+
     character(len=*) :: nomte
     real(kind=8) :: e, xnu, klv(*)
 !     ------------------------------------------------------------------
@@ -30,25 +32,23 @@ subroutine porigi(nomte, e, xnu, klv)
 !     CALCULE LA MATRICE DE RIGIDITE DES ELEMENTS DE POUTRE
 !
 ! IN  NOMTE : NOM DU TYPE ELEMENT
-!             'MECA_POU_D_E'  'MECA_POU_D_T'  'MECA_POU_C_T'
-!     ------------------------------------------------------------------
-!
+!             'MECA_POU_D_E'  'MECA_POU_D_T'  'MECA_POU_C_T' ...
+!------------------------------------------------------------------
     character(len=8) :: nomail
-    character(len=16) :: ch16
     integer :: iadzi, iazk24
-!     ------------------------------------------------------------------
-!
 !-----------------------------------------------------------------------
     integer :: istruc, itype, lrcou, lsect, lsect2, lx
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, ang
     real(kind=8) :: angs2, deux, ey, ez, g, rad, un
     real(kind=8) :: xfl, xfly, xflz, xiy, xiy2, xiz, xiz2
     real(kind=8) :: xjx, xjx2, xl, zero
+    logical :: euler
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
     g = e/ (deux* (un+xnu))
+    euler=lteatt(nomte,'EULER','OUI')
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
@@ -87,16 +87,13 @@ subroutine porigi(nomte, e, xnu, klv)
         call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
-    if (nomte(1:12) .eq. 'MECA_POU_D_E') then
+    if (euler) then
 !        --- POUTRE DROITE D'EULER A 6 DDL ---
         istruc = 1
         alfay = zero
         alfaz = zero
         alfay2 = zero
         alfaz2 = zero
-    else if (nomte(1:12).eq.'MECA_POU_D_T') then
-!        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
-        istruc = 1
     else if (nomte.eq.'MECA_POU_C_T') then
 !        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
         istruc = 1
@@ -117,8 +114,8 @@ subroutine porigi(nomte, e, xnu, klv)
         xiy2 = xiy2/xfly
         xiz2 = xiz2/xflz
     else
-        ch16 = nomte
-        call utmess('F', 'ELEMENTS2_42', sk=ch16)
+!        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
+        istruc = 1
     endif
 !
 !     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE

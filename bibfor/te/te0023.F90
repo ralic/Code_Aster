@@ -57,12 +57,10 @@ subroutine te0023(option, nomte)
                 zr(istrx-1+ncomp*(kpg-1)+15+i) = zr(iorien-1+i)
  1          continue
  3      continue
-    else if (nomte(1:8).eq.'MECA_POU') then
+    else
         do 30 i = 1, 3
             zr(istrx-1+i) = zr(iorien-1+i)
 30      continue
-    else
-        ASSERT(.false.)
     endif
     call jedema()
 end subroutine

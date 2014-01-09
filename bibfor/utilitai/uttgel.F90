@@ -1,4 +1,4 @@
-subroutine uttgel(nomte, ndim, typgeo)
+subroutine uttgel(nomte, typgeo)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,12 +15,11 @@ subroutine uttgel(nomte, ndim, typgeo)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: olivier.boiteau at edf.fr
+! person_in_charge: jacques.pellet at edf.fr
 !  UTILITAIRE - TYPE GEOMETRIQUE D'UN ELEMENT FINI
 !  **           *    *                **
 ! =====================================================================
 ! IN  NOMTE  : NOM DU TYPE D'ELEMENT FINI
-! IN  NDIM   : DIMENSION DE L'ELEMENT FINI
 ! OUT TYPGEO : TYPE GEOMETRIQUE CORRESPONDANT
 !              EN 2D : 'TR', 'QU'
 !              EN 3D : 'HE', 'TE', 'PE', 'PY'
@@ -31,107 +30,35 @@ subroutine uttgel(nomte, ndim, typgeo)
 !
 #include "asterfort/codent.h"
 #include "asterfort/utmess.h"
-    integer :: ndim
+#include "asterfort/teattr.h"
+#include "asterfort/assert.h"
     character(len=2) :: typgeo
     character(len=16) :: nomte
 !
 ! 0.2. ==> VARIABLES LOCALES
 !
-    integer :: iaux
-    character(len=8) :: k8bid
-!
-!====
-! 1. EN 2D
-!====
-!
-    if (ndim .eq. 2) then
-!
-! 1.1. ==> CAS PARTICULIER DES ELEMENTS EN THM
-!
-        if (nomte(1:11) .eq. 'THH2M_AXIS_') then
-            iaux = 12
-            elseif ( nomte(1:10).eq.'THHM_AXIS_' .or. nomte(1:10)&
-        .eq.'HH2M_AXIS_' .or. nomte(1:10).eq.'THH2_AXIS_' ) then
-            iaux = 11
-            elseif ( nomte(1:9).eq.'THH_AXIS_' .or. nomte(1:9)&
-        .eq.'HHM_AXIS_' .or. nomte(1:9).eq.'THM_AXIS_' .or. nomte(1:9)&
-        .eq.'THV_AXIS_' .or. nomte(1:9).eq.'HH2_AXIS_' ) then
-            iaux = 10
-            elseif ( nomte(1:8).eq.'THH2M_DP' .or. nomte(1:8)&
-        .eq.'HM_AXIS_' .or. nomte(1:8).eq.'HH_AXIS_' ) then
-            iaux = 9
-            elseif ( nomte(1:7).eq.'THHM_DP' .or. nomte(1:7).eq.'HH2M_DP'&
-        .or. nomte(1:7).eq.'THH2_DP' ) then
-            iaux = 8
-            elseif ( nomte(1:6).eq.'THM_DP' .or. nomte(1:6).eq.'THH_DP'&
-        .or. nomte(1:6).eq.'HHM_DP' .or. nomte(1:6).eq.'THV_DP' .or.&
-        nomte(1:6).eq.'HH2_DP' ) then
-            iaux = 7
-            elseif ( nomte(1:5).eq.'HM_DP' .or. nomte(1:5).eq.'HH_DP' )&
-        then
-            iaux = 6
-!
-! 1.2. ==> CAS PARTICULIER DES ELEMENTS OSGS
-!
-            elseif ( nomte(1:6).eq.'MIPLOS' .or. nomte(1:6).eq.'MIAXOS' )&
-        then
-            iaux = 7
-!
-! 1.3. ==> CAS GENERAL
-!
-        else
-            iaux = 5
-        endif
-!
-!====
-! 2. EN 3D
-!====
-!
-    else if (ndim.eq.3) then
-!
-! 2.1. ==> CAS PARTICULIER DES ELEMENTS EN THM
-!
-        if (nomte(1:6) .eq. 'THH2M_') then
-            iaux = 7
-            elseif ( nomte(1:5).eq.'THHM_' .or. nomte(1:5).eq.'THH2_'&
-        .or. nomte(1:5).eq.'HH2M_' ) then
-            iaux = 6
-            elseif ( nomte(1:4).eq.'THM_' .or. nomte(1:4).eq.'THH_' .or.&
-        nomte(1:4).eq.'HHM_' .or. nomte(1:4).eq.'THV_' .or. nomte(1:4)&
-        .eq.'HH2_' ) then
-            iaux = 5
-        else if (nomte(1:3).eq.'HM_' .or. nomte(1:3).eq.'HH_') then
-            iaux = 4
-!
-! 2.2. ==> CAS PARTICULIER DES ELEMENTS OSGS
-!
-        else if (nomte(1:7).eq.'MINCOS_') then
-            iaux = 8
-!
-! 2.3. ==> CAS GENERAL
-!
-        else
-            iaux = 6
-        endif
-!
-!====
-! 3. SINON ON NE SAIT PAS FAIRE
-!====
-!
+    integer :: ibid
+    character(len=8) :: alias8
+    character(len=3) :: codtma
+
+
+    call teattr(nomte, 'S', 'ALIAS8', alias8, ibid)
+    codtma=alias8(6:8)
+
+    if (codtma(1:2).eq.'TR') then
+        typgeo='TR'
+    elseif (codtma(1:2).eq.'QU') then
+        typgeo='QU'
+    elseif (codtma.eq.'HE8' .or. codtma.eq.'H20' .or. codtma.eq.'H27') then
+        typgeo='HE'
+    elseif (codtma.eq.'PE6' .or. codtma.eq.'P15' .or. codtma.eq.'P18') then
+        typgeo='PE'
+    elseif (codtma.eq.'TE4' .or. codtma.eq.'T10') then
+        typgeo='TE'
+    elseif (codtma.eq.'PY5' .or. codtma.eq.'P13') then
+        typgeo='PY'
     else
-!
-        call codent(ndim, 'G', k8bid)
-        call utmess('F', 'UTILITAI_9', sk=k8bid)
-!
-    endif
-!
-!====
-! 4. DECODAGE
-!====
-!
-    typgeo = nomte(iaux:iaux+1)
-    if (typgeo .eq. 'Q8') then
-        typgeo = 'QU'
+        ASSERT(.false.)
     endif
 !
 end subroutine

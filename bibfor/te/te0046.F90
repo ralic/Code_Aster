@@ -107,7 +107,7 @@ subroutine te0046(option, nomte)
     call jevech('PLONCHA', 'L', jlonch)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
+    if ((ibid.eq.0) .and. (.not. axi) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
         .and..not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)

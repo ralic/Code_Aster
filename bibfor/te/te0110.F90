@@ -180,7 +180,7 @@ subroutine te0110(option, nomte)
             hfmoin = zk8(icoehf)
             hfplus = zk8(icoehf+1)
         endif
-        else if (nomte(1:8).eq.'THCOSE3 ' .or. nomte(1:8).eq.'THCOSE2 ')&
+        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
     then
 ! ---   CAS OU LES COEFFICIENTS D'ECHANGE SONT DES REELS :
         if (icoehr .gt. 0) then
@@ -205,7 +205,7 @@ subroutine te0110(option, nomte)
 !.    CAS DES COQUES SURFACIQUES                                  .
 !..................................................................
 !
-    if (nomte(1:8) .ne. 'THCOSE3 ' .and. nomte(1:8) .ne. 'THCOSE2 ') then
+    if (nomte.ne.'THCOSE3' .and. nomte.ne.'THCOSE2') then
 !
 ! ---   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !       -------------------------------------------------
@@ -739,7 +739,7 @@ subroutine te0110(option, nomte)
 !.    CAS DES BORDS DES COQUES SURFACIQUES                        .
 !.    ILS INTERVIENNENT PAR LEUR CONTRIBUTION A L'ECHANGE LATERAL .
 !..................................................................
-        else if (nomte(1:8).eq.'THCOSE3 ' .or. nomte(1:8).eq.'THCOSE2 ')&
+        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
     then
         call jevete('&INEL.'//nomte(1:8)//'.DEMR', ' ', mzr)
 !
@@ -835,7 +835,7 @@ subroutine te0110(option, nomte)
             matn(2,1) = matn(1,2)
             matn(2,2) = poi2*hbord*zr(ivf-1+k+2)**2
 !
-            if (nomte(1:8) .eq. 'THCOSE3 ') then
+            if (nomte.eq.'THCOSE3') then
                 matn(1,3) = poi2*hbord*zr(ivf-1+k+1)*zr(ivf-1+k+3)
                 matn(2,3) = poi2*hbord*zr(ivf-1+k+2)*zr(ivf-1+k+3)
                 matn(3,1) = matn(1,3)
@@ -885,7 +885,7 @@ subroutine te0110(option, nomte)
             rigith(6,5) = rigith(5,6)
             rigith(6,6) = rigith(6,6) + matn(2,2)*matp(3,3)
 !
-            if (nomte(1:8) .eq. 'THCOSE3 ') then
+            if (nomte.eq.'THCOSE3') then
 !
                 rigith(1,7) = rigith(1,7) + matn(1,3)*matp(1,1)
                 rigith(1,8) = rigith(1,8) + matn(1,3)*matp(1,2)

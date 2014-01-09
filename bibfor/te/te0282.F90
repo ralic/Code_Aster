@@ -44,6 +44,7 @@ subroutine te0282(option, nomte)
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !
 !
@@ -61,10 +62,9 @@ subroutine te0282(option, nomte)
     real(kind=8) :: prod, dsde2
     real(kind=8) :: tsom
 !
-    character(len=2) :: chelem
     character(len=8) :: nompar(3), elrefe
 !
-    logical :: fonc, chargn
+    logical :: fonc, chargn, axis
 !
 ! =====================================================================
 ! INITIALISATIONS
@@ -72,7 +72,7 @@ subroutine te0282(option, nomte)
     call elref1(elrefe)
     call jemarq()
     epsi = r8prem()
-    chelem = nomte(3:4)
+    axis=lteatt(nomte,'AXIS','OUI')
 !
 ! RECUPERATION DES DONNEES GEOMETRIQUES LIEES AU CALCUL ELEMENTAIRE
     call elref5(' ', 'RIGI', ndim, nno, nnos,&
@@ -245,7 +245,7 @@ subroutine te0282(option, nomte)
 ! ON EST SUR L'AXE AVEC CHARGEMENTS NULS DONC G (ET DG) = 0
             if (chargn) then
                 goto 799
-            else if (chelem .eq. 'AX') then
+            else if (axis) then
                 call utmess('F', 'RUPTURE1_23')
             endif
         else
@@ -255,7 +255,7 @@ subroutine te0282(option, nomte)
         endif
 !
 ! CALCUL DU TERME ELEMENTAIRE
-        if (chelem .eq. 'AX') then
+        if (axis) then
             poids = zr(ipoids+kp-1)*dsde*xg
         else
             poids = zr(ipoids+kp-1)*dsde
@@ -267,7 +267,7 @@ subroutine te0282(option, nomte)
 ! PRISE EN COMPTE DE LA MODELISATION POUR G
 ! =======================================================
 !
-        if (chelem .eq. 'AX') divthe = divthe+(thx/xg)
+        if (axis) divthe = divthe+(thx/xg)
 !
 ! =======================================================
 ! CALCUL DU TAUX DE RESTITUTION G

@@ -113,7 +113,7 @@ subroutine te0401(optioz, nomtz)
 !
         zr ( jener ) = 0.5d0 * zr ( jener )
 !
-        call bsthco(nomte(1:8), bsigth, indith)
+        call bsthco(nomte, bsigth, indith)
 !
         if (indith) then
             do 120 i = 1, 6 * nb1 + 3

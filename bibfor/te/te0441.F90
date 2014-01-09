@@ -32,6 +32,7 @@ subroutine te0441(option, nomte)
 #include "asterfort/xpesro.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !......................................................................
 !
@@ -98,7 +99,7 @@ subroutine te0441(option, nomte)
     call jevech('PMATERC', 'L', imate)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
+    if ((ibid.eq.0) .and. (.not.lteatt(' ','AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
         .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)

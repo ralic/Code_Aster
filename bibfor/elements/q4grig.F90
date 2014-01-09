@@ -160,7 +160,7 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig, ener)
         call jevech('PDEPLAR', 'L', jdepg)
         call utpvgl(4, 6, pgl, zr(jdepg), depl)
         call dxqloe(flex, memb, mefl, ctor, coupmf, depl, ener)
-        call bsthpl(nomte(1:8), bsigth, indith)
+        call bsthpl(nomte, bsigth, indith)
         if (indith) then
             do i = 1, 24
                 enerth = enerth + depl(i)*bsigth(i)

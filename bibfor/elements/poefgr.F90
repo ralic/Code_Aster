@@ -171,7 +171,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
         if (kanl .eq. 2) then
             call utmess('A', 'ELEMENTS2_44', sk=suropt)
         endif
-        if (nomte(1:13) .eq. 'MECA_POU_D_EM') then
+        if (nomte.eq.'MECA_POU_D_EM') then
             call jevech('PMATERC', 'L', lmater)
             call pmfmas(nomte, ' ', 0.d0, zi(lmater), kanl,&
                         mlv)

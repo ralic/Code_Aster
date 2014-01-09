@@ -5,6 +5,7 @@ subroutine te0482(option, nomte)
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmholi.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
@@ -40,7 +41,7 @@ subroutine te0482(option, nomte)
 ! ......................................................................
 !
 !
-    axi = nomte(3:4).eq.'AX'
+    axi = lteatt(' ','AXIS','OUI')
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)

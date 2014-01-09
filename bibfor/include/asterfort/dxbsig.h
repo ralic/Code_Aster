@@ -23,6 +23,6 @@ interface
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: sigma(1)
         real(kind=8) :: bsigma(1)
-        character(len=16) :: option
+        character(len=*) :: option
     end subroutine dxbsig
 end interface

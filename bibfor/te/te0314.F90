@@ -72,7 +72,7 @@ subroutine te0314(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = HM ---------------------------------------------
 ! ======================================================================
-    if (nomte(1:2) .eq. 'HM') then
+
         flu1 = zr(iflux)
         if (axi) then
             r = zr(igeom)
@@ -80,5 +80,5 @@ subroutine te0314(option, nomte)
         else
             zr(ires+6) = zr(ires+6) - deltat*flu1
         endif
-    endif
+
 end subroutine

@@ -32,6 +32,7 @@ subroutine te0542(option, nomte)
 #include "asterfort/xbsir2.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DES OPTION FORC_NODA ET REFE_FORC_NODA
@@ -82,7 +83,7 @@ subroutine te0542(option, nomte)
     call jevech('PLST', 'L', jlst)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
+    if ((ibid.eq.0) .and. (.not.lteatt(' ','AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
          .and..not.iselli(elref))&
     call jevech('PPMILTO', 'L', jpmilt)

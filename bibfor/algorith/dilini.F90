@@ -32,6 +32,7 @@ subroutine dilini(option, nomte, ivf, ivf2, idfde,&
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
 !
     logical :: axi
     integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
@@ -108,13 +109,12 @@ subroutine dilini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! --- RECUPERATION DU TYPE DE LA MODELISATION --------------------------
 ! ======================================================================
-    if (nomte(5:6) .eq. 'DP') then
-        typmod(1) = 'D_PLAN  '
-    else if (nomte(5:6).eq.'3D') then
-        typmod(1) = '3D  '
+    if (lteatt(' ','DIM_TOPO_MODELI','2')) then
+        typmod(1) = 'D_PLAN'
+    else if (lteatt(' ','DIM_TOPO_MODELI','3')) then
+        typmod(1) = '3D'
     else
-!       NOM D'ELEMENT ILLICITE
-        ASSERT(nomte(5:6).eq.'DP' .or. nomte(5:6).eq.'3D')
+        ASSERT(.false.)
     endif
 ! ======================================================================
     if (interp .eq. 'P0') then

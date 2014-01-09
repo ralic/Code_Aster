@@ -3,6 +3,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
                   dimcon, nmec, np1, np2)
     implicit none
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
     logical :: perman, vf
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: dimdep, dimdef, dimcon
@@ -90,7 +91,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! --- EN THM ----------------------------------------------------------
 !=========================================
     if (vf) then
-        if (nomte(2:4) .eq. 'HH2') then
+        if (lteatt(nomte,'MODTHM','SUSHI')) then
             mecani(1) = 0
             tempe(1) = 0
 !
@@ -127,7 +128,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
         press1(2)=0
         press2(2)=0
         tempe(1) =0
-        if (nomte(1:4) .eq. 'THHM') then
+        if (lteatt(nomte,'MODTHM','THHM')) then
             mecani(1) = 1
             press1(1) = 1
             press2(1) = 1
@@ -138,7 +139,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! ======================================================================
 ! --- -- SI MODELISATION = THH2M ---------------------------------------
 ! ======================================================================
-        if (nomte(1:5) .eq. 'THH2M') then
+        if (lteatt(nomte,'MODTHM','THH2M')) then
             mecani(1) = 1
             press1(1) = 1
             press2(1) = 1
@@ -149,7 +150,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
-        if (nomte(1:2) .eq. 'HM') then
+        if (lteatt(nomte,'MODTHM','HM')) then
             mecani(1) = 1
             press1(1) = 1
             press2(1) = 0
@@ -163,7 +164,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! --- ON RESERVE DE LA PLACE POUR LES TROIS CONSTITUANTS. MAIS IL EST -
 ! --- POSSIBLE DE N'EN REMPLIR QUE DEUX EN LAISSANT LE DERNIER A ZERO -
 ! =====================================================================
-        if (nomte(1:3) .eq. 'HHM') then
+        if (lteatt(nomte,'MODTHM','HHM')) then
             mecani(1) = 1
             press1(1) = 1
             press2(1) = 1
@@ -177,7 +178,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! --- ON RESERVE DE LA PLACE POUR LES TROIS CONSTITUANTS. MAIS IL EST -
 ! --- POSSIBLE DE N'EN REMPLIR QUE DEUX EN LAISSANT LE DERNIER A ZERO -
 ! =====================================================================
-        if (nomte(1:4) .eq. 'HH2M') then
+        if (lteatt(nomte,'MODTHM','HH2M')) then
             mecani(1) = 1
             press1(1) = 1
             press2(1) = 1
@@ -188,7 +189,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 ! --- SI MODELISATION = THH -------------------------------------------
 ! =====================================================================
-        if (nomte(1:4) .eq. 'THH_') then
+        if (lteatt(nomte,'MODTHM','THH')) then
             mecani(1) = 0
             press1(1) = 1
             press2(1) = 1
@@ -199,7 +200,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 ! --- SI MODELISATION = THH2 ------------------------------------------
 ! =====================================================================
-        if (nomte(1:5) .eq. 'THH2_') then
+        if (lteatt(nomte,'MODTHM','THH2')) then
             mecani(1) = 0
             press1(1) = 1
             press2(1) = 1
@@ -210,7 +211,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 ! --- SI MODELISATION = H --------------------------------------------
 ! =====================================================================
-        if (nomte(1:2) .eq. 'H_') then
+        if (lteatt(nomte,'MODTHM','H')) then
             mecani(1) = 0
             press1(1) = 1
             press2(1) = 0
@@ -221,7 +222,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 ! --- SI MODELISATION = HH -------------------------------------------
 ! =====================================================================
-        if (nomte(1:3) .eq. 'HH_') then
+        if (lteatt(nomte,'MODTHM','HH')) then
             mecani(1) = 0
             press1(1) = 1
             press2(1) = 1
@@ -232,7 +233,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 ! --- SI MODELISATION = HH2 -------------------------------------------
 ! =====================================================================
-        if (nomte(1:4) .eq. 'HH2_') then
+        if (lteatt(nomte,'MODTHM','HH2')) then
             mecani(1) = 0
             press1(1) = 1
             press2(1) = 1
@@ -243,7 +244,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 ! --- SI MODELISATION = THV -------------------------------------------
 ! =====================================================================
-        if (nomte(1:4) .eq. 'THV_') then
+        if (lteatt(nomte,'MODTHM','THV')) then
             mecani(1) = 0
             press1(1) = 1
             press2(1) = 0
@@ -254,7 +255,7 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 ! --- SI MODELISATION = THM -------------------------------------------
 ! =====================================================================
-        if (nomte(1:4) .eq. 'THM_') then
+        if (lteatt(nomte,'MODTHM','THM')) then
             mecani(1) = 1
             press1(1) = 1
             press2(1) = 0

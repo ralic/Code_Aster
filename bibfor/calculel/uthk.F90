@@ -99,7 +99,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
     real(kind=8) :: x6, y6, z6
     real(kind=8) :: x7, y7, z7, x8, y8, z8
     integer :: in, i, iino
-    character(len=2) :: nomte2
+    character(len=2) :: typgeo
     character(len=6) :: valk(2)
 !
 !====
@@ -115,7 +115,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
         y2 = geom(4)
         x3 = geom(5)
         y3 = geom(6)
-        call uttgel(nomte, ndim, nomte2)
+        call uttgel(nomte, typgeo)
 !
     else if (ndim.eq.3) then
 !
@@ -133,7 +133,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
         x4 = geom(10)
         y4 = geom(11)
         z4 = geom(12)
-        call uttgel(nomte, ndim, nomte2)
+        call uttgel(nomte, typgeo)
 !
     else if (ndim.eq.0) then
 !
@@ -166,10 +166,10 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
         end do
         if ((nsomm.eq.3) .or. (nsomm.eq.6)) then
 ! FACE_3 OU FACE_6
-            nomte2 = 'FT'
+            typgeo = 'FT'
         else
 ! FACE_4 OU FACE_8
-            nomte2 = 'FQ'
+            typgeo = 'FQ'
         endif
     endif
 !
@@ -177,7 +177,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! 2. TRIANGLE : PLUS GRANDE ARETE
 !====
 !
-    if ((nomte2.eq.'TR') .or. (nomte2.eq.'TS') .or. (nomte2.eq.'TL')) then
+    if ((typgeo.eq.'TR') .or. (typgeo.eq.'TS') .or. (typgeo.eq.'TL')) then
 !
         tabaux(1) = (x2-x1)**2 + (y2-y1)**2
         tabaux(2) = (x3-x2)**2 + (y3-y2)**2
@@ -189,8 +189,8 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! 3. QUADRANGLE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-        elseif ( (nomte2.eq.'QU') .or. (nomte2.eq.'QS') .or. (&
-    nomte2.eq.'QL') ) then
+        elseif ( (typgeo.eq.'QU') .or. (typgeo.eq.'QS') .or. (&
+    typgeo.eq.'QL') ) then
 !
         x4 = geom(7)
         y4 = geom(8)
@@ -213,7 +213,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! 4. TETRAEDRE : PLUS GRANDE ARETE
 !====
 !
-    else if (nomte2.eq.'TE') then
+    else if (typgeo.eq.'TE') then
 !
         tabaux(1) = (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2
         tabaux(2) = (x3-x1)**2 + (y3-y1)**2 + (z3-z1)**2
@@ -228,7 +228,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! 5. HEXAEDRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-    else if (nomte2.eq.'HE') then
+    else if (typgeo.eq.'HE') then
 !
         x5 = geom(13)
         y5 = geom(14)
@@ -291,7 +291,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! 5. PENTAEDRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-    else if (nomte2.eq.'PE') then
+    else if (typgeo.eq.'PE') then
 !
         x5 = geom(13)
         y5 = geom(14)
@@ -331,7 +331,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! 6. PYRAMIDE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-    else if (nomte2.eq.'PY') then
+    else if (typgeo.eq.'PY') then
 !
         x5 = geom(13)
         y5 = geom(14)
@@ -362,7 +362,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! 7. FACE QUADRANGULAIRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 !====
 !
-    else if (nomte2.eq.'FQ') then
+    else if (typgeo.eq.'FQ') then
 !
         tabaux(1) = (x1-x3)**2 + (y1-y3)**2 + (z1-z3)**2
         tabaux(2) = (x2-x4)**2 + (y2-y4)**2 + (z2-z4)**2
@@ -378,7 +378,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 ! 8. FACE TRIANGULAIRE : PLUS GRANDE ARETE
 !====
 !
-    else if (nomte2.eq.'FT') then
+    else if (typgeo.eq.'FT') then
 !
         tabaux(1) = (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2
         tabaux(2) = (x3-x2)**2 + (y3-y2)**2 + (z3-z2)**2
@@ -392,7 +392,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
 !
     else
         valk(1) = nompro
-        valk(2) = nomte2
+        valk(2) = typgeo
         call utmess('F', 'INDICATEUR_32', nk=2, valk=valk)
     endif
 !
@@ -404,7 +404,7 @@ subroutine uthk(nomte, geom, hk, ndim, niv,&
     hk = sqrt(hk)
 !
     if (niv .ge. 2) then
-        call utmess('I', 'INDICATEUR_33', sk=nomte2, sr=hk)
+        call utmess('I', 'INDICATEUR_33', sk=typgeo, sr=hk)
     endif
 !
 end subroutine

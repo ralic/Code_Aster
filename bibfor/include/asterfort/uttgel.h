@@ -15,10 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine uttgel(nomte, ndim, typgeo)
-        character(len=16) :: nomte
-        integer :: ndim
-        character(len=2) :: typgeo
-    end subroutine uttgel
-end interface
+          interface 
+            subroutine uttgel(nomte,typgeo)
+              character(len=16) :: nomte
+              character(len=2) :: typgeo
+            end subroutine uttgel
+          end interface 

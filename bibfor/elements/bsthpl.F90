@@ -10,7 +10,7 @@ subroutine bsthpl(nomte, bsigth, indith)
 #include "asterfort/utpvgl.h"
     real(kind=8) :: bsigth(24)
     logical :: indith
-    character(len=8) :: nomte
+    character(len=16) :: nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,14 +40,12 @@ subroutine bsthpl(nomte, bsigth, indith)
 !     ------------------------------------------------------------------
     integer :: i, jgeom, nno, iret
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), sigth(32), zero
-    character(len=16) :: typele, option
 !     ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :
 !     ---------------
     zero = 0.0d0
     indith = .false.
-    typele = nomte
 !
     do 10 i = 1, 24
         bsigth(i) = zero
@@ -58,15 +56,15 @@ subroutine bsthpl(nomte, bsigth, indith)
 !     ----------------------------------------------------
     call jevech('PGEOMER', 'L', jgeom)
 !
-    if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDSTR3 ' .or. nomte .eq. 'MEDKTG3 ' .or.&
-        nomte .eq. 'MET3TR3 ' .or. nomte .eq. 'MET3GG3') then
+    if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDSTR3' .or. nomte .eq. 'MEDKTG3' .or.&
+        nomte .eq. 'MET3TR3' .or. nomte .eq. 'MET3GG3') then
         nno = 3
         call dxtpgl(zr(jgeom), pgl)
-        else if (nomte.eq.'MEDKQU4 ' .or.&
-     &         nomte.eq.'MEDKQG4 ' .or.&
-     &         nomte.eq.'MEDSQU4 ' .or.&
-     &         nomte.eq.'MEQ4QU4 ' .or.&
-     &         nomte.eq.'MEQ4GG4 ' ) then
+        else if (nomte.eq.'MEDKQU4' .or.&
+     &         nomte.eq.'MEDKQG4' .or.&
+     &         nomte.eq.'MEDSQU4' .or.&
+     &         nomte.eq.'MEQ4QU4' .or.&
+     &         nomte.eq.'MEQ4GG4' ) then
         nno = 4
         call dxqpgl(zr(jgeom), pgl, 'S', iret)
     else
@@ -85,9 +83,7 @@ subroutine bsthpl(nomte, bsigth, indith)
 !
 ! --- CALCUL DE BT*SIGTH :
 !     ------------------
-    option = 'FORC_NODA'
-    call dxbsig(typele, xyzl, pgl, sigth, bsigth,&
-                option)
+    call dxbsig(nomte, xyzl, pgl, sigth, bsigth,'FORC_NODA')
 !
 !
 end subroutine

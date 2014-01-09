@@ -29,6 +29,7 @@ subroutine te0431(option, nomte)
 #include "asterfort/nmgrib.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/tecach.h"
 #include "blas/dcopy.h"
     character(len=16) :: option, nomte
@@ -64,7 +65,7 @@ subroutine te0431(option, nomte)
 !
     vecteu = ((option(1:9).eq.'FULL_MECA').or. (option .eq.'RAPH_MECA'))
     matric = ((option(1:9).eq.'FULL_MECA').or. (option(1:9).eq.'RIGI_MECA'))
-    lexc = (nomte(1:4).eq.'MEGC')
+    lexc = (lteatt(' ','CODMOD','GRC'))
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !

@@ -184,7 +184,7 @@ subroutine te0036(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ier)
-    if (ier .eq. 0 .and. nomte(3:4) .ne. 'AX' .and.&
+    if (ier .eq. 0 .and. (.not. axi) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
          .and..not.iselli(elref))&
     call jevech('PPMILTO', 'L', jpmilt)
@@ -229,7 +229,7 @@ subroutine te0036(option, nomte)
                 c(j)=coorse(ndim*(3-1)+j)
             endif
             if (ndim .eq. 3) c(j)=coorse(ndim*(3-1)+j)
-            if (ndim .eq. 3) then 
+            if (ndim .eq. 3) then
                 ac(j)=c(j)-a(j)
                 if (.not.iselli(elref)) then
                    ad(j)=coorse(ndim*(4-1)+j)-a(j)
@@ -246,7 +246,7 @@ subroutine te0036(option, nomte)
             call normev(nd, norme)
             call normev(ab, nab)
             call provec(nd, ab, y)
-!       COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL         
+!       COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
             coorlo(1)=0.d0
             coorlo(2)=0.d0
             coorlo(3)=nab
@@ -260,7 +260,7 @@ subroutine te0036(option, nomte)
             coorlo(10)=ddot(3,ae,1,y,1)
             coorlo(11)=ddot(3,af,1,ab,1)
             coorlo(12)=ddot(3,af,1,y,1)
-            endif           
+            endif
         else if (ndime.eq.1) then
             if (iselli(elref)) then
 !         EN LINEAIRE 2D

@@ -62,9 +62,9 @@ subroutine te0413(option, nomte)
     character(len=16) :: valk(2)
     logical :: dkq, lkit, lbid
 !
-    if (nomte(1:8) .eq. 'MEDKQG4 ') then
+    if (nomte.eq.'MEDKQG4') then
         dkq = .true.
-    else if (nomte(1:8).eq.'MEDKTG3 ') then
+    else if (nomte.eq.'MEDKTG3') then
         dkq = .false.
     else
         call utmess('F', 'ELEMENTS_34', sk=nomte)

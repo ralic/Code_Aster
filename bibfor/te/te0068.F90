@@ -40,30 +40,26 @@ subroutine te0068(option, nomte)
     integer :: icode, j, jgano
 !-----------------------------------------------------------------------
     parameter (nbres=3)
-    character(len=8) :: nompar(nbres), elrefe, alias8
+    character(len=8) :: nompar(nbres), elrefe
     real(kind=8) :: psfn, nx, ny, valpar(nbres), poids, r, z, fluxx, fluxy
     real(kind=8) :: coorse(18), vectt(9)
-    integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, igeom, ibid
+    integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, igeom
     integer :: itemps, ivectt, i, l, li, iflu, nnop2, c(6, 9), ise, nse
-!
+
+    ASSERT(option(11:16).ne.'FLUX_R')
     call elref1(elrefe)
-!
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
-        if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
-    endif
-!
+    ASSERT(elrefe(1:2).eq.'SE')
+
+    if (lteatt(' ','LUMPE','OUI'))  elrefe='SE2'
+
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
-!
-    ASSERT(nomte(1:6).eq.'THPLSE' .or. nomte(1:6).eq.'THPLSL')
-    ASSERT(option(11:16).ne.'FLUX_R')
-!
+
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)
     call jevech('PFLUXVF', 'L', iflu)
     call jevech('PVECTTR', 'E', ivectt)
-!
+
     call connec(nomte, nse, nnop2, c)
 !
     do 10 i = 1, nnop2

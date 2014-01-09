@@ -27,6 +27,7 @@ subroutine te0329(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/shl329.h"
 #include "asterfort/tecael.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/wkvect.h"
     character(len=7) :: ielem, imode
     character(len=16) :: nomte, option
@@ -45,8 +46,8 @@ subroutine te0329(option, nomte)
     integer :: i, iacce, iadzi, iazk24, idim, iharm, ino
     integer :: ivectu, ivetel, j, jno, k
 !-----------------------------------------------------------------------
-    if (nomte(1:5) .eq. 'THER_') then
-!          ---------------------
+    if (lteatt(' ','DIM_TOPO_MODELI','3')) then
+!   ----------------------------------------
         call elref4(' ', 'RIGI', ndim, nno, nnos,&
                     npg1, ipoids, ivf, idfdx, jgano)
         idfdy = idfdx + 1
@@ -179,7 +180,7 @@ subroutine te0329(option, nomte)
 !
 !
     else if (nomte.eq.'MEDKQU4') then
-!              -----------------------
+!   ----------------------------------
         call shl329()
 !
     endif

@@ -60,6 +60,7 @@ subroutine te0382(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/xrmes2.h"
 #include "asterfort/xrmev2.h"
+#include "asterfort/assert.h"
 !
     character(len=16) :: option, nomte
 !
@@ -100,7 +101,7 @@ subroutine te0382(option, nomte)
     character(len=8) :: fami(6), elrese(6)
     character(len=8) :: nompar(2)
     character(len=8) :: enr
-    character(len=16) :: phenom, blan16, nomtse
+    character(len=16) :: phenom, nomtse
     character(len=24) :: valk(2)
 !
 !
@@ -142,28 +143,24 @@ subroutine te0382(option, nomte)
     endif
 !
 ! --- ELEMENT PARENT DE REFERENCE : RECUP DE NNO, NPG ET IDFDE
-!
+
     call elref4(' ', 'RIGI', ndim, nnop, nnosp,&
                 npgp, ipoidp, ivfp, idfde, jgano)
-!
-!     !!! ATTENTION !!! LA VALEUR DE NOMTSE EST UTILISEE POUR DEFINIR
-!     LE "TYPE" DU SOUS-ELEMENT AFIN DE CALCULER SA TAILLE AVEC LA
-!     ROUTINE UTHK(), DANS LAQUELLE UN TEST EST REALISE SUR NOMTSE(5:6)
-!     2D => SOUS ELEMENTS SONT DES TRIANGLES
-!             0123456789012345
-    blan16='                '
-    nomtse=blan16
-!                   123456
-    nomtse(1:6)= '    TR'
-!
+    ASSERT(ndim.eq.2)
+
+!   la valeur de nomtse est utilisee uniquement pour definir
+!   le "type" du sous-element afin de calculer sa taille avec la
+!   routine uthk()
+!   2d => sous elements sont des triangles
+    nomtse= 'MECPTR3'
+
 ! --- SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IDFSE
-!
     if (.not.iselli(elrefe)) then
         irese=3
     else
         irese=0
     endif
-!
+
     call elref4(elrese(ndim+irese), fami(ndim+irese), ibid, nno, ibid,&
                 npg, ibid, ibid, idfse, ibid)
 !

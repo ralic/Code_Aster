@@ -25,6 +25,7 @@ subroutine te0462(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utpvlg.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !     CALCUL DES COORDONNEES DES SOUS POINTS DE GAUSS SUR LES FAMILLE
@@ -50,15 +51,15 @@ subroutine te0462(option, nomte)
     data gm1 / 0.d0,0.d0,1.d0/
 ! ----------------------------------------------------------------------
 !
-    if (nomte(1:4) .ne. 'MEDK' .and. nomte(1:4) .ne. 'MEGC') then
+    if (.not.(lteatt(' ','CODMOD','DKT') .or. lteatt(' ','CODMOD','GRC'))) then
         ASSERT(.false.)
     endif
-    grille= nomte(1:4).eq.'MEGC'
+    grille= lteatt(' ','CODMOD','GRC')
 !
 !     NOMBRE DE NOEUDS
-    if (nomte(5:7) .eq. 'QU4') then
+    if (lteatt(' ','CODTMA','QU4')) then
         nno = 4
-    else if (nomte(5:7).eq.'TR3') then
+    else if (lteatt(' ','CODTMA','TR3')) then
         nno = 3
     else
         ASSERT(.false.)

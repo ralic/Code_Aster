@@ -40,22 +40,12 @@ subroutine te0437(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, icomp, icontm, idepl, idfde, igeom, ipoids
     integer :: iretc, iretd, ivectu, ivf, jgano, kp, ku
-    integer :: n, nbsig, ndim, ndimsi, nno, nnob, nnos
+    integer :: n, nbsig, ndim, ndimsi, nno, nnob
     integer :: npg1
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    if (nomte(6:9) .eq. 'HEXA') then
-        nnob = 8
-    else if (nomte(6:10).eq.'TETRA') then
-        nnob = 4
-    else if (nomte(6:10).eq.'PENTA') then
-        nnob = 6
-    else if (nomte(6:10).eq.'PYRAM') then
-        nnob = 5
-    endif
 !
-!
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
+    call elref4(' ', 'RIGI', ndim, nno, nnob,&
                 npg1, ipoids, ivf, idfde, jgano)
 !
 ! --- INITIALISATIONS :

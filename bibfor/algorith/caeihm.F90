@@ -125,7 +125,7 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
     data f3q8 /1,2/
     data f4q8 /4,3/
 !
-    if ((nomte(1:9).eq.'HM_J_DPQ8') .or. (nomte(1:9).eq.'HM_J_AXQ8')) then
+    if ((nomte.eq.'HM_J_DPQ8S') .or. (nomte.eq.'HM_J_AXQ8S')) then
         dimuel = 2*nno1*ndim+nno2*3*(press1(1)+press2(1))+2
         do 10 n = 1, 5
             do 11 i = 1, 2

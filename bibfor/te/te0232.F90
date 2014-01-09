@@ -48,7 +48,7 @@ subroutine te0232(option, nomte)
     integer :: nno, kp, k, npg, i
     integer :: ipoids, ivf, idfdk
     integer :: jgano, ndim, nnos
-    real(kind=8) :: r8b, rho(1)
+    real(kind=8) :: rho(1)
     integer :: j_geom, j_rota, j_vect, j_mate, j_caco
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
@@ -82,7 +82,7 @@ subroutine te0232(option, nomte)
 !
 ! - Checking
 !
-    if (nomte(3:4) .eq. 'DP' .or. nomte(3:4) .eq. 'CP') then
+    if (nomte .eq. 'METDSE3' .or. nomte .eq. 'METCSE3') then
 ! AXE=direction Oz
         if (abs(rota_axis(3)) .le. r8miem()) then
             call utmess('F', 'CHARGES2_67')
@@ -90,7 +90,7 @@ subroutine te0232(option, nomte)
         if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(2)) .gt. r8miem()) then
             call utmess('F', 'CHARGES2_67')
         endif
-    else if (nomte(3:4).eq.'AX') then
+    else if (nomte.eq.'MECXSE3') then
 ! AXE=Oy et CENTRE=ORIGINE
         if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
             call utmess('F', 'CHARGES2_65')
@@ -112,7 +112,7 @@ subroutine te0232(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(j_mate),&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
 ! - Computation

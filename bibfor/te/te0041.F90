@@ -19,6 +19,7 @@ subroutine te0041(option, nomte)
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/vecma.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -72,13 +73,12 @@ subroutine te0041(option, nomte)
     integer :: ntermx
     parameter     (zero=0.0d0,un=1.0d0,ntermx=144)
     real(kind=8) :: tempo(ntermx)
-    logical :: lbid
 ! --- ------------------------------------------------------------------
     call jemarq()
 !
 !
-    lbid = (nomte(1:9).eq.'MECA_DIS_') .or. (nomte(1:12).eq.'MECA_2D_DIS_')
-    ASSERT(lbid)
+    ! Ce sont bien des elements discrets :
+    ASSERT(lteatt(nomte,'DIM_TOPO_MODELI','-1'))
     fami='FPG1'
     kpg=1
     spt=1

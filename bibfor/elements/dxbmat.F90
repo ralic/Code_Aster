@@ -66,7 +66,7 @@ subroutine dxbmat(nomte, cara, xyzl, pgl, igau,&
         jacgau = cara(8)
 !
     else
-        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte)
     endif
 !
 end subroutine

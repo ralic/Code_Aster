@@ -27,6 +27,7 @@ subroutine te0283(option, nomte)
 #include "asterfort/rcfode.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/runge6.h"
+#include "asterfort/uttgel.h"
 !
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
@@ -43,6 +44,7 @@ subroutine te0283(option, nomte)
 !
 !
 !
+    character(len=2) :: typgeo
     integer :: icodre(1)
     real(kind=8) :: beta, lambda, theta, deltat, khi, tpg, tpgm
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, hydrgm(27)
@@ -63,7 +65,8 @@ subroutine te0283(option, nomte)
 ! ----------------------------------------------------------------------
 !
 ! DEB ------------------------------------------------------------------
-    if ((lteatt(' ','LUMPE','OUI')) .and. (nomte(6:10).ne.'PYRAM')) then
+    call uttgel(nomte, typgeo)
+    if ((lteatt(' ','LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
         call elref4(' ', 'NOEU', ndim, nno, nnos,&
                     npg2, ipoid2, ivf2, idfde2, jgano2)
     else

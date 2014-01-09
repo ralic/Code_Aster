@@ -252,7 +252,7 @@ subroutine te0102(option, nomte)
 !
 ! --- CAS DES COQUES SURFACIQUES :
 !     --------------------------
-    if (nomte(1:8) .ne. 'THCPSE3 ' .and. nomte(1:8) .ne. 'THCASE3 ') then
+    if (nomte.ne.'THCPSE3' .and. nomte.ne.'THCASE3') then
 !
 ! --- DETERMINATION DES COORDONNEES COOR2D DES NOEUDS DE L'ELEMENT
 ! --- DANS LE REPERE DE L'ELEMENT :

@@ -1,12 +1,13 @@
 subroutine greihm(nomte, perman, ndim, mecani, press1,&
                   press2, tempe, dimdef, dimcon)
     implicit none
+#include "asterfort/lteatt.h"
+
     logical :: perman
     integer :: mecani(8), press1(9), press2(9), tempe(5)
     integer :: dimdef, dimcon
     integer :: ndim
     character(len=16) :: nomte
-! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +23,6 @@ subroutine greihm(nomte, perman, ndim, mecani, press1,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
 ! ======================================================================
 !   TABLEAU MECANI :
 !   MECANI(1) = 1 : IL Y A UNE EQUATION MECANIQUE
@@ -106,7 +106,7 @@ subroutine greihm(nomte, perman, ndim, mecani, press1,&
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
-    if (nomte(1:2) .eq. 'HM') then
+    if (lteatt(nomte,'MODTHM','HM')) then
         mecani(1) = 1
         press1(1) = 1
         press2(1) = 0

@@ -70,7 +70,7 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
         nno = 4
 !
     else
-        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte)
     endif
 !
 ! --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,

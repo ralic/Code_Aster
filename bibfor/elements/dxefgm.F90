@@ -64,7 +64,7 @@ subroutine dxefgm(nomte, option, xyzl, pgl, depl,&
         call t3gedg(xyzl, option, pgl, depl, effg)
 !
     else
-        call utmess('F', 'ELEMENTS_14', sk=nomte(1:8))
+        call utmess('F', 'ELEMENTS_14', sk=nomte)
     endif
 !
 end subroutine

@@ -51,7 +51,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     integer :: dimge(3)
     logical :: melang
-    character(len=8) :: calcri, mailla, nomacr, modele, typemail, k8bid
+    character(len=8) :: calcri, mailla, nomacr, modele, typemail, k8bid, mthm
     character(len=16) :: nomte, phenom, nomodl, tyvois
     character(len=19) :: nomob
     character(len=32) :: repk
@@ -251,7 +251,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
 !
             else if (questi.eq.'EXI_THM') then
-                if (lteatt(nomte,'THM','OUI')) then
+                call teattr(nomte, 'C', 'MODTHM', mthm, iret)
+                if (iret.eq.0) then
                     repk='OUI'
                     if ((nomte.eq.'HM_D_PLAN_SE3_P') .or. ( nomte.eq.'HM_DPQ8_P') .or.&
                         ( nomte.eq.'HM_DPTR6_P')) then
@@ -471,7 +472,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         do igrel = 1,nbgrel
             call jeveuo(jexnum(list_elem, igrel), 'L', jliel)
             call jelira(jexnum(list_elem, igrel), 'LONMAX', nb_elem)
-            i_typelem = zi(jliel-1+nb_elem)  
+            i_typelem = zi(jliel-1+nb_elem)
             typemail  = zk8(jtypma-1+i_typelem)
             call dismtm('DIM_TOPO', typemail, ndime, k8bid, ibid)
             if (ndime.ne.0) then

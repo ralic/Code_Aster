@@ -219,7 +219,7 @@ subroutine te0221(option, nomte)
 40          continue
 50      continue
 !
-        if (nomte(3:4) .eq. 'CX') then
+        if (nomte.eq.'MECXSE3') then
             kd1 = 5
             kd2 = 3
             kd3 = 2

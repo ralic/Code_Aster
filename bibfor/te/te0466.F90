@@ -7,6 +7,8 @@ subroutine te0466(option, nomte)
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/teattr.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 ! =====================================================================
@@ -49,7 +51,7 @@ subroutine te0466(option, nomte)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, valpar(4)
     real(kind=8) :: deltat, flu1, flu2, fluth, x, y, z, fx, fy, fz
     integer :: napre1, napre2, natemp, ndim2
-    character(len=8) :: nompar(4), elrefe
+    character(len=8) :: nompar(4), elrefe, mthm
     character(len=24) :: elref2
     integer :: ndlno, ndlnm, ipres, ipresf
     real(kind=8) :: pres, presf
@@ -63,6 +65,10 @@ subroutine te0466(option, nomte)
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
+
+    call teattr(nomte,'C','MODTHM',mthm,iret)
+    if (iret.ne.0) mthm=' '
+
     ndim2 = 3
     call elref1(elrefe)
     if (elrefe .eq. 'TR6') then
@@ -178,7 +184,7 @@ subroutine te0466(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = SUSHI HH2 AVEC OU SANS VOISINAGE
 !
-            if (nomte(1:10) .eq. 'ZHH2_FACE9') then
+            if ((mthm.eq.'SUSHI').and.lteatt(nomte,'CODTMA','QU9')) then
 !
 !
 ! --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
@@ -228,14 +234,12 @@ subroutine te0466(option, nomte)
 !
 301              continue
 !
-!             WRITE(6,*)' ICI4'
             endif
 !
 ! ======================================================================
 ! --- SI MODELISATION = THHM OU THH
 !
-            if (nomte(1:4) .eq. 'THHM' .or. nomte(1:4) .eq. 'THH_' .or. nomte (1:4) .eq.&
-                'THH2') then
+            if (mthm.eq.'THHM'.or.mthm.eq.'THH2M'.or.mthm.eq.'THH'.or.mthm.eq.'THH2') then
 !
 ! --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
 ! --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :
@@ -277,7 +281,7 @@ subroutine te0466(option, nomte)
 !
                 endif
 !
-                if (nomte(1:4) .eq. 'THHM' .or. nomte(1:5) .eq. 'THH2M') then
+                if (mthm.eq.'THHM'.or.mthm.eq.'THH2M') then
                     do 120 i = 1, nno2
                         l = 6 * (i-1) -1
 !
@@ -305,7 +309,7 @@ subroutine te0466(option, nomte)
             endif
 !FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 !
-            if (nomte(1:3) .eq. 'HH2' .or. nomte(1:3) .eq. 'HH_') then
+            if (mthm.eq.'HH2'.or.mthm.eq.'HH') then
 !
 ! --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
 ! --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :
@@ -362,7 +366,7 @@ subroutine te0466(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = THV
 !
-            if (nomte(1:4) .eq. 'THV_') then
+            if (mthm.eq.'THV') then
 !
 ! --- NAPRE1,NATEMP SONT MIS EN PLACE
 ! --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :
@@ -415,7 +419,7 @@ subroutine te0466(option, nomte)
 ! ======================================================================
 ! SI MODELISATION = HM
 !
-            if (nomte(1:2) .eq. 'HM') then
+            if (mthm.eq.'HM') then
 !
                 napre1=0
 !
@@ -453,7 +457,7 @@ subroutine te0466(option, nomte)
 ! ======================================================================
 ! SI MODELISATION = HHM
 !
-            if (nomte(1:3) .eq. 'HHM' .or. nomte(1:4) .eq. 'HH2M') then
+            if (mthm.eq.'HHM'.or.mthm.eq.'HH2M') then
 !
                 napre1=0
                 napre2=1
@@ -499,7 +503,7 @@ subroutine te0466(option, nomte)
 ! ======================================================================
 ! SI MODELISATION = THM
 !
-            if (nomte(1:3) .eq. 'THM') then
+            if (mthm.eq.'THM') then
 !
                 napre1=0
                 natemp=1

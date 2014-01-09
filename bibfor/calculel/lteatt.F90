@@ -22,21 +22,21 @@ function lteatt(typel, noattr, vattr)
 #include "asterfort/teattr.h"
     character(len=*) :: typel, noattr, vattr
 !---------------------------------------------------------------------
-! BUT : TESTER SI L'ATTRIBUT NOATTR EXISTE ET A LA VALEUR VATTR
+! but : Tester si l'attribut noattr existe et a la valeur vattr
 !---------------------------------------------------------------------
-!     ARGUMENTS:
+!     arguments:
 !     ----------
-!     IN TYPEL  (K16) : NOM DU TYPE_ELEMENT A INTERROGER
-!                        (OU ' ' SI L'ON EST "SOUS" LA ROUTINE TE0000)
-!     IN NOATTR (K16) : NOM DE L'ATTRIBUT
-!     IN VATTR  (K16) : VALEUR DE L'ATTRIBUT
-!    OUT LTEATT (L)   : .TRUE. : L'ATTRIBUT EXISTE POUR LE TYPE_ELEMENT
-!                                ET SA VALEUR VAUT VATTR
-!                       .FALSE. : SINON
+!     in typel  (k16) : nom du type_element a interroger
+!                        (ou ' ' si l'on est "sous" la routine te0000)
+!     in noattr (k16) : nom de l'attribut
+!     in vattr  (k16) : valeur de l'attribut
+!    out lteatt (l)   : .true. : l'attribut existe pour le type_element
+!                                et sa valeur vaut vattr
+!                       .false. : sinon
 !-----------------------------------------------------------------------
-!  CETTE ROUTINE EST ACCESSIBLE PARTOUT DANS LE CODE. SI ELLE EST
-!  APPELEE EN DEHORS DE TE0000 (OU AVEC TYPEL != ' '), ELLE NECESSITE
-!  DES APPELS JEVEUX, ELLE DEVIENT DONC UN PEU COUTEUSE.
+!  cette routine est accessible partout dans le code. si elle est
+!  appelee en dehors de te0000 (ou avec typel != ' '), elle necessite
+!  des appels jeveux, elle devient donc un peu couteuse.
 !-----------------------------------------------------------------------
 !  VARIABLES LOCALES :
     character(len=16) :: vattr2

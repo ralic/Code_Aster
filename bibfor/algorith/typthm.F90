@@ -1,6 +1,5 @@
 subroutine typthm(nomte, axi, perman, vf, typvf,&
                   typmod, ndim)
-! =====================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +17,7 @@ subroutine typthm(nomte, axi, perman, vf, typvf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-! IN  NOMTE  : NOM DU TRAITEMENT ELEMENTAIRE
+! IN  NOMTE  : NOM DU TYPE_ELEMENT
 ! OUT AXI    : .TRUE. OU .FALSE. SELON LE CARACTERE AXISYMETRIQUE DU PB
 !
 ! OUT VF     : .TRUE. OU .FALSE. SELON LE CARACTERE VF OU PAS
@@ -47,7 +46,6 @@ subroutine typthm(nomte, axi, perman, vf, typvf,&
 !
 !     --- VARIABLES LOCALES ---
 !
-    integer :: iaux
 !
 ! =====================================================================
 ! --- BUT : DETERMINER LE TYPE DE MODELISATION (AXI/D_PLAN/3D) --------
@@ -72,21 +70,20 @@ subroutine typthm(nomte, axi, perman, vf, typvf,&
 ! --- BUT : LA PARTIE HM EST-ELLE TRANSITOIRE OU PERMANENTE EN TEMPS ?
 ! =====================================================================
 !
-    iaux = lxlgut(nomte)
-    if (nomte(iaux-1:iaux) .eq. '_P') then
+    if (lteatt(nomte,'CODMOD','DHB')) then
         perman = .true.
     else
         perman = .false.
     endif
 !
-! MODELISATIONS VOLUMES FINIS
-    if (nomte(iaux-4:iaux) .eq. '_SUDM') then
+! MODELISATIONS SUSHI VOLUMES FINIS
+    if (lteatt(nomte,'CODMOD','3DM').or.lteatt(nomte,'CODMOD','2DM')) then
         vf = .true.
         typvf=2
-    else if (nomte(iaux-4:iaux).eq.'_SUDA') then
+    else if (lteatt(nomte,'CODMOD','3AD').or.lteatt(nomte,'CODMOD','2DA')) then
         vf = .true.
         typvf=3
-    else if (nomte(iaux-3:iaux).eq.'_SUC') then
+    else if (lteatt(nomte,'CODMOD','3SC').or.lteatt(nomte,'CODMOD','2SC')) then
         vf = .true.
         typvf=4
     else

@@ -22,7 +22,7 @@ subroutine bsthco(nomte, bsigth, indith)
 #include "asterfort/vexpan.h"
     real(kind=8) :: bsigth(51)
     logical :: indith
-    character(len=8) :: nomte
+    character(len=16) :: nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

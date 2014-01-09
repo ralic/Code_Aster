@@ -73,7 +73,7 @@ subroutine te0106(option, nomte)
 20          continue
 30      continue
 !
-        else if (nomte(1:8).eq.'THCPSE3 ' .or. nomte(1:8).eq.'THCASE3 ')&
+        else if (nomte.eq.'THCPSE3' .or. nomte.eq.'THCASE3')&
     then
 !
         do 70 kp = 1, npg1
@@ -97,7 +97,7 @@ subroutine te0106(option, nomte)
 60          continue
 70      continue
 !
-        else if (nomte(1:8).eq.'THCOSE3 ' .or. nomte(1:8).eq.'THCOSE2 ')&
+        else if (nomte.eq.'THCOSE3' .or. nomte.eq.'THCOSE2')&
     then
 !
         long = (&
@@ -128,7 +128,7 @@ subroutine te0106(option, nomte)
             matnp(5) = rp2*poids*zr(ivf-1+k+2)
             matnp(6) = rp3*poids*zr(ivf-1+k+2)
 !
-            if (nomte(1:8) .eq. 'THCOSE3 ') then
+            if (nomte.eq.'THCOSE3') then
                 matnp(7) = rp1*poids*zr(ivf-1+k+3)
                 matnp(8) = rp2*poids*zr(ivf-1+k+3)
                 matnp(9) = rp3*poids*zr(ivf-1+k+3)

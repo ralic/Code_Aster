@@ -55,6 +55,7 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
 #include "asterfort/vdrepe.h"
 #include "asterfort/vdsiro.h"
 #include "asterfort/vdxrep.h"
+#include "asterfort/lteatt.h"
     character(len=*) :: param
     character(len=16) :: nomte
     character(len=2) :: sens
@@ -89,7 +90,7 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
 !
 !     -- CAS DES ELEMENTS DE COQUE_3D :
 !     -----------------------------------
-    if (nomte(1:4) .eq. 'MEC3') then
+    if (lteatt(nomte,'CODMOD','CQ3')) then
 !
         if (sour .eq. 'S') then
             call jevech('PCACOQU', 'L', jcara)

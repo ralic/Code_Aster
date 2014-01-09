@@ -76,26 +76,20 @@ subroutine te0539(option, nomte)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 3) then
-        typmod(1) = '3D      '
-        typmod(2) = '        '
+        typmod(1) = '3D'
+        typmod(2) = ' '
     else
         if (lteatt(' ','AXIS','OUI')) then
-            typmod(1) = 'AXIS    '
+            typmod(1) = 'AXIS'
         else if (lteatt(' ','C_PLAN','OUI')) then
-            typmod(1) = 'C_PLAN  '
+            typmod(1) = 'C_PLAN'
         else if (lteatt(' ','D_PLAN','OUI')) then
-            typmod(1) = 'D_PLAN  '
+            typmod(1) = 'D_PLAN'
         else
 !          NOM D'ELEMENT ILLICITE
             ASSERT(lteatt(' ', 'C_PLAN', 'OUI'))
         endif
-        if (nomte(1:2) .eq. 'MD') then
-            typmod(2) = 'ELEMDISC'
-        else if (nomte(1:2).eq.'MI') then
-            typmod(2) = 'INCO    '
-        else
-            typmod(2) = '        '
-        endif
+        typmod(2) = ' '
         codret=0
     endif
 !
@@ -129,7 +123,7 @@ subroutine te0539(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr(nomte, 'S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (nomte(3:4).ne.'AX') .and.&
+    if ((ibid.eq.0) .and. (.not.lteatt(' ','AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
          .and..not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
@@ -334,7 +328,7 @@ subroutine te0539(option, nomte)
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false., matsym,&
                     option, nomte, ddlm, nfiss, jfisno,&
-                    mat=zr(imatuu))        
+                    mat=zr(imatuu))
 !   OPTIONS RELATIVES A UN VECTEUR UNIQUEMENT
     elseif (option .eq. 'RAPH_MECA') then
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
