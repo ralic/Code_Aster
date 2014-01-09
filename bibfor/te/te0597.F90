@@ -59,10 +59,8 @@ subroutine te0597(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
@@ -77,18 +75,14 @@ subroutine te0597(option, nomte)
     typmod(2) = '        '
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, 0,&
-                nno2, 0, vu, vg, vp,&
-                vpi)
+    call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
 !
 ! - PARAMETRES EN ENTREE
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATUUR', 'E', imatuu)
 !
-    call nurmtd(ndim, nno1, nno2, npg, iw,&
-                zr(ivf1), zr(ivf2), ivf1, idf1, vu,&
-                vp, typmod, igeom, zi(imate), mini,&
-                zr(imatuu))
+    call nurmtd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), ivf1, idf1, vu, vp,&
+                typmod, igeom, zi(imate), mini, zr(imatuu))
 !
 end subroutine

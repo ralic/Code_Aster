@@ -153,13 +153,9 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
 ! - CALCUL DES DEFORMATIONS
         call r8inir(6, 0.d0, epsm, 1)
         call r8inir(6, 0.d0, deps, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, deplm, fm, epsm)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, depld, fm, deps)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplm, fm, epsm)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, depld, fm, deps)
 !
 ! - CALCUL DE LA PRESSION
         pm = ddot(nno2,vff2(1,g),1,presm,1)
@@ -216,12 +212,9 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
         end do
 !
 ! - APPEL A LA LOI DE COMPORTEMENT
-        call nmcomp('RIGI', g, 1, ndim, typmod,&
-                    mate, compor, crit, instm, instp,&
-                    6, epsm, deps, 6, sigmam,&
-                    vim(1, g), option, angmas, 10, tampon,&
-                    sigma, vip(1, g), 36, dsidep, 1,&
-                    rbid, cod(g))
+        call nmcomp('RIGI', g, 1, ndim, typmod, mate, compor, crit, instm, instp,&
+                    6, epsm, deps, 6, sigmam, vim(1, g), option, angmas, 10, tampon,&
+                    sigma, vip(1, g), 36, dsidep, 1, rbid, cod(g))
 !
         if (cod(g) .eq. 1) then
             codret = 1
@@ -232,16 +225,13 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
         endif
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor(1),&
-                    resi, mini, alpha, dsbdep, trepst)
+        call tanbul(option, ndim, g, mate, compor(1), resi, mini, alpha, dsbdep, trepst)
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then
-            call calkbb(nno1, ndim, w, def, dsbdep,&
-                        kbb)
+            call calkbb(nno1, ndim, w, def, dsbdep, kbb)
             call calkbp(nno2, ndim, w, dff1, kbp)
-            call calkce(nno1, ndim, kbp, kbb, presm,&
-                        presd, kce, rce)
+            call calkce(nno1, ndim, kbp, kbb, presm, presd, kce, rce)
         else
             call r8inir(nno2, 0.d0, rce, 1)
             call r8inir(nno2*nno2, 0.d0, kce, 1)
@@ -279,7 +269,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
             do ia = 4, 2*ndim
                 sigp(ia,g) = sigma(ia)/rac2
             end do
-            sigp(2*ndim+1,g) = sigtr/3.d0 - pm - pd
+            sigp(2*ndim+1,g) = sigtr/3.d0 - (pm+pd)
         endif
 !
 ! - MATRICE TANGENTE

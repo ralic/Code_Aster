@@ -20,11 +20,11 @@ import math
 
 DEBUT(PAR_LOT='OUI',CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
 
-#Nombre de calculs : INCO_UPG (SM), INCO_UPG (GDEF_LOG), INCO_LUP
+#Nombre de calculs : INCO_UPG (SM), INCO_UPG (GDEF_LOG), INCO_UP
 nb_calcul=3
 MO=[None]*nb_calcul
 RESU=[None]*nb_calcul
-model=['3D_INCO_UPG', '3D_INCO_UPG', '3D_INCO_LUP']
+model=['3D_INCO_UPG', '3D_INCO_UPG', '3D_INCO_UP']
 defor=['SIMO_MIEHE', 'GDEF_LOG', 'GDEF_LOG']
 
 SIH_N_RMIN=[-1.0586213748E+09, -1.0607454258E+09, -1.0607454328E+09]

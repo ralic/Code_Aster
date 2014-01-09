@@ -34,7 +34,7 @@ interface
         integer :: mate
         character(len=16) :: compor(*)
         real(kind=8) :: geomi(ndim, nno1)
-        real(kind=8) :: sig(2*ndim, npg)
+        real(kind=8) :: sig(2*ndim+1, npg)
         real(kind=8) :: ddl(*)
         real(kind=8) :: vect(*)
     end subroutine nufnlg

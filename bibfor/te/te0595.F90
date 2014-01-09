@@ -64,10 +64,8 @@ subroutine te0595(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
     matsym = .true.
 !
 ! - TYPE DE MODELISATION
@@ -100,8 +98,7 @@ subroutine te0595(option, nomte)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
 !
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
-                itab=jtab)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
 ! - ORIENTATION DU MASSIF
@@ -135,7 +132,7 @@ subroutine te0595(option, nomte)
             imatuu=1
         endif
 !
-        if (lteatt(' ','INCO','C2PD ')) then
+        if (lteatt(' ','INCO','C2 ')) then
 !
 ! - MINI ELEMENT ?
             call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
@@ -146,27 +143,20 @@ subroutine te0595(option, nomte)
             endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0,&
-                        nno2, 0, vu, vg, vp,&
-                        vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
             nddl = nno1*ndim + nno2
 !
-            call nufipd(ndim, nno1, nno2, npg, iw,&
-                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
+            call nufipd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
                         zr(igeom), typmod, option, zi(imate), zk16(icompo),&
                         lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
                         zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&
-                        zr(ivarip), resi, rigi, mini, zr(ivectu),&
-                        zr(imatuu), codret)
-        else if (lteatt(' ','INCO','C2PDO')) then
+                        zr(ivarip), resi, rigi, mini, zr(ivectu), zr(imatuu), codret)
+        elseif (lteatt(' ','INCO','C2O')) then
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0,&
-                        nno2, nno2, vu, vg, vp,&
-                        vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
             nddl = nno1*ndim + nno2 + nno2*ndim
 !
-            call nofipd(ndim, nno1, nno2, nno2, npg,&
-                        iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
+            call nofipd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
                         vu, vp, vpi, zr(igeom), typmod,&
                         option, nomte, zi(imate), zk16(icompo), lgpg,&
                         zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
@@ -184,16 +174,21 @@ subroutine te0595(option, nomte)
             imatuu=1
         endif
 !
-        if (lteatt(' ','INCO','C2LG ')) then
+        if (lteatt(' ','INCO','C2 ')) then
+!
+! - MINI ELEMENT ?
+            call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+            if (alias8(6:8) .eq. 'TR3' .or. alias8(6:8) .eq. 'TE4') then
+! - PAS ENCORE INTRODUIT
+                valk = zk16(icompo+2)
+                call utmess('F', 'MODELISA10_18', sk=valk)
+            endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-            call niinit(nomte, typmod, ndim, nno1, 0,&
-                        nno2, 0, vu, vg, vp,&
-                        vpi)
+            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
             nddl = nno1*ndim + nno2
 !
-            call nufilg(ndim, nno1, nno2, npg, iw,&
-                        zr(ivf1), zr(ivf2), idf1, vu, vp,&
+            call nufilg(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
                         zr(igeom), typmod, option, zi(imate), zk16(icompo),&
                         lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
                         zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&
@@ -216,10 +211,9 @@ subroutine te0595(option, nomte)
     if (idbg .eq. 1) then
         if (rigi) then
             write(6,*) 'MATRICE TANGENTE'
-            do 10 ia = 1, nddl
-                write(6,'(108(1X,E11.4))') (zr(imatuu+(ia*(ia-1)/2)+&
-                ja-1),ja=1,ia)
-10          continue
+            do ia = 1, nddl
+                write(6,'(108(1X,E11.4))') (zr(imatuu+(ia*(ia-1)/2)+ja-1),ja=1,ia)
+            enddo
         endif
         if (resi) then
             write(6,*) 'FORCE INTERNE'

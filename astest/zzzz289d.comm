@@ -21,7 +21,7 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 #ON LIT UN MAILLAGE QUADRATIQUE EN TETRA10 POUR TESTER LES ELEM
-# P2P1P1 (3D_INCO_UPG) ET P2P1 (3D_INCO_LUP)
+# P2P1P1 (3D_INCO_UPG) ET P2P1 (3D_INCO_UP)
 MAIL_Q=LIRE_MAILLAGE();
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=30000.0,
@@ -47,7 +47,7 @@ MODELUPQ=AFFE_MODELE(MAILLAGE=MAIL_Q,
 MODELUPL=AFFE_MODELE(MAILLAGE=MAIL_Q,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='3D_INCO_LUP',),);
+                             MODELISATION='3D_INCO_UP',),);
 
 #CALCUL DE LA MATRICE DE MASSE POUR LES ELEM P2P1P1
 MATMUPG=CALC_MATR_ELEM(OPTION='MASS_MECA',
@@ -107,7 +107,7 @@ MARASUPQ=ASSE_MATRICE(MATR_ELEM=MATRUPQ,
 MARASUPL=ASSE_MATRICE(MATR_ELEM=MATRUPL,
                       NUME_DDL=NUMEUPL,);
 
-#Test de non regression sur la matrice de masse (pour INCO_UPG, INCO_UPG et INCO_LUP)
+#Test de non regression sur la matrice de masse (pour INCO_UPG, INCO_UPG et INCO_UP)
 
 TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
                    NOM='MATMUPG        .M01.RESL',),
@@ -121,7 +121,7 @@ TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
                    NOM='MATMUPL        .M01.RESL',),
           )
 
-#Test de non regression sur la matrice de rigidite (pour INCO_UPG, INCO_UPG et INCO_LUP)
+#Test de non regression sur la matrice de rigidite (pour INCO_UPG, INCO_UPG et INCO_UP)
 
 TEST_RESU(OBJET=_F(VALE_CALC=2.6950725246896E+06,
                    NOM='MATRUPG .ME001     .RESL',),

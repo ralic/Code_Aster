@@ -81,5 +81,8 @@ Il est obligatoire de fournir au moins un comportement pour définir le matéria
 La valeur du mot clé DEFORMATION='%(k1)s' et incompatible avec la modélisation.
 """),
 
+18 : _(u"""
+Certains éléments à interpolation linéaires du modèle ne sont pas compatibles avec le modèle de déformation DEFORMATION='%(k1)s'.
+"""),
 
 }
