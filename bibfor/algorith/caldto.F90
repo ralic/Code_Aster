@@ -69,7 +69,7 @@ subroutine caldto(s6, fkooh, msns, dtods)
         do 4 k = 1, 3
             do 4 m = 1, 3
                 do 4 n = 1, 3
-                    l4s(a,k)=l4s(a,k)+l4(a,k,m,n)*mus(m,n)
+                    l4s(a,k)=l4s(a,k)+l4(a,k,m,n)*s(m,n)
  4              continue
 !
     do 5 a = 1, 3
