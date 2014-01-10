@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cesgno(ces1, celfpg, base, ces2)
+    subroutine cesgno(ces1, celfpg, ces2)
         character(len=19) :: ces1
         character(len=24) :: celfpg
-        character(len=*) :: base
         character(len=19) :: ces2
     end subroutine cesgno
 end interface

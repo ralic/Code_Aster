@@ -366,7 +366,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !
     else if ((typce1.eq.'ELGA') .and. (typces.eq.'ELNO')) then
 !     ------------------------------------------------------
-        call cesgno(ces1, celfpg, base, ces2)
+        call cesgno(ces1, celfpg, ces2)
 !
 !
     else

@@ -68,7 +68,7 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
                     prol0, ligrel, base, iret)
 !
     else if (method(1:10).eq.'NUAGE_DEG_') then
-        call pjngch(ch1, ch2, corres, base)
+        call pjngch(ch1, ch2, corres)
         iret=0
     else
         ASSERT(.false.)

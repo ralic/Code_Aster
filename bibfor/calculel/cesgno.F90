@@ -1,4 +1,4 @@
-subroutine cesgno(ces1, celfpg, base, ces2)
+subroutine cesgno(ces1, celfpg, ces2)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ subroutine cesgno(ces1, celfpg, base, ces2)
 #include "asterfort/jni002.h"
 #include "asterfort/nuelrf.h"
 !
-    character(len=*) :: base
     character(len=24) :: celfpg
     character(len=19) :: ces2, ces1
 ! ------------------------------------------------------------------
@@ -47,12 +46,10 @@ subroutine cesgno(ces1, celfpg, base, ces2)
 !  ATTENTION : CET OBJET EST EFFACE PENDANT L'OPERATION.
 !
 !
-! BASE    IN      K1  : BASE DE CREATION POUR CES2 : G/V/L
 ! CES2    IN/JXVAR K19 : CHAM_ELEM_S RESULTAT
 !         REMARQUE : LE CHAM_ELEM_S EST DEJA ALLOUE.
 !-----------------------------------------------------------------------
 !
-!     ------------------------------------------------------------------
     integer :: nbnomx, nbfamx, nbpgmx
     parameter (nbnomx=27,nbfamx=20,nbpgmx=27)
     character(len=8) :: elrf, fapg1, fapg(nbfamx)

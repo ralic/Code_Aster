@@ -54,16 +54,14 @@ subroutine duplisp(celssp, celasp, carel, base)
 ! carel     in/jxout k19 : sd cara_elem
 !------------------------------------------------------------------
 
-    character(len=1) :: bas1
     character(len=19) :: cel1,cel2,canbsp,ligrel
     character(len=16) :: option
     character(len=8) :: nompar,mailla,nomgd,tsca
-    integer :: igr,ier,numa,icmp,isp,ipt,nbpt,nbsp,nbelgr
+    integer :: igr,numa,icmp,ipt,nbpt
     integer ::  illiel, mxnbsp,mxvari,nbspt1,nbspt2
     integer :: ispt1,ispt2,iret,nbgr,imolo,lgcata,jmolo,iel,ncdyn
     integer :: ieq1,ieq2, adiel1, adiel2,jcelv1,jcelv2
     integer :: nbel, nbcmp
-    character(len=24) :: valk(2)
     integer, pointer :: liel(:) => null()
     integer, pointer :: celd1(:) => null()
     integer, pointer :: celd2(:) => null()
@@ -158,7 +156,6 @@ subroutine duplisp(celssp, celasp, carel, base)
                             ASSERT(.false.)
                         endif
                     end do
-201                 continue
                 end do
             end do
 210         continue

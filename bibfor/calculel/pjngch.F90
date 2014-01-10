@@ -1,4 +1,4 @@
-subroutine pjngch(cham1z, cham2z, corres, base)
+subroutine pjngch(cham1z, cham2z, corres)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -17,7 +17,7 @@ subroutine pjngch(cham1z, cham2z, corres, base)
 #include "asterfort/pronua.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=*) :: cham1z, cham2z, corres, base
+    character(len=*) :: cham1z, cham2z, corres
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,6 @@ subroutine pjngch(cham1z, cham2z, corres, base)
 !  CHAM1 : IN/JXIN  CHAMP QUE L'ON VEUT PROJETER
 !  CHAM2 : IN/JXOUT CHAMP RESULTAT DE LA PROJECTION
 !  CORRES: IN/JXIN  SD_CORRESP_2_MAILLA
-!  BASE  : IN    G/V : BASE DE CREATION POUR CHAM2
 !----------------------------------------------------------------------
     integer :: ibid, nx,  jngi1, jngi2, ieq, nbocc, nbeq, ioc
     integer :: nb1, nb2, idec1, idec2, jlno1, jlno2

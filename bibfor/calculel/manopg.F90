@@ -95,7 +95,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     integer :: ilcnx1, nbpgf(nbfamx), k, jfpgl
     integer :: nec, kfpg, ndim, nno, nnos, nbfpg, npg, kp, ino
     integer ::  nbgrel, nel, nute, imolo, jmolo, jecono
-    integer :: igr, iel, jmaref, lont1, ier
+    integer :: igr, iel, jmaref, lont1
     integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
     integer :: nblfpg,  nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
