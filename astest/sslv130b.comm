@@ -1517,7 +1517,7 @@ MOOS=AFFE_MODELE(MAILLAGE=ML,
                   VERIF='MAILLE',
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='3D_INCO_OSGS',),);
+                          MODELISATION='3D_INCO_UPO',),);
 
 CMOS=AFFE_MATERIAU(MAILLAGE=ML,
                  AFFE=_F(TOUT='OUI',
@@ -1554,7 +1554,7 @@ EVOLOS=CALC_CHAMP(reuse =EVOLOS,
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
 #       POUR UN  SOLIDE INCOMPRESSIBLE NU = 0.5
-#       3D_INCO_OSGS ET TETRA4
+#       3D_INCO_UPO ET TETRA4
 #---------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',

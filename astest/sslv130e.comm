@@ -1188,7 +1188,7 @@ MOOS=AFFE_MODELE(MAILLAGE=M0,
                  VERIF='MAILLE',
                  AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF',),
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D_INCO_OSGS',),);
+                         MODELISATION='3D_INCO_UPO',),);
 
 CHOS=AFFE_CHAR_MECA(MODELE=MOOS,
                     DDL_IMPO=(_F(GROUP_MA='FACEAB',

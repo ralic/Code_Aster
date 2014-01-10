@@ -1582,7 +1582,7 @@ MOOS=AFFE_MODELE(MAILLAGE=MLOS,
                  VERIF='MAILLE',
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='AXIS_INCO_OSGS',),);
+                         MODELISATION='AXIS_INCO_UPO',),);
 
 CMLOS=AFFE_MATERIAU(MAILLAGE=MLOS,
                  AFFE=_F(TOUT='OUI',

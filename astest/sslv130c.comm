@@ -1523,7 +1523,7 @@ MOOS=AFFE_MODELE(MAILLAGE=MLOS,
                   VERIF='MAILLE',
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='D_PLAN_INCO_OSGS',),);
+                          MODELISATION='D_PLAN_INCO_UPO',),);
 
 CHYOUNOS=CREA_CHAMP(TYPE_CHAM='ELNO_NEUT_R',
                    OPERATION='AFFE',
@@ -1570,7 +1570,7 @@ EVOLOS=CALC_CHAMP(reuse =EVOLOS,
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
 #       POUR UN  SOLIDE INCOMPRESSIBLE NU = 0.5
-#       D_PLAN_INCO_OSGS ET TRIA6/QUAD8
+#       D_PLAN_INCO_UPO ET TRIA6/QUAD8
 #---------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',

@@ -1201,7 +1201,7 @@ MOOS=AFFE_MODELE(MAILLAGE=M0,
                  VERIF='MAILLE',
                  AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF',),
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D_INCO_OSGS',),);
+                         MODELISATION='3D_INCO_UPO',),);
 
 CHOS=AFFE_CHAR_MECA(MODELE=MOOS,
                     DDL_IMPO=(_F(GROUP_MA='FACEAB',
@@ -1238,7 +1238,7 @@ EVOLOS=CALC_CHAMP(reuse =EVOLOS,
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
 #       POUR UN  SOLIDE INCOMPRESSIBLE NU = 0.5
-#       3D_INCO_OSGS ET HEXA20
+#       3D_INCO_UPO ET HEXA20
 #---------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',
