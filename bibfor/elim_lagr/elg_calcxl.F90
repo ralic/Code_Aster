@@ -1,6 +1,5 @@
 subroutine elg_calcxl(x1, vlag)
     implicit none
-! aslint: disable=W0104
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,6 +97,7 @@ subroutine elg_calcxl(x1, vlag)
 !
 #else
     integer :: x1, vlag
+    vlag = x1
     ASSERT(.false.)
 #endif
 !

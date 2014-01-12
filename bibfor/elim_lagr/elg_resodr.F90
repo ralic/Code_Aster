@@ -1,6 +1,6 @@
 subroutine elg_resodr(lt, c, z)
     implicit none
-! aslint: disable=W0104
+! aslint: disable=W1304
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -146,6 +146,8 @@ subroutine elg_resodr(lt, c, z)
 #else
     integer :: lt
     real(kind=8) :: c(*), z(*)
+    lt = 0
+    c(1) = z(1)
     ASSERT(.false.)
 #endif
 !

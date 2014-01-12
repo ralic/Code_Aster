@@ -1,7 +1,7 @@
 subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                       nonu)
     implicit none
-! aslint: disable=W0104
+! aslint: disable=W1304
 !
 ! person_in_charge: mathieu.corus at edf.fr
 ! ======================================================================
@@ -151,7 +151,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
         if (info2) write(ifm,*),' '
         if (norm .lt. 1e-12) then
             if (info2) write(ifm,*),' CONTRAINTE DEJA VERIFIEE'
-            goto 1235
+            goto 123
         endif
 !--
 !-- Comptage des DDL impliques dans d'autres contraintes
@@ -276,7 +276,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
                     zi4(nvcont+nbnvco)=i1-1
                     nbnvco=nbnvco+1
-                    goto 1235
+                    goto 123
                 endif
                 do j1 = 1, nbcont
                     icol=zi4(indcon+j1-1)
@@ -364,7 +364,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
                 zi4(nvcont+nbnvco)=i1-1
                 nbnvco=nbnvco+1
-                goto 1235
+                goto 123
             endif
 !
         else
@@ -383,14 +383,14 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
                 zi4(nvcont+nbnvco)=i1-1
                 nbnvco=nbnvco+1
-                goto 1235
+                goto 123
             endif
 !
         endif
 !--
 !-- Si la contrainte est deja verifiee, on arrive direct la
 !--
-1235     continue
+123     continue
 !
 !        call MatRestoreRow(C,I1-1,int(nbnzc),ZI4(NZROW),ZR(VALROW),ierr)
 !
@@ -408,6 +408,8 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
     integer :: c, t
     integer :: nbeq, clag1, nbnvco
     character(len=14) :: nonu
+    nonu = ' '
+    t = c + nbeq + clag1 + nbnvco
     ASSERT(.false.)
 #endif
 end subroutine

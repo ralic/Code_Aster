@@ -1,6 +1,6 @@
 subroutine elg_comptt(c, t, nbeq, clag1)
     implicit none
-! aslint: disable=W0104
+! aslint: disable=W1304
 ! person_in_charge: mathieu.corus at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -245,7 +245,7 @@ subroutine elg_comptt(c, t, nbeq, clag1)
                 end do
 !
             else
-                goto 1235
+                goto 123
             endif
 !
         else
@@ -257,13 +257,13 @@ subroutine elg_comptt(c, t, nbeq, clag1)
                                   [valt], INSERT_VALUES, ierr)
                 zi4(contr + numcon) = 1
             else
-                goto 1235
+                goto 123
             endif
 !
         endif
 !
 !-- Si la contrainte est deja verifiee, on arrive direct la
-1235     continue
+123     continue
 !
         call MatRestoreRow(c, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
                            ierr)
@@ -292,6 +292,7 @@ subroutine elg_comptt(c, t, nbeq, clag1)
 #else
     integer :: c, t
     integer :: nbeq, clag1
+    t = c + clag1 + nbeq
     ASSERT(.false.)
 #endif
 !
