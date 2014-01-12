@@ -43,7 +43,6 @@ subroutine elg_calcx0()
 # include "asterfort/elg_resodr.h"
 !
 !================================================================
-    integer(kind=8) :: ilt
     PetscInt :: ierr
     PetscInt :: n1, n2
     PetscScalar :: xxc(1), xxz(1)
@@ -64,11 +63,10 @@ subroutine elg_calcx0()
 !
 !     -- Résolution de z   = (L'*L) \  c
 !     ------------------------------------
-    ilt=lt
     call VecDuplicate(melim(ke)%vecc, vecz, ierr)
     call VecGetArray(melim(ke)%vecc, xxc, xidxc, ierr)
     call VecGetArray(vecz, xxz, xidxz, ierr)
-    call elg_resodr(ilt, xxc(xidxc+1), xxz(xidxz+1))
+    call elg_resodr(lt, xxc(xidxc+1), xxz(xidxz+1))
     call VecRestoreArray(melim(ke)%vecc, xxc, xidxc, ierr)
     call VecRestoreArray(vecz, xxz, xidxz, ierr)
 !

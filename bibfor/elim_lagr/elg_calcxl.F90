@@ -41,7 +41,7 @@ subroutine elg_calcxl(x1, vlag)
     Vec :: x1, vlag
 !
 !================================================================
-    integer(kind=8) :: ilt
+    Mat :: ilt
     PetscInt :: n1, n2, n3
     PetscInt :: ierr
     PetscScalar :: xx(1), m1
@@ -97,7 +97,7 @@ subroutine elg_calcxl(x1, vlag)
     call jedema()
 !
 #else
-    integer(kind=8) :: x1, vlag
+    integer :: x1, vlag
     ASSERT(.false.)
 #endif
 !

@@ -144,7 +144,7 @@ subroutine elg_resodr(lt, c, z)
 !
 !
 #else
-    integer(kind=8) :: lt
+    integer :: lt
     real(kind=8) :: c(*), z(*)
     ASSERT(.false.)
 #endif

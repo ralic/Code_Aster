@@ -405,7 +405,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
     call jedetr('&&ELG_REMPLT.T_LIB.CON')
 !
 #else
-    integer(kind=8) :: c, t
+    integer :: c, t
     integer :: nbeq, clag1, nbnvco
     character(len=14) :: nonu
     ASSERT(.false.)

@@ -290,7 +290,7 @@ subroutine elg_comptt(c, t, nbeq, clag1)
 !
 !
 #else
-    integer(kind=8) :: c, t
+    integer :: c, t
     integer :: nbeq, clag1
     ASSERT(.false.)
 #endif
