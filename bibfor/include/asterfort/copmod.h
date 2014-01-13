@@ -16,15 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine copmod(basemo, champ, neq, numer, nbmode,&
-                      typc, bmodr, bmodz)
-        integer :: nbmode
-        integer :: neq
-        character(len=8) :: basemo
-        character(len=*) :: champ
-        character(len=*) :: numer
-        character(len=1) :: typc
-        real(kind=8) :: bmodr(neq*nbmode)
-        complex(kind=8) :: bmodz(neq*nbmode)
+    subroutine copmod(base, bmodr, bmodz, champ, numer, &
+                      nbmodes, nequa)
+        character(len=8), intent(in):: base
+        real(kind=8), optional, intent(out) :: bmodr(*)
+        complex(kind=8), optional, intent(out) :: bmodz(*)
+        character(len=*), optional, intent(in) :: champ
+        character(len=*), optional, intent(in) :: numer
+        integer, optional, intent(in) :: nbmodes
+        integer, optional, intent(in) :: nequa
     end subroutine copmod
 end interface

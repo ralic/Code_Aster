@@ -408,8 +408,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     end do
 !
     call wkvect('&&IREDM1.BASEMO', 'V V R', nbmodt*neq, idbase)
-    call copmod(basemo, 'DEPL', neq, nume, nbmodt,&
-                'R', zr(idbase), [cbid])
+    call copmod(basemo, numer=nume, bmodr=zr(idbase))
 !
 ! --- ALLOCATION VECTEUR DE TRAVAIL
 !

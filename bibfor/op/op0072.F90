@@ -199,8 +199,7 @@ subroutine op0072()
     endif
 !
 ! --- CONVERSION DE BASEMO A LA NUMEROTATION NU
-    call copmod(basemo, 'DEPL', neq, proch1, nbmode,&
-                'R', zr(idbase), [cbid])
+    call copmod(basemo, numer=proch1, bmodr=zr(idbase))
 !
     if (nomtyp(1:4) .eq. 'FORC') then
 !

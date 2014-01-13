@@ -1,5 +1,5 @@
-subroutine copmod(basemo, champ, neq, numer, nbmode,&
-                  typc, bmodr, bmodz)
+subroutine copmod(base, bmodr, bmodz, champ, numer, &
+                  nbmodes, nequa)
     implicit none
 !***********************************************************************
 ! ======================================================================
@@ -19,38 +19,44 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!                              FONCTION
-!     _______________________________________________________________
-!    | EXTRAIRE, DANS UN VECTEUR DE TRAVAIL, DES CHAMPS D'UN CONCEPT |
-!    | MODE_MECA AVEC LA POSSIBILITE DE MODIFIER LA NUMEROTATION.    |
-!    |_______________________________________________________________|
+!                              Function
+!     _____________________________________________________________
+!    | Extract, inside a temporary work vector, the fields from a  |
+!    | modal basis concept while changing or not their numbering   |
+!    |_____________________________________________________________|
 !
 ! ---------
-! EXEMPLES: CALL COPMOD (BASE,'DEPL',NEQ,' '  ,NBMOD,'R',ZR(JBASE),CBID)
-! --------- CALL COPMOD (BASE,'DEPL',NEQ,NUDDL,NBMOD,'R',ZR(JBASE),CBID)
-!           CALL COPMOD (BASE,'DEPL',NEQ,NUDDL,NBMOD,'C',RBID,ZC(JBASE))
+! Examples: call copmod ( base, bmodr = zr(jbase) )
+! --------- call copmod ( base, bmodr = zr(jbase), numer = nuddl )
+!           call copmod ( base, bmodz = zc(jbase) )
+!           call copmod ( base, bmodr = zr(jbase), numer = nuddl, champ = 'VITE')
 !
 !
-!                     DESCRIPTIVE DES VARIABLES
-!   ___________________________________________________________________
-!  | IN > BASEMO : BASE MODALE D'ENTREE (MODE_MECA)                [K8]|
-!  | IN > CHAMP  : NOM DE CHAMP A EXTRAIRE (EX. 'DEPL')            [K*]|
-!  | IN > NEQ    : NOMBRE D'EQUATIONS DANS LE SYSTEME ASSEMBLE      [I]|
-!   ___________________________________________________________________
-!  | IN > NUMER  :                                                 [K*]|
-!  |        SOIT - BLANC (' ') SI ON VEUT CONSERVER LA NUMEROTATION    |
-!  |               INITIALE                                            |
-!  |        SOIT - LE NOM DE CONCEPT NUME_DDL OU SD_PROF_CHNO DONNANT  |
-!  |               LA NOUVELLE NUMEROTATION DES CHAMPS                 |
-!   ___________________________________________________________________
-!  | IN > NBMODE : NOMBRE DE MODES DANS BASEMO                      [I]|
-!  | IN > TYPC   : TYPE DES CHAMPS A COPIER ('R'/'C')              [K1]|
-!   ___________________________________________________________________
-!  |OUT < BMODR  : VECTEUR DE TRAVAIL (REEL) DE SORTIE             [R8]|
-!  |OUT < BMODZ  : VECTEUR DE TRAVAIL (COMPLEXE) DE SORTIE        [C16]|
-!   ___________________________________________________________________
+!                     Description of the input/output arguments
+!   _________________________________________________________________________________
+!  | in < obl > base      : Entry modal basis (mode_meca)                        [k8]|
+!  |            ------                                                               |
+!  |out < fac >|bmodr |   : Output work vector containing the copied fields      [r8]|
+!  |            ======    : (real fields case)                                       |
+!  |out < fac >|bmodz |   : Output work vector containing the copied fields     [c16]|
+!  |            ------|   : (complex fields case)                                    |
+!  |                  |                                                              |
+!  |                   => Validation rule : One of these two output vectors must     |
+!  |                                        be given                                 |
+!  |---------------------------------------------------------------------------------|
+!  | in < fac > champ     : Field type to copy (default = 'DEPL')                [k*]|
+!  | in < fac > numer     : - If given, the name of the nume_ddl concept         [k*]|
+!  |                      :   or that of the prof_chno giving the new numbering      |
+!  |                      :   of the copied fields                                   |
+!  |                      : - If absent, the numbering is unchanged                  |
+!  | in < fac > nbmodes   : The number of modes to be copied                      [i]|
+!  |                      : (default = total number of modes in base)              |
+!  | in < fac > nequa     : The number of equations in each vector                [i]|
+!  |                      : (default = determine automatically from the nume_ddl)    |
+!  |_________________________________________________________________________________|
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -72,25 +78,66 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !
 !     0.1 - DECLARATION DES VARIABLES D'ENTREE/SORTIE
 !
-    character(len=1) :: typc
-    character(len=8) :: basemo
-    character(len=*) :: numer
-    character(len=*) :: champ
-    integer :: neq, nbmode
-    real(kind=8) :: bmodr(neq*nbmode)
-    complex(kind=8) :: bmodz(neq*nbmode)
+    character(len=8), intent(in):: base
+    real(kind=8), optional, intent(out) :: bmodr(*)
+    complex(kind=8), optional, intent(out) :: bmodz(*)
+    character(len=*), optional, intent(in) :: champ
+    character(len=*), optional, intent(in) :: numer
+    integer, optional, intent(in) :: nbmodes
+    integer, optional, intent(in) :: nequa
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
+    character(len=1) :: typc
     logical :: modnum, exnume
-    integer :: i, iret
+    integer :: i, iret, neq, nbmode
     integer :: jref, jdeeq, jval
+    character(len=8) :: champ2
     character(len=19) :: numer1, numer2, nomcha, tmpcha
     character(len=24) :: maill1, maill2, valk(4), crefe(2), valcha
 !
 !     0.3 - ACTUALISATION DE LA VALEUR DE LA MARQUE COURANTE
 !
     call jemarq()
+!
+!     0.4 - TEST DES ARGUMENTS D'ENTREES, ET ATTRIBUTION DES VALEURS PAR DEFAUT
+!
+    typc = 'R'
+    ASSERT(UN_PARMI2(bmodr, bmodz))
+    if (present(bmodz)) typc = 'C'
+
+    champ2  = 'DEPL'
+    numer2  = ' '
+    if (present(champ)) champ2 = champ
+    if (present(numer)) numer2 = numer
+    if (present(nequa)) neq = nequa
+
+!   --- VERIFICATION QUE LE NOMBRE D'EQUATIONS RENSEIGNE CORRESPOND AU NUME_DDL
+    if (numer2 .ne. ' ') then
+        call jeexin(numer2(1:14)//'.NUME.NEQU', iret)
+        if (iret .ne. 0) then
+            call dismoi('NB_EQUA' , numer2, 'NUME_DDL' , repi=neq)
+            if (present(nequa)) ASSERT(nequa .eq. neq)
+        endif
+    else 
+        call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C', ier=iret)
+        if (iret .eq. 0) then
+            call jeexin(numer1(1:14)//'.NUME.NEQU', iret)
+            if (iret .ne. 0) then
+                call dismoi('NB_EQUA' , numer1, 'NUME_DDL' , repi=neq)
+                if (present(nequa)) ASSERT(nequa .eq. neq)
+            endif
+        endif
+    endif
+!   --- FIN DE LA VERIFICATION DU NOMBRE D'EQUATIONS
+
+    call dismoi('NB_MODES_TOT', base, 'RESULTAT' , repi=nbmode)
+    if (present(nbmodes)) then 
+        ASSERT(nbmodes .le. nbmode)
+        nbmode = nbmodes
+    endif
+
+
 !  ____________________________________________________________________
 !
 !  - 1 - RECHERCHE DES INFORMATIONS SUR LES CHAMPS DANS LA BASE MODALE
@@ -100,7 +147,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !
 !     1.1.1 - RECUPERER LE NOM DE CHAMP DU 1ER NUMERO ORDRE
 !
-    call rsexch('F', basemo, champ, 1, nomcha,&
+    call rsexch('F', base, champ2, 1, nomcha,&
                 iret)
 !
 !     1.1.2 - POUR TRAITER LES CAS AVEC SS-STRUCTURATION, TESTER SI
@@ -108,7 +155,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !             RECUPERER LE .REFE DU CHAMP DE DEPLACEMENT
 !
     call jeexin(nomcha(1:19)//'.REFE', iret)
-    if (iret .eq. 0) call rsexch('F', basemo, 'DEPL', 1, nomcha,&
+    if (iret .eq. 0) call rsexch('F', base, 'DEPL', 1, nomcha,&
                                  iret)
 !
     call jeveuo(nomcha(1:19)//'.REFE', 'L', jref)
@@ -181,7 +228,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !     3.1 - BOUCLE SUR LES MODES DE LA BASE
     do i = 1, nbmode
 !       3.1.1 - EXTRAIRE LE NOM DU CHAMP D'INTERET (NOMCHA)
-        call rsexch('F', basemo, champ, i, nomcha,&
+        call rsexch('F', base, champ2, i, nomcha,&
                     iret)
 !
 !       3.1.2 - NOUVELLE NUMER.? ALORS CREER UN NOUVEAU CHAMP TEMPORAIRE
@@ -227,7 +274,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !
 !       3.1.6 - ANNULER LES DDL DE LAGRANGE S'IL S'AGIT DES CHAMPS DE
 !               DEPLACEMENTS
-        if (champ .eq. 'DEPL') then
+        if (champ2 .eq. 'DEPL') then
             if (typc .ne. 'C') then
                 call zerlag(neq, zi(jdeeq), vectr=bmodr((i-1)*neq+1))
             else

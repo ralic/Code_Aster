@@ -160,8 +160,8 @@ subroutine bamo78(nomres, trange, typres)
 !
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
     AS_ALLOCATE(vr=base, size=nbmode*neq)
-    call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', base, [cbid])
+    call copmod(basemo, bmodr=base, numer=numddl)
+
     call dismoi('NOM_MODELE', numddl, 'NUME_DDL', repk=modele)
 !
 ! --- CHAMPS SUR LESQUELS ON RESTITUE

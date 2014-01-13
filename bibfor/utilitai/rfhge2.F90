@@ -166,8 +166,7 @@ subroutine rfhge2(harmge)
 ! ---   RECUPERATION DE LA BASE MODALE DANS UN VECTEUR DE TRAVAIL
         call dismoi('NB_EQUA', nume, 'NUME_DDL', repi=neq)
         call wkvect('&&RFHGE2.VECT.PROPRE', 'V V R', neq* nbmode, idbase)
-        call copmod(basemo, 'DEPL', neq, nume, nbmode,&
-                    'R', zr( idbase), [cbid])
+        call copmod(basemo, numer=nume, bmodr=zr(idbase))
 !
 ! --- TRAITEMENT D'UN GROUP DE NOEUDS SEUELEMENT
         if (ngn .ne. 0) then

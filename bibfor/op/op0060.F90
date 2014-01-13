@@ -110,11 +110,11 @@ subroutine op0060()
     character(len=8) :: nomo
     character(len=24) :: carele, mate
     character(len=14) :: numddl, numdl1, numdl2, numdl3
-    character(len=16) :: typcon, nomcmd, tysd, k16bid
+    character(len=16) :: typcon, nomcmd, tysd
     character(len=19) :: lifreq, masse, raide, amor, dynam, impe, chamno
     character(len=19) :: solveu, maprec, secmbr, soluti, vezero, crgc
     character(len=19) :: nomt, nomi
-    character(len=24) :: nomat(4), basemo, matric(3)
+    character(len=24) :: nomat(4), basemo
     character(len=24) :: exreco, exresu
     integer :: nbexre, tmod(1)
 !
@@ -283,13 +283,12 @@ subroutine op0060()
             nomsym(2) = 'VITE'
             nomsym(3) = 'ACCE'
         endif
-        call mdallo(result, basemo, masse, raide, amor,&
-                    neq, r8bid, nbfreq, 0, k8bid,&
-                    k8bid, 0, k8bid, 0, k8bid,&
-                    jdepl, jvite, jacce, ibid, jordr,&
-                    jfreq, ibid, ibid, ibid, ibid,&
-                    ibid, ibid, ibid, ibid, k16bid,&
-                    nbsym, nomsym, typcal, 'GLOB')
+
+        call mdallo(result, 'HARM', nbfreq, sauve='GLOB', base=basemo,&
+                    mass=masse, rigi=raide, amor=amor, nbmodes=neq, jordr=jordr,&
+                    jdisc=jfreq, jdepl=jdepl, jvite=jvite, jacce=jacce, nbsym=nbsym,&
+                    nomsym=nomsym)
+
 !
     else if (newcal) then
 !     --- SI NOUVEAU CALCUL SUR BASE PHYSIQUE
@@ -308,11 +307,8 @@ subroutine op0060()
 !
     if (.not.calgen) then
 !       --- SAUVEGARDE DE LA COLLECTION .REFD POUR LES CALCULS SUR BASE PHYS
-        matric(1) = raide
-        matric(2) = masse
-        matric(3) = amor
         call refdaj('F', result, -1, numddl, 'DYNAMIQUE',&
-                    matric, iret)
+                    [raide, masse, amor], iret)
     endif
 !
 !
@@ -519,11 +515,10 @@ subroutine op0060()
                 endif
 !
             end do
-            call mdarch(isto1, ifreq-1, freq, 0.d0, neq,&
-                        typcal, nbsym, nomsym, [0.d0], [0.d0],&
-                        [0.d0], [0.d0], [0.d0], [0.d0], zc(ldgec),&
-                        zc( lvgec), zc(lagec), zc(jdepl), zc(jvite), zc(jacce),&
-                        [0.d0], zi( jordr), zr(jfreq))
+            call mdarch('HARM', isto1, ifreq-1, freq, neq, zi(jordr), zr(jfreq),&
+                        nbsym=nbsym, nomsym=nomsym, depgec=zc(ldgec), vitgec=zc(lvgec),&
+                        accgec=zc(lagec), depstc=zc(jdepl), vitstc=zc(jvite),&
+                        accstc=zc(jacce))
             isto1=isto1+1
         endif
 !

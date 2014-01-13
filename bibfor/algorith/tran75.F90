@@ -351,8 +351,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
         AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
-            call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
-                        'R', base, [cbid])
+            call copmod(basemo, champ=typcha, numer=prchno(1:14), bmodr=base, &
+                                nequa=neq)
         else
             do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&

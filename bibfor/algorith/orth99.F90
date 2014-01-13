@@ -150,8 +150,7 @@ subroutine orth99(nomres, ritz)
     call jeveuo(nu//'.NUME.NEQU', 'L', llnequ)
     neq = zi(llnequ)
     call wkvect('&&ORTH99.BASE', 'V V R', nbmode*neq, idmode)
-    call copmod(base, 'DEPL', neq, nu, nbmode,&
-                'R', zr(idmode), [cbid])
+    call copmod(base, numer=nu, bmodr=zr(idmode))
 !-- FINALEMENT SI, DONC RECOPIE OK
 !
 !-----------------------------------------------------------------------

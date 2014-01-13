@@ -35,12 +35,12 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
     integer :: parch, nbobjs, nbsaui, neqgen, nbchoc, nbrede, nbrevi, nbsauv
     integer :: loncum, ino, nbstoc, nbsto1, nbvint
     integer :: jdeps, jvits, jaccs, jpass, jords, jinst, jfcho, jdcho, jvcho
-    integer :: jicho, jredc, jredd, jrevc, jrevv, ibid, jdepl, jvite, jacce
+    integer :: jicho, jredc, jredd, jrevc, jrevv, jdepl, jvite, jacce
     integer :: jdisc, jordr, jptem, jfc, jdl, jvc, jic, jvi, jvir, jedc, jedd
     integer :: jevc, jevd, decal1, decal2, decal3, decal4, decal5, decal6, decal7
     integer :: nm, jrefa
 !
-    character(len=4) :: nom4rk, intk, k4bid(3)
+    character(len=4) :: nom4rk, intk
     character(len=8) :: nom8rk, nomres, intitu(*), noecho(nbchoc, *)
     character(len=8) :: fonred(nbrede, *), fonrev(nbrevi, *), nommat, krefd
     character(len=*) :: basemo, masgen, riggen, amogen
@@ -58,13 +58,13 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
         krefd = basemo
     endif
 !
-    call mdallo(nomres, krefd, masgen, riggen, amogen,&
-                neqgen, dt, parch, nbchoc, noecho,&
-                intitu, nbrede, fonred, nbrevi, fonrev,&
-                jdeps, jvits, jaccs, jpass, jords,&
-                jinst, jfcho, jdcho, jvcho, jicho,&
-                jredc, jredd, jrevc, jrevv, method,&
-                ibid, k4bid, 'TRAN', 'GLOB')
+    call mdallo(nomres, 'TRAN', parch, sauve='GLOB', checkarg=.false.,&
+                method=method, base=krefd, nbmodes=neqgen, rigi=riggen, mass=masgen,&
+                amor=amogen, jordr=jords, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
+                jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbchoc, noecho=noecho,&
+                intitu=intitu, jfcho=jfcho, jdcho=jdcho, jvcho=jvcho, jadcho=jicho,&
+                nbrede=nbrede, fonred=fonred, jredc=jredc, jredd=jredd, nbrevi=nbrevi,&
+                fonrev=fonrev, jrevc=jrevc, jrevv=jrevv)
 !   Pour les variables internes
     if ( nbchoc .ne. 0 ) then
         call jeveuo(nomres//'           .VINT', 'E', jvir)

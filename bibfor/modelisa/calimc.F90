@@ -194,8 +194,7 @@ subroutine calimc(chargz)
         numddl = numedd(1:14)
         call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         call wkvect('&&CALIMC.BASE', 'V V R', nbmode(1)*neq, idbase)
-        call copmod(basemo, 'DEPL', neq, numddl, nbmode(1),&
-                    'R', zr(idbase), [cbid])
+        call copmod(basemo, numer=numddl, bmodr=zr(idbase))
         call dismoi('NOM_GD', numddl, 'NUME_DDL', repk=nogdsi)
 !        NOGDSI = 'DEPL_R'
         call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nbec)

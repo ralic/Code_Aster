@@ -111,8 +111,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     AS_ALLOCATE(vc=vectass3, size=neq)
     AS_ALLOCATE(vr=vbasemo, size=nbmo*neq)
 ! ----- CONVERSION DE BASEMO A LA NUMEROTATION NU
-    call copmod(basemo, 'DEPL', neq, nu, nbmo,&
-                'R', vbasemo, [cbid])
+    call copmod(basemo, numer=nu, bmodr=vbasemo)
 !
     call mtdscr(matras)
     call jeveuo(matras//'           .&INT', 'E', imatra)

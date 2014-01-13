@@ -41,7 +41,6 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
     integer :: iinst, inord, iordr, iptem, jacce, jvite, jdepl, jpass
     integer :: ibid, jinst, jordr, nbmode, nbo
     real(kind=8) :: dtbid
-    character(len=4) :: k4bid(3)
     character(len=8) :: k8b
 !-----------------------------------------------------------------------
     blanc8 = '        '
@@ -53,13 +52,10 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
 !
 !----- INITIALISATION DE LA SD TYPE
 !
-    call mdallo(nomres, basemo, blanc8, blanc8, blanc8,&
-                nbmode, dtbid, nbo, 0, blanc8,&
-                blanc8, 0, blanc8, 0, blanc8,&
-                jdepl, jvite, jacce, jpass, jordr,&
-                jinst, ibid, ibid, ibid, ibid,&
-                ibid, ibid, ibid, ibid, blan16,&
-                ibid, k4bid, 'TRAN', 'GLOB')
+    call mdallo(nomres, 'TRAN', nbo, sauve='GLOB', base=basemo,&
+                nbmodes=nbmode, jordr=jordr, jdisc=jinst, jdepl=jdepl, jvite=jvite,&
+                jacce=jacce, jptem=jpass, dt=dtbid)
+
 !
 !---- EN ABSENCE D'INFORMATION SUR LE PAS DE TEMPS, LE .PTEM EST
 !---- EST FORCE A ZERO

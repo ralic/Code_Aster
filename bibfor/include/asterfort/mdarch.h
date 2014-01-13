@@ -15,33 +15,33 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
-                      typcal, nbsym, nomsym, depger, vitger,&
-                      accger, depstr, vitstr, accstr, depgec,&
-                      vitgec, accgec, depstc, vitstc, accstc,&
-                      passto, iorsto, discst)
-        integer :: isto1
-        integer :: ipas
-        real(kind=8) :: disc
-        real(kind=8) :: dt
-        integer :: nbmode
-        character(len=4) :: typcal
-        integer :: nbsym
-        character(len=4) :: nomsym(*)
-        real(kind=8) :: depger(*)
-        real(kind=8) :: vitger(*)
-        real(kind=8) :: accger(*)
-        real(kind=8) :: depstr(*)
-        real(kind=8) :: vitstr(*)
-        real(kind=8) :: accstr(*)
-        complex(kind=8) :: depgec(*)
-        complex(kind=8) :: vitgec(*)
-        complex(kind=8) :: accgec(*)
-        complex(kind=8) :: depstc(*)
-        complex(kind=8) :: vitstc(*)
-        complex(kind=8) :: accstc(*)
-        real(kind=8) :: passto(*)
-        integer :: iorsto(*)
-        real(kind=8) :: discst(*)
+    subroutine mdarch(typcal, isto1, ipas, disc, nbmode,&
+                      iorsto, discst, dt, depger, vitger,&
+                      accger, depstr, vitstr, accstr, passto,&
+                      nbsym, nomsym, depgec, vitgec, accgec,&
+                      depstc, vitstc, accstc)
+        character(len=4) , intent(in)  :: typcal
+        integer          , intent(in)  :: isto1
+        integer          , intent(in)  :: ipas
+        real(kind=8)     , intent(in)  :: disc
+        integer          , intent(in)  :: nbmode
+        integer                        :: iorsto(*)
+        real(kind=8)                   :: discst(*)
+        real(kind=8)     , optional, intent(in)  :: dt
+        real(kind=8)     , optional, intent(in)  :: depger(nbmode)
+        real(kind=8)     , optional, intent(in)  :: vitger(nbmode)
+        real(kind=8)     , optional, intent(in)  :: accger(nbmode)
+        real(kind=8)     , optional              :: depstr(*)
+        real(kind=8)     , optional              :: vitstr(*)
+        real(kind=8)     , optional              :: accstr(*)
+        real(kind=8)     , optional              :: passto(*)
+        integer          , optional, intent(in)  :: nbsym
+        character(len=4) , optional, intent(in)  :: nomsym(*)
+        complex(kind=8)  , optional, intent(in)  :: depgec(nbmode)
+        complex(kind=8)  , optional, intent(in)  :: vitgec(nbmode)
+        complex(kind=8)  , optional, intent(in)  :: accgec(nbmode)
+        complex(kind=8)  , optional              :: depstc(*)
+        complex(kind=8)  , optional              :: vitstc(*)
+        complex(kind=8)  , optional              :: accstc(*)   
     end subroutine mdarch
 end interface

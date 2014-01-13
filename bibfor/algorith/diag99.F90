@@ -91,8 +91,7 @@ subroutine diag99(nomres)
     call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
     call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     call wkvect('&&DIAG99.MODE_MECA', 'V V R', nbmode*neq, idmode)
-    call copmod(meca, 'DEPL', neq, nu, nbmode,&
-                'R', zr(idmode), [cbid])
+    call copmod(meca, bmodr=zr(idmode), numer=nu)
 !
 !-----------------------------------------------------------------------
 ! --- RECUPERATION DES MODES STATIQUES
@@ -103,8 +102,7 @@ subroutine diag99(nomres)
     call jelira(stat//'           .ORDR', 'LONUTI', nbstat)
     call jeveuo(stat//'           .ORDR', 'L', jords)
     call wkvect('&&DIAG99.MODE_STAT', 'V V R', nbstat*neq, idstat)
-    call copmod(stat, 'DEPL', neq, nu, nbstat,&
-                'R', zr(idstat), [cbid])
+    call copmod(stat, bmodr=zr(idstat), numer=nu)
 !
 !-----------------------------------------------------------------------
 ! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE DE MASSE

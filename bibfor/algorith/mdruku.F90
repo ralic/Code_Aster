@@ -79,7 +79,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     real(kind=8) :: vrotin, arotin, dtmax, dtmin, tol, coeff, seuil1, seuil2
     logical :: lamor, prdeff, adapt, flagdt, condrepri
     character(len=3) :: finpal(palmax)
-    character(len=4) :: intk, nomsym(3)
+    character(len=4) :: intk
     character(len=6) :: typal(palmax)
     character(len=8) :: cnpal(palmax), basemo, noecho(nbchoc, *), fonred(*)
     character(len=8) :: fonrev(*), intitu, nomres, monmot, fk(2), dfk(2), vitvar
@@ -107,13 +107,13 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     nbobjs=1
     call codent(nbobjs, 'D0', intk)
     namerk='&&RK'//intk
-    call mdallo(namerk, basemo, nommas, nomrig, nomamo,&
-                neqgen, dt, nbsauv, nbchoc, noecho,&
-                intitu, nbrede, fonred, nbrevi, fonrev,&
-                jdeps, jvits, jaccs, jpass, jordr,&
-                jinst, jfcho, jdcho, jvcho, jicho,&
-                jredc, jredd, jrevc, jrevv, method,&
-                ibid, nomsym, 'TRAN', 'VOLA')
+    call mdallo(namerk, 'TRAN', nbsauv, sauve='VOLA', checkarg=.false.,&
+                method=method, base=basemo, nbmodes=neqgen, rigi=nomrig, mass=nommas,&
+                amor=nomamo, jordr=jordr, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
+                jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbchoc, noecho=noecho,&
+                intitu=intitu, jfcho=jfcho, jdcho=jdcho, jvcho=jvcho, jadcho=jicho,&
+                nbrede=nbrede, fonred=fonred, jredc=jredc, jredd=jredd, nbrevi=nbrevi,&
+                fonrev=fonrev, jrevc=jrevc, jrevv=jrevv)
 !
     deux = 2.d0
     epsi = r8prem()
@@ -420,13 +420,14 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                 nbsauv = int(nbsauv*facobj)
                 nbscho = nbsauv * 3 * nbchoc
 !
-                call mdallo(namerk, basemo, nommas, nomrig, nomamo,&
-                            neqgen, dt, nbsauv, nbchoc, noecho,&
-                            intitu, nbrede, fonred, nbrevi, fonrev,&
-                            jdeps, jvits, jaccs, jpass, jordr,&
-                            jinst, jfcho, jdcho, jvcho, jicho,&
-                            jredc, jredd, jrevc, jrevv, method,&
-                            ibid, nomsym, 'TRAN', 'VOLA')
+                call mdallo(namerk, 'TRAN', nbsauv, sauve='VOLA', checkarg=.false.,&
+                            method=method, base=basemo, nbmodes=neqgen, rigi=nomrig,&
+                            mass=nommas, amor=nomamo, jordr=jordr, jdisc=jinst,&
+                            jdepl=jdeps, jvite=jvits, jacce=jaccs, dt=dt, jptem=jpass,&
+                            nbchoc=nbchoc, noecho=noecho, intitu=intitu, jfcho=jfcho,&
+                            jdcho=jdcho, jvcho=jvcho, jadcho=jicho, nbrede=nbrede,&
+                            fonred=fonred, jredc=jredc, jredd=jredd, nbrevi=nbrevi,&
+                            fonrev=fonrev, jrevc=jrevc, jrevv=jrevv)
 !               Le pointeur des variables internes n'est pas en OUT de mdallo.
 !               Il faut le mettre à jour sinon on cartonne. La taille du tableau est *facobj
                 if ( nbchoc .ne. 0 ) then
@@ -497,7 +498,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !
     endif
 !
-!   concaténation de tous les résultats dans un seul objet sur base globale de bonne taille
+!   concatenation de tous les resultats dans un seul objet sur base globale de bonne taille
     call concrk(nomres, iarchi, facobj, nbobjs, '&&RK',&
                 nbsaui, basemo, nommas, nomrig, nomamo,&
                 neqgen, dt, nbchoc, noecho, intitu,&

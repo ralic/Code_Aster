@@ -47,19 +47,14 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
     real(kind=8) :: vint(*)
     integer :: ic, ind, ipas, ird, irv, isto1, isto2, ndec, nbscho, ii
     integer :: isto3, isto4, nbmode, nbrede, nbrevi, nbvari, dimschor
-    character(len=4) :: typcal, kbid
     real(kind=8) :: dt, t
-    complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
-    typcal = 'TRAN'
 !
 !   enregistrement des données obligatoires
-    cbid=dcmplx(0.d0,0.d0)
-    call mdarch(isto1, ipas, t, dt, nbmode,&
-                typcal, 0, [kbid], depgen, vitgen,&
-                accgen, depsto, vitsto, accsto, [cbid],&
-                [cbid], [cbid], [cbid], [cbid], [cbid],&
-                passto, iorsto, temsto)
+    call mdarch('TRAN', isto1, ipas, t, nbmode,&
+                iorsto, temsto, dt=dt, depger=depgen, vitger=vitgen,&
+                accger=accgen, depstr=depsto, vitstr=vitsto, accstr=accsto, passto=passto)
+
 !
 !   enregistrement des données optionelles
     if (nbchoc .ne. 0) then
@@ -86,7 +81,7 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
             dchost(nbscho+isto2) = saucho(ic,12)
             ichost(ndec+ic) = nint(saucho(ic,13))
 !           variables internes
-!           V(nbchoc,Vint,nbsauv)
+!           V(nbchoc,vint,nbsauv)
             do ii= 1, nbvari
                 vint(ic+(ii-1)*nbchoc+ind) = saucho(ic,dimschor+ii)
             enddo

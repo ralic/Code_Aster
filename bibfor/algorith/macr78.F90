@@ -180,8 +180,7 @@ subroutine macr78(nomres, trange, typres)
     numddl = numedd(1:14)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
     AS_ALLOCATE(vr=base, size=nbmode*neq)
-    call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', base, [cbid])
+    call copmod(basemo, bmodr=base, numer=numddl)
     call getvtx(' ', 'TOUT_CHAM', nbval=0, nbret=n0)
     if (n0 .ne. 0) then
         nbcham = 3

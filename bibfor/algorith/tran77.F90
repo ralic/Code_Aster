@@ -269,8 +269,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
         if (leffor) call jelira(nomcha, 'LONMAX', neq)
         AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
-            call copmod(basemo, typcha, neq, numddl, nbmode,&
-                        'R', base, [cbid])
+            call copmod(basemo, champ=typcha, numer=numddl, bmodr=base)
         else
             do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&

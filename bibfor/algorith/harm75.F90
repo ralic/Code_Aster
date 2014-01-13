@@ -273,8 +273,8 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         AS_ALLOCATE(vr=base, size=nbmode*neq)
 ! CAS DE LA RESTITUTION SUR TOUTE LA STRUCTURE
         if (tousno) then
-            call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
-                        'R', base, [cbid])
+!           fournir nequa est indispensable parce que nous passons un prof_chno a copmod
+            call copmod(basemo, bmodr=base, champ=typcha, numer=prchno(1:14), nequa=neq )
 ! CAS DE LA RESTITUTION SUR UNE PARTIE DE LA STRUCTURE SEULEMENT
         else
             do j = 1, nbmode

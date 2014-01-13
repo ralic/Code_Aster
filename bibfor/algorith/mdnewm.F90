@@ -93,7 +93,6 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
     real(kind=8) :: vrot, vrotin, arot, arotin
     integer :: vali(2), n1, ifm, niv
     character(len=8) :: tran, vvar
-    character(len=4) :: k4bid
 !     ------------------------------------------------------------------
 !
 ! 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
@@ -305,11 +304,10 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 !     --- ARCHIVAGE DONNEES INITIALES ---
     tarchi = tinit
 !
-    call mdarch(isto1, 0, tinit, dt, nbmode,&
-                'TRAN', 0, [k4bid], zr(jdepl), zr(jvite),&
-                zr(jacce), depsto, vitsto, accsto, [cbid],&
-                [cbid], [cbid], [cbid], [cbid], [cbid],&
-                passto, iorsto, temsto)
+    call mdarch('TRAN', isto1, 0, tinit, nbmode,&
+                iorsto, temsto, dt=dt, depger=zr(jdepl), vitger=zr(jvite),&
+                accger=zr(jacce), depstr=depsto, vitstr=vitsto, accstr=accsto,&
+                passto=passto)
 !
     temps = tinit + dt
     call uttcpu('CPU.MDNEWM', 'INIT', ' ')
@@ -417,12 +415,9 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                 temps = tinit + iarchi*dt
                 tarchi = temps
 !
-                call mdarch(isto1, iarchi, temps, dt, nbmode,&
-                            'TRAN', 0, [k4bid], zr(jdepl), zr(jvite),&
-                            zr(jacce), depsto, vitsto, accsto, [cbid],&
-                            [cbid], [cbid], [cbid], [cbid], [cbid],&
-                            passto, iorsto, temsto)
-!
+                call mdarch('TRAN', isto1, iarchi, temps, nbmode, iorsto, temsto,&
+                            dt=dt, depger=zr(jdepl), vitger=zr(jvite), accger=zr(jacce),&
+                            depstr=depsto, vitstr=vitsto, accstr=accsto, passto=passto)
             endif
 !
 !       --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---

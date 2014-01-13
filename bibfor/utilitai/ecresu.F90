@@ -67,13 +67,12 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     integer :: ltps2, ieq, ier, neq, lval, lvals, iret, nbva2
     integer :: nbsauv, iarchi, isto1, isto2, isto3, isto4
     integer :: jdeps, jvits, jaccs, jpass, jinst
-    integer :: jfcho, jdcho, jvcho, jicho, jredc, jredd, jrevc, jrevv
     integer :: ires, n1, jdesc, nbmode, lvalv, lvala, j, lv1, lv2, lv3
     integer :: jrefam, jvint, jfreq
-    real(kind=8) :: r1, rbid
+    real(kind=8) :: r1
     real(kind=8) :: dt
     character(len=1) :: ktyp
-    character(len=4) :: grande, k4bid(3), nomsym(3)
+    character(len=4) :: grande, nomsym(3)
     character(len=8) :: k8b
     character(len=8) :: masgen, riggen, amogen, basemo
     character(len=16) :: typout
@@ -236,14 +235,10 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             k8b = '        '
 !
 !           --- ALLOCATION DE LA SD DYNA_GENE RESULTAT
-            nbsym = 0
-            call mdallo(resou(1:8), basemo, masgen, riggen, amogen,&
-                        nbmode, dt, nbsauv, 0, k8b,&
-                        k8b, 0, k8b, 0, k8b,&
-                        jdeps, jvits, jaccs, jpass, jordr,&
-                        jinst, jfcho, jdcho, jvcho, jicho,&
-                        jredc, jredd, jrevc, jrevv, 'EULER           ',&
-                        nbsym, k4bid, 'TRAN', 'GLOB')
+            call mdallo(resou(1:8), 'TRAN', nbsauv, sauve='GLOB', base=basemo,&
+                        nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, jordr=jordr,&
+                        jdisc=jinst, jdepl=jdeps, jvite=jvits, jacce=jaccs, dt=dt,&
+                        jptem=jpass)
 !
 !           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
             call wkvect('&&ECRESU.DEPL', 'V V R', neq, lvals)
@@ -275,13 +270,10 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 end do
 !
 !              --- ARCHIVER LES RESULTATS POUR L'INSTANT EN COURS
-                call mdarnl(isto1, iarchi, paramacc(1+j), dt, neq,&
-                            zr(lvals), zr(lvalv), zr(lvala), isto2, 0,&
-                            [0.d0], 0, isto3, 0, [0.d0],&
-                            [0], isto4, 0, [0.d0], [0],&
-                            zr(jdeps), zr(jvits), zr(jaccs), zr( jpass), zi(jordr),&
-                            zr(jinst), zr(jfcho), zr(jdcho), zr( jvcho), zi(jicho),&
-                            zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevv))
+                call mdarch('TRAN', isto1, iarchi, paramacc(1+j), neq,&
+                            zi(jordr),zr(jinst), dt=dt, depger=zr(lvals), vitger=zr(lvalv),&
+                            accger=zr(lvala), depstr=zr(jdeps), vitstr= zr(jvits),&
+                            accstr=zr(jaccs), passto=zr(jpass))
             end do
         else
 !           --- SI LE RESULTAT TRAN_GENE N'EST PAS UN NOUVEAU CONCEPT,
@@ -336,13 +328,11 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 nomsym(3) = 'ACCE'
             endif
 !
-            call mdallo(resou(1:8), basemo, masgen, riggen, amogen,&
-                        nbmode, rbid, nbsauv, 0, k8b,&
-                        k8b, 0, k8b, 0, k8b,&
-                        jdeps, jvits, jaccs, jpass, jordr,&
-                        jfreq, ibid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, ibid, 'EULER           ',&
-                        nbsym, nomsym, 'HARM', 'GLOB')
+            call mdallo(resou(1:8), 'HARM', nbsauv, sauve='GLOB', base=basemo,&
+                        nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, jordr=jordr,&
+                        jdisc=jfreq, jdepl=jdeps, jvite=jvits, jacce=jaccs, nbsym=nbsym,&
+                        nomsym=nomsym)
+
 !
 !           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
             call wkvect('&&ECRESU.DEPLC', 'V V C', neq, lvals)
@@ -373,17 +363,11 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                     zc(lv2+ieq) = 0.d0
                     zc(lv3+ieq) = 0.d0
                 end do
-                nbsym = 3
-                nomsym(1) = 'DEPL'
-                nomsym(2) = 'VITE'
-                nomsym(3) = 'ACCE'
 !
 !              --- ARCHIVER LES RESULTATS POUR LA FREQUENCE EN COURS
-                call mdarch(isto1, iarchi, paramacc(1+j), 0.d0, neq,&
-                            'HARM', nbsym, nomsym, [0.d0], [0.d0],&
-                            [0.d0], [0.d0], [0.d0], [0.d0], zc(lvals),&
-                            zc(lvalv), zc(lvala), zc(jdeps), zc(jvits), zc(jaccs),&
-                            [0.d0], zi(jordr), zr(jfreq))
+                call mdarch('HARM', isto1, iarchi, paramacc(1+j), neq, zi(jordr), zr(jfreq),&
+                            depgec=zc(lvals), vitgec=zc(lvalv),accgec=zc(lvala),&
+                            depstc=zc(jdeps), vitstc=zc(jvits),accstc=zc(jaccs))
             end do
         else
 !           --- SI LE RESULTAT HARM_GENE N'EST PAS UN NOUVEAU CONCEPT,

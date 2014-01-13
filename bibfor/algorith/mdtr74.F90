@@ -83,7 +83,6 @@ subroutine mdtr74(nomres)
 !
 ! --------------------------------------------------------------------------------------------------
     character(len=1) :: niv
-    character(len=4) :: k4bid(3)
     character(len=8) :: k8b, k8var, masgen, riggen, amogen, gyogen
     character(len=8) :: basemo, matass, vecgen, monmot, listam, typflu, nombm, foncv, fonca, foncp
     character(len=8) :: rigass, mailla, resgen, bamo1, bamo2, rgygen, fk(2), dfk(2)
@@ -295,8 +294,7 @@ subroutine mdtr74(nomres)
 !
 !   RECOPIE DES MODES DU CONCEPT RESULTAT DANS UN VECTEUR
     call wkvect('&&MDTR74.BASEMODE', 'V V R', nbmode*neq, jbase)
-    call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(jbase), [cbid])
+    call copmod(basemo, numer=numddl, bmodr=zr(jbase), nbmodes=nbmode, nequa=neq)
 !
     do i = 0, nbmode - 1
         omeg2 = abs(zr(jraig+i)/zr(jmasg+i))
@@ -758,13 +756,13 @@ subroutine mdtr74(nomres)
 !       Dans le cas de RUNGE KUTTA, l'allocation se fait a l'intérieur de la routine MDRUKU
 !       Pour cette option il y a plusieurs objets de longueur variable. La taille d'un nouvel
 !       objet est NBSAUV*1.5. La routine 'concrk' se charge de compacter les objets.
-        call mdallo(nomres, basemo, masgen, riggen, amogen,&
-                    nbmode, dt, nbsauv, nbnli, zk8(jnoec),&
-                    zk8(jinti), nbrede, zk8(jfond), nbrevi, zk8(jfonv),&
-                    jdeps, jvits, jaccs, jpass, jordr,&
-                    jinst, jfcho, jdcho, jvcho, jicho,&
-                    jredc, jredd, jrevc, jrevv, method,&
-                    ibid, k4bid, 'TRAN', 'GLOB')
+        call mdallo(nomres, 'TRAN', nbsauv, sauve='GLOB', checkarg=.false.,&
+                    method=method, base=basemo, nbmodes=nbmode, rigi=riggen, mass=masgen,&
+                    amor=amogen, jordr=jordr, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
+                    jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbnli, noecho=zk8(jnoec),&
+                    intitu=zk8(jinti), jfcho=jfcho, jdcho=jdcho, jvcho=jvcho, jadcho=jicho,&
+                    nbrede=nbrede, fonred=zk8(jfond), jredc=jredc, jredd=jredd, nbrevi=nbrevi,&
+                    fonrev=zk8(jfonv), jrevc=jrevc, jrevv=jrevv)
     endif
 !
     if (info .eq. 1 .or. info .eq. 2) then

@@ -15,46 +15,36 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
-                      nbmode, dt, nbsauv, nbchoc, noecho,&
-                      intitu, nbrede, fonred, nbrevi, fonrev,&
-                      jdepl, jvite, jacce, jptem, jordr,&
-                      jdisc, jfcho, jdcho, jvcho, jadcho,&
-                      jredc, jredd, jrevc, jrevv, method,&
-                      nbsym, nomsym, typcal, sauve)
-        integer :: nbrevi
-        integer :: nbrede
-        integer :: nbchoc
-        character(len=8) :: nomres
-        character(len=*) :: basemo
-        character(len=*) :: masgen
-        character(len=*) :: riggen
-        character(len=*) :: amogen
-        integer :: nbmode
-        real(kind=8) :: dt
-        integer :: nbsauv
-        character(len=8) :: noecho(nbchoc, *)
-        character(len=8) :: intitu(*)
-        character(len=8) :: fonred(nbrede, *)
-        character(len=8) :: fonrev(nbrevi, *)
-        integer :: jdepl
-        integer :: jvite
-        integer :: jacce
-        integer :: jptem
-        integer :: jordr
-        integer :: jdisc
-        integer :: jfcho
-        integer :: jdcho
-        integer :: jvcho
-        integer :: jadcho
-        integer :: jredc
-        integer :: jredd
-        integer :: jrevc
-        integer :: jrevv
-        character(len=16) :: method
-        integer :: nbsym
-        character(len=4) :: nomsym(*)
-        character(len=4) :: typcal
-        character(len=4) :: sauve
+subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
+                  rigi, mass, amor, jordr, jdisc,&
+                  nbsym, nomsym, jdepl, jvite, jacce,&
+                  method, dt, jptem, nbchoc, noecho,&
+                  intitu, jfcho, jdcho, jvcho, jadcho,&
+                  nbrede, fonred, jredc, jredd, nbrevi,&
+                  fonrev, jrevc, jrevv, sauve, checkarg)
+        character(len=8) , intent(in) :: nomres
+        character(len=4) , intent(in) :: typcal
+        integer          , intent(in) :: nbsauv
+        character(len=*) , optional, intent(in)  :: base
+        integer          , optional, intent(in)  :: nbmodes
+        character(len=*) , optional, intent(in)  :: rigi, mass, amor
+        integer          , optional, intent(out) :: jordr, jdisc
+        integer          , optional, intent(in)  :: nbsym
+        character(len=4) , optional, intent(in)  :: nomsym(*)
+        integer          , optional, intent(out) :: jdepl, jvite, jacce
+        character(len=*) , optional, intent(in)  :: method
+        real(kind=8)     , optional, intent(in)  :: dt
+        integer          , optional, intent(out) :: jptem
+        integer          , optional, intent(in)  :: nbchoc
+        character(len=8) , optional, intent(in)  :: noecho(*), intitu(*)
+        integer          , optional, intent(out) :: jfcho, jdcho, jvcho, jadcho
+        integer          , optional, intent(in)  :: nbrede
+        character(len=8) , optional, intent(in)  :: fonred(*)
+        integer          , optional, intent(out) :: jredc, jredd
+        integer          , optional, intent(in)  :: nbrevi
+        character(len=8) , optional, intent(in)  :: fonrev(*)
+        integer          , optional, intent(out) :: jrevc, jrevv
+        character(len=4) , optional, intent(in)  :: sauve
+        logical          , optional, intent(in)  :: checkarg
     end subroutine mdallo
 end interface

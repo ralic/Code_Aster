@@ -99,8 +99,7 @@ subroutine calprc(nomres, classe, basmod, nommat)
     call jeveuo(num//'.NUME.DEEQ', 'L', iddeeq)
 !
     call wkvect('&&'//pgc//'.BASEMO', 'V V R', nbdef*neq, idbase)
-    call copmod(basmod, 'DEPL', neq, num, nbdef,&
-                'R', zr(idbase), [cbid])
+    call copmod(basmod, bmodr=zr(idbase), numer=num)
 !
 !
 ! --- ALLOCATION VECTEUR DE TRAVAIL

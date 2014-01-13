@@ -1,18 +1,41 @@
-subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
-                  typcal, nbsym, nomsym, depger, vitger,&
-                  accger, depstr, vitstr, accstr, depgec,&
-                  vitgec, accgec, depstc, vitstc, accstc,&
-                  passto, iorsto, discst)
+subroutine mdarch(typcal, isto1, ipas, disc, nbmode,&
+                  iorsto, discst, dt, depger, vitger,&
+                  accger, depstr, vitstr, accstr, passto,&
+                  nbsym, nomsym, depgec, vitgec, accgec,&
+                  depstc, vitstc, accstc)
+
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/assert.h"
-    integer :: iorsto(*)
-    real(kind=8) :: depger(*), vitger(*), accger(*), depstr(*), vitstr(*)
-    real(kind=8) :: accstr(*), passto(*), discst(*)
-    complex(kind=8) :: depgec(*), vitgec(*), accgec(*), depstc(*), vitstc(*)
-    complex(kind=8) :: accstc(*)
-    character(len=4) :: typcal
-    character(len=4) :: nomsym(*)
+!
+!   Obligatory arguments
+    character(len=4) , intent(in)  :: typcal
+    integer          , intent(in)  :: isto1
+    integer          , intent(in)  :: ipas
+    real(kind=8)     , intent(in)  :: disc
+    integer          , intent(in)  :: nbmode
+    integer                        :: iorsto(*)
+    real(kind=8)                   :: discst(*)
+!
+!   Optional arguments
+!     typcal = 'TRAN' case
+    real(kind=8)     , optional, intent(in)  :: dt
+    real(kind=8)     , optional, intent(in)  :: depger(nbmode)
+    real(kind=8)     , optional, intent(in)  :: vitger(nbmode)
+    real(kind=8)     , optional, intent(in)  :: accger(nbmode)
+    real(kind=8)     , optional              :: depstr(*)
+    real(kind=8)     , optional              :: vitstr(*)
+    real(kind=8)     , optional              :: accstr(*)
+    real(kind=8)     , optional              :: passto(*)
+!     typcal = 'HARM' case
+    integer          , optional, intent(in)  :: nbsym
+    character(len=4) , optional, intent(in)  :: nomsym(*)
+    complex(kind=8)  , optional, intent(in)  :: depgec(nbmode)
+    complex(kind=8)  , optional, intent(in)  :: vitgec(nbmode)
+    complex(kind=8)  , optional, intent(in)  :: accgec(nbmode)
+    complex(kind=8)  , optional              :: depstc(*)
+    complex(kind=8)  , optional              :: vitstc(*)
+    complex(kind=8)  , optional              :: accstc(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,12 +59,31 @@ subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
 !   ARCHIVAGE DES CHAMPS GENERALISES OBLIGATOIRES POUR LA SD_DYNA_GENE
 !
 !-----------------------------------------------------------------------
-    integer :: im, ind, ipas, isto1, nbsym, ich
-    integer :: nbmode
-    real(kind=8) :: dt, disc
+    integer :: im, ind, ich, inom, nbsym2
+    character(len=4) :: nomsym2(3)
 !-----------------------------------------------------------------------
 !
+    nbsym2 = 3
+    nomsym2 = ['DEPL','VITE','ACCE']
+    ASSERT(ENSEMBLE2(nomsym,nbsym))
+    if (present(nbsym)) then
+        nbsym2 = nbsym
+        do inom = 1, nbsym2
+            nomsym2(inom) = nomsym(inom)
+        end do
+    endif
+
     ASSERT((typcal(1:4).eq.'TRAN').or.(typcal(1:4).eq.'HARM'))
+    if (typcal.eq.'TRAN') then
+        ASSERT(present(dt)    .and.present(depger).and.present(vitger))
+        ASSERT(present(accger).and.present(depstr).and.present(vitstr))
+        ASSERT(present(accstr).and.present(passto))
+        ASSERT(absent(nbsym).and.absent(nomsym))
+    else
+        ASSERT(present(depgec).and.present(vitgec).and.present(accgec))
+        ASSERT(present(depstc).and.present(vitstc).and.present(accstc))
+        ASSERT(absent(dt).and.absent(passto))
+    endif
 !
     iorsto(isto1+1) = ipas
     discst(isto1+1) = disc

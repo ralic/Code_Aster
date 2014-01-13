@@ -123,8 +123,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     AS_ALLOCATE(vr=vectass2, size=neq)
     call wkvect('&&PROJMR.BASEMO', 'V V R', nbmo*neq, idbase)
 ! ----- CONVERSION DE BASEMO A LA NUMEROTATION NU
-    call copmod(basemo, 'DEPL', neq, nu, nbmo,&
-                'R', zr(idbase), [cbid])
+    call copmod(basemo, bmodr=zr(idbase), numer=nu, nequa=neq, nbmodes=nbmo)
 !
     call mtdscr(matras)
     call jeveuo(matr//'.&INT', 'E', imatra)

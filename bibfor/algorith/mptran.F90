@@ -66,10 +66,9 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
     character(len=8) :: nomres, nombas, nommes
     character(len=24) :: vrange, vnoeud, basepr, vcham
-    integer :: nbmesu, nbmode, jpara, iexi, nbsym
+    integer :: nbmesu, nbmode, jpara, iexi
 !
     character(len=1) :: typval
-    character(len=4) :: k4bid(3), nomsym(3)
     character(len=8) :: k8bid, k8b, scal, kcmp, kreg
     character(len=8) :: modele, chmat, carael
     character(len=16) :: nomcmd, typres, k16bid, nomcha, kcham
@@ -302,13 +301,9 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         endif
         if (typres(1:9) .eq. 'TRAN_GENE') then
 ! ALLOCATION
-            call mdallo(nomres, nombas, k8b, k8b, k8b,&
-                        nbmode, dt, nbabs, null, k8bid,&
-                        k8bid, null, k8bid, null, k8bid,&
-                        jdep, jvit, jacc, jpass, jordr,&
-                        jabs, ibid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, ibid, k16bid,&
-                        ibid, k4bid, 'TRAN', 'GLOB')
+            call mdallo(nomres, 'TRAN', nbabs, sauve='GLOB', base=nombas,&
+                        nbmodes=nbmode, jordr=jordr, jdisc=jabs, jdepl=jdep, jvite=jvit,&
+                        jacce=jacc, dt=dt, jptem=jpass)
 ! RESOLUTION
             call mpinv2(nbmesu, nbmode, nbabs, zr(lred), zr(lmesu),&
                         zr(lcoef), zr(labs), lfonct, zr(jdep), zr(jvit),&
@@ -331,17 +326,9 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! ALLOCATION
 !         -- DANS PROJ_MESU_MODAL ON REMPLIT TOUJOURS LES TROIS
 !            CHAMPS, PEU IMPORTE LE TYPE DE MESURE FOURNI
-            nbsym = 3
-            nomsym(1) = 'DEPL'
-            nomsym(2) = 'VITE'
-            nomsym(3) = 'ACCE'
-            call mdallo(nomres, nombas, k8b, k8b, k8b,&
-                        nbmode, r8bid, nbabs, null, k8bid,&
-                        k8bid, null, k8bid, null, k8bid,&
-                        jdep, jvit, jacc, ibid, jordr,&
-                        jabs, ibid, ibid, ibid, ibid,&
-                        ibid, ibid, ibid, ibid, k16bid,&
-                        nbsym, nomsym, 'HARM', 'GLOB')
+            call mdallo(nomres, 'HARM', nbabs, sauve='GLOB', base=nombas,&
+                        nbmodes=nbmode, jordr=jordr, jdisc=jabs, jdepl=jdep, jvite=jvit,&
+                        jacce=jacc, dt=dt, jptem=jpass)
 ! RESOLUTION
             call mpinvc(nbmesu, nbmode, nbabs, zr(lred), zc(lmesu),&
                         zr(lcoef), zr(labs), lfonct, zc(jdep), zc(jvit),&

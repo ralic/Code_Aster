@@ -64,7 +64,6 @@ subroutine ssdt74(nomres, nomcmd)
     real(kind=8) :: acrit, agene
     real(kind=8) :: valr(2)
     real(kind=8) :: dt, dts, dtu, dtmax, dtmin
-    character(len=4) :: k4bid(3)
     character(len=8) :: k8b, kbid, nomres, masgen, riggen, amogen, monmot
     character(len=8) :: basemo, modgen, mastem, amotem, vecgen, resgen, bamo1
     character(len=8) :: bamo2
@@ -347,13 +346,14 @@ subroutine ssdt74(nomres, nomcmd)
     if (namor .eq. 0) amogen = k8b
 !
     if (method(1:5) .ne. 'RUNGE') then
-        call mdallo(nomres, numgen, masgen, riggen, amogen,&
-                    neqgen, dt, nbsauv, nbchoc, zk8(jnoec),&
-                    zk8(jinti), nbrede, zk8(jfond), nbrevi, zk8(jfonv),&
-                    jdeps, jvits, jaccs, jpass, jordr,&
-                    jinst, jfcho, jdcho, jvcho, jadcho,&
-                    jredc, jredd, jrevc, jrevv, method,&
-                    ibid, k4bid, 'TRAN', 'GLOB')
+        call mdallo(nomres, 'TRAN', nbsauv, sauve='GLOB', checkarg=.false.,&
+                    method=method, base=numgen, nbmodes=neqgen, rigi=riggen, mass=masgen,&
+                    amor=amogen, jordr=jordr, jdisc=jinst, jdepl=jdeps, jvite=jvits,&
+                    jacce=jaccs, dt=dt, jptem=jpass, nbchoc=nbchoc, noecho=zk8(jnoec),&
+                    intitu=zk8(jinti), jfcho=jfcho, jdcho=jdcho, jvcho=jvcho, jadcho=jadcho,&
+                    nbrede=nbrede, fonred=zk8(jfond), jredc=jredc, jredd=jredd, nbrevi=nbrevi,&
+                    fonrev=zk8(jfonv), jrevc=jrevc, jrevv=jrevv)
+
 !     DANS LE CAS DE RUNGE KUTTA, L'ALLOCATION SE FAIT A L'INTERIEUR DE
 !     LA ROUTINE MDRUKU
     endif

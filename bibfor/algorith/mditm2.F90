@@ -138,19 +138,18 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: itest, testc, ier, ivar, indnew, indne0, xit0, it0, idecrt
-    integer :: ntrans, xnbr0, ibid, ilong, npf, npfmax, npfts, nttr, ndef, indt
+    integer :: ntrans, xnbr0, ilong, npf, npfmax, npfts, nttr, ndef, indt
     integer :: nbr0
     integer :: jordre, jtemps, jdepg, jvitg, jaccg, jdep, jfor, jvit, kdepl
     integer :: kvite, kacce, kordr, kinst, kptem, kfcho, kdcho, kvcho, kadcho
-    integer :: krevc, krevv, jptem
-    integer :: ifr, ifm, latest, iercpu, nbrede, nbrevi, kredc, kredd
+    integer :: jptem
+    integer :: ifr, ifm, latest, iercpu
     real(kind=8) :: tc, dt, div, tc0, ts0, tol, tolc, toln, tolv, ftest, ftest0
     real(kind=8) :: ttrans, premac, prerel, tps1(4)
     logical :: lsauv
     character(len=8) :: resu, k8b
     character(len=16) :: nomcmd, typres, chain1, chain2, chain3, chain4, chain5
-    character(len=16) :: chain6, chain7, chain8, chain9, method
-    character(len=4) :: k4bid(3)
+    character(len=16) :: chain6, chain7, chain8, chain9
 !
 ! FONCTIONS INTRINSEQUES
 ! ----------------------
@@ -527,18 +526,12 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
 ! 7.5 ARCHIVAGE DES RESULTATS
 !     -----------------------
     nbsauv = nbr0
-    nbrede = 0
-    nbrevi = 0
-    method = 'ITMI' 
-    k8b=' '
+    k8b = ' '
 !
-    call mdallo(resu, k8b, k8b, k8b, k8b,&
-                nbm, dt0, nbsauv, nbnl, k8b,&
-                k8b, nbrede, k8b, nbrevi, k8b,&
-                kdepl, kvite, kacce, kptem, kordr,&
-                kinst, kfcho, kdcho, kvcho, kadcho,&
-                kredc, kredd, krevc, krevv, method,&
-                ibid, k4bid, 'TRAN', 'GLOB')
+    call mdallo(resu, 'TRAN', nbsauv, sauve='GLOB', method='ITMI',&
+                nbmodes=nbm, jordr=kordr, jdisc=kinst, jdepl=kdepl, jvite=kvite,&
+                jacce=kacce, dt=dt0, jptem=kptem, nbchoc=nbnl, noecho=k8b,&
+                intitu=k8b, jfcho=kfcho, jdcho=kdcho, jvcho=kvcho, jadcho=kadcho)
 !
     call ecrbas(nbsauv, nbnl, nbm, zr(jdepg), zr(jvitg),&
                 zr(jaccg), zr(jtemps), zi(jordre), zr(jptem), zr(jdep),&

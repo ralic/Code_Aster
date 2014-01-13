@@ -1,33 +1,50 @@
-subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
-                  nbmode, dt, nbsauv, nbchoc, noecho,&
-                  intitu, nbrede, fonred, nbrevi, fonrev,&
-                  jdepl, jvite, jacce, jptem, jordr,&
-                  jdisc, jfcho, jdcho, jvcho, jadcho,&
-                  jredc, jredd, jrevc, jrevv, method,&
-                  nbsym, nomsym, typcal, sauve)
+subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
+                  rigi, mass, amor, jordr, jdisc,&
+                  nbsym, nomsym, jdepl, jvite, jacce,&
+                  method, dt, jptem, nbchoc, noecho,&
+                  intitu, jfcho, jdcho, jvcho, jadcho,&
+                  nbrede, fonred, jredc, jredd, nbrevi,&
+                  fonrev, jrevc, jrevv, sauve, checkarg)
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jecreo.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jeveut.h"
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-!
-!
-    integer :: nbrede, nbrevi, nbchoc
-    character(len=*) :: basemo, masgen, riggen, amogen
-    character(len=8) :: nomres, intitu(*)
-    character(len=8) :: noecho(nbchoc, *), fonred(nbrede, *), fonrev(nbrevi, *)
-    character(len=16) :: method
+!   Obligatory arguments
+    character(len=8) , intent(in) :: nomres
+    character(len=4) , intent(in) :: typcal
+    integer          , intent(in) :: nbsauv
+!   Optional arguments
+    character(len=*) , optional, intent(in)  :: base
+    integer          , optional, intent(in)  :: nbmodes
+    character(len=*) , optional, intent(in)  :: rigi, mass, amor
+    integer          , optional, intent(out) :: jordr, jdisc
+    integer          , optional, intent(in)  :: nbsym
+    character(len=4) , optional, intent(in)  :: nomsym(*)
+    integer          , optional, intent(out) :: jdepl, jvite, jacce
+    character(len=*) , optional, intent(in)  :: method
+    real(kind=8)     , optional, intent(in)  :: dt
+    integer          , optional, intent(out) :: jptem
+    integer          , optional, intent(in)  :: nbchoc
+    character(len=8) , optional, intent(in)  :: noecho(*), intitu(*)
+    integer          , optional, intent(out) :: jfcho, jdcho, jvcho, jadcho
+    integer          , optional, intent(in)  :: nbrede
+    character(len=8) , optional, intent(in)  :: fonred(*)
+    integer          , optional, intent(out) :: jredc, jredd
+    integer          , optional, intent(in)  :: nbrevi
+    character(len=8) , optional, intent(in)  :: fonrev(*)
+    integer          , optional, intent(out) :: jrevc, jrevv
+    character(len=4) , optional, intent(in)  :: sauve
+    logical          , optional, intent(in)  :: checkarg
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,54 +77,153 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 ! IN  : NBCHOC : NOMBRE DE NOEUDS DE CHOC
 ! IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
 ! IN  : INTITU : TABLEAU DES NOMS DES LIAISONS
-! IN  : NBREDE : NOMBRE DE RELATION EFFORT DEPLACEMENT (RED)
+! IN  : NBREDE : NOMBRE DE RELATIONS EFFORT DEPLACEMENT (RED)
 ! IN  : FONRED : TABLEAU DES FONCTIONS DE RED
-! IN  : NBREVI : NOMBRE DE RELATION EFFORT VITESSE (REV)
+! IN  : NBREVI : NOMBRE DE RELATIONS EFFORT VITESSE (REV)
 ! IN  : METHOD : ALGORITHME UTILISE (DEVOGE, EULER, ...)
 !                DANS LE CAS ITMI, UN OBJET EST DIFFERENT
 ! IN  : TYPCAL : VAUT 'HARM' OU 'TRAN'
 ! IN  : SAUVE :  VAUT 'GLOB' OU 'VOLA'
+! IN  : CHECKARG : VERIFIER LA COHERENCE DANS LES ARGUMENTS OPTIONNELS D'ENTREE
 ! ----------------------------------------------------------------------
-    integer :: nbsauv, nbstoc, j1refe, nbsym, inom
-    character(len=8) :: numgen, blanc
-    character(len=5) :: attrib
-    character(len=4) :: typcal, nomsym(*), sauve
+    logical :: checkargs, entvid, saved
+    integer :: nbstoc, j1refe, inom, i, ic, iret, jchmp, nbchoc2, nbrede2, nbrevi2, nbvint
+    integer :: jdesc, jinti, jncho, nbsym2, jsst, jvint, nbmode, nbsto1, jredn, jrevn
+    real(kind=8) :: dt2
     character(len=3) :: typsau
+    character(len=4) :: sauve2, nomsym2(3)
+    character(len=8) :: basemo, riggen, masgen, amogen, numgen, blanc
+    character(len=5) :: attrib
     character(len=12) :: bl11pt
+    character(len=16) :: method2   
     character(len=24) :: matric(3)
-!
-!     ------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    logical :: entvid
-    integer :: i, ic, iret, jacce, jadcho, jdcho, jdepl, jchmp
-    integer :: jdesc, jfcho, jdisc, jinti, jncho, jordr, jptem
-    integer :: jredc, jredd, jredn, jrevc, jrevv, jrevn
-    integer :: jsst, jvcho, jvint
-    integer :: jvite, nbmode, nbsto1, nbvint
-    real(kind=8) :: dt
 !-----------------------------------------------------------------------
     call jemarq()
-    ASSERT((sauve(1:4).eq.'GLOB'.or.sauve(1:4).eq.'VOLA'))
-    if (sauve(1:4) .eq. 'GLOB') typsau='G V'
-    if (sauve(1:4) .eq. 'VOLA') typsau='V V'
+!
+!   --- 0 - Obligatory arguments, validation of the input values
+    ASSERT((typcal.eq.'TRAN').or.(typcal.eq.'HARM'))
+    ASSERT(nbsauv.ge.0)
+
+!   --- Default values of input arguments
+    basemo = ' '
+    nbmode = 0
+    riggen = ' '
+    masgen = ' '
+    amogen = ' '
+    nbsym2 = 3
+    nomsym2 = ['DEPL','VITE','ACCE']
+    method2 = ' '
+    dt2 = 0.0d0
+    nbchoc2 = 0
+    nbrede2 = 0
+    nbrevi2 = 0
+    sauve2 = 'GLOB'
+    checkargs = .true.
+    if (present(base))    basemo = base
+    if (present(nbmodes)) nbmode = nbmodes
+    if (present(rigi))    riggen = rigi
+    if (present(mass))    masgen = mass
+    if (present(amor))    amogen = amor
+    if (present(method))  method2 = method
+    if (present(dt))      dt2 = dt
+    if (present(nbchoc))  nbchoc2 = nbchoc
+    if (present(nbrede))  nbrede2 = nbrede
+    if (present(nbrevi))  nbrevi2 = nbrevi
+    if (present(sauve))   sauve2 = sauve
+    if (present(checkarg)) checkargs = checkarg
+    if (present(nbsym).and.present(nomsym)) then 
+        nbsym2 = nbsym
+        do inom = 1, nbsym2
+            nomsym2(inom) = nomsym(inom)
+        end do
+    endif
+#define noechoc(i,j) noecho(i+(j-1)*nbchoc2)
+#define fonrede(i,j) fonred(i+(j-1)*nbrede2)
+#define fonrevi(i,j) fonrev(i+(j-1)*nbrevi2)
+
+!   --- Initialize all output jeveux pointers to 1 
+    if (present(jdepl)) jdepl = 1
+    if (present(jvite)) jvite = 1
+    if (present(jacce)) jacce = 1
+    if (present(jptem)) jptem = 1
+    if (present(jordr)) jordr = 1
+    if (present(jdisc)) jdisc = 1
+    if (present(jfcho)) jfcho = 1
+    if (present(jdcho)) jdcho = 1
+    if (present(jvcho)) jvcho = 1
+    if (present(jadcho)) jadcho= 1
+    if (present(jredc)) jredc = 1
+    if (present(jredd)) jredd = 1
+    if (present(jrevc)) jrevc = 1
+    if (present(jrevv)) jrevv = 1
+!
+!   --- If checkarg is .true. then verify the coherence of all optional arguments, 
+    if (checkargs) then
+!       --- 1 - Coherence between the modal basis and the number of modes
+        ASSERT(AU_MOINS_UN2(base,nbmodes))
+        if (present(base)) then
+            if (base.ne.' ') call dismoi('NB_MODES_TOT', base, 'RESULTAT' , repi=nbmode)
+        endif
+        if (present(nbmodes)) then
+            ASSERT((nbmode.eq.0).or.(nbmode.eq.nbmodes))
+            nbmode = nbmodes
+        endif
+!       --- 2 - If nbsauv = 0, then only initialize some objects => no vector retrieval
+        if (nbsauv.eq.0) then
+            ASSERT((absent(jordr)).and.(absent(jdisc)))
+            ASSERT((absent(jdepl)).and.(absent(jvite)).and.(absent(jacce)))
+            ASSERT(absent(jptem))
+!       --- 3 - If nbsauv != 0
+        else
+!           --- 3.1 - Get the symbolic names of the saved fields or use def vals
+            ASSERT(ENSEMBLE2(nbsym,nomsym))
+            if (typcal.eq.'TRAN') ASSERT(absent(nbsym))
+!           --- 3.2 - Verify according to nomsym if it possible to retrieve the 
+!                     displacement, velocity, and acceleration vectors.
+            saved = .false.
+            do inom = 1, nbsym2
+                if (nomsym2(inom).eq.'DEPL') saved = .true.
+            end do
+            if (.not.(saved)) ASSERT(absent(jdepl))
+            saved = .false.
+            do inom = 1, nbsym2
+                if (nomsym2(inom).eq.'VITE') saved = .true.
+            end do
+            if (.not.(saved)) ASSERT(absent(jvite))
+            saved = .false.
+            do inom = 1, nbsym2
+                if (nomsym2(inom).eq.'ACCE') saved = .true.
+            end do
+            if (.not.(saved)) ASSERT(absent(jacce))
+!           --- 3.3 - No time step or integration method are allowed in harmonic case
+            if (typcal.eq.'HARM') then
+                ASSERT(absent(dt))
+                ASSERT(absent(method))
+                ASSERT(absent(jptem))
+            endif
+        endif
+!       --- 4 - Treatment of choc parameters/arguments
+        if (nbchoc2.ne.0) ASSERT((present(noecho)).and.(present(intitu)))
+        if (nbchoc2.eq.0) then 
+            ASSERT((absent(jfcho)).and.(absent(jdcho)))
+            ASSERT((absent(jvcho)).and.(absent(jadcho)))
+        endif
+!       --- 5 - Treatment of rela effo depl/vite parameters/arguments
+        if (nbrede2.ne.0) ASSERT(present(fonred))
+        if (nbrede2.eq.0) ASSERT((absent(jredc)).and.(absent(jredd)))
+        if (nbrevi2.ne.0) ASSERT(present(fonrev))
+        if (nbrevi2.eq.0) ASSERT((absent(jrevc)).and.(absent(jrevv)))
+!       --- 6 - Treatment of sauv parameter, global (default) or volatile saving
+        ASSERT((sauve2(1:4).eq.'GLOB'.or.sauve2(1:4).eq.'VOLA'))
+!   --- End of argument verification
+    endif
+!
+    if (sauve2(1:4) .eq. 'GLOB') typsau='G V'
+    if (sauve2(1:4) .eq. 'VOLA') typsau='V V'
     nbstoc = nbmode * nbsauv
 !
-    jdepl=1
-    jvite=1
-    jacce=1
-    jptem=1
-    jordr=1
-    jdisc=1
-    jdesc=1
-    jchmp=1
-    jfcho = 1
-    jdcho = 1
-    jvcho = 1
-    jadcho= 1
-    jredc = 1
-    jredd = 1
-    jrevc = 1
-    jrevv = 1
+    jchmp = 1
+    jdesc = 1
     blanc = '        '
     bl11pt = '           .'
 !
@@ -153,177 +269,136 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 !          -- DANS LE CAS 'HARM' ON REMPLIT LA VALEUR A 4
 !
 !          -- BLINDAGE : VERIFICATION DE NBSYM ET NOMSYM
-            if ((nbsym.le.0) .or. (nbsym.ge.4)) then
+            if ((nbsym2.le.0) .or. (nbsym2.ge.4)) then
                 call utmess('F', 'ALGORITH17_29')
             endif
-            do inom = 1, nbsym
-                if ( (nomsym(inom)(1:4).ne.'DEPL').and.(nomsym(inom)( 1:4).ne.'VITE').and. &
-                     (nomsym(inom)(1:4).ne.'ACCE')) then
+            do inom = 1, nbsym2
+                if ((nomsym2(inom)(1:4).ne.'DEPL') .and. (nomsym2(inom)( 1:4).ne.'VITE')&
+                    .and. (nomsym2(inom)(1:4).ne.'ACCE')) then
                     call utmess('F', 'ALGORITH17_29')
                 endif
             enddo
         else if (typcal.eq.'TRAN') then
 !         -- INITIALISATION DES CHAMPS A ALLOUER DANS LE CAS TRANS.
-            nbsym = 3
-            nomsym(1) = 'DEPL'
-            nomsym(2) = 'VITE'
-            nomsym(3) = 'ACCE'
-            if (nbchoc .ne. 0) then
+            nbsym2 = 3
+            nomsym2(1) = 'DEPL'
+            nomsym2(2) = 'VITE'
+            nomsym2(3) = 'ACCE'
+            if (nbchoc2 .ne. 0) then
                 zi(jdesc) = 2
             endif
 !         -DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
 !          ON MET LA VALEUR 3 QUI SERVIRA DE TEST
 !           A LA COMMANDE POST_DYNA_MODA_T
-            if ((method.eq.'ITMI').or.(method(1:5).eq.'ADAPT').or.(method( 1:5).eq.'RUNGE')) then
+            if (method2 .eq. 'ITMI' .or. method2(1:5) .eq. 'ADAPT' .or. method2(1:5) .eq.&
+                'RUNGE') then
                 zi(jdesc) = 3
             endif
 !         DANS LE CAS TRANSITOIRE, ON REMPLIT TOUJOURS LES TROIS CHAMPS
         endif
         zi(jdesc+1) = nbmode
-        zi(jdesc+2) = nbchoc
-        zi(jdesc+3) = nbrede
-        zi(jdesc+4) = nbrevi
+        zi(jdesc+2) = nbchoc2
+        zi(jdesc+3) = nbrede2
+        zi(jdesc+4) = nbrevi2
         zi(jdesc+5) = mdtr74grd('MAXVINT')
     endif
 !
     if (typcal .eq. 'TRAN') then
         attrib = typsau//' R'
-        nbsym = 3
-        nomsym(1) = 'DEPL'
-        nomsym(2) = 'VITE'
-        nomsym(3) = 'ACCE'
+        nbsym2 = 3
+        nomsym2(1) = 'DEPL'
+        nomsym2(2) = 'VITE'
+        nomsym2(3) = 'ACCE'
     else
         attrib = typsau//' C'
     endif
 !
     if (nbsauv .ne. 0) then
 !       BOUCLE SUR LES CHAMPS A SAUVEGARDER (DEPL/VITE/ACCE)
-        do inom = 1, nbsym
-            call jecreo(nomres//bl11pt//nomsym(inom), attrib)
-            call jeecra(nomres//bl11pt//nomsym(inom), 'LONMAX', nbstoc)
-            call jeecra(nomres//bl11pt//nomsym(inom), 'LONUTI', nbstoc)
-            call jeveut(nomres//bl11pt//nomsym(inom), 'E', jchmp)
+        do inom = 1, nbsym2
+            call wkvect(nomres//bl11pt//nomsym2(inom), attrib, nbstoc, jchmp)
 !           INITIALISATION DES CHAMPS A ZERO
             if (typcal .eq. 'TRAN') then
-                do i = 0, nbstoc-1
-                    zr(jchmp+i) = 0.d0
-                enddo
+                call r8inir(nbstoc, 0.d0, zr(jchmp), 1)
             else
                 do i = 0, nbstoc-1
                     zc(jchmp+i) = dcmplx(0.d0,0.d0)
                 enddo
             endif
-            if (nomsym(inom) .eq. 'DEPL') jdepl=jchmp
-            if (nomsym(inom) .eq. 'VITE') jvite=jchmp
-            if (nomsym(inom) .eq. 'ACCE') jacce=jchmp
+            if (nomsym2(inom) .eq. 'DEPL') jdepl=jchmp
+            if (nomsym2(inom) .eq. 'VITE') jvite=jchmp
+            if (nomsym2(inom) .eq. 'ACCE') jacce=jchmp
         enddo
 !
 !       OBJETS COMMUNS
-        call jecreo(nomres//'           .ORDR', typsau//' I')
-        call jeecra(nomres//'           .ORDR', 'LONMAX', nbsauv)
-        call jeecra(nomres//'           .ORDR', 'LONUTI', nbsauv)
-        call jeveut(nomres//'           .ORDR', 'E', jordr)
-        call jecreo(nomres//'           .DISC', typsau//' R')
-        call jeecra(nomres//'           .DISC', 'LONMAX', nbsauv)
-        call jeecra(nomres//'           .DISC', 'LONUTI', nbsauv)
-        call jeveut(nomres//'           .DISC', 'E', jdisc)
-!
+        call wkvect(nomres//'           .ORDR', typsau//' I', nbsauv, jordr)
+        call wkvect(nomres//'           .DISC', typsau//' R', nbsauv, jdisc)
         if (typcal .eq. 'TRAN') then
-            call jecreo(nomres//'           .PTEM', typsau//' R')
-            call jeecra(nomres//'           .PTEM', 'LONMAX', nbsauv)
-            call jeecra(nomres//'           .PTEM', 'LONUTI', nbsauv)
-            call jeveut(nomres//'           .PTEM', 'E', jptem)
+            call wkvect(nomres//'           .PTEM', typsau//' R', nbsauv, jptem)
             zr(jptem) = dt
         endif
     endif
 !
 !   CREATION DES VECTEURS DE STOCKAGE DES FORCES DE CHOC
-    if (nbchoc .ne. 0) then
-        nbstoc = 3 * nbchoc * nbsauv
-        nbsto1 = nbchoc * nbsauv
+    if (nbchoc2 .ne. 0) then
+        nbstoc = 3 * nbchoc2 * nbsauv
+        nbsto1 = nbchoc2 * nbsauv
         nbvint = nbchoc * nbsauv * mdtr74grd('MAXVINT')
         call jeexin(nomres//'           .NCHO', iret)
-        if (iret .eq. 0) call wkvect(nomres//'           .NCHO', typsau//' K8', 2*nbchoc, jncho)
+        if (iret .eq. 0) call wkvect(nomres//'           .NCHO', typsau//' K8', 2*nbchoc2, jncho)
         call jeexin(nomres//'           .SST', iret)
-        if (iret .eq. 0) call wkvect(nomres//'           .SST', typsau//' K8', 2*nbchoc, jsst)
+        if (iret .eq. 0) call wkvect(nomres//'           .SST', typsau//' K8', 2*nbchoc2, jsst)
         if (nbsauv .ne. 0) then
-            call jecreo(nomres//'           .FCHO', typsau//' R')
-            call jeecra(nomres//'           .FCHO', 'LONMAX', nbstoc)
-            call jeecra(nomres//'           .FCHO', 'LONUTI', nbstoc)
-            call jeveut(nomres//'           .FCHO', 'E', jfcho)
-            call jecreo(nomres//'           .DLOC', typsau//' R')
-            call jeecra(nomres//'           .DLOC', 'LONMAX', 2*nbstoc)
-            call jeecra(nomres//'           .DLOC', 'LONUTI', 2*nbstoc)
-            call jeveut(nomres//'           .DLOC', 'E', jdcho)
-            call jecreo(nomres//'           .VCHO', typsau//' R')
-            call jeecra(nomres//'           .VCHO', 'LONMAX', nbstoc)
-            call jeecra(nomres//'           .VCHO', 'LONUTI', nbstoc)
-            call jeveut(nomres//'           .VCHO', 'E', jvcho)
-            call jecreo(nomres//'           .ICHO', typsau//' I')
-            call jeecra(nomres//'           .ICHO', 'LONMAX', nbsto1)
-            call jeecra(nomres//'           .ICHO', 'LONUTI', nbsto1)
-            call jeveut(nomres//'           .ICHO', 'E', jadcho)
+            call wkvect(nomres//'           .FCHO', typsau//' R', nbstoc  , jfcho)
+            call wkvect(nomres//'           .DLOC', typsau//' R', 2*nbstoc, jdcho)
+            call wkvect(nomres//'           .VCHO', typsau//' R', nbstoc  , jvcho)
+            call wkvect(nomres//'           .ICHO', typsau//' I', nbsto1  , jadcho)
 !           objet variables internes
-            call jecreo(nomres//'           .VINT', typsau//' R')
-            call jeecra(nomres//'           .VINT', 'LONMAX', nbvint)
-            call jeecra(nomres//'           .VINT', 'LONUTI', nbvint)
+            call wkvect(nomres//'           .VINT', typsau//' R', nbvint  , jvint)
 !           initialisation
-            call jeveuo(nomres//'           .VINT', 'E', jvint)
             call r8inir(nbvint, 0.d0, zr(jvint), 1)
         endif
         call jeexin(nomres//'           .INTI', iret)
         if (iret .eq. 0) then
-            call wkvect(nomres//'           .INTI', typsau//' K8', nbchoc, jinti)
-            do ic = 1, nbchoc
+            call wkvect(nomres//'           .INTI', typsau//' K8', nbchoc2, jinti)
+            do ic = 1, nbchoc2
                 zk8(jinti+ic-1) = intitu(ic)
-                zk8(jncho+ic-1) = noecho(ic,1)
-                zk8(jncho+nbchoc+ic-1) = noecho(ic,5)
-                zk8(jsst+ic-1) = noecho(ic,2)
-                zk8(jsst+nbchoc+ic-1) = noecho(ic,6)
+                zk8(jncho+ic-1) = noechoc(ic,1)
+                zk8(jncho+nbchoc2+ic-1) = noechoc(ic,5)
+                zk8(jsst+ic-1) = noechoc(ic,2)
+                zk8(jsst+nbchoc2+ic-1) = noechoc(ic,6)
             enddo
         endif
     endif
 !
 !   CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_DEPL
-    if (nbrede .ne. 0) then
-        nbstoc = nbrede * nbsauv
+    if (nbrede2 .ne. 0) then
+        nbstoc = nbrede2 * nbsauv
         if (nbsauv .ne. 0) then
-            call jecreo(nomres//'           .REDC', typsau//' I')
-            call jeecra(nomres//'           .REDC', 'LONMAX', nbstoc)
-            call jeecra(nomres//'           .REDC', 'LONUTI', nbstoc)
-            call jeveut(nomres//'           .REDC', 'E', jredc)
-            call jecreo(nomres//'           .REDD', typsau//' R')
-            call jeecra(nomres//'           .REDD', 'LONMAX', nbstoc)
-            call jeecra(nomres//'           .REDD', 'LONUTI', nbstoc)
-            call jeveut(nomres//'           .REDD', 'E', jredd)
+            call wkvect(nomres//'           .REDC', typsau//' I', nbstoc  , jredc)
+            call wkvect(nomres//'           .REDD', typsau//' R', nbstoc  , jredd)
         endif
         call jeexin(nomres//'           .REDN', iret)
         if (iret .eq. 0) then
-            call wkvect(nomres//'           .REDN', typsau//' K24', nbrede, jredn)
-            do i = 1, nbrede
-                zk24(jredn+i-1) = fonred(i,1)//fonred(i,2)//fonred(i, 3)
+            call wkvect(nomres//'           .REDN', typsau//' K24', nbrede2, jredn)
+            do i = 1, nbrede2
+                zk24(jredn+i-1) = fonrede(i,1)//fonrede(i,2)//fonrede(i, 3)
             enddo
         endif
     endif
 !
 !     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_VITE ---
-    if (nbrevi .ne. 0) then
-        nbstoc = nbrevi * nbsauv
+    if (nbrevi2 .ne. 0) then
+        nbstoc = nbrevi2 * nbsauv
         if (nbsauv .ne. 0) then
-            call jecreo(nomres//'           .REVC', typsau//' I')
-            call jeecra(nomres//'           .REVC', 'LONMAX', nbstoc)
-            call jeecra(nomres//'           .REVC', 'LONUTI', nbstoc)
-            call jeveut(nomres//'           .REVC', 'E', jrevc)
-            call jecreo(nomres//'           .REVV', typsau//' R')
-            call jeecra(nomres//'           .REVV', 'LONMAX', nbstoc)
-            call jeecra(nomres//'           .REVV', 'LONUTI', nbstoc)
-            call jeveut(nomres//'           .REVV', 'E', jrevv)
+            call wkvect(nomres//'           .REVC', typsau//' I', nbstoc  , jrevc)
+            call wkvect(nomres//'           .REVV', typsau//' R', nbstoc  , jrevv)
         endif
         call jeexin(nomres//'           .REVN', iret)
         if (iret .eq. 0) then
-            call wkvect(nomres//'           .REVN', typsau//' K24', nbrevi, jrevn)
-            do i = 1, nbrevi
-                zk24(jrevn+i-1) = fonrev(i,1)//fonrev(i,2)//fonrev(i, 3)
+            call wkvect(nomres//'           .REVN', typsau//' K24', nbrevi2, jrevn)
+            do i = 1, nbrevi2
+                zk24(jrevn+i-1) = fonrevi(i,1)//fonrevi(i,2)//fonrevi(i, 3)
             enddo
         endif
     endif

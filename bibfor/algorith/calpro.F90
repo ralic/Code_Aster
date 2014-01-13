@@ -120,8 +120,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
     call jeveuo(num//'.NUME.DEEQ', 'L', iddeeq)
 !
     call wkvect('&&CALPRO.BASEMO', 'V V R', nbdef*neq, idbase)
-    call copmod(basmod, 'DEPL', neq, num, nbdef,&
-                'R', zr(idbase), [cbid])
+    call copmod(basmod, numer=num, bmodr=zr(idbase))
 !
 !
 ! --- ALLOCATION VECTEUR DE TRAVAIL

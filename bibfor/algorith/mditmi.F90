@@ -243,8 +243,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! 6.4 DEFORMEES MODALES
 !
-    call copmod(nombm, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(jbase), [c16b])
+    call copmod(nombm, bmodr=zr(jbase), numer=numddl, nequa=neq, nbmodes=nbmode)
 !
 ! 6.5 RECUPERATION DE LA VITESSE D'ECOULEMENT DU FLUIDE
 !
