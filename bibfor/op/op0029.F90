@@ -1,4 +1,5 @@
 subroutine op0029()
+    implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,48 +16,7 @@ subroutine op0029()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!-----------------------------------------------------------------------
-!     COMMANDE:  DEFI_PART_PA_OPS
-!
-!   -------------------------------------------------------------------
-!     SUBROUTINES APPELLEES:
-!       MESSAGE:INFNIV,INFMAJ.
-!       SUPERVI:GETRES,GETVIS.
-!       AUTRES: FETSKP.
-!
-!     FONCTIONS INTRINSEQUES:
-!       NONE.
-!   -------------------------------------------------------------------
-!----------------------------------------------------------------------
-! CORPS DU PROGRAMME
-    implicit none
-!
-! DECLARATION PARAMETRE
-!
-!
-! DECLARATION VARIABLES LOCALES
-#include "jeveux.h"
-#include "asterfort/fetskp.h"
-#include "asterfort/getvis.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    integer :: ifm, niv, ibid
-!
-! CORPS DU PROGRAMME
-    call jemarq()
-!
-! RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
-    call getvis(' ', 'INFO', scal=niv, nbret=ibid)
-    call infmaj()
-    call infniv(ifm, niv)
-!
-!C OBTENTION DU NOM UTILISATEUR DE L'OBJET RESULTAT
-!      CALL GETRES(RESULT,K16BID,NOMCMD)
-!
-! LANCEMENT DU PARTITIONNEMENT
-    call fetskp()
-!
-    call jedema()
+#include "asterfort/utmess.h"
+!-------------------------------------------------------------
+    call utmess('F', 'FERMETUR_5')
 end subroutine

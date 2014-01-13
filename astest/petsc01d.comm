@@ -28,7 +28,6 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                );
 
 PART=DEFI_PARTITION(MODELE=MO,
-                    EXCIT=_F(),
                     NB_PART=2,);
 
 MO=MODI_MODELE(reuse=MO,

@@ -263,7 +263,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 SDPART = DEFI_PARTITION(
                 MODELE=MO,
                 NB_PART=4,
-                EXCIT=(_F(CHARGE=CHAR)),
                 METHODE='KMETIS',
                 NOM_GROUP_MA='SD');
 # 4.1 : MUMPS (distribue par sous-domaines) charge_dualisee + charge_cine + SYMGEN:

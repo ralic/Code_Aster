@@ -75,9 +75,9 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
   sous-domaines %(i2)d
 """),
 
-25 : _(u"""
-  le sous-domaine n %(i1)d n'est pas renseigné ou vide dans DEFI_PART_OPS
-"""),
+
+
+
 
 28 : _(u"""
   le modèle comporte %(i1)d mailles de plus que l'ensemble des sous-domaines
@@ -91,7 +91,7 @@ Un seul noeud doit constituer le groupe de noeuds %(k1)s. On n'utilisera que le 
  jacobien négatif ou nul : jacobien =  %(r1)f
 """),
 
- 
+
 
 
 
@@ -198,7 +198,7 @@ OPTION MASS_INER : la masse volumique RHO doit être non nulle
 """),
 
 55 : _(u"""
-  Le changement de repère : %(k1)s sur les coques n'est pas traité pour les champs de type : %(k2)s. 
+  Le changement de repère : %(k1)s sur les coques n'est pas traité pour les champs de type : %(k2)s.
 """),
 
 }

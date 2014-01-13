@@ -14,49 +14,22 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: aimery.assire at edf.fr
+# person_in_charge: jacques.pellet at edf.fr
 
 
-DEFI_PARTITION=MACRO(nom="DEFI_PARTITION",
-                     op=OPS('Macro.defi_partition_ops.defi_partition_ops'),
-                     sd_prod=sd_partit,
-                     reentrant='n',UIinfo={"groupes":("Modélisation",)},
-                     fr="Creation partitionnement en sous-domaines",
-         regles=(UN_PARMI('MAILLAGE','MODELE'),PRESENT_PRESENT('MODELE','EXCIT'),),
+DEFI_PARTITION=OPER(nom="DEFI_PARTITION",op=21,sd_prod=sd_partit,
+                    fr="Creation partitionnement en sous-domaines",
+                    docu="U4.23.05",reentrant='n',UIinfo={"groupes":("Modélisation",)},
 
          NB_PART         =SIMP(statut='o',typ='I',val_min=2),
-         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
-         MODELE          =SIMP(statut='f',typ=modele_sdaster),
-         EXCIT           =FACT(statut='f',max='**',
-           CHARGE          =SIMP(statut='f',typ=(char_meca,char_cine_meca)),),
+         MODELE          =SIMP(statut='o',typ=modele_sdaster),
 
          # Methode de partitionnement
          METHODE         =SIMP(statut='f',typ='TXM',into=("PMETIS","SCOTCH","KMETIS",), defaut="KMETIS" ),
 
-         LOGICIEL      =SIMP(statut='f',typ='TXM'),
 
-         # Corrige les problemes possibles de non-connexite des sous-domaines
-         CORRECTION_CONNEX    =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
-
-         # Permet de grouper des mailles dans un meme sous-doamine
-         GROUPAGE        =FACT(statut='f',max='**',
-           GROUP_MA       =SIMP(statut='o',typ=grma,),
-                          ),
-         # Permet d'appliquer des poids sur certaines mailles
-         POIDS_MAILLES   =FACT(statut='f',max='**',
-           GROUP_MA       =SIMP(statut='o',typ=grma,),
-           POIDS          =SIMP(statut='f',typ='I',val_min=2),
-                          ),
          # Prefixe pour le nom des group_ma definissant les sous-domaines
          NOM_GROUP_MA    =SIMP(statut='f',typ='TXM',defaut='SD' ),
-
-         # Traiter les mailles de bords (elles sont enlevees du graphe puis reinjectees)
-         TRAITER_BORDS   =SIMP(statut='f',typ='TXM',defaut='OUI',into=('OUI','NON') ),
-
-         # Si le mot-clé suivant est renseigné, crée de nouveau group_ma a partir des bords
-         b_traiter_bords =BLOC(condition="TRAITER_BORDS == 'OUI'", fr="Crée t on des nouveaux group_ma",
-           NOM_GROUP_MA_BORD  =SIMP(statut='f',typ='TXM'),
-             ),
 
          INFO            =SIMP(statut='f',typ='I',into=(1, 2), defaut=1),
 );

@@ -295,13 +295,13 @@ Erreur utilisateur :
  GROUP_MA :  %(k1)s  inconnu dans le maillage
 """),
 
-64 : _(u"""
-  le LIAISON_*** de  %(k1)s  implique les noeuds physiques  %(k2)s  et  %(k3)s et traverse l'interface
-"""),
 
-65 : _(u"""
-  le LIAISON_*** de  %(k1)s  implique le noeud physique  %(k2)s et touche l'interface
-"""),
+
+
+
+
+
+
 
 66 : _(u"""
  Si vous avez renseigné le mot-clé NOEUD_ORIG, donnez un groupe de mailles sous GROUP_MA ou une liste de mailles

@@ -15,14 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
-                      masd)
-        integer :: nbmato
-        integer :: nbpart
-        integer :: sdb
-        character(len=8) :: ma
-        character(len=24) :: sdbord
-        integer :: masd
-    end subroutine creagm
-end interface
+          interface 
+            subroutine creagm(nbmato,nbpart,ma,masd)
+              integer :: nbmato
+              integer :: nbpart
+              character(len=8) :: ma
+              integer :: masd
+            end subroutine creagm
+          end interface 

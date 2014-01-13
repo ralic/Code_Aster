@@ -18,29 +18,13 @@ subroutine op0021()
 ! ======================================================================
 !-----------------------------------------------------------------------
 !     COMMANDE:  DEFI_PARTITION
-!
-!   -------------------------------------------------------------------
-!     SUBROUTINES APPELLEES:
-!       MESSAGE:INFNIV,INFMAJ.
-!       SUPERVI:GETRES,GETVIS.
-!       AUTRES: FETCRF.
-!
-!     FONCTIONS INTRINSEQUES:
-!       NONE.
-!   -------------------------------------------------------------------
-!     ASTER INFORMATIONS:
-!       02/11/03 (OB): CREATION.
 !----------------------------------------------------------------------
-! CORPS DU PROGRAMME
     implicit none
-!
-! DECLARATION PARAMETRE
-!
-!
-! DECLARATION VARIABLES LOCALES
+
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/fetcrf.h"
+#include "asterfort/fetskp.h"
 #include "asterfort/getvis.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -49,24 +33,19 @@ subroutine op0021()
     integer :: ifm, niv, ibid
     character(len=8) :: result
     character(len=16) :: k16bid, nomcmd
-!
-!
-! CORPS DU PROGRAMME
+!-----------------------------------------------------------------------
     call jemarq()
-!
-! RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
+
     call getvis(' ', 'INFO', scal=niv, nbret=ibid)
     call infmaj()
     call infniv(ifm, niv)
-!
-! OBTENTION DU NOM UTILISATEUR DE L'OBJET RESULTAT
+
+!   -- creation des group_ma dans le maillage :
+    call fetskp()
+
+!   -- creation de la sd_partit :
     call getres(result, k16bid, nomcmd)
-!
-! CREATION DE LA SD_PARTIT DU MEME NOM
-!      CALL OBTEMP(RESULT)
     call fetcrf(result)
-!
-! MONITORING
-!
+
     call jedema()
 end subroutine

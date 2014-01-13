@@ -259,11 +259,6 @@ Erreur utilisateur :
  développement.
  Pour contourner ce problème, vous pouvez néanmoins:
    - changer de partitionneur (METHODE=KMETIS ou PMETIS),
-   - modifier les paramètres numériques du partitionnement (mots-clés TRAITER_BORDS,
-     POIDS_MAILLES, GROUPAGE...),
-   - générer votre partitionnement manuellement (autant de groupes de mailles et de
-     groupes de mailles bords que de sous-domaines) et les donner à l'opérateur
-     dédié: DEFI_PART_FETI_OPS.
 """),
 
 
@@ -342,9 +337,9 @@ Erreur utilisateur :
 
 
 
-80 : _(u"""
-  groupe_ma non présent
-"""),
+
+
+
 
 81 : _(u"""
   erreur à l'appel de METIS

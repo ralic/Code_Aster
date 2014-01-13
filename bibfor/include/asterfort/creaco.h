@@ -15,14 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
-                      nbmabo)
-        integer :: nbmato
-        character(len=8) :: ma
-        character(len=8) :: bord
-        integer :: nbbord
-        integer :: nblien
-        integer :: nbmabo
-    end subroutine creaco
-end interface
+          interface 
+            subroutine creaco(nbmato,ma,nblien)
+              integer :: nbmato
+              character(len=8) :: ma
+              integer :: nblien
+            end subroutine creaco
+          end interface 

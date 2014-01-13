@@ -56,21 +56,9 @@ class sd_partition(AsBase):
 
 class sd_partit1(AsBase):
     nomj = SDNom(fin=19)
-    FLIM = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
-    FDIM = AsVI(lonmax=5, )
-    FREF = AsVK8()
-    FETG = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
-    FLIN = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='K', ltyp=24, )
-    FLII = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
-    FETB = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FDIM = AsVI(lonmax=1, )
+    FREF = AsVK8(lonmax=1, )
     FETA = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
-    FETJ = AsVI()
-    FETI = AsVI()
-    FETH = AsVI()
-    FCFI = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
-    FCFL = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='K', ltyp=24, )
-    FCFM = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
-    FCFN = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
 
 
 class sd_partit(AsBase):

@@ -1,5 +1,4 @@
-subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
-                  masd)
+subroutine creagm(nbmato, nbpart, ma, masd)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +23,6 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
 !
 !    - IN :     NBMATO : NOMBRE DE MAILLES
 !               NBPART : NOMBRE DE PARTITION
-!               SDB    : VAUT 1 SI GROUP_MA POUR LES BORDS
 !               RENUM  : RENUMEROTATION
 !               NBMASD : NOMBRE DE MAILLES PAR SOUS DOMAINE
 !               MA     : NOM DU MAILLAGE
@@ -33,7 +31,6 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
 !    - OUT :    MASD   : DONNE LES MAILLES PAR SD
 !               IDMASD : INDEX DE MASD
 !               NOMSDM : NOM DES GROUP_MA
-!               SDBORD : NOM DES GROUP_MA POUR LES BORDS
 !
 !----------------------------------------------------------------------
 ! person_in_charge: aimery.assire at edf.fr
@@ -65,7 +62,7 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmato, nbpart, renum, nbmasd, sdb, nomsdm, masd, idmasd, numsdm
+    integer :: nbmato, nbpart, renum, nbmasd, nomsdm, masd, idmasd, numsdm
     character(len=8) :: ma
 !
 ! DECLARATION VARIABLES LOCALES
@@ -73,7 +70,7 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
     integer :: nbgma
     real(kind=8) :: tmps(3)
     character(len=8) :: ktmp
-    character(len=24) :: sdbord, nom, grpmav, grpma, gpptnm, grpema
+    character(len=24) :: nom, grpmav, grpma, gpptnm, grpema
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
     call jemarq()
@@ -107,17 +104,6 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
         zk24(nomsdm-1+isd) = nom(1:maxi)//ktmp
 51  end do
 !
-    if (sdb .eq. 1) then
-        maxi=0
-        do 47 i = 1, len(sdbord)
-            if (sdbord(i:i) .ne. ' ') maxi=maxi+1
-47      continue
-        do 66 isd = nbpart/2+1, nbpart
-            write(ktmp,'(I4)')isd-nbpart/2-1
-            call lxcadr(ktmp)
-            zk24(nomsdm-1+isd) = sdbord(1:maxi)//ktmp
-66      continue
-    endif
 !
 ! ------- CREATION DU TABLEAU DES PLACES DES GRPMA
 !

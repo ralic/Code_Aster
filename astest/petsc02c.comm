@@ -140,7 +140,7 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT2,
 PART=DEFI_PARTITION(NB_PART=4,
                     MODELE=MO,
                     METHODE='SCOTCH',
-                    EXCIT=_F(),);
+                    );
 
 MO=MODI_MODELE(reuse=MO,
                MODELE=MO,

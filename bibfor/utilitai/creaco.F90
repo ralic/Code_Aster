@@ -1,5 +1,4 @@
-subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
-                  nbmabo)
+subroutine creaco(nbmato, ma, nblien)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +16,6 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!-----------------------------------------------------------------------
 !    - FONCTION REALISEE:
 !       - CREATION DE LA CONNECTIVITE DES MAILLES
 !
@@ -30,24 +28,17 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 !               RENUM2 : RENUMEROTATION INVERSE DE RENUM2
 !               CO     : CONNECTIVITE DES MAILLES
 !               IDCO   : INDEX DE CO
-!               BORD   : TRAITES T ON LES BORDS ?
-!               NBBORD : NOMBRE DE BORDS
-!               MABORD : SI MABORD(I) != 0 CEST UN BORD SINON NON
 !               NBLIEN : NOMBRE DE LIEN
 !               NBMAMA : NOMBRE DE MAILLES RELIEES A CHAQUE MAILLE
-!               NBMABO : NOMBRE DE MAILLES A PARTITONNER
 !
 !----------------------------------------------------------------------
-! person_in_charge: aimery.assire at edf.fr
+! person_in_charge: jacques.pellet at edf.fr
 !
-! CORPS DU PROGRAMME
     implicit none
 !
 !
-! DECLARATION VARIABLES D'APPEL
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -60,18 +51,16 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmato, renum, renum2, renum3, co, idco, nbmama, nbbord, mabord
-    integer :: nblien, nbmabo
-    character(len=8) :: ma, bord
-!
-! DECLARATION VARIABLES LOCALES
+    integer :: nbmato, renum, renum2, renum3, co, idco, nbmama
+    integer :: nblien
+    character(len=8) :: ma
     integer :: nbmano, idcoi, id1, typma, idno, nbno, idnoeu, nbnoeu, ima, i, j
-    integer :: mail, ino, id, nbre, id2, err, temp, temp1, maxi, ifm, niv, coi
+    integer :: mail, ino, id, nbre, id2, temp, temp1, maxi, ifm, niv, coi
     integer :: numno, nutyma, nbnoto
     real(kind=8) :: tmps(6)
     character(len=8) :: nom, typma1, typma2
 !
-! CORPS DU PROGRAMME
+!----------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
 !
@@ -208,75 +197,14 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
     call jedetr('&&FETSKP.NBMAMA')
     call wkvect('&&FETSKP.TEMP', 'V V I', maxi, temp)
     call wkvect('&&FETSKP.TEMP1', 'V V I', maxi, temp1)
-    call wkvect('&&FETSKP.MABORD', 'V V I', nbmato, mabord)
 !
-! ------- ENLEVE T ON LES MAILLES DE BORDS ? -------------------------
-!
-    call getvtx(' ', 'TRAITER_BORDS', scal=bord, nbret=err)
-!
-! ------- ON CHERCHE LES MAILLES DE BORDS ----------------------------
-!
-    nbbord=0
-    do ima = 1, nbmato
-        id=0
-        maxi=0
-        idnoeu=zi(idno-1+ima)
-        do ino = 1, zi(nbno-1+ima)
-            numno=zi(idnoeu-1+ino)
-            do i = zi(idcoi-1+numno), zi(idcoi-1+numno+1)-1
-                mail=zi(coi-1+i)
-                if (mail .eq. ima) goto 20
-                do j = 1, id
-                    if (zi(temp-1+j) .eq. mail) then
-                        zi(temp1-1+j)=zi(temp1-1+j)+1
-                        goto 20
-                    endif
-                end do
-                zi(temp+id)=mail
-                zi(temp1+id)=1
-                id=id+1
- 20             continue
-            end do
-        end do
-        do j = 1, id
-            if (zi(nbno-1+ima) .eq. zi(temp1-1+j)) then
-                if (zi(mabord-1+ima) .eq. 0) then
-                    nbbord=nbbord+1
-                    maxi=zi(temp1-1+j)
-                endif
-                if (zi(temp1-1+j) .ge. maxi) then
-                    zi(mabord-1+ima) = zi(temp-1+j)
-                endif
-            endif
-        end do
-    end do
-!
-! ------ ON ENLEVE LES MAILLES DE BORDS ------------------------------
-!
+
     call wkvect('&&FETSKP.RENUM2', 'V V I', nbmato, renum2)
     call wkvect('&&FETSKP.RENUM3', 'V V I', nbmato, renum3)
-    nbmabo=nbmato
-    if (bord .eq. 'OUI     ') then
-        nbmato=nbmabo-nbbord
-        id=1
-        id2=nbmato+1
-        do ima = 1, nbmabo
-            if (zi(mabord-1+ima) .ne. 0) then
-                zi(renum2-1+id2)=ima
-                zi(renum3-1+ima)=id2
-                id2=id2+1
-            else
-                zi(renum2-1+id)=ima
-                zi(renum3-1+ima)=id
-                id=id+1
-            endif
-        end do
-    else
-        do ima = 1, nbmato
-            zi(renum2-1+ima)=ima
-            zi(renum3-1+ima)=ima
-        end do
-    endif
+    do ima = 1, nbmato
+        zi(renum2-1+ima)=ima
+        zi(renum3-1+ima)=ima
+    end do
 !
 ! ------------------------ JEVEUX ------------------------------------
 !
@@ -294,9 +222,6 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
             numno=zi(idnoeu-1+ino)
             do i = zi(idcoi-1+numno), zi(idcoi-1+numno+1)-1
                 mail=zi(coi-1+i)
-                if (bord .eq. 'OUI     ') then
-                    if (zi(mabord-1+mail) .ne. 0) goto 23
-                endif
                 mail=zi(renum3-1+mail)
                 if (mail .le. ima) goto 23
                 do j = 1, id
@@ -317,23 +242,15 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
             if (zi(temp1-1+j) .eq. 1) then
                 if (typma1 .eq. 'POI1    ') goto 61
                 if (typma2 .eq. 'POI1    ') goto 61
-                if (zi(mabord+zi(renum2-1+ima)-1) .eq. 0) then
-                    if (typma1 .eq. 'SEG2    ') goto 61
-                endif
-                if (zi(mabord+zi(renum2-1+zi(temp-1+j))-1) .eq. 0) then
-                    if (typma2 .eq. 'SEG2    ') goto 61
-                endif
+                if (typma1 .eq. 'SEG2    ') goto 61
+                if (typma2 .eq. 'SEG2    ') goto 61
             else if (zi(temp1-1+j) .eq. 2) then
                 if (typma1 .eq. 'SEG2    ') goto 61
                 if (typma2 .eq. 'SEG2    ') goto 61
-                if (zi(mabord+zi(renum2-1+ima)-1) .eq. 0) then
-                    if (typma1 .eq. 'TRIA3   ') goto 61
-                    if (typma1 .eq. 'QUAD4   ') goto 61
-                endif
-                if (zi(mabord+zi(renum2-1+zi(temp-1+j))-1) .eq. 0) then
-                    if (typma2 .eq. 'TRIA3   ') goto 61
-                    if (typma2 .eq. 'QUAD4   ') goto 61
-                endif
+                if (typma1 .eq. 'TRIA3   ') goto 61
+                if (typma1 .eq. 'QUAD4   ') goto 61
+                if (typma2 .eq. 'TRIA3   ') goto 61
+                if (typma2 .eq. 'QUAD4   ') goto 61
             else if (zi(temp1-1+j) .eq. 3) then
                 if (typma1 .eq. 'TRIA3   ') then
                     if (typma2 .eq. 'TETRA4  ') goto 61
@@ -407,9 +324,6 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
             numno=zi(idnoeu-1+ino)
             do i = zi(idcoi-1+numno), zi(idcoi-1+numno+1)-1
                 mail=zi(coi-1+i)
-                if (bord .eq. 'OUI     ') then
-                    if (zi(mabord-1+mail) .ne. 0) goto 29
-                endif
                 mail=zi(renum3-1+mail)
                 if (mail .le. ima) goto 29
                 do j = 1, nbre
@@ -430,23 +344,15 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
             if (zi(temp1-1+j) .eq. 1) then
                 if (typma1 .eq. 'POI1    ') goto 31
                 if (typma2 .eq. 'POI1    ') goto 31
-                if (zi(mabord+zi(renum2-1+ima)-1) .eq. 0) then
-                    if (typma1 .eq. 'SEG2    ') goto 31
-                endif
-                if (zi(mabord+zi(renum2-1+zi(temp-1+j))-1) .eq. 0) then
-                    if (typma2 .eq. 'SEG2    ') goto 31
-                endif
+                if (typma1 .eq. 'SEG2    ') goto 31
+                if (typma2 .eq. 'SEG2    ') goto 31
             else if (zi(temp1-1+j) .eq. 2) then
                 if (typma1 .eq. 'SEG2    ') goto 31
                 if (typma2 .eq. 'SEG2    ') goto 31
-                if (zi(mabord+zi(renum2-1+ima)-1) .eq. 0) then
-                    if (typma1 .eq. 'TRIA3   ') goto 31
-                    if (typma1 .eq. 'QUAD4   ') goto 31
-                endif
-                if (zi(mabord+zi(renum2-1+zi(temp-1+j))-1) .eq. 0) then
-                    if (typma2 .eq. 'TRIA3   ') goto 31
-                    if (typma2 .eq. 'QUAD4   ') goto 31
-                endif
+                if (typma1 .eq. 'TRIA3   ') goto 31
+                if (typma1 .eq. 'QUAD4   ') goto 31
+                if (typma2 .eq. 'TRIA3   ') goto 31
+                if (typma2 .eq. 'QUAD4   ') goto 31
             else if (zi(temp1-1+j) .eq. 3) then
                 if (typma1 .eq. 'TRIA3   ') then
                     if (typma2 .eq. 'TETRA4  ') goto 31
