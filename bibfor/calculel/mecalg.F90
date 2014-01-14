@@ -1,6 +1,6 @@
 subroutine mecalg(optioz, result, modele, depla, theta,&
-                  mate, lischa, symech, compor, incr,&
-                  time, iord, nbprup, noprup, chvite,&
+                  mate, lischa, symech, compor,incr,&
+                  time, iord, nbprup, noprup,chvite,&
                   chacce, lmelas, nomcas, kcalc)
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -187,7 +187,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
     call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                 chpres, chepsi, chpesa, chrota, lfonc,&
-                time, iord)
+                time  , iord)
 !
     if (lfonc) then
         pavolu = 'PFFVOLU'
@@ -328,13 +328,18 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
 !       CHAMP DE CONTRAINTE INITIALE
         if (nsig .ne. 0) then
-            lpain(nchin+1) = 'PSIGINR'
             if (inga .eq. 0) then
+                lpain(nchin+1) = 'PSIGINR'
                 lchin(nchin+1)=sigout
+                nchin = nchin + 1
+                lpain(nchin+1) = 'PSIGING'
+                lchin(nchin+1)= chsigi
+                nchin = nchin + 1
             else
+                lpain(nchin+1) = 'PSIGINR'
                 lchin(nchin+1) = chsigi
+                nchin = nchin + 1
             endif
-            nchin = nchin + 1
         endif
     endif
 !

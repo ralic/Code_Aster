@@ -167,8 +167,7 @@ subroutine op0100()
 !
 !     RECUPERATION DE LA CARTE DE COMPORTEMENT UTILISEE DANS LE CALCUL
 !     -> COMPOR, INCR
-    call cgleco(resu, modele, mate, iord0, typfis,&
-                compor(1:19), incr)
+    call cgleco(resu, modele, mate, iord0, compor(1:19), incr)
 !
 !     ATTENTION, INCR EST MAL GERE : VOIR MECAGL !!
 !

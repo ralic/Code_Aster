@@ -1,5 +1,4 @@
-subroutine cgleco(resu, modele, mate, iord0, typfis,&
-                  compor, incr)
+subroutine cgleco(resu, modele, mate, iord0, compor, incr)
     implicit none
 !
 #include "asterc/getfac.h"
@@ -37,7 +36,6 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
     character(len=8), intent(in) :: resu
     character(len=8), intent(in) :: modele
     character(len=8), intent(in) :: mate
-    character(len=8), intent(in) :: typfis
     character(len=19), intent(out) :: compor
     logical, intent(out) :: incr
 !
@@ -53,8 +51,6 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
 ! In  model  : name of model
 ! In  mate   : name of material field
 ! In  iord0  : first NUME_ORDRE in result
-! In  typfis : object to describe crack
-!               'FONDFISS'/'FISSURE'/'THETA'
 ! Out compor : name of COMPOR <CARTE>
 ! Out incr   : if incrental comportment
 !
@@ -136,11 +132,6 @@ subroutine cgleco(resu, modele, mate, iord0, typfis,&
 !
     call gverlc(resu, compor, iord0)
 !
-! - No XFEM for GTP
-!
-    if (incr .and. typfis .eq. 'FISSURE') then
-        call utmess('F', 'RUPTURE1_43')
-    endif
 !
 ! - Check COMPORTEMENT / RELATION in result for incremental comportement 
 !
