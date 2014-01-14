@@ -69,8 +69,8 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 
 CHTH=AFFE_CHAR_THER(MODELE=MODTHX,
                     TEMP_IMPO=(
-                               _F(GROUP_NO = 'LIGNSUP',TEMP = 10.),
-                               _F(GROUP_NO = 'LIGNINF',TEMP = 20.),
+                               _F(GROUP_NO = 'LIGNSUP',TEMP = 20.),
+                               _F(GROUP_NO = 'LIGNINF',TEMP = 10.),
                                ))
 
 CHTCONTR=AFFE_CHAR_THER(MODELE=MODTHX,
@@ -251,6 +251,146 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMPFONF,)
+
+# TEST SUR LE GRADIENT DE TEMPERATURE SELON X
+# CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER
+
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTX',
+                   NUME_ORDRE = 0,
+                   MAILLE='M4999',
+                   POINT=13,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=0.,
+                   PRECISION= 1.0E-9,
+                   VALE_CALC= 1.2221335055074E-12    ,
+                   CRITERE='ABSOLU',),),);
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTX',
+                   NUME_ORDRE = 0,
+                   MAILLE='M5001',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=0.,
+                   PRECISION= 1.0E-9,
+                   VALE_CALC=  1.8507980178006E-13 ,
+                   CRITERE='ABSOLU',),),);
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTX',
+                   NUME_ORDRE = 0,
+                   MAILLE='M5150',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=0.,
+                   PRECISION= 1.0E-9,
+                   VALE_CALC= -1.2747013044807E-13  ,
+                   CRITERE='ABSOLU',),),);
+
+# CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER_F
+
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTX',
+                   NUME_ORDRE = 0,
+                   MAILLE='M4999',
+                   POINT=13,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=0.,
+                   PRECISION= 1.0E-9,
+                   VALE_CALC= 1.2221335055074E-12  ,
+                   CRITERE='ABSOLU',),),);
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTX',
+                   NUME_ORDRE = 0,
+                   MAILLE='M5150',
+                   POINT=13,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=0.,
+                   PRECISION= 1.0E-9,
+                   VALE_CALC= -1.2583419151406E-13 ,
+                   CRITERE='ABSOLU',),),);
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTX',
+                   NUME_ORDRE = 0,
+                   MAILLE='M5001',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=0.,
+                   PRECISION= 1.0E-9,
+                   VALE_CALC= 1.8507980178006E-13  ,
+                   CRITERE='ABSOLU',),),);
+
+# TEST SUR LE GRADIENT DE TEMPERATURE SELON Y
+# CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER
+
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTY',
+                   NUME_ORDRE = 0,
+                   MAILLE='M4999',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=10.,
+                   VALE_CALC=  9.9999999999998,
+                   CRITERE='RELATIF',),),);
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTY',
+                   NUME_ORDRE = 0,
+                   MAILLE='M5001',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=10.,
+                   VALE_CALC= 10.000000000001,
+                   CRITERE='RELATIF',),),);
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTY',
+                   NUME_ORDRE = 0,
+                   MAILLE='M5150',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=10.,
+                   VALE_CALC= 10.000000000001 ,
+                   CRITERE='RELATIF',),),);
+
+# CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER_F
+
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTY',
+                   NUME_ORDRE = 0,
+                   MAILLE='M4999',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=10.,
+                   VALE_CALC= 9.9999999999998  ,
+                   CRITERE='RELATIF',),),);
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTY',
+                   NUME_ORDRE = 0,
+                   MAILLE='M5150',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=10.,
+                   VALE_CALC=10.000000000001  ,
+                   CRITERE='RELATIF',), ),);
+TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
+                   NOM_CHAM='TEMP_ELGA',
+                   NOM_CMP='DTY',
+                   NUME_ORDRE = 0,
+                   MAILLE='M5001',
+                   POINT=1,
+                   REFERENCE = 'ANALYTIQUE' ,
+                   VALE_REFE=10.,
+                   VALE_CALC= 10.000000000001  ,
+                   CRITERE='RELATIF',),),);
 
 #----------------------------------------------
 #            IMPRESSIONS

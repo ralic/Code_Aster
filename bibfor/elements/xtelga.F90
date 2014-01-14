@@ -57,16 +57,18 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 !
 ! OUT :
 ! ----
-! TEMPPG --> TEMPERATURE AUX POINTS DE GAUSS
+! TEMPPG --> TEMPERATURE ET SES DERIVEES PARTIELLES AUX POINTS DE GAUSS
+!            DANS L'ORDRE : 'TEMP', 'DTX', 'DTY'          EN 2D
+!                           'TEMP', 'DTX', 'DTY', 'DTZ'   EN 3D
 !
 !-----------------------------------------------------------------------
 !
     character(len=8) :: elrese(3), fami(3)
-    real(kind=8) :: baslog(3*ndim), tem, lsng, lstg, coorse(81), xg(ndim)
+    real(kind=8) :: baslog(3*ndim), tem, dtem(ndim), lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop)
     real(kind=8) :: he
-    real(kind=8) :: ffenr(nnop, 1+nfh+nfe)
+    real(kind=8) :: ffenr(nnop, 1+nfh+nfe), dfdi(nnop,ndim)
     integer :: ivf, kpg, ibid, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
     integer :: nbddl
     integer :: mxstac
@@ -133,7 +135,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 1210          continue
 !
 !         XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
 !
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then
@@ -178,18 +180,25 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 endif
 1250          continue
 !
-!         CALCUL DE TEMP AU PG
+!         CALCUL DE TEMP AU PG ET DE SES DERIVEES
             tem = 0.d0
+            dtem= 0.d0
             do 1270 inp = 1, nnop
                 do 1271 kddl = 1, nbddl
                     tem = tem + tempno(nbddl*(inp-1)+kddl)*ffenr(inp, kddl)
-1271              continue
-1270          continue
+                    do 1272 j = 1,ndim
+                       dtem(j) = dtem(j)+tempno(nbddl*(inp-1)+kddl)*dfdi(inp, j)
+1272                continue
+1271            continue
+1270        continue
 !
-!         ECRITURE DE TEMP AU PG
-            temppg(npg*(ise-1)+kpg) = tem
+!         ECRITURE DE TEMP ET DE SES DERIVEES AU PG
+            temppg(npg * (ndim+1) * (ise-1)+(kpg-1) * ndim + kpg) = tem
+            do 1280 j = 1, ndim
+                temppg (npg * (ndim+1) * (ise-1)+(kpg-1) * ndim + kpg + j) = dtem(j)
+1280        continue
 !
-1200      continue
+1200    continue
 !
 ! ----------------------------------------------------------------------
 ! ----- FIN BOUCLE SUR LES POINTS DE GAUSS

@@ -2140,9 +2140,12 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        conditions aux limites
        H1 : ddl Heaviside X-FEM
        E1 : ddl Cracktip X-FEM
+       DTX : derivee de la temperature selon x (n'est pas un ddl)
+       DTY : derivee de la temperature selon y (n'est pas un ddl)
+       DTZ : derivee de la temperature selon z (n'est pas un ddl)
 >>
-    TEMP_R   = R    TEMP     TEMP_MIL TEMP_INF TEMP_SUP LAGR H1 E1
-
+    TEMP_R   = R  TEMP   TEMP_MIL TEMP_INF TEMP_SUP LAGR   H1   E1 
+                  DTX    DTY     DTZ
 <<  VALO_R Type:R
        VALEUR :
        GRAD_X :
