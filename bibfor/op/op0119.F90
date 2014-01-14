@@ -39,6 +39,7 @@ subroutine op0119()
 #include "asterfort/gfmama.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -56,8 +57,8 @@ subroutine op0119()
 #include "asterfort/wkvect.h"
 !
 !
-    integer :: nbval, ncarfi, itrois
-    parameter  (nbval=999,ncarfi=3,itrois=3)
+    integer :: nbvfibre, ncarfi, itrois,maxfibre
+    parameter  (ncarfi=3,itrois=3)
 !
     integer :: iret, ifm, niv, nboccs, nboccp, nufib, nbfigr
     integer :: nbfib, nmails, nttri3, ntseg2, ntqua4, nunoeu
@@ -66,8 +67,10 @@ subroutine op0119()
     integer :: ibid, ipoint, ig, numf, jngfma
 !
     real(kind=8) :: pi4, dtrois, zero
-    parameter  (pi4=0.785398163397d+0,dtrois=3.d+0,zero=0.d+0)
-    real(kind=8) :: x(4), y(4), centre(2), axep(2), surf, val(nbval)
+    parameter  (pi4=0.7853981633974483d+0,dtrois=3.d+0,zero=0.d+0)
+    real(kind=8) :: x(4), y(4), centre(2), axep(2), surf
+
+    real(kind=8),pointer :: valfibre(:) => null()
 !
     character(len=8) :: sdgf, nomas, ktyma, ksudi, nommai, nogfma
     character(len=6) :: knbv, kioc, knumai
@@ -129,12 +132,12 @@ subroutine op0119()
     call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), ntqua4)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg2)
 !
-! --- COMPTAGE DU NOMBRE DE FIBRES TOTAL ET DE NOEUX ET DE MAILLES
+! comptage du nombre de fibres total et de noeuds et de mailles
     nbfib = 0
     nbnoeu=0
     nbnoma=0
 !
-    do 40 ioc = 1, nboccs
+    do ioc = 1, nboccs
         nbfigr=0
 ! ---    LES SECTIONS MAINTENANT
         call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
@@ -154,7 +157,7 @@ subroutine op0119()
         call jelira(mlgtno, 'NOMMAX', nbno)
         nbnoeu=nbnoeu+nbno
 !
-        do 30 j = 1, nmails
+        do j = 1, nmails
             nummai = zi(jms+j-1)
             nutyma = zi(jdtm+nummai-1)
             if (nutyma .ne. ntseg2) then
@@ -171,32 +174,34 @@ subroutine op0119()
                 nbfigr=nbfigr -1
                 nbnomm=nbnomm-2
             endif
-30      continue
+        enddo
         nbfib = nbfib + nbfigr
         nbnoma=nbnoma+nbnomm
         zi(jnfg-1+ioc)=nbfigr
-40  end do
+    enddo
 !
-    do 50 ioc = 1, nboccp
-! ---    NOMBRE DE FIBRES PONCTUELLES
-        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
-                    nbret=nbv)
-! ---    VERIF MULTIPLE DE 3 POUR 'VALE' DANS 'FIBRE'
-        if (dble(nbv)/dtrois .ne. nbv/itrois) then
+    maxfibre = 10
+    do ioc = 1, nboccp
+!       NOMBRE DE FIBRES PONCTUELLES
+        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=0, nbret=nbvfibre)
+        nbvfibre = -nbvfibre
+        maxfibre = max(maxfibre,nbvfibre)
+!       VERIF MULTIPLE DE 3 POUR 'VALE' DANS 'FIBRE'
+        if (dble(nbvfibre)/dtrois .ne. nbvfibre/itrois) then
             call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
             call codent(ioc, 'G', kioc)
-            call codent(nbv, 'G', knbv)
+            call codent(nbvfibre, 'G', knbv)
             valk(1)=nomgf
             valk(2)=knbv
             call utmess('F', 'MODELISA6_26', nk=2, valk=valk)
         else
-            nbfib = nbfib + nbv/itrois
-            nbnoeu = nbnoeu + nbv/itrois
-            nbnoma=nbnoma + nbv/itrois
-            zi(jnfg-1+nboccs+ioc)= nbv/itrois
+            nbfib = nbfib + nbvfibre/itrois
+            nbnoeu = nbnoeu + nbvfibre/itrois
+            nbnoma = nbnoma + nbvfibre/itrois
+            zi(jnfg-1+nboccs+ioc)= nbvfibre/itrois
         endif
-50  end do
-! --- CREATION DES ATTIBUTS DE MAILLAGE DE NOGFMA
+    enddo
+!   CREATION DES ATTIBUTS DE MAILLAGE DE NOGFMA
     call gfmacr(nogfma, nbfib, nbnoeu, nbnoma, nbgf)
 !
 ! --- ------------------------------------------------------------------
@@ -209,12 +214,12 @@ subroutine op0119()
 ! --- TRAITEMENT DES SECTIONS
     nbnoeu=0
     nufib = 0
-    do 90 ioc = 1, nboccs
+    do ioc = 1, nboccs
         ig=ig+1
         call getvtx('SECTION', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
 ! ---    CREATION DU GROUPE DE MAILLE
         call gfmagr(nogfma, nomgf, zi(jnfg+ig-1))
-        if (niv .eq. 2) write(ifm,1000) nomgf
+        if (niv .eq. 2) write(ifm,800) nomgf
 ! ---    ON RECUPERE LE MAILLAGE
         call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
 ! ---    RECUPERATION DES COORDONNEES DE L'AXE DE LA POUTRE
@@ -254,11 +259,11 @@ subroutine op0119()
 ! ---       COPIE DE LA MAILLE
             call gfmama(nogfma, nufib, nutyma, jdno, nttri3,&
                         ntqua4, nbnoeu, nomgf, nbfib)
-            do 60 in = 1, nno
+            do in = 1, nno
                 no = zi(jdno-1+in)
                 x(in) = zr(jdco+ (no-1)*3) - axep(1)
                 y(in) = zr(jdco+ (no-1)*3+1) - axep(2)
-60          continue
+            enddo
 ! ---       SURFACE ET CENTRE
             call pmfsce(nno, x, y, surf, centre)
 ! ---       STOCKAGE DES CARACTERISTIQUES DE FIBRES DANS
@@ -270,9 +275,9 @@ subroutine op0119()
                 numf = numf + 1
                 call jenuno(jexnum(mlgtma, nummai), nommai)
                 if (nno .eq. 3) then
-                    write (ifm,1001) numf,nommai,'TRIA3',centre,surf
+                    write (ifm,801) numf,nommai,'TRIA3',centre,surf
                 else
-                    write (ifm,1001) numf,nommai,'QUAD4',centre,surf
+                    write (ifm,801) numf,nommai,'QUAD4',centre,surf
                 endif
             endif
 70      continue
@@ -280,22 +285,23 @@ subroutine op0119()
         zi(jpo+ig-1)=ipoint
         ipoint = ipoint + nbfib*ncarfi
         nbnoeu=nbnoeu+nbno
-90  end do
+    enddo
 !
-! --- ------------------------------------------------------------------
-! --- TRAITEMENT DES FIBRES
-    do 120 ioc = 1, nboccp
+! --------------------------------------------------------------------------------------------------
+!   traitement des fibres
+    call wkvect('&&OP0119.VFIBRE', 'V V R', maxfibre, vr=valfibre)
+    do ioc = 1, nboccp
         ig=ig+1
         call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
-! ---    CREATION DU GROUPE DE MAILLE
+!       CREATION DU GROUPE DE MAILLE
         call gfmagr(nogfma, nomgf, zi(jnfg+ig-1))
-        if (niv .eq. 2) write (ifm,2000) nomgf
-! ---    SURFACE OU DIAMETRE
+        if (niv .eq. 2) write (ifm,820) nomgf
+!       SURFACE OU DIAMETRE
         call getvtx('FIBRE', 'CARA', iocc=ioc, scal=ksudi, nbret=iret)
         if (iret .eq. 0) ksudi = 'SURFACE '
-        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=nbval, vect=val,&
-                    nbret=nbv)
-! ---    RECUPERATION DES COORDONNEES DE L'AXE DE LA POUTRE
+        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=maxfibre, vect=valfibre, &
+                    nbret=nbvfibre)
+!       RECUPERATION DES COORDONNEES DE L'AXE DE LA POUTRE
         call getvr8('FIBRE', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep,&
                     nbret=iret)
         if (iret .ne. 2) then
@@ -304,18 +310,18 @@ subroutine op0119()
         endif
 ! ---   CHANGER DIAMETRE EN SURFACE LE CAS ECHEANT
         nbfib = 0
-        do 100 i = 1, nbv/3
+        do i = 1, nbvfibre/3
             if (ksudi .eq. 'DIAMETRE') then
-                surf = val(3*i)*val(3*i)*pi4
+                surf = valfibre(3*i)*valfibre(3*i)*pi4
             else
-                surf = val(3*i)
+                surf = valfibre(3*i)
             endif
             if (iret .eq. 2) then
-                centre(1) = val(3*i-2) - axep(1)
-                centre(2) = val(3*i-1) - axep(2)
+                centre(1) = valfibre(3*i-2) - axep(1)
+                centre(2) = valfibre(3*i-1) - axep(2)
             else
-                centre(1) = val(3*i-2)
-                centre(2) = val(3*i-1)
+                centre(1) = valfibre(3*i-2)
+                centre(2) = valfibre(3*i-1)
             endif
             nbfib = nbfib + 1
             nufib = nufib +1
@@ -330,29 +336,30 @@ subroutine op0119()
             zr(ipos+2) = surf
             if (niv .eq. 2) then
                 numf = numf + 1
-                write (ifm,2001) numf,centre,surf
+                write (ifm,821) numf,centre,surf
             endif
-100      continue
-        nbnoeu=nbnoeu+nbv/3
+        enddo
+        nbnoeu=nbnoeu+nbvfibre/3
         call jecroc(jexnom(rnomgf, nomgf))
         zi(jnfg+ig-1)=nbfib
         zi(jpo+ig-1)=ipoint
         ipoint = ipoint + nbfib*ncarfi
-120  end do
+    enddo
 !
 !
 ! --- CARACTERISTIQUES GEOMETRIQUES :
 !     -----------------------------
     call cargeo(nogfma)
 !
-    1000 format(//,'DETAIL DES FIBRES SURFACIQUES DU GROUPE "',a24,'"',&
-     &   /,'NUMF  MAILLE    TYPE        Y        ',&
-     &     '     Z            SURF')
-    1001 format(i4,2x,a8,2x,a5,3(2x,1pe12.5))
+800 format(//,'DETAIL DES FIBRES SURFACIQUES DU GROUPE "',a24,'"',&
+           /,'NUMF  MAILLE    TYPE        Y        ',&
+             '     Z            SURF')
+801 format(i4,2x,a8,2x,a5,3(2x,1pe12.5))
 !
-    2000 format(//,'DETAIL DES FIBRES PONCTUELLES DU GROUPE "',a24,'"',&
-     &   /,'NUMF       Y             Z            SURF')
-    2001 format(i4,3(2x,1pe12.5))
+820 format(//,'DETAIL DES FIBRES PONCTUELLES DU GROUPE "',a24,'"',&
+            /,'NUMF       Y             Z            SURF')
+821 format(i4,3(2x,1pe12.5))
 !
+    call jedetr('&&OP0119.VFIBRE')
     call jedema()
 end subroutine
