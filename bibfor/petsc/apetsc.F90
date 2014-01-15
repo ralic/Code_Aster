@@ -81,7 +81,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !     VARIABLES LOCALES
     integer :: iprem, k, ibid, ierd, nglo, kdeb, jnequ
     integer :: jrefa, jtrav, kptsc
-    integer(kind=8) :: n8
+    integer :: np
     real(kind=8) :: r8
     integer :: nbid
     PetscInt :: m, n
@@ -132,9 +132,9 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !        -- quelques vérifications sur la cohérence Aster / Petsc :
         ASSERT(kind(rbid).eq.kind(r8))
         ASSERT(kind(sbid).eq.kind(r8))
-        ASSERT(kind(mbid).eq.kind(n8))
-        ASSERT(kind(vbid).eq.kind(n8))
-        ASSERT(kind(offbid).eq.kind(n8))
+        ASSERT(kind(mbid).eq.kind(np))
+        ASSERT(kind(vbid).eq.kind(np))
+        ASSERT(kind(offbid).eq.kind(np))
 !
         call PetscInitialize(PETSC_NULL_CHARACTER, ierr)
         if (ierr .ne. 0) call utmess('F', 'PETSC_1')

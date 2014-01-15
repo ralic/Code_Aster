@@ -3,7 +3,7 @@
 !
 ! aslint: disable=W1510
 !
-! Avec l'accord de M. Courtois : il n'est pas facile de definir les interfaces des external :
+! Il n'est pas facile de definir les interfaces des external :
 ! aslint: disable=C1002
 !
 ! personne_in_charge: jacques.pellet at edf.fr
@@ -33,30 +33,6 @@ interface
 !
 #define PETSC_INT_SCAL_IN integer
 #define PETSC_INT_SCAL_OUT PetscInt
-!
-!
-!---------------------------------------------------
-! Je n'ai pas trouve leur definition :
-#define size_t integer(kind=8)
-!
-!---------------------------------------------------
-!
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-!----------------------------------------------------------------
-! -------------
 !
     subroutine ISCreateGeneral(comm, n, idx, mode, is,&
                                ierr)
@@ -123,7 +99,7 @@ interface
     subroutine KSPMonitorSet(ksp, monitor, mctx, mdistroy, ierr)
         KSP ksp ! KSP
         external monitor
-        integer(kind=8) :: mctx
+        integer :: mctx
         external mdistroy
         PETSC_INT_SCAL_OUT ierr
     end subroutine
