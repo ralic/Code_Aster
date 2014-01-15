@@ -153,6 +153,14 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
 
+25 : {  'message' : _(u"""Version de la librairie PETSc : %(k1)s"""),
+        'flags' : 'CENTER | ALL_UNIT',
+},
+
+26 : {  'message' : _(u"""Librairie PETSc : non disponible"""),
+        'flags' : 'CENTER | ALL_UNIT',
+},
+
 
 # Affichage des commandes
 70 : u"""  # ------------------------------------------------------------------------------------------""",

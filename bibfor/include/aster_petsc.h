@@ -18,14 +18,13 @@
 !----------------------------------------------------------------
 !    include necessaire a la gestion des instances PETSC
 !----------------------------------------------------------------
-# include "finclude/petscsys.h"
-# include "finclude/petscvec.h"
-# include "finclude/petscmat.h"
-# include "finclude/petscksp.h"
-# include "finclude/petscpc.h"
-# include "finclude/petscdmda.h"
-# include "finclude/petscis.h"
-# include "finclude/petscviewer.h"
+# include "finclude/petsc.h"
+!
+! Gestion des versions de PETSc
+#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR == 2
+#   define ASTER_PETSC_VERSION_32
+#endif
+!
 # include "petsc_interfaces.h"
 !
 !----------------------------------------------------------------

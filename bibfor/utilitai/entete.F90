@@ -68,12 +68,23 @@ subroutine entete()
     call utmess('I', 'SUPERVIS2_17')
 #endif
 ! --- LIBRARIES SOLVEURS
+! for backward compatibility
 #ifdef _HAVE_MUMPS
-!   to avoid C1510
-# define vers MUMPS_VERSION
-    call utmess('I', 'SUPERVIS2_18', sk=vers)
+#   ifndef ASTER_MUMPS_VERSION
+#       define ASTER_MUMPS_VERSION MUMPS_VERSION
+#   endif
+!   to avoid C1510, use vers1
+#   define vers1 ASTER_MUMPS_VERSION
+    call utmess('I', 'SUPERVIS2_18', sk=vers1)
 #else
     call utmess('I', 'SUPERVIS2_19')
+#endif
+#ifdef _HAVE_PETSC
+!   to avoid C1510, use vers2
+#   define vers2 ASTER_PETSC_VERSION
+    call utmess('I', 'SUPERVIS2_25', sk=vers2)
+#else
+    call utmess('I', 'SUPERVIS2_26')
 #endif
 #ifndef _DISABLE_SCOTCH
     call liscov(vali(1), vali(2), vali(3))

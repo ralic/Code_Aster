@@ -96,7 +96,7 @@ def get_mumps_version(self):
         to_search = 'bibfor/include_mumps-%s*/' % ret
         if not self.srcnode.ant_glob(to_search, src=True, dir=True):
             raise Errors.ConfigurationError('"%s" not compatible (see bibfor/include_mumps*)' % ret)
-        self.define('MUMPS_VERSION', ret)
+        self.define('ASTER_MUMPS_VERSION', ret)
     except:
         self.end_msg('no', 'YELLOW')
         raise
