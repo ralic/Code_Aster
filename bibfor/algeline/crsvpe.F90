@@ -84,7 +84,8 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
         ASSERT(ibid.eq.1)
         call getvr8(motfac, 'REMPLISSAGE', iocc=1, scal=fillin, nbret=ibid)
         ASSERT(ibid.eq.1)
-!     PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR SP
+
+!   PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR SP
     else if (kprec.eq.'LDLT_SP') then
         call getvis(motfac, 'REAC_PRECOND', iocc=1, scal=reacpr, nbret=ibid)
         ASSERT(ibid.eq.1)
@@ -93,14 +94,19 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
         call gcncon('.', solvbd)
-!     PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE ML
+!       par defaut : nmaxit=100 si LDLT_SP
+        if (nmaxit.eq.0) nmaxit=100
+
+!   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE ML
     else if (kprec.eq.'ML') then
-!     PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
+
+!   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
     else if (kprec.eq.'BOOMER') then
-!     PAS DE PARAMETRES POUR LES AUTRES PRECONDITIONNEURS
-        else if (kprec.eq.'JACOBI' .or.&
-     &         kprec.eq.'SOR'    .or.&
-     &         kprec.eq.'SANS') then
+
+!   PAS DE PARAMETRES POUR LES AUTRES PRECONDITIONNEURS
+    else if (kprec.eq.'JACOBI' .or.&
+     &       kprec.eq.'SOR'    .or.&
+     &       kprec.eq.'SANS') then
 !     RIEN DE PARTICULIER...
 !
     else

@@ -1,5 +1,7 @@
 subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                   iret)
+    implicit none
+! person_in_charge: thomas.de-soza at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -17,35 +19,6 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-    implicit none
-! person_in_charge: thomas.de-soza at edf.fr
-#include "aster_types.h"
-#include "asterf.h"
-#include "jeveux.h"
-#include "asterc/asmpi_comm.h"
-#include "asterc/matfpe.h"
-#include "asterfort/apalmc.h"
-#include "asterfort/apalmd.h"
-#include "asterfort/apksp.h"
-#include "asterfort/apmamc.h"
-#include "asterfort/apmamd.h"
-#include "asterfort/appcpr.h"
-#include "asterfort/appcrs.h"
-#include "asterfort/apsolu.h"
-#include "asterfort/apvsmb.h"
-#include "asterfort/asmpi_info.h"
-#include "asterfort/assert.h"
-#include "asterfort/csmbgg.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mrconl.h"
-#include "asterfort/mtdscr.h"
-#include "asterfort/utmess.h"
     character(len=*) :: action
     integer :: kptsc
     real(kind=8) :: rsolu(*)
@@ -69,9 +42,39 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 ! IN  : ISTOP (I)  : COMPORTEMENT EN CAS D'ERREUR
 ! OUT : IRET  (I)  : CODE RETOUR
 !---------------------------------------------------------------
+#include "asterf.h"
+#include "jeveux.h"
+#include "aster_types.h"
+#include "aster_petsc.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/matfpe.h"
+#include "asterfort/apalmc.h"
+#include "asterfort/apalmd.h"
+#include "asterfort/apksp.h"
+#include "asterfort/apmamc.h"
+#include "asterfort/apmamd.h"
+#include "asterfort/appcpr.h"
+#include "asterfort/appcrs.h"
+#include "asterfort/ap2foi.h"
+#include "asterfort/apsolu.h"
+#include "asterfort/apvsmb.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
+#include "asterfort/csmbgg.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrconl.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/utmess.h"
+#include "asterfort/uttcpu.h"
 !
 #ifdef _HAVE_PETSC
-#include "aster_petsc.h"
+
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
@@ -88,7 +91,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     real(kind=8) :: divtol, resipc
     complex(kind=8) :: cbid
 !
-    logical :: lmd, dbg
+    logical :: lmd
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -212,31 +215,36 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         ASSERT(ierr.eq.0)
         call KSPSolve(ksp, b, x, ierr)
 !
-        dbg=.false.
 !
 !        2.5 DIAGNOSTIC :
 !        ----------------
 !
-!        ARRET ANORMAL DU KSP
-        if (ierr .gt. 0) then
-            call utmess('F', 'PETSC_13')
-        endif
+!       ARRET ANORMAL DU KSP
+        if (ierr .gt. 0)  call utmess('F', 'PETSC_13')
 !
-!        ANALYSE DE LA CONVERGENCE DU KSP
+!       ANALYSE DE LA CONVERGENCE DU KSP
         call KSPGetConvergedReason(ksp, indic, ierr)
         ASSERT(ierr.eq.0)
         call KSPGetIterationNumber(ksp, its, ierr)
-!
-!
-!        ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
-!        EN CAS DE DIVERGENCE
+
+!       -- si LDLT_SP et its > maxits, on essaye une 2eme fois
+!       -- apres avoir actualise le preconditionneur :
+        if ((indic .eq. KSP_DIVERGED_ITS).and.(precon.eq.'LDLT_SP')) then
+            call ap2foi(kptsc,mpicou, nosolv,lmd,indic,its)
+!           -- ksp a ete modifie par ap2foi :
+            ksp = kp(kptsc)
+        endif
+
+
+!       ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
+!       EN CAS DE DIVERGENCE
         if (indic .lt. 0) then
-            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits,&
-                                  ierr)
+            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits,ierr)
             ASSERT(ierr.eq.0)
-!           -- PRECONDITIONNEUR UTILISE
+
             if (indic .eq. KSP_DIVERGED_ITS) then
-!              NOMBRE MAX D'ITERATIONS
+!               -- NOMBRE MAX D'ITERATIONS
+
                 if ((istop.eq.0) .or. (precon.ne.'LDLT_SP')) then
                     nmaxit=maxits
                     call utmess('F', 'PETSC_5', si=nmaxit)
@@ -244,25 +252,32 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                     iret = 1
                     goto 999
                 endif
+
             else if (indic.eq.KSP_DIVERGED_DTOL) then
-!              DIVERGENCE
+!               DIVERGENCE
                 divtol = dtol
                 call utmess('F', 'PETSC_6', sr=divtol)
+
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN) then
-!              BREAKDOWN
+!               BREAKDOWN
                 call utmess('F', 'PETSC_7')
+
             else if (indic.eq.KSP_DIVERGED_BREAKDOWN_BICG) then
-!              BREAKDOWN BiCG
+!               BREAKDOWN BiCG
                 call utmess('F', 'PETSC_8')
+
             else if (indic.eq.KSP_DIVERGED_NONSYMMETRIC) then
-!              MATRICE NON SYMETRIQUE
+!               MATRICE NON SYMETRIQUE
                 call utmess('F', 'PETSC_9')
+
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_PC) then
 !              PRECONDITIONNEUR NON DEFINI
                 call utmess('F', 'PETSC_10')
+
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_MAT) then
-!              MATRICE NON DEFINIE
+!               MATRICE NON DEFINIE
                 call utmess('F', 'PETSC_11')
+
             else
 !              AUTRE ERREUR
                 ptserr = indic
@@ -398,6 +413,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     kdummy = vcine(1:1)
     idummy = istop
     idummy = iret
+    ASSERT(.false.)
 #endif
 !
 end subroutine

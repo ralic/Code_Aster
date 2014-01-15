@@ -1,5 +1,6 @@
 #ifndef ASTER_PETSC_H
 #define ASTER_PETSC_H
+# ifdef _HAVE_PETSC
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +19,7 @@
 !----------------------------------------------------------------
 !    include necessaire a la gestion des instances PETSC
 !----------------------------------------------------------------
+
 # include "finclude/petsc.h"
 !
 ! Gestion des versions de PETSc
@@ -44,4 +46,5 @@ Vec :: xlocal, xglobal
 VecScatter :: xscatt
 common /ldltsp/xlocal, xscatt, xglobal, spsomu, spmat, spsolv
 !----------------------------------------------------------------
+#endif
 #endif

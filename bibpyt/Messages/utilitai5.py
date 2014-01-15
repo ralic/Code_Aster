@@ -219,17 +219,13 @@ cata_msg = {
 Erreur Programmeur / UTTCPU :
  l"argument "INDI" est non valide
 """),
+ 
 
-55 : _(u"""
-Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut être effectue avec la valeur "DEBUT" pour l"argument PARA
- Il faut d'abord avoir fait "INIT".
-"""),
+
 
 56 : _(u"""
 Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut être effectué avec la valeur "FIN" pour l"argument PARA.
- Il faut d'abord avoir fait "DEBUT".
+ On ne peut pas passer dans l'état %(k1)s quand on vient de l'état %(k2)s
 """),
 
 57 : _(u"""

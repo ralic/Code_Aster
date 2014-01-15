@@ -53,7 +53,7 @@ subroutine uttcp0(indi, para, nbv, temps)
     real(kind=8) :: uscpui(nb1:nb2), sycpui(nb1:nb2), elapsi(nb1:nb2)
     real(kind=8) :: uscpu(nb1:nb2), sycpu(nb1:nb2), elaps(nb1:nb2)
     integer :: nbappe(nb1:nb2), k, nbt
-    character(len=5) :: kpara, parini(nb1:nb2)
+    character(len=5) :: kpara, parini(nb1:nb2), valk(2)
 !
     real(kind=8) :: t(7), tcsm(3), tpres
 !
@@ -110,7 +110,9 @@ subroutine uttcp0(indi, para, nbv, temps)
 !
     else if (kpara .eq. 'DEBUT') then
         if (parini(indi) .ne. 'FIN' .and. parini(indi) .ne. 'INIT') then
-            call utmess('F', 'UTILITAI5_55')
+            valk(1)=kpara
+            valk(2)=parini(indi)
+            call utmess('F', 'UTILITAI5_56',nk=2,valk=valk)
         endif
         parini(indi) = 'DEBUT'
         uscpui(indi) = tcsm(1)
@@ -121,7 +123,9 @@ subroutine uttcp0(indi, para, nbv, temps)
 !
     else if (kpara .eq. 'FIN') then
         if (parini(indi) .ne. 'DEBUT') then
-            call utmess('F', 'UTILITAI5_56')
+            valk(1)=kpara
+            valk(2)=parini(indi)
+            call utmess('F', 'UTILITAI5_56',nk=2,valk=valk)
         endif
         parini(indi) = 'FIN'
         nbappe(indi) = nbappe(indi) + 1

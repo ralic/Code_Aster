@@ -29,21 +29,17 @@ subroutine pcmump(matasz, solvez, iretz)
     integer :: iretz
 !-----------------------------------------------------------------------
 !
-!     CREATION D'UNE MATRICE DE PRECONDITIONNEMENT DU GCPC
+!     CREATION D'UNE MATRICE DE PRECONDITIONNEMENT (PETSC, GCPC)
 !     PAR FACTORISATION SIMPLE PRECISION PAR MUMPS
 !
 !-----------------------------------------------------------------------
 ! IN  K*  MATASZ    : NOM DE LA MATR_ASSE A PRECONDITIONNER
 ! IN  K*  SOLVEZ    : NOM DE LA SD SOLVEUR
 ! IN  I   IRETZ     : CODE RETOUR (!=0 SI ERREUR)
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     integer :: jslvk, jslvi, iterpr, reacpr, pcpiv, jrefa, iret
-    real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=19) :: solveu, matass
     character(len=24) :: precon, solvbd
@@ -52,6 +48,7 @@ subroutine pcmump(matasz, solvez, iretz)
 !
     matass = matasz
     solveu = solvez
+    cbid=dcmplx(0.d0,0.d0)
 !
 ! --  PARAMETRES DU PRECONDITIONNEUR
     call jeveuo(solveu//'.SLVK', 'L', jslvk)
@@ -81,9 +78,9 @@ subroutine pcmump(matasz, solvez, iretz)
 ! --  APPEL AU PRECONDITIONNEUR
     iret = 0
     if (iterpr .gt. reacpr .or. iterpr .eq. 0) then
-        call amumph('DETR_MAT', solvbd, matass, [rbid], [cbid],&
+        call amumph('DETR_MAT', solvbd, matass, [0.d0], [cbid],&
                     ' ', 0, iret, .true.)
-        call amumph('PRERES', solvbd, matass, [rbid], [cbid],&
+        call amumph('PRERES', solvbd, matass, [0.d0], [cbid],&
                     ' ', 0, iret, .true.)
     endif
 !
