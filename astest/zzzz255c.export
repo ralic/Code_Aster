@@ -1,0 +1,11 @@
+P time_limit 45
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm zzzz255c.comm D 1
+F datg zzzz255a.datg D 16
+F mmed zzzz255a.mmed D 20
+F libr zzzz255c.38 D 38

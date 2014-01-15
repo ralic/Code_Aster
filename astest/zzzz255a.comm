@@ -1,0 +1,117 @@
+# TITRE VALIDATION DE L'OPTION TEST_MAIL DANS PROPA_FISS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+            IGNORE_ALARM=('XFEM2_60'),)
+
+# ON IGNORE LE MESSAGE D'ALARME XFEM2_60 QUI DIT QUE L'OPTION TEST_MAIL A ETE
+# UTILISEE PAR L'UTILISATEUR.
+
+MaiPlate=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+
+plate=AFFE_MODELE(MAILLAGE=MaiPlate,
+                   AFFE=(_F(GROUP_MA=('ALL',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),),);
+
+#***********************************
+# DEFINITION DE LA FISSURE (CERCLE)
+#***********************************
+nbcalc = 3
+rayon = 250.
+avance = 25.
+
+Fiss = [None]*2
+
+Fiss[0] = DEFI_FISS_XFEM(MODELE=plate,
+                         DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                      DEMI_GRAND_AXE = rayon,
+                                      DEMI_PETIT_AXE = rayon,
+                                      CENTRE         = (0., 0., 0.),
+                                      VECT_X         = (1. , 0. , 0. ),
+                                      VECT_Y         = (0., 1. , 0. ),),);
+
+
+#****************************
+# TEST_MAIL
+#****************************
+
+ModX=MODI_MODELE_XFEM(MODELE_IN=plate,
+                      FISSURE=Fiss[0],);
+
+Fiss[1]=CO('Fiss_1')
+PROPA_FISS(MODELE=ModX,
+           FISSURE=_F(FISS_ACTUELLE=Fiss[0],
+                      FISS_PROPAGEE=Fiss[1],
+                     ),
+           TEST_MAIL='OUI',
+           ITERATIONS=nbcalc,
+           DA_MAX=avance,
+           METHODE_PROPA='UPWIND',
+           RAYON=avance*4,
+           ZONE_MAJ='TOUT',
+           INFO=0,);
+
+#****************************
+# TEST TABLE
+#****************************
+
+# LA PART SUIVANTE N'EST PAS UTILISEE POUR LA VERIFICATION
+# DU BON FONCTIONNEMENT DE L'OPTION TEST_MAIL.
+# ON PROPOSE DE FAIRE UN TEST UN TEST UN PEU EQUIVALENT A
+# TEST_MAIL POUR VERIFIER LA PROPAGATION HOMOTHETIQUE DU FRONT
+
+
+
+CHLT=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                OPERATION='EXTR',
+                NOM_CHAM='LTNO',
+                FISSURE=Fiss[1],);
+
+TABLST = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                 GROUP_NO=('A','B','C','D','E','F','G','H',),
+                                 CHAM_GD=CHLT,
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABLST,);
+
+dist = 500.*sqrt(2.) - (rayon+nbcalc*avance)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=386.562156747,
+           VALE_REFE=dist,
+           NOM_PARA='X1',
+           TYPE_TEST='MAX',
+           TABLE=TABLST,
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='NON_DEFINI',
+           PRECISION=0.050000000000000003,
+           VALE_CALC=386.562156592,
+           VALE_REFE=dist,
+           NOM_PARA='X1',
+           TYPE_TEST='MIN',
+           TABLE=TABLST,
+           )
+
+FIN();

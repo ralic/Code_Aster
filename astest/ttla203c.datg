@@ -1,0 +1,177 @@
+
+lc=1.;
+
+LX = 1.;
+LY = 2.;
+Rext  = LX;
+Rint  = 0.5*Rext;
+Rint2 = 0.25*Rint;
+cos45 = Cos(Pi/4.);
+
+Point(1 ) = {  0., 0.5*LY, 0.,lc};
+
+Point(2 ) = { Rext*cos45, 0.5*LY,  Rext*cos45, lc};
+Point(3 ) = {-Rext*cos45, 0.5*LY,  Rext*cos45, lc};
+Point(4 ) = {-Rext*cos45, 0.5*LY, -Rext*cos45, lc};
+Point(5 ) = { Rext*cos45, 0.5*LY, -Rext*cos45, lc};
+
+Point(6 ) = { Rint*cos45, 0.5*LY,  Rint*cos45, lc};
+Point(7 ) = {-Rint*cos45, 0.5*LY,  Rint*cos45, lc};
+Point(8 ) = {-Rint*cos45, 0.5*LY, -Rint*cos45, lc};
+Point(9 ) = { Rint*cos45, 0.5*LY, -Rint*cos45, lc};
+
+Circle(1) = {2, 1, 3};
+Circle(2) = {3, 1, 4};
+Circle(3) = {4, 1, 5};
+Circle(4) = {5, 1, 2};
+
+Circle(5) = {6, 1, 7};
+Circle(6) = {7, 1, 8};
+Circle(7) = {8, 1, 9};
+Circle(8) = {9, 1, 6};
+
+Point(10) = { Rint2*cos45, 0.5*LY,  Rint2*cos45, lc};
+Point(11) = {-Rint2*cos45, 0.5*LY,  Rint2*cos45, lc};
+Point(12) = {-Rint2*cos45, 0.5*LY, -Rint2*cos45, lc};
+Point(13) = { Rint2*cos45, 0.5*LY, -Rint2*cos45, lc};
+
+Line(9)  = {10, 11};
+Line(10) = {11, 12};
+Line(11) = {12, 13};
+Line(12) = {13, 10};
+
+Line(13) = {10, 6};
+Line(14) = {6, 2};
+Line(15) = {11, 7};
+Line(16) = {7, 3};
+Line(17) = {12, 8};
+Line(18) = {8, 4};
+Line(19) = {13, 9};
+Line(20) = {9, 5};
+
+
+Line Loop(21) = {9, 10, 11, 12};
+Plane Surface(22) = {21};
+Line Loop(23) = {9, 15, -5, -13};
+Plane Surface(24) = {23};
+Line Loop(25) = {10, 17, -6, -15};
+Plane Surface(26) = {25};
+Line Loop(27) = {11, 19, -7, -17};
+Plane Surface(28) = {27};
+Line Loop(29) = {12, 13, -8, -19};
+Plane Surface(30) = {29};
+Line Loop(31) = {5, 16, -1, -14};
+Plane Surface(32) = {31};
+Line Loop(33) = {6, 18, -2, -16};
+Plane Surface(34) = {33};
+Line Loop(35) = {7, 20, -3, -18};
+Plane Surface(36) = {35};
+Line Loop(37) = {8, 14, -4, -20};
+Plane Surface(38) = {37};
+
+// pr les bords du carre et cercles
+Nseg1 = 8;
+// pr les rayons interieurs
+Nseg2 = 13;
+// pr les rayons exterieurs
+Nseg3 = 13;
+// pr l'axe d'axisymetie
+NsegY = 13;
+
+Transfinite Line{9 ,10,11,12}  = Nseg1+1;
+Transfinite Line{13,15,17,19}  = Nseg2+1;
+Transfinite Line{14,16,18,20}  = Nseg3+1;
+Transfinite Line{ 5, 6, 7, 8}  = Nseg1+1;
+Transfinite Line{ 1, 2, 3, 4}  = Nseg1+1;
+
+Transfinite Surface{22,24,26,28,30,32,34,36,38};
+Recombine   Surface{22,24,26,28,30,32,34,36,38};
+
+
+Extrude {0, 0.5*LY, 0} {
+   Surface{22,24,26,28,30,32,34,36,38};
+   Layers{NsegY};
+   Recombine;
+    }
+
+Extrude {0, -0.5*LY, 0} {
+   Surface{22,24,26,28,30,32,34,36,38};
+   Layers{NsegY};
+   Recombine;
+    }
+    
+// surface haut G_2D_435
+Physical Surface(435) = {192, 214, 236, 170, 104, 126, 148, 82, 60};
+
+// surface bas G_2D_436
+Physical Surface(436) = {390, 412, 434, 368, 346, 324, 302, 280, 258};
+
+// volume exterieur haut G_3D_437
+Physical Volume(437) = {9, 6, 8, 7};
+
+// volume exterieur bas G_3D_438
+Physical Volume(438) = {18, 15, 16, 17};
+
+// volume cylindre interieur haut et bas G_3D_439
+Physical Volume(439) = {2, 3, 4, 5, 1, 14, 11, 10, 13, 12};
+
+// tout le volume G_3D_440
+Physical Volume(440) = {7, 3, 1, 2, 6, 4, 8, 5, 9, 15, 11, 10, 13, 17, 16, 12, 14, 18};
+
+
+
+//// --------------------------------------------------------------------------------------
+//// En commentaire : script pyhton a lancer sous salome apres avoir genere le maillage
+//// sain ci-dessus au format MED pour doubler les noeuds au niveau de la fissure et ecrire 
+//// au format med le fichier contenant le maillage fissure
+//// --------------------------------------------------------------------------------------
+//import smesh, SMESH, SALOMEDS
+//import salome
+//import math as M
+//
+//gg = salome.ImportComponentGUI("GEOM")
+//gm = salome.ImportComponentGUI("SMESH")
+//
+//NomGroupVolSUP = "G_3D_437"
+//NomGroupVolINF = "G_3D_438"
+//NomGroupVolINT = "G_3D_439"
+//
+//theFileName = "/tmp/ttla203c-sain.med"
+//LeMaillage=smesh.CreateMeshesFromMED(theFileName)	
+//LeMaillage = LeMaillage[0][0]
+//
+//GroupSup = None
+//GroupInf = None
+//GroupInt = None
+//GroupList = LeMaillage.GetGroups()
+//for group in GroupList:
+//  if group.GetName()[:8] == NomGroupVolSUP : GroupSup = group
+//  if group.GetName()[:8] == NomGroupVolINF : GroupInf = group
+//  if group.GetName()[:8] == NomGroupVolINT : GroupInt = group
+//assert GroupSup is not None
+//assert GroupInf is not None
+//assert GroupInt is not None
+//
+//gr_noeuds_Sup = LeMaillage.GetMesh().CreateDimGroup([GroupSup], SMESH.NODE, "GN_SUP")
+//gr_noeuds_Inf = LeMaillage.GetMesh().CreateDimGroup([GroupInf], SMESH.NODE, "GN_INF")
+//interGroups   = LeMaillage.GetMesh().IntersectListOfGroups([gr_noeuds_Sup,gr_noeuds_Inf], "GN_inter")
+//idInterGroups = interGroups.GetListOfID()
+//idInterGroups = list( set( interGroups.GetListOfID() ) )
+//
+//gr_noeuds_Int = LeMaillage.GetMesh().CreateDimGroup([GroupInt], SMESH.NODE, "GN_INT")
+//idNoeFondFiss = list( set(idInterGroups) & set(gr_noeuds_Int.GetIDs()) )
+//
+//GNFondFiss = LeMaillage.CreateEmptyGroup( SMESH.NODE, 'FondFiss' )
+//GNFondFiss.Add(idNoeFondFiss)
+//
+//idNoe2Dble = list( set(idInterGroups) - set(idNoeFondFiss) )
+//
+//GNLevrSUP = LeMaillage.CreateEmptyGroup( SMESH.NODE, 'LevrSUP' )
+//GNLevrSUP.Add(idNoe2Dble)
+//
+//GNLevrINF = LeMaillage.DoubleNodeGroups([GNLevrSUP],[GroupInf],True)
+//GNLevrINF.SetName('LevrINF')
+//print "code_retour", GNLevrINF
+//
+//theFileName = "/tmp/ttla203c.mmed"
+//LeMaillage.ExportMED(theFileName)

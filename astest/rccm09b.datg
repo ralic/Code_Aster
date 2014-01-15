@@ -1,0 +1,554 @@
+************************************************************
+*=====Procedure de maillage d une structure plane fissuree====
+*=======(plaque rectangulaire - tore en fond de fissure)======
+************************************************************
+option dime 2 elem qua8;
+************************************************************
+* Maillage 2D axisymetrique du cylindre                    *						   
+*                                                          *
+* Definition des parametres :                              *
+*                                                          *
+* rint  : rayon interne du cylindre                        *
+* rext  : rayon externe du cylinde                         *
+* h     : demi hauteur du cylindre                         *
+* a     : profondeur du defaut                             *
+*                                                          *
+*********************************************************
+DEBPROC PARTENTI  x*flottant ;
+*********************************************************
+      rest = x - (entier x) ;
+       si ( (rest < .5) et ( abs(rest-0.5) > 1.e-4 ) );
+          ent = entier x ;
+       sinon ;
+          ent = (entier x) + 1 ;
+       finsi ;
+       si (ent <eg 1);
+         ent = 1;
+       finsi;
+finproc ent ;
+* ******************************************************************            
+* PROCEDURE DE MAILLAGE D'UNE FISSURE 2D                                        
+* --------------------------------------                                        
+*                                                                               
+*                                                                               
+* parametres:                                                                   
+*                                                                               
+* rt        rayon du maillage rayonnant                                         
+* rt1       coefficient multiplicateur de rt permettant de definir              
+*           l'epaisseur des couronnes de deraffinement des secteurs             
+* rt2       coefficient multiplicateur de rt permettant de definir              
+*           l'epaisseur de la couronne de transition du maillage                
+*           rayonnant au maillage dalle                                         
+* nc        nombre de couronnes                                                 
+* ns        nombre de secteurs sur 90 degres (multiple de 2)                    
+* eps       demi-angle d'ouverture de la fissure (degres)                       
+* nbcour    nombre de couronnes de deraffinement (0 ou 1 ou 2)                  
+* dx        position suivant x du centre du repere par rapport au fond          
+*           de fissure (dx = 0 : centre du repere au fond de fissure)           
+* levre     Pour les cas axisymetriques: fissure debouchante a                  
+*           l'exterieur (levre = 'ext' par defaut) ou fissure                   
+*           debouchante a l'interieur (levre = 'int')                           
+*                                                                               
+* ******************************************************************            
+*                                                                               
+*$$$$ FISS_2D                                                                   
+*                                                                               
+debproc fiss_2d                      
+        eps*flottant nc*entier ns*entier rt*flottant rt1*flottant               
+        nbcour*entier rt2*flottant                       
+         levre/mot dx*flottant ;                                      
+*                                                                               
+opti dime 2 elem qua8 echo 1 ;                                                  
+*                                                                               
+* Creation du maillage rayonnant (mbase)                                        
+* --------------------------------------                                        
+*                                                                               
+* critere d'elimination et de recherche des noeuds                              
+crit = (rt / (100. * nc)) ;                                                     
+*                                                                               
+o = 0. 0. ;                                                                     
+coseps = cos eps ;                                                              
+sineps = sin eps ;                                                              
+p0 = (0.0001 * rt * coseps) (0.0001 * rt * sineps) ;                              
+p1 = (rt * coseps) (rt * sineps) ;                                              
+p1_90 = 0 rt ;                                                                  
+p1_180 = (-1 * rt) 0 ;                                                          
+l11_90 = p1 cerc ns o p1_90 ;                                                   
+l11_12 = p1_90 cerc ns o p1_180 ;                                               
+lextbase = l11_90 et l11_12 ;                                                   
+lop1 = p0 d nc p1 ;                                                             
+lop1_180 = p0 d nc p1_180 ;                                                     
+*                                                                               
+* demi boudin inferieur                                                         
+mbase = lop1 rota ns (90. - eps) o rota ns 90. o ;                              
+*                                                                               
+* fusion des noeuds situes pres du centre du maillage en etoile                 
+elim mbase crit ;                                                               
+mbase = rege mbase ;                                                            
+mbase = mbase coul roug ; 
+*                                                                               
+elim (mbase et o) crit ;  
+*                                                                               
+si (((nbcour ega 2) et (ns < 8)) ou ((nbcour ega 1) et (ns < 4))) ;             
+   saut ligne ;                                                                 
+   mess '======================================================== ' ;           
+   mess '  ATTENTION !!!  Le nombre de couronnes de deraffinement ' ;           
+   mess '                 est trop eleve pour un nombre de        ' ;           
+   mess '                 de secteurs de' ns                        ;           
+   mess '                                                         ' ;           
+   mess '======================================================== ' ;           
+   saut ligne ;                                                                 
+finsi ;                                                                         
+*                                                                               
+* Creation des couronnes de deraffinement (mtran)                               
+* -----------------------------------------------                               
+*                                                                               
+si (nbcour neg 0) ;                                                             
+*                                                                               
+rti = 1.4 ;                                                                     
+*                                                                               
+ i = 0 ;                                                                        
+ repe bouc1 nbcour ;                                                            
+ i = i + 1 ;                                                                    
+*                                                                               
+   rt1 = rt1 * (i ** rti) ;                                                     
+   nsb = ns / (2 * i) ;                                                         
+*                                                                               
+   p2 = (rt * (1 + rt1) * coseps) (rt * (1 + rt1) * sineps) ;                   
+   p2_90 = 0 (rt * (1 + rt1)) ;                                                 
+   p2_180 = (-1 * (rt * (1 + rt1))) 0 ;                                         
+   l22_1 = p2 cerc nsb o p2_90 ;                                                
+   l2_12_2 = p2_90 cerc nsb o p2_180 ;                                          
+   lext_rt1 = l22_1 et l2_12_2 ;                                                
+*                                                                               
+   mtran1 = cout lextbase lext_rt1 ;                                            
+*                                                                               
+   si (i ega 1) ;                                                               
+       mtran = mtran1 ;                                                         
+       lp1p2 = p1 d 1 p2 ;                                                      
+       lp12p22 = p1_180 d 1 p2_180 ;                                            
+   sinon ;                                                                      
+       mtran = mtran et mtran1 ;                                                
+       lp1p2 = lp1p2 d 1 p2 ;                                                   
+       lp12p22 = lp12p22 d 1 p2_180 ;                                           
+   finsi ;                                                                      
+       lextbase = lext_rt1 ;                                                    
+ fin bouc1 ;                                                                    
+*                                                                               
+   p3 = p2 plus ((rt * rt2) 0) ;                                                
+   p4 = p3 plus (0 (coor 1 p3)) ;                                               
+   p5 = 0 (coor 2 p4) ;                                                         
+   p6 = (-1 * (coor 1 p4)) (coor 2 p4) ;                                        
+   p7 = (-1 * (coor 1 p4)) 0 ;                                                  
+   l2_905 = p2_90 d 1 p5 ;                                                      
+nsb_p = nsb / 2 ;                                                               
+nsb_g = nsb - nsb_p ;                                                           
+   l34 = p3 d nsb_p p4 ;                                                        
+   l45 = p4 d nsb_g p5 ;                                                        
+   l56 = p5 d nsb_g p6 ;                                                        
+   l67 = p6 d nsb_p p7 ;                                                        
+   l23 = p2 d 1 p3 ;                                                            
+   l2_27 = p2_180 d 1 p7 ;                                                      
+*                                                                               
+sinon ;                                                                         
+*                                                                               
+   p3 = p1 plus ((rt * rt2) 0) ;                                                
+   p4 = p3 plus (0 (coor 1 p3)) ;                                               
+   p5 = 0 (coor 2 p4) ;                                                         
+   p6 = (-1 * (coor 1 p4)) (coor 2 p4) ;                                        
+   p7 = (-1 * (coor 1 p4)) 0 ;                                                  
+   l22_1 = l11_90 ;                                                             
+   l2_12_2 = l11_12 ;                                                           
+   l2_905 = p1_90 d 1 p5 ;                                                      
+ns_p = ns / 2 ;                                                                 
+ns_g = ns - ns_p ;                                                              
+   l34 = p3 d ns_p p4 ;                                                         
+   l45 = p4 d ns_g p5 ;                                                         
+   l56 = p5 d ns_g p6 ;                                                         
+   l67 = p6 d ns_p p7 ;                                                         
+   l23 = p1 d 1 p3 ;                                                            
+   l2_27 = p1_180 d 1 p7 ;                                                      
+finsi ;                                                                         
+*                                                                               
+* Passage du cercle au rectangle (mce1 et mce2)                                 
+* ---------------------------------------------                                 
+mce1 = dall (l34 et l45) l2_905 l22_1 l23 ;                                     
+mce2 = dall (l56 et l67) l2_27 l2_12_2 l2_905 ;                                 
+*                                                                               
+* Creation de l'objet total intermediare                                        
+* --------------------------------------                                        
+si (nbcour neg 0) ;                                                             
+   vtot = mbase et mtran et mce1 et mce2 ;                
+sinon ;                                                                         
+   vtot = mbase et mce1 et mce2 ;                         
+finsi ; 
+*trac vtot ;
+*                                                                               
+*                                                                               
+*                                                                               
+* Ligne de la levre                                                             
+* ----------------- 
+v_cont1 = cont (mce1 ) ;                                              
+*                                                                               
+ si (nbcour ega 0) ;
+    plp2p8 = v_cont1 poin droi p1 p3 crit ;
+    lp2p8 = v_cont1 elem appuye strictement plp2p8 ;
+    lpop8 = lop1 et lp2p8 ;
+ sinon ;
+    plp2p8 = v_cont1 poin droi p2 p3 crit ;
+    lp2p8 = v_cont1 elem appuye strictement plp2p8 ;
+    lpop8 = lop1 et lp1p2 et lp2p8 ;
+ finsi ;
+*                                                                               
+* Ligne du ligament                                                             
+* -----------------                                                             
+v_cont2 = cont (mce2 ) ; 
+*                                                                               
+ si (nbcour ega 0) ;
+    plp22p11 = v_cont2 poin droi p1_180 p7 crit ;
+    lp22p11 = v_cont2 elem appuye strictement plp22p11 ;
+    lpop11 = lop1_180 et lp22p11 ;
+ sinon ;
+    plp22p11 = v_cont2 poin droi p2_180 p7 crit ;
+    lp22p11 = v_cont2 elem appuye strictement plp22p11 ;
+    lpop11 = lop1_180 et lp12p22 et lp22p11 ;
+ finsi ;
+*                                                                               
+vsort = vtot et lpop11 et lpop8  ;
+*trac vsort ;                     
+*                                                                               
+elim vsort crit ;                                                               
+*                                                                               
+* Symetrie pour les cas axisymetriques (fissure int. ou ext.)                   
+* -----------------------------------------------------------                   
+si (ega levre 'int') ;                                                          
+ vsort = depl vsort syme droi o p1_90 ;                                         
+finsi ;                                                                         
+*                                                                               
+* Deplacement de l'origine du repere                                            
+* ----------------------------------                                            
+vsort = depl vsort plus (dx 0) ;                                                
+*  
+lsup = l56 et l45;
+*  
+trac vsort ;                     
+                                                                           
+finproc vtot lpop8 lpop11 l67 l34 lsup o ;                           
+*                                                                               
+**********************************************************                      
+*  FIN DE LA PROCEDURE                                                          
+**********************************************************                      
+*                                                                               
+opti dime 2 elem qua8 echo 0 ;                                                  
+*                                                                               
+* CREATION DU MAILLAGE D'UNE FISSURE 2D                                         
+* -------------------------------------                                         
+*                                                                               
+* parametres:                                                                   
+*                                                                               
+* rt        rayon du maillage rayonnant                                         
+* rt1       coefficient multiplicateur de rt permettant de definir              
+*           l'epaisseur des couronnes de deraffinement des secteurs             
+* rt2       coefficient multiplicateur de rt permettant de definir              
+*           l'epaisseur de la couronne de transition du maillage                
+*           rayonnant au maillage dalle                                         
+* nc        nombre de couronnes                                                 
+* ns        nombre de secteurs sur 90 degres (multiple de 2)                    
+* eps       demi-angle d'ouverture de la fissure (degres)                       
+* nbcour    nombre de couronnes de deraffinement (0 ou 1 ou 2)                  
+* l_lev     longueur de la levre de la fissure                                  
+* l_lig     longueur du ligament                                                
+* l_la      largeur du domaine                                                  
+* nlev      nombre d'elements de prolongation le long de la levre               
+* nlig      nombre d'elements de prolongation le long du ligament               
+* nla       nombre d'elements de prolongation le long de la largeur             
+* dx        position suivant x du centre du repere par rapport au fond          
+*           de fissure (dx = 0 : centre du repere au fond de fissure)           
+* levre     Pour les cas axisymetriques: fissure debouchante a                  
+*           l'exterieur (levre = 'ext' par defaut) ou fissure                   
+*           debouchante a l'interieur (levre = 'int')                           
+*                                                                               
+
+
+***********************************************
+debp CYLIND rint rext a h sf LFIS LINF sfbsup sfbdro sfbgau;
+***********************************************
+* procedure de maillage du cylindre
+*********************************
+*
+xf12 = coor 1 (sfbgau point initial);
+list xf12;
+list pf0;
+*
+*
+* on complete a gauche du bloc jusqu'a rint
+*
+v = (xf12-rint) 0.;
+si (a < 0.5);
+  nela = partenti ((xf12-rint)*30);
+ sp = sfbgau tran (-1*v) (-1*nela) dini 0.06 dfin 0.08;
+sinon;
+  nela = partenti ((xf12-rint)*5);
+  sp = sfbgau tran (-1*v) (-1*nela) dini 0.3 dfin 0.4;
+finsi;
+mess 'on complete a droite ';
+list v;list nela;
+c3 = sp cote 3;
+c4 = sp cote 4;
+c2 = sp cote 2;
+sf = sf et sp;
+lf104 = sfbsup et (inve c2);
+p4 = c2 poin fina;
+LINT =  c3;
+trac sf;
+LFIS = (inve c4) et LFIS;
+*
+*
+*
+*...........................................
+* zone de derafinement autour de la fissure
+*...........................................
+*
+* prolongement a droite jusqu'a rint+5.25
+* prolongement en hauteur jusqu'a mm
+*...........................................
+*hd = 2.6;
+*PT3 = (rint+a+1.8) 0.;
+*PT4 = (rint+a+2.3) 0.;
+*PT5 = (rint+a+3.3) 0.;
+*PT6 = (rint+a+4.25) 0.;
+*p5 = rint hd.;
+*pd =(rint+a+4.25) hd.;
+*pf9 = sfbdro point final;
+
+hd = 2.6;
+PT3 = (rint+a+1.) 0.;
+PT4 = (rint+a+1.5) 0.;
+PT5 = (rint+a+2.5) 0.;
+PT6 = (rint+a+3.5) 0.;
+p5 = rint hd.;
+pd =(rint+a+3.5) hd.;
+pf9 = sfbdro point final;
+ 
+list pf9; 
+
+si (a < 0.5);
+  lf9t3 = droit pf9 PT3 (-8) dini 0.01 dfin 0.08;
+  lt34 = droit PT3 PT4 (-2) dini 0.08 dfin 0.1;
+  lt45 = droit PT4 PT5 (-3) dini 0.1 dfin 0.2;
+  lt56 = droit PT5 PT6 (-2) dini 0.2 dfin 0.4;
+sinon;
+  lf9t3 = droit pf9 PT3 (-4) dini 0.06 dfin 0.08;
+  lt34 = droit PT3 PT4 (-2) dini 0.08 dfin 0.1;
+  lt45 = droit PT4 PT5 (-3) dini 0.1 dfin 0.2;
+  lt56 = droit PT5 PT6 (-2) dini 0.2 dfin 0.4;
+finsi;
+l1 = lf9t3 et lt34 et lt45 et lt56 ;
+
+*
+*
+nel1 = partenti (((nela+6)*2.6)/(a+3.5+2.6));
+nel2 = nela+6-nel1;
+list nel1;list nel2;
+*ld5 = droit pd p5 (nela+1);
+*lt6d = droit PT6 pd 5;
+ld5 = droit pd p5 nel2;
+lt6d = droit PT6 pd nel1;
+
+
+l2 = lt6d et ld5;
+
+si (a < 0.5);
+  l3 = droit p5 p4 (-15) dini 0.5 dfin 0.5; 
+sinon;
+  l3 = droit p5 p4 (-11) dini 0.5 dfin 0.5; 
+finsi;
+l4 = (inve lf104) et sfbdro;
+
+*trac (l1 et l2 et l3 et l4 et sf);
+sp = l1 l2 l3 l4 dall plan;
+st = sf et sp;
+*trac st;
+* recuperation d'elements
+LINF = LINF et l1;
+LINT = LINT et l3;
+
+
+*************************************************
+*maillage de la zone à droite de la fissure 
+**************************************************
+
+v = (rext-(coor 1 PT6)) 0.;
+nel = partenti (rext-(coor 1 PT6));
+sp = lt6d tran v (-1*nel) dini 0.5 dfin 2.;
+c2 = sp cote 2;
+c3 = sp cote 3;
+c4 = sp cote 4;
+
+st = sp et st;
+sp1 = st ;
+* recuperation d'elements
+p1 = c3 poin fina;
+PT7 = p1;
+LEXT = c3;
+LINF = LINF et c4; 
+
+*************************************************
+*maillage de la zone superieure
+**************************************************
+**************************************************
+* prolongement jusqu'a 48mm
+
+h1 = h/2. - 4.6 ;
+v = 0. h1;
+
+l1 = (inve c2) et ld5;
+nb1 = enti (12.*h/100.) ;
+sp = l1 tran v (-1*nb1) dini 1. dfin 10.;
+c3 = sp cote 3;
+c2 = sp cote 2;
+c4 = sp cote 4;
+
+st = sp et st;
+sp2 = sp ;
+*
+LINT = LINT et (inve c2);
+LEXT = LEXT et c4;
+
+**************************************************
+* prolongement jusqu'a 100mm
+
+h2 = h/2. ;
+v = 0. h2;
+
+l1 = c3;
+nb2 = enti (8.*h/100.) ;
+sp = l1 tran v nb2;
+c3 = sp cote 3;
+c2 = sp cote 2;
+c4 = sp cote 4;
+
+st = sp et st;
+sp3 = sp ;
+trac (sp1 et (sp2 coul rouge) et (sp3 coul bleu));
+elim st 0.00001;
+
+* recuperation
+*
+SCYL = st;
+titr 'probleme';
+trac scyl;
+LINT = LINT et  c4;
+LEXT = LEXT et (inve c2);
+LSUP = c3;
+PSUP = c3 point init;
+*
+* symetrie par rapport a l'axe x
+*
+lfis = inve lfis;
+epsi = 0.000001;
+SCYLS = SCYL  syme droit (0. 0.) (1. 0.) ;
+LINTS = LINT   syme droit (0. 0.) (1. 0.) ;
+LEXTS = LEXT   syme droit (0. 0.) (1. 0.) ;
+LFISI = LFIS   syme droit (0. 0.) (1. 0.) ;
+ELIM (SCYLS ET LINF) epsi;
+ELIM (SCYLS ET LFISI) epsi;
+LEXT = LEXT ET LEXTS;
+ELIM (SCYLS ET LINTS) epsi;
+LINT = LINT ET LINTS;
+ELIM (SCYL ET LEXT) epsi;
+ELIM (SCYLS ET LEXT) epsi;
+SCYL = SCYL ET SCYLS;
+*trac (scyl);
+finp SCYL  LINT LEXT LINF LSUP LFIS LFISI PF0 PSUP;
+*
+************************************************************
+* Parametres de sortie de la procedure :                   *
+* SCYL : maillage complet du cylindre                      *
+* LINT : segment de la surface interieure                  *
+* LEXT : segment de la surface exterieure                  *
+* LINF : segment inferieur de la tranche hors fissure      *
+* LSUP : segment superieur de la tranche                   *
+* LFIS : fissure                                           *
+* PF0 = pointe de fissure                                  *
+************************************************************
+*
+* DEBUT PARAMETRES UTILISATEUR                                                  
+*
+* bloc fissure
+*
+*** rayon interieur du cylindre
+rint=128. ;  
+*** rayon exterieur du cylindre
+rext=200. ; 
+*** profondeur de fissure
+a=15.0 ;  
+*** demi-hauteur du cylindre (H> 5 ?)
+h=100. ;
+*
+si (a < 0.5);
+  rt       = 0.05;
+  rt1      = 0.3;
+  rt2      = 0.2;
+sinon;
+  rt       = 0.2;
+  rt1      = 0.2;
+  rt2      = 0.15;
+finsi;
+eps      = 0.;
+* pour le cas a = 0.1
+nc       = 12;
+ns       = 16;
+*nc       = 6;
+*ns       = 8;
+nbcour   = 1;
+dx       = rint+a;
+levre    = 'int';
+*  
+* FIN PARAMETRES UTILISATEUR                                                    
+*                                                                               
+vtot  LFIS LINF ldro lgau lsup PF0                                  
+= fiss_2d  eps nc ns rt rt1                                     
+        nbcour rt2  levre dx ;                                     
+
+titr 'bloc fissure - ligament';
+*trac (vtot et (LINF coul jaune));
+titr 'bloc fissure - levre';
+*trac (vtot et (LFIS coul jaune));
+titr 'bloc fissure - cote droit';
+*trac (vtot et (ldro coul jaune));
+titr 'bloc fissure - cote gauche';
+*trac (vtot et (lgau coul jaune));
+titr 'bloc fissure - cote superieur';
+*trac (vtot et (lsup coul jaune));
+titr 'construction cylindre';
+
+SCYL  LINT LEXT LINF LSUP LFIS LFISI  PF0 PSUP
+= CYLIND rint rext a h vtot LFIS LINF lsup ldro lgau;
+*
+
+LINF2 = LSUP   syme droit (0. 0.) (1. 0.) ;
+SCYL = SCYL et LINF2 et LSUP;
+elim SCYL LINF2 0.00001;
+
+*titre ' Cylindre 2D, prof.defaut:'a'mm '(nbno SCYL)'noeuds' 
+*(nbel SCYL)'elements';
+*trac (SCYL );
+linf = linf coul vert;
+trac (scyl et linf);
+lfis  = lfis coul rouge;
+lfisi = lfisi coul vert;
+*trac ( lfis et lfisi et scyl);
+
+opti donn 5;
+
+p1 = entier a;
+p2 = entier ((a - (entier a))*100);
+list p1;list p2;
+
+fich = '/home/vivan/uaster/POST_RCCM/mail_rccm.mgib' ;
+
+opti sauv format fich;
+sauv format SCYL;
+
+fin;

@@ -1,0 +1,758 @@
+*****************************************************************
+*****************************************************************
+**                                                             **
+**          Procedure TUBEFIS.dgibi                            ** 
+**          MAILLAGE PARAMETRE D'UN TUBE FISSURE               **
+**          FISSURE AXISYMETRIQUE                              **
+**                                                             **
+**                                                             **
+**          Version 1.0 du 7/10/03                             **
+**                                                             **
+**          (CS SI Clamart) J. RIVIERE                         **
+**	     (EDF/DRD/AMA/T65) P. MASSIN                         **
+*****************************************************************
+*****************************************************************
+************************************************************************
+*LEGENDE SUR LES PARAMETRES D'ENTREE DE LA PROCEDURE
+************************************************************************
+*
+* posaxfis : position axiale (en m) de la fissure 
+*            par rapport au centre du tube 
+*
+* proffis : profondeur de la fissure (en m)
+*    (comprise entre 0.050 et 0.250 m)
+*    par rapport a la cote 0.480
+*
+* nt : nombre de tranches le long de la moitie du fond de fissure
+*    (compris entre 16 et 32)
+*    remarque : une meme valeur de nt ne donnera pas le meme raffinement
+*    suivant la profondeur et l'excentricite de la fissure. Le choix de
+*    nt depend donc de ces parametres
+*
+*
+*
+*
+************************************************************************
+
+************************************************************************
+*LEGENDE SUR LES PARAMETRES DE SORTIE DE LA PROCEDURE
+************************************************************************
+*
+* VOLUMES :
+* vtube    : tube 
+* vtube_p  : portion du rotor cote positif du plan de fissure 
+* vtube_n  : portion du rotor cote negatif du plan de fissure
+* vtore    : tore
+
+* SURFACES :
+* slat_pos  : surface laterale du tube cote positif
+* slat_neg  : surface laterale du tube cote negatif
+* fissure_p    : elem de la levre de la fiss. cote positif
+* fissure_n    : elem de la levre de la fiss. cote negatif
+*
+* LIGNES :
+* fonfiss   : ligne du fond de fissure
+*
+* NOEUDS :
+* nobloc   : lieu du barycentre de slat_neg ;
+* notors   : lieu du barycentre de slat_pos ;
+* pfon_ini : noeud initial du fond de fissure
+* pfon_fin : noeud final du fond de fissure
+*
+*
+************************************************************************
+MESS 'LECTURE DES DONNEES' ;
+************************************************************************
+*
+*opti echo 0 ;
+opti dime 3 elem cub8 ;
+*opti donn 5;
+*
+* choix du repertoire et du fichier de sauvegarde du maillage
+* ------------------------------------------------------------
+* Si les lignes suivantes sont en commentaire et qu'aucun nom de fichier
+* n'est specifie, le maillage sera cree dans un fichier situe dans le
+* repertoire courant et nomme fort.8
+*
+opti sauv form 'ssnv166b.mgib';
+*
+* visualisation des objets de sortie si visu = 1
+* -----------------------------------------------
+visu = 0 ;
+debug = 0 ;
+*
+* choix des valeurs des parametres de la procedure principale
+* ------------------------------------------------------------
+posaxfis = 0. ;
+proffis  = 0.100 ;
+nt = 40 ;
+
+
+* diametre du tube
+* ----------------
+diamtube = 1.0 ;
+
+* Longueur du tube
+* ----------------
+longtube = 5.0 ;
+
+
+
+************************************************************************
+************************************************************************
+*DEFINITION DES PROCEDURES UTILITAIRES
+************************************************************************
+************************************************************************
+*
+*================================================================
+* CREATION D'UN VOLUME PAR EXTRUSION D'UNE SURFACE LE LONG D'UNE
+* LIGNE GENERATRICE EN CONSERVANT LES SECTIONS PERPENDICUALIRES
+* A LA LIGNE
+*================================================================
+debproc volugen2 ss*maillage lgen*maillage ;
+*
+nel = nbel lgen ;
+ii = 0 ;
+repe bclvv (nel - 1) ;
+  ii = ii + 1 ;
+  p1 = lgen poin ii ;
+  p2 = lgen poin (ii+1) ;
+  dir = p2 moins p1 ;
+*
+  pplan1 = p2 ;
+  pplan2 = p2 plus ox ;
+  si (ega ii nel) ;
+    pplan3 = p2 plus oz ;
+  sinon ;
+    p3 = lgen poin (ii+2) ;
+    dtan = p3 moins p1 ;
+    pplan3 = p2 plus (0. (coor 3 dtan) (-1.*(coor 2 dtan))) ;
+  finsi ;  
+*
+  si (ega ii 1) ;
+    s1 = ss ;
+    s2 = s1 proj dir plan pplan1 pplan2 pplan3 ;
+    vv = s1 volu 1 s2 ;
+  sinon ;
+    s1 = s2 ;
+    s2 = s1 proj dir plan pplan1 pplan2 pplan3 ;
+    vv = vv et (s1 volu 1 s2) ;
+  finsi ;
+fin bclvv ;
+vv = vv et (volu 1 s2 ss) ;
+*
+finproc vv ;
+
+*================================================================
+* CREATION D'UNE SURFACE PAR EXTRUSION D'UNE LIGNE LE LONG D'UNE
+* LIGNE GENERATRICE EN CONSERVANT LES SECTIONS PERPENDICUALIRES
+* A LA LIGNE GENERATRICE
+*================================================================
+debproc surfgen2 ll*maillage lgen*maillage ;
+*
+nel = nbel lgen ;
+ii = 0 ;
+repe bclss (nel - 1) ;
+  ii = ii + 1 ;
+  p1 = lgen poin ii ;
+  p2 = lgen poin (ii+1) ;
+  dir = p2 moins p1 ;
+*
+  pplan1 = p2 ;
+  pplan2 = p2 plus ox ;
+  si (ega ii nel) ;
+    pplan3 = p2 plus oz ;
+  sinon ;
+    p3 = lgen poin (ii+2) ;
+    dtan = p3 moins p1 ;
+    pplan3 = p2 plus (0. (coor 3 dtan) (-1.*(coor 2 dtan))) ;
+  finsi ;  
+*
+  si (ega ii 1) ;
+    l1 = ll ;
+    l2 = l1 proj dir plan pplan1 pplan2 pplan3 ;
+    ss = l1 regl 1 l2 ;
+    ligne = droit 1 (l1 poin init) (l2 poin init) ;
+    ligni = droit 1 (l1 poin fina) (l2 poin fina) ;
+  sinon ;
+    l1 = l2 ;
+    l2 = l1 proj dir plan pplan1 pplan2 pplan3 ;
+    ss = ss et (l1 regl 1 l2) ;
+    ligne = ligne et (droit 1 (l1 poin init) (l2 poin init)) ;
+    ligni = ligni et (droit 1 (l1 poin fina) (l2 poin fina)) ;
+  finsi ;
+fin bclss ;
+ss = ss et (regle 1 l2 ll) ;
+ligne = ligne et (droit 1 (l2 poin init) (ll poin init)) ;
+ligni = ligni et (droit 1 (l2 poin fina) (ll poin fina)) ;
+*
+finproc ss ligni ligne ;
+*
+
+************************************************************************
+************************************************************************
+*** DEBUT DE LA PROCEDURE PRINCIPALE
+************************************************************************
+************************************************************************
+*
+debproc TUBEFIS ;
+*
+* ====================================================
+MESS ' DETERMINATION DE PARAMETRES GENERAUX ' ;
+* ====================================================
+*
+* Initialisation de parametres fixes
+* ----------------------------------
+crit = 0.00001 ;
+critouv = 50. * crit ;
+oo = 0. 0. 0. ;
+ox = 1. 0. 0. ;
+oy = 0. 1. 0. ;
+oz = 0. 0. 1. ;
+oeilx = (100. 0. 0.) ;
+oeily = (0. 100. 0.) ;
+oeilz = (0. 0. 100.) ;
+oeil = (100. 100. 100.) ;
+pi = 3.1415927 ;
+raytube = diamtube / 2. ;
+ncirc    = nt / 4 ;
+
+
+
+
+*   MAILLAGE DE LA SECTION TRANSVERSE RAYONNANTE
+*   ============================================
+
+* point de fond de fissure
+* ------------------------
+fond = 0. 0. 0.;
+*
+*   Definition des parametres de maillages de la section
+*   ----------------------------------------------------
+* Rayon du tore (fourchette: 0.5E-03 -> 2.5E-03)
+rc0 = 10.E-03 ;
+* premiere couronne 
+rc1 = 0.4 ;
+* deuxieme couronne
+rc2 = 0.3 ;
+* Nombre de couronne (fourchette: 2 -> 6)
+nc = 4 ;
+* Nombre de secteur sur 90 degre (fourchette: 2 -> 9)
+ns = 4 ;
+* Nombre de secteur sur 90 degre au niveau des couronnes de deraffinement (2 ou 4) ;
+nsdt = 2 ;
+
+* Nombre de couronnes de deraffinement 
+* ------------------------------------
+ndt = 2 ;
+
+* rayons du tore 
+* --------------
+* troisieme couronne
+rc3 = 0.8;
+rtore = rc0 ;
+ray_1 = rtore + (rtore * rc1) ;
+ray_2 = ray_1 + (rtore * rc2) ;
+ray_3 = ray_2 + (rtore * rc3) ;
+d1tore = rtore / nc;
+
+
+* point de fond de fissure
+* ------------------------
+fond = 0. 0. 0.;
+*
+
+* definition  des points
+* ----------------------
+pctoint1 = fond plus (0. 0. d1tore);
+pctoint2 = fond plus (d1tore 0. 0.);
+pctoext1 = fond plus (0. 0. rtore);
+pctoext2 = fond plus (rtore 0. 0.);
+pext1 = fond plus (0. 0. ray_1);
+pext2 = fond plus (ray_1 0. 0.);
+pext1_2 = fond plus (ray_1 0. ray_1);
+pext3 = fond plus (0. 0. ray_2);
+pext4 = fond plus (ray_2 0. 0.);
+pext3_4 = fond plus (ray_2 0. ray_2);
+SI (ndt EGA 2) ;
+   pext5 = fond plus (0. 0. ray_3);
+   psup = fond plus (ray_3 0. 0.);
+   pext5_6 = fond plus (ray_3 0. ray_3);
+FINSI ;
+*
+
+*  Construction des lignes
+*  -----------------------
+ctoreint = cerc ns pctoint1 fond pctoint2;
+ctoreext = cerc ns pctoext1 fond pctoext2;
+ctoreder = cerc 2 pext1 fond pext2; 
+lext3 = droi pext3 1 pext3_4;
+lext4 = droi pext3_4 1 pext4; 
+lext3_4 = lext3 et lext4;
+SI (ndt EGA 2) ;
+   lext5 = droi pext5 1 pext5_6;
+   lext6 = droi pext5_6 1 psup;
+   lext5_6 = lext5 et lext6;
+FINSI ;
+*
+
+*  Construction des surfaces
+*  -------------------------
+storein1 = cout fond ctoreint;
+storeex1 = ctoreint regl (nc - 1) ctoreext;
+sext1 = cout ctoreext ctoreder; 
+sext2 = regl ctoreder 1 lext3_4;
+store_1 = storein1 et storeex1 ;
+store_c1 = sext1 et sext2 ;
+SI (ndt EGA 2) ;
+   sext3 = regl lext3_4 1 lext5_6;
+   store_1 = store_1 
+        et (store_1 syme plan fond pext5 (fond plus oy));
+   store_c1 = store_c1 
+        et (store_c1 syme plan fond pext5 (fond plus oy));
+   store_2 = sext3 
+        et (sext3 syme plan fond pext5 (fond plus oy));
+FINSI ;
+pext3_4s = pext3_4 syme plan fond pext4 (fond plus oy);
+pext5_6s = pext5_6 syme plan fond pext4 (fond plus oy);
+Store_3 = Store_1 syme plan fond pext4 (fond plus oy);
+Store_c3 = Store_c1 syme plan fond pext4 (fond plus oy);
+Store_4 = Store_2 syme plan fond pext4 (fond plus oy);
+
+elim crit ((0. 0. 0.) et pext3_4s) store_1 ;
+elim crit ((0. 0. 0.) et pext5_6s) store_2 ;
+elim crit store_1 ;
+elim crit store_c1 ;
+elim crit store_c1 store_1 ;
+elim crit store_2 ;
+elim crit store_c1 store_2 ;
+elim crit store_3 ;
+elim crit store_c3 ;
+elim crit store_c3 store_3 ;
+elim crit store_4 ;
+elim crit store_c3 store_4 ;
+  
+
+* Constuction des lignes de la levre et du ligament de la fissure
+* ----------------------------------------------------------------
+pplign = (cont (store_1 et store_c1 et store_2)) 
+           poin plan oo ox oy crit ;
+
+xxlign = coor 1 pplign ;
+pplevr = xxlign poin infe ((coor 1 fond) + crit) ;
+ppliga = xxlign poin supe ((coor 1 fond) - crit) ;
+
+llevre_p = (cont (store_1 et store_c1 et store_2)) 
+            elem appui strict pplevr ;
+ordo llevre_p ;
+
+lligam = (cont (store_1 et store_c1 et store_2))  
+            elem appui strict ppliga ;
+ordo lligam ;
+
+pplign = (cont (store_3 et store_c3 et store_4)) 
+           poin plan oo ox oy crit ;
+xxlign = coor 1 pplign ;
+pplevr = xxlign poin infe ((coor 1 fond) + crit) ;
+llevre_n = (cont (store_3 et store_c3 et store_4)) 
+             elem appui strict pplevr ;
+ordo llevre_n ;
+
+store = store_1 et store_3 ;
+store_c = store_c1 et store_2 et store_c3 et store_4 ;
+store_cp = store_c1 et store_2 ;
+store_cn = store_c3 et store_4 ;
+store_p = store_1 ;
+store_n = store_3 ;
+elim crit (store et store_c) lligam ;
+
+
+ray_tore = norm (fond moins pext5) ;
+plevre_p = ((llevre_p chan poi1) coor 1) poin infe (coor 1 fond) ;
+plevre_n = ((llevre_n chan poi1) coor 1) poin infe (coor 1 fond) ;
+*pligam = ((pligam chan poi1) coor 1) poin supe (coor 1 fond) ;
+*trac ((store_1 coul roug) et (store_2 coul vert) 
+*    et (store_3 coul bleu) et (store_4 coul rose));
+
+*trac ((((store_1 coul roug) et (store_2 coul vert) 
+*    et (store_3 coul bleu) et (store_4 coul jaun)) coul defa)
+*  et (llevre_n coul roug) et (lligam coul vert)) ;
+*
+
+*   CONSTRUCTION DU FOND DE FISSURE CIRCULAIRE
+*   ==========================================
+centfond = oo ;
+Pfond1 = centfond plus ((raytube - proffis) * oy) ;
+Pfond2 = centfond plus ((raytube - proffis) * oz) ;
+Pfond3 = centfond plus ((proffis - raytube) * oy) ;
+Pfond4 = centfond plus ((proffis - raytube) * oz) ;
+
+fonfiss = (cerc ncirc Pfond1 centfond Pfond2)
+      et (cerc ncirc Pfond2 centfond Pfond3)
+      et (cerc ncirc Pfond3 centfond Pfond4)
+      et (cerc ncirc Pfond4 centfond Pfond1) ;
+
+*  CONSTRUCTION DU BLOC FISSURE
+*  ============================
+*   Positionnement de la section 
+*   ----------------------------
+depl (store et store_c) plus (Pfond1 moins fond) ;
+depl (store et store_c) tour (90.) Pfond1 (Pfond1 plus oy) ;
+depl (store et store_c) tour (-90.) Pfond1 (Pfond1 plus ox) ;
+
+* Ouverture de la fissure
+* -----------------------
+depl plevre_p  plus (critouv * ox) ;
+
+
+* Creation des volumes composant le bloc fissure
+* ----------------------------------------------
+vtore_p = volugen2 store_p fonfiss ;
+vtore_n = volugen2 store_n fonfiss ;
+vtore_cp = volugen2 store_cp fonfiss ;
+vtore_cn = volugen2 store_cn fonfiss ;
+
+* Creation des levres
+* -------------------
+slev_p llev_pi llev_pe = surfgen2 llevre_p fonfiss ;
+slev_n llev_ni llev_ne= surfgen2 llevre_n fonfiss ;
+sligam lligae lligai= surfgen2 lligam fonfiss ;
+
+elim crit vtore_n slev_n ;
+elim crit vtore_p slev_p ;
+elim crit vtore_n sligam ;
+elim crit vtore_P sligam ;
+elim crit vtore_cn slev_n ;
+elim crit vtore_cp slev_p ;
+elim crit vtore_cn sligam ;
+elim crit vtore_cP sligam ;
+vtore = vtore_p et vtore_n ; 
+vtore_c = vtore_cp et vtore_cn ; 
+
+elim crit fonfiss vtore ;
+
+*  MAILLAGE 3D DES VOLUMES COMPLEMENTAIRES
+*  =======================================
+
+*   Surface externe de la levre cote negatif
+*   ----------------------------------------
+
+*  defnition des points
+*  - - - - - - - - - - -
+p1lev_e = llev_ni poin proc fond ;
+p2lev_e = llev_ni poin proc 
+         (p1lev_e tour 90. centfond (centfond plus ox)) ;
+p3lev_e = llev_ni poin proc 
+         (p2lev_e tour 90. centfond (centfond plus ox)) ;
+p4lev_e = llev_ni poin proc 
+         (p3lev_e tour 90. centfond (centfond plus ox)) ;
+p1lev_r = p1lev_e homo 1.1 centfond ;
+p2lev_r = p2lev_e homo 1.1 centfond ;
+p3lev_r = p3lev_e homo 1.1 centfond ;
+p4lev_r = p4lev_e homo 1.1 centfond ;
+
+p1lev_e = p1lev_e proj coni centfond cyli centfond 
+          (centfond plus ox) (centfond plus (raytube * oy)) ;
+p2lev_e = p2lev_e proj coni centfond cyli centfond 
+          (centfond plus ox) (centfond plus (raytube * oy)) ;
+p3lev_e = p3lev_e proj coni centfond cyli centfond 
+          (centfond plus ox) (centfond plus (raytube * oy)) ;
+p4lev_e = p4lev_e proj coni centfond cyli centfond 
+          (centfond plus ox) (centfond plus (raytube * oy)) ;
+llev_r = (CERC (ncirc / 2) p1lev_r centfond p2lev_r)
+      et (CERC (ncirc / 2) p2lev_r centfond p3lev_r)
+      et (CERC (ncirc / 2) p3lev_r centfond p4lev_r)
+      et (CERC (ncirc / 2) p4lev_r centfond p1lev_r) ;
+
+llev_ex = (CERC (ncirc / 2) p1lev_e centfond p2lev_e)
+      et (CERC (ncirc / 2) p2lev_e centfond p3lev_e)
+      et (CERC (ncirc / 2) p3lev_e centfond p4lev_e)
+      et (CERC (ncirc / 2) p4lev_e centfond p1lev_e) ;
+
+Nlev = ENTIER ((norm ((llev_r poin 1) moins (llev_ex poin 1))) /
+               (norm ((llev_r poin 1) moins (llev_r poin 2)))) ; 
+slev_ne = (cout llev_ni llev_r)
+       et (regle Nlev llev_ex llev_r) ;
+
+*   Volume externe cote negatif
+*   ---------------------------
+Vext_n = slev_ne volu 1 trans (((-1.) * ray_tore) * ox) ;
+
+elim crit Vext_n Vtore_cn ;
+
+*   Surface externe de la levre cote positif
+*   ----------------------------------------
+slev_pe = Slev_ne plus (critouv * ox) ;
+
+*   Volume externe cote negatif
+*   ---------------------------
+Vext_p = slev_pe volu 1 trans ((ray_tore - critouv) * ox) ;
+
+elim crit Vext_p Vtore_cp ;
+
+*  Surface centrale du tube (maillage en O)
+*  ----------------------------------------
+*   definition des points
+*   - - - - - - - - - - - 
+Pcent1 = lligae poin proc Psup ;
+Pcent2 = lligae poin proc (Pcent1 tour 90. centfond (centfond plus ox));
+Pcent3 = lligae poin proc (Pcent2 tour 90. centfond (centfond plus ox));
+Pcent4 = lligae poin proc (Pcent3 tour 90. centfond (centfond plus ox));
+
+Pcent1r = Pcent1 homo 0.9 centfond ; 
+Pcent2r = Pcent2 homo 0.9 centfond ; 
+Pcent3r = Pcent3 homo 0.9 centfond ; 
+Pcent4r = Pcent4 homo 0.9 centfond ; 
+
+Pcent5 = Pcent1 homo 0.6 centfond ; 
+Pcent6 = Pcent2 homo 0.6 centfond ; 
+Pcent7 = Pcent3 homo 0.6 centfond ; 
+Pcent8 = Pcent4 homo 0.6 centfond ; 
+
+Lcent1 = lligae COMP Pcent1 Pcent2 ;
+Lcent2 = lligae COMP Pcent2 Pcent3 ;
+Lcent3 = lligae COMP Pcent3 Pcent4 ;
+Lcent4 = lligae COMP Pcent4 Pcent1 ;
+
+Lcent1r = CERC ((nbel Lcent1) / 2) Pcent1r centfond Pcent2r ;
+Lcent2r = CERC ((nbel Lcent2) / 2) Pcent2r centfond Pcent3r ;
+Lcent3r = CERC ((nbel Lcent3) / 2) Pcent3r centfond Pcent4r ;
+Lcent4r = CERC ((nbel Lcent4) / 2) Pcent4r centfond Pcent1r ;
+
+Lcent5 = DROIT (nbel Lcent1r) Pcent5 Pcent6 ;
+Lcent6 = DROIT (nbel Lcent2r) Pcent6 Pcent7 ;
+Lcent7 = DROIT (nbel Lcent3r) Pcent7 Pcent8 ;
+Lcent8 = DROIT (nbel Lcent4r) Pcent8 Pcent5 ;
+
+*  definition des densite
+*  - - - - - - - - - - - -
+Ncent = ENTIER ((norm ((Lcent1r poin 1) moins (Lcent5 poin 1))) /
+               (norm ((Lcent1r poin 1) moins (Lcent1r poin 2)))) ; 
+Ncent = Ncent + 1 ;
+
+Scentube = (cout Lcent1r Lcent1)
+        et (cout Lcent2r Lcent2)
+        et (cout Lcent3r Lcent3)
+        et (cout Lcent4r Lcent4) ;
+Scentube = Scentube 
+        et (REGLE Ncent Lcent1r Lcent5)
+        et (REGLE Ncent Lcent2r Lcent6)
+        et (REGLE Ncent Lcent3r Lcent7)
+        et (REGLE Ncent Lcent4r Lcent8) 
+        et (REGLE (nbel Lcent6) Lcent5 (inve Lcent7)) ;
+
+*  Volume centrale
+*  ---------------
+Vcent_p = Scentube volu trans 1 (ray_tore * ox) ;
+Vcent_n = Scentube volu trans 1(((-1.) * ray_tore) * ox) ;
+elim crit Vcent_p Vtore_cp ;
+elim crit Vcent_n Vtore_cn ;
+
+* Assemblage des volumes;
+Vtube = Vcent_p et Vcent_n et Vext_p et Vext_n et Vtore_c 
+       et  vtore ;
+
+* elimination des noeuds coincident
+* ---------------------------------
+elim crit Vtube ;
+
+
+*  MAILLAGE 3D DES VOLUMES LATERAUX
+*  ================================
+*
+*   Calcul des longueurs des volumes en respect  
+*    la position axiale de la fissure
+long_p = (longtube / 2.) - ray_tore - posaxfis ;
+long_n = (-1.) * ((longtube / 2.) - ray_tore + posaxfis) ;
+ 
+*   Extraction des surfaces laterales du volume
+*   -------------------------------------------
+*     surface laterales cote positif
+*     - - - - - - - - - - - - - - -  
+p1lat_p = centfond plus (ray_tore * ox) ;
+p2lat_p = p1lat_p plus oy ;
+p3lat_p = p1lat_p plus oz ;
+
+pp = (enve vtube) poin plan P1lat_p p2lat_p p3lat_p 
+     (1. * crit) ;
+Slat_p = (enve vtube) elem appui strict pp ; 
+
+*     surface laterales cote negatif
+*     - - - - - - - - - - - - - - -  
+p1lat_n = centfond plus (((-1.) * ray_tore) * ox) ;
+p2lat_n = p1lat_n plus oy ;
+p3lat_n = p1lat_n plus oz ;
+
+pp = (enve vtube) poin plan P1lat_n p2lat_n p3lat_n 
+     (1. * crit) ;
+Slat_n = (enve vtube) elem appui strict pp ; 
+
+*  Maillage des volumes par extrusion
+*  ----------------------------------
+*  definition des densits
+Nvol_p = entier(long_p / 
+  (norm ((llev_ex poin 1) moins (llev_ex poin 2)))) ;
+Nvol_n = entier(long_n / 
+  (norm ((llev_ex poin 1) moins (llev_ex poin 2)))) ;
+Vtube_n = Slat_n volu Nvol_n trans  (long_n * ox) ;
+Slat_neg = Vtube_n face 2 ;
+ 
+Vtube_p = Slat_p volu Nvol_p trans (long_p * ox) ; 
+Slat_pos = Vtube_p face 2 ;
+
+elim crit Vtube_n Vtube ;
+elim crit Vtube_p Vtube ;
+
+*  Assemblage du volume complet
+*  ----------------------------
+Vtube_n = vtube_n et vcent_n et vext_n et vtore_cn ;
+Vtube_p = vtube_p et vcent_p et vext_p et vtore_cp ; 
+vtube = vtube_n et vtube_p ;
+
+* Changememt des elements lineaires du tore en elements quadratiques
+* ===================================================================
+
+*  extraction des surfaces des levres appartenant au tore
+*  - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Slevto_n = Slev_n elem appui strict 
+        (inter (Slev_n chan poi1) (vtore chan poi1)) ;
+Slevto_p = Slev_p elem appui strict 
+        (inter (Slev_p chan poi1) (vtore chan poi1)) ;
+Slev_n = (diff Slev_n Slevto_n) et slev_ne ;
+Slev_p = (diff Slev_p Slevto_p) et slev_pe  ;
+
+elim crit Slev_n Vtube_n ;
+elim crit Slev_p Vtube_p ;
+
+*  points du fond de fissure
+*  --------------------------
+pfon_ini = fonfiss poin init ;
+pfon_fin = fonfiss poin (nbel fonfiss) ;
+elefon = pfon_fin droit 1 pfon_ini;
+fonfiss = diff fonfiss elefon ;
+si (debug ega 1) ;trac fonfiss ;finsi;
+
+*  convertion des elements
+*  - - - - - - - - - - - -
+vtore = (vtore chan quadratique) plus oo ;
+slevto_n = (slevto_n chan quadratique) plus oo ;
+slevto_p = (slevto_p chan quadratique) plus oo ;
+fonfiss = (fonfiss chan quadratique) plus oo ;
+*opti dime 3 elem seg3 ;
+*elefon = pfon_fin droit 1 pfon_ini;
+*fonfiss = diff fonfiss elefon ;
+elim vtore (pfon_ini et pfon_fin) crit ;
+elim crit slevto_n vtore ;
+elim crit slevto_p vtore ;
+elim crit fonfiss vtore ;
+si (debug ega 1) ;trac fonfiss ;finsi;
+
+*  DEFINITION DES GROUPES DE POINTS
+*  ================================
+notore = (enve vtore) chan poi1 ;
+xtore = coor 1 notore ;
+notor_p = xtore poin supe crit ;
+pinter = inter notor_p (slevto_p chan poi1) ;
+notor_p = diff notor_p pinter ;
+notor_n = xtore poin infe crit ;
+pinter = inter notor_n (slevto_n chan poi1) ;
+notor_n = diff notor_n pinter ;
+stmp = (enve vtore) elem appui large notor_p ;
+noquad_p = inter (stmp chan poi1) ( slevto_p chan poi1) ;
+stmp = (enve vtore) elem appui large notor_n ;
+noquad_n = inter (stmp chan poi1) ( slevto_n chan poi1) ;
+*notor_p = notor_p et noquad_p ;
+*notor_n = notor_n et noquad_n ;
+
+*
+* Extraction de la derniere maille de fonfis dans le cas de fissure 
+* ----------------------------------------------------------------
+* dans le cas de fissure non debouchante
+* --------------------------------------
+*  fonfiss = fonfiss comp pfon_ini pfon_fin ;
+* trac fonfiss ;
+* 
+
+*  DEFINITION DES GROUPES DE MAILLES MANQUANTS
+*  ===========================================
+
+*  Surfaces de la levre
+*  --------------------
+fissur_p = slevto_p et slev_p et slev_pe ;
+fissur_n = slevto_n et slev_n et slev_ne ;
+contfisp = slevto_p elem appui strict 
+     (diff (fonfiss chan poi1) (slevto_p chan poi1)) ;
+contfisn = slevto_n elem appui strict 
+     (diff (fonfiss chan poi1) (slevto_n chan poi1)) ;
+     
+si (debug ega 1) ;trac fissur_p;finsi;          
+si (debug ega 1) ;trac slevto_p;finsi;     
+si (debug ega 1) ;trac slev_p;finsi;  
+si (debug ega 1) ;trac slev_pe;finsi;  
+si (debug ega 1) ;trac contfisp;finsi;
+si (debug ega 1) ;trac contfisn ;finsi;
+
+* noeuds de couplages
+* -------------------
+Nobloc = centfond plus ((-1. * longtube / 2.) * ox) ;
+Notors = centfond plus ((longtube / 2.) * ox) ;
+
+* Visualisations de controle
+* ==========================
+si (visu ega 1) ;
+ trac oeil (((enve vtube) coul defa) et (fissur_p coul roug))
+  titre 'ENVE DU TUBE FISSURE';
+ trac oeil ((fissur_p coul defa) et (fonfiss coul roug) et 
+       ((pfon_ini  et pfon_fin) coul bleu)) 
+  titre 'LEVRE ET FOND DE LA FISSURE'; 
+ trac oeil cach ((Vtube_n coul defa) et (fissur_n coul roug)) ;
+ trac cach oeil (Store) 
+  titre 'SECTION RAYONNANTE';
+ trac ((enve vtore) et (notor_p coul roug) 
+       et (notor_n coul bleu))
+   titre 'VTORE NOTOR_P NOTOR_N';
+ trac cach ((VTUBE_P coul defa) et (Slevto_p coul roug) 
+    et (slev_p coul vert))
+   titre 'VTUBE_P SLEVTO_P SLEV_P' ;   
+ 
+   
+finsi ; 
+
+
+* Fermeture de la fissure
+* =======================
+repeter bloc1 (nbno fissur_p) ;
+  pcour = (fissur_p chan poi1) poin &bloc1 ;
+  pdest = (fissur_n chan poi1) poin proc pcour ;
+  depl pcour plus (pdest moins pcour) ;
+fin bloc1 ; 
+
+************************************************************************
+************************************************************************
+*  FIN DE LA PROCEDURE
+*  ====================
+************************************************************************
+************************************************************************
+FINPROC vtube vtube_p vtube_n vtore slat_pos slat_neg  
+        fissur_p fissur_n  slevto_n slevto_p slev_n slev_p
+        contfisp contfisn notor_p notor_n noquad_p noquad_n 
+        fonfiss fonfis nobloc  notors  pfon_ini 
+        pfon_fin ;
+
+* APPEL DE LA PROCEDURE PRINCIPALE
+* ================================
+vtube vtube_p vtube_n vtore slat_pos slat_neg  
+        fissur_p fissur_n  slevto_n slevto_p slev_n slev_p
+        contfisp contfisn notor_p notor_n noquad_p noquad_n 
+        fonfiss fonfis nobloc  notors  pfon_ini 
+        pfon_fin  
+  = TUBEFIS ;
+
+
+* SAUVEGARDE
+* ==========
+sauv form ;
+
+* FIN DU MAILLAGE
+* ===============
+FIN ;

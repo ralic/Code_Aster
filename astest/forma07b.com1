@@ -1,0 +1,103 @@
+
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+#
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# TITRE TP RUPTURE : FISSURE CIRCULAIRE DANS UN MILIEU INFINI
+
+POURSUITE(CODE='OUI',IGNORE_ALARM='CALCULEL2_63')
+
+# MODELIDATION A : X-FEM 3D
+
+# PARTIE 2 : CALCUL MECANIQUE
+
+# CE FICHIER EST LA VERSION CORRIGEE DU 4EME EXERCICE DES TPS
+# POUR LA PREPARATION DES TPS, FOURNIR EGALEMENT UNE VERSION A TROUS DE CE FICHIER :
+# - REMPLACER LE CONTENU DU MOT-CLE FACTEUR DEFI_FISS PAR ...
+
+# lecture du maillage raffine
+MAIL=LIRE_MAILLAGE(FORMAT='MED',UNITE=41)
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('FACE_SUP','FACE_INF')))
+
+MOD=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(GROUP_MA = ('CUBE','FACE_SUP','FACE_INF','FACE_LAT','FACE_AV'),
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = '3D') )
+
+# fissure X-FEM
+FISSX=DEFI_FISS_XFEM(MODELE=MOD,  
+                     DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                  DEMI_GRAND_AXE = 2.,
+                                  DEMI_PETIT_AXE = 2.,
+                                  CENTRE         = (0.,0.,0.),
+                                  VECT_X         = (1.,0.,0.), 
+                                  VECT_Y         = (0.,1.,0.),
+                                  ),
+                     )
+
+# elements X-FEM
+MOX=MODI_MODELE_XFEM(MODELE_IN=MOD,FISSURE=FISSX)
+
+
+MAT=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
+                          NU = 0.3,
+                          ALPHA = 0.) )
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT = 'OUI',
+                            MATER = MAT) )
+
+SYMETR=AFFE_CHAR_MECA(MODELE=MOX,
+                      DDL_IMPO= (_F(GROUP_MA='FACE_AV', DY=0.0),
+                                 _F(GROUP_MA='FACE_LAT',DX=0.0),
+                                 _F(GROUP_NO='D',DZ=0.0,),)
+                      )           
+
+PRESSION=AFFE_CHAR_MECA(MODELE=MOX,
+                        PRES_REP=_F(GROUP_MA = ('FACE_SUP','FACE_INF'),
+                                    PRES = -1.E6), )
+
+RESU=MECA_STATIQUE(MODELE=MOX,
+                   CHAM_MATER=CHMAT,              
+                   EXCIT=(_F(CHARGE=SYMETR,),
+                          _F(CHARGE=PRESSION,),),              
+                   )
+
+#----------------------------------------------------------------------
+#                       POST-TRAITEMENT VISU
+#----------------------------------------------------------------------
+
+# uniquement pour la visu !
+MA_VISU=POST_MAIL_XFEM(MODELE=MOX)
+
+# uniquement pour la visu !
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),)
+
+# uniquement pour la visu !
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU= MOD_VISU,
+                        RESULTAT=RESU)
+
+RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
+                    RESULTAT=RES_XFEM,
+                    CRITERES=('SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU',),);
+
+IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RES_XFEM))
+
+FIN()

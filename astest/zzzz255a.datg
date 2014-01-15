@@ -1,0 +1,42 @@
+opti dime 3 ;
+opti elem CUB8 ;
+crit = 0.001 ;
+
+* On procede a chaque fois en 2 temps
+* pour avoir exactement le point (0. 0. 0.)
+* dans le volume
+
+A = (-500. -500.0 -50.0) ;
+O = (0. -500.0 -50.0) ;
+B = (500. -500.0 -50.0) ;
+AO = droi 30 A O ;
+OB = droi 30 O B ;
+AB = AO et OB ;
+elim AB crit ;
+surf1 = AB TRAN 30 (0.0 500.0 0.0);
+CD = COTE (3) surf1 ;
+surf2 = CD TRAN 30 (0.0 500.0 0.0);
+surft = surf1 et surf2 ;
+av = volu 3 surft TRAN (0.0 0.0 50.0);
+fac_mil = FACE (2) av ;
+ar = volu 3 fac_mil TRAN (0.0 0.0 50.0);
+all = av et ar ;
+
+C = (500. 500.0 -50.0) ; 
+D = (-500. 500.0 -50.0) ;
+E = (-500. 500.0 50.0) ; 
+F = (500. 500.0 50.0) ;
+G = (500. -500.0 50.0) ; 
+H = (-500. -500.0 50.0) ;
+
+OUBL O; OUBL AO; OUBL AB; OUBL AB; OUBL OB; OUBL CD; 
+OUBL surf1 ; OUBL surf2 ; OUBL surft ;
+OUBL av ; OUBL ar ; OUBL fac_mil ;
+
+all = all et C et D et E et F et G et H ;
+
+elim all crit ;
+trac all cach;
+
+OPTI SAUV 'FORMAT' 'zzzz255c_moyen.mgib' ;
+sauv format (ALL) ;
