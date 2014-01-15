@@ -47,6 +47,15 @@ Ces fichiers n'ont pas de sens lors d'un nouveau calcul (DEBUT)."""),
   Un nom de concept intermédiaire doit commencer par '.' ou '_' et non :  %(k1)s
 """),
 
+10 : { 'message' : _(u"""
+Aucune commande n'est exécutée. Seule la syntaxe est vérifiée.
+"""), 'flags' : 'DECORATED',
+},
+
+11 : _(u"""
+La vérification de syntaxe seule n'est pas disponible en mode PAR_LOT='NON'.
+"""),
+
 12: _(u"""
   Exécution de JEVEUX en mode DEBUG
 """),

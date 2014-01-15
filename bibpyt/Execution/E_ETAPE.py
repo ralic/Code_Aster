@@ -229,6 +229,8 @@ class ETAPE:
         self.parent.cr.add(cr)
         raise EOFError
 
+      if self.jdc.syntax_check():
+          return
       self.Build()
       try:
          self.Exec()

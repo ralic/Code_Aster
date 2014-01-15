@@ -63,6 +63,7 @@ class JDC:
           setattr(self, attr, 0)
       # à part car pas de type entier
       self._sign = None
+      self._syntax_check = None
       self._poursuite = False
 
    def Exec(self):
@@ -441,6 +442,15 @@ class JDC:
            traceback.print_exc()
        #print "#DBG signature of", base, "at", self.jeveux_sysaddr, ':', self._sign
        return self._sign
+
+   def set_syntax_check(self, value):
+       """Positionne le booléen qui dit si on est en mode vérification
+       de syntaxe"""
+       self._syntax_check = value
+
+   def syntax_check(self):
+       """Retourne True si on est en mode vérification de syntaxe"""
+       return self._syntax_check
 
    def set_poursuite(self, value):
        """Positionne le booléen qui dit si on est en poursuite ou non"""

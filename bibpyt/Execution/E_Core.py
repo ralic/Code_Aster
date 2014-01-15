@@ -132,7 +132,7 @@ class CoreOptions(object):
         parser.add_option('--totalview', dest='totalview',
             action='store_true', default=False,
             help="required to run Code_Aster through the Totalview debugger")
-        parser.add_option('--verif', dest='verif',
+        parser.add_option('--syntax', dest='syntax',
             action='store_true', default=False,
             help="only check the syntax of the command file is done")
 
@@ -400,7 +400,8 @@ def _bwc_arguments(argv):
                     'type_alloc', 'taille', 'partition',
                     'origine', 'ORBInitRef',)
     # renamed options
-    long_opts_mv = { 'eficas_path' : 'bibpyt' }
+    long_opts_mv = { 'eficas_path' : 'bibpyt',
+                     'verif' : 'syntax' }
     orig = argv[:]
     new = []
     buffer = ''

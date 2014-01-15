@@ -83,8 +83,14 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
       if not hasattr(jdc, 'catalc'):
          from Comportement import catalc
          jdc.catalc = catalc
+      # ne faire qu'une fois
+      if not hasattr(jdc, 'msg_init') and jdc.syntax_check():
+         if jdc.par_lot == 'NON':
+             UTMESS('A', 'SUPERVIS_11')
+             raise EOFError("can not check syntax with PAR_LOT='NON'.")
+         else:
+             UTMESS('I', 'SUPERVIS_10')
       jdc.msg_init = True
-
 
 def DEBUT(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, **args):
     """
@@ -136,6 +142,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
    commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO)
    if aster_exists:
        self.jdc.set_poursuite(True)
+   only_syntax = self.jdc.syntax_check()
 
    if self.codex:
      base = 'glob.1'
@@ -143,19 +150,22 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
         repglob = aster_core.get_option("repglob")
         bhdf = osp.join(repglob, 'bhdf.1')
         base = osp.join(repglob, 'glob.1')
-        if not osp.isfile(base) and not osp.isfile(bhdf):
+        if not osp.isfile(base) and not osp.isfile(bhdf) \
+            and not only_syntax:
             UTMESS('F','SUPERVIS_89')
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
      # on memorise avec l'attribut fichier_init que l'initialisation
      # est réalisée
-     if hasattr(self,'fichier_init'):return
+     if hasattr(self,'fichier_init'):
+         return
      self.fichier_init='glob.1'
-     self.jdc.initexec()
-     # le sous programme fortran appelé par self.codex.poursu demande le numéro
-     # de l'operateur (GCECDU->getoper), on lui donne la valeur 0
-     self.definition.op=0
-     self.codex.poursu(self)
+     if not only_syntax:
+         self.jdc.initexec()
+         # le sous programme fortran appelé par self.codex.poursu demande le numéro
+         # de l'operateur (GCECDU->getoper), on lui donne la valeur 0
+         self.definition.op=0
+         self.codex.poursu(self)
      # Par la suite pour ne pas executer la commande pendant la phase
      # d'execution on le remet à None
      self.definition.op = None
@@ -176,16 +186,17 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
         UTMESS('F', 'SUPERVIS_86')
         return
      self.jdc.restore_pickled_attrs(pickle_context)
-     # vérification cohérence pick/base
-     savsign = self.jdc._sign
-     newsign = self.jdc.signature(base)
-     if args.get('FORMAT_HDF') == 'OUI':
-         UTMESS('I', 'SUPERVIS_71')
-     elif newsign != savsign:
-         UTMESS('A', 'SUPERVIS_69', valk=(savsign, newsign),
-                                    vali=self.jdc.jeveux_sysaddr)
-     else:
-         UTMESS('I', 'SUPERVIS_70', valk=newsign, vali=self.jdc.jeveux_sysaddr)
+     if not only_syntax:
+         # vérification cohérence pick/base
+         savsign = self.jdc._sign
+         newsign = self.jdc.signature(base)
+         if args.get('FORMAT_HDF') == 'OUI':
+             UTMESS('I', 'SUPERVIS_71')
+         elif newsign != savsign:
+             UTMESS('A', 'SUPERVIS_69', valk=(savsign, newsign),
+                                        vali=self.jdc.jeveux_sysaddr)
+         else:
+             UTMESS('I', 'SUPERVIS_70', valk=newsign, vali=self.jdc.jeveux_sysaddr)
      from Cata.cata  import entier
      from Noyau.N_CO import CO
      interrupt = []
@@ -217,6 +228,8 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
                continue
          if co == None:
             del pickle_context[elem]
+     if only_syntax:
+         interrupt = []
      if count == 0:
          UTMESS('I', 'SUPERVIS_67')
      for nom, typnam in interrupt:

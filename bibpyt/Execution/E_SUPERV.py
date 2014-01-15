@@ -28,6 +28,7 @@ import os
 import os.path as osp
 import traceback
 import re
+from functools import wraps
 
 # Here are some modules that may raise a floating point exception at import
 # so they must be imported before we intercept the FPE signal.
@@ -48,12 +49,39 @@ for mod in MODULES_RAISING_FPE:
 import E_Core
 from strfunc import convert, ufmt
 
+class Interrupt(Exception):
+    """Local exception"""
+    def __init__(self, returncode):
+        """Store the returncode"""
+        self.returncode = returncode
+
+def jdc_required(method):
+    """decorator to check that the jdc attribute has been initialized"""
+    @wraps(method)
+    def wrapper(inst, *args, **kwds):
+        """wrapper"""
+        assert inst.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
+        return method(inst, *args, **kwds)
+    return wrapper
+
+def stop_on_returncode(method):
+    """decorator that calls the interrupt method if the returncode
+    is not null"""
+    @wraps(method)
+    def wrapper(inst, *args, **kwds):
+        """wrapper"""
+        errcode = method(inst, *args, **kwds)
+        if errcode:
+            inst.interrupt(errcode)
+        return errcode
+    return wrapper
+
 class SUPERV:
     usage="""
     asteru JDC.py --bibpyt="rep" --commandes="fic_commandes"
                 [--memjeveux=taille_en_Mw | --memory=taille_en_Mo]
-                [-rep_mat repertoire_materiau] [-rep_dex repertoire_datg]
-                [-interact] [-verif]
+                [--rep_mat=repertoire_materiau] [--rep_dex=repertoire_datg]
+                [--interact] [--syntax]
 
     L'ancienne syntaxe reste possible pour des raisons de compatibilité :
        asteru JDC.py -eficas_path "rep" -commandes "fic_commandes" [-memjeveux taille_en_Mw]
@@ -68,6 +96,10 @@ class SUPERV:
     def __init__(self):
         self.jdc = None
         self.timer = None
+
+    def interrupt(self, code):
+        """raise the internal exception"""
+        raise Interrupt(code)
 
     def MESSAGE(self, chaine):
         """La fonction MESSAGE n'est utilisee que dans le script courant pour afficher
@@ -164,11 +196,13 @@ class SUPERV:
                             context_ini=params, **args)
         # on enregistre les objets dans aster_core dès que le jdc est créé
         self.register()
+        self.jdc.set_syntax_check(self.coreopts.get_option('syntax'))
 
+    @jdc_required
+    @stop_on_returncode
     def CompileJDC(self):
         """Compile the JDC content (byte-compile).
         Python syntax errors will be detected here."""
-        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         # on transmet le timer au jdc
         j.timer = self.timer
@@ -182,13 +216,14 @@ class SUPERV:
             j.supprime()
             return 1
 
+    @jdc_required
+    @stop_on_returncode
     def ExecCompileJDC(self):
         """Execute the JDC :
         - with PAR_LOT='OUI', only the ETAPE objects are built ;
         - with PAR_LOT='NON', the operators are immediatly called after its ETAPE
         object is created.
         """
-        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         j.timer.Start(" . exec_compile")
         j.exec_compile()
@@ -203,9 +238,10 @@ class SUPERV:
             j.interact()
         return ier
 
+    @jdc_required
+    @stop_on_returncode
     def CheckCata(self):
         """Check Code_Aster syntax (using cata.py)."""
-        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         j.timer.Start(" . report")
         cr = j.report()
@@ -214,23 +250,40 @@ class SUPERV:
             self.error(_(u"ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION"))
             self.error(self.format_CR(cr))
             return 1
+        self.SyntaxCheck()
 
+    @jdc_required
+    def SyntaxCheck(self):
+        """Print information about the syntax check"""
+        if self.jdc.syntax_check():
+            self.jdc.traiter_fin_exec("commande")
+            self.MESSAGE(_(u"\n  Sortie immédiatement après la vérification de syntaxe.\n"))
+            # markers for as_run status
+            for fname in ('fort.8', 'fort.9'):
+                open(fname, 'ab').write('\n'
+                    '-- CODE_ASTER -- VERSION \n'
+                    'only the syntax was checked\n'
+                    '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".\n')
+            raise Interrupt(0)
+
+    @jdc_required
+    @stop_on_returncode
     def ChangeJDC(self):
         """Modify the JDC object depending on the called features."""
-        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         # fin des initialisations
         j.timer.Stop("init (jdc)")
 
+    @stop_on_returncode
     def Execute(self, params):
         """Execution of the JDC object."""
         ier = self.ParLotMixte()
         return ier
 
+    @jdc_required
     def ParLot(self):
         """Execute the JDC calling Build and Exec methods."""
         # not used for Code_Aster
-        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         try:
             ier=j.Build()
@@ -259,10 +312,10 @@ class SUPERV:
             traceback.print_exc()
             return 1
 
+    @jdc_required
     def ParLotMixte(self):
         """Execute the JDC using BuildExec"""
         from Noyau.N_JDC    import MemoryErrorMsg
-        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         j.set_par_lot("NON")
         try:
@@ -283,6 +336,7 @@ class SUPERV:
             traceback.print_exc()
             return 1
 
+    @stop_on_returncode
     def InitEnv(self):
         """Initialize the environment (language & encoding, paths...)"""
         # import after getting opts as is may change sys.path
@@ -305,6 +359,7 @@ class SUPERV:
         if ier:
             return ier
 
+    @stop_on_returncode
     def Finish(self):
         """Allow to call cleanup functions."""
         from E_utils import supprimerRepertoire
@@ -318,32 +373,24 @@ class SUPERV:
         if not coreopts:
             coreopts = E_Core.getargs()
         self.coreopts = coreopts
-        ier = self.InitEnv()
-        if ier:
-           return ier
-        self.InitJDC(params)
-        self._mem_stat_init()
-        ier = self.CompileJDC()
-        if ier:
-           return ier
-        ier = self.ExecCompileJDC()
-        self._mem_stat_jdc()
-        if ier:
-           return ier
-        if self.jdc.par_lot == 'NON':
-            print convert(_(u"""--- Fin de l'exécution"""))
-            return ier
-        ier = self.CheckCata()
-        if ier:
-            return ier
-        if self.coreopts.get_option('verif'):
-            return ier
-        ier = self.ChangeJDC()
-        if ier:
-            return ier
-        ier = self.Execute(params)
-        self.Finish()
-        return ier or 0
+        try:
+            self.InitEnv()
+            self.InitJDC(params)
+            self._mem_stat_init()
+            self.CompileJDC()
+            self.ExecCompileJDC()
+            self._mem_stat_jdc()
+            if self.jdc.par_lot == 'NON':
+                print convert(_(u"""--- Fin de l'exécution"""))
+                self.SyntaxCheck()
+                self.interrupt(0)
+            self.CheckCata()
+            self.ChangeJDC()
+            self.Execute(params)
+            self.Finish()
+        except Interrupt, exc:
+            return exc.returncode
+        return 0
 
     def _mem_stat_init(self, tag=None):
         """Set the initial memory consumption"""

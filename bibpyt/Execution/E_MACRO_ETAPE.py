@@ -64,7 +64,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       (appel dans op_init)
       """
       #message.debug(SUPERV, "%s par_lot=%s", self.nom, self.jdc and self.jdc.par_lot)
-      if not self.jdc or self.jdc.par_lot != "NON" :
+      if not self.jdc or self.jdc.par_lot != "NON":
          return
 
       if not hasattr(self,"executed") or self.executed == 0:
@@ -75,6 +75,8 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
            self.parent.cr.add(cr)
            raise EOFError
 
+         if self.jdc.syntax_check():
+             return
          try:
              # Apres l appel a Build  les executions de toutes les
              # sous commandes ont ete realisees
