@@ -142,6 +142,8 @@ TMPL_TEST = """SRCTEST        | src     | -     | %s"""
 
 TMPL_PROFILE = r"""# created by waftools/legacy
 
+%(OPT_ENV)s
+
 LD_LIBRARY_PATH=$ASTER_VERSION_DIR/lib:\
 %(LD_LIBRARY_PATH)s:\
 $LD_LIBRARY_PATH
@@ -153,6 +155,4 @@ export PYTHONPATH
 
 PYTHONHOME=%(PYTHONHOME)s
 export PYTHONHOME
-
-%(OPT_ENV)s
 """
