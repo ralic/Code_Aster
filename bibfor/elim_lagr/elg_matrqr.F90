@@ -69,6 +69,8 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
 !
     call asmpi_comm('GET_WORLD', mpicow)
     call MatGetSize(ct, n1, n2, ierr)
+    ASSERT(n1==nbphys)
+    ASSERT(n2==nblag)
 !
     if (nblag .gt. nbphys) then
         write(6,*),' PLUS DE LIAISONS QUE D''EQUATIONS...'
@@ -85,7 +87,10 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
     call jeveuo('&&APELIM.IND_NZ_ROW', 'E', nzrow)
 !
 !
-!
+! Le vecteur '&&APELIM.NNZ_MAT_T' est un vecteur de travail. 
+! Les valeurs qu'il contient en entrée de la routine ne sont pas utilisées.
+! On remplit maintenant ce tableau avec les bonnes valeurs (nombre de termes non-nuls sur
+! chaque ligne de ct + terme diagonal )
     do i1 = 1, nbphys
         call MatGetRow(ct, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
                        ierr)
@@ -101,6 +106,8 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
             else
                 zi4(nnzt+i1-1)=nbnzc
             endif
+        else
+                zi4(nnzt+i1-1)=nbnzc
         endif
     end do
 !
