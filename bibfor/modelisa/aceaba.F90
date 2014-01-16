@@ -7,6 +7,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 #include "asterfort/acedat.h"
 #include "asterfort/affbar.h"
 #include "asterfort/alcart.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvem.h"
@@ -77,33 +79,40 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 !
 !-----------------------------------------------------------------------
     integer :: i, idw, ier, iisec, ioc, isec, itabl
-    integer :: itblp, itbnp, ivect, ixma, j, jcar, jcara
-    integer :: jdcba, jdcbaf, jdcbg, jdge, jdgef, jdgm, jdls, jdls2
-    integer :: jdme, jdvba, jdvbaf, jdvbg, jexp, jpara, jsect
-    integer :: jtab, jvale, k, nbaaff, nbcar, nbcolo, nblign
+    integer :: itblp, itbnp, ivect, ixma, j
+    integer :: jdcba, jdcbaf, jdcbg, jdge, jdgef, jdgm
+    integer :: jdme, jdvba, jdvbaf, jdvbg,   jsect
+    integer :: jtab,  k, nbaaff, nbcar, nbcolo, nblign
     integer :: nbmagr, nbmail, nbo, nbval, ncar, ndim, nfcx
     integer :: ng, nm, nnosec, nsec, ntab, ntypse, nummai
     integer :: nutyel, nval
+    integer, pointer :: tab_para(:) => null()
+    character(len=8), pointer :: expbar(:) => null()
+    character(len=8), pointer :: carbar(:) => null()
+    character(len=8), pointer :: cara(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: barre(:) => null()
+    character(len=8), pointer :: barre2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getres(nomu, concep, cmd)
 !
-    call wkvect('&&ACEABA.TAB_PARA', 'V V I', 10, jpara)
-    call acedat('BARRE', 0, zi(jpara), k16b, k8b,&
+    AS_ALLOCATE(vi=tab_para, size=10)
+    call acedat('BARRE', 0, tab_para, k16b, k8b,&
                 k8b, k8b)
-    ntypse = zi(jpara+1)
-    nbo = zi(jpara+2)
-    nbcar = zi(jpara+3)
-    nbval = zi(jpara+4)
-    ndim = zi(jpara+6) * ntypse
+    ntypse = tab_para(2)
+    nbo = tab_para(3)
+    nbcar = tab_para(4)
+    nbval = tab_para(5)
+    ndim = tab_para(7) * ntypse
     call wkvect('&&ACEABA.TYP_SECT', 'V V K16', ntypse, jsect)
-    call wkvect('&&ACEABA.EXPBAR', 'V V K8 ', nbo, jexp)
+    AS_ALLOCATE(vk8=expbar, size=nbo)
     call wkvect('&&ACEABA.TABBAR', 'V V K8 ', nbo, jtab)
-    call wkvect('&&ACEABA.CARBAR', 'V V K8 ', ndim, jcar)
-    call acedat('BARRE', 1, zi(jpara), zk16(jsect), zk8(jexp),&
-                zk8(jtab), zk8(jcar))
-    call wkvect('&&ACEABA.CARA', 'V V K8', nbcar, jcara)
-    call wkvect('&&ACEABA.VALE', 'V V R8', nbval, jvale)
+    AS_ALLOCATE(vk8=carbar, size=ndim)
+    call acedat('BARRE', 1, tab_para, zk16(jsect), expbar,&
+                zk8(jtab), carbar)
+    AS_ALLOCATE(vk8=cara, size=nbcar)
+    AS_ALLOCATE(vr=vale, size=nbval)
 !
     modmai = nomo//'.MAILLE'
     mlgnma = noma//'.NOMMAI'
@@ -134,16 +143,16 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     call jecrec(tmpgef, 'V V K8', 'NO', 'CONTIG', 'CONSTANT',&
                 nbarre)
     call jeecra(tmpgef, 'LONMAX', 1)
-    call wkvect('&&ACEABA.BARRE', 'V V K24', lmax, jdls)
-    call wkvect('&&ACEABA.BARRE2', 'V V K8', lmax, jdls2)
+    AS_ALLOCATE(vk24=barre, size=lmax)
+    AS_ALLOCATE(vk8=barre2, size=lmax)
 !
 ! --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
     do 10 ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
         call getvem(noma, 'GROUP_MA', 'BARRE', 'GROUP_MA', ioc,&
-                    iarg, lmax, zk24(jdls), ng)
+                    iarg, lmax, barre, ng)
         call getvem(noma, 'MAILLE', 'BARRE', 'MAILLE', ioc,&
-                    iarg, lmax, zk8( jdls2), nm)
+                    iarg, lmax, barre2, nm)
         call getvtx('BARRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         call getvid('BARRE', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=ntab)
         if (ntab .eq. 1) then
@@ -185,17 +194,17 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                 if (zk24(itblp+4*i) .ne. 'A') then
                     goto 96
                 else
-                    zk8(jcara) = zk24(itblp+4*i)(1:8)
+                    cara = zk24(itblp+4*i)(1:8)
                     call jeveuo(zk24(itblp+4*i+2), 'L', ivect)
-                    zr(jvale)=zr(ivect-1+iisec)
+                    vale=zr(ivect-1+iisec)
                     goto 98
                 endif
 96          continue
 98          continue
         else
-            call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=zk8(jcara),&
+            call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=cara,&
                         nbret=ncar)
-            call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=zr(jvale),&
+            call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=vale,&
                         nbret=nval)
             ASSERT(ncar.gt.0)
         endif
@@ -210,8 +219,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 !                                                    GROUPES DE MAILLES
         if (ng .gt. 0) then
             do 40 i = 1, ng
-                call jeveuo(jexnom(mlggma, zk24(jdls+i-1)), 'L', jdgm)
-                call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr)
+                call jeveuo(jexnom(mlggma, barre(i)), 'L', jdgm)
+                call jelira(jexnom(mlggma, barre(i)), 'LONUTI', nbmagr)
                 do 42 j = 1, nbmagr
                     nummai = zi(jdgm+j-1)
                     call jenuno(jexnum(mlgnma, nummai), nommai)
@@ -219,7 +228,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                     do 44 k = 1, nbtel
                         if (nutyel .eq. ntyele(k)) then
                             call affbar(tmpgen, tmpgef, fcx, nommai, isec,&
-                                        zk8(jcara), zr(jvale), zk8(jexp), nbo, kioc,&
+                                        cara, vale, expbar, nbo, kioc,&
                                         ier)
                             goto 42
                         endif
@@ -234,13 +243,13 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 ! ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
         if (nm .gt. 0) then
             do 50 i = 1, nm
-                nommai = zk8(jdls2+i-1)
+                nommai = barre2(i)
                 call jenonu(jexnom(mlgnma, nommai), nummai)
                 nutyel = zi(jdme+nummai-1)
                 do 52 j = 1, nbtel
                     if (nutyel .eq. ntyele(j)) then
                         call affbar(tmpgen, tmpgef, fcx, nommai, isec,&
-                                    zk8(jcara), zr(jvale), zk8(jexp), nbo, kioc,&
+                                    cara, vale, expbar, nbo, kioc,&
                                     ier)
                         goto 50
                     endif
@@ -362,15 +371,15 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 ! --- COMPACTAGE DES CARTES
 !
 ! --- NETTOYAGE
-    call jedetr('&&ACEABA.BARRE')
-    call jedetr('&&ACEABA.BARRE2')
-    call jedetr('&&ACEABA.TAB_PARA')
+    AS_DEALLOCATE(vk24=barre)
+    AS_DEALLOCATE(vk8=barre2)
+    AS_DEALLOCATE(vi=tab_para)
     call jedetr('&&ACEABA.TYP_SECT')
-    call jedetr('&&ACEABA.EXPBAR')
+    AS_DEALLOCATE(vk8=expbar)
     call jedetr('&&ACEABA.TABBAR')
-    call jedetr('&&ACEABA.CARBAR')
-    call jedetr('&&ACEABA.CARA')
-    call jedetr('&&ACEABA.VALE')
+    AS_DEALLOCATE(vk8=carbar)
+    AS_DEALLOCATE(vk8=cara)
+    AS_DEALLOCATE(vr=vale)
     call jedetr(tmpgen)
     call jedetr(tmpgef)
     call jedetr(tmpnba)

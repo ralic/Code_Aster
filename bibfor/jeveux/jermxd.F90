@@ -35,8 +35,8 @@ subroutine jermxd(rval, iret)
 ! DEB ------------------------------------------------------------------
     integer :: lbis, lois, lols, lor8, loc8
     common /ienvje/  lbis , lois , lols , lor8 , loc8
-    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
+    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
+    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 ! ----------------------------------------------------------------------
     real(kind=8) :: rv(2)
 !

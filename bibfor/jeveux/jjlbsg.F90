@@ -60,8 +60,8 @@ subroutine jjlbsg(ic, id, ioc, ibacol, iadmi,&
     common /idynje/  ldyn , lgdyn , nbdyn , nbfree
     integer :: icdyn, mxltot
     common /xdynje/  icdyn , mxltot
-    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
+    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
+    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
     integer :: isstat
     common /iconje/  isstat
     integer :: lbis, lois, lols, lor8, loc8

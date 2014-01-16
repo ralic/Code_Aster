@@ -65,8 +65,8 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
     common /ienvje/  lbis , lois , lols , lor8 , loc8
     integer :: ldyn, lgdyn, nbdyn, nbfree
     common /idynje/  ldyn , lgdyn , nbdyn , nbfree
-    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
+    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
+    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 ! ----------------------------------------------------------------------
     integer :: init, iblanc, valloc, lsic
     integer :: ic, ival(4), unmega

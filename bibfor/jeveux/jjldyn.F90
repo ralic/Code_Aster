@@ -81,8 +81,8 @@ subroutine jjldyn(imode, lmin, ltot)
     common /idynje/  ldyn , lgdyn , nbdyn , nbfree
     integer :: icdyn, mxltot
     common /xdynje/  icdyn , mxltot
-    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2)
+    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
+    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
     integer :: lbis, lois, lols, lor8, loc8
     common /ienvje/  lbis , lois , lols , lor8 , loc8
     integer :: datei

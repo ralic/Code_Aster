@@ -32,8 +32,8 @@ subroutine jjlidy(iadyn, iadmi)
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 ! ----------------------------------------------------------------------
-    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio
-    common /r8dyje/ mxdyn ,mcdyn, mldyn, vmxdyn, vmet, lgio(2)
+    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
+    common /r8dyje/ mxdyn ,mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
     integer :: ldyn, lgdyn, nbdyn, nbfree
     common /idynje/  ldyn , lgdyn , nbdyn , nbfree
     integer :: istat

@@ -41,6 +41,7 @@ subroutine execop()
 #include "asterfort/utmess.h"
 #include "asterfort/utptme.h"
 #include "asterfort/uttcpg.h"
+#include "asterfort/check_aster_allocate.h"
     mpi_int :: mpicow, mpicou
     integer :: nivuti, nivpgm, unite
     common /inf001/ nivuti,nivpgm,unite
@@ -66,6 +67,9 @@ subroutine execop()
 !
 !     -- ON REMET A "ZERO" LES COMMONS UTILISES PAR FOINTE :
     call foint0()
+!
+!     -- on remet a "zero" le compteur pour les routines as_[de]allocate :
+    call check_aster_allocate(init=0)
 !
 !     -- ON INITIALISATION DES COMPTEURS DE TEMPS :
     call uttcpg('INIT', ' ')
@@ -140,6 +144,9 @@ subroutine execop()
     if (imaav .ne. imaap) then
         call utmess('F', 'SUPERVIS_3', sk='JEMARQ/JEDEMA')
     endif
+!
+!     -- controle du compteur pour les routines as_[de]allocate :
+    call check_aster_allocate()
 !
 !     -- ON IMPRIME LES COMPTEURS DE TEMPS :
 !        (IL FAUT LE FAIRE AVANT LA DESTRUCTION DES OBJETS VOLATILES)
