@@ -523,10 +523,62 @@ cata_msg={
      commande (pour STAT_NON_LINE par exemple).
 
 """),
+
 78: _(u"""
   -> Erreur, pour une modélisation %(i1)d, on ne peut définir que des interfaces,
      l'introduction de fissures dans le modèle n'est pas possible.
 
+"""),
+
+79: _(u"""
+  -> Vous devez renseigner le mot-clé MODELE_IN avec un modèle sain (produit par
+     l'opérateur AFFE_MODELE), or vous avez renseigné ce mot-clé avec %(k1)s
+     qui est un modèle X-FEM (produit par l'opérateur MODI_MODELE_XFEM)
+  -> Conseil:
+     Revoyez la définition de ce modèle
+"""),
+
+80: _(u"""
+  -> En présence du mot-clé MODELE_THER, vous devez renseigner le mot-clé MODELE_IN
+     avec un modèle mécanique. Or le modèle %(k1)s n'est pas un modèle mécanique.
+  -> Conseil:
+     Revoyez la définition de ce modèle
+"""),
+
+81: _(u"""
+  -> Vous devez renseigner le mot-clé MODELE_THER avec un modèle X-FEM (produit par
+     l'opérateur MODI_MODELE_XFEM), or vous avez renseigné ce mot-clé avec %(k1)s
+     qui est un modèle sain (produit par l'opérateur AFFE_MODELE)
+  -> Conseil:
+     Revoyez la définition de ce modèle
+"""),
+
+82: _(u"""
+  -> Vous devez renseigner le mot-clé MODELE_THER avec un modèle thermique. 
+     Or le modèle %(k1)s n'est pas un modèle thermique.
+  -> Conseil:
+     Revoyez la définition de ce modèle
+"""),
+
+83: _(u"""
+  -> Les modèles %(k1)s et %(k2)s doivent nécessairement avoir été créés à partir 
+     du même maillage. Or %(k1)s et %(k2)s ont respectivement été définis à partir 
+     des maillages %(k3)s et %(k4)s.
+  -> Conseil:
+     Revoyez la définition de ces modèles
+"""),
+
+84: _(u"""
+  On ne peut pas créer un modèle X-FEM avec contact dans le cas où le mot clé MODELE_THER est présent.
+  -> Conseil:
+     Vous devez renseigner CONTACT='NON' pour ne pas activer le contact.
+"""),
+
+85: _(u"""
+  La maille %(k1)s est affectée par un élément fini thermique dans le modèle thermique enrichi %(k2)s,
+  or cette maille n'est affectée par aucun élément fini dans le modèle mécanique sain %(k3)s.
+  -> Conseil:
+     Revoyez la définition de ces deux modèles
 """),
 
 }

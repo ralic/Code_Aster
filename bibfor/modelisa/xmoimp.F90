@@ -134,7 +134,6 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
     if (npf3(7) .ne. 0) write(ifm,808)'ARETE 3' ,npf3(1) ,npf3(2) ,npf3(3)
     if (nax2(7) .ne. 0) write(ifm,808)'ARETE-AXI 2' ,nax2(1) ,nax2(2) ,nax2(3)
     if (nax3(7) .ne. 0) write(ifm,808)'ARETE-AXI 3' ,nax3(1) ,nax3(2) ,nax3(3)
-    write(ifm,*)'  '
 !
 !     ELEMENTS HM-XFEM (MECANIQUE)
     if (nhyq8(7) .ne. 0) write(ifm, 810)'HMDP QUAD8', nhyq8(1), nhyq8(2), nhyq8(3), nhyq8(4),&
@@ -213,6 +212,8 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
 !
     if (ntax2(7) .ne. 0) write(ifm, 810)'ARETE-AXI 2', ntax2(1), ntax2(2), ntax2(3), ntax2(4),&
                          ntax2(5), ntax2(6), 0, 0, 0, 0, 0, 0, 0
+!
+    write(ifm,*)'  '
 !
     nbelx = nh8(7) + nh20(7) + np6(7) + np15(7) + np5(7) + np13(7) + nt4(7) + nt10(7) + ncpq4(7) &
             &+ ncpq8(7) + ncpt3(7) + ncpt6(7) + ndpq4(7) + ndpq8(7) + ndpt3(7) + ndpt6(7) + naxq4&

@@ -56,12 +56,13 @@ subroutine op0113()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcodec.h"
+#include "asterfort/xcpmod.h"
 #include "asterfort/xmolig.h"
 #include "asterfort/xtyele.h"
 #include "asterfort/xvermo.h"
 !
     real(kind=8) :: crimax
-    integer :: ibid, iel, ima
+    integer :: ibid, iel, ima, nmoth
     integer :: i, j2
     integer :: jlgrf1, jlgrf2, jmofis
     integer :: nbma, nelt
@@ -74,7 +75,7 @@ subroutine op0113()
     character(len=24) :: mail2
     character(len=24) :: trav
     integer :: jmail2, jtab, jxc
-    character(len=8) :: modelx, mod1, noma, k8cont
+    character(len=8) :: modelx, mod1, modthx, noma, k8cont
     logical :: linter
 !
     data motfac /' '/
@@ -102,6 +103,15 @@ subroutine op0113()
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+!
+! --- MOT-CLE MODELE_THER : CAS PARTICULIER (X-FEM THERMO MECA)
+!     QUE L'ON TRAITE SEPAREMENT DU CAS GENERAL
+!
+    call getvid(motfac, 'MODELE_THER', iocc=1, scal=modthx, nbret=nmoth)
+    if (nmoth .eq. 1) then
+        call xcpmod(mod1, modthx, modelx)
+        goto 999
+    endif
 !
 ! --- RECUPERER LE NOMBRE DE FISSURES
 !
@@ -240,5 +250,6 @@ subroutine op0113()
 !
     call jedetr(trav)
 !
+999 continue
     call jedema()
 end subroutine

@@ -1,0 +1,172 @@
+# -*- coding: utf-8 -*-
+
+###
+### This file is generated automatically by SALOME v6.6.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/local00/home/F97355/dev/fiches/21764_xfem-contact/maillage_quad')
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+import math
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+a = 10.
+
+pt_1 = geompy.MakeVertex( 0, 0, 0)
+pt_2 = geompy.MakeVertex( 0, a, 0)
+pt_3 = geompy.MakeVertex( a, a, 0)
+pt_4 = geompy.MakeVertex( a, 0, 0)
+
+Line_1 = geompy.MakeLineTwoPnt(pt_1, pt_2)
+Line_2 = geompy.MakeLineTwoPnt(pt_2, pt_3)
+Line_3 = geompy.MakeLineTwoPnt(pt_3, pt_4)
+Line_4 = geompy.MakeLineTwoPnt(pt_4, pt_1)
+Wire_1 = geompy.MakeWire([Line_1, Line_2, Line_3, Line_4], 1e-07)
+Face_1 = geompy.MakeFaceWires([Wire_1], 1)
+
+pt_T1 = geompy.MakeVertex( 0.5*a, -0.5*a, 0)
+pt_T2 = geompy.MakeVertex( 0.5*a,  1.5*a, 0)
+pt_T3 = geompy.MakeVertex(-0.5*a, 0.5*a, 0)
+pt_T4 = geompy.MakeVertex( 1.5*a, 0.5*a, 0)
+
+line_1 = geompy.MakeLineTwoPnt(pt_T1, pt_T2)
+line_2 = geompy.MakeLineTwoPnt(pt_T3, pt_T4)
+Partition_1 = geompy.MakePartition([Face_1], [line_1, line_2], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+
+
+
+# groupes geometriques : Gr_geo_SudOuest
+L_tmp  = []
+pt_aux = geompy.MakeVertex( 0.25*a, 0.25*a, 0.)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+Gr_geo_SudOuest = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(Gr_geo_SudOuest ,L_tmp)
+
+# groupes geometriques : Gr_geo_SudEst
+L_tmp  = []
+pt_aux = geompy.MakeVertex( 0.75*a, 0.25*a, 0.)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+Gr_geo_SudEst = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(Gr_geo_SudEst ,L_tmp)
+
+# groupes geometriques : Gr_geo_NordOuest
+L_tmp  = []
+pt_aux = geompy.MakeVertex( 0.25*a, 0.75*a, 0.)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+Gr_geo_NordOuest = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(Gr_geo_NordOuest ,L_tmp)
+
+# groupes geometriques : Gr_geo_NordEst
+L_tmp  = []
+pt_aux = geompy.MakeVertex( 0.75*a, 0.75*a, 0.)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+Gr_geo_NordEst = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(Gr_geo_NordEst ,L_tmp)
+
+# groupes geometriques : Edges2Remove
+L_tmp  = []
+pt_aux = geompy.MakeVertex( 0.5*a , 0.25*a, 0.)
+L_tmp.append(geompy.GetEdgeNearPoint(Partition_1,pt_aux))
+pt_aux = geompy.MakeVertex( 0.5*a , 0.75*a, 0.)
+L_tmp.append(geompy.GetEdgeNearPoint(Partition_1,pt_aux))
+pt_aux = geompy.MakeVertex( 0.25*a, 0.5*a , 0.)
+L_tmp.append(geompy.GetEdgeNearPoint(Partition_1,pt_aux))
+pt_aux = geompy.MakeVertex( 0.75*a, 0.5*a , 0.)
+L_tmp.append(geompy.GetEdgeNearPoint(Partition_1,pt_aux))
+Edges2Remove = geompy.CreateGroup(Partition_1, geompy.ShapeType["EDGE"])
+geompy.UnionList(Edges2Remove ,L_tmp)
+
+
+
+geompy.addToStudy( Partition_1, 'Partition_1' )
+
+geompy.addToStudyInFather( Partition_1, Gr_geo_SudOuest, 'Gr_geo_SudOuest' )
+geompy.addToStudyInFather( Partition_1, Gr_geo_SudEst, 'Gr_geo_SudEst' )
+geompy.addToStudyInFather( Partition_1, Gr_geo_NordOuest, 'Gr_geo_NordOuest' )
+geompy.addToStudyInFather( Partition_1, Gr_geo_NordEst, 'Gr_geo_NordEst' )
+geompy.addToStudyInFather( Partition_1, Edges2Remove, 'Edges2Remove' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+import NETGENPlugin
+
+
+Mesh_1 = smesh.Mesh(Partition_1)
+
+nseg = 9
+
+Regular_1D = Mesh_1.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(nseg)
+Nb_Segments_1.SetDistrType( 0 )
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+
+isDone = Mesh_1.Compute()
+
+# AJOUT DE 2 NOEUDS ORPHELINS
+# ---------------------------
+
+nodeID = Mesh_1.AddNode( 0.5*a, 0, 0)
+NORPHBAS = Mesh_1.CreateEmptyGroup( SMESH.NODE, 'NORPHBAS' )
+nbAdd = NORPHBAS.Add( [ nodeID ] )
+nodeID = Mesh_1.AddNode( 0.5*a, a, 0)
+NORPHHAU = Mesh_1.CreateEmptyGroup( SMESH.NODE, 'NORPHHAU' )
+nbAdd = NORPHHAU.Add( [ nodeID ] )
+
+# GROUPES DE MAILLES
+# ------------------
+Gr_SudOuest  = Mesh_1.GroupOnGeom(Gr_geo_SudOuest ,'Gr_SudOuest',SMESH.FACE)
+Gr_SudEst    = Mesh_1.GroupOnGeom(Gr_geo_SudEst   ,'Gr_SudEst',SMESH.FACE)
+Gr_NordOuest = Mesh_1.GroupOnGeom(Gr_geo_NordOuest,'Gr_NordOuest',SMESH.FACE)
+Gr_NordEst   = Mesh_1.GroupOnGeom(Gr_geo_NordEst  ,'Gr_NordEst',SMESH.FACE)
+
+# SUPPRESSION DES ELEMENTS DE BORD NOYES DANS LA MATIERE
+# -------------------------------------------------------
+# recuperation des ids des edges concernees et suppression
+Gr_Edges2Remove = Mesh_1.GroupOnGeom(Edges2Remove,'Edges2Remove',SMESH.EDGE)
+Ids_2_remove = Gr_Edges2Remove.GetIDs()
+Mesh_1.RemoveElements(Ids_2_remove)
+# juste pour verifier que l'on a bien supprime ce qui devait l'etre...
+GrEdge_All = Mesh_1.CreateEmptyGroup( SMESH.EDGE, 'AllEdges' )
+nbid = GrEdge_All.AddFrom( Mesh_1.GetMesh() )
+# on detruit le groupe desormais vide
+Mesh_1.RemoveGroup(Gr_Edges2Remove)
+
+Quads2Split = Gr_SudOuest.GetIDs() + Gr_NordEst.GetIDs()
+isDone = Mesh_1.SplitQuad( Quads2Split, 1 )
+
+## set object names
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

@@ -19,9 +19,12 @@
 MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu="U4.44.12-e",reentrant='f',
             UIinfo={"groupes":("Modélisation","Rupture",)},
                            fr="Engendrer ou enrichir une structure de donnees en affectant les cham_gd associes",
-                           
+
+    regles = (UN_PARMI('FISSURE','MODELE_THER')),
+
     MODELE_IN       =SIMP(statut='o',typ=modele_sdaster,min=1,max=1,),
-    FISSURE         =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
+    FISSURE         =SIMP(statut='f',typ=fiss_xfem,min=1,max='**',),
+    MODELE_THER     =SIMP(statut='f',typ=modele_sdaster,min=1,max=1,),
     CRITERE         =SIMP(statut='f',typ='R',defaut=1.1E-9),
     INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,)),
     CONTACT        

@@ -1,0 +1,201 @@
+# -*- coding: utf-8 -*-
+
+###
+### This file is generated automatically by SALOME v6.6.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/local00/home/F97355/dev/fiches/21764_xfem-contact/maillage_hexa')
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+import math
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+R_cyl = 0.5
+R_int = 0.5*R_cyl
+
+L_z   = 2.
+z_bas = -0.5*L_z
+
+cos45 = math.cos(math.pi/4.)
+
+pt_bas   = geompy.MakeVertex(0, 0, z_bas)
+
+pt_carre1 = geompy.MakeVertex( R_int*cos45,  R_int*cos45, z_bas)
+pt_carre2 = geompy.MakeVertex(-R_int*cos45,  R_int*cos45, z_bas)
+pt_carre3 = geompy.MakeVertex(-R_int*cos45, -R_int*cos45, z_bas)
+pt_carre4 = geompy.MakeVertex( R_int*cos45, -R_int*cos45, z_bas)
+Line_12   = geompy.MakeLineTwoPnt(pt_carre1, pt_carre2)
+Line_23   = geompy.MakeLineTwoPnt(pt_carre2, pt_carre3)
+Line_34   = geompy.MakeLineTwoPnt(pt_carre3, pt_carre4)
+Line_41   = geompy.MakeLineTwoPnt(pt_carre4, pt_carre1)
+Wire_1234 = geompy.MakeWire([Line_12, Line_23, Line_34, Line_41], 1e-07)
+
+pt_tool1 = geompy.MakeVertex( 2.*R_cyl*cos45,  2.*R_cyl*cos45, z_bas)
+pt_tool2 = geompy.MakeVertex(-2.*R_cyl*cos45,  2.*R_cyl*cos45, z_bas)
+pt_tool3 = geompy.MakeVertex(-2.*R_cyl*cos45, -2.*R_cyl*cos45, z_bas)
+pt_tool4 = geompy.MakeVertex( 2.*R_cyl*cos45, -2.*R_cyl*cos45, z_bas)
+Line_c11  = geompy.MakeLineTwoPnt(pt_carre1, pt_tool1)
+Line_c22  = geompy.MakeLineTwoPnt(pt_carre2, pt_tool2)
+Line_c33  = geompy.MakeLineTwoPnt(pt_carre3, pt_tool3)
+Line_c44  = geompy.MakeLineTwoPnt(pt_carre4, pt_tool4)
+
+Rotation_1234 = geompy.MakeRotation(Wire_1234, OZ, -45*math.pi/180.0)
+Rotation_11 = geompy.MakeRotation(Line_c11, OZ, -45*math.pi/180.0)
+Rotation_22 = geompy.MakeRotation(Line_c22, OZ, -45*math.pi/180.0)
+Rotation_33 = geompy.MakeRotation(Line_c33, OZ, -45*math.pi/180.0)
+Rotation_44 = geompy.MakeRotation(Line_c44, OZ, -45*math.pi/180.0)
+
+Extrusion_1234 = geompy.MakePrismVecH(Rotation_1234, OZ, L_z)
+Extrusion_11 = geompy.MakePrismVecH(Rotation_11, OZ, L_z)
+Extrusion_22 = geompy.MakePrismVecH(Rotation_22, OZ, L_z)
+Extrusion_33 = geompy.MakePrismVecH(Rotation_33, OZ, L_z)
+Extrusion_44 = geompy.MakePrismVecH(Rotation_44, OZ, L_z)
+
+Circle_1 = geompy.MakeCircle(pt_bas, None, 0.5)
+Face_1 = geompy.MakeFaceWires([Circle_1], 1)
+Partition_1 = geompy.MakePartition([Face_1], [Extrusion_1234, Extrusion_11, Extrusion_22, Extrusion_33, Extrusion_44], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+
+[Compound_1, Compound_2, Compound_3] = geompy.Propagate(Partition_1)
+
+
+# groupes geometriques : Gr_geo_SurfCentr
+L_tmp  = []
+pt_aux = geompy.MakeVertex( 0.,  0., z_bas)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+Gr_geo_SurfCentr = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(Gr_geo_SurfCentr,L_tmp)
+
+# groupes geometriques : Gr_geo_SurfExt
+L_tmp  = []
+x_aux = 0.5*(R_cyl-R_int)*cos45
+pt_aux = geompy.MakeVertex( x_aux,  x_aux, z_bas)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+pt_aux = geompy.MakeVertex( x_aux, -x_aux, z_bas)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+pt_aux = geompy.MakeVertex(-x_aux, -x_aux, z_bas)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+pt_aux = geompy.MakeVertex(-x_aux,  x_aux, z_bas)
+L_tmp.append(geompy.GetFaceNearPoint(Partition_1,pt_aux))
+Gr_geo_SurfExt = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionList(Gr_geo_SurfExt,L_tmp)
+
+
+
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+
+geompy.addToStudy( Extrusion_1234,  'Extrusion_1234' )
+geompy.addToStudy( Extrusion_11,  'Extrusion_11' )
+geompy.addToStudy( Extrusion_22,  'Extrusion_22' )
+geompy.addToStudy( Extrusion_33,  'Extrusion_33' )
+geompy.addToStudy( Extrusion_44,  'Extrusion_44' )
+
+geompy.addToStudy( Partition_1,  'Partition_1' )
+geompy.addToStudyInFather( Partition_1, Compound_1, 'Compound_1' )
+geompy.addToStudyInFather( Partition_1, Compound_2, 'Compound_2' )
+geompy.addToStudyInFather( Partition_1, Compound_3, 'Compound_3' )
+geompy.addToStudyInFather( Partition_1, Gr_geo_SurfCentr, 'Gr_geo_SurfCentr' )
+geompy.addToStudyInFather( Partition_1, Gr_geo_SurfExt, 'Gr_geo_SurfExt' )
+
+
+#Gr_geo_Surfbas = geompy.CreateGroup(cylindre, geompy.ShapeType["FACE"])
+#geompy.UnionList(Gr_geo_Surfbas,L_tmp)
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+import NETGENPlugin
+
+Mesh_1 = smesh.Mesh(Partition_1)
+Import_1D = Mesh_1.UseExisting1DElements()
+
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+
+nseg1 = 5
+nseg2 = 5
+nseg3 = 19
+
+Regular_1D_1 = Mesh_1.Segment(geom=Compound_1)
+Nb_Segments_1 = Regular_1D_1.NumberOfSegments(nseg1)
+Nb_Segments_1.SetDistrType( 0 )
+
+Regular_1D_2 = Mesh_1.Segment(geom=Compound_2)
+Nb_Segments_2 = Regular_1D_2.NumberOfSegments(nseg2)
+Nb_Segments_2.SetDistrType( 0 )
+
+Regular_1D_3 = Mesh_1.Segment(geom=Compound_3)
+Nb_Segments_3 = Regular_1D_3.NumberOfSegments(nseg1)
+Nb_Segments_3.SetDistrType( 0 )
+
+Import_1D_1 = Mesh_1.UseExisting1DElements(geom=Gr_geo_SurfCentr)
+NETGEN_2D_ONLY = Mesh_1.Triangle(algo=smesh.NETGEN_2D,geom=Gr_geo_SurfCentr)
+
+isDone = Mesh_1.Compute()
+Mesh_1.ExtrusionSweepObject2D( Mesh_1, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, L_z/float(nseg3) )), nseg3 )
+
+nodeID = Mesh_1.AddNode( 0, 0, z_bas       )
+NORPHBAS = Mesh_1.CreateEmptyGroup( SMESH.NODE, 'NORPHBAS' )
+nbAdd = NORPHBAS.Add( [ nodeID ] )
+nodeID = Mesh_1.AddNode( 0, 0, z_bas + L_z )
+NORPHHAU = Mesh_1.CreateEmptyGroup( SMESH.NODE, 'NORPHHAU' )
+nbAdd = NORPHHAU.Add( [ nodeID ] )
+
+EDGE = Mesh_1.CreateEmptyGroup( SMESH.EDGE, 'EDGE' )
+nbAdd = EDGE.AddFrom( Mesh_1.GetMesh() )
+FACE = Mesh_1.CreateEmptyGroup( SMESH.FACE, 'FACE' )
+nbAdd = FACE.AddFrom( Mesh_1.GetMesh() )
+VOLUME = Mesh_1.CreateEmptyGroup( SMESH.VOLUME, 'VOLUME' )
+nbAdd = VOLUME.AddFrom( Mesh_1.GetMesh() )
+
+SubMesh_1 = Regular_1D_1.GetSubMesh()
+SubMesh_2 = Regular_1D_2.GetSubMesh()
+SubMesh_3 = Regular_1D_3.GetSubMesh()
+
+SubMesh_4 = Import_1D_1.GetSubMesh()
+
+## set object names
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Import_1D.GetAlgorithm(), 'Import_1D')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Regular_1D_1.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Regular_1D_2.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Regular_1D_3.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(NETGEN_2D_ONLY.GetAlgorithm(), 'NETGEN_2D_ONLY')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+
+#smesh.SetName(Maillage, 'Maillage')
+#nomfich = 'CYL_HEXA_IMPAIR_nz-'+str(nz)+'.med'
+#Maillage.ExportMED( r'/local00/home/F97355/dev/fiches/21764_xfem-contact/maillage_hexa/'+nomfich, 0, SMESH.MED_V2_2, 1 )
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
