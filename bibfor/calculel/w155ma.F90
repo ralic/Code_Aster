@@ -8,12 +8,12 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 ! (AT YOUR OPTION) ANY LATER VERSION.
-!
+
 ! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 ! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
+
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
@@ -34,23 +34,24 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
     integer :: iposi, nbcou, nbsec, isect, icou, npgh
     integer :: iad2, nbfib, iad2a
     real(kind=8) :: poi(2), omega, pi, angle, dxa
-!
+
 ! ----------------------------------------------------------------------
-! BUT : DETERMINER KSP1, KSP2, C1 ET C2
-!       TELS QUE POUR LA MAILLE NUMA, LE SOUS-POINT SPECIFIE PAR
-!       (MOTFAC,NUCOU,NICOU,NANGL,NUFIB)
-!       SOIT = C1*KSP1+C2*KSP2
-! OUT IRET : / 0 -> OK : ON PEUT UTILISER C1,C2,KSP1 ET KSP2
-!            / 1 -> LA MAILLE NUMA N'EST PAS CONCERNEE
-!
-! REMARQUE : L'INTERPOLATION N'EST NECESSAIRE QUE POUR LES TUYAUX.
-!            DANS LES AUTRES CAS, KSP2=KSP1, C2=0., C1=1.
+! but : determiner ksp1, ksp2, c1 et c2
+!       tels que pour la maille numa, le sous-point specifie par
+!       (motfac,nucou,nicou,nangl,nufib)
+!       soit = c1*ksp1+c2*ksp2
+! out iret : / 0 -> ok : on peut utiliser c1,c2,ksp1 et ksp2
+!            / 1 -> la maille numa n'est pas concernee
+
+! remarque : l'interpolation n'est necessaire que pour les tuyaux.
+!            dans les autres cas, ksp2=ksp1, c2=0., c1=1.
 ! ----------------------------------------------------------------------
     iret=0
-!
-!
-!
-!     -- CALCUL DE IPOSI=1,2,3 : POSITION DANS LA COUCHE
+
+
+
+!   -- calcul de iposi=1,2,3 : position dans la couche
+!   ---------------------------------------------------
     if (motfac .eq. 'EXTR_COQUE' .or. motfac .eq. 'EXTR_TUYAU') then
         if (nicou .eq. 'INF') then
             iposi=1
@@ -62,18 +63,18 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
             ASSERT(.false.)
         endif
     endif
-!
-!
-!
-!
+
+
+
+
     if (motfac .eq. 'EXTR_COQUE') then
-!     ---------------------------------
+!   ---------------------------------
         ASSERT(nucou.ge.1)
-!       -- EXTR_COQUE EST UTILISE POUR LES COQUES :
-!       -- CMP1 = COQ_NCOU
+!       -- extr_coque est utilise pour les coques :
+!       -- cmp1 = coq_ncou
         call cesexi('C', jce2d, jce2l, numa, 1,&
                     1, 1, iad2a)
-!
+
         if (iad2a .le. 0) then
             iret=1
             goto 9999
@@ -84,15 +85,15 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
         if (nucou .gt. nbcou) then
             call utmess('F', 'CALCULEL2_14')
         endif
-!
+
         ksp1=((nucou-1)*npgh)+iposi
         ksp2=ksp1
         c1=1.d0
         c2=0.d0
-!
-!
+
+
     else if (motfac.eq.'EXTR_PMF') then
-!     ---------------------------------
+!   ---------------------------------
         ASSERT(nufib.ge.1)
 !       -- CMP4 = NBFIBR
         call cesexi('C', jce2d, jce2l, numa, 1,&
@@ -109,10 +110,10 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
         ksp2=ksp1
         c1=1.d0
         c2=0.d0
-!
-!
+
+
     else if (motfac.eq.'EXTR_TUYAU') then
-!     ---------------------------------
+!   ---------------------------------
         ASSERT(nucou.ge.1)
 !       -- CMP2 = TUY_NCOU
         call cesexi('C', jce2d, jce2l, numa, 1,&
@@ -134,13 +135,14 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
             call utmess('F', 'CALCULEL2_14')
         endif
         icou=2*(nucou-1)+iposi
-!
+
 !       -- CMP1 = ANGZZK
         call cesexi('C', jce5d, jce5l, numa, 1,&
                     1, 1, iad2)
         omega=zr(jce5v-1+iad2)
-!
-!       -- MORCEAU DE CODE EXTRAIT DE TE0597 :
+
+
+!       -- morceau de code extrait de te0597 :
         pi=r8pi()
         angle=nangl*pi/180.d0
 !       CALL CARCOU(...,OMEGA)
@@ -153,18 +155,19 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
         if (isect .le. 0 .or. isect .gt. (2*nbsec)) then
             call utmess('F', 'ELEMENTS4_51')
         endif
-!       -- FIN MORCEAU TE0597
+!       -- fin morceau te0597
+
         ksp1=(2*nbsec+1)*(icou-1)+isect
         ksp2=ksp1+1
         c1=poi(1)
         c2=poi(2)
-!
-!
+
+
     else
         ASSERT(.false.)
     endif
-!
+
 9999  continue
-!
-!
+
+
 end subroutine

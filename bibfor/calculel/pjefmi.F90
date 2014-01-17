@@ -112,5 +112,4 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
         endif
     endif
 
-9999  continue
 end subroutine

@@ -54,6 +54,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/kndoub.h"
+#include "asterfort/mecoel.h"
 #include "asterfort/montee.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"

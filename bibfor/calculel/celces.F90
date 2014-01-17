@@ -59,17 +59,17 @@ subroutine celces(celz, basez, cesz)
     character(len=4) :: typces, kmpic
     character(len=8) :: ma, nomgd
     character(len=19) :: cel, ces, ligrel
-    logical :: diff
     integer :: nec, gd, ncmpmx, nbma,  jcelv
     integer :: iadg, icmp, ncmp, jcesl, jcesv,  kcmp
-    integer :: ieq, icmp1, igr, iel,  illiel, ierr
-    integer :: jcelk, nbpt, nbgr, imolo, jmolo, k, nbgr2
+    integer :: ieq, icmp1, igr, iel, ierr
+    integer ::  nbpt, nbgr, imolo, jmolo, nbgr2
     integer :: ipt, numa, iad,    vali(2)
     integer :: nptmx, nbel, ncmpm, nbspt, ncdyn, ncdymx, lgcata
     integer :: ico, adiel, ispt, jcesd, jlpt,  cumu
     character(len=24) :: valk(2)
     logical :: sdveri
     integer, pointer :: liel(:) => null()
+    integer, pointer :: lliel(:) => null()
     integer, pointer :: celd(:) => null()
     integer, pointer :: corr1(:) => null()
     character(len=8), pointer :: nom_cmp(:) => null()
@@ -79,7 +79,7 @@ subroutine celces(celz, basez, cesz)
     integer, pointer :: vnbpt(:) => null()
     integer, pointer :: vnbspt(:) => null()
 
-#define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) liel(lliel(igr)+iel-1)
 !     ------------------------------------------------------------------
 
     call jemarq()
@@ -124,11 +124,10 @@ subroutine celces(celz, basez, cesz)
 
 !     1.2 RECUPERATION DES OBJETS DU CHAM_ELEM ET DU LIGREL :
 !     -------------------------------------------------------
-    call jeveuo(cel//'.CELK', 'L', jcelk)
     call jeveuo(cel//'.CELV', 'L', jcelv)
     call jeveuo(cel//'.CELD', 'L', vi=celd)
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
-    call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
+    call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', vi=lliel)
     nbgr = celd(2)
 
     call jelira(ligrel//'.LIEL', 'NUTIOC', nbgr2)
@@ -177,7 +176,6 @@ subroutine celces(celz, basez, cesz)
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
         ASSERT(zi(jmolo-1+1).le.3)
         ASSERT(zi(jmolo-1+2).eq.gd)
-        diff = (zi(jmolo-1+4).gt.10000)
         nbpt = mod(zi(jmolo-1+4),10000)
         nptmx = max(nptmx,nbpt)
 
@@ -186,9 +184,7 @@ subroutine celces(celz, basez, cesz)
 !          PAR LES ELEMENTS DU GREL
         ncmpm = 0
         do ipt = 1, nbpt
-            k = 1
-            if (diff) k = ipt
-            iadg = jmolo - 1 + 4 + (k-1)*nec + 1
+            iadg = jmolo - 1 + 5
             do icmp = 1, ncmpmx
                 if (exisdg(zi(iadg),icmp)) then
                     ncmpm = max(ncmpm,icmp)
@@ -252,7 +248,6 @@ subroutine celces(celz, basez, cesz)
 
 
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-            diff = (zi(jmolo-1+4).gt.10000)
             nbpt = mod(zi(jmolo-1+4),10000)
             nbel = nbelem(ligrel,igr)
 
@@ -260,9 +255,7 @@ subroutine celces(celz, basez, cesz)
 !            ET DU CUMUL SUR LES POINTS PRECEDENTS :
             do ipt = 1, nbpt
                 ico = 0
-                k = 1
-                if (diff) k = ipt
-                iadg = jmolo - 1 + 4 + (k-1)*nec + 1
+                iadg = jmolo - 1 + 5
                 do kcmp = 1, ncmp
                     icmp = corr2(kcmp)
                     if (exisdg(zi(iadg),icmp)) ico = ico + 1
@@ -277,24 +270,22 @@ subroutine celces(celz, basez, cesz)
             end do
 
 
-            do ipt = 1, nbpt
-                k = 1
-                if (diff) k = ipt
-                iadg = jmolo - 1 + 4 + (k-1)*nec + 1
-                ico = 0
-                do kcmp = 1, ncmp
-                    icmp = corr2(kcmp)
-                    if (exisdg(zi(iadg),icmp)) then
-                        ico = ico + 1
-                        icmp1 = corr1(icmp)
-                        ASSERT(icmp1.eq.kcmp)
+            do iel = 1, nbel
+                numa = numail(igr,iel)
+                if (numa .lt. 0) goto 140
 
-                        do iel = 1, nbel
-                            numa = numail(igr,iel)
-                            if (numa .lt. 0) goto 140
+                nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
+                adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
 
-                            nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
-                            adiel = celd(celd(4+igr)+4+4* (iel-1)+4)
+                do ipt = 1, nbpt
+                    iadg = jmolo - 1 + 5
+                    ico = 0
+                    do kcmp = 1, ncmp
+                        icmp = corr2(kcmp)
+                        if (exisdg(zi(iadg),icmp)) then
+                            ico = ico + 1
+                            icmp1 = corr1(icmp)
+                            ASSERT(icmp1.eq.kcmp)
 
                             do ispt = 1, nbspt
                                 call cesexi('S', jcesd, jcesl, numa, ipt,&
@@ -302,8 +293,8 @@ subroutine celces(celz, basez, cesz)
                                 iad = abs(iad)
                                 zl(jcesl-1+iad) = .true.
 
-                                ieq = adiel - 1 + nbspt*long_pt_cumu(ipt) + (ispt-1)*zi(jlpt-1+ip&
-                                      &t) + ico
+                                ieq = adiel - 1 + nbspt*long_pt_cumu(ipt) + &
+                                      (ispt-1)*zi(jlpt-1+ipt) + ico
 
                                 if (tsca .eq. 'R') then
                                     zr(jcesv-1+iad) = zr(jcelv-1+ieq)
@@ -323,10 +314,10 @@ subroutine celces(celz, basez, cesz)
                                     ASSERT(.false.)
                                 endif
                             end do
-140                         continue
-                        end do
-                    endif
+                        endif
+                    end do
                 end do
+140             continue
             end do
 170         continue
         end do
@@ -342,8 +333,6 @@ subroutine celces(celz, basez, cesz)
 
             lgcata = celd(celd(4+igr)+3)
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-            diff = (zi(jmolo-1+4).gt.10000)
-            ASSERT(.not.diff)
             nbpt = mod(zi(jmolo-1+4),10000)
             ASSERT(nbpt.eq.lgcata)
             nbel = nbelem(ligrel,igr)

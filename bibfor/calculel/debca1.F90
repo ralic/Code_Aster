@@ -185,7 +185,7 @@ subroutine debca1(nomop, ligrel, nin)
         call jeexin(ligrel//'.NVGE', ier)
         if (ier .ne. 0) then
             call jeveuo(ligrel//'.NVGE', 'L', vk16=nvge)
-            vge=nvge(1)
+            vge=nvge(1)(1:12)
             call jeveuo(vge//'.PTVOIS', 'L', jptvoi)
             call jeveuo(vge//'.ELVOIS', 'L', jelvoi)
         else
