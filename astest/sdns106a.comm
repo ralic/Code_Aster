@@ -419,7 +419,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='P04',
                    NOM_CMP='DZ',
                    VALE_CALC=-754.57801785986,
                    VALE_REFE=-824.761,
-                   TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
+                   TOLE_MACHINE=5.E-4,               # TODO TOLE_MACHINE
                    PRECISION=0.1, ),
                 ),
           )
