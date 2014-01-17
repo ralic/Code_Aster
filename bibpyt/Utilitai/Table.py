@@ -169,8 +169,11 @@ class TableBase(object):
       # est-ce que l'attribut .type est renseigné ?
       typdef=typ != [None]*len(typ)
       txt=[]
-      # ['']+ pour ajouter un séparateur en début de ligne
-      lspa=['',]
+      ASTER = (FORMAT=='ASTER')
+      lspa=[]
+      if ASTER:
+          # ['']+ pour ajouter un séparateur en début de ligne
+          lspa.append('')
       # lmax : largeur max des colonnes = max(form{K,R,I},len(parametre))
       lmax=[]
       # formats
@@ -189,7 +192,6 @@ class TableBase(object):
       txt.append(dform['ccom'])
       txt.append(dform['ccom']+'-'*80)
       txt.append(dform['ccom'])
-      ASTER=(FORMAT=='ASTER')
       if ASTER:
          txt.append('#DEBUT_TABLE')
       if self.titr:
@@ -203,7 +205,9 @@ class TableBase(object):
       if ASTER and typdef:
          txt.append(stype)
       for r in rows:
-         lig=['']
+         lig=[]
+         if ASTER:
+             lig.append('')
          empty=True
          for t, p, lmax_i in zip(typ, para, lmax):
             val = r.get(p)
