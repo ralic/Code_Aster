@@ -22,6 +22,7 @@ def build(self):
             name = 'catapy',
           target = 'elements',
              env = env,
+            vars = ['CATALO_CMD'],
     install_path = env.ASTERDATADIR[0],
     )
 
@@ -138,7 +139,10 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     add_to_env_paths(environ, 'ASTER_ROOT', env['PREFIX'])
 
     cmdexe = [python, osp.join(python_path, pyfile)] + args
-    cmds = ' '.join(cmdenv + cmdexe)
+    # this position allows CATALO_CMD to define an environment variable
+    # or a prefix to wrap the executable
+    cmdprefix = Utils.to_list(env['CATALO_CMD'])
+    cmds = ' '.join(cmdenv + cmdprefix + cmdexe)
     Logs.debug('os environ: %r' % environ)
     kwargs['output'] = Context.BOTH
     try:

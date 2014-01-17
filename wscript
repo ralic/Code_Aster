@@ -53,6 +53,10 @@ def options(self):
         'calls (4 or 8, default is 4)',
         '  MUMPS_INT_SIZE : kind of integers to use in the fortran mumps calls '
         ' (4 or 8, default is 4)',
+        '  CATALO_CMD     : command line used to build the elements catalog. '
+        'It is just inserted before the executable '
+        '(may define additional environment variables or a wrapper that takes '
+        'all arguments, see catalo/wscript)',
         '',))
     self.parser.get_usage = _usage
 
