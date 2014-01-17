@@ -15,6 +15,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: j-pierre.lefebvre at edf.fr
+
 DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                    fr="Définition des paramètres décrivant le comportement d un matériau",
                    reentrant='f',
@@ -3367,6 +3368,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              SIGM_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              PENA_ADHERENCE  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              PENA_CONTACT    =SIMP(statut='f',typ='R',defaut=1.),
+             PENA_LAGR       =SIMP(statut='f',typ='R',defaut=1.0E2,val_min=1.01E+0),             
+             RIGI_GLIS       =SIMP(statut='f',typ='R',defaut=1.0E1),             
              CINEMATIQUE     =SIMP(statut='f',typ='TXM',defaut="UNILATER",into=("UNILATER","GLIS_1D","GLIS_2D")),
            ),
            CZM_LAB_MIX    =FACT(statut='f',

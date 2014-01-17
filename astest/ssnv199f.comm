@@ -27,7 +27,7 @@ c_mult_pilo=1
 young = 100
 nu=0.0
 tenac = 0.9
-sigc  = 3
+sigc  = 3.0
 
 dc=2*tenac/sigc
 
@@ -111,15 +111,17 @@ ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                              _F(GROUP_MA='DCB_J',ANGL_REP=(-90, 0 ,-90)),
                                  ));
 
+TENAC=DEFI_CONSTANTE(VALE=tenac)
+SIGC=DEFI_CONSTANTE(VALE=sigc)
 
 MAT=DEFI_MATERIAU(
 
      ELAS=_F(
               E  =  young,
               NU =  nu),
-     RUPT_FRAG = _F(
-                     GC        = tenac,
-                     SIGM_C    = sigc,
+     RUPT_FRAG_FO = _F(
+                     GC        = TENAC,
+                     SIGM_C    = SIGC,
                      PENA_LAGR = pen_lag,
                      RIGI_GLIS = ri_gli,
                     )

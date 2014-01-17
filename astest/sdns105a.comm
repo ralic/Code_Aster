@@ -100,7 +100,9 @@ PENA_T=DEFI_FONCTION(NOM_PARA='TEMP',
 fissmob=DEFI_MATERIAU(RUPT_FRAG_FO = _F(
                      GC = GC_T,
                      SIGM_C = SIGM_CT,
-                     PENA_ADHERENCE = PENA_T
+                     PENA_ADHERENCE = PENA_T,
+                     PENA_LAGR=100.,       
+                     RIGI_GLIS=10.,                     
                     ),);
 
 
