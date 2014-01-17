@@ -455,11 +455,11 @@ cata_msg = {
   -> Attention, il s'agit d'un maillage structuré
 """),
 
-82 : _(u"""
-  -> Le champ %(k1)s n'est associé à aucun modèle.
-  -> Conseil :
-     Veuillez renseigner le modèle.
-"""),
+
+
+
+
+
 
 83 : _(u"""
 Le nombre de valeurs lues dans le fichier MED est différent du nombre de valeurs réellement
