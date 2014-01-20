@@ -302,6 +302,8 @@ def check_catamess(checker, lang, l_cata):
     for catamess in l_cata:
         checker.set_current_mod(catamess)
         loginfo("<%s> checking %s..." % (lang, catamess))
+        if catamess == 'dvp':
+            continue
         cata_msg = get_cata_msg(catamess)
         for key, msg in cata_msg.items():
             if type(msg) == dict:

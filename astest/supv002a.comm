@@ -32,7 +32,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 # Puis, s'il y a des mots qui ne sont pas dans le dictionnaire, il y a deux alarmes :
 #
 # - Cette alarme liste les mots inconnus du dictionnaire pour chaque message.
-#   Dans cet exemple, c'est le message numéro 2 du catalogue dvp.py qui est en cause.
+#   Dans cet exemple, c'est le message numéro 2 du catalogue cable0.py qui est en cause.
 #
 #   !--------------------------------------------------
 #   ! <A> <CATAMESS_1>
@@ -40,7 +40,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 #   ! Erreur lors de la vérification des messages.
 #   ! Liste des alarmes et des erreurs par message
 #   !
-#   ! <fr> dvp: dvp_2: unknown words ('floating',)
+#   ! <fr> cable0: cable0_2: unknown words ('floating',)
 #   ! ...
 #
 # - Cette alarme fournit la liste des tous les mots inconnus :
@@ -95,7 +95,7 @@ previous_errors = [
     'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn',
     'deltat', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa',
     'er', 'error', 'etanca', 'etenca', 'exchml', 'exe', 'export',
-    'flag', 'floating', 'fointa', 'fonree', 'grels', 'indn', 'ipos',
+    'flag', 'fointa', 'fonree', 'grels', 'indn', 'ipos',
     'ligrel', 'lkcaln', 'lmat', 'longt', 'majpad', 'mem',
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp',
     'nomres', 'nomta', 'nomtyp', 'not', 'nt', 'number', 'nume',
