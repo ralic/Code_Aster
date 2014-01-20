@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,14 +15,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xajpmi(list, long, ipt, cpt, newpt,&
-                      longar, ajout)
-        real(kind=8) :: list(*)
-        integer :: long
-        integer :: ipt
-        integer :: cpt
-        real(kind=8) :: newpt(3)
-        real(kind=8) :: longar
-        logical :: ajout
-    end subroutine xajpmi
+    subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta)
+        character(len=8) :: elrefp
+        integer :: ndime
+        real(kind=8) :: ksi
+        real(kind=8) :: tabls(*)
+        real(kind=8) :: delta
+        real(kind=8) :: ptxx(*)
+    end subroutine xdelt0
 end interface

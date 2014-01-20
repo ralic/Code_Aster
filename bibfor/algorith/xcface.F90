@@ -85,7 +85,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
     integer :: iadzi, iazk24, ndim, ptmax
     character(len=8) :: typma
     integer :: zxain
-    logical :: lcont, lajpa, lajpb, lajpc
+    logical :: lcont, lajpa, lajpb, lajpc, ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -227,13 +227,13 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
 !
             if (lajpa) call xajpin(ndim, pinter, ptmax, ipt, ins,&
                                    a, longar, ainter, 0, na,&
-                                   0.d0)
+                                   0.d0, ajout)
             if (lajpb) call xajpin(ndim, pinter, ptmax, ipt, ins,&
                                    b, longar, ainter, 0, nb,&
-                                   0.d0)
+                                   0.d0, ajout)
             if (lajpc) call xajpin(ndim, pinter, ptmax, ipt, ibid,&
                                    c, longar, ainter, nc, 0,&
-                                   alpha)
+                                   alpha, ajout)
         endif
 !
      end do

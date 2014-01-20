@@ -1,14 +1,20 @@
-subroutine xintar(lsna, lsnb, lsnm, a, b,&
-                  m, ndim, intar)
+subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
+                  inref, inter) 
     implicit none
 !
 #include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xelrex.h"
+#include "asterfort/xveri0.h"
 #include "asterfort/xnewto.h"
-    integer :: ndim
-    real(kind=8) :: lsna, lsnb, lsnm, a(3), b(3), m(3), intar(3)
+    character(len=8) :: elrefp
+    integer :: ndim, ndime, ia, ib
+    real(kind=8) :: lsn(*), geom(*), inter(3), inref(3)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,51 +36,55 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
 !                      ET LA FISSURE
 !
 !     ENTREE
-!       LSNA    :VALEURS DES LEVELSET DES NOEUDS DE L'ELEMENT
-!       LSNB    :VALEURS DES LEVELSET DES NOEUDS DE L'ELEMENT
-!       LSNC    :VALEURS DES LEVELSET DES NOEUDS DE L'ELEMENT
-!       A       :COORDONNEES DES NOEUDS DE L'ELEMENT
-!       B       :COORDONNEES DES NOEUDS DE L'ELEMENT
-!       M       :COORDONNEES DES NOEUDS DE L'ELEMENT
-!       NDIM    :DIMENSION TOPOLOGIQUE DU MAILLAGE
+!
 !     SORTIE
-!       INTAR   : COORDONNEES DES POINTS D'INTERSECTION
+!
 !     ----------------------------------------------------------------
 !
-    character(len=8) :: elp
     character(len=6) :: name
-    real(kind=8) :: lsnl(3), col(ndim*3)
-    real(kind=8) :: epsmax, rbid, xe(ndim)
-    integer :: nno, itemax, i, ibid, n(3)
-    parameter       (elp='SE3')
+    real(kind=8) :: ksi(ndime), ptxx(2*ndime), lsna, lsnb, x(81)
+    real(kind=8) :: epsmax
+    integer :: itemax, ibid, n(3), j, nno, iret
 !
 !---------------------------------------------------------------------
 !     DEBUT
 !---------------------------------------------------------------------
     call jemarq()
 !
-    itemax=500
-    epsmax=1.d-9
-    name='XINTAR'
-    nno=3
-!
-    lsnl(1)=lsna
-    lsnl(2)=lsnb
-    lsnl(3)=lsnm
-!
-    do 100 i = 1, ndim
-        col(i)=a(i)
-        col(ndim+i)=b(i)
-        col(ndim*2+i)=m(i)
-100  end do
-!
-    rbid = 0.d0
-    call xnewto(elp, name, n,&
-                ndim, [rbid], ndim, [rbid], lsnl,&
+    itemax=100
+    epsmax=1.d-8
+    name='XINTER'
+    n(1)=ia
+    n(2)=ib
+    n(3)=0
+!   COORDONNEES DANS L ELEMENT DE REFERENCE PARENT
+    call xelrex(elrefp, nno, x)
+!  ON STOCKE LES COORDONEES DE REFERENCE DE A ET B DANS <ptxx>
+    do j = 1,ndime
+      ptxx(j)=x(ndime*(ib-1)+j)-x(ndime*(ia-1)+j)
+      ptxx(j+ndime)=x(ndime*(ia-1)+j)
+    enddo
+!!!!!ATTENTION INITIALISATION DU NEWTON: INTERPOLATION LINEAIRE DE LSN
+    call vecini(ndime, 0.d0, ksi)
+!   INTERPOLATION GROSSIERE POUR INITIALISER LE NEWTON
+    lsna=lsn(ia)
+    lsnb=lsn(ib)
+    ASSERT(abs(lsna-lsnb) .gt. 1.d0/r8gaem())
+    ksi(1)=lsna/(lsna-lsnb)
+    call xnewto(elrefp, name, n,&
+                ndime, ptxx, ndim, geom, lsn,&
                 ibid, ibid, itemax,&
-                epsmax, xe)
-    call reerel(elp, nno, ndim, col, xe,&
-                intar)
+                epsmax, ksi)
+!  FIN DE RECHERCHE SUR SEGMENT AB
+    do j = 1, ndime
+        inref(j)=ksi(1)*ptxx(j)+ptxx(j+ndime)
+    enddo
+!
+    call xveri0(ndime, elrefp, inref, iret)  
+    ASSERT(iret .eq. 0)
+!
+    call reerel(elrefp, nno, ndim, geom, inref,&
+                inter)
 !
 !---------------------------------------------------------------------
 !     FIN

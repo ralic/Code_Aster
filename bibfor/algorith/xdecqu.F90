@@ -1,6 +1,6 @@
 subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                   igeom, pinter, ninter, npts, ainter,&
-                  pmilie, nmilie, mfis)
+                  pmilie, nmilie, mfis, tx, txlsn)
     implicit none
 !
 #include "jeveux.h"
@@ -13,7 +13,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/loncar.h"
-#include "asterfort/ndcent.h"
 #include "asterfort/padist.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
@@ -22,11 +21,12 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/xalgo2.h"
 #include "asterfort/xalgo3.h"
 #include "asterfort/xerfis.h"
-#include "asterfort/xintar.h"
+#include "asterfort/xelrex.h"
+#include "asterfort/xinter.h"
 #include "asterfort/xxmmvd.h"
     integer :: nnose, it, ndim, cnset(*), ninter, igeom, npts, nmilie, mfis
     integer :: jlsn
-    real(kind=8) :: pinter(*), ainter(*), pmilie(*)
+    real(kind=8) :: pinter(*), ainter(*), pmilie(*), tx(3, 7), txlsn(7)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,20 +67,19 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
     real(kind=8) :: a(3), b(3), c(3), m(3), lsna, lsnb, lsnm
     real(kind=8) :: alpha, longar, lonref, tampor(4), tabco(81)
-    real(kind=8) :: val, rbid
-    real(kind=8) :: tabls(27)
-    real(kind=8) :: tx(3, 7), txlsn(7)
+    real(kind=8) :: val, rbid, cref(ndim), pinref(18)
+    real(kind=8) :: tabls(27), xref(81)
     integer :: ar(12, 3), nbar, nta, ntb, na, nb, ins
     integer :: ia, i, ipi, ibid, pp, pd, k
-    integer :: ndime, nnc, noeua, noeub, im
+    integer :: ndime, noeua, noeub, im
     integer :: j, a1, a2, nx, ipt
     integer :: ptmax, pmmaxi(3), pmmax
     integer :: ntm, nm, inm, nptm, nnop
     integer :: zxain
     character(len=8) :: typma, elrese(3), elrefp
-    logical :: cut, papillon
+    logical :: cut, papillon, ajout
 !
-    parameter       (ptmax=11)
+    parameter       (ptmax=6)
     data            elrese /'SEG3','TRIA6','TETRA10'/
 !
     data            pmmaxi  / 2,  6,   17 /
@@ -102,9 +101,11 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
     typma=elrese(ndime)
 !
-    call ndcent(igeom, ndim, zr(jlsn), tx, txlsn, nnc)
-!
     call vecini(81, 0.d0, tabco)
+    call vecini(18, 0.d0, pinref)
+    call vecini(81, 0.d0, xref)
+!   RECUPERATION DES COORDONNES DE REFERENCE DE L ELEMENENT COMPLET
+    call xelrex(elrefp, ibid, xref)
 !
     nx=0
 !     TABLEAU DES COORDONNEES DES NOEUDS DE L'ELEMENT ENFANT
@@ -198,7 +199,13 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !           ON AJOUTE A LA LISTE LE POINT A
                 call xajpin(ndim, pinter, ptmax, ipi, ins,&
                             a, longar, ainter, 0, na,&
-                            0.d0)
+                            0.d0, ajout)
+!              
+               if (ajout) then
+                 do k = 1, ndime
+                 pinref(ndime*(ipi-1)+k)=xref(ndime*(na-1)+k)
+                 enddo
+               endif
             endif
 !
 !         SI LA FISSURE COUPE L'EXTREMITE B
@@ -206,7 +213,13 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !           ON AJOUTE A LA LISTE LE POINT B
                 call xajpin(ndim, pinter, ptmax, ipi, ins,&
                             b, longar, ainter, 0, nb,&
-                            longar)
+                            longar, ajout)
+!
+               if (ajout) then
+                 do k = 1, ndime
+                 pinref(ndime*(ipi-1)+k)=xref(ndime*(nb-1)+k)
+                 enddo
+               endif
             endif
 !
 !         SI LA FISSURE COUPE LE MILIEU M
@@ -217,26 +230,44 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                 if (cut) then
                     call xajpin(ndim, pinter, ptmax, ipi, inm,&
                                 m, longar, ainter, ia, 0,&
-                                alpha)
-
+                                alpha, ajout)
+!
+                    if (ajout) then
+                      do k = 1, ndime
+                        pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
+                      enddo
+                    endif
                 else if (.not.cut) then
                     call xajpin(ndim, pinter, ptmax, ipi, inm,&
                                 m, longar, ainter, 0, nm,&
-                                alpha)
+                                alpha, ajout)
+!
+                    if (ajout) then
+                      do k = 1, ndime
+                       pinref(ndime*(ipi-1)+k)=xref(ndime*(nm-1)+k)
+                    enddo
+                   endif
                 endif
             endif
 !
 !         SI LA FISSURE COUPE AILLEURS
             if (lsna .ne. 0 .and. lsnb .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
-                call xintar(lsna, lsnb, lsnm, a, b,&
-                            m, ndim, c)
+                call xinter(ndim, ndime, elrefp, zr(igeom), zr(jlsn), na, nb,&
+                  cref, c) 
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
 !           ON AJOUTE A LA LISTE LE POINT C
                 call xajpin(ndim, pinter, ptmax, ipi, ibid,&
                             c, longar, ainter, ia, 0,&
-                            alpha)
+                            alpha, ajout)
+!
+                 if (ajout) then
+                   do k = 1, ndime
+                     pinref(ndime*(ipi-1)+k)=cref(k)
+                   enddo
+                 endif
+!           ON RAJOUTE A LA LISTE DES COORDONNEES DE REFERENCE
             endif
 !
         endif
@@ -265,6 +296,10 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             tampor(k)=pinter(ndim*(pp-1)+k)
             pinter(ndim*(pp-1)+k)=pinter(ndim*(pd-1)+k)
             pinter(ndim*(pd-1)+k)=tampor(k)
+!  TRAITEMENT DE PINREF
+            tampor(k)=pinref(ndim*(pp-1)+k)
+            pinref(ndim*(pp-1)+k)=pinref(ndim*(pd-1)+k)
+            pinref(ndim*(pd-1)+k)=tampor(k)
 203      continue
 200  continue
 !
@@ -292,6 +327,10 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
               tampor(k)=pinter(ndim*(ia-1)+k)
               pinter(ndim*(ia-1)+k)=pinter(ndim*(4-1)+k)
               pinter(ndim*(4-1)+k)=tampor(k)
+!  TRAITEMENT DE PINREF
+              tampor(k)=pinref(ndim*(ia-1)+k)
+              pinref(ndim*(ia-1)+k)=pinref(ndim*(4-1)+k)
+              pinref(ndim*(4-1)+k)=tampor(k)
 227         continue
           endif
 220     continue
@@ -325,6 +364,10 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             tampor(k)=pinter(ndim*(4-1)+k)
             pinter(ndim*(4-1)+k)=pinter(ndim*(ipt-1)+k)
             pinter(ndim*(ipt-1)+k)=tampor(k)
+!  TRAITEMENT DE PINREF
+            tampor(k)=pinref(ndim*(4-1)+k)
+            pinref(ndim*(4-1)+k)=pinref(ndim*(ipt-1)+k)
+            pinref(ndim*(ipt-1)+k)=tampor(k)
          enddo
         endif
       enddo
@@ -341,14 +384,15 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 ! CALCUL DES POINTS MILIEUX
 !  
     pmmax=pmmaxi(ndim)
+    call loncar(ndim, typma, tabco, lonref)
 !
     if (ndim.le.2) call xalgo2(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
+                      pmmax, nmilie, mfis, lonref, pinref)
 !
     if (ndim.eq.3) call xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
+                      pmmax, nmilie, mfis, lonref, pinref)
 !
 999 continue
     call jedema()

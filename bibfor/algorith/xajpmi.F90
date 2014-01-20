@@ -1,5 +1,5 @@
 subroutine xajpmi(list, long, ipt, cpt, newpt,&
-                  longar)
+                  longar, ajout)
     implicit none
 !
 #include "jeveux.h"
@@ -12,6 +12,7 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
 !
     integer :: long, ipt, cpt
     real(kind=8) :: newpt(3), longar, list(*)
+    logical :: ajout
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,5 +78,6 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
         end do
     endif
 !
+    ajout=(.not.deja)
     call jedema()
 end subroutine

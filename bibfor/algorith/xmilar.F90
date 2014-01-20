@@ -1,18 +1,15 @@
-subroutine xmilar(ndim, pinter, tabar, areint, milara,&
-                  milarb)
-! aslint: disable=W1306
+subroutine xmilar(ndim, ndime, elrefp, geom,  pinref,&
+                  ia, ib, ip, ksia, ksib, milara, milarb)
+!
     implicit none
 !
-#include "jeveux.h"
-#include "asterfort/abscvf.h"
-#include "asterfort/abscvl.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
+#include "asterfort/xelrex.h"
 #include "asterfort/reerel.h"
-#include "asterfort/xinvac.h"
-    integer :: ndim, areint
-    real(kind=8) :: milara(ndim), milarb(ndim), pinter(*), tabar(*)
+    integer :: ndim, ndime, ia, ib, ip
+    real(kind=8) :: milara(3), milarb(3), pinref(*), geom(*)
+    real(kind=8) :: ksia(ndime), ksib(ndime)
+    character(len=8) :: elrefp
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,50 +41,21 @@ subroutine xmilar(ndim, pinter, tabar, areint, milara,&
 !       MILARB  : COOR DU PT MILIEU ENTRE 2EM PT DE COORSG ET PT INTER
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: c(ndim)
-    real(kind=8) :: s, sc, s1
-    real(kind=8) :: ksi1, ksia(ndim), ksib(ndim)
-    integer :: k, nno
-    character(len=8) :: elp
-    parameter     (elp='SE3', nno=3)
+    integer :: nno, j
+    real(kind=8) :: x(81)
 !
 ! --------------------------------------------------------------------
-    call jemarq()   
 !
-!     RECUPERATION DES COORDONNES DU PT INTER
-      do 200 k = 1, ndim
-          c(k)=pinter((areint-1)*ndim+k)
-200    continue
+    call xelrex(elrefp, nno, x)
 !
-!     TABAR : KSI2=-1  /  KSI1= 1  /  KSI3= 0
-!     KSI2 ETANT LE POINT D'ORIGINE
+    do j = 1,ndime
+      ksia(j)=(pinref(ndime*(ip-1)+j)+x(ndime*(ia-1)+j))/2.d0
+      ksib(j)=(pinref(ndime*(ip-1)+j)+x(ndime*(ib-1)+j))/2.d0
+    enddo
 !
-! --- ABSCISSE CURVILIGNE DU PT INTER SUR L'ARETE
-    call abscvl(ndim, tabar, c, sc)
-!
-! --- COORDONNES DU POINT MILARA DANS L'ELEMENT DE REFERENCE
-!     TEL QUE ABSCISSE CURVILIGNE(D1)=ABSCISSE CURVILIGNE(I)/2
-    s=sc/2
-    call xinvac(elp, ndim, tabar, s, ksia)
-    ASSERT(ksia(1).ge.-1 .and. ksia(1).le.1)
-!
-! --- COORDONNES DU POINT MILARA DANS L'ELEMENT REEL
-    call reerel(elp, nno, ndim, tabar, ksia,&
+    call reerel(elrefp, nno, ndim, geom, ksia,&
                 milara)
-!
-! --- ABSCISSE CURVILIGNE DE KSI1
-    ksi1=1
-    call abscvf(ndim, tabar, ksi1, s1)
-!
-! --- COORDONNES DU POINT MILARB DANS L'ELEMENT DE REFERENCE
-!     TEL QUE ABSCURV(D2)=[ABSCURV(A)+ABSCURV(I)]/2
-    s=(s1+sc)/2
-    call xinvac(elp, ndim, tabar, s, ksib)
-    ASSERT(ksib(1).ge.-1 .and. ksib(1).le.1)
-!
-! --- COORDONNES DU POINT MILARB DANS L'ELEMENT REEL
-    call reerel(elp, nno, ndim, tabar, ksib,&
+    call reerel(elrefp, nno, ndim, geom, ksib,&
                 milarb)
 !
-    call jedema()
 end subroutine

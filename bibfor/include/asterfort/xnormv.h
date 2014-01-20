@@ -16,14 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xajpmi(list, long, ipt, cpt, newpt,&
-                      longar, ajout)
-        real(kind=8) :: list(*)
-        integer :: long
-        integer :: ipt
-        integer :: cpt
-        real(kind=8) :: newpt(3)
-        real(kind=8) :: longar
-        logical :: ajout
-    end subroutine xajpmi
+    subroutine xnormv(dime, xx, norme)
+        integer ::  dime
+        real(kind=8) :: xx(dime)
+        real(kind=8) :: norme
+    end subroutine xnormv
 end interface

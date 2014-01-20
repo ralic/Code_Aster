@@ -16,26 +16,24 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xmilfa(elp, nno, ndime, n,&
-                  typma, ip1, ip2, pm1a,&
-                  pm1b, pm2, pinter, ndim, tabco1,&
-                 tabco2, pmilie, ainter, milfa)
-        integer :: ndime
-        integer :: ndim
-        character(len=8) :: elp
-        integer :: nno
-        integer :: n(3)
+    subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
+                      ainter, ip1, ip2, pm2, typma, pinref, pmiref,&
+                      ksi, milfa)
+        character(len=8) :: elrefp
         character(len=8) :: typma
+        integer :: ndim
+        integer :: ndime
+        integer :: nnose
+        integer :: it
         integer :: ip1
         integer :: ip2
-        integer :: pm1a
-        integer :: pm1b
         integer :: pm2
-        real(kind=8) :: pinter(*)
-        real(kind=8) :: tabco1(*)
-        real(kind=8) :: tabco2(*)
-        real(kind=8) :: pmilie(*)
+        integer :: cnset(*)
+        real(kind=8) :: pinref(*)
+        real(kind=8) :: pmiref(*)
+        real(kind=8) :: geom(*)
         real(kind=8) :: ainter(*)
+        real(kind=8) :: ksi(ndime)
         real(kind=8) :: milfa(ndim)
     end subroutine xmilfa
 end interface 

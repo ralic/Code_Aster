@@ -17,8 +17,8 @@
 !
 interface 
     subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
+                      pmmax, nmilie, mfis, lonref, pinref)
         integer :: ndim
         integer :: nnop
         integer :: it
@@ -37,10 +37,9 @@ interface
         integer :: mfis
         character(len=8) :: typma
         character(len=8) :: elrefp
-        real(kind=8) :: tabco(81)
-        real(kind=8) :: pinter(*) 
+        real(kind=8) :: lonref
         real(kind=8) :: ainter(*)
-        real(kind=8) :: pmilie(51)
-        real(kind=8) :: tabls(27)
+        real(kind=8) :: pmilie(*)
+        real(kind=8) :: pinref(*)  
     end subroutine xalg42
 end interface 

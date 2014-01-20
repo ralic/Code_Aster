@@ -18,7 +18,7 @@
 interface
     subroutine xajpin(ndim, list, long, ipt, cpt,&
                       newpt, longar, ainter, ia, in,&
-                      al)
+                      al, ajout)
         integer :: ndim
         real(kind=8) :: list(*)
         integer :: long
@@ -30,5 +30,6 @@ interface
         integer :: ia
         integer :: in
         real(kind=8) :: al
+        logical :: ajout
     end subroutine xajpin
 end interface

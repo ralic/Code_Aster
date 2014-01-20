@@ -69,7 +69,7 @@ subroutine te0514(option, nomte)
     integer :: iret, nfiss, ifiss, ncomb, ninmax, nmmax
     parameter(ptmaxi=6,zintmx=5,pmmaxi=17,nsemax=6,nfimax=10)
     parameter(ninmax=44,nmmax=65)
-    real(kind=8) :: nmil(3, 7), rbid7(7), ainter(ptmaxi*zintmx)
+    real(kind=8) :: nmil(3, 7), txlsn(7), ainter(ptmaxi*zintmx)
     real(kind=8) :: newpt(3), p(3), lonref, pinter(3*ptmaxi)
     real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax)
     real(kind=8) :: xg(3)
@@ -161,11 +161,11 @@ subroutine te0514(option, nomte)
     ! initilisation : cas sans noeuds centraux
     nnc=0
     call matini(3, 7, 0.d0, nmil)
-    call vecini(7, 0.d0, rbid7)
+    call vecini(7, 0.d0, txlsn)
 
     ! si l'element est incomplet, on calcule les informations concernant les les noeuds centraux
     if ((elp.eq.'QU8') .or. (elp.eq.'H20') .or. (elp.eq.'P13') .or. (elp.eq.'P15')) then
-        call ndcent(igeom, ndim, zr(jlsn), nmil, rbid7, nnc)
+        call ndcent(igeom, ndim, zr(jlsn), nmil, txlsn, nnc)
     end if
 
     npi=0
@@ -212,7 +212,7 @@ subroutine te0514(option, nomte)
         do 100 it = 1, nit
 !
 !         DECOUPAGE EN NSE SOUS-ELEMENTS
-            call vecini(12, 0.d0, pinter)
+            call vecini(18, 0.d0, pinter)
             nmilie = 0
             ninter = 0
             npts = 0
@@ -223,7 +223,7 @@ subroutine te0514(option, nomte)
             if (.not.iselli(elp)) then
                 call xdecqu(nnose, it, ndim, zi(jout2), jlsn,&
                             igeom, pinter, ninter, npts, ainter,&
-                            pmilie, nmilie, nmfis)
+                            pmilie, nmilie, nmfis, nmil, txlsn)
 !
                 call xdecqv(nnose, it, zi(jout2), zr(jlsn), igeom,&
                             ninter, npts, ainter, nse, cnse,&

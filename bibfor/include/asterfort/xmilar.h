@@ -16,13 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmilar(ndim, pinter, tabar, areint, milara,&
-                      milarb)
+    subroutine xmilar(ndim, ndime, elrefp, geom,  pinref,&
+                    ia, ib, ip, ksia, ksib, milara, milarb)
+        character(len=8) :: elrefp
         integer :: ndim
-        real(kind=8) :: pinter(*)
-        real(kind=8) :: tabar(*)
-        integer :: areint
-        real(kind=8) :: milara(ndim)
-        real(kind=8) :: milarb(ndim)
+        integer :: ndime
+        real(kind=8) :: geom(*)
+        real(kind=8) :: pinref(*)
+        integer :: ia
+        integer :: ib
+        integer :: ip
+        real(kind=8) :: ksia(ndime)
+        real(kind=8) :: ksib(ndime)
+        real(kind=8) :: milara(3)
+        real(kind=8) :: milarb(3)
     end subroutine xmilar
 end interface

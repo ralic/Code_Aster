@@ -1,17 +1,26 @@
-subroutine xcenfi(elp, ndim, nno, ptint, pmilie,&
-                  jtabco, jtabls, cenfi)
+subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
+                  pinref, pmiref, cenref, cenfi)
 !
     implicit none
 !
-#   include "jeveux.h"
-#   include "asterfort/assert.h"
-#   include "asterfort/jedema.h"
-#   include "asterfort/jemarq.h"
-#   include "asterfort/reerel.h"
-#   include "asterfort/xnewto.h"
-    integer :: ndim, nno, jtabco, jtabls
-    character(len=8) :: elp
-    real(kind=8) :: cenfi(ndim), ptint(*), pmilie(*)
+#include "jeveux.h"
+#include "blas/ddot.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/provec.h"
+#include "asterfort/reerel.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcedge.h"
+#include "asterfort/xelrex.h"
+#include "asterfort/xnewto.h"
+#include "asterfort/xnormv.h"
+#include "asterfort/xveri0.h"
+    integer :: ndim, ndime
+    character(len=8) :: elrefp
+    real(kind=8) :: lsn(*), geom(*), pinref(*), pmiref(*)
+    real(kind=8) :: cenfi(ndim), cenref(ndime)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,41 +51,126 @@ subroutine xcenfi(elp, ndim, nno, ptint, pmilie,&
 !       CENFI   : COORDONNES DU PT MILIEU AU CENTRE DE LA FISSURE
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: ksi(ndim)
-    real(kind=8) :: epsmax, rbid, tab(8, ndim)
-    integer :: ibid, itemax, i, n(3)
+    real(kind=8) :: epsmax, rbid, crit, maxi, x(81)
+    real(kind=8) :: pi1pi2(ndime), pi1pi3(ndime)
+    real(kind=8) :: v(3), ptxx(2*ndime), ksi(ndime), tole
+    integer :: ibid, itemax, i, n(3), nno, iret
+    integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34
     character(len=6) :: name
+    character(len=3) :: edge
+    logical :: courbe
+    parameter   (tole=1.d-1)
 !
 ! --------------------------------------------------------------------
 !
     call jemarq()
 !
-    itemax=500
-    epsmax=1.d-9
-    name='XCENFI'
-    do i = 1,3
-      n(i)=0
-    end do
+    call elref4(elrefp, 'RIGI', ibid, nno, ibid,&
+                ibid, ibid, ibid, ibid, ibid)
 !
-!     CALCUL DES COORDONNEES DE REFERENCE
-!     DU POINT PAR UN ALGO DE NEWTON
-!POUR LE MOMENT BLINDAGE ET SOUS DECOUPAGE DROIT
-    call xnewto(elp, name, nno, n,&
-                ndim, ptint, ndim, zr(jtabco), pmilie, zr(jtabls),&
-                tab, ibid, ibid, rbid, itemax,&
+    itemax=100
+    epsmax=1.d-8
+    name='XCENFI'
+!  CONFERE XSTUDO
+    pi1=1
+    pi2=2
+    pi3=3
+    pi4=4
+    m12=9
+    m13=12
+    m34=11
+    m24=10
+!
+    ASSERT( ndime .eq. 3)
+!
+    do i = 1,ndime
+       pi1pi2(i)=pinref(ndime*(pi2-1)+i)-pinref(ndime*(pi1-1)+i)
+       pi1pi3(i)=pinref(ndime*(pi3-1)+i)-pinref(ndime*(pi1-1)+i)
+    enddo
+    call xnormv(ndime, pi1pi2, rbid)
+    call xnormv(ndime, pi1pi3, rbid)
+    call provec(pi1pi2, pi1pi3, v)
+    do i=1,ndime
+       ptxx(i)=v(i)
+    enddo
+!
+!   CALCUL D UN POINT DE DEPART POUR LE NEWTON
+!===============================================================
+!   ON DEFINI UN CRITERE SIMPLE POUR PRENDRE EN COMPTE LA COURBURE
+!   CE CRITERE EST EFFICACE QUAND L INTERSECTION DE SURFACE DE L ISO ZERO 
+!   ET DU SOUS TETRAEDRE FORME UN <<POLYEDRE>> NON CONVEXE
+!   SITUATION PLUS PROBABLE LORS DE LA DECOUPE D UN TETRATRAEDRE
+!   EN REVANCHE,
+!   EN RAFINANT LE MAILLAGE, LA SURFACE DE LA LEVEL-SET DEVIENT PLANE DANS 
+!   LES SOUS-TETRAS, LE CRITERE CI DESSOUS N A PLUS D INCIDENCE SUR LE CALCUL
+!
+    courbe=.false.
+    maxi=0.d0
+    edge=""
+!   ARETE I1-I2
+    call xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
+    if (crit .gt. maxi) then 
+      maxi=crit
+      edge="A12"
+    endif
+!   ARETE I2-I4
+    call xcedge(ndime, pinref, pi2, pi4, pmiref, m24, crit)
+    if (crit .gt. maxi) then 
+      maxi=crit
+      edge="A24"
+    endif
+!   ARETE I3-I4
+    call xcedge(ndime, pinref, pi3, pi4, pmiref, m34, crit)
+    if (crit .gt. maxi) then 
+      maxi=crit
+      edge="A34"
+    endif
+!   ARETE I1-I3
+    call xcedge(ndime, pinref, pi1, pi3, pmiref, m13, crit)
+    if (crit .gt. maxi) then 
+      maxi=crit
+      edge="A13"
+    endif
+!
+    if (maxi .gt. tole) courbe=.true.
+!
+    if ( .not.courbe ) then
+        do i=1,ndime
+           ptxx(i+ndime)=(pinref(ndime*(pi1-1)+i)+&
+                    pinref(ndime*(pi4-1)+i))/2.d0  
+        enddo
+    else
+        do i=1,ndime
+           if (edge .eq. "A12" .or.  edge .eq. "A34") then 
+               ptxx(i+ndime)=(pmiref(ndime*(m12-1)+i)+&
+                            pmiref(ndime*(m34-1)+i))/2.d0
+           else if(edge .eq. "A13" .or.  edge .eq. "A24") then
+               ptxx(i+ndime)=(pmiref(ndime*(m13-1)+i)+&
+                            pmiref(ndime*(m24-1)+i))/2.d0
+           else
+               ASSERT(.false.)
+           endif
+        enddo    
+    endif
+!   
+!!!!!ATTENTION INITIALISATION DU NEWTON:
+    call vecini(ndime, 0.d0, ksi)
+    call xnewto(elrefp, name, n,&
+                ndime, ptxx, ndim, geom, lsn,&
+                ibid, ibid, itemax,&
                 epsmax, ksi)
 !
-    ASSERT(ksi(1).ge.-1.d0 .and. ksi(1).le.1.d0)
-    ASSERT(ksi(2).ge.-1.d0 .and. ksi(2).le.1.d0)
+    do i=1,ndime
+       cenref(i)=ksi(1)*ptxx(i)+ptxx(i+ndime)
+    enddo
+!
+    call xelrex(elrefp, nno, x)
+    call xveri0(ndime, elrefp, cenref, iret)  
+    ASSERT(iret .eq. 0)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elp, nno, ndim, zr(jtabco), ksi,&
+    call reerel(elrefp, nno, ndim, geom, cenref,&
                 cenfi)
-    if(.true.) then
-    do i = 1, ndim
-      cenfi(i)=(ptint((1-1)*ndim+i)+ptint((4-1)*ndim+i))/2.d0
-    end do
-    endif
 !
     call jedema()
 end subroutine

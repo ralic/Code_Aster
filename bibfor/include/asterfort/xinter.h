@@ -1,3 +1,4 @@
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xdelt5(elp, nno, n, ndime, ksi,&
-                  tabco, ndim, tab, delta)
-        integer :: nno
-        integer :: n(3)
-        integer :: ndime
+    subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
+                  inref, inter) 
         integer :: ndim
-        character(len=8) :: elp
-        real(kind=8) :: ksi(ndime)
-        real(kind=8) :: tabco(*)
-        real(kind=8) :: tab(8, ndim)
-        real(kind=8) :: delta(ndime)
-    end subroutine xdelt5
+        integer :: ndime
+        character(len=8) :: elrefp
+        real(kind=8) :: geom(*)
+        real(kind=8) :: lsn(*)
+        integer :: ia
+        integer :: ib
+        real(kind=8) :: inref(3)
+        real(kind=8) :: inter(3)
+    end subroutine xinter
 end interface

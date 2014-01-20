@@ -70,7 +70,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
     integer :: i, nbf, ibid, ifq, j
     integer :: fa(6, 4), ibid3(12, 3), ifisc, jfisc, ino
     integer :: nnof, na, nb, iret, nne
-    logical :: chgsgn, lajpf
+    logical :: chgsgn, lajpf, ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -183,7 +183,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
             loncar=(padist(ndim,a,b)+padist(ndim,a,c))/2.d0
             call xajpin(ndim, ptint, ptmax, ipt, ibid,&
                         m, loncar, ainter, 0, 0,&
-                        0.d0)
+                        0.d0, ajout)
         endif
 200  end do
 !

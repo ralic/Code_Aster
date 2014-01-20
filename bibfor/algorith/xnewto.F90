@@ -1,6 +1,6 @@
-subroutine xnewto(elp, name, nno, n,&
-                  ndime, ptint, ndim, tabco, pmilie, tabls,&
-                  tab, ipp, ip, s, itemax,&
+subroutine xnewto(elrefp, name, n,&
+                  ndime, ptxx, ndim, tabco, tabls,&
+                  ipp, ip, itemax,&
                   epsmax, ksi)
     implicit none
 !
@@ -11,16 +11,15 @@ subroutine xnewto(elp, name, nno, n,&
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xdelt0.h"
 #include "asterfort/xdelt2.h"
 #include "asterfort/xdelt3.h"
-#include "asterfort/xdelt4.h"
-#include "asterfort/xdelt5.h"
-    integer :: num, ndime, ndim, ipp, ip, nno, n(3)
-    real(kind=8) :: s, ptint(*), tabco(*), tabls(*), tab(8, ndim), pmilie(*)
+    integer :: ndime, ndim, ipp, ip, n(3)
+    real(kind=8) :: ptxx(*), tabco(*), tabls(*)
     integer :: itemax
     real(kind=8) :: epsmax, ksi(ndim)
     character(len=6) :: name
-    character(len=8) :: elp
+    character(len=8) :: elrefp
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +61,7 @@ subroutine xnewto(elp, name, nno, n,&
     parameter    (zero=0.d0)
     real(kind=8) :: dist, dmin
     real(kind=8) :: ksi2(ndime),delta(ndime), ksim(ndime)
-    data  itermin/2/
+    data  itermin/1/
 !
 ! ------------------------------------------------------------------
 !
@@ -70,7 +69,11 @@ subroutine xnewto(elp, name, nno, n,&
 !
 ! --- POINT DE DEPART
 !
-    call vecini(ndime, zero, ksi2)
+!  ATTENTION: ON SUPPOSE QUE LA FONCTION APPELANTE A DEJA 
+!  INITIALISE LE NEWTON EN AMONT
+    do  i=1, ndime
+        ksi2(i)=ksi(i)
+    enddo
 !
     call vecini(ndime, zero, delta)
     iter = 0
@@ -89,22 +92,22 @@ subroutine xnewto(elp, name, nno, n,&
 ! --- CALCUL DE LA QUANTITE A MINIMISER
 !
     if (name .eq. 'XMILFI') then
-        call xdelt2(elp, nno, n, ndime, ksi2,&
-                    ptint, ndim, tabco, tabls, ipp, ip,&
+        call xdelt2(elrefp, n, ndime, ksi2,&
+                    ptxx, ndim, tabco, tabls, ipp, ip,&
                     delta)
-!    else if (name.eq. 'XINVAC') then
-!        call xdelt1(num, ndim, ksi2(1), tabco, s,&
-!                    delta(1))
     else if (name.eq. 'XINTAR') then
         call xdelt3(ndim, ksi2, tabls, delta(1))
-    else if (name.eq. 'XCENFI') then
-        ASSERT(ndim.eq.3)
-        call xdelt4(elp, nno, ndim, ksi2, ptint,&
-                    pmilie, tabco, tabls, delta)
-    else if (name.eq. 'XMILFA') then
-        call xdelt5(elp, nno, n, ndime, ksi2,&
-                    tabco, ndim, tab, delta)
+    else if (name .eq. 'XINTER') then
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), delta(1))
+    else if (name .eq. 'XMIFIS') then
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), delta(1))
+    else if (name .eq. 'XCENFI') then
+        call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1), delta(1))
     endif
+!   
+!   ON VERIFIE POUR XINTER QUE LE NEWTON RESTE SUR L ARETE
+    if (name .eq. 'XINTER') &
+       ASSERT((ksi2(1) .ge. 0.d0) .and. (ksi2(1) .le. 1.d0))
 !
 ! --- ACTUALISATION
 !
@@ -148,7 +151,7 @@ subroutine xnewto(elp, name, nno, n,&
 !
 ! --- EVALUATION DE LA CONVERGENCE
 !
-    if(iter .le. itermin) goto 20
+    if(iter .lt. itermin) goto 20
 !
     if ((test.gt.eps) .and. (iter.lt.itemax)) then
         goto 20
@@ -166,9 +169,9 @@ subroutine xnewto(elp, name, nno, n,&
     end do
 !
 !   GESTION DU CAS NDIME<NDIM
-    call vecini(ndim, zero, ksi)
     do  i=1, ndime
         ksi(i)=ksi2(i)
     enddo
+!    write(6,*)'CONVERGENCE DE ',name,' EN ',iter,' ITERATIONS'
     call jedema()
 end subroutine

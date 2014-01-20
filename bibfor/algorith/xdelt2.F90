@@ -1,4 +1,4 @@
-subroutine xdelt2(elp, nno, n, ndime, ksi,&
+subroutine xdelt2(elp, n, ndime, ksi,&
                   ptint, ndim, tabco, tabls, ipp, ip,&
                   delta)
     implicit none
@@ -13,7 +13,7 @@ subroutine xdelt2(elp, nno, n, ndime, ksi,&
 #   include "asterfort/matinv.h"
 #   include "asterfort/provec.h"
 #   include "asterfort/vecini.h"
-    integer :: ndime, ndim, nno, ipp, ip, n(3)
+    integer :: ndime, ndim, ipp, ip, n(3)
     real(kind=8) :: ksi(ndim), delta(ndime), ptint(*), tabco(*), tabls(*)
     character(len=8) :: elp
 ! ======================================================================
@@ -43,7 +43,6 @@ subroutine xdelt2(elp, nno, n, ndime, ksi,&
 !       PTINT  : COORDONNÉES DES POINTS D'INTERSECTION
 !       TABCO   : COORDONNEES DES NOEUDS DE L'ELEMENT
 !       TABLS   : VALEUR DES LSN DES NOEUDS DE L'ELEMENT
-!       NNO     : NOMBRE DE NOEUX DE L'ELEMENT
 !
 !     SORTIE
 !       DELTA   : QUANTITE A MINIMISER
@@ -55,9 +54,9 @@ subroutine xdelt2(elp, nno, n, ndime, ksi,&
     parameter     (nbfamx = 20)
 !
     character(len=8) :: fapg(nbfamx)
-    integer :: ibid, ibid2, nnos, nbfpg, nbpg(nbfamx)
+    integer :: ibid, ibid2, nnos, nbfpg, nbpg(nbfamx), nno
     real(kind=8) :: vol, refcoo(3*nbnomx)
-    real(kind=8) :: ff(nno), dff(3, nbnomx)
+    real(kind=8) :: ff(nbnomx), dff(3, nbnomx)
     integer :: i, j, k, nderiv
     real(kind=8) :: p(ndim), m(ndim), nor(ndim)
     real(kind=8) :: pint1(ndim), pint2(ndim)

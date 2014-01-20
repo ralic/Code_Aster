@@ -1,23 +1,24 @@
-subroutine xmilfa(elp, nno, ndime, n,&
-                  typma, ip1, ip2, pm1a,&
-                  pm1b, pm2, pinter, ndim, tabco1,&
-                 tabco2, pmilie, ainter, milfa)
+subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, nnose, it,&
+                  ainter, ip1, ip2, pm2, typma, pinref, &
+                  pmiref, ksi, milfa)
     implicit none
 !
 #include "jeveux.h"
 !
+#include "blas/ddot.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
-#include "asterfort/xnewto.h"
+#include "asterfort/xcedge.h"
+#include "asterfort/xelrex.h"
+#include "asterfort/xnormv.h"
 #include "asterfort/xxmmvd.h"
-    integer :: ndim, ndime, ip1, ip2, pm1a, pm1b, pm2, nno
-    integer :: n(3)
-    real(kind=8) :: ainter(*), pinter(*), pmilie(*), milfa(ndim), tabco1(*)
-    real(kind=8) :: tabco2(*)
-    character(len=8) :: typma, elp
+    integer :: ip1, ip2, pm2, cnset(*), nnose, it, ndim, ndime
+    real(kind=8) :: pinref(*), geom(*), milfa(ndim), ainter(*)
+    real(kind=8) :: pmiref(*), ksi(ndime)
+    character(len=8) ::elrefp, typma
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,20 +55,16 @@ subroutine xmilfa(elp, nno, ndime, n,&
 !       MILFA   : COORDONNES DU TROISIME TYPE DE PM
 !     ----------------------------------------------------------------
 !
-    integer :: ar(12, 3), nbar, a1, a2, a, b, d
-    integer :: i, j, zxain
-    real(kind=8) :: tab(8, ndim)
-    real(kind=8) :: ksi(ndim)
-    real(kind=8) :: epsmax, rbid, rbid3(3)
-    integer :: ibid, itemax
-    character(len=6) :: name
+    integer :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
+    integer :: i, j, zxain, nno
+    real(kind=8) :: xref(81), tole, crit
+    logical :: courbe
+    parameter   (tole=1.d-1)
 !
 ! --------------------------------------------------------------------
     call jemarq()
     zxain=xxmmvd('ZXAIN')
-    itemax=500
-    epsmax=1.d-9
-    name='XMILFA'
+!   IDENTIFICATION DES NOEUDS DE LA FACE QUADRANGLE DANS LE SOUS TETRA
     call conare(typma, ar, nbar)
     a1=nint(ainter(zxain*(ip1-1)+1))
     a2=nint(ainter(zxain*(ip2-1)+1))
@@ -90,38 +87,39 @@ subroutine xmilfa(elp, nno, ndime, n,&
 41      continue
   end do
     ASSERT((a*b*d).gt.0)
+!   INDICE CORRECPONDANT DANS L ELEMENT PARENT
+    ia=cnset(nnose*(it-1)+a)
+    ib=cnset(nnose*(it-1)+b)
+    id=cnset(nnose*(it-1)+d)
+!   
+    call xelrex(elrefp, nno, xref)
 !
-    do i = 1, ndim
-        tab(1,i)=pinter(ndim*(ip1-1)+i)
-        tab(2,i)=pinter(ndim*(ip2-1)+i)
-        tab(3,i)=tabco2(ndim*(b-1)+i)
-        tab(4,i)=tabco2(ndim*(a-1)+i)
-        tab(5,i)=pmilie(ndim*(pm2-1)+i)
-        tab(6,i)=pmilie(ndim*(pm1b-1)+i)
-        tab(7,i)=tabco2(ndim*(d-1)+i)
-        tab(8,i)=pmilie(ndim*(pm1a-1)+i)
-  end do
-!POUR LE MOMENT BLINDAGE ET SOUS DECOUPAGE DROIT
-
+    do i = 1, ndime
+       ksi(i)=(pinref(ndime*(ip1-1)+i)+xref(ndime*(ib-1)+i))/2.d0
+    end do
+! --- TEST SI LSN COURBE :
+    courbe=.false.
+    call xcedge(ndime, pinref, ip1, ip2, pmiref, pm2, crit)
+!   ON RAJOUTE UNE TOLE POUR EVITER DES DECOUPES TROP POURRIES
+    if ( crit .gt. tole ) courbe = .true.
 !
-!     CALCUL DES COORDONNEES DE REFERENCE
-!     DU POINT PAR UN ALGO DE NEWTON
-    call xnewto(elp, name, nno, n,&
-                ndime, rbid3, ndim,tabco1, rbid3, rbid3,&
-                tab, ibid, ibid, rbid, itemax,&
-                epsmax, ksi)
+    if ( .not. courbe ) then
+       do i = 1, ndime
+          ksi(i)=(pinref(ndime*(ip1-1)+i)+xref(ndime*(ib-1)+i))/2.d0
+       end do
+    else
+!   EN DEUXIEME APPROXIMATION: ON CHOISIT LE MILIEU DES "MILIEUX" PM2 ET D
+       do i = 1, ndime   
+           ksi(i)=(pmiref(ndime*(pm2-1)+i)+xref(ndime*(id-1)+i))/2.d0
+       enddo
+    endif
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
 !
-    call reerel(elp, nno, ndim, tabco1, ksi,&
+    do i = 1, ndime 
+     ASSERT(abs(ksi(i)) .le. 1.d0)
+    enddo
+    call reerel(elrefp, nno, ndim, geom, ksi,&
                 milfa)
-!
-!
-    if(.true.) then
-    do i = 1, ndim
-      milfa(i)=(tab(1,i)+tab(3,i))/2.d0
-    end do
-    endif
-
     call jedema()
 end subroutine

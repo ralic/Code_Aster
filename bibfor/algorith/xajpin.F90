@@ -1,6 +1,6 @@
 subroutine xajpin(ndim, list, long, ipt, cpt,&
                   newpt, longar, ainter, ia, in,&
-                  al)
+                  al, ajout)
     implicit none
 !
 #include "jeveux.h"
@@ -9,6 +9,7 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/xxmmvd.h"
+    logical :: ajout
     integer :: ndim, long, ipt, cpt, ia, in
     real(kind=8) :: newpt(3), longar, al, list(*), ainter(*)
 ! ======================================================================
@@ -81,5 +82,6 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
         ainter(zxain*(ipt-1)+4)=al
     endif
 !
+    ajout=.not. deja
     call jedema()
 end subroutine

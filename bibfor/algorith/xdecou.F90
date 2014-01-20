@@ -74,7 +74,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     integer :: mxstac
     character(len=8) :: typma
     integer :: zxain
-    logical :: axi, papillon
+    logical :: axi, papillon, ajout
     parameter      (mxstac=1000)
 !
 ! ----------------------------------------------------------------------
@@ -221,13 +221,13 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !           ON AJOUTE A LA LISTE LE POINT A
                 call xajpin(ndim, pinter, ptmax, ipt, ins,&
                             a, lonref, ainter, 0, na,&
-                            0.d0)
+                            0.d0, ajout)
             endif
             if (lsnb .eq. 0) then
 !           ON AJOUTE A LA LISTE LE POINT B
                 call xajpin(ndim, pinter, ptmax, ipt, ins,&
                             b, lonref, ainter, 0, nb,&
-                            0.d0)
+                            0.d0, ajout)
             endif
             if (lsna .ne. 0 .and. lsnb .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
@@ -259,7 +259,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !           ON AJOUTE A LA LISTE LE POINT C
                 call xajpin(ndim, pinter, ptmax, ipt, ibid,&
                             c, lonref, ainter, ia, 0,&
-                            0.d0)
+                            0.d0, ajout)
             endif
         endif
 100  end do

@@ -15,15 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine xajpmi(list, long, ipt, cpt, newpt,&
-                      longar, ajout)
-        real(kind=8) :: list(*)
-        integer :: long
-        integer :: ipt
-        integer :: cpt
-        real(kind=8) :: newpt(3)
-        real(kind=8) :: longar
-        logical :: ajout
-    end subroutine xajpmi
-end interface
+interface 
+    subroutine xveri0(ndime, elrefp, ksi, iret)
+         character(len=8) :: elrefp
+         integer :: ndime
+         integer :: iret
+         real(kind=8) :: ksi(*)
+    end subroutine xveri0
+end interface 

@@ -80,7 +80,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     integer :: iadzi, iazk24, ndim, ptmax
     integer :: zxain
     integer :: inm, inc, nm, nbnomx
-    logical :: cut
+    logical :: cut, ajout
     character(len=8) :: typma, elp, elc
 !
     parameter       (ptmax=4, elc='SE3',nbnomx=27)
@@ -169,11 +169,11 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                 if (lsta .ge. 0.d0) then
                     call xajpin(ndim, pinter, ptmax, ipt, ins,&
                                 a, longar, ainter, 0, 0,&
-                                0.d0)
+                                0.d0, ajout)
                 else
                     call xajpin(ndim, pinter, ptmax, ipt, ins,&
                                 a, longar, ainter, 0, na,&
-                                0.d0)
+                                0.d0, ajout)
                 endif
             endif
             if (lsnb .eq. 0.d0 .and. lstb .le. prec) then
@@ -181,11 +181,11 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                 if (lstb .ge. 0.d0) then
                     call xajpin(ndim, pinter, ptmax, ipt, ins,&
                                 b, longar, ainter, 0, 0,&
-                                0.d0)
+                                0.d0, ajout)
                 else
                     call xajpin(ndim, pinter, ptmax, ipt, ins,&
                                 b, longar, ainter, 0, nb,&
-                                0.d0)
+                                0.d0, ajout)
                 endif
             endif
 !
@@ -195,16 +195,16 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                 if (lstm .ge. 0.d0) then
                     call xajpin(ndim, pinter, ptmax, ipt, inm,&
                                 m, longar, ainter, 0, 0,&
-                                0.d0)
+                                0.d0, ajout)
                 else
                     if (cut) then
                         call xajpin(ndim, pinter, ptmax, ipt, inc,&
                                     m, longar, ainter, ia, 0,&
-                                    alpha)
+                                    alpha, ajout)
                     else if (.not.cut) then
                         call xajpin(ndim, pinter, ptmax, ipt, inm,&
                                     m, longar, ainter, 0, nm,&
-                                    alpha)
+                                    alpha, ajout)
                     endif
                 endif
             endif
@@ -230,11 +230,11 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                     if (lstc .ge. 0.d0) then
                         call xajpin(ndim, pinter, ptmax, ipt, inc,&
                                     c, longar, ainter, 0, 0,&
-                                    0.d0)
+                                    0.d0, ajout)
                     else
                         call xajpin(ndim, pinter, ptmax, ipt, inc,&
                                     c, longar, ainter, ia, 0,&
-                                    alpha)
+                                    alpha, ajout)
                     endif
                 endif
             endif
@@ -272,7 +272,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !       ON AJOUTE A LA LISTE LE POINT MILFI
         call xajpin(ndim, pinter, ptmax, ipt, nbtot,&
                     milfi, smilfi*2, ainter, 5, 0,&
-                    smilfi)
+                    smilfi, ajout)
     endif
 !
 !     2) DECOUPAGE EN FACETTES TRIANGULAIRES DE LA SURFACE DEFINIE

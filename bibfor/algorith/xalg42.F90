@@ -1,25 +1,24 @@
 subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
+                      pmmax, nmilie, mfis, lonref, pinref)
     implicit none
 !
 #    include "jeveux.h"
 #    include "asterfort/jedema.h"
 #    include "asterfort/jemarq.h"
-#    include "asterfort/infoar.h"
 #    include "asterfort/assert.h"
 #    include "asterfort/vecini.h"
 #    include "asterfort/xajpmi.h"
 #    include "asterfort/xmilar.h"
-#    include "asterfort/xmilfi.h"
+#    include "asterfort/xmifis.h"
 #    include "asterfort/xxmmvd.h"
-#    include "asterfort/loncar.h"
 #    include "asterfort/detefa.h"
 #    include "asterfort/xstudo.h"
     character(len=8) :: typma, elrefp
     integer ::  ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
     integer ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
-    real(kind=8) :: tabco(81), pinter(*), ainter(*), pmilie(51), tabls(27)
+    real(kind=8) :: lonref, ainter(*), pmilie(*)
+    real(kind=8) :: pinref(*)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,17 +54,16 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !       PMILIE   : COORDONNES DES POINS MILIEUX
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: a(3), b(3), m(3), lonref
     real(kind=8) :: milfi(3), milara(3), milarb(3)
-    real(kind=8) :: rbid
-    real(kind=8) :: tabar(9)
+    real(kind=8) :: geom(81)
+    real(kind=8) :: pmiref(12), ksia(ndime), ksib(ndime)
     integer :: n(3)
-    integer :: i, ipm, k
+    integer :: i, ipm, k, j, ino
     integer :: r, a2, ip1(4), ip2(4), nbpi
     integer :: pm1a(4), pm1b(4), pm2(4)
-    integer :: inm, init, mfisloc
+    integer :: inm, ia, ib, mfisloc
     integer :: zxain
-    logical :: ispm2
+    logical :: ispm2, ajout
 !
 ! --------------------------------------------------------------------
 !
@@ -77,11 +75,15 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     ipm=0
     inm=0
     mfisloc=0
-!     CALCUL D'UNE LONGUEUR CARACTERISTIQUE DE L'ELEMENT
-    lonref=0.d0
-    call loncar(ndim, typma, tabco, lonref)
 !
     call vecini(51, 0.d0, pmilie)
+!
+    do ino=1,nnop
+      do i=1,ndim
+        geom(ndim*(ino-1)+i)=zr(igeom-1+ndim*(ino-1)+i)
+      enddo
+    enddo
+!
     do 204 i = 1, 4
         ip1(i)=0
         ip2(i)=0
@@ -109,30 +111,31 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !  ON A :                                                                                         !
 !   IP1=CONNEC(AR(I,1))                                                                           !
 !   IP2=CONNEC(AR(I,2))                                                                           !
-!   PM1=MILIEU DE AR(A3,1) ET IP3                                                                 !
-!   PM2=MILIEU DE AR(A3,2) ET IP3                                                                 !
+!   PM1 EST MILIEU DE AR(A2,1) ET IP3                                                             !
+!   PM2 EST MILIEU DE AR(A2,2) ET IP3                                                             !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        init=2
-        call infoar(ndim, ar, a2, init, tabco,&
-                        tabls, a, b, m, rbid,&
-                        rbid, rbid)
-!
+        ia=cnset(nnose*(it-1)+ar(a2,1))
+        ib=cnset(nnose*(it-1)+ar(a2,2))
         call vecini(ndim, 0.d0, milara)
         call vecini(ndim, 0.d0, milarb)
-        do 307 i = 1, ndim
-                    tabar(i)=b(i)
-                    tabar(ndim+i)=a(i)
-                    tabar(2*ndim+i)=m(i)
-307     continue
-!           INTERPOLATION DES COORDONNEES DES POINTS MILIEUX MA ET MB
-        call xmilar(ndim, pinter, tabar, r, milara,&
-                            milarb)
-!
+!    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD A SUR L ARETE A2
+        call xmilar(ndim, ndime, elrefp, geom, pinref,&
+              ia, ib, r, ksia, ksib, milara, milarb)
 !         STOCKAGE PMILIE
         call xajpmi(pmilie, pmmax, ipm, inm, milara,&
-                        lonref)
+                        lonref, ajout)
+        if (ajout) then 
+        do j=1,ndime
+           pmiref(ndime*(ipm-1)+j)=ksia(j)
+        enddo
+        endif
         call xajpmi(pmilie, pmmax, ipm, inm, milarb,&
-                        lonref)
+                        lonref, ajout)
+        if (ajout) then 
+        do j=1,ndime
+           pmiref(ndime*(ipm-1)+j)=ksib(j)
+        enddo
+        endif
 300  continue
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    RECHERCHE DU DEUXIEME TYPE DE POINT MILIEU    !
@@ -153,14 +156,19 @@ subroutine xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
 !        CALCUL DU POINT MILIEU DE 101-102
 !
-            call xmilfi(elrefp, n, ndime, nnop, pinter, ndim,&
-                        igeom, jlsn, ip1(k), ip2(k), milfi)
+            call xmifis(ndim, ndime, elrefp, geom, zr(jlsn),&
+                  n, ip1(k), ip2(k), pinref, ksia, milfi)
 !
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
 !        STOCKAGE PMILIE
             call xajpmi(pmilie, pmmax, ipm, inm, milfi,&
-                        lonref)
+                        lonref, ajout)
+            if (ajout) then 
+            do j=1,ndime
+               pmiref(ndime*(ipm-1)+j)=ksia(j)
+            enddo
+            endif
         endif
 400  continue
 !

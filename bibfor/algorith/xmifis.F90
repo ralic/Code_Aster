@@ -1,17 +1,19 @@
-subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
-                  jtabco, jtabls, ipp, ip, milfi)
+subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
+                  n, ip1, ip2, pinref, miref, mifis)
     implicit none
 !
 #include "jeveux.h"
+#include "blas/ddot.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
-    integer :: ndim, ndime, nno, jtabco, jtabls, ipp, ip, n(3)
-    character(len=8) :: elp
-    real(kind=8) :: milfi(ndim), ptint(*)
+#include "asterfort/xnormv.h"
+#include "asterfort/xveri0.h"
+    integer :: ndim, ndime, n(3), ip1, ip2
+    character(len=8) :: elrefp
+    real(kind=8) :: mifis(ndim), pinref(*), miref(ndime), geom(*), lsn(*)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,37 +43,68 @@ subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
 !       IP      : NUMERO NOEUD DEUXIEME POINT INTER
 !       N       : LES INDICES DES NOEUX D'UNE FACE DANS L'ELEMENT PARENT
 !     SORTIE
-!       MILFI   : COORDONNES DU PT MILIEU ENTRE IPP ET IP
+!       mifis   : COORDONNES DU PT MILIEU ENTRE IPP ET IP
 !     ----------------------------------------------------------------
 !
-    real(kind=8) :: ksi(ndim)
-    real(kind=8) :: epsmax
-    integer :: itemax
+    integer :: nno, j, ia, ib, ic
+    real(kind=8) :: x(81), ksi(ndime), bc(ndime), ba(ndime)
+    real(kind=8) :: epsmax, rbid, ip1ip2(ndime), ptxx(2*ndime)
+    real(kind=8) :: v(ndime), k, k1, k2, alpha
+    integer :: itemax, iret
     character(len=6) :: name
 !
 ! --------------------------------------------------------------------
 !
-    call jemarq()
+    itemax=100
+    epsmax=1.d-8
+    name='XMIFIS'
 !
-    itemax=500
-    epsmax=1.d-9
-    name='XMILFI'
+    call xelrex(elrefp, nno, x)
+    ib=n(1)
+    ic=n(2)
+    ia=n(3)
+    do j=1,ndime
+      bc(j)=x(ndime*(ic-1)+j)-x(ndime*(ib-1)+j)
+      ba(j)=x(ndime*(ia-1)+j)-x(ndime*(ib-1)+j)
+      ip1ip2(j)=pinref(ndime*(ip2-1)+j)-pinref(ndime*(ip1-1)+j)
+    enddo
+    call xnormv(ndime, bc, rbid)
+    call xnormv(ndime, ba, rbid)
+    call xnormv(ndime, ip1ip2, rbid)
+!   ARETE BC ORTHOGONAL A IP1-IP2 ? A PRIORI NON
+!   CE SERAIT PRUDENT DE LE REVERIFIER
+!   SI ORTH : BC EST LA NORMALE CHERCHEE
+!   SINON : CALCULER LA NORMALE
+    k=ddot(ndime,ba,1,bc,1)
+    k1=ddot(ndime,ba,1,ip1ip2,1)
+    k2=ddot(ndime,bc,1,ip1ip2,1)
+    alpha=dsqrt(1/(k1**2+k2**2-2*k*k1*k2))
+    do j=1,ndime
+        v(j)=alpha*(k2*ba(j)-k1*bc(j))
+    enddo
 !
+    do j=1,ndime
+      ptxx(j)=v(j)
+      ptxx(j+ndime)=(pinref(ndime*(ip1-1)+j)+&
+                     pinref(ndime*(ip2-1)+j))/2.d0
+    enddo  
 !     CALCUL DES COORDONNEES DE REFERENCE
 !     DU POINT PAR UN ALGO DE NEWTON
 !!!!!ATTENTION INITIALISATION DU NEWTON:
-    call vecini(ndim, 0.d0, ksi)
-    call xnewto(elp, name, n,&
-                ndime, ptint, ndim, zr(jtabco), zr(jtabls),&
-                ipp, ip, itemax,&
+    call vecini(ndime, 0.d0, ksi)
+    call xnewto(elrefp, name, n,&
+                ndime, ptxx, ndim, geom, lsn,&
+                ip1, ip2, itemax,&
                 epsmax, ksi)
+    do j=1,ndime
+       miref(j)=ksi(1)*ptxx(j)+ptxx(j+ndime)
+    enddo
 !
-    ASSERT(ksi(1).ge.-1.d0 .and. ksi(1).le.1.d0)
-    ASSERT(ksi(2).ge.-1.d0 .and. ksi(2).le.1.d0)
+    call xveri0(ndime, elrefp, miref, iret)  
+    ASSERT(iret .eq. 0)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
-    call reerel(elp, nno, ndim, zr(jtabco), ksi,&
-                milfi)
+    call reerel(elrefp, nno, ndim, geom, miref,&
+                mifis)
 !
-    call jedema()
 end subroutine

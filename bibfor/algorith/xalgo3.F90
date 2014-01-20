@@ -1,6 +1,6 @@
 subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm, &
+                      pmmax, nmilie, mfis, lonref, pinref)
     implicit none
 !
 #    include "jeveux.h"
@@ -15,7 +15,8 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     character(len=8) :: typma, elrefp
     integer ::  ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
     integer ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
-    real(kind=8) :: tabco(81), pinter(*), ainter(*), pmilie(51), tabls(27)
+    real(kind=8) :: lonref, ainter(*), pmilie(*)
+    real(kind=8) :: pinref(*)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,27 +54,27 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
     call jemarq()
 !
-    if (ninter .eq. 3 .and. npts .eq. 0) then
-         call xalg30(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
-    else if (ninter .eq. 3 .and. npts .eq. 1) then
-         call xalg31(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
-    else if (ninter .eq. 4 .and. npts.eq. 0) then
-         call xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
-    else if (ninter .eq. 4 .and. npts.eq. 2) then
-        call xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
-    else if (ndime .eq. 2) then
+    if (ndime .eq. 2) then
         ASSERT((ninter.eq.2.and.npts.eq.0).or.(ninter.eq.3.and.npts.eq.1))
         call xalg20(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
-                   igeom, jlsn, tabco, pinter, pmilie, tabls, ninter,&
-                  ainter, ar, npts, nptm, pmmax, nmilie, mfis)
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
+                      pmmax, nmilie, mfis, lonref, pinref)
+    else if (ninter .eq. 3 .and. npts .eq. 0) then
+         call xalg30(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
+                      pmmax, nmilie, mfis, lonref, pinref)
+    else if (ninter .eq. 3 .and. npts .eq. 1) then
+         call xalg31(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
+                      pmmax, nmilie, mfis, lonref, pinref)
+    else if (ninter .eq. 4 .and. npts.eq. 0) then
+         call xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
+                      pmmax, nmilie, mfis, lonref, pinref)
+    else if (ninter .eq. 4 .and. npts.eq. 2) then
+        call xalg42(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
+                      igeom, jlsn, pmilie, ninter, ainter, ar, npts, nptm,&
+                      pmmax, nmilie, mfis, lonref, pinref)
     else
         ASSERT(.false.)
     endif

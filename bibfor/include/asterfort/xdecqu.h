@@ -18,7 +18,7 @@
 interface
     subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                       igeom, pinter, ninter, npts, ainter,&
-                      pmilie, nmilie, mfis)
+                      pmilie, nmilie, mfis, tx, txlsn)
         integer :: ndim
         integer :: nnose
         integer :: it
@@ -32,5 +32,7 @@ interface
         real(kind=8) :: pmilie(*)
         integer :: nmilie
         integer :: mfis
+        real(kind=8) :: tx(3, 7)
+        real(kind=8) :: txlsn(7)
     end subroutine xdecqu
 end interface

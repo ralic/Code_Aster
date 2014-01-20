@@ -16,15 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xcenfi(elp, ndim, nno, ptint, pmilie,&
-                      jtabco, jtabls, cenfi)
+    subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
+                      pinref, pmiref, cenref, cenfi)
+        character(len=8) :: elrefp
         integer :: ndim
-        character(len=8) :: elp
+        integer :: ndime
         integer :: nno
-        real(kind=8) :: ptint(*)
-        real(kind=8) :: pmilie(*)
-        integer :: jtabco
-        integer :: jtabls
+        real(kind=8) :: geom(*)
+        real(kind=8) :: lsn(*)
+        real(kind=8) :: pinref(*)
+        real(kind=8) :: pmiref(*)
+        real(kind=8) :: cenref(ndime)
         real(kind=8) :: cenfi(ndim)
     end subroutine xcenfi
 end interface 

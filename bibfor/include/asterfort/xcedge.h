@@ -1,3 +1,4 @@
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -14,17 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine xdelt4(elp, nno1, ndim, ksi, ptint,&
-                  pmilie, tabco, tabls, delta)
-        integer :: ndim
-        integer :: nno1
-        character(len=8) :: elp
-        real(kind=8) :: ksi(ndim)
-        real(kind=8) :: ptint(*)
-        real(kind=8) :: pmilie(*)
-        real(kind=8) :: tabco(*)
-        real(kind=8) :: tabls(*)
-        real(kind=8) :: delta(ndim)
-    end subroutine xdelt4
-end interface
+interface 
+    subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
+        integer :: ndime
+        integer :: pi1
+        integer :: pi2
+        integer :: m12
+        real(kind=8) :: pinref(*)
+        real(kind=8) :: pmiref(*)
+        real(kind=8) :: crit
+    end subroutine xcedge
+end interface 

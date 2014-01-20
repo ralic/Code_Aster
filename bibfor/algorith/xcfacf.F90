@@ -65,6 +65,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     real(kind=8) :: m(3)
     integer :: i, nbf, ibid, ifq, j, codret
     integer :: fa(6, 4), ibid3(12, 3), indptf(3)
+    logical :: ajout
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -93,6 +94,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     call confac(typma, ibid3, ibid, fa, nbf)
 !
 !     BOUCLE SUR LES FACES
+    rbid = 0.d0
     do 200 ifq = 1, nbf
 !
 !       RECHERCHE DES INTERSECTION ENTRE LE FOND DE FISSURE ET LA FACE
@@ -121,7 +123,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
 !
         call xajpin(ndim, ptint, ptmax, ipt, ibid,&
                     m, loncar, ainter, 0, 0,&
-                    0.d0)
+                    0.d0, ajout)
 !
 200  end do
 !
