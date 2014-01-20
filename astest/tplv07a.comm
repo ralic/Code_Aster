@@ -43,7 +43,20 @@ MAIL=DEFI_GROUP(   reuse=MAIL,   MAILLAGE=MAIL,
 MATER=DEFI_MATERIAU(   THER_ORTH=_F(  LAMBDA_L = 1.00, LAMBDA_T = 0.75,
                                         LAMBDA_N = 0.50,   RHO_CP = 1.)
                          )
-
+# POUR VALIDATION DE ETHE_ELEM EN ORTHOTROPE :
+# MATERIAU ISOTROPE
+MATERI=DEFI_MATERIAU(   THER=_F(  LAMBDA = 1.00,  RHO_CP = 1.)
+                         )
+CHMATI=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',  MATER = MATERI)
+                        )
+# MATERIAU ISOTROPE AVEC THER_ORTH
+MATERO=DEFI_MATERIAU(   THER_ORTH=_F(  LAMBDA_L = 1.00, LAMBDA_T = 1.,
+                                        LAMBDA_N = 1.,   RHO_CP = 1.)
+                         )
+CHMATO=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',  MATER = MATERO)
+                        )
 #
 # AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ---------------------------
 #
@@ -144,14 +157,26 @@ TEMPE=THER_LINEAIRE(   MODELE=MOTH,
                             EXCIT=_F(  CHARGE = CHTH),
                             CARA_ELEM=ORIEN
                          )
+# SUITE VALIDATION ETHE_ELEM EN ORTHOTROPE
+TEMPI=THER_LINEAIRE(   MODELE=MOTH,
+                           CHAM_MATER=CHMATI,
+                            EXCIT=_F(  CHARGE = CHTH),
+                         )
+TEMPO=THER_LINEAIRE(   MODELE=MOTH,
+                           CHAM_MATER=CHMATO,
+                            EXCIT=_F(  CHARGE = CHTH),
+                            CARA_ELEM=ORIEN
+                         )
 
 #
 # ANALYSE DES RESULTATS ------------------------------------------------
 #
 
 
-TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA','FLUX_NOEU',))
-
+TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA','FLUX_NOEU','ETHE_ELEM'))
+#
+TEMPI=CALC_CHAMP(reuse=TEMPI,RESULTAT=TEMPI,THERMIQUE=('ETHE_ELEM'))
+TEMPO=CALC_CHAMP(reuse=TEMPO,RESULTAT=TEMPO,THERMIQUE=('ETHE_ELEM'))
 
 # ----------------------------------------------------------------------
 # VALIDATION DU CALCUL D'INTEGRALE SUR UN BORD 2D
@@ -951,6 +976,35 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_REFE=45.0,
                    REFERENCE='NON_DEFINI',
                    PRECISION=1.E-2,
+                   MAILLE='M129',),
+                _F(NUME_ORDRE=0,
+                   POINT=1,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='ETHE_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=-0.15972226753427,
+                   MAILLE='M129',),
+                ),
+          )
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+                   POINT=1,
+                   RESULTAT=TEMPI,
+                   NOM_CHAM='ETHE_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=-0.14396043186377,
+                   MAILLE='M129',),
+                ),
+          )
+TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+                   POINT=1,
+                   RESULTAT=TEMPO,
+                   NOM_CHAM='ETHE_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=-0.14396043186377,
+                   VALE_REFE=-0.14396043186377,
+                   REFERENCE = 'AUTRE_ASTER',
                    MAILLE='M129',),
                 ),
           )

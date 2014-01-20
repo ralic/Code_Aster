@@ -1,6 +1,6 @@
 subroutine te0220(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,14 +20,19 @@ subroutine te0220(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:
 !                         CALCUL DE L'ENERGIE THERMIQUE A L'EQUILIBRE
-!                         OPTION : 'EPOT_ELEM_TEMP'
+!                         OPTION : 'ETHE_ELEM'
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -35,12 +40,15 @@ subroutine te0220(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: icodre(1), kpg, spt
-    character(len=8) :: nompar, fami, poum
-    real(kind=8) :: valres(1), valpar
+    integer :: icodre(2), kpg, spt
+    character(len=8) :: nompar, fami, poum, nomres(2)
+    character(len=16) :: phenom
+    real(kind=8) :: valres(2), valpar
     real(kind=8) :: dfdx(9), dfdy(9), poids, flux, fluy, epot
+    real(kind=8) :: angmas(7), rbid(3), fluglo(2), fluloc(2), p(2, 2)
     integer :: ndim, nno, nnos, npg, kp, j, itempe, itemp, iener
     integer :: ipoids, ivf, idfde, jgano, igeom, imate, iret, nbpar
+    logical :: aniso
 !     ------------------------------------------------------------------
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
@@ -66,23 +74,56 @@ subroutine te0220(option, nomte)
     kpg=1
     spt=1
     poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', nbpar, nompar, [valpar],&
-                1, 'LAMBDA', valres, icodre, 1)
+    call rccoma(zi(imate),'THER', 1, phenom, iret)
+    if (phenom .ne. 'THER_ORTH') then
+        call rcvalb(fami, kpg, spt, poum, zi(imate),&
+                    ' ', 'THER', nbpar, nompar, [valpar],&
+                    1, 'LAMBDA', valres, icodre, 1)
+        aniso = .false.
+    else
+        nomres(1) = 'LAMBDA_L'
+        nomres(2) = 'LAMBDA_T'
+        call rcvalb(fami, kpg, spt, poum, zi(imate),&
+                    ' ', 'THER_ORTH', nbpar, nompar, [valpar],&
+                    2, nomres, valres, icodre, 1)
+        aniso = .true.
+!       pas de repere cylindrique en 2d -> rbid
+        call rcangm(ndim, rbid, angmas)
+        p(1,1) = cos(angmas(1))
+        p(2,1) = sin(angmas(1))
+        p(1,2) = -sin(angmas(1))
+        p(2,2) = cos(angmas(1))
+    endif
 !
     epot = 0.d0
-    do 101 kp = 1, npg
+    do kp = 1, npg
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdx, dfdy)
         flux = 0.d0
         fluy = 0.d0
-        do 110 j = 1, nno
+        do j = 1, nno
             flux = flux + zr(itempe+j-1)*dfdx(j)
             fluy = fluy + zr(itempe+j-1)*dfdy(j)
-110      continue
+        enddo
+        if (.not.aniso) then
+            fluglo(1) = valres(1)*flux
+            fluglo(2) = valres(1)*fluy
+        else
+            fluglo(1) = flux
+            fluglo(2) = fluy
 !
-        epot = epot - ( flux**2 + fluy**2 )*poids
-101  end do
-    zr(iener) = epot * valres(1) / 2.d0
+            fluloc(1) = p(1,1)*fluglo(1) + p(2,1)*fluglo(2)
+            fluloc(2) = p(1,2)*fluglo(1) + p(2,2)*fluglo(2)
+!
+            fluloc(1) = valres(1)*fluloc(1)
+            fluloc(2) = valres(2)*fluloc(2)
+!
+            fluglo(1) = p(1,1)*fluloc(1) + p(1,2)*fluloc(2)
+            fluglo(2) = p(2,1)*fluloc(1) + p(2,2)*fluloc(2)
+        endif
+!
+        epot = epot - (flux*fluglo(1)+fluy*fluglo(2))*poids
+    enddo
+    zr(iener) = epot/ 2.d0
 !
 end subroutine

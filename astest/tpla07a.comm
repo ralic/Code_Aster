@@ -73,6 +73,20 @@ MATER=DEFI_MATERIAU(THER_ORTH=_F(LAMBDA_L=2.89,
                                  LAMBDA_T=40.00,
                                  LAMBDA_N=2.89,
                                  RHO_CP=1.,),);
+# VALIDATION DE ETHE_ELEM EN ORTHOTROPE
+# MATERIAU ISOTROPE POUR COMPARAISON
+MATERI=DEFI_MATERIAU(THER=_F(LAMBDA=20.,
+                                 RHO_CP=1.,),);
+CHMATI=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATERI,),);
+MATERO=DEFI_MATERIAU(THER_ORTH=_F(LAMBDA_L=20.,
+                                 LAMBDA_T=20.,
+                                 LAMBDA_N=20.,
+                                 RHO_CP=1.,),);
+CHMATO=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATERO,),);
 
 #
 # AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ---------------------------
@@ -137,6 +151,20 @@ TEMPE=THER_LINEAIRE(MODELE=MOTH,
                     CARA_ELEM=ORIEN,
                     EXCIT=(_F(CHARGE=CHTH,),
                            _F(CHARGE=CHTH1,),),);
+# SUITE VALIDATION ETHE_ELEM
+
+TEMPI=THER_LINEAIRE(MODELE=MOTH,
+                    CHAM_MATER=CHMATI,
+                    CARA_ELEM=ORIEN,
+                    EXCIT=(_F(CHARGE=CHTH,),
+                           _F(CHARGE=CHTH1,),),);
+TEMPI=CALC_CHAMP(reuse =TEMPI,RESULTAT=TEMPI,NUME_ORDRE=0,THERMIQUE=('ETHE_ELEM'),)
+TEMPO=THER_LINEAIRE(MODELE=MOTH,
+                    CHAM_MATER=CHMATO,
+                    CARA_ELEM=ORIEN,
+                    EXCIT=(_F(CHARGE=CHTH,),
+                           _F(CHARGE=CHTH1,),),);
+TEMPO=CALC_CHAMP(reuse =TEMPO,RESULTAT=TEMPO,NUME_ORDRE=0,THERMIQUE=('ETHE_ELEM'),)
 
 #
 # ANALYSE DES RESULTATS ------------------------------------------------
@@ -147,9 +175,10 @@ TEMPE=CALC_CHAMP(reuse =TEMPE,
 
                 RESULTAT=TEMPE,
                 NUME_ORDRE=0,
-                 THERMIQUE=('FLUX_ELNO'),
+                 THERMIQUE=('FLUX_ELNO','ETHE_ELEM'),
 
 );
+IMPR_RESU(RESU=_F(RESULTAT=TEMPE, NOM_CHAM='ETHE_ELEM'))
 
 TEMPE=CALC_CHAMP(reuse =TEMPE,
               RESULTAT=TEMPE,
@@ -256,6 +285,36 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='Diff',
            TYPE_TEST='MIN',
            TABLE=TEMP_CD,)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+                   POINT=1,
+                   RESULTAT=TEMPE,
+                   NOM_CHAM='ETHE_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=-332.36296035464,
+                   MAILLE='M109',),
+                ),
+          )
+TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+                   POINT=1,
+                   RESULTAT=TEMPI,
+                   NOM_CHAM='ETHE_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=-170.1559513297,
+                   MAILLE='M109',),
+                ),
+          )
+TEST_RESU(RESU=(_F(NUME_ORDRE=0,
+                   POINT=1,
+                   RESULTAT=TEMPO,
+                   NOM_CHAM='ETHE_ELEM',
+                   NOM_CMP='TOTALE',
+                   VALE_CALC=-170.1559513297,
+                   VALE_REFE=-170.1559513297,
+                   REFERENCE = 'AUTRE_ASTER',
+                   MAILLE='M109',),
+                ),
+          )
 
 #
 # FIN ------------------------------------------------------------------
