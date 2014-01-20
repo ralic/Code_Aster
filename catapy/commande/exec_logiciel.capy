@@ -33,7 +33,7 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
                  EXCLUS('MAILLAGE','SALOME'),
                  ),
 
-      LOGICIEL = SIMP(statut='f', typ='TXM'),
+      LOGICIEL = SIMP(statut='f', typ=('Fichier','','Sauvegarde')),
       ARGUMENT = SIMP(statut='f', max='**', typ='TXM'),
 
 
@@ -60,7 +60,7 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
       SALOME = FACT(statut='f',
            regles=(UN_PARMI('CHEMIN_SCRIPT', 'UNITE_SCRIPT'),
                    PRESENT_PRESENT('NOM_PARA','VALE'),),
-         CHEMIN_SCRIPT     = SIMP(statut='f', typ='TXM',
+         CHEMIN_SCRIPT     = SIMP(statut='f', typ=('Fichier','','Sauvegarde'),
                                fr="Chemin du script Salome"),
          UNITE_SCRIPT      = SIMP(statut='f', typ='I', val_min=80, val_max=99,
                                fr="Unité logique du script Salome"),

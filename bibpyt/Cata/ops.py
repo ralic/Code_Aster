@@ -134,7 +134,8 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
    commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO)
-   self.jdc.set_poursuite(True)
+   if aster_exists:
+       self.jdc.set_poursuite(True)
 
    if self.codex:
      base = 'glob.1'
@@ -308,7 +309,14 @@ def INCLUDE(self, UNITE, DONNEE, **args):
             repdex = aster_core.get_option('repdex')
             fname = osp.join(repdex, fname)
     try:
-        self.make_include(fname=fname)
+        if aster_exists:
+            self.make_include(fname=fname)
+        else:
+            # dans eficas
+            if UNITE:
+                self.make_include(unite=UNITE)
+            else:
+                self.make_include(fname=fname)
     except Accas.AsException:
         if aster_exists:
             UTMESS('F+', 'FICHIER_1', valk=fname)

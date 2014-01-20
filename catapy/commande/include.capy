@@ -26,7 +26,7 @@ INCLUDE=MACRO(nom="INCLUDE",
               regles=(UN_PARMI('UNITE', 'DONNEE')),
          UNITE = SIMP(statut='f', typ='I',
                       fr="Unité logique à inclure"),
-         DONNEE = SIMP(statut='f', typ='TXM',
+         DONNEE = SIMP(statut='f', typ=('Fichier','','Sauvegarde'),
                        fr="Nom du fichier de données à inclure"),
          INFO  = SIMP(statut='f', typ='I', defaut=1, into=(1, 2)),
 );
