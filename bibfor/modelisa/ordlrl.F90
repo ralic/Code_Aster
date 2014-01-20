@@ -22,6 +22,8 @@ subroutine ordlrl(charge, lisrel, nomgd)
 #include "asterfort/ordrel.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,11 +76,11 @@ subroutine ordlrl(charge, lisrel, nomgd)
     character(len=19) :: ligrmo
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
     real(kind=8) :: copror, difrel, eps1, eps2, epsrel, rapcoe, coemax
-    integer :: i, icmp, icomp, idcoma, iddl, iddl1, iddl2, ideca1, ideca2
+    integer :: i, icmp, icomp,  iddl, iddl1, iddl2, ideca1, ideca2
     integer :: idecal, in, indmax, ino
-    integer :: inocc, inom, inorel, ipntr1, ipntr2, ipntrl, irela, irela1
+    integer ::  inom,  ipntr1, ipntr2, ipntrl, irela, irela1
     integer :: irela2
-    integer ::  jprnm, jrlco, jrlco1, jrlco2, jrlcoc, jrlcof, jrlcor
+    integer ::  jprnm, jrlco, jrlco1, jrlco2,  jrlcof
     integer :: jrldd
     integer :: jrlno, idnoe1, idnoe2, idnoeu
     integer :: nbcmp, nbec, nbrela, nbtema, nbter1, nbter2, nbterm
@@ -89,6 +91,11 @@ subroutine ordlrl(charge, lisrel, nomgd)
     integer, pointer :: rlpo(:) => null()
     integer, pointer :: rlnr(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
+    complex(kind=8), pointer :: coef_c(:) => null()
+    integer, pointer :: coefmax(:) => null()
+    real(kind=8), pointer :: coef_r(:) => null()
+    integer, pointer :: noeud_occ(:) => null()
+    integer, pointer :: noeud_rela(:) => null()
 !
     call jemarq()
 !
@@ -144,28 +151,28 @@ subroutine ordlrl(charge, lisrel, nomgd)
 ! --- L'INDICE DU PLUS GRAND COEFFICIENT EN VALEUR ABSOLUE
 ! --- (MODULE) D'UNE RELATION
 !
-    call wkvect('&&ORDLRL.COEFMAX', 'V V I', nbrela, idcoma)
+    AS_ALLOCATE(vi=coefmax, size=nbrela)
 !
 ! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 ! --- LES NUMEROS DES NOEUDS D'UNE RELATION
 !
-    call wkvect('&&ORDLRL.NOEUD_RELA', 'V V I', nbtema, inorel)
+    AS_ALLOCATE(vi=noeud_rela, size=nbtema)
 !
 ! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 ! --- LE NOMBRE D'OCCURENCES DE CHAQUE NOEUD APPRAISSANT
 ! --- DANS UNE RELATION
 !
-    call wkvect('&&ORDLRL.NOEUD_OCC', 'V V I', nbtema, inocc)
+    AS_ALLOCATE(vi=noeud_occ, size=nbtema)
 !
 ! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 ! --- LES COEFFICIENTS REELS D'UNE RELATION
 !
-    call wkvect('&&ORDLRL.COEF_R', 'V V R', nbtema, jrlcor)
+    AS_ALLOCATE(vr=coef_r, size=nbtema)
 !
 ! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 ! --- LES COEFFICIENTS COMPLEXES D'UNE RELATION
 !
-    call wkvect('&&ORDLRL.COEF_C', 'V V C', nbtema, jrlcoc)
+    AS_ALLOCATE(vc=coef_c, size=nbtema)
 !
 !
 !
@@ -182,11 +189,11 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
         if (typcoe .eq. 'COMP') then
             do ino = 1, nbterm
-                zc(jrlcoc+ino-1)=zc(jrlcof+ino-1)
+                coef_c(ino)=zc(jrlcof+ino-1)
             enddo
         else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
-                zr(jrlcor+ino-1)=zr(jrlcof+ino-1)
+                coef_r(ino)=zr(jrlcof+ino-1)
             enddo
         else
             ASSERT(.false.)
@@ -195,7 +202,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
         do ino = 1, nbterm
             nomnoe=zk8(idnoeu+ino-1)
             call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
-            zi(inorel+ino-1)=in
+            noeud_rela(ino)=in
             cmp=zk8(iddl+ino-1)
             icmp=indik8(nomcmp,cmp,1,nbcmp)
             if (.not.exisdg(zi(jprnm-1+(in-1)*nbec+1),icmp)) then
@@ -207,17 +214,17 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 ! ----- Rearrangement of linear relation tables in ascending order of nodes and dof for given node
 !
-        call ordrel(zi(inorel), zk8(idnoeu), zk8(iddl), zr(jrlcor), zc(jrlcoc),&
-                    zi(inocc), nbterm, zk8(inom), nddla)
+        call ordrel(noeud_rela, zk8(idnoeu), zk8(iddl), coef_r, coef_c,&
+                    noeud_occ, nbterm, zk8(inom), nddla)
 !
 !       -- REAFFECTATION DU TABLEAU DES COEFFICIENTS
         if (typcoe .eq. 'COMP') then
             do ino = 1, nbterm
-                zc(jrlcof+ino-1)=zc(jrlcoc+ino-1)
+                zc(jrlcof+ino-1)=coef_c(ino)
             enddo
         else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
-                zr(jrlcof+ino-1)=zr(jrlcor+ino-1)
+                zr(jrlcof+ino-1)=coef_r(ino)
             enddo
         else
             ASSERT(.false.)
@@ -226,22 +233,22 @@ subroutine ordlrl(charge, lisrel, nomgd)
         coemax=0.0d0
         if (typcoe .eq. 'COMP') then
             do ino = 1, nbterm
-                if (abs(zc(jrlcoc+ino-1)) .gt. coemax) then
-                    coemax=abs(zc(jrlcoc+ino-1))
+                if (abs(coef_c(ino)) .gt. coemax) then
+                    coemax=abs(coef_c(ino))
                     indmax=ino
                 endif
             enddo
         else if (typcoe .eq. 'REEL') then
             do ino = 1, nbterm
-                if (abs(zr(jrlcor+ino-1)) .gt. coemax) then
-                    coemax=abs(zr(jrlcor+ino-1))
+                if (abs(coef_r(ino)) .gt. coemax) then
+                    coemax=abs(coef_r(ino))
                     indmax=ino
                 endif
             enddo
         else
             ASSERT(.false.)
         endif
-        zi(idcoma+irela-1)=indmax
+        coefmax(irela)=indmax
     end do
 !
 !
@@ -281,7 +288,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
         idnoe1=jrlno+ideca1
         iddl1=jrldd+ideca1
 !
-        indmax=zi(idcoma+irela1-1)
+        indmax=coefmax(irela1)
 !
         if (typcoe .eq. 'COMP') then
             if (abs(zc(jrlco1+indmax-1)) .lt. eps2) then
@@ -380,11 +387,11 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !
 ! ---  MENAGE  ---
-    call jedetr('&&ORDLRL.NOEUD_RELA')
-    call jedetr('&&ORDLRL.NOEUD_OCC')
-    call jedetr('&&ORDLRL.COEFMAX')
-    call jedetr('&&ORDLRL.COEF_R')
-    call jedetr('&&ORDLRL.COEF_C')
+    AS_DEALLOCATE(vi=noeud_rela)
+    AS_DEALLOCATE(vi=noeud_occ)
+    AS_DEALLOCATE(vi=coefmax)
+    AS_DEALLOCATE(vr=coef_r)
+    AS_DEALLOCATE(vc=coef_c)
 !
     call jedema()
 end subroutine

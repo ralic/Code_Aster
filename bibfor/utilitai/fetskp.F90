@@ -57,10 +57,12 @@ subroutine fetskp()
 #include "asterfort/uttcpu.h"
 #include "asterfort/verico.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbmama, idco, nbmato, renum2, nbma, nomsdm, masd
-    integer :: nbmasd, id, renum1, err, co, renum
-    integer ::  velo, edlo, numsdm, nmap, i, ima, lrep
+    integer :: nbmasd, id,  err, co, renum
+    integer ::    numsdm, nmap, i, ima, lrep
     integer :: iulm1, iocc, nocc, ifm, niv, nblien, nbpart, renum3, idma, iulm2
     integer :: rang, nbproc, versco, n1, n2, n3, ier, iaux, iaux2
     integer :: vali(2), iret
@@ -70,6 +72,9 @@ subroutine fetskp()
     character(len=24) :: k24b
     character(len=256) :: jnom(4)
     character(len=128) :: rep
+    integer(kind=4), pointer :: vedlo(:) => null()
+    integer, pointer :: vrenum1(:) => null()
+    integer(kind=4), pointer :: vvelo(:) => null()
     mpi_int :: mrank, msize
 !
 !---------------------------------------------------------------------------------
@@ -92,7 +97,7 @@ subroutine fetskp()
     call dismoi('NOM_MAILLA', mod, 'MODELE', repk=ma)
 
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
-    call wkvect('&&FETSKP.RENUM1', 'V V I', nbmato, renum1)
+    AS_ALLOCATE(vi=vrenum1, size=nbmato)
 
     nbmato=0
     call jelira(mod//'.MODELE    .LIEL', 'NMAXOC', nocc)
@@ -112,7 +117,7 @@ subroutine fetskp()
             if (zi(idma-1+ima) .lt. 0) then
                 call utmess('F', 'PARTITION_3')
             endif
-            zi(renum1-1+zi(idma-1+ima))=id
+            vrenum1(zi(idma-1+ima))=id
             id=id+1
         end do
     end do
@@ -136,13 +141,13 @@ subroutine fetskp()
 !
 ! -------  UTILISATION DE CONTRAINTES
 !
-    call wkvect('&&FETSKP.VELO', 'V V S', nbmato, velo)
-    call wkvect('&&FETSKP.EDLO', 'V V S', nblien, edlo)
+    AS_ALLOCATE(vi4=vvelo, size=nbmato)
+    AS_ALLOCATE(vi4=vedlo, size=nblien)
     do ima = 1, nbmato
-        zi4(velo-1+ima)=1
+        vvelo(ima)=1
     end do
     do i = 1, nblien
-        zi4(edlo-1+i)=1
+        vedlo(i)=1
     end do
 !
 !
@@ -159,7 +164,7 @@ subroutine fetskp()
         do ima = 1, nbmato
             write(k8nb,'(''('',I4,''I8'','')'')') 2*(1+zi4(idco-1+ima+&
             1)-1 - zi4(idco-1+ima) ) + 2
-            write(iulm1,k8nb)zi4(velo-1+ima), (zi4(co-1+i),zi4(edlo-1+&
+            write(iulm1,k8nb)vvelo(ima), (zi4(co-1+i),vedlo(&
             i), i=zi4(idco-1+ima),zi4(idco-1+ima+1)-1)
         end do
 !
@@ -167,7 +172,7 @@ subroutine fetskp()
 !
     endif
 !
-    call jedetr('&&FETSKP.RENUM1')
+    AS_DEALLOCATE(vi=vrenum1)
     call jedetr('&&FETSKP.NBMAMA')
 !
 !
@@ -191,7 +196,7 @@ subroutine fetskp()
         write(ifm,*) ' * LE NOMBRE DE CONNEXIONS :',nblien
         write(ifm,*) ' '
         call fetsco(nbmato, nblien, zi4(co), zi4(idco), nbpart,&
-                    zi4(nmap), zi4(edlo), zi4(velo), versco, ier)
+                    zi4(nmap), vedlo(1), vvelo(1), versco, ier)
         n1=versco/10000
         n2=(versco-n1*10000)/100
         n3=versco-n1*10000-n2*100
@@ -234,8 +239,8 @@ subroutine fetskp()
         call aplext(niv, 3, jnom, err)
     endif
 !
-    call jedetr('&&FETSKP.EDLO')
-    call jedetr('&&FETSKP.VELO')
+    AS_DEALLOCATE(vi4=vedlo)
+    AS_DEALLOCATE(vi4=vvelo)
 !
 !
 ! ********************************************************************

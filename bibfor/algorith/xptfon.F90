@@ -43,6 +43,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 #include "asterfort/xfabor.h"
 #include "asterfort/xnorme.h"
 #include "asterfort/xtailm.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
@@ -78,8 +80,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nmaabs, nbf, nbnoma, nuno, nunoa, nunob, nunoc, nunod
     integer :: fa(6, 4), ibid3(12, 3), vecind(5)
     integer :: jconx1, jconx2, jcoor, jltsv, jlnsv, jma
-    integer :: jlsn, jlst, jglsn, jglst, igeom, jgt, jgn, itypma
-    integer :: indipt, jbord, jborl, jdirol, jnvdir, jlistp
+    integer ::   jglsn, jglst, igeom, jgt, jgn, itypma
+    integer :: indipt,  jborl, jdirol, jnvdir, jlistp
     integer :: nbfacb, iptbor(2), nbptma, ndime, indptf(3), codret
     integer :: nunopa, nunopb, nunopc, nunopd
     integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
@@ -88,6 +90,9 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     character(len=8) :: typma, nommai, alias
     character(len=19) :: grlt, chgrt, grln, chgrn
     logical :: fabord, indic
+    real(kind=8), pointer :: lsn(:) => null()
+    real(kind=8), pointer :: lst(:) => null()
+    logical, pointer :: ptbord(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
     call infdbg('XFEM', ifm, niv)
@@ -120,7 +125,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     call cnocns(grln, 'V', chgrn)
     call jeveuo(chgrn//'.CNSV', 'L', jgn)
 !
-    call wkvect('&&XPTFON.PTBORD', 'V V L', nxptff, jbord)
+    AS_ALLOCATE(vl=ptbord, size=nxptff)
 !
 !     VECTEUR PERMETTANT DE SAVOIR SI LE VECTEUR DE DIRECTION DE
 !     PROPAGATION (VDIR) A ETE RECALCULE OU NON AUX POINTS
@@ -138,7 +143,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     call wkvect('&&XPTFON.NVDIR', 'V V I', nxptff, jnvdir)
 !
     do i = 1, nxptff
-        zl(jbord-1+i) = .false.
+        ptbord(i) = .false.
         zl(jborl-1+i) = .false.
     end do
 !
@@ -161,15 +166,15 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !       POUR LSN, LST, GRLST, GRLST ET IGEOM
 !       AFIN DE POUVOIR APPELER INTFAC
         nbnoma = zi(jconx2+nmaabs) - zi(jconx2+nmaabs-1)
-        call wkvect('&&XPTFON.LSN', 'V V R', nbnoma, jlsn)
-        call wkvect('&&XPTFON.LST', 'V V R', nbnoma, jlst)
+        AS_ALLOCATE(vr=lsn, size=nbnoma)
+        AS_ALLOCATE(vr=lst, size=nbnoma)
         call wkvect('&&XPTFON.GRLSN', 'V V R', nbnoma*ndim, jglsn)
         call wkvect('&&XPTFON.GRLST', 'V V R', nbnoma*ndim, jglst)
         call wkvect('&&XPTFON.IGEOM', 'V V R', nbnoma*ndim, igeom)
         do ino = 1, nbnoma
             nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+ino-1)
-            zr(jlsn-1+ino) = zr(jlnsv-1+nuno)
-            zr(jlst-1+ino) = zr(jltsv-1+nuno)
+            lsn(ino) = zr(jlnsv-1+nuno)
+            lst(ino) = zr(jltsv-1+nuno)
             do j = 1, ndim
                 zr(jglsn-1+ndim*(ino-1)+j) = zr(jgn-1+ndim*(nuno-1)+j)
                 zr(jglst-1+ndim*(ino-1)+j) = zr(jgt-1+ndim*(nuno-1)+j)
@@ -203,7 +208,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
             indipt=0
 !         RECHERCHE DES INTERSECTION ENTRE LE FOND DE FISSURE ET LA FACE
             call intfac(noma, nmaabs, ifq, fa, nbnoma,&
-                        zr(jlst), zr(jlsn), ndim, 'OUI', jglsn,&
+                        lst, lsn, ndim, 'OUI', jglsn,&
                         jglst, igeom, m, indptf, gln,&
                         glt, codret)
 !
@@ -318,8 +323,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
 !         SI LA FACE EST UNE FACE DE BORD ON PREND SA NORMALE
             if (fabord) then
-                if (.not. zl(jbord-1+indipt)) then
-                    zl(jbord-1+indipt) = .true.
+                if (.not. ptbord(indipt)) then
+                    ptbord(indipt) = .true.
                 endif
                 if (ndim .eq. 3) then
                     call xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
@@ -380,8 +385,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         endif
 !
 !       DESTRUCTION DES VECTEURS LOCAUX A LA MAILLE
-        call jedetr('&&XPTFON.LSN')
-        call jedetr('&&XPTFON.LST')
+        AS_DEALLOCATE(vr=lsn)
+        AS_DEALLOCATE(vr=lst)
         call jedetr('&&XPTFON.GRLSN')
         call jedetr('&&XPTFON.GRLST')
         call jedetr('&&XPTFON.IGEOM')
@@ -393,7 +398,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !     PROPAGATION
     if (ndim .eq. 3) then
         do k = 1, nxptff
-            if (zl(jbord-1+k)) then
+            if (ptbord(k)) then
                 call normev(zr(jbas-1+6*(k-1)+4), normi)
             endif
         end do
@@ -421,7 +426,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
     call jedetr(chgrn)
     call jedetr(chgrt)
-    call jedetr('&&XPTFON.PTBORD')
+    AS_DEALLOCATE(vl=ptbord)
     call jedetr('&&XPTFON.LBORD')
     call jedetr('&&XPTFON.VDIROL')
     call jedetr('&&XPTFON.NVDIR')

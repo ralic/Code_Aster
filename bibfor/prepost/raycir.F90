@@ -30,6 +30,8 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 #include "asterfort/jerazo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: jvecpg, jdtau, jvecn, nbordr, nbvec
     character(len=16) :: nommet
 ! ---------------------------------------------------------------------
@@ -54,7 +56,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 !     ------------------------------------------------------------------
     integer :: i, ivect, iordr, k, n1
     integer :: jsec1, jsec2, jsec3, jsec4, jdom1
-    integer :: jdom2, jcoorp, jcer3p
+    integer :: jdom2, jcoorp
     integer :: nbpts1, nbpts2, nbpts3, nbpts4, nbptd1, nbptd2
     integer :: indsec, n, ireth, iretv, nboucl, nbr, iret3p
 !
@@ -69,6 +71,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
     real(kind=8) :: rmin3p
 !
     character(len=5) :: oricad
+    real(kind=8), pointer :: vcer3pt(:) => null()
 !
 !-----------------------------------------------------------------------
 !234567                                                              012
@@ -100,7 +103,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
     call wkvect('&&RAYCIR.DOM2', 'V V R', nbordr*2, jdom2)
 !
     call wkvect('&&RAYCIR.COORP', 'V V R', 12, jcoorp)
-    call wkvect('&&RAYCIR.CER3PT', 'V V R', 6, jcer3p)
+    AS_ALLOCATE(vr=vcer3pt, size=6)
 !
 ! ININTIALISATION
 !
@@ -479,12 +482,12 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                         ray3pt = rmin3p
                         cuon = cuoi
                         cvon = cvoi
-                        zr(jcer3p) = cupn0
-                        zr(jcer3p + 1) = cvpn0
-                        zr(jcer3p + 2) = cupn1
-                        zr(jcer3p + 3) = cvpn1
-                        zr(jcer3p + 4) = cupn2
-                        zr(jcer3p + 5) = cvpn2
+                        vcer3pt(1) = cupn0
+                        vcer3pt(1 + 1) = cvpn0
+                        vcer3pt(1 + 2) = cupn1
+                        vcer3pt(1 + 3) = cvpn1
+                        vcer3pt(1 + 4) = cupn2
+                        vcer3pt(1 + 5) = cvpn2
                     endif
 !
 110              continue
@@ -501,12 +504,12 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 endif
 !
                 if (ireth .eq. 1) then
-                    cupn0 = zr(jcer3p)
-                    cvpn0 = zr(jcer3p + 1)
-                    cupn1 = zr(jcer3p + 2)
-                    cvpn1 = zr(jcer3p + 3)
-                    cupn2 = zr(jcer3p + 4)
-                    cvpn2 = zr(jcer3p + 5)
+                    cupn0 = vcer3pt(1)
+                    cvpn0 = vcer3pt(1 + 1)
+                    cupn1 = vcer3pt(1 + 2)
+                    cvpn1 = vcer3pt(1 + 3)
+                    cupn2 = vcer3pt(1 + 4)
+                    cvpn2 = vcer3pt(1 + 5)
                 endif
 !
                 goto 100
@@ -574,12 +577,12 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                         ray3pt = rmin3p
                         cuon = cuoi
                         cvon = cvoi
-                        zr(jcer3p) = cupn0
-                        zr(jcer3p + 1) = cvpn0
-                        zr(jcer3p + 2) = cupn1
-                        zr(jcer3p + 3) = cvpn1
-                        zr(jcer3p + 4) = cupn2
-                        zr(jcer3p + 5) = cvpn2
+                        vcer3pt(1) = cupn0
+                        vcer3pt(1 + 1) = cvpn0
+                        vcer3pt(1 + 2) = cupn1
+                        vcer3pt(1 + 3) = cvpn1
+                        vcer3pt(1 + 4) = cupn2
+                        vcer3pt(1 + 5) = cvpn2
                     endif
 !
 120              continue
@@ -596,12 +599,12 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                 endif
 !
                 if (iretv .eq. 1) then
-                    cupn0 = zr(jcer3p)
-                    cvpn0 = zr(jcer3p + 1)
-                    cupn1 = zr(jcer3p + 2)
-                    cvpn1 = zr(jcer3p + 3)
-                    cupn2 = zr(jcer3p + 4)
-                    cvpn2 = zr(jcer3p + 5)
+                    cupn0 = vcer3pt(1)
+                    cvpn0 = vcer3pt(1 + 1)
+                    cupn1 = vcer3pt(1 + 2)
+                    cvpn1 = vcer3pt(1 + 3)
+                    cupn2 = vcer3pt(1 + 4)
+                    cvpn2 = vcer3pt(1 + 5)
                 endif
 !
                 goto 100
@@ -701,7 +704,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
     call jedetr('&&RAYCIR.DOM1')
     call jedetr('&&RAYCIR.DOM2')
     call jedetr('&&RAYCIR.COORP')
-    call jedetr('&&RAYCIR.CER3PT')
+    AS_DEALLOCATE(vr=vcer3pt)
 !
     call jedema()
 end subroutine

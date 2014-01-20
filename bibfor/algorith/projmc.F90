@@ -18,6 +18,8 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 #include "asterfort/ualfva.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zeclag.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: neq, nbmo
     character(len=8) :: matras, nomres, basemo
@@ -49,12 +51,15 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
     integer :: iddeeq, jscde, nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
     integer :: i, j, k, imatra, jscdi, jscbl, jschc, iblo, ldblo, n1bloc, n2bloc
-    integer :: idvec2, idvec3, idbase
+
     complex(kind=8) :: pij
     character(len=16) :: typbas
     character(len=19) :: resu
     real(kind=8) :: zero
     complex(kind=8) :: cbid
+    real(kind=8), pointer :: vbasemo(:) => null()
+    complex(kind=8), pointer :: vectass2(:) => null()
+    complex(kind=8), pointer :: vectass3(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
@@ -102,12 +107,12 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
         zi(iadesc+2) = 2
     endif
 !
-    call wkvect('&&PROJMC.VECTASS2', 'V V C', neq, idvec2)
-    call wkvect('&&PROJMC.VECTASS3', 'V V C', neq, idvec3)
-    call wkvect('&&PROJMC.BASEMO', 'V V R', nbmo*neq, idbase)
+    AS_ALLOCATE(vc=vectass2, size=neq)
+    AS_ALLOCATE(vc=vectass3, size=neq)
+    AS_ALLOCATE(vr=vbasemo, size=nbmo*neq)
 ! ----- CONVERSION DE BASEMO A LA NUMEROTATION NU
     call copmod(basemo, 'DEPL', neq, nu, nbmo,&
-                'R', zr(idbase), [cbid])
+                'R', vbasemo, [cbid])
 !
     call mtdscr(matras)
     call jeveuo(matras//'           .&INT', 'E', imatra)
@@ -133,14 +138,14 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
         do i = n1bloc, n2bloc
 !
             do k = 1, neq
-                zc(idvec2+k-1)=dcmplx(zr(idbase+(i-1)*neq+k-1),zero)
+                vectass2(k)=dcmplx(vbasemo(1+(i-1)*neq+k-1),zero)
             end do
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
 !
-            call mcmult('ZERO', imatra, zc(idvec2), zc(idvec3), 1,&
+            call mcmult('ZERO', imatra, vectass2, vectass3, 1,&
                         .true.)
-            call zeclag(zc(idvec3), neq, zi(iddeeq))
+            call zeclag(vectass3, neq, zi(iddeeq))
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
@@ -150,7 +155,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
                 pij = dcmplx(zero,zero)
                 do k = 1, neq
-                    pij = pij + zc(idvec3+k-1)* dcmplx(zr(idbase+(j-1) *neq+k-1),zero)
+                    pij = pij + vectass3(k)* dcmplx(vbasemo(1+(j-1) *neq+k-1),zero)
                 end do
 !
 ! ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
@@ -162,9 +167,9 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
         call jelibe(jexnum(resu//'.UALF', iblo))
     end do
 !
-    call jedetr('&&PROJMC.VECTASS2')
-    call jedetr('&&PROJMC.VECTASS3')
-    call jedetr('&&PROJMC.BASEMO')
+    AS_DEALLOCATE(vc=vectass2)
+    AS_DEALLOCATE(vc=vectass3)
+    AS_DEALLOCATE(vr=vbasemo)
 !
 !
     call ualfva(resu, 'G')

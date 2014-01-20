@@ -63,13 +63,15 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 #include "asterfort/resoud.h"
 #include "asterfort/tbexve.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
     logical :: reprise, lcine
-    integer :: imat(2), nd, nchoc, h, hf, ninc, iei2
+    integer :: imat(2), nd, nchoc, h, hf, ninc
     character(len=14) :: numedd, xcdl, parcho, adime
     character(len=8) :: tabchoc
 !
@@ -86,6 +88,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     character(len=24) :: magrno, manono, grno
     real(kind=8) :: orig(3)
     complex(kind=8) :: cbid
+    real(kind=8), pointer :: ei2(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
@@ -294,13 +297,13 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
         do k = 1, neq
             zr(iei-1+k)=1.d0
         end do
-        call wkvect('&&MNLCHO.EI2', 'V V R', neq, iei2)
-!        call mrmult('ZERO', imat(1), zr(iei), zr(iei2), 1, .true.)
-!        zr(iadim-1+1)=ddot(neq,zr(iei),1,zr(iei2),1)
-        call dscal(neq, 0.d0, zr(iei2), 1)
-        call mrmult('ZERO', imat(2), zr(iei), zr(iei2), 1,&
+        AS_ALLOCATE(vr=ei2, size=neq)
+!        call mrmult('ZERO', imat(1), zr(iei), ei2, 1, .true.)
+!        zr(iadim-1+1)=ddot(neq,zr(iei),1,ei2,1)
+        call dscal(neq, 0.d0, ei2, 1)
+        call mrmult('ZERO', imat(2), zr(iei), ei2, 1,&
                     .true.)
-        zr(iadim-1+2)=ddot(neq,zr(iei),1,zr(iei2),1)
+        zr(iadim-1+2)=ddot(neq,zr(iei),1,ei2,1)
     endif
 ! --- ON RECUPERE OMEGA (POUR ADIMENSIONNE LE TEMPS)
     zr(iadim-1+3)=sqrt(zr(iadim-1+1)/zr(iadim-1+2))
@@ -314,7 +317,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 !    call detrsd('MATR_ASSE','&&mnlcho.adime.matk')
 !    call detrsd('MATR_ASSE','&&mnlcho.adime.matm')
     call jedetr('&&MNLCHO.EI')
-    call jedetr('&&MNLCHO.EI2')
+    AS_DEALLOCATE(vr=ei2)
 !
     call jedema()
 !

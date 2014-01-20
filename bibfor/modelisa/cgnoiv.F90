@@ -15,6 +15,8 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbno
     character(len=*) :: nomaz, lisnoz
@@ -47,7 +49,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer :: n1, k, nbnot, ino, jtrav, ncmp
+    integer :: n1, k, nbnot, ino,  ncmp
     integer :: jlisno, jcn2v, jcn2l
     character(len=3) :: tsca
     character(len=8) :: nocmp, noma, ma1, nomgd
@@ -56,6 +58,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     character(len=24) :: lisnoi, valk(5)
     real(kind=8) :: valr(2), vmin, vmax, v1
     character(len=8), pointer :: cnsk(:) => null()
+    integer, pointer :: lisno(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -96,7 +99,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
 !
-    call wkvect('&&CGNOIV.LISNO', 'V V I', nbnot, jtrav)
+    AS_ALLOCATE(vi=lisno, size=nbnot)
     do ino = 1, nbnot
         if (.not.zl(jcn2l-1+(ino-1)*ncmp+1)) goto 10
         if (tsca .eq. 'R') then
@@ -106,7 +109,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
         endif
         if (v1 .ge. vmin .and. v1 .le. vmax) then
             nbno=nbno+1
-            zi(jtrav-1+nbno)=ino
+            lisno(nbno)=ino
         endif
  10     continue
     end do
@@ -117,12 +120,12 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !     --------------------------------------------------------
     call wkvect(lisnoi, 'V V I', max(nbno, 1), jlisno)
     do k = 1, nbno
-        zi(jlisno-1+k)=zi(jtrav-1+k)
+        zi(jlisno-1+k)=lisno(k)
     end do
 !
 !
 ! --- MENAGE :
-    call jedetr('&&CGNOIV.LISNO')
+    AS_DEALLOCATE(vi=lisno)
     call detrsd('CHAM_NO_S', cns1)
     call detrsd('CHAM_NO_S', cns2)
 !

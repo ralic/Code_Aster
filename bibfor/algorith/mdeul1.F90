@@ -42,6 +42,8 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
     integer :: nbchoc, neqgen
     integer :: iorsto(*), iredst(*), descmm, descmr, descma, iparch(*)
@@ -136,9 +138,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     integer :: palmax
 !-----------------------------------------------------------------------
     integer :: i, iarchi, ifor, im, iret, isto1, ier, ind
-    integer :: isto2, isto3, jacce, jchor
-    integer :: jdepl, jfext, jm, jmass
-    integer :: jredi, jredr, jtra1, jvint, jvite, n100
+    integer :: isto2, isto3,  jchor
+    integer :: jdepl,  jm, jmass
+    integer :: jredi, jredr,  jvint, jvite, n100
     integer :: nbexci, nbmod1, nbpas, nbrede, nbrevi, nbsauv, nbscho
     integer :: ndt, jamgy, jrigy, jrevr, jrevi, isto4
     real(kind=8) :: deux, r8bid1, tarchi
@@ -154,6 +156,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     character(len=8) :: cnpal(palmax)
     character(len=24) :: cpal
     real(kind=8) :: fsauv(palmax, 3), vrot, arot, vrotin, arotin
+    real(kind=8), pointer :: acce(:) => null()
+    real(kind=8), pointer :: fext(:) => null()
+    real(kind=8), pointer :: tra1(:) => null()
 !
 !   ------------------------------------------------------------------------------------
 !   Definition of statement functions giving the appropriate (i,j) term in the mass, 
@@ -251,9 +256,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
     call wkvect('&&MDEUL1.DEPL', 'V V R8', neqgen, jdepl)
     call wkvect('&&MDEUL1.VITE', 'V V R8', neqgen, jvite)
-    call wkvect('&&MDEUL1.ACCE', 'V V R8', neqgen, jacce)
-    call wkvect('&&MDEUL1.TRA1', 'V V R8', neqgen, jtra1)
-    call wkvect('&&MDEUL1.FEXT', 'V V R8', neqgen, jfext)
+    AS_ALLOCATE(vr=acce, size=neqgen)
+    AS_ALLOCATE(vr=tra1, size=neqgen)
+    AS_ALLOCATE(vr=fext, size=neqgen)
     if (nbchoc .ne. 0 .and. nbpal .eq. 0) then
 !      IF (NBCHOC.NE.0  ) THEN
         call wkvect('&&MDEUL1.SCHOR', 'V V R8', nbchoc*14, jchor)
@@ -284,7 +289,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     if (nbexci .ne. 0) then
         call mdfext(tinit, r8bid1, neqgen, nbexci, idescf,&
                     nomfon, coefm, liad, inumor, 1,&
-                    zr(jfext))
+fext)
     endif
 !
 !   COUPLAGE AVEC EDYOS
@@ -308,7 +313,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !       CAS CLASSIQUE
 !
     if (nbpal .ne. 0) nbchoc = 0
-    call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
+    call mdfnli(neqgen, zr(jdepl), zr(jvite), acce, fext,&
                 nbchoc, logcho, dplmod, parcho, noecho,&
                 zr(jchor), nbrede, dplred, fonred, zr(jredr),&
                 zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
@@ -328,8 +333,8 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !     --- ACCELERATIONS GENERALISEES INITIALES ---
 !
     call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
-                riggen, descmr, zr(jfext), lamor, zr(jamgy),&
-                descma, zr(jtra1), zr(jdepl), zr(jvite), zr(jacce))
+                riggen, descmr, fext, lamor, zr(jamgy),&
+                descma, tra1, zr(jdepl), zr(jvite),acce)
 !
 !
 !     --- ARCHIVAGE DONNEES INITIALES ---
@@ -337,7 +342,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     tarchi = tinit
 !
     call mdarnl(isto1, 0, tinit, dt, neqgen,&
-                zr(jdepl), zr(jvite), zr(jacce), isto2, nbchoc,&
+                zr(jdepl), zr(jvite), acce, isto2, nbchoc,&
                 zr(jchor), nbscho, isto3, nbrede, zr(jredr),&
                 zi(jredi), isto4, nbrevi, zr(jrevr), zi(jrevi),&
                 depsto, vitsto, accsto, passto, iorsto,&
@@ -391,7 +396,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
         do im = 0, nbmod1
 !           --- VITESSES GENERALISEES ---
-            zr(jvite+im) = zr(jvite+im) + ( dt * zr(jacce+im) )
+            zr(jvite+im) = zr(jvite+im) + ( dt * acce(im+1) )
 !           --- DEPLACEMENTS GENERALISES ---
             zr(jdepl+im) = zr(jdepl+im) + ( dt * zr(jvite+im) )
         end do
@@ -399,19 +404,19 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !        --- FORCES EXTERIEURES ---
 !
         do ifor = 0, neqgen-1
-            zr(jfext+ifor) = zero
+            fext(ifor+1) = zero
         end do
         if (nbexci .ne. 0) then
             call mdfext(temps, r8bid1, neqgen, nbexci, idescf,&
                         nomfon, coefm, liad, inumor, 1,&
-                        zr(jfext))
+fext)
         endif
 !
 !        CALCUL CLASSIQUE FORCES NON-LINEAIRES ET ACCELERATIONS
 !
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
-        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
+        call mdfnli(neqgen, zr(jdepl), zr(jvite), acce, fext,&
                     nbchoc, logcho, dplmod, parcho, noecho,&
                     zr(jchor), nbrede, dplred, fonred, zr(jredr),&
                     zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
@@ -430,8 +435,8 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !        --- ACCELERATIONS GENERALISEES ---
 !
         call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
-                    riggen, descmr, zr(jfext), lamor, zr(jamgy),&
-                    descma, zr(jtra1), zr( jdepl), zr(jvite), zr(jacce))
+                    riggen, descmr, fext, lamor, zr(jamgy),&
+                    descma, tra1, zr( jdepl), zr(jvite),acce)
 !
 !        --- ARCHIVAGE ---
 !
@@ -441,7 +446,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
             isto1 = isto1 + 1
 !
             call mdarnl(isto1, iarchi, temps, dt, neqgen,&
-                        zr(jdepl), zr( jvite), zr(jacce), isto2, nbchoc,&
+                        zr(jdepl), zr( jvite), acce, isto2, nbchoc,&
                         zr(jchor), nbscho, isto3, nbrede, zr(jredr),&
                         zi(jredi), isto4, nbrevi, zr(jrevr), zi( jrevi),&
                         depsto, vitsto, accsto, passto, iorsto,&
@@ -487,9 +492,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 9999  continue
     call jedetr('&&MDEUL1.DEPL')
     call jedetr('&&MDEUL1.VITE')
-    call jedetr('&&MDEUL1.ACCE')
-    call jedetr('&&MDEUL1.TRA1')
-    call jedetr('&&MDEUL1.FEXT')
+    AS_DEALLOCATE(vr=acce)
+    AS_DEALLOCATE(vr=tra1)
+    AS_DEALLOCATE(vr=fext)
     call jedetr('&&MDEUL1.MASS')
     if (nbchoc .ne. 0) then
         call jedetr('&&MDEUL1.SCHOR')

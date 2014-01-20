@@ -61,13 +61,15 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 #include "asterfort/rsnoch.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomres, modcyc, mailsk, k8b, modcys
     character(len=16) :: depl, typsd
     character(len=19) :: chamva, profno, chamno
     character(len=24) :: indirf, crefe(2), nomchc, pfchno, nomchs
     real(kind=8) :: depi, genek, beta
-    integer :: nbmode, ibid, iret, neqsec, lttsc, llfreq, ltveco, ldfreq, ldkge
+    integer :: nbmode, ibid, iret, neqsec,  llfreq, ltveco, ldfreq, ldkge
     integer :: ldmge, ldom2, ldomo, nbnot, nbcmp, llcham, nbsec, neq, ires2
     integer :: numdia, ltvesi
 !
@@ -76,6 +78,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !-----------------------------------------------------------------------
     integer :: i, icomp, ieqf, ieqi, ier, j, k
     integer :: ldtyd, llinsk, ltinds, n1, nddcou
+    real(kind=8), pointer :: teta_secteur(:) => null()
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
 !
@@ -120,9 +123,9 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----CALCUL DU TETA DE CHAQUE SECTEUR----------------------------------
 !
-    call wkvect('&&EXPHGL.TETA_SECTEUR', 'V V R', nbsec, lttsc)
+    AS_ALLOCATE(vr=teta_secteur, size=nbsec)
     do i = 1, nbsec
-        zr(lttsc+i-1) = depi*(i-1) / nbsec
+        teta_secteur(i) = depi*(i-1) / nbsec
     end do
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
@@ -215,7 +218,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-        call rotchm(profno, zr(llcham), zr(lttsc), nbsec, zi(llinsk),&
+        call rotchm(profno, zr(llcham), teta_secteur, nbsec, zi(llinsk),&
                     nbnot, nbcmp, 3)
 !
         call jelibe(nomchc(1:19)//'.VALE')
@@ -226,7 +229,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
     call jedetr('&&EXPHGL.VEC.REEL')
     call jedetr('&&EXPHGL.ORDRE.FREQ')
-    call jedetr('&&EXPHGL.TETA_SECTEUR')
+    AS_DEALLOCATE(vr=teta_secteur)
     call jedetr('&&EXPHGL.TETGD')
     call jedetr('&&EXPHGL.LIR8')
 !

@@ -19,6 +19,8 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbmocl, nbtrou
     character(len=8) :: ma, modele
@@ -75,7 +77,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     character(len=24) :: litrou
     integer :: jno, jma, kno, kma, iacnex, iem, nem, numno, nno, nma, nbenc
     integer :: ibid, ient
-    integer :: itrno, itrma, ima, ino, nbma, nbno, nbnoma, imo, ier
+    integer ::  itrma, ima, ino, nbma, nbno, nbnoma, imo, ier
     integer :: lma, lno, itbma, itbno, iret, inoem, ntou, k, ifm, niv
     character(len=8) :: type2, oui, noent, nomgd
     character(len=16) :: motfac, motcle, typmcl, phenom
@@ -84,6 +86,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     integer :: iarg
     integer, pointer :: maille(:) => null()
     integer, pointer :: prnm(:) => null()
+    integer(kind=4), pointer :: indic_noeud(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -126,13 +129,13 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
         if (modele .ne. ' ') call jeveuo(modele//'.MAILLE', 'L', vi=maille)
     endif
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
-    call wkvect('&&RELIEM.INDIC_NOEUD', 'V V S', nbno, itrno)
+    AS_ALLOCATE(vi4=indic_noeud, size=nbno)
 !
     do k = 1, nbma
         zi4(itrma-1+k) = 0
     end do
     do k = 1, nbno
-        zi4(itrno-1+k) = 0
+        indic_noeud(k) = 0
     end do
 !
 !
@@ -163,7 +166,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                 endif
                 if (type2 .eq. 'NOEUD') then
                     do k = 1, nbno
-                        zi4(itrno-1+k) = 1
+                        indic_noeud(k) = 1
                     end do
                 endif
             endif
@@ -215,7 +218,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
             else if (typmcl.eq.'NOEUD') then
                 call jenonu(jexnom(ma//'.NOMNOE', karg), ino)
-                zi4(itrno-1+ino) = 1
+                indic_noeud(ino) = 1
 !
             else if (typmcl.eq.'GROUP_NO') then
                 call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
@@ -231,7 +234,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
                 do jno = 1, nno
                     ino = zi(kno-1+jno)
-                    zi4(itrno-1+ino) = 1
+                    indic_noeud(ino) = 1
                 end do
             endif
         end do
@@ -248,7 +251,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                 call jelira(jexnum(ma//'.CONNEX', ima), 'LONMAX', nbnoma)
                 do ino = 1, nbnoma
                     numno = zi(iacnex-1+ino)
-                    zi4(itrno-1+numno) = 1
+                    indic_noeud(numno) = 1
                 end do
             endif
         end do
@@ -323,7 +326,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
         nbtrou = 0
         do ino = 1, nbno
-            if (zi4(itrno-1+ino) .ne. 0) nbtrou = nbtrou + 1
+            if (indic_noeud(ino) .ne. 0) nbtrou = nbtrou + 1
         end do
         if (nbtrou .eq. 0) goto 200
 !
@@ -336,7 +339,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !           --- RANGEMENT DES NUMEROS DE NOEUDS ---
             lno = 0
             do ino = 1, nbno
-                if (zi4(itrno-1+ino) .ne. 0) then
+                if (indic_noeud(ino) .ne. 0) then
                     lno = lno + 1
                     zi(itbno-1+lno) = ino
                 endif
@@ -349,7 +352,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !           --- RANGEMENT DES NOMS DE NOEUDS ---
             lno = 0
             do ino = 1, nbno
-                if (zi4(itrno-1+ino) .ne. 0) then
+                if (indic_noeud(ino) .ne. 0) then
                     lno = lno + 1
                     call jenuno(jexnum(ma//'.NOMNOE', ino), zk8(itbno-1+ lno))
                 endif
@@ -366,7 +369,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             call jeveuo(ligrel//'.PRNM', 'L', vi=prnm)
             ier = 0
             do ino = 1, nbno
-                if (zi4(itrno-1+ino) .ne. 0) then
+                if (indic_noeud(ino) .ne. 0) then
                     do ient = 1, nbenc
                         if (prnm(nbenc*(ino-1)+ient) .ne. 0) goto 191
                     end do
@@ -389,7 +392,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !     --- DESTRUCTION DES TABLEAUX DE TRAVAIL ---
 200 continue
     call jedetr('&&RELIEM.INDIC_MAILLE')
-    call jedetr('&&RELIEM.INDIC_NOEUD')
+    AS_DEALLOCATE(vi4=indic_noeud)
 !
     call jedema()
 end subroutine

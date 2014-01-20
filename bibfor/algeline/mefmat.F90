@@ -19,9 +19,12 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 #include "asterfort/mefin4.h"
 #include "asterfort/mefin5.h"
 #include "asterfort/wkvect.h"
-    integer :: ndim(14), numgrp(*), nbmod
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+    integer :: ndim(14), numgrp(*), nbmod, nbz
     real(kind=8) :: matma(*), dcent(*)
     real(kind=8) :: cp(*), cf(*), vit(0:*), rho(0:*), pstat(*), dpstat(*)
+    integer :: nbgrp
     real(kind=8) :: matm(nbmod, nbmod), rint(*), phix(nbz*nbgrp, nbmod)
     real(kind=8) :: phiy(nbz*nbgrp, nbmod), z(*)
     real(kind=8) :: matr(nbmod, nbmod), mata(nbmod, nbmod)
@@ -104,11 +107,12 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
     real(kind=8) :: ecart
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iaireg, idphxg, idphyg, ig, ih, imataa, imatra
+    integer ::  idphxg, idphyg, ig, ih, imataa, imatra
     integer :: iphixg, iphiyg, ippxx, ippxy, ippyx, ippyy, ivnxx
-    integer :: ivnxy, ivnyx, ivnyy, nbcyl, nbgrp, nbgtot, nbz
+    integer :: ivnxy, ivnyx, ivnyy, nbcyl, nbgtot
     integer :: ntypg
     real(kind=8) :: aire, pi, rho0, vit0
+    real(kind=8), pointer :: aireg(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -121,7 +125,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
     call wkvect('&&MEFMAT.TMP.GH', 'V V R', nbz*2, ig)
     ih = ig + nbz
     if (ntypg .ne. 0) then
-        call wkvect('&&MEFMAT.AIREG', 'V V R', ntypg, iaireg)
+        AS_ALLOCATE(vr=aireg, size=ntypg)
         call wkvect('&&MEFMAT.PHIXG', 'V V R', nbgrp*nbgtot*nbmod, iphixg)
         call wkvect('&&MEFMAT.PHIYG', 'V V R', nbgrp*nbgtot*nbmod, iphiyg)
         call wkvect('&&MEFMAT.DPHIXG', 'V V R', nbgrp*nbgtot*nbmod, idphxg)
@@ -163,7 +167,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
     if (ntypg .ne. 0) then
 !
         do 45 k = 1, ntypg
-            zr(iaireg+k-1) = axg(k)/dble(nbcyl)
+            aireg(k) = axg(k)/dble(nbcyl)
 45      continue
 !
 !---  CALCUL (PAR INTERPOLATION  LINEAIRE) DES DEFORMEES MODALES
@@ -363,7 +367,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                             do 46 k = 1, ntypg
                                 if (itypg(kg) .eq. k) then
                                     mata(imod,jmod) = mata(imod,jmod) - 0.5d0 * rhog(kg) * abs(vi&
-                                                      &tg(kg)) * zr(iaireg+k-1) * cpg(k) * ( ( dc&
+                                                      &tg(kg)) * aireg(k) * cpg(k) * ( ( dc&
                                                       &ent(ivnxx+nbcyl*(jgrp-1)+ igrp) + dble(ncy&
                                                       &l) ) * zr(iphixg+( imod-1)*nbgtot*nbgrp+ng&
                                                       &z1-1) * zr(iphixg+(jmod-1)*nbgtot*nbgrp+ n&
@@ -379,7 +383,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                                                       &grp+ngz2-1) )
 !
                                     mata(imod,jmod) = mata(imod,jmod) - 0.5d0 * rhog(kg) * abs(vi&
-                                                      &tg(kg)) * zr(iaireg+k-1) * cdg(k) * ( ( dc&
+                                                      &tg(kg)) * aireg(k) * cdg(k) * ( ( dc&
                                                       &ent(ivnxx+nbcyl*(jgrp-1)+ igrp) + dble(ncy&
                                                       &l) ) * zr(iphixg+( imod-1)*nbgtot*nbgrp+ng&
                                                       &z1-1) * zr(iphixg+(jmod-1)*nbgtot*nbgrp+ n&
@@ -401,7 +405,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                             do 47 k = 1, ntypg
                                 if (itypg(kg) .eq. k) then
                                     matr(imod,jmod) = matr(imod,jmod) - 0.5d0 * rhog(kg) * abs(vi&
-                                                      &tg(kg)) * zr(iaireg+k-1) * cdg(k) * vitg( &
+                                                      &tg(kg)) * aireg(k) * cdg(k) * vitg( &
                                                       &kg) * ( dcent(ivnxx+nbcyl*(jgrp-1) +igrp) &
                                                       &* zr(iphixg+(imod-1)*nbgrp* nbgtot+ngz1-1)&
                                                       & * zr(idphxg+( jmod-1)*nbgrp*nbgtot+ngz2-1&
@@ -416,7 +420,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
                                                       &(jmod-1)* nbgrp*nbgtot+ngz2-1) )
 !
                                     matr(imod,jmod) = matr(imod,jmod) - 0.5d0 * rhog(kg) * abs(vi&
-                                                      &tg(kg)) * zr(iaireg+k-1) * cpg(k) * vitg( &
+                                                      &tg(kg)) * aireg(k) * cpg(k) * vitg( &
                                                       &kg) * ( ( dcent(ivnxx+nbcyl*(jgrp- 1)+igrp&
                                                       &) + dble(ncyl) ) * zr( iphixg+(imod-1)*nbg&
                                                       &rp*nbgtot+ngz1- 1) * zr(idphxg+(jmod-1)*nb&
@@ -454,7 +458,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 ! --- MENAGE
 !
     call jedetr('&&MEFMAT.TMP.GH')
-    call jedetr('&&MEFMAT.AIREG')
+    AS_DEALLOCATE(vr=aireg)
     call jedetr('&&MEFMAT.PHIXG')
     call jedetr('&&MEFMAT.PHIYG')
     call jedetr('&&MEFMAT.DPHIXG')

@@ -27,6 +27,8 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ifr, nparim
     character(len=*) :: table, formar, lipaim(*)
@@ -43,7 +45,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     integer :: jtblp, i, j, k, ipar, jvale, jlogq, ideb, ifin
     integer :: itc, itl, lgt, jcol, jlig, ifinc, il, ic
     integer :: lgl, vi(2), vali, iret, i1, i2, i3, i4, itc1, itc2
-    integer :: ilon, id, if, ir, nbpara, jnpar, npara, icf
+    integer :: ilon, id, if, ir, nbpara,  npara, icf
     integer :: nblign, jtbnp
     real(kind=8) :: vr(2), valr, prec(2)
     complex(kind=8) :: vc(2), valc
@@ -57,6 +59,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     character(len=24) :: valkk(4)
     character(len=80) :: vk(2), valk
     character(len=2000) :: chaine, chainc
+    integer, pointer :: nom_para(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -95,7 +98,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 !
 !     --- ON STOCKE LES POINTEURS POUR NE PLUS FAIRE DE JEVEUO ---
 !
-    call wkvect('&&TBIMTA.NOM_PARA', 'V V I', nparim, jnpar)
+    AS_ALLOCATE(vi=nom_para, size=nparim)
     erreur = .false.
     npara = 0
     do 10 i = 1, nparim
@@ -104,7 +107,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
             knpar = zk24(jtblp+4*(j-1) )
             if (inpar .eq. knpar) then
                 npara = npara + 1
-                zi(jnpar+npara-1) = j
+                nom_para(npara) = j
                 goto 10
             endif
 12      continue
@@ -119,7 +122,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
         call utmess('F', 'UTILITAI4_86')
     endif
 !
-    ipar = zi(jnpar+3-1)
+    ipar = nom_para(3)
     typec = zk24(jtblp+4*(ipar-1)+1)
     if (typec(1:1) .eq. 'I') then
         itc1 = 12
@@ -139,7 +142,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
         itc1 = 8
     endif
 !
-    ipar = zi(jnpar+1-1)
+    ipar = nom_para(1)
     lipacr(2) = zk24(jtblp+4*(ipar-1) )
     typec = zk24(jtblp+4*(ipar-1)+1)
     nomjv = zk24(jtblp+4*(ipar-1)+2)
@@ -227,7 +230,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
         endif
 100  end do
 !
-    ipar = zi(jnpar+2-1)
+    ipar = nom_para(2)
     lipacr(1) = zk24(jtblp+4*(ipar-1) )
     typel = zk24(jtblp+4*(ipar-1)+1)
     nomjv = zk24(jtblp+4*(ipar-1)+2)
@@ -354,7 +357,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     call codent(ifinc, 'D', kfin)
     formd = '('//kfin//'(''-''))'
 !
-    ipar = zi(jnpar+3-1)
+    ipar = nom_para(3)
     inpar = zk24(jtblp+4*(ipar-1) )
     nomjv = zk24(jtblp+4*(ipar-1)+2)
     nomjvl = zk24(jtblp+4*(ipar-1)+3)
@@ -478,7 +481,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
         call utmess('A', 'UTILITAI4_84')
     endif
 !
-    call jedetr('&&TBIMTA.NOM_PARA')
+    AS_DEALLOCATE(vi=nom_para)
     call jedetr('&&TBIMTA.VALE_COL')
     call jedetr('&&TBIMTA.VALE_LIG')
 !

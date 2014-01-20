@@ -17,6 +17,8 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lmasse, lamor, lraide, nitf, nbfreq, neq
     integer :: mxresf
@@ -61,9 +63,10 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: icomb, ieq, imode, iter, jter, lacc1, lacc2
-    integer :: ldynam, lyn
+    integer :: ldynam
     real(kind=8) :: dseed, err, err2
     integer :: iret
+    complex(kind=8), pointer :: yn_associe_a_xn(:) => null()
 !-----------------------------------------------------------------------
     data          nomddl /'        '/
 !     -----------------------------------------------------------------
@@ -78,7 +81,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
     k19bid=' '
 !
 !     --- CREATION DES VECTEURS DE TRAVAIL ---
-    call wkvect('&&WP1INV.YN_ASSOCIE_A_XN', 'V V C', neq, lyn)
+    AS_ALLOCATE(vc=yn_associe_a_xn, size=neq)
     call wkvect('&&WP1INV.XN_MOINS_1     ', 'V V C', neq, lacc1)
     call wkvect('&&WP1INV.YN_MOINS_1     ', 'V V C', neq, lacc2)
 !CC   CALL WKVECT('&&WP1INV.M_ORTHOGONALISE','V V C',NEQ*NBFREQ,LMORTH)
@@ -125,7 +128,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
         call ggubsc(dseed, neq, vecpro(1, imode))
 !CC      CALL WP1ORT(NEQ,VECPRO,VECPRO(1,IMODE),ZC(LMORTH),IMODE)
         do ieq = 1, neq
-            zc(lyn+ieq-1) = rp * vecpro(ieq,imode)
+            yn_associe_a_xn(ieq) = rp * vecpro(ieq,imode)
         end do
 !
 !        --- METHODE D'ITERATION INVERSE ---
@@ -145,7 +148,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
             rnorm = sign(1.d0,dble(rnorm)) * cun /sqrt(abs(dble(rnorm) ))
             do ieq = 1, neq
                 vecpro(ieq,imode) = vecpro(ieq,imode) * rnorm
-                zc(lyn+ieq-1) = zc(lyn+ieq-1) * rnorm
+                yn_associe_a_xn(ieq) = yn_associe_a_xn(ieq) * rnorm
             end do
 !
 !           --- CONSTITUTION DU SECOND MEMBRE POUR CALCULER XN ---
@@ -156,7 +159,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
             end do
             call mcmult('CUMU', lmasse, zc(lacc1), zc(lacc2), 1,&
                         .false.)
-            call mcmult('CUMU', lmasse, zc(lyn), zc(lacc2), 1,&
+            call mcmult('CUMU', lmasse, yn_associe_a_xn, zc(lacc2), 1,&
                         .false.)
 !
 !           --- RESOLUTION ---
@@ -169,7 +172,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
 !
 !           --- CALCUL DE YN ---
             do ieq = 1, neq
-                zc(lyn+ieq-1) = rp*zc(lacc2+ieq-1)+vecpro(ieq,imode)
+                yn_associe_a_xn(ieq) = rp*zc(lacc2+ieq-1)+vecpro(ieq,imode)
             end do
 !
 !           --- CALCUL DE LA VALEUR PROPRE ---
@@ -243,7 +246,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
     end do
 !
 !     --- MENAGE ---
-    call jedetr('&&WP1INV.YN_ASSOCIE_A_XN')
+    AS_DEALLOCATE(vc=yn_associe_a_xn)
     call jedetr('&&WP1INV.XN_MOINS_1     ')
     call jedetr('&&WP1INV.YN_MOINS_1     ')
     call detrsd('MATR_ASSE', '&&WP1INV.MATR_DYNA')

@@ -27,6 +27,8 @@ subroutine orth99(nomres, ritz)
 #include "asterfort/vpgskp.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomres
     integer :: ritz
@@ -57,7 +59,7 @@ subroutine orth99(nomres, ritz)
 !
 !
     integer :: ifm, niv, n1, ier, ibid, imatra, nbmode, jordm, iddeeq
-    integer :: llnequ, neq, idmode, jtrav1, jtrav3, jtrav4, iorol, iorne, iad
+    integer :: llnequ, neq, idmode,    iorol, iorne, iad
     integer :: jiad, jvale, ieq, i, nindep, ir, tmod(1)
     real(kind=8) :: alpha, rbid
     complex(kind=8) :: cbid
@@ -65,6 +67,9 @@ subroutine orth99(nomres, ritz)
     character(len=16) :: typbas
     character(len=14) :: nu, numdd1, numdda, matri1
     character(len=19) :: matr, chamol
+    real(kind=8), pointer :: trav1(:) => null()
+    real(kind=8), pointer :: trav3(:) => null()
+    integer, pointer :: trav4(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -150,22 +155,22 @@ subroutine orth99(nomres, ritz)
 !-- FINALEMENT SI, DONC RECOPIE OK
 !
 !-----------------------------------------------------------------------
-    call wkvect('&&ORTH99.TRAV1', 'V V R', neq, jtrav1)
-    call wkvect('&&ORTH99.TRAV3', 'V V R', nbmode, jtrav3)
-    call wkvect('&&ORTH99.TRAV4', 'V V I', neq, jtrav4)
+    AS_ALLOCATE(vr=trav1, size=neq)
+    AS_ALLOCATE(vr=trav3, size=nbmode)
+    AS_ALLOCATE(vi=trav4, size=neq)
 !
     do i = 1, neq
-        zi(jtrav4+i-1) = 1
+        trav4(i) = 1
     end do
 !
     if (matr .eq. ' ') then
 ! ORTHONORMALISATION L2
         call vpgskp(neq, nbmode, zr(idmode), alpha, imatra,&
-                    0, zr(jtrav1), zi(jtrav4), zr(jtrav3))
+                    0, trav1, trav4,trav3)
     else
 ! ORTHONORMALISATION PAR RAPPORT A LA MATRICE
         call vpgskp(neq, nbmode, zr(idmode), alpha, imatra,&
-                    2, zr(jtrav1), zi(jtrav4), zr(jtrav3))
+                    2, trav1, trav4,trav3)
     endif
 ! MISE A ZEROS DES VECTEURS NON INDEPENDANTS
     call vecind(matr, idmode, neq, nbmode, 0,&
@@ -257,9 +262,9 @@ subroutine orth99(nomres, ritz)
     end do
 !
 !
-    call jedetr('&&ORTH99.TRAV1')
-    call jedetr('&&ORTH99.TRAV3')
-    call jedetr('&&ORTH99.TRAV4')
+    AS_DEALLOCATE(vr=trav1)
+    AS_DEALLOCATE(vr=trav3)
+    AS_DEALLOCATE(vi=trav4)
     call jedetr('&&ORTH99.BASE')
     call jedetr('&&ORTH99.VECT_TEM')
 !

@@ -46,6 +46,8 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 #include "asterfort/nopar2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: cesz, celz, basez, ligrez, optini, nompaz, prolz
     character(len=1) :: kstop
@@ -101,11 +103,11 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     integer :: icmp, nec,  jcesd, jcesv, jcesl, gd
     integer :: jnucm2, jnucm1,  i
     integer :: ncmpmx, ncmp1, jcmpgd, icmp1, k, iopt, iadg
-    integer :: jcelv, neq, nbvces, jcopi, nbvcop, nbvaco
+    integer :: jcelv, neq, nbvces,  nbvcop, nbvaco
     integer :: igr, iel,  illiel,  nbgr, imolo, jmolo
     integer :: nbpt, ico, ipt, numa, iad, ieq, iad2
     integer :: jdceld, jdcell,  ima, nbma, nbspt, ispt, icmpmx
-    integer :: adiel, jlpt, jlcupt, lgcata, ncdyn, cumu, nbel, nptmx
+    integer :: adiel, jlpt,  lgcata, ncdyn, cumu, nbel, nptmx
     integer :: nbsp, nbcmp, isp, nbpt2, vali(2), inan
     logical :: diff, prol, prol2
     character(len=1) :: base
@@ -122,6 +124,8 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     integer, pointer :: liel(:) => null()
     integer, pointer :: dcelv(:) => null()
     integer, pointer :: celd(:) => null()
+    integer, pointer :: copi(:) => null()
+    integer, pointer :: long_pt_cumu(:) => null()
 !
 #define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
@@ -180,7 +184,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !     -- OBJET .COPI TEMPORAIRE POUR VERIFIER QUE TOUTES LES
 !        COMPOSANTES DE CES ONT ETE RECOPIEES
     call jelira(ces//'.CESV', 'LONMAX', nbvces)
-    call wkvect('&&CESCEL.COPI', 'V V I', nbvces, jcopi)
+    AS_ALLOCATE(vi=copi, size=nbvces)
 !
     ma = cesk(1)
     nomgd = cesk(2)
@@ -404,7 +408,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
         end do
 !
         call wkvect('&&CESCEL.LONG_PT', 'V V I', nptmx, jlpt)
-        call wkvect('&&CESCEL.LONG_PT_CUMU', 'V V I', nptmx, jlcupt)
+        AS_ALLOCATE(vi=long_pt_cumu, size=nptmx)
 !
 !       3.2.2 BOUCLE SUR LES GREL DU LIGREL
         do igr = 1, nbgr
@@ -431,7 +435,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !
             cumu = 0
             do ipt = 1, nbpt
-                zi(jlcupt-1+ipt) = cumu
+                long_pt_cumu(ipt) = cumu
                 cumu = cumu + zi(jlpt-1+ipt)
             end do
 !
@@ -514,7 +518,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
                                     endif
                                 endif
 !
-                                ieq = adiel - 1 + nbspt*zi(jlcupt-1+ ipt) + (ispt-1)*zi(jlpt-1+ip&
+                                ieq = adiel - 1 + nbspt*long_pt_cumu(ipt) + (ispt-1)*zi(jlpt-1+ip&
                                       &t) + ico
                                 if (tsca .eq. 'R') then
                                     zr(jcelv-1+ieq) = zr(jcesv-1+iad)
@@ -540,7 +544,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
                                 else
                                     ASSERT(.false.)
                                 endif
-                                zi(jcopi-1+iad) = 1
+                                copi(iad) = 1
 130                             continue
                             end do
 140                         continue
@@ -645,7 +649,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
                             else
                                 ASSERT(.false.)
                             endif
-                            zi(jcopi-1+iad) = 1
+                            copi(iad) = 1
 180                         continue
                         end do
                     end do
@@ -663,7 +667,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     nbvaco = 0
     do iad = 1, nbvces
         if (zl(jcesl-1+iad)) nbvaco = nbvaco + 1
-        if (zi(jcopi-1+iad) .eq. 1) nbvcop = nbvcop + 1
+        if (copi(iad) .eq. 1) nbvcop = nbvcop + 1
     end do
     nncp = nbvaco - nbvcop
     iret = 0
@@ -708,11 +712,11 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     endif
 !
     call detrsd('CHAM_ELEM_S', dcel)
-    call jedetr('&&CESCEL.COPI')
+    AS_DEALLOCATE(vi=copi)
     call jedetr('&&CESCEL.NUCM1')
     call jedetr('&&CESCEL.NUCM2')
     call jedetr('&&CESCEL.LONG_PT')
-    call jedetr('&&CESCEL.LONG_PT_CUMU')
+    AS_DEALLOCATE(vi=long_pt_cumu)
 !
     call jedema()
 end subroutine

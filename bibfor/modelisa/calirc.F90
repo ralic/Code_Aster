@@ -31,6 +31,8 @@ subroutine calirc(chargz)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: chargz
 ! ----------------------------------------------------------------------
@@ -60,15 +62,15 @@ subroutine calirc(chargz)
 !-----------------------------------------------------------------------
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
-    integer :: ibid,  nnomx, idmax, idnomn, idcoef, idnomd, igeom
-    integer :: idirec, idimen,  iagno2, nbma1, nbno2, nbno2t
-    integer :: nno1, i, indire, lno
+    integer :: ibid,  nnomx, idmax,    igeom
+    integer ::    iagno2, nbma1, nbno2, nbno2t
+    integer :: nno1, i,  lno
     integer :: jconb, jconu, jcocf,  idecal
     integer :: jconb1, jconu1, jcocf1, jcom11, ideca1
     integer :: jconb2, jconu2, jcocf2, jcom12, ideca2
     integer :: nbtyp, nddl2, nbma2,  jlistk, jdim, ndim1
     integer ::  jnorm, idim, ij, ima1, jlisv1
-    integer :: kno2, kkno2, jnu2bs, jelim, jcoor
+    integer :: kno2, kkno2,   jcoor
     logical :: lrota, dnor
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     complex(kind=8) :: betac, cbid
@@ -96,6 +98,14 @@ subroutine calirc(chargz)
     integer, pointer :: ln(:) => null()
     integer, pointer :: limanu2(:) => null()
     integer, pointer :: com1(:) => null()
+    real(kind=8), pointer :: coef(:) => null()
+    integer, pointer :: dim(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    integer, pointer :: elim(:) => null()
+    integer, pointer :: vindire(:) => null()
+    integer, pointer :: linonu2bis(:) => null()
+    character(len=8), pointer :: nomddl(:) => null()
+    character(len=8), pointer :: nomnoe(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ----------------------------------------------------------------------
 !
@@ -162,16 +172,16 @@ subroutine calirc(chargz)
 !     -- IDMAX : NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE
 !              = 2*27 + 3 = 57
     idmax=57
-    call wkvect('&&CALIRC.NOMNOE', 'V V K8', idmax, idnomn)
-    call wkvect('&&CALIRC.NOMDDL', 'V V K8', idmax, idnomd)
-    call wkvect('&&CALIRC.COEF', 'V V R', idmax, idcoef)
-    call wkvect('&&CALIRC.DIRECT', 'V V R', idmax*3, idirec)
-    call wkvect('&&CALIRC.DIMENSION', 'V V I', idmax, idimen)
+    AS_ALLOCATE(vk8=nomnoe, size=idmax)
+    AS_ALLOCATE(vk8=nomddl, size=idmax)
+    AS_ALLOCATE(vr=coef, size=idmax)
+    AS_ALLOCATE(vr=direct, size=idmax*3)
+    AS_ALLOCATE(vi=dim, size=idmax)
 !
 !
 !     &&CALIRC.ELIM(INO) : 0 -> INO PAS ELIMINE
 !                          1 -> INO ELIMINE
-    call wkvect('&&CALIRC.ELIM', 'V V I', nnomx, jelim)
+    AS_ALLOCATE(vi=elim, size=nnomx)
 !
     corres='&&CALIRC.CORRES'
     corre1='&&CALIRC.CORRE1'
@@ -181,10 +191,10 @@ subroutine calirc(chargz)
 !
 !       IL FAUT REMETTRE à ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
         do kk = 1, idmax
-            zi(idimen-1+kk)=0
+            dim(kk)=0
         end do
         do kk = 1, 3*idmax
-            zr(idirec-1+kk)=0.d0
+            direct(kk)=0.d0
         end do
 !
         dnor=.false.
@@ -259,11 +269,11 @@ subroutine calirc(chargz)
 ! ---        CREATION DU TABLEAU D'INDIRECTION ENTRE LES INDICES
 ! ---        DU TABLEAU DES NORMALES ET LES NUMEROS DES NOEUDS :
 !            -------------------------------------------------
-            call wkvect('&&CALIRC.INDIRE', 'V V I', nnomx, indire)
+            AS_ALLOCATE(vi=vindire, size=nnomx)
             call jelira('&&NBNLMA.LN', 'LONUTI', lno)
 !
             do i = 1, lno
-                zi(indire+ln(i)-1)=i
+                vindire(1+ln(i)-1)=i
             end do
 !
             call canort(noma, nbma2, limanu2, ndim, nbno2,&
@@ -280,23 +290,23 @@ subroutine calirc(chargz)
         call getvtx(motfac, 'ELIM_MULT', iocc=iocc, scal=kelim, nbret=ibid)
         if (kelim .eq. 'NON') then
             kkno2=0
-            call wkvect('&&CALIRC.LINONU2BIS', 'V V I', nbno2, jnu2bs)
+            AS_ALLOCATE(vi=linonu2bis, size=nbno2)
             do kno2 = 1, nbno2
                 nuno2=zi(iagno2-1+kno2)
 !            -- SI NUNO2 N'EST PAS ENCORE ELIMINE :
-                if (zi(jelim-1+nuno2) .eq. 0) then
-                    zi(jelim-1+nuno2)=1
+                if (elim(nuno2) .eq. 0) then
+                    elim(nuno2)=1
                     kkno2=kkno2+1
-                    zi(jnu2bs+kkno2)=nuno2
+                    linonu2bis(kkno2)=nuno2
                 endif
             end do
             nbno2=kkno2
             call jedetr('&&CALIRC.LINONU2')
             call wkvect('&&CALIRC.LINONU2', 'V V I', nbno2, iagno2)
             do kno2 = 1, nbno2
-                zi(iagno2-1+kno2)=zi(jnu2bs+kno2)
+                zi(iagno2-1+kno2)=linonu2bis(kno2)
             end do
-            call jedetr('&&CALIRC.LINONU2BIS')
+            AS_DEALLOCATE(vi=linonu2bis)
         endif
 !
 !
@@ -402,18 +412,18 @@ subroutine calirc(chargz)
                     nuno2=ino2
                     call jenuno(jexnum(noma//'.NOMNOE', nuno2), nono2)
 !
-                    zk8(idnomn-1+1)=nono2
-                    zr(idcoef-1+1)=-1.d0
+                    nomnoe(1)=nono2
+                    coef(1)=-1.d0
 !
                     do ino1 = 1, nno1
                         nuno1=zi(jconu+idecal-1+ino1)
                         coef1=zr(jcocf+idecal-1+ino1)
                         call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-                        zk8(idnomn+ino1)=nono1
-                        zr(idcoef+ino1)=coef1
+                        nomnoe(ino1+1)=nono1
+                        coef(ino1+1)=coef1
 !               SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
                         if (nuno1 .eq. nuno2) then
-                            if (abs(zr(idcoef+ino1)-1.d0) .lt. 1.d-2) then
+                            if (abs(coef(ino1+1)-1.d0) .lt. 1.d-2) then
                                 call utmess('A', 'CALCULEL5_49', sk=nono1)
                                 goto 130
 !
@@ -425,16 +435,16 @@ subroutine calirc(chargz)
 !           -----------------------------------------------------
                     if (dnor) then
                         do ino1 = 1, nno1+1
-                            zi(idimen+ino1-1)=ndim
-                            zk8(idnomd-1+ino1)='DEPL'
+                            dim(ino1)=ndim
+                            nomddl(ino1)='DEPL'
                             do idim = 1, ndim
-                                zr(idirec+(ino1-1)*ndim1+idim-1)=zr(&
-                                jnorm+ (zi(indire+ino2-1)-1)*ndim+&
+                                direct(1+(ino1-1)*ndim1+idim-1)=zr(&
+                                jnorm+ (vindire(ino2)-1)*ndim+&
                                 idim-1)
                             end do
                         end do
-                        call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8( idnomn), zi(idimen),&
-                                    zr(idirec), nno1+1, beta, betac, kbeta,&
+                        call afrela(coef, [cbid], nomddl, nomnoe, dim,&
+                                    direct, nno1+1, beta, betac, kbeta,&
                                     typcoe, fonree, typlag, 1.d-6, lisrel)
                     else
 !
@@ -446,13 +456,13 @@ subroutine calirc(chargz)
                                 if (k .eq. 2) cmp='DY'
                                 if (k .eq. 3) cmp='DZ'
                                 do ino1 = 1, nno1+1
-                                    zk8(idnomd-1+ino1)=cmp
+                                    nomddl(ino1)=cmp
                                 end do
-                                call afrela(zr(idcoef), [cbid], zk8( idnomd), zk8(idnomn),&
-                                            zi(idimen), zr( idirec), nno1+1, beta, betac,&
+                                call afrela(coef, [cbid], nomddl, nomnoe,&
+                                            dim, direct, nno1+1, beta, betac,&
                                             kbeta, typcoe, fonree, typlag, 1.d-6,&
                                             lisrel)
-                                call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
+                                call imprel(motfac, nno1+1, coef, nomddl, nomnoe,&
                                             beta)
                             end do
 !
@@ -471,13 +481,13 @@ subroutine calirc(chargz)
                                 if (k .eq. 2) cmp='DRY'
                                 if (k .eq. 3) cmp='DRZ'
                                 do ino1 = 1, nno1+1
-                                    zk8(idnomd-1+ino1)=cmp
+                                    nomddl(ino1)=cmp
                                 end do
-                                call afrela(zr(idcoef), [cbid], zk8( idnomd), zk8(idnomn),&
-                                            zi(idimen), zr( idirec), nno1+1, beta, betac,&
+                                call afrela(coef, [cbid], nomddl, nomnoe,&
+                                            dim, direct, nno1+1, beta, betac,&
                                             kbeta, typcoe, fonree, typlag, 1.d-6,&
                                             lisrel)
-                                call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
+                                call imprel(motfac, nno1+1, coef, nomddl, nomnoe,&
                                             beta)
                             end do
 !
@@ -509,12 +519,12 @@ subroutine calirc(chargz)
                     nno1=zi(jconb-1+ino2)
                     if (nno1 .eq. 0) goto 260
                     do k = 1, idmax
-                        zk8(idnomn+k-1)=m8blan
-                        zk8(idnomd+k-1)=m8blan
-                        zr(idcoef+k-1)=zero
-                        zi(idimen+k-1)=0
+                        nomnoe(k)=m8blan
+                        nomddl(k)=m8blan
+                        coef(k)=zero
+                        dim(k)=0
                         do kk = 1, 3
-                            zr(idirec+3*(k-1)+kk-1)=zero
+                            direct(1+3*(k-1)+kk-1)=zero
                         end do
                     end do
 !
@@ -535,8 +545,8 @@ subroutine calirc(chargz)
                         nuno1=zi(jconu+idecal-1+ino1)
                         coef1=zr(jcocf+idecal-1+ino1)
                         call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-                        zk8(idnomn+ij+ino1-1)=nono1
-                        zr(idcoef+ij+ino1-1)=coef1
+                        nomnoe(1+ij+ino1-1)=nono1
+                        coef(1+ij+ino1-1)=coef1
                     end do
 !
 !
@@ -546,28 +556,28 @@ subroutine calirc(chargz)
                         do idim = 1, ndim
                             do jdim = 1, ndim
                                 normal(idim)=normal(idim)+ mrota(jdim,&
-                                idim)*zr(jnorm+(zi(indire+ ino2-1)-1)*&
+                                idim)*zr(jnorm+(vindire(ino2)-1)*&
                                 ndim+jdim-1)
                             end do
                         end do
-                        zr(idcoef+1-1)=1.0d0
-                        zk8(idnomn+1-1)=nono2
-                        zk8(idnomd+1-1)='DEPL'
-                        zi(idimen+1-1)=ndim
+                        coef(1)=1.0d0
+                        nomnoe(1)=nono2
+                        nomddl(1)='DEPL'
+                        dim(1)=ndim
                         do idim = 1, ndim
-                            zr(idirec+idim-1)=zr(jnorm+(zi(indire+&
+                            direct(idim)=zr(jnorm+(vindire(1+&
                             ino2-1)-1)*ndim+ idim-1)
                         end do
                         do ino1 = 2, nno1+1
-                            zi(idimen+ino1-1)=ndim
-                            zk8(idnomd-1+ino1)='DEPL'
+                            dim(ino1)=ndim
+                            nomddl(ino1)='DEPL'
                             do idim = 1, ndim
-                                zr(idirec+(ino1-1)*ndim1+idim-1)=-&
+                                direct(1+(ino1-1)*ndim1+idim-1)=-&
                                 normal(idim)
                             end do
                         end do
-                        call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8( idnomn), zi(idimen),&
-                                    zr(idirec), nno1+1, beta, betac, kbeta,&
+                        call afrela(coef, [cbid], nomddl, nomnoe, dim,&
+                                    direct, nno1+1, beta, betac, kbeta,&
                                     typcoe, fonree, typlag, 1.d-6, lisrel)
                     else
                         do k = 1, ndim
@@ -575,20 +585,20 @@ subroutine calirc(chargz)
                             if (k .eq. 2) cmp='DY'
                             if (k .eq. 3) cmp='DZ'
                             do ino1 = 1, nno1
-                                zk8(idnomd+ndim+ino1-1)=cmp
+                                nomddl(1+ndim+ino1-1)=cmp
                             end do
                             do kk = 1, ndim
                                 if (kk .eq. 1) cmp='DX'
                                 if (kk .eq. 2) cmp='DY'
                                 if (kk .eq. 3) cmp='DZ'
-                                zk8(idnomn+kk-1)=nono2
-                                zk8(idnomd+kk-1)=cmp
-                                zr(idcoef+kk-1)=-mrota(kk,k)
+                                nomnoe(kk)=nono2
+                                nomddl(kk)=cmp
+                                coef(kk)=-mrota(kk,k)
                             end do
-                            call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8(idnomn), zi(idimen),&
-                                        zr(idirec), nno1+ ndim, beta, betac, kbeta,&
+                            call afrela(coef, [cbid], nomddl, nomnoe, dim,&
+                                        direct, nno1+ ndim, beta, betac, kbeta,&
                                         typcoe, fonree, typlag, 1.d-6, lisrel)
-                            call imprel(motfac, nno1+ndim, zr(idcoef), zk8(idnomd), zk8(idnomn),&
+                            call imprel(motfac, nno1+ndim, coef, nomddl, nomnoe,&
                                         beta)
                         end do
                     endif
@@ -610,18 +620,18 @@ subroutine calirc(chargz)
                 nuno2=ino2
                 call jenuno(jexnum(noma//'.NOMNOE', nuno2), nono2)
 !
-                zk8(idnomn-1+1)=nono2
-                zr(idcoef-1+1)=-1.d0
+                nomnoe(1)=nono2
+                coef(1)=-1.d0
 !
                 do ino1 = 1, nno1
                     nuno1=zi(jconu+idecal-1+ino1)
                     coef1=zr(jcocf+idecal-1+ino1)
                     call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
-                    zk8(idnomn+ino1)=nono1
-                    zr(idcoef+ino1)=coef1
+                    nomnoe(ino1+1)=nono1
+                    coef(ino1+1)=coef1
 !             SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
                     if (nuno1 .eq. nuno2) then
-                        if (abs(zr(idcoef+ino1)-1.d0) .lt. 1.d-2) then
+                        if (abs(coef(ino1+1)-1.d0) .lt. 1.d-2) then
                             call utmess('A', 'CALCULEL5_49', sk=nono1)
                             goto 290
 !
@@ -633,12 +643,12 @@ subroutine calirc(chargz)
 !           -----------------------------------------------------
                 cmp='TEMP'
                 do ino1 = 1, nno1+1
-                    zk8(idnomd-1+ino1)=cmp
+                    nomddl(ino1)=cmp
                 end do
-                call afrela(zr(idcoef), [cbid], zk8(idnomd), zk8(idnomn), zi(idimen),&
-                            zr(idirec), nno1+1, beta, betac, kbeta,&
+                call afrela(coef, [cbid], nomddl, nomnoe, dim,&
+                            direct, nno1+1, beta, betac, kbeta,&
                             typcoe, fonree, typlag, 1.d-6, lisrel)
-                call imprel(motfac, nno1+1, zr(idcoef), zk8(idnomd), zk8(idnomn),&
+                call imprel(motfac, nno1+1, coef, nomddl, nomnoe,&
                             beta)
 !
 290             continue
@@ -658,19 +668,19 @@ subroutine calirc(chargz)
         call jedetr('&&CALIRC.LINONU2')
         call jedetr('&&CALIRC.LISTK')
         call jedetr('&&CALIRC.LISV1')
-        call jedetr('&&CALIRC.INDIRE')
+        AS_DEALLOCATE(vi=vindire)
         call jedetr('&&NBNLMA.LN')
         call jedetr('&&NBNLMA.NBN')
         call jedetr('&&CANORT.NORMALE')
 !
     end do
 !
-    call jedetr('&&CALIRC.NOMNOE')
-    call jedetr('&&CALIRC.NOMDDL')
-    call jedetr('&&CALIRC.COEF')
-    call jedetr('&&CALIRC.DIRECT')
-    call jedetr('&&CALIRC.DIMENSION')
-    call jedetr('&&CALIRC.ELIM')
+    AS_DEALLOCATE(vk8=nomnoe)
+    AS_DEALLOCATE(vk8=nomddl)
+    AS_DEALLOCATE(vr=coef)
+    AS_DEALLOCATE(vr=direct)
+    AS_DEALLOCATE(vi=dim)
+    AS_DEALLOCATE(vi=elim)
 !
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE :
 !     ------------------------------------------------

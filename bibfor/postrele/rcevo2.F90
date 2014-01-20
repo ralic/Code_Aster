@@ -22,6 +22,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbinti
     logical :: lfatig, flexio, lrocht, kemixt
@@ -50,9 +52,9 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbinst, kinst, jcont, jcofl, ncmpr, i, j, k, l, ndim
+    integer :: ibid, n1, nbinst, kinst,   ncmpr, i, j, k, l, ndim
     integer :: nbabsc, jabsc, jsigm, jinst, ncmp, iret, nbtran, jsioe, iocc
-    integer :: nbins0, jnocc, ii, jresu, nbcycl, jcopr, jresp, jstoe, lo, le
+    integer :: nbins0, jnocc, ii, jresu, nbcycl,  jresp, jstoe, lo, le
     integer :: jsmoe
     parameter  ( ncmp = 6 )
     real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
@@ -64,6 +66,9 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
     character(len=19) :: nomf
     character(len=24) :: instan, abscur
     character(len=24) :: valk(7)
+    real(kind=8), pointer :: cont_flexio(:) => null()
+    real(kind=8), pointer :: cont_pressi(:) => null()
+    real(kind=8), pointer :: contraintes(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -291,9 +296,9 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
     10 end do
 !
     call jeveuo(abscur, 'L', jabsc)
-    call wkvect('&&RCEVO2.CONTRAINTES', 'V V R', nbabsc, jcont)
-    call wkvect('&&RCEVO2.CONT_FLEXIO', 'V V R', nbabsc, jcofl)
-    call wkvect('&&RCEVO2.CONT_PRESSI', 'V V R', nbabsc, jcopr)
+    AS_ALLOCATE(vr=contraintes, size=nbabsc)
+    AS_ALLOCATE(vr=cont_flexio, size=nbabsc)
+    AS_ALLOCATE(vr=cont_pressi, size=nbabsc)
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
 !
@@ -433,7 +438,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 !
                 call tbliva(table, 2, valek, [ibid], vale,&
                             [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, zr( jcont+k-1), cbid, k8b,&
+                            k8b, ibid, contraintes(k), cbid, k8b,&
                             iret)
                 if (iret .ne. 0) then
                     valk (1) = table
@@ -447,7 +452,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 if (flexii) then
                     call tbliva(tabfle, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, zr(jcofl+k-1), cbid, k8b,&
+                                k8b, ibid, cont_flexio(k), cbid, k8b,&
                                 iret)
                     if (iret .ne. 0) then
                         valk (1) = tabfle
@@ -462,7 +467,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                 if (lrocht) then
                     call tbliva(tabpre, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, zr(jcopr+k-1), cbid, k8b,&
+                                k8b, ibid, cont_pressi(k), cbid, k8b,&
                                 iret)
                     if (iret .ne. 0) then
                         valk (1) = tabpre
@@ -479,22 +484,22 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             if (lfatig) then
                 lo = ncmp*(ii-1) + j
                 le = ncmp*nbinst + ncmp*(ii-1) + j
-                zr(jsioe-1+lo) = zr(jcont)
-                zr(jsioe-1+le) = zr(jcont+nbabsc-1)
+                zr(jsioe-1+lo) = contraintes(1)
+                zr(jsioe-1+le) = contraintes(nbabsc)
                 if (kemixt) then
                     if (flexii) then
-                        zr(jstoe-1+lo) = zr(jcofl)
-                        zr(jstoe-1+le) = zr(jcofl+nbabsc-1)
+                        zr(jstoe-1+lo) = cont_flexio(1)
+                        zr(jstoe-1+le) = cont_flexio(nbabsc)
                     else
                         zr(jstoe-1+lo) = 0.d0
                         zr(jstoe-1+le) = 0.d0
                     endif
-                    zr(jsmoe-1+lo) = zr(jcont) - zr(jstoe-1+lo)
-                    zr(jsmoe-1+le) = zr(jcont+nbabsc-1) - zr( jstoe-1+le)
+                    zr(jsmoe-1+lo) = contraintes(1) - zr(jstoe-1+lo)
+                    zr(jsmoe-1+le) = contraintes(nbabsc) - zr( jstoe-1+le)
                 endif
             endif
 !
-            call rc32my(nbabsc, zr(jabsc), zr(jcont), momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
             momen1 = 0.5d0*momen1
 !
             l = ncmp*(ii-1) + j
@@ -503,7 +508,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             zr(jsigm-1+l) = momen1
 !
             if (flexii) then
-                call rc32my(nbabsc, zr(jabsc), zr(jcofl), momen0, momen1)
+                call rc32my(nbabsc, zr(jabsc), cont_flexio, momen0, momen1)
                 momen1 = 0.5d0*momen1
             else
                 momen0 = 0.d0
@@ -515,7 +520,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
             zr(jsigm-1+l) = momen1
 !
             if (lrocht) then
-                call rc32my(nbabsc, zr(jabsc), zr(jcopr), momen0, momen1)
+                call rc32my(nbabsc, zr(jabsc), cont_pressi, momen0, momen1)
                 momen1 = 0.5d0*momen1
             else
                 momen0 = r8vide()
@@ -539,9 +544,9 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
     100 end do
 !
     call jedetr(abscur)
-    call jedetr('&&RCEVO2.CONTRAINTES')
-    call jedetr('&&RCEVO2.CONT_FLEXIO')
-    call jedetr('&&RCEVO2.CONT_PRESSI')
+    AS_DEALLOCATE(vr=contraintes)
+    AS_DEALLOCATE(vr=cont_flexio)
+    AS_DEALLOCATE(vr=cont_pressi)
 !
 9999  continue
     call jedema()

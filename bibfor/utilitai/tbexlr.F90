@@ -8,6 +8,8 @@ subroutine tbexlr(nomta, listr, basout)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: nomta, listr, basout
 ! ----------------------------------------------------------------------
@@ -35,14 +37,19 @@ subroutine tbexlr(nomta, listr, basout)
 ! IN  : BASOUT : BASE DE CREATION DE "LISTR"
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, kpara, nbpr, nblg, ipar, ndim, jtblp
-    integer :: i, j, jvale, jlogq, klign, nbvale, k1, kcol, klig, ideb1, ideb2
-    integer :: ifin1, ifin2, nbcl, ivide, ilig, ibloc, jpas, jnbp, jbor, k, jcol
-    integer :: jlig, klis, kcol1, kcol2
+    integer :: iret, nbpara, nblign, jtbnp,  nbpr, nblg, ipar, ndim, jtblp
+    integer :: i, j, jvale, jlogq,  nbvale, k1, kcol, klig, ideb1, ideb2
+    integer :: ifin1, ifin2, nbcl, ivide, ilig, ibloc, jpas, jnbp, jbor, k
+    integer ::   kcol1, kcol2
     character(len=1) :: base
     character(len=3) :: type
     character(len=19) :: nomtab, listr8
     character(len=24) :: nomjv, nomjvl
+    integer, pointer :: colonn(:) => null()
+    integer, pointer :: lignes(:) => null()
+    integer, pointer :: nume_lign(:) => null()
+    integer, pointer :: nume_para(:) => null()
+    real(kind=8), pointer :: vale_r(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -72,16 +79,16 @@ subroutine tbexlr(nomta, listr, basout)
 !
 !     --- ON NE RETIENT QUE LES PARAMETRES DE TYPE "I" ET "R" ---
 !
-    call wkvect('&&TBEXLR.NUME_PARA', 'V V I', nbpara, kpara)
+    AS_ALLOCATE(vi=nume_para, size=nbpara)
     nbpr = 0
     do 10 i = 1, nbpara
         type = zk24(jtblp+4*(i-1)+1)
         if (type(1:1) .eq. 'I') then
             nbpr = nbpr + 1
-            zi(kpara+nbpr-1) = i
+            nume_para(nbpr) = i
         else if (type(1:1) .eq. 'R') then
             nbpr = nbpr + 1
-            zi(kpara+nbpr-1) = i
+            nume_para(nbpr) = i
         endif
 10  end do
     if (nbpr .eq. 0) then
@@ -90,19 +97,19 @@ subroutine tbexlr(nomta, listr, basout)
 !
 !     --- ON NE RETIENT QUE LES LIGNES NON VIDES ---
 !
-    call wkvect('&&TBEXLR.NUME_LIGN', 'V V I', nblign, klign)
+    AS_ALLOCATE(vi=nume_lign, size=nblign)
     nblg = 0
     do 20 i = 1, nblign
         nbcl = 0
         do 22 j = 1, nbpr
-            ipar = zi(kpara+j-1)
+            ipar = nume_para(j)
             nomjvl = zk24(jtblp+4*(ipar-1)+3)
             call jeveuo(nomjvl, 'L', jlogq)
             if (zi(jlogq+i-1) .eq. 1) nbcl = nbcl + 1
 22      continue
         if (nbcl .ne. 0) then
             nblg = nblg + 1
-            zi(klign+nblg-1) = i
+            nume_lign(nblg) = i
         endif
 20  end do
     if (nblg .eq. 0) then
@@ -112,20 +119,20 @@ subroutine tbexlr(nomta, listr, basout)
 !     --- RECHERCHE DE BLOCS ---
 !
     nbvale = nbpr * nblg
-    call wkvect('&&TBEXLR.VALE_R', 'V V R', nbvale, klis)
-    call wkvect('&&TBEXLR.COLONN', 'V V I', nbpr, jcol)
-    call wkvect('&&TBEXLR.LIGNES', 'V V I', nblg, jlig)
+    AS_ALLOCATE(vr=vale_r, size=nbvale)
+    AS_ALLOCATE(vi=colonn, size=nbpr)
+    AS_ALLOCATE(vi=lignes, size=nblg)
 !
     ibloc = 1
     k1 = 0
     do 30 i = 1, nblg
-        ilig = zi(klign+i-1)
+        ilig = nume_lign(i)
         ideb1 = 0
         ifin1 = nbpr
         ivide = 0
         kcol1 = 0
         do 32 j = 1, nbpr
-            ipar = zi(kpara+j-1)
+            ipar = nume_para(j)
             type = zk24(jtblp+4*(ipar-1)+1)
             nomjv = zk24(jtblp+4*(ipar-1)+2)
             nomjvl = zk24(jtblp+4*(ipar-1)+3)
@@ -139,15 +146,15 @@ subroutine tbexlr(nomta, listr, basout)
                 endif
                 if (type(1:1) .eq. 'I') then
                     k1 = k1 + 1
-                    zr(klis+k1-1) = zi(jvale+ilig-1)
+                    vale_r(k1) = zi(jvale+ilig-1)
                 else if (type(1:1) .eq. 'R') then
                     k1 = k1 + 1
-                    zr(klis+k1-1) = zr(jvale+ilig-1)
+                    vale_r(k1) = zr(jvale+ilig-1)
                 endif
             else
                 if (ideb1 .ne. 0) then
                     ivide = 1
-                    if (ifin1 .eq. nbpr) ifin1 = zi(kpara+j-1-1)
+                    if (ifin1 .eq. nbpr) ifin1 = nume_para(1+j-1-1)
                 endif
 !               IF ( IFIN1 .EQ. 0 ) IFIN1 = ZI(KPARA+J-1-1)
             endif
@@ -159,8 +166,8 @@ subroutine tbexlr(nomta, listr, basout)
                 klig = klig + 1
             else
 !              --- NOUVEAU BLOC ---
-                zi(jcol+ibloc-1) = kcol2
-                zi(jlig+ibloc-1) = klig
+                colonn(ibloc) = kcol2
+                lignes(ibloc) = klig
                 ibloc = ibloc + 1
                 klig = 1
             endif
@@ -169,15 +176,15 @@ subroutine tbexlr(nomta, listr, basout)
         ifin2 = ifin1
         kcol2 = kcol1
 30  end do
-    zi(jcol+ibloc-1) = kcol2
-    zi(jlig+ibloc-1) = klig
+    colonn(ibloc) = kcol2
+    lignes(ibloc) = klig
 !
 !     --- ON STOCKE ---
 !
     nbvale = 1 + ( 2 * ibloc )
     do 40 i = 1, ibloc
-        kcol = zi(jcol+i-1)
-        klig = zi(jlig+i-1)
+        kcol = colonn(i)
+        klig = lignes(i)
         nbvale = nbvale + ( kcol * klig )
 40  end do
 !
@@ -192,17 +199,17 @@ subroutine tbexlr(nomta, listr, basout)
     j = 1
     k1 = 0
     do 50 i = 1, ibloc
-        kcol = zi(jcol+i-1)
+        kcol = colonn(i)
         j = j + 1
         zr(jvale+j-1) = kcol
-        klig = zi(jlig+i-1)
+        klig = lignes(i)
         j = j + 1
         zr(jvale+j-1) = klig
         ndim = kcol * klig
         do 52 k = 1, ndim
             k1 = k1 + 1
             j = j + 1
-            zr(jvale+j-1) = zr(klis+k1-1)
+            zr(jvale+j-1) = vale_r(k1)
 52      continue
 50  end do
 !
@@ -213,11 +220,11 @@ subroutine tbexlr(nomta, listr, basout)
  4  end do
     zr(jbor+nbvale-1) = zr(jvale+nbvale-1)
 !
-    call jedetr('&&TBEXLR.NUME_PARA')
-    call jedetr('&&TBEXLR.NUME_LIGN')
-    call jedetr('&&TBEXLR.VALE_R')
-    call jedetr('&&TBEXLR.COLONN')
-    call jedetr('&&TBEXLR.LIGNES')
+    AS_DEALLOCATE(vi=nume_para)
+    AS_DEALLOCATE(vi=nume_lign)
+    AS_DEALLOCATE(vr=vale_r)
+    AS_DEALLOCATE(vi=colonn)
+    AS_DEALLOCATE(vi=lignes)
 !
     call jedema()
 end subroutine

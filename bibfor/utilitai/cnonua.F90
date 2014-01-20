@@ -16,6 +16,8 @@ subroutine cnonua(nx, chno, lno, nuage)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nx
     character(len=*) :: chno, lno, nuage
@@ -43,14 +45,16 @@ subroutine cnonua(nx, chno, lno, nuage)
 ! IN  LNO    : LISTE DES NOEUDS A PRENDRE EN COMPTE
 ! OUT NUAGE  : SD NUAGE PRODUITE
 !     ------------------------------------------------------------------
-    integer :: gd, jdesc, num, ncmpmx, iad, nec, kcomp
-    integer :: iaec, jrefe, np, kcoor, jlno, i, ibid, kvale, itype
+    integer :: gd, jdesc, num, ncmpmx, iad, nec
+    integer ::  jrefe, np, kcoor, jlno, i, ibid, kvale, itype
     integer :: nc, iec, icmp, ianueq, iaprno, j, ino, ncmp, icompt
     integer :: jnuai, jnuax, jnuav, jnual, ival, k, ieq
     character(len=4) :: type
     character(len=8) :: noma, nomgd
     character(len=19) :: kchno, klno, knuage, nonu
     logical :: lnual, prem
+    integer, pointer :: ent_cod(:) => null()
+    integer, pointer :: nomcmp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -66,8 +70,8 @@ subroutine cnonua(nx, chno, lno, nuage)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     nec = nbec(gd)
-    call wkvect('&&CNONUA.NOMCMP', 'V V I', ncmpmx, kcomp)
-    call wkvect('&&CNONUA.ENT_COD', 'V V I', nec, iaec)
+    AS_ALLOCATE(vi=nomcmp, size=ncmpmx)
+    AS_ALLOCATE(vi=ent_cod, size=nec)
 !
     call jeveuo(kchno//'.REFE', 'L', jrefe)
     noma = zk24(jrefe-1+1) (1:8)
@@ -101,10 +105,10 @@ subroutine cnonua(nx, chno, lno, nuage)
     if (num .lt. 0) then
         nc = -num
         do iec = 1, nec
-            zi(iaec+iec-1) = zi(jdesc-1+2+iec)
+            ent_cod(iec) = zi(jdesc-1+2+iec)
         end do
         do icmp = 1, ncmpmx
-            if (exisdg(zi(iaec) , icmp )) zi(kcomp+icmp-1) = icmp
+            if (exisdg(ent_cod, icmp )) nomcmp(icmp) = icmp
         end do
     else
 !
@@ -120,13 +124,13 @@ subroutine cnonua(nx, chno, lno, nuage)
             ncmp = zi(iaprno-1+ (ino-1)*(nec+2)+2 )
             if (ncmp .eq. 0) goto 110
             do iec = 1, nec
-                zi(iaec+iec-1) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
+                ent_cod(iec) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
             end do
             icompt = 0
             do icmp = 1, ncmpmx
-                if (exisdg(zi(iaec) , icmp )) then
+                if (exisdg(ent_cod, icmp )) then
                     icompt = icompt + 1
-                    zi(kcomp+icmp-1) = icmp
+                    nomcmp(icmp) = icmp
                 endif
             end do
             if (prem) then
@@ -155,9 +159,9 @@ subroutine cnonua(nx, chno, lno, nuage)
     zi(jnuai+4) = itype
     icmp = 0
     do i = 1, ncmpmx
-        if (zi(kcomp+i-1) .ne. 0) then
+        if (nomcmp(i) .ne. 0) then
             icmp = icmp + 1
-            zi(jnuai+5+icmp-1) = zi(kcomp+i-1)
+            zi(jnuai+5+icmp-1) = nomcmp(i)
         endif
     end do
 !
@@ -187,7 +191,7 @@ subroutine cnonua(nx, chno, lno, nuage)
             ival = ncmp * ( ino - 1 )
             icompt = 0
             do icmp = 1, ncmpmx
-                if (exisdg(zi(iaec) , icmp )) then
+                if (exisdg(ent_cod, icmp )) then
                     icompt = icompt + 1
                     k = nc*(j-1) + icompt
                     if (itype .eq. 1) then
@@ -211,11 +215,11 @@ subroutine cnonua(nx, chno, lno, nuage)
             ncmp = zi(iaprno-1+ (ino-1)*(nec+2)+2 )
             if (ncmp .eq. 0) goto 210
             do iec = 1, nec
-                zi(iaec+iec-1) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
+                ent_cod(iec) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
             end do
             icompt = 0
             do icmp = 1, ncmpmx
-                if (exisdg(zi(iaec) , icmp )) then
+                if (exisdg(ent_cod, icmp )) then
                     icompt = icompt + 1
                     ieq = zi(ianueq-1+ival-1+icompt)
                     k = nc*(j-1) + icompt
@@ -231,8 +235,8 @@ subroutine cnonua(nx, chno, lno, nuage)
         end do
     endif
 !
-    call jedetr('&&CNONUA.NOMCMP')
-    call jedetr('&&CNONUA.ENT_COD')
+    AS_DEALLOCATE(vi=nomcmp)
+    AS_DEALLOCATE(vi=ent_cod)
     call jedetr('&&CNONUA.NOEUD')
     call jedema()
 end subroutine

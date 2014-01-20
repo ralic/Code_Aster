@@ -11,6 +11,8 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ifr, nparim
     character(len=*) :: table, lipaim(*), formaz, formar
@@ -43,7 +45,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 ! ----------------------------------------------------------------------
     integer :: jtblp, i, j, ipar, jvale, jlogq, ideb, ifin
     integer :: nblign, jtbnp, ilon, ilm, id, if, ir, ilmp, iaj, nbpara, npara
-    integer :: nparaf, jnpar, jvpar, jlpar
+    integer :: nparaf
     logical :: erreur
     character(len=1) :: bacs
     character(len=3) :: type
@@ -54,6 +56,9 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     character(len=24) :: nomjv, nomjvl, inpar, knpar
     character(len=24) :: valk
     character(len=2000) :: chaine, chain2
+    integer, pointer :: log_para(:) => null()
+    integer, pointer :: nom_para(:) => null()
+    integer, pointer :: val_para(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -91,9 +96,9 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 !     --- ON RECHERCHE LA LONGUEUR LA PLUS LONGUE ---
 !     --- ON STOCKE LES POINTEURS POUR NE PLUS FAIRE DE JEVEUO ---
 !
-    call wkvect('&&TBIMEX.NOM_PARA', 'V V I', nparim, jnpar)
-    call wkvect('&&TBIMEX.VAL_PARA', 'V V I', nparim, jvpar)
-    call wkvect('&&TBIMEX.LOG_PARA', 'V V I', nparim, jlpar)
+    AS_ALLOCATE(vi=nom_para, size=nparim)
+    AS_ALLOCATE(vi=val_para, size=nparim)
+    AS_ALLOCATE(vi=log_para, size=nparim)
     erreur = .false.
     npara = 0
     ilmp = 0
@@ -105,9 +110,9 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
             nomjvl = zk24(jtblp+4*(j-1)+3)
             if (inpar .eq. knpar) then
                 npara = npara + 1
-                zi(jnpar+npara-1) = j
-                call jeveuo(nomjv, 'L', zi(jvpar+npara-1))
-                call jeveuo(nomjvl, 'L', zi(jlpar+npara-1))
+                nom_para(npara) = j
+                call jeveuo(nomjv, 'L', val_para(npara))
+                call jeveuo(nomjvl, 'L', log_para(npara))
                 ilon = lxlgut( inpar )
                 ilmp = max ( ilon , ilmp )
                 goto 10
@@ -126,7 +131,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     chain2 = ' '
     ideb = 2
     do 20 i = 1, npara
-        ipar = zi(jnpar+i-1)
+        ipar = nom_para(i)
         type = zk24(jtblp+4*(ipar-1)+1)
         ilon = lxlgut( zk24(jtblp+4*(ipar-1)) )
         if (type(1:3) .eq. 'K80') then
@@ -240,10 +245,10 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
         chaine = ' '
         ideb = 2
         do 32 j = 1, nparaf
-            ipar = zi(jnpar+j-1)
+            ipar = nom_para(j)
             type = zk24(jtblp+4*(ipar-1)+1)
-            jvale = zi(jvpar+j-1)
-            jlogq = zi(jlpar+j-1)
+            jvale = val_para(j)
+            jlogq = log_para(j)
             if (zi(jlogq+i-1) .eq. 1) then
                 if (type(1:1) .eq. 'I') then
                     ilm = max ( ilmp , 12 )
@@ -350,9 +355,9 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
         write(ifr,form1) chaine(1:ifin)
 30  end do
 !
-    call jedetr('&&TBIMEX.NOM_PARA')
-    call jedetr('&&TBIMEX.VAL_PARA')
-    call jedetr('&&TBIMEX.LOG_PARA')
+    AS_DEALLOCATE(vi=nom_para)
+    AS_DEALLOCATE(vi=val_para)
+    AS_DEALLOCATE(vi=log_para)
 !
     call jedema()
 !

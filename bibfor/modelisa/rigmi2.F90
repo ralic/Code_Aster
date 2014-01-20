@@ -32,6 +32,8 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis,&
 #include "asterfort/jexnum.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ifmis
     integer :: ifreq, nfreq
     character(len=8) :: noma
@@ -45,11 +47,14 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i2, idno, ifr, ii, ij, im
-    integer :: in, inoe, iparno, iret, isopa, isoto
+    integer :: i1, i2,  ifr, ii, ij, im
+    integer :: in, inoe,  iret,  isoto
     integer :: jrig, ldgm, ldnm, nb, nbmode, nbno, noemax
 !
     real(kind=8) :: r1, r2, r3
+    integer, pointer :: noeud(:) => null()
+    integer, pointer :: parno(:) => null()
+    real(kind=8), pointer :: sompar(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ifr = iunifi('RESULTAT')
@@ -72,28 +77,28 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis,&
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
 !
-    call wkvect('&&RIGMI2.PARNO', 'V V I', noemax, iparno)
+    AS_ALLOCATE(vi=parno, size=noemax)
 !
     do 23 in = 0, nb-1
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
         inoe = zi(ldnm)
-        zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
+        parno(inoe) = parno(inoe) + 1
         inoe = zi(ldnm+1)
-        zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
+        parno(inoe) = parno(inoe) + 1
 23  end do
 !
     nbno = 0
     do 25 ij = 1, noemax
-        if (zi(iparno+ij-1) .eq. 0) goto 25
+        if (parno(ij) .eq. 0) goto 25
         nbno = nbno + 1
 25  end do
 !
-    call wkvect('&&RIGMI2.NOEUD', 'V V I', nbno, idno)
+    AS_ALLOCATE(vi=noeud, size=nbno)
     ii = 0
     do 26 ij = 1, noemax
-        if (zi(iparno+ij-1) .eq. 0) goto 26
+        if (parno(ij) .eq. 0) goto 26
         ii = ii + 1
-        zi(idno+ii-1) = ij
+        noeud(ii) = ij
 26  end do
 !
 !     LECTURE DES RIGIDITES ELEMENTAIRES
@@ -104,7 +109,7 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis,&
     call jeveuo(tabrig, 'L', jrig)
     nbmode = 3*nbno
     call wkvect('&&RIGMI2.SOMTOT', 'V V R', nbmode, isoto)
-    call wkvect('&&RIGMI2.SOMPAR', 'V V R', nbmode, isopa)
+    AS_ALLOCATE(vr=sompar, size=nbmode)
     do 28 i1 = 1, nbno
         do 28 i2 = 1, nbno
             if (i1 .ne. i2) then
@@ -118,35 +123,35 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis,&
         im = zi(ldgm+in)
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
         do 37 ii = 1, nbno
-            if (zi(ldnm) .eq. zi(idno+ii-1)) i1 = ii
-            if (zi(ldnm+1) .eq. zi(idno+ii-1)) i2 = ii
+            if (zi(ldnm) .eq. noeud(ii)) i1 = ii
+            if (zi(ldnm+1) .eq. noeud(ii)) i2 = ii
 37      continue
-        zr(isopa+3*i1-3) = zr(isopa+3*i1-3) + zr(jrig+(3*i2-3)* nbmode+3*i1-3)
-        zr(isopa+3*i2-3) = zr(isopa+3*i2-3) + zr(jrig+(3*i2-3)* nbmode+3*i1-3)
-        zr(isopa+3*i1-2) = zr(isopa+3*i1-2) + zr(jrig+(3*i2-2)* nbmode+3*i1-2)
-        zr(isopa+3*i2-2) = zr(isopa+3*i2-2) + zr(jrig+(3*i2-2)* nbmode+3*i1-2)
-        zr(isopa+3*i1-1) = zr(isopa+3*i1-1) + zr(jrig+(3*i2-1)* nbmode+3*i1-1)
-        zr(isopa+3*i2-1) = zr(isopa+3*i2-1) + zr(jrig+(3*i2-1)* nbmode+3*i1-1)
+        sompar(1+3*i1-3) = sompar(1+3*i1-3) + zr(jrig+(3*i2-3)* nbmode+3*i1-3)
+        sompar(1+3*i2-3) = sompar(1+3*i2-3) + zr(jrig+(3*i2-3)* nbmode+3*i1-3)
+        sompar(1+3*i1-2) = sompar(1+3*i1-2) + zr(jrig+(3*i2-2)* nbmode+3*i1-2)
+        sompar(1+3*i2-2) = sompar(1+3*i2-2) + zr(jrig+(3*i2-2)* nbmode+3*i1-2)
+        sompar(1+3*i1-1) = sompar(1+3*i1-1) + zr(jrig+(3*i2-1)* nbmode+3*i1-1)
+        sompar(1+3*i2-1) = sompar(1+3*i2-1) + zr(jrig+(3*i2-1)* nbmode+3*i1-1)
 33  end do
 !
     do 34 in = 0, nb-1
         im = zi(ldgm+in)
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
         do 38 ii = 1, nbno
-            if (zi(ldnm) .eq. zi(idno+ii-1)) i1 = ii
-            if (zi(ldnm+1) .eq. zi(idno+ii-1)) i2 = ii
+            if (zi(ldnm) .eq. noeud(ii)) i1 = ii
+            if (zi(ldnm+1) .eq. noeud(ii)) i2 = ii
 38      continue
         rigma(3*in+1) = 0.5d0*zr(&
-                        jrig+(3*i2-3)*nbmode+3*i1-3)* (zr(isoto+3*i1-3)/zr(isopa+3*i1-3) + zr(iso&
-                        &to+3*i2-3)/zr( isopa+3*i2-3)+0.d0&
+                        jrig+(3*i2-3)*nbmode+3*i1-3)* (zr(isoto+3*i1-3)/sompar(1+3*i1-3) + zr(iso&
+                        &to+3*i2-3)/sompar(1+3*i2-3)+0.d0&
                         )
         rigma(3*in+2) = 0.5d0*zr(&
-                        jrig+(3*i2-2)*nbmode+3*i1-2)* (zr(isoto+3*i1-2)/zr(isopa+3*i1-2) + zr(iso&
-                        &to+3*i2-2)/zr( isopa+3*i2-2)+0.d0&
+                        jrig+(3*i2-2)*nbmode+3*i1-2)* (zr(isoto+3*i1-2)/sompar(1+3*i1-2) + zr(iso&
+                        &to+3*i2-2)/sompar(1+3*i2-2)+0.d0&
                         )
         rigma(3*in+3) = 0.5d0*zr(&
-                        jrig+(3*i2-1)*nbmode+3*i1-1)* (zr(isoto+3*i1-1)/zr(isopa+3*i1-1) + zr(iso&
-                        &to+3*i2-1)/zr( isopa+3*i2-1)+0.d0&
+                        jrig+(3*i2-1)*nbmode+3*i1-1)* (zr(isoto+3*i1-1)/sompar(1+3*i1-1) + zr(iso&
+                        &to+3*i2-1)/sompar(1+3*i2-1)+0.d0&
                         )
 34  end do
 !
@@ -155,8 +160,8 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis,&
         im = zi(ldgm+in)
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
         do 39 ii = 1, nbno
-            if (zi(ldnm) .eq. zi(idno+ii-1)) i1 = ii
-            if (zi(ldnm+1) .eq. zi(idno+ii-1)) i2 = ii
+            if (zi(ldnm) .eq. noeud(ii)) i1 = ii
+            if (zi(ldnm+1) .eq. noeud(ii)) i2 = ii
 39      continue
         r1 = rigma(3*in+1)
         r2 = rigma(3*in+2)
@@ -187,10 +192,10 @@ subroutine rigmi2(noma, nogr, ifreq, nfreq, ifmis,&
      &      /7x,'VALE=(',1x,3(1x,1pe12.5,','),1x,'),',&
      &      /'   ),')
 !
-    call jedetr('&&RIGMI2.PARNO')
-    call jedetr('&&RIGMI2.NOEUD')
+    AS_DEALLOCATE(vi=parno)
+    AS_DEALLOCATE(vi=noeud)
     call jedetr('&&RIGMI2.SOMTOT')
-    call jedetr('&&RIGMI2.SOMPAR')
+    AS_DEALLOCATE(vr=sompar)
 !
     call jedema()
 end subroutine

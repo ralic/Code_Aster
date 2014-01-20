@@ -15,6 +15,8 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ndim, listma(*), nbmail, norien, ntrait, nbmavo, mailvo(*)
     character(len=8) :: noma
@@ -65,12 +67,16 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
     integer :: ifm, niv, ima, numa, nutyma, nbnmai, numa3d, noriem, norieg
-    integer :: jtyma, jcoor, p1, p2, jnbn, jdno, jnom, jtyp, jm3d, jdesm, jdes3d
+    integer :: jtyma, jcoor, p1, p2,     jm3d, jdesm, jdes3d
     logical :: dime1, dime2
     character(len=2) :: kdim
     character(len=8) :: tpmail, nomail, typ3d
     character(len=24) :: mailma, nomob1
     character(len=24) :: valk(2)
+    integer, pointer :: ori1(:) => null()
+    integer, pointer :: ori2(:) => null()
+    character(len=8), pointer :: ori3(:) => null()
+    character(len=8), pointer :: ori4(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -97,10 +103,10 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
 !     ALLOCATIONS :
 !     -----------
-    call wkvect('&&ORILMA.ORI1', 'V V I', nbmail, jnbn)
-    call wkvect('&&ORILMA.ORI2', 'V V I', nbmail, jdno)
-    call wkvect('&&ORILMA.ORI3', 'V V K8', nbmail, jnom)
-    call wkvect('&&ORILMA.ORI4', 'V V K8', nbmail, jtyp)
+    AS_ALLOCATE(vi=ori1, size=nbmail)
+    AS_ALLOCATE(vi=ori2, size=nbmail)
+    AS_ALLOCATE(vk8=ori3, size=nbmail)
+    AS_ALLOCATE(vk8=ori4, size=nbmail)
 !
 ! --- VERIFICATION DU TYPE DES MAILLES
 ! --- (ON DOIT AVOIR DES MAILLES DE PEAU) :
@@ -110,15 +116,15 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
     do 10 ima = 1, nbmail
         numa = listma(ima)
         call jenuno(jexnum(mailma, numa), nomail)
-        zk8(jnom-1+ima) = nomail
-        zi(jnbn-1+ima) = zi(p2+numa+1-1) - zi(p2+numa-1)
-        zi(jdno-1+ima) = zi(p2+numa-1)
+        ori3(ima) = nomail
+        ori1(ima) = zi(p2+numa+1-1) - zi(p2+numa-1)
+        ori2(ima) = zi(p2+numa-1)
 !
 ! ---   TYPE DE LA MAILLE COURANTE :
 !       --------------------------
         nutyma = zi(jtyma+numa-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), tpmail)
-        zk8(jtyp-1+ima) = tpmail
+        ori4(ima) = tpmail
 !
         if (tpmail(1:4) .eq. 'QUAD') then
             dime2 = .true.
@@ -153,10 +159,10 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
     do 100 ima = 1, nbmail
 !
-        nomail = zk8(jnom-1+ima)
-        tpmail = zk8(jtyp-1+ima)
-        nbnmai = zi(jnbn-1+ima)
-        jdesm = zi(jdno-1+ima)
+        nomail = ori3(ima)
+        tpmail = ori4(ima)
+        nbnmai = ori1(ima)
+        jdesm = ori2(ima)
         numa3d = zi(jm3d-1+ima)
         if (numa3d .eq. 0) then
             ntrait = ntrait + 1
@@ -175,10 +181,10 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
     norien = norien + norieg
 !
-    call jedetr('&&ORILMA.ORI1')
-    call jedetr('&&ORILMA.ORI2')
-    call jedetr('&&ORILMA.ORI3')
-    call jedetr('&&ORILMA.ORI4')
+    AS_DEALLOCATE(vi=ori1)
+    AS_DEALLOCATE(vi=ori2)
+    AS_DEALLOCATE(vk8=ori3)
+    AS_DEALLOCATE(vk8=ori4)
     call jedetr(nomob1)
 !
 9999  continue

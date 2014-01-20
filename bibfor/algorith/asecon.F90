@@ -25,6 +25,8 @@ subroutine asecon(nomsy, neq, mome, resu)
 #include "asterfort/utmess.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: neq
     character(len=16) :: nomsy
@@ -56,8 +58,8 @@ subroutine asecon(nomsy, neq, mome, resu)
 ! IN  : RESU   : NOM UTILISATEUR DE LA COMMANDE
 !     ------------------------------------------------------------------
     integer :: iad, ibid, icas, idep, idir, ier, ii, in, ino, ioc, iocc, iordr
-    integer :: iorst, iret, jabs, jaux, jcas, jcum, jdir, jlin, jno, jord, jqua
-    integer :: jrep, jsta, jtyp, jvale, jval1, lnod, nbmode, nbno, nboc, nbtrou
+    integer :: iorst, iret,   jcas,  jdir,  jno, jord
+    integer ::  jsta, jtyp, jvale, jval1, lnod, nbmode, nbno, nboc, nbtrou
     integer :: ncas, ndep, nucas, nume, tordr(1)
     real(kind=8) :: r8b, epsmac, xxx, xx1, xx2, xx3
     complex(kind=8) :: cbid
@@ -66,6 +68,12 @@ subroutine asecon(nomsy, neq, mome, resu)
     character(len=16) :: monacc, concep, nomcmd, def
     character(len=19) :: chextr, champ, moncha
     character(len=24) :: vale, noms2, valk(3)
+    real(kind=8), pointer :: vabs(:) => null()
+    real(kind=8), pointer :: aux(:) => null()
+    real(kind=8), pointer :: cumul(:) => null()
+    real(kind=8), pointer :: line(:) => null()
+    real(kind=8), pointer :: quad(:) => null()
+    real(kind=8), pointer :: rep(:) => null()
 !     ------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
     data  vale / '                   .VALE' /
@@ -76,8 +84,8 @@ subroutine asecon(nomsy, neq, mome, resu)
     call getfac('DEPL_MULT_APPUI', ndep)
     call getvid(' ', 'MODE_MECA', scal=meca, nbret=ibid)
 !
-    call wkvect('&&ASECON.CUMUL', 'V V R', neq, jcum)
-    call wkvect('&&ASECON.AUX', 'V V R', neq*nboc, jaux)
+    AS_ALLOCATE(vr=cumul, size=neq)
+    AS_ALLOCATE(vr=aux, size=neq*nboc)
 !
     epsmac = r8vide()
     nbmode = 10
@@ -104,10 +112,10 @@ subroutine asecon(nomsy, neq, mome, resu)
 !           --- CHAMP PAR OCCURENCE DE COMB_DPL_APPUI ---
 !
     call jeveuo('&&ASENAP.TYPE', 'L', jtyp)
-    call wkvect('&&ASECON.REP', 'V V R', neq, jrep)
-    call wkvect('&&ASECON.QUAD', 'V V R', neq, jqua)
-    call wkvect('&&ASECON.LINE', 'V V R', neq, jlin)
-    call wkvect('&&ASECON.ABS', 'V V R', neq, jabs)
+    AS_ALLOCATE(vr=rep, size=neq)
+    AS_ALLOCATE(vr=quad, size=neq)
+    AS_ALLOCATE(vr=line, size=neq)
+    AS_ALLOCATE(vr=vabs, size=neq)
     call jeexin('&&ASECON.NORD', iret)
     if (iret .eq. 0) then
         call wkvect('&&ASECON.NORD', 'V V I', nboc+1, jord)
@@ -138,9 +146,9 @@ subroutine asecon(nomsy, neq, mome, resu)
         call jeveuo(vale, 'E', jvale)
 !
         do 4 in = 1, neq
-            zr(jqua+in-1)= 0.0d0
-            zr(jlin+in-1)= 0.0d0
-            zr(jabs+in-1)= 0.0d0
+            quad(in)= 0.0d0
+            line(in)= 0.0d0
+            vabs(in)= 0.0d0
  4      continue
         call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)
@@ -180,26 +188,26 @@ subroutine asecon(nomsy, neq, mome, resu)
                                     call jeveuo(chextr//'.CELV', 'L', jval1)
                                 endif
                                 do 16 in = 1, neq
-                                    zr(jrep+in-1) = zr(jval1+in-1) * xx1
+                                    rep(in) = zr(jval1+in-1) * xx1
 16                              continue
                                 if (zi(jtyp+iocc-1) .eq. 1) then
 !                 --- COMBINAISON QUADRATIQUE ---
                                     do 24 in = 1, neq
-                                        xxx = zr(jrep+in-1)
-                                        zr(jqua+in-1)= zr(jqua+in-1)+&
+                                        xxx = rep(in)
+                                        quad(in)= quad(in)+&
                                         xxx*xxx
 24                                  continue
                                 else if (zi(jtyp+iocc-1).eq.2) then
 !               --- COMBINAISON LINEAIRE ---
                                     do 18 in = 1, neq
-                                        zr(jlin+in-1)= zr(jlin+in-1)+&
-                                        zr(jrep+in-1)
+                                        line(in)= line(in)+&
+                                        rep(in)
 18                                  continue
                                 else
 !              --- COMBINAISON VALEUR ABSOLUE ---
                                     do 22 in = 1, neq
-                                        xx1 = abs(zr(jrep+in-1))
-                                        zr(jabs+in-1)= zr(jabs+in-1)+&
+                                        xx1 = abs(rep(in))
+                                        vabs(in)= vabs(in)+&
                                         xx1
 22                                  continue
                                 endif
@@ -210,12 +218,12 @@ subroutine asecon(nomsy, neq, mome, resu)
 40          continue
 20      continue
         do 26 in = 1, neq
-            xx1 = zr(jlin+in-1)
-            xx2 = zr(jabs+in-1)
-            xx3 = sqrt(zr(jqua+in-1))
+            xx1 = line(in)
+            xx2 = vabs(in)
+            xx3 = sqrt(quad(in))
             zr(jvale+in-1) = xx1 + xx2 + xx3
             ii = ii + 1
-            zr(jaux+ii-1) = zr(jvale+in-1)
+            aux(ii) = zr(jvale+in-1)
 26      continue
 !
         call rsnoch(resu, nomsy, iordr)
@@ -253,13 +261,13 @@ subroutine asecon(nomsy, neq, mome, resu)
 !
     do 32 ioc = 1, nboc
         do 30 in = 1, neq
-            xx1 = zr(jaux+(ioc-1)*neq+in-1)
-            zr(jcum+in-1) = zr(jcum+in-1)+xx1*xx1
+            xx1 = aux(1+(ioc-1)*neq+in-1)
+            cumul(in) = cumul(in)+xx1*xx1
 30      continue
 32  end do
 ! STOCKAGE DU CUMUL QUADRATIQUE
     do 34 in = 1, neq
-        zr(jvale+in-1) = sqrt( abs ( zr(jcum+in-1) ) )
+        zr(jvale+in-1) = sqrt( abs ( cumul(in) ) )
 34  end do
     call jelibe(vale)
     call rsnoch(resu, nomsy, iordr)
@@ -272,11 +280,11 @@ subroutine asecon(nomsy, neq, mome, resu)
                 0, sjv=iad, styp=k8b)
     zk16(iad) = def
 !
-    call jedetr('&&ASECON.CUMUL')
-    call jedetr('&&ASECON.AUX')
-    call jedetr('&&ASECON.REP')
-    call jedetr('&&ASECON.QUAD')
-    call jedetr('&&ASECON.LINE')
-    call jedetr('&&ASECON.ABS')
+    AS_DEALLOCATE(vr=cumul)
+    AS_DEALLOCATE(vr=aux)
+    AS_DEALLOCATE(vr=rep)
+    AS_DEALLOCATE(vr=quad)
+    AS_DEALLOCATE(vr=line)
+    AS_DEALLOCATE(vr=vabs)
     call jedema()
 end subroutine

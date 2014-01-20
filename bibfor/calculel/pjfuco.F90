@@ -9,6 +9,8 @@ subroutine pjfuco(c1, c2, base, c3)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=16) :: c1, c2, c3
     character(len=1) :: base
@@ -47,8 +49,9 @@ subroutine pjfuco(c1, c2, base, c3)
     character(len=8) :: ma1, ma2
     character(len=24) :: valk(2)
     integer :: i1, i2, i3, j1, j2, j3, k
-    integer :: ino2, iatmp1, deca1, deca2, deca3, nbno, lont, nbno2
+    integer :: ino2,  deca1, deca2, deca3, nbno, lont, nbno2
     integer :: i1nb, i2nb, i3nb, i1nu, i2nu, i3nu, i1cf, i2cf, i3cf, i1ou2
+    integer, pointer :: tmp1(:) => null()
 !
 !
 !
@@ -85,16 +88,16 @@ subroutine pjfuco(c1, c2, base, c3)
 !     2.1 CREATION D'UN OBJET DE TRAVAIL '&&PJFUCO.TMP1'
 !        QUI DIRA DANS QUEL CORRESP_2_MAILLA A ETE PRIS LE NOEUD INO2
 !     ----------------------------------------------------------------
-    call wkvect('&&PJFUCO.TMP1', 'V V I', nbno2, iatmp1)
+    AS_ALLOCATE(vi=tmp1, size=nbno2)
 !
     do 20,ino2 = 1,nbno2
     if (zi(i1-1+ino2) .ne. 0) then
-        zi(iatmp1-1+ino2) = 1
+        tmp1(ino2) = 1
         zi(i3-1+ino2) = zi(i1-1+ino2)
         zi(j3-1+ino2) = zi(j1-1+ino2)
     endif
     if (zi(i2-1+ino2) .ne. 0) then
-        zi(iatmp1-1+ino2) = 2
+        tmp1(ino2) = 2
         zi(i3-1+ino2) = zi(i2-1+ino2)
         zi(j3-1+ino2) = zi(j2-1+ino2)
     endif
@@ -121,7 +124,7 @@ subroutine pjfuco(c1, c2, base, c3)
     deca2 = 0
     deca3 = 0
     do 60,ino2 = 1,nbno2
-    i1ou2 = zi(iatmp1-1+ino2)
+    i1ou2 = tmp1(ino2)
     if (i1ou2 .eq. 1) then
         nbno = zi(i3nb-1+ino2)
         do 40,k = 1,nbno
@@ -142,6 +145,6 @@ subroutine pjfuco(c1, c2, base, c3)
 !
 !
 !
-    call jedetr('&&PJFUCO.TMP1')
+    AS_DEALLOCATE(vi=tmp1)
     call jedema()
 end subroutine

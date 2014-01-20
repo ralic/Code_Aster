@@ -24,6 +24,8 @@ subroutine caliai(fonree, charge)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=4) :: fonree
     character(len=8) :: charge
@@ -69,12 +71,19 @@ subroutine caliai(fonree, charge)
     integer :: iarg
 !-----------------------------------------------------------------------
     integer :: i, ier, igr, in, indnoe, ino
-    integer :: iocc, iret, j, jcmuc, jcmuf, jcmur, jcoor
-    integer :: jddl, jdime, jdirec, jgr0, jjj, jlist1, jlist2
+    integer :: iocc, iret, j,    jcoor
+    integer :: jddl,   jgr0, jjj
     integer :: k, n, n1, n2, n3, nb, nbgt
     integer :: nbno, ndim1, ndim2, nent, ng, ngr, nliai
     integer :: nno
     real(kind=8) :: beta
+    complex(kind=8), pointer :: coemuc(:) => null()
+    character(len=8), pointer :: coemuf(:) => null()
+    real(kind=8), pointer :: coemur(:) => null()
+    integer, pointer :: dimension(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    character(len=24), pointer :: liste1(:) => null()
+    character(len=8), pointer :: liste2(:) => null()
 !-----------------------------------------------------------------------
     data nompar /'X','Y','Z'/
 ! ----------------------------------------------------------------------
@@ -152,23 +161,23 @@ subroutine caliai(fonree, charge)
 !
 !     -- ALLOCATION DE TABLEAUX DE TRAVAIL
 !    -------------------------------------
-    call wkvect('&&CALIAI.LISTE1', 'V V K24', ndim1, jlist1)
-    call wkvect('&&CALIAI.LISTE2', 'V V K8', ndim2, jlist2)
+    AS_ALLOCATE(vk24=liste1, size=ndim1)
+    AS_ALLOCATE(vk8=liste2, size=ndim2)
     call wkvect('&&CALIAI.DDL  ', 'V V K8', ndim2, jddl)
-    call wkvect('&&CALIAI.COEMUR', 'V V R', ndim2, jcmur)
-    call wkvect('&&CALIAI.COEMUC', 'V V C', ndim2, jcmuc)
-    call wkvect('&&CALIAI.COEMUF', 'V V K8', ndim2, jcmuf)
-    call wkvect('&&CALIAI.DIRECT', 'V V R', 3*ndim2, jdirec)
-    call wkvect('&&CALIAI.DIMENSION', 'V V I', ndim2, jdime)
+    AS_ALLOCATE(vr=coemur, size=ndim2)
+    AS_ALLOCATE(vc=coemuc, size=ndim2)
+    AS_ALLOCATE(vk8=coemuf, size=ndim2)
+    AS_ALLOCATE(vr=direct, size=3*ndim2)
+    AS_ALLOCATE(vi=dimension, size=ndim2)
 !
 !     BOUCLE SUR LES RELATIONS LINEAIRES
 !     -----------------------------------
     call getres(char, concep, oper)
     do i = 1, nliai
-        call getvr8(motfac, 'COEF_MULT', iocc=i, nbval=ndim2, vect=zr(jcmur),&
+        call getvr8(motfac, 'COEF_MULT', iocc=i, nbval=ndim2, vect=coemur,&
                     nbret=n2)
         if (oper .eq. 'AFFE_CHAR_MECA_F') then
-            call getvid(motfac, 'COEF_MULT_FONC', iocc=i, nbval=ndim2, vect=zk8( jcmuf),&
+            call getvid(motfac, 'COEF_MULT_FONC', iocc=i, nbval=ndim2, vect=coemuf,&
                         nbret=n3)
         else
             n3=0
@@ -213,30 +222,30 @@ subroutine caliai(fonree, charge)
 !
 !
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
-                    iarg, 0, zk24(jlist1), ng)
+                    iarg, 0, liste1, ng)
         if (ng .ne. 0) then
 !
 !           -- CAS DE GROUP_NO :
 !           --------------------
             ng = -ng
             call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
-                        iarg, ng, zk24(jlist1), n)
+                        iarg, ng, liste1, n)
             indnoe = 0
             do j = 1, ng
-                call jeveuo(jexnom(grouno, zk24(jlist1-1+j)), 'L', jgr0)
-                call jelira(jexnom(grouno, zk24(jlist1-1+j)), 'LONUTI', n)
+                call jeveuo(jexnom(grouno, liste1(j)), 'L', jgr0)
+                call jelira(jexnom(grouno, liste1(j)), 'LONUTI', n)
                 do k = 1, n
                     in = zi(jgr0-1+k)
                     indnoe = indnoe + 1
                     call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
-                    zk8(jlist2+indnoe-1) = nomnoe
+                    liste2(indnoe) = nomnoe
                     if (typco2 .eq. 'FONC') then
                         valpar(1) = zr(jcoor-1+3*(in-1)+1)
                         valpar(2) = zr(jcoor-1+3*(in-1)+2)
                         valpar(3) = zr(jcoor-1+3*(in-1)+3)
-                        call fointe('F', zk8(jcmuf-1+indnoe), 3, nompar, valpar,&
+                        call fointe('F', coemuf(indnoe), 3, nompar, valpar,&
                                     vale, ier)
-                        zr(jcmur-1+indnoe)=vale
+                        coemur(indnoe)=vale
                     endif
                 end do
             end do
@@ -252,8 +261,8 @@ subroutine caliai(fonree, charge)
 !
 !           AFFECTATION A LA LISTE DE RELATIONS
 !
-            call afrela(zr(jcmur), zc(jcmuc), zk8(jddl), zk8(jlist2), zi(jdime),&
-                        zr(jdirec), indnoe, beta, betac, betaf,&
+            call afrela(coemur, coemuc, zk8(jddl), liste2, dimension,&
+                        direct, indnoe, beta, betac, betaf,&
                         typcoe, typval, typlag, 0.d0, lisrel)
 !
         else
@@ -261,20 +270,20 @@ subroutine caliai(fonree, charge)
 !           CAS DE NOEUD :
 !           -------------
             call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
-                        iarg, 0, zk8( jlist2), nbno)
+                        iarg, 0, liste2, nbno)
             if (nbno .ne. 0) then
                 nbno = -nbno
                 call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
-                            iarg, nbno, zk8(jlist2), n)
+                            iarg, nbno, liste2, n)
                 if (typco2 .eq. 'FONC') then
                     do k = 1, n
-                        call jenonu(jexnom(noma//'.NOMNOE', zk8(jlist2- 1+k)), in)
+                        call jenonu(jexnom(noma//'.NOMNOE', liste2(k)), in)
                         valpar(1) = zr(jcoor-1+3*(in-1)+1)
                         valpar(2) = zr(jcoor-1+3*(in-1)+2)
                         valpar(3) = zr(jcoor-1+3*(in-1)+3)
-                        call fointe('F', zk8(jcmuf-1+k), 3, nompar, valpar,&
+                        call fointe('F', coemuf(k), 3, nompar, valpar,&
                                     vale, ier)
-                        zr(jcmur-1+k)=vale
+                        coemur(k)=vale
                     end do
                 endif
             endif
@@ -287,8 +296,8 @@ subroutine caliai(fonree, charge)
                 vali (2) = nbno
                 call utmess('F', 'MODELISA8_47', ni=2, vali=vali)
             endif
-            call afrela(zr(jcmur), zc(jcmuc), zk8(jddl), zk8(jlist2), zi(jdime),&
-                        zr(jdirec), nbno, beta, betac, betaf,&
+            call afrela(coemur, coemuc, zk8(jddl), liste2, dimension,&
+                        direct, nbno, beta, betac, betaf,&
                         typcoe, typval, typlag, 0.d0, lisrel)
         endif
 !
@@ -301,14 +310,14 @@ subroutine caliai(fonree, charge)
 !     -- MENAGE :
 !     -----------
     call jedetr(trav)
-    call jedetr('&&CALIAI.LISTE1')
-    call jedetr('&&CALIAI.LISTE2')
+    AS_DEALLOCATE(vk24=liste1)
+    AS_DEALLOCATE(vk8=liste2)
     call jedetr('&&CALIAI.DDL  ')
-    call jedetr('&&CALIAI.COEMUR')
-    call jedetr('&&CALIAI.COEMUC')
-    call jedetr('&&CALIAI.COEMUF')
-    call jedetr('&&CALIAI.DIRECT')
-    call jedetr('&&CALIAI.DIMENSION')
+    AS_DEALLOCATE(vr=coemur)
+    AS_DEALLOCATE(vc=coemuc)
+    AS_DEALLOCATE(vk8=coemuf)
+    AS_DEALLOCATE(vr=direct)
+    AS_DEALLOCATE(vi=dimension)
 !
  90 continue
     call jedema()

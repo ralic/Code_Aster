@@ -86,6 +86,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mailla
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
@@ -98,7 +100,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     integer :: nselec
     parameter     (nselec=5)
     integer :: ideca, immer, inob1, inob2, inobe, inoca, ipara, itetra, jcoor
-    integer :: jcxma, jd2, jnoca, jnod2, jnunob, jtblp, jtbnp, jxca, jxyzma
+    integer ::   jnoca,  jnunob, jtblp, jtbnp, jxca
     integer :: jyca, jzca, nbcnx, nblign, nbno, nbpara, nnomax, noe
     integer :: noebe(nselec), numail, nbval, nbval2, iret, ibid, noebec
     real(kind=8) :: d2, d2min(nselec), dx, dy, dz, rbid, x3dca(3)
@@ -115,6 +117,10 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
     character(len=24) :: param(3), parcr
     integer :: iarg
+    integer, pointer :: cnx_maille(:) => null()
+    real(kind=8), pointer :: d2_min_max(:) => null()
+    integer, pointer :: no_min_max(:) => null()
+    real(kind=8), pointer :: xyz_noemai(:) => null()
     data          param /'MAILLE_BETON_VOISINE    ',&
      &                     'NOEUD_BETON_VOISIN      ',&
      &                     'INDICE_IMMERSION        '/
@@ -244,11 +250,11 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !.... LE NOMBRE DE NOEUDS MAXIMAL SUR UNE MAILLE VAUT DONC 27
 !
     nnomax = 27
-    call wkvect('&&IMMECA.XYZ_NOEMAI', 'V V R', 3*nnomax, jxyzma)
-    call wkvect('&&IMMECA.CNX_MAILLE', 'V V I', nnomax, jcxma)
+    AS_ALLOCATE(vr=xyz_noemai, size=3*nnomax)
+    AS_ALLOCATE(vi=cnx_maille, size=nnomax)
 !
-    call wkvect('&&IMMECA.D2_MIN_MAX', 'V V R', nbnobe, jd2)
-    call wkvect('&&IMMECA.NO_MIN_MAX', 'V V I', nbnobe, jnod2)
+    AS_ALLOCATE(vr=d2_min_max, size=nbnobe)
+    AS_ALLOCATE(vi=no_min_max, size=nbnobe)
 !
 !.... CALCUL DE LA LONGUEUR TOTALE DU CABLE
 !
@@ -417,8 +423,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                 endif
 111          continue
 113          continue
-            zr(jd2+inobe-1) = d2
-            zi(jnod2+inobe-1) = noe
+            d2_min_max(inobe) = d2
+            no_min_max(inobe) = noe
 110      continue
 !
         if (niv .eq. 2) then
@@ -435,7 +441,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
             if (noebe(ibe) .eq. 0) goto 116
 !
             call immeno(ncncin, nmabet, mailla, x3dca(1), noebe(ibe),&
-                        numail, nbcnx, zi(jcxma), zr(jxyzma), itetra,&
+                        numail, nbcnx, cnx_maille, xyz_noemai, itetra,&
                         xbar(1), immer)
             if (immer .ge. 0) then
                 noebec = noebe(ibe)
@@ -452,23 +458,23 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !.......... DU PLUS PROCHE AU PLUS ELOIGNE DU NOEUD CABLE CONSIDERE
 !
             do 120 inob1 = 1, nbnobe-1
-                d2minc = zr(jd2+inob1-1)
-                noebec = zi(jnod2+inob1-1)
+                d2minc = d2_min_max(inob1)
+                noebec = no_min_max(inob1)
                 inobe = inob1
                 do 121 inob2 = inob1+1, nbnobe
-                    if (zr(jd2+inob2-1) .lt. d2minc) then
-                        d2minc = zr(jd2+inob2-1)
-                        noebec = zi(jnod2+inob2-1)
+                    if (d2_min_max(inob2) .lt. d2minc) then
+                        d2minc = d2_min_max(inob2)
+                        noebec = no_min_max(inob2)
                         inobe = inob2
                     endif
 121              continue
                 if (inobe .gt. inob1) then
-                    d2 = zr(jd2+inob1-1)
-                    noe = zi(jnod2+inob1-1)
-                    zr(jd2+inob1-1) = d2minc
-                    zi(jnod2+inob1-1) = noebec
-                    zr(jd2+inobe-1) = d2
-                    zi(jnod2+inobe-1) = noe
+                    d2 = d2_min_max(inob1)
+                    noe = no_min_max(inob1)
+                    d2_min_max(inob1) = d2minc
+                    no_min_max(inob1) = noebec
+                    d2_min_max(inobe) = d2
+                    no_min_max(inobe) = noe
                 endif
 120          continue
 !
@@ -484,11 +490,11 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !.......... DE LA LISTE ORDONNEE PRECEDENTE, DU SECOND JUSQU'AU DERNIER
 !.......... REPETER
             do 130 inobe = nselec, nbnobe
-                noebec = zi(jnod2+inobe-1)
+                noebec = no_min_max(inobe)
 !............. TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 !............. AUXQUELLES APPARTIENT LE NOEUD BETON COURANT
                 call immeno(ncncin, nmabet, mailla, x3dca(1), noebec,&
-                            numail, nbcnx, zi(jcxma), zr(jxyzma), itetra,&
+                            numail, nbcnx, cnx_maille, xyz_noemai, itetra,&
                             xbar(1), immer)
 !............. SORTIE DU BLOC REPETER EN CAS DE SUCCES
                 if (immer .ge. 0) goto 131
@@ -511,7 +517,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 ! 2.2.5  DETERMINATION DES RELATIONS CINEMATIQUES
 ! .....
         call reci3d(lirela, mailla, nnoeca, noebec, nbcnx,&
-                    zi(jcxma), itetra, xbar(1), immer)
+                    cnx_maille, itetra, xbar(1), immer)
 !
 ! 2.2.6  MISE A JOUR DE LA SD TABLE
 ! .....
@@ -528,10 +534,10 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
 ! --- MENAGE
 !
-    call jedetr('&&IMMECA.XYZ_NOEMAI')
-    call jedetr('&&IMMECA.CNX_MAILLE')
-    call jedetr('&&IMMECA.D2_MIN_MAX')
-    call jedetr('&&IMMECA.NO_MIN_MAX')
+    AS_DEALLOCATE(vr=xyz_noemai)
+    AS_DEALLOCATE(vi=cnx_maille)
+    AS_DEALLOCATE(vr=d2_min_max)
+    AS_DEALLOCATE(vi=no_min_max)
 !
     call jedema()
 !

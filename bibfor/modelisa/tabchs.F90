@@ -56,6 +56,8 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 #include "asterfort/verigd.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=1) :: base
     character(len=8) :: nomgd, ma
@@ -67,18 +69,22 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !
 !
 !      ==> VARIABLES LOCALES
-    integer :: jtbnp, jtblp, ncmp, jcmp, jcnsl, jcnsv, i
-    integer :: vali(2), nblig, isp, jsp
+    integer :: jtbnp, jtblp, ncmp,  jcnsl, jcnsv, i
+    integer :: vali(2), nblig, isp
     integer :: nbval
     integer :: nuno, numa, nbma, jcesd, nbssp
     integer :: jcesl, jcesv, jcesc, iad
     integer :: nbcol, nbno, ksp, kpt, jcon1, jcon2
     integer :: jcolma, jcolno, jcolpt, jcolsp, ipt
-    integer :: icmp, ili, iret, jind, jobj2, jobj3, jpg
+    integer :: icmp, ili, iret,  jobj2, jobj3
     character(len=8) :: nono, tsca, noma
     character(len=24) :: objlg, objr, objtmp
     character(len=24) :: valk(3)
     logical :: lmail, lnoeu, lpoin, lspoin
+    character(len=24), pointer :: ncmp1(:) => null()
+    integer, pointer :: ncmp2(:) => null()
+    integer, pointer :: pg_tot(:) => null()
+    integer, pointer :: sp_tot(:) => null()
 ! ---------------------------------------------------------------------
 !
 !
@@ -189,23 +195,23 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !
 !     -- ON REPERE LES COLONNES QUI CORRESPONDENT AUX CMPS.
 !        CE SONT CELLES QUI NE SONT PAS : MAILLE, NOEUD, ...
-    call wkvect('&&TABCHS.NCMP1', 'V V K24', nbcol, jcmp)
-    call wkvect('&&TABCHS.NCMP2', 'V V I', nbcol, jind)
+    AS_ALLOCATE(vk24=ncmp1, size=nbcol)
+    AS_ALLOCATE(vi=ncmp2, size=nbcol)
     ncmp=0
     do i = 1, nbcol
         if (zk24(jtblp+4*(i-1)) .ne. 'MAILLE' .and. zk24(jtblp+4*(i-1)) .ne. 'NOEUD' .and.&
             zk24(jtblp+4*(i-1)) .ne. 'POINT' .and. zk24(jtblp+4*(i-1)) .ne. 'SOUS_POINT') then
             ncmp=ncmp+1
-            zk24(jcmp+ncmp-1)=zk24(jtblp+4*(i-1))
-            zi(jind+ncmp-1)=i
+            ncmp1(ncmp)=zk24(jtblp+4*(i-1))
+            ncmp2(ncmp)=i
         endif
     end do
 !
 !     ON VERIFIE QUE LE NOM ET LE TYPE DES COMPOSANTES
 !        DE LA TABLE CORRESPONDENT A LA GRANDEUR LUE
-    call verigd(nomgd, zk24(jcmp), ncmp, iret)
+    call verigd(nomgd, ncmp1, ncmp, iret)
     if (iret .ne. 0) then
-        call utmess('F', 'MODELISA9_2', nk=ncmp, valk=zk24(jcmp))
+        call utmess('F', 'MODELISA9_2', nk=ncmp, valk=ncmp1)
     endif
 !
 !
@@ -214,7 +220,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !     ------------------------------------
 !
 ! ---    CREATION DU CHAM_NO_S
-        call cnscre(ma, nomgd, ncmp, zk24(jcmp), base,&
+        call cnscre(ma, nomgd, ncmp, ncmp1, base,&
                     chs)
 !
 ! ---    REMPLISSAGE DU CHAM_S
@@ -222,9 +228,9 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
         call jeveuo(chs//'.CNSL', 'E', jcnsl)
 !
         do icmp = 1, ncmp
-            objlg=zk24(jtblp+4*(zi(jind+icmp-1)-1)+3)
+            objlg=zk24(jtblp+4*(ncmp2(icmp)-1)+3)
             call jeveuo(objlg, 'L', jobj2)
-            objr=zk24(jtblp+4*(zi(jind+icmp-1)-1)+2)
+            objr=zk24(jtblp+4*(ncmp2(icmp)-1)+2)
             call jeveuo(objr, 'L', jobj3)
             do ili = 1, nblig
                 if (zi(jobj2+ili-1) .eq. 1) then
@@ -280,7 +286,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !       CALCUL DU NOMBRE DE SOUS_POINT PAR ELEMENT (&&TABCHS.SP_TOT):
 !       CALCUL DE NBSSP : MAX DU NOMBRE DE SOUS_POINT
         if (lspoin) then
-            call wkvect('&&TABCHS.SP_TOT', 'V V I', nbma, jsp)
+            AS_ALLOCATE(vi=sp_tot, size=nbma)
             nbssp=1
             do ili = 1, nblig
                 ksp=zi(jcolsp+ili-1)
@@ -289,7 +295,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 noma=zk8(jcolma+ili-1)
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
                 ASSERT(numa.gt.0)
-                zi(jsp-1+numa)=max(zi(jsp-1+numa),ksp)
+                sp_tot(numa)=max(sp_tot(numa),ksp)
             end do
         else
             nbssp=1
@@ -299,13 +305,13 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !       CALCUL DU NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 !       (&&TABCHS.PG_TOT):
         if (typchs .eq. 'ELGA') then
-            call wkvect('&&TABCHS.PG_TOT', 'V V I', nbma, jpg)
+            AS_ALLOCATE(vi=pg_tot, size=nbma)
             do ili = 1, nblig
                 kpt=zi(jcolpt+ili-1)
                 ASSERT(kpt.gt.0)
                 noma=zk8(jcolma+ili-1)
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
-                zi(jpg-1+numa)=max(zi(jpg-1+numa),kpt)
+                pg_tot(numa)=max(pg_tot(numa),kpt)
             end do
         endif
 !
@@ -314,18 +320,18 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
         if (nbssp .eq. 1) then
             if (typchs .eq. 'ELNO' .or. typchs .eq. 'ELEM') then
                 call cescre(base, chs, typchs, ma, nomgd,&
-                            ncmp, zk24(jcmp), [-1], [-1], [-ncmp])
+                            ncmp, ncmp1, [-1], [-1], [-ncmp])
             else if (typchs.eq.'ELGA') then
                 call cescre(base, chs, typchs, ma, nomgd,&
-                            ncmp, zk24(jcmp), zi(jpg), [-1], [-ncmp])
+                            ncmp, ncmp1, pg_tot, [-1], [-ncmp])
             endif
         else
             if (typchs .eq. 'ELNO' .or. typchs .eq. 'ELEM') then
                 call cescre(base, chs, typchs, ma, nomgd,&
-                            ncmp, zk24(jcmp), [-1], zi(jsp), [-ncmp])
+                            ncmp, ncmp1, [-1], sp_tot, [-ncmp])
             else if (typchs.eq.'ELGA') then
                 call cescre(base, chs, typchs, ma, nomgd,&
-                            ncmp, zk24(jcmp), zi(jpg), zi(jsp), [-ncmp])
+                            ncmp, ncmp1, pg_tot, sp_tot, [-ncmp])
             endif
         endif
 !
@@ -338,9 +344,9 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !
 !
         do icmp = 1, ncmp
-            objlg=zk24(jtblp+4*(zi(jind+icmp-1)-1)+3)
+            objlg=zk24(jtblp+4*(ncmp2(icmp)-1)+3)
             call jeveuo(objlg, 'L', jobj2)
-            objr=zk24(jtblp+4*(zi(jind+icmp-1)-1)+2)
+            objr=zk24(jtblp+4*(ncmp2(icmp)-1)+2)
             call jeveuo(objr, 'L', jobj3)
 !
             do ili = 1, nblig
@@ -386,10 +392,10 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
     call jedetr('&&TABCHS.NOEUD')
     call jedetr('&&TABCHS.POINT')
     call jedetr('&&TABCHS.SPOINT')
-    call jedetr('&&TABCHS.NCMP1')
-    call jedetr('&&TABCHS.NCMP2')
-    call jedetr('&&TABCHS.PG_TOT')
-    call jedetr('&&TABCHS.SP_TOT')
+    AS_DEALLOCATE(vk24=ncmp1)
+    AS_DEALLOCATE(vi=ncmp2)
+    AS_DEALLOCATE(vi=pg_tot)
+    AS_DEALLOCATE(vi=sp_tot)
 !
     call jedema()
 end subroutine

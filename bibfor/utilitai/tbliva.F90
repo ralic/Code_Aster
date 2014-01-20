@@ -12,6 +12,8 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: npacri, vi(*), vali, ier
     real(kind=8) :: vr(*), valr, prec(*)
@@ -57,7 +59,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 !                            3 : PLUSIEURS LIGNES TROUVEES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, nbpu, jnumi
+    integer :: iret, nbpara, nblign, jtbnp, nbpu
     integer :: jtblp, i, j, k, n, jvale, itrouv
     integer :: ki, kr, kc, k8, jvall
     real(kind=8) :: refr, xr, epsi
@@ -66,6 +68,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     logical :: lok
+    integer, pointer :: numero(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -118,9 +121,9 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 !
     nomjv = zk24(jtblp+2)
     call jelira(nomjv, 'LONUTI', nbpu)
-    call wkvect('&&TBLIVA.NUMERO', 'V V I', nbpu, jnumi)
+    AS_ALLOCATE(vi=numero, size=nbpu)
     do 18 i = 1, nbpu
-        zi(jnumi+i-1) = i
+        numero(i) = i
 18  end do
 !
     ki = 0
@@ -141,11 +144,11 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
                 if (type(1:1) .eq. 'I') then
                     ki = ki + 1
                     do 30 k = 1, nbpu
-                        n = zi(jnumi+k-1)
+                        n = numero(k)
                         if (zi(jvall+n-1) .eq. 0) goto 30
                         if (zi(jvale+n-1) .eq. vi(ki)) then
                             itrouv = itrouv + 1
-                            zi(jnumi+itrouv-1) = n
+                            numero(itrouv) = n
                         endif
 30                  continue
                 else if (type(1:1) .eq. 'R') then
@@ -154,7 +157,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
                     epsi = prec(kr)
                     xr = vr(kr)
                     do 31 k = 1, nbpu
-                        n = zi(jnumi+k-1)
+                        n = numero(k)
                         if (zi(jvall+n-1) .eq. 0) goto 31
                         refr = zr(jvale+n-1)
                         if (rela .eq. 'RELA') then
@@ -166,7 +169,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
                         endif
                         if (lok) then
                             itrouv = itrouv + 1
-                            zi(jnumi+itrouv-1) = n
+                            numero(itrouv) = n
                         endif
 31                  continue
                 else if (type(1:1) .eq. 'C') then
@@ -175,7 +178,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
                     epsi = prec(kc)
                     xc = vc(kc)
                     do 32 k = 1, nbpu
-                        n = zi(jnumi+k-1)
+                        n = numero(k)
                         if (zi(jvall+n-1) .eq. 0) goto 32
                         refc = zc(jvale+n-1)
                         if (rela .eq. 'RELA') then
@@ -185,57 +188,57 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
                         endif
                         if (lok) then
                             itrouv = itrouv + 1
-                            zi(jnumi+itrouv-1) = n
+                            numero(itrouv) = n
                         endif
 32                  continue
                 else if (type(1:3) .eq. 'K80') then
                     k8 = k8 + 1
                     do 33 k = 1, nbpu
-                        n = zi(jnumi+k-1)
+                        n = numero(k)
                         if (zi(jvall+n-1) .eq. 0) goto 33
                         if (zk80(jvale+n-1) .eq. vk(k8)) then
                             itrouv = itrouv + 1
-                            zi(jnumi+itrouv-1) = n
+                            numero(itrouv) = n
                         endif
 33                  continue
                 else if (type(1:3) .eq. 'K32') then
                     k8 = k8 + 1
                     do 34 k = 1, nbpu
-                        n = zi(jnumi+k-1)
+                        n = numero(k)
                         if (zi(jvall+n-1) .eq. 0) goto 34
                         if (zk32(jvale+n-1) .eq. vk(k8)) then
                             itrouv = itrouv + 1
-                            zi(jnumi+itrouv-1) = n
+                            numero(itrouv) = n
                         endif
 34                  continue
                 else if (type(1:3) .eq. 'K24') then
                     k8 = k8 + 1
                     do 35 k = 1, nbpu
-                        n = zi(jnumi+k-1)
+                        n = numero(k)
                         if (zi(jvall+n-1) .eq. 0) goto 35
                         if (zk24(jvale+n-1) .eq. vk(k8)) then
                             itrouv = itrouv + 1
-                            zi(jnumi+itrouv-1) = n
+                            numero(itrouv) = n
                         endif
 35                  continue
                 else if (type(1:3) .eq. 'K16') then
                     k8 = k8 + 1
                     do 36 k = 1, nbpu
-                        n = zi(jnumi+k-1)
+                        n = numero(k)
                         if (zi(jvall+n-1) .eq. 0) goto 36
                         if (zk16(jvale+n-1) .eq. vk(k8)) then
                             itrouv = itrouv + 1
-                            zi(jnumi+itrouv-1) = n
+                            numero(itrouv) = n
                         endif
 36                  continue
                 else if (type(1:2) .eq. 'K8') then
                     k8 = k8 + 1
                     do 37 k = 1, nbpu
-                        n = zi(jnumi+k-1)
+                        n = numero(k)
                         if (zi(jvall+n-1) .eq. 0) goto 37
                         if (zk8(jvale+n-1) .eq. vk(k8)) then
                             itrouv = itrouv + 1
-                            zi(jnumi+itrouv-1) = n
+                            numero(itrouv) = n
                         endif
 37                  continue
                 endif
@@ -260,7 +263,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
             call jeveuo(nomjvl, 'L', jvall)
             if (type(1:1) .eq. 'I') then
                 do 50 k = 1, nbpu
-                    n = zi(jnumi+k-1)
+                    n = numero(k)
                     if (zi(jvall+n-1) .eq. 0) goto 50
                     itrouv = itrouv + 1
                     vali = zi(jvale+n-1)
@@ -268,7 +271,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 50              continue
             else if (type(1:1) .eq. 'R') then
                 do 51 k = 1, nbpu
-                    n = zi(jnumi+k-1)
+                    n = numero(k)
                     if (zi(jvall+n-1) .eq. 0) goto 51
                     itrouv = itrouv + 1
                     valr = zr(jvale+n-1)
@@ -276,7 +279,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 51              continue
             else if (type(1:1) .eq. 'C') then
                 do 52 k = 1, nbpu
-                    n = zi(jnumi+k-1)
+                    n = numero(k)
                     if (zi(jvall+n-1) .eq. 0) goto 52
                     itrouv = itrouv + 1
                     valc = zc(jvale+n-1)
@@ -285,7 +288,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
             else if (type(1:3) .eq. 'K80') then
                 k8 = k8 + 1
                 do 53 k = 1, nbpu
-                    n = zi(jnumi+k-1)
+                    n = numero(k)
                     if (zi(jvall+n-1) .eq. 0) goto 53
                     itrouv = itrouv + 1
                     valk = zk80(jvale+n-1)
@@ -293,7 +296,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 53              continue
             else if (type(1:3) .eq. 'K32') then
                 do 54 k = 1, nbpu
-                    n = zi(jnumi+k-1)
+                    n = numero(k)
                     if (zi(jvall+n-1) .eq. 0) goto 54
                     itrouv = itrouv + 1
                     valk = zk32(jvale+n-1)
@@ -301,7 +304,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 54              continue
             else if (type(1:3) .eq. 'K24') then
                 do 55 k = 1, nbpu
-                    n = zi(jnumi+k-1)
+                    n = numero(k)
                     if (zi(jvall+n-1) .eq. 0) goto 55
                     itrouv = itrouv + 1
                     valk = zk24(jvale+n-1)
@@ -309,7 +312,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 55              continue
             else if (type(1:3) .eq. 'K16') then
                 do 56 k = 1, nbpu
-                    n = zi(jnumi+k-1)
+                    n = numero(k)
                     if (zi(jvall+n-1) .eq. 0) goto 56
                     itrouv = itrouv + 1
                     valk = zk16(jvale+n-1)
@@ -317,7 +320,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 56              continue
             else if (type(1:2) .eq. 'K8') then
                 do 57 k = 1, nbpu
-                    n = zi(jnumi+k-1)
+                    n = numero(k)
                     if (zi(jvall+n-1) .eq. 0) goto 57
                     itrouv = itrouv + 1
                     valk = zk8(jvale+n-1)
@@ -331,7 +334,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
     if (itrouv .gt. 1) ier = 3
 !
 9999  continue
-    call jedetr('&&TBLIVA.NUMERO')
+    AS_DEALLOCATE(vi=numero)
 !
     call jedema()
 end subroutine

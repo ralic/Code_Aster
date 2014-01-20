@@ -43,6 +43,8 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: nbcmp, icham
@@ -59,7 +61,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 ! ----------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-    integer :: i, nbno, ino, jcmp, ibid
+    integer :: i, nbno, ino,  ibid
     integer :: axyzm, ii, nbma, ipt2, inel
     integer :: jcnsd, jcnsk, jcnsv, jconx1, jconx2, nbpt
     integer :: ipt, inot, ndim, licmpu(6), jcnsl
@@ -76,6 +78,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     character(len=19) :: chams1, chams0
     character(len=24) :: mesnoe
     character(len=24) :: valk
+    character(len=8), pointer :: nom_cmp(:) => null()
 !
     call jemarq()
     epsi = 1.0d-6
@@ -90,8 +93,8 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     mesnoe = '&&CHRPEL.MES_NOEUDS'
 !
     if (nbcmp .gt. 0) then
-        call wkvect('&&CHRPNO.NOM_CMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=zk8(jcmp),&
+        AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
+        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=nom_cmp,&
                     nbret=ibid)
     else
         call utmess('F', 'ALGORITH2_6')
@@ -103,7 +106,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     chams0='&&CHRPNO.CHAMS0'
     chams1='&&CHRPNO.CHAMS1'
     call cnocns(champ1, 'V', chams0)
-    call cnsred(chams0, 0, [0], nbcmp, zk8(jcmp),&
+    call cnsred(chams0, 0, [0], nbcmp, nom_cmp,&
                 'V', chams1)
     call detrsd('CHAM_NO_S', chams0)
     call jeveuo(chams1//'.CNSK', 'L', jcnsk)
@@ -641,7 +644,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     call cnscno(chams1, ' ', 'NON', 'G', champ1,&
                 'F', ibid)
     call detrsd('CHAM_NO_S', chams1)
-    call jedetr('&&CHRPNO.NOM_CMP')
+    AS_DEALLOCATE(vk8=nom_cmp)
     call jedetr(mesnoe)
     call jedema()
 !

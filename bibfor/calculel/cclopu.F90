@@ -12,6 +12,8 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
 #include "asterfort/juveca.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbordr, nbropt
     character(len=8) :: resuin, resuou
     character(len=19) :: lisord, lisopt
@@ -64,8 +66,8 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     integer :: ntymax
     parameter (ntymax = 9)
 !
-    integer :: i, ityp, n1, jopt, jopty, postmp, nbopfa, ioc, ibid
-    integer :: nuti, nsup, joput, jord, iordr, iret
+    integer :: i, ityp, n1, jopt,  postmp, nbopfa, ioc, ibid
+    integer :: nuti, nsup,  jord, iordr, iret
 !
     character(len=9) :: mcfact
     character(len=12) :: typopt, tygrop(ntymax)
@@ -74,6 +76,8 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     parameter   (mcfact='CHAM_UTIL')
 !
     logical :: newcal, vu
+    integer, pointer :: nb_op_ty(:) => null()
+    character(len=16), pointer :: oputil(:) => null()
 !
     data tygrop  /'CONTRAINTE  ','DEFORMATION ','ENERGIE     ',&
      &              'CRITERES    ','VARI_INTERNE','HYDRAULIQUE ',&
@@ -82,12 +86,12 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     call jemarq()
 !
 ! --- PREMIERE BOUCLE POUR DETERMINER LE NOMBRE TOTAL D'OPTIONS
-    call wkvect('&&CCLOPU.NB_OP_TY', 'V V I', ntymax, jopty)
+    AS_ALLOCATE(vi=nb_op_ty, size=ntymax)
     nbropt = 0
     do 10 ityp = 1, ntymax
         typopt = tygrop(ityp)
         call getvtx(' ', typopt, nbval=0, nbret=n1)
-        zi(jopty+ityp-1) = -n1
+        nb_op_ty(ityp) = -n1
         nbropt = nbropt-n1
 10  end do
 !
@@ -97,7 +101,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     postmp = 0
     do 20 ityp = 1, ntymax
         typopt = tygrop(ityp)
-        nbopfa = zi(jopty+ityp-1)
+        nbopfa = nb_op_ty(ityp)
         if (nbopfa .eq. 0) goto 20
         call getvtx(' ', typopt, nbval=nbopfa, vect=zk16(jopt+postmp), nbret=n1)
         postmp = postmp+nbopfa
@@ -116,7 +120,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
     call jeexin(resuou//'           .DESC', iret)
     if (iret .eq. 0) newcal = .true.
 !
-    call wkvect('&&CCLOPU.OPUTIL', 'V V K16', nuti, joput)
+    AS_ALLOCATE(vk16=oputil, size=nuti)
     call jeveuo(lisord, 'L', jord)
     nsup = 0
     do 30 ioc = 1, nuti
@@ -148,7 +152,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
             endif
 33      continue
         do 34 i = 1, nsup
-            if (zk16(joput-1+i) .eq. option) then
+            if (oputil(i) .eq. option) then
                 vu = .true.
                 goto 30
             endif
@@ -158,7 +162,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
 !       ON AJOUTE L'OPTION A LA LISTE
         if (.not.vu) then
             nsup = nsup + 1
-            zk16(joput-1+nsup) = option
+            oputil(nsup) = option
         endif
 30  end do
 !
@@ -171,14 +175,14 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt,&
             call juveca(lisopt, nbropt+nsup)
         endif
         do 41 i = 1, nsup
-            zk16(jopt-1+nbropt+i) = zk16(joput-1+i)
+            zk16(jopt-1+nbropt+i) = oputil(i)
 41      continue
         nbropt = nbropt + nsup
     endif
 !
 9999  continue
-    call jedetr('&&CCLOPU.NB_OP_TY')
-    call jedetr('&&CCLOPU.OPUTIL')
+    AS_DEALLOCATE(vi=nb_op_ty)
+    AS_DEALLOCATE(vk16=oputil)
     call jedema()
 !
 end subroutine

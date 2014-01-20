@@ -36,13 +36,16 @@ subroutine op0017()
 #include "asterfort/ulopen.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/wkvect.h"
-    integer :: nivo, n3, n1, ifi, n2, nbocc, ialico, ncon, ipos, long(1), n4
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+    integer :: nivo, n3, n1, ifi, n2, nbocc,  ncon, ipos, long(1), n4
     integer :: i, iocc
     logical :: lattr, lcont
     character(len=1) :: base
     character(len=8) :: leresu
     character(len=16) :: nomfi
     character(len=72) :: chaine
+    character(len=8), pointer :: liste_co(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -80,15 +83,15 @@ subroutine op0017()
         call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=0, nbret=ncon)
         ncon= -ncon
         if (ncon .gt. 0) then
-            call wkvect('&&OP0017.LISTE_CO', 'V V K8', ncon, ialico)
-            call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=ncon, vect=zk8(ialico),&
+            AS_ALLOCATE(vk8=liste_co, size=ncon)
+            call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=ncon, vect=liste_co,&
                         nbret=n1)
             do i = 1, ncon
-                leresu = zk8(ialico-1+i)
+                leresu = liste_co(i)
                 call utimsd(ifi, nivo, lattr, lcont, leresu,&
                             1, base)
             end do
-            call jedetr('&&OP0017.LISTE_CO')
+            AS_DEALLOCATE(vk8=liste_co)
         endif
     end do
 !

@@ -32,6 +32,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: cnsz, cesz, base, cesmoz, typces, mnogaz
 ! ------------------------------------------------------------------
@@ -77,8 +79,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !     ------------------------------------------------------------------
     integer :: ima, ncmp, icmp,  jcnsl
     integer :: jcesd,  jcesl, nbma, iret, nbsp, nbno, ico
-    integer :: iad, jnbpt, nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
-    integer ::  jnbsp, ilcnx1,  nbpg, ipg, imaref
+    integer :: iad,  nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
+    integer ::   ilcnx1,  nbpg, ipg, imaref
     integer :: mnogal, mnogad
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
@@ -92,6 +94,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     character(len=8), pointer :: cesk(:) => null()
     integer, pointer :: cemd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
+    integer, pointer :: vnbpt(:) => null()
+    integer, pointer :: vnbsp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -123,13 +127,13 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
 !     2. CALCUL DES OBJETS  '&&CNSCES.NBPT','&CNSCES.NBSP'
 !     -----------------------------------------------------------------
-    call wkvect('&&CNSCES.NBPT', 'V V I', nbma, jnbpt)
-    call wkvect('&&CNSCES.NBSP', 'V V I', nbma, jnbsp)
+    AS_ALLOCATE(vi=vnbpt, size=nbma)
+    AS_ALLOCATE(vi=vnbsp, size=nbma)
 !
 !
 !     -- PAR DEFAUT : NBSP=1
     do ima = 1, nbma
-        zi(jnbsp-1+ima) = 1
+        vnbsp(ima) = 1
     end do
 !
     call exisd('CHAM_ELEM_S', cesmod, iret)
@@ -138,18 +142,18 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     if (iret .gt. 0) then
         call jeveuo(cesmod//'.CESD', 'L', vi=cemd)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = cemd(5+4* (ima-1)+1)
-            zi(jnbsp-1+ima) = cemd(5+4* (ima-1)+2)
+            vnbpt(ima) = cemd(5+4* (ima-1)+1)
+            vnbsp(ima) = cemd(5+4* (ima-1)+2)
         end do
     endif
 !
     if (typces .eq. 'ELEM') then
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = 1
+            vnbpt(ima) = 1
         end do
     else if (typces.eq.'ELNO') then
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
+            vnbpt(ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
         end do
     else if (typces.eq.'ELGA') then
 !       DEJA FAIT GRACE A CESMOD
@@ -161,7 +165,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !     5- CREATION DE CES :
 !     ---------------------------------------
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, cnsc, zi(jnbpt), zi(jnbsp), [-ncmp])
+                ncmp, cnsc, vnbpt, vnbsp, [-ncmp])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESV', 'E', vr=cesv)
@@ -319,8 +323,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
 !     7- MENAGE :
 !     -----------
-    call jedetr('&&CNSCES.NBPT')
-    call jedetr('&&CNSCES.NBSP')
+    AS_DEALLOCATE(vi=vnbpt)
+    AS_DEALLOCATE(vi=vnbsp)
 !
     call jedema()
 end subroutine

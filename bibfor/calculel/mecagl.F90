@@ -41,6 +41,8 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iord, nbprup, ndimte
 !
@@ -106,7 +108,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: i, ibid, iadrg, iadrgs, iret, jresu, nchin
+    integer :: i, ibid, iadrg,  iret, jresu, nchin
     integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga
     integer :: ndeg, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
@@ -127,6 +129,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=24) :: lchin(40), lchout(1), chthet, chtime
     character(len=24) :: objcur, normff, pavolu, papres, pa2d3d
     character(len=24) :: chsig, chepsp, chvari, type, pepsin, livk(nbmxpa)
+    real(kind=8), pointer :: valg_s(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -391,7 +394,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !    (OU G_LAGRANGE_NO_NO ET THETA_LAGRANGE)
 !- QUATRIEME METHODE: G_LAGRANGE_REGU ET THETA_LAGRANGE_REGU
 !
-    call wkvect('&&MECAGL.VALG_S', 'V V R8', nnoff, iadrgs)
+    AS_ALLOCATE(vr=valg_s, size=nnoff)
     if (glagr .or. thlag2) then
         call wkvect('&&MECAGL.VALGI', 'V V R8', nnoff, iadgi)
     else
@@ -412,10 +415,10 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     if (thlag2) then
         num = 5
         call gmeth4(nnoff, ndimte, fonoeu, zr(iadrg), milieu,&
-                    pair, zr(iadrgs), objcur, zr(iadgi), lxfem)
+                    pair, valg_s, objcur, zr(iadgi), lxfem)
     else if ((.not.glagr) .and. (.not.thlagr)) then
         num = 1
-        call gmeth1(nnoff, ndeg, zr(iadrg), zr(iadrgs), objcur,&
+        call gmeth1(nnoff, ndeg, zr(iadrg), valg_s, objcur,&
                     xl, zr( iadgi))
     else if (thlagr) then
         normff = zk24(jresu+nnoff+1-1)
@@ -423,10 +426,10 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         if (.not.glagr) then
             num = 2
             call gmeth2(modele, nnoff, ndeg, normff, fonoeu,&
-                        zr(iadrg), zr(iadrgs), objcur, xl, zr(iadgi))
+                        zr(iadrg), valg_s, objcur, xl, zr(iadgi))
 !
         else
-            call gmeth3(nnoff, fonoeu, zr(iadrg), milieu, zr(iadrgs),&
+            call gmeth3(nnoff, fonoeu, zr(iadrg), milieu, valg_s,&
                         objcur, zr(iadgi), num, lxfem)
         endif
     endif
@@ -435,14 +438,14 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     if (symech .ne. 'NON') then
         do i = 1, nnoff
-            zr(iadrgs+i-1) = 2.d0*zr(iadrgs+i-1)
+            valg_s(i) = 2.d0*valg_s(i)
         end do
     endif
 !
 !- IMPRESSION ET ECRITURE DANS TABLE(S) DE G(S)
 !
     if (niv .ge. 2) then
-        call gimpgs(result, nnoff, zr(iadabs), zr(iadrgs), num,&
+        call gimpgs(result, nnoff, zr(iadabs), valg_s, num,&
                     zr(iadgi), ndeg, ndimte, zr(iadrg), extim,&
                     time, iord, ifm)
     endif
@@ -468,7 +471,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
             call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno+i-1), livk)
         endif
         call tbajvr(result, nbprup, 'ABSC_CURV', zr(iadabs-1+i), livr)
-        call tbajvr(result, nbprup, 'G', zr(iadrgs+i-1), livr)
+        call tbajvr(result, nbprup, 'G', valg_s(i), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
     end do
@@ -476,7 +479,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !
     call jedetr(objcur)
-    call jedetr('&&MECAGL.VALG_S')
+    AS_DEALLOCATE(vr=valg_s)
     call jedetr('&&MECAGL.VALGI')
     call detrsd('CHAMP_GD', chvarc)
     call detrsd('CHAMP_GD', chvref)

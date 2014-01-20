@@ -28,6 +28,8 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xddlim.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,7 +81,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     integer :: iocc
     integer :: nbnoeu, jdirec
     integer :: idim, nume_node, jnorm, jtang, nfaci
-    integer :: ibid, ndim, jcompt
+    integer :: ibid, ndim
     integer :: ino, jprnm, nbec
     integer :: nbcmp, inom
     real(kind=8) :: repe_defi(3)
@@ -110,6 +112,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     integer :: n_keyexcl
     integer :: n_suffix
     character(len=8) :: list_suffix
+    integer, pointer :: icompt(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -287,7 +290,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
 ! --------- Counting components
 !
-            call wkvect('&&CAFACI.ICOMPT', 'V V I', n_keyword, jcompt)
+            AS_ALLOCATE(vi=icompt, size=n_keyword)
 !
 ! --------- Linear relation
 !
@@ -297,7 +300,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
                 call afddli(model, nbcmp, zk8(inom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node- 1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
                             coef_type, n_keyword, keywordlist, nbterm, vale_type,&
-                            vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
+                            vale_real, vale_func, vale_cplx, icompt, list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                             ch_xfem_ltno, connex_inv)
             enddo
@@ -306,12 +309,12 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
             do i_keyword = 1, n_keyword
                 keyword = keywordlist(i_keyword)
-                if (zi(jcompt-1+i_keyword) .eq. 0) then
+                if (icompt(i_keyword) .eq. 0) then
                     call utmess('F', 'CHARGES2_45', sk=keyword)
                 endif
             enddo
 !
-            call jedetr('&&CAFACI.ICOMPT')
+            AS_DEALLOCATE(vi=icompt)
 !
         endif
 !

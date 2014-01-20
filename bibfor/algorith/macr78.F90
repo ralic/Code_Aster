@@ -29,6 +29,8 @@ subroutine macr78(nomres, trange, typres)
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomres
     character(len=16) :: typres
@@ -67,14 +69,17 @@ subroutine macr78(nomres, trange, typres)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iaconx, iadref, iaprno, iarc0, iarch
-    integer :: ibid, icmp, idbase, iddl, im
+    integer :: ibid, icmp,  iddl, im
     integer :: inoe, inu0, inum, iret, iretou, ivale, j
-    integer :: jinst, jnocmp, jnume, jordr, jrestr, k, ldnew
+    integer :: jinst,  jnume, jordr,  k, ldnew
     integer :: linst, lnocm2, lnocmp, lpa2, lpar, n0
     integer :: n1, nbcham, nbec, nbinst, nbmdef, nbmdyn, nbmode
     integer :: nbndef, nbndyn, nbnoe, nbntot, nbtdyn, nec, neq
     integer :: nes, nmc, tmod(1)
     real(kind=8) :: rbid
+    real(kind=8), pointer :: base(:) => null()
+    character(len=8), pointer :: noecmp(:) => null()
+    real(kind=8), pointer :: restr(:) => null()
 !-----------------------------------------------------------------------
     data nomcmp   /'DX      ','DY      ','DZ      ',&
      &               'DRX     ','DRY     ','DRZ     '/
@@ -146,7 +151,7 @@ subroutine macr78(nomres, trange, typres)
         endif
     endif
 !       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
-    call wkvect('&&MACR78.NOECMP', 'V V K8', 2*nbmode, jnocmp)
+    AS_ALLOCATE(vk8=noecmp, size=2*nbmode)
     call jeveuo(macrel//'.LINO', 'L', iaconx)
     if (lredu) then
         nbtdyn = nbntot
@@ -155,16 +160,16 @@ subroutine macr78(nomres, trange, typres)
         do i = nbmdyn+1, nbmode
             call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', i,&
                         0, sjv=lnocmp, styp=k8b)
-            zk8(jnocmp+2*i-2) = zk16(lnocmp)(1:8)
-            zk8(jnocmp+2*i-1) = zk16(lnocmp)(9:16)
+            noecmp(1+2*i-2) = zk16(lnocmp)(1:8)
+            noecmp(1+2*i-1) = zk16(lnocmp)(9:16)
         end do
     endif
 !
     do i = 1, nbtdyn
         call jenuno(jexnum(mailla//'.NOMNOE', zi(iaconx+i-1)), nomnol)
         do j = 1, nec
-            zk8(jnocmp+2*nec*(i-1)+2*j-2) = nomnol
-            zk8(jnocmp+2*nec*(i-1)+2*j-1) = nomcmp(j)
+            noecmp(1+2*nec*(i-1)+2*j-2) = nomnol
+            noecmp(1+2*nec*(i-1)+2*j-1) = nomcmp(j)
         end do
     end do
 !        CALL GETVID(' ','NUME_DDL',1,IARG,1,K8B,IBID)
@@ -174,9 +179,9 @@ subroutine macr78(nomres, trange, typres)
 !        ENDIF
     numddl = numedd(1:14)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
-    call wkvect('&&MACR78.BASE', 'V V R', nbmode*neq, idbase)
+    AS_ALLOCATE(vr=base, size=nbmode*neq)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(idbase), [cbid])
+                'R', base, [cbid])
     call getvtx(' ', 'TOUT_CHAM', nbval=0, nbret=n0)
     if (n0 .ne. 0) then
         nbcham = 3
@@ -216,7 +221,7 @@ subroutine macr78(nomres, trange, typres)
 !     --- CREATION DE LA SD RESULTAT ---
     call rscrsd('G', nomres, typres, nbinst)
 !
-    call wkvect('&&MACR78.RESTR', 'V V R', nbmode, jrestr)
+    AS_ALLOCATE(vr=restr, size=nbmode)
     call rsexch('F', nomin, 'DEPL', 1, cham19,&
                 iret)
     call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=maya)
@@ -238,22 +243,22 @@ subroutine macr78(nomres, trange, typres)
             nomcha = nomcha(1:19)//'.VALE'
             call jeveuo(nomcha, 'L', ivale)
             do im = 1, nbmode
-                nomnol = zk8(jnocmp+2*im-2)
+                nomnol = noecmp(1+2*im-2)
                 call jenonu(jexnom(maya//'.NOMNOE', nomnol), inoe)
-                if (zk8(jnocmp+2*im-1) .eq. 'DX') icmp = 1
-                if (zk8(jnocmp+2*im-1) .eq. 'DY') icmp = 2
-                if (zk8(jnocmp+2*im-1) .eq. 'DZ') icmp = 3
-                if (zk8(jnocmp+2*im-1) .eq. 'DRX') icmp = 4
-                if (zk8(jnocmp+2*im-1) .eq. 'DRY') icmp = 5
-                if (zk8(jnocmp+2*im-1) .eq. 'DRZ') icmp = 6
+                if (noecmp(1+2*im-1) .eq. 'DX') icmp = 1
+                if (noecmp(1+2*im-1) .eq. 'DY') icmp = 2
+                if (noecmp(1+2*im-1) .eq. 'DZ') icmp = 3
+                if (noecmp(1+2*im-1) .eq. 'DRX') icmp = 4
+                if (noecmp(1+2*im-1) .eq. 'DRY') icmp = 5
+                if (noecmp(1+2*im-1) .eq. 'DRZ') icmp = 6
                 iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
-                zr(jrestr+im-1) = zr(ivale+iddl-1+icmp-1)
+                restr(im) = zr(ivale+iddl-1+icmp-1)
             end do
             call rsexch(' ', nomres, champ(i)(1:4), iarch, chamno,&
                         iret)
             call vtcreb(chamno, numedd, 'G', 'R', neq)
             call jeveuo(chamno(1:19)//'.VALE', 'E', ldnew)
-            call mdgeph(neq, nbmode, zr(idbase), zr(jrestr), zr(ldnew))
+            call mdgeph(neq, nbmode, base, restr, zr(ldnew))
             call rsnoch(nomres, champ(i)(1:4), iarch)
             if (i .eq. 1) then
                 call rsadpa(nomres, 'E', 1, 'INST', iarch,&
@@ -283,11 +288,11 @@ subroutine macr78(nomres, trange, typres)
 !
 ! --- MENAGE
 !
-    call jedetr('&&MACR78.NOECMP')
-    call jedetr('&&MACR78.BASE')
+    AS_DEALLOCATE(vk8=noecmp)
+    AS_DEALLOCATE(vr=base)
     call jedetr('&&MACR78.NUM_RANG')
     call jedetr('&&MACR78.INSTANT')
-    call jedetr('&&MACR78.RESTR')
+    AS_DEALLOCATE(vr=restr)
 !
     call titre()
 999 continue

@@ -32,6 +32,8 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/knindi.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbma, nbcmp
     integer :: lima(nbma)
     character(len=*) :: ces1z, ces2z, base
@@ -79,7 +81,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !
 !-----------------------------------------------------------------------
     logical :: loter
-    integer ::  jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2, jexma
+    integer ::  jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2
     integer :: jce2d, jce2v, jce2l,  jnbpt, jnbsp, jnbcmp, nbpt
     integer :: kma, isp, iad1, iad2, jce3c, nbsp, ipt
     integer :: ncmpmx, ncmp1, icmp1, icmp2, icmp3
@@ -89,6 +91,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     character(len=19) :: ces1, ces2
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: ce2c(:) => null()
+    logical, pointer :: exima(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -196,21 +199,21 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !
 !     4- ON TRANSFORME LIMA EN LISTE DE BOOLEENS:
 !     ------------------------------------------
-    call wkvect('&&CESRED.EXIMA', 'V V L', nbmam, jexma)
+    AS_ALLOCATE(vl=exima, size=nbmam)
     do kma = 1, nbmam
-        zl(jexma-1+kma) = .false.
+        exima(kma) = .false.
     end do
 !
     ASSERT(nbma.ge.0)
     if (nbma .eq. 0) then
         do kma = 1, nbmam
-            zl(jexma-1+kma) = .true.
+            exima(kma) = .true.
         end do
 !
     else
         do kma = 1, nbma
             if (lima(kma) .le. 0) goto 40
-            zl(jexma-1+lima(kma)) = .true.
+            exima(lima(kma)) = .true.
  40         continue
         end do
     endif
@@ -223,7 +226,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
         if (icmp1 .eq. 0) goto 80
 !
         do ima = 1, nbmam
-            if (zl(jexma-1+ima)) then
+            if (exima(ima)) then
                 nbpt = zi(jce2d-1+5+4* (ima-1)+1)
                 nbsp = zi(jce2d-1+5+4* (ima-1)+2)
                 do ipt = 1, nbpt
@@ -273,7 +276,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     call jedetr('&&CESRED.NBSP')
     call jedetr('&&CESRED.NBCMP')
     if (nbcmp .lt. 0) call jedetr('&&CESRED.CMP2')
-    call jedetr('&&CESRED.EXIMA')
+    AS_DEALLOCATE(vl=exima)
     if (ces1 .eq. '&&CESRED.CES1') call detrsd('CHAM_ELEM_S', ces1)
 !
     call jedema()

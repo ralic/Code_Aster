@@ -29,6 +29,8 @@ subroutine trresu(ific, nocc)
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ific, nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -54,7 +56,7 @@ subroutine trresu(ific, nocc)
 !
 !
     integer :: vali, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4
-    integer :: nbordr, numord, nupo, nbcmp, jcmp
+    integer :: nbordr, numord, nupo, nbcmp
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
     real(kind=8) :: valr, epsi, epsir, prec
@@ -74,6 +76,7 @@ subroutine trresu(ific, nocc)
     character(len=200) :: lign1, lign2
     integer :: iarg
     logical :: lref
+    character(len=8), pointer :: nom_cmp(:) => null()
 !     NONOEU= NOM_NOEUD (K8) SUIVI EVENTUELLEMENT DU NOM DU GROUP_NO
 !             A PARTIR DUQUEL ON TROUVE LE NOM DU NOEUD.
 !     ------------------------------------------------------------------
@@ -319,8 +322,8 @@ subroutine trresu(ific, nocc)
                     endif
                 else
                     nbcmp = -n4
-                    call wkvect('&&TRRESU.NOM_CMP', 'V V K8', nbcmp, jcmp)
-                    call getvtx('RESU', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                    AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
+                    call getvtx('RESU', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=nom_cmp,&
                                 nbret=n4)
                     if (lref) then
                         tbref(1)=tbtxt(1)
@@ -329,15 +332,15 @@ subroutine trresu(ific, nocc)
                     endif
                     call utest4(cham19, typtes, typres, nref, tbtxt,&
                                 zi( irefi), zr(irefr), zc(irefc), epsi, lign1,&
-                                lign2, crit, ific, nbcmp, zk8(jcmp),&
+                                lign2, crit, ific, nbcmp, nom_cmp,&
                                 .true., ssigne)
                     if (lref) then
                         call utest4(cham19, typtes, typres, nref, tbref,&
                                     zi(irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
-                                    lign2, crit, ific, nbcmp, zk8(jcmp),&
+                                    lign2, crit, ific, nbcmp, nom_cmp,&
                                     .false., ssigne)
                     endif
-                    call jedetr('&&TRRESU.NOM_CMP')
+                    AS_DEALLOCATE(vk8=nom_cmp)
                 endif
 !
             else

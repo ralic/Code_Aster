@@ -20,6 +20,8 @@ subroutine diag99(nomres)
 #include "asterfort/vpgskp.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
     character(len=8) :: nomres
 !----------------------------------------------------------------------
@@ -55,7 +57,7 @@ subroutine diag99(nomres)
 !
 !
     integer :: iad, jiad, ier, jordm, idmode, lmasse, idstat, jords
-    integer :: jtrav1, jtrav2, jtrav3, jtrav4, jnsta, i, j, k, ieq, nbord
+    integer ::     jnsta, i, j, k, ieq, nbord
     integer :: nbmode, nbstat, neq, n1, iorne, iorol, jvale
     real(kind=8) :: alpha, r8scal
     complex(kind=8) :: cbid
@@ -63,6 +65,10 @@ subroutine diag99(nomres)
     character(len=14) :: nu
     character(len=24) :: masse, numddl, mailla
     character(len=19) :: chamol, chamne
+    real(kind=8), pointer :: trav1(:) => null()
+    real(kind=8), pointer :: trav2(:) => null()
+    real(kind=8), pointer :: trav3(:) => null()
+    integer, pointer :: trav4(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !----------------------------------------------------------------------
     call jemarq()
@@ -113,45 +119,45 @@ subroutine diag99(nomres)
 ! OU T(VECTEUR) EST LA TRANSPOSEE DU VECTEUR
 !-----------------------------------------------------------------------
     call wkvect('&&DIAG99.NEW_STAT', 'V V R', nbstat*neq, jnsta)
-    call wkvect('&&DIAG99.TRAV1', 'V V R', neq, jtrav1)
-    call wkvect('&&DIAG99.TRAV2', 'V V R', neq, jtrav2)
-    call wkvect('&&DIAG99.TRAV3', 'V V R', nbstat, jtrav3)
-    call wkvect('&&DIAG99.TRAV4', 'V V I', neq, jtrav4)
+    AS_ALLOCATE(vr=trav1, size=neq)
+    AS_ALLOCATE(vr=trav2, size=neq)
+    AS_ALLOCATE(vr=trav3, size=nbstat)
+    AS_ALLOCATE(vi=trav4, size=neq)
 !
     do j = 1, nbstat
 !
-        call vecini(neq, 0.d0, zr(jtrav1))
+        call vecini(neq, 0.d0,trav1)
 !
         do i = 1, nbmode
 !
 ! --------- PRODUIT MASSE*MODE PROPRE I
-            call mrmult('ZERO', lmasse, zr(idmode+(i-1)*neq), zr( jtrav2), 1,&
+            call mrmult('ZERO', lmasse, zr(idmode+(i-1)*neq), trav2, 1,&
                         .true.)
 !
 ! --------- (T(MODE STAT J)*MASSE*MODE PROPRE I)
-            r8scal=ddot(neq,zr(idstat+(j-1)*neq),1,zr(jtrav2),1)
+            r8scal=ddot(neq,zr(idstat+(j-1)*neq),1,trav2,1)
 !
 ! --------- PRODUIT (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
 ! --------- PUIS
 ! --------- SOMME (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
             do k = 1, neq
-                zr(jtrav1+(k-1)) = zr( jtrav1+(k-1)) + r8scal * zr( idmode+(i-1)*neq+(k-1) )
+                trav1(1+(k-1)) = trav1(1+(k-1)) + r8scal * zr( idmode+(i-1)*neq+(k-1) )
             end do
         end do
 !
         do k = 1, neq
-            zr(jnsta+(j-1)*neq+(k-1)) = zr( idstat+(j-1)*neq+(k-1)) - zr(jtrav1+(k-1) )
+            zr(jnsta+(j-1)*neq+(k-1)) = zr( idstat+(j-1)*neq+(k-1)) - trav1(1+(k-1) )
         end do
 !
     end do
 !
     do i = 1, neq
-        zi(jtrav4+i-1) = 1
+        trav4(i) = 1
     end do
     alpha = 0.717d0
 !
     call vpgskp(neq, nbstat, zr(jnsta), alpha, lmasse,&
-                2, zr(jtrav1), zi(jtrav4), zr(jtrav3))
+                2, trav1, trav4,trav3)
 !
     nbord = nbmode + nbstat
     call rscrsd('G', nomres, 'MODE_MECA', nbord)
@@ -264,10 +270,10 @@ subroutine diag99(nomres)
         call rsnoch(nomres, 'DEPL', iorne)
     end do
 !
-    call jedetr('&&DIAG99.TRAV1')
-    call jedetr('&&DIAG99.TRAV2')
-    call jedetr('&&DIAG99.TRAV3')
-    call jedetr('&&DIAG99.TRAV4')
+    AS_DEALLOCATE(vr=trav1)
+    AS_DEALLOCATE(vr=trav2)
+    AS_DEALLOCATE(vr=trav3)
+    AS_DEALLOCATE(vi=trav4)
     call jedetr('&&DIAG99.TRAV5')
     call jedetr('&&DIAG99.TRAV6')
     call jedetr('&&DIAG99.MODE_MECA')

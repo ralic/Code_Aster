@@ -6,6 +6,8 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: id, neq, nbsup, nsupp(*), tcosup(nbsup, *)
     real(kind=8) :: recmod(nbsup, neq, *), repdir(neq, *)
     logical :: monoap, muapde
@@ -42,8 +44,10 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
 ! IN  : RECMOD : VECTEUR DES RECOMBINAISONS MODALES PAR APPUIS
 ! OUT : REPDIR : VECTEUR DES RECOMBINAISONS PAR DIRECTIONS
 !     ------------------------------------------------------------------
-    integer :: in, is, jqua, jlin, jabs
+    integer :: in, is,   jabs
     real(kind=8) :: xxx, xx1, xx2
+    real(kind=8), pointer :: line(:) => null()
+    real(kind=8), pointer :: quad(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -53,22 +57,22 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
             repdir(in,id)=recmod(1,in,id)
 10      continue
     else
-        call wkvect('&&ASDIR.QUAD', 'V V R', neq, jqua)
-        call wkvect('&&ASDIR.LINE', 'V V R', neq, jlin)
+        AS_ALLOCATE(vr=quad, size=neq)
+        AS_ALLOCATE(vr=line, size=neq)
         call wkvect('&&ASDIR.ABS ', 'V V R', neq, jabs)
         do 20 is = 1, nsupp(id)
             if (tcosup(is,id) .eq. 1) then
 !              --- COMBINAISON QUADRATIQUE ---
                 do 12 in = 1, neq
                     xxx = recmod(is,in,id)
-                    zr(jqua+in-1)= zr(jqua+in-1)+ xxx
+                    quad(in)= quad(in)+ xxx
 12              continue
             else if (tcosup(is,id).eq.2) then
 !              --- COMBINAISON LINEAIRE ---
                 do 14 in = 1, neq
                     if (recmod(is,in,id) .ge. 0.d0) then
                         xxx = sqrt(recmod(is,in,id))
-                        zr(jlin+in-1)= zr(jlin+in-1)+ xxx
+                        line(in)= line(in)+ xxx
                     endif
 14              continue
             else
@@ -80,12 +84,12 @@ subroutine asdir(monoap, muapde, id, neq, nbsup,&
             endif
 20      continue
         do 30 in = 1, neq
-            xx1 = zr(jlin+in-1) * zr(jlin+in-1)
+            xx1 = line(in) * line(in)
             xx2 = zr(jabs+in-1) * zr(jabs+in-1)
-            repdir(in,id) = zr(jqua+in-1)+xx1+xx2
+            repdir(in,id) = quad(in)+xx1+xx2
 30      continue
-        call jedetr('&&ASDIR.QUAD')
-        call jedetr('&&ASDIR.LINE')
+        AS_DEALLOCATE(vr=quad)
+        AS_DEALLOCATE(vr=line)
         call jedetr('&&ASDIR.ABS ')
     endif
     call jedema()

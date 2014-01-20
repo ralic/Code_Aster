@@ -26,6 +26,8 @@ subroutine pecage(resu, modele, nbocc)
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbocc
     character(len=*) :: resu, modele
@@ -50,7 +52,7 @@ subroutine pecage(resu, modele, nbocc)
 !     TRAITEMENT DU MOT CLE-FACTEUR "CARA_GEOM"
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, nbparr, ibid, iret, lvale, iocc, nt, ng, nm, nbgrma, jgr
+    integer :: mxvale, nbparr, ibid, iret,  iocc, nt, ng, nm, nbgrma, jgr
     integer :: ig, nbma, jad, nbmail, jma, im, nume, ndim, ns1, ns2, nbparc
     integer :: np, ifm, niv, iorig, i, icage
     parameter (mxvale=29,nbparr=46)
@@ -64,6 +66,7 @@ subroutine pecage(resu, modele, nbocc)
     character(len=24) :: chgeom
     complex(kind=8) :: c16b
     logical :: nsymx, nsymy
+    real(kind=8), pointer :: trav1(:) => null()
     ibid = 0
 !     ------------------------------------------------------------------
     data noparr/'LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',&
@@ -137,7 +140,7 @@ subroutine pecage(resu, modele, nbocc)
     call tbajli(resu, 1, noparr(nbparr), [ibid], [r8b],&
                 [c16b], noma, 0)
 !
-    call wkvect('&&PECAGE.TRAV1', 'V V R', mxvale, lvale)
+    AS_ALLOCATE(vr=trav1, size=mxvale)
     do iocc = 1, nbocc
 !
         call getvtx('CARA_GEOM', 'TOUT', iocc=iocc, nbval=0, nbret=nt)
@@ -151,10 +154,10 @@ subroutine pecage(resu, modele, nbocc)
         valk(2) = '????????'
 !
         if (nt .ne. 0) then
-            call pemica(chelem, mxvale, zr(lvale), 0, [ibid],&
+            call pemica(chelem, mxvale, trav1, 0, [ibid],&
                         orig, iorig, icage)
             call pecag2(ndim, nsymx, nsymy, np, xyp,&
-                        zr(lvale), valpar)
+                        trav1, valpar)
             call pecag3(ndim, nsymx, nsymy, noma, 'TOUT',&
                         0, k8b, valpar)
             valk(1) = noma
@@ -181,10 +184,10 @@ subroutine pecage(resu, modele, nbocc)
                     goto 20
                 endif
                 call jeveuo(jexnom(noma//'.GROUPEMA', zk24(jgr+ig-1)), 'L', jad)
-                call pemica(chelem, mxvale, zr(lvale), nbma, zi(jad),&
+                call pemica(chelem, mxvale, trav1, nbma, zi(jad),&
                             orig, iorig, icage)
                 call pecag2(ndim, nsymx, nsymy, np, xyp,&
-                            zr(lvale), valpar)
+                            trav1, valpar)
                 call pecag3(ndim, nsymx, nsymy, noma, 'GROUP_MA',&
                             1, zk24(jgr+ig-1), valpar)
                 valk(1) = zk24(jgr+ig-1)
@@ -208,10 +211,10 @@ subroutine pecage(resu, modele, nbocc)
                     goto 30
                 endif
                 call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)
-                call pemica(chelem, mxvale, zr(lvale), 1, [nume],&
+                call pemica(chelem, mxvale, trav1, 1, [nume],&
                             orig, iorig, icage)
                 call pecag2(ndim, nsymx, nsymy, np, xyp,&
-                            zr(lvale), valpar)
+                            trav1, valpar)
                 call pecag3(ndim, nsymx, nsymy, noma, 'MAILLE',&
                             nbmail, zk8( jma), valpar)
                 valk(1) = zk8(jma+im-1)
@@ -225,7 +228,7 @@ subroutine pecage(resu, modele, nbocc)
     end do
 !
     call detrsd('CHAM_ELEM', '&&PECAGE.CARA_GEOM')
-    call jedetr('&&PECAGE.TRAV1')
+    AS_DEALLOCATE(vr=trav1)
 !
     call jedema()
 end subroutine

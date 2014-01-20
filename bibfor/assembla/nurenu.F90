@@ -14,6 +14,8 @@ subroutine nurenu(nu, base)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=14) :: nu
     character(len=2) :: base
 ! ======================================================================
@@ -49,11 +51,12 @@ subroutine nurenu(nu, base)
 !
     integer :: rang, nbproc, jpddl, jnequl, neql, iddl, nbrddl, jnbddl
     integer :: iproc, nbddpr, jnequg, neqg, jnulg, decals, decald, iaux
-    integer :: jordjo, njoint, numpro, nbddlj, jjoint, jnewnu, numddl
+    integer :: jordjo, njoint, numpro, nbddlj, jjoint,  numddl
     integer :: num
 !
     character(len=4) :: chnbjo
     character(len=24) ::  nonbdd, nojoin
+    integer, pointer :: tmp(:) => null()
     mpi_int :: mrank, msize
     parameter    (nonbdd='&&NUPODD.NBDDL')
 !
@@ -110,27 +113,27 @@ subroutine nurenu(nu, base)
     nojoin=nu//'.NUML.'//chnbjo
     call jeveuo(nojoin, 'L', jjoint)
     call jelira(nojoin, 'LONMAX', nbddlj)
-    call wkvect('&&NURENU.TMP', 'V V I', nbddlj, jnewnu)
+    AS_ALLOCATE(vi=tmp, size=nbddlj)
     if (rang .lt. numpro) then
 !     !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
         do 50, iddl=0,nbddlj-1
         numddl=zi(jjoint+iddl)
-        zi(jnewnu+iddl)=zi(jnulg+numddl-1)
+        tmp(iddl+1)=zi(jnulg+numddl-1)
 50      continue
         call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
-                              vi=zi(jnewnu))
+                              vi=tmp)
     else if (rang.gt.numpro) then
 !     !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
         call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
-                              vi=zi(jnewnu))
+                              vi=tmp)
         do 60, iddl=0,nbddlj-1
         numddl=zi(jjoint+iddl)
-        zi(jnulg+numddl-1)=zi(jnewnu+iddl)
+        zi(jnulg+numddl-1)=tmp(iddl+1)
 60      continue
     else
         ASSERT(.false.)
     endif
-    call jedetr('&&NURENU.TMP')
+    AS_DEALLOCATE(vi=tmp)
     40 end do
 !
     call jedema()

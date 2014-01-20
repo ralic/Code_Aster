@@ -36,6 +36,8 @@ subroutine initel(ligrel)
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=19) :: ligrel
 ! ----------------------------------------------------------------------
@@ -55,7 +57,7 @@ subroutine initel(ligrel)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: igr, ngr, nmaxob, nbobj, nbprin
-    integer :: nbno, jprin, jnoma, jliel, jlliel, iconx1, iconx2
+    integer :: nbno,  jnoma, jliel, jlliel, iconx1, iconx2
     integer :: nute, nbel, iel, numa, nbnoma, ino, nuno
     parameter (nmaxob=30)
     integer :: adobj(nmaxob)
@@ -63,6 +65,7 @@ subroutine initel(ligrel)
     character(len=1) :: base
     character(len=8) :: exiele, ma, prin, nomail, resuco
     character(len=16) :: nomte, nomcmd, typcon
+    integer, pointer :: vprin(:) => null()
 ! ----------------------------------------------------------------------
 !
 ! DEB-------------------------------------------------------------------
@@ -107,7 +110,7 @@ subroutine initel(ligrel)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !
 !     -- ON COCHE LES NOEUDS PORTES PAR LES ELEMENTS PRINCIPAUX :
-    call wkvect('&&INITEL.PRIN', 'V V I', nbno, jprin)
+    AS_ALLOCATE(vi=vprin, size=nbno)
     do igr = 1, ngr
         nute = typele(ligrel,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
@@ -120,7 +123,7 @@ subroutine initel(ligrel)
             nbnoma = zi(iconx2+numa) - zi(iconx2+numa-1)
             do ino = 1, nbnoma
                 nuno = zi(iconx1-1+zi(iconx2+numa-1)+ino-1)
-                zi(jprin-1+nuno) = 1
+                vprin(nuno) = 1
             end do
  40         continue
         end do
@@ -144,7 +147,7 @@ subroutine initel(ligrel)
             nbnoma = zi(iconx2+numa) - zi(iconx2+numa-1)
             do ino = 1, nbnoma
                 nuno = zi(iconx1-1+zi(iconx2+numa-1)+ino-1)
-                if (zi(jprin-1+nuno) .ne. 1) then
+                if (vprin(nuno) .ne. 1) then
                     call jenuno(jexnum(ma//'.NOMMAI', numa), nomail)
                     call utmess('A', 'CALCULEL2_63', sk=nomail)
                     goto 71
@@ -166,7 +169,7 @@ subroutine initel(ligrel)
     endif
 !
 !
-    call jedetr('&&INITEL.PRIN')
+    AS_DEALLOCATE(vi=vprin)
 !
 !
 !

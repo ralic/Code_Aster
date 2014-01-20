@@ -14,6 +14,8 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 #include "asterfort/typddl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbmode, impr, ndir(*), nbsup, nsupp(*)
     real(kind=8) :: parmod(nbmode, *), amort(*)
@@ -62,10 +64,15 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
 ! IN  : KNOEU  : NOM DU VECTEUR DES NOMS DES SUPPORTS
 !     ------------------------------------------------------------------
     integer :: ier, im1, im2, ioc, nm, nn, ng, nbocc, jasy, neq, jddl1
-    integer :: nba, nbbloq, nbl, nbliai, jnno, jnsp, jdsp, jesp, jspe, jnas, noc
+    integer :: nba, nbbloq, nbl, nbliai,     jspe,  noc
     character(len=5) :: motfac
     character(len=8) :: k8b, noma
     character(len=14) :: nume
+    real(kind=8), pointer :: dir_spectre(:) => null()
+    real(kind=8), pointer :: ech_spectre(:) => null()
+    integer, pointer :: nat_spectre(:) => null()
+    character(len=8), pointer :: nom_noeud(:) => null()
+    character(len=8), pointer :: nom_spectre(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -139,21 +146,21 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
         if (nbbloq .eq. 0) then
             call utmess('F', 'SEISME_34')
         endif
-        call wkvect('&&ASEXCI.NOM_NOEUD', 'V V K8', 3*nbbloq, jnno)
-        call wkvect('&&ASEXCI.NOM_SPECTRE', 'V V K8', 3*nbbloq, jnsp)
-        call wkvect('&&ASEXCI.DIR_SPECTRE', 'V V R', 3*nbbloq, jdsp)
-        call wkvect('&&ASEXCI.ECH_SPECTRE', 'V V R', 3*nbbloq, jesp)
-        call wkvect('&&ASEXCI.NAT_SPECTRE', 'V V I', 3*nbbloq, jnas)
+        AS_ALLOCATE(vk8=nom_noeud, size=3*nbbloq)
+        AS_ALLOCATE(vk8=nom_spectre, size=3*nbbloq)
+        AS_ALLOCATE(vr=dir_spectre, size=3*nbbloq)
+        AS_ALLOCATE(vr=ech_spectre, size=3*nbbloq)
+        AS_ALLOCATE(vi=nat_spectre, size=3*nbbloq)
         call asexc2(motfac, nbocc, nbmode, parmod, amort,&
-                    corfre, noma, ndir, zk8(jnno), zk8(jnsp),&
-                    zr(jdsp), zr(jesp), zi(jnas), nbsup, nsupp,&
+                    corfre, noma, ndir, nom_noeud, nom_spectre,&
+                    dir_spectre, ech_spectre, nat_spectre, nbsup, nsupp,&
                     knoeu, kspect, kasysp)
         call jedetr('&&ASEXCI.POSITION.DDL1')
-        call jedetr('&&ASEXCI.NOM_NOEUD')
-        call jedetr('&&ASEXCI.NOM_SPECTRE')
-        call jedetr('&&ASEXCI.DIR_SPECTRE')
-        call jedetr('&&ASEXCI.ECH_SPECTRE')
-        call jedetr('&&ASEXCI.NAT_SPECTRE')
+        AS_DEALLOCATE(vk8=nom_noeud)
+        AS_DEALLOCATE(vk8=nom_spectre)
+        AS_DEALLOCATE(vr=dir_spectre)
+        AS_DEALLOCATE(vr=ech_spectre)
+        AS_DEALLOCATE(vi=nat_spectre)
     endif
 !
     call jedema()

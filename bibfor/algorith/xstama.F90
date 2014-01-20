@@ -38,6 +38,8 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 #include "asterfort/loncar.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xstam1.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma, jmafis
     integer :: ncouch, stano(*), jmafon, jmaen1, jmaen2, jmaen3
@@ -81,7 +83,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
 !
 !
-    integer :: jma, igeom, jcoord, jconx1, jconx2
+    integer :: jma, igeom,  jconx1, jconx2
     integer :: ima, itypma, j, idim, ndim
     integer :: nuno, ifm, niv
     integer :: nbnoe, ino, nabs, jdlino, nbnoma
@@ -89,6 +91,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
     real(kind=8) :: hff, diam, lsn, lst, rayon
     character(len=8) :: typma
     character(len=19) :: mai
+    real(kind=8), pointer :: macoord(:) => null()
 !
 !
     call jemarq()
@@ -132,17 +135,17 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
 !         CONSTRUCTION DES COORDONNES DE LA MAILLE
             nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
-            call wkvect('&&XSTAMA.MACOORD', 'V V R', ndim*nbnoma, jcoord)
+            AS_ALLOCATE(vr=macoord, size=ndim*nbnoma)
             do ino = 1, nbnoma
                 nuno = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
                 do idim = 1, ndim
-                    zr(jcoord-1+ndim*(ino-1)+idim)=zr(igeom-1+3*(nuno-&
+                    macoord(ndim*(ino-1)+idim)=zr(igeom-1+3*(nuno-&
                     1)+idim)
                 end do
             end do
 !
-            call loncar(ndim, typma, zr(jcoord), diam)
-            call jedetr('&&XSTAMA.MACOORD')
+            call loncar(ndim, typma, macoord, diam)
+            AS_DEALLOCATE(vr=macoord)
             hff = min(hff,diam)
         end do
 !

@@ -31,6 +31,8 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: noma, nomai(*), nogrm(*), nummai, noltop
     integer :: nbma, nbgr, nbmat
@@ -52,7 +54,8 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
 !     ------------------------------------------------------------------
     character(len=8) :: nomma
     integer :: jnuma, ima, iad, in, jtopo, imai, igr, iret, nbn, lnuma
-    integer :: jdime, nbmama, jexma, numa
+    integer :: jdime, nbmama,  numa
+    integer, pointer :: mailles(:) => null()
 !
 !
     call jemarq()
@@ -88,7 +91,7 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
 !     --- RECUPERATION DU NUMERO DE MAILLE----
         call jeveuo(nomma//'.DIME', 'L', jdime)
         nbmama = zi(jdime+3-1)
-        call wkvect('&&IRMAMA.MAILLES', 'V V I', nbmama, jexma)
+        AS_ALLOCATE(vi=mailles, size=nbmama)
         do 13 igr = 1, nbgr
             call jeexin(jexnom(nomma//'.GROUPEMA', nogrm(igr)), iret)
             if (iret .eq. 0) then
@@ -107,7 +110,7 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
                     call jeveuo(jexnom(nomma//'.GROUPEMA', nogrm(igr)), 'L', iad)
                     do 14 in = 1, nbn
                         numa = zi(iad+in-1)
-                        if (zi(jexma+numa-1) .eq. 0) then
+                        if (mailles(numa) .eq. 0) then
                             nbmat=nbmat+1
                             if (nbmat .gt. lnuma) then
                                 lnuma=2*lnuma
@@ -115,13 +118,13 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
                                 call jeveuo(nummai, 'E', jnuma)
                             endif
                             zi(jnuma-1+nbmat)=numa
-                            zi(jexma+numa-1)=1
+                            mailles(numa)=1
                         endif
 14                  continue
                 endif
             endif
 13      continue
-        call jedetr('&&IRMAMA.MAILLES')
+        AS_DEALLOCATE(vi=mailles)
     endif
 !
     call jedema()

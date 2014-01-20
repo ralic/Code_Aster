@@ -33,6 +33,8 @@ subroutine ssriu1(nomu)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomu
 ! ----------------------------------------------------------------------
@@ -100,12 +102,15 @@ subroutine ssriu1(nomu)
     integer :: i
     character(len=8) :: nogdsi
     character(len=19) :: nu
-    integer :: iaconx, iadeeq, iadelg, iadesm, iaintr, ialino, ianueq
-    integer :: iaprno, iawrk1, iawrk2, ico, icoe, icoi
+    integer :: iaconx, iadeeq, iadelg, iadesm,  ialino, ianueq
+    integer :: iaprno,   ico, icoe, icoi
     integer :: ieqn, ili, inl, ino, iret
     integer :: itylag, n1, nbno, nbnoe, nbnoet, nddle, nddli
     integer :: nddlt, nec, nlage, nlagi, nlagl, nlili, nuddl
     integer :: nueq, nulag, nuno, nuno2, nunold
+    integer, pointer :: interne(:) => null()
+    integer, pointer :: work1(:) => null()
+    integer, pointer :: work2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nu = nomu
@@ -130,7 +135,7 @@ subroutine ssriu1(nomu)
 !
 !     -- ALLOCATION D'UN VECTEUR DE TRAVAIL QUI CONTIENDRA
 !        DES "1" SUR LES DDL INTERNES.
-    call wkvect('&&SSRIU1.INTERNE', 'V V I', nddlt, iaintr)
+    AS_ALLOCATE(vi=interne, size=nddlt)
 !
 !
 !     -- BOUCLE SUR LES  DDLS, REMPLISSAGE DE .INTERNE:
@@ -159,7 +164,7 @@ subroutine ssriu1(nomu)
         if (nuno .ne. 0) then
             nuno2 = indiis(zi(ialino),nuno,1,nbnoe)
             if (nuno2 .eq. 0) then
-                zi(iaintr-1+i) = 1
+                interne(i) = 1
                 nddli = nddli + 1
             endif
 !
@@ -207,24 +212,24 @@ subroutine ssriu1(nomu)
 !
 !     -- MODIFICATION DE .NUEQ:
 !     -------------------------
-    call wkvect('&&SSRIU1.WORK2', 'V V I', nddlt, iawrk2)
+    AS_ALLOCATE(vi=work2, size=nddlt)
 !    .WORK2 CONTIENT LA RECIPROQUE DU NOUVEAU .NUEQ:
     ico = 0
 !     -- ON CLASSE LES DDLS INTERNES:
     do i = 1, nddlt
-        if (zi(iaintr-1+i) .eq. 1) then
+        if (interne(i) .eq. 1) then
             ico = ico + 1
             zi(ianueq-1+i) = ico
-            zi(iawrk2-1+ico) = i
+            work2(ico) = i
         endif
     end do
 !
 !     -- ON CLASSE LES DDLS EXTERNES:
     do i = 1, nddlt
-        if (zi(iaintr-1+i) .eq. 0) then
+        if (interne(i) .eq. 0) then
             ico = ico + 1
             zi(ianueq-1+i) = ico
-            zi(iawrk2-1+ico) = i
+            work2(ico) = i
         endif
     end do
 !
@@ -233,7 +238,7 @@ subroutine ssriu1(nomu)
 !     ---------------------
     nbnoet = nlage + nlagl + nbnoe
     call wkvect(nomu//'.CONX', 'G V I', 3*nbnoet, iaconx)
-    call wkvect('&&SSRIU1.WORK1', 'V V I', 2*nddlt, iawrk1)
+    AS_ALLOCATE(vi=work1, size=2*nddlt)
     ico = 0
     nunold = 0
 !
@@ -255,7 +260,7 @@ subroutine ssriu1(nomu)
                     zi(iaconx-1+3* (ico-1)+3) = itylag
                     ieqn = zi(ianueq-1+i)
                     ASSERT(ieqn.gt.nddli)
-                    zi(iawrk1-1+ieqn) = ico
+                    work1(ieqn) = ico
                 endif
             endif
 !
@@ -267,7 +272,7 @@ subroutine ssriu1(nomu)
                 zi(iaconx-1+3* (ico-1)+3) = itylag
                 ieqn = zi(ianueq-1+i)
                 ASSERT(ieqn.gt.nddli)
-                zi(iawrk1-1+ieqn) = ico
+                work1(ieqn) = ico
             endif
 !
 !           -- NOEUDS PHYSIQUES DU MAILLAGE :
@@ -286,7 +291,7 @@ subroutine ssriu1(nomu)
             zi(iaconx-1+3* (ico-1)+3) = itylag
             ieqn = zi(ianueq-1+i)
             ASSERT(ieqn.gt.nddli)
-            zi(iawrk1-1+ieqn) = ico
+            work1(ieqn) = ico
         endif
     end do
 !
@@ -304,7 +309,7 @@ subroutine ssriu1(nomu)
             if (nueq .eq. 0) goto 50
             ieqn = zi(ianueq-1+nueq)
             if (ieqn .gt. nddli) then
-                inl = zi(iawrk1-1+ieqn)
+                inl = work1(ieqn)
                 zi(iaconx-1+3* (inl-1)+1) = ili
                 zi(iaconx-1+3* (inl-1)+2) = ino
             endif
@@ -318,18 +323,18 @@ subroutine ssriu1(nomu)
 !        DE LA MODIFICATION DE .NUEQ :
 !        ---------------------------------------------------
     do i = 1, nddlt
-        zi(iawrk1-1+i) = zi(iadelg-1+zi(iawrk2-1+i))
+        work1(i) = zi(iadelg-1+work2(i))
     end do
     do i = 1, nddlt
-        zi(iadelg-1+i) = zi(iawrk1-1+i)
+        zi(iadelg-1+i) = work1(i)
     end do
 !
     do i = 1, nddlt
-        zi(iawrk1-1+2* (i-1)+1) = zi(iadeeq-1+2* (zi(iawrk2-1+i)-1)+1)
-        zi(iawrk1-1+2* (i-1)+2) = zi(iadeeq-1+2* (zi(iawrk2-1+i)-1)+2)
+        work1(2* (i-1)+1) = zi(iadeeq-1+2* (work2(i)-1)+1)
+        work1(2* (i-1)+2) = zi(iadeeq-1+2* (work2(i)-1)+2)
     end do
     do i = 1, 2*nddlt
-        zi(iadeeq-1+i) = zi(iawrk1-1+i)
+        zi(iadeeq-1+i) = work1(i)
     end do
 !
 !
@@ -346,9 +351,9 @@ subroutine ssriu1(nomu)
     end do
 !
 ! --- MENAGE
-    call jedetr('&&SSRIU1.INTERNE')
-    call jedetr('&&SSRIU1.WORK1')
-    call jedetr('&&SSRIU1.WORK2')
+    AS_DEALLOCATE(vi=interne)
+    AS_DEALLOCATE(vi=work1)
+    AS_DEALLOCATE(vi=work2)
 !
     call jedema()
 end subroutine

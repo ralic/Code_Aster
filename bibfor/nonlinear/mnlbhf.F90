@@ -54,6 +54,8 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
 #include "asterfort/mnlcir.h"
 #include "asterfort/mnluil.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, adime, xvect
     real(kind=8) :: err
@@ -64,9 +66,10 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
     real(kind=8) :: omega, alpha, eta, jeu
     real(kind=8) :: nrm
     integer :: ivect
-    integer :: iadim, i, j, itep2
+    integer :: iadim, i, j
     integer :: neqs, iraid, ijeu, ijmax, ityp, nddlx, inddl, nddly, iorig
     integer :: ineqs, ireg, nt, nddl, idep1, idep2, itemp
+    real(kind=8), pointer :: tep2(:) => null()
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -91,7 +94,7 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
     xtemp='&&MNLBHF.TEMP'
     call wkvect(xdep1, 'V V R', 2*h+1, idep1)
     call wkvect(xdep2, 'V V R', 2*h+1, idep2)
-    call wkvect('&&MNLBHF.TEP2', 'V V R', 2*h+1, itep2)
+    AS_ALLOCATE(vr=tep2, size=2*h+1)
     call wkvect(xtemp, 'V V R', ninc, itemp)
     nt = int(2**int(dlog(2.d0*dble(3*hf)+1.d0)/dlog(2.d0)+1.d0))
     neqs=0
@@ -131,10 +134,10 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
             if (nrm .gt. 0.d0) then
                 nrm=0.d0
                 do 21 j = 1, 2
-                    call dscal(2*h+1, 0.d0, zr(itep2), 1)
-                    call dcopy(h+1, zr(itemp+(j-1)*(2*hf+1)), 1, zr( itep2), 1)
-                    call dcopy(h, zr(itemp+(j-1)*(2*hf+1)+hf+1), 1, zr( itep2), 1)
-                    nrm=nrm+dnrm2(2*h+1,zr(itep2),1)
+                    call dscal(2*h+1, 0.d0, tep2, 1)
+                    call dcopy(h+1, zr(itemp+(j-1)*(2*hf+1)), 1, tep2, 1)
+                    call dcopy(h, zr(itemp+(j-1)*(2*hf+1)+hf+1), 1, tep2, 1)
+                    nrm=nrm+dnrm2(2*h+1,tep2,1)
 21              continue
                 err=err+nrm/2.d0
             endif
@@ -150,10 +153,10 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
                        1)
             nrm=dnrm2(2*hf+1,zr(itemp),1)
             if (nrm .gt. 0.d0) then
-                call dscal(2*h+1, 0.d0, zr(itep2), 1)
-                call dcopy(h+1, zr(itemp), 1, zr(itep2), 1)
-                call dcopy(h, zr(itemp+hf+1), 1, zr(itep2), 1)
-                err=err+dnrm2(2*h+1,zr(itep2),1)
+                call dscal(2*h+1, 0.d0, tep2, 1)
+                call dcopy(h+1, zr(itemp), 1, tep2, 1)
+                call dcopy(h, zr(itemp+hf+1), 1, tep2, 1)
+                err=err+dnrm2(2*h+1,tep2,1)
             endif
         endif
         neqs=neqs+zi(ineqs-1+i)
@@ -162,7 +165,7 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd,&
     err=err/dble(nchoc)
 !
     call jedetr(xtemp)
-    call jedetr('&&MNLBHF.TEP2')
+    AS_DEALLOCATE(vr=tep2)
     call jedetr(xdep1)
     call jedetr(xdep2)
 !

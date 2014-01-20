@@ -16,6 +16,8 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: motfaz, chargz, lisnoz
 ! ----------------------------------------------------------------------
@@ -67,9 +69,12 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 !-----------------------------------------------------------------------
     integer :: ibid, idim1, idim2, idimax, igr, ima
     integer :: in1, indlis, indmot, indnoe, ino, iocc, jdes
-    integer :: jgro, jind, jjj1, jjj2, jlist, lonlis, m
+    integer :: jgro,    jlist, lonlis, m
     integer :: n1, n2, nbma, nbmail, ng, ngr, nliai
     integer :: nmai, numail
+    character(len=24), pointer :: trav1(:) => null()
+    character(len=8), pointer :: trav2(:) => null()
+    integer, pointer :: trav3(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     charge = chargz
@@ -107,12 +112,12 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     call getvtx(motfac, mogrma, iocc=iocc, nbval=0, nbret=ng)
     if (ng .ne. 0) then
         ng = -ng
-        call wkvect('&&MALIN1.TRAV1', 'V V K24', ng, jjj1)
+        AS_ALLOCATE(vk24=trav1, size=ng)
         call getvem(noma, 'GROUP_MA', motfac, mogrma, iocc,&
-                    iarg, ng, zk24( jjj1), ngr)
+                    iarg, ng, trav1, ngr)
         do igr = 1, ngr
-            call jeveuo(jexnom(grmama, zk24(jjj1+igr-1)), 'L', jgro)
-            call jelira(jexnom(grmama, zk24(jjj1+igr-1)), 'LONUTI', nbmail)
+            call jeveuo(jexnom(grmama, trav1(igr)), 'L', jgro)
+            call jelira(jexnom(grmama, trav1(igr)), 'LONUTI', nbmail)
             do m = 1, nbmail
                 numail = zi(jgro-1+m)
                 call jenuno(jexnum(mailma, numail), nomail)
@@ -130,11 +135,11 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     call getvtx(motfac, momail, iocc=iocc, nbval=0, nbret=nbma)
     if (nbma .ne. 0) then
         nbma = -nbma
-        call wkvect('&&MALIN1.TRAV2', 'V V K8', nbma, jjj2)
+        AS_ALLOCATE(vk8=trav2, size=nbma)
         call getvem(noma, 'MAILLE', motfac, momail, iocc,&
-                    iarg, nbma, zk8( jjj2), nmai)
+                    iarg, nbma, trav2, nmai)
         do ima = 1, nmai
-            call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj2+ima-1)), ibid)
+            call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
             call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
             idim2 = idim2 + n2
         end do
@@ -153,11 +158,11 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     call getvtx(motfac, mogrma, iocc=iocc, nbval=0, nbret=ng)
     if (ng .ne. 0) then
         ng = -ng
-        call getvtx(motfac, mogrma, iocc=iocc, nbval=ng, vect=zk24(jjj1),&
+        call getvtx(motfac, mogrma, iocc=iocc, nbval=ng, vect=trav1,&
                     nbret=ngr)
         do igr = 1, ngr
-            call jeveuo(jexnom(grmama, zk24(jjj1+igr-1)), 'L', jgro)
-            call jelira(jexnom(grmama, zk24(jjj1+igr-1)), 'LONUTI', nbmail)
+            call jeveuo(jexnom(grmama, trav1(igr)), 'L', jgro)
+            call jelira(jexnom(grmama, trav1(igr)), 'LONUTI', nbmail)
             do m = 1, nbmail
                 numail = zi(jgro-1+m)
                 call jenuno(jexnum(mailma, numail), nomail)
@@ -176,12 +181,12 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     call getvtx(motfac, momail, iocc=iocc, nbval=0, nbret=nbma)
     if (nbma .ne. 0) then
         nbma = -nbma
-        call getvtx(motfac, momail, iocc=iocc, nbval=nbma, vect=zk8(jjj2),&
+        call getvtx(motfac, momail, iocc=iocc, nbval=nbma, vect=trav2,&
                     nbret=nmai)
         do ima = 1, nmai
-            call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj2+ima-1)), ibid)
+            call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
             call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)
-            call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj2+ima-1)), ibid)
+            call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
             call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
             do ino = 1, n2
                 call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
@@ -194,12 +199,12 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 !     -- ELIMINATION DES REDONDANCES EVENTUELLES DES NOEUDS
 !        DE LA LISTE
 !    -------------------------------------------------------------
-    call wkvect('&&MALIN1.TRAV3', 'V V I', idimax, jind)
+    AS_ALLOCATE(vi=trav3, size=idimax)
 !
     do ino = 1, idimax
         do in1 = ino+1, idimax
             if (zk8(jlist+in1-1) .eq. zk8(jlist+ino-1)) then
-                zi(jind+in1-1) = 1
+                trav3(in1) = 1
             endif
         end do
     end do
@@ -207,7 +212,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     indlis = 0
 !
     do ino = 1, idimax
-        if (zi(jind+ino-1) .eq. 0) then
+        if (trav3(ino) .eq. 0) then
             indlis = indlis + 1
             zk8(jlist+indlis-1) = zk8(jlist+ino-1)
         endif
@@ -215,9 +220,9 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
 !
     lonlis = indlis
 !
-    call jedetr('&&MALIN1.TRAV1')
-    call jedetr('&&MALIN1.TRAV2')
-    call jedetr('&&MALIN1.TRAV3')
+    AS_DEALLOCATE(vk24=trav1)
+    AS_DEALLOCATE(vk8=trav2)
+    AS_DEALLOCATE(vi=trav3)
 !
 999 continue
     call jedema()

@@ -24,6 +24,8 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 #include "asterfort/tabcor.h"
 #include "asterfort/trprot.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: mate
 !
@@ -87,12 +89,15 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !---------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iadirg, iadrx, iadry, iadrz, iadx, iady, iadz
+    integer :: iadirg,   iadrz, iadx, iady, iadz
     integer :: ibamo, icompt, idelat, igeo, ilires, ilmax
     integer :: imacl, imodg, ind, ior, iprs, irang, iret
-    integer :: irot, itabl, itzsto, k, nbmo, nbmod, nbmodg
+    integer :: irot,  itzsto, k, nbmo, nbmod, nbmodg
     integer :: nbsst, nn
     real(kind=8) :: bid, ebid
+    integer, pointer :: tabl_adrx(:) => null()
+    integer, pointer :: tabl_adry(:) => null()
+    integer, pointer :: tabl_mode(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -112,9 +117,9 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 ! CREATION DE TABLEAUX D ADRESSES PAR SOUS-STRUCTURES POUR LES
 ! NOMS DES CHAMNO DE DEPL_R PAR COMPOSANTES ET LA PRESSION
 !
-    call wkvect('&&CALMDG.TABL_MODE', 'V V I', nbsst, itabl)
-    call wkvect('&&CALMDG.TABL_ADRX', 'V V I', nbsst, iadrx)
-    call wkvect('&&CALMDG.TABL_ADRY', 'V V I', nbsst, iadry)
+    AS_ALLOCATE(vi=tabl_mode, size=nbsst)
+    AS_ALLOCATE(vi=tabl_adrx, size=nbsst)
+    AS_ALLOCATE(vi=tabl_adry, size=nbsst)
     if (model .eq. '3D') call wkvect('&&CALMDG.TABL_ADRZ', 'V V I', nbsst, iadrz)
     call wkvect('&&CALMDG.TABL_ADRP', 'V V I', nbsst, iadrp)
     call wkvect('&&CALMDG.TABL_LONMAX', 'V V I', nbsst, ilmax)
@@ -184,7 +189,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
                     nbid)
         nbmodg=tmod(1)
 !
-        zi(itabl+isst-1)=nbmodg
+        tabl_mode(isst)=nbmodg
 !
 ! CREATION DE VECTEURS CONTENANT LES NOMS DES VECTEURS DE CHAMP AUX
 ! NOEUDS DE DEPLACEMENTS SUIVANT OX  OY  OZ AINSI QUE LE CHAMP DE
@@ -199,12 +204,12 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
         call jeecra('&&CALMDG.TXSTO'//chaine, 'LONMAX', nbmodg)
         call jeecra('&&CALMDG.TXSTO'//chaine, 'LONUTI', nbmodg)
         call jeveut('&&CALMDG.TXSTO'//chaine, 'E', iadx)
-        zi(iadrx+isst-1)=iadx
+        tabl_adrx(isst)=iadx
         call jecreo('&&CALMDG.TYSTO'//chaine, 'V V K24')
         call jeecra('&&CALMDG.TYSTO'//chaine, 'LONMAX', nbmodg)
         call jeecra('&&CALMDG.TYSTO'//chaine, 'LONUTI', nbmodg)
         call jeveut('&&CALMDG.TYSTO'//chaine, 'E', iady)
-        zi(iadry+isst-1)=iady
+        tabl_adry(isst)=iady
         if (model .eq. '3D') then
             call jecreo('&&CALMDG.TZSTO'//chaine, 'V V K24')
             call jeecra('&&CALMDG.TZSTO'//chaine, 'LONMAX', nbmodg)
@@ -253,7 +258,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
     nbmo=0
     do isst = 1, nbsst
-        nbmo=nbmo+zi(itabl+isst-1)
+        nbmo=nbmo+tabl_mode(isst)
     end do
 !
 ! CREATION D UN TABLEAU DE VECTEURS CONTENANT LES NOMS DE TOUS
@@ -288,13 +293,13 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
 ! NB DE MODES PAR SST
 !
-        nbmod=zi(itabl+i-1)
+        nbmod=tabl_mode(i)
 !
         do j = 1, nbmod
 !
             ind=ind+1
-            zk24(itxsto+ind-1)=zk24(zi(iadrx+i-1)+j-1)
-            zk24(itysto+ind-1)=zk24(zi(iadry+i-1)+j-1)
+            zk24(itxsto+ind-1)=zk24(tabl_adrx(i)+j-1)
+            zk24(itysto+ind-1)=zk24(tabl_adry(i)+j-1)
             if (model .eq. '3D') zk24(itzsto+ind-1)=zk24(zi(iadrz+i-1)+j- 1)
             zk24(iprsto+ind-1)=zk24(zi(iadrp+i-1)+j-1)
             call rangen(nugene//'.NUME', i, j, irang)
@@ -318,9 +323,9 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     end do
 !
 !
-    call jedetr('&&CALMDG.TABL_MODE')
-    call jedetr('&&CALMDG.TABL_ADRX')
-    call jedetr('&&CALMDG.TABL_ADRY')
+    AS_DEALLOCATE(vi=tabl_mode)
+    AS_DEALLOCATE(vi=tabl_adrx)
+    AS_DEALLOCATE(vi=tabl_adry)
     call jedetr('&&CALMDG.TABL_ADRZ')
     call jedetr('&&CALMDG.TABL_ADRP')
     call jedetr('&&CALMDG.TABL_LONMAX')

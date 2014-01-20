@@ -16,6 +16,8 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
     integer :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
@@ -57,8 +59,8 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     real(kind=8) :: vecori(3)
 !
     integer :: nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j, idcoor
-    integer :: jmail, jnotr, idlino, jtrav, jnobe, idnono, ino1, ino2, ino
-    integer :: jnord, nbnor, irest, nbma
+    integer :: jmail,  idlino,   idnono, ino1, ino2, ino
+    integer ::  nbnor, irest, nbma
     real(kind=8) :: c1(3), c2(3), nb(3), c1nb(3), c1c2(3), lc1c2, psca, zero
     real(kind=8) :: rfut, rfut2, lfut, lcumul, xc1h, xc2h, r, c2nb(3), lc1nb, x
     real(kind=8) :: y, z, xmin, xmax, lc2nb, c2h(3), ymin, ymax, zmin, zmax
@@ -66,6 +68,10 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=8) :: noma, prefix, typm, ndorig, ndextr
     character(len=16) :: motfac, motcle(3), typmcl(3)
     character(len=24) :: lisnoe, mesmai, lisnom, mafour
+    integer, pointer :: noeud_beton(:) => null()
+    integer, pointer :: noeuds_cube(:) => null()
+    integer, pointer :: noeuds_trouves(:) => null()
+    integer, pointer :: travail(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -105,10 +111,10 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- TRANSFORMATION EN LISTE DE NOEUDS
 !
-    call wkvect('&&CGNOFU.TRAVAIL', 'V V I', nbnot, jtrav)
-    call wkvect('&&CGNOFU.NOEUD_BETON', 'V V I', nbnot, jnobe)
-    call gmgnre(noma, nbnot, zi(jtrav), zi(jmail), nbmb,&
-                zi(jnobe), nbnb, 'TOUS')
+    AS_ALLOCATE(vi=travail, size=nbnot)
+    AS_ALLOCATE(vi=noeud_beton, size=nbnot)
+    call gmgnre(noma, nbnot, travail, zi(jmail), nbmb,&
+                noeud_beton, nbnb, 'TOUS')
 !
 ! --- RECUPERATION DES NOEUDS AXE :
 !     ---------------------------
@@ -138,8 +144,8 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     lfut = r8maem( )
     call getvr8(motfac, 'LONGUEUR', iocc=iocc, scal=lfut, nbret=nlf)
 !
-    call wkvect('&&CGNOFU.NOEUDS_CUBE', 'V V I', nbnot, jnord)
-    call wkvect('&&CGNOFU.NOEUDS_TROUVES', 'V V I', nbnot, jnotr)
+    AS_ALLOCATE(vi=noeuds_cube, size=nbnot)
+    AS_ALLOCATE(vi=noeuds_trouves, size=nbnot)
 !
     lcumul = zero
 !
@@ -212,21 +218,21 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !        --------------------------------------------------------
         nbnor = 0
         do j = 1, nbnb
-            ino = zi(jnobe+j-1)
+            ino = noeud_beton(j)
             x = zr(idcoor-1+3*(ino-1)+1)
             y = zr(idcoor-1+3*(ino-1)+2)
             z = zr(idcoor-1+3*(ino-1)+3)
             if ((x.le.xmax .and. x.ge.xmin) .and. (y.le.ymax .and. y.ge.ymin) .and.&
                 (z.le.zmax .and. z.ge.zmin)) then
                 nbnor = nbnor + 1
-                zi(jnord+nbnor-1) = ino
+                noeuds_cube(nbnor) = ino
             endif
         end do
 !
 ! ------ PARCOURS DES NOEUDS DE LA BOITE A INTERSECTER :
 !        ---------------------------------------------
         do j = 1, nbnor
-            ino = zi(jnord+j-1)
+            ino = noeuds_cube(j)
 !
             nb(1) = zr(idcoor-1+3*(ino-1)+1)
             nb(2) = zr(idcoor-1+3*(ino-1)+2)
@@ -264,16 +270,16 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !           --------------------------------------------------
             if (r .le. rfut2) then
                 if (xc1h .le. lc1c2 .and. xc2h .le. lc1c2) then
-                    zi(jnotr+ino-1) = 1
+                    noeuds_trouves(ino) = 1
                 endif
 !
 ! ---          ON TRAITE LES EXTREMITES COMME DES ROTULES :
 !              ------------------------------------------
                 if ((lcumul+sqrt(xc2h)) .le. lfut) then
-                    if (lc2nb .le. rfut2) zi(jnotr+ino-1) = 1
+                    if (lc2nb .le. rfut2) noeuds_trouves(ino) = 1
                 endif
                 if ((lcumul-l12+sqrt(xc1h)) .le. lfut) then
-                    if (lc1nb .le. rfut2) zi(jnotr+ino-1) = 1
+                    if (lc1nb .le. rfut2) noeuds_trouves(ino) = 1
                 endif
             endif
 !
@@ -289,17 +295,17 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
     nbno = 0
     do i = 1, nbnot
-        if (zi(jnotr+i-1) .eq. 1) then
+        if (noeuds_trouves(i) .eq. 1) then
             nbno = nbno + 1
             zi(idlino+nbno-1) = i
         endif
     end do
 !
     call jedetr(mesmai)
-    call jedetr('&&CGNOFU.TRAVAIL')
-    call jedetr('&&CGNOFU.NOEUDS_CUBE')
-    call jedetr('&&CGNOFU.NOEUDS_TROUVES')
-    call jedetr('&&CGNOFU.NOEUD_BETON')
+    AS_DEALLOCATE(vi=travail)
+    AS_DEALLOCATE(vi=noeuds_cube)
+    AS_DEALLOCATE(vi=noeuds_trouves)
+    AS_DEALLOCATE(vi=noeud_beton)
     call jedetr(lisnom)
 !
     call jedema()

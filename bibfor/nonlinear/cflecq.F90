@@ -32,6 +32,8 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomo, noma
     integer :: iform, nsuco
@@ -64,7 +66,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 !
     character(len=24) :: contno, contma
     integer :: jnoco, jmaco
-    integer :: jindno, jelino
+    integer ::  jelino
     integer :: jdecno, jno
     integer :: jdecma
     integer :: isuco, i, ino, k, ima, nutyp, noeumi
@@ -73,6 +75,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
     integer :: nummai, numnoe
     character(len=8) :: nomtm, nommai, nomnoe
     logical :: lcoque
+    integer, pointer :: indino(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,7 +83,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 !
 ! --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !
-    call wkvect('&&CFLECQ.INDINO', 'V V I', nnoco, jindno)
+    AS_ALLOCATE(vi=indino, size=nnoco)
     call wkvect(poinsn, 'V V I', nsuco+1, jelino)
 !
 ! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
@@ -140,7 +143,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
                 do 20 i = 1, nbno
                     ino = zi(jnoco+jdecno+i-1)
                     if (ino .eq. numnoe) then
-                        zi(jindno+jdecno+i-1) = 1
+                        indino(1+jdecno+i-1) = 1
                         zi(jelino+isuco) = zi(jelino+isuco) + 1
                         elimno = elimno + 1
                         goto 90
@@ -168,7 +171,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 !
     k = 0
     do 120 i = 1, nnoco0
-        if (zi(jindno+i-1) .eq. 0) then
+        if (indino(i) .eq. 0) then
             k = k + 1
             zi(jno+k-1) = zi(jnoco+i-1)
         endif
@@ -177,7 +180,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
 !
 ! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !
-    call jedetr('&&CFLECQ.INDINO')
+    AS_DEALLOCATE(vi=indino)
 !
     call jedema()
 end subroutine

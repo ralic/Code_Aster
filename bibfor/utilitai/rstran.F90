@@ -18,6 +18,8 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 #include "asterfort/rslipa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: interp, motcle
     character(len=19) :: resu, kdisc, krang
 !     ------------------------------------------------------------------
@@ -70,10 +72,11 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
 !-----------------------------------------------------------------------
     integer :: i, ier, ier1, iocc, iord, iret
-    integer :: ival, jbid, jdisc, jordr, jrang, l, laccr
+    integer :: ival,  jdisc, jordr, jrang, l, laccr
     integer :: ldisc, lli, lt, n, nbi, nbi2, nbdisc
     integer :: nbtrou, nno, nto, nutrou(1)
     real(kind=8) :: epsi, tusr
+    integer, pointer :: nume(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
@@ -115,15 +118,15 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
         nbdisc = -nno
         call wkvect(krang, 'V V I', nbdisc, jrang)
         call wkvect(kdisc, 'V V R8', nbdisc, jdisc)
-        call wkvect('&&RSTRAN.NUME', 'V V I', nbdisc, jbid)
-        call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbdisc, vect=zi(jbid),&
+        AS_ALLOCATE(vi=nume, size=nbdisc)
+        call getvis(motcle, 'NUME_ORDRE', iocc=iocc, nbval=nbdisc, vect=nume,&
                     nbret=nno)
         do 40 i = 0, nbdisc - 1
             do 20 iord = 0, nbi - 1
-                if (zi(jbid+i) .eq. zi(jordr+iord)) goto 30
+                if (nume(1+i) .eq. zi(jordr+iord)) goto 30
 20          continue
             ier = ier + 110
-            vali = zi(jbid+i)
+            vali = nume(1+i)
             call utmess('A', 'UTILITAI8_17', si=vali)
             goto 40
 30          continue
@@ -249,7 +252,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !
 100  continue
     call jedetr('&&RSTRAN.ORDR')
-    call jedetr('&&RSTRAN.NUME')
+    AS_DEALLOCATE(vi=nume)
     call jedetr('&&RSTRAN.INSTANTS')
     call jedetr('&&RSTRAN.FREQUENCES')
     call jedetr('&&RSTRAN.LIINST')

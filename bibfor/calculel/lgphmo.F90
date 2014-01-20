@@ -16,6 +16,8 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: ma
     character(len=*) :: ligrel, pheno, modeli
@@ -45,12 +47,13 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
 !
 !
-    integer :: nbgrel, nbma, nbtm,  jlitm, ima, tm
+    integer :: nbgrel, nbma, nbtm,   ima, tm
     integer :: te,  igr, ico, jphmod, kmod, jlgrf
     integer :: nbel
     character(len=19) :: ligr19, phen1
     integer, pointer :: liel(:) => null()
     integer, pointer :: typmail(:) => null()
+    integer, pointer :: litm(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -67,7 +70,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !        DE MAILLES DE MEME TYPE
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call jeveuo(ma//'.TYPMAIL', 'L', vi=typmail)
-    call wkvect('&&LGPHMO.LITM', 'V V I', nbtm, jlitm)
+    AS_ALLOCATE(vi=litm, size=nbtm)
     nbel=0
     do ima = 1, nbma
         tm= typmail(ima)
@@ -75,7 +78,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
         te= zi(jphmod-1+tm)
         if (te .gt. 0) then
             nbel=nbel+1
-            zi(jlitm-1+tm)=zi(jlitm-1+tm)+1
+            litm(tm)=litm(tm)+1
         endif
     end do
 !
@@ -83,7 +86,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !     -- CALCUL DE NBGREL :
     nbgrel=0
     do tm = 1, nbtm
-        if (zi(jlitm-1+tm) .gt. 0) nbgrel=nbgrel+1
+        if (litm(tm) .gt. 0) nbgrel=nbgrel+1
     end do
 !
 !
@@ -97,7 +100,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     igr=0
     ico=0
     do tm = 1, nbtm
-        if (zi(jlitm-1+tm) .gt. 0) then
+        if (litm(tm) .gt. 0) then
             igr=igr+1
             te= zi(jphmod-1+tm)
             ASSERT(te.gt.0)
@@ -127,6 +130,6 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !     -- ON "ADAPTE" LA TAILLE DES GRELS DU LIGREL :
     call adalig(ligr19)
 !
-    call jedetr('&&LGPHMO.LITM')
+    AS_DEALLOCATE(vi=litm)
     call jedema()
 end subroutine

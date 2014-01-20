@@ -39,6 +39,8 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 #include "asterfort/mminfr.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xxconi.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: noma
     character(len=8) :: modele
@@ -73,7 +75,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
     integer :: ifm, niv, iret
     integer :: ibid, iad, i, ima, ifis, izone
-    integer :: nmaenr, nbma, jnbsp, ispt, icmp
+    integer :: nmaenr, nbma,  ispt, icmp
     character(len=8) :: nomfis
     integer :: jcesl, jcesv, jcesd, jmofis
     character(len=24) :: grp
@@ -81,6 +83,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
     character(len=19) :: chelsi
     real(kind=8) :: coef(nbcmp)
     integer :: jmail
+    integer, pointer :: nbsp(:) => null()
 !
     data licmp    /'RHON','MU','RHOTK','INTEG','COECH',&
      &    'COSTCO','COSTFR','COPECO','COPEFR','RELA'/
@@ -105,9 +108,9 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
     call celces(modele//'.TOPOSE.HEA', 'V', '&&XMELE2.HEAV')
     call jeveuo('&&XMELE2.HEAV      .CESD', 'L', jcesd)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-    call wkvect('&&XMELE2.NBSP', 'V V I', nbma, jnbsp)
+    AS_ALLOCATE(vi=nbsp, size=nbma)
     do ima = 1, nbma
-        zi(jnbsp-1+ima) = zi(jcesd-1+5+4*(ima-1)+2)
+        nbsp(ima) = zi(jcesd-1+5+4*(ima-1)+2)
     end do
 !
 !
@@ -115,7 +118,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 ! --- CREATION DU CHAM_ELEM_S
 !
     call cescre('V', chelsi, 'ELEM', noma, 'XCONTAC',&
-                nbcmp, licmp, [-1], zi(jnbsp), [-nbcmp])
+                nbcmp, licmp, [-1], nbsp, [-nbcmp])
 !
 ! --- ACCES AU CHAM_ELEM_S
 !
@@ -169,7 +172,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- RECUPERATION DU NUMÉRO DE SOUS POINT ISPT
 !
-                do ispt = 1, zi(jnbsp-1+ima)
+                do ispt = 1, nbsp(ima)
                     call cesexi('S', jcesd, jcesl, ima, 1,&
                                 ispt, 1, iad)
                     if (iad .lt. 0) goto 140
@@ -199,7 +202,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
     call detrsd('CHAM_ELEM_S', chelsi)
     call detrsd('CHAM_ELEM_S', '&&XMELE2.HEAV')
-    call jedetr('&&XMELE2.NBSP')
+    AS_DEALLOCATE(vi=nbsp)
 !
     call jedema()
 !

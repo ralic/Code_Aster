@@ -21,6 +21,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 #include "asterfort/rcma01.h"
 #include "asterfort/rcmo01.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ig, iocs, npass, ima, ipt, nbm, adrm(*)
     real(kind=8) :: c(*), k(*), cara(*), snmax, samax, utot, sm, factus(*)
     logical :: seisme
@@ -63,8 +65,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 !
     integer :: nbsigr, jnsg, is1, ioc1, is2, ioc2, inds, ifm, niv, jcombi
     integer :: jpresa, jpresb, jmomea, jmomeb, jnbocc, nbth1, jth1, nbth2, jth2
-    integer :: jchmat, jmsa, ndim, jnoc, nscy, ns, jmsn, nbsig2, i1, i2, indi
-    integer :: jist,  nbsitu
+    integer :: jchmat,  ndim,  nscy, ns,  nbsig2, i1, i2, indi
+    integer ::   nbsitu
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij, ug, sn, sp, smm, mpi(3), mpj(3)
     real(kind=8) :: mqi(3), mqj(3), mse(3), matpi(14), matpj(14), matqi(14)
     real(kind=8) :: matqj(14), matse(14)
@@ -72,6 +74,10 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
     character(len=24) :: mateqj
     real(kind=8) :: typeke, spmeca, spther
     integer, pointer :: situ_numero(:) => null()
+    integer, pointer :: impr_situ(:) => null()
+    real(kind=8), pointer :: matrice_salt(:) => null()
+    real(kind=8), pointer :: matrice_sn(:) => null()
+    integer, pointer :: nb_occurr(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -101,12 +107,12 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
         nbsig2 = nbsigr - 1
     endif
     ndim = 2*nbsig2
-    call wkvect('&&RC3601.NB_OCCURR', 'V V I', ndim, jnoc)
-    call wkvect('&&RC3601.IMPR_SITU', 'V V I', ndim, jist)
+    AS_ALLOCATE(vi=nb_occurr, size=ndim)
+    AS_ALLOCATE(vi=impr_situ, size=ndim)
     ndim = nbsig2*nbsig2
-    call wkvect('&&RC3601.MATRICE_SN', 'V V R', ndim, jmsn)
+    AS_ALLOCATE(vr=matrice_sn, size=ndim)
     ndim = 4*nbsig2*nbsig2
-    call wkvect('&&RC3601.MATRICE_SALT', 'V V R', ndim, jmsa)
+    AS_ALLOCATE(vr=matrice_salt, size=ndim)
 !
     ns = 0
     if (seisme) then
@@ -137,10 +143,10 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
         if (ioc1 .gt. nbsitu) goto 20
 !
         i1 = i1 + 1
-        zi(jnoc-1+2* (i1-1)+1) = zi(jnbocc+2*ioc1-2)
-        zi(jnoc-1+2* (i1-1)+2) = zi(jnbocc+2*ioc1-2)
-        zi(jist-1+2* (i1-1)+1) = ioc1
-        zi(jist-1+2* (i1-1)+2) = ioc1
+        nb_occurr(2* (i1-1)+1) = zi(jnbocc+2*ioc1-2)
+        nb_occurr(2* (i1-1)+2) = zi(jnbocc+2*ioc1-2)
+        impr_situ(2* (i1-1)+1) = ioc1
+        impr_situ(2* (i1-1)+2) = ioc1
 !
         ppi = zr(jpresa+ioc1-1)
         momepi = zk24(jmomea+ioc1-1)
@@ -173,7 +179,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
                     matpi, ppi, mpi, matpj, ppj,&
                     mpj, mse, nbth1, nbth2, ioc1,&
                     ioc2, sn)
-        zr(jmsn-1+nbsig2* (i1-1)+i1) = sn
+        matrice_sn(nbsig2* (i1-1)+i1) = sn
         snmax = max(snmax,sn)
 !
         if (niv .ge. 2) write (ifm,1010) ioc1,sn
@@ -183,7 +189,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 ! ----- 1/ CALCUL DU SALT(I,I) A PARTIR DU SN(P,Q) ET SP(I,I)
 !
         saltij = 0.d0
-        zr(jmsa-1+inds+1) = saltij
+        matrice_salt(inds+1) = saltij
 !
 ! ----- 2/ CALCUL DU SALT(I,J) A PARTIR DU SN(P,Q) ET SP(I,J)
 !
@@ -206,8 +212,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
         call rc36sa(nommat, matpi, matpj, sn, sp,&
                     typeke, spmeca, spther, saltij, smm)
 !
-        zr(jmsa-1+inds+2) = saltij
-        zr(jmsa-1+inds+3) = saltij
+        matrice_salt(inds+2) = saltij
+        matrice_salt(inds+3) = saltij
         if (saltij .gt. samax) then
             samax = saltij
             sm = smm
@@ -216,7 +222,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 ! ----- 3/ CALCUL DU SALT(J,J) A PARTIR DU SN(P,Q) ET SP(J,J)
 !
         saltij = 0.d0
-        zr(jmsa-1+inds+4) = saltij
+        matrice_salt(inds+4) = saltij
 !
 ! ----- SITUATION Q :
 !       -------------
@@ -273,8 +279,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
                         mqi, mse, nbth1, nbth2, ioc1,&
                         ioc2, sn)
 !
-            zr(jmsn-1+nbsig2* (i1-1)+i2) = sn
-            zr(jmsn-1+nbsig2* (i2-1)+i1) = sn
+            matrice_sn(nbsig2* (i1-1)+i2) = sn
+            matrice_sn(nbsig2* (i2-1)+i1) = sn
             if (niv .ge. 2) write (ifm,1020) ioc1,ioc2,sn
 !
             snmax = max(snmax,sn)
@@ -303,8 +309,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
             call rc36sa(nommat, matpi, matqi, sn, sp,&
                         typeke, spmeca, spther, saltij, smm)
 !
-            zr(jmsa-1+inds+1) = saltij
-            zr(jmsa-1+indi+1) = saltij
+            matrice_salt(inds+1) = saltij
+            matrice_salt(indi+1) = saltij
             if (saltij .gt. samax) then
                 samax = saltij
                 sm = smm
@@ -332,8 +338,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
             call rc36sa(nommat, matpi, matqj, sn, sp,&
                         typeke, spmeca, spther, saltij, smm)
 !
-            zr(jmsa-1+inds+3) = saltij
-            zr(jmsa-1+indi+2) = saltij
+            matrice_salt(inds+3) = saltij
+            matrice_salt(indi+2) = saltij
             if (saltij .gt. samax) then
                 samax = saltij
                 sm = smm
@@ -361,8 +367,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
             call rc36sa(nommat, matpj, matqi, sn, sp,&
                         typeke, spmeca, spther, saltij, smm)
 !
-            zr(jmsa-1+inds+2) = saltij
-            zr(jmsa-1+indi+3) = saltij
+            matrice_salt(inds+2) = saltij
+            matrice_salt(indi+3) = saltij
             if (saltij .gt. samax) then
                 samax = saltij
                 sm = smm
@@ -390,8 +396,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
             call rc36sa(nommat, matpj, matqj, sn, sp,&
                         typeke, spmeca, spther, saltij, smm)
 !
-            zr(jmsa-1+inds+4) = saltij
-            zr(jmsa-1+indi+4) = saltij
+            matrice_salt(inds+4) = saltij
+            matrice_salt(indi+4) = saltij
             if (saltij .gt. samax) then
                 samax = saltij
                 sm = smm
@@ -404,26 +410,26 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 ! --- CALCUL DU FACTEUR D'USAGE
 !
     if (seisme) then
-        call rc36fs(nbsig2, zi(jnoc), zi(jist), nbsig2, zi(jnoc),&
-                    zi(jist), zr(jmsa), ns, nscy, matse,&
-                    mse, zr(jmsn), nommat, c, k,&
+        call rc36fs(nbsig2, nb_occurr, impr_situ, nbsig2, nb_occurr,&
+                    impr_situ, matrice_salt, ns, nscy, matse,&
+                    mse, matrice_sn, nommat, c, k,&
                     cara, ug)
     else
         if (npass .eq. 0) then
-            call rc36fu(nbsig2, zi(jnoc), zi(jist), zr(jmsa), nommat,&
+            call rc36fu(nbsig2, nb_occurr, impr_situ, matrice_salt, nommat,&
                         ug, factus)
         else
-            call rc36fp(nbsig2, zi(jnoc), zi(jist), zi(jnsg), zr(jmsa),&
+            call rc36fp(nbsig2, nb_occurr, impr_situ, zi(jnsg), matrice_salt,&
                         nommat, ug, factus)
         endif
     endif
 !
     utot = utot + ug
 !
-    call jedetr('&&RC3601.MATRICE_SALT')
-    call jedetr('&&RC3601.MATRICE_SN')
-    call jedetr('&&RC3601.NB_OCCURR')
-    call jedetr('&&RC3601.IMPR_SITU')
+    AS_DEALLOCATE(vr=matrice_salt)
+    AS_DEALLOCATE(vr=matrice_sn)
+    AS_DEALLOCATE(vi=nb_occurr)
+    AS_DEALLOCATE(vi=impr_situ)
 !
     1000 format ('=> GROUPE: ',i4,' , NOMBRE DE SITUATIONS: ',i4)
     1002 format ('=> LISTE DES SITUATIONS: ',100 (i4,1x))

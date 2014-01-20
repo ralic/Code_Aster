@@ -51,6 +51,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/parti0.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: vec, tlivec(*), vecpro, base
     character(len=*) :: nu
@@ -106,13 +108,14 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! --- DEBUT ------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, iad, iad1, iadlie, iadnem, ianueq
-    integer :: ianulo, iapsdl, iconx1, iconx2, iddesc, idlres, idnequ
+    integer :: ianulo,  iconx1, iconx2, iddesc, idlres, idnequ
     integer :: idprn1, idprn2, idveds, idverf, idvref, iel
     integer :: igr, il, ilim, ilimnu, ilinu, ilive
     integer :: ilivec, imat, iresu, jnumsd, jprtk, jresl, jvale
     integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp
     integer :: ncmpel, nddl1, nel, nequa, nm, nmxcmp, nnoe
     integer :: nugd, numa
+    integer, pointer :: posddl(:) => null()
     mpi_int :: mrank, msize
 !-----------------------------------------------------------------------
     call jemarq()
@@ -230,7 +233,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
 !
 !     -- POSDDL(ICMP) (ICMP=1,NMXCMP(GD_SI))
-    call wkvect('&&ASSMIV.POSDDL', 'V V I', nmxcmp, iapsdl)
+    AS_ALLOCATE(vi=posddl, size=nmxcmp)
 !
     call dismoi('NB_NO_MAILLA', mo, 'MODELE', repi=nm)
 !
@@ -318,7 +321,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                                 (n1-1)*(nec+2)+1-1)
                                 call corddl(admodl, lcmodl, idprn1, idprn2, ilimnu,&
                                             mode, nec, ncmp, n1, k1,&
-                                            nddl1, zi(iapsdl))
+                                            nddl1,posddl)
                                 if (nddl1 .eq. 0) goto 50
                                 if (iad1 .eq. 0) then
                                     vali(1)=n1
@@ -348,9 +351,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                                     do i1 = 1, nddl1
                                         il=il+1
                                         zr(jvale-1+zi(ianueq-1+iad1+&
-                                        zi(iapsdl-1+i1)- 1))=min(zr(&
+                                        posddl(i1)- 1))=min(zr(&
                                         jvale-1+zi(ianueq-1+iad1+&
-                                        zi(iapsdl-1+i1)-1)), zr(jresl+&
+                                        posddl(i1)-1)), zr(jresl+&
                                         (iel-1)*ncmpel+il-1)*r)
                                     end do
                                 endif
@@ -371,7 +374,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     call jedetr(vecas//'.LIVE')
     call jedetr(vecas//'.ADNE')
     call jedetr(vecas//'.ADLI')
-    call jedetr('&&ASSMIV.POSDDL')
+    AS_DEALLOCATE(vi=posddl)
     call jedetr('&&ASSMIV.NUMLOC')
 !
 !        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC

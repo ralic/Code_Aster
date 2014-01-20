@@ -36,6 +36,8 @@ subroutine mxmoam(sddyna, nbmodp)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
 !
     character(len=19) :: sddyna
@@ -59,7 +61,7 @@ subroutine mxmoam(sddyna, nbmodp)
     integer :: nbmd, nbmg, neq, nbmax, nbrg, nbag
     integer :: nbgene
     integer :: iddeeq, jval
-    integer :: jlifge, jfge
+    integer ::  jfge
     integer :: ldblo, ldblo1, ldblo2
     integer :: imode, ifonc, imode2
     integer :: iret, ibid, nf, lpar, vali(3)
@@ -80,6 +82,7 @@ subroutine mxmoam(sddyna, nbmodp)
     integer :: jacccn
     character(len=24) :: deeq
     character(len=24) :: nomcha
+    character(len=24), pointer :: lifoge(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -210,7 +213,7 @@ subroutine mxmoam(sddyna, nbmodp)
         nbgene = ndynin(sddyna,'NBRE_EXCIT_GENE')
         if (nbgene .ne. 0) then
             call wkvect(fongen, 'V V K24', nbgene, jfonge)
-            call wkvect('&&MXMOAM.LIFOGE', 'V V K24', nbgene, jlifge)
+            AS_ALLOCATE(vk24=lifoge, size=nbgene)
             call wkvect(forgen, 'V V R', nbgene*nbmodp, jforge)
         endif
 !
@@ -257,9 +260,9 @@ subroutine mxmoam(sddyna, nbmodp)
             do 11 ifonc = 1, nbgene
                 call getvid('EXCIT_GENE', 'FONC_MULT', iocc=ifonc, scal=zk24(jfonge+ifonc-1),&
                             nbret=nf)
-                call getvid('EXCIT_GENE', 'VECT_GENE', iocc=ifonc, scal=zk24(jlifge+ifonc-1),&
+                call getvid('EXCIT_GENE', 'VECT_GENE', iocc=ifonc, scal=lifoge(ifonc),&
                             nbret=nf)
-                call jeveuo(zk24(jlifge+ifonc-1)(1:19)//'.VALE', 'L', jfge)
+                call jeveuo(lifoge(ifonc)(1:19)//'.VALE', 'L', jfge)
                 do 12 imode = 1, nbmodp
                     zr(jforge+(ifonc-1)*nbmodp+imode-1) = zr(jfge+ imode-1)
 12              continue
@@ -269,6 +272,6 @@ subroutine mxmoam(sddyna, nbmodp)
 !
 ! --- MENAGE
 !
-    call jedetr('&&MXMOAM.LIFOGE')
+    AS_DEALLOCATE(vk24=lifoge)
     call jedema()
 end subroutine

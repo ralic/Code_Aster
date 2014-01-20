@@ -43,12 +43,19 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nnoint, nbsst
     character(len=24) :: coint, noddli, ddlsst
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: i1, j1, k1, n1, l1, lindno, ldefin, lconnc, lnoeu, lvec, lind
-    integer :: lsst, nz0, nz1, lindin, decal, nbno, nbvois, no, lnddli
+    integer :: i1, j1, k1, n1, l1, lindno,  lconnc
+    integer ::  nz0, nz1, lindin, decal, nbno, nbvois, no, lnddli
+    real(kind=8), pointer :: defi_ss_lib(:) => null()
+    integer, pointer :: numero_noeuds(:) => null()
+    integer, pointer :: vect_ind_mat(:) => null()
+    integer, pointer :: vect_indsst(:) => null()
+    real(kind=8), pointer :: vect_temp(:) => null()
 !
 !-----------C
 !--       --C
@@ -61,7 +68,7 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 !-- CONSTRUCTION DE LA CONNECTIVITE REDUITE
 !
     call jeveuo('&&MOIN93.IND_NOEUD', 'L', lindno)
-    call wkvect('&&INTDIS.DEFI_SS_LIB', 'V V R', nnoint**2, ldefin)
+    AS_ALLOCATE(vr=defi_ss_lib, size=nnoint**2)
     call jeveuo(coint, 'L', lconnc)
 !
     do 10 i1 = 1, nnoint
@@ -69,29 +76,29 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
         do 20 k1 = 1, nbvois
             no=zi(lconnc+nnoint*k1+i1-1)
             j1=zi(lindno+no-1)
-            zr(ldefin+(j1-1)*nnoint+i1-1)=1.d0
-            zr(ldefin+(j1-1)*nnoint+j1-1)=1.d0
-            zr(ldefin+(i1-1)*nnoint+i1-1)=1.d0
-            zr(ldefin+(i1-1)*nnoint+j1-1)=1.d0
+            defi_ss_lib(1+(j1-1)*nnoint+i1-1)=1.d0
+            defi_ss_lib(1+(j1-1)*nnoint+j1-1)=1.d0
+            defi_ss_lib(1+(i1-1)*nnoint+i1-1)=1.d0
+            defi_ss_lib(1+(i1-1)*nnoint+j1-1)=1.d0
 20      continue
 10  end do
 !
-    call wkvect('&&INTDIS.NUMERO_NOEUDS', 'V V I', nnoint, lnoeu)
+    AS_ALLOCATE(vi=numero_noeuds, size=nnoint)
 !
     do 30 i1 = 1, nnoint
-        zi(lnoeu+i1-1)=i1
+        numero_noeuds(i1)=i1
 30  end do
 !
-    call wkvect('&&INTDIS.VECT_TEMP', 'V V R', nnoint, lvec)
-    call wkvect('&&INTDIS.VECT_IND_MAT', 'V V I', nnoint, lind)
-    call wkvect('&&INTDIS.VECT_INDSST', 'V V I', nnoint, lsst)
+    AS_ALLOCATE(vr=vect_temp, size=nnoint)
+    AS_ALLOCATE(vi=vect_ind_mat, size=nnoint)
+    AS_ALLOCATE(vi=vect_indsst, size=nnoint)
 !
 !-- INITIALISATION
 !
     decal=0
     nbsst=0
     nbno=0
-    zi(lsst)=1
+    vect_indsst(1)=1
 !
 !-- RECHERCHE DES PARTIES DISJOINTES
 !
@@ -101,9 +108,9 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
     k1=1
 !        DO WHILE (NZ0 .EQ. 0)
 667  continue
-    if (zi(lnoeu+k1-1) .gt. 0) then
+    if (numero_noeuds(k1) .gt. 0) then
         nz0=1
-        zi(lind+decal)=k1
+        vect_ind_mat(decal+1)=k1
     endif
     k1=k1+1
     if (nz0 .eq. 0) then
@@ -117,18 +124,18 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
     nz0=nz1
     do 40 j1 = 1, nz1
         do 50 i1 = 1, nnoint
-            zr(lvec+i1-1)=zr(lvec+i1-1)+ zr(ldefin+(zi(lind+decal+j1-&
+            vect_temp(i1)=vect_temp(i1)+ defi_ss_lib(1+(vect_ind_mat(1+decal+j1-&
             1)-1)*nnoint+i1-1)
 50      continue
 40  continue
 !
     nz1=0
     do 60 i1 = 1, nnoint
-        if (zr(lvec+i1-1) .gt. 0.d0) then
+        if (vect_temp(i1) .gt. 0.d0) then
             nz1=nz1+1
-            zi(lind+decal+nz1-1)=i1
-            zi(lnoeu+i1-1)=0
-            zr(lvec+i1-1)=0.d0
+            vect_ind_mat(1+decal+nz1-1)=i1
+            numero_noeuds(i1)=0
+            vect_temp(i1)=0.d0
         endif
 60  continue
 !
@@ -140,8 +147,8 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
     nbsst=nbsst+1
     decal=decal+nz1
     nbno=nbno+nz1
-    zi(lsst+2*nbsst-1)=decal
-    zi(lsst+2*nbsst)=nbno+1
+    vect_indsst(1+2*nbsst-1)=decal
+    vect_indsst(1+2*nbsst)=nbno+1
 !
     if (nbno .lt. nnoint) then
         goto 666
@@ -151,12 +158,12 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
     call jeveuo(noddli, 'L', lnddli)
     call wkvect(ddlsst, 'V V I', nbsst*6*nnoint, lindin)
     do 70 i1 = 1, nbsst
-        k1=zi(lsst+2*(i1-1))
-        l1=zi(lsst+2*(i1-1)+1)
+        k1=vect_indsst(1+2*(i1-1))
+        l1=vect_indsst(1+2*(i1-1)+1)
 !
         do 80 j1 = k1, l1
             do 90 n1 = 1, 6
-                zi(lindin+6*nnoint*(i1-1)+ 6*(zi(lind+j1-1)-1)+n1-1 )&
+                zi(lindin+6*nnoint*(i1-1)+ 6*(vect_ind_mat(j1)-1)+n1-1 )&
                 = 1
 90          continue
 80      continue
@@ -168,11 +175,11 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 !--                                    --C
 !----------------------------------------C
 !
-    call jedetr('&&INTDIS.DEFI_SS_LIB')
-    call jedetr('&&INTDIS.NUMERO_NOEUDS')
-    call jedetr('&&INTDIS.VECT_TEMP')
-    call jedetr('&&INTDIS.VECT_IND_MAT')
-    call jedetr('&&INTDIS.VECT_INDSST')
+    AS_DEALLOCATE(vr=defi_ss_lib)
+    AS_DEALLOCATE(vi=numero_noeuds)
+    AS_DEALLOCATE(vr=vect_temp)
+    AS_DEALLOCATE(vi=vect_ind_mat)
+    AS_DEALLOCATE(vi=vect_indsst)
 !
 !---------C
 !--     --C

@@ -32,6 +32,8 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: char
     character(len=8) :: noma
@@ -77,11 +79,11 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     integer :: nbgau
     character(len=24) :: deficu
     integer :: jmult, jnoe, jpoi, jnbgd
-    integer :: jcoed, jcoeg, jcompg, jcoef, jncmp
+    integer ::    jcoef, jncmp
     integer :: ino, icmp, izone
     character(len=24) :: noeucu, noeuma
     character(len=24) :: valk(2)
-    integer :: jnoeu, jindir
+    integer :: jnoeu
     integer :: numnd, exist(1), nbsup
     integer :: nbno, nbcmp
     integer :: jdebcp, jdebnd
@@ -90,6 +92,10 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     character(len=24) :: cmpgcu, ndimcu, coegcu, coedcu, poincu
     integer :: jcmpg, jdim, jcoefg, jcoefd, jpoin
     integer :: ifm, niv
+    character(len=8), pointer :: cmpg(:) => null()
+    character(len=8), pointer :: coefd(:) => null()
+    character(len=8), pointer :: coefg(:) => null()
+    integer, pointer :: indir(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -124,11 +130,11 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 !
 ! --- CREATION DES VECTEURS TEMPORAIRES
 !
-    call wkvect('&&CREAUN.INDIR', 'V V I', nnocu+1, jindir)
-    call wkvect('&&CREAUN.CMPG', 'V V K8', nbgau, jcompg)
-    call wkvect('&&CREAUN.COEFG', 'V V K8', nbgau, jcoeg)
-    call wkvect('&&CREAUN.COEFD', 'V V K8', nnocu, jcoed)
-    zi(jindir) = 1
+    AS_ALLOCATE(vi=indir, size=nnocu+1)
+    AS_ALLOCATE(vk8=cmpg, size=nbgau)
+    AS_ALLOCATE(vk8=coefg, size=nbgau)
+    AS_ALLOCATE(vk8=coefd, size=nnocu)
+    indir(1) = 1
 !
 ! ---
 !
@@ -162,8 +168,8 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
                         valk (2) = cmp
                         call utmess('I', 'UNILATER_58', nk=2, valk=valk)
                     endif
-                    zk8(jcompg-1+ncmpg) = cmp
-                    zk8(jcoeg-1+ncmpg) = zk8(jmult-1+jdebcp+icmp-1)
+                    cmpg(ncmpg) = cmp
+                    coefg(ncmpg) = zk8(jmult-1+jdebcp+icmp-1)
                     ncmpg = ncmpg + 1
                 else
                     nbsup = nbsup + 1
@@ -176,8 +182,8 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 3000          continue
 !
             zi(jnoeu-1+cptnd) = numnd
-            zk8(jcoed-1+cptd) = zk8(jcoef+izone-1)
-            zi(jindir+cptnd) = zi(jindir+cptnd-1) + nbcmp - nbsup
+            coefd(cptd) = zk8(jcoef+izone-1)
+            indir(cptnd+1) = indir(cptnd) + nbcmp - nbsup
 !
             cptd = cptd + 1
             cptnd = cptnd + 1
@@ -204,7 +210,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     poincu = deficu(1:16)//'.POINOE'
     call wkvect(poincu, 'G V I', nnocu+1, jpoin)
     do 4000 ino = 1, nnocu+1
-        zi(jpoin-1+ino) = zi(jindir-1+ino)
+        zi(jpoin-1+ino) = indir(ino)
 4000  end do
 !
 ! --- LISTE DES NOMS DE COMPOSANTES A GAUCHE
@@ -212,7 +218,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     cmpgcu = deficu(1:16)//'.CMPGCU'
     call wkvect(cmpgcu, 'G V K8', ncmpg, jcmpg)
     do 4001 icmp = 1, ncmpg
-        zk8(jcmpg-1+icmp) = zk8(jcompg-1+icmp)
+        zk8(jcmpg-1+icmp) = cmpg(icmp)
 4001  end do
 !
 ! --- LISTE DES COEFFICIENTS A DROITE ET A GAUCHE
@@ -223,19 +229,19 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     call wkvect(coedcu, 'G V K8', nnocu, jcoefd)
 !
     do 4003 icmp = 1, ncmpg
-        zk8(jcoefg-1+icmp) = zk8(jcoeg-1+icmp)
+        zk8(jcoefg-1+icmp) = coefg(icmp)
 4003  end do
 !
     do 4004 icmp = 1, cptd
-        zk8(jcoefd-1+icmp) = zk8(jcoed-1+icmp)
+        zk8(jcoefd-1+icmp) = coefd(icmp)
 4004  end do
 !
 ! --- NETTOYAGE
 !
-    call jedetr('&&CREAUN.INDIR')
-    call jedetr('&&CREAUN.CMPG')
-    call jedetr('&&CREAUN.COEFG')
-    call jedetr('&&CREAUN.COEFD')
+    AS_DEALLOCATE(vi=indir)
+    AS_DEALLOCATE(vk8=cmpg)
+    AS_DEALLOCATE(vk8=coefg)
+    AS_DEALLOCATE(vk8=coefd)
 !
 ! ======================================================================
     call jedema()

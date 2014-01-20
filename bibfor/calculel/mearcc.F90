@@ -20,6 +20,8 @@ subroutine mearcc(option, mo, chin, chout)
 #include "asterfort/srlima.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mo
     character(len=16) :: option
@@ -57,12 +59,13 @@ subroutine mearcc(option, mo, chin, chout)
     integer :: nbma, ibid, jma2d, jma3d, ndim
     integer :: jcesv3, jcesd3, jcesk3, jcesl3, jcesc3, jcesv2, jcesd2, ima
     integer :: jcesk2, jcesl2, jcesc2, jlcnx, jcnx, ipt, icp, ino2, ino3
-    integer :: jco3, jco2, npt3, npt2, ipt2, ipt3, jpt3d, k, npt
+    integer :: jco3, jco2, npt3, npt2, ipt2, ipt3,  k, npt
     integer :: iad3, iad2, nucmp, numasu, numavo
 !
     character(len=8) :: ma, comp(nbcmp), k8b, nomasu, nomavo, valk(2)
     character(len=19) :: chous, chins
     character(len=24) :: mail2d, mail3d, mailto, ligrmo
+    integer, pointer :: pt3d(:) => null()
 !
     data comp/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
 !
@@ -109,7 +112,7 @@ subroutine mearcc(option, mo, chin, chout)
 !     CORRESPONDANCE PT_MAILLE 2D / PT_MAILLE 3D: ZI(JPT3D)
 !     POUR CHAQUE POINT DE LA MAILLE 2D, ON CHERCHE LE
 !     POINT DE LA MAILLE 3D CORRESPONDANT
-    call wkvect('&&MEARCC.PT3D', 'V V I', nbma*nbnomx, jpt3d)
+    AS_ALLOCATE(vi=pt3d, size=nbma*nbnomx)
     call jeveuo(ma//'.CONNEX', 'L', jcnx)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
     do ima = 1, nbma
@@ -124,7 +127,7 @@ subroutine mearcc(option, mo, chin, chout)
                 ino3=zi(jco3+ipt3-1)
                 if (ino3 .eq. ino2) then
                     k=k+1
-                    zi(jpt3d+nbnomx*(ima-1)+k-1)=ipt3
+                    pt3d(1+nbnomx*(ima-1)+k-1)=ipt3
                     goto 110
                 endif
             end do
@@ -143,7 +146,7 @@ subroutine mearcc(option, mo, chin, chout)
                 nucmp=indik8( zk8(jcesc3), comp(icp), 1, zi(jcesd3+1)&
                 )
 !
-                call cesexi('C', jcesd3, jcesl3, zi(jma3d+ima-1), zi(jpt3d+nbnomx*(ima-1)+ipt-1),&
+                call cesexi('C', jcesd3, jcesl3, zi(jma3d+ima-1), pt3d(1+nbnomx*(ima-1)+ipt-1),&
                             1, nucmp, iad3)
                 if (iad3 .eq. 0) then
                     numasu=zi(jma2d+ima-1)
@@ -170,7 +173,7 @@ subroutine mearcc(option, mo, chin, chout)
     call cescel(chous, ligrmo, option, 'PSIG3D', 'OUI',&
                 ibid, 'V', chout, 'F', ibid)
 !
-    call jedetr('&&MEARCC.PT3D')
+    AS_DEALLOCATE(vi=pt3d)
     call jedetr(mail2d)
     call jedetr(mail3d)
     call jedetr(mailto)

@@ -37,6 +37,8 @@ subroutine pcldlt(matf, mat, niremp, bas)
 #include "asterfort/pcstru.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: matf, mat, bas
 !-----------------------------------------------------------------------
@@ -65,8 +67,8 @@ subroutine pcldlt(matf, mat, niremp, bas)
     logical :: complt
     character(len=1) :: base
     integer :: iret, jsmdi, jsmhc, jsmde, nequ, ncoef, nblc
-    integer :: jvalm, idv, i, nzmax, jicpd, jicplx, niremp
-    integer :: jicpcx, jsmdi1, jsmhc1, ier, k, jsmdif, jsmhcf, jvalf, jvect
+    integer :: jvalm,  i, nzmax,   niremp
+    integer ::   jsmhc1, ier, k, jsmdif, jsmhcf, jvalf
     integer :: jrefa, jrefaf
     real(kind=8) :: dnorm, epsi
     character(len=19) :: matfac, matas
@@ -74,6 +76,12 @@ subroutine pcldlt(matf, mat, niremp, bas)
     character(len=14) :: nu, nuf
     character(len=24) :: noobj
     character(len=8) :: ma
+    integer, pointer :: icpcx(:) => null()
+    integer, pointer :: icpd(:) => null()
+    integer, pointer :: icplx(:) => null()
+    integer, pointer :: smdif(:) => null()
+    real(kind=8), pointer :: vect(:) => null()
+    real(kind=8), pointer :: vtravail(:) => null()
 !----------------------------------------------------------------------
 !     DEBUT DES INSTRUCTIONS
     call jemarq()
@@ -146,7 +154,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !     2. CALCUL DE EPSI POUR PCFACT ET ALLOCATION DE .VTRAVAIL:
 !     ---------------------------------------------------------
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', jvalm)
-    call wkvect('&&PCLDLT.VTRAVAIL', 'V V R', nequ, idv)
+    AS_ALLOCATE(vr=vtravail, size=nequ)
     dnorm = 0.d0
     do i = 1, nequ
         dnorm = max(abs(zr(jvalm-1+zi(jsmdi-1+i))),dnorm)
@@ -159,22 +167,22 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !        FUTURE FACTORISEE :
 !     ------------------------------------------------
     nzmax = ncoef
-    call wkvect('&&PCLDLT.SMDIF', 'V V I', nequ+1, jsmdi1)
+    AS_ALLOCATE(vi=smdif, size=nequ+1)
 !
     do k = 1, 2*niremp+2
-        call wkvect('&&PCLDLT.ICPD', 'V V I', nequ, jicpd)
-        call wkvect('&&PCLDLT.ICPLX', 'V V I', nequ+1, jicplx)
+        AS_ALLOCATE(vi=icpd, size=nequ)
+        AS_ALLOCATE(vi=icplx, size=nequ+1)
         call jedetr('&&PCLDLT.SMHCF')
         call wkvect('&&PCLDLT.SMHCF', 'V V S', 2*nzmax, jsmhc1)
-        call wkvect('&&PCLDLT.ICPCX', 'V V I', nzmax, jicpcx)
+        AS_ALLOCATE(vi=icpcx, size=nzmax)
 !
-        call pcstru(nequ, zi(jsmdi), zi4(jsmhc), zi(jsmdi1), zi4(jsmhc1),&
-                    zi(jicpd), zi(jicpcx), zi(jicplx), niremp, complt,&
+        call pcstru(nequ, zi(jsmdi), zi4(jsmhc), smdif, zi4(jsmhc1),&
+                    icpd, icpcx, icplx, niremp, complt,&
                     nzmax, 0, ier)
 !
-        call jedetr('&&PCLDLT.ICPLX')
-        call jedetr('&&PCLDLT.ICPCX')
-        call jedetr('&&PCLDLT.ICPD')
+        AS_DEALLOCATE(vi=icplx)
+        AS_DEALLOCATE(vi=icpcx)
+        AS_DEALLOCATE(vi=icpd)
         if (ier .eq. 0) goto 7779
         nzmax=ier
     end do
@@ -186,9 +194,9 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !     ------------------------------------------------
     call jeveuo(nuf//'.SMOS.SMDI', 'E', jsmdif)
     do k = 1, nequ
-        zi(jsmdif-1+k) = zi(jsmdi1-1+k)
+        zi(jsmdif-1+k) = smdif(k)
     end do
-    call jedetr('&&PCLDLT.SMDIF')
+    AS_DEALLOCATE(vi=smdif)
 !
     call jedetr(nuf//'.SMOS.SMHC')
     call wkvect(nuf//'.SMOS.SMHC', base//' V S', nzmax, jsmhcf)
@@ -213,17 +221,17 @@ subroutine pcldlt(matf, mat, niremp, bas)
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', jvalm)
     call jeveuo(jexnum(matfac//'.VALM', 1), 'E', jvalf)
     call pccoef(nequ, zi(jsmdi), zi4(jsmhc), zr(jvalm), zi(jsmdif),&
-                zi4(jsmhcf), zr(jvalf), zr(idv))
+                zi4(jsmhcf), zr(jvalf),vtravail)
     call jelibe(jexnum(matas//'.VALM', 1))
 !
 !
 !     -- ON FACTORISE MATFAC.VALM :
 !     ------------------------------------------------
-    call wkvect('&&PCLDLT.VECT', 'V V R', nequ, jvect)
+    AS_ALLOCATE(vr=vect, size=nequ)
     call pcfact(matas, nequ, zi(jsmdif), zi4(jsmhcf), zr(jvalf),&
-                zr(jvalf), zr(jvect), epsi)
-    call jedetr('&&PCLDLT.VECT')
+                zr(jvalf), vect, epsi)
+    AS_DEALLOCATE(vr=vect)
 !
-    call jedetr('&&PCLDLT.VTRAVAIL')
+    AS_DEALLOCATE(vr=vtravail)
     call jedema()
 end subroutine

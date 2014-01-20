@@ -49,6 +49,8 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 #include "asterfort/resoud.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
     integer :: nbchoc, info, nbmode, irigi, indic(nbmode), ibid
     integer :: vali
@@ -70,8 +72,15 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     logical :: matuv
     integer :: nm, m, n, ierr, nblig, icolc
     integer :: nbch1, nbch2, neqch1, neqch2
-    integer :: jefloc, jrfimp, jnormx, jnormy, ja, jw, ju, jv
+    integer ::  jrfimp
     real(kind=8) :: mmax, mmin, scond, eps
+    real(kind=8), pointer :: a(:) => null()
+    real(kind=8), pointer :: efloc(:) => null()
+    real(kind=8), pointer :: normxx(:) => null()
+    real(kind=8), pointer :: normy(:) => null()
+    real(kind=8), pointer :: u(:) => null()
+    real(kind=8), pointer :: v(:) => null()
+    real(kind=8), pointer :: w(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 !
@@ -93,14 +102,14 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     call mtdscr(marig)
     call jeveuo(marig//'.&INT', 'E', irigi)
 !
-    call wkvect('&&CRICHO.EFLOC', 'V V R', nbmode, jefloc)
+    AS_ALLOCATE(vr=efloc, size=nbmode)
     call wkvect('&&CRICHO.RFIMPOX', 'V V R', neqch2, jrfimp)
-    call wkvect('&&CRICHO.NORMXX', 'V V R', nbch2, jnormx)
-    call wkvect('&&CRICHO.NORMY', 'V V R', nbmode, jnormy)
-    call wkvect('&&CRICHO.A', 'V V R', neqch1, ja)
-    call wkvect('&&CRICHO.W', 'V V R', nbch1, jw)
-    call wkvect('&&CRICHO.U', 'V V R', neqch1, ju)
-    call wkvect('&&CRICHO.V', 'V V R', neqch1, jv)
+    AS_ALLOCATE(vr=normxx, size=nbch2)
+    AS_ALLOCATE(vr=normy, size=nbmode)
+    AS_ALLOCATE(vr=a, size=neqch1)
+    AS_ALLOCATE(vr=w, size=nbch1)
+    AS_ALLOCATE(vr=u, size=neqch1)
+    AS_ALLOCATE(vr=v, size=neqch1)
 !
     if (nbchoc .gt. 0) then
         do i = 1, nbchoc
@@ -165,7 +174,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                             ' ', .true., 0, iret)
 !           NORMX : NORME K-1*N
                 normx=ddot(neq,fimpo,1,fimpo,1)
-                zr(jnormx-1+icolc)=normx
+                normxx(icolc)=normx
 !           RFIMPOX : K-1*N (SAUVEGARDE DEFORMEE STATIQUE)
                 do k = 1, neq
                     zr(jrfimp-1+k+neq*(icolc-1))=fimpo(k)
@@ -210,7 +219,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                         endif
                     endif
                     ct=ct+trlocj
-                    zr(jefloc-1+j)=cc
+                    efloc(j)=cc
                     cef = cef + cc
                 end do
                 parcho(i,48+jj-1)=ct
@@ -223,7 +232,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                         vali = indic(j)
                         valr (1) = trloc(indic(j))
                         valr (2) = soupl(indic(j))
-                        valr (3) = zr(jefloc-1+indic(j))
+                        valr (3) = efloc(indic(j))
                         call utmess('I', 'SOUSTRUC_93', si=vali, nr=3, valr=valr)
                     end do
                 endif
@@ -253,22 +262,22 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
             n = icolc
             do k = 1, neq
                 do ia = 1, icolc
-                    if (zr(jnormx-1+ia) .gt. eps) then
-                        zr(ja-1+k+neq*(ia-1)) = zr(jrfimp-1+k+neq*(ia- 1))/sqrt(zr(jnormx-1+ia))
+                    if (normxx(ia) .gt. eps) then
+                        a(k+neq*(ia-1)) = zr(jrfimp-1+k+neq*(ia- 1))/sqrt(normxx(ia))
                     else
-                        zr(ja-1+k+neq*(ia-1)) = 0.d0
+                        a(k+neq*(ia-1)) = 0.d0
                     endif
                 end do
             end do
 !
-            call calsvd(nm, m, n, zr(ja), zr(jw),&
-                        matuv, zr(ju), matuv, zr( jv), ierr)
+            call calsvd(nm, m, n, a, w,&
+                        matuv, u, matuv, v, ierr)
             if (ierr .ne. 0) goto 999
             mmax = 0.d0
             mmin = 1.d10
             do ia = 1, n
-                mmax = max(mmax,zr(jw-1+ia))
-                mmin = min(mmin,zr(jw-1+ia))
+                mmax = max(mmax,w(ia))
+                mmin = min(mmin,w(ia))
             end do
 ! CONDITIONNEMENT
             if (mmin .le. eps) then
@@ -282,7 +291,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
             valr (1) = scond
             call utmess('I', 'SOUSTRUC_99', sr=valr(1))
             do jj = 1, nbmode
-                zr(jnormy-1+jj)=ddot(neq,bmodal(1,jj),1,bmodal(1,jj),&
+                normy(jj)=ddot(neq,bmodal(1,jj),1,bmodal(1,jj),&
                 1)
             end do
 !
@@ -292,24 +301,24 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 ! LA MATRICE A CONTIENT LES DEFORMEES STATIQUES ET MODE
                 do k = 1, neq
                     do ia = 1, icolc
-                        if (zr(jnormx-1+ia) .gt. eps) then
-                            zr(ja-1+k+neq*(ia-1)) = zr(&
-                                                    jrfimp-1+k+neq* (ia-1))/sqrt(zr(jnormx-1+ia))
+                        if (normxx(ia) .gt. eps) then
+                            a(k+neq*(ia-1)) = zr(&
+                                                    jrfimp-1+k+neq* (ia-1))/sqrt(normxx(ia))
                         else
-                            zr(ja-1+k+neq*(ia-1)) = 0.d0
+                            a(k+neq*(ia-1)) = 0.d0
                         endif
                     end do
-                    zr(ja-1+k+neq*(icolc+1-1)) = bmodal(k,j)/sqrt(zr( jnormy-1+j))
+                    a(k+neq*(icolc+1-1)) = bmodal(k,j)/sqrt(normy(j))
                 end do
 !
-                call calsvd(nm, m, n, zr(ja), zr(jw),&
-                            matuv, zr(ju), matuv, zr(jv), ierr)
+                call calsvd(nm, m, n, a, w,&
+                            matuv, u, matuv, v, ierr)
                 if (ierr .ne. 0) goto 999
                 mmax = 0.d0
                 mmin = 1.d10
                 do ia = 1, n
-                    mmax = max(mmax,zr(jw-1+ia))
-                    mmin = min(mmin,zr(jw-1+ia))
+                    mmax = max(mmax,w(ia))
+                    mmin = min(mmin,w(ia))
                 end do
 ! CONDITIONNEMENT
                 if (mmin .le. eps) then
@@ -319,19 +328,19 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                     call utmess('I', 'SOUSTRUC2_1', si=vali, nr=2, valr=valr)
                     mmin = eps
                 endif
-                zr(jefloc-1+j) = mmax/mmin
+                efloc(j) = mmax/mmin
 ! NORMALISATION PAR RAPPORT DEF STATIQUE
                 if (scond .le. eps) scond = eps
-                zr(jefloc-1+j) = zr(jefloc-1+j)/scond
+                efloc(j) = efloc(j)/scond
 !
                 indic(j)=j
             end do
 !
 !      ON ORDONNE SELON LA PARTICIPATION DECROISSANTE
-            call mdtrib(indic, zr(jefloc), nbmode)
+            call mdtrib(indic, efloc, nbmode)
             do j = 1, nbmode
                 vali = indic(j)
-                valr (1) = zr(jefloc-1+indic(j))
+                valr (1) = efloc(indic(j))
                 call utmess('I', 'SOUSTRUC2_2', si=vali, sr=valr(1))
             end do
 !
@@ -345,13 +354,13 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !
 ! --- MENAGE
 !
-    call jedetr('&&CRICHO.EFLOC')
+    AS_DEALLOCATE(vr=efloc)
     call jedetr('&&CRICHO.RFIMPOX')
-    call jedetr('&&CRICHO.NORMXX')
-    call jedetr('&&CRICHO.NORMY')
-    call jedetr('&&CRICHO.A')
-    call jedetr('&&CRICHO.W')
-    call jedetr('&&CRICHO.U')
-    call jedetr('&&CRICHO.V')
+    AS_DEALLOCATE(vr=normxx)
+    AS_DEALLOCATE(vr=normy)
+    AS_DEALLOCATE(vr=a)
+    AS_DEALLOCATE(vr=w)
+    AS_DEALLOCATE(vr=u)
+    AS_DEALLOCATE(vr=v)
 !
 end subroutine

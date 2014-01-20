@@ -15,6 +15,8 @@ subroutine utncmp(cham19, ncmp, nomobj)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ncmp
     character(len=*) :: cham19, nomobj
@@ -42,12 +44,13 @@ subroutine utncmp(cham19, ncmp, nomobj)
 !     ------------------------------------------------------------------
 !
     integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
-    integer :: jcmp, iad, kcmp, igr, mode, nnoe, jceld, nbgrel, irepe, nbel
+    integer ::  iad, kcmp, igr, mode, nnoe, jceld, nbgrel, irepe, nbel
     integer :: jmod, imodel, ilong, idescr, jdesc, nb
     character(len=4) :: tych
     character(len=24) :: valk(2)
     character(len=8) :: noma
     character(len=19) :: ch19, prno, noligr
+    integer, pointer :: vicmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -63,7 +66,7 @@ subroutine utncmp(cham19, ncmp, nomobj)
     ASSERT(nec.le.10)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-    call wkvect('&&UTNCMP.ICMP', 'V V I', ncmpmx, jcmp)
+    AS_ALLOCATE(vi=vicmp, size=ncmpmx)
 !
 !     ==================================================================
 !                            C H A M _ N O
@@ -82,10 +85,10 @@ subroutine utncmp(cham19, ncmp, nomobj)
             do icmp = 1, ncmpmx
                 if (exisdg(tabec,icmp)) then
                     do j = 1, ncmp
-                        if (zi(jcmp+j-1) .eq. icmp) goto 34
+                        if (vicmp(j) .eq. icmp) goto 34
                     end do
                     nb = nb + 1
-                    zi(jcmp+nb-1) = icmp
+                    vicmp(nb) = icmp
                 endif
  34             continue
             end do
@@ -98,10 +101,10 @@ subroutine utncmp(cham19, ncmp, nomobj)
                 do icmp = 1, ncmpmx
                     if (exisdg(tabec,icmp)) then
                         do j = 1, ncmp
-                            if (zi(jcmp+j-1) .eq. icmp) goto 14
+                            if (vicmp(j) .eq. icmp) goto 14
                         end do
                         ncmp = ncmp + 1
-                        zi(jcmp+ncmp-1) = icmp
+                        vicmp(ncmp) = icmp
                     endif
  14                 continue
                 end do
@@ -128,10 +131,10 @@ subroutine utncmp(cham19, ncmp, nomobj)
             do icmp = 1, ncmpmx
                 if (exisdg( tabec , icmp )) then
                     do j = 1, ncmp
-                        if (zi(jcmp+j-1) .eq. icmp) goto 22
+                        if (vicmp(j) .eq. icmp) goto 22
                     end do
                     ncmp = ncmp + 1
-                    zi(jcmp+ncmp-1) = icmp
+                    vicmp(ncmp) = icmp
                 endif
  22             continue
             end do
@@ -150,9 +153,9 @@ subroutine utncmp(cham19, ncmp, nomobj)
 !
     call wkvect(nomobj, 'V V K8', ncmp, kcmp)
     do icmp = 1, ncmp
-        zk8(kcmp+icmp-1) = zk8(iad-1+zi(jcmp+icmp-1))
+        zk8(kcmp+icmp-1) = zk8(iad-1+vicmp(icmp))
     end do
-    call jedetr('&&UTNCMP.ICMP')
+    AS_DEALLOCATE(vi=vicmp)
 !
     call jedema()
 end subroutine

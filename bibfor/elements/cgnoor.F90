@@ -21,6 +21,8 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbmc, nbma
     character(len=*) :: typlig
@@ -89,11 +91,14 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     integer :: ier, im, n1, n2, nid, nig, nbnot
     integer :: nunori, trouv, ibid, in, nd
     integer :: existe, iret, ima
-    integer :: jcour1, jcour2, jcour3, jcour4
+    integer ::  jcour2
     character(len=8) :: k8b, nomma, typmp
     character(len=16) :: k16bid, nomcmd
     character(len=24) :: conec, typp, nommai, nomnoe, mesmai, valk(2), nogrp
     logical :: bug
+    integer, pointer :: noeud_apparies(:) => null()
+    integer, pointer :: noeuds_extrem(:) => null()
+    integer, pointer :: type_noeud(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !
@@ -219,15 +224,15 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     ---     - 1 SI INTERNE (APPARTIENT A DEUX MAILLES)
 !     ---     - 2 SI EXTREMITE
 !     ------------------------------------------------------------------
-    call wkvect('&&CGNOOR.NOEUDS_EXTREM', 'V V I', 2*nbma, jcour1)
-    call wkvect('&&CGNOOR.TYPE_NOEUD', 'V V I', nbnot, jcour4)
+    AS_ALLOCATE(vi=noeuds_extrem, size=2*nbma)
+    AS_ALLOCATE(vi=type_noeud, size=nbnot)
     do im = 1, nbma
         call i2extf(zi(jcour2-1+im), 1, conec(1:15), typp(1:16), nig,&
                     nid)
-        zi(jcour1-1+im)=nig
-        zi(jcour1-1+nbma+im)=nid
-        zi(jcour4-1+nig)=zi(jcour4-1+nig)+1
-        zi(jcour4-1+nid)=zi(jcour4-1+nid)+1
+        noeuds_extrem(im)=nig
+        noeuds_extrem(nbma+im)=nid
+        type_noeud(nig)=type_noeud(nig)+1
+        type_noeud(nid)=type_noeud(nid)+1
     end do
 !
 !
@@ -237,9 +242,9 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
     bug=.false.
     do im = 1, nbnot
 !        COMPTAGE DES EXTREMITES
-        if (zi(jcour4-1+im) .eq. 1) n1=n1+1
+        if (type_noeud(im) .eq. 1) n1=n1+1
 !        COMPTAGE NOEUDS APPARTENANT A PLUS DE DEUX MAILLES
-        if (zi(jcour4-1+im) .gt. 2) n2=n2+1
+        if (type_noeud(im) .gt. 2) n2=n2+1
     end do
 !     IL NE PEUT Y AVOIR QUE 2 NOEUDS EXTREMITES
     if (n1 .gt. 2) bug=.true.
@@ -277,8 +282,8 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !       ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
         trouv=0
         do im = 1, nbma
-            if (zi(jcour1-1+im) .eq. nunori) trouv=trouv+1
-            if (zi(jcour1-1+nbma+im) .eq. nunori) trouv=trouv+1
+            if (noeuds_extrem(im) .eq. nunori) trouv=trouv+1
+            if (noeuds_extrem(nbma+im) .eq. nunori) trouv=trouv+1
         end do
 !
         if (trouv .eq. 0) then
@@ -308,8 +313,8 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !       ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
         trouv=0
         do im = 1, nbma
-            if (zi(jcour1-1+im) .eq. nunori) trouv=trouv+1
-            if (zi(jcour1-1+nbma+im) .eq. nunori) trouv=trouv+1
+            if (noeuds_extrem(im) .eq. nunori) trouv=trouv+1
+            if (noeuds_extrem(nbma+im) .eq. nunori) trouv=trouv+1
         end do
 !
         if (trouv .eq. 0) then
@@ -334,20 +339,20 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 !     --- CONSTRUCTION D'UN VECTEUR DE TRAVAIL LOCAL POUR TROUVER
 !     --- L'ORIGINE
 !     ------------------------------------------------------------------
-        call wkvect('&&CGNOOR.NOEUD_APPARIES', 'V V I', 2*nbma, jcour3)
+        AS_ALLOCATE(vi=noeud_apparies, size=2*nbma)
 !       LISTE DES NOEUDS DEJA APPARIES
         do in = 1, nbma*2
-            zi(jcour3-1+in)=0
+            noeud_apparies(in)=0
         end do
 !
 !       PARCOURS DE L'ENSEMBLE DES NOEUDS
         do in = 1, nbma*2
-            if (zi(jcour3-1+in) .ne. 0) goto 80
-            nunori=zi(jcour1-1+in)
+            if (noeud_apparies(in) .ne. 0) goto 80
+            nunori=noeuds_extrem(in)
 !
             do nd = in+1, nbma*2
-                if (zi(jcour1-1+nd) .eq. nunori) then
-                    zi(jcour3-1+nd)=1
+                if (noeuds_extrem(nd) .eq. nunori) then
+                    noeud_apparies(nd)=1
                     goto 80
 !
                 endif
@@ -363,12 +368,12 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc,&
 100     continue
         call jenuno(jexnum(nomnoe, nunori), ndorig)
         call utmess('I', 'ELEMENTS_72', sk=ndorig)
-        call jedetr('&&CGNOOR.NOEUD_APPARIES')
+        AS_DEALLOCATE(vi=noeud_apparies)
 !
     endif
 !
-    call jedetr('&&CGNOOR.NOEUDS_EXTREM')
-    call jedetr('&&CGNOOR.TYPE_NOEUD')
+    AS_DEALLOCATE(vi=noeuds_extrem)
+    AS_DEALLOCATE(vi=type_noeud)
     call jedetr('&&CGNOOR.MES_MAILLES')
 !
     call jedema()

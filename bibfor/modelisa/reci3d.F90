@@ -83,6 +83,8 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
 ! ARGUMENTS
@@ -94,7 +96,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: icnx, iterm, jcmur, jddl, jdime, jdirec, jnomno, nbsom, nbterm
+    integer :: icnx, iterm,      nbsom, nbterm
     integer :: nbtmax, nnomax, noeca
     real(kind=8) :: ksi1, ksi2, ksi3, zero
     complex(kind=8) :: cbid
@@ -104,6 +106,11 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
     integer :: nno
 !
     real(kind=8) :: ffel3d, ff(27), x(3)
+    real(kind=8), pointer :: coemur(:) => null()
+    integer, pointer :: dimens(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    character(len=8), pointer :: nomddl(:) => null()
+    character(len=8), pointer :: nomnoe(:) => null()
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -115,11 +122,11 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
     nnomax = 27
     nbtmax = 1 + nnomax
-    call wkvect('&&RECI3D.COEMUR', 'V V R', nbtmax, jcmur)
-    call wkvect('&&RECI3D.NOMDDL', 'V V K8', nbtmax, jddl)
-    call wkvect('&&RECI3D.NOMNOE', 'V V K8', nbtmax, jnomno)
-    call wkvect('&&RECI3D.DIMENS', 'V V I', nbtmax, jdime)
-    call wkvect('&&RECI3D.DIRECT', 'V V R', 3*nbtmax, jdirec)
+    AS_ALLOCATE(vr=coemur, size=nbtmax)
+    AS_ALLOCATE(vk8=nomddl, size=nbtmax)
+    AS_ALLOCATE(vk8=nomnoe, size=nbtmax)
+    AS_ALLOCATE(vi=dimens, size=nbtmax)
+    AS_ALLOCATE(vr=direct, size=3*nbtmax)
 !
     notlin = (nbcnx.gt.8)
     if (notlin) then
@@ -152,9 +159,9 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
     nonoma = mailla//'.NOMNOE'
 !
-    zk8(jnomno) = nnoeca
-    zk8(jddl) = 'DEPL'
-    zr(jcmur) = 1.0d0
+    nomnoe(1) = nnoeca
+    nomddl(1) = 'DEPL'
+    coemur(1) = 1.0d0
 !
 ! 3.1.1 LE NOEUD DU CABLE COINCIDE TOPOLOGIQUEMENT
 !       AVEC UN DES NOEUDS DE LA MAILLE
@@ -168,9 +175,9 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
     if (immer .eq. 2) then
 !
         nbterm = 2
-        call jenuno(jexnum(nonoma, noebe), zk8(jnomno+1))
-        zk8(jddl+1) = 'DEPL'
-        zr(jcmur+1) = -1.0d0
+        call jenuno(jexnum(nonoma, noebe), nomnoe(1+1))
+        nomddl(1+1) = 'DEPL'
+        coemur(1+1) = -1.0d0
 !
 !
 ! 3.3 LE NOEUD DU CABLE EST A L'INTERIEUR DE LA MAILLE
@@ -179,8 +186,8 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
         nbterm = 1 + nbcnx
         do icnx = 1, nbcnx
-            call jenuno(jexnum(nonoma, cxma(icnx)), zk8(jnomno+icnx))
-            zk8(jddl+icnx) = 'DEPL'
+            call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(icnx+1))
+            nomddl(icnx+1) = 'DEPL'
             x(1) = ksi1
             x(2) = ksi2
             x(3) = ksi3
@@ -204,7 +211,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
                 call elrfvf('H27', x, 27, ff, nno)
             endif
             ffel3d = ff(icnx)
-            zr(jcmur+icnx) = -ffel3d
+            coemur(icnx+1) = -ffel3d
 !            ZR(JCMUR+ICNX) = -FFEL3D(NBCNX,ICNX,KSI1,KSI2,KSI3)
         end do
 !
@@ -217,56 +224,56 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !.... DANS LE VECTEUR ZR(JDIREC)
 !
     do iterm = 1, nbterm
-        zi(jdime+iterm-1) = 3
+        dimens(iterm) = 3
     end do
 !
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA PREMIERE RELATION (DDL DX)
 !.... PUIS AFFECTATION
 !
     do iterm = 1, nbterm
-        zr(jdirec+3* (iterm-1)) = 1.0d0
-        zr(jdirec+3* (iterm-1)+1) = 0.0d0
-        zr(jdirec+3* (iterm-1)+2) = 0.0d0
+        direct(1+3* (iterm-1)) = 1.0d0
+        direct(1+3* (iterm-1)+1) = 0.0d0
+        direct(1+3* (iterm-1)+2) = 0.0d0
     end do
 !
-    call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
-                zr(jdirec), nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
+                direct, nbterm, zero, cbid, k8b,&
                 'REEL', 'REEL', '12', 0.d0, lirela)
 !
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA DEUXIEME RELATION (DDL DY)
 !.... PUIS AFFECTATION
 !
     do iterm = 1, nbterm
-        zr(jdirec+3* (iterm-1)) = 0.0d0
-        zr(jdirec+3* (iterm-1)+1) = 1.0d0
-        zr(jdirec+3* (iterm-1)+2) = 0.0d0
+        direct(1+3* (iterm-1)) = 0.0d0
+        direct(1+3* (iterm-1)+1) = 1.0d0
+        direct(1+3* (iterm-1)+2) = 0.0d0
     end do
 !
-    call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
-                zr(jdirec), nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
+                direct, nbterm, zero, cbid, k8b,&
                 'REEL', 'REEL', '12', 0.d0, lirela)
 !
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA TROISIEME RELATION (DDL DZ)
 !.... PUIS AFFECTATION
 !
     do iterm = 1, nbterm
-        zr(jdirec+3* (iterm-1)) = 0.0d0
-        zr(jdirec+3* (iterm-1)+1) = 0.0d0
-        zr(jdirec+3* (iterm-1)+2) = 1.0d0
+        direct(1+3* (iterm-1)) = 0.0d0
+        direct(1+3* (iterm-1)+1) = 0.0d0
+        direct(1+3* (iterm-1)+2) = 1.0d0
     end do
 !
-    call afrela(zr(jcmur), [cbid], zk8(jddl), zk8(jnomno), zi(jdime),&
-                zr(jdirec), nbterm, zero, cbid, k8b,&
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
+                direct, nbterm, zero, cbid, k8b,&
                 'REEL', 'REEL', '12', 0.d0, lirela)
 !
  60 continue
 !
 ! --- MENAGE
-    call jedetr('&&RECI3D.COEMUR')
-    call jedetr('&&RECI3D.NOMDDL')
-    call jedetr('&&RECI3D.NOMNOE')
-    call jedetr('&&RECI3D.DIMENS')
-    call jedetr('&&RECI3D.DIRECT')
+    AS_DEALLOCATE(vr=coemur)
+    AS_DEALLOCATE(vk8=nomddl)
+    AS_DEALLOCATE(vk8=nomnoe)
+    AS_DEALLOCATE(vi=dimens)
+    AS_DEALLOCATE(vr=direct)
     call jedema()
 !
 ! --- FIN DE RECI3D.

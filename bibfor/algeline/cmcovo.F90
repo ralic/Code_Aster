@@ -30,6 +30,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 #include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: inima, nbma, lima(nbma)
     character(len=8) :: main, maout, prefno, prefma, plan, trans
@@ -67,9 +69,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 ! ----------------------------------------------------------------------
     integer :: jdime, jcoor, nbnin, nbmin, nbnot, nbgrno, ifm, niv
     integer :: jnorn, ima, n1, n2, n3, nnoaj, ic, i, ij, iq4, it3
-    integer :: jnosto, jlisma, jnbnum, ino, jnorm
+    integer ::  jlisma, jnbnum, ino, jnorm
     integer :: jtypm, numa, nbno, lgno, inov, jnewm
-    integer :: iret, jnonew, jvale, kvale, lgnu, lgpref, nbgrmv
+    integer :: iret,  jvale, kvale, lgnu, lgpref, nbgrmv
     integer :: typhex, typpen, iatyma, nbnomx, imav, lgnd, nbgrmn
     integer :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg, jrefe
     integer :: nbmai, jgg, nbmat, jno, ima2
@@ -85,6 +87,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     real(kind=8) :: nx, ny, nz, nt(3), eps2, sinvec, cosvec
     real(kind=8) :: n4n2(3), n4n3(3), nq(3), norme, angl
     logical :: logic
+    character(len=24), pointer :: new_noeuds(:) => null()
+    integer, pointer :: noeuds(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -131,8 +135,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 ! --- RECUPERATION DU NOMBRE DE NOEUDS A AJOUTER
 !     POUR DIMENSIONNER LES VECTEURS
 !     -------------------------------------------
-    call wkvect('&&CMCOVO.NEW_NOEUDS', 'V V K24', nbnin, jnonew)
-    call wkvect('&&CMCOVO.NOEUDS', 'V V I', nbnin, jnosto)
+    AS_ALLOCATE(vk24=new_noeuds, size=nbnin)
+    AS_ALLOCATE(vi=noeuds, size=nbnin)
     do ima = 1, nbma
         numa = lima(ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm+numa-1)), typm)
@@ -144,13 +148,13 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         call jelira(jexnum(connev, numa), 'LONMAX', nbno)
         call jeveuo(jexnum(connev, numa), 'L', jopt)
         do ino = 1, nbno
-            zi(jnosto+zi(jopt+ino-1)-1) = 1
+            noeuds(1+zi(jopt+ino-1)-1) = 1
         end do
     end do
 !
     nnoaj = 0
     do ino = 1, nbnin
-        if (zi(jnosto+ino-1) .eq. 1) nnoaj = nnoaj+1
+        if (noeuds(ino) .eq. 1) nnoaj = nnoaj+1
     end do
 !
 ! --- STOCKAGE DES ELEMENTS DE TRAVAIL
@@ -235,7 +239,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
     call wkvect('&&CMCOVO.NORM_NO', 'V V R8', 3*nbnin, jnorm)
     do ino = 1, nbnin
-        if (zi(jnosto+ino-1) .eq. 0) goto 70
+        if (noeuds(ino) .eq. 0) goto 70
         nbnuma = zi(jnbnum+ino-1)
         numa = zi(jlisma-1+27*(ino-1)+1)
         call jenuno(jexnum(nommav, numa), ma1)
@@ -316,7 +320,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     lgno = lxlgut(prefno)
     inov = inima - 1
     do ino = 1, nbnin
-        if (zi(jnosto+ino-1) .eq. 0) goto 50
+        if (noeuds(ino) .eq. 0) goto 50
         inov = inov + 1
         call codent(inov, 'G', knume)
         lgnu = lxlgut(knume)
@@ -328,7 +332,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         call jeexin(jexnom(nomnoe, nomg), iret)
         if (iret .eq. 0) then
             call jecroc(jexnom(nomnoe, nomg))
-            zk24(jnonew+ino-1) = nomg
+            new_noeuds(ino) = nomg
         else
             valk(1) = nomg
             call utmess('F', 'ALGELINE4_5', sk=valk(1))
@@ -362,7 +366,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
     jno = nbnin
     do ino = 1, nbnin
-        if (zi(jnosto+ino-1) .eq. 0) goto 80
+        if (noeuds(ino) .eq. 0) goto 80
         jno = jno + 1
 !
         nx = zr(jnorm+3*(ino-1))
@@ -491,7 +495,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
             end do
             do ino = 5, 8
-                call jenonu(jexnom(nomnoe, zk24(jnonew+zi(jopt-1+ino-4) -1)), zi(jnpt-1+ino))
+                call jenonu(jexnom(nomnoe, new_noeuds(1+zi(jopt-1+ino-4) -1)), zi(jnpt-1+ino))
             end do
             iq4 = iq4 + 1
 !
@@ -508,7 +512,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
             end do
             do ino = 4, 6
-                call jenonu(jexnom(nomnoe, zk24(jnonew+zi(jopt-1+ino-3) -1)), zi(jnpt-1+ino))
+                call jenonu(jexnom(nomnoe, new_noeuds(1+zi(jopt-1+ino-3) -1)), zi(jnpt-1+ino))
 !
             end do
             it3 = it3 + 1
@@ -606,8 +610,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         if (it3 .ne. 0) write(ifm,1004) it3
     endif
 !
-    call jedetr('&&CMCOVO.NEW_NOEUDS')
-    call jedetr('&&CMCOVO.NOEUDS')
+    AS_DEALLOCATE(vk24=new_noeuds)
+    AS_DEALLOCATE(vi=noeuds)
     call jedetr('&&CMCOVO.TRAV')
     call jedetr('&&CMCOVO.NORM_NO')
 !     --------------------------------

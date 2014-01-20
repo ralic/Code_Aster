@@ -32,6 +32,8 @@ subroutine chor2c(lischa, vecele)
 #include "asterfort/lisltc.h"
 #include "asterfort/sdchgd.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
     character(len=19) :: lischa, vecele
 !
@@ -54,10 +56,11 @@ subroutine chor2c(lischa, vecele)
     integer :: jcn
     character(len=24) :: resuel
     character(len=8) :: typech, typsca
-    integer :: iret, kvale, ibid, ichar
+    integer :: iret,  ibid, ichar
     integer :: ivec, nbvec, nbvdim, ivale, nbvale, jvec
     character(len=4) :: tyresl
     character(len=1) :: typchn
+    real(kind=8), pointer :: copie_travail(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,7 +80,7 @@ subroutine chor2c(lischa, vecele)
     chamno = zk24(jvacha+1-1)(1:19)
     call jeveuo(vecele//'.RELR', 'L', jvec)
     call jelira(chamno//'.VALE', 'LONMAX', nbvdim)
-    call wkvect('&&CHOR2C.COPIE_TRAVAIL', 'V V R', nbvdim, kvale)
+    AS_ALLOCATE(vr=copie_travail, size=nbvdim)
 !
 ! --- BOUCLES SUR LES CHAMNO
 !
@@ -125,7 +128,7 @@ subroutine chor2c(lischa, vecele)
 !
 ! ------- SAUVEGARDE DES VALEURS
 !
-            call dcopy(nbvale, zr(jcn), 1, zr(kvale), 1)
+            call dcopy(nbvale, zr(jcn), 1, copie_travail, 1)
 !
 ! ------- DESTRUCTION CHAMNO A VALEURS REELLES
 !
@@ -135,7 +138,7 @@ subroutine chor2c(lischa, vecele)
 !
             call wkvect(chamno//'.VALE', 'V V C', nbvale, jcn)
             do ivale = 1, nbvale
-                zc(jcn+ivale-1) = dcmplx(zr(kvale+ivale-1),0.d0)
+                zc(jcn+ivale-1) = dcmplx(copie_travail(ivale),0.d0)
             end do
 !
 ! ------- CHANGEMENT DE LA REFERENCE A LA GRANDEUR
@@ -144,6 +147,6 @@ subroutine chor2c(lischa, vecele)
         endif
     end do
 !
-    call jedetr('&&CHOR2C.COPIE_TRAVAIL')
+    AS_DEALLOCATE(vr=copie_travail)
     call jedema()
 end subroutine

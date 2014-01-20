@@ -58,6 +58,8 @@ subroutine sscgno(ma, nbgnin)
 #include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     real(kind=8) :: vecori(3)
 !
@@ -73,14 +75,17 @@ subroutine sscgno(ma, nbgnin)
 !
 !-----------------------------------------------------------------------
     integer :: i, iagm1, iagm2, iagma, iagn2, iagno, ialii1
-    integer :: ialii2, ialik8, idlino, ifm, ign, ign1
-    integer :: ign2, ii, iii, ili1, ili2, ilnok8, im1
+    integer :: ialii2,  idlino, ifm, ign, ign1
+    integer :: ign2, ii, iii, ili1, ili2,  im1
     integer :: ind1, ind2, ino, iocc, ireste, iret, jjj
-    integer :: jnoeu, jnoeu2, jvale, kkk, maxcol, n, n1
+    integer :: jnoeu,  jvale, kkk, maxcol, n, n1
     integer :: n2, n3, n4, n5, n6, n6a, n6b
     integer :: n7, n8, n9, nb, nbcol, nbgna2, nbgnaj
     integer :: nbgnin, nbgrmn, nbid, nbis, nbk8, nbline, nbno
     integer :: nbnot, nbocc, niv, ntrou, num
+    character(len=24), pointer :: lik8(:) => null()
+    character(len=8), pointer :: l_noeud(:) => null()
+    integer, pointer :: noeud2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -97,7 +102,7 @@ subroutine sscgno(ma, nbgnin)
     call jelira(grpnoe, 'NMAXOC', nbgrmn)
     nbis = nbgrmn
     nbk8 = nbgrmn
-    call wkvect('&&SSCGNO.LIK8', 'V V K24', nbk8, ialik8)
+    AS_ALLOCATE(vk24=lik8, size=nbk8)
     call wkvect('&&SSCGNO.LII1', 'V V I', nbis, ialii1)
     call wkvect('&&SSCGNO.LII2', 'V V I', nbis, ialii2)
 !
@@ -160,9 +165,9 @@ subroutine sscgno(ma, nbgnin)
 !       ---------------------
     if (n3 .gt. 0) then
         call getvem(ma, 'GROUP_NO', motfac, 'INTERSEC', iocc,&
-                    iarg, n3, zk24(ialik8), nbid)
+                    iarg, n3, lik8, nbid)
 !
-        call jenonu(jexnom(grpnoe, zk24(ialik8)), ign1)
+        call jenonu(jexnom(grpnoe,lik8(1)), ign1)
         call jelira(jexnum(grpnoe, ign1), 'LONUTI', ili1)
         call jeveuo(jexnum(grpnoe, ign1), 'L', iagm1)
         if (ili1 .gt. nbis) then
@@ -178,7 +183,7 @@ subroutine sscgno(ma, nbgnin)
         end do
 !
         do ign = 2, n3
-            call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
+            call jenonu(jexnom(grpnoe, lik8(ign)), ign2)
             call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
             call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
             call utlisi('INTER', zi(ialii1), n, zi(iagm2), ili2,&
@@ -211,9 +216,9 @@ subroutine sscgno(ma, nbgnin)
 !       ------------------
     if (n4 .gt. 0) then
         call getvem(ma, 'GROUP_NO', motfac, 'UNION', iocc,&
-                    iarg, n4, zk24(ialik8), nbid)
+                    iarg, n4, lik8, nbid)
 !
-        call jenonu(jexnom(grpnoe, zk24(ialik8)), ign1)
+        call jenonu(jexnom(grpnoe,lik8(1)), ign1)
         call jelira(jexnum(grpnoe, ign1), 'LONUTI', ili1)
         call jeveuo(jexnum(grpnoe, ign1), 'L', iagm1)
         if (ili1 .gt. nbis) then
@@ -229,7 +234,7 @@ subroutine sscgno(ma, nbgnin)
         end do
 !
         do ign = 2, n4
-            call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
+            call jenonu(jexnom(grpnoe, lik8(ign)), ign2)
             call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
             call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
             call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2,&
@@ -272,9 +277,9 @@ subroutine sscgno(ma, nbgnin)
 !       ------------------
     if (n5 .gt. 0) then
         call getvem(ma, 'GROUP_NO', motfac, 'DIFFE', iocc,&
-                    iarg, n5, zk24(ialik8), nbid)
+                    iarg, n5, lik8, nbid)
 !
-        call jenonu(jexnom(grpnoe, zk24(ialik8)), ign1)
+        call jenonu(jexnom(grpnoe,lik8(1)), ign1)
         call jelira(jexnum(grpnoe, ign1), 'LONUTI', ili1)
         call jeveuo(jexnum(grpnoe, ign1), 'L', iagm1)
         if (ili1 .gt. nbis) then
@@ -290,7 +295,7 @@ subroutine sscgno(ma, nbgnin)
         end do
 !
         do ign = 2, n5
-            call jenonu(jexnom(grpnoe, zk24(ialik8-1+ign)), ign2)
+            call jenonu(jexnom(grpnoe, lik8(ign)), ign2)
             call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
             call jeveuo(jexnum(grpnoe, ign2), 'L', iagm2)
             call utlisi('DIFFE', zi(ialii1), n, zi(iagm2), ili2,&
@@ -408,19 +413,19 @@ subroutine sscgno(ma, nbgnin)
 ! ----- MOT CLEF "NOEUD" :
 !       ------------------
     if (n2 .gt. 0) then
-        call wkvect('&&SSCGNO.L_NOEUD', 'V V K8', n2, ilnok8)
+        AS_ALLOCATE(vk8=l_noeud, size=n2)
         call getvem(ma, 'NOEUD', motfac, 'NOEUD', iocc,&
-                    iarg, n2, zk8(ilnok8), nb)
+                    iarg, n2, l_noeud, nb)
         call wkvect('&&SSCGNO.NOEUD', 'V V I', n2, jnoeu)
         call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnot)
-        call wkvect('&&SSCGNO.NOEUD2', 'V V I', nbnot, jnoeu2)
+        AS_ALLOCATE(vi=noeud2, size=nbnot)
 !         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
         nbno = 0
         do im1 = 1, n2
-            nom1 = zk8(ilnok8+im1-1)
+            nom1 = l_noeud(im1)
             call jenonu(jexnom(nomnoe, nom1), num)
-            zi(jnoeu2-1+num) = zi(jnoeu2-1+num) + 1
-            if (zi(jnoeu2-1+num) .eq. 2) then
+            noeud2(num) = noeud2(num) + 1
+            if (noeud2(num) .eq. 2) then
                 valk(1) = nom1
                 valk(2) = nogno
                 call utmess('A', 'SOUSTRUC_39', nk=2, valk=valk)
@@ -440,8 +445,8 @@ subroutine sscgno(ma, nbgnin)
         end do
         nbgnaj = nbgnaj + 1
         call jedetr('&&SSCGNO.NOEUD')
-        call jedetr('&&SSCGNO.NOEUD2')
-        call jedetr('&&SSCGNO.L_NOEUD')
+        AS_DEALLOCATE(vi=noeud2)
+        AS_DEALLOCATE(vk8=l_noeud)
         goto 100
     endif
 !
@@ -559,7 +564,7 @@ subroutine sscgno(ma, nbgnin)
 ! ----------------------------------------------------------------------
 ! --- MENAGE
     call jedetr(lisno)
-    call jedetr('&&SSCGNO.LIK8')
+    AS_DEALLOCATE(vk24=lik8)
     call jedetr('&&SSCGNO.LII1')
     call jedetr('&&SSCGNO.LII2')
 !

@@ -35,6 +35,8 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: ces1z, correz, basez, ces2z
     integer :: iret
@@ -71,7 +73,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     integer ::  jce1l, jce1v, jce1k, jce1d
     integer :: jce2c, jce2l, jce2v, jce2d, ifm, niv
     integer :: nbno1,   iaconu,  gd, nbno2
-    integer :: ncmpmx, iad1, iad2, ima1, ima2, jdecal, nbmam2
+    integer :: ncmpmx, iad1, iad2, ima1, ima2,  nbmam2
     integer :: idecal, ino2, icmp, ico, ino1, nuno2,  ilcnx2
     real(kind=8) :: v1, v2, coef1
     complex(kind=8) :: v1c, v2c
@@ -81,6 +83,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     character(len=8), pointer :: ce1c(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()
     integer, pointer :: pjef_m1(:) => null()
+    integer, pointer :: videcal(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -188,12 +191,12 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !          DANS UNE OPTIQUE "CHAM_ELEM" : UNE ESPECE DE POINTEUR DE
 !          LONGUEUR CUMULEE SUR LES OBJETS .PJEF_NU ET .PJEF_CF
     call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
-    call wkvect('&&CESPRJ.IDECAL', 'V V I', nbno2, jdecal)
+    AS_ALLOCATE(vi=videcal, size=nbno2)
     idecal = 0
 !
     do ino2 = 1, nbno2
         nbno1 = pjef_nb(ino2)
-        zi(jdecal-1+ino2) = idecal
+        videcal(ino2) = idecal
         idecal = idecal + nbno1
     end do
     call jeveuo(ma2//'.CONNEX', 'L', vi=connex)
@@ -206,7 +209,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
             nuno2 = connex(1+zi(ilcnx2-1+ima2)-2+ino2)
             nbno1 = pjef_nb(nuno2)
             ima1 = pjef_m1(nuno2)
-            idecal = zi(jdecal-1+nuno2)
+            idecal = videcal(nuno2)
             do icmp = 1, ncmpmx
 ! ================================================================
 ! --- ON NE PROJETTE UNE CMP QUE SI ELLE EST PORTEE
@@ -276,7 +279,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
         call detrsd('CHAM_ELEM_S', ces1)
         call detrsd('CHAM_ELEM_S', ces2)
     endif
-    call jedetr('&&CESPRJ.IDECAL')
+    AS_DEALLOCATE(vi=videcal)
 !
  80 continue
     call jedema()

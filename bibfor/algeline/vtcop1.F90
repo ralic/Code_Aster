@@ -13,6 +13,8 @@ subroutine vtcop1(chin, chout, kstop, codret)
 #include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: chin, chout
     character(len=1) :: kstop
     integer :: codret
@@ -46,14 +48,16 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !
 !
 !
-    integer :: iret, ieq1, ieq2, neq1, jvale1, jvale2, jtrav2
+    integer :: iret, ieq1, ieq2, neq1, jvale1, jvale2
     integer :: neq2, jdesc1, jdesc2, jrefe1, jrefe2, jdeeq1, jdeeq2
-    integer :: nnomx, ncpmx, jtrav1, nuno2, nucp2, nuno1, nucp1, jdeeq
+    integer :: nnomx, ncpmx,  nuno2, nucp2, nuno1, nucp1, jdeeq
     integer :: jcmpgd, ncmpmx, icmp
     character(len=1) :: typ1, typ2
     character(len=8) :: nomgd
     character(len=24) :: valk(4)
     character(len=19) :: ch1, ch2, pfchno
+    integer, pointer :: trav1(:) => null()
+    logical, pointer :: trav2(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -161,13 +165,13 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !
 !     2.2 ON REMPLIT UN OBJET DE TRAVAIL :
 !     ------------------------------------
-    call wkvect('&&VTCOP1.TRAV1', 'V V I', nnomx*ncpmx, jtrav1)
-    call wkvect('&&VTCOP1.TRAV2', 'V V L', neq2, jtrav2)
+    AS_ALLOCATE(vi=trav1, size=nnomx*ncpmx)
+    AS_ALLOCATE(vl=trav2, size=neq2)
     do ieq2 = 1, neq2
         nuno2=zi(jdeeq2-1+2*(ieq2-1)+1)
         nucp2=zi(jdeeq2-1+2*(ieq2-1)+2)
-        if (nucp2 .gt. 0) zi(jtrav1-1+(nuno2-1)*ncpmx+nucp2)=ieq2
-        zl(jtrav2-1+ieq2)=.false.
+        if (nucp2 .gt. 0) trav1((nuno2-1)*ncpmx+nucp2)=ieq2
+        trav2(ieq2)=.false.
     end do
 !
 !
@@ -179,9 +183,9 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 nuno1=zi(jdeeq1-1+2*(ieq1-1)+1)
                 nucp1=zi(jdeeq1-1+2*(ieq1-1)+2)
                 if ((nucp1.gt.0) .and. (nuno1.le.nnomx) .and. ( nucp1.le.ncpmx)) then
-                    ieq2=zi(jtrav1-1+(nuno1-1)*ncpmx+nucp1)
+                    ieq2=trav1((nuno1-1)*ncpmx+nucp1)
                     if (ieq2 .gt. 0) then
-                        zl(jtrav2-1+ieq2)=.true.
+                        trav2(ieq2)=.true.
                         zr(jvale2-1+ieq2)=zr(jvale1-1+ieq1)
                     endif
                 endif
@@ -191,9 +195,9 @@ subroutine vtcop1(chin, chout, kstop, codret)
                 nuno1=zi(jdeeq1-1+2*(ieq1-1)+1)
                 nucp1=zi(jdeeq1-1+2*(ieq1-1)+2)
                 if ((nucp1.gt.0) .and. (nuno1.le.nnomx)) then
-                    ieq2=zi(jtrav1-1+(nuno1-1)*ncpmx+nucp1)
+                    ieq2=trav1((nuno1-1)*ncpmx+nucp1)
                     if (ieq2 .gt. 0) then
-                        zl(jtrav2-1+ieq2)=.true.
+                        trav2(ieq2)=.true.
                         zc(jvale2-1+ieq2)=zc(jvale1-1+ieq1)
                     endif
                 endif
@@ -210,9 +214,9 @@ subroutine vtcop1(chin, chout, kstop, codret)
             nuno1=zi(jdeeq1-1+2*(ieq1-1)+1)
             nucp1=zi(jdeeq1-1+2*(ieq1-1)+2)
             if ((nucp1.gt.0) .and. (nuno1.le.nnomx)) then
-                ieq2=zi(jtrav1-1+(nuno1-1)*ncpmx+nucp1)
+                ieq2=trav1((nuno1-1)*ncpmx+nucp1)
                 if (ieq2 .gt. 0) then
-                    zl(jtrav2-1+ieq2)=.true.
+                    trav2(ieq2)=.true.
                     zc(jvale2-1+ieq2)=zr(jvale1-1+ieq1)
                 endif
             endif
@@ -238,7 +242,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
         nuno2=zi(jdeeq2-1+2*(ieq2-1)+1)
         nucp2=zi(jdeeq2-1+2*(ieq2-1)+2)
 !       NUCP2.NE.ICMP == GLUTE POUR LA SOUS-STRUCTURATION STATIQUE
-        if (nucp2 .gt. 0 .and. nucp2 .ne. icmp .and. .not.zl(jtrav2+ieq2-1)) then
+        if (nucp2 .gt. 0 .and. nucp2 .ne. icmp .and. .not.trav2(ieq2)) then
             if (kstop .eq. 'F') then
                 ASSERT(.false.)
             else
@@ -246,8 +250,8 @@ subroutine vtcop1(chin, chout, kstop, codret)
             endif
         endif
     end do
-    call jedetr('&&VTCOP1.TRAV1')
-    call jedetr('&&VTCOP1.TRAV2')
+    AS_DEALLOCATE(vi=trav1)
+    AS_DEALLOCATE(vl=trav2)
 !
 999 continue
     call jedema()

@@ -21,6 +21,8 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbepo, ntyele(*), nbocc(*), ivr(3), ifm
     character(len=8) :: noma, nomo
@@ -63,10 +65,10 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 ! ----------------------------------------------------------------------
 !
     integer :: iext1, iext2, ima, inn, ioc, jcozk, jdco, jdgn, jdno, jdme
-    integer :: jelpar, jeltuy, jma, jnbmap, jnoex1, jnoex2, jnopar, jnozk
+    integer ::   jma,     jnozk
     integer :: nbext2, nbpart, nbtuy, ncar, ni1, ni2, nj, nj1, nj2, nn, nng
-    integer :: numnoe, nutyel, nval, jsens, ixma, j
-    integer :: jnotuy, nno, nbtuy4, nbext1, jzkpar, jmmt, ibid
+    integer :: numnoe, nutyel, nval,  ixma, j
+    integer ::  nno, nbtuy4, nbext1, jzkpar,  ibid
     integer :: ier, nbmail
     real(kind=8) :: val(3), epsi
     character(len=8) :: nomu, car, crit
@@ -74,6 +76,15 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
     character(len=24) :: mlgnma, mlgnno, mlggno, mlgcoo, mlgcnx, modmai, nomlu
     character(len=24) :: nomnoe
     integer :: iarg
+    integer, pointer :: eltuy(:) => null()
+    integer, pointer :: lismapart(:) => null()
+    integer, pointer :: lisnopart(:) => null()
+    integer, pointer :: mmt(:) => null()
+    integer, pointer :: nbmapart(:) => null()
+    integer, pointer :: noext1(:) => null()
+    integer, pointer :: noext2(:) => null()
+    integer, pointer :: notuy(:) => null()
+    integer, pointer :: sens(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -112,8 +123,8 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 !
 ! --- STOCKAGE DES ELEMENTS MET3SEG3 ET DES NOEUDS
 !
-    call wkvect('&&ACEATU.NOTUY', 'V V I', nbtuy*4, jnotuy)
-    call wkvect('&&ACEATU.ELTUY', 'V V I', nbtuy, jeltuy)
+    AS_ALLOCATE(vi=notuy, size=nbtuy*4)
+    AS_ALLOCATE(vi=eltuy, size=nbtuy)
 !
     nno=0
     nbtuy=0
@@ -125,11 +136,11 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                 if ((nunoel.eq.'MET3SEG3') .or. ( nunoel.eq.'MET6SEG3')) then
                     nno=3
                     nbtuy=nbtuy+1
-                    zi(jeltuy-1+nbtuy)=ima
+                    eltuy(nbtuy)=ima
                     call jeveuo(jexnum(mlgcnx, ima), 'L', jdno)
-                    zi(jnotuy-1+3*nbtuy-2)=zi(jdno)
-                    zi(jnotuy-1+3*nbtuy-1)=zi(jdno+1)
-                    zi(jnotuy-1+3*nbtuy )=zi(jdno+2)
+                    notuy(3*nbtuy-2)=zi(jdno)
+                    notuy(3*nbtuy-1)=zi(jdno+1)
+                    notuy(3*nbtuy )=zi(jdno+2)
                 endif
             endif
 22      continue
@@ -144,12 +155,12 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                 if (nunoel .eq. 'MET3SEG4') then
                     nno=4
                     nbtuy4=nbtuy4+1
-                    zi(jeltuy-1+nbtuy4)=ima
+                    eltuy(nbtuy4)=ima
                     call jeveuo(jexnum(mlgcnx, ima), 'L', jdno)
-                    zi(jnotuy-1+4*nbtuy4-3)=zi(jdno)
-                    zi(jnotuy-1+4*nbtuy4-2)=zi(jdno+1)
-                    zi(jnotuy-1+4*nbtuy4-1)=zi(jdno+2)
-                    zi(jnotuy-1+4*nbtuy4 )=zi(jdno+3)
+                    notuy(4*nbtuy4-3)=zi(jdno)
+                    notuy(4*nbtuy4-2)=zi(jdno+1)
+                    notuy(4*nbtuy4-1)=zi(jdno+2)
+                    notuy(4*nbtuy4 )=zi(jdno+3)
                 endif
             endif
 32      continue
@@ -171,12 +182,12 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
     do 40 ima = 1, nbtuy
         iext1=0
         iext2=0
-        ni1 = zi(jnotuy-1+nno*(ima-1)+1)
-        ni2 = zi(jnotuy-1+nno*(ima-1)+2)
+        ni1 = notuy(nno*(ima-1)+1)
+        ni2 = notuy(nno*(ima-1)+2)
         do 42 jma = 1, nbtuy
             if (jma .ne. ima) then
-                nj1 = zi(jnotuy-1+nno*(jma-1)+1)
-                nj2 = zi(jnotuy-1+nno*(jma-1)+2)
+                nj1 = notuy(nno*(jma-1)+1)
+                nj2 = notuy(nno*(jma-1)+2)
                 if (ni1 .eq. nj2) then
                     iext1=1
                 endif
@@ -204,20 +215,20 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 ! --- VERIFICATION ET STOCKAGE DES PARTIES CONNEXES
 !     HYPOTHESE : LES MAILLES SONT TOUTES ORIENTEES DANS LE MEME SENS
 !
-    call wkvect('&&ACEATU.SENS', 'V V I', nbpart, jsens)
-    call wkvect('&&ACEATU.NBMAPART', 'V V I', nbpart, jnbmap)
-    call wkvect('&&ACEATU.NOEXT1', 'V V I', nbpart, jnoex1)
-    call wkvect('&&ACEATU.NOEXT2', 'V V I', nbpart, jnoex2)
-    call wkvect('&&ACEATU.LISMAPART', 'V V I', nbpart*nbtuy, jelpar)
-    call wkvect('&&ACEATU.LISNOPART', 'V V I', nbpart*nbtuy*nno, jnopar)
+    AS_ALLOCATE(vi=sens, size=nbpart)
+    AS_ALLOCATE(vi=nbmapart, size=nbpart)
+    AS_ALLOCATE(vi=noext1, size=nbpart)
+    AS_ALLOCATE(vi=noext2, size=nbpart)
+    AS_ALLOCATE(vi=lismapart, size=nbpart*nbtuy)
+    AS_ALLOCATE(vi=lisnopart, size=nbpart*nbtuy*nno)
     call wkvect('&&ACEATU.ZKPART', 'V V I', nbpart*nbtuy*nno, jzkpar)
-    call aceat2(nbtuy, zi(jeltuy), zi(jnotuy), nbpart, zi(jnoex1),&
-                zi(jnoex2), zi(jnbmap), zi(jelpar), zi(jnopar), nno)
+    call aceat2(nbtuy, eltuy, notuy, nbpart, noext1,&
+                noext2, nbmapart, lismapart, lisnopart, nno)
 !
 !   LECTURE DE MODI_METRIQUE
 !
-    call wkvect('&&ACEATU.MMT', 'V V I', nbmail, jmmt)
-    call acemmt(noma, zi(jmmt))
+    AS_ALLOCATE(vi=mmt, size=nbmail)
+    call acemmt(noma,mmt)
 !
 !     LECTURE DU MOT-CLE GENE_TUYAU
 !
@@ -289,10 +300,10 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
             endif
 50      continue
     endif
-    call aceat3(noma, nomu, nbtuy, nbpart, zi(jnbmap),&
-                zi(jelpar), zi(jnopar), ivr, ifm, inn,&
-                zi(jnozk), zr(jcozk), zi(jsens), zr(jdco), epsi,&
-                crit, nno, zi(jmmt))
+    call aceat3(noma, nomu, nbtuy, nbpart, nbmapart,&
+                lismapart, lisnopart, ivr, ifm, inn,&
+                zi(jnozk), zr(jcozk), sens, zr(jdco), epsi,&
+                crit, nno,mmt)
 !
 9998  continue
     if (ier .ne. 0) then
@@ -302,16 +313,16 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
 !
 ! --- MENAGE
 !
-    call jedetr('&&ACEATU.NOTUY')
-    call jedetr('&&ACEATU.ELTUY')
-    call jedetr('&&ACEATU.SENS')
-    call jedetr('&&ACEATU.NBMAPART')
-    call jedetr('&&ACEATU.NOEXT1')
-    call jedetr('&&ACEATU.NOEXT2')
-    call jedetr('&&ACEATU.LISMAPART')
-    call jedetr('&&ACEATU.LISNOPART')
+    AS_DEALLOCATE(vi=notuy)
+    AS_DEALLOCATE(vi=eltuy)
+    AS_DEALLOCATE(vi=sens)
+    AS_DEALLOCATE(vi=nbmapart)
+    AS_DEALLOCATE(vi=noext1)
+    AS_DEALLOCATE(vi=noext2)
+    AS_DEALLOCATE(vi=lismapart)
+    AS_DEALLOCATE(vi=lisnopart)
     call jedetr('&&ACEATU.ZKPART')
-    call jedetr('&&ACEATU.MMT')
+    AS_DEALLOCATE(vi=mmt)
     call jedetr('&&ACEATU.LISNOZK')
     call jedetr('&&ACEATU.LISCOZK')
 !

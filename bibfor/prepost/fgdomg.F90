@@ -14,6 +14,8 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 #include "asterfort/rcpare.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: method
     character(len=8) :: nommat, nomnap, nomfon
     real(kind=8) :: valmin(*), valmax(*), dommag
@@ -57,11 +59,12 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
     logical :: lke, lhaigh
 !
 !-----------------------------------------------------------------------
-    integer :: i, ivcorr, ivdome, ivke
+    integer :: i, ivcorr,  ivke
+    real(kind=8), pointer :: vdommag(:) => null()
 !-----------------------------------------------------------------------
     dommag = 0.d0
     pheno = 'FATIGUE'
-    call wkvect('&&FGDOMG.DOMMAG', 'V V R', ncyc, ivdome)
+    AS_ALLOCATE(vr=vdommag, size=ncyc)
     lke = .false.
     lhaigh = .false.
     ivke = 0
@@ -76,30 +79,30 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
         call rcpare(nommat, pheno, cara, icodhs)
         if (icodwo .eq. 0) then
             call fgdowh(nommat, ncyc, valmin, valmax, lke,&
-                        zr(ivke), lhaigh, zr(ivcorr), zr(ivdome))
+                        zr(ivke), lhaigh, zr(ivcorr),vdommag)
         else if (icodba.eq.0) then
             call fgdoba(nommat, ncyc, valmin, valmax, lke,&
-                        zr(ivke), lhaigh, zr(ivcorr), zr(ivdome))
+                        zr(ivke), lhaigh, zr(ivcorr),vdommag)
         else if (icodhs.eq.0) then
             call fgdohs(nommat, ncyc, valmin, valmax, lke,&
-                        zr(ivke), lhaigh, zr(ivcorr), zr(ivdome))
+                        zr(ivke), lhaigh, zr(ivcorr),vdommag)
         endif
     else if (method.eq.'MANSON_COFFIN') then
-        call fgdoma(nommat, ncyc, valmin, valmax, zr(ivdome))
+        call fgdoma(nommat, ncyc, valmin, valmax,vdommag)
     else if (method.eq.'TAHERI_MANSON') then
         call fgtaep(nommat, nomfon, nomnap, ncyc, valmin,&
-                    valmax, zr( ivdome))
+                    valmax,vdommag)
     else if (method.eq.'TAHERI_MIXTE') then
         call fgtaes(nommat, nomnap, ncyc, valmin, valmax,&
-                    zr(ivdome))
+vdommag)
     else
         k16b = method(1:16)
         call utmess('F', 'PREPOST_4', sk=k16b)
     endif
 !
     do 100 i = 1, ncyc
-        dommag = dommag + zr(ivdome+i-1)
+        dommag = dommag + vdommag(i)
 100  end do
 !
-    call jedetr('&&FGDOMG.DOMMAG')
+    AS_DEALLOCATE(vr=vdommag)
 end subroutine

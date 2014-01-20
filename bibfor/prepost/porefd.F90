@@ -12,6 +12,8 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: trange, noeu, cmp, nomrez
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -35,7 +37,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !
 ! ----------------------------------------------------------------------
     integer :: jdesc, jredn, jredc, jredd, jinst, nbinst, nbred, inume, jdepl
-    integer :: jnlin, jvar, jfon, i, nbmax, ii, ic, imax, nbpara
+    integer ::    i, nbmax, ii, ic, imax, nbpara
     parameter    ( nbpara = 8 )
     real(kind=8) :: para(nbpara), xmax, temd, temf, temm
     complex(kind=8) :: c16b
@@ -43,6 +45,9 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     character(len=16) :: nopara(nbpara)
     character(len=19) :: nomk19
     character(len=24) :: nomk24
+    real(kind=8), pointer :: deplmax(:) => null()
+    real(kind=8), pointer :: instmax(:) => null()
+    integer, pointer :: nlin(:) => null()
 !
     data nopara / 'RELATION' , 'NOEUD'      , 'CMP',&
      &              'PHASE'    , 'INST_INIT'  , 'INST_FIN',&
@@ -82,19 +87,19 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !
 !     --- RECHERCHE DU MAXIMUM DE LA FONCTION ---
     call wkvect('&&POREFD.DEPL', 'V V R', nbinst, jdepl)
-    call wkvect('&&POREFD.NLIN', 'V V I', nbinst, jnlin)
-    call wkvect('&&POREFD.INSTMAX', 'V V R', nbinst, jvar)
-    call wkvect('&&POREFD.DEPLMAX', 'V V R', nbinst, jfon)
+    AS_ALLOCATE(vi=nlin, size=nbinst)
+    AS_ALLOCATE(vr=instmax, size=nbinst)
+    AS_ALLOCATE(vr=deplmax, size=nbinst)
     do 14 i = 0, nbinst-1
         zr(jdepl+i) = zr(jredd+inume+nbred*i)
-        zi(jnlin+i) = zi(jredc+inume+nbred*i)
+        nlin(1+i) = zi(jredc+inume+nbred*i)
 14  end do
-    call foc1ma(nbinst, zr(jinst), zr(jdepl), nbmax, zr(jvar),&
-                zr(jfon))
+    call foc1ma(nbinst, zr(jinst), zr(jdepl), nbmax, instmax,&
+deplmax)
 !
 !     --- RECHERCHE DES PHASES NON-LINEAIRE ---
     do 18 i = 0, nbinst-1
-        if (zi(jnlin+i) .eq. 1) goto 20
+        if (nlin(1+i) .eq. 1) goto 20
 18  end do
     goto 500
 !
@@ -103,18 +108,18 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     ii = 0
     ic = 0
     do 30 i = 0, nbinst-1
-        if (zi(jnlin+i) .eq. 1 .and. ic .eq. 0) then
+        if (nlin(1+i) .eq. 1 .and. ic .eq. 0) then
             xmax = zr(jdepl+i)
             imax = i
             ic = 1
             ii = ii + 1
             temd = zr(jinst+i)
-        else if (zi(jnlin+i) .eq. 1) then
+        else if (nlin(1+i) .eq. 1) then
             if (abs(zr(jdepl+i)) .gt. abs(xmax)) then
                 xmax = zr(jdepl+i)
                 imax = i
             endif
-        else if (zi(jnlin+i).eq.0 .and. ic.eq.1) then
+        else if (nlin(1+i).eq.0 .and. ic.eq.1) then
             ic = 0
             temf = zr(jinst+i-1)
             temm = zr(jinst+imax)
@@ -139,9 +144,9 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !
 500  continue
     call jedetr('&&POREFD.DEPL')
-    call jedetr('&&POREFD.NLIN')
-    call jedetr('&&POREFD.INSTMAX')
-    call jedetr('&&POREFD.DEPLMAX')
+    AS_DEALLOCATE(vi=nlin)
+    AS_DEALLOCATE(vr=instmax)
+    AS_DEALLOCATE(vr=deplmax)
 !
     call jedema()
 end subroutine

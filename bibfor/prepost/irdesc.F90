@@ -16,6 +16,8 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ifi, nbno, nueq(*), prno(*), nec, dg(*), ncmpmx
     integer :: ir, numnoe(*)
     complex(kind=8) :: vale(*)
@@ -72,24 +74,29 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibcmps, ic, ichs, icmp, icmps, icms
+    integer :: i,  ic, ichs, icmp,  icms
     integer :: icmsup, icompt, icp, icval, idebu, iec, ier
-    integer :: ifin, inno, ino, inochs, inogds, iret, irval
-    integer :: itabl, ival, jmax, jtitr, ncmp
+    integer :: ifin, inno, ino,   iret, irval
+    integer ::  ival, jmax, jtitr, ncmp
+    integer, pointer :: ipcmps(:) => null()
+    logical, pointer :: ltabl(:) => null()
+    integer, pointer :: nbcmps(:) => null()
+    character(len=8), pointer :: nomchs(:) => null()
+    character(len=8), pointer :: nomgds(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call wkvect('&&IRDESC.NOMGDS', 'V V K8', ncmpmx, inogds)
-    call wkvect('&&IRDESC.NOMCHS', 'V V K8', ncmpmx, inochs)
-    call wkvect('&&IRDESC.NBCMPS', 'V V I', ncmpmx, ibcmps)
-    call wkvect('&&IRDESC.IPCMPS', 'V V I', ncmpmx*ncmpmx, icmps)
-    call wkvect('&&IRDESC.LTABL', 'V V L', ncmpmx, itabl)
+    AS_ALLOCATE(vk8=nomgds, size=ncmpmx)
+    AS_ALLOCATE(vk8=nomchs, size=ncmpmx)
+    AS_ALLOCATE(vi=nbcmps, size=ncmpmx)
+    AS_ALLOCATE(vi=ipcmps, size=ncmpmx*ncmpmx)
+    AS_ALLOCATE(vl=ltabl, size=ncmpmx)
 !
     nomst= '&&IRECRI.SOUS_TITRE.TITR'
     call jeveuo(nomst, 'L', jtitr)
     titre = zk80(jtitr)
     do 1 i = 1, ncmpmx
-        zl(itabl-1+i)=.false.
+        ltabl(i)=.false.
  1  end do
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL ----
@@ -102,28 +109,28 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
     call wkvect('&&IRDESC.VALC', 'V V R', ncmpmx, icval)
 ! ---- RECHERCHE DES GRANDEURS SUPERTAB -----
 !
-    call irgags(ncmpmx, nomcmp, nomsym, nbchs, zk8(inochs),&
-                zi(ibcmps), zk8(inogds), zi(icmps))
+    call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
+                nbcmps, nomgds,ipcmps)
 !
 ! ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
     do 10 ichs = 1, nbchs
         if (ichs .gt. 1) then
             afaire=.false.
-            do 2 icp = 1, zi(ibcmps-1+ichs)
-                afaire = ( afaire .or. zl(itabl-1+ zi(icmps-1+(ichs-1)* ncmpmx+icp)) )
+            do 2 icp = 1, nbcmps(ichs)
+                afaire = ( afaire .or. ltabl(ipcmps((ichs-1)* ncmpmx+icp)) )
  2          continue
             if (.not. afaire) goto 10
         endif
         iente = 1
         impre = 0
         lcmp=.false.
-        call ecrtes(nomsd, titr, zk8(inogds-1+ichs), ir, 'NOEU',&
-                    zi( ibcmps-1+ichs), 5, entete, lcmp)
+        call ecrtes(nomsd, titr, nomgds(ichs), ir, 'NOEU',&
+                    nbcmps(ichs), 5, entete, lcmp)
         idebu=1
         entete(4) = ' '
         texte = ' '
-        do 5 icp = 1, zi(ibcmps-1+ichs)
-            nocmp = nomcmp(zi(icmps-1+(ichs-1)*ncmpmx+icp))
+        do 5 icp = 1, nbcmps(ichs)
+            nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp))
             iutil = lxlgut(nocmp)
             ifin = idebu+iutil
             texte(idebu:ifin) = nocmp(1:iutil)//' '
@@ -145,17 +152,17 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
             ncmp = prno((ino-1)* (nec+2)+2)
             if (ncmp .eq. 0) goto 11
 !
-            do 25 ic = 1, zi(ibcmps-1+ichs)
+            do 25 ic = 1, nbcmps(ichs)
                 zr(irval-1+ic) = 0.0d0
                 zr(icval-1+ic) = 0.0d0
 25          continue
             icompt = 0
             do 12 icmp = 1, ncmpmx
                 if (exisdg(dg,icmp)) then
-                    if (ichs .eq. 1) zl(itabl-1+icmp)= .true.
+                    if (ichs .eq. 1) ltabl(icmp)= .true.
                     icompt = icompt + 1
-                    do 13 icms = 1, zi(ibcmps-1+ichs)
-                        icmsup = zi(icmps-1+(ichs-1)*ncmpmx+icms)
+                    do 13 icms = 1, nbcmps(ichs)
+                        icmsup = ipcmps((ichs-1)*ncmpmx+icms)
                         if (icmp .eq. icmsup) then
                             impre = 1
                             zr(irval-1+icms)=dble(vale(nueq(ival-1+&
@@ -178,7 +185,7 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
                 endif
                 write (ifi,'(I10,5X,A,A)') ino,'% NOEUD ',nomnoe(inno)
                 write (ifi,'(6(1PE13.5))') (zr(irval-1+i), zr(icval-1+&
-                i),i=1,zi(ibcmps-1+ichs))
+                i),i=1,nbcmps(ichs))
                 impre=0
             endif
 11      end do
@@ -186,10 +193,10 @@ subroutine irdesc(ifi, nbno, prno, nueq, nec,&
 10  end do
     call jedetr('&&IRDESC.VALR')
     call jedetr('&&IRDESC.VALC')
-    call jedetr('&&IRDESC.NOMGDS')
-    call jedetr('&&IRDESC.NOMCHS')
-    call jedetr('&&IRDESC.NBCMPS')
-    call jedetr('&&IRDESC.IPCMPS')
-    call jedetr('&&IRDESC.LTABL')
+    AS_DEALLOCATE(vk8=nomgds)
+    AS_DEALLOCATE(vk8=nomchs)
+    AS_DEALLOCATE(vi=nbcmps)
+    AS_DEALLOCATE(vi=ipcmps)
+    AS_DEALLOCATE(vl=ltabl)
     call jedema()
 end subroutine

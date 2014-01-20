@@ -20,6 +20,8 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ioccur, nbnosy, nbordr, nbrcmp, nbcmdu, nbpara, codret
     character(len=8) :: leresu
     character(len=*) :: nchsym, nnuord, nlicmp, novcmp, nnopar
@@ -74,7 +76,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !
 !
     integer :: jnosy, jncmed, jpa, jordr, n23, iret, n21, nvcmp
-    integer :: n22, nnrmed, isy, nnocha, nnocmp, nchar, jvcmp, ibid, npreci
+    integer :: n22, nnrmed, isy, nnocha, nnocmp, nchar,  ibid, npreci
     integer :: vali, ncrit, innosy, jnordr, icmp, nbcmpt, gd, ncmpmx, iad
     integer :: ntpara, nnpara, jcmp, nparam
 !
@@ -87,6 +89,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
     character(len=24) :: valk(6)
 !
     logical :: afaire
+    character(len=8), pointer :: veri_nom_cmp(:) => null()
 !
     call jemarq()
 !
@@ -172,8 +175,8 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
         call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=0, nbret=nnocmp)
         if (nnocmp .lt. 0) then
             nvcmp=-nnocmp
-            call wkvect('&&IRCHOR.VERI_NOM_CMP', 'V V K8', nvcmp, jvcmp)
-            call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=nvcmp, vect=zk8(jvcmp),&
+            AS_ALLOCATE(vk8=veri_nom_cmp, size=nvcmp)
+            call getvtx('RESU', 'NOM_CMP', iocc=ioccur, nbval=nvcmp, vect=veri_nom_cmp,&
                         nbret=ibid)
             afaire = .true.
         endif
@@ -226,12 +229,12 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                             endif
                             call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
                             call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-                            call irvcmp(ncmpmx, zk8(iad), zk8(jvcmp+ icmp), nbcmpt)
+                            call irvcmp(ncmpmx, zk8(iad), veri_nom_cmp(icmp+1), nbcmpt)
                         endif
  17                     continue
                     end do
                     if (nbcmpt .eq. 0) then
-                        valk (1) = zk8(jvcmp+icmp)
+                        valk (1) = veri_nom_cmp(icmp+1)
                         valk (2) = k1bid
                         call utmess('A', 'PREPOST5_61', nk=2, valk=valk)
                     endif
@@ -272,7 +275,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
     call irparb(leresu, nparam, zk16(jpa), nnopar, nbpara)
 !
 999 continue
-    call jedetr('&&IRCHOR.VERI_NOM_CMP')
+    AS_DEALLOCATE(vk8=veri_nom_cmp)
     call jedetr('&&IRCHOR.NOMUTI_PARA')
 !
     call jedema()

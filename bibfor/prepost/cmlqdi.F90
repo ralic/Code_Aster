@@ -29,6 +29,8 @@ function cmlqdi(nbma, nbno, lima, connez)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbma, nbno, lima(*)
     character(len=*) :: connez
     character(len=24) :: connex
@@ -45,7 +47,8 @@ function cmlqdi(nbma, nbno, lima, connez)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: m, ma, n, no, jnbma, nbnoma, jnoma, mxar
+    integer :: m, ma, n, no,  nbnoma, jnoma, mxar
+    integer, pointer :: nb_mailles(:) => null()
 ! ----------------------------------------------------------------------
 !
 !
@@ -54,9 +57,9 @@ function cmlqdi(nbma, nbno, lima, connez)
 !
 !    INITIALISATION
 !
-    call wkvect('&&CMLQDI.NB_MAILLES', 'V V I', nbno, jnbma)
+    AS_ALLOCATE(vi=nb_mailles, size=nbno)
     do 5 no = 1, nbno
-        zi(jnbma-1 + no) = 0
+        nb_mailles(no) = 0
  5  end do
 !
 !
@@ -72,7 +75,7 @@ function cmlqdi(nbma, nbno, lima, connez)
 !      COMPTABILISATION DES MAILLES PAR NOEUD
         do 20 n = 1, nbnoma
             no = zi(jnoma-1 + n)
-            zi(jnbma-1+no) = zi(jnbma-1+no) + 1
+            nb_mailles(no) = nb_mailles(no) + 1
 20      continue
 10  end do
 !
@@ -81,11 +84,11 @@ function cmlqdi(nbma, nbno, lima, connez)
 !
     mxar = 0
     do 30 no = 1, nbno
-        mxar = max(mxar, 4*zi(jnbma-1+no))
+        mxar = max(mxar, 4*nb_mailles(no))
 30  end do
 !
 !
-    call jedetr('&&CMLQDI.NB_MAILLES')
+    AS_DEALLOCATE(vi=nb_mailles)
     call jedema()
 !
     cmlqdi = mxar

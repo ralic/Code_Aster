@@ -23,6 +23,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 #include "asterfort/wkvect.h"
 #include "asterfort/xproj.h"
 #include "asterfort/xprpfi.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=2) :: levset
     character(len=8) :: noma, fispre
@@ -105,7 +107,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     integer :: jnodto, jeleto, node, elem, nbno, nbma
 !
 !     UPWIND INTEGRATION
-    integer :: jpoi, jtri, nbpfis, pos
+    integer ::  jtri, nbpfis, pos
     logical :: intabl, upwind
 !
 !  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
@@ -114,6 +116,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     real(kind=8) :: lsnp, lsnnew, lstnew
     character(len=19) :: pproj
     integer :: ipproj
+    real(kind=8), pointer :: vpoifis(:) => null()
 !
 !        ---------------------
 !        |  I | TRIANGLE | N |
@@ -316,7 +319,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !     COORDINATES OF THE POINTS OF INTERSECTION BETWEEN EACH ELEMENT
 !     AND THE LSN=0. THE THREE COORDINATES AND THE LSN ARE STORED.
 !     EACH ROW:   X,Y,Z,LSN
-    call wkvect('&&XPRLS0.POIFIS', 'V V R', nbmaco*24, jpoi)
+    AS_ALLOCATE(vr=vpoifis, size=nbmaco*24)
 !
 !     INITIALISE THE COUNTER FOR JTRI TABLE
     nbpfis = 0
@@ -637,8 +640,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     do pos = 1, nbpfis
                         dist = sqrt(&
                                (&
-                               x(ipt)-zr(jpoi-1+4*(pos-1)+1))** 2+ (y(ipt)-zr(jpoi-1+4*(pos-1)+2)&
-                               &)**2+ (z(ipt)-zr(jpoi-1+4*(pos-1)+3)&
+                               x(ipt)-vpoifis(4*(pos-1)+1))** 2+ (y(ipt)-vpoifis(4*(pos-1)+2)&
+                               &)**2+ (z(ipt)-vpoifis(4*(pos-1)+3)&
                                )**2&
                                )
                         if (dist .lt. r8prem()) then
@@ -652,10 +655,10 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     if (.not.intabl) then
 !                    THE COORDINATES OF THE POINT MUST BE STORED...
                         nbpfis = nbpfis+1
-                        zr(jpoi-1+4*(nbpfis-1)+1) = x(ipt)
-                        zr(jpoi-1+4*(nbpfis-1)+2) = y(ipt)
-                        zr(jpoi-1+4*(nbpfis-1)+3) = z(ipt)
-                        zr(jpoi-1+4*(nbpfis-1)+4) = lst(ipt)
+                        vpoifis(4*(nbpfis-1)+1) = x(ipt)
+                        vpoifis(4*(nbpfis-1)+2) = y(ipt)
+                        vpoifis(4*(nbpfis-1)+3) = z(ipt)
+                        vpoifis(4*(nbpfis-1)+4) = lst(ipt)
 !                    ...THE NUMBER OF THE POINT AS WELL
                         zi(jtri-1+7*(ima-1)+ipt+1) = nbpfis
                     else
@@ -756,10 +759,10 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     call wkvect(poifis, 'V V R', nbpfis*4, pos)
 !
     do i = 1, nbpfis*4
-        zr(pos-1+i) = zr(jpoi-1+i)
+        zr(pos-1+i) = vpoifis(i)
     end do
 !
-    call jedetr('&&XPRLS0.POIFIS')
+    AS_DEALLOCATE(vr=vpoifis)
 !
 !  REMPLACEMENT DES LEVEL SETS PAR CELLES CALCULEES
 !  ------------------------------------------------

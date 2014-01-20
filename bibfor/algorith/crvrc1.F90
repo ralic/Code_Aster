@@ -47,7 +47,9 @@ subroutine crvrc1()
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbfac, n1, nbinst, kinst, jinst, jlinst
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+    integer :: nbfac, n1, nbinst, kinst, jinst
     integer :: nbin, iret, iexi, jtemp
     real(kind=8) :: vinst
     character(len=8) :: kbid, resu, carele, paout, lpain(10), tempef
@@ -55,6 +57,7 @@ subroutine crvrc1()
     character(len=16) :: type, oper
     character(len=19) :: ligrmo, chout, chinst
     character(len=24) :: chcara(18), lchin(10)
+    real(kind=8), pointer :: linst(:) => null()
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -86,8 +89,8 @@ subroutine crvrc1()
     call getvr8('PREP_VRC1', 'INST', iocc=1, nbval=0, nbret=n1)
     ASSERT(n1.lt.0)
     nbinst = -n1
-    call wkvect('&&CRVRC1.LINST', 'V V R', nbinst, jlinst)
-    call getvr8('PREP_VRC1', 'INST', iocc=1, nbval=nbinst, vect=zr(jlinst),&
+    AS_ALLOCATE(vr=linst, size=nbinst)
+    call getvr8('PREP_VRC1', 'INST', iocc=1, nbval=nbinst, vect=linst,&
                 nbret=n1)
 !
     call jeexin(resu//'           .DESC', iret)
@@ -115,7 +118,7 @@ subroutine crvrc1()
 !     -- BOUCLE SUR LES INSTANTS :
 !     --------------------------------
     do kinst = 1,nbinst
-        vinst = zr(jlinst-1+kinst)
+        vinst = linst(kinst)
         call mecact('V', chinst, 'MODELE', ligrmo, 'INST_R',&
                     ncmp=1, nomcmp='INST', sr=vinst)
         call rsexch(' ', resu, 'TEMP', kinst, chout,&
@@ -134,7 +137,7 @@ subroutine crvrc1()
     end do
 !
 !
-    call jedetr('&&CRVRC1.LINST')
+    AS_DEALLOCATE(vr=linst)
 !
 !
 20  continue

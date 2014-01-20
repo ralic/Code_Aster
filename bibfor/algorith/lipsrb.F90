@@ -68,6 +68,8 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 #include "asterfort/mgutdm.h"
 #include "asterfort/rotati.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dgesvd.h"
 !
 !
@@ -79,16 +81,24 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !
 !-- VARIABLES DE LA ROUTINE
     integer :: ibid, i1, j1, k1, l1, lrot1, lrot2, ltran1, ltran2, nbno1, nbno2
-    integer :: lnoma1, lnoma2, lcoor1, lcoor2, numno, lno1, lno2, dima, ldepen
-    integer :: nbmast, nbslav, lnomas, lnosla, ldist, indmin, lphir, lvisla
-    integer :: ltramo, lprojt, decal, lmats, lmatu, lmatv, lmsm1u, lvsm1u
-    integer :: lindma, lindsl, lwork, jwork, possla, posmas, indsla
+    integer :: lnoma1, lnoma2, lcoor1, lcoor2, numno, lno1, lno2, dima
+    integer :: nbmast, nbslav, lnomas, lnosla,  indmin
+    integer :: ltramo, lprojt, decal, lmats,  lmatv, lmsm1u
+    integer :: lindma, lindsl, lwork,  possla, posmas, indsla
     integer(kind=4) :: info
-    integer :: indmas, lvimas
+    integer :: indmas
     character(len=8) :: kbid, mail1, mail2
     real(kind=8) :: tr1(3), tr2(3), ang1(3), ang2(3), rot1(3, 3), rot2(3, 3)
     real(kind=8) :: dismax, dismin, dx, dy, dz, swork(1)
     character(len=24) :: int1, int2, k24bid, tramod
+    integer, pointer :: depend_noeuds(:) => null()
+    real(kind=8), pointer :: dist_noeuds(:) => null()
+    integer, pointer :: ind_int_mast(:) => null()
+    integer, pointer :: ind_int_slav(:) => null()
+    real(kind=8), pointer :: mat_phir(:) => null()
+    real(kind=8), pointer :: mat_svd_work(:) => null()
+    real(kind=8), pointer :: mat_u(:) => null()
+    real(kind=8), pointer :: mat_vxsm1xut(:) => null()
 !
 !-----------C
 !--       --C
@@ -228,9 +238,9 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     endif
 !
 !-- ALLOCATION DE LA MATRICE DE DEPENDANCES
-    call wkvect('&&LIPSRB.DEPEND_NOEUDS', 'V V I', nbslav*dima, ldepen)
+    AS_ALLOCATE(vi=depend_noeuds, size=nbslav*dima)
 !-- ALLOCATION DE LA MATRICE DES DISTANCES
-    call wkvect('&&LIPSRB.DIST_NOEUDS', 'V V R', nbmast, ldist)
+    AS_ALLOCATE(vr=dist_noeuds, size=nbmast)
 !
     do i1 = 1, nbslav
 !-- DISTANCE AU NOEUD ESCLAVE COURANT
@@ -238,33 +248,33 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
         dismin=1.d16
 !
         do j1 = 1, nbmast
-            zr(ldist+j1-1)= (zr(lnosla+(i1-1)*3)- zr(lnomas+(j1-1)*3))&
+            dist_noeuds(j1)= (zr(lnosla+(i1-1)*3)- zr(lnomas+(j1-1)*3))&
             **2+ (zr(lnosla+(i1-1)*3+1)- zr(lnomas+(j1-1)*3+1))**2+&
             (zr(lnosla+(i1-1)*3+2)- zr(lnomas+(j1-1)*3+2))**2
-            if (zr(ldist+j1-1) .gt. dismax) then
-                dismax=zr(ldist+j1-1)
+            if (dist_noeuds(j1) .gt. dismax) then
+                dismax=dist_noeuds(j1)
             endif
-            if (zr(ldist+j1-1) .lt. dismin) then
-                dismin=zr(ldist+j1-1)
+            if (dist_noeuds(j1) .lt. dismin) then
+                dismin=dist_noeuds(j1)
                 indmin=j1
             endif
         end do
 !
 !-- RECHERCHE DES DIMA PLUS PROCHES VOISINS
         if (dima .eq. 1) then
-            zi(ldepen+i1-1)=indmin
+            depend_noeuds(i1)=indmin
         else
-            zi(ldepen+(i1-1)*dima)=indmin
+            depend_noeuds(1+(i1-1)*dima)=indmin
             do j1 = 1, dima-1
-                zr(ldist+indmin-1)=dismax
+                dist_noeuds(indmin)=dismax
                 dismin=dismax
                 do k1 = 1, nbmast
-                    if (zr(ldist+k1-1) .lt. dismin) then
-                        dismin=zr(ldist+k1-1)
+                    if (dist_noeuds(k1) .lt. dismin) then
+                        dismin=dist_noeuds(k1)
                         indmin=k1
                     endif
                 end do
-                zi(ldepen+(i1-1)*dima+j1)=indmin
+                depend_noeuds(1+(i1-1)*dima+j1)=indmin
             end do
         endif
     end do
@@ -305,39 +315,39 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     call wkvect('&&LIPSRB.TR_MOD_MAST_PRO', 'V V R', ddlsla*nbmoma, lprojt)
 !
 !-- ALLOCATION DES MATRICES DE TRAVAIL TEMPORAIRES
-    call wkvect('&&LIPSRB.MAT_PHIR', 'V V R', dima*36, lphir)
+    AS_ALLOCATE(vr=mat_phir, size=dima*36)
 !
     call wkvect('&&LIPSRB.MAT_S', 'V V R', 6, lmats)
-    call wkvect('&&LIPSRB.MAT_U', 'V V R', 36, lmatu)
+    AS_ALLOCATE(vr=mat_u, size=36)
     call wkvect('&&LIPSRB.MAT_V', 'V V R', 36*dima*dima, lmatv)
 !
 !-- DESACTIVATION DU TEST FPE
     call matfpe(-1)
 !
-    call dgesvd('A', 'A', 6, 6*dima, zr(lphir),&
-                6, zr(lmats), zr(lmatu), 6, zr(lmatv),&
+    call dgesvd('A', 'A', 6, 6*dima, mat_phir,&
+                6, zr(lmats), mat_u, 6, zr(lmatv),&
                 6*dima, swork, -1, info)
     lwork=int(swork(1))
-    call wkvect('&&LIPSRB.MAT_SVD_WORK', 'V V R', lwork, jwork)
+    AS_ALLOCATE(vr=mat_svd_work, size=lwork)
 !
     call wkvect('&&LIPSRB.MAT_SM1XUT', 'V V R', 36, lmsm1u)
-    call wkvect('&&LIPSRB.MAT_VXSM1XUT', 'V V R', 36*dima, lvsm1u)
+    AS_ALLOCATE(vr=mat_vxsm1xut, size=36*dima)
 !
 !-- CONSTRUCTION DES VECTEURS D'INDICES POUR LES DDL
 !--     EN RENUMEROTANT L'INTERFACE DE 1 A DDLMAS/DDLSLA
     possla=1
     posmas=1
-    call wkvect('&&LIPSRB.IND_INT_MAST', 'V V I', 6*nbmast, lvimas)
-    call wkvect('&&LIPSRB.IND_INT_SLAV', 'V V I', 6*nbslav, lvisla)
+    AS_ALLOCATE(vi=ind_int_mast, size=6*nbmast)
+    AS_ALLOCATE(vi=ind_int_slav, size=6*nbslav)
     do i1 = 1, 6*nbmast
         if (zi(lindma+i1-1) .gt. 0) then
-            zi(lvimas+i1-1)=posmas
+            ind_int_mast(i1)=posmas
             posmas=posmas+1
         endif
     end do
     do i1 = 1, 6*nbslav
         if (zi(lindsl+i1-1) .gt. 0) then
-            zi(lvisla+i1-1)=possla
+            ind_int_slav(i1)=possla
             possla=possla+1
         endif
     end do
@@ -352,12 +362,12 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     do i1 = 1, nbslav
 !-- INITIALISER A CHAQUE FOIS, PUISQUE LA SVD ECRASE TOUT...
         do j1 = 1, dima*36
-            zr(lphir+j1-1)=0.d0
+            mat_phir(j1)=0.d0
         end do
 !
 !-- CONSTRUCTION DE LA MATRICE DE CORPS RIGIDE POUR LE NOEUD COURANT
         do j1 = 1, dima
-            numno=zi(ldepen+(i1-1)*dima+j1-1)-1
+            numno=depend_noeuds(1+(i1-1)*dima+j1-1)-1
             dx=(zr(lnomas+numno*3)- zr(lnosla+(i1-1)*3))
             dy=(zr(lnomas+numno*3+1)- zr(lnosla+(i1-1)*3+1))
             dz=(zr(lnomas+numno*3+2)- zr(lnosla+(i1-1)*3+2))
@@ -371,25 +381,25 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !            ZR(LPHIR+DECAL+(K1-1)*7)=1.
 !            ZR(LPHIR+DECAL+(K1-1)*7)=1.-INT((K1-1)/3)
                 if (zi(lindma+6*numno+k1-1) .gt. 0) then
-                    zr(lphir+decal+(k1-1)*7)=1.d0
+                    mat_phir(1+decal+(k1-1)*7)=1.d0
                 else
-                    zr(lphir+decal+(k1-1)*7)=0.d0
+                    mat_phir(1+decal+(k1-1)*7)=0.d0
                 endif
 !
             end do
-            zr(lphir+decal+4)= dz
-            zr(lphir+decal+5)= -dy
-            zr(lphir+decal+9)= -dz
-            zr(lphir+decal+11)= dx
-            zr(lphir+decal+15)= dy
-            zr(lphir+decal+16)=-dx
+            mat_phir(1+decal+4)= dz
+            mat_phir(1+decal+5)= -dy
+            mat_phir(1+decal+9)= -dz
+            mat_phir(1+decal+11)= dx
+            mat_phir(1+decal+15)= dy
+            mat_phir(1+decal+16)=-dx
         end do
 !
 !-- CONSTRUCTION DE LA MATRICE D'OBSERVATION
 !
-        call dgesvd('A', 'A', 6, 6*dima, zr(lphir),&
-                    6, zr(lmats), zr(lmatu), 6, zr(lmatv),&
-                    6*dima, zr(jwork), lwork, info)
+        call dgesvd('A', 'A', 6, 6*dima, mat_phir,&
+                    6, zr(lmats), mat_u, 6, zr(lmatv),&
+                    6*dima, mat_svd_work, lwork, info)
 !
 !-- VOIR A RAJOUTER UN TEST EN FONCTION DE LA DIMENSION DU MAILLAGE,
 !-- POUR LE RECOLLEMENT DES INTERFACES
@@ -399,16 +409,16 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- CONDITIONNEMENT
                 if (abs(zr(lmats+j1-1)) .gt. 1.d-10) then
                     zr(lmsm1u+(k1-1)*6+j1-1)=(1/zr(lmats+j1-1))*&
-                    zr(lmatu+(j1-1)*6+k1-1)
+                    mat_u(1+(j1-1)*6+k1-1)
                 endif
             end do
         end do
 !
         do k1 = 1, 6
             do j1 = 1, 6*dima
-                zr(lvsm1u+(k1-1)*6*dima+j1-1)=0.d0
+                mat_vxsm1xut(1+(k1-1)*6*dima+j1-1)=0.d0
                 do l1 = 1, 6
-                    zr(lvsm1u+(k1-1)*6*dima+j1-1)= zr(lvsm1u+(k1-1)*6*&
+                    mat_vxsm1xut(1+(k1-1)*6*dima+j1-1)= mat_vxsm1xut(1+(k1-1)*6*&
                     dima+j1-1)+ zr(lmatv+(j1-1)*6*dima+l1-1)* zr(&
                     lmsm1u+(k1-1)*6+l1-1)
                 end do
@@ -420,17 +430,17 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- ET ESCLAVES EXISTENT DANS LA DEFINITION DES INTERFACES
 !
         do j1 = 1, 6
-            indsla=zi(lvisla+(i1-1)*6+j1-1)
+            indsla=ind_int_slav(1+(i1-1)*6+j1-1)
             if (indsla .gt. 0) then
                 do l1 = 1, nbmoma
                     zr(lprojt+(l1-1)*ddlsla+indsla-1)=0.d0
                     do k1 = 1, 6*dima
-                        numno=zi(ldepen +(i1-1)*dima+int((k1-1)/6))
-                        indmas=zi(lvimas+(numno-1)*6+mod(k1-1,6))
+                        numno=depend_noeuds(1 +(i1-1)*dima+int((k1-1)/6))
+                        indmas=ind_int_mast(1+(numno-1)*6+mod(k1-1,6))
                         if (indmas .gt. 0) then
                             zr(lprojt+(l1-1)*ddlsla+indsla-1)=&
                             zr(lprojt+(l1-1)*ddlsla+indsla-1)+&
-                            zr(lvsm1u+(j1-1)*6*dima+k1-1)* zr(ltramo+(&
+                            mat_vxsm1xut(1+(j1-1)*6*dima+k1-1)* zr(ltramo+(&
                             l1-1)*ddlmas+indmas-1)
                         endif
                     end do
@@ -448,20 +458,20 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !
 !-- DESTRUCTION DES MATRICES TEMPORAIRES
 !
-    call jedetr('&&LIPSRB.IND_INT_MAST')
-    call jedetr('&&LIPSRB.IND_INT_SLAV')
-    call jedetr('&&LIPSRB.MAT_PHIR')
+    AS_DEALLOCATE(vi=ind_int_mast)
+    AS_DEALLOCATE(vi=ind_int_slav)
+    AS_DEALLOCATE(vr=mat_phir)
     call jedetr('&&LIPSRB.MAT_TRACE_PROJ')
     call jedetr('&&LIPSRB.MAT_S')
-    call jedetr('&&LIPSRB.MAT_U')
+    AS_DEALLOCATE(vr=mat_u)
     call jedetr('&&LIPSRB.MAT_V')
     call jedetr('&&LIPSRB.MAT_SM1XUT')
-    call jedetr('&&LIPSRB.MAT_VXSM1XUT')
-    call jedetr('&&LIPSRB.MAT_SVD_WORK')
+    AS_DEALLOCATE(vr=mat_vxsm1xut)
+    AS_DEALLOCATE(vr=mat_svd_work)
     call jedetr('&&LIPSRB.COORD_INT1')
     call jedetr('&&LIPSRB.COORD_INT2')
-    call jedetr('&&LIPSRB.DEPEND_NOEUDS')
-    call jedetr('&&LIPSRB.DIST_NOEUDS')
+    AS_DEALLOCATE(vi=depend_noeuds)
+    AS_DEALLOCATE(vr=dist_noeuds)
 !
 !---------C
 !--     --C

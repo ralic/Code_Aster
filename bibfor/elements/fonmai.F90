@@ -19,6 +19,8 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbnoff
     character(len=8) :: resu, nomail, typfon
@@ -59,7 +61,7 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
 !
     real(kind=8) :: vecori(3)
 !
-    integer :: jcour2, jcour5, jtypm, iatyma, idnono, idlino, jtyp
+    integer :: jcour2,  jtypm, iatyma, idnono, idlino, jtyp
     integer :: i, nbma, n1, im, nig
     integer :: nid, numno, iret, trouv, numma
     character(len=8) :: k8b, nomma, typm, ndorig, ndextr
@@ -68,6 +70,7 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
     character(len=16) :: motcle(2), typmcl(2)
     character(len=24) :: conec, typp, nommai, nomnoe, noeord
     character(len=24) :: mesnoe, mafour, nogrp
+    integer, pointer :: maillestriees(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !
@@ -143,17 +146,17 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
 !
 !     ON REMONTE LA MAILLE_ORIG EN TETE DE LISTE
 !
-                call wkvect('&&FONMAI.MAILLESTRIEES', 'V V I', 3*nbma, jcour5)
+                AS_ALLOCATE(vi=maillestriees, size=3*nbma)
                 do 546 im = trouv, nbma
-                    zi(jcour5-1 + im+1-trouv) = zi(jcour2-1 + im)
+                    maillestriees(im+1-trouv) = zi(jcour2-1 + im)
 546              continue
                 do 547 im = 1, trouv-1
-                    zi(jcour5-1 + im+1+nbma-trouv) = zi(jcour2-1 + im)
+                    maillestriees(im+1+nbma-trouv) = zi(jcour2-1 + im)
 547              continue
                 do 548 im = 1, nbma
-                    zi(jcour2-1 + im)=zi(jcour5-1 + im)
+                    zi(jcour2-1 + im)=maillestriees(im)
 548              continue
-                call jedetr('&&FONMAI.MAILLESTRIEES')
+                AS_DEALLOCATE(vi=maillestriees)
             endif
         endif
     endif

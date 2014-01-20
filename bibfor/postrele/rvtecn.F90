@@ -22,6 +22,8 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1, ioc, isd
     real(kind=8) :: releve(*), absc(*), coor(*)
@@ -61,7 +63,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 ! IN  : NBPOIN : NOMBRE DE POINT D'EVALUATION
 ! IN  : DOCU   : 'LSTN'/'CHMM'/'SGTD'/'ARCC'
 !     ------------------------------------------------------------------
-    integer :: nbvari, nbpar, jval1, jvalk, ilign, ipt, nbsp, nbco, lc, ln, is, ic, i2, valei(12)
+    integer :: nbvari, nbpar,   ilign, ipt, nbsp, nbco, lc, ln, is, ic, i2, valei(12)
     integer :: n1, adrval, adracc, jacc, ik, ir, ii, lcr, lck, nc, nbacc, nbpr, jaces, iac, iadr
     integer :: iord(1)
     logical :: exist
@@ -72,6 +74,8 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     character(len=24) :: nomval, nomacc, nnores, nomjv
     complex(kind=8) :: c16b
     character(len=80) :: valek(11)
+    character(len=24), pointer :: para(:) => null()
+    real(kind=8), pointer :: vale_r(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -99,28 +103,28 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     call jeveuo(nomacc, 'L', jacc)
 !
     lcr = nbcmp + 10
-    call wkvect('&&RVTECN.VALE_R', 'V V R', lcr, jval1)
+    AS_ALLOCATE(vr=vale_r, size=lcr)
     lck = nbcmp + 23
-    call wkvect('&&RVTECN.PARA', 'V V K24', lck, jvalk)
+    AS_ALLOCATE(vk24=para, size=lck)
 !
     ii = 0
     ir = 0
     ik = 1
     nbpar = 1
     valek(ik) = intitu
-    zk24(jvalk-1+nbpar) = 'INTITULE'
+    para(nbpar) = 'INTITULE'
 !
     if (nc .ne. 0) then
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'CHEMIN'
+        para(nbpar) = 'CHEMIN'
         ik = ik + 1
         valek(ik) = courbe
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'SEGMENT'
+        para(nbpar) = 'SEGMENT'
         ii = ii + 1
         valei(ii) = isd
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'CMP_CNX'
+        para(nbpar) = 'CMP_CNX'
         ii = ii + 1
         valei(ii) = ioc
     endif
@@ -128,18 +132,18 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     if (zk8(jacc) .eq. 'DIRECT  ') then
         call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'L', jacc)
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'CHAM_GD'
+        para(nbpar) = 'CHAM_GD'
         ik = ik + 1
         valek(ik) = zk24(jacc)(1:8)
     else
         call jeveuo(nnores, 'L', jacc)
         nomres = zk16(jacc)(1:8)
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'RESU'
+        para(nbpar) = 'RESU'
         ik = ik + 1
         valek(ik) = nomres
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'NOM_CHAM'
+        para(nbpar) = 'NOM_CHAM'
         ik = ik + 1
         valek(ik) = zk16(jacc+1)
         call jeveuo(nomacc, 'L', adracc)
@@ -147,7 +151,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
         acces = zk8(adracc)
         if (acces(1:1) .eq. 'O') then
             nbpar = nbpar + 1
-            zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
+            para(nbpar) = 'NUME_ORDRE'
             ii = ii + 1
             valei(ii) = zi(adrval + i1-1)
             nomjv = '&&RVTECN.NOMS_ACCES'
@@ -162,13 +166,13 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
                         call tbajpa(nomtab, 1, zk16(jaces-1+iac), ctype)
                     endif
                     nbpar = nbpar + 1
-                    zk24(jvalk-1+nbpar) = zk16(jaces-1+iac)
+                    para(nbpar) = zk16(jaces-1+iac)
                     if (ctype(1:1) .eq. 'I') then
                         ii = ii + 1
                         valei(ii) = zi(iadr)
                     else if (ctype(1:1) .eq. 'R') then
                         ir = ir + 1
-                        zr(jval1+ir-1) = zr(iadr)
+                        vale_r(ir) = zr(iadr)
                     else if (ctype(1:3) .eq. 'K80') then
                         ik = ik + 1
                         valek(ik) = zk80(iadr)
@@ -190,33 +194,33 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
             endif
         else if (acces(1:1) .eq. 'M') then
             nbpar = nbpar + 1
-            zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
+            para(nbpar) = 'NUME_ORDRE'
             call rsorac(nomres, 'NUME_MODE', zi(adrval+i1-1), 0.d0, k8b,&
                         c16b, prec, crit, iord, 1,&
                         n1)
             ii = ii + 1
             valei(ii) = iord(1)
             nbpar = nbpar + 1
-            zk24(jvalk-1+nbpar) = 'NUME_MODE'
+            para(nbpar) = 'NUME_MODE'
             ii = ii + 1
             valei(ii) = zi(adrval + i1-1)
         else if (acces(1:1) .eq. 'I') then
             nbpar = nbpar + 1
-            zk24(jvalk-1+nbpar) = 'NUME_ORDRE'
+            para(nbpar) = 'NUME_ORDRE'
             call rsorac(nomres, 'INST', 0, zr(adrval + i1-1), k8b,&
                         c16b, prec, crit, iord, 1,&
                         n1)
             ii = ii + 1
             valei(ii) = iord(1)
             nbpar = nbpar + 1
-            zk24(jvalk-1+nbpar) = 'INST'
+            para(nbpar) = 'INST'
             ir = ir + 1
-            zr(jval1+ir-1) = zr(adrval + i1-1)
+            vale_r(ir) = zr(adrval + i1-1)
         else if (acces(1:1) .eq. 'F') then
             nbpar = nbpar + 1
-            zk24(jvalk-1+nbpar) = 'FREQ'
+            para(nbpar) = 'FREQ'
             ir = ir + 1
-            zr(jval1+ir-1) = zr(adrval + i1-1)
+            vale_r(ir) = zr(adrval + i1-1)
         endif
     endif
     if (docu .eq. 'LSTN' .or. docu .eq. 'CHMM') then
@@ -225,16 +229,16 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
             call tbajpa(nomtab, 1, 'NOEUD', 'K8')
         endif
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'NOEUD'
+        para(nbpar) = 'NOEUD'
     endif
     nbpar = nbpar + 1
-    zk24(jvalk-1+nbpar) = 'ABSC_CURV'
+    para(nbpar) = 'ABSC_CURV'
     nbpar = nbpar + 1
-    zk24(jvalk-1+nbpar) = 'COOR_X'
+    para(nbpar) = 'COOR_X'
     nbpar = nbpar + 1
-    zk24(jvalk-1+nbpar) = 'COOR_Y'
+    para(nbpar) = 'COOR_Y'
     nbpar = nbpar + 1
-    zk24(jvalk-1+nbpar) = 'COOR_Z'
+    para(nbpar) = 'COOR_Z'
     ic = 0
     is = 0
     do 20, ipt = 1, nbpoin, 1
@@ -247,7 +251,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
         endif
         ic = 1
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'NUME_COUCHE'
+        para(nbpar) = 'NUME_COUCHE'
     endif
     if (nbsp .gt. 1 .and. is .eq. 0) then
         call tbexip(nomtab, 'NUME_GAUSS', exist, typpar)
@@ -256,12 +260,12 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
         endif
         is = 1
         nbpar = nbpar + 1
-        zk24(jvalk-1+nbpar) = 'NUME_GAUSS'
+        para(nbpar) = 'NUME_GAUSS'
     endif
     20 end do
     do 30, i2 = 1, nbcmp, 1
     nbpar = nbpar + 1
-    zk24(jvalk-1+nbpar) = nomcmp(i2)
+    para(nbpar) = nomcmp(i2)
     30 end do
 !
     lc = ir+4+nbcmp
@@ -284,10 +288,10 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
         valek(ik) = nomnoe(ipt)
     endif
 !
-    zr(jval1+ir ) = absc(ipt)
-    zr(jval1+ir+1) = coor(1+(ipt-1)*3)
-    zr(jval1+ir+2) = coor(2+(ipt-1)*3)
-    zr(jval1+ir+3) = coor(3+(ipt-1)*3)
+    vale_r(ir+1) = absc(ipt)
+    vale_r(1+ir+1) = coor(1+(ipt-1)*3)
+    vale_r(1+ir+2) = coor(2+(ipt-1)*3)
+    vale_r(1+ir+3) = coor(3+(ipt-1)*3)
 !
     do 102, ic = 1, nbco, 1
 !
@@ -299,11 +303,11 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 !
     do 106, i2 = 1, nbcmp, 1
 !
-    zr(jval1+ir+3+i2) = releve((ipt-1)*ln+lc*(ic-1)+ nbcmp*(is-1)+i2)
+    vale_r(1+ir+3+i2) = releve((ipt-1)*ln+lc*(ic-1)+ nbcmp*(is-1)+i2)
 !
 106  continue
 !
-    call tbajli(nomtab, nbpar, zk24(jvalk), valei, zr( jval1),&
+    call tbajli(nomtab, nbpar, para, valei, vale_r,&
                 [c16b], valek, ilign)
 !
 104  continue
@@ -312,8 +316,8 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
 !
     100 end do
 !
-    call jedetr('&&RVTECN.VALE_R')
-    call jedetr('&&RVTECN.PARA')
+    AS_DEALLOCATE(vr=vale_r)
+    AS_DEALLOCATE(vk24=para)
 !
 9999  continue
     call jedema()

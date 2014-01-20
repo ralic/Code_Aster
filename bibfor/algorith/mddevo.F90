@@ -33,6 +33,8 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
     integer :: logcho(*), iorsto(*), iredst(*), iparch(*), ichost(*), irevst(*)
     integer :: nbmode, nbchoc
@@ -109,7 +111,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     integer :: palmax
 !-----------------------------------------------------------------------
     integer :: i, iarchi, if, im, im1, iret, isto1
-    integer :: isto2, isto3, jacce, jbid1, jchor, jdep1, jdep2
+    integer :: isto2, isto3,  jbid1, jchor, jdep1, jdep2
     integer :: jdep3, jdep4, jdepl, jfex1, jfex2, jfex3, jfex4
     integer :: jfext, jredi, jredr, jtra1, jvint, jvit1, jvit2
     integer :: jvit3, jvit4, jvite, n100, nbexci, nbmod1
@@ -125,6 +127,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     character(len=3) :: finpal(palmax)
     character(len=8) :: cnpal(palmax)
     real(kind=8) :: fsauv(palmax, 3)
+    real(kind=8), pointer :: acce(:) => null()
 !   ------------------------------------------------------------------------------------
 !   Definition of statement functions giving the appropriate (i,j) term in the mass, 
 !   rigidity and damping matrices
@@ -165,7 +168,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !     --- VECTEURS DE TRAVAIL ---
     call wkvect('&&MDDEVO.DEPL', 'V V R8', 4*nbmode, jdepl)
     call wkvect('&&MDDEVO.VITE', 'V V R8', 4*nbmode, jvite)
-    call wkvect('&&MDDEVO.ACCE', 'V V R8', nbmode, jacce)
+    AS_ALLOCATE(vr=acce, size=nbmode)
     call wkvect('&&MDDEVO.TRA1', 'V V R8', nbmode, jtra1)
     call wkvect('&&MDDEVO.FEXT', 'V V R8', 4*nbmode, jfext)
     if (nbchoc .ne. 0) then
@@ -242,7 +245,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
         zr(jvit1+im) = ( 1.d0 / (4.d0 - dt * agen(im1,im1) ) ) &
                           * ( zr(jvit2+im)*( 4.d0 + dt*agen(im1,im1) ) &
                             - dt * ( g1 + g2) )
-        zr(jacce+im) = g2 - agen(im1,im1)*zr(jvit2+im)
+        acce(im+1) = g2 - agen(im1,im1)*zr(jvit2+im)
 !
     end do
 !
@@ -250,7 +253,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     tarchi = tinit
 !
     call mdarnl(isto1, 0, tinit, dt, nbmode,&
-                zr(jdep2), zr(jvit2), zr(jacce), isto2, nbchoc,&
+                zr(jdep2), zr(jvit2), acce, isto2, nbchoc,&
                 zr(jchor), nbscho, isto3, nbrede, zr(jredr),&
                 zi(jredi), isto4, nbrevi, zr(jrevr), zi(jrevi),&
                 depsto, vitsto, accsto, passto, iorsto,&
@@ -351,7 +354,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
             zr(jvit4+im) = x1 * ( zr(jvit2+im) + dt3*x2 )
 !
 !           --- ACCELERATIONS GENERALISEES AU PAS ---
-            zr(jacce+im) = g4 - agen(im1,im1)*zr(jvit4+im)
+            acce(im+1) = g4 - agen(im1,im1)*zr(jvit4+im)
         end do
 !
 !        --- ARCHIVAGE ---
@@ -361,7 +364,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
             tarchi = temps
 !
             call mdarnl(isto1, iarchi, temps, dt, nbmode,&
-                        zr(jdep4), zr( jvit4), zr(jacce), isto2, nbchoc,&
+                        zr(jdep4), zr( jvit4), acce, isto2, nbchoc,&
                         zr(jchor), nbscho, isto3, nbrede, zr(jredr),&
                         zi(jredi), isto4, nbrevi, zr(jrevr), zi( jrevi),&
                         depsto, vitsto, accsto, passto, iorsto,&
@@ -417,7 +420,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 9999  continue
     call jedetr('&&MDDEVO.DEPL')
     call jedetr('&&MDDEVO.VITE')
-    call jedetr('&&MDDEVO.ACCE')
+    AS_DEALLOCATE(vr=acce)
     call jedetr('&&MDDEVO.TRA1')
     call jedetr('&&MDDEVO.FEXT')
     if (nbchoc .ne. 0) call jedetr('&&MDDEVO.SCHOR')

@@ -50,6 +50,8 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 #include "asterfort/vpwecf.h"
 #include "asterfort/vrrefe.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=4) :: mod45
     character(len=19) :: matrig, matgeo
     integer :: defo, nfreq, cdsp
@@ -83,8 +85,8 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     parameter (nbpari=8,nbparr=16,nbpark=3,nbpara=27)
     parameter (mxddl=1)
     integer :: indf, imet, i, ieq, iret, ier1, ibid, ierd, ifreq
-    integer :: lselec, lresid, lamor, lmasse, lresur, lworkd, laux, lraide
-    integer :: lworkl, islvk, lresui, lworkv, lprod, lresuk, lddl, eddl, eddl2
+    integer ::   lamor, lmasse, lresur, lworkd, laux, lraide
+    integer :: lworkl, islvk,  lworkv, lprod,  lddl, eddl, eddl2
     integer :: lmatra, lonwl, ityp, iordre, nbvec2, icoef, jexx, jest
     integer :: npivot, nbvect, priram(8), maxitr, neqact, mfreq, nparr, nbcine
     integer :: nbrss, mxresf, nblagr, nconv, npiv2(2)
@@ -96,10 +98,16 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     character(len=8) :: knega, method, chaine
     character(len=16) :: typcon, typres, typco2, k16bid
     character(len=19) :: matopa, numedd, solveu
-    integer :: ldsor, lvec, neq, idet(2)
-    integer :: nbddl2, lsta, redem
+    integer :: ldsor,  neq, idet(2)
+    integer :: nbddl2,  redem
     character(len=24) :: nopara(nbpara), metres
     logical :: flage, lbid
+    real(kind=8), pointer :: resid(:) => null()
+    integer, pointer :: resu_i(:) => null()
+    character(len=24), pointer :: resu_k(:) => null()
+    logical, pointer :: select(:) => null()
+    real(kind=8), pointer :: vect_propre(:) => null()
+    real(kind=8), pointer :: vect_stabil(:) => null()
 !     ------------------------------------------------------------------
     data  nopara /&
      &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,&
@@ -302,9 +310,9 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !     ------------------------------------------------------------------
 !
     mxresf = nfreq
-    call wkvect('&&NMOP45.RESU_I', 'V V I', nbpari*mxresf, lresui)
+    AS_ALLOCATE(vi=resu_i, size=nbpari*mxresf)
     call wkvect('&&NMOP45.RESU_R', 'V V R', nbparr*mxresf, lresur)
-    call wkvect('&&NMOP45.RESU_K', 'V V K24', nbpark*mxresf, lresuk)
+    AS_ALLOCATE(vk24=resu_k, size=nbpark*mxresf)
 !
 !     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
 !
@@ -312,18 +320,18 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
         zr(lresur+ieq-1) = undf
     end do
     do ieq = 1, nbpari*mxresf
-        zi(lresui+ieq-1) = indf
+        resu_i(ieq) = indf
     end do
 !
 !     --- CAS REEL ET GENERALISE ---
-    call wkvect('&&NMOP45.VECT_PROPRE', 'V V R', neq*nbvect, lvec)
-    call wkvect('&&NMOP45.VECT_STABIL', 'V V R', neq, lsta)
+    AS_ALLOCATE(vr=vect_propre, size=neq*nbvect)
+    AS_ALLOCATE(vr=vect_stabil, size=neq)
 !
     lonwl = 3*nbvect*nbvect + 6*nbvect
-    call wkvect('&&NMOP45.SELECT', 'V V L', nbvect, lselec)
+    AS_ALLOCATE(vl=select, size=nbvect)
 !     --- CAS REEL GENERALISE ---
 !
-    call wkvect('&&NMOP45.RESID', 'V V R', neq, lresid)
+    AS_ALLOCATE(vr=resid, size=neq)
     call wkvect('&&NMOP45.VECT.WORKD', 'V V R', 3*neq, lworkd)
     call wkvect('&&NMOP45.VECT.WORKL', 'V V R', lonwl, lworkl)
     call wkvect('&&NMOP45.VECT.WORKV', 'V V R', 3*nbvect, lworkv)
@@ -361,8 +369,8 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
         if (defo .eq. 0) then
 !
             call vpsorn(lmasse, lmatra, neq, nbvect, nfreq,&
-                        tolsor, zr(lvec), zr(lresid), zr(lworkd), zr(lworkl),&
-                        lonwl, zl(lselec), zr(ldsor), omeshi, zr(laux),&
+                        tolsor, vect_propre, resid, zr(lworkd), zr(lworkl),&
+                        lonwl, select, zr(ldsor), omeshi, zr(laux),&
                         zr(lworkv), zi(lprod), zi(lddl), neqact, maxitr,&
                         ifm, niv, priram, alpha, omecor,&
                         nconv, flage, solveu)
@@ -390,18 +398,18 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
             redem = 0
 !
             call vpsor1(lmatra, neq, nbvect, nfreq, tolsor,&
-                        zr(lvec), zr(lresid), zr(lworkd), zr(lworkl), lonwl,&
-                        zl(lselec), zr(ldsor), omeshi, zr(laux), zr(lworkv),&
+                        vect_propre, resid, zr(lworkd), zr(lworkl), lonwl,&
+                        select, zr(ldsor), omeshi, zr(laux), zr(lworkv),&
                         zi(lprod), zi(lddl), zi(eddl), nbddl, neqact,&
                         maxitr, ifm, niv, priram, alpha,&
                         omecor, nconv, flage, solveu, nbddl2,&
-                        zi(eddl2), zr(lsta), csta, redem)
+                        zi(eddl2), vect_stabil, csta, redem)
 !
         endif
     else
         call vpsorn(lmasse, lmatra, neq, nbvect, nfreq,&
-                    tolsor, zr(lvec), zr(lresid), zr(lworkd), zr(lworkl),&
-                    lonwl, zl(lselec), zr(ldsor), omeshi, zr(laux),&
+                    tolsor, vect_propre, resid, zr(lworkd), zr(lworkl),&
+                    lonwl, select, zr(ldsor), omeshi, zr(laux),&
                     zr(lworkv), zi(lprod), zi(lddl), neqact, maxitr,&
                     ifm, niv, priram, alpha, omecor,&
                     nconv, flage, solveu)
@@ -416,30 +424,30 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
 !     TRI DE CES MODES
     call rectfr(nconv, nconv, omeshi, npivot, nblagr,&
-                zr(ldsor), nfreq+1, zi(lresui), zr(lresur), nfreq)
+                zr(ldsor), nfreq+1, resu_i, zr(lresur), nfreq)
     call vpbost(typres, nconv, nconv, omeshi, zr(ldsor),&
                 nfreq+1, vpinf, vpmax, precdc, method,&
                 omecor)
     if (mod45 .eq. 'VIBR') then
-        call vpordi(1, 0, nconv, zr(lresur+mxresf), zr(lvec),&
-                    neq, zi(lresui))
+        call vpordi(1, 0, nconv, zr(lresur+mxresf), vect_propre,&
+                    neq,resu_i)
     endif
     do imet = 1, nconv
-        zi(lresui-1+mxresf+imet) = 0
+        resu_i(mxresf+imet) = 0
         zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
         zr(lresur-1+2*mxresf+imet) = 0.0d0
-        zk24(lresuk-1+mxresf+imet) = 'SORENSEN'
+        resu_k(mxresf+imet) = 'SORENSEN'
     end do
 !
 !
     if (mod45 .ne. 'VIBR') then
         ityp = 0
         iordre = 0
-        call vpordo(ityp, iordre, nconv, zr(lresur+mxresf), zr(lvec),&
+        call vpordo(ityp, iordre, nconv, zr(lresur+mxresf), vect_propre,&
                     neq)
         do imet = 1, nconv
             zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
-            zi(lresui-1+imet) = imet
+            resu_i(imet) = imet
         end do
     endif
 !
@@ -467,14 +475,14 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
     call vppara(modes, typcon, knega, lraide, lmasse,&
                 lamor, mxresf, neq, nconv, omecor,&
-                zi(lddl), zi(lprod), zr(lvec), [cbid], nbpari,&
-                nparr, nbpark, nopara, mod45, zi(lresui),&
-                zr(lresur), zk24(lresuk), ktyp, .false., ibid,&
+                zi(lddl), zi(lprod), vect_propre, [cbid], nbpari,&
+                nparr, nbpark, nopara, mod45, resu_i,&
+                zr(lresur), resu_k, ktyp, .false., ibid,&
                 ibid, k16bid, ibid)
 !
     if (niv .ge. 2) then
-        call vpwecf(' ', typres, nconv, mxresf, zi(lresui),&
-                    zr(lresur), zk24(lresuk), lamor, ktyp, lbid)
+        call vpwecf(' ', typres, nconv, mxresf, resu_i,&
+                    zr(lresur), resu_k, lamor, ktyp, lbid)
     endif
 !
     if (nsta .ne. 0) then
@@ -483,9 +491,9 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
         call vppara(modes2, typco2, knega, lraide, lmasse,&
                     lamor, un, neq, un, omecor,&
-                    zi(lddl), zi(lprod), zr(lsta), [cbid], nbpari,&
-                    nparr, nbpark, nopara, 'STAB', zi(lresui),&
-                    [csta], zk24(lresuk), ktyp, .false., ibid,&
+                    zi(lddl), zi(lprod), vect_stabil, [cbid], nbpari,&
+                    nparr, nbpark, nopara, 'STAB', resu_i,&
+                    [csta], resu_k, ktyp, .false., ibid,&
                     ibid, k16bid, ibid)
 !
     endif
@@ -497,13 +505,13 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
     call jedetr('&&NMOP45.POSITION.DDL')
     call jedetr('&&NMOP45.DDL.BLOQ.CINE')
-    call jedetr('&&NMOP45.RESU_I')
+    AS_DEALLOCATE(vi=resu_i)
     call jedetr('&&NMOP45.RESU_R')
-    call jedetr('&&NMOP45.RESU_K')
-    call jedetr('&&NMOP45.VECT_PROPRE')
-    call jedetr('&&NMOP45.VECT_STABIL')
-    call jedetr('&&NMOP45.SELECT')
-    call jedetr('&&NMOP45.RESID')
+    AS_DEALLOCATE(vk24=resu_k)
+    AS_DEALLOCATE(vr=vect_propre)
+    AS_DEALLOCATE(vr=vect_stabil)
+    AS_DEALLOCATE(vl=select)
+    AS_DEALLOCATE(vr=resid)
     call jedetr('&&NMOP45.VECT.WORKD')
     call jedetr('&&NMOP45.VECT.WORKL')
     call jedetr('&&NMOP45.VECT.WORKV')

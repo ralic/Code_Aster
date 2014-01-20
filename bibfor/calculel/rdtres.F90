@@ -26,6 +26,8 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: noma1, noma2, resu1, resu2
     character(len=24) :: corrn, corrm
@@ -64,7 +66,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !
     integer :: i, nbordr, nbpara,  nbac, nbpa, iad1, iad2, j
     integer :: iret, nbsym, isym, iordr,  n1, j1, ima2, ima1
-    integer :: nbgrel, igr, jcorrm, iel, nbma1, nbma2, jcoinv, cret
+    integer :: nbgrel, igr, jcorrm, iel, nbma1, nbma2,  cret
     integer :: ite, jmail2
     real(kind=8) :: prec
     character(len=16) :: typres, nomsym(200), nopara
@@ -73,6 +75,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     logical :: acceno, redpos
     integer, pointer :: nume_ordre(:) => null()
     character(len=16), pointer :: noms_para(:) => null()
+    integer, pointer :: corrm_inv(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -112,11 +115,11 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
         call jeveuo(corrm, 'L', jcorrm)
         call dismoi('NB_MA_MAILLA', noma1, 'MAILLAGE', repi=nbma1)
         call dismoi('NB_MA_MAILLA', noma2, 'MAILLAGE', repi=nbma2)
-        call wkvect('&&RDTRES.CORRM_INV', 'V V I', nbma1, jcoinv)
+        AS_ALLOCATE(vi=corrm_inv, size=nbma1)
         do ima2 = 1, nbma2
             ima1=zi(jcorrm-1+ima2)
             ASSERT(ima1.gt.0)
-            zi(jcoinv-1+ima1)=ima2
+            corrm_inv(ima1)=ima2
         end do
 !
         call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
@@ -125,7 +128,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
             call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
             do iel = 1, n1-1
                 ima1=zi(j1-1+iel)
-                ima2=zi(jcoinv-1+ima1)
+                ima2=corrm_inv(ima1)
                 zi(j1-1+iel)=ima2
             end do
         end do
@@ -263,7 +266,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     end do
     call jedetr('&&RDTRES.NOMS_PARA')
     call jedetr('&&RDTRES.NUME_ORDRE')
-    call jedetr('&&RDTRES.CORRM_INV')
+    AS_DEALLOCATE(vi=corrm_inv)
 !
 !
     call jedema()

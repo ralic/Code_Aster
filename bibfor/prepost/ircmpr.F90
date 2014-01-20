@@ -78,6 +78,8 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbvato, ncmprf, ncmpve
     integer :: nbenec, adtyp2
@@ -103,7 +105,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     integer :: ifm, nivinf, j, i
     integer :: iaux, ima, nbno, nbma, ipe18, ipe15
     integer :: nbmail, iadcnx, ilcnx, iadtyp
-    integer :: codret, jnoce, jco
+    integer :: codret,  jco
     integer :: adtypm, adefma
     integer :: adcaii, adcaik
     integer :: adproa, adprom, adexic, adpror
@@ -113,6 +115,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     character(len=24) :: ntprom, exicmp, ntpror
     character(len=24) :: ntauxi
     character(len=80) :: caimpk(3)
+    integer, pointer :: noeu_centr(:) => null()
 !
 !====
 ! 1. PREALABLES
@@ -167,16 +170,16 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
         call jeveuo(jexatr(nomaas//'.CONNEX', 'LONCUM'), 'L', ilcnx)
         call dismoi('NB_NO_MAILLA', nomaas, 'MAILLAGE', repi=nbno)
         call dismoi('NB_MA_MAILLA', nomaas, 'MAILLAGE', repi=nbma)
-        call wkvect('&&IRCMPR.NOEU_CENTR', 'V V I', nbno, jnoce)
+        AS_ALLOCATE(vi=noeu_centr, size=nbno)
         do i = 1, nbno
-            zi(jnoce+i-1)=0
+            noeu_centr(i)=0
         end do
 !
         do i = 1, nbma
             if (zi(iadtyp+i-1) .eq. ipe18) then
                 jco=iadcnx+zi(ilcnx+i-1)-1
                 do j = 1, 3
-                    zi(jnoce+zi(jco+15+j-1)-1)=1
+                    noeu_centr(1+zi(jco+15+j-1)-1)=1
                 end do
             endif
         end do
@@ -219,7 +222,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 !
         call ircmpn(nofimd, ncmprf, ncmpve, zi(adnucm), zl(adexic),&
                     nbvato, nbenec, lienec, adsl, zi(adcaii),&
-                    caimpk, zi(adproa), zi(jnoce))
+                    caimpk, zi(adproa),noeu_centr)
         zk80(adcaik:adcaik+2)=caimpk(1:3)
 !
     else
@@ -249,7 +252,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     call jedetr(ntprom)
     call jedetr(exicmp)
     call jedetr(ntauxi)
-    call jedetr('&&IRCMPR.NOEU_CENTR')
+    AS_DEALLOCATE(vi=noeu_centr)
     call jedetr('&&IRCMPR.TYPMA')
 !
     if (nivinf .gt. 1) then

@@ -44,6 +44,8 @@ subroutine simult()
 #include "asterfort/simul2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     real(kind=8) :: xnorm, depl(6)
     character(len=8) :: masse, modsta, mailla, nomnoe
@@ -57,8 +59,9 @@ subroutine simult()
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
 !-----------------------------------------------------------------------
-    integer :: i, idgn, idno, ii, in, ldgn
+    integer :: i,  idno, ii, in, ldgn
     integer :: nb, nbd, nbdir, nbgr, nbno, nbv
+    character(len=24), pointer :: group_no(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     magrno = ' '
@@ -111,19 +114,19 @@ subroutine simult()
         call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0,&
                     iarg, 0, kbid, nbgr)
         nbgr = -nbgr
-        call wkvect('&&SIMULT.GROUP_NO', 'V V K24', nbgr, idgn)
+        AS_ALLOCATE(vk24=group_no, size=nbgr)
         call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0,&
-                    iarg, nbgr, zk24(idgn), nbv)
+                    iarg, nbgr, group_no, nbv)
 !
 !        --- ECLATE LE GROUP_NO EN NOEUD ---
-        call compno(mailla, nbgr, zk24(idgn), nbno)
+        call compno(mailla, nbgr, group_no, nbno)
         call wkvect('&&SIMULT.NOEUD', 'V V K8', nbno, idno)
         magrno = mailla//'.GROUPENO'
         manono = mailla//'.NOMNOE'
         ii = -1
         do i = 1, nbgr
-            call jelira(jexnom(magrno, zk24(idgn+i-1)), 'LONUTI', nb)
-            call jeveuo(jexnom(magrno, zk24(idgn+i-1)), 'L', ldgn)
+            call jelira(jexnom(magrno, group_no(i)), 'LONUTI', nb)
+            call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
             do in = 0, nb-1
                 call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
                 ii = ii + 1
@@ -136,7 +139,7 @@ subroutine simult()
 !
 ! --- MENAGE
     call jedetr('&&SIMULT.NOEUD')
-    call jedetr('&&SIMULT.GROUP_NO')
+    AS_DEALLOCATE(vk24=group_no)
 !
     call jedema()
 end subroutine

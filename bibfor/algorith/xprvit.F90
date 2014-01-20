@@ -23,6 +23,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 #include "asterfort/wkvect.h"
 #include "asterfort/xprfon.h"
 #include "asterfort/xprvir.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: noma, fiss
 !
     character(len=19) :: cnsvt, cnsvn, vpoint, disfr, cnsbl, cnsdis, cnsbet
@@ -100,13 +102,13 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !
     integer :: i, j, jcoor, nbno, jmin, nbptff, ibid, jdelta, lsn, lst
-    integer :: jfonf, jvtff, jvnff, jvtl, jvtv, jvnl, jvnv, ifm, niv, jvit
+    integer :: jfonf,   jvtl, jvtv, jvnl, jvnv, ifm, niv, jvit
     integer :: jbeta, jdisfr, cfv, bfv, vfv, afv, nfv
     real(kind=8) :: eps, xm, ym, zm, dmin, smin, xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, xim, yim, zim, s, norm2, xn, yn, zn, d
     real(kind=8) :: radimp, radtor
     character(len=8) :: typcmp(6), method
-    integer :: jvff, jbasef, jbl, jdis, k
+    integer ::  jbasef, jbl, jdis, k
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, pi(3), normij
     real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan
@@ -115,7 +117,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     character(len=19) :: covir, bavir, vitvir, angvir, numvir
 !
 !     EULER AXIS AND EULER ANGLE CALCULATIONS
-    integer :: jeuler, jcnsb, jlistp, jvp
+    integer ::  jcnsb, jlistp, jvp
     real(kind=8) :: ni(3), ti(3), bi(3), nj(3), tj(3), bj(3), rij(3, 3), tpl(3)
     real(kind=8) :: npl(3), bpl(3), axeul(3), calfa, salfa, modvec
     real(kind=8) :: t0, t180, alfa
@@ -129,6 +131,10 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !     BISECTION METHOD AND VELOCITY INTERPOLATION
     real(kind=8) :: tolld, dprec, ds, vp, betap
     integer :: maxite, jlimsx, jlimdx
+    real(kind=8), pointer :: euler(:) => null()
+    real(kind=8), pointer :: vn_propa_ff(:) => null()
+    real(kind=8), pointer :: v_propa_ff(:) => null()
+    real(kind=8), pointer :: vt_propa_ff(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -274,9 +280,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !     CREATION DES VECTEURS DE VITESSE DE PROPAGATION EN FOND
 !     DE FISSURE
 !
-    call wkvect('&&XPRVIT.V_PROPA_FF', 'V V R8', ndim*nbptff, jvff)
-    call wkvect('&&XPRVIT.VT_PROPA_FF', 'V V R8', nbptff, jvtff)
-    call wkvect('&&XPRVIT.VN_PROPA_FF', 'V V R8', nbptff, jvnff)
+    AS_ALLOCATE(vr=v_propa_ff, size=ndim*nbptff)
+    AS_ALLOCATE(vr=vt_propa_ff, size=nbptff)
+    AS_ALLOCATE(vr=vn_propa_ff, size=nbptff)
 !
 !     CREATE THE VECTOR WHERE THE DISTANCE BETWEEN EACH NODE AND THE
 !     CRACK FRONT IS STORED
@@ -312,7 +318,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !                THE CRACK FRONT
 !     THIS BLOCK IS REPEATED FOR ALL THE POINTS ON THE CRACK FRONT WITH
 !     THE EXCEPTION OF THE LAST ONE.
-    call wkvect('&&XPRVIT.EULER', 'V V R8', 7*nbptff, jeuler)
+    AS_ALLOCATE(vr=euler, size=7*nbptff)
 !
 !     creation du vecteur contenant les modifications a apporter au
 !     level set avant application du fond virtuel
@@ -339,8 +345,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !        THE ACTUAL POINT ON THE CRACK FRONT
 !        ***************************************************************
 !
-        zr(jvtff-1+i)=zr(jvit-1+i)*cos(zr(jbeta-1+i))
-        zr(jvnff-1+i)=zr(jvit-1+i)*sin(zr(jbeta-1+i))
+        vt_propa_ff(i)=zr(jvit-1+i)*cos(zr(jbeta-1+i))
+        vn_propa_ff(i)=zr(jvit-1+i)*sin(zr(jbeta-1+i))
 !
 !        ***************************************************************
 !        RECALCULATE THE LOCAL REFERENCE SYSTEM IN THE ACTUAL CRACK
@@ -444,8 +450,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !        CALCULATE THE PROPAGATION SPEED VECTOR V IN THE GLOBAL
 !        REFERENCE SYSTEM USED FOR THE MESH
         do j = 1, ndim
-            zr(jvff-1+ndim*(i-1)+j) = zr(jvnff-1+i)*zr(jbasef-1+2* ndim*(i-1)+j)/modnor+ zr(jvtff&
-                                      &-1+i)*zr(jbasef-1+2*ndim*(i- 1)+j+ndim)/modtan
+            v_propa_ff(ndim*(i-1)+j) = vn_propa_ff(i)*zr(jbasef-1+2* ndim*(i-1)+j)/modnor+&
+                                 vt_propa_ff(i)*zr(jbasef-1+2*ndim*(i- 1)+j+ndim)/modtan
         end do
 !
 !        ***************************************************************
@@ -470,9 +476,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             bi(3) = ti(1)*ni(2)-ti(2)*ni(1)
 !
 !           STORE THE BINORMAL AXIS
-            zr(jeuler-1+7*(i-1-1)+5) = bi(1)
-            zr(jeuler-1+7*(i-1-1)+6) = bi(2)
-            zr(jeuler-1+7*(i-1-1)+7) = bi(3)
+            euler(7*(i-1-1)+5) = bi(1)
+            euler(7*(i-1-1)+6) = bi(2)
+            euler(7*(i-1-1)+7) = bi(3)
 !
 !           RETRIEVE THE LOCAL BASE FOR THE ACTUAL POINT
             nj(1) = zr(jbasef-1+2*ndim*(i-1)+1)
@@ -505,13 +511,13 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             if (alfa .gt. 1.d0) alfa=1.d0
             if (alfa .lt. -1.d0) alfa=-1.d0
             alfa = acos(alfa)
-            zr(jeuler-1+7*(i-1-1)+1) = alfa
+            euler(7*(i-1-1)+1) = alfa
 !
 !           CALCULATE THE EULER VECTOR
             if ((alfa.gt.t0) .and. (alfa.lt.t180)) then
-                zr(jeuler-1+7*(i-1-1)+2) = 0.5d0*(rij(2,3)-rij(3,2))/ sin(alfa)
-                zr(jeuler-1+7*(i-1-1)+3) = 0.5d0*(rij(3,1)-rij(1,3))/ sin(alfa)
-                zr(jeuler-1+7*(i-1-1)+4) = 0.5d0*(rij(1,2)-rij(2,1))/ sin(alfa)
+                euler(7*(i-1-1)+2) = 0.5d0*(rij(2,3)-rij(3,2))/ sin(alfa)
+                euler(7*(i-1-1)+3) = 0.5d0*(rij(3,1)-rij(1,3))/ sin(alfa)
+                euler(7*(i-1-1)+4) = 0.5d0*(rij(1,2)-rij(2,1))/ sin(alfa)
             endif
 !
         endif
@@ -696,7 +702,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 zm=zr(jcoor-1+(i-1)*3+3)
 !
 !              CALCULATE THE EULER ANGLE FOR THE NODE
-                alfa = zr(jeuler-1+7*(jmin-1)+1)*smin
+                alfa = euler(7*(jmin-1)+1)*smin
 !
                 if ((alfa.gt.t0) .and. (alfa.lt.t180)) then
 !
@@ -705,9 +711,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     salfa = sin(alfa)
 !
 !                 RETRIEVE THE EULER AXIS
-                    axeul(1) = zr(jeuler-1+7*(jmin-1)+2)
-                    axeul(2) = zr(jeuler-1+7*(jmin-1)+3)
-                    axeul(3) = zr(jeuler-1+7*(jmin-1)+4)
+                    axeul(1) = euler(7*(jmin-1)+2)
+                    axeul(2) = euler(7*(jmin-1)+3)
+                    axeul(3) = euler(7*(jmin-1)+4)
 !
 !                 RETRIEVE THE LOCAL BASE IN THE PREVIOUS POINT ON THE
 !                 FRONT (SMIN=0)
@@ -717,9 +723,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     ti(1) = zr(jbasef-1+2*ndim*(jmin-1)+4)
                     ti(2) = zr(jbasef-1+2*ndim*(jmin-1)+5)
                     ti(3) = zr(jbasef-1+2*ndim*(jmin-1)+6)
-                    bi(1) = zr(jeuler-1+7*(jmin-1)+5)
-                    bi(2) = zr(jeuler-1+7*(jmin-1)+6)
-                    bi(3) = zr(jeuler-1+7*(jmin-1)+7)
+                    bi(1) = euler(7*(jmin-1)+5)
+                    bi(2) = euler(7*(jmin-1)+6)
+                    bi(3) = euler(7*(jmin-1)+7)
 !
 !                 CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO
 !                 THELOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT
@@ -746,15 +752,15 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 else
 !
                     if (alfa .lt. t0) then
-                        b(1) = zr(jeuler-1+7*(jmin-1)+5)
-                        b(2) = zr(jeuler-1+7*(jmin-1)+6)
-                        b(3) = zr(jeuler-1+7*(jmin-1)+7)
+                        b(1) = euler(7*(jmin-1)+5)
+                        b(2) = euler(7*(jmin-1)+6)
+                        b(3) = euler(7*(jmin-1)+7)
                     endif
 !
                     if (alfa .gt. t180) then
-                        b(1) = zr(jeuler-1+7*(jmin-1+1)+5)
-                        b(2) = zr(jeuler-1+7*(jmin-1+1)+6)
-                        b(3) = zr(jeuler-1+7*(jmin-1+1)+7)
+                        b(1) = euler(7*(jmin-1+1)+5)
+                        b(2) = euler(7*(jmin-1+1)+6)
+                        b(3) = euler(7*(jmin-1+1)+7)
                     endif
 !
                 endif
@@ -950,7 +956,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         else
 !
 !           CALCULATE THE EULER ANGLE FOR THE NODE
-            alfa = zr(jeuler-1+7*(jmin-1)+1)*smin
+            alfa = euler(7*(jmin-1)+1)*smin
 !
             if ((alfa.gt.t0) .and. (alfa.lt.t180)) then
 !
@@ -959,9 +965,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 salfa = sin(alfa)
 !
 !              RETRIEVE THE EULER AXIS
-                axeul(1) = zr(jeuler-1+7*(jmin-1)+2)
-                axeul(2) = zr(jeuler-1+7*(jmin-1)+3)
-                axeul(3) = zr(jeuler-1+7*(jmin-1)+4)
+                axeul(1) = euler(7*(jmin-1)+2)
+                axeul(2) = euler(7*(jmin-1)+3)
+                axeul(3) = euler(7*(jmin-1)+4)
 !
 !             RETRIEVE THE LOCAL BASE IN THE PREVIOUS POINT ON THE FRONT
 !              (SMIN=0)
@@ -971,9 +977,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 ti(1) = zr(jbasef-1+2*ndim*(jmin-1)+4)
                 ti(2) = zr(jbasef-1+2*ndim*(jmin-1)+5)
                 ti(3) = zr(jbasef-1+2*ndim*(jmin-1)+6)
-                bi(1) = zr(jeuler-1+7*(jmin-1)+5)
-                bi(2) = zr(jeuler-1+7*(jmin-1)+6)
-                bi(3) = zr(jeuler-1+7*(jmin-1)+7)
+                bi(1) = euler(7*(jmin-1)+5)
+                bi(2) = euler(7*(jmin-1)+6)
+                bi(3) = euler(7*(jmin-1)+7)
 !
 !              CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
 !              LOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT
@@ -1154,8 +1160,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
             end do
 !
-            write(ifm,311) i,zr(jvit-1+i),zr(jbeta-1+i),zr(jvtff+i-1),&
-            zr(jvnff+i-1)
+            write(ifm,311) i,zr(jvit-1+i),zr(jbeta-1+i),vt_propa_ff(i),&
+            vn_propa_ff(i)
 !
         end do
 !
@@ -1174,10 +1180,10 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         call jedetr(numvir)
     endif
 !
-    call jedetr('&&XPRVIT.V_PROPA_FF')
-    call jedetr('&&XPRVIT.VT_PROPA_FF')
-    call jedetr('&&XPRVIT.VN_PROPA_FF')
-    call jedetr('&&XPRVIT.EULER')
+    AS_DEALLOCATE(vr=v_propa_ff)
+    AS_DEALLOCATE(vr=vt_propa_ff)
+    AS_DEALLOCATE(vr=vn_propa_ff)
+    AS_DEALLOCATE(vr=euler)
 !
 !-----------------------------------------------------------------------
 !     FIN

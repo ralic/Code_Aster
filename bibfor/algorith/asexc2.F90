@@ -23,6 +23,8 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbocc, nbmode, ndir(*), nature(3, *), nsupp(*)
     real(kind=8) :: parmod(nbmode, *), amort(*), dirspe(3, *), echspe(3, *)
@@ -66,7 +68,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !
 !
     integer :: i, id, ier, ifm, igr, ii, iii, im, inat, ino, ioc
-    integer :: iret, is, j, jaspe, jdgn, jgrn, jkno, jnoe
+    integer :: iret, is, j, jaspe, jdgn,  jkno
     integer :: jvspe, n1, nbsupm, ngr, nimpr
     integer :: nno
 !
@@ -78,8 +80,10 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
     character(len=4) :: knat
     character(len=8) :: k8b, spect, noeu, nomsp0(3), nompu(2)
     character(len=9) :: niveau
-    character(len=24) :: vale, obj1, obj2, valk(2), grnoeu
+    character(len=24) :: obj1, obj2, valk(2), grnoeu
     integer :: iarg
+    character(len=24), pointer :: group_no(:) => null()
+    character(len=8), pointer :: noeud(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -191,11 +195,11 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                             iarg, 0, noeu, n1)
                 if (n1 .ne. 0) then
                     nno = -n1
-                    call wkvect('&&ASEXC2.NOEUD', 'V V K8', nno, jnoe)
+                    AS_ALLOCATE(vk8=noeud, size=nno)
                     call getvem(noma, 'NOEUD', motfac, 'NOEUD', ioc,&
-                                iarg, nno, zk8(jnoe), n1)
+                                iarg, nno, noeud, n1)
                     do 20 ino = 1, nno
-                        noeu = zk8(jnoe+ino-1)
+                        noeu = noeud(ino)
                         call jenonu(jexnom(obj2, noeu), iret)
                         if (iret .eq. 0) then
                             ier = ier + 1
@@ -218,17 +222,17 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                         echspe(id,nsupp(id)) = echsp0(id)
                         nature(id,nsupp(id)) = inat
 20                  continue
-                    call jedetr('&&ASEXC2.NOEUD')
+                    AS_DEALLOCATE(vk8=noeud)
 !
                 else
                     call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc,&
                                 iarg, 0, k8b, n1)
                     ngr = -n1
-                    call wkvect('&&ASEXC2.GROUP_NO', 'V V K24', ngr, jgrn)
+                    AS_ALLOCATE(vk24=group_no, size=ngr)
                     call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc,&
-                                iarg, ngr, zk24(jgrn), n1)
+                                iarg, ngr, group_no, n1)
                     do 30 igr = 1, ngr
-                        grnoeu = zk24(jgrn+igr-1)
+                        grnoeu = group_no(igr)
                         call jeexin(jexnom(obj1, grnoeu), iret)
                         if (iret .eq. 0) then
                             ier = ier + 1
@@ -256,7 +260,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                             nature(id,nsupp(id)) = inat
 32                      continue
 30                  continue
-                    call jedetr('&&ASEXC2.GROUP_NO')
+                    AS_DEALLOCATE(vk24=group_no)
                 endif
             endif
 14      continue
@@ -346,7 +350,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                 if (corfre) valpu(2) = valpu(2) * sqrt( un - amor*amor )
                 omega = deuxpi * fcoup
                 call fointe('F ', nomspe(id,is), 2, nompu, valpu, resu, ier)
-                if (nature(id,is) .eq. 2) resu = resu * omega 
+                if (nature(id,is) .eq. 2) resu = resu * omega
                 if (nature(id,is) .eq. 3) resu = resu * omega * omega
                 j = j + 1
                 resu = resu * coef

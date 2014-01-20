@@ -17,6 +17,8 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 #include "asterfort/resmod.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbnli, nbchoc, nbflam, nbsism, nbmode, neq
     integer :: nbrfis, nbpal
     integer :: logcho(nbnli, *), ier, nexcit, info
@@ -143,7 +145,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! OUT : IER    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    integer :: imode, iamor, im, i, j, jdpl, jddl, lrefe
+    integer :: imode, iamor, im, i, j,   lrefe
     integer :: vali
     real(kind=8) :: dpiloc(6), dpiglo(6), ddpilo(3), origob(3), un
     real(kind=8) :: valr(10)
@@ -152,6 +154,8 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     character(len=16) :: typnum
     character(len=24) :: mdgene, numero
     character(len=24) :: valk
+    integer, pointer :: ddlcho(:) => null()
+    real(kind=8), pointer :: dplcho(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -194,7 +198,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 26      continue
 20  end do
 !
-    call wkvect('&&MDCHOC.DDLCHO', 'V V I', nbnli*6, jddl)
+    AS_ALLOCATE(vi=ddlcho, size=nbnli*6)
 !
 ! --- CALCUL DIRECT
 !
@@ -202,7 +206,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !         ----------------------------
         call mdchst(numddl, typnum, imode, iamor, pulsat,&
                     masgen, amogen, nbnli, nbpal, noecho,&
-                    nbrfis, logcho, parcho, intitu, zi(jddl),&
+                    nbrfis, logcho, parcho, intitu, ddlcho,&
                     ier)
 !
 ! --- CALCUL PAR SOUS-STRUCTURATION
@@ -211,7 +215,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !             ------------------------------
         call mdchge(numddl, typnum, imode, iamor, pulsat,&
                     masgen, amogen, nbnli, noecho, parcho,&
-                    intitu, zi(jddl), ier)
+                    intitu, ddlcho, ier)
 !
     endif
 !
@@ -318,13 +322,13 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !         ----------------------------
         do 200 i = 1, nbnli
             do 210 j = 1, nbmode
-                dplmod(i,j,1) = bmodal(zi(jddl-1+6*(i-1)+1),j)
-                dplmod(i,j,2) = bmodal(zi(jddl-1+6*(i-1)+2),j)
-                dplmod(i,j,3) = bmodal(zi(jddl-1+6*(i-1)+3),j)
+                dplmod(i,j,1) = bmodal(ddlcho(6*(i-1)+1),j)
+                dplmod(i,j,2) = bmodal(ddlcho(6*(i-1)+2),j)
+                dplmod(i,j,3) = bmodal(ddlcho(6*(i-1)+3),j)
                 if (noecho(i,9)(1:2) .eq. 'BI') then
-                    dplmod(i,j,4) = bmodal(zi(jddl-1+6*(i-1)+4),j)
-                    dplmod(i,j,5) = bmodal(zi(jddl-1+6*(i-1)+5),j)
-                    dplmod(i,j,6) = bmodal(zi(jddl-1+6*(i-1)+6),j)
+                    dplmod(i,j,4) = bmodal(ddlcho(6*(i-1)+4),j)
+                    dplmod(i,j,5) = bmodal(ddlcho(6*(i-1)+5),j)
+                    dplmod(i,j,6) = bmodal(ddlcho(6*(i-1)+6),j)
                 else
                     dplmod(i,j,4) = 0.d0
                     dplmod(i,j,5) = 0.d0
@@ -336,13 +340,13 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
         if (nbpal .gt. 0) then
             do 500 i = nbnli+1, nbnli+nbpal
                 do 510 j = 1, nbmode
-                    dplmod(i,j,1) = bmodal(zi(jddl-1+6*(i-1)+1),j)
-                    dplmod(i,j,2) = bmodal(zi(jddl-1+6*(i-1)+2),j)
-                    dplmod(i,j,3) = bmodal(zi(jddl-1+6*(i-1)+3),j)
+                    dplmod(i,j,1) = bmodal(ddlcho(6*(i-1)+1),j)
+                    dplmod(i,j,2) = bmodal(ddlcho(6*(i-1)+2),j)
+                    dplmod(i,j,3) = bmodal(ddlcho(6*(i-1)+3),j)
                     if (noecho(i,9)(1:2) .eq. 'BI') then
-                        dplmod(i,j,4) = bmodal(zi(jddl-1+6*(i-1)+4),j)
-                        dplmod(i,j,5) = bmodal(zi(jddl-1+6*(i-1)+5),j)
-                        dplmod(i,j,6) = bmodal(zi(jddl-1+6*(i-1)+6),j)
+                        dplmod(i,j,4) = bmodal(ddlcho(6*(i-1)+4),j)
+                        dplmod(i,j,5) = bmodal(ddlcho(6*(i-1)+5),j)
+                        dplmod(i,j,6) = bmodal(ddlcho(6*(i-1)+6),j)
                     else
                         dplmod(i,j,4) = 0.d0
                         dplmod(i,j,5) = 0.d0
@@ -357,12 +361,12 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
         if (nbrfis .gt. 0) then
             do 600 i = nbnli+nbpal+1-nbrfis, nbnli+nbpal
                 do 610 j = 1, nbmode
-                    dplmod(i,j,1) = bmodal(zi(jddl-1+6*(i-1)+1),j)
-                    dplmod(i,j,2) = bmodal(zi(jddl-1+6*(i-1)+2),j)
-                    dplmod(i,j,3) = bmodal(zi(jddl-1+6*(i-1)+3),j)
-                    dplmod(i,j,4) = bmodal(zi(jddl-1+6*(i-1)+4),j)
-                    dplmod(i,j,5) = bmodal(zi(jddl-1+6*(i-1)+5),j)
-                    dplmod(i,j,6) = bmodal(zi(jddl-1+6*(i-1)+6),j)
+                    dplmod(i,j,1) = bmodal(ddlcho(6*(i-1)+1),j)
+                    dplmod(i,j,2) = bmodal(ddlcho(6*(i-1)+2),j)
+                    dplmod(i,j,3) = bmodal(ddlcho(6*(i-1)+3),j)
+                    dplmod(i,j,4) = bmodal(ddlcho(6*(i-1)+4),j)
+                    dplmod(i,j,5) = bmodal(ddlcho(6*(i-1)+5),j)
+                    dplmod(i,j,6) = bmodal(ddlcho(6*(i-1)+6),j)
 610              continue
 600          continue
         endif
@@ -374,27 +378,27 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
         call jeveuo(numddl//'.NUME.REFN', 'L', lrefe)
         mdgene = zk24(lrefe)
         do 220 i = 1, nbnli
-            call wkvect('&&MDCHOC.DPLCHO', 'V V R8', nbmode*6, jdpl)
+            AS_ALLOCATE(vr=dplcho, size=nbmode*6)
             noeud(1) = noecho(i,1)
             noeud(2) = noecho(i,2)
             noeud(3) = noecho(i,3)
             call resmod(bmodal, nbmode, neq, numero, mdgene,&
-                        noeud, zr(jdpl))
+                        noeud,dplcho)
             do 230 j = 1, nbmode
-                dplmod(i,j,1) = zr(jdpl-1+j)
-                dplmod(i,j,2) = zr(jdpl-1+j+nbmode)
-                dplmod(i,j,3) = zr(jdpl-1+j+2*nbmode)
+                dplmod(i,j,1) = dplcho(j)
+                dplmod(i,j,2) = dplcho(j+nbmode)
+                dplmod(i,j,3) = dplcho(j+2*nbmode)
 230          continue
             if (noecho(i,9)(1:2) .eq. 'BI') then
                 noeud(1) = noecho(i,5)
                 noeud(2) = noecho(i,6)
                 noeud(3) = noecho(i,7)
                 call resmod(bmodal, nbmode, neq, numero, mdgene,&
-                            noeud, zr( jdpl))
+                            noeud,dplcho)
                 do 240 j = 1, nbmode
-                    dplmod(i,j,4) = zr(jdpl-1+j)
-                    dplmod(i,j,5) = zr(jdpl-1+j+nbmode)
-                    dplmod(i,j,6) = zr(jdpl-1+j+2*nbmode)
+                    dplmod(i,j,4) = dplcho(j)
+                    dplmod(i,j,5) = dplcho(j+nbmode)
+                    dplmod(i,j,6) = dplcho(j+2*nbmode)
 240              continue
             else
                 do 250 j = 1, nbmode
@@ -403,7 +407,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                     dplmod(i,j,6) = 0.d0
 250              continue
             endif
-            call jedetr('&&MDCHOC.DPLCHO')
+            AS_DEALLOCATE(vr=dplcho)
 220      continue
     endif
 !
@@ -413,13 +417,13 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
         if (typnum .eq. 'NUME_DDL_SDASTER') then
             do 300 i = 1, nbnli
                 do 310 j = 1, nexcit
-                    ps2del(i,j,1) = ps1del(zi(jddl-1+6*(i-1)+1),j)
-                    ps2del(i,j,2) = ps1del(zi(jddl-1+6*(i-1)+2),j)
-                    ps2del(i,j,3) = ps1del(zi(jddl-1+6*(i-1)+3),j)
+                    ps2del(i,j,1) = ps1del(ddlcho(6*(i-1)+1),j)
+                    ps2del(i,j,2) = ps1del(ddlcho(6*(i-1)+2),j)
+                    ps2del(i,j,3) = ps1del(ddlcho(6*(i-1)+3),j)
                     if (noecho(i,9)(1:2) .eq. 'BI') then
-                        ps2del(i,j,4) = ps1del(zi(jddl-1+6*(i-1)+4),j)
-                        ps2del(i,j,5) = ps1del(zi(jddl-1+6*(i-1)+5),j)
-                        ps2del(i,j,6) = ps1del(zi(jddl-1+6*(i-1)+6),j)
+                        ps2del(i,j,4) = ps1del(ddlcho(6*(i-1)+4),j)
+                        ps2del(i,j,5) = ps1del(ddlcho(6*(i-1)+5),j)
+                        ps2del(i,j,6) = ps1del(ddlcho(6*(i-1)+6),j)
                     else
                         ps2del(i,j,4) = 0.d0
                         ps2del(i,j,5) = 0.d0
@@ -451,7 +455,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     endif
     nbnli = nbnli + nbpal
 !
-    call jedetr('&&MDCHOC.DDLCHO')
+    AS_DEALLOCATE(vi=ddlcho)
 !
     call jedema()
 end subroutine

@@ -36,6 +36,8 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 #include "asterfort/typmat.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: base, mataz, tlimat(*), licoef, nu
     integer :: nbmat, itysca
@@ -72,9 +74,10 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
     integer :: k
     character(len=8) :: matk8
     character(len=19) :: tlima2(150), solve2, matas, matel, infc19
-    integer :: ilicoe, i,  iret, ibid, idbgav, ilimat
+    integer :: ilicoe, i,  iret, ibid, idbgav
     integer :: jrefa
     character(len=24), pointer :: slvk(:) => null()
+    character(len=24), pointer :: lmatel(:) => null()
 !DEB-------------------------------------------------------------------
     call jemarq()
     call jedbg2(idbgav, 0)
@@ -111,7 +114,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !     -- PREPARATION DE LA LISTE DE MATR_ELEM POUR QU'ILS SOIENT
 !        DU MEME TYPE (SYMETRIQUE OU NON) QUE LA MATR_ASSE :
 !     ---------------------------------------------------------------
-    call wkvect('&&ASMATR.LMATEL', 'V V K24', nbmat, ilimat)
+    AS_ALLOCATE(vk24=lmatel, size=nbmat)
     matsym = typmat(nbmat,tlima2)
 !
     call jeveuo(solve2//'.SLVK', 'L', vk24=slvk)
@@ -122,16 +125,16 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
             if (symel .eq. 'NON_SYM') then
                 call gcncon('.', matk8)
                 matel=matk8
-                zk24(ilimat+i-1) = matel
+                lmatel(i) = matel
                 call resyme(tlima2(i), 'V', matel)
             else
-                zk24(ilimat+i-1) = tlima2(i)
+                lmatel(i) = tlima2(i)
             endif
         end do
         matsym = 'S'
     else
         do i = 1, nbmat
-            zk24(ilimat+i-1) = tlima2(i)
+            lmatel(i) = tlima2(i)
         end do
     endif
 !
@@ -159,7 +162,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !
 !     -- ASSEMBLAGE PROPREMENT DIT :
 !     -------------------------------
-    call assmam(base, matas, nbmat, zk24(ilimat), zr(ilicoe),&
+    call assmam(base, matas, nbmat, lmatel, zr(ilicoe),&
                 nu, cumul, itysca)
 !
 !
@@ -177,14 +180,14 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
         do i = 1, nbmat
             call dismoi('TYPE_MATRICE', tlima2(i), 'MATR_ELEM', repk=symel)
             if (symel .eq. 'SYMETRI') goto 60
-            call detrsd('MATR_ELEM', zk24(ilimat+i-1)(1:19))
+            call detrsd('MATR_ELEM', lmatel(i)(1:19))
  60         continue
         end do
     endif
 !
 !
 !
-    call jedetr('&&ASMATR.LMATEL')
+    AS_DEALLOCATE(vk24=lmatel)
     call jedbg2(ibid, idbgav)
     call jedema()
 end subroutine

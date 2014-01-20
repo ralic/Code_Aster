@@ -38,10 +38,12 @@ subroutine rc32si()
 #include "asterfort/ordis.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
     integer :: n1, nbsitu, iocc, nume, ii, nocc, ing, jnbocc, jnumgr
-    integer :: jpresa, jpresb, nbchar, jchar, jnsitu, jcombi, jnbgr, ig
+    integer :: jpresa, jpresb, nbchar, jchar, jnsitu, jcombi,  ig
     integer :: numpas(2), nbvg, jnbvg, nbgr, numgr, nbsigr, jnsg, nbth, jseigr
     integer :: nscy, nbm, vali(3), nbgrt, numg1, numg2, nbseis, numgs, nbsg1
     integer :: nbsg2, nbsg3, nbp12, nbp23, nbp13, ndim, jspas, jsigr, jsp12
@@ -49,6 +51,7 @@ subroutine rc32si()
     logical :: yapass
     character(len=8) :: k8b, knume, ouinon
     character(len=16) :: motcl1, motcl2
+    integer, pointer :: nume_group(:) => null()
 ! DEB ------------------------------------------------------------------
 !
     motcl1 = 'SITUATION'
@@ -58,7 +61,7 @@ subroutine rc32si()
     call getfac(motcl2, nbseis)
 !
     ndim = nbsitu + nbseis
-    call wkvect('&&RC32SI.NUME_GROUP', 'V V I', ndim, jnbgr)
+    AS_ALLOCATE(vi=nume_group, size=ndim)
     call wkvect('&&RC32SI.SITU_GROUP', 'V V I', 2*ndim, jsigr)
 !
     call wkvect('&&RC3200.SITU_NUMERO', 'V V I', ndim, jnsitu)
@@ -122,10 +125,10 @@ subroutine rc32si()
                 call utmess('F', 'POSTRCCM_12')
             endif
             do 20 ig = 1, nbgr
-                if (zi(jnbgr+ig-1) .eq. numgr) goto 21
+                if (nume_group(ig) .eq. numgr) goto 21
 20          continue
             nbgr = nbgr + 1
-            zi(jnbgr+nbgr-1) = numgr
+            nume_group(nbgr) = numgr
 21          continue
 26      continue
         if (nbvg .eq. 1) then
@@ -162,17 +165,17 @@ subroutine rc32si()
         zi(jsigr+2*iocc-1) = max ( numpas(1), numpas(2) )
         numgr = numpas(1)
         do 22 ig = 1, nbgr
-            if (zi(jnbgr+ig-1) .eq. numgr) goto 23
+            if (nume_group(ig) .eq. numgr) goto 23
 22      continue
         nbgr = nbgr + 1
-        zi(jnbgr+nbgr-1) = numgr
+        nume_group(nbgr) = numgr
 23      continue
         numgr = numpas(2)
         do 24 ig = 1, nbgr
-            if (zi(jnbgr+ig-1) .eq. numgr) goto 25
+            if (nume_group(ig) .eq. numgr) goto 25
 24      continue
         nbgr = nbgr + 1
-        zi(jnbgr+nbgr-1) = numgr
+        nume_group(nbgr) = numgr
 25      continue
     endif
 !
@@ -269,7 +272,7 @@ subroutine rc32si()
 !
     110 end do
 !
-    call ordis(zi(jnbgr), nbgr)
+    call ordis(nume_group, nbgr)
 !
     if (nbgr .gt. 3 .and. yapass) then
         call utmess('F', 'POSTRCCM_34')
@@ -293,7 +296,7 @@ subroutine rc32si()
     endif
     do 30 ig = 1, nbgrt, 1
 !
-        numgr = zi(jnbgr+ig-1)
+        numgr = nume_group(ig)
 !
         zi(jnumgr+ig-1) = numgr
 !
@@ -477,6 +480,6 @@ subroutine rc32si()
         call jeecra(jexnum('&&RC3200.LES_GROUPES', nbgr), 'LONUTI', ii)
     endif
 !
-    call jedetr('&&RC32SI.NUME_GROUP')
+    AS_DEALLOCATE(vi=nume_group)
 !
 end subroutine

@@ -12,6 +12,8 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: motfaz, base, modelz, ligrel
 !     -----------------------------------------------------------------
 ! ======================================================================
@@ -50,13 +52,14 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !             - LE NOM DU LIGREL EST OBTENU PAR GNOMSD
 !     -----------------------------------------------------------------
 !
-    integer :: n1, nbma, nocc, nbmat, iocc, jnuma
+    integer :: n1, nbma, nocc, nbmat, iocc
     integer :: k, numa, jlima
     character(len=8) :: modele, noma, k8bid
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=19) :: ligrmo
     character(len=24) :: noojb
     integer, pointer :: lima1(:) => null()
+    integer, pointer :: vnuma(:) => null()
 !     -----------------------------------------------------------------
 !
     motfac=motfaz
@@ -90,7 +93,7 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !     -- ON STOCKE DANS .NUMA, LES NUMEROS DES MAILLES DES DIFFERENTES
 !        OCCURRENCES :
 !     ----------------------------------------------------------------
-    call wkvect('&&EXLIM3.NUMA', 'V V I', nbmat, jnuma)
+    AS_ALLOCATE(vi=vnuma, size=nbmat)
 !
     motcle(1)='GROUP_MA'
     motcle(2)='MAILLE'
@@ -104,7 +107,7 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
         call jeveuo('&&EXLIM3.LIMA1', 'L', vi=lima1)
         do k = 1, nbma
             numa=lima1(k)
-            zi(jnuma-1+numa)=1
+            vnuma(numa)=1
         end do
         call jedetr('&&EXLIM3.LIMA1')
     end do
@@ -114,17 +117,17 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !     ------------------------------------------------------------
     nbma=0
     do k = 1, nbmat
-        if (zi(jnuma-1+k) .eq. 1) nbma=nbma+1
+        if (vnuma(k) .eq. 1) nbma=nbma+1
     end do
     call wkvect('&&EXLIM3.LIMA', 'V V I', nbma, jlima)
     nbma=0
     do k = 1, nbmat
-        if (zi(jnuma-1+k) .eq. 1) then
+        if (vnuma(k) .eq. 1) then
             nbma=nbma+1
             zi(jlima-1+nbma)=k
         endif
     end do
-    call jedetr('&&EXLIM3.NUMA')
+    AS_DEALLOCATE(vi=vnuma)
 !
 !
 !

@@ -27,6 +27,8 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomres, resgen, mailsk
     character(len=19) :: profno
@@ -67,7 +69,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
     integer :: i, iad, iar, ibid, idep, ieq, ier, iord, iret, j, jbid, k, l
     integer :: ldnew, llchab, llchol, llind, lliner, llinsk, llmass, i1, k1
-    integer :: llnueq, llors, llprs, llrot, ltrotx, ltroty, ltrotz, ltvec
+    integer :: llnueq, llors, llprs, llrot
     integer :: ltype, nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod(1), nbnot, nbsst
     integer :: neq, neqs, nno, numo, nutars, llref2, llref3, elim, lmoet
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst
@@ -82,6 +84,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
     character(len=24) :: valk, nomsst, intf
     complex(kind=8) :: cbid
+    real(kind=8), pointer :: rotx(:) => null()
+    real(kind=8), pointer :: roty(:) => null()
+    real(kind=8), pointer :: rotz(:) => null()
+    real(kind=8), pointer :: trav(:) => null()
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
@@ -129,14 +135,14 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !-----RECUPERATION DES ROTATIONS----------------------------------------
 !
-    call wkvect('&&REGEGL.ROTX', 'V V R', nbsst, ltrotx)
-    call wkvect('&&REGEGL.ROTY', 'V V R', nbsst, ltroty)
-    call wkvect('&&REGEGL.ROTZ', 'V V R', nbsst, ltrotz)
+    AS_ALLOCATE(vr=rotx, size=nbsst)
+    AS_ALLOCATE(vr=roty, size=nbsst)
+    AS_ALLOCATE(vr=rotz, size=nbsst)
     do i = 1, nbsst
         call jeveuo(jexnum(modgen//'      .MODG.SSOR', i), 'L', llrot)
-        zr(ltrotz+i-1)=zr(llrot)
-        zr(ltroty+i-1)=zr(llrot+1)
-        zr(ltrotx+i-1)=zr(llrot+2)
+        rotz(i)=zr(llrot)
+        roty(i)=zr(llrot+1)
+        rotx(i)=zr(llrot+2)
     end do
 !
 !-----CREATION DU PROF-CHAMNO-------------------------------------------
@@ -305,7 +311,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 call mgutdm(modgen, kbid, k, 'NOM_NUME_DDL', ibid,&
                             numddl)
                 call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqs)
-                call wkvect('&&REGEGL.TRAV', 'V V R', neqs, ltvec)
+                AS_ALLOCATE(vr=trav, size=neqs)
 !
 !  BOUCLE SUR LES MODES PROPRES DE LA BASE
 !
@@ -335,7 +341,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !  BOUCLE SUR LES DDL DE LA BASE
 !
                     do l = 1, neqs
-                        zr(ltvec+l-1)=zr(ltvec+l-1)+zr(llchab+l-1)*&
+                        trav(l)=trav(l)+zr(llchab+l-1)*&
                         zr(iad)
                     end do
 !
@@ -347,10 +353,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 do l = 1, nbcou
                     idep=zi(llind+(l-1)*2)
                     iar=zi(llind+(l-1)*2+1)
-                    zr(ldnew+iar-1)=zr(ltvec+idep-1)
+                    zr(ldnew+iar-1)=trav(idep)
                 end do
                 call jelibe(jexnum(indirf, k))
-                call jedetr('&&REGEGL.TRAV')
+                AS_DEALLOCATE(vr=trav)
             endif
         end do
 !
@@ -380,18 +386,18 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !  ROTATION DU CHAMPS AUX NOEUDS
 !
-        call rotchm(profno, zr(ldnew), zr(ltrotz), nbsst, zi(llinsk),&
+        call rotchm(profno, zr(ldnew), rotz, nbsst, zi(llinsk),&
                     nbnot, nbcmp, 3)
-        call rotchm(profno, zr(ldnew), zr(ltroty), nbsst, zi(llinsk),&
+        call rotchm(profno, zr(ldnew), roty, nbsst, zi(llinsk),&
                     nbnot, nbcmp, 2)
-        call rotchm(profno, zr(ldnew), zr(ltrotx), nbsst, zi(llinsk),&
+        call rotchm(profno, zr(ldnew), rotx, nbsst, zi(llinsk),&
                     nbnot, nbcmp, 1)
     end do
 !
 ! --- MENAGE
-    call jedetr('&&REGEGL.ROTX')
-    call jedetr('&&REGEGL.ROTY')
-    call jedetr('&&REGEGL.ROTZ')
+    AS_DEALLOCATE(vr=rotx)
+    AS_DEALLOCATE(vr=roty)
+    AS_DEALLOCATE(vr=rotz)
 !
     call jedetr('&&MODE_ETENDU_REST_ELIM')
     call jedetr(indirf)

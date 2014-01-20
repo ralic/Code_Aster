@@ -31,6 +31,8 @@ subroutine sansno(char, motfac, noma, sans, psans,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: char
     character(len=16) :: motfac
     character(len=24) :: sans, psans
@@ -74,11 +76,12 @@ subroutine sansno(char, motfac, noma, sans, psans,&
     integer :: izone, ino, isurf
     integer :: jdecno, posno, numno
     integer :: nbelim, nuelim, ielim, nbveli
-    integer :: jtrav, ltrav
+    integer ::  ltrav
     character(len=24) :: listno
     integer :: jelim
     character(len=24) :: defico
     integer :: nzoco, nnoco
+    integer, pointer :: trav(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -102,7 +105,7 @@ subroutine sansno(char, motfac, noma, sans, psans,&
 ! --- CREATION DES VECTEURS
 !
     ltrav = nzoco*nnoco
-    call wkvect('&&SANSNO.TRAV', 'V V I', ltrav, jtrav)
+    AS_ALLOCATE(vi=trav, size=ltrav)
     call wkvect(psans, 'G V I', nzoco+1, jpsans)
 !
 ! --- INITIALISATIONS
@@ -135,7 +138,7 @@ subroutine sansno(char, motfac, noma, sans, psans,&
                 numno = zi(jnoco+posno-1)
                 if (numno .eq. nuelim) then
                     nbveli = nbveli + 1
-                    zi(jtrav+stocno-1+nbveli) = nuelim
+                    trav(1+stocno-1+nbveli) = nuelim
                     goto 50
                 endif
 40          continue
@@ -159,8 +162,8 @@ subroutine sansno(char, motfac, noma, sans, psans,&
 ! --- TRANSFERT DU VECTEUR
 !
         do 170 i = 1, stocno
-            if (zi(jtrav+i-1) .ne. 0) then
-                zi(jsans-1+i) = zi(jtrav-1+i)
+            if (trav(i) .ne. 0) then
+                zi(jsans-1+i) = trav(i)
             endif
 170      continue
     endif
@@ -168,7 +171,7 @@ subroutine sansno(char, motfac, noma, sans, psans,&
 ! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !
     call jedetr(listno)
-    call jedetr('&&SANSNO.TRAV')
+    AS_DEALLOCATE(vi=trav)
 !
     call jedema()
 end subroutine

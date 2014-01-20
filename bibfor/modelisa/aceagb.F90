@@ -21,6 +21,8 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lmax, nbocc
     logical :: locamb
@@ -57,7 +59,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 ! ----------------------------------------------------------------------
     integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, n3, n4, n5, jdls2
     integer :: i, axyzm, nbmat, nbma, n1f, n3f, iret
-    integer :: ima, nbno, jnuma, adrm, numa, jgrma, igr, nbmat0
+    integer :: ima, nbno,  adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3, iarg, jdccf, jdvcf
     real(kind=8) :: ang(2), sl, ez, ctr, axey(3), xnorm, epsi
     real(kind=8) :: axex(3), vn1n2(3), vn1n3(3), vecnor(3)
@@ -66,12 +68,13 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex, tmpncf, tmpvcf
     character(len=32) :: kjexn
     logical :: lcartf
+    integer, pointer :: nume_ma(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', axyzm)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat0)
-    call wkvect('&&ACEAGB.NUME_MA', 'V V I', nbmat0, jnuma)
+    AS_ALLOCATE(vi=nume_ma, size=nbmat0)
     nomagr = noma//'.GROUPEMA'
     nomama = noma//'.NOMMAI'
     connex = noma//'.CONNEX'
@@ -206,14 +209,14 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                     nbmat = nbmat + nbma
                     do ima = 0, nbma-1
                         numa = numa + 1
-                        zi(jnuma+numa) = zi(jgrma+ima)
+                        nume_ma(numa+1) = zi(jgrma+ima)
                     end do
                 end do
             else
                 nbmat = nm
                 do ima = 0, nm-1
                     kjexn = jexnom(nomama,zk8(jdls2+ima))
-                    call jenonu(kjexn, zi(jnuma+ima))
+                    call jenonu(kjexn, nume_ma(ima+1))
                 end do
             endif
 !
@@ -222,7 +225,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                 call utmess('F', 'MODELISA_10')
             endif
             do ima = 1, nbmat
-                numa = zi(jnuma+ima-1)
+                numa = nume_ma(ima)
                 kjexn = jexnum(connex,numa)
                 call jelira(kjexn, 'LONMAX', nbno)
                 call jeveuo(kjexn, 'L', adrm)
@@ -263,7 +266,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 !
     end do
 !
-    call jedetr('&&ACEAGB.NUME_MA')
+    AS_DEALLOCATE(vi=nume_ma)
     call jedetr('&&TMPGRILLE')
     call jedetr('&&TMPGRILLE2')
 !     SI PAS MEMBRANE

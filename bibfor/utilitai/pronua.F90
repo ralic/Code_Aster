@@ -30,6 +30,8 @@ subroutine pronua(method, nuag1, nuag2)
 #include "asterfort/nuainr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: method, nuag1, nuag2
 !
@@ -41,7 +43,7 @@ subroutine pronua(method, nuag1, nuag2)
 ! IN  NUAG2 (JXVAR)   : SD NUAGE A EVALUER
 !
 ! VARIABLES LOCALES :
-    integer :: inuai1, inuai2, inuax1, inuax2, iadref, iacorr
+    integer :: inuai1, inuai2, inuax1, inuax2
     integer :: inuav1, inuav2
     integer :: iret, inual1, inual2, ip2, ic2, ip1, ic1
     integer :: nx1, nx2, np1, np2, gd1, gd2, nc1, nc2
@@ -52,6 +54,8 @@ subroutine pronua(method, nuag1, nuag2)
     character(len=8) :: nogd
     character(len=3) :: tysca
     logical :: ldref
+    integer, pointer :: corresp(:) => null()
+    real(kind=8), pointer :: dref(:) => null()
 !
 ! DEB-------------------------------------------------------------------
     call jemarq()
@@ -90,20 +94,20 @@ subroutine pronua(method, nuag1, nuag2)
 !     -- L'OBJET '&&PRONUA.DREF' DONNE LA DISTANCE**2 DE REFERENCE
 !        A UTILISER POUR CHAQUE POINT DE NUAG2 :
 !        -----------------------------------------------------
-    call wkvect('&&PRONUA.DREF', 'V V R', np2, iadref)
+    AS_ALLOCATE(vr=dref, size=np2)
 !
 !
 !     -- L'OBJET '&&PRONUA.CORRESP' ETABLIT LA CORRESPONDANCE
 !        ENTRE LES NUMEROS DE CMPS DE NUAG2 ET CEUX DE NUAG1 :
 !        -----------------------------------------------------
-    call wkvect('&&PRONUA.CORRESP', 'V V I', nc2, iacorr)
+    AS_ALLOCATE(vi=corresp, size=nc2)
     do i2 = 1, nc2
         ii2=zi(inuai2-1+5+i2)
         i1=indiis(zi(inuai1-1+6),ii2,1,nc1)
         if (i1 .eq. 0) then
             call utmess('F', 'UTILITAI3_91', sk=nua1)
         else
-            zi(iacorr-1+i2) = i1
+            corresp(i2) = i1
         endif
     end do
 !
@@ -148,11 +152,11 @@ subroutine pronua(method, nuag1, nuag2)
 !     BOUCLE SUR LES CMPS DE NUAG2 :
 !     ------------------------------
     do ic2 = 1, nc2
-        ic1 = zi(iacorr-1+ic2)
+        ic1 = corresp(ic2)
 !
 !       CALCUL EVENTUEL DES DISTANCES DE REFERENCE :
 !       --------------------------------------------
-        if ((ic2.eq.1) .or. (.not.ldref)) call nuadrf(nua1, nua2, ic1, ic2, zr(iadref))
+        if ((ic2.eq.1) .or. (.not.ldref)) call nuadrf(nua1, nua2, ic1, ic2,dref)
 !
 !       BOUCLE SUR LES POINTS DU NUAGE NUAG2 :
 !       --------------------------------------
@@ -163,7 +167,7 @@ subroutine pronua(method, nuag1, nuag2)
                 if (zl(inual2-1+ (ip2-1)*nc2+ic2)) then
                     call nuainr(method, np1, nx1, nc1, ic1,&
                                 zr(inuax1), zl(inual1), zr(inuav1), zr(inuax2-1+ (ip2-1)*nx2+ 1),&
-                                zr(iadref-1+ip2), val2r)
+                                dref(ip2), val2r)
                     zr(inuav2-1+ (ip2-1)*nc2+ic2) = val2r
                 else
                     zr(inuav2-1+ (ip2-1)*nc2+ic2) = 0.d0
@@ -179,7 +183,7 @@ subroutine pronua(method, nuag1, nuag2)
 !
 !     MENAGE :
 !     --------
-    call jedetr('&&PRONUA.CORRESP')
-    call jedetr('&&PRONUA.DREF')
+    AS_DEALLOCATE(vi=corresp)
+    AS_DEALLOCATE(vr=dref)
     call jedema()
 end subroutine

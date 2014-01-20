@@ -76,6 +76,8 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 #include "asterfort/resoud.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 #include "blas/dgeev.h"
 #include "blas/dggev.h"
@@ -86,10 +88,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
 !-- VARIABLES DE LA ROUTINE
     integer :: lmatmo, i1, j1, k1, m1, n1, l1, lmakry, linddl, nsekry, lvtemp
-    integer :: lvtmp2, lwr, lwi, linlag, lalpi, lbeta, lmatk, lmatm, lmapro
-    integer :: lkpro, lmored, lmatrm, lmatrk, lwork, llwork, lalpr, lddld, lfreq
-    integer :: lindfr, lkryl, lmath, limped, lmolol, lmolor, lmatma, iret
-    integer :: nbvect, ibid, decal, jwork, ldelg, no, nbsst, lindin, coeff, lvp
+    integer ::    linlag,   lmatk, lmatm, lmapro
+    integer :: lkpro,  lmatrm, lmatrk, lwork,   lddld
+    integer ::  lkryl,  limped,   lmatma, iret
+    integer :: nbvect, ibid, decal,  ldelg, no, nbsst, lindin, coeff, lvp
     integer :: lintrf
     integer(kind=4) :: info
     real(kind=8) :: temp, pi, rbid, norm, lambda, comlin(2), swork(1), rand, max
@@ -99,6 +101,20 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     character(len=1) :: listyp(2)
     character(len=19) :: lismat(2), imped, solveu, nume91, nume, prno
     character(len=24) :: valk
+    real(kind=8), pointer :: hessenberg(:) => null()
+    real(kind=8), pointer :: imagpart(:) => null()
+    real(kind=8), pointer :: leftmodes(:) => null()
+    real(kind=8), pointer :: matr_eigen_work(:) => null()
+    real(kind=8), pointer :: matr_mod_red(:) => null()
+    real(kind=8), pointer :: matr_work_dggev(:) => null()
+    real(kind=8), pointer :: realpart(:) => null()
+    real(kind=8), pointer :: rightmodes(:) => null()
+    real(kind=8), pointer :: vect_alphai(:) => null()
+    real(kind=8), pointer :: vect_alphar(:) => null()
+    real(kind=8), pointer :: vect_beta(:) => null()
+    real(kind=8), pointer :: vect_temp_2(:) => null()
+    real(kind=8), pointer :: v_f_pro(:) => null()
+    integer, pointer :: v_ind_f_pro(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 !-- DEBUT --C
@@ -181,18 +197,18 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
      &'------------------------'
 !
     call wkvect('&&MODINT.VECT_TEMP', 'V V R', 6*nnoint, lvtemp)
-    call wkvect('&&MODINT.VECT_TEMP_2', 'V V R', 6*nnoint, lvtmp2)
+    AS_ALLOCATE(vr=vect_temp_2, size=6*nnoint)
     call wkvect('&&MODINT.KRYLOV_INT', 'V V R', 6*nnoint*nbvect, lkryl)
-    call wkvect('&&MODINT.HESSENBERG', 'V V R', nbvect**2, lmath)
+    AS_ALLOCATE(vr=hessenberg, size=nbvect**2)
 !
 !-- ALLOC. DES MATRICES DE TRAVAIL POUR LE CALCUL DES VALEURS PROPRES
-    call wkvect('&&MODINT.LEFT_MODES', 'V V R', nbvect**2, lmolol)
-    call wkvect('&&MODINT.RIGHT_MODES', 'V V R', nbvect**2, lmolor)
+    AS_ALLOCATE(vr=leftmodes, size=nbvect**2)
+    AS_ALLOCATE(vr=rightmodes, size=nbvect**2)
     no=max(nsekry,nbvect)
-    call wkvect('&&MODINT.REAL_PART', 'V V R', no, lwr)
-    call wkvect('&&MODINT.IMAG_PART', 'V V R', no, lwi)
-    call wkvect('&&MODINT.V_F_PRO', 'V V R', no, lfreq)
-    call wkvect('&&MODINT.V_IND_F_PRO', 'V V I', no, lindfr)
+    AS_ALLOCATE(vr=realpart, size=no)
+    AS_ALLOCATE(vr=imagpart, size=no)
+    AS_ALLOCATE(vr=v_f_pro, size=no)
+    AS_ALLOCATE(vi=v_ind_f_pro, size=no)
 !
 !-- ALLOCATION DE LA MATRICE CONTENANT LA BASE DU SE DE KRYLOV
     call wkvect('&&MODINT.SE_KRYLOV', 'V V R', neq*nsekry, lmakry)
@@ -231,27 +247,27 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                 zr(lvtemp+i1-1)=zr(lkryl+i1-1+(k1-2)*6*nnoint)
             end do
 !
-            call mrmult('ZERO', lmatma, zr(lvtemp), zr(lvtmp2), 1,&
+            call mrmult('ZERO', lmatma, zr(lvtemp), vect_temp_2, 1,&
                         .true.)
             call resoud(imped, ' ', solveu, ' ', 1,&
-                        ' ', ' ', ' ', zr(lvtmp2), [cbid],&
+                        ' ', ' ', ' ', vect_temp_2, [cbid],&
                         ' ', .true., 0, iret)
             do j1 = 1, k1-1
-                norm=ddot(6*nnoint,zr(lvtmp2),1, zr(lkryl+(j1-1)*6*&
+                norm=ddot(6*nnoint,vect_temp_2,1, zr(lkryl+(j1-1)*6*&
                 nnoint),1)
-                zr(lmath+(k1-2)*nbvect+j1-1)=norm
+                hessenberg(1+(k1-2)*nbvect+j1-1)=norm
                 do i1 = 1, 6*nnoint
-                    zr(lvtmp2+i1-1)=zr(lvtmp2+i1-1)- norm*zr(lkryl+(&
+                    vect_temp_2(i1)=vect_temp_2(i1)- norm*zr(lkryl+(&
                     j1-1)*6*nnoint+i1-1)
                 end do
             end do
 !
-            norm=ddot(6*nnoint,zr(lvtmp2),1,zr(lvtmp2),1)
+            norm=ddot(6*nnoint,vect_temp_2,1,vect_temp_2,1)
             norm=sqrt(norm)
             if (k1 .lt. nbvect+1) then
-                zr(lmath+(k1-2)*nbvect+k1-1)=norm
+                hessenberg(1+(k1-2)*nbvect+k1-1)=norm
                 do i1 = 1, 6*nnoint
-                    zr(lkryl+(k1-1)*6*nnoint+i1-1)=zr(lvtmp2+i1-1)/&
+                    zr(lkryl+(k1-1)*6*nnoint+i1-1)=vect_temp_2(i1)/&
                     norm
                     zr(lvtemp+i1-1)=zr(lkryl+(k1-1)*6*nnoint+i1-1)
                 end do
@@ -259,30 +275,30 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
         end do
 !
 !-- RESOLUTION DU PROBLEME AUX VALEURS PROPRES
-        call dgeev('N', 'V', nbvect, zr(lmath), nbvect,&
-                   zr(lwr), zr(lwi), zr(lmolol), nbvect, zr(lmolor),&
-                   nbvect, swork, -1, info)
+        call dgeev('N', 'V', nbvect, hessenberg, nbvect,&
+                  &realpart, imagpart, leftmodes, nbvect, rightmodes,&
+                  &nbvect, swork, -1, info)
         lwork=int(swork(1))
-        call wkvect('&&MODINT.MATR_EIGEN_WORK', 'V V R', lwork, jwork)
-        call dgeev('N', 'V', nbvect, zr(lmath), nbvect,&
-                   zr(lwr), zr(lwi), zr(lmolol), nbvect, zr(lmolor),&
-                   nbvect, zr(jwork), lwork, info)
-        call jedetr('&&MODINT.MATR_EIGEN_WORK')
+        AS_ALLOCATE(vr=matr_eigen_work, size=lwork)
+        call dgeev('N', 'V', nbvect, hessenberg, nbvect,&
+                  &realpart, imagpart, leftmodes, nbvect, rightmodes,&
+                  &nbvect, matr_eigen_work, lwork, info)
+        AS_DEALLOCATE(vr=matr_eigen_work)
 !
 !-- TRI DES VALEURS PROPRES
         do i1 = 1, nbvect
             temp=1.d+16
             do j1 = 1, nbvect
-                norm=abs(1.d0/sqrt(zr(lwr+j1-1)**2+zr(lwi+j1-1)**2)+&
+                norm=abs(1.d0/sqrt(realpart(j1)**2+imagpart(j1)**2)+&
                 shift)
                 if (norm .lt. temp) then
                     temp=norm
-                    zi(lindfr+i1-1)=j1
+                    v_ind_f_pro(i1)=j1
                 endif
             end do
 !
-            zr(lwr+zi(lindfr+i1-1)-1)=1.d-16
-            zr(lwi+zi(lindfr+i1-1)-1)=1.d-16
+            realpart(1+v_ind_f_pro(i1)-1)=1.d-16
+            imagpart(1+v_ind_f_pro(i1)-1)=1.d-16
         end do
 !
 !-- RAJOUTER LA SELECTION DES DDL
@@ -295,9 +311,9 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
             call wkvect(matmod, 'V V R', nddlin*coeff, lmatmo)
 !
             do l1 = 1, coeff
-                j1=zi(lindfr+l1-1)
+                j1=v_ind_f_pro(l1)
                 do k1 = 1, nbvect
-                    temp=zr(lmolor+(j1-1)*nbvect+k1-1)
+                    temp=rightmodes(1+(j1-1)*nbvect+k1-1)
                     do i1 = 1, nddlin
                         m1=zi(lintrf+i1-1)
                         zr(lmatmo+(l1-1)*nddlin+i1-1)= zr(lmatmo+(l1-&
@@ -315,9 +331,9 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !-- CONSTRUCTION DU SOUS ESPACE POUR LE PROBLEME COMPLET
         decal=int((n1-1)*coeff*neq)
         do l1 = 1, coeff
-            j1=zi(lindfr+l1-1)
+            j1=v_ind_f_pro(l1)
             do k1 = 1, nbvect
-                temp=zr(lmolor+(j1-1)*nbvect+k1-1)
+                temp=rightmodes(1+(j1-1)*nbvect+k1-1)
                 do i1 = 1, nddlin
                     m1=zi(lintrf+i1-1)
 !
@@ -396,20 +412,20 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !--                                             --C
 !-------------------------------------------------C
 !
-    call wkvect('&&MODINT.VECT_ALPHAR', 'V V R', nsekry, lalpr)
-    call wkvect('&&MODINT.VECT_ALPHAI', 'V V R', nsekry, lalpi)
-    call wkvect('&&MODINT.VECT_BETA', 'V V R', nsekry, lbeta)
-    call wkvect('&&MODINT.MATR_MOD_RED', 'V V R', nsekry**2, lmored)
+    AS_ALLOCATE(vr=vect_alphar, size=nsekry)
+    AS_ALLOCATE(vr=vect_alphai, size=nsekry)
+    AS_ALLOCATE(vr=vect_beta, size=nsekry)
+    AS_ALLOCATE(vr=matr_mod_red, size=nsekry**2)
 !
     call dggev('N', 'V', nsekry, zr(lkpro), nsekry,&
-               zr(lmapro), nsekry, zr(lalpr), zr(lalpi), zr(lbeta),&
-               zr(lmored), nsekry, zr(lmored), nsekry, swork,&
+               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta,&
+               matr_mod_red, nsekry, matr_mod_red, nsekry, swork,&
                -1, info)
     lwork=int(swork(1))
-    call wkvect('&&MODINT.MATR_WORK_DGGEV', 'V V R', lwork, llwork)
+    AS_ALLOCATE(vr=matr_work_dggev, size=lwork)
     call dggev('N', 'V', nsekry, zr(lkpro), nsekry,&
-               zr(lmapro), nsekry, zr(lalpr), zr(lalpi), zr(lbeta),&
-               zr(lmored), nsekry, zr(lmored), nsekry, zr(llwork),&
+               zr(lmapro), nsekry, vect_alphar, vect_alphai, vect_beta,&
+               matr_mod_red, nsekry, matr_mod_red, nsekry, matr_work_dggev,&
                lwork, info)
 !-- ON REACTIVE LE TEST FPE
     call matfpe(1)
@@ -417,11 +433,11 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !-- CLASSEMENT DES FREQUENCES PROPRES
     temp=1.d+16
     do i1 = 1, nsekry
-        if (abs(zr(lbeta+i1-1)) .gt. 0) then
-            lambda=zr(lalpr+i1-1)/zr(lbeta+i1-1)
-            zr(lfreq+i1-1)=(sqrt(abs(lambda)))/2/pi
+        if (abs(vect_beta(i1)) .gt. 0) then
+            lambda=vect_alphar(i1)/vect_beta(i1)
+            v_f_pro(i1)=(sqrt(abs(lambda)))/2/pi
         else
-            zr(lfreq+i1-1)=temp
+            v_f_pro(i1)=temp
         endif
     end do
 !
@@ -431,13 +447,13 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     do i1 = 1, nbmod
         temp=1.d+16
         do j1 = 1, nsekry
-            if (zr(lfreq+j1-1) .lt. temp) then
-                temp=zr(lfreq+j1-1)
-                zi(lindfr+i1-1)=j1
+            if (v_f_pro(j1) .lt. temp) then
+                temp=v_f_pro(j1)
+                v_ind_f_pro(i1)=j1
             endif
         end do
-        zr(lfreq+zi(lindfr+i1-1)-1)=1.d+16
-        lambda=zr(lalpr+zi(lindfr+i1-1)-1)/ zr(lbeta+zi(lindfr+i1-1)-&
+        v_f_pro(1+v_ind_f_pro(i1)-1)=1.d+16
+        lambda=vect_alphar(1+v_ind_f_pro(i1)-1)/ vect_beta(1+v_ind_f_pro(i1)-&
         1)-0*shift
         zr(lvp+i1-1)=(sqrt(abs(lambda)))/2/pi
     end do
@@ -451,7 +467,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     call wkvect(matmod, 'V V R', neq*nbmod, lmatmo)
     do j1 = 1, nbmod
         do k1 = 1, nsekry
-            temp=zr(lmored+(zi(lindfr+j1-1)-1)*nsekry+k1-1)
+            temp=matr_mod_red(1+(v_ind_f_pro(j1)-1)*nsekry+k1-1)
             do i1 = 1, neq
                 zr(lmatmo+(j1-1)*neq+i1-1)=zr(lmatmo+(j1-1)*neq+i1-1)+&
                 temp*zr(lmakry+(k1-1)*neq+i1-1)
@@ -471,28 +487,28 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     call jedetr('&&MODINT.K_PROJ')
     call jedetr('&&MODINT.INTERFACES_SST')
 !
-    call jedetr('&&MODINT.VECT_ALPHAR')
-    call jedetr('&&MODINT.VECT_ALPHAI')
-    call jedetr('&&MODINT.VECT_BETA')
-    call jedetr('&&MODINT.MATR_MOD_RED')
-    call jedetr('&&MODINT.MATR_WORK_DGGEV')
+    AS_DEALLOCATE(vr=vect_alphar)
+    AS_DEALLOCATE(vr=vect_alphai)
+    AS_DEALLOCATE(vr=vect_beta)
+    AS_DEALLOCATE(vr=matr_mod_red)
+    AS_DEALLOCATE(vr=matr_work_dggev)
 !
 999 continue
 !
     call detrsd('MATR_ASSE', imped)
 !
     call jedetr('&&MODINT.VECT_TEMP')
-    call jedetr('&&MODINT.VECT_TEMP_2')
+    AS_DEALLOCATE(vr=vect_temp_2)
     call jedetr('&&MODINT.KRYLOV_INT')
     call jedetr('&&MODINT.SE_KRYLOV')
-    call jedetr('&&MODINT.HESSENBERG')
+    AS_DEALLOCATE(vr=hessenberg)
 !
-    call jedetr('&&MODINT.LEFT_MODES')
-    call jedetr('&&MODINT.RIGHT_MODES')
-    call jedetr('&&MODINT.REAL_PART')
-    call jedetr('&&MODINT.IMAG_PART')
-    call jedetr('&&MODINT.V_F_PRO')
-    call jedetr('&&MODINT.V_IND_F_PRO')
+    AS_DEALLOCATE(vr=leftmodes)
+    AS_DEALLOCATE(vr=rightmodes)
+    AS_DEALLOCATE(vr=realpart)
+    AS_DEALLOCATE(vr=imagpart)
+    AS_DEALLOCATE(vr=v_f_pro)
+    AS_DEALLOCATE(vi=v_ind_f_pro)
 !
 !-- FIN --C
 !

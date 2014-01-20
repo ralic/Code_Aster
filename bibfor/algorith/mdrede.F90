@@ -18,6 +18,8 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 #include "asterfort/resmod.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbrede, nbmode, neq, ier
     real(kind=8) :: dplred(nbrede, nbmode, *), bmodal(neq, *)
@@ -65,8 +67,9 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, iret, j, jdpl, llrefe
+    integer :: ibid, iret, j,  llrefe
     integer :: nc, nf, nn, ns
+    real(kind=8), pointer :: dplcho(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
@@ -143,16 +146,16 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
 ! ----- CALCUL PAR SOUS-STRUCTURATION
         else if (typnum(1:13).eq.'NUME_DDL_GENE') then
-            call wkvect('&&MDREDE.DPLCHO', 'V V R8', nbmode*6, jdpl)
+            AS_ALLOCATE(vr=dplcho, size=nbmode*6)
             noecho(1) = noeu
             noecho(2) = sst
             noecho(3) = nume
             call resmod(bmodal, nbmode, neq, numero, mdgene,&
-                        noecho, zr( jdpl))
+                        noecho,dplcho)
             do 12 j = 1, nbmode
-                dplred(i,j,icomp) = zr(jdpl-1+j+(icomp-1)*nbmode)
+                dplred(i,j,icomp) = dplcho(j+(icomp-1)*nbmode)
 12          continue
-            call jedetr('&&MDREDE.DPLCHO')
+            AS_DEALLOCATE(vr=dplcho)
         endif
 !
         fonred(i,1) = noeu

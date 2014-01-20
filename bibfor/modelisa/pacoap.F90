@@ -16,6 +16,8 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 #include "asterfort/parotr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lonlis
     character(len=*) :: lisi1z, lisi2z, nomaz, liso1z, liso2z
@@ -66,7 +68,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 !
     integer :: i, i1, i2, iageom, idlin1, idlin2, idlinv
     integer :: idlou1, idlou2, idlou3, idlou4, ier, iexcor, iret
-    integer :: ino1, ino2, j, j1, j2, jnuli1, jnuli2, k
+    integer :: ino1, ino2, j, j1, j2,   k
     integer :: nuno1, nuno2
 !
     real(kind=8) :: d, dmin
@@ -77,6 +79,8 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
     character(len=24) :: lisin1, lisin2, lisou1, lisou2
     character(len=24) :: valk(5)
     character(len=24) :: noeuma
+    integer, pointer :: num_lisin1(:) => null()
+    integer, pointer :: num_lisin2(:) => null()
 !
 ! --- DEBUT
 !
@@ -125,11 +129,11 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 !
 !     -- ON FABRIQUE UN OBJET QUI CONTIENDRA LES NUMEROS
 !     -- DES NOEUDS DE LISIN1 ET LISIN2 :
-    call wkvect('&&PACOAP.NUM_LISIN1', 'V V I', lonlis, jnuli1)
-    call wkvect('&&PACOAP.NUM_LISIN2', 'V V I', lonlis, jnuli2)
+    AS_ALLOCATE(vi=num_lisin1, size=lonlis)
+    AS_ALLOCATE(vi=num_lisin2, size=lonlis)
     do 1,k=1,lonlis
-    call jenonu(jexnom(noeuma, zk8(idlin1-1+k)), zi(jnuli1-1+k))
-    call jenonu(jexnom(noeuma, zk8(idlin2-1+k)), zi(jnuli2-1+k))
+    call jenonu(jexnom(noeuma, zk8(idlin1-1+k)), num_lisin1(k))
+    call jenonu(jexnom(noeuma, zk8(idlin2-1+k)), num_lisin2(k))
     1 end do
 !
 ! --- CONSTITUTION DE LA PREMIERE CORRESPONDANCE ENTRE LES LISTES
@@ -139,7 +143,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
     do 10 i1 = 1, lonlis
         nomno1 = zk8(idlin1+i1-1)
 !       CALL JENONU(JEXNOM(NOEUMA,NOMNO1),NUNO1)
-        nuno1=zi(jnuli1-1+i1)
+        nuno1=num_lisin1(i1)
         call parotr(noma, iageom, nuno1, 0, centre,&
                     mrot, t, x1)
         dmin = r8gaem()
@@ -147,7 +151,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
         do 20 i2 = 1, lonlis
             nomo2 = zk8(idlin2+i2-1)
 !         CALL JENONU(JEXNOM(NOEUMA,NOMO2),INO2)
-            ino2=zi(jnuli2-1+i2)
+            ino2=num_lisin2(i2)
 !         CALL PACOOR(NOMA,INO2,0,X2)
             x2(1)=zr(iageom-1+3*(ino2-1)+1)
             x2(2)=zr(iageom-1+3*(ino2-1)+2)
@@ -195,7 +199,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
 !
     do 40 i2 = 1, lonlis
         nomno2 = zk8(idlin2+i2-1)
-        nuno2=zi(jnuli2-1+i2)
+        nuno2=num_lisin2(i2)
         x2(1)=zr(iageom-1+3*(nuno2-1)+1)
         x2(2)=zr(iageom-1+3*(nuno2-1)+2)
         x2(3)=zr(iageom-1+3*(nuno2-1)+3)
@@ -203,7 +207,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
         j1 = 0
         do 50 i1 = 1, lonlis
             nomo1 = zk8(idlin1+i1-1)
-            ino1=zi(jnuli1-1+i1)
+            ino1=num_lisin1(i1)
             call parotr(noma, iageom, ino1, 0, centre,&
                         mrot, t, x1)
             d = padist( 3, x1, x2 )
@@ -279,8 +283,8 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta,&
     call jedetr('&&PACOAP.LISOU3')
     call jedetr('&&PACOAP.LISOU4')
     call jedetr('&&PACOAP.LISINV')
-    call jedetr('&&PACOAP.NUM_LISIN1')
-    call jedetr('&&PACOAP.NUM_LISIN2')
+    AS_DEALLOCATE(vi=num_lisin1)
+    AS_DEALLOCATE(vi=num_lisin2)
 !
     call jedema()
 end subroutine

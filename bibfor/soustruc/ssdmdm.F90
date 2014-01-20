@@ -38,6 +38,8 @@ subroutine ssdmdm(mag)
 #include "asterfort/ssdmge.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
@@ -56,11 +58,13 @@ subroutine ssdmdm(mag)
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1noe, i1nol, iaconx, iacoo2, iacoor, iadesm
-    integer :: iadim2, iadime, ialk81, ialk82, ianmcr, iaparr, iasupm
+    integer :: iadim2, iadime,   ianmcr, iaparr, iasupm
     integer :: idim, idimto, ino, inold, iocc
     integer :: iret, isma, itrou, j, jno, k, n1
     integer :: n2, n3, n4, n5, nbnoe, nbnoet, nbnol
     integer :: nbsma, nnnoe, nnnol, nocc
+    character(len=8), pointer :: lk81(:) => null()
+    character(len=8), pointer :: lk82(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     r1= r8dgrd()
@@ -90,8 +94,8 @@ subroutine ssdmdm(mag)
 !
 !     -- ON ALLOUE DES OBJETS DE TRAVAIL :
 !     ------------------------------------
-    call wkvect('&&SSDMDM.LK81', 'V V K8', nbsma, ialk81)
-    call wkvect('&&SSDMDM.LK82', 'V V K8', nbsma, ialk82)
+    AS_ALLOCATE(vk8=lk81, size=nbsma)
+    AS_ALLOCATE(vk8=lk82, size=nbsma)
     call wkvect(mag//'.DIME_2', 'V V I', nbsma*4, iadim2)
 !
 !
@@ -100,10 +104,10 @@ subroutine ssdmdm(mag)
     isma=0
     do iocc = 1, nocc
 !
-        call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=nbsma, vect=zk8(ialk81),&
+        call getvid('DEFI_SUPER_MAILLE', 'MACR_ELEM', iocc=iocc, nbval=nbsma, vect=lk81,&
                     nbret=n1)
         call getvtx('DEFI_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma,&
-                    vect=zk8(ialk82), nbret=n2)
+                    vect=lk82, nbret=n2)
         if (n2 .lt. 0) then
             call utmess('F', 'SOUSTRUC_50')
         endif
@@ -132,7 +136,7 @@ subroutine ssdmdm(mag)
 !
         do i = 1, n1
             isma=isma+1
-            nomacr=zk8(ialk81-1+i)
+            nomacr=lk81(i)
             zk8(ianmcr-1+isma)=nomacr
 !
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=ma)
@@ -147,7 +151,7 @@ subroutine ssdmdm(mag)
             endif
 !
             nomail=nomacr
-            if (n2 .gt. 0) nomail=zk8(ialk82-1+i)
+            if (n2 .gt. 0) nomail=lk82(i)
 !
             call jecroc(jexnom(mag//'.SUPMAIL', nomail))
             call jeexin(nomacr//'.DESM', iret)
@@ -263,8 +267,8 @@ subroutine ssdmdm(mag)
 !
 !
 ! --- MENAGE
-    call jedetr('&&SSDMDM.LK81')
-    call jedetr('&&SSDMDM.LK82')
+    AS_DEALLOCATE(vk8=lk81)
+    AS_DEALLOCATE(vk8=lk82)
 !
     call jedema()
 end subroutine

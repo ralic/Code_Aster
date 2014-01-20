@@ -33,6 +33,8 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: mat, matf, vcine
     integer :: niter, nsecm
@@ -67,8 +69,12 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     character(len=4) :: type
     character(len=24) :: precon
     integer :: ifm, niv, ier, idvalc, idin, idip, jsmde, neq, nblc, islvk
-    integer :: idac, idinpc, idippc, idacpc, idw1, idw2, idw3
-    integer :: jrefa, jrefaf, k, lmat, kdeb, ieq, idw4, ismbr
+    integer :: idac, idinpc, idippc, idacpc
+    integer :: jrefa, jrefaf, k, lmat, kdeb, ieq,  ismbr
+    real(kind=8), pointer :: w1(:) => null()
+    real(kind=8), pointer :: w2(:) => null()
+    real(kind=8), pointer :: w3(:) => null()
+    real(kind=8), pointer :: w4(:) => null()
 !
 !----------------------------------------------------------------------
 !     DEBUT
@@ -161,16 +167,16 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !
 !     7- CREATION DE 3 VECTEURS DE TRAVAIL
 !     ------------------------------------------------
-    call wkvect('&&RESGRA.W1', 'V V R', neq, idw1)
-    call wkvect('&&RESGRA.W2', 'V V R', neq, idw2)
-    call wkvect('&&RESGRA.W3', 'V V R', neq, idw3)
+    AS_ALLOCATE(vr=w1, size=neq)
+    AS_ALLOCATE(vr=w2, size=neq)
+    AS_ALLOCATE(vr=w3, size=neq)
 !
 !
 !
 !     9- RESOLUTION EFFECTIVE ---
 !     ---------------------------------
     do 30,k=1,nsecm
-    call wkvect('&&RESGRA.W4', 'V V R', neq, idw4)
+    AS_ALLOCATE(vr=w4, size=neq)
 !
 !        ---- SOLUTION POUR MUMPS
     smbr='&&RESGRA.SMBR      '
@@ -178,14 +184,14 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !
     kdeb=(k-1)*neq+1
     call gcpc(neq, zi(idin), zi4(idip), zr(idac), zi(idinpc),&
-              zi4(idippc), zr(idacpc), rsolu(kdeb), zr(idw4), zr(idw1),&
-              zr(idw2), zr(idw3), 0, niter, epsi,&
+              zi4(idippc), zr(idacpc), rsolu(kdeb), w4, w1,&
+              w2, w3, 0, niter, epsi,&
               criter, solveu, matas, smbr, istop,&
               iret)
     do 20,ieq=1,neq
-    rsolu(kdeb-1+ieq)=zr(idw4-1+ieq)
+    rsolu(kdeb-1+ieq)=w4(ieq)
 20  continue
-    call jedetr('&&RESGRA.W4')
+    AS_DEALLOCATE(vr=w4)
     call jedetr(smbr//'.VALE')
     30 end do
 !
@@ -196,9 +202,9 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
                 nsecm)
 !
 !
-    call jedetr('&&RESGRA.W1')
-    call jedetr('&&RESGRA.W2')
-    call jedetr('&&RESGRA.W3')
+    AS_DEALLOCATE(vr=w1)
+    AS_DEALLOCATE(vr=w2)
+    AS_DEALLOCATE(vr=w3)
 !
     call jedema()
 end subroutine

@@ -31,6 +31,8 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: cns1z, cns2z, base
     integer :: nbno, nbcmp, lino(nbno)
@@ -66,7 +68,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::   jcn1v, jcn1l,  nbnom, ncmp2, jexno, kno
+    integer ::   jcn1v, jcn1l,  nbnom, ncmp2,  kno
     integer :: icmp2
     integer :: jcn2d, jcn2v, jcn2l
     integer :: ncmpmx, ncmp1, icmp1
@@ -78,6 +80,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     character(len=8), pointer :: cn1c(:) => null()
     character(len=8), pointer :: cn2c(:) => null()
     integer, pointer :: cn1d(:) => null()
+    logical, pointer :: exino(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -131,20 +134,20 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 !
 !     2- ON TRANSFORME LINO EN LISTE DE BOOLEENS:
 !     ------------------------------------------
-    call wkvect('&&CNSRED.EXINO', 'V V L', nbnom, jexno)
+    AS_ALLOCATE(vl=exino, size=nbnom)
     do kno = 1, nbnom
-        zl(jexno-1+kno) = .false.
+        exino(kno) = .false.
     end do
 !
     ASSERT(nbno.ge.0)
     if (nbno .eq. 0) then
         do kno = 1, nbnom
-            zl(jexno-1+kno) = .true.
+            exino(kno) = .true.
         end do
 !
     else
         do kno = 1, nbno
-            zl(jexno-1+lino(kno)) = .true.
+            exino(lino(kno)) = .true.
         end do
     endif
 !
@@ -158,7 +161,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 !
 !
         do ino = 1, nbnom
-            if (zl(jexno-1+ino)) then
+            if (exino(ino)) then
                 if (zl(jcn1l-1+ (ino-1)*ncmp1+icmp1)) then
                     zl(jcn2l-1+ (ino-1)*ncmp2+icmp2) = .true.
 !
@@ -186,7 +189,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
 !
 !     5- MENAGE :
 !     -----------
-    call jedetr('&&CNSRED.EXINO')
+    AS_DEALLOCATE(vl=exino)
     if (cns1 .eq. '&&CNSRED.CNS1') call detrsd('CHAM_NO_S', cns1)
 !
     call jedema()

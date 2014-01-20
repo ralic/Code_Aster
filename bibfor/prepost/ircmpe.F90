@@ -15,6 +15,8 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbvato, ncmpve, numcmp(ncmpve), nbmaec, typmai(*), adsd
     integer :: limaec(*), nbimpr, typgeo(*), profas(nbvato), tyefma(*)
     integer :: nroimp(nbvato), promed(nbvato), prorec(nbvato), adsl
@@ -93,7 +95,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     parameter (ntymax=69)
     parameter (nmaxfi=10)
     integer :: ifm, nivinf, ibid, iret, iaux, jaux, kaux, ima, jcesd, laux
-    integer :: jcesc, jcesl, jcesv, nrefma, jnofpg, jchfpg
+    integer :: jcesc, jcesl, jcesv, nrefma,  jchfpg
     integer :: nrcmp, nrpg, nrsp, nbpg, nbsp, nval, typmas, nbimp0, nrimpr
     integer :: nmaty0(ntymax), adraux(ntymax), nbcou, nbsec, nbfib
     integer :: adcaii, adcaik, nbgrf, nugrfi(nmaxfi)
@@ -104,6 +106,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     character(len=64) :: noprof
 !
     logical :: exicar, grfidt
+    character(len=16), pointer :: tabnofpg(:) => null()
 !
 !====
 ! 1. PREALABLES
@@ -190,7 +193,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 !     DE POINTS DE GAUSS
     if (typech(1:4) .eq. 'ELGA') then
         call celfpg(chanom, '&&IRCMPE.NOFPGMA', ibid)
-        call wkvect('&&IRCMPE.TABNOFPG', 'V V K16', nval, jnofpg)
+        AS_ALLOCATE(vk16=tabnofpg, size=nval)
         call jeveuo('&&IRCMPE.NOFPGMA', 'L', jchfpg)
     endif
 !
@@ -233,14 +236,14 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
         if (.not.exicar) then
 !             SI ON N'A PAS DE CARA_ELEM, LE CAS EST SIMPLE
 !             ON COMPARE LE NOM DE LA FAMILLE DE PG ET NBSP
-            if (zk16(jnofpg+jaux-1) .eq. nomfpg .and. zi( adcaii+10*(jaux-1)+2) .eq. nbsp) then
+            if (tabnofpg(jaux) .eq. nomfpg .and. zi( adcaii+10*(jaux-1)+2) .eq. nbsp) then
                 nrimpr = jaux
                 goto 423
             endif
         else
 !             SINON, ON A DEUX CAS, PMF ET AUTRES
             if (nbfib .ne. 0) then
-                if (zk16(jnofpg+jaux-1) .eq. nomfpg) then
+                if (tabnofpg(jaux) .eq. nomfpg) then
 !                 POUR LES PMF, ON COMPARE AUSSI LES GROUPES DE FIBRES
                     ima2 = zi(adcaii+10*(jaux-1)+5)
                     call ircael(jcesd, jcesl, jcesv, jcesc, ima2,&
@@ -257,7 +260,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
                     endif
                 endif
             else
-                if (zk16(jnofpg+jaux-1) .eq. nomfpg .and. zi(adcaii+10*(jaux-1)+3) .eq.&
+                if (tabnofpg(jaux) .eq. nomfpg .and. zi(adcaii+10*(jaux-1)+3) .eq.&
                     nbcou .and. zi(adcaii+10*(jaux-1)+4) .eq. nbsec) then
                     nrimpr = jaux
                     goto 423
@@ -304,7 +307,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     zi(jaux+8) = typgeo(typmai(ima))
 !
     if (typech(1:4) .eq. 'ELGA') then
-        zk16(jnofpg+nbimpr-1) = nomfpg
+        tabnofpg(nbimpr) = nomfpg
     endif
     nrimpr = nbimpr
 !
@@ -319,7 +322,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     42 end do
 !
     if (typech(1:4) .eq. 'ELGA') then
-        call jedetr('&&IRCMPE.TABNOFPG')
+        AS_DEALLOCATE(vk16=tabnofpg)
         call jedetr('&&IRCMPE.NOFPGMA')
     endif
 !

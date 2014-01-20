@@ -13,6 +13,8 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: icode, nbacc, nbpara
     character(len=*) :: nomsd, nomjv
@@ -55,8 +57,10 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 !  --- INITIALISATIONS ---
 !
 !-----------------------------------------------------------------------
-    integer :: iacc, iatava, ibid, ipar, iret, jac, jpa
+    integer :: iacc, iatava, ibid, ipar, iret
     integer :: jpara, nbpar
+    character(len=16), pointer :: nom_acce(:) => null()
+    character(len=16), pointer :: nom_para(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nomd2 = nomsd
@@ -65,18 +69,18 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 !
     call jelira(nomd2//'.NOVA', 'NOMMAX', nbpar)
     if (nbpar .ne. 0) then
-        call wkvect('&&RSNOPA.NOM_ACCE', 'V V K16', nbpar, jac)
-        call wkvect('&&RSNOPA.NOM_PARA', 'V V K16', nbpar, jpa)
+        AS_ALLOCATE(vk16=nom_acce, size=nbpar)
+        AS_ALLOCATE(vk16=nom_para, size=nbpar)
         do 30 ipar = 1, nbpar
             call jenuno(jexnum(nomd2//'.NOVA', ipar), nompar)
             call jenonu(jexnom(nomd2//'.NOVA', nompar), ibid)
             call jeveuo(jexnum(nomd2//'.TAVA', ibid), 'L', iatava)
             if (zk8(iatava+3)(1:4) .eq. 'PARA') then
                 nbpara = nbpara + 1
-                zk16(jpa-1+nbpara) = nompar
+                nom_para(nbpara) = nompar
             else
                 nbacc = nbacc + 1
-                zk16(jac-1+nbacc) = nompar
+                nom_acce(nbacc) = nompar
             endif
 30      continue
         if (icode .eq. 0) nbpara = 0
@@ -93,17 +97,17 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
             call wkvect(nomjv, 'V V K16', (nbacc+nbpara), jpara)
             if (nbacc .ne. 0) then
                 do 40 iacc = 1, nbacc
-                    zk16(jpara-1+iacc) = zk16(jac-1+iacc)
+                    zk16(jpara-1+iacc) = nom_acce(iacc)
 40              continue
             endif
             if (nbpara .ne. 0) then
                 do 50 ipar = 1, nbpara
-                    zk16(jpara-1+ipar+nbacc) = zk16(jpa-1+ipar)
+                    zk16(jpara-1+ipar+nbacc) = nom_para(ipar)
 50              continue
             endif
         endif
-        call jedetr('&&RSNOPA.NOM_ACCE')
-        call jedetr('&&RSNOPA.NOM_PARA')
+        AS_DEALLOCATE(vk16=nom_acce)
+        AS_DEALLOCATE(vk16=nom_para)
     else
 !        -- RIEN A FAIRE
     endif

@@ -16,6 +16,8 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: noma, nomo, fiss
     character(len=19) :: faclon, ainter
 ! ======================================================================
@@ -74,9 +76,10 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     character(len=19) :: nliseq
     character(len=8) :: typma
     integer :: zxain, in, jn, iac, ier, ncta, ncte
-    integer :: jcntan, jcntes, jcnte2, jarcon, narcon, jnbpt
+    integer :: jcntan, jcntes, jcnte2,  narcon, jnbpt
     logical :: lmulti, lconne
     integer :: kk, jgrp, ienr, nmaenr
+    integer, pointer :: arcon(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -209,7 +212,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 11      continue
 81  end do
     ASSERT(narcon.gt.0)
-    call wkvect('&&XBARVI.ARCON', 'V V I', 4*narcon, jarcon)
+    AS_ALLOCATE(vi=arcon, size=4*narcon)
 !
 41  continue
 !
@@ -303,11 +306,11 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
                                             iac = iac + 1
                                             ASSERT(iac.le.narcon)
-                                            zi(jarcon-1+4*(iac-1)+1) = in
-                                            zi(jarcon-1+4*(iac-1)+2) =&
+                                            arcon(4*(iac-1)+1) = in
+                                            arcon(4*(iac-1)+2) =&
                                         ima
-                                            zi(jarcon-1+4*(iac-1)+3) = ia
-                                            zi(jarcon-1+4*(iac-1)+4) = jn
+                                            arcon(4*(iac-1)+3) = ia
+                                            arcon(4*(iac-1)+4) = jn
                                             goto 20
                                         endif
 70                                  continue
@@ -342,16 +345,16 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 ! --- ON BOUCLE SUR TOUTES LES ARETES CONNECTEES
 !
             do 100 iac = 1, narcon
-                if (zi(jarcon-1+4*(iac-1)+2) .eq. in) then
+                if (arcon(4*(iac-1)+2) .eq. in) then
                     ncte = ncte+1
 !
 ! --- DES QU'IL Y EN A UNE QUI CORRESPOND AU GROUPE EN COURS,
 ! --- ON LE STOQUE DANS CE GROUPE
 !
-                    zi(jcntes-1+4*(ncte-1)+1) = zi(jarcon-1+4*(iac-1)+ 4)
+                    zi(jcntes-1+4*(ncte-1)+1) = arcon(4*(iac-1)+ 4)
                     zi(jcntes-1+4*(ncte-1)+2) = in
-                    zi(jcntes-1+4*(ncte-1)+3) = zi(jarcon-1+4*(iac-1)+ 2)
-                    zi(jcntes-1+4*(ncte-1)+4) = zi(jarcon-1+4*(iac-1)+ 3)
+                    zi(jcntes-1+4*(ncte-1)+3) = arcon(4*(iac-1)+ 2)
+                    zi(jcntes-1+4*(ncte-1)+4) = arcon(4*(iac-1)+ 3)
                 endif
 100          continue
 90      continue
@@ -360,7 +363,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
         call jedetr(fiss(1:8)//'.CONNECTANT')
         call jedetr(fiss(1:8)//'.CONNECTES ')
-        call jedetr('&&XBARVI.ARCON')
+        AS_DEALLOCATE(vi=arcon)
     endif
 !
     call jedema()

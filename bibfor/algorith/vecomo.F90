@@ -62,6 +62,8 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
 !
@@ -72,7 +74,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     integer :: nbno, icrit, nliais, ldlid, llint3, llint4, iret, nbec, nbcmpm
     integer :: ival, nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, i, j, k, l
     integer :: ibid, nbno1, nbno2, llint1, llint2, ldesc1, ldesc2, llcoo1
-    integer :: llcoo2, llista, llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
+    integer :: llcoo2,  llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
     integer :: nuno, ldac2
     parameter   (nbcmpm=10)
     character(len=4) :: nliai
@@ -86,6 +88,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     real(kind=8) :: mat3(nbcmpm, nbcmpm), zero, dxrm, lcaram, tra2(3)
     real(kind=8) :: mattmp(nbcmpm, nbcmpm), difmax, lcara1, lcara2
     real(kind=8) :: matro1(nbcmpm, nbcmpm), matro2(nbcmpm, nbcmpm), seuil, dxrij
+    integer, pointer :: lista(:) => null()
 !
 !-----------------------------------------------------------------------
     data zero /0.0d+00/
@@ -204,7 +207,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !         RECIPROQUEMENT LE NOEUD DE POSITION J DE L'INTERFACE GAUCHE
 !         EST LE VIS-A-VIS DU NOEUD DE POSITION ZI(LISTB-1+J) DE
 !         L'INTERFACE DROITE.
-    call wkvect('&&VECOMO.LISTA', 'V V I', nbno, llista)
+    AS_ALLOCATE(vi=lista, size=nbno)
     call wkvect('&&VECOMO.LISTB', 'V V I', nbno, llistb)
     dxrm=0.d0
     lcaram=0.d0
@@ -291,7 +294,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
 !
         if (dxrm .lt. dxr) dxrm=dxr
-        zi(llista-1+i) = jnode
+        lista(i) = jnode
         if (zi(llistb-1+jnode) .ne. 0) then
 !        --- CAS OU JNODE EST DEJA UN VIS-A-VIS ---
             ip = zi(llistb-1+jnode)
@@ -351,7 +354,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !       --- LES NOEUDS NE SONT PAS EN VIS-A-VIS ---
 !           ON REGARDE D'ABORD SI LE TRI EST PLAUSIBLE
         do i = 1, nbno
-            if (zi(llistb-1+zi(llista-1+i)) .ne. i) then
+            if (zi(llistb-1+lista(i)) .ne. i) then
                 valk (1) = sst1
                 valk (2) = intf1
                 valk (3) = sst2
@@ -392,7 +395,7 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             zi(llistb-1+i) = zi(llint2-1+i)
         end do
         do i = 1, nbno
-            zi(llint3-1+i) = zi(llistb-1+zi(llista-1+i))
+            zi(llint3-1+i) = zi(llistb-1+lista(i))
         end do
 !    ---  ON REORDONNE LES CODES DE CONDITIONS AUX LIMITES
 !         AFIN D'AVOIR UNE VERIFICATION CORRECTE DANS VERILI
@@ -407,13 +410,13 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
             zi(llistb+(i-1)*nbec) = zi(ldac2+(i-1)*nbec)
         end do
         do i = 1, nbno
-            zi(llint4+(i-1)*nbec) = zi(llistb+(zi(llista-1+i)-1)*nbec)
+            zi(llint4+(i-1)*nbec) = zi(llistb+(lista(i)-1)*nbec)
         end do
 !
     endif
 !
 !       --- DESTRUCTION OBJETS SUR VOLATILE
-    call jedetr('&&VECOMO.LISTA')
+    AS_DEALLOCATE(vi=lista)
     call jedetr('&&VECOMO.LISTB')
 !
     nliais=1

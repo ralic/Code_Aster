@@ -15,6 +15,8 @@ subroutine nuacno(nuage, lno, chno)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: nuage, lno, chno
 !     ------------------------------------------------------------------
@@ -47,11 +49,12 @@ subroutine nuacno(nuage, lno, chno)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iaec, ianueq, iaprno, ibid, icmp
+    integer :: i, iad,  ianueq, iaprno, ibid, icmp
     integer :: icompt, iec, ieq, ino, itype, ival
     integer :: j, jdesc, jlno, jnuai, jnuav, jrefe, k
     integer :: kcomp, kvale, nc, ncmp, ncmpmx, nec, np
     integer :: num
+    integer, pointer :: ent_cod(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     knuage = nuage
@@ -66,7 +69,7 @@ subroutine nuacno(nuage, lno, chno)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     nec = nbec(gd)
     call wkvect('&&NUACNO.NOMCMP', 'V V I', ncmpmx, kcomp)
-    call wkvect('&&NUACNO.ENT_COD', 'V V I', nec, iaec)
+    AS_ALLOCATE(vi=ent_cod, size=nec)
 !
     call jeveuo(kchno//'.REFE', 'L', jrefe)
     noma = zk24(jrefe-1+1) (1:8)
@@ -102,14 +105,14 @@ subroutine nuacno(nuage, lno, chno)
     if (num .lt. 0) then
         ncmp = -num
         do iec = 1, nec
-            zi(iaec+iec-1) = zi(jdesc-1+2+iec)
+            ent_cod(iec) = zi(jdesc-1+2+iec)
         end do
         do j = 1, np
             ino = zi(jlno+j-1)
             ival = ncmp * ( ino - 1 )
             icompt = 0
             do icmp = 1, ncmpmx
-                if (exisdg(zi(iaec) , icmp )) then
+                if (exisdg(ent_cod, icmp )) then
                     icompt = icompt + 1
                     k = nc*(j-1) + icompt
                     if (itype .eq. 1) then
@@ -133,11 +136,11 @@ subroutine nuacno(nuage, lno, chno)
             ncmp = zi(iaprno-1+ (ino-1)*(nec+2)+2 )
             if (ncmp .eq. 0) goto 210
             do iec = 1, nec
-                zi(iaec+iec-1) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
+                ent_cod(iec) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
             end do
             icompt = 0
             do icmp = 1, ncmpmx
-                if (exisdg(zi(iaec) , icmp )) then
+                if (exisdg(ent_cod, icmp )) then
                     icompt = icompt + 1
                     ieq = zi(ianueq-1+ival-1+icompt)
                     k = nc*(j-1) + icompt
@@ -153,7 +156,7 @@ subroutine nuacno(nuage, lno, chno)
     endif
 !
     call jedetr('&&NUACNO.NOMCMP')
-    call jedetr('&&NUACNO.ENT_COD')
+    AS_DEALLOCATE(vi=ent_cod)
     call jedetr('&&NUACNO.NOEUD')
     call jedema()
 end subroutine

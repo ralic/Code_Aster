@@ -36,6 +36,8 @@ subroutine nugllo(nu, base, solveu)
 #include "asterfort/nupodd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=14) :: nu
     character(len=2) :: base
@@ -56,16 +58,20 @@ subroutine nugllo(nu, base, solveu)
     integer :: jnumsd, rang, numa, nbnoma, nbno, ino, nuno
     integer :: nec, nlili, neql, idprn1, idprn2, ili, ntot
     integer :: idpr21, idpr22, numinc, numec, nddl
-    integer :: jtano, neqg, jtaeq, iddl, jnulg, jslvk
+    integer ::  neqg,  iddl, jnulg, jslvk
     integer :: jnueql, ddl1g, ddl1l, jdelgg, jdelgl, j1
     integer :: jadne, jadli, iel, igr, nel, k1, n1, j, ilib
-    integer :: jdelgt, jddlp, nbproc, vali(1), jnugl, ieqg
+    integer ::   nbproc, vali(1), jnugl, ieqg
 !
     character(len=8) :: noma, partit, mo
     character(len=19) :: ligrmo, nomlig
 !----------------------------------------------------------------------
     integer :: jprtk
     logical :: ldgrel, ldist
+    integer, pointer :: ddl_pres(:) => null()
+    integer, pointer :: delg_tmp(:) => null()
+    integer, pointer :: tab_eq(:) => null()
+    integer, pointer :: tab_no(:) => null()
     mpi_int :: mrank, msize
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
@@ -149,10 +155,10 @@ subroutine nugllo(nu, base, solveu)
 !
 !---- ON CREE LE TABLEAU &&NUGLLO.TAB_NO DONT LE ROLE EST DE SE SOUVENIR
 !     SI UN NOEUD DU MAILLAGE A DEJA ETE TRAITE (ECONOMIE DE CPU)
-    call wkvect('&&NUGLLO.TAB_NO', 'V V I', nbnoma, jtano)
+    AS_ALLOCATE(vi=tab_no, size=nbnoma)
 !
 !---- CREATION DU TABLEAU &&NUGLLO.TAB_EQ QUI SERVIRA A CREER LE .NUEQ
-    call wkvect('&&NUGLLO.TAB_EQ', 'V V I', neqg, jtaeq)
+    AS_ALLOCATE(vi=tab_eq, size=neqg)
     call wkvect(nu//'.NUML.NUGL', base(1:1)//' V I', neqg, jnugl)
 !
 !---- RECHERCHE DU TABLEAU PARTITION
@@ -193,8 +199,8 @@ subroutine nugllo(nu, base, solveu)
     call jeveuo(nu//'.NUML.PRNO', 'E', idpr21)
     call jeveuo(jexatr(nu//'.NUML.PRNO', 'LONCUM'), 'L', idpr22)
 !
-    call wkvect('&&NUGLLO.DDL_PRES', 'V V I', neqg, jddlp)
-    call wkvect('&&NUGLLO.DELG_TMP', 'V V I', neqg, jdelgt)
+    AS_ALLOCATE(vi=ddl_pres, size=neqg)
+    AS_ALLOCATE(vi=delg_tmp, size=neqg)
 !
 !
 !---- REMPLISSAGE DU .PRNO ET DU TABLEAU &&NUGLLO.TAB_EQ
@@ -223,7 +229,7 @@ subroutine nugllo(nu, base, solveu)
                     nbno=zi(jconx2+numa)-zi(jconx2+numa-1)
                     do ino = 1, nbno
                         nuno=zi(jconx1-1+zi(jconx2+numa-1)+ino-1)
-                        if (zi(jtano+nuno-1) .eq. 1) goto 40
+                        if (tab_no(nuno) .eq. 1) goto 40
 !
                         ddl1g=zzprno(1,nuno,1)
                         nddl=zzprno(1,nuno,2)
@@ -235,11 +241,11 @@ subroutine nugllo(nu, base, solveu)
                         end do
 !
                         do iddl = 1, nddl
-                            zi(jddlp+ddl1g+iddl-2)=1
-                            zi(jtaeq+numinc-1+iddl-1)=ddl1g+iddl-1
+                            ddl_pres(1+ddl1g+iddl-2)=1
+                            tab_eq(1+numinc-1+iddl-1)=ddl1g+iddl-1
                         end do
                         numinc=numinc+nddl
-                        zi(jtano+nuno-1)=1
+                        tab_no(nuno)=1
  40                     continue
                     end do
 !
@@ -253,12 +259,12 @@ subroutine nugllo(nu, base, solveu)
                             nuno=-nuno
                             ilib=ili
                         else
-                            if (zi(jtano+nuno-1) .eq. 1) goto 70
+                            if (tab_no(nuno) .eq. 1) goto 70
                             ilib=1
-                            zi(jtano+nuno-1)=1
+                            tab_no(nuno)=1
                         endif
                         ddl1g=zzprno(ilib,nuno,1)
-                        if (zi(jddlp+ddl1g-1) .eq. 1) goto 70
+                        if (ddl_pres(ddl1g) .eq. 1) goto 70
                         zi(izzpr2(ilib,nuno,1))=numinc
                         nddl=zzprno(ilib,nuno,2)
                         zi(izzpr2(ilib,nuno,2))=nddl
@@ -266,9 +272,9 @@ subroutine nugllo(nu, base, solveu)
                             zi(izzpr2(ilib,nuno,2+numec))=zzprno(ilib,nuno, 2+numec)
                         end do
                         do iddl = 1, nddl
-                            zi(jddlp+ddl1g+iddl-2)=1
-                            zi(jtaeq+numinc-1+iddl-1)=ddl1g+iddl-1
-                            zi(jdelgt+numinc-1+iddl-1)=zi(jdelgg+&
+                            ddl_pres(1+ddl1g+iddl-2)=1
+                            tab_eq(1+numinc-1+iddl-1)=ddl1g+iddl-1
+                            delg_tmp(1+numinc-1+iddl-1)=zi(jdelgg+&
                             ddl1g-1+iddl-1)
                         end do
                         numinc=numinc+nddl
@@ -292,7 +298,7 @@ subroutine nugllo(nu, base, solveu)
 !---- CREATION DU .NUML.DELG
     call wkvect(nu//'.NUML.DELG', base(1:1)//' V I', neql, jdelgl)
     do j = 1, neql
-        zi(jdelgl-1+j)=zi(jdelgt-1+j)
+        zi(jdelgl-1+j)=delg_tmp(j)
     end do
 !
 !---- CREATION DU .NUML.NEQU
@@ -311,7 +317,7 @@ subroutine nugllo(nu, base, solveu)
             ddl1l=zzprn2(ili,ino,1)
             nddl=zzprn2(ili,ino,2)
             do iddl = 1, nddl
-                ieqg=zi(jtaeq+ddl1l-1+iddl-1)
+                ieqg=tab_eq(1+ddl1l-1+iddl-1)
                 ASSERT(ieqg.gt.0)
 !
                 zi(jnulg+ddl1l-1+iddl-1)=ieqg
@@ -325,10 +331,10 @@ subroutine nugllo(nu, base, solveu)
 !     POUR PETSC ON A BESOIN D'INFORMATIONS SUPPLEMENTAIRES
     if (zk24(jslvk) .eq. 'PETSC') call nupodd(nu, base, rang, nbproc)
 !
-    call jedetr('&&NUGLLO.TAB_NO')
-    call jedetr('&&NUGLLO.TAB_EQ')
-    call jedetr('&&NUGLLO.DELG_TMP')
-    call jedetr('&&NUGLLO.DDL_PRES')
+    AS_DEALLOCATE(vi=tab_no)
+    AS_DEALLOCATE(vi=tab_eq)
+    AS_DEALLOCATE(vi=delg_tmp)
+    AS_DEALLOCATE(vi=ddl_pres)
 !
     call jedema()
 !

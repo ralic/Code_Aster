@@ -33,6 +33,8 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nmrldb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=24) :: defico, resoco
     character(len=19) :: solveu
@@ -80,13 +82,14 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
     integer :: lliac, jdecal, nbddl, posit
     integer :: neq, lgbloc, tampon
     integer :: nbsm, npas
-    integer :: nrest, ipas, llf3d, kk, iliac, jtmpv, npast
+    integer :: nrest, ipas, llf3d, kk, iliac,  npast
     character(len=19) :: liac, cm1a
     integer :: jliac, jcm1a
     character(len=24) :: appoin, apddl, apcoef, apcofr
     integer :: japptr, japddl, japcoe, japcof
     character(len=24) :: chsecm
     character(len=19) :: cncin0
+    integer, pointer :: vect(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -147,7 +150,7 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
     call wkvect(chsecm, ' V V R ', neq*lgbloc, tampon)
     llf3d = 0
     if (llf .ne. 0) then
-        call wkvect('&&CFACA1.VECT', ' V V I ', llf, jtmpv)
+        AS_ALLOCATE(vi=vect, size=llf)
     endif
 !
     do ipas = 1, npast
@@ -184,7 +187,7 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
 ! --- CALCUL DE LA COLONNE AT POUR LA PREMIERE DIRECTION DE FROTTEMENT
 !
                 llf3d = llf3d + 1
-                zi(jtmpv -1 +llf3d) = lliac
+                vect(llf3d) = lliac
                 call calatm(neq, nbddl, 1.d0, zr(japcof+jdecal), zi(japddl+ jdecal),&
                             zr(tampon+neq*(il-1)))
 !
@@ -284,7 +287,7 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
 !
             do il = 1, lg
                 iliac = lgbloc*(ipas-1) + il
-                lliac = zi(jtmpv -1 +iliac)
+                lliac = vect(iliac)
 !
 ! --- AJOUT D'UNE LIAISON DE FROTTEMENT SUIVANT LA 2NDE DIRECTION
 !
@@ -303,7 +306,7 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
 ! --- RECOPIE
             do il = 1, lg
                 iliac = lgbloc*(ipas-1) + il
-                lliac = zi(jtmpv -1 +iliac)
+                lliac = vect(iliac)
                 call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'E', jcm1a)
                 do kk = 1, neq
                     zr(jcm1a-1+kk) = zr(tampon-1+neq* (il-1)+kk)
@@ -315,7 +318,7 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
     ajliai = nbliac + llf + llf1 + llf2
 !
     call jedetr('&&CFACA1.TAMPON')
-    call jedetr('&&CFACA1.VECT')
+    AS_DEALLOCATE(vi=vect)
 !
     call jedema()
 !

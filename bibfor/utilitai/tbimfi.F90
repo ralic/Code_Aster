@@ -13,6 +13,8 @@ subroutine tbimfi(nparfi, table, newtab, iret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbextb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nparfi, iret
     character(len=19) :: table, newtab
 !     ------------------------------------------------------------------
@@ -36,9 +38,17 @@ subroutine tbimfi(nparfi, table, newtab, iret)
 !     ------------------------------------------------------------------
 !
     integer ::  ltitr, jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
-    integer :: jpafi, jccfi, jvifi, jvrfi, jvcfi, jvkfi, jprfi, jcrfi, l, l1, l2
+    integer ::         l, l1, l2
     integer :: l3, l4, irt
     character(len=80) :: montit
+    character(len=8), pointer :: critere(:) => null()
+    character(len=8), pointer :: crit_para(:) => null()
+    character(len=24), pointer :: noms_para(:) => null()
+    real(kind=8), pointer :: precision(:) => null()
+    complex(kind=8), pointer :: vale_c(:) => null()
+    integer, pointer :: vale_i(:) => null()
+    character(len=80), pointer :: vale_k(:) => null()
+    real(kind=8), pointer :: vale_r(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -57,14 +67,14 @@ subroutine tbimfi(nparfi, table, newtab, iret)
         call wkvect(newtab//'.TITR', 'V V K80', lonmax, jtitr)
     endif
 !
-    call wkvect('&&TBIMFI.NOMS_PARA', 'V V K24', nparfi, jpafi)
-    call wkvect('&&TBIMFI.CRIT_PARA', 'V V K8', nparfi, jccfi)
-    call wkvect('&&TBIMFI.VALE_I', 'V V I', nparfi, jvifi)
-    call wkvect('&&TBIMFI.VALE_R', 'V V R', nparfi, jvrfi)
-    call wkvect('&&TBIMFI.VALE_C', 'V V C', nparfi, jvcfi)
-    call wkvect('&&TBIMFI.VALE_K', 'V V K80', nparfi, jvkfi)
-    call wkvect('&&TBIMFI.PRECISION', 'V V R', nparfi, jprfi)
-    call wkvect('&&TBIMFI.CRITERE', 'V V K8', nparfi, jcrfi)
+    AS_ALLOCATE(vk24=noms_para, size=nparfi)
+    AS_ALLOCATE(vk8=crit_para, size=nparfi)
+    AS_ALLOCATE(vi=vale_i, size=nparfi)
+    AS_ALLOCATE(vr=vale_r, size=nparfi)
+    AS_ALLOCATE(vc=vale_c, size=nparfi)
+    AS_ALLOCATE(vk80=vale_k, size=nparfi)
+    AS_ALLOCATE(vr=precision, size=nparfi)
+    AS_ALLOCATE(vk8=critere, size=nparfi)
 !
     ii = -1
     ir = -1
@@ -72,8 +82,8 @@ subroutine tbimfi(nparfi, table, newtab, iret)
     ik = -1
 !
     do 20 ioc = 1, nparfi
-        call getvtx('FILTRE', 'NOM_PARA', iocc=ioc, scal=zk24(jpafi+ioc-1), nbret=l)
-        call getvtx('FILTRE', 'CRIT_COMP', iocc=ioc, scal=zk8(jccfi+ioc-1), nbret=l)
+        call getvtx('FILTRE', 'NOM_PARA', iocc=ioc, scal=noms_para(ioc), nbret=l)
+        call getvtx('FILTRE', 'CRIT_COMP', iocc=ioc, scal=crit_para(ioc), nbret=l)
         montit = ' '
         call getvis('FILTRE', 'VALE_I', iocc=ioc, nbval=0, nbret=l1)
         call getvr8('FILTRE', 'VALE', iocc=ioc, nbval=0, nbret=l2)
@@ -81,45 +91,45 @@ subroutine tbimfi(nparfi, table, newtab, iret)
         call getvtx('FILTRE', 'VALE_K', iocc=ioc, nbval=0, nbret=l4)
         if (l1 .ne. 0) then
             ii = ii + 1
-            call getvis('FILTRE', 'VALE_I', iocc=ioc, scal=zi(jvifi+ii), nbret=l)
-            write(montit,1010) zk24(jpafi+ioc-1), zk8(jccfi+ioc-1),&
-            zi(jvifi+ii)
+            call getvis('FILTRE', 'VALE_I', iocc=ioc, scal=vale_i(ii+1), nbret=l)
+            write(montit,1010) noms_para(ioc), crit_para(ioc),&
+            vale_i(ii+1)
         endif
         if (l2 .ne. 0) then
             ir = ir + 1
-            call getvr8('FILTRE', 'VALE', iocc=ioc, scal=zr(jvrfi+ir), nbret=l)
-            call getvr8('FILTRE', 'PRECISION', iocc=ioc, scal=zr(jprfi+ir), nbret=l)
-            call getvtx('FILTRE', 'CRITERE', iocc=ioc, scal=zk8(jcrfi+ir), nbret=l)
-            write(montit,1020) zk24(jpafi+ioc-1), zk8(jccfi+ioc-1),&
-            zr(jvrfi+ir)
+            call getvr8('FILTRE', 'VALE', iocc=ioc, scal=vale_r(ir+1), nbret=l)
+            call getvr8('FILTRE', 'PRECISION', iocc=ioc, scal=precision(ir+1), nbret=l)
+            call getvtx('FILTRE', 'CRITERE', iocc=ioc, scal=critere(ir+1), nbret=l)
+            write(montit,1020) noms_para(ioc), crit_para(ioc),&
+            vale_r(ir+1)
         endif
         if (l3 .ne. 0) then
             ic = ic + 1
-            call getvc8('FILTRE', 'VALE_C', iocc=ioc, scal=zc(jvcfi+ic), nbret=l)
-            write(montit,1030) zk24(jpafi+ioc-1), zk8(jccfi+ioc-1),&
-            zc(jvcfi+ic)
+            call getvc8('FILTRE', 'VALE_C', iocc=ioc, scal=vale_c(ic+1), nbret=l)
+            write(montit,1030) noms_para(ioc), crit_para(ioc),&
+            vale_c(ic+1)
         endif
         if (l4 .ne. 0) then
             ik = ik + 1
-            call getvtx('FILTRE', 'VALE_K', iocc=ioc, scal=zk80(jvkfi+ik), nbret=l)
-            write(montit,1040) zk24(jpafi+ioc-1), zk8(jccfi+ioc-1),&
-            zk80(jvkfi+ik)
+            call getvtx('FILTRE', 'VALE_K', iocc=ioc, scal=vale_k(ik+1), nbret=l)
+            write(montit,1040) noms_para(ioc), crit_para(ioc),&
+            vale_k(ik+1)
         endif
         zk80(jtitr+lonma1+ioc-1) = montit
 20  end do
 !
-    call tbextb(table, 'V', newtab, nparfi, zk24(jpafi),&
-                zk8(jccfi), zi(jvifi), zr(jvrfi), zc(jvcfi), zk80(jvkfi),&
-                zr(jprfi), zk8(jcrfi), iret)
+    call tbextb(table, 'V', newtab, nparfi, noms_para,&
+                crit_para, vale_i, vale_r, vale_c, vale_k,&
+                precision, critere, iret)
 !
-    call jedetr('&&TBIMFI.NOMS_PARA')
-    call jedetr('&&TBIMFI.CRIT_PARA')
-    call jedetr('&&TBIMFI.VALE_I')
-    call jedetr('&&TBIMFI.VALE_R')
-    call jedetr('&&TBIMFI.VALE_C')
-    call jedetr('&&TBIMFI.VALE_K')
-    call jedetr('&&TBIMFI.PRECISION')
-    call jedetr('&&TBIMFI.CRITERE')
+    AS_DEALLOCATE(vk24=noms_para)
+    AS_DEALLOCATE(vk8=crit_para)
+    AS_DEALLOCATE(vi=vale_i)
+    AS_DEALLOCATE(vr=vale_r)
+    AS_DEALLOCATE(vc=vale_c)
+    AS_DEALLOCATE(vk80=vale_k)
+    AS_DEALLOCATE(vr=precision)
+    AS_DEALLOCATE(vk8=critere)
 !
     1010 format('FILTRE -> NOM_PARA: ',a16,' CRIT_COMP: ',a4,' VALE: ',i12)
     1020 format('FILTRE -> NOM_PARA: ',a16,' CRIT_COMP: ',a4,&

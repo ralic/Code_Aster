@@ -21,6 +21,8 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xorima.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     character(len=8) :: noma
@@ -49,7 +51,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
     real(kind=8) :: dmin, eps, eps1, eps2, eps3
     integer :: imafis, inoma, inose, isefis, itri, jconx1, jconx2, jma
     integer :: jdlima, jdlise, n1, n2, nbnoma, nbsef, nmaabs
-    integer :: nseabs, ntri, num, nunoc, itypma, jnnos, jcrd
+    integer :: nseabs, ntri, num, nunoc, itypma,  jcrd
     real(kind=8) :: xln, xlt
     integer :: ino, nbmaf, nuno(4), nunose(2), i, nbnott(3)
     real(kind=8) :: ab(3), ac(3), ap(3), vn(3), vnt(3), bc(3)
@@ -63,6 +65,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 !-----------------------------------------------------------------------
     integer :: jsens
+    integer, pointer :: nbno_ma_fondfiss(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -77,12 +80,12 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 !     TABLEAU POUR STOCKER LE NOMBRE DE NOEUDS SOMMETS
 !     DES MAILLES DE FISSURE
-    call wkvect('&&XLS3D.NBNO_MA_FONDFISS', 'V V I', nbmaf, jnnos)
+    AS_ALLOCATE(vi=nbno_ma_fondfiss, size=nbmaf)
     do 5 imafis = 1, nbmaf
         nmaabs=zi(jdlima+imafis-1)
         itypma=zi(jma-1+nmaabs)
         call panbno(itypma, nbnott)
-        zi(jnnos+imafis-1)=nbnott(1)
+        nbno_ma_fondfiss(imafis)=nbnott(1)
  5  end do
 !
 !     VERIFICATION DE L'ORIENTATION DES MAILLES DE LA FISSURES
@@ -234,7 +237,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                 n1=0
                 n2=0
 !
-                do 32 inoma = 1, zi(jnnos+imafis-1)
+                do 32 inoma = 1, nbno_ma_fondfiss(imafis)
                     num=zi(jconx1-1+zi(jconx2+nmaabs-1)+inoma-1)
                     if (nunose(1) .eq. num) n1=1
                     if (nunose(2) .eq. num) n2=1
@@ -330,7 +333,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 11  end do
 !
-    call jedetr('&&XLS3D.NBNO_MA_FONDFISS')
+    AS_DEALLOCATE(vi=nbno_ma_fondfiss)
     call jedetr('&&XLS3D.ORI_MAFIS')
 !
     call jedema()

@@ -24,6 +24,8 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 #include "asterfort/uteref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: nomaas, typech, sdcarm
     character(len=*) :: nofimd
     character(len=19) :: chanom
@@ -83,7 +85,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     integer :: modnum(ntymax), nuanom(ntymax, nnomax), ino, inimp2
     integer :: numnoa(ntymax, nnomax), tymaas, tymamd, connex(9)
     integer :: imasup, jmasup, nbmasu, nbmsmx, nvtymd, edcar2, nbattv
-    integer :: dimest, nbnosu, jnvtym, tygems
+    integer :: dimest, nbnosu,  tygems
 !
     character(len=8) :: lielrf(nbfamx), saux08, nomtyp(ntymax)
     character(len=16) :: nomtef, nomfpg, nocoor(3), uncoor(3)
@@ -98,6 +100,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     real(kind=8) :: refcoo(3*lgmax), gscoo(3*lgmax), wg(lgmax)
 !
     logical :: newest
+    integer, pointer :: nv_type_med(:) => null()
 !
     data nocoor  /'X               ',&
      &              'Y               ',&
@@ -121,7 +124,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     endif
     nbmsmx = nbmasu+10
     call wkvect('&&IRELST.MAIL_SUPP', 'V V K80', nbmsmx, jmasup)
-    call wkvect('&&IRELST.NV_TYPE_MED', 'V V I', nbmsmx, jnvtym)
+    AS_ALLOCATE(vi=nv_type_med, size=nbmsmx)
     if (nbmasu .ne. 0) then
         do 40, imasup = 1, nbmasu
         call as_msmsmi(idfimd, imasup, nomasu, ndim, desmed,&
@@ -139,7 +142,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
             saux08='msesei'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
-        zi(jnvtym+imasup-1) = nvtymd
+        nv_type_med(imasup) = nvtymd
 40      continue
     endif
 !
@@ -195,7 +198,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     do 60, imasup = 1, nbmasu
     if (zk80(jmasup+imasup-1) .eq. nomasu) then
         caimpk(3,inimpr) = zk80(jmasup+imasup-1)
-        caimpi(9,inimpr) = zi(jnvtym+imasup-1)
+        caimpi(9,inimpr) = nv_type_med(imasup)
         goto 50
     endif
 60  continue
@@ -318,6 +321,6 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     endif
 !
     call jedetr('&&IRELST.MAIL_SUPP')
-    call jedetr('&&IRELST.NV_TYPE_MED')
+    AS_DEALLOCATE(vi=nv_type_med)
 !
 end subroutine

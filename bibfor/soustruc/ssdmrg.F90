@@ -33,6 +33,8 @@ subroutine ssdmrg(mag)
 #include "asterfort/ssdmu1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
@@ -50,10 +52,12 @@ subroutine ssdmrg(mag)
     integer :: iarg
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iacoo2, iadim2, iadime, ialiis, ialik8, iancnf
+    integer :: i, iacoo2, iadim2, iadime,   iancnf
     integer :: iaparr, iasupi, iasupj, iconf, ii, inoi, inoj
     integer :: iocc, isma, j, jj, jsma, n1, nbnoi
     integer :: nbnoj, nbsma, nbsmar, nnnoe, nocc
+    integer, pointer :: liis(:) => null()
+    character(len=8), pointer :: lik8(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getfac('RECO_GLOBAL', nocc)
@@ -70,8 +74,8 @@ subroutine ssdmrg(mag)
     call jeveuo(mag//'.COORDO_2', 'L', iacoo2)
     call jeveuo(mag//'.DIME_2', 'L', iadim2)
     call jeveuo(mag//'.PARA_R', 'L', iaparr)
-    call wkvect('&&SSDMRG.LIK8', 'V V K8', nbsma, ialik8)
-    call wkvect('&&SSDMRG.LIIS', 'V V I', nbsma, ialiis)
+    AS_ALLOCATE(vk8=lik8, size=nbsma)
+    AS_ALLOCATE(vi=liis, size=nbsma)
 !
 !
 !     -- BOUCLE SUR LES OCCURENCES DU MOT-CLEF:
@@ -84,18 +88,18 @@ subroutine ssdmrg(mag)
     if (n1 .eq. 1) then
         nbsmar= nbsma
         do 3, i=1,nbsmar
-        zi(ialiis-1+i)=i
+        liis(i)=i
  3      continue
     else
         call getvem(mag, 'MAILLE', 'RECO_GLOBAL', 'SUPER_MAILLE', iocc,&
-                    iarg, nbsma, zk8(ialik8), n1)
+                    iarg, nbsma, lik8, n1)
         if (n1 .lt. 0) then
             call utmess('F', 'SOUSTRUC_63')
         endif
         nbsmar= n1
         do 4, i=1,nbsmar
-        call jenonu(jexnom(mag//'.SUPMAIL', zk8(ialik8-1+i)), isma)
-        zi(ialiis-1+i)=isma
+        call jenonu(jexnom(mag//'.SUPMAIL', lik8(i)), isma)
+        liis(i)=isma
  4      continue
     endif
 !
@@ -103,12 +107,12 @@ subroutine ssdmrg(mag)
     call getvtx('RECO_GLOBAL', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
     do 5, i=1,nbsmar
-    isma=zi(ialiis-1+i)
+    isma=liis(i)
     call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupi)
     nbnoi=zi(iadim2-1+4*(isma-1)+1)+zi(iadim2-1+4*(isma-1)+2)
     di=zr(iaparr-1+14*(isma-1)+13)
     do 6, j=i+1,nbsmar
-    jsma=zi(ialiis-1+j)
+    jsma=liis(j)
     call jeveuo(jexnum(mag//'.SUPMAIL', jsma), 'L', iasupj)
     nbnoj=zi(iadim2-1+4*(jsma-1)+1)+zi(iadim2-1+4*(jsma-1)&
                 +2)
@@ -140,8 +144,8 @@ subroutine ssdmrg(mag)
 !
 9999  continue
 ! --- MENAGE
-    call jedetr('&&SSDMRG.LIK8')
-    call jedetr('&&SSDMRG.LIIS')
+    AS_DEALLOCATE(vk8=lik8)
+    AS_DEALLOCATE(vi=liis)
 !
     call jedema()
 end subroutine

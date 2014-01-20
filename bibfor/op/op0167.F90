@@ -75,6 +75,8 @@ subroutine op0167()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, nbmst, iqtr, nbvolu
     integer :: n1, numma, nbjoin, nbrest, n1a, n1b
@@ -104,9 +106,13 @@ subroutine op0167()
     integer :: ibid, icham, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
     integer :: jnommc, jnu2, jnum, joccmc, jpr2, jpro, jrefe, jtypmv
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, nch, ndinit, niv, k, jgeofi
-    integer :: jnnoma, jnnomb, jadrjv, jnonum, dimcon, decala, iocct
+    integer ::     dimcon, decala, iocct
     real(kind=8) :: shrink, lonmin
     logical :: lpb
+    integer, pointer :: adrjvx(:) => null()
+    integer, pointer :: nbnoma(:) => null()
+    integer, pointer :: nbnomb(:) => null()
+    integer, pointer :: nomnum(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -795,10 +801,10 @@ subroutine op0167()
     call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmain)
 !
-    call wkvect('&&OP0167.NBNOMA', 'V V I', nbmain, jnnoma)
-    call wkvect('&&OP0167.NBNOMB', 'V V I', nbmaiv, jnnomb)
-    call wkvect('&&OP0167.ADRJVX', 'V V I', nbmain, jadrjv)
-    call wkvect('&&OP0167.NOMNUM', 'V V I', nbmain, jnonum)
+    AS_ALLOCATE(vi=nbnoma, size=nbmain)
+    AS_ALLOCATE(vi=nbnomb, size=nbmaiv)
+    AS_ALLOCATE(vi=adrjvx, size=nbmain)
+    AS_ALLOCATE(vi=nomnum, size=nbmain)
     dimcon = 0
     decala = 0
     do ima = 1, nbmaiv
@@ -830,10 +836,10 @@ subroutine op0167()
 160     continue
         call jenonu(jexnom(nommai, nomg), ibid)
         dimcon = dimcon+nbptt
-        zi(jnnoma+ima-1) = nbptt
-        zi(jnnomb+ima-1) = nbpt
-        zi(jadrjv+ima-1) = jopt
-        zi(jnonum+ima-1) = ibid
+        nbnoma(ima) = nbptt
+        nbnomb(ima) = nbpt
+        adrjvx(ima) = jopt
+        nomnum(ima) = ibid
     end do
 !
     decala = decala + nbmaiv
@@ -859,9 +865,9 @@ subroutine op0167()
         call jelira(jexnum(connev, inumol), 'LONMAX', nbpt)
         call jeveuo(jexnum(connev, inumol), 'L', jopt)
         dimcon = dimcon+nbpt
-        zi(jnnoma+decala+ima-1) = nbpt
-        zi(jadrjv+decala+ima-1) = jopt
-        zi(jnonum+decala+ima-1) = ibid
+        nbnoma(1+decala+ima-1) = nbpt
+        adrjvx(1+decala+ima-1) = jopt
+        nomnum(1+decala+ima-1) = ibid
     end do
 !
     decala = decala + nbmaj1
@@ -887,9 +893,9 @@ subroutine op0167()
         call jelira(jexnum(connev, inumol), 'LONMAX', nbpt)
         call jeveuo(jexnum(connev, inumol), 'L', jopt)
         dimcon = dimcon+nbpt
-        zi(jnnoma+decala+ima-1) = nbpt
-        zi(jadrjv+decala+ima-1) = jopt
-        zi(jnonum+decala+ima-1) = ibid
+        nbnoma(1+decala+ima-1) = nbpt
+        adrjvx(1+decala+ima-1) = jopt
+        nomnum(1+decala+ima-1) = ibid
     end do
 !
     dimcon = dimcon+nbmaj3
@@ -897,10 +903,10 @@ subroutine op0167()
 !
     decala = 0
     do ima = 1, nbmaiv
-        nbptt = zi(jnnoma+decala+ima-1)
-        nbpt = zi(jnnomb+decala+ima-1)
-        jopt = zi(jadrjv+decala+ima-1)
-        ibid = zi(jnonum+decala+ima-1)
+        nbptt = nbnoma(1+decala+ima-1)
+        nbpt = nbnomb(1+decala+ima-1)
+        jopt = adrjvx(1+decala+ima-1)
+        ibid = nomnum(1+decala+ima-1)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbptt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do ino = 0, nbpt-1
@@ -911,9 +917,9 @@ subroutine op0167()
     decala = decala + nbmaiv
 !
     do ima = 1, nbmaj1
-        nbpt = zi(jnnoma+decala+ima-1)
-        jopt = zi(jadrjv+decala+ima-1)
-        ibid = zi(jnonum+decala+ima-1)
+        nbpt = nbnoma(1+decala+ima-1)
+        jopt = adrjvx(1+decala+ima-1)
+        ibid = nomnum(1+decala+ima-1)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do ino = 0, nbpt-1
@@ -924,9 +930,9 @@ subroutine op0167()
     decala = decala + nbmaj1
 !
     do ima = 1, nbmaj2
-        nbpt = zi(jnnoma+decala+ima-1)
-        jopt = zi(jadrjv+decala+ima-1)
-        ibid = zi(jnonum+decala+ima-1)
+        nbpt = nbnoma(1+decala+ima-1)
+        jopt = adrjvx(1+decala+ima-1)
+        ibid = nomnum(1+decala+ima-1)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do ino = 0, nbpt-1
@@ -957,10 +963,10 @@ subroutine op0167()
         call jenonu(jexnom(nomnoe, newmai), zi(jnpt))
 230     continue
     end do
-    call jedetr('&&OP0167.NBNOMA')
-    call jedetr('&&OP0167.NBNOMB')
-    call jedetr('&&OP0167.ADRJVX')
-    call jedetr('&&OP0167.NOMNUM')
+    AS_DEALLOCATE(vi=nbnoma)
+    AS_DEALLOCATE(vi=nbnomb)
+    AS_DEALLOCATE(vi=adrjvx)
+    AS_DEALLOCATE(vi=nomnum)
 ! ----------------------------------------------------------------------
 !
     call jeexin(grpmav, iret)

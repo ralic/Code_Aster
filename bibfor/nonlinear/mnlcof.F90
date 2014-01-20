@@ -60,6 +60,8 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 #include "asterfort/mnlqnl.h"
 #include "asterfort/resoud.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
@@ -76,16 +78,20 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: ivecu0, iups, itang, p, r, ivecu1, ivecu2, iqnl, ifpnl, iret
+    integer :: ivecu0, iups, itang, p, r, ivecu1, ivecu2, iqnl,  iret
     integer :: ifpnla
     character(len=14) :: xvecu1, xvecu2, xqnl
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES POUR EXTRACTION GEOMETRIQUE
 ! ----------------------------------------------------------------------
     integer :: k
-    integer :: ialpha, iratio, iecar
+
     real(kind=8) :: nvec, nratio, necar, ac, nudom
     complex(kind=8) :: cbid
+    real(kind=8), pointer :: alpha(:) => null()
+    real(kind=8), pointer :: ecar(:) => null()
+    real(kind=8), pointer :: fpnl(:) => null()
+    real(kind=8), pointer :: ratio(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
@@ -113,7 +119,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- CALCUL DES ORDRES P=2,...,ORDMAN
 ! ----------------------------------------------------------------------
-    call wkvect('&&MNLCOF.FPNL', 'V V R', ninc, ifpnl)
+    AS_ALLOCATE(vr=fpnl, size=ninc)
     xvecu1='&&MNLCOF.VECU1'
     call wkvect(xvecu1, 'V V R', ninc, ivecu1)
     xvecu2='&&MNLCOF.VECU2'
@@ -122,7 +128,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
     call wkvect(xqnl, 'V V R', ninc-1, iqnl)
     do p = 2, ordman
 !       REMISE A ZERO DU SECOND MEMBRE
-        call dscal(ninc, 0.d0, zr(ifpnl), 1)
+        call dscal(ninc, 0.d0, fpnl, 1)
 !       CALCUL DU SECOND MEMBRE
         do r = 1, p-1
 !         VECU1 = UPS(:,R)
@@ -134,15 +140,15 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
                         xvecu2, ninc, nd, nchoc, h,&
                         hf, xqnl)
 !         CALCUL DE FPNL(1:NEQ)=FPNL(1:NEQ)-Q(SYS,UPS(:,R),UPS(:,P-R))
-            call daxpy(ninc-1, -1.d0, zr(iqnl), 1, zr(ifpnl),&
+            call daxpy(ninc-1, -1.d0, zr(iqnl), 1, fpnl,&
                        1)
         end do
-        zr(ifpnl-1+ninc)=0.d0
+        fpnl(ninc)=0.d0
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
         call resoud(matdrv, '', '', '', 1,&
-                    '', '', 'v', zr(ifpnl), [cbid],&
+                    '', '', 'v', fpnl, [cbid],&
                     '', .false., 0, iret)
-        call dcopy(ninc, zr(ifpnl), 1, zr(iups+p*ninc), 1)
+        call dcopy(ninc, fpnl, 1, zr(iups+p*ninc), 1)
     end do
 ! ----------------------------------------------------------------------
 ! --- REMISE A ZERO DES VECTEURS TEMPORAIRES
@@ -153,24 +159,24 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
 ! --- EXTRACTION SERIE GEOMETRIQUE
 ! ----------------------------------------------------------------------
-    call wkvect('&&MNLCOF.ALPHA', 'V V R', nextr, ialpha)
-    call wkvect('&&MNLCOF.RATIO', 'V V R', nextr, iratio)
-    call wkvect('&&MNLCOF.ECAR', 'V V R', nextr-1, iecar)
+    AS_ALLOCATE(vr=alpha, size=nextr)
+    AS_ALLOCATE(vr=ratio, size=nextr)
+    AS_ALLOCATE(vr=ecar, size=nextr-1)
     do k = 1, nextr
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
-        zr(ialpha-1+k)=ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),1, zr(iups+(ordman-k+1-1)*ninc),1)
-        zr(ialpha-1+k)=zr(ialpha-1+k)/ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),&
+        alpha(k)=ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),1, zr(iups+(ordman-k+1-1)*ninc),1)
+        alpha(k)=alpha(k)/ddot(ninc,zr(iups+(ordman-k+2-1)*ninc),&
         1, zr(iups+(ordman-k+2-1)*ninc),1)
         call dcopy(ninc, zr(iups+(ordman-k+1-1)*ninc), 1, zr(ivecu1), 1)
-        call daxpy(ninc, -zr(ialpha-1+k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),1)
+        call daxpy(ninc, -alpha(k), zr(iups+(ordman-k+2-1)*ninc), 1, zr(ivecu1),1)
         nvec=dnrm2(ninc, zr(ivecu1), 1)
-        zr(iratio-1+k)=nvec/dnrm2(ninc, zr(iups+(ordman-k+1-1)*ninc), 1)
+        ratio(k)=nvec/dnrm2(ninc, zr(iups+(ordman-k+1-1)*ninc), 1)
         if (k .gt. 1) then
-            zr(iecar-1+k-1)=(zr(ialpha-1+k-1)-zr(ialpha-1+k))/zr(ialpha-1+k-1)
+            ecar(k-1)=(alpha(k-1)-alpha(k))/alpha(k-1)
         endif
     end do
-    nratio=dnrm2(nextr,zr(iratio),1)
-    necar=dnrm2(nextr-1,zr(iecar),1)
+    nratio=dnrm2(nextr,ratio,1)
+    necar=dnrm2(nextr-1,ecar,1)
     if (nratio .lt. epsbif .and. necar .lt. epsbif) then
         lbif=.true.
         call dscal(ninc, 0.d0, zr(ivecu1), 1)
@@ -210,11 +216,11 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
 ! ----------------------------------------------------------------------
     call jedetr(xvecu1)
     call jedetr(xvecu2)
-    call jedetr('&&MNLCOF.FPNL')
+    AS_DEALLOCATE(vr=fpnl)
     call jedetr(xqnl)
-    call jedetr('&&MNLCOF.ALPHA')
-    call jedetr('&&MNLCOF.RATIO')
-    call jedetr('&&MNLCOF.ECAR')
+    AS_DEALLOCATE(vr=alpha)
+    AS_DEALLOCATE(vr=ratio)
+    AS_DEALLOCATE(vr=ecar)
 !
     call jedema()
 !

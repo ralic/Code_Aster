@@ -14,6 +14,8 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 #include "asterfort/tbtr01.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: npara
     real(kind=8) :: prec
@@ -51,7 +53,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 ! IN  : CRIT   : RELATIF / ABSOLU
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jnume, jnum2, ii, jj, ktblp
+    integer :: iret, nbpara, nblign, jnume,  ii, jj, ktblp
     integer :: jtblp, i, j, k, n, m, ideb, ifin, nbuti, ndim
     integer :: jvall, kvall, jvale, kvale, jtbnp, ktbnp, ktbba
     character(len=1) :: base
@@ -60,6 +62,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
     character(len=24) :: nomjv, nojv2, nomjvl, nojvl2, inpar, jnpar
     character(len=24) :: valk
     logical :: lok
+    integer, pointer :: tri2(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -110,7 +113,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 10  end do
 !
     call wkvect('&&TBTRTB.TRI', 'V V I', nblign, jnume)
-    call wkvect('&&TBTRTB.TRI2', 'V V I', nblign, jnum2)
+    AS_ALLOCATE(vi=tri2, size=nblign)
     do 20 i = 1, nblign
         zi(jnume+i-1) = i
 20  end do
@@ -119,10 +122,10 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !
     if (lcrit(1)(1:2) .eq. 'DE') then
         do 22 i = 1, nblign
-            zi(jnum2-1+i) = zi(jnume-1+i)
+            tri2(i) = zi(jnume-1+i)
 22      continue
         do 24 i = 1, nblign
-            zi(jnume-1+i) = zi(jnum2-1+nblign-i+1)
+            zi(jnume-1+i) = tri2(nblign-i+1)
 24      continue
     endif
 !
@@ -208,10 +211,10 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
                 call tbtr01(tabin, nbpara, lipara(i+1), nbuti, zi(jnume-1+ideb))
                 if (lcrit(i+1)(1:2) .eq. 'DE') then
                     do 40 k = 1, nbuti
-                        zi(jnum2+k-1) = zi(jnume-1+ideb+k-1)
+                        tri2(k) = zi(jnume-1+ideb+k-1)
 40                  continue
                     do 42 k = 1, nbuti
-                        zi(jnume-1+ideb+k-1) = zi(jnum2-1+nbuti-k+1)
+                        zi(jnume-1+ideb+k-1) = tri2(nbuti-k+1)
 42                  continue
                 endif
             endif
@@ -288,7 +291,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 300  end do
 !
     call jedetr('&&TBTRTB.TRI')
-    call jedetr('&&TBTRTB.TRI2')
+    AS_DEALLOCATE(vi=tri2)
 !
     call jedema()
 end subroutine

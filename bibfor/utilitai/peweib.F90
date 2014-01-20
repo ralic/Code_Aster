@@ -35,6 +35,8 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iresu, nh, nbocc
     character(len=*) :: resu, modele, mate, cara, nomcmd
@@ -62,13 +64,13 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: valr(3)
-    integer :: nbparr, nbpard, nbmtcm, anommt, inum, nbout
+    integer :: nbparr, nbpard, nbmtcm,  inum, nbout
     integer :: vali
     integer :: ibid, ibik, mxvale, ifm, niv
     integer :: nd, ng, ni, nm, np, nq, nr, nt, i, n1, n2, n3
     integer :: iret, nbordr, jord, jins, nc, nbgrma, jgr, ig, nbma, jad
     integer :: nbmail, jma, im, nume, imc, ier
-    integer :: numord, iainst, iord, nbmtrc, lvale, nbin, iocc
+    integer :: numord, iainst, iord, nbmtrc,  nbin, iocc
     parameter (mxvale=3,nbparr=7,nbpard=5)
     real(kind=8) :: rtval(mxvale), prec, inst, valer(4), vref, coesym, mref, sref, probaw
     real(kind=8) :: sigmaw
@@ -87,6 +89,8 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     logical :: opti
     complex(kind=8) :: c16b
     integer :: iarg
+    character(len=8), pointer :: l_nom_mat(:) => null()
+    real(kind=8), pointer :: trav1(:) => null()
 !
     data noparr/'NUME_ORDRE','INST','LIEU','ENTITE','SIGMA_WEIBULL',&
      &     'PROBA_WEIBULL','SIGMA_WEIBULL**M'/
@@ -219,9 +223,9 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
         if (n3 .eq. 0) chmat = mate(1:8)
     endif
     call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm)
-    call wkvect('&&PEWEIB.L_NOM_MAT', 'V V K8', nbmtcm, anommt)
+    AS_ALLOCATE(vk8=l_nom_mat, size=nbmtcm)
     nomrc = 'WEIBULL         '
-    call chmrck(chmat, nomrc, zk8(anommt), nbmtrc)
+    call chmrck(chmat, nomrc, l_nom_mat, nbmtrc)
     if (nbmtrc .gt. 1) then
         vali = nbmtrc
         valk (1) = k8b
@@ -230,9 +234,9 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     endif
 !
 !     --- RECUPERATION DES PARAMETRES DE LA RC WEIBULL ---
-    kvalrc(1:8) = zk8(anommt)
+    kvalrc(1:8) = l_nom_mat(1)
     kvalrc(9:24) = '.WEIBULL   .VALR'
-    kvalrk(1:8) = zk8(anommt)
+    kvalrk(1:8) = l_nom_mat(1)
     kvalrk(9:24) = '.WEIBULL   .VALK'
     call jeveuo(kvalrc, 'L', ibid)
     call jeveuo(kvalrk, 'L', ibik)
@@ -260,7 +264,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
         call utmess('I', 'UTILITAI6_62', nr=3, valr=valr)
     endif
 !
-    call wkvect('&&PEWEIB.TRAV1', 'V V R', mxvale, lvale)
+    AS_ALLOCATE(vr=trav1, size=mxvale)
     do iord = 1, nbordr
         call jemarq()
         call jerecu('V')
@@ -350,8 +354,8 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
             call getvr8(motcl3, 'COEF_MULT', iocc=inum, scal=coesym, nbret=n1)
 !
             if (nt .ne. 0) then
-                call mesomm(chelem, mxvale, vr=zr(lvale))
-                probaw = coesym*zr(lvale)
+                call mesomm(chelem, mxvale, vr=trav1)
+                probaw = coesym*trav1(1)
                 sigmaw = probaw* (sref**mref)
                 probaw = 1.0d0 - exp(-probaw)
                 rtval(3) = sigmaw
@@ -390,8 +394,8 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         goto 50
                     endif
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
-                    call mesomm(chelem, mxvale, vr=zr(lvale), nbma=nbma, linuma=zi(jad))
-                    sigmaw = coesym*zr(lvale)* (sref**mref)
+                    call mesomm(chelem, mxvale, vr=trav1, nbma=nbma, linuma=zi(jad))
+                    sigmaw = coesym*trav1(1)* (sref**mref)
                     probaw = sigmaw/ (sref**mref)
                     probaw = 1.0d0 - exp(-probaw)
                     rtval(3) = sigmaw
@@ -427,8 +431,8 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         goto 60
                     endif
                     call jenonu(jexnom(mlgnma, nommai), nume)
-                    call mesomm(chelem, mxvale, vr=zr(lvale), nbma=1, linuma=[nume])
-                    probaw = coesym*zr(lvale)
+                    call mesomm(chelem, mxvale, vr=trav1, nbma=1, linuma=[nume])
+                    probaw = coesym*trav1(1)
                     sigmaw = probaw* (sref**mref)
                     probaw = 1.0d0 - exp(-probaw)
                     rtval(3) = sigmaw
@@ -463,8 +467,8 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     call jedetr('&&PEWEIB.INSTANT')
     call detrsd('CHAMP_GD', '&&PEWEIB.SIGIE')
     call detrsd('CHAMP_GD', '&&PEWEIB.SIGIS')
-    call jedetr('&&PEWEIB.TRAV1')
-    call jedetr('&&PEWEIB.L_NOM_MAT')
+    AS_DEALLOCATE(vr=trav1)
+    AS_DEALLOCATE(vk8=l_nom_mat)
 !
 100 continue
 !

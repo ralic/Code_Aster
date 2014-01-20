@@ -38,6 +38,8 @@ subroutine celces(celz, basez, cesz)
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 
     character(len=*) :: celz, cesz, basez
 ! ------------------------------------------------------------------
@@ -62,9 +64,9 @@ subroutine celces(celz, basez, cesz)
     integer :: iadg, icmp, ncmp, jcesl, jcesv,  kcmp
     integer :: ieq, icmp1, igr, iel,  illiel, ierr
     integer :: jcelk, nbpt, nbgr, imolo, jmolo, k, nbgr2
-    integer :: ipt, numa, iad, jnbpt, jnbspt, jnbcmp, vali(2)
+    integer :: ipt, numa, iad,    vali(2)
     integer :: nptmx, nbel, ncmpm, nbspt, ncdyn, ncdymx, lgcata
-    integer :: ico, adiel, ispt, jcesd, jlpt, jlcupt, cumu
+    integer :: ico, adiel, ispt, jcesd, jlpt,  cumu
     character(len=24) :: valk(2)
     logical :: sdveri
     integer, pointer :: liel(:) => null()
@@ -72,6 +74,10 @@ subroutine celces(celz, basez, cesz)
     integer, pointer :: corr1(:) => null()
     character(len=8), pointer :: nom_cmp(:) => null()
     integer, pointer :: corr2(:) => null()
+    integer, pointer :: long_pt_cumu(:) => null()
+    integer, pointer :: nbcmp(:) => null()
+    integer, pointer :: vnbpt(:) => null()
+    integer, pointer :: vnbspt(:) => null()
 
 #define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------
@@ -154,12 +160,12 @@ subroutine celces(celz, basez, cesz)
 !         CALCUL DE  NPTMX : MAXIMUM DU NOMBRE DE POINTS
 !         CALCUL DE  NCDYMX : MAXIMUM DU NOMBRE DE VARI_*
 !     ---------------------------------------------------------
-    call wkvect('&&CELCES.NBPT', 'V V I', nbma, jnbpt)
-    call wkvect('&&CELCES.NBSPT', 'V V I', nbma, jnbspt)
+    AS_ALLOCATE(vi=vnbpt, size=nbma)
+    AS_ALLOCATE(vi=vnbspt, size=nbma)
     do numa = 1, nbma
-        zi(jnbspt-1+numa) = 1
+        vnbspt(numa) = 1
     end do
-    call wkvect('&&CELCES.NBCMP', 'V V I', nbma, jnbcmp)
+    AS_ALLOCATE(vi=nbcmp, size=nbma)
     nptmx = 0
     ncdymx = 0
 
@@ -196,20 +202,20 @@ subroutine celces(celz, basez, cesz)
             if (numa .lt. 0) goto 80
 
 !         -- NOMBRE DE POINTS:
-            zi(jnbpt-1+numa) = nbpt
+            vnbpt(numa) = nbpt
 
 !         -- NOMBRE DE SOUS-POINTS:
             nbspt = celd(celd(4+igr)+4+4* (iel-1)+1)
-            zi(jnbspt-1+numa) = nbspt
+            vnbspt(numa) = nbspt
 
 !         -- NOMBRE DE CMPS:
             ncdyn = celd(celd(4+igr)+4+4* (iel-1)+2)
             ncdyn = max(ncdyn,1)
             ncdymx = max(ncdymx,ncdyn)
             if (nomgd(1:5) .eq. 'VARI_') then
-                zi(jnbcmp-1+numa) = ncdyn
+                nbcmp(numa) = ncdyn
             else
-                zi(jnbcmp-1+numa) = corr1(ncmpm)
+                nbcmp(numa) = corr1(ncmpm)
             endif
 
  80         continue
@@ -225,7 +231,7 @@ subroutine celces(celz, basez, cesz)
     call dismoi('TYPE_CHAMP', cel, 'CHAM_ELEM', repk=typces)
     if (nomgd(1:5) .eq. 'VARI_') ncmp = -ncdymx
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, nom_cmp, zi(jnbpt), zi(jnbspt), zi(jnbcmp))
+                ncmp, nom_cmp, vnbpt, vnbspt,nbcmp)
 
 !======================================================================
 
@@ -239,7 +245,7 @@ subroutine celces(celz, basez, cesz)
     if (nomgd(1:5) .ne. 'VARI_') then
 !     ----------------------------
         call wkvect('&&CELCES.LONG_PT', 'V V I', nptmx, jlpt)
-        call wkvect('&&CELCES.LONG_PT_CUMU', 'V V I', nptmx, jlcupt)
+        AS_ALLOCATE(vi=long_pt_cumu, size=nptmx)
         do igr = 1, nbgr
             imolo = celd(celd(4+igr)+2)
             if (imolo .eq. 0) goto 170
@@ -266,7 +272,7 @@ subroutine celces(celz, basez, cesz)
 
             cumu = 0
             do ipt = 1, nbpt
-                zi(jlcupt-1+ipt) = cumu
+                long_pt_cumu(ipt) = cumu
                 cumu = cumu + zi(jlpt-1+ipt)
             end do
 
@@ -296,7 +302,7 @@ subroutine celces(celz, basez, cesz)
                                 iad = abs(iad)
                                 zl(jcesl-1+iad) = .true.
 
-                                ieq = adiel - 1 + nbspt*zi(jlcupt-1+ ipt) + (ispt-1)*zi(jlpt-1+ip&
+                                ieq = adiel - 1 + nbspt*long_pt_cumu(ipt) + (ispt-1)*zi(jlpt-1+ip&
                                       &t) + ico
 
                                 if (tsca .eq. 'R') then
@@ -381,11 +387,11 @@ subroutine celces(celz, basez, cesz)
 
 
     call jedetr('&&CELCES.TMP_NUCMP')
-    call jedetr('&&CELCES.NBPT')
-    call jedetr('&&CELCES.NBSPT')
-    call jedetr('&&CELCES.NBCMP')
+    AS_DEALLOCATE(vi=vnbpt)
+    AS_DEALLOCATE(vi=vnbspt)
+    AS_DEALLOCATE(vi=nbcmp)
     call jedetr('&&CELCES.LONG_PT')
-    call jedetr('&&CELCES.LONG_PT_CUMU')
+    AS_DEALLOCATE(vi=long_pt_cumu)
     call jedetr('&&CELCES.NOM_CMP')
     call jedetr('&&CELCES.CORR1')
     call jedetr('&&CELCES.CORR2')

@@ -16,6 +16,8 @@ subroutine uimpba(clas, iunmes)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: clas
     integer :: iunmes
 ! ======================================================================
@@ -45,8 +47,14 @@ subroutine uimpba(clas, iunmes)
     character(len=24) :: kbid, obj
     character(len=16) :: typcon
     real(kind=8) :: rlong, mega, taitot
-    integer :: i, nbobj, nbval, iexi, nbcon, jtailo, jtailc, nbsv
-    integer :: jlobj, jnbobj, jnbsvo, jnbsvc, nstot
+    integer :: i, nbobj, nbval, iexi, nbcon,   nbsv
+    integer ::     nstot
+    character(len=24), pointer :: liste_obj(:) => null()
+    integer, pointer :: vnbobj(:) => null()
+    integer, pointer :: nbsvc(:) => null()
+    integer, pointer :: nbsvo(:) => null()
+    real(kind=8), pointer :: tailcon(:) => null()
+    real(kind=8), pointer :: taille(:) => null()
 !
 !
     mega=1024*1024
@@ -60,8 +68,8 @@ subroutine uimpba(clas, iunmes)
     ASSERT(nbval.le.0)
     if (nbval .eq. 0) goto 9999
     nbobj=-nbval
-    call wkvect('&&UIMPBA.LISTE_OBJ', 'V V K24', nbobj+1, jlobj)
-    call jelstc(clas, ' ', 0, nbobj, zk24(jlobj),&
+    AS_ALLOCATE(vk24=liste_obj, size=nbobj+1)
+    call jelstc(clas, ' ', 0, nbobj, liste_obj,&
                 nbval)
 !     NBVAL = NBOBJ (+1 EVENTUELLEMENT A CAUSE DE '&&UIMPBA.LISTE_OBJ')
     ASSERT(nbval.eq.nbobj+1 .or. nbval.eq.nbobj)
@@ -69,14 +77,14 @@ subroutine uimpba(clas, iunmes)
 !
 !     -- 2 : .TAILLE = TAILLE DES OBJETS :
 !     --------------------------------------
-    call wkvect('&&UIMPBA.TAILLE', 'V V R', nbobj, jtailo)
-    call wkvect('&&UIMPBA.NBSVO', 'V V I', nbobj, jnbsvo)
+    AS_ALLOCATE(vr=taille, size=nbobj)
+    AS_ALLOCATE(vi=nbsvo, size=nbobj)
     do 1, i=1,nbobj
-    obj=zk24(jlobj-1+i)
+    obj=liste_obj(i)
     call jelgdq(obj, rlong, nbsv)
     ASSERT(rlong.gt.0.d0)
-    zr(jtailo-1+i)=rlong
-    zi(jnbsvo-1+i)=nbsv
+    taille(i)=rlong
+    nbsvo(i)=nbsv
     1 end do
 !
 !
@@ -85,7 +93,7 @@ subroutine uimpba(clas, iunmes)
     call jecreo('&&UIMPBA.LCONK8', 'V N K8')
     call jeecra('&&UIMPBA.LCONK8', 'NOMMAX', nbobj)
     do 2, i=1,nbobj
-    obj=zk24(jlobj-1+i)
+    obj=liste_obj(i)
     k8=obj(1:8)
     call jenonu(jexnom('&&UIMPBA.LCONK8', k8), iexi)
     if (iexi .eq. 0) then
@@ -97,22 +105,22 @@ subroutine uimpba(clas, iunmes)
 !     -- 4 : .TAILCON = TAILLE DES CONCEPTS
 !     -----------------------------------------------------------
     call jelira('&&UIMPBA.LCONK8', 'NOMUTI', nbcon)
-    call wkvect('&&UIMPBA.TAILCON', 'V V R', nbcon, jtailc)
-    call wkvect('&&UIMPBA.NBSVC', 'V V I', nbcon, jnbsvc)
-    call wkvect('&&UIMPBA.NBOBJ', 'V V I', nbcon, jnbobj)
+    AS_ALLOCATE(vr=tailcon, size=nbcon)
+    AS_ALLOCATE(vi=nbsvc, size=nbcon)
+    AS_ALLOCATE(vi=vnbobj, size=nbcon)
     taitot=0.d0
     nstot=0
     do 3, i=1,nbobj
-    obj=zk24(jlobj-1+i)
+    obj=liste_obj(i)
     k8=obj(1:8)
     call jenonu(jexnom('&&UIMPBA.LCONK8', k8), iexi)
     ASSERT(iexi.gt.0)
     ASSERT(iexi.le.nbcon)
-    zr(jtailc-1+iexi)=zr(jtailc-1+iexi)+zr(jtailo-1+i)
-    taitot=taitot+zr(jtailo-1+i)
-    zi(jnbsvc-1+iexi)=zi(jnbsvc-1+iexi)+zi(jnbsvo-1+i)
-    zi(jnbobj-1+iexi)=zi(jnbobj-1+iexi)+1
-    nstot=nstot+zi(jnbsvo-1+i)
+    tailcon(iexi)=tailcon(iexi)+taille(i)
+    taitot=taitot+taille(i)
+    nbsvc(iexi)=nbsvc(iexi)+nbsvo(i)
+    vnbobj(iexi)=vnbobj(iexi)+1
+    nstot=nstot+nbsvo(i)
     3 end do
 !
 !
@@ -134,28 +142,28 @@ subroutine uimpba(clas, iunmes)
     call jenuno(jexnum('&&UIMPBA.LCONK8', i), k8)
     call gettco(k8, typcon)
     if (typcon .eq. ' ') goto 4
-    write(iunmes,1000) k8,typcon,zr(jtailc-1+i)/mega, zi(jnbobj-1+&
-        i),zi(jnbsvc-1+i)
+    write(iunmes,1000) k8,typcon,tailcon(i)/mega, vnbobj(&
+        i),nbsvc(i)
     4 end do
 !     -- ON IMPRIME ENSUITE LES CONCEPTS CACHES  :
     do 5, i=1,nbcon
     call jenuno(jexnum('&&UIMPBA.LCONK8', i), k8)
     call gettco(k8, typcon)
     if (typcon .ne. ' ') goto 5
-    write(iunmes,1000) k8,typcon,zr(jtailc-1+i)/mega, zi(jnbobj-1+&
-        i),zi(jnbsvc-1+i)
+    write(iunmes,1000) k8,typcon,tailcon(i)/mega, vnbobj(&
+        i),nbsvc(i)
     5 end do
     write(iunmes,*) '-----------------------------------------------',&
      &                '----------------------------'
 !
 !
 9999  continue
-    call jedetr('&&UIMPBA.LISTE_OBJ')
-    call jedetr('&&UIMPBA.TAILLE')
+    AS_DEALLOCATE(vk24=liste_obj)
+    AS_DEALLOCATE(vr=taille)
     call jedetr('&&UIMPBA.LCONK8')
-    call jedetr('&&UIMPBA.TAILCON')
-    call jedetr('&&UIMPBA.NBSVO')
-    call jedetr('&&UIMPBA.NBSVC')
-    call jedetr('&&UIMPBA.NBOBJ')
+    AS_DEALLOCATE(vr=tailcon)
+    AS_DEALLOCATE(vi=nbsvo)
+    AS_DEALLOCATE(vi=nbsvc)
+    AS_DEALLOCATE(vi=vnbobj)
     1000 format (4x,a8,3x,a16,3x,f12.2,3x,i12,3x,i12)
 end subroutine

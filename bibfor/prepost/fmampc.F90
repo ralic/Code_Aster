@@ -4,6 +4,8 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
 #include "asterfort/fmdevi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: sigm(*), rampmx
 !     ------------------------------------------------------------------
@@ -30,14 +32,15 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
 !     RAMPMX  : OUT : VALEUR AMPLITUDE DE CISSION
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: idev, i1, i2, j
+    integer ::  i1, i2, j
     real(kind=8) :: sig(6), rampc
+    real(kind=8), pointer :: dev(:) => null()
 !     ------------------------------------------------------------------
 !
 !------- CALCUL DU DEVIATEUR -------
 !
-    call wkvect('&&FMAMPC.DEV', 'V V R', nbfonc*nbptot, idev)
-    call fmdevi(nbfonc, nbptot, sigm, zr(idev))
+    AS_ALLOCATE(vr=dev, size=nbfonc*nbptot)
+    call fmdevi(nbfonc, nbptot, sigm,dev)
 !
 ! -------- CALCUL AMPLITUDE DE CISSION ------
 !
@@ -45,7 +48,7 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
     do 100 i1 = 1, nbptot-1
         do 200 i2 = i1+1, nbptot
             do 300 j = 1, nbfonc
-                sig(j) = zr(idev+(i2-1)*nbfonc+j-1)- zr(idev+(i1-1)* nbfonc+j-1 )
+                sig(j) = dev(1+(i2-1)*nbfonc+j-1)- dev(1+(i1-1)* nbfonc+j-1 )
 300          continue
             if (nbfonc .eq. 6) then
                 rampc = (&
@@ -60,6 +63,6 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
 100  end do
     rampmx = 1.d0/2.d0*sqrt(rampmx)
 !
-    call jedetr('&&FMAMPC.DEV')
+    AS_DEALLOCATE(vr=dev)
 !
 end subroutine

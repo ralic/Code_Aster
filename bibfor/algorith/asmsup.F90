@@ -23,6 +23,8 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 #include "asterfort/typddl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbmode, neq, nbsup, ndir(*), nsupp(*), tcosup(nbsup, *), lordr(*)
     real(kind=8) :: reasup(nbsup, nbmode, *)
@@ -67,7 +69,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 !                TCOSUP(I) = 3 : COMBINAISON ABSOLUE
 !     ------------------------------------------------------------------
     integer :: id, iddl, ier, igr, im, in, ino, ioc, iret, is, jddl1
-    integer :: jddl2, jdgn, jgrn, jnoe, lvale, nba, nbb, n1, nbbd, nbl, nbliai
+    integer :: jddl2, jdgn,   lvale, nba, nbb, n1, nbbd, nbl, nbliai
     integer :: nbocc, nbtrou, ngr, nno, nt, vali(2), tabord(1)
     character(len=4) :: ctyp, dir(3)
     character(len=8) :: k8b, noma, noeu, nomcmp(3)
@@ -75,6 +77,8 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
     character(len=16) :: nomsy
     character(len=19) :: cham19
     character(len=24) :: obj1, obj2, valk(2), grnoeu
+    character(len=24), pointer :: group_no(:) => null()
+    character(len=8), pointer :: noeud(:) => null()
 !     ------------------------------------------------------------------
     data  dir / 'X' , 'Y' , 'Z' /
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
@@ -173,11 +177,11 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                 call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
                     nno = -n1
-                    call wkvect('&&ASMSUP.NOEUD', 'V V K8', nno, jnoe)
-                    call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=zk8(jnoe),&
+                    AS_ALLOCATE(vk8=noeud, size=nno)
+                    call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=noeud,&
                                 nbret=n1)
                     do ino = 1, nno
-                        noeu = zk8(jnoe+ino-1)
+                        noeu = noeud(ino)
                         call jenonu(jexnom(obj2, noeu), iret)
                         if (iret .eq. 0) then
                             ier = ier + 1
@@ -195,16 +199,16 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                         end do
  46                     continue
                     end do
-                    call jedetr('&&ASMSUP.NOEUD')
+                    AS_DEALLOCATE(vk8=noeud)
                 else
                     call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=n1)
                     if (n1 .ne. 0) then
                         ngr = -n1
-                        call wkvect('&&ASMSUP.GROUP_NO', 'V V K24', ngr, jgrn)
-                        call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=zk24(jgrn),&
+                        AS_ALLOCATE(vk24=group_no, size=ngr)
+                        call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=group_no,&
                                     nbret=n1)
                         do igr = 1, ngr
-                            grnoeu = zk24(jgrn+igr-1)
+                            grnoeu = group_no(igr)
                             call jeexin(jexnom(obj1, grnoeu), iret)
                             if (iret .eq. 0) then
                                 ier = ier + 1
@@ -229,7 +233,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                             endif
  50                         continue
                         end do
-                        call jedetr('&&ASMSUP.GROUP_NO')
+                        AS_DEALLOCATE(vk24=group_no)
                     endif
                 endif
             endif

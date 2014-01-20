@@ -37,6 +37,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
@@ -73,8 +75,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     ------------------------------------------------------------------
     integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbma, n1, k
     integer :: jce3d, jce3v, jce3l,  vali(3)
-    integer :: jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
-    integer :: ncmpmx, ncmp1, icmp1, jnucmp, jnbpt, jnbsp, jnbcmp, jcrcmp
+    integer :: jcmpgd,  ichs, icmp, icmp3, ncmp3
+    integer :: ncmpmx, ncmp1, icmp1
     integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, coefi, ncmp
     character(len=8) :: ma, nomgd, nocmp, typces, nomcmp
     character(len=3) :: tsca
@@ -83,6 +85,12 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     complex(kind=8) :: coefc
     logical :: cumul
     character(len=8), pointer :: ce3c(:) => null()
+    integer, pointer :: corr_cmp(:) => null()
+    character(len=8), pointer :: licmp(:) => null()
+    integer, pointer :: nbcmp(:) => null()
+    integer, pointer :: vnbpt(:) => null()
+    integer, pointer :: vnbsp(:) => null()
+    integer, pointer :: nucmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !        CALL IMPRSD('CHAMP',LICHS(1),6,'cesfus in 1')
@@ -141,8 +149,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !        + CALCUL DES OBJETS CONTENANT LES NOMBRES DE POINTS
 !          ET DE SOUS-POINTS PAR MAILLE
 !     --------------------------------------------------------
-    call wkvect('&&CESFUS.NBPT', 'V V I', nbma, jnbpt)
-    call wkvect('&&CESFUS.NBSP', 'V V I', nbma, jnbsp)
+    AS_ALLOCATE(vi=vnbpt, size=nbma)
+    AS_ALLOCATE(vi=vnbsp, size=nbma)
     do ichs = 1, nbchs
         ces1 = lichs(ichs)
         call jeveuo(ces1//'.CESK', 'L', jce1k)
@@ -157,8 +165,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
         if (ichs .eq. 1) then
             do ima = 1, nbma
-                zi(jnbpt-1+ima) = zi(jce1d-1+5+4* (ima-1)+1)
-                zi(jnbsp-1+ima) = zi(jce1d-1+5+4* (ima-1)+2)
+                vnbpt(ima) = zi(jce1d-1+5+4* (ima-1)+1)
+                vnbsp(ima) = zi(jce1d-1+5+4* (ima-1)+2)
             end do
         else
             do ima = 1, nbma
@@ -167,28 +175,28 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                 ncmp = zi(jce1d-1+5+4* (ima-1)+3)
                 if (nbpt*nbsp*ncmp .eq. 0) goto 50
 !
-                if (zi(jnbpt-1+ima) .ne. 0) then
+                if (vnbpt(ima) .ne. 0) then
 !             TEST SUR IDENTITE DU NOMBRE DE POINTS
-                    if (zi(jnbpt-1+ima) .ne. nbpt) then
+                    if (vnbpt(ima) .ne. nbpt) then
                         vali(1)=ima
                         vali(2)=nbpt
-                        vali(3)=zi(jnbpt-1+ima)
+                        vali(3)=vnbpt(ima)
                         call utmess('F', 'CALCULEL_35', ni=3, vali=vali)
                     endif
                 else
-                    if (nbpt .ne. 0) zi(jnbpt-1+ima)=nbpt
+                    if (nbpt .ne. 0) vnbpt(ima)=nbpt
                 endif
 !
-                if (zi(jnbsp-1+ima) .ne. 0) then
+                if (vnbsp(ima) .ne. 0) then
 !             TEST SUR IDENTITE DU NOMBRE DE SOUS-POINTS
-                    if (zi(jnbsp-1+ima) .ne. nbsp) then
+                    if (vnbsp(ima) .ne. nbsp) then
                         vali(1)=ima
                         vali(2)=nbsp
-                        vali(3)=zi(jnbsp-1+ima)
+                        vali(3)=vnbsp(ima)
                         call utmess('F', 'CALCULEL_36', ni=3, vali=vali)
                     endif
                 else
-                    if (nbsp .ne. 0) zi(jnbsp-1+ima)=nbsp
+                    if (nbsp .ne. 0) vnbsp(ima)=nbsp
                 endif
  50             continue
             end do
@@ -203,8 +211,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -------------------------------------------
 !
 !     -- ON "COCHE" LES CMPS PRESENTES DANS LES CES DE LICHS:
-    call wkvect('&&CESFUS.LICMP', 'V V K8', ncmpmx, jlicmp)
-    call wkvect('&&CESFUS.NUCMP', 'V V I', ncmpmx, jnucmp)
+    AS_ALLOCATE(vk8=licmp, size=ncmpmx)
+    AS_ALLOCATE(vi=nucmp, size=ncmpmx)
     do ichs = 1, nbchs
         ces1 = lichs(ichs)
         call jeveuo(ces1//'.CESK', 'L', jce1k)
@@ -216,7 +224,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
             nocmp = zk8(jce1c-1+icmp1)
 !
             icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
-            zi(jnucmp-1+icmp) = 1
+            nucmp(icmp) = 1
         end do
         call jelibe(ces1//'.CESK')
         call jelibe(ces1//'.CESD')
@@ -225,9 +233,9 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
     icmp3 = 0
     do icmp = 1, ncmpmx
-        if (zi(jnucmp-1+icmp) .eq. 1) then
+        if (nucmp(icmp) .eq. 1) then
             icmp3 = icmp3 + 1
-            zk8(jlicmp-1+icmp3) = zk8(jcmpgd-1+icmp)
+            licmp(icmp3) = zk8(jcmpgd-1+icmp)
         endif
     end do
     ncmp3 = icmp3
@@ -236,8 +244,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
 !     3- CALCUL DE L'OBJET CONTENANT LE NOMBRE DE CMPS PAR MAILLE
 !     -----------------------------------------------------------
-    call wkvect('&&CESFUS.NBCMP', 'V V I', nbma, jnbcmp)
-    call wkvect('&&CESFUS.CORR_CMP', 'V V I', ncmpmx, jcrcmp)
+    AS_ALLOCATE(vi=nbcmp, size=nbma)
+    AS_ALLOCATE(vi=corr_cmp, size=ncmpmx)
 !
     do ichs = 1, nbchs
         ces1 = lichs(ichs)
@@ -247,8 +255,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         ncmp1 = zi(jce1d-1+2)
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
-            icmp3 = indik8(zk8(jlicmp),nocmp,1,ncmp3)
-            zi(jcrcmp-1+icmp1) = icmp3
+            icmp3 = indik8(licmp,nocmp,1,ncmp3)
+            corr_cmp(icmp1) = icmp3
         end do
 !
         do ima = 1, nbma
@@ -256,8 +264,8 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
             if (ncmp1 .eq. 0) goto 110
             ASSERT(ncmp1.ge.0)
             do icmp1 = 1, ncmp1
-                icmp3 = zi(jcrcmp-1+icmp1)
-                zi(jnbcmp-1+ima) = max(icmp3,zi(jnbcmp-1+ima))
+                icmp3 = corr_cmp(icmp1)
+                nbcmp(ima) = max(icmp3,nbcmp(ima))
             end do
 110         continue
         end do
@@ -270,7 +278,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     4- ALLOCATION DE CES3 :
 !     --------------------------
     call cescre(base, ces3, typces, ma, nomgd,&
-                ncmp3, zk8(jlicmp), zi(jnbpt), zi(jnbsp), zi(jnbcmp))
+                ncmp3, licmp, vnbpt, vnbsp,nbcmp)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
     call jeveuo(ces3//'.CESC', 'L', vk8=ce3c)
     call jeveuo(ces3//'.CESV', 'E', jce3v)
@@ -388,12 +396,12 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -----------
     call detrsd('CHAM_ELEM_S', ces3)
     call jedetr('&&CESFUS.LISVARI')
-    call jedetr('&&CESFUS.NBPT')
-    call jedetr('&&CESFUS.NBSP')
-    call jedetr('&&CESFUS.LICMP')
-    call jedetr('&&CESFUS.NUCMP')
-    call jedetr('&&CESFUS.NBCMP')
-    call jedetr('&&CESFUS.CORR_CMP')
+    AS_DEALLOCATE(vi=vnbpt)
+    AS_DEALLOCATE(vi=vnbsp)
+    AS_DEALLOCATE(vk8=licmp)
+    AS_DEALLOCATE(vi=nucmp)
+    AS_DEALLOCATE(vi=nbcmp)
+    AS_DEALLOCATE(vi=corr_cmp)
 !
     call jedema()
 end subroutine

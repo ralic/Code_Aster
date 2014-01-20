@@ -55,6 +55,8 @@ subroutine tran77(nomres, typres, nomin, basemo)
 #include "asterfort/vtcrec.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=24) :: valk(2)
 ! ----------------------------------------------------------------------
     integer :: i, j, itresu(8)
@@ -71,12 +73,14 @@ subroutine tran77(nomres, typres, nomin, basemo)
     logical :: tousno, multap, leffor, prems
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadesc, iarchi, ibid, ich, idbase, iadrif
-    integer :: idec, idefm, idinsg, idresu, idvecg, inocmp
+    integer :: iadesc, iarchi, ibid, ich,  iadrif
+    integer :: idec, idefm, idinsg, idresu,  inocmp
     integer :: inoecp, inuddl, inumno, iret, iretou, isk
     integer :: j3refe, jc, jinst, jnume, linst, llcha
     integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
     integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct
+    real(kind=8), pointer :: base(:) => null()
+    real(kind=8), pointer :: vectgene(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data blanc    /'        '/
@@ -244,7 +248,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
     call jeveuo(trange//'.DISC', 'L', idinsg)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
-    call wkvect('&&TRAN77.VECTGENE', 'V V R', nbmode, idvecg)
+    AS_ALLOCATE(vr=vectgene, size=nbmode)
     do ich = 1, nbcham
         leffor=.true.
         if (type(ich) .eq. 'DEPL' .or. type(ich) .eq. 'VITE' .or. type(ich) .eq. 'ACCE' .or.&
@@ -263,10 +267,10 @@ subroutine tran77(nomres, typres, nomin, basemo)
             nomcha(20:24)='.CELV'
         endif
         if (leffor) call jelira(nomcha, 'LONMAX', neq)
-        call wkvect('&&TRAN77.BASE', 'V V R', nbmode*neq, idbase)
+        AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
             call copmod(basemo, typcha, neq, numddl, nbmode,&
-                        'R', zr(idbase), [cbid])
+                        'R', base, [cbid])
         else
             do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
@@ -283,7 +287,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                     do jc = 1, ncmp
                         if (zi(inoecp-1+(i-1)*ncmp+jc) .eq. 1) then
                             idec = idec + 1
-                            zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
+                            base(1+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
                     end do
                 end do
@@ -338,10 +342,10 @@ subroutine tran77(nomres, typres, nomin, basemo)
             if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
             if (interp(1:3) .ne. 'NON') then
                 call extrac(interp, epsi, crit, nbinsg, zr(idinsg),&
-                            zr(jinst+i), zr(idresu), nbmode, zr(idvecg), ibid)
-                call mdgeph(neq, nbmode, zr(idbase), zr(idvecg), zr(lvale))
+                            zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
+                call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
             else
-                call mdgeph(neq, nbmode, zr(idbase), zr(idresu+(zi( jnume+i)-1)*nbmode),&
+                call mdgeph(neq, nbmode, base, zr(idresu+(zi( jnume+i)-1)*nbmode),&
                             zr(lvale))
             endif
 !
@@ -350,7 +354,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
         end do
-        call jedetr('&&TRAN77.BASE')
+        AS_DEALLOCATE(vr=base)
     end do
 !
 !
@@ -365,7 +369,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
     call jedetr('&&TRAN77.NUME_DDL    ')
     call jedetr('&&TRAN77.NUM_RANG')
     call jedetr('&&TRAN77.INSTANT')
-    call jedetr('&&TRAN77.VECTGENE')
+    AS_DEALLOCATE(vr=vectgene)
 !
     call titre()
 !

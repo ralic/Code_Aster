@@ -31,6 +31,8 @@ subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=24) :: defico
     character(len=8) :: noma
     integer :: ifm
@@ -58,7 +60,7 @@ subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
     integer :: nbmail, nbnoeu
     integer :: izone, isuco, ima, ino
     integer :: nbma, nbno
-    integer :: jdecma, jdecno, jnomma, jnomno
+    integer :: jdecma, jdecno
     integer :: numma, numno
 !
     character(len=8) :: chain1, chain2
@@ -66,6 +68,8 @@ subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
 !
     character(len=24) :: psurma, psurno, contma, contno, pzone
     integer :: jsuma, jsuno, jmaco, jnoco, jzone
+    character(len=8), pointer :: travma(:) => null()
+    character(len=8), pointer :: travno(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,8 +96,8 @@ subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
 !
 ! --- CREATION VECTEURS TEMPORAIRES
 !
-    call wkvect('&&SURFLL.TRAVMA', 'V V K8', nmaco, jnomma)
-    call wkvect('&&SURFLL.TRAVNO', 'V V K8', nnoco, jnomno)
+    AS_ALLOCATE(vk8=travma, size=nmaco)
+    AS_ALLOCATE(vk8=travno, size=nnoco)
 !
 ! --- IMPRESSIONS GLOBALES (TOUTES ZONES)
 !
@@ -134,17 +138,17 @@ subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
 !
         do 30 ima = 1, nbma
             numma = zi(jmaco+jdecma+ima-1)
-            call jenuno(jexnum(mailma, numma), zk8(jnomma+ima-1))
+            call jenuno(jexnum(mailma, numma), travma(ima))
 30      continue
         write (ifm,1040) '     LISTE DES MAILLES : '
-        write (ifm,1050) (zk8(jnomma+ima-1), ima = 1,nbma)
+        write (ifm,1050) (travma(ima), ima = 1,nbma)
 !
         do 40 ino = 1, nbno
             numno = zi(jnoco+jdecno+ino-1)
-            call jenuno(jexnum(noeuma, numno), zk8(jnomno+ino-1))
+            call jenuno(jexnum(noeuma, numno), travno(ino))
 40      continue
         write (ifm,1040) '     LISTE DES NOEUDS  : '
-        write (ifm,1050) (zk8(jnomno+ino-1), ino = 1,nbno)
+        write (ifm,1050) (travno(ino), ino = 1,nbno)
 !
         write (ifm,*) '<CONTACT> ...... SURFACE ESCLAVE '
         call cfzone(defico, izone, 'ESCL', isuco)
@@ -166,17 +170,17 @@ subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
 !
         do 31 ima = 1, nbma
             numma = zi(jmaco+jdecma+ima-1)
-            call jenuno(jexnum(mailma, numma), zk8(jnomma+ima-1))
+            call jenuno(jexnum(mailma, numma), travma(ima))
 31      continue
         write (ifm,1040) '     LISTE DES MAILLES : '
-        write (ifm,1050) (zk8(jnomma+ima-1), ima = 1,nbma)
+        write (ifm,1050) (travma(ima), ima = 1,nbma)
 !
         do 41 ino = 1, nbno
             numno = zi(jnoco+jdecno+ino-1)
-            call jenuno(jexnum(noeuma, numno), zk8(jnomno+ino-1))
+            call jenuno(jexnum(noeuma, numno), travno(ino))
 41      continue
         write (ifm,1040) '     LISTE DES NOEUDS  : '
-        write (ifm,1050) (zk8(jnomno+ino-1), ino = 1,nbno)
+        write (ifm,1050) (travno(ino), ino = 1,nbno)
 10  end do
 !
     1035 format (' <CONTACT> ...... ',i5,a8,a4,i5,a8)
@@ -185,8 +189,8 @@ subroutine surfll(defico, noma, ifm, nzoco, nmaco,&
 !
 ! --- MENAGE
 !
-    call jedetr('&&SURFLL.TRAVMA')
-    call jedetr('&&SURFLL.TRAVNO')
+    AS_DEALLOCATE(vk8=travma)
+    AS_DEALLOCATE(vk8=travno)
 !
     call jedema()
 end subroutine

@@ -17,6 +17,8 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 #include "asterfort/raorfi.h"
 #include "asterfort/reajre.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: lonlis, iprno(*)
     character(len=2) :: typlag
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod
@@ -43,13 +45,14 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !     RACCORD 3D_TUYAU PAR DES RELATIONS LINEAIRES
 !     ECRITURE DES RELATIONS SUR LES DDLS DE FOURIER
 !
-    integer :: nbcmp, nbmode, irayo
+    integer :: nbcmp, nbmode
     parameter (nbmode=3,nbcmp=6* (nbmode-1))
     character(len=8) :: nocmp(nbcmp), lpain(5), lpaout(6), nomddl(4)
     character(len=24) :: lchin(5), lchout(6), valech
     real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3), sectio
     integer :: imod, info, ifm
     integer :: nbcoef, idec
+    real(kind=8), pointer :: rayon_raccord(:) => null()
 !
     call jemarq()
     call infniv(ifm, info)
@@ -70,9 +73,9 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
 !
-    call wkvect('&&RATU3D.RAYON_RACCORD', 'V V R', 1, irayo)
-    call mesomm(lchout(1), 1, vr=zr(irayo))
-    rayon = zr(irayo+1-1)/sectio
+    AS_ALLOCATE(vr=rayon_raccord, size=1)
+    call mesomm(lchout(1), 1, vr=rayon_raccord)
+    rayon = rayon_raccord(1)/sectio
 !
 !
 !     CREATION D'UNE CARTE CONTENANT LE POINT P ORIGINE DE PHI
@@ -308,7 +311,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL
 !
-    call jedetr('&&RATU3D.RAYON_RACCORD')
+    AS_DEALLOCATE(vr=rayon_raccord)
     call detrsd('CHAMP_GD', '&&RATU3D.CAXE_TUY')
     call detrsd('CHAMP_GD', '&&RATU3D.CAORIFI')
     call detrsd('CARTE', '&&RATU3D.NUME_MODE')

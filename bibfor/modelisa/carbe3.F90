@@ -42,6 +42,8 @@ subroutine carbe3(charge)
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: charge
 !
@@ -65,14 +67,18 @@ subroutine carbe3(charge)
     integer :: idxrbe, idxlig, idxcol, idxvec, idxnoe, idxgro, idxter
     integer :: idxddl
     integer :: posesc, posmai, cntlig, cntddl, cntnoe, inilig
-    integer :: jcoor, jlises, jcofes, jddles, jcescl, jcoore, jw, js, jb
+    integer :: jcoor, jlises, jcofes, jddles, jcescl, jcoore
     integer :: jnorel, jddl, jcmur, jcmuc, jcmuf, jdirec, jdime
-    integer :: jnogro, jnoesc, jxab, jnzddl, jnznor
+    integer :: jnogro, jnoesc,  jnzddl, jnznor
     integer :: nbrbe3, nbdles, nbcfes, nbddl, nblign, nbcol, nbgrou, nbent
     integer :: nbnoeu, nbdlma, maxesc, maxles, maxddl, dime
     logical :: fincod, ddlesc(6), ddlmai(6), frstco, dime2d
     real(kind=8) :: rbid, coomai(3), cooesc(3), lc, norme, lcsqua, stws(6, 6)
     real(kind=8) :: cofesc, beta, x(6, 6)
+    real(kind=8), pointer :: b(:) => null()
+    real(kind=8), pointer :: s(:) => null()
+    real(kind=8), pointer :: w(:) => null()
+    real(kind=8), pointer :: xab(:) => null()
 ! ----------------------------------------------------------------------
 !
     motfac = 'LIAISON_RBE3    '
@@ -374,7 +380,7 @@ subroutine carbe3(charge)
 !
 !       BOUCLE SUR LES NOEUDS ESCLAVES POUR CALCULER W
 !       -------------------------------------------------------
-        call wkvect('&&CARBE3.W', 'V V R', nbdles*nbdles, jw)
+        AS_ALLOCATE(vr=w, size=nbdles*nbdles)
         call getvr8(motfac, 'COEF_ESCL', iocc=idxrbe, nbval=nbnoeu, vect=zr(jcofes),&
                     nbret=nbcfes)
         if (nbcfes .lt. 0) then
@@ -416,11 +422,11 @@ subroutine carbe3(charge)
                             endif
                             idxvec = nbdles*(nbcol-1)+nblign
                             if (idxlig .ne. idxcol) then
-                                zr(jw-1+idxvec) = 0.0d0
+                                w(idxvec) = 0.0d0
                             else if (idxcol.le.3) then
-                                zr(jw-1+idxvec) = cofesc
+                                w(idxvec) = cofesc
                             else
-                                zr(jw-1+idxvec) = cofesc * lcsqua
+                                w(idxvec) = cofesc * lcsqua
                             endif
                         endif
                     enddo
@@ -433,7 +439,7 @@ subroutine carbe3(charge)
         if (niv .eq. 2) then
             write (ifm,*) 'IMPRESSION W'
             do idxlig = 1, nbdles
-                write (ifm,*) 'LIGNE : ',idxlig, (zr(jw-1+idxlig+&
+                write (ifm,*) 'LIGNE : ',idxlig, (w(idxlig+&
                 nbdles*(idxcol-1)),idxcol=1,nbdles)
             enddo
         endif
@@ -442,7 +448,7 @@ subroutine carbe3(charge)
 !       -------------------------------------------------------
         nblign = 0
         inilig = 0
-        call wkvect('&&CARBE3.S', 'V V R', nbdles*6, js)
+        AS_ALLOCATE(vr=s, size=nbdles*6)
         do idxnoe = 1, nbnoeu
             frstco = .true.
             cntlig = 0
@@ -458,32 +464,32 @@ subroutine carbe3(charge)
                         if ((idxlig.le.3 .and. idxcol.le.3) .or.&
                             (idxlig.ge.4 .and. idxcol.ge.4)) then
                             if (idxlig .eq. idxcol) then
-                                zr(js-1+idxvec) = 1.0d0
+                                s(idxvec) = 1.0d0
                             else
-                                zr(js-1+idxvec) = 0.0d0
+                                s(idxvec) = 0.0d0
                             endif
                         else if (idxlig.ge.4 .and. idxcol.le.3) then
-                            zr(js-1+idxvec) = 0.0d0
+                            s(idxvec) = 0.0d0
                         else
                             if (idxlig .eq. 1 .and. idxcol .eq. 5) then
-                                zr(js-1+idxvec) = zr(jcoore-1+3*( idxnoe-1)+3)
+                                s(idxvec) = zr(jcoore-1+3*( idxnoe-1)+3)
                                 else if (idxlig.eq.1 .and. idxcol.eq.6)&
                             then
-                                zr(js-1+idxvec) = -zr(jcoore-1+3*( idxnoe-1)+2)
+                                s(idxvec) = -zr(jcoore-1+3*( idxnoe-1)+2)
                                 else if (idxlig.eq.2 .and. idxcol.eq.4)&
                             then
-                                zr(js-1+idxvec) = -zr(jcoore-1+3*( idxnoe-1)+3)
+                                s(idxvec) = -zr(jcoore-1+3*( idxnoe-1)+3)
                                 else if (idxlig.eq.2 .and. idxcol.eq.6)&
                             then
-                                zr(js-1+idxvec) = zr(jcoore-1+3*( idxnoe-1)+1)
+                                s(idxvec) = zr(jcoore-1+3*( idxnoe-1)+1)
                                 else if (idxlig.eq.3 .and. idxcol.eq.4)&
                             then
-                                zr(js-1+idxvec) = zr(jcoore-1+3*( idxnoe-1)+2)
+                                s(idxvec) = zr(jcoore-1+3*( idxnoe-1)+2)
                                 else if (idxlig.eq.3 .and. idxcol.eq.5)&
                             then
-                                zr(js-1+idxvec) = -zr(jcoore-1+3*( idxnoe-1)+1)
+                                s(idxvec) = -zr(jcoore-1+3*( idxnoe-1)+1)
                             else
-                                zr(js-1+idxvec) = 0.0d0
+                                s(idxvec) = 0.0d0
                             endif
                         endif
                     endif
@@ -496,14 +502,14 @@ subroutine carbe3(charge)
         if (niv .eq. 2) then
             write (ifm,*) 'IMPRESSION S'
             do idxlig = 1, nbdles
-                write (ifm,*) 'LIGNE : ',idxlig, (zr(js-1+idxlig+&
+                write (ifm,*) 'LIGNE : ',idxlig, (s(idxlig+&
                 nbdles*(idxcol-1)),idxcol=1,6)
             enddo
         endif
 !
-        call wkvect('&&CARBE3.XAB', 'V V R', nbdles*6, jxab)
-        call utbtab('ZERO', nbdles, 6, zr(jw), zr(js),&
-                    zr(jxab), stws)
+        AS_ALLOCATE(vr=xab, size=nbdles*6)
+        call utbtab('ZERO', nbdles, 6, w, s,&
+                    xab, stws)
 !
         if (niv .eq. 2) then
             write (ifm,*) 'IMPRESSION MATRICE MGAUSS'
@@ -536,20 +542,20 @@ subroutine carbe3(charge)
             enddo
         endif
 !
-        call pmppr(zr(js), nbdles, 6, -1, zr(jw),&
-                   nbdles, nbdles, -1, zr(jxab), 6,&
+        call pmppr(s, nbdles, 6, -1, w,&
+                   nbdles, nbdles, -1, xab, 6,&
                    nbdles)
 !
-        call jedetr('&&CARBE3.W')
-        call jedetr('&&CARBE3.S')
+        AS_DEALLOCATE(vr=w)
+        AS_DEALLOCATE(vr=s)
 !
-        call wkvect('&&CARBE3.B', 'V V R', nbdles*6, jb)
+        AS_ALLOCATE(vr=b, size=nbdles*6)
 !
-        call pmppr(x, 6, 6, -1, zr(jxab),&
-                   6, nbdles, 1, zr(jb), 6,&
+        call pmppr(x, 6, 6, -1, xab,&
+                   6, nbdles, 1, b, 6,&
                    nbdles)
 !
-        call jedetr('&&CARBE3.XAB')
+        AS_DEALLOCATE(vr=xab)
 !
 ! --- ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
 ! --- APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
@@ -579,11 +585,11 @@ subroutine carbe3(charge)
                 idxddl = 1
                 do idxcol = 1, nbdles
                     idxvec = 6*(idxcol-1)+idxlig
-                    if (zr(jb-1+idxvec) .ne. 0) then
+                    if (b(idxvec) .ne. 0) then
                         idxter = idxter + 1
                         zk8(jnzddl-1+idxter) = zk8(jddl-1+idxddl)
                         zk8(jnznor-1+idxter) = zk8(jnorel-1+idxddl)
-                        zr(jcmur-1+idxter) = zr(jb-1+idxvec)
+                        zr(jcmur-1+idxter) = b(idxvec)
                     endif
                     idxddl = idxddl + 1
                 enddo
@@ -593,7 +599,7 @@ subroutine carbe3(charge)
             endif
         enddo
 !
-        call jedetr('&&CARBE3.B')
+        AS_DEALLOCATE(vr=b)
 !
     end do
 !

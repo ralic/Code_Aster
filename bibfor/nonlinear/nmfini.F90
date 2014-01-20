@@ -35,6 +35,8 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 #include "asterfort/nmcvec.h"
 #include "asterfort/nmxvec.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=19) :: sddyna, valinc(*), measse(*)
     character(len=24) :: modele, mate, carele, compor, carcri, sdtime, comref
     character(len=24) :: resoco, resocu, numedd
@@ -88,13 +90,15 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     character(len=19) :: fexmoi, fammoi, flimoi
     integer :: imasse, iamort, ivitmo, iaccmo
     integer :: ifexmo, ifammo, iflimo
-    integer :: neq, iaux, icv, ima
+    integer :: neq, iaux
     logical :: lamor, ldyna
     integer :: nbvect, icnfno, ifnomo
     character(len=16) :: loptve(20)
     character(len=6) :: ltypve(20)
     logical :: lassve(20), lcalve(20)
     character(len=19) :: cnfnod, fnomoi
+    real(kind=8), pointer :: cv(:) => null()
+    real(kind=8), pointer :: ma(:) => null()
 !
     call jemarq()
 !
@@ -123,13 +127,13 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
         call jeveuo(amort//'.&INT', 'L', iamort)
         call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
         call jeveuo(vitmoi//'.VALE', 'L', ivitmo)
-        call wkvect('&&NMFINI.CV', 'V V R', neq, icv)
-        call mrmult('ZERO', iamort, zr(ivitmo), zr(icv), 1,&
+        AS_ALLOCATE(vr=cv, size=neq)
+        call mrmult('ZERO', iamort, zr(ivitmo), cv, 1,&
                     .true.)
         do iaux = 1, neq
-            zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(icv-1+iaux)
+            zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + cv(iaux)
         end do
-        call jedetr('&&NMFINI.CV')
+        AS_DEALLOCATE(vr=cv)
     endif
 !
 ! --- AJOUT DU TERME M.A
@@ -140,13 +144,13 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
         call jeveuo(masse//'.&INT', 'L', imasse)
         call nmchex(valinc, 'VALINC', 'ACCMOI', accmoi)
         call jeveuo(accmoi//'.VALE', 'L', iaccmo)
-        call wkvect('&&NMFINI.MA', 'V V R', neq, ima)
-        call mrmult('ZERO', imasse, zr(iaccmo), zr(ima), 1,&
+        AS_ALLOCATE(vr=ma, size=neq)
+        call mrmult('ZERO', imasse, zr(iaccmo), ma, 1,&
                     .true.)
         do iaux = 1, neq
-            zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(ima-1+iaux)
+            zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + ma(iaux)
         end do
-        call jedetr('&&NMFINI.MA')
+        AS_DEALLOCATE(vr=ma)
     endif
 !
 ! --- AJOUT DU TERME CNFNOD

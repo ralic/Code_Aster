@@ -24,6 +24,8 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 #include "asterfort/utcmp3.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: carael
     character(len=*) :: nomcon, novcmp, nocham, liordr, nomcmp, partie
@@ -75,9 +77,10 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !
     integer :: numord, isy, iordr, iret, ibid, codret, nbcham
     integer :: lnochm, i, cresav, nbcmdu, jnosym, ierd, jcelk
-    integer :: jnocha, jliord, nbordr, nbrcmp, jnocmp, jnucmp
+    integer :: jnocha, jliord, nbordr, nbrcmp, jnocmp
 !
     logical :: lfirst
+    integer, pointer :: numcmp(:) => null()
     parameter   (cesnsp = '&&IREMED.CANBSP')
     parameter   (cescoq = '&&IREMED.CARCOQUE')
     parameter   (cesfib = '&&IREMED.CAFIBR')
@@ -227,10 +230,10 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !
             if (nbrcmp .ne. 0) then
                 if ((nomgd.eq.'VARI_R') .and. (typech(1:2).eq.'EL')) then
-                    call wkvect('&&IREMED.NUMCMP', 'V V I', nbrcmp, jnucmp)
+                    AS_ALLOCATE(vi=numcmp, size=nbrcmp)
 ! ----------- TRAITEMENT SUR LES "NOMCMP"
-                    call utcmp3(nbrcmp, zk8(jnocmp), zi(jnucmp))
-                    call jedetr('&&IREMED.NUMCMP')
+                    call utcmp3(nbrcmp, zk8(jnocmp),numcmp)
+                    AS_DEALLOCATE(vi=numcmp)
                 endif
             endif
 !

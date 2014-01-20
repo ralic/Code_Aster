@@ -57,11 +57,13 @@ subroutine pofaun()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbocc, ifonc, nbpts, i, n1, nbpapf, ifm, niv, nbp
     integer :: ivke, ivcorr, ivpoin, nbpoin, ivmax, ivmin, ivtrav
     integer :: ibid, intrav, ivpics, nbpics, nbcycl, nbpar, ivdome
-    integer :: icodre(3), icodwo, ivmax1, ivmin1
+    integer :: icodre(3), icodwo
     integer :: icodba, icodhs, icodma
     character(len=8) :: nomfon, result, txcum, k8b, nommat, kcorre, cara
     character(len=8) :: method, nompar, nomres(3)
@@ -74,6 +76,8 @@ subroutine pofaun()
     parameter (nbpapf=5)
     character(len=1) :: typppf(nbpapf)
     character(len=16) :: nomppf(nbpapf)
+    real(kind=8), pointer :: sigmax1(:) => null()
+    real(kind=8), pointer :: sigmin1(:) => null()
     data nomppf/'CYCLE','VALE_MIN','VALE_MAX','DOMMAGE','DOMM_CUMU'/
     data typppf/'I','R','R','R','R'/
 !     ------------------------------------------------------------------
@@ -154,8 +158,8 @@ subroutine pofaun()
 !
     call wkvect('&&POFAUN.SIGMAX', 'V V R', nbpoin+2, ivmax)
     call wkvect('&&POFAUN.SIGMIN', 'V V R', nbpoin+2, ivmin)
-    call wkvect('&&POFAUN.SIGMAX1', 'V V R', nbpoin+2, ivmax1)
-    call wkvect('&&POFAUN.SIGMIN1', 'V V R', nbpoin+2, ivmin1)
+    AS_ALLOCATE(vr=sigmax1, size=nbpoin+2)
+    AS_ALLOCATE(vr=sigmin1, size=nbpoin+2)
     call wkvect('&&POFAUN.POIN.TRAV', 'V V R', nbpoin+2, ivtrav)
     call wkvect('&&POFAUN.NUME.TRAV', 'V V I', 2* (nbpoin+2), intrav)
     if (method .eq. 'RAINFLOW') then
@@ -169,10 +173,10 @@ subroutine pofaun()
         call wkvect('&&POFAUN.FONC.PICS', 'V V R', nbpoin+2, ivpics)
         call fgpic2(method, zr(ivtrav), zr(ivpoin), nbpoin, zr(ivpics),&
                     nbpics)
-        call fgrain(zr(ivpics), nbpics, zi(intrav), nbcycl, zr(ivmin1),&
-                    zr(ivmax1))
+        call fgrain(zr(ivpics), nbpics, zi(intrav), nbcycl, sigmin1,&
+sigmax1)
 !
-        call fgrmax(nbcycl, zr(ivmin1), zr(ivmax1), zr(ivmin), zr(ivmax))
+        call fgrmax(nbcycl, sigmin1, sigmax1, zr(ivmin), zr(ivmax))
 !
     else if (method.eq.'RCCM') then
         call fgordo(nbpoin, zr(ivpoin), zr(ivtrav))
@@ -316,8 +320,8 @@ subroutine pofaun()
     call jedetr('&&POFAUN.FONC.POIN')
     call jedetr('&&POFAUN.SIGMAX')
     call jedetr('&&POFAUN.SIGMIN')
-    call jedetr('&&POFAUN.SIGMAX1')
-    call jedetr('&&POFAUN.SIGMIN1')
+    AS_DEALLOCATE(vr=sigmax1)
+    AS_DEALLOCATE(vr=sigmin1)
     call jedetr('&&POFAUN.POIN.TRAV')
     call jedetr('&&POFAUN.NUME.TRAV')
     call jedetr('&&POFAUN.DOMM.ELEM')

@@ -45,10 +45,12 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbm, i
     integer :: iret, ilime, inoli, ngrel, ipg, n1, jlgrf
-    integer :: ncham, icham, nn, nbelto, nbelgr, ntail, ialiel
+    integer :: ncham,  nn, nbelto, nbelgr, ntail, ialiel
     integer :: igr, ima, ii, iel, ive, itab, imo
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
@@ -58,6 +60,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     character(len=19) :: nomcha, chgeom, matas, chharm
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     logical :: yang
+    character(len=8), pointer :: vec(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -113,8 +116,8 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     call getvid(' ', 'CHAM_NO', nbval=0, nbret=ncham)
     if (ncham .ne. 0) then
         ncham = -ncham
-        call wkvect('&&ACCEP1.VEC', 'V V K8', ncham, icham)
-        call getvid(' ', 'CHAM_NO', nbval=ncham, vect=zk8(icham), nbret=nn)
+        AS_ALLOCATE(vk8=vec, size=ncham)
+        call getvid(' ', 'CHAM_NO', nbval=ncham, vect=vec, nbret=nn)
     endif
 ! BOUCLE SUR LES MODES FORMATIONS DES VECTEURS ELEMENTAIRES
     do i = 1, nbm
@@ -125,7 +128,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
             call rsexch(' ', modmec, 'DEPL', i, nomcha,&
                         iret)
         else
-            if (i .le. ncham) nomcha = zk8(icham+i-1)
+            if (i .le. ncham) nomcha = vec(i)
         endif
         lchin(2) = nomcha//'.VALE'
         call codent(1, 'D0', lchout(1) (12:14))
@@ -138,7 +141,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                     'OUI')
         call detrsd('CARTE', chharm)
     end do
-    if (ncham .gt. 0) call jedetr('&&ACCEP1.VEC')
+    AS_DEALLOCATE(vk8=vec)
 !
 !
 !  --- CREATION D' UN TABLEAU CONTENANT LES INFORMATIONS SUIVANTES :

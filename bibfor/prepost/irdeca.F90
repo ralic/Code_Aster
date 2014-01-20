@@ -14,6 +14,8 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
 #include "asterfort/lxliis.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx, numnoe(*)
     integer :: nbcput, nive
     real(kind=8) :: vale(*)
@@ -62,21 +64,24 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
 !     ------------------------------------------------------------------
     character(len=8) :: nomvar(30)
     character(len=8) :: blanc, nomco
-    integer :: nbcmp, ipcmp(30), iutil, iltabl
+    integer :: nbcmp, ipcmp(30), iutil
 !      LOGICAL       LTABL(180)
 !
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadr, ibi, ibid, ic, icm
+    integer :: i, iad, iadr,  ibid, ic, icm
     integer :: icmc, icmcca, icmp, icompt, iec, inno, ino
-    integer :: inom, inum, iret, irval, iun, ival, ivari
+    integer ::  inum, iret, irval, iun, ival, ivari
     integer :: izero, jlast, ncmp
+    integer, pointer :: bid(:) => null()
+    logical, pointer :: ltabl(:) => null()
+    character(len=8), pointer :: nom(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
 !      IF (NCMPMX.GT.180) CALL UTMESS('F','PREPOST2_18')
-    call wkvect('&&IRDECA.LTABL', 'V V L', ncmpmx, iltabl)
+    AS_ALLOCATE(vl=ltabl, size=ncmpmx)
 !
     if (.not.lresu) then
         call jeveuo('&&OP0039.LAST', 'E', jlast)
@@ -85,7 +90,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
         inum = 0
     endif
     do i = 1, ncmpmx
-        zl(iltabl+i-1)=.false.
+        ltabl(i)=.false.
     end do
     iad = 1
     nbcmp = 0
@@ -115,12 +120,12 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
                         valk (2) = 'VARI_R'
                         call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
                     endif
-                    zl(iltabl+ivari-1)= .true.
+                    ltabl(ivari)= .true.
                     goto 30
                 else
                     do icmp = 1, ncmpmx
                         if (ncmput(icm) .eq. ncmpgd(icmp)) then
-                            zl(iltabl+icmp-1)= .true.
+                            ltabl(icmp)= .true.
                             goto 30
                         endif
                     end do
@@ -132,14 +137,14 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
             end do
         else
             do icmp = 1, ncmpmx
-                if (exisdg(dg,icmp)) zl(iltabl+icmp-1)= .true.
+                if (exisdg(dg,icmp)) ltabl(icmp)= .true.
             end do
         endif
   2     continue
     end do
 !
     do i = 1, ncmpmx
-        if (zl(iltabl+i-1)) then
+        if (ltabl(i)) then
             if (ncmpgd(i) .eq. 'DX') then
                 nbcmp = nbcmp+1
                 nomvar(iad)='UX'
@@ -215,18 +220,18 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
 !
     if (nive .eq. 3) write(ifi,'(I5,I5,I5)') iun,nbcmp,ibid
     if (nive .eq. 10) write(ifi,'(I8,I8,I8,I8)') iun,nbcmp,ibid,iun
-    call wkvect('&&IRDECA.BID', 'V V I', ncmpmx, ibi)
-    call wkvect('&&IRDECA.NOM', 'V V K8', nbcmp, inom)
+    AS_ALLOCATE(vi=bid, size=ncmpmx)
+    AS_ALLOCATE(vk8=nom, size=nbcmp)
     if (nive .eq. 3) write(ifi,'(16(I5))') iun,nbno,nbcmp
     if (nive .eq. 10) write(ifi,'(10(I8))') iun,nbno,nbcmp
     izero = 0
     do i = 1, nbcmp
-        zi(ibi-1+i) = izero
-        zk8(inom-1+i) = nomvar(i)
+        bid(i) = izero
+        nom(i) = nomvar(i)
     end do
-    write(ifi,'(16(1X,A4))') (zk8(inom-1+i)(1:4),i=1,nbcmp)
-    if (nive .eq. 3) write(ifi,'(16(I5))') (zi(ibi-1+i),i=1,nbcmp)
-    if (nive .eq. 10) write(ifi,'(10(I8))') (zi(ibi-1+i),i=1,nbcmp)
+    write(ifi,'(16(1X,A4))') (nom(i)(1:4),i=1,nbcmp)
+    if (nive .eq. 3) write(ifi,'(16(I5))') (bid(i),i=1,nbcmp)
+    if (nive .eq. 10) write(ifi,'(10(I8))') (bid(i),i=1,nbcmp)
     if (lresu) then
         write(ifi,'(1X,A71)') nomsym
     else
@@ -273,8 +278,8 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
     write(ifi,'(3(1X,E21.13E3))') (zr(irval-1+i),i=1,nbcmp*nbno)
     if (.not.lresu) zi(jlast-1+4)=inum
     call jedetr('&&IRDECA.VALE')
-    call jedetr('&&IRDECA.BID')
-    call jedetr('&&IRDECA.NOM')
-    call jedetr('&&IRDECA.LTABL')
+    AS_DEALLOCATE(vi=bid)
+    AS_DEALLOCATE(vk8=nom)
+    AS_DEALLOCATE(vl=ltabl)
     call jedema()
 end subroutine

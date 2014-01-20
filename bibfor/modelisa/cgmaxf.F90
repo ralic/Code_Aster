@@ -14,6 +14,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xtmafi.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
@@ -51,12 +53,14 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !
     integer :: i, ii, ima, ifiss, ino, n
     integer :: nbno, nbnot, nfiss, nmax, nbmalo, nbmala
-    integer :: jlmas, idlist, jfiss, jtem3, jtem4, jtem5, jstno
+    integer :: jlmas, idlist,  jtem3, jtem4,  jstno
     integer :: ibid, test, valeno
     character(len=8) :: noma, nomail, fiss
     character(len=16) :: motfac, typgrp
     character(len=19) :: stno
     character(len=24) :: lismai, lismar, lisman, maifis
+    character(len=8), pointer :: vfiss(:) => null()
+    integer, pointer :: tem5(:) => null()
 !
 !     -----------------------------------------------------------------
 !
@@ -74,8 +78,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
     call getvtx(motfac, 'TYPE_GROUP', iocc=iocc, scal=typgrp, nbret=ibid)
     call getvid(motfac, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
     nfiss = -nfiss
-    call wkvect('&&CGMAXF.FISS', 'V V K8', nfiss, jfiss)
-    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=zk8(jfiss),&
+    AS_ALLOCATE(vk8=vfiss, size=nfiss)
+    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=vfiss,&
                 nbret=ibid)
 !
 !
@@ -100,7 +104,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
         endif
 ! ---   BOUCLE SUR TOUTES LES FISSURES
         do ifiss = 1, nfiss
-            fiss = zk8(jfiss-1+ifiss)
+            fiss = vfiss(ifiss)
             call jeveuo(fiss//maifis, 'L', zi(jtem3-1+ifiss))
             call jelira(fiss//maifis, 'LONMAX', n)
             zi(jtem4-1+ifiss) = n
@@ -126,7 +130,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
     else if (typgrp.eq.'XFEM') then
 !
         lisman = '&&CGMAXF.TEM1'
-        call xtmafi(noma, 0, zk8(jfiss), nfiss, lismai,&
+        call xtmafi(noma, 0, vfiss, nfiss, lismai,&
                     lisman, nbma)
         call jedetr(lisman)
 !
@@ -140,20 +144,20 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !       POUR DIMENSIONNER GROSSIEREMENT LA LISTE DES MAILLES
         lisman = '&&CGMAXF.TEM1'
         lismar = '&&CGMAXF.TEM2'
-        call xtmafi(noma, 0, zk8(jfiss), nfiss, lismar,&
+        call xtmafi(noma, 0, vfiss, nfiss, lismar,&
                     lisman, nbma)
         call jedetr(lismar)
         call jedetr(lisman)
 !
         call wkvect('&&CGMAXF.TEM3', 'V V I', nbnot, jtem3)
         call wkvect('&&CGMAXF.TEM4', 'V V I', nmax, jtem4)
-        call wkvect('&&CGMAXF.TEM5', 'V V I', nbma, jtem5)
+        AS_ALLOCATE(vi=tem5, size=nbma)
 !
         nbmalo = 0
 !
 !       POUR CHAQUE FISSURE
         do ifiss = 1, nfiss
-            fiss = zk8(jfiss-1+ifiss)
+            fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
 !
@@ -179,8 +183,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !           MAILLES QUI REPOSENT SUR LES NOEUDS AU STATUS <> 0
                 if (test .eq. 1) then
                     nbmalo = nbmalo + 1
-                    zi(jtem5+nbmalo-1) = zi(jlmas+ii-1)
-                    call jenuno(jexnum(noma//'.NOMMAI', zi(jtem5+ nbmalo-1)), nomail)
+                    tem5(nbmalo) = zi(jlmas+ii-1)
+                    call jenuno(jexnum(noma//'.NOMMAI', tem5(nbmalo)), nomail)
                 endif
             end do
             call jedetr(lismar)
@@ -189,11 +193,11 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
         end do
         call wkvect(lismai, 'V V I', nbmalo, idlist)
         do ima = 1, nbmalo
-            zi(idlist-1+ima) = zi(jtem5-1+ima)
+            zi(idlist-1+ima) = tem5(ima)
         end do
         call jedetr('&&CGMAXF.TEM3')
         call jedetr('&&CGMAXF.TEM4')
-        call jedetr('&&CGMAXF.TEM5')
+        AS_DEALLOCATE(vi=tem5)
         nbma = nbmalo
 !
     endif
@@ -203,7 +207,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- MENAGE
 !
-    call jedetr('&&CGMAXF.FISS')
+    AS_DEALLOCATE(vk8=vfiss)
 !
     call jedema()
 !

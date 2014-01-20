@@ -25,6 +25,8 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: noma
     integer :: nbma, numai(*), nbnos, numnos(*)
@@ -47,7 +49,8 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
 !
 !-----------------------------------------------------------------------
     integer :: ima, imai, ino, inoe, ipoin, jconx
-    integer :: jnunos, jpoin, nbnoe, num
+    integer ::  jpoin, nbnoe, num
+    integer, pointer :: vnumnos(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nomma=noma
@@ -55,10 +58,10 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
 !  --- RECHERCHE DU NOMBRE DE NOEUDS DU MAILLAGE ---
 !-DEL CALL JELIRA(NOMMA//'.NOMNOE','NOMMAX',NBNOE,' ')
     call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbnoe)
-    call wkvect('&&IRMANO.NUMNOS', 'V V I', nbnoe, jnunos)
+    AS_ALLOCATE(vi=vnumnos, size=nbnoe)
 !     --- INITIALISATION DU TABLEAU DE TRAVAIL &&IRMANO.NUMNOS ----
     do ino = 1, nbnoe
-        zi(jnunos-1+ino) = 0
+        vnumnos(ino) = 0
     end do
 !     --- RECHERCHE DES NOEUDS SOMMETS ----
     call jeveuo(nomma//'.CONNEX', 'L', jconx)
@@ -69,17 +72,17 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
         nnoe = zi(jpoin-1+imai+1)-ipoin
         do inoe = 1, nnoe
             num=zi(jconx-1+ipoin-1+inoe)
-            zi(jnunos-1+num) =1
+            vnumnos(num) =1
         end do
     end do
 !  --- STOCKAGE DES NOEUDS PRESENTS SUR LA LISTE DES MAILLES---
     do inoe = 1, nbnoe
-        if (zi(jnunos-1+inoe) .eq. 1) then
+        if (vnumnos(inoe) .eq. 1) then
             nbnos=nbnos+1
             numnos(nbnos)=inoe
         endif
     end do
 !
-    call jedetr('&&IRMANO.NUMNOS')
+    AS_DEALLOCATE(vi=vnumnos)
     call jedema()
 end subroutine

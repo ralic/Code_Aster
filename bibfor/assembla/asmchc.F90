@@ -11,6 +11,8 @@ subroutine asmchc(matas)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: matas
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -44,11 +46,13 @@ subroutine asmchc(matas)
     character(len=8) :: kbid
     character(len=14) :: nu
     character(len=19) :: mat, nomsto
-    integer :: typmat, ielim, jelim, kdeb, kfin, nccva, kkeli, ilig, jcol
+    integer :: typmat, ielim, jelim, kdeb, kfin, nccva,  ilig, jcol
     integer :: jsmhc, jsmdi, jvalm, jvalm2, jccva, jccll, nelim, jnulg
     integer :: jrefa, iret2, jnequ, ieq, k, deciel, nterm, neq, ier, imatd
-    integer ::  nblocm, jccii, jremp, decjel, iremp, jccid, keta
+    integer ::  nblocm, jccii,  decjel, iremp, jccid, keta
     logical :: nonsym
+    integer, pointer :: elim(:) => null()
+    integer, pointer :: remplis(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
     mat = matas
@@ -85,7 +89,7 @@ subroutine asmchc(matas)
 !                       ZI(KKELI-1+IEQ) = / 0      -> PAS ELIMINE
 !                                         / IELIM  -> ELIMINE
 !     NELIM   I       : NOMBRE D'EQUATIONS DE LA MATRICE A ELIMINER
-    call wkvect('&&ASMCHC.ELIM', 'V V I', neq, kkeli)
+    AS_ALLOCATE(vi=elim, size=neq)
     call jeveuo(mat//'.CCID', 'L', jccid)
     nelim=0
     do 1, ieq=1,neq
@@ -97,9 +101,9 @@ subroutine asmchc(matas)
     ASSERT(keta.eq.1 .or. keta.eq.0)
     if (keta .eq. 1) then
         nelim=nelim+1
-        zi(kkeli-1+ieq)=nelim
+        elim(ieq)=nelim
     else
-        zi(kkeli-1+ieq)=0
+        elim(ieq)=0
     endif
     1 end do
 !
@@ -126,20 +130,20 @@ subroutine asmchc(matas)
     do 21 jcol = 1, neq
         kdeb = kfin + 1
         kfin = zi(jsmdi-1+jcol)
-        jelim = zi(kkeli-1+jcol)
+        jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
             zi(jccll-1+3*(jelim-1)+1) = jcol
             do 11, k=kdeb, kfin - 1
             ilig = zi4(jsmhc-1+k)
-            ielim = zi(kkeli-1+ilig)
+            ielim = elim(ilig)
             if (ielim .eq. 0) zi( jccll-1+3*(jelim-1)+2)=zi(jccll-1+ 3*(jelim-1)+2 ) +1
 11          continue
 !
         else
             do 12 k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
-                ielim = zi(kkeli-1+ilig)
+                ielim = elim(ilig)
                 if (ielim .ne. 0) zi( jccll-1+3*(ielim-1)+2)=zi(jccll-1+ 3*(ielim-1)+2 ) +1
 12          continue
         endif
@@ -180,21 +184,21 @@ subroutine asmchc(matas)
 !     -- REMPLISSAGE DE .CCII ET .CCVA :
 !     -----------------------------------------
 !
-    call wkvect('&&ASMCHC.REMPLIS', 'V V I', nelim, jremp)
+    AS_ALLOCATE(vi=remplis, size=nelim)
     kfin=0
     do 121 jcol = 1, neq
         kdeb = kfin + 1
         kfin = zi(jsmdi-1+jcol)
-        jelim = zi(kkeli-1+jcol)
+        jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
             deciel=zi(jccll-1+3*(jelim-1)+3)
             do 111, k=kdeb, kfin - 1
             ilig = zi4(jsmhc-1+k)
-            ielim = zi(kkeli-1+ilig)
+            ielim = elim(ilig)
             if (ielim .eq. 0) then
-                zi(jremp-1+jelim)=zi(jremp-1+jelim)+1
-                iremp=zi(jremp-1+jelim)
+                remplis(jelim)=remplis(jelim)+1
+                iremp=remplis(jelim)
                 zi(jccii-1+deciel+iremp)=ilig
                 if (typmat .eq. 1) then
                     zr(jccva-1+deciel+iremp)= zr(jvalm-1+k)
@@ -207,11 +211,11 @@ subroutine asmchc(matas)
         else
             do 112 k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
-                ielim = zi(kkeli-1+ilig)
+                ielim = elim(ilig)
                 decjel=zi(jccll-1+3*(ielim-1)+3)
                 if (ielim .ne. 0) then
-                    zi(jremp-1+ielim)=zi(jremp-1+ielim)+1
-                    iremp=zi(jremp-1+ielim)
+                    remplis(ielim)=remplis(ielim)+1
+                    iremp=remplis(ielim)
                     zi(jccii-1+decjel+iremp)=jcol
                     if (typmat .eq. 1) then
                         if (nonsym) then
@@ -242,7 +246,7 @@ subroutine asmchc(matas)
     do 221 jcol = 1, neq
         kdeb = kfin + 1
         kfin = zi(jsmdi-1+jcol)
-        jelim = zi(kkeli-1+jcol)
+        jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
             if (typmat .eq. 1) then
@@ -268,7 +272,7 @@ subroutine asmchc(matas)
         else
             do 212 k = kdeb, kfin -1
                 ilig = zi4(jsmhc-1+k)
-                ielim = zi(kkeli-1+ilig)
+                ielim = elim(ilig)
                 if (ielim .ne. 0) then
                     if (typmat .eq. 1) then
                         zr(jvalm-1+k)=0.d0
@@ -289,8 +293,8 @@ subroutine asmchc(matas)
 !
 !
 9999  continue
-    call jedetr('&&ASMCHC.REMPLIS')
-    call jedetr('&&ASMCHC.ELIM')
+    AS_DEALLOCATE(vi=remplis)
+    AS_DEALLOCATE(vi=elim)
 !     CALL CHEKSD('sd_matr_asse',MAT,IRET)
     call jedema()
 end subroutine

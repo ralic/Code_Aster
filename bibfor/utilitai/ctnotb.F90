@@ -16,6 +16,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbcmp, nbno, ndim, nbval
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb
@@ -62,12 +64,18 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 ! ----------------------------------------------------------------------
 !
     integer :: jcmp, jkcha, jlno, jrval, jival, jniord, jcoor, i, jcnsv, nbnox
-    integer :: jcnsl, jcnsd, jcnsc, nbcmpx, n, jval, jkval, ino, indno
-    integer :: kcp, icmp, indcmp, ni, nr, nk, ji, jr, jk, kk, nbpara
-    integer :: jparak, j, ibid
+    integer :: jcnsl, jcnsd, jcnsc, nbcmpx, n,   ino, indno
+    integer :: kcp, icmp, indcmp, ni, nr, nk,    kk, nbpara
+    integer ::  j, ibid
     complex(kind=8) :: cbid
     character(len=8) :: kno
     character(len=19) :: chamns
+    character(len=8), pointer :: nom_cmp(:) => null()
+    character(len=16), pointer :: table_parak(:) => null()
+    integer, pointer :: table_vali(:) => null()
+    character(len=16), pointer :: table_valk(:) => null()
+    real(kind=8), pointer :: table_valr(:) => null()
+    real(kind=8), pointer :: val_cmp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -89,9 +97,9 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !     TABLEAU DES VALEURS CARACTERES DE LA TABLE: ZK16(JK)
 !     POUR DES RAISONS DE PERF, CES TABLEAUX ONT ETE SORTIS DE
 !     LA BOUCLE, D'OU DES DIMENSIONS EN DUR (NOMBRE SUFFISANT)
-    call wkvect('&&CTNOTB.TABLE_VALR', 'V V R', 50, jr)
-    call wkvect('&&CTNOTB.TABLE_VALI', 'V V I', 50, ji)
-    call wkvect('&&CTNOTB.TABLE_VALK', 'V V K16', 50, jk)
+    AS_ALLOCATE(vr=table_valr, size=50)
+    AS_ALLOCATE(vi=table_vali, size=50)
+    AS_ALLOCATE(vk16=table_valk, size=50)
 !
     do 100 i = 1, nbval
 !
@@ -118,12 +126,12 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
             endif
 !
 !             TABLEAU DES VALEURS DES COMPOSANTES DESIREES: ZR(JVAL)
-            call jedetr('&&CTNOTB.VAL_CMP')
-            call wkvect('&&CTNOTB.VAL_CMP', 'V V R', n, jval)
+            AS_DEALLOCATE(vr=val_cmp)
+            AS_ALLOCATE(vr=val_cmp, size=n)
 !
 !             TABLEAU DES NOMS DE COMPOSANTES DESIREES : ZK8(JKVAL)
-            call jedetr('&&CTNOTB.NOM_CMP')
-            call wkvect('&&CTNOTB.NOM_CMP', 'V V K8', n, jkval)
+            AS_DEALLOCATE(vk8=nom_cmp)
+            AS_ALLOCATE(vk8=nom_cmp, size=n)
 !
 !             -- ON PARCOURT LES NOEUDS MAX,
             do 110 ino = 1, nbnox
@@ -148,8 +156,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !                  STOCKE LE NOM ET LA VALEUR DE COMPOSANTE :
                     if (.not.zl(jcnsl+nbcmpx*(ino-1)+icmp-1)) goto 120
                     kcp=kcp+1
-                    zr(jval+kcp-1)=zr(jcnsv+nbcmpx*(ino-1)+icmp-1)
-                    zk8(jkval+kcp-1)=zk8(jcnsc+icmp-1)
+                    val_cmp(kcp)=zr(jcnsv+nbcmpx*(ino-1)+icmp-1)
+                    nom_cmp(kcp)=zk8(jcnsc+icmp-1)
 120              continue
 !
 !               SOIT NI LE NOMBRE DE VALEURS ENTIERES DE LA TABLE
@@ -174,81 +182,81 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !               ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
                 kk=0
                 if (typac .eq. 'FREQ' .or. typac .eq. 'INST') then
-                    zr(jr+kk)=zr(jrval+i-1)
+                    table_valr(kk+1)=zr(jrval+i-1)
                     kk=kk+1
                 endif
                 do 121 j = 1, ndim
-                    zr(jr+kk)=zr(jcoor+3*(ino-1)+j-1)
+                    table_valr(kk+1)=zr(jcoor+3*(ino-1)+j-1)
                     kk=kk+1
 121              continue
                 do 122 j = 1, kcp
-                    zr(jr+kk)=zr(jval+j-1)
+                    table_valr(kk+1)=val_cmp(j)
                     kk=kk+1
 122              continue
 !
                 kk=0
                 if (resu .eq. ' ') then
-                    zk16(jk+kk)=zk24(jkcha+i-1)(1:16)
+                    table_valk(kk+1)=zk24(jkcha+i-1)(1:16)
                     kk=kk+1
                 else
-                    zk16(jk+kk)=resu
+                    table_valk(kk+1)=resu
                     kk=kk+1
-                    zk16(jk+kk)=nsymb
+                    table_valk(kk+1)=nsymb
                     kk=kk+1
-                    zi(ji)=zi(jniord+i-1)
-                    if (typac .eq. 'MODE') zi(ji+1)=zi(jival+i-1)
+                    table_vali(1)=zi(jniord+i-1)
+                    if (typac .eq. 'MODE') table_vali(1+1)=zi(jival+i-1)
                 endif
                 call jenuno(jexnum(noma//'.NOMNOE', ino), kno)
-                zk16(jk+kk)=kno
+                table_valk(kk+1)=kno
 !
 !
 !               TABLEAU DES NOMS DE PARAMETRES DE LA TABLE: ZK16(JPARAK)
                 nbpara=nr+ni+nk
-                call jedetr('&&CTNOTB.TABLE_PARAK')
-                call wkvect('&&CTNOTB.TABLE_PARAK', 'V V K16', nbpara, jparak)
+                AS_DEALLOCATE(vk16=table_parak)
+                AS_ALLOCATE(vk16=table_parak, size=nbpara)
 !
 !               ON REMPLIT ZK16(JPARAK)
                 kk=0
                 if (resu .eq. ' ') then
-                    zk16(jparak+kk)='CHAM_GD'
+                    table_parak(kk+1)='CHAM_GD'
                     kk=kk+1
                 else
-                    zk16(jparak+kk)='RESULTAT'
+                    table_parak(kk+1)='RESULTAT'
                     kk=kk+1
-                    zk16(jparak+kk)='NOM_CHAM'
+                    table_parak(kk+1)='NOM_CHAM'
                     kk=kk+1
                     if (typac .ne. 'ORDRE') then
-                        zk16(jparak+kk)=typac
+                        table_parak(kk+1)=typac
                         kk=kk+1
                     endif
-                    zk16(jparak+kk)='NUME_ORDRE'
+                    table_parak(kk+1)='NUME_ORDRE'
                     kk=kk+1
                 endif
-                zk16(jparak+kk)='NOEUD'
+                table_parak(kk+1)='NOEUD'
                 kk=kk+1
-                zk16(jparak+kk)='COOR_X'
+                table_parak(kk+1)='COOR_X'
                 kk=kk+1
                 if (ndim .ge. 2) then
-                    zk16(jparak+kk)='COOR_Y'
+                    table_parak(kk+1)='COOR_Y'
                     kk=kk+1
                 endif
                 if (ndim .eq. 3) then
-                    zk16(jparak+kk)='COOR_Z'
+                    table_parak(kk+1)='COOR_Z'
                     kk=kk+1
                 endif
                 do 123 j = 1, kcp
-                    zk16(jparak+kk)=zk8(jkval+j-1)
+                    table_parak(kk+1)=nom_cmp(j)
                     kk=kk+1
 123              continue
 !
 !
 !               ON AJOUTE LA LIGNE A LA TABLE
                 if (resu .eq. ' ') then
-                    call tbajli(nomtb, nbpara, zk16(jparak), [ibid], zr(jr),&
-                                [cbid], zk16(jk), 0)
+                    call tbajli(nomtb, nbpara, table_parak, [ibid], table_valr,&
+                                [cbid], table_valk, 0)
                 else
-                    call tbajli(nomtb, nbpara, zk16(jparak), zi(ji), zr( jr),&
-                                [cbid], zk16(jk), 0)
+                    call tbajli(nomtb, nbpara, table_parak, table_vali, table_valr,&
+                                [cbid], table_valk, 0)
                 endif
 !
 110          continue
@@ -257,9 +265,9 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !
 100  end do
 !
-    call jedetr('&&CTNOTB.TABLE_VALR')
-    call jedetr('&&CTNOTB.TABLE_VALI')
-    call jedetr('&&CTNOTB.TABLE_VALK')
+    AS_DEALLOCATE(vr=table_valr)
+    AS_DEALLOCATE(vi=table_vali)
+    AS_DEALLOCATE(vk16=table_valk)
 !
 !
     call jedema()

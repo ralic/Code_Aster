@@ -37,6 +37,8 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 #include "asterfort/renuu1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mo, ma
     character(len=14) :: nu
@@ -67,9 +69,9 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     character(len=19) :: nomlig
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacoin, iaconx, iaexi1, iagrel, ialcoi, ialiel
-    integer :: iamail, ianbco, ianbno, ianema, ianew1, ianewn, iaold1
-    integer :: iaoldn, iaordo, iasssa, ico, icol, icumul
+    integer :: i, iacoin, iaconx, iaexi1, iagrel,  ialiel
+    integer :: iamail,  ianbno, ianema,  ianewn
+    integer :: iaoldn,  iasssa, ico, icol, icumul
     integer :: iel, ifm, igrel, iinew, iino, iio1
     integer :: iio2, ilconx, ili, illiel, ilnema, ima, ino
     integer :: irempl, iret, j, jjno, jno, jrang, k
@@ -77,6 +79,11 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     integer :: n1j, n2i, n2j, nbco, nbcomp, nbel, nbgrel
     integer :: nbi, nbma, nbnm, nbnmre, nbnoma, nbnot, nbntre
     integer :: nbsma, nbssa, newnno, niv
+    integer, pointer :: lcoi(:) => null()
+    integer, pointer :: vnbco(:) => null()
+    integer, pointer :: new1(:) => null()
+    integer, pointer :: old1(:) => null()
+    integer, pointer :: ordo(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -89,8 +96,8 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !     -- ALLOCATION DES OBJETS .NEW1 ET .OLD1  (PROVISOIRES) :
 !        CES OBJETS REPRESENTENT LA RENUMEROTATION DE TOUS LES NOEUDS
 !     ---------------------------------------------------------------
-    call wkvect('&&RERCMK.NEW1', 'V V I', nbntt, ianew1)
-    call wkvect('&&RERCMK.OLD1', 'V V I', nbntt, iaold1)
+    AS_ALLOCATE(vi=new1, size=nbntt)
+    AS_ALLOCATE(vi=old1, size=nbntt)
 !
 !     ---------------------------------------------------------------
 !        ON CALCULE LA DIMENSION DE LA TABLE DE CONNECTIVITE INVERSE:
@@ -99,14 +106,14 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !
 !     -- ORDO EST UNE TABLE DE TRAVAIL QUI DOIT POUVOIR CONTENIR
 !        UNE LIGNE DE CONNECTIVITE INVERSE.
-    call wkvect('&&RERCMK.ORDO', 'V V I', nbntt, iaordo)
+    AS_ALLOCATE(vi=ordo, size=nbntt)
 !
-    call wkvect('&&RERCMK.LCOI', 'V V I', nbntt, ialcoi)
+    AS_ALLOCATE(vi=lcoi, size=nbntt)
 !     -- .LCOI(INO) CONTIENDRA L'ADRESSE DANS .COIN DE LA LISTE
 !        DES NOEUDS CONNECTES A INO (C'EST LE VECTEUR CUMULE DE .EXI1)
 !        C'EST EN QUELQUE SORTE LE POINTEUR DE LONGUEUR CUMULEE DE .COIN
 !
-    call wkvect('&&RERCMK.NBCO', 'V V I', nbntt, ianbco)
+    AS_ALLOCATE(vi=vnbco, size=nbntt)
 !     -- .NBCO(INO) CONTIENDRA AU FUR ET A MESURE DE LA CONSTRUCTION
 !         DE LA TABLE DE CONNECTIVITE INVERSE, LE NOMBRE REEL DE NOEUDS
 !         CONNECTES A INO.
@@ -125,10 +132,10 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !     -- NBNTRE EST LE NOMBRE TOTAL DE NOEUDS A RENUMEROTER
     nbntre=0
 !
-    zi(ialcoi-1+1)= 1
+    lcoi(1)= 1
     do 5  , ino=1,nbntt-1
     icumul= icumul+zi(iaexi1+ino)
-    zi(ialcoi-1+ino+1)= zi(ialcoi-1+ino)+zi(iaexi1+ino)
+    lcoi(ino+1)= lcoi(ino)+zi(iaexi1+ino)
     if (zi(iaexi1+ino) .gt. 0) nbntre= nbntre+1
     5 end do
 !
@@ -172,18 +179,18 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
                 do j = i+1, nbnm
                     jno=zi(iamail-1+j)
                     jjno=jno
-                    jrang= indiis(zi(iacoin+zi(ialcoi-1+iino)-1)&
-                    ,jjno,1,zi(ianbco-1+iino))
+                    jrang= indiis(zi(iacoin+lcoi(iino)-1)&
+                    ,jjno,1,vnbco(iino))
 !
                     if (jrang .eq. 0) then
-                        irempl=zi(ianbco-1+iino) +1
-                        zi(ianbco-1+iino)=irempl
-                        zi(iacoin+zi(ialcoi-1+iino)-1+ irempl-1)=&
+                        irempl=vnbco(iino) +1
+                        vnbco(iino)=irempl
+                        zi(iacoin+lcoi(iino)-1+ irempl-1)=&
                         jjno
 !
-                        irempl=zi(ianbco-1+jjno) +1
-                        zi(ianbco-1+jjno)=irempl
-                        zi(iacoin+zi(ialcoi-1+jjno)-1+ irempl-1)=&
+                        irempl=vnbco(jjno) +1
+                        vnbco(jjno)=irempl
+                        zi(iacoin+lcoi(jjno)-1+ irempl-1)=&
                         iino
                     endif
                 end do
@@ -238,18 +245,18 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
                     jjno= jno
                     if (jno .lt. 0) jjno=nbnoma+nbnot-jno
 !
-                    jrang= indiis(zi(iacoin+zi(ialcoi-1+iino)-1)&
-                        ,jjno,1,zi(ianbco-1+iino))
+                    jrang= indiis(zi(iacoin+lcoi(iino)-1)&
+                        ,jjno,1,vnbco(iino))
 !
                     if (jrang .eq. 0) then
-                        irempl=zi(ianbco-1+iino) +1
-                        zi(ianbco-1+iino)=irempl
-                        zi(iacoin+zi(ialcoi-1+iino)-1+ irempl-1)=&
+                        irempl=vnbco(iino) +1
+                        vnbco(iino)=irempl
+                        zi(iacoin+lcoi(iino)-1+ irempl-1)=&
                             jjno
 !
-                        irempl=zi(ianbco-1+jjno) +1
-                        zi(ianbco-1+jjno)=irempl
-                        zi(iacoin+zi(ialcoi-1+jjno)-1+ irempl-1)=&
+                        irempl=vnbco(jjno) +1
+                        vnbco(jjno)=irempl
+                        zi(iacoin+lcoi(jjno)-1+ irempl-1)=&
                             iino
                     endif
                 end do
@@ -280,36 +287,36 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     i=0
     do k = 1, nbntt
         if (zi(iaexi1+k) .eq. 0) goto 51
-        if (zi(ianew1-1+k) .ne. 0) goto 51
+        if (new1(k) .ne. 0) goto 51
         if (i .eq. 0) then
             i=k
         else
-            if (zi(ianbco-1+k) .lt. zi(ianbco-1+i)) i=k
+            if (vnbco(k) .lt. vnbco(i)) i=k
         endif
  51     continue
     end do
     ASSERT(i.ne.0)
 !
     iinew=iinew+1
-    zi(ianew1-1+i)=iinew
-    zi(iaold1-1+iinew)=i
+    new1(i)=iinew
+    old1(iinew)=i
 !     -- SI ON A RENUMEROTE TOUS LES NOEUDS ATTENDUS, ON SORT :
     if (iinew .eq. nbntre) goto 200
     ico=iinew
 !
 100 continue
-    longi= zi(ianbco-1+i)
-    call renuu1(zi(iacoin-1+zi(ialcoi-1+i)), longi, zi(iaordo), longo, zi(ianbco),&
-                zi(ianew1))
+    longi= vnbco(i)
+    call renuu1(zi(iacoin-1+lcoi(i)), longi, ordo, longo, vnbco,&
+new1)
     do j = 1, longo
         iinew=iinew+1
-        zi(ianew1-1+zi(iaordo-1+j))=iinew
-        zi(iaold1-1+iinew)=zi(iaordo-1+j)
+        new1(ordo(j))=iinew
+        old1(iinew)=ordo(j)
 !        -- SI ON A RENUMEROTE TOUS LES NOEUDS ATTENDUS, ON SORT :
         if (iinew .eq. nbntre) goto 200
     end do
     ico=ico+1
-    i=zi(iaold1-1+ico)
+    i=old1(ico)
     if (i .eq. 0) then
         goto 50
     else
@@ -326,7 +333,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !
     icol=0
     do i = 1, nbntt
-        iio1 = zi(iaold1-1+i)
+        iio1 = old1(i)
         if (iio1 .eq. 0) goto 3
         if (iio1 .gt. nm) then
             icol=icol+1
@@ -370,12 +377,12 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     do i = 1, nm
         if (zi(iaexi1+i) .eq. 0) goto 600
         nbi= nbi+1
-        nbco= zi(ianbco-1+i)
+        nbco= vnbco(i)
         l1=1
         l2=1
         do j = 1, nbco
             n1i=i
-            n1j=zi(iacoin-2+zi(ialcoi-1+i)+j)
+            n1j=zi(iacoin-2+lcoi(i)+j)
             if (n1j .gt. nm) goto 601
             l1= max(l1,(n1i-n1j)+1)
 !
@@ -407,11 +414,11 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
         endif
     endif
 !
-    call jedetr('&&RERCMK.NEW1')
-    call jedetr('&&RERCMK.OLD1')
-    call jedetr('&&RERCMK.ORDO')
-    call jedetr('&&RERCMK.LCOI')
-    call jedetr('&&RERCMK.NBCO')
+    AS_DEALLOCATE(vi=new1)
+    AS_DEALLOCATE(vi=old1)
+    AS_DEALLOCATE(vi=ordo)
+    AS_DEALLOCATE(vi=lcoi)
+    AS_DEALLOCATE(vi=vnbco)
     call jedetr('&&RERCMK.COIN')
 !
     call jedema()

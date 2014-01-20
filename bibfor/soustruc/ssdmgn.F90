@@ -42,6 +42,8 @@ subroutine ssdmgn(mag)
 #include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
@@ -63,11 +65,12 @@ subroutine ssdmgn(mag)
 !
 !-----------------------------------------------------------------------
     integer :: i1, i1noe, iadim2, iadime, iagnl, iagno, ialino
-    integer :: ianmcr, iawk1, igno, ii, inol
+    integer :: ianmcr,  igno, ii, inol
     integer :: iocc, iret, isma, kk, lgnl, lmail, longt
     integer :: lont, lpref, n, n1, n2, n3, nbgno, lpr(1)
     integer :: nbgno2, nbgnot, nbid, nbno, nbnoex, nbsma, nocc
     integer :: nusma
+    integer, pointer :: work1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(mag//'.DIME', 'L', iadime)
@@ -155,7 +158,7 @@ subroutine ssdmgn(mag)
     call jecrec(mag//'.GROUPENO', 'G V I', 'NOM', 'DISPERSE', 'VARIABLE',&
                 nbgno2)
 !
-    call wkvect('&&SSDMGN.WORK1', 'V V I', lont, iawk1)
+    AS_ALLOCATE(vi=work1, size=lont)
 !
 !
 !     --3 REMPLISSAGE:
@@ -209,7 +212,7 @@ subroutine ssdmgn(mag)
                     call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3)
                     call jeveuo(jexnum(mal//'.GROUPENO', igno), 'L', iagnl)
                     call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3,&
-                                zi(iawk1), lont, nbno)
+                                work1, lont, nbno)
 !
 !
                     if (nbno .gt. 0) then
@@ -231,7 +234,7 @@ subroutine ssdmgn(mag)
                         call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno)
                         call jeveuo(jexnom(mag//'.GROUPENO', nomgng), 'E', iagno)
                         do ii = 1, nbno
-                            inol=zi(iawk1-1+ii)
+                            inol=work1(ii)
                             kk= indiis(zi(ialino),inol,1,nbnoex)
                             ASSERT(kk .ne. 0)
                             zi(iagno-1+ii)=i1noe+kk
@@ -258,7 +261,7 @@ subroutine ssdmgn(mag)
             call jelira(jexnom(mal//'.GROUPENO', nomgnl), 'LONUTI', n3)
             call jeveuo(jexnom(mal//'.GROUPENO', nomgnl), 'L', iagnl)
             call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3,&
-                        zi(iawk1), lont, nbno)
+                        work1, lont, nbno)
 !
             if (nbno .gt. 0) then
                 call jecroc(jexnom(mag//'.GROUPENO', nomgng))
@@ -266,7 +269,7 @@ subroutine ssdmgn(mag)
                 call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno)
                 call jeveuo(jexnom(mag//'.GROUPENO', nomgng), 'E', iagno)
                 do ii = 1, nbno
-                    inol=zi(iawk1-1+ii)
+                    inol=work1(ii)
                     kk= indiis(zi(ialino),inol,1,nbnoex)
                     ASSERT(kk .ne. 0)
                     zi(iagno-1+ii)=i1noe+kk
@@ -278,7 +281,7 @@ subroutine ssdmgn(mag)
     end do
 !
 !
-    call jedetr('&&SSDMGN.WORK1')
+    AS_DEALLOCATE(vi=work1)
 !
 999 continue
     call jedema()

@@ -62,6 +62,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
     !
     integer :: nbcmp, icham
@@ -83,7 +85,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     !
     integer :: i, ii, ino, iad, ipt, isp
     integer :: jcesd, jcesv, jcesl, nbpt, axyzm, ncmp
-    integer :: jconx1, jconx2, nbsp, inel, jcmp, npain
+    integer :: jconx1, jconx2, nbsp, inel,  npain
     integer :: ibid, nbma, jcesk, iret, inbno
     integer :: ndim, nbm, idmail, nbmail, imai
     integer :: inoeu, iret0, iret1, nbgno, igno, nncp
@@ -109,6 +111,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     character(len=19) :: changl, carte, chr, chi, ch1, ch2
     character(len=24) :: mesmai, chgeom, lchin(5), chaout
     character(len=24) :: valk(3), chcara(18)
+    character(len=8), pointer :: nom_cmp(:) => null()
     !
     call jemarq()
     ipaxe = 0
@@ -121,8 +124,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     mesmai = '&&CHRPEL.MES_MAILLES'
     !
     if (nbcmp .gt. 0) then
-        call wkvect('&&CHRPEL.NOM_CMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=zk8(jcmp),&
+        AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
+        call getvtx('MODI_CHAM', 'NOM_CMP', iocc=icham, nbval=nbcmp, vect=nom_cmp,&
                     nbret=ibid)
     else
         call utmess('F', 'ALGORITH2_6')
@@ -137,7 +140,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     chams0='&&CHRPEL.CHAMS0'
     chams1='&&CHRPEL.CHAMS1'
     call celces(champ1, 'V', chams0)
-    call cesred(chams0, 0, [0], nbcmp, zk8(jcmp),&
+    call cesred(chams0, 0, [0], nbcmp, nom_cmp,&
                 'V', chams1)
     call detrsd('CHAM_ELEM_S', chams0)
     call jeveuo(chams1//'.CESK', 'L', jcesk)
@@ -618,7 +621,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         call detrsd('CHAM_ELEM_S', chaout)
         call copisd('CHAMP_GD', 'G', chaout, champ1)
     endif
-    call jedetr('&&CHRPEL.NOM_CMP')
+    AS_DEALLOCATE(vk8=nom_cmp)
     call exisd('CHAM_ELEM_S', canbsp, iret1)
     if (iret1 .ne. 0) call detrsd('CHAM_ELEM_S', canbsp)
     call jeexin(mesmai, iret)

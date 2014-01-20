@@ -12,6 +12,8 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbcrsv.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbcmp, ndim, nbval
     character(len=4) :: tych
     character(len=8) :: nomtb, typac, resu
@@ -51,9 +53,11 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpara, n, jkcha, jcnsd, jcnsc, jcesd, jcesc, jparak, jtypek
+    integer :: nbpara, n, jkcha, jcnsd, jcnsc, jcesd, jcesc
     integer :: kk, i, j, jcmp, iret
     character(len=19) :: chamns, chames
+    character(len=16), pointer :: table_parak(:) => null()
+    character(len=8), pointer :: table_typek(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -156,88 +160,88 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 ! --- 2. DETERMINATION DES NOMS ET DES TYPES DES PARAMETRES DE LA TABLE
 !        DE LA TABLE
 !     ------------------------------------------------------------------
-    call wkvect('&&CTCRTB.TABLE_PARAK', 'V V K16', nbpara, jparak)
-    call wkvect('&&CTCRTB.TABLE_TYPEK', 'V V K8', nbpara, jtypek)
+    AS_ALLOCATE(vk16=table_parak, size=nbpara)
+    AS_ALLOCATE(vk8=table_typek, size=nbpara)
 !
     kk=0
     if (resu .eq. ' ') then
-        zk16(jparak+kk)='CHAM_GD'
-        zk8(jtypek+kk)='K8'
+        table_parak(kk+1)='CHAM_GD'
+        table_typek(kk+1)='K8'
         kk=kk+1
     else
-        zk16(jparak+kk)='RESULTAT'
-        zk8(jtypek+kk)='K8'
+        table_parak(kk+1)='RESULTAT'
+        table_typek(kk+1)='K8'
         kk=kk+1
-        zk16(jparak+kk)='NOM_CHAM'
-        zk8(jtypek+kk)='K16'
+        table_parak(kk+1)='NOM_CHAM'
+        table_typek(kk+1)='K16'
         kk=kk+1
     endif
 !
     if (resu .ne. ' ') then
         if (typac .ne. 'ORDRE') then
-            zk16(jparak+kk)=typac
-            zk8(jtypek+kk)='R'
-            if (typac .eq. 'MODE') zk8(jtypek+kk)='I'
+            table_parak(kk+1)=typac
+            table_typek(kk+1)='R'
+            if (typac .eq. 'MODE') table_typek(kk+1)='I'
             kk=kk+1
         endif
-        zk16(jparak+kk)='NUME_ORDRE'
-        zk8(jtypek+kk)='I'
+        table_parak(kk+1)='NUME_ORDRE'
+        table_typek(kk+1)='I'
         kk=kk+1
     endif
 !
     if (tych(1:2) .eq. 'EL' .or. tych .eq. 'CART') then
-        zk16(jparak+kk)='MAILLE'
-        zk8(jtypek+kk)='K8'
+        table_parak(kk+1)='MAILLE'
+        table_typek(kk+1)='K8'
         kk=kk+1
     endif
     if (tych .eq. 'ELNO' .or. tych .eq. 'NOEU') then
-        zk16(jparak+kk)='NOEUD'
-        zk8(jtypek+kk)='K8'
+        table_parak(kk+1)='NOEUD'
+        table_typek(kk+1)='K8'
         kk=kk+1
     else if (tych.eq.'ELGA') then
-        zk16(jparak+kk)='POINT'
-        zk8(jtypek+kk)='I'
+        table_parak(kk+1)='POINT'
+        table_typek(kk+1)='I'
         kk=kk+1
     endif
     if (tych(1:2) .eq. 'EL') then
 !        -- TOUS LES CHAMPS ELXX PEUVENT AVOIR DES SOUS_POINT :
-        zk16(jparak+kk)='SOUS_POINT'
-        zk8(jtypek+kk)='I'
+        table_parak(kk+1)='SOUS_POINT'
+        table_typek(kk+1)='I'
         kk=kk+1
     endif
 !
-    zk16(jparak+kk)='COOR_X'
-    zk8(jtypek+kk)='R'
+    table_parak(kk+1)='COOR_X'
+    table_typek(kk+1)='R'
     kk=kk+1
     if (ndim .ge. 2) then
-        zk16(jparak+kk)='COOR_Y'
-        zk8(jtypek+kk)='R'
+        table_parak(kk+1)='COOR_Y'
+        table_typek(kk+1)='R'
         kk=kk+1
     endif
     if (ndim .eq. 3) then
-        zk16(jparak+kk)='COOR_Z'
-        zk8(jtypek+kk)='R'
+        table_parak(kk+1)='COOR_Z'
+        table_typek(kk+1)='R'
         kk=kk+1
     endif
     if (toucmp) then
         if (tych .eq. 'NOEU') then
             do 90 j = 1, n
-                zk16(jparak+kk)=zk8(jcnsc+j-1)
-                zk8(jtypek+kk)='R'
+                table_parak(kk+1)=zk8(jcnsc+j-1)
+                table_typek(kk+1)='R'
                 kk=kk+1
 90          continue
         else if (tych(1:2).eq.'EL'.or.tych.eq.'CART') then
             do 91 j = 1, n
-                zk16(jparak+kk)=zk8(jcesc+j-1)
-                zk8(jtypek+kk)='R'
+                table_parak(kk+1)=zk8(jcesc+j-1)
+                table_typek(kk+1)='R'
 !
                 kk=kk+1
 91          continue
         endif
     else
         do 95 j = 1, n
-            zk16(jparak+kk)=zk8(jcmp+j-1)
-            zk8(jtypek+kk)='R'
+            table_parak(kk+1)=zk8(jcmp+j-1)
+            table_typek(kk+1)='R'
             kk=kk+1
 95      continue
     endif
@@ -245,12 +249,12 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 !    ------------------------------------------------------------------
 ! --- 3. CREATION DE LA TABLE
 !     ------------------------------------------------------------------
-    call tbcrsv(nomtb, 'G', nbpara, zk16(jparak), zk8(jtypek),&
+    call tbcrsv(nomtb, 'G', nbpara, table_parak, table_typek,&
                 0)
 !
 !
-    call jedetr('&&CTCRTB.TABLE_PARAK')
-    call jedetr('&&CTCRTB.TABLE_TYPEK')
+    AS_DEALLOCATE(vk16=table_parak)
+    AS_DEALLOCATE(vk8=table_typek)
 !
     call jedema()
 !

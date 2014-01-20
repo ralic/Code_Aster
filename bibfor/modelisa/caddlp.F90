@@ -29,6 +29,8 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,8 +90,8 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 !
     integer :: nddli, iocc, ibid, ino
     integer :: ier, nbec, nbnoeu, n_keyword
-    integer :: jdirec, jdimen, nume_node
-    integer :: jnom, nbcmp, jcompt, jprnm
+    integer :: jdirec,  nume_node
+    integer :: jnom, nbcmp,  jprnm
     real(kind=8) :: zero
     character(len=24) :: keywordexcl
     character(len=4) :: coef_type
@@ -104,6 +106,8 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
     character(len=19) :: ncncin
     integer :: n_suffix
     character(len=8) :: list_suffix
+    integer, pointer :: dimension(:) => null()
+    integer, pointer :: icompt(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -147,7 +151,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 !
     call jelira(mesh//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
     call wkvect('&&CADDLP.DIRECT', 'V V R', 3*nbnoeu, jdirec)
-    call wkvect('&&CADDLP.DIMENSION', 'V V I', nbnoeu, jdimen)
+    AS_ALLOCATE(vi=dimension, size=nbnoeu)
 !
 ! - Loop on factor keyword
 !
@@ -162,7 +166,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 !
 ! ----- Counting components
 !
-        call wkvect('&&CADDLP.ICOMPT', 'V V I', 6, jcompt)
+        AS_ALLOCATE(vi=icompt, size=6)
 !
 ! ----- Loop on nodes
 !
@@ -186,21 +190,21 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 ! --------- Final linear relation
 !
             call afddli(model, nbcmp, zk8(jnom), nume_node, name_node,&
-                        zi(jprnm-1+(nume_node-1)*nbec+1), zi(jdimen+nume_node-1),&
+                        zi(jprnm-1+(nume_node-1)*nbec+1), dimension(nume_node),&
                         zr(jdirec+3*(nume_node-1)), coef_type, cmp_nb_glo, cmp_name_glo,&
                         cmp_acti_glo, vale_type, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,&
-                        zi(jcompt), lisrel, .false., ibid, ibid,&
+                        icompt, lisrel, .false., ibid, ibid,&
                         k19bid, k19bid, k19bid, k19bid)
         enddo
         do i_keyword = 1, 6
             keyword = cmp_name_glo(i_keyword)
             if (cmp_acti_glo(i_keyword) .eq. 1) then
-                if (zi(jcompt-1+i_keyword) .eq. 0) then
+                if (icompt(i_keyword) .eq. 0) then
                     call utmess('F', 'CHARGES2_45', sk=keyword)
                 endif
             endif
         enddo
-        call jedetr('&&CADDLP.ICOMPT')
+        AS_DEALLOCATE(vi=icompt)
         call jedetr(list_node)
     enddo
 !
@@ -209,7 +213,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
     call aflrch(lisrel, load)
 !
     call jedetr('&&CADDLP.DIRECT')
-    call jedetr('&&CADDLP.DIMENSION')
+    AS_DEALLOCATE(vi=dimension)
     call jedetr(ncncin)
 !
 999 continue

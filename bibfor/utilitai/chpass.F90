@@ -31,6 +31,8 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: ma, chou
     character(len=*) :: celmod
@@ -60,7 +62,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
     integer :: n1, ib, nbocc, iocc, nbtrou, jnutro, nbmocl, lnom, ibid
     logical :: chgcmp, cumul, lcumul(2)
-    integer :: ncmp, jlicmp, gd, jcmpgd, jlicm2, iret, nncp, nchg
+    integer :: ncmp, jlicmp, gd, jcmpgd,  iret, nncp, nchg
     real(kind=8) :: coefr, lcoefr(2)
     complex(kind=8) :: coefc, lcoefc(2)
     character(len=8) :: kbid, modele
@@ -72,6 +74,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     character(len=24) :: cnom, valk(3)
 !
     logical :: lcoc
+    character(len=8), pointer :: licmp2(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -231,8 +234,8 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
                 if (n1 .ne. -ncmp) then
                     call utmess('F', 'UTILITAI_31')
                 endif
-                call wkvect('&&CHPASS.LICMP2', 'V V K8', ncmp, jlicm2)
-                call getvtx('ASSE', 'NOM_CMP_RESU', iocc=iocc, nbval=ncmp, vect=zk8(jlicm2),&
+                AS_ALLOCATE(vk8=licmp2, size=ncmp)
+                call getvtx('ASSE', 'NOM_CMP_RESU', iocc=iocc, nbval=ncmp, vect=licmp2,&
                             nbret=ib)
             endif
 !
@@ -303,7 +306,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !       4.4 SI ON DOIT CHANGER LES CMPS ET/OU LA GRANDEUR :
 !       ----------------------------------------------------
         if (chgcmp) then
-            call chsut1(chs2, nomgd, ncmp, zk8(jlicmp), zk8(jlicm2),&
+            call chsut1(chs2, nomgd, ncmp, zk8(jlicmp), licmp2,&
                         'V', chs2)
         endif
 !
@@ -327,7 +330,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         endif
 !
         call jedetr('&&CHPASS.LICMP')
-        call jedetr('&&CHPASS.LICMP2')
+        AS_DEALLOCATE(vk8=licmp2)
     end do
 !
 !     5 TRANSFORMATION DU CHAMP_S EN CHAMP :

@@ -67,6 +67,8 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 #include "asterfort/jexnum.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     real(kind=8) :: tmax
 ! -----  ARGUMENTS
@@ -81,11 +83,13 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     character(len=19) :: matres, mat1, mati
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
     character(len=24) :: krefi, kliste
-    integer :: lgbl, jhtc, i, iadi, jeq, nbter, jibl, jpbl, ibl1, lcumu, kbl
+    integer :: lgbl, jhtc, i, iadi, jeq, nbter,   ibl1, lcumu, kbl
     integer :: jbl1
     integer :: iblav, idhcoi, icum, ismdi, lsmhc, nterm, idsmhc, l, jsmde
     integer :: itbloc, nbloc, kbloc, jrefa, idrefi, idconl, ieq
     integer :: ier, jsmde1, neq, k, htc
+    integer, pointer :: ibl(:) => null()
+    integer, pointer :: pbl(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -170,8 +174,8 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !     7-2) IBL : NUMERO DU BLOC DE KLISTE(JEQ) :
 !          PBL : POSITION DE L'EQUATION JEQ DANS LE BLOC IBL  :
 !     ------------------------------------------------------------
-    call wkvect('&&PROSMO.IBL', 'V V I', neq, jibl)
-    call wkvect('&&PROSMO.PBL', 'V V I', neq, jpbl)
+    AS_ALLOCATE(vi=ibl, size=neq)
+    AS_ALLOCATE(vi=pbl, size=neq)
     ibl1 = 1
     lcumu = 0
     do jeq = 1, neq
@@ -182,8 +186,8 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             ibl1 = ibl1 + 1
             lcumu = 0
         endif
-        zi(jibl-1+jeq) = ibl1
-        zi(jpbl-1+jeq) = lcumu
+        ibl(jeq) = ibl1
+        pbl(jeq) = lcumu
         lcumu = lcumu + htc
     end do
 !
@@ -219,14 +223,14 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
             endif
 !
 !         LE BLOC CONTENANT J DOIT-IL ETRE RAMENE EN MEMOIRE ?
-            ibl1 = zi(jibl-1+jeq)
+            ibl1 = ibl(jeq)
             if (iblav .ne. ibl1) then
                 call jelibe(jexnum(kliste, iblav))
                 call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
                 iblav = ibl1
             endif
             do k = 1, nbter
-                zi(jbl1+zi(jpbl-1+jeq)+zi(jhtc-1+jeq)+k-1)=zi4(idhcoi+&
+                zi(jbl1+pbl(jeq)+zi(jhtc-1+jeq)+k-1)=zi4(idhcoi+&
                 icum+ (k-1))
             end do
             icum = icum + nbter
@@ -249,7 +253,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     call jeveuo(jexnum(kliste, iblav), 'E', jbl1)
     do jeq = 1, neq
 !       LE BLOC CONTENANT JEQ DOIT-IL ETRE RAMENE EN MEMOIRE ?
-        ibl1 = zi(jibl-1+jeq)
+        ibl1 = ibl(jeq)
         if (iblav .ne. ibl1) then
             call jelibe(jexnum(kliste, iblav))
             call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
@@ -258,7 +262,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 !
 !       ON TRIE ET ORDONNE LA COLONNE (EN PLACE)
         nterm = zi(jhtc-1+jeq)
-        call uttrii(zi(jbl1+zi(jpbl-1+jeq)), nterm)
+        call uttrii(zi(jbl1+pbl(jeq)), nterm)
         zi(jhtc-1+jeq) = nterm
         if (jeq .eq. 1) then
             ASSERT(nterm.eq.1)
@@ -281,7 +285,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     l = 0
     do jeq = 1, neq
 !       LE BLOC CONTENANT JEQ DOIT-IL ETRE RAMENE EN MEMOIRE ?
-        ibl1 = zi(jibl-1+jeq)
+        ibl1 = ibl(jeq)
         if (iblav .ne. ibl1) then
             call jelibe(jexnum(kliste, iblav))
             call jeveuo(jexnum(kliste, ibl1), 'E', jbl1)
@@ -291,14 +295,14 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
         nterm = zi(jhtc-1+jeq)
         do k = 1, nterm
             l = l + 1
-            zi4(idsmhc-1+l) = zi(jbl1+zi(jpbl-1+jeq)-1+k)
+            zi4(idsmhc-1+l) = zi(jbl1+pbl(jeq)-1+k)
         end do
     end do
     call jelibe(jexnum(kliste, iblav))
     call jedetr(kliste)
     call jedetr('&&PROSMO.HTC')
-    call jedetr('&&PROSMO.IBL')
-    call jedetr('&&PROSMO.PBL')
+    AS_DEALLOCATE(vi=ibl)
+    AS_DEALLOCATE(vi=pbl)
 !
 !
 !     10) CREATION ET AFFECTATION DU TABLEAU .IABL

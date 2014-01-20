@@ -24,6 +24,8 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=19) :: nuag1, nuag2
     integer :: ic1, ic2
     real(kind=8) :: dref(*)
@@ -47,11 +49,12 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 ! OU       DREF    : VECTEUR QUI CONTIENDRA LES DISTANCE**2 CHERCHEES
 !                    DIMENSION : NP2 = NOMBRE DE POINTS DE NUAG2
 ! VARIABLES LOCALES :
-    integer :: inuai1, inuai2, inual1, inual2, inuax1, inuax2, iadm0
+    integer :: inuai1, inuai2, inual1, inual2, inuax1, inuax2
     integer :: np1, np2, nx1, nx2, nc1, nc2, ip1, ip2, im1, im2, im3, im4
     real(kind=8) :: x2, y2, z2, x1, y1, z1, xm1, ym1, zm1
     real(kind=8) :: d, dm0, dm, l2, s, s2, v, l
     real(kind=8) :: m1m2(3), m1m3(3), m1p1(3), n2(3), n(3), epsabs
+    real(kind=8), pointer :: vdm0(:) => null()
 !
 ! DEB-------------------------------------------------------------------
     call jemarq()
@@ -76,7 +79,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !     RECHERCHE DE LA PLUS GRANDE DISTANCE**2 ENTRE CHAQUE IP2
 !     ET L'ENSEMBLE DES IP1 :
 !     ------------------------------------------------------
-    call wkvect('&&NUADRF.DM0', 'V V R', np2, iadm0)
+    AS_ALLOCATE(vr=vdm0, size=np2)
     do 1 ,ip2 = 1,np2
     if (.not.zl(inual2-1+ (ip2-1)*nc2+ic2)) goto 1
 !
@@ -114,7 +117,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
     endif
 !
     if (dm0 .eq. 0.d0) goto 9994
-    zr(iadm0-1+ip2)=dm0
+    vdm0(ip2)=dm0
     1 end do
 !
 !
@@ -126,7 +129,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !
 !         -- IM1 EST L'INDICE DU POINT LE + PROCHE DE IP2
         im1 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 12,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 12
         x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
@@ -142,7 +145,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !         -- IM2 EST L'INDICE DU POINT LE + PROCHE DE IP2
 !            ET DIFFERENT DE IM1
         im2 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 13,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 13
         x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
@@ -169,7 +172,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !
 !         -- IM1 EST L'INDICE DU POINT LE + PROCHE DE IP2
         im1 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 22,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 22
         x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
@@ -187,7 +190,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !         -- IM2 EST L'INDICE DU POINT LE + PROCHE DE IP2
 !            ET DIFFERENT DE IM1
         im2 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 23,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 23
         x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
@@ -211,7 +214,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !         -- IM3 EST L'INDICE DU POINT M3 LE + PROCHE DE P2
 !            DIFFERENT DE M1 ET M2 ET TEL QUE M1 M2 M3 FORMENT UN PLAN
         im3 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 24,ip1 = 1,np1
 !           IF ((IP1.EQ.IM1).OR.(IP1.EQ.IM2)) GOTO 24
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 24
@@ -246,7 +249,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !
 !         -- IM1 EST L'INDICE DU POINT LE + PROCHE DE IP2
         im1 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 32,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 32
         x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
@@ -266,7 +269,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !         -- IM2 EST L'INDICE DU POINT LE + PROCHE DE IP2
 !            ET DIFFERENT DE IM1
         im2 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 33,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 33
         x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
@@ -294,7 +297,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !         -- IM3 EST L'INDICE DU POINT M3 LE + PROCHE DE P2
 !            DIFFERENT DE M1 ET M2 ET TEL QUE M1 M2 M3 FORMENT UN PLAN
         im3 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 34,ip1 = 1,np1
 !           IF ((IP1.EQ.IM1).OR.(IP1.EQ.IM2)) GOTO 34
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 34
@@ -339,7 +342,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !            DIFFERENT DE M1 M2 M3 ET TEL QUE M1 M2 M3 M4
 !            FORMENT UN VOLUME
         im4 = 0
-        dm = zr(iadm0-1+ip2)
+        dm = vdm0(ip2)
         do 35,ip1 = 1,np1
 !           IF ((IP1.EQ.IM1).OR.(IP1.EQ.IM2).OR.(IP1.EQ.IM3)) GOTO 35
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 35
@@ -391,6 +394,6 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !
 !
 9999  continue
-    call jedetr('&&NUADRF.DM0')
+    AS_DEALLOCATE(vr=vdm0)
     call jedema()
 end subroutine

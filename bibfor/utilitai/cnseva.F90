@@ -31,6 +31,8 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: npara
     character(len=*) :: cnsf, lpara(npara), cnsr
@@ -58,7 +60,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
     integer :: jpd, jpc, jpv, jpl
     integer :: jrd, jrc,  jrl, jrk
     integer :: nbno, k, ino, ncmp, nbpu, ier, nbpumx
-    integer :: k2, ncmp2, ipara, jad1, ibid
+    integer :: k2, ncmp2, ipara,  ibid
     parameter (nbpumx=50)
     character(len=8) :: ma, nomgdf, nomgdr, fo, nompu(nbpumx)
     character(len=8) :: ma2, nomgd2
@@ -72,6 +74,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
     character(len=8), pointer :: pk(:) => null()
     character(len=8), pointer :: fv(:) => null()
     real(kind=8), pointer :: rv(:) => null()
+    integer, pointer :: vjad1(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -112,7 +115,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !
 !     3- ON MET EN MEMOIRE LES OBJETS UTILES DES CHAMPS PARAMETRES :
 !     --------------------------------------------------------------
-    call wkvect('&&CNSEVA.JAD1', 'V V I', 4*npara, jad1)
+    AS_ALLOCATE(vi=vjad1, size=4*npara)
     do ipara = 1, npara
         p = lpara(ipara)
         call jeveuo(p//'.CNSK', 'L', vk8=pk)
@@ -130,10 +133,10 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
         if (ma2 .ne. ma) then
             call utmess('F', 'UTILITAI_18')
         endif
-        zi(jad1-1+4* (ipara-1)+1) = jpc
-        zi(jad1-1+4* (ipara-1)+2) = jpd
-        zi(jad1-1+4* (ipara-1)+3) = jpl
-        zi(jad1-1+4* (ipara-1)+4) = jpv
+        vjad1(4* (ipara-1)+1) = jpc
+        vjad1(4* (ipara-1)+2) = jpd
+        vjad1(4* (ipara-1)+3) = jpl
+        vjad1(4* (ipara-1)+4) = jpv
     end do
 !
 !
@@ -154,10 +157,10 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !           -------------------------------------------------------
                 nbpu = 0
                 do ipara = 1, npara
-                    jpc = zi(jad1-1+4* (ipara-1)+1)
-                    jpd = zi(jad1-1+4* (ipara-1)+2)
-                    jpl = zi(jad1-1+4* (ipara-1)+3)
-                    jpv = zi(jad1-1+4* (ipara-1)+4)
+                    jpc = vjad1(4* (ipara-1)+1)
+                    jpd = vjad1(4* (ipara-1)+2)
+                    jpl = vjad1(4* (ipara-1)+3)
+                    jpv = vjad1(4* (ipara-1)+4)
                     ncmp2 = zi(jpd-1+2)
                     do k2 = 1, ncmp2
                         if (zl(jpl-1+ (ino-1)*ncmp2+k2)) then
@@ -202,7 +205,7 @@ subroutine cnseva(cnsf, npara, lpara, cnsr)
 !
 !     5- MENAGE :
 !     ---------------------------------------
-    call jedetr('&&CNSEVA.JAD1')
+    AS_DEALLOCATE(vi=vjad1)
 !
     call jedema()
 end subroutine

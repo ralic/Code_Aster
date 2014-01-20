@@ -82,6 +82,8 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !
@@ -92,7 +94,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
     integer :: numpt, numord
     integer :: adsd, adsv, adsl, adsk
     integer :: existc, ncmprf
-    integer :: ncmpve, jcomp, junit
+    integer :: ncmpve
     integer :: typent, tygeom
     integer :: modnum(ntymax), nuanom(ntymax, *)
 !
@@ -147,6 +149,8 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
     integer :: idfimd
     integer :: iaux
     logical :: ficexi
+    character(len=16), pointer :: cname(:) => null()
+    character(len=16), pointer :: cunit(:) => null()
 !
 !====
 ! 1. PREALABLES
@@ -203,12 +207,12 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 ! 3.1. ==> CREATION DU TABLEAUX DES COMPOSANTES
 !
     nbpt=0
-    call wkvect('&&IRCAM1.CNAME', 'V V K16', ncmprf, jcomp)
-    call wkvect('&&IRCAM1.CUNIT', 'V V K16', ncmprf, junit)
+    AS_ALLOCATE(vk16=cname, size=ncmprf)
+    AS_ALLOCATE(vk16=cunit, size=ncmprf)
     nomam2 = ' '
     iret=0
-    call as_mfdfin(idfimd, nochmd, nomam2, nbpt, zk16(junit),&
-                   zk16(jcomp), iret)
+    call as_mfdfin(idfimd, nochmd, nomam2, nbpt, cunit(1),&
+                   cname(1), iret)
     if (iret .eq. 0 .and. nbpt .ne. 0 .and. nomam2 .ne. nomamd) then
         call utmess('F', 'MED_94')
     endif
@@ -361,8 +365,8 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 !====
 !
 !     MENAGE
-    call jedetr('&&IRCAM1.CNAME')
-    call jedetr('&&IRCAM1.CUNIT')
+    AS_DEALLOCATE(vk16=cname)
+    AS_DEALLOCATE(vk16=cunit)
 !
     if (nivinf .gt. 1) then
         write (ifm,1001) 'FIN DE '//nompro

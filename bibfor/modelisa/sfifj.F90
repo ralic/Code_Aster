@@ -48,10 +48,12 @@ subroutine sfifj(nomres)
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nfinit, nfin, nbm, nbpoin, nbid
     integer :: npoin, iff, ivare, lvale, ibid, in
-    integer :: im1, im2, ivate, ivecx, ivecy, ivecz, nvecx, nvecy
+    integer :: im1, im2, ivate,    nvecx, nvecy
     integer :: nveco, ier, ncham, jpara, jordr
     integer :: lnumi, lnumj, lfreq, mxval, nbabs, ij
     real(kind=8) :: fmin, fmax, finit, ffin, df, f, prs
@@ -65,6 +67,9 @@ subroutine sfifj(nomres)
     character(len=24) :: ligrmo
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     logical :: yang
+    real(kind=8), pointer :: vecx(:) => null()
+    real(kind=8), pointer :: vecy(:) => null()
+    real(kind=8), pointer :: vecz(:) => null()
 !
     data         deuxpi/6.28318530718d0/,yang/.false./
 !
@@ -196,28 +201,28 @@ subroutine sfifj(nomres)
         call getvr8(' ', 'VECT_X', nbval=0, nbret=nvecx)
         nvecx=-nvecx
         if (nvecx .gt. 0) then
-            call wkvect('&&SFIFJ.VECX', 'V V R', 3, ivecx)
-            call getvr8(' ', 'VECT_X', nbval=nvecx, vect=zr(ivecx), nbret=nbid)
+            AS_ALLOCATE(vr=vecx, size=3)
+            call getvr8(' ', 'VECT_X', nbval=nvecx, vect=vecx, nbret=nbid)
         endif
         call getvr8(' ', 'VECT_Y', nbval=0, nbret=nvecy)
         nvecy=-nvecy
         if (nvecy .gt. 0) then
-            call wkvect('&&SFIFJ.VECY', 'V V R', 3, ivecy)
-            call getvr8(' ', 'VECT_Y', nbval=nvecy, vect=zr(ivecy), nbret=nbid)
+            AS_ALLOCATE(vr=vecy, size=3)
+            call getvr8(' ', 'VECT_Y', nbval=nvecy, vect=vecy, nbret=nbid)
         endif
         if (nvecx .lt. 0 .or. nvecy .lt. 0) then
             call utmess('F', 'MODELISA7_2')
         endif
 !
 ! VECTEUR Z LOCAL = VECT-X VECTORIEL VECT-Y
-        call wkvect('&&SFIFJ.VECZ', 'V V R', 3, ivecz)
-        zr(ivecz)=zr(ivecx+1)*zr(ivecy+2)-zr(ivecy+1)*zr(ivecx+2)
-        zr(ivecz+1)=zr(ivecx+2)*zr(ivecy)-zr(ivecy+2)*zr(ivecx)
-        zr(ivecz+2)=zr(ivecx)*zr(ivecy+1)-zr(ivecy)*zr(ivecx+1)
+        AS_ALLOCATE(vr=vecz, size=3)
+        vecz(1)=vecx(1+1)*vecy(1+2)-vecy(1+1)*vecx(1+2)
+        vecz(1+1)=vecx(1+2)*vecy(1)-vecy(1+2)*vecx(1)
+        vecz(1+2)=vecx(1)*vecy(1+1)-vecy(1)*vecx(1+1)
         do 2 in = 1, 3
-            dir(1,in)=zr(ivecx+in-1)
-            dir(2,in)=zr(ivecy+in-1)
-            dir(3,in)=zr(ivecz+in-1)
+            dir(1,in)=vecx(in)
+            dir(2,in)=vecy(in)
+            dir(3,in)=vecz(in)
  2      continue
     else if (method(1:7).eq.'AU_YANG') then
         yang = .true.
@@ -329,10 +334,11 @@ subroutine sfifj(nomres)
 !
     endif
 !
+    AS_DEALLOCATE(vr=vecx)
+    AS_DEALLOCATE(vr=vecy)
+    AS_DEALLOCATE(vr=vecz)
+
     if (zk16(ivate) .eq. 'SPEC_CORR_CONV_3') then
-        call jedetr('&&SFIFJ.VECX')
-        call jedetr('&&SFIFJ.VECY')
-        call jedetr('&&SFIFJ.VECZ')
     else
         call jedetc('V', '&&329', 1)
         call jedetc('V', '&&V.M', 1)

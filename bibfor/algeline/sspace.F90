@@ -20,6 +20,8 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 #include "asterfort/vpordi.h"
 #include "asterfort/vpreco.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lraid, lmatra, lmass, neq, nbvec, nfreq
     integer :: lprod(neq), itemax, nperm, nitjac, nitbat
@@ -75,11 +77,20 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     integer :: iret
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iaa, iar, ibr, icomp, iconv, ifpos
-    integer :: ii, iipos, ijac, irdiak, irdiam, itempo, iter
-    integer :: itolve, ivecpr, ivect, jj, kk, ll, nfrcv
+    integer :: i, iaa, iar, ibr, icomp, iconv
+    integer :: ii,      iter
+    integer ::    jj, kk, ll, nfrcv
     integer :: nitja
     real(kind=8) :: art, brt, dseed
+    integer, pointer :: fpos(:) => null()
+    integer, pointer :: ipos(:) => null()
+    real(kind=8), pointer :: vjacobi(:) => null()
+    real(kind=8), pointer :: rdiak(:) => null()
+    real(kind=8), pointer :: rdiam(:) => null()
+    real(kind=8), pointer :: tempor(:) => null()
+    real(kind=8), pointer :: tolvec(:) => null()
+    real(kind=8), pointer :: vecpro(:) => null()
+    real(kind=8), pointer :: vvect(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data valm/'                   .VALM'/
@@ -94,11 +105,11 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    call wkvect('&&SSPACE.IPOS', 'V V I', neq, iipos)
-    call wkvect('&&SSPACE.FPOS', 'V V I', nbvec, ifpos)
-    call wkvect('&&SSPACE.RDIAK', 'V V R', neq, irdiak)
-    call wkvect('&&SSPACE.RDIAM', 'V V R', neq, irdiam)
-    call wkvect('&&SSPACE.VECT', 'V V R', neq, ivect)
+    AS_ALLOCATE(vi=ipos, size=neq)
+    AS_ALLOCATE(vi=fpos, size=nbvec)
+    AS_ALLOCATE(vr=rdiak, size=neq)
+    AS_ALLOCATE(vr=rdiam, size=neq)
+    AS_ALLOCATE(vr=vvect, size=neq)
 !
 !     ------------------------------------------------------------------
 !     -----   CONSTRUCTION DES VECTEURS INITIAUX DU SOUS ESPACE   ------
@@ -110,7 +121,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     valm(1:19) = zk24(zi(lraid+1))
     call jeveuo(jexnum(valm, 1), 'L', iaa)
     do jj = 1, neq
-        zr(irdiak+jj-1) = zr(iaa+zi(jsmdi+jj-1)-1)
+        rdiak(jj) = zr(iaa+zi(jsmdi+jj-1)-1)
     end do
     call jelibe(jexnum(valm, 1))
 !
@@ -120,28 +131,28 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     valm(1:19) = zk24(zi(lmass+1))
     call jeveuo(jexnum(valm, 1), 'L', iaa)
     do jj = 1, neq
-        zr(irdiam+jj-1) = zr(iaa+zi(jsmdi+jj-1)-1)
+        rdiam(jj) = zr(iaa+zi(jsmdi+jj-1)-1)
     end do
     call jelibe(jexnum(valm, 1))
 !
 !     --- ON CHERCHE LES PLUS PETITS RAPPORTS K/M ---
 !
-    call sstriv(zr(irdiak), zr(irdiam), lprod, zi(iipos), neq)
+    call sstriv(rdiak, rdiam, lprod, ipos, neq)
 !
 !     --- ON INITIALISE LES VECTEURS ---
 !
     do i = 1, neq
-        vect(i,1) = zr(irdiam+i-1)*lprod(i)
+        vect(i,1) = rdiam(i)*lprod(i)
     end do
 !
     icomp = 0
     do i = 2, nbvec - 1
  60     continue
-        if (lprod(zi(iipos+i+icomp-1-1)) .eq. 0) then
+        if (lprod(ipos(1+i+icomp-1-1)) .eq. 0) then
             icomp = icomp + 1
             goto 60
         else
-            vect(zi(iipos+i+icomp-1-1),i) = 1.d0
+            vect(ipos(1+i+icomp-1-1),i) = 1.d0
         endif
     end do
 !
@@ -158,10 +169,10 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !
     call wkvect('&&SSPACE.AR', 'V V R', nbvec* (nbvec+1)/2, iar)
     call wkvect('&&SSPACE.BR', 'V V R', nbvec* (nbvec+1)/2, ibr)
-    call wkvect('&&SSPACE.VECPRO', 'V V R', nbvec*nbvec, ivecpr)
-    call wkvect('&&SSPACE.TEMPOR', 'V V R', nbvec, itempo)
-    call wkvect('&&SSPACE.TOLVEC', 'V V R', nbvec, itolve)
-    call wkvect('&&SSPACE.JACOBI', 'V V R', nbvec, ijac)
+    AS_ALLOCATE(vr=vecpro, size=nbvec*nbvec)
+    AS_ALLOCATE(vr=tempor, size=nbvec)
+    AS_ALLOCATE(vr=tolvec, size=nbvec)
+    AS_ALLOCATE(vr=vjacobi, size=nbvec)
 !
 !     ------------------------------------------------------------------
 !     -------------------   PROCESSUS ITERATIF   -----------------------
@@ -185,21 +196,21 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     ii = 0
     do jj = 1, nbvec
         do kk = 1, neq
-            zr(ivect+kk-1) = vect(kk,jj)*lprod(kk)
+            vvect(kk) = vect(kk,jj)*lprod(kk)
         end do
         call resoud(matass, k19bid, solveu, chcine, 1,&
-                    k19bid, k19bid, kbid, zr(ivect), [cbid],&
+                    k19bid, k19bid, kbid, vvect, [cbid],&
                     criter, .false., 0, iret)
         do ll = jj, nbvec
             art = 0.d0
             do kk = 1, neq
-                art = art + vect(kk,ll)*zr(ivect+kk-1)*lprod(kk)
+                art = art + vect(kk,ll)*vvect(kk)*lprod(kk)
             end do
             ii = ii + 1
             zr(iar+ii-1) = art
         end do
         do kk = 1, neq
-            vect(kk,jj) = zr(ivect+kk-1)*lprod(kk)
+            vect(kk,jj) = vvect(kk)*lprod(kk)
         end do
     end do
 !
@@ -208,19 +219,19 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !
     ii = 0
     do jj = 1, nbvec
-        call mrmult('ZERO', lmass, vect(1, jj), zr(ivect), 1,&
+        call mrmult('ZERO', lmass, vect(1, jj), vvect, 1,&
                     .false.)
         do ll = jj, nbvec
             brt = 0.0d0
             do kk = 1, neq
-                brt = brt + vect(kk,ll)*zr(ivect+kk-1)*lprod(kk)
+                brt = brt + vect(kk,ll)*vvect(kk)*lprod(kk)
             end do
             ii = ii + 1
             zr(ibr+ii-1) = brt
         end do
         if (iconv .le. 0) then
             do kk = 1, neq
-                vect(kk,jj) = zr(ivect+kk-1)
+                vect(kk,jj) = vvect(kk)
             end do
         endif
     end do
@@ -232,7 +243,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
     type = 1
     iordre = 0
     call jacobi(nbvec, nperm, tol, toldyn, zr(iar),&
-                zr(ibr), zr(ivecpr), valpro, zr(ijac), nitja,&
+                zr(ibr), vecpro, valpro, vjacobi, nitja,&
                 type, iordre)
     if (nitja .gt. nitjac) then
         nitjac = nitja
@@ -240,17 +251,17 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !
 !     --- CALCUL DES VECTEURS PROPRES DU SYSTEME COMPLET ---
 !
-    call vpreco(nbvec, neq, zr(ivecpr), vect)
+    call vpreco(nbvec, neq, vecpro, vect)
 !
 !     --- TEST DE CONVERGENCE SUR LES VALEURS PROPRES ---
 !     ---        SEULEMENT LES NFREQ PREMIERES        ---
 !
     if (iconv .le. 0) then
         do i = 1, nfrcv
-            zr(itolve+i-1) = abs(valpro(i)-zr(itempo+i-1))
+            tolvec(i) = abs(valpro(i)-tempor(i))
         end do
         do i = 1, nfrcv
-            if (zr(itolve+i-1) .gt. tol*abs(valpro(i))) then
+            if (tolvec(i) .gt. tol*abs(valpro(i))) then
                 if (i .gt. nfreq) then
                     iconvf = .true.
                 endif
@@ -266,7 +277,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
         goto 90
 230     continue
         do i = 1, nfrcv
-            zr(itempo+i-1) = valpro(i)
+            tempor(i) = valpro(i)
         end do
         goto 90
     endif
@@ -277,7 +288,7 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !
     nitbat = iter
     call vpordi(1, 0, nbvec, valpro, vect,&
-                neq, zi(ifpos))
+                neq,fpos)
     if (.not.iconvf) then
         call utmess('A', 'ALGELINE3_45')
     endif
@@ -285,17 +296,17 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
 !     ------------------------------------------------------------------
 !     ------------- DESTRUCTION DES VARIABLES AUXILLIAIRES -------------
 !     ------------------------------------------------------------------
-    call jedetr('&&SSPACE.IPOS')
-    call jedetr('&&SSPACE.FPOS')
-    call jedetr('&&SSPACE.RDIAK')
-    call jedetr('&&SSPACE.RDIAM')
-    call jedetr('&&SSPACE.VECT')
+    AS_DEALLOCATE(vi=ipos)
+    AS_DEALLOCATE(vi=fpos)
+    AS_DEALLOCATE(vr=rdiak)
+    AS_DEALLOCATE(vr=rdiam)
+    AS_DEALLOCATE(vr=vvect)
     call jedetr('&&SSPACE.AR')
     call jedetr('&&SSPACE.BR')
-    call jedetr('&&SSPACE.VECPRO')
-    call jedetr('&&SSPACE.TEMPOR')
-    call jedetr('&&SSPACE.TOLVEC')
-    call jedetr('&&SSPACE.JACOBI')
+    AS_DEALLOCATE(vr=vecpro)
+    AS_DEALLOCATE(vr=tempor)
+    AS_DEALLOCATE(vr=tolvec)
+    AS_DEALLOCATE(vr=vjacobi)
 !
     call jedema()
 end subroutine

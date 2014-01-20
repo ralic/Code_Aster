@@ -57,12 +57,14 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 #include "asterfort/resoud.h"
 #include "asterfort/tri.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dgelss.h"
 !
 !
 !
 !
-    integer :: nbmod, lbid, i1, j1, k1, isst1, ibid, lclef, lnum, nbeq1, nl, nc
+    integer :: nbmod, lbid, i1, j1, k1, isst1, ibid,   nbeq1, nl, nc
     integer :: lmast, numlia, nbno, lnres, lmodet, sizeco, connec, lconnc, nbec
     integer :: lprno, ipos1, lcphi, nbddl, lnoint, lindin, llino, lindno, lipos
     integer :: ik, lddld, linlag, lintrf, linddl, nddlin, nbvect, ltramo, lmatmo
@@ -77,6 +79,8 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     character(len=24) :: coint, noddli, matmod, vefreq, indin1, lino1, tramod
     character(len=24) :: modet
     integer :: iret
+    integer, pointer :: vect_clefs(:) => null()
+    integer, pointer :: vect_num(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 !---------------------------------------------------C
@@ -115,16 +119,16 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call wkvect('&&MOIN93.V_IND_DDL_INT', 'V V I', nbddl, linddl)
 !
 !-- LA LISTE DES NOEUDS D'INTERFACE DOIT ETRE ORDONNEE
-    call wkvect('&&MODEXP.VECT_CLEFS', 'V V I', nbno, lclef)
-    call wkvect('&&MODEXP.VECT_NUM', 'V V I', nbno, lnum)
+    AS_ALLOCATE(vi=vect_clefs, size=nbno)
+    AS_ALLOCATE(vi=vect_num, size=nbno)
 !
     do k1 = 1, nbno
-        zi(lclef+k1-1)=k1
-        zi(lnum+k1-1)=zi(llino+k1-1)
+        vect_clefs(k1)=k1
+        vect_num(k1)=zi(llino+k1-1)
     end do
-    call tri(zi(lnum), zi(lclef), 1, nbno)
+    call tri(vect_num, vect_clefs, 1, nbno)
     do k1 = 1, nbno
-        ik=zi(lclef+k1-1)
+        ik=vect_clefs(k1)
         zi(lnoint+(k1-1))=zi(llino+ik-1)
         zi(lnoint+(k1-1)+nbno)=zi(lindin+(ik-1)*6)
         zi(lnoint+(k1-1)+2*nbno)=6
@@ -132,8 +136,8 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
             zi(lnoint+(k1-1)+((2+j1)*nbno))=j1
         end do
     end do
-    call jedetr('&&MODEXP.VECT_CLEFS')
-    call jedetr('&&MODEXP.VECT_NUM')
+    AS_DEALLOCATE(vi=vect_clefs)
+    AS_DEALLOCATE(vi=vect_num)
 !
     call wkvect('&&MOIN93.IS_DDL_INTERF', 'V V I', nbeq1, lddld)
     k1=1

@@ -19,6 +19,8 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ioc, ispmax, ispmin, isamax, isamin
     real(kind=8) :: valmin, valmax, vaamin, vaamax
@@ -49,7 +51,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 ! ----------------------------------------------------------------------
 !
     integer :: jcesk, jcesd, jcesv, jcesl, jcesc, nbma, ncmp, nbm
-    integer :: ibid, nbmail, idmail, nbc, nbcmp, jcmp
+    integer :: ibid, nbmail, idmail, nbc, nbcmp
     integer :: i100, i110, icp, imai, nbpt, nbsp, ipt, isp, iad
     integer :: imamax, iptmax, imamin, iptmin, jcone
     integer :: imaaax, ipamax, imaain, ipamin, ier1, ier2
@@ -58,6 +60,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     character(len=16) :: motcle(2), typmcl(2)
     character(len=19) :: chams1
     character(len=24) :: mesmai
+    character(len=8), pointer :: nom_cmp(:) => null()
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_MA'
@@ -96,8 +99,8 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=0, nbret=nbc)
     if (nbc .ne. 0) then
         nbcmp = -nbc
-        call wkvect('&&PREXEL.NOM_CMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=zk8(jcmp),&
+        AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
+        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=nom_cmp,&
                     nbret=ibid)
     else
         nbcmp = ncmp
@@ -123,7 +126,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 !
     do 100 i100 = 1, nbcmp
         if (nbc .ne. 0) then
-            nocmp = zk8(jcmp+i100-1)
+            nocmp = nom_cmp(i100)
             icp = indik8( zk8(jcesc), nocmp, 1, ncmp )
             if (icp .eq. 0) goto 100
         else
@@ -193,6 +196,6 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 ! --- MENAGE
     call detrsd('CHAM_ELEM_S', chams1)
     call jedetr(mesmai)
-    call jedetr('&&PREXEL.NOM_CMP')
+    AS_DEALLOCATE(vk8=nom_cmp)
 !
 end subroutine

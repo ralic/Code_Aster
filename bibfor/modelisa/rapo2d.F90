@@ -47,6 +47,8 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: numdlz, chargz, fonrez, lisrez
 ! -------------------------------------------------------
@@ -85,13 +87,20 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: iop, nliai, i, narl, nrl, jnoma, jcoor, inom
     integer :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
     integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
-    integer :: ino, idiner, idch1, idch2, nbterm
-    integer :: jlisno, jlisdl, jliscr, jliscc, jlisdi, jlisdm, ival
+    integer :: ino,  idch1, idch2, nbterm
+    integer ::       ival
     integer :: iocc, iarg
     real(kind=8) :: igzz, coorig(3), beta, eps, un
     real(kind=8) :: xpou, ypou, s, s1, xg, yg, dnorme
     real(kind=8) :: ax, ay, axx, ayy
     complex(kind=8) :: betac, ccmp(3)
+    complex(kind=8), pointer :: coec(:) => null()
+    real(kind=8), pointer :: coer(:) => null()
+    integer, pointer :: dime(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    real(kind=8), pointer :: inertie_raccord(:) => null()
+    character(len=8), pointer :: lisddl(:) => null()
+    character(len=8), pointer :: lisno(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()
@@ -306,17 +315,17 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- VECTEUR DES QUANTITES GEOMETRIQUES PRECITEES SOMMEES
 !     SUR LA SURFACE DE RACCORD, CES QUANTITES SERONT NOTEES :
 !        A1 = S,AX,AY,AXX,AYY
-    call wkvect('&&RAPO2D.INERTIE_RACCORD', 'V V R', 6, idiner)
+    AS_ALLOCATE(vr=inertie_raccord, size=6)
 ! --- -----------------------------------------------------------------
 !     SOMMATION DES QUANTITES GEOMETRIQUES ELEMENTAIRES
 !     DANS LE VECTEUR &&RAPO2D.INERTIE_RACCORD :
-    call mesomm(lchout(1), 6, vr=zr(idiner))
+    call mesomm(lchout(1), 6, vr=inertie_raccord)
 !
-    s = zr(idiner+1-1)
-    ax = zr(idiner+2-1)
-    ay = zr(idiner+3-1)
-    axx = zr(idiner+4-1)
-    ayy = zr(idiner+5-1)
+    s = inertie_raccord(1)
+    ax = inertie_raccord(2)
+    ay = inertie_raccord(3)
+    axx = inertie_raccord(4)
+    ayy = inertie_raccord(5)
 !
     if (abs(s) .lt. r8prem()) then
         call utmess('F', 'MODELISA6_46')
@@ -405,17 +414,17 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- MAJORANT DU NOMBRE DE TERMES DANS UNE RELATION
     nbterm = 2*lonlis + 2
 ! --- VECTEUR DU NOM DES NOEUDS
-    call wkvect('&&RAPO2D.LISNO', 'V V K8', nbterm, jlisno)
+    AS_ALLOCATE(vk8=lisno, size=nbterm)
 ! --- VECTEUR DU NOM DES DDLS
-    call wkvect('&&RAPO2D.LISDDL', 'V V K8', nbterm, jlisdl)
+    AS_ALLOCATE(vk8=lisddl, size=nbterm)
 ! --- VECTEUR DES COEFFICIENTS REELS
-    call wkvect('&&RAPO2D.COER', 'V V R', nbterm, jliscr)
+    AS_ALLOCATE(vr=coer, size=nbterm)
 ! --- VECTEUR DES COEFFICIENTS COMPLEXES
-    call wkvect('&&RAPO2D.COEC', 'V V C', nbterm, jliscc)
+    AS_ALLOCATE(vc=coec, size=nbterm)
 ! --- VECTEUR DES DIRECTIONS DES DDLS A CONTRAINDRE
-    call wkvect('&&RAPO2D.DIRECT', 'V V R', 2*nbterm, jlisdi)
+    AS_ALLOCATE(vr=direct, size=2*nbterm)
 ! --- VECTEUR DES DIMENSIONS DE CES DIRECTIONS
-    call wkvect('&&RAPO2D.DIME', 'V V I', nbterm, jlisdm)
+    AS_ALLOCATE(vi=dime, size=nbterm)
 !
 ! --- -----------------------------------------------------------------
 ! --- RELATIONS ENTRE LES NOEUDS DU BORD ET LE NOEUD POUTRE
@@ -433,19 +442,19 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno + (ino-1)*(nbec+2))
 !
-        zk8(jlisno+i-1) = zk8(ilisno+i-1)
-        zk8(jlisdl+i-1) = 'DX'
-        zr(jliscr+i-1) = zr(idch1+ival-1)
+        lisno(i) = zk8(ilisno+i-1)
+        lisddl(i) = 'DX'
+        coer(i) = zr(idch1+ival-1)
     end do
 !
-    zk8(jlisno+lonlis+1-1) = noepou
-    zk8(jlisdl+lonlis+1-1) = 'DX'
-    zr(jliscr+lonlis+1-1) = -s
+    lisno(1+lonlis+1-1) = noepou
+    lisddl(1+lonlis+1-1) = 'DX'
+    coer(1+lonlis+1-1) = -s
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 ! --- DEUXIEME RELATION :
@@ -457,19 +466,19 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno + (ino-1)*(nbec+2))
 !
-        zk8(jlisno+i-1) = zk8(ilisno+i-1)
-        zk8(jlisdl+i-1) = 'DY'
-        zr(jliscr+i-1) = zr(idch1+ival-1)
+        lisno(i) = zk8(ilisno+i-1)
+        lisddl(i) = 'DY'
+        coer(i) = zr(idch1+ival-1)
     end do
 !
-    zk8(jlisno+lonlis+1-1) = noepou
-    zk8(jlisdl+lonlis+1-1) = 'DY'
-    zr(jliscr+lonlis+1-1) = -s
+    lisno(1+lonlis+1-1) = noepou
+    lisddl(1+lonlis+1-1) = 'DY'
+    coer(1+lonlis+1-1) = -s
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 !
@@ -489,22 +498,22 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+ (ino-1)* (nbec+2))
 !
-        zk8(jlisno+2*(i-1) ) = zk8(ilisno+i-1)
-        zk8(jlisno+2*(i-1)+1) = zk8(ilisno+i-1)
-        zk8(jlisdl+2*(i-1) ) = 'DY'
-        zk8(jlisdl+2*(i-1)+1) = 'DX'
-        zr(jliscr+2*(i-1) ) = zr(idch2+ival-1)
-        zr(jliscr+2*(i-1)+1) = -zr(idch2+ival-1+1)
+        lisno(1+2*(i-1) ) = zk8(ilisno+i-1)
+        lisno(1+2*(i-1)+1) = zk8(ilisno+i-1)
+        lisddl(1+2*(i-1) ) = 'DY'
+        lisddl(1+2*(i-1)+1) = 'DX'
+        coer(1+2*(i-1) ) = zr(idch2+ival-1)
+        coer(1+2*(i-1)+1) = -zr(idch2+ival-1+1)
     end do
 !
-    zk8(jlisno+2*lonlis+1-1) = noepou
-    zk8(jlisdl+2*lonlis+1-1) = 'DRZ'
-    zr(jliscr+2*lonlis+1-1) = -igzz
+    lisno(1+2*lonlis+1-1) = noepou
+    lisddl(1+2*lonlis+1-1) = 'DRZ'
+    coer(1+2*lonlis+1-1) = -igzz
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 !
@@ -514,18 +523,18 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     call jedetr('&&RAPO2D.LISTE_NOEUDS')
     call jedetr('&&RAPO2D.LISTE_MAILLES')
     call detrsd('CHAMP_GD', '&&RAPO2D.PSECT')
-    call jedetr('&&RAPO2D.INERTIE_RACCORD')
+    AS_DEALLOCATE(vr=inertie_raccord)
     call detrsd('CARTE', '&&RAPO2D.CAORIGE')
     call detrsd('RESUELEM', '&&RAPO2D.VECT_NI')
     call detrsd('RESUELEM', '&&RAPO2D.VECT_XYZNI')
     call jedetr('&&RAPO2D           .RELR')
     call jedetr('&&RAPO2D           .RERR')
-    call jedetr('&&RAPO2D.LISNO')
-    call jedetr('&&RAPO2D.LISDDL')
-    call jedetr('&&RAPO2D.COER')
-    call jedetr('&&RAPO2D.COEC')
-    call jedetr('&&RAPO2D.DIRECT')
-    call jedetr('&&RAPO2D.DIME')
+    AS_DEALLOCATE(vk8=lisno)
+    AS_DEALLOCATE(vk8=lisddl)
+    AS_DEALLOCATE(vr=coer)
+    AS_DEALLOCATE(vc=coec)
+    AS_DEALLOCATE(vr=direct)
+    AS_DEALLOCATE(vi=dime)
     call detrsd('LIGREL', ligrel)
     call detrsd('CHAMP_GD', 'CH_DEPL_1')
     call detrsd('CHAMP_GD', 'CH_DEPL_2')

@@ -38,8 +38,10 @@ subroutine pofaqu()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, j, ibid, iordo
-    integer :: ifonc1, ifonc, nbpapf, idefp, itemp, ivdome
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+    integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, j, ibid
+    integer :: ifonc1, ifonc, nbpapf,   ivdome
     real(kind=8) :: rdomm, val(2)
     complex(kind=8) :: cbid
     character(len=8) :: k8b, nomten(6), nommat, kdomm, result, nomp, nomt, txcum
@@ -49,6 +51,9 @@ subroutine pofaqu()
     parameter    ( nbpapf = 3  )
     character(len=1) :: typppf(nbpapf)
     character(len=16) :: nomppf(nbpapf)
+    real(kind=8), pointer :: defpla(:) => null()
+    real(kind=8), pointer :: ordo(:) => null()
+    real(kind=8), pointer :: temp(:) => null()
     data  nomppf /  'INST' , 'DOMMAGE' , 'DOMM_CUMU' /
     data  typppf / 'R' , 'R' , 'R' /
 !     ------------------------------------------------------------------
@@ -83,7 +88,7 @@ subroutine pofaqu()
             call utmess('F', 'FATIGUE1_21')
         endif
 20  end do
-    call wkvect('&&POFAQU.ORDO', 'V V R', nbptot/2*nbf, iordo)
+    AS_ALLOCATE(vr=ordo, size=nbptot/2*nbf)
     call jeveuo(fvale(1), 'L', ifonc1)
     do 30 i = 2, nbf
         call jeveuo(fvale(i), 'L', ifonc)
@@ -91,12 +96,12 @@ subroutine pofaqu()
             if (zr(ifonc+j-1) .ne. zr(ifonc1+j-1)) then
                 call utmess('F', 'FATIGUE1_21')
             endif
-            zr(iordo+(j-1)*nbf+i-1) = zr(ifonc+nbptot/2+j-1)
+            ordo(1+(j-1)*nbf+i-1) = zr(ifonc+nbptot/2+j-1)
 35      continue
 30  end do
     nbptot = nbptot / 2
     do 40 j = 1, nbptot
-        zr(iordo+(j-1)*nbf) = zr(ifonc1+nbptot+j-1)
+        ordo(1+(j-1)*nbf) = zr(ifonc1+nbptot+j-1)
 40  end do
 !
     fvale(1) = nomp//'           .VALE'
@@ -104,13 +109,13 @@ subroutine pofaqu()
     if (nbpts .ne. nbptot*2) then
         call utmess('F', 'FATIGUE1_22')
     endif
-    call wkvect('&&POFAQU.DEFPLA', 'V V R', nbptot, idefp)
+    AS_ALLOCATE(vr=defpla, size=nbptot)
     call jeveuo(fvale(1), 'L', ifonc)
     do 45 j = 0, nbptot-1
         if (zr(ifonc+j) .ne. zr(ifonc1+j)) then
             call utmess('F', 'FATIGUE1_22')
         endif
-        zr(idefp+j) = zr(ifonc+nbptot+j)
+        defpla(1+j) = zr(ifonc+nbptot+j)
 45  end do
 !
     fvale(1) = nomt//'           .VALE'
@@ -118,13 +123,13 @@ subroutine pofaqu()
     if (nbpts .ne. nbptot*2) then
         call utmess('F', 'FATIGUE1_23')
     endif
-    call wkvect('&&POFAQU.TEMP', 'V V R', nbptot, itemp)
+    AS_ALLOCATE(vr=temp, size=nbptot)
     call jeveuo(fvale(1), 'L', ifonc)
     do 46 j = 0, nbptot-1
         if (zr(ifonc+j) .ne. zr(ifonc1+j)) then
             call utmess('F', 'FATIGUE1_23')
         endif
-        zr(itemp+j) = zr(ifonc+nbptot+j)
+        temp(1+j) = zr(ifonc+nbptot+j)
 46  end do
 !
 !     --- CREATION DE LA TABLE ---
@@ -144,7 +149,7 @@ subroutine pofaqu()
 !     --- CALCUL DU DOMMAGE ELEMENTAIRE DE LEMAITRE GENERALISE
 !         -----------------------------------------------------
     if (kdomm .eq. 'LEMAITRE') then
-        call fglema(nbf, nbptot, zr(iordo), zr(idefp), zr(itemp),&
+        call fglema(nbf, nbptot, ordo, defpla, temp,&
                     nommat, zr(ivdome))
     else
         call utmess('F', 'FATIGUE1_20')
@@ -170,9 +175,9 @@ subroutine pofaqu()
 !
     endif
 !
-    call jedetr('&&POFAQU.ORDO')
-    call jedetr('&&POFAQU.DEFPLA')
-    call jedetr('&&POFAQU.TEMP')
+    AS_DEALLOCATE(vr=ordo)
+    AS_DEALLOCATE(vr=defpla)
+    AS_DEALLOCATE(vr=temp)
     call jedetr('&&POFAQU.DOMM.ELEM')
 !
     call jedema()

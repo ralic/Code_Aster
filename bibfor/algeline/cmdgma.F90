@@ -19,6 +19,8 @@ subroutine cmdgma(mailla)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: mailla
 !     ------------------------------------------------------------------
@@ -41,18 +43,20 @@ subroutine cmdgma(mailla)
 !     OPERATEUR CREA_MAILLAGE   MOT CLE FACTEUR "DETR_GROUP_MA"
 !     ------------------------------------------------------------------
 !
-    integer :: limit, long, ndetr, nugr, igma, n1, iret, ngrma, ianugr, ialigr
+    integer :: limit, long, ndetr, nugr, igma, n1, iret, ngrma
     integer :: i, jvg, jgg, nbma, ii, adetr, ngrman
     character(len=8) :: ma
     character(len=24) :: nomg
     integer :: iarg
+    character(len=24), pointer :: ligrma_a_detr(:) => null()
+    integer, pointer :: nugrma_a_detr(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
     ma = mailla
     call jelira(ma//'.GROUPEMA', 'NMAXOC', ival=ngrma)
-    call wkvect('&&CMDGMA.NUGRMA_A_DETR', 'V V I', ngrma, ianugr)
+    AS_ALLOCATE(vi=nugrma_a_detr, size=ngrma)
 !
     call getvis('DETR_GROUP_MA', 'NB_MAILLE', iocc=1, scal=limit, nbret=n1)
 !     --------------------------------------------------------
@@ -61,7 +65,7 @@ subroutine cmdgma(mailla)
         call jeexin(jexnum(ma//'.GROUPEMA', igma), iret)
         if (iret .gt. 0) then
             call jelira(jexnum(ma//'.GROUPEMA', igma), 'LONUTI', ival=long)
-            if (long .le. limit) zi(ianugr-1+igma)=1
+            if (long .le. limit) nugrma_a_detr(igma)=1
         endif
  1      continue
     endif
@@ -71,12 +75,12 @@ subroutine cmdgma(mailla)
 !     ----------------------------------------------------------
     if (ndetr .lt. 0) then
         ndetr=-ndetr
-        call wkvect('&&CMDGMA.LIGRMA_A_DETR', 'V V K24', ndetr, ialigr)
+        AS_ALLOCATE(vk24=ligrma_a_detr, size=ndetr)
         call getvem(ma, 'GROUP_MA', 'DETR_GROUP_MA', 'GROUP_MA', 1,&
-                    iarg, ndetr, zk24(ialigr), n1)
+                    iarg, ndetr, ligrma_a_detr, n1)
         do 2,igma=1,ndetr
-        call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialigr-1+igma)), nugr)
-        if (nugr .gt. 0) zi(ianugr-1+nugr)=1
+        call jenonu(jexnom(ma//'.GROUPEMA', ligrma_a_detr(igma)), nugr)
+        if (nugr .gt. 0) nugrma_a_detr(nugr)=1
  2      continue
     endif
 !
@@ -86,7 +90,7 @@ subroutine cmdgma(mailla)
 !
     adetr = 0
     do 10, i= 1 , ngrma
-    if (zi(ianugr-1+i) .ne. 0) adetr = adetr + 1
+    if (nugrma_a_detr(i) .ne. 0) adetr = adetr + 1
     10 end do
 !
     ngrman = ngrma - adetr
@@ -105,7 +109,7 @@ subroutine cmdgma(mailla)
     do 3, i=1,ngrma
     call jeexin(jexnum('&&CMDGMA.GROUPEMA', i), iret)
     if (iret .le. 0) goto 3
-    if (zi(ianugr-1+i) .eq. 0) then
+    if (nugrma_a_detr(i) .eq. 0) then
         call jenuno(jexnum('&&CMDGMA.GROUPEMA', i), nomg)
         call jecroc(jexnom(ma//'.GROUPEMA', nomg))
         call jeveuo(jexnum('&&CMDGMA.GROUPEMA', i), 'L', jvg)
@@ -119,8 +123,8 @@ subroutine cmdgma(mailla)
     endif
     3 end do
 !
-    call jedetr('&&CMDGMA.NUGRMA_A_DETR')
-    call jedetr('&&CMDGMA.LIGRMA_A_DETR')
+    AS_DEALLOCATE(vi=nugrma_a_detr)
+    AS_DEALLOCATE(vk24=ligrma_a_detr)
     call jedetr('&&CMDGMA.GROUPEMA')
 !
     call jedema()

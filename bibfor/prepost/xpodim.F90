@@ -56,6 +56,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xismec.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nsetot, nnntot, ncotot, nbnoc, ior, ngfon
     character(len=8) :: maxfem, malini, resuco, modvis
@@ -96,9 +98,9 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
 !
     integer :: ier, nbmac, nbma2, nbno, nbno2, iret, jdime, igeomr, nbid
-    integer :: iadesc, iarefe, iacoo2, jtypm2, jtrav, jno, jmac
+    integer :: iadesc, iarefe, iacoo2, jtypm2,  jno, jmac
     integer :: ndim, jord, iord, i, ifm, niv, nmaxsp, nmaxcm, nbcham
-    integer :: jcnsk1, jcvid1, jnbpt, jcesd2
+    integer :: jcnsk1, jcvid1,  jcesd2
     integer :: jcnsk2, jcnsd2, jcnsc2, jdirgr
     integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
     integer :: jresd1, jresc1, nbcmp
@@ -110,6 +112,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     character(len=19) :: nomgd
     character(len=24) :: ordr, gpptnm, nogma
     character(len=24) :: comp1
+    integer, pointer :: litrav(:) => null()
+    integer, pointer :: nbpt(:) => null()
     data          ldep3/ 'DX','DY','DZ','LAGS_C','LAGS_F1','LAGS_F2'/
     data          ldep2/ 'DX','DY',     'LAGS_C','LAGS_F1'          /
     data          ldep1/ 'DX','DY','PRE1'                           /
@@ -132,11 +136,11 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         call jelira(mailc, 'LONMAX', nbmac)
 !       RECHERCHE DE LA LISTE DE NOEUDS SOUS-JACENTE
         call dismoi('NB_NO_MAILLA', malini, 'MAILLAGE', repi=nbno)
-        call wkvect('&&XPODIM.LITRAV', 'V V I', nbno, jtrav)
+        AS_ALLOCATE(vi=litrav, size=nbno)
         call wkvect(listno, 'V V I', nbno, jno)
-        call gmgnre(malini, nbno, zi(jtrav), zi(jmac), nbmac,&
+        call gmgnre(malini, nbno, litrav, zi(jmac), nbmac,&
                     zi(jno), nbnoc, 'TOUS')
-        call jedetr('&&XPODIM.LITRAV')
+        AS_DEALLOCATE(vi=litrav)
     endif
 !
 !     NOMBRE DE MAILLES DU NOUVEAU MAILLAGE : NBMA2
@@ -360,15 +364,15 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
                 nmaxsp = zi(jcvid1-1 +4)
                 nmaxcm = zi(jcvid1-1 +5)
-                call wkvect('&&XPODIM.NBPT', 'V V I', nbma2, jnbpt)
+                AS_ALLOCATE(vi=nbpt, size=nbma2)
 !
                 do i = 1, nbma2
-                    zi(jnbpt-1+i) = zi(jcesd2-1+5 + 4*(i-1) + 1)
+                    nbpt(i) = zi(jcesd2-1+5 + 4*(i-1) + 1)
 !
                 end do
 !
                 call cescre('V', cesvi2, 'ELGA', maxfem, 'VARI_R',&
-                            -nmaxcm, ' ', zi(jnbpt), [-nmaxsp], [-nmaxcm])
+                            -nmaxcm, ' ', nbpt, [-nmaxsp], [-nmaxcm])
             endif
 !
         endif
@@ -403,7 +407,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
     endif
 !
-    call jedetr('&&XPODIM.NBPT')
+    AS_DEALLOCATE(vi=nbpt)
     call jedema()
 !
     808 format (30x,a8,2x,i12)

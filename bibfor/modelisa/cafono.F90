@@ -27,6 +27,8 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=4) :: fonree
     character(len=8) :: char, noma
@@ -64,8 +66,8 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     integer :: nmocl, nfono, n2dl, n3dl, n6dl, ncoq2d, nbcomp
 !-----------------------------------------------------------------------
     integer :: i, idgex, ii, in, ino, iret
-    integer :: j, jdesgi, jj, jl, jnbno, jncmp, jno
-    integer :: jnono, jprnm, jval, jvalv, nangl, nbec, nbecf
+    integer :: j,  jj, jl, jnbno, jncmp, jno
+    integer ::  jprnm, jval, jvalv, nangl, nbec, nbecf
     integer :: nbno, nbnoeu, nsurch, numel
     integer :: igrel, inema
 !-----------------------------------------------------------------------
@@ -78,6 +80,8 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     character(len=19) :: carte, ligrmo, ligrch
     character(len=24) :: liel, nomnoe, nomele, mesnoe
     integer :: nb_node, nb_list_elem, nb_list_node
+    integer, pointer :: desgi(:) => null()
+    character(len=8), pointer :: noms_noeuds(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -174,13 +178,13 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !        -  VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR ASSOCIE AUX
 !                         FORCES IMPOSEES PAR NOEUD
 !
-    call wkvect('&&CAFONO.NOMS_NOEUDS', 'V V K8', nbnoeu, jnono)
+    AS_ALLOCATE(vk8=noms_noeuds, size=nbnoeu)
     if (fonree .eq. 'REEL') then
         call wkvect('&&CAFONO.VALDDLR', 'V V R', nbcomp*nbnoeu, jval)
     else
         call wkvect('&&CAFONO.VALDDLF', 'V V K8', nbcomp*nbnoeu, jval)
     endif
-    call wkvect('&&CAFONO.DESGI', 'V V I', nbnoeu, jdesgi)
+    AS_ALLOCATE(vi=desgi, size=nbnoeu)
 !
     dgrd = r8dgrd()
     if (fonree .eq. 'FONC') then
@@ -256,8 +260,8 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !
         do jj = 1, nbno
             call jenonu(jexnom(nomnoe, zk8(jno-1+jj)), ino)
-            zk8(jnono-1+ino) = zk8(jno-1+jj)
-            call affono(zr(jval), zk8(jval), zi(jdesgi+ino-1), zi(jprnm- 1+(ino-1)*nbec+1),&
+            noms_noeuds(ino) = zk8(jno-1+jj)
+            call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm- 1+(ino-1)*nbec+1),&
                         nbcomp, fonree, zk8(jno-1+jj), ino, nsurch,&
                         forimp, valfor, valfof, motcle, verif,&
                         nbec)
@@ -309,9 +313,9 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !
     do ino = 1, nbnoeu
 !
-        if (zi(jdesgi-1+ino) .ne. 0) then
+        if (desgi(ino) .ne. 0) then
 !
-            nomn = zk8(jnono-1+ino)
+            nomn = noms_noeuds(ino)
             call jenonu(jexnom(nomnoe, nomn), in)
             idgex = jprnm - 1 + (in-1)*nbec + 1
 !
@@ -351,8 +355,8 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !
     end do
 !
-    call jedetr('&&CAFONO.NOMS_NOEUDS')
-    call jedetr('&&CAFONO.DESGI')
+    AS_DEALLOCATE(vk8=noms_noeuds)
+    AS_DEALLOCATE(vi=desgi)
     if (fonree .eq. 'REEL') then
         call jedetr('&&CAFONO.VALDDLR')
     else if (fonree.eq.'FONC') then

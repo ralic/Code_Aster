@@ -65,6 +65,8 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomres, basmod, modcyc, intf, kbid, mailsk, k8b
     character(len=16) :: depl, typsd, typsup(1)
@@ -84,9 +86,10 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
     integer :: ldom2, ldomo, ldotm, ldtyd, llcham, lldesc, lldiam
     integer :: llfreq, llinsk, llmoc, llnsec, llnumi, llref, lmass
     integer :: ltetgd, ltinds, ltora, ltord, ltorf, ltorg, ltorto
-    integer :: lttsc, ltveco, ltvere, ltvezt, mdiapa, nbcmp, nbdax
+    integer ::  ltveco, ltvere, ltvezt, mdiapa, nbcmp, nbdax
     integer :: nbddg, nbddr, nbdia, nbmoc, nbmod, nbnot, nborc
     integer :: nbsec, nddcou, neq, neqsec, numa, numd, numg
+    real(kind=8), pointer :: teta_secteur(:) => null()
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
@@ -236,9 +239,9 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----CALCUL DU TETA DE CHAQUE SECTEUR----------------------------------
 !
-    call wkvect('&&RECBGL.TETA_SECTEUR', 'V V R', nbsec, lttsc)
+    AS_ALLOCATE(vr=teta_secteur, size=nbsec)
     do i = 1, nbsec
-        zr(lttsc+i-1) = depi*(i-1) / nbsec
+        teta_secteur(i) = depi*(i-1) / nbsec
     end do
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
@@ -346,7 +349,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-            call rotchm(profno, zr(llcham), zr(lttsc), nbsec, zi(llinsk),&
+            call rotchm(profno, zr(llcham), teta_secteur, nbsec, zi(llinsk),&
                         nbnot, nbcmp, 3)
 !
 !***********************************************************************
@@ -427,7 +430,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-                call rotchm(profno, zr(llcham), zr(lttsc), nbsec, zi( llinsk),&
+                call rotchm(profno, zr(llcham), teta_secteur, nbsec, zi( llinsk),&
                             nbnot, nbcmp, 3)
 !
             endif
@@ -441,7 +444,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
     call jedetr('&&RECBGL.ORD.DEF.DR')
     call jedetr('&&RECBGL.ORD.DEF.GA')
     call jedetr('&&RECBGL.ORDRE.FREQ')
-    call jedetr('&&RECBGL.TETA_SECTEUR')
+    AS_DEALLOCATE(vr=teta_secteur)
     call jedetr('&&RECBGL.TETGD')
     if (nbdax .gt. 0) call jedetr('&&RECBGL.ORD.DEF.AX')
 !

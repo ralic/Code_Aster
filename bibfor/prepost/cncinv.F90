@@ -68,6 +68,8 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !  -----------------------------------------
 !
@@ -80,7 +82,8 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
     character(len=8) :: mail
     character(len=1) :: base
     integer :: lima(*), nlima, nno, nma, ima, nare
-    integer :: i, j, n, p0, p1, p2, p3, q0, q1, q2, q3
+    integer :: i, j, n, p0, p1, p2, p3,  q1, q2, q3
+    integer, pointer :: indice(:) => null()
 !
 ! --- LECTURE DONNEES
 !
@@ -103,20 +106,20 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 !
 ! --- ALLOCATION OBJETS TEMPORAIRES
 !
-    call wkvect('&&CNCINV.INDICE', 'V V I', nma, q0)
+    AS_ALLOCATE(vi=indice, size=nma)
     call wkvect('&&CNCINV.NMAILLE', 'V V I', nno, q1)
     call wkvect('&&CNCINV.POINTEUR', 'V V I', nno+1, q2)
 !
     if (nlima .eq. 0) then
 !
         do 10 i = 1, nma
-            zi(q0-1+i) = i
+            indice(i) = i
 10      continue
 !
     else
 !
         do 20 i = 1, nma
-            zi(q0-1+i) = lima(i)
+            indice(i) = lima(i)
 20      continue
 !
     endif
@@ -129,7 +132,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 !
     do 40 i = 1, nma
 !
-        ima = zi(q0-1+i)
+        ima = indice(i)
         p0 = zi(p2-1+ima)
         n = zi(p2+ima)-p0
         p0 = p1 + p0 - 1
@@ -180,7 +183,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 !
     do 80 i = 1, nma
 !
-        ima = zi(q0-1+i)
+        ima = indice(i)
         p0 = zi(p2-1+ima)
         n = zi(p2+ima)-p0
         p0 = p1 + p0 - 1
@@ -196,7 +199,7 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 !
 ! --- DESALLOCATION
 !
-    call jedetr('&&CNCINV.INDICE')
+    AS_DEALLOCATE(vi=indice)
     call jedetr('&&CNCINV.NMAILLE')
     call jedetr('&&CNCINV.POINTEUR')
 !

@@ -49,6 +49,8 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: ligrez, mnogaz, optioz, paramz
 ! ------------------------------------------------------------------
@@ -95,7 +97,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     integer :: ilcnx1, nbpgf(nbfamx), k, jfpgl
     integer :: nec, kfpg, ndim, nno, nnos, nbfpg, npg, kp, ino
     integer ::  nbgrel, nel, nute, imolo, jmolo, jecono
-    integer :: igr, iel, jmaref, lont1
+    integer :: igr, iel,  lont1
     integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
     integer :: nblfpg,  nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
@@ -113,6 +115,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     integer, pointer :: celd(:) => null()
     character(len=32), pointer :: pnlocfpg(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: mailref(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -157,7 +160,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !
 !     '&&MANOPG.MAILREF': OBJET DONNANT POUR CHAQUE MAILLE SA MAILLE
 !         DE REFERENCE
-    call wkvect('&&MANOPG.MAILREF', 'V V I', nbma, jmaref)
+    AS_ALLOCATE(vi=mailref, size=nbma)
 !
     ligre1='&&MANOPG.LIGRE1'
     ASSERT(nbgrel.gt.0)
@@ -189,9 +192,9 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                 ima=zi(jliel-1+iel)
                 if (ima .lt. 0) goto 882
                 if (iel .eq. 1) then
-                    zi(jmaref-1+ima)=+zi(jliel-1+1)
+                    mailref(ima)=+zi(jliel-1+1)
                 else
-                    zi(jmaref-1+ima)=-zi(jliel-1+1)
+                    mailref(ima)=-zi(jliel-1+1)
                 endif
 882             continue
             end do
@@ -205,7 +208,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                 zi(jliel1-1+iel)=zi(jliel-1+iel)
                 ima=zi(jliel-1+iel)
                 if (ima .lt. 0) goto 884
-                zi(jmaref-1+ima)=+zi(jliel-1+iel)
+                mailref(ima)=+zi(jliel-1+iel)
 884             continue
             end do
         endif
@@ -345,12 +348,12 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                 ASSERT(iad0.gt.0)
 !
 !           -- SI CE N'EST PAS UNE MAILLE DE REFERENCE :
-                if (zi(jmaref-1+ima) .lt. 0) then
+                if (mailref(ima) .lt. 0) then
                     zl(jcesl-1+iad0-1+1) = .true.
-                    cesv(iad0-1+1) = zi(jmaref-1+ima)
+                    cesv(iad0-1+1) = mailref(ima)
                     goto 3
                 endif
-                ASSERT(zi(jmaref-1+ima).eq.ima)
+                ASSERT(mailref(ima).eq.ima)
 !
 !
 !           -- LES 2 PREMIERES CMPS : NNO ET NPG :
@@ -405,7 +408,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call jedetr(obnbpg)
     call jedetr(obnbno)
     call jedetr(obdime)
-    call jedetr('&&MANOPG.MAILREF')
+    AS_DEALLOCATE(vi=mailref)
     call jedetr(kecono)
 !
     call jedema()

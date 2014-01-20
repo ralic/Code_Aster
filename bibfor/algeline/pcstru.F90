@@ -46,6 +46,8 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 #include "asterfort/pcfull.h"
 #include "asterfort/pcinfe.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: n, in(n)
     integer(kind=4) :: ip(*), icpc(*)
     integer :: icpl(0:n), icpd(n)
@@ -62,12 +64,13 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 ! IN-IP---> IPL-IPC
 ! =================
 !-----------------------------------------------------------------------
-    integer :: i, ier, imp, jind, k, k1, k2
+    integer :: i, ier, imp,  k, k1, k2
     integer :: kk, lca, niv, niveau, nz
+    integer, pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
-    call wkvect('&&PCSTRU.IND', 'V V I', n, jind)
+    AS_ALLOCATE(vi=ind, size=n)
     call pcfalu(n, in, ip, icpl, icpc,&
-                zi(jind), imp)
+                ind, imp)
 !
 ! INITIALISATION
     ier = 0
@@ -80,10 +83,10 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
         nz = icpl(n)
         if (niv .lt. niveau) then
             call pcfull(n, icpl, icpc, icpd, icplx,&
-                        icpcx, zi(jind), lca, ier)
+                        icpcx, ind, lca, ier)
         else
             call pcinfe(n, icpl, icpc, icpd, icplx,&
-                        icpcx, zi(jind), lca, ier)
+                        icpcx, ind, lca, ier)
         endif
 !
         if (ier .gt. 0) goto 50
@@ -130,6 +133,6 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 !     WRITE (6,*) ' DUREE  ',TFIN
 60  continue
 !
-    call jedetr('&&PCSTRU.IND')
+    AS_DEALLOCATE(vi=ind)
 !
 end subroutine

@@ -22,6 +22,8 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 #include "asterfort/w039c2.h"
 #include "asterfort/w039c4.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=19) :: ligrel
     character(len=*) :: carte, titre, form
@@ -54,12 +56,13 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
     integer :: iret,  ima, nbma, izone, nuzone
     integer ::  jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi
-    integer :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit, jzones, kzone, kcmp
+    integer :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit,  kzone, kcmp
     character(len=19) :: cart1, cel2, ces2
     character(len=64) :: nommed
     character(len=8) :: kbid, ma, tsca, nomgd, modele, typech, sdcarm
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: ptma(:) => null()
+    integer, pointer :: zones(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -112,7 +115,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 
 !     -- PARFOIS LA CARTE CONTIENT DES ZONES AYANT LES MEMES VALEURS :
 !     ----------------------------------------------------------------
-    call wkvect('&&W039C1.ZONES', 'V V I', ngedit, jzones)
+    AS_ALLOCATE(vi=zones, size=ngedit)
     nuzone=0
     do kgedit = 1, ngedit
         izone=kgedit
@@ -139,13 +142,13 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
                 endif
             end do
 !         -- IZONE == KZONE :
-            zi(jzones-1+izone)=zi(jzones-1+kzone)
+            zones(izone)=zones(kzone)
             goto 30
 !
  20         continue
         end do
         nuzone=nuzone+1
-        zi(jzones-1+izone)=nuzone
+        zones(izone)=nuzone
         call w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
                     ifr)
  30     continue
@@ -173,7 +176,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     do ima = 1, nbma
         izone=ptma(ima)
         if (izone .gt. 0) then
-            nuzone=zi(jzones-1+izone)
+            nuzone=zones(izone)
             ASSERT(nuzone.gt.0)
             call cesexi('C', jcesd, jcesl, ima, 1,&
                         1, 1, iad)
@@ -217,7 +220,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
         ASSERT(.false.)
     endif
     call detrsd('CHAM_ELEM', cel2)
-    call jedetr('&&W039C1.ZONES')
+    AS_DEALLOCATE(vi=zones)
 
 !
 999 continue

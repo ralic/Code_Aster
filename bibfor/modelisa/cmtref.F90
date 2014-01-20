@@ -24,6 +24,8 @@ subroutine cmtref(chmat, nomail)
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: chmat, nomail
 ! ----------------------------------------------------------------------
@@ -53,11 +55,12 @@ subroutine cmtref(chmat, nomail)
     integer :: iret, jdcm1, jvcm1, jlcm1, jdtrf, jvtrf, jltrf
     integer :: nbcm1, nbtrf, kcm1, ktrf, codcm1, codtrf, igd
     integer :: nccm1, nctrf, jncmp, jvalv, nucm1, nutrf, kk
-    integer :: ico, nm, nbma, ninter, codint, jlint, ncm1, ntrf
+    integer :: ico, nm, nbma, ninter, codint,  ncm1, ntrf
     real(kind=8) :: tref, valr(2)
     character(len=8) :: mater, nocp
     character(len=8) :: ktref, nomgd
     character(len=19) :: carcm1, carcm2, cartrf
+    integer, pointer :: lismail(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -72,7 +75,7 @@ subroutine cmtref(chmat, nomail)
     if (iret .eq. 0) goto 50
     call dismoi('NB_MA_MAILLA', nomail, 'MAILLAGE', repi=nbma)
     if (nbma .eq. 0) goto 50
-    call wkvect('&&CMTREF.LISMAIL', 'V V I', nbma, jlint)
+    AS_ALLOCATE(vi=lismail, size=nbma)
 !
 !     2) MISE EN MEMOIRE DES OBJETS DE CARCM1 ET CARTRF :
 !     ---------------------------------------------------------------
@@ -168,7 +171,7 @@ subroutine cmtref(chmat, nomail)
             endif
 !           -- CALCUL DE LA LISTE DES MAILLES CONCERNEES PAR KCM1/KTRF:
             call cmtrf2(codcm1, codtrf, ncm1, zi(jlcm1), ntrf,&
-                        zi(jltrf), nbma, codint, zi(jlint), ninter)
+                        zi(jltrf), nbma, codint, lismail, ninter)
             ASSERT(codint.eq.1 .or. codint.eq.3)
             if (ninter .eq. 0) goto 30
 !
@@ -177,7 +180,7 @@ subroutine cmtref(chmat, nomail)
 !
             else
                 call nocart(carcm2, 3, nm+2, mode='NUM', nma=ninter,&
-                            limanu=zi(jlint))
+                            limanu=lismail)
             endif
 !
  30         continue
@@ -213,7 +216,7 @@ subroutine cmtref(chmat, nomail)
 !
 !     6) MENAGE :
 !     ---------------------------------------------------------------
-    call jedetr('&&CMTREF.LISMAIL')
+    AS_DEALLOCATE(vi=lismail)
 !
  50 continue
     call jedema()

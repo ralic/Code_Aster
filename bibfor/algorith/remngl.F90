@@ -66,6 +66,8 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomres, basmod, modcyc, intf, kbid, mailsk, k8b
     character(len=16) :: depl, typsd, typsup(1)
@@ -85,10 +87,11 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     integer :: ldmge, ldom2, ldomo, ldotm, ldtyd, llcham, lldesc
     integer :: lldiam, llfreq, llinsk, llmoc, llnsec, llnumi, llref
     integer :: lmass, ltetax, ltetgd, ltflax, ltfldr, ltflga, ltinds
-    integer :: ltorf, ltorto, lttsc, ltveco, ltvere, ltvezt, mdiapa
+    integer :: ltorf, ltorto,  ltveco, ltvere, ltvezt, mdiapa
     integer :: nbcmp, nbdax, nbddg, nbddr, nbdia, nbmoc, nbmod
     integer :: nbnot, nborc, nbsec, nddcou, neq, neqsec, numa
     integer :: numd, numg
+    real(kind=8), pointer :: teta_secteur(:) => null()
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
     data typsup /'MODE_MECA       '/
@@ -247,9 +250,9 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----CALCUL DU TETA DE CHAQUE SECTEUR----------------------------------
 !
-    call wkvect('&&REMNGL.TETA_SECTEUR', 'V V R', nbsec, lttsc)
+    AS_ALLOCATE(vr=teta_secteur, size=nbsec)
     do i = 1, nbsec
-        zr(lttsc+i-1) = depi*(i-1) / nbsec
+        teta_secteur(i) = depi*(i-1) / nbsec
     end do
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
@@ -357,7 +360,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-            call rotchm(profno, zr(llcham), zr(lttsc), nbsec, zi(llinsk),&
+            call rotchm(profno, zr(llcham), teta_secteur, nbsec, zi(llinsk),&
                         nbnot, nbcmp, 3)
 !
 !***********************************************************************
@@ -438,7 +441,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-                call rotchm(profno, zr(llcham), zr(lttsc), nbsec, zi( llinsk),&
+                call rotchm(profno, zr(llcham), teta_secteur, nbsec, zi( llinsk),&
                             nbnot, nbcmp, 3)
 !
             endif
@@ -452,7 +455,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
     call jedetr('&&REMNGL.FLEX.DROITE')
     call jedetr('&&REMNGL.FLEX.GAUCHE')
     call jedetr('&&REMNGL.TETGD')
-    call jedetr('&&REMNGL.TETA_SECTEUR')
+    AS_DEALLOCATE(vr=teta_secteur)
     call jedetr('&&REMNGL.ORDRE.FREQ')
     if (numa .gt. 0) then
         call jedetr('&&REMNGL.FLEX.AXE')

@@ -43,6 +43,8 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: tdisp, nbnop, lisnoe(nbnop), nbnot, nbordr, nnoini
     integer :: tspaq
@@ -80,7 +82,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !  - LA TAILLE DU SOUS-PAQUET EST EGALE A LA TAILLE DU <<PAQUET>> DE
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
-    integer :: i, jvectn, jvectu, jvectv
+    integer :: i
     integer :: jcnrd, jcnrl, jcnrv, iret, icesd, icesl, icesv
     integer :: tneces, tdisp2(1), jvecno, n, k
     integer :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
@@ -101,6 +103,9 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     character(len=16) :: typcha
     character(len=19) :: chmat, cesmat, ncncin
     character(len=24) :: typma
+    real(kind=8), pointer :: vect_norma(:) => null()
+    real(kind=8), pointer :: vect_tangu(:) => null()
+    real(kind=8), pointer :: vect_tangv(:) => null()
 !
 !
 !-----------------------------------------------------------------------
@@ -123,9 +128,9 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 ! CONSTRUCTION DU VECTEUR U DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
 ! CONSTRUCTION DU VECTEUR V DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
 !
-    call wkvect('&&AVGRNO.VECT_NORMA', 'V V R', 627, jvectn)
-    call wkvect('&&AVGRNO.VECT_TANGU', 'V V R', 627, jvectu)
-    call wkvect('&&AVGRNO.VECT_TANGV', 'V V R', 627, jvectv)
+    AS_ALLOCATE(vr=vect_norma, size=627)
+    AS_ALLOCATE(vr=vect_tangu, size=627)
+    AS_ALLOCATE(vr=vect_tangv, size=627)
 !
 ! OBTENTION DES ADRESSES '.CNSD', '.CNSL' ET '.CNSV' DU CHAMP SIMPLE
 ! DESTINE A RECEVOIR LES RESULTATS : DOMMAGE_MAX, COORDONNEES VECTEUR
@@ -194,8 +199,8 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         phi0 = dphi/2.0d0
 !
         call vecnuv(ideb, ifin, gamma, phi0, dphi,&
-                    n, k, dim, zr( jvectn), zr(jvectu),&
-                    zr(jvectv))
+                    n, k, dim, vect_norma, vect_tangu,&
+vect_tangv)
 !
     end do
 !
@@ -269,7 +274,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         nbvecm = 209
 !
 ! REMPLACER PAR AVPLCR
-        call avplcr(nbvecm, zr(jvectn), zr(jvectu), zr(jvectv), nbordr,&
+        call avplcr(nbvecm, vect_norma, vect_tangu, vect_tangv, nbordr,&
                     kwork, somnow, vwork, tdisp, tspaq,&
                     ibidno, nomcri, nomfor, grdvie, forvie,&
                     fordef, fatsoc, proaxe, nommat, vala,&
@@ -325,9 +330,9 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         call detrsd('CHAM_ELEM_S', cesmat)
     endif
 !
-    call jedetr('&&AVGRNO.VECT_NORMA')
-    call jedetr('&&AVGRNO.VECT_TANGU')
-    call jedetr('&&AVGRNO.VECT_TANGV')
+    AS_DEALLOCATE(vr=vect_norma)
+    AS_DEALLOCATE(vr=vect_tangu)
+    AS_DEALLOCATE(vr=vect_tangv)
 !
     call jedema()
 end subroutine

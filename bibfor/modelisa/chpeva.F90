@@ -43,10 +43,14 @@ subroutine chpeva(chou)
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: n1, ib, jpara1, npara, jpara2, k, nncp, ibid
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+    integer :: n1, ib,  npara,  k, nncp, ibid
     character(len=4) :: typ1, typ2, knum
     character(len=8) :: chin, chou, nomgd
     character(len=19) :: ligrel, chs1, chs2, chins
+    character(len=8), pointer :: lpara1(:) => null()
+    character(len=24), pointer :: lpara2(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -71,18 +75,18 @@ subroutine chpeva(chou)
 !
     call getvid(' ', 'CHAM_PARA', nbval=0, nbret=n1)
     npara = -n1
-    call wkvect('&&CHPEVA.LPARA1', 'V V K8', npara, jpara1)
-    call getvid(' ', 'CHAM_PARA', nbval=npara, vect=zk8(jpara1), nbret=n1)
+    AS_ALLOCATE(vk8=lpara1, size=npara)
+    call getvid(' ', 'CHAM_PARA', nbval=npara, vect=lpara1, nbret=n1)
 !
 !
 ! 2.  ON VERIFIE QUE LES CHAMPS PARA ONT LA MEME DISCRETISATION:
 !     ET ON LES TRANSFORME EN CHAMPS SIMPLES
 !     CALCUL DE .LPARA2: NOMS DES CHAMP_S PARAMETRES POUR LES FONCTIONS
 ! ------------------------------------------------------------
-    call wkvect('&&CHPEVA.LPARA2', 'V V K24', npara, jpara2)
+    AS_ALLOCATE(vk24=lpara2, size=npara)
     call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=typ1)
     do k = 1, npara
-        call dismoi('TYPE_CHAMP', zk8(jpara1-1+k), 'CHAMP', repk=typ2)
+        call dismoi('TYPE_CHAMP', lpara1(k), 'CHAMP', repk=typ2)
         if (typ1 .ne. typ2) then
             call utmess('F', 'MODELISA4_14')
         endif
@@ -90,16 +94,16 @@ subroutine chpeva(chou)
         call codent(k, 'G', knum)
         chs1 = '&&CHPEVA.'//knum
         if (typ1 .eq. 'NOEU') then
-            call cnocns(zk8(jpara1-1+k), 'V', chs1)
+            call cnocns(lpara1(k), 'V', chs1)
 !
         else if (typ1.eq.'CART') then
-            call carces(zk8(jpara1-1+k), 'ELEM', ' ', 'V', chs1,&
+            call carces(lpara1(k), 'ELEM', ' ', 'V', chs1,&
                         'A', ib)
 !
         else if (typ1(1:2).eq.'EL') then
-            call celces(zk8(jpara1-1+k), 'V', chs1)
+            call celces(lpara1(k), 'V', chs1)
         endif
-        zk24(jpara2-1+k) = chs1
+        lpara2(k) = chs1
     end do
 !
 !
@@ -108,7 +112,7 @@ subroutine chpeva(chou)
     ASSERT((typ1.eq.'NOEU').or.(typ1(1:2).eq.'EL'))
     if (typ1 .eq. 'NOEU') then
         call cnocns(chin, 'V', chins)
-        call cnseva(chins, npara, zk24(jpara2), chs2)
+        call cnseva(chins, npara, lpara2, chs2)
         call cnscno(chs2, ' ', 'NON', 'G', chou,&
                     'F', ibid)
         call detrsd('CHAM_NO_S', chins)
@@ -116,7 +120,7 @@ subroutine chpeva(chou)
 !
     else if (typ1(1:2).eq.'EL') then
         call celces(chin, 'V', chins)
-        call ceseva(chins, npara, zk24(jpara2), chs2)
+        call ceseva(chins, npara, lpara2, chs2)
         call dismoi('NOM_LIGREL', chin, 'CHAMP', repk=ligrel)
         call cescel(chs2, ligrel, ' ', ' ', 'NON',&
                     nncp, 'G', chou, 'F', ibid)
@@ -128,16 +132,16 @@ subroutine chpeva(chou)
 !
 ! 7. MENAGE :
 ! -----------------------------------------------------
-    call jedetr('&&CHPEVA.LPARA1')
+    AS_DEALLOCATE(vk8=lpara1)
     do k = 1, npara
         if (typ1 .eq. 'NOEU') then
-            call detrsd('CHAM_NO_S', zk24(jpara2-1+k))
+            call detrsd('CHAM_NO_S', lpara2(k))
 !
         else
-            call detrsd('CHAM_ELEM_S', zk24(jpara2-1+k))
+            call detrsd('CHAM_ELEM_S', lpara2(k))
         endif
     end do
-    call jedetr('&&CHPEVA.LPARA2')
+    AS_DEALLOCATE(vk24=lpara2)
 !
     call jedema()
 !

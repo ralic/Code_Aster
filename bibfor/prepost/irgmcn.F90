@@ -17,6 +17,8 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ifi, nbordr, nbcmpi, versio
     integer :: ordr(*), connx(*), point(*)
     real(kind=8) :: coord(*), para(*)
@@ -70,11 +72,16 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 !     ------------------------------------------------------------------
 !
     integer :: i, ine
-    integer :: ior, k, ncmp, iret, nbord2, jncmp, ncmpu
-    integer :: jtabc, jtabv, jtabl, jtabd, jcnsk, jtype
+    integer :: ior, k, ncmp, iret, nbord2,  ncmpu
+    integer ::     jcnsk, jtype
     logical :: scal, vect, tens
     character(len=8) :: k8b, nocmp, tbcmp(3)
     character(len=19) :: noch19, champs
+    integer, pointer :: cnsc(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    integer, pointer :: cnsl(:) => null()
+    integer, pointer :: cnsv(:) => null()
+    character(len=8), pointer :: vnocmp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -84,10 +91,10 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 !
     nbord2 = max(1,nbordr)
 !
-    call wkvect('&&IRGMCN.CNSD', 'V V I', nbord2, jtabd)
-    call wkvect('&&IRGMCN.CNSC', 'V V I', nbord2, jtabc)
-    call wkvect('&&IRGMCN.CNSV', 'V V I', nbord2, jtabv)
-    call wkvect('&&IRGMCN.CNSL', 'V V I', nbord2, jtabl)
+    AS_ALLOCATE(vi=cnsd, size=nbord2)
+    AS_ALLOCATE(vi=cnsc, size=nbord2)
+    AS_ALLOCATE(vi=cnsv, size=nbord2)
+    AS_ALLOCATE(vi=cnsl, size=nbord2)
     call wkvect('&&IRGMCN.TYPE', 'V V K8', nbord2, jtype)
 !
 !
@@ -103,10 +110,10 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
         champs = '&&IRGMCN.CH'//k8b
         call cnocns(noch19, 'V', champs)
         call jeveuo(champs//'.CNSK', 'L', jcnsk)
-        call jeveuo(champs//'.CNSD', 'L', zi(jtabd+ior-1))
-        call jeveuo(champs//'.CNSC', 'L', zi(jtabc+ior-1))
-        call jeveuo(champs//'.CNSV', 'L', zi(jtabv+ior-1))
-        call jeveuo(champs//'.CNSL', 'L', zi(jtabl+ior-1))
+        call jeveuo(champs//'.CNSD', 'L', cnsd(ior))
+        call jeveuo(champs//'.CNSC', 'L', cnsc(ior))
+        call jeveuo(champs//'.CNSV', 'L', cnsv(ior))
+        call jeveuo(champs//'.CNSL', 'L', cnsl(ior))
         call jelira(champs//'.CNSV', 'TYPE', cval=zk8(jtype+ior-1))
 !
 !
@@ -115,19 +122,19 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 ! --- RECUPERATION DES COMPOSANTES POUR L'IMPRESSION
 !     D'UN CHAMP SCALAIRE PAR COMPOSANTE
 !
-    ncmp = zi(zi(jtabd)-1+2)
+    ncmp = zi(cnsd(1)-1+2)
     ncmpu = 0
-    call wkvect('&&IRGMCN.NOCMP', 'V V K8', ncmp, jncmp)
+    AS_ALLOCATE(vk8=vnocmp, size=ncmp)
     if (nbcmpi .eq. 0) then
         do 180 k = 1, ncmp
-            nocmp = zk8(zi(jtabc)-1+k)
+            nocmp = zk8(cnsc(1)-1+k)
             ncmpu = ncmpu + 1
-            zk8(jncmp+ncmpu-1) = nocmp
+            vnocmp(ncmpu) = nocmp
 180      continue
     else
         do 190 k = 1, nbcmpi
             ncmpu = ncmpu + 1
-            zk8(jncmp+ncmpu-1) = nomcmp(k)
+            vnocmp(ncmpu) = nomcmp(k)
 190      continue
     endif
 !
@@ -148,10 +155,10 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
     tens = .false.
 !
     if (versio .eq. 1) then
-        ncmp = zi(zi(jtabd)-1+2)
+        ncmp = zi(cnsd(1)-1+2)
         if (nbcmpi .eq. 0) then
             do 200 k = 1, ncmp
-                nocmp = zk8(zi(jtabc)-1+k)
+                nocmp = zk8(cnsc(1)-1+k)
                 if (nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ') then
                     vect = .true.
                 else
@@ -189,8 +196,8 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
             i=tord(ine)
             if (nbel(i) .ne. 0) then
                 call irgnte(ifi, nbord2, coord, connx, point,&
-                            nobj(i), nbel(i), zi(jtabv), partie, jtype,&
-                            zi(jtabd))
+                            nobj(i), nbel(i), cnsv, partie, jtype,&
+cnsd)
             endif
 101      continue
 !
@@ -222,7 +229,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
         else if (versio.eq.2) then
             tbcmp(3)='        '
             do 104 i = 1, nbcmpi
-                tbcmp(i)=zk8(jncmp+i-1)
+                tbcmp(i)=vnocmp(i)
 104          continue
         endif
 !
@@ -233,8 +240,8 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
             if (nbel(i) .ne. 0) then
                 call irgnal(ifi, nbord2, coord, connx, point,&
                             tbcmp, 3, i, nobj(i), nbel(i),&
-                            zi(jtabc), zi(jtabl), zi( jtabv), partie, jtype,&
-                            zi(jtabd))
+                            cnsc, cnsl, cnsv, partie, jtype,&
+cnsd)
             endif
 102      continue
 !
@@ -251,7 +258,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 !
     if (scal) then
         do 300 k = 1, ncmpu
-            nocmp = zk8(jncmp+k-1)
+            nocmp = vnocmp(k)
 !
 !        ECRITURE DE L'ENTETE DE View
 !        ****************************
@@ -270,8 +277,8 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
                 if (nbel(i) .ne. 0) then
                     call irgnal(ifi, nbord2, coord, connx, point,&
                                 tbcmp, 1, i, nobj(i), nbel(i),&
-                                zi(jtabc), zi( jtabl), zi(jtabv), partie, jtype,&
-                                zi(jtabd))
+                                cnsc, cnsl, cnsv, partie, jtype,&
+cnsd)
                 endif
 103          continue
 !
@@ -283,11 +290,11 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 300      continue
     endif
 !
-    call jedetr('&&IRGMCN.CNSD')
-    call jedetr('&&IRGMCN.CNSC')
-    call jedetr('&&IRGMCN.CNSV')
-    call jedetr('&&IRGMCN.CNSL')
-    call jedetr('&&IRGMCN.NOCMP')
+    AS_DEALLOCATE(vi=cnsd)
+    AS_DEALLOCATE(vi=cnsc)
+    AS_DEALLOCATE(vi=cnsv)
+    AS_DEALLOCATE(vi=cnsl)
+    AS_DEALLOCATE(vk8=vnocmp)
     call jedetr('&&IRGMCN.TYPE')
     call jedema()
 !

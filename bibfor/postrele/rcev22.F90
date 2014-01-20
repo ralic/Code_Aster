@@ -21,6 +21,8 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbinti
     logical :: lfatig, flexio, lrocht
@@ -49,9 +51,9 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbinst, kinst, jcont, jcofl, ncmpr, i, j, k, l, ndim
+    integer :: ibid, n1, nbinst, kinst,   ncmpr, i, j, k, l, ndim
     integer :: nbabsc, jabsc, jsigm, jinst, ncmp, iret, jsioe, iocc, nbins0
-    integer :: jnocc, jresu, nbcycl, jcopr, jresp
+    integer :: jnocc, jresu, nbcycl,  jresp
     parameter  ( ncmp = 6 )
     real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
     complex(kind=8) :: cbid
@@ -62,6 +64,9 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
     character(len=19) :: nomf
     character(len=24) :: instan, abscur
     character(len=24) :: valk(7)
+    real(kind=8), pointer :: cont_flexio(:) => null()
+    real(kind=8), pointer :: cont_pressi(:) => null()
+    real(kind=8), pointer :: contraintes(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -276,9 +281,9 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 k8b)
 !
     call jeveuo(abscur, 'L', jabsc)
-    call wkvect('&&RCEV22.CONTRAINTES', 'V V R', nbabsc, jcont)
-    call wkvect('&&RCEV22.CONT_FLEXIO', 'V V R', nbabsc, jcofl)
-    call wkvect('&&RCEV22.CONT_PRESSI', 'V V R', nbabsc, jcopr)
+    AS_ALLOCATE(vr=contraintes, size=nbabsc)
+    AS_ALLOCATE(vr=cont_flexio, size=nbabsc)
+    AS_ALLOCATE(vr=cont_pressi, size=nbabsc)
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
 !
@@ -346,7 +351,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !
                 call tbliva(table, 2, valek, [ibid], vale,&
                             [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, zr(jcont+k-1), cbid, k8b,&
+                            k8b, ibid, contraintes(k), cbid, k8b,&
                             iret)
                 if (iret .ne. 0) then
                     valk (1) = table
@@ -360,7 +365,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 if (flexio) then
                     call tbliva(tabfle, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, zr( jcofl+k-1), cbid, k8b,&
+                                k8b, ibid, cont_flexio(k), cbid, k8b,&
                                 iret)
                     if (iret .ne. 0) then
                         valk (1) = tabfle
@@ -375,7 +380,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 if (lrocht) then
                     call tbliva(tabpre, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, zr( jcopr+k-1), cbid, k8b,&
+                                k8b, ibid, cont_pressi(k), cbid, k8b,&
                                 iret)
                     if (iret .ne. 0) then
                         valk (1) = tabpre
@@ -391,12 +396,12 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !
             if (lfatig) then
                 l = ncmp*(i-1) + j
-                zr(jsioe-1+l) = zr(jcont)
+                zr(jsioe-1+l) = contraintes(1)
                 l = ncmp*nbinst + ncmp*(i-1) + j
-                zr(jsioe-1+l) = zr(jcont+nbabsc-1)
+                zr(jsioe-1+l) = contraintes(nbabsc)
             endif
 !
-            call rc32my(nbabsc, zr(jabsc), zr(jcont), momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
             momen1 = 0.5d0*momen1
 !
             l = ncmp*(i-1) + j
@@ -405,7 +410,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
             zr(jsigm-1+l) = momen1
 !
             if (flexio) then
-                call rc32my(nbabsc, zr(jabsc), zr(jcofl), momen0, momen1)
+                call rc32my(nbabsc, zr(jabsc), cont_flexio, momen0, momen1)
                 momen1 = 0.5d0*momen1
             else
                 momen0 = 0.d0
@@ -417,7 +422,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
             zr(jsigm-1+l) = momen1
 !
             if (lrocht) then
-                call rc32my(nbabsc, zr(jabsc), zr(jcopr), momen0, momen1)
+                call rc32my(nbabsc, zr(jabsc), cont_pressi, momen0, momen1)
                 momen1 = 0.5d0*momen1
             else
                 momen0 = r8vide()
@@ -434,9 +439,9 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !
     call jedetr(instan)
     call jedetr(abscur)
-    call jedetr('&&RCEV22.CONTRAINTES')
-    call jedetr('&&RCEV22.CONT_FLEXIO')
-    call jedetr('&&RCEV22.CONT_PRESSI')
+    AS_DEALLOCATE(vr=contraintes)
+    AS_DEALLOCATE(vr=cont_flexio)
+    AS_DEALLOCATE(vr=cont_pressi)
     if (nbinti .ne. 1) then
         call detrsd('TABLE', table)
         if (flexio) call detrsd('TABLE', tabfle)

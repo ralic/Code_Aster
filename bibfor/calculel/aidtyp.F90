@@ -33,12 +33,18 @@ subroutine aidtyp(impr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=16) :: nophen, note, noop, nomodl
     character(len=80) :: ligne
-    integer :: impr, nbtm, nbphen,  nbte, nbop, ianbop, ianbte, ianot2
-    integer :: ianop2, iop, iphen, nbmodl, imodl, iamodl, itm, ite, ioptte
+    integer :: impr, nbtm, nbphen,  nbte, nbop
+    integer ::  iop, iphen, nbmodl, imodl, iamodl, itm, ite, ioptte
     integer :: iaopmo, nucalc
     integer, pointer :: optte(:) => null()
+    integer, pointer :: vnbop(:) => null()
+    integer, pointer :: vnbte(:) => null()
+    character(len=16), pointer :: nop2(:) => null()
+    character(len=80), pointer :: not2(:) => null()
 !
 !
     call jemarq()
@@ -54,17 +60,17 @@ subroutine aidtyp(impr)
     call jelira('&CATA.TE.NOMTE', 'NOMUTI', nbte)
     call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop)
 !
-    call wkvect('&&AIDTYP.NBOP', 'V V I', nbop, ianbop)
-    call wkvect('&&AIDTYP.NBTE', 'V V I', nbte, ianbte)
-    call wkvect('&&AIDTYP.NOT2', 'V V K80', nbte, ianot2)
-    call wkvect('&&AIDTYP.NOP2', 'V V K16', nbop, ianop2)
+    AS_ALLOCATE(vi=vnbop, size=nbop)
+    AS_ALLOCATE(vi=vnbte, size=nbte)
+    AS_ALLOCATE(vk80=not2, size=nbte)
+    AS_ALLOCATE(vk16=nop2, size=nbop)
 !
 !
 !     -- REMPLISSAGE DE .NOP2:
 !     ------------------------
     do 7,iop=1,nbop
     call jenuno(jexnum('&CATA.OP.NOMOPT', iop), noop)
-    zk16(ianop2-1+iop)=noop
+    nop2(iop)=noop
     7 end do
 !
 !
@@ -80,7 +86,7 @@ subroutine aidtyp(impr)
     ite= zi(iamodl-1+itm)
     if (ite .eq. 0) goto 3
     call jenuno(jexnum('&CATA.TE.NOMTE', ite), note)
-    zk80(ianot2-1+ite)=nophen//' '//nomodl//' '//note
+    not2(ite)=nophen//' '//nomodl//' '//note
  3  continue
  2  continue
     1 end do
@@ -88,9 +94,9 @@ subroutine aidtyp(impr)
 !     ON COMPLETE .NOT2 AVEC LES ELEMENTS N'APPARTENANT A AUCUNE
 !        MODELISATION NI PHENOMENE:
     do 6, ite=1,nbte
-    if (zk80(ianot2-1+ite)(1:1) .eq. ' ') then
+    if (not2(ite)(1:1) .eq. ' ') then
         call jenuno(jexnum('&CATA.TE.NOMTE', ite), note)
-        zk80(ianot2-1+ite)(35:50)=note
+        not2(ite)(35:50)=note
     endif
     6 end do
 !
@@ -108,9 +114,9 @@ subroutine aidtyp(impr)
     call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
     nucalc= zi(iaopmo)
     if (nucalc .eq. 0) goto 101
-    zi(ianbte-1+ite)=zi(ianbte-1+ite)+1
-    zi(ianbop-1+iop)=zi(ianbop-1+iop)+1
-    write(impr,1001) zk80(ianot2-1+ite)(1:50), zk16(ianop2-1+&
+    vnbte(ite)=vnbte(ite)+1
+    vnbop(iop)=vnbop(iop)+1
+    write(impr,1001) not2(ite)(1:50), nop2(&
             iop),nucalc
 101  continue
     10 end do
@@ -121,8 +127,8 @@ subroutine aidtyp(impr)
     write(impr,'(A80)') ligne
     write(impr,*)' RESUME TYPE_ELEMENTS : '
     do 20, ite=1,nbte
-    write(impr,1001) zk80(ianot2-1+ite)(1:50),' NB_OPT_CALC: ',&
-        zi(ianbte-1+ite)
+    write(impr,1001) not2(ite)(1:50),' NB_OPT_CALC: ',&
+        vnbte(ite)
     20 end do
 !
 !
@@ -131,7 +137,7 @@ subroutine aidtyp(impr)
     write(impr,'(A80)') ligne
     write(impr,*)' RESUME OPTIONS : '
     do 30, iop=1,nbop
-    write(impr,*)zk16(ianop2-1+iop),' NB_TYP_CALC: ', zi(ianbop-1+&
+    write(impr,*)nop2(iop),' NB_TYP_CALC: ', vnbop(&
         iop)
     30 end do
     write(impr,'(A80)') ligne
@@ -139,10 +145,10 @@ subroutine aidtyp(impr)
 !
 ! --- MENAGE
 !
-    call jedetr('&&AIDTYP.NBOP')
-    call jedetr('&&AIDTYP.NBTE')
-    call jedetr('&&AIDTYP.NOT2')
-    call jedetr('&&AIDTYP.NOP2')
+    AS_DEALLOCATE(vi=vnbop)
+    AS_DEALLOCATE(vi=vnbte)
+    AS_DEALLOCATE(vk80=not2)
+    AS_DEALLOCATE(vk16=nop2)
 !
 !
     1001 format (a50,1x,a16,1x,i5)

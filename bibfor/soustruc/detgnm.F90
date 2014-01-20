@@ -19,6 +19,8 @@ subroutine detgnm(ma)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: ma
 !
@@ -47,12 +49,13 @@ subroutine detgnm(ma)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: n1, iocc, maxval, nbval, jgmdet, iret, nbtgp, numgm, nbgmde
+    integer :: n1, iocc, maxval, nbval,  iret, nbtgp, numgm, nbgmde
     integer :: nbgp, nbmagp, jgm, i, j, j1, j2, ngp, ig
     parameter(ngp=2)
     character(len=8) :: k8b
     character(len=16) :: detr(2), group(2), ptrn(2)
     character(len=24) :: grp, gpptnm, nomgp
+    character(len=24), pointer :: group_detr(:) => null()
     data detr  / 'DETR_GROUP_MA','DETR_GROUP_NO'/
     data group / '.GROUPEMA','.GROUPENO'/
     data ptrn  / '.PTRNOMMAI','.PTRNOMNOE'/
@@ -76,17 +79,17 @@ subroutine detgnm(ma)
                 call getvtx(detr(ig), 'NOM', iocc=iocc, nbval=maxval, vect=k8b,&
                             nbret=nbval)
                 nbval=-nbval
-                call wkvect('&&DETGNM.GROUP_DETR', 'V V K24', nbval, jgmdet)
-                call getvtx(detr(ig), 'NOM', iocc=iocc, nbval=nbval, vect=zk24( jgmdet),&
+                AS_ALLOCATE(vk24=group_detr, size=nbval)
+                call getvtx(detr(ig), 'NOM', iocc=iocc, nbval=nbval, vect=group_detr,&
                             nbret=iret)
 !              ON RECUPERE LES NUMEROS DES GROUPES A DETRUIRE
                 do 15 i = 1, nbval
-                    call jenonu(jexnom(ma//group(ig), zk24(jgmdet+i-1)), numgm)
+                    call jenonu(jexnom(ma//group(ig), group_detr(i)), numgm)
                     if (numgm .ne. 0) then
                         zi(jgm+numgm-1)=numgm
                     endif
 15              continue
-                call jedetr('&&DETGNM.GROUP_DETR')
+                AS_DEALLOCATE(vk24=group_detr)
 10          continue
 !           ON COMPTE LE NOMBRE DE GROUPES A DETRUIRE
             nbgmde=0

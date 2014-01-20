@@ -29,6 +29,8 @@ subroutine cescar(cesz, cartz, basz)
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: cartz, cesz, basz
 ! ------------------------------------------------------------------
 ! BUT: TRANSFORMER UN CHAM_ELEM_S (DE TYPE ELEM)  EN CARTE
@@ -44,7 +46,7 @@ subroutine cescar(cesz, cartz, basz)
 !     ------------------------------------------------------------------
     integer ::  jce1d,  jce1l, jce1v, nbmam, ncmp, ncmpmx
     integer ::  jvalv, iad1, kcmp, ncmpma, nbpt, nbsp, ima
-    integer :: jlima, k, jvals, nbpaqu, nbcmps, jnoms, vali(3)
+    integer ::  k, jvals, nbpaqu, nbcmps,  vali(3)
     logical :: idprec, premie
     character(len=1) :: base
     character(len=8) :: ma, nomgd
@@ -54,6 +56,8 @@ subroutine cescar(cesz, cartz, basz)
     character(len=8), pointer :: vncmp(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
+    integer, pointer :: lima(:) => null()
+    character(len=8), pointer :: noms(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !      CALL IMPRSD('CHAMP',CESZ,6,'AJOCOT CESCAR IN')
@@ -84,8 +88,8 @@ subroutine cescar(cesz, cartz, basz)
     call jeveuo(cart//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(cart//'.VALV', 'E', jvalv)
 !
-    call wkvect('&&CESCAR.LIMA', 'V V I', nbmam, jlima)
-    call wkvect('&&CESCAR.NOMS', 'V V K8', ncmpmx, jnoms)
+    AS_ALLOCATE(vi=lima, size=nbmam)
+    AS_ALLOCATE(vk8=noms, size=ncmpmx)
     call wkvect('&&CESCAR.VALS', 'V V '//tsca, ncmpmx, jvals)
 !
 !     -- POUR ECONOMISER L'ESPACE ET LE TEMPS, ON REGROUPE
@@ -157,7 +161,7 @@ subroutine cescar(cesz, cartz, basz)
 !         -- LA MAILLE EST-ELLE COMME LA MAILLE SAUVEGARDEE ?
             if (ncmpma .ne. nbcmps) goto 30
             do k = 1, nbcmps
-                if (zk8(jnoms-1+k) .ne. vncmp(k)) goto 30
+                if (noms(k) .ne. vncmp(k)) goto 30
                 if (tsca .eq. 'R') then
                     if (zr(jvals-1+k) .ne. zr(jvalv-1+k)) goto 30
                 else if (tsca.eq.'C') then
@@ -192,7 +196,7 @@ subroutine cescar(cesz, cartz, basz)
 !          -----------------------------------------------------
             if (.not.premie) then
                 do k = 1, nbcmps
-                    vncmp(k)=zk8(jnoms-1+k)
+                    vncmp(k)=noms(k)
                     if (tsca .eq. 'R') then
                         zr(jvalv-1+k)=zr(jvals-1+k)
                     else if (tsca.eq.'C') then
@@ -212,7 +216,7 @@ subroutine cescar(cesz, cartz, basz)
                     endif
                 end do
                 call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu,&
-                            limanu=zi(jlima))
+                            limanu=lima)
 !
 !           -- POUR FAIRE LE NOCART, ON A DU ECRASER JVALV.
 !           -- IL FAUT LE RETABLIR :
@@ -249,7 +253,7 @@ subroutine cescar(cesz, cartz, basz)
             premie=.false.
             nbcmps=ncmpma
             do k = 1, nbcmps
-                zk8(jnoms-1+k)=vncmp(k)
+                noms(k)=vncmp(k)
                 if (tsca .eq. 'R') then
                     zr(jvals-1+k)=zr(jvalv-1+k)
                 else if (tsca.eq.'C') then
@@ -269,14 +273,14 @@ subroutine cescar(cesz, cartz, basz)
                 endif
             end do
             nbpaqu=1
-            zi(jlima-1+nbpaqu)=ima
+            lima(nbpaqu)=ima
 !
 !
         else
 !         -- SI LA MAILLE EST IDENTIQUE :
 !         --------------------------------
             nbpaqu=nbpaqu+1
-            zi(jlima-1+nbpaqu)=ima
+            lima(nbpaqu)=ima
         endif
 !
  80     continue
@@ -284,7 +288,7 @@ subroutine cescar(cesz, cartz, basz)
 !
 !     -- IL NE FAUT PAS OUBLIER LE DERNIER PAQUET :
     do k = 1, nbcmps
-        vncmp(k)=zk8(jnoms-1+k)
+        vncmp(k)=noms(k)
         if (tsca .eq. 'R') then
             zr(jvalv-1+k)=zr(jvals-1+k)
         else if (tsca.eq.'C') then
@@ -304,11 +308,11 @@ subroutine cescar(cesz, cartz, basz)
         endif
     end do
     call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu,&
-                limanu=zi(jlima))
+                limanu=lima)
 !
 !
-    call jedetr('&&CESCAR.LIMA')
-    call jedetr('&&CESCAR.NOMS')
+    AS_DEALLOCATE(vi=lima)
+    AS_DEALLOCATE(vk8=noms)
     call jedetr('&&CESCAR.VALS')
 !
     call jedema()

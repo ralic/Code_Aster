@@ -30,19 +30,22 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ioc, nbcmp
     real(kind=8) :: som(1)
     character(len=8) :: nocmp(1)
     character(len=*) :: champ
 !
     integer :: jcnsk, jcnsd, jcnsv, jcnsl, jcnsc, nbno, ncmp, nbn
-    integer :: ibid, nbnoeu, idnoeu, nbc, jcmp
+    integer :: ibid, nbnoeu, idnoeu, nbc
     integer :: i100, i110, icp, ino
     real(kind=8) :: x
     character(len=8) ::  ma
     character(len=16) :: motcle(4), typmcl(4)
     character(len=19) :: chams1
     character(len=24) :: mesnoe
+    character(len=8), pointer :: nom_cmp(:) => null()
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_NO'
@@ -79,8 +82,8 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=0, nbret=nbc)
     if (nbc .ne. 0) then
         nbcmp = -nbc
-        call wkvect('&&PRMONO.NOM_CMP', 'V V K8', nbcmp, jcmp)
-        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=zk8(jcmp),&
+        AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
+        call getvtx('ACTION', 'NOM_CMP', iocc=ioc, nbval=nbcmp, vect=nom_cmp,&
                     nbret=ibid)
     else
         nbcmp = ncmp
@@ -88,7 +91,7 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 !
     do 100 i100 = 1, nbcmp
         if (nbc .ne. 0) then
-            nocmp(i100) = zk8(jcmp+i100-1)
+            nocmp(i100) = nom_cmp(i100)
             icp = indik8( zk8(jcnsc), nocmp(i100), 1, ncmp )
             if (icp .eq. 0) goto 100
         else
@@ -119,6 +122,6 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 ! --- MENAGE
     call detrsd('CHAM_NO_S', chams1)
     call jedetr(mesnoe)
-    call jedetr('&&PRMONO.NOM_CMP')
+    AS_DEALLOCATE(vk8=nom_cmp)
 !
 end subroutine

@@ -29,6 +29,8 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), ncmpu
     integer :: nucmp(*), nbnoma(*), typma(*), permut(maxnod, *), nbmat
@@ -94,25 +96,36 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iachml, iad, iaec, iast, ibcmps, ic
-    integer :: ichs, icm, icmax0, icmp, icmpl, icmps, icms
+    integer :: ichs, icm, icmax0, icmp, icmpl,  icms
     integer :: icmsup, ico, icoef, icomax, icomm, icou, icp
     integer :: ida, idebu, idern, iel, ielg, ier, ies
-    integer :: ifin, igre, igrel, ilig, imai, inbcg, inbctg
-    integer :: indats, inoa, inochs, inogds, inos, inper, iperm
-    integer :: ipg, ipoin1, ipoin2, ipos, ir, ires, irvg
-    integer :: irvn, is0, isnbcs, isp, ispt, isup, itabl
+    integer :: ifin, igre, igrel, ilig, imai
+    integer ::  inoa,   inos
+    integer :: ipg, ipoin1, ipoin2,  ir, ires, irvg
+    integer :: irvn, is0,  isp, ispt, isup
     integer :: itseg2, itype, iutil, j, jj, jmax, jmod
     integer :: jspt, jt, jtitr, k, l, ll
     integer :: mode, nbcou, nbdats, nbelgr, nbpg, ncmpg
     integer :: ncmpp, nec, ni, npcalc, nsca, nscal
+    integer, pointer :: cmp_grel(:) => null()
+    integer, pointer :: ipcmps(:) => null()
+    logical, pointer :: ltabl(:) => null()
+    integer, pointer :: nbcmps_grel(:) => null()
+    integer, pointer :: nbcmpt_grel(:) => null()
+    character(len=8), pointer :: nomchs(:) => null()
+    character(len=8), pointer :: nomgds(:) => null()
+    integer, pointer :: perm(:) => null()
+    integer, pointer :: pos(:) => null()
+    integer, pointer :: scmp_dats(:) => null()
+    integer, pointer :: snbcps(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call wkvect('&&IRCERS.NOMGDS', 'V V K8', ncmpmx, inogds)
-    call wkvect('&&IRCERS.NOMCHS', 'V V K8', ncmpmx, inochs)
+    AS_ALLOCATE(vk8=nomgds, size=ncmpmx)
+    AS_ALLOCATE(vk8=nomchs, size=ncmpmx)
     call wkvect('&&IRCERS.NBCMPS', 'V V I', ncmpmx, ibcmps)
-    call wkvect('&&IRCERS.IPCMPS', 'V V I', ncmpmx*ncmpmx, icmps)
-    call wkvect('&&IRCERS.LTABL', 'V V L', ncmpmx, itabl)
+    AS_ALLOCATE(vi=ipcmps, size=ncmpmx*ncmpmx)
+    AS_ALLOCATE(vl=ltabl, size=ncmpmx)
     call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
 !
@@ -120,15 +133,15 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     call jeveuo(nomst, 'L', jtitr)
     titre = zk80(jtitr)
     do 1 i = 1, ncmpmx
-        zl(itabl-1+i)=.false.
+        ltabl(i)=.false.
  1  end do
     lnocen=.false.
     lcmp=.false.
 !
 !  --- RECHERCHE DES GRANDEURS SUPERTAB ----
 !
-    call irgags(ncmpmx, nomcmp, nomsym, nbchs, zk8(inochs),&
-                zi(ibcmps), zk8(inogds), zi(icmps))
+    call irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
+                zi(ibcmps), nomgds,ipcmps)
 !
 !
 !     NOM DE LA GRANDEUR SUPERTAB
@@ -137,11 +150,11 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
         if (nomgd .ne. 'VARI_R') then
             do 897 i = 1, nbchs
                 do 898 j = 1, zi(ibcmps+i-1)
-                    if (ncmps(1) .eq. zi(icmps-1+(i-1)*ncmpmx+j)) goto 899
+                    if (ncmps(1) .eq. ipcmps((i-1)*ncmpmx+j)) goto 899
 898              continue
 897          continue
 899          continue
-            nomgs=zk8(inogds-1+i)
+            nomgs=nomgds(i)
         endif
     endif
 ! --- DETERMINATION DU NOMBRE MAXIMUM DE SOUS-POINTS ---
@@ -173,7 +186,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
         if (ichs .gt. 1) then
             afaire = .false.
             do 2 icp = 1, zi(ibcmps-1+ichs)
-                afaire= (afaire.or.zl(itabl-1+(zi(icmps-1 +(ichs-1)*&
+                afaire= (afaire.or.ltabl((ipcmps((ichs-1)*&
                 ncmpmx+icp))))
  2          continue
             if (.not. afaire) goto 10
@@ -200,27 +213,27 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
             nbcmpt=6
             nomgs='VARI'
         else if (nbcmp.ne.0 .and. nomgd.ne.'VARI_R') then
-            call wkvect('&&IRCERS.SCMP_DATS', 'V V I', nbcmp, indats)
+            AS_ALLOCATE(vi=scmp_dats, size=nbcmp)
             ilig=nbcmp/6
             ires=nbcmp-ilig*6
             ni=0
-            zi(indats)=ni
+            scmp_dats(1)=ni
             if (ires .eq. 0) then
                 nbdats=ilig
                 do 901 i = 1, nbdats
                     zi(ibcmps+i-1)=6
                     ni=ni+6
-                    zi(indats+i)=ni
+                    scmp_dats(1+i)=ni
 901              continue
             else
                 nbdats=ilig+1
                 do 902 i = 1, nbdats-1
                     zi(ibcmps+i-1)=6
                     ni=ni+6
-                    zi(indats+i)=ni
+                    scmp_dats(1+i)=ni
 902              continue
                 zi(ibcmps+nbdats-1)=ires
-                zi(indats+nbdats)=ni+ires
+                scmp_dats(nbdats+1)=ni+ires
             endif
             nbcmpt=6
         else
@@ -229,7 +242,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                 zi(jspt-1+i)=1
  3          continue
             nbcmpt=zi(ibcmps-1+ichs)
-            nomgs=zk8(inogds-1+ichs)
+            nomgs=nomgds(ichs)
         endif
 !
 !
@@ -246,13 +259,13 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
             k=0
             l=0
             ll=0
-            call wkvect('&&IRCERS.PERM', 'V V I', nbcmp*nbgrel, iperm)
-            call wkvect('&&IRCERS.NBCMPS_GREL', 'V V I', nbgrel, inbcg)
-            call wkvect('&&IRCERS.POS', 'V V I', nbcmp*nbgrel, ipos)
-            call wkvect('&&IRCERS.NBCMPT_GREL', 'V V I', nbgrel, inbctg)
-            call wkvect('&&IRCERS.SNBCPS', 'V V I', nbgrel+1, isnbcs)
-            call wkvect('&&IRCERS.CMP_GREL', 'V V I', nbcmp*nbgrel, inper)
-            zi(isnbcs)=0
+            AS_ALLOCATE(vi=perm, size=nbcmp*nbgrel)
+            AS_ALLOCATE(vi=nbcmps_grel, size=nbgrel)
+            AS_ALLOCATE(vi=pos, size=nbcmp*nbgrel)
+            AS_ALLOCATE(vi=nbcmpt_grel, size=nbgrel)
+            AS_ALLOCATE(vi=snbcps, size=nbgrel+1)
+            AS_ALLOCATE(vi=cmp_grel, size=nbcmp*nbgrel)
+            snbcps(1)=0
             do 904 igrel = 1, nbgrel
                 mode=celd(celd(4+igrel)+2)
                 ipoin1=longr(igrel)
@@ -269,16 +282,16 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !             DANS LE  GREL PARMI LES COMPOSANTES SELECTIONNEES
                 do 905 icmpl = 1, nbcmp
                     if (exisdg(zi(iaec),ncmps(icmpl))) then
-                        zi(inper+k)=ncmps(icmpl)
+                        cmp_grel(1+k)=ncmps(icmpl)
                         k=k+1
                         ncmpg=ncmpg+1
                     endif
 905              continue
 !             SOMME DES COMPOSANTES SELECTIONNEES PAR GREL
-                zi(isnbcs+igrel)=k
+                snbcps(igrel+1)=k
 !             NOMBRE DE COMPOSANTES SELECTIONNEES PRESENTES
 !             DANS LE GREL
-                zi(inbcg+igrel-1)=ncmpg
+                nbcmps_grel(igrel)=ncmpg
                 if (igrel .eq. nbgrel .and. k .lt. nbcmp) then
                     call utmess('F', 'PREPOST_83')
                 endif
@@ -288,9 +301,9 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                         ncmpp=ncmpp+1
 !                   POSITIONS DES COMPOSANTES SELECTIONNEES PRESENTES
 !                   DANS LE GREL PARMI LES COMPOSANTES DU GREL
-                        do 915 j = 1, zi(inbcg+igrel-1)
-                            if (i .eq. zi(inper+j-1+zi(isnbcs+igrel-1))) then
-                                zi(ipos+l)=ncmpp
+                        do 915 j = 1, nbcmps_grel(igrel)
+                            if (i .eq. cmp_grel(1+j-1+snbcps(igrel))) then
+                                pos(1+l)=ncmpp
                                 l=l+1
                             endif
 915                      continue
@@ -298,14 +311,14 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !                   DANS LES DATASETS
                         do 789 j = 1, nbcmp
                             if (i .eq. ncmps(j)) then
-                                zi(iperm+ll)=j
+                                perm(ll+1)=j
                                 ll=ll+1
                             endif
 789                      continue
                     endif
 906              continue
 !             NOMBRE DE COMPOSANTES DANS LE GREL
-                zi(inbctg+igrel-1)=ncmpp
+                nbcmpt_grel(igrel)=ncmpp
 904          continue
         endif
 !
@@ -326,7 +339,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
             if (nbcmp .ne. 0 .and. nomgd .ne. 'VARI_R') then
                 do 907 icp = 1, zi(ibcmps+ida-1)
-                    nocmp=nocmpl(zi(indats+ida-1)+icp)
+                    nocmp=nocmpl(scmp_dats(ida)+icp)
                     iutil=lxlgut(nocmp)
                     ifin = idebu+iutil
                     texte(idebu:ifin)=nocmp(1:iutil)//' '
@@ -343,7 +356,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             else
                                 entier=nucmp((ida-1)*6+ispt)
                             endif
-                            nocmp = nomcmp(zi(icmps-1+(ichs-1)*ncmpmx+ icp))
+                            nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+ icp))
                             iutil=lxlgut(nocmp)
                             call codent(entier, 'G', toto)
                             ifin = idebu+iutil+3
@@ -352,7 +365,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             idebu = ifin + 1
  6                      continue
                     else
-                        nocmp = nomcmp(zi(icmps-1+(ichs-1)*ncmpmx+icp) )
+                        nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp) )
                         iutil=lxlgut(nocmp)
                         ifin = idebu+iutil
                         texte(idebu:ifin)=nocmp(1:iutil)//' '
@@ -390,7 +403,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
                 if (nbcmp .ne. 0 .and. nomgd .ne. 'VARI_R') then
                     nsca=nscal
-                    if (zi(inbcg+igrel-1) .ne. 0) then
+                    if (nbcmps_grel(igrel) .ne. 0) then
                         goto 62
                     else
                         goto 12
@@ -413,11 +426,11 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                 do 23 i = 1, ncmpmx
                     if (exisdg(zi(iaec),i)) then
                         ncmpp=ncmpp+1
-                        if (ichs .eq. 1) zl(itabl-1+i)=.true.
+                        if (ichs .eq. 1) ltabl(i)=.true.
                     endif
 23              continue
                 do 61 i = 1, zi(ibcmps-1+ichs)
-                    if (exisdg(zi(iaec),zi(icmps-1+(ichs-1) *ncmpmx+i) )) goto 62
+                    if (exisdg(zi(iaec),ipcmps((ichs-1) *ncmpmx+i) )) goto 62
 61              continue
                 goto 12
 62              continue
@@ -459,7 +472,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
                             if (nbcmp .ne. 0 .and. nomgd .ne. 'VARI_R') then
 !
-                                npcalc=nscal/zi(inbctg+igrel-1)
+                                npcalc=nscal/nbcmpt_grel(igrel)
                                 nnoe = nbnoma(iel)
                                 itype = typma(iel)
                                 call jenuno(jexnum('&CATA.TM.NOMTM', itype), ktype)
@@ -496,20 +509,20 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                     ASSERT(inoa.ne.0)
 !
                                     do 561 icou = 1, nbcou
-                                        jj=iachml-1+zi(inbctg+igrel-1)&
-                                        *(inoa-1)+ (icou-1)*zi(inbctg+&
+                                        jj=iachml-1+nbcmpt_grel(igrel)&
+                                        *(inoa-1)+ (icou-1)*nbcmpt_grel(1+&
                                         igrel-1)*nnoe
 !
                                         do 521 i = 1, nbcmpt
                                             zr(irvn-1+i)=0.d0
 521                                      continue
 !
-                                        do 509 icm = 1, zi(inbcg+igrel-1)
-                                            j=zi(iperm+zi(isnbcs+igrel-1)+&
+                                        do 509 icm = 1, nbcmps_grel(igrel)
+                                            j=perm(1+snbcps(igrel)+&
                                         icm-1)
                                             if (j .le. 6*ida .and. j .ge. (6* ida-5)) then
                                                 jt=j-6*(ida-1)
-                                                ic=zi(ipos+zi(isnbcs+igrel-1)+&
+                                                ic=pos(1+snbcps(igrel)+&
                                         icm-1)
                                                 zr(irvn-1+jt)= vale(jj+ic)
                                             endif
@@ -585,7 +598,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                             if (exisdg(zi(iaec),icmp)) then
                                                 ic=ic+1
                                                 do 43 icms = 1, zi(ibcmps-1+ichs)
-                                                    icmsup = zi( icmps-1+(ichs-1 )* ncmpmx+icms )
+                                                    icmsup = ipcmps((ichs-1 )* ncmpmx+icms )
                                                     if (icmp .eq. icmsup) then
                                                         impre=1
                                                         do 26 isp = 1, zi(jspt-1+ida)
@@ -626,22 +639,22 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                         else if (loc.eq.'ELGA'.or.loc.eq.'ELEM') then
 !
                             if (nbcmp .ne. 0 .and. nomgd .ne. 'VARI_R') then
-                                nbpg=nscal/zi(inbctg+igrel-1)
+                                nbpg=nscal/nbcmpt_grel(igrel)
 !
                                 do 908 i = 1, nbcmpt
                                     zr(irvg-1+i)=0.d0
 908                              continue
 !
-                                do 909 icm = 1, zi(inbcg+igrel-1)
-                                    j=zi(iperm+zi(isnbcs+igrel-1)+icm-&
+                                do 909 icm = 1, nbcmps_grel(igrel)
+                                    j=perm(1+snbcps(igrel)+icm-&
                                     1)
 !
                                     if (j .le. 6*ida .and. j .ge. (6*ida- 5)) then
                                         jt=j-6*(ida-1)
 !
                                         do 910 ipg = 1, nbpg
-                                            jj=zi(inbctg+igrel-1)*(ipg-1)+&
-                                        zi(ipos+zi(isnbcs+igrel-1)+&
+                                            jj=nbcmpt_grel(igrel)*(ipg-1)+&
+                                        pos(1+snbcps(igrel)+&
                                         icm-1)
                                             zr(irvg-1+jt)=zr(irvg-1+jt)+&
                                         vale(iachml-1+jj)
@@ -679,7 +692,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                     if (exisdg(zi(iaec),icmp)) then
                                         ic=ic+1
                                         do 37 icms = 1, zi(ibcmps-1+ichs)
-                                            icmsup = zi( icmps-1+(ichs-1 )* ncmpmx+icms )
+                                            icmsup = ipcmps((ichs-1 )* ncmpmx+icms )
                                             if (icmp .eq. icmsup) then
                                                 impre=1
                                                 do 36 isp = 1, zi(jspt-1+ida)
@@ -743,17 +756,17 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     call jedetr('&&IRCERS.VALGAU')
     call jedetr('&&IRCERS.SOUS_PT')
     call jedetr('&&IRCERS.ENT_COD')
-    call jedetr('&&IRCERS.NOMGDS')
-    call jedetr('&&IRCERS.NOMCHS')
+    AS_DEALLOCATE(vk8=nomgds)
+    AS_DEALLOCATE(vk8=nomchs)
     call jedetr('&&IRCERS.NBCMPS')
-    call jedetr('&&IRCERS.IPCMPS')
-    call jedetr('&&IRCERS.LTABL')
-    call jedetr('&&IRCERS.PERM')
-    call jedetr('&&IRCERS.NBCMPS_GREL')
-    call jedetr('&&IRCERS.POS')
-    call jedetr('&&IRCERS.NBCMPT_GREL')
-    call jedetr('&&IRCERS.SNBCPS')
-    call jedetr('&&IRCERS.CMP_GREL')
-    call jedetr('&&IRCERS.SCMP_DATS')
+    AS_DEALLOCATE(vi=ipcmps)
+    AS_DEALLOCATE(vl=ltabl)
+    AS_DEALLOCATE(vi=perm)
+    AS_DEALLOCATE(vi=nbcmps_grel)
+    AS_DEALLOCATE(vi=pos)
+    AS_DEALLOCATE(vi=nbcmpt_grel)
+    AS_DEALLOCATE(vi=snbcps)
+    AS_DEALLOCATE(vi=cmp_grel)
+    AS_DEALLOCATE(vi=scmp_dats)
     call jedema()
 end subroutine

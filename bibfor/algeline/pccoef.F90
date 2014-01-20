@@ -32,7 +32,10 @@ subroutine pccoef(n, in, ip, ac, icpl,&
 #include "jeveux.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     real(kind=8) :: ac(*)
+    integer :: n
     integer :: in(n)
     integer(kind=4) :: ip(*), icpc(*)
     real(kind=8) :: acpc(*), cx(n)
@@ -46,14 +49,15 @@ subroutine pccoef(n, in, ip, ac, icpl,&
 ! ==========================
 !   MISE A 0 DE ACPC
 !-----------------------------------------------------------------------
-    integer :: i, imp, j, jind, k, k1, k2
-    integer :: kk, kk1, kk2, n
+    integer :: i, imp, j,  k, k1, k2
+    integer :: kk, kk1, kk2
+    integer, pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
     kk2 = icpl(n-1)
     do 10 kk = 1, kk2
         acpc(kk) = 0.d0
 10  end do
-    call wkvect('&&PCCOEF.IND', 'V V I', n, jind)
+    AS_ALLOCATE(vi=ind, size=n)
 !
     acpc(1) = ac(1)
     do 40 i = 2, n
@@ -63,14 +67,14 @@ subroutine pccoef(n, in, ip, ac, icpl,&
         k2 = in(i)
         do 20 k = k1, k2 - 1
             j = ip(k)
-            zi(jind-1+j) = i
+            ind(j) = i
             cx(j) = ac(k)
 20      continue
         kk1 = icpl(i-2) + 1
         kk2 = icpl(i-1)
         do 30 kk = kk1, kk2 - 1
             j = icpc(kk)
-            if (zi(jind-1+j) .eq. i) acpc(kk) = cx(j)
+            if (ind(j) .eq. i) acpc(kk) = cx(j)
 30      continue
         acpc(kk2) = ac(k2)
 40  end do
@@ -79,6 +83,6 @@ subroutine pccoef(n, in, ip, ac, icpl,&
     if (imp .eq. 1) then
 !       WRITE (6,*) ' FIN DU S-P PCCOEF'
     endif
-    call jedetr('&&PCCOEF.IND')
+    AS_DEALLOCATE(vi=ind)
 !
 end subroutine

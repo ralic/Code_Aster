@@ -54,6 +54,8 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: itypfl, nivpar, nivdef, nbm, npv, nuor(nbm), jvcn, jven
     integer :: nive, nbval, lfsvi, pas, jconn, jrap
@@ -63,8 +65,8 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     real(kind=8) :: vrmin, vrmax, vrmin1, vrmin2, vrmax1, vrmax2
     real(kind=8) :: vmoy, vmoyto, reduit, rappor, rappo2
 !
-    integer :: jtrav1, jtrav2, jtrav3, jtrav4, jvit1, jvit2, jzone
-    integer :: jtr1, jtr2, jvrzo, lfsvr, jcste
+    integer ::     jvit1, jvit2, jzone
+    integer :: jtr1, jtr2, jvrzo, lfsvr
     integer :: lprofv, lnoe, iret, modul, modul2
     character(len=3) :: i3
     character(len=8) :: k8bid, nomsym, nomcmp(6), formar, numzo, nbpzon
@@ -84,10 +86,16 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifr, ik, im, imod, ind
-    integer :: iv, j, jprofv, jtrav5, k, l1
+    integer :: iv, j, jprofv,  k, l1
     integer :: l2, l3, n1, n2, npasv, nzone
 !
     real(kind=8) :: amor1, bmax, bmin, dif1, freq1, rbid, vred
+    real(kind=8), pointer :: cste(:) => null()
+    character(len=80), pointer :: trav1(:) => null()
+    character(len=80), pointer :: trav2(:) => null()
+    character(len=80), pointer :: trav3(:) => null()
+    character(len=80), pointer :: trav4(:) => null()
+    character(len=80), pointer :: trav5(:) => null()
 !
 !-----------------------------------------------------------------------
     data           nomcmp /'DX      ','DY      ','DZ      ',&
@@ -183,7 +191,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                     ctrav2((1+(30*nzone)+i):(1+(30*nzone)+i))='*'
 60              continue
                 ctrav2((1+(30*nzone)+181):(1+(30*nzone)+181))='*'
-                call wkvect('&&FLUIMP.CSTE', 'V V R', nzone, jcste)
+                AS_ALLOCATE(vr=cste, size=nzone)
             endif
         endif
 !
@@ -226,10 +234,10 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                     chazv6 = '| '
                     chazv7 = '|               |               *'
 !
-                    call wkvect('&&FLUIMP.TRAV1', 'V V K80', nzone, jtrav1)
-                    call wkvect('&&FLUIMP.TRAV2', 'V V K80', nzone, jtrav2)
-                    call wkvect('&&FLUIMP.TRAV3', 'V V K80', nzone, jtrav3)
-                    call wkvect('&&FLUIMP.TRAV4', 'V V K80', nzone, jtrav4)
+                    AS_ALLOCATE(vk80=trav1, size=nzone)
+                    AS_ALLOCATE(vk80=trav2, size=nzone)
+                    AS_ALLOCATE(vk80=trav3, size=nzone)
+                    AS_ALLOCATE(vk80=trav4, size=nzone)
 !
                     call jeveuo('&&COEFMO.VRZO', 'L', jvrzo)
 !
@@ -268,35 +276,35 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                             xvmoy = '      -      '
                         endif
 !
-                        zk80(jtrav1+j-1) = chazv2(1:8)//numzo(1:2)// '          *'
-                        zk80(jtrav2+j-1) = chazp3(1:15)//xvmoy//'*'
-                        zk80(jtrav3+j-1) = chazp5(1:23)//nbpzon(1:4)// ' *'
-                        zk80(jtrav4+j-1) = chazv6(1:2 )//xvmin//' | ' //xvmax//' *'
+                        trav1(j) = chazv2(1:8)//numzo(1:2)// '          *'
+                        trav2(j) = chazp3(1:15)//xvmoy//'*'
+                        trav3(j) = chazp5(1:23)//nbpzon(1:4)// ' *'
+                        trav4(j) = chazv6(1:2 )//xvmin//' | ' //xvmax//' *'
 15                  continue
 !
                     write(ifr,3001) ' *',chav11,chav11,chav11,chav11,&
                     (chazp1,chazv1,j=1,nzone)
                     write(ifr,3001) ' *',chav12,chav12,chav12,chav13,&
-                    (chazp2,zk80(jtrav1+j-1),j=1,nzone)
+                    (chazp2,trav1(j),j=1,nzone)
                     write(ifr,3001) ' *',chav11,chav11,chav11,chav11,&
                     (chazp1,chazv1,j=1,nzone)
                     write(ifr,3001) ' *',chav13,chav13,chav13,chav13,&
-                    (zk80(jtrav2+j-1),chazv3,j=1,nzone)
+                    (trav2(j),chazv3,j=1,nzone)
                     write(ifr,3001) ' *',chav21,chav21,chav22,chav23,&
                     (chazp4,chazv4,j=1,nzone)
                     write(ifr,3001) ' *',chav31,chav32,chav33,chav34,&
-                    (zk80(jtrav3+j-1),chazv5,j=1,nzone)
+                    (trav3(j),chazv5,j=1,nzone)
                     write(ifr,3001) ' *',chav13,chav13,chav13,chav13,&
-                    (chazp6,zk80(jtrav4+j-1),j=1,nzone)
+                    (chazp6,trav4(j),j=1,nzone)
                     write(ifr,3001) ' *',chav13,chav13,chav13,chav13,&
                     (chazp7,chazv7,j=1,nzone)
                     write(ifr,3001) ' *',chav11,chav11,chav11,chav11,&
                     (chazp1,chazv1,j=1,nzone)
 !
-                    call jedetr('&&FLUIMP.TRAV1')
-                    call jedetr('&&FLUIMP.TRAV2')
-                    call jedetr('&&FLUIMP.TRAV3')
-                    call jedetr('&&FLUIMP.TRAV4')
+                    AS_DEALLOCATE(vk80=trav1)
+                    AS_DEALLOCATE(vk80=trav2)
+                    AS_DEALLOCATE(vk80=trav3)
+                    AS_DEALLOCATE(vk80=trav4)
                 endif
             else
                 write(ifr,2001) ' *',chav11,chav11,chav11,chav11
@@ -374,7 +382,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                         xfreq1//' * '//xamor//' *'
 !
                         if (itypfl .eq. 1) then
-                            call wkvect('&&FLUIMP.TRAV5', 'V V K80', 10, jtrav5)
+                            AS_ALLOCATE(vk80=trav5, size=10)
                             call jeveuo('&&PACOUC.TRAV1', 'L', jtr1)
                             call jeveuo('&&PACOUC.TRAV2', 'L', jtr2)
 !
@@ -410,13 +418,13 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                                         xbmax = ' '//xbmax
                                     endif
                                 endif
-                                zk80(jtrav5+ik-1) =' '//xl1(1:8)//' '//xl2(1:8)&
+                                trav5(ik) =' '//xl1(1:8)//' '//xl2(1:8)&
                                     &//' '//xl3(1:8)//' | '//xbmin//' | '&
                                     &//xbmax//' *'
 25                          continue
-                            write (ifr,3002) chav40,(zk80(jtrav5+j-1),&
+                            write (ifr,3002) chav40,(trav5(j),&
                             j=1,nzone)
-                            call jedetr('&&FLUIMP.TRAV5')
+                            AS_DEALLOCATE(vk80=trav5)
                         else
                             write (ifr,2002) chav40
                         endif
@@ -507,10 +515,10 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                             modul2=modul*zi(lfsvi+1+nzone+j)
                             pas=(mod((i-1),modul2))/modul
                         endif
-                        zr(jcste-1+j)=zr(lfsvr+3+2*(j-1))+pas*&
+                        cste(j)=zr(lfsvr+3+2*(j-1))+pas*&
                         (zr(lfsvr+3+2*(j-1)+1)-zr(lfsvr+3+2*(j-1)))&
                         /(zi(lfsvi+1+nzone+j)-1)
-                        call codree(zr(jcste-1+j), 'E', ccste)
+                        call codree(cste(j), 'E', ccste)
                         ctrav1((3+(30*(j-1))):(3+(30*j)))='  '//ccste//'  *'
 !
 110                  continue
@@ -519,7 +527,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                     rappor=zr(jrap-1+(im-1)*nbval+i)
                     rappo2=zr(jrap-1+nbm*nbval+(im-1)*nbval+i)
 !
-                    write(ifr,5006) zr(jcste), zr(jvcn-1+(im-1)*nbval+&
+                    write(ifr,5006) cste, zr(jvcn-1+(im-1)*nbval+&
                     i), reduit,rappor,rappo2
 !
 100              continue
@@ -569,7 +577,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 30      continue
 !
     endif
-    call jedetr('&&FLUIMP.CSTE')
+    AS_DEALLOCATE(vr=cste)
     call jedema()
 ! --- FORMATS
 !

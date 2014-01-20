@@ -14,6 +14,8 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: nomcom, chacc(*), chamca(*)
     integer :: nbordr, ifi, iocc, ordr(*), nbacc, nbchca
     integer :: nbk16, nive
@@ -55,7 +57,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
     integer :: maxlen
 !-----------------------------------------------------------------------
     integer :: i, iad, ideu, ierd, ior, irest
-    integer :: iret, iseize, itype, iun, izero, j, jenti
+    integer :: iret, iseize, itype, iun, izero, j
     integer :: jlast, jposi, jtabl, nbobj, nfor, np
 !
 !-----------------------------------------------------------------------
@@ -63,6 +65,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
     character(len=maxlen) :: chaine
     character(len=72) :: ctmp
     integer :: nbcara, iob, il
+    integer, pointer :: entier(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -168,10 +171,10 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
 !
 ! ECRITURE DE ENREGISTREMENT ASSOCIE A TOUS LES NUMEROS D'ORDRE
 !
-        call wkvect('&&IRPACA.ENTIER', 'V V I', ideu*nbordr, jenti)
+        AS_ALLOCATE(vi=entier, size=ideu*nbordr)
         do ior = 1, nbordr
-            zi(jenti-1+(ior-1)*2+1) = ior
-            zi(jenti-1+(ior-1)*2+2) = ordr(ior)
+            entier((ior-1)*2+1) = ior
+            entier((ior-1)*2+2) = ordr(ior)
         end do
         itype = 26
         write (ifi,'(A,I4)') ' ENREGISTREMENT DE TYPE',ideu
@@ -184,7 +187,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
             'NBRE OBJETS NOMMES',izero,'NBRE OBJETS',2*nbordr
             write(ifi,'(I8)') 2*nbordr
         endif
-        write(ifi,'(7I11)') (zi(jenti-1+ior),ior=1,2*nbordr)
+        write(ifi,'(7I11)') (entier(ior),ior=1,2*nbordr)
         zi(jlast-1+1) = zi(jlast-1+1)+2*nbordr
     endif
     zi(jtabl-1+1) = 27
@@ -259,6 +262,6 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
         endif
     end do
     call jedetr('&&IRPACA.POSI.CASTEM')
-    call jedetr('&&IRPACA.ENTIER')
+    AS_DEALLOCATE(vi=entier)
     call jedema()
 end subroutine

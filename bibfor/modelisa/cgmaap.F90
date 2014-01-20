@@ -14,6 +14,8 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
@@ -60,11 +62,12 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 !
 !
     integer :: nbmala, i, j, jmala, jco, iacnx, ilcnx, ii, nbmc
-    integer :: jnoeu, nbno, nno, jlmas, idlist, ima, n1
+    integer ::  nbno, nno, jlmas, idlist, ima, n1
     integer :: ityp, jnnma, nuno, j1, k, nbnot
     character(len=8) :: noma, motcle(2), tymocl(2), typma
     character(len=16) :: motfac, typapp
     character(len=24) :: listrv, lismai, mesnoe, lismas, lnnma
+    integer, pointer :: noeuds(:) => null()
 !
 !     -----------------------------------------------------------------
 !
@@ -113,10 +116,10 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
                 nbmc, motcle, tymocl, mesnoe, nbno)
     call jeveuo(mesnoe, 'L', j1)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
-    call wkvect('&&CGMAAP.NOEUDS', 'V V I', nbnot, jnoeu)
+    AS_ALLOCATE(vi=noeuds, size=nbnot)
     do k = 1, nbno
         nuno=zi(j1-1+k)
-        zi(jnoeu-1+nuno)=1
+        noeuds(nuno)=1
     end do
 !
     call jeveuo(noma//'.CONNEX', 'L', iacnx)
@@ -173,7 +176,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
         ii=0
         do j = 1, nno
             nuno=zi(jco+j-1)
-            if (zi(jnoeu-1+nuno) .eq. 1) ii=ii+1
+            if (noeuds(nuno) .eq. 1) ii=ii+1
         end do
 !
         if (typapp .eq. 'TOUT' .or. typapp .eq. 'SOMMET') then
@@ -206,7 +209,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
     call jedetr(lismas)
     call jedetr(mesnoe)
     call jedetr(lnnma)
-    call jedetr('&&CGMAAP.NOEUDS')
+    AS_DEALLOCATE(vi=noeuds)
 !
     call jedema()
 !

@@ -25,6 +25,8 @@ subroutine pemain(resu, modele, mate, cara, nh,&
 #include "asterfort/utmess.h"
 #include "asterfort/vtgpld.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, cara, deform
@@ -49,7 +51,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
 !     TRAITEMENT DU MOT CLE-FACTEUR "MASS_INER"
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, nbparr, ibid, iret, lvale, iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
+    integer :: mxvale, nbparr, ibid, iret,  iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
     integer :: nbmail, jma, im, nume, nb, ifm, niv, mxval1, nbpar1, mxval2, nbpar2, iorig, nre
     integer :: icage
     parameter (mxval1=16,nbpar1=18)
@@ -62,6 +64,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
     character(len=24) :: chgeom, chgeo2, chcara(18), chharm, ligrel
     complex(kind=8) :: c16b
     integer :: iarg
+    real(kind=8), pointer :: trav1(:) => null()
 !
     data noparr/'LIEU','ENTITE','MASSE','CDG_X','CDG_Y','CDG_Z',&
      &     'IX_G','IY_G','IZ_G','IXY_G','IXZ_G','IYZ_G','IX_PRIN_G',&
@@ -154,7 +157,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
     call tbcrsd(resu, 'G')
     call tbajpa(resu, nbparr, noparr, typarr)
 !
-    call wkvect('&&PEMAIN.TRAV1', 'V V R', mxvale, lvale)
+    AS_ALLOCATE(vr=trav1, size=mxvale)
     do 50 iocc = 1, nbocc
         iorig = 0
         orig(1) = zero
@@ -173,11 +176,11 @@ subroutine pemain(resu, modele, mate, cara, nh,&
                         nbret=nr)
         endif
         if (nt .ne. 0) then
-            call pemica(chelem, mxvale, zr(lvale), 0, [ibid],&
+            call pemica(chelem, mxvale, trav1, 0, [ibid],&
                         orig, iorig, icage)
             valk(1) = noma
             valk(2) = 'TOUT'
-            call tbajli(resu, nbparr, noparr, [ibid], zr(lvale),&
+            call tbajli(resu, nbparr, noparr, [ibid], trav1,&
                         [c16b], valk, 0)
         endif
         if (ng .ne. 0) then
@@ -198,10 +201,10 @@ subroutine pemain(resu, modele, mate, cara, nh,&
                     goto 30
                 endif
                 call jeveuo(jexnom(noma//'.GROUPEMA', zk24(jgr+ig-1)), 'L', jad)
-                call pemica(chelem, mxvale, zr(lvale), nbma, zi(jad),&
+                call pemica(chelem, mxvale, trav1, nbma, zi(jad),&
                             orig, iorig, icage)
                 valk2(1) = zk24(jgr+ig-1)
-                call tbajli(resu, nbparr, noparr, [ibid], zr(lvale),&
+                call tbajli(resu, nbparr, noparr, [ibid], trav1,&
                             [c16b], valk2, 0)
 30          continue
             call jedetr('&&PEMAIN_GROUPM')
@@ -219,10 +222,10 @@ subroutine pemain(resu, modele, mate, cara, nh,&
                     goto 40
                 endif
                 call jenonu(jexnom(mlgnma, zk8(jma+im-1)), nume)
-                call pemica(chelem, mxvale, zr(lvale), 1, [nume],&
+                call pemica(chelem, mxvale, trav1, 1, [nume],&
                             orig, iorig, icage)
                 valk(1) = zk8(jma+im-1)
-                call tbajli(resu, nbparr, noparr, [ibid], zr(lvale),&
+                call tbajli(resu, nbparr, noparr, [ibid], trav1,&
                             [c16b], valk, 0)
 40          continue
             call jedetr('&&PEMAIN_MAILLE')
@@ -232,7 +235,7 @@ subroutine pemain(resu, modele, mate, cara, nh,&
 ! --- MENAGE
     call detrsd('CHAM_ELEM', '&&PEMAIN.MASS_INER')
     call detrsd('CHAMP_GD', '&&PEMAIN.CH_GEOMER')
-    call jedetr('&&PEMAIN.TRAV1')
+    AS_DEALLOCATE(vr=trav1)
 !
 60  continue
 !

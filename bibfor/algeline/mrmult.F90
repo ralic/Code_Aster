@@ -13,6 +13,8 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 #include "asterfort/mtdsc2.h"
 #include "asterfort/mtmchc.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     character(len=*) :: cumul
@@ -57,8 +59,10 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic, kmatd
     character(len=19) :: matas
-    integer :: neq, jtemp, neql, jrefa, jsmhc, jsmdi, jvtemp
+    integer :: neq,  neql, jrefa, jsmhc, jsmdi
     logical :: lmatd
+    real(kind=8), pointer :: vectmp(:) => null()
+    real(kind=8), pointer :: xtemp(:) => null()
 !     ---------------------------------------------------------------
 !
     prepo2=prepos
@@ -69,7 +73,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
     call jeveuo(matas//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
     neq=zi(lmat+2)
-    call wkvect('&&MRMULT.VECTMP', 'V V R', neq, jvtemp)
+    AS_ALLOCATE(vr=vectmp, size=neq)
 !
     call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
     call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
@@ -80,8 +84,8 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 !     ----------------------------
     if (kmpic .eq. 'NON') then
         if (cumul .eq. 'CUMU') then
-            call wkvect('&&MRMULT.XTEMP', 'V V R', nbvect*neq, jtemp)
-            call dcopy(nbvect*neq, xsol, 1, zr(jtemp), 1)
+            AS_ALLOCATE(vr=xtemp, size=nbvect*neq)
+            call dcopy(nbvect*neq, xsol, 1, xtemp, 1)
         endif
 !
         call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
@@ -94,14 +98,14 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
         endif
         call mrmmvr('ZERO', lmat, zi(jsmdi), zi4(jsmhc), lmatd,&
                     neq, neql, vect, xsol, nbvect,&
-                    zr(jvtemp), prepo2)
+                    vectmp, prepo2)
 !       ON DOIT COMMUNIQUER POUR OBTENIR LE PRODUIT MAT-VEC 'COMPLET'
         call asmpi_comm_vect('MPI_SUM', 'R', nbval=nbvect*neq, vr=xsol)
 !
         if (cumul .eq. 'CUMU') then
-            call daxpy(nbvect*neq, 1.d0, zr(jtemp), 1, xsol,&
+            call daxpy(nbvect*neq, 1.d0, xtemp, 1, xsol,&
                        1)
-            call jedetr('&&MRMULT.XTEMP')
+            AS_DEALLOCATE(vr=xtemp)
         endif
 !
 !
@@ -112,10 +116,10 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
         neql=0
         call mrmmvr(cumul, lmat, zi(jsmdi), zi4(jsmhc), lmatd,&
                     neq, neql, vect, xsol, nbvect,&
-                    zr(jvtemp), prepo2)
+                    vectmp, prepo2)
     endif
 !
 !
-    call jedetr('&&MRMULT.VECTMP')
+    AS_DEALLOCATE(vr=vectmp)
     call jedema()
 end subroutine

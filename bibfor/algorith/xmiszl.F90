@@ -36,6 +36,8 @@ subroutine xmiszl(vecinc, defico, noma)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=19) :: vecinc
     character(len=24) :: defico
@@ -62,7 +64,7 @@ subroutine xmiszl(vecinc, defico, noma)
     integer :: ntmae, jconx1, jconx2
     integer :: numno, nummae, nno, posmae
     integer :: ino, imae, i
-    integer :: ibid, nbno, jtab, zmesx
+    integer :: ibid, nbno,  zmesx
     logical :: lcumul(4)
     real(kind=8) :: lcoefr(4)
     character(len=19) :: prno, lichs(4)
@@ -73,6 +75,7 @@ subroutine xmiszl(vecinc, defico, noma)
     integer :: jmaesx
     complex(kind=8) :: c16bid
     character(len=8) :: nommae
+    integer, pointer :: vnno(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,7 +96,7 @@ subroutine xmiszl(vecinc, defico, noma)
 !
 ! --- TABLEAU TEMPORAIRE POUR STOCKER NUMERO NOEUDS ESCLAVES
 !
-    call wkvect('&&XMISZL.NNO', 'V V I', 20*ntmae, jtab)
+    AS_ALLOCATE(vi=vnno, size=20*ntmae)
 !
     do imae = 1, ntmae
         posmae = imae
@@ -103,10 +106,10 @@ subroutine xmiszl(vecinc, defico, noma)
         do ino = 1, nno
             numno = zi(jconx1-1+zi(jconx2+nummae-1)+ino-1)
             do i = 1, nbno
-                if (numno .eq. zi(jtab+i-1)) goto 20
+                if (numno .eq. vnno(i)) goto 20
             end do
             nbno = nbno+1
-            zi(jtab+nbno-1) = numno
+            vnno(nbno) = numno
  20         continue
         end do
     end do
@@ -123,11 +126,11 @@ subroutine xmiszl(vecinc, defico, noma)
 !
 ! --- REDUCTION CHAM_NO_S SUR LAGS_C/LAG_F1/LAG_F2
 !
-    call cnsred(cns1, nbno, zi(jtab), 1, ['LAGS_C'],&
+    call cnsred(cns1, nbno, vnno, 1, ['LAGS_C'],&
                 'V', cns1b)
-    call cnsred(cns1, nbno, zi(jtab), 1, ['LAGS_F1'],&
+    call cnsred(cns1, nbno, vnno, 1, ['LAGS_F1'],&
                 'V', cns1d)
-    call cnsred(cns1, nbno, zi(jtab), 1, ['LAGS_F2'],&
+    call cnsred(cns1, nbno, vnno, 1, ['LAGS_F2'],&
                 'V', cns1e)
     call jeveuo(cns1b//'.CNSV', 'E', jcns1b)
     call jeveuo(cns1d//'.CNSV', 'E', jcns1d)
@@ -136,9 +139,9 @@ subroutine xmiszl(vecinc, defico, noma)
 ! --- MISE A ZERO LAGRANGIENS
 !
     do ino = 1, nbno
-        zr(jcns1b-1+zi(jtab+ino-1)) = 0.d0
-        zr(jcns1d-1+zi(jtab+ino-1)) = 0.d0
-        zr(jcns1e-1+zi(jtab+ino-1)) = 0.d0
+        zr(jcns1b-1+vnno(ino)) = 0.d0
+        zr(jcns1d-1+vnno(ino)) = 0.d0
+        zr(jcns1e-1+vnno(ino)) = 0.d0
     end do
 !
 ! --- FUSION CHAM_NO_S POUR CREATION CHAM_NO_S CNS1C
@@ -171,7 +174,7 @@ subroutine xmiszl(vecinc, defico, noma)
     call detrsd('CHAM_NO_S', cns1c)
     call detrsd('CHAM_NO_S', cns1d)
     call detrsd('CHAM_NO_S', cns1e)
-    call jedetr('&&XMISZL.NNO')
+    AS_DEALLOCATE(vi=vnno)
 !
     call jedema()
 end subroutine

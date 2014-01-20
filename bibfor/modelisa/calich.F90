@@ -58,6 +58,8 @@ subroutine calich(chargz)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
 ! -----  ARGUMENTS
@@ -76,11 +78,17 @@ subroutine calich(chargz)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, idcoec, idcoer, idddl, ideeq, idimen
-    integer :: idirec, idnoeu, idvale, iequa, ino, inocmp
+    integer :: i, ibid,    ideeq
+    integer ::   idvale, iequa, ino, inocmp
     integer :: iocc, iret, k, nb, nbcmp, nbec, nbnoeu
     integer :: nbterm, nequa, nliai, nucmp
     real(kind=8) :: beta, vale, zero
+    complex(kind=8), pointer :: coec(:) => null()
+    real(kind=8), pointer :: coer(:) => null()
+    integer, pointer :: dime(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    character(len=8), pointer :: lisddl(:) => null()
+    character(len=8), pointer :: lisno(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -220,17 +228,17 @@ subroutine calich(chargz)
 ! ---   DE LA LISTE_RELA
 !       ----------------
 ! ---     VECTEUR DU NOM DES NOEUDS
-        call wkvect('&&CALICH.LISNO', 'V V K8', nbterm, idnoeu)
+        AS_ALLOCATE(vk8=lisno, size=nbterm)
 ! ---     VECTEUR DU NOM DES DDLS
-        call wkvect('&&CALICH.LISDDL', 'V V K8', nbterm, idddl)
+        AS_ALLOCATE(vk8=lisddl, size=nbterm)
 ! ---      VECTEUR DES COEFFICIENTS REELS
-        call wkvect('&&CALICH.COER', 'V V R', nbterm, idcoer)
+        AS_ALLOCATE(vr=coer, size=nbterm)
 ! ---     VECTEUR DES COEFFICIENTS COMPLEXES
-        call wkvect('&&CALICH.COEC', 'V V C', nbterm, idcoec)
+        AS_ALLOCATE(vc=coec, size=nbterm)
 ! ---     VECTEUR DES DIRECTIONS DES DDLS A CONTRAINDRE
-        call wkvect('&&CALICH.DIRECT', 'V V R', 3*nbterm, idirec)
+        AS_ALLOCATE(vr=direct, size=3*nbterm)
 ! ---     VECTEUR DES DIMENSIONS DE CES DIRECTIONS
-        call wkvect('&&CALICH.DIME', 'V V I', nbterm, idimen)
+        AS_ALLOCATE(vi=dime, size=nbterm)
 !
 ! ---   COLLECTION DES NOMS DES NOEUDS DU MAILLAGE
 !       ------------------------------------------
@@ -266,9 +274,9 @@ subroutine calich(chargz)
                 if (vale .ne. zero) then
                     k = k + 1
                     nomcmp = zk8(inocmp+nucmp-1)
-                    zk8(idnoeu+k-1) = nomnoe
-                    zk8(idddl+k-1) = nomcmp
-                    zr(idcoer+k-1) = vale
+                    lisno(k) = nomnoe
+                    lisddl(k) = nomcmp
+                    coer(k) = vale
                 endif
             endif
 !
@@ -278,18 +286,18 @@ subroutine calich(chargz)
 !
 ! ---   AFFECTATION DE LA RELATION A LA LISTE_RELA  :
 !       ------------------------------------------
-        call afrela(zr(idcoer), zc(idcoec), zk8(idddl), zk8(idnoeu), zi(idimen),&
-                    zr(idirec), nbterm, beta, betac, betaf,&
+        call afrela(coer, coec, lisddl, lisno, dime,&
+                    direct, nbterm, beta, betac, betaf,&
                     typcoe, typval, typlag, 0.d0, lisrel)
 !
 ! ---   MENAGE :
 !       ------
-        call jedetr('&&CALICH.LISNO')
-        call jedetr('&&CALICH.LISDDL')
-        call jedetr('&&CALICH.COER')
-        call jedetr('&&CALICH.COEC')
-        call jedetr('&&CALICH.DIRECT')
-        call jedetr('&&CALICH.DIME')
+        AS_DEALLOCATE(vk8=lisno)
+        AS_DEALLOCATE(vk8=lisddl)
+        AS_DEALLOCATE(vr=coer)
+        AS_DEALLOCATE(vc=coec)
+        AS_DEALLOCATE(vr=direct)
+        AS_DEALLOCATE(vi=dime)
 !
     end do
 !

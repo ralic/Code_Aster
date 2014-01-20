@@ -15,6 +15,8 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     real(kind=8) :: alpha
     character(len=1) :: base
@@ -41,7 +43,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: iavalf, iavali, ibid, icmp, ino, nbno, ncmp, jno, ngst, nbno1
-    integer :: nbno2, iem, kno, jgnap, jnoap, ngap, jgnst, nno, jnost, jcnsk
+    integer :: nbno2, iem, kno,   ngap,  nno,  jcnsk
     integer :: jcnsd, jcnsc, jcnsv, jcnsl, noap, nost
     real(kind=8) :: rdepla
     character(len=1) :: bas2, tsca
@@ -49,6 +51,10 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
     character(len=19) :: geomi2, geomf2, chamns
     character(len=24) :: karg
     integer :: iarg
+    character(len=24), pointer :: gnap(:) => null()
+    character(len=24), pointer :: gnst(:) => null()
+    integer, pointer :: vnoap(:) => null()
+    integer, pointer :: vnost(:) => null()
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -74,27 +80,27 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
     if (ngst .ne. 0) then
         ngst = -ngst
         nbno1 = 0
-        call wkvect('&&DEFAPP.GNST', 'V V K24', ngst, jgnst)
+        AS_ALLOCATE(vk24=gnst, size=ngst)
         call getvem(ma, 'GROUP_NO', 'DEFORME', 'GROUP_NO_STRU', 1,&
-                    iarg, ngst, zk24(jgnst), ibid)
+                    iarg, ngst, gnst, ibid)
 ! PREMIERE BOUCLE POUR COMPTER LE NOMBRE DE NOEUDS
 !
         do iem = 1, ngst
-            karg = zk24(jgnst-1+iem)
+            karg = gnst(iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             nbno1 = nbno1 + nno
         end do
 !
-        call wkvect('&&DEFAPP.NOST', 'V V I', nbno1, jnost)
+        AS_ALLOCATE(vi=vnost, size=nbno1)
 !
 ! DEUXIEME BOUCLE POUR RECUPERER LES NUMEROS DES NOEUDS
         nbno1 =0
         do iem = 1, ngst
-            karg = zk24(jgnst-1+iem)
+            karg = gnst(iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
             do jno = 1, nno
-                zi(jnost-1+nbno1+jno) = zi(kno+jno-1)
+                vnost(nbno1+jno) = zi(kno+jno-1)
             end do
             nbno1 = nbno1 +nno
         end do
@@ -105,28 +111,28 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
     if (ngap .ne. 0) then
         ngap = -ngap
         nbno2 = 0
-        call wkvect('&&DEFAPP.GNAP', 'V V K24', ngst, jgnap)
+        AS_ALLOCATE(vk24=gnap, size=ngst)
         call getvem(ma, 'GROUP_NO', 'DEFORME', 'GROUP_NO_APPUI', 1,&
-                    iarg, ngap, zk24(jgnap), ibid)
+                    iarg, ngap, gnap, ibid)
 !
 ! PREMIERE BOUCLE POUR COMPTER LE NOMBRE DE NOEUDS
 !
         do iem = 1, ngap
-            karg = zk24(jgnap-1+iem)
+            karg = gnap(iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             nbno2 = nbno2 + nno
         end do
 !
-        call wkvect('&&DEFAPP.NOAP', 'V V I', nbno2, jnoap)
+        AS_ALLOCATE(vi=vnoap, size=nbno2)
 !
 ! DEUXIEME BOUCLE POUR RECUPERER LES NUMEROS DES NOEUDS
         nbno2 = 0
         do iem = 1, ngap
-            karg = zk24(jgnap-1+iem)
+            karg = gnap(iem)
             call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
             do jno = 1, nno
-                zi(jnoap-1+nbno2+jno)= zi(kno+jno-1)
+                vnoap(nbno2+jno)= zi(kno+jno-1)
             end do
             nbno2 = nbno2 +nno
         end do
@@ -155,8 +161,8 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
         call utmess('F', 'ALGORITH2_63')
     endif
     do ino = 1, nbno
-        noap = zi(jnoap-1+ino)
-        nost = zi(jnost -1 +ino)
+        noap = vnoap(ino)
+        nost = vnost(ino)
         do icmp = 1, ncmp
             if (zl(jcnsl-1+ (noap-1)*ncmp+icmp)) then
                 rdepla = zr(jcnsv-1+(nost-1)*ncmp+icmp)
@@ -169,10 +175,10 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
                 'F', ibid)
 !
 ! -- MENAGE
-    call jedetr('&&DEFAPP.GNST')
-    call jedetr('&&DEFAPP.NOST')
-    call jedetr('&&DEFAPP.GNAP')
-    call jedetr('&&DEFAPP.NOAP')
+    AS_DEALLOCATE(vk24=gnst)
+    AS_DEALLOCATE(vi=vnost)
+    AS_DEALLOCATE(vk24=gnap)
+    AS_DEALLOCATE(vi=vnoap)
 !
 !
     call jedema()

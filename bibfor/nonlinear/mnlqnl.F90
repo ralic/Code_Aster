@@ -59,6 +59,8 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 #include "asterfort/mnlaft.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: xcdl, parcho, adime, xvec1, xvec2, xqnl
 ! ----------------------------------------------------------------------
@@ -67,7 +69,8 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
     real(kind=8) :: kk, alpha, jeu
     integer :: puismax, nt, neq, ivec1, ivec2, icdl, iqnl, k, ivtp1, ivtp2
     integer :: ivtp3, ivtp4, ivtp5, inddl, iraid, ijeu, ijmax, nddl, j, i
-    integer :: iadim, neqs, ityp, ineqs, ivtp6, nddlx, nddly
+    integer :: iadim, neqs, ityp, ineqs,  nddlx, nddly
+    real(kind=8), pointer :: vtep6(:) => null()
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -153,7 +156,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 !      CALL JEVEUO(PARCHO//'.ORIG','L',IORIG)
     call wkvect('&&MNLQNL.VTEP4', 'V V R', 2*hf+1, ivtp4)
     call wkvect('&&MNLQNL.VTEP5', 'V V R', 2*hf+1, ivtp5)
-    call wkvect('&&MNLQNL.VTEP6', 'V V R', 2*hf+1, ivtp6)
+    AS_ALLOCATE(vr=vtep6, size=2*hf+1)
     neqs=0
     do 60 i = 1, nchoc
         alpha=zr(iraid-1+i)/zr(iadim-1+1)
@@ -247,10 +250,10 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 !           SIN
             call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddly), nd, zr( ivtp5+hf+1),&
                        1)
-            call dscal(2*hf+1, 0.d0, zr(ivtp6), 1)
+            call dscal(2*hf+1, 0.d0, vtep6, 1)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt,&
-                        zr(ivtp6))
-            call daxpy(2*hf+1, -1.d0, zr(ivtp6), 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
+vtep6)
+            call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
                        1)
 !         - (UX/JEU)^2
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
@@ -267,16 +270,16 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
 !           SIN
             call daxpy(h, 1.d0/jeu, zr(ivec2-1+nd*(h+1)+nddlx), nd, zr(ivtp5+hf+1),&
                        1)
-            call dscal(2*hf+1, 0.d0, zr(ivtp6), 1)
+            call dscal(2*hf+1, 0.d0, vtep6, 1)
             call mnlaft(zr(ivtp4), zr(ivtp5), hf, nt,&
-                        zr(ivtp6))
-            call daxpy(2*hf+1, -1.d0, zr(ivtp6), 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
+vtep6)
+            call daxpy(2*hf+1, -1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
                        1)
 !          + R^2
-            call dscal(2*hf+1, 0.d0, zr(ivtp6), 1)
+            call dscal(2*hf+1, 0.d0, vtep6, 1)
             call mnlaft(zr(ivec1+nd*(2*h+1)+(neqs+2)*(2*hf+1)),&
-                        zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt, zr(ivtp6))
-            call daxpy(2*hf+1, 1.d0, zr(ivtp6), 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
+                        zr(ivec2+nd*(2*h+1)+(neqs+2)*(2*hf+1)), hf, nt,vtep6)
+            call daxpy(2*hf+1, 1.d0, vtep6, 1, zr(iqnl+nd*(2*h+1)+( neqs+2)*(2*hf+1)),&
                        1)
 ! ---     (FN/ALPHA - R)*FN
             call dscal(2*hf+1, 0.d0, zr(ivtp4), 1)
@@ -333,7 +336,7 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1,&
     call jedetr('&&MNLQNL.VTEP3')
     call jedetr('&&MNLQNL.VTEP4')
     call jedetr('&&MNLQNL.VTEP5')
-    call jedetr('&&MNLQNL.VTEP6')
+    AS_DEALLOCATE(vr=vtep6)
 !
     call jedema()
 !

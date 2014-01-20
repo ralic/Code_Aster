@@ -35,6 +35,8 @@ subroutine pevolu(resu, modele, nbocc)
 #include "asterfort/utflmd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbocc
     character(len=8) :: modele
@@ -65,7 +67,7 @@ subroutine pevolu(resu, modele, nbocc)
     integer :: nn
     integer :: nbpar, nbpmax, iocc, inum, numo, jin, nbmato, iresma, ncmpm, ifm
     integer :: nbcmp, nbint, jbpct, ivalr, ii, i, ib, jvalr, jvali, jvalk, niv
-    integer :: jlicmp, jlicm2, jlicm1, nucmp, ivali, bfix, ivol(2), tord(1)
+    integer :: jlicmp,   nucmp, ivali, bfix, ivol(2), tord(1)
     parameter(nbpmax=13)
     character(len=4) :: tych, ki
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd
@@ -79,6 +81,8 @@ subroutine pevolu(resu, modele, nbocc)
     character(len=16) :: vali
     character(len=24) :: mesmai, mesmaf, mesmae, borpct, valk2(5), grouma
     logical :: exiord, toneut, lseuil
+    character(len=8), pointer :: cmp1(:) => null()
+    character(len=8), pointer :: cmp2(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -282,16 +286,16 @@ subroutine pevolu(resu, modele, nbocc)
                 call cnocns(cham2, 'V', chamtm)
                 call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
                 call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
-                call jedetr('&&PEVOLU.CMP1')
-                call wkvect('&&PEVOLU.CMP1', 'V V K8', ncmpm, jlicm1)
-                call jedetr('&&PEVOLU.CMP2')
-                call wkvect('&&PEVOLU.CMP2', 'V V K8', ncmpm, jlicm2)
+                AS_DEALLOCATE(vk8=cmp1)
+                AS_ALLOCATE(vk8=cmp1, size=ncmpm)
+                AS_DEALLOCATE(vk8=cmp2)
+                AS_ALLOCATE(vk8=cmp2, size=ncmpm)
                 do i = 1, ncmpm
                     call codent(i, 'G', ki)
-                    zk8(jlicm2+i-1)='X'//ki(1:len(ki))
-                    zk8(jlicm1+i-1)=zk8(jlicmp+i-1)
+                    cmp2(i)='X'//ki(1:len(ki))
+                    cmp1(i)=zk8(jlicmp+i-1)
                 end do
-                call chsut1(chamtm, 'NEUT_R', ncmpm, zk8(jlicm1), zk8(jlicm2),&
+                call chsut1(chamtm, 'NEUT_R', ncmpm, cmp1, cmp2,&
                             'V', chamtm)
 !
                 cham3='&&PEEINT.CHAM_3'
@@ -332,8 +336,8 @@ subroutine pevolu(resu, modele, nbocc)
             call getvtx('VOLUMOGRAMME', 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=nbcmp)
             ncpini=nomcmp
             if (toneut) then
-                nucmp=indik8(zk8(jlicm1),nomcmp,1,ncmpm)
-                nomcmp=zk8(jlicm2+nucmp-1)
+                nucmp=indik8(cmp1,nomcmp,1,ncmpm)
+                nomcmp=cmp2(nucmp)
             endif
 !
 !      -- 4.3 RECUPERATION DES MAILLES --

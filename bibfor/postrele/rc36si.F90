@@ -17,6 +17,8 @@ subroutine rc36si(noma, nbma, listma)
 #include "asterfort/rc36th.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbma, listma(*)
     character(len=8) :: noma
@@ -46,8 +48,8 @@ subroutine rc36si(noma, nbma, listma)
 !     ------------------------------------------------------------------
 !
     integer :: n1, nbsitu, iocc, jmomea, jmomeb, ii, nocc, jreth, jnbocc
-    integer :: jnumgr, jpresa, jpresb, nbchar, jchar1, jchar2, jnsitu, jcombi
-    integer :: jpassa, jnbgr, ig, numpas(2), nscy, nbgr, numgr, nbsigr, jnsg
+    integer :: jnumgr, jpresa, jpresb, nbchar, jchar1,  jnsitu, jcombi
+    integer :: jpassa,  ig, numpas(2), nscy, nbgr, numgr, nbsigr, jnsg
     integer :: nbth, jseigr, jchth, nume, nbm, nbp12, nbp23, nbp13, jsp12, jsp23
     integer :: jsp13, nbsg1, nbsg2, nbsg3, jsigr, vali(3), nbgrt, numg1, numg2
     integer :: jspas, ing, jnbvg, nbvg, ndim, numgs, nbseis
@@ -55,6 +57,8 @@ subroutine rc36si(noma, nbma, listma)
     character(len=8) :: k8b, ouinon
     character(len=16) :: motcl1, motcl2
     character(len=24) :: chmome
+    integer, pointer :: char_meca(:) => null()
+    integer, pointer :: nume_group(:) => null()
 ! DEB ------------------------------------------------------------------
 !
     motcl1 = 'SITUATION'
@@ -64,7 +68,7 @@ subroutine rc36si(noma, nbma, listma)
     call getfac(motcl2, nbseis)
 !
     ndim = nbsitu + nbseis
-    call wkvect('&&RC36SI.NUME_GROUP', 'V V I', ndim, jnbgr)
+    AS_ALLOCATE(vi=nume_group, size=ndim)
     call wkvect('&&RC32SI.SITU_GROUP', 'V V I', 2*ndim, jsigr)
 !
     call wkvect('&&RC3600.SITU_NUMERO', 'V V I', ndim, jnsitu)
@@ -121,10 +125,10 @@ subroutine rc36si(noma, nbma, listma)
                 call utmess('F', 'POSTRCCM_12')
             endif
             do 20 ig = 1, nbgr
-                if (zi(jnbgr+ig-1) .eq. numgr) goto 21
+                if (nume_group(ig) .eq. numgr) goto 21
 20          continue
             nbgr = nbgr + 1
-            zi(jnbgr+nbgr-1) = numgr
+            nume_group(nbgr) = numgr
 21          continue
 26      continue
         if (nbvg .eq. 1) then
@@ -160,17 +164,17 @@ subroutine rc36si(noma, nbma, listma)
         zi(jsigr+2*iocc-1) = max ( numpas(1), numpas(2) )
         numgr = numpas(1)
         do 22 ig = 1, nbgr
-            if (zi(jnbgr+ig-1) .eq. numgr) goto 23
+            if (nume_group(ig) .eq. numgr) goto 23
 22      continue
         nbgr = nbgr + 1
-        zi(jnbgr+nbgr-1) = numgr
+        nume_group(nbgr) = numgr
 23      continue
         numgr = numpas(2)
         do 24 ig = 1, nbgr
-            if (zi(jnbgr+ig-1) .eq. numgr) goto 25
+            if (nume_group(ig) .eq. numgr) goto 25
 24      continue
         nbgr = nbgr + 1
-        zi(jnbgr+nbgr-1) = numgr
+        nume_group(nbgr) = numgr
 25      continue
     endif
 !
@@ -201,15 +205,15 @@ subroutine rc36si(noma, nbma, listma)
 !        ----------------------------
     call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=0, nbret=n1)
     nbchar = -n1
-    call wkvect('&&RC36SI.CHAR_MECA', 'V V I', nbchar, jchar2)
-    call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=nbchar, vect=zi(jchar2),&
+    AS_ALLOCATE(vi=char_meca, size=nbchar)
+    call getvis(motcl1, 'CHAR_ETAT_B', iocc=iocc, nbval=nbchar, vect=char_meca,&
                 nbret=n1)
 !
     chmome = '&&RC36SI_B'//k8b
     call rc36cm(iocc, 'B', nbma, listma, nbchar,&
-                zi(jchar2), chmome)
+                char_meca, chmome)
     zk24(jmomeb+iocc-1) = chmome
-    call jedetr('&&RC36SI.CHAR_MECA')
+    AS_DEALLOCATE(vi=char_meca)
 !
 ! ------ TRANSITOIRE THERMIQUE ASSOCIE A LA SITUATION:
 !        ---------------------------------------------
@@ -281,7 +285,7 @@ subroutine rc36si(noma, nbma, listma)
 !
     110 end do
 !
-    call ordis(zi(jnbgr), nbgr)
+    call ordis(nume_group, nbgr)
 !
     if (nbgr .gt. 3 .and. yapass) then
         call utmess('F', 'POSTRCCM_34')
@@ -305,7 +309,7 @@ subroutine rc36si(noma, nbma, listma)
     endif
     do 30 ig = 1, nbgrt, 1
 !
-        numgr = zi(jnbgr+ig-1)
+        numgr = nume_group(ig)
 !
         zi(jnumgr+ig-1) = numgr
 !
@@ -487,6 +491,6 @@ subroutine rc36si(noma, nbma, listma)
         call jeecra(jexnum('&&RC3600.LES_GROUPES', nbgr), 'LONUTI', ii)
     endif
 !
-    call jedetr('&&RC36SI.NUME_GROUP')
+    AS_DEALLOCATE(vi=nume_group)
 !
 end subroutine

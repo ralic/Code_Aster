@@ -38,6 +38,8 @@ subroutine rfrgen(trange)
 #include "asterfort/utmess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=19) :: trange
 !     ------------------------------------------------------------------
@@ -72,15 +74,17 @@ subroutine rfrgen(trange)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iagno, idbase, iddl, idinsg, idvecf, idvecg, ie
+    integer :: i, iagno, idbase, iddl, idinsg, idvecf,  ie
     integer :: ier, ierd, ign2, ii, ino, inoeud, iordr
     integer :: ip, ipas, ipsdel, iret, itresu, jfon, jinst
-    integer :: ldesc, lfon, lg1, lg2, lordr, lpas, lpro
+    integer :: ldesc, lfon, lg1, lg2, lordr,  lpro
     integer :: lvar, n1, n2, n3, nbexci, nbinsg
     integer :: nbmode, nbordr, nbpas, neq
     integer :: nfonct, ngn, numcmp
     real(kind=8) :: alpha, epsi, rep, rep1(1)
     complex(kind=8) :: cbid
+    real(kind=8), pointer :: dt(:) => null()
+    real(kind=8), pointer :: vectgene(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -165,9 +169,9 @@ subroutine rfrgen(trange)
         call jelira(resu//'.PTEM', 'LONMAX', nbpas)
 ! NORMALEMENT ON SORT LE dt SI ADAPT. MAIS AVEC DYNA_GENE ON PEUT
 ! TOUJOURS LE SORTIR
-        call wkvect('&&RFRGEN.DT', 'V V R', nbpas, lpas)
+        AS_ALLOCATE(vr=dt, size=nbpas)
         do ip = 1, nbpas
-            zr(lpas+ip-1) = zr(ipas+ip-1)
+            dt(ip) = zr(ipas+ip-1)
 !            ZR(LPAS+IP-1) = LOG10(ZR(IPAS+IP-1))
         end do
 !
@@ -178,7 +182,7 @@ subroutine rfrgen(trange)
             call jelira(resu//'.DISC', 'LONMAX', nbinsg)
             do iordr = 0, nbordr-1
                 call extrac(intres, epsi, crit, nbinsg-2, zr(idinsg),&
-                            zr(jinst+iordr), zr(lpas), 1, rep1, ierd)
+                            zr(jinst+iordr), dt, 1, rep1, ierd)
                 zr(lvar+iordr) = zr(jinst+iordr)
                 zr(lfon+iordr) = rep1(1)
             end do
@@ -186,10 +190,10 @@ subroutine rfrgen(trange)
             do iordr = 0, nbordr-1
                 ii = zi(lordr+iordr)
                 zr(lvar+iordr) = zr(jinst+iordr)
-                zr(lfon+iordr) = zr(lpas+iordr)
+                zr(lfon+iordr) = dt(iordr+1)
             end do
         endif
-        call jedetr('&&RFRGEN.DT')
+        AS_DEALLOCATE(vr=dt)
 !
 !----------------------------------------------------------------------
 !                 D E P L   ---   V I T E   ---   A C C E
@@ -273,16 +277,16 @@ subroutine rfrgen(trange)
             if (intres(1:3) .ne. 'NON') then
                 call jeveuo(resu//'.DISC', 'L', idinsg)
                 call jelira(resu//'.DISC', 'LONMAX', nbinsg)
-                call wkvect('&&RFRGEN.VECTGENE', 'V V R', nbmode, idvecg)
+                AS_ALLOCATE(vr=vectgene, size=nbmode)
                 do iordr = 0, nbordr-1
                     call extrac(intres, epsi, crit, nbinsg, zr(idinsg),&
-                                zr(jinst+iordr), zr(itresu), nbmode, zr(idvecg), ierd)
-                    call mdgep2(neq, nbmode, zr(idbase), zr(idvecg), iddl,&
+                                zr(jinst+iordr), zr(itresu), nbmode, vectgene, ierd)
+                    call mdgep2(neq, nbmode, zr(idbase), vectgene, iddl,&
                                 rep)
                     zr(lvar+iordr) = zr(jinst+iordr)
                     zr(lfon+iordr) = rep
                 end do
-                call jedetr('&&RFRGEN.VECTGENE')
+                AS_DEALLOCATE(vr=vectgene)
 !
             else
                 do iordr = 0, nbordr-1

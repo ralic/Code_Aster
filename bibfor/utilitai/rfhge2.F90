@@ -26,6 +26,8 @@ subroutine rfhge2(harmge)
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zxtrac.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: harmge
 !     ------------------------------------------------------------------
@@ -59,13 +61,14 @@ subroutine rfhge2(harmge)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iagno, idbase, iddl, idinsg, idvecg
+    integer :: iagno, idbase, iddl, idinsg
     integer :: ie, ierd, ign2, ii, ino, inoeud, iordr, ldesc
     integer :: iret, itresu, jinst, jj, lfon, lg1, lg2
     integer :: lordr, lpro, lvar, n1, n2
     integer :: n3, nbinsg, nbmode, nbordr
     integer :: neq, ngn, numcmp
     real(kind=8) :: epsi
+    complex(kind=8), pointer :: vectgene(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -194,13 +197,13 @@ subroutine rfhge2(harmge)
 ! ---   CAS OU ON INTERPOLE
             call jeveuo(resu//'.DISC', 'L', idinsg)
             call jelira(resu//'.DISC', 'LONMAX', nbinsg)
-            call wkvect('&&RFHGE2.VECTGENE', 'V V C', nbmode, idvecg)
+            AS_ALLOCATE(vc=vectgene, size=nbmode)
             do iordr = 0, nbordr-1
 !             EXTRACTION ET INTERPOLATION
                 call zxtrac(intres, epsi, crit, nbinsg, zr(idinsg),&
-                            zr(jinst+iordr), zc(itresu), nbmode, zc(idvecg), ierd)
+                            zr(jinst+iordr), zc(itresu), nbmode, vectgene, ierd)
 !             PASSAGE EN BASE PHYSIQUE
-                call mdgep5(neq, nbmode, zr(idbase), zc(idvecg), iddl,&
+                call mdgep5(neq, nbmode, zr(idbase), vectgene, iddl,&
                             crep)
 !             REMPLISSAGE DES TROIS VECTEURS DE LA FONCTION
                 zr(lvar+iordr) = zr(jinst+iordr)
@@ -209,7 +212,7 @@ subroutine rfhge2(harmge)
                 zr(lfon+jj) = dimag(crep)
                 jj = jj +1
             end do
-            call jedetr('&&RFHGE2.VECTGENE')
+            AS_DEALLOCATE(vc=vectgene)
 !
         else
 ! ---   CAS OU ON N'INTERPOLE PAS

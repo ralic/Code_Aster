@@ -97,6 +97,8 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
 #include "asterfort/jexnum.h"
 #include "asterfort/projsg.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dnrm2.h"
     character(len=8) :: mailla
     character(len=19) :: lnuma, licnx
@@ -106,10 +108,11 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: i1, i2, i3, icnx, ima, imail, inoma, jcoor, jcxma, jlnuma, jlicnx
-    integer :: jsomno, nbmaok, nbsom, noe, somn12, somn23
+    integer ::  nbmaok, nbsom, noe, somn12, somn23
     real(kind=8) :: d, dx, dy, dz, epsg, nrm2, x3dp(3), xbw(2)
     character(len=24) :: conxma, coorno
     logical :: dejavu
+    integer, pointer :: somno_bord(:) => null()
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -131,7 +134,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
     call jeveuo(lnuma, 'L', jlnuma)
     call jeveuo(licnx, 'L', jlicnx)
 !
-    call wkvect('&&PROJKB.SOMNO_BORD', 'V V I', 2*nbmaok, jsomno)
+    AS_ALLOCATE(vi=somno_bord, size=2*nbmaok)
 !
     epsg = 1.0d+08 * r8prem()
 !
@@ -186,8 +189,8 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
             i2 = i1 + 1
             if (i2 .gt. nbsom) i2 = 1
             somn12 = cxma(i1) + cxma(i2)
-            zi(jsomno+2*(imail-1) ) = somn12
-            zi(jsomno+2*(imail-1)+1) = 0
+            somno_bord(1+2*(imail-1) ) = somn12
+            somno_bord(1+2*(imail-1)+1) = 0
 !
 ! 2.3.1     ON VERIFIE QUE LA TENTATIVE DE PROJECTION SUR LE BORD N'A
 ! .....     PAS DEJA ETE EFFECTUEE (SUR UNE MAILLE LIMITROPHE)
@@ -195,8 +198,8 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
             dejavu = .false.
             if (imail .gt. 1) then
                 do 30 ima = 1, imail-1
-                    if ((zi(jsomno+2*(ima-1) ).eq.somn12) .or.&
-                        (zi(jsomno+2*(ima-1)+1).eq.somn12)) dejavu = .true.
+                    if ((somno_bord(1+2*(ima-1) ).eq.somn12) .or.&
+                        (somno_bord(1+2*(ima-1)+1).eq.somn12)) dejavu = .true.
                     if (dejavu) goto 10
 30              continue
             endif
@@ -272,8 +275,8 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
             if (i3 .gt. nbsom) i3 = 1
             somn12 = cxma(i1) + cxma(i2)
             somn23 = cxma(i2) + cxma(i3)
-            zi(jsomno+2*(imail-1) ) = somn12
-            zi(jsomno+2*(imail-1)+1) = somn23
+            somno_bord(1+2*(imail-1) ) = somn12
+            somno_bord(1+2*(imail-1)+1) = somn23
 !
 ! 2.4.1     ON VERIFIE QUE LA TENTATIVE DE PROJECTION SUR LE PREMIER
 ! .....     BORD N'A PAS DEJA ETE EFFECTUEE (SUR UNE MAILLE LIMITROPHE)
@@ -281,8 +284,8 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
             dejavu = .false.
             if (imail .gt. 1) then
                 do 40 ima = 1, imail-1
-                    if ((zi(jsomno+2*(ima-1) ).eq.somn12) .or.&
-                        (zi(jsomno+2*(ima-1)+1).eq.somn12)) dejavu = .true.
+                    if ((somno_bord(1+2*(ima-1) ).eq.somn12) .or.&
+                        (somno_bord(1+2*(ima-1)+1).eq.somn12)) dejavu = .true.
                     if (dejavu) goto 41
 40              continue
 41              continue
@@ -350,8 +353,8 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
             dejavu = .false.
             if (imail .gt. 1) then
                 do 50 ima = 1, imail-1
-                    if ((zi(jsomno+2*(ima-1) ).eq.somn23) .or.&
-                        (zi(jsomno+2*(ima-1)+1).eq.somn23)) dejavu = .true.
+                    if ((somno_bord(1+2*(ima-1) ).eq.somn23) .or.&
+                        (somno_bord(1+2*(ima-1)+1).eq.somn23)) dejavu = .true.
                     if (dejavu) goto 10
 50              continue
             endif
@@ -414,7 +417,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
 10  end do
 !
 9999  continue
-    call jedetr('&&PROJKB.SOMNO_BORD')
+    AS_DEALLOCATE(vi=somno_bord)
     call jedema()
 !
 ! --- FIN DE PROJKB.

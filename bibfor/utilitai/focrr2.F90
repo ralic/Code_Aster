@@ -27,6 +27,8 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 #include "asterfort/utch19.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=1) :: base
     character(len=8) :: maille, noeud, cmp
@@ -76,7 +78,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iacces, ialexi, iatach, iatava
+    integer :: i, i1, i2, iacces,  iatach, iatava
     integer :: ibid, iddl1, iddl2, ier, ierd, ierr1
     integer :: ierr2, ii, inoeud, iordr, ip1, ip2, iposit
     integer :: iret, ivari, jinst, jlir8, l1, l2, lfon
@@ -84,6 +86,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     integer :: n1, n2, n3, n4, nbinst, nbordr, npoint
     integer :: nusp, vali1, vali2
     real(kind=8) :: r1, r2, rbase, rval, valr1, valr2
+    logical, pointer :: lexi(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -168,19 +171,19 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 !
 !
 !     -- ON REPERE QUELS SONT LES CHAMPS EXISTANT REELLEMENT:
-    call wkvect('&&FOCRR2.LEXI', 'V V L', nbordr, ialexi)
+    AS_ALLOCATE(vl=lexi, size=nbordr)
     call jenonu(jexnom(resu//'.DESC', nomcha), ibid)
     call jeveuo(jexnum(resu//'.TACH', ibid), 'L', iatach)
     do i = 1, nbordr
         if (zk24(iatach-1+i) (1:1) .eq. ' ') then
-            zl(ialexi-1+i) = .false.
+            lexi(i) = .false.
         else
-            zl(ialexi-1+i) = .true.
+            lexi(i) = .true.
         endif
     end do
 !
     rval = zr(jinst)
-    call rsbary(zr(jlir8), nbordr, .false., zl(ialexi), rval,&
+    call rsbary(zr(jlir8), nbordr, .false., lexi, rval,&
                 i1, i2, iposit)
     call rsutro(resu, i1, ip1, ierr1)
     call rsexch('F', resu, nomcha, ip1, ch1,&
@@ -209,7 +212,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call jemarq()
 !
             rval = zr(jinst+iordr)
-            call rsbary(zr(jlir8), nbordr, .false., zl(ialexi), rval,&
+            call rsbary(zr(jlir8), nbordr, .false., lexi, rval,&
                         i1, i2, iposit)
             if (iposit .eq. -2) then
                 valr (1) = rval
@@ -330,7 +333,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call jemarq()
 !
             rval = zr(jinst+iordr)
-            call rsbary(zr(jlir8), nbordr, .false., zl(ialexi), rval,&
+            call rsbary(zr(jlir8), nbordr, .false., lexi, rval,&
                         i1, i2, iposit)
             if (iposit .eq. -2) then
                 valr (1) = rval
@@ -405,7 +408,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     endif
 !
 ! --- MENAGE
-    call jedetr('&&FOCRR2.LEXI')
+    AS_DEALLOCATE(vl=lexi)
     call jedetr('&&FOCRR2.LIR8')
     call jedetr('&&FOCRR2.INST')
 !

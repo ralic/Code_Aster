@@ -21,6 +21,8 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,8 +68,8 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcoor, jliscc, jliscr, jlisdi, jlisdl
-    integer :: jlisdm, jlisno, jlino
+    integer :: jcoor
+    integer ::   jlino
     integer :: nb_maxi, nb_term
     real(kind=8) :: un, zero
     character(len=8) :: nomnoe_a, nomnoe_b, nomnoe_c, nomnoe_m
@@ -83,6 +85,12 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
     character(len=8) :: vale_fonc
     character(len=4) :: type_coef
     logical :: l_trian, l_same
+    complex(kind=8), pointer :: coec(:) => null()
+    real(kind=8), pointer :: coer(:) => null()
+    integer, pointer :: dime(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    character(len=8), pointer :: lisddl(:) => null()
+    character(len=8), pointer :: lisno(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,12 +148,12 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 ! - Working vectors
 !
     nb_maxi = 12
-    call wkvect('&&DRZ03D.LISNO', 'V V K8', nb_maxi, jlisno)
-    call wkvect('&&DRZ03D.LISDDL', 'V V K8', nb_maxi, jlisdl)
-    call wkvect('&&DRZ03D.COER', 'V V R', nb_maxi, jliscr)
-    call wkvect('&&DRZ03D.COEC', 'V V C', nb_maxi, jliscc)
-    call wkvect('&&DRZ03D.DIRECT', 'V V R', 3*nb_maxi, jlisdi)
-    call wkvect('&&DRZ03D.DIME', 'V V I', nb_maxi, jlisdm)
+    AS_ALLOCATE(vk8=lisno, size=nb_maxi)
+    AS_ALLOCATE(vk8=lisddl, size=nb_maxi)
+    AS_ALLOCATE(vr=coer, size=nb_maxi)
+    AS_ALLOCATE(vc=coec, size=nb_maxi)
+    AS_ALLOCATE(vr=direct, size=3*nb_maxi)
+    AS_ALLOCATE(vi=dime, size=nb_maxi)
 !
 ! - Reference node A: first node
 !
@@ -188,81 +196,81 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 ! ----- Three nodes build non-zero-triangle
 !
         nb_term = 6
-        zk8(jlisdl+1-1) = 'DX'
-        zk8(jlisdl+2-1) = 'DX'
-        zk8(jlisdl+3-1) = 'DY'
-        zk8(jlisdl+4-1) = 'DY'
-        zk8(jlisdl+5-1) = 'DZ'
-        zk8(jlisdl+6-1) = 'DZ'
+        lisddl(1) = 'DX'
+        lisddl(2) = 'DX'
+        lisddl(3) = 'DY'
+        lisddl(4) = 'DY'
+        lisddl(5) = 'DZ'
+        lisddl(6) = 'DZ'
 !
 ! ----- First relation (nodes A and B): (DU(B)-DU(A)).AB = 0
 !
-        zk8(jlisno+1-1) = nomnoe_b
-        zk8(jlisno+2-1) = nomnoe_a
-        zk8(jlisno+3-1) = nomnoe_b
-        zk8(jlisno+4-1) = nomnoe_a
-        zk8(jlisno+5-1) = nomnoe_b
-        zk8(jlisno+6-1) = nomnoe_a
-        zr(jliscr+1-1) = ab(1)
-        zr(jliscr+2-1) = -ab(1)
-        zr(jliscr+3-1) = ab(2)
-        zr(jliscr+4-1) = -ab(2)
-        zr(jliscr+5-1) = ab(3)
-        zr(jliscr+6-1) = -ab(3)
-        call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                    zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+        lisno(1) = nomnoe_b
+        lisno(2) = nomnoe_a
+        lisno(3) = nomnoe_b
+        lisno(4) = nomnoe_a
+        lisno(5) = nomnoe_b
+        lisno(6) = nomnoe_a
+        coer(1) = ab(1)
+        coer(2) = -ab(1)
+        coer(3) = ab(2)
+        coer(4) = -ab(2)
+        coer(5) = ab(3)
+        coer(6) = -ab(3)
+        call afrela(coer, coec, lisddl, lisno, dime,&
+                    direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                     type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
 ! ----- Second relation (nodes A and C): (DU(C)-DU(A)).AC = 0
 !
-        zk8(jlisno+1-1) = nomnoe_c
-        zk8(jlisno+2-1) = nomnoe_a
-        zk8(jlisno+3-1) = nomnoe_c
-        zk8(jlisno+4-1) = nomnoe_a
-        zk8(jlisno+5-1) = nomnoe_c
-        zk8(jlisno+6-1) = nomnoe_a
-        zr(jliscr+1-1) = ac(1)
-        zr(jliscr+2-1) = -ac(1)
-        zr(jliscr+3-1) = ac(2)
-        zr(jliscr+4-1) = -ac(2)
-        zr(jliscr+5-1) = ac(3)
-        zr(jliscr+6-1) = -ac(3)
-        call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                    zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+        lisno(1) = nomnoe_c
+        lisno(2) = nomnoe_a
+        lisno(3) = nomnoe_c
+        lisno(4) = nomnoe_a
+        lisno(5) = nomnoe_c
+        lisno(6) = nomnoe_a
+        coer(1) = ac(1)
+        coer(2) = -ac(1)
+        coer(3) = ac(2)
+        coer(4) = -ac(2)
+        coer(5) = ac(3)
+        coer(6) = -ac(3)
+        call afrela(coer, coec, lisddl, lisno, dime,&
+                    direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                     type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
 ! ----- Third relation (nodes C and C): (DU(B)-DU(A)).AC + (DU(C)-DU(A)).AB = 0
 !
         nb_term = 9
-        zk8(jlisno+1-1) = nomnoe_a
-        zk8(jlisno+2-1) = nomnoe_b
-        zk8(jlisno+3-1) = nomnoe_c
-        zk8(jlisno+4-1) = nomnoe_a
-        zk8(jlisno+5-1) = nomnoe_b
-        zk8(jlisno+6-1) = nomnoe_c
-        zk8(jlisno+7-1) = nomnoe_a
-        zk8(jlisno+8-1) = nomnoe_b
-        zk8(jlisno+9-1) = nomnoe_c
-        zk8(jlisdl+1-1) = 'DX'
-        zk8(jlisdl+2-1) = 'DX'
-        zk8(jlisdl+3-1) = 'DX'
-        zk8(jlisdl+4-1) = 'DY'
-        zk8(jlisdl+5-1) = 'DY'
-        zk8(jlisdl+6-1) = 'DY'
-        zk8(jlisdl+7-1) = 'DZ'
-        zk8(jlisdl+8-1) = 'DZ'
-        zk8(jlisdl+9-1) = 'DZ'
-        zr(jliscr+1-1) = -ab(1) - ac(1)
-        zr(jliscr+2-1) = ac(1)
-        zr(jliscr+3-1) = ab(1)
-        zr(jliscr+4-1) = -ab(2) - ac(2)
-        zr(jliscr+5-1) = ac(2)
-        zr(jliscr+6-1) = ab(2)
-        zr(jliscr+7-1) = -ab(3) - ac(3)
-        zr(jliscr+8-1) = ac(3)
-        zr(jliscr+9-1) = ab(3)
-        call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                    zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+        lisno(1) = nomnoe_a
+        lisno(2) = nomnoe_b
+        lisno(3) = nomnoe_c
+        lisno(4) = nomnoe_a
+        lisno(5) = nomnoe_b
+        lisno(6) = nomnoe_c
+        lisno(7) = nomnoe_a
+        lisno(8) = nomnoe_b
+        lisno(9) = nomnoe_c
+        lisddl(1) = 'DX'
+        lisddl(2) = 'DX'
+        lisddl(3) = 'DX'
+        lisddl(4) = 'DY'
+        lisddl(5) = 'DY'
+        lisddl(6) = 'DY'
+        lisddl(7) = 'DZ'
+        lisddl(8) = 'DZ'
+        lisddl(9) = 'DZ'
+        coer(1) = -ab(1) - ac(1)
+        coer(2) = ac(1)
+        coer(3) = ab(1)
+        coer(4) = -ab(2) - ac(2)
+        coer(5) = ac(2)
+        coer(6) = ab(2)
+        coer(7) = -ab(3) - ac(3)
+        coer(8) = ac(3)
+        coer(9) = ab(3)
+        call afrela(coer, coec, lisddl, lisno, dime,&
+                    direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                     type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
 ! ----- Computation of matrix for solid movement in 3D - First part
@@ -287,25 +295,25 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
                 nb_term = 12
                 do i = 1, 3
-                    zk8(jlisno+i-1) = nomnoe_a
-                    zk8(jlisno+3+i-1) = nomnoe_b
-                    zk8(jlisno+6+i-1) = nomnoe_c
-                    zk8(jlisno+9+i-1) = nomnoe_m
+                    lisno(i) = nomnoe_a
+                    lisno(1+3+i-1) = nomnoe_b
+                    lisno(1+6+i-1) = nomnoe_c
+                    lisno(1+9+i-1) = nomnoe_m
                 enddo
                 do i = 1, 4
-                    zk8(jlisdl+3*(i-1)+1-1) = 'DX'
-                    zk8(jlisdl+3*(i-1)+2-1) = 'DY'
-                    zk8(jlisdl+3*(i-1)+3-1) = 'DZ'
+                    lisddl(1+3*(i-1)+1-1) = 'DX'
+                    lisddl(1+3*(i-1)+2-1) = 'DY'
+                    lisddl(1+3*(i-1)+3-1) = 'DZ'
                 enddo
 !
 ! ------------- Apply linear relation
 !
                 do i = 1, 3
                     do j = 1, 12
-                        zr(jliscr+j-1) = matr_5(i,j)
+                        coer(j) = matr_5(i,j)
                     enddo
-                    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8( jlisno), zi(jlisdm),&
-                                zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                    call afrela(coer, coec, lisddl, lisno, dime,&
+                                direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                                 type_coef, type_vale, type_lagr, 0.d0, lisrel)
                 enddo
             endif
@@ -319,48 +327,48 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 ! --------- Zero triangle/degenerate case: all nodes have same coordinates
 !
             nb_term = 2
-            zk8(jlisno+1-1) = nomnoe_a
-            zr(jliscr+1-1) = un
+            lisno(1) = nomnoe_a
+            coer(1) = un
 !
 ! --------- Relation: DX(M) - DX(A) = 0
 !
-            zk8(jlisdl+1-1) = 'DX'
+            lisddl(1) = 'DX'
             do i_no = 2, nb_node
                 numnoe_m = zi(jlino+i_no-1)
                 call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
-                zk8(jlisno+2-1) = nomnoe_m
-                zk8(jlisdl+2-1) = 'DX'
-                zr(jliscr+2-1) = -un
-                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                lisno(2) = nomnoe_m
+                lisddl(2) = 'DX'
+                coer(2) = -un
+                call afrela(coer, coec, lisddl, lisno, dime,&
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
             enddo
 !
 ! --------- Relation: DY(M) - DY(A) = 0
 !
-            zk8(jlisdl+1-1) = 'DY'
+            lisddl(1) = 'DY'
             do i_no = 2, nb_node
                 numnoe_m = zi(jlino+i_no-1)
                 call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
-                zk8(jlisno+2-1) = nomnoe_m
-                zk8(jlisdl+2-1) = 'DY'
-                zr(jliscr+2-1) = -un
-                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                lisno(2) = nomnoe_m
+                lisddl(2) = 'DY'
+                coer(2) = -un
+                call afrela(coer, coec, lisddl, lisno, dime,&
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
             enddo
 !
 ! --------- Relation: DZ(M) - DZ(A) = 0
 !
-            zk8(jlisdl+1-1) = 'DZ'
+            lisddl(1) = 'DZ'
             do i_no = 2, nb_node
                 numnoe_m = zi(jlino+i_no-1)
                 call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
-                zk8(jlisno+2-1) = nomnoe_m
-                zk8(jlisdl+2-1) = 'DZ'
-                zr(jliscr+2-1) = -un
-                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                lisno(2) = nomnoe_m
+                lisddl(2) = 'DZ'
+                coer(2) = -un
+                call afrela(coer, coec, lisddl, lisno, dime,&
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
             enddo
         else
@@ -375,26 +383,26 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! ------------- One relation: (DU(B)-DU(A)).AB = 0
 !
-                zk8(jlisno+1-1) = nomnoe_b
-                zk8(jlisno+2-1) = nomnoe_a
-                zk8(jlisno+3-1) = nomnoe_b
-                zk8(jlisno+4-1) = nomnoe_a
-                zk8(jlisno+5-1) = nomnoe_b
-                zk8(jlisno+6-1) = nomnoe_a
-                zk8(jlisdl+1-1) = 'DX'
-                zk8(jlisdl+2-1) = 'DX'
-                zk8(jlisdl+3-1) = 'DY'
-                zk8(jlisdl+4-1) = 'DY'
-                zk8(jlisdl+5-1) = 'DZ'
-                zk8(jlisdl+6-1) = 'DZ'
-                zr(jliscr+1-1) = ab(1)
-                zr(jliscr+2-1) = -ab(1)
-                zr(jliscr+3-1) = ab(2)
-                zr(jliscr+4-1) = -ab(2)
-                zr(jliscr+5-1) = ab(3)
-                zr(jliscr+6-1) = -ab(3)
-                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8( jlisno), zi(jlisdm),&
-                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                lisno(1) = nomnoe_b
+                lisno(2) = nomnoe_a
+                lisno(3) = nomnoe_b
+                lisno(4) = nomnoe_a
+                lisno(5) = nomnoe_b
+                lisno(6) = nomnoe_a
+                lisddl(1) = 'DX'
+                lisddl(2) = 'DX'
+                lisddl(3) = 'DY'
+                lisddl(4) = 'DY'
+                lisddl(5) = 'DZ'
+                lisddl(6) = 'DZ'
+                coer(1) = ab(1)
+                coer(2) = -ab(1)
+                coer(3) = ab(2)
+                coer(4) = -ab(2)
+                coer(5) = ab(3)
+                coer(6) = -ab(3)
+                call afrela(coer, coec, lisddl, lisno, dime,&
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
             else
 !
@@ -451,26 +459,26 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 ! ------------- First relation (nodes A and B): (DU(B)-DU(A)).AB = 0
 !
                 nb_term = 6
-                zk8(jlisdl+1-1) = 'DX'
-                zk8(jlisdl+2-1) = 'DX'
-                zk8(jlisdl+3-1) = 'DY'
-                zk8(jlisdl+4-1) = 'DY'
-                zk8(jlisdl+5-1) = 'DZ'
-                zk8(jlisdl+6-1) = 'DZ'
-                zk8(jlisno+1-1) = nomnoe_b
-                zk8(jlisno+2-1) = nomnoe_a
-                zk8(jlisno+3-1) = nomnoe_b
-                zk8(jlisno+4-1) = nomnoe_a
-                zk8(jlisno+5-1) = nomnoe_b
-                zk8(jlisno+6-1) = nomnoe_a
-                zr(jliscr+1-1) = ab(1)
-                zr(jliscr+2-1) = -ab(1)
-                zr(jliscr+3-1) = ab(2)
-                zr(jliscr+4-1) = -ab(2)
-                zr(jliscr+5-1) = ab(3)
-                zr(jliscr+6-1) = -ab(3)
-                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8( jlisno), zi(jlisdm),&
-                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                lisddl(1) = 'DX'
+                lisddl(2) = 'DX'
+                lisddl(3) = 'DY'
+                lisddl(4) = 'DY'
+                lisddl(5) = 'DZ'
+                lisddl(6) = 'DZ'
+                lisno(1) = nomnoe_b
+                lisno(2) = nomnoe_a
+                lisno(3) = nomnoe_b
+                lisno(4) = nomnoe_a
+                lisno(5) = nomnoe_b
+                lisno(6) = nomnoe_a
+                coer(1) = ab(1)
+                coer(2) = -ab(1)
+                coer(3) = ab(2)
+                coer(4) = -ab(2)
+                coer(5) = ab(3)
+                coer(6) = -ab(3)
+                call afrela(coer, coec, lisddl, lisno, dime,&
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
 ! ------------- Matrix matr_6
@@ -513,22 +521,22 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
                         nb_term = 9
                         do i = 1, 3
-                            zk8(jlisno+i-1) = nomnoe_a
-                            zk8(jlisno+3+i-1) = nomnoe_b
-                            zk8(jlisno+6+i-1) = nomnoe_m
-                            zk8(jlisdl+3*(i-1)+1-1) = 'DX'
-                            zk8(jlisdl+3*(i-1)+2-1) = 'DY'
-                            zk8(jlisdl+3*(i-1)+3-1) = 'DZ'
+                            lisno(i) = nomnoe_a
+                            lisno(1+3+i-1) = nomnoe_b
+                            lisno(1+6+i-1) = nomnoe_m
+                            lisddl(1+3*(i-1)+1-1) = 'DX'
+                            lisddl(1+3*(i-1)+2-1) = 'DY'
+                            lisddl(1+3*(i-1)+3-1) = 'DZ'
                         enddo
 !
 ! --------------------- Apply linear relation
 !
                         do i = 1, 3
                             do j = 1, 9
-                                zr(jliscr+j-1) = matr_7(i,j)
+                                coer(j) = matr_7(i,j)
                             enddo
-                            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno),&
-                                        zi(jlisdm), zr(jlisdi), nb_term, vale_real, vale_cplx,&
+                            call afrela(coer, coec, lisddl, lisno,&
+                                        dime, direct, nb_term, vale_real, vale_cplx,&
                                         vale_fonc, type_coef, type_vale, type_lagr, 0.d0,&
                                         lisrel)
                         enddo
@@ -538,12 +546,12 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
         endif
     endif
 !
-    call jedetr('&&DRZ03D.LISNO')
-    call jedetr('&&DRZ03D.LISDDL')
-    call jedetr('&&DRZ03D.COER')
-    call jedetr('&&DRZ03D.COEC')
-    call jedetr('&&DRZ03D.DIRECT')
-    call jedetr('&&DRZ03D.DIME')
+    AS_DEALLOCATE(vk8=lisno)
+    AS_DEALLOCATE(vk8=lisddl)
+    AS_DEALLOCATE(vr=coer)
+    AS_DEALLOCATE(vc=coec)
+    AS_DEALLOCATE(vr=direct)
+    AS_DEALLOCATE(vi=dime)
 !
     call jedema()
 end subroutine

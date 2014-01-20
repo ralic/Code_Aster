@@ -12,6 +12,8 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ndim(14)
     real(kind=8) :: alpha, z(*), cf(*), dh, vit(*), rho(*), pstat(*)
     real(kind=8) :: dpstat(*), dvit(*)
@@ -76,8 +78,10 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
 !                POSITIONNEMENT DES GRILLES
 ! IN  : RHOG   : MASSE VOLUMIQUE DU FLUIDE AUX MEMES POINTS
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, n, icfnew, nbz, nbgtot, ntypg, ideltp
+    integer :: i, j, k, n,  nbz, nbgtot, ntypg
     real(kind=8) :: ecart, g, pi
+    real(kind=8), pointer :: cfnew(:) => null()
+    real(kind=8), pointer :: deltap(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -88,8 +92,8 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
     if (ntypg .ne. 0) then
-        call wkvect('&&MEFPRE.DELTAP', 'V V R', nbgtot, ideltp)
-        call wkvect('&&MEFPRE.CFNEW', 'V V R', nbgtot, icfnew)
+        AS_ALLOCATE(vr=deltap, size=nbgtot)
+        AS_ALLOCATE(vr=cfnew, size=nbgtot)
     endif
 !
     pi = r8pi()
@@ -137,7 +141,7 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
     if (ntypg .ne. 0) then
 !
         do 6 j = 1, nbgtot
-            zr(ideltp+j-1) = 0.d0
+            deltap(j) = 0.d0
  6      continue
 !
         do 18 i = 2, nbz
@@ -145,7 +149,7 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
                 ecart=(z(i)-zg(j))*(z(i-1)-zg(j))
 !
                 if (ecart .le. 0.d0) then
-                    zr(icfnew+j-1)=( cf(i-1)*(z(i)-zg(j))+ cf(i)*(zg(&
+                    cfnew(j)=( cf(i-1)*(z(i)-zg(j))+ cf(i)*(zg(&
                     j)-z(i-1)) ) / (z(i)-z(i-1))
                 endif
 19          continue
@@ -154,9 +158,9 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
         do 7 j = 1, nbgtot
             do 25 k = 1, ntypg
                 if (itypg(j) .eq. k) then
-                    zr(ideltp+j-1) = 0.5d0*rhog(j)*abs(vitg(j))*vitg( j)* (axg(k)*cdg(k)+xig(k)*h&
+                    deltap(j) = 0.5d0*rhog(j)*abs(vitg(j))*vitg( j)* (axg(k)*cdg(k)+xig(k)*h&
                                      &g(k)*cfg(j))/afluid + 0.5d0*rhog(j)*abs(vitg(j))*vitg(j)* (&
-                                     &1.d0-(1.d0- axg(k)/afluid)**2)*pm*hg(k)*zr(icfnew+j-1)/aflu&
+                                     &1.d0-(1.d0- axg(k)/afluid)**2)*pm*hg(k)*cfnew(j)/aflu&
                                      &id
                 endif
 25          continue
@@ -167,7 +171,7 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
                 ecart = (z(n)-zg(j))*(z(n-1)-zg(j))
                 if (ecart .le. 0.d0) then
                     do 44 k = n, nbz
-                        pstat(k) = pstat(k)-zr(ideltp+j-1)
+                        pstat(k) = pstat(k)-deltap(j)
 44                  continue
                 endif
 42          continue
@@ -176,8 +180,8 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
     endif
 !
     if (ntypg .ne. 0) then
-        call jedetr('&&MEFPRE.DELTAP')
-        call jedetr('&&MEFPRE.CFNEW')
+        AS_DEALLOCATE(vr=deltap)
+        AS_DEALLOCATE(vr=cfnew)
     endif
     call jedema()
 end subroutine

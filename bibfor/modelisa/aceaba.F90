@@ -81,8 +81,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     integer :: i, idw, ier, iisec, ioc, isec, itabl
     integer :: itblp, itbnp, ivect, ixma, j
     integer :: jdcba, jdcbaf, jdcbg, jdge, jdgef, jdgm
-    integer :: jdme, jdvba, jdvbaf, jdvbg,   jsect
-    integer :: jtab,  k, nbaaff, nbcar, nbcolo, nblign
+    integer :: jdme, jdvba, jdvbaf, jdvbg
+    integer ::   k, nbaaff, nbcar, nbcolo, nblign
     integer :: nbmagr, nbmail, nbo, nbval, ncar, ndim, nfcx
     integer :: ng, nm, nnosec, nsec, ntab, ntypse, nummai
     integer :: nutyel, nval
@@ -93,6 +93,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     real(kind=8), pointer :: vale(:) => null()
     character(len=24), pointer :: barre(:) => null()
     character(len=8), pointer :: barre2(:) => null()
+    character(len=8), pointer :: tabbar(:) => null()
+    character(len=16), pointer :: typ_sect(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getres(nomu, concep, cmd)
@@ -105,12 +107,12 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     nbcar = tab_para(4)
     nbval = tab_para(5)
     ndim = tab_para(7) * ntypse
-    call wkvect('&&ACEABA.TYP_SECT', 'V V K16', ntypse, jsect)
+    AS_ALLOCATE(vk16=typ_sect, size=ntypse)
     AS_ALLOCATE(vk8=expbar, size=nbo)
-    call wkvect('&&ACEABA.TABBAR', 'V V K8 ', nbo, jtab)
+    AS_ALLOCATE(vk8=tabbar, size=nbo)
     AS_ALLOCATE(vk8=carbar, size=ndim)
-    call acedat('BARRE', 1, tab_para, zk16(jsect), expbar,&
-                zk8(jtab), carbar)
+    call acedat('BARRE', 1, tab_para, typ_sect, expbar,&
+                tabbar, carbar)
     AS_ALLOCATE(vk8=cara, size=nbcar)
     AS_ALLOCATE(vr=vale, size=nbval)
 !
@@ -211,9 +213,9 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
         fcx = '.'
         call getvid('BARRE', 'FCX', iocc=ioc, scal=fcx, nbret=nfcx)
 !
-        if (sec .eq. zk16(jsect )) isec = 0
-        if (sec .eq. zk16(jsect+1)) isec = 1
-        if (sec .eq. zk16(jsect+2)) isec = 2
+        if (sec .eq. typ_sect(1)) isec = 0
+        if (sec .eq. typ_sect(1+1)) isec = 1
+        if (sec .eq. typ_sect(1+2)) isec = 2
 !
 ! ---    "GROUP_MA" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DES
 !                                                    GROUPES DE MAILLES
@@ -326,7 +328,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     call jeveuo(tmpvbf, 'E', jdvbaf)
 !
 ! --- AFFECTATIONS DES DONNEES GENERALES
-    zk8(jdcba) = zk8(jtab)
+    zk8(jdcba) = tabbar(1)
 !     POUR LA CARTE DE VENT ==> FCXP
     zk8(jdcbaf) = 'FCXP'
     do 70 i = 1, nbaaff
@@ -345,7 +347,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 !
 ! --- AFFECTATIONS DONNEES GEOMETRIQUES (ON AFFECTE TOUTES LES CMPS)
     do 74 i = 1, 6
-        zk8(jdcbg+i-1) = zk8(jtab+i)
+        zk8(jdcbg+i-1) = tabbar(1+i)
 74  end do
     do 76 j = 1, nbaaff
         call jenuno(jexnum(tmpgen, j), nommai)
@@ -374,9 +376,9 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     AS_DEALLOCATE(vk24=barre)
     AS_DEALLOCATE(vk8=barre2)
     AS_DEALLOCATE(vi=tab_para)
-    call jedetr('&&ACEABA.TYP_SECT')
+    AS_DEALLOCATE(vk16=typ_sect)
     AS_DEALLOCATE(vk8=expbar)
-    call jedetr('&&ACEABA.TABBAR')
+    AS_DEALLOCATE(vk8=tabbar)
     AS_DEALLOCATE(vk8=carbar)
     AS_DEALLOCATE(vk8=cara)
     AS_DEALLOCATE(vr=vale)

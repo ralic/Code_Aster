@@ -17,6 +17,8 @@ subroutine grpdbl(maz, typgz)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: maz, typgz
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,13 +45,15 @@ subroutine grpdbl(maz, typgz)
 ! ----------------------------------------------------------------------
 !
     integer :: igr, nbgr, ie, nbe, jgroup, nue, nbno, nbma
-    integer :: jlent, k,  nbent, jgrou2
-    integer :: imax, nelim, lnew, jnew, je, kk
+    integer ::  k,  nbent, jgrou2
+    integer :: imax, nelim, lnew,  je, kk
     character(len=4) ::  clas
     character(len=8) :: ma, typgr
     character(len=9) :: ptrn
     character(len=24) :: nomgr, nvnogr, nvptno
     integer, pointer :: dime(:) => null()
+    integer, pointer :: lent(:) => null()
+    integer, pointer :: vlnew(:) => null()
 ! -DEB------------------------------------------------------------------
 !
     call jemarq()
@@ -78,7 +82,7 @@ subroutine grpdbl(maz, typgz)
     endif
 !
 !
-    call wkvect('&&GRPDBL.LENT', 'V V I', nbent, jlent)
+    AS_ALLOCATE(vi=lent, size=nbent)
     call jelira(ma//'.'//typgr, 'NOMUTI', nbgr)
 !
     call jecreo(nvptno, 'V N K24')
@@ -94,8 +98,8 @@ subroutine grpdbl(maz, typgz)
     imax=0
     do 11,ie = 1,nbe
     nue = zi(jgroup-1+ie)
-    zi(jlent-1+nue)=zi(jlent-1+nue)+1
-    imax=max(imax,zi(jlent-1+nue))
+    lent(nue)=lent(nue)+1
+    imax=max(imax,lent(nue))
 11  continue
 !
     lnew=nbe
@@ -103,28 +107,28 @@ subroutine grpdbl(maz, typgz)
 !         -- IL Y A DES DOUBLONS A ELIMINER :
         nelim=0
         do 31,k=1,nbent
-        if (zi(jlent-1+k) .gt. 1) nelim=nelim+1
+        if (lent(k) .gt. 1) nelim=nelim+1
 31      continue
         ASSERT(nelim.gt.0)
         lnew=nbe-nelim
         ASSERT(lnew.gt.0)
-        call wkvect('&&GRPDBL.LNEW', 'V V I', lnew, jnew)
+        AS_ALLOCATE(vi=vlnew, size=lnew)
         je=0
         do 34,ie=1,nbe
         nue = zi(jgroup-1+ie)
-        kk=zi(jlent-1+nue)
+        kk=lent(nue)
         ASSERT(kk.ne.0)
         if (kk .eq. 1) then
 !             -- ENTITE NON DOUBLONNEE :
             je=je+1
             ASSERT(je.ge.1.and.je.le.lnew)
-            zi(jnew-1+je)=nue
+            vlnew(je)=nue
         else if (kk.gt.1) then
 !             -- ENTITE DOUBLONNEE VUE LA 1ERE FOIS:
             je=je+1
             ASSERT(je.ge.1.and.je.le.lnew)
-            zi(jnew-1+je)=nue
-            zi(jlent-1+nue)=-1
+            vlnew(je)=nue
+            lent(nue)=-1
         else if (kk.eq.-1) then
 !             -- ENTITE DOUBLONNEE DEJA VUE :
         else
@@ -139,9 +143,9 @@ subroutine grpdbl(maz, typgz)
 !
     if (imax .gt. 1) then
         do 35,k=1,lnew
-        zi(jgrou2-1+k)=zi(jnew-1+k)
+        zi(jgrou2-1+k)=vlnew(k)
 35      continue
-        call jedetr('&&GRPDBL.LNEW')
+        AS_DEALLOCATE(vi=vlnew)
     else
         do 36,k=1,lnew
         zi(jgrou2-1+k)=zi(jgroup-1+k)
@@ -151,12 +155,12 @@ subroutine grpdbl(maz, typgz)
 !
 !       -- REMISE A ZERO DE .LENT :
     do 32,k=1,nbent
-    zi(jlent-1+k)=0
+    lent(k)=0
 32  continue
 !
     21 end do
 !
-    call jedetr('&&GRPDBL.LENT')
+    AS_DEALLOCATE(vi=lent)
 !
     call jelira(ma//'.'//typgr, 'CLAS', cval=clas)
     call jedetr(ma//'.'//typgr)

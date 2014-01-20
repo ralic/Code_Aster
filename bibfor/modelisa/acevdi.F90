@@ -18,6 +18,8 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 #include "asterfort/verdis.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbocc, nlm, nlg, nln, nlj, ier
     character(len=*) :: nomaz, nomoz, mcf
@@ -62,8 +64,9 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
     character(len=24) :: grmama, mailma, cara, nogrm
     character(len=24) :: valk(4)
     integer :: idtyma, i3d, i2d, ndim1, ioc, nc, ng, nm, nj, nn, nsom, nbmail
-    integer :: n1, ima, nbgrm, jgrm, ig, jmail, numa, nutyma, lmax2
+    integer :: n1, ima, nbgrm,  ig, jmail, numa, nutyma, lmax2
     integer :: iarg
+    character(len=24), pointer :: group_ma(:) => null()
 !     ------------------------------------------------------------------
     call getres(nomu, concep, cmd)
 !
@@ -140,11 +143,11 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 !
         if (ng .ne. 0) then
             nbgrm = -ng
-            call wkvect('&&ACEVDI.GROUP_MA', 'V V K24', nbgrm, jgrm)
-            call getvtx(mcf, 'GROUP_MA', iocc=ioc, nbval=nbgrm, vect=zk24(jgrm),&
+            AS_ALLOCATE(vk24=group_ma, size=nbgrm)
+            call getvtx(mcf, 'GROUP_MA', iocc=ioc, nbval=nbgrm, vect=group_ma,&
                         nbret=n1)
             do 14 ig = 1, nbgrm
-                nogrm = zk24(jgrm+ig-1)
+                nogrm = group_ma(ig)
                 call verima(noma, nogrm, 1, 'GROUP_MA')
                 call jelira(jexnom(grmama, nogrm), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, nogrm), 'L', jmail)
@@ -162,7 +165,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                     endif
 16              continue
 14          continue
-            call jedetr('&&ACEVDI.GROUP_MA')
+            AS_DEALLOCATE(vk24=group_ma)
         endif
 !
 10  end do

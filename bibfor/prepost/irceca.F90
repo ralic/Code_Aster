@@ -25,6 +25,8 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*)
     integer :: nbnoma(*), typma(*), nbmat, nbcput, imodl
@@ -86,11 +88,18 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: icmcas, icmp, icoef, icoma2, icomax, ideu, iel
     integer :: ielg, ielt, igr, igre, igrel, ij, inos
     integer :: inum, iobj, ipoin1, ipoin2, iret, iso, isp
-    integer :: ispv, ityca, iutil, ivari, j, jadr, jbid
-    integer :: jent, jlast, jli, jlog, jmod, jnbr, jnom
-    integer :: jpos, jv, jva, jvale, lkname, mode
+    integer :: ispv, ityca, iutil, ivari, j, jadr
+    integer ::  jlast, jli,  jmod
+    integer ::  jv,  jvale, lkname, mode
     integer :: nbelgr, nbgr, nbsmo, nbsobj, nbva, ncmp, ncmpp
     integer :: nec, nnoe, npcalc, nsca, nscal
+    integer, pointer :: bid(:) => null()
+    integer, pointer :: entete(:) => null()
+    logical, pointer :: jlogi(:) => null()
+    integer, pointer :: jnbva(:) => null()
+    integer, pointer :: nbrcmp(:) => null()
+    character(len=8), pointer :: nomvar(:) => null()
+    integer, pointer :: posvar(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -103,8 +112,8 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     nbvar = 0
     izero = 0
 !
-    call wkvect('&&IRCECA.NBRCMP', 'V V I', nbgrel, jnbr)
-    call wkvect('&&IRCECA.ENTETE', 'V V I', nbgrel*7, jent)
+    AS_ALLOCATE(vi=nbrcmp, size=nbgrel)
+    AS_ALLOCATE(vi=entete, size=nbgrel*7)
     call jeveuo(jexnum('&&OP0039.LIGREL', imodl), 'E', jli)
     call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
@@ -115,8 +124,8 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     icomax = 0
     nbsobj = 0
     nbsmo = zi(jli-1+1)
-    call wkvect('&&IRCECA.JLOGI', 'V V L', nbsmo*ncmpmx, jlog)
-    call wkvect('&&IRCECA.JNBVA', 'V V I', nbsmo+1, jva)
+    AS_ALLOCATE(vl=jlogi, size=nbsmo*ncmpmx)
+    AS_ALLOCATE(vi=jnbva, size=nbsmo+1)
     do 10 iso = 1, nbsmo
         lmode = .false.
         modsav = celd(celd(4+zi(jli+(iso-1)*(4+nbgrel)+5))+2)
@@ -172,13 +181,13 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             valk (2) = 'VARI_R'
                             call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
                         endif
-                        zl(jlog-1+(iso-1)*ncmpmx+ivari) = .true.
+                        jlogi((iso-1)*ncmpmx+ivari) = .true.
                         nbvar = nbvar + 1
                         goto 18
                     else
                         do 20 i = 1, ncmpmx
                             if (ncmput(icm) .eq. ncmpgd(i)) then
-                                zl(jlog-1+(iso-1)*ncmpmx+i) = .true.
+                                jlogi((iso-1)*ncmpmx+i) = .true.
                                 nbvar = nbvar + 1
                                 goto 18
                             endif
@@ -191,7 +200,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
             else
                 do 22 i = 1, ncmpmx
                     if (exisdg(tabec,i)) then
-                        zl(jlog-1+(iso-1)*ncmpmx+i) = .true.
+                        jlogi((iso-1)*ncmpmx+i) = .true.
                         nbvar = nbvar + 1
                     endif
 22              continue
@@ -203,19 +212,19 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 16      continue
         if (lmode) then
             nbsobj = nbsobj + 1
-            zi(jnbr-1+nbsobj) = digdel(modsav)
-            zi(jent-1+(nbsobj-1)*7+1) = zi(jli+(iso-1)*(4+nbgrel)+2)
+            nbrcmp(nbsobj) = digdel(modsav)
+            entete((nbsobj-1)*7+1) = zi(jli+(iso-1)*(4+nbgrel)+2)
         else
             zi(jli+(iso-1)*(4+nbgrel)+3) = 0
         endif
 10  end do
-    zi(jva-1+1) = icomax
+    jnbva(1) = icomax
 !     ------------------------------------------------------------------
 !
 !     --- NOMS DES COMPOSANTES ET POSITIONS DANS LA GRANDEUR ---
 !
-    call wkvect('&&IRCECA.NOMVAR', 'V V K8', ncmpmx*icomax*nbsmo, jnom)
-    call wkvect('&&IRCECA.POSVAR', 'V V I', ncmpmx*icomax*nbsmo, jpos)
+    AS_ALLOCATE(vk8=nomvar, size=ncmpmx*icomax*nbsmo)
+    AS_ALLOCATE(vi=posvar, size=ncmpmx*icomax*nbsmo)
     icoma2 = 0
     do 50 iso = 1, nbsmo
         nbgr = zi(jli+(iso-1)*(4+nbgrel)+3)
@@ -225,7 +234,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
             if (icoef .gt. icoma2) icoma2 = icoef
 58      continue
         do 52 i = 1, ncmpmx
-            if (zl(jlog-1+(iso-1)*ncmpmx+i)) then
+            if (jlogi((iso-1)*ncmpmx+i)) then
                 nomco = ncmpgd(i)
                 if (nomco .eq. 'SIXX    ') then
                     nomco = 'SMXX    '
@@ -240,36 +249,36 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                 else if (nomco.eq.'SIYZ    ') then
                     nomco = 'SMYZ    '
                 endif
-                zi(jva+(iso-1)+1) = zi(jva+(iso-1)+1) + 1
-                nbva = zi(jva+(iso-1)+1)
+                jnbva(1+(iso-1)+1) = jnbva(1+(iso-1)+1) + 1
+                nbva = jnbva(1+(iso-1)+1)
                 if (icoma2 .gt. 1) then
                     if (ncmpv .gt. 0) then
                         do 54 isp = 1, ncmpv
                             call codent(nucmpv(isp), 'G', toto)
-                            zk8(jnom-1+(iso-1)*ncmpmx*icomax+nbva-1+&
+                            nomvar((iso-1)*ncmpmx*icomax+nbva-1+&
                             isp) = 'V'//toto
-                            zi(jpos-1+(iso-1)*ncmpmx*icomax+nbva-1+&
+                            posvar((iso-1)*ncmpmx*icomax+nbva-1+&
                             isp) = i
 54                      continue
                     else
                         do 56 isp = 1, icoma2
                             call codent(isp, 'G', toto)
-                            zk8(jnom-1+(iso-1)*ncmpmx*icomax+nbva-1+&
+                            nomvar((iso-1)*ncmpmx*icomax+nbva-1+&
                             isp) = 'V'//toto
-                            zi(jpos-1+(iso-1)*ncmpmx*icomax+nbva-1+&
+                            posvar((iso-1)*ncmpmx*icomax+nbva-1+&
                             isp) = i
 56                      continue
                     endif
                 else
                     iutil= lxlgut(nomco)
                     if (iutil .le. 4) then
-                        zk8(jnom-1+(iso-1)*ncmpmx*icomax+nbva) =&
+                        nomvar((iso-1)*ncmpmx*icomax+nbva) =&
                         nomco
                     else
-                        zk8(jnom-1+(iso-1)*ncmpmx*icomax+nbva) =&
+                        nomvar((iso-1)*ncmpmx*icomax+nbva) =&
                         nomco(1:2)//nomco((iutil-1):iutil)
                     endif
-                    zi(jpos-1+(iso-1)*ncmpmx*icomax+nbva) = i
+                    posvar((iso-1)*ncmpmx*icomax+nbva) = i
                 endif
             endif
 52      continue
@@ -319,22 +328,22 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     write(ifi,'(1X,A71)')  ctype
     iobj = 0
     do 100 iso = 1, nbsmo
-        nbvar = zi(jva+(iso-1)+1)
-        icomax= zi(jva-1+1)
+        nbvar = jnbva(1+(iso-1)+1)
+        icomax= jnbva(1)
         if (nbvar .ne. 0) then
             iobj = iobj + 1
-            zi(jent-1+(iobj-1)*7+2) = izero
-            zi(jent-1+(iobj-1)*7+3) = nbvar*icomax
-            zi(jent-1+(iobj-1)*7+4) = izero
-            zi(jent-1+(iobj-1)*7+5) = izero
-            zi(jent-1+(iobj-1)*7+6) = izero
-            zi(jent-1+(iobj-1)*7+7) = izero
+            entete((iobj-1)*7+2) = izero
+            entete((iobj-1)*7+3) = nbvar*icomax
+            entete((iobj-1)*7+4) = izero
+            entete((iobj-1)*7+5) = izero
+            entete((iobj-1)*7+6) = izero
+            entete((iobj-1)*7+7) = izero
         endif
 100  end do
     if (nive .eq. 3) then
-        write(ifi,'(16I5)') (zi(jent-1+i),i=1,nbsobj*7)
+        write(ifi,'(16I5)') (entete(i),i=1,nbsobj*7)
     else if (nive.eq.10) then
-        write(ifi,'(10I8)') (zi(jent-1+i),i=1,nbsobj*7)
+        write(ifi,'(10I8)') (entete(i),i=1,nbsobj*7)
 !      NOMS DES CONSTITUANTS (2A8 COLLES POUR UN K16 PAR SOUS-ZONE)
 !      GIBI LIT DONC 2*NBSOBJ A8 SUR UN FORMAT 8(1X,A8), IL FAUT DONC
 !      ECRIRE (2*NBSOBJ-1)/8+1 LIGNES
@@ -347,7 +356,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
 !     --- IMPRESSION ---
 !
-    call wkvect('&&IRCECA.BID', 'V V I', ncmpmx*icomax, jbid)
+    AS_ALLOCATE(vi=bid, size=ncmpmx*icomax)
     nbmat = longr(nbgrel+1)
     call gicoor()
     nbsmo = zi(jli-1+1)
@@ -357,7 +366,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     do 200 iso = 1, nbsmo
         first = .true.
         nbgr = zi(jli+(iso-1)*(4+nbgrel)+3)
-        nbvar = zi(jva+(iso-1)+1)
+        nbvar = jnbva(1+(iso-1)+1)
         if (nbgr .ne. 0) then
             nbelt = zi(jli+(iso-1)*(4+nbgrel)+4)
             ielt = 0
@@ -443,7 +452,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                             if (exisdg(tabec,icmp)) then
                                 ic = ic + 1
                                 do 210 icmc = 1, nbvar
-                                    icmcas = zi( jpos-1+(iso-1)*ncmpmx* icomax+icmc )
+                                    icmcas = posvar((iso-1)*ncmpmx* icomax+icmc )
                                     if (icmp .eq. icmcas) then
                                         if (ncmpv .gt. 0) then
                                             do 211 ispv = 1, ncmpv
@@ -465,26 +474,26 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 206              continue
 202          continue
             do 220 i = 1, nbvar*icomax
-                zi(jbid-1+i) = izero
+                bid(i) = izero
 220          continue
             if (nive .eq. 3) then
-                write(ifi,'(16I5)') (zi(jbid-1+i),i=1,nbvar*icomax)
+                write(ifi,'(16I5)') (bid(i),i=1,nbvar*icomax)
             else if (nive.eq.10) then
-                write(ifi,'(10I8)') (zi(jbid-1+i),i=1,nbvar*icomax)
+                write(ifi,'(10I8)') (bid(i),i=1,nbvar*icomax)
             endif
-            write(ifi,'(8(1X,A8))') (zk8(jnom-1+(iso-1)*ncmpmx*icomax+&
+            write(ifi,'(8(1X,A8))') (nomvar((iso-1)*ncmpmx*icomax+&
             i), i=1,nbvar*icomax)
             write(ifi,'(8(1X,A8))') ('REAL*8  ',' ',i=1,nbvar*icomax)
-            zi(jbid-1+1) = npcalc
-            zi(jbid-1+2) = nbelt
-            zi(jbid-1+3) = izero
-            zi(jbid-1+4) = izero
+            bid(1) = npcalc
+            bid(2) = nbelt
+            bid(3) = izero
+            bid(4) = izero
             do 222 jv = 1, nbvar
                 do 224 isp = 1, icomax
                     if (nive .eq. 3) then
-                        write(ifi,'(16I5)') (zi(jbid-1+i),i=1,4)
+                        write(ifi,'(16I5)') (bid(i),i=1,4)
                     else if (nive.eq.10) then
-                        write(ifi,'(10I8)') (zi(jbid-1+i),i=1,4)
+                        write(ifi,'(10I8)') (bid(i),i=1,4)
                     endif
                     write(ifi,'(1P,3E22.13E3)') (zr(jvale-1+i),&
                     i=jv*isp,nbelt*npcalc*nbvar*icomax,nbvar*icomax)
@@ -500,13 +509,13 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 9999  continue
     if (.not.lresu) zi(jlast-1+5) = inum
     call jedetr('&&GILIRE.CORR_ASTER_GIBI')
-    call jedetr('&&IRCECA.BID')
-    call jedetr('&&IRCECA.ENTETE')
-    call jedetr('&&IRCECA.JLOGI')
-    call jedetr('&&IRCECA.JNBVA')
-    call jedetr('&&IRCECA.NBRCMP')
-    call jedetr('&&IRCECA.NOMVAR')
-    call jedetr('&&IRCECA.POSVAR')
+    AS_DEALLOCATE(vi=bid)
+    AS_DEALLOCATE(vi=entete)
+    AS_DEALLOCATE(vl=jlogi)
+    AS_DEALLOCATE(vi=jnbva)
+    AS_DEALLOCATE(vi=nbrcmp)
+    AS_DEALLOCATE(vk8=nomvar)
+    AS_DEALLOCATE(vi=posvar)
     call jedetr('&&IRCECA.VALE')
 !
     call jedema()

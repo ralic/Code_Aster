@@ -53,11 +53,13 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: nbpres, imatx, imaty, itxsto, itysto, itzsto, idelat
-    integer :: ivx, ivy, itpx, itpy, ipres, iprsto, iadia, ihcol, imatz
-    integer :: iablo, irang, jrang, i, j, iblo, ldblo, ivz, itpz, iadirg
+    integer ::   itpx, itpy, ipres, iprsto, iadia, ihcol, imatz
+    integer :: iablo, irang, jrang, i, j, iblo, ldblo,  itpz, iadirg
     integer :: iblodi, ldiabl, nbloc, n1bloc, n2bloc, nbmo, nn
     integer :: ifm, niv, iret1
     real(kind=8) :: mij, rx, ry, rz
@@ -65,6 +67,9 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     character(len=8) :: repon
     character(len=8) :: nomres
     character(len=19) :: max, may, maz, stolci
+    real(kind=8), pointer :: vectx(:) => null()
+    real(kind=8), pointer :: vecty(:) => null()
+    real(kind=8), pointer :: vectz(:) => null()
 ! ------------------------------------------------------------------
 !----- ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE ---
 !
@@ -82,8 +87,8 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     call jeveuo(stolci//'.SCIB', 'L', ldiabl)
 !
     call jelira(zk24(iprsto)(1:19)//'.VALE', 'LONMAX', nbpres)
-    call wkvect('&&MAMODG.VECTX', 'V V R', nbpres, ivx)
-    call wkvect('&&MAMODG.VECTY', 'V V R', nbpres, ivy)
+    AS_ALLOCATE(vr=vectx, size=nbpres)
+    AS_ALLOCATE(vr=vecty, size=nbpres)
 !
 ! --- RECUPERATION DES DESCRIPTEURS DE MATRICES ASSEMBLEES MAX ET MAY
 ! --- EVENTUELLEMENT MAZ
@@ -95,7 +100,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     if (model .eq. '3D') then
         call mtdscr(maz)
         call jeveuo(maz(1:19)//'.&INT', 'E', imatz)
-        call wkvect('&&MAMODG.VECTZ', 'V V R', nbpres, ivz)
+        AS_ALLOCATE(vr=vectz, size=nbpres)
     endif
 !
 !     BOUCLE SUR LES BLOCS DE LA MATRICE ASSEMBLEE GENE
@@ -121,16 +126,16 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
             call jeveuo(zk24(itysto+i-1)(1:19)//'.VALE', 'L', itpy)
             if (model .eq. '3D') then
                 call jeveuo(zk24(itzsto+i-1)(1:19)//'.VALE', 'L', itpz)
-                call mrmult('ZERO', imatz, zr(itpz), zr(ivz), 1,&
+                call mrmult('ZERO', imatz, zr(itpz), vectz, 1,&
                             .true.)
             endif
 !
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-            call mrmult('ZERO', imatx, zr(itpx), zr(ivx), 1,&
+            call mrmult('ZERO', imatx, zr(itpx), vectx, 1,&
                         .true.)
-            call mrmult('ZERO', imaty, zr(itpy), zr(ivy), 1,&
+            call mrmult('ZERO', imaty, zr(itpy), vecty, 1,&
                         .true.)
 !
 ! RANG GENERALISE DU TERME DE MASSE CALCULEE : LIGNE
@@ -150,11 +155,11 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
                 call jeveuo(zk24(iprsto+j-1)(1:19)//'.VALE', 'L', ipres)
 !
-                rx= ddot(nbpres,zr(ipres), 1,zr(ivx),1)
-                ry= ddot(nbpres,zr(ipres), 1,zr(ivy),1)
+                rx= ddot(nbpres,zr(ipres), 1,vectx,1)
+                ry= ddot(nbpres,zr(ipres), 1,vecty,1)
 !
                 if (model .eq. '3D') then
-                    rz= ddot(nbpres,zr(ipres), 1,zr(ivz),1)
+                    rz= ddot(nbpres,zr(ipres), 1,vectz,1)
                     mij = rx+ry+rz
                 else
                     mij = rx+ry
@@ -197,9 +202,9 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
 !--MENAGE FINAL DES OBJETS DE TRAVAIL
 !
-    call jedetr('&&MAMODG.VECTZ')
-    call jedetr('&&MAMODG.VECTX')
-    call jedetr('&&MAMODG.VECTY')
+    AS_DEALLOCATE(vr=vectz)
+    AS_DEALLOCATE(vr=vectx)
+    AS_DEALLOCATE(vr=vecty)
 !
     call jedema()
 end subroutine

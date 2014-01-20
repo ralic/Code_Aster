@@ -16,6 +16,8 @@ subroutine ajlagr(rigid, masse, masinv)
 #include "asterfort/pteddl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: rigid, masse, masinv
 !-----------------------------------------------------------------------
@@ -56,7 +58,8 @@ subroutine ajlagr(rigid, masse, masinv)
 !
 !-----------------------------------------------------------------------
     integer :: i, imati, imatm, imatr, imtrer, j, jconl
-    integer :: jmass, jraid, jrefa1, jrefa2, jsmde, lddl, nbmat
+    integer :: jmass, jraid, jrefa1, jrefa2, jsmde,  nbmat
+    integer, pointer :: lagr(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -169,13 +172,13 @@ subroutine ajlagr(rigid, masse, masinv)
 !
     nomddl = 'LAGR    '
     mxddl = 1
-    call wkvect('&&AJLAGR.LAGR', 'V V I', neq*mxddl, lddl)
+    AS_ALLOCATE(vi=lagr, size=neq*mxddl)
     call pteddl('NUME_DDL', numddl, mxddl, nomddl, neq,&
-                zi(lddl))
+lagr)
     call jeveuo(masi//'           .CONL', 'E', jconl)
     if (typmat .eq. 'R') then
         do 30 i = 0, neq-1
-            if (zi(lddl+i) .ne. 0) then
+            if (lagr(1+i) .ne. 0) then
                 zr(jconl+i) = mmax
             else
                 zr(jconl+i) = un
@@ -183,7 +186,7 @@ subroutine ajlagr(rigid, masse, masinv)
 30      continue
     else
         do 32 i = 0, neq-1
-            if (zi(lddl+i) .ne. 0) then
+            if (lagr(1+i) .ne. 0) then
                 zc(jconl+i) = cmmax
             else
                 zc(jconl+i) = cun
@@ -194,7 +197,7 @@ subroutine ajlagr(rigid, masse, masinv)
 !
 ! --- MENAGE
 !
-    call jedetr('&&AJLAGR.LAGR')
+    AS_DEALLOCATE(vi=lagr)
     call detrsd('MATR_ASSE', '&&RIGIL')
 !
     call jedema()

@@ -42,6 +42,8 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/vrcref.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomres
     character(len=16) :: typres
@@ -81,7 +83,7 @@ subroutine bamo78(nomres, trange, typres)
     integer :: neq
     integer :: nbinst
     integer :: nbmode
-    integer :: idbase, jrestr, ldnew, linst
+    integer ::  jrestr, ldnew, linst
     character(len=14) :: numddl
     character(len=24) :: numedd
     character(len=19) :: chamel, chamgd, chamno, chgene, ligrel, chs(2)
@@ -106,6 +108,7 @@ subroutine bamo78(nomres, trange, typres)
     integer :: iarc2, ievnew, iopt, jordr, lpar, n, nbins2
     integer :: nbtrou, nc, nh, nncp, num0, nume0
     real(kind=8) :: alpha, epsi, rundf, time
+    real(kind=8), pointer :: base(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -156,9 +159,9 @@ subroutine bamo78(nomres, trange, typres)
 ! --- RECOPIE DES MODES PROPRES DANS UN VECTEUR DE TRAVAIL
 !
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
-    call wkvect('&&BAMO78.BASE', 'V V R', nbmode*neq, idbase)
+    AS_ALLOCATE(vr=base, size=nbmode*neq)
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
-                'R', zr(idbase), [cbid])
+                'R', base, [cbid])
     call dismoi('NOM_MODELE', numddl, 'NUME_DDL', repk=modele)
 !
 ! --- CHAMPS SUR LESQUELS ON RESTITUE
@@ -268,7 +271,7 @@ subroutine bamo78(nomres, trange, typres)
 !
 !         --- TRANSFERT EFFECTIF SUR BASE PHYSIQUE
 !
-            call mdgeph(neq, nbmode, zr(idbase), zr(jrestr), zr(ldnew))
+            call mdgeph(neq, nbmode, base, zr(jrestr), zr(ldnew))
 !
 !         --- STOCKAGE CHAMP PHYSIQUE
 !
@@ -397,7 +400,7 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- MENAGE
 !
-    call jedetr('&&BAMO78.BASE')
+    AS_DEALLOCATE(vr=base)
     call jedetr('&&BAMO78.NUM_RANG')
     call jedetr('&&BAMO78.INSTANT')
 !

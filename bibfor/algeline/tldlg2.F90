@@ -45,6 +45,8 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: lmat, nprec, nmrig
     character(len=*) :: vemrig
 !
@@ -86,13 +88,15 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     character(len=40) :: infobl
     complex(kind=8) :: cbid
     integer :: ndeci, isingu, nom, neq, typvar, typsym
-    integer :: lmatb, ndigi2, npivot,  ksing, nmrav, jksing
+    integer :: lmatb, ndigi2, npivot,  ksing, nmrav
     integer :: ifm, niv
-    integer :: pass, ieq, jeq, krig, jpomr, lxsol
+    integer :: pass, ieq, jeq, krig,  lxsol
     integer :: lcine
     integer :: jdigs, jrefab, jccid
     real(kind=8) :: epsb, d1, moydia
     integer, pointer :: delg(:) => null()
+    integer, pointer :: ksingu(:) => null()
+    integer, pointer :: posmodri(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
@@ -149,7 +153,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !
 !     -- CE VECTEUR CONTIENDRA DES 0,ET LE NUMERO,LA OU ON A BLOQUE
-    call wkvect('&&TLDLG2.POSMODRI', 'V V I ', neq, jpomr)
+    AS_ALLOCATE(vi=posmodri, size=neq)
 !
 !     -- CREATION DE LA MATRICE DE TRAVAIL (COPIE DE NOMA19)
     nomb19='&&TLDLG2.COPIEMATA'
@@ -178,7 +182,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !     -- 1. RECHERCHE DES PIVOTS NULS DE LA MATRICE :
 !     ----------------------------------------------------------------
-    call wkvect('&&TLDLG2.KSINGU', 'V V I ', neq, jksing)
+    AS_ALLOCATE(vi=ksingu, size=neq)
     nmrig=0
 !
 !     -- DEBUT BOUCLE: TANT QU'IL EXISTE DES PIVOTS NULS
@@ -193,7 +197,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     if (npivot .ge. 1) then
 !       -- 1.1 LA FACT. S'EST ARRETEE SUR UN PIVOT VRAIMENT NUL
         nmrig=nmrig+1
-        zi(jksing-1+nmrig)=npivot
+        ksingu(nmrig)=npivot
     else
 !       -- 1.2 LA FACT. A PEUT ETRE CALCULE DES PIVOTS QUASI-NULS
 !          POUR EVITER DE FACTORISER PLUSIEURS FOIS (COUT), ON RELEVE
@@ -207,7 +211,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
             endif
             if (ndeci .ge. ndigi2) then
                 nmrig=nmrig+1
-                zi(jksing-1+nmrig)=ieq
+                ksingu(nmrig)=ieq
             endif
         end do
     endif
@@ -215,11 +219,11 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !     -- 1.3 SI ON A RENCONTRE DE NOUVEAUX PIVOTS NULS :
     do ksing = nmrav+1, nmrig
         pass=1
-        isingu=zi(jksing-1+ksing)
+        isingu=ksingu(ksing)
         ASSERT(isingu.gt.0 .and. isingu.le.neq)
 !       -- CE SERAIT BIZARRE QUE ISINGU SOIT UN DDL DE LAGRANGE :
         ASSERT(delg(isingu).eq.0)
-        zi(jpomr-1+isingu)=ksing
+        posmodri(isingu)=ksing
         if (niv .ge. 2) then
             write (ifm,*)'<TLDLG2> PIVOT NUL A LA LIGNE ',isingu
             call rgndas(nu, isingu, nomno, nomcmp, tyddl,&
@@ -252,7 +256,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
         call wkvect(nomb19//'.CCID', 'V V I', neq+1, jccid)
     endif
     do ieq = 1, neq
-        if (zi(jpomr-1+ieq) .gt. 0) zi(jccid-1+ieq)=1
+        if (posmodri(ieq) .gt. 0) zi(jccid-1+ieq)=1
     end do
     zi(jccid-1+neq+1)=nmrig
     zk24(jrefab-1+3)='ELIML'
@@ -266,7 +270,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !
 !     -- 1.4 : FIN DE BOUCLE RECHERCHE NMRIG :
-    call jedetr('&&TLDLG2.KSINGU')
+    AS_DEALLOCATE(vi=ksingu)
     if (niv .ge. 1) then
         write (ifm,9000)
         write (ifm,*)'<TLDLG2> NB DE MODES DE CORPS RIGIDES'//&
@@ -295,7 +299,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !       -- REMPLISSAGE POUR AVOIR FI=0 ET U0=-1 (NOTATION CSMBGG)
         krig=1
         do jeq = 1, neq
-            if (zi(jpomr+jeq-1) .ne. 0) then
+            if (posmodri(jeq) .ne. 0) then
                 zr(lcine+(krig-1)*neq+jeq-1)=-1.d0
                 krig=krig+1
             endif
@@ -334,7 +338,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !     -- NETTOYAGE ET SORTIE :
 !     -------------------------
     if (niv .ge. 1) write (ifm,9010)
-    call jedetr('&&TLDLG2.POSMODRI')
+    AS_DEALLOCATE(vi=posmodri)
     call jedetr('&&TLDLG2.TLSECCIN')
     call jedema()
 !

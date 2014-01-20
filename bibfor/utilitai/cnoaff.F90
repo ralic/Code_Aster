@@ -24,6 +24,8 @@ subroutine cnoaff(noma, nomgd, base, cno)
 #include "asterfort/utmess.h"
 #include "asterfort/vericp.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=1) :: base
     character(len=8) :: nomgd, noma, cno
@@ -59,7 +61,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !
     integer :: numgd, iav, ibid, nocc, jcmpt, nbcmpt
     integer :: iocc, nbcmp, nbvar, nbvai, nbvac, nbvak, nbva, vali, jcmp
-    integer :: i, iret, ncmp, jtmp, ncmpmx, jcmpmx, jcnsv, jcnsl
+    integer :: i, iret, ncmp,  ncmpmx, jcmpmx, jcnsv, jcnsl
     integer :: nbno, nbtou, nbnoe, jlno, jval, icmp, j, ino, nt, nbval
     character(len=1) :: tsca
     character(len=3) :: prol0
@@ -67,6 +69,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
     character(len=16) :: motcle(4)
     character(len=19) :: cnos
     character(len=24) :: valk(2), mesnoe, mescmp, prchno
+    character(len=8), pointer :: tmp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -138,23 +141,23 @@ subroutine cnoaff(noma, nomgd, base, cno)
     do iocc = 1, nocc
         call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=0, nbret=ncmp)
         ncmp=-ncmp
-        call wkvect('&&CNOAFF.TMP', 'V V K8', ncmp, jtmp)
-        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=zk8(jtmp))
+        AS_ALLOCATE(vk8=tmp, size=ncmp)
+        call getvtx('AFFE', 'NOM_CMP', iocc=iocc, nbval=ncmp, vect=tmp)
         if (iocc .eq. 1) then
             do i = 1, ncmp
-                zk8(jcmpt+i-1)=zk8(jtmp+i-1)
+                zk8(jcmpt+i-1)=tmp(i)
             end do
             nt=ncmp
         else
             do i = 1, ncmp
-                j=indik8(zk8(jcmpt),zk8(jtmp+i-1),1,nt)
+                j=indik8(zk8(jcmpt),tmp(i),1,nt)
                 if (j .eq. 0) then
-                    zk8(jcmpt+nt)=zk8(jtmp+i-1)
+                    zk8(jcmpt+nt)=tmp(i)
                     nt=nt+1
                 endif
             end do
         endif
-        call jedetr('&&CNOAFF.TMP')
+        AS_DEALLOCATE(vk8=tmp)
     end do
     nbcmpt=nt
 !

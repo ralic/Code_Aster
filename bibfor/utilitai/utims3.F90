@@ -30,6 +30,8 @@ subroutine utims3(comm, sch1, ipos, base)
 #include "asterfort/utmess.h"
 #include "asterfort/uttr24.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: comm, sch1, base
     integer :: ipos
@@ -51,7 +53,8 @@ subroutine utims3(comm, sch1, ipos, base)
     character(len=24) :: ob1, chain2, ficou
     character(len=8) :: kbid, comm2
     character(len=1) :: bas2
-    integer :: long, ifm, nbval, nbobj, ialiob, i, iret
+    integer :: long, ifm, nbval, nbobj,  i, iret
+    character(len=24), pointer :: liste(:) => null()
 !
 !
     call jemarq()
@@ -104,16 +107,16 @@ subroutine utims3(comm, sch1, ipos, base)
 !
 !     -- RECHERCHE DES NOMS DES OBJETS VERIFIANT LE CRITERE:
 !    -------------------------------------------------------
-    call wkvect('&&UTIMS3.LISTE', 'V V K24', nbobj, ialiob)
+    AS_ALLOCATE(vk24=liste, size=nbobj)
     if (long .eq. 24) then
-        zk24(ialiob-1+1) = sch1
+        liste(1) = sch1
     else
-        call jelstc(bas2, sch1, ipos, nbobj, zk24(ialiob),&
+        call jelstc(bas2, sch1, ipos, nbobj, liste,&
                     nbval)
     endif
 !
 !     -- ON TRIE PAR ORDRE ALPHABETIQUE:
-    call uttr24(zk24(ialiob), nbobj)
+    call uttr24(liste, nbobj)
 !
 !
 !     -- ECRITURE D'UNE LIGNE D'INFO POUR CHAQUE OBJET
@@ -122,12 +125,12 @@ subroutine utims3(comm, sch1, ipos, base)
      &  'LONMAX','TYPE','IRET','SOMMI','RESUME','SOMMR'
 !
     do 10 i = 1, nbobj
-        ob1 = zk24(ialiob-1+i)
+        ob1 = liste(i)
         call dbgobj(ob1, 'OUI', ifm, '&&UTIMS3')
 10  end do
 !
 !
-    call jedetr('&&UTIMS3.LISTE')
+    AS_DEALLOCATE(vk24=liste)
 20  continue
     call jedema()
 !

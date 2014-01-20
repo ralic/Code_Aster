@@ -32,6 +32,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ig, iocs, npass
     real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm
@@ -75,9 +77,9 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !     ------------------------------------------------------------------
 !
     integer :: nbsigr, nbsig2, jnsg, is1, ioc1, is2, ioc2, inds, jcombi, jpresa
-    integer :: jpresb, jnbocc, ifm, niv, i1, i2, ndim, jnoc, nscy, ns, jmsn
-    integer ::  nsitup, nsituq, indi, jist, i, icas, icss, nbsitu, i4
-    integer :: jmfu, jmfub, jmfus, nbthep, nbtheq
+    integer :: jpresb, jnbocc, ifm, niv, i1, i2, ndim,  nscy, ns, jmsn
+    integer ::  nsitup, nsituq, indi,  i, icas, icss, nbsitu, i4
+    integer :: jmfu,   nbthep, nbtheq
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij(2), salijs(2), ug, sn, sp(2), smm
     real(kind=8) :: sns, sps(2), spp, sqq(2), sqqs(2), mpi(12), mpj(12), mqi(12)
     real(kind=8) :: mqj(12), mse(12), sij0(12), matpi(8), matpj(8), matqi(8)
@@ -94,6 +96,10 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     integer :: nocc
     real(kind=8) :: nadm(1)
     integer, pointer :: situ_numero(:) => null()
+    integer, pointer :: impr_situ(:) => null()
+    real(kind=8), pointer :: matrice_fu_b(:) => null()
+    real(kind=8), pointer :: matrice_fu_s(:) => null()
+    integer, pointer :: nb_occurr(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
@@ -124,13 +130,13 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         nbsig2 = nbsigr - 1
     endif
     ndim = nbsig2*nbsig2
-    call wkvect('&&RC3201.NB_OCCURR', 'V V I', nbsig2, jnoc)
-    call wkvect('&&RC3201.IMPR_SITU', 'V V I', nbsig2, jist)
+    AS_ALLOCATE(vi=nb_occurr, size=nbsig2)
+    AS_ALLOCATE(vi=impr_situ, size=nbsig2)
     call wkvect('&&RC3201.MATRICE_SN', 'V V R', ndim, jmsn)
     call wkvect('&&RC3201.MATRICE_FU', 'V V R', ndim, jmfu)
     if (seisme) then
-        call wkvect('&&RC3201.MATRICE_FU_B', 'V V R', ndim, jmfub)
-        call wkvect('&&RC3201.MATRICE_FU_S', 'V V R', ndim, jmfus)
+        AS_ALLOCATE(vr=matrice_fu_b, size=ndim)
+        AS_ALLOCATE(vr=matrice_fu_s, size=ndim)
     endif
 !
     sp12ma(1)=0.d0
@@ -230,8 +236,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         if (.not.zl(jcombi+ioc1-1)) goto 20
 !
         i1 = i1 + 1
-        zi(jnoc-1+i1) = zi(jnbocc+2*ioc1-2)
-        zi(jist-1+i1) = situ_numero(ioc1)
+        nb_occurr(i1) = zi(jnbocc+2*ioc1-2)
+        impr_situ(i1) = situ_numero(ioc1)
 !
         nsitup = situ_numero(ioc1)
         nsituq = 0
@@ -358,7 +364,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             sm = smm
         endif
         if (seisme) then
-            zr(jmfub-1+indi+1) = fuij(1)
+            matrice_fu_b(indi+1) = fuij(1)
             call rc32sp('SP_SITU', lieu, nsitup, ppi, mpi,&
                         nsituq, ppj, mpj, seisme, mse,&
                         sps, typeke, spmecs, spthes)
@@ -370,7 +376,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
             resuas(10*(is1-1)+8) = kethes
             resuas(10*(is1-1)+9) = salijs(1)
             kemax = max( kemax , kemeca )
-            zr(jmfus-1+indi+1) = fuij(1)
+            matrice_fu_s(indi+1) = fuij(1)
             spmeps = spmecs(1)
         endif
 !
@@ -386,7 +392,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 if (seisme) write (ifm,1051) nsitup,spmecs(1),kemecs
             endif
             write (ifm,1060) nsitup, saltij(1),zr(jmfu-1+indi+1)
-            if (seisme) write (ifm,1061) nsitup, salijs(1), zr(jmfus- 1+indi+1)
+            if (seisme) write (ifm,1061) nsitup, salijs(1), matrice_fu_s(indi+1)
         endif
 !
         call limend(mater, saltij(1), 'WOHLER', kbid, endur)
@@ -702,8 +708,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 sm = smm
             endif
             if (seisme) then
-                zr(jmfub-1+inds+1) = fuij(1)+fuij(2)
-                zr(jmfub-1+indi+1) = fuij(1)+fuij(2)
+                matrice_fu_b(inds+1) = fuij(1)+fuij(2)
+                matrice_fu_b(indi+1) = fuij(1)+fuij(2)
 ! ON PREND SPTHES = SPTHER
                 call rc32sa('COMB', mater, mat1, mat2, sns,&
                             sps, typeke, spmecs, spther, kemecs,&
@@ -717,8 +723,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 icas = icas + 1
                 resuca(icas) = salijs(2)
                 kemax = max( kemax , kemeca )
-                zr(jmfus-1+inds+1) = fuij(1)+fuij(2)
-                zr(jmfus-1+indi+1) = fuij(1)+fuij(2)
+                matrice_fu_s(inds+1) = fuij(1)+fuij(2)
+                matrice_fu_s(indi+1) = fuij(1)+fuij(2)
             endif
             spmax = max(spmax,sps(1),sp12ma(1),sps(2),sp12ma(2))
             spmecm = max(spmecm,spmecs(1),spmeca(1))
@@ -742,28 +748,28 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
     if (lfatig) then
         if (seisme) then
-            call rc32fs(nbsig2, zi(jnoc), zi(jist), zr(jmfus), zr(jmfub),&
+            call rc32fs(nbsig2, nb_occurr, impr_situ, matrice_fu_s, matrice_fu_b,&
                         fuse(1), ns, nscy, ug)
             utot = utot + ug
         endif
         if (npass .eq. 0) then
-            call rc32fu(nbsig2, zi(jnoc), zi(jist), zr(jmfu), ug,&
+            call rc32fu(nbsig2, nb_occurr, impr_situ, zr(jmfu), ug,&
                         factus)
         else
-            call rc32fp(nbsig2, zi(jnoc), zi(jist), zi(jnsg), zr(jmfu),&
+            call rc32fp(nbsig2, nb_occurr, impr_situ, zi(jnsg), zr(jmfu),&
                         ug, factus)
         endif
         utot = utot + ug
     endif
 !
     if (seisme) then
-        call jedetr('&&RC3201.MATRICE_FU_B')
-        call jedetr('&&RC3201.MATRICE_FU_S')
+        AS_DEALLOCATE(vr=matrice_fu_b)
+        AS_DEALLOCATE(vr=matrice_fu_s)
     endif
     call jedetr('&&RC3201.MATRICE_FU')
     call jedetr('&&RC3201.MATRICE_SN')
-    call jedetr('&&RC3201.NB_OCCURR')
-    call jedetr('&&RC3201.IMPR_SITU')
+    AS_DEALLOCATE(vi=nb_occurr)
+    AS_DEALLOCATE(vi=impr_situ)
 !
 !
     1012 format (1p,' SITUATION ',i4,' PM =',e12.5,&

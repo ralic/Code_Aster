@@ -26,6 +26,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: noma, nomare
     character(len=*) :: corrn, corrm
@@ -74,7 +76,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     integer :: jcorou
     integer :: iad, ntgeo, nbnoou, nbnomx, jwk2, nbgma, jgma, igm, nbma, nbmain
     integer :: jwk3, nbgmin, jgmanv, nbgmnv, k, jnmpg, nmpg, nbgno, jmaor
-    integer :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg, jnugn, numgno
+    integer :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg,  numgno
     integer :: jcorrm, imain, imaou
     character(len=4) :: docu
     character(len=8) :: typmcl(2), nomres
@@ -84,6 +86,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm
     logical :: lvide, lcaay
+    character(len=24), pointer :: grp_noeu_in(:) => null()
 !
     call jemarq()
 !
@@ -368,8 +371,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !
     if (nbgno .ne. 0) then
         nbgno=-nbgno
-        call wkvect('&&RDTMAI.GRP_NOEU_IN', 'V V K24', nbgno, jnugn)
-        call getvtx('RESTREINT', 'GROUP_NO', iocc=1, nbval=nbgno, vect=zk24(jnugn),&
+        AS_ALLOCATE(vk24=grp_noeu_in, size=nbgno)
+        call getvtx('RESTREINT', 'GROUP_NO', iocc=1, nbval=nbgno, vect=grp_noeu_in,&
                     nbret=iret)
     endif
 !
@@ -383,14 +386,14 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call wkvect('&&RDTMAI_NB_NO_PAR_GRNO', 'V V I', nbnoou, jnnpg)
         nbgnnv=0
         do ign = 1, nbgno
-            call jenonu(jexnom(noma//'.GROUPENO', zk24(jnugn+ign-1)), numgno)
+            call jenonu(jexnom(noma//'.GROUPENO', grp_noeu_in(ign)), numgno)
             if (numgno .eq. 0) then
-                valk(1) = zk24(jnugn+ign-1)
+                valk(1) = grp_noeu_in(ign)
                 valk(2) = noma
                 call utmess('F', 'CALCULEL6_82', nk=2, valk=valk)
             endif
-            call jeveuo(jexnom(noma//'.GROUPENO', zk24(jnugn+ign-1)), 'L', jadin)
-            call jelira(jexnom(noma//'.GROUPENO', zk24(jnugn+ign-1)), 'LONMAX', nbno)
+            call jeveuo(jexnom(noma//'.GROUPENO', grp_noeu_in(ign)), 'L', jadin)
+            call jelira(jexnom(noma//'.GROUPENO', grp_noeu_in(ign)), 'LONMAX', nbno)
             nnpg=0
             lvide=.true.
             do ino = 1, nbno
@@ -500,7 +503,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call jedetr('&&RDTMAI_GRNO_NON_VIDES')
     call jedetr('&&RDTMAI_NB_MA_PAR_GRMA')
     call jedetr('&&RDTMAI_NB_NO_PAR_GRNO')
-    call jedetr('&&RDTMAI.GRP_NOEU_IN')
+    AS_DEALLOCATE(vk24=grp_noeu_in)
     call jedetr('&&RDTMAI.NUM_MAIL_IN')
 !
     call jedema()

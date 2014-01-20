@@ -15,6 +15,8 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: listma(*), nbmail, norien
     logical :: reorie
@@ -47,10 +49,10 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: idtyma, nutyma, lori, jori, nori, kori, iliste
+    integer :: idtyma, nutyma,     iliste
     integer :: ima, numail, numa, norieg, lliste
     integer :: im1, im2, ico, ibid(1)
-    integer :: p1, p2, ifm, niv, ktyp, p3, p4
+    integer :: p1, p2, ifm, niv,  p3, p4
     integer :: jdesm1, jdesm2
     integer :: nbmavo, indi, im3, nconex, zero
     logical :: dime1, dime2
@@ -59,8 +61,13 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo
     character(len=24) :: valk(2)
+    integer, pointer :: ori1(:) => null()
+    integer, pointer :: ori2(:) => null()
+    integer, pointer :: ori3(:) => null()
+    integer, pointer :: ori4(:) => null()
+    character(len=8), pointer :: ori5(:) => null()
 !
-#define pasori(ima) zi(lori-1+ima).eq.0
+#define pasori(ima) ori1(ima).eq.0
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -85,11 +92,11 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !
 !     ALLOCATIONS :
 !     -----------
-    call wkvect('&&ORNORM.ORI1', 'V V I', nbmail, lori)
-    call wkvect('&&ORNORM.ORI2', 'V V I', nbmail, jori)
-    call wkvect('&&ORNORM.ORI3', 'V V I', nbmail, nori)
-    call wkvect('&&ORNORM.ORI4', 'V V I', nbmail, kori)
-    call wkvect('&&ORNORM.ORI5', 'V V K8', nbmail, ktyp)
+    AS_ALLOCATE(vi=ori1, size=nbmail)
+    AS_ALLOCATE(vi=ori2, size=nbmail)
+    AS_ALLOCATE(vi=ori3, size=nbmail)
+    AS_ALLOCATE(vi=ori4, size=nbmail)
+    AS_ALLOCATE(vk8=ori5, size=nbmail)
 !
 ! --- VERIFICATION DU TYPE DES MAILLES
 ! --- (ON DOIT AVOIR DES MAILLES DE PEAU) :
@@ -97,17 +104,17 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
     dime1 = .false.
     dime2 = .false.
     do 10 ima = 1, nbmail
-        zi(lori-1+ima) = 0
+        ori1(ima) = 0
         numa = listma(ima)
-        zi(nori-1+ima) = zi(p2+numa)-zi(p2-1+numa)
-        zi(kori-1+ima) = zi(p2+numa-1)
+        ori3(ima) = zi(p2+numa)-zi(p2-1+numa)
+        ori4(ima) = zi(p2+numa-1)
         jdesm1 = zi(p2+numa-1)
 !
 ! ---   TYPE DE LA MAILLE COURANTE :
 !       --------------------------
         nutyma = zi(idtyma+numa-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
-        zk8(ktyp-1+ima) = typel
+        ori5(ima) = typel
 !
         if (typel(1:4) .eq. 'QUAD') then
             dime2 = .true.
@@ -155,17 +162,17 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
             if (nconex .gt. 1) then
                 call utmess('F', 'MODELISA5_99')
             endif
-            zi(lori-1+ima) = 1
+            ori1(ima) = 1
             lliste = 0
             iliste = 0
-            zi(jori+lliste) = ima
+            ori2(lliste+1) = ima
 !
 ! ------- ON ORIENTE TOUTES LES MAILLES DU CONNEXE
 !
 200          continue
 !
-            im1 = zi(jori+iliste)
-            jdesm1 = zi(kori-1+im1)
+            im1 = ori2(iliste+1)
+            jdesm1 = ori4(im1)
 ! ------- ON ESSAYE D'ORIENTER LES MAILLES VOISINES
             nbmavo = zi(p4+im1)-zi(p4-1+im1)
             do 210 im3 = 1, nbmavo
@@ -174,18 +181,18 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
                 if (im2 .eq. 0) goto 210
                 numail = listma(im2)
                 if (pasori(im2)) then
-                    jdesm2 = zi(kori-1+im2)
+                    jdesm2 = ori4(im2)
 !             VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
                     if (dime1) ico = iorim1 ( zi(p1+jdesm1-1), zi(p1+jdesm2-1), reorie)
                     if (dime2) ico = iorim2 (&
-                                     zi(p1+jdesm1-1), zi(nori- 1+im1), zi(p1+jdesm2-1),&
-                                     zi(nori-1+im2), reorie&
+                                     zi(p1+jdesm1-1), ori3(im1), zi(p1+jdesm2-1),&
+                                     ori3(im2), reorie&
                                      )
 !             SI MAILLES CONNEXES
                     if (ico .ne. 0) then
-                        zi(lori-1+im2) = 1
+                        ori1(im2) = 1
                         lliste = lliste + 1
-                        zi(jori+lliste) = im2
+                        ori2(lliste+1) = im2
                         if (reorie .and. niv .eq. 2) then
                             call jenuno(jexnum(mailma, numail), nomail)
                             if (ico .lt. 0) then
@@ -208,11 +215,11 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !
     norien = norien + norieg
 !
-    call jedetr('&&ORNORM.ORI1')
-    call jedetr('&&ORNORM.ORI2')
-    call jedetr('&&ORNORM.ORI3')
-    call jedetr('&&ORNORM.ORI4')
-    call jedetr('&&ORNORM.ORI5')
+    AS_DEALLOCATE(vi=ori1)
+    AS_DEALLOCATE(vi=ori2)
+    AS_DEALLOCATE(vi=ori3)
+    AS_DEALLOCATE(vi=ori4)
+    AS_DEALLOCATE(vk8=ori5)
     call jedetr(nomavo)
 !
 9999  continue

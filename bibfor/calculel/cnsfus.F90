@@ -33,6 +33,8 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbchs
     character(len=*) :: lichs(nbchs), cns3z, base
@@ -69,8 +71,8 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     ------------------------------------------------------------------
     integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c, nbno
     integer :: jcn3d, jcn3v, jcn3l
-    integer :: jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
-    integer :: ncmpmx, ncmp1, icmp1, jnucmp
+    integer :: jcmpgd,  ichs, icmp, icmp3, ncmp3
+    integer :: ncmpmx, ncmp1, icmp1
     integer :: ino, coefi, k1, k3
     character(len=8) :: ma, nomgd, nocmp
     character(len=3) :: tsca
@@ -79,6 +81,8 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     complex(kind=8) :: coefc
     logical :: cumul
     character(len=8), pointer :: cn3c(:) => null()
+    character(len=8), pointer :: licmp(:) => null()
+    integer, pointer :: nucmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -107,8 +111,8 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     ---------------------------------------
 !
 !     -- ON "COCHE" LES CMPS PRESENTES DANS LES CNS DE LICHS:
-    call wkvect('&&CNSFUS.LICMP', 'V V K8', ncmpmx, jlicmp)
-    call wkvect('&&CNSFUS.NUCMP', 'V V I', ncmpmx, jnucmp)
+    AS_ALLOCATE(vk8=licmp, size=ncmpmx)
+    AS_ALLOCATE(vi=nucmp, size=ncmpmx)
     do ichs = 1, nbchs
         cns1 = lichs(ichs)
         call jeveuo(cns1//'.CNSK', 'L', jcn1k)
@@ -124,7 +128,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         do icmp1 = 1, ncmp1
             nocmp = zk8(jcn1c-1+icmp1)
             icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
-            zi(jnucmp-1+icmp) = 1
+            nucmp(icmp) = 1
         end do
         call jelibe(cns1//'.CNSK')
         call jelibe(cns1//'.CNSD')
@@ -133,9 +137,9 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
     icmp3 = 0
     do icmp = 1, ncmpmx
-        if (zi(jnucmp-1+icmp) .eq. 1) then
+        if (nucmp(icmp) .eq. 1) then
             icmp3 = icmp3 + 1
-            zk8(jlicmp-1+icmp3) = zk8(jcmpgd-1+icmp)
+            licmp(icmp3) = zk8(jcmpgd-1+icmp)
         endif
     end do
     ncmp3 = icmp3
@@ -143,7 +147,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !
 !     2- ALLOCATION DE CNS3 :
 !     ---------------------------------------
-    call cnscre(ma, nomgd, ncmp3, zk8(jlicmp), base,&
+    call cnscre(ma, nomgd, ncmp3, licmp, base,&
                 cns3)
     call jeveuo(cns3//'.CNSD', 'L', jcn3d)
     call jeveuo(cns3//'.CNSC', 'L', vk8=cn3c)
@@ -246,8 +250,8 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     4- MENAGE :
 !     -----------
     call detrsd('CHAM_NO_S', cns3)
-    call jedetr('&&CNSFUS.LICMP')
-    call jedetr('&&CNSFUS.NUCMP')
+    AS_DEALLOCATE(vk8=licmp)
+    AS_DEALLOCATE(vi=nucmp)
 !
     call jedema()
 end subroutine

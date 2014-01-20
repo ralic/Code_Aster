@@ -46,6 +46,8 @@ subroutine te0535(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
     character(len=16) :: option, nomte
@@ -69,7 +71,7 @@ subroutine te0535(option, nomte)
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk), rgeom(nk)
     real(kind=8) :: deplm(12), deplp(12), matsec(6), dege(6)
     real(kind=8) :: zero, deux
-    integer :: jdefm, jdefp, jmodfb, jsigfb, nbfib, ncarfi, jacf, nbvalc
+    integer ::   jmodfb, jsigfb, nbfib, ncarfi, jacf, nbvalc
     integer :: jtab(7), ivarmp, istrxp, istrxm
     integer :: ip, inbf, jcret, codret, codrep
     integer :: iposcp, iposig, ipomod, iinstp, iinstm
@@ -84,6 +86,8 @@ subroutine te0535(option, nomte)
     logical :: vecteu, matric, reactu
     character(len=8) :: mator
     character(len=24) :: valk(2)
+    real(kind=8), pointer :: defmfib(:) => null()
+    real(kind=8), pointer :: defpfib(:) => null()
     parameter  (zero=0.0d+0,deux=2.d+0)
 !
 ! --- ------------------------------------------------------------------
@@ -178,8 +182,8 @@ subroutine te0535(option, nomte)
     read (zk16(icompo-1+2),'(I16)') nbvalc
 !
 ! --- ON RESERVE QUELQUES PLACES
-    call wkvect('&&TE0535.DEFMFIB', 'V V R8', nbfib, jdefm)
-    call wkvect('&&TE0535.DEFPFIB', 'V V R8', nbfib, jdefp)
+    AS_ALLOCATE(vr=defmfib, size=nbfib)
+    AS_ALLOCATE(vr=defpfib, size=nbfib)
     call wkvect('&&TE0535.MODUFIB', 'V V R8', (nbfib*2), jmodfb)
     call wkvect('&&TE0535.SIGFIB', 'V V R8', (nbfib*2), jsigfb)
 !
@@ -261,10 +265,10 @@ subroutine te0535(option, nomte)
 ! ---       DEFORMATIONS '-' ET INCREMENT DE DEFORMATION PAR FIBRE
 !           MOINS --> M
             call pmfdge(b, gg, deplm, alicom, dege)
-            call pmfdef(nbfib, ncarfi, zr(jacf), dege, zr(jdefm))
+            call pmfdef(nbfib, ncarfi, zr(jacf), dege,defmfib)
 !  --       INCREMENT --> P
             call pmfdge(b, gg, deplp, dalico, dege)
-            call pmfdef(nbfib, ncarfi, zr(jacf), dege, zr(jdefp))
+            call pmfdef(nbfib, ncarfi, zr(jacf), dege,defpfib)
 !
             iposig=jsigfb + nbfib*(ip-1)
             ipomod=jmodfb + nbfib*(ip-1)
@@ -272,7 +276,7 @@ subroutine te0535(option, nomte)
             call pmfmcf(ip, nbgf, nbfib, zi(inbf+2), zk24(isdcom),&
                         zr(icarcr), option, zr(iinstm), zr(iinstp), zi(imate),&
                         nbvalc, defam, defap, zr(ivarim), zr(ivarmp),&
-                        zr(icontm), zr( jdefm), zr(jdefp), epsm, zr(ipomod),&
+                        zr(icontm), defmfib, defpfib, epsm, zr(ipomod),&
                         zr(iposig), zr(ivarip), isecan, codrep)
 !
             if (codrep .ne. 0) then
@@ -419,8 +423,8 @@ subroutine te0535(option, nomte)
         zi(jcret) = codret
     endif
 !
-    call jedetr('&&TE0535.DEFMFIB')
-    call jedetr('&&TE0535.DEFPFIB')
+    AS_DEALLOCATE(vr=defmfib)
+    AS_DEALLOCATE(vr=defpfib)
     call jedetr('&&TE0535.MODUFIB')
     call jedetr('&&TE0535.SIGFIB')
 end subroutine

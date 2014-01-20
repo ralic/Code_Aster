@@ -41,6 +41,8 @@ subroutine simono()
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: lmat, neq
     real(kind=8) :: xnorm, depl(6)
     character(len=8) :: tabcmp(6), masse
@@ -49,8 +51,9 @@ subroutine simono()
     character(len=19) :: resu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idchm, in, jddl, jvec, nbd
+    integer :: i, idchm, in,  jvec, nbd
     integer :: nbdir, nbv
+    integer, pointer :: ddl(:) => null()
 !-----------------------------------------------------------------------
     data   tabcmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 !     ------------------------------------------------------------------
@@ -89,12 +92,12 @@ subroutine simono()
     end do
 !
     call wkvect('&&SIMONO.VECTEUR', 'V V R', neq, jvec)
-    call wkvect('&&SIMONO.DDL', 'V V I', neq*nbdir, jddl)
+    AS_ALLOCATE(vi=ddl, size=neq*nbdir)
     call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq,&
-                zi(jddl))
+ddl)
     do i = 1, nbdir
         do in = 0, neq-1
-            zr(jvec+in) = zr(jvec+in) - zi(jddl+(i-1)*neq+in)*depl(i)
+            zr(jvec+in) = zr(jvec+in) - ddl(1+(i-1)*neq+in)*depl(i)
         end do
     end do
 !
@@ -114,7 +117,7 @@ subroutine simono()
 !
 ! --- MENAGE
     call jedetr('&&SIMONO.VECTEUR')
-    call jedetr('&&SIMONO.DDL')
+    AS_DEALLOCATE(vi=ddl)
 !
     call jedema()
 end subroutine

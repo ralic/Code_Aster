@@ -34,6 +34,8 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: chamno, form, titre, nomsd, nomsym
     character(len=*) :: nomcmp(*), formr, partie
@@ -89,7 +91,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !
     character(len=1) :: type
     integer :: gd, lgconc, lgch16
-    integer :: jvale, nuti
+    integer ::  nuti
     logical :: lmasu
     character(len=8) :: nomsdr, nomma, nomgd, cbid, forma
     character(len=16) :: nomcmd, nosy16
@@ -102,8 +104,11 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !-----------------------------------------------------------------------
     integer :: i, iad, iadesc, iaec, ianueq, iaprno, iarefe
     integer :: iavale, ibid, ino, iret, itype, jcoor
-    integer :: jncmp, jno, jnu, jtitr, nbcmpt
+    integer :: jncmp,   jtitr, nbcmpt
     integer :: nbno, nbnot2, nbtitr, ncmpmx, ndim, nec, num
+    character(len=8), pointer :: nomnoe(:) => null()
+    integer, pointer :: vnumnoe(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -174,14 +179,14 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
 !
 !     --- CREATION LISTES DES NOMS ET DES NUMEROS DES NOEUDS A IMPRIMER
-    call wkvect('&&IRDEPL.NOMNOE', 'V V K8', nbno, jno)
-    call wkvect('&&IRDEPL.NUMNOE', 'V V I', nbno, jnu)
+    AS_ALLOCATE(vk8=nomnoe, size=nbno)
+    AS_ALLOCATE(vi=vnumnoe, size=nbno)
     if (nbnot .eq. 0) then
 !       - IL N'Y A PAS EU DE SELECTION SUR ENTITES TOPOLOGIQUES EN
 !         OPERANDE DE IMPR_RESU => ON PREND TOUS LES NOEUDS DU MAILLAGE
         do ino = 1, nbno
-            call jenuno(jexnum(nomma//'.NOMNOE', ino), zk8(jno-1+ino))
-            zi(jnu-1+ino) = ino
+            call jenuno(jexnum(nomma//'.NOMNOE', ino), nomnoe(ino))
+            vnumnoe(ino) = ino
             nbnot2= nbno
         end do
 !
@@ -190,8 +195,8 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !         PREND QUE LES NOEUDS DEMANDES (APPARTENANT A UNE LISTE DE
 !         NOEUDS, DE MAILLES, DE GPES DE NOEUDS OU DE GPES DE MAILLES)
         do ino = 1, nbnot
-            zi(jnu-1+ino) = numnoe(ino)
-            call jenuno(jexnum(nomma//'.NOMNOE', numnoe(ino)), zk8(jno- 1+ino))
+            vnumnoe(ino) = numnoe(ino)
+            call jenuno(jexnum(nomma//'.NOMNOE', numnoe(ino)), nomnoe(ino))
         end do
         nbnot2= nbnot
     endif
@@ -202,20 +207,20 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     if (form .eq. 'RESULTAT') then
         if (itype .eq. 1 .and. num .ge. 0) then
             call ircnrl(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
-                        zi(iaec), ncmpmx, zr(iavale), zk8(iad), zk8(jno),&
-                        lcor, ndim, zr(jcoor), zi(jnu), nbcmpt,&
+                        zi(iaec), ncmpmx, zr(iavale), zk8(iad), nomnoe,&
+                        lcor, ndim, zr(jcoor), vnumnoe, nbcmpt,&
                         zi(jncmp), lsup, borsup, linf, borinf,&
                         lmax, lmin, formr)
         else if (itype.eq.1.and.num.lt.0) then
             call ircrrl(ifi, nbnot2, zi(iadesc), nec, zi(iaec),&
-                        ncmpmx, zr( iavale), zk8(iad), zk8(jno), lcor,&
-                        ndim, zr(jcoor), zi(jnu), nbcmpt, zi(jncmp),&
+                        ncmpmx, zr( iavale), zk8(iad), nomnoe, lcor,&
+                        ndim, zr(jcoor), vnumnoe, nbcmpt, zi(jncmp),&
                         lsup, borsup, linf, borinf, lmax,&
                         lmin, formr)
         else if (itype.eq.2.and.num.ge.0) then
             call ircnc8(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
-                        zi(iaec), ncmpmx, zc(iavale), zk8(iad), zk8(jno),&
-                        lcor, ndim, zr(jcoor), zi(jnu), nbcmpt,&
+                        zi(iaec), ncmpmx, zc(iavale), zk8(iad), nomnoe,&
+                        lcor, ndim, zr(jcoor), vnumnoe, nbcmpt,&
                         zi(jncmp), lsup, borsup, linf, borinf,&
                         lmax, lmin, formr)
         else if (itype.eq.2.and.num.lt.0) then
@@ -233,30 +238,30 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         if (itype .eq. 1 .and. num .ge. 0) then
             call irdeca(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
                         zi(iaec), ncmpmx, zr(iavale), nomgd, zk8(iad),&
-                        nosy16, zi(jnu), lresu, nbcmp, nomcmp,&
+                        nosy16, vnumnoe, lresu, nbcmp, nomcmp,&
                         nive)
         else if (itype.eq.1.and.num.lt.0) then
             call irdrca(ifi, nbnot2, zi(iadesc), nec, zi(iaec),&
                         ncmpmx, zr( iavale), nomgd, zk8(iad), nosy16,&
-                        zi(jnu), lresu, nbcmp, nomcmp, nive)
+                        vnumnoe, lresu, nbcmp, nomcmp, nive)
         else if (itype.eq.2.and.num.ge.0) then
             call jelira(chamn//'.VALE', 'LONUTI', nuti)
-            call wkvect('&&IRDEPL.VALE', 'V V R', nuti, jvale)
+            AS_ALLOCATE(vr=vale, size=nuti)
 !
             if (partie .eq. 'REEL') then
                 do i = 1, nuti
-                    zr(jvale-1+i)=dble(zc(iavale-1+i))
+                    vale(i)=dble(zc(iavale-1+i))
                 end do
             else if (partie.eq.'IMAG') then
                 do i = 1, nuti
-                    zr(jvale-1+i)=dimag(zc(iavale-1+i))
+                    vale(i)=dimag(zc(iavale-1+i))
                 end do
             else
                 call utmess('F', 'PREPOST2_4')
             endif
             call irdeca(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
-                        zi(iaec), ncmpmx, zr(jvale), nomgd, zk8(iad),&
-                        nosy16, zi(jnu), lresu, nbcmp, nomcmp,&
+                        zi(iaec), ncmpmx, vale, nomgd, zk8(iad),&
+                        nosy16, vnumnoe, lresu, nbcmp, nomcmp,&
                         nive)
         else
             valk(1) = chamn
@@ -282,17 +287,17 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         if (itype .eq. 1 .and. num .ge. 0) then
             call irdesr(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
                         zi(iaec), ncmpmx, zr(iavale), zk8(iad), titre,&
-                        zk8(jno), nomsd, nomsym, numord, zi(jnu),&
+                        nomnoe, nomsd, nomsym, numord, vnumnoe,&
                         lmasu, nbcmp, zi(jncmp), nomcmp)
         else if (itype.eq.1.and.num.lt.0) then
             call irdrsr(ifi, nbnot2, zi(iadesc), nec, zi(iaec),&
-                        ncmpmx, zr( iavale), zk8(iad), titre, zk8(jno),&
-                        nomsd, nomsym, numord, zi( jnu), lmasu,&
+                        ncmpmx, zr( iavale), zk8(iad), titre, nomnoe,&
+                        nomsd, nomsym, numord, vnumnoe, lmasu,&
                         nbcmp, zi(jncmp), nomcmp)
         else if (itype.eq.2.and.num.ge.0) then
             call irdesc(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
                         zi(iaec), ncmpmx, zc(iavale), zk8(iad), titre,&
-                        zk8(jno), nomsd, nomsym, numord, zi(jnu),&
+                        nomnoe, nomsd, nomsym, numord, vnumnoe,&
                         lmasu)
         else if (itype.eq.2.and.num.lt.0) then
             call utmess('E', 'PREPOST2_35', sk=forma)
@@ -317,9 +322,9 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 9998 continue
     call jedetr('&&IRDEPL.ENT_COD')
     call jedetr('&&IRDEPL.NUM_CMP')
-    call jedetr('&&IRDEPL.NOMNOE')
-    call jedetr('&&IRDEPL.NUMNOE')
-    call jedetr('&&IRDEPL.VALE')
+    AS_DEALLOCATE(vk8=nomnoe)
+    AS_DEALLOCATE(vi=vnumnoe)
+    AS_DEALLOCATE(vr=vale)
 999 continue
     call jedema()
 end subroutine

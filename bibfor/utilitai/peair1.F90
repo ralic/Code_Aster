@@ -14,6 +14,8 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 #include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: nbma, lisma(*)
@@ -44,9 +46,9 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !     OUT : LONG : LONGUEUR DU CONTOUR
 !
 !
-    integer :: jma, ifm, niv, jnoma, idtyma, jn1, jn2, ima, numa, idcoor
+    integer :: jma, ifm, niv, jnoma, idtyma,   ima, numa, idcoor
     integer :: nutyma, nbel, jdno, nbext1, nbext2, iext1
-    integer :: iext2, ni1, ni2, nj1, nj2, nbe, nj3, nj0, jdco, jm1
+    integer :: iext2, ni1, ni2, nj1, nj2, nbe, nj3, nj0, jdco
     real(kind=8) :: orig(3), zero, vgn1(3), vn1n2(3), aire1, aire2, vgn3(3)
     real(kind=8) :: vn1n3(3)
     real(kind=8) :: xx1(3), xx2(3), xx3(3), xn(3), pv(3), xnorm, vn3n2(3)
@@ -55,6 +57,9 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     character(len=8) :: noma, nomail, typel
     character(len=24) :: mlgnma, mlgcnx, mlgcoo
     character(len=24) :: valk(2)
+    integer, pointer :: mailles(:) => null()
+    integer, pointer :: noeud1(:) => null()
+    integer, pointer :: noeud2(:) => null()
 !
     call jemarq()
 !
@@ -72,9 +77,9 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     call jeveuo(noma//'.TYPMAIL', 'L', idtyma)
     call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
 !
-    call wkvect('&&PEAIR1.NOEUD1', 'V V I', nbma*3, jn1)
-    call wkvect('&&PEAIR1.NOEUD2', 'V V I', nbma*3, jn2)
-    call wkvect('&&PEAIR1.MAILLES', 'V V I', nbma, jm1)
+    AS_ALLOCATE(vi=noeud1, size=nbma*3)
+    AS_ALLOCATE(vi=noeud2, size=nbma*3)
+    AS_ALLOCATE(vi=mailles, size=nbma)
 !
 !     VERIFICATION DU TYPE DES MAILLES ET STOCKAGE DES CONNECTIVITES
 !
@@ -97,10 +102,10 @@ subroutine peair1(modele, nbma, lisma, aire, long)
         endif
         nbel = nbel + 1
         call jeveuo(jexnum(mlgcnx, numa), 'L', jdno)
-        zi(jn1-1+3*nbel-2) = zi(jdno)
-        zi(jn1-1+3*nbel-1) = zi(jdno+1)
+        noeud1(3*nbel-2) = zi(jdno)
+        noeud1(3*nbel-1) = zi(jdno+1)
         if (typel(1:4) .eq. 'SEG3') then
-            zi(jn1-1+3*nbel) = zi(jdno+2)
+            noeud1(3*nbel) = zi(jdno+2)
             x1 = zr(idcoor+3*(zi(jdno )-1)+1-1)
             y1 = zr(idcoor+3*(zi(jdno )-1)+2-1)
             z1 = zr(idcoor+3*(zi(jdno )-1)+3-1)
@@ -134,13 +139,13 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     do ima = 1, nbel
         iext1=0
         iext2=0
-        ni1 = zi(jn1-1+3*ima-2)
-        ni2 = zi(jn1-1+3*ima-1)
-        zi(jm1-1+ima)=ima
+        ni1 = noeud1(3*ima-2)
+        ni2 = noeud1(3*ima-1)
+        mailles(ima)=ima
         do jma = 1, nbel
             if (jma .ne. ima) then
-                nj1 = zi(jn1-1+3*jma-2)
-                nj2 = zi(jn1-1+3*jma-1)
+                nj1 = noeud1(3*jma-2)
+                nj2 = noeud1(3*jma-1)
                 if ((ni1.eq.nj2) .or. (ni1.eq.nj1)) iext1=1
                 if ((ni2.eq.nj1) .or. (ni2.eq.nj2)) iext2=1
             endif
@@ -155,36 +160,36 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !     VERIFICATION QUE LE CONTOUR EST CONTINU ET REORIENTATION
 !
     nbe=1
-    zi(jm1)=0
-    zi(jn2)=zi(jn1)
-    zi(jn2+1)=zi(jn1+1)
-    zi(jn2+2)=zi(jn1+2)
+    mailles(1)=0
+    noeud2(1)=noeud1(1)
+    noeud2(1+1)=noeud1(1+1)
+    noeud2(1+2)=noeud1(1+2)
 41  continue
-    ni1 = zi(jn2-1+3*nbe-2)
-    ni2 = zi(jn2-1+3*nbe-1)
+    ni1 = noeud2(3*nbe-2)
+    ni2 = noeud2(3*nbe-1)
     do jma = 1, nbel
-        if ((zi(jm1-1+jma).ne.0)) then
-            nj1 = zi(jn1-1+3*jma-2)
-            nj2 = zi(jn1-1+3*jma-1)
-            nj3 = zi(jn1-1+3*jma)
+        if ((mailles(jma).ne.0)) then
+            nj1 = noeud1(3*jma-2)
+            nj2 = noeud1(3*jma-1)
+            nj3 = noeud1(3*jma)
             if (ni2 .eq. nj1) then
                 nbe = nbe+1
-                zi(jn2-1+3*nbe-2)=nj1
-                zi(jn2-1+3*nbe-1)=nj2
-                if (nj3 .ne. 0) zi(jn2-1+3*nbe)=nj3
+                noeud2(3*nbe-2)=nj1
+                noeud2(3*nbe-1)=nj2
+                if (nj3 .ne. 0) noeud2(3*nbe)=nj3
                 goto 43
             else if (ni2.eq.nj2) then
                 nbe = nbe+1
-                zi(jn2-1+3*nbe-2)=nj2
-                zi(jn2-1+3*nbe-1)=nj1
-                if (nj3 .ne. 0) zi(jn2-1+3*nbe)=nj3
+                noeud2(3*nbe-2)=nj2
+                noeud2(3*nbe-1)=nj1
+                if (nj3 .ne. 0) noeud2(3*nbe)=nj3
                 goto 43
             endif
         endif
     end do
     call utmess('F', 'UTILITY_2')
 43  continue
-    zi(jm1-1+jma)=0
+    mailles(jma)=0
     if (nbe .ge. nbma) then
         goto 11
     else
@@ -192,8 +197,8 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     endif
 11  continue
     ASSERT(nbma.eq.nbe)
-    nj2=zi(jn2-1+3*nbe-1)
-    nj0=zi(jn2)
+    nj2=noeud2(3*nbe-1)
+    nj0=noeud2(1)
     ASSERT(nj2.eq.nj0)
 !
 !     CALCUL DU CDG APPROXIMATIF
@@ -201,7 +206,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     mlgcoo = noma//'.COORDO    .VALE'
     call jeveuo(mlgcoo, 'L', jdco)
     do ima = 1, nbma
-        nj1 = zi(jn2-1+3*ima-2)
+        nj1 = noeud2(3*ima-2)
         orig(1) = orig(1)+zr(jdco-1+3*nj1-2)
         orig(2) = orig(2)+zr(jdco-1+3*nj1-1)
         orig(3) = orig(3)+zr(jdco-1+3*nj1)
@@ -212,8 +217,8 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
 !     CALCUL DE L'AIRE GM.VECT.DL
 !
-    nj1 = zi(jn2-1+1)
-    nj2 = zi(jn2-1+2)
+    nj1 = noeud2(1)
+    nj2 = noeud2(2)
 !
 !     CALCUL DE LA NORMALE A LA COURBE SUPPOSEE PLANE
 !
@@ -229,9 +234,9 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     call normev(xn, xnorm)
     aire=0.d0
     do ima = 1, nbma
-        nj1 = zi(jn2-1+3*ima-2)
-        nj2 = zi(jn2-1+3*ima-1)
-        nj3 = zi(jn2-1+3*ima)
+        nj1 = noeud2(3*ima-2)
+        nj2 = noeud2(3*ima-1)
+        nj3 = noeud2(3*ima)
         if (nj3 .eq. 0) then
             xx1(1) = zr(jdco-1+3*nj1-2)
             xx1(2) = zr(jdco-1+3*nj1-1)
@@ -266,8 +271,8 @@ subroutine peair1(modele, nbma, lisma, aire, long)
             aire=aire+aire2/2.d0
         endif
     end do
-    call jedetr('&&PEAIR1.NOEUD1')
-    call jedetr('&&PEAIR1.NOEUD2')
-    call jedetr('&&PEAIR1.MAILLES')
+    AS_DEALLOCATE(vi=noeud1)
+    AS_DEALLOCATE(vi=noeud2)
+    AS_DEALLOCATE(vi=mailles)
     call jedema()
 end subroutine

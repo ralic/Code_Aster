@@ -17,6 +17,8 @@ subroutine rsagsd(nomsd, ilong)
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ilong
     character(len=*) :: nomsd
@@ -48,11 +50,12 @@ subroutine rsagsd(nomsd, ilong)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: iundef, iret, nbcham, nbordr, nborlu, newnb, neword, neworl
-    integer :: jtachg, jtachv, jordrg, i, j, k, jordrv, jpara
+    integer :: jtachg,  jordrg, i, j, k, jordrv, jpara
     real(kind=8) :: rundef
     integer :: n1, n2, kk, ier1
     character(len=24) :: nomobj
     character(len=19) :: nomd2
+    character(len=24), pointer :: tach(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
     nomd2 = nomsd
@@ -89,7 +92,7 @@ subroutine rsagsd(nomsd, ilong)
 !     -- LE .TACH ET LE .ORDR ---
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     call jeveuo(nomd2//'.TACH', 'L', jtachg)
-    call wkvect('&&RSAGSD.TACH', 'V V K24', neword*nbcham, jtachv)
+    AS_ALLOCATE(vk24=tach, size=neword*nbcham)
     call jeveuo(nomd2//'.ORDR', 'L', jordrg)
     call wkvect('&&RSAGSD.ORDR', 'V V I', max(neworl, 1), jordrv)
     do 10 i = 0, neworl - 1
@@ -97,7 +100,7 @@ subroutine rsagsd(nomsd, ilong)
 10  end do
     do 30 i = 0, nbcham - 1
         do 20 j = 0, neword - 1
-            zk24(jtachv+j+i*neword) = zk24(jtachg+j+i*nbordr)
+            tach(1+j+i*neword) = zk24(jtachg+j+i*nbordr)
 20      continue
 30  end do
     call jedetr(nomd2//'.TACH')
@@ -118,11 +121,11 @@ subroutine rsagsd(nomsd, ilong)
 50  end do
     do 70 i = 0, nbcham - 1
         do 60 j = 0, neword - 1
-            zk24(jtachg+j+i*newnb) = zk24(jtachv+j+i*neword)
+            zk24(jtachg+j+i*newnb) = tach(1+j+i*neword)
 60      continue
 70  end do
 !
-    call jedetr('&&RSAGSD.TACH')
+    AS_DEALLOCATE(vk24=tach)
     call jedetr('&&RSAGSD.ORDR')
 !
 !

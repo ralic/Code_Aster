@@ -17,6 +17,8 @@ subroutine lrvema(nomail, mfich, nochmd)
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: mfich
     character(len=8) :: nomail
     character(len=64) :: nochmd
@@ -48,7 +50,7 @@ subroutine lrvema(nomail, mfich, nochmd)
 !-----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: iret, nmatyp, ncmp, jcmp, junit
+    integer :: iret, nmatyp, ncmp
     integer :: nbma, jnbtyp, jmatyp, nbtym, nbtv, codret
     integer :: i, j, idfimd, iaux, jnbty2
     integer :: vali(2), lnomam, jtymas
@@ -70,6 +72,8 @@ subroutine lrvema(nomail, mfich, nochmd)
     character(len=200) :: nofimd
     character(len=255) :: kfic
     logical :: lfirst
+    character(len=16), pointer :: cname(:) => null()
+    character(len=16), pointer :: cunit(:) => null()
 !
     data nomast  /'POI1    ','SEG2    ','SEG22   ','SEG3    ',&
      &              'SEG33   ','SEG4    ',&
@@ -137,11 +141,11 @@ subroutine lrvema(nomail, mfich, nochmd)
     if (codret .ne. 0) then
         call utmess('F', 'MED_32', sk=nochmd)
     endif
-    call wkvect('&&LRVEMA.CNAME', 'V V K16', ncmp, jcmp)
-    call wkvect('&&LRVEMA.CUNIT', 'V V K16', ncmp, junit)
+    AS_ALLOCATE(vk16=cname, size=ncmp)
+    AS_ALLOCATE(vk16=cunit, size=ncmp)
 !
-    call as_mfdfin(idfimd, nochmd, nomamd, nbtv, zk16(junit),&
-                   zk16(jcmp), codret)
+    call as_mfdfin(idfimd, nochmd, nomamd, nbtv, cunit(1),&
+                   cname(1), codret)
 !
     call wkvect('&&LRVERIMO_NBETYP1', 'V V I', ntymax, jnbtyp)
     call wkvect('&&LRVERIMO_NBETYP2', 'V V I', ntymax, jnbty2)
@@ -202,8 +206,8 @@ subroutine lrvema(nomail, mfich, nochmd)
     call jedetr('&&LRVERIMO_NBETYP1')
     call jedetr('&&LRVERIMO_NBETYP2')
     call jedetr('&&LRVERIMO_NBMA_TYP')
-    call jedetr('&&LRVEMA.CNAME')
-    call jedetr('&&LRVEMA.CUNIT')
+    AS_DEALLOCATE(vk16=cname)
+    AS_DEALLOCATE(vk16=cunit)
 !
     call jedema()
 !

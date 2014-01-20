@@ -5,6 +5,8 @@ subroutine vpreco(nbvect, neq, vecred, vect)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbvect, neq
     real(kind=8) :: vect(neq, nbvect), vecred(nbvect, nbvect)
 !     ------------------------------------------------------------------
@@ -37,26 +39,27 @@ subroutine vpreco(nbvect, neq, vecred, vect)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ilig, j, k, l
+    integer :: i,  j, k, l
     real(kind=8) :: rt
+    real(kind=8), pointer :: vilig(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    call wkvect('&&VPRECO.ILIG', 'V V R', nbvect, ilig)
+    AS_ALLOCATE(vr=vilig, size=nbvect)
 !
     do 10 i = 1, neq
         do 20 j = 1, nbvect
-            zr(ilig+j-1) = vect(i,j)
+            vilig(j) = vect(i,j)
 20      continue
         do 30 k = 1, nbvect
             rt = 0.d0
             do 40 l = 1, nbvect
-                rt = rt + zr(ilig+l-1) * vecred(l,k)
+                rt = rt + vilig(l) * vecred(l,k)
 40          continue
             vect(i,k) = rt
 30      continue
 10  end do
 !
-    call jedetr('&&VPRECO.ILIG')
+    AS_DEALLOCATE(vr=vilig)
 !
     call jedema()
 end subroutine

@@ -48,14 +48,16 @@ subroutine op0112()
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
     integer :: nbval, icmp, ibid, idecal, ino2
     integer :: ino1, ii, jj, icmpg, iocc, ima, nbnog1, nbmag1
     integer :: jnomo, jchnsk, jchnsd, jchnsc, jchnsv, jchnsl
-    integer :: jacono, jaconb, jaconu, jacocf, jflan1, ialin2
+    integer :: jacono, jaconb, jaconu, jacocf,  ialin2
     integer :: jncmp, jvalv, jligr, jalim1, jcxma1
-    integer :: jforc2, ilengt
+    integer ::  ilengt
     integer :: nbcmpg, nbno2, nbno1, nbocc
     integer :: ddlfor(3)
     character(len=8) :: charg, modele, ma, ma1, ma2
@@ -72,6 +74,8 @@ subroutine op0112()
     integer :: icompo, numpas, iadr, ifm, niv
     real(kind=8) :: ti, tf, dt
     character(len=24) :: ayacs
+    integer, pointer :: flagn1(:) => null()
+    real(kind=8), pointer :: force2(:) => null()
 !     COUPLAGE <=
 !
     call jemarq()
@@ -175,18 +179,18 @@ subroutine op0112()
 !     ! ===================================== !
 !     ! RECUPERATION DES FORCES DU MAILLAGE 2 !
 !     ! ===================================== !
-    call wkvect('&&OP0112.FORCE2', 'V V R', 3*nbno2, jforc2)
+    AS_ALLOCATE(vr=force2, size=3*nbno2)
     nomvar = 'FORAST'
     ti = tf
     call cpldb(icompo, cpiter, ti, tf, numpa4,&
-               nomvar, int(3*nbno4, 4), taille, zr(jforc2), ibid4)
+               nomvar, int(3*nbno4, 4), taille, force2, ibid4)
 !
 !     ! ====================================== !
 !     ! LISTE DES NOEUDS DU MAILLAGE 1 COUPLES !
 !     ! ====================================== !
-    call wkvect('&&OP0112.FLAGN1', 'V V I', nbno1, jflan1)
+    AS_ALLOCATE(vi=flagn1, size=nbno1)
     do ino1 = 1, nbno1
-        zi(jflan1-1+ino1) = 0
+        flagn1(ino1) = 0
         do icmp = 1, nbcmpg
             zr(jchnsv-1+nbcmpg*(ino1-1)+icmp) = 0.d0
         end do
@@ -203,7 +207,7 @@ subroutine op0112()
             call jeveuo(jexnum(ma1//'.CONNEX', ima), 'L', jcxma1)
             do jj = 1, nbnog1
                 ino1 = zi(jcxma1-1+jj)
-                zi(jflan1-1+ino1) = 1
+                flagn1(ino1) = 1
             end do
         end do
     end do
@@ -226,7 +230,7 @@ subroutine op0112()
                 do icmp = 1, 3
                     if (ddlfor(icmp) .eq. 1) then
                         icmpg = nbcmpg*(ino1-1)+icmp
-                        zr(jchnsv-1+icmpg) = zr(jchnsv-1+icmpg) + zr(jforc2-1+3*(ino2-1)+icmp) * &
+                        zr(jchnsv-1+icmpg) = zr(jchnsv-1+icmpg) + force2(3*(ino2-1)+icmp) * &
                                              &zr(jacocf-1+ idecal+ii)
                     endif
                 end do
@@ -256,7 +260,7 @@ subroutine op0112()
     end do
     idecal = 0
     do ino1 = 1, nbno1
-        if (zi(jflan1-1+ino1) .eq. 1) then
+        if (flagn1(ino1) .eq. 1) then
             idecal = idecal + 1
             do icmp = 1, 3
                 zr(jvalv-1+icmp) = zr(jchnsv-1+nbcmpg*(ino1-1)+icmp)
@@ -275,8 +279,8 @@ subroutine op0112()
 !     ! ======================== !
     call jedetr(chnos)
     call jedetr('&&OP0112.NOGRMA')
-    call jedetr('&&OP0112.FORCE2')
-    call jedetr('&&OP0112.FLAGN1')
+    AS_DEALLOCATE(vr=force2)
+    AS_DEALLOCATE(vi=flagn1)
     call jedema()
 !
 !=======================================================================

@@ -15,6 +15,8 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,11 +61,14 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, iacnx1, ilcnx1, jco, jtanma, j, ino, nbnoma, jcoor, jnoema
-    integer :: jtanno, k, ino1, ino2, ino3, jtyp, i1, jtang
+    integer :: i, iacnx1, ilcnx1, jco,  j, ino, nbnoma, jcoor
+    integer ::  k, ino1, ino2, ino3, jtyp, i1, jtang
     real(kind=8) :: vale1(3), vale2(3), vale3(3), vale(3), valu(3), valv(3)
     real(kind=8) :: norm
     character(len=8) :: ntyp
+    integer, pointer :: noeu_mail(:) => null()
+    real(kind=8), pointer :: tang_mail(:) => null()
+    real(kind=8), pointer :: tang_noeu(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,9 +81,9 @@ subroutine catang(noma, nbma, listma, nbno, listno)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
     call jedetr('&&CATANG.TANGENT')
-    call wkvect('&&CATANG.TANG_MAIL', 'V V R', 3*3*nbma, jtanma)
-    call wkvect('&&CATANG.NOEU_MAIL', 'V V I', 3*nbma, jnoema)
-    call wkvect('&&CATANG.TANG_NOEU', 'V V R', 3*nbnoma, jtanno)
+    AS_ALLOCATE(vr=tang_mail, size=3*3*nbma)
+    AS_ALLOCATE(vi=noeu_mail, size=3*nbma)
+    AS_ALLOCATE(vr=tang_noeu, size=3*nbnoma)
     call wkvect('&&CATANG.TANGENT', 'V V R', 3*nbno, jtang)
 !
 ! --- 1.ON CONSTRUIT LES VECTEURS TANGENTS AUX NOEUDS PAR ELEMENT
@@ -114,20 +119,20 @@ subroutine catang(noma, nbma, listma, nbno, listno)
             call normev(vale, norm)
 !
 !            -- PREMIER NOEUD DE LA MAILLE J
-            zi(jnoema+3*(i-1))=ino1
-            zr(jtanma+9*(i-1)) =vale(1)
-            zr(jtanma+9*(i-1)+1)=vale(2)
-            zr(jtanma+9*(i-1)+2)=vale(3)
+            noeu_mail(1+3*(i-1))=ino1
+            tang_mail(1+9*(i-1)) =vale(1)
+            tang_mail(1+9*(i-1)+1)=vale(2)
+            tang_mail(1+9*(i-1)+2)=vale(3)
 !            -- SECOND NOEUD DE LA MAILLE J
-            zi(jnoema+3*(i-1)+1)=ino2
-            zr(jtanma+9*(i-1)+3)=vale(1)
-            zr(jtanma+9*(i-1)+4)=vale(2)
-            zr(jtanma+9*(i-1)+5)=vale(3)
+            noeu_mail(1+3*(i-1)+1)=ino2
+            tang_mail(1+9*(i-1)+3)=vale(1)
+            tang_mail(1+9*(i-1)+4)=vale(2)
+            tang_mail(1+9*(i-1)+5)=vale(3)
 !            -- NOEUD MILIEU DE LA MAILLE J
-            zi(jnoema+3*(i-1)+2)=0
-            zr(jtanma+9*(i-1)+6)=0.d0
-            zr(jtanma+9*(i-1)+7)=0.d0
-            zr(jtanma+9*(i-1)+8)=0.d0
+            noeu_mail(1+3*(i-1)+2)=0
+            tang_mail(1+9*(i-1)+6)=0.d0
+            tang_mail(1+9*(i-1)+7)=0.d0
+            tang_mail(1+9*(i-1)+8)=0.d0
 !
         else if (ntyp(1:4).eq.'SEG3') then
 !
@@ -145,20 +150,20 @@ subroutine catang(noma, nbma, listma, nbno, listno)
             call normev(vale, norm)
 !
 !            -- PREMIER NOEUD DE LA MAILLE J
-            zi(jnoema+3*(i-1))=ino1
-            zr(jtanma+9*(i-1)) =valu(1)
-            zr(jtanma+9*(i-1)+1)=valu(2)
-            zr(jtanma+9*(i-1)+2)=valu(3)
+            noeu_mail(1+3*(i-1))=ino1
+            tang_mail(1+9*(i-1)) =valu(1)
+            tang_mail(1+9*(i-1)+1)=valu(2)
+            tang_mail(1+9*(i-1)+2)=valu(3)
 !            -- SECOND NOEUD DE LA MAILLE J
-            zi(jnoema+3*(i-1)+1)=ino2
-            zr(jtanma+9*(i-1)+3)=valv(1)
-            zr(jtanma+9*(i-1)+4)=valv(2)
-            zr(jtanma+9*(i-1)+5)=valv(3)
+            noeu_mail(1+3*(i-1)+1)=ino2
+            tang_mail(1+9*(i-1)+3)=valv(1)
+            tang_mail(1+9*(i-1)+4)=valv(2)
+            tang_mail(1+9*(i-1)+5)=valv(3)
 !            -- NOEUD MILIEU DE LA MAILLE J
-            zi(jnoema+3*(i-1)+2)=ino3
-            zr(jtanma+9*(i-1)+6)=vale(1)
-            zr(jtanma+9*(i-1)+7)=vale(2)
-            zr(jtanma+9*(i-1)+8)=vale(3)
+            noeu_mail(1+3*(i-1)+2)=ino3
+            tang_mail(1+9*(i-1)+6)=vale(1)
+            tang_mail(1+9*(i-1)+7)=vale(2)
+            tang_mail(1+9*(i-1)+8)=vale(3)
 !
         endif
     end do
@@ -174,15 +179,15 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 !     PARTIE DES MAILLES FOURNIES PAR L'UTILISATEUR
 !
     do j = 1, 3*nbnoma
-        zr(jtanno+j-1)=0.d0
+        tang_noeu(j)=0.d0
     end do
     do j = 1, nbma
         do i = 1, 3
-            ino=zi(jnoema+3*(j-1)+i-1)
+            ino=noeu_mail(1+3*(j-1)+i-1)
             if (ino .gt. 0) then
                 do k = 1, 3
-                    zr(jtanno+3*(ino-1)+k-1)=zr(jtanno+3*(ino-1)+k-1)+&
-                    zr(jtanma+9*(j-1)+3*(i-1)+k-1)
+                    tang_noeu(1+3*(ino-1)+k-1)=tang_noeu(1+3*(ino-1)+k-1)+&
+                    tang_mail(1+9*(j-1)+3*(i-1)+k-1)
                 end do
             endif
         end do
@@ -196,12 +201,12 @@ subroutine catang(noma, nbma, listma, nbno, listno)
     end do
     do j = 1, nbma
         do i = 1, 3
-            ino=zi(jnoema+3*(j-1)+i-1)
+            ino=noeu_mail(1+3*(j-1)+i-1)
             i1= indiis(listno,ino,1,nbno)
             if (i1 .gt. 0) then
-                vale(1)=zr(jtanno+3*(ino-1))
-                vale(2)=zr(jtanno+3*(ino-1)+1)
-                vale(3)=zr(jtanno+3*(ino-1)+2)
+                vale(1)=tang_noeu(1+3*(ino-1))
+                vale(2)=tang_noeu(1+3*(ino-1)+1)
+                vale(3)=tang_noeu(1+3*(ino-1)+2)
                 call normev(vale, norm)
                 do k = 1, 3
                     zr(jtang-1+3*(i1-1)+k) = vale(k)
@@ -210,9 +215,9 @@ subroutine catang(noma, nbma, listma, nbno, listno)
         end do
     end do
 !
-    call jedetr('&&CATANG.TANG_MAIL')
-    call jedetr('&&CATANG.NOEU_MAIL')
-    call jedetr('&&CATANG.TANG_NOEU')
+    AS_DEALLOCATE(vr=tang_mail)
+    AS_DEALLOCATE(vi=noeu_mail)
+    AS_DEALLOCATE(vr=tang_noeu)
 !
     call jedema()
 end subroutine

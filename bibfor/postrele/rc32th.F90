@@ -47,9 +47,11 @@ subroutine rc32th()
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ibid, n1, iocc, nbther, nume, nbinst, jinst, i, j, k, l, ndim
-    integer :: nbabsc, jabsc, jorig, jextr, ncmp, jcont, iret, kk
+    integer :: nbabsc, jabsc, jorig, jextr, ncmp,  iret, kk
     parameter  ( ncmp = 6 )
     real(kind=8) :: prec(2), momen0, momen1, vale(2)
     real(kind=8) :: sigth(1000*ncmp), tresc(2), r3(2)
@@ -60,6 +62,7 @@ subroutine rc32th()
     character(len=16) :: motclf, valek(2), motcl2
     character(len=24) :: instan, abscur, jvorig, jvextr
     character(len=24) :: valk(7)
+    real(kind=8), pointer :: contraintes(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -133,7 +136,7 @@ subroutine rc32th()
                 k8b)
     call jeveuo(abscur, 'L', jabsc)
 !
-    call wkvect('&&RC32TH.CONTRAINTES', 'V V R', nbabsc, jcont)
+    AS_ALLOCATE(vr=contraintes, size=nbabsc)
 !
     ndim = 4 * ncmp * 2
     call jecroc(jexnom(jvorig, knume))
@@ -170,7 +173,7 @@ subroutine rc32th()
 !
                 call tbliva(table, 2, valek, [ibid], vale,&
                             [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, zr( jcont+k-1), cbid, k8b,&
+                            k8b, ibid, contraintes(k), cbid, k8b,&
                             iret)
                 if (iret .ne. 0) then
                     valk (1) = table
@@ -180,7 +183,7 @@ subroutine rc32th()
                     call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
                                 valr=vale)
                 endif
-                sigth((k-1)*ncmp+j) = zr(jcont+k-1)
+                sigth((k-1)*ncmp+j) = contraintes(k)
                 if (j .eq. ncmp) then
                     call rctres(sigth((k-1)*ncmp+1), tresc(kk))
 !
@@ -220,11 +223,11 @@ subroutine rc32th()
 !
             call tbliva(table, 2, valek, [ibid], vale,&
                         [cbid], k8b, crit, prec, nocmp(j),&
-                        k8b, ibid, zr(jcont+k-1), cbid, k8b,&
+                        k8b, ibid, contraintes(k), cbid, k8b,&
                         iret)
 166      continue
-        zr(jorig-1+j) = zr(jcont)
-        call rc32my(nbabsc, zr(jabsc), zr(jcont), momen0, momen1)
+        zr(jorig-1+j) = contraintes(1)
+        call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
 !
         l = ncmp*2 + j
         zr(jorig-1+l) = momen0 - 0.5d0*momen1
@@ -238,12 +241,12 @@ subroutine rc32th()
 !
             call tbliva(table, 2, valek, [ibid], vale,&
                         [cbid], k8b, crit, prec, nocmp(j),&
-                        k8b, ibid, zr(jcont+k-1), cbid, k8b,&
+                        k8b, ibid, contraintes(k), cbid, k8b,&
                         iret)
 266      continue
-        zr(jextr-1+j) = zr(jcont+nbabsc-1)
+        zr(jextr-1+j) = contraintes(nbabsc)
 !
-        call rc32my(nbabsc, zr(jabsc), zr(jcont), momen0, momen1)
+        call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
 !
         l = ncmp*2 + j
         zr(jextr-1+l) = momen0 + 0.5d0*momen1
@@ -261,13 +264,13 @@ subroutine rc32th()
 !
             call tbliva(table, 2, valek, [ibid], vale,&
                         [cbid], k8b, crit, prec, nocmp(j),&
-                        k8b, ibid, zr(jcont+k-1), cbid, k8b,&
+                        k8b, ibid, contraintes(k), cbid, k8b,&
                         iret)
 366      continue
         l = ncmp + j
-        zr(jorig-1+l) = zr(jcont)
+        zr(jorig-1+l) = contraintes(1)
 !
-        call rc32my(nbabsc, zr(jabsc), zr(jcont), momen0, momen1)
+        call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
 !
         l = ncmp*3 + j
         zr(jorig-1+l) = momen0 - 0.5d0*momen1
@@ -284,13 +287,13 @@ subroutine rc32th()
 !
             call tbliva(table, 2, valek, [ibid], vale,&
                         [cbid], k8b, crit, prec, nocmp(j),&
-                        k8b, ibid, zr(jcont+k-1), cbid, k8b,&
+                        k8b, ibid, contraintes(k), cbid, k8b,&
                         iret)
 466      continue
         l = ncmp + j
-        zr(jextr-1+l) = zr(jcont+nbabsc-1)
+        zr(jextr-1+l) = contraintes(nbabsc)
 !
-        call rc32my(nbabsc, zr(jabsc), zr(jcont), momen0, momen1)
+        call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
 !
         l = ncmp*3 + j
         zr(jextr-1+l) = momen0 + 0.5d0*momen1
@@ -303,7 +306,7 @@ subroutine rc32th()
 66  continue
     call jedetr(instan)
     call jedetr(abscur)
-    call jedetr('&&RC32TH.CONTRAINTES')
+    AS_DEALLOCATE(vr=contraintes)
 !
     10 end do
 !

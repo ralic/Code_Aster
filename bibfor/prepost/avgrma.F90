@@ -40,6 +40,8 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: tdisp, nbmap, vnbpg(nbmap), nbpgt, nbordr, nmaini
     integer :: numpaq, tspaq
     real(kind=8) :: vwork(tdisp)
@@ -78,7 +80,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: jvectn, jvectu, jvectv, nbvecm
+    integer ::    nbvecm
     integer :: jcerd, jcerl, jcerv, iret, icesd, icesl, icesv, ibid
     integer :: tneces, tdisp2(1), jvecpg, n, k
     integer :: ideb, dim, j, ngam, tab2(18), ifin
@@ -95,6 +97,9 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio
     character(len=19) :: chmat, cesmat
+    real(kind=8), pointer :: vect_norma(:) => null()
+    real(kind=8), pointer :: vect_tangu(:) => null()
+    real(kind=8), pointer :: vect_tangv(:) => null()
 !
 !
 !-----------------------------------------------------------------------
@@ -116,9 +121,9 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 ! CONSTRUCTION DU VECTEUR U DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
 ! CONSTRUCTION DU VECTEUR V DANS LE PLAN TANGENT, SUR UNE DEMI SPHERE
 !
-    call wkvect('&&AVGRMA.VECT_NORMA', 'V V R', 627, jvectn)
-    call wkvect('&&AVGRMA.VECT_TANGU', 'V V R', 627, jvectu)
-    call wkvect('&&AVGRMA.VECT_TANGV', 'V V R', 627, jvectv)
+    AS_ALLOCATE(vr=vect_norma, size=627)
+    AS_ALLOCATE(vr=vect_tangu, size=627)
+    AS_ALLOCATE(vr=vect_tangv, size=627)
 !
 !
 ! OBTENTION DES ADRESSES '.CESD', '.CESL' ET '.CESV' DU CHAMP SIMPLE
@@ -179,8 +184,8 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
         phi0 = dphi/2.0d0
 !
         call vecnuv(ideb, ifin, gamma, phi0, dphi,&
-                    n, k, dim, zr( jvectn), zr(jvectu),&
-                    zr(jvectv))
+                    n, k, dim, vect_norma, vect_tangu,&
+vect_tangv)
 !
 300  end do
 !
@@ -228,7 +233,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
 !
 ! REMPLACER PAR AVPLCR
-            call avplcr(nbvecm, zr(jvectn), zr(jvectu), zr(jvectv), nbordr,&
+            call avplcr(nbvecm, vect_norma, vect_tangu, vect_tangv, nbordr,&
                         kwork, sompgw, vwork, tdisp, tspaq,&
                         ipg, nomcri, nomfor, grdvie, forvie,&
                         fordef, fatsoc, proaxe, nommat, vala,&
@@ -268,9 +273,9 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
     call detrsd('CHAM_ELEM_S', cesmat)
 !
-    call jedetr('&&AVGRMA.VECT_NORMA')
-    call jedetr('&&AVGRMA.VECT_TANGU')
-    call jedetr('&&AVGRMA.VECT_TANGV')
+    AS_DEALLOCATE(vr=vect_norma)
+    AS_DEALLOCATE(vr=vect_tangu)
+    AS_DEALLOCATE(vr=vect_tangv)
 !
     call jedema()
 end subroutine

@@ -33,6 +33,8 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nnoff, indi, indj, ndeg
     integer :: nbprup, ndimte
@@ -96,7 +98,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     integer :: nbmxpa
     parameter (nbmxpa = 20)
 !
-    integer :: i, iadrg, iadrgs, jresu, nchin
+    integer :: i, iadrg,  jresu, nchin
     integer :: num
     integer :: ifon, init
     integer :: iadrno, iadgi, iadabs, ifm, niv
@@ -122,6 +124,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     character(len=19) :: uchrot, vchrot
     character(len=24) :: upavol, vpavol, upa23d, vpa23d, upapre, vpapre
     character(len=24) :: upepsi, vpepsi
+    real(kind=8), pointer :: valg_s(:) => null()
 !
     data vrcmoi /'&&MBILGL.VRCM'/
     data vrcplu /'&&MBILGL.VRCP'/
@@ -304,7 +307,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !- PREMIERE METHODE : G_LEGENDRE ET THETA_LEGENDRE
 !- DEUXIEME METHODE: G_LAGRANGE ET THETA_LAGRANGE
 !
-    call wkvect('&&MBILGL.VALG_S', 'V V R8', nnoff, iadrgs)
+    AS_ALLOCATE(vr=valg_s, size=nnoff)
     if (glagr .or. thlag2) then
         call wkvect('&&MBILGL.VALGI', 'V V R8', nnoff, iadgi)
     else
@@ -314,13 +317,13 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     if (thlag2) then
         num = 5
         call gmeth4(nnoff, ndimte, fonoeu, zr(iadrg), milieu,&
-                    pair, zr( iadrgs), objcur, zr(iadgi), .false.)
+                    pair, valg_s, objcur, zr(iadgi), .false.)
     else if ((.not.glagr) .and. (.not.thlagr)) then
         num = 1
-        call gmeth1(nnoff, ndeg, zr(iadrg), zr(iadrgs), objcur,&
+        call gmeth1(nnoff, ndeg, zr(iadrg), valg_s, objcur,&
                     xl, zr( iadgi))
     else if (glagr .and. thlagr) then
-        call gmeth3(nnoff, fonoeu, zr(iadrg), milieu, zr(iadrgs),&
+        call gmeth3(nnoff, fonoeu, zr(iadrg), milieu, valg_s,&
                     objcur, zr(iadgi), num, .false.)
     endif
 !
@@ -328,7 +331,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !
     if (symech .ne. 'NON') then
         do i = 1, nnoff
-            zr(iadrgs+i-1) = 2.d0*zr(iadrgs+i-1)
+            valg_s(i) = 2.d0*valg_s(i)
         end do
     endif
 !
@@ -337,7 +340,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
     call jeveuo(fonoeu, 'L', iadrno)
 !
     if (niv .ge. 2) then
-        call gimpgs(result, nnoff, zr(iadabs), zr(iadrgs), num,&
+        call gimpgs(result, nnoff, zr(iadabs), valg_s, num,&
                     zr(iadgi), ndeg, ndimte, zr(iadrg), extim,&
                     timeu, iord, ifm)
     endif
@@ -353,7 +356,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
         call tbajvi(result, nbprup, 'NUME_CMP_J', indj, livi)
         call tbajvk(result, nbprup, 'NOEUD', zk8(iadrno+i-1), livk)
         call tbajvr(result, nbprup, 'ABSC_CURV', zr(iadabs-1+i), livr)
-        call tbajvr(result, nbprup, 'G_BILI_LOCAL', zr(iadrgs+i-1), livr)
+        call tbajvr(result, nbprup, 'G_BILI_LOCAL', valg_s(i), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
     end do
@@ -361,7 +364,7 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !
     call jedetr(objcur)
-    call jedetr('&&MBILGL.VALG_S')
+    AS_DEALLOCATE(vr=valg_s)
     call jedetr('&&MBILGL.VALG')
     call jedetr('&&MBILGL.VALGI')
 !

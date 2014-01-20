@@ -18,6 +18,8 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,8 +66,8 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_no
-    integer :: jcoor, jliscc, jliscr, jlisdi, jlisdl
-    integer :: jlisdm, jlisno, jprnm
+    integer :: jcoor
+    integer ::   jprnm
     integer :: nbec
     integer :: jlino, numnoe_m, numnoe_a
     integer :: nb_maxi, nb_term
@@ -75,6 +77,12 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
     character(len=8) :: vale_fonc
     character(len=4) :: type_coef
     character(len=8) :: nomg, nomnoe_m, nomnoe_a
+    complex(kind=8), pointer :: coec(:) => null()
+    real(kind=8), pointer :: coer(:) => null()
+    integer, pointer :: dime(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    character(len=8), pointer :: lisddl(:) => null()
+    character(len=8), pointer :: lisno(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,12 +115,12 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 ! - Working vectors
 !
     nb_maxi = 3
-    call wkvect('&&DRZ12D.LISNO', 'V V K8', nb_maxi, jlisno)
-    call wkvect('&&DRZ12D.LISDDL', 'V V K8', nb_maxi, jlisdl)
-    call wkvect('&&DRZ12D.COER', 'V V R', nb_maxi, jliscr)
-    call wkvect('&&DRZ12D.COEC', 'V V C', nb_maxi, jliscc)
-    call wkvect('&&DRZ12D.DIRECT', 'V V R', 3*nb_maxi, jlisdi)
-    call wkvect('&&DRZ12D.DIME', 'V V I', nb_maxi, jlisdm)
+    AS_ALLOCATE(vk8=lisno, size=nb_maxi)
+    AS_ALLOCATE(vk8=lisddl, size=nb_maxi)
+    AS_ALLOCATE(vr=coer, size=nb_maxi)
+    AS_ALLOCATE(vc=coec, size=nb_maxi)
+    AS_ALLOCATE(vr=direct, size=3*nb_maxi)
+    AS_ALLOCATE(vi=dime, size=nb_maxi)
 !
 ! - First node with DRZ node (reference)
 !
@@ -148,67 +156,67 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 ! --------- First relation: DX(M) - DX(A) + Y*DRZ(A) = 0
 !
             nb_term = 3
-            zk8(jlisno+1-1) = nomnoe_m
-            zk8(jlisno+2-1) = nomnoe_a
-            zk8(jlisno+3-1) = nomnoe_a
-            zk8(jlisdl+1-1) = 'DX'
-            zk8(jlisdl+2-1) = 'DX'
-            zk8(jlisdl+3-1) = 'DRZ'
-            zr(jliscr+1-1) = un
-            zr(jliscr+2-1) = -un
-            zr(jliscr+3-1) = y
+            lisno(1) = nomnoe_m
+            lisno(2) = nomnoe_a
+            lisno(3) = nomnoe_a
+            lisddl(1) = 'DX'
+            lisddl(2) = 'DX'
+            lisddl(3) = 'DRZ'
+            coer(1) = un
+            coer(2) = -un
+            coer(3) = y
 !
 ! --------- Compute linear relation
 !
-            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                        zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+            call afrela(coer, coec, lisddl, lisno, dime,&
+                        direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                         type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
 ! --------- Second relation: DY(M) - DY(A) - X*DRZ(A) = 0
 !
             nb_term = 3
-            zk8(jlisno+1-1) = nomnoe_m
-            zk8(jlisno+2-1) = nomnoe_a
-            zk8(jlisno+3-1) = nomnoe_a
-            zk8(jlisdl+1-1) = 'DY'
-            zk8(jlisdl+2-1) = 'DY'
-            zk8(jlisdl+3-1) = 'DRZ'
-            zr(jliscr+1-1) = un
-            zr(jliscr+2-1) = -un
-            zr(jliscr+3-1) = -x
+            lisno(1) = nomnoe_m
+            lisno(2) = nomnoe_a
+            lisno(3) = nomnoe_a
+            lisddl(1) = 'DY'
+            lisddl(2) = 'DY'
+            lisddl(3) = 'DRZ'
+            coer(1) = un
+            coer(2) = -un
+            coer(3) = -x
 !
 ! --------- Compute linear relation
 !
-            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                        zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+            call afrela(coer, coec, lisddl, lisno, dime,&
+                        direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                         type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
 ! --------- Third relation: DRZ(M) - DRZ(A)  = 0
 !
             if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index_drz)) then
                 nb_term = 2
-                zk8(jlisno+1-1) = nomnoe_m
-                zk8(jlisno+2-1) = nomnoe_a
-                zk8(jlisdl+1-1) = 'DRZ'
-                zk8(jlisdl+2-1) = 'DRZ'
-                zr(jliscr+1-1) = un
-                zr(jliscr+2-1) = -un
+                lisno(1) = nomnoe_m
+                lisno(2) = nomnoe_a
+                lisddl(1) = 'DRZ'
+                lisddl(2) = 'DRZ'
+                coer(1) = un
+                coer(2) = -un
 !
 ! ------------- Compute linear relation
 !
-                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                call afrela(coer, coec, lisddl, lisno, dime,&
+                            direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
             endif
         endif
     end do
 !
-    call jedetr('&&DRZ12D.LISNO')
-    call jedetr('&&DRZ12D.LISDDL')
-    call jedetr('&&DRZ12D.COER')
-    call jedetr('&&DRZ12D.COEC')
-    call jedetr('&&DRZ12D.DIRECT')
-    call jedetr('&&DRZ12D.DIME')
+    AS_DEALLOCATE(vk8=lisno)
+    AS_DEALLOCATE(vk8=lisddl)
+    AS_DEALLOCATE(vr=coer)
+    AS_DEALLOCATE(vc=coec)
+    AS_DEALLOCATE(vr=direct)
+    AS_DEALLOCATE(vi=dime)
 !
     call jedema()
 end subroutine

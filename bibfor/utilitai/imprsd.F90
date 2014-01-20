@@ -17,6 +17,8 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 #include "asterfort/tbimpr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: typesd, nomsd, titre
     integer :: ific
@@ -53,12 +55,13 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 ! ----------------------------------------------------------------------
 !
     integer :: i1, i2, i3, i4, i5, i6, ib
-    integer ::   j3, k, npara
+    integer ::    k, npara
     character(len=16) :: typ2sd
     character(len=19) :: ch, chs, matr
     character(len=17) :: table
     character(len=24), pointer :: tblp(:) => null()
     integer, pointer :: tbnp(:) => null()
+    character(len=16), pointer :: lipara(:) => null()
 !
 ! -DEB------------------------------------------------------------------
 !
@@ -121,13 +124,13 @@ subroutine imprsd(typesd, nomsd, ific, titre)
         call jeveuo(table//'  .TBNP', 'L', vi=tbnp)
         call jeveuo(table//'  .TBLP', 'L', vk24=tblp)
         npara=tbnp(1)
-        call wkvect('&&IMPRSD.LIPARA', 'V V K16', npara, j3)
+        AS_ALLOCATE(vk16=lipara, size=npara)
         do 1, k=1,npara
-        zk16(j3-1+k)=tblp(4*(k-1)+1)
+        lipara(k)=tblp(4*(k-1)+1)
  1      continue
-        call tbimpr(table, 'ASTER', ific, npara, zk16(j3),&
+        call tbimpr(table, 'ASTER', ific, npara, lipara,&
                     0, '1PE12.5')
-        call jedetr('&&IMPRSD.LIPARA')
+        AS_DEALLOCATE(vk16=lipara)
 !
 !
     else if (typ2sd.eq.'MATRICE') then

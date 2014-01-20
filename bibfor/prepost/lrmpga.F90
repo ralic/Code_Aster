@@ -75,6 +75,8 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nrofic, nbma, ntypel, npgmax, numpt, numord
     integer :: pgmail(nbma), pgmmil(nbma), indpg(ntypel, npgmax)
@@ -95,7 +97,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     integer :: edcomp
     parameter (edcomp=2)
 !
-    integer :: ifm, nivinf, ncmp, jcomp, junit
+    integer :: ifm, nivinf, ncmp
     integer :: idfimd, codret, nloc, iret, igrel, jtyelm
     integer :: j, nbgrel, jtypma, jtypge
     integer :: numte, i, ityg, ngaulu, npdt
@@ -116,6 +118,8 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     character(len=64) :: nomprf, nomloc, nomam2
     character(len=200) :: nofimd
     character(len=255) :: kfic
+    character(len=16), pointer :: cname(:) => null()
+    character(len=16), pointer :: cunit(:) => null()
 !
     data tygeo /    1,          102,        103,        104,&
      &                203,        204,        206,        207,&
@@ -182,10 +186,10 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     endif
 !
     call as_mfdncn(idfimd, nochmd, ncmp, iret)
-    call wkvect('&&LRMPGA.CNAME', 'V V K16', ncmp, jcomp)
-    call wkvect('&&LRMPGA.CUNIT', 'V V K16', ncmp, junit)
-    call as_mfdfin(idfimd, nochmd, nomam2, npdt, zk16(junit),&
-                   zk16(jcomp), iret)
+    AS_ALLOCATE(vk16=cname, size=ncmp)
+    AS_ALLOCATE(vk16=cunit, size=ncmp)
+    call as_mfdfin(idfimd, nochmd, nomam2, npdt, cunit(1),&
+                   cname(1), iret)
     if (npdt .gt. 0) then
 !
         do 13 , ityg=1,ntygeo
@@ -217,8 +221,8 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
         write(ifm,*) ' '
     endif
 !
-    call jedetr('&&LRMPGA.CNAME')
-    call jedetr('&&LRMPGA.CUNIT')
+    AS_DEALLOCATE(vk16=cname)
+    AS_DEALLOCATE(vk16=cunit)
 !
     if (nbtyel .eq. 0) then
         call utmess('F', 'MED_77', sk=nochmd, si=nrofic)

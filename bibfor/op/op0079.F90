@@ -48,14 +48,16 @@ subroutine op0079()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 !
     integer :: jsmde, nbmode, nbo, ii, iret, nbsym, idbase
-    integer :: idvec1, idvec2
+
 !-----------------------------------------------------------------------
-    integer :: iadvec, iamatr, ibid, icod, iadref
-    integer :: iddeeq, idvect, iliord, imod, ind, iord, isym
+    integer :: iadvec,  ibid, icod, iadref
+    integer :: iddeeq,  iliord, imod, ind, iord, isym
     integer :: jmod, jrefa, llnequ, n0, n1, n2, n4
     integer :: nbid, neq, tmod(1)
     real(kind=8) :: bid, ebid, pij
@@ -70,6 +72,10 @@ subroutine op0079()
     character(len=19) :: nochno
     character(len=24) :: matric, deeq
     complex(kind=8) :: cbid
+    real(kind=8), pointer :: matrnorm(:) => null()
+    real(kind=8), pointer :: vectass1(:) => null()
+    real(kind=8), pointer :: vectass2(:) => null()
+    real(kind=8), pointer :: vectasse(:) => null()
     data  nosyin / 'DEPL','VITE','ACCE'/
     data  nosyou / 'DEPL','VITE','ACCE'/
 !
@@ -219,33 +225,33 @@ subroutine op0079()
 !
 ! --- PROJECTION D UN VECTEUR DE TYPE FORCE
 !
-                call wkvect('&&OP0079.VECTASSE', 'V V R', neq, idvect)
+                AS_ALLOCATE(vr=vectasse, size=neq)
                 do imod = 1, nbmode
 !
 !
 ! --------- RECOPIE DU IEME MODE DANS UN VECTEUR TEMP
 !
-                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, zr( idvect), 1)
+                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, vectasse, 1)
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
-                    call zerlag(neq, zi(iddeeq), vectr=zr(idvect))
+                    call zerlag(neq, zi(iddeeq), vectr=vectasse)
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
                     ind = ii-1+(iord-1)*nbmode+imod
-                    zr(ind) = ddot(neq,zr(idvect),1,zr(iadvec),1)
+                    zr(ind) = ddot(neq,vectasse,1,zr(iadvec),1)
 !
 ! ------- LIBERATION DU VECTEUR TEMP
                 end do
-                call jedetr('&&OP0079.VECTASSE')
+                AS_DEALLOCATE(vr=vectasse)
             else
 !
 ! --- PROJECTION D UN VECTEUR DE TYPE DEPL OU VITE
 !
-                call wkvect('&&OP0079.VECTASS1', 'V V R', neq, idvec1)
-                call wkvect('&&OP0079.VECTASS2', 'V V R', neq, idvec2)
-                call wkvect('&&OP0079.MATRNORM', 'V V R', nbmode* nbmode, iamatr)
+                AS_ALLOCATE(vr=vectass1, size=neq)
+                AS_ALLOCATE(vr=vectass2, size=neq)
+                AS_ALLOCATE(vr=matrnorm, size=nbmode* nbmode)
 !
 ! ----- CALCUL DE TMODE*MODE
 !
@@ -253,11 +259,11 @@ subroutine op0079()
 !
 ! ----- RECOPIE DU IEME MODE
 !
-                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, zr( idvec1), 1)
+                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, vectass1, 1)
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
-                    call zerlag(neq, zi(iddeeq), vectr=zr(idvec1))
+                    call zerlag(neq, zi(iddeeq), vectr=vectass1)
 !
 !-------- PRODUIT SCALAIRE MODE(IMOD)*MODE(JMOD)
 !
@@ -265,16 +271,16 @@ subroutine op0079()
 !
 ! ------- RECOPIE DU JEME MODE
 !
-                        call dcopy(neq, zr(idbase+(jmod-1)*neq), 1, zr( idvec2), 1)
+                        call dcopy(neq, zr(idbase+(jmod-1)*neq), 1, vectass2, 1)
 ! --------- MISE A ZERO DES DDLS DE LAGRANGE
 !
-                        call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
+                        call zerlag(neq, zi(iddeeq), vectr=vectass2)
 !
 ! --------- PRODUIT SCALAIRE MODE(IMOD)*MODE(JMOD)
 !
-                        pij = ddot(neq,zr(idvec1),1,zr(idvec2),1)
-                        zr(iamatr+imod+ (jmod-1)*nbmode-1) = pij
-                        zr(iamatr+jmod+ (imod-1)*nbmode-1) = pij
+                        pij = ddot(neq,vectass1,1,vectass2,1)
+                        matrnorm(1+imod+ (jmod-1)*nbmode-1) = pij
+                        matrnorm(1+jmod+ (imod-1)*nbmode-1) = pij
                     end do
                 end do
 !
@@ -284,30 +290,30 @@ subroutine op0079()
 !
 ! ------- RECOPIE DU IEME MODE
 !
-                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, zr( idvec1), 1)
+                    call dcopy(neq, zr(idbase+(imod-1)*neq), 1, vectass1, 1)
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
-                    call zerlag(neq, zi(iddeeq), vectr=zr(idvec1))
+                    call zerlag(neq, zi(iddeeq), vectr=vectass1)
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
-                    zr(idvec2+imod-1) = ddot(neq,zr(idvec1),1,zr( iadvec),1)
+                    vectass2(imod) = ddot(neq,vectass1,1,zr( iadvec),1)
 !
                 end do
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
 !
                 ind = ii-1+(iord-1)*nbmode+imod
-                call trlds(zr(iamatr), nbmode, nbmode, icod)
+                call trlds(matrnorm, nbmode, nbmode, icod)
                 if (icod .ne. 0) then
                     call utmess('F', 'ALGORITH9_42')
                 endif
-                call rrlds(zr(iamatr), nbmode, nbmode, zr(idvec2), 1)
-                call dcopy(nbmode, zr(idvec2), 1, zr(ind), 1)
-                call jedetr('&&OP0079.VECTASS1')
-                call jedetr('&&OP0079.VECTASS2')
-                call jedetr('&&OP0079.MATRNORM')
+                call rrlds(matrnorm, nbmode, nbmode, vectass2, 1)
+                call dcopy(nbmode, vectass2, 1, zr(ind), 1)
+                AS_DEALLOCATE(vr=vectass1)
+                AS_DEALLOCATE(vr=vectass2)
+                AS_DEALLOCATE(vr=matrnorm)
                 if (typvec .eq. 'C') call jedetr('&&OP0079.VECTASC2')
             endif
 !

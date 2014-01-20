@@ -30,6 +30,8 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: cesz, nomcmp(*)
     integer :: unite, nbmat, nummai(*), nbcmp
     real(kind=8) :: borinf, borsup
@@ -55,8 +57,8 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 ! LMIN   IN       L   : =.TRUE.  INDIQUE IMPRESSION VALEUR MINIMALE
 ! ---------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: jcesk, jcesd, jcesc, jcesv, jcesl, ncmpc, icmp, i, jcmp
-    integer :: ncmp, jma, nbmac, nbma, nbpt, nbsp, j, ipt, isp, iad
+    integer :: jcesk, jcesd, jcesc, jcesv, jcesl, ncmpc, icmp, i
+    integer :: ncmp,  nbmac, nbma, nbpt, nbsp, j, ipt, isp, iad
     integer :: ispmin, ispmax, ispmi2, ispma2, ispmi3, ispma3
     integer :: iptmin, iptmax, iptmi2, iptma2
     integer :: imamin, imamax, ima
@@ -65,6 +67,8 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     character(len=8) ::  ma, noma
     character(len=19) :: ces
     logical :: lmamin, lmamax, lptmin, lptmax, lspmin, lspmax
+    integer, pointer :: num_cmp_cham(:) => null()
+    integer, pointer :: num_mail_cham(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -82,8 +86,8 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     ma = zk8(jcesk-1+1)
     nbmac = zi(jcesd-1+1)
 !
-    call wkvect('&&IRSSPT.NUM_CMP_CHAM', 'V V I', ncmpc, jcmp)
-    call wkvect('&&IRSSPT.NUM_MAIL_CHAM', 'V V I', nbmac, jma)
+    AS_ALLOCATE(vi=num_cmp_cham, size=ncmpc)
+    AS_ALLOCATE(vi=num_mail_cham, size=nbmac)
 !
 !
 ! --- ON RECUPERE LES COMPOSANTES AD-HOC:
@@ -94,14 +98,14 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
         do 10 i = 1, nbcmp
             icmp=indik8(zk8(jcesc),nomcmp(i),1,ncmpc)
             if (icmp .ne. 0) then
-                zi(jcmp+ncmp)=icmp
+                num_cmp_cham(ncmp+1)=icmp
                 ncmp=ncmp+1
             endif
 10      continue
     else
 !       SINON TOUT_CMP='OUI'
         do 20 i = 1, ncmpc
-            zi(jcmp+i-1)=i
+            num_cmp_cham(i)=i
 20      continue
         ncmp=ncmpc
     endif
@@ -111,13 +115,13 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !     SI L'UTILISATEUR A RENSEIGNE MAILLE/GROUP_MA
     if (nbmat .ne. 0) then
         do 30 i = 1, nbmat
-            zi(jma+i-1)=nummai(i)
+            num_mail_cham(i)=nummai(i)
 30      continue
         nbma=nbmat
     else
 !        SINON
         do 40 i = 1, nbmac
-            zi(jma+i-1)=i
+            num_mail_cham(i)=i
 40      continue
         nbma=nbmac
     endif
@@ -128,7 +132,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !
 !     BOUCLE SUR LES COMPOSANTES
     do 50 i = 1, ncmp
-        icmp=zi(jcmp+i-1)
+        icmp=num_cmp_cham(i)
 !
 !       LMAxxx : BOOLEEN INDIQUANT LE PREMIER PASSAGE
 !       LORS DU DES MAILLES POUR STOCKER LES VALEURS
@@ -137,7 +141,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !
 !       BOUCLE SUR LES MAILLES
         do 60 j = 1, nbma
-            ima=zi(jma+j-1)
+            ima=num_mail_cham(j)
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
 !
@@ -343,8 +347,8 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     2000 format(3(a),e12.5)
     2001 format(3(a),i3,a,i3)
 !
-    call jedetr('&&IRSSPT.NUM_CMP_CHAM')
-    call jedetr('&&IRSSPT.NUM_MAIL_CHAM')
+    AS_DEALLOCATE(vi=num_cmp_cham)
+    AS_DEALLOCATE(vi=num_mail_cham)
 !
     call jedema()
 !

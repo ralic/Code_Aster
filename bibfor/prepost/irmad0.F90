@@ -17,6 +17,8 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: versio, nstat
     character(len=*) :: chamno(*), nomsym
@@ -53,8 +55,10 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, iadesc, iaec, ianueq, iaprno, iarefe
-    integer :: ibid, ifc, ino, iret, itype, jno
-    integer :: jnu, nbno, ncmpmx, nec
+    integer :: ibid, ifc, ino, iret, itype
+    integer ::  nbno, ncmpmx, nec
+    character(len=8), pointer :: nomnoe(:) => null()
+    integer, pointer :: numnoe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     chamn = chamno(1)
@@ -123,18 +127,18 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
     call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
 !
 !     --- CREATION LISTES DES NOMS ET DES NUMEROS DES NOEUDS A IMPRIMER
-    call wkvect('&&IRMAD0.NOMNOE', 'V V K8', nbno, jno)
-    call wkvect('&&IRMAD0.NUMNOE', 'V V I', nbno, jnu)
+    AS_ALLOCATE(vk8=nomnoe, size=nbno)
+    AS_ALLOCATE(vi=numnoe, size=nbno)
     do ino = 1, nbno
-        call jenuno(jexnum(nomma//'.NOMNOE', ino), zk8(jno-1+ino))
-        zi(jnu-1+ino) = ino
+        call jenuno(jexnum(nomma//'.NOMNOE', ino), nomnoe(ino))
+        numnoe(ino) = ino
     end do
 !
     if (num .ge. 0) then
         ncmpmx = 6
         call irmad1(ifc, versio, nbno, zi(iaprno), zi(ianueq),&
                     nec, zi(iaec), ncmpmx, itype, nstat,&
-                    chamno, zk8(iad), nomsym, zi(jnu))
+                    chamno, zk8(iad), nomsym,numnoe)
     else
         call getres(k8b, k8b, nomcmd)
         call utmess('E', 'PREPOST2_70')
@@ -142,8 +146,8 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !
 ! --- MENAGE
     call jedetr('&&IRMAD0.ENT_COD')
-    call jedetr('&&IRMAD0.NOMNOE')
-    call jedetr('&&IRMAD0.NUMNOE')
+    AS_DEALLOCATE(vk8=nomnoe)
+    AS_DEALLOCATE(vi=numnoe)
 !
 999 continue
     call jedema()

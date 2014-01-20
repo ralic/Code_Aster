@@ -14,6 +14,8 @@ subroutine iredsu(macr, form, ifc, versio)
 #include "asterfort/rsexch.h"
 #include "asterfort/rslipa.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ifc, versio
     character(len=*) :: macr, form
@@ -63,9 +65,9 @@ subroutine iredsu(macr, form, ifc, versio)
     integer :: iero, ifor, im, imat
     integer :: in, ind, inoe, inoeu, iord, iret, is, is2, ityp, i2
     integer :: j, k, m2, nbordr, nstat
-    integer :: jmasg, jmasj, jmst, jordr, jnoeu, jpars, jpari
-    integer :: jrefe, jrigj, jrigg
-    integer :: knoeu, kmass, krigi
+    integer ::    jordr, jnoeu
+    integer :: jrefe
+    integer ::  kmass, krigi
     integer :: nbnoeu, nbmodt, nbmode, nbmods
 !
     real(kind=8) :: zero
@@ -78,6 +80,14 @@ subroutine iredsu(macr, form, ifc, versio)
     character(len=80) :: titre
 !
     logical :: f, lbid
+    real(kind=8), pointer :: mass_gene(:) => null()
+    real(kind=8), pointer :: mass_jonc(:) => null()
+    character(len=24), pointer :: mode_stat(:) => null()
+    character(len=8), pointer :: noeuds(:) => null()
+    real(kind=8), pointer :: part_infe(:) => null()
+    real(kind=8), pointer :: part_supe(:) => null()
+    real(kind=8), pointer :: rigi_gene(:) => null()
+    real(kind=8), pointer :: rigi_jonc(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -112,16 +122,16 @@ subroutine iredsu(macr, form, ifc, versio)
 !
 !     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     if (nbmods .ne. 0) then
-        call wkvect('&&IREDSU.NOEUDS', 'V V K8', nbnoeu, knoeu)
+        AS_ALLOCATE(vk8=noeuds, size=nbnoeu)
         inoeu = 1
-        zk8(knoeu) = zk16(jnoeu+nbmode)
+        noeuds(1) = zk16(jnoeu+nbmode)
         do im = 2, nbmods
             noeu = zk16(jnoeu+nbmode+im-1)
             do j = 1, inoeu
-                if (noeu .eq. zk8(knoeu+j-1)) goto 20
+                if (noeu .eq. noeuds(j)) goto 20
             end do
             inoeu = inoeu + 1
-            zk8(knoeu+inoeu-1) = noeu
+            noeuds(inoeu) = noeu
  20         continue
         end do
         if (versio .eq. 5) then
@@ -137,7 +147,7 @@ subroutine iredsu(macr, form, ifc, versio)
             write (ifc,'(2I10)') ind
             write (ifc,'(A)') 'DDL JONCTION'
             do in = 1, inoeu
-                noeu = zk8(knoeu+in-1)
+                noeu = noeuds(in)
                 call jenonu(jexnom(manono, noeu), inoe)
                 idx = 0
                 idy = 0
@@ -178,7 +188,7 @@ subroutine iredsu(macr, form, ifc, versio)
     nomsym = 'DEPL'
     call jeveuo(basemo//'.ORDR', 'L', jordr)
     call jelira(basemo//'.ORDR', 'LONMAX', nbordr)
-    call wkvect('&&IREDSU.MODE_STAT', 'V V K24', nbordr, jmst)
+    AS_ALLOCATE(vk24=mode_stat, size=nbordr)
     nstat = 0
     do i = 1, nbordr
         iord = zi(jordr+i-1)
@@ -187,7 +197,7 @@ subroutine iredsu(macr, form, ifc, versio)
                         iret)
             if (iret .eq. 0) then
                 nstat = nstat + 1
-                zk24(jmst+nstat-1) = noch19
+                mode_stat(nstat) = noch19
             endif
         else
             write (ifc,'(A)') '    -1'
@@ -211,21 +221,21 @@ subroutine iredsu(macr, form, ifc, versio)
         write (ifc,'(I10)') 1
         write (ifc,'(40A2)') 'Ps', 'i_', 'a '
         write (ifc,'(A)') '    -1'
-        call irmad0(ifc, versio, nstat, zk24(jmst), nomsym)
+        call irmad0(ifc, versio, nstat, mode_stat, nomsym)
     endif
-    call jedetr('&&IREDSU.MODE_STAT')
+    AS_DEALLOCATE(vk24=mode_stat)
 !     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
 !                 --- IMPRESSION DES MATRICES MODALES ---
 !
 !     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    call wkvect('&&IREDSU.MASS_GENE', 'V V R', nbmode*nbmode, jmasg)
-    call wkvect('&&IREDSU.RIGI_GENE', 'V V R', nbmode*nbmode, jrigg)
+    AS_ALLOCATE(vr=mass_gene, size=nbmode*nbmode)
+    AS_ALLOCATE(vr=rigi_gene, size=nbmode*nbmode)
     if (nbmods .ne. 0) then
-        call wkvect('&&IREDSU.MASS_JONC', 'V V R', nbmods*nbmods, jmasj)
-        call wkvect('&&IREDSU.RIGI_JONC', 'V V R', nbmods*nbmods, jrigj)
-        call wkvect('&&IREDSU.PART_SUPE', 'V V R', nbmode*nbmods, jpars)
-        call wkvect('&&IREDSU.PART_INFE', 'V V R', nbmode*nbmods, jpari)
+        AS_ALLOCATE(vr=mass_jonc, size=nbmods*nbmods)
+        AS_ALLOCATE(vr=rigi_jonc, size=nbmods*nbmods)
+        AS_ALLOCATE(vr=part_supe, size=nbmode*nbmods)
+        AS_ALLOCATE(vr=part_infe, size=nbmode*nbmods)
     endif
 !
     call jeveuo(macrel//'.MAEL_MASS_VALE', 'L', kmass)
@@ -233,27 +243,27 @@ subroutine iredsu(macr, form, ifc, versio)
     do im = 1, nbmode
         do i = 1, im
             k =im*(im-1)/2 + i
-            zr(jmasg+i-1+(im-1)*nbmode) = zr(kmass+k-1)
-            zr(jmasg+im-1+(i-1)*nbmode) = zr(kmass+k-1)
-            zr(jrigg+i-1+(im-1)*nbmode) = zr(krigi+k-1)
-            zr(jrigg+im-1+(i-1)*nbmode) = zr(krigi+k-1)
+            mass_gene(1+i-1+(im-1)*nbmode) = zr(kmass+k-1)
+            mass_gene(1+im-1+(i-1)*nbmode) = zr(kmass+k-1)
+            rigi_gene(1+i-1+(im-1)*nbmode) = zr(krigi+k-1)
+            rigi_gene(1+im-1+(i-1)*nbmode) = zr(krigi+k-1)
         end do
     end do
     do is = nbmode+1, nbmodt
         do im = 1, nbmode
             k = is*(is-1)/2 + im
             is2 = is - nbmode
-            zr(jpars+is2-1+(im-1)*nbmods) = zr(kmass+k-1)
-            zr(jpari+is2-1+(im-1)*nbmods) = zr(kmass+k-1)
+            part_supe(1+is2-1+(im-1)*nbmods) = zr(kmass+k-1)
+            part_infe(1+is2-1+(im-1)*nbmods) = zr(kmass+k-1)
         end do
         do i = nbmode+1, is
             k = is*(is-1)/2 + i
             i2 = i - nbmode
             is2 = is - nbmode
-            zr(jmasj+i2-1+(is2-1)*nbmods) = zr(kmass+k-1)
-            zr(jmasj+is2-1+(i2-1)*nbmods) = zr(kmass+k-1)
-            zr(jrigj+i2-1+(is2-1)*nbmods) = zr(krigi+k-1)
-            zr(jrigj+is2-1+(i2-1)*nbmods) = zr(krigi+k-1)
+            mass_jonc(1+i2-1+(is2-1)*nbmods) = zr(kmass+k-1)
+            mass_jonc(1+is2-1+(i2-1)*nbmods) = zr(kmass+k-1)
+            rigi_jonc(1+i2-1+(is2-1)*nbmods) = zr(krigi+k-1)
+            rigi_jonc(1+is2-1+(i2-1)*nbmods) = zr(krigi+k-1)
         end do
     end do
 !
@@ -274,7 +284,7 @@ subroutine iredsu(macr, form, ifc, versio)
         write (ifc,'(A)') '   252'
         write (ifc,'(I10)') imat
         write (ifc,'(5I10)') ityp, ifor, nbmode, nbmode, icol
-        write (ifc,1000) (zr(jmasg+i) , i= 0, m2-1 )
+        write (ifc,1000) (mass_gene(1+i) , i= 0, m2-1 )
         write (ifc,'(A)') '    -1'
 !
 !        --- RAIDEUR GENERALISEE ---
@@ -288,7 +298,7 @@ subroutine iredsu(macr, form, ifc, versio)
         write (ifc,'(A)') '   252'
         write (ifc,'(I10)') imat
         write (ifc,'(5I10)') ityp, ifor, nbmode, nbmode, icol
-        write (ifc,1000) (zr(jrigg+i) , i= 0, m2-1 )
+        write (ifc,1000) (rigi_gene(1+i) , i= 0, m2-1 )
         write (ifc,'(A)') '    -1'
 !
         if (nbmods .ne. 0) then
@@ -305,7 +315,7 @@ subroutine iredsu(macr, form, ifc, versio)
             write (ifc,'(A)') '   252'
             write (ifc,'(I10)') imat
             write (ifc,'(5I10)') ityp, ifor, nbmods, nbmods, icol
-            write (ifc,1000) (zr(jmasj+i) , i= 0, m2-1 )
+            write (ifc,1000) (mass_jonc(1+i) , i= 0, m2-1 )
             write (ifc,'(A)') '    -1'
 !
 !          --- RIGIDITE CONDENSEE A LA JONCTION ---
@@ -319,7 +329,7 @@ subroutine iredsu(macr, form, ifc, versio)
             write (ifc,'(A)') '   252'
             write (ifc,'(I10)') imat
             write (ifc,'(5I10)') ityp, ifor, nbmods, nbmods, icol
-            write (ifc,1000) (zr(jrigj+i) , i= 0, m2-1 )
+            write (ifc,1000) (rigi_jonc(1+i) , i= 0, m2-1 )
             write (ifc,'(A)') '    -1'
 !
             m2 = nbmode * nbmods
@@ -335,7 +345,7 @@ subroutine iredsu(macr, form, ifc, versio)
             write (ifc,'(A)') '   252'
             write (ifc,'(I10)') imat
             write (ifc,'(5I10)') ityp, ifor, nbmode, nbmods, icol
-            write (ifc,1000) (zr(jpari+i) , i= 0, m2-1 )
+            write (ifc,1000) (part_infe(1+i) , i= 0, m2-1 )
             write (ifc,'(A)') '    -1'
 !
         endif
@@ -346,13 +356,13 @@ subroutine iredsu(macr, form, ifc, versio)
 ! --- MENAGE
 !
     call jedetr('&&IREDSU.LINOEU')
-    call jedetr('&&IREDSU.NOEUDS')
-    call jedetr('&&IREDSU.MASS_GENE')
-    call jedetr('&&IREDSU.RIGI_GENE')
-    call jedetr('&&IREDSU.MASS_JONC')
-    call jedetr('&&IREDSU.RIGI_JONC')
-    call jedetr('&&IREDSU.PART_SUPE')
-    call jedetr('&&IREDSU.PART_INFE')
+    AS_DEALLOCATE(vk8=noeuds)
+    AS_DEALLOCATE(vr=mass_gene)
+    AS_DEALLOCATE(vr=rigi_gene)
+    AS_DEALLOCATE(vr=mass_jonc)
+    AS_DEALLOCATE(vr=rigi_jonc)
+    AS_DEALLOCATE(vr=part_supe)
+    AS_DEALLOCATE(vr=part_infe)
 !
     call jedema()
 end subroutine

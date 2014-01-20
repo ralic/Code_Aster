@@ -31,6 +31,8 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 #include "asterfort/utmess.h"
 #include "asterfort/uttr24.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: sch1, base
     integer :: ipos, niveau, unit
     logical :: lattr, lcont
@@ -62,9 +64,10 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
     character(len=24) :: ob1, chain2
     character(len=40) :: lb
     character(len=1) :: xous, bas2
-    integer :: long, nbval, nbobj, ialiob, i
+    integer :: long, nbval, nbobj,  i
     logical :: tout
     character(len=8) :: kbid
+    character(len=24), pointer :: liste(:) => null()
 !
 !
     call jemarq()
@@ -107,26 +110,26 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !
 !     -- RECHERCHE DES NOMS DES OBJETS VERIFIANT LE CRITERE:
 !    -------------------------------------------------------
-    call wkvect('&&UTIMSD.LISTE', 'V V K24', nbobj, ialiob)
-    call jelstc(bas2, sch1, ipos, nbobj, zk24(ialiob),&
+    AS_ALLOCATE(vk24=liste, size=nbobj)
+    call jelstc(bas2, sch1, ipos, nbobj, liste,&
                 nbval)
 !
 !     -- ON TRIE PAR ORDRE ALPHABETIQUE:
-    call uttr24(zk24(ialiob), nbobj)
+    call uttr24(liste, nbobj)
 !
 !
 !     -- SI NIVEAU = 0 ON IMPRIME LES NOMS DES OBJETS :
 !     -----------------------------------------------
     if (niveau .eq. 0) then
         do 1 i = 1, nbobj
-            ob1 = zk24(ialiob-1+i)
+            ob1 = liste(i)
             write(unit,*) '      >',ob1,'<'
  1      continue
 !
 !
     else if (niveau.eq.-1) then
         do 4 i = 1, nbobj
-            ob1 = zk24(ialiob-1+i)
+            ob1 = liste(i)
             call dbgobj(ob1, 'OUI', unit, '&&UTIMSD')
  4      continue
 !
@@ -140,7 +143,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
             write(unit,'(A40,A40)') lb,lb
             write(unit,*) ' IMPRESSION DES ATTRIBUTS DES OBJETS TROUVES :'
             do 2 i = 1, nbobj
-                ob1 = zk24(ialiob-1+i)
+                ob1 = liste(i)
                 call jelira(ob1, 'XOUS', cval=xous)
                 call utimob(unit, ob1, niveau, .true., .false.,&
                             xous)
@@ -153,7 +156,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
             write(unit,'(A40,A40)') lb,lb
             write(unit,*) ' IMPRESSION DU CONTENU DES OBJETS TROUVES :'
             do 3 i = 1, nbobj
-                ob1 = zk24(ialiob-1+i)
+                ob1 = liste(i)
                 call jelira(ob1, 'XOUS', cval=xous)
                 call utimob(unit, ob1, niveau, .false., .true.,&
                             xous)
@@ -167,7 +170,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
      &                chain2
 !
 !
-    call jedetr('&&UTIMSD.LISTE')
+    AS_DEALLOCATE(vk24=liste)
 9999  continue
     call jedema()
 end subroutine

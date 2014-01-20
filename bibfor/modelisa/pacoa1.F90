@@ -15,6 +15,8 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 #include "asterfort/padist.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lonlis, noeud1(*), noeud2(*)
     character(len=*) :: nomaz, liso1z, liso2z
@@ -59,7 +61,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 ! OUT  LISO1Z     K24 : NOM DE LA 1ERE LISTE TRIEE
 ! OUT  LISO2Z     K24 : NOM DE LA 2EME LISTE TRIEE
 !
-    integer :: iageom, iret, idlou1, idlou2, idlou3, idlou4, idlinv, i1, i2
+    integer :: iageom, iret, idlou1, idlou2,    i1, i2
     integer :: ino1, nuno1, ino2, nuno2, j1, j2, i, j, iexcor, trouv1, trouv2
     integer :: jfac1, jfac2, jfond, im, nbfa, nbfo
     real(kind=8) :: dmin, d, x1(3), x2(3)
@@ -68,6 +70,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
     character(len=24) :: lisou1, lisou2
     character(len=24) :: valk(3)
     character(len=24) :: nomnoe, grpnoe
+    integer, pointer :: lisinv(:) => null()
+    integer, pointer :: lisou3(:) => null()
+    integer, pointer :: lisou4(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -104,11 +109,11 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 !
 ! --- VECTEURS DE TRAVAIL
 !
-    call wkvect('&&PACOA1.LISOU3', 'V V I', lonlis, idlou3)
-    call wkvect('&&PACOA1.LISOU4', 'V V I', lonlis, idlou4)
-    call wkvect('&&PACOA1.LISINV', 'V V I', lonlis, idlinv)
+    AS_ALLOCATE(vi=lisou3, size=lonlis)
+    AS_ALLOCATE(vi=lisou4, size=lonlis)
+    AS_ALLOCATE(vi=lisinv, size=lonlis)
     do 5 i1 = 1, lonlis
-        zi(idlinv+i1-1) = 0
+        lisinv(i1) = 0
  5  end do
 !
 ! --- CONSTITUTION DE LA PREMIERE CORRESPONDANCE ENTRE LES LISTES
@@ -173,14 +178,14 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
             call utmess('F', 'MODELISA6_3', sk=nomno1)
         endif
 !
-        if (zi(idlinv+j2-1) .eq. 0) then
+        if (lisinv(j2) .eq. 0) then
             zi(idlou1+i1-1) = nuno1
             zi(idlou2+i1-1) = nuno2
-            zi(idlinv+j2-1) = nuno1
+            lisinv(j2) = nuno1
         else
             call jenuno(jexnum(nomnoe, nuno1), nomno1)
             call jenuno(jexnum(nomnoe, nuno2), nomno2)
-            call jenuno(jexnum(nomnoe, zi(idlinv+j2-1)), nomno3)
+            call jenuno(jexnum(nomnoe, lisinv(j2)), nomno3)
             valk (1) = nomno2
             valk (2) = nomno1
             valk (3) = nomno3
@@ -190,7 +195,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 10  end do
 !
     do 30 i1 = 1, lonlis
-        zi(idlinv+i1-1) = 0
+        lisinv(i1) = 0
 30  end do
 !
 ! --- CONSTITUTION DE LA SECONDE CORRESPONDANCE ENTRE LES LISTES
@@ -257,14 +262,14 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
             call utmess('F', 'MODELISA6_3', sk=nomno2)
         endif
 !
-        if (zi(idlinv+j1-1) .eq. 0) then
-            zi(idlou3+i2-1) = nuno1
-            zi(idlou4+i2-1) = nuno2
-            zi(idlinv+j1-1) = nuno2
+        if (lisinv(j1) .eq. 0) then
+            lisou3(i2) = nuno1
+            lisou4(i2) = nuno2
+            lisinv(j1) = nuno2
         else
             call jenuno(jexnum(nomnoe, nuno1), nomno1)
             call jenuno(jexnum(nomnoe, nuno2), nomno2)
-            call jenuno(jexnum(nomnoe, zi(idlinv+j1-1)), nomno3)
+            call jenuno(jexnum(nomnoe, lisinv(j1)), nomno3)
             valk (1) = nomno1
             valk (2) = nomno2
             valk (3) = nomno3
@@ -280,12 +285,12 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
     do 60 i = 1, lonlis
         iexcor = 0
         do 70 j = 1, lonlis
-            if (zi(idlou1+i-1) .eq. zi(idlou3+j-1)) then
+            if (zi(idlou1+i-1) .eq. lisou3(j)) then
                 iexcor = 1
-                if (zi(idlou2+i-1) .ne. zi(idlou4+j-1)) then
+                if (zi(idlou2+i-1) .ne. lisou4(j)) then
                     call jenuno(jexnum(nomnoe, zi(idlou1+i-1)), nomno1)
                     call jenuno(jexnum(nomnoe, zi(idlou2+i-1)), nomno2)
-                    call jenuno(jexnum(nomnoe, zi(idlou4+j-1)), nomno3)
+                    call jenuno(jexnum(nomnoe, lisou4(j)), nomno3)
                     valk (1) = nomno1
                     valk (2) = nomno2
                     valk (3) = nomno3
@@ -306,9 +311,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 !
 ! --- MENAGE
 !
-    call jedetr('&&PACOA1.LISOU3')
-    call jedetr('&&PACOA1.LISOU4')
-    call jedetr('&&PACOA1.LISINV')
+    AS_DEALLOCATE(vi=lisou3)
+    AS_DEALLOCATE(vi=lisou4)
+    AS_DEALLOCATE(vi=lisinv)
 !
     call jedema()
 end subroutine

@@ -34,6 +34,8 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbnm, nunomi(nbnm)
     character(len=8) :: main, maout
 !-----------------------------------------------------------------------
@@ -52,10 +54,11 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 !
 !
     integer :: jdim, nbtno, jnon, i, inoeu, nbno, nbtgno, nbnogr, jname, jval1
-    integer :: jval2, j, jgnoi, jgnou, kk, jnogr, jrefe, iret, ij
+    integer :: jval2, j, jgnoi, jgnou, kk,  jrefe, iret, ij
     character(len=8) :: nnoi
     character(len=19) :: coordo, coordi
     character(len=24) :: nom, nomnoi, nomnoe, grpno, dime, gpptnn
+    integer, pointer :: noeud_group(:) => null()
 !
     call jemarq()
 !
@@ -140,12 +143,12 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
             call jenuno(jexnum(main//'.GROUPENO', i), nom)
             call jelira(jexnom(main//'.GROUPENO', nom), 'LONUTI', nbnogr)
             call jeveuo(jexnom(main//'.GROUPENO', nom), 'L', jgnoi)
-            call wkvect('&&CMQLNO.NOEUD_GROUP', 'V V I', nbnogr, jnogr)
+            AS_ALLOCATE(vi=noeud_group, size=nbnogr)
             kk=0
             do 60 j = 1, nbnogr
                 if (zi(jnon+zi(jgnoi+j-1)-1) .eq. 0) then
                     kk=kk+1
-                    zi(jnogr+kk-1)=zi(jgnoi+j-1)
+                    noeud_group(kk)=zi(jgnoi+j-1)
                 endif
 60          continue
 !           NOMBRE DE NOEUDS DU NOUVEAU GROUPE
@@ -158,13 +161,13 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
                 call jeecra(jexnom(grpno, nom), 'LONUTI', nbnogr)
                 call jeveuo(jexnom(grpno, nom), 'E', jgnou)
                 do 70 j = 1, nbnogr
-                    ij=zi(jnogr+j-1)
+                    ij=noeud_group(j)
                     call jenuno(jexnum(nomnoi, ij), nnoi)
                     call jenonu(jexnom(nomnoe, nnoi), zi(jgnou+j-1))
 70              continue
             endif
 !
-            call jedetr('&&CMQLNO.NOEUD_GROUP')
+            AS_DEALLOCATE(vi=noeud_group)
 !
 50      continue
 !

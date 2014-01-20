@@ -71,6 +71,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 #include "asterfort/moinsr.h"
 #include "asterfort/trir.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: ma
 ! -----  ARGUMENTS
@@ -78,8 +80,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     integer :: neq, nblia, nmul
     integer :: apddl(*), apptr(*)
 ! -----  VARIABLES LOCALES
-    integer :: j, k, iimax, jhbid, idsuiv, dimacv, jacnbt, jconl, nblig, nblig2
-    integer :: jac1er, ilig, idligm, nddlt, jacv, jaci, iilib, idlm, iddl
+    integer :: j, k, iimax, jhbid, idsuiv, dimacv,  jconl, nblig, nblig2
+    integer ::  ilig, idligm, nddlt, jacv, jaci, iilib, idlm, iddl
     integer :: ieq, jsmhc, jsmdi, ncoef, jvalm, decal, jrefa
     integer :: i, jsmde, ii1, ii2, iii, ii, jj, jdecal, nddltm, kdeb
     character(len=1) :: base
@@ -88,6 +90,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
     character(len=24) :: a, ksuiv, khbid
     real(kind=8) :: un, vi, vj, vij
+    integer, pointer :: acompac_1er(:) => null()
+    integer, pointer :: acompac_nbt(:) => null()
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
     call jemarq()
@@ -139,8 +143,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !        -- ALLOCATION DE &&ATASMO.ACOMPAC_1ER
 !     ----------------------------------------------------------------
     dimacv = 0
-    call wkvect('&&ATASMO.ACOMPAC_NBT', 'V V I', nblig, jacnbt)
-    call wkvect('&&ATASMO.ACOMPAC_1ER', 'V V I', nblig, jac1er)
+    AS_ALLOCATE(vi=acompac_nbt, size=nblig)
+    AS_ALLOCATE(vi=acompac_1er, size=nblig)
     do j = 1, nmul
         do ilig = 1, nblia
             call jeveuo(jexnum(a, ilig+(j-1)*nblia), 'L', idligm)
@@ -150,8 +154,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
                 if (zr(idligm-1+i) .ne. 0.d0) nddlt = nddlt + 1
             end do
 !           ASSERT(NDDLT.GT.0)
-            zi(jacnbt-1+ilig+(j-1)*nblia) = nddlt
-            zi(jac1er-1+ilig+(j-1)*nblia) = dimacv + 1
+            acompac_nbt(ilig+(j-1)*nblia) = nddlt
+            acompac_1er(ilig+(j-1)*nblia) = dimacv + 1
             dimacv = dimacv + nddlt
             call jelibe(jexnum(a, ilig+(j-1)*nblia))
         end do
@@ -206,8 +210,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !     4.2 : ON INSERE LES VRAIS TERMES :
     do ilig = 1, nblig
 !       NDDLT : NOMBRE DE TERMES NON NULS POUR ILIG
-        nddlt = zi(jacnbt-1+ilig)
-        idlm = jaci - 1 + zi(jac1er-1+ilig)
+        nddlt = acompac_nbt(ilig)
+        idlm = jaci - 1 + acompac_1er(ilig)
 !
 !       -- INSERTION DES COLONNES DE L'ELEMENT DANS
 !           LA STRUCTURE CHAINEE
@@ -262,9 +266,9 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     call jeveuo(jexnum(kvalm, 1), 'E', jvalm)
     do ilig = 1, nblig
 !       NDDLT : NOMBRE DE TERMES NON NULS POUR ILIG
-        nddlt = zi(jacnbt-1+ilig)
-        idlm = jaci - 1 + zi(jac1er-1+ilig)
-        decal = zi(jac1er-1+ilig)
+        nddlt = acompac_nbt(ilig)
+        idlm = jaci - 1 + acompac_1er(ilig)
+        decal = acompac_1er(ilig)
 !
 !       -- CALCUL DE .VALM(II,JJ) :
         do j = 1, nddlt
@@ -298,8 +302,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !     ------------
     call jedetr('&&ATASMO.SMOS.SMHC')
     call jedetr('&&ATASMO.ANCIEN.ISUIV')
-    call jedetr('&&ATASMO.ACOMPAC_NBT')
-    call jedetr('&&ATASMO.ACOMPAC_1ER')
+    AS_DEALLOCATE(vi=acompac_nbt)
+    AS_DEALLOCATE(vi=acompac_1er)
     call jedetr('&&ATASMO.ACOMPAC_V')
     call jedetr('&&ATASMO.ACOMPAC_I')
     call jedetr('&&ATASMO.LMBID')

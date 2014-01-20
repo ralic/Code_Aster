@@ -28,6 +28,8 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 #include "asterfort/tbexp2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbr, nbc, nbk, nbobj
     real(kind=8) :: valr(*)
@@ -77,15 +79,17 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     character(len=24) :: prol1, prol2, valkk(2)
     character(len=16) :: typeco
     complex(kind=8) :: valc8
-    integer :: jtypo, jnomo, ibk, nbmax, vali
+    integer ::   ibk, nbmax, vali
     integer :: i, k, ii, jfct, jrpv, jvale, nbcoup, n
     integer :: iret, nbfct, nbpts, jprol, nbptm, lpro1, lpro2
+    character(len=16), pointer :: nomobj(:) => null()
+    character(len=8), pointer :: typobj(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    call wkvect('&&RCSTOC.TYPOBJ', 'V V K8', nbobj, jtypo)
-    call wkvect('&&RCSTOC.NOMOBJ', 'V V K16', nbobj, jnomo)
-    call getmjm(nomrc, 1, nbobj, zk16(jnomo), zk8(jtypo),&
+    AS_ALLOCATE(vk8=typobj, size=nbobj)
+    AS_ALLOCATE(vk16=nomobj, size=nbobj)
+    call getmjm(nomrc, 1, nbobj, nomobj, typobj,&
                 n)
 !
 !     ON VERIFIE QUE 2 MOTS CLES DIFFERENTS N'ONT PAS LES MEMES
@@ -96,19 +100,19 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     do 777,i=1,nbobj
 !
 !        ON EST OBLIGE DE RECOPIER LA GLUTE ELAS_FLUI :
-    if (zk16(jnomo+i-1) .eq. 'PROF_RHO_F_INT') then
+    if (nomobj(i) .eq. 'PROF_RHO_F_INT') then
         mcle8 = 'RHO_F_IN'
-    else if (zk16(jnomo+i-1) .eq. 'PROF_RHO_F_EXT') then
+    else if (nomobj(i) .eq. 'PROF_RHO_F_EXT') then
         mcle8 = 'RHO_F_EX'
-    else if (zk16(jnomo+i-1) .eq. 'COEF_MASS_AJOU') then
+    else if (nomobj(i) .eq. 'COEF_MASS_AJOU') then
         mcle8 = 'CM'
     else
-        mcle8= zk16(jnomo-1+i)(1:8)
+        mcle8= nomobj(i)(1:8)
     endif
 !
     call jeexin(jexnom('&&RCSTOC.TEMPOR', mcle8), iret)
     if (iret .gt. 0) then
-        call utmess('F', 'MODELISA6_69', sk=zk16(jnomo-1+i))
+        call utmess('F', 'MODELISA6_69', sk=nomobj(i))
     else
         call jecroc(jexnom('&&RCSTOC.TEMPOR', mcle8))
     endif
@@ -123,28 +127,28 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 ! --- ON TRAITE LES TX QU ON CONVERTIT EN REELS
 !
     do 50 i = 1, nbobj
-        if (zk8(jtypo+i-1)(1:2) .eq. 'TX') then
+        if (typobj(i)(1:2) .eq. 'TX') then
             if (nomrc(1:9) .eq. 'ELAS_META') then
-                call getvtx(nomrc, zk16(jnomo+i-1), iocc=1, scal=valtx, nbret=n)
+                call getvtx(nomrc, nomobj(i), iocc=1, scal=valtx, nbret=n)
                 if (n .eq. 1) then
-                    if (zk16(jnomo+i-1) .eq. 'PHASE_REFE' .and. valtx .eq. 'CHAUD') then
+                    if (nomobj(i) .eq. 'PHASE_REFE' .and. valtx .eq. 'CHAUD') then
                         nbr = nbr + 1
                         valr(nbr) = 1.d0
-                        valk(nbr) = zk16(jnomo+i-1)
-                        elseif( zk16(jnomo+i-1).eq.'PHASE_REFE' .and.&
+                        valk(nbr) = nomobj(i)
+                        elseif( nomobj(i).eq.'PHASE_REFE' .and.&
                     valtx.eq.'FROID') then
                         nbr = nbr + 1
                         valr(nbr) = 0.d0
-                        valk(nbr) = zk16(jnomo+i-1)
+                        valk(nbr) = nomobj(i)
                     endif
                 endif
             else if (nomrc .eq. 'BETON_DOUBLE_DP') then
-                call getvtx(nomrc, zk16(jnomo+i-1), iocc=1, scal=valtx, nbret=n)
+                call getvtx(nomrc, nomobj(i), iocc=1, scal=valtx, nbret=n)
                 if (n .eq. 1) then
-                    if (zk16(jnomo+i-1) .eq. 'ECRO_COMP_P_PIC' .or. zk16(jnomo+i-1) .eq.&
+                    if (nomobj(i) .eq. 'ECRO_COMP_P_PIC' .or. nomobj(i) .eq.&
                         'ECRO_TRAC_P_PIC') then
                         nbr = nbr + 1
-                        valk(nbr) = zk16(jnomo+i-1)
+                        valk(nbr) = nomobj(i)
                         if (valtx .eq. 'LINEAIRE') then
                             valr(nbr) = 0.d0
                         else
@@ -154,11 +158,11 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                 endif
                 elseif ((nomrc.eq.'RUPT_FRAG') .or.(&
             nomrc.eq.'CZM_LAB_MIX')) then
-                call getvtx(nomrc, zk16(jnomo+i-1), iocc=1, scal=valtx, nbret=n)
+                call getvtx(nomrc, nomobj(i), iocc=1, scal=valtx, nbret=n)
                 if (n .eq. 1) then
-                    if (zk16(jnomo+i-1) .eq. 'CINEMATIQUE') then
+                    if (nomobj(i) .eq. 'CINEMATIQUE') then
                         nbr = nbr + 1
-                        valk(nbr) = zk16(jnomo+i-1)
+                        valk(nbr) = nomobj(i)
                         if (valtx .eq. 'UNILATER') then
                             valr(nbr) = 0.d0
                         else if (valtx.eq.'GLIS_1D') then
@@ -179,12 +183,12 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 ! --- 1- ON TRAITE LES REELS
 !
     do 100 i = 1, nbobj
-        if (zk8(jtypo+i-1)(1:3) .eq. 'R8 ') then
-            call getvr8(nomrc, zk16(jnomo+i-1), iocc=1, scal=valr8, nbret=n)
+        if (typobj(i)(1:3) .eq. 'R8 ') then
+            call getvr8(nomrc, nomobj(i), iocc=1, scal=valr8, nbret=n)
             if (n .eq. 1) then
                 nbr = nbr + 1
                 valr(nbr) = valr8
-                valk(nbr) = zk16(jnomo+i-1)
+                valk(nbr) = nomobj(i)
             endif
         endif
 100  end do
@@ -193,12 +197,12 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 ! --- 2- ON TRAITE LES COMPLEXES
 !
     do 115 i = 1, nbobj
-        if (zk8(jtypo+i-1)(1:3) .eq. 'C8 ') then
-            call getvc8(nomrc, zk16(jnomo+i-1), iocc=1, scal=valc8, nbret=n)
+        if (typobj(i)(1:3) .eq. 'C8 ') then
+            call getvc8(nomrc, nomobj(i), iocc=1, scal=valc8, nbret=n)
             if (n .eq. 1) then
                 nbc = nbc + 1
                 valc(nbr+nbc) = valc8
-                valk(nbr+nbc) = zk16(jnomo+i-1)
+                valk(nbr+nbc) = nomobj(i)
             endif
         endif
 115  end do
@@ -207,18 +211,18 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 ! --- 3- ON TRAITE ENSUITE LES CONCEPTS
 !
     do 110 i = 1, nbobj
-        if (zk8(jtypo+i-1)(1:3) .eq. 'CO ') then
-            call getvid(nomrc, zk16(jnomo+i-1), iocc=1, scal=valch, nbret=n)
+        if (typobj(i)(1:3) .eq. 'CO ') then
+            call getvid(nomrc, nomobj(i), iocc=1, scal=valch, nbret=n)
             if (n .eq. 1) then
                 nbk = nbk + 1
-                if (zk16(jnomo+i-1) .eq. 'PROF_RHO_F_INT') then
+                if (nomobj(i) .eq. 'PROF_RHO_F_INT') then
                     valk(nbr+nbc+nbk) = 'RHO_F_IN'
-                else if (zk16(jnomo+i-1) .eq. 'PROF_RHO_F_EXT') then
+                else if (nomobj(i) .eq. 'PROF_RHO_F_EXT') then
                     valk(nbr+nbc+nbk) = 'RHO_F_EX'
-                else if (zk16(jnomo+i-1) .eq. 'COEF_MASS_AJOU') then
+                else if (nomobj(i) .eq. 'COEF_MASS_AJOU') then
                     valk(nbr+nbc+nbk) = 'CM'
                 else
-                    valk(nbr+nbc+nbk) = zk16(jnomo+i-1)
+                    valk(nbr+nbc+nbk) = nomobj(i)
                 endif
             endif
         endif
@@ -226,8 +230,8 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 !
     ibk = 0
     do 120 i = 1, nbobj
-        if (zk8(jtypo+i-1)(1:3) .eq. 'CO ') then
-            call getvid(nomrc, zk16(jnomo+i-1), iocc=1, scal=valch, nbret=n)
+        if (typobj(i)(1:3) .eq. 'CO ') then
+            call getvid(nomrc, nomobj(i), iocc=1, scal=valch, nbret=n)
             if (n .eq. 1) then
                 call gettco(valch, typeco)
                 ibk = ibk + 1
@@ -467,8 +471,8 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 720      continue
     endif
 !
-    call jedetr('&&RCSTOC.TYPOBJ')
-    call jedetr('&&RCSTOC.NOMOBJ')
+    AS_DEALLOCATE(vk8=typobj)
+    AS_DEALLOCATE(vk16=nomobj)
 ! FIN ------------------------------------------------------------------
     call jedema()
 end subroutine

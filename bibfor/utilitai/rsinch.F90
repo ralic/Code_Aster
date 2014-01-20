@@ -21,6 +21,8 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 #include "asterfort/rsutro.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: istop, ier
     real(kind=8) :: rval
@@ -87,10 +89,11 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iacces, ialexi, iaobj, iatach
+    integer :: i, i1, i2, iacces,  iaobj, iatach
     integer :: iatava, ibid, idebu, ier1, ier2, ierr1, ierr2
     integer :: iloty, imaxi, inomch, ip1, ip2, iposit, nbord2
     integer :: nbordr
+    logical, pointer :: lexi(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     acce2 = acces
@@ -146,20 +149,20 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 !     -----------------
 !
 !     -- ON REPERE QUELS SONT LES CHAMPS EXISTANT REELLEMENT:
-    call wkvect('&&RSINCH.LEXI', 'V V L', nbordr, ialexi)
+    AS_ALLOCATE(vl=lexi, size=nbordr)
     call jenonu(jexnom(noms2//'.DESC', nomc2), ibid)
     call jeveuo(jexnum(noms2//'.TACH', ibid), 'L', iatach)
     nbord2=0
     do 1,i = 1,nbordr
     if (zk24(iatach-1+i) (1:1) .eq. ' ') then
-        zl(ialexi-1+i) = .false.
+        lexi(i) = .false.
     else
-        zl(ialexi-1+i) = .true.
+        lexi(i) = .true.
         nbord2=nbord2+1
     endif
     1 end do
 !
-    call rsbary(zr(iaobj), nbordr, .false., zl(ialexi), rval,&
+    call rsbary(zr(iaobj), nbordr, .false., lexi, rval,&
                 i1, i2, iposit)
     if (iposit .eq. -2) then
         ier = 10
@@ -278,7 +281,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 !
 9999  continue
     call jedetr('&&RSINCH.LIR8')
-    call jedetr('&&RSINCH.LEXI')
+    AS_DEALLOCATE(vl=lexi)
 !
     call jedema()
 end subroutine

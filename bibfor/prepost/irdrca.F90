@@ -12,6 +12,8 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ifi, nbno, desc(*), nec, dg(*), ncmpmx, numnoe(*), nbcput, nive
     real(kind=8) :: vale(*)
     character(len=*) :: nomgd, ncmpgd(*), ncmput(*)
@@ -63,14 +65,17 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadr, ibi, ibid, ic, icm
-    integer :: icmp, iec, inno, ino, inom, inum, ipos
+    integer :: i, iad, iadr,  ibid, ic, icm
+    integer :: icmp, iec, inno, ino,  inum
     integer :: irval, iun, iva, ival, izero, jlast
     integer :: ncmp
+    integer, pointer :: bid(:) => null()
+    character(len=8), pointer :: nom(:) => null()
+    integer, pointer :: pos(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     blanc = '      '
-    call wkvect('&&IRDRCA.POS', 'V V I', ncmpmx, ipos)
+    AS_ALLOCATE(vi=pos, size=ncmpmx)
     if (nec .gt. 0) then
         do 16 iec = 1, nec
             dg(iec)=desc(3+iec-1)
@@ -89,7 +94,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
         do 30 icm = 1, nbcput
             do 32 icmp = 1, ncmpmx
                 if (ncmput(icm) .eq. ncmpgd(icmp)) then
-                    zi(ipos-1+icmp) = icmp
+                    pos(icmp) = icmp
                     goto 30
                 endif
 32          continue
@@ -99,14 +104,14 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 30      continue
     else
         do 2 icmp = 1, ncmpmx
-            if (exisdg(dg,icmp)) zi(ipos-1+icmp) = icmp
+            if (exisdg(dg,icmp)) pos(icmp) = icmp
  2      continue
     endif
 !
     iad = 1
     nbcmp = 0
     do 5 i = 1, ncmpmx
-        if (zi(ipos-1+i) .ne. 0) then
+        if (pos(i) .ne. 0) then
             if (ncmpgd(i) .eq. 'DX') then
                 nbcmp = nbcmp+1
                 nomvar(iad)='UX'
@@ -183,17 +188,17 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
         write(ifi,'(10(I8))') iun,nbno,nbcmp
     endif
 !
-    call wkvect('&&IRDRCA.BID', 'V V I', ncmpmx, ibi)
-    call wkvect('&&IRDRCA.NOM', 'V V K8', nbcmp, inom)
+    AS_ALLOCATE(vi=bid, size=ncmpmx)
+    AS_ALLOCATE(vk8=nom, size=nbcmp)
 !
     izero = 0
     do 10 i = 1, nbcmp
-        zi(ibi-1+i) = izero
-        zk8(inom-1+i) = nomvar(i)
+        bid(i) = izero
+        nom(i) = nomvar(i)
 10  end do
-    write(ifi,'(16(1X,A4))') (zk8(inom-1+i)(1:4),i=1,nbcmp)
-    if (nive .eq. 3) write(ifi,'(16(I5))') (zi(ibi-1+i),i=1,nbcmp)
-    if (nive .eq. 10) write(ifi,'(10(I8))') (zi(ibi-1+i),i=1,nbcmp)
+    write(ifi,'(16(1X,A4))') (nom(i)(1:4),i=1,nbcmp)
+    if (nive .eq. 3) write(ifi,'(16(I5))') (bid(i),i=1,nbcmp)
+    if (nive .eq. 10) write(ifi,'(10(I8))') (bid(i),i=1,nbcmp)
     if (lresu) then
         write(ifi,'(1X,A71)') nomsym
     else
@@ -208,7 +213,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 !
 ! ---- BOUCLE SUR LES DIVERSES GRANDEURS CASTEM ----
     do 22 iva = 1, ncmp
-        ic = zi(ipos-1+iva)
+        ic = pos(iva)
         iadr = irval-1+(iva-1)*nbno
         do 12 inno = 1, nbno
             ino = numnoe(inno)
@@ -219,8 +224,8 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
     write(ifi,'(3(1X,E21.13E3))') (zr(irval-1+i),i=1,nbcmp*nbno)
     if (.not.lresu) zi(jlast-1+4)=inum
     call jedetr('&&IRDRCA.VALE')
-    call jedetr('&&IRDRCA.BID')
-    call jedetr('&&IRDRCA.NOM')
-    call jedetr('&&IRDRCA.POS')
+    AS_DEALLOCATE(vi=bid)
+    AS_DEALLOCATE(vk8=nom)
+    AS_DEALLOCATE(vi=pos)
     call jedema()
 end subroutine

@@ -64,6 +64,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
 ! ARGUMENTS
@@ -75,8 +77,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ibid, imail, ino, iret, isuiv, isuiv0(2), ivois, jcxma, jnomad
-    integer :: jnono1, jnono2, jnonod, jnuma1, jnuma2, jnumac, jnumad, jtyma
+    integer :: ibid, imail, ino, iret, isuiv, isuiv0(2), ivois, jcxma
+    integer ::      jnumac, jnumad, jtyma
     integer :: lonuti, nbchem, nbmail, nbno1, nbno2, nbsuiv, no1, no2, ntseg
     integer :: numail, n1, nbse2, nbse3, no3, ntseg2
     real(kind=8) :: rbid
@@ -90,6 +92,12 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     character(len=24) :: valk(3), nogrno(2), nogrna(2), nogrma
     character(len=24) :: param(6), vk(5)
     integer :: iarg
+    character(len=8), pointer :: nomail_def(:) => null()
+    character(len=8), pointer :: nomnoe_ch1(:) => null()
+    character(len=8), pointer :: nomnoe_ch2(:) => null()
+    character(len=8), pointer :: nomnoe_def(:) => null()
+    integer, pointer :: numail_ch1(:) => null()
+    integer, pointer :: numail_ch2(:) => null()
     data          param /'NUME_CABLE              ',&
      &                     'NOEUD_CABLE             ',&
      &                     'NOM_CABLE               ',&
@@ -125,12 +133,12 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     if (nbmail .ne. 0) then
 !
         nbmail = abs(nbmail)
-        call wkvect('&&TOPOCA.NOMAIL_DEF', 'V V K8', nbmail, jnomad)
+        AS_ALLOCATE(vk8=nomail_def, size=nbmail)
         call wkvect('&&TOPOCA.NUMAIL_DEF', 'V V I', nbmail, jnumad)
         call getvem(mailla, 'MAILLE', 'DEFI_CABLE', 'MAILLE', icabl,&
-                    iarg, nbmail, zk8(jnomad), ibid)
+                    iarg, nbmail, nomail_def, ibid)
         do 10 imail = 1, nbmail
-            call jenonu(jexnom(nomama, zk8(jnomad+imail-1)), zi(jnumad+ imail-1))
+            call jenonu(jexnom(nomama, nomail_def(imail)), zi(jnumad+ imail-1))
 10      continue
 !
 !.... SAISIE INDIRECTE PAR UN GROUPE DE MAILLES
@@ -150,7 +158,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG3'), ntseg2)
 !
-    call wkvect('&&TOPOCA.NOMNOE_DEF', 'V V K8', 2*nbmail, jnonod)
+    AS_ALLOCATE(vk8=nomnoe_def, size=2*nbmail)
 !
     nbse2=0
     nbse3=0
@@ -165,8 +173,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
         no1 = zi(jcxma)
         no2 = zi(jcxma+1)
-        call jenuno(jexnum(nonoma, no1), zk8(jnonod+2*(imail-1)))
-        call jenuno(jexnum(nonoma, no2), zk8(jnonod+2*(imail-1)+1))
+        call jenuno(jexnum(nonoma, no1), nomnoe_def(1+2*(imail-1)))
+        call jenuno(jexnum(nonoma, no2), nomnoe_def(1+2*(imail-1)+1))
     end do
     ASSERT((nbse2.eq.0).or.(nbse3.eq.0))
     quad=.false.
@@ -249,13 +257,13 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
     nbchem = 0
     do ino = 1, 2*nbmail
-        if (zk8(jnonod+ino-1) .eq. noancr(1)) then
+        if (nomnoe_def(ino) .eq. noancr(1)) then
             if (mod(ino,2) .eq. 0) then
                 isuiv = ino - 1
             else
                 isuiv = ino + 1
             endif
-            nosuiv = zk8(jnonod+isuiv-1)
+            nosuiv = nomnoe_def(isuiv)
             if (nosuiv .ne. noancr(1)) then
                 nbchem = nbchem + 1
                 if (nbchem .gt. 2) then
@@ -276,27 +284,27 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
         call utmess('F', 'MODELISA7_56', nk=2, valk=valk)
     endif
 !
-    nosui1 = zk8(jnonod+isuiv0(1)-1)
+    nosui1 = nomnoe_def(1+isuiv0(1)-1)
     if (nbchem .eq. 2) then
-        nosui2 = zk8(jnonod+isuiv0(2)-1)
+        nosui2 = nomnoe_def(1+isuiv0(2)-1)
         if (nosui1 .eq. nosui2) nbchem = 1
     endif
 !
 ! 2.2 TENTATIVE DE PARCOURS DU PREMIER CHEMIN POSSIBLE
 ! ---
-    call wkvect('&&TOPOCA.NUMAIL_CH1', 'V V I', nbmail, jnuma1)
-    call wkvect('&&TOPOCA.NOMNOE_CH1', 'V V K8', nbmail+1, jnono1)
+    AS_ALLOCATE(vi=numail_ch1, size=nbmail)
+    AS_ALLOCATE(vk8=nomnoe_ch1, size=nbmail+1)
 !
     ok1 = .false.
 !
     nbno1 = 1
-    zk8(jnono1) = noancr(1)
+    nomnoe_ch1(1) = noancr(1)
     if (mod(isuiv0(1),2) .eq. 0) then
         imail = isuiv0(1)/2
     else
         imail = (isuiv0(1)+1)/2
     endif
-    zi(jnuma1) = zi(jnumad+imail-1)
+    numail_ch1(1) = zi(jnumad+imail-1)
     noprec = noancr(1)
     nocour = nosui1
 !
@@ -304,19 +312,19 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 40  continue
     if (nocour .eq. noancr(2)) then
         nbno1 = nbno1 + 1
-        zk8(jnono1+nbno1-1) = noancr(2)
+        nomnoe_ch1(nbno1) = noancr(2)
         ok1 = .true.
         goto 60
     endif
     nbsuiv = 0
     do 50 ino = 1, 2*nbmail
-        if (zk8(jnonod+ino-1) .eq. nocour) then
+        if (nomnoe_def(ino) .eq. nocour) then
             if (mod(ino,2) .eq. 0) then
                 ivois = ino - 1
             else
                 ivois = ino + 1
             endif
-            novois = zk8(jnonod+ivois-1)
+            novois = nomnoe_def(ivois)
             if ((novois.ne.nocour) .and. (novois.ne.noprec)) then
                 nbsuiv = nbsuiv + 1
                 if (nbsuiv .gt. 1) goto 60
@@ -327,13 +335,13 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 50  continue
     if (nbsuiv .eq. 0) goto 60
     nbno1 = nbno1 + 1
-    zk8(jnono1+nbno1-1) = nocour
+    nomnoe_ch1(nbno1) = nocour
     if (mod(isuiv,2) .eq. 0) then
         imail = isuiv/2
     else
         imail = (isuiv+1)/2
     endif
-    zi(jnuma1+nbno1-1) = zi(jnumad+imail-1)
+    numail_ch1(nbno1) = zi(jnumad+imail-1)
     noprec = nocour
     nocour = nosuiv
     if (nbno1 .lt. nbmail+1) goto 40
@@ -347,17 +355,17 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
     if (nbchem .eq. 2) then
 !
-        call wkvect('&&TOPOCA.NUMAIL_CH2', 'V V I', nbmail, jnuma2)
-        call wkvect('&&TOPOCA.NOMNOE_CH2', 'V V K8', nbmail+1, jnono2)
+        AS_ALLOCATE(vi=numail_ch2, size=nbmail)
+        AS_ALLOCATE(vk8=nomnoe_ch2, size=nbmail+1)
 !
         nbno2 = 1
-        zk8(jnono2) = noancr(1)
+        nomnoe_ch2(1) = noancr(1)
         if (mod(isuiv0(2),2) .eq. 0) then
             imail = isuiv0(2)/2
         else
             imail = (isuiv0(2)+1)/2
         endif
-        zi(jnuma2) = zi(jnumad+imail-1)
+        numail_ch2(1) = zi(jnumad+imail-1)
         noprec = noancr(1)
         nocour = nosui2
 !
@@ -365,19 +373,19 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 70      continue
         if (nocour .eq. noancr(2)) then
             nbno2 = nbno2 + 1
-            zk8(jnono2+nbno2-1) = noancr(2)
+            nomnoe_ch2(nbno2) = noancr(2)
             ok2 = .true.
             goto 90
         endif
         nbsuiv = 0
         do 80 ino = 1, 2*nbmail
-            if (zk8(jnonod+ino-1) .eq. nocour) then
+            if (nomnoe_def(ino) .eq. nocour) then
                 if (mod(ino,2) .eq. 0) then
                     ivois = ino - 1
                 else
                     ivois = ino + 1
                 endif
-                novois = zk8(jnonod+ivois-1)
+                novois = nomnoe_def(ivois)
                 if ((novois.ne.nocour) .and. (novois.ne.noprec)) then
                     nbsuiv = nbsuiv + 1
                     if (nbsuiv .gt. 1) goto 90
@@ -388,13 +396,13 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 80      continue
         if (nbsuiv .eq. 0) goto 90
         nbno2 = nbno2 + 1
-        zk8(jnono2+nbno2-1) = nocour
+        nomnoe_ch2(nbno2) = nocour
         if (mod(isuiv,2) .eq. 0) then
             imail = isuiv/2
         else
             imail = (isuiv+1)/2
         endif
-        zi(jnuma2+nbno2-1) = zi(jnumad+imail-1)
+        numail_ch2(nbno2) = zi(jnumad+imail-1)
         noprec = nocour
         nocour = nosuiv
         if (nbno2 .lt. nbmail+1) goto 70
@@ -444,9 +452,9 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
             sens=0
 !
             do 100 imail = 1, nbno1-1
-                zi(jnumac+lonuti+imail-1) = zi(jnuma1+imail-1)
+                zi(jnumac+lonuti+imail-1) = numail_ch1(imail)
                 ino=imail
-                vk(1) = zk8(jnono1+ino-1)
+                vk(1) = nomnoe_ch1(ino)
                 vk(2) = nogrma
                 vk(3) = nogrno(1)
                 vk(4) = nogrno(2)
@@ -454,20 +462,20 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                 call tbajli(tablca, 6, param, [icabl], [rbid],&
                             [cbid], vk, 0)
                 if (quad) then
-                    numail=zi(jnuma1+imail-1)
+                    numail=numail_ch1(imail)
                     call jeveuo(jexnum(conxma, numail), 'L', jcxma)
                     no3=zi(jcxma+2)
                     no1=zi(jcxma)
                     call jenuno(jexnum(nonoma, no1), vk(1))
                     if (sens .eq. 0) then
-                        if (zk8(jnono1+ino-1) .eq. vk(1)) then
+                        if (nomnoe_ch1(ino) .eq. vk(1)) then
                             sens=1
                         else
                             sens=-1
                         endif
                     else
 !                   TOUTES LES MAILLES DOIVENT ETRE DANS LE MEME SENS
-                        if (zk8(jnono1+ino-1) .eq. vk(1)) then
+                        if (nomnoe_ch1(ino) .eq. vk(1)) then
                             if (sens .ne.1) call utmess('F', 'MODELISA7_14', nk=1, valk=nogrma)
 !                             ASSERT(sens.eq.1)
                         else
@@ -483,7 +491,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                                 [cbid], vk, 0)
                 endif
 100          continue
-            vk(1) = zk8(jnono1+nbno1-1)
+            vk(1) = nomnoe_ch1(nbno1)
             vk(2) = nogrma
             vk(3) = nogrno(1)
             vk(4) = nogrno(2)
@@ -513,9 +521,9 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
             endif
             sens=0
             do 150 imail = 1, nbno2-1
-                zi(jnumac+lonuti+imail-1) = zi(jnuma2+imail-1)
+                zi(jnumac+lonuti+imail-1) = numail_ch2(imail)
                 ino=imail
-                vk(1) = zk8(jnono2+ino-1)
+                vk(1) = nomnoe_ch2(ino)
                 vk(2) = nogrma
                 vk(3) = nogrno(1)
                 vk(4) = nogrno(2)
@@ -523,20 +531,20 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                 call tbajli(tablca, 6, param, [icabl], [rbid],&
                             [cbid], vk, 0)
                 if (quad) then
-                    numail=zi(jnuma2+imail-1)
+                    numail=numail_ch2(imail)
                     call jeveuo(jexnum(conxma, numail), 'L', jcxma)
                     no3=zi(jcxma+2)
                     no1=zi(jcxma)
                     call jenuno(jexnum(nonoma, no1), vk(1))
                     if (sens .eq. 0) then
-                        if (zk8(jnono1+ino-1) .eq. vk(1)) then
+                        if (nomnoe_ch1(ino) .eq. vk(1)) then
                             sens=1
                         else
                             sens=-1
                         endif
                     else
 !                   TOUTES LES MAILLES DOIVENT ETRE DANS LE MEME SENS
-                        if (zk8(jnono1+ino-1) .eq. vk(1)) then
+                        if (nomnoe_ch1(ino) .eq. vk(1)) then
                             ASSERT(sens.eq.1)
                         else
                             ASSERT(sens.eq.-1)
@@ -551,7 +559,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
                                 [cbid], vk, 0)
                 endif
 150          continue
-            vk(1) = zk8(jnono2+nbno2-1)
+            vk(1) = nomnoe_ch2(nbno2)
             vk(2) = nogrma
             vk(3) = nogrno(1)
             vk(4) = nogrno(2)
@@ -570,13 +578,13 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     endif
 !
 ! --- MENAGE
-    call jedetr('&&TOPOCA.NOMAIL_DEF')
+    AS_DEALLOCATE(vk8=nomail_def)
     call jedetr('&&TOPOCA.NUMAIL_DEF')
-    call jedetr('&&TOPOCA.NOMNOE_DEF')
-    call jedetr('&&TOPOCA.NUMAIL_CH1')
-    call jedetr('&&TOPOCA.NOMNOE_CH1')
-    call jedetr('&&TOPOCA.NUMAIL_CH2')
-    call jedetr('&&TOPOCA.NOMNOE_CH2')
+    AS_DEALLOCATE(vk8=nomnoe_def)
+    AS_DEALLOCATE(vi=numail_ch1)
+    AS_DEALLOCATE(vk8=nomnoe_ch1)
+    AS_DEALLOCATE(vi=numail_ch2)
+    AS_DEALLOCATE(vk8=nomnoe_ch2)
 !
     call jedema()
 !

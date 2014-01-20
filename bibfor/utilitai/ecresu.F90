@@ -24,6 +24,8 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 #include "asterfort/vtcreb.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: npara, nbva
     character(len=*) :: resin, resou, grand
     character(len=19) :: vectot
@@ -61,7 +63,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
 !
 !     ------------------------------------------------------------------
-    integer :: nbordr, ltps, jordr, ibid, i, nbsym
+    integer :: nbordr,  jordr, ibid, i, nbsym
     integer :: ltps2, ieq, ier, neq, lval, lvals, iret, nbva2
     integer :: nbsauv, iarchi, isto1, isto2, isto3, isto4
     integer :: jdeps, jvits, jaccs, jpass, jinst
@@ -79,6 +81,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     character(len=24) :: typres, chdep2
     character(len=24) :: raide, numedd
     complex(kind=8) :: r1c
+    real(kind=8), pointer :: paramacc(:) => null()
 !
 !     ------------------------------------------------------------------
     call jemarq()
@@ -122,7 +125,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
         neq = neq / nbordr
     endif
     nbordr = nbva
-    call wkvect('&&ECRESU.PARAMACC', 'V V R', nbva, ltps)
+    AS_ALLOCATE(vr=paramacc, size=nbva)
 !
 !  Creation objet resultat en sortie si non existence
 !
@@ -137,14 +140,14 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !        --- RECUPERER LA LISTE DES FREQUENCES DE LA TABLE FFT
         do i = 0, nbva-1
 !           --- LES FREQUENCES SONT DECALEES PAR (NEQ*NBVA) DS LA TBLE
-            zr(ltps+i) = dble(zc(npara+(neq*nbva)+i))
+            paramacc(1+i) = dble(zc(npara+(neq*nbva)+i))
         end do
 !
 !        --- BOUCLE SUR LES FREQUENCES A SAUVEGARDER (NUM ORDRE RESU)
         do i = 0, nbordr-1
             call rsadpa(resou, 'E', 1, 'FREQ', i+1,&
                         0, sjv=ltps2, styp=k8b)
-            zr(ltps2) = zr(ltps+i)
+            zr(ltps2) = paramacc(1+i)
             call rsexch(' ', resou, grande, i+1, chdeps,&
                         iret)
 !
@@ -171,13 +174,13 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
         end do
     else if (typout(1:10).eq.'DYNA_TRANS') then
         do i = 1, nbva
-            zr(ltps+i-1) = zr(npara+(neq*nbva2)+i-1)
+            paramacc(i) = zr(npara+(neq*nbva2)+i-1)
         end do
         do i = 1, nbordr
 !  Temps
             call rsadpa(resou, 'E', 1, 'INST', (i-1),&
                         0, sjv=ltps2, styp=k8b)
-            zr(ltps2) = zr(ltps+i-1)
+            zr(ltps2) = paramacc(i)
             call rsexch(' ', resou, grande, (i-1), chdeps,&
                         iret)
             if (raide(1:1) .ne. ' ') then
@@ -206,7 +209,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             do i = 0, nbva-1
 !              --- INSTANTS SAUVEGARDEES DANS LA TABLE FFT MAIS
 !                  DECALEES PAR (NEQ*NBVA2)
-                zr(ltps+i) = zr(npara+(neq*nbva2)+i)
+                paramacc(1+i) = zr(npara+(neq*nbva2)+i)
             end do
 !           --- INITIALISATION DES INDICES D'ARCHIVAGE POUR MDARCH
             isto1 = 0
@@ -224,7 +227,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             nbsauv = nbordr
 !           --- RECUPERATION DU PAS DE TEMPS, NOMBRE DE MODES ET
 !               ENFIN LA BASE MODALE
-            dt = zr(ltps+1) - zr(ltps)
+            dt = paramacc(1+1) - paramacc(1)
             call jeveuo(masgen(1:8)//'           .DESC', 'L', jdesc)
             nbmode = zi(jdesc+1)
             call jeveuo(masgen(1:8)//'           .REFA', 'L', jrefam)
@@ -272,7 +275,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 end do
 !
 !              --- ARCHIVER LES RESULTATS POUR L'INSTANT EN COURS
-                call mdarnl(isto1, iarchi, zr(ltps+j), dt, neq,&
+                call mdarnl(isto1, iarchi, paramacc(1+j), dt, neq,&
                             zr(lvals), zr(lvalv), zr(lvala), isto2, 0,&
                             [0.d0], 0, isto3, 0, [0.d0],&
                             [0], isto4, 0, [0.d0], [0],&
@@ -303,7 +306,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !
             do i = 0, nbva-1
 !             --- LES FREQUENCES SONT DECALEES PAR (NEQ*NBVA) DS LA TBLE
-                zr(ltps+i) = dble(zc(npara+(neq*nbva)+i))
+                paramacc(1+i) = dble(zc(npara+(neq*nbva)+i))
             end do
 !
 !           --- INITIALISATION DES INDICES D'ARCHIVAGE POUR MDARCH
@@ -376,7 +379,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 nomsym(3) = 'ACCE'
 !
 !              --- ARCHIVER LES RESULTATS POUR LA FREQUENCE EN COURS
-                call mdarch(isto1, iarchi, zr(ltps+j), 0.d0, neq,&
+                call mdarch(isto1, iarchi, paramacc(1+j), 0.d0, neq,&
                             'HARM', nbsym, nomsym, [0.d0], [0.d0],&
                             [0.d0], [0.d0], [0.d0], [0.d0], zc(lvals),&
                             zc(lvalv), zc(lvala), zc(jdeps), zc(jvits), zc(jaccs),&
@@ -404,6 +407,6 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
         call refdcp(resin, resou)
     endif
 !
-    call jedetr('&&ECRESU.PARAMACC')
+    AS_DEALLOCATE(vr=paramacc)
     call jedema()
 end subroutine

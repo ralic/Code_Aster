@@ -46,6 +46,8 @@ subroutine extdia(matr, numddl, icode, diag)
 #include "asterfort/typddl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=24) :: numddl
     character(len=8) :: matr
@@ -55,8 +57,9 @@ subroutine extdia(matr, numddl, icode, diag)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: idia, j, jadia, jbloc, jsmde, jtyp, k
+    integer :: idia, j, jadia, jbloc, jsmde,  k
     integer :: l, lmat, nbacti, nbbloq, nblagr, nbliai, neq
+    integer, pointer :: vtypddl(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -66,8 +69,8 @@ subroutine extdia(matr, numddl, icode, diag)
     call jeveuo(numddl(1:8)//'      .SMOS.SMDE', 'L', jsmde)
     neq = zi(jsmde-1+1)
 !
-    call wkvect('&&EXTDIA.TYPDDL', 'V V I', neq, jtyp)
-    call typddl('ACTI', numddl(1:8), neq, zi(jtyp), nbacti,&
+    AS_ALLOCATE(vi=vtypddl, size=neq)
+    call typddl('ACTI', numddl(1:8), neq, vtypddl, nbacti,&
                 nbbloq, nblagr, nbliai)
     if (icode .eq. 2) then
         if (nbliai .gt. 0) then
@@ -81,7 +84,7 @@ subroutine extdia(matr, numddl, icode, diag)
     call jeveuo(jexnum(matr//'           .VALM', 1), 'L', jbloc)
     do 40 j = 1, neq
         k = k + 1
-        if (zi(jtyp-1+k) .ne. 0) then
+        if (vtypddl(k) .ne. 0) then
             idia=zi(jadia+k-1)
             l=l+1
             diag(l)=zr(jbloc-1+idia)
@@ -90,7 +93,7 @@ subroutine extdia(matr, numddl, icode, diag)
             diag(l)=0.d0
         endif
 40  end do
-    call jedetr('&&EXTDIA.TYPDDL')
+    AS_DEALLOCATE(vi=vtypddl)
 !
     call jedema()
 end subroutine

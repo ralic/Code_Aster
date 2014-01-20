@@ -13,6 +13,8 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=1) :: type
     character(len=8) :: nomgd
@@ -48,10 +50,11 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 !
     integer :: nbloc, ibloc, icmp, ncmp, ino, nbno, nbec, ii
     integer :: jcnsd, jcnsv, jcnsl, jafci, jafcv, iaprnm, jcnsc, kcmp
-    integer :: jcmp, ncmpmx, jcorr
+    integer :: jcmp, ncmpmx
     character(len=8) :: nomo
     character(len=19) :: chci, cns
     character(len=24) :: cafci, cafcv
+    integer, pointer :: corres(:) => null()
 !
     data cafci /'                   .AFCI'/
     data cafcv /'                   .AFCV'/
@@ -82,10 +85,10 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 !        ET CELLES DE LA GRANDEUR.
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
-    call wkvect('&&CHCSUR.CORRES', 'V V I', ncmpmx, jcorr)
+    AS_ALLOCATE(vi=corres, size=ncmpmx)
     do kcmp = 1, ncmpmx
         icmp = indik8(zk8(jcnsc),zk8(jcmp-1+kcmp),1,ncmp)
-        zi(jcorr-1+kcmp)=icmp
+        corres(kcmp)=icmp
     end do
 !
 !
@@ -116,7 +119,7 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
         do kcmp = 1, ncmpmx
             if (exisdg(zi(iaprnm-1+nbec*(ino-1)+1),kcmp)) then
                 ii = ii + 1
-                icmp=zi(jcorr-1+kcmp)
+                icmp=corres(kcmp)
                 if (icmp .eq. 0) goto 122
                 if (zl(jcnsl+(ino-1)*ncmp+icmp-1)) then
                     ibloc = ibloc + 1
@@ -142,6 +145,6 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     endif
     zi(jafci) = ibloc
 !
-    call jedetr('&&CHCSUR.CORRES')
+    AS_DEALLOCATE(vi=corres)
     call jedema()
 end subroutine

@@ -29,6 +29,8 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: matz
     integer :: nbcmp
     real(kind=8) :: vdiag
@@ -54,7 +56,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !     ------------------------------------------------------------------
     integer :: ilig, jcol, kterm, n, nz,   nsmdi, jsmhc, nsmhc
     integer :: jdelg, n1, nvale, jvale, nlong, jval2, nucmp, k, jcmp
-    integer ::   kcmp, jlddl, jllag
+    integer ::   kcmp
     character(len=8) :: nomgd, nocmp
     character(len=14) :: nonu
     character(len=1) :: ktyp
@@ -66,6 +68,8 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refn(:) => null()
     integer, pointer :: deeq(:) => null()
+    integer, pointer :: lddlelim(:) => null()
+    integer, pointer :: llag(:) => null()
 !
 !     ------------------------------------------------------------------
     call jemarq()
@@ -111,8 +115,8 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !
 !     -- CALCUL DE LA LISTE DES DDLS A ELIMINER :
 !     -------------------------------------------
-    call wkvect('&&MATIDE.LDDLELIM', 'V V I', n, jlddl)
-    call wkvect('&&MATIDE.LLAG', 'V V I', n, jllag)
+    AS_ALLOCATE(vi=lddlelim, size=n)
+    AS_ALLOCATE(vi=llag, size=n)
 !
     call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
     call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
@@ -126,11 +130,11 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
         nocmp=zk8(jcmp-1+nucmp)
         do 10,kcmp=1,nbcmp
         if (nocmp .eq. licmp(kcmp)) then
-            zi(jlddl-1+k)=1
+            lddlelim(k)=1
         endif
 10      continue
     else if (modlag(1:13) .eq. 'MODI_LAGR_OUI') then
-        zi(jllag-1+k)=1
+        llag(k)=1
     endif
     20 end do
 !
@@ -179,9 +183,9 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     ilig=zi4(jsmhc-1+kterm)
     elimc=.false.
     eliml=.false.
-    if ((zi(jlddl-1+jcol).eq.1) .and. (zi(jllag-1+jcol).eq.0) .and. (zi(jllag-1+ilig).eq.0)) &
+    if ((lddlelim(jcol).eq.1) .and. (llag(jcol).eq.0) .and. (llag(ilig).eq.0)) &
     elimc=.true.
-    if ((zi(jlddl-1+ilig).eq.1) .and. (zi(jllag-1+ilig).eq.0) .and. (zi(jllag-1+jcol).eq.0)) &
+    if ((lddlelim(ilig).eq.1) .and. (llag(ilig).eq.0) .and. (llag(jcol).eq.0)) &
     eliml=.true.
 !
     if (elimc .or. eliml) then
@@ -221,7 +225,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !
     30 end do
 !
-    call jedetr('&&MATIDE.LDDLELIM')
-    call jedetr('&&MATIDE.LLAG')
+    AS_DEALLOCATE(vi=lddlelim)
+    AS_DEALLOCATE(vi=llag)
     call jedema()
 end subroutine

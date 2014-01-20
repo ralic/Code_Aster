@@ -34,6 +34,8 @@ subroutine peeint(resu, modele, nbocc)
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbocc
     character(len=8) :: modele
@@ -62,7 +64,7 @@ subroutine peeint(resu, modele, nbocc)
     integer :: iret, nbcmp, nzero, ibid, nbordr, iocc, jnuma, nbma, ncmpm
     integer :: jcmp, n1, numa, nr, np, nc, im, ni, no, jno, jin, numo, i
     integer :: nbgma, jgma, nma, jma, igm, nbpa1, nbpa2, nn, inum, nli, nlo
-    integer :: nd, ib, jlicmp, jlicm2, jlicm1, nucmp, jcpini, tord(1)
+    integer :: nd, ib, jlicmp,   nucmp,  tord(1)
     parameter(nzero=0,nbpa1=4,nbpa2=2)
     real(kind=8) :: prec, inst
     complex(kind=8) :: cbid
@@ -75,6 +77,9 @@ subroutine peeint(resu, modele, nbocc)
     character(len=19) :: cham2, cham3, chamtm, ligtmp
     character(len=24) :: nomcha, valk2(5)
     logical :: exiord, toneut
+    character(len=8), pointer :: cmp1(:) => null()
+    character(len=8), pointer :: cmp2(:) => null()
+    character(len=8), pointer :: cmp_init(:) => null()
     data nompa1/'NOM_CHAM','NUME_ORDRE','INST','VOL'/
     data typpa1/'K16','I','R','R'/
     data nompa2/'CHAM_GD','VOL'/
@@ -228,16 +233,16 @@ subroutine peeint(resu, modele, nbocc)
                 call cnocns(cham2, 'V', chamtm)
                 call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
                 call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
-                call jedetr('&&PEEINT.CMP1')
-                call wkvect('&&PEEINT.CMP1', 'V V K8', ncmpm, jlicm1)
-                call jedetr('&&PEEINT.CMP2')
-                call wkvect('&&PEEINT.CMP2', 'V V K8', ncmpm, jlicm2)
+                AS_DEALLOCATE(vk8=cmp1)
+                AS_ALLOCATE(vk8=cmp1, size=ncmpm)
+                AS_DEALLOCATE(vk8=cmp2)
+                AS_ALLOCATE(vk8=cmp2, size=ncmpm)
                 do i = 1, ncmpm
                     call codent(i, 'G', ki)
-                    zk8(jlicm2+i-1)='X'//ki(1:len(ki))
-                    zk8(jlicm1+i-1)=zk8(jlicmp+i-1)
+                    cmp2(i)='X'//ki(1:len(ki))
+                    cmp1(i)=zk8(jlicmp+i-1)
                 end do
-                call chsut1(chamtm, 'NEUT_R', ncmpm, zk8(jlicm1), zk8(jlicm2),&
+                call chsut1(chamtm, 'NEUT_R', ncmpm, cmp1, cmp2,&
                             'V', chamtm)
                 cham3='&&PEEINT.CHAM_3'
                 call cnscno(chamtm, ' ', 'NON', 'V', cham3,&
@@ -281,15 +286,15 @@ subroutine peeint(resu, modele, nbocc)
                         nbret=iret)
 !
 !         COMPOSANTES A AFFICHER DANS LA TABLE: ZK8(JCPINI)
-            call wkvect('&&PEEINT.CMP_INIT', 'V V K8', nbcmp, jcpini)
+            AS_ALLOCATE(vk8=cmp_init, size=nbcmp)
             do i = 1, nbcmp
-                zk8(jcpini+i-1)=zk8(jcmp+i-1)
+                cmp_init(i)=zk8(jcmp+i-1)
             end do
 !
             if (toneut) then
                 do i = 1, nbcmp
-                    nucmp=indik8(zk8(jlicm1),zk8(jcpini+i-1),1,ncmpm)
-                    zk8(jcmp+i-1)=zk8(jlicm2+nucmp-1)
+                    nucmp=indik8(cmp1,cmp_init(i),1,ncmpm)
+                    zk8(jcmp+i-1)=cmp2(nucmp)
                 end do
             endif
 !
@@ -299,7 +304,7 @@ subroutine peeint(resu, modele, nbocc)
             if (iret .ne. 0) then
                 call peecal(tych, resu, nomcha, tout, tout,&
                             modele, nr, cham, nbcmp, zk8(jcmp),&
-                            zk8(jcpini), numo, inst, iocc)
+                            cmp_init, numo, inst, iocc)
             endif
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'GROUP_MA'
@@ -316,7 +321,7 @@ subroutine peeint(resu, modele, nbocc)
                     call jeveuo(jexnom(mailla//'.GROUPEMA', zk24(jgma+ igm-1)), 'L', jnuma)
                     call peecal(tych, resu, nomcha, grpma, zk24(jgma+igm- 1),&
                                 modele, nr, cham, nbcmp, zk8(jcmp),&
-                                zk8(jcpini), numo, inst, iocc)
+                                cmp_init, numo, inst, iocc)
                 end do
                 call jedetr('&&PEEINT_GMA')
             endif
@@ -333,13 +338,13 @@ subroutine peeint(resu, modele, nbocc)
                     call jenonu(jexnom(mailla//'.NOMMAI', zk8(jma+im-1) ), numa)
                     call peecal(tych, resu, nomcha, maille, zk8(jma+im-1),&
                                 modele, nr, cham, nbcmp, zk8(jcmp),&
-                                zk8(jcpini), numo, inst, iocc)
+                                cmp_init, numo, inst, iocc)
                 end do
                 call jedetr('&&PEEINT_MAIL')
             endif
 !
             call jedetr('&&PEEINT.CMP')
-            call jedetr('&&PEEINT.CMP_INIT')
+            AS_DEALLOCATE(vk8=cmp_init)
 !
 !
 !

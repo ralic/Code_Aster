@@ -21,6 +21,8 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 #include "asterfort/nutygm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: noma, nonoe(*)
     integer :: ifc, versio
@@ -69,7 +71,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     integer :: ntyele
 !-----------------------------------------------------------------------
     integer :: i, iatyma, ibid, idgm, idgrma, idlima, idm
-    integer :: idn, idnugm, ier, igm, ima, ino, ipoin
+    integer :: idn,  ier, igm, ima, ino, ipoin
     integer :: itype, itypgm, j, jconx, jcoor, jdnbnu, jpoin
     integer :: nbelgm, nbgrm, nbm, nbma2, nbmli, ndim, nno
     integer :: nnoe, numgrm, numgrx
@@ -81,6 +83,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     character(len=7) :: k7no, k7ma, tk7no(ntyele)
     character(len=8) :: nmtyp(ntyele), blanc8
     integer :: nbtyp(ntyele), ifm, niv, vali
+    integer, pointer :: numgrma(:) => null()
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -168,7 +171,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 !     =================================================
 ! --- CREATION DU VECTEUR DES NUMEROS DE GROUP_MA :
 !     -------------------------------------------
-    call wkvect('&&IRMGMS.NUMGRMA', 'V V I', nbma2, idnugm)
+    AS_ALLOCATE(vi=numgrma, size=nbma2)
 !
 !     LES NOMS DE GROUPE DE MAILLES SONT AU FORMAT : GM123456
 !
@@ -197,7 +200,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
             nbmli = zi(jdnbnu+zi(idgrma+i-1)-1)
             call jeveuo(jexnum( '&&IRMGMS.LISMA', zi(idgrma+i-1) ), 'L', idlima)
             do 50 j = 1, nbmli
-                zi(idnugm+zi(idlima+j-1)-1) = numgrm
+                numgrma(1+zi(idlima+j-1)-1) = numgrm
 50          continue
 40      continue
         write(6,1002) nomgrm,numgrm
@@ -223,9 +226,9 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
         itype = zi(iatyma+ima-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', itype), nomtyp)
         itypgm = nutygm(nomtyp)
-        if (zi(idnugm+ima-1) .eq. 0) then
+        if (numgrma(ima) .eq. 0) then
             nbelgm=nbelgm+1
-            zi(idnugm+ima-1) = 10000
+            numgrma(ima) = 10000
 !
             do 80 i = 1, ntyele
                 if (nmtyp(i) .eq. nomtyp) then
@@ -252,7 +255,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
                 call codent(zi(jconx+ipoin-1+ino-1), 'D', tk7no(ino))
             endif
 61      continue
-        write(ifc,1003) k7ma,itypgm,zi(idnugm+ima-1),zi(idnugm+ima-1),&
+        write(ifc,1003) k7ma,itypgm,numgrma(ima),numgrma(ima),&
         nnoe, (tk7no(ino),ino=1,nnoe)
 60  end do
 !
@@ -280,7 +283,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     call jedetr(nomaou//'_PRI')
     call jedetr(nomaou//'_HEX')
     call jedetr(nomaou//'.NBNUNE')
-    call jedetr('&&IRMGMS.NUMGRMA')
+    AS_DEALLOCATE(vi=numgrma)
     call jedetr('&&IRMGMS.LISMA')
 !
     1001 format (1x,a7,1x,1pe23.16,1x,1pe23.16,1x,1pe23.16,1x,1pe23.16)

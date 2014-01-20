@@ -19,6 +19,8 @@ subroutine trchno(ific, nocc)
 #include "asterfort/utestr.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ific, nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -45,7 +47,7 @@ subroutine trchno(ific, nocc)
     character(len=6) :: nompro
     parameter (nompro='TRCHNO')
 !
-    integer :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4
+    integer :: iocc, iret, nbcmp,  n1, n2, n3, n4
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
     real(kind=8) :: epsi, epsir
@@ -61,6 +63,7 @@ subroutine trchno(ific, nocc)
     character(len=200) :: lign1, lign2
     integer :: iarg
     logical :: lref
+    character(len=8), pointer :: nom_cmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -221,8 +224,8 @@ subroutine trchno(ific, nocc)
 !
             else
                 nbcmp = -n4
-                call wkvect('&&TRCHNO.NOM_CMP', 'V V K8', nbcmp, jcmp)
-                call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                AS_ALLOCATE(vk8=nom_cmp, size=nbcmp)
+                call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=nom_cmp,&
                             nbret=n4)
                 if (lref) then
                     tbref(1)=tbtxt(1)
@@ -231,15 +234,15 @@ subroutine trchno(ific, nocc)
                 endif
                 call utest4(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
-                            lign2, crit, ific, nbcmp, zk8(jcmp),&
+                            lign2, crit, ific, nbcmp, nom_cmp,&
                             .true., ssigne)
                 if (lref) then
                     call utest4(cham19, typtes, typres, nref, tbref,&
                                 zi( irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
-                                lign2, crit, ific, nbcmp, zk8(jcmp),&
+                                lign2, crit, ific, nbcmp, nom_cmp,&
                                 .false., ssigne)
                 endif
-                call jedetr('&&TRCHNO.NOM_CMP')
+                AS_DEALLOCATE(vk8=nom_cmp)
             endif
 !
         else

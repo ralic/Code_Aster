@@ -32,6 +32,8 @@ subroutine ops007()
 #include "asterfort/jvinfo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,8 +48,10 @@ subroutine ops007()
     integer :: ibid
     integer :: iocc, nbocc
     integer :: ipos, npos, jlpos
-    integer :: icon, ncon, jlcon
-    integer :: iobj, nobj, jlobj
+    integer :: icon, ncon
+    integer :: iobj, nobj
+    character(len=8), pointer :: liste_co(:) => null()
+    character(len=24), pointer :: nomobj(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,13 +68,13 @@ subroutine ops007()
         call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=0, nbret=ncon)
         ncon = -ncon
         if (ncon .gt. 0) then
-            call wkvect('&&OPS007.LISTE_CO', 'V V K8', ncon, jlcon)
-            call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=ncon, vect=zk8(jlcon),&
+            AS_ALLOCATE(vk8=liste_co, size=ncon)
+            call getvid('CONCEPT', 'NOM', iocc=iocc, nbval=ncon, vect=liste_co,&
                         nbret=ibid)
             do 15 icon = 1, ncon
-                call jedetc('G', zk8(jlcon-1+icon), 1)
+                call jedetc('G', liste_co(icon), 1)
 15          continue
-            call jedetr('&&OPS007.LISTE_CO')
+            AS_DEALLOCATE(vk8=liste_co)
         endif
 10  end do
 !
@@ -81,8 +85,8 @@ subroutine ops007()
         call getvtx('OBJET', 'CLASSE', iocc=iocc, scal=klas, nbret=nobj)
         call getvtx('OBJET', 'CHAINE', iocc=iocc, nbval=0, nbret=nobj)
         nobj = -nobj
-        call wkvect('&&OPS007.NOMOBJ', 'V V K24', nobj, jlobj)
-        call getvtx('OBJET', 'CHAINE', iocc=iocc, nbval=nobj, vect=zk24(jlobj),&
+        AS_ALLOCATE(vk24=nomobj, size=nobj)
+        call getvtx('OBJET', 'CHAINE', iocc=iocc, nbval=nobj, vect=nomobj,&
                     nbret=ibid)
         call getvis('OBJET', 'POSITION', iocc=iocc, nbval=0, nbret=npos)
         npos = -npos
@@ -97,13 +101,13 @@ subroutine ops007()
         call getvis('OBJET', 'POSITION', iocc=iocc, nbval=npos, vect=zi(jlpos),&
                     nbret=ibid)
         do 22 iobj = 1, nobj
-            kch = zk24(jlobj+iobj-1)
+            kch = nomobj(iobj)
             l = lxlgut(kch)
             if (l .gt. 0) then
                 call jedetc(klas, kch(1:l), zi(jlpos+iobj-1))
             endif
 22      continue
-        call jedetr('&&OPS007.NOMOBJ')
+        AS_DEALLOCATE(vk24=nomobj)
         call jedetr('&&OPS007.NIPOSI')
 20  end do
     if (niv .gt. 1) ibid=jvinfo('AFFECT', 0)

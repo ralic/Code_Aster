@@ -69,6 +69,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/vtcrec.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 ! ----------------------------------------------------------------------
     integer :: i, j, itresu(8)
     integer :: foci, focf, fomi, fomf, fomo
@@ -87,14 +89,17 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iadesc, iarchi, ibid, ich, id
-    integer :: idbase, idec, idefm, idinsg, idresu, idvecg, ie
+    integer ::  idec, idefm, idinsg, idresu,  ie
     integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
-    integer :: irou, j3refe, jc, jddl, jinst, jnoacc
+    integer :: irou, j3refe, jc,  jinst, jnoacc
     integer :: jnodep, jnovit, jnume, jpsdel, jvec, linst, llcha
     integer :: lpsdel, lval2, lvale, n1, n2, n3
     integer :: n4, nbcham, nbd, nbdir, nbexci, nbinsg, nbinst
     integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0
     complex(kind=8) :: cbid
+    real(kind=8), pointer :: base(:) => null()
+    integer, pointer :: ddl(:) => null()
+    real(kind=8), pointer :: vectgene(:) => null()
 !-----------------------------------------------------------------------
     data blanc    /'        '/
     data chamn2   /'&&TRAN75.CHAMN2'/
@@ -318,7 +323,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     endif
     call jeveuo(trange//'.DISC', 'L', idinsg)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
-    call wkvect('&&TRAN75.VECTGENE', 'V V R', nbmode, idvecg)
+    AS_ALLOCATE(vr=vectgene, size=nbmode)
     neq0 = neq
     do ich = 1, nbcham
         leffor=.true.
@@ -344,10 +349,10 @@ subroutine tran75(nomres, typres, nomin, basemo)
             neq = neq0
         endif
 !
-        call wkvect('&&TRAN75.BASE', 'V V R', nbmode*neq, idbase)
+        AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
             call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
-                        'R', zr(idbase), [cbid])
+                        'R', base, [cbid])
         else
             do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
@@ -370,7 +375,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                     do jc = 1, ncmp
                         if (zi(inoecp-1+(i-1)*ncmp+jc) .eq. 1) then
                             idec = idec + 1
-                            zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
+                            base(1+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
                     end do
                 end do
@@ -426,10 +431,10 @@ subroutine tran75(nomres, typres, nomin, basemo)
             if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
             if (interp(1:3) .ne. 'NON') then
                 call extrac(interp, epsi, crit, nbinsg, zr(idinsg),&
-                            zr(jinst+i), zr(idresu), nbmode, zr(idvecg), ibid)
-                call mdgeph(neq, nbmode, zr(idbase), zr(idvecg), zr(lvale))
+                            zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
+                call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
             else
-                call mdgeph(neq, nbmode, zr(idbase), zr(idresu+(zi( jnume+i)-1)*nbmode),&
+                call mdgeph(neq, nbmode, base, zr(idresu+(zi( jnume+i)-1)*nbmode),&
                             zr(lvale))
             endif
             if (multap) then
@@ -453,26 +458,26 @@ subroutine tran75(nomres, typres, nomin, basemo)
                             alpha, ier)
 !               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
                 call wkvect('&&TRAN75.VECTEUR', 'V V R', neq, jvec)
-                call wkvect('&&TRAN75.DDL', 'V V I', neq*nbdir, jddl)
+                AS_ALLOCATE(vi=ddl, size=neq*nbdir)
                 call pteddl('NUME_DDL', numddl, nbdir, nomcmp, neq,&
-                            zi( jddl))
+ddl)
                 do id = 1, nbdir
                     do ie = 0, neq-1
-                        zr(jvec+ie) = zr(jvec+ie) + zi(jddl+neq*(id-1) +ie)*alpha*depl(id)
+                        zr(jvec+ie) = zr(jvec+ie) + ddl(1+neq*(id-1) +ie)*alpha*depl(id)
                     end do
                 end do
                 do ie = 0, neq-1
                     zr(lvale+ie) = zr(lvale+ie) + zr(jvec+ie)
                 end do
                 call jedetr('&&TRAN75.VECTEUR')
-                call jedetr('&&TRAN75.DDL')
+                AS_DEALLOCATE(vi=ddl)
             endif
             call rsnoch(nomres, type(ich), iarchi)
             call rsadpa(nomres, 'E', 1, 'INST', iarchi,&
                         0, sjv=linst, styp=k8b)
             zr(linst) = zr(jinst+i)
         end do
-        call jedetr('&&TRAN75.BASE')
+        AS_DEALLOCATE(vr=base)
     end do
 !
 !
@@ -493,7 +498,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     call jedetr('&&TRAN75.VAL2')
     call jedetr('&&TRAN75.NUM_RANG')
     call jedetr('&&TRAN75.INSTANT')
-    call jedetr('&&TRAN75.VECTGENE')
+    AS_DEALLOCATE(vr=vectgene)
 !
     call titre()
 !

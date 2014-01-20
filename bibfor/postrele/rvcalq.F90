@@ -21,6 +21,8 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 #include "asterfort/rvpstd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=24) :: sdeval, quant, sdlieu
     character(len=19) :: sdcalq
@@ -86,7 +88,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     integer :: nbpt, lpadr, lpnbn, apnbnq, avaleq, apadrq, anocpq, apncoe
     integer :: apnbne, avalee, apadre, idecq, idece, nvp, n, nboc
     integer :: adre, adrq, ll, i, j, k, ioc, apcmpe, anumcp, iadr, acpgd, apnspe
-    integer :: av1x, av2x, av1y, av2y, ipadr, apnspq
+    integer ::     ipadr, apnspq
     integer :: kd1, kd2, kd3, kd4, kd5, kd6, idec, ny, il
     integer :: l, lnq, lne, m, mder, nbadrq, nbnd, nc, num, pt, apncoq
     integer :: nperm, itype, iordre, ifm, niv
@@ -101,6 +103,10 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     integer :: tcoe, tcoq, tnde, tndq
 !
     integer :: asgtu
+    real(kind=8), pointer :: vv1x(:) => null()
+    real(kind=8), pointer :: vv1y(:) => null()
+    real(kind=8), pointer :: vv2x(:) => null()
+    real(kind=8), pointer :: vv2y(:) => null()
 #define sgtu(i) zr(asgtu+i-1)
 !     FORME BILINEAIRE ASSOCIEE AU TENSEUR
 #define vtv(vax,vay,vaz,vbx,vby,vbz) (vax) * ((vbx)*txx+(vby)*txy+(vbz)*txz) + \
@@ -959,10 +965,10 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             tndq = lnq*nbsp
             tcoq = tndq*nbnd
             tcoe = tnde*nbnd
-            call wkvect('&&RVCALQ.V1X', 'V V R', nbnd, av1x)
-            call wkvect('&&RVCALQ.V1Y', 'V V R', nbnd, av1y)
-            call wkvect('&&RVCALQ.V2X', 'V V R', nbnd, av2x)
-            call wkvect('&&RVCALQ.V2Y', 'V V R', nbnd, av2y)
+            AS_ALLOCATE(vr=vv1x, size=nbnd)
+            AS_ALLOCATE(vr=vv1y, size=nbnd)
+            AS_ALLOCATE(vr=vv2x, size=nbnd)
+            AS_ALLOCATE(vr=vv2y, size=nbnd)
             if ((docu.eq.'CHNO') .or. (docul.eq.'LSTN')) then
                 if (repere .eq. 'LOCAL') then
                     v1x = vec1(2* (i-1)+1)
@@ -981,10 +987,10 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                     v2y = vec1(2* (i-1)+2)
                 endif
                 do 430,j = 1,nbnd,1
-                zr(av1x+j-1) = v1x
-                zr(av1y+j-1) = v1y
-                zr(av2x+j-1) = v2x
-                zr(av2y+j-1) = v2y
+                vv1x(j) = v1x
+                vv1y(j) = v1y
+                vv2x(j) = v2x
+                vv2y(j) = v2y
 430              continue
             else
                 if (i .lt. l) then
@@ -998,31 +1004,31 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                     endif
                 endif
                 if (repere .eq. 'LOCAL') then
-                    zr(av1x+1-1) = vec1(2* (n-1)+1)
-                    zr(av1y+1-1) = vec1(2* (n-1)+2)
-                    zr(av2x+1-1) = vec2(2* (n-1)+1)
-                    zr(av2y+1-1) = vec2(2* (n-1)+2)
-                    zr(av1x+2-1) = vec1(2*n+1)
-                    zr(av1y+2-1) = vec1(2*n+2)
-                    zr(av2x+2-1) = vec2(2*n+1)
-                    zr(av2y+2-1) = vec2(2*n+2)
+                    vv1x(1) = vec1(2* (n-1)+1)
+                    vv1y(1) = vec1(2* (n-1)+2)
+                    vv2x(1) = vec2(2* (n-1)+1)
+                    vv2y(1) = vec2(2* (n-1)+2)
+                    vv1x(2) = vec1(2*n+1)
+                    vv1y(2) = vec1(2*n+2)
+                    vv2x(2) = vec2(2*n+1)
+                    vv2y(2) = vec2(2*n+2)
                 else
-                    zr(av1x+1-1) = vec1(2* (n-1)+1)
-                    zr(av1y+1-1) = vec1(2* (n-1)+2)
-                    zr(av2x+1-1) = -vec2(2* (n-1)+1)
-                    zr(av2y+1-1) = -vec2(2* (n-1)+2)
-                    zr(av1x+2-1) = vec1(2*n+1)
-                    zr(av1y+2-1) = vec1(2*n+2)
-                    zr(av2x+2-1) = -vec2(2*n+1)
-                    zr(av2y+2-1) = -vec2(2*n+2)
+                    vv1x(1) = vec1(2* (n-1)+1)
+                    vv1y(1) = vec1(2* (n-1)+2)
+                    vv2x(1) = -vec2(2* (n-1)+1)
+                    vv2y(1) = -vec2(2* (n-1)+2)
+                    vv1x(2) = vec1(2*n+1)
+                    vv1y(2) = vec1(2*n+2)
+                    vv2x(2) = -vec2(2*n+1)
+                    vv2y(2) = -vec2(2*n+2)
                 endif
             endif
             do 490,ico = 1,nbco,1
             do 480,j = 1,nbnd,1
-            v1x = zr(av1x+j-1)
-            v1y = zr(av1y+j-1)
-            v2x = zr(av2x+j-1)
-            v2y = zr(av2y+j-1)
+            v1x = vv1x(j)
+            v1y = vv1y(j)
+            v2x = vv2x(j)
+            v2y = vv2y(j)
             do 470,isp = 1,nbsp,1
             idece = (ico-1)*tcoe + (j-1)*tnde + (isp- 1)*lne
             idecq = (ico-1)*tcoq + (j-1)*tndq + (isp- 1)*lnq
@@ -1253,10 +1259,10 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 470          continue
 480          continue
 490          continue
-            call jedetr('&&RVCALQ.V1X')
-            call jedetr('&&RVCALQ.V1Y')
-            call jedetr('&&RVCALQ.V2X')
-            call jedetr('&&RVCALQ.V2Y')
+            AS_DEALLOCATE(vr=vv1x)
+            AS_DEALLOCATE(vr=vv1y)
+            AS_DEALLOCATE(vr=vv2x)
+            AS_DEALLOCATE(vr=vv2y)
 500          continue
             call jedetr('&&RVCALQ.NUM.CP.CD')
         endif

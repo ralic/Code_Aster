@@ -38,6 +38,8 @@ subroutine nmmoam(sdammz, nbmoda)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
     character(len=*) :: sdammz
     integer :: nbmoda
@@ -74,9 +76,10 @@ subroutine nmmoam(sdammz, nbmoda)
     integer :: iret, iam, imode, vali(3)
     integer :: na, nb, n, nm
     integer :: nbmd, neq, nbmax, nbamor
-    integer :: iddeeq, lmat, iamor, ltvec
+    integer :: iddeeq, lmat, iamor
     integer :: jvalmo, jbasmo, jamor, jval, jamo2, jmasg, jfreq
     integer :: exiam
+    real(kind=8), pointer :: vect1(:) => null()
 !
 ! ---------------------------------------------------------------------
 !
@@ -185,14 +188,14 @@ subroutine nmmoam(sdammz, nbmoda)
 ! --- CREATION BASE MODALE
 !
     call wkvect(sdammo(1:19)//'.BASM', 'V V R', nbmoda*neq, jbasmo)
-    call wkvect('&&NMMOAM.VECT1', 'V V R', neq, ltvec)
+    AS_ALLOCATE(vr=vect1, size=neq)
     do imode = 1, nbmoda
         call rsexch('F', modmec, 'DEPL', imode, nomcha,&
                     iret)
         call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
-        call dcopy(neq, zr(jval), 1, zr(ltvec), 1)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
-        call mrmult('ZERO', lmat, zr(ltvec), zr(jbasmo+(imode-1)*neq), 1,&
+        call dcopy(neq, zr(jval), 1, vect1, 1)
+        call zerlag(neq, zi(iddeeq), vectr=vect1)
+        call mrmult('ZERO', lmat, vect1, zr(jbasmo+(imode-1)*neq), 1,&
                     .true.)
         call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
     end do
@@ -201,7 +204,7 @@ subroutine nmmoam(sdammz, nbmoda)
 !
     call jedetr('&&NMMOAM.AMORTISSEMENT')
     call jedetr('&&NMMOAM.AMORTISSEMEN2')
-    call jedetr('&&NMMOAM.VECT1')
+    AS_DEALLOCATE(vr=vect1)
 !
     call jedema()
 end subroutine

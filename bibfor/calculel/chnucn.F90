@@ -35,6 +35,8 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: chno1, numdd2, base, chno2, tcorr(*)
     integer :: ncorr
@@ -140,11 +142,12 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2
-    integer :: iaval1, iaval2, ibid, ico1, ico2, icorr2, ieq1
+    integer :: iaval1, iaval2, ibid, ico1, ico2,  ieq1
     integer :: ieq2, ino, inueq1, inueq2, iprn1, iprn2
     integer :: iret, ival1, ival2, j1, j2, nbno, ncmmx1
     integer :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nugd2, nval1
     integer :: nval2
+    integer, pointer :: corr2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     base2 = base
@@ -218,12 +221,12 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
 !     -- REMPLISSAGE DE L'OBJET '.CORR2' :
 !     ------------------------------------
-    call wkvect('&&CHNUCN.CORR2', 'V V I', ncmmx2, icorr2)
+    AS_ALLOCATE(vi=corr2, size=ncmmx2)
     if (ncorr .eq. 0) then
 !       LES GRANDEURS G1 ET G2 DOIVENT ETRE IDENTIQUES
         ASSERT(gd1.eq.gd2)
         do i2 = 1, ncmmx2
-            zi(icorr2-1+i2)=i2
+            corr2(i2)=i2
         end do
     else
         ASSERT(ncorr.eq.2*(ncorr/2))
@@ -232,7 +235,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
             cmp2=tcorr(2*(i-1)+2)
             j1=indik8(zk8(iacmp1),cmp1,1,ncmmx1)
             j2=indik8(zk8(iacmp2),cmp2,1,ncmmx2)
-            if (j2 .ne. 0) zi(icorr2-1+j2)=j1
+            if (j2 .ne. 0) corr2(j2)=j1
         end do
     endif
 !
@@ -248,7 +251,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
         do i2 = 1, ncmmx2
             if (exisdg(zi(iadg2),i2)) then
                 ico2=ico2+1
-                i1=zi(icorr2-1+i2)
+                i1=corr2(i2)
 !
                 if (.not.(exisdg(zi(iadg1),i1))) then
                     ico1=0
@@ -271,7 +274,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
   1     continue
     end do
 !
-    call jedetr('&&CHNUCN.CORR2')
+    AS_DEALLOCATE(vi=corr2)
 !
     call jedema()
 end subroutine

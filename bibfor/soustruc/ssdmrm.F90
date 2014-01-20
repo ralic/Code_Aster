@@ -35,6 +35,8 @@ subroutine ssdmrm(mag)
 #include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
@@ -56,12 +58,14 @@ subroutine ssdmrm(mag)
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iacoo2, iadim2, iadime, iagno, ialiii, ialiij
-    integer :: ialikg, ialikm, ialini, ialinj, iamacr, iancnf, iaparr
+    integer ::   ialini, ialinj, iamacr, iancnf, iaparr
     integer :: ibid(1), ico, iconf, ii, inoi
     integer :: inoii, inoj, inojj, iocc, ismai, ismaj, j
     integer :: jj, kk, longi, longj, n1, n2, n3
     integer :: nbexti, nbextj, nbid, nbngno, nbnore, nbnori, nbnorj
     integer :: nbsma, nbsmar, nocc
+    character(len=24), pointer :: likg(:) => null()
+    character(len=8), pointer :: likm(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getfac('RECO_SUPER_MAILLE', nocc)
@@ -78,8 +82,8 @@ subroutine ssdmrm(mag)
     call jeveuo(mag//'.COORDO_2', 'L', iacoo2)
     call jeveuo(mag//'.DIME_2', 'L', iadim2)
     call jeveuo(mag//'.PARA_R', 'L', iaparr)
-    call wkvect('&&SSDMRM.LIKM', 'V V K8', nbsma, ialikm)
-    call wkvect('&&SSDMRM.LIKG', 'V V K24', nbsma, ialikg)
+    AS_ALLOCATE(vk8=likm, size=nbsma)
+    AS_ALLOCATE(vk24=likg, size=nbsma)
 !
 !
 !     -- BOUCLE SUR LES OCCURENCES DU MOT-CLEF:
@@ -91,8 +95,8 @@ subroutine ssdmrm(mag)
 !     -- ON RECUPERE LA LISTE DES MAILLES ET LA LISTE DES GROUP_NO:
 !     -------------------------------------------------------------
         call getvtx('RECO_SUPER_MAILLE', 'SUPER_MAILLE', iocc=iocc, nbval=nbsma,&
-                    vect=zk8(ialikm), nbret=n1)
-        call getvtx('RECO_SUPER_MAILLE', 'GROUP_NO', iocc=iocc, nbval=nbsma, vect=zk24(ialikg),&
+                    vect=likm, nbret=n1)
+        call getvtx('RECO_SUPER_MAILLE', 'GROUP_NO', iocc=iocc, nbval=nbsma, vect=likg,&
                     nbret=n2)
         if (n1 .lt. 0) then
             call utmess('F', 'SOUSTRUC_64')
@@ -113,8 +117,8 @@ subroutine ssdmrm(mag)
         endif
 !
         do i = 1, nbsmar
-            nosma= zk8(ialikm-1+i)
-            nognoi= zk24(ialikg-1+i)
+            nosma= likm(i)
+            nognoi= likg(i)
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), ismai)
             di=zr(iaparr-1+14*(ismai-1)+13)
             nomacr= zk8(iamacr-1+ismai)
@@ -135,8 +139,8 @@ subroutine ssdmrm(mag)
             call utlisi('INTER', zi(iagno), nbngno, zi(ialini), nbexti,&
                         zi(ialiii), nbnori, nbid)
             do j = i+1, nbsmar
-                nosma= zk8(ialikm-1+j)
-                nognoj= zk24(ialikg-1+j)
+                nosma= likm(j)
+                nognoj= likg(j)
                 call jenonu(jexnom(mag//'.SUPMAIL', nosma), ismaj)
                 dj=zr(iaparr-1+14*(ismaj-1)+13)
                 nomacr= zk8(iamacr-1+ismaj)
@@ -250,8 +254,8 @@ subroutine ssdmrm(mag)
 !
 ! --- MENAGE
 !
-    call jedetr('&&SSDMRM.LIKM')
-    call jedetr('&&SSDMRM.LIKG')
+    AS_DEALLOCATE(vk8=likm)
+    AS_DEALLOCATE(vk24=likg)
     call jedetr('&&SSDMRM.LIII')
     call jedetr('&&SSDMRM.LIIJ')
 !

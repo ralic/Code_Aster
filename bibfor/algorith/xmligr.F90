@@ -39,6 +39,8 @@ subroutine xmligr(noma, nomo, resoco)
 #include "asterfort/mmimp2.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xmelel.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: noma, nomo
     character(len=24) :: resoco
@@ -67,7 +69,7 @@ subroutine xmligr(noma, nomo, resoco)
     parameter (nbtyp=30)
     integer :: ico, jco, nbgrel, ipc, nbpc, k, ino
     integer :: jlgrf, jtymai, jmail, iacnx1, ilcnx1
-    integer :: nummam, nummae, jnbno, long, jad, ityte, jtynma
+    integer :: nummam, nummae, jnbno, long, jad, ityte
     integer :: nndel, numtyp, compt(nbtyp), jtabf, ztabf
     integer :: jnosdc, ifm, niv
     integer :: imod, iatt(2), imail(2), nno(2), ndim
@@ -78,6 +80,7 @@ subroutine xmligr(noma, nomo, resoco)
     character(len=3) :: mail2(2, 8)
     character(len=2) :: mail(2, 8)
     character(len=1) :: attr(7)
+    integer, pointer :: typnema(:) => null()
 !
     data (mode(k),k=1,3) /'MECP','MEDP','ME3D'/
     data (attr(k),k=1,7) /'H','C','T','2','3','4','H'/
@@ -155,7 +158,7 @@ subroutine xmligr(noma, nomo, resoco)
 !
 ! --- VECTEUR DE TYPES DE MAILLE DU LIGREL
 !
-    call wkvect('&&XMLIGR.TYPNEMA', 'V V I', nbpc, jtynma)
+    AS_ALLOCATE(vi=typnema, size=nbpc)
 !
 ! --- CREATION DE L'OBJET .NEMA
 !
@@ -207,14 +210,14 @@ subroutine xmligr(noma, nomo, resoco)
         do k = 1, nbgrel
             if (nomte .eq. nomte2(k)) then
                 compt(k) = compt(k)+1
-                zi(jtynma-1+ipc)=k
+                typnema(ipc)=k
                 goto 50
             endif
         end do
         nbgrel = nbgrel+1
         nomte2(nbgrel) = nomte
         compt(nbgrel) = 1
-        zi(jtynma-1+ipc)=nbgrel
+        typnema(ipc)=nbgrel
  50     continue
     end do
     ASSERT(nbgrel.ne.0)
@@ -238,7 +241,7 @@ subroutine xmligr(noma, nomo, resoco)
 !
         jco = 0
         do ipc = 1, nbpc
-            if (zi(jtynma-1+ipc) .eq. k) then
+            if (typnema(ipc) .eq. k) then
                 jco = jco + 1
                 zi(jad-1+jco) = -ipc
             endif
@@ -258,7 +261,7 @@ subroutine xmligr(noma, nomo, resoco)
 !
 ! --- MENAGE
 !
-    call jedetr('&&XMLIGR.TYPNEMA')
+    AS_DEALLOCATE(vi=typnema)
 !
     call jedema()
 end subroutine

@@ -46,6 +46,8 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 #include "asterfort/utmess.h"
 #include "asterfort/vampli.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
     character(len=16) :: forcri
@@ -68,10 +70,10 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 ! NOMCRI   IN    K16: NOM DU CRITERE AVEC PLANS CRITIQUES.
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, lordr, jordr, nbordr, ndim, iret, iret1
+    integer :: ibid, lordr,  nbordr, ndim, iret, iret1
     integer :: nbno, ino, tdisp(1), jrwork, tpaq, iret2, iret3
     integer :: nbpaq, numpaq, nnopaq, bormax, nbpmax, nbp0, bor0
-    integer :: nbcmp, jpaqno, k, ordini, iord, jinst
+    integer :: nbcmp,  k, ordini, iord, jinst
     integer :: nnoini, nbnop, tspaq, iordr
     integer :: jsigv, jsigd, jsigl, jepsd, jepsl, jepsv, kwork
     integer :: jepspd, jepspl, jepspv, iret4, jepped, jeppel
@@ -89,6 +91,8 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     character(len=19) :: cnsr, lisnoe, cheppe, cns7, cns8
     character(len=19) :: chsig, cheps, cns1, cns2, cns3, cns4, chsig1, chsig2
     character(len=19) :: chepsp, cns5, cns6
+    integer, pointer :: nume_ordre(:) => null()
+    integer, pointer :: paqno(:) => null()
 !
 !
 !-----------------------------------------------------------------------
@@ -141,13 +145,13 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
         ndim = nbordr
     endif
 !
-    call wkvect('&&PAQNOE.NUME_ORDRE', 'V V I', ndim, jordr)
+    AS_ALLOCATE(vi=nume_ordre, size=ndim)
     call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, zi(jordr), ndim,&
+                c16b, r8b, k8b, nume_ordre, ndim,&
                 nbordr)
     ordini = 1
     do k = 2, nbordr
-        iord = zi(jordr-1+k)
+        iord = nume_ordre(k)
         call rsadpa(nomsd, 'L', 1, 'INST', iord,&
                     0, sjv=jinst, styp=kbid)
         if (instic .gt. r8prem()) then
@@ -172,7 +176,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
         call utmess('A', 'PREPOST4_48')
     endif
 !
-    if (zi(jordr) .eq. 0) then
+    if (nume_ordre(1) .eq. 0) then
         call utmess('A', 'PREPOST4_27')
         nbordr = nbordr - 1
     endif
@@ -247,7 +251,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
     else
         nbpmax = 2
     endif
-    call wkvect('&&PAQNOE.PAQNO', 'V V I', nbpmax*4, jpaqno)
+    AS_ALLOCATE(vi=paqno, size=nbpmax*4)
 !
 ! TPAQ   = TAILLE DU PAQUET DE NOEUDS
 ! NBPAQ  = NOMBRE DE PAQUET(S) DE NOEUDS
@@ -267,10 +271,10 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
         if (tpaq .lt. tdisp(1)) then
             if (ino .eq. nbno) then
                 numpaq = numpaq + 1
-                zi(jpaqno + (numpaq-1)*4) = numpaq
-                zi(jpaqno + (numpaq-1)*4 + 1) = tpaq
-                zi(jpaqno + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
-                zi(jpaqno + (numpaq-1)*4 + 3) = nnopaq
+                paqno(1 + (numpaq-1)*4) = numpaq
+                paqno(1 + (numpaq-1)*4 + 1) = tpaq
+                paqno(1 + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
+                paqno(1 + (numpaq-1)*4 + 3) = nnopaq
                 nbpaq = numpaq
             endif
 !
@@ -289,20 +293,20 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
             tpaq = tpaq - (2*nbordr*nbcmp)
             numpaq = numpaq + 1
-            zi(jpaqno + (numpaq-1)*4) = numpaq
-            zi(jpaqno + (numpaq-1)*4 + 1) = tpaq
-            zi(jpaqno + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
-            zi(jpaqno + (numpaq-1)*4 + 3) = nnopaq - 2
+            paqno(1 + (numpaq-1)*4) = numpaq
+            paqno(1 + (numpaq-1)*4 + 1) = tpaq
+            paqno(1 + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
+            paqno(1 + (numpaq-1)*4 + 3) = nnopaq - 2
             nbpaq = numpaq
 !
             tpaq = 2*nbordr*nbcmp
             nnopaq = 2
             if (ino .eq. nbno) then
                 numpaq = numpaq + 1
-                zi(jpaqno + (numpaq-1)*4) = numpaq
-                zi(jpaqno + (numpaq-1)*4 + 1) = tpaq
-                zi(jpaqno + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
-                zi(jpaqno + (numpaq-1)*4 + 3) = nnopaq
+                paqno(1 + (numpaq-1)*4) = numpaq
+                paqno(1 + (numpaq-1)*4 + 1) = tpaq
+                paqno(1 + (numpaq-1)*4 + 2) = ino - (nnopaq - 1)
+                paqno(1 + (numpaq-1)*4 + 3) = nnopaq
                 nbpaq = numpaq
             endif
         endif
@@ -321,9 +325,9 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
     do numpaq = 1, nbpaq
         call jerazo('&&PAQNOE.RWORK', tdisp(1), 1)
-        tpaq = zi(jpaqno + (numpaq-1)*4 + 1)
-        nnoini = zi(jpaqno + (numpaq-1)*4 + 2)
-        nbnop = zi(jpaqno + (numpaq-1)*4 + 3)
+        tpaq = paqno(1 + (numpaq-1)*4 + 1)
+        nnoini = paqno(1 + (numpaq-1)*4 + 2)
+        nbnop = paqno(1 + (numpaq-1)*4 + 3)
         tspaq = tpaq/nbordr
 !
         do iordr = 1, nbordr
@@ -568,9 +572,9 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
         call detrsd('CHAM_NO_S', cns8)
     endif
 !
-    call jedetr('&&PAQNOE.NUME_ORDRE')
+    AS_DEALLOCATE(vi=nume_ordre)
     call jedetr('&&PAQNOE.RWORK')
-    call jedetr('&&PAQNOE.PAQNO')
+    AS_DEALLOCATE(vi=paqno)
 !
     call jedema()
 end subroutine

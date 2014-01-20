@@ -34,6 +34,8 @@ subroutine adalig(ligrz)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=24) :: ligr
     character(len=*) :: ligrz
@@ -58,11 +60,14 @@ subroutine adalig(ligrz)
 !
     character(len=1) :: clas
     character(len=24) :: liel, tliel
-    integer :: i, iret, nbtg, iad, iadp, iadt, iadtp, jliel, jtlie2, jnteut
-    integer :: jteut, jtliel, igrel, itype, j, jtype
+    integer :: i, iret, nbtg, iad, iadp, iadt, iadtp, jliel, jtlie2
+    integer ::  jtliel, igrel, itype, j, jtype
     integer :: nbel, nbelem, nbg, nbgrel, nbtype, nel, nelem, ntot
     integer :: nbelmx, rang, nbproc, np1, nspaq, nbelgr, igre2
-    integer :: ktype, jgteut, k, nbelgv, lont
+    integer :: ktype,  k, nbelgv, lont
+    integer, pointer :: gteut(:) => null()
+    integer, pointer :: nteut(:) => null()
+    integer, pointer :: teut(:) => null()
     mpi_int :: mrank, msize
 !
     call jemarq()
@@ -93,9 +98,9 @@ subroutine adalig(ligrz)
 !     .TEUT  : LISTE DES TYPE_ELEM UTILISES DANS LE LIGREL
 !     .NTEUT : NOMBRE TOTAL D'ELEMENTS DU LIGREL (PAR TYPE_ELEM)
 !     .GTEUT : NOMBRE DE GRELS DU LIGREL (PAR TYPE_ELEM)
-    call wkvect('&&ADALIG.TEUT', 'V V I', nbtg, jteut)
-    call wkvect('&&ADALIG.NTEUT', 'V V I', nbtg, jnteut)
-    call wkvect('&&ADALIG.GTEUT', 'V V I', nbtg, jgteut)
+    AS_ALLOCATE(vi=teut, size=nbtg)
+    AS_ALLOCATE(vi=nteut, size=nbtg)
+    AS_ALLOCATE(vi=gteut, size=nbtg)
 !
     call jeveuo(tliel, 'L', jtliel)
     call jeveuo(jexatr(tliel, 'LONCUM'), 'L', jtlie2)
@@ -108,14 +113,14 @@ subroutine adalig(ligrz)
         if (nbelem .gt. 0) then
             itype = zi(jtliel-1+iadp-1)
             do 2 j = 1, nbtype
-                if (itype .eq. zi(jteut-1+j)) then
-                    zi(jnteut-1+j) = zi(jnteut-1+j)+ nbelem
+                if (itype .eq. teut(j)) then
+                    nteut(j) = nteut(j)+ nbelem
                     goto 1
                 endif
  2          continue
             nbtype = nbtype+1
-            zi(jteut-1+nbtype) = itype
-            zi(jnteut-1+nbtype) = nbelem
+            teut(nbtype) = itype
+            nteut(nbtype) = nbelem
         endif
  1  end do
 !
@@ -126,13 +131,13 @@ subroutine adalig(ligrz)
     nbgrel = 0
     nbelmx = int(jevtbl('TAILLE_GROUP_ELEM'))
     do 3 ktype = 1, nbtype
-        nbel = zi(jnteut-1+ktype)
+        nbel = nteut(ktype)
 !
         nspaq=(nbel/nbproc)/nbelmx
         ASSERT((nspaq*nbproc*nbelmx.le.nbel))
         if (nspaq*nbproc*nbelmx .lt. nbel) nspaq=nspaq+1
         nbg = nspaq*nbproc
-        zi(jgteut-1+ktype) = nbg
+        gteut(ktype) = nbg
         nbgrel = nbgrel + nbg
         lont = lont + nbel + nbg
  3  end do
@@ -146,9 +151,9 @@ subroutine adalig(ligrz)
     call jeecra(liel, 'LONT', lont)
     igrel=0
     do 41 ktype = 1, nbtype
-        itype = zi(jteut-1+ktype)
-        ntot = zi(jnteut-1+ktype)
-        nbg = zi(jgteut-1+ktype)
+        itype = teut(ktype)
+        ntot = nteut(ktype)
+        nbg = gteut(ktype)
         nbelgr=ntot/nbg
 !       -- ATTENTION : POUR LES PETITS GRELS, IL PEUT ARRIVER QUE
 !          NBELGR=0 (SI NBPROC > NTOT)
@@ -176,9 +181,9 @@ subroutine adalig(ligrz)
 !     ------------------------------------
     igrel = 0
     do 4 ktype = 1, nbtype
-        itype = zi(jteut-1+ktype)
-        ntot = zi(jnteut-1+ktype)
-        nbg = zi(jgteut-1+ktype)
+        itype = teut(ktype)
+        ntot = nteut(ktype)
+        nbg = gteut(ktype)
         nbelgr=ntot/nbg
         np1=ntot-nbg*nbelgr
         ASSERT(np1.lt.nbg)
@@ -220,9 +225,9 @@ subroutine adalig(ligrz)
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL
     call jedetr(tliel)
-    call jedetr('&&ADALIG.TEUT')
-    call jedetr('&&ADALIG.NTEUT')
-    call jedetr('&&ADALIG.GTEUT')
+    AS_DEALLOCATE(vi=teut)
+    AS_DEALLOCATE(vi=nteut)
+    AS_DEALLOCATE(vi=gteut)
 9999  continue
     call jedema()
 end subroutine

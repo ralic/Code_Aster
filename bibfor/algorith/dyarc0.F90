@@ -20,6 +20,8 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 #include "asterfort/rsutrg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbarch, nbchex, nbnosy
     character(len=*) :: resuz, lisarc, lichex
@@ -52,13 +54,14 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 ! OUT : LICHEX : NOMS DES CHAMPS EXCLUS
 ! ----------------------------------------------------------------------
     integer :: ibid, jarch, jchex, n1, nbocc, jnum, lnum, k, ier, ipach, karch
-    integer :: jordr, nbtrou, nbordr(1), iocc, n2, nbcham, i, j, iret, iflag, jtrav
+    integer :: jordr, nbtrou, nbordr(1), iocc, n2, nbcham, i, j, iret, iflag
     integer :: irang
     real(kind=8) :: r8b, prec
     complex(kind=8) :: c16b
     character(len=8) :: k8b, crit
     character(len=16) :: motcle, nomsym
     character(len=19) :: numarc, knum, resu
+    character(len=16), pointer :: trav1(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -101,8 +104,8 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
         if (iret .ne. 0) call jedetr(lichex)
 !
         call wkvect(lichex, 'V V K16', nbchex, jchex)
-        call wkvect('&&DYARC0.TRAV1', 'V V K16', nbcham, jtrav)
-        call getvtx(motcle, 'NOM_CHAM', iocc=iocc, nbval=nbcham, vect=zk16(jtrav),&
+        AS_ALLOCATE(vk16=trav1, size=nbcham)
+        call getvtx(motcle, 'NOM_CHAM', iocc=iocc, nbval=nbcham, vect=trav1,&
                     nbret=ibid)
 !
 ! ---   ON TESTE SI LES NOM_CHAM EXISTENT DANS LA SD
@@ -111,13 +114,13 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
             iflag = 0
             do 80 j = 1, nbnosy
                 call jenuno(jexnum(resu//'.DESC', j), nomsym)
-                if (zk16(jtrav +i-1) .eq. nomsym) then
+                if (trav1(i) .eq. nomsym) then
                     iflag = 1
                     goto 70
                 endif
 80          continue
             if (iflag .eq. 0) then
-                call utmess('F', 'ALGORITH3_40', sk=zk16(jtrav+i-1))
+                call utmess('F', 'ALGORITH3_40', sk=trav1(i))
             endif
 70      continue
 !
@@ -125,7 +128,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
         do 50 i = 1, nbnosy
             call jenuno(jexnum(resu//'.DESC', i), nomsym)
             do 60 j = 1, nbcham
-                if (nomsym .eq. zk16(jtrav +j-1)) then
+                if (nomsym .eq. trav1(j)) then
                     goto 50
                 endif
 60          continue
@@ -195,7 +198,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
         nbarch = nbarch + zi(jarch+k-1)
 40  end do
 !
-    call jedetr('&&DYARC0.TRAV1')
+    AS_DEALLOCATE(vk16=trav1)
 !
     call jedema()
 !

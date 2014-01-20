@@ -35,6 +35,8 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 #include "asterfort/jeveuo.h"
 #include "asterfort/padist.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: noma, fiss
     integer :: ndim, nfiss
@@ -50,11 +52,13 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 !
 !
     real(kind=8) :: point(3), dist, dmin
-    integer :: jjonf, jjonc, jjon3, jncmp, ino, nbno, iret, ibid
+    integer :: jjonf, jjonc, jjon3,  ino, nbno, iret, ibid
     integer :: nfini, ifiss, nfis2, nfis3, ifis2, ifis3, cpt, jcnsvt, nfisd
-    integer :: jcnsv, jcnsl, jcnsvn, coefln(10), jfiss, iadrco, nuno
+    integer :: jcnsv, jcnsl, jcnsvn, coefln(10),  iadrco, nuno
     character(len=8) :: ch, nomfis(10)
     character(len=19) :: cnsln, cnslt, jonfis, joncoe
+    character(len=8), pointer :: vfiss(:) => null()
+    character(len=8), pointer :: licmp(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -65,8 +69,8 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     nfiss = -nfiss
     cnsln= '&&XINLSJ.CNSLN'
     cnslt= '&&XINLSJ.CNSLT'
-    call wkvect('&&XINLSJ.FISS', 'V V K8', nfiss, jfiss)
-    call getvid('JONCTION', 'FISSURE', iocc=1, nbval=nfiss, vect=zk8(jfiss),&
+    AS_ALLOCATE(vk8=vfiss, size=nfiss)
+    call getvid('JONCTION', 'FISSURE', iocc=1, nbval=nfiss, vect=vfiss,&
                 nbret=ibid)
     call getvr8('JONCTION', 'POINT', iocc=1, nbval=3, vect=point,&
                 nbret=ibid)
@@ -91,19 +95,19 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     cpt = 0
     do ifiss = 1, nfiss
         do ifis2 = ifiss+1, nfiss
-            call jeexin(zk8(jfiss-1+ifis2)//'.JONFISS', iret)
+            call jeexin(vfiss(ifis2)//'.JONFISS', iret)
             if (iret .ne. 0) then
-                call jeveuo(zk8(jfiss-1+ifis2)//'.JONFISS', 'L', jjon3)
-                call jelira(zk8(jfiss-1+ifis2)//'.JONFISS', 'LONMAX', nfis3)
+                call jeveuo(vfiss(ifis2)//'.JONFISS', 'L', jjon3)
+                call jelira(vfiss(ifis2)//'.JONFISS', 'LONMAX', nfis3)
                 do ifis3 = 1, nfis3
 ! --- SI IFISS EST CONTENU DANS LES FISSURES SUIVANTES : ON SORT
 ! --- ELLE SERA AJOUTÉ DANS LA BOUCLE 60
-                    if (zk8(jjon3-1+ifis3) .eq. zk8(jfiss-1+ifiss)) goto 50
+                    if (zk8(jjon3-1+ifis3) .eq. vfiss(ifiss)) goto 50
                 end do
             endif
         end do
         cpt = cpt +1
-        nomfis(cpt) = zk8(jfiss-1+ifiss)
+        nomfis(cpt) = vfiss(ifiss)
         call cnocns(nomfis(cpt)//'.LNNO', 'V', cnsln)
         call jeveuo(cnsln//'.CNSV', 'L', jcnsvn)
         ASSERT(zr(jcnsvn-1+nuno).ne.0.d0)
@@ -163,16 +167,16 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
         zi(jjonc-1+ifiss) = coefln(ifiss)
     end do
 !
-    call wkvect('&&XINLSJ.LICMP', 'V V K8', 2*nfiss, jncmp)
+    AS_ALLOCATE(vk8=licmp, size=2*nfiss)
     do ifiss = 1, 2*nfiss
         call codent(ifiss, 'G', ch)
-        zk8(jncmp-1+ifiss) = 'X'//ch
+        licmp(ifiss) = 'X'//ch
     end do
 !
 ! --- CRÉATION DE LA SD CNSLJ : LSJ(IFISS,1) = COEF*LSN(IFISS)
 !                               LSJ(IFISS,2) = LST(IFISS)
 !
-    call cnscre(noma, 'N120_R', 2*nfiss, zk8(jncmp), 'V',&
+    call cnscre(noma, 'N120_R', 2*nfiss, licmp, 'V',&
                 cnslj)
     call jeveuo(cnslj//'.CNSV', 'E', jcnsv)
     call jeveuo(cnslj//'.CNSL', 'E', jcnsl)
@@ -194,9 +198,9 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
         end do
     end do
 !
-    call jedetr('&&XINLSJ.FISS')
+    AS_DEALLOCATE(vk8=vfiss)
     call jedetr('&&XINLSJ.COEF')
-    call jedetr('&&XINLSJ.LICMP')
+    AS_DEALLOCATE(vk8=licmp)
     call detrsd('CHAM_NO_S', cnsln)
     call detrsd('CHAM_NO_S', cnslt)
 !

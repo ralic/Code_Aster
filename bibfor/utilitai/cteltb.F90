@@ -20,6 +20,8 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbcmp, ndim, nbval, nbma
     character(len=4) :: tych
     character(len=8) :: typac, noma, resu, nomtb
@@ -72,12 +74,18 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     integer :: jcmp, jkcha, jlma, jrval, jival, jniord, jcoor, jconx1, jconx2
     integer :: jcpgv, jcpgl, jcpgd, i, j, jcesv, jcesl, jcesd, jcesc, nbmax
     integer :: nbcmpx
-    integer :: n, jval, jkval, ima, ipt, ispt, icmp, indma, nbpt, kk
-    integer :: nbcmpt, nbspt, inot, kcp, indcmp, iad, ni, nk, nr, ji, jr, jk
-    integer :: nbpara, jparak, iret
+    integer :: n,   ima, ipt, ispt, icmp, indma, nbpt, kk
+    integer :: nbcmpt, nbspt, inot, kcp, indcmp, iad, ni, nk, nr
+    integer :: nbpara,  iret
     character(len=8) :: kma, kno
     complex(kind=8) :: cbid
     character(len=19) :: chames
+    character(len=8), pointer :: nom_cmp(:) => null()
+    character(len=16), pointer :: table_parak(:) => null()
+    integer, pointer :: table_vali(:) => null()
+    character(len=16), pointer :: table_valk(:) => null()
+    real(kind=8), pointer :: table_valr(:) => null()
+    real(kind=8), pointer :: val_cmp(:) => null()
 !
 !
 !
@@ -109,9 +117,9 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !     TABLEAU DE CARACTERES DE LA TABLE: ZK16(JK)
 !     POUR DES RAISONS DE PERF, CES TABLEAUX ONT ETE SORTIS DE
 !     LA BOUCLE, D'OU DES DIMENSIONS EN DUR (NOMBRE SUFFISANT)
-    call wkvect('&&CTELTB.TABLE_VALR', 'V V R', 250, jr)
-    call wkvect('&&CTELTB.TABLE_VALI', 'V V I', 250, ji)
-    call wkvect('&&CTELTB.TABLE_VALK', 'V V K16', 250, jk)
+    AS_ALLOCATE(vr=table_valr, size=250)
+    AS_ALLOCATE(vi=table_vali, size=250)
+    AS_ALLOCATE(vk16=table_valk, size=250)
 !
 ! --- 1. LECTURE DES CHAMPS ET REMPLISSAGE DE LA TABLE
 !      -----------------------------------------------
@@ -151,12 +159,12 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
             endif
 !
 !             TABLEAU DES VALEURS DES COMPOSANTES DESIREES: ZR(JVAL)
-            call jedetr('&&CTELTB.VAL_CMP')
-            call wkvect('&&CTELTB.VAL_CMP', 'V V R', n, jval)
+            AS_DEALLOCATE(vr=val_cmp)
+            AS_ALLOCATE(vr=val_cmp, size=n)
 !
 !             TABLEAU DES NOMS DE COMPOSANTES DESIREES : ZK8(JKVAL)
-            call jedetr('&&CTELTB.NOM_CMP')
-            call wkvect('&&CTELTB.NOM_CMP', 'V V K8', n, jkval)
+            AS_DEALLOCATE(vk8=nom_cmp)
+            AS_ALLOCATE(vk8=nom_cmp, size=n)
 !
 !            -- ON PARCOURT LES MAILLES
             do 210 ima = 1, nbmax
@@ -205,8 +213,8 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                                         ispt, icmp, iad)
                             if (iad .gt. 0) then
                                 kcp=kcp+1
-                                zr(jval+kcp-1)=zr(jcesv+iad-1)
-                                zk8(jkval+kcp-1)=zk8(jcesc+icmp-1)
+                                val_cmp(kcp)=zr(jcesv+iad-1)
+                                nom_cmp(kcp)=zk8(jcesc+icmp-1)
                             endif
 !
 230                      continue
@@ -245,12 +253,12 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !                   ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
                         kk=0
                         if (typac .eq. 'FREQ' .or. typac .eq. 'INST') then
-                            zr(jr+kk)=zr(jrval+i-1)
+                            table_valr(kk+1)=zr(jrval+i-1)
                             kk=kk+1
                         endif
                         if (tych .eq. 'ELNO') then
                             do 240 j = 1, ndim
-                                zr(jr+kk)=zr(jcoor+3*(inot-1)+j-1)
+                                table_valr(kk+1)=zr(jcoor+3*(inot-1)+j-1)
                                 kk=kk+1
 240                          continue
                         else if (tych.eq.'ELGA') then
@@ -258,114 +266,114 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                                 call cesexi('C', jcpgd, jcpgl, ima, ipt,&
                                             ispt, j, iad)
                                 if (iad .gt. 0) then
-                                    zr(jr+kk)=zr(jcpgv+iad-1)
+                                    table_valr(kk+1)=zr(jcpgv+iad-1)
                                     kk=kk+1
                                 endif
 241                          continue
                         endif
                         do 250 j = 1, kcp
-                            zr(jr+kk)=zr(jval+j-1)
+                            table_valr(kk+1)=val_cmp(j)
                             kk=kk+1
 250                      continue
 !
                         kk=0
                         if (resu .ne. ' ') then
-                            zi(ji+kk)=zi(jniord+i-1)
+                            table_vali(kk+1)=zi(jniord+i-1)
                             kk=kk+1
                         endif
                         if (typac .eq. 'MODE') then
-                            zi(ji+kk)=zi(jival+i-1)
+                            table_vali(kk+1)=zi(jival+i-1)
                             kk=kk+1
                         endif
                         if (tych .eq. 'ELGA') then
-                            zi(ji+kk)=ipt
+                            table_vali(kk+1)=ipt
                             kk=kk+1
                         endif
                         if (tych(1:2) .eq. 'EL') then
-                            zi(ji+kk)=ispt
+                            table_vali(kk+1)=ispt
                             kk=kk+1
                         endif
 !
                         kk=0
                         if (resu .eq. ' ') then
-                            zk16(jk+kk)=zk24(jkcha+i-1)(1:16)
+                            table_valk(kk+1)=zk24(jkcha+i-1)(1:16)
                             kk=kk+1
                         else
-                            zk16(jk+kk)=resu
+                            table_valk(kk+1)=resu
                             kk=kk+1
-                            zk16(jk+kk)=nsymb
+                            table_valk(kk+1)=nsymb
                             kk=kk+1
                         endif
                         call jenuno(jexnum(noma//'.NOMMAI', ima), kma)
-                        zk16(jk+kk)=kma
+                        table_valk(kk+1)=kma
                         kk=kk+1
                         if (tych .eq. 'ELNO') then
                             call jenuno(jexnum(noma//'.NOMNOE', inot), kno)
-                            zk16(jk+kk)=kno
+                            table_valk(kk+1)=kno
                             kk=kk+1
                         endif
 !
 !                   TABLEAU DES NOMS DE PARAMETRES DE LA TABLE
                         nbpara=nr+ni+nk
-                        call jedetr('&&CTELTB.TABLE_PARAK')
-                        call wkvect('&&CTELTB.TABLE_PARAK', 'V V K16', nbpara, jparak)
+                        AS_DEALLOCATE(vk16=table_parak)
+                        AS_ALLOCATE(vk16=table_parak, size=nbpara)
 !
                         kk=0
                         if (resu .eq. ' ') then
-                            zk16(jparak+kk)='CHAM_GD'
+                            table_parak(kk+1)='CHAM_GD'
                             kk=kk+1
                         else
-                            zk16(jparak+kk)='RESULTAT'
+                            table_parak(kk+1)='RESULTAT'
                             kk=kk+1
-                            zk16(jparak+kk)='NOM_CHAM'
+                            table_parak(kk+1)='NOM_CHAM'
                             kk=kk+1
                         endif
 !
                         if (resu .ne. ' ') then
                             if (typac .ne. 'ORDRE') then
-                                zk16(jparak+kk)=typac
+                                table_parak(kk+1)=typac
                                 kk=kk+1
                             endif
-                            zk16(jparak+kk)='NUME_ORDRE'
+                            table_parak(kk+1)='NUME_ORDRE'
                             kk=kk+1
                         endif
-                        zk16(jparak+kk)='MAILLE'
+                        table_parak(kk+1)='MAILLE'
                         kk=kk+1
                         if (tych .eq. 'ELNO') then
-                            zk16(jparak+kk)='NOEUD'
+                            table_parak(kk+1)='NOEUD'
                             kk=kk+1
                         else if (tych.eq.'ELGA') then
-                            zk16(jparak+kk)='POINT'
+                            table_parak(kk+1)='POINT'
                             kk=kk+1
                         endif
                         if (tych(1:2) .eq. 'EL') then
-                            zk16(jparak+kk)='SOUS_POINT'
+                            table_parak(kk+1)='SOUS_POINT'
                             kk=kk+1
                         endif
 !
 !                   -- COORDONNEES :
                         if (tych .eq. 'ELNO' .or. tych .eq. 'ELGA') then
-                            zk16(jparak+kk)='COOR_X'
+                            table_parak(kk+1)='COOR_X'
                             kk=kk+1
                             if (ndim .ge. 2) then
-                                zk16(jparak+kk)='COOR_Y'
+                                table_parak(kk+1)='COOR_Y'
                                 kk=kk+1
                             endif
                             if (ndim .eq. 3) then
-                                zk16(jparak+kk)='COOR_Z'
+                                table_parak(kk+1)='COOR_Z'
                                 kk=kk+1
                             endif
                         endif
 !
 !                   -- COMPOSANTES :
                         do 260 j = 1, kcp
-                            zk16(jparak+kk)=zk8(jkval+j-1)
+                            table_parak(kk+1)=nom_cmp(j)
                             kk=kk+1
 260                      continue
 !
 !                       ON AJOUTE LA LIGNE A LA TABLE
-                        call tbajli(nomtb, nbpara, zk16(jparak), zi(ji), zr(jr),&
-                                    [cbid], zk16(jk), 0)
+                        call tbajli(nomtb, nbpara, table_parak, table_vali, table_valr,&
+                                    [cbid], table_valk, 0)
 !
 225                  continue
 !
@@ -377,9 +385,9 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !
 100  end do
 !
-    call jedetr('&&CTELTB.TABLE_VALR')
-    call jedetr('&&CTELTB.TABLE_VALI')
-    call jedetr('&&CTELTB.TABLE_VALK')
+    AS_DEALLOCATE(vr=table_valr)
+    AS_DEALLOCATE(vi=table_vali)
+    AS_DEALLOCATE(vk16=table_valk)
 !
     call jedema()
 !

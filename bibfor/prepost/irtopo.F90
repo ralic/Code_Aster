@@ -16,6 +16,8 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ioccur, nbnoto, nbmato, ifichi, codret
     character(len=8) :: formaf, leresu
     character(len=24) :: nonuma, nonuno
@@ -65,14 +67,19 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !
 !
     integer :: nbno, nbgrn, nbma, nbgrm, nbnofa, nbgnfa, nbmafa
-    integer :: nbgmfa, jtopo, jlgrn, jngrn, ibid, jlno, jnno, jlgrm, jngrm
-    integer :: jlma, jmma, nbnoe, jindno, ino, jnunou, nbnou, nbele, jnuma
-    integer :: jnunos, nbnos, jnofi, ii, igrm, igrn, ima, nbnomx, nbgnmx
+    integer :: nbgmfa, jtopo, jlgrn,  ibid, jlno,  jlgrm, jngrm
+    integer :: jlma, jmma, nbnoe,  ino, jnunou, nbnou, nbele, jnuma
+    integer ::  nbnos,  ii, igrm, igrn, ima, nbnomx, nbgnmx
     integer :: nbmamx, nbgmmx, imxno, imxgn, imxma, imxgm, idebu, jnunot
     integer :: iutil
 !
     character(len=8) :: nomma
     character(len=24) :: texte
+    integer, pointer :: filtre_no(:) => null()
+    integer, pointer :: ind_noeu(:) => null()
+    character(len=80), pointer :: nom_grno(:) => null()
+    character(len=80), pointer :: nom_noe(:) => null()
+    integer, pointer :: numnos(:) => null()
 !
     call jemarq()
 !
@@ -110,7 +117,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           UN TABLEAU DE K8, LISTE DES NOMS DE GPES DE NOEUDS
 !           UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
             call wkvect('&&IRTOPO.LIST_GRNO', 'V V K24', nbgrn, jlgrn)
-            call wkvect('&&IRTOPO.NOM_GRNO', 'V V K80', nbgrn, jngrn)
+            AS_ALLOCATE(vk80=nom_grno, size=nbgrn)
             call getvtx('RESU', 'GROUP_NO', iocc=ioccur, nbval=nbgrn, vect=zk24( jlgrn),&
                         nbret=ibid)
             zi(jtopo-1+3) = nbgrn
@@ -125,7 +132,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           UN TABLEAU DE K8, LISTE DES NOMS DE NOEUDS
 !           UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
             call wkvect('&&IRTOPO.LIST_NOE', 'V V K8', nbno, jlno)
-            call wkvect('&&IRTOPO.NOM_NOE', 'V V K80', nbno, jnno)
+            AS_ALLOCATE(vk80=nom_noe, size=nbno)
             call getvtx('RESU', 'NOEUD', iocc=ioccur, nbval=nbno, vect=zk8(jlno),&
                         nbret=ibid)
             zi(jtopo-1+1) = nbno
@@ -175,9 +182,9 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
             endif
 !         - NOMBRE TOTAL DE NOEUDS DU MAILLAGE NOMMA = NBNOE
             call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbnoe)
-            call wkvect('&&IRTOPO.IND_NOEU', 'V V I', nbnoe, jindno)
+            AS_ALLOCATE(vi=ind_noeu, size=nbnoe)
             do ino = 1, nbnoe
-                zi(jindno+ino-1)=0
+                ind_noeu(ino)=0
             end do
         endif
 !
@@ -190,7 +197,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           NOEUDS DE LA LISTE DE NOEUDS OU DE GROUPES DE NOEUDS
 !           (NBNOU EST LE NBRE TOTAL DE NOEUDS TROUVES A IMPRIMER)
             call irnono(nomma, nbnoe, nbno, zk8(jlno), nbgrn,&
-                        zk24(jlgrn), '&&IRTOPO.NUMNOE', nbnou, zi(jindno), '&&IRTOPO.LIST_TOPO')
+                        zk24(jlgrn), '&&IRTOPO.NUMNOE', nbnou, ind_noeu, '&&IRTOPO.LIST_TOPO')
 !         - ON RECUPERE DE NOUVEAU L'ADRESSE DE .NUMNOE CAR IRNONO
 !           A PU AGRANDIR CET OBJET :
             call jeveuo('&&IRTOPO.NUMNOE', 'L', jnunou)
@@ -203,7 +210,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !           UN TABLEAU POUR LES NUMEROS DES NOEUDS DE CES MAILLES
             call jelira(nomma//'.NOMMAI', 'NOMMAX', nbele)
             call wkvect(nonuma, 'V V I', nbele, jnuma)
-            call wkvect('&&IRTOPO.NUMNOS', 'V V I', nbnoe, jnunos)
+            AS_ALLOCATE(vi=numnos, size=nbnoe)
 !         - ON RECUPERE A PARTIR DE ZI(JNUMA) LES NUMEROS DES
 !           MAILLES DE LA LISTE DE MAILLES OU DE GROUPES DE MAILLES
 !           (NBMATO = NBRE TOTAL DE MAILLES TROUVEES A IMPRIMER)
@@ -216,16 +223,16 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !         - ON RECUPERE A PARTIR DE ZI(JNUNOS) LA LISTE DES NUMEROS
 !           DES NOEUDS SOMMETS DE CES MAILLES
 !          (NBNOS = NOMBRE DE NOEUDS SOMMETS DE CETTE LISTE)
-            call irmano(nomma, nbmato, zi(jnuma), nbnos, zi(jnunos))
+            call irmano(nomma, nbmato, zi(jnuma), nbnos,numnos)
             if (nbnos .eq. 0) then
                 call utmess('F', 'PREPOST5_4')
             endif
-            call wkvect('&&IRTOPO.FILTRE_NO', 'V V I', nbnos, jnofi)
+            AS_ALLOCATE(vi=filtre_no, size=nbnos)
             ii=0
             do ino = 1, nbnos
-                if (zi(jindno+zi(jnunos+ino-1)-1) .eq. 0) then
+                if (ind_noeu(1+numnos(ino)-1) .eq. 0) then
                     ii=ii+1
-                    zi(jnofi+ii-1)=zi(jnunos+ino-1)
+                    filtre_no(ii)=numnos(ino)
                 endif
             end do
             nbnos=ii
@@ -254,7 +261,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
         if (nbnos .gt. 0) then
 !         - SUIVIE DE LA LISTE DES NUMEROS DE NOEUDS SOMMETS
             do ino = 1, nbnos
-                zi(jnunot-1+nbnou+ino)= zi(jnofi-1+ino)
+                zi(jnunot-1+nbnou+ino)= filtre_no(ino)
             end do
         endif
     endif
@@ -283,7 +290,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                         imxno = imxno + 1
                         idebu = 1
                     endif
-                    zk80(jnno-1+imxno)(idebu:idebu+iutil)=texte(1:&
+                    nom_noe(imxno)(idebu:idebu+iutil)=texte(1:&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
@@ -300,7 +307,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                         imxgn = imxgn + 1
                         idebu = 1
                     endif
-                    zk80(jngrn-1+imxgn)(idebu:idebu+iutil)=texte(1:&
+                    nom_grno(imxgn)(idebu:idebu+iutil)=texte(1:&
                     iutil)
                     idebu=idebu+iutil+1
                 endif
@@ -344,12 +351,12 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
             write(ifichi, '(/,20X,A)') 'ENTITES ' //'TOPOLOGIQUES SELECTIONNEES '
         endif
         if (imxno .ne. 0) then
-            zk80(jnno-1+1)(1:11) = 'NOEUD    : '
-            write(ifichi,'(1X,A80)') (zk80(jnno-1+ino),ino=1,imxno)
+            nom_noe(1)(1:11) = 'NOEUD    : '
+            write(ifichi,'(1X,A80)') (nom_noe(ino),ino=1,imxno)
         endif
         if (imxgn .ne. 0) then
-            zk80(jngrn-1+1)(1:11) = 'GROUP_NO : '
-            write(ifichi,'(1X,A80)') (zk80(jngrn-1+igrn),igrn=1,imxgn)
+            nom_grno(1)(1:11) = 'GROUP_NO : '
+            write(ifichi,'(1X,A80)') (nom_grno(igrn),igrn=1,imxgn)
         endif
         if (imxma .ne. 0) then
             zk80(jmma-1+1)(1:11) = 'MAILLE   : '
@@ -364,17 +371,17 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 999 continue
     call jedetr('&&IRTOPO.LIST_TOPO')
     call jedetr('&&IRTOPO.LIST_GRNO')
-    call jedetr('&&IRTOPO.NOM_GRNO')
+    AS_DEALLOCATE(vk80=nom_grno)
     call jedetr('&&IRTOPO.LIST_NOE')
-    call jedetr('&&IRTOPO.NOM_NOE')
+    AS_DEALLOCATE(vk80=nom_noe)
     call jedetr('&&IRTOPO.LIST_GRMA')
     call jedetr('&&IRTOPO.NOM_GRMA')
     call jedetr('&&IRTOPO.LIST_MAI')
     call jedetr('&&IRTOPO.NOM_MAI')
-    call jedetr('&&IRTOPO.IND_NOEU')
+    AS_DEALLOCATE(vi=ind_noeu)
     call jedetr('&&IRTOPO.NUMNOE')
-    call jedetr('&&IRTOPO.NUMNOS')
-    call jedetr('&&IRTOPO.FILTRE_NO')
+    AS_DEALLOCATE(vi=numnos)
+    AS_DEALLOCATE(vi=filtre_no)
 !
     call jedema()
 !

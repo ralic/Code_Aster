@@ -36,6 +36,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 #include "asterfort/mtmchc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
 !
     character(len=*) :: action, solvez, matasz, vcinez
@@ -81,7 +83,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 !     VARIABLES LOCALES
     integer :: iprem, k, nglo, kdeb, jnequ
-    integer :: jrefa, jtrav, kptsc
+    integer :: jrefa,  kptsc
     integer :: np
     real(kind=8) :: r8
     PetscInt :: m, n
@@ -90,6 +92,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     character(len=14) :: nu
     character(len=4) :: etamat
     character(len=1) :: rouc
+    real(kind=8), pointer :: travail(:) => null()
 !
 !----------------------------------------------------------------
 !
@@ -261,18 +264,18 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 !
 !
-!     4. APPEL DE PETSC :
-!     -------------------
+!   4. APPEL DE PETSC :
+!   -------------------
     if (action .eq. 'RESOUD') then
-        call wkvect('&&APETSC.TRAVAIL', 'V V R', nglo, jtrav)
+        AS_ALLOCATE(vr=travail, size=nglo)
         do k = 1, nbsol
             kdeb = (k-1)*nglo+1
-            call dcopy(nglo, rsolu(kdeb), 1, zr(jtrav), 1)
-            call apmain(action, kptsc, zr(jtrav), vcine, istop,&
+            call dcopy(nglo, rsolu(kdeb), 1, travail, 1)
+            call apmain(action, kptsc, travail, vcine, istop,&
                         iret)
-            call dcopy(nglo, zr(jtrav), 1, rsolu(kdeb), 1)
+            call dcopy(nglo, travail, 1, rsolu(kdeb), 1)
         end do
-        call jedetr('&&APETSC.TRAVAIL')
+        AS_DEALLOCATE(vr=travail)
     else
         call apmain(action, kptsc, rsolu, vcine, istop, iret)
     endif

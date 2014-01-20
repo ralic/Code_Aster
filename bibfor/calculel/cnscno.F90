@@ -45,6 +45,8 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 #include "asterfort/pteequ.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: cnsz, cnoz, basez, prchnz, prol0
     character(len=1) :: kstop
@@ -87,7 +89,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     character(len=24) :: valk(3)
 !     -----------------------------------------------------------------
     integer :: icmp, nec,   jcnsv, jcnsl, gd, iexi, ncmp, jcorr2
-    integer :: reste, iec, code, nbno, jnucmp, jnucm1
+    integer :: reste, iec, code, nbno
     integer :: ncmpmx, jrefe, ncmp1, neq2, jcmpgd, icmp1, k, ieq2, iexi2, nbec
     integer :: jprn2, ino, idg2, ico, jdesc,  jvale, iret, n1
     integer :: lshift, nuprf
@@ -101,6 +103,8 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     character(len=8), pointer :: cnsc(:) => null()
     character(len=24), pointer :: refn(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
+    integer, pointer :: tmp_nucm1(:) => null()
+    integer, pointer :: tmp_nucmp(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
 !
@@ -135,16 +139,16 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
 !     1- REMPLISSAGE DE .TMP_NUCMP ET .TMP_NUCM1 :
 !     --------------------------------------------
-    call wkvect('&&CNSCNO.TMP_NUCMP', 'V V I', ncmpmx, jnucmp)
-    call wkvect('&&CNSCNO.TMP_NUCM1', 'V V I', ncmp1, jnucm1)
+    AS_ALLOCATE(vi=tmp_nucmp, size=ncmpmx)
+    AS_ALLOCATE(vi=tmp_nucm1, size=ncmp1)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
     do icmp1 = 1, ncmp1
         nomcmp=cnsc(icmp1)
         icmp=indik8(zk8(jcmpgd),nomcmp,1,ncmpmx)
         ASSERT(icmp.gt.0)
-        zi(jnucmp-1+icmp)=icmp1
-        zi(jnucm1-1+icmp1)=icmp
+        tmp_nucmp(icmp)=icmp1
+        tmp_nucm1(icmp1)=icmp
     end do
 !
 !
@@ -212,7 +216,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
         do ino = 1, nbno
             do icmp1 = 1, ncmp1
                 if (zl(jcnsl-1+(ino-1)*ncmp1+icmp1)) then
-                    icmp=zi(jnucm1-1+icmp1)
+                    icmp=tmp_nucm1(icmp1)
                     iec=(icmp-1)/30+1
                     reste=icmp-30*(iec-1)
                     code=lshift(1,reste)
@@ -286,7 +290,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
         icmp=deeq(2*(ieq2-1)+2)
         if (ino*icmp .gt. 0) then
             nomcmp=zk8(jcmpgd-1+icmp)
-            icmp1=zi(jnucmp-1+icmp)
+            icmp1=tmp_nucmp(icmp)
 !
             if (icmp1 .eq. 0) then
                 if (prol0 .eq. 'NON') then
@@ -419,8 +423,8 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
 !
  80 continue
-    call jedetr('&&CNSCNO.TMP_NUCMP')
-    call jedetr('&&CNSCNO.TMP_NUCM1')
+    AS_DEALLOCATE(vi=tmp_nucmp)
+    AS_DEALLOCATE(vi=tmp_nucm1)
     call jedema()
 !     CALL UTIMSD(6,2,.TRUE.,.TRUE.,CNO,1,' ')
 end subroutine

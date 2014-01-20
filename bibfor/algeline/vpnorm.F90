@@ -9,6 +9,8 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 #include "asterfort/mrmult.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr, ddlexc(*)
@@ -65,7 +67,9 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ie, im, indg, isign, lpo1, lpo2, numddl
+    integer :: ie, im, indg, isign,   numddl
+    real(kind=8), pointer :: poi1(:) => null()
+    real(kind=8), pointer :: poi2(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -133,17 +137,17 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
 12              continue
 10          continue
         else
-            call wkvect('&&VPNORM.POI1', 'V V R', neq, lpo1)
-            call wkvect('&&VPNORM.POI2', 'V V R', neq, lpo2)
+            AS_ALLOCATE(vr=poi1, size=neq)
+            AS_ALLOCATE(vr=poi2, size=neq)
             do 20 im = 1, nbmode
                 do 22 ie = 1, neq
-                    zr(lpo1+ie-1) = vecpro(ie,im)
+                    poi1(ie) = vecpro(ie,im)
 22              continue
-                call mrmult('ZERO', lmatr, zr(lpo1), zr(lpo2), 1,&
+                call mrmult('ZERO', lmatr, poi1, poi2, 1,&
                             .true.)
                 xmn = 0.0d0
                 do 24 ie = 1, neq
-                    xmn = xmn + ( zr(lpo1+ie-1) * zr(lpo2+ie-1) )
+                    xmn = xmn + ( poi1(ie) * poi2(ie) )
 24              continue
                 xx1 = 1.0d0 / sqrt(xmn)
                 coef(im) = xx1
@@ -151,8 +155,8 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
                     vecpro(ie,im) = vecpro(ie,im) * xx1
 26              continue
 20          continue
-            call jedetr('&&VPNORM.POI2')
-            call jedetr('&&VPNORM.POI1')
+            AS_DEALLOCATE(vr=poi2)
+            AS_DEALLOCATE(vr=poi1)
         endif
 !
     else

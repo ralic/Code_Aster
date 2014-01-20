@@ -23,6 +23,8 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 #include "asterfort/utmess.h"
 #include "asterfort/utncmp.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: mcf
     character(len=24) :: nlscpc, nomojb, quant
@@ -73,9 +75,10 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     character(len=8) :: nomgd, k8b, mailla
     character(len=4) :: docu
     integer :: acpgd, ntc, nin, ntn1, ntn2, nep, nnc, avk8, i, nbcpgd, nso
-    integer :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc, alcpc2
+    integer :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc
     integer :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, iexi, nn
     logical :: dirx, diry, dirz
+    character(len=8), pointer :: tmp(:) => null()
 !
 !======================================================================
 !
@@ -477,15 +480,15 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             if ((nomgd(1:6).eq.'SIEF_R') .or. (nomgd.eq.'EPSI_R')) then
 !          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
                 call jelira(nlscpc, 'LONMAX', nn)
-                call wkvect('&&RVCPNC.TMP', 'V V K8', nbcpgd, alcpc2)
+                AS_ALLOCATE(vk8=tmp, size=nbcpgd)
                 do i = 1, nbcpgd
-                    zk8(alcpc2+i-1)=' '
+                    tmp(i)=' '
                 end do
                 do i = 1, nn
-                    zk8(alcpc2+i-1)=zk8(alscpc+i-1)
+                    tmp(i)=zk8(alscpc+i-1)
                 end do
-                call num2k8(nomgd, zk8(alcpc2), zk8(acpgd), nbcpgd, zi(alsi))
-                call jedetr('&&RVCPNC.TMP')
+                call num2k8(nomgd, tmp, zk8(acpgd), nbcpgd, zi(alsi))
+                AS_DEALLOCATE(vk8=tmp)
                 do i = 1, 6, 1
                     n1 = n1 + zi(alsi + i-1)
                 end do

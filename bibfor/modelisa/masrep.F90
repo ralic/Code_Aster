@@ -19,6 +19,8 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: ioc, nbgr, nbno, ndim
@@ -53,16 +55,32 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     integer :: appui
 !
 !-----------------------------------------------------------------------
-    integer :: i, icoef, idno, ifongr, ii, iunite
-    integer :: ij, im, in, inoe, iret, isurma, jcoor
+    integer :: i,    ii, iunite
+    integer :: ij, im, in, inoe, iret,  jcoor
     integer :: ldgm, ldnm, ltyp, nb, nbma
     integer :: nfg, nm, nn, noemax, ntopo, numa
-    integer :: isurm1, isurm2, isurm3, isurm4, isurm5, isurm6
-    integer :: icoexx, icoexy, icoexz, icoeyy, icoeyz, icoezz
+
+
     real(kind=8) :: coef, hc, r1, r2, r3, r4, r5, r6
     real(kind=8) :: surf, surtot, xc
     real(kind=8) :: yc, z0
     real(kind=8) :: surtxx, surtxy, surtxz, surtyy, surtyz, surtzz
+    real(kind=8), pointer :: coeno(:) => null()
+    real(kind=8), pointer :: coenxx(:) => null()
+    real(kind=8), pointer :: coenxy(:) => null()
+    real(kind=8), pointer :: coenxz(:) => null()
+    real(kind=8), pointer :: coenyy(:) => null()
+    real(kind=8), pointer :: coenyz(:) => null()
+    real(kind=8), pointer :: coenzz(:) => null()
+    character(len=8), pointer :: fongro(:) => null()
+    integer, pointer :: parno(:) => null()
+    real(kind=8), pointer :: surma1(:) => null()
+    real(kind=8), pointer :: surma2(:) => null()
+    real(kind=8), pointer :: surma3(:) => null()
+    real(kind=8), pointer :: surma4(:) => null()
+    real(kind=8), pointer :: surma5(:) => null()
+    real(kind=8), pointer :: surma6(:) => null()
+    real(kind=8), pointer :: surmai(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -93,9 +111,9 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     z0 = zero
     call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=0, nbret=nfg)
     if (nfg .ne. 0) then
-        call wkvect('&&MASREP.FONGRO', 'V V K8', nbgr, ifongr)
+        AS_ALLOCATE(vk8=fongro, size=nbgr)
         lfonc = .true.
-        call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=zk8( ifongr),&
+        call getvid('MASS_AJOU', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro,&
                     nbret=nfg)
     endif
 !
@@ -139,28 +157,28 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     end do
     ASSERT(appui.ne.-1)
 !
-    call wkvect('&&MASREP.COENO', 'V V R', noemax, icoef)
-    call wkvect('&&MASREP.COENXX', 'V V R', noemax, icoexx)
-    call wkvect('&&MASREP.COENXY', 'V V R', noemax, icoexy)
-    call wkvect('&&MASREP.COENXZ', 'V V R', noemax, icoexz)
-    call wkvect('&&MASREP.COENYY', 'V V R', noemax, icoeyy)
-    call wkvect('&&MASREP.COENYZ', 'V V R', noemax, icoeyz)
-    call wkvect('&&MASREP.COENZZ', 'V V R', noemax, icoezz)
+    AS_ALLOCATE(vr=coeno, size=noemax)
+    AS_ALLOCATE(vr=coenxx, size=noemax)
+    AS_ALLOCATE(vr=coenxy, size=noemax)
+    AS_ALLOCATE(vr=coenxz, size=noemax)
+    AS_ALLOCATE(vr=coenyy, size=noemax)
+    AS_ALLOCATE(vr=coenyz, size=noemax)
+    AS_ALLOCATE(vr=coenzz, size=noemax)
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
 !
-    call wkvect('&&MASREP.PARNO', 'V V I', noemax, idno)
+    AS_ALLOCATE(vi=parno, size=noemax)
 !
 !
 !     CALCUL DES SURFACES ELEMENTAIRES ET DE LA SURFACE TOTALE
 !
-    call wkvect('&&MASREP.SURMAI', 'V V R', nbma, isurma)
-    call wkvect('&&MASREP.SURMA1', 'V V R', nbma, isurm1)
-    call wkvect('&&MASREP.SURMA2', 'V V R', nbma, isurm2)
-    call wkvect('&&MASREP.SURMA3', 'V V R', nbma, isurm3)
-    call wkvect('&&MASREP.SURMA4', 'V V R', nbma, isurm4)
-    call wkvect('&&MASREP.SURMA5', 'V V R', nbma, isurm5)
-    call wkvect('&&MASREP.SURMA6', 'V V R', nbma, isurm6)
+    AS_ALLOCATE(vr=surmai, size=nbma)
+    AS_ALLOCATE(vr=surma1, size=nbma)
+    AS_ALLOCATE(vr=surma2, size=nbma)
+    AS_ALLOCATE(vr=surma3, size=nbma)
+    AS_ALLOCATE(vr=surma4, size=nbma)
+    AS_ALLOCATE(vr=surma5, size=nbma)
+    AS_ALLOCATE(vr=surma6, size=nbma)
     im = 0
     surtot = zero
     surtxx = zero
@@ -181,7 +199,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             hc = zero
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                zi(idno+inoe-1) = zi(idno+inoe-1) + 1
+                parno(inoe) = parno(inoe) + 1
                 x(nn) = zr(jcoor+3*(inoe-1)+1-1)
                 y(nn) = zr(jcoor+3*(inoe-1)+2-1)
                 z(nn) = zr(jcoor+3*(inoe-1)+3-1)
@@ -215,11 +233,11 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 c(1)=c(1)/sqrt(surf)
                 c(2)=c(2)/sqrt(surf)
                 c(3)=c(3)/sqrt(surf)
-                zr(isurma+im-1) = sqrt(surf)*0.5d0
+                surmai(im) = sqrt(surf)*0.5d0
             else
                 ASSERT(.false.)
             endif
-            if (.not.lvale) surtot = surtot + zr(isurma+im-1)
+            if (.not.lvale) surtot = surtot + surmai(im)
             if (lfonc) then
                 u(1) = xc
                 u(2) = yc
@@ -227,28 +245,28 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 nompar(1) = 'X'
                 nompar(2) = 'Y'
                 nompar(3) = 'Z'
-                call fointe('F ', zk8(ifongr+i-1), 3, nompar, u,&
+                call fointe('F ', fongro(i), 3, nompar, u,&
                             coef, iret)
-                zr(isurma+im-1) = zr(isurma+im-1)*coef
+                surmai(im) = surmai(im)*coef
             else
-                zr(isurma+im-1) = zr(isurma+im-1)*1.0d3*(z0-hc)
+                surmai(im) = surmai(im)*1.0d3*(z0-hc)
             endif
             if (lvale) then
-                surtot = surtot + zr(isurma+im-1)
-                zr(isurma+im-1) = zr(isurma+im-1)/nm
+                surtot = surtot + surmai(im)
+                surmai(im) = surmai(im)/nm
             else
-                surtxx = surtxx + zr(isurma+im-1)*c(1)*c(1)
-                surtxy = surtxy + zr(isurma+im-1)*c(1)*c(2)
-                surtxz = surtxz + zr(isurma+im-1)*c(1)*c(3)
-                surtyy = surtyy + zr(isurma+im-1)*c(2)*c(2)
-                surtyz = surtyz + zr(isurma+im-1)*c(2)*c(3)
-                surtzz = surtzz + zr(isurma+im-1)*c(3)*c(3)
-                zr(isurm1+im-1) = zr(isurma+im-1)*c(1)*c(1)/nm
-                zr(isurm2+im-1) = zr(isurma+im-1)*c(1)*c(2)/nm
-                zr(isurm4+im-1) = zr(isurma+im-1)*c(1)*c(3)/nm
-                zr(isurm3+im-1) = zr(isurma+im-1)*c(2)*c(2)/nm
-                zr(isurm5+im-1) = zr(isurma+im-1)*c(2)*c(3)/nm
-                zr(isurm6+im-1) = zr(isurma+im-1)*c(3)*c(3)/nm
+                surtxx = surtxx + surmai(im)*c(1)*c(1)
+                surtxy = surtxy + surmai(im)*c(1)*c(2)
+                surtxz = surtxz + surmai(im)*c(1)*c(3)
+                surtyy = surtyy + surmai(im)*c(2)*c(2)
+                surtyz = surtyz + surmai(im)*c(2)*c(3)
+                surtzz = surtzz + surmai(im)*c(3)*c(3)
+                surma1(im) = surmai(im)*c(1)*c(1)/nm
+                surma2(im) = surmai(im)*c(1)*c(2)/nm
+                surma4(im) = surmai(im)*c(1)*c(3)/nm
+                surma3(im) = surmai(im)*c(2)*c(2)/nm
+                surma5(im) = surmai(im)*c(2)*c(3)/nm
+                surma6(im) = surmai(im)*c(3)*c(3)/nm
             endif
         end do
     end do
@@ -268,18 +286,18 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 do ij = 1, noemax
-                    if (zi(idno+ij-1) .eq. 0) goto 37
+                    if (parno(ij) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
                         if (lvale) then
-                            zr(icoef+ij-1)=zr(icoef+ij-1)+zr(isurma+&
+                            coeno(ij)=coeno(ij)+surmai(1+&
                             im-1)/surtot
                         else
-                            zr(icoexx+ij-1) = zr(icoexx+ij-1) + zr( isurm1+im-1)
-                            zr(icoexy+ij-1) = zr(icoexy+ij-1) + zr( isurm2+im-1)
-                            zr(icoexz+ij-1) = zr(icoexz+ij-1) + zr( isurm4+im-1)
-                            zr(icoeyy+ij-1) = zr(icoeyy+ij-1) + zr( isurm3+im-1)
-                            zr(icoeyz+ij-1) = zr(icoeyz+ij-1) + zr( isurm5+im-1)
-                            zr(icoezz+ij-1) = zr(icoezz+ij-1) + zr( isurm6+im-1)
+                            coenxx(ij) = coenxx(ij) + surma1(im)
+                            coenxy(ij) = coenxy(ij) + surma2(im)
+                            coenxz(ij) = coenxz(ij) + surma4(im)
+                            coenyy(ij) = coenyy(ij) + surma3(im)
+                            coenyz(ij) = coenyz(ij) + surma5(im)
+                            coenzz(ij) = coenzz(ij) + surma6(im)
                         endif
                     endif
  37                 continue
@@ -291,26 +309,26 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
     ii = 0
     do ij = 1, noemax
-        if (zi(idno+ij-1) .eq. 0) goto 51
+        if (parno(ij) .eq. 0) goto 51
         ii = ii + 1
         if (lvale) then
-            r1 = rigi(1)*zr(icoef+ij-1)
-            r2 = rigi(2)*zr(icoef+ij-1)
-            r3 = rigi(3)*zr(icoef+ij-1)
+            r1 = rigi(1)*coeno(ij)
+            r2 = rigi(2)*coeno(ij)
+            r3 = rigi(3)*coeno(ij)
         else
-            r1 = zr(icoexx+ij-1)
-            r2 = zr(icoexy+ij-1)
-            r3 = zr(icoeyy+ij-1)
+            r1 = coenxx(ij)
+            r2 = coenxy(ij)
+            r3 = coenyy(ij)
         endif
         if (ndim .eq. 3) then
             if (lvale) then
-                r4 = rigi(4)*zr(icoef+ij-1)
-                r5 = rigi(5)*zr(icoef+ij-1)
-                r6 = rigi(6)*zr(icoef+ij-1)
+                r4 = rigi(4)*coeno(ij)
+                r5 = rigi(5)*coeno(ij)
+                r6 = rigi(6)*coeno(ij)
             else
-                r4 = zr(icoexz+ij-1)
-                r5 = zr(icoeyz+ij-1)
-                r6 = zr(icoezz+ij-1)
+                r4 = coenxz(ij)
+                r5 = coenyz(ij)
+                r6 = coenzz(ij)
             endif
         else
             r4 = zero
@@ -341,22 +359,22 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     end do
     nbno = ii
 !
-    call jedetr('&&MASREP.FONGRO')
-    call jedetr('&&MASREP.COENO')
-    call jedetr('&&MASREP.COENXX')
-    call jedetr('&&MASREP.COENXY')
-    call jedetr('&&MASREP.COENYY')
-    call jedetr('&&MASREP.COENXZ')
-    call jedetr('&&MASREP.COENYZ')
-    call jedetr('&&MASREP.COENZZ')
-    call jedetr('&&MASREP.PARNO')
-    call jedetr('&&MASREP.SURMAI')
-    call jedetr('&&MASREP.SURMA1')
-    call jedetr('&&MASREP.SURMA2')
-    call jedetr('&&MASREP.SURMA3')
-    call jedetr('&&MASREP.SURMA4')
-    call jedetr('&&MASREP.SURMA5')
-    call jedetr('&&MASREP.SURMA6')
+    AS_DEALLOCATE(vk8=fongro)
+    AS_DEALLOCATE(vr=coeno)
+    AS_DEALLOCATE(vr=coenxx)
+    AS_DEALLOCATE(vr=coenxy)
+    AS_DEALLOCATE(vr=coenyy)
+    AS_DEALLOCATE(vr=coenxz)
+    AS_DEALLOCATE(vr=coenyz)
+    AS_DEALLOCATE(vr=coenzz)
+    AS_DEALLOCATE(vi=parno)
+    AS_DEALLOCATE(vr=surmai)
+    AS_DEALLOCATE(vr=surma1)
+    AS_DEALLOCATE(vr=surma2)
+    AS_DEALLOCATE(vr=surma3)
+    AS_DEALLOCATE(vr=surma4)
+    AS_DEALLOCATE(vr=surma5)
+    AS_DEALLOCATE(vr=surma6)
 !
     call jedema()
     1010 format(' MXX= ',1pe12.5,' MXY= ',1pe12.5,' MXZ= ',1pe12.5/,&

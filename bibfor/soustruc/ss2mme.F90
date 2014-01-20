@@ -36,6 +36,8 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomo
     character(len=19) :: vesstr
@@ -61,9 +63,10 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
     character(len=8) :: noma, k8bid, nosma, nomcas, nomacr
     integer :: nbssa, nbsma, n1, n2, nboc
-    integer :: iarefr, ialmai, ialsch, imas, iasssa, iamacr
+    integer :: iarefr,  ialsch, imas, iasssa, iamacr
     integer :: ier0, ioc, i, iret
     character(len=16) :: motfac, valk(2)
+    character(len=8), pointer :: lmai(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,7 +96,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
                 nboc)
     call jeecra(vesstr(1:19)//'.RELC', 'LONMAX', nbsma)
 !
-    call wkvect('&&SS2MME.LMAI', 'V V K8', nbsma, ialmai)
+    AS_ALLOCATE(vk8=lmai, size=nbsma)
 !
 ! --- BOUCLE SUR LES CAS_DE_CHARGE
 !
@@ -120,11 +123,11 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
         if (-n2 .gt. nbsma) then
             call utmess('F', 'SOUSTRUC_25')
         else
-            call getvtx(motfac, 'SUPER_MAILLE', iocc=ioc, nbval=nbsma, vect=zk8(ialmai),&
+            call getvtx(motfac, 'SUPER_MAILLE', iocc=ioc, nbval=nbsma, vect=lmai,&
                         nbret=n2)
         endif
         do i = 1, n2
-            nosma = zk8(ialmai-1+i)
+            nosma = lmai(i)
             call jenonu(jexnom(noma//'.SUPMAIL', nosma), imas)
             if (imas .eq. 0) then
                 valk(1) = nosma
@@ -162,7 +165,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
         call utmess('F', 'SOUSTRUC_29')
     endif
 !
-    call jedetr('&&SS2MME.LMAI')
+    AS_DEALLOCATE(vk8=lmai)
 !
 999 continue
     call jedema()

@@ -13,6 +13,8 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     real(kind=8) :: xm0, xm2, xm4, dom
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,14 +45,16 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     character(len=16) :: pheno, phenom
     real(kind=8) :: delta, rvke, alpha, pi, salt, x, val(6), re(1)
     real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt(1)
-    integer :: ibask, ifonc, ihosin, iawho2, nbval
+    integer :: ibask, ifonc, ihosin,  nbval
     logical :: endur
 !
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iapics, ipoint, nbpar, nbpoin
+    integer ::  ipoint, nbpar, nbpoin
     real(kind=8) :: rbid, x1, x2, xnpoin
     real(kind=8) :: xp, y, y1, yd1, yd2, ypic1, ypic2
+    real(kind=8), pointer :: dispics(:) => null()
+    real(kind=8), pointer :: wohler2(:) => null()
 !
 !-----------------------------------------------------------------------
     rbid = 0.d0
@@ -115,7 +119,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     if (mecomp .eq. 'PIC' .and. xm4 .eq. 0.d0) then
         call utmess('F', 'FATIGUE1_38')
     endif
-    call wkvect('&&PDADOM.DISPICS', 'V V R8', 2*nbpoin, iapics)
+    AS_ALLOCATE(vr=dispics, size=2*nbpoin)
     if (mecomp .eq. 'PIC     ') xireg = sqrt( xm2*xm2/xm0/xm4)
     do 305 ipoint = 1, nbpoin
         x1 = valmin + (ipoint-1)*pas
@@ -132,8 +136,8 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             y1 = (1.d0/(2.d0*pi))*sqrt(xm2/(xm0*xm0*xm0))
             y1 = y1 *x1*exp(-x1*x1/(2.d0*xm0))
         endif
-        zr(iapics-1+ipoint) = x1
-        zr(iapics-1+nbpoin+ipoint) = y1
+        dispics(ipoint) = x1
+        dispics(nbpoin+ipoint) = y1
 305  end do
 !
 !---------CORRECTION ELASTO-PLASTIQUE
@@ -151,7 +155,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             call rcvale(nommat, 'RCCM', nbpar, nompar, [rbid],&
                         3, nomres(1), val(1), icodre(1), 2)
             do 304 ipoint = 1, nbpoin
-                delta = zr(iapics+ipoint-1)
+                delta = dispics(ipoint)
                 if (delta .le. 3.d0*val(3)) then
                     rvke = 1.d0
                     elseif(delta.gt.3.d0*val(3).and.delta.lt. 3.d0*val(2)*&
@@ -161,7 +165,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
                 else if (delta.ge.3*val(2)*val(3)) then
                     rvke = 1.d0/val(1)
                 endif
-                zr(iapics+ipoint-1) = rvke * zr(iapics+ipoint-1)
+                dispics(ipoint) = rvke * dispics(ipoint)
 304          continue
         endif
     endif
@@ -172,21 +176,21 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 !
 ! --- INTERPOLATION SUR LA COURBE DE WOHLER ---
 !
-        call wkvect('&&PDADOM.WOHLER2', 'V V R8', nbpoin, iawho2)
+        AS_ALLOCATE(vr=wohler2, size=nbpoin)
         if (ifonc .ne. 0) then
             nomres(1) = 'WOHLER'
             nbpar = 1
             pheno = 'FATIGUE'
             nompar = 'SIGM'
             do 307 ipoint = 1, nbpoin
-                delta = zr(iapics-1+ipoint)
+                delta = dispics(ipoint)
                 call limend(nommat, delta, 'WOHLER', kbid, endur)
                 if (endur) then
-                    zr(iawho2+ipoint-1) = 0.d0
+                    wohler2(ipoint) = 0.d0
                 else
                     call rcvale(nommat, pheno, nbpar, nompar, [delta],&
                                 1, nomres(1), nrupt(1), icodre(1), 2)
-                    zr(iawho2+ipoint-1) = 1.d0 / nrupt(1)
+                    wohler2(ipoint) = 1.d0 / nrupt(1)
                 endif
 307          continue
         else if (ibask.ne.0) then
@@ -197,7 +201,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                         2, nomres, val, icodre, 2)
             do 308 ipoint = 1, nbpoin
-                zr(iawho2+ipoint-1) = val(1)*zr(iapics+ipoint-1)**val( 2)
+                wohler2(ipoint) = val(1)*dispics(ipoint)**val( 2)
 308          continue
         else if (ihosin.ne.0) then
             nomres(1) = 'E_REFE'
@@ -214,13 +218,13 @@ subroutine pdadom(xm0, xm2, xm4, dom)
             call rcvale(nommat, 'ELAS', nbpar, nompar, [rbid],&
                         1, nomres, re(1), icodre, 2)
             do 309 ipoint = 1, nbpoin
-                salt = (val(1)/re(1))*zr(iapics+ipoint-1)
+                salt = (val(1)/re(1))*dispics(ipoint)
                 if (salt .ge. val(6)) then
                     x = log10 (salt)
                     y = val(2) + val(3)*x + val(4)*(x**2) + val(5)*( x**3)
-                    zr(iawho2+ipoint-1) = 1.d0 / (10.d0**y)
+                    wohler2(ipoint) = 1.d0 / (10.d0**y)
                 else
-                    zr(iawho2+ipoint-1) = 0.d0
+                    wohler2(ipoint) = 0.d0
                 endif
 309          continue
         endif
@@ -230,16 +234,16 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 !
     dom = 0.d0
     do 310 ipoint = 2, nbpoin
-        x2 = zr(iapics-1+ipoint)
-        x1 = zr(iapics-1+ipoint-1)
-        yd2 = zr(iawho2-1+ipoint)
-        yd1 = zr(iawho2-1+ipoint-1)
-        ypic2 = zr(iapics-1+nbpoin+ipoint)
-        ypic1 = zr(iapics-1+nbpoin+ipoint-1)
+        x2 = dispics(ipoint)
+        x1 = dispics(ipoint-1)
+        yd2 = wohler2(ipoint)
+        yd1 = wohler2(ipoint-1)
+        ypic2 = dispics(nbpoin+ipoint)
+        ypic1 = dispics(nbpoin+ipoint-1)
         dom = dom + (yd2*ypic2+yd1*ypic1)* (x2-x1)/2.d0
 310  end do
 !
-    call jedetr('&&PDADOM.DISPICS')
-    call jedetr('&&PDADOM.WOHLER2')
+    AS_DEALLOCATE(vr=dispics)
+    AS_DEALLOCATE(vr=wohler2)
 !
 end subroutine

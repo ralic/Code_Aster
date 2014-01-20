@@ -38,6 +38,8 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 #include "asterfort/utmess.h"
 #include "asterfort/w155ma.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: carele
     character(len=3) :: nicou
     character(len=16) :: motfac
@@ -63,7 +65,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     character(len=16) :: option
     character(len=8) :: licmp(4), ma, nomgd, tsca, typces
     character(len=8) :: nompar
-    integer :: iret, nbma, nbmat, numa, jnbpt, kma
+    integer :: iret, nbma, nbmat, numa,  kma
     integer :: nbpt, ksp1, ksp2, kpt, kcmp, nncp
     integer :: iad1, iad2, iad4, jlima, ncmp
     integer :: jce2l, jce2d, jce2v,  jce3l, jce3d, jce3v
@@ -71,6 +73,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     real(kind=8) :: c1, c2
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: cesk(:) => null()
+    integer, pointer :: vnbpt(:) => null()
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -145,12 +148,12 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call jeveuo(ces3//'.CESV', 'L', jce3v)
     call jelira(ces3//'.CESC', 'LONMAX', ncmp)
     typces=cesk(3)
-    call wkvect('&&W155CH.NBPT', 'V V I', nbmat, jnbpt)
+    AS_ALLOCATE(vi=vnbpt, size=nbmat)
     do kma = 1, nbma
         numa=zi(jlima-1+kma)
         if (numa .le. 0) goto 10
         nbpt=zi(jce3d-1+5+4*(numa-1)+1)
-        zi(jnbpt-1+numa)=nbpt
+        vnbpt(numa)=nbpt
  10     continue
     end do
 !
@@ -158,7 +161,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 !     4. ALLOCATION ET CALCUL DE CHEXTR :
 !     ------------------------------------
     call cescre('V', ces4, typces, ma, nomgd,&
-                ncmp, cesc, zi(jnbpt), [-1], [-ncmp])
+                ncmp, cesc, vnbpt, [-1], [-ncmp])
     call jeveuo(ces4//'.CESD', 'L', jce4d)
     call jeveuo(ces4//'.CESV', 'L', jce4v)
     call jeveuo(ces4//'.CESL', 'L', jce4l)
@@ -166,7 +169,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
         numa=zi(jlima-1+kma)
         if (numa .le. 0) goto 40
         ASSERT(numa.le.nbmat)
-        nbpt=zi(jnbpt-1+numa)
+        nbpt=vnbpt(numa)
         call w155ma(numa, nucou, nicou, nangl, nufib,&
                     motfac, jce2d, jce2l, jce2v, jce5d,&
                     jce5l, jce5v, ksp1, ksp2, c1,&
@@ -216,7 +219,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call detrsd('CHAM_ELEM_S', ces3)
     call detrsd('CHAM_ELEM_S', ces4)
     call detrsd('CHAM_ELEM_S', ces5)
-    call jedetr('&&W155CH.NBPT')
+    AS_DEALLOCATE(vi=vnbpt)
     call jedetr(linuma)
     call jedetr(linute)
 !

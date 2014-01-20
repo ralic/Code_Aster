@@ -20,6 +20,8 @@ subroutine rsmena(resu)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: resu
 !     ------------------------------------------------------------------
@@ -47,7 +49,7 @@ subroutine rsmena(resu)
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: n1, n2, k, jlist, nbcon, ibid, nbordr, jordr, jcoche
+    integer :: n1, n2, k,  nbcon, ibid, nbordr,  jcoche
     integer :: i, nbnosy, jtach, j, iret, i1,  tord(1)
     character(len=8) :: kbid, tych, res8
     character(len=16) :: nomsym
@@ -56,6 +58,8 @@ subroutine rsmena(resu)
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
     character(len=24), pointer :: rs24(:) => null()
+    character(len=24), pointer :: lobj(:) => null()
+    integer, pointer :: nume_ordre(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     res19=resu
@@ -72,8 +76,8 @@ subroutine rsmena(resu)
 !     * LOBJ : LISTE DES OBJETS EXISTANT DANS LA SD_RESULTAT
     call jelstc('G', res8, 1, 0, kbid,&
                 n1)
-    call wkvect('&&RSMENA.LOBJ', 'V V K24', -n1, jlist)
-    call jelstc('G', res8, 1, -n1, zk24(jlist),&
+    AS_ALLOCATE(vk24=lobj, size=-n1)
+    call jelstc('G', res8, 1, -n1, lobj,&
                 n2)
 !
 !
@@ -85,7 +89,7 @@ subroutine rsmena(resu)
     call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
     do k = 1, n2
-        noobj=zk24(jlist-1+k)
+        noobj=lobj(k)
         if (noobj(20:24) .eq. '.DEEQ') then
             nbcon=nbcon+1
             noco19=noobj(1:19)
@@ -100,9 +104,9 @@ subroutine rsmena(resu)
                 c16b, r8b, kbid, tord, 1,&
                 ibid)
     nbordr=tord(1)
-    call wkvect('&&RSMENA.NUME_ORDRE', 'V V I', nbordr, jordr)
+    AS_ALLOCATE(vi=nume_ordre, size=nbordr)
     call rsorac(res19, 'TOUT_ORDRE', 0, r8b, kbid,&
-                c16b, r8b, kbid, zi(jordr), nbordr,&
+                c16b, r8b, kbid, nume_ordre, nbordr,&
                 ibid)
     call wkvect('&&RSMENA.COCHE', 'V V I', nbcon, jcoche)
 !
@@ -111,7 +115,7 @@ subroutine rsmena(resu)
         call jeveuo(jexnum(res19//'.TACH', i), 'E', jtach)
         do j = 1, nbordr
             if (zk24(jtach+j-1)(1:1) .eq. ' ') goto 20
-            call rsexch('F', res19, nomsym, zi(jordr-1+j), cham,&
+            call rsexch('F', res19, nomsym, nume_ordre(j), cham,&
                         iret)
             call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych)
             if (tych .ne. 'NOEU') goto 30
@@ -145,7 +149,7 @@ subroutine rsmena(resu)
     call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
     do k = 1, n2
-        noobj=zk24(jlist-1+k)
+        noobj=lobj(k)
         if (noobj(20:24) .eq. '.LCHA') then
             nbcon=nbcon+1
             noco19=noobj(1:19)
@@ -189,7 +193,7 @@ subroutine rsmena(resu)
     call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
     do k = 1, n2
-        noobj=zk24(jlist-1+k)
+        noobj=lobj(k)
         if (noobj(20:24) .eq. '.LIEL') then
             nbcon=nbcon+1
             noco19=noobj(1:19)
@@ -206,7 +210,7 @@ subroutine rsmena(resu)
         call jeveuo(jexnum(res19//'.TACH', i), 'E', jtach)
         do j = 1, nbordr
             if (zk24(jtach+j-1)(1:1) .eq. ' ') goto 110
-            call rsexch('F', res19, nomsym, zi(jordr-1+j), cham,&
+            call rsexch('F', res19, nomsym, nume_ordre(j), cham,&
                         iret)
             call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych)
             if (tych(1:2) .ne. 'EL') goto 120
@@ -231,9 +235,9 @@ subroutine rsmena(resu)
 !
 !     -- MENAGE :
 !     -----------
-    call jedetr('&&RSMENA.LOBJ')
+    AS_DEALLOCATE(vk24=lobj)
     call jedetr('&&RSMENA.DICO')
-    call jedetr('&&RSMENA.NUME_ORDRE')
+    AS_DEALLOCATE(vi=nume_ordre)
     call jedetr('&&RSMENA.COCHE')
 !
     call jedema()

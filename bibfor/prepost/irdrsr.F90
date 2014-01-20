@@ -16,6 +16,8 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ifi, nbno, desc(*), nec, dg(*), ncmpmx
     integer :: ir, numnoe(*), nbcmp, ncmps(*), ncmp
     real(kind=8) :: vale(*)
@@ -73,19 +75,22 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibcmps, ic, ichs, icmp, icmps, icms
+    integer :: i, ibcmps, ic, ichs, icmp,  icms
     integer :: icompt, icp, ida, idebu, iec, ier, ifin
-    integer :: ilig, indats, inno, ino, inochs, inogds, inom
+    integer :: ilig, indats, inno, ino,   inom
     integer :: ires, iret, irval, ival, j, jadm, jj
     integer :: jl, jmax, jpos, jtitr, k, l, ll
     integer :: nbcmpt, nbdats, ni
+    integer, pointer :: ipcmps(:) => null()
+    character(len=8), pointer :: nomchs(:) => null()
+    character(len=8), pointer :: nomgds(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call wkvect('&&IRDRSR.NOMGDS', 'V V K8', ncmpmx, inogds)
-    call wkvect('&&IRDRSR.NOMCHS', 'V V K8', ncmpmx, inochs)
+    AS_ALLOCATE(vk8=nomgds, size=ncmpmx)
+    AS_ALLOCATE(vk8=nomchs, size=ncmpmx)
     call wkvect('&&IRDRSR.NBCMPS', 'V V I', ncmpmx, ibcmps)
-    call wkvect('&&IRDRSR.IPCMPS', 'V V I', ncmpmx*ncmpmx, icmps)
+    AS_ALLOCATE(vi=ipcmps, size=ncmpmx*ncmpmx)
 !
     nomst= '&&IRECRI.SOUS_TITRE.TITR'
     call jeveuo(nomst, 'L', jtitr)
@@ -114,8 +119,8 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 !
 !     ---- RECHERCHE DES GRANDEURS SUPERTAB -----
 !
-    call irgags(icompt, zk16(inom), nomsym, nbchs, zk8(inochs),&
-                zi(ibcmps), zk8(inogds), zi(icmps))
+    call irgags(icompt, zk16(inom), nomsym, nbchs, nomchs,&
+                zi(ibcmps), nomgds,ipcmps)
 !
 !
 !      ==================
@@ -127,13 +132,13 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
         do 10 ichs = 1, nbchs
             iente = 1
             lcmp=.false.
-            call ecrtes(nomsd, titr, zk8(inogds-1+ichs), ir, 'NOEU',&
+            call ecrtes(nomsd, titr, nomgds(ichs), ir, 'NOEU',&
                         zi(ibcmps-1+ichs), 2, entete, lcmp)
             idebu=1
             entete(4) = ' '
             texte = ' '
             do 5 icp = 1, zi(ibcmps-1+ichs)
-                nocmp = nomcmp(zi(icmps-1+(ichs-1)*ncmpmx+icp))
+                nocmp = nomcmp(ipcmps((ichs-1)*ncmpmx+icp))
                 iutil = lxlgut(nocmp)
                 ifin = idebu+iutil
                 texte(idebu:ifin) = nocmp(1:iutil)//' '
@@ -168,10 +173,10 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 10      continue
         call jedetr('&&IRDRSR.VAL')
         call jedetr('&&IRDRSR.NOM')
-        call jedetr('&&IRDRSR.NOMGDS')
-        call jedetr('&&IRDRSR.NOMCHS')
+        AS_DEALLOCATE(vk8=nomgds)
+        AS_DEALLOCATE(vk8=nomchs)
         call jedetr('&&IRDRSR.NBCMPS')
-        call jedetr('&&IRDRSR.IPCMPS')
+        AS_DEALLOCATE(vi=ipcmps)
 !
 !      =====================
 ! ---- PARTIE 2 : NBCMP.NE.0
@@ -182,11 +187,11 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 ! --- NOM DE LA GRANDEUR SUPERTAB
         do 897 i = 1, nbchs
             do 898 j = 1, zi(ibcmps+i-1)
-                if (ncmps(1) .eq. zi(icmps-1+(i-1)*ncmpmx+j)) goto 899
+                if (ncmps(1) .eq. ipcmps((i-1)*ncmpmx+j)) goto 899
 898          continue
 897      end do
 899      continue
-        nomgs=zk8(inogds-1+i)
+        nomgs=nomgds(i)
 !
 ! --- NOMBRE DE DATASET
         call wkvect('&&IRDRSR.CMP_DATS', 'V V I', nbcmp, indats)

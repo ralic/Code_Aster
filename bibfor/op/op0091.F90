@@ -70,6 +70,8 @@ subroutine op0091()
 #include "asterfort/vecomo.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
 !
@@ -85,10 +87,11 @@ subroutine op0091()
     integer :: lnusst, isst1, nl, nc, nbddl1, tach1, nbexp, lomeg, lmod1, lmass
     integer :: lbid, ltrsst, nbsla, lraid, leff1, leff2, ltrain, lintf, nbint
     integer :: lcopy1, lsecme, limped, unit, lmasst, nbmas, lslast, nindep, jadr
-    integer :: ltramo, lmatro, lobsro, kk1, ll1
+    integer :: ltramo, lmatro,  kk1, ll1
     real(kind=8) :: trvint, rbid, vr(2), temp
     complex(kind=8) :: cbid
     character(len=24) :: lisint, modet
+    real(kind=8), pointer :: vec_obs_temp_ro(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
     cbid=(0.d0,0.d0)
@@ -207,7 +210,7 @@ subroutine op0091()
             endif
         endif
 !
-        call wkvect('&&OP0091.VEC_OBS_TEMP_RO', 'V V R', nl*nc, lobsro)
+        AS_ALLOCATE(vr=vec_obs_temp_ro, size=nl*nc)
         call jeveuo('&&ROTLIR.MATR_ROTATION', 'L', lmatro)
         do j1 = 1, nc
             do k1 = 1, nl
@@ -218,14 +221,14 @@ subroutine op0091()
                     if (kk1 .eq. ll1) then
                         rbid=zr(lmatro+ (k1-kk1*3 -1)*3+ (l1-ll1*3 -1)&
                         )
-                        zr(lobsro+(j1-1)*nl+ l1-1 )= zr(lobsro+(j1-1)*&
+                        vec_obs_temp_ro(1+(j1-1)*nl+ l1-1 )= vec_obs_temp_ro(1+(j1-1)*&
                         nl+ l1-1 )+temp*rbid
                     endif
                 end do
             end do
         end do
-        call lceqvn(nl*nc, zr(lobsro), zr(ltramo))
-        call jedetr('&&OP0091.VEC_OBS_TEMP_RO')
+        call lceqvn(nl*nc, vec_obs_temp_ro, zr(ltramo))
+        AS_DEALLOCATE(vr=vec_obs_temp_ro)
         call jedetr('&&ROTLIR.MATR_ROTATION')
 !-- CALCUL DES TRAV. D'INTERF. ET DES EFFORTS POUR CORRECTION ULTERIEURE
         call traint(resgen, modgen, i1, sst1, sst2,&

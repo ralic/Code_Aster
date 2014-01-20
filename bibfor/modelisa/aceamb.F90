@@ -20,6 +20,8 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lmax, nbocc
     character(len=8) :: nomu, noma
@@ -54,7 +56,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 ! ----------------------------------------------------------------------
     integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, iret, jdls2
     integer :: i, axyzm, nbmat, nbma
-    integer :: ima, nbno, jnuma, adrm, numa, jgrma, igr, nbmat0
+    integer :: ima, nbno,  adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3, iarg
     real(kind=8) :: ang(2)
     real(kind=8) :: axey(3), xnorm, epsi, axex(3), vecnor(3)
@@ -62,12 +64,13 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     character(len=19) :: cartgr
     character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex
     character(len=32) :: kjexn
+    integer, pointer :: nume_ma(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', axyzm)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat0)
-    call wkvect('&&ACEAMB.NUME_MA', 'V V I', nbmat0, jnuma)
+    AS_ALLOCATE(vi=nume_ma, size=nbmat0)
     nomagr = noma//'.GROUPEMA'
     nomama = noma//'.NOMMAI'
     connex = noma//'.CONNEX'
@@ -131,14 +134,14 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                     nbmat = nbmat + nbma
                     do ima = 0, nbma-1
                         numa = numa + 1
-                        zi(jnuma+numa) = zi(jgrma+ima)
+                        nume_ma(numa+1) = zi(jgrma+ima)
                     end do
                 end do
             else
                 nbmat = nm
                 do ima = 0, nm-1
                     kjexn = jexnom(nomama,zk8(jdls2+ima))
-                    call jenonu(kjexn, zi(jnuma+ima))
+                    call jenonu(kjexn, nume_ma(ima+1))
                 end do
             endif
 !
@@ -148,7 +151,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
             endif
 !
             do ima = 1, nbmat
-                numa = zi(jnuma+ima-1)
+                numa = nume_ma(ima)
                 call jelira(jexnum(connex, numa), 'LONMAX', nbno)
                 call jeveuo(jexnum(connex, numa), 'L', adrm)
 !              CALCUL DE LA NORMALE : VECTEUR Z LOCAL
@@ -180,7 +183,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
         endif
     end do
 !
-    call jedetr('&&ACEAMB.NUME_MA')
+    AS_DEALLOCATE(vi=nume_ma)
     call jedetr('&&TMPMEMBRANE')
     call jedetr('&&TMPMEMBRANE2')
     call jedetr(tmpngr)

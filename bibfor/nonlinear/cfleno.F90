@@ -28,6 +28,8 @@ subroutine cfleno(defico, nsuco, nnoco0, listno, poinsn,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nsuco
     integer :: nnoco0, nnoco
     character(len=24) :: defico
@@ -58,10 +60,11 @@ subroutine cfleno(defico, nsuco, nnoco0, listno, poinsn,&
 !
     character(len=24) :: contno
     integer :: jnoco
-    integer :: jindno, jelino
+    integer ::  jelino
     integer :: jdecno, jno
     integer :: isuco, i, ii, ino1, ino2, k
     integer :: elimno, nbno
+    integer, pointer :: indino(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,7 +72,7 @@ subroutine cfleno(defico, nsuco, nnoco0, listno, poinsn,&
 !
 ! --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !
-    call wkvect('&&CFLENO.INDINO', 'V V I', nnoco, jindno)
+    AS_ALLOCATE(vi=indino, size=nnoco)
     call wkvect(poinsn, 'V V I', nsuco+1, jelino)
 !
 ! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
@@ -91,7 +94,7 @@ subroutine cfleno(defico, nsuco, nnoco0, listno, poinsn,&
             do 10 ii = 1, i - 1
                 ino2 = zi(jnoco+jdecno+ii-1)
                 if (ino1 .eq. ino2) then
-                    zi(jindno+jdecno+i-1) = 1
+                    indino(1+jdecno+i-1) = 1
                     zi(jelino+isuco) = zi(jelino+isuco) + 1
                     elimno = elimno + 1
                     goto 20
@@ -109,7 +112,7 @@ subroutine cfleno(defico, nsuco, nnoco0, listno, poinsn,&
 !
     k = 0
     do 120 i = 1, nnoco0
-        if (zi(jindno+i-1) .eq. 0) then
+        if (indino(i) .eq. 0) then
             k = k + 1
             zi(jno+k-1) = zi(jnoco+i-1)
         endif
@@ -118,7 +121,7 @@ subroutine cfleno(defico, nsuco, nnoco0, listno, poinsn,&
 !
 ! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !
-    call jedetr('&&CFLENO.INDINO')
+    AS_DEALLOCATE(vi=indino)
 !
     call jedema()
 end subroutine

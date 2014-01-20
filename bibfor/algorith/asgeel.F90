@@ -52,6 +52,8 @@ subroutine asgeel(nomres, option, nugene)
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
 !
@@ -64,11 +66,14 @@ subroutine asgeel(nomres, option, nugene)
     real(kind=8) :: temp
 !
     integer :: ibid, i1, j1, k1, l1, n1, lres, neq, lneq, lproj, nbddl, indsst
-    integer :: lsst, llref, nbmacr, exist, lnomcr, limacr, lmacr, llmacr, indmcr
+    integer :: lsst, llref, nbmacr, exist,   lmacr,  indmcr
     integer :: decal, ddlcp, lselia, nlt, ind, ldconl, iret, nmaddl, ltemp
     integer :: jrefa, ldlim, nbsst, lsilia, iadesc
     character(len=8) :: kbid, k8bid
     character(len=1) :: k1bid
+    integer, pointer :: indices_macro(:) => null()
+    character(len=8), pointer :: noms_macro(:) => null()
+    integer, pointer :: pointeurs_macro(:) => null()
 !-----------C
 !--       --C
 !-- DEBUT --C
@@ -134,8 +139,8 @@ subroutine asgeel(nomres, option, nugene)
 !
 !-- RECUPERATION DES DIFFERENTS MACRO ELEMENTS
 !
-    call wkvect('&&ASGEEL.NOMS_MACRO', 'V V K8', nbsst, lnomcr)
-    call wkvect('&&ASGEEL.INDICES_MACRO', 'V V I', nbsst*3, limacr)
+    AS_ALLOCATE(vk8=noms_macro, size=nbsst)
+    AS_ALLOCATE(vi=indices_macro, size=nbsst*3)
 !
     call jeveuo(sizlia, 'L', lsilia)
     call jeveuo(sst, 'L', lsst)
@@ -158,26 +163,26 @@ subroutine asgeel(nomres, option, nugene)
 !
         if (i1 .eq. 1) then
             nbmacr=1
-            zi(limacr)=1
-            zi(limacr+nbsst)=nbddl
-            zi(limacr+2*nbsst)=nlt-nbddl
-            zk8(lnomcr)=k8bid
+            indices_macro(1)=1
+            indices_macro(nbsst+1)=nbddl
+            indices_macro(1+2*nbsst)=nlt-nbddl
+            noms_macro(1)=k8bid
         else
             exist=0
             do j1 = 1, nbmacr
-                if (zk8(lnomcr+j1-1) .eq. k8bid) then
+                if (noms_macro(j1) .eq. k8bid) then
                     exist=1
-                    zi(limacr+i1-1)=j1
-                    zi(limacr+nbsst+i1-1)=nbddl
-                    zi(limacr+2*nbsst+i1-1)=nlt-nbddl
+                    indices_macro(i1)=j1
+                    indices_macro(1+nbsst+i1-1)=nbddl
+                    indices_macro(1+2*nbsst+i1-1)=nlt-nbddl
                 endif
             end do
             if (exist .eq. 0) then
                 nbmacr=nbmacr+1
-                zi(limacr+i1-1)=nbmacr
-                zi(limacr+nbsst+i1-1)=nbddl
-                zi(limacr+2*nbsst+i1-1)=nlt-nbddl
-                zk8(lnomcr+nbmacr-1)=k8bid
+                indices_macro(i1)=nbmacr
+                indices_macro(1+nbsst+i1-1)=nbddl
+                indices_macro(1+2*nbsst+i1-1)=nlt-nbddl
+                noms_macro(nbmacr)=k8bid
             endif
         endif
     end do
@@ -185,18 +190,18 @@ subroutine asgeel(nomres, option, nugene)
 !
 !-- RECUPERATION DES MATRICES DES DIFERENTS MACROS ELEMENTS
 !
-    call wkvect('&&ASGEEL.POINTEURS_MACRO', 'V V I', nbmacr, llmacr)
+    AS_ALLOCATE(vi=pointeurs_macro, size=nbmacr)
     do i1 = 1, nbmacr
         if (option .eq. 'RIGI_GENE') then
-            call jeveuo(zk8(lnomcr+i1-1)//'.MAEL_RAID_VALE', 'L', lmacr)
+            call jeveuo(noms_macro(i1)//'.MAEL_RAID_VALE', 'L', lmacr)
             k1bid='K'
         else if (option .eq. 'MASS_GENE') then
-            call jeveuo(zk8(lnomcr+i1-1)//'.MAEL_MASS_VALE', 'L', lmacr)
+            call jeveuo(noms_macro(i1)//'.MAEL_MASS_VALE', 'L', lmacr)
             k1bid='M'
         else if (option .eq. 'AMOR_GENE') then
-            call jeveuo(zk8(lnomcr+i1-1)//'.MAEL_AMOR_VALE', 'L', lmacr)
+            call jeveuo(noms_macro(i1)//'.MAEL_AMOR_VALE', 'L', lmacr)
         endif
-        zi(llmacr+i1-1)=lmacr
+        pointeurs_macro(i1)=lmacr
     end do
 !
 ! ----------- CREATION ET REMPLISSAGE DU .DESC ---------------
@@ -228,10 +233,10 @@ subroutine asgeel(nomres, option, nugene)
     call wkvect('&&ASGEEL.PROJ_TEMP', 'V V R', nmaddl*neq, lproj)
 !
     do n1 = 1, nbsst
-        indmcr=zi(limacr+n1-1)
-        nbddl=zi(limacr+nbsst+n1-1)
-        decal=zi(limacr+2*nbsst+n1-1)
-        lmacr=zi(llmacr+indmcr-1)
+        indmcr=indices_macro(n1)
+        nbddl=indices_macro(1+nbsst+n1-1)
+        decal=indices_macro(1+2*nbsst+n1-1)
+        lmacr=pointeurs_macro(indmcr)
 !
 !-- ON RECOPIE LA MATRICE DU MACRO ELEMENT (STOCKAGE PLEIN)
         do j1 = 1, int(nbddl*(nbddl+1)/2)
@@ -264,9 +269,9 @@ subroutine asgeel(nomres, option, nugene)
 !
     end do
 !
-    call jedetr('&&ASGEEL.POINTEURS_MACRO')
-    call jedetr('&&ASGEEL.NOMS_MACRO')
-    call jedetr('&&ASGEEL.INDICES_MACRO')
+    AS_DEALLOCATE(vi=pointeurs_macro)
+    AS_DEALLOCATE(vk8=noms_macro)
+    AS_DEALLOCATE(vi=indices_macro)
     call jedetr('&&ASGEEL.MATR_TEMP')
     call jedetr('&&ASGEEL.PROJ_TEMP')
 !

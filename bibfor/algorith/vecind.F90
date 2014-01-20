@@ -51,21 +51,28 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 #include "asterfort/mrmult.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/daxpy.h"
 #include "blas/ddot.h"
 #include "blas/dgemm.h"
 #include "blas/dgesvd.h"
-    integer :: lvec, nbl, nbc, nindep, lwork, jwork, lmat, ltrav1, ltrav2
-    integer :: ltrav3, jnsta, i1, k1, l1, iret, lcopy, force, indnz, vecnz
+    integer :: lvec, nbl, nbc, nindep, lwork,  lmat, ltrav1
+    integer ::   i1, k1, l1, iret, lcopy, force, indnz
     integer(kind=4) :: info
     integer :: ideeq
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
     character(len=19) :: mat, nume
+    real(kind=8), pointer :: mat_svd_work(:) => null()
+    real(kind=8), pointer :: new_stat(:) => null()
+    real(kind=8), pointer :: trav2_u(:) => null()
+    real(kind=8), pointer :: trav3_v(:) => null()
+    integer, pointer :: vec_ind_nz(:) => null()
 !
-    call wkvect('&&VECIND.NEW_STAT', 'V V R', nbc*nbc, jnsta)
+    AS_ALLOCATE(vr=new_stat, size=nbc*nbc)
     call wkvect('&&VECIND.TRAV1', 'V V R', nbl, ltrav1)
-    call wkvect('&&VECIND.VEC_IND_NZ', 'V V I', nbc, vecnz)
+    AS_ALLOCATE(vi=vec_ind_nz, size=nbc)
     indnz=0
     if (mat .ne. ' ') then
         call jeveuo(mat//'.&INT', 'L', lmat)
@@ -109,11 +116,11 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
             call lceqvn(nbl, zr(lcopy+nbl*(l1-1)), zr(ltrav1))
         endif
         norme=ddot(nbl,zr(ltrav1),1,zr(lcopy+nbl*(l1-1)),1)
-        zr(jnsta+(l1-1)*(nbc+1))=norme
+        new_stat(1+(l1-1)*(nbc+1))=norme
         do k1 = l1+1, nbc
             rij=ddot(nbl,zr(ltrav1),1,zr(lcopy+nbl*(k1-1)),1)
-            zr(jnsta+(l1-1)*nbc+k1-1)=rij
-            zr(jnsta+(k1-1)*nbc+l1-1)=rij
+            new_stat(1+(l1-1)*nbc+k1-1)=rij
+            new_stat(1+(k1-1)*nbc+l1-1)=rij
         end do
     end do
 !
@@ -122,11 +129,11 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !-- ELIMINER LES VECTEURS NON INDEPENDANTS
 !
         do l1 = 1, nbc
-            norme=zr(jnsta+(l1-1)*(nbc+1))
+            norme=new_stat(1+(l1-1)*(nbc+1))
 !
             if (norme .gt. 1.d-16) then
                 do k1 = l1+1, nbc
-                    rij=abs(zr(jnsta+(l1-1)*nbc+k1-1))
+                    rij=abs(new_stat(1+(l1-1)*nbc+k1-1))
                     rij=rij/norme
                     if (rij .gt. 1.d-8) then
                         write(6,*)' ... ANNULATION DU VECTEUR ',k1
@@ -134,8 +141,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
                             zr(lvec+((k1-1)*nbl)+i1-1)=0.d0
                         end do
                         do i1 = 1, nbc
-                            zr(jnsta+((k1-1)*nbc)+i1-1)=0.d0
-                            zr(jnsta+((i1-1)*nbc)+k1-1)=0.d0
+                            new_stat(1+((k1-1)*nbc)+i1-1)=0.d0
+                            new_stat(1+((i1-1)*nbc)+k1-1)=0.d0
                         end do
                     endif
                 end do
@@ -148,14 +155,14 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         if ((iret .eq. 1) .and. (ortho.eq.'OUI')) then
 !-- SELECTION DES VECTEURS NON NULS POUR REMPLIR LA BASE
             do i1 = 1, nbc
-                if (zr(jnsta + (i1-1)*(nbc+1) ) .gt. 1d-10) then
-                    zi(vecnz+indnz)=i1
+                if (new_stat(1 + (i1-1)*(nbc+1) ) .gt. 1d-10) then
+                    vec_ind_nz(indnz+1)=i1
                     indnz=indnz+1
                 endif
             end do
 !
             do i1 = 1, indnz
-                l1=zi(vecnz+i1-1)
+                l1=vec_ind_nz(i1)
                 if (i1 .ne. l1) then
                     call lceqvn(nbl, zr(lvec+nbl*(l1-1)), zr(lvec+nbl*( i1-1)))
                 endif
@@ -166,21 +173,21 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
 !-- ALLOCATION DES MATRICES DE TRAVAIL TEMPORAIRES
         call wkvect('&&VECIND.TRAV1_S', 'V V R', nbc, ltrav1)
-        call wkvect('&&VECIND.TRAV2_U', 'V V R', nbc*nbc, ltrav2)
-        call wkvect('&&VECIND.TRAV3_V', 'V V R', nbc*nbc, ltrav3)
+        AS_ALLOCATE(vr=trav2_u, size=nbc*nbc)
+        AS_ALLOCATE(vr=trav3_v, size=nbc*nbc)
 !
 !-- DESACTIVATION DU TEST FPE
         call matfpe(-1)
 !
-        call dgesvd('A', 'N', nbc, nbc, zr(jnsta),&
-                    nbc, zr(ltrav1), zr( ltrav2), nbc, zr(ltrav3),&
+        call dgesvd('A', 'N', nbc, nbc, new_stat,&
+                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v,&
                     nbc, swork, -1, info)
         lwork=int(swork(1))
-        call wkvect('&&VECIND.MAT_SVD_WORK', 'V V R', lwork, jwork)
+        AS_ALLOCATE(vr=mat_svd_work, size=lwork)
 !
-        call dgesvd('A', 'N', nbc, nbc, zr(jnsta),&
-                    nbc, zr(ltrav1), zr( ltrav2), nbc, zr(ltrav3),&
-                    nbc, zr(jwork), lwork, info)
+        call dgesvd('A', 'N', nbc, nbc, new_stat,&
+                    nbc, zr(ltrav1), trav2_u, nbc, trav3_v,&
+                    nbc, mat_svd_work, lwork, info)
 !
         nindep=0
         norme=(nbc+0.d0)*zr(ltrav1)*1.d-16
@@ -191,7 +198,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
         call wkvect('&&VECIND.MODE_INTF_DEPL', 'V V R', nbl*nbc, lmat)
 !
         call dgemm('N', 'N', nbl, nindep, nbc,&
-                   1.d0, zr(lcopy), nbl, zr( ltrav2), nbc,&
+                   1.d0, zr(lcopy), nbl, trav2_u, nbc,&
                    0.d0, zr(lvec), nbl)
 !
 !-- INUTILE D'ANNULER DES VECTEURS QUI NE SERVIRONT NUL PART...
@@ -201,20 +208,20 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
         call matfpe(1)
 !
-        call jedetr('&&VECIND.MAT_SVD_WORK')
+        AS_DEALLOCATE(vr=mat_svd_work)
         call jedetr('&&VECIND.TRAV1_S')
-        call jedetr('&&VECIND.TRAV2_U')
-        call jedetr('&&VECIND.TRAV3_V')
+        AS_DEALLOCATE(vr=trav2_u)
+        AS_DEALLOCATE(vr=trav3_v)
         call jedetr('&&VECIND.MODE_INTF_DEPL')
 !
     endif
 !
 !
 !
-    call jedetr('&&VECIND.NEW_STAT')
+    AS_DEALLOCATE(vr=new_stat)
     call jedetr('&&VECIND.TRAV1')
     call jedetr('&&VECIND.VECTEURS_COPIES')
     call jedetr('&&VECIND.VECTEURS_TEMP')
-    call jedetr('&&VECIND.VEC_IND_NZ')
+    AS_DEALLOCATE(vi=vec_ind_nz)
 !
 end subroutine

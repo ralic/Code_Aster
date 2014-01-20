@@ -22,6 +22,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: ioc, nbgr, nbno, ndim
@@ -56,8 +58,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     integer :: iarg, appui
 !
 !-----------------------------------------------------------------------
-    integer :: i, icoef, icoegr, idno, ifongr, ii
-    integer :: ij, im, in, inoe, iret, isurma, jcoor
+    integer :: i,     ii
+    integer :: ij, im, in, inoe, iret,  jcoor
     integer :: ldgm, ldgn, ldnm, ltyp, nb, nbma, ncg
     integer :: nfg, ngn, nm, nn, nno, noemax, ntopo
     integer :: numa
@@ -65,6 +67,11 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     real(kind=8) :: r4, r5, r6, rig3, rig4, rig45, rig46
     real(kind=8) :: rig5, rig56, rig6, surf, surtot, xc, xg
     real(kind=8) :: xx, yc, yg, yy, zg, zz
+    real(kind=8), pointer :: coegro(:) => null()
+    real(kind=8), pointer :: coeno(:) => null()
+    character(len=8), pointer :: fongro(:) => null()
+    integer, pointer :: parno(:) => null()
+    real(kind=8), pointer :: surmai(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -123,13 +130,13 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
     call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=0, nbret=ncg)
     if (ncg .ne. 0) then
-        call wkvect('&&RAIREP.COEGRO', 'V V R', nbgr, icoegr)
-        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=zr(icoegr),&
+        AS_ALLOCATE(vr=coegro, size=nbgr)
+        call getvr8('RIGI_PARASOL', 'COEF_GROUP', iocc=ioc, nbval=nbgr, vect=coegro,&
                     nbret=ncg)
     else
-        call wkvect('&&RAIREP.FONGRO', 'V V K8', nbgr, ifongr)
+        AS_ALLOCATE(vk8=fongro, size=nbgr)
         lfonc = .true.
-        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=zk8(ifongr),&
+        call getvid('RIGI_PARASOL', 'FONC_GROUP', iocc=ioc, nbval=nbgr, vect=fongro,&
                     nbret=nfg)
     endif
 !
@@ -173,16 +180,16 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     end do
     ASSERT(appui.ne.-1)
 !
-    call wkvect('&&RAIREP.COENO', 'V V R', noemax, icoef)
+    AS_ALLOCATE(vr=coeno, size=noemax)
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
 !
-    call wkvect('&&RAIREP.PARNO', 'V V I', noemax, idno)
+    AS_ALLOCATE(vi=parno, size=noemax)
 !
 !
 !     CALCUL DES SURFACES ELEMENTAIRES ET DE LA SURFACE TOTALE
 !
-    call wkvect('&&RAIREP.SURMAI', 'V V R', nbma, isurma)
+    AS_ALLOCATE(vr=surmai, size=nbma)
     im = 0
     surtot = zero
     do i = 1, nbgr
@@ -197,7 +204,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             hc = zero
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                zi(idno+inoe-1) = zi(idno+inoe-1) + 1
+                parno(inoe) = parno(inoe) + 1
                 x(nn) = zr(jcoor+3*(inoe-1)+1-1)
                 y(nn) = zr(jcoor+3*(inoe-1)+2-1)
                 z(nn) = zr(jcoor+3*(inoe-1)+3-1)
@@ -214,7 +221,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                 a(2) = y(2) - y(1)
                 a(3) = z(2) - z(1)
                 surf = ddot(2,a,1,a,1)
-                zr(isurma+im-1)= sqrt(surf)
+                surmai(im)= sqrt(surf)
             else if (appui.eq.2) then
                 a(1) = x(3) - x(1)
                 a(2) = y(3) - y(1)
@@ -232,7 +239,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                 endif
                 call provec(a, b, c)
                 surf=ddot(3,c,1,c,1)
-                zr(isurma+im-1) = sqrt(surf)*0.5d0
+                surmai(im) = sqrt(surf)*0.5d0
             else
                 ASSERT(.false.)
             endif
@@ -242,14 +249,14 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
                 u(3) = zg - hc
                 dist=ddot(3,u,1,u,1)
                 dist = sqrt(dist)
-                call fointe('F ', zk8(ifongr+i-1), 1, ['X'], [dist],&
+                call fointe('F ', fongro(i), 1, ['X'], [dist],&
                             coef, iret)
-                zr(isurma+im-1) = zr(isurma+im-1)*coef
+                surmai(im) = surmai(im)*coef
             else
-                zr(isurma+im-1) = zr(isurma+im-1)*zr(icoegr+i-1)
+                surmai(im) = surmai(im)*coegro(i)
             endif
-            surtot = surtot + zr(isurma+im-1)
-            zr(isurma+im-1) = zr(isurma+im-1)/nm
+            surtot = surtot + surmai(im)
+            surmai(im) = surmai(im)/nm
         end do
     end do
 !
@@ -265,9 +272,9 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 do ij = 1, noemax
-                    if (zi(idno+ij-1) .eq. 0) goto 37
+                    if (parno(ij) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
-                        zr(icoef+ij-1) = zr(icoef+ij-1) + zr(isurma+ im-1)/surtot
+                        coeno(ij) = coeno(ij) + surmai(im)/surtot
                     endif
  37                 continue
                 end do
@@ -287,21 +294,21 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     rig56 = zero
     rig3 = 0.d0
     do ij = 1, noemax
-        if (zi(idno+ij-1) .eq. 0) goto 50
+        if (parno(ij) .eq. 0) goto 50
         ii = ii + 1
         xx = zr(jcoor+3*(ij-1)+1-1) - xg
         yy = zr(jcoor+3*(ij-1)+2-1) - yg
         zz = zr(jcoor+3*(ij-1)+3-1) - zg
         if (ndim .eq. 3) then
-            rig4 = rig4 + (rigi(2)*zz**2+rigi(3)*yy**2)*zr(icoef+ij-1)
-            rig5 = rig5 + (rigi(1)*zz**2+rigi(3)*xx**2)*zr(icoef+ij-1)
-            rig6 = rig6 + (rigi(2)*xx**2+rigi(1)*yy**2)*zr(icoef+ij-1)
-            rig45 = rig45 - rigi(3)*xx*yy*zr(icoef+ij-1)
-            rig46 = rig46 - rigi(2)*xx*zz*zr(icoef+ij-1)
-            rig56 = rig56 - rigi(1)*yy*zz*zr(icoef+ij-1)
+            rig4 = rig4 + (rigi(2)*zz**2+rigi(3)*yy**2)*coeno(ij)
+            rig5 = rig5 + (rigi(1)*zz**2+rigi(3)*xx**2)*coeno(ij)
+            rig6 = rig6 + (rigi(2)*xx**2+rigi(1)*yy**2)*coeno(ij)
+            rig45 = rig45 - rigi(3)*xx*yy*coeno(ij)
+            rig46 = rig46 - rigi(2)*xx*zz*coeno(ij)
+            rig56 = rig56 - rigi(1)*yy*zz*coeno(ij)
             rig3 = 0.d0
         else
-            rig3 = rig3 + (rigi(2)*xx**2+rigi(1)*yy**2)*zr(icoef+ij-1)
+            rig3 = rig3 + (rigi(2)*xx**2+rigi(1)*yy**2)*coeno(ij)
         endif
 !
  50     continue
@@ -342,17 +349,17 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
     ii = 0
     do ij = 1, noemax
-        if (zi(idno+ij-1) .eq. 0) goto 51
+        if (parno(ij) .eq. 0) goto 51
         ii = ii + 1
-        r1 = rigi(1)*zr(icoef+ij-1)
-        r2 = rigi(2)*zr(icoef+ij-1)
+        r1 = rigi(1)*coeno(ij)
+        r2 = rigi(2)*coeno(ij)
         if (ndim .eq. 3) then
-            r3 = rigi(3)*zr(icoef+ij-1)
-            r4 = rig4*zr(icoef+ij-1)
-            r5 = rig5*zr(icoef+ij-1)
-            r6 = rig6*zr(icoef+ij-1)
+            r3 = rigi(3)*coeno(ij)
+            r4 = rig4*coeno(ij)
+            r5 = rig5*coeno(ij)
+            r6 = rig6*coeno(ij)
         else
-            r3 = rig3*zr(icoef+ij-1)
+            r3 = rig3*coeno(ij)
             r4 = zero
             r5 = zero
             r6 = zero
@@ -395,11 +402,11 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
  51     continue
     end do
 !
-    call jedetr('&&RAIREP.COEGRO')
-    call jedetr('&&RAIREP.FONGRO')
-    call jedetr('&&RAIREP.COENO')
-    call jedetr('&&RAIREP.PARNO')
-    call jedetr('&&RAIREP.SURMAI')
+    AS_DEALLOCATE(vr=coegro)
+    AS_DEALLOCATE(vk8=fongro)
+    AS_DEALLOCATE(vr=coeno)
+    AS_DEALLOCATE(vi=parno)
+    AS_DEALLOCATE(vr=surmai)
 !
     call jedema()
 end subroutine

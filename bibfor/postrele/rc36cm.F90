@@ -13,6 +13,8 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: iocc, nbma, listma(*), nbchar, lichar(*)
     character(len=1) :: etat
     character(len=24) :: chmome
@@ -48,12 +50,15 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 ! OUT : CHNOME : TORSEUR RESULTAT
 !     ------------------------------------------------------------------
 !
-    integer :: jnume, jcham, nbresu, nbcmp, icha, ir, jlich, jlicm, jlicr
+    integer :: jnume, jcham, nbresu, nbcmp, icha, ir
     integer :: vali(2)
     logical :: seisme, autre
     character(len=8) :: nocmp(3)
     character(len=24) :: chams0
     complex(kind=8) :: cbid
+    character(len=24), pointer :: lich(:) => null()
+    logical, pointer :: licm(:) => null()
+    real(kind=8), pointer :: licr(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -69,9 +74,9 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     seisme = .false.
     autre = .false.
 !
-    call wkvect('&&RC36CM.LICH', 'V V K24', nbchar, jlich)
-    call wkvect('&&RC36CM.LICM', 'V V L', nbchar, jlicm)
-    call wkvect('&&RC36CM.LICR', 'V V R', nbchar, jlicr)
+    AS_ALLOCATE(vk24=lich, size=nbchar)
+    AS_ALLOCATE(vl=licm, size=nbchar)
+    AS_ALLOCATE(vr=licr, size=nbchar)
 !
     do 110, icha = 1, nbchar, 1
     do 112, ir = 1, nbresu, 1
@@ -86,9 +91,9 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     else
         autre = .true.
     endif
-    zk24(jlich+icha-1) = zk24(jcham+ir-1)
-    zl(jlicm+icha-1) = .true.
-    zr(jlicr+icha-1) = 1.d0
+    lich(icha) = zk24(jcham+ir-1)
+    licm(icha) = .true.
+    licr(icha) = 1.d0
     110 end do
 !
     if (seisme .and. autre) then
@@ -96,26 +101,26 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     endif
 !
     if (nbchar .eq. 1) then
-        chams0 = zk24(jlich)
+        chams0 = lich(1)
         call cesred(chams0,nbma,listma,nbcmp,nocmp,&
                     'V', chmome)
     else
 !
         chams0='&&RC36CM.CHAMS0'
         if (autre) then
-            call cesfus(nbchar, zk24(jlich), zl(jlicm), zr(jlicr), [cbid],&
+            call cesfus(nbchar, lich, licm, licr, [cbid],&
                         .false., 'V', chams0)
         else
-            call cesqua(nbchar, zk24(jlich), zl(jlicm), 'V', chams0)
+            call cesqua(nbchar, lich, licm, 'V', chams0)
         endif
         call cesred(chams0,nbma,listma,nbcmp,nocmp,&
                     'V', chmome)
         call detrsd('CHAM_ELEM_S', chams0)
     endif
 !
-    call jedetr('&&RC36CM.LICH')
-    call jedetr('&&RC36CM.LICM')
-    call jedetr('&&RC36CM.LICR')
+    AS_DEALLOCATE(vk24=lich)
+    AS_DEALLOCATE(vl=licm)
+    AS_DEALLOCATE(vr=licr)
 !
     call jedema()
 end subroutine

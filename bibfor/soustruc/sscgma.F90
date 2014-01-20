@@ -56,6 +56,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 #include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
     character(len=8) :: ma, noma, kbid, kpos, nom1
@@ -68,15 +70,18 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iagm1, iagm2, ialii1, ialii2, ialik8, ibid
+    integer :: i, iagm1, iagm2, ialii1, ialii2,  ibid
     integer :: idlima, ier, ierr, ifm, igm, igm1
-    integer :: igm2, ii, iii, ili1, ili2, ilmak8, im1
+    integer :: igm2, ii, iii, ili1, ili2,  im1
     integer :: ima, ind1, ind2, iocc, ireste, jgma, jjj
-    integer :: jlisma, jmail, jmail2, kkk, maxcol, n, n1
+    integer :: jlisma, jmail,  kkk, maxcol, n, n1
     integer :: n2, n3, n4, n5, n6, n6a, n6b
     integer :: n7, n8, nalar, nb, nbcol, nbgmin, nbgmp
     integer :: nbgnaj, nbgrmn, nbid, nbis, nbk8, nbline, nbma
     integer :: nbmat, niv, ntrou, ntyp, num
+    character(len=24), pointer :: lik8(:) => null()
+    character(len=8), pointer :: l_maille(:) => null()
+    integer, pointer :: maille2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -89,7 +94,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
     call jelira(ma//'.GROUPEMA', 'NMAXOC', nbgrmn)
     nbis = nbgrmn
     nbk8 = nbgrmn
-    call wkvect('&&SSCGMA.LIK8', 'V V K24', nbk8, ialik8)
+    AS_ALLOCATE(vk24=lik8, size=nbk8)
     call wkvect('&&SSCGMA.LII1', 'V V I', nbis, ialii1)
     call wkvect('&&SSCGMA.LII2', 'V V I', nbis, ialii2)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
@@ -139,24 +144,24 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -- MOT CLEF MAILLE:
 !       -------------------
         if (n2 .gt. 0) then
-            call wkvect('&&SSCGMA.L_MAILLE', 'V V K8', n2, ilmak8)
+            AS_ALLOCATE(vk8=l_maille, size=n2)
             call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc,&
-                        iarg, n2, zk8(ilmak8), n1)
+                        iarg, n2, l_maille, n1)
             call wkvect('&&SSCGMA.MAILLE', 'V V I', n2, jmail)
             call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
-            call wkvect('&&SSCGMA.MAILLE2', 'V V I', nbmat, jmail2)
+            AS_ALLOCATE(vi=maille2, size=nbmat)
             nbma = 0
             ier = 0
             do im1 = 1, n2
-                nom1 = zk8(ilmak8+im1-1)
+                nom1 = l_maille(im1)
                 call jenonu(jexnom(ma//'.NOMMAI', nom1), num)
                 if (num .eq. 0) then
                     ier = ier + 1
                     call utmess('E', 'SOUSTRUC_31', sk=nom1)
                     goto 20
                 endif
-                zi(jmail2-1+num) = zi(jmail2-1+num) + 1
-                if (zi(jmail2-1+num) .eq. 2) then
+                maille2(num) = maille2(num) + 1
+                if (maille2(num) .eq. 2) then
                     valk(1) = nom1
                     valk(2) = nogma
                     call utmess('A', 'SOUSTRUC_32', nk=2, valk=valk)
@@ -172,8 +177,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
                 zi(jlisma+ima) = zi(jmail+ima)
             end do
             call jedetr('&&SSCGMA.MAILLE')
-            call jedetr('&&SSCGMA.MAILLE2')
-            call jedetr('&&SSCGMA.L_MAILLE')
+            AS_DEALLOCATE(vi=maille2)
+            AS_DEALLOCATE(vk8=l_maille)
             goto 219
         endif
 !
@@ -230,16 +235,16 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -- MOT CLEF INTER:
 !       -------------------
         if (n3 .gt. 0) then
-            call getvtx('CREA_GROUP_MA', 'INTERSEC', iocc=iocc, nbval=n3, vect=zk24(ialik8),&
+            call getvtx('CREA_GROUP_MA', 'INTERSEC', iocc=iocc, nbval=n3, vect=lik8,&
                         nbret=nbid)
             do igm = 1, n3
-                call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
+                call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 if (igm2 .eq. 0) then
-                    call utmess('F', 'SOUSTRUC_35', sk=zk24(ialik8-1+igm))
+                    call utmess('F', 'SOUSTRUC_35', sk=lik8(igm))
                 endif
             end do
 !
-            call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
+            call jenonu(jexnom(ma//'.GROUPEMA',lik8(1)), igm1)
             call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
             call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
             if (ili1 .gt. nbis) then
@@ -255,7 +260,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             end do
 !
             do igm = 2, n3
-                call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
+                call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
                 call utlisi('INTER', zi(ialii1), n, zi(iagm2), ili2,&
@@ -284,16 +289,16 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -- MOT CLEF UNION:
 !       -------------------
         if (n4 .gt. 0) then
-            call getvtx('CREA_GROUP_MA', 'UNION', iocc=iocc, nbval=n4, vect=zk24( ialik8),&
+            call getvtx('CREA_GROUP_MA', 'UNION', iocc=iocc, nbval=n4, vect=lik8,&
                         nbret=nbid)
             do igm = 1, n4
-                call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
+                call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 if (igm2 .eq. 0) then
-                    call utmess('F', 'SOUSTRUC_35', sk=zk24(ialik8-1+igm))
+                    call utmess('F', 'SOUSTRUC_35', sk=lik8(igm))
                 endif
             end do
 !
-            call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
+            call jenonu(jexnom(ma//'.GROUPEMA',lik8(1)), igm1)
             call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
             call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
             if (ili1 .gt. nbis) then
@@ -309,7 +314,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             end do
 !
             do igm = 2, n4
-                call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
+                call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
                 call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2,&
@@ -348,16 +353,16 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !       -- MOT CLEF DIFFE:
 !       -------------------
         if (n5 .gt. 0) then
-            call getvtx('CREA_GROUP_MA', 'DIFFE', iocc=iocc, nbval=n5, vect=zk24( ialik8),&
+            call getvtx('CREA_GROUP_MA', 'DIFFE', iocc=iocc, nbval=n5, vect=lik8,&
                         nbret=nbid)
             do igm = 1, n5
-                call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
+                call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 if (igm2 .eq. 0) then
-                    call utmess('F', 'SOUSTRUC_35', sk=zk24(ialik8-1+igm))
+                    call utmess('F', 'SOUSTRUC_35', sk=lik8(igm))
                 endif
             end do
 !
-            call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
+            call jenonu(jexnom(ma//'.GROUPEMA',lik8(1)), igm1)
             call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
             call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
             if (ili1 .gt. nbis) then
@@ -373,7 +378,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             end do
 !
             do igm = 2, n5
-                call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
+                call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
                 call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
                 call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
                 call utlisi('DIFFE', zi(ialii1), n, zi(iagm2), ili2,&
@@ -536,7 +541,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
 ! --- MENAGE
     call jedetr(lisma)
-    call jedetr('&&SSCGMA.LIK8')
+    AS_DEALLOCATE(vk24=lik8)
     call jedetr('&&SSCGMA.LII1')
     call jedetr('&&SSCGMA.LII2')
 !

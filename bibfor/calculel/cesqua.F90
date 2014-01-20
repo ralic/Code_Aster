@@ -17,6 +17,8 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
@@ -66,13 +68,19 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !     ------------------------------------------------------------------
     integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbma, n1, k
     integer :: jce3d, jce3v, jce3l, jce3c
-    integer :: jcmpgd, jlicmp, ichs, icmp, icmp3, ncmp3
-    integer :: ncmpmx, ncmp1, icmp1, jnucmp, jnbpt, jnbsp, jnbcmp, jcrcmp
+    integer :: jcmpgd,  ichs, icmp, icmp3, ncmp3
+    integer :: ncmpmx, ncmp1, icmp1
     integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, ncmp
     character(len=8) :: ma, nomgd, nocmp, typces, nomcmp
     character(len=3) :: tsca
     character(len=19) :: ces1, ces3
     logical :: cumul
+    integer, pointer :: corr_cmp(:) => null()
+    character(len=8), pointer :: licmp(:) => null()
+    integer, pointer :: nbcmp(:) => null()
+    integer, pointer :: vnbpt(:) => null()
+    integer, pointer :: vnbsp(:) => null()
+    integer, pointer :: nucmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -127,8 +135,8 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !        + CALCUL DES OBJETS CONTENANT LES NOMBRES DE POINTS
 !          ET DE SOUS-POINTS PAR MAILLE
 !     --------------------------------------------------------
-    call wkvect('&&CESQUA.NBPT', 'V V I', nbma, jnbpt)
-    call wkvect('&&CESQUA.NBSP', 'V V I', nbma, jnbsp)
+    AS_ALLOCATE(vi=vnbpt, size=nbma)
+    AS_ALLOCATE(vi=vnbsp, size=nbma)
     do ichs = 1, nbchs
         ces1 = lichs(ichs)
         call jeveuo(ces1//'.CESK', 'L', jce1k)
@@ -143,8 +151,8 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !
         if (ichs .eq. 1) then
             do ima = 1, nbma
-                zi(jnbpt-1+ima) = zi(jce1d-1+5+4* (ima-1)+1)
-                zi(jnbsp-1+ima) = zi(jce1d-1+5+4* (ima-1)+2)
+                vnbpt(ima) = zi(jce1d-1+5+4* (ima-1)+1)
+                vnbsp(ima) = zi(jce1d-1+5+4* (ima-1)+2)
             end do
         else
             do ima = 1, nbma
@@ -153,9 +161,9 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
                 ncmp = zi(jce1d-1+5+4* (ima-1)+3)
                 if (nbpt*nbsp*ncmp .eq. 0) goto 50
 !           TEST SUR IDENTITE DU NOMBRE DE POINTS
-                ASSERT(zi(jnbpt-1+ima).eq.nbpt)
+                ASSERT(vnbpt(ima).eq.nbpt)
 !           TEST SUR IDENTITE DU NOMBRE DE SOUS-POINTS
-                ASSERT(zi(jnbsp-1+ima).eq.nbsp)
+                ASSERT(vnbsp(ima).eq.nbsp)
  50             continue
             end do
         endif
@@ -168,8 +176,8 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !     -------------------------------------------
 !
 !     -- ON "COCHE" LES CMPS PRESENTES DANS LES CES DE LICHS:
-    call wkvect('&&CESQUA.LICMP', 'V V K8', ncmpmx, jlicmp)
-    call wkvect('&&CESQUA.NUCMP', 'V V I', ncmpmx, jnucmp)
+    AS_ALLOCATE(vk8=licmp, size=ncmpmx)
+    AS_ALLOCATE(vi=nucmp, size=ncmpmx)
     do ichs = 1, nbchs
         ces1 = lichs(ichs)
         call jeveuo(ces1//'.CESK', 'L', jce1k)
@@ -181,7 +189,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
             nocmp = zk8(jce1c-1+icmp1)
 !
             icmp = indik8(zk8(jcmpgd),nocmp,1,ncmpmx)
-            zi(jnucmp-1+icmp) = 1
+            nucmp(icmp) = 1
         end do
         call jelibe(ces1//'.CESK')
         call jelibe(ces1//'.CESD')
@@ -190,17 +198,17 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !
     icmp3 = 0
     do icmp = 1, ncmpmx
-        if (zi(jnucmp-1+icmp) .eq. 1) then
+        if (nucmp(icmp) .eq. 1) then
             icmp3 = icmp3 + 1
-            zk8(jlicmp-1+icmp3) = zk8(jcmpgd-1+icmp)
+            licmp(icmp3) = zk8(jcmpgd-1+icmp)
         endif
     end do
     ncmp3 = icmp3
 !
 !     3- CALCUL DE L'OBJET CONTENANT LE NOMBRE DE CMPS PAR MAILLE
 !     -----------------------------------------------------------
-    call wkvect('&&CESQUA.NBCMP', 'V V I', nbma, jnbcmp)
-    call wkvect('&&CESQUA.CORR_CMP', 'V V I', ncmpmx, jcrcmp)
+    AS_ALLOCATE(vi=nbcmp, size=nbma)
+    AS_ALLOCATE(vi=corr_cmp, size=ncmpmx)
 !
     do ichs = 1, nbchs
         ces1 = lichs(ichs)
@@ -210,16 +218,16 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         ncmp1 = zi(jce1d-1+2)
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
-            icmp3 = indik8(zk8(jlicmp),nocmp,1,ncmp3)
-            zi(jcrcmp-1+icmp1) = icmp3
+            icmp3 = indik8(licmp,nocmp,1,ncmp3)
+            corr_cmp(icmp1) = icmp3
         end do
 !
         do ima = 1, nbma
             icmp1 = zi(jce1d-1+5+4* (ima-1)+3)
             if (icmp1 .eq. 0) goto 110
             ASSERT(icmp1.gt.0)
-            icmp3 = zi(jcrcmp-1+icmp1)
-            zi(jnbcmp-1+ima) = max(icmp3,zi(jnbcmp-1+ima))
+            icmp3 = corr_cmp(icmp1)
+            nbcmp(ima) = max(icmp3,nbcmp(ima))
 110         continue
         end do
 !
@@ -230,7 +238,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !     4- ALLOCATION DE CES3 :
 !     --------------------------
     call cescre(base, ces3, typces, ma, nomgd,&
-                ncmp3, zk8(jlicmp), zi(jnbpt), zi(jnbsp), zi(jnbcmp))
+                ncmp3, licmp, vnbpt, vnbsp,nbcmp)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
     call jeveuo(ces3//'.CESC', 'L', jce3c)
     call jeveuo(ces3//'.CESV', 'E', jce3v)
@@ -329,12 +337,12 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !     -----------
     call detrsd('CHAM_ELEM_S', ces3)
     call jedetr('&&CESQUA.LISVARI')
-    call jedetr('&&CESQUA.NBPT')
-    call jedetr('&&CESQUA.NBSP')
-    call jedetr('&&CESQUA.LICMP')
-    call jedetr('&&CESQUA.NUCMP')
-    call jedetr('&&CESQUA.NBCMP')
-    call jedetr('&&CESQUA.CORR_CMP')
+    AS_DEALLOCATE(vi=vnbpt)
+    AS_DEALLOCATE(vi=vnbsp)
+    AS_DEALLOCATE(vk8=licmp)
+    AS_DEALLOCATE(vi=nucmp)
+    AS_DEALLOCATE(vi=nbcmp)
+    AS_DEALLOCATE(vi=corr_cmp)
 !
     call jedema()
 end subroutine

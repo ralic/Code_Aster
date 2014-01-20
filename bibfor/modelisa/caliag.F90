@@ -47,6 +47,8 @@ subroutine caliag(fonrez, chargz)
 #include "asterfort/lxcaps.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: fonrez, chargz
 ! ----------------------------------------------------------------------
@@ -61,10 +63,10 @@ subroutine caliag(fonrez, chargz)
     integer :: i, j, k, iret, iocc, ifm, niv, nmocl
     integer :: vali(2)
 !-----------------------------------------------------------------------
-    integer :: icmpz, idco1, idco2, idcoef, idconi, idconr, iddl1
-    integer :: iddl2, idg1, idg2, idim, idimen, idirec, idmax
-    integer :: idnbn, idnomd, idnomn, iec, iexcm1, iexcm2, imult1
-    integer :: imult2, ino1, ino2, inom, jcmuc, jnoma, jprnm
+    integer :: icmpz, idco1, idco2,  idconi, idconr, iddl1
+    integer :: iddl2, idg1, idg2, idim,   idmax
+    integer ::    iec, iexcm1, iexcm2, imult1
+    integer :: imult2, ino1, ino2, inom,  jnoma, jprnm
     integer :: lonli1, lonli2, nb, nbcmp, nbec, nbno, nbterm
     integer :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
 !-----------------------------------------------------------------------
@@ -81,6 +83,13 @@ subroutine caliag(fonrez, chargz)
     character(len=19) :: prefix, ligrmo, lisrel
     character(len=24) :: coni, conr, nomdd1, nomdd2, coef1, coef2, lisin1
     character(len=24) :: lisin2
+    real(kind=8), pointer :: coef(:) => null()
+    complex(kind=8), pointer :: coemuc(:) => null()
+    integer, pointer :: dim(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    integer, pointer :: nbnor(:) => null()
+    character(len=8), pointer :: nomddl(:) => null()
+    character(len=8), pointer :: nomnoe(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -297,34 +306,34 @@ subroutine caliag(fonrez, chargz)
 !
 ! ---  ALLOCATION D'UN TABLEAU BIDON POUR AFRELA ---
 !
-        call wkvect('&&CALIAG.COEMUC', 'V V C', idmax, jcmuc)
+        AS_ALLOCATE(vc=coemuc, size=idmax)
 !
 ! ---  ALLOCATION DU TABLEAU DES NOMS DES NOEUDS DE LA RELATION ---
 !
-        call wkvect('&&CALIAG.NOMNOE', 'V V K8', idmax, idnomn)
+        AS_ALLOCATE(vk8=nomnoe, size=idmax)
 !
 ! ---  ALLOCATION DU TABLEAU DES NOMS DES DDLS DE LA RELATION ---
 !
-        call wkvect('&&CALIAG.NOMDDL', 'V V K8', idmax, idnomd)
+        AS_ALLOCATE(vk8=nomddl, size=idmax)
 !
 ! ---  ALLOCATION DU TABLEAU DES COEFFICIENTS DE LA RELATION ---
 !
-        call wkvect('&&CALIAG.COEF', 'V V R', idmax, idcoef)
+        AS_ALLOCATE(vr=coef, size=idmax)
 !
 ! ---  ALLOCATION DU TABLEAU DES DIRECTIONS DES COMPOSANTES ---
 ! ---  DE LA RELATION                                       ---
 !
-        call wkvect('&&CALIAG.DIRECT', 'V V R', 3*idmax, idirec)
+        AS_ALLOCATE(vr=direct, size=3*idmax)
 !
 ! ---  ALLOCATION DU TABLEAU DE LA DIMENSION DU PROBLEME  ---
 ! ---  RELATIVE A CHAQUE COMPOSANTE DE LA RELATION        ---
 !
-        call wkvect('&&CALIAG.DIMENSION', 'V V I', idmax, idimen)
+        AS_ALLOCATE(vi=dim, size=idmax)
 !
 ! ---  ALLOCATION DU TABLEAU DES DIMENSIONS DES VECTEURS NORMAUX ---
 ! ---  EN CHAQUE NOEUD POUR TOUTES LES RELATIONS                 ---
 !
-        call wkvect('&&CALIAG.NBNOR', 'V V I', 2*nbno, idnbn)
+        AS_ALLOCATE(vi=nbnor, size=2*nbno)
 !
 ! ---  AFFECTATION DE CE VECTEUR ---
 !
@@ -356,18 +365,18 @@ subroutine caliag(fonrez, chargz)
                 call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
                 call utmess('F', 'CHARGES2_33', sk=nomno1)
             endif
-            zi(idnbn-1+2* (j-1)+1) = 3
+            nbnor(2* (j-1)+1) = 3
             if ((icmpz.eq.0) .or. (.not.exisdg(zi(idg1),icmpz))) then
-                zi(idnbn-1+2* (j-1)+1) = 2
+                nbnor(2* (j-1)+1) = 2
             endif
 !
             if (iexcm2 .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
                 call utmess('F', 'CHARGES2_33', sk=nomno2)
             endif
-            zi(idnbn-1+2* (j-1)+2) = 3
+            nbnor(2* (j-1)+2) = 3
             if ((icmpz.eq.0) .or. (.not.exisdg(zi(idg2),icmpz))) then
-                zi(idnbn-1+2* (j-1)+2) = 2
+                nbnor(2* (j-1)+2) = 2
             endif
         enddo
 !
@@ -383,21 +392,21 @@ subroutine caliag(fonrez, chargz)
             cmp = zk8(iddl1)
             if (cmp .eq. 'DNOR') then
                 call jeveuo(jexnum(conr, iocc), 'L', idconr)
-                idim = zi(idnbn-1+2* (j-1)+1)
+                idim = nbnor(2* (j-1)+1)
                 k = k + 1
-                zr(idcoef+k-1) = zr(idco1)
-                zk8(idnomn+k-1) = nomno1
-                zk8(idnomd+k-1) = nomdep
-                zi(idimen+k-1) = idim
+                coef(k) = zr(idco1)
+                nomnoe(k) = nomno1
+                nomddl(k) = nomdep
+                dim(k) = idim
                 do i = 1, idim
-                    zr(idirec+3* (k-1)+i-1) = zr(idconr-1+(2*idim+1)* (j-1)+i)
+                    direct(1+3* (k-1)+i-1) = zr(idconr-1+(2*idim+1)* (j-1)+i)
                 enddo
             else
                 do i = 1, nddl1
                     k = k + 1
-                    zk8(idnomn+k-1) = nomno1
-                    zk8(idnomd+k-1) = zk8(iddl1+i-1)
-                    zr(idcoef+k-1) = zr(idco1+i-1)
+                    nomnoe(k) = nomno1
+                    nomddl(k) = zk8(iddl1+i-1)
+                    coef(k) = zr(idco1+i-1)
                 enddo
             endif
 !
@@ -408,21 +417,21 @@ subroutine caliag(fonrez, chargz)
             cmp = zk8(iddl2)
             if (cmp .eq. 'DNOR') then
                 call jeveuo(jexnum(conr, iocc), 'L', idconr)
-                idim = zi(idnbn-1+2* (j-1)+2)
+                idim = nbnor(2* (j-1)+2)
                 k = k + 1
-                zr(idcoef+k-1) = zr(idco2)
-                zk8(idnomn+k-1) = nomno2
-                zk8(idnomd+k-1) = nomdep
-                zi(idimen+k-1) = idim
+                coef(k) = zr(idco2)
+                nomnoe(k) = nomno2
+                nomddl(k) = nomdep
+                dim(k) = idim
                 do i = 1, idim
-                    zr(idirec+3* (k-1)+i-1) = zr( idconr-1+ (2*idim+1)* (j-1)+idim+i )
+                    direct(1+3* (k-1)+i-1) = zr( idconr-1+ (2*idim+1)* (j-1)+idim+i )
                 enddo
             else
                 do i = 1, nddl2
                     k = k + 1
-                    zk8(idnomn+k-1) = nomno2
-                    zk8(idnomd+k-1) = zk8(iddl2+i-1)
-                    zr(idcoef+k-1) = zr(idco2+i-1)
+                    nomnoe(k) = nomno2
+                    nomddl(k) = zk8(iddl2+i-1)
+                    coef(k) = zr(idco2+i-1)
                 enddo
             endif
 !
@@ -432,8 +441,8 @@ subroutine caliag(fonrez, chargz)
 !
 ! --- AFFECTATION DE LA RELATION ---
 !
-            call afrela(zr(idcoef), zc(jcmuc), zk8(idnomd), zk8(idnomn), zi(idimen),&
-                        zr(idirec), nbterm, beta, betac, kbeta,&
+            call afrela(coef, coemuc, nomddl, nomnoe, dim,&
+                        direct, nbterm, beta, betac, kbeta,&
                         typcoe, fonree, typlag, 0.d0, lisrel)
 !
 ! --- FIN DE LA BOUCLE SUR LES RELATIONS                       ---
@@ -460,13 +469,13 @@ subroutine caliag(fonrez, chargz)
 !
 ! --- DESTRUCTION DES TABLEAUX DE TRAVAIL  ---
 !
-        call jedetr('&&CALIAG.COEMUC')
-        call jedetr('&&CALIAG.NOMNOE')
-        call jedetr('&&CALIAG.NOMDDL')
-        call jedetr('&&CALIAG.COEF')
-        call jedetr('&&CALIAG.DIRECT')
-        call jedetr('&&CALIAG.DIMENSION')
-        call jedetr('&&CALIAG.NBNOR')
+        AS_DEALLOCATE(vc=coemuc)
+        AS_DEALLOCATE(vk8=nomnoe)
+        AS_DEALLOCATE(vk8=nomddl)
+        AS_DEALLOCATE(vr=coef)
+        AS_DEALLOCATE(vr=direct)
+        AS_DEALLOCATE(vi=dim)
+        AS_DEALLOCATE(vi=nbnor)
         call jedetr(lisin1)
         call jedetr(lisin2)
 !

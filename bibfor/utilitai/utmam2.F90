@@ -9,6 +9,8 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbma, nbtrou, tatrou(nbma)
     character(len=8) :: modele
 ! ----------------------------------------------------------------------
@@ -53,7 +55,8 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 !.......................................................................
 !
     integer :: nbmail, ima, itrou
-    integer :: itempo, jmamo
+    integer ::  jmamo
+    integer, pointer :: liste_m_temp(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -64,27 +67,27 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
     call jelira(modele//'.MAILLE', 'LONMAX', nbmail)
     ASSERT(nbma.eq.nbmail)
 !
-    call wkvect('&&UTMAM2.LISTE_M_TEMP', 'V V I', nbmail, itempo)
+    AS_ALLOCATE(vi=liste_m_temp, size=nbmail)
 !
     nbtrou = 0
 !
     do 10, ima=1,nbmail
     if (zi(jmamo-1+ima) .gt. 0) then
         nbtrou=nbtrou+1
-        zi(itempo-1+nbtrou)=ima
+        liste_m_temp(nbtrou)=ima
     endif
     10 end do
 !
     if (nbtrou .eq. 0) goto 9999
 !
     do 20 itrou = 1, nbtrou
-        tatrou(itrou) = zi(itempo-1+itrou)
+        tatrou(itrou) = liste_m_temp(itrou)
 20  end do
 !
 9999  continue
 !
     call jedema()
 !
-    call jedetr('&&UTMAM2.LISTE_M_TEMP')
+    AS_DEALLOCATE(vi=liste_m_temp)
 !
 end subroutine

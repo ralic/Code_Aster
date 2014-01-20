@@ -19,6 +19,8 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: nbgr, nbno, nbnoeu, tabnoe(nbnoeu)
@@ -53,8 +55,8 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     integer :: iarg
 !
 !-----------------------------------------------------------------------
-    integer :: i, icoef, icoegr, idno, ifongr, ifr, ii
-    integer :: ij, im, in, inoe, iret, isurma
+    integer :: i,     ifr, ii
+    integer :: ij, im, in, inoe, iret
     integer :: jcoor, ldgm, ldgn, ldnm, nb, nbma, ncf
     integer :: ncg, nfg, ngn, nm, nn, nno, noemax
 !
@@ -62,6 +64,11 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     real(kind=8) :: r4, r5, r6, rig4, rig45, rig46, rig5
     real(kind=8) :: rig56, rig6, surf, surtot, xc, xg, xx
     real(kind=8) :: yc, yg, yy, zg, zz
+    real(kind=8), pointer :: coegro(:) => null()
+    real(kind=8), pointer :: coeno(:) => null()
+    character(len=8), pointer :: fongro(:) => null()
+    integer, pointer :: parno(:) => null()
+    real(kind=8), pointer :: surmai(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -121,17 +128,17 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
 !
     call getvr8('ENER_SOL', 'COEF_GROUP', iocc=1, nbval=0, nbret=ncg)
     if (ncg .ne. 0) then
-        call wkvect('&&RAIRE2.COEGRO', 'V V R', nbgr, icoegr)
-        call getvr8('ENER_SOL', 'COEF_GROUP', iocc=1, nbval=nbgr, vect=zr(icoegr),&
+        AS_ALLOCATE(vr=coegro, size=nbgr)
+        call getvr8('ENER_SOL', 'COEF_GROUP', iocc=1, nbval=nbgr, vect=coegro,&
                     nbret=ncg)
     else
         call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=0, nbret=ncf)
         if (ncf .eq. 0) then
             call utmess('F', 'MODELISA6_33')
         endif
-        call wkvect('&&RAIRE2.FONGRO', 'V V K8', nbgr, ifongr)
+        AS_ALLOCATE(vk8=fongro, size=nbgr)
         lfonc = .true.
-        call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=nbgr, vect=zk8(ifongr),&
+        call getvid('ENER_SOL', 'FONC_GROUP', iocc=1, nbval=nbgr, vect=fongro,&
                     nbret=nfg)
     endif
 !
@@ -147,16 +154,16 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
 24          continue
 22      continue
 20  end do
-    call wkvect('&&RAIRE2.COENO', 'V V R', noemax, icoef)
+    AS_ALLOCATE(vr=coeno, size=noemax)
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
 !
-    call wkvect('&&RAIRE2.PARNO', 'V V I', noemax, idno)
+    AS_ALLOCATE(vi=parno, size=noemax)
 !
 !
 !     CALCUL DES SURFACES ELEMENTAIRES ET DE LA SURFACE TOTALE
 !
-    call wkvect('&&RAIRE2.SURMAI', 'V V R', nbma, isurma)
+    AS_ALLOCATE(vr=surmai, size=nbma)
     im = 0
     surtot = zero
     do 21 i = 1, nbgr
@@ -171,7 +178,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
             hc = zero
             do 25 nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                zi(idno+inoe-1) = zi(idno+inoe-1) + 1
+                parno(inoe) = parno(inoe) + 1
                 x(nn) = zr(jcoor+3*(inoe-1)+1-1)
                 y(nn) = zr(jcoor+3*(inoe-1)+2-1)
                 z(nn) = zr(jcoor+3*(inoe-1)+3-1)
@@ -198,21 +205,21 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
             endif
             call provec(a, b, c)
             surf=ddot(3,c,1,c,1)
-            zr(isurma+im-1) = sqrt(surf)*0.5d0
+            surmai(im) = sqrt(surf)*0.5d0
             if (lfonc) then
                 u(1) = xg - xc
                 u(2) = yg - yc
                 u(3) = zg - hc
                 dist=ddot(3,u,1,u,1)
                 dist = sqrt(dist)
-                call fointe('F ', zk8(ifongr+i-1), 1, ['X'], [dist],&
+                call fointe('F ', fongro(i), 1, ['X'], [dist],&
                             coef, iret)
-                zr(isurma+im-1) = zr(isurma+im-1)*coef
+                surmai(im) = surmai(im)*coef
             else
-                zr(isurma+im-1) = zr(isurma+im-1)*zr(icoegr+i-1)
+                surmai(im) = surmai(im)*coegro(i)
             endif
-            surtot = surtot + zr(isurma+im-1)
-            zr(isurma+im-1) = zr(isurma+im-1)/nm
+            surtot = surtot + surmai(im)
+            surmai(im) = surmai(im)/nm
 23      continue
 21  end do
 !
@@ -228,9 +235,9 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do 35 nn = 1, nm
                 do 37 ij = 1, noemax
-                    if (zi(idno+ij-1) .eq. 0) goto 37
+                    if (parno(ij) .eq. 0) goto 37
                     if (zi(ldnm+nn-1) .eq. ij) then
-                        zr(icoef+ij-1) = zr(icoef+ij-1) + zr(isurma+ im-1)/surtot
+                        coeno(ij) = coeno(ij) + surmai(im)/surtot
                     endif
 37              continue
 35          continue
@@ -248,17 +255,17 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     rig46 = zero
     rig56 = zero
     do 50 ij = 1, noemax
-        if (zi(idno+ij-1) .eq. 0) goto 50
+        if (parno(ij) .eq. 0) goto 50
         ii = ii + 1
         xx = zr(jcoor+3*(ij-1)+1-1) - xg
         yy = zr(jcoor+3*(ij-1)+2-1) - yg
         zz = zr(jcoor+3*(ij-1)+3-1) - zg
-        rig4 = rig4 + (rigi(2)*zz**2+rigi(3)*yy**2)*zr(icoef+ij-1)
-        rig5 = rig5 + (rigi(1)*zz**2+rigi(3)*xx**2)*zr(icoef+ij-1)
-        rig6 = rig6 + (rigi(2)*xx**2+rigi(1)*yy**2)*zr(icoef+ij-1)
-        rig45 = rig45 - rigi(3)*xx*yy*zr(icoef+ij-1)
-        rig46 = rig46 - rigi(2)*xx*zz*zr(icoef+ij-1)
-        rig56 = rig56 - rigi(1)*yy*zz*zr(icoef+ij-1)
+        rig4 = rig4 + (rigi(2)*zz**2+rigi(3)*yy**2)*coeno(ij)
+        rig5 = rig5 + (rigi(1)*zz**2+rigi(3)*xx**2)*coeno(ij)
+        rig6 = rig6 + (rigi(2)*xx**2+rigi(1)*yy**2)*coeno(ij)
+        rig45 = rig45 - rigi(3)*xx*yy*coeno(ij)
+        rig46 = rig46 - rigi(2)*xx*zz*coeno(ij)
+        rig56 = rig56 - rigi(1)*yy*zz*coeno(ij)
 50  end do
     nbno = ii
     rig4 = rigi(4) - rig4
@@ -268,14 +275,14 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
 !
     ii = 0
     do 51 ij = 1, noemax
-        if (zi(idno+ij-1) .eq. 0) goto 51
+        if (parno(ij) .eq. 0) goto 51
         ii = ii + 1
-        r1 = rigi(1)*zr(icoef+ij-1)
-        r2 = rigi(2)*zr(icoef+ij-1)
-        r3 = rigi(3)*zr(icoef+ij-1)
-        r4 = rig4*zr(icoef+ij-1)
-        r5 = rig5*zr(icoef+ij-1)
-        r6 = rig6*zr(icoef+ij-1)
+        r1 = rigi(1)*coeno(ij)
+        r2 = rigi(2)*coeno(ij)
+        r3 = rigi(3)*coeno(ij)
+        r4 = rig4*coeno(ij)
+        r5 = rig5*coeno(ij)
+        r6 = rig6*coeno(ij)
         rignoe(6*(ii-1)+1) = r1
         rignoe(6*(ii-1)+2) = r2
         rignoe(6*(ii-1)+3) = r3
@@ -288,11 +295,11 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     1001 format(1x,'RAIDEURS DE ROTATION A REPARTIR:',/&
      &      1x,' KRX: ',1x,1pe12.5,' KRY: ',1x,1pe12.5,&
      &      ' KRZ: ',1x,1pe12.5)
-    call jedetr('&&RAIRE2.COEGRO')
-    call jedetr('&&RAIRE2.FONGRO')
-    call jedetr('&&RAIRE2.COENO')
-    call jedetr('&&RAIRE2.PARNO')
-    call jedetr('&&RAIRE2.SURMAI')
+    AS_DEALLOCATE(vr=coegro)
+    AS_DEALLOCATE(vk8=fongro)
+    AS_DEALLOCATE(vr=coeno)
+    AS_DEALLOCATE(vi=parno)
+    AS_DEALLOCATE(vr=surmai)
 !
     call jedema()
 end subroutine

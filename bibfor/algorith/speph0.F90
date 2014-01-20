@@ -23,6 +23,8 @@ subroutine speph0(nomu, table)
 #include "asterfort/utchdl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomu, table
 !-----------------------------------------------------------------------
@@ -48,8 +50,8 @@ subroutine speph0(nomu, table)
 !-----------------------------------------------------------------------
 !
     integer :: ibid, nbmod1, nbtrou, lnumor, nbmode, ilmode, im, imod1, iad
-    integer :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn, inoen
-    integer :: icmpn, nbmail, i, imain, inddl, inoeud, iddl, nupo, ivari, napex1
+    integer :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn
+    integer ::  nbmail, i,   inoeud, iddl, nupo, ivari, napex1
     integer :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
     integer :: isip, icham, nbn1, nbn2, tmod(1)
     integer :: i1, lnumi, lnumj, mxval, lrefe, lfreq, lrefes, lfreqs
@@ -65,6 +67,10 @@ subroutine speph0(nomu, table)
     character(len=24) :: chnumi, chnumj, chfreq
 !
     character(len=3) :: toutor
+    character(len=8), pointer :: maille_rep(:) => null()
+    character(len=8), pointer :: nocmp_rep(:) => null()
+    character(len=8), pointer :: noeud_rep(:) => null()
+    integer, pointer :: nume_ddl(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -206,10 +212,10 @@ subroutine speph0(nomu, table)
         call utmess('F', 'ALGORITH10_68')
     endif
     nbn = -nbn1
-    call wkvect('&&SPEPH0.NOEUD_REP', 'V V K8', nbn, inoen)
-    call wkvect('&&SPEPH0.NOCMP_REP', 'V V K8', nbn, icmpn)
-    call getvtx(' ', 'NOEUD', nbval=nbn, vect=zk8(inoen), nbret=ibid)
-    call getvtx(' ', 'NOM_CMP', nbval=nbn, vect=zk8(icmpn), nbret=ibid)
+    AS_ALLOCATE(vk8=noeud_rep, size=nbn)
+    AS_ALLOCATE(vk8=nocmp_rep, size=nbn)
+    call getvtx(' ', 'NOEUD', nbval=nbn, vect=noeud_rep, nbret=ibid)
+    call getvtx(' ', 'NOM_CMP', nbval=nbn, vect=nocmp_rep, nbret=ibid)
 !
     call getvtx(' ', 'MAILLE', nbval=0, nbret=nbmail)
     if (nbmail .ne. 0) then
@@ -217,21 +223,21 @@ subroutine speph0(nomu, table)
         if (nbn .ne. nbmail) then
             call utmess('F', 'ALGORITH10_69')
         endif
-        call wkvect('&&SPEPH0.MAILLE_REP', 'V V K8', nbn, imain)
-        call getvtx(' ', 'MAILLE', nbval=nbn, vect=zk8(imain), nbret=ibid)
+        AS_ALLOCATE(vk8=maille_rep, size=nbn)
+        call getvtx(' ', 'MAILLE', nbval=nbn, vect=maille_rep, nbret=ibid)
     endif
 !
 !     --- RECUPERATION DU NUMERO DU DDL ---
 !
     call rsexch('F', modmec, optch1, zi(ilmode), cham19,&
                 iret)
-    call wkvect('&&SPEPH0.NUME_DDL', 'V V I', nbn, inddl)
+    AS_ALLOCATE(vi=nume_ddl, size=nbn)
     call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
 !
     if (typcha(1:7) .eq. 'CHAM_NO') then
         do i = 1, nbn
-            noeud = zk8(inoen+i-1)
-            cmp = zk8(icmpn+i-1)
+            noeud = noeud_rep(i)
+            cmp = nocmp_rep(i)
             call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
                         iddl)
             if (inoeud .eq. 0) then
@@ -241,7 +247,7 @@ subroutine speph0(nomu, table)
                 valk(2) = noeud
                 call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
             endif
-            zi(inddl+i-1) = iddl
+            nume_ddl(i) = iddl
         end do
 !
     else if (typcha(1:9).eq.'CHAM_ELEM') then
@@ -252,9 +258,9 @@ subroutine speph0(nomu, table)
         nupo = 0
         ivari = 1
         do i = 1, nbn
-            maille = zk8(imain+i-1)
-            noeud = zk8(inoen+i-1)
-            cmp = zk8(icmpn+i-1)
+            maille = maille_rep(i)
+            noeud = noeud_rep(i)
+            cmp = nocmp_rep(i)
             call utchdl(cham19, noma, maille, noeud, nupo,&
                         0, ivari, cmp, iddl)
             if (iddl .eq. 0) then
@@ -263,7 +269,7 @@ subroutine speph0(nomu, table)
                 valk(3) = maille
                 call utmess('F', 'ALGORITH10_73', nk=3, valk=valk)
             endif
-            zi(inddl+i-1) = iddl
+            nume_ddl(i) = iddl
         end do
     else
         call utmess('F', 'CALCULEL_17')
@@ -314,7 +320,7 @@ subroutine speph0(nomu, table)
         call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
         do in = 1, nbn
             icham1 = icham + nbn* (imr-1) + in - 1
-            zr(icham1) = zr(isip+zi(inddl+in-1)-1)
+            zr(icham1) = zr(isip+nume_ddl(in)-1)
         end do
     end do
 !
@@ -329,7 +335,7 @@ subroutine speph0(nomu, table)
         if (typmec .eq. 'MODE_MECA_C') then
             do in = 1, nbn
                 icham1 = icham + napex1*nbn + nbn* (imr-1) + in - 1
-                zr(icham1) = dble(zc(isip+zi(inddl+in-1)-1))
+                zr(icham1) = dble(zc(isip+nume_ddl(in)-1))
             end do
 !  -------------------------------
 !  si base modale, alors les nume_ddl des differents modes peuvent
@@ -339,8 +345,8 @@ subroutine speph0(nomu, table)
             call dismoi('TYPE_SUPERVIS', cham19, 'CHAMP', repk=typcha)
             if (typcha(1:7) .eq. 'CHAM_NO') then
                 do in = 1, nbn
-                    noeud = zk8(inoen+in-1)
-                    cmp = zk8(icmpn+in-1)
+                    noeud = noeud_rep(in)
+                    cmp = nocmp_rep(in)
                     call posddl('CHAM_NO', cham19, noeud, cmp, inoeud,&
                                 iddl)
                     icham1 = icham + nbn* (imr-1) + in - 1
@@ -351,9 +357,9 @@ subroutine speph0(nomu, table)
                 nupo = 0
                 ivari = 1
                 do i = 1, nbn
-                    maille = zk8(imain+i-1)
-                    noeud = zk8(inoen+i-1)
-                    cmp = zk8(icmpn+i-1)
+                    maille = maille_rep(i)
+                    noeud = noeud_rep(i)
+                    cmp = nocmp_rep(i)
                     call utchdl(cham19, noma, maille, noeud, nupo,&
                                 0, ivari, cmp, iddl)
                     zr(icham1) = zr(isip+iddl-1)
@@ -363,7 +369,7 @@ subroutine speph0(nomu, table)
         else
             do in = 1, nbn
                 icham1 = icham + napex1*nbn + nbn* (imr-1) + in - 1
-                zr(icham1) = zr(isip+zi(inddl+in-1)-1)
+                zr(icham1) = zr(isip+nume_ddl(in)-1)
             end do
         endif
     end do
@@ -389,24 +395,24 @@ subroutine speph0(nomu, table)
                 table, zr(ifor), zr(ifoi))
 !
     call speph1(intphy, intmod, nomu, zr(icham), zr(ifor),&
-                zr(ifoi), zk8(inoen), zk8(icmpn), nbmr, nbn,&
+                zr(ifoi), noeud_rep, nocmp_rep, nbmr, nbn,&
                 nbpf)
 !
     call titre()
 !
     call jedetr('&&SPEPH0.NUMERO.ORDRE')
     call jedetr('&&SPEPH0.LISTEMODES')
-    call jedetr('&&SPEPH0.NUME_DDL')
+    AS_DEALLOCATE(vi=nume_ddl)
     call jedetr('&&SPEPH0_CHAM')
     call jedetr('&&SPEPH0.TEMP.FONR')
     call jedetr('&&SPEPH0.TEMP.FONI')
-    call jedetr('&&SPEPH0.NOEUD_REP')
-    call jedetr('&&SPEPH0.NOCMP_REP')
+    AS_DEALLOCATE(vk8=noeud_rep)
+    AS_DEALLOCATE(vk8=nocmp_rep)
     call jeexin('&&SPEPH0.LISTENOEEXC', iret)
     if (iret .ne. 0) call jedetr('&&SPEPH0.LISTENOEEXC')
     call jeexin('&&SPEPH0.LISTECMPEXC', iret)
     if (iret .ne. 0) call jedetr('&&SPEPH0.LISTECMPEXC')
-    if (nbmail .ne. 0) call jedetr('&&SPEPH0.MAILLE_REP')
+    AS_DEALLOCATE(vk8=maille_rep)
 !
     call jedema()
 end subroutine

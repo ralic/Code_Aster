@@ -33,6 +33,8 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: cesa, cesb, base, cesmoz, typces, mnogaz, celfpz
 ! ------------------------------------------------------------------
@@ -72,8 +74,8 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !     ------------------------------------------------------------------
     integer :: ima, ncmp, icmp
     integer :: jcesd, jcesv, jcesl, nbma, iret, nbsp, nbno, ico
-    integer :: iad, jnbpt, ino, isp, nbpg2, nbno2, iad1, jnbcmp
-    integer ::  jnbsp, ilcnx1, iacnx1, nbpg, ipg
+    integer :: iad,  ino, isp, nbpg2, nbno2, iad1
+    integer ::   ilcnx1, iacnx1, nbpg, ipg
     integer :: mnogal, mnogad,   nbno1, imaref
     integer ::  jces1d, jces1l, jces1v
     integer :: nbpt, nbpt1, nbsp1, ipt, ipt1, nbv
@@ -90,6 +92,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     character(len=8), pointer :: ces1k(:) => null()
     character(len=8), pointer :: nmnogak(:) => null()
     real(kind=8), pointer :: nmnogav(:) => null()
+    integer, pointer :: nbcmp(:) => null()
+    integer, pointer :: vnbpt(:) => null()
+    integer, pointer :: vnbsp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -148,23 +153,23 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !
 !     4. CALCUL DES OBJETS  '.NBPT','.NBSP' ET '.NBCMP'
 !     -----------------------------------------------------------------
-    call wkvect('&&CESCES.NBPT', 'V V I', nbma, jnbpt)
-    call wkvect('&&CESCES.NBSP', 'V V I', nbma, jnbsp)
-    call wkvect('&&CESCES.NBCMP', 'V V I', nbma, jnbcmp)
+    AS_ALLOCATE(vi=vnbpt, size=nbma)
+    AS_ALLOCATE(vi=vnbsp, size=nbma)
+    AS_ALLOCATE(vi=nbcmp, size=nbma)
 !
 !
     if (typces .eq. 'ELEM') then
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = 1
-            zi(jnbsp-1+ima) = 1
-            zi(jnbcmp-1+ima) = zi(jces1d-1+5+4* (ima-1)+3)
+            vnbpt(ima) = 1
+            vnbsp(ima) = 1
+            nbcmp(ima) = zi(jces1d-1+5+4* (ima-1)+3)
         end do
 !
     else if (typces.eq.'ELNO') then
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
-            zi(jnbsp-1+ima) = zi(jces1d-1+5+4* (ima-1)+2)
-            zi(jnbcmp-1+ima) = zi(jces1d-1+5+4* (ima-1)+3)
+            vnbpt(ima) = zi(ilcnx1+ima) - zi(ilcnx1+ima-1)
+            vnbsp(ima) = zi(jces1d-1+5+4* (ima-1)+2)
+            nbcmp(ima) = zi(jces1d-1+5+4* (ima-1)+3)
         end do
 !
     else if (typces.eq.'ELGA') then
@@ -173,9 +178,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
         ASSERT(iret.gt.0)
         call jeveuo(cesmod//'.CESD', 'L', vi=cemd)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = cemd(5+4* (ima-1)+1)
-            zi(jnbsp-1+ima) = zi(jces1d-1+5+4* (ima-1)+2)
-            zi(jnbcmp-1+ima) = zi(jces1d-1+5+4* (ima-1)+3)
+            vnbpt(ima) = cemd(5+4* (ima-1)+1)
+            vnbsp(ima) = zi(jces1d-1+5+4* (ima-1)+2)
+            nbcmp(ima) = zi(jces1d-1+5+4* (ima-1)+3)
         end do
 !
     else
@@ -186,7 +191,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !     5. CREATION DE CES2 :
 !     ---------------------------------------
     call cescre(base, ces2, typces, ma, nomgd,&
-                ncmp, cesc, zi(jnbpt), zi(jnbsp), zi(jnbcmp))
+                ncmp, cesc, vnbpt, vnbsp,nbcmp)
 !
     call jeveuo(ces2//'.CESD', 'L', jcesd)
     call jeveuo(ces2//'.CESV', 'E', jcesv)
@@ -377,9 +382,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !
 !     7- MENAGE :
 !     -----------
-    call jedetr('&&CESCES.NBPT')
-    call jedetr('&&CESCES.NBSP')
-    call jedetr('&&CESCES.NBCMP')
+    AS_DEALLOCATE(vi=vnbpt)
+    AS_DEALLOCATE(vi=vnbsp)
+    AS_DEALLOCATE(vi=nbcmp)
 !
 180 continue
 !

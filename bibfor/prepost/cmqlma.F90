@@ -31,6 +31,8 @@ subroutine cmqlma(main, maout, nbma, mailq)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbma, mailq(nbma)
     character(len=8) :: main, maout
@@ -68,11 +70,12 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !
     integer :: nbtyma
     parameter(nbtyma=27)
-    integer :: jdim, i, nbtma, jma, jtypm1, jtypm2, jconn1, jconn2
+    integer :: jdim, i, nbtma,  jtypm1, jtypm2, jconn1, jconn2
     integer :: tymal(nbtyma), num1, num2, nbnol(nbtyma), ityp, j, inom, nbnomx
     integer :: ndim, ij
     character(len=8) :: nomnoi
     character(len=24) :: connex, typma
+    integer, pointer :: maille(:) => null()
 !
 !     TYMAL: TYPE DES MAILLES APRES LINEARISATION (CF. CI-DESSUS)
 !     NBNOL: NOMBRE DE NOEUDS APRES LINEARISATION (CF. CI-DESSUS)
@@ -90,12 +93,12 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !     -----------------------------------------------------------
     call jeveuo(main//'.DIME', 'L', jdim)
     nbtma=zi(jdim+2)
-    call wkvect('&&CMQLMA.MAILLE', 'V V I', nbtma, jma)
+    AS_ALLOCATE(vi=maille, size=nbtma)
     do i = 1, nbtma
-        zi(jma+i-1)=0
+        maille(i)=0
     end do
     do i = 1, nbma
-        zi(jma+mailq(i)-1)=1
+        maille(1+mailq(i)-1)=1
     end do
 !
 !     CREATION DES OBJETS  '.TYPMAIL', '.CONNEX':
@@ -120,7 +123,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !        '.TYPMAIL':
 !        ----------
 !        SI LA MAILLE N'EST PAS A LINEARISER
-        if (zi(jma+i-1) .eq. 0) then
+        if (maille(i) .eq. 0) then
             zi(jtypm2+i-1)=zi(jtypm1+i-1)
             num2=num1
 !        SI LA MAILLE EST A LINEARISER
@@ -146,7 +149,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !     -- RETASSAGE  DE CONNEX (QUI A ETE ALLOUEE TROP GRANDE) :
     call jeccta(connex)
 !
-    call jedetr('&&CMQLMA.MAILLE')
+    AS_DEALLOCATE(vi=maille)
 !
     call jedema()
 !

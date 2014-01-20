@@ -31,6 +31,8 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: mo, ma
     integer :: nm, nl, newn(*), oldn(*)
@@ -55,9 +57,11 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !     -- SI LE MODELE N'A PAS DE SOUS-STRUCTURES ON RESSORT :
 !     --------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iaavap, iamail, iaoldt, iasssa, iatypl, ico
+    integer :: i,  iamail,  iasssa, iatypl, ico
     integer :: icol, il, ima, ino, inomax, inomin
     integer :: iold, iprem, iret, itypi, nbnm, nbsma, nbssa
+    integer, pointer :: avap(:) => null()
+    integer, pointer :: oldt(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -74,12 +78,12 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !     -- L'OBJET SUIVANT CONTIENDRA EN REGARD DES NUMEROS DE NOEUDS
 !        PHYSIQUES DU MAILLAGE UN ENTIER (+1, OU 0) POUR DIRE
 !        SI CE NOEUD EST PRECEDE OU SUIVI (+1) DE NOEUDS DE LAGRANGE :
-    call wkvect('&&RELAGM.AVAP', 'V V I', nm, iaavap)
+    AS_ALLOCATE(vi=avap, size=nm)
 !
 !
 !     -- .OLDT EST UN .OLDN TEMPORAIRE QUE L'ON RECOPIERA A LA FIN
     nbnoma= nm+nl
-    call wkvect('&&RELAGM.OLDT', 'V V I', nbnoma, iaoldt)
+    AS_ALLOCATE(vi=oldt, size=nbnoma)
 !
 !
 !     -- BOUCLE SUR LES (SUPER)MAILLES
@@ -133,8 +137,8 @@ subroutine relagm(mo, ma, nm, nl, newn,&
             end do
 !
             if (exilag) then
-                zi(iaavap-1+inomin)= 1
-                zi(iaavap-1+inomax)= 1
+                avap(inomin)= 1
+                avap(inomax)= 1
             endif
 !
         endif
@@ -150,28 +154,28 @@ subroutine relagm(mo, ma, nm, nl, newn,&
     do i = 1, nm
         iold=oldn(i)
         if (iold .eq. 0) goto 32
-        if (zi(iaavap-1+iold) .eq. 1) then
+        if (avap(iold) .eq. 1) then
 !
             do il = 1, nl
                 if (newn(nm+il) .eq. -iold) then
                     ico = ico+1
-                    zi(iaoldt-1+ico)=nm+il
+                    oldt(ico)=nm+il
                 endif
             end do
 !
             ico = ico+1
-            zi(iaoldt-1+ico)=iold
+            oldt(ico)=iold
 !
             do il = 1, nl
                 if (newn(nm+il) .eq. +iold) then
                     ico = ico+1
-                    zi(iaoldt-1+ico)=nm+il
+                    oldt(ico)=nm+il
                 endif
             end do
 !
         else
             ico = ico+1
-            zi(iaoldt-1+ico)=iold
+            oldt(ico)=iold
         endif
     end do
  32 continue
@@ -185,15 +189,15 @@ subroutine relagm(mo, ma, nm, nl, newn,&
     end do
 !
     do i = 1, nbnore
-        oldn(i) = zi(iaoldt-1+i)
-        newn(zi(iaoldt-1+i)) =i
+        oldn(i) = oldt(i)
+        newn(oldt(i)) =i
     end do
 !
 !
 999 continue
 !
-    call jedetr('&&RELAGM.AVAP')
-    call jedetr('&&RELAGM.OLDT')
+    AS_DEALLOCATE(vi=avap)
+    AS_DEALLOCATE(vi=oldt)
 !
     call jedema()
 end subroutine

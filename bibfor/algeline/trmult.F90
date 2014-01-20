@@ -21,6 +21,8 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: modsta, mailla
     integer :: numexi, neq, iddeeq
@@ -68,10 +70,11 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id, idgn, idmst, idno, ii, in
+    integer :: i, id,  idmst, idno, ii, in
     integer :: iret, ldgn, nb, nbd, nbdir, nbgr, nbno
     integer :: nbtrou, nbv
     real(kind=8) :: xd
+    character(len=24), pointer :: group_no(:) => null()
 !-----------------------------------------------------------------------
     data cmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 !     ------------------------------------------------------------------
@@ -120,18 +123,18 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                     iarg, 0, kbid, nbgr)
         nbgr = - nbgr
         if (nbgr .ne. 0) then
-            call wkvect('&&TRMULT.GROUP_NO', 'V V K24', nbgr, idgn)
+            AS_ALLOCATE(vk24=group_no, size=nbgr)
             call getvem(mailla, 'GROUP_NO', 'EXCIT', 'GROUP_NO', numexi,&
-                        iarg, nbgr, zk24(idgn), nbv)
+                        iarg, nbgr, group_no, nbv)
 !           --- ECLATE LE GROUP_NO EN NOEUD ---
-            call compno(mailla, nbgr, zk24(idgn), nbno)
+            call compno(mailla, nbgr, group_no, nbno)
             call wkvect('&&TRMULT.NOEUD', 'V V K8', nbno, idno)
             magrno = mailla//'.GROUPENO'
             manono = mailla//'.NOMNOE'
             ii = -1
             do 20 i = 1, nbgr
-                call jelira(jexnom(magrno, zk24(idgn+i-1)), 'LONUTI', nb)
-                call jeveuo(jexnom(magrno, zk24(idgn+i-1)), 'L', ldgn)
+                call jelira(jexnom(magrno, group_no(i)), 'LONUTI', nb)
+                call jeveuo(jexnom(magrno, group_no(i)), 'L', ldgn)
                 do 22 in = 0, nb-1
                     call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)
                     ii = ii + 1
@@ -189,7 +192,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     call zerlag(neq, zi(iddeeq), vectr=pside(1))
 !
     call jedetr('&&TRMULT.NOEUD')
-    call jedetr('&&TRMULT.GROUP_NO')
+    AS_DEALLOCATE(vk24=group_no)
 !
     call jedema()
 end subroutine

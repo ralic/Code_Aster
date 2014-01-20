@@ -33,6 +33,8 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=14) :: nu14
     character(len=2) :: base
@@ -94,10 +96,11 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !
 !-----------------------------------------------------------------------
     integer :: i, iadg, iddl, ieq, ier
-    integer :: ilag, j, jdeeq, jdelg, jlblq, jncmp, jnueq
+    integer :: ilag, j, jdeeq, jdelg,  jncmp, jnueq
     integer :: jprno, jtypl, k, l, nblag, nbligr, nbnl
     integer :: nbnm, nbno, ncmpmx, nddlb, nec, nob, nucmp
     integer :: nuno
+    integer, pointer :: lnobloq(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     numeqa=nu14//'.NUME'
@@ -178,20 +181,20 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !     -- ON VERIFIE QUE LES DDLS BLOQUES NE SONT PAS BLOQUES
 !        PLUSIEURS FOIS (ON NE REGARDE QUE LES 10 1ERES CMPS):
 !     -------------------------------------------------------
-    call wkvect('&&NUDEEQ.LNOBLOQ', 'V V I', nbnm*10, jlblq)
+    AS_ALLOCATE(vi=lnobloq, size=nbnm*10)
     do ieq = 1, neq
         nuno = zi(jdeeq-1+2* (ieq-1)+1)
         nucmp = zi(jdeeq-1+2* (ieq-1)+2)
         if ((nuno.gt.0) .and. (nucmp.lt.0) .and. (nucmp.ge.-10)) then
             nucmp = -nucmp
-            zi(jlblq-1+ (nuno-1)*10+nucmp) = zi(jlblq-1+ (nuno-1)*10+ nucmp) + 1
+            lnobloq((nuno-1)*10+nucmp) = lnobloq((nuno-1)*10+ nucmp) + 1
         endif
     end do
 !
     ier = 0
     do nuno = 1, nbnm
         do nucmp = 1, 10
-            if (zi(jlblq-1+ (nuno-1)*10+nucmp) .gt. 2) then
+            if (lnobloq((nuno-1)*10+nucmp) .gt. 2) then
                 ier = ier + 1
                 call jenuno(jexnum(ma//'.NOMNOE', nuno), nono)
                 call jeveuo(jexnum('&CATA.GD.NOMCMP', gds), 'L', jncmp)
@@ -203,7 +206,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
         end do
     end do
     ASSERT(ier.le.0)
-    call jedetr('&&NUDEEQ.LNOBLOQ')
+    AS_DEALLOCATE(vi=lnobloq)
 !
 !
     call jedema()

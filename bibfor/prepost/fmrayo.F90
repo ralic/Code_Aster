@@ -4,6 +4,8 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
 #include "asterfort/fmdevi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: sigm(*), rayon
 !     ------------------------------------------------------------------
@@ -30,8 +32,9 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
 !     RAYON   : OUT : VALEUR RAYON SPHERE CIRCONSCRITE AU CHARGEMENT
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: idev, nbr, i, j, n2
+    integer ::  nbr, i, j, n2
     real(kind=8) :: eps, x, sig(6), rau(6), p, pmac, a
+    real(kind=8), pointer :: deviat(:) => null()
 !     ------------------------------------------------------------------
 !
     eps = 1.d-3
@@ -39,8 +42,8 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
 !
 !------- CALCUL DU DEVIATEUR -------
 !
-    call wkvect('&&FMRAYO.DEVIAT', 'V V R', nbfonc*nbptot, idev)
-    call fmdevi(nbfonc, nbptot, sigm, zr(idev))
+    AS_ALLOCATE(vr=deviat, size=nbfonc*nbptot)
+    call fmdevi(nbfonc, nbptot, sigm,deviat)
 !
 !---- CALCUL DE LA SPHERE CIRCONSCRITE AU CHARGEMENT ----
 !
@@ -50,7 +53,7 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
     do 10 j = 1, nbfonc
         rau(j) = 0.d0
         do 20 i = 1, nbptot
-            rau(j) = rau(j) + zr(idev+(i-1)*nbfonc+j-1)
+            rau(j) = rau(j) + deviat(1+(i-1)*nbfonc+j-1)
 20      continue
         rau(j) = rau(j) / nbptot
 10  end do
@@ -63,7 +66,7 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
     n2 = n2 + 1
     if (n2 .gt. nbptot) n2 = n2 - nbptot
     do 40 j = 1, nbfonc
-        sig(j) = zr(idev+(n2-1)*nbfonc+j-1)-rau(j)
+        sig(j) = deviat(1+(n2-1)*nbfonc+j-1)-rau(j)
 40  end do
     if (nbfonc .eq. 6) then
         pmac = (&
@@ -87,6 +90,6 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
     endif
     if (nbr .lt. nbptot) goto 30
 !
-    call jedetr('&&FMRAYO.DEVIAT')
+    AS_DEALLOCATE(vr=deviat)
 !
 end subroutine

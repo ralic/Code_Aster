@@ -65,19 +65,22 @@ subroutine spline(x, y, n, dy1, dyn,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     real(kind=8) :: x(*), y(*), dy1, dyn, d2y(*)
     integer :: n, iret
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i, jw
+    integer :: i
     real(kind=8) :: bignum, p, qn, sig, un
+    real(kind=8), pointer :: work(:) => null()
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
     call jemarq()
-    call wkvect('&&SPLINE.WORK', 'V V R', n, jw)
+    AS_ALLOCATE(vr=work, size=n)
 !
     iret = 0
     if (n .lt. 3) then
@@ -89,21 +92,21 @@ subroutine spline(x, y, n, dy1, dyn,&
 !
     if (dble(abs(dy1)) .gt. bignum) then
         d2y(1) = 0.0d0
-        zr(jw) = 0.0d0
+        work(1) = 0.0d0
     else
         d2y(1) = -0.5d0
-        zr(jw) = 3.0d0/(x(2)-x(1)) * ( (y(2)-y(1))/(x(2)-x(1)) - dy1 )
+        work(1) = 3.0d0/(x(2)-x(1)) * ( (y(2)-y(1))/(x(2)-x(1)) - dy1 )
     endif
 !
     do 10 i = 2, n-1
         sig = (x(i)-x(i-1))/(x(i+1)-x(i-1))
         p = sig * d2y(i-1) + 2.0d0
         d2y(i) = (sig-1.0d0) / p
-        zr(jw+i-1) = (&
+        work(i) = (&
                      6.0d0 * (&
                      (&
                      y(i+1)-y(i))/(x(i+1)-x(i)) - (y(i)- y(i-1))/(x(i)-x(i-1)) ) / (x(i+1)-x(i-1)&
-                     ) - sig * zr(jw+i-2&
+                     ) - sig * work(1+i-2&
                      )&
                      ) / p
 10  end do
@@ -116,13 +119,13 @@ subroutine spline(x, y, n, dy1, dyn,&
         un = 3.0d0/(x(n)-x(n-1)) * ( dyn - (y(n)-y(n-1))/(x(n)-x(n-1)) )
     endif
 !
-    d2y(n) = (un-qn*zr(jw+n-2))/(qn*d2y(n-1)+1.0d0)
+    d2y(n) = (un-qn*work(1+n-2))/(qn*d2y(n-1)+1.0d0)
     do 20 i = n-1, 1, -1
-        d2y(i) = d2y(i) * d2y(i+1) + zr(jw+i-1)
+        d2y(i) = d2y(i) * d2y(i+1) + work(i)
 20  end do
 !
 9999  continue
-    call jedetr('&&SPLINE.WORK')
+    AS_DEALLOCATE(vr=work)
     call jedema()
 !
 ! --- FIN DE SPLINE.

@@ -15,6 +15,8 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbsup, tcosup(nbsup, *)
     character(len=8) :: nomsup(nbsup, *)
@@ -48,10 +50,11 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 !-----------------------------------------------------------------------
     integer :: ia, ibid, ic, icas, id, idep, ifm
     integer :: ii, il, ino, iocc, iordr, iq, is
-    integer :: jcas, jdir, jkno, jno, jnoe, jnref
+    integer :: jcas, jdir, jkno, jno,  jnref
     integer :: jord, jref, jtyp, lnod, nbno, nboc, ncas
     integer :: ndep, nucas, nume
     real(kind=8) :: epsima, vale
+    character(len=8), pointer :: noeuds(:) => null()
 !-----------------------------------------------------------------------
     epsima = r8vide()
     call jemarq()
@@ -82,34 +85,34 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     iq = 1
     il = 1
     ia = 1
-    call wkvect('&&ASIMPR.NOEUDS', 'V V K8', 3*nbsup, jnoe)
+    AS_ALLOCATE(vk8=noeuds, size=3*nbsup)
     ino = 1
     do 40 id = 1, 3
         do 42 is = 1, nbsup
             if (tcosup(is,1) .eq. 1) then
                 do 44 ii = 1, ino
-                    if (nomsup(is,id) .eq. zk8(jnoe+ii-1)) then
+                    if (nomsup(is,id) .eq. noeuds(ii)) then
                         goto 42
                     endif
 44              continue
-                zk8(jnoe+ino-1) = nomsup(is,id)
-                chainq(iq+5 : iq+12)= zk8(jnoe+ino-1)
+                noeuds(ino) = nomsup(is,id)
+                chainq(iq+5 : iq+12)= noeuds(ino)
                 ino = ino+1
                 iq = iq+9
             else if (tcosup(is,1).eq.2) then
                 do 46 ii = 1, ino
-                    if (nomsup(is,id) .eq. zk8(jnoe+ino-1)) goto 42
+                    if (nomsup(is,id) .eq. noeuds(ino)) goto 42
 46              continue
-                zk8(jnoe+ino-1)= nomsup(is,id)
+                noeuds(ino)= nomsup(is,id)
                 chainl(il+5 : il+12)= nomsup(is,id)
                 ino = ino+1
                 il = il+9
             else if (tcosup(is,1).eq.3) then
                 do 48 ii = 1, ino
-                    if (nomsup(is,id) .eq. zk8(jnoe+ino-1)) goto 42
+                    if (nomsup(is,id) .eq. noeuds(ino)) goto 42
 48              continue
                 chaina(ia+5 : ia+12)= nomsup(is,id)
-                zk8(jnoe+ino-1)= nomsup(is,id)
+                noeuds(ino)= nomsup(is,id)
                 ino = ino+1
                 ia = ia+9
             endif
@@ -216,7 +219,7 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 ! --- MENAGE
 !
     call jedetr('&&ASECON.NORD')
-    call jedetr('&&ASIMPR.NOEUDS')
+    AS_DEALLOCATE(vk8=noeuds)
 !
     call jedema()
 end subroutine

@@ -23,6 +23,8 @@ subroutine chveno(fonree, noma, nomo)
 #include "asterfort/utmess.h"
 #include "asterfort/utmotp.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=4) :: fonree
     character(len=*) :: noma, nomo
@@ -60,7 +62,7 @@ subroutine chveno(fonree, noma, nomo)
     integer :: imfac, nbmfac, n, ndim, ndim1, vali
     integer :: iocc, nocc, ic, nbmc, iobj, nbobj, ima, impb, nbmail
     integer :: numail, numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
-    integer :: jcoor, jtyma, jgroup, jgro, jnma, jmab, jpri, jbor
+    integer :: jcoor, jtyma,  jgro,  jmab, jpri, jbor
     integer :: if1, if2, if3, imf1, imf2, ipres, idnor, idtan
     integer :: norien, norie1, norie2, jlima, nbmamo
     real(kind=8) :: dnor
@@ -71,6 +73,8 @@ subroutine chveno(fonree, noma, nomo)
     character(len=24) :: grmama, mailma, nogr, nomail
     character(len=24) :: valk(2)
     integer :: iarg
+    integer, pointer :: nume_maille(:) => null()
+    character(len=24), pointer :: objet(:) => null()
 !
     data mcft / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  ,&
      &            'EFFE_FOND'  , 'ZONE'  /
@@ -164,12 +168,12 @@ subroutine chveno(fonree, noma, nomo)
                 if (nbobj .eq. 0) goto 210
 !
                 nbobj = -nbobj
-                call wkvect('&&CHVENO.OBJET', 'V V K24', nbobj, jgroup)
+                AS_ALLOCATE(vk24=objet, size=nbobj)
                 call getvem(noma, typmc(ic), motfac, valmc(ic), iocc,&
-                            iarg, nbobj, zk24(jgroup), nbobj)
+                            iarg, nbobj, objet, nbobj)
                 if (typmc(ic) .eq. 'GROUP_MA') then
                     do iobj = 1, nbobj
-                        nogr = zk24(jgroup-1+iobj)
+                        nogr = objet(iobj)
                         if (motfac .eq. 'ZONE') then
 !
 ! ---             RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
@@ -276,11 +280,11 @@ subroutine chveno(fonree, noma, nomo)
 ! ----------CAS DES MAILLES :
 !           ---------------
                 else
-                    call wkvect('&&CHVENO.NUME_MAILLE', 'V V I', nbobj, jnma)
+                    AS_ALLOCATE(vi=nume_maille, size=nbobj)
                     do iobj = 1, nbobj
-                        nomail = zk24(jgroup-1+iobj)
+                        nomail = objet(iobj)
                         call jenonu(jexnom(nomma//'.NOMMAI', nomail), numa)
-                        zi(jnma+iobj-1) = numa
+                        nume_maille(iobj) = numa
                         if (motfac .eq. 'ZONE') then
                             call jeveuo(nomma//'.TYPMAIL', 'L', idtyma)
                             nutyma = zi(idtyma+numa-1)
@@ -308,10 +312,10 @@ subroutine chveno(fonree, noma, nomo)
                     norie2 = 0
                     if (mcfl(ic)) then
                         call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbobj, jmab)
-                        call chbord(nomo, nbobj, zi(jnma), zi(jmab), nbmapr,&
+                        call chbord(nomo, nbobj, nume_maille, zi(jmab), nbmapr,&
                                     nbmabo)
                         if (nbmapr .eq. nbobj .and. nbmabo .eq. 0) then
-                            call ornorm(nomma, zi(jnma), nbobj, reorie, norie1)
+                            call ornorm(nomma, nume_maille, nbobj, reorie, norie1)
                             elseif ( (nbmapr.eq.0 .and. nbmabo.eq.nbobj)&
                         .or. (motfac .eq. 'ZONE') ) then
                             if (motfac .eq. 'ZONE') then
@@ -321,11 +325,11 @@ subroutine chveno(fonree, noma, nomo)
                                 call utmamo(nommo, nbmamo, limamo)
                                 call jeveuo(limamo, 'L', jlima)
                             endif
-                            call orilma(nomma, ndim, zi(jnma), nbobj, norie1,&
+                            call orilma(nomma, ndim, nume_maille, nbobj, norie1,&
                                         ntrait, reorie, nbmamo, zi( jlima))
                             call jedetr(limamo)
                         else if (nbmapr.eq.0 .and. nbmabo.eq.0) then
-                            call ornorm(nomma, zi(jnma), nbobj, reorie, norie1)
+                            call ornorm(nomma, nume_maille, nbobj, reorie, norie1)
                         else
                             call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, jpri)
                             call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, jbor)
@@ -334,10 +338,10 @@ subroutine chveno(fonree, noma, nomo)
                             do impb = 1, nbobj
                                 if (zi(jmab+impb-1) .eq. 0) then
                                     nbmapr = nbmapr + 1
-                                    zi(jpri+nbmapr-1) = zi(jnma+impb- 1)
+                                    zi(jpri+nbmapr-1) = nume_maille(impb)
                                 else
                                     nbmabo = nbmabo + 1
-                                    zi(jbor+nbmabo-1) = zi(jnma+impb- 1)
+                                    zi(jbor+nbmabo-1) = nume_maille(impb)
                                 endif
                             end do
                             call ornorm(nomma, zi(jpri), nbmapr, reorie, norie1)
@@ -348,7 +352,7 @@ subroutine chveno(fonree, noma, nomo)
                         endif
                         call jedetr('&&CHVENO.MAILLE_BORD')
                     else
-                        call ornorm(nomma, zi(jnma), nbobj, reorie, norie2)
+                        call ornorm(nomma, nume_maille, nbobj, reorie, norie2)
                     endif
                     norien = norie1 + norie2
                     if (norien .ne. 0) then
@@ -358,8 +362,8 @@ subroutine chveno(fonree, noma, nomo)
                     endif
                 endif
 211             continue
-                call jedetr('&&CHVENO.NUME_MAILLE')
-                call jedetr('&&CHVENO.OBJET')
+                AS_DEALLOCATE(vi=nume_maille)
+                AS_DEALLOCATE(vk24=objet)
 210             continue
             end do
 200         continue

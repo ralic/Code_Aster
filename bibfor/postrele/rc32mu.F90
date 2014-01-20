@@ -37,8 +37,10 @@ subroutine rc32mu()
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
-    integer :: jcont, ncmp, jcorp
+    integer ::  ncmp, jcorp
     parameter  ( ncmp = 6 )
     real(kind=8) :: prec, momen0, momen1
     complex(kind=8) :: cbid
@@ -47,6 +49,7 @@ subroutine rc32mu()
     character(len=16) :: motclf, valek
     character(len=24) :: abscur
     character(len=24) :: valk(7)
+    real(kind=8), pointer :: contraintes(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -141,7 +144,7 @@ subroutine rc32mu()
                 k8b)
     call jeveuo(abscur, 'L', jabsc)
 !
-    call wkvect('&&RC32MU.CONTRAINTES', 'V V R', nbabsc, jcont)
+    AS_ALLOCATE(vr=contraintes, size=nbabsc)
 !
     nocmp(1) = 'SIXX'
     nocmp(2) = 'SIYY'
@@ -172,7 +175,7 @@ subroutine rc32mu()
             do 14 k = 1, nbabsc
                 call tbliva(tbsig(i), 1, valek, [ibid], zr(jabsc+k-1),&
                             [cbid], k8b, crit, [prec], nocmp(j),&
-                            k8b, ibid, zr(jcont+ k-1), cbid, k8b,&
+                            k8b, ibid, contraintes(k), cbid, k8b,&
                             iret)
                 if (iret .ne. 0) then
                     valk (1) = tbsig(i)
@@ -183,10 +186,10 @@ subroutine rc32mu()
 14          continue
 !
             l = ncmp*(i-1) + j
-            zr(jmuno-1+l) = zr(jcont)
-            zr(jmune-1+l) = zr(jcont+nbabsc-1)
+            zr(jmuno-1+l) = contraintes(1)
+            zr(jmune-1+l) = contraintes(nbabsc)
 !
-            call rc32my(nbabsc, zr(jabsc), zr(jcont), momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
 !
             l = 13*ncmp + ncmp*(i-1) + j
             zr(jmuno-1+l) = momen0 - 0.5d0*momen1
@@ -205,7 +208,7 @@ subroutine rc32mu()
 10  end do
 !
     call jedetr(abscur)
-    call jedetr('&&RC32MU.CONTRAINTES')
+    AS_DEALLOCATE(vr=contraintes)
 !
     call jedema()
 end subroutine

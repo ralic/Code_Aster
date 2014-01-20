@@ -34,6 +34,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: modele, fondf, result, symech
     character(len=8) :: noeud
@@ -95,7 +97,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     parameter   (nbinmx=50,nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
-    integer :: i, ibid, ific, inorma, init, ifm, niv, jnor, jbasfo
+    integer :: i, ibid,  inorma, init, ifm, niv, jnor, jbasfo
     integer :: iadrma, iadrff, icoode, iadrco, iadrno
     integer :: lobj2, ndimte, nunoff, ndim, nchin, ixfem, jfond, numfon
     integer :: iret, livi(nbmxpa), nbchar
@@ -117,6 +119,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=24) :: ligrmo, nomno, norma
     character(len=24) :: obj1, obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
+    real(kind=8), pointer :: valg(:) => null()
 !
     data chvarc/'&&CAKG2D.CH_VARC_R'/
     data chvref/'&&CAKG2D.CHVREF'/
@@ -289,7 +292,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     baseco = modele//'.TOPOFAC.BA'
 !
     ndimte = 5
-    call wkvect('&&CAKG2D.VALG', 'V V R8', ndimte, ific)
+    AS_ALLOCATE(vr=valg, size=ndimte)
     lpaout(1) = 'PGTHETA'
     lchout(1) = '&&FICGELE'
 !
@@ -381,29 +384,29 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     call mesomm(lchout(1), 5, vr=fic)
 !
     do i = 1, 5
-        zr(ific+i-1) = fic(i)
+        valg(i) = fic(i)
     end do
 !
     if (typmo(1:4) .eq. 'AXIS') then
         do i = 1, 5
-            zr(ific+i-1) = zr(ific+i-1)/rcmp(1)
+            valg(i) = valg(i)/rcmp(1)
         end do
     endif
 !
     if (symech .eq. 'OUI') then
-        zr(ific) = 2.d0*zr(ific)
-        zr(ific+1) = 2.d0*zr(ific+1)
-        zr(ific+2) = 0.d0
-        zr(ific+3) = 2.d0*zr(ific+3)
-        zr(ific+4) = 0.d0
+        valg(1) = 2.d0*valg(1)
+        valg(1+1) = 2.d0*valg(1+1)
+        valg(1+2) = 0.d0
+        valg(1+3) = 2.d0*valg(1+3)
+        valg(1+4) = 0.d0
     endif
 !
-    girwin = zr(ific+1)*zr(ific+1) + zr(ific+2)*zr(ific+2)
+    girwin = valg(1+1)*valg(1+1) + valg(1+2)*valg(1+2)
 !
 ! IMPRESSION DE K1,K2,G ET ECRITURE DANS LA TABLE RESU
 !
     if (niv .ge. 2) then
-        call impfic(zr(ific), zk8(iadrno), rcmp, ifm, ixfem)
+        call impfic(valg, zk8(iadrno), rcmp, ifm, ixfem)
     endif
 !
     if ((ixfem.ne.0) .and. (option(1:8).eq.'CALC_K_G') .and. (.not.lmoda)) then
@@ -420,9 +423,9 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         call tbajvr(result, nbprup, 'INST', time, livr)
     endif
 !
-    call tbajvr(result, nbprup, 'K1', zr(ific+3), livr)
-    call tbajvr(result, nbprup, 'K2', zr(ific+4), livr)
-    call tbajvr(result, nbprup, 'G', zr(ific), livr)
+    call tbajvr(result, nbprup, 'K1', valg(1+3), livr)
+    call tbajvr(result, nbprup, 'K2', valg(1+4), livr)
+    call tbajvr(result, nbprup, 'G', valg(1), livr)
     call tbajvr(result, nbprup, 'G_IRWIN', girwin, livr)
     call tbajli(result, nbprup, noprup, livi, livr,&
                 livc, livk, 0)
@@ -435,7 +438,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     call detrsd('CHAMP_GD', chepsi)
     call detrsd('CHAMP_GD', chpesa)
     call detrsd('CHAMP_GD', chrota)
-    call jedetr('&&CAKG2D.VALG')
+    AS_DEALLOCATE(vr=valg)
     call jedetr('&&CAKG2D.FOND')
 !
     call jedema()

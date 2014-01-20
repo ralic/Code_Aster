@@ -36,6 +36,8 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 #include "asterfort/jexatr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: cartz, cesz, base, cesmoz, typces
     character(len=1) :: kstop
@@ -68,8 +70,8 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !     ------------------------------------------------------------------
     integer :: ima, iret, nec, ncmpmx, jdesc, jvale, ngrmx, ncmp
     integer ::  jcesd, jcesc, jcesv, jcesl, nbma, ient, debgd, deb1, ico
-    integer :: cmp, ieq, iad, cmp2,   jnbpt, nbpt, ipt
-    integer ::  jnbsp, jconx2, isp, nbsp,  kcmp
+    integer :: cmp, ieq, iad, cmp2,    nbpt, ipt
+    integer ::   jconx2, isp, nbsp,  kcmp
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: cart, ces, cesmod
@@ -78,6 +80,8 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
     integer, pointer :: ptma(:) => null()
     character(len=8), pointer :: nom_cmp(:) => null()
     integer, pointer :: corr2(:) => null()
+    integer, pointer :: vnbpt(:) => null()
+    integer, pointer :: vnbsp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -96,33 +100,33 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !
 !     1-CALCUL DES OBJETS  '&&CARCES.NBPT','&CARCES.NBSP'
 !     -----------------------------------------------------------------
-    call wkvect('&&CARCES.NBPT', 'V V I', nbma, jnbpt)
-    call wkvect('&&CARCES.NBSP', 'V V I', nbma, jnbsp)
+    AS_ALLOCATE(vi=vnbpt, size=nbma)
+    AS_ALLOCATE(vi=vnbsp, size=nbma)
 !
 !
     call exisd('CHAM_ELEM_S', cesmod, iret)
     if (iret .gt. 0) then
         call jeveuo(cesmod//'.CESD', 'L', vi=cemd)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = cemd(5+4* (ima-1)+1)
-            zi(jnbsp-1+ima) = cemd(5+4* (ima-1)+2)
+            vnbpt(ima) = cemd(5+4* (ima-1)+1)
+            vnbsp(ima) = cemd(5+4* (ima-1)+2)
         end do
     else
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = 1
-            zi(jnbsp-1+ima) = 1
+            vnbpt(ima) = 1
+            vnbsp(ima) = 1
         end do
     endif
 !
 !
     if (typces .eq. 'ELEM') then
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = 1
-            zi(jnbsp-1+ima) = 1
+            vnbpt(ima) = 1
+            vnbsp(ima) = 1
         end do
     else if (typces.eq.'ELNO') then
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = zi(jconx2+ima) - zi(jconx2+ima-1)
+            vnbpt(ima) = zi(jconx2+ima) - zi(jconx2+ima-1)
         end do
     endif
 !
@@ -162,7 +166,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !     5- CREATION DE CES :
 !     ---------------------------------------
     call cescre(base, ces, typces, ma, nomgd,&
-                ncmp, nom_cmp, zi(jnbpt), zi(jnbsp), [-ncmp])
+                ncmp, nom_cmp, vnbpt, vnbsp, [-ncmp])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESC', 'L', jcesc)
@@ -241,8 +245,8 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 !     8- MENAGE :
 !     -----------
     call jedetr(cart//'.PTMA')
-    call jedetr('&&CARCES.NBPT')
-    call jedetr('&&CARCES.NBSP')
+    AS_DEALLOCATE(vi=vnbpt)
+    AS_DEALLOCATE(vi=vnbsp)
     call jedetr('&&CARCES.NOM_CMP')
     call jedetr('&&CARCES.CORR1')
     call jedetr('&&CARCES.CORR2')

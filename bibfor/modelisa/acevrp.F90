@@ -10,6 +10,8 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbocc, noemax
     character(len=8) :: noma
@@ -42,9 +44,11 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
     character(len=8) :: k8b
     integer :: iarg
 !-----------------------------------------------------------------------
-    integer :: i, idgm, idno2, ii, ij, in, inoe
+    integer :: i,   ii, ij, in, inoe
     integer :: ioc, ldgm, ldnm, nb, nbgr, nbgrmx, nbv
     integer :: nm, nn, noema2, noemaf
+    character(len=24), pointer :: group_ma(:) => null()
+    integer, pointer :: parno2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nbgrmx = 0
@@ -57,7 +61,7 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
         nbgr = -nbgr
         nbgrmx = max(nbgrmx,nbgr)
 10  end do
-    call wkvect('&&ACEVRP.GROUP_MA', 'V V K24', nbgrmx, idgm)
+    AS_ALLOCATE(vk24=group_ma, size=nbgrmx)
     noemax = 0
     noemaf = 0
     do 11 ioc = 1, nbocc
@@ -66,12 +70,12 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
                     iarg, 0, k8b, nbgr)
         nbgr = -nbgr
         call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc,&
-                    iarg, nbgr, zk24(idgm), nbv)
+                    iarg, nbgr, group_ma, nbv)
 !
 !        --- ON ECLATE LES GROUP_MA ---
         do 20 i = 1, nbgr
-            call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
-            call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
+            call jelira(jexnom(magrma, group_ma(i)), 'LONUTI', nb)
+            call jeveuo(jexnom(magrma, group_ma(i)), 'L', ldgm)
             do 22 in = 0, nb-1
                 call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
                 call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
@@ -82,29 +86,29 @@ subroutine acevrp(nbocc, noma, noemax, noemaf)
 22          continue
 20      continue
         noemaf = max(noemaf,noema2)
-        call wkvect('&&ACEVRP.PARNO2', 'V V I', noema2, idno2)
+        AS_ALLOCATE(vi=parno2, size=noema2)
         do 41 i = 1, nbgr
-            call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
-            call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
+            call jelira(jexnom(magrma, group_ma(i)), 'LONUTI', nb)
+            call jeveuo(jexnom(magrma, group_ma(i)), 'L', ldgm)
             do 43 in = 0, nb-1
                 call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
                 call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
                 do 45 nn = 1, nm
                     inoe = zi(ldnm+nn-1)
-                    zi(idno2+inoe-1) = zi(idno2+inoe-1) + 1
+                    parno2(inoe) = parno2(inoe) + 1
 45              continue
 43          continue
 41      continue
         ii = 0
         do 51 ij = 1, noema2
-            if (zi(idno2+ij-1) .eq. 0) goto 51
+            if (parno2(ij) .eq. 0) goto 51
             ii = ii + 1
 51      continue
         noema2 = ii
         noemax = noemax + noema2
-        call jedetr('&&ACEVRP.PARNO2')
+        AS_DEALLOCATE(vi=parno2)
 11  end do
-    call jedetr('&&ACEVRP.GROUP_MA')
+    AS_DEALLOCATE(vk24=group_ma)
 !
     call jedema()
 end subroutine

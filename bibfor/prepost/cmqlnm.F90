@@ -27,6 +27,8 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 #include "asterfort/jexatr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbma, nbnm
     character(len=8) :: main
@@ -69,11 +71,13 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !
     logical :: isasup
 !
-    integer :: jtyp, iacnx1, ilcnx1, jdime, ii, nbmato, jtabma, numma, iacnx2
+    integer :: jtyp, iacnx1, ilcnx1, jdime, ii, nbmato,  numma, iacnx2
     integer :: ilcnx2, nbtyma, nbnoto, jj, jmaqu, nbnosu, numamo, nbnomi
-    integer :: ponomi, jco, nunomi, nbm1, kk, numa2, jnomi, jtabno
+    integer :: ponomi, jco, nunomi, nbm1, kk, numa2, jnomi
     parameter(nbtyma=27)
     integer :: nbnmtm(nbtyma), ppnm(nbtyma)
+    integer, pointer :: tab_ma(:) => null()
+    integer, pointer :: tab_no(:) => null()
 !
 !     NBNMTM: NOMBRE DE NOEUDS MILIEU PAR TYPE DE MAILLE
 !     PPNM:   POSITION DU PREMIER NOEUD MILIEU PAR TYPE DE MAILLE
@@ -94,19 +98,19 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
     nbmato = zi(jdime+2)
     nbnoto = zi(jdime)
 !
-    call wkvect('&&CMQLNM.TAB_MA', 'V V I', nbmato, jtabma)
+    AS_ALLOCATE(vi=tab_ma, size=nbmato)
     do 10 ii = 1, nbmato
-        zi(jtabma+ii-1) = 0
+        tab_ma(ii) = 0
 10  end do
 !
     do 20 ii = 1, nbma
         numma = zi(jmaqu+ii-1)
-        zi(jtabma+numma-1) = 1
+        tab_ma(numma) = 1
 20  end do
 !
-    call wkvect('&&CMQLNM.TAB_NO', 'V V I', nbnoto, jtabno)
+    AS_ALLOCATE(vi=tab_no, size=nbnoto)
     do 70 ii = 1, nbnoto
-        zi(jtabno+ii-1) = 0
+        tab_no(ii) = 0
 70  end do
 !
 !     CREATION DE LA CONNECTIVITE INVERSE
@@ -127,7 +131,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
             nunomi = zi(jco+ponomi-1+jj-1)
 !
 !         SI LE NOEUD A DEJA ETE TRAITE ON NE LE TRAITE PAS
-            if (zi(jtabno+nunomi-1) .ne. 0) goto 40
+            if (tab_no(nunomi) .ne. 0) goto 40
 !
             nbm1 = zi(ilcnx2+nunomi)-zi(ilcnx2-1+nunomi)
 !
@@ -137,18 +141,18 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
                 numa2 = zi(iacnx2+zi(ilcnx2-1+nunomi)-1+kk-1)
 !           SI UNE DE CES MAILLES N'EST PAS A MODIFIER ALORS ON
 !           NE DOIT PAS SUPPRIMER LE NOEUD
-                if (zi(jtabma+numa2-1) .eq. 0) isasup = .false.
+                if (tab_ma(numa2) .eq. 0) isasup = .false.
 50          continue
             if (isasup) then
-                zi(jtabno+nunomi-1) = 2
+                tab_no(nunomi) = 2
                 nbnosu = nbnosu + 1
             else
-                zi(jtabno+nunomi-1) = 1
+                tab_no(nunomi) = 1
             endif
 40      continue
 30  end do
 !
-    call jedetr('&&CMQLNM.TAB_MA')
+    AS_DEALLOCATE(vi=tab_ma)
 !
     if (nbnosu .eq. 0) then
         call utmess('F', 'MODELISA4_3')
@@ -159,7 +163,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !
     nbnosu = 0
     do 60 ii = 1, nbnoto
-        if (zi(jtabno+ii-1) .eq. 2) then
+        if (tab_no(ii) .eq. 2) then
             nbnosu = nbnosu+1
             zi(jnomi+nbnosu-1) = ii
         endif
@@ -167,7 +171,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !
     ASSERT(nbnosu.eq.nbnm)
 !
-    call jedetr('&&CMQLNM.TAB_NO')
+    AS_DEALLOCATE(vi=tab_no)
 !
 !
     call jedema()

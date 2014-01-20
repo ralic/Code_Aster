@@ -25,6 +25,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
 !
     character(len=8) :: masse, noma, basemo
@@ -63,10 +65,10 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadmo1, iadmo2, iamor, ibid, ic, idbase
-    integer :: iddl, iddl0, idgm, idgm2, idgm3, idgm4, idgm5
-    integer :: idno, ifmis, ii, ij, imess, in
-    integer :: ino, inoe, iparno, j, j2, jcoor
+    integer :: i,   iamor, ibid, ic, idbase
+    integer :: iddl, iddl0,  idgm2, idgm3, idgm4, idgm5
+    integer ::  ifmis, ii, ij, imess, in
+    integer :: ino, inoe,  j, j2, jcoor
     integer :: jtyp, k, l, ldgm, ldnm, nb
     integer :: nbgr, nbgr2, nbgr3, nbgr4, nbgr5, nbma, nbma2
     integer :: nbma3, nbma4, nbma5, nbmode, nbmods, nbmodt, nbno
@@ -74,6 +76,11 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     integer :: nm, nn, nti, nu
     real(kind=8) :: zero
     complex(kind=8) :: cbid
+    character(len=24), pointer :: group_solstru(:) => null()
+    integer, pointer :: noeud(:) => null()
+    integer, pointer :: parno(:) => null()
+    real(kind=8), pointer :: vect1(:) => null()
+    real(kind=8), pointer :: vect2(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -126,9 +133,9 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_INTERF', 1,&
                 iarg, 0, k8b, nbgr)
     nbgr = -nbgr
-    call wkvect('&&IREDM1.GROUP_SOLSTRU', 'V V K24', nbgr, idgm)
+    AS_ALLOCATE(vk24=group_solstru, size=nbgr)
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_INTERF', 1,&
-                iarg, nbgr, zk24(idgm), nbv)
+                iarg, nbgr, group_solstru, nbv)
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_STR', 1,&
                 iarg, 0, k8b, nbgr2)
     nbgr2 = -nbgr2
@@ -173,7 +180,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
 !
-    call wkvect('&&IREDM1.PARNO', 'V V I', nbnoeu, iparno)
+    AS_ALLOCATE(vi=parno, size=nbnoeu)
 !
     nbma = 0
     nbma2 = 0
@@ -181,8 +188,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     nbma4 = 0
     nbma5 = 0
     do i = 1, nbgr
-        call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
-        call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
+        call jelira(jexnom(magrma, group_solstru(i)), 'LONUTI', nb)
+        call jeveuo(jexnom(magrma, group_solstru(i)), 'L', ldgm)
         nbma = nbma + nb
         do in = 0, nb-1
             call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
@@ -192,7 +199,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
+                parno(inoe) = parno(inoe) + 1
             end do
         end do
     end do
@@ -208,7 +215,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
+                parno(inoe) = parno(inoe) + 1
             end do
         end do
     end do
@@ -224,7 +231,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
+                parno(inoe) = parno(inoe) + 1
             end do
         end do
     end do
@@ -240,7 +247,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
-                zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
+                parno(inoe) = parno(inoe) + 1
             end do
         end do
     end do
@@ -251,23 +258,23 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         do in = 0, nb-1
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             inoe = zi(ldnm)
-            zi(iparno+inoe-1) = zi(iparno+inoe-1) + 1
+            parno(inoe) = parno(inoe) + 1
         end do
     end do
 !
     nbno = 0
     do ij = 1, nbnoeu
-        if (zi(iparno+ij-1) .eq. 0) goto 105
+        if (parno(ij) .eq. 0) goto 105
         nbno = nbno + 1
 105     continue
     end do
 !
-    call wkvect('&&IREDM1.NOEUD', 'V V I', nbno, idno)
+    AS_ALLOCATE(vi=noeud, size=nbno)
     ii = 0
     do ij = 1, nbnoeu
-        if (zi(iparno+ij-1) .eq. 0) goto 106
+        if (parno(ij) .eq. 0) goto 106
         ii = ii + 1
-        zi(idno+ii-1) = ij
+        noeud(ii) = ij
 106     continue
     end do
 !
@@ -281,7 +288,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     write(imess,'(1X,I6,1X,''NOEUDS'')') nbno
     write(ifmis,'(''NOEU'',1X,I6)') nbno
     do ino = 1, nbno
-        inoe = zi(idno+ino-1)
+        inoe = noeud(ino)
         ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
         write(ifmis,'(3(1X,1PE12.5))') ( zr(jcoor+3*(inoe-1)+in-1) ,&
         in=1,3 )
@@ -289,8 +296,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     write(imess,'(1X,I6,1X,''ELEMENTS SOLSTRU'')') nbma
     write(ifmis,'(''ELEM'',1X,I6)') nbma
     do i = 1, nbgr
-        call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
-        call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
+        call jelira(jexnom(magrma, group_solstru(i)), 'LONUTI', nb)
+        call jeveuo(jexnom(magrma, group_solstru(i)), 'L', ldgm)
         do in = 0, nb-1
             do k = 1, 8
                 tabl(k) = 0
@@ -300,7 +307,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 do ij = 1, nbno
-                    if (zi(ldnm+nn-1) .eq. zi(idno+ij-1)) tab2(nn) = ij
+                    if (zi(ldnm+nn-1) .eq. noeud(ij)) tab2(nn) = ij
                 end do
                 if (nm .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .le. 3) tabl(2*nn-1) = tab2(nn)
@@ -325,7 +332,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 do ij = 1, nbno
-                    if (zi(ldnm+nn-1) .eq. zi(idno+ij-1)) tab2(nn) = ij
+                    if (zi(ldnm+nn-1) .eq. noeud(ij)) tab2(nn) = ij
                 end do
                 if (nm .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .le. 3) tabl(2*nn-1) = tab2(nn)
@@ -350,7 +357,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 do ij = 1, nbno
-                    if (zi(ldnm+nn-1) .eq. zi(idno+ij-1)) tab2(nn) = ij
+                    if (zi(ldnm+nn-1) .eq. noeud(ij)) tab2(nn) = ij
                 end do
                 if (nm .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .le. 3) tabl(2*nn-1) = tab2(nn)
@@ -375,7 +382,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do nn = 1, nm
                 do ij = 1, nbno
-                    if (zi(ldnm+nn-1) .eq. zi(idno+ij-1)) tab2(nn) = ij
+                    if (zi(ldnm+nn-1) .eq. noeud(ij)) tab2(nn) = ij
                 end do
                 if (nm .le. 4) tabl(2*nn-1) = tab2(nn)
                 if (nm .eq. 6 .and. nn .le. 3) tabl(2*nn-1) = tab2(nn)
@@ -394,7 +401,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         do in = 0, nb-1
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do ij = 1, nbno
-                if (zi(ldnm) .eq. zi(idno+ij-1)) inoe = ij
+                if (zi(ldnm) .eq. noeud(ij)) inoe = ij
             end do
             write(ifmis,'(1X,I6)') inoe
         end do
@@ -406,22 +413,22 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 !
 ! --- ALLOCATION VECTEUR DE TRAVAIL
 !
-    call wkvect('&&IREDM1.VECT1', 'V V R', neq, iadmo1)
-    call wkvect('&&IREDM1.VECT2', 'V V R', neq, iadmo2)
+    AS_ALLOCATE(vr=vect1, size=neq)
+    AS_ALLOCATE(vr=vect2, size=neq)
 !
     if (typi(1:5) .ne. 'CRAIG' .or. impmec .eq. 'OUI') then
         do j = 1, nbmode
-            call dcopy(neq, zr(idbase+(j-1)*neq), 1, zr(iadmo1), 1)
+            call dcopy(neq, zr(idbase+(j-1)*neq), 1, vect1, 1)
             write(ifmis,'(''MODE DYNA INTER'',1X,I6)') j
             do ino = 1, nbno
-                inoe = zi(idno+ino-1)
+                inoe = noeud(ino)
                 iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
                 iddl0 = iddl+1
                 if (iddl0 .eq. 0) then
                     write(ifmis,1100) zero,zero,zero,zero,zero,zero
                 else
-                    write(ifmis,1100) ( zr(iadmo1+iddl+ic-1), ic=1,&
+                    write(ifmis,1100) ( vect1(1+iddl+ic-1), ic=1,&
                     ncmp )
                 endif
             end do
@@ -447,17 +454,17 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     if (typi(1:5) .ne. 'CRAIG' .or. impmod .eq. 'OUI') then
         do j = 1, nbmods
             j2 = j + nbmode
-            call dcopy(neq, zr(idbase+(j2-1)*neq), 1, zr(iadmo2), 1)
+            call dcopy(neq, zr(idbase+(j2-1)*neq), 1, vect2, 1)
             write(ifmis,'(''MODE STAT INTER'',1X,I6)') j
             do ino = 1, nbno
-                inoe = zi(idno+ino-1)
+                inoe = noeud(ino)
                 iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 ) - 1
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
                 iddl0 = iddl+1
                 if (iddl0 .eq. 0) then
                     write(ifmis,1100) zero,zero,zero,zero,zero,zero
                 else
-                    write(ifmis,1100) ( zr(iadmo2+iddl+ic-1) , ic=1,&
+                    write(ifmis,1100) ( vect2(1+iddl+ic-1) , ic=1,&
                     ncmp )
                 endif
             end do
@@ -512,16 +519,16 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 ! --- MENAGE
 !
     call detrsd('CHAM_NO', '&&IREDM1.CHAMNO')
-    call jedetr('&&IREDM1.GROUP_SOLSTRU')
+    AS_DEALLOCATE(vk24=group_solstru)
     call jedetr('&&IREDM1.GROUP_FLUSTRU')
     call jedetr('&&IREDM1.GROUP_FLUSOL')
     call jedetr('&&IREDM1.GROUP_LIBRE')
     call jedetr('&&IREDM1.GROUP_CONTROL')
-    call jedetr('&&IREDM1.PARNO')
-    call jedetr('&&IREDM1.NOEUD')
+    AS_DEALLOCATE(vi=parno)
+    AS_DEALLOCATE(vi=noeud)
     call jedetr('&&IREDM1.BASEMO')
-    call jedetr('&&IREDM1.VECT1')
-    call jedetr('&&IREDM1.VECT2')
+    AS_DEALLOCATE(vr=vect1)
+    AS_DEALLOCATE(vr=vect2)
 !
     call jedema()
 end subroutine

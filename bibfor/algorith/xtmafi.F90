@@ -33,6 +33,8 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nfiss, nbma, ndim
     character(len=8) :: noma, fiss(nfiss)
     character(len=24) :: lismai, mesmai
@@ -60,10 +62,12 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 !
 !
 !
-    integer :: ifiss, kk, jgrp, nmaenr, i, ima, jma, cpt, iret
-    integer :: jtmdim, jtypma, ndime, jmad, jmai, mxstac
+    integer :: ifiss, kk, jgrp, nmaenr, i, ima,  cpt, iret
+    integer :: jtmdim, jtypma, ndime, jmad,  mxstac
     character(len=8) :: nomail
     character(len=24) :: nommai, grp(nfiss, 3)
+    integer, pointer :: temi(:) => null()
+    character(len=8), pointer :: temp(:) => null()
 !
     parameter (mxstac=100)
 !
@@ -94,9 +98,9 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 10  end do
 !
 !     CREATION DE LA LISTE TEMPORAIRE
-    call wkvect('&&XTMAFI.TEMP', 'V V K8', cpt, jma)
+    AS_ALLOCATE(vk8=temp, size=cpt)
 !     CREATION DE LA LISTE TEMPORAIRE
-    call wkvect('&&XTMAFI.TEMI', 'V V I', cpt, jmai)
+    AS_ALLOCATE(vi=temi, size=cpt)
 !
 !     REMPLISSAGE DE LA LISTE
     nbma = 0
@@ -119,8 +123,8 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
                     if ((ndim.eq.ndime) .or. (ndim.eq.0)) then
                         call jenuno(jexnum(nommai, ima), nomail)
                         nbma =nbma + 1
-                        zk8(jma-1+nbma) = nomail
-                        zi(jmai-1+nbma) = ima
+                        temp(nbma) = nomail
+                        temi(nbma) = ima
                     endif
 120              continue
 !
@@ -137,17 +141,17 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 !     CREATION DE LA LISTE DEFINITIVE
     call wkvect(mesmai, 'V V K8', nbma, jmad)
     do 200 i = 1, nbma
-        zk8(jmad-1+i) = zk8(jma-1+i)
+        zk8(jmad-1+i) = temp(i)
 200  end do
 !
 !     CREATION DE LA LISTE DEFINITIVE
     call wkvect(lismai, 'V V I', nbma, jmad)
     do 201 i = 1, nbma
-        zi(jmad-1+i) = zi(jmai-1+i)
+        zi(jmad-1+i) = temi(i)
 201  end do
 !
-    call jedetr('&&XTMAFI.TEMP')
-    call jedetr('&&XTMAFI.TEMI')
+    AS_DEALLOCATE(vk8=temp)
+    AS_DEALLOCATE(vi=temi)
 !
     call jedema()
 end subroutine

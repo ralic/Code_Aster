@@ -21,6 +21,8 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 #include "asterfort/numel2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nupo, ivari, iddl, nusp
     character(len=*) :: cham19, nomma, nomail, nonoeu, nocmp1
@@ -64,7 +66,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     integer :: vali(2)
     integer ::   nec, icmp, ncmpmx, iancmp, ima
     integer :: ino, iaconx, nbno, ipo, nupo2, igr, iel
-    integer :: imolo, jmolo, ispt, jlpt, jlcupt, nbpt, ipt, ico
+    integer :: imolo, jmolo, ispt, jlpt,  nbpt, ipt, ico
     integer :: k, iadg, kcmp, cumu, nbspt, adiel, lgcata, ncdyn
     character(len=1) :: aof
     character(len=24) :: valk(2)
@@ -74,6 +76,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     logical :: diff, trouve, nogran
     integer, pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
+    integer, pointer :: long_pt_cumu(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -233,7 +236,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
             goto 999
         endif
         call wkvect('&&UTCHDL.LONG_PT', 'V V I', nbpt, jlpt)
-        call wkvect('&&UTCHDL.LONG_PT_CUMU', 'V V I', nbpt, jlcupt)
+        AS_ALLOCATE(vi=long_pt_cumu, size=nbpt)
 !
 !         -- CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT
 !            ET DU CUMUL SUR LES POINTS PRECEDENTS :
@@ -259,7 +262,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !
         cumu = 0
         do ipt = 1, nbpt
-            zi(jlcupt-1+ipt) = cumu
+            long_pt_cumu(ipt) = cumu
             cumu = cumu + zi(jlpt-1+ipt)
         end do
 !
@@ -274,7 +277,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
                     ico = ico + 1
 !
 !
-                    iddl = adiel - 1 + nbspt*zi(jlcupt-1+ipt) + (ispt-1)*zi(jlpt-1+ipt) + ico
+                    iddl = adiel - 1 + nbspt*long_pt_cumu(ipt) + (ispt-1)*zi(jlpt-1+ipt) + ico
                     if ((ipt.eq.nupo2) .and. (kcmp.eq.icmp)) goto 60
 !
                 endif
@@ -316,7 +319,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !
 999 continue
     call jedetr('&&UTCHDL.LONG_PT')
-    call jedetr('&&UTCHDL.LONG_PT_CUMU')
+    AS_DEALLOCATE(vi=long_pt_cumu)
     call jedetr('&&UTCHDL.N_CMP')
 !
     call jedema()

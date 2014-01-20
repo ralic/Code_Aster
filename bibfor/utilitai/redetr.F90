@@ -14,6 +14,8 @@ subroutine redetr(matelz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerosd.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: matelz
 ! person_in_charge: jacques.pellet at edf.fr
@@ -41,11 +43,13 @@ subroutine redetr(matelz)
 !     IN/OUT  : MATELZ = NOM DE LA SD MATR_ELEM A NETTOYER
 !
 !
-    integer ::  iret1, iexi, iexiav, jtemp, jadet
+    integer ::  iret1, iexi, iexiav
     integer :: izero, ico, k, nb1, nbdet, nb1av
     logical :: ldetr
     character(len=19) :: matele, resuel
     character(len=24), pointer :: relr(:) => null()
+    integer, pointer :: adetr(:) => null()
+    character(len=24), pointer :: tempor(:) => null()
 !
     call jemarq()
 !
@@ -78,8 +82,8 @@ subroutine redetr(matelz)
 !     -- CREATION DES OBJETS TEMPORAIRES DE TRAVAIL
 !        ET DU BOOLEEN POUR DESTRUCTION A LA SORTIE
     ldetr=.true.
-    call wkvect('&&REDETR.TEMPOR', 'V V K24', nb1, jtemp)
-    call wkvect('&&REDETR.ADETR', 'V V I', nb1, jadet)
+    AS_ALLOCATE(vk24=tempor, size=nb1)
+    AS_ALLOCATE(vi=adetr, size=nb1)
 !
 !     -- ON EXAMINE LES RESUELEM CANDIDATS A LA DESTRUCTION :
 !        ADETR(K)=1 : LE NOM EST ' '
@@ -89,18 +93,18 @@ subroutine redetr(matelz)
 !     REMARQUE : LES CAS 1 ET 2 N'EXISTENT PAS ENCORE
 !                J'ESPERE QU'ILS N'ARRIVERONT JAMAIS
     do 10,k=1,nb1
-    zi(jadet-1+k)=0
+    adetr(k)=0
     resuel=relr(k)(1:19)
     if (resuel .eq. ' ') then
         ASSERT(.false.)
-        zi(jadet-1+k)=1
+        adetr(k)=1
         goto 10
     endif
 !
 !       -- EXISTENCE DU RESU_ELEM ?
     call exisd('RESUELEM', resuel, iret1)
     if (iret1 .eq. 0) then
-        zi(jadet-1+k)=2
+        adetr(k)=2
         ASSERT(.false.)
         goto 10
     endif
@@ -112,9 +116,9 @@ subroutine redetr(matelz)
     if (zerosd('RESUELEM',resuel)) izero=0
     call asmpi_comm_vect('MPI_MAX', 'I', sci=izero)
     if (izero .eq. 0) then
-        zi(jadet-1+k)=3
+        adetr(k)=3
     else
-        zi(jadet-1+k)=0
+        adetr(k)=0
     endif
     10 end do
 !
@@ -122,7 +126,7 @@ subroutine redetr(matelz)
 !     -- ON COMPTE LES RESUELEM A DETRUIRE :
     nbdet=0
     do 20,k=1,nb1
-    if (zi(jadet-1+k) .eq. 3) nbdet=nbdet+1
+    if (adetr(k) .eq. 3) nbdet=nbdet+1
     20 end do
     if (nbdet .eq. 0) goto 60
 !
@@ -132,7 +136,7 @@ subroutine redetr(matelz)
     nbdet=min(nbdet,nb1-1)
     ico=0
     do 30,k=nb1,1,-1
-    if (zi(jadet-1+k) .eq. 3) then
+    if (adetr(k) .eq. 3) then
         ico=ico+1
         if (ico .gt. nbdet) goto 31
         resuel = relr(k)(1:19)
@@ -149,22 +153,22 @@ subroutine redetr(matelz)
     resuel=relr(k)(1:19)
     if (resuel .ne. ' ') then
         ico=ico+1
-        zk24(jtemp-1+ico) = resuel
+        tempor(ico) = resuel
     endif
     40 end do
     ASSERT(ico.gt.0)
 !
     call jeecra(matele//'.RELR', 'LONUTI', ico)
     do 50,k=1,ico
-    relr(k) = zk24(jtemp-1+k)
+    relr(k) = tempor(k)
     50 end do
 !
 60  continue
 !
 !     -- DESTRUCTION DES OBJETS TEMPORAIRES SI BESOIN
     if (ldetr) then
-        call jedetr('&&REDETR.TEMPOR')
-        call jedetr('&&REDETR.ADETR')
+        AS_DEALLOCATE(vk24=tempor)
+        AS_DEALLOCATE(vi=adetr)
     endif
 !
     call jedema()

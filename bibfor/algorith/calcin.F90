@@ -41,6 +41,8 @@ subroutine calcin(option, max, may, maz, model,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
     integer :: ipres, i, j
     real(kind=8) :: mij
@@ -49,9 +51,12 @@ subroutine calcin(option, max, may, maz, model,&
 !--------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: imatx, imaty, imatz, imodx, imody, imodz, ivecx
-    integer :: ivecy, ivecz, nbpres
+    integer :: imatx, imaty, imatz, imodx, imody, imodz
+    integer ::   nbpres
     real(kind=8) :: rx, ry, rz
+    real(kind=8), pointer :: vectx(:) => null()
+    real(kind=8), pointer :: vecty(:) => null()
+    real(kind=8), pointer :: vectz(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(modx//'.VALE', 'L', imodx)
@@ -60,8 +65,8 @@ subroutine calcin(option, max, may, maz, model,&
     call jeveuo(veprj//'.VALE', 'L', ipres)
     call jelira(veprj//'.VALE', 'LONMAX', nbpres)
 !
-    call wkvect('&&CALCIN.VECTX', 'V V R', nbpres, ivecx)
-    call wkvect('&&CALCIN.VECTY', 'V V R', nbpres, ivecy)
+    AS_ALLOCATE(vr=vectx, size=nbpres)
+    AS_ALLOCATE(vr=vecty, size=nbpres)
 !
 ! --- RECUPERATION DES DESCRIPTEURS DE MATRICES ASSEMBLEES MAX ET MAY
 !
@@ -73,22 +78,22 @@ subroutine calcin(option, max, may, maz, model,&
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-    call mrmult('ZERO', imatx, zr(imodx), zr(ivecx), 1,&
+    call mrmult('ZERO', imatx, zr(imodx), vectx, 1,&
                 .true.)
-    call mrmult('ZERO', imaty, zr(imody), zr(ivecy), 1,&
+    call mrmult('ZERO', imaty, zr(imody), vecty, 1,&
                 .true.)
 !
 !--PRODUITS SCALAIRES VECTEURS PRESSION PAR MAX*MODX ET MAY*MODY
 !
-    rx= ddot(nbpres,zr(ipres), 1,zr(ivecx),1)
-    ry= ddot(nbpres,zr(ipres), 1,zr(ivecy),1)
+    rx= ddot(nbpres,zr(ipres), 1,vectx,1)
+    ry= ddot(nbpres,zr(ipres), 1,vecty,1)
 !
 !
 !---------------- MENAGE SUR LA VOLATILE ---------------------------
 !
 !
-    call jedetr('&&CALCIN.VECTX')
-    call jedetr('&&CALCIN.VECTY')
+    AS_DEALLOCATE(vr=vectx)
+    AS_DEALLOCATE(vr=vecty)
 !
     call detrsd('CHAM_NO', modx)
     call detrsd('CHAM_NO', mody)
@@ -102,13 +107,13 @@ subroutine calcin(option, max, may, maz, model,&
     if (model .eq. '3D') then
 !
         call jeveuo(modz//'.VALE', 'L', imodz)
-        call wkvect('&&CALCIN.VECTZ', 'V V R', nbpres, ivecz)
+        AS_ALLOCATE(vr=vectz, size=nbpres)
         call mtdscr(maz)
         call jeveuo(maz(1:19)//'.&INT', 'E', imatz)
-        call mrmult('ZERO', imatz, zr(imodz), zr(ivecz), 1,&
+        call mrmult('ZERO', imatz, zr(imodz), vectz, 1,&
                     .true.)
-        rz= ddot(nbpres,zr(ipres), 1,zr(ivecz),1)
-        call jedetr('&&CALCIN.VECTZ')
+        rz= ddot(nbpres,zr(ipres), 1,vectz,1)
+        AS_DEALLOCATE(vr=vectz)
         call detrsd('CHAM_NO', modz)
         mij = rx+ry+rz
 !

@@ -63,6 +63,8 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
 #include "asterfort/mrmult.h"
 #include "asterc/r8pi.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: imat(2), ind, ninc, nd, h, nbpt, nchoc
     character(len=14) :: xcdl, parcho, xus, xeng
     real(kind=8) :: e
@@ -72,8 +74,12 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
     real(kind=8) :: pi
     real(kind=8) :: omega, alpha, jeu, rayon, origx, origy, ratio
     integer :: ix, iy, idy, imdy, iky
-    integer :: ius, ieng, k, icdl, neq, iye, idye, ikye, imdye, i
+    integer :: ius, ieng, k, icdl, neq,     i
     integer :: ityp, inddl, ireg, ijeu, iraid, iorig, nddl, nddlx, nddly
+    real(kind=8), pointer :: dye(:) => null()
+    real(kind=8), pointer :: kye(:) => null()
+    real(kind=8), pointer :: mdye(:) => null()
+    real(kind=8), pointer :: ye(:) => null()
 !
     call jemarq()
 !
@@ -100,10 +106,10 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
     call wkvect('&&MNLENG.MDY', 'V V R', nd, imdy)
     call wkvect('&&MNLENG.KY', 'V V R', nd, iky)
 !
-    call wkvect('&&MNLENG.YE', 'V V R', neq, iye)
-    call wkvect('&&MNLENG.DYE', 'V V R', neq, idye)
-    call wkvect('&&MNLENG.KYE', 'V V R', neq, ikye)
-    call wkvect('&&MNLENG.MDYE', 'V V R', neq, imdye)
+    AS_ALLOCATE(vr=ye, size=neq)
+    AS_ALLOCATE(vr=dye, size=neq)
+    AS_ALLOCATE(vr=kye, size=neq)
+    AS_ALLOCATE(vr=mdye, size=neq)
     do 100 ind = 1, nbpt-1
         call dscal(nd*(2*h+1), 0.d0, zr(ix), 1)
         call dscal(nd, 0.d0, zr(iy), 1)
@@ -131,21 +137,21 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE K*Y ET M*DY
 ! ----------------------------------------------------------------------
-        call dscal(nd, 0.d0, zr(iye), 1)
-        call dscal(nd, 0.d0, zr(idye), 1)
-        call dscal(nd, 0.d0, zr(ikye), 1)
-        call dscal(nd, 0.d0, zr(imdye), 1)
+        call dscal(nd, 0.d0, ye, 1)
+        call dscal(nd, 0.d0, dye, 1)
+        call dscal(nd, 0.d0, kye, 1)
+        call dscal(nd, 0.d0, mdye, 1)
         i=0
         do 20 k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
-                zr(iye-1+k)=zr(iy-1+i)
-                zr(idye-1+k)=zr(idy-1+i)
+                ye(k)=zr(iy-1+i)
+                dye(k)=zr(idy-1+i)
             endif
 20      continue
-        call mrmult('ZERO', imat(1), zr(iye), zr(ikye), 1,&
+        call mrmult('ZERO', imat(1), ye, kye, 1,&
                     .false.)
-        call mrmult('ZERO', imat(2), zr(idye), zr(imdye), 1,&
+        call mrmult('ZERO', imat(2), dye, mdye, 1,&
                     .false.)
         call dscal(nd, 0.d0, zr(iky), 1)
         call dscal(nd, 0.d0, zr(imdy), 1)
@@ -153,8 +159,8 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
         do 30 k = 1, neq
             if (zi(icdl-1+k) .eq. 0) then
                 i=i+1
-                zr(iky-1+i)=zr(ikye-1+k)
-                zr(imdy-1+i)=zr(imdye-1+k)
+                zr(iky-1+i)=kye(k)
+                zr(imdy-1+i)=mdye(k)
             endif
 30      continue
         e=ddot(nd, zr(iy),1,zr(iky),1)/2
@@ -194,10 +200,10 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
     call jedetr('&&MNLENG.MDY')
     call jedetr('&&MNLENG.KY')
 !
-    call jedetr('&&MNLENG.YE')
-    call jedetr('&&MNLENG.DYE')
-    call jedetr('&&MNLENG.KYE')
-    call jedetr('&&MNLENG.MDYE')
+    AS_DEALLOCATE(vr=ye)
+    AS_DEALLOCATE(vr=dye)
+    AS_DEALLOCATE(vr=kye)
+    AS_DEALLOCATE(vr=mdye)
 
     call jedema()
 !

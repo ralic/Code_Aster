@@ -17,6 +17,8 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lima(*), nlima, nbmavo, mailvo(*)
     character(len=1) :: base
@@ -71,9 +73,10 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !
     integer :: ibid, nare, numa, nbno, nbmat, ino, nuno, p1, p2
     integer :: i, j, k, jmail, nbman, adrvlc, acncin, ima, ii
-    integer :: adra, iad, jtr1(1000), jtr2, idtyma, nutyma, iexinv
+    integer :: adra, iad, jtr1(1000),  idtyma, nutyma, iexinv
     character(len=8) :: type
     character(len=24) :: nom, ncninv
+    integer, pointer :: trav2(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -104,7 +107,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !
 ! --- DIMENSIONNEMENT DE LA SD
 !
-    call wkvect('&&UTMAVO.TRAV2', 'V V I', nlima, jtr2)
+    AS_ALLOCATE(vi=trav2, size=nlima)
     nare = 0
     do 100 i = 1, nlima
         numa = lima(i)
@@ -157,7 +160,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
                 jtr1(nbmat) = ima
 120          continue
 110      continue
-        zi(jtr2-1+i) = nbmat
+        trav2(i) = nbmat
         nare = nare + max(nbmat,1)
 100  end do
 !
@@ -174,13 +177,13 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
         nbno = zi(p2+numa+1-1) - zi(p2+numa-1)
         iad = zi(p2+numa-1)
         call jecroc(jexnum(nom, i))
-        if (zi(jtr2-1+i) .eq. 0) then
+        if (trav2(i) .eq. 0) then
             call jeecra(jexnum(nom, i), 'LONMAX', 1)
             call jeecra(jexnum(nom, i), 'LONUTI', 0)
             goto 200
         else
-            call jeecra(jexnum(nom, i), 'LONMAX', zi(jtr2-1+i))
-            call jeecra(jexnum(nom, i), 'LONUTI', zi(jtr2-1+i))
+            call jeecra(jexnum(nom, i), 'LONMAX', trav2(i))
+            call jeecra(jexnum(nom, i), 'LONUTI', trav2(i))
             call jeveuo(jexnum(nom, i), 'E', jmail)
         endif
 !
@@ -237,7 +240,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 200  end do
 !
     call jedetr('&&UTMAVO.TRAV1')
-    call jedetr('&&UTMAVO.TRAV2')
+    AS_DEALLOCATE(vi=trav2)
     if (nbmavo .ne. 0) call jedetr(ncninv)
     call jedema()
 !

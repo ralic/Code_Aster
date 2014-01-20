@@ -6,6 +6,8 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
 #include "jeveux.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ncmpmx, nbchs, nbcmps(*), ipcmps(*)
     character(len=*) :: nomcmp(*), nomsym, nomchs(*), nomgds(*)
 !
@@ -48,35 +50,57 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
     integer :: nbfh11, nbfh12, nbfh21, nbfh22, nbfht, nbsip
 !
 !-----------------------------------------------------------------------
-    integer :: i, icmas, idepl, ient, iepsi, iepsm, iepss
-    integer :: ifh11, ifh12, ifh21, ifh22, ifht, iflu, iflui
-    integer :: iflus, ipre1, ipre2, ipres, ires, isigi, isigm
-    integer :: isigs, isip, itemi, itemp, items, iva, ivar
-    integer :: ivari, j
+    integer :: i, icmas,  ient
+    integer ::      iflu
+    integer ::     ires
+    integer ::      iva, ivar
+    integer ::  j
+    integer, pointer :: videpl(:) => null()
+    integer, pointer :: viepsi(:) => null()
+    integer, pointer :: viepsm(:) => null()
+    integer, pointer :: viepss(:) => null()
+    integer, pointer :: vifh11(:) => null()
+    integer, pointer :: vifh12(:) => null()
+    integer, pointer :: vifh21(:) => null()
+    integer, pointer :: vifh22(:) => null()
+    integer, pointer :: vifht(:) => null()
+    integer, pointer :: viflui(:) => null()
+    integer, pointer :: viflus(:) => null()
+    integer, pointer :: vipre1(:) => null()
+    integer, pointer :: vipre2(:) => null()
+    integer, pointer :: vipres(:) => null()
+    integer, pointer :: visigi(:) => null()
+    integer, pointer :: visigm(:) => null()
+    integer, pointer :: visigs(:) => null()
+    integer, pointer :: visip(:) => null()
+    integer, pointer :: vitemi(:) => null()
+    integer, pointer :: vitemp(:) => null()
+    integer, pointer :: vitems(:) => null()
+    integer, pointer :: vivari(:) => null()
 !-----------------------------------------------------------------------
-    call wkvect('&&IRGAGS.IDEPL', 'V V I', 6, idepl)
-    call wkvect('&&IRGAGS.ITEMP', 'V V I', 1, itemp)
-    call wkvect('&&IRGAGS.ITEMI', 'V V I', 1, itemi)
-    call wkvect('&&IRGAGS.ITEMS', 'V V I', 1, items)
-    call wkvect('&&IRGAGS.IPRES', 'V V I', 1, ipres)
-    call wkvect('&&IRGAGS.IPRE1', 'V V I', 1, ipre1)
-    call wkvect('&&IRGAGS.IPRE2', 'V V I', 1, ipre2)
-    call wkvect('&&IRGAGS.ISIP', 'V V I', 1, isip)
-    call wkvect('&&IRGAGS.ISIGM', 'V V I', 6, isigm)
-    call wkvect('&&IRGAGS.ISIGS', 'V V I', 6, isigs)
-    call wkvect('&&IRGAGS.ISIGI', 'V V I', 6, isigi)
-    call wkvect('&&IRGAGS.IEPSI', 'V V I', 6, iepsi)
-    call wkvect('&&IRGAGS.IEPSM', 'V V I', 6, iepsm)
-    call wkvect('&&IRGAGS.IEPSS', 'V V I', 6, iepss)
+    AS_ALLOCATE(vi=videpl, size=6)
+    AS_ALLOCATE(vi=vitemp, size=1)
+    AS_ALLOCATE(vi=vitemi, size=1)
+    AS_ALLOCATE(vi=vitems, size=1)
+    AS_ALLOCATE(vi=vipres, size=1)
+    AS_ALLOCATE(vi=vipre1, size=1)
+    AS_ALLOCATE(vi=vipre2, size=1)
+    AS_ALLOCATE(vi=visip, size=1)
+    AS_ALLOCATE(vi=visigm, size=6)
+    AS_ALLOCATE(vi=visigs, size=6)
+    AS_ALLOCATE(vi=visigi, size=6)
+    AS_ALLOCATE(vi=viepsi, size=6)
+    AS_ALLOCATE(vi=viepsm, size=6)
+    AS_ALLOCATE(vi=viepss, size=6)
     call wkvect('&&IRGAGS.IFLU', 'V V I', 3, iflu)
-    call wkvect('&&IRGAGS.IFLUI', 'V V I', 3, iflui)
-    call wkvect('&&IRGAGS.IFLUS', 'V V I', 3, iflus)
-    call wkvect('&&IRGAGS.IFH11', 'V V I', 3, ifh11)
-    call wkvect('&&IRGAGS.IFH12', 'V V I', 3, ifh12)
-    call wkvect('&&IRGAGS.IFH21', 'V V I', 3, ifh21)
-    call wkvect('&&IRGAGS.IFH22', 'V V I', 3, ifh22)
-    call wkvect('&&IRGAGS.IFHT', 'V V I', 3, ifht)
-    call wkvect('&&IRGAGS.IVARI', 'V V I', ncmpmx, ivari)
+    AS_ALLOCATE(vi=viflui, size=3)
+    AS_ALLOCATE(vi=viflus, size=3)
+    AS_ALLOCATE(vi=vifh11, size=3)
+    AS_ALLOCATE(vi=vifh12, size=3)
+    AS_ALLOCATE(vi=vifh21, size=3)
+    AS_ALLOCATE(vi=vifh22, size=3)
+    AS_ALLOCATE(vi=vifht, size=3)
+    AS_ALLOCATE(vi=vivari, size=ncmpmx)
 !
 !  --- INITIALISATIONS ----
 !
@@ -111,40 +135,40 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
     do 1 icmas = 1, ncmpmx
         if (nomcmp(icmas) .eq. 'DX') then
             nbdepl= nbdepl+1
-            zi(idepl-1+1)=icmas
+            videpl(1)=icmas
         else if (nomcmp(icmas).eq.'DY') then
             nbdepl= nbdepl+1
-            zi(idepl-1+2)=icmas
+            videpl(2)=icmas
         else if (nomcmp(icmas).eq.'DZ') then
             nbdepl= nbdepl+1
-            zi(idepl-1+3)=icmas
+            videpl(3)=icmas
         else if (nomcmp(icmas).eq.'DRX') then
             nbdepl= nbdepl+1
-            zi(idepl-1+4)=icmas
+            videpl(4)=icmas
         else if (nomcmp(icmas).eq.'DRY') then
             nbdepl= nbdepl+1
-            zi(idepl-1+5)=icmas
+            videpl(5)=icmas
         else if (nomcmp(icmas).eq.'DRZ') then
             nbdepl= nbdepl+1
-            zi(idepl-1+6)=icmas
+            videpl(6)=icmas
         else if (nomcmp(icmas).eq.'FLUXI') then
             nbflui= nbflui+1
-            zi(iflui-1+1)=icmas
+            viflui(1)=icmas
         else if (nomcmp(icmas).eq.'FLUYI') then
             nbflui= nbflui+1
-            zi(iflui-1+2)=icmas
+            viflui(2)=icmas
         else if (nomcmp(icmas).eq.'FLUZI') then
             nbflui= nbflui+1
-            zi(iflui-1+3)=icmas
+            viflui(3)=icmas
         else if (nomcmp(icmas).eq.'FLUXS') then
             nbflus= nbflus+1
-            zi(iflus-1+1)=icmas
+            viflus(1)=icmas
         else if (nomcmp(icmas).eq.'FLUYS') then
             nbflus= nbflus+1
-            zi(iflus-1+2)=icmas
+            viflus(2)=icmas
         else if (nomcmp(icmas).eq.'FLUZS') then
             nbflus= nbflus+1
-            zi(iflus-1+3)=icmas
+            viflus(3)=icmas
         else if (nomcmp(icmas).eq.'FLUX') then
             nbflu= nbflu+1
             zi(iflu-1+1)=icmas
@@ -156,181 +180,181 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
             zi(iflu-1+3)=icmas
         else if (nomcmp(icmas).eq.'FH11X') then
             nbfh11 = nbfh11+1
-            zi(ifh11-1+1)=icmas
+            vifh11(1)=icmas
         else if (nomcmp(icmas).eq.'FH11Y') then
             nbfh11= nbfh11+1
-            zi(ifh11-1+2)=icmas
+            vifh11(2)=icmas
         else if (nomcmp(icmas).eq.'FH11Z') then
             nbfh11= nbfh11+1
-            zi(ifh11-1+3)=icmas
+            vifh11(3)=icmas
         else if (nomcmp(icmas).eq.'FH12X') then
             nbfh12= nbfh12+1
-            zi(ifh12-1+1)=icmas
+            vifh12(1)=icmas
         else if (nomcmp(icmas).eq.'FH12Y') then
             nbfh12= nbfh12+1
-            zi(ifh12-1+2)=icmas
+            vifh12(2)=icmas
         else if (nomcmp(icmas).eq.'FH12Z') then
             nbfh12= nbfh12+1
-            zi(ifh12-1+3)=icmas
+            vifh12(3)=icmas
         else if (nomcmp(icmas).eq.'FH21X') then
             nbfh21= nbfh21+1
-            zi(ifh21-1+1)=icmas
+            vifh21(1)=icmas
         else if (nomcmp(icmas).eq.'FH21Y') then
             nbfh21= nbfh21+1
-            zi(ifh21-1+2)=icmas
+            vifh21(2)=icmas
         else if (nomcmp(icmas).eq.'FH21Z') then
             nbfh21= nbfh21+1
-            zi(ifh21-1+3)=icmas
+            vifh21(3)=icmas
         else if (nomcmp(icmas).eq.'FH22X') then
             nbfh22= nbfh22+1
-            zi(ifh22-1+1)=icmas
+            vifh22(1)=icmas
         else if (nomcmp(icmas).eq.'FH22Y') then
             nbfh22= nbfh22+1
-            zi(ifh22-1+2)=icmas
+            vifh22(2)=icmas
         else if (nomcmp(icmas).eq.'FH22Z') then
             nbfh22= nbfh22+1
-            zi(ifh22-1+3)=icmas
+            vifh22(3)=icmas
         else if (nomcmp(icmas).eq.'FHTX') then
             nbfht= nbfht+1
-            zi(ifht-1+1)=icmas
+            vifht(1)=icmas
         else if (nomcmp(icmas).eq.'FHTY') then
             nbfht= nbfht+1
-            zi(ifht-1+2)=icmas
+            vifht(2)=icmas
         else if (nomcmp(icmas).eq.'FHTZ') then
             nbfht= nbfht+1
-            zi(ifht-1+3)=icmas
+            vifht(3)=icmas
         else if (nomcmp(icmas).eq.'TEMP_I') then
             nbtemi= nbtemi+1
-            zi(itemi-1+1)=icmas
+            vitemi(1)=icmas
         else if (nomcmp(icmas).eq.'TEMP_S') then
             nbtems= nbtems+1
-            zi(items-1+1)=icmas
+            vitems(1)=icmas
         else if (nomcmp(icmas).eq.'TEMP') then
             nbtemp= nbtemp+1
-            zi(itemp-1+1)=icmas
+            vitemp(1)=icmas
         else if (nomcmp(icmas).eq.'PRES') then
             nbpres= nbpres+1
-            zi(ipres-1+1)=icmas
+            vipres(1)=icmas
         else if (nomcmp(icmas).eq.'PRE1') then
             nbpre1= nbpre1+1
-            zi(ipre1-1+1)=icmas
+            vipre1(1)=icmas
         else if (nomcmp(icmas).eq.'PRE2') then
             nbpre2= nbpre2+1
-            zi(ipre2-1+1)=icmas
+            vipre2(1)=icmas
         else if (nomcmp(icmas).eq.'SIP') then
             nbsip= nbsip+1
-            zi(isip-1+1)=icmas
+            visip(1)=icmas
         else if (nomcmp(icmas).eq.'SIXX_I') then
             nbsigi= nbsigi+1
-            zi(isigi-1+1) = icmas
+            visigi(1) = icmas
         else if (nomcmp(icmas).eq.'SIXY_I') then
             nbsigi= nbsigi+1
-            zi(isigi-1+2) = icmas
+            visigi(2) = icmas
         else if (nomcmp(icmas).eq.'SIYY_I') then
             nbsigi= nbsigi+1
-            zi(isigi-1+3) = icmas
+            visigi(3) = icmas
         else if (nomcmp(icmas).eq.'SIXZ_I') then
             nbsigi= nbsigi+1
-            zi(isigi-1+4) = icmas
+            visigi(4) = icmas
         else if (nomcmp(icmas).eq.'SIYZ_I') then
             nbsigi= nbsigi+1
-            zi(isigi-1+5) = icmas
+            visigi(5) = icmas
         else if (nomcmp(icmas).eq.'SIZZ_I') then
             nbsigi= nbsigi+1
-            zi(isigi-1+6) = icmas
+            visigi(6) = icmas
         else if (nomcmp(icmas).eq.'SIXX_S') then
             nbsigs= nbsigs+1
-            zi(isigs-1+1) = icmas
+            visigs(1) = icmas
         else if (nomcmp(icmas).eq.'SIXY_S') then
             nbsigs= nbsigs+1
-            zi(isigs-1+2) = icmas
+            visigs(2) = icmas
         else if (nomcmp(icmas).eq.'SIYY_S') then
             nbsigs= nbsigs+1
-            zi(isigs-1+3) = icmas
+            visigs(3) = icmas
         else if (nomcmp(icmas).eq.'SIXZ_S') then
             nbsigs= nbsigs+1
-            zi(isigs-1+4) = icmas
+            visigs(4) = icmas
         else if (nomcmp(icmas).eq.'SIYZ_S') then
             nbsigs= nbsigs+1
-            zi(isigs-1+5) = icmas
+            visigs(5) = icmas
         else if (nomcmp(icmas).eq.'SIZZ_S') then
             nbsigs= nbsigs+1
-            zi(isigs-1+6) = icmas
+            visigs(6) = icmas
         else if (nomcmp(icmas).eq.'SIXX') then
             nbsigm= nbsigm+1
-            zi(isigm-1+1) = icmas
+            visigm(1) = icmas
         else if (nomcmp(icmas).eq.'SIXY') then
             nbsigm= nbsigm+1
-            zi(isigm-1+2) = icmas
+            visigm(2) = icmas
         else if (nomcmp(icmas).eq.'SIYY') then
             nbsigm= nbsigm+1
-            zi(isigm-1+3) = icmas
+            visigm(3) = icmas
         else if (nomcmp(icmas).eq.'SIXZ') then
             nbsigm= nbsigm+1
-            zi(isigm-1+4) = icmas
+            visigm(4) = icmas
         else if (nomcmp(icmas).eq.'SIYZ') then
             nbsigm= nbsigm+1
-            zi(isigm-1+5) = icmas
+            visigm(5) = icmas
         else if (nomcmp(icmas).eq.'SIZZ') then
             nbsigm= nbsigm+1
-            zi(isigm-1+6) = icmas
+            visigm(6) = icmas
         else if (nomcmp(icmas).eq.'EPXX_I') then
             nbepsi= nbepsi+1
-            zi(iepsi-1+1) = icmas
+            viepsi(1) = icmas
         else if (nomcmp(icmas).eq.'EPXY_I') then
             nbepsi= nbepsi+1
-            zi(iepsi-1+2) = icmas
+            viepsi(2) = icmas
         else if (nomcmp(icmas).eq.'EPYY_I') then
             nbepsi= nbepsi+1
-            zi(iepsi-1+3) = icmas
+            viepsi(3) = icmas
         else if (nomcmp(icmas).eq.'EPXZ_I') then
             nbepsi= nbepsi+1
-            zi(iepsi-1+4) = icmas
+            viepsi(4) = icmas
         else if (nomcmp(icmas).eq.'EPYZ_I') then
             nbepsi= nbepsi+1
-            zi(iepsi-1+5) = icmas
+            viepsi(5) = icmas
         else if (nomcmp(icmas).eq.'EPZZ_I') then
             nbepsi= nbepsi+1
-            zi(iepsi-1+6) = icmas
+            viepsi(6) = icmas
         else if (nomcmp(icmas).eq.'EPXX_S') then
             nbepss= nbepss+1
-            zi(iepss-1+1) = icmas
+            viepss(1) = icmas
         else if (nomcmp(icmas).eq.'EPXY_S') then
             nbepss= nbepss+1
-            zi(iepss-1+2) = icmas
+            viepss(2) = icmas
         else if (nomcmp(icmas).eq.'EPYY_S') then
             nbepss= nbepss+1
-            zi(iepss-1+3) = icmas
+            viepss(3) = icmas
         else if (nomcmp(icmas).eq.'EPXZ_S') then
             nbepss= nbepss+1
-            zi(iepss-1+4) = icmas
+            viepss(4) = icmas
         else if (nomcmp(icmas).eq.'EPYZ_S') then
             nbepss= nbepss+1
-            zi(iepss-1+5) = icmas
+            viepss(5) = icmas
         else if (nomcmp(icmas).eq.'EPZZ_S') then
             nbepss= nbepss+1
-            zi(iepss-1+6) = icmas
+            viepss(6) = icmas
         else if (nomcmp(icmas).eq.'EPXX') then
             nbepsm= nbepsm+1
-            zi(iepsm-1+1) = icmas
+            viepsm(1) = icmas
         else if (nomcmp(icmas).eq.'EPXY') then
             nbepsm= nbepsm+1
-            zi(iepsm-1+2) = icmas
+            viepsm(2) = icmas
         else if (nomcmp(icmas).eq.'EPYY') then
             nbepsm= nbepsm+1
-            zi(iepsm-1+3) = icmas
+            viepsm(3) = icmas
         else if (nomcmp(icmas).eq.'EPXZ') then
             nbepsm= nbepsm+1
-            zi(iepsm-1+4) = icmas
+            viepsm(4) = icmas
         else if (nomcmp(icmas).eq.'EPYZ') then
             nbepsm= nbepsm+1
-            zi(iepsm-1+5) = icmas
+            viepsm(5) = icmas
         else if (nomcmp(icmas).eq.'EPZZ') then
             nbepsm= nbepsm+1
-            zi(iepsm-1+6) = icmas
+            viepsm(6) = icmas
         else
             nbvari= nbvari+1
-            zi(ivari-1+nbvari)= icmas
+            vivari(nbvari)= icmas
         endif
  1  end do
 !
@@ -498,7 +522,7 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
     do 8 i = 1, nbchs
         if (nomchs(i) .eq. 'DEPL') then
             do 31 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(idepl-1+j)
+                ipcmps((i-1)*ncmpmx+j) = videpl(j)
 31          continue
         else if (nomchs(i).eq.'FLUX') then
             do 32 j = 1, nbcmps(i)
@@ -506,113 +530,113 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
 32          continue
         else if (nomchs(i).eq.'FLUI') then
             do 33 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(iflui-1+j)
+                ipcmps((i-1)*ncmpmx+j) = viflui(j)
 33          continue
         else if (nomchs(i).eq.'FLUS') then
             do 34 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(iflus-1+j)
+                ipcmps((i-1)*ncmpmx+j) = viflus(j)
 34          continue
         else if (nomchs(i).eq.'FH11') then
             do 341 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ifh11-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vifh11(j)
 341          continue
         else if (nomchs(i).eq.'FH12') then
             do 342 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ifh12-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vifh12(j)
 342          continue
         else if (nomchs(i).eq.'FH21') then
             do 343 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ifh21-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vifh21(j)
 343          continue
         else if (nomchs(i).eq.'FH22') then
             do 344 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ifh22-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vifh22(j)
 344          continue
         else if (nomchs(i).eq.'FHT') then
             do 345 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ifht-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vifht(j)
 345          continue
         else if (nomchs(i).eq.'TEMP') then
             do 35 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(itemp-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vitemp(j)
 35          continue
         else if (nomchs(i).eq.'TEMI') then
             do 36 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(itemi-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vitemi(j)
 36          continue
         else if (nomchs(i).eq.'TEMS') then
             do 37 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(items-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vitems(j)
 37          continue
         else if (nomchs(i).eq.'PRES') then
             do 38 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ipres-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vipres(j)
 38          continue
         else if (nomchs(i).eq.'PRE1') then
             do 381 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ipre1-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vipre1(j)
 381          continue
         else if (nomchs(i).eq.'PRE2') then
             do 382 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ipre2-1+j)
+                ipcmps((i-1)*ncmpmx+j) = vipre2(j)
 382          continue
         else if (nomchs(i).eq.'SIP') then
             do 383 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(isip-1+j)
+                ipcmps((i-1)*ncmpmx+j) = visip(j)
 383          continue
         else if (nomchs(i).eq.'SIGM') then
             do 39 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(isigm-1+j)
+                ipcmps((i-1)*ncmpmx+j) = visigm(j)
 39          continue
         else if (nomchs(i).eq.'SIGI') then
             do 40 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(isigi-1+j)
+                ipcmps((i-1)*ncmpmx+j) = visigi(j)
 40          continue
         else if (nomchs(i).eq.'SIGS') then
             do 41 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(isigs-1+j)
+                ipcmps((i-1)*ncmpmx+j) = visigs(j)
 41          continue
         else if (nomchs(i).eq.'EPSM') then
             do 42 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(iepsm-1+j)
+                ipcmps((i-1)*ncmpmx+j) = viepsm(j)
 42          continue
         else if (nomchs(i).eq.'EPSS') then
             do 43 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(iepss-1+j)
+                ipcmps((i-1)*ncmpmx+j) = viepss(j)
 43          continue
         else if (nomchs(i).eq.'EPSI') then
             do 44 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(iepsi-1+j)
+                ipcmps((i-1)*ncmpmx+j) = viepsi(j)
 44          continue
         else if (nomchs(i).eq.'VARI') then
             iva =iva + 1
             do 45 j = 1, nbcmps(i)
-                ipcmps((i-1)*ncmpmx+j) = zi(ivari-1+(iva-1)*6+j)
+                ipcmps((i-1)*ncmpmx+j) = vivari((iva-1)*6+j)
 45          continue
         endif
  8  end do
 !
-    call jedetr('&&IRGAGS.IDEPL')
-    call jedetr('&&IRGAGS.ITEMP')
-    call jedetr('&&IRGAGS.ITEMI')
-    call jedetr('&&IRGAGS.ITEMS')
-    call jedetr('&&IRGAGS.IPRES')
-    call jedetr('&&IRGAGS.IPRE1')
-    call jedetr('&&IRGAGS.IPRE2')
-    call jedetr('&&IRGAGS.ISIP')
-    call jedetr('&&IRGAGS.ISIGM')
-    call jedetr('&&IRGAGS.ISIGS')
-    call jedetr('&&IRGAGS.ISIGI')
-    call jedetr('&&IRGAGS.IEPSI')
-    call jedetr('&&IRGAGS.IEPSM')
-    call jedetr('&&IRGAGS.IEPSS')
+    AS_DEALLOCATE(vi=videpl)
+    AS_DEALLOCATE(vi=vitemp)
+    AS_DEALLOCATE(vi=vitemi)
+    AS_DEALLOCATE(vi=vitems)
+    AS_DEALLOCATE(vi=vipres)
+    AS_DEALLOCATE(vi=vipre1)
+    AS_DEALLOCATE(vi=vipre2)
+    AS_DEALLOCATE(vi=visip)
+    AS_DEALLOCATE(vi=visigm)
+    AS_DEALLOCATE(vi=visigs)
+    AS_DEALLOCATE(vi=visigi)
+    AS_DEALLOCATE(vi=viepsi)
+    AS_DEALLOCATE(vi=viepsm)
+    AS_DEALLOCATE(vi=viepss)
     call jedetr('&&IRGAGS.IFLU')
-    call jedetr('&&IRGAGS.IFLUI')
-    call jedetr('&&IRGAGS.IFLUS')
-    call jedetr('&&IRGAGS.IFH11')
-    call jedetr('&&IRGAGS.IFH12')
-    call jedetr('&&IRGAGS.IFH21')
-    call jedetr('&&IRGAGS.IFH22')
-    call jedetr('&&IRGAGS.IFHT')
-    call jedetr('&&IRGAGS.IVARI')
+    AS_DEALLOCATE(vi=viflui)
+    AS_DEALLOCATE(vi=viflus)
+    AS_DEALLOCATE(vi=vifh11)
+    AS_DEALLOCATE(vi=vifh12)
+    AS_DEALLOCATE(vi=vifh21)
+    AS_DEALLOCATE(vi=vifh22)
+    AS_DEALLOCATE(vi=vifht)
+    AS_DEALLOCATE(vi=vivari)
 end subroutine

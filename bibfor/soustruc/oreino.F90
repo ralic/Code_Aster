@@ -10,6 +10,8 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lnoeud(*), nbno, nori, next, ier, iera
     real(kind=8) :: coor(*), prec
@@ -45,12 +47,13 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
 !     IN  : PREC  : PRECISION
 !     IN  : IER   : CODE RETOUR,  = 0  OK
 !-----------------------------------------------------------------------
-    integer :: i, j, k, n, idis, inoe, inod
+    integer :: i, j, k, n,  inoe, inod
     real(kind=8) :: xa, ya, za, xb, yb, zb, xab, yab, zab, ab2, xm, ym, zm, xam
     real(kind=8) :: yam, zam, c, c2, xv, yv, zv, v2, r8b, ecart, valr
     character(len=8) :: nomn
     character(len=24) :: nomnoe
     character(len=24) :: valk(2)
+    real(kind=8), pointer :: bary(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
     nomnoe = noma//'.NOMNOE         '
@@ -76,7 +79,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
         goto 9999
     endif
 !
-    call wkvect('&&OREINO.BARY', 'V V R', nbno, idis)
+    AS_ALLOCATE(vr=bary, size=nbno)
 !
 !     --- CALCUL DE LA CORDONNEE BARYCENTRIQUE ---
 !
@@ -130,7 +133,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
                 ier = ier + 1
             endif
         endif
-        zr(idis-1+inoe) = c
+        bary(inoe) = c
 100  end do
 !
 !     --- TRI PAR BUBBLE SORT ---
@@ -138,10 +141,10 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
     do 300 k = 1, nbno-1
         do 200 i = nbno-1, k, -1
             j = i+1
-            if (zr(idis-1+i) .gt. zr(idis-1+j)) then
-                c=zr(idis-1+j)
-                zr(idis-1+j)=zr(idis-1+i)
-                zr(idis-1+i)=c
+            if (bary(i) .gt. bary(j)) then
+                c=bary(j)
+                bary(j)=bary(i)
+                bary(i)=c
                 n=lnoeud(j)
                 lnoeud(j)=lnoeud(i)
                 lnoeud(i)=n
@@ -152,7 +155,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
 !     --- VERIFICATION QUE DEUX NOEUDS CONSECUTIFS
 !                          N'ONT PAS LA MEME PROJECTION ---
     do 400 inoe = 1, nbno-1
-        if (zr(idis-1+inoe) .eq. zr(idis-1+inoe+1)) then
+        if (bary(inoe) .eq. bary(inoe+1)) then
             call utmess('A', 'SOUSTRUC_23')
             ier = ier + 1
         endif
@@ -160,7 +163,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
 !
 9999  continue
 !
-    call jedetr('&&OREINO.BARY')
+    AS_DEALLOCATE(vr=bary)
 !
     call jedema()
 end subroutine

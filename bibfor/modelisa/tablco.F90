@@ -31,6 +31,8 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 #include "asterfort/jexatr.h"
 #include "asterfort/juveca.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: char
     character(len=8) :: noma
     integer :: nsuco, nmaco, nnoco
@@ -63,7 +65,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
     integer :: numno, numa
     integer :: nmax, nbno, nbma
     integer :: isuco, jdecno, jdecma
-    integer :: jtrav, jtrav2, inc, long
+    integer :: jtrav,  inc, long
     character(len=24) :: defico
     character(len=24) :: pzone, psurma, psurno, contma, contno
     integer :: jzone, jsuma, jsuno, jmaco, jnoco
@@ -73,6 +75,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
     integer :: numalo
     character(len=19) :: coninv
     integer :: nmano, nnoma
+    integer, pointer :: trav2(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,7 +118,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 !
 !
     call wkvect('&&TABLCO.TRAV', 'V V I', nnoco, jtrav)
-    call wkvect('&&TABLCO.TRAV2', 'V V I', nmaco, jtrav2)
+    AS_ALLOCATE(vi=trav2, size=nmaco)
 !
 ! ======================================================================
 ! TABLEAU MANOCO : TABLEAU INVERSE NOEUDS->MAILLES
@@ -250,13 +253,13 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
             do 100 ima = 1, nnn
                 numalo=zi(iainve-1+zi(ilinve-1+numno)+ima-1)
                 if (numalo .le. zi(jsuma+isuco) .and. numalo .gt. zi(jsuma+ isuco-1)) then
-                    zi(jtrav2+numalo-1)=zi(jtrav2+numalo-1)+1
+                    trav2(numalo)=trav2(numalo)+1
                 endif
 100          continue
 90      continue
 !
         do 110 ima = 1, nbma
-            zi(jpono+jdecma+ima)= zi(jpono+jdecma+ima-1)+ zi(jtrav2+&
+            zi(jpono+jdecma+ima)= zi(jpono+jdecma+ima-1)+ trav2(1+&
             jdecma+ima-1)
 !
 !
@@ -295,7 +298,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 !
 !
     call jedetr('&&TABLCO.TRAV')
-    call jedetr('&&TABLCO.TRAV2')
+    AS_DEALLOCATE(vi=trav2)
     call jedetr(coninv)
 ! ======================================================================
     call jedema()

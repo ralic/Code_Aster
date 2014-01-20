@@ -21,6 +21,8 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbocc, indch
     character(len=8) :: modele
@@ -47,7 +49,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !     ------------------------------------------------------------------
 !
     integer :: iret, nbcmp, nzero, nbordr, iocc, jnuma, nbma
-    integer :: jcmp, n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
+    integer ::  n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
     integer :: nbgma, jgma, nma, igm, nbpar, nn, inum, nli, nlo
     parameter(nzero=0,nbpar=3)
     real(kind=8) :: prec, inst
@@ -59,6 +61,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     character(len=19) :: knum, cham, kins, lisins
     character(len=24) :: nomcha
     logical :: exiord
+    character(len=8), pointer :: cmp(:) => null()
     data nompar/'CHAMP_GD','NUME_ORDRE','INST'/
     data typpar/'K16','I','R'/
 !     ------------------------------------------------------------------
@@ -179,8 +182,8 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
             call getvtx('MINMAX', 'NOM_CMP', iocc=iocc, nbval=nzero, vect=k8b,&
                         nbret=nbcmp)
             nbcmp=-nbcmp
-            call wkvect('&&PEMIMA.CMP', 'V V K8', nbcmp, jcmp)
-            call getvtx('MINMAX', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+            AS_ALLOCATE(vk8=cmp, size=nbcmp)
+            call getvtx('MINMAX', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=cmp,&
                         nbret=iret)
 !
 !         --- CALCUL ET STOCKAGE DES MINMAX : MOT-CLE 'TOUT'
@@ -190,11 +193,11 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
             if (iret .ne. 0) then
                 if (tych(1:2) .eq. 'EL') then
                     call pemaxe(resu, nomcha, tout, tout, modele,&
-                                cham, nbcmp, zk8(jcmp), numo, inst,&
+                                cham, nbcmp, cmp, numo, inst,&
                                 iocc)
                 else
                     call pemaxn(resu, nomcha, tout, tout, modele,&
-                                cham, nbcmp, zk8(jcmp), numo, inst)
+                                cham, nbcmp, cmp, numo, inst)
                 endif
             endif
 !
@@ -212,17 +215,17 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
                     call jeveuo(jexnom(mailla//'.GROUPEMA', zk8(jgma+ igm-1)), 'L', jnuma)
                     if (tych(1:2) .eq. 'EL') then
                         call pemaxe(resu, nomcha, grpma, zk8(jgma+igm-1), modele,&
-                                    cham, nbcmp, zk8(jcmp), numo, inst,&
+                                    cham, nbcmp, cmp, numo, inst,&
                                     iocc)
                     else
                         call pemaxn(resu, nomcha, grpma, zk8(jgma+igm-1), modele,&
-                                    cham, nbcmp, zk8(jcmp), numo, inst)
+                                    cham, nbcmp, cmp, numo, inst)
                     endif
                 end do
                 call jedetr('&&PEMIMA_GMA')
             endif
 !
-            call jedetr('&&PEMIMA.CMP')
+            AS_DEALLOCATE(vk8=cmp)
 !
         end do
 !

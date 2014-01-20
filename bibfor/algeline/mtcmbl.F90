@@ -23,6 +23,8 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 #include "asterfort/prosmo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbcomb
     character(len=*) :: typcst(nbcomb), ddlexc
     character(len=*) :: matrez, numedd
@@ -93,11 +95,12 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     character(len=19) :: matemp, mat1, matres, mati
     character(len=24) :: valk(2)
 !     -----------------------------------------------------------------
-    integer :: jrefar,  jrefai, ier, idlima, ier1
+    integer :: jrefar,  jrefai, ier,  ier1
     integer :: i, lres, nbloc,  lgbloc
     logical :: reutil, symr, symi, matd
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: lispoint(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -122,7 +125,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     endif
 !
     ASSERT(ddlexc.eq.' '.or.ddlexc.eq.'LAGR')
-    call wkvect('&&MTCMBL.LISPOINT', 'V V I', nbcomb, idlima)
+    AS_ALLOCATE(vi=lispoint, size=nbcomb)
     reutil=.false.
     do i = 1, nbcomb
         ASSERT(typcst(i).eq.'R'.or.typcst(i).eq.'C')
@@ -130,7 +133,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         call jeveuo(mati//'.REFA', 'L', jrefai)
         if (zk24(jrefai-1+3) .eq. 'ELIMF') call mtmchc(mati, 'ELIML')
         call mtdscr(mati)
-        call jeveuo(mati//'.&INT', 'E', zi(idlima+i-1))
+        call jeveuo(mati//'.&INT', 'E', lispoint(i))
         call jelira(mati//'.VALM', 'TYPE', cval=typmat)
         call jelira(mati//'.VALM', 'NMAXOC', nbloc)
         call jeveuo(mati//'.REFA', 'L', jrefai)
@@ -208,6 +211,10 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
             if (.not.idenob(mat1//'.CCID',mati//'.CCID')) then
                 valk(1)=mat1
                 valk(2)=mati
+!               -- si on ne fait pas le DEALLOCATE, on ne peut pas executer
+!                  le test zzzz213a qui fait un try/except
+!                  puis execute a nouveau cette routine
+                AS_DEALLOCATE(vi=lispoint)
                 call utmess('F', 'ALGELINE2_10', nk=2, valk=valk)
             endif
         endif
@@ -223,7 +230,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     if (ier1 .eq. 0) then
         call mtdscr(matemp)
         call jeveuo(matemp//'.&INT', 'E', lres)
-        call cbvale(nbcomb, typcst, const, zi(idlima), typres,&
+        call cbvale(nbcomb, typcst, const, lispoint, typres,&
                     lres, ddlexc, matd)
 !
 ! ---   CAS OU LES MATRICES A COMBINER N'ONT PAS LE MEME PROFIL :
@@ -238,7 +245,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
                     symr, typres)
         call mtdscr(matemp)
         call jeveuo(matemp//'.&INT', 'E', lres)
-        call cbval2(nbcomb, typcst, const, zi(idlima), typres,&
+        call cbval2(nbcomb, typcst, const, lispoint, typres,&
                     lres, ddlexc)
     endif
 !
@@ -264,7 +271,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 ! --- COMBINAISON LINEAIRE DES .CONL DES MATRICES SI NECESSAIRE :
 !     =========================================================
     if (ddlexc .ne. 'LAGR') then
-        call mtconl(nbcomb, typcst, const, zi(idlima), typres,&
+        call mtconl(nbcomb, typcst, const, lispoint, typres,&
                     lres)
     else
         call jedetr(zk24(zi(lres+1))(1:19)//'.CONL')
@@ -280,7 +287,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         call detrsd('MATR_ASSE', matemp)
     endif
 !
-    call jedetr('&&MTCMBL.LISPOINT')
+    AS_DEALLOCATE(vi=lispoint)
 !
     call jedema()
 end subroutine

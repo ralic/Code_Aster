@@ -30,6 +30,8 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 #include "asterfort/nmlerr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=19) :: sddisc
     integer :: iterat
     logical :: lextra
@@ -56,13 +58,14 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 !
 !
 !
-    integer :: ibid, regres, depart, jvresi
+    integer :: ibid, regres, depart
     real(kind=8) :: cresi, crela, cmaxi
     real(kind=8) :: vrela(1), vmaxi(1)
     real(kind=8) :: r8bid
     real(kind=8) :: xa0, xa1, xdet
     integer :: nbiter, mniter, mxiter
     integer :: nbigno
+    real(kind=8), pointer :: erreurs(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -136,22 +139,22 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 !
 ! --- TOUTES LES RESIDUS AU COURS DES ITERATIONS [0,ITERAT]
 !
-    call wkvect('&&NMACEX.ERREURS', 'V V R8', iterat+1, jvresi)
+    AS_ALLOCATE(vr=erreurs, size=iterat+1)
     if (regres .eq. 1) then
         cresi = crela
-        call nmlere(sddisc, 'L', 'VRELA_TOUS', iterat, zr(jvresi))
+        call nmlere(sddisc, 'L', 'VRELA_TOUS', iterat,erreurs)
     else if (regres .eq. 2) then
         cresi = cmaxi
-        call nmlere(sddisc, 'L', 'VMAXI_TOUS', iterat, zr(jvresi))
+        call nmlere(sddisc, 'L', 'VMAXI_TOUS', iterat,erreurs)
     else
         ASSERT(.false.)
     endif
 !
 ! --- CALCUL DE L'EXTRAPOLATION LINEAIRE
 !
-    call nmdcrg(depart, iterat, zr(jvresi), xa0, xa1,&
+    call nmdcrg(depart, iterat, erreurs, xa0, xa1,&
                 xdet)
-    call jedetr('&&NMACEX.ERREURS')
+    AS_DEALLOCATE(vr=erreurs)
 !
 ! --- EXTRAPOLATION REUSSIE ?
 !

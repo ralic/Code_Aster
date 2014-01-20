@@ -31,6 +31,8 @@ subroutine dfllec(sdlist, dtmin)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: sdlist
     real(kind=8) :: dtmin
 !
@@ -77,7 +79,8 @@ subroutine dfllec(sdlist, dtmin)
     integer :: leevr, leevk, lesur
     integer :: jeevr, jeevk, jesur
     logical :: loblig, lsave
-    integer :: jtrav, ilast, iplus
+    integer ::  ilast, iplus
+    integer, pointer :: trav(:) => null()
 !
     data evdord  /'ERRE'     ,'DELTA_GRANDEUR'  ,&
      &              'COLLISION','INTERPENETRATION',&
@@ -119,7 +122,7 @@ subroutine dfllec(sdlist, dtmin)
     if (nerreu .eq. 0) then
         neche2 = neche2 + 1
     endif
-    call wkvect('&&DFLLEC.TRAV', 'V V I', neche2, jtrav)
+    AS_ALLOCATE(vi=trav, size=neche2)
 !
 ! --- CREATION SD
 !
@@ -147,7 +150,7 @@ subroutine dfllec(sdlist, dtmin)
                 if (even .eq. evd) then
                     lisord(iordr) = iechec
                     if (even .eq. 'DELTA_GRANDEUR') then
-                        zi(jtrav+ilast-1) = iechec
+                        trav(ilast) = iechec
                         ilast = ilast + 1
                     endif
                 endif
@@ -180,7 +183,7 @@ subroutine dfllec(sdlist, dtmin)
         else
             even = evd
             if (even .eq. 'DELTA_GRANDEUR') then
-                iplus = zi(jtrav+ilast-1)
+                iplus = trav(ilast)
                 iechec = iplus
                 if (iplus .eq. 0) then
                     iechec = 0
@@ -247,6 +250,6 @@ subroutine dfllec(sdlist, dtmin)
         zr(jesur-1+lesur*(iechec-1)+4) = nivmax
 130  end do
 !
-    call jedetr('&&DFLLEC.TRAV')
+    AS_DEALLOCATE(vi=trav)
     call jedema()
 end subroutine

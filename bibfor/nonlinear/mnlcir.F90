@@ -31,6 +31,8 @@ subroutine mnlcir(xdep, ydep, omega, alpha, eta,&
 #include "asterfort/mnlfft.h"
 #include "asterc/r8depi.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 
     integer :: h, hf, nt
     real(kind=8) :: omega, alpha, eta
@@ -39,58 +41,63 @@ subroutine mnlcir(xdep, ydep, omega, alpha, eta,&
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: depi, xt, yt, rk
-    integer :: k, j, ix, iy, isor, it, ifx, ify, ifn, ir
+    integer :: k, j, ix, iy, isor
+    real(kind=8), pointer :: fn(:) => null()
+    real(kind=8), pointer :: fx(:) => null()
+    real(kind=8), pointer :: fy(:) => null()
+    real(kind=8), pointer :: r(:) => null()
+    real(kind=8), pointer :: t(:) => null()
 !
     call jemarq()
 !
-    call wkvect('&&MNLCIR.T', 'V V R', nt, it)
-    call wkvect('&&MNLCIR.FX', 'V V R', nt, ifx)
-    call wkvect('&&MNLCIR.FY', 'V V R', nt, ify)
-    call wkvect('&&MNLCIR.FN', 'V V R', nt, ifn)
-    call wkvect('&&MNLCIR.R', 'V V R', nt, ir)
+    AS_ALLOCATE(vr=t, size=nt)
+    AS_ALLOCATE(vr=fx, size=nt)
+    AS_ALLOCATE(vr=fy, size=nt)
+    AS_ALLOCATE(vr=fn, size=nt)
+    AS_ALLOCATE(vr=r, size=nt)
 !
     call jeveuo(xdep, 'E', ix)
     call jeveuo(ydep, 'E', iy)
     call jeveuo(xsort, 'E', isor)
 !
     depi=r8depi()
-    zr(it)=0.d0
+    t(1)=0.d0
     do 10 k = 2, nt
-        zr(it-1+k)=zr(it-1+k-1)+(depi/omega)/nt
+        t(k)=t(k-1)+(depi/omega)/nt
 10  continue
 !
     do 20 k = 1, nt
         xt=zr(ix)
         yt=zr(iy)
         do 21 j = 1, h
-            xt=xt+zr(ix+j)*dcos(dble(j)*omega*zr(it-1+k))
-            yt=yt+zr(iy+j)*dcos(dble(j)*omega*zr(it-1+k))
-            xt=xt+zr(ix+h+j)*dsin(dble(j)*omega*zr(it-1+k))
-            yt=yt+zr(iy+h+j)*dsin(dble(j)*omega*zr(it-1+k))
+            xt=xt+zr(ix+j)*dcos(dble(j)*omega*t(k))
+            yt=yt+zr(iy+j)*dcos(dble(j)*omega*t(k))
+            xt=xt+zr(ix+h+j)*dsin(dble(j)*omega*t(k))
+            yt=yt+zr(iy+h+j)*dsin(dble(j)*omega*t(k))
 21      continue
         rk=xt**2+yt**2
-        zr(ir-1+k)=sqrt(rk)
-        zr(ifn-1+k)=((zr(ir-1+k)-1.d0)+sqrt((zr(ir-1+k)-1.d0)**2+&
+        r(k)=sqrt(rk)
+        fn(k)=((r(k)-1.d0)+sqrt((r(k)-1.d0)**2+&
         4.d0*eta/alpha))/(2.d0/alpha)
-        zr(ifx-1+k)=zr(ifn-1+k)*xt/zr(ir-1+k)
-        zr(ify-1+k)=zr(ifn-1+k)*yt/zr(ir-1+k)
+        fx(k)=fn(k)*xt/r(k)
+        fy(k)=fn(k)*yt/r(k)
 20  continue
 !
     call dscal(4*(2*hf+1), 0.d0, zr(isor), 1)
-    call mnlfft(1, zr(isor), zr(ifx), hf, nt,&
+    call mnlfft(1, zr(isor), fx, hf, nt,&
                 1)
-    call mnlfft(1, zr(isor+(2*hf+1)), zr(ify), hf, nt,&
+    call mnlfft(1, zr(isor+(2*hf+1)), fy, hf, nt,&
                 1)
-    call mnlfft(1, zr(isor+2*(2*hf+1)), zr(ir), hf, nt,&
+    call mnlfft(1, zr(isor+2*(2*hf+1)), r, hf, nt,&
                 1)
-    call mnlfft(1, zr(isor+3*(2*hf+1)), zr(ifn), hf, nt,&
+    call mnlfft(1, zr(isor+3*(2*hf+1)), fn, hf, nt,&
                 1)
 !
-    call jedetr('&&MNLCIR.T')
-    call jedetr('&&MNLCIR.FX')
-    call jedetr('&&MNLCIR.FY')
-    call jedetr('&&MNLCIR.FN')
-    call jedetr('&&MNLCIR.R')
+    AS_DEALLOCATE(vr=t)
+    AS_DEALLOCATE(vr=fx)
+    AS_DEALLOCATE(vr=fy)
+    AS_DEALLOCATE(vr=fn)
+    AS_DEALLOCATE(vr=r)
 
     call jedema()
 !

@@ -26,6 +26,8 @@ subroutine cfmajm(resoco, ndim, nbliac, llf, llf1,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ndim, nbliac, llf, llf1, llf2
     character(len=24) :: resoco
 !
@@ -54,9 +56,10 @@ subroutine cfmajm(resoco, ndim, nbliac, llf, llf1,&
 !
 !
 !
-    integer :: jmu, iliac, posit, posmu, jmajmu, dimmaj
+    integer :: jmu, iliac, posit, posmu,  dimmaj
     integer :: posnbl, poslf0, poslf1, poslf2
     character(len=19) :: mu
+    real(kind=8), pointer :: ordo(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,9 +81,9 @@ subroutine cfmajm(resoco, ndim, nbliac, llf, llf1,&
 !
 ! --- RECOPIE DES VALEURS DANS UN VECTEUR TEMPORAITE
 !
-    call wkvect('&&CFMAJM.ORDO', 'V V R', dimmaj, jmajmu)
+    AS_ALLOCATE(vr=ordo, size=dimmaj)
     do iliac = 1, dimmaj
-        zr(jmajmu-1+iliac) = zr(jmu-1+iliac)
+        ordo(iliac) = zr(jmu-1+iliac)
     end do
 !
 ! --- ECRIT LES LIAISONS DANS L'ORDRE: NBLIAC, LLF, LLF1, LLF2
@@ -94,33 +97,33 @@ subroutine cfmajm(resoco, ndim, nbliac, llf, llf1,&
 !
         case (1)
             posnbl = posnbl + 1
-            zr(jmu-1+posnbl) = zr(jmajmu-1+posmu)
+            zr(jmu-1+posnbl) = ordo(posmu)
 !
 ! ----- LIAISON DE FROTTEMENT - 2D OU 3D DANS LES DEUX DIRECTIONS
 !
         case (2)
             poslf0 = poslf0 + 1
-            zr(jmu-1+poslf0) = zr(jmajmu-1+posmu)
+            zr(jmu-1+poslf0) = ordo(posmu)
             if (ndim .eq. 3) then
                 posmu = posmu + 1
-                zr(jmu-1+poslf0+llf) = zr(jmajmu-1+posmu)
+                zr(jmu-1+poslf0+llf) = ordo(posmu)
             endif
 !
 ! ----- LIAISON DE FROTTEMENT - 3D PREMIERE DIRECTION
 !
         case (3)
             poslf1 = poslf1 + 1
-            zr(jmu-1+poslf1) = zr(jmajmu-1+posmu)
+            zr(jmu-1+poslf1) = ordo(posmu)
 !
 ! ----- LIAISON DE FROTTEMENT - 3D SECONDE DIRECTION
 !
         case (4)
             poslf2 = poslf2 + 1
-            zr(jmu-1+poslf2) = zr(jmajmu-1+posmu)
+            zr(jmu-1+poslf2) = ordo(posmu)
         end select
     end do
 !
-    call jedetr('&&CFMAJM.ORDO')
+    AS_DEALLOCATE(vr=ordo)
     call jedema()
 !
 end subroutine

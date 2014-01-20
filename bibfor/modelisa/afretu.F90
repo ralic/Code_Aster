@@ -14,6 +14,8 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: lonlis, iprno(*), idec, nbcoef
     real(kind=8) :: coef(nbcoef)
@@ -41,12 +43,18 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 !     RACCORD (COQUE OU 3D)_TUYAU : UNE RELATION LINEAIRE
 !
     integer :: ino, ival, idch1, nbterm, i, nbec
-    integer :: jlisno, jliscr, jliscc, jlisdi, jlisdm, jlisdl
+
     character(len=8) :: betaf
     character(len=16) :: motfac
     character(len=24) :: noeuma
     real(kind=8) :: beta
     complex(kind=8) :: betac
+    complex(kind=8), pointer :: coec(:) => null()
+    real(kind=8), pointer :: coer(:) => null()
+    integer, pointer :: dime(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    character(len=8), pointer :: lisddl(:) => null()
+    character(len=8), pointer :: lisno(:) => null()
 !
     call jemarq()
 !
@@ -67,17 +75,17 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 !
     nbterm = 3*lonlis + nbcoef
 ! ---     VECTEUR DU NOM DES NOEUDS
-    call wkvect('&&AFRETU.LISNO', 'V V K8', nbterm, jlisno)
+    AS_ALLOCATE(vk8=lisno, size=nbterm)
 ! ---     VECTEUR DU NOM DES DDLS
-    call wkvect('&&AFRETU.LISDDL', 'V V K8', nbterm, jlisdl)
+    AS_ALLOCATE(vk8=lisddl, size=nbterm)
 ! ---     VECTEUR DES COEFFICIENTS REELS
-    call wkvect('&&AFRETU.COER', 'V V R', nbterm, jliscr)
+    AS_ALLOCATE(vr=coer, size=nbterm)
 ! ---     VECTEUR DES COEFFICIENTS COMPLEXES
-    call wkvect('&&AFRETU.COEC', 'V V C', nbterm, jliscc)
+    AS_ALLOCATE(vc=coec, size=nbterm)
 ! ---     VECTEUR DES DIRECTIONS DES DDLS A CONTRAINDRE
-    call wkvect('&&AFRETU.DIRECT', 'V V R', 3*nbterm, jlisdi)
+    AS_ALLOCATE(vr=direct, size=3*nbterm)
 ! ---     VECTEUR DES DIMENSIONS DE CES DIRECTIONS
-    call wkvect('&&AFRETU.DIME', 'V V I', nbterm, jlisdm)
+    AS_ALLOCATE(vi=dime, size=nbterm)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD NOEPOU
 !        DE TUYAU SUR LE DDL NOMDDL
@@ -87,43 +95,43 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 !           ADRESSE DE LA PREMIERE CMP DU NOEUD INO DANS LES CHAMNO
         ival = iprno((ino-1)* (nbec+2)+1)
 !
-        zk8(jlisno+3* (i-1)+1-1) = klisno(i)
-        zk8(jlisno+3* (i-1)+2-1) = klisno(i)
-        zk8(jlisno+3* (i-1)+3-1) = klisno(i)
+        lisno(1+3* (i-1)+1-1) = klisno(i)
+        lisno(1+3* (i-1)+2-1) = klisno(i)
+        lisno(1+3* (i-1)+3-1) = klisno(i)
 !
-        zk8(jlisdl+3* (i-1)+1-1) = 'DX'
-        zk8(jlisdl+3* (i-1)+2-1) = 'DY'
-        zk8(jlisdl+3* (i-1)+3-1) = 'DZ'
+        lisddl(1+3* (i-1)+1-1) = 'DX'
+        lisddl(1+3* (i-1)+2-1) = 'DY'
+        lisddl(1+3* (i-1)+3-1) = 'DZ'
 !
 ! RACCORD  3D_TUYAU : IDEC=0 DANS TOUS LES APPELS A AFRETU
 ! RACCORD COQ_TUYAU : IDEC=0 OU 3 DANS LES APPELS A AFRETU
 !
-        zr(jliscr+3* (i-1)+1-1) = zr(idch1+ival-1+idec+0)
-        zr(jliscr+3* (i-1)+2-1) = zr(idch1+ival-1+idec+1)
-        zr(jliscr+3* (i-1)+3-1) = zr(idch1+ival-1+idec+2)
+        coer(1+3* (i-1)+1-1) = zr(idch1+ival-1+idec+0)
+        coer(1+3* (i-1)+2-1) = zr(idch1+ival-1+idec+1)
+        coer(1+3* (i-1)+3-1) = zr(idch1+ival-1+idec+2)
     end do
 !
     do i = 1, nbcoef
-        zk8(jlisno+3*lonlis+i-1) = noepou
-        zk8(jlisdl+3*lonlis+i-1) = nomddl(i)
-        zr(jliscr+3*lonlis+i-1) = coef(i)
+        lisno(1+3*lonlis+i-1) = noepou
+        lisddl(1+3*lonlis+i-1) = nomddl(i)
+        coer(1+3*lonlis+i-1) = coef(i)
     end do
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 'REEL', 'REEL', typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 !
 ! --- MENAGE
 !
-    call jedetr('&&AFRETU.LISNO')
-    call jedetr('&&AFRETU.LISDDL')
-    call jedetr('&&AFRETU.COER')
-    call jedetr('&&AFRETU.COEC')
-    call jedetr('&&AFRETU.DIRECT')
-    call jedetr('&&AFRETU.DIME')
+    AS_DEALLOCATE(vk8=lisno)
+    AS_DEALLOCATE(vk8=lisddl)
+    AS_DEALLOCATE(vr=coer)
+    AS_DEALLOCATE(vc=coec)
+    AS_DEALLOCATE(vr=direct)
+    AS_DEALLOCATE(vi=dime)
 !
     call jedema()
 end subroutine

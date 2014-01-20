@@ -18,6 +18,8 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbdir, nbno
     real(kind=8) :: dir(*)
@@ -59,10 +61,11 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     complex(kind=8) :: c16b
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id, idchm, iddl, idmst, idve
+    integer :: i, id, idchm, iddl, idmst
     integer :: in, iret, nba, nbb, nbl, nbliai, nbtrou
 !
     real(kind=8) :: xd
+    real(kind=8), pointer :: vecteur(:) => null()
 !-----------------------------------------------------------------------
     data cmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 !     ------------------------------------------------------------------
@@ -76,7 +79,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     call jeveuo(mass2//'.&INT', 'E', lmat)
     call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=nume)
-    call wkvect('&&SIMUL2.VECTEUR', 'V V R', neq, idve)
+    AS_ALLOCATE(vr=vecteur, size=neq)
 !
 !     --- CREATION DU CHAM_NO RESULTAT ---
 !
@@ -127,10 +130,10 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !
 !                 --- ON EFFECTUE LE PRODUIT  MASSE * CHAM_NO ---
                     do i = 0, neq-1
-                        zr(idve+i) = -xd * zr(idmst+i)
+                        vecteur(1+i) = -xd * zr(idmst+i)
                     end do
                     call jelibe(chamno//'.VALE')
-                    call mrmult('CUMU', lmat, zr(idve), zr(idchm), 1,&
+                    call mrmult('CUMU', lmat, vecteur, zr(idchm), 1,&
                                 .true.)
                 endif
  20             continue
@@ -151,7 +154,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
 !
 ! --- MENAGE
     call jelibe(resu2//'.VALE')
-    call jedetr('&&SIMUL2.VECTEUR')
+    AS_DEALLOCATE(vr=vecteur)
     call jedetr('&&SIMUL2.DDL.BLOQUE')
 !
     call jedema()

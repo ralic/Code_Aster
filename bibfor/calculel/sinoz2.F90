@@ -54,6 +54,8 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 #include "asterfort/zzcala.h"
 #include "asterfort/zzcalb.h"
 #include "asterfort/zzpoly.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: modele, ma, typema, licmp(4), vecass, elrefe
     character(len=8) :: famil
@@ -72,16 +74,21 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacoor, iad, ialcv, iamav, ianew, ianob
+    integer :: i, iacoor, iad,  iamav, ianew, ianob
     integer :: ianov, iarepe, iatyma, ibid, ic, icmp
-    integer :: iindic, ima, ino, inob, inoma, ipa, jceld
-    integer :: jcelv, jcon, jconin, jelfa, jnb, jnoeu, jpa
-    integer :: jpami, jprno, jrefe, jrefn, jsig, jval, k
+    integer ::  ima, ino, inob, inoma, ipa, jceld
+    integer :: jcelv, jcon, jconin, jelfa,   jpa
+    integer ::  jprno, jrefe, jrefn, jsig, jval, k
     integer :: nb, nbcmp, nbec, nbma, nbmav, nbn, nbno
     integer :: nbnob, nbnobp, nbnoma, nqua, ntri, num, numav
     integer :: numc, numel, numeq, numgr, numloc
     real(kind=8) :: xino, xinob, xinomi, xmax, xmin, xnorm, yino
     real(kind=8) :: yinob, yinomi, ymax, ymin
+    integer, pointer :: indic(:) => null()
+    integer, pointer :: longconinv(:) => null()
+    integer, pointer :: nbpatchmil(:) => null()
+    logical, pointer :: noeubord(:) => null()
+    integer, pointer :: numnb(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -111,7 +118,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     call jecrec(coninv, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbno)
 !
-    call wkvect('&&SINOZ2.LONGCONINV', 'V V I', nbno, ialcv)
+    AS_ALLOCATE(vi=longconinv, size=nbno)
     do ima = 1, nbma
         iad = iatyma - 1 + ima
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typema)
@@ -120,16 +127,16 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
             call jelira(jexnum(connex, ima), 'LONMAX', nbn)
             do ino = 1, nbn
                 num = zi(jcon-1+ino)
-                zi(ialcv-1+num) = zi(ialcv-1+num) + 1
+                longconinv(num) = longconinv(num) + 1
             end do
         endif
     end do
 !
     do ino = 1, nbno
-        call jeecra(jexnum(coninv, ino), 'LONMAX', zi(ialcv-1+ino))
+        call jeecra(jexnum(coninv, ino), 'LONMAX', longconinv(ino))
     end do
 !
-    call wkvect('&&SINOZ2.INDIC', 'V V I', nbno, iindic)
+    AS_ALLOCATE(vi=indic, size=nbno)
 !
     do ima = 1, nbma
         iad = iatyma - 1 + ima
@@ -140,13 +147,13 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
             do ino = 1, nbn
                 num = zi(jcon-1+ino)
                 call jeveuo(jexnum(coninv, num), 'E', jconin)
-                nb = zi(iindic-1+num)
+                nb = indic(num)
                 zi(jconin+nb) = ima
-                zi(iindic-1+num) = zi(iindic-1+num) + 1
+                indic(num) = indic(num) + 1
             end do
         endif
     end do
-    call jedetr('&&SINOZ2.INDIC')
+    AS_DEALLOCATE(vi=indic)
 !
 !   CONSTRUCTION D'UN VECTEUR DE BOOLEENS SUR LES NOEUDS INDIQUANT
 !   L'APPARTENANCE OU NON AU BORD
@@ -172,7 +179,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     call jeveuo(noeub//'.REFE', 'E', jrefe)
     zk24(jrefe+1)=pfchno
 !
-    call wkvect('&&SINOZ2.NOEUBORD', 'V V L', nbno, jnoeu)
+    AS_ALLOCATE(vl=noeubord, size=nbno)
 !
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     call jeveuo(jexnum(pfchno//'.PRNO', 1), 'L', jprno)
@@ -187,20 +194,20 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
             xnorm = xnorm + zr(jval-1+numeq-1+icmp)**2
         end do
         if (xnorm .le. eps) then
-            zl(jnoeu-1+ino) = .false.
+            noeubord(ino) = .false.
         else
-            zl(jnoeu-1+ino) = .true.
+            noeubord(ino) = .true.
             nbnob = nbnob + 1
         endif
     end do
-    call wkvect('&&SINOZ2.NBPATCHMIL', 'V V I', nbno, jpami)
-    call wkvect('&&SINOZ2.NUMNB', 'V V I', nbnob, jnb)
+    AS_ALLOCATE(vi=nbpatchmil, size=nbno)
+    AS_ALLOCATE(vi=numnb, size=nbnob)
     call wkvect('&&SINOZ2.NBPATCH', 'V V I', nbnob, jpa)
     inob = 0
     do ino = 1, nbno
-        if (zl(jnoeu-1+ino)) then
+        if (noeubord(ino)) then
             inob = inob + 1
-            zi(jnb-1+inob) = ino
+            numnb(inob) = ino
         endif
     end do
     if (inob .ne. nbnob) then
@@ -261,7 +268,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
     ipa = 0
     do ino = 1, nbno
-        if (.not.zl(jnoeu-1+ino)) then
+        if (.not.noeubord(ino)) then
             call jelira(jexnum(coninv, ino), 'LONMAX', nbmav)
 !
 !    TRAITEMENT DES SOMMETS
@@ -317,7 +324,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                     do inoma = 1, nbnoma
                         num = zi(ianov-1+inoma)
 !    SI NOEUD BORD
-                        if (zl(jnoeu-1+num)) then
+                        if (noeubord(num)) then
                             call zzappa(num, zi(ianew), nbnobp, app)
                             if (.not.app) then
                                 nbnobp = nbnobp + 1
@@ -378,7 +385,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 do inob = 1, nbnobp
                     num = zi(ianob-1+inob)
                     do k = 1, nbnob
-                        numc = zi(jnb-1+k)
+                        numc = numnb(k)
                         if (numc .eq. num) then
                             zi(jpa-1+k) = zi(jpa-1+k) + 1
                         endif
@@ -414,7 +421,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                         if (nno .eq. 8) numloc = numloc + 4
                         if (nno .eq. 9) numloc = numloc + 4
                         num = zi(ianov-1+numloc)
-                        zi(jpami-1+num) = zi(jpami-1+num) + 1
+                        nbpatchmil(num) = nbpatchmil(num) + 1
                         xinomi = zr(iacoor-1+3* (num-1)+1)
                         yinomi = zr(iacoor-1+3* (num-1)+2)
                         xinomi = -1.d0 + 2.d0* (xinomi-xmin)/ (xmax- xmin)
@@ -436,7 +443,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !     RECUPERATION DU NOEUD BARYCENTRE
 !
                         num = zi(ianov-1+nbnoma)
-                        zi(jpami-1+num) = zi(jpami-1+num) + 1
+                        nbpatchmil(num) = nbpatchmil(num) + 1
                         xinomi = zr(iacoor-1+3* (num-1)+1)
                         yinomi = zr(iacoor-1+3* (num-1)+2)
                         xinomi = -1.d0 + 2.d0* (xinomi-xmin)/ (xmax- xmin)
@@ -453,7 +460,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !    MOYENNAGE SUR LES NOEUDS BORD
 !
     do i = 1, nbnob
-        num = zi(jnb-1+i)
+        num = numnb(i)
         if (zi(jpa-1+i) .eq. 0) then
             call utmess('F', 'CALCULEL4_89')
         endif
@@ -466,22 +473,22 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
     do ino = 1, nbno
 !    SI PAS NOEUD BORD
-        if (.not.zl(jnoeu-1+ino)) then
-            if (zi(jpami-1+ino) .eq. 0) then
-                zi(jpami-1+ino) = 1
+        if (.not.noeubord(ino)) then
+            if (nbpatchmil(ino) .eq. 0) then
+                nbpatchmil(ino) = 1
             endif
             do ic = 1, 4
-                zr(jsig-1+4* (ino-1)+ic) = zr( jsig-1+4* (ino-1)+ic )/ zi(jpami-1+ino )
+                zr(jsig-1+4* (ino-1)+ic) = zr( jsig-1+4* (ino-1)+ic )/ nbpatchmil(ino )
             end do
         endif
     end do
     call detrsd('CHAMP_GD', '&&VECASS')
-    call jedetr('&&SINOZ2.NUMNB')
+    AS_DEALLOCATE(vi=numnb)
     call jedetr('&&SINOZ2.NBPATCH')
-    call jedetr('&&SINOZ2.NBPATCHMIL')
-    call jedetr('&&SINOZ2.NOEUBORD')
+    AS_DEALLOCATE(vi=nbpatchmil)
+    AS_DEALLOCATE(vl=noeubord)
     call jedetr('&&SINOZ2.CONINV')
-    call jedetr('&&SINOZ2.LONGCONINV')
+    AS_DEALLOCATE(vi=longconinv)
     call jedetr(elrfam)
 !
     call jedema()

@@ -5,6 +5,8 @@ subroutine tbtrir(ndim, tabcha, tabint)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: ndim, tabint(*)
     real(kind=8) :: tabcha(*)
 ! ----------------------------------------------------------------------
@@ -35,19 +37,20 @@ subroutine tbtrir(ndim, tabcha, tabint)
 !                   DANS LE TABLEAU  TABCHA DANS L'ORDRE CROISSANT.
 !-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: imin, j0, j1, i, j, lmasq
+    integer :: imin, j0, j1, i, j
+    integer, pointer :: masq(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
 !     --- ON DEMASQUE TOUS LES ELEMENTS DU TABLAEU A TRIER ---
 !
-    call wkvect('&&TBTRIR.MASQ', 'V V I', ndim, lmasq)
+    AS_ALLOCATE(vi=masq, size=ndim)
 !
     j0 = 1
     do 10 i = 1, ndim
 !        --- RECHERCHE DU PREMIER ELEMENT NON MASQUE ---
         do 20 j = j0, ndim
-            if (zi(lmasq+j-1) .eq. 0) then
+            if (masq(j) .eq. 0) then
                 j1 = j
                 goto 22
             endif
@@ -59,16 +62,16 @@ subroutine tbtrir(ndim, tabcha, tabint)
         j0 = j1
         imin = j1
         do 30 j = j0+1, ndim
-            if (zi(lmasq+j-1) .eq. 0 .and. tabcha(j) .lt. tabcha(imin)) imin = j
+            if (masq(j) .eq. 0 .and. tabcha(j) .lt. tabcha(imin)) imin = j
 30      continue
 !
 !        -- RANGEMENT DU IEME ELEMENT ET MISE A JOUR DU MASQUE --
         tabint(i) = imin
-        zi(lmasq+imin-1) = 1
+        masq(imin) = 1
 !
 10  end do
 !
-    call jedetr('&&TBTRIR.MASQ')
+    AS_DEALLOCATE(vi=masq)
 !
     call jedema()
 end subroutine

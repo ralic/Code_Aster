@@ -13,6 +13,8 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr(*), ddlexc(*)
@@ -61,13 +63,14 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: im, ieq, lacc1, ldynam
+    integer :: im, ieq,  ldynam
     character(len=1) :: typcst(2)
     character(len=19) :: matmod
     real(kind=8) :: rnorm, rx1, rx2, constr(4), fr, am, zero
     complex(kind=8) :: xx1, cmpl, xnorm, dconjg, czero
     character(len=24) :: nmatr(2), ndynam
     character(len=24) :: valk
+    complex(kind=8), pointer :: xxxx_gene_2(:) => null()
 !     ------------------------------------------------------------------
     data        typcst/'C','C'/
 !     ------------------------------------------------------------------
@@ -113,7 +116,7 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
         matmod = zk24(zi(lmatr(1)+1))
         nmatr(1)=zk24(zi(lmatr(1)+1))
         nmatr(2)=zk24(zi(lmatr(2)+1))
-        call wkvect('&&WPNORM.XXXX_GENE_2', 'V V C', neq, lacc1)
+        AS_ALLOCATE(vc=xxxx_gene_2, size=neq)
         call mtdefs('&&WPNORM.MATR.DYNAMIC', matmod, 'V', 'C')
         call mtdscr('&&WPNORM.MATR.DYNAM')
         ndynam='&&WPNORM.MATR.DYNAM'//'.&INT'
@@ -140,11 +143,11 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
             endif
             call mtcmbl(2, typcst, constr, nmatr, ndynam,&
                         ' ', ' ', 'ELIM=')
-            call mcmult('ZERO', ldynam, vecpro(1, im), zc(lacc1), 1,&
+            call mcmult('ZERO', ldynam, vecpro(1, im), xxxx_gene_2, 1,&
                         .true.)
             xnorm = czero
             do 31 ieq = 1, neq
-                xnorm = xnorm + vecpro(ieq,im) * zc(lacc1+ieq-1)
+                xnorm = xnorm + vecpro(ieq,im) * xxxx_gene_2(ieq)
 31          continue
             xnorm = 1.d0 / sqrt(xnorm)
             coef(im) = dble(xnorm)
@@ -159,7 +162,7 @@ subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
             endif
 30      continue
 ! --- MENAGE
-        call jedetr('&&WPNORM.XXXX_GENE_2')
+        AS_DEALLOCATE(vc=xxxx_gene_2)
         call detrsd('MATR_ASSE', '&&WPNORM.MATR.DYNAMIC')
         call detrsd('MATR_ASSE', '&&WPNORM.MATR.DYNAM')
         call jedetr('&&WPNORM.MATR.DYNAM'//'.&INT')

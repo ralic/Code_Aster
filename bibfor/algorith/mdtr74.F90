@@ -72,6 +72,8 @@ subroutine mdtr74(nomres)
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=1) :: niv
     character(len=4) :: k4bid(3)
@@ -123,10 +125,10 @@ subroutine mdtr74(nomres)
     integer :: ivecr2, ivecr3, ivecr4, ivecr5, jabsc, jaccs, jamo1
     integer :: jamo2, jamog, jarch, jbase, jbasf, jcodim, jcoefm
     integer :: jdcho, jdep0, jdepl, jdeps, jdesc, jdfk
-    integer :: jfcho, jfk, jfond, jfonv, jgr, jiadve, jicho
+    integer :: jfcho, jfk, jfond, jfonv,  jiadve, jicho
     integer :: jidesc, jinst, jinti, jinumo, jlocf, jmasg, jnoacc
     integer :: jnodep, jnoec, jnomfo, jnovit, jordr, jparc, jpard
-    integer :: jpass, jphie, jpoids, jpsdel, jpsid, jpul2, jpuls
+    integer :: jpass, jphie, jpoids, jpsdel, jpsid,  jpuls
     integer :: jraig, jranc, jredc, jredd, jrede, jrefa, jrefac
     integer :: jrevc, jrevv
     integer :: jrefak, jrefam, jrevi, jrhoe, jscdek, jscdem, jvcho
@@ -139,6 +141,8 @@ subroutine mdtr74(nomres)
     integer :: nterm, nts, numvif, nv, nbobjs
     real(kind=8) :: crit, deux, dtarch, eps, omeg2
     real(kind=8) :: seuil, tfexm, tfin, tinit, ts, vgap
+    character(len=24), pointer :: group_ma(:) => null()
+    real(kind=8), pointer :: pulsat2(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
@@ -291,7 +295,7 @@ subroutine mdtr74(nomres)
     call wkvect('&&MDTR74.RAIDEGEN', 'V V R', nbstok, jraig)
     call wkvect('&&MDTR74.AMORTGEN', 'V V R', nbstoc, jamo1)
     call wkvect('&&MDTR74.PULSATIO', 'V V R', nbmode, jpuls)
-    call wkvect('&&MDTR74.PULSAT2', 'V V R', nbmode, jpul2)
+    AS_ALLOCATE(vr=pulsat2, size=nbmode)
     numm24(1:14) = numgem
     numk24(1:14) = numgek
     call extdia(masgen, numm24, 0, zr(jmasg))
@@ -307,7 +311,7 @@ subroutine mdtr74(nomres)
     do i = 0, nbmode - 1
         omeg2 = abs(zr(jraig+i)/zr(jmasg+i))
         zr(jpuls+i) = sqrt(omeg2)
-        zr(jpul2+i) = omeg2
+        pulsat2(1+i) = omeg2
     end do
 !
 !     --- RECUPERATION DE L AMORTISSEMENT ---
@@ -460,7 +464,6 @@ subroutine mdtr74(nomres)
         call jedetr('&&MDTR74.BASEMODE')
         call jedetr('&&MDTR74.AMORTI')
 !--- ET POUR GAGNER DE LA PLACE
-        call jedetr('&&MDTR74.PULSAT2')
         nbmode = 0
         call mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                     nbmd, vgap, itrans, eps, ts,&
@@ -546,14 +549,13 @@ subroutine mdtr74(nomres)
             call getvtx('CHOC', 'GROUP_MA', iocc=ioc, nbval=0, nbret=n2)
             if (n2 .ne. 0) then
                 ngr = -n2
-                call wkvect('&&MDTR74.GROUP_MA', 'V V K24', ngr, jgr)
-                call getvtx('CHOC', 'GROUP_MA', iocc=ioc, nbval=ngr, vect=zk24(jgr),&
-                            nbret=n2)
+                AS_ALLOCATE(vk24=group_ma, size=ngr)
+                call getvtx('CHOC', 'GROUP_MA', iocc=ioc, nbval=ngr, vect=group_ma)
                 do ig = 0, ngr-1
-                    call jelira(jexnom(mailla//'.GROUPEMA', zk24(jgr+ ig)), 'LONMAX', nbmg)
+                    call jelira(jexnom(mailla//'.GROUPEMA', group_ma(ig+1)), 'LONMAX', nbmg)
                     nbchoc = nbchoc + nbmg
                 end do
-                call jedetr('&&MDTR74.GROUP_MA')
+                AS_DEALLOCATE(vk24=group_ma)
             else
                 nbchoc = nbchoc + 1
             endif
@@ -827,7 +829,7 @@ subroutine mdtr74(nomres)
     endif
 !
     if (method .eq. 'EULER') then
-        call mdeul1(nbpas, dt, nbmode, zr(jpuls), zr(jpul2),&
+        call mdeul1(nbpas, dt, nbmode, zr(jpuls), pulsat2,&
                     zr(jmasg), ibid, zr(jraig), ibid, zr(jrgyg),&
                     lamor, zr(jamog), ibid, zr(jgyog), foncv,&
                     fonca, typbas, basemo, tinit, zi(jarch),&
@@ -845,7 +847,7 @@ subroutine mdtr74(nomres)
     else if (method(1:5).eq.'RUNGE') then
         call mdruku(method, tinit, tfin, dt, dtmin,&
                     dtmax, nbsauv, nbobjs, nbmode, zr(jpuls),&
-                    zr(jpul2), zr(jmasg), ibid, zr(jraig), ibid,&
+                    pulsat2, zr(jmasg), ibid, zr(jraig), ibid,&
                     zr( jrgyg), lamor, zr(jamog), ibid, zr(jgyog),&
                     foncv, fonca, typbas, basemo, nbnli,&
                     zk8(jinti), zi(jranc), zr(jdepl), zr(jparc), zk8(jnoec),&
@@ -857,7 +859,7 @@ subroutine mdtr74(nomres)
                     nomres, ntotex, masgen, riggen, amogen)
 !
     else if (method(1:5).eq.'ADAPT') then
-        call mdadap(dt, dtmax, nbmode, zr(jpuls), zr(jpul2),&
+        call mdadap(dt, dtmax, nbmode, zr(jpuls), pulsat2,&
                     zr(jmasg), ibid, zr(jraig), ibid, lamor,&
                     zr(jamog), ibid, typbas, basemo, tinit,&
                     tfin, dtarch, nbsauv, nbnli, zi( jranc),&
@@ -870,7 +872,7 @@ subroutine mdtr74(nomres)
                     monmot, nbpal, dtsto, vrotat, prdeff,&
                     method, nomres, ntotex, zi(jrevc), zr(jrevv))
     else if (method.eq.'NEWMARK') then
-        call mdnewm(nbpas, dt, nbmode, zr(jpuls), zr(jpul2),&
+        call mdnewm(nbpas, dt, nbmode, zr(jpuls), pulsat2,&
                     zr(jmasg), zr(jraig), zr(jrgyg), lamor, zr(jamog),&
                     zr(jgyog), foncv, fonca, typbas, basemo,&
                     tinit, zi(jarch), zr(jdeps), zr(jvits), zr(jaccs),&
@@ -878,7 +880,7 @@ subroutine mdtr74(nomres)
                     zk8(jnomfo), zr( jcoefm), zi(jiadve), zi(jinumo), zr(jpass))
 !
     else if (method.eq.'DEVOGE') then
-        call mddevo(nbpas, dt, nbmode, zr(jpuls), zr(jpul2),&
+        call mddevo(nbpas, dt, nbmode, zr(jpuls), pulsat2,&
                     zr(jmasg), zr(jamog), basemo, tinit, zi(jarch),&
                     nbsauv, nbnli, zi(jranc), zr( jdepl), zr(jparc),&
                     zk8(jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
@@ -935,5 +937,6 @@ subroutine mdtr74(nomres)
         call utmess('F', 'ALGORITH5_24')
     endif
 !
+    AS_DEALLOCATE(vr=pulsat2)
     call jedema()
 end subroutine

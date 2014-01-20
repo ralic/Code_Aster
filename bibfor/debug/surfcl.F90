@@ -36,6 +36,8 @@ subroutine surfcl(char, noma, ifm)
 #include "asterfort/mminfr.h"
 #include "asterfort/surfll.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: char
     character(len=8) :: noma
     integer :: ifm
@@ -75,7 +77,7 @@ subroutine surfcl(char, noma, ifm)
     character(len=24) :: psans, sansno
     integer :: jpsans, jsans
     character(len=24) :: noeuma
-    integer :: jnomno
+
 !
     character(len=24) :: dirapp, dirnor
     integer :: jdirap, jdirno
@@ -85,6 +87,7 @@ subroutine surfcl(char, noma, ifm)
     integer :: inorm, itypa, ivecm, ivece, iappa
     logical :: lcoqu, lpout, lveri
     logical :: lliss, lexiv, lstop
+    character(len=8), pointer :: travno(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -154,7 +157,7 @@ subroutine surfcl(char, noma, ifm)
 !
 ! --- CREATION VECTEURS TEMPORAIRES
 !
-    call wkvect('&&SURFCL.TRAVNO', 'V V K8', nzoco*nnoco, jnomno)
+    AS_ALLOCATE(vk8=travno, size=nzoco*nnoco)
 !
 ! --- IMPRESSIONS POUR L'UTILISATEUR
 !
@@ -246,11 +249,11 @@ subroutine surfcl(char, noma, ifm)
             jdec = zi(jpsans+izone-1)
             do 801 ino = 1, nsno
                 numnoe = zi(jsans+jdec+ino-1)
-                call jenuno(jexnum(noeuma, numnoe), zk8(jnomno+ino-1))
+                call jenuno(jexnum(noeuma, numnoe), travno(ino))
 801          continue
 !
             write (ifm,1040) '     LISTE DES NOEUDS  : '
-            write (ifm,1050) (zk8(jnomno+ino-1), ino = 1,nsno)
+            write (ifm,1050) (travno(ino), ino = 1,nsno)
         endif
 !
  9  end do
@@ -413,7 +416,7 @@ subroutine surfcl(char, noma, ifm)
 !
 ! --- MENAGE
 !
-    call jedetr('&&SURFCL.TRAVNO')
+    AS_DEALLOCATE(vk8=travno)
 !
     call jedema()
 end subroutine

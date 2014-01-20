@@ -53,6 +53,8 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/utmess.h"
 #include "asterfort/veripl.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=8) :: charge
     character(len=14) :: numddl
@@ -93,14 +95,21 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: iop, nliai, i, narl, nrl, ibid, jnoma, jcoor, inom
     integer :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
     integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
-    integer :: ino, j, idiner, idch1, idch2, nbterm
-    integer :: jlisno, jlisdl, jliscr, jliscc, jlisdi, jlisdm, ival
+    integer :: ino, j,  idch1, idch2, nbterm
+    integer ::       ival
     integer :: ncara, iocc
     real(kind=8) :: ig(6), coorig(3), angt, beta, eps, un, vtang(6)
     real(kind=8) :: xpou, ypou, zpou, s, s1, xg, yg, zg, dnorme
     real(kind=8) :: ax, ay, az, axx, ayy, azz, axy, axz, ayz, valr(9)
     complex(kind=8) :: betac, ccmp(3)
     integer :: iarg
+    complex(kind=8), pointer :: coec(:) => null()
+    real(kind=8), pointer :: coer(:) => null()
+    integer, pointer :: dime(:) => null()
+    real(kind=8), pointer :: direct(:) => null()
+    real(kind=8), pointer :: inertie_raccord(:) => null()
+    character(len=8), pointer :: lisddl(:) => null()
+    character(len=8), pointer :: lisno(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()
@@ -397,23 +406,23 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- VECTEUR DES QUANTITES GEOMETRIQUES PRECITEES SOMMEES
 !     SUR LA SURFACE DE RACCORD, CES QUANTITES SERONT NOTEES :
 !        A1 = S,AX,AY,AZ,AXX,AYY,AZZ,AXY,AXZ,AYZ
-    call wkvect('&&RAPO3D.INERTIE_RACCORD', 'V V R', 16, idiner)
+    AS_ALLOCATE(vr=inertie_raccord, size=16)
 ! --- -----------------------------------------------------------------
 !     SOMMATION DES QUANTITES GEOMETRIQUES ELEMENTAIRES
 !     DANS LE VECTEUR &&RAPO3D.INERTIE_RACCORD :
 !     SEULES LES 10 PREMIERES VALEURS SERONT UTILISEES
-    call mesomm(lchout(1), 16, vr=zr(idiner))
+    call mesomm(lchout(1), 16, vr=inertie_raccord)
 !
-    s = zr(idiner+1-1)
-    ax = zr(idiner+2-1)
-    ay = zr(idiner+3-1)
-    az = zr(idiner+4-1)
-    axx = zr(idiner+5-1)
-    ayy = zr(idiner+6-1)
-    azz = zr(idiner+7-1)
-    axy = zr(idiner+8-1)
-    axz = zr(idiner+9-1)
-    ayz = zr(idiner+10-1)
+    s = inertie_raccord(1)
+    ax = inertie_raccord(2)
+    ay = inertie_raccord(3)
+    az = inertie_raccord(4)
+    axx = inertie_raccord(5)
+    ayy = inertie_raccord(6)
+    azz = inertie_raccord(7)
+    axy = inertie_raccord(8)
+    axz = inertie_raccord(9)
+    ayz = inertie_raccord(10)
 !
     if (abs(s) .lt. r8prem()) then
         call utmess('F', 'MODELISA6_46')
@@ -455,13 +464,13 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 !     RECUPERATION DES VECTEURS TANGENTS ORTHONORMES DU 1ER ELEMENT
     if (option .eq. 'PLAQ_POUT_ORTH') then
-        call mesomm(lchout(1), 16, vr=zr(idiner), nbma=1, linuma=zi(jlisma))
-        vtang(1) = zr(idiner+11-1)
-        vtang(2) = zr(idiner+12-1)
-        vtang(3) = zr(idiner+13-1)
-        vtang(4) = zr(idiner+14-1)
-        vtang(5) = zr(idiner+15-1)
-        vtang(6) = zr(idiner+16-1)
+        call mesomm(lchout(1), 16, vr=inertie_raccord, nbma=1, linuma=zi(jlisma))
+        vtang(1) = inertie_raccord(11)
+        vtang(2) = inertie_raccord(12)
+        vtang(3) = inertie_raccord(13)
+        vtang(4) = inertie_raccord(14)
+        vtang(5) = inertie_raccord(15)
+        vtang(6) = inertie_raccord(16)
     endif
 !
 ! --- -----------------------------------------------------------------
@@ -547,17 +556,17 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- MAJORANT DU NOMBRE DE TERMES DANS UNE RELATION
     nbterm = 3*lonlis + 3
 ! --- VECTEUR DU NOM DES NOEUDS
-    call wkvect('&&RAPO3D.LISNO', 'V V K8', nbterm, jlisno)
+    AS_ALLOCATE(vk8=lisno, size=nbterm)
 ! --- VECTEUR DU NOM DES DDLS
-    call wkvect('&&RAPO3D.LISDDL', 'V V K8', nbterm, jlisdl)
+    AS_ALLOCATE(vk8=lisddl, size=nbterm)
 ! --- VECTEUR DES COEFFICIENTS REELS
-    call wkvect('&&RAPO3D.COER', 'V V R', nbterm, jliscr)
+    AS_ALLOCATE(vr=coer, size=nbterm)
 ! --- VECTEUR DES COEFFICIENTS COMPLEXES
-    call wkvect('&&RAPO3D.COEC', 'V V C', nbterm, jliscc)
+    AS_ALLOCATE(vc=coec, size=nbterm)
 ! --- VECTEUR DES DIRECTIONS DES DDLS A CONTRAINDRE
-    call wkvect('&&RAPO3D.DIRECT', 'V V R', 3*nbterm, jlisdi)
+    AS_ALLOCATE(vr=direct, size=3*nbterm)
 ! --- VECTEUR DES DIMENSIONS DE CES DIRECTIONS
-    call wkvect('&&RAPO3D.DIME', 'V V I', nbterm, jlisdm)
+    AS_ALLOCATE(vi=dime, size=nbterm)
 !
 ! --- -----------------------------------------------------------------
 ! --- RELATIONS ENTRE LES NOEUDS DE LA COQUE ET LE NOEUD POUTRE
@@ -575,19 +584,19 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno + (ino-1)*(nbec+2))
 !
-        zk8(jlisno+i-1) = zk8(ilisno+i-1)
-        zk8(jlisdl+i-1) = 'DX'
-        zr(jliscr+i-1) = zr(idch1+ival-1)
+        lisno(i) = zk8(ilisno+i-1)
+        lisddl(i) = 'DX'
+        coer(i) = zr(idch1+ival-1)
     end do
 !
-    zk8(jlisno+lonlis+1-1) = noepou
-    zk8(jlisdl+lonlis+1-1) = 'DX'
-    zr(jliscr+lonlis+1-1) = -s
+    lisno(1+lonlis+1-1) = noepou
+    lisddl(1+lonlis+1-1) = 'DX'
+    coer(1+lonlis+1-1) = -s
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 ! --- DEUXIEME RELATION :
@@ -599,19 +608,19 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno + (ino-1)*(nbec+2))
 !
-        zk8(jlisno+i-1) = zk8(ilisno+i-1)
-        zk8(jlisdl+i-1) = 'DY'
-        zr(jliscr+i-1) = zr(idch1+ival-1)
+        lisno(i) = zk8(ilisno+i-1)
+        lisddl(i) = 'DY'
+        coer(i) = zr(idch1+ival-1)
     end do
 !
-    zk8(jlisno+lonlis+1-1) = noepou
-    zk8(jlisdl+lonlis+1-1) = 'DY'
-    zr(jliscr+lonlis+1-1) = -s
+    lisno(1+lonlis+1-1) = noepou
+    lisddl(1+lonlis+1-1) = 'DY'
+    coer(1+lonlis+1-1) = -s
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 ! --- TROISIEME RELATION :
@@ -623,19 +632,19 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno + (ino-1)*(nbec+2))
 !
-        zk8(jlisno+i-1) = zk8(ilisno+i-1)
-        zk8(jlisdl+i-1) = 'DZ'
-        zr(jliscr+i-1) = zr(idch1+ival-1)
+        lisno(i) = zk8(ilisno+i-1)
+        lisddl(i) = 'DZ'
+        coer(i) = zr(idch1+ival-1)
     end do
 !
-    zk8(jlisno+lonlis+1-1) = noepou
-    zk8(jlisdl+lonlis+1-1) = 'DZ'
-    zr(jliscr+lonlis+1-1) = -s
+    lisno(1+lonlis+1-1) = noepou
+    lisddl(1+lonlis+1-1) = 'DZ'
+    coer(1+lonlis+1-1) = -s
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 ! --- -----------------------------------------------------------------
@@ -654,32 +663,32 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno + (ino-1)*(nbec+2))
 !
-        zk8(jlisno+2*(i-1)+1-1) = zk8(ilisno+i-1)
-        zk8(jlisno+2*(i-1)+2-1) = zk8(ilisno+i-1)
-        zk8(jlisdl+2*(i-1)+1-1) = 'DZ'
-        zk8(jlisdl+2*(i-1)+2-1) = 'DY'
+        lisno(1+2*(i-1)+1-1) = zk8(ilisno+i-1)
+        lisno(1+2*(i-1)+2-1) = zk8(ilisno+i-1)
+        lisddl(1+2*(i-1)+1-1) = 'DZ'
+        lisddl(1+2*(i-1)+2-1) = 'DY'
 !        SOMME/S_RACCORD(Y*NI.DS) = ZR(IDCH2+IVAL+1-1)
 !        SOMME/S_RACCORD(Z*NI.DS) = ZR(IDCH2+IVAL+2-1)
-        zr(jliscr+2*(i-1)+1-1) = zr(idch2+ival-1+1)
-        zr(jliscr+2*(i-1)+2-1) = -zr(idch2+ival-1+2)
+        coer(1+2*(i-1)+1-1) = zr(idch2+ival-1+1)
+        coer(1+2*(i-1)+2-1) = -zr(idch2+ival-1+2)
     end do
 !
-    zk8(jlisno+2*lonlis+1-1) = noepou
-    zk8(jlisno+2*lonlis+2-1) = noepou
-    zk8(jlisno+2*lonlis+3-1) = noepou
+    lisno(1+2*lonlis+1-1) = noepou
+    lisno(1+2*lonlis+2-1) = noepou
+    lisno(1+2*lonlis+3-1) = noepou
 !
-    zk8(jlisdl+2*lonlis+1-1) = 'DRX'
-    zk8(jlisdl+2*lonlis+2-1) = 'DRY'
-    zk8(jlisdl+2*lonlis+3-1) = 'DRZ'
+    lisddl(1+2*lonlis+1-1) = 'DRX'
+    lisddl(1+2*lonlis+2-1) = 'DRY'
+    lisddl(1+2*lonlis+3-1) = 'DRZ'
 !
-    zr(jliscr+2*lonlis+1-1) = -ig(1)
-    zr(jliscr+2*lonlis+2-1) = -ig(2)
-    zr(jliscr+2*lonlis+3-1) = -ig(3)
+    coer(1+2*lonlis+1-1) = -ig(1)
+    coer(1+2*lonlis+2-1) = -ig(2)
+    coer(1+2*lonlis+3-1) = -ig(3)
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 ! --- CINQUIEME RELATION :
@@ -694,32 +703,32 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+ (ino-1)* (nbec+2))
 !
-        zk8(jlisno+2*(i-1)+1-1) = zk8(ilisno+i-1)
-        zk8(jlisno+2*(i-1)+2-1) = zk8(ilisno+i-1)
-        zk8(jlisdl+2*(i-1)+1-1) = 'DX'
-        zk8(jlisdl+2*(i-1)+2-1) = 'DZ'
+        lisno(1+2*(i-1)+1-1) = zk8(ilisno+i-1)
+        lisno(1+2*(i-1)+2-1) = zk8(ilisno+i-1)
+        lisddl(1+2*(i-1)+1-1) = 'DX'
+        lisddl(1+2*(i-1)+2-1) = 'DZ'
 !        SOMME/S_RACCORD(Z*NI.DS) = ZR(IDCH2+IVAL+2-1)
 !        SOMME/S_RACCORD(X*NI.DS) = ZR(IDCH2+IVAL-1)
-        zr(jliscr+2*(i-1)+1-1) = zr(idch2+ival-1+2)
-        zr(jliscr+2*(i-1)+2-1) = -zr(idch2+ival-1)
+        coer(1+2*(i-1)+1-1) = zr(idch2+ival-1+2)
+        coer(1+2*(i-1)+2-1) = -zr(idch2+ival-1)
     end do
 !
-    zk8(jlisno+2*lonlis+1-1) = noepou
-    zk8(jlisno+2*lonlis+2-1) = noepou
-    zk8(jlisno+2*lonlis+3-1) = noepou
+    lisno(1+2*lonlis+1-1) = noepou
+    lisno(1+2*lonlis+2-1) = noepou
+    lisno(1+2*lonlis+3-1) = noepou
 !
-    zk8(jlisdl+2*lonlis+1-1) = 'DRX'
-    zk8(jlisdl+2*lonlis+2-1) = 'DRY'
-    zk8(jlisdl+2*lonlis+3-1) = 'DRZ'
+    lisddl(1+2*lonlis+1-1) = 'DRX'
+    lisddl(1+2*lonlis+2-1) = 'DRY'
+    lisddl(1+2*lonlis+3-1) = 'DRZ'
 !
-    zr(jliscr+2*lonlis+1-1) = -ig(2)
-    zr(jliscr+2*lonlis+2-1) = -ig(4)
-    zr(jliscr+2*lonlis+3-1) = -ig(5)
+    coer(1+2*lonlis+1-1) = -ig(2)
+    coer(1+2*lonlis+2-1) = -ig(4)
+    coer(1+2*lonlis+3-1) = -ig(5)
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 ! --- SIXIEME RELATION :
@@ -734,32 +743,32 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
         ival = zi(iaprno+ (ino-1)* (nbec+2))
 !
-        zk8(jlisno+2*(i-1)+1-1) = zk8(ilisno+i-1)
-        zk8(jlisno+2*(i-1)+2-1) = zk8(ilisno+i-1)
-        zk8(jlisdl+2*(i-1)+1-1) = 'DY'
-        zk8(jlisdl+2*(i-1)+2-1) = 'DX'
+        lisno(1+2*(i-1)+1-1) = zk8(ilisno+i-1)
+        lisno(1+2*(i-1)+2-1) = zk8(ilisno+i-1)
+        lisddl(1+2*(i-1)+1-1) = 'DY'
+        lisddl(1+2*(i-1)+2-1) = 'DX'
 !        SOMME/S_RACCORD(X*NI.DS) = ZR(IDCH2+IVAL-1)
 !        SOMME/S_RACCORD(Y*NI.DS) = ZR(IDCH2+IVAL+1-1)
-        zr(jliscr+2*(i-1)+1-1) = zr(idch2+ival-1)
-        zr(jliscr+2*(i-1)+2-1) = -zr(idch2+ival-1+1)
+        coer(1+2*(i-1)+1-1) = zr(idch2+ival-1)
+        coer(1+2*(i-1)+2-1) = -zr(idch2+ival-1+1)
     end do
 !
-    zk8(jlisno+2*lonlis+1-1) = noepou
-    zk8(jlisno+2*lonlis+2-1) = noepou
-    zk8(jlisno+2*lonlis+3-1) = noepou
+    lisno(1+2*lonlis+1-1) = noepou
+    lisno(1+2*lonlis+2-1) = noepou
+    lisno(1+2*lonlis+3-1) = noepou
 !
-    zk8(jlisdl+2*lonlis+1-1) = 'DRX'
-    zk8(jlisdl+2*lonlis+2-1) = 'DRY'
-    zk8(jlisdl+2*lonlis+3-1) = 'DRZ'
+    lisddl(1+2*lonlis+1-1) = 'DRX'
+    lisddl(1+2*lonlis+2-1) = 'DRY'
+    lisddl(1+2*lonlis+3-1) = 'DRZ'
 !
-    zr(jliscr+2*lonlis+1-1) = -ig(3)
-    zr(jliscr+2*lonlis+2-1) = -ig(5)
-    zr(jliscr+2*lonlis+3-1) = -ig(6)
+    coer(1+2*lonlis+1-1) = -ig(3)
+    coer(1+2*lonlis+2-1) = -ig(5)
+    coer(1+2*lonlis+3-1) = -ig(6)
 !
-    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                zr(jlisdi), nbterm, beta, betac, betaf,&
+    call afrela(coer, coec, lisddl, lisno, dime,&
+                direct, nbterm, beta, betac, betaf,&
                 typcoe, typval, typlag, 0.d0, lisrel)
-    call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+    call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
 ! === =================================================================
@@ -779,31 +788,31 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
             ival = zi(iaprno + (ino-1)*(nbec+2))
 !
-            zk8(jlisno+3*(i-1)+1-1) = zk8(ilisno+i-1)
-            zk8(jlisno+3*(i-1)+2-1) = zk8(ilisno+i-1)
-            zk8(jlisno+3*(i-1)+3-1) = zk8(ilisno+i-1)
-            zk8(jlisdl+3*(i-1)+1-1) = 'DRX'
-            zk8(jlisdl+3*(i-1)+2-1) = 'DRY'
-            zk8(jlisdl+3*(i-1)+3-1) = 'DRZ'
-            zr( jliscr+3*(i-1)+1-1) = vtang(1)*zr(idch1+ival-1)
-            zr( jliscr+3*(i-1)+2-1) = vtang(2)*zr(idch1+ival-1)
-            zr( jliscr+3*(i-1)+3-1) = vtang(3)*zr(idch1+ival-1)
+            lisno(1+3*(i-1)+1-1) = zk8(ilisno+i-1)
+            lisno(1+3*(i-1)+2-1) = zk8(ilisno+i-1)
+            lisno(1+3*(i-1)+3-1) = zk8(ilisno+i-1)
+            lisddl(1+3*(i-1)+1-1) = 'DRX'
+            lisddl(1+3*(i-1)+2-1) = 'DRY'
+            lisddl(1+3*(i-1)+3-1) = 'DRZ'
+            coer(1+3*(i-1)+1-1) = vtang(1)*zr(idch1+ival-1)
+            coer(1+3*(i-1)+2-1) = vtang(2)*zr(idch1+ival-1)
+            coer(1+3*(i-1)+3-1) = vtang(3)*zr(idch1+ival-1)
         end do
 !
-        zk8(jlisno+3*lonlis+1-1) = noepou
-        zk8(jlisno+3*lonlis+2-1) = noepou
-        zk8(jlisno+3*lonlis+3-1) = noepou
-        zk8(jlisdl+3*lonlis+1-1) = 'DRX'
-        zk8(jlisdl+3*lonlis+2-1) = 'DRY'
-        zk8(jlisdl+3*lonlis+3-1) = 'DRZ'
-        zr( jliscr+3*lonlis+1-1) = -s*vtang(1)
-        zr( jliscr+3*lonlis+2-1) = -s*vtang(2)
-        zr( jliscr+3*lonlis+3-1) = -s*vtang(3)
+        lisno(1+3*lonlis+1-1) = noepou
+        lisno(1+3*lonlis+2-1) = noepou
+        lisno(1+3*lonlis+3-1) = noepou
+        lisddl(1+3*lonlis+1-1) = 'DRX'
+        lisddl(1+3*lonlis+2-1) = 'DRY'
+        lisddl(1+3*lonlis+3-1) = 'DRZ'
+        coer(1+3*lonlis+1-1) = -s*vtang(1)
+        coer(1+3*lonlis+2-1) = -s*vtang(2)
+        coer(1+3*lonlis+3-1) = -s*vtang(3)
 !
-        call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                    zr(jlisdi), nbterm, beta, betac, betaf,&
+        call afrela(coer, coec, lisddl, lisno, dime,&
+                    direct, nbterm, beta, betac, betaf,&
                     typcoe, typval, typlag, 0.d0, lisrel)
-        call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+        call imprel(motfac, nbterm, coer, lisddl, lisno,&
                     beta)
 !
 ! --- PREMIERE RELATION :
@@ -815,31 +824,31 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !        ADRESSE DE LA PREMIERE COMPOSANTE DU NOEUD INO DANS LES CHAMNO
             ival = zi(iaprno + (ino-1)*(nbec+2))
 !
-            zk8(jlisno+3*(i-1)+1-1) = zk8(ilisno+i-1)
-            zk8(jlisno+3*(i-1)+2-1) = zk8(ilisno+i-1)
-            zk8(jlisno+3*(i-1)+3-1) = zk8(ilisno+i-1)
-            zk8(jlisdl+3*(i-1)+1-1) = 'DRX'
-            zk8(jlisdl+3*(i-1)+2-1) = 'DRY'
-            zk8(jlisdl+3*(i-1)+3-1) = 'DRZ'
-            zr( jliscr+3*(i-1)+1-1) = vtang(4)*zr(idch1+ival-1)
-            zr( jliscr+3*(i-1)+2-1) = vtang(5)*zr(idch1+ival-1)
-            zr( jliscr+3*(i-1)+3-1) = vtang(6)*zr(idch1+ival-1)
+            lisno(1+3*(i-1)+1-1) = zk8(ilisno+i-1)
+            lisno(1+3*(i-1)+2-1) = zk8(ilisno+i-1)
+            lisno(1+3*(i-1)+3-1) = zk8(ilisno+i-1)
+            lisddl(1+3*(i-1)+1-1) = 'DRX'
+            lisddl(1+3*(i-1)+2-1) = 'DRY'
+            lisddl(1+3*(i-1)+3-1) = 'DRZ'
+            coer(1+3*(i-1)+1-1) = vtang(4)*zr(idch1+ival-1)
+            coer(1+3*(i-1)+2-1) = vtang(5)*zr(idch1+ival-1)
+            coer(1+3*(i-1)+3-1) = vtang(6)*zr(idch1+ival-1)
         end do
 !
-        zk8(jlisno+3*lonlis+1-1) = noepou
-        zk8(jlisno+3*lonlis+2-1) = noepou
-        zk8(jlisno+3*lonlis+3-1) = noepou
-        zk8(jlisdl+3*lonlis+1-1) = 'DRX'
-        zk8(jlisdl+3*lonlis+2-1) = 'DRY'
-        zk8(jlisdl+3*lonlis+3-1) = 'DRZ'
-        zr( jliscr+3*lonlis+1-1) = -s*vtang(4)
-        zr( jliscr+3*lonlis+2-1) = -s*vtang(5)
-        zr( jliscr+3*lonlis+3-1) = -s*vtang(6)
+        lisno(1+3*lonlis+1-1) = noepou
+        lisno(1+3*lonlis+2-1) = noepou
+        lisno(1+3*lonlis+3-1) = noepou
+        lisddl(1+3*lonlis+1-1) = 'DRX'
+        lisddl(1+3*lonlis+2-1) = 'DRY'
+        lisddl(1+3*lonlis+3-1) = 'DRZ'
+        coer(1+3*lonlis+1-1) = -s*vtang(4)
+        coer(1+3*lonlis+2-1) = -s*vtang(5)
+        coer(1+3*lonlis+3-1) = -s*vtang(6)
 !
-        call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                    zr(jlisdi), nbterm, beta, betac, betaf,&
+        call afrela(coer, coec, lisddl, lisno, dime,&
+                    direct, nbterm, beta, betac, betaf,&
                     typcoe, typval, typlag, 0.d0, lisrel)
-        call imprel(motfac, nbterm, zr(jliscr), zk8(jlisdl), zk8(jlisno),&
+        call imprel(motfac, nbterm, coer, lisddl, lisno,&
                     beta)
 !
     endif
@@ -862,15 +871,15 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call jedetr('&&RAPO3D.LISTE_NOEUDS')
     call jedetr('&&RAPO3D.LISTE_MAILLES')
-    call jedetr('&&RAPO3D.INERTIE_RACCORD')
+    AS_DEALLOCATE(vr=inertie_raccord)
     call jedetr('&&RAPO3D           .RELR')
     call jedetr('&&RAPO3D           .RERR')
-    call jedetr('&&RAPO3D.LISNO')
-    call jedetr('&&RAPO3D.LISDDL')
-    call jedetr('&&RAPO3D.COER')
-    call jedetr('&&RAPO3D.COEC')
-    call jedetr('&&RAPO3D.DIRECT')
-    call jedetr('&&RAPO3D.DIME')
+    AS_DEALLOCATE(vk8=lisno)
+    AS_DEALLOCATE(vk8=lisddl)
+    AS_DEALLOCATE(vr=coer)
+    AS_DEALLOCATE(vc=coec)
+    AS_DEALLOCATE(vr=direct)
+    AS_DEALLOCATE(vi=dime)
     call detrsd('CHAMP_GD', '&&RAPO3D.PSECT')
     call detrsd('RESUELEM', '&&RAPO3D.VECT_NI')
     call detrsd('RESUELEM', '&&RAPO3D.VECT_XYZNI')

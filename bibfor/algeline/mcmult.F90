@@ -13,6 +13,8 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 #include "asterfort/mtmchc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: cumul
     integer :: lmat, nbvect
     complex(kind=8) :: vect(*), xsol(*)
@@ -55,7 +57,8 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic
     character(len=19) :: matas
-    integer :: jrefa, jsmdi, jsmhc, jvtemp, neq
+    integer :: jrefa, jsmdi, jsmhc,  neq
+    complex(kind=8), pointer :: vectmp(:) => null()
 !
     call jemarq()
     prepo2=prepos
@@ -70,7 +73,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !
     call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
     neq=zi(lmat+2)
-    call wkvect('&&MCMULT.VECTMP', 'V V C', neq, jvtemp)
+    AS_ALLOCATE(vc=vectmp, size=neq)
 !
 !
 !     SELON REEL OU COMPLEXE :
@@ -78,14 +81,14 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !
         call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
         call mcmmvr(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq,&
-                    vect, xsol, nbvect, zc(jvtemp), prepo2)
+                    vect, xsol, nbvect, vectmp, prepo2)
 !
     else if (zi(lmat+3) .eq. 2) then
 !
 !     MATRICE COMPLEXE
         call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
         call mcmmvc(cumul, lmat, zi(jsmdi), zi4(jsmhc), neq,&
-                    vect, xsol, nbvect, zc(jvtemp), prepo2)
+                    vect, xsol, nbvect, vectmp, prepo2)
 !
     else
 !
@@ -93,6 +96,6 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !
     endif
 !
-    call jedetr('&&MCMULT.VECTMP')
+    AS_DEALLOCATE(vc=vectmp)
     call jedema()
 end subroutine

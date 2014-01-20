@@ -63,10 +63,12 @@ subroutine crtype()
 #include "asterfort/rssepa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
     integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
-    integer :: jcham, jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf
+    integer ::  jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf
     integer :: ino, nbv(1), jrefe, jlcha, nchar, jfcha, iadesc, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
@@ -88,6 +90,7 @@ subroutine crtype()
     character(len=24) :: k24, linst, nsymb, typres, lcpt, o1, o2, profch, noojb
     character(len=24) :: valkk(4), matric(3)
     character(len=32) :: kjexn
+    character(len=8), pointer :: champs(:) => null()
 !
     data linst,listr8,lcpt/'&&CRTYPE_LINST','&&CRTYPE_LISR8',&
      &     '&&CPT_CRTYPE'/
@@ -116,7 +119,7 @@ subroutine crtype()
     numini = -1
     icompt = -1
     profch = ' '
-    call wkvect('&&CRTYPE.CHAMPS', 'V V K8', nbfac, jcham)
+    AS_ALLOCATE(vk8=champs, size=nbfac)
 !
     do iocc = 1, nbfac
         modele = ' '
@@ -141,7 +144,7 @@ subroutine crtype()
         endif
 !
         call getvid('AFFE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
-        zk8(jcham+iocc-1) = champ(1:8)
+        champs(iocc) = champ(1:8)
         call dismoi('NOM_MAILLA', champ, 'CHAMP', repk=noma)
         if (modele .ne. ' ') then
             call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma2)
@@ -467,7 +470,7 @@ subroutine crtype()
             if (iret .eq. 0) then
                 call rsadpa(resu, 'L', 1, typabs, icompt,&
                             0, sjv=iad, styp=k8b)
-                valkk(1) = zk8(jcham+icompt-1)
+                valkk(1) = champs(icompt)
                 valkk(2) = champ(1:8)
                 valrr(1) = zr(iad)
                 valrr(2) = tps
@@ -596,6 +599,6 @@ subroutine crtype()
     endif
 !
 !
-    call jedetr('&&CRTYPE.CHAMPS')
+    AS_DEALLOCATE(vk8=champs)
     call jedema()
 end subroutine

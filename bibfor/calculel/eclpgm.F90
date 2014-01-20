@@ -73,15 +73,17 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
 !
     integer :: k, te, tabno(27), iret1, jobj, numa, nch
     integer :: igr, iel, iacoor, iamaco, ilmaco, ialiel, illiel
-    integer :: dimgeo, iacose, ibid, ino, ino1, ino2
+    integer :: dimgeo,  ibid, ino, ino1, ino2
     integer :: nbmail, nbnoeu, nbcoor, iadime, kse
     integer :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
-    integer :: npg1, nbpi, iagepi, iagese, nno2, nuse, nse1
+    integer :: npg1, nbpi,  iagese, nno2, nuse, nse1
     integer :: ima, nbelgr, nupoin, npoini, iterm, ipoini
     integer :: iret, ich, jrefe, nch2
     character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, famil, nompar
@@ -113,6 +115,8 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
     integer :: ico
     integer :: opt, iadesc, iaoppa, nbin
+    integer, pointer :: connexse(:) => null()
+    real(kind=8), pointer :: geopoini(:) => null()
 ! ----------------------------------------------------------------------
 !
 !     FONCTIONS FORMULES :
@@ -255,8 +259,8 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     if (nbpi .eq. 0) then
         call utmess('F', 'CALCULEL2_35')
     endif
-    call wkvect('&&ECLPGM.GEOPOINI', 'V V R', nbpi*dimgeo, iagepi)
-    call wkvect('&&ECLPGM.CONNEXSE', 'V V I', nbno2t, iacose)
+    AS_ALLOCATE(vr=geopoini, size=nbpi*dimgeo)
+    AS_ALLOCATE(vi=connexse, size=nbno2t)
     call wkvect('&&ECLPGM.GEOSE', 'V V R', nbno2t*dimgeo, iagese)
     call wkvect('&&ECLPGM.NBNO2', 'V V I', nbse, ianno2)
 !
@@ -312,7 +316,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                         x=x+csomm1(ipoini,iterm)* zr(iacoor-1+3*(&
                         tabno(nsomm1(ipoini,iterm))-1)+k)
                     end do
-                    zr(iagepi-1+(nupoin-1)*dimgeo+k)=x
+                    geopoini((nupoin-1)*dimgeo+k)=x
                 end do
             end do
 !
@@ -325,10 +329,10 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                 nno2=nbno2(kse)
                 do ino2 = 1, nno2
                     nuno2=nuno2+1
-                    zi(iacose-1+nuno2)=connx(ino2,kse)+ nupoin-npoini
-                    nupoi2=zi(iacose-1+nuno2)
+                    connexse(nuno2)=connx(ino2,kse)+ nupoin-npoini
+                    nupoi2=connexse(nuno2)
                     do k = 1, dimgeo
-                        zr(iagese-1+(nuno2-1)*dimgeo+k)= zr(iagepi-1+(&
+                        zr(iagese-1+(nuno2-1)*dimgeo+k)= geopoini((&
                         nupoi2-1)*dimgeo+k)
                     end do
                 end do
@@ -429,8 +433,8 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !
 !
     call jedetr('&&ECLPGM.NOMOBJ')
-    call jedetr('&&ECLPGM.GEOPOINI')
-    call jedetr('&&ECLPGM.CONNEXSE')
+    AS_DEALLOCATE(vr=geopoini)
+    AS_DEALLOCATE(vi=connexse)
     call jedetr('&&ECLPGM.GEOSE')
     call jedetr('&&ECLPGM.NBBO2')
     call jedema()

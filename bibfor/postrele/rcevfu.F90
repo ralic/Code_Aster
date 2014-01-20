@@ -9,6 +9,8 @@ subroutine rcevfu(cnoc, cfat, fut)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     real(kind=8) :: fut
     character(len=24) :: cnoc, cfat
 !     ------------------------------------------------------------------
@@ -36,9 +38,12 @@ subroutine rcevfu(cnoc, cfat, fut)
 !
     integer :: nbinst, jnocr, jfu, i1, i2, ind, noc1, noc2, i1m, i2m, noc1m
     integer :: noc2m, nbcycl
-    integer :: jnock, jnocl, jfukl, indi, inds, k, l, ifm, niv
+    integer ::    indi, inds, k, l, ifm, niv
     real(kind=8) :: fum, fukl
     logical :: encore
+    real(kind=8), pointer :: matr_fu(:) => null()
+    integer, pointer :: nb_occ_k(:) => null()
+    integer, pointer :: nb_occ_l(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -50,25 +55,25 @@ subroutine rcevfu(cnoc, cfat, fut)
 !
     fut = 0.d0
 !
-    call wkvect('&&RCEVFU.NB_OCC_K', 'V V I', nbinst, jnock)
-    call wkvect('&&RCEVFU.NB_OCC_L', 'V V I', nbinst, jnocl)
+    AS_ALLOCATE(vi=nb_occ_k, size=nbinst)
+    AS_ALLOCATE(vi=nb_occ_l, size=nbinst)
     do 10 i1 = 1, nbinst
-        zi(jnock+i1-1) = zi(jnocr+i1-1)
-        zi(jnocl+i1-1) = zi(jnocr+i1-1)
+        nb_occ_k(i1) = zi(jnocr+i1-1)
+        nb_occ_l(i1) = zi(jnocr+i1-1)
 10  end do
 !
-    call wkvect('&&RCEVFU.MATR_FU', 'V V R', nbinst*nbinst, jfukl)
+    AS_ALLOCATE(vr=matr_fu, size=nbinst*nbinst)
     ind = 0
     do 20 i1 = 1, nbinst
         indi = nbinst*(i1-1) + i1
         ind = ind + 1
-        zr(jfukl-1+indi) = zr(jfu-1+5*(ind-1)+4)
+        matr_fu(indi) = zr(jfu-1+5*(ind-1)+4)
         do 22 i2 = i1+1, nbinst
             inds = nbinst*(i1-1) + i2
             indi = nbinst*(i2-1) + i1
             ind = ind + 1
-            zr(jfukl-1+inds) = zr(jfu-1+5*(ind-1)+4)
-            zr(jfukl-1+indi) = zr(jfu-1+5*(ind-1)+4)
+            matr_fu(inds) = zr(jfu-1+5*(ind-1)+4)
+            matr_fu(indi) = zr(jfu-1+5*(ind-1)+4)
 22      continue
 20  end do
 !
@@ -84,10 +89,10 @@ subroutine rcevfu(cnoc, cfat, fut)
         else
             write(ifm,*) 'MATRICE FACTEUR D''USAGE MODIFIEE'
         endif
-        write(ifm,1010) ( zi(jnocl+l-1), l=1,nbinst )
+        write(ifm,1010) ( nb_occ_l(l), l=1,nbinst )
         do 700 k = 1, nbinst
             i1 = nbinst*(k-1)
-            write(ifm,1000) zi(jnock+k-1), (zr(jfukl-1+i1+l), l=1,&
+            write(ifm,1000) nb_occ_k(k), (matr_fu(i1+l), l=1,&
             nbinst)
 700      continue
     endif
@@ -95,16 +100,16 @@ subroutine rcevfu(cnoc, cfat, fut)
     fum = 0.d0
 !
     do 110 i1 = 1, nbinst
-        noc1 = zi(jnock-1+i1)
+        noc1 = nb_occ_k(i1)
         if (noc1 .eq. 0) goto 110
         k = nbinst*(i1-1)
 !
         do 112 i2 = 1, nbinst
-            noc2 = zi(jnocl-1+i2)
+            noc2 = nb_occ_l(i2)
             if (noc2 .eq. 0) goto 112
             l = i2
 !
-            fukl = zr(jfukl-1+k+l)
+            fukl = matr_fu(k+l)
             if (fukl .lt. r8prem()) goto 112
             if (fukl .gt. fum) then
                 noc1m = noc1
@@ -132,33 +137,33 @@ subroutine rcevfu(cnoc, cfat, fut)
 ! --- ON MET A ZERO LES FACTEURS D'USAGE INCRIMINES
 !
     if (noc1m .eq. noc2m) then
-        zi(jnocl-1+i1m) = 0
-        zi(jnocl-1+i2m) = 0
-        zi(jnock-1+i1m) = 0
-        zi(jnock-1+i2m) = 0
+        nb_occ_l(i1m) = 0
+        nb_occ_l(i2m) = 0
+        nb_occ_k(i1m) = 0
+        nb_occ_k(i2m) = 0
         do 120 k = 1, nbinst
-            zr(jfukl-1+(k-1)*nbinst+i2m) = 0.d0
-            zr(jfukl-1+(i2m-1)*nbinst+k) = 0.d0
-            zr(jfukl-1+(k-1)*nbinst+i1m) = 0.d0
-            zr(jfukl-1+(i1m-1)*nbinst+k) = 0.d0
+            matr_fu((k-1)*nbinst+i2m) = 0.d0
+            matr_fu((i2m-1)*nbinst+k) = 0.d0
+            matr_fu((k-1)*nbinst+i1m) = 0.d0
+            matr_fu((i1m-1)*nbinst+k) = 0.d0
 120      continue
     else if (noc1m .lt. noc2m) then
-        zi(jnocl-1+i2m) = zi(jnocl-1+i2m) - noc1m
-        zi(jnock-1+i2m) = zi(jnock-1+i2m) - noc1m
-        zi(jnock-1+i1m) = 0
-        zi(jnocl-1+i1m) = 0
+        nb_occ_l(i2m) = nb_occ_l(i2m) - noc1m
+        nb_occ_k(i2m) = nb_occ_k(i2m) - noc1m
+        nb_occ_k(i1m) = 0
+        nb_occ_l(i1m) = 0
         do 122 k = 1, nbinst
-            zr(jfukl-1+(i1m-1)*nbinst+k) = 0.d0
-            zr(jfukl-1+(k-1)*nbinst+i1m) = 0.d0
+            matr_fu((i1m-1)*nbinst+k) = 0.d0
+            matr_fu((k-1)*nbinst+i1m) = 0.d0
 122      continue
     else
-        zi(jnocl-1+i2m) = 0
-        zi(jnock-1+i2m) = 0
-        zi(jnocl-1+i1m) = zi(jnocl-1+i1m) - noc2m
-        zi(jnock-1+i1m) = zi(jnock-1+i1m) - noc2m
+        nb_occ_l(i2m) = 0
+        nb_occ_k(i2m) = 0
+        nb_occ_l(i1m) = nb_occ_l(i1m) - noc2m
+        nb_occ_k(i1m) = nb_occ_k(i1m) - noc2m
         do 124 k = 1, nbinst
-            zr(jfukl-1+(k-1)*nbinst+i2m) = 0.d0
-            zr(jfukl-1+(i2m-1)*nbinst+k) = 0.d0
+            matr_fu((k-1)*nbinst+i2m) = 0.d0
+            matr_fu((i2m-1)*nbinst+k) = 0.d0
 124      continue
     endif
 !
@@ -166,7 +171,7 @@ subroutine rcevfu(cnoc, cfat, fut)
 !
     encore = .false.
     do 200 i1 = 1, nbinst
-        if (zi(jnock-1+i1) .gt. 0) then
+        if (nb_occ_k(i1) .gt. 0) then
             encore = .true.
         endif
 200  continue
@@ -176,9 +181,9 @@ subroutine rcevfu(cnoc, cfat, fut)
 !
     if (niv .eq. 2) write(ifm,*)'-->> FACTEUR D''USAGE CUMULE = ', fut
 !
-    call jedetr('&&RCEVFU.NB_OCC_K')
-    call jedetr('&&RCEVFU.NB_OCC_L')
-    call jedetr('&&RCEVFU.MATR_FU')
+    AS_DEALLOCATE(vi=nb_occ_k)
+    AS_DEALLOCATE(vi=nb_occ_l)
+    AS_DEALLOCATE(vr=matr_fu)
 !
     1000 format(1p,i10,'|',40(e10.3,'|'))
     1010 format(1p,'   NB_OCCUR ','|',40(i10,'|'))

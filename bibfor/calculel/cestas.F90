@@ -30,6 +30,8 @@ subroutine cestas(cesz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: cesz
 ! ---------------------------------------------------------------------
 ! BUT: "TASSER" UN CHAM_ELEM_S LORSQU'IL A ETE ALLOUE TROP GRAND
@@ -41,7 +43,7 @@ subroutine cestas(cesz)
 !     ------------------------------------------------------------------
     integer ::  jcesd, jcesv, jcesl,  nbma
     integer :: jce2d, jce2v, jce2l
-    integer :: jnbpt, jnbsp, jnbcmp, icmp
+    integer ::    icmp
     integer :: ima, ipt, isp, nbpt, nbsp, iad, iad2
     integer :: ncmp, nbcmp, nbpt2, nbsp2, nbcmp2
     character(len=1) :: base
@@ -50,6 +52,9 @@ subroutine cestas(cesz)
     character(len=19) :: ces, ces2
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: cesk(:) => null()
+    integer, pointer :: vnbcmp(:) => null()
+    integer, pointer :: vnbpt(:) => null()
+    integer, pointer :: vnbsp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -81,9 +86,9 @@ subroutine cestas(cesz)
 !        '&&CESTAS.NBSP'
 !        '&&CESTAS.NBCMP'
 !     -----------------------------------------------------------
-    call wkvect('&&CESTAS.NBPT', 'V V I', nbma, jnbpt)
-    call wkvect('&&CESTAS.NBSP', 'V V I', nbma, jnbsp)
-    call wkvect('&&CESTAS.NBCMP', 'V V I', nbma, jnbcmp)
+    AS_ALLOCATE(vi=vnbpt, size=nbma)
+    AS_ALLOCATE(vi=vnbsp, size=nbma)
+    AS_ALLOCATE(vi=vnbcmp, size=nbma)
 !
     do ima = 1, nbma
         nbpt = zi(jcesd-1+5+4* (ima-1)+1)
@@ -106,9 +111,9 @@ subroutine cestas(cesz)
                 end do
             end do
         end do
-        zi(jnbpt-1+ima) = nbpt2
-        zi(jnbsp-1+ima) = nbsp2
-        zi(jnbcmp-1+ima) = nbcmp2
+        vnbpt(ima) = nbpt2
+        vnbsp(ima) = nbsp2
+        vnbcmp(ima) = nbcmp2
     end do
 !
 !
@@ -117,7 +122,7 @@ subroutine cestas(cesz)
 !     --------------------------
     ces2 = '&&CESTAS.CES2'
     call cescre(base, ces2, typces, ma, nomgd,&
-                ncmp, cesc, zi(jnbpt), zi(jnbsp), zi(jnbcmp))
+                ncmp, cesc, vnbpt, vnbsp,vnbcmp)
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESV', 'E', jce2v)
     call jeveuo(ces2//'.CESL', 'E', jce2l)
@@ -181,9 +186,9 @@ subroutine cestas(cesz)
 !     7- MENAGE :
 !     -----------
     call detrsd('CHAM_ELEM_S', ces2)
-    call jedetr('&&CESTAS.NBPT')
-    call jedetr('&&CESTAS.NBSP')
-    call jedetr('&&CESTAS.NBCMP')
+    AS_DEALLOCATE(vi=vnbpt)
+    AS_DEALLOCATE(vi=vnbsp)
+    AS_DEALLOCATE(vi=vnbcmp)
 !
     call jedema()
 end subroutine

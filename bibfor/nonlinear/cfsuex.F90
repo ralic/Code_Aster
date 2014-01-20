@@ -26,6 +26,8 @@ subroutine cfsuex(defico, noesup, nbexcl, nzoco)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=24) :: noesup, defico
     integer :: nbexcl
     integer :: nzoco
@@ -47,9 +49,11 @@ subroutine cfsuex(defico, noesup, nbexcl, nzoco)
 !
 !
 !
-    integer :: ksans, kpsans, jpsans, jsans, jnoes
+    integer ::   jpsans, jsans, jnoes
     integer :: i, izone, ind, jdec, nbold, nbnew, lsansn
     character(len=24) :: psans, sansno
+    integer, pointer :: pssnoco(:) => null()
+    integer, pointer :: ssnoco(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,13 +66,13 @@ subroutine cfsuex(defico, noesup, nbexcl, nzoco)
     call jeveuo(psans, 'E', jpsans)
     call jeveuo(noesup, 'L', jnoes)
     call jelira(sansno, 'LONMAX', ival=lsansn)
-    call wkvect('&&CFSUEX.SSNOCO', 'V V I', lsansn, ksans)
-    call wkvect('&&CFSUEX.PSSNOCO', 'V V I', nzoco+1, kpsans)
+    AS_ALLOCATE(vi=ssnoco, size=lsansn)
+    AS_ALLOCATE(vi=pssnoco, size=nzoco+1)
     do 10 i = 1, lsansn
-        zi(ksans-1+i) = zi(jsans-1+i)
+        ssnoco(i) = zi(jsans-1+i)
 10  end do
     do 20 i = 1, nzoco + 1
-        zi(kpsans-1+i) = zi(jpsans-1+i)
+        pssnoco(i) = zi(jpsans-1+i)
 20  end do
 !
 ! --- DESTRUCTION ANCIENS OBJETS
@@ -83,9 +87,9 @@ subroutine cfsuex(defico, noesup, nbexcl, nzoco)
     jdec = 1
     zi(jpsans) = 0
     do 50 izone = 1, nzoco
-        nbold = zi(kpsans-1+izone+1) - zi(kpsans-1+izone)
+        nbold = pssnoco(izone+1) - pssnoco(izone)
         do 30 ind = 1, nbold
-            zi(jsans-1+jdec) = zi(ksans-1+zi(kpsans-1+izone)+ind)
+            zi(jsans-1+jdec) = ssnoco(pssnoco(izone)+ind)
             jdec = jdec + 1
 30      continue
         do 40 ind = 1, nbexcl
@@ -98,7 +102,7 @@ subroutine cfsuex(defico, noesup, nbexcl, nzoco)
 !
 ! --- MENAGE
 !
-    call jedetr('&&CFSUEX.SSNOCO')
-    call jedetr('&&CFSUEX.PSSNOCO')
+    AS_DEALLOCATE(vi=ssnoco)
+    AS_DEALLOCATE(vi=pssnoco)
     call jedema()
 end subroutine

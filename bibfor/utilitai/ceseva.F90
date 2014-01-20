@@ -35,6 +35,8 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: npara
     character(len=*) :: cesf, lpara(npara), cesr
@@ -60,7 +62,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     integer :: jpd, jpc, jpv, jpl
     integer :: jrd, jrc,  jrl, jrk
     integer :: nbma, k, ima, ncmp, nbpu, ier, nbpumx, ibid
-    integer :: ncmp2, ipara, jad1, ncmpmx, nspmx, nptmx
+    integer :: ncmp2, ipara,  ncmpmx, nspmx, nptmx
     integer :: k2, iadf, iadr, iadp, nbpt, nbsp, ipt, isp, jnompu, jvalpu
     character(len=8) :: ma, nomgdf, nomgdr, fo
     character(len=8) :: ma2, nomgd2, typces
@@ -73,6 +75,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     character(len=8), pointer :: fc(:) => null()
     character(len=8), pointer :: fk(:) => null()
     character(len=8), pointer :: pk(:) => null()
+    integer, pointer :: vjad1(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -121,7 +124,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !
 !     3- ON MET EN MEMOIRE LES OBJETS UTILES DES CHAMPS PARAMETRES :
 !     --------------------------------------------------------------
-    call wkvect('&&CESEVA.JAD1', 'V V I', 4*npara, jad1)
+    AS_ALLOCATE(vi=vjad1, size=4*npara)
     do ipara = 1, npara
         p = lpara(ipara)
         call jeveuo(p//'.CESK', 'L', vk8=pk)
@@ -139,10 +142,10 @@ subroutine ceseva(cesf, npara, lpara, cesr)
         if (ma2 .ne. ma) then
             call utmess('F', 'UTILITAI_18')
         endif
-        zi(jad1-1+4* (ipara-1)+1) = jpc
-        zi(jad1-1+4* (ipara-1)+2) = jpd
-        zi(jad1-1+4* (ipara-1)+3) = jpl
-        zi(jad1-1+4* (ipara-1)+4) = jpv
+        vjad1(4* (ipara-1)+1) = jpc
+        vjad1(4* (ipara-1)+2) = jpd
+        vjad1(4* (ipara-1)+3) = jpl
+        vjad1(4* (ipara-1)+4) = jpv
     end do
 !
 !     4- EVALUATION DES FONCTIONS :
@@ -173,10 +176,10 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !           -------------------------------------------------------
                     nbpu = 0
                     do ipara = 1, npara
-                        jpc = zi(jad1-1+4* (ipara-1)+1)
-                        jpd = zi(jad1-1+4* (ipara-1)+2)
-                        jpl = zi(jad1-1+4* (ipara-1)+3)
-                        jpv = zi(jad1-1+4* (ipara-1)+4)
+                        jpc = vjad1(4* (ipara-1)+1)
+                        jpd = vjad1(4* (ipara-1)+2)
+                        jpl = vjad1(4* (ipara-1)+3)
+                        jpv = vjad1(4* (ipara-1)+4)
                         ncmp2 = zi(jpd-1+2)
                         do k2 = 1, ncmp2
                             call cesexi('C', jpd, jpl, ima, ipt,&
@@ -232,7 +235,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !
 !     5- MENAGE :
 !     ---------------------------------------
-    call jedetr('&&CESEVA.JAD1')
+    AS_DEALLOCATE(vi=vjad1)
     call jedetr('&&CESEVA.NOMPU')
     call jedetr('&&CESEVA.VALPU')
 !

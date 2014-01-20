@@ -30,6 +30,8 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 #include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbprup, lonvec, ivec, nnoff, ndeg, ndimte
     character(len=8) :: modele, thetai, fiss, latabl
@@ -88,11 +90,11 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i, j, k, icoef, ikm1, ikm2, ikm3, nbcol, inopr, itypr
+    integer :: i, j, k,     nbcol
     integer :: iad, init
-    integer :: ipr, ipi, iret, iord, jinst, nborn, itypc, nbval
+    integer ::   iret, iord, jinst, nborn,  nbval
     integer :: ik1, ik2, ik3, labscu, igl, iglm
-    integer :: inom, ityp, mxval, nbv, itmp
+    integer ::  ityp, mxval, nbv, itmp
     real(kind=8) :: kmoy, time, puls
     complex(kind=8) :: cbid
 !
@@ -102,6 +104,16 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     character(len=24) :: depla, depmax, chsigi
     character(len=24) :: valk
     logical :: exitim, lmoda
+    real(kind=8), pointer :: coef(:) => null()
+    character(len=24), pointer :: dep(:) => null()
+    real(kind=8), pointer :: kmax1(:) => null()
+    real(kind=8), pointer :: kmax2(:) => null()
+    real(kind=8), pointer :: kmax3(:) => null()
+    character(len=16), pointer :: noru(:) => null()
+    integer, pointer :: tabi(:) => null()
+    real(kind=8), pointer :: tabr(:) => null()
+    character(len=8), pointer :: type_char(:) => null()
+    character(len=8), pointer :: typr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -178,14 +190,14 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !
     call getfac('SIGNES', nborn)
     if (nborn .ne. 0) then
-        call wkvect('&&MMAXKL.TYPE_CHAR', 'V V K8', lonvec, itypc)
+        AS_ALLOCATE(vk8=type_char, size=lonvec)
         call getvis('SIGNES', 'CHARGE_NS', iocc=1, nbval=0, nbret=nbv)
         mxval = -nbv
         call wkvect('&&MMAXKL.TMP', 'V V I', mxval, itmp)
         call getvis('SIGNES', 'CHARGE_NS', iocc=1, nbval=mxval, vect=zi(itmp),&
                     nbret=nbv)
         do 2 i = 1, mxval
-            zk8(itypc+zi(itmp+i-1)-1) = 'NON_SIGN'
+            type_char(1+zi(itmp+i-1)-1) = 'NON_SIGN'
  2      continue
         call jedetr('&&MMAXKL.TMP')
         call getvis('SIGNES', 'CHARGE_S', iocc=1, nbval=0, nbret=nbv)
@@ -194,41 +206,41 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         call getvis('SIGNES', 'CHARGE_S', iocc=1, nbval=mxval, vect=zi(itmp),&
                     nbret=nbv)
         do 3 i = 1, mxval
-            zk8(itypc+zi(itmp+i-1)-1) = 'SIGNE'
+            type_char(1+zi(itmp+i-1)-1) = 'SIGNE'
  3      continue
         call jedetr('&&MMAXKL.TMP')
     endif
 !
-    call wkvect('&&MMAXKL.COEF', 'V V R8', lonvec, icoef)
+    AS_ALLOCATE(vr=coef, size=lonvec)
     do 10 i = 1, lonvec
         kmoy = 0.d0
-        if (zk8(itypc+i-1) .ne. 'SIGNE') then
+        if (type_char(i) .ne. 'SIGNE') then
             do 11 j = 1, nnoff
                 kmoy = kmoy + zr(ik1+j-1+(i-1)*nnoff)
 11          continue
             if (kmoy .le. 0.d0) then
-                zr(icoef+i-1) = -1
+                coef(i) = -1
             else
-                zr(icoef+i-1) = 1
+                coef(i) = 1
             endif
         else
-            zr(icoef+i-1) = 1
+            coef(i) = 1
         endif
 10  continue
 !
-    call wkvect('&&MMAXKL.KMAX1', 'V V R8', nnoff, ikm1)
-    call wkvect('&&MMAXKL.KMAX2', 'V V R8', nnoff, ikm2)
-    call wkvect('&&MMAXKL.KMAX3', 'V V R8', nnoff, ikm3)
+    AS_ALLOCATE(vr=kmax1, size=nnoff)
+    AS_ALLOCATE(vr=kmax2, size=nnoff)
+    AS_ALLOCATE(vr=kmax3, size=nnoff)
     do 20 j = 1, nnoff
-        zr(ikm1+j-1) = 0.d0
-        zr(ikm2+j-1) = 0.d0
-        zr(ikm3+j-1) = 0.d0
+        kmax1(j) = 0.d0
+        kmax2(j) = 0.d0
+        kmax3(j) = 0.d0
         do 21 i = 1, lonvec
-            zr(ikm1+j-1)=zr(ikm1+j-1)+zr(icoef+i-1)*zr(ik1+j-1+(i-1)*&
+            kmax1(j)=kmax1(j)+coef(i)*zr(ik1+j-1+(i-1)*&
             nnoff)
-            zr(ikm2+j-1)=zr(ikm2+j-1)+zr(icoef+i-1)*zr(ik2+j-1+(i-1)*&
+            kmax2(j)=kmax2(j)+coef(i)*zr(ik2+j-1+(i-1)*&
             nnoff)
-            zr(ikm3+j-1)=zr(ikm3+j-1)+zr(icoef+i-1)*zr(ik3+j-1+(i-1)*&
+            kmax3(j)=kmax3(j)+coef(i)*zr(ik3+j-1+(i-1)*&
             nnoff)
 21      continue
 20  continue
@@ -238,17 +250,17 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 ! CALCUL DE G LOCAL MAX
 !
     call wkvect('&&MMAXKL.TYP', 'V V K8', lonvec, ityp)
-    call wkvect('&&MMAXKL.DEP', 'V V K24', lonvec, inom)
+    AS_ALLOCATE(vk24=dep, size=lonvec)
     do 60 i = 1, lonvec
         iord = zi(ivec-1+i)
         call rsexch(' ', resuco, 'DEPL', iord, depla,&
                     iret)
-        zk24(inom+i-1) = depla
+        dep(i) = depla
         zk8(ityp+i-1) = 'R'
 60  continue
 !
     depmax = 'MMAXKL.DEPMAX'
-    call vtcmbl(lonvec, zk8(ityp), zr(icoef), zk8(ityp), zk24(inom),&
+    call vtcmbl(lonvec, zk8(ityp), coef, zk8(ityp), dep,&
                 zk8(ityp), depmax)
     optio2 = 'CALC_K_G'
     lmoda = .false.
@@ -270,78 +282,78 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 ! CREATION DU TABLEAU RESULTAT
 !
     nbcol = lonvec + 6
-    call wkvect('&&MMAXKL.NORU', 'V V K16', nbcol, inopr)
-    call wkvect('&&MMAXKL.TYPR', 'V V K8', nbcol, itypr)
+    AS_ALLOCATE(vk16=noru, size=nbcol)
+    AS_ALLOCATE(vk8=typr, size=nbcol)
     do 30 i = 1, lonvec
         call codent(i, 'G', chnu)
-        zk16(inopr+i-1) = 'Q_'//chnu
-        zk8 (itypr+i-1) = 'I'
+        noru(i) = 'Q_'//chnu
+        typr(i) = 'I'
 30  continue
-    zk16(inopr+lonvec) = 'NUM_PT'
-    zk8 (itypr+lonvec) = 'I'
-    zk16(inopr+lonvec+1) = 'ABSC_CURV'
-    zk8 (itypr+lonvec+1) = 'R'
-    zk16(inopr+lonvec+2) = 'K1'
-    zk8 (itypr+lonvec+2) = 'R'
-    zk16(inopr+lonvec+3) = 'K2'
-    zk8 (itypr+lonvec+3) = 'R'
-    zk16(inopr+lonvec+4) = 'K3'
-    zk8 (itypr+lonvec+4) = 'R'
-    zk16(inopr+lonvec+5) = 'G'
-    zk8 (itypr+lonvec+5) = 'R'
+    noru(lonvec+1) = 'NUM_PT'
+    typr(lonvec+1) = 'I'
+    noru(1+lonvec+1) = 'ABSC_CURV'
+    typr(1+lonvec+1) = 'R'
+    noru(1+lonvec+2) = 'K1'
+    typr(1+lonvec+2) = 'R'
+    noru(1+lonvec+3) = 'K2'
+    typr(1+lonvec+3) = 'R'
+    noru(1+lonvec+4) = 'K3'
+    typr(1+lonvec+4) = 'R'
+    noru(1+lonvec+5) = 'G'
+    typr(1+lonvec+5) = 'R'
 !
 !
     call tbcrsd('T4', 'V')
-    call tbajpa('T4', nbcol, zk16(inopr), zk8(itypr))
-    call wkvect('&&MMAXKL.TABR', 'V V R', 5, ipr)
-    call wkvect('&&MMAXKL.TABI', 'V V I', lonvec+1, ipi)
+    call tbajpa('T4', nbcol, noru,typr)
+    AS_ALLOCATE(vr=tabr, size=5)
+    AS_ALLOCATE(vi=tabi, size=lonvec+1)
 !
     do 40 i = 1, lonvec
         do 41 k = 1, lonvec
-            zi(ipi+k-1) = 0
+            tabi(k) = 0
 41      continue
-        zi(ipi+i-1) = 1
+        tabi(i) = 1
 !
         do 42 j = 1, nnoff
-            zi(ipi+lonvec) = j
-            zr(ipr) = zr(labscu+j-1)
-            zr(ipr+1) = zr(ik1+j+(i-1)*nnoff-1)
-            zr(ipr+2) = zr(ik2+j+(i-1)*nnoff-1)
-            zr(ipr+3) = zr(ik3+j+(i-1)*nnoff-1)
-            zr(ipr+4) = zr(igl+j+(i-1)*nnoff-1)
-            call tbajli('T4', nbcol, zk16(inopr), zi(ipi), zr(ipr),&
+            tabi(lonvec+1) = j
+            tabr(1) = zr(labscu+j-1)
+            tabr(1+1) = zr(ik1+j+(i-1)*nnoff-1)
+            tabr(1+2) = zr(ik2+j+(i-1)*nnoff-1)
+            tabr(1+3) = zr(ik3+j+(i-1)*nnoff-1)
+            tabr(1+4) = zr(igl+j+(i-1)*nnoff-1)
+            call tbajli('T4', nbcol, noru, tabi, tabr,&
                         [cbid], k8b, 0)
 42      continue
 40  continue
 !
     do 50 j = 1, nnoff
         do 51 k = 1, lonvec
-            zi(ipi+k-1) = nint(zr(icoef+k-1))
+            tabi(k) = nint(coef(k))
 51      continue
-        zi(ipi+lonvec) = j
-        zr(ipr) = zr(labscu+j-1)
-        zr(ipr+1) = zr(ikm1+j-1)
-        zr(ipr+2) = zr(ikm2+j-1)
-        zr(ipr+3) = zr(ikm3+j-1)
-        zr(ipr+4) = zr(iglm+j-1+nnoff*lonvec)
-        call tbajli('T4', nbcol, zk16(inopr), zi(ipi), zr(ipr),&
+        tabi(lonvec+1) = j
+        tabr(1) = zr(labscu+j-1)
+        tabr(1+1) = kmax1(j)
+        tabr(1+2) = kmax2(j)
+        tabr(1+3) = kmax3(j)
+        tabr(1+4) = zr(iglm+j-1+nnoff*lonvec)
+        call tbajli('T4', nbcol, noru, tabi, tabr,&
                     [cbid], k8b, 0)
 50  continue
 !
     call copisd('TABLE', 'G', 'T4', latabl)
 !
     call detrsd('TABLE', 'T4')
-    call jedetr('&&MMAXKL.TABR')
-    call jedetr('&&MMAXKL.TABI')
+    AS_DEALLOCATE(vr=tabr)
+    AS_DEALLOCATE(vi=tabi)
     call jedetr('&&MMAXKL.TYP')
-    call jedetr('&&MMAXKL.NORU')
-    call jedetr('&&MMAXKL.TYPR')
-    call jedetr('&&MMAXKL.DEP')
-    call jedetr('&&MMAXKL.TYPE_CHAR')
-    call jedetr('&&MMAXKL.COEF')
-    call jedetr('&&MMAXKL.KMAX1')
-    call jedetr('&&MMAXKL.KMAX2')
-    call jedetr('&&MMAXKL.KMAX3')
+    AS_DEALLOCATE(vk16=noru)
+    AS_DEALLOCATE(vk8=typr)
+    AS_DEALLOCATE(vk24=dep)
+    AS_DEALLOCATE(vk8=type_char)
+    AS_DEALLOCATE(vr=coef)
+    AS_DEALLOCATE(vr=kmax1)
+    AS_DEALLOCATE(vr=kmax2)
+    AS_DEALLOCATE(vr=kmax3)
 !
     call jedema()
 end subroutine

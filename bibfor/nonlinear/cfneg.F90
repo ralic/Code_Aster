@@ -30,6 +30,8 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=24) :: resoco, defico
     character(len=8) :: noma
     integer :: ndim
@@ -76,14 +78,19 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 !
 !
     integer :: deklag, dekln, deklf0, deklf1
-    integer :: deklf2, posit, jspnbl, jsplf0, jsplf1, jsplf2
-    integer :: jj, kk, ll, mm, iliac, lliac, lljac, jsplia
+    integer :: deklf2, posit
+    integer :: jj, kk, ll, mm, iliac, lliac, lljac
     integer :: compt0, compt1, compt2, nbini, idebut, ifin, jsto
     real(kind=8) :: lambda
     character(len=1) :: typesp
     character(len=2) :: typec0, typef0, typef1, typef2
     character(len=19) :: liac, mu, typl
     integer :: jliac, jmu, jtypl
+    integer, pointer :: spliac(:) => null()
+    integer, pointer :: suplf0(:) => null()
+    integer, pointer :: suplf1(:) => null()
+    integer, pointer :: suplf2(:) => null()
+    integer, pointer :: supnbl(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -121,16 +128,16 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
 !
-    call wkvect('&&CFNEG.SUPNBL', 'V V I', nbliac, jspnbl)
-    call wkvect('&&CFNEG.SPLIAC', 'V V I', nbliac, jsplia)
+    AS_ALLOCATE(vi=supnbl, size=nbliac)
+    AS_ALLOCATE(vi=spliac, size=nbliac)
     if (llf .ne. 0) then
-        call wkvect('&&CFNEG.SUPLF0', 'V V I', llf, jsplf0)
+        AS_ALLOCATE(vi=suplf0, size=llf)
     endif
     if (llf1 .ne. 0) then
-        call wkvect('&&CFNEG.SUPLF1', 'V V I', llf1, jsplf1)
+        AS_ALLOCATE(vi=suplf1, size=llf1)
     endif
     if (llf2 .ne. 0) then
-        call wkvect('&&CFNEG.SUPLF2', 'V V I', llf2, jsplf2)
+        AS_ALLOCATE(vi=suplf2, size=llf2)
     endif
 ! ======================================================================
 ! --- LES VALEURS DU VECTEUR SUPNBL SONT NECESSAIREMENT CROISSANTES
@@ -145,8 +152,8 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
                 if (zk8(jtypl-1+jj) .eq. typec0) then
                     deklag = deklag + 1
                     if (deklag .eq. iliac) then
-                        zi(jspnbl-1+dekln) = iliac
-                        zi(jsplia-1+dekln) = jj
+                        supnbl(dekln) = iliac
+                        spliac(dekln) = jj
                         nbini = jj + 1
                         lliac = zi(jliac-1+jj)
                         compt0 = 0
@@ -175,41 +182,41 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
                                 case (2)
                                     deklf0 = deklf0 + 1
-                                    zi(jsplf0-1+deklf0) = compt0
+                                    suplf0(deklf0) = compt0
 ! ======================================================================
 ! --- CAS DU FROTTEMENT ADHERENT SUIVANT LA PREMIERE DIRECTION
 ! ======================================================================
                                 case (3)
                                     do ll = 0, deklf1-1
-                                        if (compt1 .gt. zi(jsplf1-1+deklf1- ll)) then
+                                        if (compt1 .gt. suplf1(deklf1- ll)) then
                                             deklf1 = deklf1 + 1
                                             do mm = deklf1 - ll, deklf1
-                                                zi(jsplf1-1+mm) = zi(jsplf1-1+ mm-1 )
+                                                suplf1(mm) = suplf1(mm-1 )
                                             end do
-                                            zi(jsplf1-1+deklf1-ll-1) =&
+                                            suplf1(deklf1-ll-1) =&
                                         compt1
                                             goto 10
                                         endif
                                     end do
                                     deklf1 = deklf1 + 1
-                                    zi(jsplf1-1+deklf1) = compt1
+                                    suplf1(deklf1) = compt1
 ! ======================================================================
 ! --- CAS DU FROTTEMENT ADHERENT SUIVANT LA SECONDE DIRECTION
 ! ======================================================================
                                 case (4)
                                     do ll = 0, deklf2-1
-                                        if (compt2 .gt. zi(jsplf2-1+deklf2- ll)) then
+                                        if (compt2 .gt. suplf2(deklf2- ll)) then
                                             deklf2 = deklf2 + 1
                                             do mm = deklf2 - ll, deklf2
-                                                zi(jsplf2-1+mm) = zi(jsplf2-1+ mm-1 )
+                                                suplf2(mm) = suplf2(mm-1 )
                                             end do
-                                            zi(jsplf2-1+deklf2-ll-1) =&
+                                            suplf2(deklf2-ll-1) =&
                                         compt2
                                             goto 10
                                         endif
                                     end do
                                     deklf2 = deklf2 + 1
-                                    zi(jsplf2-1+deklf2) = compt2
+                                    suplf2(deklf2) = compt2
                                 end select
 ! ======================================================================
                             endif
@@ -229,10 +236,10 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! --- MISE A JOUR DE MU POUR LE CONTACT ET DU VECTEUR DES LIAISONS
 ! --- DE CONTACT ET DE FROTTEMENT ADHERENT
 ! ======================================================================
-    jsto = zi(jspnbl) - 1
+    jsto = supnbl(1) - 1
     do iliac = 1, dekln-1
         idebut = jsto + 1
-        ifin = idebut+zi(jspnbl-1+iliac+1)-zi(jspnbl-1+iliac)-1-1
+        ifin = idebut+supnbl(iliac+1)-supnbl(iliac)-1-1
         do jj = idebut, ifin
             jsto = jsto + 1
             zr(jmu-1+jsto) = zr(jmu-1+jj+iliac)
@@ -246,7 +253,7 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
     end do
     do jj = 1, dekln
         iliac = dekln - jj + 1
-        posit = zi(jsplia-1+iliac)
+        posit = spliac(iliac)
         lliac = zi(jliac -1+posit)
         zr(jmu+3*nbliai-1+lliac) = 0.0d0
         call cftabl(indic, nbliac, ajliai, spliai, llf,&
@@ -262,13 +269,13 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
     if (llf .ne. 0) then
         if (deklf0 .ne. 0) then
-            do iliac = 1, zi(jsplf0-1+1) - 1
+            do iliac = 1, suplf0(1) - 1
                 jsto = jsto + 1
                 zr(jmu-1+jsto) = zr(jmu-1+nbliac+dekln+iliac)
             end do
             do iliac = 1, deklf0 - 1
                 idebut = jsto + 1
-                ifin = idebut + zi(jsplf0-1+iliac+1) - zi(jsplf0-1+ iliac) - 1 - 1
+                ifin = idebut + suplf0(iliac+1) - suplf0(iliac) - 1 - 1
                 do jj = idebut, ifin
                     jsto = jsto + 1
                     zr(jmu-1+jsto) = zr(jmu-1+dekln+jj+iliac)
@@ -286,13 +293,13 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
         if (ndim .eq. 3) then
             if (deklf0 .ne. 0) then
-                do iliac = 1, zi(jsplf0-1+1) - 1
+                do iliac = 1, suplf0(1) - 1
                     jsto = jsto + 1
                     zr(jmu-1+jsto) = zr(jmu-1+nbliac+dekln+llf+deklf0+ iliac)
                 end do
                 do iliac = 1, deklf0 - 1
                     idebut = jsto + 1
-                    ifin = idebut + zi(jsplf0-1+iliac+1) - zi(jsplf0- 1+iliac) - 1 - 1
+                    ifin = idebut + suplf0(iliac+1) - suplf0(iliac) - 1 - 1
                     do jj = idebut, ifin
                         jsto = jsto + 1
                         zr(jmu-1+jsto) = zr(jmu-1+dekln+deklf0+jj)
@@ -312,13 +319,13 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
     if (llf1 .ne. 0) then
         if (deklf1 .ne. 0) then
-            do iliac = 1, zi(jsplf1-1+1) - 1
+            do iliac = 1, suplf1(1) - 1
                 jsto = jsto + 1
                 zr(jmu-1+jsto) = zr( jmu-1+nbliac+dekln+(ndim-1)*(llf+ deklf0)+iliac )
             end do
             do iliac = 1, deklf1 - 1
-                idebut = zi(jsplf1-1+iliac )
-                ifin = zi(jsplf1-1+iliac+1) - 1
+                idebut = suplf1(iliac )
+                ifin = suplf1(iliac+1) - 1
                 do jj = idebut, ifin
                     jsto = jsto + 1
                     zr(jmu-1+jsto) = zr(jmu-1+dekln+(ndim-1)*deklf0+ jj)
@@ -337,13 +344,13 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
     if (llf2 .ne. 0) then
         if (deklf2 .ne. 0) then
-            do iliac = 1, zi(jsplf2-1+1) - 1
+            do iliac = 1, suplf2(1) - 1
                 jsto = jsto + 1
                 zr(jmu-1+jsto) = zr(jmu-1+nbliac+dekln+(ndim-1)*(llf+ deklf0)+llf1+deklf1+iliac)
             end do
             do iliac = 1, deklf2 - 1
-                idebut = zi(jsplf2-1+iliac )
-                ifin = zi(jsplf2-1+iliac+1) - 1
+                idebut = suplf2(iliac )
+                ifin = suplf2(iliac+1) - 1
                 do jj = idebut, ifin
                     jsto = jsto + 1
                     zr(jmu-1+jsto) = zr(jmu-1+dekln+(ndim-1)*deklf0+ deklf1+jj)
@@ -364,11 +371,11 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! ======================================================================
 ! --- MENAGE
 ! ======================================================================
-    call jedetr('&&CFNEG.SUPNBL')
-    call jedetr('&&CFNEG.SPLIAC')
-    call jedetr('&&CFNEG.SUPLF0')
-    call jedetr('&&CFNEG.SUPLF1')
-    call jedetr('&&CFNEG.SUPLF2')
+    AS_DEALLOCATE(vi=supnbl)
+    AS_DEALLOCATE(vi=spliac)
+    AS_DEALLOCATE(vi=suplf0)
+    AS_DEALLOCATE(vi=suplf1)
+    AS_DEALLOCATE(vi=suplf2)
 ! ======================================================================
     call jedema()
 ! ======================================================================

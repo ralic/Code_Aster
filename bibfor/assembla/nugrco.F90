@@ -12,6 +12,8 @@ subroutine nugrco(nu, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=14) :: nu
     character(len=2) :: base
 ! ======================================================================
@@ -47,13 +49,15 @@ subroutine nugrco(nu, base)
 !                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 !
     integer :: rang, nbproc, jpddl, jcomm1, iddl, jnequl, neql, jgraco
-    integer :: iproc, nbedge, iaux, jmasqu, jtmp, nmatch, iproc1
+    integer :: iproc, nbedge, iaux,  jtmp, nmatch, iproc1
     integer :: iproc2, posit, jordjo, num, jnequg, neqg, jnugl, nulodd
-    integer :: jpospr, nbddlj, jjoint, curpos, numpro, jjoin2, jnulg
+    integer ::  nbddlj, jjoint, curpos, numpro, jjoin2, jnulg
     integer :: iddlg, iddll
 !
     character(len=4) :: chnbjo
     character(len=24) :: nojoin, nogrco
+    integer, pointer :: masque(:) => null()
+    integer, pointer :: posproc(:) => null()
     mpi_int :: mrank, msize
     parameter    (nogrco='&&NUGRCO.GRAPH_COMM')
 !
@@ -97,7 +101,7 @@ subroutine nugrco(nu, base)
     nbedge=nbedge/2
 !
 !---- RECHERCHE DES COUPLAGES MAXIMAUX
-    call wkvect('&&NUGRCO.MASQUE', 'V V I', nbproc*nbproc, jmasqu)
+    AS_ALLOCATE(vi=masque, size=nbproc*nbproc)
     call wkvect('&&NUGRCO.TMP', 'V V I', nbproc, jtmp)
     nmatch=1
 60  continue
@@ -106,10 +110,10 @@ subroutine nugrco(nu, base)
     posit=iproc1*nbproc+iproc2
     if (zi(jgraco+posit) .eq. 1 .and. zi(jtmp+iproc1) .eq. 0 .and. zi(jtmp+iproc2) .eq. 0) then
         zi(jgraco+posit)=0
-        zi(jmasqu+posit)=nmatch
+        masque(posit+1)=nmatch
         posit=iproc2*nbproc+iproc1
         zi(jgraco+posit)=0
-        zi(jmasqu+posit)=nmatch
+        masque(posit+1)=nmatch
         nbedge=nbedge-1
         zi(jtmp+iproc1)=1
         zi(jtmp+iproc2)=1
@@ -126,12 +130,12 @@ subroutine nugrco(nu, base)
 !---- CREATION DU GRAPH
     nmatch=nmatch-1
     call wkvect(nu//'.NUML.JOIN', base(1:1)//' V I', nmatch, jordjo)
-    call wkvect('&&NUGRCO.POSPROC', 'V V I', 2*nbproc, jpospr)
+    AS_ALLOCATE(vi=posproc, size=2*nbproc)
     do 80, iaux = 0,nmatch-1
     zi(jordjo+iaux)=-1
     80 end do
     do 90, iaux = 0,nbproc-1
-    num=zi(jmasqu+rang*nbproc+iaux)
+    num=masque(1+rang*nbproc+iaux)
     ASSERT(num.le.nmatch)
     if (num .ne. 0) then
         zi(jordjo+num-1)=iaux
@@ -141,15 +145,15 @@ subroutine nugrco(nu, base)
         nbddlj=zi(jcomm1+iaux)
         if (nbddlj .ne. 0) then
             call wkvect(nojoin, base(1:1)//' V I', nbddlj, jjoint)
-            zi(jpospr+2*iaux)=jjoint
-            zi(jpospr+2*iaux+1)=0
+            posproc(1+2*iaux)=jjoint
+            posproc(1+2*iaux+1)=0
         else
-            zi(jpospr+2*iaux)=-1
-            zi(jpospr+2*iaux+1)=-1
+            posproc(1+2*iaux)=-1
+            posproc(1+2*iaux+1)=-1
         endif
     else
-        zi(jpospr+2*iaux)=-1
-        zi(jpospr+2*iaux+1)=-1
+        posproc(1+2*iaux)=-1
+        posproc(1+2*iaux+1)=-1
     endif
     90 end do
 !
@@ -158,12 +162,12 @@ subroutine nugrco(nu, base)
     if (nulodd .ne. 0) then
         numpro=zi(jpddl+nulodd-1)
         if (numpro .ne. rang) then
-            jjoint=zi(jpospr+2*numpro)
+            jjoint=posproc(1+2*numpro)
             ASSERT(jjoint.ne.-1)
 !
-            curpos=zi(jpospr+2*numpro+1)
+            curpos=posproc(1+2*numpro+1)
             zi(jjoint+curpos)=nulodd
-            zi(jpospr+2*numpro+1)=zi(jpospr+2*numpro+1)+1
+            posproc(1+2*numpro+1)=posproc(1+2*numpro+1)+1
         endif
     endif
     100 end do
@@ -173,10 +177,10 @@ subroutine nugrco(nu, base)
     if (numpro .eq. -1) goto 110
 !
     if (rang .gt. numpro) then
-        nbddlj=zi(jpospr+2*numpro+1)
+        nbddlj=posproc(1+2*numpro+1)
         call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, sci=nbddlj)
 !
-        jjoint=zi(jpospr+2*numpro)
+        jjoint=posproc(1+2*numpro)
         call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
         do 120, iddl=0,nbddlj-1
         iddlg=zi(jnulg+zi(jjoint+iddl)-1)
@@ -211,8 +215,8 @@ subroutine nugrco(nu, base)
 !
     call jedetr('&&NUGRCO.COMM1')
     call jedetr(nogrco)
-    call jedetr('&&NUGRCO.MASQUE')
-    call jedetr('&&NUGRCO.POSPROC')
+    AS_DEALLOCATE(vi=masque)
+    AS_DEALLOCATE(vi=posproc)
 !
     call jedema()
 !

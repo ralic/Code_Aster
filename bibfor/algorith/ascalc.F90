@@ -32,6 +32,8 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 #include "asterfort/utmess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: ndir(*), tcosup(*), nordr(*), nsupp(*)
     real(kind=8) :: amort(*), spectr(*), gamma0(*), depsup(*), reasup(*)
@@ -98,8 +100,8 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !     ------------------------------------------------------------------
     integer :: id, iopt, iret, jcrer, jcrep, jdir, jmod, jrep1, jtabs
     integer :: jval, nbmode, nbopt, nbpara, nbpari, nbpark, nbparr, nbsup, ndepl
-    integer :: neq, jrep2, nbdis(nbsup), noc, ioc, jnoe1, n1, nno, is, ino, igr
-    integer :: ngr, jgrn, jdgn, ier, ncompt, nintra
+    integer :: neq, jrep2, nbdis(nbsup), noc, ioc,  n1, nno, is, ino, igr
+    integer :: ngr,  jdgn, ier, ncompt, nintra
     parameter     ( nbpara = 5 )
     real(kind=8) :: temps
     logical :: prim, secon, glob
@@ -111,6 +113,8 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     character(len=24) :: kvx1, kvx2, kve2, kve3, kve4, kve5, obj1, obj2
     character(len=24) :: grnoeu
     integer :: iarg
+    character(len=24), pointer :: group_no(:) => null()
+    character(len=8), pointer :: noeud(:) => null()
 !
     data  nopara /        'OMEGA2'          , 'MASS_GENE'       ,&
      &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ'  /
@@ -159,11 +163,11 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                 call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
                 if (n1 .ne. 0) then
                     nno = -n1
-                    call wkvect('&&ASCALC.NOEUD', 'V V K8', nno, jnoe1)
-                    call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=nno, vect=zk8(jnoe1),&
+                    AS_ALLOCATE(vk8=noeud, size=nno)
+                    call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=nno, vect=noeud,&
                                 nbret=n1)
                     do ino = 1, nno
-                        noeu = zk8(jnoe1+ino-1)
+                        noeu = noeud(ino)
                         call getvtx(motfa1, 'NOEUD', iocc=ioc, nbval=0, nbret=n1)
                         do is = 1, nbsup
                             do id = 1, 3
@@ -176,7 +180,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                             end do
                         end do
                     end do
-                    call jedetr('&&ASCALC.NOEUD')
+                    AS_DEALLOCATE(vk8=noeud)
                 else
                     call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
                     obj1 = noma//'.GROUPENO'
@@ -185,11 +189,11 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                                 iarg, 0, k8b, n1)
                     if (n1 .ne. 0) then
                         ngr = -n1
-                        call wkvect('&&ASCALC.GROUP_NO', 'V V K24', ngr, jgrn)
+                        AS_ALLOCATE(vk24=group_no, size=ngr)
                         call getvem(noma, 'GROUP_NO', motfa1, 'GROUP_NO', ioc,&
-                                    iarg, ngr, zk24(jgrn), n1)
+                                    iarg, ngr, group_no, n1)
                         do igr = 1, ngr
-                            grnoeu = zk24(jgrn+igr-1)
+                            grnoeu = group_no(igr)
                             call jeexin(jexnom(obj1, grnoeu), iret)
                             if (iret .eq. 0) then
                                 ier = ier + 1
@@ -212,7 +216,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                                 end do
                             end do
                         end do
-                        call jedetr('&&ASCALC.GROUP_NO')
+                        AS_DEALLOCATE(vk24=group_no)
                     endif
                 endif
             end do

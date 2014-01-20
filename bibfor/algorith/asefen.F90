@@ -21,6 +21,8 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: id, neq, nbsup, nsupp(*), ndir(*), nintra, nbdis(nbsup)
     real(kind=8) :: depsup(nbsup, *), recmod(nbsup, neq, *)
@@ -63,9 +65,9 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 ! IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 !     ------------------------------------------------------------------
     integer :: ibid, idi, ier, igr, in, ino, inorf, ioc, iordr, ire1, ire2, iret
-    integer :: is, jdgn, jgrn, jnoe, jvale, nbtrou, ncas, ng, ngr, nn, nno, nnr
+    integer :: is, jdgn,   jvale, nbtrou, ncas, ng, ngr, nn, nno, nnr
     integer :: nx, ny, nz, ns
-    integer :: jrepmo, tordr(1)
+    integer ::  tordr(1)
     real(kind=8) :: dx, dy, dz, r8b, xx1, xxx
     complex(kind=8) :: cbid
     character(len=8) :: k8b, noeu, cmp, nomcmp(3), noma
@@ -73,13 +75,16 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     character(len=16) :: monacc
     character(len=19) :: chextr, motfac
     character(len=24) :: obj1, obj2, valk(2), grnoeu
+    character(len=24), pointer :: group_no(:) => null()
+    character(len=8), pointer :: noeud(:) => null()
+    real(kind=8), pointer :: repmo(:) => null()
 !     ------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
-    call wkvect('&&ASEFEN.REPMO', 'V V R', nbsup*neq, jrepmo)
+    AS_ALLOCATE(vr=repmo, size=nbsup*neq)
     call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
     obj1 = noma//'.GROUPENO'
     obj2 = noma//'.NOMNOE'
@@ -95,14 +100,14 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
             call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
             if (nn .ne. 0) then
                 nno = -nn
-                call wkvect('&&ASEFEN.NOEUD', 'V V K8', nno, jnoe)
-                call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=zk8(jnoe),&
+                AS_ALLOCATE(vk8=noeud, size=nno)
+                call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=nno, vect=noeud,&
                             nbret=nn)
                 call getvr8(motfac, 'DX', iocc=ioc, scal=dx, nbret=nx)
                 call getvr8(motfac, 'DY', iocc=ioc, scal=dy, nbret=ny)
                 call getvr8(motfac, 'DZ', iocc=ioc, scal=dz, nbret=nz)
                 do ino = 1, nno
-                    noeu = zk8(jnoe+ino-1)
+                    noeu = noeud(ino)
                     call jenonu(jexnom(obj2, noeu), iret)
                     if (iret .eq. 0) then
                         ier = ier + 1
@@ -128,21 +133,21 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                     endif
  22                 continue
                 end do
-                call jedetr('&&ASEFEN.NOEUD')
+                AS_DEALLOCATE(vk8=noeud)
 !
             else
 !
                 call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=0, nbret=ng)
                 ngr = -ng
-                call wkvect('&&ASEFEN.GROUP_NO', 'V V K24', ngr, jgrn)
-                call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=zk24(jgrn),&
+                AS_ALLOCATE(vk24=group_no, size=ngr)
+                call getvtx(motfac, 'GROUP_NO', iocc=ioc, nbval=ngr, vect=group_no,&
                             nbret=ng)
                 call getvr8(motfac, 'DX', iocc=ioc, scal=dx, nbret=nx)
                 call getvr8(motfac, 'DY', iocc=ioc, scal=dy, nbret=ny)
                 call getvr8(motfac, 'DZ', iocc=ioc, scal=dz, nbret=nz)
 !
                 do igr = 1, ngr
-                    grnoeu = zk24(jgrn+igr-1)
+                    grnoeu = group_no(igr)
                     call jeexin(jexnom(obj1, grnoeu), iret)
                     if (iret .eq. 0) then
                         ier = ier + 1
@@ -175,7 +180,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
  26                 continue
                 end do
 !
-                call jedetr('&&ASEFEN.GROUP_NO')
+                AS_DEALLOCATE(vk24=group_no)
 !
             endif
 !
@@ -221,7 +226,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     cmp = nomcmp(id)
     do is = 1, nbsup
         do in = 1, neq
-            zr(jrepmo-1+in + (is-1)*neq) = 0.d0
+            repmo(in + (is-1)*neq) = 0.d0
         end do
     end do
     do is = 1, nsupp(id)
@@ -246,7 +251,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                 ioc = nbdis(is)
                 do in = 1, neq
                     xxx = zr(jvale+in-1) * xx1
-                    zr(jrepmo-1+in+(ioc-1)*neq) = zr(jrepmo-1+in+(ioc- 1)*neq ) + xxx
+                    repmo(in+(ioc-1)*neq) = repmo(in+(ioc- 1)*neq ) + xxx
                 end do
             else
                 do in = 1, neq
@@ -259,7 +264,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     if (muapde) then
         do ioc = 1, nintra
             do in = 1, neq
-                xxx = zr(jrepmo-1+in+(ioc-1)*neq)
+                xxx = repmo(in+(ioc-1)*neq)
                 recmod(ioc,in,id) = recmod(ioc,in,id) + xxx*xxx
             end do
         end do
@@ -267,7 +272,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 !
 999 continue
 !
-    call jedetr('&&ASEFEN.REPMO')
+    AS_DEALLOCATE(vr=repmo)
 !
     call jedema()
 end subroutine

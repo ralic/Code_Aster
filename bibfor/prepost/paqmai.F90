@@ -47,6 +47,8 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 #include "asterfort/utmess.h"
 #include "asterfort/vampli.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
     character(len=16) :: forcri
@@ -68,9 +70,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 ! TYPCHA     IN    K16: TYPE DE CHARGEMENT (PERIODIQUE OU NON).
 ! PROAXE     IN    K16: TYPE DE PROJECTION (UN OU DEUX AXES).
 !-----------------------------------------------------------------------
-    integer :: ibid, ierd, lordr, jordr, nbordr, ndim, iret, jcesd
+    integer :: ibid, ierd, lordr,  nbordr, ndim, iret, jcesd
     integer :: nbma, nbpgt, nbpgmx, jnbpg, ima, tdisp(1), jrwork, tpaq
-    integer :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax, jnbpaq
+    integer :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax
     integer :: nmaini, nbmap, tspaq, iordr, jad, tord(1)
     integer :: jsigv, jsigd, jsigl, imap, nbpg, ipg, icmp, iret1
     integer :: jepsv, jepsd, jepsl, paract(35), jepped, jeppel
@@ -92,6 +94,8 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     character(len=19) :: cheps, ces3, ces4, cheppe
     character(len=19) :: chepsp, ces5, ces6, ces7, ces8
     logical :: lbid, crsigm, crepst, crepse, crepsp, creppe
+    integer, pointer :: nume_ordre(:) => null()
+    integer, pointer :: paqma(:) => null()
 !
 !-----------------------------------------------------------------------
 !234567                                                              012
@@ -140,18 +144,18 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         ndim = nbordr
     endif
 !
-    call wkvect('&&PAQMAI.NUME_ORDRE', 'V V I', ndim, jordr)
+    AS_ALLOCATE(vi=nume_ordre, size=ndim)
     call rsorac(nomsd, 'TOUT_ORDRE', ibid, r8b, k8b,&
-                c16b, r8b, k8b, zi(jordr), ndim,&
+                c16b, r8b, k8b, nume_ordre, ndim,&
                 nbordr)
-    if (zi(jordr) .eq. 0) then
+    if (nume_ordre(1) .eq. 0) then
         call utmess('A', 'PREPOST4_27')
         nbordr = nbordr - 1
     endif
 !
     ordini = 1
     do k = 2, nbordr
-        iord = zi(jordr-1+k)
+        iord = nume_ordre(k)
         call rsadpa(nomsd, 'L', 1, 'INST', iord,&
                     0, sjv=jinst, styp=kbid)
         if (instic .gt. r8prem()) then
@@ -299,7 +303,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     else
         nbpmax = 2
     endif
-    call wkvect('&&PAQMAI.PAQMA', 'V V I', nbpmax*4, jnbpaq)
+    AS_ALLOCATE(vi=paqma, size=nbpmax*4)
 !
 ! TPAQ   = TAILLE DU PAQUET DE MAILLES
 ! NBPAQ  = NOMBRE DE PAQUET(S) DE MAILLES
@@ -320,10 +324,10 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         if (tpaq .lt. tdisp(1)) then
             if (ima .eq. nbma) then
                 numpaq = numpaq + 1
-                zi(jnbpaq + (numpaq-1)*4) = numpaq
-                zi(jnbpaq + (numpaq-1)*4 + 1) = tpaq
-                zi(jnbpaq + (numpaq-1)*4 + 2) = ima - (nmapaq - 1)
-                zi(jnbpaq + (numpaq-1)*4 + 3) = nmapaq
+                paqma(1 + (numpaq-1)*4) = numpaq
+                paqma(1 + (numpaq-1)*4 + 1) = tpaq
+                paqma(1 + (numpaq-1)*4 + 2) = ima - (nmapaq - 1)
+                paqma(1 + (numpaq-1)*4 + 3) = nmapaq
                 nbpaq = numpaq
             endif
 !
@@ -344,10 +348,10 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
             tpaq = tpaq - zi(jnbpg-1 + ima-1)*nbordr*nbcmp
 !
             numpaq = numpaq + 1
-            zi(jnbpaq + (numpaq-1)*4) = numpaq
-            zi(jnbpaq + (numpaq-1)*4 + 1) = tpaq
-            zi(jnbpaq + (numpaq-1)*4 + 2) = (ima - nmapaq + 1)
-            zi(jnbpaq + (numpaq-1)*4 + 3) = nmapaq - 2
+            paqma(1 + (numpaq-1)*4) = numpaq
+            paqma(1 + (numpaq-1)*4 + 1) = tpaq
+            paqma(1 + (numpaq-1)*4 + 2) = (ima - nmapaq + 1)
+            paqma(1 + (numpaq-1)*4 + 3) = nmapaq - 2
             nbpaq = numpaq
 !
             tpaq = zi(jnbpg-1 + ima-1)*nbordr*nbcmp
@@ -355,10 +359,10 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
             nmapaq = 2
             if (ima .eq. nbma) then
                 numpaq = numpaq + 1
-                zi(jnbpaq + (numpaq-1)*4) = numpaq
-                zi(jnbpaq + (numpaq-1)*4 + 1) = tpaq
-                zi(jnbpaq + (numpaq-1)*4 + 2) = ima - (nmapaq - 1)
-                zi(jnbpaq + (numpaq-1)*4 + 3) = nmapaq
+                paqma(1 + (numpaq-1)*4) = numpaq
+                paqma(1 + (numpaq-1)*4 + 1) = tpaq
+                paqma(1 + (numpaq-1)*4 + 2) = ima - (nmapaq - 1)
+                paqma(1 + (numpaq-1)*4 + 3) = nmapaq
                 nbpaq = numpaq
             endif
         endif
@@ -381,9 +385,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !
     do numpaq = 1, nbpaq
         call jerazo('&&PAQMAI.RWORK', tdisp(1), 1)
-        tpaq = zi(jnbpaq + (numpaq-1)*4 + 1)
-        nmaini = zi(jnbpaq + (numpaq-1)*4 + 2)
-        nbmap = zi(jnbpaq + (numpaq-1)*4 + 3)
+        tpaq = paqma(1 + (numpaq-1)*4 + 1)
+        nmaini = paqma(1 + (numpaq-1)*4 + 2)
+        nbmap = paqma(1 + (numpaq-1)*4 + 3)
         tspaq = tpaq/nbordr
 !
 !        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
@@ -674,11 +678,11 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         call detrsd('CHAM_ELEM_S', ces8)
     endif
 !
-    call jedetr('&&PAQMAI.NUME_ORDRE')
+    AS_DEALLOCATE(vi=nume_ordre)
     call jedetr('&&PAQMAI.NBMAGR')
     call jedetr('&&PAQMAI.NBPG')
     call jedetr('&&PAQMAI.RWORK')
-    call jedetr('&&PAQMAI.PAQMA')
+    AS_DEALLOCATE(vi=paqma)
     if (nommai .ne. '        ') then
         call jedetr('&&PAQMAI.L_MAILLES')
     endif

@@ -67,13 +67,20 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: icabl, nbno
     real(kind=8) :: s(*), alpha(*), f0, delta, ea, frco, frli, sa, f(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ino, jabsc2, jalph2, jf1, jf2, jfmax
+    integer :: ino
     real(kind=8) :: alphal, d1, d2, df, long, wcr
+    real(kind=8), pointer :: absc2(:) => null()
+    real(kind=8), pointer :: alpha2(:) => null()
+    real(kind=8), pointer :: f1(:) => null()
+    real(kind=8), pointer :: f2(:) => null()
+    real(kind=8), pointer :: fmax(:) => null()
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -83,11 +90,11 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 ! 1   CREATION DES OBJETS DE TRAVAIL
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    call wkvect('&&TENSK2.ABSC2', 'V V R', nbno, jabsc2)
-    call wkvect('&&TENSK2.ALPHA2', 'V V R', nbno, jalph2)
-    call wkvect('&&TENSK2.F1', 'V V R', nbno, jf1)
-    call wkvect('&&TENSK2.F2', 'V V R', nbno, jf2)
-    call wkvect('&&TENSK2.FMAX', 'V V R', nbno, jfmax)
+    AS_ALLOCATE(vr=absc2, size=nbno)
+    AS_ALLOCATE(vr=alpha2, size=nbno)
+    AS_ALLOCATE(vr=f1, size=nbno)
+    AS_ALLOCATE(vr=f2, size=nbno)
+    AS_ALLOCATE(vr=fmax, size=nbno)
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   CREATION DES DISCRETISATIONS DE L'ABSCISSE CURVILIGNE ET DE LA
@@ -96,15 +103,15 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     long = s(nbno)
-    zr(jabsc2) = 0.0d0
+    absc2(1) = 0.0d0
     do 10 ino = 2, nbno
-        zr(jabsc2+ino-1) = long - s(nbno-ino+1)
+        absc2(ino) = long - s(nbno-ino+1)
 10  end do
 !
     alphal = alpha(nbno)
-    zr(jalph2) = 0.0d0
+    alpha2(1) = 0.0d0
     do 20 ino = 2, nbno
-        zr(jalph2+ino-1) = alphal - alpha(nbno-ino+1)
+        alpha2(ino) = alphal - alpha(nbno-ino+1)
 20  end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,20 +121,20 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 ! 3.1 TENSION APPLIQUEE AU PREMIER ANCRAGE ACTIF
 ! ---
     do 30 ino = 1, nbno
-        zr(jf1+ino-1) = f0 * dble(exp(-frco*alpha(ino)-frli*s(ino)))
+        f1(ino) = f0 * dble(exp(-frco*alpha(ino)-frli*s(ino)))
 30  end do
 !
 ! 3.2 TENSION APPLIQUEE AU SECOND ANCRAGE ACTIF
 ! ---
     do 40 ino = 1, nbno
-        zr(jf2+ino-1) = f0 * dble ( exp ( -frco*zr(jalph2+ino-1) -frli*zr(jabsc2+ino-1) ))
+        f2(ino) = f0 * dble ( exp ( -frco*alpha2(ino) -frli*absc2(ino) ))
 40  end do
 !
 ! 3.3 VALEUR MAXIMALE INDUITE PAR LES TENSIONS APPLIQUEES AUX DEUX
 ! --- ANCRAGES ACTIFS APRES PRISE EN COMPTE DES PERTES PAR FROTTEMENT
 !
     do 50 ino = 1, nbno
-        zr(jfmax+ino-1) = dble(max(zr(jf1+ino-1),zr(jf2+nbno-ino)))
+        fmax(ino) = dble(max(f1(ino),f2(1+nbno-ino)))
 50  end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,13 +145,13 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 ! ---
     call ancrca(icabl, nbno, s, alpha, f0,&
                 delta, ea, frco, frli, sa,&
-                d1, zr(jf1))
+                d1,f1)
 !
 ! 4.2 TENSION APPLIQUEE AU SECOND ANCRAGE ACTIF
 ! ---
-    call ancrca(icabl, nbno, zr(jabsc2), zr(jalph2), f0,&
+    call ancrca(icabl, nbno, absc2, alpha2, f0,&
                 delta, ea, frco, frli, sa,&
-                d2, zr(jf2))
+                d2,f2)
 !
 ! 4.3 VALEUR FINALE INDUITE PAR LES TENSIONS APPLIQUEES AUX DEUX
 ! --- ANCRAGES ACTIFS APRES PRISE EN COMPTE DES PERTES PAR RECUL
@@ -152,11 +159,11 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
 !
     if (d1+d2 .lt. long) then
         do 60 ino = 1, nbno
-            f(ino) = dble ( max ( zr(jf1+ino-1) , zr(jf2+nbno-ino) ) )
+            f(ino) = dble ( max ( f1(ino) , f2(1+nbno-ino) ) )
 60      continue
     else
         do 62 ino = 1, nbno
-            f(ino) = dble ( min ( zr(jf1+ino-1) , zr(jf2+nbno-ino) ) )
+            f(ino) = dble ( min ( f1(ino) , f2(1+nbno-ino) ) )
 62      continue
     endif
 !
@@ -168,7 +175,7 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
         do 70 ino = 1, nbno-1
             wcr = wcr + (&
                   (&
-                  zr(jfmax+ino-1) - f(ino) ) + ( zr(jfmax+ ino) - f(ino+1) ) ) * ( s(ino+1) - s(i&
+                  fmax(ino) - f(ino) ) + ( fmax(ino+1) - f(ino+1) ) ) * ( s(ino+1) - s(i&
                   &no&
                   )&
                   ) / 2.0d0
@@ -180,11 +187,11 @@ subroutine tensk2(icabl, nbno, s, alpha, f0,&
     endif
 !
 ! --- MENAGE
-    call jedetr('&&TENSK2.ABSC2')
-    call jedetr('&&TENSK2.ALPHA2')
-    call jedetr('&&TENSK2.F1')
-    call jedetr('&&TENSK2.F2')
-    call jedetr('&&TENSK2.FMAX')
+    AS_DEALLOCATE(vr=absc2)
+    AS_DEALLOCATE(vr=alpha2)
+    AS_DEALLOCATE(vr=f1)
+    AS_DEALLOCATE(vr=f2)
+    AS_DEALLOCATE(vr=fmax)
 !
     call jedema()
 !

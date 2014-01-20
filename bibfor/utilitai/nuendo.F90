@@ -37,6 +37,8 @@ subroutine nuendo(numedd, sdnuen)
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=24) :: numedd
     character(len=24) :: sdnuen
@@ -64,11 +66,12 @@ subroutine nuendo(numedd, sdnuen)
     integer :: nlili, nbno, neq, nbnoc
     integer :: ico
     integer :: ima, ino, idamg, i, k, inoc, ival, iadg
-    integer :: itrav, iconex
+    integer ::  iconex
     integer :: iancmp, ianueq, iaprno
     integer :: ifm, niv
     integer :: nbgr, igr, te, nbelgr, liel, iel
     integer :: jnuen
+    integer, pointer :: noeuds(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,7 +96,7 @@ subroutine nuendo(numedd, sdnuen)
 !
 ! --- CREATION D'UN VECTEUR DESTINE A CONTENIR LES NUMEROS DES NOEUDS
 !
-    call wkvect('&&NUENDO.NOEUDS', 'V V I', nbnoeu, itrav)
+    AS_ALLOCATE(vi=noeuds, size=nbnoeu)
 !
 ! --- REPERAGE DES NOEUDS SUR ELEMENTS AVEC ENDOMMAGEMENT AUX NOEUDS
 !
@@ -112,7 +115,7 @@ subroutine nuendo(numedd, sdnuen)
                 call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
                 call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
                 do ino = 1, nbno
-                    zi(itrav+zi(iconex+ino-1)-1) = 1
+                    noeuds(1+zi(iconex+ino-1)-1) = 1
                 end do
             end do
         endif
@@ -122,7 +125,7 @@ subroutine nuendo(numedd, sdnuen)
 !
     nbnoc = 0
     do ino = 1, nbnoeu
-        if (zi(itrav+ino-1) .eq. 1) then
+        if (noeuds(ino) .eq. 1) then
             nbnoc = nbnoc + 1
         endif
     end do
@@ -179,7 +182,7 @@ subroutine nuendo(numedd, sdnuen)
 !
     inoc = 0
     do ino = 1, nbnoeu
-        if (zi(itrav+ino-1) .eq. 0) goto 50
+        if (noeuds(ino) .eq. 0) goto 50
         inoc = inoc + 1
         ival = zi(iaprno+(ino-1)*(nec+2)+1-1)
         iadg = iaprno+(ino-1)*(nec+2)+3-1
@@ -194,11 +197,11 @@ subroutine nuendo(numedd, sdnuen)
         endif
  50     continue
     end do
-!
-! --- MENAGE
-    call jedetr('&&NUENDO.NOEUDS')
-!
+
 999 continue
+
+! --- MENAGE
+    AS_DEALLOCATE(vi=noeuds)
 !
     call jedema()
 end subroutine

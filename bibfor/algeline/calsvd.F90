@@ -72,6 +72,8 @@ subroutine calsvd(nm, m, n, a, w,&
 #include "asterc/matfpe.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dgesdd.h"
 #include "blas/dgesvd.h"
     integer :: nm, m, n, ierr
@@ -81,7 +83,7 @@ subroutine calsvd(nm, m, n, a, w,&
 ! VARIABLES LOCALES
 ! -----------------
     integer(kind=4) :: ierr1
-    integer :: jwork, jiwork, jvt, nm1, nm2, ldvt, i, j, lwork
+    integer ::    nm1, nm2, ldvt, i, j, lwork
     character(len=1) :: code
     parameter (nm1=20)
     real(kind=8) :: vt(nm1*nm1)
@@ -89,6 +91,9 @@ subroutine calsvd(nm, m, n, a, w,&
     real(kind=8) :: work(2*(7*nm1**2 + 4*nm1))
     integer(kind=4) :: iwork(8*nm1)
     logical :: alloc, safe
+    integer(kind=4), pointer :: viwork(:) => null()
+    real(kind=8), pointer :: vvt(:) => null()
+    real(kind=8), pointer :: vwork(:) => null()
 !
 !
 !
@@ -117,9 +122,9 @@ subroutine calsvd(nm, m, n, a, w,&
         alloc=.false.
     else
         alloc=.true.
-        call wkvect('&&CALSVD.VT', 'V V R', nm2*nm2, jvt)
-        call wkvect('&&CALSVD.WORK', 'V V R', lwork, jwork)
-        call wkvect('&&CALSVD.IWORK', 'V V S', 8*nm2, jiwork)
+        AS_ALLOCATE(vr=vvt, size=nm2*nm2)
+        AS_ALLOCATE(vr=vwork, size=lwork)
+        AS_ALLOCATE(vi4=viwork, size=8*nm2)
     endif
 !
     if (matu .or. matv) then
@@ -151,17 +156,17 @@ subroutine calsvd(nm, m, n, a, w,&
     else
         if (safe) then
             call dgesvd(code, code, m, n, a,&
-                        nm, w, u, nm, zr(jvt),&
-                        ldvt, zr(jwork), lwork, ierr1)
+                        nm, w, u, nm, vvt,&
+                        ldvt, vwork, lwork, ierr1)
         else
             call dgesdd(code, m, n, a, nm,&
-                        w, u, nm, zr(jvt), ldvt,&
-                        zr(jwork), lwork, zi4(jiwork), ierr1)
+                        w, u, nm, vvt, ldvt,&
+                        vwork, lwork, viwork, ierr1)
         endif
         if (matv) then
             do 3, i=1,nm
             do 4, j=1,n
-            v(i,j)=zr(jvt-1+(i-1)*ldvt+j)
+            v(i,j)=vvt((i-1)*ldvt+j)
  4          continue
  3          continue
         endif
@@ -170,9 +175,9 @@ subroutine calsvd(nm, m, n, a, w,&
     ierr=ierr1
 !
     if (alloc) then
-        call jedetr('&&CALSVD.VT')
-        call jedetr('&&CALSVD.WORK')
-        call jedetr('&&CALSVD.IWORK')
+        AS_DEALLOCATE(vr=vvt)
+        AS_DEALLOCATE(vr=vwork)
+        AS_DEALLOCATE(vi4=viwork)
     endif
 !
 !

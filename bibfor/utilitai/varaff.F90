@@ -16,6 +16,8 @@ subroutine varaff(noma, gran, base, ceselz)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=1) :: base
     character(len=8) :: noma, gran
     character(len=*) :: ceselz
@@ -46,10 +48,12 @@ subroutine varaff(noma, gran, base, ceselz)
     character(len=16) :: motclf, motcls(2)
     character(len=19) :: ceselm
     character(len=24) :: mesmai
-    integer :: nvarmx, jcesd, jcesl, jcesv, jlnova, jlnovx, jlvavx
+    integer :: nvarmx, jcesd, jcesl, jcesv,   jlvavx
     integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
     parameter  (nvarmx=10000)
     logical :: ltou
+    character(len=8), pointer :: lnova(:) => null()
+    character(len=8), pointer :: lnovx(:) => null()
 !   ------------------------------------------------------------------
     call jemarq()
 !
@@ -59,7 +63,7 @@ subroutine varaff(noma, gran, base, ceselz)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
 !
     ASSERT(gran.eq.'VARI_R')
-    call wkvect('&&VARAFF.LNOVX', 'V V K8', nvarmx, jlnovx)
+    AS_ALLOCATE(vk8=lnovx, size=nvarmx)
     call wkvect('&&VARAFF.LVAVX', 'V V R', nvarmx, jlvavx)
 !
     motclf = 'AFFE'
@@ -76,12 +80,12 @@ subroutine varaff(noma, gran, base, ceselz)
 !     --------------------------------------------------------
     nuvamx=0
     do iocc = 1, nocc
-        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=zk8(jlnovx),&
+        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=lnovx,&
                     nbret=n1)
         ASSERT(n1.gt.0)
         do k = 1, n1
-            ASSERT(zk8(jlnovx-1+k)(1:1).eq.'V')
-            read (zk8(jlnovx-1+k)(2:8),'(I7)') nuva
+            ASSERT(lnovx(k)(1:1).eq.'V')
+            read (lnovx(k)(2:8),'(I7)') nuva
             nuvamx=max(nuvamx,nuva)
         end do
     end do
@@ -90,15 +94,15 @@ subroutine varaff(noma, gran, base, ceselz)
 !
 !     1- ALLOCATION DE CESELM
 !     --------------------------------------------
-    call wkvect('&&VARAFF.LNOVA', 'V V K8', nuvamx, jlnova)
+    AS_ALLOCATE(vk8=lnova, size=nuvamx)
     do k = 1, nuvamx
         call codent(k, 'G', knuva)
-        zk8(jlnova-1+k)='V'//knuva
+        lnova(k)='V'//knuva
     end do
     ceselm = ceselz
 !     -- REMARQUE : LES CMPS SERONT DANS L'ORDRE V1,V2,...
     call cescre(base, ceselm, 'ELEM', noma, 'VARI_R',&
-                nuvamx, zk8(jlnova), [0], [-1], [-nuvamx])
+                nuvamx, lnova, [0], [-1], [-nuvamx])
 !
     call jeveuo(ceselm//'.CESD', 'L', jcesd)
     call jeveuo(ceselm//'.CESV', 'E', jcesv)
@@ -118,7 +122,7 @@ subroutine varaff(noma, gran, base, ceselz)
             call utmess('F', 'UTILITAI_13')
         endif
 !
-        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=zk8(jlnovx),&
+        call getvtx(motclf, 'NOM_CMP', iocc=iocc, nbval=nvarmx, vect=lnovx,&
                     nbret=n1)
         call getvr8(motclf, 'VALE', iocc=iocc, nbval=nvarmx, vect=zr(jlvavx),&
                     nbret=n2)
@@ -139,7 +143,7 @@ subroutine varaff(noma, gran, base, ceselz)
         endif
 !
         do kvari = 1, n1
-            read (zk8(jlnovx-1+kvari)(2:8),'(I7)') nuva
+            read (lnovx(kvari)(2:8),'(I7)') nuva
             ASSERT(nuva.gt.0.and.nuva.le.nuvamx)
             do k = 1, nbmail
                 if (ltou) then
@@ -165,7 +169,7 @@ subroutine varaff(noma, gran, base, ceselz)
     end do
 !
 !
-    call jedetr('&&VARAFF.LNOVX')
-    call jedetr('&&VARAFF.LNOVA')
+    AS_DEALLOCATE(vk8=lnovx)
+    AS_DEALLOCATE(vk8=lnova)
     call jedema()
 end subroutine

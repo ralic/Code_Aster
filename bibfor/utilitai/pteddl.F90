@@ -16,6 +16,8 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: nbcmp, neq, ivec(neq, *)
     character(len=*) :: typesd, num
@@ -49,7 +51,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 !                   0 SINON
 ! ----------------------------------------------------------------------
     integer :: ibid, i, j, tabec(10), ncmpmx
-    integer :: nec, gd, iad, iec, jnucmp
+    integer :: nec, gd, iad, iec
     integer :: jnueq, nlili, jprno, nbno, ival, ncmp, icompt
     integer :: icmp, ieq, nucmp, jdeeq, nleq, numno, jlili, ino
     integer :: ieql, jnugl, imatd, iexi, jdesc
@@ -57,6 +59,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
     character(len=19) :: nomnu, prno
     character(len=24) :: nolili
     logical :: matd, lnuge
+    integer, pointer :: nume_cmp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -105,9 +108,9 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 !
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
-        call wkvect('&&PTEDDL.NUME_CMP', 'V V I', ncmpmx, jnucmp)
+        AS_ALLOCATE(vi=nume_cmp, size=ncmpmx)
         do i = 0, ncmpmx-1
-            zi(jnucmp+i)=indik8(lnocmp,zk8(iad+i),1,nbcmp)
+            nume_cmp(1+i)=indik8(lnocmp,zk8(iad+i),1,nbcmp)
         end do
 !
         call jeveuo(prno//'.NUEQ', 'L', jnueq)
@@ -143,7 +146,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
                     if (exisdg(tabec,icmp)) then
                         icompt=icompt+1
                         ieq=zi(jnueq-1+ival-1+icompt)
-                        nucmp=zi(jnucmp+icmp-1)
+                        nucmp=nume_cmp(icmp)
                         if (.not.matd) then
                             ieql=ieq
                         else
@@ -156,7 +159,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
             end do
  70         continue
         end do
-        call jedetr('&&PTEDDL.NUME_CMP')
+        AS_DEALLOCATE(vi=nume_cmp)
 !
 !
 !     -- CAS NUME_DDL_GENE :

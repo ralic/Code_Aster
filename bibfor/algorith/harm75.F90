@@ -61,6 +61,8 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 #include "asterfort/vtcrec.h"
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !
     integer :: ibid, nbmode, itresu(8)
@@ -78,10 +80,11 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     logical :: tousno, leffor, prems
     integer :: inocmp, inoecp, inumno, inuddl
     integer :: j, jc, i, iadesc, iarchi, ich
-    integer :: idbase, idvecg, iret, iretou, jfreq
+    integer ::  idvecg, iret, iretou, jfreq
     integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg
     integer :: n1, n2, n3, n4, j3refe, idec, idefm, idinsg, idresu
     integer :: nbfreq, neq, nbnoeu, ncmp
+    real(kind=8), pointer :: base(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ------------------------------------------------------------------
     data chamno   /'&&HARM75.CHAMNO'/
@@ -267,11 +270,11 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         endif
 !
         if (leffor) call jelira(nomcha, 'LONMAX', neq)
-        call wkvect('&&HARM75.BASE', 'V V R', nbmode*neq, idbase)
+        AS_ALLOCATE(vr=base, size=nbmode*neq)
 ! CAS DE LA RESTITUTION SUR TOUTE LA STRUCTURE
         if (tousno) then
             call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
-                        'R', zr(idbase), [cbid])
+                        'R', base, [cbid])
 ! CAS DE LA RESTITUTION SUR UNE PARTIE DE LA STRUCTURE SEULEMENT
         else
             do j = 1, nbmode
@@ -289,7 +292,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                     do jc = 1, ncmp
                         if (zi(inoecp-1+(i-1)*ncmp+jc) .eq. 1) then
                             idec = idec + 1
-                            zr(idbase+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
+                            base(1+(j-1)*neq+idec-1) = zr( idefm+zi( inuddl+idec-1)-1 )
                         endif
                     end do
                 end do
@@ -355,7 +358,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !     &               ZR(JFREQ+I),ZC(IDRESU),NBMODE,ZR(IDVECG), IBID)
 !               CALL MDGPHC(NEQ,NBMODE,ZR(IDBASE),ZC(IDVECG),ZC(LVALE))
 !             ELSE
-            call mdgepc(neq, nbmode, zr(idbase), zc(idresu+(zi(jnume+i)- 1)*nbmode), zc(lvale))
+            call mdgepc(neq, nbmode, base, zc(idresu+(zi(jnume+i)- 1)*nbmode), zc(lvale))
 !             ENDIF
 !
             call rsnoch(nomres, type(ich), iarchi)
@@ -363,7 +366,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                         0, sjv=lfreq, styp=k8b)
             zr(lfreq) = zr(jfreq+i)
         end do
-        call jedetr('&&HARM75.BASE')
+        AS_DEALLOCATE(vr=base)
     end do
 !
     if (mode .eq. ' ') call refdcp(basemo, nomres)

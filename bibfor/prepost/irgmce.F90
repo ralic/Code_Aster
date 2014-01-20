@@ -23,6 +23,8 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
     character(len=8) :: nomaou, nomain, tycha
     real(kind=8) :: coord(*), para(*)
@@ -82,10 +84,10 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 !     ------------------------------------------------------------------
 !
     integer :: ior, i, j, k, ine, inoe, ima, listno(8), ix, nbno
-    integer :: iq, ifm, niv, jtype, jzcmp, ncmpme
+    integer :: iq, ifm, niv, jtype,  ncmpme
     integer :: nbcmp, ipoin, iret, jcesc, jcesl
-    integer :: jtabc, jtabd, jtabv, jtabl, jcesk, jcesd
-    integer :: icmp, jncmp, ipt, isp, nbpt, nbsp, jnumol
+    integer ::     jcesk, jcesd
+    integer :: icmp,  ipt, isp, nbpt, nbsp, jnumol
     integer :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
     parameter(ncmpme=12)
     logical :: iwri, tens, scal, vect, lcmp
@@ -93,6 +95,12 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
     character(len=8) :: k8b, nomgd, type, nocmp
     character(len=19) :: noch19, champs
     character(len=24) :: numold, connex
+    integer, pointer :: cesc(:) => null()
+    integer, pointer :: cesd(:) => null()
+    integer, pointer :: cesl(:) => null()
+    integer, pointer :: cesv(:) => null()
+    character(len=8), pointer :: vnocmp(:) => null()
+    character(len=8), pointer :: ordre_cmp(:) => null()
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -108,10 +116,10 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
     numold = nomaou//'.NUMOLD         '
     connex = nomain//'.CONNEX         '
 !
-    call wkvect('&&IRGMCE.CESD', 'V V I', nbord2, jtabd)
-    call wkvect('&&IRGMCE.CESC', 'V V I', nbord2, jtabc)
-    call wkvect('&&IRGMCE.CESV', 'V V I', nbord2, jtabv)
-    call wkvect('&&IRGMCE.CESL', 'V V I', nbord2, jtabl)
+    AS_ALLOCATE(vi=cesd, size=nbord2)
+    AS_ALLOCATE(vi=cesc, size=nbord2)
+    AS_ALLOCATE(vi=cesv, size=nbord2)
+    AS_ALLOCATE(vi=cesl, size=nbord2)
     call wkvect('&&IRGMCG.TYPE', 'V V K8', nbord2, jtype)
 !
     nbcmp = 0
@@ -127,10 +135,10 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
         champs = '&&IRGMCE.CH'//k8b
         call celces(noch19, 'V', champs)
         call jeveuo(champs//'.CESK', 'L', jcesk)
-        call jeveuo(champs//'.CESD', 'L', zi(jtabd+ior-1))
-        call jeveuo(champs//'.CESC', 'L', zi(jtabc+ior-1))
-        call jeveuo(champs//'.CESV', 'L', zi(jtabv+ior-1))
-        call jeveuo(champs//'.CESL', 'L', zi(jtabl+ior-1))
+        call jeveuo(champs//'.CESD', 'L', cesd(ior))
+        call jeveuo(champs//'.CESC', 'L', cesc(ior))
+        call jeveuo(champs//'.CESV', 'L', cesv(ior))
+        call jeveuo(champs//'.CESL', 'L', cesl(ior))
         call jelira(champs//'.CESV', 'TYPE', cval=zk8(jtype+ior-1))
 !
         nomgd = zk8(jcesk-1+2)
@@ -145,13 +153,13 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
         endif
 !
         if (ior .eq. 1) then
-            jcesc = zi(jtabc+ior-1)
-            jcesd = zi(jtabd+ior-1)
-            jcesl = zi(jtabl+ior-1)
+            jcesc = cesc(ior)
+            jcesd = cesd(ior)
+            jcesl = cesl(ior)
             nbma = zi(jcesd-1+1)
             nbcmp = zi(jcesd-1+2)
             ncmpu = 0
-            call wkvect('&&IRGMCE.NOCMP', 'V V K8', nbcmp, jncmp)
+            AS_ALLOCATE(vk8=vnocmp, size=nbcmp)
             do icmp = 1, nbcmp
                 do ima = 1, nbma
                     nbpt = zi(jcesd-1+5+4* (ima-1)+1)
@@ -167,11 +175,11 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                 goto 50
  40             continue
                 ncmpu = ncmpu + 1
-                zk8(jncmp+ncmpu-1) = zk8(jcesc-1+icmp)
+                vnocmp(ncmpu) = zk8(jcesc-1+icmp)
  50             continue
             end do
         else
-            if (zi(zi(jtabd+ior-1)-1+2) .ne. nbcmp) then
+            if (zi(cesd(ior)-1+2) .ne. nbcmp) then
                 call utmess('F', 'PREPOST2_53')
             endif
         endif
@@ -216,15 +224,15 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 !
     if (versio .eq. 2 .and. tens) then
         lcmp=.false.
-        call wkvect('&&IRGMCE.ORDRE_CMP', 'V V K8', ncmpme, jzcmp)
+        AS_ALLOCATE(vk8=ordre_cmp, size=ncmpme)
         do k = 1, ncmpme
-            zk8(jzcmp+k-1)=' '
+            ordre_cmp(k)=' '
         end do
         do k = 1, nbcmpd
-            zk8(jzcmp+k-1)=nomcmp(k)
-            zk8(jzcmp+ncmpme/2+k-1)=zk8(jncmp+k-1)
+            ordre_cmp(k)=nomcmp(k)
+            ordre_cmp(1+ncmpme/2+k-1)=vnocmp(k)
             do ix = 1, nbcmp
-                if (zk8(jncmp+ix-1) .eq. nomcmp(k)) then
+                if (vnocmp(ix) .eq. nomcmp(k)) then
                     icmp = ix
                     goto 62
                 endif
@@ -235,15 +243,15 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
             if (k .ne. ix) lcmp=.true.
         end do
         if (lcmp) then
-            call utmess('A', 'PREPOST2_55', nk=ncmpme, valk=zk8(jzcmp))
+            call utmess('A', 'PREPOST2_55', nk=ncmpme, valk=ordre_cmp)
         endif
-        call jedetr('&&IRGMCE.ORDRE_CMP')
+        AS_DEALLOCATE(vk8=ordre_cmp)
     endif
 !
     do k = 1, nbcmpd
         if (nbcmpi .ne. 0) then
             do ix = 1, nbcmp
-                if (zk8(jncmp+ix-1) .eq. nomcmp(k)) then
+                if (vnocmp(ix) .eq. nomcmp(k)) then
                     icmp = ix
                     goto 80
                 endif
@@ -254,7 +262,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
         else
             icmp = k
         endif
-        nocmp = zk8(jncmp+icmp-1)
+        nocmp = vnocmp(icmp)
 !
 ! ----- PREMIER PASSAGE POUR DETERMINER SI LE CHAMP A ECRIRE EXISTE
 !       SUR LES POI1, SEG2, TRIA3, TETR4...
@@ -277,8 +285,8 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                     do inoe = 1, nbno
                         listno(inoe) = connx(ipoin-1+inoe)
                     end do
-                    call irgmec(zi(jnumol), ima, connex, nbord2, zi(jtabd),&
-                                zi(jtabl), zi(jtabv), partie, jtype, nbno,&
+                    call irgmec(zi(jnumol), ima, connex, nbord2, cesd,&
+                                cesl, cesv, partie, jtype, nbno,&
                                 listno, icmp, ifi, iwri, iadmax,&
                                 ordr, chamsy, nomcon, lresu)
                     iadmm = max(iadmax,iadmm)
@@ -317,8 +325,8 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                             write(ifi,1000) (coord(3*(listno(inoe)-1)+&
                             j),inoe=1,nbno)
                         end do
-                        call irgmec(zi(jnumol), ima, connex, nbord2, zi( jtabd),&
-                                    zi(jtabl), zi(jtabv), partie, jtype, nbno,&
+                        call irgmec(zi(jnumol), ima, connex, nbord2, cesd,&
+                                    cesl, cesv, partie, jtype, nbno,&
                                     listno, icmp, ifi, iwri, iadmax,&
                                     ordr, chamsy, nomcon, lresu)
                     end do
@@ -338,7 +346,7 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 !
 ! ----- VERIFICATION SUR LES COMPOSANTES FOURNIES PAR L'UTILISATEUR:
         do k = 1, nbcmpi
-            icmp=indik8(zk8(jncmp),nomcmp(k),1,nbcmp)
+            icmp=indik8(vnocmp,nomcmp(k),1,nbcmp)
             if (icmp .eq. 0) then
                 call utmess('F', 'PREPOST6_34', sk=nomcmp(k))
             endif
@@ -372,8 +380,8 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                         write(ifi,1000) (coord(3*(listno(inoe)-1)+j),&
                         inoe=1,nbno)
                     end do
-                    call irgme2(zi(jnumol), ima, connex, nbord2, zi(jtabd),&
-                                zi(jtabl), zi(jtabv), partie, jtype, nbno,&
+                    call irgme2(zi(jnumol), ima, connex, nbord2, cesd,&
+                                cesl, cesv, partie, jtype, nbno,&
                                 listno, nbcmp, ifi, iadmax)
                 end do
             endif
@@ -385,11 +393,11 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
 !
     endif
 !
-    call jedetr('&&IRGMCE.CESC')
-    call jedetr('&&IRGMCE.CESD')
-    call jedetr('&&IRGMCE.CESV')
-    call jedetr('&&IRGMCE.CESL')
-    call jedetr('&&IRGMCE.NOCMP')
+    AS_DEALLOCATE(vi=cesc)
+    AS_DEALLOCATE(vi=cesd)
+    AS_DEALLOCATE(vi=cesv)
+    AS_DEALLOCATE(vi=cesl)
+    AS_DEALLOCATE(vk8=vnocmp)
     call jedetr('&&IRGMCG.TYPE')
     call jedema()
 !

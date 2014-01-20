@@ -27,6 +27,8 @@ subroutine phi199(model, mate, ma, nu, num,&
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbmode, indice, tabad(*)
     character(len=8) :: ma
     character(len=14) :: nu, num
@@ -64,7 +66,7 @@ subroutine phi199(model, mate, ma, nu, num,&
 ! IN : K* : SOLVEZ : METHODE DE RESOLUTION 'MULT_FRONT','LDLT' OU 'GCPC'
 !---------------------------------------------------------------------
     integer :: ibid, nbvale, nbrefe, nbdesc, iret, nbno, idno, id, ier
-    integer :: ilires, jref, neq, nbd, nbdir, i, jvec, jddl, in, nbsta
+    integer :: ilires, jref, neq, nbd, nbdir, i, jvec,  in, nbsta
     integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou, idmst, tmod(1)
     real(kind=8) :: rbid, xnorm, xd, depl(6), epsi
     complex(kind=8) :: c16b, cbid
@@ -76,6 +78,7 @@ subroutine phi199(model, mate, ma, nu, num,&
     character(len=19) :: vecso1, vesto1, maprec, solveu, chsol, chamno
     character(len=24) :: nomcha, nocham, criter
     character(len=24) :: valk(3)
+    integer, pointer :: ddl(:) => null()
 !
     data maprec   /'&&OP0199.MAPREC'/
     data chsol    /'&&OP0199.SOLUTION'/
@@ -167,9 +170,9 @@ subroutine phi199(model, mate, ma, nu, num,&
         end do
 !
         call jeveuo(nomcha(1:19)//'.VALE', 'E', jvec)
-        call wkvect('&&PHI199.DDL', 'V V I', neq*nbdir, jddl)
+        AS_ALLOCATE(vi=ddl, size=neq*nbdir)
         call pteddl('NUME_DDL', nume, nbdir, tabcmp, neq,&
-                    zi(jddl))
+ddl)
 !
         do in = 0, neq-1
             zr(jvec+in) = 0.d0
@@ -226,7 +229,7 @@ subroutine phi199(model, mate, ma, nu, num,&
                     call jeveuo(chamno//'.VALE', 'L', idmst)
 !
                     do i = 0, neq-1
-                        zr(jvec+i) = zr(jvec+i) - zi(jddl+(id-1)*neq+ i)*xd*zr(idmst+i)
+                        zr(jvec+i) = zr(jvec+i) - ddl(1+(id-1)*neq+ i)*xd*zr(idmst+i)
                     end do
                     call jelibe(chamno//'.VALE')
  26                 continue
@@ -242,7 +245,7 @@ subroutine phi199(model, mate, ma, nu, num,&
  41     continue
         do i = 1, nbdir
             do in = 0, neq-1
-                zr(jvec+in) = zr(jvec+in) - zi(jddl+(i-1)*neq+in)* depl(i)
+                zr(jvec+in) = zr(jvec+in) - ddl(1+(i-1)*neq+in)* depl(i)
             end do
         end do
  42     continue
@@ -277,7 +280,7 @@ subroutine phi199(model, mate, ma, nu, num,&
 !
 ! --- MENAGE
     call detrsd('CHAM_NO', '&&PHI199.CHAMREF')
-    call jedetr('&&PHI199.DDL')
+    AS_DEALLOCATE(vi=ddl)
     call jedetr('&&PHI199.NOEUD')
 !
     call jeexin(criter(1:19)//'.CRTI', iret)

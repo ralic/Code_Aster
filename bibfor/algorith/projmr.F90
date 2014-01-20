@@ -19,6 +19,8 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 #include "asterfort/ualfva.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: neq, nbmo
@@ -51,12 +53,13 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !
     integer :: iddeeq, jscde, nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
     integer :: i, j, imatra, jscdi, jscbl, jschc, iblo, ldblo, n1bloc, n2bloc
-    integer :: idvec2, idbase, nbj, ldblo1, ldblo2
+    integer ::  idbase, nbj, ldblo1, ldblo2
     real(kind=8) :: pij
     complex(kind=8) :: cbid
     character(len=16) :: typbas
     character(len=19) :: matr, resu
     logical :: lsym
+    real(kind=8), pointer :: vectass2(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
@@ -117,7 +120,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
         zi(iadesc+2)=2
     endif
 !
-    call wkvect('&&PROJMR.VECTASS2', 'V V R', neq, idvec2)
+    AS_ALLOCATE(vr=vectass2, size=neq)
     call wkvect('&&PROJMR.BASEMO', 'V V R', nbmo*neq, idbase)
 ! ----- CONVERSION DE BASEMO A LA NUMEROTATION NU
     call copmod(basemo, 'DEPL', neq, nu, nbmo,&
@@ -153,15 +156,15 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
                 ASSERT(nbj.eq.1 .or. nbj.eq.i)
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
-                call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), zr(idvec2), 1,&
+                call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), vectass2, 1,&
                             .true.)
-                call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
+                call zerlag(neq, zi(iddeeq), vectr=vectass2)
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
                 do j = nbj, i
 !
 ! ------------ PRODUIT SCALAIRE VECTASS * MODE
-                    pij=ddot(neq,zr(idbase+(j-1)*neq),1,zr(idvec2),1)
+                    pij=ddot(neq,zr(idbase+(j-1)*neq),1,vectass2,1)
 !
 ! ------------ STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
                     zr(ldblo+zi(jscdi+i-1)+j-i-1)=pij
@@ -188,11 +191,11 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
         do i = 1, nueq
             nbj=i-zi(jschc+i-1)+1
             ASSERT(nbj.eq.1)
-            call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), zr(idvec2), 1,&
+            call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), vectass2, 1,&
                         .true.)
-            call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
+            call zerlag(neq, zi(iddeeq), vectr=vectass2)
             do j = 1, nueq
-                pij=ddot(neq,zr(idbase+(j-1)*neq),1,zr(idvec2),1)
+                pij=ddot(neq,zr(idbase+(j-1)*neq),1,vectass2,1)
                 if (j .le. i) then
                     zr(ldblo1+zi(jscdi+i-1)+j-i-1)=pij
                 endif
@@ -204,7 +207,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     endif
 !
 !
-    call jedetr('&&PROJMR.VECTASS2')
+    AS_DEALLOCATE(vr=vectass2)
     call jedetr('&&PROJMR.BASEMO')
 !
     call ualfva(resu, 'G')

@@ -21,6 +21,8 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 #include "asterfort/vprecu.h"
 #include "asterfort/vpstor.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: numvit, itypfl, imasse
     integer :: nbnuor, nuor(*), nbmfl, numo(*)
     character(len=8) :: nomres, basemo
@@ -72,7 +74,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     integer :: iddl(6), ifrfl, imafl, ifafl, neq, nbmode, j, i
     integer :: lmod, iret, ideeq, ivit, numod, imas
     integer :: ifac, ifre, ieq, k, icm, iprec, ivale
-    integer :: lmat(2), lddl, lvali, lvalr, lvalk, lcoef
+    integer :: lmat(2), lddl, lvali, lvalr, lvalk
     integer :: npari, nparr, npark
     integer :: nbpari, nbparr, nbpark, nbpara
     parameter    ( nbpari=1 , nbparr=15 , nbpark=1, nbpara=17 )
@@ -85,6 +87,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     character(len=24) :: chamfl, kvec, nopara(nbpara)
     character(len=24) :: kvali, kvalr, kvalk
     logical :: lmasin, lnorm
+    real(kind=8), pointer :: coef_mode(:) => null()
 !
     data iddl  / 1, 2, 3, 4, 5, 6 /
     data  nopara /&
@@ -217,19 +220,19 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
         do ieq = 0, neq-1
             zi(lddl+ieq)= 1 - zi(lddl+ieq)
         end do
-        call wkvect('&&MODIBA.COEF_MODE', 'V V R', nbmode, lcoef)
+        AS_ALLOCATE(vr=coef_mode, size=nbmode)
 !        --- ON NORMALISE LES DEFORMEES
         call vpnorm(norm, 'OUI', lmat(1), neq, nbmode,&
                     zi(lddl), zr(lmod), zr(lvalr), lmasin, xmastr,&
-                    0, 0, zr(lcoef))
+                    0, 0,coef_mode)
 !        --- ON STOCKE LES DEFORMEES
         call vpstor(-1, typmod, nomres, nbnuor, neq,&
                     zr(lmod), zc(1), nbnuor, nbpari, nbparr,&
                     nbpark, nopara, '    ', zi(lvali), zr(lvalr),&
                     zk24(lvalk), iprec)
 !        --- ON NORMALISE LES AUTRES CHAMPS
-        call vpnor2(nomres, nbmode, nuor, zr(lcoef))
-        call jedetr('&&MODIBA.COEF_MODE')
+        call vpnor2(nomres, nbmode, nuor,coef_mode)
+        AS_DEALLOCATE(vr=coef_mode)
     else
 !        --- ON STOCKE LES DEFORMEES
         call vpstor(-1, typmod, nomres, nbnuor, neq,&

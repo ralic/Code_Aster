@@ -22,6 +22,8 @@ subroutine rvtec0(t, co, sp, absc, x,&
 #include "asterfort/tbexip.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: co(*), sp(*), nbpoin, nbcmp, padr(*), ioc, iocc, i1, isd
     real(kind=8) :: t(*), absc(*), x(*)
@@ -65,7 +67,7 @@ subroutine rvtec0(t, co, sp, absc, x,&
 !     ------------------------------------------------------------------
     integer :: nbpar, ilign, nbsp, i, ikk, l, jam, nbco, lc, is, ic, valei(1052), n1, adrval
     integer :: nbmail, j, adracc, jacc, ik, ir, ii, ivari(1000), nbcmp2, jvari, ico, lm, im, nc
-    integer :: jnpar, jtpar, nbvari, nbacc, nbpr, jaces, iac, iadr, iord(1)
+    integer ::   nbvari, nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(1050)
     complex(kind=8) :: c16b
     logical :: exist, erreur
@@ -75,6 +77,8 @@ subroutine rvtec0(t, co, sp, absc, x,&
     character(len=16) :: intitu
     character(len=24) :: nomval, nomacc, nnores, nopara(1053), nomjv
     character(len=80) :: valek(1051)
+    character(len=8), pointer :: nom_para(:) => null()
+    character(len=8), pointer :: typ_para(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -282,16 +286,16 @@ subroutine rvtec0(t, co, sp, absc, x,&
         nopara(nbpar) = cmp(i)
 40      continue
     else
-        call wkvect('&&RVTEC0.NOM_PARA', 'V V K8', nbcmp2, jnpar)
-        call wkvect('&&RVTEC0.TYP_PARA', 'V V K8', nbcmp2, jtpar)
+        AS_ALLOCATE(vk8=nom_para, size=nbcmp2)
+        AS_ALLOCATE(vk8=typ_para, size=nbcmp2)
         if (nbvari .eq. 1 .and. zi(jvari) .eq. -1) then
             do 12, i = 1, nbcmp2, 1
             ivari(i) = i
             call codent(i, 'G', kii)
             nbpar = nbpar + 1
             nopara(nbpar) = 'V'//kii
-            zk8(jnpar-1+i) = 'V'//kii
-            zk8(jtpar-1+i) = 'R'
+            nom_para(i) = 'V'//kii
+            typ_para(i) = 'R'
 12          continue
         else
             do 14, i = 1, nbcmp2, 1
@@ -299,11 +303,11 @@ subroutine rvtec0(t, co, sp, absc, x,&
             call codent(zi(jvari+i-1), 'G', kii)
             nbpar = nbpar + 1
             nopara(nbpar) = 'V'//kii
-            zk8(jnpar-1+i) = 'V'//kii
-            zk8(jtpar-1+i) = 'R'
+            nom_para(i) = 'V'//kii
+            typ_para(i) = 'R'
 14          continue
         endif
-        call tbajpa(nomtab, nbcmp2, zk8(jnpar), zk8(jtpar))
+        call tbajpa(nomtab, nbcmp2, nom_para,typ_para)
     endif
 !
     erreur = .false.
@@ -405,8 +409,8 @@ subroutine rvtec0(t, co, sp, absc, x,&
     30 end do
 !
     if (nbvari .ne. 0) then
-        call jedetr('&&RVTEC0.NOM_PARA')
-        call jedetr('&&RVTEC0.TYP_PARA')
+        AS_DEALLOCATE(vk8=nom_para)
+        AS_DEALLOCATE(vk8=typ_para)
     endif
 !
 9999  continue

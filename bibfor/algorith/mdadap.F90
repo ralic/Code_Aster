@@ -41,6 +41,8 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
     integer :: iorsto(*), iredst(*), descm, descr, desca, nbchoc
     integer :: logcho(nbchoc, *), ichost(*), neqgen
@@ -133,11 +135,11 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     integer :: palmax
 !-----------------------------------------------------------------------
     integer :: if, im, ipas, iret, isto1, isto2
-    integer :: isto3, istoav, iv, iveri, jacc2, jacce
-    integer :: jcho2, jchor, jdep2, jdepl
-    integer :: jfext, jmass, jredi
-    integer :: jredr, jslvi, jtra1, jvint, jvip1, jvip2, jvit2
-    integer :: jvite, jvmin, nbacc, nbexci, nbmod1, nbpasc
+    integer :: isto3, istoav, iv, iveri
+    integer :: jcho2, jchor
+    integer ::  jmass, jredi
+    integer :: jredr, jslvi,  jvint
+    integer ::   nbacc, nbexci, nbmod1, nbpasc
     integer :: nbrede, nbrevi, nbsauv, nbscho, ndt, npas
     integer :: nper, nr, nrmax
     integer :: isto4, jrevr, jrevi, irevst(*)
@@ -156,6 +158,17 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     character(len=8) :: cnpal(palmax)
     character(len=24) :: cpal
     real(kind=8) :: fsauv(palmax, 3)
+    real(kind=8), pointer :: acc2(:) => null()
+    real(kind=8), pointer :: acce(:) => null()
+    real(kind=8), pointer :: dep2(:) => null()
+    real(kind=8), pointer :: depl(:) => null()
+    real(kind=8), pointer :: fext(:) => null()
+    real(kind=8), pointer :: tra1(:) => null()
+    real(kind=8), pointer :: vip1(:) => null()
+    real(kind=8), pointer :: vip2(:) => null()
+    real(kind=8), pointer :: vit2(:) => null()
+    real(kind=8), pointer :: vite(:) => null()
+    real(kind=8), pointer :: vmin(:) => null()
 !
     call jemarq()
 !
@@ -196,8 +209,8 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
 !     --- RECUPERATION DES PARAMETRES D'ADAPTATION DU PAS
 !
-    call wkvect('&&MDADAP.VMIN', 'V V R8', neqgen, jvmin)
-    call recpar(neqgen, dti, dtmax, zr(jvmin), vvar,&
+    AS_ALLOCATE(vr=vmin, size=neqgen)
+    call recpar(neqgen, dti, dtmax, vmin, vvar,&
                 cmp, cdp, dtmin, nper, nrmax)
 !
 !     --- FACTORISATION DE LA MATRICE MASSE ---
@@ -232,16 +245,16 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
 !     --- VECTEURS DE TRAVAIL ---
 !
-    call wkvect('&&MDADAP.DEPL', 'V V R8', neqgen, jdepl)
-    call wkvect('&&MDADAP.DEP2', 'V V R8', neqgen, jdep2)
-    call wkvect('&&MDADAP.VITE', 'V V R8', neqgen, jvite)
-    call wkvect('&&MDADAP.VIT2', 'V V R8', neqgen, jvit2)
-    call wkvect('&&MDADAP.VIP1', 'V V R8', neqgen, jvip1)
-    call wkvect('&&MDADAP.VIP2', 'V V R8', neqgen, jvip2)
-    call wkvect('&&MDADAP.ACCE', 'V V R8', neqgen, jacce)
-    call wkvect('&&MDADAP.ACC2', 'V V R8', neqgen, jacc2)
-    call wkvect('&&MDADAP.TRA1', 'V V R8', neqgen, jtra1)
-    call wkvect('&&MDADAP.FEXT', 'V V R8', neqgen, jfext)
+    AS_ALLOCATE(vr=depl, size=neqgen)
+    AS_ALLOCATE(vr=dep2, size=neqgen)
+    AS_ALLOCATE(vr=vite, size=neqgen)
+    AS_ALLOCATE(vr=vit2, size=neqgen)
+    AS_ALLOCATE(vr=vip1, size=neqgen)
+    AS_ALLOCATE(vr=vip2, size=neqgen)
+    AS_ALLOCATE(vr=acce, size=neqgen)
+    AS_ALLOCATE(vr=acc2, size=neqgen)
+    AS_ALLOCATE(vr=tra1, size=neqgen)
+    AS_ALLOCATE(vr=fext, size=neqgen)
     if (nbchoc .ne. 0 .and. nbpal .eq. 0) then
         call wkvect('&&MDADAP.SCHOR', 'V V R8', nbchoc*14, jchor)
         call wkvect('&&MDADAP.SCHO2', 'V V R8', nbchoc*14, jcho2)
@@ -270,10 +283,10 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
 !     --- CONDITIONS INITIALES ---
 !
-    call mdinit(basemo, neqgen, nbchoc, zr(jdepl), zr(jvite),&
+    call mdinit(basemo, neqgen, nbchoc, depl, vite,&
                 zr(jvint), iret, tinit)
     if (iret .ne. 0) goto 999
-    call dcopy(neqgen, zr(jvite), 1, zr(jvip1), 1)
+    call dcopy(neqgen, vite, 1, vip1, 1)
     dt2 = dti
     dt1 = zero
     if (nbchoc .gt. 0 .and. nbpal .eq. 0) then
@@ -285,7 +298,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     if (nbexci .ne. 0) then
         call mdfext(tinit, r8bid1, neqgen, nbexci, idescf,&
                     nomfon, coefm, liad, inumor, 1,&
-                    zr(jfext))
+fext)
     endif
 !
 !    COUPLAGE AVEC EDYOS
@@ -311,7 +324,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
 !       CAS CLASSIQUE
 !
-    call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
+    call mdfnli(neqgen, depl, vite, acce, fext,&
                 nbchoc, logcho, dplmod, parcho, noecho,&
                 zr(jchor), nbrede, dplred, fonred, zr(jredr),&
                 zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
@@ -329,8 +342,8 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !     --- ACCELERATIONS GENERALISEES INITIALES ---
 !
     call mdacce(typbas, neqgen, pulsa2, masgen, descm,&
-                riggen, descr, zr(jfext), lamor, amogen,&
-                desca, zr(jtra1), zr(jdepl), zr(jvite), zr(jacce))
+                riggen, descr, fext, lamor, amogen,&
+                desca, tra1, depl, vite,acce)
 !
 !
 !     --- ARCHIVAGE DONNEES INITIALES ---
@@ -338,7 +351,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     tarchi = tinit
 !
     call mdarnl(isto1, 0, tinit, dt2, neqgen,&
-                zr(jdepl), zr(jvite), zr(jacce), isto2, nbchoc,&
+                depl, vite, acce, isto2, nbchoc,&
                 zr(jchor), nbscho, isto3, nbrede, zr(jredr),&
                 zi(jredi), isto4, nbrevi, zr(jrevr), zi(jrevi),&
                 depsto, vitsto, accsto, passto, iorsto,&
@@ -381,15 +394,15 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
             do im = 0, nbmod1
 !              --- VITESSES GENERALISEES ---
-                zr(jvit2+im) = zr(jvite+im) + zr(jacce+im) * pas1
+                vit2(im+1) = vite(im+1) + acce(im+1) * pas1
 !              --- DEPLACEMENTS GENERALISES ---
-                zr(jdep2+im) = zr(jdepl+im) + ( dt2 * zr(jvit2+im) )
+                dep2(im+1) = depl(im+1) + ( dt2 * vit2(im+1) )
 !              --- PREDICTEUR DE LA VITESSE ---
                 if (method .eq. 'ADAPT_ORDRE2') then
-                    zr(jvip2+im) = zr(jvit2+im) + pas2 * zr(jacce+im)
+                    vip2(im+1) = vit2(im+1) + pas2 * acce(im+1)
                 else
 !  MODIFICATION POUR ADAPT ORDRE1
-                    zr(jvip2+im) = zr(jvit2+im)
+                    vip2(im+1) = vit2(im+1)
                 endif
             end do
 !
@@ -397,13 +410,13 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !        --- FORCES EXTERIEURES ---
 !
             do if = 0, neqgen-1
-                zr(jfext+if) = zero
+                fext(if+1) = zero
             end do
             if (nbexci .ne. 0) then
                 r8val = temps+dt2
                 call mdfext(r8val, r8bid1, neqgen, nbexci, idescf,&
                             nomfon, coefm, liad, inumor, 1,&
-                            zr(jfext))
+fext)
             endif
 !
 !
@@ -413,7 +426,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
             r8val = temps + dt2
             ii = ii + 1
-            call mdfnli(neqgen, zr(jdep2), zr(jvip2), zr(jacce), zr( jfext),&
+            call mdfnli(neqgen, dep2, vip2, acce, fext,&
                         nbchoc, logcho, dplmod, parcho, noecho,&
                         zr(jcho2), nbrede, dplred, fonred, zr(jredr),&
                         zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
@@ -432,14 +445,14 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
             nbacc = nbacc + 1
             call mdacce(typbas, neqgen, pulsa2, masgen, descm,&
-                        riggen, descr, zr(jfext), lamor, amogen,&
-                        desca, zr(jtra1), zr(jdep2), zr(jvip2), zr(jacc2))
+                        riggen, descr, fext, lamor, amogen,&
+                        desca, tra1, dep2, vip2,acc2)
 !
 !
 !           --- CALCUL DE L'ERREUR ---
 !
-            call frqapp(dt2, neqgen, zr(jdepl), zr(jdep2), zr(jacce),&
-                        zr( jacc2), zr(jvmin), freq)
+            call frqapp(dt2, neqgen, depl, dep2, acce,&
+                        acc2, vmin, freq)
             err = nper * freq * dt2
 !
             if (method .eq. 'ADAPT_ORDRE1' .and. temps .lt. (tinit+5.d0*dt2)) err = 0.d0
@@ -495,7 +508,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                 tarchi = temp2
 !
                 call mdarnl(isto1, ipas, temp2, dt2, neqgen,&
-                            zr(jdep2), zr(jvip2), zr(jacc2), isto2, nbchoc,&
+                            dep2, vip2, acc2, isto2, nbchoc,&
                             zr(jcho2), nbscho, isto3, nbrede, zr(jredr),&
                             zi(jredi), isto4, nbrevi, zr( jrevr), zi(jrevi),&
                             depsto, vitsto, accsto, passto, iorsto,&
@@ -506,7 +519,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                 tarchi = temps
 !
                 call mdarnl(isto1, ipas-1, temps, dt2, neqgen,&
-                            zr(jdepl), zr(jvip1), zr(jacce), isto2, nbchoc,&
+                            depl, vip1, acce, isto2, nbchoc,&
                             zr(jchor), nbscho, isto3, nbrede, zr(jredr),&
                             zi(jredi), isto4, nbrevi, zr( jrevr), zi(jrevi),&
                             depsto, vitsto, accsto, passto, iorsto,&
@@ -524,28 +537,28 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         if (vvar(1:4) .eq. 'NORM') then
             tmp = zero
             do iv = 0, nbmod1
-                tmp = tmp+zr(jvit2+iv)**2
+                tmp = tmp+vit2(iv+1)**2
             end do
             tmp = sqrt(tmp)*0.01d0
             do iv = 0, nbmod1
-                zr(jvmin+iv) = tmp
+                vmin(iv+1) = tmp
             end do
         else if (vvar(1:4) .eq. 'MAXI') then
             do iv = 0, nbmod1
-                rint1 = zr(jvit2+iv)*0.01d0
+                rint1 = vit2(iv+1)*0.01d0
                 rint2 = abs(rint1)
-                rint1 = zr(jvmin+iv)
-                zr(jvmin+iv) = max(rint1,rint2)
+                rint1 = vmin(iv+1)
+                vmin(iv+1) = max(rint1,rint2)
             end do
         endif
 !
 !           --- MISE A JOUR ---
 !
         temps = temp2
-        call dcopy(neqgen, zr(jdep2), 1, zr(jdepl), 1)
-        call dcopy(neqgen, zr(jvit2), 1, zr(jvite), 1)
-        call dcopy(neqgen, zr(jvip2), 1, zr(jvip1), 1)
-        call dcopy(neqgen, zr(jacc2), 1, zr(jacce), 1)
+        call dcopy(neqgen, dep2, 1, depl, 1)
+        call dcopy(neqgen, vit2, 1, vite, 1)
+        call dcopy(neqgen, vip2, 1, vip1, 1)
+        call dcopy(neqgen, acc2, 1, acce, 1)
         if (nbchoc .ne. 0) call dcopy(14, zr(jcho2), 1, zr(jchor), 1)
 !
 !        --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---
@@ -585,7 +598,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         tarchi = temps
 !
         call mdarnl(isto1, ipas, temps, dt2, neqgen,&
-                    zr(jdep2), zr(jvip2), zr(jacc2), isto2, nbchoc,&
+                    dep2, vip2, acc2, isto2, nbchoc,&
                     zr(jchor), nbscho, isto3, nbrede, zr( jredr),&
                     zi(jredi), isto4, nbrevi, zr(jrevr), zi(jrevi),&
                     depsto, vitsto, accsto, passto, iorsto,&
@@ -623,18 +636,18 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     endif
 !
 999 continue
-    call jedetr('&&MDADAP.DEPL')
-    call jedetr('&&MDADAP.DEP2')
-    call jedetr('&&MDADAP.VITE')
-    call jedetr('&&MDADAP.VIT2')
-    call jedetr('&&MDADAP.VIP1')
-    call jedetr('&&MDADAP.VIP2')
-    call jedetr('&&MDADAP.ACCE')
-    call jedetr('&&MDADAP.ACC2')
-    call jedetr('&&MDADAP.TRA1')
-    call jedetr('&&MDADAP.FEXT')
+    AS_DEALLOCATE(vr=depl)
+    AS_DEALLOCATE(vr=dep2)
+    AS_DEALLOCATE(vr=vite)
+    AS_DEALLOCATE(vr=vit2)
+    AS_DEALLOCATE(vr=vip1)
+    AS_DEALLOCATE(vr=vip2)
+    AS_DEALLOCATE(vr=acce)
+    AS_DEALLOCATE(vr=acc2)
+    AS_DEALLOCATE(vr=tra1)
+    AS_DEALLOCATE(vr=fext)
     call jedetr('&&MDADAP.MASS')
-    call jedetr('&&MDADAP.VMIN')
+    AS_DEALLOCATE(vr=vmin)
     if (nbchoc .ne. 0) then
         call jedetr('&&MDADAP.SCHOR')
         call jedetr('&&MDADAP.SCHO2')

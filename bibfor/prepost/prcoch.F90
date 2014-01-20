@@ -20,6 +20,8 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: itopo, ngroup
     character(len=8) :: noche8, nochs8, nocmp, ktype
@@ -47,13 +49,15 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
     character(len=8) :: nomma, k8bid, nogd, tsca
     integer :: jcesd, jcesl,  jcesv, jcesk, ncmpmx, icmp, numcmp
     integer :: nbma, ima, nbpt, nbsp, ipt, isp, iad, jval, jma, jpo, jsp
-    integer :: ival, iret, itrma, itrno, igr, nbtrou, itbma, lma, nbval
+    integer :: ival, iret,   igr, nbtrou, itbma, lma, nbval
     integer ::  jcnsl,  jcnsv, nbno, ino, jno, nbn, in
     integer :: jcmp, cmpmin, cmpmax
     logical :: ltopo
     character(len=8), pointer :: cnsc(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cesc(:) => null()
+    integer, pointer :: indic_maille(:) => null()
+    integer, pointer :: indic_noeud(:) => null()
 !
 !
     call jemarq()
@@ -111,7 +115,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             if (iret .ne. 0) call jedetr(litrou)
 !     --- RECUPERATION DU NUMERO DE MAILLE----
             call dismoi('NB_MA_MAILLA', nomma, 'MAILLAGE', repi=nbma)
-            call wkvect('&&PRCOCH.INDIC_MAILLE', 'V V I', nbma, itrma)
+            AS_ALLOCATE(vi=indic_maille, size=nbma)
 !
             do igr = 1, ngroup
                 call jeexin(jexnom(nomma//'.GROUPEMA', group(igr)), iret)
@@ -123,14 +127,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     call jeveuo(jexnom(nomma//'.GROUPEMA', group(igr)), 'L', iad)
                     do in = 1, nbn
                         ima = zi(iad-1+in)
-                        zi(itrma-1+ima) = 1
+                        indic_maille(ima) = 1
                     end do
                 endif
             end do
 !
             nbtrou = 0
             do ima = 1, nbma
-                if (zi(itrma-1+ima) .ne. 0) nbtrou = nbtrou + 1
+                if (indic_maille(ima) .ne. 0) nbtrou = nbtrou + 1
             end do
             if (nbtrou .eq. 0) then
                 call utmess('F', 'CHAMPS_4')
@@ -141,14 +145,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !         --- RANGEMENT DES NUMEROS DE MAILLES ---
             lma = 0
             do ima = 1, nbma
-                if (zi(itrma-1+ima) .ne. 0) then
+                if (indic_maille(ima) .ne. 0) then
                     lma = lma + 1
                     zi(itbma-1+lma) = ima
                 endif
             end do
             call cesred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
                         'V', cesz)
-            call jedetr('&&PRCOCH.INDIC_MAILLE')
+            AS_DEALLOCATE(vi=indic_maille)
         endif
 !
 ! -- 2EME ETAPE : RECUPERATION DU NUMCMP QUI NOUS INTERESSE
@@ -260,7 +264,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
             if (iret .ne. 0) call jedetr(litrou)
 !     --- RECUPERATION DU NUMERO DE NOEUDS----
             call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
-            call wkvect('&&PRCOCH.INDIC_NOEUD', 'V V I', nbno, itrno)
+            AS_ALLOCATE(vi=indic_noeud, size=nbno)
 !
             do igr = 1, ngroup
                 call jeexin(jexnom(nomma//'.GROUPENO', group(igr)), iret)
@@ -272,14 +276,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     call jeveuo(jexnom(nomma//'.GROUPENO', group(igr)), 'L', iad)
                     do in = 1, nbn
                         ino = zi(iad-1+in)
-                        zi(itrno-1+ino) = 1
+                        indic_noeud(ino) = 1
                     end do
                 endif
             end do
 !
             nbtrou = 0
             do ino = 1, nbno
-                if (zi(itrno-1+ino) .ne. 0) nbtrou = nbtrou + 1
+                if (indic_noeud(ino) .ne. 0) nbtrou = nbtrou + 1
             end do
             if (nbtrou .eq. 0) then
                 call utmess('F', 'CHAMPS_5')
@@ -290,14 +294,14 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 !         --- RANGEMENT DES NUMEROS DE NOEUDS ---
             lma = 0
             do ino = 1, nbno
-                if (zi(itrno-1+ino) .ne. 0) then
+                if (indic_noeud(ino) .ne. 0) then
                     lma = lma + 1
                     zi(itbma-1+lma) = ino
                 endif
             end do
             call cnsred(cesz, nbtrou, zi(itbma), 0, [k8bid],&
                         'V', cesz)
-            call jedetr('&&PRCOCH.INDIC_NOEUD')
+            AS_DEALLOCATE(vi=indic_noeud)
         endif
 !
 !

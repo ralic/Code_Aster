@@ -82,6 +82,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 #include "asterfort/reci2d.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     character(len=8) :: mailla
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
     integer :: nbnobe, icabl, nbmabe, nbnoca(*)
@@ -89,8 +91,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ideca, inobe, inoca, ipara, iproj, itria, jcoor, jcxma, jnoca
-    integer :: jnunob, jtblp, jtbnp, jxca, jxyzma, jyca, jzca, nbcnx, nblign
+    integer :: ideca, inobe, inoca, ipara, iproj, itria, jcoor,  jnoca
+    integer :: jnunob, jtblp, jtbnp, jxca,  jyca, jzca, nbcnx, nblign
     integer :: nbno, nbpara, nnomax, noe, noebe, numail
     real(kind=8) :: d2, d2min, dx, dy, dz, excent, normal(3), x3dca(3), xbar(3)
     complex(kind=8) :: cbid
@@ -100,6 +102,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     logical :: encore
 !
     character(len=24) :: param(4), parcr
+    integer, pointer :: cnx_maille(:) => null()
+    real(kind=8), pointer :: xyz_noemai(:) => null()
     data          param /'MAILLE_BETON_VOISINE    ',&
      &                     'NOEUD_BETON_VOISIN      ',&
      &                     'INDICE_PROJECTION       ',&
@@ -166,8 +170,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !.... LE NOMBRE DE NOEUDS MAXIMAL SUR UNE MAILLE VAUT DONC 9
 !
     nnomax = 9
-    call wkvect('&&PROJCA.XYZ_NOEMAI', 'V V R', 3*nnomax, jxyzma)
-    call wkvect('&&PROJCA.CNX_MAILLE', 'V V I', nnomax, jcxma)
+    AS_ALLOCATE(vr=xyz_noemai, size=3*nnomax)
+    AS_ALLOCATE(vi=cnx_maille, size=nnomax)
     write(lnuma,'(A19)') '&&PROJCA.NUMA_NOEBE'
     call jecreo(lnuma, 'V V I')
     call jeecra(lnuma, 'LONMAX', nbmabe)
@@ -210,8 +214,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 ! .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
 !
         call projkm(nmabet, nbmabe, mailla, x3dca(1), noebe,&
-                    lnuma, licnx, numail, nbcnx, zi(jcxma),&
-                    zr(jxyzma), normal(1), itria, xbar(1), iproj,&
+                    lnuma, licnx, numail, nbcnx, cnx_maille,&
+                    xyz_noemai, normal(1), itria, xbar(1), iproj,&
                     excent)
         if (iproj .ge. 0) encore = .false.
 !
@@ -224,7 +228,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !
         if (encore) then
             call projkb(mailla, x3dca(1), lnuma, licnx, numail,&
-                        nbcnx, zi( jcxma), zr(jxyzma), normal(1), itria,&
+                        nbcnx, cnx_maille, xyz_noemai, normal(1), itria,&
                         xbar(1), iproj, excent)
             if (iproj .gt. 0) encore = .false.
         endif
@@ -239,14 +243,14 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 ! ON PEUT VERIFIER LE PASSAGE PAR PROJKN AVEC:
 !            PRINT*,'projca.f: On utilise PROJKN.'
             call projkn(mailla, x3dca(1), lnuma, licnx, numail,&
-                        nbcnx, zi( jcxma), zr(jxyzma), normal(1), itria,&
+                        nbcnx, cnx_maille, xyz_noemai, normal(1), itria,&
                         iproj, excent)
         endif
 !
 ! 2.2.5  DETERMINATION DES RELATIONS CINEMATIQUES
 ! .....
         call reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
-                    zi(jcxma), normal(1), itria, xbar(1), iproj,&
+                    cnx_maille, normal(1), itria, xbar(1), iproj,&
                     excent)
 !
 ! 2.2.6  MISE A JOUR DE LA SD TABLE
@@ -259,8 +263,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 100  end do
 !
 ! --- MENAGE
-    call jedetr('&&PROJCA.XYZ_NOEMAI')
-    call jedetr('&&PROJCA.CNX_MAILLE')
+    AS_DEALLOCATE(vr=xyz_noemai)
+    AS_DEALLOCATE(vi=cnx_maille)
     call jedetr('&&PROJCA.NUMA_NOEBE')
     call jedetr('&&PROJCA.ICNX_NOEBE')
 !

@@ -29,6 +29,8 @@ subroutine te0516(option, nomte)
 #include "asterfort/utpvlg.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
     character(len=16) :: option, nomte
@@ -79,7 +81,7 @@ subroutine te0516(option, nomte)
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
     integer :: inbfib, ncarfi, nbfib, jacf, jtab(7), ivarmp, codret
 !
-    integer :: ncomp, jdefm, jdefp, jmodfb, jsigfb, nbvalc, jvarfb, isdcom
+    integer :: ncomp,     nbvalc,  isdcom
     integer :: kp, j, k, kk, istrxm, istrxp, istrmp, ncomp2
     real(kind=8) :: aa, xiy, xiz, alfay, alfaz, xjx, xjg
     real(kind=8) :: e, g, nu, temp, temm, phiy, phiz
@@ -93,6 +95,11 @@ subroutine te0516(option, nomte)
     character(len=8) :: mator
     character(len=4) :: fami
     character(len=24) :: valk(2)
+    real(kind=8), pointer :: defmfib(:) => null()
+    real(kind=8), pointer :: defpfib(:) => null()
+    real(kind=8), pointer :: modufib(:) => null()
+    real(kind=8), pointer :: vsigfib(:) => null()
+    real(kind=8), pointer :: varfib(:) => null()
 !     ------------------------------------------------------------------
 !
     fami = 'RIGI'
@@ -297,15 +304,15 @@ subroutine te0516(option, nomte)
     phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*aa)
 !
 ! --- DEFORMATIIONS MOINS ET INCREMENT DE DEFORMATION POUR CHAQUE FIBRE
-    call wkvect('&&TE0516.DEFMFIB', 'V V R8', nbfib, jdefm)
-    call wkvect('&&TE0516.DEFPFIB', 'V V R8', nbfib, jdefp)
+    AS_ALLOCATE(vr=defmfib, size=nbfib)
+    AS_ALLOCATE(vr=defpfib, size=nbfib)
 !
 ! --- NOMBRE DE VARIABLE INTERNE DE LA LOI DE COMPORTEMENT
     read (zk16(icompo-1+2),'(I16)') nbvalc
 ! --- MODULE ET CONTRAINTES SUR CHAQUE FIBRE (COMPORTEMENT)
-    call wkvect('&&TE0516.MODUFIB', 'V V R8', nbfib, jmodfb)
-    call wkvect('&&TE0516.SIGFIB', 'V V R8', nbfib, jsigfb)
-    call wkvect('&&TE0516.VARFIB', 'V V R8', nbfib*nbvalc*npg, jvarfb)
+    AS_ALLOCATE(vr=modufib, size=nbfib)
+    AS_ALLOCATE(vr=vsigfib, size=nbfib)
+    AS_ALLOCATE(vr=varfib, size=nbfib*nbvalc*npg)
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
     do 300 kp = 1, 3
@@ -361,16 +368,16 @@ subroutine te0516(option, nomte)
             endif
         endif
 !        CALCUL DES DEFORMATIONS ET DES INCREMENTS DE DEF SUR LES FIBRES
-        call pmfdef(nbfib, ncarfi, zr(jacf), eps, zr(jdefm))
-        call pmfdef(nbfib, ncarfi, zr(jacf), deps, zr(jdefp))
+        call pmfdef(nbfib, ncarfi, zr(jacf), eps,defmfib)
+        call pmfdef(nbfib, ncarfi, zr(jacf), deps,defpfib)
         epsm = (u(8)-u(1))/xl
 !
 ! ---   MODULE ET CONTRAINTES SUR CHAQUE FIBRE (COMPORTEMENT)
         call pmfmcf(kp, nbgf, nbfib, zi(inbfib+2), zk24(isdcom),&
                     zr( icarcr), option, zr(iinstm), zr(iinstp), zi(imate),&
                     nbvalc, defam, defap, zr(ivarim), zr(ivarmp),&
-                    zr(icontm), zr(jdefm), zr( jdefp), epsm, zr(jmodfb),&
-                    zr(jsigfb), zr(jvarfb), isecan, codrep)
+                    zr(icontm), defmfib, defpfib, epsm, modufib,&
+                    vsigfib, varfib, isecan, codrep)
 !
         if (codrep .ne. 0) then
             codret=codrep
@@ -384,7 +391,7 @@ subroutine te0516(option, nomte)
 !              FFP(1) = +INT(SE.DS)   = N
 !              FFP(2) = +INT(SE.Z.DS) = MY
 !              FFP(3) = -INT(SE.Y.DS) = MZ
-            call pmffor(nbfib, ncarfi, zr(jacf), zr(jsigfb), ffp)
+            call pmffor(nbfib, ncarfi, zr(jacf), vsigfib, ffp)
         endif
 !        CALCUL DE BT*H*B :
         if (matric) then
@@ -395,10 +402,10 @@ subroutine te0516(option, nomte)
 !              MOMENT AUTOUR Z : COMPOSANTE 6
 !   ----    CALCUL DE LA RAIDEUR TANGENTE AU COMPORTEMENT PAR FIBRE
             if (isecan .eq. 1) then
-                call pmftgt(nbfib, e, zr(icontm+nbfib*(kp-1)), zr( jsigfb), zr(jdefp),&
-                            zr(jmodfb))
+                call pmftgt(nbfib, e, zr(icontm+nbfib*(kp-1)), vsigfib, defpfib,&
+modufib)
             endif
-            call pmfite(nbfib, ncarfi, zr(jacf), zr(jmodfb), matsct)
+            call pmfite(nbfib, ncarfi, zr(jacf), modufib, matsct)
 !           MATSCT(1) : INT(E.DS)
 !           MATSCT(2) : INT(E.Y.DS)
 !           MATSCT(3) : INT(E.Z.DS)
@@ -428,7 +435,7 @@ subroutine te0516(option, nomte)
 !        ON STOCKE A "+" : CONTRAINTES, FL, VARI
         if (vecteu) then
             do 332 i = 1, nbfib
-                zr(icontp-1+nbfib*(kp-1)+i) = zr(jsigfb-1+i)
+                zr(icontp-1+nbfib*(kp-1)+i) = vsigfib(i)
 332          continue
 !
 !
@@ -507,7 +514,7 @@ subroutine te0516(option, nomte)
 !
     if (vecteu) then
         do 330 i = 1, nbfib*nbvalc*npg
-            zr(ivarip-1+i) = zr(jvarfb-1+i)
+            zr(ivarip-1+i) = varfib(i)
 330      continue
     endif
 !
@@ -599,9 +606,9 @@ subroutine te0516(option, nomte)
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret
     endif
-    call jedetr('&&TE0516.DEFMFIB')
-    call jedetr('&&TE0516.DEFPFIB')
-    call jedetr('&&TE0516.MODUFIB')
-    call jedetr('&&TE0516.SIGFIB')
-    call jedetr('&&TE0516.VARFIB')
+    AS_DEALLOCATE(vr=defmfib)
+    AS_DEALLOCATE(vr=defpfib)
+    AS_DEALLOCATE(vr=modufib)
+    AS_DEALLOCATE(vr=vsigfib)
+    AS_DEALLOCATE(vr=varfib)
 end subroutine

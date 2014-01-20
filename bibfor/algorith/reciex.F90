@@ -46,10 +46,12 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 !-----------------------------------------------------------------------
     integer :: i1, i2, ibid1, iderex, ij2, ilcmpi
-    integer :: ilcmpj, ilcpex, ilfex, ilindi, ilindj, illex, ilnoex
+    integer ::  ilcpex, ilfex, ilindi, ilindj, illex, ilnoex
     integer :: ilvaex, ivite, napexc, ncmpex
     integer :: ndim, nindex, nnoeex, nvasex
 !-----------------------------------------------------------------------
@@ -63,6 +65,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     logical :: lindi, exiind
     integer :: lnumi, lnumj, mxval, num, lcmpi, lcmpj
     integer :: nbfreq, ifreq
+    character(len=8), pointer :: cmp_j(:) => null()
 !
     call getvid('EXCIT', 'INTE_SPEC', iocc=1, scal=intexc, nbret=ibid)
 !
@@ -85,14 +88,14 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
         call wkvect('&&RECIEX.INDI_I', 'V V K8', nindex, ilindi)
         call wkvect('&&RECIEX.INDI_J', 'V V K8', nindex, ilindj)
         call wkvect('&&RECIEX.CMP_I', 'V V K8', nindex, ilcmpi)
-        call wkvect('&&RECIEX.CMP_J', 'V V K8', nindex, ilcmpj)
+        AS_ALLOCATE(vk8=cmp_j, size=nindex)
         call getvtx('EXCIT', 'NOEUD_I', iocc=1, nbval=nindex, vect=zk8(ilindi),&
                     nbret=ibid)
         call getvtx('EXCIT', 'NOEUD_J', iocc=1, nbval=nindex, vect=zk8(ilindj),&
                     nbret=ibid)
         call getvtx('EXCIT', 'NOM_CMP_I', iocc=1, nbval=nindex, vect=zk8(ilcmpi),&
                     nbret=ibid)
-        call getvtx('EXCIT', 'NOM_CMP_J', iocc=1, nbval=nindex, vect=zk8(ilcmpj),&
+        call getvtx('EXCIT', 'NOM_CMP_J', iocc=1, nbval=nindex, vect=cmp_j,&
                     nbret=ibid)
     endif
     call getvis('EXCIT', 'NUME_VITE_FLUI', iocc=1, scal=ivite, nbret=ibid)
@@ -146,7 +149,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
                     if ((zk8(lnumi-1+num) .eq. zk8(ilindi-1+i1)) .and.&
                         (zk8(lnumj-1+num) .eq. zk8(ilindj-1+i2)) .and.&
                         (zk8(lcmpi-1+num) .eq. zk8(ilcmpi-1+i1)) .and.&
-                        (zk8(lcmpj-1+num) .eq. zk8(ilcmpj-1+i2))) then
+                        (zk8(lcmpj-1+num) .eq. cmp_j(i2))) then
                         exiind = .true.
                         call jeveuo(jexnum(chvale, num), 'L', zi(ilfex-1+ ij2))
                         call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2))
@@ -209,7 +212,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     call jeexin('&&RECIEX.CMP_I', iret)
     if (iret .ne. 0) then
         call jedetr('&&RECIEX.CMP_I')
-        call jedetr('&&RECIEX.CMP_J')
+        AS_DEALLOCATE(vk8=cmp_j)
     endif
 !
 end subroutine

@@ -15,6 +15,8 @@ subroutine celcel(transf, cel1, base, cel2)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     character(len=*) :: transf, cel1, base, cel2
 ! ----------------------------------------------------------------------
@@ -61,7 +63,7 @@ subroutine celcel(transf, cel1, base, cel2)
     integer :: jcesd1, jcesl1,  jcesc1
     integer :: jcesd2, jcesl2,   nbgrel, igrel, debugr, nbel
     integer :: nbpt, nbspt, ncmp2, iad1, iad2, imolo, nbspmx, iel, nbsp
-    integer :: ncmpg, nbvamx, jnbpt, jnbspt,  nncp, ico
+    integer :: ncmpg, nbvamx,    nncp, ico
     character(len=19) :: ces1, ces2, ligrel, cel11, cel22
     character(len=16) :: optini, nompar
     character(len=8) :: ma, nomgd, typces, kbid
@@ -71,6 +73,8 @@ subroutine celcel(transf, cel1, base, cel2)
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv1(:) => null()
     real(kind=8), pointer :: cesv2(:) => null()
+    integer, pointer :: vnbpt(:) => null()
+    integer, pointer :: vnbspt(:) => null()
 ! -DEB------------------------------------------------------------------
     call jemarq()
 !
@@ -109,17 +113,17 @@ subroutine celcel(transf, cel1, base, cel2)
 !       2.1 : CALCUL DE 2 VECTEURS CONTENANT LE NOMBRE DE
 !             POINTS DE SOUS-POINTS DES MAILLES
 !       ---------------------------------------------------
-        call wkvect('&&CELCEL.NBPT', 'V V I', nbma, jnbpt)
-        call wkvect('&&CELCEL.NBSPT', 'V V I', nbma, jnbspt)
+        AS_ALLOCATE(vi=vnbpt, size=nbma)
+        AS_ALLOCATE(vi=vnbspt, size=nbma)
         do ima = 1, nbma
-            zi(jnbpt-1+ima) = zi(jcesd1-1+5+4* (ima-1)+1)
-            zi(jnbspt-1+ima) = zi(jcesd1-1+5+4* (ima-1)+2)
+            vnbpt(ima) = zi(jcesd1-1+5+4* (ima-1)+1)
+            vnbspt(ima) = zi(jcesd1-1+5+4* (ima-1)+2)
         end do
 !
 !       2.2 : ALLOCATION DE CES2 :
 !       ---------------------------------------------------
         call cescre('V', ces2, typces, ma, nomgd,&
-                    -nbvamx, kbid, zi(jnbpt), zi(jnbspt), [-nbvamx])
+                    -nbvamx, kbid, vnbpt, vnbspt, [-nbvamx])
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
         call jeveuo(ces2//'.CESV', 'E', vr=cesv2)
@@ -170,8 +174,8 @@ subroutine celcel(transf, cel1, base, cel2)
 !
 !       5- MENAGE :
 !       -------------------------------------------
-        call jedetr('&&CELCEL.NBPT')
-        call jedetr('&&CELCEL.NBSPT')
+        AS_DEALLOCATE(vi=vnbpt)
+        AS_DEALLOCATE(vi=vnbspt)
         call detrsd('CHAM_ELEM_S', ces1)
         call detrsd('CHAM_ELEM_S', ces2)
 !

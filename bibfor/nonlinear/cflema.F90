@@ -28,6 +28,8 @@ subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nsuco
     integer :: nmaco0, nmaco
     character(len=24) :: defico
@@ -56,10 +58,11 @@ subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
 !
     character(len=24) :: contma
     integer :: jmaco
-    integer :: jindma, jelima
+    integer ::  jelima
     integer :: jdecma, jma
     integer :: isuco, i, ii, ima1, ima2, k
     integer :: elimma, nbma
+    integer, pointer :: indima(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,7 +70,7 @@ subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
 !
 ! --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !
-    call wkvect('&&CFLEMA.INDIMA', 'V V I', nmaco, jindma)
+    AS_ALLOCATE(vi=indima, size=nmaco)
     call wkvect(poinsm, 'V V I', nsuco+1, jelima)
 !
 ! --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
@@ -89,7 +92,7 @@ subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
             do 10 ii = 1, i - 1
                 ima2 = zi(jmaco+jdecma+ii-1)
                 if (ima1 .eq. ima2) then
-                    zi(jindma+jdecma+i-1) = 1
+                    indima(1+jdecma+i-1) = 1
                     zi(jelima+isuco) = zi(jelima+isuco) + 1
                     elimma = elimma + 1
                     goto 20
@@ -107,7 +110,7 @@ subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
 !
     k = 0
     do 120 i = 1, nmaco0
-        if (zi(jindma+i-1) .eq. 0) then
+        if (indima(i) .eq. 0) then
             k = k + 1
             zi(jma+k-1) = zi(jmaco+i-1)
         endif
@@ -116,7 +119,7 @@ subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
 !
 ! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !
-    call jedetr('&&CFLEMA.INDIMA')
+    AS_DEALLOCATE(vi=indima)
 !
     call jedema()
 end subroutine

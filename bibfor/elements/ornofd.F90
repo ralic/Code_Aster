@@ -14,6 +14,8 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
     integer :: nbma
@@ -58,12 +60,14 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 !
     real(kind=8) :: vecta(3), ps1, ps2
 !
-    integer :: iatyma, jtypm, jcour1, jcour2, jmail
+    integer :: iatyma, jtypm,   jmail
     integer :: im, nid, nig, njonc, n, i, k, nbno
     integer :: jrdm, jnoe, ntemp, jcoor
     character(len=8) :: typm
     character(len=8) :: noeud
     character(len=24) :: conec, typp, nomnoe
+    integer, pointer :: mailles_triee(:) => null()
+    integer, pointer :: noeuds_extrem(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !
@@ -85,12 +89,12 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 !     CONSTRUCTION D'UN VECTEUR DE TRAVAIL LOCAL CONTENANT
 !     LES NOEUDS EXTREMITES  DE CHAQUE MAILLE
 !     ------------------------------------------------------------------
-    call wkvect('&&ORNOFD.NOEUDS_EXTREM', 'V V I', 2*nbma, jcour2)
+    AS_ALLOCATE(vi=noeuds_extrem, size=2*nbma)
     do 30 im = 1, nbma
         call i2extf(zi(jmail-1+im), 1, conec(1:15), typp(1:16), nig,&
                     nid)
-        zi(jcour2-1 + im) = nig
-        zi(jcour2-1 +nbma+im) = nid
+        noeuds_extrem(im) = nig
+        noeuds_extrem(nbma+im) = nid
 30  end do
 !
 !
@@ -104,41 +108,41 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 !     TRIER LES NOEUDS ET CONTENANT
 !     LES MAILLES, LES NOEUDS SOMMET 1 ET LES NOEUDS SOMMET 2
 !     ------------------------------------------------------------------
-    call wkvect('&&ORNOFD.MAILLES_TRIEE', 'V V I', 3*nbma, jcour1)
+    AS_ALLOCATE(vi=mailles_triee, size=3*nbma)
 !     EQUIVALENT D'UNE BOUCLE WHILE
 550  continue
     do 552 i = n, nbma
-        if (zi(jcour2-1 + i) .eq. njonc) then
-            zi(jcour1-1 + n)=zi(jmail-1 + i)
-            zi(jcour1-1 + nbma+n)=zi(jcour2-1 + i)
-            zi(jcour1-1 + 2*nbma+n)=zi(jcour2-1 + nbma+i)
-            njonc =zi(jcour2-1 + nbma+i)
+        if (noeuds_extrem(i) .eq. njonc) then
+            mailles_triee(n)=zi(jmail-1 + i)
+            mailles_triee(nbma+n)=noeuds_extrem(i)
+            mailles_triee(2*nbma+n)=noeuds_extrem(nbma+i)
+            njonc =noeuds_extrem(nbma+i)
             goto 555
         endif
-        if (zi(jcour2-1 + nbma+i) .eq. njonc) then
-            zi(jcour1-1 + n)=zi(jmail-1 + i)
-            zi(jcour1-1 + nbma+n)=zi(jcour2-1 + nbma+i)
-            zi(jcour1-1 + 2*nbma+n)=zi(jcour2-1 + i)
-            njonc =zi(jcour2-1 + i)
+        if (noeuds_extrem(nbma+i) .eq. njonc) then
+            mailles_triee(n)=zi(jmail-1 + i)
+            mailles_triee(nbma+n)=noeuds_extrem(nbma+i)
+            mailles_triee(2*nbma+n)=noeuds_extrem(i)
+            njonc =noeuds_extrem(i)
             goto 555
         endif
 552  end do
 !
 555  continue
     do 557 k = n, i-1
-        zi(jcour1-1 + 1+k)=zi(jmail-1 + k)
-        zi(jcour1-1 + nbma+1+k)=zi(jcour2-1 + k)
-        zi(jcour1-1 + 2*nbma+1+k)=zi(jcour2-1 + nbma+k)
+        mailles_triee(1+k)=zi(jmail-1 + k)
+        mailles_triee(nbma+1+k)=noeuds_extrem(k)
+        mailles_triee(2*nbma+1+k)=noeuds_extrem(nbma+k)
 557  end do
     do 558 k = i+1, nbma
-        zi(jcour1-1 + k)=zi(jmail-1 + k)
-        zi(jcour1-1 + nbma+k)=zi(jcour2-1 + k)
-        zi(jcour1-1 + 2*nbma+k)=zi(jcour2-1 + nbma+k)
+        mailles_triee(k)=zi(jmail-1 + k)
+        mailles_triee(nbma+k)=noeuds_extrem(k)
+        mailles_triee(2*nbma+k)=noeuds_extrem(nbma+k)
 558  end do
     do 559 k = n, nbma
-        zi(jmail-1 + k)=zi(jcour1-1 + k)
-        zi(jcour2-1 + k)=zi(jcour1-1 + nbma+k)
-        zi(jcour2-1 + nbma+k)=zi(jcour1-1 +2*nbma+k)
+        zi(jmail-1 + k)=mailles_triee(k)
+        noeuds_extrem(k)=mailles_triee(nbma+k)
+        noeuds_extrem(nbma+k)=mailles_triee(2*nbma+k)
 559  end do
     n=n+1
     if (n .gt. nbma) goto 560
@@ -157,38 +161,38 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
         nbno=nbma+1
         call wkvect(noeord, base//' V I', nbno, jnoe)
         do 570 i = 1, nbma
-            zi(jnoe-1 + i) = zi(jcour2-1 + i)
+            zi(jnoe-1 + i) = noeuds_extrem(i)
 570      continue
-        zi(jnoe-1 + nbma+1) = zi(jcour2-1 + 2*nbma)
+        zi(jnoe-1 + nbma+1) = noeuds_extrem(2*nbma)
 !
     else if (typm(1:4) .eq. 'SEG3') then
 !
         nbno=2*nbma+1
         call wkvect(noeord, base//' V I', nbno, jnoe)
         do 575 i = 1, nbma
-            zi(jnoe-1 + 2*i-1) = zi(jcour2-1 + i)
+            zi(jnoe-1 + 2*i-1) = noeuds_extrem(i)
             call jeveuo(jexnum(conec, zi(jmail-1 + i)), 'L', jrdm)
             zi(jnoe-1 + 2*i) = zi(jrdm-1 + 3)
 575      continue
-        zi(jnoe-1 + 2*nbma+1) = zi(jcour2-1 + 2*nbma)
+        zi(jnoe-1 + 2*nbma+1) = noeuds_extrem(2*nbma)
 !
     else if (typm(1:4) .eq. 'SEG4') then
 !
         nbno=3*nbma+1
         call wkvect(noeord, base//' V I', nbno, jnoe)
         do 580 i = 1, nbma
-            zi(jnoe-1 + 3*i-2) = zi(jcour2-1 + i)
+            zi(jnoe-1 + 3*i-2) = noeuds_extrem(i)
             call jeveuo(jexnum(conec, zi(jmail-1 + i)), 'L', jrdm)
-            ASSERT((zi(jrdm-1 + 1).eq.zi(jcour2-1 + i)) .or. (zi(jrdm-1 + 2).eq.zi(jcour2-1 + i)))
-            if (zi(jrdm-1 + 1) .eq. zi(jcour2-1 + i)) then
+            ASSERT((zi(jrdm-1 + 1).eq.noeuds_extrem(i)) .or. (zi(jrdm-1 + 2).eq.noeuds_extrem(i)))
+            if (zi(jrdm-1 + 1) .eq. noeuds_extrem(i)) then
                 zi(jnoe-1 + 3*i-1) = zi(jrdm-1 + 3)
                 zi(jnoe-1 + 3*i ) = zi(jrdm-1 + 4)
-            else if (zi(jrdm-1 + 2).eq.zi(jcour2-1 + i)) then
+            else if (zi(jrdm-1 + 2).eq.noeuds_extrem(i)) then
                 zi(jnoe-1 + 3*i-1) = zi(jrdm-1 + 4)
                 zi(jnoe-1 + 3*i ) = zi(jrdm-1 + 3)
             endif
 580      continue
-        zi(jnoe-1 + 3*nbma+1) = zi(jcour2-1 + 2*nbma)
+        zi(jnoe-1 + 3*nbma+1) = noeuds_extrem(2*nbma)
 !
     endif
 !
@@ -242,8 +246,8 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 !
 !
 !     -- MENAGE :
-    call jedetr('&&ORNOFD.MAILLES_TRIEE')
-    call jedetr('&&ORNOFD.NOEUDS_EXTREM')
+    AS_DEALLOCATE(vi=mailles_triee)
+    AS_DEALLOCATE(vi=noeuds_extrem)
 !
     call jedema()
 end subroutine

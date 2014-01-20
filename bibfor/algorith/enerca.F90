@@ -80,6 +80,8 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 #include "asterfort/nmchex.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 !
@@ -96,16 +98,22 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! DECLARATION VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     integer :: iaux, neq, nbcol, long
-    integer :: jdeeq, imdv, icvmoz, iener
+    integer :: jdeeq,  icvmoz, iener
     integer :: imasse, iamort, irigid
     integer :: iumoy, iupmum, iumoyz, iupmuz
-    integer :: ivmoy, ivpmvm, ivmoyz, ivpmvz
-    integer :: ikumoy, ikumoz, imumoy, imumoz, ifmoy, idesc
+    integer :: ivmoy, ivpmvm
+    integer :: ikumoy,  imumoy,   idesc
     character(len=24) :: numedd
     character(len=19) :: depplu
     character(len=11) :: forma
     character(len=40) :: formb, formc
     real(kind=8) :: wint, wext, liai, ecin, amor, wsch
+    real(kind=8), pointer :: fmoy(:) => null()
+    real(kind=8), pointer :: kumoyz(:) => null()
+    real(kind=8), pointer :: mdv(:) => null()
+    real(kind=8), pointer :: mumoyz(:) => null()
+    real(kind=8), pointer :: vmoyz(:) => null()
+    real(kind=8), pointer :: vpmvmz(:) => null()
 !
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
@@ -146,8 +154,8 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         call wkvect('&&ENERCA.UPMUMZ', 'V V R', neq, iupmuz)
         call wkvect('&&ENERCA.VMOY', 'V V R', neq, ivmoy)
         call wkvect('&&ENERCA.VPMVM', 'V V R', neq, ivpmvm)
-        call wkvect('&&ENERCA.VMOYZ', 'V V R', neq, ivmoyz)
-        call wkvect('&&ENERCA.VPMVMZ', 'V V R', neq, ivpmvz)
+        AS_ALLOCATE(vr=vmoyz, size=neq)
+        AS_ALLOCATE(vr=vpmvmz, size=neq)
         do iaux = 1, neq
             zr(iumoy-1+iaux)=(depl1(iaux)+dep0(iaux))*5.d-1
             zr(iupmum-1+iaux)=depl1(iaux)-dep0(iaux)
@@ -156,8 +164,8 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         end do
         call dcopy(neq, zr(iumoy), 1, zr(iumoyz), 1)
         call dcopy(neq, zr(iupmum), 1, zr(iupmuz), 1)
-        call dcopy(neq, zr(ivmoy), 1, zr(ivmoyz), 1)
-        call dcopy(neq, zr(ivpmvm), 1, zr(ivpmvz), 1)
+        call dcopy(neq, zr(ivmoy), 1, vmoyz, 1)
+        call dcopy(neq, zr(ivpmvm), 1, vpmvmz, 1)
         call dismoi('NOM_NUME_DDL', masse, 'MATR_ASSE', repk=numedd)
         call jeveuo(numedd(1:14)//'.NUME.DEEQ', 'L', jdeeq)
         if (sdener(1:8) .eq. '&&OP0070') then
@@ -170,8 +178,8 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
             endif
         endif
         call ddlphy(depplu, neq, zr(iupmuz), zk8(idesc))
-        call ddlphy(depplu, neq, zr(ivmoyz), zk8(idesc))
-        call ddlphy(depplu, neq, zr(ivpmvz), zk8(idesc))
+        call ddlphy(depplu, neq, vmoyz, zk8(idesc))
+        call ddlphy(depplu, neq, vpmvmz, zk8(idesc))
 ! ON ENLEVE UNIQUEMENT LES LAGRANGES DES CONDITIONS DE DIRICHLET
         call zerlag(neq, zi(jdeeq), vectr=zr(iumoyz))
     else
@@ -208,27 +216,27 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! - SI DYNA_LINE_TRAN : EGAL A L ENERGIE DE DEFORMATION ELASTIQUE
 ! - SI MECA_NON_LINE : TRAVAIL DES FORCES INTERNES
 ! --------------------------------------------------------------------
-    call wkvect('&&ENERCA.FMOY', 'V V R', neq, ifmoy)
+    AS_ALLOCATE(vr=fmoy, size=neq)
     if (sdener(1:8) .eq. '&&OP0048') then
-        call wkvect('&&ENERCA.KUMOYZ', 'V V R  ', neq, ikumoz)
-        call mrmult('ZERO', irigid, zr(iumoyz), zr(ikumoz), 1,&
+        AS_ALLOCATE(vr=kumoyz, size=neq)
+        call mrmult('ZERO', irigid, zr(iumoyz), kumoyz, 1,&
                     .true.)
-        wint=ddot(neq,zr(iupmuz),1,zr(ikumoz),1)
+        wint=ddot(neq,zr(iupmuz),1,kumoyz,1)
     else
         do iaux = 1, neq
-            zr(ifmoy-1+iaux)=(fnoda(iaux)+fnoda(iaux+neq))*5.d-1
+            fmoy(iaux)=(fnoda(iaux)+fnoda(iaux+neq))*5.d-1
         end do
-        wint=ddot(neq,zr(iupmuz),1,zr(ifmoy),1)
+        wint=ddot(neq,zr(iupmuz),1,fmoy,1)
     endif
 ! --------------------------------------------------------------------
 ! ECIN : ENERGIE CINETIQUE
 ! - UNIQUEMENT SI CALCUL DYNAMIQUE
 ! --------------------------------------------------------------------
     if (ldyna) then
-        call wkvect('&&ENERCA.MDV', 'V V R  ', neq, imdv)
-        call mrmult('ZERO', imasse, zr(ivpmvz), zr(imdv), 1,&
+        AS_ALLOCATE(vr=mdv, size=neq)
+        call mrmult('ZERO', imasse, vpmvmz, mdv, 1,&
                     .true.)
-        ecin=ddot(neq,zr(ivmoyz),1,zr(imdv),1)
+        ecin=ddot(neq,vmoyz,1,mdv,1)
     endif
 ! --------------------------------------------------------------------
 ! WEXT : TRAVAIL DES EFFORTS EXTERIEURS
@@ -236,36 +244,36 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     wext=0.d0
 ! 1. CONTRIBUTION AFFE_CHAR_CINE (MECA_NON_LINE UNIQUEMENT)
     if (sdener(1:8) .eq. '&&OP0070') then
-        wext=ddot(neq,zr(ifmoy),1,fcine(1),1)
+        wext=ddot(neq,fmoy,1,fcine(1),1)
     endif
 ! 2. CONTRIBUTION DE Bt.LAMBDA (DIRICHLETS) POUR OP0048
     if (sdener(1:8) .eq. '&&OP0048') then
         if (lexpl) then
 ! LAGRANGES PORTES PAR LA MATRICE DE MASSE
             call wkvect('&&ENERCA.MUMOY', 'V V R', neq, imumoy)
-            call wkvect('&&ENERCA.MUMOYZ', 'V V R', neq, imumoz)
+            AS_ALLOCATE(vr=mumoyz, size=neq)
             call mrmult('ZERO', imasse, zr(iumoy), zr(imumoy), 1,&
                         .true.)
-            call mrmult('ZERO', imasse, zr(iumoyz), zr(imumoz), 1,&
+            call mrmult('ZERO', imasse, zr(iumoyz), mumoyz, 1,&
                         .true.)
             do iaux = 1, neq
-                zr(ifmoy-1+iaux)=zr(imumoz-1+iaux)-zr(imumoy-1+iaux)
+                fmoy(iaux)=mumoyz(iaux)-zr(imumoy-1+iaux)
             end do
-            wext = wext + ddot(neq,zr(ifmoy),1,zr(iupmuz),1)
+            wext = wext + ddot(neq,fmoy,1,zr(iupmuz),1)
         else
 ! LAGRANGES PORTES PAR LA MATRICE DE RIGIDITE
             call wkvect('&&ENERCA.KUMOY', 'V V R  ', neq, ikumoy)
             call mrmult('ZERO', irigid, zr(iumoy), zr(ikumoy), 1,&
                         .true.)
             do iaux = 1, neq
-                zr(ifmoy-1+iaux)=zr(ikumoz-1+iaux)-zr(ikumoy-1+iaux)
+                fmoy(iaux)=kumoyz(iaux)-zr(ikumoy-1+iaux)
             end do
-            wext = wext + ddot(neq,zr(ifmoy),1,zr(iupmuz),1)
+            wext = wext + ddot(neq,fmoy,1,zr(iupmuz),1)
         endif
     endif
 ! 3. CONTRIBUTION DES NEUMANN
     do iaux = 1, neq
-        zr(ifmoy-1+iaux)=(fexte(iaux)+fexte(iaux+neq))*5.d-1
+        fmoy(iaux)=(fexte(iaux)+fexte(iaux+neq))*5.d-1
     end do
 ! GLUT : LA CONTRIBUTION DE LA FORCE QUI TRAVAILLE EN UN POINT OU
 ! LE DEPLACEMENT EST IMPOSE EST PRIS EN COMPTE DANS WEXT1 POUR
@@ -275,36 +283,36 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! CERTAINS TERMES DES EFFORTS EXTERIEURS.
     do iaux = 1, neq
         if (fcine(iaux) .ne. 0.d0) then
-            zr(ifmoy-1+iaux)=0.d0
+            fmoy(iaux)=0.d0
         endif
     end do
-    wext = wext + ddot(neq,zr(ifmoy),1,zr(iupmuz),1)
+    wext = wext + ddot(neq,fmoy,1,zr(iupmuz),1)
 ! --------------------------------------------------------------------
 ! LIAI : ENERGIE DISSIPEE PAR LES LIAISONS
 ! - UNIQUEMENT IMPE_ABSO POUR DYNA_LINE_TRAN
 ! --------------------------------------------------------------------
     do iaux = 1, neq
-        zr(ifmoy-1+iaux)=(fliai(iaux)+fliai(iaux+neq))*5.d-1
+        fmoy(iaux)=(fliai(iaux)+fliai(iaux+neq))*5.d-1
     end do
-    liai=ddot(neq,zr(iupmuz),1,zr(ifmoy),1)
+    liai=ddot(neq,zr(iupmuz),1,fmoy,1)
 ! --------------------------------------------------------------------
 ! AMOR : ENERGIE DISSIPEE PAR AMORTISSEMENT
 ! - UNIQUEMENT SI CALCUL DYNAMIQUE
 ! --------------------------------------------------------------------
     if (ldyna) then
         do iaux = 1, neq
-            zr(ifmoy-1+iaux)=(famor(iaux)+famor(iaux+neq))*5.d-1
+            fmoy(iaux)=(famor(iaux)+famor(iaux+neq))*5.d-1
         end do
-        amor=ddot(neq,zr(iupmuz),1,zr(ifmoy),1)
+        amor=ddot(neq,zr(iupmuz),1,fmoy,1)
         if (lamort) then
             if (zi(iamort+3) .eq. 1) then
                 call wkvect('&&ENERCA.CVMOYZ', 'V V R', neq, icvmoz)
-                call mrmult('ZERO', iamort, zr(ivmoyz), zr(icvmoz), 1,&
+                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
                             .true.)
                 amor = amor + ddot(neq,zr(iupmuz),1,zr(icvmoz),1)
             else
                 call wkvect('&&ENERCA.CVMOYZ', 'V V C', neq, icvmoz)
-                call mrmult('ZERO', iamort, zr(ivmoyz), zr(icvmoz), 1,&
+                call mrmult('ZERO', iamort, vmoyz, zr(icvmoz), 1,&
                             .true.)
                 amor = amor + ddot(neq,zr(iupmuz),1,zr(icvmoz),1)
             endif
@@ -388,20 +396,20 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! --------------------------------------------------------------------
     call jedetr('&&ENERCA.CVMOYZ')
     call jedetr('&&ENERCA.DESC')
-    call jedetr('&&ENERCA.FMOY')
+    AS_DEALLOCATE(vr=fmoy)
     call jedetr('&&ENERCA.KUMOY')
-    call jedetr('&&ENERCA.KUMOYZ')
-    call jedetr('&&ENERCA.MDV')
+    AS_DEALLOCATE(vr=kumoyz)
+    AS_DEALLOCATE(vr=mdv)
     call jedetr('&&ENERCA.MUMOY')
-    call jedetr('&&ENERCA.MUMOYZ')
+    AS_DEALLOCATE(vr=mumoyz)
     call jedetr('&&ENERCA.UMOY')
     call jedetr('&&ENERCA.UMOYZ')
     call jedetr('&&ENERCA.UPMUM')
     call jedetr('&&ENERCA.UPMUMZ')
     call jedetr('&&ENERCA.VMOY')
-    call jedetr('&&ENERCA.VMOYZ')
+    AS_DEALLOCATE(vr=vmoyz)
     call jedetr('&&ENERCA.VPMVM')
-    call jedetr('&&ENERCA.VPMVMZ')
+    AS_DEALLOCATE(vr=vpmvmz)
 !
     1001 format ('(',i3,'A1)')
     1002 format ('((A1,1X,A15,1X),',i1,'(A1,A13),A1)')

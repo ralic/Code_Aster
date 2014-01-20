@@ -15,6 +15,8 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: dim, nbtrou, nbma
     integer :: tabmai(nbma), tatrou(nbma)
@@ -69,7 +71,11 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
 !
     integer :: nbtyp, i, ii, itrou, itych
-    integer :: itypma, idimto, jtypma, it, itempo
+    integer ::   jtypma
+    integer, pointer :: dime_topo(:) => null()
+    integer, pointer :: liste_m_temp(:) => null()
+    integer, pointer :: liste_typmai(:) => null()
+    character(len=8), pointer :: type_maille(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -88,16 +94,16 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
     else
 !
-        call wkvect('&&UTFLM2.TYPE_MAILLE', 'V V K8', nbtyp, itypma)
-        call wkvect('&&UTFLM2.DIME_TOPO', 'V V I', nbtyp, idimto)
-        call wkvect('&&UTFLM2.LISTE_TYPMAI', 'V V I', nbma, it)
+        AS_ALLOCATE(vk8=type_maille, size=nbtyp)
+        AS_ALLOCATE(vi=dime_topo, size=nbtyp)
+        AS_ALLOCATE(vi=liste_typmai, size=nbma)
 !
 ! ------RECUPERATION DE TOUS LES TYPES DE MAILLE
 !        ET DE LEUR DIMENSION TOPOLOGIQUE
 !
         do i = 1, nbtyp
-            call jenuno(jexnum('&CATA.TM.NOMTM', i), zk8(itypma-1+i))
-            call dismoi('DIM_TOPO', zk8(itypma-1+i), 'TYPE_MAILLE', repi=zi(idimto-1+i))
+            call jenuno(jexnum('&CATA.TM.NOMTM', i), type_maille(i))
+            call dismoi('DIM_TOPO', type_maille(i), 'TYPE_MAILLE', repi=dime_topo(i))
         end do
     endif
 !
@@ -106,7 +112,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
     call jeveuo(mailla//'.TYPMAIL        ', 'L', jtypma)
 !
-    call wkvect('&&UTFLM2.LISTE_M_TEMP', 'V V I', nbma, itempo)
+    AS_ALLOCATE(vi=liste_m_temp, size=nbma)
 !
     nbtrou = 0
     ii = 1
@@ -118,9 +124,9 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
 ! --------SI LA DIMENSION TOPOLOGIQUE EST LA BONNE ON GARDE LA MAILLE
 !
-            zi(it-1+i) = zi(jtypma-1+tabmai(i))
-            if (zi(idimto-1+zi(it-1+i)) .eq. dim) then
-                zi(itempo-1+ii) = tabmai(i)
+            liste_typmai(i) = zi(jtypma-1+tabmai(i))
+            if (dime_topo(liste_typmai(i)) .eq. dim) then
+                liste_m_temp(ii) = tabmai(i)
                 nbtrou = nbtrou + 1
                 ii = ii + 1
             endif
@@ -129,7 +135,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 ! --------TRI SUR LE TYPE DE LA MAILLE :
 !
             if (zi(jtypma-1+tabmai(i)) .eq. itych) then
-                zi(itempo-1+ii) = tabmai(i)
+                liste_m_temp(ii) = tabmai(i)
                 nbtrou = nbtrou + 1
                 ii = ii + 1
             endif
@@ -141,15 +147,15 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 ! ----SI LA LISTE N'EST PAS VIDE ON RECOPIE DANS TATROU DE TAILLE NBMA
 !
     do itrou = 1, nbtrou
-        tatrou(itrou) = zi(itempo-1+itrou)
+        tatrou(itrou) = liste_m_temp(itrou)
     end do
 !
 999 continue
 !
-    call jedetr('&&UTFLM2.TYPE_MAILLE')
-    call jedetr('&&UTFLM2.DIME_TOPO')
-    call jedetr('&&UTFLM2.LISTE_M_TEMP')
-    call jedetr('&&UTFLM2.LISTE_TYPMAI')
+    AS_DEALLOCATE(vk8=type_maille)
+    AS_DEALLOCATE(vi=dime_topo)
+    AS_DEALLOCATE(vi=liste_m_temp)
+    AS_DEALLOCATE(vi=liste_typmai)
 !
     call jedema()
 !

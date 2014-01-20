@@ -16,6 +16,8 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
@@ -60,7 +62,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     integer :: ibid
     integer :: n1, ifiss, nfiss
     integer :: ino, valeno, nbnot
-    integer :: idlist, jnoeu, jfiss, jstno, jlst, jlsn
+    integer :: idlist,   jstno, jlst, jlsn
     character(len=8) :: noma, nomnoe, fiss, nomofi, nomafi, nomogr
     character(len=8) :: nomagr, valk(2), ma
     character(len=16) :: motfac, typgrp
@@ -69,6 +71,8 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=24) :: lisnoe
     logical :: grille
     real(kind=8) :: rayon, dist
+    character(len=8), pointer :: vfiss(:) => null()
+    integer, pointer :: noeu(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -82,7 +86,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     nbno = 0
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
-    call wkvect('&&CGNOXF.NOEU', 'V V I', nbnot, jnoeu)
+    AS_ALLOCATE(vi=noeu, size=nbnot)
 !
 ! --  RECUPERATION DU TYPE GROUPE :
 !     ============================
@@ -92,22 +96,22 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ===================================
     call getvid(motfac, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
     nfiss = -nfiss
-    call wkvect('&&CGNOXF.FISS', 'V V K8', nfiss, jfiss)
-    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=zk8(jfiss),&
+    AS_ALLOCATE(vk8=vfiss, size=nfiss)
+    call getvid(motfac, 'FISSURE', iocc=iocc, nbval=nfiss, vect=vfiss,&
                 nbret=ibid)
 !
 ! --- TYPE DE NOEUD = 'HEAVISIDE'
 !     ============================
     if (typgrp .eq. 'HEAVISIDE') then
         do ifiss = 1, nfiss
-            fiss = zk8(jfiss-1+ifiss)
+            fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
             do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .eq. 1) then
                     nbno = nbno + 1
-                    zi(jnoeu+nbno-1) = ino
+                    noeu(nbno) = ino
                 endif
             end do
             call jedetr(stno)
@@ -117,14 +121,14 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ============================
     else if (typgrp.eq.'CRACKTIP') then
         do ifiss = 1, nfiss
-            fiss = zk8(jfiss-1+ifiss)
+            fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
             do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .eq. 2) then
                     nbno = nbno + 1
-                    zi(jnoeu+nbno-1) = ino
+                    noeu(nbno) = ino
                 endif
             end do
             call jedetr(stno)
@@ -134,14 +138,14 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ============================
     else if (typgrp.eq.'MIXTE') then
         do ifiss = 1, nfiss
-            fiss = zk8(jfiss-1+ifiss)
+            fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
             do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .eq. 3) then
                     nbno = nbno + 1
-                    zi(jnoeu+nbno-1) = ino
+                    noeu(nbno) = ino
                 endif
             end do
         end do
@@ -150,14 +154,14 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ============================
     else if (typgrp.eq.'XFEM') then
         do ifiss = 1, nfiss
-            fiss = zk8(jfiss-1+ifiss)
+            fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
             call jeveuo(stno//'.VALE', 'L', jstno)
             do ino = 1, nbnot
                 valeno = zi(jstno+ino-1)
                 if (valeno .ne. 0) then
                     nbno = nbno + 1
-                    zi(jnoeu+nbno-1) = ino
+                    noeu(nbno) = ino
                 endif
             end do
             call jedetr(stno)
@@ -172,7 +176,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
         cnsln = '&&CGNOXF.CNSLN'
 !
         do ifiss = 1, nfiss
-            fiss = zk8(jfiss-1+ifiss)
+            fiss = vfiss(ifiss)
 !
 !           CHECK IF THE LOCALISATION HAS BEEN USED
             stnot = fiss//'.PRO.RAYON_TORE'
@@ -230,7 +234,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     dist=zr(jlst-1+ino)**2+zr(jlsn-1+ino)**2
                     if (dist .le. rayon) then
                         nbno = nbno + 1
-                        zi(jnoeu+nbno-1) = ino
+                        noeu(nbno) = ino
                     endif
                 end do
 !
@@ -290,7 +294,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     do ino = 1, nbnot
                         if (zl(jstno+ino-1)) then
                             nbno = nbno + 1
-                            zi(jnoeu+nbno-1) = ino
+                            noeu(nbno) = ino
                         endif
                     end do
                 else
@@ -298,7 +302,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !                COINCIDENT WITH THE WHOLE MODEL.
                     do ino = 1, nbnot
                         nbno = nbno + 1
-                        zi(jnoeu+nbno-1) = ino
+                        noeu(nbno) = ino
                     end do
                 endif
             endif
@@ -313,7 +317,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
         call wkvect(lisnoe, 'V V I', nbno, idlist)
 !
         do ino = 1, nbno
-            zi(idlist+ino-1)=zi(jnoeu+ino-1)
+            zi(idlist+ino-1)=noeu(ino)
             call jenuno(jexnum(noma//'.NOMNOE', zi(idlist+ino-1)), nomnoe)
         end do
     endif
@@ -324,8 +328,8 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- MENAGE
 !
 !
-    call jedetr('&&CGNOXF.FISS')
-    call jedetr('&&CGNOXF.NOEU')
+    AS_DEALLOCATE(vk8=vfiss)
+    AS_DEALLOCATE(vi=noeu)
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================

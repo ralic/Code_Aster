@@ -18,6 +18,8 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/reliem.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 ! ======================================================================
@@ -50,7 +52,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 ! -------------------------------------------------------
 !
     integer :: nbmc, nbno1, jma1, nbno2, jno2
-    integer :: n1, jtrav, jpjnb
+    integer :: n1,  jpjnb
     integer :: ino2, jlisno, i, ibid, iret
     complex(kind=8) :: c16b
     character(len=8) :: noma2, k8bid, ncas, noma1
@@ -61,6 +63,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=19) :: tablg
     logical :: ldmax
     real(kind=8) :: distma, armin, r8b
+    integer, pointer :: litrav(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -142,7 +145,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !     LES NOEUDS A RETENIR :
 !     --------------------------------------------------------
     call dismoi('NB_NO_MAILLA', noma2, 'MAILLAGE', repi=nbno2)
-    call wkvect('&&CGNOIN.LITRAV', 'V V I', nbno2, jtrav)
+    AS_ALLOCATE(vi=litrav, size=nbno2)
     call jeveuo(corres//'.PJEF_NB', 'L', jpjnb)
 !
 !
@@ -150,7 +153,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     do ino2 = 1, nbno2
         if (zi(jpjnb-1+ino2) .gt. 0) then
             nbno=nbno+1
-            zi(jtrav-1+nbno)=ino2
+            litrav(nbno)=ino2
         endif
     end do
 !
@@ -161,10 +164,10 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !     --------------------------------------------------------
     call wkvect(lisnoi, 'V V I', max(nbno, 1), jlisno)
     do i = 1, nbno
-        zi(jlisno-1+i)=zi(jtrav-1+i)
+        zi(jlisno-1+i)=litrav(i)
     end do
 !
-    call jedetr('&&CGNOIN.LITRAV')
+    AS_DEALLOCATE(vi=litrav)
     call jedetr(mesma1)
     call jedetr(mesno2)
     call detrsd('CORRESP_2_MAILLA', corres)

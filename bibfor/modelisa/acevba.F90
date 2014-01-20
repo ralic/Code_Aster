@@ -12,6 +12,8 @@ subroutine acevba(nbocc, nlm, nlg, ier)
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -48,36 +50,44 @@ subroutine acevba(nbocc, nlm, nlg, ier)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ioc, irece, irech, jcar, jcara, jexp
-    integer :: jpara, jsect, jtab, jtype, jvale, l, nbcar
+    integer :: i, ioc, irece, irech
+    integer ::      l, nbcar
     integer :: nbo, nbval, nc, ncar, ncara, ncmax, ndim
     integer :: ng, nm, ns, nsec, nsecba, nsom, ntypse
     integer :: nv, nval
+    character(len=8), pointer :: cara(:) => null()
+    character(len=8), pointer :: carbar(:) => null()
+    character(len=8), pointer :: expbar(:) => null()
+    integer, pointer :: ncp(:) => null()
+    character(len=8), pointer :: tabbar(:) => null()
+    integer, pointer :: tab_para(:) => null()
+    character(len=16), pointer :: typ_sect(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getres(nomu, concep, cmd)
 !
-    call wkvect('&&ACEVBA.TAB_PARA', 'V V I', 10, jpara)
-    call acedat('BARRE', 0, zi(jpara), k16b, k8b,&
+    AS_ALLOCATE(vi=tab_para, size=10)
+    call acedat('BARRE', 0, tab_para, k16b, k8b,&
                 k8b, k8b)
-    nsecba = zi(jpara )
-    ntypse = zi(jpara+1)
-    nbo = zi(jpara+2)
-    nbcar = zi(jpara+3)
-    nbval = zi(jpara+4)
-    call wkvect('&&ACEVBA.NCP', 'V V I', ntypse, jtype)
+    nsecba = tab_para(1)
+    ntypse = tab_para(1+1)
+    nbo = tab_para(1+2)
+    nbcar = tab_para(1+3)
+    nbval = tab_para(1+4)
+    AS_ALLOCATE(vi=ncp, size=ntypse)
     do 2 i = 1, ntypse
-        zi(jtype+i-1) = zi(jpara+4+i)
+        ncp(i) = tab_para(1+4+i)
  2  end do
-    ndim = zi(jtype+1) * ntypse
-    call wkvect('&&ACEVBA.TYP_SECT', 'V V K16', ntypse, jsect)
-    call wkvect('&&ACEVBA.EXPBAR', 'V V K8 ', nbo, jexp)
-    call wkvect('&&ACEVBA.TABBAR', 'V V K8 ', nbo, jtab)
-    call wkvect('&&ACEVBA.CARBAR', 'V V K8 ', ndim, jcar)
-    call acedat('BARRE', 1, zi(jpara), zk16(jsect), zk8(jexp),&
-                zk8(jtab), zk8(jcar))
-    call wkvect('&&ACEVBA.CARA', 'V V K8', nbcar, jcara)
-    call wkvect('&&ACEVBA.VALE', 'V V R8', nbval, jvale)
+    ndim = ncp(1+1) * ntypse
+    AS_ALLOCATE(vk16=typ_sect, size=ntypse)
+    AS_ALLOCATE(vk8=expbar, size=nbo)
+    AS_ALLOCATE(vk8=tabbar, size=nbo)
+    AS_ALLOCATE(vk8=carbar, size=ndim)
+    call acedat('BARRE', 1, tab_para, typ_sect, expbar,&
+                tabbar,carbar)
+    AS_ALLOCATE(vk8=cara, size=nbcar)
+    AS_ALLOCATE(vr=vale, size=nbval)
 !
     tst = r8maem()
     nlm = 0
@@ -89,69 +99,69 @@ subroutine acevba(nbocc, nlm, nlg, ier)
         call getvtx('BARRE', 'SECTION', iocc=ioc, nbval=0, nbret=ns)
         call getvtx('BARRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         call getvtx('BARRE', 'CARA', iocc=ioc, nbval=0, nbret=nc)
-        call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=zk8(jcara),&
+        call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=cara,&
                     nbret=ncar)
         call getvr8('BARRE', 'VALE', iocc=ioc, nbval=0, nbret=nv)
-        call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=zr(jvale),&
+        call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=vale,&
                     nbret=nval)
 !
 ! -- CARA
         if (ncar .gt. 0) then
             ncara = ncar
             do 20 l = 1, ntypse
-                if (sec .eq. zk16(jsect+l-1)) then
-                    ncmax = zi(jtype+l-1)*nsecba
+                if (sec .eq. typ_sect(l)) then
+                    ncmax = ncp(l)*nsecba
                     call codent(ncmax, 'G', ki)
                     if (ncar .gt. ncmax .and. l .ne. 2) then
                         valk(1) = kioc
                         valk(2) = ki
-                        valk(3) = zk16(jsect+l-1)
+                        valk(3) = typ_sect(l)
                         call utmess('E', 'MODELISA_44', nk=3, valk=valk)
                         ier = ier + 1
                     endif
                     if (l .eq. 2) then
                         if (ncar .gt. 4) then
                             valk(1) = kioc
-                            valk(2) = zk16(jsect+l-1)
+                            valk(2) = typ_sect(l)
                             call utmess('E', 'MODELISA_45', nk=2, valk=valk)
                             ier = ier + 1
                         endif
                         irech = 0
                         irece = 0
                         do 30 i = 1, ncar
-                            if (zk8(jcara+i-1)(1:2) .eq. 'H ') then
+                            if (cara(i)(1:2) .eq. 'H ') then
                                 if (irech .eq. 2) then
                                     valk(1) = kioc
-                                    valk(2) = zk16(jsect+l-1)
+                                    valk(2) = typ_sect(l)
                                     call utmess('E', 'MODELISA_46', nk=2, valk=valk)
                                     ier = ier + 1
                                 endif
                                 irech = 1
                             endif
-                            if (zk8(jcara+i-1)(1:2) .eq. 'HY' .or. zk8(jcara+i-1)(1:2) .eq.&
+                            if (cara(i)(1:2) .eq. 'HY' .or. cara(i)(1:2) .eq.&
                                 'HZ') then
                                 if (irech .eq. 1) then
                                     valk(1) = kioc
-                                    valk(2) = zk16(jsect+l-1)
+                                    valk(2) = typ_sect(l)
                                     call utmess('E', 'MODELISA_47', nk=2, valk=valk)
                                     ier = ier + 1
                                 endif
                                 irech = 2
                             endif
-                            if (zk8(jcara+i-1)(1:3) .eq. 'EP ') then
+                            if (cara(i)(1:3) .eq. 'EP ') then
                                 if (irece .eq. 1) then
                                     valk(1) = kioc
-                                    valk(2) = zk16(jsect+l-1)
+                                    valk(2) = typ_sect(l)
                                     call utmess('E', 'MODELISA_48', nk=2, valk=valk)
                                     ier = ier + 1
                                 endif
                                 irece = 2
                             endif
-                            if (zk8(jcara+i-1)(1:3) .eq. 'EPX' .or. zk8(jcara+i-1)(1:3)&
+                            if (cara(i)(1:3) .eq. 'EPX' .or. cara(i)(1:3)&
                                 .eq. 'EPY') then
                                 if (irece .eq. 2) then
                                     valk(1) = kioc
-                                    valk(2) = zk16(jsect+l-1)
+                                    valk(2) = typ_sect(l)
                                     call utmess('E', 'MODELISA_49', nk=2, valk=valk)
                                     ier = ier + 1
                                 endif
@@ -174,9 +184,9 @@ subroutine acevba(nbocc, nlm, nlg, ier)
             else
                 do 70 i = 1, nval
                     call codent(i, 'G', ki)
-                    if (zr(jvale+i-1) .eq. tst) then
+                    if (vale(i) .eq. tst) then
                         valk(1) = kioc
-                        valk(2) = zk16(jsect+l-1)
+                        valk(2) = typ_sect(l)
                         valk(3) = ki
                         call utmess('E', 'MODELISA_51', nk=3, valk=valk)
                         ier = ier + 1
@@ -194,14 +204,14 @@ subroutine acevba(nbocc, nlm, nlg, ier)
 !
 10  end do
 !
-    call jedetr('&&ACEVBA.TAB_PARA')
-    call jedetr('&&ACEVBA.NCP')
-    call jedetr('&&ACEVBA.TYP_SECT')
-    call jedetr('&&ACEVBA.EXPBAR')
-    call jedetr('&&ACEVBA.TABBAR')
-    call jedetr('&&ACEVBA.CARBAR')
-    call jedetr('&&ACEVBA.CARA')
-    call jedetr('&&ACEVBA.VALE')
+    AS_DEALLOCATE(vi=tab_para)
+    AS_DEALLOCATE(vi=ncp)
+    AS_DEALLOCATE(vk16=typ_sect)
+    AS_DEALLOCATE(vk8=expbar)
+    AS_DEALLOCATE(vk8=tabbar)
+    AS_DEALLOCATE(vk8=carbar)
+    AS_DEALLOCATE(vk8=cara)
+    AS_DEALLOCATE(vr=vale)
 !
     call jedema()
 end subroutine
