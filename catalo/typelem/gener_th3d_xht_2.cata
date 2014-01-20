@@ -32,8 +32,9 @@ MODE_LOCAL__
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     H1       E1       )
     E6NEUTI  = N128_I   ELEM__         (X[6])
     E10NEUTI = N120_I   ELEM__         (X[10])
-    E9NEUTR  = N132_R   ELEM__         (X[9])
     E10NEUTR = N120_R   ELEM__         (X[10])
+    E12NEUTR = N132_R   ELEM__         (X[12])
+    E33NEUTR = N480_R   ELEM__         (X[33])
     E36NEUI  = N512_I   ELEM__         (X[36])
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
@@ -49,4 +50,5 @@ OPTION__
     RIGI_THER         99  IN__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   
                           OUT__ MMATTTR  PMATTTR  
     TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET  
-                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI PLONCHA  E9NEUTR  PPINTTO
+                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI PLONCHA  E12NEUTR PPINTTO
+                                E33NEUTR PPMILTO
