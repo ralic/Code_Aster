@@ -41,7 +41,7 @@ subroutine te0482(option, nomte)
 ! ......................................................................
 !
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)

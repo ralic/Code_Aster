@@ -133,7 +133,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
 ! --------- Type of modelization
 !
-            call teattr(notype, 'C', 'TYPMOD', type_elem, iret)
+            call teattr('C', 'TYPMOD', type_elem, iret, typel=notype)
             if (iret .eq. 0) then
                 if (type_elem(1:6) .eq. 'C_PLAN') then
                     call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', irett)

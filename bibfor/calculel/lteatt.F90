@@ -1,6 +1,5 @@
-function lteatt(typel, noattr, vattr)
+function lteatt(noattr, vattr, typel)
     implicit none
-    logical :: lteatt
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,30 +19,41 @@ function lteatt(typel, noattr, vattr)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 #include "asterfort/teattr.h"
-    character(len=*) :: typel, noattr, vattr
+    logical  :: lteatt
+    character(len=*), intent(in) :: noattr
+    character(len=*), intent(in) :: vattr
+    character(len=*), intent(in), optional :: typel
 !---------------------------------------------------------------------
 ! but : Tester si l'attribut noattr existe et a la valeur vattr
 !---------------------------------------------------------------------
 !     arguments:
 !     ----------
-!     in typel  (k16) : nom du type_element a interroger
-!                        (ou ' ' si l'on est "sous" la routine te0000)
-!     in noattr (k16) : nom de l'attribut
-!     in vattr  (k16) : valeur de l'attribut
-!    out lteatt (l)   : .true. : l'attribut existe pour le type_element
-!                                et sa valeur vaut vattr
-!                       .false. : sinon
+!    (o) in  noattr (k16) : nom de l'attribut
+!    (o) in  vattr  (k16) : valeur de l'attribut
+!    (f) in  typel  (k16) : Nom du type_element a interroger.
+!                           Cet argument est inutile si la question concerne le
+!                           type_element "courant".
+!                           Quand on fournit typel, le cout CPU est plus eleve.
+!    (o) out lteatt (l)   : .true. : l'attribut existe pour le type_element
+!                                    et sa valeur vaut vattr
+!                           .false. : sinon
+
+! ATTENTION : l'appel a lteatt est plus couteux avec typel
 !-----------------------------------------------------------------------
 !  cette routine est accessible partout dans le code. si elle est
-!  appelee en dehors de te0000 (ou avec typel != ' '), elle necessite
-!  des appels jeveux, elle devient donc un peu couteuse.
+!  appelee en dehors de te0000 (donc avec typel), elle necessite
+!  des appels jeveux, elle devient donc plus couteuse.
 !-----------------------------------------------------------------------
 !  VARIABLES LOCALES :
     character(len=16) :: vattr2
     integer :: iret
 !
 !----------------------------------------------------------------------
-    call teattr(typel, 'C', noattr, vattr2, iret)
+    if (present(typel)) then
+        call teattr('C', noattr, vattr2, iret, typel=typel)
+    else
+        call teattr('C', noattr, vattr2, iret)
+    endif
     if ((iret.eq.0) .and. (vattr.eq.vattr2)) then
         lteatt=.true.
     else

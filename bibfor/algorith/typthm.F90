@@ -1,4 +1,4 @@
-subroutine typthm(nomte, axi, perman, vf, typvf,&
+subroutine typthm(axi, perman, vf, typvf,&
                   typmod, ndim)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,6 @@ subroutine typthm(nomte, axi, perman, vf, typvf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-! IN  NOMTE  : NOM DU TYPE_ELEMENT
 ! OUT AXI    : .TRUE. OU .FALSE. SELON LE CARACTERE AXISYMETRIQUE DU PB
 !
 ! OUT VF     : .TRUE. OU .FALSE. SELON LE CARACTERE VF OU PAS
@@ -42,7 +41,6 @@ subroutine typthm(nomte, axi, perman, vf, typvf,&
     integer :: typvf
     integer :: ndim
     character(len=8) :: typmod(2)
-    character(len=16) :: nomte
 !
 !     --- VARIABLES LOCALES ---
 !
@@ -52,12 +50,12 @@ subroutine typthm(nomte, axi, perman, vf, typvf,&
 ! =====================================================================
     axi = .false.
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         axi = .true.
         typmod(1) = 'AXIS    '
         ndim = 2
 !
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN  '
         ndim = 2
 !
@@ -70,20 +68,20 @@ subroutine typthm(nomte, axi, perman, vf, typvf,&
 ! --- BUT : LA PARTIE HM EST-ELLE TRANSITOIRE OU PERMANENTE EN TEMPS ?
 ! =====================================================================
 !
-    if (lteatt(nomte,'CODMOD','DHB')) then
+    if (lteatt('CODMOD','DHB')) then
         perman = .true.
     else
         perman = .false.
     endif
 !
 ! MODELISATIONS SUSHI VOLUMES FINIS
-    if (lteatt(nomte,'CODMOD','3DM').or.lteatt(nomte,'CODMOD','2DM')) then
+    if (lteatt('CODMOD','3DM').or.lteatt('CODMOD','2DM')) then
         vf = .true.
         typvf=2
-    else if (lteatt(nomte,'CODMOD','3AD').or.lteatt(nomte,'CODMOD','2DA')) then
+    else if (lteatt('CODMOD','3AD').or.lteatt('CODMOD','2DA')) then
         vf = .true.
         typvf=3
-    else if (lteatt(nomte,'CODMOD','3SC').or.lteatt(nomte,'CODMOD','2SC')) then
+    else if (lteatt('CODMOD','3SC').or.lteatt('CODMOD','2SC')) then
         vf = .true.
         typvf=4
     else

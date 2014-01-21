@@ -245,7 +245,7 @@ subroutine te0575(option, nomte)
                     poids)
 !
         axi=.false.
-        if ((lteatt(' ','AXIS','OUI')) .or. (lteatt(' ','FOURIER', 'OUI'))) then
+        if ((lteatt('AXIS','OUI')) .or. (lteatt('FOURIER', 'OUI'))) then
             rayon = zero
             do i = 1, nno
                 rayon = rayon + zr(ivf+k+i-1)*zr(igeom+ndim*(i-1))
@@ -332,12 +332,12 @@ subroutine te0575(option, nomte)
             if (ideplm .ne. 0 .and. idsigm .ne. 0) then
                 integ1 = sigma(1)*delta(1) + sigma(2)*delta(2) + sigma(3)*delta(3) + deux*sigma(4&
                          &)*delta(4)
-                if (lteatt(' ','FOURIER','OUI')) integ1 = integ1 + deux*sigma(5)*delta(5) + deux*&
+                if (lteatt('FOURIER','OUI')) integ1 = integ1 + deux*sigma(5)*delta(5) + deux*&
                                                           &sigma(6)*delta(6)
 !
                 integ2 = sigmm(1)*delta(1) + sigmm(2)*delta(2) + sigmm(3)*delta(3) + deux*sigmm(4&
                          &)*delta(4)
-                if (lteatt(' ','FOURIER','OUI')) integ2 = integ2 + deux*sigmm(5)*delta(5) + deux*&
+                if (lteatt('FOURIER','OUI')) integ2 = integ2 + deux*sigmm(5)*delta(5) + deux*&
                                                           &sigmm(6)*delta(6)
 !
                 enerpg(igau) = undemi*(integ1+integ2)
@@ -347,7 +347,7 @@ subroutine te0575(option, nomte)
 !            --------------------
                 integ = sigma(1)*epsi(1) + sigma(2)*epsi(2) + sigma(3) *epsi(3) + deux*sigma(4)*e&
                         &psi(4)
-                if (lteatt(' ','FOURIER','OUI')) integ = integ + deux*sigma(5)*epsi(5) + deux*sig&
+                if (lteatt('FOURIER','OUI')) integ = integ + deux*sigma(5)*epsi(5) + deux*sig&
                                                          &ma(6)*epsi(6)
 !
                 enerpg(igau) = undemi*integ

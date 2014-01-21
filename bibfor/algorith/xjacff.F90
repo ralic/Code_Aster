@@ -84,7 +84,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     call elref4(elc, fpg, ndimf, nnof, ibid,&
                 ibid, ipoidf, ivff, idfdef, ibid)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
     ASSERT(nnof.eq.3)
     ASSERT(ndim.eq.3)
 !

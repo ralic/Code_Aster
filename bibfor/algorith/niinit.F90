@@ -58,7 +58,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
 ! ----------------------------------------------------------------------
 !
 !    RECUPERATION DU TYPE D'ELEMENT VIA L'ALIAS
-    call teattr(' ', 'S', 'ALIAS8', alias, iret)
+    call teattr('S', 'ALIAS8', alias, iret)
 !
     if (nno2 .ne. 0) then
 !       ON EST DANS LE CAS DES FORMULATIONS A 3 CHAMPS

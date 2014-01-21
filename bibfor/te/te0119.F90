@@ -38,7 +38,7 @@ subroutine te0119(option, nomte)
 !
 !     1. RECUPERATION DU CODE DE LA MODELISATION (CMOD) :
 !     ---------------------------------------------------
-    call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    call teattr('S', 'ALIAS8', alias8, ibid)
     cmod=alias8(3:5)
 !
 !

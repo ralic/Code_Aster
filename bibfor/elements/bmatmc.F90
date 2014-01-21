@@ -64,7 +64,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !       -------------
 ! ----  CAS MASSIF 3D
 !       -------------
-    if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
+    if (lteatt('DIM_TOPO_MAILLE','3')) then
 !
         k = 3*(igau-1)*nno
 !
@@ -95,7 +95,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !       -------------------------------------------------------
 ! ----  CAS MASSIF 2D CONTRAINTES PLANES ET DEFORMATIONS PLANES
 !       -------------------------------------------------------
-        elseif (lteatt(' ','C_PLAN','OUI').or. lteatt(' ','D_PLAN','OUI'))&
+        elseif (lteatt('C_PLAN','OUI').or. lteatt('D_PLAN','OUI'))&
     then
 !
         k = (igau-1)*nno + 1
@@ -122,7 +122,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !       ------------------------
 ! ----  CAS MASSIF AXISYMETRIQUE
 !       ------------------------
-        elseif (lteatt(' ','AXIS','OUI').and. (.not.lteatt(' ','FOURIER',&
+        elseif (lteatt('AXIS','OUI').and. (.not.lteatt('FOURIER',&
     'OUI'))) then
 !
         k = (igau-1)*nno
@@ -168,7 +168,7 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !       ------------------
 ! ----  CAS MASSIF FOURIER
 !       ------------------
-    else if (lteatt(' ','FOURIER','OUI')) then
+    else if (lteatt('FOURIER','OUI')) then
 !
         k = (igau-1)*nno
         rayon = zero

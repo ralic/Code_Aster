@@ -91,7 +91,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     call elref4(' ', 'RIGI', ndime, ibid, ibid,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
     if (ndim .eq. 3) then
 !
@@ -296,9 +296,9 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
           a2=nint(ainter(zxain*(ia-1)+1))
           papillon=.true.
           do 224 i = 1,2
-            do 225 j = 1,2            
+            do 225 j = 1,2
               if(ar(a1,i).eq.ar(a2,j)) papillon=.false.
-225         continue          
+225         continue
 224       continue
           if(papillon) then
 !        CONFIGURATION RENCONTREE PAR EXEMPLE DANS SSNV510C

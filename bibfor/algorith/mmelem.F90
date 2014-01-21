@@ -62,11 +62,11 @@ subroutine mmelem(nomte ,ndim  ,nddl  ,typmae,nne   , &
 !
 ! --- MODELE AXISYMETRIQUE ?
 !
-    laxis = lteatt(' ','AXIS','OUI')
+    laxis = lteatt('AXIS','OUI')
 !
 ! --- ELEMENT AVEC DDL DE FROTTEMENT ?
 !
-    leltf = lteatt(' ','FROTTEMENT','OUI')
+    leltf = lteatt('FROTTEMENT','OUI')
 !
 ! --- NOMBRE DE COMPOSANTES LAGRANGIENS (NON DEPLACEMENT)
 !

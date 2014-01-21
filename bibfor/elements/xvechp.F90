@@ -102,7 +102,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 !
 !     S'AGIT-IL D'UNE MODELISATION AXIS
     axi = .false.
-    if (lteatt(' ','AXIS','OUI')) axi = .true.
+    if (lteatt('AXIS','OUI')) axi = .true.
 !
 !     RECUP DU PARAMETRE THETA (POUR LE THETA SCHEMA)
     theta = zr(itps-1+3)

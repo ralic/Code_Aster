@@ -70,7 +70,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  CODOPT  : CODE DE L OPTION, POUR DIMENSIONNER LE TABLEAU SIGMA
-!                 0 : REFE_FORC_NODA 
+!                 0 : REFE_FORC_NODA
 !                 1 : FORC_NODA,CHAR_MECA_TEMP_R
 !
 ! OUT IVECTU  : ADRESSE DU VECTEUR BT.SIGMA
@@ -109,7 +109,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
                 ibid, ibid, ibid, ibid, ibid)
 !
     if (ndim .eq. 2) then
-        axi = lteatt(' ','AXIS','OUI')
+        axi = lteatt('AXIS','OUI')
     else if (ndim.eq.3) then
         axi = .false.
     endif
@@ -188,7 +188,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
                         r, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
                         fe, dgdgl, ff, dfdi, f, rbid6, rbid33)
         else
-!           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R, 
+!           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R,
 !                      l'adresse idepl est un argument bidon...)
             call matini(3, 3, 0.d0, f)
             do i = 1, 3

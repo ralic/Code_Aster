@@ -62,8 +62,8 @@ subroutine te0244(option, nomte)
 !====
     call elref1(elrefe)
 !
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    if (lteatt('LUMPE','OUI')) then
+        call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
         call elref4(elrefe, 'NOEU', ndim, nno, nnos,&
@@ -76,7 +76,7 @@ subroutine te0244(option, nomte)
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         laxi = .true.
     else
         laxi = .false.

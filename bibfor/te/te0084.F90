@@ -80,7 +80,7 @@ subroutine te0084(option, nomte)
 !
 ! - Checking
 !
-    if (lteatt(' ','C_PLAN','OUI').or.lteatt(' ','C_PLAN','OUI')) then
+    if (lteatt('C_PLAN','OUI').or.lteatt('C_PLAN','OUI')) then
 ! AXE=direction Oz
         if (abs(rota_axis(3)) .le. r8miem()) then
             call utmess('F', 'CHARGES2_67')
@@ -88,7 +88,7 @@ subroutine te0084(option, nomte)
         if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(2)) .gt. r8miem()) then
             call utmess('F', 'CHARGES2_67')
         endif
-    else if (lteatt(' ','AXIS','OUI')) then
+    else if (lteatt('AXIS','OUI')) then
 ! AXE=Oy et CENTRE=ORIGINE
         if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
             call utmess('F', 'CHARGES2_65')
@@ -122,7 +122,7 @@ subroutine te0084(option, nomte)
             rx= rx+ zr(j_geom+2*i-2)*zr(ivf+k+i-1)
             ry= ry+ zr(j_geom+2*i-1)*zr(ivf+k+i-1)
         end do
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             poids = poids*rx
             do i = 1, nno
                 k=(kp-1)*nno

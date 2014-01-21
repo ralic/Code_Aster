@@ -47,7 +47,7 @@ subroutine te0314(option, nomte)
 !
     axi = .false.
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         axi = .true.
     endif
 ! ======================================================================

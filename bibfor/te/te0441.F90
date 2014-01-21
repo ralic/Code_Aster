@@ -98,8 +98,8 @@ subroutine te0441(option, nomte)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PMATERC', 'L', imate)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (.not.lteatt(' ','AXIS','OUI')) .and.&
+    call teattr('S', 'XFEM', enr, ibid)
+    if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
         .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
@@ -181,7 +181,7 @@ subroutine te0441(option, nomte)
     end do
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
-    call teattr(nomte, 'C', 'XLAG', lag, ibid)
+    call teattr('C', 'XLAG', lag, ibid)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nnop = nnos
     endif

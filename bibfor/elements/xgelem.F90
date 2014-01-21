@@ -140,10 +140,10 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     tfor = 0.d0
     tini = 0.d0
 !
-    if (lteatt(' ','C_PLAN','OUI')) then
+    if (lteatt('C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN'
         cp = .true.
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN'
     endif
 !
@@ -162,7 +162,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     call elref4(' ', 'RIGI', ibid, ibid, nnops,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
 !     NOMBRE DE COMPOSANTES DES TENSEURS
     ncmp = 2*ndim

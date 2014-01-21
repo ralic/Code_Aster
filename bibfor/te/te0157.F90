@@ -90,7 +90,7 @@ subroutine te0157(option, nomte)
         k = (kp-1) * nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             r = zero
             do i = 1, nno
                 r = r + zr(igeom-2+2*i)*zr(ivf+k+i-1)
@@ -117,7 +117,7 @@ subroutine te0157(option, nomte)
         end do
     end do
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         yg = zr(lcastr+2) / volume
         zr(lcastr) = depi * volume * rho
         zr(lcastr+3) = yg

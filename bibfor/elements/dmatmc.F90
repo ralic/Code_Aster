@@ -58,7 +58,7 @@ subroutine dmatmc(fami, modeli, mater, instan, poum,&
 !       ------------------------
 ! ----  CAS MASSIF 3D ET FOURIER
 !       ------------------------
-    if (lteatt(' ','DIM_TOPO_MAILLE','3') .or. lteatt(' ','FOURIER','OUI')) then
+    if (lteatt('DIM_TOPO_MAILLE','3') .or. lteatt('FOURIER','OUI')) then
 !
         call dmat3d(fami, mater, instan, poum, igau,&
                     isgau, repere, xyzgau, d)
@@ -66,7 +66,7 @@ subroutine dmatmc(fami, modeli, mater, instan, poum,&
 !       ----------------------------------------
 ! ----  CAS DEFORMATIONS PLANES ET AXISYMETRIQUE
 !       ----------------------------------------
-        elseif (lteatt(' ','D_PLAN','OUI').or. lteatt(' ','AXIS','OUI')&
+        elseif (lteatt('D_PLAN','OUI').or. lteatt('AXIS','OUI')&
     .or.modeli.eq.'DP') then
 !
         call dmatdp(fami, mater, instan, poum, igau,&
@@ -75,7 +75,7 @@ subroutine dmatmc(fami, modeli, mater, instan, poum,&
 !       ----------------------
 ! ----  CAS CONTRAINTES PLANES
 !       ----------------------
-    else if (lteatt(' ','C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN','OUI')) then
 !
         call dmatcp(fami, mater, instan, poum, igau,&
                     isgau, repere, d)

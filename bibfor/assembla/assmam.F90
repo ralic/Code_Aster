@@ -553,7 +553,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                         call jeveuo(jexnum(resu//'.RSVI', igr), 'L', jrsvi)
                         itypel=zzliel(ilima,igr,nel+1)
                         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-                        call teattr(nomte, 'S', 'TYPE_VOISIN', codvoi, ibid)
+                        call teattr('S', 'TYPE_VOISIN', codvoi, ibid, typel=nomte)
                     endif
 !
 !                           BOUCLE SUR LES ELEMENTS DU GREL

@@ -46,7 +46,7 @@ subroutine te0447(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 !
     ncmp = 2*ndim
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
     grand = .false.
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)

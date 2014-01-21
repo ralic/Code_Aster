@@ -1,4 +1,4 @@
-subroutine borthm(nomte, axi, vf, perman, typvf,&
+subroutine borthm(axi, vf, perman, typvf,&
                   typmod, ndim, ndlno, ndlnm)
 ! ======================================================================
 ! ======================================================================
@@ -24,20 +24,19 @@ subroutine borthm(nomte, axi, vf, perman, typvf,&
     logical :: axi, perman, vf
     integer :: ndim, ndlno, ndlnm
     character(len=8) :: typmod(2)
-    character(len=16) :: nomte
     integer :: typvf
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
-    typmod(2) = '        '
+    typmod(2) = ' '
 ! ======================================================================
 ! --- TYPE DE MODELISATION ? AXI/DPLAN/3D ET HM INSTAT/PERM ------------
 ! ======================================================================
-    call typthm(nomte, axi, perman, vf, typvf,&
+    call typthm(axi, perman, vf, typvf,&
                 typmod, ndim)
 ! ======================================================================
 ! --- MISE A JOUR DES DIMENSIONS POUR ELEMENTS DE BORD -----------------
 ! ======================================================================
-    call dimthm(nomte, ndlno, ndlnm, ndim)
+    call dimthm(ndlno, ndlnm, ndim)
 ! ======================================================================
 end subroutine

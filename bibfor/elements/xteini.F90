@@ -71,7 +71,7 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
     nfiss = 1
     contac= 0
 !
-    call teattr(nomte, 'S', 'XFEM', enr, ier)
+    call teattr('S', 'XFEM', enr, ier, typel=nomte)
 !
 ! --- DDL ENRICHISSEMENT : HEAVYSIDE, ENRICHIS (FOND)
 !

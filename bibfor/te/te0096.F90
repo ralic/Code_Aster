@@ -108,13 +108,13 @@ subroutine te0096(option, nomte)
     spt=1
     poum='+'
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS'
         axi = .true.
-    else if (lteatt(' ','C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN'
         cp = .true.
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN'
     endif
 !

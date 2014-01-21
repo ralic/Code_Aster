@@ -65,7 +65,7 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 !
 !     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
 !
-    call teattr(nomte, 'S', 'XFEM', tyenel, ier)
+    call teattr('S', 'XFEM', tyenel, ier, typel=nomte)
     if (tyenel(1:2) .eq. 'XH') ielim=1
 !
 !     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER

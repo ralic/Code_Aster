@@ -70,7 +70,7 @@ subroutine te0536(option, nomte)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
+    call teattr('S', 'XFEM', enr, ibid)
     if (ibid .eq. 0 .and. (enr.eq.'XH'.or.enr.eq.'XHC')&
         .and. .not.iselli(elrefp)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
@@ -84,7 +84,7 @@ subroutine te0536(option, nomte)
 !
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
-    call teattr(nomte, 'C', 'XLAG', lag, ibid)
+    call teattr('C', 'XLAG', lag, ibid)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nno = nnos
     endif

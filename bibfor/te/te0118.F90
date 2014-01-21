@@ -102,7 +102,7 @@ subroutine te0118(option, nomte)
 !
 !
 !  CALCUL DE NDIME (2 OU 3) DIMENSION DE L'ESPACE :
-    call teattr(' ', 'S', 'DIM_COOR_MODELI', kdime, ibid)
+    call teattr('S', 'DIM_COOR_MODELI', kdime, ibid)
     read(kdime,'(I8)')  ndime
     ASSERT(ndime.eq.2.or.ndime.eq.3)
 !

@@ -43,7 +43,7 @@ subroutine te0209(option, nomte)
 !     ------------------------------------------------------------------
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     call elref2(nomte, 2, lirefe, nbelr)
     ASSERT(nbelr.eq.2)

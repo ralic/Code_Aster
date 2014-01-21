@@ -123,7 +123,7 @@ subroutine metau1(option, nomte, iret)
                     ' ', 'ELAS_META', 0, 'TEMP', [0.d0],&
                     6, nomres, valres, icodre, 1)
         vk3al = valres(1)/ (1.d0-2.d0*valres(2))
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             poids = poids*r
             do 20 i = 1, nno
                 k = (kp-1)*nno

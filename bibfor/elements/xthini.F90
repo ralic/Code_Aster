@@ -53,7 +53,7 @@ subroutine xthini(nomte, nfh, nfe)
     nfh = 0
     nfe = 0
 !
-    call teattr(nomte, 'S', 'XFEM', enr, ier)
+    call teattr('S', 'XFEM', enr, ier, typel=nomte)
 !
 ! --- DDL ENRICHISSEMENT : HEAVYSIDE, ENRICHIS (FOND)
 !

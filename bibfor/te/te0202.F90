@@ -41,7 +41,7 @@ subroutine te0202(option, nomte)
     character(len=8) :: typmod(2)
 !
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS'
     else
         typmod(1) = 'PLAN'

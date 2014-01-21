@@ -94,7 +94,7 @@ subroutine te0502(option, nomte)
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdx, dfdy)
 !
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             r = 0.d0
             do 40 i = 1, nno
                 r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)

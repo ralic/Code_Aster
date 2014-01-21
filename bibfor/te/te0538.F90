@@ -76,7 +76,7 @@ subroutine te0538(option, nomte)
 !
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
-    call teattr(nomte, 'C', 'XLAG', lag, ibid)
+    call teattr('C', 'XLAG', lag, ibid)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nno = nnos
     endif

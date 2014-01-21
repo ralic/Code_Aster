@@ -87,7 +87,7 @@ subroutine te0354(option, nomte)
     call elref1(elrefe)
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
                 npg, iw, ivf, idfde, jgano)
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
     do 100 g = 1, npg
         os = (g-1)*nno

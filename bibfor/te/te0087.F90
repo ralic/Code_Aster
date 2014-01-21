@@ -113,7 +113,7 @@ subroutine te0087(option, nomte)
 !
 ! ---- RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES PLANES :
 !      ---------------------------------------------------------------
-    if (lteatt(' ','C_PLAN','OUI')) then
+    if (lteatt('C_PLAN','OUI')) then
         call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
             compor = zk16(icompo)

@@ -1,8 +1,7 @@
-subroutine modthm(nomte, modint)
+subroutine modthm(modint)
     implicit      none
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
-    character(len=16), intent(in) :: nomte
     character(len=3), intent(out) :: modint
 ! =====================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +20,7 @@ subroutine modthm(nomte, modint)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! =====================================================================
 ! --- determination du mode d'integration : CLA/RED/LUM
+!     pour le type_element courant.
 ! =====================================================================
     logical :: lprincip
     integer :: iret
@@ -29,13 +29,13 @@ subroutine modthm(nomte, modint)
 ! =====================================================================
 !
 !   -- l'element est-il principal ?
-    call teattr(nomte,'S','DIM_TOPO_MODELI',d1,iret)
-    call teattr(nomte,'S','DIM_TOPO_MAILLE',d2,iret)
+    call teattr('S','DIM_TOPO_MODELI',d1,iret)
+    call teattr('S','DIM_TOPO_MAILLE',d2,iret)
     lprincip=(d1.eq.d2)
 
     modint='CLA'
     if (lprincip) then
-        call teattr(nomte,'C','INTTHM',mint,iret)
+        call teattr('C','INTTHM',mint,iret)
         if (iret.eq.0) modint=mint
     endif
 ! =====================================================================

@@ -72,7 +72,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
     if     (     option .eq. 'RIGI_THER'&
             .or. option .eq. 'RIGI_THER_PARO_F'&
             .or. option .eq. 'RIGI_THER_PARO_R'&
-            .or. option .eq. 'MASS_THER'        ) then 
+            .or. option .eq. 'MASS_THER'        ) then
         lmat = .true.
 !   OPTIONS RELATIVES A UN VECTEUR
     elseif (     option .eq. 'CHAR_THER_EVOL'&
@@ -100,7 +100,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !
 ! --- TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
 !
-    call teattr(nomte, 'S', 'XFEM', tyenel, ier)
+    call teattr('S', 'XFEM', tyenel, ier, typel=nomte)
     if (tyenel(1:2) .eq. 'XH') ielim=1
     if (tyenel(1:2) .eq. 'XT') ielim=2
     if (tyenel(1:3) .eq. 'XHT') ielim=3

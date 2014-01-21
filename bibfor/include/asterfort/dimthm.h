@@ -16,8 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dimthm(nomte, ndlno, ndlnm, ndim)
-        character(len=16) :: nomte
+    subroutine dimthm(ndlno, ndlnm, ndim)
         integer :: ndlno
         integer :: ndlnm
         integer :: ndim

@@ -167,7 +167,7 @@ subroutine te0534(option, nomte)
     do i = 1, max(1, nfh)*nnos
         vstnc(i) = 1
     end do
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
+    call teattr('S', 'XFEM', enr, ibid)
 !
 !
 ! --- BOUCLE SUR LES FISSURES

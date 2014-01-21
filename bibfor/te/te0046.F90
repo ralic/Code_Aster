@@ -80,7 +80,7 @@ subroutine te0046(option, nomte)
     call elref4(' ', 'RIGI', ndim, nnop, ibid,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
     if (.not.iselli(elrefp)) then
@@ -106,7 +106,7 @@ subroutine te0046(option, nomte)
     call jevech('PHEAVTO', 'L', jheavt)
     call jevech('PLONCHA', 'L', jlonch)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
+    call teattr('S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (.not. axi) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
         .and..not.iselli(elrefp)) &

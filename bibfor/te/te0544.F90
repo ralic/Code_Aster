@@ -51,11 +51,11 @@ subroutine te0544(option, nomte)
 ! - TYPE DE MODELISATION
     typmod(2) = 'GRADEPSI'
 !
-    if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
+    if (lteatt('DIM_TOPO_MAILLE','3')) then
         typmod(1) = '3D'
-    else if (lteatt(' ','C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN'
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN'
     else
         ASSERT(.false.)

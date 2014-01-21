@@ -51,7 +51,7 @@ subroutine te0088(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevecd('PPRESSR', ipres, 0.d0)

@@ -78,7 +78,7 @@ subroutine te0041(option, nomte)
 !
 !
     ! Ce sont bien des elements discrets :
-    ASSERT(lteatt(nomte,'DIM_TOPO_MODELI','-1'))
+    ASSERT(lteatt('DIM_TOPO_MODELI','-1'))
     fami='FPG1'
     kpg=1
     spt=1

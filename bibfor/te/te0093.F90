@@ -58,7 +58,7 @@ subroutine te0093(option, nomte)
             fy = fy + zr(ivf+k+i-1) * zr(iforc+ii+1)
         end do
 !
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             r = 0.d0
             do i = 1, nno
                 r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)

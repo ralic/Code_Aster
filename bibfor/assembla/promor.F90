@@ -372,7 +372,7 @@ subroutine promor(nuz, base)
                 nel=zznelg(ili,igr)
                 itypel=zzliel(ili,igr,nel+1)
                 call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-                call teattr(nomte, 'S', 'TYPE_VOISIN', codvoi, ibid)
+                call teattr('S', 'TYPE_VOISIN', codvoi, ibid, typel=nomte)
                 do iel = 1, nel
                     nddlt=0
                     numa=zzliel(ili,igr,iel)

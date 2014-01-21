@@ -128,7 +128,7 @@ subroutine te0547(option, nomte)
     call jevech('PCDTAU', 'L', ictau)
     dtau = zr(ictau)
 !
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
+    call teattr('S', 'XFEM', enr, ibid)
     if (enr .eq. 'XHC') then
         rela = zr(jdonco-1+10)
     else

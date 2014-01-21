@@ -65,7 +65,7 @@ subroutine te0431(option, nomte)
 !
     vecteu = ((option(1:9).eq.'FULL_MECA').or. (option .eq.'RAPH_MECA'))
     matric = ((option(1:9).eq.'FULL_MECA').or. (option(1:9).eq.'RIGI_MECA'))
-    lexc = (lteatt(' ','CODMOD','GRC'))
+    lexc = (lteatt('CODMOD','GRC'))
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !

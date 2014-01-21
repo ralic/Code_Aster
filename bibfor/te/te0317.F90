@@ -50,7 +50,7 @@ subroutine te0317(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
     ndi = nno* (nno+1)/2
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATTTR', 'E', imattt)
     do 10 i = 1, ndi

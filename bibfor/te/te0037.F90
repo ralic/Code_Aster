@@ -92,9 +92,9 @@ subroutine te0037(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
-    call teattr(nomte, 'C', 'MODTHM', enr, iret)
+    call teattr('C', 'MODTHM', enr, iret)
     pre1=(iret.eq.0)
 !
 !-----------------------------------------------------------------------
@@ -409,7 +409,7 @@ subroutine te0037(option, nomte)
                     zi(jstno), .false., option, nomte, mat,&
                     zr(ires), nddlm)
     else
-        call teattr(nomte, 'C', 'XLAG', lag, ibid)
+        call teattr('C', 'XLAG', lag, ibid)
         if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
             nno = nnos
         endif

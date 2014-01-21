@@ -46,7 +46,7 @@ subroutine te0054(option, nomte)
     integer :: jgano, nno, kp, npg2, ij, i, j, imattt, itemps
     integer :: nnos, kpg, spt
 !
-    if (lteatt(' ','LUMPE','OUI')) then
+    if (lteatt('LUMPE','OUI')) then
         call elref4(' ', 'NOEU', ndim, nno, nnos,&
                     npg2, ipoids, ivf, idfde, jgano)
     else

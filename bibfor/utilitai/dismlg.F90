@@ -111,7 +111,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-            if (lteatt(nomte,'VF_AVEC_VOISIN','OUI')) then
+            if (lteatt('VF_AVEC_VOISIN','OUI', typel=nomte)) then
                 repk='OUI'
                 goto 10
 !
@@ -131,7 +131,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-            call teattr(nomte, 'C', 'TYPE_VOISIN', tyvois, iret)
+            call teattr('C', 'TYPE_VOISIN', tyvois, iret, typel=nomte)
             if (iret .eq. 0) then
                 repk='OUI'
                 goto 20
@@ -251,7 +251,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
 !
             else if (questi.eq.'EXI_THM') then
-                call teattr(nomte, 'C', 'MODTHM', mthm, iret)
+                call teattr('C', 'MODTHM', mthm, iret, typel=nomte)
                 if (iret.eq.0) then
                     repk='OUI'
                     if ((nomte.eq.'HM_D_PLAN_SE3_P') .or. ( nomte.eq.'HM_DPQ8_P') .or.&
@@ -414,7 +414,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-            if (lteatt(nomte,'AXIS','OUI')) then
+            if (lteatt('AXIS','OUI', typel=nomte)) then
                 ico=ico+1
             endif
 60          continue

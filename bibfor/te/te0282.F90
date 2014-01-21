@@ -72,7 +72,7 @@ subroutine te0282(option, nomte)
     call elref1(elrefe)
     call jemarq()
     epsi = r8prem()
-    axis=lteatt(nomte,'AXIS','OUI')
+    axis=lteatt('AXIS','OUI')
 !
 ! RECUPERATION DES DONNEES GEOMETRIQUES LIEES AU CALCUL ELEMENTAIRE
     call elref5(' ', 'RIGI', ndim, nno, nnos,&

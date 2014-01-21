@@ -146,7 +146,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     call elref4(' ', 'RIGI', ibid, ibid, nnops,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
     if (.not.iselli(elrefp)) then
         irese=3
@@ -238,7 +238,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             call utmess('F', 'RUPTURE1_26')
         endif
 !
-        if (ndim .eq. 3 .or. (ndim.eq.2.and.lteatt(' ','D_PLAN','OUI')) .or. axi) then
+        if (ndim .eq. 3 .or. (ndim.eq.2.and.lteatt('D_PLAN','OUI')) .or. axi) then
 !
             lambda = nu*e/((1.d0+nu)*(1.d0-2.d0*nu))
             mu = e/(2.d0*(1.d0+nu))
@@ -250,7 +250,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             c3 = mu
             th = 1.d0
 !
-        else if (ndim.eq.2.and.lteatt(' ','C_PLAN','OUI')) then
+        else if (ndim.eq.2.and.lteatt('C_PLAN','OUI')) then
 !
             ka = (3.d0-nu)/(1.d0+nu)
             mu = e/(2.d0*(1.d0+nu))

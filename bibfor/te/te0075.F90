@@ -52,8 +52,8 @@ subroutine te0075(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    if (lteatt('LUMPE','OUI')) then
+        call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
@@ -61,7 +61,7 @@ subroutine te0075(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)

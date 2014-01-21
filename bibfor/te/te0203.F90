@@ -55,7 +55,7 @@ subroutine te0203(option, nomte)
     call jevech('PDEPL1R', 'L', idepl1)
     call jevech('PCDTAU', 'L', ictau)
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS'
     else
         typmod(1) = 'PLAN'

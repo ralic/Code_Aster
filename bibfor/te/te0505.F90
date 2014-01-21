@@ -104,7 +104,7 @@ subroutine te0505(option, nomte)
             dtpgdy(kp)= dtpgdy(kp) + zr(itempi+i-1) *dfdy(i)
 102      continue
 !
-        if (lteatt(' ','AXIS','OUI')) poids = poids*r
+        if (lteatt('AXIS','OUI')) poids = poids*r
         call rcfode(ifon(2), tpg, xk1, xkpt)
         call rcfode(ifon(2), tpg0, xk0, xkpt)
         pn = zr(ilagrm + kp - 1)

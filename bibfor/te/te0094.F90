@@ -64,7 +64,7 @@ subroutine te0094(option, nomte)
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
             z = z + zr(igeom+2*i-1)*zr(ivf+k+i-1)
         end do
-        if (lteatt(' ','AXIS','OUI')) poids = poids*r
+        if (lteatt('AXIS','OUI')) poids = poids*r
         valpar(1) = r
         valpar(2) = z
         call fointe('FM', zk8(ifr2d ), 3, nompar, valpar,&

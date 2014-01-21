@@ -109,9 +109,9 @@ subroutine dilini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! --- RECUPERATION DU TYPE DE LA MODELISATION --------------------------
 ! ======================================================================
-    if (lteatt(' ','DIM_TOPO_MODELI','2')) then
+    if (lteatt('DIM_TOPO_MODELI','2')) then
         typmod(1) = 'D_PLAN'
-    else if (lteatt(' ','DIM_TOPO_MODELI','3')) then
+    else if (lteatt('DIM_TOPO_MODELI','3')) then
         typmod(1) = '3D'
     else
         ASSERT(.false.)

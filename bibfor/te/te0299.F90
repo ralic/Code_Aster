@@ -100,7 +100,7 @@ subroutine te0299(option, nomte)
     call jevech('PGTHETA', 'E', ificg)
 !
     axi = .false.
-    if (lteatt(' ','AXIS','OUI')) axi = .true.
+    if (lteatt('AXIS','OUI')) axi = .true.
 !
     g = 0.d0
     k1 = 0.d0
@@ -333,7 +333,7 @@ subroutine te0299(option, nomte)
         nu = valres(2)
 !
         c3 = e/(2.d0*(1.d0+nu))
-        if (lteatt(' ','D_PLAN','OUI') .or. lteatt(' ','AXIS','OUI')) then
+        if (lteatt('D_PLAN','OUI') .or. lteatt('AXIS','OUI')) then
             mu = e/(2.d0*(1.d0+nu))
             ka = 3.d0-4.d0*nu
             c1 = e*(1.d0-nu)/((1.d0+nu)*(1.d0-2.d0*nu))

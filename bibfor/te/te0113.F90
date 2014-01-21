@@ -77,9 +77,9 @@ subroutine te0113(option, nomte)
     endif
 !
 ! - TYPE DE MODELISATION
-    if (ndim .eq. 2 .and. lteatt(' ','C_PLAN','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN  '
-    else if (ndim.eq.2 .and. lteatt(' ','D_PLAN','OUI')) then
+    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'

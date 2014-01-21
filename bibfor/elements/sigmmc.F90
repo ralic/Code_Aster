@@ -70,7 +70,7 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
     zero = 0.0d0
     nbinco = ndim*nno
     ndim2 = ndim
-    if (lteatt(' ','FOURIER','OUI')) then
+    if (lteatt('FOURIER','OUI')) then
         ndim2 = 2
     endif
 !

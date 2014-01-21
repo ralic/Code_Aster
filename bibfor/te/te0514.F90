@@ -121,10 +121,10 @@ subroutine te0514(option, nomte)
     call jevech('PHEAVTO', 'E', jout3)
     call jevech('PLONCHA', 'E', jout4)
 !
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
+    call teattr('S', 'XFEM', enr, ibid)
 !
 !     MODELISATION AXISYMETRIQUE AVEC ELEMENTS QUADRATIQUES INTERDITE
-    if (lteatt(' ','AXIS','OUI') .and. .not.iselli(elp)) then
+    if (lteatt('AXIS','OUI') .and. .not.iselli(elp)) then
         call utmess('F', 'XFEM_76')
     endif
 !

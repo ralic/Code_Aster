@@ -95,10 +95,10 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
         if (nutyel .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
-            call teattr(notype, 'S', 'DIM_TOPO_MODELI', dmo, iret)
-            call teattr(notype, 'S', 'DIM_TOPO_MAILLE', dma, iret)
+            call teattr('S', 'DIM_TOPO_MODELI', dmo, iret, typel=notype)
+            call teattr('S', 'DIM_TOPO_MAILLE', dma, iret, typel=notype)
             if (dmo .eq. dma) then
-                call teattr(notype, 'C', 'TYPMOD', typmod, iret)
+                call teattr('C', 'TYPMOD', typmod, iret, typel=notype)
                 if (iret .eq. 0) then
                     if (typmod(1:6) .eq. 'C_PLAN') then
                         exicp = .true.

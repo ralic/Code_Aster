@@ -59,9 +59,9 @@ subroutine connec(nomte, nse, nnop2, c)
 !
 ! CONNECTIVITE DES SOUS ELEMENTS (ELEMENTS ISO_P2)
 !
-    call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    call teattr('S', 'ALIAS8', alias8, ibid)
 !
-    if (lteatt(' ','LUMPE','OUI') .and. (alias8(6:8).eq.'SE3')) then
+    if (lteatt('LUMPE','OUI') .and. (alias8(6:8).eq.'SE3')) then
         nnop2 = 3
         nse = 2
         c(1,1) = 1
@@ -69,7 +69,7 @@ subroutine connec(nomte, nse, nnop2, c)
         c(2,1) = c(1,2)
         c(2,2) = 2
 !
-        else if (lteatt(' ','LUMPE','OUI').and. (alias8(6:8).eq.'TR6'))&
+        else if (lteatt('LUMPE','OUI').and. (alias8(6:8).eq.'TR6'))&
     then
         nnop2 = 6
         nse = 4
@@ -85,7 +85,7 @@ subroutine connec(nomte, nse, nnop2, c)
         c(4,1) = c(1,2)
         c(4,2) = c(2,3)
         c(4,3) = c(1,3)
-        else if (lteatt(' ','LUMPE','OUI').and. (alias8(6:8).eq.'QU9'))&
+        else if (lteatt('LUMPE','OUI').and. (alias8(6:8).eq.'QU9'))&
     then
         nnop2 = 9
         nse = 4

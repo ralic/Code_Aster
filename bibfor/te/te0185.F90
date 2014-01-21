@@ -57,7 +57,7 @@ subroutine te0185(option, nomte)
     line=(inlin.eq.0)
 !
 !     -- CALCUL DE CMOD (CODE DE LA MODELISATION) :
-    call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    call teattr('S', 'ALIAS8', alias8, ibid)
     cmod=alias8(3:5)
 !
     if (line) then

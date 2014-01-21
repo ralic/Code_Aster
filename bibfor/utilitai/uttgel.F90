@@ -42,7 +42,7 @@ subroutine uttgel(nomte, typgeo)
     character(len=3) :: codtma
 
 
-    call teattr(nomte, 'S', 'ALIAS8', alias8, ibid)
+    call teattr('S', 'ALIAS8', alias8, ibid, typel=nomte)
     codtma=alias8(6:8)
 
     if (codtma(1:2).eq.'TR') then

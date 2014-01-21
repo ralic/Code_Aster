@@ -72,9 +72,9 @@ subroutine te0322(option, nomte)
         typmod(1) = 'PLAN'
     endif
 !
-    if (lteatt(nomte,'TYPMOD2','ELEMJOIN')) then
+    if (lteatt('TYPMOD2','ELEMJOIN')) then
         typmod(2) = 'ELEMJOIN'
-    else if (lteatt(nomte,'TYPMOD2','EJ_HYME')) then
+    else if (lteatt('TYPMOD2','EJ_HYME')) then
         typmod(2) = 'EJ_HYME'
     else
 !       MODELISATION NON SUPORTEE

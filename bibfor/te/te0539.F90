@@ -79,15 +79,15 @@ subroutine te0539(option, nomte)
         typmod(1) = '3D'
         typmod(2) = ' '
     else
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             typmod(1) = 'AXIS'
-        else if (lteatt(' ','C_PLAN','OUI')) then
+        else if (lteatt('C_PLAN','OUI')) then
             typmod(1) = 'C_PLAN'
-        else if (lteatt(' ','D_PLAN','OUI')) then
+        else if (lteatt('D_PLAN','OUI')) then
             typmod(1) = 'D_PLAN'
         else
 !          NOM D'ELEMENT ILLICITE
-            ASSERT(lteatt(' ', 'C_PLAN', 'OUI'))
+            ASSERT(lteatt('C_PLAN', 'OUI'))
         endif
         typmod(2) = ' '
         codret=0
@@ -122,8 +122,8 @@ subroutine te0539(option, nomte)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (.not.lteatt(' ','AXIS','OUI')) .and.&
+    call teattr('S', 'XFEM', enr, ibid)
+    if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
          .and..not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
@@ -318,7 +318,7 @@ subroutine te0539(option, nomte)
 999 continue
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
-    call teattr(nomte, 'C', 'XLAG', lag, ibid)
+    call teattr('C', 'XLAG', lag, ibid)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nno = nnos
     endif

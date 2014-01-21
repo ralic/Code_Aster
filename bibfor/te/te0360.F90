@@ -64,7 +64,7 @@ subroutine te0360(option, nomte)
     call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
                 npg, iw, ivf2, idf2, jgn)
     ndim = ndim + 1
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
     call eiinit(nomte, iu, im, it)

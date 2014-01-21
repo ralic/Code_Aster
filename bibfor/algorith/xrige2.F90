@@ -94,7 +94,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
     call elref4(' ', 'RIGI', ibid, ibid, nnops,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
     call elref5(elrese, 'XINT', ndimb, nno, nnos,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&

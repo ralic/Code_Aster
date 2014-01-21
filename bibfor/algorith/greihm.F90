@@ -1,4 +1,4 @@
-subroutine greihm(nomte, perman, ndim, mecani, press1,&
+subroutine greihm(perman, ndim, mecani, press1,&
                   press2, tempe, dimdef, dimcon)
     implicit none
 #include "asterfort/lteatt.h"
@@ -7,7 +7,6 @@ subroutine greihm(nomte, perman, ndim, mecani, press1,&
     integer :: mecani(8), press1(9), press2(9), tempe(5)
     integer :: dimdef, dimcon
     integer :: ndim
-    character(len=16) :: nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +105,7 @@ subroutine greihm(nomte, perman, ndim, mecani, press1,&
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
-    if (lteatt(nomte,'MODTHM','HM')) then
+    if (lteatt('MODTHM','HM')) then
         mecani(1) = 1
         press1(1) = 1
         press2(1) = 0

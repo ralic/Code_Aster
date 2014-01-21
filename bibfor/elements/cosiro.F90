@@ -90,7 +90,7 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
 !
 !     -- CAS DES ELEMENTS DE COQUE_3D :
 !     -----------------------------------
-    if (lteatt(nomte,'CODMOD','CQ3')) then
+    if (lteatt('CODMOD','CQ3')) then
 !
         if (sour .eq. 'S') then
             call jevech('PCACOQU', 'L', jcara)

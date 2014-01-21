@@ -67,7 +67,7 @@ subroutine te0353(option, nomte)
                 npg1, ipoids, ivf, idfde, jgano)
     nbcon=4
     laxi=.false.
-    if (lteatt(' ','AXIS','OUI')) laxi=.true.
+    if (lteatt('AXIS','OUI')) laxi=.true.
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     mater=zi(imate)

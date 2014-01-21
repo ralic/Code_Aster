@@ -70,7 +70,7 @@ subroutine epthmc(fami, nno, ndim, nbsig, npg,&
 10  end do
 !
     ndim2 = ndim
-    if (lteatt(' ','FOURIER','OUI')) then
+    if (lteatt('FOURIER','OUI')) then
         ndim2 = 2
     endif
 !

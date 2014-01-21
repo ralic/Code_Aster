@@ -53,7 +53,7 @@ subroutine te0092(option, nomte)
 !
     axis=zero
     r   =un
-    if (lteatt(' ','AXIS','OUI')) axis=un
+    if (lteatt('AXIS','OUI')) axis=un
 !
     do 101 kp = 1, npg
         k=(kp-1)*nno

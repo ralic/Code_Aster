@@ -188,7 +188,7 @@ subroutine te0421(option, nomte)
 !
         endif
 !
-        if (lteatt(' ','C_PLAN','OUI')) then
+        if (lteatt('C_PLAN','OUI')) then
             a11=a11-a13*a13/a33
             a12=a12-a13*a23/a33
             a22=a22-a23*a23/a33
@@ -196,7 +196,7 @@ subroutine te0421(option, nomte)
             a23=0.d0
         endif
 !
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             poids = poids*r
             if (r .ne. 0.d0) then
                 do 103 i = 1, nno

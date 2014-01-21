@@ -53,9 +53,9 @@ subroutine te0592(option, nomte)
     call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
 !
 ! - TYPE DE MODELISATION
-    if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS  '
-    else if (ndim.eq.2 .and. lteatt(' ','D_PLAN','OUI')) then
+    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'

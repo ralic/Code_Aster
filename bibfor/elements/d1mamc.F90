@@ -54,7 +54,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
 !       ------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    if (lteatt(' ','DIM_TOPO_MAILLE','3') .or. lteatt(' ','FOURIER','OUI')) then
+    if (lteatt('DIM_TOPO_MAILLE','3') .or. lteatt('FOURIER','OUI')) then
 !
         call d1ma3d(fami, mater, instan, poum, kpg,&
                     ksp, repere, xyzgau, d1)
@@ -62,7 +62,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
 !       ----------------------------------------
 ! ----  CAS DEFORMATIONS PLANES ET AXISYMETRIQUE
 !       ----------------------------------------
-        elseif(lteatt(' ','D_PLAN','OUI').or. lteatt(' ','AXIS', 'OUI'))&
+        elseif(lteatt('D_PLAN','OUI').or. lteatt('AXIS', 'OUI'))&
     then
 !
         call d1madp(fami, mater, instan, poum, kpg,&
@@ -71,7 +71,7 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
 !       ----------------------
 ! ----  CAS CONTRAINTES PLANES
 !       ----------------------
-    else if (lteatt(' ','C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN','OUI')) then
 !
         call d1macp(fami, mater, instan, poum, kpg,&
                     ksp, repere, d1)

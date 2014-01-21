@@ -145,7 +145,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
         enddo
     endif
 !     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
-    call teattr(nomte, 'S', 'XFEM', tyenel, ier)
+    call teattr('S', 'XFEM', tyenel, ier, typel=nomte)
     if (tyenel(1:2) .eq. 'XH') ielim=1
     if (tyenel(1:2) .eq. 'XT') ielim=2
     if (tyenel(1:3) .eq. 'XHT') ielim=3

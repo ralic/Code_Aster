@@ -66,7 +66,7 @@ subroutine te0283(option, nomte)
 !
 ! DEB ------------------------------------------------------------------
     call uttgel(nomte, typgeo)
-    if ((lteatt(' ','LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
+    if ((lteatt('LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
         call elref4(' ', 'NOEU', ndim, nno, nnos,&
                     npg2, ipoid2, ivf2, idfde2, jgano2)
     else

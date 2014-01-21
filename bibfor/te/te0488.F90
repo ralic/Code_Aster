@@ -55,8 +55,8 @@ subroutine te0488(option, nomte)
     data poidc / 0.16666666666666666d0,0.66666666666666663d0,&
      &             0.16666666666666666d0/
 ! DEB ------------------------------------------------------------------
-    coq3d= lteatt(' ','CODMOD','CQ3')
-    grille= lteatt(' ','CODMOD','GRC')
+    coq3d= lteatt('CODMOD','CQ3')
+    grille= lteatt('CODMOD','GRC')
     if (coq3d) then
         call elref4(' ', 'MASS', ndim, nno, nnos,&
                     npg, ipoids, ivf, idfde, jgano)

@@ -98,13 +98,13 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 ! ======================================================================
 ! --- TYPE DE MODELISATION? AXI/DPLAN/3D ET HM TRANSI/PERM -------------
 ! ======================================================================
-    call typthm(nomte, axi, perman, vf, typvf,&
+    call typthm(axi, perman, vf, typvf,&
                 typmod, ndim)
 ! ======================================================================
 ! --- SELECTION DU TYPE D'INTEGRATION ----------------------------------
 ! ======================================================================
     if (.not.vf) then
-        call modthm(nomte, modint)
+        call modthm(modint)
     else
         modint = 'CLA'
     endif

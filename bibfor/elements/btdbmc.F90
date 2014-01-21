@@ -46,6 +46,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
     character(len=*) :: phenoz
+    integer :: nbsig
     real(kind=8) :: b(nbsig, *), d(nbsig, *), jacob, btdb(81, 81)
 ! -----  VARIABLES LOCALES
     character(len=16) :: phenom
@@ -54,7 +55,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i1, i2, l1, l2, nbinco, nbsig, ndim
+    integer :: i1, i2, l1, l2, nbinco, ndim
     integer :: nno
     real(kind=8) :: d1, d2, d3, r11, r12, r13, r21
     real(kind=8) :: r22, r23, r31, r32, r33, rs13, rs23
@@ -70,7 +71,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
 !
 ! ----   CAS CONTRAINTES PLANES ET DEFORMATIONS PLANES
 !        ---------------------------------------------
-        if (lteatt(' ','C_PLAN','OUI') .or. lteatt(' ','D_PLAN','OUI')) then
+        if (lteatt('C_PLAN','OUI') .or. lteatt('D_PLAN','OUI')) then
 !
             l1 = nbinco - 1
 !
@@ -95,7 +96,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
 !
 ! ----   CAS AXI
 !        -------
-            elseif (lteatt(' ','AXIS','OUI').and. (.not.lteatt(' ',&
+            elseif (lteatt('AXIS','OUI').and. (.not.lteatt(&
         'FOURIER','OUI'))) then
 !
             l1 = nbinco - 1
@@ -128,7 +129,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
 !
 ! ----   CAS 3D
 !        ------
-        else if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
+        else if (lteatt('DIM_TOPO_MAILLE','3')) then
 !
             l2 = nbinco - 2
 !
@@ -167,7 +168,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
 !
 ! ----   CAS FOURIER
 !        -----------
-        else if (lteatt(' ','FOURIER','OUI')) then
+        else if (lteatt('FOURIER','OUI')) then
 !
             l2 = nbinco - 2
 !

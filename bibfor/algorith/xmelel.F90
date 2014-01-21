@@ -86,7 +86,7 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
 10  end do
     ASSERT(imod.ne.0)
 ! --- RECUPERATION DES L'ATTRIBUT POUR L'ESCALVE
-    call teattr(typel, 'S', 'XFEM', att, ier)
+    call teattr('S', 'XFEM', att, ier, typel=typel)
     do 20 k = 1, 7
         if (att .eq. attr(k)) iatt(1) = k
 20  end do
@@ -107,7 +107,7 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     call dismte('MODELISATION', typel, ibid, mod, ier)
     ASSERT(mod(1:2).eq.mode(imod))
 ! --- RECUPERATION DES L'ATTRIBUT POUR LE MAITRE
-    call teattr(typel, 'S', 'XFEM', att, ier)
+    call teattr('S', 'XFEM', att, ier, typel=typel)
     do 40 k = 1, 7
         if (att .eq. attr(k)) iatt(2) = k
 40  end do

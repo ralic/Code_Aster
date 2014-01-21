@@ -50,8 +50,8 @@ subroutine te0219(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    if (lteatt('LUMPE','OUI')) then
+        call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
     endif
@@ -122,7 +122,7 @@ subroutine te0219(option, nomte)
                             gry, ier)
             endif
 !
-            if (lteatt(' ','AXIS','OUI')) poids = poids*x
+            if (lteatt('AXIS','OUI')) poids = poids*x
             poids = poids*valres(1)
 !
             do 103 i = 1, nno

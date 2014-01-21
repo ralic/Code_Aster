@@ -89,7 +89,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                 ibid, ibid, ibid, ibid, ibid)
     zxain = xxmmvd('ZXAIN')
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 !     NDIM EST LA DIMENSION DU MAILLAGE
 !     NDIME EST DIMENSION DE L'ELEMENT FINI

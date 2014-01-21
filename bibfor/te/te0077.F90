@@ -53,8 +53,8 @@ subroutine te0077(option, nomte)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    if (lteatt('LUMPE','OUI')) then
+        call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
     endif
@@ -85,13 +85,13 @@ subroutine te0077(option, nomte)
     endif
 !
 !
-    if (.not.lteatt(' ','LUMPE','OUI')) then
+    if (.not.lteatt('LUMPE','OUI')) then
 !
         do 101 kp = 1, npg
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
-            if (lteatt(' ','AXIS','OUI')) then
+            if (lteatt('AXIS','OUI')) then
                 r = 0.d0
                 do 102 i = 1, nno
                     r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
@@ -129,7 +129,7 @@ subroutine te0077(option, nomte)
                 k=(kp-1)*nno
                 call dfdm2d(nno, kp, ipoid2, idfde2, coorse,&
                             poids, dfdx, dfdy)
-                if (lteatt(' ','AXIS','OUI')) then
+                if (lteatt('AXIS','OUI')) then
                     r = 0.d0
                     do 202 i = 1, nno
                         r = r + coorse(2*(i-1)+1)*zr(ivf2+k+i-1)

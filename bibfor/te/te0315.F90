@@ -50,12 +50,12 @@ subroutine te0315(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, iacce, idim, itemp, jgano, k, ndim
     integer :: nnos
-    real(kind=8) :: r, r8b, rho(1)
+    real(kind=8) :: r, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -66,7 +66,7 @@ subroutine te0315(option, nomte)
     poum='+'
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 0, ' ', [r8b],&
+                ' ', 'THER', 0, ' ', [0.d0],&
                 1, 'RHO_CP', rho, icodre, 1)
 !
     if (option(16:16) .eq. 'R') then

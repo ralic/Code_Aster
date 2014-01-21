@@ -66,7 +66,7 @@ subroutine te0466(option, nomte)
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
 
-    call teattr(nomte,'C','MODTHM',mthm,iret)
+    call teattr('C','MODTHM',mthm,iret)
     if (iret.ne.0) mthm=' '
 
     ndim2 = 3
@@ -89,7 +89,7 @@ subroutine te0466(option, nomte)
                 npi2, ipoid2, ivf2, idfdx2, ibid)
 !
 ! NB DE DDL A CHAQUE NOEUD
-    call dimthm(nomte, ndlno, ndlnm, ndim2)
+    call dimthm(ndlno, ndlnm, ndim2)
 !      WRITE(6,*)'NDLNO',NDLNO
 !      WRITE(6,*)'NDLNM',NDLNM
 !      WRITE(6,*)'NDIM2',NDIM2
@@ -184,7 +184,7 @@ subroutine te0466(option, nomte)
 ! ======================================================================
 ! --- SI MODELISATION = SUSHI HH2 AVEC OU SANS VOISINAGE
 !
-            if ((mthm.eq.'SUSHI').and.lteatt(nomte,'CODTMA','QU9')) then
+            if ((mthm.eq.'SUSHI').and.lteatt('CODTMA','QU9')) then
 !
 !
 ! --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE

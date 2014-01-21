@@ -60,7 +60,7 @@ subroutine xhmini(nomte, nfh, ddld, ddlm)
     ddlm = 0
     nfiss = 1
 !
-    call teattr(nomte, 'S', 'XFEM', enr, ier)
+    call teattr('S', 'XFEM', enr, ier, typel=nomte)
 !
 ! --- DDL ENRICHISSEMENT : HEAVYSIDE
 !

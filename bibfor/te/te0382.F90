@@ -182,7 +182,7 @@ subroutine te0382(option, nomte)
     call jevech('PCVOISX', 'L', jvoxse)
     call jevech('PCONTSER', 'L', jsigse)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
+    call teattr('S', 'XFEM', enr, ibid)
     if (ibid .eq. 0 .and. (enr.eq.'XH'.or.enr.eq.'XHC') .and. ndim .le. 2) call jevech(&
                                                                            'PPMILTO', 'L',&
                                                                            jpmilt)

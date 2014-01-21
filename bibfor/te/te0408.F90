@@ -37,8 +37,8 @@ subroutine te0408(option, nomte)
     logical :: tempno, grille
     character(len=8) :: nompu(2), alias8
 !
-    call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
-    grille=lteatt(' ','GRILLE','OUI')
+    call teattr('S', 'ALIAS8', alias8, ibid)
+    grille=lteatt('GRILLE','OUI')
     ASSERT(.not.grille)
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&

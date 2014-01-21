@@ -92,7 +92,7 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
         enthpg=0.d0
 ! ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 3D
 !
-        if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
+        if (lteatt('DIM_TOPO_MAILLE','3')) then
             call dfdm3d(nno, igau, ipoids, idfde, xyz,&
                         poidi, dfdx, dfdy, dfdz)
 ! ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 2D
@@ -100,7 +100,7 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
             k=(igau-1)*nno
             call dfdm2d(nno, igau, ipoids, idfde, xyz,&
                         poidi, dfdx, dfdy)
-            if (lteatt(' ','AXIS','OUI')) then
+            if (lteatt('AXIS','OUI')) then
                 rayon = 0.d0
                 do 41 i = 1, nno
                     rayon = rayon + zr(ivf+k-1+i)*xyz(2*(i-1)+1)

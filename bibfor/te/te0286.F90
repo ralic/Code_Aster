@@ -67,7 +67,7 @@ subroutine te0286(option, nomte)
     instan = zero
     nharm = zero
     ndim2 = 2
-    if (lteatt(' ','FOURIER','OUI')) then
+    if (lteatt('FOURIER','OUI')) then
         ndim = 3
     endif
 !

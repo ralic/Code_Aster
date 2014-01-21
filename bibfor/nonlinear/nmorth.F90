@@ -93,15 +93,15 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         repere(4)=angmas(3)
         vrai = .true.
     else
-        if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
+        if (lteatt('DIM_TOPO_MAILLE','3')) then
             repere(3)=angmas(2)
             repere(4)=angmas(3)
             vrai = .true.
-        else if (lteatt(' ','C_PLAN','OUI')) then
+        else if (lteatt('C_PLAN','OUI')) then
             vrai = .true.
-        else if (lteatt(' ','D_PLAN','OUI')) then
+        else if (lteatt('D_PLAN','OUI')) then
             vrai = .true.
-        else if (lteatt(' ','AXIS','OUI')) then
+        else if (lteatt('AXIS','OUI')) then
             vrai = .true.
         endif
     endif

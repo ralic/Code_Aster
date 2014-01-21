@@ -70,8 +70,8 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
             do 30 iel = 1, nel-1
                 if (numail .eq. zi(ialiel-1+iel)) then
                     traite = traite + 1
-                    call teattr(nomte, 'S', 'DIM_TOPO_MODELI', dmo, ier)
-                    call teattr(nomte, 'S', 'DIM_TOPO_MAILLE', dma, ier)
+                    call teattr('S', 'DIM_TOPO_MODELI', dmo, ier, typel=nomte)
+                    call teattr('S', 'DIM_TOPO_MAILLE', dma, ier, typel=nomte)
                     if (dmo .eq. dma) then
 !                    on a un element principal
                         mabord(ima) = 0

@@ -127,7 +127,7 @@ subroutine te0510(option, nomte)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     nmaabs=zi(iadzi)
 !
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
+    call teattr('S', 'XFEM', enr, ibid)
     if (enr .eq. 'XH1' .or. enr .eq. 'XH2' .or. enr .eq. 'XH3' .or. enr .eq. 'XH4') then
 ! --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
         goto 999

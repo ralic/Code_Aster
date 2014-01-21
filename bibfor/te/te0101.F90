@@ -133,7 +133,7 @@ subroutine te0101(option, nomte)
 !
 ! --- NOMBRE DE NOEUDS SOMMETS :
 !     ------------------------
-    call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    call teattr('S', 'ALIAS8', alias8, ibid)
     if (alias8(6:7) .eq. 'TR') then
         nbnoso = 3
     else if (alias8(6:7).eq.'QU') then

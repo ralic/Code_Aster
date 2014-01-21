@@ -94,7 +94,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     call elref4(' ', 'RIGI', ibid, ibid, nnops,&
                 ibid, ibid, ibid, ibid, ibid)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
 !     SOUS-ELEMENT DE REFERENCE
     if (.not.iselli(elrefp)) then

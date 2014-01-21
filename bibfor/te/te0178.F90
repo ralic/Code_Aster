@@ -46,13 +46,12 @@ subroutine te0178(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: jgano, mater, ndim, nnos
-    real(kind=8) :: r8b
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PIMPEDC', 'L', iimpe)
@@ -65,7 +64,7 @@ subroutine te0178(option, nomte)
     poum='+'
     mater = zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [r8b],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
     if (zc(iimpe) .ne. (0.d0,0.d0)) then

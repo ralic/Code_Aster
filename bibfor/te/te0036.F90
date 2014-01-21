@@ -95,7 +95,7 @@ subroutine te0036(option, nomte)
                 ibid, ibid, ibid, ibid, ibid)
     ASSERT(ndime.eq.1.or.ndime.eq.2)
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
 !     DIMENSION DE L'ESPACE
     call tecael(iadzi, iazk24)
@@ -125,7 +125,7 @@ subroutine te0036(option, nomte)
     nfh = 0
     nfiss = 1
     ifiss = 1
-    call teattr(nomte, 'S', 'XFEM', enr, ier)
+    call teattr('S', 'XFEM', enr, ier)
     if (enr(1:2) .eq. 'XH') then
 ! --- NOMBRE DE FISSURES
         call tecach('NOO', 'PHEAVTO', 'L', iret, nval=7,&
@@ -183,7 +183,7 @@ subroutine te0036(option, nomte)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    call teattr(nomte, 'S', 'XFEM', enr, ier)
+    call teattr('S', 'XFEM', enr, ier)
     if (ier .eq. 0 .and. (.not. axi) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
          .and..not.iselli(elref))&
@@ -521,7 +521,7 @@ subroutine te0036(option, nomte)
 !     SUPPRESSION DES DDLS SUPERFLUS
     ddls = ndim*(1+nfh+nfe)
     nddl = nnop*ddls
-    call teattr(nomte, 'C', 'XLAG', lag, ibid)
+    call teattr('C', 'XLAG', lag, ibid)
     if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
         nnop = nnos
     endif

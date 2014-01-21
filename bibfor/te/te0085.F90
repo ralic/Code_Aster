@@ -62,7 +62,7 @@ subroutine te0085(option, nomte)
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
         poids = poids * rho(1) * zr(ipesa)
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             rx= 0.d0
             do i = 1, nno
                 rx= rx+ zr(igeom+2*i-2)*zr(ivf+k+i-1)

@@ -66,7 +66,7 @@ subroutine te0332(option, nomte)
     ima =zi(iadzi)
     numema= dble(ima)
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     poids=0.d0
     triax=0.d0

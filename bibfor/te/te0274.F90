@@ -58,15 +58,15 @@ subroutine te0274(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    if (lteatt('LUMPE','OUI')) then
+        call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         laxi = .true.
     else
         laxi = .false.

@@ -78,7 +78,7 @@ subroutine te0574(option, nomte)
 !
 ! --- CARACTERISTIQUES ELEMENT
 !
-    laxi = lteatt(' ','AXIS','OUI')
+    laxi = lteatt('AXIS','OUI')
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, jpoids, jvf, jdf, jgano)
     nddl = 2*nno

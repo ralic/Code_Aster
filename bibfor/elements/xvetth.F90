@@ -102,7 +102,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 !
 !     S'AGIT-IL D'UNE MODELISATION AXIS
     axi = .false.
-    if (lteatt(' ','AXIS','OUI')) axi = .true.
+    if (lteatt('AXIS','OUI')) axi = .true.
 !
 !     NBRE DE DDLS PAR NOEUD
     nbddl = 1+nfh+nfe

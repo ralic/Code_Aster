@@ -47,9 +47,9 @@ subroutine te0122(option, nomte)
 !
     jquad = ((nomte.eq.'MFPLQU8' ) .or. (nomte.eq.'MEFI_HEXA20' ) .or. (nomte.eq.'MEFI_PENTA15'))
 !
-    jhm = lteatt(nomte,'TYPMOD2','EJ_HYME')
+    jhm = lteatt('TYPMOD2','EJ_HYME')
 !
-    interf = lteatt(nomte,'TYPMOD2','INTERFAC')
+    interf = lteatt('TYPMOD2','INTERFAC')
 
 !
     quadra = (jquad.or.jhm.or.interf)

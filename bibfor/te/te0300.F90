@@ -73,7 +73,7 @@ subroutine te0300(option, nomte)
     eps = r8prem()
     depi = r8depi()
     axi = .false.
-    if (lteatt(' ','AXIS','OUI')) axi = .true.
+    if (lteatt('AXIS','OUI')) axi = .true.
 !
     fami = 'RIGI'
     call elref4(' ', fami, ndim, nno, nnos,&

@@ -83,7 +83,7 @@ subroutine te0291(option, nomte)
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     do kp = 1, npg1
         k=(kp-1)*nno

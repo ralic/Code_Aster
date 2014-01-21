@@ -379,7 +379,7 @@ subroutine te0003(option, nomte)
     end do
 !
 ! INITIALISATION DIMENSION DE L'ESPACE DE TRAVAIL/LLUMPE OU PAS
-    llumpe = lteatt(' ','LUMPE','OUI')
+    llumpe = lteatt('LUMPE','OUI')
     l2d = (ndim.eq.2)
     if (llumpe) then
         if (( elrefe(1:3).eq.'H20' ) .or. ( elrefe(1:3).eq.'H27' ) .or.&
@@ -396,7 +396,7 @@ subroutine te0003(option, nomte)
     nompar(1) = 'X'
     nompar(2) = 'Y'
     nompar(nbpar) = 'INST'
-    laxi = lteatt(' ','AXIS','OUI')
+    laxi = lteatt('AXIS','OUI')
     if (.not.l2d) then
         nompar(3) = 'Z'
     endif

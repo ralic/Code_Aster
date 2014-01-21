@@ -65,7 +65,7 @@ subroutine te0501(option, nomte)
             r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
             tpg =tpg + zr(itempi+i-1)*zr(ivf+k+i-1)
 102      continue
-        if (lteatt(' ','AXIS','OUI')) poids = poids*r
+        if (lteatt('AXIS','OUI')) poids = poids*r
 !
         call rcfode(ifon(2), tpg, alpha, xkpt)
 !

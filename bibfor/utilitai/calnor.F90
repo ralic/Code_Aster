@@ -144,7 +144,7 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
 !
 ! 1.1. ==> PREALABLE
 !
-        if (lteatt(' ','AXIS','OUI')) then
+        if (lteatt('AXIS','OUI')) then
             laxi = .true.
         else
             laxi = .false.

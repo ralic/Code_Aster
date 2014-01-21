@@ -124,7 +124,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 ! --- CAS DES CONTRAINTES PLANES, ON CALCULE EPSZZ A PARTIR
 ! --- DE SIGZZ = 0 :
 !     ------------
-    if (lteatt(' ','C_PLAN','OUI')) then
+    if (lteatt('C_PLAN','OUI')) then
 !
 ! ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 !       -----------------------------------
@@ -158,7 +158,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 !
 ! --- CAS DES DEFORMATIONS PLANES,  EPSZZ = 0 :
 !     ---------------------------------------
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
 !
 ! ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 !       -----------------------------------

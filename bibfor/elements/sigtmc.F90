@@ -67,7 +67,7 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg,&
     k2bid = '  '
     zero = 0.0d0
     ndim2 = ndim
-    if (lteatt(' ','FOURIER','OUI')) then
+    if (lteatt('FOURIER','OUI')) then
         ndim2 = 2
     endif
 !

@@ -67,8 +67,8 @@ subroutine te0243(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    if (lteatt('LUMPE','OUI')) then
+        call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
         call elref4(elrefe, 'NOEU', ndim, nno, nnos,&
@@ -171,7 +171,7 @@ subroutine te0243(option, nomte)
 !
                 call rcfode(ifon(2), tpg, lambda, r8bid)
 !
-                if (lteatt(' ','AXIS','OUI')) poids = poids*r
+                if (lteatt('AXIS','OUI')) poids = poids*r
 !DIR$ IVDEP
                 do 105 i = 1, nno
                     vectt(c(ise,i)) = vectt(&
@@ -212,7 +212,7 @@ subroutine te0243(option, nomte)
                 endif
 !
                 call rcfode(ifon(1), tpg, beta, r8bid)
-                if (lteatt(' ','AXIS','OUI')) poids = poids*r
+                if (lteatt('AXIS','OUI')) poids = poids*r
                 if (zk16(icomp)(1:9) .eq. 'THER_HYDR') then
 ! --- THERMIQUE NON LINEAIRE AVEC HYDRATATION
                     do 104 i = 1, nno
@@ -250,7 +250,7 @@ subroutine te0243(option, nomte)
                     tpsec = tpsec + zr(isechf-1+c(ise,i)) *zr(ivf+k+i- 1)
 201              continue
                 call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
-                if (lteatt(' ','AXIS','OUI')) poids = poids*r
+                if (lteatt('AXIS','OUI')) poids = poids*r
 !
                 do 202 i = 1, nno
                     k=(kp-1)*nno
@@ -273,7 +273,7 @@ subroutine te0243(option, nomte)
                     r = r + coorse(2*(i-1)+1) *zr(ivf2+k+i-1)
                     tpg = tpg + zr(itempi-1+c(ise,i)) *zr(ivf2+k+i-1)
 301              continue
-                if (lteatt(' ','AXIS','OUI')) poids = poids*r
+                if (lteatt('AXIS','OUI')) poids = poids*r
 !
                 do 302 i = 1, nno
                     k=(kp-1)*nno

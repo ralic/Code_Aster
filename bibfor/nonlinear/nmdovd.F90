@@ -125,9 +125,9 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
 ! --------- Type of modelization
 !
-            call teattr(notype, 'C', 'TYPMOD', type_elem, iret)
+            call teattr('C', 'TYPMOD', type_elem, iret, typel=notype)
             if (iret .eq. 0) then
-                call teattr(notype, 'C', 'TYPMOD2', type_elem2, iret)
+                call teattr('C', 'TYPMOD2', type_elem2, iret, typel=notype)
                 if (type_elem(1:6) .eq. 'COMP3D') then
                     call lctest(defo_comp_py, 'MODELISATION', '3D', irett)
                     if (irett .eq. 0) then

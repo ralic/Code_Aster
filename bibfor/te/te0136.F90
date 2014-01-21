@@ -47,8 +47,8 @@ subroutine te0136(option, nomte)
 !
     call elref1(elrefe)
 !
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    if (lteatt('LUMPE','OUI')) then
+        call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
@@ -57,7 +57,7 @@ subroutine te0136(option, nomte)
     tz0 = r8t0()
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     if (option(11:14) .eq. 'COEF') then
         call jevech('PCOEFHR', 'L', iech)

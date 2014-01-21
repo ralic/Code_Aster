@@ -54,19 +54,19 @@ subroutine te0543(option, nomte)
 !
 ! - TYPE DE MODELISATION
 !
-    if (lteatt(' ','DIM_TOPO_MODELI','3')) then
+    if (lteatt('DIM_TOPO_MODELI','3')) then
         typmod(1) = '3D'
-    else if (lteatt(' ','AXIS','OUI')) then
+    else if (lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS'
-    else if (lteatt(' ','C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN'
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN'
     endif
 !
     typmod(2) = 'DEPLA'
 !
-    if (lteatt(' ','TYPMOD2','ELEMDISC')) then
+    if (lteatt('TYPMOD2','ELEMDISC')) then
         typmod(2)='ELEMDISC'
     endif
 !

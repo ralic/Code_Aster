@@ -48,7 +48,7 @@ subroutine porigi(nomte, e, xnu, klv)
     un = 1.d0
     deux = 2.d0
     g = e/ (deux* (un+xnu))
-    euler=lteatt(nomte,'EULER','OUI')
+    euler=lteatt('EULER','OUI')
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !

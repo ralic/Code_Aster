@@ -82,8 +82,8 @@ subroutine te0542(option, nomte)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (.not.lteatt(' ','AXIS','OUI')) .and.&
+    call teattr('S', 'XFEM', enr, ibid)
+    if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
          .and..not.iselli(elref))&
     call jevech('PPMILTO', 'L', jpmilt)

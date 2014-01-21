@@ -118,7 +118,7 @@ subroutine te0334(option, nomte)
 ! ---    RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES
 ! ---    PLANES :
 !        ---------------------------------------------------------
-    if (lteatt(' ','C_PLAN','OUI')) then
+    if (lteatt('C_PLAN','OUI')) then
         call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
             compor = zk16(icompo)
@@ -220,7 +220,7 @@ subroutine te0334(option, nomte)
             sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
 100      continue
 !
-        if (lteatt(' ','C_PLAN','OUI')) then
+        if (lteatt('C_PLAN','OUI')) then
             trsig = sigma(1) + sigma(2)
         else
             trsig = sigma(1) + sigma(2) + sigma(3)
@@ -236,7 +236,7 @@ subroutine te0334(option, nomte)
 !           ---------------------------------------------------------
         epspla(nbsig* (igau-1)+1) = epsm(nbsig* (igau-1)+1) - (c1* sigma(1)-c2*trsig) - epsflf(1)
         epspla(nbsig* (igau-1)+2) = epsm(nbsig* (igau-1)+2) - (c1* sigma(2)-c2*trsig) - epsflf(2)
-        if (lteatt(' ','C_PLAN','OUI')) then
+        if (lteatt('C_PLAN','OUI')) then
             epspla(nbsig* (igau-1)+3) = - (epspla( nbsig* (igau-1)+1)+ epspla(nbsig* (igau-1)+2 )&
                                         )
         else

@@ -69,9 +69,9 @@ subroutine te0595(option, nomte)
     matsym = .true.
 !
 ! - TYPE DE MODELISATION
-    if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS  '
-    else if (ndim.eq.2 .and. lteatt(' ','D_PLAN','OUI')) then
+    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
@@ -132,10 +132,10 @@ subroutine te0595(option, nomte)
             imatuu=1
         endif
 !
-        if (lteatt(' ','INCO','C2 ')) then
+        if (lteatt('INCO','C2 ')) then
 !
 ! - MINI ELEMENT ?
-            call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+            call teattr('S', 'ALIAS8', alias8, ibid)
             if (alias8(6:8) .eq. 'TR3' .or. alias8(6:8) .eq. 'TE4') then
                 mini = .true.
             else
@@ -151,7 +151,7 @@ subroutine te0595(option, nomte)
                         lgpg, zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm),&
                         zr(iddld), angmas, zr(icontm), zr(ivarim), zr(icontp),&
                         zr(ivarip), resi, rigi, mini, zr(ivectu), zr(imatuu), codret)
-        elseif (lteatt(' ','INCO','C2O')) then
+        elseif (lteatt('INCO','C2O')) then
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
             call niinit(nomte, typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
             nddl = nno1*ndim + nno2 + nno2*ndim
@@ -174,10 +174,10 @@ subroutine te0595(option, nomte)
             imatuu=1
         endif
 !
-        if (lteatt(' ','INCO','C2 ')) then
+        if (lteatt('INCO','C2 ')) then
 !
 ! - MINI ELEMENT ?
-            call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+            call teattr('S', 'ALIAS8', alias8, ibid)
             if (alias8(6:8) .eq. 'TR3' .or. alias8(6:8) .eq. 'TE4') then
 ! - PAS ENCORE INTRODUIT
                 valk = zk16(icompo+2)

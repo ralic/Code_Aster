@@ -58,9 +58,9 @@ subroutine te0596(option, nomte)
     call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
 !
 ! - TYPE DE MODELISATION
-    if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
+    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS  '
-    else if (ndim.eq.2 .and. lteatt(' ','D_PLAN','OUI')) then
+    else if (ndim.eq.2 .and. lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN  '
     else if (ndim .eq. 3) then
         typmod(1) = '3D'
@@ -77,10 +77,10 @@ subroutine te0596(option, nomte)
 !
 ! - CALCUL DES FORCES INTERIEURES
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
-        if (lteatt(' ','INCO','C2 ')) then
+        if (lteatt('INCO','C2 ')) then
 !
 ! - MINI ELEMENT ?
-            call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+            call teattr('S', 'ALIAS8', alias8, ibid)
             if (alias8(6:8) .eq. 'TR3' .or. alias8(6:8) .eq. 'TE4') then
                 mini = .true.
             else
@@ -93,7 +93,7 @@ subroutine te0596(option, nomte)
             call nufnpd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
                         typmod, zi(imate), zk16(icompo), zr(igeom), zr(icontm),&
                         zr(iddlm), mini, zr(ivectu))
-        else if (lteatt(' ','INCO','C2O')) then
+        else if (lteatt('INCO','C2O')) then
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
             call niinit(nomte, typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
 !
@@ -106,10 +106,10 @@ subroutine te0596(option, nomte)
             call utmess('F', 'MODELISA10_17', sk=valk)
         endif
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
-        if (lteatt(' ','INCO','C2 ')) then
+        if (lteatt('INCO','C2 ')) then
 !
 ! - MINI ELEMENT ?
-            call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+            call teattr('S', 'ALIAS8', alias8, ibid)
             if (alias8(6:8) .eq. 'TR3' .or. alias8(6:8) .eq. 'TE4') then
 ! - PAS ENCORE INTRODUIT
                 valk = zk16(icompo+2)

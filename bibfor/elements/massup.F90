@@ -85,7 +85,7 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
             call dfdm2j(nno, kpg, idfde, geom, poids)
             poids = abs(poids) * zr(ipoids+kpg-1)
 !
-            if (lteatt(' ','AXIS','OUI')) then
+            if (lteatt('AXIS','OUI')) then
                 r = 0.0d0
                 do 20 i = 1, nno
                     r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)

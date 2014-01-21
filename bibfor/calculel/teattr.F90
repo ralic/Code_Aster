@@ -1,4 +1,4 @@
-subroutine teattr(typel, kstop, noattr, vattr, iret)
+subroutine teattr(kstop, noattr, vattr, iret, typel)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,25 +26,30 @@ subroutine teattr(typel, kstop, noattr, vattr, iret)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 
-    character(len=*) :: typel, kstop, noattr, vattr
-    integer :: iret
+    character(len=1), intent(in) :: kstop
+    character(len=*), intent(in) :: noattr
+    character(len=*), intent(out) :: vattr
+    integer, intent(out) :: iret
+    character(len=*), intent(in), optional :: typel
+
 !---------------------------------------------------------------------
 ! but : Recuperer la valeur d'un attribut d'un type_element
 !---------------------------------------------------------------------
 !  Arguments:
 !  ----------
-!  in typel  (k16) : nom du type_element a interroger
-!                     (ou ' ' si l'on est "sous" la routine te0000)
-!  in noattr (k16) : nom de l'attribut recherche
-!  in kstop  (k1)  : 's' => erreur <f> si attribut absent
-!                  : 'c' => on continue si attribut absent (iret=1)
-! out vattr  (k16) : valeur de l'attribut (ou "non_defini" si absent)
-! out iret   (i)   : code de retour :  0 -> ok
-!                                      1 -> attribut absent
+! (o) in  kstop  (k1)  : 'S' => erreur <f> si attribut absent
+!                      : 'C' => on continue si attribut absent (iret=1)
+! (o) in  noattr (k16) : nom de l'attribut recherche
+! (o) out vattr  (k16) : valeur de l'attribut (ou "non_defini" si absent)
+! (o) out iret   (i)   : code de retour :  0 -> ok
+!                                          1 -> attribut absent
+! (f) in  typel  (k16) : Nom du type_element a interroger
+!                        Necessaire si typel n'est pas le type_element courant
+! ATTENTION : l'appel a teattr est plus couteux avec typel
 !-----------------------------------------------------------------------
 !  Cette routine est accessible partout dans le code. si elle est
-!  appelee en dehors de te0000 (avec typel != ' '), elle necessite
-!  des appels jeveux, elle devient donc un peu couteuse.
+!  appelee en dehors de te0000 (donc avec typel), elle necessite
+!  des appels jeveux, elle devient donc plus couteuse.
 !-----------------------------------------------------------------------
 ! Remarque :
 !  Il est aussi possible de demander les attributs :
@@ -70,7 +75,12 @@ subroutine teattr(typel, kstop, noattr, vattr, iret)
     logical :: apelje
 
 !----------------------------------------------------------------------
-    nomt2=typel
+    if (present(typel)) then
+        ASSERT(nomt2 .ne. ' ')
+        nomt2=typel
+    else
+        nomt2=' '
+    endif
     noatt2=noattr
 
     if (noattr.eq.'CODPHE') noatt2='ALIAS8'

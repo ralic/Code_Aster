@@ -54,11 +54,11 @@ subroutine te0007(option, nomte)
 !
 ! - SPECIFICATION DE LA DIMENSION
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         ndim = 2
-    else if (lteatt(' ','C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN','OUI')) then
         ndim = 2
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         ndim = 2
     endif
 !

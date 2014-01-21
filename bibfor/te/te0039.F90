@@ -103,7 +103,7 @@ subroutine te0039(option, nomte)
     spt=1
     poum='+'
     ! DIM_TOPO_MODELI = -1 => element discret
-    if (lteatt(' ','DIM_TOPO_MODELI','-1')) then
+    if (lteatt('DIM_TOPO_MODELI','-1')) then
 !        ON VERIFIE QUE LES CARACTERISTIQUES ONT ETE AFFECTEES
 !        LE CODE DU DISCRET
         call infdis('CODE', ibid, r8bid, nomte)
@@ -138,7 +138,7 @@ subroutine te0039(option, nomte)
 ! --- ------------------------------------------------------------------
     if (option(1:14) .eq. 'REFE_FORC_NODA') then
         call jevech('PVECTUR', 'E', ivectu)
-        if (nomte .eq. 'MECA_POU_C_T' .or. lteatt(' ','CODMOD','DTR')) then
+        if (nomte .eq. 'MECA_POU_C_T' .or. lteatt('CODMOD','DTR')) then
             call terefe('EFFORT_REFE', 'MECA_DISCRET', forref)
             call terefe('MOMENT_REFE', 'MECA_DISCRET', momref)
 !
@@ -150,13 +150,13 @@ subroutine te0039(option, nomte)
                     zr(ivectu+(in-1)*nc+i-1)=momref
 202              continue
 200          continue
-        else if (lteatt(' ','CODMOD','2DT')) then
+        else if (lteatt('CODMOD','2DT')) then
             call terefe('EFFORT_REFE', 'MECA_DISCRET', forref)
             do 204 in = 1, nno
                 zr(ivectu+(in-1)*nc)=forref
                 zr(ivectu+(in-1)*nc+1)=forref
 204          continue
-        else if (lteatt(' ','CODMOD','2TR')) then
+        else if (lteatt('CODMOD','2TR')) then
             call terefe('EFFORT_REFE', 'MECA_DISCRET', forref)
             call terefe('MOMENT_REFE', 'MECA_DISCRET', momref)
             do 205 in = 1, nno
@@ -164,7 +164,7 @@ subroutine te0039(option, nomte)
                 zr(ivectu+(in-1)*nc+1)=forref
                 zr(ivectu+(in-1)*nc+2)=momref
 205          continue
-        else if (lteatt(' ','CODMOD','DIT')) then
+        else if (lteatt('CODMOD','DIT')) then
             call terefe('EFFORT_REFE', 'MECA_DISCRET', forref)
             do 206 in = 1, nno
                 zr(ivectu+(in-1)*nc)=forref
@@ -191,7 +191,7 @@ subroutine te0039(option, nomte)
         call jevech('PDEPLPR', 'L', ideplp)
         call jevech('PCOMPOR', 'L', icompo)
         call jevech('PMATERC', 'L', lmater)
-        if (lteatt(nomte,'CODMOD','DTR') .or. lteatt(nomte,'CODMOD','DIT')) then
+        if (lteatt('CODMOD','DTR') .or. lteatt('CODMOD','DIT')) then
 !           PARAMETRES EN ENTREE
             call jevech('PCAORIE', 'L', lorien)
             call matrot(zr(lorien), pgl)

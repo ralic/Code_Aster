@@ -49,13 +49,13 @@ subroutine te0372(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ii, ij, j, jgano, jj, ndim
     integer :: nnos
-    real(kind=8) :: r, rbid
+    real(kind=8) :: r
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
     ndi = nno* (2*nno+1)
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PONDECR', 'L', ionde)
@@ -68,7 +68,7 @@ subroutine te0372(option, nomte)
     nomres(1) = 'RHO'
     nomres(2) = 'CELE_R'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [rbid],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     celer = valres(2)

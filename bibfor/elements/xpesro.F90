@@ -82,7 +82,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !-----------------------------------------------------------------------
     grdepl=.false.
 !
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
     call elref4(' ', 'RIGI', ibid, ibid, nnops,&
                 ibid, ibid, ibid, ibid, ibid)

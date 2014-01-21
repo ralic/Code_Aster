@@ -50,7 +50,7 @@ subroutine te0518(option, nomte)
 ! - INITIALISATION
 !
     nomelt = nomte
-    call teattr(' ', 'S', 'TYPMOD', typmod(1), iret)
+    call teattr('S', 'TYPMOD', typmod(1), iret)
     typmod(2) = 'GRADVARI'
     axi = typmod(1).eq.'AXIS'
 !

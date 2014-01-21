@@ -77,7 +77,7 @@ subroutine te0331(option, nomte)
     volact=0.d0
     dvol=0.d0
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     nomres(1) = 'M'
     nomres(2) = 'VOLU_REFE'

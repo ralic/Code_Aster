@@ -57,7 +57,7 @@ subroutine te0433(option, nomte)
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !
-    lexc = (lteatt(' ','CODMOD','GRC'))
+    lexc = (lteatt('CODMOD','GRC'))
     materi = ' '
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS

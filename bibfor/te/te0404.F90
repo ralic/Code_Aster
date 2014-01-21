@@ -59,7 +59,7 @@ subroutine te0404(option, nomte)
     call jevech('PCOURAN', 'E', icour)
 !
 !     RECUPERATION DES COORDONNEES DES NOEUDS
-    call teattr(' ', 'S', 'DIM_COOR_MODELI', cnd, ier)
+    call teattr('S', 'DIM_COOR_MODELI', cnd, ier)
     read(cnd,'(I8)')  nd
     call jevech('PGEOMER', 'L', igeom)
     fami = 'RIGI'

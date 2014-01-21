@@ -46,7 +46,7 @@ subroutine te0386(option, nomte)
     call elref4(lirefe(2), 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)

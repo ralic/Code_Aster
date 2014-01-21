@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine borthm(nomte, axi, vf, perman, typvf,&
+    subroutine borthm(axi, vf, perman, typvf,&
                       typmod, ndim, ndlno, ndlnm)
-        character(len=16) :: nomte
         logical :: axi
         logical :: vf
         logical :: perman

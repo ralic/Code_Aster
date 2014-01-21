@@ -52,7 +52,7 @@ subroutine te0293(option, nomte)
     call jevech('PMATZZR', 'E', imattt)
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     do 10 kp = 1, npg
         k=(kp-1)*nno

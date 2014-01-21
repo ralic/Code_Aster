@@ -50,7 +50,7 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv,&
 !
     zero = 0.d0
     deux = 2.d0
-    euler=lteatt(nomte,'EULER','OUI')
+    euler=lteatt('EULER','OUI')
 !
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

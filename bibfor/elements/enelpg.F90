@@ -172,7 +172,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
         call dcopy(6, vari(nbvari-5), 1, tlog, 1)
 !
 !        CAS 3D
-        if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
+        if (lteatt('DIM_TOPO_MAILLE','3')) then
 !
             trt=tlog(1)+tlog(2)+tlog(3)
             enelas = undemi* (&
@@ -182,7 +182,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !
 !
 ! ---    CAS DES CONTRAINTES PLANES :
-        else if (lteatt(' ','C_PLAN','OUI')) then
+        else if (lteatt('C_PLAN','OUI')) then
             trt=tlog(1)+tlog(2)
 !
             enelas = undemi* (&

@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine typthm(nomte, axi, perman, vf, typvf,&
+    subroutine typthm(axi, perman, vf, typvf,&
                       typmod, ndim)
-        character(len=16) :: nomte
         logical :: axi
         logical :: perman
         logical :: vf

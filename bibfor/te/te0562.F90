@@ -47,7 +47,7 @@ subroutine te0562(option, nomte)
                 idfde, idfdeb, jgano, jganob)
 !
 !    TYPE DE MODELISATION
-    call teattr(' ', 'S', 'TYPMOD', typmod(1), iret)
+    call teattr('S', 'TYPMOD', typmod(1), iret)
     typmod(2) = 'GRADVARI'
 !
 !     PARAMETRES EN ENTREE

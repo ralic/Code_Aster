@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function lteatt(typel, noattr, vattr)
-        character(len=*) :: typel
-        character(len=*) :: noattr
-        character(len=*) :: vattr
-        logical :: lteatt
-    end function lteatt
+function lteatt(noattr, vattr, typel)
+    logical  :: lteatt
+    character(len=*), intent(in) :: noattr
+    character(len=*), intent(in) :: vattr
+    character(len=*), intent(in), optional :: typel
+end function lteatt
 end interface

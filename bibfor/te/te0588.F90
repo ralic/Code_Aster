@@ -170,7 +170,7 @@ subroutine te0588(option,nomte)
 !
 ! PARAMÈTRES PROPRES AUX ÉLÉMENTS 1D ET 2D QUADRATIQUES
 !
-    call teattr(nomte, 'S', 'XFEM', enr, ibid)
+    call teattr('S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (enr.eq.'XH') .and. .not.&
          iselli(elref)) call jevech('PPMILTO', 'L', jpmilt)
 ! =====================================================================
@@ -193,7 +193,7 @@ subroutine te0588(option,nomte)
         call jevech('PCARCRI', 'L', icarcr)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PCONTMR', 'L', icontm)
-!        call jevech('PVARIMP', 'L', 
+!        call jevech('PVARIMP', 'L',
         read (zk16(icompo-1+2),'(I16)') nbvari
 ! =====================================================================
 ! ----RECUPERATION DES ANGLES NAUTIQUES/EULER DEFINIS PAR AFFE_CARA_ELEM
@@ -223,7 +223,7 @@ subroutine te0588(option,nomte)
                 angleu(1) = angmas(5)
             endif
             call eulnau(angleu/r8dgrd(), angnau/r8dgrd())
-!     
+!
 !# CAS OU AFFE_CARA_ELEM EST EN ANGLE NAUTIQUE (OK PAS DE CONVERSION)
         else
             if (ndim .eq. 3) then

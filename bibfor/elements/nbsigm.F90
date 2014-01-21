@@ -28,7 +28,7 @@ function nbsigm()
     character(len=8) :: nbsig
     integer :: iret
 !
-    call teattr(' ', 'C', 'NBSIGM', nbsig, iret)
+    call teattr('C', 'NBSIGM', nbsig, iret)
     if (iret .ne. 0) then
         call utmess('F', 'ELEMENTS_90')
     endif

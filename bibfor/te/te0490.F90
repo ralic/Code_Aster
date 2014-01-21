@@ -192,7 +192,7 @@ subroutine te0490(option, nomte)
 !
 ! --- TYPE DE MODELISATION
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         axi=.true.
     else
         axi=.false.
@@ -561,7 +561,7 @@ subroutine te0490(option, nomte)
 !
 ! --- TRAITEMENT DU CAS CONTRAINTES PLANES :
 !
-            if (lteatt(' ','C_PLAN','OUI')) then
+            if (lteatt('C_PLAN','OUI')) then
 !
 ! --- CALCUL DE LA COMPOSANTE EPSZZ DE LA DEFORMATION TOTALE
 ! --- EN ECRIVANT EPSZZ = EPSZZ_ELAS   + EPSZZ_PLAS
@@ -774,7 +774,7 @@ subroutine te0490(option, nomte)
 !
 ! --- CAS DES CONTRAINTES PLANES :
 !
-            if (lteatt(' ','C_PLAN','OUI')) then
+            if (lteatt('C_PLAN','OUI')) then
                 trsig = sigma(1) + sigma(2)
                 epsel(1) = c1*sigma(1)-c2*trsig
                 epsel(2) = c1*sigma(2)-c2*trsig

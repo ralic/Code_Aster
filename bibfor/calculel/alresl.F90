@@ -178,7 +178,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
                 call jeecra(jexnum(nochou//'.RSVI', igr), 'LONMAX', nel+ 1)
                 call jeveuo(jexnum(nochou//'.RSVI', igr), 'E', jrsvi)
                 call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-                call teattr(nomte, 'S', 'TYPE_VOISIN', codvoi, ibid)
+                call teattr('S', 'TYPE_VOISIN', codvoi, ibid, typel=nomte)
 !
 !           -- CALCUL DE LA LONGUEUR DU GREL : LONTOT
                 lontot=0

@@ -138,7 +138,7 @@ subroutine xmacon(char, noma, nomo)
         if (iad .gt. 0) then
 !          ITYELE=ZI(JMAIL-1+IMA)
 !          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYELE),TYPELE)
-!          CALL TEATTR(TYPELE,'S','XFEM',ENR,IBID)
+!          CALL TEATTR('S','XFEM',ENR,IBID)
 !          IF (ENR(3:3).EQ.'C'.OR.ENR(4:4).EQ.'C') THEN
             nfiss = zi(jcesd-1+5+4*(ima-1)+2)
             do ifiss = 1, nfiss
@@ -205,7 +205,7 @@ subroutine xmacon(char, noma, nomo)
 !
             ityele=zi(jmail-1+ima)
             call jenuno(jexnum('&CATA.TE.NOMTE', ityele), typele)
-            call teattr(typele, 'S', 'XFEM', enr, ibid)
+            call teattr('S', 'XFEM', enr, ibid, typel=typele)
 ! --- ON SORT SI CE N'EST PAS UNE MAILLE DE CONTACT
 !          IF (ENR(3:3).NE.'C'.AND.ENR(4:4).NE.'C') GOTO 210
 ! --- CALCUL DU STATUT DE LA MAILLE, UTILE POUR LA PROJECTION :

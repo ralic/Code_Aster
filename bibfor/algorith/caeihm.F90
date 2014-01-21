@@ -88,13 +88,13 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
 ! ======================================================================
 ! --- INITIALISATION DES GRANDEURS GENERALISEES SELON MODELISATION -----
 ! ======================================================================
-    call greihm(nomte, perman, ndim, mecani, press1,&
+    call greihm(perman, ndim, mecani, press1,&
                 press2, tempe, dimdef, dimcon)
 !
 !
-    call modthm(nomte, modint)
+    call modthm(modint)
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         axi = .true.
     endif
 ! ======================================================================

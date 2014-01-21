@@ -46,7 +46,7 @@ subroutine te0329(option, nomte)
     integer :: i, iacce, iadzi, iazk24, idim, iharm, ino
     integer :: ivectu, ivetel, j, jno, k
 !-----------------------------------------------------------------------
-    if (lteatt(' ','DIM_TOPO_MODELI','3')) then
+    if (lteatt('DIM_TOPO_MODELI','3')) then
 !   ----------------------------------------
         call elref4(' ', 'RIGI', ndim, nno, nnos,&
                     npg1, ipoids, ivf, idfdx, jgano)

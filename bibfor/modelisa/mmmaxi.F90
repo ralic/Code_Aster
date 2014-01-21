@@ -111,7 +111,7 @@ function mmmaxi(modelz, lisma, nbma)
         endif
  50     continue
         call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
-        if (lteatt(notype,'AXIS','OUI')) then
+        if (lteatt('AXIS','OUI', typel=notype)) then
             nbaxis = nbaxis +1
         endif
 100     continue

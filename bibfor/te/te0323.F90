@@ -48,7 +48,7 @@ subroutine te0323(option, nomte)
                 npg, iw, ivf2, idf2, jgn)
     ndim = ndim + 1
     nddl = 2*ndim*nno1 + nno2
-    axi = lteatt(' ','AXIS','OUI')
+    axi = lteatt('AXIS','OUI')
 !
 ! - DECALAGE D'INDICE POUR LES ELEMENTS DE JOINT
     call ejinit(nomte, iu, ip)

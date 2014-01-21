@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine teattr(typel, kstop, noattr, vattr, iret)
-        character(len=*) :: typel
-        character(len=*) :: kstop
-        character(len=*) :: noattr
-        character(len=*) :: vattr
-        integer :: iret
-    end subroutine teattr
+subroutine teattr(kstop, noattr, vattr, iret, typel)
+    character(len=1), intent(in) :: kstop
+    character(len=*), intent(in) :: noattr
+    character(len=*), intent(out):: vattr
+    integer, intent(out) :: iret
+    character(len=*), intent(in), optional :: typel
+end subroutine teattr
 end interface

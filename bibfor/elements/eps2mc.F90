@@ -87,7 +87,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 !       -------------
 ! ----  CAS MASSIF 3D
 !       -------------
-        if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
+        if (lteatt('DIM_TOPO_MAILLE','3')) then
 !
 ! ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 ! ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB) :
@@ -126,8 +126,8 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 !       ------------------------------------------------------------
 ! ----  CAS MASSIF 2D CONTRAINTES PLANES, DEFORMATIONS PLANES ET AXI
 !       ------------------------------------------------------------
-            elseif (lteatt(' ','C_PLAN','OUI').or. lteatt(' ','D_PLAN',&
-        'OUI').or. lteatt(' ','AXIS','OUI')) then
+            elseif (lteatt('C_PLAN','OUI').or. lteatt('D_PLAN',&
+        'OUI').or. lteatt('AXIS','OUI')) then
 !
             k = (igau-1)*nno
 !
@@ -147,7 +147,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
                 dvdx = dvdx + dfdx(i)*depl((i-1)*ndim+2)
                 dvdy = dvdy + dfdy(i)*depl((i-1)*ndim+2)
 !
-                if (lteatt(' ','AXIS','OUI')) then
+                if (lteatt('AXIS','OUI')) then
                     idecno = 2*(i-1)
                     rayon = rayon + zr(ivf+i+k-1)*xyz(1+idecno)
                     dx = dx + zr(ivf+i+k-1)*depl(1+idecno)
@@ -160,7 +160,7 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
             eps2(nbsig*(igau-1)+2) = undemi*( dudy*dudy + dvdy*dvdy )
             eps2(nbsig*(igau-1)+3) = zero
 !
-            if (lteatt(' ','AXIS','OUI')) then
+            if (lteatt('AXIS','OUI')) then
                 eps2(nbsig*(igau-1)+3) = undemi*dx*dx/rayon/rayon
             endif
 !

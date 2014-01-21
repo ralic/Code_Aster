@@ -53,7 +53,7 @@ subroutine te0210(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
 !====

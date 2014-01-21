@@ -94,7 +94,7 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
 ! 1. MODELISATION AXI
 !====
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
 !
         r=0.d0
         do i = 1, nno

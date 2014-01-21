@@ -76,18 +76,18 @@ subroutine te0100(option, nomte)
 !
 ! - TYPE DE MODELISATION
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS    '
-    else if (lteatt(' ','C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN  '
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN  '
     else
 !       NOM D'ELEMENT ILLICITE
-        ASSERT(lteatt(' ', 'C_PLAN', 'OUI'))
+        ASSERT(lteatt('C_PLAN', 'OUI'))
     endif
 !
-    if (lteatt(' ','TYPMOD2','ELEMDISC')) then
+    if (lteatt('TYPMOD2','ELEMDISC')) then
         typmod(2) = 'ELEMDISC'
     else
         typmod(2) = '        '

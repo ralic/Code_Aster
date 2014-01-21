@@ -52,8 +52,8 @@ subroutine te0242(option, nomte)
 ! DEB ------------------------------------------------------------------
     call elref1(elrefe)
 !
-    if (lteatt(' ','LUMPE','OUI')) then
-        call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    if (lteatt('LUMPE','OUI')) then
+        call teattr('S', 'ALIAS8', alias8, ibid)
         if (alias8(6:8) .eq. 'QU9') elrefe='QU4'
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
         call elref4(elrefe, 'NOEU', ndim, nno, nnos,&
@@ -127,7 +127,7 @@ subroutine te0242(option, nomte)
                     r = r + coorse(2*(i-1)+1) * zr(ivf+k+i-1)
                     tpgi = tpgi + zr(itempi-1+c(ise,i)) * zr(ivf+k+i- 1)
 102              continue
-                if (lteatt(' ','AXIS','OUI')) poids = poids*r
+                if (lteatt('AXIS','OUI')) poids = poids*r
                 call rcfode(ifon(2), tpgi, lambda, r8bid)
 !
                 ij = imattt - 1
@@ -161,7 +161,7 @@ subroutine te0242(option, nomte)
                     r = r + coorse(2*(i-1)+1) * zr(ivf2+k+i-1)
                     tpgi = tpgi + zr(itempi-1+c(ise,i)) * zr(ivf2+k+i- 1)
 402              continue
-                if (lteatt(' ','AXIS','OUI')) poids = poids*r
+                if (lteatt('AXIS','OUI')) poids = poids*r
                 call rcfode(ifon(1), tpgi, r8bid, rhocp)
 !
                 ij = imattt - 1
@@ -195,7 +195,7 @@ subroutine te0242(option, nomte)
                     tpg = tpg + zr(itempi-1+c(ise,i)) *zr(ivf+k+i-1)
                     tpsec = tpsec + zr(isechf-1+c(ise,i)) *zr(ivf+k+i- 1)
 201              continue
-                if (lteatt(' ','AXIS','OUI')) poids = poids*r
+                if (lteatt('AXIS','OUI')) poids = poids*r
                 call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
 !
                 ij = imattt - 1
@@ -226,7 +226,7 @@ subroutine te0242(option, nomte)
                 do 302 i = 1, nno
                     r = r + coorse(2*(i-1)+1) *zr(ivf2+k+i-1)
 302              continue
-                if (lteatt(' ','AXIS','OUI')) poids = poids*r
+                if (lteatt('AXIS','OUI')) poids = poids*r
 !
                 ij = imattt - 1
                 do 303 i = 1, nno

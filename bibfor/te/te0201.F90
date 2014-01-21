@@ -53,7 +53,7 @@ subroutine te0201(option, nomte)
 !
     npg=2
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS'
     else
         typmod(1) = 'PLAN'

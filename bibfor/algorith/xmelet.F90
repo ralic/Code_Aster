@@ -101,8 +101,8 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
     if (elrefp .eq. 'P15') typmai = 'PENTA15'
     if (elrefp .eq. 'T10') typmai = 'TETRA10'
 !
-    call teattr(nomte, 'S', 'XFEM_E', enre, ier)
-    call teattr(nomte, 'S', 'XFEM_M', enrm, ier)
+    call teattr('S', 'XFEM_E', enre, ier, typel=nomte)
+    call teattr('S', 'XFEM_M', enrm, ier, typel=nomte)
 !
     do 11 i = 1, 3
         jnne(i)=0

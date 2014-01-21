@@ -59,11 +59,11 @@ subroutine te0561(option, nomte)
 !
 ! - TYPE DE MODELISATION
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS    '
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN  '
-    else if (lteatt(' ','DIM_TOPO_MAILLE','3')) then
+    else if (lteatt('DIM_TOPO_MAILLE','3')) then
         typmod(1) = '3D      '
     else
         ASSERT(.false.)

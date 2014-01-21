@@ -50,7 +50,7 @@ subroutine te0068(option, nomte)
     call elref1(elrefe)
     ASSERT(elrefe(1:2).eq.'SE')
 
-    if (lteatt(' ','LUMPE','OUI'))  elrefe='SE2'
+    if (lteatt('LUMPE','OUI'))  elrefe='SE2'
 
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)

@@ -50,7 +50,7 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 !
     zero = 0.d0
     deux = 2.d0
-    euler=lteatt(nomte,'EULER','OUI')
+    euler=lteatt('EULER','OUI')
 
 !
 !

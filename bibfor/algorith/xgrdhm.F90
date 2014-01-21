@@ -89,7 +89,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
-    call teattr(nomte, 'C', 'MODTHM', enr, ier)
+    call teattr('C', 'MODTHM', enr, ier, typel=nomte)
     if (ier .eq. 0) then
         mecani(1) = 1
         press1(1) = 1
@@ -100,7 +100,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
 ! =====================================================================
 ! --- ON VERIFIE LA NATURE DE L'ELEMENT HM-XFEM -----------------------
 ! =====================================================================
-    call teattr(nomte, 'S', 'XFEM', enr, ier)
+    call teattr('S', 'XFEM', enr, ier, typel=nomte)
     if (enr(1:2) .eq. 'XH') then
         enrmec(1)=1
     endif

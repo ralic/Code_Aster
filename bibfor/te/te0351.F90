@@ -43,11 +43,11 @@ subroutine te0351(option, nomte)
 !
 ! - TYPE DE MODELISATION
 !
-    if (lteatt(' ','AXIS','OUI')) then
+    if (lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS'
-    else if (lteatt(' ','C_PLAN','OUI')) then
+    else if (lteatt('C_PLAN','OUI')) then
         typmod(1) = 'C_PLAN'
-    else if (lteatt(' ','D_PLAN','OUI')) then
+    else if (lteatt('D_PLAN','OUI')) then
         typmod(1) = 'D_PLAN'
     else
         ASSERT(.false.)

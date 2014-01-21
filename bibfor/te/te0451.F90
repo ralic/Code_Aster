@@ -44,7 +44,7 @@ subroutine te0451(option, nomte)
     character(len=2) :: val
     logical :: lcoqmu, lreel
 !     ------------------------------------------------------------------
-    call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
+    call teattr('S', 'ALIAS8', alias8, ibid)
     cmod=alias8(3:5)
     if (cmod .eq. 'DKT' .or. cmod .eq. 'DST' .or. cmod .eq. 'Q4G' .or. cmod .eq. 'CQ3') then
         nbsig=6

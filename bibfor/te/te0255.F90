@@ -45,13 +45,13 @@ subroutine te0255(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: i, ii, jgano, ndim, nnos
-    real(kind=8) :: r, r8b, rho(1)
+    real(kind=8) :: r, rho(1)
 !-----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
     laxi = .false.
-    if (lteatt(' ','AXIS','OUI')) laxi = .true.
+    if (lteatt('AXIS','OUI')) laxi = .true.
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
@@ -62,7 +62,7 @@ subroutine te0255(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [r8b],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
     do 10 i = 1, 2*nno
