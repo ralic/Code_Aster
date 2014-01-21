@@ -151,15 +151,6 @@ Conseil :
      de type :%(k2)s
 """),
 
-32 : _(u"""
-     Erreur programmeur :
-     La mémoire allouée avec la routine AS_ALLOCATE n'a pas été totalement libérée
-     (fuite mémoire).
-
-     Le volume de mémoire perdu est : %(r1)f Mo
-"""),
-
-
 
 36 : _(u"""
      Le nombre d'enregistrements maximum de la base %(k1)s sera modifié

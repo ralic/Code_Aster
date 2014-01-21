@@ -60,6 +60,16 @@ Conseils :
     L'élément de référence ou la famille de points de Gauss ne sont pas définis.
 """),
 
+6 : _(u"""
+     Erreur programmeur :
+     La mémoire allouée avec la routine AS_ALLOCATE n'a pas été totalement libérée
+     (fuite mémoire).
+
+     Le volume de mémoire perdu est : %(r1).6f Mo
+"""),
+
+
+
 9 : _(u"""
 Erreur de programmation dans un module Python. 
 Condition non respectée : %(k2)s

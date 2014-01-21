@@ -43,7 +43,7 @@ subroutine check_aster_allocate(init)
     endif
 !
     if (cuvtrav .ne. 0.d0) then
-        call utmess('A', 'JEVEUX_32', sr=cuvtrav*lois/1.e6)
+        call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
     endif
 !
 end subroutine
