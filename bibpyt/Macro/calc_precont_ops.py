@@ -127,40 +127,24 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
   # cas ADHERENT ou non
   ii = 0
+  typ_ma = []
   for mcabl in CABLE_BP :
       __TCAB1 = RECU_TABLE(CO=mcabl, NOM_TABLE='CABLE_GL')
       table_cable=__TCAB1.EXTR_TABLE()
       __adher    = table_cable.ADHERENT.values()[0]
+      __typ_ma   = table_cable.TYPE_MAILLE.values()[0]
+      typ_ma.append(__typ_ma)
       if ii==0 :
           adher = __adher
       elif ii!=0 and __adher!= adher:
           UTMESS('F','CABLE0_3')
       ii+=1
 
-      DETRUIRE(CONCEPT=_F(NOM=__TCAB1))
+      #DETRUIRE(CONCEPT=_F(NOM=__TCAB1))
 
   adher = adher.strip()
 
   if (adher == 'OUI') :
-    __MOD = string.ljust(MODELE.nom,8)
-    __MOD1 =__MOD+'.MODELE    .LGRF        '
-    __LMAIL = aster.getvectjev(__MOD1)
-    __MAIL  = string.strip(__LMAIL[0])
-    __MOD1 =__MOD+'.MAILLE      '
-    __typeMaille = aster.getvectjev(__MOD1)
-    __teNomte    = aster.getvectjev('&CATA.TE.NOMTE')
-
-    __frott = False
-    for iel in __typeMaille :
-      if string.strip(__teNomte[iel-1]) == 'MECGSEG3' :
-        __frott = True
-        break
-
-    if __frott :
-      __modCable = "CABLE_GAINE"
-    else :
-      __modCable = "BARRE"
-
     # finalisation liste instants
     __L2[-1:-1] = [__TINT]
 
@@ -234,8 +218,9 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
     motscle2['RELA_CINE_BP']=[]
     motscle3={}
     motscle3['RELA_CINE_BP']=[]
-    set_GROUP_MA_A = set()
-    for mcabl in CABLE_BP:
+    set_GROUP_MA_A_SEG2 = set()
+    set_GROUP_MA_A_SEG3 = set()
+    for ica,mcabl in enumerate(CABLE_BP):
       # Creation de mots-cles pour les AFFE_CHAR_MECA
       motscles['RELA_CINE_BP'].append(_F(CABLE_BP=mcabl,
                                         SIGM_BPEL = 'OUI',
@@ -246,33 +231,50 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
       motscle3['RELA_CINE_BP'].append(_F(CABLE_BP=mcabl,
                                         SIGM_BPEL = 'OUI',
                                         RELA_CINE = 'OUI',) )
-
       # Creation de __GROUP_MA_A : liste des noms des cables contenus
       # dans chaque concept CABLE_BP = cables  a activer
       __TCAB = RECU_TABLE(CO=mcabl, NOM_TABLE='CABLE_BP')
-      col_nom_cable = __TCAB.EXTR_TABLE().NOM_CABLE
-      set_GROUP_MA_A.update(col_nom_cable.values())
-    __GROUP_MA_A = list(set_GROUP_MA_A)
+      table_cable=__TCAB.EXTR_TABLE()
+      col_nom_cable = table_cable.NOM_CABLE
+      __typ_ma   = typ_ma[ica]
+      if __typ_ma.strip()=='SEG2':
+        set_GROUP_MA_A_SEG2.update(col_nom_cable.values())
+      elif __typ_ma.strip()=='SEG3':
+        set_GROUP_MA_A_SEG3.update(col_nom_cable.values())
+      else :
+        raise Exception('type inconnu')
+    __GROUP_MA_A_SEG2 = list(set_GROUP_MA_A_SEG2)
+    __GROUP_MA_A_SEG3 = list(set_GROUP_MA_A_SEG3)
 
     # Creation de __GROUP_MA_I : liste des noms des cables contenus
     # dans chaque CABLE_BP_INACTIF
     # __GROUP_MA_CABLE = liste des cables actifs et inactifs
-    set_GROUP_MA_I = set()
+    set_GROUP_MA_I_SEG2 = set()
+    set_GROUP_MA_I_SEG3 = set()
 
     if CABLE_BP_INACTIF:
       motscle6={}
       motscle6['RELA_CINE_BP']=[]
       for mcabl in CABLE_BP_INACTIF:
         __TCA0 = RECU_TABLE(CO=mcabl, NOM_TABLE='CABLE_BP')
+        __TCA2 = RECU_TABLE(CO=mcabl, NOM_TABLE='CABLE_GL')
         col_nom_cable = __TCA0.EXTR_TABLE().NOM_CABLE
-        set_GROUP_MA_I.update(col_nom_cable.values())
+        __typ_ma   = __TCA2.EXTR_TABLE().TYPE_MAILLE.values()[0]
+        if __typ_ma.strip()=='SEG2':
+            set_GROUP_MA_I_SEG2.update(col_nom_cable.values())
+        elif __typ_ma.strip()=='SEG3':
+            set_GROUP_MA_I_SEG3.update(col_nom_cable.values())
+        else :
+            raise Exception('type inconnu')
 
         # Creation de mots-cles pour les AFFE_CHAR_MECA
         motscle6['RELA_CINE_BP'].append(_F(CABLE_BP=mcabl,
                                           SIGM_BPEL = 'NON',
                                           RELA_CINE = 'OUI',) )
-    __GROUP_MA_I = list(set_GROUP_MA_I)
-    __GROUP_MA_CABLES = __GROUP_MA_A + __GROUP_MA_I
+    __GROUP_MA_I_SEG2 = list(set_GROUP_MA_I_SEG2)
+    __GROUP_MA_I_SEG3 = list(set_GROUP_MA_I_SEG3)
+    __GROUP_MA_CABLES_SEG2 = __GROUP_MA_A_SEG2 + __GROUP_MA_I_SEG2
+    __GROUP_MA_CABLES_SEG3 = __GROUP_MA_A_SEG3 + __GROUP_MA_I_SEG3
 
 
     # 1.4 Creation des mots-clés facteurs COMPORTEMENT
@@ -284,6 +286,8 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
         dComp_incr.append(j.cree_dict_valeurs(j.mc_liste))
         for i in dComp_incr[-1].keys():
             if dComp_incr[-1][i]==None : del dComp_incr[-1][i]
+    dComp_incr0=copy.copy(dComp_incr)
+    dComp_incr1=copy.copy(dComp_incr)
 
     PARM_THETA=0.
     for j in range(len(COMPORTEMENT)) :
@@ -293,45 +297,54 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
     if PARM_THETA == 0:
       PARM_THETA=dComp_incr[0]['PARM_THETA']
 
-    if __frott:
-      dComp_incrElas={'RELATION' : 'KIT_CG', 'TOUT' : 'OUI', 'PARM_THETA' : PARM_THETA}
-      dComp_incrElas['RELATION_KIT']=('ELAS','CABLE_GAINE_FROT',)
-    else :
-      dComp_incrElas={'RELATION' : 'ELAS', 'TOUT' : 'OUI', 'PARM_THETA' : PARM_THETA}
-
-    dComp_incr0=copy.copy(dComp_incr)
-    dComp_incr1=copy.copy(dComp_incr)
-
-    if __frott :
+    dComp_incrElas=[]
+    affe_mo = []
+    if __GROUP_MA_A_SEG3 != []:
+        comp_seg3={'RELATION' : 'KIT_CG', 'GROUP_MA' : __GROUP_MA_A_SEG3, 'PARM_THETA' : PARM_THETA}
+        comp_seg3['RELATION_KIT']=('ELAS','CABLE_GAINE_FROT',)
+        dComp_incrElas.append(comp_seg3)
+        affe_mo.append({'GROUP_MA' : __GROUP_MA_A_SEG3,
+                        'PHENOMENE': 'MECANIQUE',
+                        'MODELISATION' : 'CABLE_GAINE',
+                       })
+    if __GROUP_MA_A_SEG2 != []:
+      dComp_incrElas.append({'RELATION' : 'ELAS', 'TOUT' : 'OUI', 'PARM_THETA' : PARM_THETA})
+      affe_mo.append({'GROUP_MA' : __GROUP_MA_A_SEG2,
+                        'PHENOMENE': 'MECANIQUE',
+                        'MODELISATION' : 'BARRE',
+                       })
+    if __GROUP_MA_CABLES_SEG3 != []:
       dComp_incr0.append(_F(RELATION='KIT_CG',
                             RELATION_KIT=('SANS','CABLE_GAINE_FROT',),
-                            GROUP_MA=__GROUP_MA_CABLES,) )
-      if __GROUP_MA_I:
+                            GROUP_MA=__GROUP_MA_CABLES_SEG3,) )
+      if __GROUP_MA_I_SEG3:
         dComp_incr1.append(_F(RELATION='KIT_CG',
                             RELATION_KIT=('SANS','CABLE_GAINE_FROT',),
-                              GROUP_MA=__GROUP_MA_I,) )
+                              GROUP_MA=__GROUP_MA_I_SEG3,) )
 
-    else :
-      dComp_incr0.append(_F(RELATION='SANS',GROUP_MA=__GROUP_MA_CABLES,) )
-      if __GROUP_MA_I:
-        dComp_incr1.append(_F(RELATION='SANS',GROUP_MA=__GROUP_MA_I,) )
+    if __GROUP_MA_CABLES_SEG2 != []:
+      dComp_incr0.append(_F(RELATION='SANS',GROUP_MA=__GROUP_MA_CABLES_SEG2,) )
+      if __GROUP_MA_I_SEG2:
+        dComp_incr1.append(_F(RELATION='SANS',GROUP_MA=__GROUP_MA_I_SEG2,) )
 
 
     # 1.5 Modele contenant uniquement les cables de precontrainte
     # ---------------------------------------------------------
 
 
-    objma=self.get_sd_avant_etape(__MAIL,self)
+    __MOD = string.ljust(MODELE.nom,8)
+    __MOD1 =__MOD+'.MODELE    .LGRF        '
+    __LMAIL = aster.getvectjev(__MOD1)
+    __MAIL  = string.strip(__LMAIL[0])
 
+    objma=self.get_sd_avant_etape(__MAIL,self)
     __M_CA=AFFE_MODELE( MAILLAGE=objma,
-                        AFFE    =_F( GROUP_MA     = __GROUP_MA_A,
-                                      PHENOMENE    = 'MECANIQUE',
-                                      MODELISATION = __modCable) )
+                        AFFE    =affe_mo)
 
 
     # 1.6 Blocage de tous les noeuds des cables actifs
     # --------------------------------------------------
-
+    __GROUP_MA_A = __GROUP_MA_CABLES_SEG2 + __GROUP_MA_CABLES_SEG3
     _B_CA=AFFE_CHAR_MECA(MODELE=__M_CA,
                           DDL_IMPO= _F( GROUP_MA = __GROUP_MA_A,
                                         DX = 0.,
@@ -499,6 +512,21 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
     if self.reuse:
       motscle4['reuse'] = self.reuse
     #assert (len(CABLE_BP) == 1)
+    # traitement des cables inactifs
+    if type(CABLE_BP_INACTIF) is not types.NoneType:
+      if not is_sequence(CABLE_BP_INACTIF):
+        CABLE_BP_INACTIF0 = CABLE_BP_INACTIF
+        CABLE_BP_INACTIF = []
+        CABLE_BP_INACTIF.append ( CABLE_BP_INACTIF0 )
+    else :
+        CABLE_BP_INACTIF =[]
+    motscle6={}
+    motscle6['RELA_CINE_BP']=[]
+    for mcabl in CABLE_BP_INACTIF:
+        # Creation de mots-cles pour les AFFE_CHAR_MECA
+        motscle6['RELA_CINE_BP'].append(_F(CABLE_BP=mcabl,
+                                          SIGM_BPEL = 'NON',
+                                          RELA_CINE = 'OUI',) )
     for mcabl in CABLE_BP :
       __TCAB1 = RECU_TABLE(CO=mcabl, NOM_TABLE='CABLE_GL')
 
@@ -575,7 +603,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                           GLIS = ancr1_passif*__sens*__recul*(-1)**(j)) )
         if (actif == 2) :
           __ActifActif = True
-      DETRUIRE(CONCEPT=_F(NOM=__TCAB1))
+      #DETRUIRE(CONCEPT=_F(NOM=__TCAB1))
 
     dExcit=[]
     for j in EXCIT :
@@ -587,6 +615,12 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
     if __ActifActif :
       dExcit1a=copy.copy(dExcit)
       dExcit1b=copy.copy(dExcit)
+      if CABLE_BP_INACTIF:
+        _C_CI=AFFE_CHAR_MECA(MODELE=MODELE,**motscle6)
+        dExcit1a.append(_F(CHARGE=_C_CI,
+                         ))
+        dExcit1b.append(_F(CHARGE=_C_CI,
+                         ))
       __CH1a=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELE,
                     **motscle3a)
       __CH1b=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELE,
@@ -605,6 +639,10 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
       __L2[-1:-1] = [__TINT]
     else :
       dExcit1=copy.copy(dExcit)
+      if CABLE_BP_INACTIF:
+        _C_CI=AFFE_CHAR_MECA(MODELE=MODELE,**motscle6)
+        dExcit1.append(_F(CHARGE=_C_CI,
+                         ))
       __CH1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELE,
                     **motscle3)
       _C_CA=AFFE_CHAR_MECA(MODELE=MODELE,VECT_ASSE=__CH1,**motscle2)
@@ -613,6 +651,9 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
     _C_RA=AFFE_CHAR_MECA(MODELE=MODELE,**motscle5)
     dExcit2=copy.copy(dExcit)
     dExcit2.append(_F(CHARGE=_C_RA,TYPE_CHARGE='DIDI'),)
+    if CABLE_BP_INACTIF:
+        dExcit2.append(_F(CHARGE=_C_CI,
+                         ))
 
     if __recul_exists :
       __L2[-1:-1] = [__TINT2]

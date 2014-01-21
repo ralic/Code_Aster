@@ -59,7 +59,7 @@ subroutine te0020(nomopt, nomte)
     real(kind=8) :: epx, xky, xkz
     real(kind=8) :: rad, angarc, xfl, xfly, xflz, angs2, ang, xl
     real(kind=8) :: along, de(12), pgl(3, 3), pgl1(3, 3), pgl2(3, 3)
-    character(len=8) :: nomres(nbres), nompar, nomail
+    character(len=8) :: nomres(nbres), nomail
     parameter (zero=0.0d0, un=1.0d0, deux = 2.0d0)
 !     ------------------------------------------------------------------
 !
