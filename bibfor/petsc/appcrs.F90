@@ -29,8 +29,6 @@ subroutine appcrs(kptsc, lmd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/ldsp1.h"
-#include "asterfort/ldsp2.h"
 #include "asterfort/utmess.h"
     integer :: kptsc
     logical :: lmd
@@ -43,6 +41,8 @@ subroutine appcrs(kptsc, lmd)
 !
 #ifdef _HAVE_PETSC
 #include "aster_petsc.h"
+#include "asterfort/ldsp1.h"
+#include "asterfort/ldsp2.h"
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
@@ -68,7 +68,8 @@ subroutine appcrs(kptsc, lmd)
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
-!---- COMMUNICATEUR MPI DE TRAVAIL
+!
+!   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
 !
 !     -- LECTURE DU COMMUN
@@ -174,7 +175,7 @@ subroutine appcrs(kptsc, lmd)
         endif
     endif
 !
-999 continue
+999  continue
 !
     call jedema()
 !

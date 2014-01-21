@@ -55,10 +55,10 @@ subroutine apmamc(kptsc)
 !
     real(kind=8) :: valm
 !
-    parameter (idxi1 ='&&APMATR.IDXI1__')
-    parameter (idxi2 ='&&APMATR.IDXI2__')
-    parameter (trans1='&&APMATR.TRANS1_')
-    parameter (trans2='&&APMATR.TRANS2_')
+    parameter (idxi1 ='&&APMAMC.IDXI1__')
+    parameter (idxi2 ='&&APMAMC.IDXI2__')
+    parameter (trans1='&&APMAMC.TRANS1_')
+    parameter (trans2='&&APMAMC.TRANS2_')
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -115,8 +115,7 @@ subroutine apmamc(kptsc)
 !
 !     CAS OU ON POSSEDE LE PREMIER BLOC DE LIGNES
     if (low .eq. 0) then
-        call MatSetValue(a, 0, 0, zr(jvalm), INSERT_VALUES,&
-                         ierr)
+        call MatSetValue(a, 0, 0, zr(jvalm), INSERT_VALUES, ierr)
         dlow=1
     else
         dlow=0

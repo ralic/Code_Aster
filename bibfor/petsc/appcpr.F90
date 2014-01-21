@@ -21,15 +21,15 @@ subroutine appcpr(kptsc)
 #include "aster_types.h"
 #include "asterf.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/ldsp1.h"
-#include "asterfort/ldsp2.h"
 #include "asterfort/utmess.h"
     integer :: kptsc
 !----------------------------------------------------------------
@@ -41,13 +41,15 @@ subroutine appcpr(kptsc)
 !
 #ifdef _HAVE_PETSC
 #include "aster_petsc.h"
+#include "asterfort/ldsp1.h"
+#include "asterfort/ldsp2.h"
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc
     integer :: jslvk, jslvr, jslvi
     integer :: tbloc, niremp
-    integer :: ibid, iret
+    integer :: iret
 !
     character(len=24) :: precon
     character(len=19) :: nomat, nosolv
@@ -93,7 +95,7 @@ subroutine appcpr(kptsc)
 !     -- CAS PARTICULIER (LDLT_INC/SOR)
 !     -- CES PC NE SONT PAS PARALLELISES
 !     -- ON UTILISE DONC DES VERSIONS PAR BLOC
-!     -- QUE L'ON CREERA AU MOMENT DE LA RESOLUTION (DANS APPCPO)
+!   -- QUE L'ON CREERA AU MOMENT DE LA RESOLUTION (DANS APPCRS)
 !     -----------------------------------------------------------
     if ((precon.eq.'LDLT_INC') .or. (precon.eq.'SOR')) then
         if (nbproc .gt. 1) then
@@ -104,6 +106,7 @@ subroutine appcpr(kptsc)
         endif
     endif
 !
+
 !     -- CHOIX DU PRECONDITIONNEUR :
 !     ------------------------------
     call KSPGetPC(ksp, pc, ierr)
@@ -151,6 +154,7 @@ subroutine appcpr(kptsc)
 !        CHOIX DE LA RESTRICTION (UNCOUPLED UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue('-pc_ml_CoarsenScheme', 'Uncoupled', ierr)
         ASSERT(ierr.eq.0)
+!
         call PetscOptionsSetValue('-pc_ml_PrintLevel', '0', ierr)
         ASSERT(ierr.eq.0)
 !        APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
@@ -170,6 +174,7 @@ subroutine appcpr(kptsc)
 !        CHOIX DU LISSAGE (SOR UNIQUEMENT POUR LE MOMENT)
         call PetscOptionsSetValue('-pc_hypre_boomeramg_relax_type_all', 'SOR/Jacobi', ierr)
         ASSERT(ierr.eq.0)
+!
         call PetscOptionsSetValue('-pc_hypre_boomeramg_print_statistics', '0', ierr)
         ASSERT(ierr.eq.0)
 !        APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS

@@ -73,7 +73,7 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
     ASSERT(n2==nblag)
 !
     if (nblag .gt. nbphys) then
-        write(6,*),' PLUS DE LIAISONS QUE D''EQUATIONS...'
+        write(6,*)' PLUS DE LIAISONS QUE D''EQUATIONS...'
         ASSERT(.false.)
     endif
 !
@@ -380,9 +380,6 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
     call jedetr('&&ELG_MATRQR.VTEMP')
     call jedetr('&&ELG_MATRQR.VTEMP2')
 !
-!
-    102 format (a30,2(2x,i4))
-    103 format (a30,3(2x,i4))
 #else
     integer :: ct, r, nbphys, nblag
     call utmess('F', 'ELIMLAGR_1')

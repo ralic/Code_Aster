@@ -109,8 +109,7 @@ subroutine apksp(kptsc)
     atol = PETSC_DEFAULT_DOUBLE_PRECISION
     dtol = PETSC_DEFAULT_DOUBLE_PRECISION
 !
-    call KSPSetTolerances(ksp, rtol, atol, dtol, maxits,&
-                          ierr)
+    call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
     ASSERT(ierr.eq.0)
 !
 !     - pour suivre les itérations de Krylov

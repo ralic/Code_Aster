@@ -159,5 +159,5 @@ Solveur PETSc :
   - reconstruisez une version de PETSc avec le support des préconditionneurs BOOMER et ML
   - utilisez un autre préconditionneur (comme 'LDLT_SP' par exemple)
 """),
-
 }
+

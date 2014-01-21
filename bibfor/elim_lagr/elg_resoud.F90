@@ -17,7 +17,7 @@ subroutine elg_resoud(matas1, chcine, nsecm, chsecm, chsolu,&
 # include "asterfort/resou1.h"
 # include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
-! But : faire "resoud" si ELIM_MAGR='OUI'
+! But : faire "resoud" si ELIM_LAGR='OUI'
 !-----------------------------------------------------------------------
 !
     character(len=19) :: matas1

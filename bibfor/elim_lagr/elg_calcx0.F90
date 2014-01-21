@@ -54,7 +54,7 @@ subroutine elg_calcx0()
 !
     call MatGetSize(melim(ke)%ctrans, n1, n2, ierr)
 !
-! juste une copie de "pointeur" pour la lisibilit
+! juste une copie de "pointeur" pour la lisibilité
     lt=melim(ke)%rct
 !
 !     -- On transpose Lt pour permettre un acces par ligne pour L:

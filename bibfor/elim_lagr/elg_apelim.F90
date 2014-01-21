@@ -1,7 +1,6 @@
 subroutine elg_apelim(kptsc, lqr)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
-! aslint: disable=W1510
 ! aslint: disable=W0104
 !
 ! ======================================================================
@@ -40,22 +39,22 @@ subroutine elg_apelim(kptsc, lqr)
     integer :: kptsc
     logical :: lqr
 !--------------------------------------------------------------
-! BUT : calculer (dans PETSC) les matrices nÃ©cessaires Ã 
+! BUT : calculer (dans PETSC) les matrices nécessaires à
 !       ELIM_LAGR='OUI' :
 !       Kproj,Ctrans,Tfinal,RCt,MatB
 !       (voir la description de ces matrices dans elim_lagr.h)
 !
 ! IN  : KPTSC (I): INDICE DE L'INSTANCE PETSC LE COMMON SPETSC
-!       (pour la matrice complÃšte).
+!       (pour la matrice complète).
 ! IN  : LQR (L) : .TRUE. on souhaite le calcul de la matrice R
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-# include "asterfort/elg_matrqr.h"
-# include "asterfort/elg_comptt.h"
-# include "asterfort/elg_remplt.h"
-
+#include "aster_petsc.h"
+#include "asterfort/elg_matrqr.h"
+#include "asterfort/elg_comptt.h"
+#include "asterfort/elg_remplt.h"
 !
 !================================================================
 !
@@ -74,7 +73,7 @@ subroutine elg_apelim(kptsc, lqr)
     IS :: isnvco, istout
     integer :: clag1, clag2, cphys, nbphys, nblag, i1, j1, nbelig
     PetscInt :: n1, n2, nterm
-    integer :: nbeq, ilag1, ilag2, iphys, ie,  nnzt, contr
+    integer :: nbeq, ilag1, ilag2, iphys, nnzt, contr
     integer :: nzrow, valrow, indnz, indcon, indlib
     integer :: ctemp, redem, nvcont, nbnvco, ifull, nbred
     integer :: ilig, jcol, ico, kterm, ieq, k, kptscr, ktrou
@@ -271,7 +270,7 @@ subroutine elg_apelim(kptsc, lqr)
 !
     nbnvco=0
     redem=0
-1234 continue
+123 continue
 !
 !----------------------------------------------------!
 !--                                                --!
@@ -298,18 +297,18 @@ subroutine elg_apelim(kptsc, lqr)
 !
 !-----------------------------!
 !--                         --!
-!-- On traite le redemarage --!
+!-- On traite le redemarrage --!
 !--                         --!
 !-----------------------------!
 !
     if (nbnvco .gt. 0) then
         redem=redem+1
-        if (info2) write(ifm,'(A14,I3)'),'Redemarrage #',redem
-        if (info2) write(ifm,'(A3,I3,A26)'),' * ',nbnvco, ' CONTRAINTES NON VERIFIEES'
+        if (info2) write(ifm,'(A14,I3)') 'Redemarrage #',redem
+        if (info2) write(ifm,'(A3,I3,A26)') ' * ',nbnvco, ' CONTRAINTES NON VERIFIEES'
 !
-        if (info2) write(ifm,*),'NEW NUMBER    ','OLD NUMBER    '
+        if (info2) write(ifm,*) 'NEW NUMBER    ','OLD NUMBER    '
         do j1 = 1, nbnvco
-            if (info2) write(ifm,*),j1,' - ',zi4(nvcont+j1-1)+1
+            if (info2) write(ifm,*) j1,' - ',zi4(nvcont+j1-1)+1
         end do
 !
         call MatDuplicate(c, MAT_COPY_VALUES, c2, ierr)
@@ -343,7 +342,7 @@ subroutine elg_apelim(kptsc, lqr)
             zi4(nnzt+i1-1)=1
         end do
 !
-        goto 1234
+        goto 123
 !
     endif
 !
@@ -365,21 +364,22 @@ subroutine elg_apelim(kptsc, lqr)
     call MatGetColumnNorms(melim(ke)%ctrans, norm_2, zr(valrow), ierr)
     ASSERT(ierr.eq.0)
 !
-!-- /!\ /!\ Attention au changement de version 3.2 -> 3.3
-!-- Renamed MatMatMultTranspose() for C=A^T*B to MatTransposeMatMult()
-!-- V 3.2
-    call MatMatMultTranspose(melim(ke)%tfinal, melim(ke)%ctrans, MAT_INITIAL_MATRIX,&
-                             PETSC_DEFAULT_DOUBLE_PRECISION, c2, ierr)
-!-- V 3.3
-!   call MatTransposeMatMult(Tfinal,Ctrans,MAT_INITIAL_MATRIX,
-!     &                      PETSC_DEFAULT_DOUBLE_PRECISION,C2,ierr)
+!-- Changement de version PETSc 3.2 -> 3.3 
+!   Renamed MatMatMultTranspose() for C=A^T*B to MatTransposeMatMult()
+#ifdef ASTER_PETSC_VERSION_32
+        call MatMatMultTranspose(melim(ke)%tfinal, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
+                                     PETSC_DEFAULT_DOUBLE_PRECISION, c2, ierr)
+#else
+    call MatTransposeMatMult(melim(ke)%tfinal,melim(ke)%ctrans,MAT_INITIAL_MATRIX, &
+                           PETSC_DEFAULT_DOUBLE_PRECISION,C2,ierr)
+#endif
 !
     call MatGetColumnNorms(c2, norm_2, zr(ctemp), ierr)
-    if (info2) write(ifm,*),' '
-    if (info2) write(ifm,*),' '
-    if (info2) write(ifm,*),'|C.T|/|C| apres elimination :'
+    if (info2) write(ifm,*) ' '
+    if (info2) write(ifm,*) ' '
+    if (info2) write(ifm,*) '|C.T|/|C| apres elimination :'
     do i1 = 1, nblag
-        if (info2) write(ifm, '(A11,I3,A3,E11.4)'), 'CONTRAINTE ', i1, ' : ',&
+        if (info2) write(ifm, '(A11,I3,A3,E11.4)') 'CONTRAINTE ', i1, ' : ',&
                    zr(ctemp+i1-1)/zr(valrow+i1-1)
     end do
 !
@@ -480,10 +480,10 @@ subroutine elg_apelim(kptsc, lqr)
 !
     nbelig=clag1-2*nblag
     if (info2) then
-        write(ifm,*),'On a ',nbeq,' ddls (y compris les double-Lagrange).'
-        write(ifm,*),'On a ',nbeq-2*nblag,' ddls "physiques".'
-        write(ifm,*),'On avait ',nblag,' contraintes'
-        write(ifm,*),'On a ete capable d''en eliminer ',nbelig
+        write(ifm,*) 'On a ',nbeq,' ddls (y compris les double-Lagrange).'
+        write(ifm,*) 'On a ',nbeq-2*nblag,' ddls "physiques".'
+        write(ifm,*) 'On avait ',nblag,' contraintes'
+        write(ifm,*) 'On a ete capable d''en eliminer ',nbelig
     endif
     ASSERT(nbelig.le.nblag)
 !

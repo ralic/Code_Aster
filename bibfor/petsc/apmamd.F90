@@ -59,10 +59,10 @@ subroutine apmamd(kptsc)
 !
     real(kind=8) :: valm
 !
-    parameter (idxi1 ='&&APETS2.IDXI1__')
-    parameter (idxi2 ='&&APETS2.IDXI2__')
-    parameter (trans1='&&APETS2.TRANS1_')
-    parameter (trans2='&&APETS2.TRANS2_')
+    parameter (idxi1 ='&&APMAMD.IDXI1__')
+    parameter (idxi2 ='&&APMAMD.IDXI2__')
+    parameter (trans1='&&APMAMD.TRANS1_')
+    parameter (trans2='&&APMAMD.TRANS2_')
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -131,8 +131,7 @@ subroutine apmamd(kptsc)
 !     Recopie de la matrice
 !     C'est PETSc qui s'occupe de la recopie des termes vers
 !     le bon processeur
-    call MatSetValue(a, zi(jnugll)-1, zi(jnugll)-1, zr(jvalm), ADD_VALUES,&
-                     ierr)
+    call MatSetValue(a, zi(jnugll)-1, zi(jnugll)-1, zr(jvalm), ADD_VALUES, ierr)
 !
     do jcoll = 2, nloc
         nzdeb = zi(jsmdi+jcoll-2) + 1

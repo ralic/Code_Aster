@@ -36,21 +36,18 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,),);
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='GRNO1',
+CHA1=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=(_F(GROUP_NO='GRNO1',
                                  DZ=0.0,),
                               _F(GROUP_NO='GRNO8',
-                                 DY=0.0,),),);
-
-CHA2=AFFE_CHAR_CINE(MODELE=MO,
-                    MECA_IMPO=_F(GROUP_NO='GRNO7',
+                                 DY=0.0,),
+                              _F(GROUP_NO='GRNO7',
                                  DX=0.0,
-                                 DY=0.01,),);
+                                 DY=0.01,),),);
 
 MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                    MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   CHARGE=CHA1,);
+                   CHAM_MATER=CHMAT,);
 
 NU=NUME_DDL(MATR_RIGI=MEL,
             METHODE='PETSC',);
@@ -65,10 +62,10 @@ VECAS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 
 MATAS=ASSE_MATRICE(MATR_ELEM=MEL,
                    NUME_DDL=NU,
-                   CHAR_CINE=CHA2,);
+                   CHAR_CINE=CHA1,);
 
 VCINE=CALC_CHAR_CINE(NUME_DDL=NU,
-                     CHAR_CINE=CHA2,);
+                     CHAR_CINE=CHA1,);
 
 MATAS=FACTORISER(reuse =MATAS,
                  MATR_ASSE=MATAS,

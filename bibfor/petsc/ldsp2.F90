@@ -28,8 +28,6 @@ subroutine ldsp2(pc, x1, y, ierr)
     integer :: iret
 !----------------------------------------------------------------
 !     Variables PETSc
-! because of conditional (if _HAVE_PETSC) and external types
-! aslint: disable=C1309
     PC :: pc
     Vec :: x1, y
     PetscInt :: ierr
@@ -43,13 +41,11 @@ subroutine ldsp2(pc, x1, y, ierr)
     ASSERT(ierr.eq.0)
 !
 ! --  RECUPERATION DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
-    call VecScatterBegin(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD,&
-                         ierr)
+    call VecScatterBegin(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD, ierr)
     ASSERT(ierr.eq.0)
-    call VecScatterEnd(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD,&
-                       ierr)
+    call VecScatterEnd(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD, ierr)
+    ASSERT(ierr.eq.0)
 !
-    ASSERT(ierr.eq.0)
     call VecGetArray(xglobal, xx, xidx, ierr)
     ASSERT(ierr.eq.0)
 !
@@ -61,11 +57,9 @@ subroutine ldsp2(pc, x1, y, ierr)
 ! --  ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
     call VecRestoreArray(xglobal, xx, xidx, ierr)
     ASSERT(ierr.eq.0)
-    call VecScatterBegin(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE,&
-                         ierr)
+    call VecScatterBegin(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE, ierr)
     ASSERT(ierr.eq.0)
-    call VecScatterEnd(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE,&
-                       ierr)
+    call VecScatterEnd(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE, ierr)
     ASSERT(ierr.eq.0)
 !
     ierr=iret

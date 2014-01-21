@@ -35,8 +35,8 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,),);
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='GRNO1',
+CHA1=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=(_F(GROUP_NO='GRNO1',
                                  DZ=0.0,),
                               _F(GROUP_NO='GRNO8',
                                  DY=0.0,),),);

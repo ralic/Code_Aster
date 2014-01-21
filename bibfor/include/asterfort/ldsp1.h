@@ -17,7 +17,12 @@
 !
 interface
     subroutine ldsp1(pc, ierr)
-        integer :: pc
+#ifdef _HAVE_PETSC
+        PC       ::  pc
+        PetscInt ::  ierr
+#else
+        integer  :: pc
         integer(kind=4) :: ierr
+#endif
     end subroutine ldsp1
 end interface

@@ -63,7 +63,7 @@ CHA2=AFFE_CHAR_CINE(MODELE=MO,
 
 VECAS=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CHA1,),
+                    EXCIT=(_F(CHARGE=CHA1cin,),
                            _F(CHARGE=CHA2,),),
                     SOLVEUR=_F(METHODE='PETSC',
                                PRE_COND='LDLT_INC',

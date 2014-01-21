@@ -96,7 +96,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !----------------------------------------------------------------
 !     Variables PETSc
 !
-    PetscInt :: ierr, n1, n2, its, maxits
+    PetscInt :: ierr, its, maxits
     PetscReal :: rtol, atol, dtol
     Vec :: r
     PetscScalar :: ires, fres
@@ -106,10 +106,11 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !----------------------------------------------------------------
     cbid = dcmplx(0.d0, 0.d0)
     call jemarq()
-!---- COMMUNICATEUR MPI DE TRAVAIL
+!
+!   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
 !
-!     -- ON DESACTIVE LA LEVEE D'EXCEPTION FPE DANS LES MKL
+!   -- ON DESACTIVE LA LEVEE D'EXCEPTION FPE DANS LES BIBLIOTHEQUES MATHEMATIQUES
     call matfpe(-1)
 !
     call infniv(ifm, niv)
@@ -180,8 +181,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        -- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
         call mtdscr(nomat)
         call jeveuo(nomat//'.&INT', 'L', lmat)
-        call mrconl('MULT', lmat, 0, 'R', rsolu,&
-                    1)
+        call mrconl('MULT', lmat, 0, 'R', rsolu, 1)
 !
 !        -- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
         call jeexin(vcine//'.VALE', ierd)
@@ -239,7 +239,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !       ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
 !       EN CAS DE DIVERGENCE
         if (indic .lt. 0) then
-            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits,ierr)
+            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
             ASSERT(ierr.eq.0)
 
             if (indic .eq. KSP_DIVERGED_ITS) then
@@ -311,8 +311,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             call VecDestroy(r, ierr)
             ASSERT(ierr.eq.0)
 !
-            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits,&
-                                  ierr)
+            call KSPGetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
             ASSERT(ierr.eq.0)
 !
             if (fres .gt. sqrt(rtol)*ires) then
@@ -329,7 +328,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !         --------------------------------
 !
 !        -- EN CAS D'ERREUR DANS LES ITERATIONS DE KRYLOV ON SAUTE ICI
-999     continue
+999      continue
         call VecDestroy(b, ierr)
         ASSERT(ierr.eq.0)
         call VecDestroy(x, ierr)

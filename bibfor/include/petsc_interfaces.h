@@ -1,7 +1,6 @@
 #ifndef PETSC_INTERFACES_H
 #define PETSC_INTERFACES_H
 !
-! aslint: disable=W1510
 !
 ! Il n'est pas facile de definir les interfaces des external :
 ! aslint: disable=C1002
@@ -36,9 +35,9 @@ interface
 !
     subroutine ISCreateGeneral(comm, n, idx, mode, is,&
                                ierr)
-        mpi_int comm ! MPI_Comm
+        mpi_int comm 
         PETSC_INT_SCAL_IN n
-        PetscInt idx (*) ! PetscInt
+        PetscInt idx (*) 
         PetscCopyMode mode ! PetscCopyMode
         IS is ! IS
         PETSC_INT_SCAL_OUT ierr
@@ -52,7 +51,7 @@ interface
 ! -------------
 !
     subroutine KSPCreate(comm, inksp, ierr)
-        mpi_int comm ! MPI_Comm
+        mpi_int comm 
         KSP inksp ! KSP
         PETSC_INT_SCAL_OUT ierr
     end subroutine
@@ -88,9 +87,9 @@ interface
     subroutine KSPGetTolerances(ksp, rtol, abstol, dtol, maxits,&
                                 ierr)
         KSP ksp ! KSP
-        PetscReal rtol ! PetscReal
-        PetscReal abstol ! PetscReal
-        PetscReal dtol ! PetscReal
+        PetscReal rtol 
+        PetscReal abstol 
+        PetscReal dtol 
         PETSC_INT_SCAL_OUT maxits
         PETSC_INT_SCAL_OUT ierr
     end subroutine
@@ -107,9 +106,9 @@ interface
 !
     subroutine KSPSetOperators(ksp, Amat, Pmat, flag, ierr)
         KSP ksp ! KSP
-        Mat Amat ! Mat
-        Mat Pmat ! Mat
-        MatStructure flag ! MatStructure
+        Mat Amat 
+        Mat Pmat 
+        MatStructure flag 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
@@ -117,9 +116,9 @@ interface
     subroutine KSPSetTolerances(ksp, rtol, abstol, dtol, maxits,&
                                 ierr)
         KSP ksp ! KSP
-        PetscReal rtol ! PetscReal
-        PetscReal abstol ! PetscReal
-        PetscReal dtol ! PetscReal
+        PetscReal rtol 
+        PetscReal abstol 
+        PetscReal dtol 
         PETSC_INT_SCAL_IN maxits
         PETSC_INT_SCAL_OUT ierr
     end subroutine
@@ -140,69 +139,82 @@ interface
 !
     subroutine KSPSolve(ksp, b, x, ierr)
         KSP ksp ! KSP
-        Vec b ! Vec
-        Vec x ! Vec
+        Vec b 
+        Vec x 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatAssemblyBegin(mat, type, ierr)
-        Mat mat ! Mat
-        MatAssemblyType type ! MatAssemblyType
+        Mat mat 
+        MatAssemblyType type 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatAssemblyEnd(mat, type, ierr)
-        Mat mat ! Mat
-        MatAssemblyType type ! MatAssemblyType
+        Mat mat 
+        MatAssemblyType type 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatCreate(comm, A, ierr)
-        mpi_int comm ! MPI_Comm
-        Mat A ! Mat
+        mpi_int comm 
+        Mat A 
         PETSC_INT_SCAL_OUT ierr
+    end subroutine
+! -------------
+!
+    subroutine MatNullSpaceCreateRigidBody (coords, sp, ierr)
+    Vec                :: coords
+    MatNullSpace       :: sp
+    PETSC_INT_SCAL_OUT :: ierr
+    end subroutine
+! -------------
+!
+    subroutine MatNullSpaceDestroy(sp, ierr)
+    MatNullSpace       :: sp
+    PETSC_INT_SCAL_OUT :: ierr
     end subroutine
 ! -------------
 !
     subroutine MatCreateSeqAIJ(comm, m, n, nz, nnz,&
                                a, ierr)
-        mpi_int comm ! MPI_Comm
+        mpi_int comm 
         PETSC_INT_SCAL_IN m
         PETSC_INT_SCAL_IN n
         PETSC_INT_SCAL_IN nz
         PetscInt nnz(*)
-        Mat a ! Mat
+        Mat a 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatDestroy(A, ierr)
-        Mat A ! Mat
+        Mat A 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatDuplicate(mat, op, M, ierr)
-        Mat mat ! Mat
-        MatDuplicateOption op ! MatDuplicateOption
-        Mat M ! Mat
+        Mat mat 
+        MatDuplicateOption op 
+        Mat M 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatGetColumnNorms(A, type, norms, ierr)
-        Mat A ! Mat
-        NormType type ! NormType
-        PetscReal norms ! PetscReal
+        Mat A 
+        NormType type 
+        PetscReal norms 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatGetOwnershipRange(mat, m, n, ierr)
-        Mat mat ! Mat
+        Mat mat 
         PETSC_INT_SCAL_OUT m
         PETSC_INT_SCAL_OUT n
         PETSC_INT_SCAL_OUT ierr
@@ -211,7 +223,7 @@ interface
 !
     subroutine MatGetRow(mat, ilig, nterm, irow, vrow,&
                          ierr)
-        Mat mat ! Mat
+        Mat mat 
         PETSC_INT_SCAL_IN ilig
         PETSC_INT_SCAL_OUT nterm
         PetscInt irow (*)
@@ -221,7 +233,7 @@ interface
 ! -------------
 !
     subroutine MatGetSize(mat, m, n, ierr)
-        Mat mat ! Mat
+        Mat mat 
         PETSC_INT_SCAL_OUT m
         PETSC_INT_SCAL_OUT n
         PETSC_INT_SCAL_OUT ierr
@@ -230,47 +242,57 @@ interface
 !
     subroutine MatGetSubMatrix(mat, isrow, iscol, cll, newmat,&
                                ierr)
-        Mat mat ! Mat
+        Mat mat 
         IS isrow ! IS
         IS iscol ! IS
-        MatReuse cll ! MatReuse
-        Mat newmat ! Mat
+        MatReuse cll
+        Mat newmat 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatGetValues(mat, m, idxm, n, idxn,&
                             v, ierr)
-        Mat mat ! Mat
+        Mat mat 
         PETSC_INT_SCAL_IN m
-        PetscInt idxm (*) ! PetscInt
+        PetscInt idxm (*) 
         PETSC_INT_SCAL_IN n
-        PetscInt idxn (*) ! PetscInt
-        PetscScalar v (*) ! PetscScalar
+        PetscInt idxn (*) 
+        PetscScalar v (*) 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatMatMult(A, B, scall, fill, C,&
                           ierr)
-        Mat A ! Mat
-        Mat B ! Mat
-        MatReuse scall ! MatReuse
-        PetscReal fill ! PetscReal
-        Mat C ! Mat
+        Mat A 
+        Mat B 
+        MatReuse scall
+        PetscReal fill 
+        Mat C 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
-    subroutine MatMatMultTranspose(A, B, scall, fill, C,&
-                                   ierr)
-        Mat A ! Mat
-        Mat B ! Mat
-        MatReuse scall ! MatReuse
-        PetscReal fill ! PetscReal
-        Mat C ! Mat
-        PETSC_INT_SCAL_OUT ierr
-    end subroutine
+     subroutine MatMatTransposeMult(A, B, scall, fill, C ,ierr)
+       Mat A 
+       Mat B 
+       MatReuse scall
+       PetscReal fill 
+       Mat C 
+       PETSC_INT_SCAL_OUT ierr
+     end subroutine
+     
+! -------------
+!   
+    subroutine MatMatMultTranspose(A, B, scall, fill, C, ierr)
+       Mat A 
+       Mat B 
+       MatReuse scall
+       PetscReal fill 
+       Mat C 
+       PETSC_INT_SCAL_OUT ierr
+     end subroutine
 ! -------------
 !
     subroutine MatMPIAIJSetPreallocation(A, d_nz, d_nnz, o_nz, o_nnz,&
@@ -282,31 +304,32 @@ interface
         PetscInt o_nnz (*)
         PETSC_INT_SCAL_OUT ierr
     end subroutine
+
 ! -------------
 !
     subroutine MatMult(mat, x, y, ierr)
-        Mat mat ! Mat
-        Vec x ! Vec
-        Vec y ! Vec
+        Mat mat 
+        Vec x 
+        Vec y 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatMultTranspose(mat, x, y, ierr)
-        Mat mat ! Mat
-        Vec x ! Vec
-        Vec y ! Vec
+        Mat mat 
+        Vec x 
+        Vec y 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatPtAP(A, P, scall, fill, C,&
                        ierr)
-        Mat A ! Mat
-        Mat P ! Mat
-        MatReuse scall ! MatReuse
-        PetscReal fill ! PetscReal
-        Mat C ! Mat
+        Mat A 
+        Mat P 
+        MatReuse scall
+        PetscReal fill 
+        Mat C 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
@@ -321,6 +344,13 @@ interface
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
+!  
+    subroutine MatSetNearNullSpace(mat, sp, ierr)
+        Mat   mat 
+        MatNullSpace  sp
+        PETSC_INT_SCAL_OUT  ierr
+    end subroutine
+! -------------
 !
     subroutine MatSEQAIJSetPreallocation(B, nz, nnz, ierr)
         Mat B
@@ -331,7 +361,7 @@ interface
 ! -------------
 !
     subroutine MatSetBlockSize(mat, bs, ierr)
-        Mat mat ! Mat
+        Mat mat 
         PETSC_INT_SCAL_IN bs
         PETSC_INT_SCAL_OUT ierr
     end subroutine
@@ -339,7 +369,7 @@ interface
 !
     subroutine MatSetSizes(A, m, n, mupper, nupper,&
                            ierr)
-        Mat A ! Mat
+        Mat A 
         PETSC_INT_SCAL_IN m
         PETSC_INT_SCAL_IN n
         PETSC_INT_SCAL_IN mupper
@@ -357,32 +387,43 @@ interface
 !
     subroutine MatSetValue(m, row, col, value, addv,&
                            ierr)
-        Mat m ! Mat
+        Mat m 
         PETSC_INT_SCAL_IN row
         PETSC_INT_SCAL_IN col
-        PetscScalar value ! PetscScalar
-        InsertMode addv ! InsertMode
+        PetscScalar value 
+        InsertMode addv 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatSetValues(mat, m, idxm, n, idxn,&
                             v, addv, ierr)
-        Mat mat ! Mat
+        Mat mat 
         PETSC_INT_SCAL_IN m
-        PetscInt idxm (*) ! PetscInt
+        PetscInt idxm (*) 
         PETSC_INT_SCAL_IN n
-        PetscInt idxn (*) ! PetscInt
-        PetscScalar v (*) ! PetscScalar
-        InsertMode addv ! InsertMode
+        PetscInt idxn (*) 
+        PetscScalar v (*) 
+        InsertMode addv 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine MatTranspose(mat, reuse, B, ierr)
-        Mat mat ! Mat
-        MatReuse reuse ! MatReuse
-        Mat B ! Mat
+        Mat mat 
+        MatReuse reuse
+        Mat B 
+        PETSC_INT_SCAL_OUT ierr
+    end subroutine
+! -------------
+!
+    subroutine MatTransposeMatMult(A, B, scall, fill, C,&
+                                   ierr)
+        Mat A 
+        Mat B 
+        MatReuse scall
+        PetscReal fill 
+        Mat C 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
@@ -396,7 +437,7 @@ interface
 !
     subroutine MatZeroRows(mat, nbrow, rows, diag, x,&
                            b, ierr)
-        Mat mat ! Mat
+        Mat mat 
         PETSC_INT_SCAL_IN nbrow
         PetscInt rows(*)
         PetscScalar diag
@@ -406,6 +447,12 @@ interface
     end subroutine
 ! -------------
 !
+    subroutine PCGAMGSetNSmooths( pc, nsmooth, ierr)
+        PC                 :: pc
+        PetscInt           :: nsmooth
+        PETSC_INT_SCAL_OUT :: ierr
+    end subroutine
+! -------------
     subroutine PCBJacobiGetSubKSP(pc, n_local, first_local, ksp, ierr)
         PC pc
         PetscInt n_local
@@ -418,7 +465,7 @@ interface
 !
     subroutine PCFactorSetFill(pc, fill, ierr)
         PC pc ! PC
-        PetscReal fill ! PetscReal
+        PetscReal fill 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
@@ -494,73 +541,73 @@ interface
 ! -------------
 !
     subroutine VecAssemblyBegin(vec, ierr)
-        Vec vec ! Vec
+        Vec vec 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecAssemblyEnd(vec, ierr)
-        Vec vec ! Vec
+        Vec vec 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecAXPY(y, alpha, x, ierr)
-        Vec y ! Vec
-        PetscScalar alpha ! PetscScalar
-        Vec x ! Vec
+        Vec y 
+        PetscScalar alpha 
+        Vec x 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecAYPX(y, alpha, x, ierr)
-        Vec y ! Vec
-        PetscScalar alpha ! PetscScalar
-        Vec x ! Vec
+        Vec y 
+        PetscScalar alpha 
+        Vec x 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecCopy(x, y, ierr)
-        Vec x ! Vec
-        Vec y ! Vec
+        Vec x 
+        Vec y 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecCreate(comm, vec, ierr)
-        mpi_int comm ! MPI_Comm
-        Vec vec ! Vec
+        mpi_int comm 
+        Vec vec 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecCreateMPI(comm, n, nupper, v, ierr)
-        mpi_int comm ! MPI_Comm
+        mpi_int comm 
         PetscInt n
         PETSC_INT_SCAL_IN nupper
-        Vec v ! Vec
+        Vec v 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecCreateSeq(comm, n, v, ierr)
-        mpi_int comm ! MPI_Comm
+        mpi_int comm 
         PETSC_INT_SCAL_IN n
-        Vec v ! Vec
+        Vec v 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecDestroy(v, ierr)
-        Vec v ! Vec
+        Vec v 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecDuplicate(v, newv, ierr)
-        Vec v ! Vec
-        Vec newv ! Vec
+        Vec v 
+        Vec newv 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
@@ -574,7 +621,7 @@ interface
 ! -------------
 !
     subroutine VecGetOwnershipRange(x, m, n, ierr)
-        Vec x ! Vec
+        Vec x 
         PETSC_INT_SCAL_OUT m
         PETSC_INT_SCAL_OUT n
         PETSC_INT_SCAL_OUT ierr
@@ -582,16 +629,16 @@ interface
 ! -------------
 !
     subroutine VecGetSize(x, size, ierr)
-        Vec x ! Vec
+        Vec x 
         PETSC_INT_SCAL_OUT size
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecNorm(x, type, val, ierr)
-        Vec x ! Vec
-        NormType type ! NormType
-        PetscReal val ! PetscReal
+        Vec x 
+        NormType type 
+        PetscReal val 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
@@ -606,19 +653,19 @@ interface
 !
     subroutine VecScatterBegin(inctx, x, y, addv, mode,&
                                ierr)
-        VecScatter inctx ! VecScatter
-        Vec x ! Vec
-        Vec y ! Vec
-        InsertMode addv ! InsertMode
-        ScatterMode mode ! ScatterMode
+        VecScatter inctx 
+        Vec x 
+        Vec y 
+        InsertMode addv 
+        ScatterMode mode 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecScatterCreateToAll(vin, ctx, vout, ierr)
-        Vec vin ! Vec
-        VecScatter ctx ! VecScatter
-        Vec vout ! Vec
+        Vec vin 
+        VecScatter ctx
+        Vec vout 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
@@ -631,31 +678,31 @@ interface
 !
     subroutine VecScatterEnd(ctx, x, y, addv, mode,&
                              ierr)
-        VecScatter ctx ! VecScatter
-        Vec x ! Vec
-        Vec y ! Vec
-        InsertMode addv ! InsertMode
-        ScatterMode mode ! ScatterMode
+        VecScatter  ctx
+        Vec x 
+        Vec y 
+        InsertMode addv 
+        ScatterMode mode 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecSet(x, alpha, ierr)
-        Vec x ! Vec
-        PetscScalar alpha ! PetscScalar
+        Vec x 
+        PetscScalar alpha 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecSetBlockSize(v, bs, ierr)
-        Vec v ! Vec
+        Vec v 
         PETSC_INT_SCAL_IN bs
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------
 !
     subroutine VecSetSizes(v, n, nupper, ierr)
-        Vec v ! Vec
+        Vec v 
         PetscInt n
         PETSC_INT_SCAL_IN nupper
         PETSC_INT_SCAL_OUT ierr
@@ -671,11 +718,11 @@ interface
 !
     subroutine VecSetValues(x, ni, ix, y, iora,&
                             ierr)
-        Vec x ! Vec
+        Vec x 
         PETSC_INT_SCAL_IN ni
-        PetscInt ix (*) ! PetscInt
-        PetscScalar y (*) ! PetscScalar
-        InsertMode iora ! InsertMode
+        PetscInt ix (*) 
+        PetscScalar y (*) 
+        InsertMode iora 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
 ! -------------

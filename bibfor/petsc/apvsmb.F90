@@ -60,7 +60,8 @@ subroutine apvsmb(kptsc, lmd, rsolu)
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
-!---- COMMUNICATEUR MPI DE TRAVAIL
+
+!   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
 !
 !     -- LECTURE DU COMMUN
@@ -105,8 +106,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
             numglo = zi(jnugl+jcoll)
             zr(jvaleu+jcoll) = rsolu(numglo)
         end do
-        call VecSetValues(b, nloc, zi4(jindic), zr(jvaleu), ADD_VALUES,&
-                          ierr)
+        call VecSetValues(b, nloc, zi4(jindic), zr(jvaleu), ADD_VALUES, ierr)
         call jedetr('&&APVSMB.INDICES')
         call jedetr('&&APVSMB.VALEURS')
         call VecAssemblyBegin(b, ierr)

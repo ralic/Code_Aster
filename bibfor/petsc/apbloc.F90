@@ -40,9 +40,8 @@ subroutine apbloc(matass, solveu, tbloc)
 !
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
-    character(len=4) :: kbid
     character(len=24) :: precon
-    integer :: ierd, jslvk
+    integer :: jslvk
     logical :: leliml
 !
 !----------------------------------------------------------------
@@ -55,7 +54,7 @@ subroutine apbloc(matass, solveu, tbloc)
     precon = zk24(jslvk-1+2)
     leliml = zk24(jslvk-1+13)(1:3).eq.'OUI'
 !
-    if ((precon.ne.'ML') .and. (precon.ne.'BOOMER')) then
+    if ((precon.ne.'ML') .and. (precon.ne.'BOOMER') .and. (precon.ne.'GAMG') ) then
         tbloc = 1
     endif
 !

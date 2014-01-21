@@ -55,8 +55,8 @@ subroutine apalmc(kptsc)
     character(len=16) :: idxo, idxd
     character(len=14) :: nonu
 !
-    parameter   (idxo  ='&&APALLC.IDXO___')
-    parameter   (idxd  ='&&APALLC.IDXD___')
+    parameter   (idxo  ='&&APALMC.IDXO___')
+    parameter   (idxd  ='&&APALMC.IDXD___')
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -67,7 +67,8 @@ subroutine apalmc(kptsc)
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
-!---- COMMUNICATEUR MPI DE TRAVAIL
+!
+!   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
 !
 !     -- LECTURE DU COMMUN
@@ -175,6 +176,14 @@ subroutine apalmc(kptsc)
     call MatSetSizes(a, nblloc, nblloc, neq, neq,&
                      ierr)
     ASSERT(ierr.eq.0)
+!
+#ifndef ASTER_PETSC_VERSION_32 
+!   AVEC PETSc >= 3.3
+!   IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION
+    call MatSetBlockSize(a, bs, ierr)
+    ASSERT(ierr.eq.0)
+#endif 
+    
     if (nbproc .eq. 1) then
         call MatSetType(a, MATSEQAIJ, ierr)
         ASSERT(ierr.eq.0)
@@ -188,11 +197,14 @@ subroutine apalmc(kptsc)
         ASSERT(ierr.eq.0)
     endif
 !
-!     AVEC PETSc <= 3.2
-!     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI, NE PAS DEPLACER
-    call MatSetBlockSize(a, bs, ierr)
-    ASSERT(ierr.eq.0)
-    ap(kptsc)=a
+#ifdef ASTER_PETSC_VERSION_32 
+!     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI
+      call MatSetBlockSize(a, bs, ierr)
+      ASSERT(ierr.eq.0)
+!     RQ : A PARTIR DE LA VERSION V 3.3 IL DOIT PRECEDER LA PREALLOCATION
+#endif 
+!      
+      ap(kptsc)=a
 !
 !     ON N'OUBLIE PAS DE DETRUIRE LES TABLEAUX
 !     APRES AVOIR ALLOUE CORRECTEMENT

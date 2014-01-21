@@ -76,14 +76,14 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 #ifdef _HAVE_PETSC
 #include "aster_petsc.h"
+
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: iprem, k, ibid, ierd, nglo, kdeb, jnequ
+    integer :: iprem, k, nglo, kdeb, jnequ
     integer :: jrefa, jtrav, kptsc
     integer :: np
     real(kind=8) :: r8
-    integer :: nbid
     PetscInt :: m, n
 !
     character(len=19) :: solveu, matas, vcine
@@ -100,6 +100,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     PetscScalar :: sbid
     PetscOffset :: offbid
     PetscReal :: rbid
+    
 !----------------------------------------------------------------
 !   INITIALISATION DE PETSC A FAIRE AU PREMIER APPEL
     save iprem
@@ -206,7 +207,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 !   3. quelques verifications et petites actions :
 !   ----------------------------------------------
-  1 continue
+ 1  continue
 !
     if (action .eq. 'PRERES') then
 !        -- remplissage du commun
@@ -260,8 +261,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 !
 !
-!   4. APPEL DE PETSC :
-!   -------------------
+!     4. APPEL DE PETSC :
+!     -------------------
     if (action .eq. 'RESOUD') then
         call wkvect('&&APETSC.TRAVAIL', 'V V R', nglo, jtrav)
         do k = 1, nbsol
@@ -273,8 +274,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         end do
         call jedetr('&&APETSC.TRAVAIL')
     else
-        call apmain(action, kptsc, rsolu, vcine, istop,&
-                    iret)
+        call apmain(action, kptsc, rsolu, vcine, istop, iret)
     endif
 !
 999 continue
