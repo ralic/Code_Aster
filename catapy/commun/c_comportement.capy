@@ -93,6 +93,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                        "ELAS",
                                        "CJS",
                                        "HUJEUX",
+                                       "MOHR_COULOMB",
                                        "CAM_CLAY",
                                        "BARCELONE",
                                        "LAIGLE",

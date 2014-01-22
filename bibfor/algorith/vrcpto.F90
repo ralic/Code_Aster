@@ -51,12 +51,13 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
 !
     logical :: lpomec
     integer :: dmmeca, ii
-    parameter     ( dmmeca = 19 )
+    parameter     ( dmmeca = 20 )
     character(len=16) :: pomeca(dmmeca)
 !
     data pomeca / 'ELAS'            ,&
      &              'CJS'             ,&
      &              'HUJEUX'          ,&
+     &              'MOHR_COULOMB'    ,&
      &              'CAM_CLAY'        ,&
      &              'BARCELONE'       ,&
      &              'LAIGLE'          ,&

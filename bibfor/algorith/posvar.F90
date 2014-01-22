@@ -432,6 +432,27 @@ subroutine posvar(compor, ndim, vari, nume)
     else
         nume=0
     endif
+!-----LA LOI MECANIQUE EST MOHR_COULOMB
+    if (meca(1:12) .eq. 'MOHR_COULOMB') then
+!----- ECROUISSAGE DEVIATOIRE MECANISME 1
+        if (vari(1:7) .eq. 'EPSPVOL') then
+            nume=advime
+            goto 9999
+!----- ECROUISSAGE DEVIATOIRE MECANISME 2
+        else if (vari(1:6).eq.'EPSPEQ') then
+            nume=advime+1
+            goto 9999
+!----- ECROUISSAGE DEVIATOIRE MECANISME 3
+        else if (vari(1:8).eq.'INDIPLAS') then
+            nume=advime+2
+            goto 9999
+        else
+            nume=-1
+            goto 9999
+        endif
+    else
+        nume=0
+    endif
 9999  continue
     if (nume .eq. -1) then
         valk(1) = vari

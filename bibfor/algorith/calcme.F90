@@ -61,6 +61,11 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 #include "asterfort/redece.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/lcmohr.h"
+#include "asterfort/mctgel.h"
+#include "asterfort/matini.h"
+#include "asterfort/mcbnvi.h"
     logical :: mectru, pre2tr
     integer :: ndim, dimdef, dimcon, nvimec, addeme, addete, addep1
     integer :: addep2, adcome, imate, yate, retcom
@@ -85,6 +90,8 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     real(kind=8) :: d(6, 6), mdal(6), dalal
     character(len=16) :: complg(3)
     logical :: cp, yapre2
+    character(len=8)  :: nomres(3)
+    real(kind=8)      :: rprops(3)
 ! ======================================================================
 !    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
     real(kind=8) :: dsidp1(6), dp1, dp2, sat, tbiot(6)
@@ -208,11 +215,46 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         endif
 !
     endif
+! ======================================================================
+! --- LOI DE MOHR-COULOMB                                       -------
+! ======================================================================
+    mectru = .false.
+    
+    if (meca .eq. 'MOHR_COULOMB') then
+      
+      call mcbnvi(typmod, ndt, ndi)
+    
+      mectru = .true.
+      tini = t - dt
+      call matini(6, 6, 0.d0, dsdeme)
+      
+      if (option(1:14) .eq. 'RIGI_MECA_TANG') then
+!       write(6,'(A)')
+!       write(6,'(A)')'> CALCME :: RIGI_MECA -> Elastic Matrix'
+
+        nomres(1)= 'ALPHA   '
+        nomres(2)= 'E       '
+        nomres(3)= 'NU      '
+        call rcvala(imate, ' ', 'ELAS', 0, '   ',&
+                    [t], 3, nomres, rprops, icodre,2)
+
+        call mctgel(dsdeme, rprops)
+
+        retcom = 0
+
+      else
+        
+        call lcmohr(ndim  , typmod        , imate         , option, tini ,&
+                    deps  , congem(adcome), congep(adcome), vintm , vintp,&
+                    dsdeme, retcom )
+! --OK
+      endif
+    endif
+!
 !
 ! ======================================================================
 ! --- LOI CJS, LOI LAIGLE, LOI HOEK-BROWN OU LOI DRUCKER_PRAGER -------
 ! ======================================================================
-    mectru = .false.
     if (meca .eq. 'CJS') then
         mectru = .true.
         tini = t - dt
