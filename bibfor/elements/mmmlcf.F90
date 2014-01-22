@@ -1,5 +1,5 @@
-subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
-                  iresof, iresog, lambds)
+subroutine mmmlcf(coefff,coefac,coefaf,lpenac,lpenaf, &
+                  iresof,iresog,lambds)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

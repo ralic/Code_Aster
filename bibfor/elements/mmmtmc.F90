@@ -1,7 +1,7 @@
-subroutine mmmtmc(phasep, ndim, nnl, nnm, norm,&
-                  tau1, tau2, mprojt, wpg, ffl,&
-                  ffm, jacobi, coefff, coefaf, dlagrf,&
-                  djeut, rese, nrese, matrmc)
+subroutine mmmtmc(phasep,ndim  ,nnl   ,nnm   ,norm  , &
+                  tau1  ,tau2  ,mprojt,wpg   ,ffl   , &
+                  ffm   ,jacobi,coefff,coefaf,dlagrf, &
+                  djeut ,rese  ,nrese ,matrmc)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

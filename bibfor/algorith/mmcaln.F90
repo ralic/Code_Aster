@@ -1,4 +1,4 @@
-subroutine mmcaln(ndim, tau1, tau2, norm, mprojn,&
+subroutine mmcaln(ndim  ,tau1  ,tau2  ,norm  ,mprojn, &
                   mprojt)
 !
 ! ======================================================================
@@ -64,22 +64,22 @@ subroutine mmcaln(ndim, tau1, tau2, norm, mprojn,&
 !
 ! --- MATRICE DE PROJECTION NORMALE
 !
-    do 321 i = 1, ndim
+    do  i = 1, ndim
         do 311 j = 1, ndim
             mprojn(i,j) = norm(i)*norm(j)
 311      continue
-321  end do
+  end do
 !
 ! --- MATRICE DE PROJECTION TANGENTE
 !
-    do 125 i = 1, ndim
+    do  i = 1, ndim
         do 115 j = 1, ndim
             mprojt(i,j) = -1.d0*norm(i)*norm(j)
 115      continue
-125  end do
+  end do
 !
-    do 330 i = 1, ndim
+    do  i = 1, ndim
         mprojt(i,i) = 1.d0 + mprojt(i,i)
-330  end do
+  end do
 !
 end subroutine

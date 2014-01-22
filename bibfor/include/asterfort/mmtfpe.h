@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmtfpe(phasep, iresof, ndim, nne, nnm,&
-                      nnl, nbcps, wpg, jacobi, ffl,&
-                      ffe, ffm, dffm, norm, tau1,&
-                      tau2, mprojn, mprojt, rese, nrese,&
-                      lambda, jeu, coefff, coefaf, coefac,&
-                      dlagrc, dlagrf, djeut, matree, matrmm,&
-                      matrem, matrme, matrec, matrmc, matref,&
-                      matrmf)
+    subroutine mmtfpe(phasep,iresof,ndim  ,nne   ,nnm   , &
+                  nnl   ,nbcps ,wpg   ,jacobi, ffl  , &
+                  ffe   ,ffm    ,norm  ,tau1  , &
+                  tau2  ,mprojn,mprojt,rese  ,nrese , &
+                  lambda,coefff,coefaf,coefac, &
+                  dlagrf,djeut ,matree,matrmm, &
+                  matrem,matrme,matrec,matrmc,matref, &
+                  matrmf)
         character(len=9) :: phasep
         integer :: iresof
         integer :: ndim
@@ -36,7 +36,6 @@ interface
         real(kind=8) :: ffl(9)
         real(kind=8) :: ffe(9)
         real(kind=8) :: ffm(9)
-        real(kind=8) :: dffm(2, 9)
         real(kind=8) :: norm(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
@@ -49,7 +48,6 @@ interface
         real(kind=8) :: coefff
         real(kind=8) :: coefaf
         real(kind=8) :: coefac
-        real(kind=8) :: dlagrc
         real(kind=8) :: dlagrf(2)
         real(kind=8) :: djeut(3)
         real(kind=8) :: matree(27, 27)

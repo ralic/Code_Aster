@@ -1,10 +1,10 @@
-subroutine mmtfpe(phasep, iresof, ndim, nne, nnm,&
-                  nnl, nbcps, wpg, jacobi, ffl,&
-                  ffe, ffm, dffm, norm, tau1,&
-                  tau2, mprojn, mprojt, rese, nrese,&
-                  lambda, jeu, coefff, coefaf, coefac,&
-                  dlagrc, dlagrf, djeut, matree, matrmm,&
-                  matrem, matrme, matrec, matrmc, matref,&
+subroutine mmtfpe(phasep,iresof,ndim  ,nne   ,nnm   , &
+                  nnl   ,nbcps ,wpg   ,jacobi, ffl  , &
+                  ffe   ,ffm    ,norm  ,tau1  , &
+                  tau2  ,mprojn,mprojt,rese  ,nrese , &
+                  lambda,coefff,coefaf,coefac, &
+                  dlagrf,djeut ,matree,matrmm, &
+                  matrem,matrme,matrec,matrmc,matref, &
                   matrmf)
 !
 ! ======================================================================
@@ -37,11 +37,11 @@ subroutine mmtfpe(phasep, iresof, ndim, nne, nnm,&
     real(kind=8) :: norm(3), tau1(3), tau2(3)
     real(kind=8) :: mprojn(3, 3), mprojt(3, 3)
     real(kind=8) :: ffe(9), ffm(9), ffl(9)
-    real(kind=8) :: wpg, jacobi, dffm(2, 9)
+    real(kind=8) :: wpg, jacobi
     real(kind=8) :: rese(3), nrese
     real(kind=8) :: coefac, coefaf
-    real(kind=8) :: lambda, coefff, jeu
-    real(kind=8) :: dlagrf(2), dlagrc
+    real(kind=8) :: lambda, coefff
+    real(kind=8) :: dlagrf(2)
     real(kind=8) :: djeut(3)
     real(kind=8) :: matrem(27, 27), matrme(27, 27)
     real(kind=8) :: matree(27, 27), matrmm(27, 27)
@@ -53,6 +53,9 @@ subroutine mmtfpe(phasep, iresof, ndim, nne, nnm,&
 ! ROUTINE CONTACT (METHODE CONTINUE - CALCUL)
 !
 ! CALCUL DES MATRICES - EQUATION EQUILIBRE - CAS POIN_ELEM
+! CONTRIBUTIONS STANDARDS 
+! DANS CETTE ROUTINE ON NE PREND PAS EN COMPTE 
+! LES NON LINEARITES GEOMETRIQUES LIEES A LA DEUXIEME VARIATION DU GAP NORMAL
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,66 +106,61 @@ subroutine mmtfpe(phasep, iresof, ndim, nne, nnm,&
 ! OUT MATREM : MATRICE ELEMENTAIRE DEPL_E/DEPL_M
 !
 ! ----------------------------------------------------------------------
-!
-    logical :: lnewtg
-    real(kind=8) :: h11t1n(3, 3), h12t2n(3, 3)
-    real(kind=8) :: h21t1n(3, 3), h22t2n(3, 3)
-!
-! ----------------------------------------------------------------------
-!
-    lnewtg = .false.
-!
-    call matini(3, 3, 0.d0, h11t1n)
-    call matini(3, 3, 0.d0, h12t2n)
-    call matini(3, 3, 0.d0, h21t1n)
-    call matini(3, 3, 0.d0, h22t2n)
+
 !
     if (phasep(1:4) .eq. 'CONT') then
-        call mmmtuc(phasep, ndim, nnl, nne, nnm,&
-                    norm, tau1, tau2, mprojt, wpg,&
-                    ffl, ffe, ffm, jacobi, coefff,&
-                    coefaf, dlagrf, djeut, rese, nrese,&
+    
+        call mmmtuc(phasep,ndim  ,nnl   ,nne   ,nnm   , &
+                    norm  ,tau1  ,tau2  ,mprojt,wpg   , &
+                    ffl   ,ffe   ,ffm   ,jacobi,coefff, &
+                    coefaf,dlagrf,djeut ,rese  ,nrese , &
                     matrec, matrmc)
-        call mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
-                    mprojn, mprojt, wpg, ffe, ffm,&
-                    dffm, jacobi, coefac, coefaf, coefff,&
-                    rese, nrese, lambda, jeu, dlagrc,&
-                    h11t1n, h12t2n, h21t1n, h22t2n, matree,&
-                    matrmm, matrem, matrme)
+            
+        call mmmtuu(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+              mprojt,wpg   ,ffe   ,ffm, &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese ,lambda,matree, &
+          matrmm, matrem, matrme)
+            
     else if (phasep(1:4).eq.'ADHE') then
-        call mmmtuf(phasep, ndim, nnl, nne, nnm,&
-                    nbcps, wpg, jacobi, ffl, ffe,&
-                    ffm, tau1, tau2, mprojt, rese,&
-                    nrese, lambda, coefff, matref, matrmf)
-        call mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
-                    mprojn, mprojt, wpg, ffe, ffm,&
-                    dffm, jacobi, coefac, coefaf, coefff,&
-                    rese, nrese, lambda, jeu, dlagrc,&
-                    h11t1n, h12t2n, h21t1n, h22t2n, matree,&
-                    matrmm, matrem, matrme)
+    
+        call mmmtuf(phasep,ndim  ,nnl   ,nne   ,nnm   , &
+                    nbcps ,wpg   ,jacobi,ffl   ,ffe   , &
+                    ffm   ,tau1  ,tau2  ,mprojt,rese  , &
+                    nrese ,lambda,coefff,matref,matrmf)
+            
+        call mmmtuu(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+              mprojt,wpg   ,ffe   ,ffm, &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese ,lambda,matree, &
+          matrmm, matrem, matrme)
+            
         if (iresof .ge. 1) then
-            call mmmtuc(phasep, ndim, nnl, nne, nnm,&
-                        norm, tau1, tau2, mprojt, wpg,&
-                        ffl, ffe, ffm, jacobi, coefff,&
-                        coefaf, dlagrf, djeut, rese, nrese,&
+            call mmmtuc(phasep,ndim  ,nnl   ,nne   ,nnm   , &
+                        norm  ,tau1  ,tau2  ,mprojt,wpg   , &
+                        ffl   ,ffe   ,ffm   ,jacobi,coefff, &
+                        coefaf,dlagrf,djeut ,rese  ,nrese , &
                         matrec, matrmc)
         endif
     else if (phasep(1:4).eq.'GLIS') then
-        call mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
-                    mprojn, mprojt, wpg, ffe, ffm,&
-                    dffm, jacobi, coefac, coefaf, coefff,&
-                    rese, nrese, lambda, jeu, dlagrc,&
-                    h11t1n, h12t2n, h21t1n, h22t2n, matree,&
-                    matrmm, matrem, matrme)
-        call mmmtuf(phasep, ndim, nnl, nne, nnm,&
-                    nbcps, wpg, jacobi, ffl, ffe,&
-                    ffm, tau1, tau2, mprojt, rese,&
-                    nrese, lambda, coefff, matref, matrmf)
+            
+        call mmmtuu(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+              mprojt,wpg   ,ffe   ,ffm, &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese ,lambda,matree, &
+          matrmm, matrem, matrme)
+    
+        call mmmtuf(phasep,ndim  ,nnl   ,nne   ,nnm   , &
+                    nbcps ,wpg   ,jacobi,ffl   ,ffe   , &
+                    ffm   ,tau1  ,tau2  ,mprojt,rese  , &
+                    nrese ,lambda,coefff,matref,matrmf)
+ 
+         
         if (iresof .ge. 1) then
-            call mmmtuc(phasep, ndim, nnl, nne, nnm,&
-                        norm, tau1, tau2, mprojt, wpg,&
-                        ffl, ffe, ffm, jacobi, coefff,&
-                        coefaf, dlagrf, djeut, rese, nrese,&
+            call mmmtuc(phasep,ndim  ,nnl   ,nne   ,nnm   , &
+                        norm  ,tau1  ,tau2  ,mprojt,wpg   , &
+                        ffl   ,ffe   ,ffm   ,jacobi,coefff, &
+                        coefaf,dlagrf,djeut ,rese  ,nrese , &
                         matrec, matrmc)
         endif
     endif

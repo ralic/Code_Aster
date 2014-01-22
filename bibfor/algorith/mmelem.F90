@@ -1,5 +1,5 @@
-subroutine mmelem(nomte, ndim, nddl, typmae, nne,&
-                  typmam, nnm, nnl, nbcps, nbdm,&
+subroutine mmelem(nomte ,ndim  ,nddl  ,typmae,nne   , &
+                  typmam,nnm   ,nnl   ,nbcps ,nbdm  , &
                   laxis, leltf)
 !
 ! ======================================================================

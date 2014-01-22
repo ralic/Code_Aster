@@ -210,7 +210,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CHAM='DEPL',
                   NOEUD='N10',
                   NOM_CMP='LAGS_C',
-                  VALE_CALC= 2.32262653E+06,
+                  VALE_CALC= 2.3226295413012E+06,
                   VALE_REFE=2.4177949709864603E6,
                   PRECISION=0.040000000000000001,),
           )

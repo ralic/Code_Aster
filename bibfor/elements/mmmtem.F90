@@ -1,8 +1,7 @@
-subroutine mmmtem(phasep, lnewtg, ndim, nne, nnm,&
-                  mprojn, mprojt, wpg, ffe, ffm,&
-                  dffm, jacobi, coefac, coefaf, coefff,&
-                  rese, nrese, lambda, dlagrc, jeu,&
-                  h11t1n, h12t2n, h21t1n, h22t2n, matrem)
+subroutine mmmtem(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+                  mprojt,wpg   ,ffe   ,ffm   , &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese, lambda, matrem)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +21,7 @@ subroutine mmmtem(phasep, lnewtg, ndim, nne, nnm,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
+
     implicit     none
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -33,17 +32,13 @@ subroutine mmmtem(phasep, lnewtg, ndim, nne, nnm,&
 #include "asterfort/pmavec.h"
 #include "asterfort/vecini.h"
     character(len=9) :: phasep
-    logical :: lnewtg
     integer :: ndim, nne, nnm
     real(kind=8) :: mprojn(3, 3), mprojt(3, 3)
-    real(kind=8) :: ffe(9), ffm(9), dffm(2, 9)
+    real(kind=8) :: ffe(9), ffm(9)
     real(kind=8) :: wpg, jacobi
     real(kind=8) :: rese(3), nrese
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: lambda, coefff
-    real(kind=8) :: dlagrc, jeu
-    real(kind=8) :: h11t1n(3, 3), h12t2n(3, 3)
-    real(kind=8) :: h21t1n(3, 3), h22t2n(3, 3)
     real(kind=8) :: matrem(27, 27)
 !
 ! ----------------------------------------------------------------------
@@ -76,17 +71,10 @@ subroutine mmmtem(phasep, lnewtg, ndim, nne, nnm,&
 ! IN  COEFAC : COEF_AUGM_CONT
 ! IN  COEFAF : COEF_AUGM_FROT
 ! IN  LAMBDA : LAGRANGIEN DE CONTACT
-! IN  DLAGRC : INCREMENT DEPDEL DU LAGRANGIEN DE CONTACT
-! IN  DJEU   : INCREMENT DEPDEL DU JEU
-!
 ! IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 !               GTK = LAMBDAF + COEFAF*VITESSE
 ! IN  NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 ! IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
-! IN  H11T1N : MATRICE
-! IN  H21T1N : MATRICE
-! IN  H12T2N : MATRICE
-! IN  H22T2N : MATRICE
 ! OUT MATREM : MATRICE ELEMENTAIRE DEPL_E/DEPL_M
 !
 ! ----------------------------------------------------------------------
@@ -111,11 +99,11 @@ subroutine mmmtem(phasep, lnewtg, ndim, nne, nnm,&
     call vecini(3, 0.d0, d2)
     call vecini(3, 0.d0, d3)
 !
-    do 3 idim = 1, 3
+    do  idim = 1, 3
         c1(idim) = mprojt(idim,1)
         c2(idim) = mprojt(idim,2)
         c3(idim) = mprojt(idim,3)
- 3  end do
+   end do
 !
 ! --- PRODUIT [E] = [Pt]x[Pt]
 !
@@ -170,24 +158,6 @@ subroutine mmmtem(phasep, lnewtg, ndim, nne, nnm,&
 190              continue
 200          continue
         else
-            if (lnewtg) then
-                do 709 i = 1, nne
-                    do 699 j = 1, nnm
-                        do 689 k = 1, ndim
-                            do 679 l = 1, ndim
-                                ii = ndim*(i-1)+l
-                                jj = ndim*(j-1)+k
-                                matrem(ii,jj) = matrem(ii,jj) - wpg*jacobi* (dlagrc-coefac*jeu)* &
-                                                &h11t1n(l,k)*ffe(i)*dffm(1,j)- wpg* jacobi* (dlag&
-                                                &rc-coefac*jeu)*h12t2n(l, k)*ffe(i)*dffm(1,j)- wp&
-                                                &g*jacobi* (dlagrc-coefac*jeu)*h21t1n(l,k)*ffe(i)&
-                                                & *dffm(2,j)- wpg*jacobi* (dlagrc- coefac*jeu)*h2&
-                                                &2t2n(l,k)*ffe(i)*dffm(2, j)
-679                          continue
-689                      continue
-699                  continue
-709              continue
-            else
                 do 701 i = 1, nne
                     do 691 j = 1, nnm
                         do 681 k = 1, ndim
@@ -200,7 +170,6 @@ subroutine mmmtem(phasep, lnewtg, ndim, nne, nnm,&
 681                      continue
 691                  continue
 701              continue
-            endif
         endif
     else if (phasep(1:4).eq.'ADHE') then
         if (phasep(6:9) .eq. 'PENA') then

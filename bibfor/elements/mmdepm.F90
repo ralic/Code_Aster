@@ -1,5 +1,5 @@
-subroutine mmdepm(nbdm, ndim, nne, nnm, jdepm,&
-                  jdepde, ffe, ffm, ddeple, ddeplm,&
+subroutine mmdepm(nbdm  ,ndim  ,nne   ,nnm   ,jdepm , &
+                  jdepde, ffe  ,ffm   ,ddeple,ddeplm, &
                   deplme, deplmm)
 !
 ! ======================================================================
@@ -66,44 +66,44 @@ subroutine mmdepm(nbdm, ndim, nne, nnm, jdepm,&
 !
     call jemarq()
 !
-    do 9 idim = 1, 3
+    do  idim = 1, 3
         ddeplm(idim) = 0.d0
         deplmm(idim) = 0.d0
         ddeple(idim) = 0.d0
         deplme(idim) = 0.d0
- 9  end do
+   end do
 !
 ! --- DEPLACEMENT PAS DE TEMPS MOINS POUR LES NOEUDS ESCLAVES
 !
-    do 31 idim = 1, ndim
+    do  idim = 1, ndim
         do 32 inoe = 1, nne
             deplme(idim) = deplme(idim) + ffe(inoe)* zr(jdepm+(inoe-1) *nbdm+idim-1)
 32      continue
-31  end do
+  end do
 !
 ! --- INCREMENT DEPDEL DU DEPL. POUR LES NOEUDS ESCLAVES
 !
-    do 131 idim = 1, ndim
+    do  idim = 1, ndim
         do 132 inoe = 1, nne
             ddeple(idim) = ddeple(idim) + ffe(inoe)* zr(jdepde+( inoe-1)*nbdm+idim-1)
 132      continue
-131  end do
+  end do
 !
 ! --- DEPLACEMENT PAS DE TEMPS MOINS POUR LES NOEUDS MAITRES
 !
-    do 41 idim = 1, ndim
+    do  idim = 1, ndim
         do 42 inoe = 1, nnm
             deplmm(idim) = deplmm(idim) + ffm(inoe)* zr(jdepm+nne* nbdm+(inoe-1)*ndim+idim-1)
 42      continue
-41  end do
+  end do
 !
 ! --- INCREMENT DEPDEL DU DEPL. POUR LES NOEUDS MAITRES
 !
-    do 141 idim = 1, ndim
+    do  idim = 1, ndim
         do 142 inoe = 1, nnm
             ddeplm(idim) = ddeplm(idim) + ffm(inoe)* zr(jdepde+nne* nbdm+(inoe-1)*ndim+idim-1)
 142      continue
-141  end do
+  end do
 !
     call jedema()
 !

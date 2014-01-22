@@ -1,7 +1,7 @@
-subroutine mmmtuc(phasep, ndim, nnl, nne, nnm,&
-                  norm, tau1, tau2, mprojt, wpg,&
-                  ffl, ffe, ffm, jacobi, coefff,&
-                  coefaf, dlagrf, djeut, rese, nrese,&
+subroutine mmmtuc(phasep,ndim  ,nnl   ,nne   ,nnm   , &
+                  norm  ,tau1  ,tau2  ,mprojt,wpg   , &
+                  ffl   ,ffe   ,ffm   ,jacobi,coefff, &
+                  coefaf,dlagrf,djeut ,rese  ,nrese , &
                   matrec, matrmc)
 !
 ! ======================================================================
@@ -83,16 +83,16 @@ subroutine mmmtuc(phasep, ndim, nnl, nne, nnm,&
 !
 ! --- DEPL_E/LAGR_C
 !
-    call mmmtec(phasep, ndim, nnl, nne, norm,&
-                tau1, tau2, mprojt, wpg, ffl,&
-                ffe, jacobi, coefff, coefaf, dlagrf,&
+    call mmmtec(phasep,ndim  ,nnl   ,nne   ,norm  , &
+                tau1  ,tau2  ,mprojt,wpg   ,ffl   , &
+                ffe   ,jacobi,coefff,coefaf,dlagrf, &
                 djeut, rese, nrese, matrec)
 !
 ! --- DEPL_M/LAGR_C
 !
-    call mmmtmc(phasep, ndim, nnl, nnm, norm,&
-                tau1, tau2, mprojt, wpg, ffl,&
-                ffm, jacobi, coefff, coefaf, dlagrf,&
+    call mmmtmc(phasep,ndim  ,nnl   ,nnm   ,norm  , &
+                tau1  ,tau2  ,mprojt,wpg   ,ffl   , &
+                ffm   ,jacobi,coefff,coefaf,dlagrf, &
                 djeut, rese, nrese, matrmc)
 !
 end subroutine

@@ -1,7 +1,6 @@
-subroutine mmmjeu(ndim, jeusup, norm, geome, geomm,&
-                  ddeple, ddeplm, mprojt, jeu, djeu,&
-                  djeut, iresog, tau1, tau2, gene11,&
-                  gene21)
+subroutine mmmjeu(ndim  ,jeusup,norm  ,geome ,geomm , &
+                  ddeple,ddeplm,mprojt,jeu   ,djeu  , &
+                  djeut ,iresog)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,15 +22,15 @@ subroutine mmmjeu(ndim, jeusup, norm, geome, geomm,&
 !
     implicit none
 #include "asterfort/matini.h"
+#include "asterfort/assert.h"
     integer :: ndim
+    integer :: iresog
     real(kind=8) :: jeusup
-    real(kind=8) :: norm(3), tau1(3), tau2(3)
+    real(kind=8) :: norm(3)
     real(kind=8) :: geomm(3), geome(3)
     real(kind=8) :: ddeple(3), ddeplm(3)
     real(kind=8) :: mprojt(3, 3)
     real(kind=8) :: jeu, djeu(3), djeut(3)
-    integer :: iresog
-    real(kind=8) :: gene11(3, 3), gene21(3, 3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,13 +52,6 @@ subroutine mmmjeu(ndim, jeusup, norm, geome, geomm,&
 ! OUT JEU    : JEU NORMAL ACTUALISE
 ! OUT DJEU   : INCREMENT DEPDEL DU JEU
 ! OUT DJEUT  : INCREMENT DEPDEL DU JEU TANGENT
-! IN  IRESOG : ALGO. DE RESOLUTION POUR LA GEOMETRIE
-!              0 - POINT FIXE
-!              1 - NEWTON
-! IN  TAU1   : PREMIER VECTEUR TANGENT
-! IN  TAU2   : SECOND VECTEUR TANGENT
-! OUT GENE11 : MATRICE
-! OUT GENE21 : MATRICE
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,51 +59,38 @@ subroutine mmmjeu(ndim, jeusup, norm, geome, geomm,&
 !
 ! ----------------------------------------------------------------------
 !
-    do 1 idim = 1, 3
+   
+    do idim = 1, 3
         djeu(idim) = 0.d0
         djeut(idim) = 0.d0
- 1  end do
+    end do
     jeu = 0.d0
 !
 ! --- CALCUL DE L'INCREMENT DE JEU
 !
-    do 5 idim = 1, 3
+    do idim = 1, 3
         djeu(idim) = ddeple(idim) - ddeplm(idim)
- 5  end do
+    end do
 !
-! --- CALCUL DU JEU TOTAL
+! ---- CALCUL DU JEU TOTAL :
+! ---- LE JEU EST CALCULE A PARTIR DE (MMREAC+MMDEPM) SUIVANT
+! ---- POINT FIXE  : (MAILLAGE+DEPMOI          =GEOM_)+DDEPL_ 
+! ---- NEWTON GENE : (MAILLAGE+DEPMOI+PPE*DDPL_=GEOM_)
+! ---- GEOM_ --> MMREAC, DDEPL_ --> MMDEPM 
 !
     jeu = jeusup
-    do 10 idim = 1, ndim
-        jeu = jeu + ( geome(idim)+ddeple(idim)- geomm(idim)-ddeplm( idim))*norm(idim)
-10  end do
+    do idim = 1, ndim
+        jeu = jeu + ( geome(idim)+(1-iresog)*ddeple(idim) &
+                - geomm(idim)-(1-iresog)*ddeplm( idim))*norm(idim)
+    end do
 !
 ! --- PROJECTION DE L'INCREMENT DE JEU SUR LE PLAN TANGENT
 !
-    do 20 i = 1, ndim
-        do 25 j = 1, ndim
+    do i = 1, ndim
+        do j = 1, ndim
             djeut(i) = mprojt(i,j)*djeu(j)+djeut(i)
-25      continue
-20  end do
-!
-! --- MATRICE GENE11 ET GENE21
-!
-    if (iresog .eq. 1) then
-        if ((1.d0-jeu**2) .ne. 0.0d0) then
-            do 24 i = 1, ndim
-                do 26 j = 1, ndim
-                    gene11(i,j) = gene11(i,j)*jeu/(1.d0-jeu**2)+ tau1(i)*tau1(j)/(1.d0-jeu**2)
-!
-                    gene21(i,j) = gene21(i,j)*jeu/(1.d0-jeu**2)+ tau2(i)*tau1(j)/(1.d0-jeu**2)
-26              continue
-24          continue
-        else
-            call matini(3, 3, 0.d0, gene11)
-            call matini(3, 3, 0.d0, gene21)
-        endif
-    else
-        call matini(3, 3, 0.d0, gene11)
-        call matini(3, 3, 0.d0, gene21)
-    endif
-!
+        end do
+    end do
+
+
 end subroutine

@@ -137,7 +137,7 @@ subroutine te0365(option, nomte)
 ! ----- STATUTS
 !
         call mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
-                    dlagrf, coefaf, coefff, tau1, tau2,&
+                    dlagrf, coefaf,  tau1, tau2,&
                     lcont, ladhe, lambda, rese, nrese)
 !
 ! ----- PHASE DE CALCUL
@@ -189,14 +189,14 @@ subroutine te0365(option, nomte)
 !
 ! --- RECOPIE VALEURS FINALES
 !
-    do 60 iddl = 1, nddl
+    do  iddl = 1, nddl
         zr(jvect-1+iddl) = vtmp(iddl)
         if (debug) then
             if (vtmp(iddl) .ne. 0.d0) then
                 write(6,*) 'TE0365: ',iddl,vtmp(iddl)
             endif
         endif
-60  end do
+  end do
 !
     call jedema()
 end subroutine

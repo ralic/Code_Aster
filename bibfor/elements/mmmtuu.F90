@@ -1,9 +1,8 @@
-subroutine mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
-                  mprojn, mprojt, wpg, ffe, ffm,&
-                  dffm, jacobi, coefac, coefaf, coefff,&
-                  rese, nrese, lambda, jeu, dlagrc,&
-                  h11t1n, h12t2n, h21t1n, h22t2n, matree,&
-                  matrmm, matrem, matrme)
+subroutine mmmtuu(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+              mprojt,wpg   ,ffe   ,ffm, &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese ,lambda,matree, &
+          matrmm, matrem, matrme)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,23 +22,20 @@ subroutine mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
+
     implicit     none
 #include "asterfort/mmmtee.h"
 #include "asterfort/mmmtem.h"
 #include "asterfort/mmmtme.h"
 #include "asterfort/mmmtmm.h"
     character(len=9) :: phasep
-    logical :: lnewtg
     integer :: ndim, nne, nnm
     real(kind=8) :: mprojn(3, 3), mprojt(3, 3)
-    real(kind=8) :: ffe(9), ffm(9), dffm(2, 9)
+    real(kind=8) :: ffe(9), ffm(9)
     real(kind=8) :: wpg, jacobi
     real(kind=8) :: rese(3), nrese
-    real(kind=8) :: coefac, coefaf, jeu, dlagrc
+    real(kind=8) :: coefac, coefaf
     real(kind=8) :: lambda, coefff
-    real(kind=8) :: h11t1n(3, 3), h12t2n(3, 3)
-    real(kind=8) :: h21t1n(3, 3), h22t2n(3, 3)
     real(kind=8) :: matrem(27, 27), matrme(27, 27)
     real(kind=8) :: matree(27, 27), matrmm(27, 27)
 !
@@ -47,7 +43,8 @@ subroutine mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
 !
 ! ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 !
-! CALCUL DE LA MATRICE DEPL/DEPL
+! CALCUL DE LA MATRICE DEPL/DEPL ----- CONTRIBUTIONS STANDARDS 
+! SANS NON LINEARITES GEOMETRIQUES LIEES A LA DEUXIEME VARIATION DU GAP NORMAL
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,32 +92,29 @@ subroutine mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
 !
 ! --- DEPL_ESCL/DEPL_ESCL
 !
-    call mmmtee(phasep, ndim, nne, mprojn, mprojt,&
-                wpg, ffe, jacobi, coefac, coefaf,&
-                coefff, rese, nrese, lambda, matree)
+    call mmmtee(phasep,ndim  ,nne   ,mprojn,mprojt, &
+                wpg   ,ffe   ,jacobi,coefac,coefaf, &
+                coefff,rese  ,nrese ,lambda,matree)
 !
 ! --- DEPL_MAIT/DEPL_MAIT
 !
-    call mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
-                mprojt, wpg, ffm, dffm, jacobi,&
-                coefac, coefaf, coefff, rese, nrese,&
-                lambda, dlagrc, jeu, h11t1n, h12t2n,&
-                h21t1n, h22t2n, matrmm)
+    call mmmtmm(phasep,ndim  ,nnm   ,mprojn,mprojt, &
+                  wpg   ,ffm    ,jacobi,coefac, &
+          coefaf,coefff,rese  ,nrese ,lambda, &
+          matrmm)
 !
 ! --- DEPL_ESCL/DEPL_MAIT
 !
-    call mmmtem(phasep, lnewtg, ndim, nne, nnm,&
-                mprojn, mprojt, wpg, ffe, ffm,&
-                dffm, jacobi, coefac, coefaf, coefff,&
-                rese, nrese, lambda, dlagrc, jeu,&
-                h11t1n, h12t2n, h21t1n, h22t2n, matrem)
+    call mmmtem(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+                  mprojt,wpg   ,ffe   ,ffm   , &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese, lambda, matrem)
 !
 ! --- DEPL_MAIT/DEPL_ESCL
 !
-    call mmmtme(phasep, lnewtg, ndim, nne, nnm,&
-                mprojn, mprojt, wpg, ffe, ffm,&
-                dffm, jacobi, coefac, coefaf, coefff,&
-                rese, nrese, lambda, dlagrc, jeu,&
-                h11t1n, h12t2n, h21t1n, h22t2n, matrme)
+    call mmmtme(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+                  mprojt,wpg   ,ffe   ,ffm   , &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese, lambda,  matrme)
 !
 end subroutine

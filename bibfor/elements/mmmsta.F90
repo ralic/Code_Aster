@@ -1,6 +1,6 @@
-subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
-                  dlagrf, coefaf, coefff, tau1, tau2,&
-                  lcont, ladhe, lambda, rese, nrese)
+subroutine mmmsta(ndim  ,leltf ,lpenaf,loptf ,djeut , &
+                  dlagrf,coefaf,tau1  ,tau2  , &
+                  lcont ,ladhe ,lambda,rese  ,nrese)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,13 +26,14 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mmtrpr.h"
+
     integer :: ndim
     real(kind=8) :: dlagrf(2), djeut(3)
     logical :: loptf, lpenaf, leltf
     real(kind=8) :: tau1(3), tau2(3)
     logical :: lcont, ladhe
     real(kind=8) :: rese(3), nrese, lambda
-    real(kind=8) :: coefaf, coefff
+    real(kind=8) :: coefaf
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,11 +47,10 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
 ! IN  NDIM   : DIMENSION DE L'ESPACE
 ! IN  LPENAF : .TRUE. SI FROTTEMENT PENALISE
 ! IN  LELTF  : .TRUE. SI ELEMENT DE FROTTEMENT
-! IN  LOPTF  : .TRUE. SI OPTION DE FROTTEMENT
+! IN  LOPTF  : .TRUE. SI OPTION  DE FROTTEMENT
 ! IN  DLAGRF : INCREMENT DEPDEL DES LAGRANGIENS DE FROTTEMENT
 ! IN  DJEUT  : INCREMENT DEPDEL DU JEU TANGENT
 ! IN  COEFAF : COEF_AUGM_FROT
-! IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 ! IN  TAU1   : PREMIER VECTEUR TANGENT
 ! IN  TAU2   : SECOND VECTEUR TANGENT
 ! OUT LCONT  : .TRUE. SI CONTACT (SU=1)
@@ -96,17 +96,16 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
 !
 ! --- STATUT DU CONTACT - CAS DU FROTTEMENT
 !
+
     if (loptf) then
-        if (coefff .eq. 0.d0) lcont = .false.
         if (lambda .eq. 0.d0) lcont = .false.
-        if (.not.leltf) lcont = .false.
     endif
 !
 ! --- ETAT D'ADHERENCE DU POINT DE CONTACT
 !
     if (loptf .and. lcont) then
-        call mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
-                    tau1, tau2, ladhe, rese, nrese)
+        call mmtrpr(ndim  ,lpenaf,djeut  ,dlagrf,coefaf, &
+                    tau1  ,tau2  ,ladhe  ,rese  ,nrese)
     endif
 !
     call jedema()

@@ -1,6 +1,6 @@
-subroutine mmmtec(phasep, ndim, nnl, nne, norm,&
-                  tau1, tau2, mprojt, wpg, ffl,&
-                  ffe, jacobi, coefff, coefaf, dlagrf,&
+subroutine mmmtec(phasep,ndim  ,nnl   ,nne   ,norm  , &
+                  tau1  ,tau2  ,mprojt,wpg   ,ffl   , &
+                  ffe   ,jacobi,coefff,coefaf,dlagrf, &
                   djeut, rese, nrese, matrec)
 !
 ! ======================================================================

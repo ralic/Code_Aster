@@ -1,8 +1,7 @@
-subroutine mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
-                  mprojt, wpg, ffm, dffm, jacobi,&
-                  coefac, coefaf, coefff, rese, nrese,&
-                  lambda, dlagrc, jeu, h11t1n, h12t2n,&
-                  h21t1n, h22t2n, matrmm)
+subroutine mmmtmm(phasep,ndim  ,nnm   ,mprojn,mprojt, &
+                  wpg   ,ffm    ,jacobi,coefac, &
+          coefaf,coefff,rese  ,nrese ,lambda, &
+          matrmm)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +21,7 @@ subroutine mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
+
     implicit     none
 #include "asterfort/matini.h"
 #include "asterfort/mmmmpb.h"
@@ -30,15 +29,12 @@ subroutine mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
 #include "asterfort/pmavec.h"
 #include "asterfort/vecini.h"
     character(len=9) :: phasep
-    logical :: lnewtg
     integer :: ndim, nnm
     real(kind=8) :: mprojn(3, 3), mprojt(3, 3)
-    real(kind=8) :: wpg, ffm(9), jacobi, dffm(2, 9)
+    real(kind=8) :: wpg, ffm(9), jacobi
     real(kind=8) :: rese(3), nrese
-    real(kind=8) :: coefac, coefaf, jeu
-    real(kind=8) :: lambda, coefff, dlagrc
-    real(kind=8) :: h11t1n(3, 3), h12t2n(3, 3)
-    real(kind=8) :: h21t1n(3, 3), h22t2n(3, 3)
+    real(kind=8) :: coefac, coefaf
+    real(kind=8) :: lambda, coefff
     real(kind=8) :: matrmm(27, 27)
 !
 ! ----------------------------------------------------------------------
@@ -84,7 +80,7 @@ subroutine mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
 ! ----------------------------------------------------------------------
 !
     integer :: i, j, k, l, ii, jj, idim
-    real(kind=8) :: g(3, 3), e(3, 3), d(3, 3), matprb(3, 3), dffmt(9, 2)
+    real(kind=8) :: g(3, 3), e(3, 3), d(3, 3), matprb(3, 3)
     real(kind=8) :: c1(3), c2(3), c3(3), d1(3), d2(3), d3(3)
 !
 ! ----------------------------------------------------------------------
@@ -99,17 +95,13 @@ subroutine mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
     call vecini(3, 0.d0, c2)
     call vecini(3, 0.d0, c3)
 !
-    do 3 idim = 1, 3
+    do  idim = 1, 3
         c1(idim) = mprojt(idim,1)
         c2(idim) = mprojt(idim,2)
         c3(idim) = mprojt(idim,3)
- 3  end do
+  end do
 !
-    do 17 i = 1, 9
-        do 18 j = 1, 2
-            dffmt(i,j) = dffm(j,i)
-18      continue
-17  end do
+
 !
 ! --- PRODUIT [E] = [Pt]x[Pt]
 !
@@ -164,25 +156,6 @@ subroutine mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
 150              continue
 160          continue
         else
-            if (lnewtg) then
-                do 761 i = 1, nnm
-                    do 751 j = 1, nnm
-                        do 741 k = 1, ndim
-                            do 731 l = 1, ndim
-                                ii = ndim*(i-1)+l
-                                jj = ndim*(j-1)+k
-                                matrmm(ii,jj) = matrmm(ii,jj) - wpg*jacobi*2.0d0* (dlagrc-coefac*&
-                                                &jeu)* h11t1n(l,k)*ffm(i)*dffmt(j,1)- wpg*jacobi*&
-                                                &2.0d0* (dlagrc-coefac*jeu)* h12t2n(l,k)*ffm(i)*d&
-                                                &ffmt(j,1)- wpg*jacobi*2.0d0* (dlagrc-coefac*jeu)&
-                                                &* h21t1n(l,k)*ffm(i)*dffmt(j,2)- wpg*jacobi*2.0d&
-                                                &0* (dlagrc-coefac*jeu)* h22t2n(l,k)*ffm(i)*dffmt&
-                                                &(j,2)
-731                          continue
-741                      continue
-751                  continue
-761              continue
-            else
                 do 361 i = 1, nnm
                     do 351 j = 1, nnm
                         do 341 k = 1, ndim
@@ -195,7 +168,6 @@ subroutine mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
 341                      continue
 351                  continue
 361              continue
-            endif
         endif
     else if (phasep(1:4).eq.'ADHE') then
         if (phasep(6:9) .eq. 'PENA') then

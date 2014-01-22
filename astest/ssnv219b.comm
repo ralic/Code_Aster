@@ -576,7 +576,7 @@ TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      TYPE_TEST='MAX',
                      CHAM_GD=DIFFUN,
                      VALE_CALC= 4.1704914693E-05,
-                     VALE_REFE=4.1704914693391002E-05,),
+                     VALE_REFE= 4.170491468701E-05,),
           )
 
 # On cree une liste bidon pour pouvoir

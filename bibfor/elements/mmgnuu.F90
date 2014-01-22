@@ -1,8 +1,8 @@
-subroutine mmtgeo(phasep,ndim  ,nne   ,nnm   ,mprt1n, &
+subroutine mmgnuu(ndim  ,nne   ,nnm   ,mprt1n, &
               mprt2n,mprojn,mprt11,mprt21,mprt22, &
           wpg   ,ffe   ,ffm   ,dffm  ,jacobi, &
           coefac,jeu   ,dlagrc,kappa ,vech1 , &
-          vech2 ,h        ,hah  , &
+          vech2 ,h     ,hah   , &
           matree,matrmm,matrem, matrme)
 !
 ! ======================================================================
@@ -25,10 +25,10 @@ subroutine mmtgeo(phasep,ndim  ,nne   ,nnm   ,mprt1n, &
 !
 ! aslint: disable=W1504
     implicit     none
-#include "asterfort/matini.h"
-#include "asterfort/mmgnuu.h"
-
-    character(len=9) :: phasep
+#include "asterfort/mmgnee.h"
+#include "asterfort/mmgnem.h"
+#include "asterfort/mmgnme.h"
+#include "asterfort/mmgnmm.h"
     
     integer :: ndim, nne, nnm
     
@@ -48,9 +48,10 @@ subroutine mmtgeo(phasep,ndim  ,nne   ,nnm   ,mprt1n, &
 !
 ! ----------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODE CONTINUE - CALCUL)
+! ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 !
-! CALCUL DES MATRICES - EQUATION EQUILIBRE - CAS POIN_ELEM
+! CALCUL DE LA MATRICE DEPL/DEPL ----- CONTRIBUTIONS STANDARDS 
+! SANS NON LINEARITES GEOMETRIQUES LIEES A LA DEUXIEME VARIATION DU GAP NORMAL
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,33 +82,58 @@ subroutine mmtgeo(phasep,ndim  ,nne   ,nnm   ,mprt1n, &
 !               GTK = LAMBDAF + COEFAF*VITESSE
 ! IN  NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 ! IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
-! IN  MPRT1N : MATRICE DE PROJECTION TANGENTE1/NORMALE
-! IN  MPRT2N : MATRICE DE PROJECTION TANGENTE2/NORMALE
 ! OUT MATREE : MATRICE ELEMENTAIRE DEPL_E/DEPL_E
 ! OUT MATRMM : MATRICE ELEMENTAIRE DEPL_M/DEPL_M
 ! OUT MATRME : MATRICE ELEMENTAIRE DEPL_M/DEPL_E
 ! OUT MATREM : MATRICE ELEMENTAIRE DEPL_E/DEPL_M
-!--------ON VIENT ENRICHIR LES MATRICES MATREE MATRMM MATREM MATRME
-!--------AVEC LA DEUXIEME VARIATION DU GAP NORMAL
 !
-! ----------------------------------------------------------------------
+! ----------------------------------------------------------
+!  IL Y A 3 CONTRIBUTIONS VENANT DE LA SECONDE VARIATION DE LA NORMALE
+!  ETUDE DE REFERENCE : V. YASTREBOV THESIS
+!
+!  CONTRIBUTION 1 : -NORM{[d(delta YPR)/delta XI)*DELTA XI]+&
+![(D(DELTA YPR)/DELTA XI)*delta XI]}
+!  CONTRIBUTION 2 :  DELTA XI*H*delta XI
+!  CONTRIBUTION 3 : JEU*{[(delta XI*H)+&
+!(NORM.d(delta YPR)/delta XI)]A[(delta XI*H)+(NORM.d(delta YPR)/delta XI)] 
+!-------------------------------------------------
 !
 !
-! --- CONTRIBUTIONS MATRICE NEWTON GENERALISE
-!
-    if (phasep(1:4) .eq. 'CONT') then
-    
-      call mmgnuu(ndim  ,nne   ,nnm   ,mprt1n, &
-              mprt2n,mprojn,mprt11,mprt21,mprt22, &
-          wpg   ,ffe   ,ffm   ,dffm  ,jacobi, &
-          coefac,jeu   ,dlagrc,kappa ,vech1 , &
-          vech2 ,h     ,hah   , &
-          matree,matrmm,matrem, matrme)
-   
-    elseif (phasep(1:4) .eq. 'GLIS') then
-!Implementation de la deuxième varitation de xi
-! ROUTINE DE CALCUL SUPPLEMENTAIRE EN FROTTEMENT : INEXISTANT POUR LE MOMENT 
 
-    endif
+  
+
+! --- DEPL_ESCL/DEPL_ESCL
+
+
+     call mmgnee(ndim  ,nne   ,wpg   ,ffe   , &
+          jacobi,coefac,jeu   ,dlagrc,vech1 , &
+          vech2 ,hah   ,kappa ,mprt11,mprt21, &
+          mprt22,matree)
+
+
+! --- DEPL_MAIT/DEPL_MAIT
+!
+!
+     call mmgnmm(ndim  ,nnm   ,mprt1n,mprt2n, &
+                  mprojn,wpg   , &
+          ffm    ,dffm  ,jacobi,coefac,jeu   , &
+          dlagrc,kappa ,vech1 ,vech2 ,h     , &
+          matrmm)
+
+! --- DEPL_ESCL/DEPL_MAIT
+!
+     call mmgnem(ndim  ,nnm   ,nne,mprt1n,mprt2n, &
+                  wpg   , &
+          ffe,dffm  ,jacobi,coefac,jeu   , &
+          dlagrc,kappa ,vech1 ,vech2 ,h     , &
+          matrem)
+!
+! --- DEPL_MAIT/DEPL_ESCL
+!
+     call mmgnme(ndim  ,nnm   ,nne,mprt1n,mprt2n, &
+                 wpg   , &
+          ffe,dffm  ,jacobi,coefac,jeu   , &
+          dlagrc,kappa ,vech1 ,vech2 ,h     , &
+          matrme)
 !
 end subroutine

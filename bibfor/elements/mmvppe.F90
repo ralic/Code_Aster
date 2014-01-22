@@ -41,6 +41,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     character(len=8) :: typmae, typmam
     integer :: iresog
     integer :: ndim, nne, nnm, nnl, nbdm
+    real(kind=8) :: ppe
     real(kind=8) :: ffe(9), ffm(9), ffl(9)
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3)
@@ -107,8 +108,6 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: xpc, ypc, xpr, ypr
     real(kind=8) :: mprojn(3, 3)
     real(kind=8) :: jeuvit
-    real(kind=8) :: mprt1n(3, 3), mprt2n(3, 3)
-    real(kind=8) :: gene11(3, 3), gene21(3, 3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -128,6 +127,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     tau2(2) = zr(jpcf-1+9)
     tau2(3) = zr(jpcf-1+10)
     wpg = zr(jpcf-1+11)
+    ppe = 0.d0 
 !
 ! --- RECUPERATION DE LA GEOMETRIE ET DES CHAMPS DE DEPLACEMENT
 !
@@ -138,6 +138,9 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
         call jevech('PVITE_P', 'L', jvitp)
         call jevech('PVITE_M', 'L', jvitm)
         call jevech('PACCE_M', 'L', jaccm)
+    endif
+    if (iresog.eq.1) then
+      ppe = 1.0d0
     endif
 !
 ! --- FONCTIONS DE FORMES ET DERIVEES
@@ -152,17 +155,19 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     call mmmjac(typmae, jgeom, ffe, dffe, laxis,&
                 nne, ndim, jacobi)
 !
-! --- REACTUALISATION DE LA GEOMETRIE (MAILLAGE+DEPMOI)
-!
+! --- REACTUALISATION DE LA GEOMETRIE  (MAILLAGE+DEPMOI)+PPE*DEPDEL
+!     POINT_FIXE          --> PPE=0.0d0
+!     NEWTON_GENE         --> PPE=1.0d0
+!     NEWTON_GENE INEXACT --> 0.0d0<PPE<1.0d0
+
     call mmreac(nbdm, ndim, nne, nnm, jgeom,&
-                jdepm, geomae, geomam)
+                jdepm,jdepde,ppe, geomae, geomam)
 !
 ! --- CALCUL DES COORDONNEES ACTUALISEES
 !
-    call mmgeom(iresog, ndim, nne, nnm, ffe,&
-                ffm, ddffm, geomae, geomam, tau1,&
-                tau2, norm, mprojn, mprojt, geome,&
-                geomm, mprt1n, mprt2n, gene11, gene21)
+    call mmgeom(ndim  ,nne   ,nnm   ,ffe   ,ffm   , &
+                geomae,geomam,tau1  ,tau2  , &
+        norm  ,mprojn,mprojt,geome ,geomm )
 !
 ! --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT ET FROTTEMENT
 !
@@ -188,8 +193,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 !
     call mmmjeu(ndim, jeusup, norm, geome, geomm,&
                 ddeple, ddeplm, mprojt, jeu, djeu,&
-                djeut, iresog, tau1, tau2, gene11,&
-                gene21)
+                djeut, iresog)
 !
 ! --- CALCUL DU JEU EN VITESSE NORMALE
 !

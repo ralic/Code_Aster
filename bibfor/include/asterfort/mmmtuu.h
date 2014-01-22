@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
-                      mprojn, mprojt, wpg, ffe, ffm,&
-                      dffm, jacobi, coefac, coefaf, coefff,&
-                      rese, nrese, lambda, jeu, dlagrc,&
-                      h11t1n, h12t2n, h21t1n, h22t2n, matree,&
-                      matrmm, matrem, matrme)
+    subroutine mmmtuu(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+              mprojt,wpg   ,ffe   ,ffm, &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese ,lambda,matree, &
+          matrmm, matrem, matrme)
+
         character(len=9) :: phasep
-        logical :: lnewtg
         integer :: ndim
         integer :: nne
         integer :: nnm
@@ -32,7 +31,6 @@ interface
         real(kind=8) :: wpg
         real(kind=8) :: ffe(9)
         real(kind=8) :: ffm(9)
-        real(kind=8) :: dffm(2, 9)
         real(kind=8) :: jacobi
         real(kind=8) :: coefac
         real(kind=8) :: coefaf
@@ -40,12 +38,6 @@ interface
         real(kind=8) :: rese(3)
         real(kind=8) :: nrese
         real(kind=8) :: lambda
-        real(kind=8) :: jeu
-        real(kind=8) :: dlagrc
-        real(kind=8) :: h11t1n(3, 3)
-        real(kind=8) :: h12t2n(3, 3)
-        real(kind=8) :: h21t1n(3, 3)
-        real(kind=8) :: h22t2n(3, 3)
         real(kind=8) :: matree(27, 27)
         real(kind=8) :: matrmm(27, 27)
         real(kind=8) :: matrem(27, 27)

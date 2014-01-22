@@ -1,8 +1,7 @@
-subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
-                  mprojn, mprojt, wpg, ffe, ffm,&
-                  dffm, jacobi, coefac, coefaf, coefff,&
-                  rese, nrese, lambda, dlagrc, jeu,&
-                  h11t1n, h12t2n, h21t1n, h22t2n, matrme)
+subroutine mmmtme(phasep,ndim  ,nne   ,nnm   ,mprojn, &
+                  mprojt,wpg   ,ffe   ,ffm   , &
+          jacobi,coefac,coefaf,coefff,rese  , &
+          nrese, lambda,  matrme)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +21,7 @@ subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1504
+
     implicit     none
 #include "asterfort/assert.h"
 #include "asterfort/matini.h"
@@ -31,17 +30,13 @@ subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
 #include "asterfort/pmavec.h"
 #include "asterfort/vecini.h"
     character(len=9) :: phasep
-    logical :: lnewtg
     integer :: ndim, nne, nnm
     real(kind=8) :: mprojn(3, 3), mprojt(3, 3)
     real(kind=8) :: ffe(9), ffm(9)
-    real(kind=8) :: wpg, jacobi, dffm(2, 9)
+    real(kind=8) :: wpg, jacobi
     real(kind=8) :: rese(3), nrese
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: lambda, coefff
-    real(kind=8) :: dlagrc, jeu
-    real(kind=8) :: h11t1n(3, 3), h12t2n(3, 3)
-    real(kind=8) :: h21t1n(3, 3), h22t2n(3, 3)
     real(kind=8) :: matrme(27, 27)
 !
 ! ----------------------------------------------------------------------
@@ -69,7 +64,6 @@ subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
 ! IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 ! IN  FFE    : FONCTIONS DE FORMES DEPL. ESCL.
 ! IN  FFM    : FONCTIONS DE FORMES DEPL. MAIT.
-! IN  DFFM   : DERIVEES PREMIERES DES FONCTIONS DE FORME MAITRES
 ! IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 ! IN  COEFAC : COEF_AUGM_CONT
 ! IN  COEFAF : COEF_AUGM_FROT
@@ -90,7 +84,7 @@ subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
 !
     integer :: i, j, k, l, ii, jj, idim
     real(kind=8) :: g(3, 3), e(3, 3), d(3, 3), matprb(3, 3)
-    real(kind=8) :: c1(3), c2(3), c3(3), d1(3), d2(3), d3(3), dffmt(9, 2)
+    real(kind=8) :: c1(3), c2(3), c3(3), d1(3), d2(3), d3(3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,11 +109,7 @@ subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
 !
 ! --- PRODUIT [E] = [Pt]x[Pt]
 !
-    do 17 i = 1, 9
-        do 18 j = 1, 2
-            dffmt(i,j) = dffm(j,i)
-18      continue
-17  end do
+
     call pmat(3, mprojt, mprojt, e)
 !
 ! --- MATRICE DE PROJECTION SUR LA BOULE UNITE
@@ -171,24 +161,7 @@ subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
 190              continue
 200          continue
         else
-            if (lnewtg) then
-                do 702 i = 1, nnm
-                    do 692 j = 1, nne
-                        do 682 k = 1, ndim
-                            do 672 l = 1, ndim
-                                ii = ndim*(i-1)+l
-                                jj = ndim*(j-1)+k
-                                matrme(ii,jj) = matrme(ii,jj) - wpg*jacobi* (dlagrc-coefac*jeu)* &
-                                                &h11t1n(l,k)*ffe(i)*dffmt(j,1)- wpg*jacobi* (dlag&
-                                                &rc-coefac*jeu)* h12t2n(l,k)*ffe(i)*dffmt(j,1)- w&
-                                                &pg*jacobi* (dlagrc-coefac*jeu)* h21t1n(l,k)*ffe(&
-                                                &i)*dffmt(j,2)- wpg*jacobi* (dlagrc-coefac*jeu)* &
-                                                &h22t2n(l,k)*ffe(i)*dffmt(j,2)
-672                          continue
-682                      continue
-692                  continue
-702              continue
-            else
+
                 do 701 i = 1, nnm
                     do 691 j = 1, nne
                         do 681 k = 1, ndim
@@ -201,7 +174,7 @@ subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
 681                      continue
 691                  continue
 701              continue
-            endif
+
         endif
     else if (phasep(1:4).eq.'ADHE') then
         if (phasep(6:9) .eq. 'PENA') then
