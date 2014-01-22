@@ -38,8 +38,6 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 #include "asterfort/lxcaps.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*) :: chamel, nomcmp(*), form, titre, loc, nomsd, nomsym
     character(len=*) :: formr, partie
@@ -106,14 +104,11 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     integer :: i, iacelk, iad, iadr, ianoma, iel
     integer :: im, imod, in, ino, iret, itype
     integer :: jceld, jcncin, jcnx, jcoor, jdrvlc, jligr, jliste
-    integer :: jlongr, jmode,  jncmp, jnmn,  jperm
-    integer :: jpnt, jtitr, jtypm,  kk, libre, lon1
+    integer :: jlongr, jmode, jnbnm, jncmp, jnmn, jnoel, jperm
+    integer :: jpnt, jtitr, jtypm, jvale, kk, libre, lon1
     integer :: maxnod, n, n2, nbcmpt, nbel, nbgrel, nbm
     integer :: nbmac, nbmodl, nbn, nbno, nbtitr, nbtma, ncmpmx
     integer :: ndim, ngr
-    integer, pointer :: nbnoma(:) => null()
-    character(len=8), pointer :: nommai(:) => null()
-    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     data iprem /0/
 !
@@ -193,13 +188,13 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 !     RECHERCHE DU NOMBRE D'ELEMENTS : NBEL
     call jelira(nomma//'.NOMMAI', 'NOMMAX', nbel)
     call dismoi('NB_NO_MAILLA', nomma, 'MAILLAGE', repi=nbno)
-    AS_ALLOCATE(vk8=nommai, size=nbel)
-    AS_ALLOCATE(vi=nbnoma, size=nbel)
+    call wkvect('&&IRCHML.NOMMAI', 'V V K8', nbel, jnoel)
+    call wkvect('&&IRCHML.NBNOMA', 'V V I', nbel, jnbnm)
     do iel = 1, nbel
         call jenuno(jexnum(nomma//'.NOMMAI', iel), nomel)
-        nommai(iel) = nomel
+        zk8(jnoel-1+iel) = nomel
         call jelira(jexnum(nomma//'.CONNEX', iel), 'LONMAX', nbn)
-        nbnoma(iel) = nbn
+        zi(jnbnm-1+iel) = nbn
     end do
     call jeveuo(chame//'.CELV', 'L', jcelv)
     call jeveuo(nolili(1:19)//'.LIEL', 'L', jligr)
@@ -269,7 +264,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 !
         if (itype .eq. 1) then
             call ircerl(ifi, nbel, zi(jligr), nbgrel, zi(jlongr),&
-                        ncmpmx, zr(jcelv), zk8(iad), nommai, loc,&
+                        ncmpmx, zr(jcelv), zk8(iad), zk8(jnoel), loc,&
                         zi(jceld), zi(jcnx), zi( jpnt), zk8(jnmn), nbcmpt,&
                         zi(jncmp), nbnot, numnoe, nbmac, zi( jliste),&
                         lsup, borsup, linf, borinf, lmax,&
@@ -277,7 +272,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
                         formr, ncmp, nucmp)
         else if (itype.eq.2) then
             call ircecl(ifi, nbel, zi(jligr), nbgrel, zi(jlongr),&
-                        ncmpmx, zc(jcelv), zk8(iad), nommai, loc,&
+                        ncmpmx, zc(jcelv), zk8(iad), zk8(jnoel), loc,&
                         zi(jceld), zi(jcnx), zi( jpnt), zk8(jnmn), nbcmpt,&
                         zi(jncmp), nbnot, numnoe, nbmac, zi( jliste),&
                         lsup, borsup, linf, borinf, lmax,&
@@ -312,15 +307,15 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         maxnod=zi(jperm-1+lon1)
         if (itype .eq. 1) then
             call ircers(ifi, zi(jligr), nbgrel, zi(jlongr), ncmpmx,&
-                        zr(jcelv), nomgd, zk8(iad), titre, nommai,&
-                        loc, zi(jceld), nbnoma, zi(jperm), maxnod,&
+                        zr(jcelv), nomgd, zk8(iad), titre, zk8(jnoel),&
+                        loc, zi(jceld), zi(jnbnm), zi(jperm), maxnod,&
                         zi(jtypm), nomsd, nomsym, numord, nbmat,&
                         nummai, lmasu, ncmp, nucmp, nbcmp,&
                         zi(jncmp), nomcmp)
         else if (itype.eq.2) then
             call ircecs(ifi, zi(jligr), nbgrel, zi(jlongr), ncmpmx,&
-                        zc(jcelv), zk8(iad), titre, nommai, loc,&
-                        zi(jceld), nbnoma, zi(jperm), maxnod, zi(jtypm),&
+                        zc(jcelv), zk8(iad), titre, zk8(jnoel), loc,&
+                        zi(jceld), zi( jnbnm), zi(jperm), maxnod, zi(jtypm),&
                         nomsd, nomsym, numord, nbmat, nummai,&
                         lmasu, ncmp, nucmp)
         endif
@@ -349,7 +344,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
             call jeveuo(nomma//'.TYPMAIL', 'L', jtypm)
             if (loc .eq. 'ELNO') then
                 call irceca(ifi, zi(jligr), nbgrel, zi(jlongr), ncmpmx,&
-                            zr(jcelv), nomgd, zk8(iad), zi(jceld), nbnoma,&
+                            zr(jcelv), nomgd, zk8(iad), zi(jceld), zi(jnbnm),&
                             zi( jtypm), nomsy2, nbmat, lresu, nbcmp,&
                             nomcmp, imod, ncmp, nucmp, nive)
             else if (loc.eq.'ELGA') then
@@ -359,20 +354,20 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
             call jeveuo(nomma//'.TYPMAIL', 'L', jtypm)
             if (loc .eq. 'ELNO') then
                 call jelira(chame//'.CELV', 'LONUTI', nuti)
-                AS_ALLOCATE(vr=vale, size=nuti)
+                call wkvect('&&IRCHML.VALE', 'V V R', nuti, jvale)
                 if (partie .eq. 'REEL') then
                     do i = 1, nuti
-                        vale(i)=dble(zc(jcelv-1+i))
+                        zr(jvale-1+i)=dble(zc(jcelv-1+i))
                     end do
                 else if (partie.eq.'IMAG') then
                     do i = 1, nuti
-                        vale(i)=dimag(zc(jcelv-1+i))
+                        zr(jvale-1+i)=dimag(zc(jcelv-1+i))
                     end do
                 else
                     call utmess('F', 'PREPOST2_4')
                 endif
                 call irceca(ifi, zi(jligr), nbgrel, zi(jlongr), ncmpmx,&
-                            zr(jcelv), nomgd, zk8(iad), zi(jceld), nbnoma,&
+                            zr(jcelv), nomgd, zk8(iad), zi(jceld), zi(jnbnm),&
                             zi( jtypm), nomsy2, nbmat, lresu, nbcmp,&
                             nomcmp, imod, ncmp, nucmp, nive)
             else if (loc.eq.'ELGA') then
@@ -382,11 +377,11 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     endif
 204 continue
     call jedetr('&&IRCHML.NUM_CMP')
-    AS_DEALLOCATE(vk8=nommai)
-    AS_DEALLOCATE(vi=nbnoma)
+    call jedetr('&&IRCHML.NOMMAI')
+    call jedetr('&&IRCHML.NBNOMA')
     call jedetr('&&IRCHML.MAILLE')
     call jedetr('&&IRCHML.NOMNOE')
-    AS_DEALLOCATE(vr=vale)
+    call jedetr('&&IRCHML.VALE')
     call detrsd('CHAM_ELEM', '&&IRCHML.CHAMEL1')
     call detrsd('CHAM_ELEM', '&&IRCHML.CHAMEL2')
 999 continue
