@@ -27,7 +27,7 @@ interface
         integer :: nbnli
         integer :: nbchoc
         integer :: nbflam
-        integer :: nbsism
+        integer :: nbsism(2)
         integer :: nbrfis
         integer :: nbpal
         integer :: logcho(nbnli, *)

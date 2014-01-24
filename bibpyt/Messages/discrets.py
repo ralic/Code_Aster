@@ -191,4 +191,33 @@ Risques et conseils :
 L'utilisation des discrets non-symétriques n'est actuellement pas possible pour des calculs non-linéaires.
 """),
 
+41: _(u"""
+DYNA_TRAN_MODAL : Pour l'élément discret de type DIS_VISC.
+La raideur tangente est nulle ou trop petite.
+Vérifier les caractéristiques : K1 K2 K3 UNSUR_K1 UNSUR_K2 UNSUR_K3
+
+La raideur tangente : 1/K1 + 1/K3 + K2/(K1*K3) ne doit pas être nulle ou trop petite.
+"""),
+
+42: _(u"""
+DYNA_TRAN_MODAL : Pour l'élément discret de type DIS_VISC.
+
+L'intégration de la loi de comportement du discret pose problème.
+L'erreur est supérieure à RESI_INTE_RELA=%(r1)12.5E pour un nombre
+d'itération maximum de ITER_INTE_MAXI=%(i1)d.
+
+Conseils :
+  Augmenter ITER_INTE_MAXI
+  Augmenter le nombre de pas d'intégration.
+  Modifier votre liste d'instant
+"""),
+
+43: _(u"""
+DYNA_TRAN_MODAL : Pour l'élément discret de type DIS_VISC.
+
+Sa longueur est nulle ou trop petite.
+Il n'est pas possible de calculer le vecteur directeur de l'élément.
+
+"""),
+
 }

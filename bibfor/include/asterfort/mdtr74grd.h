@@ -1,3 +1,4 @@
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,20 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
-                      vint, ier, tinit, intitu, noecho, &
-                      reprise, accgen)
-        character(len=8) :: basemo
-        integer :: nbmode
-        integer :: nbchoc
-        real(kind=8) :: depgen(*)
-        real(kind=8) :: vitgen(*)
-        real(kind=8) :: vint(*)
-        integer :: ier
-        real(kind=8) :: tinit
-        character(len=8), optional, intent(in) :: intitu(*)
-        character(len=8), optional, intent(in) :: noecho(nbchoc,*)
-        logical, optional, intent(out) :: reprise
-        real(kind=8), optional, intent(out) :: accgen(*)
-    end subroutine mdinit
+    function mdtr74grd(nomgrd)
+        character(len=*) :: nomgrd
+        integer :: mdtr74grd
+    end function mdtr74grd
 end interface
+

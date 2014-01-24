@@ -1,5 +1,5 @@
 subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
-                  defpla, wk1, wk2, wk3, tdebut,&
+                  vint, wk1, wk2, wk3, tdebut,&
                   tfin, nbloc, offset, trepos, nbclas,&
                   noecho, intitu, nomres)
     implicit none
@@ -8,6 +8,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 #include "asterfort/impact.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/mdtr74grd.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
@@ -16,10 +17,10 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
     integer :: nbobst, nbpt, nbloc
     real(kind=8) :: temps(*), fcho(*), vgli(*), tdebut, tfin
     real(kind=8) :: wk1(*), wk2(*), wk3(*), fnmaxa, fnmety, fnmmoy
-    real(kind=8) :: offset, trepos, defpla(*)
+    real(kind=8) :: offset, trepos, vint(*)
     character(len=8) :: noecho(*), intitu(*)
     character(len=*) :: nomres
-!-----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,19 +46,19 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 !     TEMPS        : INSTANTS DE CALCUL
 !     FCHO         : VECTEUR DES FORCES DE CHOC
 !     VGLI         : VECTEUR DES VITESSES DE GLISSEMENT
-!     DEFPLA       : ECRASEMENT RESIDUEL CUMULE
+!     VINT         : Variables internes
 !     NBCLAS       : NOMBRE DE CLASSES
 !
 !-----------------------------------------------------------------------
     integer :: ibid, nbpara, nparg, nparp, nparf
 !-----------------------------------------------------------------------
     integer :: i, idebut, idec, ifin, ipas, nbchoc, nbclas
-    integer :: nbpas, ndec, npari
+    integer :: nbpas, ndec, npari, nbvint
     real(kind=8) :: dt, fmax, fmin
 !-----------------------------------------------------------------------
     parameter    ( nparg = 6 , nparp = 7 , npari = 10 , nbpara = 20 )
     parameter    ( nparf = 7 )
-    real(kind=8) :: para(3)
+    real(kind=8) :: para(3),forcefl
     complex(kind=8) :: c16b
     character(len=4) :: tpara(nbpara)
     character(len=8) :: noeud
@@ -66,32 +67,32 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 !
     data tvar  / 'IMPACT' , 'GLOBAL' , 'PROBA'  , 'FLAMBAGE' /
 !
-    data npara / 'INTITULE','NOEUD', 'CALCUL'       , 'CHOC'         ,&
-     &             'INSTANT'       , 'F_MAX'         , 'IMPULSION'    ,&
-     &             'T_CHOC'        , 'V_IMPACT'      , 'NB_IMPACT'    ,&
-     &             'F_MAX_ABS'     , 'F_MAX_MOY'     , 'F_MAX_ETYPE'  ,&
-     &             'CLASSE'        , 'DEBUT'         , 'FIN'          ,&
-     &             'PROBA'         , 'FLAMBAGE'      , 'ECRAS_RESI'   ,&
-     &             'INST_FLAMB'    /
-    data tpara / 'K8', 'K8'      , 'K16'           , 'I'            ,&
-     &             'R'             , 'R'             , 'R'            ,&
-     &             'R'             , 'R'             , 'I'            ,&
-     &             'R'             , 'R'             , 'R'            ,&
-     &             'I'             , 'R'             , 'R'            ,&
-     &             'R'             , 'K8'            , 'R'            ,&
-     &             'R'             /
+    data npara/ 'INTITULE','NOEUD', 'CALCUL'       , 'CHOC'         ,&
+                'INSTANT'       , 'F_MAX'         , 'IMPULSION'    ,&
+                'T_CHOC'        , 'V_IMPACT'      , 'NB_IMPACT'    ,&
+                'F_MAX_ABS'     , 'F_MAX_MOY'     , 'F_MAX_ETYPE'  ,&
+                'CLASSE'        , 'DEBUT'         , 'FIN'          ,&
+                'PROBA'         , 'FLAMBAGE'      , 'ECRAS_RESI'   ,&
+                'INST_FLAMB'    /
+    data tpara/ 'K8', 'K8'      , 'K16'           , 'I'            ,&
+                'R'             , 'R'             , 'R'            ,&
+                'R'             , 'R'             , 'I'            ,&
+                'R'             , 'R'             , 'R'            ,&
+                'I'             , 'R'             , 'R'            ,&
+                'R'             , 'K8'            , 'R'            ,&
+                'R'             /
 !
-    data lpari / 'INTITULE','NOEUD', 'CALCUL'      , 'CHOC'         ,&
-     &             'INSTANT'       , 'F_MAX'         , 'IMPULSION'    ,&
-     &             'T_CHOC'        , 'V_IMPACT'      , 'NB_IMPACT'    /
+    data lpari/ 'INTITULE','NOEUD', 'CALCUL'      , 'CHOC'         ,&
+                'INSTANT'       , 'F_MAX'         , 'IMPULSION'    ,&
+                'T_CHOC'        , 'V_IMPACT'      , 'NB_IMPACT'    /
 !
-    data lparg / 'INTITULE'      ,'NOEUD'          ,'CALCUL'      ,&
-     &             'F_MAX_ABS'     , 'F_MAX_MOY'     , 'F_MAX_ETYPE'  /
+    data lparg/ 'INTITULE'      ,'NOEUD'          ,'CALCUL'      ,&
+                'F_MAX_ABS'     , 'F_MAX_MOY'     , 'F_MAX_ETYPE'  /
 !
-    data lparp / 'INTITULE','NOEUD','CALCUL'       , 'CLASSE'        ,&
-     &             'DEBUT'         , 'FIN'           , 'PROBA'         /
-    data lparf / 'INTITULE','NOEUD','CALCUL'       , 'CHOC'         ,&
-     &             'FLAMBAGE'      , 'ECRAS_RESI'    , 'INST_FLAMB'    /
+    data lparp/ 'INTITULE','NOEUD','CALCUL'       , 'CLASSE'        ,&
+                'DEBUT'         , 'FIN'           , 'PROBA'         /
+    data lparf/ 'INTITULE','NOEUD','CALCUL'       , 'CHOC'         ,&
+                'FLAMBAGE'      , 'ECRAS_RESI'    , 'INST_FLAMB'    /
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -106,7 +107,6 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
     if (nbloc .eq. 0) nbloc = 1
     if (nbloc .gt. 1) then
         call utmess('I', 'ALGORITH10_76')
-!
         nbloc = 1
     endif
     if (nbclas .eq. 0) nbclas = 10
@@ -114,9 +114,10 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, nbpara, npara, tpara)
 !
-!     BOUCLE SUR LES NOEUDS DE CHOC
-!
-    do 10 i = 1, nbobst
+!   Nombre de variables internes dans la SD
+    nbvint = mdtr74grd('MAXVINT')
+!   Boucle sur les noeuds de choc
+    do i = 1, nbobst
         noeud = noecho(i)
         valek(1) = intitu(i)
         valek(2) = noeud
@@ -143,7 +144,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
                     wk1, ndec)
 !
         valek(3) = tvar(3)
-        do 30 idec = 1, ndec
+        do idec = 1, ndec
             if (idec .eq. 1) then
                 para(1) = fmin
             else
@@ -153,28 +154,34 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
             para(3) = wk1(idec)
             call tbajli(nomres, nparp, lparp, [idec], para,&
                         [c16b], valek, 0)
-30      continue
+        enddo
 !
-!       --- AJOUT FLAMBAGE SI CELUI-CI A EU LIEU ---
-        if (defpla(nbobst*(nbpas-1)+i) .gt. 0.d0) then
+!       AJOUT FLAMBAGE SI CELUI-CI A EU LIEU
+!       Si au dernier pas de temps le flambage a eu lieu on cherche l'instant correspondant
+!           Vint(nbchoc,Vint,nbsauv) = Vint( i , j , k ) = Vint( i + (j-1)*I + (k-1)*I*J )
+!           Pour le flambement la variable interne = 1 (j=1)
+        forcefl = vint(i + (nbpas-1)*nbobst*nbvint)
+        if (forcefl .gt. 0.d0) then
             valek(3) = tvar(4)
             valek(4) = 'OUI'
-            para(1) = defpla(nbobst*(nbpas-1)+i)
+            para(1) = forcefl
             ipas = 1
+!           Quand forcefl devient >0 ==> on a trouvé l'instant
 40          continue
-            if (defpla(nbobst*(ipas-1)+i) .gt. 0) then
+            forcefl = vint(i + (ipas-1)*nbobst*nbvint)
+            if ( forcefl .gt. 0.0d0 ) then
                 para(2) = temps(ipas)
             else
                 ipas = ipas + 1
                 if (ipas .le. nbpas) goto 40
             endif
             if (noeud .ne. noecho(nbobst+i)) then
-!          --- CAS CHOC ENTRE 2 NOEUDS : ON REPARTIT DEFPLA ---
+!               cas choc entre 2 noeuds : on repartit l'effort
                 para(1) = para(1)/2.d0
-!             --- 1ER NOEUD ---
+!               1er noeud
                 call tbajli(nomres, nparf, lparf, [i], para,&
                             [c16b], valek, 0)
-!             --- 2EME NOEUD ---
+!               2eme noeud
                 valek(1) = intitu(nbobst+i)
                 valek(2) = noecho(nbobst+i)
                 call tbajli(nomres, nparf, lparf, [i], para,&
@@ -184,8 +191,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
                             [c16b], valek, 0)
             endif
         endif
-!
-10  end do
+    enddo
 !
     call jedema()
 end subroutine

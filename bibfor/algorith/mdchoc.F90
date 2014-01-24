@@ -14,12 +14,13 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdchge.h"
 #include "asterfort/mdchst.h"
+#include "asterfort/mdtr74grd.h"
 #include "asterfort/resmod.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: nbnli, nbchoc, nbflam, nbsism, nbmode, neq
+    integer :: nbnli, nbchoc, nbflam, nbsism(2), nbmode, neq
     integer :: nbrfis, nbpal
     integer :: logcho(nbnli, *), ier, nexcit, info
     real(kind=8) :: parcho(nbnli, *), pulsat(*), masgen(*), amogen(*)
@@ -48,13 +49,15 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !
 !     STOCKAGE DES INFORMATIONS DE CHOC DANS DES TABLEAUX
 !     ------------------------------------------------------------------
-! IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM+NBFLAM+NBRFIS)
+! IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM(*)+NBFLAM+NBPAL)
 ! IN  : NBCHOC : NOMBRE DE POINTS DE CHOC
 ! IN  : NBFLAM : NOMBRE DE CHOCS AVEC FLAMBEMENT
 ! IN  : NBPAL : NOMBRE DE PALIERS (COUPLAGE EDYOS)
-! OUT : LOGCHO : LOGIQUE CHOC: LOGCHO(I,1) = SI ADHERENCE OU NON
-!                              LOGCHO(I,4) = SI DISPO ANTI S OU NON
-!                              LOGCHO(I,5) = SI FLAMBEMENT OU NON
+! OUT : LOGCHO : LOGIQUE CHOC: LOGCHO(I,1) = SI ADHERENCE    OU NON=0
+!                              LOGCHO(I,4) = SI DISPO ANTI_S OU NON=0
+!                              LOGCHO(I,5) = SI FLAMBEMENT   OU NON=0
+!                              LOGCHO(I,6) = SI DISC_VIS=1   OU NON=0
+!
 ! OUT : DPLMOD : DEPL MODAUX AUX NOEUDS DE CHOC APRES ORIENTATION
 !                DPLMOD(I,J,1) = DEPL DX DU NOEUD_1 DE CHOC I - MODE J
 !                DPLMOD(I,J,2) = DEPL DY
@@ -115,6 +118,16 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !                PARCHO(I,50)= FORCE LIMITE DE FLAMBAGE
 !                PARCHO(I,51)= PALIER FORCE DE REACTION APRES FLAMBAGE
 !                PARCHO(I,52)= RIGIDITE APRES FLAMBAGE
+!   DISC_VIS
+!                PARCHO(I,53)   = S1 Souplesse en série avec les 2 autres branches.
+!                PARCHO(I,54)   = K2 Raideur en parallèle de la branche visqueuse.
+!                PARCHO(I,55)   = S3 Souplesse dans la branche visqueuse.
+!                PARCHO(I,56)   = C  'Raideur' de la partie visqueuse.
+!                PARCHO(I,57)   = A  Puissance de la loi visqueuse ]0.0, 1.0]
+!                PARCHO(I,58)   = ITER_INTE_MAXI
+!                PARCHO(I,59)   = RESI_INTE_RELA
+!                PARCHO(I,60:63)= Variables internes
+!
 ! OUT : NOECHO : NOEUD DE CHOC: NOECHO(I,1) = NOEUD_1
 !                               NOECHO(I,2) = SOUS_STRUC_1
 !                               NOECHO(I,3) = NUME_1
@@ -145,7 +158,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! OUT : IER    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    integer :: imode, iamor, im, i, j,   lrefe
+    integer :: imode, iamor, im, i, j, lrefe, nbparcho, nblogcho
     integer :: vali
     real(kind=8) :: dpiloc(6), dpiglo(6), ddpilo(3), origob(3), un
     real(kind=8) :: valr(10)
@@ -165,7 +178,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     mdgene = ' '
     call gettco(numddl, typnum)
     if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
-        if (nbsism .gt. 0 .or. nbflam .gt. 0) then
+        if (nbsism(1)+nbsism(2)+nbflam .gt. 0) then
             call utmess('F', 'ALGORITH5_36')
         endif
     endif
@@ -174,60 +187,47 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !
     xmas = masgen(1)
     imode = 1
-    do 10 im = 2, nbmode
+    do im = 2, nbmode
         if (masgen(im) .gt. xmas) then
             xmas = masgen(im)
             imode = im
         endif
-10  end do
+    enddo
     if (lamor) then
         iamor = imode
     else
         iamor = imode + nbmode*( imode - 1 )
     endif
 !
-    do 20 i = 1, nbnli
-        do 22 j = 1, 5
-            logcho(i,j) = 0
-22      continue
-        do 24 j = 1, 9
-            noecho(i,j) = ' '
-24      continue
-        do 26 j = 1, 52
-            parcho(i,j) = 0.d0
-26      continue
-20  end do
+    nbparcho = mdtr74grd('PARCHO')
+    nblogcho = mdtr74grd('LOGCHO')
+    do i = 1, nbnli
+        logcho(i,1:nblogcho)  = 0
+        noecho(i,1:9)  = ' '
+        parcho(i,1:nbparcho) = 0.d0
+    enddo
 !
     AS_ALLOCATE(vi=ddlcho, size=nbnli*6)
 !
-! --- CALCUL DIRECT
-!
+!   CALCUL DIRECT
     if (typnum .eq. 'NUME_DDL_SDASTER') then
-!         ----------------------------
         call mdchst(numddl, typnum, imode, iamor, pulsat,&
                     masgen, amogen, nbnli, nbpal, noecho,&
                     nbrfis, logcho, parcho, intitu, ddlcho,&
                     ier)
 !
-! --- CALCUL PAR SOUS-STRUCTURATION
-!
+!   CALCUL PAR SOUS-STRUCTURATION
     else if (typnum(1:13).eq.'NUME_DDL_GENE') then
-!             ------------------------------
         call mdchge(numddl, typnum, imode, iamor, pulsat,&
                     masgen, amogen, nbnli, noecho, parcho,&
                     intitu, ddlcho, ier)
-!
     endif
 !
-    nbnli = nbnli - nbpal
-    do 100 i = 1, nbnli
-!
+    do i = 1, nbnli - nbpal
         ctang = parcho(i,5)
-!
         origob(1) = parcho(i,14)
         origob(2) = parcho(i,15)
         origob(3) = parcho(i,16)
-!
         sina = parcho(i,17)
         cosa = parcho(i,18)
         sinb = parcho(i,19)
@@ -271,10 +271,9 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
             valr (10)= parcho(i,22)
             call utmess('I', 'ALGORITH16_8', nr=10, valr=valr)
             if (noecho(i,9)(1:2) .eq. 'BI') then
-                xjeu = (&
-                       parcho(i,11)-parcho(i,8))**2 + (parcho(i,12)- parcho(i,9))**2 + (parcho(i,&
-                       &13)-parcho(i,10)&
-                       )**2
+                xjeu =  (parcho(i,11) - parcho(i,8))**2 + &
+                        (parcho(i,12) - parcho(i,9))**2 + &
+                        (parcho(i,13) - parcho(i,10))**2
                 if (i .le. nbchoc) then
                     xjeu = sqrt(xjeu) - (parcho(i,30)+parcho(i,31))
                 else
@@ -314,14 +313,14 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
         parcho(i,37)= -sign(un,ddpilo(2))
         parcho(i,38)= -sign(un,ddpilo(3))
 !
-100  end do
+    enddo
 !
 ! --- REMPLISSAGE DE DPLMOD(I,J,K) ---
 !
     if (typnum .eq. 'NUME_DDL_SDASTER') then
 !         ----------------------------
-        do 200 i = 1, nbnli
-            do 210 j = 1, nbmode
+        do i = 1, nbnli - nbpal
+            do j = 1, nbmode
                 dplmod(i,j,1) = bmodal(ddlcho(6*(i-1)+1),j)
                 dplmod(i,j,2) = bmodal(ddlcho(6*(i-1)+2),j)
                 dplmod(i,j,3) = bmodal(ddlcho(6*(i-1)+3),j)
@@ -334,12 +333,12 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                     dplmod(i,j,5) = 0.d0
                     dplmod(i,j,6) = 0.d0
                 endif
-210          continue
-200      continue
-!  COUPLAGE AVEC EDYOS
+            enddo
+        enddo
+!       COUPLAGE AVEC EDYOS
         if (nbpal .gt. 0) then
-            do 500 i = nbnli+1, nbnli+nbpal
-                do 510 j = 1, nbmode
+            do i = nbnli - nbpal +1 , nbnli
+                do j = 1, nbmode
                     dplmod(i,j,1) = bmodal(ddlcho(6*(i-1)+1),j)
                     dplmod(i,j,2) = bmodal(ddlcho(6*(i-1)+2),j)
                     dplmod(i,j,3) = bmodal(ddlcho(6*(i-1)+3),j)
@@ -352,71 +351,71 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                         dplmod(i,j,5) = 0.d0
                         dplmod(i,j,6) = 0.d0
                     endif
-510              continue
-500          continue
+                enddo
+            enddo
         endif
-!  FIN COUPLAGE AVEC EDYOS
+!       FIN COUPLAGE AVEC EDYOS
 !
-!  ROTOR FISSURE
+!       ROTOR FISSURE
         if (nbrfis .gt. 0) then
-            do 600 i = nbnli+nbpal+1-nbrfis, nbnli+nbpal
-                do 610 j = 1, nbmode
+            do i = nbnli - nbrfis + 1, nbnli
+                do j = 1, nbmode
                     dplmod(i,j,1) = bmodal(ddlcho(6*(i-1)+1),j)
                     dplmod(i,j,2) = bmodal(ddlcho(6*(i-1)+2),j)
                     dplmod(i,j,3) = bmodal(ddlcho(6*(i-1)+3),j)
                     dplmod(i,j,4) = bmodal(ddlcho(6*(i-1)+4),j)
                     dplmod(i,j,5) = bmodal(ddlcho(6*(i-1)+5),j)
                     dplmod(i,j,6) = bmodal(ddlcho(6*(i-1)+6),j)
-610              continue
-600          continue
+                enddo
+            enddo
         endif
-!  FIN ROTOR FISSURE
+!       FIN ROTOR FISSURE
 !
     else if (typnum(1:13).eq.'NUME_DDL_GENE') then
 !             -------------------------------
         numero(1:14) = numddl
         call jeveuo(numddl//'.NUME.REFN', 'L', lrefe)
         mdgene = zk24(lrefe)
-        do 220 i = 1, nbnli
+        do i = 1, nbnli - nbpal
             AS_ALLOCATE(vr=dplcho, size=nbmode*6)
             noeud(1) = noecho(i,1)
             noeud(2) = noecho(i,2)
             noeud(3) = noecho(i,3)
             call resmod(bmodal, nbmode, neq, numero, mdgene,&
-                        noeud,dplcho)
-            do 230 j = 1, nbmode
+                        noeud, dplcho)
+            do j = 1, nbmode
                 dplmod(i,j,1) = dplcho(j)
                 dplmod(i,j,2) = dplcho(j+nbmode)
                 dplmod(i,j,3) = dplcho(j+2*nbmode)
-230          continue
+            enddo
             if (noecho(i,9)(1:2) .eq. 'BI') then
                 noeud(1) = noecho(i,5)
                 noeud(2) = noecho(i,6)
                 noeud(3) = noecho(i,7)
                 call resmod(bmodal, nbmode, neq, numero, mdgene,&
-                            noeud,dplcho)
-                do 240 j = 1, nbmode
+                            noeud, dplcho)
+                do j = 1, nbmode
                     dplmod(i,j,4) = dplcho(j)
                     dplmod(i,j,5) = dplcho(j+nbmode)
                     dplmod(i,j,6) = dplcho(j+2*nbmode)
-240              continue
+                enddo
             else
-                do 250 j = 1, nbmode
+                do j = 1, nbmode
                     dplmod(i,j,4) = 0.d0
                     dplmod(i,j,5) = 0.d0
                     dplmod(i,j,6) = 0.d0
-250              continue
+                enddo
             endif
             AS_DEALLOCATE(vr=dplcho)
-220      continue
+        enddo
     endif
 !
 ! --- REMPLISSAGE DE PS2DEL(I,J,K) ---
 !
     if (monmot(1:3) .eq. 'OUI') then
         if (typnum .eq. 'NUME_DDL_SDASTER') then
-            do 300 i = 1, nbnli
-                do 310 j = 1, nexcit
+            do i = 1, nbnli - nbpal
+                do j = 1, nexcit
                     ps2del(i,j,1) = ps1del(ddlcho(6*(i-1)+1),j)
                     ps2del(i,j,2) = ps1del(ddlcho(6*(i-1)+2),j)
                     ps2del(i,j,3) = ps1del(ddlcho(6*(i-1)+3),j)
@@ -429,8 +428,8 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                         ps2del(i,j,5) = 0.d0
                         ps2del(i,j,6) = 0.d0
                     endif
-310              continue
-300          continue
+                enddo
+            enddo
         else if (typnum(1:13).eq.'NUME_DDL_GENE') then
             ier = ier + 1
             call utmess('E', 'ALGORITH5_37')
@@ -440,20 +439,19 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! --- VERIFICATION DE COHERENCE ENTRE CHOC ET FLAMBAGE ---
 !
     if (nbchoc .ne. 0 .and. nbflam .ne. 0) then
-        do 140 i = 1, nbchoc
-            j = nbchoc+nbsism
-130          continue
+        do i = 1, nbchoc
+            j = nbchoc+nbsism(1)+nbsism(2)
+130         continue
             j = j + 1
-            if (j .le. nbnli) then
+            if (j .le. nbnli - nbpal) then
                 if (noecho(i,1) .ne. noecho(j,1)) goto 130
                 if (noecho(i,5) .ne. noecho(j,5)) goto 130
                 call utmess('A', 'ALGORITH5_38')
                 parcho(i,2) = 0.d0
                 parcho(i,4) = 0.d0
             endif
-140      continue
+        enddo
     endif
-    nbnli = nbnli + nbpal
 !
     AS_DEALLOCATE(vi=ddlcho)
 !

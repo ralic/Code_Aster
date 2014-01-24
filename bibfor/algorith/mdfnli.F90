@@ -19,10 +19,10 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
     integer :: numpas
     real(kind=8) :: dt, dtsto, vrotat, conv, angini
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*)
-    real(kind=8) :: parcho(*), saucho(*)
+    real(kind=8) :: parcho(*), saucho(nbchoc,*)
     real(kind=8) :: saured(*), dplrev(*), dplred(*), saurev(*)
     real(kind=8) :: accgen(*), dplmod(nbchoc, nbmode, *)
-    real(kind=8) :: temps, psidel(nbchoc, nbexci, *)
+    real(kind=8) :: temps, psidel(nbchoc, nbexci, *), ltemps(3)
     character(len=8) :: noecho(*), fonred(*), fonrev(*), monmot
     character(len=8) :: nofdep(nbexci), nofvit(nbexci), nofacc(nbexci)
     character(len=8) :: fk(2), dfk(2), foncp
@@ -93,32 +93,43 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
 ! IN  : MONMOT : = OUI SI MULTI-APPUIS
 ! ----------------------------------------------------------------------
 !
-!     --- FORCES NON-LINEAIRES DE TYPE CHOC ---
-    if (nbchoc .ne. 0 .and. nbrfis .eq. 0) then 
+!   FORCES NON-LINEAIRES DE TYPE CHOC
+    if (nbchoc .ne. 0 .and. nbrfis .eq. 0) then
+        ltemps(1) = temps
+        ltemps(2) = dt
+        ltemps(3) = numpas
         call mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                     nbchoc, logcho, dplmod, parcho, noecho,&
-                    saucho, temps, nofdep, nofvit, nofacc,&
+                    saucho, ltemps, nofdep, nofvit, nofacc,&
                     nbexci, psidel, monmot)
     endif
 !
-!     --- NON-LINEARITE DE TYPE RELA_EFFO_DEPL ---
-    if (nbrede .ne. 0) call mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
-                                   fonred, saured, saredi)
+!   NON-LINEARITE DE TYPE RELA_EFFO_DEPL
+    if (nbrede .ne. 0) then
+        call mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
+                    fonred, saured, saredi)
+    endif
 !
-!     --- NON-LINEARITE DE TYPE ROTOR FISSURE ---
-    if (nbrfis .gt. 0) call mdrfis(nbmode, depgen, fexgen, nbchoc, nbrfis,&
-                                   dplmod, fk, dfk, parcho, angini,&
-                                   vrotat, foncp, temps)
+!   NON-LINEARITE DE TYPE ROTOR FISSURE
+    if (nbrfis .gt. 0) then
+        call mdrfis(nbmode, depgen, fexgen, nbchoc, nbrfis,&
+                    dplmod, fk, dfk, parcho, angini,&
+                    vrotat, foncp, temps)
+    endif
 !
-!     --- NON-LINEARITE DE TYPE RELA_EFFO_VITE ---
-    if (nbrevi .ne. 0) call mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
-                                   fonrev, saurev, sarevi)
+!   NON-LINEARITE DE TYPE RELA_EFFO_VITE
+    if (nbrevi .ne. 0) then
+        call mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
+                    fonrev, saurev, sarevi)
+    endif
 !
-!     COUPLAGE AVEC EDYOS
+!   COUPLAGE AVEC EDYOS
     conv = 1.d0
-    if (nbpal .ne. 0) call mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
-                                  temps, vrotat, dplmod, depgen, vitgen,&
-                                  fexgen, typal, finpal, cnpal, prdeff,&
-                                  conv, fsauv)
+    if (nbpal .ne. 0) then
+        call mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
+                    temps, vrotat, dplmod, depgen, vitgen,&
+                    fexgen, typal, finpal, cnpal, prdeff,&
+                    conv, fsauv)
+    endif
 !
 end subroutine

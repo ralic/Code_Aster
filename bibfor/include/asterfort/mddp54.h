@@ -28,10 +28,9 @@ interface
                       conv, fsauv, typbas, pulsa2, masgen,&
                       descmm, riggen, descmr, lamor, descma,&
                       work1, temps, tol, depli, vitei,&
-                      erde, ervi, kde, kvi, fonca,&
-                      foncv, istep, rigy, amgy, nbconv,&
-                      nbmxcv, vitvar, gyogen, rgygen, amogen,&
-                      errt)
+                      kde, kvi, fonca, foncv, istep,&
+                      rigy, amgy, nbconv, nbmxcv, vitvar,&
+                      gyogen, rgygen, amogen, errt)
         integer :: nbchoc
         integer :: neqgen
         real(kind=8) :: depl(*)
@@ -50,7 +49,7 @@ interface
         real(kind=8) :: dplmod(nbchoc, neqgen, *)
         real(kind=8) :: parcho(*)
         character(len=8) :: noecho(nbchoc, *)
-        real(kind=8) :: saucho(*)
+        real(kind=8) :: saucho(nbchoc,*)
         integer :: nbrede
         real(kind=8) :: dplred(*)
         character(len=8) :: fonred(*)
@@ -92,8 +91,6 @@ interface
         real(kind=8) :: tol
         real(kind=8) :: depli(*)
         real(kind=8) :: vitei(*)
-        real(kind=8) :: erde(*)
-        real(kind=8) :: ervi(*)
         real(kind=8) :: kde(*)
         real(kind=8) :: kvi(*)
         character(len=8) :: fonca

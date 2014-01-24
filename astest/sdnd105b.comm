@@ -211,8 +211,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=3.0000000000000001E-3,
-           VALE_CALC=2.998192313,
+           PRECISION=3.00E-3,
+           VALE_CALC=2.998684,
            VALE_REFE=3.0,
            NOM_PARA='ECRAS_RESI',
            TABLE=TABLE,
@@ -227,16 +227,17 @@ TRAN=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
                            NOM_CHAM='DEPL',
                        )
 
-TEST_RESU(RESU=_F(INST=10.45178254693452,
+IMPR_RESU(RESU=_F(RESULTAT=TRAN))
+TEST_RESU(RESU=_F(INST=1.04505447028502E+01,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=TRAN,
                   NOM_CHAM='DEPL',
                   NOEUD='N02',
                   NOM_CMP='DX',
-                  VALE_CALC=-1.93028191E-03,
+                  VALE_CALC=-7.32494377E-04,
                   VALE_REFE=0.0,
                   CRITERE=('ABSOLU', 'RELATIF'),
-                  PRECISION=3.0000000000000001E-3, TOLE_MACHINE=(3.0000000000000001E-3, 2.0000000000000001E-4),),
+                  PRECISION=3.00E-3,),
           )
 
 FIN()

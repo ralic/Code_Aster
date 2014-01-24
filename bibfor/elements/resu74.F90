@@ -35,6 +35,7 @@ subroutine resu74(tran, nomres)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/mdtr74grd.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     character(len=8) :: nomres, tran
@@ -46,14 +47,14 @@ subroutine resu74(tran, nomres)
 !
 !
     integer :: nbmode, nc, np, ni, nbsto1, nbinst, nbsto2
-    integer :: nbsto3, nbstoc, nbsau2, nbsauv, ntem2, ntemp
+    integer :: nbsto3, nbstoc, nbsau2, nbsauv, ntem2, ntemp, nbvarit, nbvarin
     integer :: nbchoc, ntem1
     real(kind=8) :: prec, tinit, prec2
     character(len=8) :: resu, crit
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, jacce, jacce1, jacce2, jdch1, jdch2, jdcho
+    integer :: i, jacce, jacce1, jacce2, jdch1, jdch2, jdcho, nbvint
     integer :: jdepl, jdepl1, jdepl2, jdesc, jfch1, jfch2, jfcho
     integer :: jicho, jicho1, jicho2, jinst, jinst1, jinst2, jordr
     integer :: jordr1, jordr2, jtem1, jtem2, jtemp, jvch1, jvch2
@@ -93,14 +94,14 @@ subroutine resu74(tran, nomres)
         nbinst = nbsto1
         goto 202
     endif
-    do 201 i = 2, nbsto1-1
+    do i = 2, nbsto1-1
         if (crit(1:7) .eq. 'RELATIF') prec2 = prec * zr(jinst1+i-1)
         if (abs ( tinit - zr(jinst1+i-1) ) .le. prec2) then
             nbinst = i
             goto 202
         endif
-201  end do
-202  continue
+    enddo
+202 continue
 !
 !     --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
 !
@@ -134,12 +135,12 @@ subroutine resu74(tran, nomres)
     nbsauv = nbinst + nbsau2 - 1
 !
     call wkvect(resu//'           .ORDR', 'G V I', nbsauv, jordr)
-    do 10 i = 1, nbinst
+    do i = 1, nbinst
         zi(jordr-1+i) = zi(jordr1-1+i)
-10  end do
-    do 20 i = 1, nbsau2-1
+    enddo
+    do i = 1, nbsau2-1
         zi(jordr+nbinst-1+i) = zi(jordr2+i+1) + zi(jordr1+nbinst-1)
-20  end do
+    enddo
     call jeveuo(nomres//'           .DISC', 'E', jinst2)
     call wkvect(resu//'           .DISC', 'G V R', nbsauv, jinst)
     call dcopy(nbinst, zr(jinst1), 1, zr(jinst), 1)
@@ -154,12 +155,12 @@ subroutine resu74(tran, nomres)
         call jeveuo(nomres//'           .PTEM', 'L', jtem2)
         ntemp = nbinst -1 + ntem2
         call wkvect(resu//'           .PTEM', 'G V R', ntemp, jtemp)
-        do 30 i = 1, ntem1
+        do i = 1, ntem1
             zr(jtemp+i-1)=zr(jtem1+i-1)
-30      continue
-        do 40 i = ntem1+1, nbinst-1
+        enddo
+        do i = ntem1+1, nbinst-1
             zr(jtemp+i-1)=zr(jtem1+ntem1-1)
-40      continue
+        enddo
         call dcopy(ntem2, zr(jtem2), 1, zr(jtemp+nbinst-1), 1)
     endif
 !
@@ -183,11 +184,15 @@ subroutine resu74(tran, nomres)
         call jeveuo(tran//'           .DLOC', 'E', jdch1)
         call dcopy(6*nbchoc*nbinst, zr(jdch1), 1, zr(jdcho), 1)
         call dcopy(6*nbchoc*(nbsau2-1), zr(jdch2+6*nbchoc), 1, zr(jdcho+ 6*nbchoc*nbinst), 1)
-        call jeveuo(nomres//'           .VINT', 'E', jvint2)
-        call wkvect(resu//'           .VINT', 'G V R', nbchoc*nbsauv, jvint)
+        ! Variables internes
+        nbvint = nbchoc*nbsauv*mdtr74grd('MAXVINT')
+        call wkvect(resu//'           .VINT', 'G V R', nbvint, jvint)
         call jeveuo(tran//'           .VINT', 'E', jvint1)
-        call dcopy(nbchoc*nbinst, zr(jvint1), 1, zr(jvint), 1)
-        call dcopy(nbchoc*(nbsau2-1), zr(jvint2+nbchoc), 1, zr(jvint+ nbchoc*nbinst), 1)
+        call jeveuo(nomres//'           .VINT', 'E', jvint2)
+        nbvarit = nbchoc*nbinst*mdtr74grd('MAXVINT')
+        nbvarin = nbchoc*(nbsau2-1)*mdtr74grd('MAXVINT')
+        call dcopy(nbvarit, zr(jvint1), 1, zr(jvint), 1)
+        call dcopy(nbvarin, zr(jvint2+nbchoc*mdtr74grd('MAXVINT')), 1, zr(jvint+ nbvarit), 1)
 !
         call jeveuo(nomres//'           .ICHO', 'E', jicho2)
         call jeveuo(tran//'           .ICHO', 'E', jicho1)
@@ -211,7 +216,7 @@ subroutine resu74(tran, nomres)
         call jedupo(resu//'           .DLOC', 'G', tran//'           .DLOC', .false.)
         call jedupo(resu//'           .VCHO', 'G', tran//'           .VCHO', .false.)
         call jedupo(resu//'           .ICHO', 'G', tran//'           .ICHO', .false.)
-!      VARIABLES INTERNES (FLAMBAGE)
+!       VARIABLES INTERNES (FLAMBAGE)
         call jedupo(resu//'           .VINT', 'G', tran//'           .VINT', .false.)
     endif
 !

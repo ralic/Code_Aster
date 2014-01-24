@@ -78,7 +78,7 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
     parameter  (nbpara=5)
     real(kind=8) :: ldcpar(nbpara)
     real(kind=8) :: temps0, temps1, dtemps
-!   équations du système : sigma , epsivis, epsi, puiss
+!   équations du système : sigma, epsivis, epsi, puiss
     integer :: nbequa, nbdecp
     parameter  (nbequa=4)
     real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2)
@@ -86,7 +86,6 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !
     real(kind=8) :: precis
     parameter (precis=1.0e-08)
-!
 !
 !   paramètres issus de DEFI_MATERIAU
     integer :: nbcar, ie1, ie2, ie3, in3, ia3, is1, is2, is3
@@ -203,8 +202,8 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !   comportement non-linéaire suivant le x local
 !   équations du système :
 !              1       2         3     4
-!       yy   : sigma , epsivisq, epsi,  puiss
-!       vari : sigma , epsivisq, puiss, tangente
+!       yy   : sigma, epsivisq, epsi,  puiss
+!       vari : sigma, epsivisq, puiss, tangente
     if (nno .eq. 1) then
         y0(3) = ulm(1)
         dy0(3) = dul(1)/dtemps
@@ -234,6 +233,7 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
     endif
 !   actualisation de la matrice quasi-tangente
 800  continue
+!
     if (nomte .eq. 'MECA_DIS_TR_L') then
         klv(1) = raidex
         klv(28) = raidex

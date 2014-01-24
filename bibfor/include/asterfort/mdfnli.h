@@ -36,7 +36,7 @@ interface
         real(kind=8) :: dplmod(nbchoc, nbmode, *)
         real(kind=8) :: parcho(*)
         character(len=8) :: noecho(*)
-        real(kind=8) :: saucho(*)
+        real(kind=8) :: saucho(nbchoc,*)
         integer :: nbrede
         real(kind=8) :: dplred(*)
         character(len=8) :: fonred(*)

@@ -11,7 +11,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                   nofvit, nofacc, nomfon, psidel, monmot,&
                   nbrfis, fk, dfk, angini, foncp,&
                   nbpal, dtsto, vrotat, prdeff, nomres,&
-                  nbexci, passto)
+                  nbexci, passto, intitu )
 !
 ! aslint: disable=W1504
     implicit none
@@ -32,6 +32,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 #include "asterfort/mdfnli.h"
 #include "asterfort/mdinit.h"
 #include "asterfort/mdsize.h"
+#include "asterfort/mdtr74grd.h"
 #include "asterfort/preres.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/resu74.h"
@@ -57,12 +58,12 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     character(len=8) :: basemo, noecho(nbchoc, *), fonred(*), fonrev(*)
     character(len=8) :: nomres, monmot
     character(len=16) :: typbas
-    logical :: lamor, prdeff
+    logical :: lamor, prdeff,condrepri
 !
     real(kind=8) :: coefm(*), psidel(*)
     integer :: liad(*), inumor(*), idescf(*)
     integer :: nbpal, nbrfis
-    character(len=8) :: nofdep(*), nofvit(*), nofacc(*), nomfon(*)
+    character(len=8) :: nofdep(*), nofvit(*), nofacc(*), nomfon(*), intitu(*)
     character(len=8) :: fk(2), dfk(2), foncv, fonca, foncp
 !
 !-----------------------------------------------------------------------
@@ -138,9 +139,9 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     integer :: palmax
 !-----------------------------------------------------------------------
     integer :: i, iarchi, ifor, im, iret, isto1, ier, ind
-    integer :: isto2, isto3,  jchor
-    integer :: jdepl,  jm, jmass
-    integer :: jredi, jredr,  jvint, jvite, n100
+    integer :: isto2, isto3, jchor
+    integer :: jdepl, jm, jmass
+    integer :: jredi, jredr, jvint, jvite, n100
     integer :: nbexci, nbmod1, nbpas, nbrede, nbrevi, nbsauv, nbscho
     integer :: ndt, jamgy, jrigy, jrevr, jrevi, isto4
     real(kind=8) :: deux, r8bid1, tarchi
@@ -148,7 +149,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
 !-----------------------------------------------------------------------
     parameter (palmax=20)
-    integer :: iadrk, iapp
+    integer :: iadrk, iapp, nbschor, nbvint
     integer :: dimnas
     parameter     (dimnas=8)
     character(len=3) :: finpal(palmax)
@@ -161,7 +162,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     real(kind=8), pointer :: tra1(:) => null()
 !
 !   ------------------------------------------------------------------------------------
-!   Definition of statement functions giving the appropriate (i,j) term in the mass, 
+!   Definition of statement functions giving the appropriate (i,j) term in the mass,
 !   rigidity and damping matrices
 #define rgen(row,col) rigene(row, col, riggen, neqgen, typbas, 'EULER')
 #define agen(row,col) amgene(row, col, amogen, neqgen, typbas, 'EULER', lamor)
@@ -201,7 +202,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     if (lamor) then
         do im = 1, neqgen
             amogen(im) = deux * amogen(im) * pulsat(im)
-        end do
+        enddo
     else
         call getvtx(' ', 'VITESSE_VARIABLE', nbval=0, nbret=n1)
         if (n1 .ne. 0) then
@@ -219,16 +220,16 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                     ind = jm + neqgen*(im-1)
                     zr(jamgy+ind-1) = agen(im,jm) + vrotin * gyogen( ind)
                     zr(jrigy+ind-1) = rgen(im,jm) + arotin * rgygen( ind)
-                end do
-            end do
+                enddo
+            enddo
         else
             do im = 1, neqgen
                 do jm = 1, neqgen
                     ind = jm + neqgen*(im-1)
                     zr(jamgy+ind-1) = agen(im,jm)
                     zr(jrigy+ind-1) = rgen(im,jm)
-                end do
-            end do
+                enddo
+            enddo
         endif
     endif
 !
@@ -260,11 +261,12 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
     AS_ALLOCATE(vr=tra1, size=neqgen)
     AS_ALLOCATE(vr=fext, size=neqgen)
     if (nbchoc .ne. 0 .and. nbpal .eq. 0) then
-!      IF (NBCHOC.NE.0  ) THEN
-        call wkvect('&&MDEUL1.SCHOR', 'V V R8', nbchoc*14, jchor)
-!        INITIALISATION POUR LE FLAMBAGE
+        nbschor = nbchoc*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT'))
+        call wkvect('&&MDEUL1.SCHOR', 'V V R8', nbschor, jchor)
+!       initialisation variables internes
         call jeveuo(nomres//'           .VINT', 'E', jvint)
-        call r8inir(nbchoc, 0.d0, zr(jvint), 1)
+        nbvint = nbsauv*nbchoc*mdtr74grd('MAXVINT')
+        call r8inir(nbvint, 0.d0, zr(jvint), 1)
     endif
     if (nbrede .ne. 0) then
         call wkvect('&&MDEUL1.SREDR', 'V V R8', nbrede, jredr)
@@ -275,25 +277,23 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
         call wkvect('&&MDEUL1.SREVI', 'V V I', nbrevi, jrevi)
     endif
 !
-!     --- CONDITIONS INITIALES ---
-!
-    call mdinit(basemo, neqgen, nbchoc, zr(jdepl), zr(jvite),&
-                zr(jvint), iret, tinit)
+!   conditions initiales
+    call mdinit(basemo, neqgen, nbchoc, zr(jdepl), zr(jvite), &
+                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho, &
+                reprise=condrepri, accgen=acce)
     if (iret .ne. 0) goto 9999
     if (nbchoc .gt. 0 .and. nbpal .eq. 0) then
-        call dcopy(nbchoc, zr(jvint), 1, zr(jchor+13*nbchoc), 1)
+        nbvint = nbchoc*mdtr74grd('MAXVINT')
+        call dcopy(nbvint, zr(jvint), 1, zr(jchor+mdtr74grd('SCHOR')*nbchoc), 1)
     endif
-!
-!     --- FORCES EXTERIEURES ---
-!
+!   forces exterieures
     if (nbexci .ne. 0) then
         call mdfext(tinit, r8bid1, neqgen, nbexci, idescf,&
                     nomfon, coefm, liad, inumor, 1,&
-fext)
+                    fext)
     endif
 !
-!   COUPLAGE AVEC EDYOS
-!
+!   couplage avec edyos
     if (nbpal .gt. 0) then
         cpal='C_PAL'
 !     RECUPERATION DES DONNEES SUR LES PALIERS
@@ -306,22 +306,24 @@ fext)
             typal(iapp)=zk8(iadrk+(iapp-1))(1:6)
             finpal(iapp)=zk8(iadrk+(iapp-1)+palmax)(1:3)
             cnpal(iapp)=zk8(iadrk+(iapp-1)+2*palmax)(1:dimnas)
-        end do
+        enddo
     endif
-!  FIN COUPLAGE AVEC EDYOS
+!  fin couplage avec edyos
 !
-!       CAS CLASSIQUE
-!
+!   cas classique
     if (nbpal .ne. 0) nbchoc = 0
-    call mdfnli(neqgen, zr(jdepl), zr(jvite), acce, fext,&
-                nbchoc, logcho, dplmod, parcho, noecho,&
-                zr(jchor), nbrede, dplred, fonred, zr(jredr),&
-                zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
-                zi(jrevi), tinit, nofdep, nofvit, nofacc,&
-                nbexci, psidel, monmot, nbrfis, fk,&
-                dfk, angini, foncp, 1, nbpal,&
-                dt, dtsto, vrotat, typal, finpal,&
-                cnpal, prdeff, conv, fsauv)
+!   Si ce n'est pas une reprise : on calcule l'état initial
+    if ( .not. condrepri ) then
+        call mdfnli(neqgen, zr(jdepl), zr(jvite), acce, fext,&
+                    nbchoc, logcho, dplmod, parcho, noecho,&
+                    zr(jchor), nbrede, dplred, fonred, zr(jredr),&
+                    zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
+                    zi(jrevi), tinit, nofdep, nofvit, nofacc,&
+                    nbexci, psidel, monmot, nbrfis, fk,&
+                    dfk, angini, foncp, 1, nbpal,&
+                    dt, dtsto, vrotat, typal, finpal,&
+                    cnpal, prdeff, conv, fsauv)
+    endif
 !
     if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
         call utmess('F', 'EDYOS_46')
@@ -329,18 +331,15 @@ fext)
         nbconv = nbconv + 1
     endif
 !
+!   accélérations généralisées initiales : si pas de reprise on calcule
+    if ( .not. condrepri ) then
+        call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
+                    riggen, descmr, fext, lamor, zr(jamgy),&
+                    descma, tra1, zr(jdepl), zr(jvite), acce)
+    endif
 !
-!     --- ACCELERATIONS GENERALISEES INITIALES ---
-!
-    call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
-                riggen, descmr, fext, lamor, zr(jamgy),&
-                descma, tra1, zr(jdepl), zr(jvite),acce)
-!
-!
-!     --- ARCHIVAGE DONNEES INITIALES ---
-!
+!   archivage donnees initiales
     tarchi = tinit
-!
     call mdarnl(isto1, 0, tinit, dt, neqgen,&
                 zr(jdepl), zr(jvite), acce, isto2, nbchoc,&
                 zr(jchor), nbscho, isto3, nbrede, zr(jredr),&
@@ -353,8 +352,7 @@ fext)
     call uttcpu('CPU.MDEUL1', 'INIT', ' ')
     n100 = nbpas/100 + 1
 !
-!     --- BOUCLE TEMPORELLE ---
-!
+!   boucle temporelle
     do i = 1, nbpas
 !
         if (mod(i,n100) .eq. 0) call uttcpu('CPU.MDEUL1', 'DEBUT', ' ')
@@ -366,8 +364,8 @@ fext)
 !              --- LAMOR = .TRUE. ALORS COPIER LA LISTE DES AMORTISS.
 !                  (TERMES DIAGONAUX) DANS LE VECTEUR DE TRAVAIL
                     zr(jamgy+ind-1) = amogen(jm)
-                end do
-            end do
+                enddo
+            enddo
         else
             vrot = 0.d0
             arot = 0.d0
@@ -381,16 +379,16 @@ fext)
                         ind = jm + neqgen*(im-1)
                         zr(jamgy+ind-1) = amogen(ind) + vrot * gyogen( ind)
                         zr(jrigy+ind-1) = riggen(ind) + arot * rgygen( ind)
-                    end do
-                end do
+                    enddo
+                enddo
             else
                 do im = 1, neqgen
                     do jm = 1, neqgen
                         ind = jm + neqgen*(im-1)
                         zr(jamgy+ind-1) = amogen(ind)
                         zr(jrigy+ind-1) = riggen(ind)
-                    end do
-                end do
+                    enddo
+                enddo
             endif
         endif
 !
@@ -399,23 +397,21 @@ fext)
             zr(jvite+im) = zr(jvite+im) + ( dt * acce(im+1) )
 !           --- DEPLACEMENTS GENERALISES ---
             zr(jdepl+im) = zr(jdepl+im) + ( dt * zr(jvite+im) )
-        end do
+        enddo
 !
 !        --- FORCES EXTERIEURES ---
 !
         do ifor = 0, neqgen-1
             fext(ifor+1) = zero
-        end do
+        enddo
         if (nbexci .ne. 0) then
             call mdfext(temps, r8bid1, neqgen, nbexci, idescf,&
                         nomfon, coefm, liad, inumor, 1,&
-fext)
+                        fext)
         endif
 !
-!        CALCUL CLASSIQUE FORCES NON-LINEAIRES ET ACCELERATIONS
-!
-!        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
-!
+!       CALCUL CLASSIQUE FORCES NON-LINEAIRES ET ACCELERATIONS
+!       CONTRIBUTION DES FORCES NON LINEAIRES
         call mdfnli(neqgen, zr(jdepl), zr(jvite), acce, fext,&
                     nbchoc, logcho, dplmod, parcho, noecho,&
                     zr(jchor), nbrede, dplred, fonred, zr(jredr),&
@@ -432,11 +428,10 @@ fext)
             nbconv = nbconv + 1
         endif
 !
-!        --- ACCELERATIONS GENERALISEES ---
-!
+!       ACCELERATIONS GENERALISEES ---
         call mdacce(typbas, neqgen, pulsa2, masgen, descmm,&
                     riggen, descmr, fext, lamor, zr(jamgy),&
-                    descma, tra1, zr( jdepl), zr(jvite),acce)
+                    descma, tra1, zr(jdepl), zr(jvite),acce)
 !
 !        --- ARCHIVAGE ---
 !
@@ -446,9 +441,9 @@ fext)
             isto1 = isto1 + 1
 !
             call mdarnl(isto1, iarchi, temps, dt, neqgen,&
-                        zr(jdepl), zr( jvite), acce, isto2, nbchoc,&
+                        zr(jdepl), zr(jvite), acce, isto2, nbchoc,&
                         zr(jchor), nbscho, isto3, nbrede, zr(jredr),&
-                        zi(jredi), isto4, nbrevi, zr(jrevr), zi( jrevi),&
+                        zi(jredi), isto4, nbrevi, zr(jrevr), zi(jrevi),&
                         depsto, vitsto, accsto, passto, iorsto,&
                         temsto, fchost, dchost, vchost, ichost,&
                         zr(jvint), iredst, dredst, irevst, drevst)
@@ -487,7 +482,7 @@ fext)
             endif
         endif
         temps = temps + dt
-    end do
+    enddo
 !
 9999  continue
     call jedetr('&&MDEUL1.DEPL')

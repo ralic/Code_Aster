@@ -9,7 +9,8 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                   dredst, coefm, liad, inumor, idescf,&
                   nofdep, nofvit, nofacc, nomfon, psidel,&
                   monmot, nbpal, dtsto, vrotat, prdeff,&
-                  method, nomres, nbexci, irevst, drevst)
+                  method, nomres, nbexci, irevst, drevst, &
+                  intitu)
 !
 ! aslint: disable=W1504
     implicit none
@@ -31,6 +32,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 #include "asterfort/mdfnli.h"
 #include "asterfort/mdinit.h"
 #include "asterfort/mdsize.h"
+#include "asterfort/mdtr74grd.h"
 #include "asterfort/preres.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/recpar.h"
@@ -54,7 +56,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     real(kind=8) :: dti, dtmax
     real(kind=8) :: dtsto, vrotat
     character(len=8) :: basemo, noecho(nbchoc, *), fonred(*), fonrev(*), vvar
-    character(len=8) :: nomres, monmot
+    character(len=8) :: nomres, monmot, intitu(*)
     character(len=16) :: typbas, method
     logical :: lamor, prdeff
 !
@@ -134,14 +136,14 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     integer :: ii
     integer :: palmax
 !-----------------------------------------------------------------------
-    integer :: if, im, ipas, iret, isto1, isto2
+    integer :: ff, im, ipas, iret, isto1, isto2
     integer :: isto3, istoav, iv, iveri
     integer :: jcho2, jchor
-    integer ::  jmass, jredi
-    integer :: jredr, jslvi,  jvint
-    integer ::   nbacc, nbexci, nbmod1, nbpasc
-    integer :: nbrede, nbrevi, nbsauv, nbscho, ndt, npas
-    integer :: nper, nr, nrmax
+    integer :: jmass, jredi
+    integer :: jredr, jslvi, jvint
+    integer :: nbacc, nbexci, nbmod1, nbpasc
+    integer :: nbrede, nbrevi, nbsauv, nbscho, ndt, npas, nbschor
+    integer :: nper, nr, nrmax, nbvint
     integer :: isto4, jrevr, jrevi, irevst(*)
     real(kind=8) :: cdp, cmp, deux, dt1, dt2, dtarch, dtmin
     real(kind=8) :: err, freq, pas1, pas2, r8bid1
@@ -198,13 +200,13 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         typal(iapp)='      '
         finpal(iapp)='   '
         cnpal(iapp)=' '
-    end do
+    enddo
     prdeff = .false.
 !
     if (lamor) then
         do im = 1, neqgen
             amogen(im) = deux * amogen(im) * pulsat(im)
-        end do
+        enddo
     endif
 !
 !     --- RECUPERATION DES PARAMETRES D'ADAPTATION DU PAS
@@ -256,11 +258,13 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     AS_ALLOCATE(vr=tra1, size=neqgen)
     AS_ALLOCATE(vr=fext, size=neqgen)
     if (nbchoc .ne. 0 .and. nbpal .eq. 0) then
-        call wkvect('&&MDADAP.SCHOR', 'V V R8', nbchoc*14, jchor)
-        call wkvect('&&MDADAP.SCHO2', 'V V R8', nbchoc*14, jcho2)
-!        INITIALISATION POUR LE FLAMBAGE
+        nbschor = nbchoc*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT'))
+        call wkvect('&&MDADAP.SCHOR', 'V V R8', nbschor, jchor)
+        call wkvect('&&MDADAP.SCHO2', 'V V R8', nbschor, jcho2)
+!       initialisation variables internes
+        nbvint = nbsauv*nbchoc*mdtr74grd('MAXVINT')
         call jeveuo(nomres//'           .VINT', 'E', jvint)
-        call r8inir(nbchoc, 0.d0, zr(jvint), 1)
+        call r8inir(nbvint, 0.d0, zr(jvint), 1)
     else
         jchor=1
         jcho2=1
@@ -283,14 +287,16 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
 !     --- CONDITIONS INITIALES ---
 !
-    call mdinit(basemo, neqgen, nbchoc, depl, vite,&
-                zr(jvint), iret, tinit)
+    call mdinit(basemo, neqgen, nbchoc, depl, vite, &
+                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho )
     if (iret .ne. 0) goto 999
     call dcopy(neqgen, vite, 1, vip1, 1)
     dt2 = dti
     dt1 = zero
     if (nbchoc .gt. 0 .and. nbpal .eq. 0) then
-        call dcopy(nbchoc, zr(jvint), 1, zr(jchor+13*nbchoc), 1)
+        nbvint = nbchoc*mdtr74grd('MAXVINT')
+        call dcopy(nbvint, zr(jvint), 1, zr(jchor+mdtr74grd('SCHOR')*nbchoc), 1)
+        call dcopy(nbvint, zr(jvint), 1, zr(jcho2+mdtr74grd('SCHOR')*nbchoc), 1)
     endif
 !
 !     --- FORCES EXTERIEURES ---
@@ -298,7 +304,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     if (nbexci .ne. 0) then
         call mdfext(tinit, r8bid1, neqgen, nbexci, idescf,&
                     nomfon, coefm, liad, inumor, 1,&
-fext)
+                    fext)
     endif
 !
 !    COUPLAGE AVEC EDYOS
@@ -315,7 +321,7 @@ fext)
             typal(iapp)=zk8(iadrk+(iapp-1))(1:6)
             finpal(iapp)=zk8(iadrk+(iapp-1)+palmax)(1:3)
             cnpal(iapp)=zk8(iadrk+(iapp-1)+2*palmax)(1:dimnas)
-        end do
+        enddo
     endif
     if (nbpal .ne. 0) nbchoc = 0
 !
@@ -389,7 +395,7 @@ fext)
 !
             pas1 = (dt1+dt2)*0.5d0
             pas2 = dt2*0.5d0
-!  MODIFICATION POUR ADAPT ORDRE1
+!           MODIFICATION POUR ADAPT ORDRE1
             if ((dt1.le.1.d-13) .and. (method.eq.'ADAPT_ORDRE1')) pas1= dt2
 !
             do im = 0, nbmod1
@@ -401,22 +407,22 @@ fext)
                 if (method .eq. 'ADAPT_ORDRE2') then
                     vip2(im+1) = vit2(im+1) + pas2 * acce(im+1)
                 else
-!  MODIFICATION POUR ADAPT ORDRE1
+!                   MODIFICATION POUR ADAPT ORDRE1
                     vip2(im+1) = vit2(im+1)
                 endif
-            end do
+            enddo
 !
 !
 !        --- FORCES EXTERIEURES ---
 !
-            do if = 0, neqgen-1
-                fext(if+1) = zero
+            do ff = 0, neqgen-1
+                fext(ff+1) = zero
             end do
             if (nbexci .ne. 0) then
                 r8val = temps+dt2
                 call mdfext(r8val, r8bid1, neqgen, nbexci, idescf,&
                             nomfon, coefm, liad, inumor, 1,&
-fext)
+                            fext)
             endif
 !
 !
@@ -538,18 +544,18 @@ fext)
             tmp = zero
             do iv = 0, nbmod1
                 tmp = tmp+vit2(iv+1)**2
-            end do
+            enddo
             tmp = sqrt(tmp)*0.01d0
             do iv = 0, nbmod1
                 vmin(iv+1) = tmp
-            end do
+            enddo
         else if (vvar(1:4) .eq. 'MAXI') then
             do iv = 0, nbmod1
                 rint1 = vit2(iv+1)*0.01d0
                 rint2 = abs(rint1)
                 rint1 = vmin(iv+1)
                 vmin(iv+1) = max(rint1,rint2)
-            end do
+            enddo
         endif
 !
 !           --- MISE A JOUR ---
@@ -559,7 +565,10 @@ fext)
         call dcopy(neqgen, vit2, 1, vite, 1)
         call dcopy(neqgen, vip2, 1, vip1, 1)
         call dcopy(neqgen, acc2, 1, acce, 1)
-        if (nbchoc .ne. 0) call dcopy(14, zr(jcho2), 1, zr(jchor), 1)
+        if (nbchoc .ne. 0) then
+            nbschor = nbchoc*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT'))
+            call dcopy(nbschor, zr(jcho2), 1, zr(jchor), 1)
+        endif
 !
 !        --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---
 !       ON FIXE UN TEMPS MOYEN PAR PAS A UN MINIMUM DE 0.001 S
@@ -612,15 +621,14 @@ fext)
     vali (2) = nbacc
     call utmess('I', 'ALGORITH16_1', ni=2, vali=vali)
 !
-! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
-!
+!   verification si interruption demandee par signal usr1
     if (etausr() .eq. 1) then
         call sigusr()
     endif
 !
     if (tps1(1) .le. max(tjob/100.d0,15.d0)) then
         if (nomres .eq. '&&OP0074') then
-!       --- CAS D'UNE POURSUITE ---
+!           CAS D'UNE POURSUITE
             call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=ndt)
             if (ndt .ne. 0) call resu74(tran, nomres)
         endif

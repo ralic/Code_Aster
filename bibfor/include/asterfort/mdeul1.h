@@ -29,7 +29,7 @@ interface
                       nofvit, nofacc, nomfon, psidel, monmot,&
                       nbrfis, fk, dfk, angini, foncp,&
                       nbpal, dtsto, vrotat, prdeff, nomres,&
-                      nbexci, passto)
+                      nbexci, passto, intitu )
         integer :: nbchoc
         integer :: neqgen
         integer :: nbpas
@@ -97,5 +97,6 @@ interface
         character(len=8) :: nomres
         integer :: nbexci
         real(kind=8) :: passto(*)
+        character(len=8) :: intitu(*)
     end subroutine mdeul1
 end interface

@@ -16,6 +16,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
+#include "asterfort/mdtr74grd.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"
@@ -82,7 +83,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     integer :: jdesc, jfcho, jdisc, jinti, jncho, jordr, jptem
     integer :: jredc, jredd, jredn, jrevc, jrevv, jrevn
     integer :: jsst, jvcho, jvint
-    integer :: jvite, nbmode, nbsto1
+    integer :: jvite, nbmode, nbsto1, nbvint
     real(kind=8) :: dt
 !-----------------------------------------------------------------------
     call jemarq()
@@ -143,7 +144,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 !
     call jeexin(nomres//'           .DESC', iret)
     if (iret .eq. 0) then
-        call wkvect(nomres//'           .DESC', typsau//' I', 5, jdesc)
+        call wkvect(nomres//'           .DESC', typsau//' I', 6, jdesc)
 !
         zi(jdesc) = 1
 !
@@ -156,11 +157,11 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
                 call utmess('F', 'ALGORITH17_29')
             endif
             do inom = 1, nbsym
-                if ((nomsym(inom)(1:4).ne.'DEPL') .and. (nomsym(inom)( 1:4).ne.'VITE')&
-                    .and. (nomsym(inom)(1:4).ne.'ACCE')) then
+                if ( (nomsym(inom)(1:4).ne.'DEPL').and.(nomsym(inom)( 1:4).ne.'VITE').and. &
+                     (nomsym(inom)(1:4).ne.'ACCE')) then
                     call utmess('F', 'ALGORITH17_29')
                 endif
-            end do
+            enddo
         else if (typcal.eq.'TRAN') then
 !         -- INITIALISATION DES CHAMPS A ALLOUER DANS LE CAS TRANS.
             nbsym = 3
@@ -173,17 +174,16 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 !         -DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
 !          ON MET LA VALEUR 3 QUI SERVIRA DE TEST
 !           A LA COMMANDE POST_DYNA_MODA_T
-            if (method .eq. 'ITMI' .or. method(1:5) .eq. 'ADAPT' .or. method( 1:5) .eq.&
-                'RUNGE') then
+            if ((method.eq.'ITMI').or.(method(1:5).eq.'ADAPT').or.(method( 1:5).eq.'RUNGE')) then
                 zi(jdesc) = 3
             endif
 !         DANS LE CAS TRANSITOIRE, ON REMPLIT TOUJOURS LES TROIS CHAMPS
         endif
-!        ---
         zi(jdesc+1) = nbmode
         zi(jdesc+2) = nbchoc
         zi(jdesc+3) = nbrede
         zi(jdesc+4) = nbrevi
+        zi(jdesc+5) = mdtr74grd('MAXVINT')
     endif
 !
     if (typcal .eq. 'TRAN') then
@@ -199,27 +199,24 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     if (nbsauv .ne. 0) then
 !       BOUCLE SUR LES CHAMPS A SAUVEGARDER (DEPL/VITE/ACCE)
         do inom = 1, nbsym
-!
             call jecreo(nomres//bl11pt//nomsym(inom), attrib)
             call jeecra(nomres//bl11pt//nomsym(inom), 'LONMAX', nbstoc)
             call jeecra(nomres//bl11pt//nomsym(inom), 'LONUTI', nbstoc)
             call jeveut(nomres//bl11pt//nomsym(inom), 'E', jchmp)
-!
-!         INITIALISATION DES CHAMPS A ZERO
-!
+!           INITIALISATION DES CHAMPS A ZERO
             if (typcal .eq. 'TRAN') then
                 do i = 0, nbstoc-1
                     zr(jchmp+i) = 0.d0
-                end do
+                enddo
             else
                 do i = 0, nbstoc-1
                     zc(jchmp+i) = dcmplx(0.d0,0.d0)
-                end do
+                enddo
             endif
             if (nomsym(inom) .eq. 'DEPL') jdepl=jchmp
             if (nomsym(inom) .eq. 'VITE') jvite=jchmp
             if (nomsym(inom) .eq. 'ACCE') jacce=jchmp
-        end do
+        enddo
 !
 !       OBJETS COMMUNS
         call jecreo(nomres//'           .ORDR', typsau//' I')
@@ -240,10 +237,11 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
         endif
     endif
 !
-!     --- CREATION DES VECTEURS DE STOCKAGE DES FORCES DE CHOC ---
+!   CREATION DES VECTEURS DE STOCKAGE DES FORCES DE CHOC
     if (nbchoc .ne. 0) then
         nbstoc = 3 * nbchoc * nbsauv
         nbsto1 = nbchoc * nbsauv
+        nbvint = nbchoc * nbsauv * mdtr74grd('MAXVINT')
         call jeexin(nomres//'           .NCHO', iret)
         if (iret .eq. 0) call wkvect(nomres//'           .NCHO', typsau//' K8', 2*nbchoc, jncho)
         call jeexin(nomres//'           .SST', iret)
@@ -265,13 +263,13 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
             call jeecra(nomres//'           .ICHO', 'LONMAX', nbsto1)
             call jeecra(nomres//'           .ICHO', 'LONUTI', nbsto1)
             call jeveut(nomres//'           .ICHO', 'E', jadcho)
-!          --- OBJET POUR LE FLAMBEMENT : VARIABLE INTERNE ---
+!           objet variables internes
             call jecreo(nomres//'           .VINT', typsau//' R')
-            call jeecra(nomres//'           .VINT', 'LONMAX', nbsto1)
-            call jeecra(nomres//'           .VINT', 'LONUTI', nbsto1)
-!              INITIALISATION
+            call jeecra(nomres//'           .VINT', 'LONMAX', nbvint)
+            call jeecra(nomres//'           .VINT', 'LONUTI', nbvint)
+!           initialisation
             call jeveuo(nomres//'           .VINT', 'E', jvint)
-            call r8inir(nbsto1, 0.d0, zr(jvint), 1)
+            call r8inir(nbvint, 0.d0, zr(jvint), 1)
         endif
         call jeexin(nomres//'           .INTI', iret)
         if (iret .eq. 0) then
@@ -282,11 +280,11 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
                 zk8(jncho+nbchoc+ic-1) = noecho(ic,5)
                 zk8(jsst+ic-1) = noecho(ic,2)
                 zk8(jsst+nbchoc+ic-1) = noecho(ic,6)
-            end do
+            enddo
         endif
     endif
 !
-!     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_DEPL ---
+!   CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_DEPL
     if (nbrede .ne. 0) then
         nbstoc = nbrede * nbsauv
         if (nbsauv .ne. 0) then
@@ -304,7 +302,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
             call wkvect(nomres//'           .REDN', typsau//' K24', nbrede, jredn)
             do i = 1, nbrede
                 zk24(jredn+i-1) = fonred(i,1)//fonred(i,2)//fonred(i, 3)
-            end do
+            enddo
         endif
     endif
 !
@@ -326,7 +324,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
             call wkvect(nomres//'           .REVN', typsau//' K24', nbrevi, jrevn)
             do i = 1, nbrevi
                 zk24(jrevn+i-1) = fonrev(i,1)//fonrev(i,2)//fonrev(i, 3)
-            end do
+            enddo
         endif
     endif
 !

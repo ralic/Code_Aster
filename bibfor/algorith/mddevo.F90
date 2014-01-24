@@ -1,13 +1,13 @@
-subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
-                  masgen, amogen, basemo, tinit, iparch,&
+subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
+                  masgen, amogen, basemo, tinit,  iparch,&
                   nbsauv, nbchoc, logcho, dplmod, parcho,&
                   noecho, nbrede, dplred, fonred, nbrevi,&
                   dplrev, fonrev, depsto, vitsto, accsto,&
                   iorsto, temsto, fchost, dchost, vchost,&
-                  ichost, iredst, dredst, coefm, liad,&
+                  ichost, iredst, dredst, coefm,  liad,&
                   inumor, idescf, nofdep, nofvit, nofacc,&
                   nomfon, psidel, monmot, nomres, nbexci,&
-                  passto, irevst, drevst)
+                  passto, irevst, drevst, intitu)
 !
 ! aslint: disable=W1504
     implicit none
@@ -26,6 +26,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 #include "asterfort/mdfnli.h"
 #include "asterfort/mdinit.h"
 #include "asterfort/mdsize.h"
+#include "asterfort/mdtr74grd.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/resu74.h"
 #include "asterfort/sigusr.h"
@@ -47,7 +48,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
     real(kind=8) :: coefm(*), psidel(*)
     integer :: liad(*), inumor(*), idescf(*)
-    character(len=8) :: nofdep(*), nofvit(*), nofacc(*), nomfon(*)
+    character(len=8) :: nofdep(*), nofvit(*), nofacc(*), nomfon(*), intitu(*)
 !
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -110,13 +111,13 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     character(len=8) :: tran
     integer :: palmax
 !-----------------------------------------------------------------------
-    integer :: i, iarchi, if, im, im1, iret, isto1
-    integer :: isto2, isto3,  jbid1, jchor, jdep1, jdep2
+    integer :: i, iarchi, ff, im, im1, iret, isto1
+    integer :: isto2, isto3, jbid1, jchor, jdep1, jdep2
     integer :: jdep3, jdep4, jdepl, jfex1, jfex2, jfex3, jfex4
     integer :: jfext, jredi, jredr, jtra1, jvint, jvit1, jvit2
-    integer :: jvit3, jvit4, jvite, n100, nbexci, nbmod1
+    integer :: jvit3, jvit4, jvite, n100, nbexci, nbmod1, nbschor
     integer :: isto4, jrevr, jrevi
-    integer :: nbpas, nbrede, nbrevi, nbsauv, nbscho, ndt
+    integer :: nbpas, nbrede, nbrevi, nbsauv, nbscho, ndt, nbvint
 !
     real(kind=8) :: deux, dt, dt1, dt2, dt3, dt4, dt5
     real(kind=8) :: dt6, g1, g2, g3, g4, quatre, six
@@ -129,9 +130,9 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     real(kind=8) :: fsauv(palmax, 3)
     real(kind=8), pointer :: acce(:) => null()
 !   ------------------------------------------------------------------------------------
-!   Definition of statement functions giving the appropriate (i,j) term in the mass, 
+!   Definition of statement functions giving the appropriate (i,j) term in the mass,
 !   rigidity and damping matrices
-#define mgen(row,col) magene(row, col, masgen, nbmode, ' ', 'DEVOGE') 
+#define mgen(row,col) magene(row, col, masgen, nbmode, ' ', 'DEVOGE')
 #define agen(row,col) amgene(row, col, amogen, nbmode, ' ', 'DEVOGE', .FALSE.)
 !   ------------------------------------------------------------------------------------
 !
@@ -141,7 +142,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     call wkvect('&&MDDEVO.BID', 'V V R8', nbmode, jbid1)
     do i = 1, nbmode
         zr(jbid1+i-1)=zero
-    end do
+    enddo
     r8bid2=zero
     r8bid3=zero
     r8bid4=zero
@@ -172,10 +173,12 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     call wkvect('&&MDDEVO.TRA1', 'V V R8', nbmode, jtra1)
     call wkvect('&&MDDEVO.FEXT', 'V V R8', 4*nbmode, jfext)
     if (nbchoc .ne. 0) then
-        call wkvect('&&MDDEVO.SCHOR', 'V V R8', nbchoc*14, jchor)
-!        INITIALISATION POUR LE FLAMBAGE
+        nbschor = nbchoc*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT'))
+        call wkvect('&&MDDEVO.SCHOR', 'V V R8', nbschor, jchor)
+!       initialisation variables internes
         call jeveuo(nomres//'           .VINT', 'E', jvint)
-        call r8inir(nbchoc, 0.d0, zr(jvint), 1)
+        nbvint = nbsauv*nbchoc*mdtr74grd('MAXVINT')
+        call r8inir(nbvint, 0.d0, zr(jvint), 1)
     else
         jchor=1
     endif
@@ -209,10 +212,11 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !     --- CONDITIONS INITIALES ---
     call mdinit(basemo, nbmode, nbchoc, zr(jdep2), zr(jvit2),&
-                zr(jvint), iret, tinit)
+                zr(jvint), iret, tinit, intitu=intitu, noecho=noecho )
     if (iret .ne. 0) goto 9999
     if (nbchoc .gt. 0) then
-        call dcopy(nbchoc, zr(jvint), 1, zr(jchor+13*nbchoc), 1)
+        nbvint = nbchoc*mdtr74grd('MAXVINT')
+        call dcopy(nbvint, zr(jvint), 1, zr(jchor+mdtr74grd('SCHOR')*nbchoc), 1)
     endif
 !
 !     --- FORCES EXTERIEURES ---
@@ -229,7 +233,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                 zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
                 zi(jrevi), tinit, nofdep, nofvit, nofacc,&
                 nbexci, psidel, monmot, 0, fbid,&
-                fbid, 0.d0, k8b, 0, 0,&
+                fbid, 0.d0, k8b, 1, 0,&
                 0.d0, 0.d0, 0.d0, typal, finpal,&
                 cnpal, prdeff, r8b2, fsauv)
 !
@@ -247,7 +251,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                             - dt * ( g1 + g2) )
         acce(im+1) = g2 - agen(im1,im1)*zr(jvit2+im)
 !
-    end do
+    enddo
 !
 !     --- ARCHIVAGE DONNEES INITIALES ---
     tarchi = tinit
@@ -280,12 +284,12 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
             x2 = quatre*g2 - g1 - agen(im1,im1) * ( quatre*zr(jvit2+im) - zr(jvit1+im) )
             zr(jdep3+im) = zr(jdep2+im) + dt1*zr(jvit2+im) + dt4*x2
             zr(jvit3+im) = ( zr(jdep3+im) - zr(jdep2+im) ) / dt1
-        end do
+        enddo
 !
 !     --- FORCES EXTERIEURES ---
-        do if = 0, nbmode-1
-            zr(jfex3+if) = zero
-        end do
+        do ff = 0, nbmode-1
+            zr(jfex3+ff) = zero
+        enddo
         if (nbexci .ne. 0) then
             call mdfext(temps, r8bid2, nbmode, nbexci, idescf,&
                         nomfon, coefm, liad, inumor, 1,&
@@ -299,7 +303,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                     zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
                     zi(jrevi), temps, nofdep, nofvit, nofacc,&
                     nbexci, psidel, monmot, 0, fbid,&
-                    fbid, 0.d0, k8b, 0, 0,&
+                    fbid, 0.d0, k8b, (i+1), 0,&
                     0.d0, 0.d0, 0.d0, typal, finpal,&
                     cnpal, prdeff, r8b2, fsauv)
 !
@@ -317,12 +321,12 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
             x2 = g2 + deux*g3 - agen(im1,im1) * ( zr(jvit2+im) + deux* zr(jvit3+im) )
             zr(jdep4+im) = zr(jdep2+im) + dt*zr(jvit2+im) + dt5*x2
             zr(jvit4+im) = ( zr(jdep4+im) - zr(jdep3+im) ) / dt1
-        end do
+        enddo
 !
 !        --- FORCES EXTERIEURES ---
-        do if = 0, nbmode-1
-            zr(jfex4+if) = zero
-        end do
+        do ff = 0, nbmode-1
+            zr(jfex4+ff) = zero
+        enddo
         temps = temps + dt1
         if (nbexci .ne. 0) then
             call mdfext(temps, r8bid2, nbmode, nbexci, idescf,&
@@ -336,7 +340,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                     zi(jredi), nbrevi, dplrev, fonrev, zr(jrevr),&
                     zi(jrevi), temps, nofdep, nofvit, nofacc,&
                     nbexci, psidel, monmot, 0, fbid,&
-                    fbid, 0.d0, k8b, 0, 0,&
+                    fbid, 0.d0, k8b, (i+1), 0,&
                     0.d0, 0.d0, 0.d0, typal, finpal,&
                     cnpal, prdeff, r8b2, fsauv)
 !
@@ -355,7 +359,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !           --- ACCELERATIONS GENERALISEES AU PAS ---
             acce(im+1) = g4 - agen(im1,im1)*zr(jvit4+im)
-        end do
+        enddo
 !
 !        --- ARCHIVAGE ---
         iarchi = i
@@ -380,8 +384,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
             zr(jvit2+im) = zr(jvit4+im)
             zr(jfex1+im) = zr(jfex3+im)
             zr(jfex2+im) = zr(jfex4+im)
-        end do
-!
+        enddo
 !
 !        --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---
 !
@@ -415,7 +418,7 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
             endif
         endif
         temps = temps+dt1
-    end do
+    enddo
 !
 9999  continue
     call jedetr('&&MDDEVO.DEPL')

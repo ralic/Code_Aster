@@ -1,6 +1,5 @@
 subroutine mdtr74(nomres)
-    implicit none
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +17,8 @@ subroutine mdtr74(nomres)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! --------------------------------------------------------------------------------------------------
+!
 !     BUT: CALCUL TRANSITOIRE PAR DYNA_TRAN_MODAL DANS LE CAS OU LES
 !          MATRICES ET VECTEURS PROVIENNENT D'UNE PROJECTION SUR :
 !              - MODE_MECA
@@ -25,6 +26,9 @@ subroutine mdtr74(nomres)
 !              - BASE_MODALE
 !
 ! ----------------------------------------------------------------------
+!
+    implicit none
+    character(len=8) :: nomres
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -59,6 +63,7 @@ subroutine mdtr74(nomres)
 #include "asterfort/mdeul1.h"
 #include "asterfort/mdgene.h"
 #include "asterfort/mdicho.h"
+#include "asterfort/mdidisvisc.h"
 #include "asterfort/mdinit.h"
 #include "asterfort/mditm1.h"
 #include "asterfort/mditmi.h"
@@ -68,6 +73,7 @@ subroutine mdtr74(nomres)
 #include "asterfort/mdrede.h"
 #include "asterfort/mdrevi.h"
 #include "asterfort/mdruku.h"
+#include "asterfort/mdtr74grd.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
@@ -75,18 +81,17 @@ subroutine mdtr74(nomres)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
+! --------------------------------------------------------------------------------------------------
     character(len=1) :: niv
     character(len=4) :: k4bid(3)
-    character(len=8) :: k8b, k8var, nomres, masgen, riggen, amogen, gyogen
-    character(len=8) :: basemo, matass, vecgen, monmot, listam, typflu, nombm
-    character(len=8) :: rigass, mailla, resgen, bamo1, bamo2, rgygen
+    character(len=8) :: k8b, k8var, masgen, riggen, amogen, gyogen
+    character(len=8) :: basemo, matass, vecgen, monmot, listam, typflu, nombm, foncv, fonca, foncp
+    character(len=8) :: rigass, mailla, resgen, bamo1, bamo2, rgygen, fk(2), dfk(2)
     character(len=14) :: numddl, numgem, numgek, numgec, numgeg, k14b
     character(len=16) :: typbas, typba2, method
-    character(len=19) :: lisarc, nomstm, nomstk, nomstg, masse
-    character(len=24) :: numk24, numm24, numc24, lisins, nomnoe, typeba
-    character(len=24) :: valk(3)
-    character(len=19) :: marig
-    logical :: lamor
+    character(len=19) :: lisarc, nomstm, nomstk, nomstg, masse, marig, fonct
+    character(len=24) :: numk24, numm24, numc24, lisins, nomnoe, typeba, valk(3)
+    logical :: lamor, okmethod
     integer :: itypfl, nexcit, nexcir, ntotex
     integer :: vali(3), jvec, jvecr, j1
     real(kind=8) :: acrit, agene
@@ -94,29 +99,20 @@ subroutine mdtr74(nomres)
     real(kind=8) :: dt, dts, dtu, dtmax, dtmin
     real(kind=8) :: rad
     complex(kind=8) :: cbid
-    character(len=19) :: fonct
-    character(len=8) :: fk(2), dfk(2), foncv, fonca, foncp
 !
-!  COUPLAGE EDYOS/FISSURE
-! =>
+! --------------------------------------------------------------------------------------------------
+!   COUPLAGE EDYOS/FISSURE
     real(kind=8) :: vrotat, dtsto, angini
-!
     integer :: nbedyo, unitpa
     integer :: info
 !
-!     COMMON
-!     ======
+! --------------------------------------------------------------------------------------------------
     integer :: nbpal, nbrfis
-!
     integer :: iadri
     character(len=24) :: npal
-!
     logical :: prdeff
 !
-! =<
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     integer :: i, iam, iamog, ibid, icoupl, idiff
     integer :: ier, ifimp, ifm, ig, iindic, im
     integer :: indic, ioc, iparch, iptcho, iret, irfimp
@@ -125,10 +121,10 @@ subroutine mdtr74(nomres)
     integer :: ivecr2, ivecr3, ivecr4, ivecr5, jabsc, jaccs, jamo1
     integer :: jamo2, jamog, jarch, jbase, jbasf, jcodim, jcoefm
     integer :: jdcho, jdep0, jdepl, jdeps, jdesc, jdfk
-    integer :: jfcho, jfk, jfond, jfonv,  jiadve, jicho
+    integer :: jfcho, jfk, jfond, jfonv, jiadve, jicho
     integer :: jidesc, jinst, jinti, jinumo, jlocf, jmasg, jnoacc
     integer :: jnodep, jnoec, jnomfo, jnovit, jordr, jparc, jpard
-    integer :: jpass, jphie, jpoids, jpsdel, jpsid,  jpuls
+    integer :: jpass, jphie, jpoids, jpsdel, jpsid, jpuls
     integer :: jraig, jranc, jredc, jredd, jrede, jrefa, jrefac
     integer :: jrevc, jrevv
     integer :: jrefak, jrefam, jrevi, jrhoe, jscdek, jscdem, jvcho
@@ -136,7 +132,7 @@ subroutine mdtr74(nomres)
     integer :: lprofv, lprol, n, n1, n2, na, nbamor
     integer :: nbcho1, nbchoc, nbexit, nbf, nbflam, nbfv, nbm0
     integer :: nbmd, nbmg, nbmod2, nbmode, nbmp, nbnli, nbpas
-    integer :: nbrede, nbrevi, nbsauv, nbsism, nbstoc, nbstok
+    integer :: nbrede, nbrevi, nbsauv, nbsism(2), nbstoc, nbstok
     integer :: nbstom, neq, ngr, nm, nmp, nr
     integer :: nterm, nts, numvif, nv, nbobjs
     real(kind=8) :: crit, deux, dtarch, eps, omeg2
@@ -145,12 +141,11 @@ subroutine mdtr74(nomres)
     real(kind=8), pointer :: pulsat2(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     data k14b/'              '/
     call jemarq()
     deux = 2.d0
-!-----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
     ibid = 0
     jranc = 1
@@ -180,14 +175,13 @@ subroutine mdtr74(nomres)
     rad = r8dgrd()
     nbobjs=1
     lamor = .false.
-!     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
+!   RECUPERATION DES ARGUMENTS DE LA COMMANDE
     call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
     call getfac('EXCIT', nexcit)
     call getfac('EXCIT_RESU', nexcir)
 !
-!     --- RECUPERATION DES MATRICES PROJETEES ---
-!
+!   RECUPERATION DES MATRICES PROJETEES
     call getvid(' ', 'MATR_MASS', scal=masgen, nbret=nm)
     call getvid(' ', 'MATR_RIGI', scal=riggen, nbret=nr)
     call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=na)
@@ -196,26 +190,25 @@ subroutine mdtr74(nomres)
         do i = 1, nexcit
             call getvid('EXCIT', 'VECT_ASSE_GENE', iocc=i, scal=vecgen, nbret=nv)
             zk8(jvec-1+i) = vecgen
-        end do
+        enddo
     endif
     if (nexcir .ne. 0) then
         call wkvect('&&MDTR74.NOMVER', 'V V K8', nexcir, jvecr)
         do i = 1, nexcir
             call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resgen, nbret=nv)
             zk8(jvecr-1+i) = resgen
-! ------- VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
+!           VERIF : LA BASE DE MODES ASSOCIEE EST CELLE DES MATRICES GENE
             call jeveuo(masgen//'           .REFA', 'L', j1)
             bamo1=zk24(j1-1+1)(1:8)
             call dismoi('BASE_MODALE', resgen, 'RESU_DYNA', repk=bamo2)
             if (bamo1 .ne. bamo2) then
                 call utmess('F', 'ALGORITH17_18', si=i)
             endif
-        end do
+        enddo
     endif
     if (na .eq. 0) lamor = .true.
 !
-!     --- RECUPERATION DE LA NUMEROTATION GENERALISEE DE M, K
-!
+!   RECUPERATION DE LA NUMEROTATION GENERALISEE DE M, K
     call jeveuo(masgen//'           .REFA', 'L', jrefam)
     numgem = zk24(jrefam-1+2)(1:14)
     nomstm = numgem//'.SLCS'
@@ -228,16 +221,16 @@ subroutine mdtr74(nomres)
     call jeveuo(nomstk//'.SCDE', 'L', jscdek)
     nbstok = zi(jscdek-1+1)*zi(jscdek-1+4)
 !
-!     --- RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES ---
-!
+!   RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES
     call jeveuo(masgen//'           .DESC', 'L', jdesc)
     nbmode = zi(jdesc+1)
     basemo = zk24(jrefam-1+1)(1:8)
     call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=rigass)
-!------------on recupere le type de base modale---------
+!
+!   on recupere le type de base modale
     call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C',&
                 ier=iret)
-!-------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     marig = '&&MDTR74.RIGI'
     call copisd('MATR_ASSE', 'V', rigass, marig)
     call jeexin(marig//'.REFA', ier)
@@ -289,8 +282,7 @@ subroutine mdtr74(nomres)
         call utmess('F', 'ALGORITH5_65')
     endif
 !
-!     --- RECOPIE DES MATRICES DANS DES VECTEURS DE TRAVAIL ---
-!
+!   RECOPIE DES MATRICES DANS DES VECTEURS DE TRAVAIL
     call wkvect('&&MDTR74.MASSEGEN', 'V V R', nbstom, jmasg)
     call wkvect('&&MDTR74.RAIDEGEN', 'V V R', nbstok, jraig)
     call wkvect('&&MDTR74.AMORTGEN', 'V V R', nbstoc, jamo1)
@@ -301,10 +293,8 @@ subroutine mdtr74(nomres)
     call extdia(masgen, numm24, 0, zr(jmasg))
     call extdia(riggen, numk24, 0, zr(jraig))
 !
-!     --- RECOPIE DES MODES DU CONCEPT RESULTAT DANS UN VECTEUR ---
-!
+!   RECOPIE DES MODES DU CONCEPT RESULTAT DANS UN VECTEUR
     call wkvect('&&MDTR74.BASEMODE', 'V V R', nbmode*neq, jbase)
-!
     call copmod(basemo, 'DEPL', neq, numddl, nbmode,&
                 'R', zr(jbase), [cbid])
 !
@@ -312,14 +302,10 @@ subroutine mdtr74(nomres)
         omeg2 = abs(zr(jraig+i)/zr(jmasg+i))
         zr(jpuls+i) = sqrt(omeg2)
         pulsat2(1+i) = omeg2
-    end do
+    enddo
 !
-!     --- RECUPERATION DE L AMORTISSEMENT ---
-!
-!     ... RECUPERATION D'UNE LISTE D'AMORTISSEMENTS REDUITS ...
-!
+!   RECUPERATION DE L AMORTISSEMENT D'UNE LISTE D'AMORTISSEMENTS REDUITS
     if (lamor) then
-!
         amogen = '&&AMORT'
         call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
         call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
@@ -345,7 +331,7 @@ subroutine mdtr74(nomres)
                     call jeveuo(listam//'           .VALE', 'L', iamog)
                     do iam = 1, nbmode
                         zr(jamog+iam-1) = zr(iamog+iam-1)
-                    end do
+                    enddo
                 endif
             else if (nbamor.lt.nbmode) then
 !
@@ -357,7 +343,7 @@ subroutine mdtr74(nomres)
                     call jeveuo(listam//'           .VALE', 'L', iamog)
                     do iam = 1, nbamor
                         zr(jamog+iam-1) = zr(iamog+iam-1)
-                    end do
+                    enddo
                 endif
                 idiff = nbmode - nbamor
                 vali (1) = idiff
@@ -367,10 +353,10 @@ subroutine mdtr74(nomres)
                 call wkvect('&&MDTR74.AMORTI2', 'V V R8', nbmode, jamo2)
                 do iam = 1, nbamor
                     zr(jamo2+iam-1) = zr(jamog+iam-1)
-                end do
+                enddo
                 do iam = nbamor + 1, nbmode
                     zr(jamo2+iam-1) = zr(jamog+nbamor-1)
-                end do
+                enddo
                 jamog = jamo2
             else if (nbamor.eq.nbmode) then
 !
@@ -382,14 +368,12 @@ subroutine mdtr74(nomres)
                     call jeveuo(listam//'           .VALE', 'L', iamog)
                     do iam = 1, nbamor
                         zr(jamog+iam-1) = zr(iamog+iam-1)
-                    end do
+                    enddo
                 endif
             endif
         else
             call wkvect('&&MDTR74.AMORTI', 'V V R8', nbmode, jamog)
             do im = 1, nbmode
-!            IF (TYPBA2(1:9).NE.'MODE_STAT'.AND.
-!     &          TYPBA2(1:9).NE.'BASE_MODA') THEN
                 if (typeba(1:1) .eq. ' ') then
                     call rsadpa(basemo, 'L', 1, 'AMOR_REDUIT', im,&
                                 0, sjv=lamre, styp=k8b)
@@ -397,17 +381,15 @@ subroutine mdtr74(nomres)
                 else
                     zr(jamog+im-1) = 0.d0
                 endif
-            end do
+            enddo
         endif
         amogen = '        '
 !
     endif
 !
-!     ... RECUPERATION D'UNE MATRICE D'AMORTISSEMENTS DIMENSIONNELS ...
-!
+!   RECUPERATION D'UNE MATRICE D'AMORTISSEMENTS DIMENSIONNELS
     if (.not.lamor) then
-!
-!        RECUP NUMEROTATION GENE DE MATRICE AMORTISSEMENT
+!       RECUP NUMEROTATION GENE DE MATRICE AMORTISSEMENT
         call jeveuo(amogen//'           .REFA', 'L', jrefac)
         numgec = zk24(jrefac-1+2)(1:14)
         numc24(1:14) = numgec
@@ -423,8 +405,8 @@ subroutine mdtr74(nomres)
                 call utmess('A', 'ALGORITH16_20', sk=valk(1), si=vali(1), nr=2,&
                             valr=valr)
             endif
-        end do
-!        PROBLEME POSSIBLE DU JEVEUO SUR UNE COLLECTION
+        enddo
+!       PROBLEME POSSIBLE DU JEVEUO SUR UNE COLLECTION
         call wkvect('&&MDTR74.AMORTI', 'V V R8', nbmode*nbmode, jamog)
         call copmat(amogen, numgec, zr(jamog))
 !
@@ -450,20 +432,20 @@ subroutine mdtr74(nomres)
         call getvr8(' ', 'VITE_ROTA', scal=vrotat, nbret=n1)
     endif
 !
-!     --- VERIFICATION DES DONNEES GENERALISEES ---
-!
+!   VERIFICATION DES DONNEES GENERALISEES
     call mdgene(basemo, nbmode, k14b, masgen, riggen,&
                 amogen, nexcit, jvec, iret)
     if (iret .ne. 0) goto 120
 !
     if (method .eq. 'ITMI') then
-!        --- DONNEES ITMI ---
+!       DONNEES ITMI
         call jedetr('&&MDTR74.PULSATIO')
         call jedetr('&&MDTR74.MASSEGEN')
         call jedetr('&&MDTR74.AMORTGEN')
         call jedetr('&&MDTR74.BASEMODE')
         call jedetr('&&MDTR74.AMORTI')
-!--- ET POUR GAGNER DE LA PLACE
+!       ET POUR GAGNER DE LA PLACE
+        AS_DEALLOCATE(vr=pulsat2)
         nbmode = 0
         call mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
                     nbmd, vgap, itrans, eps, ts,&
@@ -503,8 +485,7 @@ subroutine mdtr74(nomres)
         endif
     endif
 !
-!     --- RECUPERATION DES PARAMETRES D'EXCITATION
-!
+!   RECUPERATION DES PARAMETRES D'EXCITATION
     ntotex = nexcit + nexcir*nbmode
     jnoacc=1
     if (ntotex .ne. 0) then
@@ -530,15 +511,39 @@ subroutine mdtr74(nomres)
                 call jelira(zk8(jnomfo-1+i)//'           .VALE', 'LONMAX', nbfv)
                 nbfv = nbfv/2
                 nbf = max(nbf,nbfv)
-            end do
+            enddo
         endif
     endif
 !
-!     --- CHOC  ET  ANTI_SISM ---
+! --------------------------------------------------------------------------------------------------
 !
-    call getfac('ANTI_SISM', nbsism)
-    call getfac('FLAMBAGE', nbflam)
     call getfac('CHOC', nbcho1)
+!
+!   Amortisseurs anti-sismique : ANTI_SISM, DIS_VISC
+    nbsism(1:2)= 0
+    call getfac('ANTI_SISM', nbsism(1))
+    if ( nbsism(1).ne.0 ) then
+        okmethod = (method.eq.'EULER').or.(method(1:5).eq.'RUNGE').or.(method(1:5).eq.'ADAPT')
+        if ( .not. okmethod ) then
+            valk(1) = 'DYNA_TRAN_MODAL'
+            valk(2) = 'ANTI_SISM'
+            valk(3) = method
+            call utmess('F', 'ALGORITH5_81', nk=3, valk=valk)
+        endif
+    endif
+!
+    call getfac('DIS_VISC',  nbsism(2))
+    if ( nbsism(2).ne.0 ) then
+        okmethod = (method.eq.'EULER').or.(method(1:5).eq.'RUNGE')
+        if ( .not. okmethod ) then
+            valk(1) = 'DYNA_TRAN_MODAL'
+            valk(2) = 'DIS_VISC'
+            valk(3) = method
+            call utmess('F', 'ALGORITH5_81', nk=3, valk=valk)
+        endif
+    endif
+!
+    call getfac('FLAMBAGE', nbflam)
 !
     nbchoc = 0
     do ioc = 1, nbcho1
@@ -554,18 +559,19 @@ subroutine mdtr74(nomres)
                 do ig = 0, ngr-1
                     call jelira(jexnom(mailla//'.GROUPEMA', group_ma(ig+1)), 'LONMAX', nbmg)
                     nbchoc = nbchoc + nbmg
-                end do
+                enddo
                 AS_DEALLOCATE(vk24=group_ma)
             else
                 nbchoc = nbchoc + 1
             endif
         endif
-    end do
+    enddo
 !
-    nbnli = nbchoc + nbsism + nbflam
+    nbnli = nbchoc + nbsism(1)+nbsism(2) + nbflam
 !
-!     --- COUPLAGE EDYOS ---
-! =>
+! --------------------------------------------------------------------------------------------------
+!
+!   COUPLAGE  EDYOS
     nbedyo = 0
     call getfac('COUPLAGE_EDYOS', nbedyo)
     nbpal = 0
@@ -573,7 +579,7 @@ subroutine mdtr74(nomres)
     if (nbedyo .ne. 0) then
         call getfac('PALIER_EDYOS', nbedyo)
         if (nbedyo .ne. 0) then
-! Lecture des donnees paliers
+!           Lecture des donnees paliers
             call getvis('PALIER_EDYOS', 'UNITE', iocc=1, scal=unitpa, nbret=n1)
             if (n1 .ne. 0) then
                 call lecdon(.true., unitpa, prdeff)
@@ -584,16 +590,14 @@ subroutine mdtr74(nomres)
         else
             call utmess('F', 'EDYOS_48')
         endif
-!  Recuperation du nombre de paliers
+!       Recuperation du nombre de paliers
         npal='N_PAL'
         call jeveuo(npal, 'L', iadri)
         nbpal=zi(iadri)
         nbnli = nbnli + nbpal
     endif
-! =<
 !
-!     --- NON LINEARITE DE ROTOR FISSURE ---
-! =>
+!   NON LINEARITE DE ROTOR FISSURE
     nbrfis = 0
     angini = 0.d0
     call getfac('ROTOR_FISS', nbrfis)
@@ -619,14 +623,14 @@ subroutine mdtr74(nomres)
                 call getvr8('ROTOR_FISS', 'ANGL_INIT', iocc=ioc, scal=angini, nbret=n1)
                 angini=angini*rad
             endif
-        end do
+        enddo
     endif
-! =<
+!
     jinti=1
     if (nbnli .ne. 0) then
-        call wkvect('&&MDTR74.RANG_CHOC', 'V V I ', nbnli*5, jranc)
+        call wkvect('&&MDTR74.RANG_CHOC', 'V V I ', nbnli*mdtr74grd('LOGCHO'), jranc)
         call wkvect('&&MDTR74.DEPL', 'V V R8', nbnli*6*nbmode, jdepl)
-        call wkvect('&&MDTR74.PARA_CHOC', 'V V R8', nbnli*52, jparc)
+        call wkvect('&&MDTR74.PARA_CHOC', 'V V R8', nbnli*mdtr74grd('PARCHO'), jparc)
         call wkvect('&&MDTR74.NOEU_CHOC', 'V V K8', nbnli*9, jnoec)
         call wkvect('&&MDTR74.INTI_CHOC', 'V V K8', nbnli, jinti)
         if (ntotex .ne. 0) then
@@ -673,8 +677,7 @@ subroutine mdtr74(nomres)
         endif
     endif
 !
-!     --- RELATION EFFORT DEPLACEMENT ---
-!
+!   RELATION EFFORT DEPLACEMENT
     call getfac('RELA_EFFO_DEPL', nbrede)
     if (nbrede .ne. 0) then
         call wkvect('&&MDTR74.DPLR', 'V V R8', nbrede*6*nbmode, jrede)
@@ -684,8 +687,7 @@ subroutine mdtr74(nomres)
         if (iret .ne. 0) goto 120
     endif
 !
-!     --- RELATION EFFORT VITESSE ---
-!
+!   RELATION EFFORT VITESSE
     call getfac('RELA_EFFO_VITE', nbrevi)
     if (nbrevi .ne. 0) then
         call wkvect('&&MDTR74.DPLV', 'V V R8', nbrevi*6*nbmode, jrevi)
@@ -695,32 +697,28 @@ subroutine mdtr74(nomres)
         if (iret .ne. 0) goto 120
     endif
 !
-!     --- DESTRUCTION DU VECTEUR BASE MODALE (POUR FAIRE DE LA PLACE)
-!
+!   DESTRUCTION DU VECTEUR BASE MODALE (POUR FAIRE DE LA PLACE)
     call jedetr('&&MDTR74.BASEMODE')
 !
-!     --- VERIFICATION DU PAS DE TEMPS ---
-!
+!   VERIFICATION DU PAS DE TEMPS
     call mdptem(nbmode, zr(jmasg), zr(jpuls), nbnli, zr(jdepl),&
                 zr(jparc), zk8(jnoec), dt, dts, dtu,&
                 dtmax, dtmin, tinit, tfin, nbpas,&
                 info, iret, lisins)
 !
-!     --- COUPLAGE EDYOS ---
-! =>
+!   COUPLAGE EDYOS
     if (nbedyo .ne. 0) then
         call inicou(nbpas, tinit, tfin, dt, dtsto,&
                     vrotat)
     endif
-! <=
+!
     if (method .eq. 'ITMI') then
         tfexm = tfin - tinit
         if (nts .eq. 0) ts = tfexm
     endif
     if (iret .ne. 0) goto 120
 !
-!     --- ARCHIVAGE ---
-!
+!   ARCHIVAGE
     if (method(1:5) .eq. 'ADAPT' .or. method .eq. 'ITMI' .or. method(1:5) .eq. 'RUNGE') then
         call getvis('ARCHIVAGE', 'PAS_ARCH', iocc=1, scal=iparch, nbret=n1)
         if (n1 .eq. 0) iparch = 1
@@ -731,10 +729,10 @@ subroutine mdtr74(nomres)
                 nbsauv=nbsauv+1
             endif
         else if (method.eq.'ITMI') then
-!       DANS LE CAS ITMI, NBSAUV NE SERA CONNU QUE DANS MDITM2
+!           DANS LE CAS ITMI, NBSAUV NE SERA CONNU QUE DANS MDITM2
             nbsauv = 0
         else if (method(1:5).eq.'RUNGE') then
-!         DANS LE CAS RUNGE ON ARCHIVE TOUS LES PAS DE CALCUL
+!           DANS LE CAS RUNGE ON ARCHIVE TOUS LES PAS DE CALCUL
             if (dt .gt. dtmax) then
                 nbsauv = int((tfin-tinit)/dtmax) + 1
             else
@@ -755,9 +753,11 @@ subroutine mdtr74(nomres)
         call copmat(riggen, numgek, zr(jraig))
     endif
 !
-!     --- ALLOCATION DES VECTEURS DE SORTIE ---
-!
+!   ALLOCATION DES VECTEURS DE SORTIE
     if (method(1:5) .ne. 'RUNGE') then
+!       Dans le cas de RUNGE KUTTA, l'allocation se fait a l'intérieur de la routine MDRUKU
+!       Pour cette option il y a plusieurs objets de longueur variable. La taille d'un nouvel
+!       objet est NBSAUV*1.5. La routine 'concrk' se charge de compacter les objets.
         call mdallo(nomres, basemo, masgen, riggen, amogen,&
                     nbmode, dt, nbsauv, nbnli, zk8(jnoec),&
                     zk8(jinti), nbrede, zk8(jfond), nbrevi, zk8(jfonv),&
@@ -765,8 +765,6 @@ subroutine mdtr74(nomres)
                     jinst, jfcho, jdcho, jvcho, jicho,&
                     jredc, jredd, jrevc, jrevv, method,&
                     ibid, k4bid, 'TRAN', 'GLOB')
-!     DANS LE CAS DE RUNGE KUTTA, L'ALLOCATION SE FAIT A L'INTERIEUR DE
-!     LA ROUTINE MDRUKU
     endif
 !
     if (info .eq. 1 .or. info .eq. 2) then
@@ -810,8 +808,8 @@ subroutine mdtr74(nomres)
             vali (1) = nbchoc
             call utmess('I', 'ALGORITH16_80', si=vali(1))
         endif
-        if (nbsism .ne. 0) then
-            vali (1) = nbsism
+        if (nbsism(1)+nbsism(2) .ne. 0) then
+            vali (1) = nbsism(1)+nbsism(2)
             call utmess('I', 'ALGORITH16_81', si=vali(1))
         endif
         if (nbflam .ne. 0) then
@@ -834,29 +832,38 @@ subroutine mdtr74(nomres)
                     lamor, zr(jamog), ibid, zr(jgyog), foncv,&
                     fonca, typbas, basemo, tinit, zi(jarch),&
                     nbsauv, nbnli, zi(jranc), zr(jdepl), zr(jparc),&
-                    zk8( jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
-                    zr( jrevi), zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs),&
-                    zi(jordr), zr( jinst), zr(jfcho), zr(jdcho), zr(jvcho),&
-                    zi(jicho), zi(jredc), zr( jredd), zi(jrevc), zr(jrevv),&
+                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond), nbrevi,&
+                    zr(jrevi), zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs),&
+                    zi(jordr), zr(jinst), zr(jfcho), zr(jdcho), zr(jvcho),&
+                    zi(jicho), zi(jredc), zr(jredd), zi(jrevc), zr(jrevv),&
                     zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep),&
                     zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
                     nbrfis, fk, dfk, angini, foncp,&
                     nbpal, dtsto, vrotat, prdeff, nomres,&
-                    ntotex, zr(jpass))
+                    ntotex, zr(jpass), zk8(jinti))
 !
     else if (method(1:5).eq.'RUNGE') then
         call mdruku(method, tinit, tfin, dt, dtmin,&
                     dtmax, nbsauv, nbobjs, nbmode, zr(jpuls),&
                     pulsat2, zr(jmasg), ibid, zr(jraig), ibid,&
-                    zr( jrgyg), lamor, zr(jamog), ibid, zr(jgyog),&
+                    zr(jrgyg), lamor, zr(jamog), ibid, zr(jgyog),&
                     foncv, fonca, typbas, basemo, nbnli,&
                     zk8(jinti), zi(jranc), zr(jdepl), zr(jparc), zk8(jnoec),&
-                    nbrede, zr(jrede), zk8(jfond), nbrevi, zr( jrevi),&
-                    zk8(jfonv), zr(jcoefm), zi(jiadve), zi(jinumo), zi( jidesc),&
-                    zk8(jnodep), zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr( jpsid),&
+                    nbrede, zr(jrede), zk8(jfond), nbrevi, zr(jrevi),&
+                    zk8(jfonv), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
+                    zk8(jnodep), zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid),&
                     monmot, nbrfis, fk, dfk, angini,&
                     foncp, nbpal, dtsto, vrotat, prdeff,&
                     nomres, ntotex, masgen, riggen, amogen)
+!       Les pointeurs sur la SD 'nomres' sont crée par 'mdallo' et sont en sortie de cette routine.
+!       Pour Runge c'est fait dans mdruku ==> IL NE SONT DONC PAS CONNUS ICI
+!                                         ==> ON VA CHERCHER CEUX DONT ON A BESOIN
+            if ( nbnli .ne. 0 ) then
+                call jeveuo(nomres//'           .DISC', 'L', jinst)
+                call jeveuo(nomres//'           .FCHO', 'L', jfcho)
+                call jeveuo(nomres//'           .DLOC', 'L', jdcho)
+                call jeveuo(nomres//'           .VCHO', 'L', jvcho)
+            endif
 !
     else if (method(1:5).eq.'ADAPT') then
         call mdadap(dt, dtmax, nbmode, zr(jpuls), pulsat2,&
@@ -870,7 +877,8 @@ subroutine mdtr74(nomres)
                     zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
                     zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
                     monmot, nbpal, dtsto, vrotat, prdeff,&
-                    method, nomres, ntotex, zi(jrevc), zr(jrevv))
+                    method, nomres, ntotex, zi(jrevc), zr(jrevv), &
+                    zk8(jinti))
     else if (method.eq.'NEWMARK') then
         call mdnewm(nbpas, dt, nbmode, zr(jpuls), pulsat2,&
                     zr(jmasg), zr(jraig), zr(jrgyg), lamor, zr(jamog),&
@@ -889,34 +897,34 @@ subroutine mdtr74(nomres)
                     zi(jicho), zi(jredc), zr(jredd), zr(jcoefm), zi(jiadve),&
                     zi( jinumo), zi(jidesc), zk8(jnodep), zk8(jnovit), zk8(jnoacc),&
                     zk8( jnomfo), zr(jpsid), monmot, nomres, ntotex,&
-                    zr(jpass), zi(jrevc), zr(jrevv))
+                    zr(jpass), zi(jrevc), zr(jrevv), zk8(jinti))
     endif
-!     --- IMPRESSION DES RESULTATS DE CHOC DANS TOUS LES CAS
-!     --- SAUF ITMI POUR ITMI ON IMPRIME DANS MDITM2
-    if (method .ne. 'ITMI' .and. nbnli .ne. 0) then
-!CC      IF (NBNLI.NE.0) THEN
+!
+!   Impression des résultats de choc
+!       sauf pour ITMI
+!       sauf dans le cas DIS_VISC
+    if ( (method.ne.'ITMI').and.(nbnli.ne.0).and.(nbsism(2).eq.0) ) then
         call mdicho(nomres, nbsauv, zr(jinst), zr(jfcho), zr(jdcho),&
                     zr(jvcho), nbnli, nbchoc, zr(jparc), zk8(jnoec))
     endif
+!   Impression des résultats des DIS_VISC
+    if ( nbsism(2).ne.0 ) then
+        call mdidisvisc(nomres, nbnli, zi(jranc), zk8(jnoec), nbsauv, &
+                        zr(jinst) )
+    endif
+!
     if (method .eq. 'ITMI') then
-!
-!        --- CONDITIONS INITIALES ---
-!
+!       CONDITIONS INITIALES
         call wkvect('&&MDITMI.DEPL_0', 'V V R8', nbmode, jdep0)
         call wkvect('&&MDITMI.VITE_0', 'V V R8', nbmode, jvit0)
         call mdinit(nombm, nbmode, 0, zr(jdep0), zr(jvit0),&
-                    [0.d0], iret, tinit)
+                    [0.d0], iret, tinit, intitu=zk8(jinti), noecho=zk8(jnoec) )
         if (iret .ne. 0) goto 120
-!
-! --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE
-!
+!       NOMBRE DE POINTS DE DISCRETISATION DU TUBE
         call dismoi('REF_MASS_PREM', basemo, 'RESU_DYNA', repk=masse)
         call mtdscr(masse)
-!
-!
         call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
-!        --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
-!
+!       RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
         nomnoe = mailla//'.NOMNOE'
         call jelira(nomnoe, 'NOMUTI', lnoe)
         indic = lnoe
@@ -932,7 +940,7 @@ subroutine mdtr74(nomres)
     endif
 !
 120 continue
-!      CALL JEDETC('V','&&',1)
+!
     if (iret .ne. 0) then
         call utmess('F', 'ALGORITH5_24')
     endif

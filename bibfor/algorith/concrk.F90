@@ -2,6 +2,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
                   nbsaui, basemo, masgen, riggen, amogen,&
                   neqgen, dt, nbchoc, noecho, intitu,&
                   nbrede, fonred, nbrevi, fonrev, method)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +20,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+!
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvid.h"
@@ -27,13 +29,15 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdallo.h"
+#include "asterfort/mdtr74grd.h"
 #include "blas/dcopy.h"
+!
     integer :: parch, nbobjs, nbsaui, neqgen, nbchoc, nbrede, nbrevi, nbsauv
-    integer :: loncum, ino, nbstoc, nbsto1
+    integer :: loncum, ino, nbstoc, nbsto1, nbvint
     integer :: jdeps, jvits, jaccs, jpass, jords, jinst, jfcho, jdcho, jvcho
     integer :: jicho, jredc, jredd, jrevc, jrevv, ibid, jdepl, jvite, jacce
     integer :: jdisc, jordr, jptem, jfc, jdl, jvc, jic, jvi, jvir, jedc, jedd
-    integer :: jevc, jevd, decal1, decal2, decal3, decal4, decal5, decal6
+    integer :: jevc, jevd, decal1, decal2, decal3, decal4, decal5, decal6, decal7
     integer :: nm, jrefa
 !
     character(len=4) :: nom4rk, intk, k4bid(3)
@@ -61,9 +65,14 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
                 jinst, jfcho, jdcho, jvcho, jicho,&
                 jredc, jredd, jrevc, jrevv, method,&
                 ibid, k4bid, 'TRAN', 'GLOB')
+!   Pour les variables internes
+    if ( nbchoc .ne. 0 ) then
+        call jeveuo(nomres//'           .VINT', 'E', jvir)
+    else
+        jvir = 1
+    endif
 !
-!
-!    BOUCLE SUR LE NOMBRE D'OBJETS VOLATILES EXISTANTS
+!   boucle sur le nombre d'objets volatiles existants
     nbsauv = nbsaui
     loncum = 0
     decal1 = 0
@@ -72,9 +81,9 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
     decal4 = 0
     decal5 = 0
     decal6 = 0
+    decal7 = 0
 !
-    do 10 ino = 1, nbobjs
-!
+    do ino = 1, nbobjs
         if (ino .eq. nbobjs) then
             nbsauv = parch - loncum
         endif
@@ -105,23 +114,22 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
         call jedetr(nom8rk//'           .ORDR')
         call jedetr(nom8rk//'           .PTEM')
 !
-!     --- RECUPERATION DES CHOCS
-!
+!       récupération des chocs et variables internes
         if (nbchoc .ne. 0) then
             nbstoc = 3 * nbchoc * nbsauv
             nbsto1 = nbchoc * nbsauv
+            nbvint = nbchoc * nbsauv * mdtr74grd('MAXVINT')
             call jeveuo(nom8rk//'           .FCHO', 'L', jfc)
             call jeveuo(nom8rk//'           .DLOC', 'L', jdl)
             call jeveuo(nom8rk//'           .VCHO', 'L', jvc)
             call jeveuo(nom8rk//'           .ICHO', 'L', jic)
             call jeveuo(nom8rk//'           .VINT', 'L', jvi)
-            call jeveuo(nomres//'           .VINT', 'E', jvir)
 !
             call dcopy(nbstoc, zr(jfc), 1, zr(jfcho+decal3), 1)
             call dcopy(2*nbstoc, zr(jdl), 1, zr(jdcho+2*decal3), 1)
             call dcopy(nbstoc, zr(jvc), 1, zr(jvcho+decal3), 1)
             call jacopo(nbsto1, 'I', jic, jicho+decal4)
-            call dcopy(nbsto1, zr(jvi), 1, zr(jvir+decal4), 1)
+            call dcopy(nbvint, zr(jvi), 1, zr(jvir+decal7), 1)
 !
             call jedetr(nom8rk//'           .FCHO')
             call jedetr(nom8rk//'           .DLOC')
@@ -130,8 +138,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
             call jedetr(nom8rk//'           .VINT')
         endif
 !
-!     --- RECUPERATION DES RELA EFFO DEPL
-!
+!       récupération des RELA_EFFO_DEPL
         if (nbrede .ne. 0) then
             nbstoc = nbrede * nbsauv
             call jeveuo(nom8rk//'           .REDC', 'L', jedc)
@@ -144,8 +151,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
             call jedetr(nom8rk//'           .REDD')
         endif
 !
-!     --- RECUPERATION DES RELA EFFO VITE
-!
+!       récupération des RELA_EFFO_VITE
         if (nbrevi .ne. 0) then
             nbstoc = nbrevi * nbsauv
             call jeveuo(nom8rk//'           .REVC', 'L', jevc)
@@ -157,19 +163,19 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
             call jedetr(nom8rk//'           .REVC')
             call jedetr(nom8rk//'           .REVV')
         endif
-!          LONGUEUR CUMULEE DES OBJETS COPIES (EN MULTIPLE DE NBSAUV)
+!       longueur cumulée des objets copiés (en multiple de nbsauv)
         loncum = loncum + nbsauv
-!          NBSAUV DU PROCHAIN OBJET ET DECALAGES
-        decal1=decal1+nbstoc
-        decal2=decal2+nbsauv
-        decal3=decal3+(3*nbchoc*nbsauv)
-        decal4=decal4+(nbchoc*nbsauv)
-        decal5=decal5+(nbrede*nbsauv)
-        decal6=decal6+(nbrevi*nbsauv)
-!          PROCHAIN NBSAUV
+!       nbsauv du prochain objet et décalages
+        decal1 = decal1 + neqgen*nbsauv
+        decal2 = decal2 + nbsauv
+        decal3 = decal3 + (3*nbchoc*nbsauv)
+        decal4 = decal4 + (nbchoc*nbsauv)
+        decal5 = decal5 + (nbrede*nbsauv)
+        decal6 = decal6 + (nbrevi*nbsauv)
+        decal7 = decal7 + nbchoc*nbsauv*mdtr74grd('MAXVINT')
+!       prochain nbsauv
         nbsauv = int(nbsauv*facobj)
-!
-10  end do
+    enddo
     call jedetc('V', '&&RK', 1)
 !
 end subroutine

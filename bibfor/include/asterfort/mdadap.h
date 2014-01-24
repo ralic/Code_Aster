@@ -27,7 +27,8 @@ interface
                       dredst, coefm, liad, inumor, idescf,&
                       nofdep, nofvit, nofacc, nomfon, psidel,&
                       monmot, nbpal, dtsto, vrotat, prdeff,&
-                      method, nomres, nbexci, irevst, drevst)
+                      method, nomres, nbexci, irevst, drevst, &
+                      intitu)
         integer :: nbchoc
         integer :: neqgen
         real(kind=8) :: dti
@@ -88,5 +89,6 @@ interface
         integer :: nbexci
         integer :: irevst(*)
         real(kind=8) :: drevst(*)
+        character(len=8) :: intitu(*)
     end subroutine mdadap
 end interface

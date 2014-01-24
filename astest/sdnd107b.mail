@@ -1,0 +1,28 @@
+COOR_3D
+ N01       0.00E+00  0.00E+00  0.00E+00
+ N02       1.00E-01  0.00E+00  0.00E+00
+ N03       2.00E-01  0.00E+00  0.00E+00
+FINSF
+
+SEG2
+    M0102     N01     N02
+    M0203     N02     N03
+FINSF
+
+POI1
+    PT01      N01
+    PT02      N02
+    PT03      N03
+FINSF
+
+GROUP_MA
+    GM0102     M0102
+FINSF
+GROUP_MA
+    GM0203     M0203
+FINSF
+GROUP_MA
+    MASSE      PT02
+FINSF
+
+FIN

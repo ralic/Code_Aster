@@ -16,27 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
-                      vint, wk1, wk2, wk3, tdebut,&
-                      tfin, nbloc, offset, trepos, nbclas,&
-                      noecho, intitu, nomres)
-        integer :: nbobst
-        integer :: nbpt
+    subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
+                          temps)
+        character(len=8) :: nomres
+        integer :: nbchoc
+        integer :: logcho(nbchoc, *)
+        character(len=8) :: noecho(nbchoc, *)
+        integer :: nbsauv
         real(kind=8) :: temps(*)
-        real(kind=8) :: fcho(*)
-        real(kind=8) :: vgli(*)
-        real(kind=8) :: vint(*)
-        real(kind=8) :: wk1(*)
-        real(kind=8) :: wk2(*)
-        real(kind=8) :: wk3(*)
-        real(kind=8) :: tdebut
-        real(kind=8) :: tfin
-        integer :: nbloc
-        real(kind=8) :: offset
-        real(kind=8) :: trepos
-        integer :: nbclas
-        character(len=8) :: noecho(*)
-        character(len=8) :: intitu(*)
-        character(len=*) :: nomres
-    end subroutine statim
+    end subroutine mdidisvisc
 end interface
+

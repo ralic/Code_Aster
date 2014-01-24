@@ -2,6 +2,7 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
                   trepos, nbclas, nomres, loptio)
     implicit none
 #include "jeveux.h"
+#include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -44,10 +45,12 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
 !-----------------------------------------------------------------------
     integer :: iddesc, iddloc, idfcho, idiadh, idinst, idncho, idnint
     integer :: idvgli, idvint, idwk1, idwk2, idwk3, idwk4, nbbloc
-    integer :: nbchoc, nbclas, nbpt
+    integer :: nbchoc, nbclas, nbpt, ifm, info
     real(kind=8) :: offset, tdebut, tfin, tmax, tmin, trepos
 !-----------------------------------------------------------------------
     call jemarq()
+    call infniv(ifm, info)
+!
     nomk19='                   '
     nomk19(1:8)=trange
 !
@@ -56,7 +59,7 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
 !
     call jeveuo(nomk19//'.DISC', 'L', idinst)
     call jelira(nomk19//'.DISC', 'LONMAX', nbpt)
-    write(6,*) ' NB DE PAS DE TEMPS :',nbpt
+    write(ifm,*) ' NB DE PAS DE TEMPS :',nbpt
     tmax = zr(idinst+nbpt-1)
     tmin = zr(idinst)
     if (tfin .gt. tmax) tfin = tmax

@@ -1,0 +1,279 @@
+#
+# TITRE LÂCHER D’UN SYSTÈME AVEC AMORTISSEUR VISQUEUX NON LINÉAIRE DE TYPE "ZENER"
+#
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+# --------------------------------------------------------------------------------------------------
+#
+#                   DISCRET COMPORTEMENT ZENER GENERALISE
+#
+#   Validation du comportement par rapport à un zener construit avec des discrets
+#
+#
+# --------------------------------------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
+    IGNORE_ALARM='MODELISA4_8'
+)
+
+MAIL=LIRE_MAILLAGE()
+
+# Définition des matériaux
+Bidon = DEFI_MATERIAU( ELAS=_F(E=1.0, NU=0.3 ,  ), )
+
+KK1=120.0; KK2=10.0; KK3=60.0
+Zener = DEFI_MATERIAU( ELAS=_F(E=1.0, NU=0.3 ,  ),
+    DIS_VISC=_F(K1=KK1, K2=KK2, K3=KK3, C=1.7, PUIS_ALPHA=1.0 ),
+)
+
+CHMATT=AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE= _F(GROUP_MA=('RESST1','RESST2','RESST3','MASST1','AMORT3'),  MATER=Bidon,),
+)
+
+CHMATZ=AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE= (
+        _F(GROUP_MA=('ZENER01',),  MATER=Zener,),
+        _F(GROUP_MA=('MASSZ1',),   MATER=Bidon,),
+    ),
+)
+
+# Modèles
+MODELT=AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F( GROUP_MA=('RESST1','RESST2','RESST3','MASST1','AMORT3'),
+            PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
+    ),
+)
+
+MODELZ=AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F( GROUP_MA=('ZENER01','MASSZ1',),
+            PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
+    ),
+)
+
+# condition aux limites en déplacement
+U01 = 0.10
+
+CONDT1 =AFFE_CHAR_MECA(MODELE=MODELT,
+    DDL_IMPO = (
+        _F(GROUP_NO='PT3', DY=0.0, DZ=0.0, DX=U01, ),
+        _F(GROUP_NO='PT1', DY=0.0, DZ=0.0,),
+        _F(GROUP_NO='PT2', DY=0.0, DZ=0.0,),
+        _F(GROUP_NO='PT4', DY=0.0, DZ=0.0,),
+    ),
+)
+
+CONDZ1 =AFFE_CHAR_MECA(MODELE=MODELZ,
+    DDL_IMPO = (
+        _F(GROUP_NO='PZ2', DY=0.0, DZ=0.0, DX=U01, ),
+        _F(GROUP_NO='PZ1', DY=0.0, DZ=0.0,),
+    ),
+)
+
+#
+kbid = 1.0
+CARELT1=AFFE_CARA_ELEM(
+    MODELE=MODELT,
+    DISCRET=(
+        _F( REPERE='LOCAL',CARA='K_T_D_L', GROUP_MA='RESST1',  VALE=(  KK1,kbid,kbid), ),
+        _F( REPERE='LOCAL',CARA='K_T_D_L', GROUP_MA='RESST2',  VALE=(  KK2,kbid,kbid), ),
+        _F( REPERE='LOCAL',CARA='K_T_D_L', GROUP_MA='RESST3',  VALE=(  KK3,kbid,kbid), ),
+        _F( REPERE='LOCAL',CARA='A_T_D_L', GROUP_MA='RESST1',  VALE=(  0.0,0.0,0.0), ),
+        _F( REPERE='LOCAL',CARA='A_T_D_L', GROUP_MA='RESST2',  VALE=(  0.0,0.0,0.0), ),
+        _F( REPERE='LOCAL',CARA='A_T_D_L', GROUP_MA='RESST3',  VALE=(  0.0,0.0,0.0), ),
+        _F( REPERE='LOCAL',CARA='A_T_D_L', GROUP_MA='AMORT3',  VALE=(  1.7,0.0,0.0), ),
+        _F( REPERE='LOCAL',CARA='M_T_D_L', GROUP_MA='RESST1',  VALE=(  0.0), ),
+        _F( REPERE='LOCAL',CARA='M_T_D_L', GROUP_MA='RESST2',  VALE=(  0.0), ),
+        _F( REPERE='LOCAL',CARA='M_T_D_L', GROUP_MA='RESST3',  VALE=(  0.0), ),
+        _F( REPERE='LOCAL',CARA='M_T_D_L', GROUP_MA='AMORT3',  VALE=(  0.0), ),
+        _F( REPERE='LOCAL',CARA='M_T_D_N', GROUP_MA='MASST1',  VALE=(  1.0), ),
+    ),
+)
+
+CARELZ1=AFFE_CARA_ELEM(
+    MODELE=MODELZ,
+    DISCRET=(
+        _F( REPERE='LOCAL',CARA='K_T_D_L', GROUP_MA='ZENER01',  VALE=( kbid,kbid,kbid), ),
+        _F( REPERE='LOCAL',CARA='A_T_D_L', GROUP_MA='ZENER01',  VALE=(  0.0,0.0,0.0), ),
+        _F( REPERE='LOCAL',CARA='M_T_D_L', GROUP_MA='ZENER01',  VALE=(  0.0), ),
+        _F( REPERE='LOCAL',CARA='M_T_D_N', GROUP_MA='MASSZ1',   VALE=(  1.0), ),
+    ),
+)
+
+# Liste d'instant
+TempsMaxi = 5.00
+DeltaPas  = 4.0E-03
+
+# Déplacement imposé puis laché
+linstL=DEFI_LIST_REEL(
+    DEBUT= 0.0,
+    INTERVALLE=(
+        _F(JUSQU_A =  DeltaPas, NOMBRE = 10,),
+        _F(JUSQU_A = TempsMaxi, PAS = DeltaPas,),
+    ),
+)
+
+CHNULT = CREA_CHAMP(
+    TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELT, OPERATION='AFFE',
+    AFFE=_F(TOUT='OUI', NOM_CMP=('DX','DY','DZ',),VALE=(0.0,0.0,0.0),),
+)
+RESUT=DYNA_NON_LINE(
+    ETAT_INIT=_F(ACCE=CHNULT),
+    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT',),
+    MODELE     = MODELT,
+    CHAM_MATER = CHMATT,
+    CARA_ELEM  = CARELT1,
+    EXCIT=_F(CHARGE=CONDT1),
+    COMPORTEMENT=_F(RELATION='ELAS', TOUT='OUI'),
+    INCREMENT=_F(LIST_INST=linstL,),
+    CONVERGENCE=_F(ARRET='OUI', ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=50,),
+    NEWTON=_F(REAC_INCR=1,REAC_ITER=1, MATRICE='TANGENTE',),
+)
+
+RESUZ=DYNA_NON_LINE(
+    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT',),
+    MODELE     = MODELZ,
+    CHAM_MATER = CHMATZ,
+    CARA_ELEM  = CARELZ1,
+    EXCIT=_F(CHARGE=CONDZ1),
+    COMPORTEMENT=(
+        _F(RELATION='ELAS',     TOUT='OUI',),
+        _F(RELATION='DIS_VISC', GROUP_MA='ZENER01'),
+    ),
+    INCREMENT=_F(LIST_INST=linstL,),
+    CONVERGENCE=_F(ARRET='OUI', ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=50,),
+    NEWTON=_F(REAC_INCR=1,REAC_ITER=1, MATRICE='TANGENTE',),
+)
+
+#IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RESUT,NOM_CHAM=('DEPL','VITE',),),)
+#IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RESUZ,NOM_CHAM=('DEPL','VITE',),),)
+
+# Solution Théorique
+def Deplacement(t):
+    wt  = 14593.0/4792.0
+    As  = 5516.0/214807.0;  Lsc = 1573.0/2072.0
+    Ac  = 3137.0/29305.0
+    Ae  = 413.0/58610.0;    Le  = 38132.0/1685.0
+    tmp = As*exp(-Lsc*t)*sin(wt*t)-Ac*exp(-Lsc*t)*cos(wt*t)+Ae*exp(-Le*t)+0.10
+    return tmp
+
+def Force(t):
+    wt  = 14593.0/4792.0
+    Bs  = 5625.0/7831.0;    Lsc = 1573.0/2072.0
+    Bc  = 9170.0/11289.0
+    Be  = 12692.0/3517.0;   Le  = 38132.0/1685.0
+    tmp = -Bs*exp(-Lsc*t)*sin(wt*t)+Bc*exp(-Lsc*t)*cos(wt*t)+Be*exp(-Le*t)
+    return tmp
+
+# Différences entre les valeurs théorique et calculées
+DDEPLA=FORMULE(NOM_PARA=('INST','DX'), VALE='abs(Deplacement(INST)-DX)')
+DFORCE=FORMULE(NOM_PARA=('INST','N'),  VALE='abs(Force(INST)-N)/4.42')
+
+TempsF = ( 0.7120, 1.7440, 2.7760, 3.8080, 4.8400,)
+TempsD = ( 0.8760, 1.9040, 2.9360, 3.9680, )
+
+# --------------------------------------------------------------------------------------------------
+TABDEPT0 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESUT, GROUP_MA='RESST1',NOM_CHAM='DEPL',TOUT_CMP='OUI',INST=TempsF,),
+)
+TABDEPT0 = CALC_TABLE(reuse=TABDEPT0,
+    TABLE=TABDEPT0,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='NOEUD',CRIT_COMP='EQ',VALE_K='NT1'),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','DX'),),
+    ),
+)
+TABSIGT0 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESUT,GROUP_MA='RESST1',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',INST=TempsF,),
+)
+TABSIGT0 = CALC_TABLE(reuse=TABSIGT0,
+    TABLE=TABSIGT0,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=1),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','N',),),
+    ),
+)
+TABRT0= CALC_TABLE(
+    TABLE=TABDEPT0,
+    ACTION=(
+        _F(OPERATION='COMB',TABLE=TABSIGT0,NOM_PARA='NUME_ORDRE'),
+        _F(OPERATION='OPER',NOM_PARA='DDEPLA', FORMULE=DDEPLA,),
+        _F(OPERATION='OPER',NOM_PARA='DFORCE', FORMULE=DFORCE,),
+    ),
+)
+TEST_TABLE(
+    TABLE = TABRT0,
+    FILTRE=_F(NOM_PARA= 'DDEPLA',CRIT_COMP="MAXI_ABS",),
+    NOM_PARA= 'DDEPLA', VALE_REFE=2.00E-05, VALE_CALC=2.00E-05,
+    CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
+)
+TEST_TABLE(
+    TABLE = TABRT0,
+    FILTRE=_F(NOM_PARA= 'DFORCE',CRIT_COMP="MAXI_ABS",),
+    NOM_PARA= 'DFORCE', VALE_REFE=2.00E-06, VALE_CALC=2.00E-06,
+    CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
+)
+IMPR_TABLE(FORMAT='TABLEAU',TABLE=TABRT0,FORMAT_R='E20.13')
+# --------------------------------------------------------------------------------------------------
+TABDEPZ0 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESUZ, GROUP_MA='ZENER01',NOM_CHAM='DEPL',TOUT_CMP='OUI',INST=TempsD,),
+)
+TABDEPZ0 = CALC_TABLE(reuse=TABDEPZ0,
+    TABLE=TABDEPZ0,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='NOEUD',CRIT_COMP='EQ',VALE_K='NZ1'),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','DX'),),
+    ),
+)
+TABSIGZ0 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESUZ, GROUP_MA='ZENER01',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',INST=TempsD,),
+)
+TABSIGZ0 = CALC_TABLE(reuse=TABSIGZ0,
+    TABLE=TABSIGZ0,
+    ACTION=(
+        _F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE=1),
+        _F(OPERATION='EXTR',NOM_PARA=('NUME_ORDRE','INST','N',),),
+    ),
+)
+TABRZ0= CALC_TABLE(
+    TABLE=TABDEPZ0,
+    ACTION=(
+        _F(OPERATION='COMB',TABLE=TABSIGZ0,NOM_PARA='NUME_ORDRE'),
+        _F(OPERATION='OPER',NOM_PARA='DDEPLA', FORMULE=DDEPLA,),
+        _F(OPERATION='OPER',NOM_PARA='DFORCE', FORMULE=DFORCE,),
+    ),
+)
+TEST_TABLE(
+    TABLE = TABRZ0,
+    FILTRE=_F(NOM_PARA= 'DDEPLA',CRIT_COMP="MAXI_ABS",),
+    NOM_PARA= 'DDEPLA', VALE_REFE=1.40E-05, VALE_CALC=1.40E-05,
+    CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
+)
+TEST_TABLE(
+    TABLE = TABRZ0,
+    FILTRE=_F(NOM_PARA= 'DFORCE',CRIT_COMP="MAXI_ABS",),
+    NOM_PARA= 'DFORCE', VALE_REFE=5.46E-05, VALE_CALC=5.46E-05,
+    CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
+)
+IMPR_TABLE(FORMAT='TABLEAU',TABLE=TABRZ0,FORMAT_R='E20.13')
+FIN()

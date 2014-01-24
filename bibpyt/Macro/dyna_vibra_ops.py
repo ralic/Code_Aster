@@ -42,7 +42,7 @@ def dyna_vibra_ops(self, TYPE_CALCUL, BASE_CALCUL, **args):
     except AttributeError:
        pass
 
-    liste=['FLAMBAGE', 'CHOC', 'ANTI_SISM', 'RELA_EFFO_DEPL', 'RELA_TRANSIS', 'RELA_EFFO_VITE']
+    liste=['FLAMBAGE', 'CHOC', 'ANTI_SISM', 'DIS_VISC', 'RELA_EFFO_DEPL', 'RELA_TRANSIS', 'RELA_EFFO_VITE']
     for i in range(len(liste)):
         if args.has_key(liste[i]):
             try:

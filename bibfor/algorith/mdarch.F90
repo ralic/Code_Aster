@@ -54,27 +54,23 @@ subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
             depstr(ind+im) = depger(im)
             vitstr(ind+im) = vitger(im)
             accstr(ind+im) = accger(im)
-        end do
-!
+        enddo
     else
-!
         do ich = 1, nbsym
-!
             if (nomsym(ich)(1:4) .eq. 'DEPL') then
                 do im = 1, nbmode
                     depstc(ind+im) = depgec(im)
-                end do
+                enddo
             else if (nomsym(ich)(1:4).eq.'VITE') then
                 do im = 1, nbmode
                     vitstc(ind+im) = vitgec(im)
-                end do
+                enddo
             else
                 do im = 1, nbmode
                     accstc(ind+im) = accgec(im)
-                end do
+                enddo
             endif
-!
-        end do
+        enddo
 !
     endif
 !

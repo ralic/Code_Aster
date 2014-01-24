@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
-                      masgen, amogen, basemo, tinit, iparch,&
+    subroutine mddevo(nbpas,  dt,     nbmode, pulsat, pulsa2,&
+                      masgen, amogen, basemo, tinit,  iparch,&
                       nbsauv, nbchoc, logcho, dplmod, parcho,&
-                      noecho, nbrede, dplred, fonred,&
-                      nbrevi, dplrev, fonrev, depsto, vitsto,&
-                      accsto, iorsto, temsto, fchost, dchost,&
-                      vchost, ichost, iredst, dredst, coefm,&
-                      liad, inumor, idescf, nofdep, nofvit,&
-                      nofacc, nomfon, psidel, monmot, nomres,&
-                      nbexci, passto, irevst, drevst)
+                      noecho, nbrede, dplred, fonred, nbrevi, &
+                      dplrev, fonrev, depsto, vitsto, accsto, &
+                      iorsto, temsto, fchost, dchost, vchost, &
+                      ichost, iredst, dredst, coefm,  liad, &
+                      inumor, idescf, nofdep, nofvit, nofacc, &
+                      nomfon, psidel, monmot, nomres, nbexci, &
+                      passto, irevst, drevst, intitu)
         integer :: nbchoc
         integer :: nbmode
         integer :: nbpas
@@ -74,5 +74,6 @@ interface
         real(kind=8) :: passto(*)
         integer :: irevst(*)
         real(kind=8) :: drevst(*)
+        character(len=8) :: intitu(*)
     end subroutine mddevo
 end interface

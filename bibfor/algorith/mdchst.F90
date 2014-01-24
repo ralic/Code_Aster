@@ -5,11 +5,13 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterc/r8miem.h"
 #include "asterfort/angvx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -63,7 +65,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 ! IN  : PULSAT : PULSATIONS DES MODES
 ! IN  : MASGEN : MASSES GENERALISEES DES MODES
 ! IN  : AMOGEN : MATRICE DES AMORTISSEMENTS GENERALISES
-! IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM+NBFLAM)
+! IN  : NBNLI  : DIMENSION DES TABLEAUX (NBCHOC+NBSISM(*)+NBFLAM)
 ! OUT : NOECHO : NOEUD DE CHOC (VOIR MDCHOC)
 ! OUT : LOGCHO : LOGIQUE CHOC (VOIR MDCHOC)
 ! OUT : PARCHO : PARAMETRE DE CHOC (VOIR MDCHOC)
@@ -72,10 +74,10 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 ! OUT : IER    : NIVEAU D'ERREUR
 !     ------------------------------------------------------------------
 !
-    integer :: nbchoc, nbsism, nbflam, nbocc, i, j, ioc, ibid, il, jcoor, jmama
+    integer :: nbchoc, nbsism(2), nbflam, nbocc, i, j, ioc, ibid, il, jcoor, jmama
     integer :: nbnma, kma, nn1, nn2, ino1, ino2, ig, n1, namtan, iret, nmliai
     integer :: jmail, im, iliai, nmgr, ngrm, numai, irett, compt1, compt2
-    integer :: nbmail, nbno, j1, j2, bono1, bono2
+    integer :: nbmail, nbno, j1, j2, bono1, bono2, vali
     real(kind=8) :: ktang, ctang, k, rap, xjeu, r8bid
     real(kind=8) :: alpha, beta, axe(3)
     complex(kind=8) :: cbid
@@ -106,9 +108,10 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 !
     call jemarq()
     call getfac('CHOC', nbchoc)
-    call getfac('ANTI_SISM', nbsism)
+    call getfac('ANTI_SISM', nbsism(1))
+    call getfac('DIS_VISC',  nbsism(2))
     call getfac('FLAMBAGE', nbflam)
-    nbocc = nbchoc + nbsism + nbflam
+    nbocc = nbchoc + nbsism(1)+nbsism(2) + nbflam
     mdgene = ' '
     call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
 !
@@ -119,18 +122,23 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
         noecho(il,4) = mailla
         noecho(il,7) = numddl(1:8)
         noecho(il,8) = mailla
-    end do
+    enddo
 !
+
     iliai = 0
-    motfac = 'CHOC'
     do i = 1, nbocc
-        ioc = i
-        if (i .gt. nbchoc+nbsism) then
+        if      (i .gt. nbchoc+nbsism(1)+nbsism(2)) then
             motfac = 'FLAMBAGE'
-            ioc = i-(nbchoc+nbsism)
-        else if (i.gt.nbchoc) then
+            ioc = i - (nbchoc+nbsism(1)+nbsism(2))
+        else if (i .gt. nbchoc+nbsism(1)) then
+            motfac = 'DIS_VISC'
+            ioc = i - (nbchoc+nbsism(1))
+        else if (i .gt. nbchoc) then
             motfac = 'ANTI_SISM'
-            ioc = i-nbchoc
+            ioc = i - nbchoc
+        else
+            motfac = 'CHOC'
+            ioc = i
         endif
         lnoue2 = .false.
         nmliai = 0
@@ -158,7 +166,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     call jenuno(jexnum(mailla//'.NOMNOE', zi(jmama+1)), noecho(iliai, 5))
                     call mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                                 ier)
-                end do
+                enddo
                 call jedetr('&&MDCHST.MAILLE')
                 goto 102
             endif
@@ -191,8 +199,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                         call jenuno(jexnum(mailla//'.NOMNOE', zi(jmama+ 1)), noecho(iliai, 5))
                         call mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                                     ier)
-                    end do
-                end do
+                    enddo
+                enddo
                 call jedetr('&&MDCHST.GROUP_MA')
                 goto 102
             endif
@@ -279,7 +287,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             do j = 1, 3
                 parcho(iliai,7+j) = zr(jcoor+3*(ino1-1)+j-1)
                 parcho(iliai,10+j) = zr(jcoor+3*(ino2-1)+j-1)
-            end do
+            enddo
 !
             ktang = 0.d0
             ctang = 0.d0
@@ -323,7 +331,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     call utmess('F', 'ALGORITH5_35')
                 endif
             else if (motfac.eq.'FLAMBAGE') then
-                intitu(i) = noecho(iliai,1)
+!                 intitu(iliai) = noecho(iliai,1)
+                intitu(iliai) = 'FLAMBAGE'
                 call getvr8(motfac, 'JEU', iocc=ioc, scal=parcho(iliai, 1), nbret=n1)
                 call getvr8(motfac, 'DIST_1', iocc=ioc, scal=parcho(iliai, 30), nbret=n1)
                 call getvr8(motfac, 'DIST_2', iocc=ioc, scal=parcho(iliai, 31), nbret=n1)
@@ -363,43 +372,117 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 endif
 !
             else if (motfac.eq.'ANTI_SISM') then
-                intitu(iliai) = noecho(iliai,1)
+!                 intitu(iliai) = noecho(iliai,1)
+                intitu(iliai) = 'ANTISISM'
                 call getvr8(motfac, 'RIGI_K1   ', iocc=ioc, scal=parcho(iliai, 39), nbret=n1)
                 call getvr8(motfac, 'RIGI_K2   ', iocc=ioc, scal=parcho(iliai, 40), nbret=n1)
                 call getvr8(motfac, 'SEUIL_FX  ', iocc=ioc, scal=parcho(iliai, 41), nbret=n1)
                 call getvr8(motfac, 'C         ', iocc=ioc, scal=parcho(iliai, 42), nbret=n1)
-                call getvr8(motfac, 'PUIS_ALPHA', iocc=ioc, scal=parcho( iliai, 43), nbret=n1)
+                call getvr8(motfac, 'PUIS_ALPHA', iocc=ioc, scal=parcho(iliai, 43), nbret=n1)
                 call getvr8(motfac, 'DX_MAX    ', iocc=ioc, scal=parcho(iliai, 44), nbret=n1)
                 logcho(iliai,4)=1
                 noecho(iliai,9) = 'BI_PLANY'
+!
+            else if (motfac.eq.'DIS_VISC') then
+!               MODÈLE DE D'AMORTISSEUR DE ZENZER GÉNÉRALISÉ
+!
+!                                   e2
+!                   e1     |-----======-----|
+!               ---=====---|                |-----
+!                          |--=====----=]---|
+!                               e3    n3,a3
+!
+!               C'est un DIS_VISC
+                logcho(iliai,6)=1
+!               Il y a 2 noeuds : seul BI est important
+                noecho(iliai,9) = 'BIDISVIS'
+!               Pour pas laisser vide
+                intitu(iliai) = 'DIS_VISC'
+                call getvr8(motfac, 'K1', iocc=ioc, scal=r8bid, nbret=n1)
+                if ( n1.eq.1 ) then
+                    parcho(iliai,53) = 1.0d0/r8bid
+                else
+                    call getvr8(motfac, 'UNSUR_K1', iocc=ioc, scal=r8bid, nbret=n1)
+                    ASSERT( n1.eq.1 )
+                    parcho(iliai,53) = r8bid
+                endif
+                call getvr8(motfac, 'K2', iocc=ioc, scal=r8bid, nbret=n1)
+                if ( n1.eq.1 ) then
+                    parcho(iliai,54) = r8bid
+                else
+                    call getvr8(motfac, 'UNSUR_K2', iocc=ioc, scal=r8bid, nbret=n1)
+                    ASSERT( n1.eq.1 )
+                    parcho(iliai,54) = 1.0d0/r8bid
+                endif
+                call getvr8(motfac, 'K3', iocc=ioc, scal=r8bid, nbret=n1)
+                if ( n1.eq.1 ) then
+                    parcho(iliai,55) = 1.0d0/r8bid
+                else
+                    call getvr8(motfac, 'UNSUR_K3', iocc=ioc, scal=r8bid, nbret=n1)
+                    ASSERT( n1.eq.1 )
+                    parcho(iliai,55) = r8bid
+                endif
+                call getvr8(motfac, 'C', iocc=ioc, scal=parcho(iliai,56), nbret=n1)
+                ASSERT( n1.eq.1 )
+                call getvr8(motfac, 'PUIS_ALPHA', iocc=ioc, scal=parcho(iliai,57), nbret=n1)
+                ASSERT( n1.eq.1 )
+!               calcul : 1/K1 + K2/(K1*K3) + 1/K3
+                r8bid = ( parcho(iliai,53)+parcho(iliai,54)*parcho(iliai,53)*parcho(iliai,55) + &
+                          parcho(iliai,55) )
+                if ( r8bid .le. r8miem() ) then
+                    call utmess('F', 'DISCRETS_41')
+                endif
+                call getvis(motfac, 'ITER_INTE_MAXI', iocc=ioc, scal=vali, nbret=n1)
+                parcho(iliai,58) = vali
+                ASSERT( n1.eq.1 )
+                call getvr8(motfac, 'RESI_INTE_RELA', iocc=ioc, scal=parcho(iliai,59), nbret=n1)
+                ASSERT( n1.eq.1 )
+!
+!               Orientation de l'élément : vecteur x1x2 qui doit être non nul
+                axe(1) = (parcho(iliai,11) - parcho(iliai,8))
+                axe(2) = (parcho(iliai,12) - parcho(iliai,9))
+                axe(3) = (parcho(iliai,13) - parcho(iliai,10))
+                r8bid = axe(1)**2+axe(2)**2+axe(3)**2
+                if ( r8bid .le. r8miem() ) then
+                    call utmess('F', 'DISCRETS_43')
+                endif
+                call angvx(axe, alpha, beta)
+                parcho(iliai,17) = sin(alpha)
+                parcho(iliai,18) = cos(alpha)
+                parcho(iliai,19) = sin(beta)
+                parcho(iliai,20) = cos(beta)
+                parcho(iliai,21) = 0.0
+                parcho(iliai,22) = 0.0
             endif
-! --------- SI AMOR_TAN NON RENSEIGNE ON LUI AFFECTE UNE VAL OPTIMISEE
-            if (namtan .eq. 0 .and. ktang .ne. 0.d0) then
-                k = pulsat(imode)**2 * masgen(imode)
-                ctang = 2.d0*sqrt(&
-                        masgen(imode)*(k+ktang) ) - 2.d0* amogen(iamor)*sqrt( k*masgen(imode))
-                call utmess('I', 'ALGORITH16_10', si=i, sr=ctang)
+
+            if (motfac.ne.'DIS_VISC') then
+!               SI AMOR_TAN NON RENSEIGNE ON LUI AFFECTE UNE VAL OPTIMISEE
+                if (namtan .eq. 0 .and. ktang .ne. 0.d0) then
+                    k = pulsat(imode)**2 * masgen(imode)
+                    ctang = 2.d0*sqrt( masgen(imode)*(k+ktang)) - &
+                            2.d0*amogen(iamor)*sqrt(k*masgen(imode))
+                    call utmess('I', 'ALGORITH16_10', si=i, sr=ctang)
+                endif
+                parcho(iliai,4) = ktang
+                parcho(iliai,5) = ctang
+    !
+                if (noecho(iliai,9)(1:2) .eq. 'BI') then
+                    xjeu = ( parcho(iliai,11) - parcho(iliai,8) )**2 + &
+                        ( parcho(iliai,12) - parcho(iliai,9) )**2 + &
+                        ( parcho(iliai,13) - parcho(iliai,10) )**2
+                endif
+    !
+                call mdchre(motfac, ioc, iliai, mdgene, typnum,&
+                            repere, nbnli, parcho, lnoue2)
+    !
+                call mdchan(motfac, ioc, iliai, mdgene, typnum,&
+                            repere, xjeu, nbnli, noecho, parcho)
             endif
-            parcho(iliai,4) = ktang
-            parcho(iliai,5) = ctang
 !
-            if (noecho(iliai,9)(1:2) .eq. 'BI') then
-                xjeu = (&
-                       parcho(iliai,11)-parcho(iliai,8))**2 + (parcho(iliai,12)-parcho(iliai,9))*&
-                       &*2 + (parcho(iliai, 13)-parcho(iliai,10)&
-                       )**2
-            endif
+        enddo
+    enddo
 !
-            call mdchre(motfac, ioc, iliai, mdgene, typnum,&
-                        repere, nbnli, parcho, lnoue2)
-!
-            call mdchan(motfac, ioc, iliai, mdgene, typnum,&
-                        repere, xjeu, nbnli, noecho, parcho)
-!
-        end do
-!
-    end do
-!    COUPLAGE EDYOS
+!   COUPLAGE EDYOS
     if (nbpal .gt. 0) then
         cpal = 'C_PAL'
         comp(1)='DX'
@@ -413,7 +496,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             noecho(ipal,1)=zk8(iadrk+(ipal-1)+2*palmax)(1:dimnas)
             noecho(ipal,5)=noecho(ipal,1)
             cnpal(ipal)=zk8(iadrk+(ipal-1)+2*palmax)(1:dimnas)
-        end do
+        enddo
         do ipal = 1, nbpal
             call utnono(' ', mailla, 'NOEUD', cnpal(ipal), nomno1,&
                         iret)
@@ -429,12 +512,12 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                 call posddl('NUME_DDL', numddl, nomno1, comp(ipat), nno,&
                             nddl)
                 ddlcho(6*(ipal-1)+ipat) = nddl
-            end do
-        end do
+            enddo
+        enddo
     endif
-! FIN PALIERS EDYOS
+!   FIN PALIERS EDYOS
 !
-!    ROTOR FISSURE
+!   ROTOR FISSURE
     motfac='ROTOR_FISS'
     comp(1)='DRX'
     comp(2)='DRY'
@@ -483,10 +566,9 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             nddl2)
                 ddlcho(iliai-1+6*(i-1)+ipat) = nddl1
                 ddlcho(iliai-1+6*(i-1)+ipat+3) = nddl2
-            end do
+            enddo
 !
-!
-! DETERMINATION DES DIRECTION ET ORIENTATION DU ROTOR
+!           DETERMINATION DES DIRECTION ET ORIENTATION DU ROTOR
             compt1=0
             compt2=0
             call jelira(mailla//'.CONNEX', 'NMAXOC', nbmail)
@@ -499,7 +581,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             memail=.false.
                             do j2 = 1, nbno
                                 if (zi(ibid+j2-1) .eq. nn2) memail= .true.
-                            end do
+                            enddo
                             if (.not.memail) then
                                 compt1=compt1+1
                                 if (j1 .eq. 1) bono1=zi(ibid+1)
@@ -510,35 +592,33 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             memail=.false.
                             do j2 = 1, nbno
                                 if (zi(ibid+j2-1) .eq. nn1) memail= .true.
-                            end do
+                            enddo
                             if (.not.memail) then
                                 compt2=compt2+1
                                 if (j1 .eq. 1) bono2=zi(ibid+1)
                                 if (j1 .eq. 2) bono2=zi(ibid)
                             endif
                         endif
-                    end do
+                    enddo
                 endif
-            end do
+            enddo
             ASSERT(compt1 .ge. 1)
             ASSERT(compt2 .ge. 1)
 !
             do j = 1, 3
-                axe(j)=zr(jcoor+3*(bono1-1)+j-1) - zr(jcoor+3*(bono2-&
-                1)+j-1)
-            end do
+                axe(j)=zr(jcoor+3*(bono1-1)+j-1) - zr(jcoor+3*(bono2-1)+j-1)
+            enddo
 !
-! ORIENTATION DU ROTOR
+!           ORIENTATION DU ROTOR
             call angvx(axe, alpha, beta)
             parcho(iliai,17) = sin(alpha)
             parcho(iliai,18) = cos(alpha)
             parcho(iliai,19) = sin(beta)
             parcho(iliai,20) = cos(beta)
 !
-        end do
+        enddo
     endif
-!
-! FIN ROTOR FISSURE
+!   FIN ROTOR FISSURE
 !
     call jedema()
 end subroutine

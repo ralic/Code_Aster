@@ -336,4 +336,35 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
  la prise en compte des fissures dans les rotors n'est possible que pour SCHEMA_TEMP=EULER
 """),
 
+81 : _(u"""
+Pour la commande %(k1)s.
+
+L'utilisation de %(k1)s est incompatible avec le schéma d'intégration %(k3)s.
+"""),
+
+
+82 : _(u"""
+Vous réalisez une poursuite d'un calcul avec DYNA_VIBRA ou DYNA_TRAN_MODAL.
+Le nombre de dispositif de choc est différent.
+    Avant      : %(i1)d
+    Maintenant : %(i2)d
+
+Conseil :
+   Vérifier vos données concernant les dispositifs de choc.
+"""),
+
+83 : _(u"""
+Vous réalisez une poursuite d'un calcul avec DYNA_VIBRA ou DYNA_TRAN_MODAL.
+La nature, les noeuds du ou des dispositifs de choc sont différents.
+
+              Avant     Maintenant
+    Nature    %(k1)8s   %(k2)8s
+    Noeud1    %(k3)8s   %(k4)8s
+    Noeud2    %(k5)8s   %(k6)8s
+
+Conseil :
+   Vérifier vos données concernant les dispositifs de choc.
+"""),
+
+
 }

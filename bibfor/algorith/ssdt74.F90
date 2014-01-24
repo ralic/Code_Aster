@@ -411,7 +411,7 @@ subroutine ssdt74(nomres, nomcmd)
                     zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
                     0, fbid, fbid(1), 0.d0, fbid(1),&
                     nbpal, dtsto, vrotat, prdeff, nomres,&
-                    ntotex, zr(jpass))
+                    ntotex, zr(jpass), zk8(jinti) )
 !
     else if (method(1:5).eq.'ADAPT') then
         call mdadap(dt, dtmax, neqgen, zr(jpuls), zr(jpul2),&
@@ -425,7 +425,8 @@ subroutine ssdt74(nomres, nomcmd)
                     zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
                     zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
                     monmot, nbpal, dtsto, vrotat, prdeff,&
-                    method, nomres, ntotex, zi(jrevc), zr(jrevv))
+                    method, nomres, ntotex, zi(jrevc), zr(jrevv), &
+                    zk8(jinti) )
 !
     else if (method(1:5).eq.'RUNGE') then
         call mdruku(method, tinit, tfin, dt, dtmin,&

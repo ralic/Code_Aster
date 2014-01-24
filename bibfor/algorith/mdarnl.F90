@@ -5,18 +5,7 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
                   depsto, vitsto, accsto, passto, iorsto,&
                   temsto, fchost, dchost, vchost, ichost,&
                   vint, iredst, dredst, irevst, drevst)
-! aslint: disable=W1504
-    implicit none
-#include "asterfort/mdarch.h"
-    integer :: iorsto(*), iredst(*), saredi(*), irevst(*), sarevi(*)
-    integer :: ichost(*)
-    real(kind=8) :: depgen(*), vitgen(*), accgen(*), depsto(*), vitsto(*)
-    integer :: nbchoc
-    real(kind=8) :: saucho(nbchoc, *), saured(*), dredst(*), saurev(*)
-    real(kind=8) :: drevst(*), passto(*), accsto(*), temsto(*), fchost(*)
-    real(kind=8) :: dchost(*), vchost(*)
-    real(kind=8) :: vint(*)
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,21 +23,37 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=W1504
+!
+    implicit none
+!
+#include "asterfort/mdarch.h"
+#include "asterfort/mdtr74grd.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     ARCHIVAGE DES DES CHAMPS GENERALISES OBLIGATOIRES ET OPTIONELS
 !     POUR LA SD_DYNA_GENE DANS LE CADRE D'UN CALCUL TRANSITOIRE
-!     ------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: ic, ind, ipas, ird, irv, isto1, isto2, ndec, nbscho
-    integer :: isto3, isto4, nbmode, nbrede, nbrevi
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: iorsto(*), iredst(*), saredi(*), irevst(*), sarevi(*)
+    integer :: ichost(*)
+    real(kind=8) :: depgen(*), vitgen(*), accgen(*), depsto(*), vitsto(*)
+    integer :: nbchoc
+    real(kind=8) :: saucho(nbchoc, *), saured(*), dredst(*), saurev(*)
+    real(kind=8) :: drevst(*), passto(*), accsto(*), temsto(*), fchost(*)
+    real(kind=8) :: dchost(*), vchost(*)
+    real(kind=8) :: vint(*)
+    integer :: ic, ind, ipas, ird, irv, isto1, isto2, ndec, nbscho, ii
+    integer :: isto3, isto4, nbmode, nbrede, nbrevi, nbvari, dimschor
     character(len=4) :: typcal, kbid
     real(kind=8) :: dt, t
     complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
     typcal = 'TRAN'
 !
-! --- ENREGISTREMENT DES DONNES OBLIGATOIRES
-!
+!   enregistrement des données obligatoires
     cbid=dcmplx(0.d0,0.d0)
     call mdarch(isto1, ipas, t, dt, nbmode,&
                 typcal, 0, [kbid], depgen, vitgen,&
@@ -56,12 +61,13 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
                 [cbid], [cbid], [cbid], [cbid], [cbid],&
                 passto, iorsto, temsto)
 !
-!
-! --- ENREGISTREMENT DES DONNES OPTIONELLES
-!
+!   enregistrement des données optionelles
     if (nbchoc .ne. 0) then
         ndec = nbchoc*isto1
-        ind = nbchoc * isto1
+!
+        dimschor= mdtr74grd('SCHOR')
+        nbvari = mdtr74grd('MAXVINT')
+        ind = nbchoc*isto1*nbvari
         do ic = 1, nbchoc
             isto2 = isto2 + 1
             fchost(isto2) = saucho(ic,1)
@@ -79,30 +85,30 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
             vchost(isto2) = saucho(ic,9)
             dchost(nbscho+isto2) = saucho(ic,12)
             ichost(ndec+ic) = nint(saucho(ic,13))
-!           --- VARIABLES INTERNES : FLAMBAGE ---
-            vint(ind+ic) = saucho(ic,14)
-        end do
+!           variables internes
+!           V(nbchoc,Vint,nbsauv)
+            do ii= 1, nbvari
+                vint(ic+(ii-1)*nbchoc+ind) = saucho(ic,dimschor+ii)
+            enddo
+        enddo
     endif
 !
-!--- CAS DES RELATIONS EFFORT-DEPLACEMENT
-!
+!   cas des relations effort-déplacement
     if (nbrede .ne. 0) then
         do ird = 1, nbrede
             isto3 = isto3 + 1
             iredst(isto3) = saredi(ird)
             dredst(isto3) = saured(ird)
-        end do
+        enddo
     endif
 !
-!
-!--- CAS DES RELATIONS EFFORT-VITESSE
-!
+!   cas des relations effort-vitesse
     if (nbrevi .ne. 0) then
         do irv = 1, nbrevi
             isto4 = isto4 + 1
             irevst(isto4) = sarevi(irv)
             drevst(isto4) = saurev(irv)
-        end do
+        enddo
     endif
 !
 end subroutine

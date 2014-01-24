@@ -18,7 +18,7 @@
 interface
     subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                       nbchoc, logcho, dplmod, parcho, noecho,&
-                      saucho, temps, nofdep, nofvit, nofacc,&
+                      saucho, ltemps, nofdep, nofvit, nofacc,&
                       nbexci, psidel, nonmot)
         integer :: nbexci
         integer :: nbchoc
@@ -32,7 +32,7 @@ interface
         real(kind=8) :: parcho(nbchoc, *)
         character(len=8) :: noecho(nbchoc, *)
         real(kind=8) :: saucho(nbchoc, *)
-        real(kind=8) :: temps
+        real(kind=8) :: ltemps(3)
         character(len=8) :: nofdep(nbexci)
         character(len=8) :: nofvit(nbexci)
         character(len=8) :: nofacc(nbexci)
