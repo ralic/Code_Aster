@@ -156,7 +156,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                         endif
                     endif
                 endif
-                elseif ((nomrc.eq.'RUPT_FRAG') .or.(&
+                elseif ((nomrc(1:9).eq.'RUPT_FRAG') .or.(&
             nomrc.eq.'CZM_LAB_MIX')) then
                 call getvtx(nomrc, nomobj(i), iocc=1, scal=valtx, nbret=n)
                 if (n .eq. 1) then
