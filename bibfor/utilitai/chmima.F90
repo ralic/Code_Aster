@@ -256,7 +256,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
             if (zi(jddlz+in) .ne. 0) zr(nvale+zi(jddlz+in)-1) = z
             zi(inumer+zi(jddlx+in)-1) = zi(jordr)
             zi(inumer+zi(jddly+in)-1) = zi(jordr)
-            zi(inumer+zi(jddlz+in)-1) = zi(jordr)
+            if (zi(jddlz+in) .ne. 0) zi(inumer+zi(jddlz+in)-1) = zi(jordr)
             if (zi(jdlrx+in) .ne. 0) zr(nvale+zi(jdlrx+in)-1) = zr( ivale+zi( jdlrx+in)-1 )
             if (zi(jdlry+in) .ne. 0) zr(nvale+zi(jdlry+in)-1) = zr( ivale+zi( jdlry+in)-1 )
             if (zi(jdlrz+in) .ne. 0) zr(nvale+zi(jdlrz+in)-1) = zr( ivale+zi( jdlrz+in)-1 )
@@ -284,7 +284,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
                     zr(jvpnt+in) = rs1
                     zi(inumer+zi(jddlx+in)-1) = zi(jordr+i-1)
                     zi(inumer+zi(jddly+in)-1) = zi(jordr+i-1)
-                    zi(inumer+zi(jddlz+in)-1) = zi(jordr+i-1)
+                    if (zi(jddlz+in) .ne. 0) zi(inumer+zi(jddlz+in)-1) = zi(jordr+i-1)
                     zr(nvale+zi(jddlx+in)-1) = x
                     zr(nvale+zi(jddly+in)-1) = y
                     if (zi(jddlz+in) .ne. 0) zr(nvale+zi(jddlz+in)- 1) = z
