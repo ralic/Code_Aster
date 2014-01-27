@@ -17,6 +17,7 @@ subroutine as_allocate(size, vl, vi, vi4, vr, vc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1304
     implicit none
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
@@ -167,7 +168,7 @@ subroutine as_allocate(size, vl, vi, vi4, vr, vc,&
         vi4(:)=0
     else if (typv.eq.'L') then
         allocate(vl(size))
-        vl(:)=0
+        vl(:)=.false.
     else if (typv.eq.'R') then
         allocate(vr(size))
         vr(:)=0.d0

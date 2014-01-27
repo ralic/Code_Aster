@@ -196,7 +196,6 @@ class BuildElementContext(Build.BuildContext):
     fun = 'build_elements'
 
 def runtest(self):
-    """Run a testcase"""
     self.load('runtest', tooldir='waftools')
 
 class TestContext(Build.BuildContext):
