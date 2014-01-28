@@ -32,7 +32,7 @@ from Utilitai import test_utils
 
 class MissCmdeGenerator(object):
     """Construit un fichier de commandes Miss"""
-    _dbg = True
+    _dbg = False
 
     def __init__(self, param, struct, filename_callback):
         """Initialisation
@@ -496,7 +496,7 @@ class TestMissCmde(unittest.TestCase):
             '_hasPC' : False,
             '_nbPC' : 0,
         })
-        self._write = True
+        self._write = False
 
     def fname(self, ext):
         """use PROJET"""
@@ -734,21 +734,24 @@ JzC/fjkrKbGQsJ7OPMzQh2lKLI5fAT7FzxesTU3Loj7dVcdcl637xX1XiO/L133N+hF0pTpDK7Co
     def test07_fdlv112e(self):
         """use ISSF + control points"""
         refe = """
-eJzdVslu2zAQvfMr5uzCru20RXtUJMoRoK0UbRS9BIpM2wS0OJJY9Jf6Hf2xDmknluM1QdFDhQhm
-KM7Mmzcbe+CIB9XCXEAOolX4G8imIT3oH3tID7+EVQFLUYpaPiqBkg0sZLaSom4g8JLklGxXzYSG
-lIHr+LPRaHxrtG5xKChEqcCxuHVUEdl8wW9ctrXoACe9w8Pc44ySmEXO1OMQWwxsy7fvNzBRhy+y
-VmktaDaVeZ4uj6nRmoJZ5MPg/RPkQfGjyre4F7KUraxKQ8WyrtRanCQQXWfRNCauF06OiRfV/KQw
-se+sICa+x2gXSbZaG01xWqeFQE4amIMsW7GsU633TDyIF3I6YRb3ohAYtTl8gs/AmWeFE5/CaIx/
-hyghT2GtqdLrRS0wC8rsjMsvbLqMfp3S0KbgUMBnNBiah/aHI7D0zs3TzrvhEIOW6L3x4Mvz3jHi
-mko1/XmFUSwvQjmQV3vi+E9+0RmSOFFgeeHGBTBR1ev+SDuA7weScGa1ciGFjnby142OO0bH+N4Q
-x/WnHrAIRkgU2NTHGht9xGUyZS4MBzscriwvlZo+7HQr0xTaT5GpM0llzturtF4K1G3K+TX+YXV3
-SD2eeU2r0xo7Trqj8QrNOwPJOIDvQ23hYzfP4KCwmuMVnq3SYt1ghWVyjj5ekfdYZrYHGJ/Yt9C3
-ZIY5fwQCGQ4wSPjt+eDdlQfjS+dMWNI8U/kbXCD0G7VB+2D03FYqyzGeqoZc9/6rGgDy7jLxCDya
-cppAYs0oBDPXwQ0OmLQcXy+IHXAjZtP/Mo06/C+qMtNmGw1mUgtxrkl3YpDELjvUVSP3OAJBFmsx
-T69rxRt90wmfaNqpETPcizPcL3Il9Zx9Df3jf4KXCWRZPUVyXVcPOaLfzsE6zS7MwUNLEz+6tfxd
-rzQ58/CWzO9qDh0XZfa0Xmip+1ejddW0fUxc2ZrYnJvs5kawf9zQj6T//nUl6ySOEo5zwL7r5jNe
-MNS9jh3mui5Z20z0bWXjHSWe6rVZ8c0KJ0l8EtA2HxrZFPo+efU14jQ2rZFs+kgXmeP4Gzi63ezB
-2k7Da9l9Eb8Ll2ZthvwB+KvUFQ==
+eJzdV1uP6jYQfvevmOetlhK2W/XlPOQkTjZqbrUTdNSXo2wwYCkknFyq7b/v2EAJECBnu5WqIi4h
+sb/5Zr7xePwAtnjtWlgIKEC0Hf4GsmnIAzwOvcgDPgmrDaxEKWr5rRM4s4GlzNdS1A0EHufX5vZh
+XBpSBo7tzw1jRjXqnkcHG1F2YJuJOQhEdk/wWSLbWvSIk4fLwYmXMEpiFtmpl0BsMrBM3/q6o4kY
+vsjbTqGg2UwWRbYaglFIwTzyYfLjgfJk80dV7HkvZSlbWZU6FKu66rbiagDRdRalMQGAZ0DINKDE
+8UL1/+f+f/y4Q/CbanEVnFgvZhAT32O0zzRfbzVSnNXZRmDMGliALFuxqjOFe0Mv4oUJdZmZeFEI
+jFoJkvwFEuaZoetTMGb4vmQJRQZbFUp1vawFZkmZ3wjJmU2H0d9SGloUbIphgZ8mU/2iP0ynYKo7
+z/07scnVPaN3byhwTdU1j4sKVS7vUrmY351Mh6atO503Y13idhSYXqjdMUBnwP4aYKakJ79agdKc
+3zWtsu6O0RNzs6O5R2XuSUVUxZDwhJmtXErx7xh+6hlGHx+fiO34qQcsAgN1Aov6WAKMZ7zkKXNg
+OjnycGR5rxKowXa/cOg68Cby7kZO6/HWOqtXArF1tXmHpqSvJqFfEso8mrKLhSfeWsWS3rI6Iqon
+9q4sN2SfKS3z7CjeCOSjAT4L4PfpxeKCC6ea4bKXr7PNtsGykssF+jhisWNtsTzArIh9E33jc1zC
+AxTIdIKpgc/+HvgycmB8b5yWJSvyrniHC6g7tUD5cA8Hsu4NtpVUl6hWXpVtXRVja8eQVSsKExZh
+AU53xj9XXV5gMnU1FGo3HlVyUXSHiW+QRGlCOXBzTiGYOzbeSBAYEvx4QWyDEzHr/5nDPdGWVZkr
+s1oitxbi1rbYk4LHDrvEqjH22JSA3GzFIhu3+e3wUjdxIbWxPKq9XAlANYBWQdxQYVl0cvGdxevp
+w5kP8WUC490dNN3W1WuB7Pc9SJ3ld3qQS0uuH302/Y/PSP5n2a5FI/qr+LCmNNdlNr6NOZC1PcdR
+TgpI1cJK8Ou/kv63/P2AenWsVWr60X0II5dGx31ee//6nhLWtxXaDs45Qb3TDpyeOrZV0z6iBLLV
+6XSrKR7olOSqzK6JRbjnhqYP5zJMjYma9/F5HJ+68k/3HxJHPCE8RjFD5xPsejsnML98Ot9ZHc96
+OfMwRx8mGbE4np58isc+7OlNS/d++lTBdbu/34R2B5h922/sen3sV1WHbyALPIzwKw9t21cY/NBC
+4k/c7yTHqnuWP3fOw/qk9hdKKMTn
 """
         self.par.update({
             'PROJET' : "FDLV112E",
@@ -767,7 +770,7 @@ MNS9jh3mui5Z20z0bWXjHSWe6rVZ8c0KJ0l8EtA2HxrZFPo+efU14jQ2rZFs+kgXmeP4Gzi63ezB
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
         if self._write:
-            open('/tmp/test03_fdlv112e.in', 'wb').write(txt)
+            open('/tmp/test07_fdlv112e.in', 'wb').write(txt)
         diff = self._diffcompress(refe, txt)
         assert diff.strip() == "", diff
 

@@ -1,0 +1,106 @@
+# coding: utf-8
+#
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: mathieu.courtois at edf.fr
+
+import sys
+import unittest
+
+# to be runnable without aster module
+if not 'DEBUT' in globals().keys():
+    def does_nothing(**kwargs):
+        """empty function"""
+        return
+    DEBUT = FIN = _F = does_nothing
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+
+
+ldr = unittest.defaultTestLoader
+suite = unittest.TestSuite()
+
+if hasattr(ldr, 'discover'):    # only python >= 2.7
+    count = suite.countTestCases()
+    suite.addTests(ldr.discover('Miss', pattern='*.py'))
+    suite.addTests(ldr.discover('Utilitai', pattern='*.py'))
+else:
+    TESTLIST = [
+        'Miss.miss_fichier_cmde', 'Miss.miss_resu_aster', 'Miss.miss_resu_miss',
+        'Utilitai.calc_fonction_utils',
+        'Utilitai.TensorModule', 'Utilitai.HookeTensor',
+    ]
+    suite.addTest(ldr.loadTestsFromNames(TESTLIST))
+
+# info = 0 (quiet), 1 (print tests titles), 2 (debug, stop on first error)
+info = 1
+if info < 2:
+    runner = unittest.TextTestRunner(verbosity=info + 1)
+    result = runner.run(suite)
+else:
+    result = None
+    suite.debug()
+    raise AssertionError('only for debug purpose')
+
+# add TEST_TABLE: True=1, False=0
+keys = ['GLOBAL', 'NBRUN', 'ERROR', 'FAILURE']
+values = [
+    int(result.wasSuccessful()),
+    result.testsRun,
+    len(result.errors),
+    len(result.failures),
+]
+
+tab1 = CREA_TABLE(LISTE=(_F(PARA='TEST',
+                            TYPE_K='K8',
+                            LISTE_K=keys,),
+                         _F(PARA='RESULT',
+                            LISTE_I=values,),),)
+
+TEST_TABLE(TABLE=tab1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='GLOBAL',),
+           NOM_PARA='RESULT',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,)
+
+TEST_TABLE(TABLE=tab1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='NBRUN',),
+           NOM_PARA='RESULT',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=20,
+           VALE_REFE_I=20,)
+
+TEST_TABLE(TABLE=tab1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='ERROR',),
+           NOM_PARA='RESULT',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,)
+
+TEST_TABLE(TABLE=tab1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='FAILURE',),
+           NOM_PARA='RESULT',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=0,
+           VALE_REFE_I=0,)
+
+FIN()

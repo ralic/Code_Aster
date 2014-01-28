@@ -17,14 +17,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-import TensorModule
-
-import sympy
-
+import unittest
 import numpy as N
 
-X,Y,Z=sympy.symbols('X Y Z')
-
+try:
+    import sympy
+    import TensorModule
+    X,Y,Z = sympy.symbols('X Y Z')
+    HAVE_SYMPY = True
+except ImportError:
+    HAVE_SYMPY = False
 
 def kron(i,j):
     if i==j:
@@ -132,22 +134,27 @@ def HookeOrthotropicOrienteQuelconque(E_L, E_T, E_N, NU_LT, NU_LN, NU_TN, G_LT, 
     return TensorModule.Tensor(Tens)
 
 
-import unittest
-
-
 class TensorUnitTest(unittest.TestCase):
 
    def setUp(self):
+      if not HAVE_SYMPY:
+          return
       self.U=TensorModule.Tensor(N.array(([X**3,Y**3,Z**3])))
 
    def testType(self):
+      if not HAVE_SYMPY:
+          return
       self.assertEqual(TensorModule.isTensor(self.U),1)
 
    def testRank(self):
+      if not HAVE_SYMPY:
+          return
       self.assertEqual(self.U.rank,1)
       self.assertEqual(TensorModule.grad(self.U).rank,2)
 
    def testProduitDoubleContracte(self):
+      if not HAVE_SYMPY:
+          return
       tensDiff=(HookeOrthotropic(200.,100.,150.,0.4,0.2,0.3,100.,100.,200.).produitDoubleContracte(TensorModule.Tensor(N.ones((3,3)))) - TensorModule.Tensor(N.array([[ 375.52155772,200.,200.], [ 200.,273.99165508,400.], [ 200.,400.,329.62447844]])  ))
       diff=max(N.fabs(TensorModule.flatten(tensDiff.array.tolist())))
       self.assertAlmostEqual(diff,0., 8)

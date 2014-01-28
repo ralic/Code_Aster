@@ -39,7 +39,7 @@ MODULES_RAISING_FPE = (
 )
 for mod in MODULES_RAISING_FPE:
     try:
-        __import__('sympy')
+        __import__(mod)
     except ImportError:
         pass
 
