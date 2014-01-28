@@ -49,7 +49,7 @@ class JDC:
    """
    # attributs accessibles depuis le fortran par les méthodes génériques
    # get_jdc_attr et set_jdc_attr
-   l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro', 'jeveux', 'jeveux_sysaddr')
+   l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro', 'jeveux', 'jeveux_sysaddr', 'icode')
 
    # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
    # nsd : nombre de sd produites

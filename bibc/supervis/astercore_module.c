@@ -87,7 +87,7 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, STRING_SIZE l_attr)
         printf("attribut inexistant dans le jdc : '%s'\n\n", attr);
         MYABORT("erreur dans JDCGET");
     }
-    if (!PyLong_Check(val))
+    if (! (PyInt_Check(val) || PyLong_Check(val)) )
         MYABORT("Seuls les attributs de type entier peuvent etre recuperes !");
 
     value = (INTEGER)PyLong_AsLong(val);

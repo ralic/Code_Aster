@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine jdcset(nomatr, ival)
+    function jdcget(nomatr)
         character(len=*), intent(in) :: nomatr
-        integer, intent(in) :: ival
-    end subroutine jdcset
+        integer :: jdcget
+    end function jdcget
 end interface

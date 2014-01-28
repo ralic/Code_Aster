@@ -20,6 +20,7 @@ subroutine check_aster_allocate(init)
     integer, optional, intent(in) :: init
 !
 #include "jeveux_private.h"
+#include "asterc/jdcget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
 !
@@ -35,8 +36,8 @@ subroutine check_aster_allocate(init)
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 ! ----------------------------------------------------------------------
+    integer, save :: icode = -1
 !
-! DEB ------------------------------------------------------------------
     if (present(init)) then
         ASSERT (init.eq.0)
         cuvtrav=0.d0
@@ -44,6 +45,12 @@ subroutine check_aster_allocate(init)
 !
     if (cuvtrav .ne. 0.d0) then
         call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
+        if (icode < 0) then
+            icode = jdcget('icode')
+        endif
+        if (icode == 1) then
+            ASSERT(cuvtrav .eq. 0.d0)
+        endif
     endif
 !
 end subroutine

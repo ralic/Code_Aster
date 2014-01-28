@@ -20,6 +20,7 @@ subroutine ibcode(ncode)
 !
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
+#include "asterc/jdcset.h"
 #include "asterfort/getvtx.h"
 !
     integer, intent(out) :: ncode
@@ -39,4 +40,5 @@ subroutine ibcode(ncode)
 !       cas de DEBUT
         call getfac('CODE', ncode)
     endif
+    call jdcset('icode', ncode)
 end subroutine ibcode
