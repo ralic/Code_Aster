@@ -9,7 +9,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/conare.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
-#include "asterfort/infoar.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/loncar.h"

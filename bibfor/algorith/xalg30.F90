@@ -6,7 +6,6 @@ subroutine xalg30(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 #    include "jeveux.h"
 #    include "asterfort/assert.h"
 #    include "asterfort/detefa.h"
-#    include "asterfort/infoar.h"
 #    include "asterfort/jedema.h"
 #    include "asterfort/jemarq.h"
 #    include "asterfort/vecini.h"
