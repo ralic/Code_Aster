@@ -56,7 +56,7 @@ subroutine xveri0(ndime, elrefp, ksi, iret)
            plan=1.d0-ksi(2)-ksi(3)
            if(plan .lt. zero) iret=iret+1 
      elseif((elrefp .eq. 'PY5') .or. (elrefp .eq. 'P13')) then
-           if (ksi(3) .lt. 0.d0) iret=iret+1
+           if (ksi(3) .lt. zero) iret=iret+1
            plan=1.d0-ksi(1)-ksi(2)-ksi(3)
            if(plan .lt. zero) iret=iret+1 
            plan=1.d0-ksi(1)+ksi(2)-ksi(3)

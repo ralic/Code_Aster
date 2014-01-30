@@ -32,6 +32,6 @@ interface
         integer :: ip
         integer :: itemax
         real(kind=8) :: epsmax
-        real(kind=8) :: ksi(ndim)
+        real(kind=8) :: ksi(ndime)
     end subroutine xnewto
 end interface

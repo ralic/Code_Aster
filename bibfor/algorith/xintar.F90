@@ -6,6 +6,7 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
+#include "asterfort/vecini.h"
 #include "asterfort/xnewto.h"
     integer :: ndim
     real(kind=8) :: lsna, lsnb, lsnm, a(3), b(3), m(3), intar(3)
@@ -69,6 +70,7 @@ subroutine xintar(lsna, lsnb, lsnm, a, b,&
 100  end do
 !
     rbid = 0.d0
+    call vecini(ndim, 0.d0, xe)
     call xnewto(elp, name, n,&
                 ndim, [rbid], ndim, [rbid], lsnl,&
                 ibid, ibid, itemax,&
