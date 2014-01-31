@@ -1,6 +1,6 @@
 subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
                   refi, refr, refc, epsi, crit,&
-                  ific, llab, ssigne)
+                  ific, llab, ssigne, ignore, compare)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -17,6 +17,8 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
     character(len=*) :: chamgd, typres, crit, ssigne
     complex(kind=8) :: refc(nbref)
     logical :: llab
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,14 +51,25 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
     integer :: vali, jvale, neq, i, iret1, iret2
-    real(kind=8) :: valr
+    real(kind=8) :: valr, ordgrd
     complex(kind=8) :: valc
     character(len=1) :: typrez
     character(len=24) :: valk(3)
     character(len=4) :: type
     character(len=5) :: sufv
     character(len=19) :: cham19
+    logical :: skip
 !     ------------------------------------------------------------------
+    if (present(ignore)) then
+        skip = ignore
+    else
+        skip = .false.
+    endif
+    if (present(compare)) then
+        ordgrd = compare
+    else
+        ordgrd = 1.d0
+    endif
 !
     call jemarq()
 !
@@ -170,7 +183,8 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
 !
     call utites(tbtxt(1), tbtxt(2), typres, nbref, refi,&
                 refr, refc, vali, valr, valc,&
-                epsi, crit, ific, llab, ssigne)
+                epsi, crit, ific, llab, ssigne,&
+                ignore=skip, compare=ordgrd)
 !
 9999  continue
 !

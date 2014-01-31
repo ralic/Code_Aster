@@ -18,7 +18,7 @@
 interface
     subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
                       refi, refr, refc, epsi, crit,&
-                      ific, llab, ssigne)
+                      ific, llab, ssigne, ignore, compare)
         integer :: nbref
         character(len=*) :: chamgd
         character(len=8) :: typtes
@@ -32,5 +32,7 @@ interface
         integer :: ific
         logical :: llab
         character(len=*) :: ssigne
+        logical, intent(in), optional :: ignore
+        real(kind=8), intent(in), optional :: compare
     end subroutine utest1
 end interface

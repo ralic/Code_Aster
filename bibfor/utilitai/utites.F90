@@ -1,10 +1,12 @@
 subroutine utites(label1, label2, type, nbref, refi,&
                   refr, refc, vali, valr, valc,&
-                  epsi, crit, ific, llab, ssigne)
+                  epsi, crit, ific, llab, ssigne,&
+                  ignore, compare)
     implicit       none
 #include "asterfort/assert.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcovt.h"
+#include "asterfort/utmess.h"
     integer, intent(in) :: nbref
     character(len=*), intent(in) :: label1
     character(len=*), intent(in) :: label2
@@ -20,6 +22,8 @@ subroutine utites(label1, label2, type, nbref, refi,&
     integer, intent(in) :: ific
     logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,18 +42,18 @@ subroutine utites(label1, label2, type, nbref, refi,&
 ! ======================================================================
 !  IN  : K1  : TYPE   : TYPE DE VALEUR A TESTER 'R', OU 'C'
 !  IN  : I   : NBREF  : NOMBRE DE VALEURS DE REFERENCE (=1 SOUVENT)
-!  IN  : R8  : REFR   : VALEUR(S) REELLE(S) DE REFERENCE
+!  IN  : R8  : REFR   : VALEUR(S) REELLE(S) DE REFERENCE OU NON REGRESSION
 !  IN  : C16 : REFC   : VALEUR(S) COMPLEXE(S) DE REFERENCE
-!  IN  : R8  : VALR   : VALEUR REELLE A TESTER ( ASTER )
+!  IN  : R8  : VALR   : VALEUR REELLE CALCULEE ( ASTER )
 !  IN  : C16 : VALC   : VALEUR COMPLEXE A TESTER ( ASTER )
-!  IN  : K8  : CRIT   : PRECISION 'RELATIVE' OU 'ABSOLUE'
+!  IN  : K8  : CRIT   : COMPARAISON EN 'RELATIF' OU 'ABSOLU'
 !  IN  : R8  : EPSI   : PRECISION ESPEREE
 !  IN  : I   : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
 !  IN  : L   : LLAB   : FLAG IMPRESSION LABELS
 !  OUT :                IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
     integer :: wali
-    real(kind=8) :: walr
+    real(kind=8) :: walr, ordgrd
     complex(kind=8) :: walc
     integer :: i, imin, minvi, tmpi, nl, tvali(2), nl1, nl2
     parameter   (nl=6)
@@ -60,7 +64,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
     real(kind=8) :: err, zero, cent, tmpr, minvr, minvc, tmpc
     real(kind=8) :: tvalr(2), terrr(2)
     complex(kind=8) :: zeroc, vtc
-    logical :: lok
+    logical :: lok, skip
     data lign2/'REFERENCE','LEGENDE','VALE_REFE','VALE_CALC','ERREUR',&
      &           'TOLE'/
 !     ------------------------------------------------------------------
@@ -82,6 +86,19 @@ subroutine utites(label1, label2, type, nbref, refi,&
     tchvac(2) = ' '
     tchva2(1) = ' '
     tchva2(2) = ' '
+    if (present(ignore)) then
+        skip = ignore
+    else
+        skip = .false.
+    endif
+    if (present(compare)) then
+        ordgrd = compare
+    else
+        ordgrd = 1.d0
+    endif
+    if (skip) then
+        call utmess('A', 'TEST0_12')
+    endif
 !
 !-----------------
 ! --- CAS REEL ---
@@ -110,6 +127,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
         tcherr(2)=' '
 !
         if (rela .eq. 'RELA') then
+            ASSERT(ordgrd .eq. 1.d0)
             lok = ( abs(walr-refr(imin)) .le. epsi * abs(refr(imin)) )
             if (refr(imin) .ne. zero) then
                 err = (walr - refr(imin)) / refr(imin) *cent
@@ -124,11 +142,14 @@ subroutine utites(label1, label2, type, nbref, refi,&
             terrr(1)=err
             terrr(2)=epsi*cent
         else
-            lok = ( abs(walr - refr(imin)) .le. epsi )
+            if (ordgrd .ne. 1.d0) then
+                write(ific,1016) 'ORDRE DE GRANDEUR :     ', ordgrd
+            endif
+            lok = ( abs(walr - refr(imin)) .le. epsi * ordgrd )
             err = walr - refr(imin)
             if (lok) testok = ' OK '
             terrr(1)=err
-            terrr(2)=epsi
+            terrr(2)=epsi * ordgrd
         endif
 !
         call utcovt('R', tvalr, tvali, terrr, rela,&
@@ -137,16 +158,25 @@ subroutine utites(label1, label2, type, nbref, refi,&
         nl1=lxlgut(tchval(1))
         nl2=lxlgut(tchval(2))
 !
+!       set blank after formatting to keep alignment
+        if (skip) then
+            testok = '-'
+            tchval(1) = '-'
+            tchval(2) = '-'
+            tcherr(1) = '-'
+            tcherr(2) = '-'
+        endif
+!
         if (nl1 .lt. 17) then
             if (nl2 .lt. 17) then
                 if (llab) write(ific,1616)(lign2(i), i=1,nl)
                 write(ific,5616)testok,k120,k170,tchval(1),tchval(2),&
-                tcherr(1),tcherr(2)
+                                tcherr(1),tcherr(2)
 !
             else
                 if (llab) write(ific,1624)(lign2(i), i=1,nl)
                 write(ific,5624)testok,k120,k170,tchval(1),tchval(2),&
-                tcherr(1),tcherr(2)
+                                tcherr(1),tcherr(2)
             endif
         else
             if (nl2 .lt. 17) then
@@ -214,6 +244,15 @@ subroutine utites(label1, label2, type, nbref, refi,&
 !
         nl1=lxlgut(tchval(1))
         nl2=lxlgut(tchval(2))
+!
+!       set blank after formatting to keep alignment
+        if (skip) then
+            testok = '-'
+            tchval(1) = '-'
+            tchval(2) = '-'
+            tcherr(1) = '-'
+            tcherr(2) = '-'
+        endif
 !
         if (nl1 .lt. 17) then
             if (nl2 .lt. 17) then
@@ -321,6 +360,15 @@ subroutine utites(label1, label2, type, nbref, refi,&
 !
         nl1=lxlgut(tchva2(1))
         nl2=lxlgut(tchva2(2))
+!       set blank after formatting to keep alignment
+        if (skip) then
+            testok = '-'
+            tchva2(1) = '-'
+            tchva2(2) = '-'
+            tcherr(1) = '-'
+            tcherr(2) = '-'
+        endif
+!
         if (nl1 .ge. 48 .or. nl2 .ge. 48) ASSERT(.false.)
         if (nl1 .lt. 24) then
             if (nl2 .lt. 24) then
@@ -369,6 +417,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
     endif
 !
 !     IF (TESTOK.EQ.'NOOK') CALL ABORT()
+    1016 format(5x,1x,a24,1pe12.5)
     1616 format(5x,6(1x,a16))
     5616 format(a4,1x,6(1x,a16))
     1624 format(5x,3(1x,a16),1(1x,a24),2(1x,a16))

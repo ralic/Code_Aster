@@ -259,6 +259,11 @@ subroutine op0177()
             nl22)
         endif
 !
+        print *, '#DEBUG: ', zr(irefr)
+        if ( zr(irefr) .eq. 0.d0 ) then
+            print *, '#DEBUG: op0177: valeur de référence de non régression nulle: ignorer ou crit=RELATIF, valeur=valeur/ordre grandeur'
+        endif
+!
         call utest0(newtab, para, typtes, typr, tbtxt,&
                     zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
                     ific, .true., ssigne)

@@ -77,4 +77,17 @@ On utilise les valeurs de '%(k2)s'.
 Les listes fournies aux mots-clés MACHINE et VALE doivent avoir le même cardinal.
 """),
 
+11 : _(u"""
+Le test n'a pas de sens quand la valeur de non régression (VALE_CALC) est nulle.
+
+Il faut :
+- soit fournir un ordre de grandeur pour faire la comparaison,
+- soit faire un test avec une valeur de référence analytique ou autre
+  (mots-clés REFERENCE et VALE_REFE).
+"""),
+
+12 : _(u"""
+Pour les tests de non régression de valeurs nulles, il faut définir un ordre de grandeur.
+"""),
+
 }

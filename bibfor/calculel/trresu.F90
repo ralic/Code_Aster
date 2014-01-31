@@ -55,11 +55,11 @@ subroutine trresu(ific, nocc)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: vali, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4
+    integer :: vali, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4, nord
     integer :: nbordr, numord, nupo, nbcmp
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
-    real(kind=8) :: valr, epsi, epsir, prec
+    real(kind=8) :: valr, epsi, epsir, prec, ordgrd
     complex(kind=8) :: valc
     character(len=1) :: typres
     character(len=3) :: ssigne
@@ -75,7 +75,7 @@ subroutine trresu(ific, nocc)
     character(len=33) :: titres, valk(3)
     character(len=200) :: lign1, lign2
     integer :: iarg
-    logical :: lref
+    logical :: lref, skip
     character(len=8), pointer :: nom_cmp(:) => null()
 !     NONOEU= NOM_NOEUD (K8) SUIVI EVENTUELLEMENT DU NOM DU GROUP_NO
 !             A PARTIR DUQUEL ON TROUVE LE NOM DU NOEUD.
@@ -108,8 +108,11 @@ subroutine trresu(ific, nocc)
         call getvtx('RESU', 'VALE_ABS', iocc=iocc, scal=ssigne, nbret=n1)
 !
         call getvr8('RESU', 'VALE_CALC', iocc=iocc, nbval=0, nbret=n1)
+        call getvr8('RESU', 'ORDRE_GRANDEUR', iocc=iocc, nbval=0, nbret=nord)
         call getvis('RESU', 'VALE_CALC_I', iocc=iocc, nbval=0, nbret=n2)
         call getvc8('RESU', 'VALE_CALC_C', iocc=iocc, nbval=0, nbret=n3)
+        skip = .false.
+        ordgrd = 1.d0
         if (n1 .ne. 0) then
             nref=-n1
             typres = 'R'
@@ -117,6 +120,14 @@ subroutine trresu(ific, nocc)
             call wkvect(travr, 'V V R', nref, irefr)
             call getvr8('RESU', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr),&
                         nbret=iret)
+            if ( zr(irefr) .eq. 0.d0 ) then
+                if (nord .eq. 0) then
+                    skip = .true.
+                else
+                    call getvr8('RESU', 'ORDRE_GRANDEUR', iocc=iocc, scal=ordgrd)
+                endif
+            endif
+!
         else if (n2 .ne. 0) then
             nref=-n2
             typres = 'I'
@@ -162,6 +173,9 @@ subroutine trresu(ific, nocc)
                 call getvc8('RESU', 'VALE_REFE_C', iocc=iocc, nbval=nref, vect=zc(irefcr),&
                             nbret=iret)
             endif
+        endif
+        if (skip .and. .not. lref) then
+            call utmess('F', 'TEST0_11')
         endif
 ! ----------------------------------------------------------------------
 !
@@ -246,7 +260,8 @@ subroutine trresu(ific, nocc)
             endif
             call utites(tbtxt(1), tbtxt(2), typres, nref, zi(irefi),&
                         zr(irefr), zc(irefc), vali, valr, valc,&
-                        epsi, crit, ific, .true., ssigne)
+                        epsi, crit, ific, .true., ssigne,&
+                        ignore=skip, compare=ordgrd)
             if (lref) then
                 call utites(tbref(1), tbref(2), typres, nref, zi(irefir),&
                             zr(irefrr), zc(irefcr), vali, valr, valc,&
@@ -314,7 +329,7 @@ subroutine trresu(ific, nocc)
                     endif
                     call utest1(cham19, typtes, typres, nref, tbtxt,&
                                 zi( irefi), zr(irefr), zc(irefc), epsi, crit,&
-                                ific, .true., ssigne)
+                                ific, .true., ssigne, ignore=skip, compare=ordgrd)
                     if (lref) then
                         call utest1(cham19, typtes, typres, nref, tbref,&
                                     zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&

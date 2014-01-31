@@ -18,7 +18,8 @@
 interface
     subroutine utites(label1, label2, type, nbref, refi,&
                       refr, refc, vali, valr, valc,&
-                      epsi, crit, ific, llab, ssigne)
+                      epsi, crit, ific, llab, ssigne,&
+                      ignore, compare)
         integer, intent(in) :: nbref
         character(len=*), intent(in) :: label1
         character(len=*), intent(in) :: label2
@@ -34,5 +35,7 @@ interface
         integer, intent(in) :: ific
         logical, intent(in) :: llab
         character(len=*), intent(in) :: ssigne
+        logical, intent(in), optional :: ignore
+        real(kind=8), intent(in), optional :: compare
     end subroutine utites
 end interface
