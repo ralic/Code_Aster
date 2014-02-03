@@ -4,6 +4,8 @@ import sys
 import os
 import os.path as osp
 from functools import partial
+from subprocess import Popen, PIPE
+
 from waflib import Options, Configure, Errors, Utils
 
 def options(self):
@@ -21,13 +23,17 @@ def configure(self):
 def configure_pythonpath(self):
     """Insert env.PYTHONPATH at the beginning of sys.path"""
     path = Utils.to_list(self.env['PYTHONPATH'])
+    system_path = _get_default_pythonpath()
     for i in sys.path:
+        if i in system_path:
+            continue
         if osp.basename(i).startswith('.waf'):
             continue
         if osp.abspath(i).startswith(osp.abspath(os.getcwd())):
             continue
         path.append(i)
-    sys.path = self.env['CFG_PYTHONPATH'] = path
+    sys.path = path + sys.path
+    self.env['CFG_PYTHONPATH'] = path
     os.environ['PYTHONPATH'] = os.pathsep.join(sys.path)
 
 @Configure.conf
@@ -101,3 +107,12 @@ def check_optimization_python(self):
     self.env['PYC'] = self.env['PYO'] = 0
     self.setenv('release')
     self.env['PYC'] = self.env['PYO'] = 0
+
+def _get_default_pythonpath():
+    """Default sys.path should be added into PYTHONPATH"""
+    env = os.environ.copy()
+    env['PYTHONPATH'] = ''
+    proc = Popen([sys.executable, '-c', 'import sys; print sys.path'],
+                 stdout=PIPE, env=env)
+    system_path = eval(proc.communicate()[0])
+    return system_path
