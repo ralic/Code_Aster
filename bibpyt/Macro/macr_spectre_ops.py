@@ -104,10 +104,11 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
   ### boucle 4 sur les résultats
               l_fonc=[]
               for resu in RESU :
-                  ### Récupération des fonctions
+                  ### Etape 1: Récupération des fonctions
                   motscles={}
                   if resu['RESU_GENE']!=None :
-                     #if CALCUL=='ABSOLU' :
+                    if CALCUL=='ABSOLU' :
+                       motscles['MULT_APPUI'] = args['MULT_APPUI']
                      #   UTMESS('F','SPECTRAL0_8')
                     motscles['RESU_GENE'] = resu['RESU_GENE']
                     __spo=RECU_FONCTION(NOM_CHAM     = NOM_CHAM,
@@ -117,7 +118,8 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
                                         PROL_GAUCHE  = 'CONSTANT',
                                         PROL_DROITE  = 'CONSTANT',
                                         NOEUD        = node , **motscles )
-
+                  elif args['MULT_APPUI']!=None :
+                    UTMESS('F','SPECTRAL0_13')
                   if resu['RESULTAT' ]!=None :
                     motscles['RESULTAT']  = resu['RESULTAT']
                     __spo=RECU_FONCTION(NOM_CHAM     = NOM_CHAM,
@@ -137,6 +139,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
                                                    _F(NOM_PARA='NOM_CHAM',VALE_K=NOM_CHAM ),
                                                    _F(NOM_PARA='NOM_CMP', VALE_K='D'+dd   ),) )
 
+                  ### Etape 2: Combinaisons
                   if NOM_CHAM=='ACCE' :
                      ### Accelerations relatives
                      if CALCUL=='RELATIF' :
@@ -148,7 +151,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
                                                   _F(FONCTION=resu['ACCE_'+dd],
                                                      COEF= 1.0)              ),**motscles )
 
-                     ### Calcul des spectres d'oscillateur
+                  ### Etape 3: Calcul des spectres d'oscillateur
                      motscles={}
                      if FREQ     !=None : motscles['FREQ']     =FREQ
                      if LIST_FREQ!=None : motscles['LIST_FREQ']=LIST_FREQ
@@ -264,7 +267,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
   ############################################################
 
   ############################################################
-  ### Calcul des enveloppes des spectres ou des deplacements max
+  ### Etape 4: Calcul des enveloppes des spectres ou des deplacements max
       if NOM_CHAM=='ACCE' :
          mcslx=[]
          mcsly=[]
@@ -302,7 +305,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
               dico_glob['DH_max'].append(DRmH)
 
   ############################################################
-  ### Impression des courbes
+  ### Etape 5: Impression des courbes
       if   NOM_CHAM=='ACCE' and IMPRESSION!=None :
         motscles={}
         dI = IMPRESSION[0].cree_dict_valeurs(IMPRESSION[0].mc_liste)
@@ -358,7 +361,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
   ############################################################
 
   ############################################################
-  ### Renseignement de la table finale des résultats
+  ### Etape6 : Renseignement de la table finale des résultats
   lListe=[]
   if   NOM_CHAM=='DEPL' :
       lListe.append(_F(LISTE_K=l_plancher,PARA='PLANCHER'))

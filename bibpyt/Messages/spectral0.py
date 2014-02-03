@@ -59,5 +59,9 @@ On ne traite pas les cas ou les abscisses fréquentielles ne sont pas régulièr
 Le mot-clé format correspond au format du fichier source, qui peut être 'ASTER' ou 'IDEAS' (pour lire les DS58)
 """),
 
+13: _(u"""
+Le calcul en multi-appuis n'est réalisable que lorsque le concept résultat renseigné sous le mot-clé RESU est RESU_GENE.
+"""),
+
 
 }
