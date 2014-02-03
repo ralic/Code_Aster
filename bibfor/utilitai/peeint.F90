@@ -233,9 +233,7 @@ subroutine peeint(resu, modele, nbocc)
                 call cnocns(cham2, 'V', chamtm)
                 call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
                 call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
-                AS_DEALLOCATE(vk8=cmp1)
                 AS_ALLOCATE(vk8=cmp1, size=ncmpm)
-                AS_DEALLOCATE(vk8=cmp2)
                 AS_ALLOCATE(vk8=cmp2, size=ncmpm)
                 do i = 1, ncmpm
                     call codent(i, 'G', ki)
@@ -345,8 +343,8 @@ subroutine peeint(resu, modele, nbocc)
 !
             call jedetr('&&PEEINT.CMP')
             AS_DEALLOCATE(vk8=cmp_init)
-!
-!
+            AS_DEALLOCATE(vk8=cmp1)
+            AS_DEALLOCATE(vk8=cmp2)
 !
         end do
 !

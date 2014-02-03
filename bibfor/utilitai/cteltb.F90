@@ -159,11 +159,9 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
             endif
 !
 !             TABLEAU DES VALEURS DES COMPOSANTES DESIREES: ZR(JVAL)
-            AS_DEALLOCATE(vr=val_cmp)
             AS_ALLOCATE(vr=val_cmp, size=n)
 !
 !             TABLEAU DES NOMS DE COMPOSANTES DESIREES : ZK8(JKVAL)
-            AS_DEALLOCATE(vk8=nom_cmp)
             AS_ALLOCATE(vk8=nom_cmp, size=n)
 !
 !            -- ON PARCOURT LES MAILLES
@@ -315,7 +313,6 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !
 !                   TABLEAU DES NOMS DE PARAMETRES DE LA TABLE
                         nbpara=nr+ni+nk
-                        AS_DEALLOCATE(vk16=table_parak)
                         AS_ALLOCATE(vk16=table_parak, size=nbpara)
 !
                         kk=0
@@ -375,11 +372,14 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                         call tbajli(nomtb, nbpara, table_parak, table_vali, table_valr,&
                                     [cbid], table_valk, 0)
 !
+                        AS_DEALLOCATE(vk16=table_parak)
 225                  continue
 !
 220              continue
 !
-210          continue
+210         continue
+            AS_DEALLOCATE(vk8=nom_cmp)
+            AS_DEALLOCATE(vr=val_cmp)
 !
         endif
 !

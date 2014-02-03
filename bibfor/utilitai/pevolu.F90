@@ -286,9 +286,7 @@ subroutine pevolu(resu, modele, nbocc)
                 call cnocns(cham2, 'V', chamtm)
                 call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
                 call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
-                AS_DEALLOCATE(vk8=cmp1)
                 AS_ALLOCATE(vk8=cmp1, size=ncmpm)
-                AS_DEALLOCATE(vk8=cmp2)
                 AS_ALLOCATE(vk8=cmp2, size=ncmpm)
                 do i = 1, ncmpm
                     call codent(i, 'G', ki)
@@ -338,6 +336,8 @@ subroutine pevolu(resu, modele, nbocc)
             if (toneut) then
                 nucmp=indik8(cmp1,nomcmp,1,ncmpm)
                 nomcmp=cmp2(nucmp)
+                AS_DEALLOCATE(vk8=cmp1)
+                AS_DEALLOCATE(vk8=cmp2)
             endif
 !
 !      -- 4.3 RECUPERATION DES MAILLES --

@@ -126,11 +126,9 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
             endif
 !
 !             TABLEAU DES VALEURS DES COMPOSANTES DESIREES: ZR(JVAL)
-            AS_DEALLOCATE(vr=val_cmp)
             AS_ALLOCATE(vr=val_cmp, size=n)
 !
 !             TABLEAU DES NOMS DE COMPOSANTES DESIREES : ZK8(JKVAL)
-            AS_DEALLOCATE(vk8=nom_cmp)
             AS_ALLOCATE(vk8=nom_cmp, size=n)
 !
 !             -- ON PARCOURT LES NOEUDS MAX,
@@ -158,7 +156,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                     kcp=kcp+1
                     val_cmp(kcp)=zr(jcnsv+nbcmpx*(ino-1)+icmp-1)
                     nom_cmp(kcp)=zk8(jcnsc+icmp-1)
-120              continue
+120             continue
 !
 !               SOIT NI LE NOMBRE DE VALEURS ENTIERES DE LA TABLE
 !               SOIT NR LE NOMBRE DE VALEURS REELES DE LA TABLE
@@ -212,7 +210,6 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !
 !               TABLEAU DES NOMS DE PARAMETRES DE LA TABLE: ZK16(JPARAK)
                 nbpara=nr+ni+nk
-                AS_DEALLOCATE(vk16=table_parak)
                 AS_ALLOCATE(vk16=table_parak, size=nbpara)
 !
 !               ON REMPLIT ZK16(JPARAK)
@@ -258,8 +255,11 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                     call tbajli(nomtb, nbpara, table_parak, table_vali, table_valr,&
                                 [cbid], table_valk, 0)
                 endif
+                AS_DEALLOCATE(vk16=table_parak)
 !
-110          continue
+110         continue
+            AS_DEALLOCATE(vr=val_cmp)
+            AS_DEALLOCATE(vk8=nom_cmp)
 !
         endif
 !
