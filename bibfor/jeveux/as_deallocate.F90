@@ -1,5 +1,6 @@
-subroutine as_deallocate(vl, vi, vi4, vr, vc, vk8,&
-                         vk16, vk24, vk32, vk80)
+subroutine as_deallocate(vl, vi, vi4, vr, vc, &
+                         vk8, vk16, vk24, vk32, vk80, &
+                         strdbg)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +19,7 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, vk8,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "aster_debug.h"
 #include "jeveux_private.h"
 #include "asterc/hpalloc.h"
 #include "asterfort/assert.h"
@@ -36,6 +38,8 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, vk8,&
     character(len=24), optional, pointer :: vk24(:)
     character(len=32), optional, pointer :: vk32(:)
     character(len=80), optional, pointer :: vk80(:)
+!
+    character(len=*) :: strdbg
 !
 ! ----------------------------------------------------------------------
 ! DESALLOUER un vecteur de travail
@@ -60,7 +64,7 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, vk8,&
     integer :: ierr, lonty, lsic, lonvec
     character(len=4) :: typv
 !
-! DEB ------------------------------------------------------------------
+! -------------------------------------------------------------------
     if (present(vi)) then
         typv='I'
         lonty=lois
@@ -151,6 +155,7 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, vk8,&
         ASSERT(.false.)
     endif
 !
+    DEBUG_ALLOCATE('free ', strdbg, lonvec)
 !   -- Si le deallocate s'est bien passe, c'est que le vecteur etait alloue.
 !      il faut "rendre" la memoire a JEVEUX
 !   -------------------------------------------------

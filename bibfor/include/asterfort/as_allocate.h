@@ -14,12 +14,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! because macros must be on a single line
+! aslint: disable=C1509
+!
 ! To have a syntax similar to the standard ALLOCATE
-#define AS_ALLOCATE call as_allocate
+#include "asterf.h"
+#include "aster_debug.h"
+
+#define AS_ALLOCATE(arg, size) DEBUG_LOC("alloc", __FILE__, __LINE__) ; call as_allocate(arg, size, strdbg=TO_STRING((arg, size)))
 !
 interface
-    subroutine as_allocate(size, vl, vi, vi4, vr, vc,&
-                           vk8, vk16, vk24, vk32, vk80)
+    subroutine as_allocate(size, vl, vi, vi4, vr, &
+                           vc, vk8, vk16, vk24, vk32, &
+                           vk80, strdbg)
         integer :: size
         logical, pointer, optional :: vl(:)
         integer, optional, pointer :: vi(:)
@@ -31,5 +38,7 @@ interface
         character(len=24), optional, pointer :: vk24(:)
         character(len=32), optional, pointer :: vk32(:)
         character(len=80), optional, pointer :: vk80(:)
+!
+        character(len=*) :: strdbg
     end subroutine as_allocate
 end interface

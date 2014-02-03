@@ -1,5 +1,6 @@
-subroutine as_allocate(size, vl, vi, vi4, vr, vc,&
-                       vk8, vk16, vk24, vk32, vk80)
+subroutine as_allocate(size, vl, vi, vi4, vr,&
+                       vc, vk8, vk16, vk24, vk32, &
+                       vk80, strdbg)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,6 +20,7 @@ subroutine as_allocate(size, vl, vi, vi4, vr, vc,&
 ! ======================================================================
 ! aslint: disable=W1304
     implicit none
+#include "aster_debug.h"
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeimpm.h"
@@ -37,6 +39,8 @@ subroutine as_allocate(size, vl, vi, vi4, vr, vc,&
     character(len=24), optional, pointer :: vk24(:)
     character(len=32), optional, pointer :: vk32(:)
     character(len=80), optional, pointer :: vk80(:)
+!
+    character(len=*) :: strdbg
 !
 ! ----------------------------------------------------------------------
 ! ALLOUER un vecteur de travail de longueur size
@@ -195,6 +199,7 @@ subroutine as_allocate(size, vl, vi, vi4, vr, vc,&
         ASSERT(.false.)
     endif
 !
+    DEBUG_ALLOCATE('alloc', strdbg, size)
 !   -- actualisation de mcdyn :
 !   ---------------------------
     mcdyn=mcdyn+lsic

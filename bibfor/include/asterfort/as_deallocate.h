@@ -14,12 +14,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! because macros must be on a single line
+! aslint: disable=C1509
+!
 ! To have a syntax similar to the standard DEALLOCATE
-#define AS_DEALLOCATE call as_deallocate
+#include "asterf.h"
+#include "aster_debug.h"
+
+#define AS_DEALLOCATE(arg) DEBUG_LOC("free ", __FILE__, __LINE__) ; call as_deallocate(arg, strdbg=TO_STRING(arg))
 !
 interface
-    subroutine as_deallocate(vl, vi, vi4, vr, vc, vk8,&
-                             vk16, vk24, vk32, vk80)
+    subroutine as_deallocate(vl, vi, vi4, vr, vc, &
+                             vk8, vk16, vk24, vk32, vk80, &
+                             strdbg)
         logical, pointer, optional :: vl(:)
         integer, optional, pointer :: vi(:)
         integer(kind=4), optional, pointer :: vi4(:)
@@ -30,5 +37,7 @@ interface
         character(len=24), optional, pointer :: vk24(:)
         character(len=32), optional, pointer :: vk32(:)
         character(len=80), optional, pointer :: vk80(:)
+!
+        character(len=*) :: strdbg
     end subroutine as_deallocate
 end interface
