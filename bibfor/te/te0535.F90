@@ -70,7 +70,7 @@ subroutine te0535(option, nomte)
     integer :: lx
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk), rgeom(nk)
     real(kind=8) :: deplm(12), deplp(12), matsec(6), dege(6)
-    real(kind=8) :: zero, deux
+    real(kind=8) :: zero
     integer ::   jmodfb, jsigfb, nbfib, ncarfi, jacf, nbvalc
     integer :: jtab(7), ivarmp, istrxp, istrxm
     integer :: ip, inbf, jcret, codret, codrep
@@ -79,8 +79,8 @@ subroutine te0535(option, nomte)
     integer :: npg, ndim, nnoel, nnos, ipoids, ivf, iplouf
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
-    real(kind=8) :: alicom, dalico, ss1, hv, he, minus, xls2
-    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3), sign, my, mz
+    real(kind=8) :: alicom, dalico, ss1, hv, he, minus
+    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3), sign_noeu
     real(kind=8) :: gamma, angp(3), sigma(nd), cars1(6)
     real(kind=8) :: a, xiy, xiz, ey, ez
     logical :: vecteu, matric, reactu
@@ -88,7 +88,7 @@ subroutine te0535(option, nomte)
     character(len=24) :: valk(2)
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
-    parameter  (zero=0.0d+0,deux=2.d+0)
+    parameter  (zero=0.0d+0)
 !
 ! --- ------------------------------------------------------------------
 !
@@ -165,7 +165,7 @@ subroutine te0535(option, nomte)
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DU NOMBRE DE FIBRES TOTAL DE L'ELEMENT
 !     ET DU NOMBRE DE GROUPES DE FIBRES SUR CET ELEMENT
-    nbfib = zi(inbf)    
+    nbfib = zi(inbf)
     nbgf = zi(inbf+1)
 !
 ! --- VERIFICATION QUE C'EST BIEN DES MULTIFIBRES
@@ -361,9 +361,6 @@ subroutine te0535(option, nomte)
 !
 !   STOCKAGE DES EFFORTS GENERALISES ET PASSAGE DES FORCES EN REP LOCAL
     if (vecteu) then
-        xls2 = xl/2.d0
-        my = (fl(11)-fl(5))/deux
-        mz = (fl(12)-fl(6))/deux
 ! ---    ON SORT LES CONTRAINTES SUR CHAQUE FIBRE
         do 310 ip = 1, 2
             iposcp=icontp + nbfib*(ip-1)
@@ -373,20 +370,19 @@ subroutine te0535(option, nomte)
 300          continue
 !           STOCKAGE DES FORCES INTEGREES
             if (ip .eq. 1) then
-                sign = - 1.d0
+                sign_noeu = -1.d0
             else
-                sign = 1.d0
+                sign_noeu = 1.d0
             endif
             zr(istrxp-1+ncomp*(ip-1)+1) = fl(6*(ip-1)+1)
             zr(istrxp-1+ncomp*(ip-1)+2) = fl(6*(ip-1)+2)
             zr(istrxp-1+ncomp*(ip-1)+3) = fl(6*(ip-1)+3)
             zr(istrxp-1+ncomp*(ip-1)+4) = fl(6*(ip-1)+4)
-            zr(istrxp-1+ncomp*(ip-1)+5) = sign *( my + fl(6*(ip-1)+3)*xls2)
-            zr(istrxp-1+ncomp*(ip-1)+6) = sign *( mz - fl(6*(ip-1)+2)*xls2)
+            zr(istrxp-1+ncomp*(ip-1)+5) = fl(6*(ip-1)+5)
+            zr(istrxp-1+ncomp*(ip-1)+6) = fl(6*(ip-1)+6)
+            zr(istrxp-1+ncomp*(ip-1)+15)= alicom+dalico
 310      continue
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
-        zr(istrxp-1+15)=alicom+dalico
-        zr(istrxp-1+ncomp+15)=alicom+dalico
     endif
 !
 !   CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE

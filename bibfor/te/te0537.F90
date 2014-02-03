@@ -23,6 +23,7 @@ subroutine te0537(option, nomte)
 #include "asterfort/jeveuo.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
 #include "asterfort/pmfdef.h"
 #include "asterfort/pmfdge.h"
 #include "asterfort/pmfitx.h"
@@ -48,25 +49,24 @@ subroutine te0537(option, nomte)
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !     ------------------------------------------------------------------
 !
-    integer :: jcont, lorien, jdepl, imate, isect, lx, nno, nc, i, iret
+    integer :: jcont, lorien, jdepl, imate, lx, nno, nc, i, iret
     parameter (nno=2,nc=6)
     character(len=16) :: ch16
     real(kind=8) :: ul(12), pgl(3, 3), dege(6), xl, e, nu
-    real(kind=8) :: g, xjx, gxjx
+    real(kind=8) :: g
     integer :: nbfib, ncarfi, jacf, jtab(7)
-    real(kind=8) :: casect(6), xl2, nx, ty, tz, mx, my, mz
+    real(kind=8) :: casect(6)
     real(kind=8) :: coa, cob, ex12, ex13
-    real(kind=8) :: dep1, dep2, dep3, dep4, co6, co12
-    real(kind=8) :: zero, un, deux, trois, quatre, six
-    parameter (zero=0.0d+0,un=1.0d+0,deux=2.d+0,trois=3.d+0)
-    parameter (quatre=4.d+0,six=6.d+0)
-    real(kind=8) :: b(4), gg, xi, wi, valres(2), sign, alpha
-    integer :: ip, ipos, nbgfmx, iadzi, iazk24, isicom, istrxr
+    real(kind=8) :: zero, deux, trois, quatre
+    parameter (zero=0.0d+0,deux=2.d+0,trois=3.d+0)
+    parameter (quatre=4.d+0)
+    real(kind=8) :: b(4), gg, xi, wi, valres(2), sign_noeu, alpha
+    integer :: ip, ipos, iadzi, iazk24, istrxr
     integer :: ipos1, ipos2, nbfig, nbgf, ig, nugf, ifb, icp, isdcom, icompo
     character(len=8) :: materi, nomres(2), nomail
     integer :: codres(2), ncomp
     integer :: npg, ndim, nnoel, nnos, ipoids, ivf, iplouf
-    real(kind=8) :: klv(78),klc(12,12)
+    real(kind=8) :: klv(78),klc(12,12) ,effo(12)
 !     ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
@@ -193,49 +193,22 @@ subroutine te0537(option, nomte)
 !
 ! ---   CALCUL DES EFFORTS GENERALISES (CAS ELASTIQUE)
 ! ---   ON FAIT KELE*UL
-        xl2=xl/2.d0
         call pmfrig(nomte,zi(imate),klv)
         call vecma ( klv, 78, klc, 12 )
-!
-        nx=zero
-        do i=1,12
-            nx=nx+klc(7,i)*ul(i)
-        enddo
-        ty=zero
-        do i=1,12
-            ty=ty+klc(8,i)*ul(i)
-        enddo
-        tz=zero
-        do i=1,12
-            tz=tz+klc(9,i)*ul(i)
-        enddo
-        mx=zero
-        do i=1,12
-            mx=mx+klc(10,i)*ul(i)
-        enddo
-        my=zero
-        do i=1,12
-            my=my+(klc(11,i)-klc(5,i))*ul(i)
-        enddo
-        my=my/deux
-        mz=zero
-        do i=1,12
-            mz=mz+(klc(12,i)-klc(6,i))*ul(i)
-        enddo
-        mz=mz/deux
-!
+        call pmavec('ZERO', 12, klc, ul, effo)
+
         do ip = 1, npg
             if (ip .eq. 1) then
-                sign = -1.d0
+                sign_noeu = -1.d0
             else
-                sign = 1.d0
+                sign_noeu = 1.d0
             endif
-            zr(istrxr-1+ncomp*(ip-1)+1)= sign * nx
-            zr(istrxr-1+ncomp*(ip-1)+2)= sign * ty
-            zr(istrxr-1+ncomp*(ip-1)+3)= sign * tz
-            zr(istrxr-1+ncomp*(ip-1)+4)= sign * mx
-            zr(istrxr-1+ncomp*(ip-1)+5)= sign * my + tz*xl2
-            zr(istrxr-1+ncomp*(ip-1)+6)= sign * mz - ty*xl2
+            zr(istrxr-1+ncomp*(ip-1)+1)= effo(6*(ip-1)+1)
+            zr(istrxr-1+ncomp*(ip-1)+2)= effo(6*(ip-1)+2)
+            zr(istrxr-1+ncomp*(ip-1)+3)= effo(6*(ip-1)+3)
+            zr(istrxr-1+ncomp*(ip-1)+4)= effo(6*(ip-1)+4)
+            zr(istrxr-1+ncomp*(ip-1)+5)= effo(6*(ip-1)+5)
+            zr(istrxr-1+ncomp*(ip-1)+6)= effo(6*(ip-1)+6)
             zr(istrxr-1+ncomp*(ip-1)+15)= alpha
 !
         end do

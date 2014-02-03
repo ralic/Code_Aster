@@ -108,6 +108,16 @@ U1=CALC_CHAMP(reuse=U1,RESULTAT=U1,CONTRAINTE=('EFGE_ELNO'))
 U1=CALC_CHAMP(reuse =U1, RESULTAT=U1, CONTRAINTE='EFGE_NOEU')
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   MAILLE='M1',
+                   NOEUD = 'N1',
+                   RESULTAT=U1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='VZ',
+                   VALE_CALC=5000.0,
+                   ),))
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='C',
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
@@ -283,6 +293,17 @@ U2=STAT_NON_LINE(
    COMPORTEMENT=_F(TOUT='OUI',RELATION='MULTIFIBRE',),
    EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),
 )
+U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,CONTRAINTE=('EFGE_ELNO'))
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   MAILLE='M1',
+                   NOEUD = 'N1',
+                   RESULTAT=U2,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='VZ',
+                   VALE_CALC=5000.0,
+                   VALE_REFE=5000.0,
+                   REFERENCE = 'AUTRE_ASTER',
+                   ),))
 
 TU2_1 = CREA_TABLE(RESU=_F(RESULTAT=U2,TOUT='OUI',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI'))
 IMPR_TABLE(TABLE=TU2_1)

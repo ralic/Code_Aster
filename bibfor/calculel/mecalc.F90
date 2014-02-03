@@ -133,14 +133,13 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
             call copisd('CHAM_ELEM_S', 'V', canbva, chele2)
             call detrsd('CHAM_ELEM_S', canbva)
 !
-            else if ((optio2.eq.'EPSI_ELGA') .or. (optio2.eq.'SIEF_ELGA')&
-        .or. (optio2.eq.'STRX_ELGA')) then
+        else if ((optio2.eq.'EPSI_ELGA') .or. (optio2.eq.'SIEF_ELGA')) then
             canbsp = '&&'//nompro//'.NBSP'
             call exisd('CHAM_ELEM_S', canbsp, iret1)
             if (iret1 .ne. 1) call cesvar(carel, ' ', ligrel, canbsp)
             call copisd('CHAM_ELEM_S', 'V', canbsp, chele2)
 !
-            else if ((optio2.eq.'SIEQ_ELGA') .or. (optio2.eq.'EPEQ_ELGA'))&
+        else if ((optio2.eq.'SIEQ_ELGA') .or. (optio2.eq.'EPEQ_ELGA'))&
         then
             canbsp = '&&'//nompro//'.NBSP'
             call exisd('CHAM_ELEM_S', canbsp, iret1)

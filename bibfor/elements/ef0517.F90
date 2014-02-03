@@ -122,10 +122,13 @@ subroutine ef0517(nomte)
         npg = 2
         call jevech('PSTRXRR', 'L', istrxr)
         call jevech('PEFFORR', 'E', icontn)
-        do kp = 1,npg
-            do i = 1,nc
-                zr(icontn-1+nc*(kp-1)+i) = zr(istrxr-1+ncomp*(kp-1)+i)
-            end do
+        kp = 1
+        do i = 1,nc
+            zr(icontn-1+nc*(kp-1)+i) = - zr(istrxr-1+ncomp*(kp-1)+i)
+        end do
+        kp = 2
+        do i = 1,nc
+            zr(icontn-1+nc*(kp-1)+i) = zr(istrxr-1+ncomp*(kp-1)+i)
         end do
 !
     else
