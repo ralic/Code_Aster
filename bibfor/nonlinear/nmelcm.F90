@@ -269,7 +269,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
     lchin(17) = ainter
     lpain(18) = 'PCFACE'
     lchin(18) = cface
-    lpain(19) = 'PLONCHA'
+    lpain(19) = 'PLONGCO'
     lchin(19) = faclon
     lpain(20) = 'PBASECO'
     lchin(20) = baseco

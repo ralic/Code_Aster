@@ -189,7 +189,7 @@ subroutine xcpmo2(modx1, modx2)
     lpara(6)  = 'PPINTER'
     lpara(7)  = 'PAINTER'
     lpara(8)  = 'PCFACE'
-    lpara(9)  = 'PLONCHA'
+    lpara(9)  = 'PLONGCO'
     lpara(10) = 'PBASECO'
     lpara(11) = 'PGESCLA'
 !   pour option == FULL_MECA dans alchml

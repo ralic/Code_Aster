@@ -131,7 +131,7 @@ subroutine xgecfi(modele, depgeo)
     lchin(1) = depgeo
     lpain(2) = 'PPINTER'
     lchin(2) = pinter
-    lpain(3) = 'PLONCHA'
+    lpain(3) = 'PLONGCO'
     lchin(3) = faclon
     lpain(4) = 'PGESCLO'
     lchin(4) = gesclo

@@ -221,7 +221,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     lchin(19) = ainter
     lpain(20) = 'PCFACE'
     lchin(20) = cface
-    lpain(21) = 'PLONCHA'
+    lpain(21) = 'PLONGCO'
     lchin(21) = faclon
     lpain(22) = 'PBASECO'
     lchin(22) = baseco

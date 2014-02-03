@@ -135,7 +135,7 @@ subroutine te0534(option, nomte)
     call jevech('PPINTER', 'L', jptint)
     call jevech('PAINTER', 'L', jaint)
     call jevech('PCFACE', 'L', jcface)
-    call jevech('PLONCHA', 'L', jlonch)
+    call jevech('PLONGCO', 'L', jlonch)
     call jevech('PBASECO', 'L', jbasec)
     call jevech('PVECTUR', 'E', ivect)
     if (nfiss .gt. 1) then

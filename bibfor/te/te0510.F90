@@ -118,7 +118,7 @@ subroutine te0510(option, nomte)
     call jevech('PPINTER', 'E', jout1)
     call jevech('PAINTER', 'E', jout2)
     call jevech('PCFACE', 'E', jout3)
-    call jevech('PLONCHA', 'E', jout4)
+    call jevech('PLONGCO', 'E', jout4)
     call jevech('PBASECO', 'E', jout5)
     call jevech('PGESCLA', 'E', jout6)
 !

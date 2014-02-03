@@ -76,7 +76,7 @@ subroutine te0519(option, nomte)
 !
     call jevech('PDEPLA', 'L', jdepl)
     call jevech('PPINTER', 'L', jpint)
-    call jevech('PLONCHA', 'L', jlon)
+    call jevech('PLONGCO', 'L', jlon)
     call jevech('PLST', 'L', jlst)
 ! --- LES GEOMETRIES MAITRES ET ESCLAVES INITIALES SONT
 ! --- ET RESTENT LES MEMES

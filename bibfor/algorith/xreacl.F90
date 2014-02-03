@@ -129,7 +129,7 @@ subroutine xreacl(noma, nomo, valinc, resoco)
     lchin(2) = ainter(1:19)
     lpain(3) = 'PCFACE'
     lchin(3) = cface(1:19)
-    lpain(4) = 'PLONCHA'
+    lpain(4) = 'PLONGCO'
     lchin(4) = faclon(1:19)
     lpain(5) = 'PDONCO'
     lchin(5) = xdonco(1:19)

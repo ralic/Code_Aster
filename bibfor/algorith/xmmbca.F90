@@ -166,7 +166,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     lchin(7) = ainter
     lpain(8) = 'PCFACE'
     lchin(8) = cface
-    lpain(9) = 'PLONCHA'
+    lpain(9) = 'PLONGCO'
     lchin(9) = faclon
     lpain(10) = 'PDONCO'
     lchin(10) = xdonco

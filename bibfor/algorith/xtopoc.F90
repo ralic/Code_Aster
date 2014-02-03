@@ -149,7 +149,7 @@ subroutine xtopoc(modele)
     lchout(2) = champ(2)
     lpaout(3) = 'PCFACE'
     lchout(3) = champ(3)
-    lpaout(4) = 'PLONCHA'
+    lpaout(4) = 'PLONGCO'
     lchout(4) = champ(4)
     lpaout(5) = 'PBASECO'
     lchout(5) = champ(5)

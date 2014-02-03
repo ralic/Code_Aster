@@ -39,7 +39,7 @@ OPTION__
         PPINTER  N120_R    << XFEM >>
         PAINTER  N120_R    << XFEM >>
         PCFACE   N120_I    << XFEM >>
-        PLONCHA  N120_I    << XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
+        PLONGCO  N120_I    << XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
         PBASECO  N120_R    << XFEM >>
         PSEUIL   NEUT_R    << XFEM >>
         PSTANO   N120_I    << XFEM >>

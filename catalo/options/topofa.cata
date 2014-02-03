@@ -32,7 +32,7 @@ OPTION__
         PPINTER  N120_R ELEM__
         PAINTER  N120_R ELEM__
         PCFACE   N120_I ELEM__
-        PLONCHA  N120_I ELEM__
+        PLONGCO  N120_I ELEM__
         PBASECO  N120_R ELEM__
         PGESCLA  N120_R ELEM__
         PGESCLO  N120_R ELEM__
