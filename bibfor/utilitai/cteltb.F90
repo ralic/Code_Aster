@@ -246,6 +246,9 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                         else if (tych.eq.'ELGA') then
 !                      -- point + sous_point
                             ni=ni+2
+                        else if (tych.eq.'ELEM') then
+!                      -- sous_point
+                            ni=ni+1
                         endif
 !
 !                   ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
@@ -273,6 +276,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                             table_valr(kk+1)=val_cmp(j)
                             kk=kk+1
 250                      continue
+                        ASSERT(kk .eq. nr)
 !
                         kk=0
                         if (resu .ne. ' ') then
@@ -291,6 +295,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                             table_vali(kk+1)=ispt
                             kk=kk+1
                         endif
+                        ASSERT(kk .eq. ni)
 !
                         kk=0
                         if (resu .eq. ' ') then
@@ -310,6 +315,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                             table_valk(kk+1)=kno
                             kk=kk+1
                         endif
+                        ASSERT(kk .eq. nk)
 !
 !                   TABLEAU DES NOMS DE PARAMETRES DE LA TABLE
                         nbpara=nr+ni+nk
@@ -368,6 +374,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                             kk=kk+1
 260                      continue
 !
+                        ASSERT(kk .le. nbpara)
 !                       ON AJOUTE LA LIGNE A LA TABLE
                         call tbajli(nomtb, nbpara, table_parak, table_vali, table_valr,&
                                     [cbid], table_valk, 0)
