@@ -18,12 +18,12 @@
 interface
     subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
                       nbtrou, tatrou)
-        integer :: nbma
-        character(len=8) :: mailla
-        integer :: tabmai(nbma)
-        integer :: dim
-        character(len=*) :: typmai
-        integer :: nbtrou
-        integer :: tatrou(nbma)
+        integer, intent(in) :: nbma
+        character(len=8), intent(in) :: mailla
+        integer, intent(in) :: tabmai(nbma)
+        integer, intent(in) :: dim
+        character(len=*), intent(in) :: typmai
+        integer, intent(out) :: nbtrou
+        integer, intent(out) :: tatrou(nbma)
     end subroutine utflm2
 end interface

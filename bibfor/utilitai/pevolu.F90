@@ -64,7 +64,7 @@ subroutine pevolu(resu, modele, nbocc)
 !     ------------------------------------------------------------------
 !
     integer :: nr, nd, np, nc, ni, no, nli, nlo, iret, ibid, nbma, nbordr, jno
-    integer :: nn
+    integer :: nn, nbmaf
     integer :: nbpar, nbpmax, iocc, inum, numo, jin, nbmato, iresma, ncmpm, ifm
     integer :: nbcmp, nbint, jbpct, ivalr, ii, i, ib, jvalr, jvali, jvalk, niv
     integer :: jlicmp,   nucmp, ivali, bfix, ivol(2), tord(1)
@@ -362,7 +362,6 @@ subroutine pevolu(resu, modele, nbocc)
 !           GEOMETRIQUE (2D OU 3D)
             call getvtx('VOLUMOGRAMME', 'TYPE_MAILLE', iocc=iocc, scal=infoma, nbret=iret)
             if (iret .ne. 0) then
-                mesmae=mesmaf
                 if (infoma .eq. '2D') then
                     iresma=2
                 else if (infoma.eq.'3D') then
@@ -371,7 +370,14 @@ subroutine pevolu(resu, modele, nbocc)
                     ASSERT(.false.)
                 endif
                 call utflmd(mailla, mesmai, nbma, iresma, ' ',&
-                            nbma, mesmaf)
+                            nbmaf, mesmaf)
+                if (nbmaf .gt. 0) then
+                    call jedetr(mesmai)
+                    nbma = nbmaf
+                    mesmae = mesmaf
+                else
+                    call utmess('F', 'PREPOST2_6')
+                endif    
             else
                 infoma='-'
             endif

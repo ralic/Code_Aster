@@ -39,6 +39,13 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CA
  Le mot-clé RESTREINT n'est pas autorisé dans EXTR_RESU en reuse.
 """),
 
+6 : _(u"""
+  Aucune maille n'a été trouvée avec le critère donné.
+
+Conseil :
+  Il faut vérifier votre critère ou le supprimer.
+"""),
+
 35 : _(u"""
    désolé on ne sait pas écrire les champs aux noeuds de représentation constante et a valeurs complexes au format  %(k1)s
 """),

@@ -18,12 +18,12 @@
 interface
     subroutine utflmd(mailla, limail, nbmail, dim, typmai,&
                       nbtrou, litrou)
-        character(len=8) :: mailla
-        character(len=*) :: limail
-        integer :: nbmail
-        integer :: dim
-        character(len=*) :: typmai
-        integer :: nbtrou
-        character(len=*) :: litrou
+        character(len=8), intent(in) :: mailla
+        character(len=*), intent(in) :: limail
+        integer, intent(in) :: nbmail
+        integer, intent(in) :: dim
+        character(len=*), intent(in) :: typmai
+        integer, intent(out) :: nbtrou
+        character(len=*), intent(out) :: litrou
     end subroutine utflmd
 end interface

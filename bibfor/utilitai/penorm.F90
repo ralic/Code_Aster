@@ -75,7 +75,7 @@ subroutine penorm(resu, modele)
     integer :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nb_coef_user
     integer :: jno, jin, j_coef_user, tord(1)
     integer :: nbpar, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
-    integer :: nn
+    integer :: nn, nbmaf
     integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
     integer :: nb_cmp_act
     real(kind=8) :: prec, inst, vnorm(1)
@@ -346,9 +346,14 @@ subroutine penorm(resu, modele)
                 ASSERT(.false.)
             endif
             call utflmd(mailla, mesmai, nbma, iresma, ' ',&
-                        nbma, mesmaf)
-            call jedetr(mesmai)
-            mesmai=mesmaf
+                        nbmaf, mesmaf)
+            if (nbmaf .gt. 0) then
+                call jedetr(mesmai)
+                nbma = nbmaf
+                mesmai = mesmaf
+            else
+                call utmess('F', 'PREPOST2_6')
+            endif    
         else
             infoma='-'
         endif
