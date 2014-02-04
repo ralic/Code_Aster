@@ -155,8 +155,8 @@ OPTION__
                           OUT__ MVECTUR  PVECTUR
     COOR_ELGA        478  IN__  NGEOMER  PGEOMER
                           OUT__ EGGEOP_R PCOORPG
-    DEGE_ELGA        158  IN__  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                          OUT__ EDEFGPG  PDEFOPG
+    DEGE_ELGA        -1   IN__
+                          OUT__ XXXXXX   XXXXXX
     DEGE_ELNO        158  IN__  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                           OUT__ EDEFGNO  PDEFOGR

@@ -75,8 +75,6 @@ subroutine te0158(option, nomte)
 !
     if (option .eq. 'DEGE_ELNO') then
         call jevech('PDEFOGR', 'E', jeffg)
-    else if (option .eq. 'DEGE_ELGA') then
-        call jevech('PDEFOPG', 'E', jeffg)
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
@@ -156,64 +154,54 @@ subroutine te0158(option, nomte)
         if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
 !
 !        --- PASSAGE DE G (CENTRE DE GRAVITE) A C (CENTRE DE TORSION)
-            do 20 i = 1, 2
+            do i = 1, 2
                 ul(7* (i-1)+2) = ul(7* (i-1)+2) - ez*ul(7* (i-1)+4)
                 ul(7* (i-1)+3) = ul(7* (i-1)+3) + ey*ul(7* (i-1)+4)
-20          continue
+            enddo
         endif
 !
 !        BOUCLE SUR LES POINTS DE GAUSS
-        do 30 kp = 1, 3
+        do kp = 1, 3
             if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
                 call jsd1ff(kp, xl, phiy, phiz, d1btg)
             else
                 call jpd1ff(kp, xl, phiy, phiz, d1b)
             endif
 !
-            do 32 i = 1, nc
+            do i = 1, nc
                 dege(kp,i) = zero
-                do 34 j = 1, 2*nc
+                do j = 1, 2*nc
                     if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
                         dege(kp,i) = dege(kp,i) + d1btg(i,j)*ul(j)
                     else
                         dege(kp,i) = dege(kp,i) + d1b(i,j)*ul(j)
                     endif
-34              continue
-32          continue
+                enddo
+            enddo
             dege(kp,1) = dege(kp,1) - epsthe(1)
 !
-30      continue
+        enddo
 !
-        if (option .eq. 'DEGE_ELGA') then
-            do 36 kp = 1, 3
-                zr(jeffg-1+(kp-1)*nc + 1) = dege(kp,1)
-                zr(jeffg-1+(kp-1)*nc + 2) = dege(kp,2)
-                zr(jeffg-1+(kp-1)*nc + 3) = dege(kp,3)
-                zr(jeffg-1+(kp-1)*nc + 4) = dege(kp,4)
-                zr(jeffg-1+(kp-1)*nc + 5) = dege(kp,4)
-                zr(jeffg-1+(kp-1)*nc + 6) = dege(kp,6)
-36          continue
-        else
+
 !        --- POUR LE POINT 1 ---
-            ksi1 = -sqrt( 5.d0 / 3.d0 )
-            d1b3(1,1) = ksi1*(ksi1-1.d0)/2.0d0
-            d1b3(1,2) = 1.d0-ksi1*ksi1
-            d1b3(1,3) = ksi1*(ksi1+1.d0)/2.0d0
+        ksi1 = -sqrt( 5.d0 / 3.d0 )
+        d1b3(1,1) = ksi1*(ksi1-1.d0)/2.0d0
+        d1b3(1,2) = 1.d0-ksi1*ksi1
+        d1b3(1,3) = ksi1*(ksi1+1.d0)/2.0d0
 !        --- POUR LE POINT 2 ---
-            ksi1 = sqrt( 5.d0 / 3.d0 )
-            d1b3(2,1) = ksi1*(ksi1-1.d0)/2.0d0
-            d1b3(2,2) = 1.d0-ksi1*ksi1
-            d1b3(2,3) = ksi1*(ksi1+1.d0)/2.0d0
+        ksi1 = sqrt( 5.d0 / 3.d0 )
+        d1b3(2,1) = ksi1*(ksi1-1.d0)/2.0d0
+        d1b3(2,2) = 1.d0-ksi1*ksi1
+        d1b3(2,3) = ksi1*(ksi1+1.d0)/2.0d0
 !
-            do 42 i = 1, nc
-                do 44 kp = 1, 3
-                    zr(jeffg+i-1) =zr(jeffg+i-1) +dege(kp,i)*d1b3(1,&
-                    kp)
-                    zr(jeffg+nc+i-1)=zr(jeffg+nc+i-1)+dege(kp,i)*d1b3(&
-                    2,kp)
-44              continue
-42          continue
-        endif
+        do i = 1, nc
+            do kp = 1, 3
+                zr(jeffg+i-1) =zr(jeffg+i-1) +dege(kp,i)*d1b3(1,&
+                kp)
+                zr(jeffg+nc+i-1)=zr(jeffg+nc+i-1)+dege(kp,i)*d1b3(&
+                2,kp)
+            enddo
+        enddo
     else
 !
 !     POUTRE MULTIFIBRES MECA_POU_D_EM
@@ -226,28 +214,15 @@ subroutine te0158(option, nomte)
         istrxr=jtab(1)
         alpha=zr(istrxr-1+15)
 !
-        if (option .eq. 'DEGE_ELNO') then
-            do 50 in = 1, 2
-                call pmfpti(-in, zr(ipoids), zr(ivf), xl, xi,&
-                            wi, b, gg)
-                call pmfdge(b, gg, ul, alpha, degem)
-                ipos=jeffg+nc*(in-1)
-                do 60 i = 1, nc
-                    zr(ipos+i-1) = degem(i)
-60              continue
-50          continue
-!
-        else if (option.eq.'DEGE_ELGA') then
-            do 55 in = 1, 2
-                call pmfpti(in, zr(ipoids), zr(ivf), xl, xi,&
-                            wi, b, gg)
-                call pmfdge(b, gg, ul, alpha, degem)
-                ipos=jeffg+nc*(in-1)
-                do 65 i = 1, nc
-                    zr(ipos+i-1) = degem(i)
-65              continue
-55          continue
-        endif
+        do in = 1, 2
+            call pmfpti(-in, zr(ipoids), zr(ivf), xl, xi,&
+                        wi, b, gg)
+            call pmfdge(b, gg, ul, alpha, degem)
+            ipos=jeffg+nc*(in-1)
+            do i = 1, nc
+                zr(ipos+i-1) = degem(i)
+            enddo
+        enddo
     endif
 !
 end subroutine
