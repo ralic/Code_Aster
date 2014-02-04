@@ -64,6 +64,7 @@ def runtest(self):
             func = Logs.error
             status += 1
         func('`- exit %s' % retcode)
+        notify('testcase %s ended - exit %s' % (test, retcode), errlevel=retcode)
     if status != 0:
         raise Errors.WafError('testcase failed')
 
@@ -75,3 +76,17 @@ def _has_asrun():
     except OSError:
         iret = 127
     return iret == 0
+
+def notify(message, errlevel=0):
+    """Send a message as a notification bubble"""
+    title = 'codeaster waf'
+    d_icon = {
+        0 : 'weather-clear',
+        'nook' : 'weather-overcast',
+        1 : 'weather-storm',
+    }
+    icon = d_icon.get(errlevel, d_icon[1])
+    try:
+        Popen(['notify-send', '-i', icon, title, message])
+    except OSError:
+        pass
