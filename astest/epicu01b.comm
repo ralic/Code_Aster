@@ -1,5 +1,4 @@
 #
-#
 # TITRE VALIDATION 3D DE LA COMMANDE POST_K_BETA
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -307,7 +306,7 @@ TEMP = THER_NON_LINE (
                      )
 
 #===== 3 - MODELISATION ET RESOLUTION MECANIQUE  =======================
-#=====     COMPORTEMENT ELASTIQUE LINEAIRE  ============================
+#=====     COMPORTEMENT ELASTIQUE NON LINEAIRE DE VON MISES  ===========
 
 # 3.1 DEFINITION DU MODELE MECANIQUE
 
@@ -781,7 +780,7 @@ TB_KBETA = POST_K_BETA (
                          MAILLAGE  = MAIL,
                          MATER_REV = MAME_RE2,
                          EPAIS_REV = EPREV,
-                         FISSURE   =_F ( FORM_FISS   = 'ELLIPSE',
+                         FISSURE   =_F (
                                          DECALAGE    = DECADEF,
                                          PROFONDEUR  = PROFDEF,
                                          LONGUEUR    = LONGDEF,
