@@ -44,6 +44,7 @@ def configure(self):
 @Configure.conf
 def check_bibc_depends(self):
     """check dependencies of bibc"""
+    # never in static
     self.check_cc(uselib_store='SYS', lib='dl')
 
 def build(self):

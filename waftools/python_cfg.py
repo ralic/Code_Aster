@@ -10,12 +10,25 @@ from waflib import Options, Configure, Errors, Utils
 
 def options(self):
     #self.load('python')    # only --nopyc/--nopyo, always disabled below
-    pass
+    group = self.add_option_group('Code_Aster options')
+    group.add_option('--embed-python', dest='embed_python',
+                    default=False, action='store_true',
+                    help='Embed python as static libraries (experimental, '
+                         'not enabled by embed-all)')
 
 def configure(self):
     self.configure_pythonpath()
+    # require to force static libs if --embed-python is present
+    embed_py = self.options.embed_python
+    if embed_py:
+        self.static_lib_pref()
     self.check_python()
     self.check_numpy()
+    if embed_py:
+        self.revert_lib_pref()
+        if self.env['LIB_PYEMBED']:
+            self.env['STLIB_PYEMBED'] = self.env['LIB_PYEMBED']
+            del self.env['LIB_PYEMBED']
 
 ###############################################################################
 

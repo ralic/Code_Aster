@@ -13,21 +13,6 @@ LAPACK = ('lapack', )
 SCALAPACK = ('scalapack', )
 OPTIONAL_DEPS = ('cblas', )
 
-###############################################################################
-from waflib.Tools import fc, c, ccroot
-# original run_str command line is store as hcode
-for feature in ('c', 'cxx', 'cprogram', 'cshlib', 'fc', 'fcprogram', 'fcshlib'):
-    ccroot.USELIB_VARS[feature].add('OPTLIB_FLAGS')
-
-class fcprogram(fc.fcprogram):
-    """Link object files into a fortran program, add optional OPTLIB_FLAGS at the end"""
-    run_str = fc.fcprogram.hcode + ' ${OPTLIB_FLAGS}'
-
-class cprogram(c.cprogram):
-    """Link object files into a C program, add optional OPTLIB_FLAGS at the end"""
-    run_str = c.cprogram.hcode + ' ${OPTLIB_FLAGS}'
-
-###############################################################################
 def options(self):
     group = self.add_option_group("Mathematics  libraries options")
     group.add_option('--maths-libs', type='string',
@@ -39,7 +24,7 @@ def options(self):
                     help='Embed math libraries as static library')
 
 def configure(self):
-    # always check for libpthread, libm
+    # always check for libpthread, libm (never in static)
     self.check_cc(uselib_store='MATH', lib='pthread')
     self.check_cc(uselib_store='MATH', lib='m')
     if self.options.maths_libs in (None, 'auto'):
