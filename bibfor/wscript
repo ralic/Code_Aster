@@ -355,7 +355,7 @@ UUDhrNe2n47oGiqnvu1VOkuVZWOqXTTPVWE4DdMcqVUphtlnupKmG3HClhMGzjUc/kPN3MJVE39z
 UU8tXTCiGNuXp22QFbmvgmINfLw7Ph8eLrAtdRU29JYGh7fjKwsufNa3+LF+AEX8l7U=
 ''')
     self.setenv('debug')
-    flags = ['-g']
+    flags = ['-g'] + Utils.to_list(self.env['FCFLAGS_ASTER_DEBUG'])
     self.start_msg('Setting fortran debug flags')
     self.env.append_unique('FCFLAGS', flags)
     self.end_msg(flags)

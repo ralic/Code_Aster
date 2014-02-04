@@ -2,7 +2,7 @@
 
 import os.path as osp
 
-from waflib import Configure, Logs
+from waflib import Configure, Logs, Utils
 
 def options(self):
     self.load('python_cfg', tooldir='waftools')
@@ -182,7 +182,7 @@ def check_cflags(self):
 @Configure.conf
 def check_optimization_cflags(self):
     self.setenv('debug')
-    flags = ['-g']
+    flags = ['-g'] + Utils.to_list(self.env['CFLAGS_ASTER_DEBUG'])
     self.start_msg('Setting C debug flags')
     self.env.append_unique('CFLAGS', flags)
     self.end_msg(flags)
