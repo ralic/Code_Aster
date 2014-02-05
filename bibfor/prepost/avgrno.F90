@@ -84,7 +84,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !-----------------------------------------------------------------------
     integer :: i
     integer :: jcnrd, jcnrl, jcnrv, iret, icesd, icesl, icesv
-    integer :: tneces, tdisp2(1), jvecno, n, k
+    integer :: tneces, tdisp2(1), n, k
     integer :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
     integer :: l, cnbno, ibidno, kwork, somnow, inop
     integer :: nbma, adrma, jtypma
@@ -164,8 +164,6 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         vali (1) = tdisp2(1)
         vali (2) = tneces
         call utmess('F', 'PREPOST5_8', ni=2, vali=vali)
-    else
-        call wkvect('&&AVGRNO.VECTNO', 'V V R', tneces, jvecno)
     endif
 !
     typcha = 'NON_PERIODIQUE'
@@ -200,7 +198,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
         call vecnuv(ideb, ifin, gamma, phi0, dphi,&
                     n, k, dim, vect_norma, vect_tangu,&
-vect_tangv)
+                    vect_tangv)
 !
     end do
 !
@@ -333,6 +331,8 @@ vect_tangv)
     AS_DEALLOCATE(vr=vect_norma)
     AS_DEALLOCATE(vr=vect_tangu)
     AS_DEALLOCATE(vr=vect_tangv)
+
+    call jedetr('&&AVGRNO.CNCINV')
 !
     call jedema()
 end subroutine
