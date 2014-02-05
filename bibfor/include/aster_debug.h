@@ -43,13 +43,13 @@
 #   define DEBUG_ALLOCATE(a, b, c) print *, MARKER, a, ':', b, c
 #   define __DEBUG_LOC__
 #else
-#   define DEBUG_ALLOCATE(a, b, c)
+#   define DEBUG_ALLOCATE(a, b, c) continue
 #endif
 
 #if defined(__DEBUG_LOC__) || defined(__DEBUG_ALL__)
 #   define DEBUG_LOC(label, a, b) write(6,"(1X,A,A,'@',A,':',I4)") MARKER, label, a, b
 #else
-#   define DEBUG_LOC(label, a, b)
+#   define DEBUG_LOC(label, a, b) continue
 #endif
 
 #endif
