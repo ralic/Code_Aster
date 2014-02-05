@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 #
@@ -50,7 +50,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
 
 MOTHER=AFFE_MODELE(  MAILLAGE=MA,
                      AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
-                              MODELISATION = 'COQUE_PLAN'))
+                              MODELISATION = 'COQUE_AXIS'))
 
 E_TEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                      VALE=(-1., 2.0E+05,
@@ -69,27 +69,82 @@ MATTH=DEFI_MATERIAU(ELAS_FO=_F( E = E_TEMP, NU = NU_FO, RHO = 8.E-6,
 
 MATHER=DEFI_MATERIAU(THER=_F( LAMBDA = 1.0, RHO_CP = 0.0) )
 
+
 CARE=AFFE_CARA_ELEM(   MODELE=MO,
                        COQUE=_F( GROUP_MA = 'TOUT',
                                  EPAIS = 1.00,
                                  A_CIS = 1.E3,    MODI_METRIQUE = 'NON'))
 # ------------------------------------------------------------------
+# ------------------------------------------------------------------
+# ------------------------------------------------------------------
+# ------------------------------------------------------------------
 
-T_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
-                   AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-                            VALE=   (    0.0   ,  0.0 ,    0.0   ), ), )
+CHMATHER=AFFE_MATERIAU(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
 
-T_FIN1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
-                   AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-                            VALE=   (   -0.5   ,   0. ,    0.5   ), ), )
 
-T_FIN2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
-                   AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-                            VALE=   (    0.1   ,  0.1 ,    0.1   ), ), )
+CH_INI=AFFE_CHAR_THER(MODELE=MOTHER,
+                      TEMP_IMPO=_F( TOUT='OUI',
+                      TEMP_INF = 0., 
+                      TEMP_SUP = 0.,))
+CH_FIN1=AFFE_CHAR_THER(MODELE=MOTHER,
+                      TEMP_IMPO=_F( TOUT='OUI',
+                      TEMP_INF = -0.5, 
+TEMP_SUP = +0.5,))
+CH_FIN2=AFFE_CHAR_THER(MODELE=MOTHER,
+                      TEMP_IMPO=_F( TOUT='OUI',
+                      TEMP_INF = 0.1, 
+                      TEMP_SUP = 0.1,))
+#
+# RESOLUTION ------------------------------------------------------
+#
 
+TEM_INIT=THER_LINEAIRE(MODELE=MOTHER,
+                       CARA_ELEM=CARE,
+                       CHAM_MATER=CHMATHER,
+                       EXCIT=_F(  CHARGE = CH_INI) )
+
+IMPR_RESU(RESU=_F(RESULTAT=TEM_INIT))
+
+TEM_FIN1=THER_LINEAIRE(MODELE=MOTHER,
+                       CARA_ELEM=CARE,
+                       CHAM_MATER=CHMATHER,
+                       EXCIT=_F(  CHARGE = CH_FIN1) )
+
+IMPR_RESU(RESU=_F(RESULTAT=TEM_FIN1))
+
+TEM_FIN2=THER_LINEAIRE(MODELE=MOTHER,
+                       CARA_ELEM=CARE,
+                       CHAM_MATER=CHMATHER,
+                       EXCIT=_F(  CHARGE = CH_FIN2) )
+
+IMPR_RESU(RESU=_F(RESULTAT=TEM_FIN2))
+
+# ------------------------------------------------------------------
+# ------------------------------------------------------------------
+# ------------------------------------------------------------------
+# ------------------------------------------------------------------
+
+T_INIT=CREA_CHAMP( OPERATION='EXTR', 
+                   TYPE_CHAM='NOEU_TEMP_R', 
+                   NOM_CHAM='TEMP',
+                   RESULTAT=TEM_INIT)
+
+IMPR_RESU(RESU=_F(CHAM_GD=T_INIT))
+
+T_FIN1=CREA_CHAMP( OPERATION='EXTR', 
+                   TYPE_CHAM='NOEU_TEMP_R', 
+                   NOM_CHAM='TEMP',
+                   RESULTAT=TEM_FIN1)
+
+IMPR_RESU(RESU=_F(CHAM_GD=T_FIN1))
+
+T_FIN2=CREA_CHAMP( OPERATION='EXTR', 
+                   TYPE_CHAM='NOEU_TEMP_R', 
+                   NOM_CHAM='TEMP',
+                   RESULTAT=TEM_FIN2)
+
+IMPR_RESU(RESU=_F(CHAM_GD=T_FIN2))
 
 TEMPLI1=CREA_RESU( OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
@@ -518,6 +573,5 @@ TEST_RESU(RESU=_F(INST=1.0,
           )
 
 #----------------------------------------------------------------------------
-
 FIN()
 #

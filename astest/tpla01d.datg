@@ -1,0 +1,77 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v6.6.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/lebouvier/AL_21546_COQUE_AXIS/TPLA01')
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+A = geompy.MakeVertex(0.3, 0, 0)
+B = geompy.MakeVertex(0.35, 0, 0)
+AB = geompy.MakeLineTwoPnt(A, B)
+[A_1,B_1] = geompy.ExtractShapes(AB, geompy.ShapeType["VERTEX"], True)
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( A, 'A' )
+geompy.addToStudy( B, 'B' )
+geompy.addToStudy( AB, 'AB' )
+geompy.addToStudyInFather( AB, A_1, 'A' )
+geompy.addToStudyInFather( AB, B_1, 'B' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+Cylindre = smesh.Mesh(AB)
+Regular_1D = Cylindre.Segment()
+Nb_Segments_1 = Regular_1D.NumberOfSegments(10)
+Nb_Segments_1.SetDistrType( 0 )
+AB_1 = Cylindre.GroupOnGeom(AB,'AB',SMESH.EDGE)
+A_2 = Cylindre.GroupOnGeom(A_1,'A',SMESH.NODE)
+B_2 = Cylindre.GroupOnGeom(B_1,'B',SMESH.NODE)
+Quadratic_Mesh_1 = Regular_1D.QuadraticMesh()
+isDone = Cylindre.Compute()
+smesh.SetName(Cylindre, 'Cylindre')
+Cylindre.ExportMED( r'/home/lebouvier/AL_21546_COQUE_AXIS/TPLA01/tpla01d.med', 0, SMESH.MED_V2_2, 1 )
+
+## set object names
+smesh.SetName(Cylindre.GetMesh(), 'Cylindre')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(AB_1, 'AB')
+smesh.SetName(A_2, 'A')
+smesh.SetName(B_2, 'B')
+smesh.SetName(Quadratic_Mesh_1, 'Quadratic Mesh_1')
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
