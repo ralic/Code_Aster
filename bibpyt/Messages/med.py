@@ -310,7 +310,7 @@ cata_msg = {
 """),
 
 54 : _(u"""
-  -> Le maillage fourni à LIRE_RESU n'est pas cohérent avec le type de structure
+  -> Le maillage fourni à la commande n'est pas cohérent avec le type de structure
      de données résultat que vous souhaitez produire.
 """),
 
