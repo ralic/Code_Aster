@@ -9,7 +9,7 @@ subroutine trcart(ific, nocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/get_tole_mach.h"
+#include "asterfort/tresu_tole.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
@@ -80,7 +80,7 @@ subroutine trcart(ific, nocc)
         lign2(nl2+17:nl2+17)='.'
 !
 !
-        call get_tole_mach(epsi, mcf='CARTE', iocc=iocc)
+        call tresu_tole(epsi, mcf='CARTE', iocc=iocc)
         call getvtx('CARTE', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
         call getvr8('CARTE', 'VALE_CALC', iocc=iocc, scal=valr, nbret=n1)

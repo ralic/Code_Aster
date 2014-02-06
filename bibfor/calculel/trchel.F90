@@ -10,7 +10,7 @@ subroutine trchel(ific, nocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/get_tole_mach.h"
+#include "asterfort/tresu_tole.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -114,7 +114,7 @@ subroutine trchel(ific, nocc)
             lign2(nl2+17:nl2+17)='.'
         endif
 !
-        call get_tole_mach(epsi, mcf='CHAM_ELEM', iocc=iocc)
+        call tresu_tole(epsi, mcf='CHAM_ELEM', iocc=iocc)
         call getvtx('CHAM_ELEM', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
         call getvr8('CHAM_ELEM', 'VALE_CALC', iocc=iocc, nbval=0, nbret=n1)

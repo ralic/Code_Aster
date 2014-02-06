@@ -16,10 +16,10 @@
 ! ======================================================================
 !
 interface
-    subroutine get_tole_mach(tole, prec, mcf, iocc)
+    subroutine tresu_tole(tole, prec, mcf, iocc)
         real(kind=8), intent(out) :: tole
         real(kind=8), intent(out), optional :: prec
         character(len=*), intent(in), optional :: mcf
         integer, intent(in), optional :: iocc
-    end subroutine
+    end subroutine tresu_tole
 end interface

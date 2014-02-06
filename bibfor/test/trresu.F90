@@ -25,6 +25,7 @@ subroutine trresu(ific, nocc)
 #include "asterfort/tresu_champ_val.h"
 #include "asterfort/tresu_read_refe.h"
 #include "asterfort/tresu_champ_cmp.h"
+#include "asterfort/tresu_ordgrd.h"
 #include "asterfort/utestr.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
@@ -109,7 +110,6 @@ subroutine trresu(ific, nocc)
         call getvtx('RESU', 'VALE_ABS', iocc=iocc, scal=ssigne, nbret=n1)
 !
         call getvr8('RESU', 'VALE_CALC', iocc=iocc, nbval=0, nbret=n1)
-        call getvr8('RESU', 'ORDRE_GRANDEUR', iocc=iocc, nbval=0, nbret=nord)
         call getvis('RESU', 'VALE_CALC_I', iocc=iocc, nbval=0, nbret=n2)
         call getvc8('RESU', 'VALE_CALC_C', iocc=iocc, nbval=0, nbret=n3)
         skip = .false.
@@ -121,27 +121,21 @@ subroutine trresu(ific, nocc)
             call wkvect(travr, 'V V R', nref, irefr)
             call getvr8('RESU', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr),&
                         nbret=iret)
-            if ( abs(zr(irefr)) .le. r8prem() ) then
-                if (nord .eq. 0) then
-                    skip = .true.
-                else
-                    call getvr8('RESU', 'ORDRE_GRANDEUR', iocc=iocc, scal=ordgrd)
-                endif
-            endif
+            call tresu_ordgrd(zr(irefr), skip, ordgrd, mcf='RESU', iocc=iocc)
 !
         else if (n2 .ne. 0) then
             nref=-n2
             typres = 'I'
             call jedetr(travi)
             call wkvect(travi, 'V V I', nref, irefi)
-            call getvis('RESU', 'VALE_CALC_I', iocc=iocc, nbval=nref, vect=zi( irefi),&
+            call getvis('RESU', 'VALE_CALC_I', iocc=iocc, nbval=nref, vect=zi(irefi),&
                         nbret=iret)
         else if (n3 .ne. 0) then
             nref=-n3
             typres = 'C'
             call jedetr(travc)
             call wkvect(travc, 'V V C', nref, irefc)
-            call getvc8('RESU', 'VALE_CALC_C', iocc=iocc, nbval=nref, vect=zc( irefc),&
+            call getvc8('RESU', 'VALE_CALC_C', iocc=iocc, nbval=nref, vect=zc(irefc),&
                         nbret=iret)
         endif
 ! ----------------------------------------------------------------------

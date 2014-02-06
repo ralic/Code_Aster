@@ -1,4 +1,4 @@
-subroutine get_tole_mach(tole, prec, mcf, iocc)
+subroutine tresu_tole(tole, prec, mcf, iocc)
     implicit none
     real(kind=8), intent(out) :: tole
     real(kind=8), intent(out), optional :: prec

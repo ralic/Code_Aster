@@ -3,7 +3,7 @@ subroutine trprec(mcf, iocc, epsi, crit, prec,&
     implicit none
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/get_tole_mach.h"
+#include "asterfort/tresu_tole.h"
     character(len=*) :: mcf
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -36,7 +36,7 @@ subroutine trprec(mcf, iocc, epsi, crit, prec,&
     character(len=8) :: crit, crit2, critr(2)
 !     ------------------------------------------------------------------
 !
-    call get_tole_mach(epsi, prec, mcf, iocc)
+    call tresu_tole(epsi, prec, mcf, iocc)
 !
     call getvtx(mcf, 'CRITERE', iocc=iocc, nbval=0, nbret=nc)
     nc = -nc
