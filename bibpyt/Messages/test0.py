@@ -88,6 +88,7 @@ Il faut :
 
 12 : _(u"""
 Pour les tests de non régression de valeurs nulles, il faut définir un ordre de grandeur.
+Dans le cas contraire, le test de non régression est ignoré.
 """),
 
 }

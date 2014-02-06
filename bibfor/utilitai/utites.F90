@@ -5,7 +5,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
     implicit       none
 #include "asterfort/assert.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/utcovt.h"
+#include "asterfort/tresu_print.h"
 #include "asterfort/utmess.h"
     integer, intent(in) :: nbref
     character(len=*), intent(in) :: label1
@@ -55,37 +55,17 @@ subroutine utites(label1, label2, type, nbref, refi,&
     integer :: wali
     real(kind=8) :: walr, ordgrd
     complex(kind=8) :: walc
-    integer :: i, imin, minvi, tmpi, nl, tvali(2), nl1, nl2
-    parameter   (nl=6)
-    character(len=4) :: testok, rela
-    character(len=16) :: k120, k170, tcherr(2)
-    character(len=24) :: tchval(2), tchvar(2), tchvac(2)
-    character(len=48) :: lign2(nl), tchva2(2)
-    real(kind=8) :: err, zero, cent, tmpr, minvr, minvc, tmpc
-    real(kind=8) :: tvalr(2), terrr(2)
-    complex(kind=8) :: zeroc, vtc
-    logical :: lok, skip
-    data lign2/'REFERENCE','LEGENDE','VALE_REFE','VALE_CALC','ERREUR',&
-     &           'TOLE'/
+    integer :: i, imin, minvi, tmpi
+    real(kind=8) :: tmpr, minvr, minvc, tmpc
+    complex(kind=8) :: vtc
+    logical :: skip, isrela
 !     ------------------------------------------------------------------
 !   variables de travail
+    isrela = crit(1:4) .eq. 'RELA'
     wali = vali
     walr = valr
     walc = valc
 !
-    k120 = label1
-    k170 = label2
-    rela = crit
-    cent = 100.0d0
-    zero = 0.d0
-    zeroc = dcmplx(0.d0,0.d0)
-    testok = 'NOOK'
-    tchvar(1) = ' '
-    tchvar(2) = ' '
-    tchvac(1) = ' '
-    tchvac(2) = ' '
-    tchva2(1) = ' '
-    tchva2(2) = ' '
     if (present(ignore)) then
         skip = ignore
     else
@@ -95,9 +75,6 @@ subroutine utites(label1, label2, type, nbref, refi,&
         ordgrd = compare
     else
         ordgrd = 1.d0
-    endif
-    if (skip) then
-        call utmess('A', 'TEST0_12')
     endif
 !
 !-----------------
@@ -117,79 +94,8 @@ subroutine utites(label1, label2, type, nbref, refi,&
             endif
 10      continue
 !
-        tvalr(1)=refr(imin)
-        tvalr(2)=walr
-        tvali(1)=0
-        tvali(2)=0
-        tchval(1)=' '
-        tchval(2)=' '
-        tcherr(1)=' '
-        tcherr(2)=' '
-!
-        if (rela .eq. 'RELA') then
-            ASSERT(ordgrd .eq. 1.d0)
-            lok = ( abs(walr-refr(imin)) .le. epsi * abs(refr(imin)) )
-            if (refr(imin) .ne. zero) then
-                err = (walr - refr(imin)) / refr(imin) *cent
-            else
-                if (lok) then
-                    err = 0.d0
-                else
-                    err = 999.999999d0
-                endif
-            endif
-            if (lok) testok = ' OK '
-            terrr(1)=err
-            terrr(2)=epsi*cent
-        else
-            if (ordgrd .ne. 1.d0) then
-                write(ific,1016) 'ORDRE DE GRANDEUR :     ', ordgrd
-            endif
-            lok = ( abs(walr - refr(imin)) .le. epsi * ordgrd )
-            err = walr - refr(imin)
-            if (lok) testok = ' OK '
-            terrr(1)=err
-            terrr(2)=epsi * ordgrd
-        endif
-!
-        call utcovt('R', tvalr, tvali, terrr, rela,&
-                    tchval, tcherr)
-!
-        nl1=lxlgut(tchval(1))
-        nl2=lxlgut(tchval(2))
-!
-!       set blank after formatting to keep alignment
-        if (skip) then
-            testok = '-'
-            tchval(1) = '-'
-            tchval(2) = '-'
-            tcherr(1) = '-'
-            tcherr(2) = '-'
-        endif
-!
-        if (nl1 .lt. 17) then
-            if (nl2 .lt. 17) then
-                if (llab) write(ific,1616)(lign2(i), i=1,nl)
-                write(ific,5616)testok,k120,k170,tchval(1),tchval(2),&
-                                tcherr(1),tcherr(2)
-!
-            else
-                if (llab) write(ific,1624)(lign2(i), i=1,nl)
-                write(ific,5624)testok,k120,k170,tchval(1),tchval(2),&
-                                tcherr(1),tcherr(2)
-            endif
-        else
-            if (nl2 .lt. 17) then
-                if (llab) write(ific,2416)(lign2(i), i=1,nl)
-                write(ific,6416)testok,k120,k170,tchval(1),tchval(2),&
-                tcherr(1),tcherr(2)
-!
-            else
-                if (llab) write(ific,2424)(lign2(i), i=1,nl)
-                write(ific,6424)testok,k120,k170,tchval(1),tchval(2),&
-                tcherr(1),tcherr(2)
-            endif
-        endif
+        call tresu_print(label1, label2, llab, skip, isrela, &
+                         epsi, refr=refr(imin), valr=walr, compare=ordgrd)
 !
 !-------------------
 ! --- CAS ENTIER ---
@@ -197,6 +103,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
 !
     else if (type(1:1) .eq. 'I') then
 !
+        if (ssigne .eq. 'OUI') wali = abs(wali)
         minvi=abs(wali-refi(1))
         imin=1
         do 20 i = 1, nbref-1
@@ -206,77 +113,9 @@ subroutine utites(label1, label2, type, nbref, refi,&
                 imin=i+1
             endif
 20      continue
-        if (ssigne .eq. 'OUI') wali = abs(wali)
-        err = dble( wali - refi(imin) )
 !
-        tvalr(1)=0.d0
-        tvalr(2)=0.d0
-        tvali(1)=refi(imin)
-        tvali(2)=wali
-        tchval(1)=' '
-        tchval(2)=' '
-        tcherr(1)=' '
-        tcherr(2)=' '
-!
-        if (rela .eq. 'RELA') then
-            lok = ( abs( err ) .le. epsi*abs(refi(imin)) )
-            if (refi(imin) .ne. 0) then
-                err = ( wali - refi(imin) )*cent / refi(imin)
-            else
-                if (lok) then
-                    err = 0.d0
-                else
-                    err = 999.999999d0
-                endif
-            endif
-            if (lok) testok = ' OK '
-            terrr(1)=err
-            terrr(2)=epsi*cent
-        else
-            lok = ( abs( err ) .le. epsi )
-            if (lok) testok = ' OK '
-            terrr(1)=err
-            terrr(2)=epsi
-        endif
-!
-        call utcovt('I', tvalr, tvali, terrr, rela,&
-                    tchval, tcherr)
-!
-        nl1=lxlgut(tchval(1))
-        nl2=lxlgut(tchval(2))
-!
-!       set blank after formatting to keep alignment
-        if (skip) then
-            testok = '-'
-            tchval(1) = '-'
-            tchval(2) = '-'
-            tcherr(1) = '-'
-            tcherr(2) = '-'
-        endif
-!
-        if (nl1 .lt. 17) then
-            if (nl2 .lt. 17) then
-                if (llab) write(ific,1616)(lign2(i), i=1,nl)
-                write(ific,5616)testok,k120,k170,tchval(1),tchval(2),&
-                tcherr(1),tcherr(2)
-!
-            else
-                if (llab) write(ific,1624)(lign2(i), i=1,nl)
-                write(ific,5624)testok,k120,k170,tchval(1),tchval(2),&
-                tcherr(1),tcherr(2)
-            endif
-        else
-            if (nl2 .lt. 17) then
-                if (llab) write(ific,2416)(lign2(i), i=1,nl)
-                write(ific,6416)testok,k120,k170,tchval(1),tchval(2),&
-                tcherr(1),tcherr(2)
-!
-            else
-                if (llab) write(ific,2424)(lign2(i), i=1,nl)
-                write(ific,6424)testok,k120,k170,tchval(1),tchval(2),&
-                tcherr(1),tcherr(2)
-            endif
-        endif
+        call tresu_print(label1, label2, llab, skip, isrela, &
+                         epsi, refi=refi(imin), vali=wali)
 !
 !---------------------
 ! --- CAS COMPLEXE ---
@@ -304,145 +143,9 @@ subroutine utites(label1, label2, type, nbref, refi,&
         vtc = refc(imin)
         if (ssigne .eq. 'OUI') vtc = abs(vtc)
 !
-        tvali(1)=0
-        tvali(2)=0
-        tchval(1)=' '
-        tchval(2)=' '
-        tcherr(1)=' '
-        tcherr(2)=' '
-!
-        if (rela .eq. 'RELA') then
-            lok = ( abs(walc-vtc) .le. epsi * abs(vtc))
-            if (vtc .ne. zeroc) then
-                err = abs(walc - vtc) / abs(vtc) *cent
-            else
-                if (lok) then
-                    err = 0.d0
-                else
-                    err = 999.999999d0
-                endif
-            endif
-            if (lok) testok = ' OK '
-            terrr(1)=err
-            terrr(2)=epsi*cent
-        else
-            lok = ( abs(walc - vtc) .le. epsi )
-            err = abs(walc - vtc)
-            if (lok) testok = ' OK '
-            terrr(1)=err
-            terrr(2)=epsi
-        endif
-!
-        tvalr(1)=dble(vtc)
-        tvalr(2)=dble(walc)
-        call utcovt('R', tvalr, tvali, terrr, rela,&
-                    tchvar, tcherr)
-!
-        tvalr(1)=dimag(vtc)
-        tvalr(2)=dimag(walc)
-        call utcovt('R', tvalr, tvali, terrr, rela,&
-                    tchvac, tcherr)
-!
-        nl1=lxlgut(tchvar(1))
-        nl2=lxlgut(tchvac(1))
-        if (tchvac(1)(1:1) .eq. '-') then
-            tchva2(1)=tchvar(1)(1:nl1)//tchvac(1)(1:nl2)//'j'
-        else
-            tchva2(1)=tchvar(1)(1:nl1)//'+'//tchvac(1)(1:nl2)//'j'
-        endif
-        nl1=lxlgut(tchvar(2))
-        nl2=lxlgut(tchvac(2))
-        if (tchvac(2)(1:1) .eq. '-') then
-            tchva2(2)=tchvar(2)(1:nl1)//tchvac(2)(1:nl2)//'j'
-        else
-            tchva2(2)=tchvar(2)(1:nl1)//'+'//tchvac(2)(1:nl2)//'j'
-        endif
-!
-        nl1=lxlgut(tchva2(1))
-        nl2=lxlgut(tchva2(2))
-!       set blank after formatting to keep alignment
-        if (skip) then
-            testok = '-'
-            tchva2(1) = '-'
-            tchva2(2) = '-'
-            tcherr(1) = '-'
-            tcherr(2) = '-'
-        endif
-!
-        if (nl1 .ge. 48 .or. nl2 .ge. 48) ASSERT(.false.)
-        if (nl1 .lt. 24) then
-            if (nl2 .lt. 24) then
-                if (llab) write(ific,2424)(lign2(i), i=1,nl)
-                write(ific,6424)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            else if (nl2.lt.36) then
-                if (llab) write(ific,2436)(lign2(i), i=1,nl)
-                write(ific,6436)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            else
-                if (llab) write(ific,2448)(lign2(i), i=1,nl)
-                write(ific,6448)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            endif
-        else if (nl1.lt.36) then
-            if (nl2 .lt. 24) then
-                if (llab) write(ific,3624)(lign2(i), i=1,nl)
-                write(ific,7624)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            else if (nl2.lt.36) then
-                if (llab) write(ific,3636)(lign2(i), i=1,nl)
-                write(ific,7636)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            else
-                if (llab) write(ific,3648)(lign2(i), i=1,nl)
-                write(ific,7648)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            endif
-        else
-            if (nl2 .lt. 24) then
-                if (llab) write(ific,4824)(lign2(i), i=1,nl)
-                write(ific,8824)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            else if (nl2.lt.36) then
-                if (llab) write(ific,4836)(lign2(i), i=1,nl)
-                write(ific,8836)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            else
-                if (llab) write(ific,4848)(lign2(i), i=1,nl)
-                write(ific,8848)testok,k120,k170,tchva2(1),tchva2(2),&
-                tcherr(1),tcherr(2)
-            endif
-        endif
+        call tresu_print(label1, label2, llab, skip, isrela, &
+                         epsi, refc=vtc, valc=walc)
 !
     endif
-!
-!     IF (TESTOK.EQ.'NOOK') CALL ABORT()
-    1016 format(5x,1x,a24,1pe12.5)
-    1616 format(5x,6(1x,a16))
-    5616 format(a4,1x,6(1x,a16))
-    1624 format(5x,3(1x,a16),1(1x,a24),2(1x,a16))
-    5624 format(a4,1x,3(1x,a16),1(1x,a24),2(1x,a16))
-    2416 format(5x,2(1x,a16),1(1x,a24),3(1x,a16))
-    6416 format(a4,1x,2(1x,a16),1(1x,a24),3(1x,a16))
-    2424 format(5x,2(1x,a16),2(1x,a24),2(1x,a16))
-    6424 format(a4,1x,2(1x,a16),2(1x,a24),2(1x,a16))
-    2436 format(5x,2(1x,a16),1x,a24,1x,a36,2(1x,a16))
-    6436 format(a4,1x,2(1x,a16),1x,a24,1x,a36,2(1x,a16))
-    2448 format(5x,2(1x,a16),1x,a24,1x,a48,2(1x,a16))
-    6448 format(a4,1x,2(1x,a16),1x,a24,1x,a48,2(1x,a16))
-    3624 format(5x,2(1x,a16),1x,a36,1x,a24,2(1x,a16))
-    7624 format(a4,1x,2(1x,a16),1x,a36,1x,a24,2(1x,a16))
-    3636 format(5x,2(1x,a16),2(1x,a36),2(1x,a16))
-    7636 format(a4,1x,2(1x,a16),2(1x,a36),2(1x,a16))
-    3648 format(5x,2(1x,a16),1x,a36,1x,a48,2(1x,a16))
-    7648 format(a4,1x,2(1x,a16),1x,a36,1x,a48,2(1x,a16))
-    4824 format(5x,2(1x,a16),1x,a48,1x,a24,2(1x,a16))
-    8824 format(a4,1x,2(1x,a16),1x,a48,1x,a24,2(1x,a16))
-    4836 format(5x,2(1x,a16),1x,a48,1x,a36,2(1x,a16))
-    8836 format(a4,1x,2(1x,a16),1x,a48,1x,a36,2(1x,a16))
-    4848 format(5x,2(1x,a16),2(1x,a48),2(1x,a16))
-    8848 format(a4,1x,2(1x,a16),2(1x,a48),2(1x,a16))
-!
-!
 !
 end subroutine

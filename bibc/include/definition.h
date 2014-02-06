@@ -1,5 +1,5 @@
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2014  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -36,7 +36,7 @@
  * }
  * ici, lnom est l'entier qui indique la longueur de la chaine Fortran nomobj
  * Les macros définies ici ne servent qu'à former le nom de la fonction et à
- * mettre les arguments dans le bon ordre. On utilise l'ordre windows comme
+ * mettre les arguments dans le bon ordre. On utilise l'ordre _WIN32 comme
  * base (pointeur char suivi de la longueur) et on reordonne pour les autres compilateurs.
  * STRING_SIZE est le type retourné par strlen.
  */
@@ -187,6 +187,8 @@
 #define CALLSSPSPPSPSS(UN,LN,a,b,c,d,e,f,g,h,i,j)                                F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,strlen(a),strlen(b),strlen(d),strlen(g),strlen(i),strlen(j))
 #define DEFSSPSPPSPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,lg,h,i,j)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,la,lb,ld,lg)
 #define CALLSSPSPPSPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)                          F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,strlen(a),strlen(b),strlen(d),strlen(g))
+#define DEFSSPPPPPPPPPPPP(UN,LN,a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,la,lb)
+#define CALLSSPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n)                    F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,strlen(a),strlen(b))
 /* spécial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
 #define DEFUMATWRAP(UN,LN,a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,la,lb,lu)
 
@@ -312,6 +314,8 @@
 #define CALLSSPSPPSPSS(UN,LN,a,b,c,d,e,f,g,h,i,j)                                F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,strlen(g),h,i,strlen(i),j,strlen(j))
 #define DEFSSPSPPSPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,lg,h,i,j)               STDCALL(UN,LN)(a,la,b,lb,c,d,ld,e,f,g,lg,h,i,j)
 #define CALLSSPSPPSPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)                          F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,strlen(g),h,i,j)
+#define DEFSSPPPPPPPPPPPP(UN,LN,a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n)               STDCALL(UN,LN)(a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n)
+#define CALLSSPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n)                    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e,f,g,h,i,j,k,l,m,n)
 /* spécial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
 #define DEFUMATWRAP(UN,LN,a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)               STDCALL(UN,LN)(a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)
 
@@ -329,13 +333,22 @@
 #define DEFPPPP(UN,LN,a,b,c,d)               STDCALL(UN,LN)(a,b,c,d)
 #define CALLPPPP(UN,LN,a,b,c,d)              F_FUNC(UN,LN)(a,b,c,d)
 #define DEFPPPPP(UN,LN,a,b,c,d,e)               STDCALL(UN,LN)(a,b,c,d,e)
+#define CALLPPPPP(UN,LN,a,b,c,d,e)              F_FUNC(UN,LN)(a,b,c,d,e)
 #define DEFPPPPPP(UN,LN,a,b,c,d,e,f)               STDCALL(UN,LN)(a,b,c,d,e,f)
 #define CALLPPPPPP(UN,LN,a,b,c,d,e,f)              F_FUNC(UN,LN)(a,b,c,d,e,f)
+#define DEFPPPPPPP(UN,LN,a,b,c,d,e,f,g)               STDCALL(UN,LN)(a,b,c,d,e,f,g)
+#define CALLPPPPPPP(UN,LN,a,b,c,d,e,f,g)              F_FUNC(UN,LN)(a,b,c,d,e,f,g)
+#define DEFPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h)
+#define CALLPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h)
 #define DEFPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i)
 #define CALLPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i)
 #define DEFPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j)
 #define CALLPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j)
+#define DEFPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k)
+#define CALLPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k)
+#define DEFPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l)
+#define CALLPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l)
 #define DEFPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m)
-#define CALLPPPPPSPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m)                 F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m)
+#define CALLPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m)
 
 #endif

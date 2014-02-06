@@ -22,7 +22,7 @@
  *      - JDC : current JDC object,
  *      - CoreOptions : command line options + basic informations
  *      - MessageLog : utility to print message,
- *      - E_Global : a module to define functions more easily in Python than here.
+ *      - E_Core : module that define functions more easily in Python than here.
  *  - give informations about the execution.
  */
 
@@ -501,8 +501,8 @@ void DEFSS(UTALRM,utalrm, _IN char *bool, _IN STRING_SIZE lbool,
 {
     /* Interface Fortran/Python pour masquer et rétablir l'affichage d'une alarme.
      *
-     * CALL UTALRM('OFF', 'CALCULEL5_7') == MasquerAlarme('CALCULEL5_7')
-     * CALL UTALRM('ON', 'CALCULEL5_7') == RetablirAlarme('CALCULEL5_7')
+     * call utalrm('OFF', 'CALCULEL5_7') == MasquerAlarme('CALCULEL5_7')
+     * call utalrm('ON', 'CALCULEL5_7') == RetablirAlarme('CALCULEL5_7')
      */
     char *onoff, *s_id;
     PyObject *res;
@@ -557,7 +557,7 @@ void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN STRING_SIZE lnom,
       est conforme au type `typsd`.
 
       Exemple d'appel :
-         CALL CHEKSD('MA', 'sd_maillage', IRET)
+         call cheksd('MA', 'sd_maillage', iret)
    */
    PyObject *res;
 
@@ -566,6 +566,69 @@ void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN STRING_SIZE lnom,
    *iret = (INTEGER)PyLong_AsLong(res);
 
    Py_DECREF(res);
+}
+
+void DEFSSPPPPPPPPPPPP(TESTRESU_PRINT,testresu_print,
+            _IN char *refer, _IN STRING_SIZE lref,
+            _IN char *legend, _IN STRING_SIZE lleg,
+            _IN INTEGER *llab, _IN INTEGER *skip, _IN INTEGER *rela,
+            _IN DOUBLE *tole,
+            _IN INTEGER *typ,
+            _IN DOUBLE *refr, _IN DOUBLE *valr,
+            _IN INTEGER *refi, _IN INTEGER *vali,
+            _IN DOUBLE *refc, _IN DOUBLE *valc,
+            _IN DOUBLE *compare)
+{
+    /*
+        Interface Fortran/C pour imprimer le résultat d'un TEST_RESU
+
+        def testresu_print(type_ref, legend, label, skip, relative,
+                           tole, ref, val, compare=1.):
+    */
+    PyObject *res, *func, *args, *kwargs, *ref, *val, *comp=NULL;
+    int ityp;
+
+    func = PyObject_GetAttrString(gPyMod, "testresu_print");
+    /* positional arguments */
+    args = Py_BuildValue("s#s#llld", refer, lref, legend, lleg,
+                         (long)(*llab), (long)(*skip), (long)(*rela),
+                         (double)(*tole));
+    /* keyword arguments */
+    ityp = (int)(*typ);
+    switch ( ityp ) {
+        case 1:
+            ref = PyFloat_FromDouble((double)(*refr));
+            val = PyFloat_FromDouble((double)(*valr));
+            break;
+        case 2:
+            ref = PyInt_FromLong((long)(*refi));
+            val = PyInt_FromLong((long)(*vali));
+            break;
+        case 3:
+            ref = PyComplex_FromDoubles((double)(*refc), (double)(*(refc+1)));
+            val = PyComplex_FromDoubles((double)(*valc), (double)(*(valc+1)));
+            break;
+    }
+    kwargs = PyDict_New();
+    PyDict_SetItemString(kwargs, "ref", ref);
+    PyDict_SetItemString(kwargs, "val", val);
+    if ( (float)(*compare) != 1. ) {
+        comp = PyFloat_FromDouble((double)(*compare));
+        PyDict_SetItemString(kwargs, "compare", comp);
+    }
+    
+    res = PyObject_Call(func, args, kwargs);
+    if (!res) {
+       MYABORT("erreur lors de l'appel a testresu_print");
+    }
+
+    Py_DECREF(res);
+    Py_XDECREF(func);
+    Py_XDECREF(args);
+    Py_XDECREF(kwargs);
+    Py_XDECREF(ref);
+    Py_XDECREF(val);
+    Py_XDECREF(comp);
 }
 
 /*
