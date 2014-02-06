@@ -1,4 +1,4 @@
-subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
+subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                   refi, refr, refc, epsi, lign1,&
                   lign2, crit, ific, nbcmp, nocmp,&
                   llab, ssigne)
@@ -76,7 +76,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
     cham19 = chamgd
     typrez = typres(1:1)
 !
-    call wkvect('&&UTEST4_CMP', 'V V I', nbcmp, jcmp)
+    call wkvect('&&tresu_champ_cmp_CMP', 'V V I', nbcmp, jcmp)
 !
 !     -- LE CHAMP EXISTE-T-IL ?
 !     =========================
@@ -87,7 +87,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
 !
     if (tych(1:4) .eq. 'NOEU') then
 !         -------------------
-        cnsinr = '&&UTEST4.CNSINR'
+        cnsinr = '&&tresu_champ_cmp.CNSINR'
         call cnocns(cham19, 'V', cnsinr)
         call jeveuo(cnsinr//'.CNSV', 'L', jcsv)
         call jeveuo(cnsinr//'.CNSC', 'L', jcsc)
@@ -119,7 +119,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
 !
     else if (tych(1:2).eq.'EL') then
 !              -----------------
-        cnsinr = '&&UTEST4.CNSINR'
+        cnsinr = '&&tresu_champ_cmp.CNSINR'
         call celces(cham19, 'V', cnsinr)
         call jeveuo(cnsinr//'.CESV', 'L', jcsv)
         call jeveuo(cnsinr//'.CESC', 'L', jcsc)
@@ -423,7 +423,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
 !
     call detrsd('CHAM_NO_S', cnsinr)
 999 continue
-    call jedetr('&&UTEST4_CMP')
+    call jedetr('&&tresu_champ_cmp_CMP')
 !
     1160 format(1x,a80,a)
     1200 format(1x,2(a80),a)

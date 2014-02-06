@@ -16,10 +16,10 @@ subroutine trchel(ific, nocc)
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcmp1.h"
-#include "asterfort/utest1.h"
-#include "asterfort/utest2.h"
-#include "asterfort/utest3.h"
-#include "asterfort/utest4.h"
+#include "asterfort/tresu_champ_all.h"
+#include "asterfort/tresu_champ_val.h"
+#include "asterfort/tresu_read_refe.h"
+#include "asterfort/tresu_champ_cmp.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
     integer :: ific, nocc
@@ -92,7 +92,7 @@ subroutine trchel(ific, nocc)
         lign1(22:22)='.'
         lign2(1:21)='     '//cham19(1:8)
         lign2(22:22)='.'
-        call utest3('CHAM_ELEM', iocc, tbtxt)
+        call tresu_read_refe('CHAM_ELEM', iocc, tbtxt)
 !
         call getvtx('CHAM_ELEM', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
         if (n1 .ne. 0) then
@@ -214,11 +214,11 @@ subroutine trchel(ific, nocc)
                     tbref(2)=tbtxt(2)
                     tbtxt(1)='NON_REGRESSION'
                 endif
-                call utest1(cham19, typtes, typres, nref, tbtxt,&
+                call tresu_champ_all(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
                             ific, .true., ssigne)
                 if (lref) then
-                    call utest1(cham19, typtes, typres, nref, tbref,&
+                    call tresu_champ_all(cham19, typtes, typres, nref, tbref,&
                                 zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
                                 ific, .false., ssigne)
                 endif
@@ -232,12 +232,12 @@ subroutine trchel(ific, nocc)
                     tbref(2)=tbtxt(2)
                     tbtxt(1)='NON_REGRESSION'
                 endif
-                call utest4(cham19, typtes, typres, nref, tbtxt,&
+                call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
                             lign2, crit, ific, nbcmp, zk8(jcmp),&
                             .true., ssigne)
                 if (lref) then
-                    call utest4(cham19, typtes, typres, nref, tbref,&
+                    call tresu_champ_cmp(cham19, typtes, typres, nref, tbref,&
                                 zi(irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
                                 lign2, crit, ific, nbcmp, zk8(jcmp),&
                                 .false., ssigne)
@@ -334,12 +334,12 @@ subroutine trchel(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call utest2(cham19, nomail, nonoeu, nupo, nusp,&
+            call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                         ivari, noddl, nref, tbtxt, zi(irefi),&
                         zr(irefr), zc(irefc), typres, epsi, crit,&
                         ific, .true., ssigne)
             if (lref) then
-                call utest2(cham19, nomail, nonoeu, nupo, nusp,&
+                call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                             ivari, noddl, nref, tbref, zi(irefir),&
                             zr(irefrr), zc(irefcr), typres, epsir, crit,&
                             ific, .false., ssigne)

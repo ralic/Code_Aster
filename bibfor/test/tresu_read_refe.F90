@@ -1,13 +1,8 @@
-subroutine utest3(mclfac, iocc, tbref)
+subroutine tresu_read_refe(mclfac, iocc, tbref)
     implicit none
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/lxnoac.h"
-    integer :: iocc
-    character(len=16) :: tbref(2)
-    character(len=*) :: mclfac
-! ----------------------------------------------------------------------
+    character(len=*), intent(in) :: mclfac
+    integer, intent(in) :: iocc
+    character(len=16), intent(out) :: tbref(2)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,17 +20,20 @@ subroutine utest3(mclfac, iocc, tbref)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! ----------------------------------------------------------------------
-! UTILISEE POUR TEST_RESU,TEST_TABLE,TEST_FONCTION
+! utilisé par TEST_RESU, TEST_TABLE
 !
-! IN  : MCLFAC : MOT CLE FACTEUR
-! IN  : IOCC   : NUMERO D'OCCURRENCE
-! OUT : TBREF  : (1) = REFERENCE
-!                (2) = LEGENDE
-! ----------------------------------------------------------------------
+! in  : mclfac : mot cle facteur
+! in  : iocc   : numero d'occurrence
+! out : tbref  : (1) = reference
+!                (2) = legende
+!
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxnoac.h"
+!
     integer :: n0, n2
     character(len=16) :: legend, refer
-!     ------------------------------------------------------------------
 !
     call jemarq()
 !

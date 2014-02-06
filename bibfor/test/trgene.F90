@@ -22,7 +22,7 @@ subroutine trgene(ific, nocc)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/trprec.h"
-#include "asterfort/utest3.h"
+#include "asterfort/tresu_read_refe.h"
 #include "asterfort/utites.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -227,7 +227,7 @@ subroutine trgene(ific, nocc)
                 161:nl2)
             endif
 !
-            call utest3('GENE', iocc, tbtxt)
+            call tresu_read_refe('GENE', iocc, tbtxt)
 !
             if (lref) then
                 tbref(1)=tbtxt(1)
@@ -305,7 +305,7 @@ subroutine trgene(ific, nocc)
                     lign2(161:nl2)
                 endif
 !
-                call utest3('GENE', iocc, tbtxt)
+                call tresu_read_refe('GENE', iocc, tbtxt)
 !
                 if (lref) then
                     tbref(1)=tbtxt(1)
@@ -405,7 +405,7 @@ subroutine trgene(ific, nocc)
                 161:nl2)
             endif
 !
-            call utest3('GENE', iocc, tbtxt)
+            call tresu_read_refe('GENE', iocc, tbtxt)
 !
             if (lref) then
                 tbref(1)=tbtxt(1)
@@ -493,7 +493,7 @@ subroutine trgene(ific, nocc)
                 161:nl2)
             endif
 !
-            call utest3('GENE', iocc, tbtxt)
+            call tresu_read_refe('GENE', iocc, tbtxt)
             if (lref) then
                 tbref(1)=tbtxt(1)
                 tbref(2)=tbtxt(2)
@@ -582,7 +582,7 @@ subroutine trgene(ific, nocc)
                 161:nl2)
             endif
 !
-            call utest3('GENE', iocc, tbtxt)
+            call tresu_read_refe('GENE', iocc, tbtxt)
             if (lref) then
                 tbref(1)=tbtxt(1)
                 tbref(2)=tbtxt(2)

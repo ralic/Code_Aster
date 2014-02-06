@@ -14,8 +14,8 @@ subroutine trcart(ific, nocc)
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcmp1.h"
-#include "asterfort/utest3.h"
-#include "asterfort/utest5.h"
+#include "asterfort/tresu_read_refe.h"
+#include "asterfort/tresu_carte.h"
     integer :: ific, nocc
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ subroutine trcart(ific, nocc)
         lign1(22:22)='.'
         lign2(1:21)='     '//cham19(1:8)
         lign2(22:22)='.'
-        call utest3('CARTE', iocc, tbtxt)
+        call tresu_read_refe('CARTE', iocc, tbtxt)
 !
         call getvtx('CARTE', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
         ASSERT(n1.eq.1)
@@ -136,11 +136,11 @@ subroutine trcart(ific, nocc)
             tbref(2)=tbtxt(2)
             tbtxt(1)='NON_REGRESSION'
         endif
-        call utest5(cham19, nomail, noddl, tbtxt, vali,&
+        call tresu_carte(cham19, nomail, noddl, tbtxt, vali,&
                     valr, valc, typres, epsi, crit,&
                     ific, .true.)
         if (lref) then
-            call utest5(cham19, nomail, noddl, tbref, valir,&
+            call tresu_carte(cham19, nomail, noddl, tbref, valir,&
                         valrr, valcr, typres, epsir, crit,&
                         ific, .false.)
         endif

@@ -5,7 +5,7 @@ subroutine trjeve(ific, nocc)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/get_tole_mach.h"
-#include "asterfort/utest3.h"
+#include "asterfort/tresu_read_refe.h"
 #include "asterfort/utesto.h"
     integer :: ific, nocc
 ! ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine trjeve(ific, nocc)
         call get_tole_mach(epsi, mcf='OBJET', iocc=iocc)
         call getvtx('OBJET', 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
 !
-        call utest3('OBJET', iocc, tbtxt)
+        call tresu_read_refe('OBJET', iocc, tbtxt)
         lref=.false.
         call getvr8('OBJET', 'PRECISION', iocc=iocc, scal=epsir, nbret=iret)
         if (iret .ne. 0) then

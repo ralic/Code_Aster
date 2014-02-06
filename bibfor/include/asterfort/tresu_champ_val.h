@@ -16,23 +16,27 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
-                      refi, refr, refc, epsi, crit,&
-                      ific, llab, ssigne, ignore, compare)
+    subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
+                               ivari, nocmp, nbref, tbtxt, refi,&
+                               refr, refc, typres, epsi, crit,&
+                               ific, llab, ssigne)
         integer :: nbref
-        character(len=*) :: chamgd
-        character(len=8) :: typtes
-        character(len=*) :: typres
+        character(len=*) :: cham19
+        character(len=*) :: nomail
+        character(len=*) :: nonoeu
+        integer :: nupo
+        integer :: nusp
+        integer :: ivari
+        character(len=*) :: nocmp
         character(len=16) :: tbtxt(2)
         integer :: refi(nbref)
         real(kind=8) :: refr(nbref)
         complex(kind=8) :: refc(nbref)
+        character(len=*) :: typres
         real(kind=8) :: epsi
         character(len=*) :: crit
         integer :: ific
         logical :: llab
         character(len=*) :: ssigne
-        logical, intent(in), optional :: ignore
-        real(kind=8), intent(in), optional :: compare
-    end subroutine utest1
+    end subroutine tresu_champ_val
 end interface

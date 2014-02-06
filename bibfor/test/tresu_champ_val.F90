@@ -1,21 +1,20 @@
-subroutine utest5(cham19, nomail, nocmp, tbtxt, refi,&
+subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
+                  ivari, nocmp, nbref, tbtxt, refi,&
                   refr, refc, typres, epsi, crit,&
-                  ific, llab)
+                  ific, llab, ssigne)
     implicit none
 #include "asterfort/dismoi.h"
-#include "asterfort/utchca.h"
+#include "asterfort/utch19.h"
 #include "asterfort/utites.h"
-#include "asterfort/utmess.h"
-    integer :: refi, ific
-    real(kind=8) :: refr, epsi
-    character(len=*) :: cham19, nomail, typres, nocmp, crit
+    integer :: nbref, refi(nbref), nupo, ivari, ific, nusp
+    real(kind=8) :: refr(nbref), epsi
+    character(len=*) :: cham19, nomail, nonoeu, typres, nocmp, crit, ssigne
     character(len=16) :: tbtxt(2)
-    complex(kind=8) :: refc
+    complex(kind=8) :: refc(nbref)
     logical :: llab
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,44 +27,44 @@ subroutine utest5(cham19, nomail, nocmp, tbtxt, refi,&
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-! IN  : CHAM19 : NOM DE LA CARTE DONT ON DESIRE VERIFIER 1 COMPOSANTE
+! IN  : CHAM19 : NOM DU CHAM_ELEM DONT ON DESIRE VERIFIER 1 COMPOSANTE
 ! IN  : NOMAIL : NOM DE LA MAILLE A TESTER
-! IN  : NOCMP  : NOM DU DDL A TESTER
+! IN  : NONOEU : NOM D'UN NOEUD (POUR LES CHAM_ELEM "AUX NOEUDS").
+!                 (SI CE NOM EST BLANC : ON UTILISE NUPO)
+! IN  : NUPO   : NUMERO DU POINT A TESTER SUR LA MAILLE NOMAIL
+! IN  : NUSP   : NUMERO DU SOUS_POINT A TESTER SUR LA MAILLE NOMAIL
+!                (SI NUSP=0 : IL N'Y A PAS DE SOUS-POINT)
+! IN  : IVARI   : NUMERO DE LA CMP (POUR VARI_R)
+! IN  : NOCMP  : NOM DU DDL A TESTER SUR LE POINT NUPO
+! IN  : NBREF  : NOMBRE DE VALEURS DE REFERENCE
 ! IN  : TBTXT  : (1)=REFERENCE, (2)=LEGENDE
-! IN  : REFR   : VALEUR REELLE ATTENDUE
-! IN  : REFI   : VALEUR REELLE ATTENDUE
-! IN  : REFC   : VALEUR COMPLEXE ATTENDUE
+! IN  : REFR   : VALEUR REELLE ATTENDUE SUR LE DDL DU POINT.
+! IN  : REFC   : VALEUR COMPLEXE ATTENDUE SUR LE DDL DU POINT.
 ! IN  : CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 ! IN  : EPSI   : PRECISION ESPEREE
 ! IN  : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
-! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
+! IN  : LLAB   : FLAG D IMPRESSION DE LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
     integer :: vali, ier
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
-    character(len=3) :: ssigne
-    character(len=4) :: tych
 !     ------------------------------------------------------------------
-    call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych)
-    if (tych .ne. 'CART') then
-        call utmess('F', 'CALCULEL3_90', sk=cham19)
-    endif
 !
-    call dismoi('NOM_MAILLA', cham19, 'CARTE', repk=nomma)
+    call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=nomma)
 !
-    call utchca(cham19, nomma, nomail, nocmp, typres,&
-                valr, vali, valc, ier)
+    call utch19(cham19, nomma, nomail, nonoeu, nupo,&
+                nusp, ivari, nocmp, typres, valr,&
+                valc, vali, ier)
     if (ier .ne. 0) then
         write (ific,*) 'NOOK '
     else
-        ssigne='NON'
-        call utites(tbtxt(1), tbtxt(2), typres, 1, [refi],&
-                    [refr], [refc], vali, valr, valc,&
+        call utites(tbtxt(1), tbtxt(2), typres, nbref, refi,&
+                    refr, refc, vali, valr, valc,&
                     epsi, crit, ific, llab, ssigne)
     endif
 !

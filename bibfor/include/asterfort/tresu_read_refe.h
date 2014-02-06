@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine utest3(mclfac, iocc, tbref)
-        character(len=*) :: mclfac
-        integer :: iocc
-        character(len=16) :: tbref(2)
-    end subroutine utest3
+    subroutine tresu_read_refe(mclfac, iocc, tbref)
+        character(len=*), intent(in) :: mclfac
+        integer, intent(in) :: iocc
+        character(len=16), intent(out) :: tbref(2)
+    end subroutine tresu_read_refe
 end interface

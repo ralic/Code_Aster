@@ -48,8 +48,8 @@ subroutine op0177()
 #include "asterfort/tbliva.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
-#include "asterfort/utest0.h"
-#include "asterfort/utest3.h"
+#include "asterfort/tresu_tabl.h"
+#include "asterfort/tresu_read_refe.h"
 #include "asterfort/utestk.h"
 #include "asterfort/utites.h"
 #include "asterfort/utmess.h"
@@ -221,7 +221,7 @@ subroutine op0177()
     endif
 !   ------------------------------------------------------------------
 !
-    call utest3(' ', 1, tbtxt)
+    call tresu_read_refe(' ', 1, tbtxt)
     if (lref) then
         tbref(1)=tbtxt(1)
         tbref(2)=tbtxt(2)
@@ -264,11 +264,11 @@ subroutine op0177()
             print *, '#DEBUG: op0177: valeur de référence de non régression nulle: ignorer ou crit=RELATIF, valeur=valeur/ordre grandeur'
         endif
 !
-        call utest0(newtab, para, typtes, typr, tbtxt,&
+        call tresu_tabl(newtab, para, typtes, typr, tbtxt,&
                     zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
                     ific, .true., ssigne)
         if (lref) then
-            call utest0(newtab, para, typtes, typr, tbref,&
+            call tresu_tabl(newtab, para, typtes, typr, tbref,&
                         zi( irefir), zr(irefrr), zc(irefcr), epsir, crit,&
                         ific, .false., ssigne)
         endif

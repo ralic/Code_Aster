@@ -40,17 +40,15 @@ subroutine utites(label1, label2, type, nbref, refi,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!  IN  : K1  : TYPE   : TYPE DE VALEUR A TESTER 'R', OU 'C'
-!  IN  : I   : NBREF  : NOMBRE DE VALEURS DE REFERENCE (=1 SOUVENT)
-!  IN  : R8  : REFR   : VALEUR(S) REELLE(S) DE REFERENCE OU NON REGRESSION
-!  IN  : C16 : REFC   : VALEUR(S) COMPLEXE(S) DE REFERENCE
-!  IN  : R8  : VALR   : VALEUR REELLE CALCULEE ( ASTER )
-!  IN  : C16 : VALC   : VALEUR COMPLEXE A TESTER ( ASTER )
-!  IN  : K8  : CRIT   : COMPARAISON EN 'RELATIF' OU 'ABSOLU'
-!  IN  : R8  : EPSI   : PRECISION ESPEREE
-!  IN  : I   : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
-!  IN  : L   : LLAB   : FLAG IMPRESSION LABELS
-!  OUT :                IMPRESSION SUR LISTING
+!  in  : k1  : type   : type de valeur a tester 'r', ou 'c'
+!  in  : i   : nbref  : nombre de valeurs de reference (=1 souvent)
+!  in  : r8  : refr   : valeur(s) reelle(s) de reference ou non regression
+!  in  : c16 : refc   : valeur(s) complexe(s) de reference
+!  in  : r8  : valr   : valeur reelle calculee ( aster )
+!  in  : c16 : valc   : valeur complexe a tester ( aster )
+!  in  : k8  : crit   : comparaison en 'relatif' ou 'absolu'
+!  in  : r8  : epsi   : precision esperee
+!  in  : l   : llab   : flag impression labels
 ! ----------------------------------------------------------------------
     integer :: wali
     real(kind=8) :: walr, ordgrd
