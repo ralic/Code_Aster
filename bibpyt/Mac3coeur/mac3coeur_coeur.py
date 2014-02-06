@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# person_in_charge: romeo.fernandes at edf.fr
+# person_in_charge: samuel.geniaut at edf.fr
 
 """
 Module dédié à la macro MAC3COEUR.
@@ -593,13 +593,6 @@ class Coeur(object):
         from Accas import _F
         CREA_MAILLAGE = self.macro.get_cmd('CREA_MAILLAGE')
         DEFI_GROUP    = self.macro.get_cmd('DEFI_GROUP')
-
-        #__unit=DEFI_FICHIER(ACTION='RESERVER')
-
-        #EXEC_LOGICIEL(LOGICIEL='/opt/salome/Salome-V5_1_5_64bit/runSalome',
-        #           ARGUMENT='-t < /home/fernandes/CAC/Raphael/CHOOZ_C00_Version1/Version_finale_21_07_10_MODIF_DILA__DIS_CHOC/maquette_maillage_coeur_21_07_2010_DILA_POU__DIS_CHOC.py',);
-
-        #MA0 = LIRE_MAILLAGE(FORMAT='MED',UNITE=__unit)
 
         LISGRIL =[]
         LISGRILI=[]
