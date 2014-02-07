@@ -36,6 +36,7 @@ subroutine op0177()
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/get_tole_mach.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
@@ -110,7 +111,7 @@ subroutine op0177()
     call getfac('FILTRE', nparfi)
 !
     call getvtx(' ', 'VALE_ABS', scal=ssigne, nbret=n1)
-    call getvr8(' ', 'TOLE_MACHINE', scal=epsi, nbret=n1)
+    call get_tole_mach(epsi)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)
 !
     call getvr8(' ', 'VALE_CALC', nbval=0, nbret=n1)

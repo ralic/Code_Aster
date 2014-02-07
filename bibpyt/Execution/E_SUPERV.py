@@ -28,7 +28,6 @@ import os
 import os.path as osp
 import traceback
 import re
-from functools import wraps
 
 # Here are some modules that may raise a floating point exception at import
 # so they must be imported before we intercept the FPE signal.
@@ -48,6 +47,7 @@ for mod in MODULES_RAISING_FPE:
 # les arguments de la ligne de commande parsés.
 import E_Core
 from strfunc import convert, ufmt
+from decorators import jdc_required, stop_on_returncode, never_fail
 
 class Interrupt(Exception):
     """Local exception"""
@@ -55,26 +55,6 @@ class Interrupt(Exception):
         """Store the returncode"""
         self.returncode = returncode
 
-def jdc_required(method):
-    """decorator to check that the jdc attribute has been initialized"""
-    @wraps(method)
-    def wrapper(inst, *args, **kwds):
-        """wrapper"""
-        assert inst.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
-        return method(inst, *args, **kwds)
-    return wrapper
-
-def stop_on_returncode(method):
-    """decorator that calls the interrupt method if the returncode
-    is not null"""
-    @wraps(method)
-    def wrapper(inst, *args, **kwds):
-        """wrapper"""
-        errcode = method(inst, *args, **kwds)
-        if errcode:
-            inst.interrupt(errcode)
-        return errcode
-    return wrapper
 
 class SUPERV:
     usage="""
@@ -359,12 +339,18 @@ class SUPERV:
         if ier:
             return ier
 
+    @jdc_required
     @stop_on_returncode
+    @never_fail
     def Finish(self):
         """Allow to call cleanup functions."""
         from E_utils import supprimerRepertoire
         if self.coreopts.get_option('totalview') == 1:
             supprimerRepertoire(os.getcwd())
+        # post-run for testcases
+        if self.jdc.fico:
+            from Contrib import testcase_tools
+            testcase_tools.testcase_post()
 
     def main(self, params={}, coreopts=None):
         """Programme principal. Appelle les methodes internes qui realisent les

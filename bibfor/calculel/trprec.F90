@@ -3,6 +3,7 @@ subroutine trprec(mcf, iocc, epsi, crit, prec,&
     implicit none
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/get_tole_mach.h"
     character(len=*) :: mcf
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -22,33 +23,20 @@ subroutine trprec(mcf, iocc, epsi, crit, prec,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-!     COMMANDE:  TEST_RESU
+!     Commande:  TEST_RESU
 !
-!     REMARQUES:  MCF=_F( ...
-!                         TOLE_MACHINE: ( EPSI , PREC  )        L_R8
-!                         CRITERE  : ( CRIT , CRIT2 )           L_TXM
-!     EPSI ET CRIT  SONT LA PRECISION ET LE CRITERE DU TEST
-!     PREC ET CRIT2 SONT LA PRECISION ET LE CRITERE DE L'EXTRACTION
+!     Remarques:  MCF=_F( ...
+!                         TOLE_MACHINE=(epsi, prec)
+!                         CRITERE=(crit, crit2)
+!     epsi et crit  sont la tolérance et le critère du test
+!     prec et crit2 sont la précision et le critère de l'extraction
 ! ----------------------------------------------------------------------
-    integer :: iocc, np, nc
-    real(kind=8) :: epsi, prec, epsir(2)
+    integer :: iocc, nc
+    real(kind=8) :: epsi, prec
     character(len=8) :: crit, crit2, critr(2)
 !     ------------------------------------------------------------------
 !
-    call getvr8(mcf, 'TOLE_MACHINE', iocc=iocc, nbval=0, nbret=np)
-    np = -np
-    if (np .eq. 0) then
-        epsi = 1.d-6
-        prec = 1.d-6
-    else if (np.eq.1) then
-        call getvr8(mcf, 'TOLE_MACHINE', iocc=iocc, scal=epsi, nbret=np)
-        prec = epsi
-    else
-        call getvr8(mcf, 'TOLE_MACHINE', iocc=iocc, nbval=2, vect=epsir,&
-                    nbret=np)
-        epsi = epsir(1)
-        prec = epsir(2)
-    endif
+    call get_tole_mach(epsi, prec, mcf, iocc)
 !
     call getvtx(mcf, 'CRITERE', iocc=iocc, nbval=0, nbret=nc)
     nc = -nc

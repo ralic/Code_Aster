@@ -9,6 +9,7 @@ subroutine trchno(ific, nocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/get_tole_mach.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -113,7 +114,7 @@ subroutine trchno(ific, nocc)
             lign1(nl1+17:nl1+17)='.'
             lign2(nl2+17:nl2+17)='.'
         endif
-        call getvr8('CHAM_NO', 'TOLE_MACHINE', iocc=iocc, scal=epsi, nbret=iret)
+        call get_tole_mach(epsi, mcf='CHAM_NO', iocc=iocc)
         call getvtx('CHAM_NO', 'CRITERE', iocc=iocc, scal=crit, nbret=iret)
 !
         call getvr8('CHAM_NO', 'VALE_CALC', iocc=iocc, nbval=0, nbret=n1)

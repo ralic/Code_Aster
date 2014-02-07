@@ -18,6 +18,9 @@ def configure(self):
 
     intel.configure(self)
 
+    # enable TEST_STRICT on the reference server
+    self.env.append_value('DEFINES', ['TEST_STRICT'])
+
     self.env['ADDMEM'] = 250
     self.env.append_value('OPT_ENV', [
         '. /aster/etc/codeaster/profile.sh',
@@ -43,5 +46,12 @@ def configure(self):
         YAMMROOT + 'prerequisites/Scotch_5111/include'])
 
     self.env.append_value('LIB', ('pthread', 'util'))
+
+    # to fail if not found
+    self.options.enable_hdf5 = True
+    self.options.enable_med = True
+    self.options.enable_metis = True
+    self.options.enable_mumps = True
+    self.options.enable_scotch = True
 
     opts.enable_petsc = False

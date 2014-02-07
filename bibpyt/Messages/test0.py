@@ -52,6 +52,13 @@ TEST_FICHIER impossible, fichier inexistant : %(k1)s
       Identifiant pour la mesure des performances : %(k2)s
 """),
 
+6 : {  'message' : _(u"""
+Test strict activé.
+TOLE_MACHINE est pris égal à %(r1)e quelle que soit la valeur renseignée pour le mot-clé.
+"""),
+       'flags' : 'DECORATED',
+},
+
 7 : _(u"""
 La commande '%(k1)s' n'a pas été exécutée %(i1)d fois.
 """),
