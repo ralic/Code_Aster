@@ -16,22 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
-                      refi, refr, refc, typres, epsi,&
-                      crit, ific, llab, ssigne)
-        integer :: nbref
-        character(len=19) :: cham19
-        character(len=33) :: nonoeu
-        character(len=8) :: nocmp
-        character(len=16) :: tbtxt(2)
-        integer :: refi(nbref)
-        real(kind=8) :: refr(nbref)
-        complex(kind=8) :: refc(nbref)
-        character(len=1) :: typres
-        real(kind=8) :: epsi
-        character(len=*) :: crit
-        integer :: ific
-        logical :: llab
-        character(len=*) :: ssigne
-    end subroutine utestr
+    subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
+                         epsi, crit, llab, ssigne, ignore, &
+                         compare)
+        character(len=24), intent(in) :: nomobj
+        character(len=*), intent(in) :: type
+        character(len=16), intent(in) :: tbtxt(2)
+        integer, intent(in) :: refi
+        real(kind=8), intent(in) :: refr
+        real(kind=8), intent(in) :: epsi
+        character(len=*), intent(in) :: crit
+        logical, intent(in) :: llab
+        character(len=*), intent(in) :: ssigne
+        logical, intent(in), optional :: ignore
+        real(kind=8), intent(in), optional :: compare
+    end subroutine tresu_obj
 end interface

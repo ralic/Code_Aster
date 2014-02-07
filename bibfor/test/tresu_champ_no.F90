@@ -1,6 +1,7 @@
-subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
+subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
                   refi, refr, refc, typres, epsi,&
-                  crit, ific, llab, ssigne)
+                  crit, ific, llab, ssigne, ignore,&
+                  compare)
     implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -18,16 +19,22 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
 !
-    character(len=19) :: cham19
-    character(len=33) :: nonoeu
-    character(len=8) :: nocmp
-    integer :: nbref, refi(nbref), ific
-    real(kind=8) :: refr(nbref), epsi
-    complex(kind=8) :: refc(nbref)
-    character(len=16) :: tbtxt(2)
-    character(len=1) :: typres
-    character(len=*) :: crit, ssigne
-    logical :: llab
+    character(len=19), intent(in) :: cham19
+    character(len=33), intent(in) :: nonoeu
+    character(len=8), intent(in) :: nocmp
+    integer, intent(in) :: nbref
+    character(len=16), intent(in) :: tbtxt(2)
+    integer, intent(in) :: refi(nbref)
+    real(kind=8), intent(in) :: refr(nbref)
+    complex(kind=8), intent(in) :: refc(nbref)
+    character(len=1), intent(in) :: typres
+    real(kind=8), intent(in) :: epsi
+    character(len=*), intent(in) :: crit
+    integer, intent(in) :: ific
+    logical, intent(in) :: llab
+    character(len=*), intent(in) :: ssigne
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +78,8 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
     character(len=8) :: nomma
     character(len=19) :: prchno, valk(3)
     character(len=24) :: nolili
-!
+    logical :: skip
+    real(kind=8) :: ordgrd
 !
 !-----------------------------------------------------------------------
     integer :: iadesc, iancmp, ianueq, iaprno, iarefe, iavale, ibid
@@ -80,6 +88,16 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !-----------------------------------------------------------------------
     call jemarq()
     testok = 'NOOK'
+!
+    skip = .false.
+    if (present(ignore)) then
+        skip = ignore
+    endif
+!
+    ordgrd = 1.d0
+    if (present(compare)) then
+        ordgrd = compare
+    endif
 !
     call dismoi('NOM_GD', cham19, 'CHAM_NO', repk=nogd)
 !
@@ -142,7 +160,8 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
             endif
             call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref, &
                                  crit, epsi, ssigne, refr, valr, &
-                                 refi, vali, refc, valc)
+                                 refi, vali, refc, valc, ignore=skip, &
+                                 compare=ordgrd)
         else
             call utmess('F', 'CALCULEL6_93')
         endif
@@ -185,7 +204,8 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
             endif
             call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref, &
                                  crit, epsi, ssigne, refr, valr, &
-                                 refi, vali, refc, valc)
+                                 refi, vali, refc, valc, ignore=skip, &
+                                 compare=ordgrd)
         else
             call utmess('F', 'CALCULEL6_93')
         endif

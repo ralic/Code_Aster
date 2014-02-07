@@ -10,19 +10,22 @@ subroutine trchel(ific, nocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/tresu_tole.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcmp1.h"
+#include "asterfort/utmess.h"
 #include "asterfort/tresu_champ_all.h"
-#include "asterfort/tresu_champ_val.h"
-#include "asterfort/tresu_read_refe.h"
 #include "asterfort/tresu_champ_cmp.h"
+#include "asterfort/tresu_champ_val.h"
+#include "asterfort/tresu_ordgrd.h"
+#include "asterfort/tresu_read_refe.h"
+#include "asterfort/tresu_tole.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
-    integer :: ific, nocc
+    integer, intent(in) :: ific
+    integer, intent(in) :: nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,6 +67,8 @@ subroutine trchel(ific, nocc)
     character(len=200) :: lign1, lign2
     integer :: iarg
     logical :: lref
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -121,13 +126,16 @@ subroutine trchel(ific, nocc)
         call getvis('CHAM_ELEM', 'VALE_CALC_I', iocc=iocc, nbval=0, nbret=n2)
         call getvc8('CHAM_ELEM', 'VALE_CALC_C', iocc=iocc, nbval=0, nbret=n3)
 !
+        skip = .false.
+        ordgrd = 1.d0
         if (n1 .ne. 0) then
             nref=-n1
             typres = 'R'
             call jedetr(travr)
             call wkvect(travr, 'V V R', nref, irefr)
-            call getvr8('CHAM_ELEM', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr( irefr),&
+            call getvr8('CHAM_ELEM', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr),&
                         nbret=iret)
+            call tresu_ordgrd(zr(irefr), skip, ordgrd, mcf='CHAM_ELEM', iocc=iocc)
         else if (n2 .ne. 0) then
             nref=-n2
             typres = 'I'
@@ -175,6 +183,9 @@ subroutine trchel(ific, nocc)
                             nbret=iret)
             endif
         endif
+        if (skip .and. .not. lref) then
+            call utmess('A', 'TEST0_11')
+        endif
 ! ----------------------------------------------------------------------
         call getvtx('CHAM_ELEM', 'TYPE_TEST', iocc=iocc, scal=typtes, nbret=n1)
 !
@@ -216,7 +227,7 @@ subroutine trchel(ific, nocc)
                 endif
                 call tresu_champ_all(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                            ific, .true., ssigne)
+                            ific, .true., ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_all(cham19, typtes, typres, nref, tbref,&
                                 zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
@@ -235,7 +246,7 @@ subroutine trchel(ific, nocc)
                 call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
                             lign2, crit, ific, nbcmp, zk8(jcmp),&
-                            .true., ssigne)
+                            .true., ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_cmp(cham19, typtes, typres, nref, tbref,&
                                 zi(irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
@@ -337,7 +348,7 @@ subroutine trchel(ific, nocc)
             call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                         ivari, noddl, nref, tbtxt, zi(irefi),&
                         zr(irefr), zc(irefc), typres, epsi, crit,&
-                        ific, .true., ssigne)
+                        ific, .true., ssigne, ignore=skip, compare=ordgrd)
             if (lref) then
                 call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                             ivari, noddl, nref, tbref, zi(irefir),&

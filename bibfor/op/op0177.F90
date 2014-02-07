@@ -36,7 +36,6 @@ subroutine op0177()
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/tresu_tole.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/iunifi.h"
@@ -48,10 +47,12 @@ subroutine op0177()
 #include "asterfort/tbliva.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/tresu_ordgrd.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/tresu_tabl.h"
 #include "asterfort/tresu_read_refe.h"
-#include "asterfort/utestk.h"
-#include "asterfort/tresu_print_all.h"
+#include "asterfort/tresu_str.h"
+#include "asterfort/tresu_tole.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=6) :: nompro
@@ -77,6 +78,8 @@ subroutine op0177()
     character(len=80) :: valk
     character(len=200) :: lign1, lign2
     logical :: lref
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
 !====
@@ -123,12 +126,15 @@ subroutine op0177()
     irefi = 0
     irefc = 0
     irefk = 0
+    skip = .false.
+    ordgrd = 1.d0
     if (n1 .ne. 0) then
         nref=-n1
         typr = 'R'
         call jedetr(travr)
         call wkvect(travr, 'V V R', nref, irefr)
         call getvr8(' ', 'VALE_CALC', nbval=nref, vect=zr(irefr))
+        call tresu_ordgrd(zr(irefr), skip, ordgrd)
     else if (n2 .ne. 0) then
         nref=-n2
         typr = 'I'
@@ -189,6 +195,9 @@ subroutine op0177()
             call wkvect(travkr, 'V V K80', nref, irefkr)
             call getvtx(' ', 'VALE_CALC_K', nbval=nref, vect=zk80(irefkr))
         endif
+    endif
+    if (skip .and. .not. lref) then
+        call utmess('A', 'TEST0_11')
     endif
 ! ----------------------------------------------------------------------
     call getvtx(' ', 'NOM_PARA', scal=para)
@@ -261,7 +270,7 @@ subroutine op0177()
 !
         call tresu_tabl(newtab, para, typtes, typr, tbtxt,&
                     zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                    ific, .true., ssigne)
+                    ific, .true., ssigne, ignore=skip, compare=ordgrd)
         if (lref) then
             call tresu_tabl(newtab, para, typtes, typr, tbref,&
                         zi( irefir), zr(irefrr), zc(irefcr), epsir, crit,&
@@ -310,15 +319,16 @@ subroutine op0177()
 !
         if (nk .ne. 0) then
 !       cas des chaînes de caractères
-            call utestk(tbtxt, zk80(irefk), valk, ific, .true.)
+            call tresu_str(tbtxt, zk80(irefk), valk, ific, .true.)
             if (lref) then
-                call utestk(tbtxt, zk80(irefkr), valk, ific, .false.)
+                call tresu_str(tbtxt, zk80(irefkr), valk, ific, .false.)
             endif
         else
 !       cas des réels, entiers, complexes
             call tresu_print_all(tbtxt(1), tbtxt(2), .true., typr, nref, &
                         crit, epsi, ssigne, zr(irefr), valr, &
-                        zi(irefi), vali, zc(irefc), valc)
+                        zi(irefi), vali, zc(irefc), valc, ignore=skip, &
+                        compare=ordgrd)
             if (lref) then
                 call tresu_print_all(tbref(1), tbref(2), .true., typr, nref, &
                             crit, epsir, ssigne, zr(irefrr), valr, &

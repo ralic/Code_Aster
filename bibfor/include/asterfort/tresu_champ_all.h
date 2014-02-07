@@ -19,19 +19,19 @@ interface
     subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                                refi, refr, refc, epsi, crit,&
                                ific, llab, ssigne, ignore, compare)
-        integer :: nbref
-        character(len=*) :: chamgd
-        character(len=8) :: typtes
-        character(len=*) :: typres
-        character(len=16) :: tbtxt(2)
-        integer :: refi(nbref)
-        real(kind=8) :: refr(nbref)
-        complex(kind=8) :: refc(nbref)
-        real(kind=8) :: epsi
-        character(len=*) :: crit
-        integer :: ific
-        logical :: llab
-        character(len=*) :: ssigne
+        character(len=*), intent(in) :: chamgd
+        character(len=8), intent(in) :: typtes
+        character(len=*), intent(in) :: typres
+        integer, intent(in) :: nbref
+        character(len=16), intent(in) :: tbtxt(2)
+        integer, intent(in) :: refi(nbref)
+        real(kind=8), intent(in) :: refr(nbref)
+        complex(kind=8), intent(in) :: refc(nbref)
+        real(kind=8), intent(in) :: epsi
+        character(len=*), intent(in) :: crit
+        integer, intent(in) :: ific
+        logical, intent(in) :: llab
+        character(len=*), intent(in) :: ssigne
         logical, intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_champ_all

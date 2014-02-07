@@ -17,7 +17,7 @@
 !
 interface
     subroutine trjeve(ific, nocc)
-        integer :: ific
-        integer :: nocc
+        integer, intent(in) :: ific
+        integer, intent(in) :: nocc
     end subroutine trjeve
 end interface

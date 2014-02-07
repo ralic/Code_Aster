@@ -20,7 +20,8 @@ subroutine trgene(ific, nocc)
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1501
     implicit none
-    integer :: ific, nocc
+    integer, intent(in) :: ific
+    integer, intent(in) :: nocc
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -43,8 +44,9 @@ subroutine trgene(ific, nocc)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/trprec.h"
-#include "asterfort/tresu_read_refe.h"
+#include "asterfort/tresu_ordgrd.h"
 #include "asterfort/tresu_print_all.h"
+#include "asterfort/tresu_read_refe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zxtrac.h"
@@ -69,6 +71,8 @@ subroutine trgene(ific, nocc)
     character(len=24) :: travr, travi, travc, travrr, travir, travcr
     character(len=200) :: lign1, lign2
     logical :: lref
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
     motcle = 'RESU_GENE'
@@ -97,6 +101,8 @@ subroutine trgene(ific, nocc)
         call getvr8('GENE', 'VALE_CALC', iocc=iocc, nbval=0, nbret=n1)
         call getvis('GENE', 'VALE_CALC_I', iocc=iocc, nbval=0, nbret=n2)
         call getvc8('GENE', 'VALE_CALC_C', iocc=iocc, nbval=0, nbret=n3)
+        skip = .false.
+        ordgrd = 1.d0
         if (n1 .ne. 0) then
             nref=-n1
             typres = 'R'
@@ -104,6 +110,7 @@ subroutine trgene(ific, nocc)
             call wkvect(travr, 'V V R', nref, irefr)
             call getvr8('GENE', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr),&
                         nbret=iret)
+            call tresu_ordgrd(zr(irefr), skip, ordgrd, mcf='GENE', iocc=iocc)
         else if (n2 .ne. 0) then
             nref=-n2
             typres = 'I'
@@ -149,6 +156,9 @@ subroutine trgene(ific, nocc)
                 call getvc8('GENE', 'VALE_REFE_C', iocc=iocc, nbval=nref, vect=zc(irefcr),&
                             nbret=iret)
             endif
+        endif
+        if (skip .and. .not. lref) then
+            call utmess('A', 'TEST0_11')
         endif
 ! ----------------------------------------------------------------------
 !
@@ -238,7 +248,8 @@ subroutine trgene(ific, nocc)
 
             call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
                                  crit, epsi, ssigne, zr(irefr), valr, &
-                                 zi(irefi), vali, zc(irefc), valc)
+                                 zi(irefi), vali, zc(irefc), valc, ignore=skip, &
+                                 compare=ordgrd)
             if (lref) then
                 call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
                                      crit, epsir, ssigne, zr(irefrr), valr, &
@@ -317,7 +328,8 @@ subroutine trgene(ific, nocc)
 
                 call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
                                      crit, epsi, ssigne, zr(irefr), valr, &
-                                     zi(irefi), vali, zc(irefc), valc)
+                                     zi(irefi), vali, zc(irefc), valc, ignore=skip, &
+                                     compare=ordgrd)
                 if (lref) then
                     call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
                                          crit, epsir, ssigne, zr(irefrr), valr, &
@@ -420,7 +432,8 @@ subroutine trgene(ific, nocc)
             endif
             call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
                                  crit, epsi, ssigne, zr(irefr), valr, &
-                                 zi(irefi), vali, zc(irefc), valc)
+                                 zi(irefi), vali, zc(irefc), valc, ignore=skip, &
+                                 compare=ordgrd)
             if (lref) then
                 call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
                                      crit, epsir, ssigne, zr(irefrr), valr, &
@@ -598,7 +611,8 @@ subroutine trgene(ific, nocc)
             endif
             call tresu_print_all(tbtxt(1), tbtxt(2), .true., 'R', nref, &
                                  crit, epsi, ssigne, zr(irefr), valr, &
-                                 zi(irefi), vali, zc(irefc), valc)
+                                 zi(irefi), vali, zc(irefc), valc, ignore=skip, &
+                                 compare=ordgrd)
             if (lref) then
                 call tresu_print_all(tbref(1), tbref(2), .false., 'R', nref, &
                                      crit, epsir, ssigne, zr(irefrr), valr, &

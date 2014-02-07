@@ -17,7 +17,7 @@
 !
 interface
     subroutine trgene(ific, nocc)
-        integer :: ific
-        integer :: nocc
+        integer, intent(in) :: ific
+        integer, intent(in) :: nocc
     end subroutine trgene
 end interface

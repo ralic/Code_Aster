@@ -1,4 +1,4 @@
-subroutine utestk(tbtxt, refk, valk, ific, llab)
+subroutine tresu_str(tbtxt, refk, valk, ific, llab)
     implicit none
     character(len=16), intent(in) :: tbtxt(2)
     character(len=80), intent(in) :: refk

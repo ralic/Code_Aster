@@ -18,18 +18,20 @@
 interface
     subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
                            refr, refc, typres, epsi, crit,&
-                           ific, llab)
-        character(len=*) :: cham19
-        character(len=*) :: nomail
-        character(len=*) :: nocmp
-        character(len=16) :: tbtxt(2)
-        integer :: refi
-        real(kind=8) :: refr
-        complex(kind=8) :: refc
-        character(len=*) :: typres
-        real(kind=8) :: epsi
-        character(len=*) :: crit
-        integer :: ific
-        logical :: llab
+                           ific, llab, ignore, compare)
+        character(len=*), intent(in) :: cham19
+        character(len=*), intent(in) :: nomail
+        character(len=*), intent(in) :: nocmp
+        character(len=16), intent(in) :: tbtxt(2)
+        integer, intent(in) :: refi
+        real(kind=8), intent(in) :: refr
+        complex(kind=8), intent(in) :: refc
+        character(len=*), intent(in) :: typres
+        real(kind=8), intent(in) :: epsi
+        character(len=*), intent(in) :: crit
+        integer, intent(in) :: ific
+        logical, intent(in) :: llab
+        logical, intent(in), optional :: ignore
+        real(kind=8), intent(in), optional :: compare
     end subroutine tresu_carte
 end interface

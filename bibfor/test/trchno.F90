@@ -9,20 +9,23 @@ subroutine trchno(ific, nocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/tresu_tole.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/tresu_champ_all.h"
-#include "asterfort/tresu_read_refe.h"
 #include "asterfort/tresu_champ_cmp.h"
-#include "asterfort/utestr.h"
+#include "asterfort/tresu_champ_no.h"
+#include "asterfort/tresu_ordgrd.h"
+#include "asterfort/tresu_read_refe.h"
+#include "asterfort/tresu_tole.h"
+#include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: ific, nocc
+    integer, intent(in) :: ific
+    integer, intent(in) :: nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +68,8 @@ subroutine trchno(ific, nocc)
     integer :: iarg
     logical :: lref
     character(len=8), pointer :: nom_cmp(:) => null()
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -120,13 +125,17 @@ subroutine trchno(ific, nocc)
         call getvr8('CHAM_NO', 'VALE_CALC', iocc=iocc, nbval=0, nbret=n1)
         call getvis('CHAM_NO', 'VALE_CALC_I', iocc=iocc, nbval=0, nbret=n2)
         call getvc8('CHAM_NO', 'VALE_CALC_C', iocc=iocc, nbval=0, nbret=n3)
+!
+        skip = .false.
+        ordgrd = 1.d0
         if (n1 .ne. 0) then
             nref=-n1
             typres = 'R'
             call jedetr(travr)
             call wkvect(travr, 'V V R', nref, irefr)
-            call getvr8('CHAM_NO', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr( irefr),&
+            call getvr8('CHAM_NO', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr),&
                         nbret=iret)
+            call tresu_ordgrd(zr(irefr), skip, ordgrd, mcf='CHAM_NO', iocc=iocc)
         else if (n2 .ne. 0) then
             nref=-n2
             typres = 'I'
@@ -173,6 +182,12 @@ subroutine trchno(ific, nocc)
                             nbret=iret)
             endif
         endif
+        if (skip .and. .not. lref) then
+            call utmess('A', 'TEST0_11')
+        endif
+        if (skip .and. .not. lref) then
+            call utmess('A', 'TEST0_11')
+        endif
 ! ----------------------------------------------------------------------
 !
         call getvtx('CHAM_NO', 'TYPE_TEST', iocc=iocc, scal=typtes, nbret=n1)
@@ -216,7 +231,7 @@ subroutine trchno(ific, nocc)
                 endif
                 call tresu_champ_all(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
-                            ific, .true., ssigne)
+                            ific, .true., ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_all(cham19, typtes, typres, nref, tbref,&
                                 zi(irefir), zr(irefrr), zc(irefcr), epsir, crit,&
@@ -236,7 +251,7 @@ subroutine trchno(ific, nocc)
                 call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt,&
                             zi(irefi), zr(irefr), zc(irefc), epsi, lign1,&
                             lign2, crit, ific, nbcmp, nom_cmp,&
-                            .true., ssigne)
+                            .true., ssigne, ignore=skip, compare=ordgrd)
                 if (lref) then
                     call tresu_champ_cmp(cham19, typtes, typres, nref, tbref,&
                                 zi( irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
@@ -281,7 +296,7 @@ subroutine trchno(ific, nocc)
                             iret)
                 if (iret .ne. 0) then
                     write (ific,*) testok
-                    goto 100
+                    cycle
                 endif
                 nonoeu(10:33) = nogrno
             endif
@@ -291,17 +306,17 @@ subroutine trchno(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call utestr(cham19, nonoeu, noddl, nref, tbtxt,&
-                        zi(irefi), zr( irefr), zc(irefc), typres, epsi,&
-                        crit, ific, .true., ssigne)
+            call tresu_champ_no(cham19, nonoeu, noddl, nref, tbtxt,&
+                                zi(irefi), zr( irefr), zc(irefc), typres, epsi,&
+                                crit, ific, .true., ssigne, ignore=skip, &
+                                compare=ordgrd)
             if (lref) then
-                call utestr(cham19, nonoeu, noddl, nref, tbref,&
-                            zi(irefir), zr(irefrr), zc(irefcr), typres, epsir,&
-                            crit, ific, .false., ssigne)
+                call tresu_champ_no(cham19, nonoeu, noddl, nref, tbref,&
+                                    zi(irefir), zr(irefrr), zc(irefcr), typres, epsir,&
+                                    crit, ific, .false., ssigne)
             endif
         endif
         write (ific,*)' '
-100     continue
     end do
 !
     1160 format(1x,a80,a)

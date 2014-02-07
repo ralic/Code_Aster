@@ -19,23 +19,25 @@ interface
     subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                       refi, refr, refc, epsi, lign1,&
                       lign2, crit, ific, nbcmp, nocmp,&
-                      llab, ssigne)
-        integer :: nbref
-        character(len=*) :: chamgd
-        character(len=8) :: typtes
-        character(len=*) :: typres
-        character(len=16) :: tbtxt(2)
-        integer :: refi(nbref)
-        real(kind=8) :: refr(nbref)
-        complex(kind=8) :: refc(nbref)
-        real(kind=8) :: epsi
-        character(len=200) :: lign1
-        character(len=200) :: lign2
-        character(len=*) :: crit
-        integer :: ific
-        integer :: nbcmp
-        character(len=8) :: nocmp(*)
-        logical :: llab
-        character(len=*) :: ssigne
+                      llab, ssigne, ignore, compare)
+        character(len=*), intent(in) :: chamgd
+        character(len=8), intent(in) :: typtes
+        character(len=*), intent(in) :: typres
+        integer, intent(in) :: nbref
+        character(len=16), intent(in) :: tbtxt(2)
+        integer, intent(in) :: refi(nbref)
+        real(kind=8), intent(in) :: refr(nbref)
+        complex(kind=8), intent(in) :: refc(nbref)
+        real(kind=8), intent(in) :: epsi
+        character(len=200), intent(inout) :: lign1
+        character(len=200), intent(inout) :: lign2
+        character(len=*), intent(in) :: crit
+        integer, intent(in) :: ific
+        integer, intent(in) :: nbcmp
+        character(len=8), intent(in) :: nocmp(*)
+        logical, intent(in) :: llab
+        character(len=*), intent(in) :: ssigne
+        logical, intent(in), optional :: ignore
+        real(kind=8), intent(in), optional :: compare
     end subroutine tresu_champ_cmp
 end interface

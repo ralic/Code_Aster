@@ -17,7 +17,7 @@
 !
 interface
     subroutine trcart(ific, nocc)
-        integer :: ific
-        integer :: nocc
+        integer, intent(in) :: ific
+        integer, intent(in) :: nocc
     end subroutine trcart
 end interface

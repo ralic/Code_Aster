@@ -18,19 +18,21 @@
 interface
     subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
                           refi, refr, refc, epsi, crit,&
-                          ific, llab, ssigne)
-        character(len=*) :: nomta
-        character(len=*) :: para
-        character(len=8) :: typtes
-        character(len=*) :: typres
-        character(len=16) :: tbtxt(2)
-        integer :: refi
-        real(kind=8) :: refr
-        complex(kind=8) :: refc
-        real(kind=8) :: epsi
-        character(len=*) :: crit
-        integer :: ific
-        logical :: llab
-        character(len=*) :: ssigne
+                          ific, llab, ssigne, ignore, compare)
+        character(len=*), intent(in) :: nomta
+        character(len=*), intent(in) :: para
+        character(len=8), intent(in) :: typtes
+        character(len=*), intent(in) :: typres
+        character(len=16), intent(in) :: tbtxt(2)
+        integer, intent(in) :: refi
+        real(kind=8), intent(in) :: refr
+        complex(kind=8), intent(in) :: refc
+        real(kind=8), intent(in) :: epsi
+        character(len=*), intent(in) :: crit
+        integer, intent(in) :: ific
+        logical, intent(in) :: llab
+        character(len=*), intent(in) :: ssigne
+        logical, intent(in), optional :: ignore
+        real(kind=8), intent(in), optional :: compare
     end subroutine tresu_tabl
 end interface

@@ -1,17 +1,31 @@
 subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                   ivari, nocmp, nbref, tbtxt, refi,&
                   refr, refc, typres, epsi, crit,&
-                  ific, llab, ssigne)
+                  ific, llab, ssigne, ignore, compare)
     implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/utch19.h"
 #include "asterfort/tresu_print_all.h"
-    integer :: nbref, refi(nbref), nupo, ivari, ific, nusp
-    real(kind=8) :: refr(nbref), epsi
-    character(len=*) :: cham19, nomail, nonoeu, typres, nocmp, crit, ssigne
-    character(len=16) :: tbtxt(2)
-    complex(kind=8) :: refc(nbref)
-    logical :: llab
+    character(len=*), intent(in) :: cham19
+    character(len=*), intent(in) :: nomail
+    character(len=*), intent(in) :: nonoeu
+    integer, intent(in) :: nupo
+    integer, intent(in) :: nusp
+    integer, intent(in) :: ivari
+    character(len=*), intent(in) :: nocmp
+    integer, intent(in) :: nbref
+    character(len=16), intent(in) :: tbtxt(2)
+    integer, intent(in) :: refi(nbref)
+    real(kind=8), intent(in) :: refr(nbref)
+    complex(kind=8), intent(in) :: refc(nbref)
+    character(len=*), intent(in) :: typres
+    real(kind=8), intent(in) :: epsi
+    character(len=*), intent(in) :: crit
+    integer , intent(in):: ific
+    logical, intent(in) :: llab
+    character(len=*), intent(in) :: ssigne
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +67,19 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
+!
+    skip = .false.
+    if (present(ignore)) then
+        skip = ignore
+    endif
+!
+    ordgrd = 1.d0
+    if (present(compare)) then
+        ordgrd = compare
+    endif
 !
     call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=nomma)
 !
@@ -65,7 +91,8 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     else
         call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
                     crit, epsi, ssigne, refr, valr, &
-                    refi, vali, refc, valc)
+                    refi, vali, refc, valc, ignore=skip, &
+                    compare=ordgrd)
     endif
 !
 end subroutine

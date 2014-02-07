@@ -6,8 +6,11 @@ subroutine trjeve(ific, nocc)
 #include "asterfort/getvtx.h"
 #include "asterfort/tresu_tole.h"
 #include "asterfort/tresu_read_refe.h"
-#include "asterfort/utesto.h"
-    integer :: ific, nocc
+#include "asterfort/tresu_ordgrd.h"
+#include "asterfort/tresu_obj.h"
+#include "asterfort/utmess.h"
+    integer, intent(in) :: ific
+    integer, intent(in) :: nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +39,8 @@ subroutine trjeve(ific, nocc)
     character(len=16) :: tbtxt(2), tbref(2)
     character(len=24) :: nomobj
     logical :: lref
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
 !
     do 100 iocc = 1, nocc
@@ -59,25 +64,30 @@ subroutine trjeve(ific, nocc)
 !
         call getvis('OBJET', 'VALE_CALC_I', iocc=iocc, scal=refi, nbret=n2)
         if (n2 .eq. 1) then
-            call utesto(nomobj, 'I', tbtxt, refi, refr,&
-                        epsi, crit, .true., ssigne)
+            call tresu_obj(nomobj, 'I', tbtxt, refi, refr,&
+                           epsi, crit, .true., ssigne)
             if (lref) then
                 call getvis('OBJET', 'VALE_REFE_I', iocc=iocc, scal=refir, nbret=n2r)
                 ASSERT(n2.eq.n2r)
-                call utesto(nomobj, 'I', tbref, refir, refrr,&
-                            epsir, crit, .false., ssigne)
+                call tresu_obj(nomobj, 'I', tbref, refir, refrr,&
+                               epsir, crit, .false., ssigne)
             endif
         endif
 !
         call getvr8('OBJET', 'VALE_CALC', iocc=iocc, scal=refr, nbret=n2)
         if (n2 .eq. 1) then
-            call utesto(nomobj, 'R', tbtxt, refi, refr,&
-                        epsi, crit, .true., ssigne)
+            call tresu_ordgrd(refr, skip, ordgrd, mcf='OBJET', iocc=iocc)
+            if (skip .and. .not. lref) then
+                call utmess('A', 'TEST0_11')
+            endif
+            call tresu_obj(nomobj, 'R', tbtxt, refi, refr,&
+                           epsi, crit, .true., ssigne, ignore=skip, &
+                           compare=ordgrd)
             if (lref) then
                 call getvr8('OBJET', 'VALE_REFE', iocc=iocc, scal=refrr, nbret=n2r)
                 ASSERT(n2.eq.n2r)
-                call utesto(nomobj, 'R', tbref, refir, refrr,&
-                            epsir, crit, .false., ssigne)
+                call tresu_obj(nomobj, 'R', tbref, refir, refrr,&
+                               epsir, crit, .false., ssigne)
             endif
         endif
         write (ific,*)' '

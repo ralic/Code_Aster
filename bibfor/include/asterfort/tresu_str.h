@@ -16,16 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine utesto(nomobj, type, tbtxt, refi, refr,&
-                      epsi, crit, llab, ssigne)
-        character(len=24) :: nomobj
-        character(len=*) :: type
-        character(len=16) :: tbtxt(2)
-        integer :: refi
-        real(kind=8) :: refr
-        real(kind=8) :: epsi
-        character(len=*) :: crit
-        logical :: llab
-        character(len=*) :: ssigne
-    end subroutine utesto
+    subroutine tresu_str(tbtxt, refk, valk, ific, llab)
+        character(len=16), intent(in) :: tbtxt(2)
+        character(len=80), intent(in) :: refk
+        character(len=80), intent(in) :: valk
+        integer, intent(in) :: ific
+        logical, intent(in) :: llab
+    end subroutine tresu_str
 end interface

@@ -1,16 +1,22 @@
-subroutine utesto(nomobj, type, tbtxt, refi, refr,&
-                  epsi, crit, llab, ssigne)
+subroutine tresu_obj(nomobj, type, tbtxt, refi, refr,&
+                     epsi, crit, llab, ssigne, ignore, &
+                     compare)
     implicit none
 #include "asterfort/jeexin.h"
 #include "asterfort/tstobj.h"
 #include "asterfort/tresu_print.h"
 #include "asterfort/utmess.h"
-    character(len=24) :: nomobj
-    real(kind=8) :: refr, epsi
-    character(len=*) :: crit, type, ssigne
-    character(len=16) :: tbtxt(2)
-    integer :: refi
-    logical :: llab
+    character(len=24), intent(in) :: nomobj
+    character(len=*), intent(in) :: type
+    character(len=16), intent(in) :: tbtxt(2)
+    integer, intent(in) :: refi
+    real(kind=8), intent(in) :: refr
+    real(kind=8), intent(in) :: epsi
+    character(len=*), intent(in) :: crit
+    logical, intent(in) :: llab
+    character(len=*), intent(in) :: ssigne
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,6 +54,18 @@ subroutine utesto(nomobj, type, tbtxt, refi, refr,&
     character(len=3) :: tysc
     real(kind=8) :: sommr
     integer :: resume, sommi, lonuti, lonmax, ni, iret, iret2
+    logical :: skip
+    real(kind=8) :: ordgrd
+!
+    skip = .false.
+    if (present(ignore)) then
+        skip = ignore
+    endif
+!
+    ordgrd = 1.d0
+    if (present(compare)) then
+        ordgrd = compare
+    endif
 !
     call tstobj(nomobj, 'NON', resume, sommi, sommr,&
                 lonuti, lonmax, tysc, iret, ni)
@@ -61,7 +79,8 @@ subroutine utesto(nomobj, type, tbtxt, refi, refr,&
                         epsi, ssigne, refi=[refi], vali=sommi)
         else if (type.eq.'R') then
             call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit, &
-                        epsi, ssigne, refr=[refr], valr=sommr)
+                        epsi, ssigne, refr=[refr], valr=sommr, ignore=skip, &
+                        compare=ordgrd)
         endif
     else
         call jeexin(nomobj, iret2)

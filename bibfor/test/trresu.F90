@@ -22,18 +22,19 @@ subroutine trresu(ific, nocc)
 #include "asterfort/trprec.h"
 #include "asterfort/utcmp1.h"
 #include "asterfort/tresu_champ_all.h"
-#include "asterfort/tresu_champ_val.h"
-#include "asterfort/tresu_read_refe.h"
 #include "asterfort/tresu_champ_cmp.h"
+#include "asterfort/tresu_champ_no.h"
+#include "asterfort/tresu_champ_val.h"
 #include "asterfort/tresu_ordgrd.h"
-#include "asterfort/utestr.h"
 #include "asterfort/tresu_print_all.h"
+#include "asterfort/tresu_read_refe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: ific, nocc
+    integer, intent(in) :: ific
+    integer, intent(in) :: nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +58,7 @@ subroutine trresu(ific, nocc)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: vali, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4, nord
+    integer :: vali, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4
     integer :: nbordr, numord, nupo, nbcmp
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
@@ -170,7 +171,7 @@ subroutine trresu(ific, nocc)
             endif
         endif
         if (skip .and. .not. lref) then
-            call utmess('F', 'TEST0_11')
+            call utmess('A', 'TEST0_11')
         endif
 ! ----------------------------------------------------------------------
 !
@@ -260,8 +261,7 @@ subroutine trresu(ific, nocc)
             if (lref) then
                 call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
                                      crit, epsir, ssigne, zr(irefrr), valr, &
-                                     zi(irefir), vali, zc(irefcr), valc,&
-                                     ignore=skip, compare=ordgrd)
+                                     zi(irefir), vali, zc(irefcr), valc)
             endif
         endif
 !
@@ -344,7 +344,7 @@ subroutine trresu(ific, nocc)
                     call tresu_champ_cmp(cham19, typtes, typres, nref, tbtxt,&
                                 zi( irefi), zr(irefr), zc(irefc), epsi, lign1,&
                                 lign2, crit, ific, nbcmp, nom_cmp,&
-                                .true., ssigne)
+                                .true., ssigne, ignore=skip, compare=ordgrd)
                     if (lref) then
                         call tresu_champ_cmp(cham19, typtes, typres, nref, tbref,&
                                     zi(irefir), zr(irefrr), zc(irefcr), epsir, lign1,&
@@ -443,13 +443,14 @@ subroutine trresu(ific, nocc)
                         tbref(2)=tbtxt(2)
                         tbtxt(1)='NON_REGRESSION'
                     endif
-                    call utestr(cham19, nonoeu, noddl, nref, tbtxt,&
-                                zi( irefi), zr(irefr), zc(irefc), typres, epsi,&
-                                crit, ific, .true., ssigne)
+                    call tresu_champ_no(cham19, nonoeu, noddl, nref, tbtxt,&
+                                        zi( irefi), zr(irefr), zc(irefc), typres, epsi,&
+                                        crit, ific, .true., ssigne, ignore=skip, &
+                                        compare=ordgrd)
                     if (lref) then
-                        call utestr(cham19, nonoeu, noddl, nref, tbref,&
-                                    zi(irefir), zr(irefrr), zc(irefcr), typres, epsir,&
-                                    crit, ific, .false., ssigne)
+                        call tresu_champ_no(cham19, nonoeu, noddl, nref, tbref,&
+                                            zi(irefir), zr(irefrr), zc(irefcr), typres, epsir,&
+                                            crit, ific, .false., ssigne)
                     endif
                 else if (typch(1:2).eq.'EL') then
                     call getvem(nomma, 'MAILLE', 'RESU', 'MAILLE', iocc,&
@@ -513,7 +514,7 @@ subroutine trresu(ific, nocc)
                     call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                                 ivari, noddl, nref, tbtxt, zi(irefi),&
                                 zr(irefr), zc(irefc), typres, epsi, crit,&
-                                ific, .true., ssigne)
+                                ific, .true., ssigne, ignore=skip, compare=ordgrd)
                     if (lref) then
                         call tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                                     ivari, noddl, nref, tbref, zi(irefir),&

@@ -1,17 +1,25 @@
 subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
                        refr, refc, typres, epsi, crit,&
-                       ific, llab)
+                       ific, llab, ignore, compare)
     implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/utchca.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
-    integer :: refi, ific
-    real(kind=8) :: refr, epsi
-    character(len=*) :: cham19, nomail, typres, nocmp, crit
-    character(len=16) :: tbtxt(2)
-    complex(kind=8) :: refc
-    logical :: llab
+    character(len=*), intent(in) :: cham19
+    character(len=*), intent(in) :: nomail
+    character(len=*), intent(in) :: nocmp
+    character(len=16), intent(in) :: tbtxt(2)
+    integer, intent(in) :: refi
+    real(kind=8), intent(in) :: refr
+    complex(kind=8), intent(in) :: refc
+    character(len=*), intent(in) :: typres
+    real(kind=8), intent(in) :: epsi
+    character(len=*), intent(in) :: crit
+    integer, intent(in) :: ific
+    logical, intent(in) :: llab
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -49,7 +57,19 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     complex(kind=8) :: valc
     character(len=8) :: nomma
     character(len=4) :: tych
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
+    skip = .false.
+    if (present(ignore)) then
+        skip = ignore
+    endif
+!
+    ordgrd = 1.d0
+    if (present(compare)) then
+        ordgrd = compare
+    endif
+!
     call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych)
     if (tych .ne. 'CART') then
         call utmess('F', 'CALCULEL3_90', sk=cham19)
@@ -64,7 +84,8 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     else
         call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1, &
                     crit, epsi, 'NON', [refr], valr, &
-                    [refi], vali, [refc], valc)
+                    [refi], vali, [refc], valc, ignore=skip, &
+                    compare=ordgrd)
     endif
 !
 end subroutine

@@ -9,14 +9,17 @@ subroutine trcart(ific, nocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/tresu_tole.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcmp1.h"
-#include "asterfort/tresu_read_refe.h"
+#include "asterfort/utmess.h"
 #include "asterfort/tresu_carte.h"
-    integer :: ific, nocc
+#include "asterfort/tresu_ordgrd.h"
+#include "asterfort/tresu_read_refe.h"
+#include "asterfort/tresu_tole.h"
+    integer, intent(in) :: ific
+    integer, intent(in) :: nocc
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -54,6 +57,8 @@ subroutine trcart(ific, nocc)
     character(len=200) :: lign1, lign2
     integer :: iarg
     logical :: lref
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -87,8 +92,11 @@ subroutine trcart(ific, nocc)
         call getvis('CARTE', 'VALE_CALC_I', iocc=iocc, scal=vali, nbret=n2)
         call getvc8('CARTE', 'VALE_CALC_C', iocc=iocc, scal=valc, nbret=n3)
 !
+        skip = .false.
+        ordgrd = 1.d0
         if (n1 .eq. 1) then
             typres = 'R'
+            call tresu_ordgrd(valr, skip, ordgrd, mcf='CARTE', iocc=iocc)
         else if (n2 .eq. 1) then
             typres = 'I'
         else
@@ -104,6 +112,9 @@ subroutine trcart(ific, nocc)
             call getvis('CARTE', 'VALE_REFE_I', iocc=iocc, scal=valir, nbret=n2r)
             call getvc8('CARTE', 'VALE_REFE_C', iocc=iocc, scal=valcr, nbret=n3r)
             ASSERT(n1r.eq.n1 .and. n2r.eq.n2 .and. n3r.eq.n3)
+        endif
+        if (skip .and. .not. lref) then
+            call utmess('A', 'TEST0_11')
         endif
 ! ----------------------------------------------------------------------
 !
@@ -138,7 +149,7 @@ subroutine trcart(ific, nocc)
         endif
         call tresu_carte(cham19, nomail, noddl, tbtxt, vali,&
                     valr, valc, typres, epsi, crit,&
-                    ific, .true.)
+                    ific, .true., ignore=skip, compare=ordgrd)
         if (lref) then
             call tresu_carte(cham19, nomail, noddl, tbref, valir,&
                         valrr, valcr, typres, epsir, crit,&

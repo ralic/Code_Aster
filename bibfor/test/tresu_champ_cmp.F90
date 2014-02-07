@@ -1,7 +1,7 @@
 subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                   refi, refr, refc, epsi, lign1,&
                   lign2, crit, ific, nbcmp, nocmp,&
-                  llab, ssigne)
+                  llab, ssigne, ignore, compare)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -18,14 +18,25 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbref, refi(nbref), ific, nbcmp
-    real(kind=8) :: refr(nbref), epsi
-    character(len=8) :: typtes, nocmp(*)
-    character(len=16) :: tbtxt(2)
-    character(len=*) :: chamgd, typres, crit, ssigne
-    character(len=200) :: lign1, lign2
-    complex(kind=8) :: refc(nbref)
-    logical :: llab
+    character(len=*), intent(in) :: chamgd
+    character(len=8), intent(in) :: typtes
+    character(len=*), intent(in) :: typres
+    integer, intent(in) :: nbref
+    character(len=16), intent(in) :: tbtxt(2)
+    integer, intent(in) :: refi(nbref)
+    real(kind=8), intent(in) :: refr(nbref)
+    complex(kind=8), intent(in) :: refc(nbref)
+    real(kind=8), intent(in) :: epsi
+    character(len=200), intent(inout) :: lign1
+    character(len=200), intent(inout) :: lign2
+    character(len=*), intent(in) :: crit
+    integer, intent(in) :: ific
+    integer, intent(in) :: nbcmp
+    character(len=8), intent(in) :: nocmp(*)
+    logical, intent(in) :: llab
+    character(len=*), intent(in) :: ssigne
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,7 +80,19 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     character(len=4) :: type
     character(len=8) :: tych, noddl
     character(len=19) :: cham19, cnsinr
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
+!
+    skip = .false.
+    if (present(ignore)) then
+        skip = ignore
+    endif
+!
+    ordgrd = 1.d0
+    if (present(compare)) then
+        ordgrd = compare
+    endif
 !
     call jemarq()
 !
@@ -119,7 +142,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 !
     else if (tych(1:2).eq.'EL') then
 !              -----------------
-        cnsinr = '&&tresu_champ_cmp.CNSINR'
+        cnsinr = '&&TRESU_CH.CNSINR'
         call celces(cham19, 'V', cnsinr)
         call jeveuo(cnsinr//'.CESV', 'L', jcsv)
         call jeveuo(cnsinr//'.CESC', 'L', jcsc)
@@ -418,8 +441,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     endif
 !
     call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
-                crit, epsi, ssigne, refr, valr, &
-                refi, vali, refc, valc)
+                         crit, epsi, ssigne, refr, valr, &
+                         refi, vali, refc, valc, ignore=skip, &
+                         compare=ordgrd)
 !
     call detrsd('CHAM_NO_S', cnsinr)
 999 continue

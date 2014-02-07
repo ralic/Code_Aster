@@ -1,6 +1,6 @@
 subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
                       refi, refr, refc, epsi, crit,&
-                      ific, llab, ssigne)
+                      ific, llab, ssigne, ignore, compare)
     implicit none
 #include "jeveux.h"
 #include "asterc/ismaem.h"
@@ -11,13 +11,21 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
 #include "asterfort/tbexip.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
-    integer :: refi, ific
-    real(kind=8) :: refr, epsi
-    character(len=8) :: typtes
-    character(len=16) :: tbtxt(2)
-    character(len=*) :: nomta, para, typres, crit, ssigne
-    complex(kind=8) :: refc
-    logical :: llab
+    character(len=*), intent(in) :: nomta
+    character(len=*), intent(in) :: para
+    character(len=8), intent(in) :: typtes
+    character(len=*), intent(in) :: typres
+    character(len=16), intent(in) :: tbtxt(2)
+    integer, intent(in) :: refi
+    real(kind=8), intent(in) :: refr
+    complex(kind=8), intent(in) :: refc
+    real(kind=8), intent(in) :: epsi
+    character(len=*), intent(in) :: crit
+    integer, intent(in) :: ific
+    logical, intent(in) :: llab
+    character(len=*), intent(in) :: ssigne
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +66,19 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
     character(len=19) :: nomtab
     character(len=24) :: inpar
     character(len=24) :: valk(2)
+    logical :: skip
+    real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
+!
+    skip = .false.
+    if (present(ignore)) then
+        skip = ignore
+    endif
+!
+    ordgrd = 1.d0
+    if (present(compare)) then
+        ordgrd = compare
+    endif
 !
     call jemarq()
 !
@@ -164,7 +184,8 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
 !
     call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1, &
                 crit, epsi, ssigne, [refr], valr, &
-                [refi], vali, [refc], valc)
+                [refi], vali, [refc], valc, ignore=skip, &
+                compare=ordgrd)
 !
 9999  continue
 !

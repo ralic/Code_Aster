@@ -17,7 +17,7 @@
 !
 interface
     subroutine trchel(ific, nocc)
-        integer :: ific
-        integer :: nocc
+        integer, intent(in) :: ific
+        integer, intent(in) :: nocc
     end subroutine trchel
 end interface

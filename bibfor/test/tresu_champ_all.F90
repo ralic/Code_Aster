@@ -10,13 +10,19 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
-    integer :: nbref, refi(nbref), ific
-    real(kind=8) :: refr(nbref), epsi
-    character(len=8) :: typtes
-    character(len=16) :: tbtxt(2)
-    character(len=*) :: chamgd, typres, crit, ssigne
-    complex(kind=8) :: refc(nbref)
-    logical :: llab
+    character(len=*), intent(in) :: chamgd
+    character(len=8), intent(in) :: typtes
+    character(len=*), intent(in) :: typres
+    integer, intent(in) :: nbref
+    character(len=16), intent(in) :: tbtxt(2)
+    integer, intent(in) :: refi(nbref)
+    real(kind=8), intent(in) :: refr(nbref)
+    complex(kind=8), intent(in) :: refc(nbref)
+    real(kind=8), intent(in) :: epsi
+    character(len=*), intent(in) :: crit
+    integer, intent(in) :: ific
+    logical, intent(in) :: llab
+    character(len=*), intent(in) :: ssigne
     logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 ! ----------------------------------------------------------------------
@@ -75,7 +81,6 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
 !
     cham19 = chamgd
     typrez = typres(1:1)
-!
 !
 !     -- LE CHAMP EXISTE-T-IL ?
 !     =========================
