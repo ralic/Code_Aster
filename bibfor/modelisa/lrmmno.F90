@@ -74,7 +74,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
     parameter (edfuin=0)
 !
     integer :: codret
-    integer :: iaux
+    integer :: iaux, ndimm
     integer :: ntgeo
 !
     character(len=4) :: dimesp
@@ -144,7 +144,9 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !    LA DIMENSION DU PROBLEME PHYSIQUE EST VARIABLE (1,2,3), MAIS
 !   Aster stocke toujours 3 coordonnees par noeud.
     call wkvect(coordo, 'G V R', nbnoeu*3, vr=tcoord)
-    call codent(ndim, 'G', dimesp)
+    ndimm = ndim
+    if ( ndim.lt.2 ) ndimm = 2
+    call codent(ndimm, 'G', dimesp)
     call jeecra(coordo, 'DOCU', cval=dimesp)
 !
 ! 2.1. ==> EN DIMENSION 3, ON LIT LE TABLEAU DES COORDONNEES
