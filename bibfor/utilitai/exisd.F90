@@ -39,6 +39,7 @@ subroutine exisd(typesd, nomsd, iret)
 !         / 'MODELE'
 !         /'MAILLAGE'
 !         /'NUME_DDL'
+!         /'PROF_CHNO'
 !         /'MATR_ASSE'
 !       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A TESTER
 !
@@ -195,6 +196,14 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch(1:14)//'.NUME.LILI', i3)
         call jeexin(ch(1:14)//'.NUME.NUEQ', i4)
         if (i1*i2*i3*i4 .ne. 0) goto 20
+!
+    else if (typ2sd.eq.'PROF_CHNO') then
+!     -----------------------------------
+        ch = nomsd
+        call jeexin(ch(1:19)//'.PRNO', i1)
+        call jeexin(ch(1:19)//'.DEEQ', i2)
+        call jeexin(ch(1:19)//'.LILI', i3)
+        if (i1*i2*i3 .ne. 0) goto 20
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)

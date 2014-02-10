@@ -147,7 +147,10 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 
 
 26 : _(u"""
- pas la même numérotation sur les CHAM_NO.
+Erreur utilisateur dans la commande CREA_RESU / TYPE_MAXI= ...
+  La commande exige que tous les cham_no pour lesquels on veut extraire
+  le maximum aient la même numérotation pour leurs composantes.
+  Ce n'est pas le cas pour cette structure de donnée SD_RESULTAT.
 """),
 
 27 : _(u"""

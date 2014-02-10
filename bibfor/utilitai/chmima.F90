@@ -19,6 +19,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/idensd.h"
 !
     integer :: nbordr
     character(len=*) :: nomsd, nomsy, typmax, nocham
@@ -57,7 +58,6 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
     character(len=19) :: nocha2, chextr, knum
     character(len=24) :: nomnoe
     character(len=5) :: sufv
-! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iad, in, inoe, inumer
     integer :: iret, ivale, j, jddlx, jddly, jddlz, jdlrx
@@ -112,7 +112,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 !
 !     --- BOUCLE SUR LES NUMEROS D'ORDRE ---
 !
-    if (typma .eq. 'MAXI    ') then
+    if (typma .eq. 'MAXI') then
 !
         do i = 2, nbordr
 !
@@ -159,7 +159,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
 !
         end do
 !
-    else if (typma.eq.'MINI    ') then
+    else if (typma.eq.'MINI') then
 !
         do i = 2, nbordr
 !
@@ -266,9 +266,13 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
             call rsexch('F', nomsd, noms2, zi(jordr+i-1), chextr,&
                         iret)
             call dismoi('PROF_CHNO', chextr, 'CHAM_NO', repk=prn2)
-            if (prn2 .ne. prno) then
-                call utmess('F', 'UTILITAI_26')
+            if (prn2.ne.prno) then
+                if (.not.idensd('PROF_CHNO',prn2,prno)) then
+                    call utmess('F', 'UTILITAI_26')
+                endif
             endif
+
+
             call jeveuo(chextr//'.VALE', 'L', ivale)
 !
             do in = 0, nbnoe-1

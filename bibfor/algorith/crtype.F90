@@ -29,8 +29,10 @@ subroutine crtype()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fonbpa.h"
@@ -68,14 +70,14 @@ subroutine crtype()
 !
     integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
     integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
-    integer ::  jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf
+    integer ::  jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf, nuprev
     integer :: ino, nbv(1), jrefe, jlcha, nchar, jfcha, iadesc, icmpd, icmpi
-    integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini
+    integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
 !
     parameter  (mxpara=10)
 !
-    logical :: lncas, lfonc
+    logical :: lncas, lfonc, lcopy
 !
     real(kind=8) :: valpu(mxpara), rbid, tps, prec, valrr(3), freq
     complex(kind=8) :: cbid
@@ -86,8 +88,8 @@ subroutine crtype()
     character(len=8) :: modele, materi, carele, blan8, noma2
     character(len=14) :: numedd
     character(len=16) :: nomp(mxpara), type, oper, acces, k16b
-    character(len=19) :: nomch, champ, listr8, excit, pchn1, resu19
-    character(len=24) :: k24, linst, nsymb, typres, lcpt, o1, o2, profch, noojb
+    character(len=19) :: nomch, champ, listr8, excit, pchn1, resu19, profprev, profch
+    character(len=24) :: k24, linst, nsymb, typres, lcpt, o1, o2, noojb
     character(len=24) :: valkk(4), matric(3)
     character(len=32) :: kjexn
     character(len=8), pointer :: champs(:) => null()
@@ -188,13 +190,31 @@ subroutine crtype()
  20     continue
 !
         if (k24(1:7) .eq. 'CHAM_NO') then
-!           ON CHERCHE A ECONOMISER LES PROF_CHNO (PARTAGE SI POSSIBLE)
+!           -- on cherche a economiser les prof_chno (partage si possible)
             if (profch .eq. ' ') then
                 call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=pchn1)
                 noojb = '12345678.PRCHN00000.PRNO'
                 call gnomsd(' ', noojb, 15, 19)
                 profch = noojb(1:19)
-                call copisd('PROF_CHNO', 'G', pchn1, profch)
+                lcopy=.true.
+!               -- si le numero du prof_chno est > 0, on regarde si le numero precedent convient:
+                read (profch(15:19),'(I5)') nuprev
+                if (nuprev.gt.0) then
+                    nuprev=nuprev-1
+                    profprev=profch
+                    call codent(nuprev, 'D0', profprev(15:19))
+                    call exisd('PROF_CHNO',profprev,iexi)
+                    if (iexi.gt.0) then
+                        if (idensd('PROF_CHNO',profprev,pchn1)) then
+                            profch=profprev
+                            lcopy=.false.
+                        endif
+                    endif
+                endif
+
+                if (lcopy) then
+                    call copisd('PROF_CHNO', 'G', pchn1, profch)
+                endif
             else
                 call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=pchn1)
                 if (.not.idensd('PROF_CHNO',profch,pchn1)) then
