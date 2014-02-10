@@ -36,18 +36,16 @@ Rho_beton =2400
 ft =3.9*MPa
 # pente post-pic en traction
 DE_beton = -E_beton
-# contrainte limite en compression
+# contrainte limite en compressio
 fc = -38.3*MPa
 
-## ACIER # avec une grille en parallele du GLRC
+## ACIER moyenne
 # section acier longitudinal inf (mm2) par barres
 section_acier_haut = math.pi*(8e-3*0.5)**2
 # section acier longitudinal sup (mm2) par barres
 section_acier_bas = math.pi*(32.E-3*0.5)**2
 # section acier lonigitudinal inf (mm2/m)
-section_acier = section_acier_haut*2/lg_beton
-# section acier supplementaire 
-section_acier_suppl = (2*section_acier_bas-2*section_acier_haut)/lg_beton
+section_acier = (section_acier_haut+section_acier_bas)/lg_beton
 # excentrement des aciers
 excentr = ep_beton*0.5-0.032
 # module de Young acier
@@ -68,24 +66,19 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
 #-----------------------------------------------
 # LECTURE DU MAILLAGE
 #-----------------------------------------------    
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',);
 
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
+MA=DEFI_GROUP(reuse =MA,
+                MAILLAGE=MA,
                 CREA_GROUP_NO=(_F(GROUP_MA='A',),
                                _F(GROUP_MA='B',),),);
 
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
                    ORIE_NORM_COQUE=_F(GROUP_MA='POUTRE',
                                       VECT_NORM=(0.,1.,0.,),
                                       GROUP_NO='A',),);
-
-# creation du renforcement supplementaire
-MA=CREA_MAILLAGE(MAILLAGE = MAIL,
-                      CREA_GROUP_MA =(_F(NOM = 'RENF_H',
-                                        GROUP_MA = 'POUTRE',
-                                        PREF_MAILLE = 'H',),),);
+                      
 
 #-----------------------------------------------
 # CREATION DU MODELE
@@ -93,10 +86,7 @@ MA=CREA_MAILLAGE(MAILLAGE = MAIL,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA=('POUTRE'),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKTG',),
-                     _F(GROUP_MA='RENF_H',
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='GRILLE_EXCENTRE',),));
+                        MODELISATION='DKTG',),),);
 
 #-----------------------------------------------
 # DEFINTION DES MATERIAUX 
@@ -126,19 +116,14 @@ MAT_T=DEFI_GLRC(RELATION='GLRC_DM',
 
 MATER=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='POUTRE',
-                             MATER=MAT_T,),
-                          _F(GROUP_MA='RENF_H',
-                             MATER=ACIER,),),);
+                             MATER=MAT_T,),),);
 
+                      
 CAEL=AFFE_CARA_ELEM(MODELE=MO,
                     COQUE=_F(GROUP_MA='POUTRE',
                              EPAIS=ep_beton,
                              ANGL_REP=(0.0,0.0,),
-                             INER_ROTA='OUI',),
-                    GRILLE=_F(GROUP_MA='RENF_H',
-                              SECTION=section_acier_suppl,
-                              ANGL_REP=(0.0,0.0,),
-                              EXCENTREMENT=-excentr,),);
+                             INER_ROTA='OUI',),);
 
 #-----------------------------------------------
 # DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS 
@@ -179,9 +164,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=CL,),),
                    COMPORTEMENT=(_F(GROUP_MA ='POUTRE',
                                     RELATION='GLRC_DM',
-                                    ITER_INTE_MAXI=30,),
-                                 _F(GROUP_MA = ('RENF_H'),
-                                    RELATION ='GRILLE_CINE_LINE'),),
+                                    ITER_INTE_MAXI=30,),),
                    INCREMENT=_F(LIST_INST=LINST,),
                    NEWTON=_F(REAC_ITER=1,
                              MATRICE='TANGENTE',),);
@@ -189,10 +172,6 @@ RESU=STAT_NON_LINE(MODELE=MO,
 CALC_CHAMP(reuse=RESU,
            RESULTAT=RESU,
            FORCE=('FORC_NODA','REAC_NODA'),);
-CALC_CHAMP(reuse=RESU,
-           RESULTAT=RESU,
-           DEFORMATION=('EPSI_ELGA', 'EPSI_NOEU'),
-           GROUP_MA='RENF_H');
 
 #-----------------------------------------------
 # CALCUL DES TEST_RESU
@@ -221,9 +200,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(26547.197762391 ),
+           VALE_CALC=(30889.874360044 ),
            VALE_REFE=(val_exp[3]*0.5 ),
-           PRECISION=0.11,
+           PRECISION=0.05,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -235,9 +214,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=( 33915.120006123   ),
+           VALE_CALC=( 41854.549871505   ),
            VALE_REFE=(val_exp[6]*0.5 ),
-           PRECISION=0.16,
+           PRECISION=0.04,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -249,9 +228,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(40852.747876166 ),
+           VALE_CALC=(52435.820833159 ),
            VALE_REFE=(val_exp[9]*0.5 ),
-           PRECISION=0.19,
+           PRECISION=0.06,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -263,9 +242,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(54301.739766847  ),
+           VALE_CALC=(73299.919635242 ),
            VALE_REFE=(val_exp[12]*0.5 ),
-           PRECISION=0.23,
+           PRECISION=0.06,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -277,9 +256,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(70869.257492292  ),
+           VALE_CALC=(99158.320493457  ),
            VALE_REFE=(val_exp[15]*0.5 ),
-           PRECISION=0.21,
+           PRECISION=0.11,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -291,9 +270,9 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(80706.026126082  ),
+           VALE_CALC=(1.1457150899729E+05  ),
            VALE_REFE=(val_exp[18]*0.5  ),
-           PRECISION=0.20,
+           PRECISION=0.15,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
 
@@ -305,81 +284,10 @@ TEST_TABLE(TABLE=POST,
                      CRIT_COMP='EQ',
                      PRECISION=1.E-3,),
            REFERENCE='SOURCE_EXTERNE',
-           VALE_CALC=(1.2356484817602E+05  ),
+           VALE_CALC=(2.7207077072441E+05  ),
            VALE_REFE=(val_exp[21]*0.5  ),
-           PRECISION=0.06,
+           PRECISION=1.32,
            CRITERE='RELATIF',
            VALE_ABS='NON',);
-
-TEST_RESU(RESU=(_F(POINT=1,
-                   NOM_CMP='EPXX',
-                   MAILLE=('HM52', ),
-                   INST=0.3,
-                   NOM_CHAM='EPSI_ELGA',
-                   RESULTAT=RESU,
-                   REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=( 3.5680480897826E-04 ),
-                   VALE_REFE=(val_exp[5] ),
-                   PRECISION=0.18,),
-                _F(POINT=1,
-                   NOM_CMP='EPXX',
-                   MAILLE=('HM52', ),
-                   INST=0.5,
-                   NOM_CHAM='EPSI_ELGA',
-                   RESULTAT=RESU,
-                   REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=(5.5879868513188E-04),
-                   VALE_REFE=(val_exp[8]  ),
-                   PRECISION=0.34,),
-                _F(POINT=1,
-                   NOM_CMP='EPXX',
-                   MAILLE=('HM52', ),
-                   INST=0.7,
-                   NOM_CHAM='EPSI_ELGA',
-                   RESULTAT=RESU,
-                   REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=(7.4904552867289E-04 ),
-                   VALE_REFE=(val_exp[11] ),
-                   PRECISION=0.1,),
-                _F(POINT=1,
-                   NOM_CMP='EPXX',
-                   MAILLE=('HM52', ),
-                   INST=1.1,
-                   NOM_CHAM='EPSI_ELGA',
-                   RESULTAT=RESU,
-                   REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=(1.1177934013717E-03 ),
-                   VALE_REFE=(val_exp[14] ),
-                   PRECISION=0.13,),
-                _F(POINT=1,
-                   NOM_CMP='EPXX',
-                   MAILLE=('HM52', ),
-                   INST=1.6,
-                   NOM_CHAM='EPSI_ELGA',
-                   RESULTAT=RESU,
-                   REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=(1.5721656529375E-03, ),
-                   VALE_REFE=(val_exp[17]  ),
-                   PRECISION=0.23,),
-                _F(POINT=1,
-                   NOM_CMP='EPXX',
-                   MAILLE=('HM52', ),
-                   INST=1.9,
-                   NOM_CHAM='EPSI_ELGA',
-                   RESULTAT=RESU,
-                   REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=(1.8419237372081E-03 ),
-                   VALE_REFE=(val_exp[20]  ),
-                   PRECISION=0.29,),
-                _F(POINT=1,
-                   NOM_CMP='EPXX',
-                   MAILLE=('HM52', ),
-                   INST=5.0,
-                   NOM_CHAM='EPSI_ELGA',
-                   RESULTAT=RESU,
-                   REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=(6.5000697218637E-03 ),
-                   VALE_REFE=(val_exp[23]  ),
-                   PRECISION=0.7,),),);
 
 FIN()

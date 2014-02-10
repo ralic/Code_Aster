@@ -5,6 +5,6 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist C
 
-F comm ssnl119b.comm D 1
+F comm ssnl119c.comm D 1
 F mmed ssnl119b.mmed D 20
 F libr ssnl119b.12 D 12

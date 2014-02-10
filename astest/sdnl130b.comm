@@ -1,0 +1,276 @@
+# TITRE POUTRE DKT MODELE GLRC_DM (DYNA NON-LINEAIRE)
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+import math
+MPa = 1e6
+#-----------------------------------------------
+# PARAMETRES DU CALCUL
+#-----------------------------------------------  
+## BETON
+# epaisseur de la plaque
+ep_beton = 0.50
+# largeur de la plaque
+lg_beton = 0.2
+# module de Young  beton
+E_beton = 37272*MPa
+# coefficient de poisson  beton
+Nu_beton = 0.2
+# masse volumique beton
+Rho_beton =2400
+# contrainte limite de traction
+ft =3.9*MPa
+# pente post-pic en traction
+DE_beton = -E_beton
+# contrainte limite en compressio
+fc = -38.3*MPa
+
+## ACIER
+# section acier longitudinal sup (mm2) par barres
+section_acier_haut = math.pi*(32.E-3*0.5)**2
+# section acier lonigitudinal inf (mm2/m)
+section_acier = section_acier_haut*2/lg_beton
+# excentrement des aciers
+excentr = ep_beton*0.5-0.032
+# module de Young acier
+E_acier = 200000*MPa
+# coefficient de Poisson acier
+Nu_acier = 0.0
+# limite elastique acier
+sy_acier = 400*MPa
+# module d'ecrouissage acier
+Dsde_acier = 3280*MPa 
+# masse volumique acier
+Rho_acier = 7800
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# LECTURE DU SEISME
+INCLUDE(UNITE=92)
+
+#-----------------------------------------------
+# LECTURE DU MAILLAGE
+#-----------------------------------------------    
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+MA=DEFI_GROUP(reuse =MA,
+                MAILLAGE=MA,
+                CREA_GROUP_NO=(_F(GROUP_MA='A',),
+                               _F(GROUP_MA='B',),
+                               ),);
+
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_NORM_COQUE=_F(GROUP_MA='POUTRE',
+                                      VECT_NORM=(0.,1.,0.,),
+                                      GROUP_NO='CC',),);
+
+#-----------------------------------------------
+# CREATION DU MODELE
+#-----------------------------------------------     
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+                 INFO=1,
+                 AFFE=(_F(GROUP_MA=('POUTRE'),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='DKTG',),
+                      ));
+
+
+#-----------------------------------------------
+# DEFINTION DES MATERIAUX 
+#-----------------------------------------------    
+BETON = DEFI_MATERIAU(ELAS=_F(E=E_beton,
+                            NU=Nu_beton,
+                            RHO=Rho_beton,
+                            ),
+                      BETON_ECRO_LINE=_F(
+                                         D_SIGM_EPSI=(DE_beton),
+                                         SYT=ft,
+                                         SYC=-fc
+                                         ),);
+ACIER = DEFI_MATERIAU(ELAS=_F(E=E_acier,
+                            NU=Nu_acier,
+                            RHO=Rho_acier,),
+                    ECRO_LINE=_F(
+                                D_SIGM_EPSI=Dsde_acier,
+                                 SY=sy_acier,
+                                 ),);
+ 
+MAT_T = DEFI_GLRC(
+         RELATION = 'GLRC_DM',
+         BETON =_F(MATER = BETON,
+                    EPAIS = ep_beton),
+         NAPPE =_F(MATER = ACIER,
+                    OMX = section_acier ,
+                    OMY = section_acier, 
+                    RX = excentr/ep_beton*2,
+                    RY = excentr/ep_beton*2,
+                ),
+        PENTE ='PLAS_ACIER',   
+        AMOR_ALPHA=8.E-5,
+        AMOR_BETA=20.,               
+        INFO =2        
+)            
+
+MATER=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(GROUP_MA='POUTRE',
+                             MATER=MAT_T,), 
+                             ),);
+
+CAEL=AFFE_CARA_ELEM(MODELE=MO,
+                      COQUE=_F(GROUP_MA='POUTRE',
+                               EPAIS=ep_beton,
+                               ANGL_REP=(0.0,0.0,),
+                               INER_ROTA='OUI',),       
+                               );
+                               
+#-----------------------------------------------
+# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS 
+#-----------------------------------------------     
+CL=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(GROUP_NO='A',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,),
+                                 _F(GROUP_MA='B',
+                                    DY=0.0,), 
+                                 _F(GROUP_MA ='POUTRE',
+                                    DZ =0.0,
+                                    DRX = 0.0,
+                                    DRY = 0.0)       
+                                    ),
+                                    );
+
+MASS_ELE=CALC_MATR_ELEM(MODELE=MO, OPTION='MASS_MECA', CARA_ELEM=CAEL, CHAM_MATER=MATER, CHARGE=CL,);
+RIGI_ELE=CALC_MATR_ELEM(MODELE=MO, OPTION='RIGI_MECA', CARA_ELEM=CAEL, CHAM_MATER=MATER, CHARGE=CL,);
+NUMEDDL=NUME_DDL(MATR_RIGI=RIGI_ELE, METHODE='LDLT', RENUM='SANS',);
+MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE, NUME_DDL=NUMEDDL,);
+#
+# ON DEFINIT L'ACCELEROGRAMME DU SEISME
+ACCELERO = CALC_FONCTION( COMB= _F(FONCTION= ACS2C11, COEF= 45.))
+# ET SA DIRECTION SOUS FORME DE CHAM_NO_DEPL_R
+DEPSEISM=CALC_CHAR_SEISME (MATR_MASS=MASSE, MONO_APPUI='OUI', DIRECTION=(0., -1., 0.),)
+
+# ON TRANSFORME LE CHAM_NO_DEPL_R ET CHAR_MECA
+CHASEISM=AFFE_CHAR_MECA (MODELE=MO, VECT_ASSE=DEPSEISM,)
+
+# LES INSTANTS DE CALCUL
+LINST= DEFI_LIST_REEL(
+   DEBUT=0.0,
+   INTERVALLE=(
+      _F(JUSQU_A =  2.5 , NOMBRE =  250),
+      _F(JUSQU_A =  3.0 , NOMBRE =  50),
+      # _F(JUSQU_A = 15.0 , NOMBRE = 1200),
+   ),
+)
+
+#-----------------------------------------------
+# CALCUL DES RESULTATS POUR LE CHARGEMENT 
+#-----------------------------------------------
+RESU = DYNA_NON_LINE (MODELE=MO, 
+                      CHAM_MATER=MATER, 
+                      CARA_ELEM=CAEL,
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER =1),
+                      EXCIT=(_F(CHARGE=CL,),
+                             _F(CHARGE=CHASEISM, FONC_MULT=ACCELERO,),
+                             ),
+                      COMPORTEMENT=_F(GROUP_MA ='POUTRE', 
+                                    RELATION='GLRC_DM',
+                                   ITER_INTE_MAXI=30
+                                   ),
+                      INCREMENT=_F(LIST_INST=LINST,
+                      ),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5, 
+                                     ITER_GLOB_MAXI=350,
+                                     ARRET='OUI',),
+                      ARCHIVAGE=_F( LIST_INST=LINST, ),
+                      AMOR_RAYL_RIGI='ELASTIQUE',
+                          ) ;
+#
+RESU=CALC_CHAMP(reuse =RESU, RESULTAT=RESU, FORCE='FORC_NODA', TOUT_ORDRE='OUI', TOUT='OUI',)
+
+#-----------------------------------------------
+# CALCUL DES TEST_RESU
+#-----------------------------------------------
+
+# QUELQUES TEST DE RESULTATS
+TEST_RESU(RESU=(_F(GROUP_NO='AA',
+                   INST=1.76,
+                   RESULTAT=RESU,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=-2.2780230968398E4,
+                   ),
+                _F(GROUP_NO='CC',
+                   INST=1.76,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.9397870215904E-03,
+                   ),
+                _F(GROUP_NO='AA',
+                   INST=2.05,
+                   RESULTAT=RESU,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=1.6684414330187E4,
+                   ),
+                _F(GROUP_NO='CC',
+                   INST=2.05,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-1.1103406908659E-03,
+                   ),
+                _F(GROUP_NO='AA',
+                   INST=2.68,
+                   RESULTAT=RESU,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC=-3.8918040947715E4,
+                   ),
+                _F(GROUP_NO='CC',
+                   INST=2.68,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.4235992727914E-03,
+                   ),
+                _F(GROUP_NO='AA',
+                   INST=2.87,
+                   RESULTAT=RESU,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   VALE_CALC= 2.9974625623498E4,
+                   ),
+                _F(GROUP_NO='CC',
+                   INST=2.87,
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-3.0796634755416E-03,
+                   ),
+                ),
+          )
+
+FIN()
