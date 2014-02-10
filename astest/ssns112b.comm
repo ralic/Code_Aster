@@ -1,0 +1,331 @@
+# TITRE POUTRE DKTG MODELE GLRC_DM (STAT NON-LINEAIRE): TRACTION COMPRESSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+import math
+MPa = 1e6
+#-----------------------------------------------
+# PARAMETRES DU CALCUL
+#-----------------------------------------------  
+## BETON
+# epaisseur et hauteur de la plaque
+ht = 0.15
+# module de Young  beton
+E_beton = 28500*MPa
+# coefficient de poisson  beton
+Nu_beton = 0.2
+# masse volumique beton
+Rho_beton =2500
+# contrainte limite de traction
+ft =1.6*MPa
+# deformation au pic de compression
+eps_c = 2.3E-03
+# contrainte limite en compressio
+fc = -25*MPa
+# parametre de la MAZARS: pour le post-pic en traction
+AT = 0.5
+# aire de la fibre de beton
+a_fibre = ht**2/4.
+
+## ACIER
+# aire de la fibre de beton
+a_acier = math.pi*(0.014*0.5)**2
+# module de Young acier
+E_acier = 195000*MPa
+# limite elastique acier
+sy_acier = 610*MPa
+# masse volumique acier
+Rho_acier = 7500
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#-----------------------------------------------
+# LECTURE DU MAILLAGE
+#-----------------------------------------------    
+
+MAIL=LIRE_MAILLAGE(FORMAT='ASTER',);
+
+#-----------------------------------------------
+# CREATION DU MODELE
+#-----------------------------------------------   
+MO=AFFE_MODELE(MAILLAGE=MAIL,
+                 INFO=1,
+                  AFFE=_F(GROUP_MA = 'POUTRE', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),
+                         );
+                         
+#-----------------------------------------------
+# DEFINTION DES MATERIAUX ET CARACTERSISTIQUES
+#-----------------------------------------------
+GF=DEFI_GEOM_FIBRE( INFO=1,
+                    FIBRE = (_F(GROUP_FIBRE='SBET',
+                                COOR_AXE_POUTRE = (0.,0.,),
+                                VALE =( 0,0,4*(a_fibre-a_acier)
+                                       ),),
+                            _F(GROUP_FIBRE='SACI',
+                                COOR_AXE_POUTRE = (0.,0.,),
+                                VALE =( 0,0,4*a_acier
+                                       ),),
+                            ),
+                   )
+
+BETON = DEFI_MATER_GC(
+           MAZARS=_F(
+              UNITE_LONGUEUR = 'M',
+              FCJ      = -fc, 
+              EIJ      = E_beton,
+              EPSI_C   = eps_c, 
+              FTJ  = ft,
+              AT=AT,
+           ),
+           RHO=Rho_beton,  
+           INFO=2,
+)
+ACIER=DEFI_MATER_GC(
+           ACIER=_F(
+              E = E_acier,
+              SY=sy_acier,
+           ),
+           RHO=Rho_acier,
+)
+ 
+COMPF=DEFI_COMPOR(
+   GEOM_FIBRE=GF,
+   MATER_SECT=BETON,
+   MULTIFIBRE= (_F(GROUP_FIBRE='SACI', 
+                    MATER=ACIER, 
+                    RELATION='VMIS_CINE_GC'),
+               _F(GROUP_FIBRE='SBET', 
+                    MATER=BETON, 
+                    RELATION='MAZARS_GC'),),
+               
+)
+
+MATER=AFFE_MATERIAU(
+   MAILLAGE=MAIL,
+   AFFE=_F(GROUP_MA='POUTRE', 
+           MATER=(BETON,ACIER)),
+   AFFE_COMPOR=_F(TOUT='OUI',
+            COMPOR=COMPF),
+)
+
+
+
+CAEL=AFFE_CARA_ELEM(
+            MODELE=MO, 
+            INFO=1,
+            POUTRE=_F(GROUP_MA=('POUTRE'), SECTION='RECTANGLE',CARA=('HY','HZ'), VALE=(ht,ht),),
+            ORIENTATION=_F(GROUP_MA=('POUTRE'), CARA='ANGL_VRIL', VALE=-90.0,),
+            GEOM_FIBRE=GF,
+            MULTIFIBRE=_F(GROUP_MA=('POUTRE'), 
+                        GROUP_FIBRE=('SBET','SACI'), 
+                        PREC_AIRE=2.0E-02, 
+                        PREC_INERTIE=10,),
+)
+
+#-----------------------------------------------
+# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS 
+#-----------------------------------------------                                 
+CL=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(GROUP_NO='A',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,
+                                    DRZ=0.0,),
+                                 _F(GROUP_NO='B',
+                                    DY=0.0,
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,
+                                    DRZ=0.0,),
+                                 ),);
+
+CHARGE=AFFE_CHAR_MECA(MODELE=MO,
+                           FORCE_NODALE=_F(GROUP_NO = 'B',
+                                          FX=1000.0,),);
+                                          
+t1 = 1.0
+t2 = 3.0
+t3 = 5.0
+t4 = 7.0
+t5 = 9.0
+t6 = 11.0
+t7 = 13.0
+t8 = 15.0
+t9 = 17.0
+t10 = 19.0
+
+dt = 0.05;
+
+FOFO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                              t1,-250.,
+                         t2,55.,
+                         t3,-365.0,
+                         t4,176.0,
+                         t5,-490.0,
+                         t6,298.0,
+                         t7,-675.0,
+                         t8,368.0,
+                         t9,-790.0,
+                         t10,376.0,
+                             ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                             
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=t10,
+                                   PAS=dt,),);                       
+
+#-----------------------------------------------
+# CALCUL DES RESULTATS POUR LE CHARGEMENT 
+#-----------------------------------------------                               
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=MATER,
+                      CARA_ELEM=CAEL,
+                      EXCIT=(_F(CHARGE=CHARGE,
+                                FONC_MULT=FOFO,),
+                             _F(CHARGE=CL,
+                               ),),
+                      COMPORTEMENT=_F(RELATION='MULTIFIBRE',
+                                   ),
+                      INCREMENT=_F(
+                                   LIST_INST=LINST,
+                                   ),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                                    RESI_GLOB_RELA = 1.E-6,
+                                    ),
+                      );
+
+#-----------------------------------------------
+# CALCUL DES TEST_RESU
+#-----------------------------------------------
+
+# les resultats experimentaux sont donnees dans le fichier joint
+# il s'agit des points de la numerisation de la courbe de reponse du specimen: deformation (-) et force (kN)                   
+INCLUDE(UNITE = 12)                      
+
+# on a identifie les points numerises les plus proches des pic de chaque cycle pour la comparaison avec la solution numerique
+# les deformations sont converties en deplacement par la multiplication par la longueur du speciment l= 0.7m
+
+TEST_RESU(RESU=(_F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t1,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(-2.5539432345647E-04 , ),
+                     VALE_REFE=(val_exp[2*247]*0.7, ),
+                     PRECISION=0.05,),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t2,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(2.1174381169126E-04, ),
+                     VALE_REFE=(val_exp[2*367]*0.7 ),
+                     PRECISION=0.3,),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t3,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(-4.0643863738269E-04, ),
+                     VALE_REFE=(val_exp[2*171]*0.7, ),
+                     PRECISION=0.05,
+                     VALE_ABS='NON',),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t4,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(9.2398831493911E-04 , ),
+                     VALE_REFE=(val_exp[2*501]*0.7, ),
+                     PRECISION=0.02,),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t5,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(-6.0521888594909E-04, ),
+                     VALE_REFE=(val_exp[2*113]*0.7, ),
+                     PRECISION=0.09,
+                     VALE_ABS='NON',),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t6,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(1.6352301855578E-03       , ),
+                     VALE_REFE=(val_exp[2*568]*0.7, ),
+                     PRECISION=0.06,),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t7,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(-1.0181145532455E-03 , ),
+                     VALE_REFE=(val_exp[2*14]*0.7, ),
+                     PRECISION=0.1,),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t8,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(2.0433197832292E-03, ),
+                     VALE_REFE=(val_exp[2*602]*0.7, ),
+                     PRECISION=0.04,),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t9,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(-1.4358195645233E-03, ),
+                     VALE_REFE=(val_exp[2*1]*0.7, ),
+                     PRECISION=0.05,),
+                  _F(NOM_CMP='DX',
+                     GROUP_NO=('B', ),
+                     INST=t10,
+                     NOM_CHAM='DEPL',
+                     RESULTAT=RESU,
+                     CRITERE=('RELATIF', 'ABSOLU'),
+                     REFERENCE='SOURCE_EXTERNE',
+                     VALE_CALC=(2.0899585943919E-03, ),
+                     VALE_REFE=(val_exp[2*604]*0.7, ),
+                     PRECISION=0.06,),
+                  ),
+           )
+###############################################
+
+FIN()
