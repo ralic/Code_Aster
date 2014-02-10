@@ -17,7 +17,6 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
 #......................................................................
 
 
@@ -83,7 +82,7 @@ CHARG=AFFE_CHAR_MECA_F(   MODELE=MO,DDL_IMPO=(
 L_INST=DEFI_LIST_REEL(    DEBUT=0.,
                             INTERVALLE=_F(  JUSQU_A = 100.,  NOMBRE = 100)
                         )
-
+#CALCUL MECANIQUE HPP
 T=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM,
@@ -107,7 +106,55 @@ U=CALC_CHAMP(reuse=U,
              VARI_INTERNE=('VARI_ELNO'),
              DEFORMATION=('EPSG_ELGA',))
 
-#
+#CALCUL MECANIQUE SIMO_MIEHE
+TSM=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CM,
+                             EXCIT=_F(
+                CHARGE = CHARG),
+                         COMPORTEMENT=_F(
+                RELATION = 'VMIS_ISOT_TRAC',
+                DEFORMATION='SIMO_MIEHE',),
+                         INCREMENT=_F(
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 10),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.0E-04,
+                ITER_GLOB_MAXI = 25)
+              )
+
+USM=EXTR_RESU(RESULTAT=TSM,ARCHIVAGE=_F(NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),))
+
+USM=CALC_CHAMP(reuse=USM,
+             RESULTAT=USM,
+             CONTRAINTE=('SIGM_ELNO'),
+             VARI_INTERNE=('VARI_ELNO'),
+             DEFORMATION=('EPSG_ELGA',))
+#CALCUL MECANIQUE GDEF_LOG
+TLOG=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CM,
+                             EXCIT=_F(
+                CHARGE = CHARG),
+                         COMPORTEMENT=_F(
+                RELATION = 'VMIS_ISOT_TRAC',
+                DEFORMATION='GDEF_LOG',),
+                         INCREMENT=_F(
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 10),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.0E-04,
+                ITER_GLOB_MAXI = 25)
+              )
+
+ULOG=EXTR_RESU(RESULTAT=TLOG,ARCHIVAGE=_F(NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),))
+
+ULOG=CALC_CHAMP(reuse=ULOG,
+             RESULTAT=ULOG,
+             CONTRAINTE=('SIGM_ELNO'),
+             VARI_INTERNE=('VARI_ELNO'),
+             DEFORMATION=('EPSG_ELGA',))
+
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    PARA='INST',
@@ -132,6 +179,21 @@ WEIB=POST_ELEM(
                                     CORR_PLAST = 'NON')
                    )
 
+WEIBSM=POST_ELEM(
+                      RESULTAT=USM,
+                      NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
+                       WEIBULL=_F(  TOUT = 'OUI',
+                                    OPTION = 'SIGM_ELGA',
+                                    CORR_PLAST = 'NON')
+                   )
+                   
+WEIBLOG=POST_ELEM(
+                      RESULTAT=ULOG,
+                      NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
+                       WEIBULL=_F(  TOUT = 'OUI',
+                                    OPTION = 'SIGM_ELGA',
+                                    CORR_PLAST = 'NON')
+                   )
 # WEIBULL AVEC OPTION SIGM_ELMOY ET COOR_PLAST = NON
 WEIB2=POST_ELEM(
                       RESULTAT=U,
@@ -165,6 +227,24 @@ RET=POST_ELEM(
 TEST_TABLE(VALE_CALC=1407.5606013829,
            NOM_PARA='SIGMA_WEIBULL',
            TABLE=WEIB,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+TEST_TABLE(VALE_CALC=1404.6370007864,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIBSM,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='M',),
+                   ),
+           )
+TEST_TABLE(VALE_CALC=1404.4531713828,
+           NOM_PARA='SIGMA_WEIBULL',
+           TABLE=WEIBLOG,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=2,),
                    _F(NOM_PARA='LIEU',
