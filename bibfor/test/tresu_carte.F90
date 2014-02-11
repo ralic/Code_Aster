@@ -4,7 +4,7 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/utchca.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
     integer :: refi, ific
     real(kind=8) :: refr, epsi
@@ -48,7 +48,6 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
-    character(len=3) :: ssigne
     character(len=4) :: tych
 !     ------------------------------------------------------------------
     call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=tych)
@@ -63,10 +62,9 @@ subroutine tresu_carte(cham19, nomail, nocmp, tbtxt, refi,&
     if (ier .ne. 0) then
         write (ific,*) 'NOOK '
     else
-        ssigne='NON'
-        call utites(tbtxt(1), tbtxt(2), typres, 1, [refi],&
-                    [refr], [refc], vali, valr, valc,&
-                    epsi, crit, ific, llab, ssigne)
+        call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1, &
+                    crit, epsi, 'NON', [refr], valr, &
+                    [refi], vali, [refc], valc)
     endif
 !
 end subroutine

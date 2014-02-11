@@ -60,24 +60,24 @@ subroutine trjeve(ific, nocc)
         call getvis('OBJET', 'VALE_CALC_I', iocc=iocc, scal=refi, nbret=n2)
         if (n2 .eq. 1) then
             call utesto(nomobj, 'I', tbtxt, refi, refr,&
-                        epsi, crit, ific, .true., ssigne)
+                        epsi, crit, .true., ssigne)
             if (lref) then
                 call getvis('OBJET', 'VALE_REFE_I', iocc=iocc, scal=refir, nbret=n2r)
                 ASSERT(n2.eq.n2r)
                 call utesto(nomobj, 'I', tbref, refir, refrr,&
-                            epsir, crit, ific, .false., ssigne)
+                            epsir, crit, .false., ssigne)
             endif
         endif
 !
         call getvr8('OBJET', 'VALE_CALC', iocc=iocc, scal=refr, nbret=n2)
         if (n2 .eq. 1) then
             call utesto(nomobj, 'R', tbtxt, refi, refr,&
-                        epsi, crit, ific, .true., ssigne)
+                        epsi, crit, .true., ssigne)
             if (lref) then
                 call getvr8('OBJET', 'VALE_REFE', iocc=iocc, scal=refrr, nbret=n2r)
                 ASSERT(n2.eq.n2r)
                 call utesto(nomobj, 'R', tbref, refir, refrr,&
-                            epsir, crit, ific, .false., ssigne)
+                            epsir, crit, .false., ssigne)
             endif
         endif
         write (ific,*)' '

@@ -17,7 +17,7 @@
 !
 interface
     subroutine utesto(nomobj, type, tbtxt, refi, refr,&
-                      epsi, crit, ific, llab, ssigne)
+                      epsi, crit, llab, ssigne)
         character(len=24) :: nomobj
         character(len=*) :: type
         character(len=16) :: tbtxt(2)
@@ -25,7 +25,6 @@ interface
         real(kind=8) :: refr
         real(kind=8) :: epsi
         character(len=*) :: crit
-        integer :: ific
         logical :: llab
         character(len=*) :: ssigne
     end subroutine utesto

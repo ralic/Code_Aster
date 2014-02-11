@@ -1,6 +1,6 @@
-subroutine tresu_print(refer, legend, llab, skip, rela, &
-                       tole, refr, valr, refi, vali, &
-                       refc, valc, compare)
+subroutine tresu_print(refer, legend, llab, nbref, rela, &
+                       tole, ssigne, refr, valr, refi, &
+                       vali, refc, valc, ignore, compare)
     implicit none
 !
 ! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,30 +24,41 @@ subroutine tresu_print(refer, legend, llab, skip, rela, &
     character(len=16), intent(in) :: refer
     character(len=16), intent(in) :: legend
     logical, intent(in) :: llab
-    logical, intent(in) :: skip
-    logical, intent(in) :: rela
+    integer, intent(in) :: nbref
+    character(len=*), intent(in) :: rela
     real(kind=8), intent(in) :: tole
-    real(kind=8), intent(in), optional :: refr
+    character(len=*), intent(in), optional :: ssigne
+    real(kind=8), intent(in), optional :: refr(nbref)
     real(kind=8), intent(in), optional :: valr
-    integer, intent(in), optional :: refi
+    integer, intent(in), optional :: refi(nbref)
     integer, intent(in), optional :: vali
-    complex(kind=8), intent(in), optional :: refc
+    complex(kind=8), intent(in), optional :: refc(nbref)
     complex(kind=8), intent(in), optional :: valc
+    logical, intent(in), optional :: ignore
     real(kind=8), intent(in), optional :: compare
 !
 !   Interface d'appel à la fonction d'impression en C/Python pour les TEST_RESU
+!   Quand plusieurs valeurs de référence sont fournis, on conserve la plus proche
+!   de la valeur calculée.
 !
 #include "asterfort/assert.h"
 #include "asterc/testresu_print.h"
 !
-    real(kind=8) :: arg_refr
-    real(kind=8) :: arg_valr
-    integer :: arg_refi
-    integer :: arg_vali
-    complex(kind=8) :: arg_refc
-    complex(kind=8) :: arg_valc
+    real(kind=8) :: arefr
+    real(kind=8) :: avalr, minvr, tmpr, minvc, tmpc
+    integer :: arefi
+    integer :: avali, minvi, tmpi
+    integer :: i, imin
+    complex(kind=8) :: arefc
+    complex(kind=8) :: avalc
     real(kind=8) :: arg_cmp
+    logical :: skip, isrela, valabs
     integer :: typ
+!
+    valabs = .false.
+    if (present(ssigne)) then
+        valabs = ssigne .eq. 'OUI'
+    endif
 !
     typ = 0
     ASSERT(UN_PARMI3(refr, refi, refc))
@@ -56,28 +67,99 @@ subroutine tresu_print(refer, legend, llab, skip, rela, &
     ASSERT(ENSEMBLE2(refi, vali))
     ASSERT(ENSEMBLE2(refc, valc))
 !
-    arg_refr = 0.d0
-    arg_valr = 0.d0
+    arefr = 0.d0
+    avalr = 0.d0
     if (present(refr)) then
         typ = 1
-        arg_refr = refr
-        arg_valr = valr
+        avalr = valr
+        arefr = refr(1)
+        if (valabs) then
+            avalr = abs(avalr)
+            arefr = abs(arefr)
+        endif
+        minvr = abs(avalr - arefr)
+        imin = 1
+        do i=1, nbref - 1
+            arefr = refr(i+1)
+            if (valabs) then
+                arefr = abs(arefr)
+            endif
+            tmpr = abs(avalr - arefr)
+            if (tmpr .lt. minvr) then
+                tmpr = minvr
+                imin = i + 1
+            endif
+        end do
+        arefr = refr(imin)
+        if (valabs) then
+            arefr = abs(arefr)
+        endif
     endif
 !
-    arg_refi = 0
-    arg_vali = 0
+    arefi = 0
+    avali = 0
     if (present(refi)) then
         typ = 2
-        arg_refi = refi
-        arg_vali = vali
+        avali = vali
+        arefi = refi(1)
+        if (valabs) then
+            avali = abs(avali)
+            arefi = abs(arefi)
+        endif
+        minvi = abs(avali - arefi)
+        imin = 1
+        do i=1, nbref - 1
+            arefi = refi(i+1)
+            if (valabs) then
+                arefi = abs(arefi)
+            endif
+            tmpi = abs(avali - arefi)
+            if (tmpi .lt. minvi) then
+                tmpi = minvi
+                imin = i + 1
+            endif
+        end do
+        arefi = refi(imin)
+        if (valabs) then
+            arefi = abs(arefi)
+        endif
     endif
 !
-    arg_refc = dcmplx(0.d0)
-    arg_valc = dcmplx(0.d0)
+    arefc = dcmplx(0.d0, 0.d0)
+    avalc = dcmplx(0.d0, 0.d0)
     if (present(refc)) then
         typ = 3
-        arg_refc = refc
-        arg_valc = valc
+        avalc = valc
+        arefc = refc(1)
+        if (valabs) then
+            avalc = abs(avalc)
+            arefc = abs(arefc)
+        endif
+        minvc = abs(avalc - arefc)
+        imin = 1
+        do i=1, nbref - 1
+            arefc = refc(i+1)
+            if (valabs) then
+                arefc = abs(arefc)
+            endif
+            tmpc = abs(avalc - arefc)
+            if (tmpc .lt. minvc) then
+                tmpc = minvc
+                imin = i + 1
+            endif
+        end do
+        arefc = refc(imin)
+        if (valabs) then
+            arefc = abs(arefc)
+        endif
+    endif
+!
+    ASSERT(typ.ge.1 .and. typ.le.3)
+!
+    isrela = rela(1:4) .eq. 'RELA'
+    skip = .false.
+    if (present(ignore)) then
+        skip = ignore
     endif
 !
     arg_cmp = 1.d0
@@ -85,10 +167,8 @@ subroutine tresu_print(refer, legend, llab, skip, rela, &
         arg_cmp = compare
     endif
 !
-    ASSERT(typ.ge.1 .and. typ.le.3)
-!
-    call testresu_print(refer, legend, llab, skip, rela, &
-                        tole, typ, arg_refr, arg_valr, arg_refi, &
-                        arg_vali, arg_refc, arg_valc, arg_cmp)
+    call testresu_print(refer, legend, llab, skip, isrela, &
+                        tole, typ, arefr, avalr, arefi, &
+                        avali, arefc, avalc, arg_cmp)
 !
 end subroutine tresu_print

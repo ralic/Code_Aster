@@ -8,7 +8,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
     integer :: nbref, refi(nbref), ific
     real(kind=8) :: refr(nbref), epsi
@@ -165,9 +165,9 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
 !
     else if (type .eq. 'C') then
         if (typtes .eq. 'SOMM_ABS') then
-            valr = 0.d0
+            valc = dcmplx(0.d0,0.d0)
             do 300 i = 1, neq
-                valr = valr + abs( zc(jvale+i-1) )
+                valc = valc + abs( zc(jvale+i-1) )
 300          continue
         else if (typtes .eq. 'SOMM') then
             valc = dcmplx(0.d0,0.d0)
@@ -181,9 +181,9 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
         endif
     endif
 !
-    call utites(tbtxt(1), tbtxt(2), typres, nbref, refi,&
-                refr, refc, vali, valr, valc,&
-                epsi, crit, ific, llab, ssigne,&
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
+                crit, epsi, ssigne, refr, valr, &
+                refi, vali, refc, valc, &
                 ignore=skip, compare=ordgrd)
 !
 9999  continue

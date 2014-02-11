@@ -18,22 +18,24 @@
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 interface
-    subroutine tresu_print(refer, legend, llab, skip, rela, &
-                           tole, refr, valr, refi, vali, &
-                           refc, valc, compare)
+    subroutine tresu_print(refer, legend, llab, nbref, rela, &
+                           tole, ssigne, refr, valr, refi, &
+                           vali, refc, valc, ignore, compare)
         implicit none
         character(len=16), intent(in) :: refer
         character(len=16), intent(in) :: legend
         logical, intent(in) :: llab
-        logical, intent(in) :: skip
-        logical, intent(in) :: rela
+        integer, intent(in) :: nbref
+        character(len=*), intent(in) :: rela
         real(kind=8), intent(in) :: tole
-        real(kind=8), intent(in), optional :: refr
+        character(len=*), intent(in), optional :: ssigne
+        real(kind=8), intent(in), optional :: refr(nbref)
         real(kind=8), intent(in), optional :: valr
-        integer, intent(in), optional :: refi
+        integer, intent(in), optional :: refi(nbref)
         integer, intent(in), optional :: vali
-        complex(kind=8), intent(in), optional :: refc
+        complex(kind=8), intent(in), optional :: refc(nbref)
         complex(kind=8), intent(in), optional :: valc
+        logical, intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
     end subroutine tresu_print
 end interface

@@ -9,7 +9,7 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
     integer :: refi, ific
     real(kind=8) :: refr, epsi
@@ -162,9 +162,9 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
         endif
     endif
 !
-    call utites(tbtxt(1), tbtxt(2), typres, 1, [refi],&
-                [refr], [refc], vali, valr, valc,&
-                epsi, crit, ific, llab, ssigne)
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, 1, &
+                crit, epsi, ssigne, [refr], valr, &
+                [refi], vali, [refc], valc)
 !
 9999  continue
 !

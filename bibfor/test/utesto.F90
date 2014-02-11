@@ -1,15 +1,15 @@
 subroutine utesto(nomobj, type, tbtxt, refi, refr,&
-                  epsi, crit, ific, llab, ssigne)
+                  epsi, crit, llab, ssigne)
     implicit none
 #include "asterfort/jeexin.h"
 #include "asterfort/tstobj.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print.h"
 #include "asterfort/utmess.h"
     character(len=24) :: nomobj
     real(kind=8) :: refr, epsi
     character(len=*) :: crit, type, ssigne
     character(len=16) :: tbtxt(2)
-    integer :: refi, ific
+    integer :: refi
     logical :: llab
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -40,36 +40,28 @@ subroutine utesto(nomobj, type, tbtxt, refi, refr,&
 !        REFR   : VALEUR REELLE ATTENDUE POUR L'OBJET
 !        CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
 !        EPSI   : PRECISION ESPEREE
-!        IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
 !        LLAB   : FLAG D IMPRESSION DES LABELS
 !     SORTIES:
 !      LISTING ...
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
     character(len=3) :: tysc
-    complex(kind=8) :: cbid
-    real(kind=8) :: rbid, sommr
-    integer :: ibid, resume, sommi, lonuti, lonmax, ni, iret, iret2
+    real(kind=8) :: sommr
+    integer :: resume, sommi, lonuti, lonmax, ni, iret, iret2
 !
     call tstobj(nomobj, 'NON', resume, sommi, sommr,&
                 lonuti, lonmax, tysc, iret, ni)
 !
-    rbid = 0.d0
-    cbid = dcmplx(0.d0, 0.d0)
-    ibid = 0
     if (iret .eq. 0) then
         if (type .eq. 'RESUME') then
-            call utites(tbtxt(1), tbtxt(2), 'I', 1, [refi],&
-                        [rbid], [cbid], resume, rbid, cbid,&
-                        epsi, crit, ific, llab, ssigne)
+            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit, &
+                        epsi, ssigne, refi=[refi], vali=resume)
         else if (type.eq.'I') then
-            call utites(tbtxt(1), tbtxt(2), 'I', 1, [refi],&
-                        [rbid], [cbid], sommi, rbid, cbid,&
-                        epsi, crit, ific, llab, ssigne)
+            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit, &
+                        epsi, ssigne, refi=[refi], vali=sommi)
         else if (type.eq.'R') then
-            call utites(tbtxt(1), tbtxt(2), 'R', 1, [ibid],&
-                        [refr], [cbid], ibid, sommr, cbid,&
-                        epsi, crit, ific, llab, ssigne)
+            call tresu_print(tbtxt(1), tbtxt(2), llab, 1, crit, &
+                        epsi, ssigne, refr=[refr], valr=sommr)
         endif
     else
         call jeexin(nomobj, iret2)

@@ -51,7 +51,7 @@ subroutine op0177()
 #include "asterfort/tresu_tabl.h"
 #include "asterfort/tresu_read_refe.h"
 #include "asterfort/utestk.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=6) :: nompro
@@ -259,11 +259,6 @@ subroutine op0177()
             nl22)
         endif
 !
-        print *, '#DEBUG: ', zr(irefr)
-        if ( zr(irefr) .eq. 0.d0 ) then
-            print *, '#DEBUG: op0177: valeur de référence de non régression nulle: ignorer ou crit=RELATIF, valeur=valeur/ordre grandeur'
-        endif
-!
         call tresu_tabl(newtab, para, typtes, typr, tbtxt,&
                     zi(irefi), zr(irefr), zc(irefc), epsi, crit,&
                     ific, .true., ssigne)
@@ -321,13 +316,13 @@ subroutine op0177()
             endif
         else
 !       cas des réels, entiers, complexes
-            call utites(tbtxt(1), tbtxt(2), typr, nref, zi(irefi),&
-                        zr(irefr), zc(irefc), vali, valr, valc,&
-                        epsi, crit, ific, .true., ssigne)
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true., typr, nref, &
+                        crit, epsi, ssigne, zr(irefr), valr, &
+                        zi(irefi), vali, zc(irefc), valc)
             if (lref) then
-                call utites(tbref(1), tbref(2), typr, nref, zi(irefir),&
-                            zr(irefrr), zc(irefcr), vali, valr, valc,&
-                            epsir, crit, ific, .false., ssigne)
+                call tresu_print_all(tbref(1), tbref(2), .true., typr, nref, &
+                            crit, epsir, ssigne, zr(irefrr), valr, &
+                            zi(irefir), vali, zc(irefcr), valc)
             endif
         endif
     endif

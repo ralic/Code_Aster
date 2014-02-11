@@ -1,6 +1,7 @@
 subroutine trresu(ific, nocc)
     implicit none
 #include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -25,7 +26,7 @@ subroutine trresu(ific, nocc)
 #include "asterfort/tresu_read_refe.h"
 #include "asterfort/tresu_champ_cmp.h"
 #include "asterfort/utestr.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
@@ -120,7 +121,7 @@ subroutine trresu(ific, nocc)
             call wkvect(travr, 'V V R', nref, irefr)
             call getvr8('RESU', 'VALE_CALC', iocc=iocc, nbval=nref, vect=zr(irefr),&
                         nbret=iret)
-            if ( zr(irefr) .eq. 0.d0 ) then
+            if ( abs(zr(irefr)) .le. r8prem() ) then
                 if (nord .eq. 0) then
                     skip = .true.
                 else
@@ -258,14 +259,15 @@ subroutine trresu(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call utites(tbtxt(1), tbtxt(2), typres, nref, zi(irefi),&
-                        zr(irefr), zc(irefc), vali, valr, valc,&
-                        epsi, crit, ific, .true., ssigne,&
-                        ignore=skip, compare=ordgrd)
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
+                                 crit, epsi, ssigne, zr(irefr), valr, &
+                                 zi(irefi), vali, zc(irefc), valc,&
+                                 ignore=skip, compare=ordgrd)
             if (lref) then
-                call utites(tbref(1), tbref(2), typres, nref, zi(irefir),&
-                            zr(irefrr), zc(irefcr), vali, valr, valc,&
-                            epsir, crit, ific, .false., ssigne)
+                call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
+                                     crit, epsir, ssigne, zr(irefrr), valr, &
+                                     zi(irefir), vali, zc(irefcr), valc,&
+                                     ignore=skip, compare=ordgrd)
             endif
         endif
 !

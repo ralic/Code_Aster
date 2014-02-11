@@ -5,7 +5,7 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/utch19.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
     integer :: nbref, refi(nbref), nupo, ivari, ific, nusp
     real(kind=8) :: refr(nbref), epsi
     character(len=*) :: cham19, nomail, nonoeu, typres, nocmp, crit, ssigne
@@ -63,9 +63,9 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     if (ier .ne. 0) then
         write (ific,*) 'NOOK '
     else
-        call utites(tbtxt(1), tbtxt(2), typres, nbref, refi,&
-                    refr, refc, vali, valr, valc,&
-                    epsi, crit, ific, llab, ssigne)
+        call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
+                    crit, epsi, ssigne, refr, valr, &
+                    refi, vali, refc, valc)
     endif
 !
 end subroutine

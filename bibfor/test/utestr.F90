@@ -15,7 +15,7 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
 !
     character(len=19) :: cham19
@@ -140,9 +140,9 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
             else if (type .eq. 'C') then
                 valc = zc(iavale-1+(ino-1)*ncmp+idecal)
             endif
-            call utites(tbtxt(1), tbtxt(2), type, nbref, refi,&
-                        refr, refc, vali, valr, valc,&
-                        epsi, crit, ific, llab, ssigne)
+            call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref, &
+                                 crit, epsi, ssigne, refr, valr, &
+                                 refi, vali, refc, valc)
         else
             call utmess('F', 'CALCULEL6_93')
         endif
@@ -183,9 +183,9 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
             else if (type .eq. 'C') then
                 valc = zc(iavale-1+zi(ianueq-1+ival-1+idecal))
             endif
-            call utites(tbtxt(1), tbtxt(2), type, nbref, refi,&
-                        refr, refc, vali, valr, valc,&
-                        epsi, crit, ific, llab, ssigne)
+            call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref, &
+                                 crit, epsi, ssigne, refr, valr, &
+                                 refi, vali, refc, valc)
         else
             call utmess('F', 'CALCULEL6_93')
         endif

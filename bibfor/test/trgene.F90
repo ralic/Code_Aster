@@ -1,5 +1,26 @@
 subroutine trgene(ific, nocc)
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! ----------------------------------------------------------------------
+!     COMMANDE:  TEST_RESU      MOT CLE FACTEUR "GENE"
+! ----------------------------------------------------------------------
+! aslint: disable=W1501
     implicit none
+    integer :: ific, nocc
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
@@ -23,31 +44,11 @@ subroutine trgene(ific, nocc)
 #include "asterfort/rsutnu.h"
 #include "asterfort/trprec.h"
 #include "asterfort/tresu_read_refe.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zxtrac.h"
-    integer :: ific, nocc
-! ----------------------------------------------------------------------
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! ----------------------------------------------------------------------
-!     COMMANDE:  TEST_RESU      MOT CLE FACTEUR "GENE"
-! ----------------------------------------------------------------------
     character(len=6) :: nompro
     parameter (nompro='TRGENE')
     integer :: vali, iocc, iret, jlue, jordr, jdesc, jrefe, n1, n2, n3
@@ -234,13 +235,14 @@ subroutine trgene(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call utites(tbtxt(1), tbtxt(2), typres, nref, zi(irefi),&
-                        zr( irefr), zc(irefc), vali, valr, valc,&
-                        epsi, crit, ific, .true., ssigne)
+
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
+                                 crit, epsi, ssigne, zr(irefr), valr, &
+                                 zi(irefi), vali, zc(irefc), valc)
             if (lref) then
-                call utites(tbref(1), tbref(2), typres, nref, zi(irefir),&
-                            zr(irefrr), zc(irefcr), vali, valr, valc,&
-                            epsir, crit, ific, .false., ssigne)
+                call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
+                                     crit, epsir, ssigne, zr(irefrr), valr, &
+                                     zi(irefir), vali, zc(irefcr), valc)
             endif
 !
         else if (tysd .eq. 'MODE_GENE') then
@@ -312,12 +314,16 @@ subroutine trgene(ific, nocc)
                     tbref(2)=tbtxt(2)
                     tbtxt(1)='NON_REGRESSION'
                 endif
-                call utites(tbtxt(1), tbtxt(2), typres, nref, zi(irefi),&
-                            zr(irefr), zc(irefc), vali, valr, valc,&
-                            epsi, crit, ific, .true., ssigne)
-                if (lref) call utites(tbref(1), tbref(2), typres, nref, zi(irefir),&
-                                      zr(irefrr), zc(irefcr), vali, valr, valc,&
-                                      epsir, crit, ific, .false., ssigne)
+
+                call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
+                                     crit, epsi, ssigne, zr(irefr), valr, &
+                                     zi(irefi), vali, zc(irefc), valc)
+                if (lref) then
+                    call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
+                                         crit, epsir, ssigne, zr(irefrr), valr, &
+                                         zi(irefir), vali, zc(irefcr), valc)
+                endif
+
                 call jedetr(knum)
                 goto 100
             endif
@@ -412,12 +418,14 @@ subroutine trgene(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call utites(tbtxt(1), tbtxt(2), typres, nref, zi(irefi),&
-                        zr( irefr), zc(irefc), vali, valr, valc,&
-                        epsi, crit, ific, .true., ssigne)
-            if (lref) call utites(tbref(1), tbref(2), typres, nref, zi(irefir),&
-                                  zr(irefrr), zc(irefcr), vali, valr, valc,&
-                                  epsir, crit, ific, .false., ssigne)
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true., typres, nref, &
+                                 crit, epsi, ssigne, zr(irefr), valr, &
+                                 zi(irefi), vali, zc(irefc), valc)
+            if (lref) then
+                call tresu_print_all(tbref(1), tbref(2), .false., typres, nref, &
+                                     crit, epsir, ssigne, zr(irefrr), valr, &
+                                     zi(irefir), vali, zc(irefcr), valc)
+            endif
             call jedetr(knum)
 !
         else if (tysd .eq. 'HARM_GENE') then
@@ -499,13 +507,13 @@ subroutine trgene(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call utites(tbtxt(1), tbtxt(2), 'C', nref, zi(irefi),&
-                        zr(irefr), zc(irefc), vali, valr, valc,&
-                        epsi, crit, ific, .true., ssigne)
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true., 'C', nref, &
+                                 crit, epsi, ssigne, zr(irefr), valr, &
+                                 zi(irefi), vali, zc(irefc), valc)
             if (lref) then
-                call utites(tbref(1), tbref(2), 'C', nref, zi(irefir),&
-                            zr(irefrr), zc(irefcr), vali, valr, valc,&
-                            epsir, crit, ific, .false., ssigne)
+                call tresu_print_all(tbref(1), tbref(2), .false., 'C', nref, &
+                                     crit, epsir, ssigne, zr(irefrr), valr, &
+                                     zi(irefir), vali, zc(irefcr), valc)
             endif
             call jedetr('&&TRGENE.CHAMP')
 !
@@ -588,13 +596,13 @@ subroutine trgene(ific, nocc)
                 tbref(2)=tbtxt(2)
                 tbtxt(1)='NON_REGRESSION'
             endif
-            call utites(tbtxt(1), tbtxt(2), 'R', nref, zi(irefi),&
-                        zr(irefr), zc(irefc), vali, valr, valc,&
-                        epsi, crit, ific, .true., ssigne)
+            call tresu_print_all(tbtxt(1), tbtxt(2), .true., 'R', nref, &
+                                 crit, epsi, ssigne, zr(irefr), valr, &
+                                 zi(irefi), vali, zc(irefc), valc)
             if (lref) then
-                call utites(tbref(1), tbref(2), 'R', nref, zi(irefir),&
-                            zr(irefrr), zc(irefcr), vali, valr, valc,&
-                            epsir, crit, ific, .false., ssigne)
+                call tresu_print_all(tbref(1), tbref(2), .false., 'R', nref, &
+                                     crit, epsir, ssigne, zr(irefrr), valr, &
+                                     zi(irefir), vali, zc(irefcr), valc)
             endif
             call jedetr('&&TRGENE.CHAMP')
         endif

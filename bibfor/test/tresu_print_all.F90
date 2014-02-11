@@ -1,0 +1,81 @@
+subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
+                           rela, tole, ssigne, refr, valr, &
+                           refi, vali, refc, valc, ignore, &
+                           compare)
+    implicit none
+!
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+!
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!
+! person_in_charge: mathieu.courtois at edf.fr
+!
+    character(len=16), intent(in) :: refer
+    character(len=16), intent(in) :: legend
+    logical, intent(in) :: llab
+    character(len=*), intent(in) :: typres
+    integer, intent(in) :: nbref
+    character(len=*), intent(in) :: rela
+    real(kind=8), intent(in) :: tole
+    character(len=*), intent(in) :: ssigne
+    real(kind=8), intent(in) :: refr(nbref)
+    real(kind=8), intent(in) :: valr
+    integer, intent(in) :: refi(nbref)
+    integer, intent(in) :: vali
+    complex(kind=8), intent(in) :: refc(nbref)
+    complex(kind=8), intent(in) :: valc
+    logical, intent(in), optional :: ignore
+    real(kind=8), intent(in), optional :: compare
+!
+!   Pour faciliter la transition à tresu_print
+!   On prend tous les types et on trie.
+!
+#include "asterfort/assert.h"
+#include "asterfort/tresu_print.h"
+!
+    real(kind=8) :: arg_cmp
+    logical :: skip
+    character(len=1) :: typ
+!
+    skip = .false.
+    if (present(ignore)) then
+        skip = ignore
+    endif
+!
+    arg_cmp = 1.d0
+    if (present(compare)) then
+        arg_cmp = compare
+    endif
+!
+    typ = typres(1:1)
+!
+    select case ( typ )
+    case ('I')
+        call tresu_print(refer, legend, llab, nbref, rela, &
+                         tole, ssigne, refi=refi, vali=vali, &
+                         ignore=skip, compare=arg_cmp)
+    case ('R')
+        call tresu_print(refer, legend, llab, nbref, rela, &
+                         tole, ssigne, refr=refr, valr=valr, &
+                         ignore=skip, compare=arg_cmp)
+    case ('C')
+        call tresu_print(refer, legend, llab, nbref, rela, &
+                         tole, ssigne, refc=refc, valc=valc, &
+                         ignore=skip, compare=arg_cmp)
+    case default
+        ASSERT(typ.eq.'I' .or. typ.eq.'R' .or. typ.eq.'C')
+    end select
+!
+end subroutine tresu_print_all

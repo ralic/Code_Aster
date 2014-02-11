@@ -15,7 +15,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/utites.h"
+#include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbref, refi(nbref), ific, nbcmp
@@ -76,7 +76,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     cham19 = chamgd
     typrez = typres(1:1)
 !
-    call wkvect('&&tresu_champ_cmp_CMP', 'V V I', nbcmp, jcmp)
+    call wkvect('&&TRESU_CH.CMP', 'V V I', nbcmp, jcmp)
 !
 !     -- LE CHAMP EXISTE-T-IL ?
 !     =========================
@@ -87,7 +87,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 !
     if (tych(1:4) .eq. 'NOEU') then
 !         -------------------
-        cnsinr = '&&tresu_champ_cmp.CNSINR'
+        cnsinr = '&&TRESU_CH.CNSINR'
         call cnocns(cham19, 'V', cnsinr)
         call jeveuo(cnsinr//'.CNSV', 'L', jcsv)
         call jeveuo(cnsinr//'.CNSC', 'L', jcsc)
@@ -417,13 +417,13 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         endif
     endif
 !
-    call utites(tbtxt(1), tbtxt(2), typres, nbref, refi,&
-                refr, refc, vali, valr, valc,&
-                epsi, crit, ific, llab, ssigne)
+    call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref, &
+                crit, epsi, ssigne, refr, valr, &
+                refi, vali, refc, valc)
 !
     call detrsd('CHAM_NO_S', cnsinr)
 999 continue
-    call jedetr('&&tresu_champ_cmp_CMP')
+    call jedetr('&&TRESU_CH.CMP')
 !
     1160 format(1x,a80,a)
     1200 format(1x,2(a80),a)

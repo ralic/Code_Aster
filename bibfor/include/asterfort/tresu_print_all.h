@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -13,29 +13,31 @@
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!
+! person_in_charge: mathieu.courtois at edf.fr
 !
 interface
-    subroutine utites(label1, label2, type, nbref, refi,&
-                      refr, refc, vali, valr, valc,&
-                      epsi, crit, ific, llab, ssigne,&
-                      ignore, compare)
-        integer, intent(in) :: nbref
-        character(len=*), intent(in) :: label1
-        character(len=*), intent(in) :: label2
-        character(len=*), intent(in) :: type
-        integer, intent(in) :: refi(nbref)
-        real(kind=8), intent(in) :: refr(nbref)
-        complex(kind=8), intent(in) :: refc(nbref)
-        integer, intent(in) :: vali
-        real(kind=8), intent(in) :: valr
-        complex(kind=8), intent(in) :: valc
-        real(kind=8), intent(in) :: epsi
-        character(len=*), intent(in) :: crit
-        integer, intent(in) :: ific
+    subroutine tresu_print_all(refer, legend, llab, typres, nbref, &
+                               rela, tole, ssigne, refr, valr, &
+                               refi, vali, refc, valc, ignore, &
+                               compare)
+        implicit none
+        character(len=16), intent(in) :: refer
+        character(len=16), intent(in) :: legend
         logical, intent(in) :: llab
+        character(len=*), intent(in) :: typres
+        integer, intent(in) :: nbref
+        character(len=*), intent(in) :: rela
+        real(kind=8), intent(in) :: tole
         character(len=*), intent(in) :: ssigne
+        real(kind=8), intent(in) :: refr(nbref)
+        real(kind=8), intent(in) :: valr
+        integer, intent(in) :: refi(nbref)
+        integer, intent(in) :: vali
+        complex(kind=8), intent(in) :: refc(nbref)
+        complex(kind=8), intent(in) :: valc
         logical, intent(in), optional :: ignore
         real(kind=8), intent(in), optional :: compare
-    end subroutine utites
+    end subroutine tresu_print_all
 end interface
