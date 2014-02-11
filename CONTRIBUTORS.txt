@@ -1,0 +1,248 @@
+#
+# Code_Aster is official supported by EDF R&D since 1989 and released under the
+# GNU General Public License since 2001.
+#
+# This file records the contributions - that are legally significant and
+# after 2001 - to the source files as well as its documentation, installation
+# scripts...
+# Small contributions, bug reports, ideas, etc., are omitted.
+#
+# Please help to maintain this list.
+# Please keep this list sorted.
+#
+# The PRIMARY AUTHORS are (and/or have been), under an initiative of EDF R&D:
+#
+    Mickaël Abbas <mickael.abbas .at. edf.fr>
+    André Adobes
+    Albert Alarcón
+    Mazen Almikdad
+    Harinaivo Andriambololona
+    Stéphane Andrieux
+    Jean Angles
+    Aimery Assire
+    Philippe Aubert
+    Ludovic Aubry
+    Sylvie Audebert
+    Michel Aufaure
+    Pierre Badel
+    Gilles Barbier
+    Renaud Bargellini
+    Frédéric Beaud
+    Jérôme Beaurain
+    Adel Ben Haj Nedder
+    Alexandre Berard
+    Natacha Béreux <natacha.bereux .at. edf.fr>
+    Hassan Berro
+    Jean-Yves Berthou
+    Gérard Bertrand
+    Laurent Billet
+    Charles Bodel
+    Michel Boin
+    Olivier Boiteau <olivier.boiteau .at. edf.fr>
+    Marc Bonamy
+    Didier Bosselut
+    Marina Bottoni
+    Christophe Bourcier
+    Marie-Thérèse Bourdeix
+    Lahbib Bourhrara
+    Emmanuel Boyere <emmanuel.boyere .at. edf.fr>
+    Philippe Breban
+    Nicolas Brie
+    Stéphane Bugat
+    Danielle Bui
+    Simon Cambier
+    Valérie Cano
+    Bertrand Cao
+    Axelle Caron
+    Benoît Carrier
+    Franck Chansard
+    The-Hiep Chau
+    Clément Chavant
+    Catherine Chedeau
+    Étienne Cheignon
+    Bertrand CiréE
+    Daniele Colombo
+    Anne Corbel
+    Mathieu Corus
+    Alexis Courtois
+    Mathieu Courtois <mathieu.courtois .at. edf.fr>
+    Jean-Philippe Crestey
+    Sam Cuvilliez
+    Luca Dall'ollio
+    Anna Dahl
+    Luc Davenne
+    Martin David
+    P. David
+    Philippe De Bonnieres
+    Thomas De Soza <thomas.de-soza .at. edf.fr>
+    Isabelle Debost
+    Gilles Debruyne
+    Josselin Delmas  <josselin.delmas .at. edf.fr>
+    Xavier Desroches
+    Georges Devesa
+    Olivier Diard
+    Norberto Dominguez
+    Anne-Marie Donore
+    Fabien Dumay
+    Annick Dumond
+    Georges Dumont
+    Philippe Dupas
+    Christophe Durand
+    Claude Duval
+    Joumana El-Gharib
+    Xavier Épiard
+    Vincent Faucher
+    Sébastien Fayolle
+    Roméo Fernandes
+    Guilhem Ferté
+    Laïla Flandi
+    Jean-Luc Fléjou
+    Alexandre Foucault
+    Isabelle Fournier <isabelle.fournier .at. edf.fr>
+    Thierry Friou
+    Erwan Galenne
+    Nadine Gay
+    Samuel Geniaut
+    Véronique Gervais
+    Philippe Geyer
+    Shahrokh Ghavamian
+    Dominique Girardot
+    Vincent Godard
+    G. Gouin
+    Thomas Gourcy
+    Sylvie Granet
+    Nicolas Greffet
+    Jean-Pierre Grégoire
+    Martin Guiton
+    Houssem Haddar
+    Jessica Haelewyn
+    François Hamon
+    Pascal Hemon
+    Peggy Herman
+    David Hersant
+    Ludovic Idoux
+    Guillaume Jacquart
+    André Jaubert
+    Toufik Kanit
+    Kyrylo Kazymyrenko
+    Tim Kestens
+    Marc Kham
+    Philippe Klein
+    Pierre Koechlin
+    Ayaovi-Dzifa Kudawoo <ayaovi-dzifa.kudawoo .at. edf.fr>
+    Pascal Laclergue
+    Aurélie Ladier
+    Marc Lainet
+    Sophie Lamarche
+    Pascal Latrubesse
+    André Laulusa
+    N. Laurent
+    Jérôme Laverne
+    Francis Lebouvier
+    Éric Leclère
+    Véronique Lecorvec
+    Jean-Pierre Lefebvre <j-pierre.lefebvre .at. edf.fr>
+    Vincent Lefebvre
+    Walter Lefevre
+    Anne-Claire Léger
+    Yann Lepape
+    Sébastien Lepaul
+    Jean-Raymond Lévesque
+    Michel Lopes
+    Éric Lorentz
+    Karina Macocco
+    Dana Mahfouz
+    Najib Mahjoubi
+    Damijan Markovic
+    Alexandre Martin
+    Cyrille Masseret
+    Patrick Massin
+    Renaud Masson
+    Sylvain Mazet
+    Rabia Meddouri
+    Catherine Mengoni
+    Omar Merabet
+    Clarisse Messelier-Gouze
+    Julien Messier
+    Sébastien Meunier
+    Pascal Mialon
+    Sylvie Michel-Ponnelle
+    Richard Michel
+    Alexandre Micol
+    Alexei Mikchevitch
+    Patrick Morilhat
+    Stéphane Moulin
+    Fabrice Nagot
+    Marcel Ndeffo
+    Boumedienne Nedjar
+    Christophe Nguyen
+    Gérald Nicolas
+    Olivier Nicolas
+    Alex Nieto-Ferro
+    Ionel Nistor
+    Delphine Nunez
+    Anna Ouglova
+    Thomas Papaconstantinou
+    Aurore Parrot
+    Jean Pauthenet
+    Jacques Pellet <jacques.pellet .at. edf.fr>
+    Raphaël Perony
+    Christophe Peyrard
+    Jérôme Pigat
+    Yannick Pons
+    Sergueï Potapov
+    Emiliano ProÏA
+    Jean-Michel Proix
+    Bruno Quinnez
+    Nadia Rahni
+    Guillaume Rateau
+    Christelle Raynaud
+    Anika Razakanaivo
+    Marie-Ange Redon
+    Christophe Rezette
+    Nicolas Richard
+    Patrick Richard
+    Bernard Riou
+    Christian Rose
+    Matthias Rosier
+    Gilles Rousseau
+    Gilles Rousselier
+    Lionel Salmona
+    J-R. Schneiter
+    Philippe Schoenberger
+    Didier Seligmann
+    Nabila Sellali
+    Nicolas Sellenet <nicolas.sellenet .at. edf.fr>
+    Benoît Serre
+    Cyril Sevin
+    Mohammad Seyedi
+    Maximilien Siavelis
+    Francis Stifkens
+    Saïd Taheri
+    Nicolas Tardieu
+    Denis Thomasson
+    Mohamed Torkhani
+    Van-Xuan Tran
+    M. Trost
+    Sylvie Vandenberghe
+    Christophe Vare
+    Isabelle Vautier
+    Éric Visse
+    Lionel Vivan
+    Cécile Vogel
+    François Voldoire
+    Jérôme Wabinski
+    Yves Wadier
+    François Waeckel
+    Françoise Waeckel
+    Olivier Wilk
+    Antoine Yessayan
+    Irmela Zentner
+#
+# And here is a list of EXTERNAL CONTRIBUTORS:
+#
+    Arnaud Alzina <arnaud.alzina .at. unilim.fr>
+    Thouraya Baranger <thouraya.baranger .at. univ-lyon1.fr>
+    Daniele Colombo <daniele.colombo .at. ifpen.fr>
+    Peter Halverson <halverson .at. byu.edu>
+    Alain Leufroy <alain.leufroy .at. logilab.fr>
