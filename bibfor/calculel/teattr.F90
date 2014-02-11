@@ -76,7 +76,7 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
 
 !----------------------------------------------------------------------
     if (present(typel)) then
-        ASSERT(nomt2 .ne. ' ')
+        ASSERT(typel .ne. ' ')
         nomt2=typel
     else
         nomt2=' '
