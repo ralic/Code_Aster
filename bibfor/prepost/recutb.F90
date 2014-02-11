@@ -37,7 +37,7 @@ subroutine recutb(ik1d, nomgrn, tabrev, tabmdb, tabthr)
 ! --- : TABMDB : TABLE MECANIQUE DU METAL DE BASE ----------------------
 ! --- : TABTHR : TABLE THERMIQUE ---------------------------------------
 ! ======================================================================
-    integer :: ibid
+    integer :: ibid, irev
     character(len=8) :: motfac
 ! ======================================================================
     call jemarq()
@@ -45,10 +45,11 @@ subroutine recutb(ik1d, nomgrn, tabrev, tabmdb, tabthr)
 ! --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 ! ======================================================================
     motfac = 'K1D'
-    call getvid(motfac, 'TABL_MECA_REV', iocc=ik1d, scal=tabrev, nbret=ibid)
+    call getvid(motfac, 'TABL_MECA_REV', iocc=ik1d, scal=tabrev, nbret=irev)
     call getvid(motfac, 'TABL_MECA_MDB', iocc=ik1d, scal=tabmdb, nbret=ibid)
     call getvid(motfac, 'TABL_THER', iocc=ik1d, scal=tabthr, nbret=ibid)
     call getvtx(motfac, 'INTITULE', iocc=ik1d, scal=nomgrn, nbret=ibid)
+    if(irev.eq.0) tabrev=tabmdb
 ! ======================================================================
     call jedema()
 ! ======================================================================

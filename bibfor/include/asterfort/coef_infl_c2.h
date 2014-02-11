@@ -16,19 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine recupe(noma, ndim, nk1d, lrev, lmdb, &
-                      matrev, matmdb, deklag, prodef, londef, &
-                      oridef, profil)
-        character(len=8) :: noma
-        integer :: ndim
-        integer :: nk1d
-        real(kind=8) :: lrev
-        real(kind=8) :: lmdb
-        character(len=8) :: matrev, matmdb
-        real(kind=8) :: deklag
-        real(kind=8) :: prodef
-        real(kind=8) :: londef
-        character(len=8) :: oridef
-        character(len=12) :: profil
-    end subroutine recupe
+    subroutine coef_infl_c2(ix1,ix2,iy1,iy2,i, &
+                            v11,v21,v12,v22)
+        integer :: ix1 
+        integer :: ix2
+        integer :: iy1
+        integer :: iy2
+        integer :: i
+        real(kind=8) :: v11
+        real(kind=8) :: v21
+        real(kind=8) :: v12
+        real(kind=8) :: v22
+    end subroutine coef_infl_c2
 end interface

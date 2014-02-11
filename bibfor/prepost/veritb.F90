@@ -1,4 +1,4 @@
-subroutine veritb(nk1d, ndim, oridef)
+subroutine veritb(nk1d, ndim, oridef, deklag, profil)
 !
     implicit none
 #include "asterfort/getvid.h"
@@ -10,7 +10,9 @@ subroutine veritb(nk1d, ndim, oridef)
 #include "asterfort/utmess.h"
 #include "asterfort/verinr.h"
     integer :: nk1d, ndim
+    real(kind=8) :: deklag
     character(len=8) :: oridef
+    character(len=12) :: profil
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +40,7 @@ subroutine veritb(nk1d, ndim, oridef)
 ! --- : ORIDEF : TYPE D'ORIENTATION DU DEFAUT --------------------------
 ! ======================================================================
     logical :: teste
-    integer :: i, ibid, nbval1, nbval2
+    integer :: i, ibid, nbval1, nbval2,irev
     character(len=8) :: motfac, k8b, tabrev, tabmdb, tabthr
     character(len=19) :: tbins1, tbins2
 ! ======================================================================
@@ -52,9 +54,13 @@ subroutine veritb(nk1d, ndim, oridef)
 ! ======================================================================
 ! --- CAS DE LA PREMIERE OCCURENCE DE K1D ------------------------------
 ! ======================================================================
-    call getvid(motfac, 'TABL_MECA_REV', iocc=1, scal=tabrev, nbret=ibid)
+    call getvid(motfac, 'TABL_MECA_REV', iocc=1, scal=tabrev, nbret=irev)
     call getvid(motfac, 'TABL_MECA_MDB', iocc=1, scal=tabmdb, nbret=ibid)
     call getvid(motfac, 'TABL_THER', iocc=1, scal=tabthr, nbret=ibid)
+    if(profil(1:7).eq.'ELLIPSE') then
+       if(deklag.lt.0.D0.and.irev.eq.0) call utmess('F', 'PREPOST_7')
+    endif
+    if(irev.eq.0) tabrev=tabmdb
 ! ======================================================================
 ! --- VERIFICATION DE LA PRESENCE DE LISTE D'INSTANT -------------------
 ! ======================================================================

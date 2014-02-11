@@ -193,10 +193,6 @@ cata_msg = {
  aucun cercle n'est circonscrit aux quatre points.
 """),
 
-60 : _(u"""
- le décalage se trouve nécessairement coté revêtement
- le décalage doit être négatif
-"""),
 
 76 : _(u"""
  le champ demandé n'est pas prévu

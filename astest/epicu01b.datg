@@ -1,0 +1,285 @@
+* Mise a jour le : 23/05/02 BOYER
+
+
+
+************************************************************************
+* Procedure de calcul de la distance entre deux points dans le plan
+************************************************************************
+
+DEBPROC DIST2D PT1*point PT2*point ;
+
+   X1 = COOR 1 PT1 ;
+   X2 = COOR 1 PT2 ;
+   Y1 = COOR 2 PT1 ;
+   Y2 = COOR 2 PT2 ;
+   DX2 = (X2-X1) * (X2-X1) ;
+   DY2 = (Y2-Y1) * (Y2-Y1) ;
+   DIST12 = (DX2+DY2) ** (0.5) ;
+
+FINPROC DIST12 ;
+
+
+************************************************************************
+* Procedure principale
+************************************************************************
+
+
+DEBPROC M3  rint*flottant eprev*flottant epmdb*flottant ;
+
+
+* 0. Initialisation du code retour
+
+  ierr = 0 ;
+
+* 1. Options generales de maillage - Variables geometriques
+
+  OPTI ECHO 1 ;
+  OPTI DIME 2 ELEM QUA8 ;
+
+* Parametres internes et variables geometriques
+  
+  pi = 3.1415926535897932 ; 
+  long_cur =  ( pi / 4 ) * rint ; 
+  mess long_cur rint ;
+  H = 0.5 ;
+  critere = 1.0e-7 ;
+  
+  nbxr = 2 ;
+  nbxm = -6;
+  nby = 12 ;
+  
+  densxir = 1;
+  densxfr = 1;
+  densxim = 0.005;
+  densxfm = 0.05;
+  densyi = 1;
+  densyf = 1;
+
+*-Coordonnees radiales
+  rI   = rint + eprev   ;
+  rext = rI   + epmdb   ;
+ 
+* 2. Points de construction
+
+  PT11 = rint         0.     ;
+  PT12 = rint         long_cur   ;   
+  
+  PT21 = rI            0.     ;
+  PT22 = rI         long_cur      ;
+  
+  PT31 = (rint + epmdb) 0.  ;
+  PT32 = (rint + epmdb) long_cur   ;
+  
+  
+* 3. Maillage
+
+  lintr = pt11 d nbxr pt21 dini densxir dfin densxfr ;
+  lintm = pt21 d nbxm pt31 dini densxim dfin densxfm;
+  lsym1 = lintr et lintm ;
+  
+  lextr = pt12 d nbxr pt22 dini densxir dfin densxfr;
+  lextm = pt22 d nbxm pt32 dini densxim dfin densxfm;
+  lsym2 = lextr et lextm ;
+  
+  r = REGL lintr nby lextr ;
+  m = REGL lintm nby lextm ;
+  
+  lint = pt11 d nby pt12 ;
+  lext = pt31 d nby pt32 ;
+
+
+* 3.11 Reorientations et eliminations
+  
+  r = ORIE r ;
+  m = ORIE m ;
+
+  lint   = ORIE lint ;
+  lext   = ORIE lext ;
+  lsym1   = ORIE lsym1 ;
+  lsym2   = ORIE lsym2 ;
+  
+
+  ELIM ( r et m et lint et lext et lsym1 et lsym2 ) critere ;
+
+
+FINPROC r m lsym1 lsym2 lint lext ierr ;
+
+
+************************************************************************
+* Procedure de cintrage d'un maillage plat compris entre les plans
+* x=xmin et x=xmax.
+* La projection du maillage plat dans le plan OYZ est un rectangle
+* dont les limites sont ymin, ymax, zmin, zmax.
+* La peau x=xmin se retrouve en peau interieure apres cintrage autour
+* de l'axe z.
+* La coordonnee z est inchangee apres transformation.
+************************************************************************
+
+DEBPROC cintrayz mail*maillage ;
+
+   OPTI DIME 3 ELEM CU20 ;
+
+   pi = 3.1415926535897932 ;
+
+   chxini = COOR 1 mail ;
+   chxini = NOMC 'scal' chxini ;
+   chyini = COOR 2 mail ;
+   chyini = NOMC 'scal' chyini ;
+
+   xmin = MINI chxini ;
+   ymin = MINI chyini ;
+   ymax = MAXI chyini ;
+
+   deltay = ymax - ymin ;
+   rint   = deltay / (pi / 4) ;
+   
+   xcent = 0 ; 
+   ycent = 0 ;
+   pto = (xcent ycent 0 ) ;
+   
+   chycent = MANU CHPO mail 1 'scal' ycent ;
+   chdycent = COLI chyini (1.0) chycent (-1.0) ;
+   coetheta = 45. / deltay ;
+   chtheta = COLI chdycent coetheta ;
+   chcos = cos chtheta ;
+   chcos = NOMC 'scal' chcos ;
+   chsin = sin chtheta ;
+   chsin = NOMC 'scal' chsin ;
+
+   chrint = MANU CHPO mail 1 'scal' rint ;
+   chxmin = MANU CHPO mail 1 'scal' xmin ;
+   chdxmin = COLI chxini (1.0) chxmin (-1.0) ;
+   chr = COLI chrint (1.0) chdxmin (1.0) ;
+   mscal = MOTS 'scal' ;
+   chrx = PSCA chr chcos mscal mscal ;
+   chrx = NOMC 'scal' chrx ;
+   chry = PSCA chr chsin mscal mscal ;
+   chry = NOMC 'scal' chry ;
+
+   chxcent = MANU CHPO mail 1 'scal' xcent ;
+   chxnew = COLI chxcent (1.0) chrx (1.0) ;
+
+   chynew = COLI chycent (1.0) chry (1.0) ;
+
+   chdx = COLI chxnew (1.0) chxini (-1.0) ;
+   chdx = NOMC 'UX' chdx ;
+   chdy = COLI chynew (1.0) chyini (-1.0) ;
+   chdy = NOMC 'UY' chdy ;
+
+   DEPL mail PLUS chdx ;
+   DEPL mail PLUS chdy ;
+   
+  FINPROC ;
+
+
+************************************************************************
+*
+*               Execution de la procedure de maillage M3
+*
+************************************************************************
+
+  OPTI ECHO 1 ;
+
+* 1. Affectation des parametres
+
+ ri   = 1994;
+ erev = 7.5 ;
+ emdb = 207.5 ;
+
+** Conversion d'unite pour les parametres geometriques : mm -> m
+ rint    = ri   / 1.0e+3 ;
+ eprev   = erev / 1.0e+3 ;
+ epmdb   = emdb / 1.0e+3 ;
+
+ ivisu   = 0 ;
+ critere = 1.0e-7 ;
+
+* 2. Construction du maillage
+
+  s_r s_m  lsym1 lsym2 lint lext ierr
+  = M3 rint eprev epmdb ;
+
+
+* 3. Creation du volume par extrusion
+
+   OPTI DIME 3 ELEM CU20 ;
+   OEIL = 100000 100000 100000 ;
+
+   ht = 200 / 1.0e+3 ;
+   nbelh = 3 ;
+   VECTRAZ = (0. 0. ht) ;
+   
+   faceinf = s_r et s_m ;
+   facesup = faceinf PLUS VECTRAZ ; 
+   
+   facesym1 = REGL lsym1 nbelh (lsym1 PLUS VECTRAZ) ;
+    
+   facesym2 = REGL lsym2 nbelh (lsym2 PLUS VECTRAZ) ;
+   faceint = REGL lint nbelh (lint PLUS VECTRAZ) ;
+   faceext = REGL lext nbelh (lext PLUS VECTRAZ) ;
+   
+   r = VOLU s_r nbelh (s_r plus VECTRAZ) ;
+   m = VOLU s_m nbelh (s_m plus VECTRAZ) ;
+   
+* 3 . Elimination des noeuds doubles
+
+*elim (s_r et s_m) critere ;
+
+*trac s_r ;
+*trac r (1000 1000 1000) ;
+
+*OPTI SAUV FORM '/home/aboyer/Dvpt_aster/POST_K_BETA/kbeta.mgib' ;
+*SAUV FORM (s_r et s_m et r) ;
+
+*FIN ;
+
+
+    elim ( r et m et FACESYM1 et FACESYM2 et 
+    FACEINF et FACESUP et FACEINT et FACEEXT ) critere ;
+
+* 4. Cintrage du maillage
+
+    cintrayz (r et m et FACESYM1 et FACESYM2 et 
+   FACEINF et FACESUP et FACEINT et FACEEXT) ;  
+
+
+* 6. Trace du maillage et sauvegarde
+
+
+SI (EGA ivisu 1) ;     
+    trac (lint et lext et lsym1 et lsym2 ) 
+    (1000. 1000. 1000.) ;
+    titre 'FACESYM1' ;
+    trac FACESYM1 (0. -1000. 0.) ;
+    titre 'FACESYM2' ;
+    trac FACESYM2 (0. 1000. 0.) ;
+    titre 'FACEINF' ;
+    trac FACEINF (0. 0. -1000.) ;
+    titre 'FACEINT' ;
+    trac FACEINT (-1000. 0. 0.) ;
+    titre 'FACESUP' ;
+    trac FACESUP (0. 0. 1000) ;
+    titre 'FACEEXT' ;
+    trac FACEEXT (1000. 0. 0.) ;
+    titre 'Maillage revetement' ;
+    trac r (1000. 1000. 1000.) ;
+    titre 'Maillage metal de base' ;
+    trac m (1000. 1000. 1000.) ;
+    titre 'Maillage global' ;
+    trac (r et m) (1000. 1000. 1000.) ; 
+    NNO = NBNO (r et m) ;
+    Message 'Nombre de noeuds du maillage  =' NNO ;
+    NEL = NBEL (r et m) ;
+    Message 'Nombre d elements du maillage =' NEL ;
+FINSI ;
+
+
+OPTI SAUV FORM 
+'...' ;
+   SAUV FORM (r et m et FACESYM1 et FACESYM2 et 
+    FACEINF et FACESUP et FACEINT et FACEEXT) ;
+
+opti donn 5 ;
+
+
+FIN ;

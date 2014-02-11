@@ -1,0 +1,145 @@
+************************************************************************
+*
+*                         Outil metier Secure
+*
+************************************************************************
+*
+* Type d'analyse : Trans1D-Rupt1D
+*
+* Identifiant    : M1
+*
+* Fonction       : Fichier de commandes Gibiane pour realisation du
+*                  maillage M1 2D-axisymetrique
+*
+************************************************************************
+
+
+DEBPROC M1    rint*flottant eprev*flottant epmdb*flottant
+                 H*flottant ;
+
+
+* 1. Options de maillage
+
+OPTI ECHO 0 ;
+OPTI DIME 2 MODE AXIS ELEM QUA8 ;
+
+* 2. Variables de travail
+
+critere = 1.0e-5 ;
+*profondeur = 0.02 ;
+
+rI   = rint + eprev   ;
+rext = rI   + epmdb   ;
+r2   = rI   + 0.02    ;
+
+* 3. Definition des points de construction
+
+p1  =  rint         0. ;
+pI  =  rI           0. ;
+p2  =  r2           0. ;
+p3  =  rext         0. ;
+
+p1H =  rint         H  ;
+pIH =  rI           H  ;
+p2H =  r2           H  ;
+p3H =  rext         H  ;
+
+* 4. Generation des lignes de construction
+
+lp1pI   = DROIT 2 p1 pI ;
+lpIpIH  = DROIT 1 pI pIH ;
+lpIHp1H = DROIT 2 pIH p1H ;
+lp1Hp1  = DROIT 1 p1h p1 ; 
+
+lpIp2   = DROIT 2 pI p2 ;
+lp2p2H  = DROIT 1 p2 p2H ;
+lp2HpIH = DROIT 2 p2H pIH ;
+
+lp2p3   = DROIT 8 p2 p3 ;
+lp3p3H  = DROIT 1 p3 p3H ;
+lp3Hp2H = DROIT 8 p3H p2H ;
+
+* 5. Maillage des surfaces
+
+s1I = lp1pI lpIpIH lpIHp1H lp1Hp1 daller plan ;
+sI2 = lpIp2 lp2p2H lp2HpIH (inve lpIpIH) daller plan ;
+s23 = lp2p3 lp3p3H lp3Hp2H (inve lp2p2H) daller plan ;
+
+* 6. Groupes de mailles lineiques sur les bords
+
+seginfr = lp1pI ;
+seginfm = lpIp2 et lp2p3  ;
+seginf  = seginfr et seginfm ;
+
+segext  = lp3p3H ;
+
+segsup  = lp3Hp2H et lp2HpIH et lpIHp1H ;
+
+segint  = lp1Hp1 ;
+
+* 7. Groupes de mailles surfaciques
+
+r = s1I ;
+m = sI2 et s23 ;
+stot = r et m ;
+
+ELIM critere stot ;
+
+* 8. Reorientation des mailles
+
+stot = ORIE stot ;
+r    = ORIE r    ;
+m    = ORIE m    ;
+
+seginfr = ORIE seginfr ;
+seginfm = ORIE seginfm ;
+seginf  = ORIE seginf  ;
+segext  = ORIE segext  ;
+segsup  = ORIE segsup  ;
+segint  = ORIE segint  ;
+
+
+FINP stot r m seginfr seginfm seginf segext segsup segint p1 pI p3;
+
+
+************************************************************************
+*
+*               Execution de la procedure de maillage M1
+*
+************************************************************************
+
+* 1. Affectation des parametres
+
+ ri   = 1994;                                                           
+ erev = 7.5 ;                                                           
+ emdb = 200 ;                                                           
+ pdef = 6 ;      
+
+** Conversion d'unite pour les parametres geometriques : mm -> m
+rint    = ri   / 1.0e+3 ;
+eprev   = erev / 1.0e+3 ;
+epmdb   = emdb / 1.0e+3 ;
+
+ivisu   = 1 ;
+
+H     = 5.0e-3 ;
+
+* 2. Execution de la procedure
+
+stot r m seginfr seginfm seginf segext segsup segint p1 pI p3
+= M1 rint eprev epmdb H ;
+mess 'nnoeud' (NBNO stot) 'nel' (NBEL stot);
+* 3. Trace du maillage et sauvegarde
+
+SI (EGA ivisu 1) ;
+   trace stot ;
+FINSI ;
+
+SI (EGA ivisu 0) ;
+OPTI SAUV FORM '/export/exterieurs/cibhhbc/uaster/toto.mgib' ;
+SAUV FORM ;
+FINSI ;
+OPTI SAUV FORM '/export/exterieurs/cibhhbc/uaster/toto.mgib' ;
+SAUV FORM ;
+
+FIN ;

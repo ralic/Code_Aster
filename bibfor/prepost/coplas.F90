@@ -1,6 +1,7 @@
-subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
-                  deklag, prodef, oridef, kal, kbl,&
-                  dkma, dkmb, k1acp, k1bcp)
+subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
+                  lrev, deklag, prodef, oridef, profil, &
+                  kal, kbl, kcl, dkma, dkmb, &
+                  dkmc, k1acp, k1bcp, k1ccp)
 !
     implicit none
 #include "jeveux.h"
@@ -12,9 +13,11 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    real(kind=8) :: tempa, kal, kbl, k1a, k1b, lrev, deklag
-    real(kind=8) :: dkma, dkmb, k1acp, k1bcp, prodef
+    real(kind=8) :: tempa, kal, kbl, kcl, k1a
+    real(kind=8) :: k1b, k1c, lrev, deklag, dkma
+    real(kind=8) :: dkmb, dkmc, k1acp, k1bcp, k1ccp, prodef
     character(len=8) :: matrev, oridef
+    character(len=12) :: profil
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,17 +44,25 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
 ! IN  : TEMPA  : TEMPERATURE EN POINTE A -------------------------------
 ! --- : K1A    : FACTEUR D'INTENSITE DE CONTRAINTES ELASTIQUE EN A -----
 ! --- : K1B    : FACTEUR D'INTENSITE DE CONTRAINTES ELASTIQUE EN B -----
+! --- : K1C    : FACTEUR D'INTENSITE DE CONTRAINTES ELASTIQUE EN C -----
 ! --- : MATREV : MATERIAU DE REVETEMENT --------------------------------
 ! --- : LREV   : LONGUEUR DE REVETEMENT --------------------------------
 ! --- : DEKLAG : DECALAGE DU DEFAUT COTE REVETEMENT (TOUJOURS NEGATIF) -
+! --- : PRODEF : PROFONDEUR DU DEFAUT ----------------------------------
+! --- : ORIDEF : ORIENTATION DU DEFAUT ---------------------------------
+! --- : PROFIL : TYPE DE PROFIL (ELLIPSE OU SEMI-ELLIPSE) --------------
 ! VAR : KAL    : FACTEUR DE MARGE EN POINTE A --------------------------
 ! --- : KBL    : FACTEUR DE MARGE EN POINTE B --------------------------
+! --- : KCL    : FACTEUR DE MARGE EN POINTE C --------------------------
 ! --- : DKMA   : CORRECTION PLASTIQUE EN A -----------------------------
 ! --- : DKMB   : CORRECTION PLASTIQUE EN B -----------------------------
+! --- : DKMC   : CORRECTION PLASTIQUE EN C -----------------------------
 ! OUT : K1ACP  : FACTEUR D'INTENSITE DE CONTRAINTE AVEC CORRECTION -----
 ! ------------ : PLASTIQUE EN A ----------------------------------------
 ! --- : K1BCP  : FACTEUR D'INTENSITE DE CONTRAINTE AVEC CORRECTION -----
 ! ------------ : PLASTIQUE EN B ----------------------------------------
+! --- : K1CCP  : FACTEUR D'INTENSITE DE CONTRAINTE AVEC CORRECTION -----
+! ------------ : PLASTIQUE EN C ----------------------------------------
 ! ======================================================================
 ! ======================================================================
     integer :: iadr, long, i, j, k, lreel, ineut1, ineut2, ineut3, ineut4
@@ -226,9 +237,10 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
             endif
             goto 30
         endif
- 3  end do
+ 3  continue
     call utmess('F', 'PREPOST_10')
 30  continue
+!
     rya = (k1a * k1a)/(6 * pi * sigma * sigma)
     if (oridef .eq. 'LONGI') then
         ca = 0.165d0*log(prodef*1000)
@@ -237,8 +249,12 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
         ca = 0.5d0
         cb = 0.5d0
     endif
+!
     betaa = 1 + ca * tanh(36*rya/(lrev+deklag))
     betab = 1 + cb * tanh(36*rya/(lrev+deklag))
+!
+! --- correction plastique point A
+!
     if (k1a .lt. kal) then
         k1acp = k1a + dkma
     else
@@ -252,6 +268,9 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
         endif
     endif
     kal = k1a
+!
+! --- correction plastique point B
+!
     if (k1b .lt. kbl) then
         k1bcp = k1b + dkmb
     else
@@ -265,6 +284,24 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
         endif
     endif
     kbl = k1b
+!
+! --- correction plastique point C
+!
+    if(profil(1:12).eq.'SEMI_ELLIPSE') then
+       if (k1c .lt. kcl) then
+          k1ccp = k1c + dkmc
+       else
+          val1 = betaa*k1c
+          val2 = k1c + dkmc
+          if (val1 .gt. val2) then
+             k1ccp = val1
+             dkmc = k1ccp - k1c
+          else
+             k1ccp = k1c + dkmc
+          endif
+       endif
+       kcl = k1c
+    endif
 ! ======================================================================
     call jedema()
 ! ======================================================================

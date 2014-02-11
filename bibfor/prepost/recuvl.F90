@@ -41,7 +41,7 @@ subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
 ! --- : NOMDB  : NOMBRE DE NOEUDS COTE METAL DE BASE -------------------
 ! --- : TBSCMB : VECTEUR DES ABSCISSES CURVILIGNES COTE METAL DE BASE --
 ! ======================================================================
-    integer :: ibid
+    integer :: ibid,irev
     character(len=8) :: motfac, k8b, tabrev, tabmdb, tabthr
 ! ======================================================================
     call jemarq()
@@ -52,9 +52,12 @@ subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
 ! ======================================================================
 ! --- RECUPERATION DES TABLES ASSOCIEES A K1D POUR L'ITERATION COURANTE-
 ! ======================================================================
-    call getvid(motfac, 'TABL_MECA_REV', iocc=1, scal=tabrev, nbret=ibid)
+    call getvid(motfac, 'TABL_MECA_REV', iocc=1, scal=tabrev, nbret=irev)
     call getvid(motfac, 'TABL_MECA_MDB', iocc=1, scal=tabmdb, nbret=ibid)
     call getvid(motfac, 'TABL_THER', iocc=1, scal=tabthr, nbret=ibid)
+    if(irev.eq.0) then
+      tabrev=tabmdb
+    endif
 ! ======================================================================
 ! --- RECUPERATION DES LISTES D'INSTANT --------------------------------
 ! ======================================================================

@@ -1,5 +1,6 @@
-subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
-                  deklag, prodef, londef, oridef)
+subroutine recupe(noma, ndim, nk1d, lrev, lmdb, &
+                  matrev, matmdb, deklag, prodef,londef,&
+                  oridef, profil)
     implicit none
 #include "asterc/getfac.h"
 #include "asterfort/dismoi.h"
@@ -10,8 +11,9 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
     integer :: ndim, nk1d
-    real(kind=8) :: lrev, deklag, prodef, londef
-    character(len=8) :: noma, matrev, oridef
+    real(kind=8) :: lrev, lmdb, deklag, prodef, londef
+    character(len=8) :: noma, matrev, matmdb, oridef
+    character(len=12) :: profil
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,13 +39,17 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
 ! OUT : NOMA   : NOM DU MAILLAGE ---------------------------------------
 ! --- : NDIM   : DIMENSION DE L'ESPACE ---------------------------------
 ! --- : NK1D   : NOMBRE D'OCCURENCE ------------------------------------
-! --- : LREV   : LONGUEUR DU REVETEMENT --------------------------------
+! --- : LREV   : EPAISSEUR DU REVETEMENT -------------------------------
+! --- : LMDB   : EPAISSEUR DU METAL DE BASE ----------------------------
 ! --- : MATREV : MATERIAU DU REVETEMENT --------------------------------
+! --- : MATMDB : MATERIAU DU METAL DE BASE -----------------------------
+! --- : DEKLAG : DECALAGE DU DEFAUT ------------------------------------
 ! --- : PRODEF : PROFONDEUR DU DEFAUT ----------------------------------
 ! --- : LONDEF : LONGUEUR DU DEFAUT ------------------------------------
 ! --- : ORIDEF : ORIENTATION DU DEFAUT ---------------------------------
+! --- : PROFIL : TYPE DE PROFIL (ELLIPSE OU SEMI-ELLIPSE) --------------
 ! ======================================================================
-    integer :: ibid
+    integer :: ibid,ibid1,ibid2
     character(len=8) :: k8b
     character(len=16) :: motfac
 ! ======================================================================
@@ -62,16 +68,34 @@ subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
         ndim = 3
     endif
 ! ======================================================================
+! --- RECUPERATION DU PROFIL DE FISSURE --------------------------------
+! ======================================================================
+    call getvtx('FISSURE', 'FORM_FISS', iocc=1, scal=profil, nbret=ibid)
+! ======================================================================
 ! --- RECUPERATION DES CARACTERISTIQUES DU REVETEMENT ------------------
 ! ======================================================================
     call getvr8(' ', 'EPAIS_REV', scal=lrev, nbret=ibid)
     call getvid(' ', 'MATER_REV', scal=matrev, nbret=ibid)
 ! ======================================================================
+! --- RECUPERATION DES CARACTERISTIQUES DU METAL DE BASE ---------------
+! ======================================================================
+    lmdb   = 0.d0
+    matmdb = '        '
+    if(profil(1:12).eq.'SEMI_ELLIPSE')then
+       call getvr8(' ', 'EPAIS_MDB', scal=lmdb, nbret=ibid1)
+       call getvid(' ', 'MATER_MDB', scal=matmdb, nbret=ibid2)
+       if((ibid1.eq.0).or.(ibid2.eq.0)) then
+          call utmess('F', 'PREPOST_3')
+       endif
+!
+    endif
+! ======================================================================
 ! --- RECUPERATION DES DONNEES DE LA FISSURE ---------------------------
 ! ======================================================================
-    call getvr8('FISSURE', 'DECALAGE', iocc=1, scal=deklag, nbret=ibid)
-    if (deklag .gt. 0.0d0) then
-        call utmess('F', 'PREPOST4_60')
+    if(profil(1:7).eq.'ELLIPSE') then
+       call getvr8('FISSURE', 'DECALAGE', iocc=1, scal=deklag, nbret=ibid)
+    else 
+       deklag=0.d0
     endif
     call getvr8('FISSURE', 'PROFONDEUR', iocc=1, scal=prodef, nbret=ibid)
     call getvr8('FISSURE', 'LONGUEUR', iocc=1, scal=londef, nbret=ibid)

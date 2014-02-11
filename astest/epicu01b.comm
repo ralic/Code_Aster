@@ -1,0 +1,866 @@
+#
+#
+# TITRE VALIDATION 3D DE LA COMMANDE POST_K_BETA
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#=====  1 - LECTURE DU MAILLAGE  =======================================
+
+PRE_GIBI ()
+
+MAIL = LIRE_MAILLAGE ()
+
+# ON AJOUTE DES GROUPES DE NOEUDS
+
+DEFI_GROUP ( reuse = MAIL,
+                    MAILLAGE      = MAIL,
+                    CREA_GROUP_NO =(
+
+# NOEUDS DE LA FACE INFERIEURE
+
+                                  _F ( NOM      = 'NOEINF',
+                                       GROUP_MA = 'FACEINF' ),
+
+# NOEUDS DE LA FACE SUPERIEURE
+
+                                  _F ( NOM      = 'NOESUP',
+                                       GROUP_MA = 'FACESUP' ),
+
+# NOEUDS DE LA FACE DE SYMETRIE 1 - DEPL UNIFORME EN DY
+
+                                  _F ( NOM      = 'NOESYM1',
+                                       GROUP_MA = 'FACESYM1' ),
+
+# NOEUDS DE LA FACE DE SYMETRIE 2 - BLOCAGE DU DEPL NORMAL
+
+                                  _F ( NOM      = 'NOESYM2',
+                                       GROUP_MA = 'FACESYM2' ) )
+
+                   )
+
+#===== 2 - MODELISATION ET RESOLUTION THERMIQUE NON LINEAIRE  ==========
+
+# 2.1 DEFINITION DU MODELE THERMIQUE
+
+MO_THER = AFFE_MODELE (
+                       MAILLAGE = MAIL,
+                       AFFE     =_F (
+                                     TOUT = 'OUI' ,
+                                     PHENOMENE    = 'THERMIQUE',
+                                     MODELISATION = '3D' )
+                                    )
+
+# ORIENTATION DES FACES INT et EXT
+
+MODI_MAILLAGE ( reuse        = MAIL ,
+                       MAILLAGE     = MAIL ,
+                       ORIE_PEAU_3D = (
+                                        _F ( GROUP_MA = 'FACEINT'  ) ,
+                                        _F ( GROUP_MA = 'FACEEXT' )
+                                      ),
+                     )
+# 2.2 DEFINITION DES PROPRIETES THERMIQUES DES MATERIAUX
+
+# 2.2.1 MATERIAU DU DEFAUT
+
+LAMB_MET = DEFI_FONCTION ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                           VALE        = (
+0.0, 0.0377,
+      20.0, 0.0377,
+      50.0, 0.0386,
+      100.0, 0.0399,
+      150.0, 0.0405,
+      200.0, 0.0405,
+      250.0, 0.0402,
+      300.0, 0.0395,
+      350.0, 0.0387, ),
+# FIN PARAM
+                           PROL_DROITE = 'LINEAIRE',
+                           PROL_GAUCHE = 'LINEAIRE' )
+
+BETA_MET = DEFI_FONCTION ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                           VALE        = (
+      0.0, 0.0,
+      50.0, 0.10619,
+      100.0, 0.29033,
+      150.0, 0.48291,
+      200.0, 0.68328,
+      250.0, 0.89216,
+      300.0, 1.10944,
+      350.0, 1.33506, ),
+# FIN PARAM
+                           PROL_DROITE = 'LINEAIRE',
+                           PROL_GAUCHE = 'LINEAIRE' )
+
+# CONVERSIONS D'UNITES
+#
+#                   -1  -1       -1  -1
+# LAMBDA      : W.mm  .K   -> W.m  .K
+#
+#                   -3           -3
+# H VOLUMIQUE : J.mm       -> J.m
+
+LMBD_MET = CALC_FONCTION (
+             COMB        =_F ( FONCTION = LAMB_MET,
+                               COEF     = 1.0E+3 ),
+             PROL_DROITE = 'LINEAIRE',
+             PROL_GAUCHE = 'LINEAIRE' )
+
+ENTH_MET = CALC_FONCTION (
+             COMB        =_F ( FONCTION = BETA_MET,
+                               COEF     = 1.0E+9 ),
+             PROL_DROITE = 'LINEAIRE',
+             PROL_GAUCHE = 'LINEAIRE' )
+
+MATH_MET = DEFI_MATERIAU ( THER_NL = _F ( LAMBDA = LMBD_MET,
+                                          BETA   = ENTH_MET ) )
+
+# 2.2.2 REVETEMENT
+
+LAMB_REV = DEFI_FONCTION ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                           VALE        = (
+      0.0, 0.0147,
+      20.0, 0.0147,
+      50.0, 0.0152,
+      100.0, 0.0158,
+      150.0, 0.0167,
+      200.0, 0.0172,
+      250.0, 0.018,
+      300.0, 0.0186,
+      350.0, 0.0193, ),
+# FIN PARAM
+                           PROL_DROITE = 'LINEAIRE',
+                           PROL_GAUCHE = 'LINEAIRE' )
+
+BETA_REV = DEFI_FONCTION ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                           VALE        = (
+      0.0, 0.0,
+      50.0, 0.11021,
+      100.0, 0.30133,
+      150.0, 0.50143,
+      200.0, 0.70813,
+      250.0, 0.91888,
+      300.0, 1.13291,
+      350.0, 1.34898, ),
+# FIN PARAM
+                           PROL_DROITE = 'LINEAIRE',
+                           PROL_GAUCHE = 'LINEAIRE' )
+
+# CONVERSIONS D'UNITES
+#
+#                   -1  -1       -1  -1
+# LAMBDA      : W.mm  .K   -> W.m  .K
+#
+#                   -3           -3
+# H VOLUMIQUE : J.mm       -> J.m
+
+LMBD_REV = CALC_FONCTION (
+             COMB        =_F ( FONCTION = LAMB_REV,
+                               COEF     = 1.0E+3 ),
+             PROL_DROITE = 'LINEAIRE',
+             PROL_GAUCHE = 'LINEAIRE' )
+
+ENTH_REV = CALC_FONCTION (
+             COMB        =_F ( FONCTION = BETA_REV,
+                               COEF     = 1.0E+9 ),
+             PROL_DROITE = 'LINEAIRE',
+             PROL_GAUCHE = 'LINEAIRE' )
+
+MATH_REV = DEFI_MATERIAU ( THER_NL = _F ( LAMBDA = LMBD_REV,
+                                          BETA   = ENTH_REV ) )
+
+# 2.3 AFFECTATION DES MATERIAUX
+
+CHMAT_TH = AFFE_MATERIAU ( MAILLAGE = MAIL,
+                           AFFE     =(
+                                    _F ( GROUP_MA = 'M',
+                                         MATER    = MATH_MET ),
+                                    _F ( GROUP_MA = 'R',
+                                         MATER    = MATH_REV ))
+                         )
+
+# 2.4 DEFINITION DU CHARGEMENT THERMIQUE : ECHANGE EN PEAU INTERNE
+
+# 2.4.1 TEMPERATURE FLUIDE EN PEAU INTERNE
+
+T_INT = DEFI_FONCTION ( NOM_PARA    = 'INST',
+# DEB PARAM
+                        VALE        = (
+                                         0.0, 286.0,
+                                         12.0, 20.0,
+                                         20.0, 20.0,
+                                         21.0, 18.0,
+                                         45.0, 18.0,
+                                         46.0, 7.0,
+                                         141.0, 7.0,
+                                         236.0, 7.0,
+                                         426.0, 7.0,
+                                         616.0, 7.0,
+                                         806.0, 7.0,
+                                         996.0, 7.0,
+                                         1186.0, 7.0,
+                                         1376.0, 7.0,
+                                         1566.0, 7.0,
+                                         1870.0, 7.0,
+                                         1871.0, 80.0,
+                                         3871.0, 80.0, ),
+                        PROL_DROITE = 'CONSTANT',
+                        PROL_GAUCHE = 'LINEAIRE'
+# FIN PARAM
+                      )
+
+# 2.4.2 COEFFICIENT D'ECHANGE EN PEAU INTERNE
+
+H_INT = DEFI_FONCTION ( NOM_PARA    = 'INST',
+# DEB PARAM
+                        VALE        = (
+      0.0, 138454.0,
+                                         12.0, 19972.0,
+                                         20.0, 19972.0,
+                                         21.0, 20984.0,
+                                         45.0, 20984.0,
+                                         46.0, 2668.0,
+                                         141.0, 3382.0,
+                                         236.0, 2668.0,
+                                         426.0, 2668.0,
+                                         616.0, 2668.0,
+                                         806.0, 2668.0,
+                                         996.0, 2668.0,
+                                         1186.0, 2668.0,
+                                         1376.0, 2668.0,
+                                         1566.0, 2668.0,
+                                         1870.0, 2668.0,
+                                         1871.0, 5100.0,
+                                         3871.0, 5100.0, ),
+                        PROL_DROITE = 'CONSTANT',
+                        PROL_GAUCHE = 'CONSTANT'
+# FIN PARAM
+                      )
+
+# 2.5 AFFECTATION DU CHARGEMENT THERMIQUE
+
+CHAR_TH = AFFE_CHAR_THER_F ( MODELE  = MO_THER,
+                             ECHANGE = _F( GROUP_MA = 'FACEINT',
+                                           COEF_H   = H_INT,
+                                           TEMP_EXT = T_INT    ) ,
+
+                           )
+
+# 2.6 RESOLUTION THERMIQUE NON LINEAIRE
+
+# 2.6.1 DEFINITION DES INSTANTS DE RESOLUTION
+
+LINST_TH = DEFI_LIST_REEL (
+               DEBUT      = 0.,
+               INTERVALLE =(
+# DEB PARAM
+# REPETER LA SEQUENCE AUTANT DE FOIS QU'IL Y A DE COUPLETS (INST,NB)
+# DANS LA BASE DE DONNEES TRANS1D POUR listn_inst_th
+                                _F (JUSQU_A = 12,                                    NOMBRE  = 6 ),
+                                _F (JUSQU_A = 20,                                    NOMBRE  = 4 ),
+                                _F (JUSQU_A = 21,                                    NOMBRE  = 1 ),
+                                _F (JUSQU_A = 45,                                    NOMBRE  = 4 ),
+                                _F (JUSQU_A = 46,                                    NOMBRE  = 1 ),
+                                _F (JUSQU_A = 141,                                    NOMBRE  = 5 ),
+                                _F (JUSQU_A = 210,                                    NOMBRE  = 1 ),
+                                _F (JUSQU_A = 1870,                                    NOMBRE  = 19 ),
+                                _F (JUSQU_A = 1871,                                    NOMBRE  = 5 ),
+                                _F (JUSQU_A = 2046,                                    NOMBRE  = 10 ),
+                                _F (JUSQU_A = 3871,                                    NOMBRE  = 10 ),
+# ATTENTION : ')' A LA PLACE DE ',' APRES LA DERNIERE OCCURRENCE
+# DU MOT CLE FACTEUR INTERVALLE
+# FIN PARAM
+                          )
+)
+# 2.6.2 RESOLUTION
+
+TEMP = THER_NON_LINE (
+         MODELE      = MO_THER,
+         CHAM_MATER  = CHMAT_TH,
+         EXCIT       = _F ( CHARGE         = CHAR_TH ),
+# DEB PARAM
+         ETAT_INIT   = _F ( VALE           = 287.0 ),
+# FIN PARAM
+         INCREMENT   = _F ( LIST_INST      = LINST_TH ),
+         CONVERGENCE = _F ( ITER_GLOB_MAXI = 100,
+                            RESI_GLOB_RELA = 1.0E-5 ) ,
+                     )
+
+#===== 3 - MODELISATION ET RESOLUTION MECANIQUE  =======================
+#=====     COMPORTEMENT ELASTIQUE LINEAIRE  ============================
+
+# 3.1 DEFINITION DU MODELE MECANIQUE
+
+MO_MECA = AFFE_MODELE (
+        MAILLAGE = MAIL,
+        AFFE     =_F ( GROUP_MA     = ( 'R', 'M', 'FACEINF', 'FACEEXT',
+                                        'FACESUP', 'FACEINT','FACESYM1','FACESYM2',),
+                       PHENOMENE    = 'MECANIQUE',
+                       MODELISATION = '3D' )
+                      )
+
+# ORIENTATION DES FACES INF, INT et SYM2
+
+MODI_MAILLAGE ( reuse        = MAIL ,
+                       MAILLAGE     = MAIL ,
+                       ORIE_PEAU_3D = (
+                                        _F ( GROUP_MA = 'FACEINF'  ) ,
+                                        _F ( GROUP_MA = 'FACEINT'  ) ,
+                                        _F ( GROUP_MA = 'FACESYM1' ) ,
+                                        _F ( GROUP_MA = 'FACESYM2' )
+                                      ),
+                     )
+# 3.2 DEFINITION DES PROPRIETES MECANIQUES DES MATERIAUX
+
+# 3.2.1 MATERIAU DU DEFAUT
+
+E_MET = DEFI_FONCTION ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                        VALE        = (
+      0.0, 205000.0,
+      20.0, 204000.0,
+      50.0, 203000.0,
+      100.0, 200000.0,
+      150.0, 197000.0,
+      200.0, 193000.0,
+      250.0, 189000.0,
+      300.0, 185000.0,
+                                         350.0, 180000.0 ),
+# FIN PARAM
+                        PROL_DROITE = 'LINEAIRE',
+                        PROL_GAUCHE = 'LINEAIRE' )
+
+# CONVERSION D'UNITE POUR LE MODULE D'YOUNG : MPa -> Pa
+YOUNGMET = CALC_FONCTION (
+             COMB        =_F ( FONCTION = E_MET,
+                               COEF     = 1.0E+6 ),
+             PROL_DROITE = 'LINEAIRE',
+             PROL_GAUCHE = 'LINEAIRE' )
+
+# DEB PARAM
+NUMET = DEFI_CONSTANTE ( VALE = 0.3 )
+# FIN PARAM
+
+ALPHAMET = DEFI_FONCTION  ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                            VALE        = (
+      20.0, 1.122e-05,
+      50.0, 1.145e-05,
+      100.0, 1.179e-05,
+      150.0, 1.214e-05,
+      200.0, 1.247e-05,
+      250.0, 1.278e-05,
+      300.0, 1.308e-05, ),
+# FIN PARAM
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE' )
+
+MAME_MET = DEFI_MATERIAU (
+                 ELAS_FO  =_F (
+                      E              = YOUNGMET,
+                      NU             = NUMET,
+                      ALPHA          = ALPHAMET,
+# DEB PARAM
+                      TEMP_DEF_ALPHA = 20.0
+# FIN PARAM
+                              )  )
+
+# 3.2.2 REVETEMENT
+
+E_REV = DEFI_FONCTION ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                        VALE        = (
+      0.0, 198500.0,
+                                         20.0, 197000.0,
+                                         50.0, 195000.0,
+                                         100.0, 191500.0,
+                                         150.0, 187500.0,
+                                         200.0, 184000.0,
+                                         250.0, 180000.0,
+                                         300.0, 176500.0,
+                                         350.0, 172000.0, ),
+# FIN PARAM
+                        PROL_DROITE = 'LINEAIRE',
+                        PROL_GAUCHE = 'LINEAIRE' )
+
+# CONVERSION D'UNITE POUR LE MODULE D'YOUNG : MPa -> Pa
+YOUNGREV = CALC_FONCTION (
+             COMB        =_F ( FONCTION = E_REV,
+                               COEF     = 1.0E+6 ),
+             PROL_DROITE = 'LINEAIRE',
+             PROL_GAUCHE = 'LINEAIRE' )
+
+# DEB PARAM
+NUREV = DEFI_CONSTANTE ( VALE = 0.3 )
+# FIN PARAM
+
+ALPHAREV = DEFI_FONCTION  ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                            VALE        = (
+      20.0, 1.64e-05,
+      50.0, 1.654e-05,
+      100.0, 1.68e-05,
+      150.0, 1.704e-05,
+      200.0, 1.72e-05,
+      250.0, 1.75e-05,
+      300.0, 1.777e-05,  ),
+# FIN PARAM
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE' )
+
+MAME_REV = DEFI_MATERIAU (
+                 ELAS_FO  =_F (
+                      E              = YOUNGREV,
+                      NU             = NUREV,
+                      ALPHA          = ALPHAREV,
+# DEB PARAM
+                      TEMP_DEF_ALPHA = 20.0
+# FIN PARAM
+                              )  )
+
+# 3.3 AFFECTATION DES MATERIAUX
+
+CHMAT_ME = AFFE_MATERIAU ( MAILLAGE = MAIL,
+                           AFFE     =(
+                                    _F ( GROUP_MA = 'M',
+                                         MATER    = MAME_MET,),
+                                    _F ( GROUP_MA = 'R',
+                                         MATER    = MAME_REV,)),
+                            AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',
+                                         EVOL=TEMP,NOM_CHAM='TEMP',VALE_REF=287.0),
+                         )
+
+# 3.4 DEFINITION DES CHARGEMENTS MECANIQUES
+
+# 3.4.1 PRESSION FLUIDE EN PEAU INTERNE
+
+PRESS = DEFI_FONCTION ( NOM_PARA    = 'INST',
+# DEB PARAM
+                        VALE        = (
+      0.0, 15.5,
+                                         12.0, 6.3,
+                                         20.0, 0.1,
+                                         21.0, 0.1,
+                                         45.0, 0.1,
+                                         46.0, 0.1,
+                                         141.0, 0.1,
+                                         236.0, 0.1,
+                                         426.0, 0.1,
+                                         616.0, 0.1,
+                                         806.0, 0.1,
+                                         996.0, 0.1,
+                                         1186.0, 0.1,
+                                         1376.0, 0.1,
+                                         1566.0, 0.1,
+                                         1870.0, 0.1,
+                                         1871.0, 0.1,
+                                         3871.0, 0.1, ),
+                        PROL_DROITE = 'CONSTANT',
+                        PROL_GAUCHE = 'CONSTANT'
+# FIN PARAM
+                      )
+
+# CONVERSION D'UNITE POUR LA PRESSION FLUIDE : MPa -> Pa
+P_INT = CALC_FONCTION (
+          COMB        =_F ( FONCTION = PRESS,
+                            COEF     = 1.0E+6 ),
+          INTERPOL    = 'LIN',
+# DEB PARAM
+          PROL_DROITE = 'EXCLU',
+          PROL_GAUCHE = 'CONSTANT'
+# FIN PARAM
+                      )
+
+# 3.4.2 EFFET DE FOND
+
+# DEB PARAM
+RIMM = 1994
+EREV = 7.5
+EMDB = 200.0
+# FIN PARAM
+
+# CONVERSION D'UNITE POUR LES PARAMETRES GEOMETRIQUES : mm -> m
+RINT  = RIMM / 1.0E+3
+EPREV = EREV / 1.0E+3
+EPMDB = EMDB / 1.0E+3
+
+REXT = RINT + EPREV + EPMDB
+
+COEFFOND = ( -1.0E+0*RINT*RINT ) / ( REXT*REXT-RINT*RINT )
+
+P_EF = CALC_FONCTION (
+         COMB        =_F ( FONCTION = P_INT,
+                           COEF     = COEFFOND ),
+         INTERPOL    = 'LIN',
+# DEB PARAM
+         PROL_DROITE = 'CONSTANT',
+         PROL_GAUCHE = 'CONSTANT'
+# FIN PARAM
+                     )
+
+# 3.4.3 DEFINITION D'UNE FONCTION CONSTANTE NULLE AU COURS DU TEMPS
+#       POUR L'APPLICATION DES CONDITIONS AUX LIMITES (BLOCAGES)
+
+ZERO = DEFI_FONCTION ( NOM_PARA    = 'INST',
+                       VALE        = (  0.,  0.,
+                                       10.,  0. ),
+                       PROL_DROITE = 'CONSTANT',
+                       PROL_GAUCHE = 'CONSTANT' )
+
+# 3.5 AFFECTATION DES CHARGEMENTS THERMO-MECANIQUES
+
+# 3.5.1 PRESSION INTERNE, EFFET DE FOND, BLOCAGES ET CONDITIONS
+#       DE SYMETRIE
+
+CHME2 = AFFE_CHAR_MECA_F ( MODELE        = MO_MECA,
+
+                           PRES_REP      =(
+                                         _F ( GROUP_MA = 'FACEINT',
+                                              PRES     = P_INT ),
+
+                                         _F ( GROUP_MA = 'FACESUP',
+                                              PRES     = P_EF  )),
+
+                           DDL_IMPO      =(
+                                         _F ( GROUP_NO = 'NOEINF',
+                                              DZ       = ZERO  )),
+
+                           LIAISON_UNIF  =(
+                                         _F ( GROUP_NO = 'NOESUP',
+                                              DDL      = 'DZ'  )),
+
+                           FACE_IMPO     =(
+                                         _F ( GROUP_MA = 'FACESYM1',
+                                              DNOR      = ZERO  ),
+
+                                         _F ( GROUP_MA = 'FACESYM2',
+                                              DNOR      = ZERO  ))
+                         )
+
+
+# 3.6 RESOLUTION MECANIQUE LINEAIRE
+
+# 3.6.1 DEFINITION DES INSTANTS DE RESOLUTION
+
+LINST_ME = DEFI_LIST_REEL (
+               DEBUT      = 0.,
+# DEB PARAM
+# REPETER LA SEQUENCE AUTANT DE FOIS QU'IL Y A DE COUPLETS (INST,NB)
+# DANS LA BASE DE DONNEES TRANS1D POUR list_inst_meca
+               INTERVALLE =(
+                                _F (JUSQU_A = 12,                                    NOMBRE  = 6 ),
+                                _F (JUSQU_A = 20,                                    NOMBRE  = 4 ),
+                                _F (JUSQU_A = 21,                                    NOMBRE  = 1 ),
+                                _F (JUSQU_A = 45,                                    NOMBRE  = 4 ),
+                                _F (JUSQU_A = 46,                                    NOMBRE  = 1 ),
+                                _F (JUSQU_A = 141,                                    NOMBRE  = 5 ),
+                                _F (JUSQU_A = 210,                                    NOMBRE  = 1 ),
+                                _F (JUSQU_A = 1870,                                    NOMBRE  = 19 ),
+                                _F (JUSQU_A = 1871,                                    NOMBRE  = 5 ),
+                                _F (JUSQU_A = 2046,                                    NOMBRE  = 10 ),
+                                _F (JUSQU_A = 3871,                                    NOMBRE  = 10 ),
+# ATTENTION : ')' A LA PLACE DE ',' APRES LA DERNIERE OCCURRENCE
+# DU MOT CLE FACTEUR INTERVALLE
+# FIN PARAM
+                          )
+)
+# 3.6.2 RESOLUTION
+
+
+SIG = MECA_STATIQUE ( MODELE     = MO_MECA,
+                       CHAM_MATER = CHMAT_ME,
+                       EXCIT      =(
+                                  _F (CHARGE = CHME2)),
+
+                       LIST_INST  = LINST_ME
+                     )
+
+CALC_CHAMP(reuse=SIG,RESULTAT=SIG,CONTRAINTE=('SIGM_ELNO'),LIST_INST=LINST_ME,PRECISION=1.0E-6)
+
+#
+CHEM1=INTE_MAIL_3D ( MAILLAGE = MAIL,
+                     GROUP_MA = 'R',
+                     INFO = 2,
+                     PRECISION = 1.0E-6,
+                     DEFI_SEGMENT  = _F(
+                                        ORIGINE = (2.0013,0.0,0.0030),
+                                        EXTREMITE = (2.0014999999999999,0.0,0.0030),
+                                      )
+                   )
+#
+CHEM2=INTE_MAIL_3D ( MAILLAGE = MAIL,
+                     GROUP_MA = 'M',
+                     PRECISION = 1.0E-6,
+                     INFO = 2,
+                     DEFI_SEGMENT  = _F(
+                                        ORIGINE = (2.0015000000000000001,0.0,0.0030),
+                                        EXTREMITE = (2.0073,0.0,0.0030),
+                                      )
+                   )
+#
+CHEM3=INTE_MAIL_3D ( MAILLAGE = MAIL,
+                     PRECISION = 1.0E-6,
+                     INFO = 2,
+                     DEFI_SEGMENT  = _F(
+                                        ORIGINE = (2.0013,0.0,0.0030),
+                                        EXTREMITE = (2.0073,0.0,0.0030),
+                                      )
+                   )
+#
+S1_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                 INTITULE = 'GLOBAL1',
+                                 RESULTAT = SIG,
+                                 TOUT_CMP = 'OUI',
+                                 NOM_CHAM = 'SIGM_ELNO',
+                                 LIST_INST = LINST_ME,
+                                 OPERATION = 'EXTRACTION',
+                              )
+                   )
+#
+S2_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM2,
+                                 INTITULE = 'GLOBAL2',
+                                 RESULTAT = SIG,
+                                 TOUT_CMP = 'OUI',
+                                 NOM_CHAM = 'SIGM_ELNO',
+                                 LIST_INST = LINST_ME,
+                                 OPERATION = 'EXTRACTION',
+                              )
+                   )
+#
+TEMP_G=POST_RELEVE_T(  ACTION=_F(CHEMIN = CHEM3,
+                                 INTITULE = 'GLOBAL3',
+                                 RESULTAT = TEMP,
+                                 TOUT_CMP = 'OUI',
+                                 NOM_CHAM = 'TEMP',
+                                 LIST_INST = LINST_TH,
+                                 OPERATION = 'EXTRACTION',
+                              )
+                   )
+
+#===== 4 - POST-TRAITEMENT : CALCUL DES FACTEURS D'INTENSITE  ==========
+#=====     DE CONTRAINTES PAR LA METHODE K-BETA               ==========
+
+# 4.1 CALCUL PREALABLE DES CONTRAINTES AUX NOEUDS
+
+#SIG=CALC_CHAMP(reuse=SIG,
+#               RESULTAT=SIG,
+#               LIST_INST=LINST_ME,
+#               CONTRAINTE='SIGM_NOEU',);
+
+# 4.2 DEFINITION D'UN NOUVEAU MATERIAU AVEC ECROUISSAGE ISOTROPE NON
+#     LINEAIRE POUR LE REVETEMENT
+#     (UTILISATION DE LA LIMITE ELASTIQUE PAR LA METHODE K-BETA)
+
+# DEB PARAM NIV 1
+# BOUCLE SUR nb_trac_rev
+CTREV_01 = DEFI_FONCTION (  NOM_PARA = 'EPSI',
+                            VALE = (
+                                         0.00191436, 380.0,
+                                         0.01, 392.331,),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE')
+
+# CONVERSION D'UNITE SUR LA COURBE DE TRACTION : CONTRAINTE MPa -> Pa
+TRREV_01 = CALC_FONCTION (
+                  COMB     =_F (FONCTION= CTREV_01,
+                                COEF     = 1.0E+6 ),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE')
+
+CTREV_02 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                            VALE = (
+                                         0.00187817, 370.0,
+                                         0.01, 382.386,),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE')
+
+# CONVERSION D'UNITE SUR LA COURBE DE TRACTION : CONTRAINTE MPa -> Pa
+TRREV_02 = CALC_FONCTION (
+                  COMB     =_F (FONCTION= CTREV_02,
+                                COEF     = 1.0E+6 ),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE')
+
+CTREV_03 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                            VALE = (
+                                         0.00172324, 330.0,
+                                         0.01, 342.622,),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE')
+
+# CONVERSION D'UNITE SUR LA COURBE DE TRACTION : CONTRAINTE MPa -> Pa
+TRREV_03 = CALC_FONCTION (
+                  COMB     =_F (FONCTION= CTREV_03,
+                                COEF     = 1.0E+6 ),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE')
+
+CTREV_04 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                            VALE = (
+                                         0.00152975, 270.0,
+                                         0.01, 282.917,),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE')
+
+# CONVERSION D'UNITE SUR LA COURBE DE TRACTION : CONTRAINTE MPa -> Pa
+TRREV_04 = CALC_FONCTION (
+                  COMB     =_F (FONCTION= CTREV_04,
+                                COEF     = 1.0E+6 ),
+                            PROL_DROITE = 'LINEAIRE',
+                            PROL_GAUCHE = 'LINEAIRE')
+
+SIGM_REV = DEFI_NAPPE ( NOM_PARA    = 'TEMP',
+# DEB PARAM
+                        PARA        = (  0.0,
+                                         20.0,
+                                         100.0,
+                                         300.0, ),
+# FIN PARAM
+                        FONCTION    = (
+# DEB PARAM
+# BOUCLE SUR trrev
+                           TRREV_01,
+                           TRREV_02,
+                           TRREV_03,
+                           TRREV_04,
+# ATTENTION PAS DE ',' APRES LA DERNIERE FONCTION DE LA LISTE
+# FIN PARAM
+                                      ),
+                        PROL_DROITE = 'LINEAIRE',
+                        PROL_GAUCHE = 'LINEAIRE' )
+
+MAME_RE2 = DEFI_MATERIAU (
+                 ELAS_FO  =_F (
+                      E              = YOUNGREV,
+                      NU             = NUREV,
+                      ALPHA          = ALPHAREV,
+# DEB PARAM
+                      TEMP_DEF_ALPHA = 20.0
+# FIN PARAM
+                              ),
+                 TRACTION =_F ( SIGM = SIGM_REV )
+                         )
+
+# 4.3 CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES
+#     REMARQUES :
+#     LES CARACTERISTIQUES GEOMETRIQUES DE LA FISSURE SONT SAISIES DANS
+#     L'IHM. L'ORIENTATION DE LA FISSURE EST 'CIRC' OU 'LONGI'.
+
+# DEB PARAM
+DDEF = -0.2
+PDEF = 6.0
+LDEF = 60.0
+# FIN PARAM
+
+# CONVERSION D'UNITE POUR LES PARAMETRES GEOMETRIQUES : mm -> m
+DECADEF = DDEF / 1.0E+3
+PROFDEF = PDEF / 1.0E+3
+LONGDEF = LDEF / 1.0E+3
+
+TB_KBETA = POST_K_BETA (
+                         MAILLAGE  = MAIL,
+                         MATER_REV = MAME_RE2,
+                         EPAIS_REV = EPREV,
+                         FISSURE   =_F ( FORM_FISS   = 'ELLIPSE',
+                                         DECALAGE    = DECADEF,
+                                         PROFONDEUR  = PROFDEF,
+                                         LONGUEUR    = LONGDEF,
+# DEB PARAM
+                                         ORIENTATION = 'LONGI' ),
+# FIN PARAM
+                         K1D       =(_F ( TABL_MECA_REV = S1_G,
+                                          TABL_MECA_MDB = S2_G,
+                                          TABL_THER     = TEMP_G,
+                                          INTITULE      = 'NOEINF',),),
+                         TITRE     = 'FIC PAR METHODE K-BETA'
+                       )
+
+# 4.4 IMPRESSION DES RESULTATS
+
+IMPR_TABLE ( TABLE      = TB_KBETA,
+             FORMAT     = 'TABLEAU',
+             FORMAT_R   = 'E12.5E2',
+             PAGINATION = 'GROUP_NO'
+           )
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 9.51611996E+06,
+           VALE_REFE=9.407000E6,
+           NOM_PARA='K1_REV',
+           TABLE=TB_KBETA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3871.0,),
+           )
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 2.52758826E+07,
+           VALE_REFE=2.5167000E7,
+           NOM_PARA='KCP_REV',
+           TABLE=TB_KBETA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3871.0,),
+           )
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=84.926371117,
+           VALE_REFE=84.879999999999995,
+           NOM_PARA='TEMPPF_REV',
+           TABLE=TB_KBETA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3871.0,),
+           )
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 3.60460515E+06,
+           VALE_REFE=3.585000E6,
+           NOM_PARA='K1_MDB',
+           TABLE=TB_KBETA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3871.0,),
+           )
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC= 2.58887301E+07,
+           VALE_REFE=2.5894000E7,
+           NOM_PARA='KCP_MDB',
+           TABLE=TB_KBETA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3871.0,),
+           )
+
+TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.014999999999999999,
+           VALE_CALC=86.082616569,
+           VALE_REFE=86.040000000000006,
+           NOM_PARA='TEMPPF_MDB',
+           TABLE=TB_KBETA,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3871.0,),
+           )
+
+FIN();

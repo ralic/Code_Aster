@@ -16,22 +16,28 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
-                      deklag, prodef, oridef, kal, kbl,&
-                      dkma, dkmb, k1acp, k1bcp)
+    subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
+                      lrev, deklag, prodef, oridef, profil, &
+                      kal, kbl, kcl, dkma, dkmb, &
+                      dkmc, k1acp, k1bcp, k1ccp)
         real(kind=8) :: tempa
         real(kind=8) :: k1a
         real(kind=8) :: k1b
+        real(kind=8) :: k1c
         character(len=8) :: matrev
         real(kind=8) :: lrev
         real(kind=8) :: deklag
         real(kind=8) :: prodef
         character(len=8) :: oridef
+        character(len=12) :: profil
         real(kind=8) :: kal
         real(kind=8) :: kbl
+        real(kind=8) :: kcl
         real(kind=8) :: dkma
         real(kind=8) :: dkmb
+        real(kind=8) :: dkmc
         real(kind=8) :: k1acp
         real(kind=8) :: k1bcp
+        real(kind=8) :: k1ccp
     end subroutine coplas
 end interface

@@ -10,7 +10,8 @@ subroutine calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: norev, nomdb
+#include "asterfort/calc_fact_int_cont.h"
+   integer :: norev, nomdb
     real(kind=8) :: prodef, londef, deklag, lrev, k1a, k1b
     character(len=19) :: sigmrv, sigmdb, tbscrv, tbscmb
 ! ======================================================================
@@ -49,15 +50,15 @@ subroutine calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
 ! --- : K1B    : FACTEUR D'INTENSITE DE CONTRAINTES POINTE B -----------
 ! ======================================================================
 ! ======================================================================
-    integer :: jsigmr, jsigmb, jabsrv, jabsmb, ific
-    real(kind=8) :: zero, un, deux, rappo, gamma1, gamma2, fa, fb, fab
-    real(kind=8) :: a, b, pi, alpha, beta, z, z2, z3, z4, z5
-    real(kind=8) :: gamx, gamy, ldefo, rtole
+    integer :: jsigmr, jsigmb, jabsrv, jabsmb
+    real(kind=8) :: zero, deux, rappo, fa, fb, fab
+    real(kind=8) :: a, b, pi, z, z2, z3, z4, z5
+    real(kind=8) :: ldefo, rtole
+    real(kind=8) :: trans
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------
 ! ======================================================================
     parameter       ( zero   =  0.0d0 )
-    parameter       ( un     =  1.0d0 )
     parameter       ( deux   =  2.0d0 )
 ! ======================================================================
     call jemarq()
@@ -87,75 +88,40 @@ subroutine calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
 ! --- DES ABSCISSES CURVILIGNES COTE REVETEMENT ET COTE METAL DE BASE --
 ! ======================================================================
     ldefo = zr(jabsrv+norev-1) + zr(jabsmb+nomdb-1)
+    if(deklag.ge.0.d0) ldefo = zr(jabsmb) + zr(jabsmb+nomdb-1)
     if (abs(ldefo - prodef) .gt. rtole) then
         call utmess('F', 'PREPOST_5')
     endif
 ! ======================================================================
 ! --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE REVETEMENT --
 ! ======================================================================
-    do 10 ific = 1, norev-1
-        alpha = (zr(jsigmr+ific) - zr(jsigmr+ific-1) ) / ( zr(jabsrv+ ific) - zr(jabsrv+ific-1))
-        beta = zr(jsigmr+ific-1) - alpha * ( zr(jabsrv+ific-1) - a )
-        gamx = ( zr(jabsrv+ific-1) - a )
-        gamy = sqrt( abs(a*a - gamx*gamx) )
-        if (gamy .le. r8prem()) then
-            if (gamx .lt. zero) then
-                gamma1 = - pi / deux
-            else
-                gamma1 = pi / deux
-            endif
-        else
-            gamma1 = atan2( gamx/gamy , un )
-        endif
-        gamx = ( zr(jabsrv+ific ) - a )
-        gamy = sqrt( abs(a*a - gamx*gamx) )
-        if (gamy .le. r8prem()) then
-            if (gamx .lt. zero) then
-                gamma2 = - pi / deux
-            else
-                gamma2 = pi / deux
-            endif
-        else
-            gamma2 = atan2( gamx/gamy , un )
-        endif
-        k1a = k1a + (beta-alpha*a/2) * (gamma2-gamma1) + (beta-alpha* a) * (cos(gamma2)-cos(gamma&
-              &1)) + alpha*a*(sin(2*gamma2)-sin(2* gamma1))/4
-        k1b = k1b + (beta+alpha*a/2) * (gamma2-gamma1) - (beta+alpha* a) * (cos(gamma2)-cos(gamma&
-              &1)) - alpha*a*(sin(2*gamma2)-sin(2* gamma1))/4
-10  end do
-! ======================================================================
-! --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE METAL DE BASE
-! ======================================================================
-    do 20 ific = 1, nomdb-1
-        alpha = (zr(jsigmb+ific) - zr(jsigmb+ific-1) ) / ( zr(jabsmb+ ific) - zr(jabsmb+ific-1))
-        beta = zr(jsigmb+ific-1) - alpha * ( zr(jabsmb+ific-1) - deklag - a )
-        gamx = ( zr(jabsmb+ific-1) - deklag - a )
-        gamy = sqrt( abs(a*a - gamx*gamx) )
-        if (gamy .le. r8prem()) then
-            if (gamx .lt. zero) then
-                gamma1 = - pi / deux
-            else
-                gamma1 = pi / deux
-            endif
-        else
-            gamma1 = atan2( gamx/gamy , un )
-        endif
-        gamx = ( zr(jabsmb+ific ) - deklag - a )
-        gamy = sqrt( abs(a*a - gamx*gamx) )
-        if (gamy .le. r8prem()) then
-            if (gamx .lt. zero) then
-                gamma2 = - pi / deux
-            else
-                gamma2 = pi / deux
-            endif
-        else
-            gamma2 = atan2( gamx/gamy , un )
-        endif
-        k1a = k1a + (beta-alpha*a/2) * (gamma2-gamma1) + (beta-alpha* a) * (cos(gamma2)-cos(gamma&
-              &1)) + alpha*a*(sin(2*gamma2)-sin(2* gamma1))/4
-        k1b = k1b + (beta+alpha*a/2) * (gamma2-gamma1) - (beta+alpha* a) * (cos(gamma2)-cos(gamma&
-              &1)) - alpha*a*(sin(2*gamma2)-sin(2* gamma1))/4
-20  end do
+
+! Decalage negatif
+!
+    if(deklag.lt.zero) then
+       trans = - prodef/deux 
+!  --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE REVETEMENT --
+       call calc_fact_int_cont(norev, zr(jsigmr), zr(jabsrv), prodef, trans, &
+                               k1a, k1b)
+
+!  --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE METAL DE BASE --
+       trans = - prodef/deux - deklag
+       call calc_fact_int_cont(nomdb, zr(jsigmb), zr(jabsmb), prodef, trans, &
+                               k1a, k1b)
+
+! Decalage positif
+    else if(deklag.ge.zero) then
+
+       trans = - prodef/deux 
+!  --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE REVETEMENT --
+!       call calc_fact_int_cont(norev, zr(jsigmr), zr(jabsrv), prodef, trans, &
+!                               k1a, k1b)
+!  --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE METAL DE BASE --
+!       trans = zero
+       call calc_fact_int_cont(nomdb, zr(jsigmb), zr(jabsmb), prodef, trans, &
+                               k1a, k1b)
+    endif
+
     k1a = k1a * sqrt(a/pi)
     k1b = k1b * sqrt(a/pi)
 ! ======================================================================

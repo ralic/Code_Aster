@@ -16,9 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine veritb(nk1d, ndim, oridef)
+    subroutine veritb(nk1d, ndim, oridef, deklag, profil)
         integer :: nk1d
         integer :: ndim
+        real(kind=8) :: deklag
         character(len=8) :: oridef
+        character(len=12) :: profil
     end subroutine veritb
 end interface

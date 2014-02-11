@@ -32,13 +32,31 @@ Attention :
 
 """),
 
+3 : _(u"""
+ Dans le cas d'un défaut SEMI_ELLIPSE, les mots-clés suivants doivent être présents :
+    
+   - EPAIS_MDB : épaisseur du métal de base
+   - MATER_MDB : matériau constituant le métal de base
+"""),
+
 4 : _(u"""
- La méthode  %(k1)s  est illicite
+ La méthode %(k1)s est illicite
 """),
 
 5 : _(u"""
- la longueur du défaut n'est pas en accord avec les tables définies
- coté revêtement et coté métal de base
+ Dans le cas d'un défaut de type ELLIPSE, la longueur du défaut n'est pas en accord :
+ 
+   - Décalage >= 0 : avec la table coté métal de base,
+   - Décalage <  0 : avec les tables définies cote revêtement et coté métal de base.
+"""),
+
+6 : _(u"""
+ Attention: le nombre de points de la table TABL_MECA_MDB est de %(i1)d. Il doit 
+ être égale a 5.  
+"""),
+
+7 : _(u"""
+  Dans le cas d'un défaut ELLIPSE le mot-clé TABL_MECA_REV est obligatoire.
 """),
 
 8 : _(u"""

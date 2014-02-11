@@ -42,22 +42,29 @@ subroutine op0198()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/veritb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/calc_infl_k1.h"
     integer :: ndim, nk1d, ik1d, jnogn, itime, nbval, jtbint, nbval2
-    integer :: norev, nomdb, ibid
+    integer :: norev, nomdb, ibid, nval
     real(kind=8) :: lrev, deklag, prodef, londef, temps, k1acp
-    real(kind=8) :: dkma, dkmb, kal, kbl, k1a, k1b, tempa, tempb, k1bcp
-    real(kind=8) :: rnom(7)
+    real(kind=8) :: lmdb
+    real(kind=8) :: dkma, dkmb, dkmc, kal, kbl, kcl, k1a, k1b, k1c
+    real(kind=8) :: tempa, tempb, k1bcp, k1ccp
+    real(kind=8) :: rnom(10)
+    real(kind=8) :: decal
     complex(kind=8) :: c16b
-    character(len=8) :: result, k8b, noma, matrev, oridef
-    character(len=8) :: tabrev, tabmdb, tabthr, typpar(8)
-    character(len=10) :: nomtab(8)
+    character(len=8) :: result, k8b, noma, matrev, matmdb, oridef
+    character(len=8) :: tabrev, tabmdb, tabthr, typpar(11)
+    character(len=10) :: nomtab(11)
+    character(len=12) :: profil
     character(len=16) :: nomcmd, nmgrno
     character(len=19) :: tbinst, tbscrv, tbscmb, sigmrv, sigmdb, tbinth
     character(len=32) :: knom
 !
-    data  nomtab / 'GROUP_NO', 'INST', 'K1_REV', 'KCP_REV',&
-     &               'TEMPPF_REV', 'K1_MDB',  'KCP_MDB', 'TEMPPF_MDB' /
-    data  typpar / 'K32', 'R', 'R', 'R', 'R', 'R', 'R', 'R' /
+    data  nomtab / 'GROUP_NO',   'INST',     'K1_REV',  'KCP_REV',&
+     &             'TEMPPF_REV', 'K1_MDB',   'KCP_MDB', 'TEMPPF_MDB',&
+     &             'K1C_REV',    'KCPC_REV', 'TEMPFC_REV'/
+    data  typpar / 'K32', 'R', 'R', 'R', 'R', 'R', 'R', 'R' ,'R' ,'R',&
+     &             'R' /
 ! ======================================================================
     call jemarq()
     ibid=0
@@ -85,12 +92,13 @@ subroutine op0198()
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES AUTRE QUE K1D ---------------------------
 ! ======================================================================
-    call recupe(noma, ndim, nk1d, lrev, matrev,&
-                deklag, prodef, londef, oridef)
+    call recupe(noma, ndim, nk1d, lrev, lmdb, &
+                matrev, matmdb, deklag, prodef, londef, &
+                oridef, profil)
 ! ======================================================================
 ! --- VERIFICATION DES DONNEES -----------------------------------------
 ! ======================================================================
-    call veritb(nk1d, ndim, oridef)
+    call veritb(nk1d, ndim, oridef, deklag, profil)
 ! ======================================================================
 ! --- RECUPERATION DES TABLES D'INSTANT, D'ABSCISSES CURVILIGNES / -----
 ! --- COTE REVETEMENT / COTE METAL DE BASE -----------------------------
@@ -101,7 +109,11 @@ subroutine op0198()
 ! --- CREATION DE LA TABLE RESULTAT ------------------------------------
 ! ======================================================================
     call tbcrsd(result, 'G')
-    call tbajpa(result, 8, nomtab, typpar)
+    nval = 8
+    if(profil(1:12).eq.'SEMI_ELLIPSE') then
+       nval     = 11
+    endif
+    call tbajpa(result, nval, nomtab, typpar)
 ! ======================================================================
 ! --- CREATION DES VECTEURS NECESSAIRES --------------------------------
 ! ======================================================================
@@ -114,12 +126,15 @@ subroutine op0198()
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
-        dkma = 0.0d0
-        dkmb = 0.0d0
+        dkma  = 0.0d0
+        dkmb  = 0.0d0
+        dkmc  = 0.0d0
         k1acp = 0.0d0
         k1bcp = 0.0d0
-        kal = 0.0d0
-        kbl = 0.0d0
+        k1ccp = 0.0d0
+        kal   = 0.0d0
+        kbl   = 0.0d0
+        kcl   = 0.0d0
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES ASSOCIEES A LA IK1D OCCURENCE DE K1D ----
 ! ======================================================================
@@ -137,23 +152,37 @@ subroutine op0198()
             call rechmc(ndim, temps, oridef, tabrev, tabmdb,&
                         norev, sigmrv, nomdb, sigmdb)
 ! ======================================================================
-! --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES --------
-! ======================================================================
-            call calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
-                        tbscmb, prodef, londef, deklag, lrev,&
-                        k1a, k1b)
-! ======================================================================
 ! --- RECUPERATION DES TEMPERATURES AUX POINTES DE LA FISSURE ----------
 ! ======================================================================
             call rechth(temps, nbval2, tbinth, tabthr, tempa,&
                         tempb)
 ! ======================================================================
+! --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES --------
+! ======================================================================
+            if(profil(1:7).eq.'ELLIPSE') then
+               call calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
+                           tbscmb, prodef, londef, deklag, lrev,&
+                           k1a, k1b)
+! ======================================================================
+! --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES --------
+! --- METHODE DES COEFFICIENTS D'INFLUENCE -----------------------------
+! ======================================================================
+            else if(profil(1:12).eq.'SEMI_ELLIPSE') then
+               call calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
+                                 lrev, lmdb, matrev, matmdb, tempa,&
+                                 tempb, k1a, k1b, k1c)
+            endif
+! ======================================================================
 ! --- AJOUT DE CORRECTION PLASTIQUE AU CALCUL DES FACTEURS -------------
 ! --- D'INTENSITE DE CONTRAINTES ---------------------------------------
 ! ======================================================================
-            call coplas(tempa, k1a, k1b, matrev, lrev,&
-                        deklag, prodef, oridef, kal, kbl,&
-                        dkma, dkmb, k1acp, k1bcp)
+            decal=deklag
+            if(deklag.ge.0.d0) decal=0.d0
+            if(profil(1:12).eq.'SEMI_ELLIPSE') decal=0.d0
+            call coplas(tempa, k1a, k1b, k1c, matrev, &
+                        lrev, decal, prodef, oridef, profil, &
+                        kal, kbl, kcl, dkma, dkmb, &
+                        dkmc, k1acp, k1bcp, k1ccp)
 ! ======================================================================
 ! --- RECUPERATION DES TEMPERATURES AUX POINTES DE LA FISSURE ----------
 ! ======================================================================
@@ -164,16 +193,26 @@ subroutine op0198()
             rnom(5) = k1b
             rnom(6) = k1bcp
             rnom(7) = tempb
-            knom = zk32(jnogn+ik1d-1)
-            call tbajli(result, 8, nomtab, [ibid], rnom,&
+            knom    = zk32(jnogn+ik1d-1)
+            nval    = 8
+!
+            if(profil(1:12).eq.'SEMI_ELLIPSE') then
+               nval     = 11
+               rnom(8)  = k1c
+               rnom(9)  = k1ccp
+               rnom(10) = tempa
+            endif
+!    
+            call tbajli(result, nval, nomtab, [ibid], rnom,&
                         [c16b], knom, 0)
+
 ! ======================================================================
 ! --- DESTRUCTION DES CHAMPS DE CONTRAINTES ----------------------------
 ! ======================================================================
             call jedetr(sigmrv)
             call jedetr(sigmdb)
 20      continue
-10  end do
+10  continue
 ! ======================================================================
     call jedema()
 ! ======================================================================
