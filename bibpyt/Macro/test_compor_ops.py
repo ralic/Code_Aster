@@ -365,6 +365,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
   from Accas import _F
   import numpy as NP
   from Contrib.veri_matr_tang import VERI_MATR_TANG
+  from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
   self.update_const_context({'ERREUR' : ERREUR})
 
   ier=0
@@ -565,11 +566,12 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
           DETRUIRE ( CONCEPT =  _F (NOM =__epsimp),INFO=1);
           DETRUIRE ( CONCEPT =  _F (NOM =__list),INFO=1);
 
-
-
+          # On ne peut pas faire de non régression puisqu'on ne connait pas ici
+          # la valeur obtenue sur la machine de référence
+          MasquerAlarme('TEST0_12')
           TEST_TABLE(TABLE=__RES[i],
                      NOM_PARA='VMIS',
-                     VALE_CALC=__U['VMIS',i+1],
+                     VALE_CALC=0.0,
                      VALE_REFE=__U['VMIS',i+1],
                      TOLE_MACHINE=1.e-3,
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
@@ -577,7 +579,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
 
           TEST_TABLE(TABLE=__RES[i],
                      NOM_PARA='TRACE',
-                     VALE_CALC=__U['TRACE',i+1],
+                     VALE_CALC=0.0,
                      VALE_REFE=__U['TRACE',i+1],
                      TOLE_MACHINE=1.e-3,
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
@@ -589,7 +591,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
                    if abs(__U[nomvari,i+1]) > epsi :
                       TEST_TABLE(TABLE=__RES[i],
                          NOM_PARA=nomvari,
-                         VALE_CALC=__U[nomvari,i+1],
+                         VALE_CALC=0.0,
                          VALE_REFE=__U[nomvari,i+1],
                          TOLE_MACHINE=1.e-3,
                          FILTRE=_F(NOM_PARA='INST',VALE=time),
@@ -600,11 +602,12 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
                    if abs(__U[nomvari,i+1]) > epsi :
                       TEST_TABLE(TABLE=__RES[i],
                          NOM_PARA=nomvari,
-                         VALE_CALC=__U[nomvari,i+1],
+                         VALE_CALC=0.0,
                          VALE_REFE=__U[nomvari,i+1],
                          TOLE_MACHINE=1.e-3,
                          FILTRE=_F(NOM_PARA='INST',VALE=time),
-                         REFERENCE='AUTRE_ASTER',);
+                         REFERENCE='AUTRE_ASTER',)
+          RetablirAlarme('TEST0_12')
       for i in range(NCAL):
           DETRUIRE ( CONCEPT =  _F (NOM =__RES[i]),INFO=1)
 
@@ -743,6 +746,9 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
       # les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
       __RSI = TEST_ECART(self,ch_param2,label_cal,LIST_NPAS,Ncal,ch_param,__RSI,LIST_TOLE,PREC_ZERO)
 
+      # On ne peut pas faire de non régression puisqu'on ne connait pas ici
+      # la valeur obtenue sur la machine de référence
+      MasquerAlarme('TEST0_12')
       for ch in ch_param2 :
         i=ch_param2.index(ch)
         if INFO==2 : IMPR_TABLE(TABLE=__RSI[i]);
@@ -758,7 +764,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
                      TOLE_MACHINE=LIST_TOLE[j],
                      PRECISION=LIST_TOLE[j],
                      REFERENCE='ANALYTIQUE',);
-
+      RetablirAlarme('TEST0_12')
       ###############################################################################
       # Test de la matrice tangente sur le calcul le plus fin
       ###############################################################################
@@ -801,6 +807,9 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
 
               __DIFFMAT=VERI_MATR_TANG(**motscles)
 
+              # On ne peut pas faire de non régression puisqu'on ne connait pas ici
+              # la valeur obtenue sur la machine de référence
+              MasquerAlarme('TEST0_12')
               TEST_TABLE(TABLE=__DIFFMAT,
                          NOM_PARA='MAT_DIFF',
                          TYPE_TEST='MAX',
@@ -810,7 +819,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMPORTEMENT,LIST_MATER,VARI_
                          TOLE_MACHINE=prec_tgt,
                          PRECISION=prec_tgt,
                          REFERENCE='ANALYTIQUE',);
-
+              RetablirAlarme('TEST0_12')
               if INFO==2 : IMPR_TABLE(TABLE=__DIFFMAT)
 
   return ier
