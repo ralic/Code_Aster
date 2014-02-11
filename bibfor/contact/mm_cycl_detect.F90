@@ -1,7 +1,9 @@
-subroutine mm_cycl_detect(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, point_index, &
-                          pres_cont_prev, dist_cont_prev, coef_cont_prev, indi_frot_prev, &
-                          dist_frot_prev, indi_cont, dist_cont, pres_cont, indi_frot,&
-                          dist_frot)
+subroutine mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
+                          l_loop_cont   , l_frot_zone   , point_index, &
+                          coef_cont     , pres_cont_prev, dist_cont_prev, &
+                          indi_frot_prev, dist_frot_prev, &
+                          indi_cont_eval, indi_frot_eval, &
+                          dist_cont_curr, pres_cont_curr, dist_frot_curr)
 !
     implicit     none
 !
@@ -33,36 +35,40 @@ subroutine mm_cycl_detect(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, 
     logical, intent(in) :: l_loop_cont
     logical, intent(in) :: l_frot_zone
     integer, intent(in) :: point_index
+    real(kind=8), intent(in) :: coef_cont
     real(kind=8), intent(in) :: pres_cont_prev
     real(kind=8), intent(in) :: dist_cont_prev
     integer, intent(in) :: indi_frot_prev
     real(kind=8), intent(in) :: dist_frot_prev(3)
-    real(kind=8), intent(in) :: coef_cont_prev
-    real(kind=8), intent(in) :: dist_frot(3)
-    integer, intent(in) :: indi_cont
-    real(kind=8), intent(in) :: pres_cont
-    real(kind=8), intent(in) :: dist_cont
-    integer, intent(in) :: indi_frot
+    integer, intent(in) :: indi_cont_eval
+    integer, intent(in) :: indi_frot_eval
+    real(kind=8), intent(in) :: dist_cont_curr
+    real(kind=8), intent(in) :: pres_cont_curr
+    real(kind=8), intent(in) :: dist_frot_curr(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
-! Cycling detection
+! Detection
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sd_cont_solv   : data structure for contact solving
 ! In  sd_cont_defi   : data structure from contact definition 
 ! In  l_frot_zone    : .true. if friction on zone
-! In  l_loop_cont    : .true. if fixed poitn on contact loop
+! In  l_loop_cont    : .true. if fixed point on contact loop
 ! In  point_index    : contact point index
+! In  coef_cont      : augmented ratio for contact
+! In  pres_cont_prev : previous pressure contact in cycle
+! In  dist_cont_prev : previous pressure distance in cycle
 ! In  indi_frot_prev : previous friction indicator in cycle
 ! In  dist_frot_prev : previous friction distance in cycle
-! In  coef_cont_prev : augmented ratio for contact
-! In  dist_frot      : friction distance
-! In  indi_cont      : contact indicator
-! In  indi_frot      : friction indicator
+! In  indi_cont_eval : evaluation of new contact status
+! In  dist_cont_curr : current contact gap
+! In  pres_cont_curr : current contact pressure
+! In  indi_frot_eval : evaluation of new friction status
+! In  dist_frot_curr : current friction distance
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,21 +76,29 @@ subroutine mm_cycl_detect(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, 
 !
 ! - Detection of cycling: contact/no contact
 !
-    call mm_cycl_d1(sd_cont_solv, point_index, pres_cont_prev, dist_cont_prev, coef_cont_prev, &
-                    indi_cont   , dist_cont  , pres_cont) 
+    call mm_cycl_d1(sd_cont_solv  , point_index   , pres_cont_prev, dist_cont_prev, coef_cont, &
+                    indi_cont_eval, dist_cont_curr, pres_cont_curr) 
 !
 ! - Detection of cycling: sliding/sticking
 !
-    if (l_frot_zone) call mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_frot)
+    if (l_frot_zone) then
+        call mm_cycl_d2(sd_cont_defi  , sd_cont_solv  , point_index, &
+                        indi_cont_eval, indi_frot_eval)
+    endif
 !
 ! - Detection of cycling: sliding forward/backward
 !
-    if (l_frot_zone) call mm_cycl_d3(sd_cont_defi, sd_cont_solv, point_index, indi_frot_prev, &
-                                     dist_frot_prev, indi_cont, indi_frot, &
-                                     dist_frot)
+    if (l_frot_zone) then
+        call mm_cycl_d3(sd_cont_defi  , sd_cont_solv, point_index, &
+                        indi_frot_prev, dist_frot_prev, &
+                        indi_cont_eval, indi_frot_eval, &
+                        dist_frot_curr)
+    endif
 !
 ! - Detection of cycling: old flip/flop
 !
-    if (l_loop_cont) call mm_cycl_d4(sd_cont_solv, point_index, indi_cont)
+    if (l_loop_cont) then
+        call mm_cycl_d4(sd_cont_solv, point_index, indi_cont_eval)
+    endif
 
 end subroutine

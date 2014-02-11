@@ -26,7 +26,7 @@ subroutine mm_cycl_laugf(pres, dist, coef_augm, lagr_norm)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
 ! Augmented lagrangian (vectorial version)
 !

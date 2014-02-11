@@ -1,15 +1,13 @@
-subroutine mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_frot)
+subroutine mm_cycl_d4(sd_cont_solv, point_index, indi_cont_eval)
 !
     implicit     none
 !
-#include "jeveux.h"
 #include "asterfort/iscode.h"
 #include "asterfort/iscycl.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mm_cycl_erase.h"
 #include "asterfort/mm_cycl_shift.h"
 !
 ! ======================================================================
@@ -30,30 +28,30 @@ subroutine mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi
     character(len=24), intent(in) :: sd_cont_solv
     integer, intent(in) :: point_index
-    integer, intent(in) :: indi_cont
-    integer, intent(in) :: indi_frot
+    integer, intent(in) :: indi_cont_eval
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact - Cycling
+! Contact (continue method) - Cycling
 !
-! Detection of cycling: sliding/sticking
+! Detection: old flip/flop
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sd_cont_solv   : data structure for contact solving
-! In  sd_cont_defi   : data structure from contact definition 
 ! In  point_index    : contact point index
-! In  indi_cont      : contact indicator
-! In  indi_frot      : friction indicator
+! In  indi_cont_eval : evaluation of new contact status
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_lis, sd_cycl_nbr, sd_cycl_eta
-    integer :: jcylis, jcynbr, jcyeta
+    character(len=24) :: sd_cycl_lis
+    integer, pointer :: p_cycl_lis(:) => null()
+    character(len=24) :: sd_cycl_nbr
+    integer, pointer :: p_cycl_nbr(:) => null()
+    character(len=24) :: sd_cycl_eta
+    integer, pointer :: p_cycl_eta(:) => null()
     integer :: statut(30)
     integer :: cycl_type, cycl_long_acti
     integer :: cycl_ecod(1), cycl_long, cycl_stat
@@ -65,8 +63,8 @@ subroutine mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
 !
 ! - Initializations
 !
-    cycl_long_acti = 3
-    cycl_type = 2
+    cycl_type = 4
+    cycl_long_acti = 20
     detect = .false.
 !
 ! - Access to cycling objects
@@ -74,27 +72,20 @@ subroutine mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
     sd_cycl_lis = sd_cont_solv(1:14)//'.CYCLIS'
     sd_cycl_nbr = sd_cont_solv(1:14)//'.CYCNBR'
     sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
-    call jeveuo(sd_cycl_lis,'E',jcylis)
-    call jeveuo(sd_cycl_nbr,'E',jcynbr)
-    call jeveuo(sd_cycl_eta,'E',jcyeta)
+    call jeveuo(sd_cycl_lis, 'E', vi = p_cycl_lis)
+    call jeveuo(sd_cycl_nbr, 'E', vi = p_cycl_nbr)
+    call jeveuo(sd_cycl_eta, 'E', vi = p_cycl_eta)
 !
 ! - Cycle state
 !
-    cycl_ecod(1) = zi(jcylis-1+4*(point_index-1)+cycl_type)
-    cycl_long = zi(jcynbr-1+4*(point_index-1)+cycl_type)
+    cycl_ecod(1) = p_cycl_lis(4*(point_index-1)+cycl_type)
+    cycl_long    = p_cycl_nbr(4*(point_index-1)+cycl_type)
     call isdeco(cycl_ecod(1),statut,30)
-!
-! - No contact: cycling break
-!
-    if (indi_cont .eq. 0) then
-        call mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_index)
-        goto 99
-    endif
 !
 ! - New iteration in cycle
 !
     cycl_long = cycl_long + 1
-    statut(cycl_long) = indi_frot
+    statut(cycl_long) = indi_cont_eval
     call iscode(statut,cycl_ecod(1),30)
 !
 ! - Cycling detection
@@ -102,20 +93,22 @@ subroutine mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_f
     cycl_stat = 0
     if (cycl_long .eq. cycl_long_acti) then
         detect = iscycl(cycl_ecod(1), cycl_long_acti)
-        if (detect) cycl_stat = 10
+        if (detect) then
+            cycl_stat = 10
+        endif
     endif
 !
 ! - End of cycling detection zone: shifting
 !
-    if (cycl_long .eq. cycl_long_acti) call mm_cycl_shift(cycl_long_acti, cycl_ecod(1), cycl_long)
+    if (cycl_long .eq. cycl_long_acti) then
+        call mm_cycl_shift(cycl_long_acti, cycl_ecod(1), cycl_long)
+    endif
 !
 ! - Cycling save
 !
-    zi(jcyeta-1+4*(point_index-1)+cycl_type) = cycl_stat
-    zi(jcylis-1+4*(point_index-1)+cycl_type) = cycl_ecod(1)
-    zi(jcynbr-1+4*(point_index-1)+cycl_type) = cycl_long
-!
- 99 continue
+    p_cycl_eta(4*(point_index-1)+cycl_type) = cycl_stat
+    p_cycl_lis(4*(point_index-1)+cycl_type) = cycl_ecod(1)
+    p_cycl_nbr(4*(point_index-1)+cycl_type) = cycl_long
 !
     call jedema()
 end subroutine

@@ -1,12 +1,11 @@
-subroutine mmstaf(noma, ndim, chdepd, coef_frot, lpenaf,&
-                  nummae, aliase, nne, nummam, ksipc1,&
-                  ksipc2, ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2,&
-                  tang_1, tang_2, norm, indi_frot_eval ,pres_frot,&
-                  dist_frot)
+subroutine mmstaf(mesh          , ndim  , chdepd, coef_frot   , lpenaf      , &
+                  nummae        , aliase, nne   , nummam      , ksipc1      , &
+                  ksipc2        , ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2, &
+                  tang_1        , tang_2, norm  , pres_frot   , dist_frot   , &
+                  indi_frot_eval)
 !
     implicit     none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -34,18 +33,27 @@ subroutine mmstaf(noma, ndim, chdepd, coef_frot, lpenaf,&
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-    character(len=8), intent(in) :: noma, aliase
-    integer, intent(in) :: ndim, nne
-    real(kind=8), intent(in) :: ksipc1, ksipc2
-    real(kind=8), intent(in) :: ksipr1, ksipr2
-    integer, intent(in) :: nummae, nummam
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: ndim
     character(len=19), intent(in) :: chdepd
-    real(kind=8), intent(in) :: tang_1(3), tang_2(3), norm(3)
     real(kind=8), intent(in) :: coef_frot
     logical, intent(in) :: lpenaf
-    real(kind=8), intent(in) :: mult_lagr_f1(9), mult_lagr_f2(9)
+    integer, intent(in) :: nummae
+    character(len=8), intent(in) :: aliase
+    integer, intent(in) :: nne
+    integer, intent(in) :: nummam
+    real(kind=8), intent(in) :: ksipc1
+    real(kind=8), intent(in) :: ksipc2
+    real(kind=8), intent(in) :: ksipr1
+    real(kind=8), intent(in) :: ksipr2
+    real(kind=8), intent(in) :: mult_lagr_f1(9)
+    real(kind=8), intent(in) :: mult_lagr_f2(9)
+    real(kind=8), intent(in) :: tang_1(3)
+    real(kind=8), intent(in) :: tang_2(3)
+    real(kind=8), intent(in) :: norm(3)
+    real(kind=8), intent(out) :: pres_frot(3)
+    real(kind=8), intent(out) :: dist_frot(3)
     integer, intent(out) :: indi_frot_eval
-    real(kind=8), intent(out) :: pres_frot(3), dist_frot(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,10 +64,10 @@ subroutine mmstaf(noma, ndim, chdepd, coef_frot, lpenaf,&
 ! --------------------------------------------------------------------------------------------------
 !
 !
-! In  noma           : name of mesh
+! In  mesh           : name of mesh
 ! In  ndim           : space size
 ! In  chdepd         : cumulated displacement
-! In  coef_frot_prev : previousaugmented ratio for friction
+! In  coef_frot      : augmented ratio for friction
 ! In  lpenaf         : .true. if penalized friction
 ! In  nummae         : number of slave element
 ! In  aliase         : type of slave element
@@ -74,9 +82,9 @@ subroutine mmstaf(noma, ndim, chdepd, coef_frot, lpenaf,&
 ! In  tang_1         : first tangent vector
 ! In  tang_2         : second tangent vector
 ! In  norm           : normal
-! Out indi_frot_eval : new friction status
 ! Out pres_frot      : friction pressure
 ! Out dist_frot      : friction distance
+! Out indi_frot_eval : evaluation of new friction status
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,9 +135,9 @@ subroutine mmstaf(noma, ndim, chdepd, coef_frot, lpenaf,&
 !
 ! - Displacement increment
 !
-    call mcopco(noma, chdepd, ndim, nummae, ksipc1,&
+    call mcopco(mesh, chdepd, ndim, nummae, ksipc1,&
                 ksipc2, ddeple)
-    call mcopco(noma, chdepd, ndim, nummam, ksipr1,&
+    call mcopco(mesh, chdepd, ndim, nummam, ksipr1,&
                 ksipr2, ddeplm)
 !
 ! - Gap increment
@@ -166,7 +174,7 @@ subroutine mmstaf(noma, ndim, chdepd, coef_frot, lpenaf,&
 !
     call mm_cycl_laugf(pres_frot, dist_frot, coef_frot, laug_frot_norm)
 !
-! - Friction status
+! - New status of friction (sign of augmented lagrangian)
 !
     if (laug_frot_norm .le. 1.d0) then
         indi_frot_eval = 1

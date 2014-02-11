@@ -3,7 +3,6 @@ subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_pr
 !
     implicit     none
 !
-#include "jeveux.h"
 #include "asterfort/mm_cycl_zonc.h"
 !
 ! ======================================================================
@@ -25,15 +24,17 @@ subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_pr
 ! person_in_charge: mickael.abbas at edf.fr
 !
     real(kind=8), intent(in) :: pres_near
-    real(kind=8), intent(in) :: laug_cont_prev, laug_cont_curr
+    real(kind=8), intent(in) :: laug_cont_prev
+    real(kind=8), intent(in) :: laug_cont_curr
+    integer, intent(out) :: zone_cont_prev
+    integer, intent(out) :: zone_cont_curr
     integer, intent(out) :: cycl_sub_type
-    integer, intent(out) :: zone_cont_prev, zone_cont_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact - Cycling
+! Contact (continue method) - Cycling
 !
-! Detection of sub-cycling: contact/no-contact
+! Detection: contact/no-contact sub-cycling
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,21 +64,21 @@ subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_pr
 !
     if (((zone_cont_prev.eq.3).and.(zone_cont_curr.eq.2)).or. &
         ((zone_cont_prev.eq.2).and.(zone_cont_curr.eq.3))) then
-      cycl_sub_type = 1
+        cycl_sub_type = 1
     endif
 !
 ! - Sub-cycling 2
 !
     if (((zone_cont_prev.eq.2).and.(zone_cont_curr.eq.4)).or. &
         ((zone_cont_prev.eq.4).and.(zone_cont_curr.eq.2))) then
-      cycl_sub_type = 2
+        cycl_sub_type = 2
     endif
 !
 ! - Sub-cycling 3
 !
     if (((zone_cont_prev.eq.1).and.(zone_cont_curr.eq.3)).or. &
         ((zone_cont_prev.eq.3).and.(zone_cont_curr.eq.1))) then
-      cycl_sub_type = 3
+        cycl_sub_type = 3
     endif
 
 end subroutine

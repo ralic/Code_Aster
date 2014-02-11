@@ -16,15 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mm_cycl_t3(sd_cont_solv, pres_frot_prev, &
-                          dist_frot_prev, coef_frot, pres_frot, &
-                          dist_frot, cycl_stat_curr)
-        character(len=24), intent(in) :: sd_cont_solv
+    subroutine mm_cycl_t3(pres_frot_prev, dist_frot_prev, coef_frot_prev, &
+                          cycl_stat_curr)
         real(kind=8), intent(in) :: pres_frot_prev(3)
         real(kind=8), intent(in) :: dist_frot_prev(3)
-        real(kind=8), intent(in) :: coef_frot
-        real(kind=8), intent(in) :: pres_frot(3)
-        real(kind=8), intent(in) :: dist_frot(3)
+        real(kind=8), intent(in) :: coef_frot_prev
         integer, intent(out) :: cycl_stat_curr
     end subroutine mm_cycl_t3
 end interface

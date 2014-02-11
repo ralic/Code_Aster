@@ -2,7 +2,6 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 !
     implicit     none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -36,9 +35,9 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
-! Cycling statisticals
+! Statistics
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +48,7 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sd_cycl_eta
-    integer :: jcyeta
+    integer, pointer :: p_cycl_eta(:) => null()
     integer :: cycl_index, cycl_stat
     integer :: point_index, point_number
     logical :: cont_disc, cont_xfem
@@ -74,14 +73,14 @@ subroutine mm_cycl_stat(sd_stat, sd_cont_defi, sd_cont_solv)
 ! - Acces to cycling objects
 !
     sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
-    call jeveuo(sd_cycl_eta,'L',jcyeta)
+    call jeveuo(sd_cycl_eta, 'L', vi = p_cycl_eta)
 !
 ! - Counting cycles
 !
     point_number = cfdisi(sd_cont_defi,'NTPC' )
     do point_index = 1, point_number
         do cycl_index = 1, 4
-          cycl_stat  = zi(jcyeta-1+4*(point_index-1)+cycl_index)
+          cycl_stat  = p_cycl_eta(4*(point_index-1)+cycl_index)
           if (cycl_stat.ne.0) then
               cycl_nb(cycl_index) = cycl_nb(cycl_index) + 1
           endif

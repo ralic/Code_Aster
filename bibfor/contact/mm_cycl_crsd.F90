@@ -30,9 +30,9 @@ subroutine mm_cycl_crsd(sd_cont_defi,sd_cont_solv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
-! Creating data structures for cycling detection and treatment
+! Creating data structures
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,8 +43,16 @@ subroutine mm_cycl_crsd(sd_cont_defi,sd_cont_solv)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: point_number, zone_number
-    character(len=24) :: sd_cycl_lis, sd_cycl_nbr, sd_cycl_eta, sd_cycl_his, sd_cycl_coe
-    integer :: jcylis, jcynbr, jcyeta, jcyhis, jcycoe
+    character(len=24) :: sd_cycl_lis
+    integer, pointer :: p_cycl_lis(:) => null()
+    character(len=24) :: sd_cycl_nbr
+    integer, pointer :: p_cycl_nbr(:) => null()
+    character(len=24) :: sd_cycl_eta
+    integer, pointer :: p_cycl_eta(:) => null()
+    character(len=24) :: sd_cycl_his
+    real(kind=8), pointer :: p_cycl_his(:) => null()
+    character(len=24) :: sd_cycl_coe
+    real(kind=8), pointer :: p_cycl_coe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,11 +85,11 @@ subroutine mm_cycl_crsd(sd_cont_defi,sd_cont_solv)
 !
 ! - Creating cycling objects
 !
-    call wkvect(sd_cycl_lis, 'V V I', 4*point_number, jcylis)
-    call wkvect(sd_cycl_nbr, 'V V I', 4*point_number, jcynbr)
-    call wkvect(sd_cycl_eta, 'V V I', 4*point_number, jcyeta)
-    call wkvect(sd_cycl_his, 'V V R', 25*point_number, jcyhis)
-    call wkvect(sd_cycl_coe, 'V V R', 6*zone_number, jcycoe)
+    call wkvect(sd_cycl_lis, 'V V I', 4*point_number, vi = p_cycl_lis)
+    call wkvect(sd_cycl_nbr, 'V V I', 4*point_number, vi = p_cycl_nbr)
+    call wkvect(sd_cycl_eta, 'V V I', 4*point_number, vi = p_cycl_eta)
+    call wkvect(sd_cycl_his, 'V V R', 25*point_number, vr = p_cycl_his)
+    call wkvect(sd_cycl_coe, 'V V R', 6*zone_number, vr = p_cycl_coe)
 !
     call jedema()
 end subroutine

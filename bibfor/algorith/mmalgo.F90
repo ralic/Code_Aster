@@ -1,7 +1,7 @@
 subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   , l_vite        , &
                   l_glis_init   , l_coef_adap   , zone_index    , point_index   , indi_cont_init, &
-                  indi_cont_eval, indi_frot_eval, dist_cont     , vite_cont     , pres_cont     , &
-                  dist_frot     , pres_frot     , cycl_hist     , cycl_coef     , indi_cont_curr, &
+                  indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, pres_cont_curr, &
+                  dist_frot_curr, pres_frot_curr, cycl_hist     , cycl_coef     , indi_cont_curr, &
                   indi_frot_curr, ctcsta        , mmcvca        , scotch        )
 !
     implicit none
@@ -41,11 +41,11 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
     integer, intent(in) :: indi_cont_init
     integer, intent(in) :: indi_cont_eval
     integer, intent(in) :: indi_frot_eval
-    real(kind=8), intent(in) :: dist_cont
-    real(kind=8), intent(in) :: vite_cont
-    real(kind=8), intent(in) :: pres_cont
-    real(kind=8), intent(in) :: dist_frot(3)
-    real(kind=8), intent(in) :: pres_frot(3)
+    real(kind=8), intent(in) :: dist_cont_curr
+    real(kind=8), intent(in) :: vite_cont_curr
+    real(kind=8), intent(in) :: pres_cont_curr
+    real(kind=8), intent(in) :: dist_frot_curr(3)
+    real(kind=8), intent(in) :: pres_frot_curr(3)
     real(kind=8), intent(inout) :: cycl_hist(*) 
     real(kind=8), intent(inout) :: cycl_coef(*) 
     integer, intent(out) :: indi_cont_curr
@@ -54,13 +54,13 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
     logical, intent(out) :: mmcvca
     logical, intent(out) :: scotch
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE CONTACT (METHODE CONTINUE - CONTRAINTES ACTIVES)
 !
 ! TRAITEMENT DES DIFFERENTS CAS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
 ! In  sd_cont_solv   : data structure for contact solving
@@ -74,20 +74,20 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
 ! In  indi_cont_init : previous contact status (but not for cycling)
 ! In  indi_cont_eval : evaluation of new contact status
 ! In  indi_frot_eval : evaluation of new friction status
-! In  dist_cont      : contact gap
-! In  vite_cont      : contact velocity gap
-! In  pres_cont      : contact pressure
-! In  dist_frot      : friction distance
-! In  pres_frot      : friction pressure
+! In  dist_cont_curr : current contact gap
+! In  vite_cont_curr : current contact velocity gap
+! In  pres_cont_curr : current contact pressure
+! In  dist_frot_curr : current friction distance
+! In  pres_frot_curr : current friction pressure
 ! I/O cycl_hist      : cycling history
 ! I/O cycl_coef      : coefficient history
 ! Out indi_cont_curr : current contact status
 ! Out indi_frot_curr : current friction status
-! Out mmcvca         : .true. if contact loop is OK
+! Out mmcvca         : .true. if contact loop converged
 ! Out ctcsta         : number of contact points has changed their status
-! Out scotch         : VAUT .TRUE. SI LE NOEUD EST COLLE*
+! Out scotch         : .true. if contact point glued
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: hist_index
     real(kind=8) :: coef_cont_prev, coef_frot_prev
@@ -115,7 +115,7 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
 ! - Save old history
 !
     do hist_index = 1, 12
-      cycl_hist(25*(point_index-1)+12+hist_index) = cycl_hist(25*(point_index-1)+hist_index)
+        cycl_hist(25*(point_index-1)+12+hist_index) = cycl_hist(25*(point_index-1)+hist_index)
     enddo
 !
 ! - Previous informations
@@ -140,18 +140,20 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
 !
 ! - Cycling detection
 !
-    call mm_cycl_detect(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, point_index, &
-                        pres_cont_prev, dist_cont_prev, coef_cont_prev, indi_frot_prev, &
-                        dist_frot_prev, indi_cont_eval, dist_cont, pres_cont, indi_frot_eval,&
-                        dist_frot)
+    call mm_cycl_detect(sd_cont_defi  , sd_cont_solv  , &
+                        l_loop_cont   , l_frot_zone   , point_index, &
+                        coef_cont_prev, pres_cont_prev, dist_cont_prev, &
+                        indi_frot_prev, dist_frot_prev, &
+                        indi_cont_eval, indi_frot_eval, &
+                        dist_cont_curr, pres_cont_curr, dist_frot_curr)
 !
-! - Cycling treatment: automatic adaptation of augmented lagrangian
+! - Cycling treatment: automatic adaptation of augmented lagrangian ratio
 !
     if (l_coef_adap) then
         call mm_cycl_trait(sd_cont_solv, point_index, &
                            coef_cont_prev,&
                            coef_frot_prev, pres_frot_prev, dist_frot_prev,&
-                           pres_frot     , dist_frot     , &
+                           pres_frot_curr, dist_frot_curr, &
                            indi_cont_eval, indi_frot_eval, &
                            indi_cont_curr, coef_cont_curr, &
                            indi_frot_curr, coef_frot_curr)
@@ -172,7 +174,7 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
 ! - Special treatment if velocity scheme
 !
     if (l_vite) then
-        if ((indi_cont_eval.eq.0) .and. (vite_cont.le.0.d0)) then
+        if ((indi_cont_eval.eq.0) .and. (vite_cont_curr.le.0.d0)) then
             indi_cont_curr = 0
         endif
     endif
@@ -185,16 +187,16 @@ subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   
 !
     cycl_hist(25*(point_index-1)+1) = indi_cont_curr
     cycl_hist(25*(point_index-1)+2) = coef_cont_curr
-    cycl_hist(25*(point_index-1)+3) = pres_cont
-    cycl_hist(25*(point_index-1)+4) = dist_cont
+    cycl_hist(25*(point_index-1)+3) = pres_cont_curr
+    cycl_hist(25*(point_index-1)+4) = dist_cont_curr
     cycl_hist(25*(point_index-1)+5) = indi_frot_curr
     cycl_hist(25*(point_index-1)+6) = coef_frot_curr
-    cycl_hist(25*(point_index-1)+7) = pres_frot(1)
-    cycl_hist(25*(point_index-1)+8) = pres_frot(2)
-    cycl_hist(25*(point_index-1)+9) = pres_frot(3)
-    cycl_hist(25*(point_index-1)+10) = dist_frot(1)
-    cycl_hist(25*(point_index-1)+11) = dist_frot(2)
-    cycl_hist(25*(point_index-1)+12) = dist_frot(3)
+    cycl_hist(25*(point_index-1)+7) = pres_frot_curr(1)
+    cycl_hist(25*(point_index-1)+8) = pres_frot_curr(2)
+    cycl_hist(25*(point_index-1)+9) = pres_frot_curr(3)
+    cycl_hist(25*(point_index-1)+10) = dist_frot_curr(1)
+    cycl_hist(25*(point_index-1)+11) = dist_frot_curr(2)
+    cycl_hist(25*(point_index-1)+12) = dist_frot_curr(3)
 !
 ! - Convergence ?
 !

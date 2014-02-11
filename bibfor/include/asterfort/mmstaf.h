@@ -17,22 +17,31 @@
 !
 ! aslint: disable=W1504
 interface
-    subroutine mmstaf(noma, ndim, chdepd, coef_frot, lpenaf,&
-                      nummae, aliase, nne, nummam, ksipc1,&
-                      ksipc2, ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2,&
-                      tang_1, tang_2, norm, indi_frot_eval ,pres_frot,&
-                      dist_frot)
-        character(len=8), intent(in) :: noma, aliase
-        integer, intent(in) :: ndim, nne
-        real(kind=8), intent(in) :: ksipc1, ksipc2
-        real(kind=8), intent(in) :: ksipr1, ksipr2
-        integer, intent(in) :: nummae, nummam
+    subroutine mmstaf(mesh          , ndim  , chdepd, coef_frot   , lpenaf      , &
+                      nummae        , aliase, nne   , nummam      , ksipc1      , &
+                      ksipc2        , ksipr1, ksipr2, mult_lagr_f1, mult_lagr_f2, &
+                      tang_1        , tang_2, norm  , pres_frot   , dist_frot   , &
+                      indi_frot_eval)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: ndim
         character(len=19), intent(in) :: chdepd
-        real(kind=8), intent(in) :: tang_1(3), tang_2(3), norm(3)
         real(kind=8), intent(in) :: coef_frot
         logical, intent(in) :: lpenaf
-        real(kind=8), intent(in) :: mult_lagr_f1(9), mult_lagr_f2(9)
+        integer, intent(in) :: nummae
+        character(len=8), intent(in) :: aliase
+        integer, intent(in) :: nne
+        integer, intent(in) :: nummam
+        real(kind=8), intent(in) :: ksipc1
+        real(kind=8), intent(in) :: ksipc2
+        real(kind=8), intent(in) :: ksipr1
+        real(kind=8), intent(in) :: ksipr2
+        real(kind=8), intent(in) :: mult_lagr_f1(9)
+        real(kind=8), intent(in) :: mult_lagr_f2(9)
+        real(kind=8), intent(in) :: tang_1(3)
+        real(kind=8), intent(in) :: tang_2(3)
+        real(kind=8), intent(in) :: norm(3)
+        real(kind=8), intent(out) :: pres_frot(3)
+        real(kind=8), intent(out) :: dist_frot(3)
         integer, intent(out) :: indi_frot_eval
-        real(kind=8), intent(out) :: pres_frot(3), dist_frot(3)
     end subroutine mmstaf
 end interface

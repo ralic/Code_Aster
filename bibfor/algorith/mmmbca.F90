@@ -380,11 +380,11 @@ subroutine mmmbca(noma  , sddyna, iterat, defico, resoco, &
 ! ------------- Evaluate friction status
 !
                 if (lfrotz) then
-                    call mmstaf(noma, ndimg, chdepd, coef_frot, lpenaf,&
-                                nummae, aliase, nne, nummam, ksipc1,&
-                                ksipc2, ksipr1, ksipr2, mlagf1, mlagf2,&
-                                tau1, tau2, norm, indi_frot_eval, pres_frot,&
-                                dist_frot)
+                    call mmstaf(noma          , ndimg , chdepd, coef_frot, lpenaf    , &
+                                nummae        , aliase, nne   , nummam   , ksipc1    , &
+                                ksipc2        , ksipr1, ksipr2, mlagf1   , mlagf2    , &
+                                tau1          , tau2  , norm  , pres_frot, dist_frot , &
+                                indi_frot_eval)
                 endif
 !
 ! ------------- Status treatment

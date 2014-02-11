@@ -2,7 +2,6 @@ subroutine mm_cycl_prop(sd_cont_defi, sd_cont_solv, cycl_hist, cycl_coef)
 !
     implicit     none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
@@ -37,14 +36,14 @@ subroutine mm_cycl_prop(sd_cont_defi, sd_cont_solv, cycl_hist, cycl_coef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
 ! Propagating adapted ratio
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sd_cont_solv   : data structure for contact solving
-! In  sd_cont_defi   : data structure from contact definition 
+! In  sd_cont_defi   : data structure from contact definition
 ! I/O cycl_hist      : cycling history
 ! I/O cycl_coef      : coefficient history
 !
@@ -52,7 +51,7 @@ subroutine mm_cycl_prop(sd_cont_defi, sd_cont_solv, cycl_hist, cycl_coef)
 !
     integer :: point_number, point_index, zone_index, cycl_stat
     character(len=24) :: sd_cycl_eta
-    integer ::  jcyeta
+    integer, pointer :: p_cycl_eta(:) => null()
     real(kind=8) :: coef_frot, coef_frot_maxi, coef_frot_mini
     real(kind=8) :: nrese, nrese_prop, nrese_maxi, nrese_mini
     real(kind=8) :: pres_frot(3), dist_frot(3)
@@ -73,7 +72,7 @@ subroutine mm_cycl_prop(sd_cont_defi, sd_cont_solv, cycl_hist, cycl_coef)
 ! - Acces to cycling objects
 !
     sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
-    call jeveuo(sd_cycl_eta, 'L', jcyeta)
+    call jeveuo(sd_cycl_eta, 'L', vi = p_cycl_eta)
 !
 ! - Erasing cycling information
 !
@@ -81,9 +80,8 @@ subroutine mm_cycl_prop(sd_cont_defi, sd_cont_solv, cycl_hist, cycl_coef)
         zone_index     = nint(cycl_hist(25*(point_index-1)+25))
         l_frot_zone    = mminfl(sd_cont_defi,'FROTTEMENT_ZONE',zone_index)
         if (.not.l_frot_zone) goto 15
-        cycl_stat  = zi(jcyeta-1+4*(point_index-1)+2)
+        cycl_stat      = p_cycl_eta(+4*(point_index-1)+2)
         coef_frot_mini = cycl_coef(6*(zone_index-1)+5)
-!        coef_frot_init = cycl_coef(6*(zone_index-1)+2)
         coef_frot_maxi = cycl_coef(6*(zone_index-1)+6)
         coef_frot      = cycl_hist(25*(point_index-1)+6)
         pres_frot(1)   = cycl_hist(25*(point_index-1)+7)
@@ -140,7 +138,7 @@ subroutine mm_cycl_prop(sd_cont_defi, sd_cont_solv, cycl_hist, cycl_coef)
             if (propa) then
                 if (coef_frot.ne.coef_frot_maxi) then
                     coef_frot = coef_frot_maxi
-                endif     
+                endif
             else
                 if (nrese_prop.eq.nrese_maxi) then
                     nrese_prop = nrese_mini

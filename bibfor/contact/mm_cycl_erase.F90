@@ -2,7 +2,6 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
 !
     implicit     none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -35,14 +34,14 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
-! Initialization of data structures for cycling detection and treatment
+! Erase cycling informations
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition 
+! In  sd_cont_defi : data structure from contact definition
 ! In  cycl_type    : type of cycling to erase
 !                     0 - for erasing for all cycles
 ! In  point_curr   : contact point to erasing
@@ -50,8 +49,12 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_lis, sd_cycl_nbr, sd_cycl_eta, sd_cycl_his
-    integer :: jcylis, jcynbr, jcyeta, jcyhis
+    character(len=24) :: sd_cycl_lis
+    integer, pointer :: p_cycl_lis(:) => null()
+    character(len=24) :: sd_cycl_nbr
+    integer, pointer :: p_cycl_nbr(:) => null()
+    character(len=24) :: sd_cycl_eta
+    integer, pointer :: p_cycl_eta(:) => null()
     integer :: point_number, point_index
     integer :: cycl_index
     logical :: lctcc
@@ -69,14 +72,12 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
     sd_cycl_lis = sd_cont_solv(1:14)//'.CYCLIS'
     sd_cycl_nbr = sd_cont_solv(1:14)//'.CYCNBR'
     sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
-    sd_cycl_his = sd_cont_solv(1:14)//'.CYCHIS'
 !
 ! - Access to cycling objects
 !
-    call jeveuo(sd_cycl_lis, 'E', jcylis)
-    call jeveuo(sd_cycl_nbr, 'E', jcynbr)
-    call jeveuo(sd_cycl_eta, 'E', jcyeta)
-    call jeveuo(sd_cycl_his, 'E', jcyhis)
+    call jeveuo(sd_cycl_lis, 'E', vi = p_cycl_lis)
+    call jeveuo(sd_cycl_nbr, 'E', vi = p_cycl_nbr)
+    call jeveuo(sd_cycl_eta, 'E', vi = p_cycl_eta)
 !
 ! - Initializations
 !
@@ -88,9 +89,9 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
         ASSERT(point_curr.eq.0)
         do cycl_index = 1, 4
             do point_index = 1, point_number
-                zi(jcylis-1+4*(point_index-1)+cycl_index) = 0
-                zi(jcynbr-1+4*(point_index-1)+cycl_index) = 0
-                zi(jcyeta-1+4*(point_index-1)+cycl_index) = 0
+                p_cycl_lis(4*(point_index-1)+cycl_index) = 0
+                p_cycl_nbr(4*(point_index-1)+cycl_index) = 0
+                p_cycl_eta(4*(point_index-1)+cycl_index) = 0
             enddo
         end do
     else if (cycl_type.gt.0) then
@@ -100,9 +101,9 @@ subroutine mm_cycl_erase(sd_cont_defi, sd_cont_solv, cycl_type, point_curr)
         ASSERT(cycl_type.le.4)
         cycl_index = cycl_type
         point_index = point_curr
-        zi(jcylis-1+4*(point_index-1)+cycl_index) = 0
-        zi(jcynbr-1+4*(point_index-1)+cycl_index) = 0
-        zi(jcyeta-1+4*(point_index-1)+cycl_index) = 0
+        p_cycl_lis(4*(point_index-1)+cycl_index) = 0
+        p_cycl_nbr(4*(point_index-1)+cycl_index) = 0
+        p_cycl_eta(4*(point_index-1)+cycl_index) = 0
     else
         ASSERT(.false.)
     endif

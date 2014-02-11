@@ -1,12 +1,9 @@
-subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
+subroutine mm_cycl_print(sd_impr, sd_stat)
 !
     implicit     none
 !
-#include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/nmrvai.h"
+#include "asterfort/nmimci.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,50 +23,32 @@ subroutine mm_cycl_flip(sd_cont_defi, sd_cont_solv, cycl_flip)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_defi
-    character(len=24), intent(in) :: sd_cont_solv
-    logical, intent(out) :: cycl_flip
+    character(len=24), intent(in) :: sd_stat
+    character(len=24), intent(in) :: sd_impr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
-! Detection of clip-flop cycling
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  sd_cont_solv : data structure for contact solving
-! In  sd_cont_defi : data structure from contact definition
-! Out cycl_flip    : .true. if flip-flop cycling activated
+! Informations printing in convergence table
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_eta
-    integer :: jcyeta
-    integer :: cycl_index, cycl_stat
-    integer :: point_number, point_index
+!
+! In  sd_stat      : data structure for non-linear stats
+! In  sd_impr      : data structure for non-linear printing
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    integer :: cycl_nb(4),cycl_nb_tot
 !
-! - Initializations
+! --------------------------------------------------------------------------------------------------
 !
-    cycl_flip = .false.
-    cycl_index = 4
-!
-! - Cycling objects
-!
-    sd_cycl_eta = sd_cont_solv(1:14)//'.CYCETA'
-    call jeveuo(sd_cycl_eta,'L',jcyeta)
-!
-! - Flip-flop dectected ?
-!
-    point_number = cfdisi(sd_cont_defi,'NTPC' )
-    do point_index = 1, point_number
-      cycl_stat  = zi(jcyeta-1+4*(point_index-1)+cycl_index)
-      if (cycl_stat.gt.0) cycl_flip = .true.
-    end do
-!
-    call jedema()
+    call nmrvai(sd_stat, 'CTCC_CYCL_1', 'N', cycl_nb(1))
+    call nmrvai(sd_stat, 'CTCC_CYCL_2', 'N', cycl_nb(2))
+    call nmrvai(sd_stat, 'CTCC_CYCL_3', 'N', cycl_nb(3))
+    call nmrvai(sd_stat, 'CTCC_CYCL_4', 'N', cycl_nb(4))
+    cycl_nb_tot = cycl_nb(1) + cycl_nb(2) + cycl_nb(3) + cycl_nb(4)
+    call nmimci(sd_impr, 'CTCC_CYCL', cycl_nb_tot, .true.)
+
 end subroutine

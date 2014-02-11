@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mm_cycl_d2(sd_cont_defi, sd_cont_solv, point_index, indi_cont, indi_frot)
+    subroutine mm_cycl_d2(sd_cont_defi  , sd_cont_solv  , point_index, &
+                          indi_cont_eval, indi_frot_eval)
         character(len=24), intent(in) :: sd_cont_defi
         character(len=24), intent(in) :: sd_cont_solv
         integer, intent(in) :: point_index
-        integer, intent(in) :: indi_cont
-        integer, intent(in) :: indi_frot
+        integer, intent(in) :: indi_cont_eval
+        integer, intent(in) :: indi_frot_eval
     end subroutine mm_cycl_d2
 end interface

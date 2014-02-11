@@ -35,7 +35,7 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
 ! Adaptation of augmented ratio for friction
 !

@@ -1,13 +1,10 @@
-subroutine mm_cycl_t2(sd_cont_solv, pres_frot_prev, dist_frot_prev, coef_frot, cycl_stat_prev, &
-                      pres_frot, dist_frot, coef_frot_curr, cycl_stat_curr)
+subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_prev, &
+                      pres_frot_curr, dist_frot_curr, &
+                      coef_frot_curr, cycl_stat_curr)
 !
     implicit     none
 !
-#include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mm_cycl_adaf.h"
 #include "asterfort/mm_cycl_laugf.h"
 #include "asterfort/mm_cycl_zonf.h"
@@ -30,26 +27,30 @@ subroutine mm_cycl_t2(sd_cont_solv, pres_frot_prev, dist_frot_prev, coef_frot, c
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_cont_solv
     real(kind=8), intent(in) :: pres_frot_prev(3)
     real(kind=8), intent(in) :: dist_frot_prev(3)
+    real(kind=8), intent(in) :: coef_frot_prev
     integer, intent(in) :: cycl_stat_prev
-    real(kind=8), intent(in) :: coef_frot
-    real(kind=8), intent(in) :: pres_frot(3)
-    real(kind=8), intent(in) :: dist_frot(3)
+    real(kind=8), intent(in) :: pres_frot_curr(3)
+    real(kind=8), intent(in) :: dist_frot_curr(3)
     real(kind=8), intent(out) :: coef_frot_curr
     integer, intent(out) :: cycl_stat_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
-! Automatic treatment for Sticking/sliding cycling
+! Treatment: sticking/sliding
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  sd_cont_solv   : data structure for contact solving
+! In  pres_frot_prev : previous friction pressure in cycle
+! In  dist_frot_prev : previous friction distance in cycle
+! In  coef_frot_prev : previous augmented ratio for friction
+! In  cycl_stat_prev : previous state of cycle
+! In  pres_frot_curr : current friction pressure
+! In  dist_frot_curr : current friction distance
+! Out coef_frot_curr : current augmented ratio for friction
 ! Out cycl_stat_curr : state of treatment
 !                      -10 : Failure during adaptation
 !                      -02 : Cannot adapt
@@ -57,8 +58,6 @@ subroutine mm_cycl_t2(sd_cont_solv, pres_frot_prev, dist_frot_prev, coef_frot, c
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sd_cycl_his
-    integer :: jcyhis
     integer :: cycl_type, stat_adap
     integer :: zone_frot_curr, zone_frot_prev
     real(kind=8) :: tole_stick, tole_slide
@@ -68,7 +67,6 @@ subroutine mm_cycl_t2(sd_cont_solv, pres_frot_prev, dist_frot_prev, coef_frot, c
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! - Initialisations
 !
@@ -80,17 +78,12 @@ subroutine mm_cycl_t2(sd_cont_solv, pres_frot_prev, dist_frot_prev, coef_frot, c
 !
 ! - Default: no adaptation
 !
-    coef_adap = coef_frot
-!
-! - Acces to cycling objects
-!
-    sd_cycl_his = sd_cont_solv(1:14)//'.CYCHIS'
-    call jeveuo(sd_cycl_his,'E',jcyhis)
+    coef_adap = coef_frot_prev
 !
 ! - Norm of augmented ratios
 !
-    call mm_cycl_laugf(pres_frot_prev, dist_frot_prev, coef_frot, nrese_prev)
-    call mm_cycl_laugf(pres_frot     , dist_frot     , coef_frot, nrese_curr)
+    call mm_cycl_laugf(pres_frot_prev, dist_frot_prev, coef_frot_prev, nrese_prev)
+    call mm_cycl_laugf(pres_frot_curr, dist_frot_curr, coef_frot_prev, nrese_curr)
 !
 ! - Previous state
 !
@@ -101,20 +94,20 @@ subroutine mm_cycl_t2(sd_cont_solv, pres_frot_prev, dist_frot_prev, coef_frot, c
     call mm_cycl_zonf(nrese_curr, tole_stick, tole_slide, zone_frot_curr)
     call mm_cycl_zonf(nrese_prev, tole_stick, tole_slide, zone_frot_prev)
     if (zone_frot_curr.eq.-1) then
-        pres_frot_adap(1) = pres_frot(1)
-        pres_frot_adap(2) = pres_frot(2)
-        pres_frot_adap(3) = pres_frot(3)
-        dist_frot_adap(1) = dist_frot(1)
-        dist_frot_adap(2) = dist_frot(2)
-        dist_frot_adap(3) = dist_frot(3)
+        pres_frot_adap(1) = pres_frot_curr(1)
+        pres_frot_adap(2) = pres_frot_curr(2)
+        pres_frot_adap(3) = pres_frot_curr(3)
+        dist_frot_adap(1) = dist_frot_curr(1)
+        dist_frot_adap(2) = dist_frot_curr(2)
+        dist_frot_adap(3) = dist_frot_curr(3)
         adap_type = 'Sticking'
     elseif (zone_frot_curr.eq.+1) then
-        pres_frot_adap(1) = pres_frot(1)
-        pres_frot_adap(2) = pres_frot(2)
-        pres_frot_adap(3) = pres_frot(3)
-        dist_frot_adap(1) = dist_frot(1)
-        dist_frot_adap(2) = dist_frot(2)
-        dist_frot_adap(3) = dist_frot(3)
+        pres_frot_adap(1) = pres_frot_curr(1)
+        pres_frot_adap(2) = pres_frot_curr(2)
+        pres_frot_adap(3) = pres_frot_curr(3)
+        dist_frot_adap(1) = dist_frot_curr(1)
+        dist_frot_adap(2) = dist_frot_curr(2)
+        dist_frot_adap(3) = dist_frot_curr(3)
         adap_type = 'Sliding'
     elseif (zone_frot_prev.eq.-1) then
         pres_frot_adap(1) = pres_frot_prev(1)
@@ -139,7 +132,7 @@ subroutine mm_cycl_t2(sd_cont_solv, pres_frot_prev, dist_frot_prev, coef_frot, c
 !
 ! - Trying to adapt coef
 !
-    call mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_frot, pres_frot_adap, &
+    call mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_frot_prev, pres_frot_adap, &
                       dist_frot_adap, coef_adap, stat_adap)
     if (stat_adap.eq.0) then
         cycl_stat_curr = -1
@@ -148,8 +141,9 @@ subroutine mm_cycl_t2(sd_cont_solv, pres_frot_prev, dist_frot_prev, coef_frot, c
     endif
 
 99  continue
-    
-    coef_frot_curr = coef_adap
 !
-    call jedema()
+! - New augmented ratio
+!
+    coef_frot_curr = coef_adap
+
 end subroutine

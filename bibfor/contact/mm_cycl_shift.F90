@@ -1,9 +1,9 @@
-subroutine mm_cycl_print(sd_impr, sd_stat)
+subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
 !
     implicit     none
 !
-#include "asterfort/nmrvai.h"
-#include "asterfort/nmimci.h"
+#include "asterfort/iscode.h"
+#include "asterfort/isdeco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,32 +23,37 @@ subroutine mm_cycl_print(sd_impr, sd_stat)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: sd_stat
-    character(len=24), intent(in) :: sd_impr
+    integer, intent(in) :: cycl_long_acti
+    integer, intent(inout) :: cycl_ecod
+    integer, intent(inout) :: cycl_long
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact (continue method)
+! Contact (continue method) - Cycling
 !
-! Cycling informations printing in convergence table
-!
-! --------------------------------------------------------------------------------------------------
-!
-!
-! In  sd_stat      : data structure for non-linear stats
-! In  sd_impr      : data structure for non-linear printing
+! Shift detection (index greater than cycling length)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cycl_nb(4),cycl_nb_tot
+! In  cycl_long_acti : length of cycling to detect
+! IO  cycl_ecod      : coded integer for cycling
+! IO  cycl_long      : cycling length
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call nmrvai(sd_stat, 'CTCC_CYCL_1', 'N', cycl_nb(1))
-    call nmrvai(sd_stat, 'CTCC_CYCL_2', 'N', cycl_nb(2))
-    call nmrvai(sd_stat, 'CTCC_CYCL_3', 'N', cycl_nb(3))
-    call nmrvai(sd_stat, 'CTCC_CYCL_4', 'N', cycl_nb(4))
-    cycl_nb_tot = cycl_nb(1) + cycl_nb(2) + cycl_nb(3) + cycl_nb(4)
-    call nmimci(sd_impr, 'CTCC_CYCL', cycl_nb_tot, .true.)
+    integer :: statut(30)
+    integer :: cycl_index
+    integer :: cycl_ecodi(1)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    cycl_ecodi(1) = cycl_ecod
+    call isdeco(cycl_ecodi(1), statut, 30)
+    do cycl_index = 1, cycl_long_acti-1
+        statut(cycl_index) = statut(cycl_index+1)
+    end do
+    call iscode(statut, cycl_ecodi(1), 30)
+    cycl_long = cycl_long_acti - 1
+    cycl_ecod = cycl_ecodi(1)
 
 end subroutine

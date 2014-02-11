@@ -1,4 +1,4 @@
-subroutine mm_cycl_zonf(lagr_frot_norm, tole_stick, tole_slide, zone_frot)
+subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
 !
     implicit     none
 !
@@ -23,42 +23,33 @@ subroutine mm_cycl_zonf(lagr_frot_norm, tole_stick, tole_slide, zone_frot)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    real(kind=8), intent(in) :: lagr_frot_norm
-    real(kind=8), intent(in) :: tole_stick
-    real(kind=8), intent(in) :: tole_slide
-    integer, intent(out) :: zone_frot
+    real(kind=8), intent(in) :: laug_cont
+    real(kind=8), intent(in) :: pres_near
+    integer, intent(out) :: zone_cont
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact - Cycling
+! Contact (continue method) - Cycling
 !
-! Detection of zone for friction
-!
-! --------------------------------------------------------------------------------------------------
-!
-!
-! In  lagr_frot_norm : norm of augmented lagrangian for friction
-! In  tole_stick     : tolerance for "near" discontinuity point by inferior value (sticking)
-! In  tole_slide     : tolerance for "near" discontinuity point by superior value (sliding)
-! Out zone_frot      : zone of friction
-!                       -2 - Sticking far from discontinuity point
-!                       -1 - Sticking near discontinuity point
-!                        0 - Near discontinuity point
-!                       +1 - Sliding near discontinuity point
-!                       +2 - Sliding far from discontinuity point
+! Detection of zone for contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (lagr_frot_norm.lt.tole_stick) then 
-        zone_frot = -2
-    elseif ((lagr_frot_norm.ge.tole_stick).and.(lagr_frot_norm.le.1.d0)) then
-        zone_frot = -1
-    elseif ((lagr_frot_norm.gt.tole_stick).and.(lagr_frot_norm.lt.tole_slide)) then
-        zone_frot = 0
-    elseif ((lagr_frot_norm.ge.1.d0).and.(lagr_frot_norm.le.tole_slide)) then
-        zone_frot = +1
-    elseif (lagr_frot_norm.gt.tole_slide) then
-        zone_frot = +2
+!
+! In  laug_cont : augmented lagrangian for contact
+! In  pres_near : tolerance for "near" contact - pressure
+! Out zone_cont : zone of contact
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (laug_cont.gt.pres_near) then
+        zone_cont = 1
+    elseif ((laug_cont.le.pres_near).and.(laug_cont.ge.r8prem())) then
+        zone_cont = 2
+    elseif ((laug_cont.ge.-pres_near).and.(laug_cont.le.r8prem())) then
+        zone_cont = 3
+    elseif (laug_cont.lt.-pres_near) then
+        zone_cont = 4
     else
         ASSERT(.false.)
     endif

@@ -19,8 +19,8 @@
 interface
     subroutine mmalgo(sd_cont_defi  , sd_cont_solv  , l_loop_cont   , l_frot_zone   , l_vite    , &
                   l_glis_init   , l_coef_adap   , zone_index    , point_index   , indi_cont_init, &
-                  indi_cont_eval, indi_frot_eval, dist_cont     , vite_cont     , pres_cont     , &
-                  dist_frot     , pres_frot     , cycl_hist     , cycl_coef     , indi_cont_curr, &
+                  indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, pres_cont_curr, &
+                  dist_frot_curr, pres_frot_curr, cycl_hist     , cycl_coef     , indi_cont_curr, &
                   indi_frot_curr, ctcsta        , mmcvca        , scotch        )
         character(len=24), intent(in) :: sd_cont_defi
         character(len=24), intent(in) :: sd_cont_solv
@@ -34,11 +34,11 @@ interface
         integer, intent(in) :: indi_cont_init
         integer, intent(in) :: indi_cont_eval
         integer, intent(in) :: indi_frot_eval
-        real(kind=8), intent(in) :: dist_cont
-        real(kind=8), intent(in) :: vite_cont
-        real(kind=8), intent(in) :: pres_cont
-        real(kind=8), intent(in) :: dist_frot(3)
-        real(kind=8), intent(in) :: pres_frot(3)
+        real(kind=8), intent(in) :: dist_cont_curr
+        real(kind=8), intent(in) :: vite_cont_curr
+        real(kind=8), intent(in) :: pres_cont_curr
+        real(kind=8), intent(in) :: dist_frot_curr(3)
+        real(kind=8), intent(in) :: pres_frot_curr(3)
         real(kind=8), intent(inout) :: cycl_hist(*) 
         real(kind=8), intent(inout) :: cycl_coef(*) 
         integer, intent(out) :: indi_cont_curr
