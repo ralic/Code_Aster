@@ -293,17 +293,24 @@ MAC_RDEX=MAC_MODES(BASE_1=RED_MODE,
 # Verification : la diagonale du MAC entre modes etendus reduits 
 # et modes experimentaux doit valoir 1. La resultat est ici normalement
 # aussi bon que dans la modelisation a.
-for ind in range(1,22):
+
+vale_calc = [1.0, 0.999999999221, 0.999999999745, 0.999999991117, 0.99999982645,
+    0.999999803796, 0.999999605443, 0.999993874341, 0.999997495611, 0.999999400936,
+    0.999999985304, 0.999999978948, 0.999958879233, 0.999996999014, 0.999996307355,
+    0.999995280124, 0.999758167262, 0.999999173819, 0.999997644162, 0.999978106592,
+    0.999953396187]
+
+for ind in range(21):
     TEST_TABLE(REFERENCE='ANALYTIQUE',
-               VALE_CALC=1.0,
+               VALE_CALC=vale_calc[ind],
                VALE_REFE=1.0,
                NOM_PARA='MAC',
                TOLE_MACHINE=1.E-3,     # TODO TOLE_MACHINE
                TABLE=MAC_RDEX,
                FILTRE=(_F(NOM_PARA='NUME_MODE_1',
-                          VALE_I=ind,),
+                          VALE_I=ind+1,),
                        _F(NOM_PARA='NUME_MODE_2',
-                          VALE_I=ind,),
+                          VALE_I=ind+1,),
                        ),
                )
 

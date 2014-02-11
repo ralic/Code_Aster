@@ -330,7 +330,7 @@ subroutine op0177()
                         zi(irefi), vali, zc(irefc), valc, ignore=skip, &
                         compare=ordgrd)
             if (lref) then
-                call tresu_print_all(tbref(1), tbref(2), .true., typr, nref, &
+                call tresu_print_all(tbref(1), tbref(2), .false., typr, nref, &
                             crit, epsir, ssigne, zr(irefrr), valr, &
                             zi(irefir), vali, zc(irefcr), valc)
             endif

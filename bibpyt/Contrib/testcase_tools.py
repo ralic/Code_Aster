@@ -55,7 +55,7 @@ def change_test_resu():
         print i, val
     for i, kw in enumerate(keywords):
         print i, kw
-    assert len(results) == len(keywords)
+    assert len(results) == len(keywords), (len(results), len(keywords))
 
     changed = fort1
     while len(results) > 0:

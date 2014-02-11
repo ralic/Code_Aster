@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm zzzz266b.comm D 1
+F comm zzzz266b.com1 D 1
 F mail ssnp150b.mail D 20

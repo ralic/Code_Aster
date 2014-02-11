@@ -193,19 +193,6 @@ FOND=[None]*nbcalc
 TABLSN=[None]*nbcalc
 TABLST=[None]*nbcalc
 
-VALE_CALC=[-2.6367796834847E-16,
- -8.3960616237277E-16,
- 2.0704680135608E-03,
- 1.7320682941049E-03,
- 2.0838932633616E-03,
- -8.3780566819799E-04,
- 2.2157406936001E-03,
- -2.7433096872069E-03,
- 0.011698699084409,
- 2.9828896865438E-03,
- 6.6987621585967E-03,
- 3.3720878319225E-03,]
-
 # VERIFICATION DE LA POSITION DU CHAQUE FOND DE FISSURE CALCULE
 for i in range(1,nbcalc) :
 
@@ -250,45 +237,128 @@ for i in range(1,nbcalc) :
 
 #   VERIFICATION DES VALEURS DES LEVEL SETS. POUR LES POINTS
 #   SELECTIONNES, LES LEVEL SETS DOIVENT ETRE EGAL A ZERO.
-    TEST_TABLE(TABLE=TABLSN[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
-               TYPE_TEST='MAX',
-               CRITERE='ABSOLU',
-               VALE_CALC=VALE_CALC[(i-1)*4],
-               TOLE_MACHINE=6.E-04,
-               VALE_REFE=0.0  )
 
-    TEST_TABLE(TABLE=TABLSN[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
-               TYPE_TEST='MIN',
-               CRITERE='ABSOLU',
-               VALE_CALC=VALE_CALC[(i-1)*4+1],
-               TOLE_MACHINE=6.E-04,
-               VALE_REFE=0.0  )
+TEST_TABLE(TABLE=TABLSN[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
+           VALE_REFE=0.0  )
 
-    TEST_TABLE(TABLE=TABLST[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
-               TYPE_TEST='MAX',
-               CRITERE='ABSOLU',
-               VALE_CALC=VALE_CALC[(i-1)*4+2],
-               TOLE_MACHINE=6.E-04,
-               VALE_REFE=0.0  )
+TEST_TABLE(TABLE=TABLSN[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
+           VALE_REFE=0.0  )
 
-    TEST_TABLE(TABLE=TABLST[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
-               TYPE_TEST='MIN',
-               CRITERE='ABSOLU',
-               VALE_CALC=VALE_CALC[(i-1)*4+3],
-               TOLE_MACHINE=6.E-04,
-               VALE_REFE=0.0  )
+TEST_TABLE(TABLE=TABLST[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.002070,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.001732,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
+
+TEST_TABLE(TABLE=TABLSN[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.002084,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLSN[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.000838,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.002216,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.002743,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
+
+TEST_TABLE(TABLE=TABLSN[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.011699,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLSN[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.0029849942169,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.00669535379383,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.003372,
+           TOLE_MACHINE=6.E-04,
+           VALE_REFE=0.0  )
+
 
 #----------------------------------------------
 #         POST TRAITEMENT
