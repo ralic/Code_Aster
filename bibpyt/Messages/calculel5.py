@@ -157,7 +157,7 @@ PROJ_CHAMP  :
 
 43 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  Le noeud %(k1)s de coordonnées (%(r1)e,%(r2)e,%(r3)e) est projeté à une distance %(r4)e"""),
+  Le noeud %(k1)s de coordonnées (%(r1)e,%(r2)e,%(r3)e) est projeté à la distance %(r4)e"""),
 
 44 : _(u"""
  ! le champ doit être un CHAM_ELEM !
@@ -174,10 +174,11 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 48 : _(u"""
  Vous utilisez la commande PROJ_CHAMP ou un mot clé nécessitant de "projeter"
  des noeuds sur des mailles (par exemple LIAISON_MAIL).
- Nombre de noeuds projetés sur des mailles distantes : %(i1)d.
- (la distance à la maille est supérieure à 1/10ème du diamètre de la maille la plus proche)
-
- Le noeud %(k1)s est celui qui est projeté à la plus grande distance %(r1)e"""),
+ Un certain nombre de noeuds (%(i1)d) ont été projetés sur des mailles distantes.
+ (Pour ces noeuds, la distance à la maille est supérieure à 1/10ème du diamètre
+  de cette maille)
+ Les 5 noeuds les "pires" ont été imprimés ci-dessus.
+"""),
 
 
 49 : _(u"""

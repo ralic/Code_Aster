@@ -17,7 +17,7 @@
 !
 interface
     subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
-                      x1, x2, lext, xmi)
+                      x1, x2, lext, xmi, distv)
         integer :: ndim
         integer :: nnop
         character(len=8) :: elrefp
@@ -27,5 +27,6 @@ interface
         real(kind=8) :: x2(ndim)
         logical :: lext
         real(kind=8) :: xmi(ndim)
+        real(kind=8),intent(out) :: distv
     end subroutine pjefmi
 end interface

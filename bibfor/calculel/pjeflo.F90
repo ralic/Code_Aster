@@ -27,16 +27,20 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
     character(len=*) :: elrefa
 ! ----------------------------------------------------------------------
 ! BUT :
-!   * EMETTRE UNE ALARME SI INO2 EST TROP LOIN DE IMA1.
-!   * DETERMINER SI INO2 EST EXTERIEUR A IMA1
+!   * calculer disprj : distance de projection d'un point
+!                       (normee par le diametre de la maille)
+!  disprj =   0. => le point est interieur a la maille
+!  disprj = 999. => la routine reereg n'a pas converge
+!  disprj = a>0  => le point est exterieur a la maille.
+!   La distance du point a la maille est de l'ordre de a*diametre(maille)
 ! ----------------------------------------------------------------------
 !
-! IN  ELREFA   : ELREFA DE L'ELEMENT
-! IN  NDIM     : DIMENSION DE L'ESPACE
-! IN  XR2      : COORDONNEES DU POINT DANS L'ESPACE PARA DE L'ELEMENT
-!                (CALCULE PAR REEREG)
-! IN  IPBD     : CODE RETOUR DE REEREG
-! OUT DISPRJ   : DISTANCE
+! in  elrefa   : elrefa de l'element
+! in  ndim     : dimension de l'espace
+! in  xr2      : coordonnees du point dans l'element de reference
+!                (calcule par reereg)
+! in  ipbd     : code retour de reereg
+! out disprj   : distance de projection (en relatif)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: x, y, z
@@ -44,7 +48,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
     disprj = 0.0d0
 !   SI REEREG N'A PAS CONVERGE, ON N'A PAS CONFIANCE DANS XR2 :
     if (ipb .ne. 0) then
-        disprj=999.d0
+        disprj=dble(999)
         goto 80
     endif
 !
