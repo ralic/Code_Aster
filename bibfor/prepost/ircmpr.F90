@@ -189,7 +189,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     else if (typech(1:2).eq.'EL') then
 !
         call jeveuo(nomaas//'.TYPMAIL', 'L', adtypm)
-        call jelira(nomaas//'.TYPMAIL', 'LONUTI', nbmail)
+        call jelira(nomaas//'.TYPMAIL', 'LONMAX', nbmail)
         call wkvect('&&IRCMPR.TYPMA', 'V V I', nbmail, adtyp2)
         do ima = 1, nbmail
             if (zi(adtypm+ima-1) .eq. ipe18) then
