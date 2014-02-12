@@ -25,7 +25,7 @@ import os
 import os.path as osp
 import re
 from glob import glob
-
+import traceback
 
 DELIMITER = '---delimiter---'
 
@@ -111,7 +111,7 @@ def get_dest_filename(fname, nb):
     while len(lres) < nb:
         lres.append(root + '.com%d' % i)
         i += 1
-    assert len(lres) == nb, lres
+    assert len(lres) >= nb, lres
     return lres
 
 # helper functions run manually
@@ -154,4 +154,5 @@ if __name__ == '__main__':
             assert False, 'unsupported action: %s' % args[0]
     except AssertionError, exc:
         print str(exc)
+        traceback.print_exc()
         sys.exit(1)

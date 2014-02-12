@@ -369,6 +369,7 @@ class SUPERV:
             if self.jdc.par_lot == 'NON':
                 print convert(_(u"""--- Fin de l'exécution"""))
                 self.SyntaxCheck()
+                self.Finish()
                 self.interrupt(0)
             self.CheckCata()
             self.ChangeJDC()
