@@ -39,7 +39,6 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mecoel.h"
 #include "asterfort/nbec.h"
 #include "asterfort/scalai.h"
 #include "asterfort/utmess.h"
@@ -85,6 +84,8 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
     character(len=19) :: chin, chou, ligre2
     character(len=24) :: noprno, objdes, valk(5)
 !---------------- COMMUNS POUR CALCUL ----------------------------------
+    integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
+    common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
     common /caii02/iaoptt,lgco,iaopmo,ilopmo,iaopno,ilopno,iaopds,&
      &       iaoppa,npario,nparin,iamloc,ilmloc,iadsgd
     common /caii04/iachii,iachik,iachix
@@ -206,11 +207,9 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
             if (ligre2 .ne. ligrel) then
                 call codent(i, 'G', knum)
                 lchin(i)='&&CALCUL.CHML.'//knum
-!           -- ATTENTION, POUR CHLIGR, IL FAUT IACTIF=0
-                call mecoel(0)
+                ASSERT(iactif.eq.0)
                 call chligr(chin, ligrel, nomop, nompar, 'V',&
                             lchin(i))
-                call mecoel(1)
 !
                 call jeexin(lchin(i)(1:19)//'.CELD', ibid)
                 chin=lchin(i)

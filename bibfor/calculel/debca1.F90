@@ -266,7 +266,5 @@ subroutine debca1(nomop, ligrel, nin)
         call jeveuo('&&CALCUL.NOMTE', 'L', ianote)
     endif
 !
-!     -- APPEL A MECOEL (INUTILE) POUR CONSERVER LA DOC :
-    call mecoel(1)
 !
 end subroutine

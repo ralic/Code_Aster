@@ -172,7 +172,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
     call infniv(ifm, niv)
     ligrel=ligrlz
-    iactif=1
     nbobtr=0
     base2=base
     option=optio
@@ -361,6 +360,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !     6- BOUCLE SUR LES GREL :
 !     -------------------------------------------------
+    call mecoel(1)
     do igr = 1, nbgr
 !
 !       -- SI PARALLELISME='GROUP_ELEM' : ON PEUT PARFOIS TOUT "SAUTER"
@@ -486,7 +486,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         call jedetr(zk24(iaobtr-1+i))
     end do
     call jedetr('&&CALCUL.OBJETS_TRAV')
-    iactif=0
+    call mecoel(0)
 !
 !
 !     9- MESURE DU TEMPS CONSOMME :

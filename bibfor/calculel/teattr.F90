@@ -43,13 +43,13 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
 ! (o) out vattr  (k16) : valeur de l'attribut (ou "non_defini" si absent)
 ! (o) out iret   (i)   : code de retour :  0 -> ok
 !                                          1 -> attribut absent
-! (f) in  typel  (k16) : Nom du type_element a interroger
-!                        Necessaire si typel n'est pas le type_element courant
-! ATTENTION : l'appel a teattr est plus couteux avec typel
+! (f) in  typel  (k16) : Nom du type_element a interroger.
+!                        Cet argument est inutile si la question concerne le
+!                        type_element "courant".
 !-----------------------------------------------------------------------
-!  Cette routine est accessible partout dans le code. si elle est
-!  appelee en dehors de te0000 (donc avec typel), elle necessite
-!  des appels jeveux, elle devient donc plus couteuse.
+!  Cette routine est utilisable partout dans le code.
+!  Si elle est appelee en dehors de te0000 il faut fournir typel.
+!  Sinon, typel est inutile.
 !-----------------------------------------------------------------------
 ! Remarque :
 !  Il est aussi possible de demander les attributs :
@@ -76,21 +76,27 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
 
 !----------------------------------------------------------------------
     if (present(typel)) then
-        ASSERT(typel .ne. ' ')
         nomt2=typel
+        ASSERT(nomt2 .ne. ' ')
     else
         nomt2=' '
     endif
+
     noatt2=noattr
 
     if (noattr.eq.'CODPHE') noatt2='ALIAS8'
     if (noattr.eq.'CODMOD') noatt2='ALIAS8'
     if (noattr.eq.'CODTMA') noatt2='ALIAS8'
 
-    if (nomt2 .eq. ' ') ASSERT(iactif.eq.1)
+    if (nomt2 .eq. ' ') then
+        ASSERT(iactif.eq.1)
+        nomt2=nomte
+    endif
+
     apelje=.true.
-    if ((iactif.eq.1) .and. (nomt2.eq.' ')) apelje=.false.
-    if (nomt2 .eq. ' ') nomt2=nomte
+    if (iactif.eq.1) then
+       if (nomt2.eq.nomte)  apelje=.false.
+    endif
 
 
     if (apelje) then
