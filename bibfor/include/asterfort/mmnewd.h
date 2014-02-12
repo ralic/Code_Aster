@@ -16,21 +16,21 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmnewd(alias, nno, ndim, coorma, coorpt,&
-                      itemax, epsmax, dir, ksi1, ksi2,&
-                      tau1, tau2, niverr)
-        character(len=8) :: alias
-        integer :: nno
-        integer :: ndim
-        real(kind=8) :: coorma(27)
-        real(kind=8) :: coorpt(3)
-        integer :: itemax
-        real(kind=8) :: epsmax
-        real(kind=8) :: dir(3)
-        real(kind=8) :: ksi1
-        real(kind=8) :: ksi2
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau2(3)
-        integer :: niverr
+    subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
+                      iter_maxi, tole_maxi, proj_dire, ksi1     , ksi2   ,&
+                      tang_1   , tang_2   , error)
+        character(len=8), intent(in) :: type_elem
+        integer, intent(in) :: nb_node
+        integer, intent(in) :: nb_dim
+        real(kind=8), intent(in) :: elem_coor(27)
+        real(kind=8), intent(in) :: pt_coor(3)
+        integer, intent(in) :: iter_maxi
+        real(kind=8), intent(in) :: tole_maxi
+        real(kind=8), intent(in) :: proj_dire(3)
+        real(kind=8), intent(out) :: ksi1
+        real(kind=8), intent(out) :: ksi2
+        real(kind=8), intent(out) :: tang_1(3)
+        real(kind=8), intent(out) :: tang_2(3)
+        integer, intent(out) :: error
     end subroutine mmnewd
 end interface

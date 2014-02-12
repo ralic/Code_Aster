@@ -1,6 +1,14 @@
-subroutine mmnewt(alias, nno, ndim, coorma, coorpt,&
-                  itemax, epsmax, ksi1, ksi2, tau1,&
-                  tau2, niverr)
+subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
+                  iter_maxi, tole_maxi, ksi1  , ksi2     , tang_1 ,&
+                  tang_2   , error)
+!
+    implicit none
+!
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/mmfonf.h"
+#include "asterfort/mmreli.h"
+#include "asterfort/mmtang.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,239 +28,227 @@ subroutine mmnewt(alias, nno, ndim, coorma, coorpt,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
-#include "asterfort/mmfonf.h"
-#include "asterfort/mmreli.h"
-#include "asterfort/mmtang.h"
-    character(len=8) :: alias
-    integer :: nno
-    integer :: ndim
-    real(kind=8) :: coorma(27)
-    real(kind=8) :: coorpt(3)
-    real(kind=8) :: ksi1, ksi2
-    real(kind=8) :: tau1(3), tau2(3)
-    integer :: niverr
-    integer :: itemax
-    real(kind=8) :: epsmax
+    character(len=8), intent(in) :: type_elem
+    integer, intent(in) :: nb_node
+    integer, intent(in) :: nb_dim
+    real(kind=8), intent(in) :: elem_coor(27)
+    real(kind=8), intent(in) :: pt_coor(3)
+    integer, intent(in) :: iter_maxi
+    real(kind=8), intent(in) :: tole_maxi
+    real(kind=8), intent(out) :: ksi1
+    real(kind=8), intent(out) :: ksi2
+    real(kind=8), intent(out) :: tang_1(3)
+    real(kind=8), intent(out) :: tang_2(3)
+    integer, intent(out) :: error
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - APPARIEMENT)
+! Contact (all methods)
 !
-! ALGORITHME DE NEWTON POUR CALCULER LA PROJECTION D'UN POINT SUR UNE
-! MAILLE - VERSION GENERALE
+! Projection of point on element (Newton algorithm) - Minimum distance
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  type_elem : element type
+! In  nb_node   : number of nodes of element
+! In  nb_dim    : dimension of element (2 or 3)
+! In  elem_coor : coordinates of nodes of the element
+! In  pt_coor   : coordinates of poitn to project
+! In  iter_maxi : Newton algorithm - Maximum number of iterations
+! In  tole_maxi : Newton algorithm - Tolerance
+! Out ksi1      : first parametric coordinate of projection of point on element
+! Out ksi2      : second parametric coordinate of projection of point on element
+! Out tang_1    : first tangent of local basis for the projection of point on element
+! Out tang_2    : second tangent of local basis for the projection of point on element
+! Out error     : error code
+!                  0  OK
+!                  1  NON-OK
 !
-! IN  ALIAS  : TYPE DE MAILLE
-! IN  NNO    : NOMBRE DE NOEUD SUR LA MAILLE
-! IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
-! IN  COORMA : COORDONNEES DES NOEUDS DE LA MAILLE
-! IN  COORPT : COORDONNEES DU NOEUD A PROJETER SUR LA MAILLE
-! IN  ITEMAX : NOMBRE MAXI D'ITERATIONS DE NEWTON POUR LA PROJECTION
-! IN  EPSMAX : RESIDU POUR CONVERGENCE DE NEWTON POUR LA PROJECTION
-! OUT KSI1   : PREMIERE COORDONNEE PARAMETRIQUE DU POINT PROJETE
-! OUT KSI2   : SECONDE COORDONNEE PARAMETRIQUE DU POINT PROJETE
-! OUT TAU1   : PREMIER VECTEUR TANGENT EN KSI1,KSI2
-! OUT TAU2   : SECOND VECTEUR TANGENT EN KSI1,KSI2
-! OUT NIVERR : RETOURNE UN CODE ERREUR
-!                0  TOUT VA BIEN
-!                1  ECHEC NEWTON
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    real(kind=8) :: zero
+    parameter   (zero=0.d0)
 !
     integer :: ino, idim, iter
     real(kind=8) :: ff(9), dff(2, 9), ddff(3, 9)
-    real(kind=8) :: vec1(3)
-    real(kind=8) :: matrix(2, 2), par11(3), par12(3), par22(3)
-    real(kind=8) :: residu(2), eps
+    real(kind=8) :: vect_posi(3)
+    real(kind=8) :: matrix(2,2), par11(3), par12(3), par22(3)
+    real(kind=8) :: residu(2)
     real(kind=8) :: dksi1, dksi2
-    real(kind=8) :: det, test, epsrel, epsabs, refe
+    real(kind=8) :: det, test, refe
     real(kind=8) :: alpha
-    real(kind=8) :: zero
-    parameter   (zero=0.d0)
-    real(kind=8) :: dist, dmin, ksi1m, ksi2m
+    real(kind=8) :: tole_rela, tole_abso, tole_newt
+    real(kind=8) :: dist, dist_mini, ksi1_mini, ksi2_mini
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+    ASSERT(nb_node.le.9)
+    ASSERT(nb_dim.le.3)
+    ASSERT(nb_dim.ge.2)
 !
-! --- VERIF CARACTERISTIQUES DE LA MAILLE
+! - Initializations
 !
-    if (nno .gt. 9) ASSERT(.false.)
-    if (ndim .gt. 3) ASSERT(.false.)
-    if (ndim .le. 1) ASSERT(.false.)
+    error     = 0
+    ksi1      = zero
+    ksi2      = zero
+    iter      = 0
+    tole_abso = tole_maxi/100.d0
+    tole_rela = tole_maxi
+    alpha     = 1.d0
+    dist_mini = r8gaem()
 !
-! --- POINT DE DEPART
-!
-    niverr = 0
-    ksi1 = zero
-    ksi2 = zero
-    iter = 0
-    epsabs = epsmax/100.d0
-    epsrel = epsmax
-    alpha = 1.d0
-    dmin = r8gaem()
-!
-! --- DEBUT DE LA BOUCLE
+! - Newton loop
 !
 20  continue
 !
-! --- INITIALISATIONS
+    vect_posi(1:3)  = zero
+    tang_1(1:3)     = zero
+    tang_2(1:3)     = zero
+    par11(1:3)      = zero
+    par12(1:3)      = zero
+    par22(1:3)      = zero
+    matrix(1:2,1:2) = zero
+    residu(1:2)     = zero
+    dksi1           = zero
+    dksi2           = zero
 !
-    do 10 idim = 1, 3
-        vec1(idim) = zero
-        tau1(idim) = zero
-        tau2(idim) = zero
-        par11(idim) = zero
-        par12(idim) = zero
-        par22(idim) = zero
-10  continue
-    residu(1) = zero
-    residu(2) = zero
-    matrix(1,1) = zero
-    matrix(1,2) = zero
-    matrix(2,1) = zero
-    matrix(2,2) = zero
+! - Shape functions (and derivates) at current point
 !
-! --- CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT
-! --- DANS LA MAILLE
-!
-    call mmfonf(ndim, nno, alias, ksi1, ksi2,&
+    call mmfonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
                 ff, dff, ddff)
 !
-! --- CALCUL DU VECTEUR POSITION DU POINT COURANT SUR LA MAILLE
+! - Position vector of current point
 !
-    do 40 idim = 1, ndim
-        do 30 ino = 1, nno
-            vec1(idim) = coorma(3*(ino-1)+idim)*ff(ino) + vec1(idim)
-30      continue
-40  continue
+    do idim = 1, nb_dim
+        do ino = 1, nb_node
+            vect_posi(idim) = elem_coor(3*(ino-1)+idim)*ff(ino) + vect_posi(idim)
+        end do
+    end do
 !
-! --- CALCUL DES TANGENTES
+! - Local base
 !
-    call mmtang(ndim, nno, coorma, dff, tau1,&
-                tau2)
+    call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1,&
+                tang_2)
 !
-! --- CALCUL DE LA QUANTITE A MINIMISER
+! - Quantity to minimize
 !
-    do 35 idim = 1, ndim
-        vec1(idim) = coorpt(idim) - vec1(idim)
-35  continue
-    dist = sqrt(vec1(1)*vec1(1)+ vec1(2)*vec1(2)+ vec1(3)*vec1(3))
+    do idim = 1, nb_dim
+        vect_posi(idim) = pt_coor(idim) - vect_posi(idim)
+    end do
+    dist = sqrt(vect_posi(1)*vect_posi(1)+vect_posi(2)*vect_posi(2)+vect_posi(3)*vect_posi(3))
 !
-! --- CALCUL DU RESIDU
+! - Newton residual
 !
-    residu(1) = vec1(1)*tau1(1) + vec1(2)*tau1(2) + vec1(3)*tau1(3)
-    if (ndim .eq. 3) then
-        residu(2) = vec1(1)*tau2(1) + vec1(2)*tau2(2) + vec1(3)*tau2( 3)
+    residu(1) = vect_posi(1)*tang_1(1) + vect_posi(2)*tang_1(2) + vect_posi(3)*tang_1(3)
+    if (nb_dim .eq. 3) then
+        residu(2) = vect_posi(1)*tang_2(1) + vect_posi(2)*tang_2(2) + vect_posi(3)*tang_2( 3)
     endif
 !
-! --- CALCUL DES COURBURES LOCALES
+! - Local curvatures
 !
-    do 42 idim = 1, ndim
-        do 32 ino = 1, nno
-            par11(idim) = coorma(3*(ino-1)+idim)*ddff(1,ino) + par11(idim)
-            if (ndim .eq. 3) then
-                par22(idim) = coorma(3*(ino-1)+idim)*ddff(2,ino) + par22(idim)
-                par12(idim) = coorma(3*(ino-1)+idim)*ddff(3,ino) + par12(idim)
+    do idim = 1, nb_dim
+        do ino = 1, nb_node
+            par11(idim) = elem_coor(3*(ino-1)+idim)*ddff(1,ino) + par11(idim)
+            if (nb_dim .eq. 3) then
+                par22(idim) = elem_coor(3*(ino-1)+idim)*ddff(2,ino) + par22(idim)
+                par12(idim) = elem_coor(3*(ino-1)+idim)*ddff(3,ino) + par12(idim)
             endif
-32      continue
-42  continue
+        end do
+    end do
 !
-! --- CALCUL DE LA MATRICE TANGENTE
+! - Tangent matrix (Newton)
 !
-    do 60 idim = 1, ndim
-        matrix(1,1) = -tau1(idim)*tau1(idim) + par11(idim)*vec1(idim) + matrix(1,1)
-        if (ndim .eq. 3) then
-            matrix(1,2) = -tau2(idim)*tau1(idim) + par12(idim)*vec1( idim) + matrix(1,2)
-            matrix(2,1) = -tau1(idim)*tau2(idim) + par12(idim)*vec1( idim) + matrix(2,1)
-            matrix(2,2) = -tau2(idim)*tau2(idim) + par22(idim)*vec1( idim) + matrix(2,2)
+    do idim = 1, nb_dim
+        matrix(1,1) = -tang_1(idim)*tang_1(idim) + par11(idim)*vect_posi(idim) + matrix(1,1)
+        if (nb_dim .eq. 3) then
+            matrix(1,2) = -tang_2(idim)*tang_1(idim) + par12(idim)*vect_posi(idim) + matrix(1,2)
+            matrix(2,1) = -tang_1(idim)*tang_2(idim) + par12(idim)*vect_posi(idim) + matrix(2,1)
+            matrix(2,2) = -tang_2(idim)*tang_2(idim) + par22(idim)*vect_posi(idim) + matrix(2,2)
         endif
-60  continue
+    end do
 !
-! --- RESOLUTION K.dU=RESIDU
+! - System determinant
 !
-    if (ndim .eq. 2) then
+    if (nb_dim .eq. 2) then
         det = matrix(1,1)
-    else if (ndim.eq.3) then
+    else if (nb_dim.eq.3) then
         det = matrix(1,1)*matrix(2,2) - matrix(1,2)*matrix(2,1)
     endif
 !
     if (det .eq. 0.d0) then
-        niverr = 1
+        error = 1
         goto 999
     endif
 !
-    if (ndim .eq. 2) then
+! - Solve system
+!
+    if (nb_dim .eq. 2) then
         dksi1 = -residu(1)/matrix(1,1)
         dksi2 = 0.d0
-    else if (ndim.eq.3) then
+    else if (nb_dim.eq.3) then
         dksi1 = (matrix(2,2)* (-residu(1))-matrix(1,2)* (-residu(2)))/ det
         dksi2 = (matrix(1,1)* (-residu(2))-matrix(2,1)* (-residu(1)))/ det
+    else
+        ASSERT(.false.)
     endif
 !
-! --- RECHERCHE LINEAIRE
+! - Line search
 !
-    call mmreli(alias, nno, ndim, coorma, coorpt,&
+    call mmreli(type_elem, nb_node, nb_dim, elem_coor, pt_coor,&
                 ksi1, ksi2, dksi1, dksi2, alpha)
 !
-! --- ACTUALISATION
+! - Update
 !
     ksi1 = ksi1 + alpha*dksi1
     ksi2 = ksi2 + alpha*dksi2
 !
-    iter = iter + 1
-    if (dist .le. dmin) then
-        dmin = dist
-        ksi1m = ksi1
-        ksi2m = ksi2
+! - Save values if Newton avoids
+!
+    if (dist .le. dist_mini) then
+        dist_mini = dist
+        ksi1_mini = ksi1
+        ksi2_mini = ksi2
     endif
 !
-! --- CALCUL DE LA REFERENCE POUR TEST DEPLACEMENTS
+! - Convergence
 !
     refe = (ksi1*ksi1+ksi2*ksi2)
-    if (refe .le. epsrel) then
-        refe = 1.d0
-        eps = epsabs
+    if (refe .le. tole_rela) then
+        tole_newt = tole_abso
+        test      = sqrt(dksi1*dksi1+dksi2*dksi2)
     else
-        eps = epsrel
+        tole_newt = tole_rela
+        test      = sqrt(dksi1*dksi1+dksi2*dksi2)/sqrt(refe)
     endif
 !
-! --- CALCUL POUR LE TEST DE CONVERGENCE
+! - Continue or not ?
 !
-    test = sqrt(dksi1*dksi1+dksi2*dksi2)/sqrt(refe)
-!
-! --- EVALUATION DE LA CONVERGENCE
-!
-    if ((test.gt.eps) .and. (iter.lt.itemax)) then
+    if ((test.gt.tole_newt) .and. (iter.lt.iter_maxi)) then
+        iter = iter + 1
         goto 20
-    else if ((iter.ge.itemax).and.(test.gt.eps)) then
-        ksi1 = ksi1m
-        ksi2 = ksi2m
-        call mmfonf(ndim, nno, alias, ksi1, ksi2,&
+    else if ((iter.ge.iter_maxi).and.(test.gt.tole_newt)) then
+        ksi1 = ksi1_mini
+        ksi2 = ksi2_mini
+        call mmfonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
                     ff, dff, ddff)
-        call mmtang(ndim, nno, coorma, dff, tau1,&
-                    tau2)
+        call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1,&
+                    tang_2)
     endif
 !
-! --- FIN DE LA BOUCLE
+! - End of loop
 !
+999 continue
 !
-999  continue
+    if (error .eq. 1) then
+        write(6,*) 'POINT A PROJETER : ',pt_coor(1),pt_coor(2),pt_coor(3)
+        write(6,*) 'MAILLE             ',type_elem,nb_node
 !
-    if (niverr .eq. 1) then
-        write(6,*) 'POINT A PROJETER : ',coorpt(1),coorpt(2),coorpt(3)
-        write(6,*) 'MAILLE             ',alias,nno
-!
-        do 70 ino = 1, nno
+        do ino = 1, nb_node
             write(6,*) '  NOEUD ',ino
-            write(6,*) '   (X,Y,Z)',coorma(3*(ino-1)+1) ,&
-     &                            coorma(3*(ino-1)+2),&
-     &                            coorma(3*(ino-1)+3)
-70      continue
+            write(6,*) '   (X,Y,Z)',elem_coor(3*(ino-1)+1) ,&
+                                    elem_coor(3*(ino-1)+2),&
+                                    elem_coor(3*(ino-1)+3)
+        end do
         write(6,*) 'KSI   : ',ksi1,ksi2
         write(6,*) 'ALPHA : ',alpha
     endif
