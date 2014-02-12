@@ -31,6 +31,7 @@ subroutine calirc(chargz)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
@@ -70,7 +71,7 @@ subroutine calirc(chargz)
     integer :: jconb2, jconu2, jcocf2, jcom12, ideca2
     integer :: nbtyp, nddl2, nbma2,  jlistk, jdim, ndim1
     integer ::  jnorm, idim, ij, ima1, jlisv1
-    integer :: kno2, kkno2,   jcoor
+    integer :: kno2, kkno2, jcoor, iarg
     logical :: lrota, dnor
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     complex(kind=8) :: betac, cbid
@@ -85,12 +86,11 @@ subroutine calirc(chargz)
     character(len=24) :: geom2
     character(len=24) :: valk(2)
     character(len=1) :: kb
-    real(kind=8) :: rbid
     logical :: l_tran
     real(kind=8) :: tran(3)
     logical :: l_cent
-    real(kind=8) :: cent(3)
-    logical :: l_angl_naut
+    real(kind=8) :: cent(3), dmax
+    logical :: l_angl_naut, l_dmax
     real(kind=8) :: angl_naut(3)
     character(len=24) :: list_node
     integer, pointer :: limanu1(:) => null()
@@ -109,9 +109,17 @@ subroutine calirc(chargz)
     cbid = dcmplx(0.d0, 0.d0)
 ! ----------------------------------------------------------------------
 !
+    l_dmax=.false.
+!
     call jemarq()
     motfac='LIAISON_MAIL'
     call getfac(motfac, nocc)
+    call getvr8(motfac, 'DISTANCE_MAX', iocc=1, scal=dmax, isdefault=iarg)
+!
+    if (iarg .eq. 0.d0 ) then
+        l_dmax = .true.
+    endif
+!
     if (nocc .eq. 0) goto 320
 !
     call getres(kb, kb, nomcmd)
@@ -339,21 +347,21 @@ subroutine calirc(chargz)
             ASSERT((typrac.eq.' ') .or. (typrac.eq.'MASSIF'))
             call pj2dco('PARTIE', mo, mo, nbma1, limanu1,&
                         nbno2, zi( iagno2), ' ', geom2, corres,&
-                        .false., rbid)
+                        l_dmax, dmax)
         else if (ndim.eq.3) then
             if ((typrac.eq.' ') .or. (typrac.eq.'MASSIF')) then
                 call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
-                            .false., rbid)
+                            l_dmax, dmax)
                 elseif (typrac.eq.'COQUE' .or. typrac.eq.'MASSIF_COQUE')&
             then
                 call pj4dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
-                            .false., rbid, 'NON')
+                            l_dmax, dmax, 'NON')
             else if (typrac.eq.'COQUE_MASSIF') then
                 call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
                             nbno2, zi(iagno2), ' ', geom2, corres,&
-                            .false., rbid)
+                            l_dmax, dmax)
                 call wkvect('&&CALIRC.LISV1', 'V V R', 3*nnomx, jlisv1)
                 call calir3(mo, nbma1, limanu1, nbno2, zi(iagno2),&
                             geom2, corre1, corre2, jlisv1, iocc)

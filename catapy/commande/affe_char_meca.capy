@@ -364,6 +364,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
               MAILLE_ESCL     =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
               GROUP_NO_ESCL   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
               NOEUD_ESCL      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+              DISTANCE_MAX    =SIMP(statut='f',typ='R'),
 
               TYPE_RACCORD    =SIMP(statut='o',typ='TXM',defaut="MASSIF",into=("MASSIF","COQUE","COQUE_MASSIF","MASSIF_COQUE",)),
 

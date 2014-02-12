@@ -66,8 +66,12 @@ MEST11=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # --------------------
 
 CH12=AFFE_CHAR_MECA(  MODELE=MO,  INFO=2,
-    LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   NOEUD_ESCL = ('E','E2',),
-       TRAN = ( -5., 0., 0.,), CENTRE = (10., 0., 0.,), ANGL_NAUT = (90.,0.,0.,)) )
+    LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   
+                     NOEUD_ESCL = ('E','E2',),
+                     DISTANCE_MAX = 1.E-6 ,
+                     TRAN = ( -5., 0., 0.,), 
+                     CENTRE = (10., 0., 0.,), 
+                     ANGL_NAUT = (90.,0.,0.,)) )
 
 MEST12=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH12)) )
@@ -117,9 +121,14 @@ MEST21=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # --------------------
 
 CH22=AFFE_CHAR_MECA( INFO=2, MODELE=MO,
-      LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   MAILLE_ESCL = 'S1',
-         TRAN = ( 5., 10., 0.,), CENTRE = (10., 0., 0.,), ANGL_NAUT = (180.,0.,0.,),
-         DDL_MAIT = 'DNOR', DDL_ESCL = 'DNOR') )
+      LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   
+                       MAILLE_ESCL = 'S1',
+                       DISTANCE_MAX = 1.E-6 ,
+                       TRAN = ( 5., 10., 0.,), 
+                       CENTRE = (10., 0., 0.,), 
+                       ANGL_NAUT = (180.,0.,0.,),
+                       DDL_MAIT = 'DNOR', 
+                       DDL_ESCL = 'DNOR') )
 
 MEST22=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH22)) )
@@ -198,8 +207,12 @@ MEST11=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # --------------------
 
 CH12=AFFE_CHAR_THER(  MODELE=MO,   INFO=2,
-            LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   NOEUD_ESCL = ('E','E2',),
-               TRAN = ( -5., 0., 0.), CENTRE = (10., 0., 0.), ANGL_NAUT = (90., 0., 0.)) )
+            LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),
+                             NOEUD_ESCL = ('E','E2',),
+                             DISTANCE_MAX = 1.E-6 ,
+                             TRAN = ( -5., 0., 0.), 
+                             CENTRE = (10., 0., 0.), 
+                             ANGL_NAUT = (90., 0., 0.)) )
 
 MEST12=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH12)) )
