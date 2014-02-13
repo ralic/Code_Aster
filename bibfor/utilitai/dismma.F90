@@ -207,7 +207,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
 52      continue
 !
     else
-        ierd = 1
+        ASSERT(.false.)
     endif
 !
 !

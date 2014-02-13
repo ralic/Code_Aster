@@ -70,7 +70,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 !
     call jeveuo(model//'.MAILLE', 'L', j_mail)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    call dismoi('NB_MA_MAILLAGE', mesh, 'MAILLAGE', repi=nb_elem_mesh, arret='C')
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !
 ! - Mesh affectation
 !
