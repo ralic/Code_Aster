@@ -36,30 +36,35 @@ subroutine op0118()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: npfft, dim, dim2, l, nbtir
-    integer :: ifm, niv, nbpar, nbval, lvale, ldesc, nbfreq, k
+    integer :: ifm, niv, nbval, lvale, ldesc, nbfreq, k
     integer :: nbfc, long, ln, ln2, lonv, lvalf, lvalc, lr, lv
-    integer :: lx, ly, ln4, kf, lfo, lprof, if, ifo, kt, it
-    integer :: ix, iy, lnr, kk, ifft, kv
+    integer :: lx, ly, ln4, kf, ifo, kt, it
+    integer :: ix, iy, lnr, kk, ifft
     integer :: jump
+    integer :: linst, lrefe,ibid, ifonc, inum, ispec
 !
-    integer :: lnuor
-    parameter   ( nbpar = 2 )
+    integer :: lnuor,lnuord
 !
     real(kind=8) :: pui2, pui2d, pui3d, freini, frefin, dfreq, tt, dt, tini
     real(kind=8) :: tfin, duree
     complex(kind=8) :: c16b
-    character(len=8) :: typar(2), nomvec
-    character(len=16) :: typvec, nomcmd, nopar(2)
-    character(len=19) :: nominf, nomfon
+    character(len=8) :: nomvec
+    character(len=16) :: typvec, nomcmd
+    character(len=19) :: nominf
+    character(len=24) :: chinst, chvale
 !
-    data nopar / 'NUME_ORDRE' , 'FONCTION' /
-    data typar / 'I'          , 'K24'      /
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -68,10 +73,8 @@ subroutine op0118()
     call infmaj()
     call infniv(ifm, niv)
 !
-!
+!   on récupère le nom du concept résultat ici de type interspectre
     call getres(nomvec, typvec, nomcmd)
-!
-!
 !===============
 ! 2. LECTURE DES DONNEES LIEES A LA GENERATION
 !===============
@@ -96,11 +99,14 @@ subroutine op0118()
 !===============
 ! 4. RECUPERATION DE L'INTERSPECTRE FACTORISE (NOMINF)
 !===============
+! on lit les valeurs de l'interspectre factorisé
     call jelira(nominf//'.VALE', 'LONUTI', nbval)
     call jeveuo(nominf//'.VALE', 'L', lvale)
     call jeveuo(nominf//'.DESC', 'L', ldesc)
     call jeveuo(nominf//'.NUOR', 'L', lnuor)
+! celui-ci est discrétisé sur nbfreq
     nbfreq = zi(ldesc)
+! 
     dim = zi(ldesc+1)
     nbfc = zi(ldesc+2)
 !                        => NBFC = (DIM*(DIM+1))/2
@@ -135,57 +141,25 @@ subroutine op0118()
 ! A T=DT ET NON T=0.
     tfin = ln2*nbtir*dt
 !
+    ln4 = ln2*nbtir+1
     call wkvect('&&OP0118.TEMP.VALF', 'V V R', lonv, lvalf)
     call wkvect('&&OP0118.TEMP.VALC', 'V V C', ln2, lvalc)
     call wkvect('&&OP0118.TEMP.VALR', 'V V C', dim2, lr)
     call wkvect('&&OP0118.TEMP.VALV', 'V V C', dim, lv)
     call wkvect('&&OP0118.TEMP.VALX', 'V V C', dim, lx)
-    call wkvect('&&OP0118.TEMP.VALY', 'V V I', dim, ly)
-!
-!     --- CREATION DE L'OBJET NOMVEC//'.TABL' ET REMPLISSAGE ---
-!
-    call tbcrsd(nomvec, 'G')
-    call tbajpa(nomvec, nbpar, nopar, typar)
-!
-!     --- CREATION DES FONCTIONS (VIDE)---
-    ln4 = ln2*nbtir+1
-!
-    do 60 kf = 1, dim
-        write (nomfon,'(A8,A3,I4.4)') nomvec, '.FO', kf
-!
-        call tbajli(nomvec, nbpar, nopar, zi(lnuor-1+kf), [0.d0],&
-                    [c16b], nomfon, 0)
-!
-        call wkvect(nomfon//'.VALE', 'G V R', ln4*2, lfo)
-        call wkvect(nomfon//'.PROL', 'G V K24', 6, lprof)
-        zi(ly+kf-1) = lfo
-        zk24(lprof ) = 'FONCTION'
-        zk24(lprof+1) = 'LIN LIN '
-        zk24(lprof+2) = 'INST    '
-        zk24(lprof+3) = 'TOUTRESU'
-        zk24(lprof+4) = 'EC      '
-        zk24(lprof+5) = nomfon
-60  end do
-!
-    do 80 if = 1, dim
-        ifo = zi(ly+if-1)
-        do 30 kt = 1, ln4
-            zr(ifo+kt-1) = dt* (kt-1)
-30      continue
-80  end do
-!
-!
-!
+    call wkvect('&&OP0118.TEMP.VALY', 'V V R', ln4*dim, ly)
+
+
 !===============
-! 5.  GENERATION DES FONCTIONS
+! 5.  CALCUL DES FFT
 !===============
-    do 70 it = 1, nbtir
+    do it = 1, nbtir
 !
         call genale(zr(lvale), zr(lvalf), zc(lr), zc(lv), zc(lx),&
                     dim, long, lonv, ln)
 !
-        do 20 kf = 1, dim
-            do 40 k = 1, ln
+        do kf = 1, dim
+            do k = 1, ln
                 ix = lvalf + (k-1) + (kf-1)*ln2
                 iy = ix + ln
                 zc(lvalc+k-1) = dcmplx(zr(ix),zr(iy))
@@ -196,25 +170,67 @@ subroutine op0118()
                     zc(lvalc+ln) = dcmplx(0.d0,0.d0)
                     zc(lvalc+k-1) = dcmplx(0.d0,0.d0)
                 endif
-40          continue
-            do 998 kk = 1, ln2
+            end do
+            do kk = 1, ln2
                 zc(lvalc+kk-1) = zc(lvalc+kk-1)*sqrt(ln2/dt)
-998          continue
+            end do
 !
             ifft = -1
             call fft(zc(lvalc), ln2, ifft)
-!
-            ifo = zi(ly+kf-1) + ln2* (it-1) + ln4 + 1
+! 
+            ifo = ly + ln2* (it-1) + 1 + (kf-1)*ln4
             if (it .eq. 1) zr(ifo-1)=0.d0
-!                        (VALEUR NULLE POUR T=0.)
-            do 50 kv = 1, ln2
-                zr(ifo+kv-1) = dble(zc(lvalc+kv-1))
-50          continue
-20      continue
-70  end do
+            do inum = 1, ln2
+                zr(ifo-1+inum) = dble(zc(lvalc-1+inum))
+            end do
+!
+        end do
+    end do
+
+!===============
+! 6.  GENERATION DE L'INTERSPECTRE ET REMPLISSAGE
+!===============
+    chinst = nomvec(1:8)//'.ABS'
+    call jeexin(chinst, ibid)
+    if (ibid .eq. 0) then
+        call wkvect(chinst, 'G V R', ln4, linst)
+        do kt = 1, ln4
+                zr(linst-1+kt) = dt* (kt-1)
+        end do
+    endif
+!
+    call wkvect(nomvec(1:8)//'.REFE', 'G V K16', 2, lrefe)
+    zk16(lrefe) = 'DSP'
+    zk16(lrefe+1) = 'TOUT'
+!
+    call wkvect(nomvec(1:8)//'.NUME_ORDRE', 'G V I', dim, lnuord)
+    do ifonc = 1, dim
+        zi(lnuord-1+ifonc) = ifonc
+    end do
+!
+!
+    chvale = nomvec(1:8)//'.VALE'
+    call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',dim)
+    do ifonc = 1, dim
+        call jecroc(jexnum(chvale, ifonc))
+        call jeecra(jexnum(chvale, ifonc), 'LONMAX', ln4)
+        call jeecra(jexnum(chvale, ifonc), 'LONUTI', ln4)
+        call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
+        do inum = 1, ln4
+            zr(ispec-1+inum) = zr(ly-1+inum+(ifonc-1)*ln4)
+        end do
+    end do
+!
+    call jedetr('&&OP0118.TEMP.VALF')
+    call jedetr('&&OP0118.TEMP.VALR')
+    call jedetr('&&OP0118.TEMP.VALC')
+    call jedetr('&&OP0118.TEMP.VALV')
+    call jedetr('&&OP0118.TEMP.VALX')
+    call jedetr('&&OP0118.TEMP.VALY')
+
 !
 !===============
-! 6. IMPRESSION
+! 7. IMPRESSION
 !===============
 !
     if (niv .ge. 2) then

@@ -15,7 +15,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # person_in_charge: irmela.zentner at edf.fr
-GENE_FONC_ALEA=OPER(nom="GENE_FONC_ALEA",op= 118,sd_prod=table_fonction,
+GENE_FONC_ALEA=OPER(nom="GENE_FONC_ALEA",op= 118,sd_prod=interspectre,
                     fr="Génération de la fonction temporelle à partir d une matrice interspectrale",
                     reentrant='n',
             UIinfo={"groupes":("Fonctions",)},

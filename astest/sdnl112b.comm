@@ -429,41 +429,17 @@ VECTINT=GENE_FONC_ALEA(INTE_SPEC=TPSB,
                        NB_TIRAGE=NB_TIR,
 )
 
-EFPROJ1=RECU_FONCTION(  TABLE=VECTINT,
-                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I   = 1          ),
-                  NOM_PARA_TABL='FONCTION',
-                       INTERPOL='LIN',
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU'
-)
+EFPROJ1=RECU_FONCTION(INTE_SPEC=VECTINT,
+                      NUME_ORDRE = 1 )
 
-EFPROJ2=RECU_FONCTION(  TABLE=VECTINT,
-                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I   = 2          ),
-                  NOM_PARA_TABL='FONCTION',
-                       INTERPOL='LIN',
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU'
-)
+EFPROJ2=RECU_FONCTION(INTE_SPEC=VECTINT,
+                      NUME_ORDRE = 2 )
 
-EFPROJ3=RECU_FONCTION(  TABLE=VECTINT,
-                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I   = 3          ),
-                  NOM_PARA_TABL='FONCTION',
-                       INTERPOL='LIN',
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU'
-)
+EFPROJ3=RECU_FONCTION(INTE_SPEC=VECTINT,
+                      NUME_ORDRE = 3 )
 
-EFPROJ4=RECU_FONCTION(  TABLE=VECTINT,
-                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                   VALE_I   = 4          ),
-                  NOM_PARA_TABL='FONCTION',
-                       INTERPOL='LIN',
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU'
-)
+EFPROJ4=RECU_FONCTION(INTE_SPEC=VECTINT,
+                      NUME_ORDRE = 4 )
 
 # OBST1 ---> DEF_CHOC
 OBST1=DEFI_OBSTACLE(  TYPE='PLAN_Y'  )

@@ -1647,37 +1647,22 @@ INT1=DEFI_INTE_SPEC(    DIMENSION=2,PAR_FONCTION=(
                           )
 
 
-VECT1=GENE_FONC_ALEA(
-                         INTE_SPEC=INT1,
-                               FREQ_INIT=0.,
-                               FREQ_FIN=500.,
-                               NB_TIRAGE=10,
-                                NB_POIN=512,
-                                  INFO=2,
-                          )
+VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
+                     FREQ_INIT=0.,
+                     FREQ_FIN=500.,
+                     NB_TIRAGE=10,
+                     NB_POIN=512,
+                     INFO=2,)
 
 #
 #
 
-FONCT1=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',
-                                   INTERPOL='LIN',
-                                 PROL_DROITE='CONSTANT',
-                                PROL_GAUCHE='EXCLU'
-                           )
-
+FONCT1=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE = 1)
 #
 
-FONCT2=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 2),
-                              NOM_PARA_TABL='FONCTION',
-                                   INTERPOL='LIN',
-                                 PROL_DROITE='CONSTANT',
-                                PROL_GAUCHE='EXCLU'
-                           )
+FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE = 2)
 
 #
 

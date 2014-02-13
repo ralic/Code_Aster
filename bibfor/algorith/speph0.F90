@@ -158,7 +158,7 @@ subroutine speph0(nomu, table)
 !
     chnumi = table//'.NUMI'
     chnumj = table//'.NUMJ'
-    chfreq = table//'.FREQ'
+    chfreq = table//'.ABS'
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)
     call jeveuo(chfreq, 'L', lfreq)
@@ -383,7 +383,7 @@ subroutine speph0(nomu, table)
     zk16(lrefes+1) = optcal
 !
     call jelira(chfreq, 'LONMAX', nbpf)
-    call wkvect(nomu//'.FREQ', 'G V R', nbpf, lfreqs)
+    call wkvect(nomu//'.ABS', 'G V R', nbpf, lfreqs)
     call wkvect('&&SPEPH0.TEMP.FONR', 'V V R', nbpf*nbfo1, ifor)
     call wkvect('&&SPEPH0.TEMP.FONI', 'V V R', nbpf*nbfo1, ifoi)
 !

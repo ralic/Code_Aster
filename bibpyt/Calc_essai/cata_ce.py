@@ -663,7 +663,7 @@ class InterSpectre:
     def extr_freq(self):
         """Extraction des frequences d'etude dans la tabl_intsp qui contient
         les inter-spectres mesures"""
-        freq  = aster.getvectjev(self.obj.nom.ljust(8)+'.FREQ')
+        freq  = aster.getvectjev(self.obj.nom.ljust(8)+'.ABS')
         self.f = freq
         self.intsp = 1
 

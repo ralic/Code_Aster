@@ -78,6 +78,7 @@ INT1=DEFI_INTE_SPEC(    DIMENSION=2,PAR_FONCTION=(
                                     NUME_ORDRE_J = 2,
                                     FONCTION = SPECT22))
                           )
+IMPR_CO(CONCEPT=(_F(NOM=INT1)))
 
 POST1=POST_DYNA_ALEA(INTERSPECTRE=_F(
                                     INTE_SPEC=INT1,
@@ -116,31 +117,18 @@ TEST_TABLE(CRITERE='RELATIF',
 
 nbtir = 10
 
-VECT1=GENE_FONC_ALEA(
-                         INTE_SPEC=INT1,
-                               NB_TIRAGE=nbtir,
-                               DUREE_TIRAGE = 7.,
-                                  INFO=2,
-                          )
-
+VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
+                     NB_TIRAGE=nbtir,
+                     DUREE_TIRAGE = 7.,
+                     INFO=2,)
 #
 
-FONCT1=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',
-                                   INTERPOL='LIN',
-                                 PROL_DROITE='CONSTANT',
-                                PROL_GAUCHE='EXCLU'
+FONCT1=RECU_FONCTION(    INTE_SPEC=VECT1,
+                         NUME_ORDRE=1,
                            )
 
-FONCT2=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 2),
-                              NOM_PARA_TABL='FONCTION',
-                                   INTERPOL='LIN',
-                                 PROL_DROITE='CONSTANT',
-                                PROL_GAUCHE='EXCLU'
+FONCT2=RECU_FONCTION(    INTE_SPEC=VECT1,
+                         NUME_ORDRE=2,
                            )
 
 ##############################
@@ -269,7 +257,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 ##############################
 # RECUP. DES MODULES ET PHASES, TEST SUR NORME L2 (VIA LES VALEURS "RMS")
 ##############################
-
+IMPR_CO(CONCEPT=(_F(NOM=INTERS)))
 
 MF11=RECU_FONCTION(    INTE_SPEC=INTERS,
                     NUME_ORDRE_I = 1,
@@ -428,22 +416,16 @@ DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
 ##############################
 # GENERATION DES FCT ALEATOIRES,
 ##############################
-VECT1=GENE_FONC_ALEA(
-                         INTE_SPEC=INT1,
-                               NB_TIRAGE=nbtir,
-                               NB_POIN=2048,
-                               INIT_ALEA=0,
-                          )
+VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
+                     NB_TIRAGE=nbtir,
+                     NB_POIN=2048,
+                     INIT_ALEA=0,)
 
-FONCT1=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',    )
+FONCT1=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE = 1)
 
-FONCT2=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 2),
-                              NOM_PARA_TABL='FONCTION',     )
+FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE = 2)
 
 ##############################
 # TEST SUR LES VALEURS RMS DES TEMPORELS
@@ -479,23 +461,17 @@ DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
 ##############################
 # GENERATION DES FCT ALEATOIRES,
 ##############################
-VECT1=GENE_FONC_ALEA(
-                         INTE_SPEC=INT1,
-                               NB_TIRAGE=nbtir,
-                               FREQ_INIT=10.,
-                               FREQ_FIN=100.,
-                               INIT_ALEA=100000000,
-                          )
+VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
+                     NB_TIRAGE=nbtir,
+                     FREQ_INIT=10.,
+                     FREQ_FIN=100.,
+                     INIT_ALEA=100000000,)
 
-FONCT1=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',    )
+FONCT1=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 1)
 
-FONCT2=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 2),
-                              NOM_PARA_TABL='FONCTION',     )
+FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 2)
 
 ##############################
 # TEST SUR LES VALEURS RMS DES TEMPORELS
@@ -529,23 +505,17 @@ DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
 ##############################
 # GENERATION DES FCT ALEATOIRES,
 ##############################
-VECT1=GENE_FONC_ALEA(
-                         INTE_SPEC=INT1,
-                               NB_TIRAGE=nbtir,
-                               DUREE_TIRAGE = 7.,
-                               NB_POIN=4096,
-                               INIT_ALEA=0,
-                          )
+VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
+                     NB_TIRAGE=nbtir,
+                     DUREE_TIRAGE = 7.,
+                     NB_POIN=4096,
+                     INIT_ALEA=0,)
 
-FONCT1=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',    )
+FONCT1=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 1)
 
-FONCT2=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 2),
-                              NOM_PARA_TABL='FONCTION',     )
+FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 2)
 
 ##############################
 # TEST SUR LES VALEURS RMS DES TEMPORELS
@@ -579,19 +549,13 @@ DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
 ##############################
 # GENERATION DES FCT ALEATOIRES,
 ##############################
-VECT1=GENE_FONC_ALEA(
-                         INTE_SPEC=INT1,
-                          )
+VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,)
 
-FONCT1=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',    )
+FONCT1=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 1)
 
-FONCT2=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 2),
-                              NOM_PARA_TABL='FONCTION',     )
+FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 2)
 
 ##############################
 # TEST SUR LES VALEURS RMS DES TEMPORELS
@@ -626,19 +590,15 @@ DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
 # GENERATION DES FCT ALEATOIRES,
 ##############################
 
-VECT1=GENE_FONC_ALEA(    INTE_SPEC=INT1,
-                         NB_TIRAGE=nbtir,
-                         INTERPOL='NON',    )
+VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
+                     NB_TIRAGE=nbtir,
+                     INTERPOL='NON',)
 
-FONCT1=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',    )
+FONCT1=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 1)
 
-FONCT2=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 2),
-                              NOM_PARA_TABL='FONCTION',     )
+FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 2)
 
 ##########################################################################################
 # TEST SUR LES VALEURS RMS DES TEMPORELS
@@ -681,20 +641,16 @@ DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
 # GENERATION DES FCT ALEATOIRES,
 ##############################
 
-VECT1=GENE_FONC_ALEA(    INTE_SPEC=INT1,
-                         NB_TIRAGE=nbtir,
-                         NB_POIN=2048,
-                         INTERPOL='NON',    )
+VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
+                     NB_TIRAGE=nbtir,
+                     NB_POIN=2048,
+                     INTERPOL='NON',    )
 
-FONCT1=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',    )
+FONCT1=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 1)
 
-FONCT2=RECU_FONCTION(    TABLE=VECT1,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 2),
-                              NOM_PARA_TABL='FONCTION',     )
+FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
+                     NUME_ORDRE= 2)
 
 ##############################
 # TEST SUR LES VALEURS RMS DES TEMPORELS

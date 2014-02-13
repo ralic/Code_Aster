@@ -105,6 +105,8 @@ subroutine gefact(duree, nominf)
 !===============
 !
     call getvid(' ', 'INTE_SPEC', scal=nomint, nbret=l)
+    write(6,*)"Mon Nom est ",nomint
+
 !
     call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n1)
     linter = (interp.eq.'NON')
@@ -119,7 +121,7 @@ subroutine gefact(duree, nominf)
     intesp = nomint(1:8)
     chnumi = intesp//'.NUMI'
     chnumj = intesp//'.NUMJ'
-    chfreq = intesp//'.FREQ'
+    chfreq = intesp//'.ABS'
     chval = intesp//'.VALE'
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)

@@ -80,7 +80,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 !
     chnumi = table//'.NUMI'
     chnumj = table//'.NUMJ'
-    chfreq = table//'.FREQ'
+    chfreq = table//'.ABS'
     chvale = table//'.VALE'
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)
@@ -90,7 +90,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 !
     crnumi = nomu//'.NUMI'
     crnumj = nomu//'.NUMJ'
-    crfreq = nomu//'.FREQ'
+    crfreq = nomu//'.ABS'
     crvale = nomu//'.VALE'
     call wkvect(crfreq, 'G V R', nbpf, lrfreq)
     do 240 ip = 1, nbpf

@@ -215,7 +215,7 @@ subroutine op0131()
     chvale = nomref//'.VALE'
     call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 itail1)
-    chfreq = nomref//'.FREQ'
+    chfreq = nomref//'.ABS'
     call wkvect(chfreq, 'G V R', npdsc3, lfreq)
 !
     ij1 = 0

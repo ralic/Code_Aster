@@ -301,23 +301,15 @@ IMPR_TABLE(TABLE=STADE,
            TITRE='DSP_RESU ',
            FORMAT='TABLEAU',);    
                                                              
-GENE_KT=GENE_FONC_ALEA(
-                         INTE_SPEC=INTKTJ1,
-                         FREQ_INIT=0.,
-                         FREQ_FIN=50.,
-                         NB_TIRAGE=20,
-                          NB_POIN=2048,
-                        INFO=2,
-                          );
+GENE_KT=GENE_FONC_ALEA(INTE_SPEC=INTKTJ1,
+                       FREQ_INIT=0.,
+                       FREQ_FIN=50.,
+                       NB_TIRAGE=20,
+                       NB_POIN=2048,
+                       INFO=2,);
                          
-FONCT1=RECU_FONCTION(    TABLE=GENE_KT,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                              NOM_PARA_TABL='FONCTION',
-                                   INTERPOL='LIN',
-                                 PROL_DROITE='CONSTANT',
-                                PROL_GAUCHE='EXCLU'
-                           );
+FONCT1=RECU_FONCTION(INTE_SPEC=GENE_KT,
+                     NUME_ORDRE = 1);
                            
 test_KT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FONCT1 ),);    
     

@@ -39,13 +39,14 @@ subroutine rfinte(ispec)
     integer :: nbval
     integer :: lpro, i1, indi
     integer :: i, kvale
-    integer :: ifm, niv, n2, n3, n4, mxval, numi, numj, nbfreq, ifreq
-    integer :: lnumi, lnumj, lvale, lfreq, lrefe
+    integer :: ifm, niv, n2, n3, n4, n5, mxval, numi, numj, nbfreq, ifreq, num
+    integer :: lnumi, lnumj, lvale, lfreq, lrefe, lnum
     integer :: lnoei, lnoej, lcmpi, lcmpj
+    character(len=4) :: abscisse
     character(len=8) :: nospec, noei, noej, cmpi, cmpj
     character(len=16) :: nomcmd, typcon, noch, nocham
     character(len=19) :: nomfon
-    character(len=24) :: chnumi, chnumj, chfreq, chvale
+    character(len=24) :: chnumi, chnumj, chfreq, chvale, chnum
     character(len=24) :: chnoei, chnoej, chcmpi, chcmpj
     character(len=24) :: paray
     logical :: indice
@@ -75,14 +76,16 @@ subroutine rfinte(ispec)
         endif
     endif
 !
-    chfreq = nospec//'.FREQ'
+    chfreq = nospec//'.ABS'
     call jeveuo(chfreq, 'L', lfreq)
 !
     call getvtx(' ', 'NOEUD_I', nbval=0, nbret=n2)
     call getvis(' ', 'NUME_ORDRE_I', nbval=0, nbret=n3)
+    call getvis(' ', 'NUME_ORDRE', nbval=0, nbret=n5)
 !
     indice = .false.
     indi = 0
+    abscisse = 'FREQ'
     if (n2 .lt. 0) then
         call getvtx(' ', 'NOEUD_I', scal=noei, nbret=n4)
         call getvtx(' ', 'NOEUD_J', nbval=0, nbret=n4)
@@ -133,13 +136,25 @@ subroutine rfinte(ispec)
                 indice = .true.
             endif
 110      continue
+    else if (n5 .lt. 0) then
+        call getvis(' ', 'NUME_ORDRE', scal=num, nbret=n4)
+        chnum = nospec//'.NUME_ORDRE'
+        call jeveuo(chnum, 'L', lnum)
+        call jelira(chnum, 'LONMAX', mxval)
+        do i1 = 1, mxval
+            if ((zi(lnum-1+i1) .eq. num) .and. (.not. indice)) then
+                indi = i1
+                indice = .true.
+                abscisse = 'INST'
+            endif
+        end do
     endif
 !
     if (.not. indice) then
         call utmess('F', 'UTILITAI4_53')
     endif
 !
-    chfreq = nospec//'.FREQ'
+    chfreq = nospec//'.ABS'
     call jelira(chfreq, 'LONMAX', nbfreq)
     call jeveuo(chfreq, 'L', ifreq)
 !
@@ -150,7 +165,7 @@ subroutine rfinte(ispec)
     ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro+1) = 'LIN LIN '
-    zk24(lpro+2) = 'FREQ'
+    zk24(lpro+2) = abscisse
     zk24(lpro+3) = paray
     zk24(lpro+4) = 'LL      '
     zk24(lpro+5) = nomfon

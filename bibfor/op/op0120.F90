@@ -176,7 +176,7 @@ subroutine op0120()
     chvale = nomref//'.VALE'
     call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 mxval)
-    chfreq = nomref//'.FREQ'
+    chfreq = nomref//'.ABS'
     chnumi = nomref//'.NUMI'
     chnumj = nomref//'.NUMJ'
     call wkvect(chnumi, 'G V I', mxval, lnumi)

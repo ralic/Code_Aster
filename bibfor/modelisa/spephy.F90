@@ -103,7 +103,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 !
     chnumi = table//'.NUMI'
     chnumj = table//'.NUMJ'
-    chfreq = table//'.FREQ'
+    chfreq = table//'.ABS'
     chvale = table//'.VALE'
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)
@@ -189,7 +189,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
     chcmpi = nomu//'.CMPI'
     chcmpj = nomu//'.CMPJ'
     chvals = nomu//'.VALE'
-    call wkvect(nomu//'.FREQ', 'G V R', nbpf, lfreqs)
+    call wkvect(nomu//'.ABS', 'G V R', nbpf, lfreqs)
     do 80 il = 1, nbpf
         zr(lfreqs+il-1) = disc(il)
 80  continue

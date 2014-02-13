@@ -179,7 +179,7 @@ subroutine op0148()
 ! --- INTERSPECTRES OU AUTOSPECTRES UNIQUEMENT ---
 !
     chnumi = table//'.NUMI'
-    chfreq = table//'.FREQ'
+    chfreq = table//'.ABS'
     call jeveuo(chnumi, 'L', lnumi)
     call jelira(chnumi, 'LONMAX', nbmr)
 !

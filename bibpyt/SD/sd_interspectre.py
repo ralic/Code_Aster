@@ -24,11 +24,12 @@ class sd_interspectre(sd_titre):
     nomj = SDNom(fin=8)
 
     REFE = AsVK16(lonmax=2,)
-    FREQ = AsVR()
+    ABS  = AsVR()
     VALE = AsColl(acces='NU',stockage='DISPERSE',modelong='VARIABLE',type='R',)
 
     NUMI = Facultatif(AsVI())
     NUMJ = Facultatif(AsVI())
+    NUME_ORDRE = Facultatif(AsVI())
 
     NOEI = Facultatif(AsVK8())
     NOEJ = Facultatif(AsVK8())
@@ -44,8 +45,7 @@ class sd_interspectre(sd_titre):
             assert len(numi) == len(numj)
             assert self.VALE.nmaxoc == len(numi)
 
-        else:
-            assert self.NOEI.exists
+        elif self.NOEI.exists:
             noei = self.NOEI.get()
             assert self.NOEJ.exists
             noej = self.NOEJ.get()
@@ -57,3 +57,6 @@ class sd_interspectre(sd_titre):
             assert len(cmpj) == len(cmpi)
             assert len(noei) == len(cmpj)
             assert self.VALE.nmaxoc == len(noei)
+        else:
+            assert self.NUME_ORDRE.exists
+            nume_ordre = self.NUME_ORDRE.get()

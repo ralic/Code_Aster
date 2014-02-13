@@ -29,13 +29,13 @@ subroutine genale(vec1, vec2, r, v, x,&
 !           NALEA : NOMBRE ALEATOIRE POUR INITIALISER LE GENERATEUR
 #include "jeveux.h"
 #include "asterfort/genere.h"
-    integer :: dim
+    integer :: dim, long, lonv
     real(kind=8) :: vec1(long), vec2(lonv)
     complex(kind=8) :: r(dim, dim), v(dim), x(dim)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, icomp, ix, iy, j, kf, kk
-    integer :: ln, ln2, long, lonv
+    integer :: ln, ln2
 !-----------------------------------------------------------------------
     ln2=ln*2
     do 10 kf = 1, ln
@@ -48,6 +48,7 @@ subroutine genale(vec1, vec2, r, v, x,&
                 r(i,j) = dcmplx(vec1(ix),vec1(iy))
 30          continue
 20      continue
+        
 !
         call genere(r, dim, v, x)
 !
