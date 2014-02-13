@@ -1,7 +1,7 @@
 subroutine as_deallocate(vl, vi, vi4, vr, vc, &
                          vk8, vk16, vk24, vk32, vk80, &
                          strdbg)
-! person_in_charge: j-pierre.lefebvre at edf.fr
+use module_allocate
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,9 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, &
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+! aslint: disable=W0104,W1304
+!
     implicit none
 #include "aster_debug.h"
 #include "jeveux_private.h"
@@ -52,14 +55,6 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, &
 ! INOUT vk8     : vecteur de k8
 ! INOUT vk16    : vecteur de k16
 ! ...
-! ----------------------------------------------------------------------
-!
-!   -- commons jeveux :
-!   --------------------
-    integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
-    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 ! ----------------------------------------------------------------------
     integer :: ierr, lonty, lsic, lonvec
     character(len=4) :: typv
@@ -131,25 +126,25 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, &
 !   ----------------------------
     ierr=1
     if (typv .eq. 'I') then
-        if (associated(vi)) deallocate(vi, stat=ierr)
+        call deallocate_slvec(vi=vi,ierr=ierr)
     else if (typv.eq.'S') then
-        if (associated(vi4)) deallocate(vi4, stat=ierr)
+        call deallocate_slvec(vi4=vi4,ierr=ierr)
     else if (typv.eq.'L') then
-        if (associated(vl)) deallocate(vl, stat=ierr)
+        call deallocate_slvec(vl=vl,ierr=ierr)
     else if (typv.eq.'R') then
-        if (associated(vr)) deallocate(vr, stat=ierr)
+        call deallocate_slvec(vr=vr,ierr=ierr)
     else if (typv.eq.'C') then
-        if (associated(vc)) deallocate(vc, stat=ierr)
+        call deallocate_slvec(vc=vc,ierr=ierr)
     else if (typv.eq.'K8') then
-        if (associated(vk8)) deallocate(vk8, stat=ierr)
+        call deallocate_slvec(vk8=vk8,ierr=ierr)
     else if (typv.eq.'K16') then
-        if (associated(vk16)) deallocate(vk16, stat=ierr)
+        call deallocate_slvec(vk16=vk16,ierr=ierr)
     else if (typv.eq.'K24') then
-        if (associated(vk24)) deallocate(vk24, stat=ierr)
+        call deallocate_slvec(vk24=vk24,ierr=ierr)
     else if (typv.eq.'K32') then
-        if (associated(vk32)) deallocate(vk32, stat=ierr)
+        call deallocate_slvec(vk32=vk32,ierr=ierr)
     else if (typv.eq.'K80') then
-        if (associated(vk80)) deallocate(vk80, stat=ierr)
+        call deallocate_slvec(vk80=vk80,ierr=ierr)
 !
     else
         ASSERT(.false.)

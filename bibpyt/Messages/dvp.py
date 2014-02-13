@@ -61,7 +61,7 @@ Conseils :
 """),
 
 6 : _(u"""
-Erreur programmeur :
+Erreur de programmation :
   La mémoire allouée avec la routine AS_ALLOCATE n'a pas été totalement libérée
   (fuite mémoire).
 
@@ -70,6 +70,17 @@ Erreur programmeur :
 Risques et conseils :
   Il faut émettre une fiche d'anomalie.
 """),
+
+7 : _(u"""
+Erreur de programmation :
+  Le nombre d'objet de travail créés par le mécanisme AS_ALLOCATE
+  est supérieur au maximum autorisé.
+
+Risques et conseils :
+  Il faut émettre une fiche d'anomalie.
+"""),
+
+
 
 9 : _(u"""
 Erreur de programmation dans un module Python.

@@ -1,6 +1,7 @@
 subroutine as_allocate(size, vl, vi, vi4, vr,&
                        vc, vk8, vk16, vk24, vk32, &
                        vk80, strdbg)
+use module_allocate
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +19,7 @@ subroutine as_allocate(size, vl, vi, vi4, vr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1304
+! aslint: disable=W0104,W1304
     implicit none
 #include "aster_debug.h"
 #include "jeveux_private.h"
@@ -55,55 +56,47 @@ subroutine as_allocate(size, vl, vi, vi4, vr,&
 ! INOUT vk16    : vecteur de k16
 ! ...
 ! ----------------------------------------------------------------------
-!
-!   -- commons jeveux :
-!   --------------------
-    integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
-    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
-! ----------------------------------------------------------------------
-    integer :: lonty, lsic, ltot, ival(4), unmega
-    character(len=4) :: typv
+    integer, save :: iprem=0
+    integer :: lonty, lsic, unmega, ltot, ival(4)
+    character(len=3) :: tsca
     logical :: alloc
-    integer :: iprem=0
-    save iprem
-!
-! -------------------------------------------------------------------
+
+
     if (iprem .eq. 0) then
         cuvtrav=0.d0
         iprem=1
+        call init_slvec(slvec,1000)
     endif
 !
     if (present(vi)) then
-        typv='I'
+        tsca='I'
         lonty=lois
     else if (present(vi4)) then
-        typv='S'
+        tsca='S'
         lonty=4
     else if (present(vl)) then
-        typv='L'
+        tsca='L'
         lonty=lois
     else if (present(vr)) then
-        typv='R'
+        tsca='R'
         lonty=8
     else if (present(vc)) then
-        typv='C'
+        tsca='C'
         lonty=16
     else if (present(vk8)) then
-        typv='K8'
+        tsca='K8'
         lonty=8
     else if (present(vk16)) then
-        typv='K16'
+        tsca='K16'
         lonty=16
     else if (present(vk24)) then
-        typv='K24'
+        tsca='K24'
         lonty=24
     else if (present(vk32)) then
-        typv='K32'
+        tsca='K32'
         lonty=32
     else if (present(vk80)) then
-        typv='K80'
+        tsca='K80'
         lonty=80
     else
         ASSERT(.false.)
@@ -112,34 +105,38 @@ subroutine as_allocate(size, vl, vi, vi4, vr,&
 !
 !
 !   -- on verifie que le vecteur n'est pas deja alloue :
+!      (on ne peut plus le faire depuis issue21985)
+
 !   -----------------------------------------------------
-    alloc=.false.
-    if (typv .eq. 'I') then
-        alloc=associated(vi)
-    else if (typv.eq.'S') then
-        alloc=associated(vi4)
-    else if (typv.eq.'L') then
-        alloc=associated(vl)
-    else if (typv.eq.'R') then
-        alloc=associated(vr)
-    else if (typv.eq.'C') then
-        alloc=associated(vc)
-    else if (typv.eq.'K8') then
-        alloc=associated(vk8)
-    else if (typv.eq.'K16') then
-        alloc=associated(vk16)
-    else if (typv.eq.'K24') then
-        alloc=associated(vk24)
-    else if (typv.eq.'K32') then
-        alloc=associated(vk32)
-    else if (typv.eq.'K80') then
-        alloc=associated(vk80)
+    if (.false.) then
+        alloc=.false.
+        if (tsca .eq. 'I') then
+            alloc=associated(vi)
+        else if (tsca.eq.'S') then
+            alloc=associated(vi4)
+        else if (tsca.eq.'L') then
+            alloc=associated(vl)
+        else if (tsca.eq.'R') then
+            alloc=associated(vr)
+        else if (tsca.eq.'C') then
+            alloc=associated(vc)
+        else if (tsca.eq.'K8') then
+            alloc=associated(vk8)
+        else if (tsca.eq.'K16') then
+            alloc=associated(vk16)
+        else if (tsca.eq.'K24') then
+            alloc=associated(vk24)
+        else if (tsca.eq.'K32') then
+            alloc=associated(vk32)
+        else if (tsca.eq.'K80') then
+            alloc=associated(vk80)
 !
-    else
-        ASSERT(.false.)
+        else
+            ASSERT(.false.)
+        endif
+!       erreur de programmation (ou consequence d'un try/except dans le .comm) :
+!       ASSERT(.not.alloc)
     endif
-! erreur de programmation :
-    ASSERT(.not.alloc)
 !
 !
 !   -- a-t-on encore de la place pour l'allocation ?
@@ -149,7 +146,7 @@ subroutine as_allocate(size, vl, vi, vi4, vr,&
         if (mcdyn+lsic .gt. vmxdyn) then
             call jjldyn(0, -1, ltot)
         endif
-! on depasse la limite => meme message que jjalls:
+!       -- on depasse la limite => meme message que jjalls:
         if (mcdyn+lsic .gt. vmxdyn) then
             unmega=1048576
             ival(1)=(lsic*lois)/unmega
@@ -164,36 +161,29 @@ subroutine as_allocate(size, vl, vi, vi4, vr,&
 !
 !   -- on alloue le vecteur et on l'initialise a "zero" :
 !   -----------------------------------------------------
-    if (typv .eq. 'I') then
-        allocate(vi(size))
-        vi(:)=0
-    else if (typv.eq.'S') then
-        allocate(vi4(size))
-        vi4(:)=0
-    else if (typv.eq.'L') then
-        allocate(vl(size))
-        vl(:)=.false.
-    else if (typv.eq.'R') then
-        allocate(vr(size))
-        vr(:)=0.d0
-    else if (typv.eq.'C') then
-        allocate(vc(size))
-        vc(:)=dcmplx(0.d0,0.d0)
-    else if (typv.eq.'K8') then
-        allocate(vk8(size))
-        vk8(:)=' '
-    else if (typv.eq.'K16') then
-        allocate(vk16(size))
-        vk16(:)=' '
-    else if (typv.eq.'K24') then
-        allocate(vk24(size))
-        vk24(:)=' '
-    else if (typv.eq.'K32') then
-        allocate(vk32(size))
-        vk32(:)=' '
-    else if (typv.eq.'K80') then
-        allocate(vk80(size))
-        vk80(:)=' '
+
+!   -- recherche de l'indice dans slvec :
+
+    if (tsca .eq. 'I') then
+        call allocate_slvec(lon1=size,vi=vi)
+    else if (tsca.eq.'S') then
+        call allocate_slvec(lon1=size,vi4=vi4)
+    else if (tsca.eq.'L') then
+        call allocate_slvec(lon1=size,vl=vl)
+    else if (tsca.eq.'R') then
+        call allocate_slvec(lon1=size,vr=vr)
+    else if (tsca.eq.'C') then
+        call allocate_slvec(lon1=size,vc=vc)
+    else if (tsca.eq.'K8') then
+        call allocate_slvec(lon1=size,vk8=vk8)
+    else if (tsca.eq.'K16') then
+        call allocate_slvec(lon1=size,vk16=vk16)
+    else if (tsca.eq.'K24') then
+        call allocate_slvec(lon1=size,vk24=vk24)
+    else if (tsca.eq.'K32') then
+        call allocate_slvec(lon1=size,vk32=vk32)
+    else if (tsca.eq.'K80') then
+        call allocate_slvec(lon1=size,vk80=vk80)
 !
     else
         ASSERT(.false.)

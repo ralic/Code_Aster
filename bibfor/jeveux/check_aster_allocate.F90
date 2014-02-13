@@ -1,4 +1,5 @@
 subroutine check_aster_allocate(init)
+use module_allocate
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,23 +20,17 @@ subroutine check_aster_allocate(init)
     implicit none
     integer, optional, intent(in) :: init
 !
-#include "jeveux_private.h"
-#include "asterc/jdcget.h"
-#include "asterfort/utmess.h"
-#include "asterfort/assert.h"
-!
 ! --------------------------------------------------------------------------
 ! verifier que les objets alloues par as_allocate ont bien ete desalloues
 ! init=0 => on (re)initialise la variable du common : cuvtrav=0
 ! --------------------------------------------------------------------------
 !
-!   -- commons jeveux :
-!   --------------------
-    integer :: lbis, lois, lols, lor8, loc8
-    common /ienvje/  lbis , lois , lols , lor8 , loc8
-    real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
-    common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
-! ----------------------------------------------------------------------
+#include "jeveux_private.h"
+#include "asterc/jdcget.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
+!
     integer, save :: icode = -1
 !
     if (present(init)) then
@@ -43,14 +38,15 @@ subroutine check_aster_allocate(init)
         cuvtrav=0.d0
     endif
 !
-    if (cuvtrav .ne. 0.d0) then
+    if (abs(cuvtrav) > r8prem()) then
         call utmess('A', 'DVP_6', sr=cuvtrav*lois/1.e6)
         if (icode < 0) then
             icode = jdcget('icode')
         endif
         if (icode == 1) then
-            ASSERT(cuvtrav .eq. 0.d0)
+            ASSERT(abs(cuvtrav) < r8prem())
         endif
+        call deallocate_all_slvec()
     endif
 !
 end subroutine
