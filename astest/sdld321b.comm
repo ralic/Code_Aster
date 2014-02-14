@@ -511,6 +511,7 @@ TEST_RESU(RESU=_F(INST=3.6400000000000001,
                   NOM_CMP='DX',
                   VALE_CALC=-8.197197E-03,
                   VALE_REFE=-8.19821E-3,
+                  CRITERE='ABSOLU',
                   REFERENCE='ANALYTIQUE',
                   PRECISION=5.E-3,),
           )
@@ -522,6 +523,7 @@ TEST_RESU(RESU=_F(INST=4.96,
                   NOM_CMP='DX',
                   VALE_CALC=9.0069277E-03,
                   VALE_REFE=9.00847E-3,
+                  CRITERE='ABSOLU',
                   REFERENCE='ANALYTIQUE',
                   PRECISION=5.E-3,),
           )
@@ -577,6 +579,7 @@ TEST_RESU(RESU=_F(INST=1.01,
                   NOM_CMP='DX',
                   VALE_CALC=-3.838997E-03,
                   VALE_REFE=-3.83901E-3,
+                  CRITERE='ABSOLU',
                   REFERENCE='ANALYTIQUE',
                   PRECISION=5.E-3,),
           )
@@ -611,7 +614,8 @@ TEST_RESU(RESU=_F(INST=4.96,
                   VALE_CALC=9.00842E-03,
                   VALE_REFE=9.00847E-03,
                   REFERENCE='ANALYTIQUE',
-                  TOLE_MACHINE=1.E-3,             # ajustement pour clap0f0q
+                  CRITERE='RELATIF',
+                  #TOLE_MACHINE=1.E-3,             # ajustement pour clap0f0q
                   PRECISION=5.E-3,),
           )
 
@@ -875,6 +879,8 @@ TEST_RESU(RESU=_F(INST=3.6800000000000002,
                   NOM_CMP='DX',
                   VALE_CALC=0.41050285,
                   VALE_REFE=0.410585,
+                  CRITERE='ABSOLU',
+                  TOLE_MACHINE=5.0E-05,  # pour clap0f0q
                   REFERENCE='ANALYTIQUE',
                   PRECISION=5.E-3,),
           )
