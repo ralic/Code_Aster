@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -194,6 +194,8 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
         arg_int = {}
         if INTERFACE[i]['NOEUD'] :
             arg_int['NOEUD'] = INTERFACE[i]['NOEUD']
+        if INTERFACE[i]['MASQUE'] :
+            arg_int['MASQUE'] = INTERFACE[i]['MASQUE']
         if INTERFACE[i]['GROUP_NO'] :
             arg_int['GROUP_NO'] = INTERFACE[i]['GROUP_NO']
         mcfact.append( _F(NOM = INTERFACE[i]['NOM'],

@@ -179,13 +179,15 @@ MODES_2=MODE_ITER_SIMULT(     MATR_RIGI=RAID_2,
 LINT1_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_1,
                          INTERFACE=_F( NOM = 'GAUCHE',
                                         TYPE = 'CRAIGB',
-                                        GROUP_NO = 'GAUCHE'))
+                                        MASQUE = ('DX','DY','DRZ',),
+                                        GROUP_NO = 'GAUCHE'),)
 
 #
 LINT2_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_2,
                           INTERFACE=_F( NOM = 'BLOQUE',
                                         TYPE = 'CRAIGB',
-                                        GROUP_NO = 'BLOQUE'))
+                                        MASQUE = ('DX','DY','DRZ',),
+                                        GROUP_NO = 'BLOQUE'),)
 #   CALCUL DES MODES DE COUPLAGE
 MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID_1,
                         MATR_MASS=MASS_1,

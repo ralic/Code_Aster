@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,7 @@ CREA_ELEM_SSD=MACRO(nom="CREA_ELEM_SSD",
            NOEUD           =SIMP(statut='f',typ=no,max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
            FREQ            =SIMP(statut='f',typ='R',defaut= 1.),
+           MASQUE          =SIMP(statut='f',typ='TXM',max='**'),
          ),
 
 # pour DEFI_BASE_MODALE

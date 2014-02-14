@@ -106,11 +106,11 @@ MACEL1 = CREA_ELEM_SSD(
                  CARA_ELEM = PARAM1,
                  INTERFACE = _F( NOM = 'GAUCHE',
                                TYPE = 'CRAIGB',
+                               MASQUE = ('DX','DY','DRZ',),
                                GROUP_NO = 'GAUCHE'),
                  BASE_MODALE = _F( TYPE = 'RITZ',
                                    NMAX_MODE_INTF = 20,),
-                 CALC_FREQ = _F(NMAX_FREQ = 6,),
-                )
+                 CALC_FREQ = _F(NMAX_FREQ = 6,),)
 #
 # SOUS-STRUCTURE 2 ENCASTREE-APPUYEE - INTERFACE TYPE CRAIG-BAMPTON
 #
@@ -128,11 +128,11 @@ MACEL2 = CREA_ELEM_SSD(
                  CARA_ELEM = PARAM2,
                  INTERFACE = _F( NOM = 'BLOQUE',
                                 TYPE = 'CRAIGB',
+                                MASQUE = ('DX','DY','DRZ'),
                                 GROUP_NO = 'BLOQUE'),
                  BASE_MODALE = _F( TYPE = 'RITZ',
                                    NMAX_MODE_INTF = 20,),
-                 CALC_FREQ = _F(NMAX_FREQ = 6,),
-                )
+                 CALC_FREQ = _F(NMAX_FREQ = 6,),)
 
 #
 #   CALCUL SUR MODELE GENERALISE
