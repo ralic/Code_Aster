@@ -94,6 +94,8 @@ subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
                 write(ific,103) temps(it), (zr(indx+(vv-1)*nbchoc),vv=1,nbvdisc)
             enddo
         enddo
+!       On ferme le fichier pour être sûr que le flush soit fait
+        call ulopen(-ific, ' ', ' ', ' ', ' ')
     enddo
 100 format(A)
 101 format(A,I5,A)
