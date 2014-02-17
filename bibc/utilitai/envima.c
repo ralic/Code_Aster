@@ -30,14 +30,10 @@ static long   ISUND    = 0x7FFFFFFFFFFFFFFF ;
 static long   ISUND    = LONG_MAX ;
 #endif
 
-#ifdef _NAN_BULL
-static unsigned short R8UND[4] = {0, 65535, 65535, 65527};
-#else
 #ifdef _USE_64_BITS
 static int    R8UND[2] = { 0x00000000 , 0x7ff80000 };
 #else
 static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
-#endif
 #endif
 
 /* entier max, réel max, réel min, précision en réel simple et double */
