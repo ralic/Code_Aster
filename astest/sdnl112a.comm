@@ -174,6 +174,7 @@ MELFLUI0=CALC_FLUI_STRU(
              IMPRESSION=_F(  PARA_COUPLAGE = 'OUI')
 )
 
+
 #
 
 FREQ1=RECU_FONCTION( 
@@ -282,7 +283,6 @@ DYN0=POST_DYNA_ALEA(INTERSPECTRE=_F(
                         OPTION='DIAG'
 ))
 
-#
 
 IMPR_TABLE(  TABLE=DYN0, )
 
@@ -297,7 +297,49 @@ TEST_TABLE(
                       VALE_K='N_04_001',),
                    ),
            )
+#
+MELFLU45=CALC_FLUI_STRU(VITE_FLUI      = _F(VITE_MIN    = vite_min,
+                                            VITE_MAX    = vite_max,
+                                            NB_POIN     = nb_poin),
+                        BASE_MODALE    = _F(MODE_MECA   = MODES, 
+                                            NUME_ORDRE  = (4,5),
+                                            AMOR_REDUIT = (4.999E-03,4.999E-03),),
+                        TYPE_FLUI_STRU = TYPEFLUI,
+                        IMPRESSION     = _F(PARA_COUPLAGE = 'NON'))
 
+SPPROJ45=PROJ_SPEC_BASE(SPEC_TURB      = SPECTRE1,
+                        NB_POIN        = 4096 ,
+                        FREQ_INIT      = Fmin ,
+                        FREQ_FIN       = Fmax ,
+                        TOUT_CMP       = 'NON',
+                        TOUT           = 'OUI',
+                        BASE_ELAS_FLUI = MELFLU45,
+                        VITE_FLUI      = vite_min,)
+
+REPM45=DYNA_SPEC_MODAL(BASE_ELAS_FLUI = MELFLU45,
+                       VITE_FLUI      = vite_min,
+                       EXCIT          =_F(INTE_SPEC_GENE = SPPROJ45))
+
+REPP45=REST_SPEC_PHYS(BASE_ELAS_FLUI = MELFLU45,
+                      VITE_FLUI      = vite_min,
+                      INTE_SPEC_GENE = REPM45,
+                      NOM_CHAM       = 'DEPL',
+                      NOM_CMP        = 'DX',
+                      OPTION         = 'TOUT_TOUT',
+                      NOEUD          = 'N_04_001')
+
+DYN45=POST_DYNA_ALEA(INTERSPECTRE=_F(INTE_SPEC = REPP45,
+                                     OPTION    = 'DIAG'))
+
+TEST_TABLE(VALE_CALC      = 2.39852863262E-31,
+           CRITERE        = 'ABSOLU',
+           ORDRE_GRANDEUR = 2.0E-3, # ~ RMS de déplacement obténu sur les 4 premiers modes
+           NOM_PARA       = 'ECART',
+           TABLE          = DYN45,
+           FILTRE         = (_F(NOM_PARA='NOEUD_I',
+                                VALE_K='N_04_001',),
+                             _F(NOM_PARA='NOEUD_J',
+                                VALE_K='N_04_001',),),)
 #
 FIN( )
 #
