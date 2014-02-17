@@ -1,4 +1,4 @@
-# TITRE POUTRE DCB 2D PLASTIQUE AVEC ELEMENTS D'INTERFACE EN CHARGEMENT MONOTONE : LOI CZM_OUV_MIX
+# TITRE POUTRE DCB 2D ELASTIQUE AVEC ELEMENTS DE JOINT EN CHARGEMENT MONOTONE : LOI CZM_LIN_REG
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,16 +19,13 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
-
 # DEFINITION DES LOIS DE COMPORTEMENT DE LA DCB ET DE LA FISSURE
-loi_pla='VMIS_ISOT_LINE'
 loi_ela='ELAS'
-loi_czm='CZM_OUV_MIX'
+loi_czm='CZM_LIN_REG'
 
 # INSTANT FINAL ET VALEUR DU DEPL FINAL
 tfin=10
-dep_fp=3.5
-dep_fe=1.1e0
+dep_f=1.1
 
 # NOMBRES DE PAS PAR INSTANT ET NOMBRE D'ARCHIVAGE
 nbpas = 2*tfin
@@ -40,20 +37,16 @@ sigc=35
 dc=2*tenac/sigc
 
 # PARAMETRES NUMERIQUES DE LA LOI CZM
-ri_gli=10
-pen_lag=100
+pen = 1.E-5
 
-# PARAMETRES DE LA LOI ELASTOPLASTIQUE (valeurs tests)
+# PARAMETRES DE LA LOI ELASTIQUE (valeurs tests)
 young = 200000
 nnuu = 0.3
-splas = 30
-ecrou = 3577
 
 
 PRE_GMSH()
-MA0  =  LIRE_MAILLAGE()
 
-MA = CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
+MA  =  LIRE_MAILLAGE()
 
 MA  =  DEFI_GROUP(
     reuse  = MA,
@@ -101,28 +94,19 @@ MO=AFFE_MODELE(
                 _F(
                         GROUP_MA = 'DCBJ',
                         PHENOMENE = 'MECANIQUE',
-                        MODELISATION = 'PLAN_INTERFACE'
+                        MODELISATION = 'PLAN_JOINT'
                        ),
                  ))
-
-
-# DEFINITION DE LA POSITION DE LA FISSURE DANS LE REPERE GLOBAL
-ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
-                     MASSIF=(_F(GROUP_MA='DCBJ',ANGL_REP=(90, 0 ,0))));
 
 
 MATE=DEFI_MATERIAU(
      ELAS=_F(
              E =  young,
              NU = nnuu),
-     ECRO_LINE=_F(
-                  D_SIGM_EPSI=ecrou,
-                  SY=splas),
      RUPT_FRAG = _F(
                      GC        = tenac,
                      SIGM_C    = sigc,
-                     PENA_LAGR = pen_lag,
-                     RIGI_GLIS = ri_gli,
+                     PENA_ADHERENCE = pen,
                     ))
 
 
@@ -149,32 +133,28 @@ TRACTION = AFFE_CHAR_MECA(
 
 # LISTES D'INSTANT ET D'ARCHIVAGE
 
-deb=-0.1
+deb=0.0
 L_INST=DEFI_LIST_REEL(DEBUT   = deb,
      INTERVALLE=(
-      _F( JUSQU_A = 0,        NOMBRE = 1 ),
+      #_F( JUSQU_A = 0,        NOMBRE = 1 ),
       _F( JUSQU_A = tfin  ,   NOMBRE = nbpas ),
 
       ))
 
 INS_ARCH=DEFI_LIST_REEL(DEBUT   = deb,
      INTERVALLE=(
-      _F( JUSQU_A = 0,        NOMBRE = 1 ),
+      #_F( JUSQU_A = 0,        NOMBRE = 1 ),
       _F( JUSQU_A = tfin  ,   NOMBRE = nbarch),
 
       ))
 
-# DEFINITION DE L'EVOLUTION DU CHARGEMENT
-FCT_P = DEFI_FONCTION(
-  NOM_PARA = 'INST',
-  VALE     = (-1,0 ,  0,0,   tfin ,dep_fp ),
-                )
+# DEFINITION DE L'EVOLUTION DU CHARGEMENT                )
 FCT_E = DEFI_FONCTION(
   NOM_PARA = 'INST',
-  VALE     = (-1,0 ,  0,0,   tfin ,dep_fe ),
+  VALE     = (-1,0 ,  0,0,   tfin ,dep_f ),
   
                 )
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST ),
                         ECHEC=_F(
                   ACTION       = 'DECOUPE',
                   SUBD_METHODE = 'MANUEL',
@@ -183,50 +163,14 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
                   SUBD_NIVEAU=10,
                                  ))
 
-# CALCUL
-# LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
-# ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
-# CORRIGE LES EVENTUELLES DERIVES.
-
-# CALCUL ELASTOPLASTIQUE
-U_PLAS=STAT_NON_LINE( INFO=1,
-  MODELE     = MO,
-  CHAM_MATER = CM,
-  CARA_ELEM  = ORIEN_FI,
-  EXCIT      = (
-                 _F(CHARGE = SYMETRIE),
-                 _F(CHARGE = TRACTION,
-                    FONC_MULT = FCT_P),
-               ),
-  COMPORTEMENT  = (
-                _F(RELATION = loi_pla,  GROUP_MA = ('DCB1','DCB2')),
-                _F(RELATION = loi_czm , GROUP_MA = 'DCBJ'),
-                ),
-  INCREMENT  = _F(LIST_INST = DEFLIST,
-                  INST_FIN = tfin,
-                  ),
-  NEWTON     = _F(MATRICE    = 'TANGENTE'  , REAC_ITER=1),
-  CONVERGENCE = _F(
-                   RESI_REFE_RELA = 1.E-6,
-                   SIGM_REFE      = sigc,
-                   DEPL_REFE      = dc,
-                   ITER_GLOB_MAXI = 12,
-                  ),
-  SOLVEUR = _F(METHODE = 'MUMPS'),
-  ARCHIVAGE = _F(
-     LIST_INST     = INS_ARCH
-    )
-  )
   
 # CALCUL ELASTIQUE
 U_ELAS=STAT_NON_LINE( INFO=1,
   MODELE     = MO,
   CHAM_MATER = CM,
-  CARA_ELEM  = ORIEN_FI,
   EXCIT      = (
                  _F(CHARGE = SYMETRIE),
-                 _F(CHARGE = TRACTION,
-                    FONC_MULT = FCT_E),
+                 _F(CHARGE = TRACTION,FONC_MULT = FCT_E),
                ),
   COMPORTEMENT  = (
                 _F(RELATION = loi_ela,  GROUP_MA = ('DCB1','DCB2')),
@@ -237,24 +181,16 @@ U_ELAS=STAT_NON_LINE( INFO=1,
                   ),
   NEWTON     = _F(MATRICE    = 'TANGENTE'  , REAC_ITER=1),
   CONVERGENCE = _F(
-                   RESI_REFE_RELA = 1.E-6,
-                   SIGM_REFE      = sigc,
-                   DEPL_REFE      = dc,
+                   RESI_GLOB_RELA = 1.E-6,
                    ITER_GLOB_MAXI = 8,
                   ),
-  SOLVEUR = _F(METHODE = 'MUMPS'),
-  ARCHIVAGE = _F(
-     LIST_INST     = INS_ARCH
-    )
+  ARCHIVAGE = _F(LIST_INST     = INS_ARCH),
+  SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE='OUI'),
+
   )
 
 
 # POST_TRAITEMENT
-U_PLAS = CALC_CHAMP(reuse = U_PLAS,
-               RESULTAT = U_PLAS,
-               FORCE='FORC_NODA',
-               TOUT = 'OUI',
-               )
 
 U_ELAS = CALC_CHAMP(reuse = U_ELAS,
                RESULTAT = U_ELAS,
@@ -263,33 +199,6 @@ U_ELAS = CALC_CHAMP(reuse = U_ELAS,
                )
 
 # INTERPOLATION NODALE DES CHAMPS AUX PG
-U_PLAS=CALC_CHAMP(reuse =U_PLAS,
-             RESULTAT=U_PLAS,
-             VARI_INTERNE='VARI_ELNO',
-             CONTRAINTE='SIEF_ELNO',
-             GROUP_MA='DCBJ'
-             );
-
-U_PLAS=CALC_CHAMP(
-             reuse =U_PLAS,
-             RESULTAT=U_PLAS,
-             VARI_INTERNE='VARI_NOEU',
-             CONTRAINTE='SIEF_NOEU',
-             GROUP_MA='DCBJ'
-             );
-
-
-F_PLAS = POST_RELEVE_T(
- ACTION = _F(
-   INTITULE     = 'FORCE_G',
-   OPERATION    = 'EXTRACTION',
-   GROUP_NO        = 'DCB_G',
-   NOM_CHAM     = 'FORC_NODA',
-   RESULTANTE   = ('DX','DY'),
-   RESULTAT     =  U_PLAS,
-   TOUT_ORDRE   = 'OUI',
-    ))
-
 
 F_ELAS = POST_RELEVE_T(
  ACTION = _F(
@@ -302,16 +211,6 @@ F_ELAS = POST_RELEVE_T(
    TOUT_ORDRE   = 'OUI',
     ))
 
-D_PLAS = POST_RELEVE_T(
- ACTION = _F(
-   INTITULE     = 'DEPLY',
-   OPERATION    = 'EXTRACTION',
-   GROUP_NO        = 'NO_7',
-   NOM_CHAM     = 'DEPL',
-   NOM_CMP   = ('DX','DY'),
-   RESULTAT     =  U_PLAS,
-   TOUT_ORDRE   = 'OUI',
-    ))
 
 D_ELAS = POST_RELEVE_T(
  ACTION = _F(
@@ -326,27 +225,22 @@ D_ELAS = POST_RELEVE_T(
 
 
 # POST TRAITEMENT DE LA LONGUEUR DE FISSURE COHESIVE
-L_CZM_P = POST_CZM_FISS(RESULTAT = U_PLAS, 
-                      GROUP_MA='DCBJ', 
-                      POINT_ORIG=(0.0,-0.025),
-                      VECT_TANG=(1.,0.))
-IMPR_TABLE(TABLE=L_CZM_P);
 
 L_CZM_E = POST_CZM_FISS(RESULTAT = U_ELAS, 
                       GROUP_MA='DCBJ', 
-                      POINT_ORIG=(0.0,-0.025),
-                      VECT_TANG=(1.0,0.0))
+                      POINT_ORIG = (0.0 , 0.0),
+                      VECT_TANG  = (1.0 , 0.0))
 IMPR_TABLE(TABLE=L_CZM_E);
 
-# TESTS DE LA LONGUEUR DE FISSURE COHESIVE A PARTIR DE LA SOLUTION POUTRE
+# TESTS DE LA LONGUEUR DE FISSURE COHESIVE A PARTIR DE LA SOLUTION APPROCHEE POUTRE
 # epaisseur de la poutre
 epai = 1.0
 # hauteur de la poutre
 haut = 6.0
 # Force a l'instant final
-forc = 8.88580E+00
+forc_f = 8.936982493002
 # complaisance a l'instant final a partir de la force et du deplacement
-comp=dep_fe/forc
+comp=dep_f/forc_f
 # moment d'inercie
 iner = epai*(haut**3)/12.0
 # longueur analytique de la fissure en fonction de la complaisance
@@ -354,20 +248,18 @@ l_ana=(3.0*comp*young*iner)**(1./3.)
 
 TEST_TABLE(
            REFERENCE = 'ANALYTIQUE',
-           VALE_CALC = 105.26127016654,
+           VALE_CALC = 108.5,
            VALE_REFE = l_ana,
            NOM_PARA  = 'LONG_FIS',
            TABLE = L_CZM_E,
-           PRECISION = 6.E-2,
+           PRECISION = 3.E-2,
            FILTRE = _F(NOM_PARA='INST',
                      VALE=10.0,),
            )
 
-
 # TESTS DE NON REGRESSION SUR LA TABLE LONGUEUR DE FISSURE
-
 TEST_TABLE(
-           VALE_CALC=1.2387298334621,
+           VALE_CALC=1.5577350269189,
            NOM_PARA='LONG_COH',
            TABLE=L_CZM_E,
            FILTRE=_F(NOM_PARA='INST',
@@ -375,113 +267,34 @@ TEST_TABLE(
            )
 
 
-TEST_TABLE(
-           VALE_CALC=101.26127016654,
-           NOM_PARA='LONG_TOT',
-           TABLE=L_CZM_P,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,),
-           )
-
-
 # AUTRES TESTS RESU
-
 TEST_TABLE(
-           VALE_CALC=3.7160599343029,
+           VALE_CALC=3.7501830421875,
            NOM_PARA='DY',
-           TABLE=F_PLAS,
+           TABLE=F_ELAS,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),
            )
 
 TEST_TABLE(
-           VALE_CALC=4.036758279583,
+           VALE_CALC = forc_f,
            NOM_PARA='DY',
-           TABLE=F_PLAS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=4.5900595605716,
-           NOM_PARA='DY',
-           TABLE=F_PLAS,
+           TABLE=F_ELAS,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=10.0,),
            )
 
-# TESTS DE QUANTITES LOCALES AUX PG
-TEST_RESU(RESU=_F(INST=10,
-                  POINT=2,
-                  RESULTAT=U_PLAS,
-                  NOM_CHAM='VARI_ELGA',
-                  NOM_CMP='V7',
-                  VALE_CALC=3.8705561473718E-03,
-                  MAILLE='M9788',),
-          )
 
-TEST_RESU(RESU=_F(INST=10,
-                  POINT=2,
-                  RESULTAT=U_PLAS,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIGN',
-                  VALE_CALC=16.693315519188,
-                  MAILLE='M9788',),
-          )
-
-# TESTS DES EXTRAPOLATIONS NODALES
-TEST_RESU(RESU=_F(INST=10,
-                  RESULTAT=U_PLAS,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V7',
-                  VALE_CALC=4.809340930054E-03,
-                  NOEUD='N137'
-                  ),
-          )
-
-TEST_RESU(RESU=_F(INST=10,
-                  RESULTAT=U_PLAS,
-                  NOM_CHAM='SIEF_NOEU',
-                  NOM_CMP='SIGN',
-                  VALE_CALC=12.253117222718,
-                  NOEUD='N137'
-                  ),
-          )
-
-IMPR_TABLE(TABLE = D_PLAS);
-IMPR_TABLE(TABLE = F_PLAS);
 IMPR_TABLE(TABLE = D_ELAS);
 IMPR_TABLE(TABLE = F_ELAS);
 
 # TESTS DES VALEURS AU POINTS DE GAUSS
-IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_PLAS,
+IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_ELAS,
                                      NOM_CHAM='VARI_ELGA',
                                      INST=tfin,
                                      MAILLE=('M9788','M9789','M9790','M9791','M9792'),
                                      NOM_CMP=('V3','V7'))))
 
 
-# CALCUL ET TESTS DES COORDONNEES DES POINTS DE GAUSS
-CHAMEL=CALC_CHAM_ELEM(MODELE=MO,GROUP_MA = 'DCBJ',OPTION='COOR_ELGA')
-
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
-                       NOM_CMP='X',
-                       MAILLE='M9293',
-                       POINT=1,
-                       REFERENCE='ANALYTIQUE',
-                       VALE_REFE=1.99822540333076E+02,
-                       VALE_CALC=1.99822540333076E+02,
-                      ),
-         )
-
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
-                       NOM_CMP='Y',
-                       MAILLE='M9293',
-                       POINT=1,
-                       REFERENCE='ANALYTIQUE',
-                       VALE_REFE=-0.025,
-                       VALE_CALC=-0.025,
-                      ),
-         )
 
 FIN(FORMAT_HDF='OUI')

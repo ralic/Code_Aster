@@ -173,4 +173,47 @@ Si OUVERTURE='OUI' il est nécessaire de renseigner un concept RESULTAT en entr�
 44 : _(u"""
 Si OUVERTURE='OUI' il est nécessaire de renseigner le mot-clé BORNE_MAX.
 """),
+
+45 : _(u"""
+Problème dans POST_CZM_FISS, le point de référence P_ORIG n'est pas aligné avec les points de Gauss des éléments cohésifs.
+
+Pour vous aider à déterminer la position du point de référence voici les coordonnées min et max des points de Gauss 
+du groupe de mailles cohésives %(k1)s :
+abscisse minimale = %(r1)f 
+abscisse maximale = %(r2)f 
+ordonnée minimale = %(r3)f 
+ordonnée maximale = %(r4)f
+"""),
+
+46 : _(u"""
+Problème dans POST_CZM_FISS, le vecteur directeur VECT_TANG n'est pas colinéaire à la droite des points de Gauss.
+
+Pour vous aider à déterminer ce vecteur directeur voici les coordonnées min et max des points de Gauss 
+du groupe de mailles cohésives %(k1)s :
+abscisse minimale = %(r1)f 
+abscisse maximale = %(r2)f 
+ordonnée minimale = %(r3)f 
+ordonnée maximale = %(r4)f
+"""),
+
+47 : _(u"""
+Problème dans POST_CZM_FISS, aucun point de Gauss ne se trouve sur la demi-droite défini par POINT_ORIG et VECT_TANG.
+
+Pour vous aider à déterminer la demi-droite voici les coordonnées min et max des points de Gauss 
+du groupe de mailles cohésives %(k1)s :
+abscisse minimale = %(r1)f 
+abscisse maximale = %(r2)f 
+ordonnée minimale = %(r3)f 
+ordonnée maximale = %(r4)f
+"""),
+
+48 : _(u"""
+Attention, dans POST_CZM_FISS la zone cohésive n'est pas connexe (voir documentation d'utilisation).
+"""),
+
+49 : _(u"""
+Attention, dans POST_CZM_FISS on constate que la zone cohésive n'est portée que par au plus trois points de Gauss.
+Le maillage n'est peut être pas suffisamment fin pour décrire cette zone.
+"""),
+
 }
