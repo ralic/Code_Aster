@@ -516,7 +516,7 @@ BIDONU_S=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U_Surf));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=3.514633,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.514541806954,
                         TOLE_MACHINE=6.E-05,           #TODO TOLE_MACHINE variable entre les machines
                         VALE_PARA=1.0,
                         FONCTION=BIDONU_S,
