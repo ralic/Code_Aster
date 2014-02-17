@@ -9,7 +9,7 @@ waf configure --use-config=aster4 --prefix=../install/std
 waf install -p
 """
 
-YAMMROOT = '/aster/yamm/V7_3_0/'
+YAMMROOT = '/aster/yamm/V7_3_0_201402/'
 
 import intel
 

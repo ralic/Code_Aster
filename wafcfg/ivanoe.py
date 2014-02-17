@@ -9,7 +9,7 @@ waf configure --use-config=ivanoe --prefix=../install/std
 waf install -p -j 8
 """
 
-YAMMROOT = '/home/projets/aster/yamm/V7_3_0/'
+YAMMROOT = '/home/projets/aster/yamm/V7_3_0_201402/'
 
 import intel
 

@@ -9,7 +9,7 @@ waf configure --use-config=clap0f0q --prefix=../install/std
 waf install -p
 """
 
-YAMMROOT = '/home/aster/yamm/V7_3_0/'
+YAMMROOT = '/home/aster/yamm/V7_3_0_201402/'
 
 def configure(self):
     opts = self.options

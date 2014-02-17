@@ -1,15 +1,15 @@
 # coding: utf-8
 
 """
-Configuration for Calibre 7
+Configuration for aster5
 
 . $HOME/dev/codeaster/devtools/etc/env_unstable.sh
 
-waf configure --use-config=calibre7 --prefix=../install/std
+waf configure --use-config=aster5 --prefix=../install/std
 waf install -p
 """
 
-YAMMROOT = '/home/aster/yamm/V7_3_0_201402/'
+YAMMROOT = '/aster/yamm/V7_3_0_201402/'
 
 import intel
 
@@ -20,27 +20,26 @@ def configure(self):
 
     self.env['ADDMEM'] = 250
     self.env.append_value('OPT_ENV', [
-        '. /home/aster/etc/codeaster/profile.sh',
-        '. /home/aster/etc/codeaster/profile_intel-12.sh',
-        '. /home/aster/etc/codeaster/profile_zmat.sh',
-        '. /home/aster/etc/codeaster/profile_mfront.sh'])
+        'module load intel_compilers/14.0.0.080'
+#        'module load intel_mpi'])
+                                                 ])
 
     self.env.append_value('LIBPATH', [
-        '/usr/lib/atlas-base/atlas',                # for NumPy, see issue18751
-        YAMMROOT + 'prerequisites/Python_273/lib',
+        #'/usr/lib/atlas',                           # for NumPy, see issue18751
         YAMMROOT + 'prerequisites/Hdf5_1810/lib',
         YAMMROOT + 'tools/Medfichier_307/lib',
-        YAMMROOT + 'prerequisites/Mumps_for_aster/lib',
-        YAMMROOT + 'prerequisites/Mumps_for_aster/libseq',
+        YAMMROOT + 'prerequisites/Mumps_20141/lib',
+        YAMMROOT + 'prerequisites/Mumps_20141/libseq',
         YAMMROOT + 'prerequisites/Metis_40/lib',
         YAMMROOT + 'prerequisites/Scotch_5111/lib'])
 
     self.env.append_value('INCLUDES', [
-        YAMMROOT + 'prerequisites/Python_273/include/python2.7',
         YAMMROOT + 'prerequisites/Hdf5_1810/include',
         YAMMROOT + 'tools/Medfichier_307/include',
         YAMMROOT + 'prerequisites/Metis_40/Lib',
         YAMMROOT + 'prerequisites/Scotch_5111/include'])
+
+    self.env.append_value('LIB', ('pthread', 'util'))
 
     # to fail if not found
     self.options.enable_hdf5 = True
