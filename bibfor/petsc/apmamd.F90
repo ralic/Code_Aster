@@ -37,6 +37,27 @@ subroutine apmamd(kptsc)
 !  REMPLISSAGE DE LA MATRICE PETSC (INSTANCE NUMERO KPTSC)
 !  DANS LE CAS MATR_DISTRIBUEE
 !
+!  En entrée : la matrice locale ASTER  
+!  En sortie : les valeurs de la matrice PETSc sont remplies à 
+!              partir des valeurs de la matrice ASTER
+!
+!  Rq : 
+!  - la matrice PETSc n'a pas de stockage symétrique: que la matrice 
+!    ASTER soit symétrique ou non, la matrice PETSc est stockée en entier    
+!    (termes non-nuls).
+!  - dans le mode "matrice distribuée" chaque processeur connait une partie de 
+!    la matrice ASTER, la matrice ASTER "locale" Aloc. 
+!    Il initialise sa partie de matrice PETSc (i.e. le bloc de lignes A(low:high-1)). 
+!    La matrice locale ASTER et la matrice locale PETSc sont différentes. 
+!    Lors du MatSetValues, le processeur local envoie aux autres processeurs
+!    les valeurs dont ils ont besoin et il récupère les valeurs
+!    lui permettant d'initialiser son bloc. C'est PETSc qui gère les 
+!    communications entre processeurs (qui possède quoi etc ), et cette gestion 
+!    est cachée. Ici chaque proc envoie *toutes* les valeurs qu'il possède, sans
+!    savoir à qui.    
+!
+!----------------------------------------------------------------
+!
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
@@ -48,8 +69,8 @@ subroutine apmamd(kptsc)
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
     integer :: jsmdi, jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
     integer :: k, iligl, jcoll, nzdeb, nzfin, nbproc
-    integer :: iterm, jterm, jcolg, iligg, jnugll, procol, jprddl
-    integer :: jnequ, nloc, nglo, prolig, rang, jnequl
+    integer :: iterm, jterm, jcolg, iligg, jnugll, jprddl
+    integer :: jnequ, nloc, nglo,  jnequl
 !
     character(len=19) :: nomat, nosolv
     character(len=16) :: idxi1, idxi2, trans1, trans2
@@ -66,7 +87,7 @@ subroutine apmamd(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low, high, neql, neqg, ierr
+    PetscInt :: neql, neqg, ierr
     Mat :: a
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
@@ -85,16 +106,13 @@ subroutine apmamd(kptsc)
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
     call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
     call jeveuo(nonu//'.NUML.NLGP', 'L', jnugll)
-    call jeveuo(nonu//'.NUML.PDDL', 'L', jprddl)
-    call asmpi_info(rank=mrank, size=msize)
-    rang = to_aster_int(mrank)
-    nbproc = to_aster_int(msize)
     nloc = zi(jnequl)
     nglo = zi(jnequ)
     neql = nloc
     neqg = nglo
     nz=zi(jsmdi-1+nloc)
 !
+! La matrice Aster est-elle symétrique ? 
     call jelira(nomat//'.VALM', 'NMAXOC', nvalm)
     if (nvalm .eq. 1) then
         lmnsy=.false.
@@ -104,7 +122,9 @@ subroutine apmamd(kptsc)
     else
         ASSERT(.false.)
     endif
-!
+! Vérification de la cohérence entre le(s) tableau(x) stockant les 
+! valeurs de la matrice nomat et sa structure creuse (telle que définie 
+! dans nonu)
     call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvalm)
     call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
     ASSERT(nlong.eq.nz)
@@ -114,12 +134,6 @@ subroutine apmamd(kptsc)
         ASSERT(nlong.eq.nz)
     endif
 !
-!     low donne la premiere ligne stockee localement
-!     high donne la premiere ligne stockee par le processus (rang+1)
-!     ATTENTION ces indices commencent a zero (convention C de PETSc)
-    call MatGetOwnershipRange(a, low, high, ierr)
-    ASSERT(ierr.eq.0)
-!
     call wkvect(idxi1, 'V V S', nloc, jdxi1)
     call wkvect(idxi2, 'V V S', nloc, jdxi2)
     call wkvect(trans1, 'V V R', nloc, jdval1)
@@ -128,35 +142,55 @@ subroutine apmamd(kptsc)
     iterm=0
     jterm=0
 !
-!     Recopie de la matrice
-!     C'est PETSc qui s'occupe de la recopie des termes vers
-!     le bon processeur
+!  Recopie de la matrice
+!  C'est PETSc qui s'occupe de la recopie des termes vers
+!  le bon processeur
+! 
+! Envoi de Aloc(1,1)
     call MatSetValue(a, zi(jnugll)-1, zi(jnugll)-1, zr(jvalm), ADD_VALUES, ierr)
-!
+    ASSERT(ierr==0)
+! 
     do jcoll = 2, nloc
         nzdeb = zi(jsmdi+jcoll-2) + 1
         nzfin = zi(jsmdi+jcoll-1)
-        procol = zi(jprddl+jcoll-1)
+        ! Indice colonne global (F) de la colonne locale jcoll
         jcolg = zi(jnugll+jcoll-1)
         do k = nzdeb, nzfin
             iligl = zi4(jsmhc-1+k)
             iligg = zi(jnugll-1+iligl)
-            prolig = zi(jprddl-1+iligl)
-            jterm=jterm+1
+            ! Compteur de termes sur la colonne locale jcoll
+            iterm=iterm+1
             valm=zr(jvalm-1+k)
-            zr(jdval2+jterm-1)=valm
-            zi4(jdxi2+jterm-1)=iligg-1
+            ! Stockage dans val1 de A(iligg,jcolg)  
+            zr(jdval1+iterm-1)=valm
+            ! et de son indice ligne global (C)
+            zi4(jdxi1+iterm-1)=iligg-1
+            ! On passe à la *ligne* jcoll
             if (iligg .ne. jcolg) then
-                iterm=iterm+1
-                valm=zr(jvalm-1+k)
-                zr(jdval1+iterm-1)=valm
-                zi4(jdxi1+iterm-1)=iligg-1
+              ! Attention, il ne faut pas stocker le terme diagonal A(jcolg, jcolg) 
+              ! qui a déjà été rencontré dans la *colonne* jcoll
+              ! Compteur de termes sur la ligne jcoll
+              jterm=jterm+1  
+              if ( .not. lmnsy ) then 
+                ! si la matrice ASTER est symétrique
+                ! la ligne jcoll est la transposée de la colonne jcoll  
+                ! on reprend la valeur lue depuis valm
+                valm=zr(jvalm-1+k)  
+              endif
+              ! on stocke dans val2 
+              zr(jdval2+jterm-1)=valm
+              ! avec l'indice colonne global (C) correspondant 
+              zi4(jdxi2+jterm-1)=iligg-1
             endif
         end do
-        call MatSetValues(a, jterm, zi4(jdxi2), 1, [int(jcolg-1, 4)],&
-                          zr(jdval2), ADD_VALUES, ierr)
-        call MatSetValues(a, 1, [int(jcolg-1, 4)], iterm, zi4(jdxi1),&
+        ! Envoi de la colonne jcolg 
+        call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcolg-1, 4)],&
                           zr(jdval1), ADD_VALUES, ierr)
+        ASSERT(ierr==0)
+        ! Envoi de la ligne jcolg
+        call MatSetValues(a, 1, [int(jcolg-1, 4)], jterm, zi4(jdxi2),&
+                          zr(jdval2), ADD_VALUES, ierr)      
+        ASSERT(ierr==0) 
         iterm=0
         jterm=0
     end do

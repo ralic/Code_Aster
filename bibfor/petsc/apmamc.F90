@@ -33,7 +33,18 @@ subroutine apmamc(kptsc)
 !----------------------------------------------------------------
 !
 !  REMPLISSAGE DE LA MATRICE PETSC (INSTANCE NUMERO KPTSC)
+!  
+!  En entrée : la matrice ASTER complète 
+!  En sortie : les valeurs de la matrice PETSc sont remplies à 
+!              partir des valeurs de la matrice ASTER
 !
+!  Rq : 
+!  - la matrice PETSc n'a pas de stockage symétrique: que la matrice 
+!    ASTER soit symétrique ou non, la matrice PETSc est stockée en entier    
+!    (termes non-nuls).
+!  - dans le mode "matrice complète" (MC) tous les processeurs connaissent 
+!    toute la matrice ASTER. Chaque processeur initialise sa partie de la 
+!    matrice PETSc (ie le bloc de lignes A(low:high-1))
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
@@ -44,7 +55,7 @@ subroutine apmamc(kptsc)
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, n, nz, nvalm, nlong
     integer :: jsmdi, jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
-    integer :: k, ilig, jcol, nzdeb, nzfin
+    integer :: k, ilig,  nzdeb, nzfin
     integer :: iterm, jterm
 !
     character(len=19) :: nomat, nosolv
@@ -62,7 +73,7 @@ subroutine apmamc(kptsc)
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low, high, neq, dlow, ierr
+    PetscInt :: low, high, neq, dlow, ierr,jcol
     Mat :: a
 !----------------------------------------------------------------
     call jemarq()
@@ -77,10 +88,13 @@ subroutine apmamc(kptsc)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
+!   n: nb total de ddls
     n=nsmdi
     neq=n
+!   nz: nombre de termes non-nuls (dans la partie triangulaire supérieure 
+!                                             ou inférieure de la matrice) 
     nz=zi(jsmdi-1+n)
-!
+!   la matrice est-elle symétrique ?   
     call jelira(nomat//'.VALM', 'NMAXOC', nvalm)
     if (nvalm .eq. 1) then
         lmnsy=.false.
@@ -89,10 +103,13 @@ subroutine apmamc(kptsc)
     else
         ASSERT(.false.)
     endif
-!
+!   les valeurs de la partie triangulaire supérieure de la matrice sont stockées  
+!   dans valm 
     call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvalm)
     call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
     ASSERT(nlong.eq.nz)
+!   si la matrice n'est pas symétrique, on a aussi besoin des valeurs de 
+!   la partie triangulaire inférieure
     if (lmnsy) then
         call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvalm2)
         call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong)
@@ -113,7 +130,8 @@ subroutine apmamc(kptsc)
     iterm=0
     jterm=0
 !
-!     CAS OU ON POSSEDE LE PREMIER BLOC DE LIGNES
+!     CAS OU ON POSSEDE LE PREMIER BLOC DE LIGNES:
+!     on initialise directement la valeur du premier terme A(0,0) 
     if (low .eq. 0) then
         call MatSetValue(a, 0, 0, zr(jvalm), INSERT_VALUES, ierr)
         dlow=1
@@ -121,55 +139,100 @@ subroutine apmamc(kptsc)
         dlow=0
     endif
 !
-!     ON COMMENCE PAR S'OCCUPER DU BLOC DIAGONAL
+!   Le bloc de lignes A(low:high-1) est composé de trois sous-blocs:
+!           (                               )
+!   low     ( x x x \ o o o | v v v v v v v ) 
+!           ( x x x x \ o o | v v v v v v v )
+!   high-1  ( x x x x x \ o | v v v v v v v )
+!           (                               )
+!   - bloc C (x) = lower(A(low:high-1)) 
+!   - bloc D (o) = upper(A(low:high-1,low:high-1))
+!   - bloc E (v) = A(low:high-1,high:n)
+!   
+!   upper(A) est stockée au format CSC.
+!   Si A n'est pas symétrique, on stocke également  
+!   lower(A),  au format CSR 
+!   
+!   
+! 
+!  ON COMMENCE PAR S'OCCUPER DES BLOCS C ET D
+!
     do jcol = low+dlow, high-1
+    ! Les termes non-nuls de A(1:jcol,jcol) sont stockés dans valm (nzdeb:nzfin)
+    ! Si A n'est pas symétrique, les termes non-nuls de A(jcol,1:jcol) sont stockés
+    ! dans valm2 (nzdeb:nzfin) 
         nzdeb = zi(jsmdi+jcol-1) + 1
         nzfin = zi(jsmdi+jcol)
         do k = nzdeb, nzfin
+        ! indice ligne (fortran) du terme courant dans la matrice Aster 
             ilig = zi4(jsmhc-1+k)
-            jterm=jterm+1
+            ! ======
+            ! Bloc C 
+            ! ======
+            ! Lecture de la ligne C(jcol,:) 
+            ! Compteur de termes dans la ligne jcol de C 
+            jterm=jterm+1  
+            ! si A n'est pas symétrique, on lit valm2 
             if (lmnsy) then
                 valm=zr(jvalm2-1+k)
-                zr(jdval2+jterm-1)=valm
-                zi4(jdxi2+jterm-1)=ilig-1
             else
+            ! si A est symétrique, on lit valm1 
                 valm=zr(jvalm-1+k)
-                zr(jdval2+jterm-1)=valm
-                zi4(jdxi2+jterm-1)=ilig-1
             endif
+            zr(jdval2+jterm-1)=valm
+            ! on stocke l'indice C de la ligne, c'est 
+            ! l'indice de la colonne transposée 
+            zi4(jdxi2+jterm-1)=ilig-1
+            ! ======
+            ! bloc D 
+            ! ======
+            ! il est lu en colonne depuis valm
             if (ilig .ge. (low+1)) then
-                iterm=iterm+1
-                valm=zr(jvalm-1+k)
-                zr(jdval1+iterm-1)=valm
-                zi4(jdxi1+iterm-1)=ilig-1
+               ! Compteur de termes dans la colonne jcol de D
+               iterm=iterm+1
+               valm=zr(jvalm-1+k)
+               zr(jdval1+iterm-1)=valm
+               ! on stocke l'indice C de la ligne
+               zi4(jdxi1+iterm-1)=ilig-1
             endif
         end do
+        ! On enlève un terme dans la ligne C(jcol,:): c'est le terme diagonal
+        ! que l'on a stocké deux fois (pour C et pour D) 
         jterm=jterm-1
+        ! Valeurs de D => on envoie les valeurs de la colonne jcol 
         call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcol, 4)],&
                           zr(jdval1), INSERT_VALUES, ierr)
+        ! Valeurs de C => on envoie les valeurs de la ligne jcol
         call MatSetValues(a, 1, [int(jcol, 4)], jterm, zi4(jdxi2),&
                           zr(jdval2), INSERT_VALUES, ierr)
         iterm=0
         jterm=0
     end do
 !
-!     ENSUITE ON FINIT PAR LE BLOC HORS DIAGONAL
+!     ENSUITE ON FINIT PAR LE BLOC HORS DIAGONAL E
+!
+!   
+! On lit colonne par colonne upper(A( :,high:))
     do jcol = high, neq-1
         nzdeb = zi(jsmdi+jcol-1) + 1
         nzfin = zi(jsmdi+jcol)
         do k = nzdeb, nzfin
             ilig = zi4(jsmhc-1+k)
+            ! On ignore les lignes avant low 
             if (ilig .lt. (low+1)) then
                 continue
+            ! On lit et on stocke A(low+1:high,jcol)= E(:,jcol)
             else if (ilig.le.high) then
                 iterm=iterm+1
                 valm=zr(jvalm-1+k)
                 zr(jdval1+iterm-1)=valm
                 zi4(jdxi1+iterm-1)=ilig-1
             else
+            ! On ignore les lignes après high
                 exit
             endif
         end do
+         ! Valeurs de E => on envoie les valeurs de la colonne jcol 
         call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcol, 4)],&
                           zr(jdval1), INSERT_VALUES, ierr)
         iterm=0

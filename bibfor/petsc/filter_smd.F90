@@ -1,13 +1,15 @@
-subroutine csmbmd(nommat, neq, vsmb)
+subroutine filter_smd(nommat, vsmb)
     implicit none
+! person_in_charge: natacha.bereux at edf.fr
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=*) :: nommat
     real(kind=8) :: vsmb(*)
-    integer :: neq
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,18 +27,17 @@ subroutine csmbmd(nommat, neq, vsmb)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !-----------------------------------------------------------------------
-! BUT :
-!-----------------------------------------------------------------------
-!     FONCTIONS JEVEUX
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
+! BUT : ON MET A ZERO LES TERMES DU SECOND MEMBRE QUI N'APPARTIENNENT PAS
+!       DE FACON EXCLUSIVE (AU SENS PETSC) AU PROCESSEUR COURANT. 
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: jccid, ieq, jrefa, jnugl, iccid
+    integer :: ieql, ieqg, jrefa, jnulg, jnequ, jnequl, jpddl, neqg, neql
+    integer :: iccid, jccid, rang  
     character(len=14) :: nu
     character(len=19) :: mat
+    mpi_int :: mrank, msize
+    logical :: is_ddl_cine, iam_sole_owner
 !-----------------------------------------------------------------------
 !     DEBUT
     call jemarq()
@@ -45,24 +46,42 @@ subroutine csmbmd(nommat, neq, vsmb)
 !
     call jeveuo(mat//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
+        ! Infos du processeur courant
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        ! Infos du NUME_DDL
         nu = zk24(jrefa-1+2)(1:14)
-        call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
-!
+        call jeveuo(nu//'.NUML.NULG', 'L', jnulg) 
+        call jeveuo(nu//'.NUML.PDDL','L',jpddl)
+        call jeveuo(nu//'.NUML.NEQU','L', jnequl)
+        call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
+        neqg=zi(jnequ)
+        neql=zi(jnequl)
         call jeexin(mat//'.CCID', iccid)
 !
         if (iccid .ne. 0) then
             call jeveuo(mat//'.CCID', 'L', jccid)
-            do 10 ieq = 1, neq
-!         SI LE DDL N'APPARTIENT PAS AU PROC COURANT ET QU'IL Y A
-!         UNE CHARGE CINEMATIQUE DESSUS, ON MET LE SECOND MEMBRE A ZERO
-!         SUR LE PROC COURANT POUR EVITER DES INTERFERENCES AVEC
-!         LE PROC QUI POSSEDE EFFECTIVEMENT LE DDL BLOQUE
-                if ((zi(jnugl+ieq-1).eq.0) .and. (zi(jccid-1+ieq).eq.1)) then
-                    vsmb(ieq) = 0.d0
-                endif
-10          continue
         endif
+!        
+        do ieql=1, neql
+           ieqg=zi(jnulg-1+ieql)
+        ! Le dl courant est-il fixé par une charge cinématique ? 
+          if ( iccid == 0 ) then 
+          ! Il n'y a pas de charge cinématique sur le modèle  
+          is_ddl_cine=.false.
+          else 
+          ! Il existe au moins une charge cinématique. On vérifie si
+          ! le numéro global de dl est concerné 
+          is_ddl_cine=zi(jccid-1+ieqg).eq.1
+          endif
+          ! Suis-je le proriétaire exclusif (PETSc) de ce ddl ? 
+          iam_sole_owner= zi(jpddl-1+ieql) .eq. rang
+          if ((.not.is_ddl_cine).and.(.not.iam_sole_owner)) then 
+             vsmb(ieqg) = 0.d0
+          endif
+       enddo
     endif
 !
     call jedema()
 end subroutine
+

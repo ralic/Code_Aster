@@ -62,6 +62,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/filter_smd.h" 
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -183,6 +184,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         call jeveuo(nomat//'.&INT', 'L', lmat)
         call mrconl('MULT', lmat, 0, 'R', rsolu, 1)
 !
+!        -- MISE A ZERO DES TERMES NON CINEMATIQUES DONT LE PROC 
+!           COURANT N'EST PAS SEUL PROPRIETAIRE 
+        call filter_smd(nomat, rsolu)
 !        -- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
         call jeexin(vcine//'.VALE', ierd)
         if (ierd .ne. 0) then
