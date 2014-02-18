@@ -105,7 +105,18 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV127A,
 #
 
 
+VV = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                        OPERATION='AFFE',
+                        MODELE=MO,
+                        AFFE=_F(NOM_CMP=('DY', ),
+                                GROUP_NO=('O2', ),
+                                VALE=(-9.37500E5, ),),
+                        INFO=1,)
+
+
+# validation du chargement VECT_ASSE avec FONC_MULT dans EXCIT [#21882]
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
+                       VECT_ASSE=VV,
                     DDL_IMPO=(_F(GROUP_NO='CC4',
                                  DX=0.0,
                                  DY=0.0,),
@@ -121,10 +132,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0.0,),
                               _F(GROUP_NO='BD4',
                                  DX=0.0,),),
-                    FORCE_NODALE=_F(GROUP_NO='O2',
-                                    FY=-9.37500E5,),);
-#
-#
+                    );
 
 
 CHA2=DEFI_CONTACT(MODELE      = MO,
