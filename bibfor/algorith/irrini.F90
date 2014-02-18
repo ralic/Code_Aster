@@ -7,13 +7,14 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcdive.h"
 #include "asterfort/lceqvn.h"
-#include "asterfort/lcnrve.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/vecini.h"
+#include "blas/ddot.h"
+!
     integer :: typess, nmat, kpg, ksp
     real(kind=8) :: essai, materf(nmat, 2), yd(*), deps(6), dy(*)
     character(len=8) :: mod
@@ -111,8 +112,8 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
         endif
 !
         call lcdevi(sig, dev)
-        call lcnrve(dev, s)
-        s = sqrt ( 1.5d0 ) * s
+        s = ddot(ndt,dev,1,dev,1)
+        s = sqrt ( 1.5d0 * s )
 !
 !        DETAI
         detai=zetaf*s*dphi
