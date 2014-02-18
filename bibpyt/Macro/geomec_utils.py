@@ -205,7 +205,7 @@ def verif_essais(COMPORTEMENT,ESSAI_TD ,
       # Le "bon" nbre d'elts a-t-il ete renseigne pr les MotCles simples
       # -> PRES_CONF, EPSI_IMPOSE, TABLE_RESU ?
       char = "<PRES_CONF>, <EPSI_IMPOSE>"
-      test = test and len(DicoEssai['PRES_CONF']) == len(DicoEssai['EPSI_IMPOSE'])
+      test = len(DicoEssai['PRES_CONF']) == len(DicoEssai['EPSI_IMPOSE'])
       if DicoEssai.has_key('TABLE_RESU'):
         char += ", <TABLE_RESU>"
         test = test and len(DicoEssai['PRES_CONF']) == len(DicoEssai['TABLE_RESU'])
