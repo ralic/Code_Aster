@@ -16,10 +16,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # TEST MPI SUR 4 PROCESSEURS
-
 # CHARGEMENT DE NEUMANN (PRESSION REPARTIE)
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -28,71 +27,149 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
 
-MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3,),);
+#Acier 
+
+MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1e+11,
+                           NU=0.3,),);
 
 AFMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT1,));
+                            MATER=MAT1,),);
 
-AFMECA=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=(_F(GROUP_NO='Cote_inferieur',
-                                   DX=0,DY=0,DZ=0,),),
-                     PRES_REP=_F(GROUP_MA='load_top',
-                                  PRES=1.E8,),
-                                 );
+ENCASTR=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=_F(GROUP_NO='Cote_inferieur',
+                                   DX=0,
+                                   DY=0,
+                                   DZ=0,),);
+
+PRESSION=AFFE_CHAR_MECA(MODELE=MO,
+                        PRES_REP=_F(GROUP_MA='load_top',
+                                    PRES=100000000.0,),);
+
 # DISTRIBUTION PAR GREL
 
-MESTAT1=MECA_STATIQUE(MODELE=MO,
-                      CHAM_MATER=AFMAT,
-                      EXCIT=_F(CHARGE=AFMECA,),
-                      SOLVEUR=_F(METHODE='PETSC',
-                                 ALGORITHME='GCR',
-                                 PRE_COND='LDLT_SP',
-                                 PCENT_PIVOT=100,
-                                 RESI_RELA=1.0E-12,
-                                 MATR_DISTRIBUEE='OUI',),
-                      INFO=2,);
+MESTAT=MECA_STATIQUE(MODELE=MO,
+                     CHAM_MATER=AFMAT,
+                     EXCIT=(_F(CHARGE=ENCASTR,),
+                            _F(CHARGE=PRESSION,),),
+                     SOLVEUR=_F(METHODE='PETSC',
+                                MATR_DISTRIBUEE='OUI',
+                                ALGORITHME='GCR',
+                                PRE_COND='LDLT_SP',
+                                RESI_RELA=1e-12,
+                                PCENT_PIVOT=100,),
+                     INFO=2,);
 
-IMPR_RESU(RESU=_F(RESULTAT=MESTAT1,
+IMPR_RESU(RESU=_F(RESULTAT=MESTAT,
                   NOM_CHAM='DEPL',),);
 
 INT_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
-                                NOM_CMP='DZ',
-                                NOM_CHAM='DEPL',
-                                ),
-                   CHAM_MATER=AFMAT,
-                   RESULTAT=MESTAT1,
-                   );
+                              NOM_CHAM='DEPL',
+                              NOM_CMP='DZ',),
+                 CHAM_MATER=AFMAT,
+                 RESULTAT=MESTAT,);
 
-INT_DEPX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
-                                NOM_CMP='DX',
-                                NOM_CHAM='DEPL',),
-                   CHAM_MATER=AFMAT,
-                   RESULTAT=MESTAT1,);
+INT_DX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
+                              NOM_CHAM='DEPL',
+                              NOM_CMP='DX',),
+                 CHAM_MATER=AFMAT,
+                 RESULTAT=MESTAT,);
 
-INT_DEPY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
-                                NOM_CMP='DY',
-                                NOM_CHAM='DEPL',),
-                   CHAM_MATER=AFMAT,
-                   RESULTAT=MESTAT1,);
+INT_DY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
+                              NOM_CHAM='DEPL',
+                              NOM_CMP='DY',),
+                 CHAM_MATER=AFMAT,
+                 RESULTAT=MESTAT,);
 
-IMPR_TABLE(TABLE=INT_DZ)
-IMPR_TABLE(TABLE=INT_DEPX)
-IMPR_TABLE(TABLE=INT_DEPY)
+IMPR_TABLE(TABLE=INT_DZ,);
+
+IMPR_TABLE(TABLE=INT_DX,);
+
+IMPR_TABLE(TABLE=INT_DY,);
 
 TEST_TABLE(TABLE=INT_DZ,
            NOM_PARA='MOYE_DZ',
-           VALE_CALC=-2.0898770833937E-04,
-           )
+           VALE_CALC=-0.000208987708339,);
 
-TEST_TABLE(TABLE=INT_DEPX,
+TEST_TABLE(TABLE=INT_DX,
            NOM_PARA='MOYE_DX',
-           VALE_CALC=-7.3646048180018E-05,
-           )
+           VALE_CALC=-7.364604818e-05,);
 
-TEST_TABLE(TABLE=INT_DEPY,
+TEST_TABLE(TABLE=INT_DY,
            NOM_PARA='MOYE_DY',
-           VALE_CALC=-7.3646048180018E-05,
-           )
+           VALE_CALC=-7.364604818e-05,);
+
+# CHARGEMENT : PRESSION SUIVEUSE, LA MATRICE N'EST PAS SYMETRIQUE 
+T = 1.0;
+
+tau = 1.0;
+
+
+ListReel=DEFI_LIST_REEL(DEBUT=0,
+                        INTERVALLE=_F(JUSQU_A=T,
+                                      PAS=tau,),);
+
+EVOL=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=AFMAT,
+                   EXCIT=(_F(CHARGE=ENCASTR,),
+                          _F(CHARGE=PRESSION,
+                             TYPE_CHARGE='SUIV',),),
+                   COMPORTEMENT=_F(RELATION='ELAS',
+                                   DEFORMATION='GROT_GDEP',),
+                   INCREMENT=_F(LIST_INST=ListReel,),
+                   NEWTON=_F(PREDICTION='TANGENTE',
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,
+                             REAC_ITER_ELAS=1,),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=0.0001,
+                                  RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=20,
+                                  ITER_GLOB_ELAS=50,),
+                   SOLVEUR=_F(METHODE='PETSC',
+                              SYME='NON',
+                              MATR_DISTRIBUEE='OUI',
+                              ALGORITHME='GCR',
+                              PRE_COND='LDLT_SP',
+                              RESI_RELA=1e-06,
+                              NMAX_ITER=0,
+                              RENUM='SANS',
+                              REAC_PRECOND=30,
+                              PCENT_PIVOT=100,),);
+
+EV_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
+                             NOM_CHAM='DEPL',
+                             NOM_CMP='DZ',),
+                CHAM_MATER=AFMAT,
+                RESULTAT=EVOL,
+                NUME_ORDRE=1,);
+
+EV_DX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
+                             NOM_CHAM='DEPL',
+                             NOM_CMP='DX',),
+                CHAM_MATER=AFMAT,
+                RESULTAT=EVOL,
+                NUME_ORDRE=1,);
+
+EV_DY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
+                             NOM_CHAM='DEPL',
+                             NOM_CMP='DY',),
+                CHAM_MATER=AFMAT,
+                RESULTAT=EVOL,
+                NUME_ORDRE=1,);
+
+# Test de non-regression sur la valeur moyenne des déplacements 
+
+TEST_TABLE(TABLE=EV_DZ,
+           NOM_PARA='MOYE_DZ',
+           VALE_CALC=-0.000209188587359,);
+
+TEST_TABLE(TABLE=EV_DX,
+           NOM_PARA='MOYE_DX',
+           VALE_CALC=-7.36954516145E-05,);
+
+TEST_TABLE(TABLE=EV_DY,
+           NOM_PARA='MOYE_DY',
+           VALE_CALC=-7.36954516145E-05,);
 
 FIN();
+#CHECKSUM:e25e9d8cc951297d921f96935e634338  -:FIN CHECKSUM

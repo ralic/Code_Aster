@@ -68,8 +68,8 @@ subroutine apmamd(kptsc)
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
     integer :: jsmdi, jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
-    integer :: k, iligl, jcoll, nzdeb, nzfin, nbproc
-    integer :: iterm, jterm, jcolg, iligg, jnugll, jprddl
+    integer :: k, iligl, jcoll, nzdeb, nzfin
+    integer :: iterm, jterm, jcolg, iligg, jnugll
     integer :: jnequ, nloc, nglo,  jnequl
 !
     character(len=19) :: nomat, nosolv
@@ -89,7 +89,6 @@ subroutine apmamd(kptsc)
 !     Variables PETSc
     PetscInt :: neql, neqg, ierr
     Mat :: a
-    mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
 !
@@ -117,7 +116,6 @@ subroutine apmamd(kptsc)
     if (nvalm .eq. 1) then
         lmnsy=.false.
     else if (nvalm.eq.2) then
-        ASSERT(.false.)
         lmnsy=.true.
     else
         ASSERT(.false.)
@@ -176,6 +174,10 @@ subroutine apmamd(kptsc)
                 ! la ligne jcoll est la transposée de la colonne jcoll  
                 ! on reprend la valeur lue depuis valm
                 valm=zr(jvalm-1+k)  
+              else 
+              ! si la matrice ASTER n'est pas symétrique
+              ! on lit les termes de la ligne jcoll depuis valm2
+                valm=zr(jvalm2-1+k) 
               endif
               ! on stocke dans val2 
               zr(jdval2+jterm-1)=valm
