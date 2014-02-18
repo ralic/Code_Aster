@@ -6,6 +6,7 @@ subroutine filter_smd(nommat, vsmb)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=*) :: nommat

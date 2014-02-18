@@ -19,6 +19,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -27,6 +28,8 @@ subroutine echmat(matz, ldist, rmin, rmax)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 !
     character(len=*) :: matz
     real(kind=8) :: rmin, rmax
@@ -53,14 +56,15 @@ subroutine echmat(matz, ldist, rmin, rmax)
 ! ---------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::  nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
-    integer :: jcol, nlong,  jvalm1
+    integer ::  nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd, jnulg
+    integer :: jcol, nlong,  jvalm1, jcolg
     character(len=1) ::  ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19
-    real(kind=8) :: rdiag
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: smdi(:) => null()
+    real(kind=8), pointer :: rdiag(:) => null()
+    complex(kind=8), pointer :: zdiag(:) => null()
 !=================================================================
     call jemarq()
 !
@@ -74,6 +78,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     ASSERT(nz.le.nsmhc)
 !
+
     call jeveuo(nonu//'.NUME.DELG', 'L', jdelgg)
     call jelira(nonu//'.NUME.DELG', 'LONMAX', ng)
     call jeexin(nonu//'.NUML.DELG', imatd)
@@ -83,12 +88,27 @@ subroutine echmat(matz, ldist, rmin, rmax)
         jdelgl=jdelgg
         ASSERT(ng.eq.n)
     endif
+    !
+    call jeexin(nonu//'.NUML.NLGP', imatd)
+    if (imatd .ne. 0) then 
+      call jeveuo(nonu//'.NUML.NLGP', 'L', jnulg)
+    endif
 !
     call jelira(mat19//'.VALM', 'TYPE', cval=ktyp)
     call jelira(mat19//'.VALM', 'CLAS', cval=base1)
     call jeveuo(jexnum(mat19//'.VALM', 1), 'L', jvalm1)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong)
     ASSERT(nlong.eq.nz)
+!
+!   Le vecteur rdiag/zdiag contient la diagonale de la matrice globale
+! 
+    if  (ktyp .eq. 'R') then
+      AS_ALLOCATE(vr=rdiag, size=ng)
+      rdiag(:)=0.d0
+    else
+      AS_ALLOCATE(vc=zdiag, size=ng)
+      zdiag(:)=cmplx(0.d0, 0.d0)
+    endif
 !
 !
 !     --CALCUL DE RMIN ET RMAX :
@@ -98,25 +118,51 @@ subroutine echmat(matz, ldist, rmin, rmax)
 !     CALCUL DE RMIN : PLUS PETIT TERME NON NUL DE LA DIAGONALE
 !     CALCUL DE RMAX : PLUS GRAND TERME DE LA DIAGONALE
     do 10,jcol=1,n
+     ! si le dl est un multiplicateur de Lagrange on passe
     if (zi(jdelgl-1+jcol) .lt. 0) then
         goto 10
     endif
-!
-    if (ktyp .eq. 'R') then
-        rdiag=abs(zr(jvalm1-1+smdi(jcol)))
+!   Indice dans la matrice globale Aster de la colonne locale jcol
+    if (imatd.ne.0) then 
+       jcolg = zi(jnulg-1+jcol)
     else
-        rdiag=abs(zc(jvalm1-1+smdi(jcol)))
+       jcolg = jcol 
     endif
-    if (rdiag .gt. rmax) rmax=rdiag
-    if (rdiag .eq. 0.d0) goto 10
-    if (rdiag .lt. rmin) rmin=rdiag
+!   Lecture des valeurs de rdiag/zdiag
+    if (ktyp .eq. 'R') then
+        rdiag(jcolg)=rdiag(jcolg)+zr(jvalm1-1+smdi(jcol))
+    else
+        zdiag(jcolg)=zdiag(jcolg)+zc(jvalm1-1+smdi(jcol))
+    endif
+    
     10 end do
 !
-!     -- SI EXECUTION PARALLELE, IL FAUT COMMUNIQUER :
+!     -- SI EXECUTION PARALLELE, IL FAUT COMMUNIQUER 
+! 
     if (ldist) then
-        call asmpi_comm_vect('MPI_MAX', 'R', scr=rmax)
-        call asmpi_comm_vect('MPI_MIN', 'R', scr=rmin)
+      if (ktyp .eq. 'R') then
+       call asmpi_comm_vect('MPI_SUM','R',nbval=ng, vr=rdiag)
+      else
+       call asmpi_comm_vect('MPI_SUM','C',nbval=ng, vc=zdiag)
+      endif   
     endif
 !
+!   Tous les procs possèdent les termes qui correspondent à des ddls physiques. 
+!   On calcule les valeurs min et max des modules des termes de la diagonale.    
+!
+    if (ktyp .eq. 'R') then
+      rmax = maxval(abs(rdiag))
+      rmin = minval(abs(rdiag), mask = abs(rdiag) > r8prem())
+    else
+      rmax = maxval(abs(zdiag))
+      rmin = minval(abs(zdiag), mask = abs(zdiag) > r8prem())
+    endif
+!
+!   Libération de la mémoire
+!
+    AS_DEALLOCATE(vr=rdiag)
+    AS_DEALLOCATE(vc=zdiag)
+    !
     call jedema()
 end subroutine
+
