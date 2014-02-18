@@ -238,6 +238,13 @@ U=STAT_NON_LINE(reuse=U,
   ARCHIVAGE    = _F(LIST_INST  = INS_ARCH)
   )
 
+IMPR_RESU(FORMAT='MED',RESU=(_F(RESULTAT=U,
+                                NOM_CHAM='SIEF_ELGA',
+                                GROUP_MA='DCB_J',),
+                             _F(RESULTAT=U,
+                                NOM_CHAM='VARI_ELGA',
+                                GROUP_MA='DCB_J',),),)
+
 
 U = CALC_CHAMP(reuse = U,
                RESULTAT = U,

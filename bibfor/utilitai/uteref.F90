@@ -90,14 +90,21 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     integer :: nbfamx
     parameter ( nbfamx = 20 )
 !
-    integer :: nbpg00(nbfamx), imolo, nec, kfpg, nbfpg, ifam
-    integer :: itype, nb1, nbelr, jmolo
+    integer :: nbpg00(nbfamx), imolo, nec, kfpg, nbfpg, nbfpg2, ifam
+    integer :: itype, nb1, nbelr, jmolo, idime, ipg
     integer :: ifm, nivinf, jcelk, jceld, igrel
     integer :: ierd, jliel, nbgrel, iordr
-    integer :: iaux
+    integer :: iaux, dimtopo
+    logical :: ljoint, lpenta
+!
+    integer :: lgmax
+    parameter (lgmax=1000)
+!
+    real(kind=8) :: gscoo2(3*lgmax)
 !
     character(len=4) :: tych
-    character(len=8) :: elrefe, lielrf(nbfamx), fapg(nbfamx), nomgd, famil
+    character(len=8) :: elrefe, elrefb, lielrf(nbfamx), fapg(nbfamx), nomgd, famil
+    character(len=8) :: nomtypmail, fapg2(nbfamx)
     character(len=16) :: nomsym, valk(2)
     character(len=19) :: ligrel, resu
 !
@@ -107,6 +114,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !     ---------------
     call jemarq()
     codret = 0
+    ljoint = .false.
 !
     call infniv(ifm, nivinf)
     if (nivinf .gt. 1) then
@@ -186,10 +194,36 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !     5- APPEL AUX ROUTINES ELRACA ET ELRAGA DE DESCRIPTION DES ELREFE:
 !     ----------------------------------------------------------------
 !
+    lpenta = .false.
     if (codret .eq. 0) then
 !
         call elraca(elrefe, ndim, nno, nnos, nbfpg,&
                     fapg, nbpg00, refcoo, vol)
+!
+        call dismoi('DIM_TOPO', nomte, 'TYPE_ELEM', repi=dimtopo)
+        call dismoi('NOM_TYPMAIL', nomte, 'TYPE_ELEM', repk=nomtypmail)
+!       Glute pour les joints
+        elrefb = elrefe
+        if ( dimtopo.ne.ndim ) then
+            if ( nomtypmail.eq.'HEXA8' ) then
+                elrefb = 'HE8'
+            else if ( nomtypmail.eq.'QUAD8' ) then
+                elrefb = 'QU8'
+            else if ( nomtypmail.eq.'PENTA6' ) then
+                lpenta = .true.
+                elrefb = 'PE6'
+            else if ( nomtypmail.eq.'PENTA15' ) then
+                lpenta = .true.
+                elrefb = 'P15'
+            else if ( nomtypmail.eq.'HEXA20' ) then
+                elrefb = 'H20'
+            else
+                call utmess('F', 'MED2_11')
+            endif
+            call elraca(elrefb, dimtopo, nno, nnos, nbfpg2,&
+                        fapg2, nbpg00, refcoo, vol)
+            ljoint = .true.
+        endif
 !
         ASSERT(nbfpg.le.20)
         ASSERT(nno.le.27)
@@ -207,8 +241,35 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
             call utmess('F', 'MED2_5', nk=2, valk=valk)
         endif
 !
-        call elraga(elrefe, famil, ndim, nbpg, gscoo,&
-                    wg)
+        if ( ljoint ) then
+            call elraga(elrefe, famil, ndim, nbpg, gscoo2,&
+                        wg)
+            if ( lpenta ) then
+                do ipg = 1, nbpg
+                    do idime = 1, dimtopo
+                        if ( idime.eq.1 ) then
+                            gscoo((ipg-1)*dimtopo + idime) = 0
+                        else
+                            gscoo((ipg-1)*dimtopo + idime) = gscoo2((ipg-1)*ndim + idime-1)
+                        endif
+                    enddo
+                enddo
+            else
+                do ipg = 1, nbpg
+                    do idime = 1, dimtopo
+                        if ( idime.gt.ndim ) then
+                            gscoo((ipg-1)*dimtopo + idime) = 0
+                        else
+                            gscoo((ipg-1)*dimtopo + idime) = gscoo2((ipg-1)*ndim + idime)
+                        endif
+                    enddo
+                enddo
+            endif
+            ndim = dimtopo
+        else
+            call elraga(elrefe, famil, ndim, nbpg, gscoo,&
+                        wg)
+        endif
 !
         ASSERT(nbpg.le.27)
 !

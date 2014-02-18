@@ -102,4 +102,12 @@ format MED.
             contourner cette limitation.
 """),
 
+11 : _(u"""
+  Votre champ repose sur un modèle comportant des éléments joints
+  ou interfaces non encore imprimables au format MED.
+
+  Conseil : Pour que cette impression soit possible, il vous faut
+            faire une demande d'évolution.
+"""),
+
 }
