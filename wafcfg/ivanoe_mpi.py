@@ -24,7 +24,7 @@ def configure(self):
         '. /home/projets/aster/etc/codeaster/profile_impi.sh'])
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + 'prerequisites/Mumps_mpi_for_aster/lib',
+        YAMMROOT + 'prerequisites/Mumps_mpi_20141/lib',
         YAMMROOT + 'prerequisites/Petsc_mpi_petsc_aster/lib',
         '/logiciels/intel/composerxe-2011.3.174/mkl/lib/intel64'])
     self.env.prepend_value('INCLUDES', [

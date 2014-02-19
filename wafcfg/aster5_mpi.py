@@ -25,7 +25,7 @@ def configure(self):
         ' module load intel_mpi'])
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + 'prerequisites/Mumps_mpi_for_aster/lib',        
+        YAMMROOT + 'prerequisites/Mumps_mpi_20141/lib',        
         YAMMROOT + 'prerequisites/Petsc_mpi_petsc_aster/lib'])
     self.env.prepend_value('INCLUDES', [
         YAMMROOT + 'prerequisites/Petsc_mpi_petsc_aster/include'])

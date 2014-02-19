@@ -30,8 +30,8 @@ def configure(self):
         YAMMROOT + 'prerequisites/Python_273/lib',
         YAMMROOT + 'prerequisites/Hdf5_1810/lib',
         YAMMROOT + 'tools/Medfichier_307/lib',
-        YAMMROOT + 'prerequisites/Mumps_for_aster/lib',
-        YAMMROOT + 'prerequisites/Mumps_for_aster/libseq',
+        YAMMROOT + 'prerequisites/Mumps_20141/lib',
+        YAMMROOT + 'prerequisites/Mumps_20141/libseq',
         YAMMROOT + 'prerequisites/Metis_40/lib',
         YAMMROOT + 'prerequisites/Scotch_5111/lib'])
 
