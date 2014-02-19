@@ -11,7 +11,7 @@ subroutine te0038(option, nomte)
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
 #include "asterfort/pmat.h"
-#include "asterfort/pmfitg.h"
+#include "asterfort/pmfitx.h"
 #include "asterfort/provec.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -55,7 +55,6 @@ subroutine te0038(option, nomte)
 !
 !
     integer :: codres(1)
-    character(len=8) :: materi
     character(len=16) :: ch16, phenom
     real(kind=8) :: rho(1), a1, iy1, iz1, a2, cdg(3), ab2, ab3, ab4, amb, apb, ep
     real(kind=8) :: rad, ang, angarc, angs2, xfl, xl, xl2, matinl(6)
@@ -67,12 +66,10 @@ subroutine te0038(option, nomte)
     real(kind=8) :: pgl4(3, 3)
     real(kind=8) :: t1(3), t2(3), norme1, norme2, n(3), normen, x3(3), y3(3)
     real(kind=8) :: coo1(3), coo2(3), coo3(3), prec, omega
-    real(kind=8) :: casect(6), casec1(6), val(1)
+    real(kind=8) :: casect(6), yg, zg, p1gl(3),p1gg (3), rbid
 !
     integer :: lmater, lx, lorien, nno, nc, lcastr, lsect, lsect2, itype, icoude
     integer :: i, n1, n2, lrcou, iadzi, iazk24, nn2
-    integer :: inbf, jacf, icompo, isdcom, nbgf, ncarfi, ig
-    integer :: nugf, icp, nbfig, ipos
 !     ------------------------------------------------------------------
     prec = r8prem()
     zero = 0.0d0
@@ -115,21 +112,10 @@ subroutine te0038(option, nomte)
 !
     if (option .eq. 'MASS_INER') then
         call jevech('PMASSINE', 'E', lcastr)
-        do 10 i = 1, 6
+        do i = 1, 6
             matine(i) = 0.d0
             matinl(i) = 0.d0
-10      continue
-!
-        if ((nomte.eq.'MECA_POU_D_EM') .or. (nomte.eq.'MECA_POU_D_TGM')) then
-!           RECUPERATION DES CARACTERISTIQUES DES FIBRES :
-            call jevech('PNBSP_I', 'L', inbf)
-            nbgf=zi(inbf+1)
-            call jevech('PFIBRES', 'L', jacf)
-            ncarfi = 3
-!           RECUPERATION DES MATERIAUX DANS SDCOMP DANS COMPOR
-            call jevech('PCOMPOR', 'L', icompo)
-            call jeveuo(zk16(icompo-1+7), 'L', isdcom)
-        endif
+        enddo
 !
         if ((nomte.ne.'MET3SEG3') .and. (nomte.ne.'MET6SEG3') .and. (nomte.ne.'MET3SEG4')) then
 !           RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
@@ -279,45 +265,29 @@ subroutine te0038(option, nomte)
         if (itype .eq. 0) then
 !           -------- MASSE
             if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
-                do 15 i = 1, 6
-                    casect(i) = zero
-15              continue
-!              BOUCLE SUR LES GROUPES DE FIBRE
-                ipos=jacf
-                do 100 ig = 1, nbgf
-                    nugf=zi(inbf+1+ig)
-                    icp=isdcom-1+(nugf-1)*6
-                    read(zk24(icp+6),'(I24)')nbfig
-                    materi=zk24(icp+2)(1:8)
-!                 CALCUL DES CARACTERISTIQUES DU GROUPE ---
-                    call pmfitg(nbfig, ncarfi, zr(ipos), casec1)
-!                 ON MULTIPLIE PAR RHO (CONSTANT SUR LE GROUPE)
-                    call rcvalb('FPG1', 1, 1, '+', zi(lmater),&
-                                materi, 'ELAS', 0, ' ', [zero],&
-                                1, 'RHO', val, codres, 0)
-                    if (codres(1) .eq. 1) then
-                        call rcvalb('FPG1', 1, 1, '+', zi(lmater),&
-                                    materi, 'ELAS_FLUI', 0, ' ', [zero],&
-                                    1, 'RHO', val, codres, 1)
-                    endif
-                    do 25 i = 1, 6
-                        casect(i) = casect(i) + val(1)*casec1(i)
-25                  continue
-                    ipos=ipos+nbfig*ncarfi
-100              continue
+                call pmfitx(zi(lmater), 2, casect, rbid)
+!               correction excentricite
+                yg=casect(2)/casect(1)
+                zg=casect(3)/casect(1)
+                p1gl(1)=xl/2.d0
+                p1gl(2)=yg
+                p1gl(3)=zg
+                call utpvlg(1,3,pgl,p1gl,p1gg)
+                iy1=casect(5)-casect(1)*zg*zg
+                iz1=casect(4)-casect(1)*yg*yg
 !
                 zr(lcastr) = casect(1)*xl
-!           -------- CDG
-                zr(lcastr+1) = (zr(lx+4)+zr(lx+1))/2.d0
-                zr(lcastr+2) = (zr(lx+5)+zr(lx+2))/2.d0
-                zr(lcastr+3) = (zr(lx+6)+zr(lx+3))/2.d0
-!           -------- INERTIE
-                matinl(1) = (casect(4)+casect(5))*xl
+!               CDG
+                zr(lcastr+1) =  zr(lx+1)+p1gg(1)
+                zr(lcastr+2) =  zr(lx+2)+p1gg(2)
+                zr(lcastr+3) =  zr(lx+3)+p1gg(3)
+!               INERTIE
+                matinl(1) = (iy1+iz1)*xl
                 matinl(2) = 0.d0
-                matinl(3) = xl*casect(5)+ casect(1)*xl*xl2/12.d0
+                matinl(3) = xl*iy1+ casect(1)*xl*xl2/12.d0
                 matinl(4) = 0.d0
                 matinl(5) = 0.d0
-                matinl(6) = xl*casect(4)+ casect(1)*xl*xl2/12.d0
+                matinl(6) = xl*iz1+ casect(1)*xl*xl2/12.d0
             else
                 zr(lcastr) = rho(1)*a1*xl
 !           -------- CDG

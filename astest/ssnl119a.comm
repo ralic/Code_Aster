@@ -155,7 +155,7 @@ Aciet = [  1.99326E+07 ,   4.00499E+08 ,   4.35444E+08 ]
 # contraintes acier comprime
 Aciec = [ -2.21394E+07 ,  -1.77301E+08 ,  -4.01893E+08 ]
 # Deformations acier tendu
-Eacit = [  9.93916E-05 ,   2.09912E-03 ,   1.07467E-02 ]
+Eacit = [  9.966306298026E-05 ,   2.1521863075491E-03 ,   0.012806191657530 ]
 # contraintes beton comprime
 Betoc = [ -4.47657E+06 ,  -3.53105E+07 ,  -3.06413E+07 ]
 # contraintes beton tendu
@@ -203,7 +203,7 @@ TEST_RESU(RESU=(_F(NOM_CMP='DY',
                    NOM_CHAM='EPSI_ELGA',
                    RESULTAT=U1MAZAR,
                    CRITERE=('RELATIF', 'ABSOLU'),
-                   VALE_CALC=9.93915767344E-05,
+                   VALE_CALC=9.966306298026E-05,
                    TOLE_MACHINE=(3.E-4, ),
                    VALE_ABS='NON',),
                 _F(POINT=2,
@@ -267,7 +267,7 @@ TEST_RESU(RESU=(_F(NOM_CMP='DY',
                    NOM_CHAM='EPSI_ELGA',
                    RESULTAT=U1MAZAR,
                    CRITERE=('RELATIF', 'ABSOLU'),
-                   VALE_CALC=0.00209912380703,
+                   VALE_CALC=2.1521863075491E-03,
                    TOLE_MACHINE=(3.E-4, ),
                    VALE_ABS='NON',),
                 _F(POINT=2,
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(_F(NOM_CMP='DY',
                    NOM_CHAM='EPSI_ELGA',
                    RESULTAT=U1MAZAR,
                    CRITERE=('RELATIF', 'ABSOLU'),
-                   VALE_CALC=0.0107467652771,
+                   VALE_CALC=0.012806191657530,
                    TOLE_MACHINE=(3.E-4, ),
                    VALE_ABS='NON',),
                 _F(POINT=2,

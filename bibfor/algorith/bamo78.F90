@@ -361,7 +361,7 @@ subroutine bamo78(nomres, trange, typres)
                             k24bla, k24bla, chel2, k24bla, ligrel,&
                             'V', chvarc, chvref, k24bla, compor,&
                             k24bla, k24bla, k8bla, ibid, k24bla,&
-                            iret)
+                            k24bla, iret)
                 call celces(chel2, 'V', ches2)
                 nc = 2
                 chs(1) = ches2

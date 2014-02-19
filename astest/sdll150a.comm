@@ -1,6 +1,6 @@
-# TITRE  VALIDATION DU CALCUL DE L'ENERGIE POTENTIELLE POUR LES POUTRES
+# TITRE MODES PROPRES D'UNE POUTRE A AME EXCENTREE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,8 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # lecture maillage lineique
 MAPOU=LIRE_MAILLAGE(UNITE=20,);
@@ -24,16 +23,18 @@ MAPOU=LIRE_MAILLAGE(UNITE=20,);
 # lecture maillage section1
 PRE_GIBI(UNITE_GIBI=18, UNITE_MAILLAGE=21,);
 MASEC1=LIRE_MAILLAGE(UNITE=21,);
-IMPR_RESU(UNITE = 55,RESU=_F(MAILLAGE = MASEC1))
+#IMPR_RESU(UNITE = 55,RESU=_F(MAILLAGE = MASEC1))
 
 
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
                   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),);
 
+#exc=0.
+exc=0.5
 GF=DEFI_GEOM_FIBRE(
-           SECTION = (_F( GROUP_FIBRE='SEC1',
+           SECTION = (_F ( GROUP_FIBRE='SEC1',
                             MAILLAGE_SECT = MASEC1 , TOUT_SECT = 'OUI',
-                            COOR_AXE_POUTRE = (0.,0.)),
+                            COOR_AXE_POUTRE = (0.,exc)),
             )
             )
 
@@ -42,13 +43,17 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
            POUTRE=_F(GROUP_MA=('POUTRE'),
                      SECTION='GENERALE',
                      CARA=('A','IY','IZ','JX'),
-                     VALE=(4.50e-2,4.61625E-04,1.60375E-04,9.77e-5), ),
+                    VALE=(4.50e-2,4.61625E-04,1.60375E-04,9.77e-5),
+
+                     ),
            ORIENTATION=_F(GROUP_MA=('POUTRE'),
                           CARA='ANGL_VRIL', VALE=0.0,),
 
            GEOM_FIBRE=GF,
-           MULTIFIBRE = (_F(MAILLE = 'M1',GROUP_FIBRE=('SEC1',), PREC_AIRE = 1.0E-06, PREC_INERTIE = 1.0E-06,),
-                         _F(MAILLE = 'M2',GROUP_FIBRE=('SEC1',), PREC_AIRE = 1.0E-06, PREC_INERTIE = 1.0E-06,),
+           MULTIFIBRE = (_F ( MAILLE = 'M1',GROUP_FIBRE=('SEC1',),PREC_AIRE    = 0.1/1000.,
+                     PREC_INERTIE = 1.E6,),
+                        _F ( MAILLE = 'M2',GROUP_FIBRE=('SEC1',),PREC_AIRE    = 0.1/1000.,
+                     PREC_INERTIE = 1.E6,),
                         )
                   )
 
@@ -82,40 +87,25 @@ U1=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
                   EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
 
 
-# CALCUL DE L'ENERGIE POTENTIELLE
+# TEST
+#IMPR_RESU(RESU=_F(RESULTAT=U1))
 
-
-EPOT=POST_ELEM(MODELE=MOPOU,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM =POUCA,
-                   ENER_POT  =_F(TOUT='OUI'),
-                   RESULTAT  = U1,
-                   )
-
-IMPR_TABLE(TABLE=EPOT)
-
-IMPR_RESU(RESU = _F(RESULTAT = U1, NOM_CHAM = 'DEPL'))
+#if exc==0. :
+  #refdx=1.9164724641236E-04
+#elif exc==0.5 :
+  #refdx=-6.70765E-03
 
 TEST_RESU(RESU=(
-               _F( RESULTAT=U1,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='B',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.045995339138967,
-                   ),
-                )
-         )
+# Fleche
+_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DZ',VALE_REFE=0.045995339138967,
+    REFERENCE='AUTRE_ASTER',VALE_CALC=0.045995339138967,
+),
+#deplacement axial (couplage)
+# inutile de tester car il est bon même sans les corrections
+#_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DX',VALE_CALC=refdx,
+#),
+))
 
-TEST_TABLE(
-      TABLE=EPOT,
-      FILTRE=(
-         _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I=  1),
-      ),
-      NOM_PARA='TOTALE',
-      VALE_CALC=229.97669569484,
-      VALE_REFE=229.97669569484,
-      REFERENCE='ANALYTIQUE',PRECISION=1.E-6)
 
 MASSELE=CALC_MATR_ELEM(CARA_ELEM=POUCA,
                             INST=0.0,
@@ -154,33 +144,26 @@ MODES = MODE_ITER_SIMULT(MATR_RIGI=KASS,
 MODES=NORM_MODE(reuse =MODES,
                MODE=MODES,
                NORME='MASS_GENE',)
-# E = 2*(pi*f)^2
-EPOT2=POST_ELEM(MODELE=MOPOU,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM =POUCA,
-                   ENER_POT  =_F(TOUT='OUI'),
-                   RESULTAT  = MODES,
-                   )
 
-IMPR_TABLE(TABLE=EPOT2)
+#IMPR_RESU(RESU=_F(RESULTAT=MODES))
 
-TEST_TABLE(
-      TABLE=EPOT2,
-      FILTRE=(
-         _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I=  7),
-      ),
-      NOM_PARA='FREQ',
-      VALE_CALC=66.800179540929,
-      )
-
-TEST_TABLE(
-      TABLE=EPOT2,
-      FILTRE=(
-         _F(NOM_PARA='NUME_ORDRE', CRIT_COMP='EQ', VALE_I=  7),
-      ),
-      NOM_PARA='TOTALE',
-      VALE_CALC=88081.560563920604,
-      VALE_REFE=88081.560563920604,
-      REFERENCE='ANALYTIQUE',PRECISION=1.E-6)
+TEST_RESU(RESU=(
+# Frequence
+_F( RESULTAT=MODES,NUME_ORDRE=1,PARA='FREQ',VALE_REFE=1.9740586420219,
+    REFERENCE='AUTRE_ASTER',VALE_CALC=1.9740181869401,
+),
+# deplacement Y
+_F( RESULTAT=MODES,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DY',VALE_REFE=0.044067411231561,
+    REFERENCE='AUTRE_ASTER',VALE_CALC=0.044159425434821,PRECISION=3E-3,
+),
+# Frequence
+_F( RESULTAT=MODES,NUME_ORDRE=2,PARA='FREQ',VALE_REFE=3.3155178878428,
+    REFERENCE='AUTRE_ASTER',VALE_CALC=3.3155178878428,
+),
+# deplacement Y
+_F( RESULTAT=MODES,NUME_ORDRE=2,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DZ',VALE_REFE=0.044043066332150,
+    REFERENCE='AUTRE_ASTER',VALE_CALC=0.044043066332150,
+),
+))
 
 FIN();

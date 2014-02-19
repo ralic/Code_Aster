@@ -302,7 +302,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
                     k24b, k24b, chelem, k24b, ligrel,&
                     base, chvarc, chvref, k24b, k24b,&
                     k24b, k24b, k8b, ibid, k24b,&
-                    iret)
+                    k24b, iret)
  30     continue
 !
 !        --- ON CALCULE L'ENERGIE TOTALE ---

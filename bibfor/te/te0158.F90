@@ -10,6 +10,7 @@ subroutine te0158(option, nomte)
 #include "asterfort/moytem.h"
 #include "asterfort/pmfdge.h"
 #include "asterfort/pmfpti.h"
+#include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
@@ -49,7 +50,7 @@ subroutine te0158(option, nomte)
 !     ------------------------------------------------------------------
 !
     integer :: jeffg, lmater, lsect, lx, iret, lorien, jdepl, i, j, kp, nc
-    integer :: itemp
+    integer :: itemp, jtab(7), istrxr
 !
     character(len=4) :: fami
     character(len=8) :: nomail
@@ -58,7 +59,7 @@ subroutine te0158(option, nomte)
     integer :: npg, ndim, nno, nnos, ipoids, ivf, iplouf
     real(kind=8) :: b(4), gg, xi, wi
     real(kind=8) :: ul(14), pgl(3, 3), d1b(6, 12), dege(3, 7), d1btg(7, 14)
-    real(kind=8) :: degem(6)
+    real(kind=8) :: degem(6), alpha
     real(kind=8) :: zero, un, deux, temp, e, xnu, epsthe(1), g, xl
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, phiy, phiz
     real(kind=8) :: ksi1, d1b3(2, 3), ey, ez
@@ -70,7 +71,7 @@ subroutine te0158(option, nomte)
 !
     fami = 'RIGI'
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, iplouf, iplouf)  
+                npg, ipoids, ivf, iplouf, iplouf)
 !
     if (option .eq. 'DEGE_ELNO') then
         call jevech('PDEFOGR', 'E', jeffg)
@@ -219,14 +220,17 @@ subroutine te0158(option, nomte)
         nc = 6
 !        --- PASSAGE DES DEPLACEMENTS DANS LE REPERE LOCAL ---
         call utpvgl(nno, nc, pgl, zr(jdepl), ul)
+!       alpha modes incompatibles
+        call tecach('ONN','PSTRXRR','L',iret, nval=7,&
+                    itab= jtab)
+        istrxr=jtab(1)
+        alpha=zr(istrxr-1+15)
 !
         if (option .eq. 'DEGE_ELNO') then
             do 50 in = 1, 2
                 call pmfpti(-in, zr(ipoids), zr(ivf), xl, xi,&
                             wi, b, gg)
-!   ZERO POUR LA VARIABLE ALPHA DES MODES INCOMPATIBLES CAR NON ACTIF
-!   SI CALCUL ELASTIQUE (RIGI_MECA et X_X_DEPL)
-                call pmfdge(b, gg, ul, zero, degem)
+                call pmfdge(b, gg, ul, alpha, degem)
                 ipos=jeffg+nc*(in-1)
                 do 60 i = 1, nc
                     zr(ipos+i-1) = degem(i)
@@ -237,7 +241,7 @@ subroutine te0158(option, nomte)
             do 55 in = 1, 2
                 call pmfpti(in, zr(ipoids), zr(ivf), xl, xi,&
                             wi, b, gg)
-                call pmfdge(b, gg, ul, zero, degem)
+                call pmfdge(b, gg, ul, alpha, degem)
                 ipos=jeffg+nc*(in-1)
                 do 65 i = 1, nc
                     zr(ipos+i-1) = degem(i)

@@ -115,6 +115,7 @@ subroutine op0046()
     charep = ' '
     k24bla = ' '
     k8bla = ' '
+    chstrx = ' '
     alpha = 0.d0
     calpha = (0.d0 , 0.d0)
     nfon = 0
@@ -209,11 +210,29 @@ subroutine op0046()
                         alpha, ier)
         endif
 !
+        if (kstr(1:3) .eq. 'OUI') then
+            ibid = 0
+            call rsexch(' ', result, 'STRX_ELGA', iordr, chstrx,&
+                        iret)
+!         -- SI LE CHAMP A DEJE ETE CALCULE :
+            if (iret .eq. 0) goto 62
+            call mecalc('STRX_ELGA', nomode, chamgd, chgeom, mate,&
+                        chcara, k24bla, k24bla, chtime, k24bla,&
+                        chharm, k24bla, k24bla, k24bla, k24bla,&
+                        k24bla, charep, typcoe, alpha, calpha,&
+                        k24bla, k24bla, chstrx, k24bla, ligrel,&
+                        base, chvarc, chvref, k24bla, compor,&
+                        k24bla, k24bla, k8bla, ibid, k24bla,&
+                        k24bla, iret)
+!
+            call rsnoch(result, 'STRX_ELGA', iordr)
+        endif
+ 62     continue
         if (nosy .eq. 'SIEF_ELGA') then
             call rsexch(' ', result, nosy, iordr, chamel,&
                         iret)
 !           -- SI LE CHAMP A DEJE ETE CALCULE :
-            if (iret .eq. 0) goto 62
+            if (iret .eq. 0) goto 13
             ibid = 0
             call mecalc(nosy, nomode, chamgd, chgeom, mate,&
                         chcara, k24bla, k24bla, chtime, k24bla,&
@@ -222,31 +241,12 @@ subroutine op0046()
                         k24bla, k24bla, chamel, k24bla, ligrel,&
                         base, chvarc, chvref, k24bla, compor,&
                         k24bla, k24bla, k8bla, ibid, k24bla,&
-                        iret)
+                        chstrx, iret)
             call rsnoch(result, nosy, iordr)
         endif
- 62     continue
-!
-        if (kstr(1:3) .eq. 'OUI') then
-            ibid = 0
-            call rsexch(' ', result, 'STRX_ELGA', iordr, chstrx,&
-                        iret)
-!         -- SI LE CHAMP A DEJE ETE CALCULE :
-            if (iret .eq. 0) goto 13
-            call mecalc('STRX_ELGA', nomode, chamgd, chgeom, mate,&
-                        chcara, k24bla, k24bla, chtime, k24bla,&
-                        chharm, k24bla, k24bla, k24bla, k24bla,&
-                        k24bla, charep, typcoe, alpha, calpha,&
-                        k24bla, k24bla, chstrx, k24bla, ligrel,&
-                        base, chvarc, chvref, k24bla, compor,&
-                        k24bla, k24bla, k8bla, ibid, k24bla,&
-                        iret)
-!
-            call rsnoch(result, 'STRX_ELGA', iordr)
-        endif
-!
-!
  13     continue
+!
+!
     end do
 !
 !

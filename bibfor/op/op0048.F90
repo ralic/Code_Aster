@@ -302,7 +302,7 @@ subroutine op0048()
                     k24bla, k24bla, chstru, k24bla, ligrel,&
                     base, chvarc, chvref, k24bla, compor,&
                     k24bla, k24bla, k8b, ibid, k24bla,&
-                    iret)
+                    k24bla, iret)
 !
         call rsnoch(result, 'STRX_ELGA', iordr)
 !

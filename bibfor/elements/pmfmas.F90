@@ -44,9 +44,9 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
     character(len=16) :: ch16
     integer :: lx, iadzi, iazk24, itype, i, istruc
     integer :: inbfib, nbfib, jacf, lsect
-    real(kind=8) :: casrho(6), xl, rbid, cars1(6)
+    real(kind=8) :: casrho(6), xl, rbid, cars1(6) ,co12, co13
     real(kind=8) :: matp1(105), a, xiy, xiz, rho, casece(6), g, e
-    real(kind=8) :: alfay, alfaz, ey, ez
+    real(kind=8) :: alfay, alfaz, ey, ez, casect(6)
 !     ------------------------------------------------------------------
 !
 !
@@ -72,7 +72,11 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
     if (nomte .eq. 'MECA_POU_D_EM') then
 !
 !       --- CALCUL DE LA MATRICE DE MASSE LOCALE
-        call pmfm01(kanl, xl, casrho, mlv)
+        call pmfitx(icdmat, 1, casect, rbid)
+        co12=casect(3)/casect(1)
+        co13=-casect(2)/casect(1)
+        call pmfm01(kanl, xl, co12, co13, casrho,&
+                    mlv)
 !
     else if (nomte .eq.'MECA_POU_D_TGM') then
 !

@@ -5,7 +5,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
                   chdynr, suropt, chelem, chelex, ligrel,&
                   base, ch1, ch2, chvari, compor,&
                   chtese, chdese, nopase, typese, chacse,&
-                  codret)
+                  chstrx, codret)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
     character(len=*) :: chgeom, chmate, chcara(*), chfreq, chmass, chsig, chtemp
     character(len=*) :: chtref, chtime, chnumc, chharm, charge, cheps, chmeta
     character(len=*) :: typcoe, ligrel, base, ch1, ch2, chvari, chacse, chelex
-    character(len=*) :: chdese, chtese, nopase
+    character(len=*) :: chdese, chtese, nopase, chstrx
     real(kind=8) :: alpha
     complex(kind=8) :: calpha
     integer :: typese, codret
@@ -407,6 +407,8 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
         call ajchca('PVARIGR', chvari, lpain, lchin, nbin,&
                     maxin, 'N')
         call ajchca('PVARIGS', chvari, lpain, lchin, nbin,&
+                    maxin, 'N')
+        call ajchca('PSTRXRR', chstrx, lpain, lchin, nbin,&
                     maxin, 'N')
 !
 !

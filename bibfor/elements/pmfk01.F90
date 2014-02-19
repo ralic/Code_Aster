@@ -1,6 +1,6 @@
 subroutine pmfk01(cars, gxjx, xl, sk)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,6 +16,7 @@ subroutine pmfk01(cars, gxjx, xl, sk)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/pmftor.h"
 !    -------------------------------------------------------------------
 !    * CE SOUS PROGRAMME CALCULE LA MATRICE DE RAIDEUR DE L'ELEMENT DE
 !    POUTRE MULTIFIBRE DROITE A SECTION CONSTANTE.
@@ -58,20 +59,23 @@ subroutine pmfk01(cars, gxjx, xl, sk)
     integer :: i, ip(12)
     real(kind=8) :: xl, sk(*), cars(6), gxjx
     real(kind=8) :: ks11, ks12, ks13, ks22, ks33, ks23
-    real(kind=8) :: zero, un, deux, quatre, six, douze, co1, co2, co4, co6, co12
-    parameter (zero=0.0d+0,un=1.d+0,deux=2.d+0,quatre=4.d+0,six=6.d+0,&
-     &          douze=12.d+0)
+    real(kind=8) :: zero
+    real(kind=8) :: co1, co2, co3, co4, co6, co12
+    real(kind=8) :: x1,x2,x3
+    real(kind=8) :: ety,etz
+    parameter (zero=0.0d+0)
     data ip/0,1,3,6,10,15,21,28,36,45,55,66/
 !
-    do 10,i = 1,78
-    sk(i) = zero
-    10 end do
+    do i = 1,78
+        sk(i) = zero
+    end do
 !
-    co1 = un/xl
-    co2 = deux/xl
-    co4 = quatre/xl
-    co6 = six/ (xl*xl)
-    co12 = douze/ (xl*xl*xl)
+    co1 = 1.d0/xl
+    co2 = 2.d0/xl
+    co3 = 3.d0/xl
+    co4 = 4.d0/xl
+    co6 = 6.d0/ (xl*xl)
+    co12 = 12.d0/ (xl*xl*xl)
 !
 ! --- POUR ETRE PLUS PARLANT
 ! --- ATTENTION : SIGNE MOINS POUR KS13 ET KS23
@@ -148,7 +152,57 @@ subroutine pmfk01(cars, gxjx, xl, sk)
     sk(ip(12)+5) = ks23*co2
     sk(ip(11)+6) = sk(ip(12)+5)
 !
-! LES 28 AUTRES TERMES SONT NULS ...
-!(SAUF SI ON MET DU COUPLAGE TORSION-FLEXION)
+!   prise en compte des modes incompatibles (cas excentre uniquement)
+    x1=-ks12*ks12/ks11
+    x2=-ks13*ks13/ks11
+    x3=-ks12*ks13/ks11
+
+    if(x1 .ne. zero)then
+        sk(ip(4))    = sk(ip(4))    + co12 * x1
+        sk(ip(5)+3)  = sk(ip(5)+3)  - co6  * x1
+        sk(ip(9)+3)  = sk(ip(9)+3)  - co12 * x1
+        sk(ip(11)+3) = sk(ip(11)+3) - co6  * x1
+        sk(ip(6))    = sk(ip(6))    + co3  * x1
+        sk(ip(9)+5)  = sk(ip(9)+5)  + co6  * x1
+        sk(ip(11)+5) = sk(ip(11)+5) + co3  * x1
+        sk(ip(10))   = sk(ip(10))   + co12 * x1
+        sk(ip(11)+9) = sk(ip(11)+9) + co6  * x1
+        sk(ip(12))   = sk(ip(12))   + co3  * x1
+    endif
+    if(x2 .ne. zero)then
+        sk(ip(3))    = sk(ip(3))    + co12 * x2
+        sk(ip(6)+2)  = sk(ip(6)+2)  + co6  * x2
+        sk(ip(8)+2)  = sk(ip(8)+2)  - co12 * x2
+        sk(ip(12)+2) = sk(ip(12)+2) + co6  * x2
+        sk(ip(7))    = sk(ip(7))    + co3  * x2
+        sk(ip(8)+6)  = sk(ip(8)+6)  - co6  * x2
+        sk(ip(12)+6) = sk(ip(12)+6) + co3  * x2
+        sk(ip(9))    = sk(ip(9))    + co12 * x2
+        sk(ip(12)+8) = sk(ip(12)+8) - co6  * x2
+        sk(ip(12)+12)= sk(ip(12)+12)+ co3  * x2
+    endif
+    if(x3 .ne. zero)then
+        sk(ip(3)+2)  = sk(ip(3)+2)  - co12 * x3
+        sk(ip(5)+2)  = sk(ip(5)+2)  + co6  * x3
+        sk(ip(6)+3)  = sk(ip(6)+3)  - co6  * x3
+        sk(ip(6)+5)  = sk(ip(6)+5)  + co3  * x3
+        sk(ip(8)+3)  = sk(ip(8)+3)  + co12 * x3
+        sk(ip(8)+5)  = sk(ip(8)+5)  - co6  * x3
+        sk(ip(9)+2)  = sk(ip(9)+2)  + co12 * x3
+        sk(ip(9)+6)  = sk(ip(9)+6)  + co6  * x3
+        sk(ip(9)+8)  = sk(ip(9)+8)  - co12 * x3
+        sk(ip(11)+2) = sk(ip(11)+2) + co6  * x3
+        sk(ip(11)+6) = sk(ip(11)+6) + co3  * x3
+        sk(ip(11)+8) = sk(ip(11)+8) - co6  * x3
+        sk(ip(12)+3) = sk(ip(12)+3) - co6  * x3
+        sk(ip(12)+5) = sk(ip(12)+5) + co3  * x3
+        sk(ip(12)+9) = sk(ip(12)+9) + co6  * x3
+        sk(ip(12)+11)= sk(ip(12)+11)+ co3  * x3
+    endif
+!
+!   excentricite du centre de torsion dans le repere de l'axe neutre
+    ety= -ks13/ks11
+    etz= ks12/ks11
+    call pmftor(ety, etz, sk)
 !
 end subroutine

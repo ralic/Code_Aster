@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmfm01(kanl, xl, kk12, kk13, cars,&
-                      m)
-        integer :: kanl
-        real(kind=8) :: xl
-        real(kind=8) :: kk12
-        real(kind=8) :: kk13
-        real(kind=8) :: cars(6)
-        real(kind=8) :: m(*)
-    end subroutine pmfm01
+    subroutine pmftor(ety, etz, sk)
+        real(kind=8) :: ety
+        real(kind=8) :: etz
+        real(kind=8) :: sk(78)
+    end subroutine pmftor
 end interface

@@ -22,7 +22,7 @@ interface
                       chdynr, suropt, chelem, chelex, ligrel,&
                       base, ch1, ch2, chvari, compor,&
                       chtese, chdese, nopase, typese, chacse,&
-                      codret)
+                      chstrx, codret)
         character(len=*) :: option
         character(len=*) :: modele
         character(len=*) :: chdepl
@@ -58,6 +58,7 @@ interface
         character(len=*) :: nopase
         integer :: typese
         character(len=*) :: chacse
+        character(len=*) :: chstrx
         integer :: codret
     end subroutine mecalc
 end interface

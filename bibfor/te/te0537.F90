@@ -25,13 +25,15 @@ subroutine te0537(option, nomte)
 #include "asterfort/matrot.h"
 #include "asterfort/pmfdef.h"
 #include "asterfort/pmfdge.h"
-#include "asterfort/pmfitg.h"
+#include "asterfort/pmfitx.h"
 #include "asterfort/pmfpti.h"
+#include "asterfort/pmfrig.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
+#include "asterfort/vecma.h"
 !
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
@@ -52,16 +54,19 @@ subroutine te0537(option, nomte)
     real(kind=8) :: ul(12), pgl(3, 3), dege(6), xl, e, nu
     real(kind=8) :: g, xjx, gxjx
     integer :: nbfib, ncarfi, jacf, jtab(7)
-    real(kind=8) :: casect(6), casec1(6), xl2, nx, ty, tz, mx, my, mz
+    real(kind=8) :: casect(6), xl2, nx, ty, tz, mx, my, mz
+    real(kind=8) :: coa, cob, ex12, ex13
     real(kind=8) :: dep1, dep2, dep3, dep4, co6, co12
-    real(kind=8) :: zero, un, deux, six
-    parameter (zero=0.0d+0,un=1.0d+0,deux=2.d+0,six=6.d+0)
-    real(kind=8) :: b(4), gg, xi, wi, valres(2), sign
+    real(kind=8) :: zero, un, deux, trois, quatre, six
+    parameter (zero=0.0d+0,un=1.0d+0,deux=2.d+0,trois=3.d+0)
+    parameter (quatre=4.d+0,six=6.d+0)
+    real(kind=8) :: b(4), gg, xi, wi, valres(2), sign, alpha
     integer :: ip, ipos, nbgfmx, iadzi, iazk24, isicom, istrxr
     integer :: ipos1, ipos2, nbfig, nbgf, ig, nugf, ifb, icp, isdcom, icompo
     character(len=8) :: materi, nomres(2), nomail
     integer :: codres(2), ncomp
     integer :: npg, ndim, nnoel, nnos, ipoids, ivf, iplouf
+    real(kind=8) :: klv(78),klc(12,12)
 !     ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
@@ -74,30 +79,10 @@ subroutine te0537(option, nomte)
     nbgf=zi(ifb+1)
     call jevech('PFIBRES', 'L', jacf)
     ncarfi = 3
-!
-!   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
-    ncomp = 18
-!
-    if (option .eq. 'EPSI_ELGA') then
-        call tecach('OON', 'PDEFOPG', 'E', iret, nval=7,&
-                    itab=jtab)
-        jcont = jtab(1)
-    else if (option.eq.'SIEF_ELGA') then
-        call jevech('PMATERC', 'L', imate)
-        call tecach('OON', 'PCONTRR', 'E', iret, nval=7,&
-                    itab=jtab)
-        jcont = jtab(1)
-    else if (option.eq.'STRX_ELGA') then
-        call jevech('PMATERC', 'L', imate)
-        call jevech('PSTRXRR', 'E', istrxr)
-    else
-        ch16 = option
-        call utmess('F', 'ELEMENTS2_47', sk=ch16)
-    endif
+    alpha = 0.d0
     call jevech('PGEOMER', 'L', lx)
     call jevech('PCAORIE', 'L', lorien)
     call jevech('PDEPLAR', 'L', jdepl)
-!
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
     lx = lx - 1
@@ -114,20 +99,56 @@ subroutine te0537(option, nomte)
 !     --- PASSAGE DES DEPLACEMENTS DANS LE REPERE LOCAL ---
     call utpvgl(nno, nc, pgl, zr(jdepl), ul)
 !
+!   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
+    ncomp = 18
+!
+    if (option .eq. 'EPSI_ELGA') then
+        call tecach('OON', 'PDEFOPG', 'E', iret, nval=7,&
+                    itab=jtab)
+        jcont = jtab(1)
+    else if (option.eq.'SIEF_ELGA') then
+        call jevech('PMATERC', 'L', imate)
+        call tecach('OON', 'PCONTRR', 'E', iret, nval=7,&
+                    itab=jtab)
+        jcont = jtab(1)
+    else if (option.eq.'STRX_ELGA') then
+        call jevech('PMATERC', 'L', imate)
+        call jevech('PSTRXRR', 'E', istrxr)
+!   --- SI EXCENTRICITE CALCUL DE ALPHA
+!   --- APPEL INTEGRATION SUR SECTION ET CALCUL G TORSION
+        call pmfitx(zi(imate),1,casect,g)
+        if(casect(2).ne.zero.or.casect(3).ne.zero)then
+            coa = trois/deux/xl
+            cob = trois/quatre
+            ex13=casect(2)/casect(1)
+            ex12=casect(3)/casect(1)
+            alpha = coa*ex13*ul(2)-coa*ex12*ul(3)&
+                   +cob*ex12*ul(5)+cob*ex13*ul(6)&
+                   -coa*ex13*ul(8)+coa*ex12*ul(9)&
+                   +cob*ex12*ul(11)+cob*ex13*ul(12)
+        else
+            alpha=zero
+        endif
+    else
+        ch16 = option
+        call utmess('F', 'ELEMENTS2_47', sk=ch16)
+    endif
+!
 ! --- SI OPTION EPSI_ELGA OU SIEF_ELGA
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
     if (option .ne. 'STRX_ELGA') then
-        do 20 ip = 1, npg
+!       alpha modes incompatibles
+        call jevech('PSTRXRR', 'L', istrxr)
+        alpha=zr(istrxr-1+15)
+        do ip = 1, npg
 !        ---  MATRICE B PUIS DEGE PUIS DEFORMATIONS SUR LES FIBRES
             call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi,&
                         wi, b, gg)
-!          ZERO POUR LA VARIABLE ALPHA DES MODES INCOMPATIBLES CAR
-!          NON ACTIF SI CALCUL ELASTIQUE (RIGI_MECA et X_X_DEPL)
-            call pmfdge(b, gg, ul, zero, dege)
+            call pmfdge(b, gg, ul, alpha, dege)
             ipos=jcont+nbfib*(ip-1)
             call pmfdef(nbfib, ncarfi, zr(jacf), dege, zr(ipos))
-20      continue
+        enddo
     endif
 !
 ! --- SI EPSI_ELGA JCONT EST L'ADRESSE PDEFORR, ON SORT
@@ -143,7 +164,7 @@ subroutine te0537(option, nomte)
 ! --- BOUCLE SUR LES GROUPES DE FIBRE
         ipos1=jcont-1
         ipos2=ipos1+nbfib
-        do 100 ig = 1, nbgf
+        do ig = 1, nbgf
             nugf=zi(ifb+1+ig)
             icp=isdcom-1+(nugf-1)*6
             read(zk24(icp+6),'(I24)')nbfig
@@ -158,88 +179,50 @@ subroutine te0537(option, nomte)
             nu = valres(2)
 ! ---    ON MULTIPLIE LES ZR(JCONT) (DEFORMATIONS) PAR E
 !        POUR AVOIR DES CONTRAINTES
-            do 32 i = 1, nbfig
+            do i = 1, nbfig
                 zr(ipos1+i)=zr(ipos1+i) * e
                 zr(ipos2+i)=zr(ipos2+i) * e
-32          continue
+            enddo
             ipos1=ipos1+nbfig
             ipos2=ipos2+nbfig
-100      continue
+        enddo
     endif
 !
 !
     if (option .eq. 'STRX_ELGA') then
 !
-! --- RECUPERATION DES DIFFERENTS MATERIAUX DANS SDCOMP DANS COMPOR
-        call jevech('PCOMPOR', 'L', icompo)
-        call jeveuo(zk16(icompo-1+7), 'L', isdcom)
+! ---   CALCUL DES EFFORTS GENERALISES (CAS ELASTIQUE)
+! ---   ON FAIT KELE*UL
+        xl2=xl/2.d0
+        call pmfrig(nomte,zi(imate),klv)
+        call vecma ( klv, 78, klc, 12 )
 !
-!     RECUPERATION DU MATERIAU TORSION
-!
-        call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', isicom)
-        nbgfmx=zi(isicom+2)
-        materi=zk24(isdcom-1+6*nbgfmx+1)(1:8)
-        call matela(zi(imate), materi, 0, 0.d0, e,&
-                    nu)
-        g = e/ (deux* (un+nu))
-! --- TORSION A PART
-        call jevech('PCAGNPO', 'L', isect)
-        xjx = zr(isect+7)
-        gxjx = g*xjx
-!
-! --- CALCUL DES CARACTERISTIQUES INTEGREES DE LA SECTION ---
-        do 116 i = 1, 6
-            casect(i) = zero
-116      continue
-! ---   BOUCLE SUR LES GROUPES DE FIBRE
-        ipos=jacf
-        do 200 ig = 1, nbgf
-            nugf=zi(ifb+1+ig)
-            icp=isdcom-1+(nugf-1)*6
-            read(zk24(icp+6),'(I24)')nbfig
-            materi=zk24(icp+2)(1:8)
-! ---    CALCUL DES CARACTERISTIQUES DE LA SECTION ---
-            call pmfitg(nbfig, ncarfi, zr(ipos), casec1)
-! ---    ON MULTIPLIE PAR E (CONSTANT SUR LE GROUPE)
-            nomres(1) = 'E'
-            nomres(2) = 'NU'
-            call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                        materi, 'ELAS', 0, ' ', [0.d0],&
-                        2, nomres, valres, codres, 1)
-            e = valres(1)
-            nu = valres(2)
-            do 126 i = 1, 6
-                casect(i) = casect(i) + e*casec1(i)
-126          continue
-            ipos=ipos+nbfig*ncarfi
-!
-200      continue
-!
-!
-! --- ON DOIT AJOUTER LES EFFORTS GENERALISES (VOIR TE0535 ET TE0536)
-! --- ON FAIT KELE*UL (TOUTES LES INTEGRATIONS SONT FAITES
-!                           ANALYTIQUEMENT)
-        xl2 = xl/deux
-        co6 = six/xl/xl
-        co12 = co6/xl2
-! --- EFORTS TRANCHANTS
-!     RAPPEL: KS22=MATSEC(5), KS33=MATSEC(4), KS23=-MATSEC(6)
-        dep1 = ul(11) + ul(5)
-        dep2 = ul(12) + ul(6)
-        dep3 = ul(9) - ul(3)
-        dep4 = ul(8) - ul(2)
-        ty = co6* ( casect(6)*dep1-casect(4)*dep2) + co12* (casect(6)* dep3+casect(4)*dep4 )
-        tz = co6* ( casect(5)*dep1-casect(6)*dep2) + co12* (casect(5)* dep3+casect(6)*dep4 )
-! --- EFORT NORMAL ET MOMENTS
-!     RAPPEL: KS11=MATSEC(1), KS12=MATSEC(3), KS13=-MATSEC(2)
-        dep1 = ul(7) - ul(1)
-        dep2 = ul(12) - ul(6)
-        dep3 = ul(11) - ul(5)
-        nx = (casect(1)*dep1-casect(2)*dep2+casect(3)*dep3)/xl
-        my = (casect(3)*dep1-casect(6)*dep2+casect(5)*dep3)/xl
-        mz = (-casect(2)*dep1-casect(6)*dep3+casect(4)*dep2)/xl
-! --- TORSION
-        mx = gxjx* (ul(10)-ul(4))/xl
+        nx=zero
+        do i=1,12
+            nx=nx+klc(7,i)*ul(i)
+        enddo
+        ty=zero
+        do i=1,12
+            ty=ty+klc(8,i)*ul(i)
+        enddo
+        tz=zero
+        do i=1,12
+            tz=tz+klc(9,i)*ul(i)
+        enddo
+        mx=zero
+        do i=1,12
+            mx=mx+klc(10,i)*ul(i)
+        enddo
+        my=zero
+        do i=1,12
+            my=my+(klc(11,i)-klc(5,i))*ul(i)
+        enddo
+        my=my/deux
+        mz=zero
+        do i=1,12
+            mz=mz+(klc(12,i)-klc(6,i))*ul(i)
+        enddo
+        mz=mz/deux
 !
         do ip = 1, npg
             if (ip .eq. 1) then
@@ -253,6 +236,7 @@ subroutine te0537(option, nomte)
             zr(istrxr-1+ncomp*(ip-1)+4)= sign * mx
             zr(istrxr-1+ncomp*(ip-1)+5)= sign * my + tz*xl2
             zr(istrxr-1+ncomp*(ip-1)+6)= sign * mz - ty*xl2
+            zr(istrxr-1+ncomp*(ip-1)+15)= alpha
 !
         end do
 !

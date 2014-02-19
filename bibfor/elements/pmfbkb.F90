@@ -1,6 +1,6 @@
 subroutine pmfbkb(cars, b, wi, gxjx, sk)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,6 +79,7 @@ subroutine pmfbkb(cars, b, wi, gxjx, sk)
 ! --- POUR ETRE PLUS PARLANT
 ! --- ATTENTION : SIGNE MOINS POUR KS13 ET KS23
 ! --- MULTIPLICATION PAR LE POIDS
+
     ks11=cars(1)*wi
     ks13=-cars(2)*wi
     ks12=cars(3)*wi
@@ -163,7 +164,5 @@ subroutine pmfbkb(cars, b, wi, gxjx, sk)
 !
     sk(ip(12)+5)=ks23*b3b4
     sk(ip(11)+6)=sk(ip(12)+5)
-!
-! LES 20 TERMES DE COUPLAGE TORSION-QUELQUECHOSE SONT NULS
 !
 end subroutine
