@@ -342,31 +342,39 @@ def supv002_ops(self, ERREUR, **kwargs):
     LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, '*.py'))]
     #LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(msgdir, 'mecanonline9.py'))]
 
-    # start the timekeeper
-    #XXX commented because it does not work properly under LSF...
-    #ptk = MPR.Process(target=timekeeper, args=(os.getpid(), 60))
-    #ptk.start()
-    aspell = AspellCall(get_personal_dict(), 'fr', ENCODING)
-    checker = Checker(aspell)
-    checker.set_ignored(ERREUR)
-    # check default/native messages
-    check_catamess(checker, 'fr', LCATA)
-    # check translated messages in english
-    check_catamess(checker, 'en', LCATA)
-    # close aspell
-    aspell.close()
-    # stop the timekeeper
-    #ptk.terminate()
+    # check for installation problem: http://bugs.python.org/issue3770
+    do_check = True
+    try:
+        self.queue = MPR.Queue()
+    except ImportError, exc:
+        if 'sem_open implementation' in str(exc):
+            do_check = False
+            print "\n  <A> Problem detected ! supv002a can not run on this machine\n\n"
+    if do_check:
+        aspell = AspellCall(get_personal_dict(), 'fr', ENCODING)
+        checker = Checker(aspell)
+        checker.set_ignored(ERREUR)
+        # check default/native messages
+        check_catamess(checker, 'fr', LCATA)
+        # check translated messages in english
+        check_catamess(checker, 'en', LCATA)
+        # close aspell
+        aspell.close()
 
-    nberr = checker.count_errors()
-    errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
-    allw = checker.get_all_words()
-    nbwrn = len(allw)
-    warns = checker.get_warnings()
-    torm = list(previous_errors.difference(allw))
-    torm.sort()
-    new = checker.get_unknown_words()
-    nbnew = len(new)
+        nberr = checker.count_errors()
+        errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
+        allw = checker.get_all_words()
+        nbwrn = len(allw)
+        warns = checker.get_warnings()
+        torm = list(previous_errors.difference(allw))
+        torm.sort()
+        new = checker.get_unknown_words()
+        nbnew = len(new)
+    else:
+        nberr = nbnew = 0
+        nbwrn = len(previous_errors)
+        warns = ''
+        torm = []
     
     if kwargs.get('unittest'):
         print warns
