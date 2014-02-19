@@ -22,9 +22,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       LANG='EN')
 
 import aster
-lopt = aster.get_option_dependency('SIGM_ELGA')
-assert len(lopt) == 3, lopt
-assert lopt == ('DEPL', 'SIEF_ELGA', 'SIGM_ELGA'), lopt
+lopt = set(aster.get_option_dependency('SIGM_ELGA'))
+assert len(lopt) == 4, lopt
+assert len(lopt.difference(('DEPL', 'SIEF_ELGA', 'SIGM_ELGA', 'STRX_ELGA'))) == 0, lopt
 
 lopt = aster.get_option_dependency('ACCE')
 assert len(lopt) == 0, lopt
