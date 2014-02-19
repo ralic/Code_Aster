@@ -130,7 +130,8 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
                     valk(2) = modeli
                     call utmess('F', 'THM1_35', nk=2, valk=valk)
                 endif
-            else if (rela_thmc(1:16).eq.'LIQU_AD_GAZ_VAPE') then
+            else if ((rela_thmc(1:16).eq.'LIQU_AD_GAZ_VAPE').or.&
+                     (rela_thmc(1:16).eq.'LIQU_AD_GAZ')) then
                 if ((modeli(1:9).ne.'AXIS_HH2M') .and. (modeli(1:9) .ne.'AXIS_THH2') .and.&
                     (modeli(1:8).ne.'AXIS_HH2') .and. (modeli(1:11).ne.'D_PLAN_HH2M') .and.&
                     (modeli(1:11).ne.'D_PLAN_THH2') .and. (modeli(1:11) .ne.'D_PLAN_THH2')&
