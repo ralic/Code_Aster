@@ -602,7 +602,6 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     integer :: nfacev
     integer :: nnov, nnosv
     real(kind=8) :: alpha
-    logical :: uticer
     real(kind=8) :: xg(maxdim), xl(maxdim)
     real(kind=8) :: rhol, rhog, drhol1, drhol2, drhog1, drhog2
     real(kind=8) :: zero
@@ -655,11 +654,8 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 511  end do
 !============================
 ! ACTUELLEMENT ON OBLIGE A PRENDRE LE CENTRE
-! AU CENTRE DE GRAVITE
-! SI ON VEUT TESTER LE CENTRE DU CERCLE CIRCONSCRIT
-! ON PRENDRA UTICER = TRUE
+! AU CENTRE DE GRAVITE - CERCLE CIRCONSCRIT DESACTIVE
 !===============================
-    uticer = .false.
 !
     bool = (option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) .or.&
            (option(1:9).eq.'FULL_MECA' )
@@ -771,7 +767,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! ================================================================
     call cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                 nface, axi, geom, vol, mface,&
-                dface, xface, normfa, uticer)
+                dface, xface, normfa)
 ! ================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES ----------------------
 ! ON MET DANS LE TABLEAU DES DEF GENERALISES LES PRESSIONS
@@ -1230,7 +1226,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! ================================================================
             call cabhvf(maxfa, maxdim, ndim, nnov, nnosv,&
                         nface, axi, zr( igeomv), volv, mfacel,&
-                        dfacel, xfacel, norfal, uticer)
+                        dfacel, xfacel, norfal)
             call cacdsu(maxfa, maxdim, alpha, ndim, nnov,&
                         nfacev, zr( igeomv), volv, mfacel, dfacel,&
                         xfacel, norfal, kintvf, yssl, cl,&

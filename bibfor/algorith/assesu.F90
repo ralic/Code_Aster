@@ -249,7 +249,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: dias2(maxfa), difuvp(maxfa), difuas(maxfa), difuad(maxfa), diad1f(maxfa)
     real(kind=8) :: diad2f(maxfa), dias1f(maxfa), dias2f(maxfa), divp1f(maxfa), divp2f(maxfa)
 !=====================================================================
-    logical :: uticer, ldcen
+    logical ::  ldcen
     real(kind=8) :: xg(maxdim)
     real(kind=8) :: rhol, rhog, drhol1, drhol2, drhog1, drhog2
     real(kind=8) :: alpha, zero
@@ -280,12 +280,8 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !
     alpha = crit(13)
 !============================
-! ACTUELLEMENT ON OBLIGE A PRENDRE LE CENTRE
-! AU CENTRE DE GRAVITE
-! SI ON VEUT TESTER LE CENTRE DU CERCLE CIRCONSCRIT
-! ON PRENDRA UTICER = TRUE
+! LE CENTRE EST LE CENTRE DE GRAVITE (CENTRE DU CERCLE CIRCONSCRIT DESACTIVE
 !===============================
-    uticer = .false.
     zero=0.d0
     do 100 idim = 1, ndim
         xg(idim)=geom(idim,nno)
@@ -439,7 +435,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! ================================================================
     call cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                 nface, axi, geom, vol, mface,&
-                dface, xface, normfa, uticer)
+                dface, xface, normfa)
 ! ================================================================
 ! --- CALCUL DES DEFORMATIONS GENERALISEES ----------------------
 ! ON MET DANS LE TABLEAU DES DEF GENERALISES LES PRESSIONS

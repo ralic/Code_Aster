@@ -18,7 +18,7 @@
 interface
     subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                       nface, axi, geom, vol, mface,&
-                      dface, xface, normfa, uticer)
+                      dface, xface, normfa)
         integer :: nno
         integer :: ndim
         integer :: maxdim
@@ -32,6 +32,5 @@ interface
         real(kind=8) :: dface(1:maxfa)
         real(kind=8) :: xface(1:maxdim, 1:maxfa)
         real(kind=8) :: normfa(1:maxdim, 1:maxfa)
-        logical :: uticer
     end subroutine cabhvf
 end interface

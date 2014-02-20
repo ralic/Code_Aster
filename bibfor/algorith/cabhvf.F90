@@ -1,6 +1,6 @@
 subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
                   nface, axi, geom, vol, mface,&
-                  dface, xface, normfa, uticer)
+                  dface, xface, normfa)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +18,6 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! =====================================================================
-!  UTICER :       PERMET DE PLACER LE POINT XK SOIT TJRS AU CENTRE DE
-!                 GRAVITE SOIT AU CENTRE DU CERCLE CIRCONSCRIT SOIT
-!                 AU CENTRE DE GRAVITE
 !
 !  NB :           LE PARAMETRE PERMETANT DE CONSIDER QUE LE POINT EST
 !                 A L INTERIEUR DU CERCLE OU NON EST ECRIT EN DUR
@@ -55,7 +52,6 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vfgefa.h"
-#include "asterfort/vfimat.h"
 #include "asterfort/vfnulo.h"
 !
     integer :: ndim, nno, nnos
@@ -70,18 +66,12 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
     real(kind=8) :: xg(maxdi1)
     integer :: ifa
     integer :: nface
-!   VARIABLES POUR POINT K COMME CENTRE CERCLE CIRCONSCRIT
-    real(kind=8) :: xc(3), a(3), a1va2(3), sa, lambda(3)
 !
 !  ARIS(IS,1) ET FAIS(IS,2) SONT LES DEUX ARETES ISSUTES DU SOMMET IS
 !
     integer :: aris(3, 2)
-    real(kind=8) :: matgeo(3, 3), matg1(3, 3)
-    integer :: jj, ii, if1, if2
-    logical :: hintr
     real(kind=8) :: epsilo, epsrel
     parameter   (epsrel=0.1d0)
-    logical :: uticer
 !
 !
     integer :: nbnofa(1:maxfa1)
@@ -102,14 +92,10 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
     aris(2,2)=2
     aris(3,1)=2
     aris(3,2)=3
-    if (uticer .and. nface .ne. 3) then
-        call utmess('F', 'VOLUFINI_14', sk=nomail, si=ifa)
-    endif
     call vfnulo(maxfa1, maxar, ndim, nnos, nface,&
                 nbnofa, nosar, nosfa, narfa)
     do 1 idim = 1, ndim
         xg(idim)=geom(idim,nno)
-        xc(idim)=0.d0
  1  end do
     if (ndim .eq. 2) then
 !  ========================================
@@ -132,63 +118,13 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
             ))/2.d0
         endif
 !
-        sa=0.d0
         do 3 ifa = 1, nface
             mface(ifa)=sqrt(t(1,ifa)**2+t(2,ifa)**2)
             normfa(1,ifa)=-t(2,ifa)/mface(ifa)
             normfa(2,ifa)= t(1,ifa)/mface(ifa)
  3      continue
-!  SI ON UTILISE LE CENTRE DU CERCLE CIRCONSCRIT ET QUE NOTRE
-!  MAILLAGE EST COMPOSÉ DE TRIANGLE UNIQUEMENT
-!
-        if (uticer) then
-            do 4 is = 1, nnos
-                if1=aris(is,1)
-                if2=aris(is,2)
-                a1va2(is)=pdvc2d(t(1,if1),t(1,if2))/ (mface(if1)*&
-                mface(if2))
-                a(is)=sin(2.d0*abs(sin(a1va2(is))))
-                sa=sa+a(is)
- 4          continue
-!
-! CALCUL DES COORDONNÉES DU CERCLE CIRCONSCRIT
-            do 31 idim = 1, 2
-                do 32 is = 1, nnos
-                    xc(idim)=xc(idim)+geom(idim,is)*a(is)/sa
-32              continue
-31          continue
-!
-! ON REGARDE SI LE CENTRE DU CERCLE CIRCONSCRIT EST DANS LA MAILLE
-!  SI IL EST DANS LA MAILLE ALORS XG=XC SINON XG
-            xc(3)=1.d0
-            do 13 jj = 1, 3
-                do 14 ii = 1, 2
-                    matgeo(ii,jj)=geom(ii,jj)
-14              continue
-                matgeo(3,jj)=1.d0
-13          continue
-!
-            call vfimat(3, 3, matgeo, matg1)
-!
-            hintr=.true.
-            do 15 ii = 1, 3
-                lambda(ii)=0.d0
-                do 25 jj = 1, 3
-                    lambda(ii)= lambda(ii)+matg1(ii,jj)*xc(jj)
-25              continue
-                if (lambda(ii) .le. epsilo) then
-                    hintr=.false.
-                endif
-15          continue
-        endif
-        if (uticer .and. hintr) then
-            do 16 idim = 1, ndim
-                xg(idim) = xc(idim)
-16          continue
-        else
-            call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3) (1:8)
-        endif
+        call tecael(iadzi, iazk24)
+        nomail = zk24(iazk24-1+3) (1:8)
         do 17 ifa = 1, nface
             dface(ifa)=(xface(1,ifa)-xg(1))*normfa(1,ifa)+ (xface(2,&
             ifa)-xg(2))*normfa(2,ifa)

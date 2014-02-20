@@ -66,12 +66,7 @@ cata_msg = {
 13 : _(u"""
   -> l'élément %(k1)s et la face  %(i1)i est non plane 
 """),
-14 : _(u"""
-  -> Il est possible d'utiliser comme inconnue dans la maille le centre du cercle
-     circonscrit (a la place du centre de gravite) ce qui nous permet de retrouver
-     un schéma volumes finis a deux points. Cependant cette possibilité n'est programme
-     que pour des maillages 2D composés de triangles.
-"""),
+
 15 : _(u"""
   -> Le nombre de noeuds de l'élément est inconnu en VF. 
      Nous pouvons utiliser uniquement des mailles quadratiques. Il est donc 
