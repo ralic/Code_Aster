@@ -53,7 +53,7 @@ subroutine te0346(option, nomte)
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, imat
     integer :: istrxm, istrxp, ldep
     character(len=4) :: fami
-    character(len=24) :: valk(2)
+    character(len=24) :: valk(3)
 !
     nno = 2
     nc = 7
@@ -82,13 +82,19 @@ subroutine te0346(option, nomte)
         call utmess('F', 'ELEMENTS3_40', nk=2, valk=valk)
     endif
 !
+    if ( zk16(icompo) .ne. 'ELAS' ) then
+        valk(1) = option
+        valk(2) = zk16(icompo)
+        valk(3) = nomte
+        call utmess('F', 'ELEMENTS3_2', nk=3, valk=valk)
+    endif
+!
     npg = 3
     fami = 'RIGI'
 !
-! ---- LA PRESENCE DU CHAMP DE DEPLACEMENT A L INSTANT T+
-! ---- DEVRAIT ETRE CONDITIONNE  PAR L OPTION (AVEC RIGI_MECA_TANG
-! ---- CA N A PAS DE SENS).
-! ---- CEPENDANT CE CHAMP EST INITIALISE A 0 PAR LA ROUTINE NMMATR.
+!   LA PRESENCE DU CHAMP DE DEPLACEMENT A L INSTANT T+
+!   DEVRAIT ETRE CONDITIONNE  PAR L OPTION (AVEC RIGI_MECA_TANG CA N A PAS DE SENS).
+!   CEPENDANT CE CHAMP EST INITIALISE A 0 PAR LA ROUTINE NMMATR.
     call jevech('PDEPLPR', 'L', ideplp)
     icontp = 1
     if (vecteu) then
@@ -98,8 +104,7 @@ subroutine te0346(option, nomte)
     if (matric) call jevech('PMATUUR', 'E', imat)
 !
 !
-!     GEOMETRIE EVENTUELLEMENT  REACTUALISEE :
-!
+!   GEOMETRIE EVENTUELLEMENT  REACTUALISEE :
     reactu = zk16(icompo+2) .eq. 'GROT_GDEP'
     if (reactu) then
 !        RECUPERATION DU 3EME ANGLE NAUTIQUE AU TEMPS T-

@@ -27,7 +27,6 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
 #include "asterfort/jsd1ff.h"
 #include "asterfort/mavec.h"
 #include "asterfort/moytem.h"
-#include "asterfort/nmvmpm.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utbtab.h"
@@ -80,8 +79,8 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     logical :: vecteu, matric
     integer :: dimklv, kp, kk, i, j, k
     real(kind=8) :: eps(7), deps(7), fg(14), sigp(7), sigm(7), vip(9)
-    real(kind=8) :: e, nu, g, phiy, phiz, xls2, l346p(28), epsthf(1), epsthd(1)
-    real(kind=8) :: co(3), aa, xiy, xiz, alfay, alfaz, xjx, xjg, loi346(28)
+    real(kind=8) :: e, nu, g, phiy, phiz, xls2, epsthf(1), epsthd(1)
+    real(kind=8) :: co(3), aa, xiy, xiz, alfay, alfaz, xjx, xjg
     real(kind=8) :: valres(2)
 !
 !     POUR LA THERMIQUE
@@ -127,7 +126,7 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
-!     THERMIQUE À T+
+!   THERMIQUE À T+
     call moytem(fami, npg, 1, '+', temp,&
                 iret)
     call rcvalb(fami, 1, 1, '+', icodma,&
@@ -136,10 +135,8 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     e = valres(1)
     nu = valres(2)
     g = e / (2.d0*(1.d0+nu))
-    call nmvmpm(compor, icodma, itemp, temp, e,&
-                nu, l346p)
 !
-!     THERMIQUE À T-
+!   THERMIQUE À T-
     call moytem(fami, npg, 1, '-', temm,&
                 iret)
     call rcvalb(fami, 1, 1, '-', icodma,&
@@ -147,12 +144,8 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
                 2, nomres, valres, codres, 1)
     em = valres(1)
     num = valres(2)
-    call nmvmpm(compor, icodma, itemp, temm, em,&
-                num, loi346)
 !
-!
-!     CARACTERISTIQUES DE LA SECTION :
-!
+!   CARACTERISTIQUES DE LA SECTION :
     aa = sect(1)
     xiy = sect(2)
     xiz = sect(3)
@@ -183,7 +176,7 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
     endif
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
-    do 101 kp = 1, npg
+    do kp = 1, npg
 !        CALCUL DE D1B ( EPSI = D1B * U ) :
         if (nomte .eq. 'MECA_POU_D_TG') then
             call jsd1ff(kp, xl, phiy, phiz, d1b)
@@ -196,13 +189,13 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
         call r8inir(nc, 0.d0, deps, 1)
         call r8inir(nc, 0.d0, sigm, 1)
 !
-        do 210 i = 1, nc
-            do 211 j = 1, 2*nc
+        do i = 1, nc
+            do j = 1, 2*nc
                 eps(i) = eps(i) + d1b(i,j)* u(j)
                 deps(i) = deps(i) + d1b(i,j)*du(j)
-211          continue
+            enddo
             sigm(i) = contm(nc*(kp-1)+i)*e/em
-210      continue
+        enddo
         if ((epsthd(1).ne.0.d0) .and. (itemp.ne.0)) then
             f = epsthf(1)
             df= epsthd(1)
@@ -210,23 +203,16 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
             deps(1)=deps(1)-df
         endif
 !
-!        QUELQUE SOIT LE COMPORTEMENT, IL FAUT :
-!            HOTA : MATRICE DE COMPORTEMENT TANGENT
-!            VIP  : VARIABLES INTERNES ACTUALISEES
-!            SIGP : CONTRAINTES ACTUALISEES
-!
-!        LOI346(1)   = 0   ==>   ELASTICITE
-!
-!        CAS ELASTIQUE
-        do 800 i = 1, nc
+!       CAS ELASTIQUE
+        do i = 1, nc
             hota(i,i) = hoel(i,i)
-800      continue
-        do 810 i = 1, nc
+        enddo
+        do i = 1, nc
             sigp(i)=sigm(i)+hoel(i,i)*deps(i)
-810      continue
+        enddo
         call r8inir(9, 0.d0, vip, 1)
 !
-!        CALCUL DE BT*H*B :
+!       CALCUL DE BT*H*B :
         if (matric) then
             call dscal(nc*nc, xls2, hota, 1)
             call dscal(nc*nc, co(kp), hota, 1)
@@ -234,21 +220,20 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
                         work, rg0)
         endif
 !
-!        ON STOCKE   LES  VARIABLES INTERNES "+"
-!                    LES CONTRAINTES "+" ET LE FL :
+!       ON STOCKE   LES  VARIABLES INTERNES "+"
+!                   LES CONTRAINTES "+" ET LE FL :
         if (vecteu) then
-            do 59 i = 1, nc
+            do i = 1, nc
                 contp(nc*(kp-1)+i) = sigp(i)
-59          continue
-!
-            do 214 k = 1, 2*nc
-                do 215 kk = 1, nc
+            enddo
+            do k = 1, 2*nc
+                do kk = 1, nc
                     fl(k)=fl(k) + xls2*sigp(kk)*d1b(kk,k)*co(kp)
-215              continue
-214          continue
+                enddo
+            enddo
         endif
 !
-101  end do
+    enddo
 !
     if (matric) then
         call mavec(rg0, 2*nc, klv, dimklv)

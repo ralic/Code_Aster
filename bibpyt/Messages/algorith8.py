@@ -108,21 +108,6 @@ Arrêt suite à l'échec de l'intégration de la loi de comportement.
  le nombre de composantes dans le champ de vent est incorrect. on doit avoir : DX, DY, DZ
 """),
 
-80 : _(u"""
-Pour le comportement %(k3)s, matériau %(k4)s. Incohérence dans les données matériau.
-   %(k1)s est >= %(k2)s cela n'est pas possible.
-   valeur de %(k1)s : %(r1)E
-   valeur de %(k2)s : %(r2)E
-"""),
-
-81 : _(u"""
-L'association comportement vs matériau est incorrecte.
-Les combinaisons possibles sont :
-   comportement %(k1)s et matériau %(k2)s et %(k5)s
-   comportement %(k3)s et matériau %(k4)s et %(k5)s
-"""),
-
-
 86 : _(u"""
  porosité strictement nulle( cas non traité)
 """),
