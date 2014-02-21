@@ -517,11 +517,13 @@ class CalcFonction_DSP(CalcFonctionOper):
             SRO_args['PAS'] = kw['FREQ_PAS']
         elif kw['LIST_FREQ'] != None:
             l_freq = kw['LIST_FREQ'].Valeurs()
-            ASSERT(l_freq[0] > 0.0, "LIST_FREQ: il faut des valeurs positives")
+            if l_freq[0] <= 0.0: 
+               UTMESS('F', 'FONCT0_43')
             SRO_args['LIST_FREQ'] = l_freq
             SRO_args['PAS'] = None
         f_dsp, f_sro_ref = SRO2DSP(f_in, **SRO_args)
         self.resu = t_fonction(f_dsp.vale_x / deuxpi, f_dsp.vale_y * deuxpi, para=f_in.para)
+
 
 class CalcFonction_LISS_ENVELOP(CalcFonctionOper):
     """LISS_ENVELOP"""
