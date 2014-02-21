@@ -62,6 +62,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
@@ -89,12 +90,12 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     character(len=1) :: typc
-    logical :: modnum, exnume
+    logical :: modnum, exnume, chnoeud
     integer :: i, iret, neq, nbmode
     integer :: jref, jdeeq, jval
-    character(len=8) :: champ2
-    character(len=19) :: numer1, numer2, nomcha, tmpcha
-    character(len=24) :: maill1, maill2, valk(4), crefe(2), valcha
+    character(len=16) :: champ2
+    character(len=19) :: numer1, numer2
+    character(len=24) :: maill1, maill2, valk(4), crefe(2), valcha, nomcha, tmpcha
 !
 !     0.3 - ACTUALISATION DE LA VALEUR DE LA MARQUE COURANTE
 !
@@ -112,31 +113,43 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
     if (present(numer)) numer2 = numer
     if (present(nequa)) neq = nequa
 
-!   --- VERIFICATION QUE LE NOMBRE D'EQUATIONS RENSEIGNE CORRESPOND AU NUME_DDL
-    if (numer2 .ne. ' ') then
-        call jeexin(numer2(1:14)//'.NUME.NEQU', iret)
-        if (iret .ne. 0) then
-            call dismoi('NB_EQUA' , numer2, 'NUME_DDL' , repi=neq)
-            if (present(nequa)) ASSERT(nequa .eq. neq)
-        endif
-    else 
-        call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C', ier=iret)
-        if (iret .eq. 0) then
-            call jeexin(numer1(1:14)//'.NUME.NEQU', iret)
+    chnoeud = .true.
+    if (champ2(6:7).eq.'EL') chnoeud = .false.
+
+!   --- RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS RENSEIGNE
+!   --- 1. CHAMP AUX NOEUDS : PAR RAPPORT A L'INFORMATION DANS LE NUME_DDL 
+    if (chnoeud) then
+        if (numer2 .ne. ' ') then
+            call jeexin(numer2(1:14)//'.NUME.NEQU', iret)
             if (iret .ne. 0) then
-                call dismoi('NB_EQUA' , numer1, 'NUME_DDL' , repi=neq)
+                call dismoi('NB_EQUA' , numer2, 'NUME_DDL' , repi=neq)
                 if (present(nequa)) ASSERT(nequa .eq. neq)
             endif
+        else 
+            call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C', ier=iret)
+            if (iret .eq. 0) then
+                call jeexin(numer1(1:14)//'.NUME.NEQU', iret)
+                if (iret .ne. 0) then
+                    call dismoi('NB_EQUA' , numer1, 'NUME_DDL' , repi=neq)
+                    if (present(nequa)) ASSERT(nequa .eq. neq)
+                endif
+            endif
         endif
+    else
+!   --- 2. CHAMP AUX ELEMENTS : PAR RAPPORT A UN CHAMP DU MEME TYPE DE LA BASE
+        call rsexch('F', base, champ2, 1, nomcha,&
+                    iret)
+        nomcha = nomcha(1:19)//'.CELV'
+        call jelira(nomcha, 'LONMAX', neq)
+        if (present(nequa)) ASSERT(nequa .eq. neq)
     endif
-!   --- FIN DE LA VERIFICATION DU NOMBRE D'EQUATIONS
+!   --- FIN DE LA RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS
 
     call dismoi('NB_MODES_TOT', base, 'RESULTAT' , repi=nbmode)
     if (present(nbmodes)) then 
         ASSERT(nbmodes .le. nbmode)
         nbmode = nbmodes
     endif
-
 
 !  ____________________________________________________________________
 !

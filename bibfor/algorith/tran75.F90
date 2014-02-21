@@ -352,7 +352,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
             call copmod(basemo, champ=typcha, numer=prchno(1:14), bmodr=base, &
-                                nequa=neq)
+                                nequa=neq, nbmodes=nbmode)
         else
             do j = 1, nbmode
                 call rsexch('F', basemo, typcha, j, nomcha,&
@@ -419,13 +419,11 @@ subroutine tran75(nomres, typres, nomin, basemo)
             else
                 ASSERT(.false.)
             endif
+
             chamno(20:24) = '.VALE'
             call jeexin(chamno, ibid)
-            if (ibid .gt. 0) then
-                chamno(20:24) = '.VALE'
-            else
-                chamno(20:24) = '.CELV'
-            endif
+            if (ibid .le. 0) chamno(20:24) = '.CELV'
+
             call jeveuo(chamno, 'E', lvale)
 !
             if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
