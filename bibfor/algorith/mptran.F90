@@ -328,7 +328,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !            CHAMPS, PEU IMPORTE LE TYPE DE MESURE FOURNI
             call mdallo(nomres, 'HARM', nbabs, sauve='GLOB', base=nombas,&
                         nbmodes=nbmode, jordr=jordr, jdisc=jabs, jdepl=jdep, jvite=jvit,&
-                        jacce=jacc, dt=dt, jptem=jpass)
+                        jacce=jacc)
 ! RESOLUTION
             call mpinvc(nbmesu, nbmode, nbabs, zr(lred), zc(lmesu),&
                         zr(lcoef), zr(labs), lfonct, zc(jdep), zc(jvit),&
