@@ -248,6 +248,12 @@ U_ELAS=STAT_NON_LINE( INFO=1,
     )
   )
 
+IMPR_RESU(FORMAT='MED',RESU=(_F(RESULTAT=U_PLAS,
+                                NOM_CHAM='SIEF_ELGA',
+                                GROUP_MA='DCBJ',),
+                             _F(RESULTAT=U_PLAS,
+                                NOM_CHAM='VARI_ELGA',
+                                GROUP_MA='DCBJ',),),)
 
 # POST_TRAITEMENT
 U_PLAS = CALC_CHAMP(reuse = U_PLAS,
