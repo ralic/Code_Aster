@@ -330,7 +330,7 @@ subroutine pmfd00()
             if (erre .gt. precai) then
                 valmi = ioc
                 call jenuno(jexnum(mommai, nummai), valmk(1))
-                valmk(2) = 'IY'
+                valmk(2) = 'IZ'
                 valmr(1) = moinoz
                 valmr(2) = casect(4)
                 valmr(3) = erre
