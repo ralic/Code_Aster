@@ -32,7 +32,7 @@ subroutine impmem()
     k8tab(1) = 'VMPEAK'
     k8tab(2) = 'VMSIZE'
     k8tab(3) = 'CMAX_JV'
-    k8tab(4) = 'CUSE_JV'
+    k8tab(4) = 'CMXU_JV'
     call utgtme(4, k8tab, rval, iret)
     if (iret .eq. 0) then
         if (rval(1) .gt. 0.d0) then
