@@ -57,11 +57,8 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
 #include "asterfort/dmvpp1.h"
 #include "asterfort/dmwdt2.h"
 #include "asterfort/dmwp1v.h"
-#include "asterfort/dqdeps.h"
 #include "asterfort/dqvpdp.h"
 #include "asterfort/dqvpdt.h"
-#include "asterfort/dsipdt.h"
-#include "asterfort/dspdlq.h"
 #include "asterfort/enteau.h"
 #include "asterfort/entgaz.h"
 #include "asterfort/inithm.h"
@@ -113,9 +110,6 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
     real(kind=8) :: rbid57(ndim, ndim), rbid58, rbid55
     real(kind=8) :: m11m, m12m, coeps, pinf, dp2, cp21, cp22, rho21
     real(kind=8) :: rho22, dpad, signe, rac2
-    real(kind=8) :: dqeps(6)
-    real(kind=8) :: dspdt(6), dsdlq(6)
-    real(kind=8) :: dmdeps(6), sigmp(6)
 !
     logical :: net, bishop
 !
@@ -229,17 +223,12 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
 ! =====================================================================
 ! --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 ! =====================================================================
-        if ((yamec.eq.1)) then
+!        if ((yamec.eq.1)) then
 ! =====================================================================
 ! --- ON POSE ICI P2 = PVP ET P1 = - (PVP - PW) (ON CHANGE LE SIGNE ---
 ! --- CAR ON MULTIPLIE DANS VIPORO PAR -1) ----------------------------
 ! =====================================================================
-            call viporo(nbvari, vintm, vintp, advico, vicphi,&
-                        phi0, deps, depsv, alphfi, dt,&
-                        dp1-dpvp, dpvp, signe, sat, cs,&
-                        tbiot, phi, phim, retcom, cbiot,&
-                        unsks, alpha0, aniso, phenom)
-        endif
+!        endif
         if (emmag) then
             call viemma(nbvari, vintm, vintp, advico, vicphi,&
                         phi0, dp1-dpvp, dpvp, signe, sat,&
@@ -255,15 +244,6 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
         if (retcom .ne. 0) then
             goto 30
         endif
-    endif
-! =====================================================================
-! --- ACTUALISATION DE CS ET ALPHFI -----------------------------------
-! =====================================================================
-    if (yamec .eq. 1) then
-        call dilata(imate, phi, alphfi, t, aniso,&
-                    angmas, tbiot, phenom)
-        call unsmfi(imate, phi, cs, t, tbiot,&
-                    aniso, ndim, phenom)
     endif
 ! =====================================================================
 ! --- QUELQUES INITIALISATIONS ----------------------------------------
@@ -341,21 +321,9 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
 ! ======================================================================
     if ((option.eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
 ! ======================================================================
-! --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
+! --- CALCUL DES CONTRAINTES DE PRESSIONS : PAS D ACTUALITE TANT QUE
+!      PAS COUPLE
 ! ======================================================================
-        if (yamec .eq. 1) then
-            call sigmap(net, bishop, sat, signe, tbiot,&
-                        dpvp, dp1-dpvp, sigmp)
-            call sigmap(net, bishop, sat, signe, tbiot,&
-                        dp2, dp1, sigmp)
-            do 10 i = 1, 3
-                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
-10          continue
-            do 14 i = 4, 6
-                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*&
-                rac2
-14          continue
-        endif
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
 ! ======================================================================
@@ -371,44 +339,8 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
 ! --- UNIQUEMENT POUR LES OPTIONS RIGI_MECA ET FULL_MECA ---------------
 ! ======================================================================
     if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
-        if (yamec .eq. 1) then
-! ======================================================================
-! --- CALCUL UNIQUEMENT EN PRESENCE DE MECANIQUE -----------------------
-! ======================================================================
-! --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
-! ======================================================================
-            call dspdlq(tbiot, sat, dpvpl, dsdlq)
-            do 11 i = 1, 3
-                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
-                +dsdlq(i)
-11          continue
-            do 22 i = 4, 6
-                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
-                +dsdlq(i)*rac2
-22          continue
-! ======================================================================
-! --- CALCUL DES DERIVEES DE SIGMAP PAR RAPPORT A LA TEMPERATURE -------
-! ======================================================================
-            if (yate .eq. 1) then
-                call dsipdt(tbiot, sat, dpvpt, dspdt)
-                do 112 i = 1, 6
-                    dsde(adcome+6+i-1,addete)=dsde(adcome+6+i-1,&
-                    addete) +dspdt(i)
-112              continue
-            endif
-! ======================================================================
-! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
-! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
-! ======================================================================
-            call dmdepv(rho11, sat, tbiot, dmdeps)
-            do 12 i = 1, 6
-                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
-12          continue
-            call dmdepv(rho12, 1.0d0-sat, tbiot, dmdeps)
-            do 13 i = 1, 6
-                dsde(adcp12,addeme+ndim-1+i) = dsde(adcp12,addeme+ ndim-1+i) + dmdeps(i)
-13          continue
-        endif
+!        if (yamec .eq. 1) then
+!        endif
         if (yate .eq. 1) then
 ! ======================================================================
 ! --- CALCUL UNIQUEMENT EN PRESENCE DE THERMIQUE -----------------------
@@ -437,14 +369,11 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
             alp12,t,dpvpl)
 ! ======================================================================
 ! --- CALCUL DE LA DERIVEE DE LA CHALEUR REDUITE Q' --------------------
-! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
+! --- UNIQUEMENT POUR LA PARTIE MECANIQUE : AUJOURD'HUI NON PREVUE 
 ! ======================================================================
-            if (yamec .eq. 1) then
-                call dqdeps(mdal, t, dqeps)
-                do 20 i = 1, 6
-                    dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqeps(i)
-20              continue
-            endif
+!            if (yamec .eq. 1) then
+!    a completer le cas echeant
+!            endif
         endif
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------

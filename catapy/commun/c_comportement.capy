@@ -122,7 +122,6 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                        "HYDR_UTIL",
                                        "HYDR_VGM",
                                        "HYDR_VGC",
-                                       "HYDR",
                                        "HYDR_ENDO",
                                        ),),
                                        ),

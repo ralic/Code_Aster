@@ -203,11 +203,6 @@ cata_msg = {
  attention, mode instable
 """),
 
-80 : _(u"""
- pour utiliser le comportement "HYDR", il faut surcharger le code
- en "mode développement" avec les routines "PERMEA" et "SATURA".
-"""),
-
 81 : _(u"""
  le vecteur directeur est nul.
 """),

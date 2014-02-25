@@ -39,11 +39,9 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     implicit none
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
-#include "asterfort/permea.h"
 #include "asterfort/permvc.h"
 #include "asterfort/permvg.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/satura.h"
 #include "asterfort/satuvg.h"
 #include "asterfort/tdlamb.h"
 #include "asterfort/tebiot.h"
@@ -52,7 +50,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 #include "asterfort/tpermh.h"
 #include "asterfort/utmess.h"
     integer :: imate, retcom, ndim
-    integer :: aniso, aniso1, aniso2, aniso3, aniso4, anisoh
+    integer :: aniso, aniso1, aniso2, aniso3, aniso4
     real(kind=8) :: t0, p10, p20, phi0, pvp0, t, p1, p2, phi, pvp
     real(kind=8) :: rgaz, rhod, cpd, satm, satur, dsatur, pesa(3)
     real(kind=8) :: permli, dperml, permgz, dperms, dpermp
@@ -77,12 +75,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     integer :: dim9, dim10, dim11, dim12, dim13, dim14, dim15
     integer :: dim16, dim17, dim18, dim19, dim20, dim21, dim22
     integer :: dim23, dim24, dim25, dim26, dim27, dim28, dim29
-    integer :: dim30, dim31, dim32, dim33, ncon, dim35
+    integer :: dim30, dim31, dim32, dim33, dim35
     integer :: dimpar
     integer :: dim36, dim37, dim38, dim40, dim41, dim42, dim43, dim39
     parameter   ( dimsat =  2 )
     parameter   ( dimvg  =  5 )
-    parameter   ( ncon   = 11 )
     parameter   ( dim1   =  5 )
     parameter   ( dim2   =  7 )
     parameter   ( dim3   =  4 )
@@ -147,7 +144,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     real(kind=8) :: val33(dim33), valsat(dimsat)
     real(kind=8) :: val35(dim35+1), val36(dim36), val37(dim37), val38(dim38)
     real(kind=8) :: val40(dim40), val41(dim41), val42(dim42), val43(dim43)
-    real(kind=8) :: val39(dim39), valpar(dimpar), cond(ncon)
+    real(kind=8) :: val39(dim39), valpar(dimpar)
     real(kind=8) :: vg(dimvg), fpesa(1), un, zero
 !
 !
@@ -890,13 +887,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                     call utmess('F', 'ALGORITH16_94')
                 endif
                 call satuvg(vg, p1m, val6(7), rbid1)
-                elseif (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
-            then
+            elseif (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
+             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1m], 1, ncra6(7), val6(7), icodre,&
                             1)
-            else
-                call satura(hydr, p1m, val6(7), rbid1)
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra6(8), val6(8), icodre,&
@@ -999,17 +994,14 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call satuvg(vg, p1m, val9(7), rbid1)
                 call satuvg(vg, p1, val9(8), val9(9))
 !
-                else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
-            then
+            else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
+               then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1m], 1, ncra9(7), val9(7), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, ncra9(7), val9(8), icodre,&
                             1)
-            else
-                call satura(hydr, p1m, val9(7), rbid1)
-                call satura(hydr, p1, val9(8), val9(9))
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra9(9), val9(10), icodre,&
@@ -1134,9 +1126,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, ncra35(7), val35(8), icodre,&
                             1)
-            else
-                call satura(hydr, p1m, val35(7), rbid1)
-                call satura(hydr, p1, val35(8), val35(9))
             endif
             call rcvala(imate, ' ', 'THM_AIR_DISSOUS', 0, ' ',&
                         [0.d0], 1, ncra39(1), val39(1), icodre,&
@@ -1260,9 +1249,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, crad35(7), val35(8), icodre,&
                             1)
-            else
-                call satura(hydr, p1m, val35(7), rbid1)
-                call satura(hydr, p1, val35(8), val35(9))
             endif
             call rcvala(imate, ' ', 'THM_AIR_DISSOUS', 0, ' ',&
                         [0.d0], 1, crad39(1), val39(1), icodre,&
@@ -1381,9 +1367,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, ncra13(7), val13(8), icodre,&
                             1)
-            else
-                call satura(hydr, p1m, val13(7), rbid1)
-                call satura(hydr, p1, val13(8), val13(9))
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra13(9), val13(10), icodre,&
@@ -1474,9 +1457,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, ncra16(6), val16(7), icodre,&
                             1)
-            else
-                call satura(hydr, p1m, val16(6), rbid1)
-                call satura(hydr, p1, val16(7), val16(8))
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra16(8), val16(9), icodre,&
@@ -1514,8 +1494,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         1)
             satur = valsat(1)
             dsatur = valsat(2)
-        else if (hydr.eq.'HYDR') then
-            call satura(hydr, p1, satur, dsatur)
         else
             call utmess('F', 'ALGORITH16_95')
         endif
@@ -2153,8 +2131,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [pvp-p1], 2, ncra22(22), val22(22), icodre,&
                             1)
-            else
-                call satura(hydr, pvp-p1, val22(22), val22(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
@@ -2423,8 +2399,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, ncra25(22), val25(22), icodre,&
                             1)
-            else
-                call satura(hydr, p1, val25(22), val25(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
@@ -2741,8 +2715,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, ncra40(22), val40(22), icodre,&
                             1)
-            else
-                call satura(hydr, p1, val40(22), val40(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
@@ -3080,8 +3052,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, crad40(22), val40(22), icodre,&
                             1)
-            else
-                call satura(hydr, p1, val40(22), val40(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
@@ -3390,8 +3360,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, ncra29(22), val29(22), icodre,&
                             1)
-            else
-                call satura(hydr, p1, val29(22), val29(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
@@ -3632,8 +3600,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
                             [p1], 2, ncra32(21), val32(21), icodre,&
                             1)
-            else
-                call satura(hydr, p1, val32(21), val32(22))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
@@ -3707,29 +3673,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 ! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
             call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
-!
-        endif
-        if (hydr .eq. 'HYDR') then
-            call permea(imate, hydr, phi, t, satur,&
-                        ncon, cond, anisoh)
-            permfh(1) = cond(1)
-            permfh(2) = cond(2)
-            permfh(3) = cond(3)
-            permli = cond(4)
-            dperml = cond(5)
-            permgz = cond(6)
-            dperms = cond(7)
-            dpermp = cond(8)
-            fick = cond(9)
-            dfickt = cond(10)
-            dfickg = cond(11)
-            if (satur .gt. un .or. satur .lt. zero) then
-                retcom = 2
-                goto 500
-            endif
-!
-! CALCUL DU TENSEUR DE PERMEABILITE
-            call tpermh(angmas, permfh, tperm, anisoh, ndim)
 !
         endif
     endif

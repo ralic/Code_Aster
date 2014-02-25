@@ -53,7 +53,7 @@ subroutine thm_kit_read(keywordfact, iocc     , rela_comp, rela_thmc, rela_hydr,
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: dmthmc, dmhydr, dmmeca
-    parameter  ( dmthmc = 8, dmhydr = 5, dmmeca = 19 )
+    parameter  ( dmthmc = 8, dmhydr = 4, dmmeca = 19 )
     character(len=16) :: pothmc(dmthmc), pohydr(dmhydr), pomeca(dmmeca)
     character(len=16) :: valk(3)
     integer :: ikit, ii, nocc
@@ -65,7 +65,7 @@ subroutine thm_kit_read(keywordfact, iocc     , rela_comp, rela_thmc, rela_hydr,
     data pothmc / 'LIQU_SATU'       ,'LIQU_GAZ'        ,'GAZ'             ,&
                   'LIQU_GAZ_ATM'    ,'LIQU_VAPE_GAZ'   ,'LIQU_VAPE'       ,&
                   'LIQU_AD_GAZ_VAPE','LIQU_AD_GAZ'/
-    data pohydr / 'HYDR'            ,'HYDR_UTIL'       ,'HYDR_VGM'        ,&
+    data pohydr / 'HYDR_UTIL'       ,'HYDR_VGM'        ,&
                   'HYDR_VGC'        ,'HYDR_ENDO'/
     data pomeca / 'ELAS'            ,'CJS'             ,'HUJEUX'          ,&
                   'CAM_CLAY'        ,'BARCELONE'       ,'LAIGLE'          ,&
