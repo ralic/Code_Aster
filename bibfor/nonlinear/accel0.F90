@@ -3,6 +3,25 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
                   sddyna, sdstat, sdtime, meelem, measse,&
                   veelem, veasse, solalg)
 !
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detlsp.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lspini.h"
+#include "asterfort/nmassi.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmprac.h"
+#include "asterfort/nmreso.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vtzero.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,24 +40,6 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/copisd.h"
-#include "asterfort/detlsp.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/lspini.h"
-#include "asterfort/nmassi.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmdebg.h"
-#include "asterfort/nmprac.h"
-#include "asterfort/nmreso.h"
-#include "asterfort/nulvec.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vtzero.h"
     character(len=19) :: solveu, maprec, lischa
     character(len=19) :: sddyna
     character(len=24) :: sdtime, sdstat
@@ -120,7 +121,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
                 sddyna, sdstat, sdtime, defico, resoco,&
                 meelem, measse, maprec, matass, faccvg)
     if (faccvg .eq. 2) then
-        call nulvec(accmoi)
+        call vtzero(accmoi)
         call utmess('A', 'MECANONLINE_69')
         goto 999
     endif
@@ -140,7 +141,7 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
     call nmreso(fonact, cndonn, k19bla, cncinx, solveu,&
                 maprec, matass, depso1, depso2, rescvg)
     if (rescvg .eq. 1) then
-        call nulvec(accmoi)
+        call vtzero(accmoi)
         call utmess('A', 'MECANONLINE_70')
         goto 999
     endif
