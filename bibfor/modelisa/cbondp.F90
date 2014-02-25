@@ -66,11 +66,10 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
     character(len=8) :: signal
     character(len=16) :: wave_type
     integer :: jvalv
-    integer :: iocc, ndir, val_nb, nondp, ibid, codret
+    integer :: iocc, ndir, val_nb, nondp, codret
     character(len=16) :: keywordfact
     character(len=19) :: carte(2)
     integer :: nb_carte, nb_cmp
-    character(len=8) :: suffix
     character(len=24) :: list_elem
     integer :: j_elem
     integer :: nb_elem
@@ -100,81 +99,78 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 ! ----- Read mesh affectation
 !
         list_elem = '&&CBONDP.LIST_ELEM'
-        suffix = ' '
-        call getelem(mesh, keywordfact, iocc, suffix, 'A',&
-                     list_elem, nb_elem)
-        if (nb_elem .eq. 0) goto 100
-        call jeveuo(list_elem, 'L', j_elem)
+        call getelem(mesh, keywordfact, iocc, 'A', list_elem, &
+                     nb_elem)
+        if (nb_elem .ne. 0) then
+            call jeveuo(list_elem, 'L', j_elem)
 !
-! ----- Get wave function
+! --------- Get wave function
 !
-        call char_read_val(keywordfact, iocc, 'FONC_SIGNAL', 'FONC', val_nb,&
-                           r8dummy, signal, c16dummy, k16dummy)
-        ASSERT(val_nb.eq.1)
+            call char_read_val(keywordfact, iocc, 'FONC_SIGNAL', 'FONC', val_nb,&
+                               r8dummy, signal, c16dummy, k16dummy)
+            ASSERT(val_nb.eq.1)
 !
-! ----- Affectation of values in <CARTE> - Wave function
+! --------- Affectation of values in <CARTE> - Wave function
 !
-        call jeveuo(carte(1)//'.VALV', 'E', jvalv)
-        nb_cmp = 1
-        zk8(jvalv-1+1) = signal
-        call nocart(carte(1), 3, nb_cmp, mode='NUM', nma=nb_elem,&
-                    limanu=zi(j_elem))
+            call jeveuo(carte(1)//'.VALV', 'E', jvalv)
+            nb_cmp = 1
+            zk8(jvalv-1+1) = signal
+            call nocart(carte(1), 3, nb_cmp, mode='NUM', nma=nb_elem,&
+                        limanu=zi(j_elem))
 !
-! ----- Get direction
+! --------- Get direction
 !
-        wave_dire(1) = 0.d0
-        wave_dire(2) = 0.d0
-        wave_dire(3) = 0.d0
-        call getvr8(keywordfact, 'DIRECTION', iocc=iocc, nbval=0, nbret=ndir)
-        ndir = - ndir
-        ASSERT(ndir.eq.3)
-        call getvr8(keywordfact, 'DIRECTION', iocc=iocc, nbval=ndir, vect=wave_dire,&
-                    nbret=ibid)
+            wave_dire(1) = 0.d0
+            wave_dire(2) = 0.d0
+            wave_dire(3) = 0.d0
+            call getvr8(keywordfact, 'DIRECTION', iocc=iocc, nbval=0, nbret=ndir)
+            ndir = - ndir
+            ASSERT(ndir.eq.3)
+            call getvr8(keywordfact, 'DIRECTION', iocc=iocc, nbval=ndir, vect=wave_dire)
 !
-! ----- Get wave type
+! --------- Get wave type
 !
-        call char_read_val(keywordfact, iocc, 'TYPE_ONDE', 'TEXT', val_nb,&
-                           r8dummy, k8dummy, c16dummy, wave_type)
-        ASSERT(val_nb.eq.1)
-        if (ndim .eq. 3) then
-            if (wave_type .eq. 'P ') then
-                wave_type_r = 0.d0
-            else if (wave_type.eq.'SV') then
-                wave_type_r = 1.d0
-            else if (wave_type.eq.'SH') then
-                wave_type_r = 2.d0
-            else if (wave_type.eq.'S ') then
-                call utmess('F', 'CHARGES2_61')
+            call char_read_val(keywordfact, iocc, 'TYPE_ONDE', 'TEXT', val_nb,&
+                               r8dummy, k8dummy, c16dummy, wave_type)
+            ASSERT(val_nb.eq.1)
+            if (ndim .eq. 3) then
+                if (wave_type .eq. 'P ') then
+                    wave_type_r = 0.d0
+                else if (wave_type.eq.'SV') then
+                    wave_type_r = 1.d0
+                else if (wave_type.eq.'SH') then
+                    wave_type_r = 2.d0
+                else if (wave_type.eq.'S ') then
+                    call utmess('F', 'CHARGES2_61')
+                else
+                    ASSERT(.false.)
+                endif
+            else if (ndim .eq. 2) then
+                if (wave_type .eq. 'P ') then
+                    wave_type_r = 0.d0
+                else if (wave_type.eq.'S ') then
+                    wave_type_r = 1.d0
+                else if (wave_type.eq.'SV'.or.wave_type.eq.'SH') then
+                    call utmess('A', 'CHARGES2_62')
+                    wave_type_r = 1.d0
+                else
+                    ASSERT(.false.)
+                endif
             else
                 ASSERT(.false.)
             endif
-        else if (ndim .eq. 2) then
-            if (wave_type .eq. 'P ') then
-                wave_type_r = 0.d0
-            else if (wave_type.eq.'S ') then
-                wave_type_r = 1.d0
-            else if (wave_type.eq.'SV'.or.wave_type.eq.'SH') then
-                call utmess('A', 'CHARGES2_62')
-                wave_type_r = 1.d0
-            else
-                ASSERT(.false.)
-            endif
-        else
-            ASSERT(.false.)
+!
+! --------- Affectation of values in <CARTE> - Wave type and direction
+!
+            call jeveuo(carte(2)//'.VALV', 'E', jvalv)
+            nb_cmp = 4
+            zr(jvalv-1+1) = wave_dire(1)
+            zr(jvalv-1+2) = wave_dire(2)
+            zr(jvalv-1+3) = wave_dire(3)
+            zr(jvalv-1+4) = wave_type_r
+            call nocart(carte(2), 3, nb_cmp, mode='NUM', nma=nb_elem,&
+                        limanu=zi(j_elem))
         endif
-!
-! ----- Affectation of values in <CARTE> - Wave type and direction
-!
-        call jeveuo(carte(2)//'.VALV', 'E', jvalv)
-        nb_cmp = 4
-        zr(jvalv-1+1) = wave_dire(1)
-        zr(jvalv-1+2) = wave_dire(2)
-        zr(jvalv-1+3) = wave_dire(3)
-        zr(jvalv-1+4) = wave_type_r
-        call nocart(carte(2), 3, nb_cmp, mode='NUM', nma=nb_elem,&
-                    limanu=zi(j_elem))
-!
-100      continue
 !
 ! ----- Check elements
 !
@@ -183,7 +179,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 !
         call jedetr(list_elem)
 !
-    enddo
+    end do
 !
 99  continue
     call jedema()

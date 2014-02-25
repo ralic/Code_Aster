@@ -68,7 +68,6 @@ subroutine carota(load, ligrmo, mesh, vale_type)
     character(len=24) :: list_elem
     integer :: j_elem
     integer :: nb_elem
-    character(len=8) :: suffix
     character(len=19) :: carte
     integer :: nb_carte
 !
@@ -86,7 +85,6 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
     ASSERT(vale_type.eq.'REEL')
     list_elem = '&&CAROTA.LISTELEM'
-    suffix = ' '
 !
 ! - Creation and initialization to zero of <CARTE>
 !
@@ -100,8 +98,8 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
 ! ----- Elements
 !
-        call getelem(mesh, keywordfact, iocc, suffix, 'F',&
-                     list_elem, nb_elem)
+        call getelem(mesh, keywordfact, iocc, 'F', list_elem, &
+                     nb_elem)
         call jeveuo(list_elem, 'L', j_elem)
 !
 ! ----- Get speed

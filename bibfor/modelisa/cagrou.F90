@@ -68,7 +68,6 @@ subroutine cagrou(load, mesh, vale_type)
 !
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
-    character(len=8) :: list_suffix
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
     integer :: ibid
@@ -105,7 +104,6 @@ subroutine cagrou(load, mesh, vale_type)
     coef_real_unit(2) = -1.d0
     list_rela = '&&CAGROU.RLLISTE'
     list_dof = '&&CAGROU.LIST_DOF'
-    list_suffix = ' '
 !
 ! - Initializations of types
 !
@@ -125,8 +123,8 @@ subroutine cagrou(load, mesh, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CAGROU.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
-                     list_node, nb_node)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
+                     nb_node)
         if (nb_node .lt. 2) then
             call utmess('F', 'CHARGES2_82')
         endif

@@ -110,8 +110,6 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     character(len=16) :: val_t_dnor, val_t_dtan
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
-    integer :: n_suffix
-    character(len=8) :: list_suffix
     integer, pointer :: icompt(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -143,9 +141,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords for using nume_node char_read_keyw
 !
     keywordexcl = '&&CAFACI.KEYWORDEXCL'
-    n_suffix = 0
-    list_suffix = ' '
-    call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
 !
@@ -177,10 +173,10 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
         list_node = '&&CAFACI.LIST_NODE'
         list_elem = '&&CAFACI.LIST_ELEM'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
-                     list_node, nb_node)
-        call getelem(mesh, keywordfact, iocc, list_suffix, 'F',&
-                     list_elem, nb_elem)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
+                     nb_node)
+        call getelem(mesh, keywordfact, iocc, 'F', list_elem, &
+                     nb_elem)
         call jeveuo(list_node, 'L', jlino)
         call jeveuo(list_elem, 'L', jlima)
 !

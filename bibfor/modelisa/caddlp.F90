@@ -104,8 +104,6 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
     character(len=16) :: keywordfact, keyword
     character(len=19) :: lisrel, k19bid
     character(len=19) :: ncncin
-    integer :: n_suffix
-    character(len=8) :: list_suffix
     integer, pointer :: dimension(:) => null()
     integer, pointer :: icompt(:) => null()
 !
@@ -135,9 +133,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords for using in load_read_keyw
 !
     keywordexcl = '&&CADDLP.KEYWORDEXCL'
-    n_suffix = 0
-    list_suffix = ' '
-    call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
 !
@@ -160,8 +156,8 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLP.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
-                     list_node, nb_node)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
+                     nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Counting components

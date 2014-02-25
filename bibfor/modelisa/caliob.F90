@@ -99,8 +99,6 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
     integer :: n_angle
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
-    integer :: n_suffix
-    character(len=8) :: list_suffix
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -126,9 +124,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CALIOB.KEYWORDEXCL'
-    n_suffix = 0
-    list_suffix = ' '
-    call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
 !
@@ -148,8 +144,8 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CALIOB.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, 'F',&
-                     list_node, nb_node)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node, &
+                     nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Local orientation

@@ -111,8 +111,6 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
     complex(kind=8) :: liai_vale_cplx
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
-    integer :: n_suffix
-    character(len=8) :: list_suffix
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -128,9 +126,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CADDLI.KEYWORDEXCL'
-    n_suffix = 0
-    list_suffix = ' '
-    call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 !
 ! - Type of linear coefficient
 !
@@ -182,8 +178,8 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLI.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, list_suffix, ' ',&
-                     list_node, nb_node)
+        call getnode(mesh, keywordfact, iocc, ' ', list_node, &
+                     nb_node)
 !
 ! ----- No nodes (empty groups)
 !

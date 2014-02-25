@@ -1,9 +1,8 @@
-subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
-                   list_elem, nb_elem, model)
+subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
+                   nb_elem, suffix     , model)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -34,11 +33,11 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywordfact
     integer, intent(in) :: iocc
-    character(len=8), intent(in) :: suffix
     character(len=1), intent(in) :: stop_void
     integer, intent(out) :: nb_elem
     character(len=24), intent(in) :: list_elem
     character(len=8), intent(in), optional :: model
+    character(len=*), intent(in), optional :: suffix
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +59,6 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
 ! In  mesh         : name of mesh
 ! In  keywordfact  : factor keyword to read
 ! In  iocc         : factor keyword index
-! In  suffix       : suffix add to keywords
 ! In  stop_void    : if nb_elem == 0
 !                      'F' - Error
 !                      'A' - Error
@@ -68,18 +66,22 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
 ! In  list_elem    : list of elements read
 ! Out nb_elem      : number of elements read
 ! In  model        : <optional> check elements belongs to model
+! In  suffix       : <optional> suffix add to keywords
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: moclm(5)
     character(len=16) :: typmcl(5)
-    character(len=24) :: list_lect, list_excl
+    character(len=24) :: list_lect
+    integer, pointer :: p_list_lect(:) => null()
+    character(len=24) :: list_excl
+    integer, pointer :: p_list_excl(:) => null()
+    integer, pointer :: p_list_elem(:) => null()
     character(len=24) :: keyword
-    character(len=8) :: model_name
+    character(len=8) :: model_name, suffix_name
     integer :: nb_mocl
     integer :: nb_lect, nb_excl, nb_elim
-    integer :: num_lect, num_excl
-    integer :: jlect, jexcl, jelem
+    integer :: nume_lect, nume_excl
     integer :: i_lect, i_excl, i_elem
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,13 +90,19 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
 !
 ! - Initializations
 !
-    list_lect = '&&LIST_LECT'
-    list_excl = '&&LIST_EXCL'
-    nb_elem = 0
-    nb_lect = 0
-    nb_excl = 0
-    model_name = ' '
-    if (present(model)) model_name = model
+    list_lect   = '&&LIST_LECT'
+    list_excl   = '&&LIST_EXCL'
+    nb_elem     = 0
+    nb_lect     = 0
+    nb_excl     = 0
+    model_name  = ' '
+    suffix_name = ' '
+    if (present(model)) then
+        model_name = model
+    endif
+    if (present(suffix)) then
+        suffix_name = suffix
+    endif
 !
 ! - Read elements
 !
@@ -104,13 +112,13 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
         moclm(nb_mocl) = 'TOUT'
         typmcl(nb_mocl) = 'TOUT'
     endif
-    keyword = 'GROUP_MA'//suffix
+    keyword = 'GROUP_MA'//suffix_name
     if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
         moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'GROUP_MA'
     endif
-    keyword = 'MAILLE'//suffix
+    keyword = 'MAILLE'//suffix_name
     if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
         moclm(nb_mocl) = keyword
@@ -124,13 +132,13 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
 ! - Read elements excludes
 !
     nb_mocl = 0
-    keyword = 'SANS_GROUP_MA'//suffix
+    keyword = 'SANS_GROUP_MA'//suffix_name
     if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
         moclm(nb_mocl) = keyword
         typmcl(nb_mocl) = 'GROUP_MA'
     endif
-    keyword = 'SANS_MAILLE'//suffix
+    keyword = 'SANS_MAILLE'//suffix_name
     if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
         moclm(nb_mocl) = keyword
@@ -140,20 +148,26 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
         call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                     nb_mocl, moclm, typmcl, list_excl, nb_excl)
     endif
+
+!
+! - Access to list of elements 
+!
+    if (nb_lect .ne. 0) then
+        call jeveuo(list_lect, 'E', vi = p_list_lect)
+    endif
 !
 ! - Exclusion of elements in initial list
 !
     nb_elim = 0
-    if (nb_lect .ne. 0) call jeveuo(list_lect, 'E', jlect)
     if (nb_excl .ne. 0) then
-        call jeveuo(list_excl, 'L', jexcl)
+        call jeveuo(list_excl, 'L', vi = p_list_excl)
         do i_excl = 1, nb_excl
-            num_excl = zi(jexcl-1+i_excl)
+            nume_excl = p_list_excl(i_excl)
             do i_lect = 1, nb_lect
-                num_lect = zi(jlect-1+i_lect)
-                if (num_excl .eq. num_lect) then
+                nume_lect = p_list_lect(i_lect)
+                if (nume_excl .eq. nume_lect) then
                     nb_elim = nb_elim + 1
-                    zi(jlect-1+i_lect) = 0
+                    p_list_lect(i_lect) = 0
                 endif
             end do
         end do
@@ -164,12 +178,12 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
 !
     i_elem = 0
     if ((nb_elem.ne.0) .and. (nb_lect.ne.0)) then
-        call wkvect(list_elem, 'V V I', nb_elem, jelem)
+        call wkvect(list_elem, 'V V I', nb_elem, vi = p_list_elem)
         do i_lect = 1, nb_lect
-            num_lect = zi(jlect-1+i_lect)
-            if (num_lect .ne. 0) then
-                i_elem= i_elem + 1
-                zi(jelem-1+i_elem) = num_lect
+            nume_lect = p_list_lect(i_lect)
+            if (nume_lect .ne. 0) then
+                i_elem = i_elem + 1
+                p_list_elem(i_elem) = nume_lect
             endif
         end do
         ASSERT(i_elem.eq.nb_elem)
@@ -183,6 +197,5 @@ subroutine getelem(mesh, keywordfact, iocc, suffix, stop_void,&
 !
     call jedetr(list_lect)
     call jedetr(list_excl)
-!
     call jedema()
 end subroutine

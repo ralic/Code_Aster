@@ -118,15 +118,14 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 ! ----- Elements for hole
 !
         suffix = '_INT'
-        call getelem(mesh, keywordfact, iocc, suffix, 'F',&
-                     list_elem_hole, nb_elem_hole)
+        call getelem(mesh, keywordfact, iocc, 'F', list_elem_hole, &
+                     nb_elem_hole, suffix = suffix)
         call jeveuo(list_elem_hole, 'L', j_elem_hole)
 !
 ! ----- Elements for section
 !
-        suffix = ' '
-        call getelem(mesh, keywordfact, iocc, suffix, 'F',&
-                     list_elem_sect, nb_elem_sect)
+        call getelem(mesh, keywordfact, iocc, 'F', list_elem_sect, &
+                     nb_elem_sect)
         call jeveuo(list_elem_sect, 'L', j_elem_sect)
 !
 ! ----- Create <LIGREL>

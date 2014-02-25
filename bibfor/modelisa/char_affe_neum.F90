@@ -3,7 +3,6 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/getelem.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
@@ -56,8 +55,7 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
 !
     character(len=16) :: load_type
     character(len=24) :: list_elem
-    character(len=8) :: suffix
-    integer :: j_elem
+    integer, pointer :: p_list_elem(:) => null()
     integer :: nb_elem
     integer :: codret, i_carte
 !
@@ -65,34 +63,33 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
 !
     list_elem = '&&LIST_ELEM'
     load_type = keywordfact
-    suffix = ' '
 !
 ! - Elements to apply
 !
-    call getelem(mesh, keywordfact, iocc, suffix, 'A',&
-                 list_elem, nb_elem)
-    if (nb_elem .eq. 0) goto 99
+    call getelem(mesh, keywordfact, iocc, 'A', list_elem, &
+                 nb_elem)
+    if (nb_elem .ne. 0) then
 !
-! - Check elements
+! ----- Check elements
 !
-    call jeveuo(list_elem, 'L', j_elem)
-    do i_carte = 1, nb_carte
-        if (nb_cmp(i_carte) .ne. 0) then
-            call vetyma(mesh, ndim, keywordfact, list_elem, nb_elem,&
-                        codret)
-        endif
-    enddo
+        call jeveuo(list_elem, 'L', vi = p_list_elem)
+        do i_carte = 1, nb_carte
+            if (nb_cmp(i_carte) .ne. 0) then
+                call vetyma(mesh, ndim, keywordfact, list_elem, nb_elem,&
+                            codret)
+            endif
+        end do
 !
-! - Apply Neumann loads in <CARTE>
+! ----- Apply Neumann loads in <CARTE>
 !
-    do i_carte = 1, nb_carte
-        if (nb_cmp(i_carte) .ne. 0) then
-            call nocart(carte(i_carte), 3, nb_cmp(i_carte), mode='NUM', nma=nb_elem,&
-                        limanu=zi(j_elem))
-        endif
-    enddo
+        do i_carte = 1, nb_carte
+            if (nb_cmp(i_carte) .ne. 0) then
+                call nocart(carte(i_carte), 3, nb_cmp(i_carte), mode='NUM', nma=nb_elem,&
+                            limanu=p_list_elem)
+            endif
+        end do
 !
-99  continue
+    endif
 !
     call jedetr(list_elem)
 !

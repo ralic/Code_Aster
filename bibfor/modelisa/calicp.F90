@@ -163,14 +163,14 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 ! ----- Read nodes - First list
 !
         suffix = '_1'
-        call getnode(mesh, keywordfact, iocc, suffix, 'F',&
-                     list_node_i1, nb_node_1)
+        call getnode(mesh, keywordfact, iocc, 'F', list_node_i1, &
+                     nb_node_1, suffix =  suffix)
 !
 ! ----- Read nodes - Second list
 !
         suffix = '_2'
-        call getnode(mesh, keywordfact, iocc, suffix, 'F',&
-                     list_node_i2, nb_node_2)
+        call getnode(mesh     , keywordfact, iocc, 'F', list_node_i2, &
+                     nb_node_2, suffix =  suffix)
 !
         if (nb_node_1 .ne. nb_node_2) then
             call utmess('F', 'CHARGES2_8')
