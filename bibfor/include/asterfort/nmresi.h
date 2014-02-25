@@ -15,10 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
 interface
     subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                       sddyna, sdconv, sdimpr, defico, resoco,&
-                      matass, numins, conv, resigr, eta,&
+                      matass, numins, conv, resi_glob_rela, resi_glob_maxi, eta,&
                       comref, valinc, solalg, veasse, measse,&
                       vrela, vmaxi, vchar, vresi, vrefe,&
                       vinit, vcomp, vfrot, vgeom)
@@ -35,7 +36,8 @@ interface
         character(len=19) :: matass
         integer :: numins
         real(kind=8) :: conv(*)
-        real(kind=8) :: resigr
+        real(kind=8) :: resi_glob_rela
+        real(kind=8) :: resi_glob_maxi
         real(kind=8) :: eta
         character(len=24) :: comref
         character(len=19) :: valinc(*)

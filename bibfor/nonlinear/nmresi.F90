@@ -1,6 +1,6 @@
 subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                   sddyna, sdconv, sdimpr, defico, resoco,&
-                  matass, numins, conv, resigr, eta,&
+                  matass, numins, conv, resi_glob_rela, resi_glob_maxi, eta,&
                   comref, valinc, solalg, veasse, measse,&
                   vrela, vmaxi, vchar, vresi, vrefe,&
                   vinit, vcomp, vfrot, vgeom)
@@ -9,6 +9,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterc/r8vide.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
@@ -57,7 +58,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     character(len=19) :: matass
     character(len=24) :: comref
     integer :: fonact(*)
-    real(kind=8) :: eta, conv(*), resigr
+    real(kind=8) :: eta, conv(*), resi_glob_rela, resi_glob_maxi
     real(kind=8) :: vrela, vmaxi, vchar, vresi, vrefe, vinit, vcomp, vfrot
     real(kind=8) :: vgeom
 !
@@ -79,7 +80,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! IN  COMREF : VARI_COM REFE
 ! IN  MATASS : MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  NUMINS : NUMERO D'INSTANT
-! IN  RESIGR : RESI_GLOB_RELA
+! IN  resi_glob_rela : RESI_GLOB_RELA
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -358,12 +359,18 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! --- A DES FORCES NODALES NULLES
 !
     if (linit) then
-        if (vchar .gt. resigr) then
-            vinit = vinit/vchar
-        endif
-        if (vinit .gt. resigr) then
-            call nmvcmx(mate, noma, comref, commoi)
-        endif
+        if (resi_glob_rela.eq.r8vide()) then
+            if (vinit .gt. resi_glob_maxi) then
+                call nmvcmx(mate, noma, comref, commoi)
+            endif
+        else
+            if (vchar .gt. resi_glob_rela) then
+                vinit = vinit/vchar
+                if (vinit .gt. resi_glob_rela) then
+                    call nmvcmx(mate, noma, comref, commoi)
+                endif
+            endif
+        endif  
     endif
 !
     call jedema()

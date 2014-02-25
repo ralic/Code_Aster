@@ -112,7 +112,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
     logical :: lreli, lnkry, limpex, lcont
     real(kind=8) :: r8bid
-    real(kind=8) :: resigr, pasmin
+    real(kind=8) :: resi_glob_rela, resi_glob_maxi, pasmin
     real(kind=8) :: instam, instap
     real(kind=8) :: vrela, vmaxi, vrefe, vresi, vchar, vinit, vcomp, vfrot
     real(kind=8) :: vgeom
@@ -139,7 +139,8 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
     itemax = .false.
     lerror = .false.
     cvnewt = .false.
-    resigr = parcri(2)
+    resi_glob_maxi = parcri(1)
+    resi_glob_rela = parcri(2)
     pasmin = parmet(3)
     vrela = r8vide()
     vmaxi = r8vide()
@@ -201,7 +202,7 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
     call nmresi(noma, mate, numedd, sdnume, fonact,&
                 sddyna, sdconv, sdimpr, defico, resoco, &
-                matass, numins, conv, resigr, eta, &
+                matass, numins, conv, resi_glob_rela, resi_glob_maxi, eta, &
                 comref, valinc, solalg, veasse, measse, &
                 vrela, vmaxi, vchar, vresi, vrefe, &
                 vinit, vcomp, vfrot, vgeom)
