@@ -1,8 +1,8 @@
-subroutine carc_save(model, mesh, carcri, nb_cmp, list_vale)
+subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
+                     p_info_carc_valk, p_info_carc_valr)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
@@ -36,9 +36,10 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, list_vale)
 !
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: list_vale
     character(len=19), intent(in) :: carcri
     integer, intent(in) :: nb_cmp
+    character(len=16), pointer, intent(in) :: p_info_carc_valk(:)
+    real(kind=8)     , pointer, intent(in) :: p_info_carc_valr(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,24 +49,25 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, list_vale)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh        : name of mesh
-! In  model       : name of model
-! In  carcri      : name of <CARTE> CARCRI
-! In  nb_cmp      : number of components in <CARTE> CARCRI
-! In  list_vale   : list of informations to save
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  carcri           : name of <CARTE> CARCRI
+! In  nb_cmp           : number of components in <CARTE> CARCRI
+! In  p_info_carc_valk : pointer to carcri informations (character)
+! In  p_info_carc_valr : pointer to carcri informations (real)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
     logical :: l_affe_all
     integer :: nb_elem_affe
-    integer :: j_elem_affe
+    integer, pointer :: p_elem_affe(:) => null()
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
     integer :: nt
-    integer :: j_lvalr, j_lvalk, j_cart_val
+    real(kind=8), pointer :: p_carc_valv(:) => null()
     character(len=16) :: algo_inte, rela_comp
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
     real(kind=8) :: resi_cplan_maxi, seuil, amplitude, taux_retour, parm_alpha
@@ -73,9 +75,6 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, list_vale)
     logical :: plane_stress
 !
 ! --------------------------------------------------------------------------------------------------
-!
-!
-! - Initializations
 !
     nbocc       = 0
     keywordfact = 'COMPORTEMENT'
@@ -88,12 +87,7 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, list_vale)
 !
 ! - Access to <CARTE>
 !
-    call jeveuo(carcri//'.VALV', 'E', j_cart_val)
-!
-! - Access to list
-!
-    call jeveuo(list_vale(1:19)//'.VALR', 'L', j_lvalr)
-    call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
+    call jeveuo(carcri//'.VALV', 'E', vr = p_carc_valv)
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
@@ -101,19 +95,19 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, list_vale)
 !
 ! ----- Get infos
 !
-        type_matr_t     = int(zr(j_lvalr+13*(iocc-1) -1 + 2))
-        parm_theta      = zr(j_lvalr+13*(iocc-1) -1 + 4)
-        iter_inte_pas   = int(zr(j_lvalr+13*(iocc-1) -1 + 5))
-        algo_inte_r     = zr(j_lvalr+13*(iocc-1) -1 + 6)
-        vale_pert_rela  = zr(j_lvalr+13*(iocc-1) -1 + 7)
-        resi_cplan_maxi = zr(j_lvalr+13*(iocc-1) -1 + 8)
-        iter_cplan_maxi = int(zr(j_lvalr+13*(iocc-1) -1 + 9))
-        seuil           = zr(j_lvalr+13*(iocc-1) -1 + 10)
-        amplitude       = zr(j_lvalr+13*(iocc-1) -1 + 11)
-        taux_retour     = zr(j_lvalr+13*(iocc-1) -1 + 12)
-        parm_alpha      = zr(j_lvalr+13*(iocc-1) -1 + 13)
-        rela_comp       = zk24(j_lvalk+2*(iocc-1) -1 + 1)(1:16)
-        algo_inte       = zk24(j_lvalk+2*(iocc-1) -1 + 2)(1:16)
+        type_matr_t     = int(p_info_carc_valr(13*(iocc-1) + 2))
+        parm_theta      =     p_info_carc_valr(13*(iocc-1) + 4)
+        iter_inte_pas   = int(p_info_carc_valr(13*(iocc-1) + 5))
+        algo_inte_r     =     p_info_carc_valr(13*(iocc-1) + 6)
+        vale_pert_rela  =     p_info_carc_valr(13*(iocc-1) + 7)
+        resi_cplan_maxi =     p_info_carc_valr(13*(iocc-1) + 8)
+        iter_cplan_maxi = int(p_info_carc_valr(13*(iocc-1) + 9))
+        seuil           =     p_info_carc_valr(13*(iocc-1) + 10)
+        amplitude       =     p_info_carc_valr(13*(iocc-1) + 11)
+        taux_retour     =     p_info_carc_valr(13*(iocc-1) + 12)
+        parm_alpha      =     p_info_carc_valr(13*(iocc-1) + 13)
+        rela_comp       =     p_info_carc_valk(2*(iocc-1) + 1)
+        algo_inte       =     p_info_carc_valk(2*(iocc-1) + 2)
 !
 ! ----- Get mesh
 !
@@ -145,28 +139,28 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, list_vale)
 !
 ! ----- Set in <CARTE>
 !
-        zr(j_cart_val-1+1)  = iter_inte_maxi
-        zr(j_cart_val-1+2)  = type_matr_t
-        zr(j_cart_val-1+3)  = resi_inte_rela
-        zr(j_cart_val-1+4)  = parm_theta
-        zr(j_cart_val-1+5)  = iter_inte_pas
-        zr(j_cart_val-1+6)  = algo_inte_r
-        zr(j_cart_val-1+7)  = vale_pert_rela
-        zr(j_cart_val-1+8)  = resi_cplan_maxi
-        zr(j_cart_val-1+9)  = iter_cplan_maxi
-        zr(j_cart_val-1+10) = seuil
-        zr(j_cart_val-1+11) = amplitude
-        zr(j_cart_val-1+12) = taux_retour
-        zr(j_cart_val-1+13) = parm_alpha
+        p_carc_valv(1)  = iter_inte_maxi
+        p_carc_valv(2)  = type_matr_t
+        p_carc_valv(3)  = resi_inte_rela
+        p_carc_valv(4)  = parm_theta
+        p_carc_valv(5)  = iter_inte_pas
+        p_carc_valv(6)  = algo_inte_r
+        p_carc_valv(7)  = vale_pert_rela
+        p_carc_valv(8)  = resi_cplan_maxi
+        p_carc_valv(9)  = iter_cplan_maxi
+        p_carc_valv(10) = seuil
+        p_carc_valv(11) = amplitude
+        p_carc_valv(12) = taux_retour
+        p_carc_valv(13) = parm_alpha
 !
 ! ----- Affect in <CARTE>
 !
         if (l_affe_all) then
             call nocart(carcri, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', j_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi = p_elem_affe)
             call nocart(carcri, 3, nb_cmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = zi(j_elem_affe))
+                        limanu = p_elem_affe)
             call jedetr(list_elem_affe)
         endif
     enddo

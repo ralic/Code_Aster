@@ -1,14 +1,11 @@
-subroutine comp_meca_cvar(list_vale)
+subroutine comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_vari.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +25,9 @@ subroutine comp_meca_cvar(list_vale)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: list_vale
+    character(len=16), pointer, intent(in) :: p_info_comp_valk(:)
+    integer          , pointer, intent(in) :: p_info_comp_vali(:)
+    integer          , pointer, intent(inout) :: p_info_comp_nvar(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +43,6 @@ subroutine comp_meca_cvar(list_vale)
 !
     integer :: nb_vari_exte
     integer :: iocc, nbocc, icomp
-    integer :: j_lvali, j_lvalk, j_lnvar
     character(len=16) :: keywordfact
     character(len=16) :: type_matg, post_iter
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(9), type_cpla
@@ -56,14 +54,6 @@ subroutine comp_meca_cvar(list_vale)
 !
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
-!
-! - Access to list
-!
-    if (nbocc.ne.0) then
-        call wkvect(list_vale(1:19)//'.NVAR', 'V V I', 10*nbocc, j_lnvar)
-        call jeveuo(list_vale(1:19)//'.VALI', 'L', j_lvali)
-        call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
-    endif
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
@@ -79,22 +69,22 @@ subroutine comp_meca_cvar(list_vale)
 !
 ! ----- Options
 !
-        nb_vari_exte = zi(j_lvali+2*(iocc-1) -1 + 1)
-        rela_comp   = zk24(j_lvalk+16*(iocc-1) -1 + 1)(1:16)
-        defo_comp   = zk24(j_lvalk+16*(iocc-1) -1 + 2)(1:16)
-        type_cpla   = zk24(j_lvalk+16*(iocc-1) -1 + 4)(1:16)
-        kit_comp(1) = zk24(j_lvalk+16*(iocc-1) -1 + 5)(1:16)
-        kit_comp(2) = zk24(j_lvalk+16*(iocc-1) -1 + 6)(1:16) 
-        kit_comp(3) = zk24(j_lvalk+16*(iocc-1) -1 + 7)(1:16)
-        kit_comp(4) = zk24(j_lvalk+16*(iocc-1) -1 + 8)(1:16)
-        kit_comp(5) = zk24(j_lvalk+16*(iocc-1) -1 + 9)(1:16)
-        kit_comp(6) = zk24(j_lvalk+16*(iocc-1) -1 + 10)(1:16)
-        kit_comp(7) = zk24(j_lvalk+16*(iocc-1) -1 + 11)(1:16)
-        kit_comp(8) = zk24(j_lvalk+16*(iocc-1) -1 + 12)(1:16)
-        kit_comp(9) = zk24(j_lvalk+16*(iocc-1) -1 + 13)(1:16)
-        mult_comp   = zk24(j_lvalk+16*(iocc-1) -1 + 14)(1:16)
-        type_matg   = zk24(j_lvalk+16*(iocc-1) -1 + 15)(1:16)
-        post_iter   = zk24(j_lvalk+16*(iocc-1) -1 + 16)(1:16)
+        nb_vari_exte = p_info_comp_vali(2*(iocc-1)  + 1)
+        rela_comp    = p_info_comp_valk(16*(iocc-1) + 1)
+        defo_comp    = p_info_comp_valk(16*(iocc-1) + 2)
+        type_cpla    = p_info_comp_valk(16*(iocc-1) + 4)
+        kit_comp(1)  = p_info_comp_valk(16*(iocc-1) + 5)
+        kit_comp(2)  = p_info_comp_valk(16*(iocc-1) + 6)
+        kit_comp(3)  = p_info_comp_valk(16*(iocc-1) + 7)
+        kit_comp(4)  = p_info_comp_valk(16*(iocc-1) + 8)
+        kit_comp(5)  = p_info_comp_valk(16*(iocc-1) + 9)
+        kit_comp(6)  = p_info_comp_valk(16*(iocc-1) + 10)
+        kit_comp(7)  = p_info_comp_valk(16*(iocc-1) + 11)
+        kit_comp(8)  = p_info_comp_valk(16*(iocc-1) + 12)
+        kit_comp(9)  = p_info_comp_valk(16*(iocc-1) + 13)
+        mult_comp    = p_info_comp_valk(16*(iocc-1) + 14)
+        type_matg    = p_info_comp_valk(16*(iocc-1) + 15)
+        post_iter    = p_info_comp_valk(16*(iocc-1) + 16)
 !
 ! ----- Detection of specific cases
 !
@@ -110,14 +100,14 @@ subroutine comp_meca_cvar(list_vale)
 !
 ! ----- Save informations
 !
-        zi(j_lnvar+10*(iocc-1) -1 + 1) = nume_comp
-        zi(j_lnvar+10*(iocc-1) -1 + 2) = nb_vari
-        zi(j_lnvar+10*(iocc-1) -1 + 3) = nb_vari_comp(1)
-        zi(j_lnvar+10*(iocc-1) -1 + 4) = nb_vari_comp(2)
-        zi(j_lnvar+10*(iocc-1) -1 + 5) = nb_vari_comp(3)
-        zi(j_lnvar+10*(iocc-1) -1 + 6) = nb_vari_comp(4)
-        zi(j_lnvar+10*(iocc-1) -1 + 7) = nb_vari_comp(2)
-        zi(j_lnvar+10*(iocc-1) -1 + 8) = nb_vari_comp(1)
+        p_info_comp_nvar(10*(iocc-1) + 1) = nume_comp
+        p_info_comp_nvar(10*(iocc-1) + 2) = nb_vari
+        p_info_comp_nvar(10*(iocc-1) + 3) = nb_vari_comp(1)
+        p_info_comp_nvar(10*(iocc-1) + 4) = nb_vari_comp(2)
+        p_info_comp_nvar(10*(iocc-1) + 5) = nb_vari_comp(3)
+        p_info_comp_nvar(10*(iocc-1) + 6) = nb_vari_comp(4)
+        p_info_comp_nvar(10*(iocc-1) + 7) = nb_vari_comp(2)
+        p_info_comp_nvar(10*(iocc-1) + 8) = nb_vari_comp(1)
     end do
 !
 end subroutine

@@ -2,7 +2,6 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"

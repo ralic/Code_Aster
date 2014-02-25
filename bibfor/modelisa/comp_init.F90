@@ -2,7 +2,6 @@ subroutine comp_init(mesh, compor, base, nb_cmp)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -44,7 +43,7 @@ subroutine comp_init(mesh, compor, base, nb_cmp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh     : namle of mesh
+! In  mesh     : name of mesh
 ! In  compor   : name of <CARTE> COMPOR
 ! In  base     : base where create <CARTE> COMPOR
 ! Out nb_cmp   : number of components in <CARTE> COMPOR
@@ -52,16 +51,13 @@ subroutine comp_init(mesh, compor, base, nb_cmp)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nume_gd
-    integer :: j_cmp, icmp, j_cart_cmp, j_cart_val
-    integer :: nb_cmp_max
-    character(len=8) :: k8dummy
+    integer :: nb_cmp_max, icmp
     character(len=8) :: name_gd
+    character(len=16), pointer :: p_compor_valv(:) => null()
+    character(len=8) , pointer :: p_cata_nomcmp(:) => null()
+    character(len=8) , pointer :: p_compor_ncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    call jemarq()
-!
-! - Initializations
 !
     nb_cmp  = 0
     name_gd = 'COMPOR'   
@@ -69,8 +65,8 @@ subroutine comp_init(mesh, compor, base, nb_cmp)
 ! - Read catalog
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', name_gd), nume_gd)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', j_cmp)
-    call jelira(jexnum('&CATA.GD.NOMCMP', nume_gd), 'LONMAX', nb_cmp_max, k8dummy)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', vk8 = p_cata_nomcmp)
+    call jelira(jexnum('&CATA.GD.NOMCMP', nume_gd), 'LONMAX', nb_cmp_max)
 !
 ! - Allocate <CARTE>
 !
@@ -78,17 +74,16 @@ subroutine comp_init(mesh, compor, base, nb_cmp)
 !
 ! - Acces to <CARTE>
 !
-    call jeveuo(compor(1:19)//'.NCMP', 'E', j_cart_cmp)
-    call jeveuo(compor(1:19)//'.VALV', 'E', j_cart_val)
+    call jeveuo(compor(1:19)//'.NCMP', 'E', vk8  = p_compor_ncmp)
+    call jeveuo(compor(1:19)//'.VALV', 'E', vk16 = p_compor_valv)
 !
 ! - Init <CARTE>
 !
     do icmp = 1, nb_cmp_max
-        zk8(j_cart_cmp-1+icmp)  = zk8(j_cmp-1+icmp)
-        zk16(j_cart_val-1+icmp) = ' '
+        p_compor_ncmp(icmp) = p_cata_nomcmp(icmp)
+        p_compor_valv(icmp) = ' '
     enddo
 !
     nb_cmp = nb_cmp_max
-!
-    call jedema()
+
 end subroutine

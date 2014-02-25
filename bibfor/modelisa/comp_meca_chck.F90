@@ -1,4 +1,4 @@
-subroutine comp_meca_chck(model, mesh, full_elem_s, list_vale)
+subroutine comp_meca_chck(model, mesh, full_elem_s, p_info_comp_valk)
 !
     implicit none
 !
@@ -38,7 +38,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, list_vale)
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: full_elem_s
-    character(len=19), intent(in) :: list_vale
+    character(len=16), pointer, intent(in) :: p_info_comp_valk(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,10 +48,10 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, list_vale)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh        : name of mesh
-! In  model       : name of model
-! In  full_elem_s :  <CHELEM_S> of FULL_MECA option
-! In  list_vale   : list of informations to save
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  full_elem_s      : <CHELEM_S> of FULL_MECA option
+! In  p_info_comp_valk : pointer to comportment informations (character)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +68,6 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, list_vale)
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
     integer :: nt
-    integer :: j_lvalk
     logical :: l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,15 +75,12 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, list_vale)
     nbocc       = 0
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
+!
     list_elem_affe = '&&COMPMECASAVE.LIST'
     motcle(1)   = 'GROUP_MA'
     motcle(2)   = 'MAILLE'
     typmcl(1)   = 'GROUP_MA'
     typmcl(2)   = 'MAILLE'
-!
-! - Access to list
-!
-    call jeveuo(list_vale(1:19)//'.VALK', 'E', j_lvalk)
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
@@ -104,14 +100,14 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, list_vale)
 !
 ! ----- Get infos
 !
-        rela_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 1)(1:16)
-        defo_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 2)(1:16)
-        kit_comp(1)  = zk24(j_lvalk+16*(iocc-1) -1 + 5)(1:16)
+        rela_comp    = p_info_comp_valk(16*(iocc-1) + 1)
+        defo_comp    = p_info_comp_valk(16*(iocc-1) + 2)
+        kit_comp(1)  = p_info_comp_valk(16*(iocc-1) + 5)
         rela_thmc    = kit_comp(1)
 !
 ! ----- Detection of specific cases
 !
-        call comp_meca_l(rela_comp, 'KIT_THM'  , l_kit_thm)
+        call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
 !
 ! ----- Coding comportment (Python)
 !
@@ -123,7 +119,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, list_vale)
         type_cpla = 'VIDE'
         call nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                     rela_comp, rela_comp_py, type_cpla)
-        zk24(j_lvalk+16*(iocc-1) -1 + 4) = type_cpla
+        p_info_comp_valk(16*(iocc-1) + 4) = type_cpla
 !
 ! ----- Check comportment/deformation with Comportement.py
 !

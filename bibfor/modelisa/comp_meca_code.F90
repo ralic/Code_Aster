@@ -65,9 +65,9 @@ subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp
     do icomp = 1, 20
        comp_elem(icomp) = 'VIDE'
     enddo
-    call comp_meca_l(rela_comp, 'UMAT'     , l_umat)
-    call comp_meca_l(rela_comp, 'MFRONT'   , l_mfront)
-    call comp_meca_l(rela_comp, 'KIT_META' , l_kit_meta)
+    call comp_meca_l(rela_comp, 'UMAT'    , l_umat)
+    call comp_meca_l(rela_comp, 'MFRONT'  , l_mfront)
+    call comp_meca_l(rela_comp, 'KIT_META', l_kit_meta)
     call comp_meca_l(rela_comp, 'KIT_THM' , l_kit_thm)
 !
 ! - Create composite comportment
@@ -103,7 +103,7 @@ subroutine comp_meca_code(rela_comp   , defo_comp   , type_cpla , kit_comp, comp
     if (l_kit_meta) then
         rela_meta = kit_comp(1)
         call lccree(1, rela_meta, meta_code_py)
-    endif  
+    endif
 !
 ! - Coding RELATION comportment
 !

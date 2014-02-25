@@ -2,8 +2,9 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
     implicit none
 !
-#include "jeveux.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/comp_init.h"
+#include "asterfort/comp_meca_info.h"
 #include "asterfort/comp_meca_chck.h"
 #include "asterfort/comp_meca_cvar.h"
 #include "asterfort/comp_meca_elas.h"
@@ -17,6 +18,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nocart.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,23 +58,28 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp, nbocc
+    integer :: nb_cmp, nbocc_compor
     character(len=8) :: mesh
-    character(len=19) :: list_vale, comp_elas, full_elem_s
+    character(len=19) :: comp_elas, full_elem_s
     character(len=19) :: list_vari_name
+    character(len=16), pointer :: p_info_comp_valk(:) => null()
+    integer          , pointer :: p_info_comp_vali(:) => null()
+    integer          , pointer :: p_info_comp_nvar(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Initializations
-!
-    compor = '&&NMDOCC.COMPOR'
-    list_vale = '&&NMDOCC.LIST_VALE'
-    comp_elas = '&&NMDOCC.COMP_ELAS'
-    full_elem_s = '&&NMDOCC.FULL_ELEM'
+    compor         = '&&NMDOCC.COMPOR'
+    comp_elas      = '&&NMDOCC.COMP_ELAS'
+    full_elem_s    = '&&NMDOCC.FULL_ELEM'
     list_vari_name = '&&NMDOCC.LIST_VARI'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+!
+! - Create comportment informations objects
+!
+    call comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
+    if (nbocc_compor.eq.0) then
+        call utmess('I', 'COMPOR4_64')
+    endif
 !
 ! - Create COMPOR <CARTE>
 !
@@ -88,8 +95,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! - Read informations from command file
 !
-    call comp_meca_read(list_vale, l_etat_init, nbocc)
-    if (nbocc .eq. 0) goto 99
+    call comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
 !
 ! - Create <CARTE> of FULL_MECA option for checking
 !
@@ -97,15 +103,16 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! - Check informations in COMPOR <CARTE>
 !
-    call comp_meca_chck(model, mesh, full_elem_s, list_vale)
+    call comp_meca_chck(model, mesh, full_elem_s, p_info_comp_valk)
 !
 ! - Count internal variables
 !
-    call comp_meca_cvar(list_vale)
+    call comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 !
 ! - Save informations in COMPOR <CARTE>
 !
-    call comp_meca_save(mesh, chmate, compor, nb_cmp, list_vale)
+    call comp_meca_save(mesh            , chmate          , compor          , nb_cmp,&
+                        p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 !
 ! - Prepare informations about internal variables
 !
@@ -115,11 +122,8 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
     call imvari(list_vari_name, compor_cart = compor)
 !
-    call jedetr(list_vale(1:19)//'.VALK')
-    call jedetr(list_vale(1:19)//'.VALI')
-    call jedetr(list_vale(1:19)//'.NVAR')
+    AS_DEALLOCATE(vk16 = p_info_comp_valk)
+    AS_DEALLOCATE(vi   = p_info_comp_vali)
+    AS_DEALLOCATE(vi   = p_info_comp_nvar)
 !
- 99 continue
-!
-    call jedema()
 end subroutine

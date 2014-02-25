@@ -55,6 +55,7 @@ Comportement - Occurrence  %(i1)d"""),
   Pour les kits métallurgiques en grandes déformations, on n'affiche pas d'informations sur le nom des variables internes.
 """),
 
+
 20: _(u"""         V%(i1)d : %(k1)s"""),
 
 30: _(u"""  Détails du kit THM"""),
@@ -114,6 +115,14 @@ Aucun KIT ne peut être utilisé avec un comportement externe de type UMAT ou MF
      est lâche (très supérieur à la valeur par défaut).
   -> Risque & Conseil :
      Cela peut nuire à la qualité de la solution et à la convergence.
+"""),
+
+63 : _(u"""
+La définition explicite du comportement est obligatoire.
+"""),
+
+64 : _(u"""
+Comme vous n'avez pas défini explicitement le comportement, tout le modèle est supposé élastique en petites perturbations.
 """),
 
 70 : _(u"""

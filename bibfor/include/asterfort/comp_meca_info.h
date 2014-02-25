@@ -16,13 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
-                         p_info_carc_valk, p_info_carc_valr)
-        character(len=8), intent(in) :: model
-        character(len=8), intent(in) :: mesh
-        character(len=19), intent(in) :: carcri
-        integer, intent(in) :: nb_cmp
-        character(len=16), pointer, intent(in) :: p_info_carc_valk(:)
-        real(kind=8)     , pointer, intent(in) :: p_info_carc_valr(:)
-    end subroutine carc_save
+    subroutine comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
+        character(len=16), pointer, intent(inout) :: p_info_comp_valk(:)
+        integer          , pointer, intent(inout) :: p_info_comp_vali(:)
+        integer          , pointer, intent(inout) :: p_info_comp_nvar(:)
+        integer          , intent(out) :: nbocc_compor
+    end subroutine comp_meca_info
 end interface

@@ -313,8 +313,6 @@ Erreur lors de la vérification de la cohérence entre les champs de variables i
   Les colonnes ABSCISSE et ORDONNEE d'une TABLE_REF doivent avoir même cardinal et contenir des réels.
 """),
 
-
-
 70: _(u"""
 #---------------------------------------------------------------------------------------------------------------------------
 # test pour analyser à l'aide de SIMU_POINT_MAT l'échec d'intégration du comportement sur la maille <%(k1)s>, point <%(i1)d>

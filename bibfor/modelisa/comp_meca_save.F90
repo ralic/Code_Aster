@@ -1,8 +1,8 @@
-subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, list_vale)
+subroutine comp_meca_save(mesh            , chmate          , compor          , nb_cmp,&
+                          p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/zaswri.h"
@@ -36,9 +36,11 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, list_vale)
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: chmate
-    character(len=19), intent(in) :: list_vale
     character(len=19), intent(in) :: compor
     integer, intent(in) :: nb_cmp
+    character(len=16), pointer, intent(in) :: p_info_comp_valk(:)
+    integer          , pointer, intent(in) :: p_info_comp_vali(:)
+    integer          , pointer, intent(in) :: p_info_comp_nvar(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,24 +50,26 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, list_vale)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh        : name of mesh
-! In  chmate      : name of material field
-! In  compor      : name of <CARTE> COMPOR
-! In  nb_cmp      : number of components in <CARTE> COMPOR
-! In  list_vale   : list of informations to save
+! In  mesh             : name of mesh
+! In  chmate           : name of material field
+! In  compor           : name of <CARTE> COMPOR
+! In  nb_cmp           : number of components in <CARTE> COMPOR
+! In  p_info_comp_valk : pointer to comportment informations (character)
+! In  p_info_comp_vali : pointer to comportment informations (integer)
+! In  p_info_comp_nvar : pointer to comportment informations (int. vari. count)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
     logical :: l_affe_all
     integer :: nb_elem_affe
-    integer :: j_elem_affe
+    integer, pointer :: p_elem_affe(:) => null()
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
     integer :: nt
-    integer :: j_lvalk, j_lvali, j_lnvar, j_cart_val
+    character(len=16), pointer :: p_compor_valv(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp, type_cpla, mult_comp
     character(len=16) :: kit_comp(9), type_matg, post_iter
     logical :: l_cristal, l_zmat, l_umat, l_mfront, l_exte_comp
@@ -89,13 +93,7 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, list_vale)
 !
 ! - Access to COMPOR <CARTE>
 !
-    call jeveuo(compor//'.VALV', 'E', j_cart_val)
-!
-! - Access to list
-!
-    call jeveuo(list_vale(1:19)//'.NVAR', 'L', j_lnvar)
-    call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
-    call jeveuo(list_vale(1:19)//'.VALI', 'L', j_lvali)
+    call jeveuo(compor//'.VALV', 'E', vk16 = p_compor_valv)
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
@@ -103,30 +101,30 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, list_vale)
 !
 ! ----- Get infos
 !
-        nb_vari_exte = zi(j_lvali+2*(iocc-1) -1 + 1)
-        unit_comp    = zi(j_lvali+2*(iocc-1) -1 + 2)
-        nume_comp    = zi(j_lnvar+10*(iocc-1) -1 + 1)
-        nb_vari      = zi(j_lnvar+10*(iocc-1) -1 + 2)
-        nb_vari_comp(1) = zi(j_lnvar+10*(iocc-1) -1 + 3)
-        nb_vari_comp(2) = zi(j_lnvar+10*(iocc-1) -1 + 4)
-        nb_vari_comp(3) = zi(j_lnvar+10*(iocc-1) -1 + 5)
-        nb_vari_comp(4) = zi(j_lnvar+10*(iocc-1) -1 + 6)
-        rela_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 1)(1:16)
-        defo_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 2)(1:16)
-        type_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 3)(1:16)
-        type_cpla    = zk24(j_lvalk+16*(iocc-1) -1 + 4)(1:16)
-        kit_comp(1)  = zk24(j_lvalk+16*(iocc-1) -1 + 5)(1:16)
-        kit_comp(2)  = zk24(j_lvalk+16*(iocc-1) -1 + 6)(1:16) 
-        kit_comp(3)  = zk24(j_lvalk+16*(iocc-1) -1 + 7)(1:16)
-        kit_comp(4)  = zk24(j_lvalk+16*(iocc-1) -1 + 8)(1:16)
-        kit_comp(5)  = zk24(j_lvalk+16*(iocc-1) -1 + 9)(1:16)
-        kit_comp(6)  = zk24(j_lvalk+16*(iocc-1) -1 + 10)(1:16)
-        kit_comp(7)  = zk24(j_lvalk+16*(iocc-1) -1 + 11)(1:16)
-        kit_comp(8)  = zk24(j_lvalk+16*(iocc-1) -1 + 12)(1:16)
-        kit_comp(9)  = zk24(j_lvalk+16*(iocc-1) -1 + 13)(1:16)
-        mult_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 14)(1:16)
-        type_matg    = zk24(j_lvalk+16*(iocc-1) -1 + 15)(1:16)
-        post_iter    = zk24(j_lvalk+16*(iocc-1) -1 + 16)(1:16)
+        nb_vari_exte = p_info_comp_vali(2*(iocc-1) + 1)
+        unit_comp    = p_info_comp_vali(2*(iocc-1) + 2)
+        nume_comp    = p_info_comp_nvar(10*(iocc-1) + 1)
+        nb_vari      = p_info_comp_nvar(10*(iocc-1) + 2)
+        nb_vari_comp(1) = p_info_comp_nvar(10*(iocc-1) + 3)
+        nb_vari_comp(2) = p_info_comp_nvar(10*(iocc-1) + 4)
+        nb_vari_comp(3) = p_info_comp_nvar(10*(iocc-1) + 5)
+        nb_vari_comp(4) = p_info_comp_nvar(10*(iocc-1) + 6)
+        rela_comp    = p_info_comp_valk(16*(iocc-1) + 1)
+        defo_comp    = p_info_comp_valk(16*(iocc-1) + 2)
+        type_comp    = p_info_comp_valk(16*(iocc-1) + 3)
+        type_cpla    = p_info_comp_valk(16*(iocc-1) + 4)
+        kit_comp(1)  = p_info_comp_valk(16*(iocc-1) + 5)
+        kit_comp(2)  = p_info_comp_valk(16*(iocc-1) + 6)
+        kit_comp(3)  = p_info_comp_valk(16*(iocc-1) + 7)
+        kit_comp(4)  = p_info_comp_valk(16*(iocc-1) + 8)
+        kit_comp(5)  = p_info_comp_valk(16*(iocc-1) + 9)
+        kit_comp(6)  = p_info_comp_valk(16*(iocc-1) + 10)
+        kit_comp(7)  = p_info_comp_valk(16*(iocc-1) + 11)
+        kit_comp(8)  = p_info_comp_valk(16*(iocc-1) + 12)
+        kit_comp(9)  = p_info_comp_valk(16*(iocc-1) + 13)
+        mult_comp    = p_info_comp_valk(16*(iocc-1) + 14)
+        type_matg    = p_info_comp_valk(16*(iocc-1) + 15)
+        post_iter    = p_info_comp_valk(16*(iocc-1) + 16)
 !
 ! ----- Detection of specific cases
 !
@@ -161,52 +159,52 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, list_vale)
 !
 ! ----- Set in <CARTE>
 !
-        zk16(j_cart_val-1+1)  = rela_comp
-        write (zk16(j_cart_val-1+2),'(I16)') nb_vari
-        zk16(j_cart_val-1+3)  = defo_comp
-        zk16(j_cart_val-1+4)  = type_comp
-        zk16(j_cart_val-1+5)  = type_cpla
+        p_compor_valv(1)  = rela_comp
+        write (p_compor_valv(2),'(I16)') nb_vari
+        p_compor_valv(3)  = defo_comp
+        p_compor_valv(4)  = type_comp
+        p_compor_valv(5)  = type_cpla
         if (.not.l_pmf) then
-            write (zk16(j_cart_val-1+6),'(I16)') nume_comp
+            write (p_compor_valv(6),'(I16)') nume_comp
         endif
         if (l_cristal) then
-            zk16(j_cart_val-1+7)  = mult_comp
+            p_compor_valv(7)  = mult_comp
         else
-            write (zk16(j_cart_val-1+7),'(I16)') unit_comp
+            write (p_compor_valv(7),'(I16)') unit_comp
         endif
-        zk16(j_cart_val-1+8)  = kit_comp(1)
-        zk16(j_cart_val-1+9)  = kit_comp(2)
-        zk16(j_cart_val-1+10) = kit_comp(3)
-        zk16(j_cart_val-1+11) = kit_comp(4)
+        p_compor_valv(8)  = kit_comp(1)
+        p_compor_valv(9)  = kit_comp(2)
+        p_compor_valv(10) = kit_comp(3)
+        p_compor_valv(11) = kit_comp(4)
         if (l_exte_comp) then
-            zk16(j_cart_val-1+12) = kit_comp(5)
+            p_compor_valv(12) = kit_comp(5)
         else
-            write (zk16(j_cart_val-1+12),'(I16)') iocc
+            write (p_compor_valv(12),'(I16)') iocc
         endif 
         if (l_exte_comp) then
             if (l_matr_tgsc) call utmess('F','COMPOR4_59')
             if (l_crit_rupt) call utmess('F','COMPOR4_60')
-            zk16(j_cart_val-1+13) = kit_comp(6)
-            zk16(j_cart_val-1+14) = kit_comp(7)
+            p_compor_valv(13) = kit_comp(6)
+            p_compor_valv(14) = kit_comp(7)
         else
-            zk16(j_cart_val-1+13) = type_matg
-            zk16(j_cart_val-1+14) = post_iter
+            p_compor_valv(13) = type_matg
+            p_compor_valv(14) = post_iter
         endif
-        zk16(j_cart_val-1+15) = kit_comp(8)
-        zk16(j_cart_val-1+16) = kit_comp(9)
-        write (zk16(j_cart_val-1+17),'(I16)') nb_vari_comp(1)
-        write (zk16(j_cart_val-1+18),'(I16)') nb_vari_comp(2)
-        write (zk16(j_cart_val-1+19),'(I16)') nb_vari_comp(3)
-        write (zk16(j_cart_val-1+20),'(I16)') nb_vari_comp(4)
+        p_compor_valv(15) = kit_comp(8)
+        p_compor_valv(16) = kit_comp(9)
+        write (p_compor_valv(17),'(I16)') nb_vari_comp(1)
+        write (p_compor_valv(18),'(I16)') nb_vari_comp(2)
+        write (p_compor_valv(19),'(I16)') nb_vari_comp(3)
+        write (p_compor_valv(20),'(I16)') nb_vari_comp(4)
 !
 ! ----- Affect in <CARTE>
 !
         if (l_affe_all) then
             call nocart(compor, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', j_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi = p_elem_affe)
             call nocart(compor, 3, nb_cmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = zi(j_elem_affe))
+                        limanu = p_elem_affe)
             call jedetr(list_elem_affe)
         endif
     enddo

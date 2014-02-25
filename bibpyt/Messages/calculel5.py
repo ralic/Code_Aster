@@ -42,18 +42,6 @@ Conseils :
  !! problème création CHAM_ELEM nul dans alchml !!
 """),
 
-5 : _(u"""
-Erreur utilisateur :
-  Vous essayez de faire un calcul non-linéaire mécanique sur un modèle dont les éléments
-  ne sont pas programmés pour cela.
-  On arrête le calcul.
-
-Risques & conseils :
-  Vous devriez changer de MODELISATION.
-  Par exemple, la modélisation 'DST' ne peut pas faire du non-linéaire alors que la
-  modélisation 'DKT' le peut.
-"""),
-
 6 : _(u"""
 Erreur utilisateur :
  Vous utilisez le mot clé NOM_CMP, mais l'une (au moins) des composantes indiquées

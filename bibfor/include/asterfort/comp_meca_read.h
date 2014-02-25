@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
-        character(len=19), intent(in) :: list_vale
+    subroutine comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
         logical, intent(in) :: l_etat_init
-        integer, intent(out) :: nbocc
+        character(len=16), pointer, intent(inout) :: p_info_comp_valk(:)
+        integer          , pointer, intent(inout) :: p_info_comp_vali(:)
     end subroutine comp_meca_read
 end interface

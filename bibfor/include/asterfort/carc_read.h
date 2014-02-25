@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine carc_read(list_vale, nbocc)
-        character(len=19), intent(in) :: list_vale
-        integer, intent(out) :: nbocc
+    subroutine carc_read(p_info_carc_valk, p_info_carc_valr)
+        character(len=16), pointer, intent(inout) :: p_info_carc_valk(:)
+        real(kind=8)     , pointer, intent(inout) :: p_info_carc_valr(:)
     end subroutine carc_read
 end interface

@@ -1,8 +1,7 @@
-subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
+subroutine comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvid.h"
@@ -33,9 +32,9 @@ subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: list_vale
     logical, intent(in) :: l_etat_init
-    integer, intent(out) :: nbocc
+    character(len=16), pointer, intent(inout) :: p_info_comp_valk(:)
+    integer          , pointer, intent(inout) :: p_info_comp_vali(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,16 +44,14 @@ subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_vale   : list of informations to save
-! In  l_etat_init : .true. if initial state is defined
-! Out nbocc       : number of occurrences of COMPORTEMENT
+! IO  p_info_comp_valk : pointer to comportment informations (character)
+! IO  p_info_comp_vali : pointer to comportment informations (integer)
+! In  l_etat_init      : .true. if initial state is defined
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: iocc
-    integer :: ikit
-    integer :: j_lvalk, j_lvali
+    integer :: iocc, ikit, nbocc
     integer :: nb_vari_all
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, subr_name, type_comp
     character(len=16) :: type_matg, post_iter
@@ -72,25 +69,18 @@ subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
 !
-! - List contruction
-!
-    if (nbocc.ne.0) then
-        call wkvect(list_vale(1:19)//'.VALK', 'V V K24', 16*nbocc, j_lvalk)
-        call wkvect(list_vale(1:19)//'.VALI', 'V V I'  , 2*nbocc, j_lvali)
-    endif
-!
 ! - Read informations
 !
     do iocc = 1, nbocc
         nb_vari_exte = 0
         unit_comp    = 0
-        rela_comp = 'VIDE'
-        defo_comp = 'VIDE'
-        mult_comp = ' '
-        type_cpla = 'VIDE'
-        libr_name = ' '
-        type_matg = ' '
-        post_iter = ' '
+        rela_comp    = 'VIDE'
+        defo_comp    = 'VIDE'
+        mult_comp    = ' '
+        type_cpla    = 'VIDE'
+        libr_name    = ' '
+        type_matg    = ' '
+        post_iter    = ' '
         do ikit = 1, 9
             kit_comp(ikit) = 'VIDE'
         enddo
@@ -171,25 +161,24 @@ subroutine comp_meca_read(list_vale, l_etat_init, nbocc)
 !
 ! ----- Save options in list
 !
-        zk24(j_lvalk+16*(iocc-1) -1 + 1)  = rela_comp
-        zk24(j_lvalk+16*(iocc-1) -1 + 2)  = defo_comp
-        zk24(j_lvalk+16*(iocc-1) -1 + 3)  = type_comp
-        zk24(j_lvalk+16*(iocc-1) -1 + 4)  = type_cpla
-        zk24(j_lvalk+16*(iocc-1) -1 + 5)  = kit_comp(1)
-        zk24(j_lvalk+16*(iocc-1) -1 + 6)  = kit_comp(2)
-        zk24(j_lvalk+16*(iocc-1) -1 + 7)  = kit_comp(3)
-        zk24(j_lvalk+16*(iocc-1) -1 + 8)  = kit_comp(4)
-        zk24(j_lvalk+16*(iocc-1) -1 + 9)  = kit_comp(5)
-        zk24(j_lvalk+16*(iocc-1) -1 + 10) = kit_comp(6)
-        zk24(j_lvalk+16*(iocc-1) -1 + 11) = kit_comp(7)
-        zk24(j_lvalk+16*(iocc-1) -1 + 12) = kit_comp(8)
-        zk24(j_lvalk+16*(iocc-1) -1 + 13) = kit_comp(9)
-        zk24(j_lvalk+16*(iocc-1) -1 + 14) = mult_comp
-        zk24(j_lvalk+16*(iocc-1) -1 + 15) = type_matg
-        zk24(j_lvalk+16*(iocc-1) -1 + 16) = post_iter
-        zi(j_lvali+2*(iocc-1) -1 + 1) = nb_vari_exte
-        zi(j_lvali+2*(iocc-1) -1 + 2) = unit_comp
+        p_info_comp_valk(16*(iocc-1) + 1)  = rela_comp
+        p_info_comp_valk(16*(iocc-1) + 2)  = defo_comp
+        p_info_comp_valk(16*(iocc-1) + 3)  = type_comp
+        p_info_comp_valk(16*(iocc-1) + 4)  = type_cpla
+        p_info_comp_valk(16*(iocc-1) + 5)  = kit_comp(1)
+        p_info_comp_valk(16*(iocc-1) + 6)  = kit_comp(2)
+        p_info_comp_valk(16*(iocc-1) + 7)  = kit_comp(3)
+        p_info_comp_valk(16*(iocc-1) + 8)  = kit_comp(4)
+        p_info_comp_valk(16*(iocc-1) + 9)  = kit_comp(5)
+        p_info_comp_valk(16*(iocc-1) + 10) = kit_comp(6)
+        p_info_comp_valk(16*(iocc-1) + 11) = kit_comp(7)
+        p_info_comp_valk(16*(iocc-1) + 12) = kit_comp(8)
+        p_info_comp_valk(16*(iocc-1) + 13) = kit_comp(9)
+        p_info_comp_valk(16*(iocc-1) + 14) = mult_comp
+        p_info_comp_valk(16*(iocc-1) + 15) = type_matg
+        p_info_comp_valk(16*(iocc-1) + 16) = post_iter
+        p_info_comp_vali(2*(iocc-1)  + 1)  = nb_vari_exte
+        p_info_comp_vali(2*(iocc-1)  + 2)  = unit_comp
     end do
 !
-
 end subroutine

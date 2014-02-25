@@ -1,13 +1,12 @@
-subroutine comp_meca_elas(comp_elas, nb_cmp)
+subroutine carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_compor)
 !
     implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nocart.h"
+#include "asterc/getfac.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2091 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,56 +23,44 @@ subroutine comp_meca_elas(comp_elas, nb_cmp)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-      character(len=19) , intent(in) :: comp_elas
-      integer, intent(in) :: nb_cmp
+    character(len=16), pointer, intent(inout) :: p_info_carc_valk(:)
+    real(kind=8)     , pointer, intent(inout) :: p_info_carc_valr(:)
+    integer          , intent(out) :: nbocc_compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! COMPOR <CARTE> - MECHANICS
 !
-! Set ELASTIQUE COMPOR
+! Create comportment informations objects
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  comp_elas : name of ELAS <CARTE> COMPOR
-! In  nb_cmp    : number of components in ELAS <CARTE> COMPOR
+! IO  p_info_carc_valk : pointer to carcri informations (character)
+! IO  p_info_carc_valr : pointer to carcri informations (real)
+! Out nbocc_compor     : number of comportement keywords
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icmp
-    character(len=16), pointer :: p_compelas_valv(:) => null()
+    character(len=16) :: keywordfact
+    integer :: nb_info_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nb_cmp .ge. 6)
+    nbocc_compor = 0
+    keywordfact  = 'COMPORTEMENT'
+    call getfac(keywordfact, nbocc_compor)
 !
-! - Access <CARTE>
+! - Number of comportement information
 !
-    call jeveuo(comp_elas(1:19)//'.VALV', 'E', vk16 = p_compelas_valv)
+    if (nbocc_compor.eq.0) then
+        nb_info_comp = 1
+    else
+        nb_info_comp = nbocc_compor
+    endif
 !
-! - Init <CARTE>
+! - Create comportment informations objects
 !
-    do icmp = 1, 20
-        p_compelas_valv(icmp) = 'VIDE'
-    enddo
+    AS_ALLOCATE(vk16 = p_info_carc_valk, size = 2*nb_info_comp)
+    AS_ALLOCATE(vr   = p_info_carc_valr, size = 13*nb_info_comp)
 !
-! - Set for ELASTIQUE
-!
-    p_compelas_valv(1)  = 'ELAS'
-    p_compelas_valv(2)  = '1'
-    p_compelas_valv(3)  = 'PETIT'
-    p_compelas_valv(4)  = 'COMP_ELAS'
-    p_compelas_valv(5)  = 'ANALYTIQUE'
-    p_compelas_valv(6)  = '1'
-    p_compelas_valv(12) = '1'
-    p_compelas_valv(17) = '1'
-    p_compelas_valv(18) = '1'
-    p_compelas_valv(19) = '1'
-    p_compelas_valv(20) = '1'
-!
-! - Create <CARTE>
-!
-    call nocart(comp_elas, 1, nb_cmp)
-
 end subroutine
-

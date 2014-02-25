@@ -2,7 +2,6 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
@@ -51,7 +50,6 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbocc, ibid, iexi
-    integer :: j_repe
     character(len=16) :: keywordfact
     character(len=19) :: elas_elem_s, elas_elem, ligrel
     logical :: l_comp
@@ -64,8 +62,7 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
     l_comp      = nbocc .gt. 0
 !
     if (l_comp) then
-        ligrel = model(1:8)//'.MODELE    .LIEL'
-        call jeveuo(ligrel(1:19)//'.REPE', 'L', j_repe)
+        ligrel      = model(1:8)//'.MODELE    .LIEL'
         elas_elem_s = '&&CRCMEL.CES1'
         elas_elem   = '&&CRCMEL.CEL1'
         call carces(comp_elas, 'ELEM', ' ', 'V', elas_elem_s,&
@@ -73,7 +70,9 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
         call cescel(elas_elem_s, ligrel, 'FULL_MECA', 'PCOMPOR', 'OUI',&
                     ibid, 'V', elas_elem, 'A', ibid)
         call exisd('CHAMP',  elas_elem, iexi)
-        if (iexi .eq. 0) call utmess('F', 'CALCULEL5_5')
+        if (iexi .eq. 0) then
+            call utmess('F', 'MECANONLINE_3')
+        endif
         call celces(elas_elem, 'V',  full_elem_s)
         call detrsd('CHAMP', elas_elem_s)
         call detrsd('CHAMP', elas_elem)

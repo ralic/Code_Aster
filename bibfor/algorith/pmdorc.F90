@@ -2,13 +2,15 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
     implicit none
 !
-#include "jeveux.h"
+#include "asterfort/as_deallocate.h"
 #include "asterc/zaswri.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
+#include "asterfort/carc_info.h"
 #include "asterfort/carc_read.h"
 #include "asterfort/comp_meca_cvar.h"
 #include "asterfort/comp_meca_l.h"
+#include "asterfort/comp_meca_info.h"
 #include "asterfort/comp_meca_pvar.h"
 #include "asterfort/comp_meca_read.h"
 #include "asterfort/imvari.h"
@@ -57,21 +59,23 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: list_vari_name
-    character(len=24) :: list_vale
-    integer :: j_lvalk, j_lvali, j_lnvar, j_lvalr
-    integer :: iocc, nbocc, unit_comp, i, nume_comp
+    integer :: iocc, unit_comp, i, nume_comp, nbocc_compor, nbocc_carcri
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: keywordfact
     character(len=16) :: rela_comp, algo_inte, type_matg, post_iter, defo_comp, type_comp, mult_comp
     logical :: l_cristal, l_zmat, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm, l_etat_init
     real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
+    character(len=16), pointer :: p_info_comp_valk(:) => null()
+    integer          , pointer :: p_info_comp_vali(:) => null()
+    integer          , pointer :: p_info_comp_nvar(:) => null()
+    character(len=16), pointer :: p_info_carc_valk(:) => null()
+    real(kind=8)     , pointer :: p_info_carc_valr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
     list_vari_name = '&&PMDORC.LIST_VARI'
-    list_vale      = '&&PMDORC.LIST_VALE'
     keywordfact    = 'COMPORTEMENT'
     do i = 1,20
         compor(i) = 'VIDE'
@@ -84,30 +88,33 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     call getfac('VARI_INIT', nbocc3)
     l_etat_init = (nbocc1+nbocc2+nbocc3) > 0
 !
+! - Create comportment informations objects
+!
+    call comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
+    if (nbocc_compor.eq.0) then
+        call utmess('F', 'COMPOR4_63')
+    endif
+!
 ! - Read informations from command file
 !
-    call comp_meca_read(list_vale, l_etat_init, nbocc)
-    ASSERT(nbocc.eq.1)
+    call comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
 !
 ! - Count internal variables
 !
-    call comp_meca_cvar(list_vale)
+    call comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 !
 ! - Save it
 !
     iocc = 1
-    call jeveuo(list_vale(1:19)//'.NVAR', 'L', j_lnvar)
-    call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
-    call jeveuo(list_vale(1:19)//'.VALI', 'L', j_lvali)
-    nb_vari      = zi(j_lnvar+10*(iocc-1) -1 + 2)
-    nume_comp    = zi(j_lnvar+10*(iocc-1) -1 + 1)
-    unit_comp    = zi(j_lvali+2*(iocc-1) -1 + 2)
-    rela_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 1)(1:16)
-    defo_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 2)(1:16)
-    type_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 3)(1:16)
-    mult_comp    = zk24(j_lvalk+16*(iocc-1) -1 + 14)(1:16)
-    type_matg    = zk24(j_lvalk+16*(iocc-1) -1 + 15)(1:16)
-    post_iter    = zk24(j_lvalk+16*(iocc-1) -1 + 16)(1:16)
+    nb_vari      = p_info_comp_nvar(10*(iocc-1) + 2)
+    nume_comp    = p_info_comp_nvar(10*(iocc-1) + 1)
+    unit_comp    = p_info_comp_vali(2*(iocc-1) + 2)
+    rela_comp    = p_info_comp_valk(16*(iocc-1) + 1)
+    defo_comp    = p_info_comp_valk(16*(iocc-1) + 2)
+    type_comp    = p_info_comp_valk(16*(iocc-1) + 3)
+    mult_comp    = p_info_comp_valk(16*(iocc-1) + 14)
+    type_matg    = p_info_comp_valk(16*(iocc-1) + 15)
+    post_iter    = p_info_comp_valk(16*(iocc-1) + 16)
     call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
     call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
     call comp_meca_l(rela_comp, 'ZMAT'     , l_zmat)
@@ -136,26 +143,26 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     else
          write (compor(7),'(I16)') unit_comp
     endif
-    compor(8)  = zk24(j_lvalk+16*(iocc-1) -1 + 5)(1:16)
-    compor(9)  = zk24(j_lvalk+16*(iocc-1) -1 + 6)(1:16)
-    compor(10) = zk24(j_lvalk+16*(iocc-1) -1 + 7)(1:16)
-    compor(11) = zk24(j_lvalk+16*(iocc-1) -1 + 8)(1:16)
+    compor(8)  = p_info_comp_valk(16*(iocc-1) + 5)
+    compor(9)  = p_info_comp_valk(16*(iocc-1) + 6)
+    compor(10) = p_info_comp_valk(16*(iocc-1) + 7)
+    compor(11) = p_info_comp_valk(16*(iocc-1) + 8)
     if (l_exte_comp) then
-        compor(12) = zk24(j_lvalk+16*(iocc-1) -1 + 9)(1:16)
+        compor(12) = p_info_comp_valk(16*(iocc-1) + 9)
     else
         write (compor(12),'(I16)') iocc
     endif
     if (l_exte_comp) then
         if (l_matr_tgsc) call utmess('F','COMPOR4_59')
         if (l_crit_rupt) call utmess('F','COMPOR4_60')
-        compor(13) = zk24(j_lvalk+16*(iocc-1) -1 + 10)(1:16)
-        compor(14) = zk24(j_lvalk+16*(iocc-1) -1 + 11)(1:16)
+        compor(13) = p_info_comp_valk(16*(iocc-1) + 10)
+        compor(14) = p_info_comp_valk(16*(iocc-1) + 11)
     else
-        compor(13) = zk24(j_lvalk+16*(iocc-1) -1 + 15)(1:16)
-        compor(14) = zk24(j_lvalk+16*(iocc-1) -1 + 16)(1:16)
+        compor(13) = p_info_comp_valk(16*(iocc-1) + 15)
+        compor(14) = p_info_comp_valk(16*(iocc-1) + 16)
     endif
-    compor(15) = zk24(j_lvalk+16*(iocc-1) -1 + 12)(1:16)
-    compor(16) = zk24(j_lvalk+16*(iocc-1) -1 + 13)(1:16)
+    compor(15) = p_info_comp_valk(16*(iocc-1) + 12)
+    compor(16) = p_info_comp_valk(16*(iocc-1) + 13)
 !
 ! - No THM
 !
@@ -168,9 +175,9 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
     compor(17) = 'POINT'
 !
-    call jedetr(list_vale(1:19)//'.NVAR')
-    call jedetr(list_vale(1:19)//'.VALK')
-    call jedetr(list_vale(1:19)//'.VALI')
+    AS_DEALLOCATE(vk16 = p_info_comp_valk)
+    AS_DEALLOCATE(vi   = p_info_comp_vali)
+    AS_DEALLOCATE(vi   = p_info_comp_nvar)
 !
 ! - Prepare informations about internal variables
 !
@@ -180,38 +187,40 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
     call imvari(list_vari_name, compor_list = compor)
 !
+! - Create carcri informations objects
+!
+    call carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_carcri)
+    ASSERT(nbocc_carcri.ne.0)
+!
 ! - Read informations from command file
 !
-    call carc_read(list_vale, nbocc)
-    ASSERT(nbocc.eq.1)
-!
-! - Save it
-!
-    call jeveuo(list_vale(1:19)//'.VALR', 'L', j_lvalr)
-    call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
+    call carc_read(p_info_carc_valk, p_info_carc_valr)
     iocc = 1
 !
-    algo_inte  = zk24(j_lvalk+2*(iocc-1) -1 + 2)(1:16)
+    algo_inte  = p_info_carc_valk(2*(iocc-1) + 2)
     call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
     call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
     call utlcal('NOM_VALE', algo_inte, algo_inte_r)
 !
     carcri(1)  =  iter_inte_maxi
-    carcri(2)  =  zr(j_lvalr+13*(iocc-1) -1 + 2) 
+    carcri(2)  =  p_info_carc_valr(13*(iocc-1) + 2) 
     carcri(3)  =  resi_inte_rela
-    carcri(4)  =  zr(j_lvalr+13*(iocc-1) -1 + 4) 
-    carcri(5)  =  zr(j_lvalr+13*(iocc-1) -1 + 5) 
+    carcri(4)  =  p_info_carc_valr(13*(iocc-1) + 4) 
+    carcri(5)  =  p_info_carc_valr(13*(iocc-1) + 5) 
     carcri(6)  =  algo_inte_r
-    carcri(7)  =  zr(j_lvalr+13*(iocc-1) -1 + 7) 
-    carcri(8)  =  zr(j_lvalr+13*(iocc-1) -1 + 8) 
-    carcri(9)  =  zr(j_lvalr+13*(iocc-1) -1 + 9) 
-    carcri(10) =  zr(j_lvalr+13*(iocc-1) -1 + 10)
-    carcri(11) =  zr(j_lvalr+13*(iocc-1) -1 + 11)
-    carcri(12) =  zr(j_lvalr+13*(iocc-1) -1 + 12)
-    carcri(13) =  zr(j_lvalr+13*(iocc-1) -1 + 13)
+    carcri(7)  =  p_info_carc_valr(13*(iocc-1) + 7) 
+    carcri(8)  =  p_info_carc_valr(13*(iocc-1) + 8) 
+    carcri(9)  =  p_info_carc_valr(13*(iocc-1) + 9) 
+    carcri(10) =  p_info_carc_valr(13*(iocc-1) + 10)
+    carcri(11) =  p_info_carc_valr(13*(iocc-1) + 11)
+    carcri(12) =  p_info_carc_valr(13*(iocc-1) + 12)
+    carcri(13) =  p_info_carc_valr(13*(iocc-1) + 13)
 !
-    call jedetr(list_vale(1:19)//'.VALR')
-    call jedetr(list_vale(1:19)//'.VALK')
+    AS_DEALLOCATE(vk16 = p_info_comp_valk)
+    AS_DEALLOCATE(vi   = p_info_comp_vali)
+    AS_DEALLOCATE(vi   = p_info_comp_nvar)
+    AS_DEALLOCATE(vk16 = p_info_carc_valk)
+    AS_DEALLOCATE(vr   = p_info_carc_valr)
 !
 ! - Init ZASTER_HANDLER
 !

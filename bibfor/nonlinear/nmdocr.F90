@@ -2,14 +2,13 @@ subroutine nmdocr(model, carcri)
 !
     implicit none
 !
-#include "jeveux.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/carc_info.h"
 #include "asterfort/carc_init.h"
 #include "asterfort/carc_read.h"
 #include "asterfort/carc_save.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nocart.h"
 !
 ! ======================================================================
@@ -44,19 +43,19 @@ subroutine nmdocr(model, carcri)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: list_vale
     character(len=8) :: mesh
-    integer :: nb_cmp, nbocc
+    integer :: nb_cmp, nbocc_carcri
+    character(len=16), pointer :: p_info_carc_valk(:) => null()
+    real(kind=8)     , pointer :: p_info_carc_valr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Initializations
-!
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     carcri = '&&NMDOCR.CARCRI'
-    list_vale = '&&NMDOCR.LIST_VALE'
+!
+! - Create carcri informations objects
+!
+    call carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_carcri)
 !
 ! - Create CARCRI <CARTE>
 !
@@ -68,17 +67,14 @@ subroutine nmdocr(model, carcri)
 !
 ! - Read informations from command file
 !
-    call carc_read(list_vale, nbocc)
-    if (nbocc .eq. 0) goto 99
+    call carc_read(p_info_carc_valk, p_info_carc_valr)
 !
 ! - Save and check informations in CARCRI <CARTE>
 !
-    call carc_save(model, mesh, carcri, nb_cmp, list_vale)
+    call carc_save(model           , mesh            , carcri, nb_cmp, &
+                   p_info_carc_valk, p_info_carc_valr)
 !
-    call jedetr(list_vale(1:19)//'.VALR')
-    call jedetr(list_vale(1:19)//'.VALK')
+    AS_DEALLOCATE(vk16 = p_info_carc_valk)
+    AS_DEALLOCATE(vr   = p_info_carc_valr)
 !
- 99 continue
-!
-    call jedema()
 end subroutine

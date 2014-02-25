@@ -1,13 +1,10 @@
 subroutine carc_init(mesh, carcri, nb_cmp)
 !
     implicit none
-!
-#include "jeveux.h"
+
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -50,16 +47,13 @@ subroutine carc_init(mesh, carcri, nb_cmp)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nume_gd
-    integer :: j_cmp, icmp, j_cart_cmp, j_cart_val
-    integer :: nb_cmp_max
-    character(len=8) :: k8dummy
+    integer :: nb_cmp_max, icmp
     character(len=8) :: name_gd
+    real(kind=8)    , pointer :: p_carcri_valv(:) => null()
+    character(len=8), pointer :: p_cata_nomcmp(:) => null()
+    character(len=8), pointer :: p_carcri_ncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    call jemarq()
-!
-! - Initializations
 !
     nb_cmp  = 0
     name_gd = 'CARCRI'  
@@ -67,8 +61,8 @@ subroutine carc_init(mesh, carcri, nb_cmp)
 ! - Read catalog
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', name_gd), nume_gd)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', j_cmp)
-    call jelira(jexnum('&CATA.GD.NOMCMP', nume_gd), 'LONMAX', nb_cmp_max, k8dummy)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', vk8 = p_cata_nomcmp)
+    call jelira(jexnum('&CATA.GD.NOMCMP', nume_gd), 'LONMAX', nb_cmp_max)
     ASSERT(nb_cmp_max .le. 20)
 !
 ! - Allocate <CARTE>
@@ -77,24 +71,23 @@ subroutine carc_init(mesh, carcri, nb_cmp)
 !
 ! - Acces to <CARTE>
 !
-    call jeveuo(carcri(1:19)//'.NCMP', 'E', j_cart_cmp)
-    call jeveuo(carcri(1:19)//'.VALV', 'E', j_cart_val)
+    call jeveuo(carcri(1:19)//'.NCMP', 'E', vk8 = p_carcri_ncmp)
+    call jeveuo(carcri(1:19)//'.VALV', 'E', vr  = p_carcri_valv)
 !
 ! - Init <CARTE>
 !
     do icmp = 1, nb_cmp_max
-        zk8(j_cart_cmp-1+icmp)  = zk8(j_cmp-1+icmp)
-        zr(j_cart_val-1+icmp) = 0.d0
+        p_carcri_ncmp(icmp) = p_cata_nomcmp(icmp)
+        p_carcri_valv(icmp) = 0.d0
     enddo
 !
 ! - Default values
 !
-    zr(j_cart_val-1+1) = 10
-    zr(j_cart_val-1+2) = 0
-    zr(j_cart_val-1+3) = 1.d-6
-    zr(j_cart_val-1+4) = 1.d0
+    p_carcri_valv(1) = 10
+    p_carcri_valv(2) = 0
+    p_carcri_valv(3) = 1.d-6
+    p_carcri_valv(4) = 1.d0
 !
     nb_cmp = nb_cmp_max
-!
-    call jedema()
+
 end subroutine

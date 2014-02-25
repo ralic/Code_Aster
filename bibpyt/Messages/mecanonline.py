@@ -32,6 +32,16 @@ cata_msg = {
  pas assez de composantes, on complète donc par des zéros.
 """),
 
+3 : _(u"""
+Erreur utilisateur :
+  Vous essayez de faire un calcul non-linéaire mécanique ou un post-traitement sur un modèle dont les éléments
+  ne sont pas programmés pour cela.
+  On arrête le calcul.
+Risques & conseils :
+  Vous devriez changer de modélisation.
+"""),
+
+
 23 : _(u"""
  Le calcul de l'accélération initiale a ignoré les chargements de type:
  - ONDE_PLANE

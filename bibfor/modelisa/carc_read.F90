@@ -1,8 +1,7 @@
-subroutine carc_read(list_vale, nbocc)
+subroutine carc_read(p_info_carc_valk, p_info_carc_valr)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvid.h"
@@ -36,8 +35,8 @@ subroutine carc_read(list_vale, nbocc)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=19), intent(in) :: list_vale
-    integer, intent(out) :: nbocc
+    character(len=16), pointer, intent(inout) :: p_info_carc_valk(:)
+    real(kind=8)     , pointer, intent(inout) :: p_info_carc_valr(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,15 +46,13 @@ subroutine carc_read(list_vale, nbocc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_vale   : list of informations to save
-! Out nbocc       : number of occurrences of COMPORTEMENT
+! IO  p_info_carc_valk : pointer to carcri informations (character)
+! IO  p_info_carc_valr : pointer to carcri informations (real)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: iocc
-    integer :: iret
-    integer :: j_lvalr, j_lvalk
+    integer :: iocc, iret, nbocc
     character(len=16) :: algo_inte, type_matr_tang, method, post_iter
     real(kind=8) :: parm_theta, vale_pert_rela 
     real(kind=8) :: resi_cplan_maxi, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
@@ -74,13 +71,6 @@ subroutine carc_read(list_vale, nbocc)
     nbocc       = 0
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
-!
-! - List construction
-!
-    if (nbocc.ne.0) then
-        call wkvect(list_vale(1:19)//'.VALR', 'V V R'  , 13*nbocc, j_lvalr)
-        call wkvect(list_vale(1:19)//'.VALK', 'V V K24', 2*nbocc , j_lvalk)
-    endif
 !
 ! - Read informations
 !
@@ -226,21 +216,21 @@ subroutine carc_read(list_vale, nbocc)
 !
 ! ----- Save options in list
 !
-        zr(j_lvalr+13*(iocc-1) -1 + 1)  = 0.d0
-        zr(j_lvalr+13*(iocc-1) -1 + 2)  = type_matr_t
-        zr(j_lvalr+13*(iocc-1) -1 + 3)  = 0.d0
-        zr(j_lvalr+13*(iocc-1) -1 + 4)  = parm_theta
-        zr(j_lvalr+13*(iocc-1) -1 + 5)  = iter_inte_pas
-        zr(j_lvalr+13*(iocc-1) -1 + 6)  = 0.d0
-        zr(j_lvalr+13*(iocc-1) -1 + 7)  = vale_pert_rela
-        zr(j_lvalr+13*(iocc-1) -1 + 8)  = resi_cplan_maxi
-        zr(j_lvalr+13*(iocc-1) -1 + 9)  = iter_cplan_maxi
-        zr(j_lvalr+13*(iocc-1) -1 + 10) = seuil
-        zr(j_lvalr+13*(iocc-1) -1 + 11) = amplitude
-        zr(j_lvalr+13*(iocc-1) -1 + 12) = taux_retour
-        zr(j_lvalr+13*(iocc-1) -1 + 13) = parm_alpha
-        zk24(j_lvalk+2*(iocc-1) -1 + 1) = rela_comp
-        zk24(j_lvalk+2*(iocc-1) -1 + 2) = algo_inte
+        p_info_carc_valr(13*(iocc-1) + 1)  = 0.d0
+        p_info_carc_valr(13*(iocc-1) + 2)  = type_matr_t
+        p_info_carc_valr(13*(iocc-1) + 3)  = 0.d0
+        p_info_carc_valr(13*(iocc-1) + 4)  = parm_theta
+        p_info_carc_valr(13*(iocc-1) + 5)  = iter_inte_pas
+        p_info_carc_valr(13*(iocc-1) + 6)  = 0.d0
+        p_info_carc_valr(13*(iocc-1) + 7)  = vale_pert_rela
+        p_info_carc_valr(13*(iocc-1) + 8)  = resi_cplan_maxi
+        p_info_carc_valr(13*(iocc-1) + 9)  = iter_cplan_maxi
+        p_info_carc_valr(13*(iocc-1) + 10) = seuil
+        p_info_carc_valr(13*(iocc-1) + 11) = amplitude
+        p_info_carc_valr(13*(iocc-1) + 12) = taux_retour
+        p_info_carc_valr(13*(iocc-1) + 13) = parm_alpha
+        p_info_carc_valk(2*(iocc-1) + 1) = rela_comp
+        p_info_carc_valk(2*(iocc-1) + 2) = algo_inte
     end do
 !
     call jedema()
