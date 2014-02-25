@@ -1,0 +1,125 @@
+*---*---*---*---*---*---*---*---*---*---*---*---*
+*
+* TEST FOR COUPLING ECREVISSE / ASTER :
+*   Comparison between rotated / translated meshes
+*
+*---*---*---*---*---*---*---*---*---*---*---*---*
+
+OPTI DIME 2 ELEM QUA4 ;
+
+
+
+* MESH PARAMETERS
+* ----------------------
+* Centre point for mesh rotation
+POINR =  0. 0. ;
+* Rotation and translation no. 1
+ANGL1 = -30. ;
+VEC1  = 0. 0. ;
+* Rotation and translation no. 2
+ANGL2 = -150. ;
+VEC2  = -10. 20. ;
+* Half of the crack opening
+OuvF  = (140.0E-6)*0.5 ;
+* Sizes
+BHaut  = 0.250 ;
+BLarg  = 0.500 ;
+* Element densities
+dpetit = 0.002 ;
+dgrand = 0.05 ;
+
+
+
+* BLOCK -30 DEGREES
+* ----------------------
+* Upper mesh :
+i_hd1   = (0.0   OuvF) ;
+i_hf1   = (0.0   (BHaut + OuvF)) ;
+e_hf1   = (BLarg (BHaut + OuvF)) ;
+e_hd1   = (BLarg OuvF) ;
+inth1   = DROIT i_hd1 i_hf1 DINI dpetit DFIN dgrand ;
+exth1   = DROIT e_hd1 e_hf1 DINI dpetit DFIN dgrand ;
+haut1   = DROIT i_hf1 e_hf1 DINI dpetit DFIN dgrand ;
+bfish1  = DROIT i_hd1 e_hd1 DINI dpetit DFIN dgrand ;
+bloc_h1 = DALLER PLAN inth1 haut1 exth1 bfish1 ;
+
+* Lower mesh :
+i_bd1   = (0.0   (-1.0*OuvF)) ;
+i_bf1   = (0.0   (-1.0*((BHaut + OuvF)))) ;
+e_bd1   = (bLarg (-1.0*OuvF)) ;
+e_bf1   = (BLarg (-1.0*(bHaut + OuvF))) ;
+intb1   = DROIT i_bd1 i_bf1 DINI dpetit DFIN dgrand ;
+extb1   = DROIT e_bd1 e_bf1 DINI dpetit DFIN dgrand ;
+bas1    = DROIT i_bf1 e_bf1 DINI dpetit DFIN dgrand ;
+bfisb1  = DROIT i_bd1 e_bd1 DINI dpetit DFIN dgrand ;
+bloc_b1 = DALLER PLAN intb1 bas1 extb1 bfisb1 ;
+
+* Groups for material and B.C application :
+beton1   = bloc_h1 et bloc_b1 ;
+intra1   = (inth1 et intb1) COUL vert ;
+extra1   = (exth1 et extb1) COUL bleu ;
+fixe1    = (haut1 et bas1)  COUL jaune ;
+castest1 = beton1 et intra1 et extra1 et fixe1 ;
+
+* Mesh rotation / translation :
+DEPL castest1 'TOUR' ANGL1  POINR ;
+DEPL castest1 'PLUS' VEC1 ;
+
+
+
+* BLOCK -150 DEGREES
+* ----------------------
+* Upper mesh :
+i_hd2   = (0.0   OuvF);
+i_hf2   = (0.0   (BHaut + OuvF));
+e_hf2   = (BLarg (BHaut + OuvF));
+e_hd2   = (BLarg OuvF);
+inth2   = DROIT i_hd2 i_hf2 DINI dpetit DFIN dgrand ;
+exth2   = DROIT e_hd2 e_hf2 DINI dpetit DFIN dgrand ;
+haut2   = DROIT i_hf2 e_hf2 DINI dpetit DFIN dgrand ;
+bfish2  = DROIT i_hd2 e_hd2 DINI dpetit DFIN dgrand ;
+bloc_h2 = DALLER PLAN inth2 haut2 exth2 bfish2 ;
+
+* Lower mesh :
+i_bd2   = (0.0   (-1.0*OuvF)) ;
+i_bf2   = (0.0   (-1.0*((BHaut + OuvF)))) ;
+e_bd2   = (bLarg (-1.0*OuvF)) ;
+e_bf2   = (BLarg (-1.0*(bHaut + OuvF))) ;
+intb2   = DROIT i_bd2 i_bf2 DINI dpetit DFIN dgrand ;
+extb2   = DROIT e_bd2 e_bf2 DINI dpetit DFIN dgrand ;
+bas2    = DROIT i_bf2 e_bf2 DINI dpetit DFIN dgrand ;
+bfisb2  = DROIT i_bd2 e_bd2 DINI dpetit DFIN dgrand ;
+bloc_b2 = DALLER PLAN intb2 bas2 extb2 bfisb2 ;
+
+* Groups for material and B.C application :
+beton2   = bloc_h2 et bloc_b2 ;
+intra2   = (inth2 et intb2) COUL vert ;
+extra2   = (exth2 et extb2) COUL bleu ;
+fixe2    = (haut2 et bas2)  COUL jaune ;
+castest2 = beton2 et intra2 et extra2 et fixe2 ;
+
+* Mesh rotation / translation :
+DEPL castest2 'TOUR' ANGL2  POINR ;
+DEPL castest2 'PLUS' VEC2 ;
+
+
+
+* PLOTS
+* ----------------------
+trace castest1 ;
+trace castest2 ;
+trace (castest1 et castest2) ;
+
+
+
+* SAVING MESH TEXT FORMAT
+* -------------------------
+* Deleting unnecessary groups :
+OUBL I_HF1; OUBL E_HF1; OUBL I_BF1; OUBL E_BF1;
+OUBL I_HF2; OUBL E_HF2; OUBL I_BF2; OUBL E_BF2;
+
+* Saving mesh :
+OPTI SAUV FORMAT 'zzzz218c.mgib' ;
+SAUV FORMAT (castest1 et castest2) ;
+
+FIN

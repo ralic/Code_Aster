@@ -1,0 +1,77 @@
+*---*---*---*---*---*---*---*---*---*---*---*---*
+*
+* TEST FOR COUPLING ECREVISSE / ASTER :
+*   Test with one horizontal crack
+*
+*---*---*---*---*---*---*---*---*---*---*---*---*
+
+OPTI DIME 2 ELEM QUA4 ;
+
+
+* MESH PARAMETERS
+* ----------------------
+* Half of the crack opening :
+OuvF = (140.0E-6)*0.5 ;
+* Sizes :
+BHaut = 0.250 ;
+BLarg = 0.500 ;
+* Element densities :
+dpetit = 0.002 ;
+dgrand = 0.05 ;
+nLarge = 30 ;
+
+
+* MESH DESCRIPTION
+* ----------------------
+* Upper mesh :
+i_hd   = (0.0   OuvF) ;
+i_hf   = (0.0   (BHaut + OuvF)) ;
+e_hf   = (BLarg (BHaut + OuvF)) ;
+e_hd   = (BLarg OuvF) ;
+inth   = DROIT i_hd i_hf DINI dpetit DFIN dgrand ;
+exth   = DROIT e_hd e_hf DINI dpetit DFIN dgrand ;
+haut   = DROIT i_hf e_hf DINI dpetit DFIN dgrand ;
+bfish  = DROIT i_hd e_hd DINI dpetit DFIN dgrand ;
+bloc_h = DALLER PLAN inth haut exth bfish ;
+
+* Lower mesh :
+i_bd   = (0.0   (-1.0*OuvF)) ;
+i_bf   = (0.0   (-1.0*((BHaut + OuvF)))) ;
+e_bd   = (bLarg (-1.0*OuvF)) ;
+e_bf   = (BLarg (-1.0*(bHaut + OuvF))) ;
+intb   = DROIT i_bd i_bf DINI dpetit DFIN dgrand ;
+extb   = DROIT e_bd e_bf DINI dpetit DFIN dgrand ;
+bas    = DROIT nLarge i_bf e_bf ;
+bfisb  = DROIT nLarge i_bd e_bd ;
+bas    = DROIT i_bf e_bf DINI dpetit DFIN dgrand ;
+bfisb  = DROIT i_bd e_bd DINI dpetit DFIN dgrand ;
+bloc_b = DALLER PLAN intb bas extb bfisb ;
+
+
+* Groups for material and B.C application :
+beton    = bloc_h et bloc_b ;
+intrados = (inth et intb) COUL vert ;
+extrados = (exth et extb) COUL bleu ;
+encastre = (haut et bas)  COUL jaune ;
+castest  = beton et intrados et extrados et encastre ;
+
+
+
+* PLOTS
+* ----------------------
+trace castest ;
+
+
+
+* SAVING MESH TEXT FORMAT
+* -------------------------
+* Deleting unnecessary groups :
+OUBL I_HF;OUBL E_HF;OUBL I_BF;OUBL E_BF;OUBL F_IH;OUBL F_EH;
+OUBL F_IB;OUBL F_EB;
+
+* Saving mesh :
+OPTI SAUV FORMAT 'zzzz218a.mgib' ;
+SAUV FORMAT castest ;
+
+
+FIN ;

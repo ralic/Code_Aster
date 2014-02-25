@@ -1,0 +1,379 @@
+# ======================================================================
+# TITRE : VALIDATION FROTTEMENT ECREVISSE ICHAL = 2 - FLUIDE = 5
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#############################################################################################
+# VALIDATION TEST FOR MACR_ECREVISSE : OPTIONS FOR THE FRICTION COEFFICIENT
+#
+#   HEAT EXCHANGE OPTION : 2 (ICHAL)
+#   FLUID TYPE : 5 (AIR + SATURATED STEAM)
+#############################################################################################
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), IGNORE_ALARM=('COMPOR4_70'))
+
+Npos = 4
+
+# Tested options for friction coefficient
+lst_frot = (11,12,13,14)
+
+# Other Ecrevisse options
+ichal  = 2
+ivenac = 0
+
+# Total flow computed by Ecrevisse alone
+VQRECRE = (2.349390E-03, 3.929627E-03, 2.844686E-02, 5.233854E-02, 2.349393E-03)
+
+# Temperature computed by Ecrevisse alone, abscissa s=0.475
+VTRECRE = (1.996949E+01,  1.996619E+01,  1.992868E+01, 1.992261E+01)
+
+## Non regression values for total flow
+#VQCALC = (0.2172624,2.3494E-03,3.929631E-03,0.06647478,0.05274545, 2.3494E-03, 3.929631E-03, 0.02844714, 0.05233852,2.3494E-03, 3.929631E-03,0.05009747,0.05009747)
+
+## Non regression values for temperature
+#VTCALC = (20., 19.96949, 19.96619, 19.92234, 19.92223, 19.96949, 19.96619, 19.92864, 19.92257, 19.96949, 19.96619, 19.92431, 19.92431)
+
+VQCALC = (0.002349396, 3.929651E-03, 0.028447110000000, 0.05233891)
+
+VTCALC = (19.96949, 19.96619, 19.92866, 19.9226)
+
+# Boundary conditions for pressure
+prext     = 1.E5 #Pa
+printe    = 1.E6 #Pa
+prinin    = 1.E6 #Pa
+PrAPart   = 6.E5 #Pa
+PrAPart13 = 4.E5 #Pa
+printe13  = 6.E5 #Pa
+prinin13  = 6.E5 #Pa
+
+# Boundary conditions for temperature
+tempint  = 180.  #C
+temp_ext = 20.   #C
+temp_ref = 20.   #C
+
+# Test duration (in seconds)
+duree_inj = 5000.
+
+# Geometry parametres
+profondeur = 1.    #m
+
+# Material properties making coupling negligible
+lambd   = 0.             #W/M/K
+cp      = 8800000000000.   #J/kg/K
+rho     = 2500.          #kg/m3
+rho_cp  = rho*cp         #J/m3/K
+alpha   = 1.0E-20        # 1/K
+coeff_H = 0.             #W/m2/K
+
+# ------------------------------------ #
+# MESH
+# ------------------------------------ #
+
+MAIL = LIRE_MAILLAGE(FORMAT='MED',)
+
+MAIL = DEFI_GROUP(reuse    = MAIL,
+                  MAILLAGE = MAIL,
+                  CREA_GROUP_MA = (
+                        _F(NOM='GHAUT',GROUP_MA = ('GM21'),),
+                        _F(NOM='GBAS',GROUP_MA = ('GM22'),),
+                        _F(NOM='BETON',UNION = ('GM21','GM22'),),
+                        _F(NOM='INTRADOS',UNION = ('GM14','GM19'),),
+                        _F(NOM='EXTRADOS',UNION = ('GM15','GM18'),),
+                        _F(NOM='HAUT',GROUP_MA = ('GM16'),),
+                        _F(NOM='BAS',GROUP_MA = ('GM20'),),
+                        _F(NOM='ENCASTRE',UNION = ('BAS','HAUT'),),
+                        _F(NOM='BFISH',GROUP_MA = ('GM13'),),
+                        _F(NOM='BFISB',UNION = ('GM17'),),
+                                    ),);
+
+MAIL = DEFI_GROUP(reuse    = MAIL,
+                  MAILLAGE = MAIL,
+                  CREA_GROUP_NO = (
+                        _F(GROUP_MA = ('BETON','ENCASTRE','INTRADOS',
+                                        'EXTRADOS','BFISH','BFISB',),),
+                        _F(OPTION    ='SEGM_DROI_ORDO',
+                            NOM      ='BFISBO',
+                            GROUP_NO ='BFISB',
+                            GROUP_NO_ORIG = 'GM28',
+                            GROUP_NO_EXTR = 'GM30',
+                            PRECISION     = 1.E-6,
+                            CRITERE = 'ABSOLU',),
+                        _F(OPTION    = 'SEGM_DROI_ORDO',
+                            NOM      ='BFISHO',
+                            GROUP_NO ='BFISH',
+                            GROUP_NO_ORIG = 'GM27',
+                            GROUP_NO_EXTR = 'GM29',
+                            PRECISION     = 1.E-6,
+                            CRITERE = 'ABSOLU',),),)
+
+MAIL = MODI_MAILLAGE(
+              reuse        = MAIL,
+              MAILLAGE     = MAIL,
+              ORIE_PEAU_2D = _F(GROUP_MA = ('ENCASTRE','INTRADOS',
+                                            'EXTRADOS','BFISH','BFISB',),),)
+
+
+# ------------------------------------ #
+# DEFINITION OF MODELS AND MATERIALS
+# ------------------------------------ #
+MODMECA = AFFE_MODELE(
+                  MAILLAGE  = MAIL,
+                  AFFE      = (_F(GROUP_MA = ('BETON','ENCASTRE','INTRADOS',
+                                              'EXTRADOS','BFISH','BFISB',),
+                  PHENOMENE = 'MECANIQUE',
+                  MODELISATION = 'D_PLAN',),),)
+
+MODTHER = AFFE_MODELE(
+                  MAILLAGE  = MAIL,
+                  AFFE      = _F(GROUP_MA=('BETON','ENCASTRE','INTRADOS',
+                                           'EXTRADOS','BFISH','BFISB',),
+                  PHENOMENE = 'THERMIQUE',
+                  MODELISATION = 'PLAN_DIAG',),)
+
+BETON = DEFI_MATERIAU(ELAS = _F(E      = 1.E25,
+                                NU     = 0.2,
+                                ALPHA  = alpha,),
+                      THER = _F(LAMBDA = lambd,
+                                RHO_CP = rho_cp,),)
+
+CHMAT = AFFE_MATERIAU(MAILLAGE  = MAIL,
+                      AFFE      = (_F(GROUP_MA = ('BETON','ENCASTRE','INTRADOS',
+                                                  'EXTRADOS','BFISH','BFISB',),
+                                      MATER    = BETON,),),
+                      AFFE_VARC = (_F(NOM_VARC ='TEMP',
+                                      VALE_REF = temp_ref),),)
+
+
+
+# BOUNDARY CONDITIONS
+# ---------------------------------
+# Mechanical B.C.
+CONDMECA = AFFE_CHAR_MECA( MODELE      = MODMECA,
+                           FACE_IMPO   = _F(GROUP_MA = ('ENCASTRE'), DNOR = 0.0,),
+                           DDL_IMPO    = _F(GROUP_NO = ('GM24','GM25'), DX = 0),
+                      )
+
+CONT  = DEFI_CONTACT(MODELE      = MODMECA,
+                     FORMULATION = 'DISCRETE',
+                     REAC_GEOM   = 'SANS',
+                     ZONE        = _F(
+                            GROUP_MA_MAIT = 'BFISH',
+                            GROUP_MA_ESCL = 'BFISB',
+                     ),)
+
+# Temperature and pressure time functions
+#
+PR_EXT = DEFI_CONSTANTE(VALE = prext,)
+
+PR_INT = DEFI_FONCTION( NOM_PARA    = 'INST',
+                        PROL_GAUCHE = 'CONSTANT',
+                        PROL_DROITE = 'CONSTANT',
+                        VALE = ( 0,              prinin,
+                                 duree_inj,      printe, ), )
+
+PR_INT13 = DEFI_FONCTION( NOM_PARA    = 'INST',
+                          PROL_GAUCHE = 'CONSTANT',
+                          PROL_DROITE = 'CONSTANT',
+                          VALE = ( 0,              prinin13,
+                                   duree_inj,      printe13, ), )
+
+TEMP_EXT = DEFI_CONSTANTE(VALE = temp_ext,)
+
+TEMP_INT = DEFI_FONCTION(NOM_PARA    = 'INST',
+                       PROL_GAUCHE = 'CONSTANT',
+                       PROL_DROITE = 'CONSTANT',
+                       VALE = ( 0.,        tempint,
+                                duree_inj, tempint, ), )
+
+# Thermal B.C.
+#
+H_EXT    = DEFI_CONSTANTE(VALE = coeff_H,)
+H_INT    = DEFI_CONSTANTE(VALE = coeff_H,)
+CONDTHER = AFFE_CHAR_THER_F(
+                    MODELE  = MODTHER,
+                    ECHANGE = (_F(GROUP_MA = 'INTRADOS',
+                                  COEF_H   = H_INT,
+                                  TEMP_EXT = TEMP_INT,),
+                               _F(GROUP_MA = 'EXTRADOS',
+                                  COEF_H   = H_EXT,
+                                  TEMP_EXT = TEMP_EXT,),),)
+
+
+# --------------------------------------- #
+# COMPUTATIONS WITH iflow = 5
+#   (AIR + SATURATED STEAM)
+#   USING DIFFERENT FRICTION COEFFICIENTS
+# --------------------------------------- #
+L_INST = DEFI_LIST_REEL(
+                DEBUT      = 0.0,
+                INTERVALLE = (_F(JUSQU_A = duree_inj, NOMBRE = 2,), ),)
+
+
+RMECA = [None]*Npos
+iflow = 5 # Type of ingoing fluid
+
+# Friction coefficient computed by rugosity
+#  --> Ecrevisse : parameter ifrot>0
+#
+for icalc in xrange(Npos):
+
+    ifrot = lst_frot[icalc]
+    kgtest = 0.5
+    if ifrot == 0 :
+        kgtest = 0.4
+
+    if ifrot!=13 :
+        titre = 'ICHAL=2, IFLOW=5, IFROT='+str(ifrot)
+        RMECA[icalc] = MACR_ECREVISSE(
+                        TABLE  = CO('TABLECR'),
+                        DEBIT  = CO('DEBECR'),
+                        TEMPER = CO('TEMPECR'),
+                        #
+                        CHAM_MATER   = CHMAT,
+                        MODELE_MECA  = MODMECA,
+                        MODELE_THER  = MODTHER,
+                        EXCIT_MECA   = _F(CHARGE   = CONDMECA),
+                        EXCIT_THER   = _F(CHARGE   = CONDTHER),
+                        COMPORTEMENT = _F(RELATION ='ELAS',),
+                        CONTACT      = CONT,
+                        #
+                        FISSURE = _F(
+                              PREFIXE_FICHIER  = 'FISSURE1',
+                              SECTION          = 'RECTANGLE',
+                              GROUP_MA         = ('BFISH','BFISB',),
+                              RUGOSITE         = 0.5E-06,
+                              ZETA             = 0.0,
+                              GROUP_NO_ORIG    = ('GM27','GM28',),
+                              GROUP_NO_EXTR    = ('GM29','GM30',),
+                              LISTE_VAL_BL     = (profondeur,profondeur),
+                              OUVERT_REMANENTE = 10.0E-06,
+                              TORTUOSITE       = 1.0, ),
+                        #
+                        ECOULEMENT = _F(
+                              FLUIDE_ENTREE  = iflow,
+                              PRES_ENTREE_FO = PR_INT,
+                              PRES_SORTIE_FO = PR_EXT,
+                              PRES_PART      = PrAPart,
+                              TITR_MASS      = 0.3,),
+                        #
+                        LIST_INST = L_INST,
+                        #
+                        MODELE_ECRE = _F(
+                              IVENAC         = ivenac,
+                              ECOULEMENT     = 'SATURATION',
+                              FROTTEMENT     = ifrot,
+                              TRANSFERT_CHAL = ichal,),
+                        #
+                        CONV_CRITERE = _F(
+                              TEMP_REF = 0.5,
+                              PRES_REF = 0.01*prext,
+                              CRITERE  = 'EXPLICITE',),
+                        #
+                        CONVERGENCE_ECREVISSE = _F(
+                              CRIT_CONV_DEBI = 1.e-8,
+                              KGTEST         = kgtest,
+                              ITER_GLOB_MAXI = 400,),
+                        #
+                        VERSION     = '3.2.1',
+                        COURBES     = 'AUCUNE',
+                        ENTETE      = titre,
+                        IMPRESSION  = 'NON',
+                        INFO        = 1,
+                        )
+
+    else :
+        RMECA[icalc] = MACR_ECREVISSE(
+                    TABLE  = CO('TABLECR'),
+                    DEBIT  = CO('DEBECR'),
+                    TEMPER = CO('TEMPECR'),
+                    #
+                    CHAM_MATER   = CHMAT,
+                    MODELE_MECA  = MODMECA,
+                    MODELE_THER  = MODTHER,
+                    EXCIT_MECA   = _F(CHARGE   = CONDMECA),
+                    EXCIT_THER   = _F(CHARGE   = CONDTHER),
+                    COMPORTEMENT = _F(RELATION ='ELAS',),
+                    CONTACT      = CONT,
+                    #
+                    FISSURE = _F(
+                          PREFIXE_FICHIER  = 'FISSURE1',
+                          SECTION          = 'RECTANGLE',
+                          GROUP_MA         = ('BFISH','BFISB',),
+                          RUGOSITE         = 0.5E-06,
+                          ZETA             = 0.0,
+                          GROUP_NO_ORIG    = ('GM27','GM28',),
+                          GROUP_NO_EXTR    = ('GM29','GM30',),
+                          LISTE_VAL_BL     = (profondeur,profondeur),
+                          OUVERT_REMANENTE = 10.0E-06,
+                          TORTUOSITE       = 1.0, ),
+                    #
+                    ECOULEMENT = _F(
+                          FLUIDE_ENTREE  = iflow,
+                          PRES_ENTREE_FO = PR_INT13,
+                          PRES_SORTIE_FO = PR_EXT,
+                          PRES_PART      = PrAPart13,
+                          TITR_MASS      = 0.3,),
+                    #
+                    LIST_INST = L_INST,
+                    #
+                    MODELE_ECRE = _F(
+                          IVENAC         = ivenac,
+                          ECOULEMENT     = 'SATURATION',
+                          FROTTEMENT     = ifrot,
+                          TRANSFERT_CHAL = ichal,),
+                    #
+                    CONV_CRITERE = _F(
+                          TEMP_REF = 0.5,
+                          PRES_REF = 0.01*prext,
+                          CRITERE  = 'EXPLICITE',),
+                    #
+                    CONVERGENCE_ECREVISSE = _F(
+                          CRIT_CONV_DEBI = 1.e-8,
+                          KGTEST         = kgtest,
+                          ITER_GLOB_MAXI = 400,),
+                    #
+                    VERSION     = '3.2.1',
+                    COURBES     = 'AUCUNE',
+                    ENTETE      = 'ICHAL=2, FLOW=5, IFROT=13',
+                    IMPRESSION  = 'NON',
+                    INFO        = 1, )
+
+    TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
+               PRECISION = 1.E-4,
+               VALE_CALC = VQCALC[icalc],
+               VALE_REFE = VQRECRE[icalc],
+               TOLE_MACHINE = 1.E-5,
+               NOM_PARA  = 'DEBTOT',
+               TABLE     = DEBECR,
+               FILTRE    = (_F(NOM_PARA = 'INST',
+                               VALE     = duree_inj,),),)
+
+    TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
+               PRECISION = 1.E-4,
+               VALE_CALC = VTCALC[icalc],
+               VALE_REFE = VTRECRE[icalc],
+               TOLE_MACHINE = 1.E-5,
+               NOM_PARA  = 'TEMP',
+               TABLE     = TABLECR,
+               FILTRE    = (_F(NOM_PARA = 'COTES',
+                               VALE     = 0.475,),
+                            _F(NOM_PARA = 'INST',
+                               VALE     = duree_inj,),),)
+
+    DETRUIRE(CONCEPT = _F(NOM = DEBECR))
+    DETRUIRE(CONCEPT = _F(NOM = TEMPECR))
+    DETRUIRE(CONCEPT = _F(NOM = TABLECR))
+
+FIN();

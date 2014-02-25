@@ -1,0 +1,88 @@
+*---*---*---*---*---*---*---*---*---*---*---*---*
+*
+* TEST FOR COUPLING ECREVISSE / ASTER :
+*   Test with two vertical cracks
+*
+*---*---*---*---*---*---*---*---*---*---*---*---*
+
+OPTI DIME 2 ELEM QUA4 ;
+
+
+
+* MESH PARAMETERS
+* ----------------------
+* Half of the crack opening
+OuvF = (140.0E-6)*0.5 ;
+* Sizes
+BHaut = 0.250 ;
+BLarg = 0.500 ;
+* Element densities
+dpetit = 0.002 ;
+dgrand = 0.05 ;
+
+
+* MESH DESCRIPTION
+* ----------------------
+* Left block mesh :
+i_gg   = ( (-1.0*((1.5*BHaut) + (2*OuvF)))    0.0  ) ;
+i_gd   = ( (-1.0*((0.5*BHaut) + (2*OuvF)))    0.0  ) ;
+e_gg   = ( (-1.0*((1.5*BHaut) + (2*OuvF)))    BLarg) ;
+e_gd   = ( (-1.0*((0.5*BHaut) + (2*OuvF)))    BLarg) ;
+intg   = DROIT i_gd i_gg DINI dpetit DFIN dgrand ;
+extg   = DROIT e_gd e_gg DINI dpetit DFIN dgrand ;
+gauche = DROIT i_gg e_gg DINI dpetit DFIN dgrand ;
+bfisg1 = DROIT i_gd e_gd DINI dpetit DFIN dgrand ;
+bloc_g = DALLER PLAN intg gauche extg bfisg1 ;
+
+
+* Mesh of the middle block :
+i_mg = ( (-1.0*(0.5*BHaut))    0.0  ) ;
+e_mg = ( (-1.0*(0.5*BHaut))    BLarg) ;
+i_0  = ( 0.0                   0.0  ) ;
+i_md = ( (0.5*BHaut)           0.0  ) ;
+e_md = ( (0.5*BHaut)           BLarg) ;
+e_0  = ( 0.0                   BLarg) ;
+
+intmg   = DROIT i_0 i_mg DINI (0.5*dgrand) DFIN dpetit ;
+intmd   = DROIT i_md i_0 DINI dpetit DFIN (0.5*dgrand) ;
+bfism1  = DROIT i_mg e_mg DINI dpetit DFIN dgrand ;
+bfism2  = DROIT e_md i_md DINI dgrand DFIN dpetit ;
+extmg   = DROIT e_mg e_0 DINI dpetit DFIN (0.5*dgrand) ;
+extmd   = DROIT e_0 e_md DINI (0.5*dgrand) DFIN dpetit ;
+milieu  = DROIT i_0 e_0 DINI dpetit DFIN dgrand ;
+
+bloc_mg = DALLER PLAN intmg bfism1 extmg milieu ;
+bloc_md = DALLER PLAN intmd milieu extmd bfism2 ;
+
+
+* Right block mesh :
+i_dg = ( ((0.5*BHaut) + (2*OuvF))    0.0  ) ;
+i_dd = ( ((1.5*BHaut) + (2*OuvF))    0.0  ) ;
+e_dg = ( ((0.5*BHaut) + (2*OuvF))    BLarg) ;
+e_dd = ( ((1.5*BHaut) + (2*OuvF))    BLarg) ;
+
+intd   = DROIT i_dg i_dd DINI dpetit DFIN dgrand ;
+extd   = DROIT e_dg e_dd DINI dpetit DFIN dgrand ;
+droite = DROIT i_dd e_dd DINI dpetit DFIN dgrand ;
+bfisd2 = DROIT i_dg e_dg DINI dpetit DFIN dgrand ;
+bloc_d = DALLER PLAN intd droite extd bfisd2 ;
+
+* Groups for material and B.C application :
+beton = bloc_g et bloc_d et bloc_mg et bloc_md;
+intrados = (intg et intd et intmg et intmd) COUL vert;
+extrados = (extg et extd et extmg et extmd) COUL bleu;
+encastre = (gauche et droite)  COUL jaune;
+castest = beton et intrados et extrados et encastre ;
+
+
+* PLOTS
+* ----------------------
+trace castest ;
+
+
+* SAVING MESH TEXT FORMAT
+* -------------------------
+OPTI SAUV FORMAT 'zzzz218b.mgib';
+SAUV FORMAT castest ;
+
+FIN ;
