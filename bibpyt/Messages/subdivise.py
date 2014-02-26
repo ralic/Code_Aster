@@ -56,6 +56,8 @@ cata_msg={
 
 52: _(u""" <Action> On ne découpe pas le pas de temps."""),
 
+53: _(u""" <Action><Échec> Le pas de temps est devenu trop petit: %(r1)19.12e"""),
+
 99: _(u"""Avec PREDICTION = 'DEPL_CALCULE', la subdivision du pas de temps n'est pas autorisée. """),
 
 }
