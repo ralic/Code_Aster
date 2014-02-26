@@ -14,9 +14,7 @@ subroutine te0247(option, nomte)
 #include "asterfort/nmlmab.h"
 #include "asterfort/nmpoel.h"
 #include "asterfort/porea1.h"
-#include "asterfort/ptka01.h"
-#include "asterfort/ptka02.h"
-#include "asterfort/ptka10.h"
+#include "asterfort/porigi.h"
 #include "asterfort/ptkg00.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
@@ -64,9 +62,9 @@ subroutine te0247(option, nomte)
     integer :: ivectu, icontp, itype, nno, nc, ivarim, ivarip, itemp, i
     integer :: jtab(7), jcret, kk, lgpg, iret, iretm, iretp, iret2
     integer :: npg, ndimel, nnoel, nnosel
-    integer :: lx, lrcou, istrxm, istrxp, ldep
+    integer :: lrcou, istrxm, istrxp, ldep
     parameter    (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
-    real(kind=8) :: e, nu, g, em, num
+    real(kind=8) :: e, nu, em, num
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2, xjx2, xl
 ! AUTRES
@@ -78,9 +76,8 @@ subroutine te0247(option, nomte)
     character(len=24) :: valk(2)
 !
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), kls(nk), flc, effnoc
-    real(kind=8) :: pgl1(3, 3), pgl2(3, 3), rad, angarc, angs2
+    real(kind=8) :: pgl1(3, 3), pgl2(3, 3), rad, angarc, angs2, ang
     real(kind=8) :: zero, deux
-    real(kind=8) :: xfl, xfly, xflz, ang
     real(kind=8) :: effnom, tempm, tempp
     real(kind=8) :: irram, irrap, epsthe(1)
     real(kind=8) :: sigma(nd), rgeom(nk), gamma, angp(3)
@@ -147,6 +144,16 @@ subroutine te0247(option, nomte)
                 alfay, alfaz, ey, ez, a2,&
                 xiy2, xiz2, xjx2, alfay2, alfaz2)
 !
+    if (nomte .eq. 'MECA_POU_C_T') then
+        call jevech('PCAARPO', 'L', lrcou)
+        rad = zr(lrcou)
+        angarc = zr(lrcou+1)
+        angs2 = trigom('ASIN',xl/ (deux*rad))
+        ang = angs2 * deux
+        xl = rad * ang
+        call matro2(zr(iorien), angarc, angs2, pgl1, pgl2)
+    endif
+!
 !
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)
@@ -175,71 +182,24 @@ subroutine te0247(option, nomte)
 !
     endif
 !
+!-- RECUPERATION DES CARACTERISTIQUES ELASTIQUES
+    call moytem('RIGI', npg, 1, '+', tempp,&
+                    iretp)
+    call moytem('RIGI', npg, 1, '-', tempm,&
+                    iretm)
+    itemp = 0
+    if ((iretp+iretm) .eq. 0) itemp=1
+    call matela(zi(imate), ' ', itemp, tempp, e,&
+                nu)
+    call matela(zi(imate), ' ', itemp, tempm, em,&
+                num)
+    call verifm('RIGI', npg, 1, 'T', zi(imate),&
+                'ELAS', 1, epsthe, iret)
+
     if (zk16(icompo) .eq. 'ELAS') then
 !
-        call moytem('RIGI', npg, 1, '+', tempp,&
-                    iretp)
-        call moytem('RIGI', npg, 1, '-', tempm,&
-                    iretm)
-        itemp = 0
-        if ((iretp+iretm) .eq. 0) itemp=1
-        call matela(zi(imate), ' ', itemp, tempp, e,&
-                    nu)
-        call matela(zi(imate), ' ', itemp, tempm, em,&
-                    num)
-        call verifm('RIGI', npg, 1, 'T', zi(imate),&
-                    'ELAS', 1, epsthe, iret)
-        g = e / (2.d0*(1.d0+nu))
-!
 !        --- CALCUL DES MATRICES ELEMENTAIRES ----
-        if (itype .eq. 0) then
-            if (nomte .eq. 'MECA_POU_D_E') then
-                alfay = 0.d0
-                alfaz = 0.d0
-            endif
-            call ptka01(klv, e, a, xl, xiy,&
-                        xiz, xjx, g, alfay, alfaz,&
-                        ey, ez, 1)
-        else if (itype .eq. 1 .or. itype .eq. 2) then
-            if (nomte .eq. 'MECA_POU_D_E') then
-                alfay2 = 0.d0
-                alfaz2 = 0.d0
-                alfay = 0.d0
-                alfaz = 0.d0
-            endif
-            call ptka02(itype, klv, e, a, a2,&
-                        xl, xiy, xiy2, xiz, xiz2,&
-                        xjx, xjx2, g, alfay, alfay2,&
-                        alfaz, alfaz2, ey, ez, 1)
-!
-        else if (itype .eq. 10) then
-            if (nomte .eq. 'MECA_POU_C_T') then
-!        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
-                call jevech('PCAARPO', 'L', lrcou)
-                rad = zr(lrcou)
-                xfl = zr(lrcou+2)
-                xfly = xfl
-                xflz = xfl
-                if (xfl .eq. zero) then
-                    xfly = zr(lrcou+4)
-                    xflz = zr(lrcou+6)
-                endif
-                angs2 = trigom('ASIN', xl/(deux*rad) )
-                ang = angs2*deux
-                xl = rad*ang
-                xiy = xiy/xfly
-                xiz = xiz/xflz
-                lx = igeom - 1
-                xl = sqrt(&
-                     ( zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2) )**2 + (zr(lx+6)-zr(lx+3) )**2)
-                angarc = zr(lrcou+1)
-                angs2 = trigom('ASIN', xl/(deux*rad) )
-                call matro2(zr(iorien), angarc, angs2, pgl1, pgl2)
-                call ptka10(klv, e, a, xiy, xiz,&
-                            xjx, g, alfay, alfaz, rad,&
-                            ang, 1)
-            endif
-        endif
+        call porigi(nomte, e, nu, xl, klv)
 !
         if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA') then
             if ((itemp.ne.0) .and. (nu.ne.num)) then
@@ -251,49 +211,15 @@ subroutine te0247(option, nomte)
                         zr( icontp), angs2, rad)
         endif
 !
-        elseif ((zk16(icompo).eq.'LMARC_IRRA').or. (zk16(icompo)&
-    .eq.'LEMAITRE_IRRA')) then
+    elseif ((zk16(icompo).eq.'LMARC_IRRA').or. (zk16(icompo).eq.'LEMAITRE_IRRA')) then
 !
         call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
                     itab=jtab)
         lgpg = max(jtab(6),1)*jtab(7)
 !
-!-- RECUPERATION DES CARACTERISTIQUES ELASTIQUES
-        call moytem('RIGI', npg, 1, '+', tempp,&
-                    iretp)
-        call moytem('RIGI', npg, 1, '-', tempm,&
-                    iretm)
-        itemp = 0
-        if ((iretp+iretm) .eq. 0) itemp=1
-        call matela(zi(imate), ' ', itemp, tempp, e,&
-                    nu)
-        call matela(zi(imate), ' ', itemp, tempm, em,&
-                    num)
-        call verifm('RIGI', npg, 1, 'T', zi(imate),&
-                    'ELAS', 1, epsthe, iret)
-        g = e / (2.d0*(1.d0+nu))
-!
 !        --- CALCUL DES MATRICES ELEMENTAIRES ELASTIQUES ----
-        if (itype .eq. 0) then
-            if (nomte .eq. 'MECA_POU_D_E') then
-                alfay = 0.d0
-                alfaz = 0.d0
-            endif
-            call ptka01(klv, e, a, xl, xiy,&
-                        xiz, xjx, g, alfay, alfaz,&
-                        ey, ez, 1)
-        else if (itype .eq. 1 .or. itype .eq. 2) then
-            if (nomte .eq. 'MECA_POU_D_E') then
-                alfay2 = 0.d0
-                alfaz2 = 0.d0
-                alfay = 0.d0
-                alfaz = 0.d0
-            endif
-            call ptka02(itype, klv, e, a, a2,&
-                        xl, xiy, xiy2, xiz, xiz2,&
-                        xjx, xjx2, g, alfay, alfay2,&
-                        alfaz, alfaz2, ey, ez, 1)
-        endif
+        call porigi(nomte, e, nu, xl, klv)
+!
         if ((itemp.ne.0) .and. (nu.ne.num)) then
             call utmess('A', 'ELEMENTS3_59')
         endif
@@ -426,20 +352,8 @@ subroutine te0247(option, nomte)
 !
     endif
 !
-!
-!
 !        --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
 !
-    if (nomte .eq. 'MECA_POU_C_T') then
-        call jevech('PGEOMER', 'L', lx)
-        lx = lx - 1
-        xl = sqrt( ( zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-        call jevech('PCAARPO', 'L', lrcou)
-        rad = zr(lrcou)
-        angarc = zr(lrcou+1)
-        angs2 = trigom('ASIN',xl/ (deux*rad))
-        call matro2(zr(iorien), angarc, angs2, pgl1, pgl2)
-    endif
     if (matric) then
         if (nomte .eq. 'MECA_POU_C_T') then
             call chgrep('LG', pgl1, pgl2, klv, zr(imatuu))

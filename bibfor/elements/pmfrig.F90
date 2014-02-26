@@ -86,10 +86,6 @@ subroutine pmfrig(nomte, icdmat, klv)
         xiy = cars1(5)
         xiz = cars1(4)
 !
-!
-!
-!
-        call jevech('PCAGNPO', 'L', lsect)
         lsect = lsect-1
         alfay = zr(lsect+4)
         alfaz = zr(lsect+5)

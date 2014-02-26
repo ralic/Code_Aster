@@ -102,7 +102,7 @@ subroutine ef0142(nomte)
     if (nomte .eq. 'MECA_POU_D_EM') then
         call pmfrig(nomte, zi(lmater), klv)
     else
-        call porigi(nomte, e, nu, klv)
+        call porigi(nomte, e, nu, -1.d0, klv)
     endif
 !
 !     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
@@ -113,9 +113,9 @@ subroutine ef0142(nomte)
     call jevech('PEFFORR', 'E', jeffo)
     call poefgr(nomte, klc, zi(lmater), e, nu,&
                 rho, zr(jeffo))
-    do 10 i = 1, 6
+    do i = 1, 6
         zr(jeffo+i-1)=-zr(jeffo+i-1)
         zr(jeffo+i+6-1)=zr(jeffo+i+6-1)
-10  end do
+    end do
 !
 end subroutine

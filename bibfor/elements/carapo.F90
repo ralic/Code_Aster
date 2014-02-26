@@ -4,7 +4,7 @@ subroutine carapo(sect, geom, orien, xl, pgl,&
                   xiy2, xiz2, xjx2, alfay2, alfaz2)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,12 +21,15 @@ subroutine carapo(sect, geom, orien, xl, pgl,&
 ! ======================================================================
 !
     implicit none
+#include "jeveux.h"
 #include "asterfort/matrot.h"
+#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: itype
+    integer :: itype, iadzi, iazk24
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2, xjx2, xl
     real(kind=8) :: pgl(3, 3), sect(*), geom(6), orien(3)
+    character(len=8) :: nomail
 !
 !     RECUPERATION DES CARACTERISTIQUES GEOMETRIQUES POUR
 !     LES ELEMENTS DE POUTRE 'MECA_POU_D_E/D_T'
@@ -62,7 +65,9 @@ subroutine carapo(sect, geom, orien, xl, pgl,&
 !
     xl = sqrt( (geom(4)-geom(1))**2 + (geom(5)-geom(2))**2 + (geom(6)-geom(3))**2)
     if (xl .eq. 0.d0) then
-        call utmess('F', 'ELEMENTS_17')
+        call tecael(iadzi, iazk24)
+        nomail=zk24(iazk24-1+3)(1:8)
+        call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
 !
     call matrot(orien, pgl)

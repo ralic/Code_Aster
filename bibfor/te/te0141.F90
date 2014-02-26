@@ -4,14 +4,12 @@ subroutine te0141(option, nomte)
 #include "asterfort/chgrep.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/masstg.h"
 #include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/pmfmas.h"
 #include "asterfort/pomass.h"
-#include "asterfort/ptma01.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
 #include "asterfort/tecael.h"
@@ -68,14 +66,13 @@ subroutine te0141(option, nomte)
     integer :: i, lmater, iret, nbpar, lcage, labsc
     integer :: lorien, iacce, ivect, lrcou, lmat
     integer :: nno, nc, ntc, nbv, kanl, kpg, spt
-    integer :: itype, istruc, lsect, lx, iadzi, iazk24
+    integer :: lx, iadzi, iazk24
     integer :: icompo, isdcom, isicom, nbgfmx
     real(kind=8) :: xl, rad, angs2
     real(kind=8) :: zero, un, deux, absmoy, angarc
     real(kind=8) :: e, g, xnu, rho, rhos, rhofi, rhofe, cm, phie, phii
-    real(kind=8) :: a, xiy, xiz, alfay, alfaz, ey, ez
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), mlv(105)
-    real(kind=8) :: matv(105), matp(14, 14), matp1(105)
+    real(kind=8) :: matv(105), matp(14, 14)
 !     ------------------------------------------------------------------
     data nomres/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
 !     ------------------------------------------------------------------
@@ -95,17 +92,15 @@ subroutine te0141(option, nomte)
     if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
         nno = 2
         nc = 7
-        itype = 0
-        istruc = 1
     endif
     ntc = nc*nno
     nbv = ntc*(ntc+1)/2
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     rho = 0.d0
-    do 10 i = 1, nbres
+    do i = 1, nbres
         valres(i) = zero
-10  end do
+    end do
 !
     call jevech('PMATERC', 'L', lmater)
     call moytem('RIGI', 2, 1, '+', valpar,&
@@ -144,7 +139,7 @@ subroutine te0141(option, nomte)
         call rhoequ(rho, rhos, rhofi, rhofe, cm,&
                     phii, phie)
 !
-        else if (option.eq.'MASS_MECA' .or. option.eq.'MASS_MECA_DIAG'&
+    else if (option.eq.'MASS_MECA' .or. option.eq.'MASS_MECA_DIAG'&
     .or. option.eq.'MASS_MECA_EXPLI' .or. option.eq.'M_GAMMA') then
         if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
             call rcvalb(fami, kpg, spt, poum, zi(lmater),&
@@ -158,18 +153,6 @@ subroutine te0141(option, nomte)
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
-    endif
-!     --- CARACTERISTIQUES GENERALES DES SECTIONS ---
-    if (nomte .eq. 'MECA_POU_D_TG') then
-        call jevech('PCAGNPO', 'L', lsect)
-        lsect = lsect - 1
-        a = zr(lsect+1)
-        xiy = zr(lsect+2)
-        xiz = zr(lsect+3)
-        alfay = zr(lsect+4)
-        alfaz = zr(lsect+5)
-        ey = -zr(lsect+6)
-        ez = -zr(lsect+7)
     endif
 !     --- COORDONNEES DES NOEUDS ---
     call jevech('PGEOMER', 'L', lx)
@@ -189,15 +172,6 @@ subroutine te0141(option, nomte)
     if ((nomte.eq.'MECA_POU_D_EM') .or. (nomte.eq.'MECA_POU_D_TGM')) then
         call pmfmas(nomte, option, rho, zi(lmater), kanl,&
                     mlv)
-    else if (nomte.eq.'MECA_POU_D_TG') then
-        do 20 i = 1, 105
-            matp1(i) = 0.0d0
-20      continue
-        call ptma01(kanl, itype, matp1, istruc, rho,&
-                    e, a, a, xl, xiy,&
-                    xiy, xiz, xiz, g, alfay,&
-                    alfay, alfaz, alfaz, ey, ez)
-        call masstg(matp1, mlv)
     else
         call pomass(nomte, e, xnu, rho, kanl,&
                     mlv)

@@ -147,9 +147,9 @@ subroutine te0431(option, nomte)
             call dxqpgl(zr(igeom), pgl, 'S', iret)
         endif
 !
-        do 8 i = 1, 3
+        do i = 1, 3
             vecn(i)=distn*pgl(3,i)
- 8      continue
+        enddo
         nddl=6
 !
     else

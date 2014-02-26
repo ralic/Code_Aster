@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine porigi(nomte, e, xnu, klv)
+    subroutine porigi(nomte, e, xnu, xl, klv)
         character(len=*) :: nomte
         real(kind=8) :: e
         real(kind=8) :: xnu
+        real(kind=8) :: xl
         real(kind=8) :: klv(*)
     end subroutine porigi
 end interface

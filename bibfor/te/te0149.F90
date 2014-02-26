@@ -106,13 +106,13 @@ subroutine te0149(option, nomte)
 !     LE 1ER MATERIAU
     imat = jmat+zi(jmat+nbmat+1)
 !     SEUL ELAS EST AUTORISE
-    do 152 icomp = 1, zi(imat+1)
+    do icomp = 1, zi(imat+1)
         if (zk16(zi(imat)+icomp-1)(1:4) .ne. 'ELAS') then
             messk(1) = option
             messk(2) = zk16(zi(imat)+icomp-1)(1:10)
             call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
         endif
-152  end do
+    end do
 ! --- ------------------------------------------------------------------
 !
     npg = 3
@@ -172,7 +172,7 @@ subroutine te0149(option, nomte)
 !
 ! --- ------------------------------------------------------------------
 ! --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
-    call porigi(nomte, e, nu, klv)
+    call porigi(nomte, e, nu, -1.d0, klv)
 ! --- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
     call vecma(klv, 78, klc, 12)
 !

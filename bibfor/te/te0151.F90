@@ -18,23 +18,20 @@ subroutine te0151(option, nomte)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
+#include "asterfort/carapo.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matro2.h"
-#include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmfrig.h"
+#include "asterfort/pomass.h"
+#include "asterfort/porigi.h"
 #include "asterfort/ptenci.h"
 #include "asterfort/ptenpo.h"
 #include "asterfort/ptenth.h"
-#include "asterfort/ptka01.h"
-#include "asterfort/ptka02.h"
-#include "asterfort/ptka10.h"
-#include "asterfort/ptka21.h"
-#include "asterfort/ptma01.h"
-#include "asterfort/ptma10.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
+#include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
@@ -64,24 +61,23 @@ subroutine te0151(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, if, iret, istruc, itype, jdepl, jende
     integer :: jfreq, jmasd, jvite, kanl, lmater, lorien, lrcou
-    integer :: lsect, lsect2, lx, nbpar, nbres, nc, nno
-    integer :: npg
-    real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, ang
-    real(kind=8) :: angarc, angs2, deux, e, enerth, ey, ez
-    real(kind=8) :: g, rad, rho, un, valpar, x2iy, x2iz
-    real(kind=8) :: xfl, xfly, xflz, xiy, xiy2, xiz, xiz2
-    real(kind=8) :: xjx, xjx2, xl, xnu, zero, xig
+    integer :: lsect, nbpar, nbres, nc, nno
+    integer :: npg, igeom
+    real(kind=8) :: ang
+    real(kind=8) :: angarc, angs2, deux, e, enerth
+    real(kind=8) :: g, rad, rho, un, valpar
+    real(kind=8) :: xl, xnu, zero, rbid
 !-----------------------------------------------------------------------
     parameter    (             nbres = 3 )
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
     character(len=3) :: stopz
     character(len=4) :: fami
-    character(len=8) :: nompar, nomres(nbres), nomail, famil, poum
+    character(len=8) :: nompar, nomres(nbres), famil, poum
     character(len=16) :: ch16
     real(kind=8) :: ul(14), ug(14), pgl(3, 3), klc(14, 14), klv(105)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), epsthe(1)
-    integer :: iadzi, iazk24, kpg, spt, nklv
+    integer :: kpg, spt, nklv
 !     ------------------------------------------------------------------
     data nomres / 'E' , 'NU' , 'RHO' /
 !     ------------------------------------------------------------------
@@ -92,12 +88,14 @@ subroutine te0151(option, nomte)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     call jevech('PMATERC', 'L', lmater)
-    do 10 i = 1, nbres
+    do i = 1, nbres
         valres(i) = zero
-10  end do
+    end do
 !
     fami = 'RIGI'
     npg = 3
+    istruc = 1
+    nno = 2
     if ((nomte.eq.'MECA_POU_C_T') .or. (nomte.eq.'MECA_POU_D_EM')) npg = 2
 !
     call moytem(fami, npg, 1, '+', valpar,&
@@ -125,106 +123,27 @@ subroutine te0151(option, nomte)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
     call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect-1
-    itype = nint(zr(lsect+23))
-!
-!
-!       --- RECUPERATION DES ORIENTATIONS ---
+    call jevech('PGEOMER', 'L', igeom)
     call jevech('PCAORIE', 'L', lorien)
+    call carapo(zr(lsect), zr(igeom), zr(lorien), xl, pgl,&
+                itype, rbid, rbid, rbid, rbid,&
+                rbid, rbid, rbid, rbid, rbid,&
+                rbid, rbid, rbid, rbid, rbid)
+
 !
-    if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
-!
-!       --- SECTION INITIALE ---
-        a = zr(lsect+ 1)
-        xiy = zr(lsect+ 2)
-        xiz = zr(lsect+ 3)
-        alfay = zr(lsect+ 4)
-        alfaz = zr(lsect+ 5)
-!       EY    = -ZR(LSECT+ 6)
-!       EZ    = -ZR(LSECT+ 7)
-        xjx = zr(lsect+ 8)
-        xig = zr(lsect+12)
-!
-!       --- SECTION FINALE ---
-        lsect2 = lsect + 11
-        a2 = zr(lsect2+ 1)
-        xiy2 = zr(lsect2+ 2)
-        xiz2 = zr(lsect2+ 3)
-        alfay2 = zr(lsect2+ 4)
-        alfaz2 = zr(lsect2+ 5)
-        ey = -(zr(lsect+6)+zr(lsect2+6))/deux
-        ez = -(zr(lsect+7)+zr(lsect2+7))/deux
-        xjx2 = zr(lsect2+ 8)
-!
-!
-!       --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-        call jevech('PGEOMER', 'L', lx)
-        lx = lx - 1
-        xl = sqrt( ( zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + ( zr(lx+6)-zr(lx+3) )**2 )
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        if (xl .eq. zero) then
-            call utmess('F', 'ELEMENTS2_43', sk=nomail)
-        endif
-!
-    endif
-!
-    if (nomte .eq. 'MECA_POU_D_E') then
-!        --- POUTRE DROITE D'EULER A 6 DDL ---
-        istruc = 1
-        nno = 2
-        nc = 6
-        alfay = zero
-        alfaz = zero
-        alfay2 = zero
-        alfaz2 = zero
-        call matrot(zr(lorien), pgl)
-    else if (nomte.eq.'MECA_POU_D_EM') then
-        istruc = 1
-        nno = 2
-        nc = 6
-        call matrot(zr(lorien), pgl)
-    else if (nomte .eq. 'MECA_POU_D_T') then
-!        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
-        istruc = 1
-        nno = 2
-        nc = 6
-        call matrot(zr(lorien), pgl)
-        elseif ( nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq.&
-    'MECA_POU_D_TGM' ) then
-!        --- POUTRE DROITE DE TIMOSKENKO A 7 DDL ---
-        istruc = 1
-        nno = 2
-        nc = 7
-        call matrot(zr(lorien), pgl)
-    else if (nomte .eq. 'MECA_POU_C_T') then
+    nc = 6
+    if ( nomte(1:13) .eq. 'MECA_POU_D_TG') nc = 7
+
+    if (nomte .eq. 'MECA_POU_C_T') then
 !        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
-        istruc = 1
         nno = 1
-        nc = 6
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         angarc = zr(lrcou+1)
-        xfl = zr(lrcou+2)
-        xfly = xfl
-        xflz = xfl
-        if (xfl .eq. zero) then
-            xfly = zr(lrcou+4)
-            xflz = zr(lrcou+6)
-        endif
-        angs2 = asin( xl / ( deux * rad ) )
+        angs2 = trigom('ASIN',xl/ (deux*rad))
         ang = angs2 * deux
         xl = rad * ang
-        x2iy = xiy
-        x2iz = xiz
-        xiy = xiy / xfly
-        xiz = xiz / xflz
-        xiy2 = xiy2 / xfly
-        xiz2 = xiz2 / xflz
         call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
-    else
-        ch16 = nomte
-        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
     nklv = 2*nc*(2*nc+1)/2
@@ -269,30 +188,10 @@ subroutine te0151(option, nomte)
         call jevech('PENERDR', 'E', jende)
 !
 !        --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE
-        if (itype .eq. 0) then
-!           --- POUTRE DROITE A SECTION CONSTANTE ---
-            if ((nomte.eq.'MECA_POU_D_EM') .or. ( nomte.eq.'MECA_POU_D_TGM')) then
-                call pmfrig(nomte, zi(lmater), klv)
-            else if (nomte.eq.'MECA_POU_D_TG') then
-                call ptka21(klv, e, a, xl, xiy,&
-                            xiz, xjx, xig, g, alfay,&
-                            alfaz, ey, ez)
-            else
-                call ptka01(klv, e, a, xl, xiy,&
-                            xiz, xjx, g, alfay, alfaz,&
-                            ey, ez, istruc)
-            endif
-        else if (itype .eq. 1 .or. itype .eq. 2) then
-!           --- POUTRE DROITE A SECTION VARIABLE (TYPE 1 OU 2) ---
-            call ptka02(itype, klv, e, a, a2,&
-                        xl, xiy, xiy2, xiz, xiz2,&
-                        xjx, xjx2, g, alfay, alfay2,&
-                        alfaz, alfaz2, ey, ez, istruc)
-        else if (itype .eq. 10) then
-!           --- POUTRE COURBE A SECTION CONSTANTE ---
-            call ptka10(klv, e, a, xiy, xiz,&
-                        xjx, g, alfay, alfaz, rad,&
-                        ang, istruc)
+        if ((nomte.eq.'MECA_POU_D_EM') .or. ( nomte.eq.'MECA_POU_D_TGM')) then
+            call pmfrig(nomte, zi(lmater), klv)
+        else
+            call porigi(nomte, e, xnu, xl, klv)
         endif
 !
 !        ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
@@ -319,17 +218,8 @@ subroutine te0151(option, nomte)
         if (rho .ne. zero) then
 !           --- KANL = 0 MASSES CONCENTREES
 !           --- KANL = 1 MASSES COHERENTES
-            if (itype .lt. 10) then
-!              --- POUTRE DROITE SECTION CONSTANTE OU VARIABLE (1 OU 2)
-                call ptma01(kanl, itype, klv, istruc, rho,&
-                            e, a, a2, xl, xiy,&
-                            xiy2, xiz, xiz2, g, alfay,&
-                            alfay2, alfaz, alfaz2, ey, ez)
-            else if (itype.eq.10) then
-!              --- POUTRE COURBE SECTION CONSTANTE ---
-                call ptma10(klv, rho, a, xl, x2iy,&
-                            x2iz)
-            endif
+            call pomass(nomte, e, xnu, rho, kanl,&
+                  klv)
 !
 !           ---- MATRICE MASSE LIGNE > MATRICE MASSE CARRE
             call vecma(klv, 78, klc, 12)

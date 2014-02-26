@@ -3,16 +3,17 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
+#include "asterfort/carapo.h"
 #include "asterfort/jevech.h"
+#include "asterfort/masstg.h"
 #include "asterfort/ptma01.h"
 #include "asterfort/ptma10.h"
-#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomte
     real(kind=8) :: mlv(*)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,72 +35,53 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: g
-    character(len=8) :: nomail
     character(len=16) :: ch16
-    integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: istruc, itype, kanl, lrcou, lsect, lsect2, lx
+    integer :: istruc, itype, kanl, lrcou, lsect, lx, i
 !
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, ang
     real(kind=8) :: angs2, deux, e, ey, ez, rad, rho
-    real(kind=8) :: un, x2iy, x2iz, xfl, xfly, xflz, xiy
-    real(kind=8) :: xiy2, xiz, xiz2, xl, xnu, zero
+    real(kind=8) :: un, x2iy, x2iz, xfl, xfly, xflz, xiy, xjx, xjx2
+    real(kind=8) :: xiy2, xiz, xiz2, xl, xnu, zero, ang_bid(3)
+    real(kind=8) :: pgl_bid(3, 3), mlv2(105)
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
     g = e/ (deux* (un+xnu))
+    do i = 1, 105
+        mlv2(i) = 0.0d0
+    enddo
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
     call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
-    itype = nint(zr(lsect+23))
-!
-!     --- SECTION INITIALE ---
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
-    alfay = zr(lsect+4)
-    alfaz = zr(lsect+5)
-!     EY    = -ZR(LSECT+ 6)
-!     EZ    = -ZR(LSECT+ 7)
-!
-!     --- SECTION FINALE ---
-    lsect2 = lsect + 11
-    a2 = zr(lsect2+1)
-    xiy2 = zr(lsect2+2)
-    xiz2 = zr(lsect2+3)
-    alfay2 = zr(lsect2+4)
-    alfaz2 = zr(lsect2+5)
-    ey = - (zr(lsect+6)+zr(lsect2+6))/deux
-    ez = - (zr(lsect+7)+zr(lsect2+7))/deux
-!
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
     call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    ang_bid(1)= 0.d0
+    ang_bid(2)= 0.d0
+    ang_bid(3)= 0.d0
+    call carapo(zr(lsect), zr(lx), ang_bid, xl, pgl_bid,&
+                itype, a, xiy, xiz, xjx,&
+                alfay, alfaz, ey, ez, a2,&
+                xiy2, xiz2, xjx2, alfay2, alfaz2)
+
 !
+    istruc = 1
     if (nomte .eq. 'MECA_POU_D_E') then
 !        --- POUTRE DROITE D'EULER A 6 DDL ---
-        istruc = 1
         alfay = zero
         alfaz = zero
         alfay2 = zero
         alfaz2 = zero
     else if (nomte.eq.'MECA_POU_D_T') then
 !        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
-        istruc = 1
+    else if (nomte.eq.'MECA_POU_D_TG') then
+!        --- POUTRE DROITE DE TIMOSKENKO A 7 DDL ---
+        a2 = a
     else if (nomte.eq.'MECA_POU_C_T') then
 !        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
-        istruc = 1
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         xfl = zr(lrcou+2)
@@ -127,10 +109,18 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 !
     if (itype .lt. 10) then
 !        --- POUTRE DROITE SECTION CONSTANTE OU VARIABLE (1 OU 2)
-        call ptma01(kanl, itype, mlv, istruc, rho,&
+        call ptma01(kanl, itype, mlv2, istruc, rho,&
                     e, a, a2, xl, xiy,&
                     xiy2, xiz, xiz2, g, alfay,&
                     alfay2, alfaz, alfaz2, ey, ez)
+        if (nomte.eq. 'MECA_POU_D_TG')then
+            call masstg(mlv2, mlv)
+        else
+            do i = 1, 105
+                mlv(i) = mlv2(i)
+            enddo
+        endif
+
 !
     else if (itype.eq.10) then
 !        --- POUTRE COURBE SECTION CONSTANTE ---

@@ -54,7 +54,7 @@ subroutine te0140(option, nomte)
 !
     integer :: iadzi, iazk24
     integer :: i, imate, lmat, lorien, lrcou
-    integer :: lx, nbpar, nbres, nc, nno, lsect, iret
+    integer :: lx, nbpar, nbres, nc, nno, iret
     parameter (nbres=2)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: angarc, angs2, deux, e, rad
@@ -63,7 +63,6 @@ subroutine te0140(option, nomte)
     character(len=8) :: nompar, nomres(nbres), nomail, fami, poum
     character(len=16) :: opti
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), klv(105)
-    real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, xjg, ez, ey
 !     ------------------------------------------------------------------
     data nomres/'E','NU'/
 !     ------------------------------------------------------------------
@@ -109,77 +108,40 @@ subroutine te0140(option, nomte)
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)
 !
-    do 25 i = 1, 105
+    do i = 1, 105
         klv(i) = 0.d0
-25  end do
+    end do
 !
 !     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
     if ((nomte.eq.'MECA_POU_D_EM') .or. (nomte.eq.'MECA_POU_D_TGM')) then
         call pmfrig(nomte, zi(imate), klv)
-    else if (nomte.ne.'MECA_POU_D_TG') then
-        call porigi(nomte, e, xnu, klv)
+    else
+        call porigi(nomte, e, xnu, -1.d0, klv)
     endif
 !
     call jevech('PMATUUR', 'E', lmat)
+    nno = 2
+    nc = 6
+    if (nomte(1:13).eq.'MECA_POU_D_TG') nc = 7
 !
-    if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_E' .or. nomte .eq.&
-        'MECA_POU_D_T') then
-        nno = 2
-        nc = 6
-        call matrot(zr(lorien), pgl)
-        call utpslg(nno, nc, pgl, klv, zr(lmat))
-!
-    else if (nomte.eq.'MECA_POU_C_T') then
+    if (nomte.eq.'MECA_POU_C_T') then
         call jevech('PGEOMER', 'L', lx)
         lx = lx - 1
         xl = sqrt( ( zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
+        if (xl .eq. 0.d0) then
+            call tecael(iadzi, iazk24)
+            nomail=zk24(iazk24-1+3)(1:8)
+            call utmess('F', 'ELEMENTS2_43', sk=nomail)
+        endif
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         angarc = zr(lrcou+1)
         angs2 = trigom('ASIN',xl/ (deux*rad))
         call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
         call chgrep('LG', pgl1, pgl2, klv, zr(lmat))
-!
-    else if (nomte.eq.'MECA_POU_D_TGM') then
-        nno = 2
-        nc = 7
-        call matrot(zr(lorien), pgl)
-        call utpslg(nno, nc, pgl, klv, zr(lmat))
-    else if (nomte.eq.'MECA_POU_D_TG') then
-!     --- CARACTERISTIQUES GENERALES DES SECTIONS ---
-        call jevech('PCAGNPO', 'L', lsect)
-        lsect = lsect - 1
-        a = zr(lsect+1)
-        xiy = zr(lsect+2)
-        xiz = zr(lsect+3)
-        alfay = zr(lsect+4)
-        alfaz = zr(lsect+5)
-        ey = -zr(lsect+6)
-        ez = -zr(lsect+7)
-        xjx = zr(lsect+8)
-        xjg = zr(lsect+12)
-        nno = 2
-        nc = 7
-!     --- COORDONNEES DES NOEUDS ---
-        call jevech('PGEOMER', 'L', lx)
-        lx = lx - 1
-        xl = sqrt( ( zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-        if (xl .eq. zero) then
-            call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3)(1:8)
-            call utmess('F', 'ELEMENTS2_43', sk=nomail)
-        endif
-!     --- CALCUL DES MATRICES ELEMENTAIRES ----
-        if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'RIGI_FLUI') then
-            call ptka21(klv, e, a, xl, xiy,&
-                        xiz, xjx, xjg, g, alfay,&
-                        alfaz, ey, ez)
-        endif
-!        --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
-        call matrot(zr(lorien), pgl)
-        call utpslg(nno, nc, pgl, klv, zr(lmat))
     else
-        call utmess('F', 'ELEMENTS2_42', sk=nomte)
+        call matrot(zr(lorien), pgl)
+        call utpslg(nno, nc, pgl, klv, zr(lmat))
     endif
 !
 end subroutine

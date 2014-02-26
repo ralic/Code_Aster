@@ -99,7 +99,7 @@ subroutine te0144(option, nomte)
 !
 !     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
 !
-    call porigi(nomte, e, xnu, klv)
+    call porigi(nomte, e, xnu, -1.d0, klv)
 !
 !     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
 !
@@ -135,9 +135,9 @@ subroutine te0144(option, nomte)
     endif
 !
     call jevech('PDEPLAR', 'L', jdepl)
-    do 500 i = 1, 12
+    do i = 1, 12
         ug(i) = zr(jdepl+i-1)
-500  end do
+    end do
 !
 !      --- VECTEUR DEPLACEMENT LOCAL  UL = PGL * UG
     if (itype .eq. 10) then
@@ -152,9 +152,9 @@ subroutine te0144(option, nomte)
 !
 !     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
     if (epsith(1) .ne. zero) then
-        do 40 i = 1, 12
+        do i = 1, 12
             ug(i) = zero
-40      continue
+        enddo
 !
         if (itype .ne. 10) then
             ug(1) = -epsith(1) * xl
@@ -168,20 +168,20 @@ subroutine te0144(option, nomte)
         endif
 !
 !              --- CALCUL DES FORCES INDUITES ---
-        do 20 i = 1, 6
-            do 22 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 fl(i) = fl(i) - klc(i,j) * ug(j)
                 fl(i+6) = fl(i+6) - klc(i+6,j+6) * ug(j+6)
-22          continue
-20      continue
+            enddo
+        enddo
     endif
 !
 ! --- ARCHIVAGE ---
     if (npg .eq. 2) then
-        do 702 i = 1, 6
+        do i = 1, 6
             zr(jeffo+i-1) = -fl(i)
             zr(jeffo+i+6-1) = fl(i+6)
-702      continue
+        enddo
     else
 !        DANS LE CAS 3 POINTS DE GAUSS
 !        IL NE FAUT PAS METTRE 0 SUR UN DES POINTS DE GAUSS
@@ -189,11 +189,11 @@ subroutine te0144(option, nomte)
 !              NOEUD        N1       N2       N3
 !              POSITION   (-0.7777 , 0.0000 , 0.7777)
 !        C'EST LINEAIRE : (N2) = ( (N1) + (N3) )/2
-        do 705 i = 1, 6
+        do i = 1, 6
             zr(jeffo+i-1) = -fl(i)
             zr(jeffo+i+6-1) = (-fl(i) + fl(i+6))*0.5d0
             zr(jeffo+i+12-1) = fl(i+6)
-705      continue
+        enddo
     endif
 !
 end subroutine

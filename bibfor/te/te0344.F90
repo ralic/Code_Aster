@@ -18,14 +18,14 @@ subroutine te0344(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/carapo.h"
 #include "asterfort/jevech.h"
-#include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmavec.h"
+#include "asterfort/porigi.h"
 #include "asterfort/posigr.h"
 #include "asterfort/posipr.h"
 #include "asterfort/ptforp.h"
-#include "asterfort/ptka21.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
@@ -49,14 +49,14 @@ subroutine te0344(option, nomte)
     integer :: nbres
     parameter     (nbres=2)
     integer :: lmater, jmat, nbmat, imat, icomp, nbpar, i, j, npg, nno, nc
-    integer :: ncc, jeffo, iadzi, iazk24, iret, lsect, itype, lx
+    integer :: ncc, jeffo, iret, lsect, itype, lx
     integer :: lorien, jdepl, iret1, lforcr, lforcf
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomres(nbres), nomail, materi
+    character(len=8) :: nompar, nomres(nbres), materi
     character(len=16) :: messk(2)
-    real(kind=8) :: valpar, zero, angs2, rad, e, g, a, xiz, alfaz, alfay, ey, ez
-    real(kind=8) :: xjx, xjg, xiy, xl, epsith
+    real(kind=8) :: valpar, zero, angs2, rad, e, g, a, rbid
+    real(kind=8) :: xl, epsith
     real(kind=8) :: nu, fe(12), fi(12), flr(14), klv(105)
     real(kind=8) :: ulr(14), ugr(14), pgl(14, 14), klc(14, 14)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3)
@@ -84,13 +84,13 @@ subroutine te0344(option, nomte)
 !     LE 1ER MATERIAU
     imat = jmat+zi(jmat+nbmat+1)
 !     SEUL ELAS EST AUTORISE
-    do 152 icomp = 1, zi(imat+1)
+    do icomp = 1, zi(imat+1)
         if (zk16(zi(imat)+icomp-1)(1:4) .ne. 'ELAS') then
             messk(1) = option
             messk(2) = zk16(zi(imat)+icomp-1)(1:10)
             call utmess('F', 'ELEMENTS4_64', nk=2, valk=messk)
         endif
-152 end do
+    end do
 ! --- ------------------------------------------------------------------
     nbpar = 0
     nompar = '  '
@@ -98,15 +98,16 @@ subroutine te0344(option, nomte)
     zero = 0.d0
     angs2 = zero
     rad = zero
-    do 10 i = 1, nbres
+    do i = 1, nbres
         valres(i) = zero
- 10 end do
+    end do
 !
-    do 11 i = 1, 3
-        do 11 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             pgl1(i,j) = zero
             pgl2(i,j) = zero
- 11     continue
+        enddo
+    enddo
 !
     npg = 3
     call moytem('RIGI', npg, 1, '+', valpar,&
@@ -123,49 +124,28 @@ subroutine te0344(option, nomte)
     nu = valres(2)
     g = e / ( 2.d0 * ( 1.d0 + nu ) )
 ! --- ------------------------------------------------------------------
-! --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
-    alfay = zr(lsect+4)
-    alfaz = zr(lsect+5)
-    ey = -zr(lsect+6)
-    ez = -zr(lsect+7)
-    xjx = zr(lsect+8)
-    xjg = zr(lsect+12)
-    itype = nint(zr(lsect+23))
+! --- RECUPERATION DES CARAC DES SECTIONS UTILES, LONGUEUR ET PGL
     nno = 2
     nc = 7
     ncc = 6
-! --- ------------------------------------------------------------------
-! --- RECUPERATION DES COORDONNEES DES NOEUDS
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
-    if (xl .eq. 0.d0) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
-! --- ------------------------------------------------------------------
-! --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA
+    call jevech('PCAGNPO', 'L', lsect)
     call jevech('PCAORIE', 'L', lorien)
-    call matrot(zr(lorien), pgl)
+    call jevech('PGEOMER', 'L', lx)
+    call carapo(zr(lsect), zr(lx), zr(lorien), xl, pgl,&
+                itype, a, rbid, rbid, rbid,&
+                rbid, rbid, rbid, rbid, rbid,&
+                rbid, rbid, rbid, rbid, rbid)
 ! --- ------------------------------------------------------------------
 ! --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE
-    call ptka21(klv, e, a, xl, xiy,&
-                xiz, xjx, xjg, g, alfay,&
-                alfaz, ey, ez)
+    call porigi(nomte, e, nu, xl, klv)
 ! --- ------------------------------------------------------------------
 ! --- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
     call vecma(klv, 105, klc, 14)
 !
     call jevech('PDEPLAR', 'L', jdepl)
-    do 510 i = 1, 14
+    do i = 1, 14
         ugr(i) = zr(jdepl+i-1)
-510 end do
+    end do
 ! --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UGR
     call utpvgl(nno, nc, pgl, ugr, ulr)
 ! --- VECTEUR EFFORT       LOCAL  FLR = KLC * ULR
@@ -174,17 +154,17 @@ subroutine te0344(option, nomte)
 ! --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION
     call verift('RIGI', npg, 1, '+', zi(lmater),&
                 materi, 'ELAS', iret1, epsth=epsith)
-    do 20 i = 1, 14
+    do i = 1, 14
         ugr(i) = 0.d0
- 20 end do
+    end do
     ugr(1) = -epsith*xl
     ugr(8) = -ugr(1)
 ! --- ------------------------------------------------------------------
 ! --- CALCUL DES FORCES INDUITES
-    do 35 i = 1, 7
+    do i = 1, 7
         flr(i) = flr(i) - klc(i,1)*ugr(1)
         flr(i+7) = flr(i+7) - klc(i+7,1+7)*ugr(1+7)
- 35 end do
+     end do
 ! --- ------------------------------------------------------------------
 ! --- PRISE EN COMPTE DES EFFORTS REPARTIS
     call tecach('ONN', 'PFR1D1D', 'L', iret, iad=lforcr)
@@ -193,10 +173,10 @@ subroutine te0344(option, nomte)
                     xl, rad, angs2, 1, nno,&
                     ncc, pgl, pgl1, pgl2, fe,&
                     fi)
-        do 100 i = 1, 6
+        do i = 1, 6
             flr(i) = flr(i) - fe(i)
             flr(i+7) = flr(i+7) - fe(i+6)
-100     continue
+        enddo
     endif
 ! --- ------------------------------------------------------------------
 ! --- PRISE EN COMPTE DES EFFORTS REPARTIS (SOUS FORME DE FONCTION)
@@ -206,10 +186,10 @@ subroutine te0344(option, nomte)
                     xl, rad, angs2, 1, nno,&
                     ncc, pgl, pgl1, pgl2, fe,&
                     fi)
-        do 110 i = 1, 6
+        do i = 1, 6
             flr(i) = flr(i) - fe(i)
             flr(i+7) = flr(i+7) - fe(i+6)
-110     continue
+        enddo
     endif
 !
 ! --- ------------------------------------------------------------------
@@ -217,18 +197,18 @@ subroutine te0344(option, nomte)
 !
     if (option .eq. 'SIPM_ELNO') then
         call jevech('PSIMXRR', 'E', jeffo)
-        do 210 i = 1, 6
+        do i = 1, 6
             fe(i) = flr(i)
             fe(i+6) = flr(i+7)
-210     continue
+        enddo
         call posigr(nomte, fe, zr(jeffo))
 !
     else if (option.eq.'SIPO_ELNO') then
         call jevech('PCONTPO', 'E', jeffo)
-        do 220 i = 1, 6
+        do i = 1, 6
             fe(i) = flr(i)
             fe(i+6) = flr(i+7)
-220     continue
+        enddo
         call posipr(nomte, fe, zr(jeffo))
 !
     endif
