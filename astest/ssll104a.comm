@@ -55,6 +55,9 @@ MO3=AFFE_MODELE(  MAILLAGE=MA,
 MO4=AFFE_MODELE(  MAILLAGE=MA,
                   AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'POU_D_EM') )
+MO5=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_TGM') )
 
 GF=DEFI_GEOM_FIBRE(
            SECTION = _F ( GROUP_FIBRE='SEC1',
@@ -99,6 +102,14 @@ CH3=AFFE_CHAR_MECA(  MODELE=MO3,
                     )
 
 CH4=AFFE_CHAR_MECA(  MODELE=MO4,
+          DDL_IMPO=_F(
+                   NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0.,
+                               DRX = 0., DRY = 0., DRZ = 0.),
+           PRE_EPSI=_F( TOUT = 'OUI',  EPX = 1.E-3,
+                                    KY = 2.E-3, KZ = 3.E-3)
+                    )
+
+CH5=AFFE_CHAR_MECA(  MODELE=MO5,
           DDL_IMPO=_F(
                    NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0.,
                                DRX = 0., DRY = 0., DRZ = 0.),
@@ -166,6 +177,22 @@ CELEM4=AFFE_CARA_ELEM(   MODELE=MO4,
                        GROUP_FIBRE='SEC1'),
                      )
 
+CELEM5=AFFE_CARA_ELEM(   MODELE=MO5,
+                         VERIF=( 'MAILLE',  'NOEUD',  ),
+            POUTRE=
+               _F(  GROUP_MA = 'TOUT',
+                    SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
+                    CARA = ( 'A1',       'IZ1',    'A2',    'IZ2',
+                             'AY1',      'AZ1',    'AY2',   'AZ2',
+                             'IY1',      'JX1',    'IY2',   'JX2', ),
+                    VALE = (  1.,         0.0833,     1.,     0.0833,
+                              1.,         1.,         1.,     1.,
+                              0.0833,     1.,     0.0833,     1.,   )),
+            GEOM_FIBRE=GF,
+            MULTIFIBRE=_F(GROUP_MA='TOUT',
+                       GROUP_FIBRE='SEC1'),
+                     )
+
 # ------------------------------------------------------------------
 
 MELR1=CALC_MATR_ELEM(  MODELE=MO1,            CHARGE=CH1,
@@ -184,6 +211,10 @@ MELR4=CALC_MATR_ELEM(  MODELE=MO4,            CHARGE=CH4,
                        CARA_ELEM=CELEM4,
                        CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
 
+MELR5=CALC_MATR_ELEM(  MODELE=MO5,            CHARGE=CH5,
+                       CARA_ELEM=CELEM5,
+                       CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
+
 NUM1=NUME_DDL(  MATR_RIGI=MELR1  )
 
 NUM2=NUME_DDL(  MATR_RIGI=MELR2  )
@@ -192,6 +223,8 @@ NUM3=NUME_DDL(  MATR_RIGI=MELR3  )
 
 NUM4=NUME_DDL(  MATR_RIGI=MELR4  )
 
+NUM5=NUME_DDL(  MATR_RIGI=MELR5  )
+
 MATASS1=ASSE_MATRICE(MATR_ELEM=MELR1,NUME_DDL=NUM1)
 
 MATASS2=ASSE_MATRICE(MATR_ELEM=MELR2,NUME_DDL=NUM2)
@@ -199,6 +232,8 @@ MATASS2=ASSE_MATRICE(MATR_ELEM=MELR2,NUME_DDL=NUM2)
 MATASS3=ASSE_MATRICE(MATR_ELEM=MELR3,NUME_DDL=NUM3)
 
 MATASS4=ASSE_MATRICE(MATR_ELEM=MELR4,NUME_DDL=NUM4)
+
+MATASS5=ASSE_MATRICE(MATR_ELEM=MELR5,NUME_DDL=NUM5)
 
 VEL1=CALC_VECT_ELEM(    CHARGE=CH1,
                               OPTION='CHAR_MECA',
@@ -220,6 +255,11 @@ VEL4=CALC_VECT_ELEM(    CHARGE=CH4,
                              CHAM_MATER=CHMAT,
                              CARA_ELEM=CELEM4 )
 
+VEL5=CALC_VECT_ELEM(    CHARGE=CH5,
+                              OPTION='CHAR_MECA',
+                             CHAM_MATER=CHMAT,
+                             CARA_ELEM=CELEM5 )
+
 VECASS1=ASSE_VECTEUR(    VECT_ELEM=VEL1,
                               NUME_DDL=NUM1   )
 
@@ -232,6 +272,9 @@ VECASS3=ASSE_VECTEUR(    VECT_ELEM=VEL3,
 VECASS4=ASSE_VECTEUR(    VECT_ELEM=VEL4,
                               NUME_DDL=NUM4   )
 
+VECASS5=ASSE_VECTEUR(    VECT_ELEM=VEL5,
+                              NUME_DDL=NUM5   )
+
 MATASS1=FACTORISER( reuse=MATASS1,   MATR_ASSE=MATASS1 )
 
 MATASS2=FACTORISER( reuse=MATASS2,   MATR_ASSE=MATASS2 )
@@ -239,6 +282,8 @@ MATASS2=FACTORISER( reuse=MATASS2,   MATR_ASSE=MATASS2 )
 MATASS3=FACTORISER( reuse=MATASS3,   MATR_ASSE=MATASS3 )
 
 MATASS4=FACTORISER( reuse=MATASS4,   MATR_ASSE=MATASS4 )
+
+MATASS5=FACTORISER( reuse=MATASS5,   MATR_ASSE=MATASS5 )
 
 VECASS1=RESOUDRE( reuse=VECASS1,   MATR=MATASS1,
                             CHAM_NO=VECASS1  )
@@ -251,6 +296,9 @@ VECASS3=RESOUDRE( reuse=VECASS3,   MATR=MATASS3,
 
 VECASS4=RESOUDRE( reuse=VECASS4,   MATR=MATASS4,
                             CHAM_NO=VECASS4  )
+
+VECASS5=RESOUDRE( reuse=VECASS5,   MATR=MATASS5,
+                            CHAM_NO=VECASS5  )
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='N11',
                       CRITERE='RELATIF',
@@ -634,6 +682,102 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N11',
                       NOM_CMP='DRZ',
                       PRECISION=9.9999999999999995E-08,
                       CHAM_GD=VECASS4,
+                      VALE_CALC=0.122474485,
+                      VALE_REFE=0.12247448714,),
+                   _F(NOEUD='N11',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=1.E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=-6.466383758,
+                      VALE_REFE=-6.4663837861999998,),
+                   _F(NOEUD='N11',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=4.9999999999999998E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=14.746819259,
+                      VALE_REFE=14.746819649000001,),
+                   _F(NOEUD='N11',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=-8.107230420,
+                      VALE_REFE=-8.1072307824000003,),
+                   _F(NOEUD='N11',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DRX',
+                      PRECISION=4.9999999999999998E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=-0.263895835,
+                      VALE_REFE=-0.26389584337999999,),
+                   _F(NOEUD='N11',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DRY',
+                      PRECISION=4.9999999999999998E-07,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=0.018946865238637,
+                      VALE_REFE=0.018946869097999999,),
+                   _F(NOEUD='N11',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DRZ',
+                      PRECISION=4.9999999999999998E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=0.244948969,
+                      VALE_REFE=0.24494897428000001,),
+                   _F(NOEUD='N6',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DX',
+                      PRECISION=1.E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=-1.602162183,
+                      VALE_REFE=-1.6021621898,),
+                   _F(NOEUD='N6',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DY',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=3.701138571,
+                      VALE_REFE=3.7011386691000001,),
+                   _F(NOEUD='N6',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=-2.012373848,
+                      VALE_REFE=-2.0123739389000002,),
+                   _F(NOEUD='N6',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DRX',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC=-0.131947917,
+                      VALE_REFE=-0.13194792169,),
+                   _F(NOEUD='N6',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DRY',
+                      PRECISION=4.9999999999999998E-07,
+                      CHAM_GD=VECASS5,
+                      VALE_CALC= 9.47343262E-03,
+                      VALE_REFE=9.4734345490999992E-3,),
+                   _F(NOEUD='N6',
+                      CRITERE='RELATIF',
+                      REFERENCE='ANALYTIQUE',
+                      NOM_CMP='DRZ',
+                      PRECISION=9.9999999999999995E-08,
+                      CHAM_GD=VECASS5,
                       VALE_CALC=0.122474485,
                       VALE_REFE=0.12247448714,),
                    ),
