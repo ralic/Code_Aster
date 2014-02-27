@@ -51,15 +51,12 @@ CLROT=AFFE_CHAR_MECA(MODELE=MODE,
 pres=1.0E+10
 
 # FONCTION NON CONSTANTE POUR TESTER UNE PRESSION FONCTION DE L'ESPACE
-vpres=DEFI_FONCTION(NOM_PARA='X',
+vpres=DEFI_FONCTION(NOM_PARA='XF',
                     VALE=(
                          -0.1                       , 0.0 ,
                           0.0                       , pres,
                           1.0                       , pres,
                           1.1                       , 0,
-                          1.2                       , pres,
-                          2.1                       , pres,
-                          2.2                       , 0.0 ,
                           ),
                     PROL_GAUCHE='EXCLU',
                     PROL_DROITE='CONSTANT',
@@ -146,9 +143,10 @@ TEST_TABLE(TABLE=RESRN,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),
            NOM_PARA='DX',
-           VALE_REFE=pres,
+           VALE_REFE=0.,
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=pres,
+           VALE_CALC=0.,
+           CRITERE='ABSOLU',
            )
 # TEST EN CONFIGURATION TOURNEE, PRESSION SUIVANT DY
 TEST_TABLE(TABLE=RESRN,

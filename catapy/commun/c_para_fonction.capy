@@ -21,4 +21,4 @@ def C_PARA_FONCTION() : return  ( #COMMUN#
                    "INST","X","Y","Z","EPSI","META","FREQ","PULS","DSP",
                    "AMOR","ABSC","ABSC_CURV","SIGM","HYDR","SECH","PORO","SAT",
                    "PGAZ","PCAP","PLIQ","PVAP","PAD","VITE","ENDO",
-                   "NORM","EPAIS","NEUT1","NEUT2",)
+                   "NORM","EPAIS","NEUT1","NEUT2","XF","YF","ZF")

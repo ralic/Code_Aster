@@ -48,12 +48,12 @@ subroutine te0425(option, nomte)
     integer :: mxnoeu, mxnpg, mxvect, mxmatr
     parameter     (mxnoeu=9,mxnpg=27,mxvect=3*9,mxmatr=3*9*3*9)
     integer :: mxpara
-    parameter     (mxpara=4)
+    parameter     (mxpara=7)
 !
     character(len=8) :: nompar(mxpara)
     real(kind=8) :: valpar(mxpara)
     integer :: ier
-    real(kind=8) :: x, y, z
+    real(kind=8) :: x, y, z, xf, yf, zf
 !
     integer :: ndim, nno, npg, nnos, nddl
     integer :: iddl, ino, ipg
@@ -61,7 +61,7 @@ subroutine te0425(option, nomte)
     integer :: j_depm, j_depp, j_geom, j_pres, j_time, j_vect, j_matr, j_effe
     integer :: kdec, i, j, k
     real(kind=8) :: pres, pres_point(mxnpg)
-    real(kind=8) :: vect(mxvect), matr(mxmatr), coef_mult
+    real(kind=8) :: vect(mxvect), matr(mxmatr), coef_mult, geom_reac(mxvect)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,12 +84,6 @@ subroutine te0425(option, nomte)
     call jevech('PDEPLMR', 'L', j_depm)
     call jevech('PDEPLPR', 'L', j_depp)
     call jevech('PTEMPSR', 'L', j_time)
-!
-! - New geometry
-!
-    do iddl = 1, nddl
-        zr(j_geom+iddl-1) = zr(j_geom+iddl-1) + zr(j_depm+iddl-1) + zr(j_depp+iddl-1)
-    end do
 !
 ! - Multiplicative ratio for pressure (EFFE_FOND)
 !
@@ -114,6 +108,15 @@ subroutine te0425(option, nomte)
     nompar(1) = 'X'
     nompar(2) = 'Y'
     nompar(3) = 'Z'
+    nompar(5) = 'XF'
+    nompar(6) = 'YF'
+    nompar(7) = 'ZF'
+!
+! - New geometry
+!
+    do iddl = 1, nddl
+        geom_reac(iddl) = zr(j_geom+iddl-1) + zr(j_depm+iddl-1) + zr(j_depp+iddl-1)
+    end do
 !
 ! - Evaluation of pressure (function) at Gauss points (from nodes)
 !
@@ -122,14 +125,23 @@ subroutine te0425(option, nomte)
         x = 0.d0
         y = 0.d0
         z = 0.d0
+        xf = 0.d0
+        yf = 0.d0
+        zf = 0.d0
         do ino = 1, nno
             x = x + zr(j_geom+3*(ino-1)+1-1) * zr(jvf+kdec+ino-1)
             y = y + zr(j_geom+3*(ino-1)+2-1) * zr(jvf+kdec+ino-1)
             z = z + zr(j_geom+3*(ino-1)+3-1) * zr(jvf+kdec+ino-1)
+            xf = xf + geom_reac(3*(ino-1)+1) * zr(jvf+kdec+ino-1)
+            yf = yf + geom_reac(3*(ino-1)+2) * zr(jvf+kdec+ino-1)
+            zf = zf + geom_reac(3*(ino-1)+3) * zr(jvf+kdec+ino-1)
         end do
         valpar(1) = x
         valpar(2) = y
         valpar(3) = z
+        valpar(5) = xf
+        valpar(6) = yf
+        valpar(7) = zf
         call fointe('FM', zk8(j_pres), mxpara, nompar, valpar,&
                     pres, ier)
         pres_point(ipg) = coef_mult * pres
@@ -139,7 +151,7 @@ subroutine te0425(option, nomte)
 !
     if (option(1:9) .eq. 'CHAR_MECA') then
         call nmpr3d_vect(nno, npg, zr(jpoids), zr(jvf), zr(jdf),&
-                         zr(j_geom), pres_point, vect)
+                         geom_reac, pres_point, vect)
         call jevech('PVECTUR', 'E', j_vect)
         call dcopy(nddl, vect, 1, zr(j_vect), 1)
 !
@@ -147,7 +159,7 @@ subroutine te0425(option, nomte)
 !
     else if (option(1:9).eq.'RIGI_MECA') then
         call nmpr3d_matr(nno, npg, zr(jpoids), zr(jvf), zr(jdf), &
-                        zr(j_geom), pres_point, matr)
+                        geom_reac, pres_point, matr)
         call jevech('PMATUNS', 'E', j_matr)
         k = 0
         do i = 1, nddl

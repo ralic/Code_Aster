@@ -2,6 +2,7 @@ subroutine te0486(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/antisy.h"
+#include "asterfort/assert.h"
 #include "asterfort/b1tdb2.h"
 #include "asterfort/btsig.h"
 #include "asterfort/elref4.h"
@@ -54,13 +55,15 @@ subroutine te0486(option, nomte)
     integer :: ino, lzi, lzr, iadzi, iazk24, iret
     integer :: i, j, in, kn, ii, komptn, nb1, nb2
     integer :: ivectu, imatun, intsn, npgsn
-    integer :: irco3d, ifco3d, itemps, ierz
+    integer :: irco3d, ifco3d, itemps, ierz, mxnoeu
+    parameter     (mxnoeu=9)
     real(kind=8) :: pres, presno(9), madn(3, 51), nks1(3, 51), nks2(3, 51)
     real(kind=8) :: a1(3), a2(3), anta1(3, 3), anta2(3, 3), surf(3)
     real(kind=8) :: rigns(2601), pr
-    real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), valpar(4)
+    real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), valpar(7)
+    real(kind=8) :: geom_reac(3*mxnoeu)
     logical :: locapr
-    character(len=8) :: nomail, nompar(4)
+    character(len=8) :: nomail, nompar(7)
 !     ------------------------------------------------------------------
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -81,14 +84,14 @@ subroutine te0486(option, nomte)
         endif
         call jevech('PVECTUR', 'E', ires)
 !
-        do 10 ino = 0, nno-1
+        do ino = 0, nno-1
             if (zr(ipres+ino) .ne. 0.d0) then
                 call tecael(iadzi, iazk24)
                 nomail = zk24(iazk24-1+3)(1:8)
                 valk = nomail
                 call utmess('F', 'ELEMENTS4_93', sk=valk)
             endif
-10      continue
+        enddo
 !
     else
 !     --- ELEMENTS COQUES 3D ---
@@ -98,6 +101,7 @@ subroutine te0486(option, nomte)
 !        --- NOMBRE DE NOEUDS ( NB1 : SERENDIP , NB2 : LAGRANGE )
         nb1 = zi ( lzi - 1 + 1 )
         nb2 = zi ( lzi - 1 + 2 )
+        ASSERT(nb2-1.lt.mxnoeu)
 !        --- NBRE POINTS INTEGRATIONS (NPGSN : NORMALE )
         npgsn = zi ( lzi - 1 + 4 )
 !
@@ -125,23 +129,22 @@ subroutine te0486(option, nomte)
         call jevech('PDEPLMR', 'L', ium)
         call jevech('PDEPLPR', 'L', iup)
 !
-!        ---  REACTUALISATION DE LA GEOMETRIE
+!        ---  CALCUL DE LA GEOMETRIE REACTUALISEE
 !
-        do 30 in = 1, nb2-1
-            do 20 ii = 1, 3
-                zr ( igeom - 1 + 3 * ( in - 1 ) + ii ) = zr ( igeom -&
-  1             + 3 * ( in - 1 ) + ii ) + zr ( ium - 1 + 6 * ( in -&
-  1             ) + ii ) + zr ( iup - 1 + 6 * ( in - 1 ) + ii )
-20          continue
-30      continue
+        do in = 1, nb2-1
+            do  ii = 1, 3
+                geom_reac(3 * ( in - 1 ) + ii) = zr ( igeom -1&
+               + 3 * ( in - 1 ) + ii ) + zr ( ium - 1 + 6 * ( in -1&
+               ) + ii ) + zr ( iup - 1 + 6 * ( in - 1 ) + ii )
+            enddo
+        enddo
 !
 !        ---- RECUPERATION DU VECTEUR DE PRESSION NODALE A INTERPOLER
         if (option ( 10 : 16 ) .eq. '_SRCO3D') then
             call jevech('PFRCO3D', 'L', irco3d)
-            do 40 kn = 1, nb2
-                presno ( kn ) = - zr ( irco3d - 1 + ( kn - 1 ) * 7 +&
-  3             )
-40          continue
+            do kn = 1, nb2
+                presno ( kn ) = - zr ( irco3d - 1 + ( kn - 1 ) * 7 +3)
+            enddo
 !
         else if (option ( 10 : 16 ) .eq. '_SFCO3D') then
             call jevech('PFFCO3D', 'L', ifco3d)
@@ -151,10 +154,13 @@ subroutine te0486(option, nomte)
             nompar ( 1 ) = 'X'
             nompar ( 2 ) = 'Y'
             nompar ( 3 ) = 'Z'
+            nompar ( 5 ) = 'XF'
+            nompar ( 6 ) = 'YF'
+            nompar ( 7 ) = 'ZF'
 !
-            do 55 i = 1, nb2
+            do i = 1, nb2
                 presno(i)=0.d0
-55          continue
+            enddo
 !
 !            GLOBAL = ZK8 ( IFCO3D + 6 ) .EQ. 'GLOBAL'
             locapr = zk8 ( ifco3d + 6 ) .eq. 'LOCAL_PR'
@@ -162,10 +168,13 @@ subroutine te0486(option, nomte)
             if (locapr) then
 !
 !             IF (NOMTE.EQ.'MEC3QU9H') THEN
-                do 50 in = 0, nb2-1
+                do in = 0, nb2-1
                     valpar ( 1 ) = zr ( igeom + 3 * in )
                     valpar ( 2 ) = zr ( igeom + 3 * in + 1 )
                     valpar ( 3 ) = zr ( igeom + 3 * in + 2 )
+                    valpar ( 5 ) = geom_reac(3*in + 1 )
+                    valpar ( 6 ) = geom_reac(3*in + 2 )
+                    valpar ( 7 ) = geom_reac(3*in + 3 )
 !
                     call fointe('FM', zk8 ( ifco3d + 2 ), 4, nompar, valpar,&
                                 pr, ierz)
@@ -174,7 +183,7 @@ subroutine te0486(option, nomte)
                         call utmess('F', 'ELEMENTS4_1')
                     endif
 !
-50              continue
+                enddo
 !
 !             ENDIF
             endif
@@ -183,11 +192,11 @@ subroutine te0486(option, nomte)
 !
 !        ---- VECTEURS TANGENTS A1 ET A2 AUX NOEUDS NON NORMALISES
 !
-        call vectan(nb1, nb2, zr(igeom), zr(lzr), vecta,&
+        call vectan(nb1, nb2, geom_reac, zr(lzr), vecta,&
                     vectn, vectpt)
 !
 !        ---- BOUCLE SUR LES POINTS D INTEGRATION NORMALE
-        do 80 intsn = 1, npgsn
+        do intsn = 1, npgsn
 !
 !          ---- VECTEURS DE BASE AUX POINTS DE GAUSS A KSI3 = 0.D0
             call r8inir(3, 0.d0, a1, 1)
@@ -197,11 +206,11 @@ subroutine te0486(option, nomte)
 !               VECTEURS TANGENTS NON NORMES A1 A2
             pres = 0.d0
 !
-            do 70 kn = 1, nb2
+            do kn = 1, nb2
 !
                 pres = pres + zr ( lzr - 1 + 459 + 9 * ( intsn - 1 ) + kn ) * presno ( kn)
 !
-                do 60 ii = 1, 3
+                do ii = 1, 3
 !
                     a1 ( ii ) = a1 ( ii ) + zr ( lzr - 1 + 459 + 9 * (&
                     intsn - 1 ) + kn ) * vecta ( kn , 1 , ii )
@@ -209,9 +218,9 @@ subroutine te0486(option, nomte)
                     a2 ( ii ) = a2 ( ii ) + zr ( lzr - 1 + 459 + 9 * (&
                     intsn - 1 ) + kn ) * vecta ( kn , 2 , ii )
 !
-60              continue
+                enddo
 !
-70          continue
+            enddo
 !
 !          ---- A1 VECTORIEL A2
             call provec(a1, a2, surf)
@@ -244,7 +253,7 @@ subroutine te0486(option, nomte)
                             6 * nb1 + 3, rigns)
             endif
 !
-80      continue
+        enddo
 !
 !
         if (option ( 1 : 16 ) .eq. 'RIGI_MECA_SRCO3D' .or. option ( 1 : 16 ) .eq.&
@@ -254,14 +263,14 @@ subroutine te0486(option, nomte)
 !
             komptn = 0
 !            KOMPTU = 0
-            do 110 j = 1, 6 * nb1 + 3
+            do j = 1, 6 * nb1 + 3
 !
 !            POUR UNE MATRICE NON SYMETRIQUE (VOIR AUSSI MECGME)
-                do 90 i = 1, 6*nb1+3
+                do i = 1, 6*nb1+3
                     zr ( imatun + komptn ) = - rigns((6*nb1+3)*(i-1)+&
                     j)
                     komptn = komptn + 1
-90              continue
+                enddo
 !
 !              DO 100  I = 1 , J
 !                 KOMPTU = KOMPTU + 1
@@ -271,7 +280,7 @@ subroutine te0486(option, nomte)
 !
 !  100         CONTINUE
 !
-110          continue
+            enddo
 !
         endif
 !
