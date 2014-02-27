@@ -64,12 +64,13 @@ subroutine comp_meca_elas(comp_elas, nb_cmp)
     p_compelas_valv(3)  = 'PETIT'
     p_compelas_valv(4)  = 'COMP_ELAS'
     p_compelas_valv(5)  = 'ANALYTIQUE'
-    p_compelas_valv(6)  = '1'
-    p_compelas_valv(12) = '1'
-    p_compelas_valv(17) = '1'
-    p_compelas_valv(18) = '1'
-    p_compelas_valv(19) = '1'
-    p_compelas_valv(20) = '1'
+    write (p_compelas_valv(6) ,'(I16)') 1
+! 99999 = Not affected
+    write (p_compelas_valv(12),'(I16)') 99999
+    write (p_compelas_valv(17) ,'(I16)') 1
+    write (p_compelas_valv(18) ,'(I16)') 1
+    write (p_compelas_valv(19) ,'(I16)') 1
+    write (p_compelas_valv(20) ,'(I16)') 1
 !
 ! - Create <CARTE>
 !

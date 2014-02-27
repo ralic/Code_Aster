@@ -70,7 +70,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
     character(len=16) :: kit_comp(9)
     character(len=16) :: comp_code_py, rela_code_py, meta_code_py
     integer :: j_comp_d, j_comp_v, j_comp_l, iadc
-    logical :: l_kit_meta
+    logical :: l_kit_meta, l_affe
     logical :: l_cristal, l_exte_comp, l_pmf, l_matr_tgsc, l_crit_rupt
     logical :: l_excl
     integer :: nb_elem, nocc, nb_vari, nb_vari_all
@@ -128,12 +128,15 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
                 
                 if (.not.l_exte_comp .and. .not. l_pmf) then
                     read (zk16(j_comp_v+iadc-2+12),'(I16)') iocc
+                    l_affe = (iocc.ne.99999)
                     read (zk16(j_comp_v+iadc-2+2 ),'(I16)') nb_vari
-                    old_nume = zi(j_list_occ-1+iocc)
-                    if (old_nume .eq. 0) then
-                        nocc = nocc + 1
-                        zi(j_list_occ-1+iocc) = nume_elem
-                        nb_vari_all = nb_vari_all + nb_vari
+                    if (l_affe) then
+                        old_nume = zi(j_list_occ-1+iocc)
+                        if (old_nume .eq. 0) then
+                            nocc = nocc + 1
+                            zi(j_list_occ-1+iocc) = nume_elem
+                            nb_vari_all = nb_vari_all + nb_vari
+                        endif
                     endif
                 else
                     nb_vari     = 1

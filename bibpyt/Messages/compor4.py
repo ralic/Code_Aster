@@ -125,6 +125,9 @@ La définition explicite du comportement est obligatoire.
 Comme vous n'avez pas défini explicitement le comportement, tout le modèle est supposé élastique en petites perturbations.
 """),
 
+65 : _(u"""
+Il y a trop d'occurrences du mot-clef facteur COMPORTEMENT. On n'affichera aucune information sur les comportements."""),
+
 70 : _(u"""
 Le comportement s'intègre avec un algorithme de type analytique.
 On ne peut donc pas utiliser le mot-clé  %(k1)s . On l'ignore.

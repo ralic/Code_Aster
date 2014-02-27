@@ -80,6 +80,9 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
     if (nbocc_compor.eq.0) then
         call utmess('I', 'COMPOR4_64')
     endif
+    if (nbocc_compor.ge.99999) then
+        call utmess('A', 'COMPOR4_65')
+    endif
 !
 ! - Create COMPOR <CARTE>
 !

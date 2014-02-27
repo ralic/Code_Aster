@@ -175,10 +175,6 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
     compor(17) = 'POINT'
 !
-    AS_DEALLOCATE(vk16 = p_info_comp_valk)
-    AS_DEALLOCATE(vi   = p_info_comp_vali)
-    AS_DEALLOCATE(vi   = p_info_comp_nvar)
-!
 ! - Prepare informations about internal variables
 !
     call comp_meca_pvar(list_vari_name, compor_list = compor)
