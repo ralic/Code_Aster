@@ -158,13 +158,14 @@ TYPEFLUI=DEFI_FLUI_STRU(
 
 MELASFLU=CALC_FLUI_STRU( 
                    VITE_FLUI=_F(  VITE_MIN = 0.,
-                               VITE_MAX = 10.,
+                               VITE_MAX = 5.,
                                NB_POIN = 5),
                  BASE_MODALE=_F(  MODE_MECA = MODES,
                                AMOR_UNIF = 0.001),
               TYPE_FLUI_STRU=TYPEFLUI,
                   IMPRESSION=_F(  PARA_COUPLAGE = 'OUI',
-                               DEFORMEE = 'NON')
+                               DEFORMEE = 'NON'),
+                  STOP_ERREUR='OUI'
                            )
 
 #

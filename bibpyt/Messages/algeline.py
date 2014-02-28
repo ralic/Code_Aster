@@ -274,6 +274,11 @@ cata_msg = {
  la carte des caractéristiques géométriques des éléments de coque n'existe pas. il faut préalablement affecter ces caractéristiques aux groupes de mailles correspondant aux coques interne et externe, par l opérateur <AFFE_CARA_ELEM>
 """),
 
+55: _(u"""
+  Des difficultés de convergence ont été rencontrées lors du calcul des
+  coefficients de couplage pour le mode no. %(i1)d et la vitesse %(r1)f
+"""),
+
     56: _(u"""
  les caractéristiques des éléments de coque n'ont pas été affectées
  distinctement à l'un ou(et) l'autre des groupes de mailles associés
@@ -321,6 +326,10 @@ cata_msg = {
  coefficient de type non prévu
 """),
 
+67: _(u"""
+  Nous sauvegardons quand-même les paramètres de couplage qui n'ont pas convergé
+  pour cette vitesse. (STOP_ERREUR='NON')
+"""),
 
     68: _(u"""
  la zone d excitation du fluide, de nom  %(k1)s , est réduite a un point.
@@ -347,6 +356,13 @@ cata_msg = {
 
     73: _(u"""
  le cylindre  %(k1)s  n a pas un axe rectiligne
+"""),
+
+74: _(u"""
+  -> Conseil :
+  Soit : - relancer le calcul en modifiant la discrétisation en vitesses
+           afin d'éviter ce point singulier.
+         - retenir les résultats qui n'ont pas convergé avec STOP_ERREUR = 'NON'.
 """),
 
     75: _(u"""

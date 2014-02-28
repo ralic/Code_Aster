@@ -25,10 +25,12 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/pacou0.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: typflu
     integer :: nbno, indic, nbpv, veci1(*), ier, jtrav1, jtrav2
@@ -51,6 +53,7 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
     integer, pointer :: fsic(:) => null()
     real(kind=8), pointer :: fsvr(:) => null()
     integer, pointer :: tempo(:) => null()
+    character(len=3) :: stperr
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -192,41 +195,51 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
             endif
 !
             if (check) then
-                i1 = (i-1)*2*nbno + (j-1)*2 + 1
-                i2 = (i-1)*2*nbno + (j-1)*2 + 2
-                freq(i1) = -1.d0
-                freq(i2) = -1.d0
-            else
-                i1 = (i-1)*2*nbno + (j-1)*2 + 1
-                i2 = (i-1)*2*nbno + (j-1)*2 + 2
-                freq(i1) = sqrt(w(1)*w(1)+w(2)*w(2))/ (2.d0*pi)
-                freq(i2) = -w(1)/ (2.d0*pi*freq(i1))
+                call getvtx(' ', 'STOP_ERREUR', scal=stperr)
+                if (stperr(1:3).eq.'OUI') then
+!                   SI STOP_ERREUR = 'OUI', ERREUR FATALE
+                    call utmess('F+', 'ALGELINE_55', ni=1, vali=[j],&
+                                                     nr=1, valr=[vgap])
+                    call utmess('F' , 'ALGELINE_74')
+                else 
+!                   SI STOP_ERREUR = 'NON', ALARME ENSUITE STOCKER LES DERNIERS
+!                   PARAMETRES CALCULES (NON CONVERGES)
+                    call utmess('A+', 'ALGELINE_55', ni=1, vali=[j],&
+                                                     nr=1, valr=[vgap])
+                    call utmess('A' , 'ALGELINE_67')
+                end if
+            end if
+!
+            i1 = (i-1)*2*nbno + (j-1)*2 + 1
+            i2 = (i-1)*2*nbno + (j-1)*2 + 2
+            freq(i1) = sqrt(w(1)*w(1)+w(2)*w(2))/ (2.d0*pi)
+            freq(i2) = -w(1)/ (2.d0*pi*freq(i1))
 !
 !           ON STOCKE EN FIN DE BOUCLE ET POUR CHAQUE ZONE LES VALEURS
 !           DE VITESSES REDUITES MIN ET MAX QUI SORTENT DE LA PLAGE
 !           EXPERIMENTALE
-                if (itypfl .eq. 1) then
-                    call jeveuo(nom1, 'L', jcompt)
-                    call jeveuo(nom2, 'L', jextr)
-                    do 30 k = 1, nzone
-                        l1 = zi(jcompt+3*(k-1))
-                        l2 = zi(jcompt+3*(k-1)+1)
-                        l3 = zi(jcompt+3*(k-1)+2)
-                        bmin = zr(jextr+2*(k-1))
-                        bmax = zr(jextr+2*(k-1)+1)
-                        zr(jtrav1 + 2*nzone*nbpv*(j-1) + 2*(i-1)*&
-                        nzone + 2*(k-1)) = bmin
-                        zr(jtrav1 + 2*nzone*nbpv*(j-1) + 2*(i-1)*&
-                        nzone + 2*(k-1) + 1) = bmax
-                        zi(jtrav2 + 3*nzone*nbpv*(j-1) + 3*(i-1)*&
-                        nzone + 3*(k-1)) = l1
-                        zi(jtrav2 + 3*nzone*nbpv*(j-1) + 3*(i-1)*&
-                        nzone + 3*(k-1) + 1) = l2
-                        zi(jtrav2 + 3*nzone*nbpv*(j-1) + 3*(i-1)*&
-                        nzone + 3*(k-1) + 2) = l3
- 30                 continue
-                endif
+            if (itypfl .eq. 1) then
+                call jeveuo(nom1, 'L', jcompt)
+                call jeveuo(nom2, 'L', jextr)
+                do 30 k = 1, nzone
+                    l1 = zi(jcompt+3*(k-1))
+                    l2 = zi(jcompt+3*(k-1)+1)
+                    l3 = zi(jcompt+3*(k-1)+2)
+                    bmin = zr(jextr+2*(k-1))
+                    bmax = zr(jextr+2*(k-1)+1)
+                    zr(jtrav1 + 2*nzone*nbpv*(j-1) + 2*(i-1)*&
+                    nzone + 2*(k-1)) = bmin
+                    zr(jtrav1 + 2*nzone*nbpv*(j-1) + 2*(i-1)*&
+                    nzone + 2*(k-1) + 1) = bmax
+                    zi(jtrav2 + 3*nzone*nbpv*(j-1) + 3*(i-1)*&
+                    nzone + 3*(k-1)) = l1
+                    zi(jtrav2 + 3*nzone*nbpv*(j-1) + 3*(i-1)*&
+                    nzone + 3*(k-1) + 1) = l2
+                    zi(jtrav2 + 3*nzone*nbpv*(j-1) + 3*(i-1)*&
+                    nzone + 3*(k-1) + 2) = l3
+ 30             continue
             endif
+            
  20     continue
  10 end do
 !
