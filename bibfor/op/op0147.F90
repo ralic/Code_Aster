@@ -72,13 +72,16 @@ subroutine op0147()
     call getvr8(' ', 'VITE_FLUI', scal=vitef)
     call getvr8(' ', 'PRECISION', scal=epsi)
 !
-    ivitef = 1
+    ivitef = 0
     do 300 i3 = 1, npv
         val = zr(ivite-1+i3)-vitef
         if (abs(val) .lt. epsi) then
             ivitef = i3
         endif
 300  end do
+    if (ivitef .eq. 0) then
+        call utmess('F', 'ALGELINE3_25', sr=vitef)
+    endif
 !
     call jeveuo(freq, 'L', ifreq)
     call jelira(freq, 'LONUTI', nbm)

@@ -133,6 +133,15 @@ Conseils & solution :
  Résolution LDLT : erreur de programmation.
 """),
 
+25: _(u"""
+ Les effets de couplage fluide-élastique n'ont pas été calculés pour la vitesse
+ fluide demandée : (%(r1)f).
+
+ Conseil :
+  Vérifier la liste de vitesses renseignée lors du calcul des propriétés vibratoires 
+  de la structure en écoulement avec l'opérateur CALC_FLUI_STRU.
+"""),
+
 
 
 
