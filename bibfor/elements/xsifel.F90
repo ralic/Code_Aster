@@ -571,29 +571,33 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
         if (ndim .eq. 3) then
 !
+            coef = 2.d0
             call gbil3d(dudme, dudme, dtdme, dfdm, dfdm,&
                         tgudm, tgudm, ttrgu, ttrgu, poids,&
-                        c1, c2, c3, k3a, rho,&
+                        c1, c2, c3, k3a, alpha, coef, rho,&
                         puls, g)
             zr(igthet )= zr(igthet) + g
 !
+            coef = 1.d0
             call gbil3d(dudme, du1dme, dtdme, dfdm, dzero,&
                         tgudm, tzero, ttrgu, ttrgv, poids,&
-                        c1, c2, c3, k3a, rho,&
+                        c1, c2, c3, k3a, alpha, coef, rho,&
                         puls, k1)
             zr(igthet+4 )= zr(igthet+4) + k1 * coefk
             zr(igthet+1 )= zr(igthet+1) + k1 * sqrt(coefk)
 !
+            coef = 1.d0
             call gbil3d(dudme, du2dme, dtdme, dfdm, dzero,&
                         tgudm, tzero, ttrgu, ttrgv, poids,&
-                        c1, c2, c3, k3a, rho,&
+                        c1, c2, c3, k3a, alpha, coef, rho,&
                         puls, k2)
             zr(igthet+5) = zr(igthet+5) + k2 * coefk
             zr(igthet+2) = zr(igthet+2) + k2 * sqrt(coefk)
 !
+            coef = 1.d0
             call gbil3d(dudme, du3dme, dtdme, dfdm, dzero,&
                         tgudm, tzero, ttrgu, ttrgv, poids,&
-                        c1, c2, c3, k3a, rho,&
+                        c1, c2, c3, k3a, alpha, coef, rho,&
                         puls, k3)
             zr(igthet+6) = zr(igthet+6) + k3 * coeff3
             zr(igthet+3) = zr(igthet+3) + k3 * sqrt(coeff3)

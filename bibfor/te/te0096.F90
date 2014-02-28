@@ -60,7 +60,7 @@ subroutine te0096(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: icodre(1), kpg, spt
+    integer :: icodre(1), kpg, spt, ibid
     character(len=4) :: fami
     character(len=8) :: nompar(3), typmod(2), famil, poum
     character(len=16) :: compor(4), oprupt, phenom
@@ -485,7 +485,7 @@ subroutine te0096(option, nomte)
             crit(1) = 300
             crit(2) = 0.d0
             crit(3) = 1.d-3
-            call nmelnl(fami, kp, 1, '+', ndim,&
+            call nmelnl(fami, kp, 1, ibid, '+', ndim,&
                         typmod, matcod, compor, crit, oprupt,&
                         eps, sigl, rbid, dsidep, energi)
 !

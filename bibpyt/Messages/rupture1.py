@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -433,6 +434,17 @@ La relation de comportement %(k1)s n'est pas prévue dans CALC_G
 GTP : 
 La relation de comportement VMIS_ISOT_TRAC est interdite dans CALC_G en présence de thermique.
 Dans la commande AFFE_MATERIAU, le mot clé facteur AFFE_VARC ne doit pas être présent.
+"""),
+
+71:_(u"""
+La différence relative moyenne entre G et G_IRWIN est: %(r1)f
+
+--> Risques & conseils :
+Pour un problème thermo-mécanique, on a pris la solution singulière d'un problème 
+purement mécanique. Le calcul des facteurs d'intensité des contraintes est approché.
+Si la différence relative entre G et G_IRWIN est importante, le calcul des facteurs
+d'intensité des contraintes K par CALC_K_G n'est plus valable.
+
 """),
 
 }

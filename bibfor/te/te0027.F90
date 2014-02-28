@@ -59,7 +59,7 @@ subroutine te0027(option, nomte)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ipoids, ivf, idfde
+    integer :: ipoids, ivf, idfde, ibid
     integer :: icomp, igeom, itemps, idepl, imate
     integer :: iepsr, iepsf, isigi, isigm, iepsp, ivari
     integer :: iforc, iforf, ithet, igthet, irota, ipesa, ier
@@ -425,7 +425,8 @@ subroutine te0027(option, nomte)
             crit(1) = 300
             crit(2) = 0.d0
             crit(3) = 1.d-3
-            call nmelnl(fami, kp, 1, '+', ndim,&
+
+            call nmelnl(fami, kp, 1,ibid, '+',  ndim,&
                         typmod, matcod, compor, crit, oprupt,&
                         eps, sigl, rbid, dsidep, energi)
             call tecach('NNN', 'PCONTGR', 'L', iret, iad=isigm)
@@ -542,6 +543,7 @@ subroutine te0027(option, nomte)
 550      continue
         prod = prod - ecin*divt + prod3 - prod4
         tcla = tcla + poids* (prod-energi(1)*divt)
+
 !
 ! =======================================================
 ! - TERME THERMIQUE :   -(D(ENER)/DT)(GRAD(T).THETA)
@@ -613,5 +615,6 @@ subroutine te0027(option, nomte)
 9999  continue
 ! ASSEMBLAGE FINAL DES TERMES DE G OU DG
     zr(igthet) = tthe + tcla + tfor + tplas + tini
+
     call jedema()
 end subroutine

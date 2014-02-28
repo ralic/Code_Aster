@@ -74,7 +74,7 @@ subroutine te0295(option, nomte)
     real(kind=8) :: coeff, coeff3
     real(kind=8) :: guv, guv1, guv2, guv3, k1, k2, k3, g, poids
     real(kind=8) :: norme, k3a, ttrgv, tgvdm(3)
-    real(kind=8) :: valpar(4), lsng, lstg, puls
+    real(kind=8) :: valpar(4), lsng, lstg, puls, coef
 !
     character(len=4) :: fami
     character(len=8) :: nomres(3), nompar(4)
@@ -452,30 +452,34 @@ subroutine te0295(option, nomte)
 !-----------------------------------------------------------------------
 !
         guv = 0.d0
+        coef = 2.d0
         call gbil3d(dudm, dudm, dtdm, dfdm, dfdm,&
                     tgdm, tgdm, ttrg, ttrg, poids,&
-                    c1, c2, c3, k3a, rho(1),&
+                    c1, c2, c3, k3a, alpha, coef, rho(1),&
                     puls, guv)
         g = g + guv
 !
         guv1 = 0.d0
+        coef = 1.d0
         call gbil3d(dudm, du1dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, rho(1),&
+                    c1, c2, c3, k3a, alpha, coef, rho(1),&
                     puls, guv1)
         k1 = k1 + guv1
 !
         guv2 = 0.d0
+        coef = 1.d0
         call gbil3d(dudm, du2dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, rho(1),&
+                    c1, c2, c3, k3a, alpha, coef, rho(1),&
                     puls, guv2)
         k2 = k2 + guv2
 !
         guv3 = 0.d0
+        coef = 1.d0
         call gbil3d(dudm, du3dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, rho(1),&
+                    c1, c2, c3, k3a, alpha, coef, rho(1),&
                     puls, guv3)
         k3 = k3 + guv3
 !

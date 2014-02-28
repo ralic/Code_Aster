@@ -140,57 +140,58 @@ SIF=CALC_G(RESULTAT=UTOT,
            THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.2,),
-           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                      LISSAGE_G='LAGRANGE',),
+#           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+#                      LISSAGE_G='LAGRANGE',),
            INFO=2,);
 
 
 IMPR_TABLE(TABLE=SIF,);
 
-# ces valeurs de reference ont ete obtenues par un calcul classique 3D
-# avec les memes conditions aux limites, et un maillage 2*100*100
+TABG=CALC_G(RESULTAT=UTOT,
+           OPTION='CALC_G',
+           THETA=_F(FISSURE=FISS,
+                    R_INF=0.1,
+                    R_SUP=0.2,),
+#           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+#                      LISSAGE_G='LAGRANGE',),
+           INFO=2,);
+
+
+IMPR_TABLE(TABLE=TABG,);
+
 
 # on ne peut pas les obtenir avec la modelisation a (2d), ni c (3d avec DZ=0)
 
 
 TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=0.040000000000000001,
-           VALE_CALC=6.6622354862974E+06,
-           VALE_REFE=6.894100E6,
-           NOM_PARA='K1',
+           VALE_CALC= 231.412800803,
+           NOM_PARA='G',
            TABLE=SIF,
            FILTRE=(_F(NOM_PARA='NUM_PT',
-                      VALE_I=1,),
+                      VALE_I=5,),
                    _F(NOM_PARA='NUME_ORDRE',
                       VALE_I=1,),
                    ),
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=0.02,
-           VALE_CALC=3.0372574097121E+06,
-           VALE_REFE=3.076700E6,
-           NOM_PARA='K2',
-           TABLE=SIF,
+           VALE_CALC= 231.412800803,
+           NOM_PARA='G',
+           TABLE=TABG,
            FILTRE=(_F(NOM_PARA='NUM_PT',
-                      VALE_I=1,),
+                      VALE_I=5,),
                    _F(NOM_PARA='NUME_ORDRE',
                       VALE_I=1,),
                    ),
            )
 
-# on peut s'etonner de trouver 4% d'erreur sur K1 alors que le maillage x-fem est fin (51*51)
-# en fait, si on regarde les contributions de la thermique pour K, et la contribution non-thermique pour K, on a les resultats suivants:
 
+# CLe bareau est libre de dilation thermique.
 
-# K1
-#                non-thermique  +    thermique           =    total
-# reference :       4.640e8           -4.5709e8          =   6.89e6
-# x-fem     :       4.629e8           -4.562e8           =   6.66e6
-# ecart     :        0.24%              0.19%                3.43%
+# On note que G_IRWIN est très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions 
+# singulières d'un problème thermo-mécanique a entrainé des valuers des K mauvais. Cependant, les valeurs de G est juste.
+# Voir les documents pour plus d'information.
 
-
+# On note que les valeurs de G obtenues avec l'option CALC_G et CALC_K_G sont identiques.
 FIN();
 

@@ -178,7 +178,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N2862',      ),
-                     VALE_CALC=11.605279610697,
+                     VALE_CALC=11.6052796107,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.01,
                      REFERENCE='ANALYTIQUE'       )

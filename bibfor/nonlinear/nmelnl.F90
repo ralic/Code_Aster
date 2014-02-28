@@ -1,4 +1,4 @@
-subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
+subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
                   typmod, imate, compor, crit, option,&
                   eps, sig, vi, dsidep, energi)
 !-----------------------------------------------------------------------
@@ -22,6 +22,9 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 !
 !     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES
 !
+! IN  IDECPG  : POSITION DANS LA FAMILLE 'XFEM' DU 1ER POINT DE GAUSS
+!               DU SOUS ELEMENT COURRANT (EN FAIT 1ER POINT : IDECPG+1)
+
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  IMATE   : NATURE DU MATERIAU
@@ -58,7 +61,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
-    integer :: kpg, ksp, ndim, imate, iret, isec, ihyd
+    integer :: kpg, ksp, ndim, imate, iret, isec, ihyd, idecpg
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
@@ -121,6 +124,18 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
     call verift(fami, kpg, ksp, poum, imate,&
                 materi, 'ELAS', iret, epsth=epsthe)
 !
+    if (fami(1:4) .eq. 'XFEM') then
+
+        call verift(fami, kpg + idecpg, ksp, poum, imate,&
+                materi, 'ELAS', iret, epsth=epsthe)
+    else
+
+        call verift(fami, kpg, ksp, poum, imate,&
+                materi, 'ELAS', iret, epsth=epsthe)
+
+    endif
+
+
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret)
     call rcvarc(' ', 'HYDR', poum, fami, kpg,&
@@ -430,7 +445,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 ! CALCUL DE L'ENERGIE LIBRE ENERGI(1) ET DE SA DERIVEE / T ENERGI(2)
     if (option(1:7) .eq. 'RUPTURE') then
         divu = 3.d0*epsmo
-        call nmelru(fami, kpg, ksp, poum, imate,&
+        call nmelru(fami, kpg, ksp, idecpg, poum, imate,&
                     compor, epseq, p, divu, nonlin,&
                     energi)
     endif

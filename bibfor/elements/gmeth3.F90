@@ -67,6 +67,7 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 ! CONNEX = TRUE
 !
     connex = .false.
+
     if (.not. gxfem) then
         call jeveuo(fond, 'L', iadrno)
         if (zk8(iadrno+1-1) .eq. zk8(iadrno+nnoff-1)) connex = .true.
@@ -169,9 +170,11 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
             endif
         endif
 !
+
 !  SYSTEME LINEAIRE:  MATR*GI = GTHI
 !
         call gsyste(matr, nnoff, nnoff, gthi, gi)
+
     endif
 !
     do 200 i = 1, nnoff

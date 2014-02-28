@@ -1,4 +1,5 @@
-# TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
+# TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
+# SIMILAIRE A HSNV132D AVEC UN ENCASTREMENT SUPLLEMENT SUR LA SURFACE SUP
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,22 +18,17 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'));
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('CALCULEL2_63'));
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+n = 51
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 
-MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA_ZONE',
-                  ZONE=_F(TYPE='DISQUE',
-                        X_CENTRE = 0.5,
-                        Y_CENTRE = 0.5,
-                        RAYON = 0.1, ),
-                  MAILLAGE_N = MAILLAGE,
-                  MAILLAGE_NP1 = CO('MAILLAG1'),
-                  QUALITE='OUI',
-                  TAILLE='OUI',
-                  )
-#
-###IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=MAILLAG1,),);
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(GROUP_MA=('SURFINF','SURFSUP' )),
+                                   _F(GROUP_MA='VOL',),
+                                   ),
+                    INFO=1);
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
@@ -41,7 +37,7 @@ MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA_ZONE',
 MOTH=AFFE_MODELE(MAILLAGE=MAILLAG1,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='PLAN',),);
+                         MODELISATION='3D',),);
 
 MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
                            RHO_CP=0.0,),);
@@ -51,9 +47,8 @@ CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                            MATER=MATH,),);
 
 CHTH=AFFE_CHAR_THER(MODELE=MOTH,
-                    TEMP_IMPO=(_F(GROUP_MA='LIG4',TEMP=20.0,),
-                               _F(GROUP_MA='LIG23',TEMP=220.0,),),);
-
+                    TEMP_IMPO=(_F(GROUP_MA='SURFGAU',TEMP=20.0,),
+                               _F(GROUP_MA='SURFDRO',TEMP=220.0,),),);
 
 THLI=THER_LINEAIRE(MODELE=MOTH,
                    CHAM_MATER=CMTH,
@@ -74,9 +69,9 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
 
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                   AFFE=(_F(GROUP_MA='SURF',
+                   AFFE=(_F(GROUP_MA='VOL',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN',),),);
+                            MODELISATION='3D',),),);
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.5');
 LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
@@ -86,6 +81,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELE,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
                     );
+
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS,INFO=2,);
 
@@ -97,8 +93,8 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA='SURF',MATER=ACIER,),
-                       AFFE_VARC=_F( GROUP_MA='SURF',
+                       AFFE=_F(GROUP_MA='VOL',MATER=ACIER,),
+                       AFFE_VARC=_F( GROUP_MA='VOL',
                                      NOM_VARC='TEMP',
                                      CHAM_GD=TEMP,
                                      VALE_REF=20.0),
@@ -110,9 +106,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #*********************************************************************
 
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
-                       DDL_IMPO=_F(GROUP_MA='LIGINF',
-                                   DX=0.0,
-                                   DY=0.0,),
+                       DDL_IMPO=_F(GROUP_NO=('SURFINF','SURFSUP' ),DX=0.0,DY=0.0,DZ=0.0),
                        INFO=1,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -124,7 +118,7 @@ UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    EXCIT=_F(CHARGE=CHARBLO,),
                    INST=1,)
 
-#---------------POST--------------------------------------------
+#---------------post--------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
                        INFO          = 2)
@@ -132,110 +126,93 @@ MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),) 
+                              MODELISATION='3D',),) 
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT,
                         INFO          = 2)
 
 
-
-#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'))   
-
-TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
-                        GROUP_NO  = 'P5',
-                        RESULTAT   = UTOT,
-                        NOM_CHAM   = 'DEPL',
-                        NOM_CMP   = ( 'DX','DY'),
-                        OPERATION = 'EXTRACTION',),);
-                        
-IMPR_TABLE(TABLE=TABDEP)
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'))   
 
 
-# REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES)
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=0.02,
-           VALE_CALC=-8.75308651E-04,
-           VALE_REFE=-8.7404262899510004E-4,
-           NOM_PARA='DX',
-           TABLE=TABDEP,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC= 3.82725446E-03,
-           VALE_REFE=3.8260958514619E-3,
-           NOM_PARA='DY',
-           TABLE=TABDEP,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-# CALCUL AVEC POST_K1_K2_K3
-PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
-                 MATER=ACIER,
-                 FISSURE = FISS,
-                 ABSC_CURV_MAXI = 0.05,
-                 RESULTAT = UTOT,
-                )
-
-IMPR_TABLE(TABLE = PK)
-
-# REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES - CALCUL AVEC POST_K1_K2_K3)
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=0.040000000000000001,
-           VALE_CALC= 8.78622505E+06,
-           VALE_REFE=8.4543655482163001E6,
-           NOM_PARA='K1',
-           TABLE=PK,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-# CALCUL AVEC CALC_G
 SIF=CALC_G(RESULTAT=UTOT,
            OPTION='CALC_K_G',
            THETA=_F(FISSURE=FISS,
-                    R_INF=0.01,
-                    R_SUP=0.05,),
-           )
+                    R_INF=0.1,
+                    R_SUP=0.2,),
+           INFO=2,);
+
 
 IMPR_TABLE(TABLE=SIF,);
 
 TABG=CALC_G(RESULTAT=UTOT,
+           OPTION='CALC_G',
            THETA=_F(FISSURE=FISS,
-                    R_INF=0.01,
-                    R_SUP=0.05,),
-           )
+                    R_INF=0.1,
+                    R_SUP=0.2,),
+           INFO=2,);
+
 
 IMPR_TABLE(TABLE=TABG,);
 
-# REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES - CALCUL AVEC CALC_G)
+
+# ces valeurs de reference ont ete obtenues par un calcul classique 3D
+# avec les memes conditions aux limites, et un maillage 2*100*100
+
+# on ne peut pas les obtenir avec la modelisation a (2d), ni c (3d avec DZ=0)
+
+
+
 TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=0.02,
-           VALE_CALC= 9.07949519E+06,
-           VALE_REFE=9.0328413451143E6,
-           NOM_PARA='K1',
+           VALE_CALC=393366.055819,
+           NOM_PARA='G',
            TABLE=SIF,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),
+                   ),
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=0.02,
-           VALE_CALC=487.911507502,
-           VALE_REFE=492.81784641923002,
+           VALE_CALC=-310148521.794,
+           NOM_PARA='K1',
+           TABLE=SIF,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=-16044.9748463,
+           NOM_PARA='K2',
+           TABLE=SIF,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=884808.766742,
+           NOM_PARA='K3',
+           TABLE=SIF,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),
+                   ),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=393366.055819,
            NOM_PARA='G',
            TABLE=TABG,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),
+                   ),
            )
 
 FIN();
+
+# On note que G_IRWIN n'est pas très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions 
+# singulières d'un problème thermo-mécanique a entrainé des valuers des K approchées. Cependant, les valeurs de G est juste.
+# Voir les documents pour plus d'information.
+
+# On note que les valeurs de G obtenues avec l'option CALC_G et CALC_K_G sont identiques.

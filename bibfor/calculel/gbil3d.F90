@@ -1,6 +1,6 @@
 subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
                   tgudm, tgvdm, ttrgu, ttrgv, poids,&
-                  c1, c2, c3, k3a, rho,&
+                  c1, c2, c3, k3a, alpha, coef, rho,&
                   puls, g)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
     real(kind=8) :: dudm(3, 4), dvdm(3, 4), dtdm(3, 4)
     real(kind=8) :: dfudm(3, 4), dfvdm(3, 4), tgudm(3), tgvdm(3)
     real(kind=8) :: c1, c2, c3, poids, g, k3a, rho, puls, ttrgu, ttrgv, gcla
-    real(kind=8) :: enethu(2), enethv(2)
+    real(kind=8) :: alpha, coef, enethu(2), enethv(2)
 !
 ! ----------------------------------------------------------------------
 !     CALCUL DU TAUX DE RESTITUTION D'ENERGIE G SOUS LA FORME
@@ -171,8 +171,14 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
     enethv(1) = k3a * ttrgu * divv
     enethu(1) = k3a * ttrgv * divu
 !
-    s1th = enethu(1) + enethv(1)
-!
+!   POUR CALCULER G : coef = 2.0
+!   POUR CALCULER K : coef = 1.0
+    s1th = coef*enethv(1)
+
+!! AJOUTER LE TERME CONSTANT POUR COMPARER AVEC CALC_G
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    s1th = s1th - 3*k3a*alpha*ttrgu*ttrgv
+
     s2th1v = dvdm(1,1) * dtdm(1,1) + dvdm(1,2) * dtdm(2,1) + dvdm(1,3) * dtdm(3,1)
     s2th2v = dvdm(2,1) * dtdm(1,2) + dvdm(2,2) * dtdm(2,2) + dvdm(2,3) * dtdm(3,2)
     s2th3v = dvdm(3,1) * dtdm(1,3) + dvdm(3,2) * dtdm(2,3) + dvdm(3,3) * dtdm(3,3)
@@ -181,10 +187,11 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
     s2th2u = dudm(2,1) * dtdm(1,2) + dudm(2,2) * dtdm(2,2) + dudm(2,3) * dtdm(3,2)
     s2th3u = dudm(3,1) * dtdm(1,3) + dudm(3,2) * dtdm(2,3) + dudm(3,3) * dtdm(3,3)
 !
-    s2th = 0.5d0 * (&
-           k3a * ttrgu * (s2th1v + s2th2v + s2th3v) + k3a * ttrgv * (s2th1u + s2th2u + s2th3u))
+    s2th = 0.5d0 *coef* (&
+           k3a * ttrgu * (s2th1v + s2th2v + s2th3v))
 !
     gcla = (s2 - s2th - 0.5d0 * (s1 - s1th) * divt) * poids
+
 !
 ! - TERME FORCE VOLUMIQUE
 !
@@ -230,8 +237,13 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
     enethv(2) = -1.d0 * k3a * divv
     enethu(2) = -1.d0 * k3a * divu
 !
-    tther = -1.d0*(ttt1u * enethv(2) + ttt1v * enethu(2))*poids
-!
+    tther = -coef*(ttt1u * enethv(2))*poids
+
+! AJOUTER LE TERME CONSTANT POUR COMPARER AVEC CALC_G
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! ATTENTION AUX FACTEUR 0.5 DANS tttlu
+    tther = tther -3.d0*k3a*alpha*(ttrgv*ttt1u*coef)*poids
+
 !  - TERME DYNAMIQUE
 !
     prod = 0.d0

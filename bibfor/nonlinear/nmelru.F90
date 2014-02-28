@@ -1,4 +1,4 @@
-subroutine nmelru(fami, kpg, ksp, poum, imate,&
+subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
                   compor, epseq, p, divu, nonlin,&
                   ener)
 ! ----------------------------------------------------------------------
@@ -27,6 +27,8 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
 !     ET DE SA DERIVEE PAR RAPPORT A UNE VARIATION DE DOMAINE (EN DP
 !     ELASTIQUE ISOTROPE LINEAIRE).
 !
+! IN  IDECPG  : POSITION DANS LA FAMILLE 'XFEM' DU 1ER POINT DE GAUSS
+!               DU SOUS ELEMENT COURRANT (EN FAIT 1ER POINT : IDECPG+1)
 ! IN  IMATE   : NATURE DU MATERIAU
 ! IN  COMPOR  : COMPORTEMENT
 ! IN  EPSEQ   : DEFORMATION EQUIVALENTE
@@ -50,7 +52,7 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 !
-    integer :: kpg, ksp, imate
+    integer :: kpg, ksp, imate, idecpg
     real(kind=8) :: epseq, p, divu, ener(2)
     character(len=*) :: fami, poum
     character(len=16) :: compor(*)
@@ -83,10 +85,23 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
 !====================================================================
 ! -  LECTURE DE E, NU, ALPHA ET DERIVEES / TEMPERATRURE
 !====================================================================
-    call rcvarc(' ', 'TEMP', poum, fami, kpg,&
-                ksp, temp, iret1)
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
-                ksp, tref, iret2)
+               ksp, tref, iret2)
+
+    if (iret2 .ne. 0) tref=0.d0
+
+    if (fami(1:4) .eq. 'XFEM') then
+
+        call rcvarc(' ', 'TEMP', poum, fami, kpg + idecpg,&
+                1, temp, iret1)
+    else
+        call rcvarc(' ', 'TEMP', poum, 'RIGI', kpg,&
+                1, temp, iret1)
+
+    endif
+
+    if (iret1 .ne. 0) temp=0.d0
+
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
@@ -193,7 +208,11 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
 !  CALCUL DE L'ENERGIE LIBRE ET DE LA DERIVEE /TEMPERATURE
 !=====================================================================
 !
+
     nrj = 0.5d0*k*divu*divu
+
+!    POUR COMPARER AVEC CALC_K_G, enlener le terme constant   
+!    nrj = 0.5d0*k*divu*divu - 9/2*k*alpha*alpha*(temp- tref)*(temp- tref)
     if (iret1 .eq. 0) then
         if (iret2 .eq. 1) then
             call utmess('F', 'CALCULEL_31')
@@ -203,6 +222,9 @@ subroutine nmelru(fami, kpg, ksp, poum, imate,&
     else
         dnrj = 0.5d0*dk*divu*divu-k3*divu*alpha
     endif
+    
+!    POUR COMPARER AVEC CALC_K_G, enlener le terme constant
+!    dnrj = dnrj - 9*k*alpha*alpha*(temp- tref)
 !
     if (nonlin) then
         ener(1) = nrj +rp*rp/demu/3.d0 + airep

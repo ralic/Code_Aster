@@ -224,6 +224,15 @@ GTHER=CALC_G(THETA=_F( FISSURE=FISS,
              RESULTAT=RESOUVFI,
              INST=1,
              OPTION='CALC_G')
+IMPR_TABLE(TABLE=GTHER)
+
+GKTHER=CALC_G(THETA=_F( FISSURE=FISS,
+                         NUME_FOND = 2
+                ),
+             RESULTAT=RESOUVFI,
+             INST=1,
+             OPTION='CALC_K_G')
+IMPR_TABLE(TABLE=GKTHER)
 
 ## Impression des resultats
 TEST_TABLE(PRECISION=0.02,

@@ -108,7 +108,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     integer :: nnoff, num, incr, nres
     integer :: ndeg, init, livi(nbmxpa)
     integer :: iadgki, iadabs, ifm, niv
-    real(kind=8) :: gkthi(8), time, livr(nbmxpa)
+    real(kind=8) :: gkthi(8), time, livr(nbmxpa), diff2g, difrel
     complex(kind=8) :: livc(nbmxpa)
     logical :: lfonc
     character(len=2) :: codret
@@ -165,6 +165,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
     call vrcins(modele, mate, ' ', time, chvarc,&
                 codret)
+
     call vrcref(modele, mate(1:8), '        ', chvref(1:19))
 !
 !     TRAITEMENT DES CHARGES
@@ -407,6 +408,9 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvi(result, nbprup, 'NUME_FOND', numfon, livi)
     endif
 !
+    diff2g = 0.d0
+    difrel = 0.d0
+
     do i = 1, nnoff
         call tbajvi(result, nbprup, 'NUM_PT', i, livi)
         call tbajvr(result, nbprup, 'ABSC_CURV', zr(iadabs-1+i), livr)
@@ -418,7 +422,15 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         call tbajvr(result, nbprup, 'G_IRWIN', zr(iadgks-1+6*(i-1)+5), livr)
         call tbajli(result, nbprup, noprup, livi, livr,&
                     livc, livk, 0)
+        if ( (codret .eq. 'OK') .and. (zr(iadgks-1+6*(i-1)+1) .ne. 0.d0  ) ) then
+          difrel= abs((zr(iadgks-1+6*(i-1)+1)- zr(iadgks-1+6*(i-1)+5))/zr(iadgks-1+6*(i-1)+1))
+          diff2g = diff2g + difrel
+        endif
+
     end do
+
+    if ((codret .eq. 'OK').and.(diff2g/nnoff.gt.0.5)) call utmess('A','RUPTURE1_71', sr = diff2g)
+
 !
 !- DESTRUCTION D'OBJETS DE TRAVAIL
 !

@@ -79,7 +79,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 ! OUT IGTHET  : G
 !
 !
-    integer :: ithet, imate, icomp, igthet, jtab(2), ncomp
+    integer :: ithet, imate, icomp, igthet, jtab(2), ncomp, idecpg
     integer :: ipoids, jcoopg, ivf, idfde, jdfd2, jgano
     integer :: i, j, k, kpg, n, ino, iret, cpt, ig, in, mxstac
     integer :: ndimb, nno, nnos, npgbis, ddld, ddls, matcod, m, irett
@@ -90,7 +90,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: dgdpo(4, 2), dgdlo(4, 3)
     real(kind=8) :: grad(ndim, ndim), dudm(3, 4), poids
     real(kind=8) :: dtdm(3, 4), lsng, lstg
-    real(kind=8) :: rbid
+    real(kind=8) :: rbid, divu
     real(kind=8) :: tthe, r
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref
     real(kind=8) :: crit(3), dfdm(3, 4)
@@ -217,6 +217,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 !     ------------------------------------------------------------------
 !
+
+    idecpg = (ise-1)*npgbis
+
     do kpg = 1, npgbis
         l = (kpg-1)*nno
 !
@@ -445,7 +448,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         crit(1) = 300
         crit(2) = 0.d0
         crit(3) = 1.d-3
-        call nmelnl('RIGI', kpg, 1, '+', ndim,&
+
+        call nmelnl('XFEM', kpg, 1, idecpg, '+', ndim,&
                     typmod, matcod, compor, crit, oprupt,&
                     eps, sigl, rbid, dsidep, energi)
 !
@@ -550,7 +554,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                 end do
             end do
         end do
+
         prod2 = poids*( prod - energi(1)*divt)
+
         tcla = tcla + prod2
 !
 !
@@ -600,9 +606,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 !     ------------------------------------------------------------------
 !
-!      ZR(IGTHET) = ZR(IGTHET) + TCLA + TTHE + TFOR + TINI
-!
-    zr(igthet) = zr(igthet) + tcla + tthe + tfor + tini
+     zr(igthet) = zr(igthet) + tcla + tthe + tfor + tini
+
 !
     call jedema()
 end subroutine

@@ -9,9 +9,9 @@ LY = 1;
 LZ = 0.1;
 
 * nombre d'elements
-NX = 51;
-NY = 51; 
-NZ = 2;
+NX = 31;
+NY = 31; 
+NZ = 10;
 
 *---------------------------------------------
 *construction des surfaces dans le plan inférieur
@@ -49,6 +49,6 @@ trac cach (vol et (SURFGAU coul roug)
                et (SURFSUP coul vert));        
                           
 opti sauv format 
-'/local00/geniaut/ast_dev/THERMO/test/hsnv132d.mgib' ;
+'/local00/home/A88170/hsnv132d.mgib' ;
 sauv format maille ;
 fin ;
