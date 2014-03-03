@@ -5,5 +5,5 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist R 
 
-F comm ssnv224b.comm D 1
-F mmed ssnv223b.mmed D 20
+F comm ssnv234a.comm D 1
+F mail ssnv234a.mail D 20
