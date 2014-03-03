@@ -1,4 +1,4 @@
-# TITRE Analyse modale et harmonique d'un barrage en interaction
+# TITRE Analyse modale et harmonique d un barrage en interaction
 #       sol-fluide-structure avec points de controle
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,6 +64,8 @@ mail=MODI_MAILLAGE(reuse =mail,
                                     _F(GROUP_MA='SLIBREM2',
                                        VECT_NORM=(0.,0.,1.,),
                                        NOEUD='N1043',),),);
+                                       
+IMPR_RESU(RESU=_F(MAILLAGE=mail,));
 
 modele=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=(_F(GROUP_MA='STRVOU2',
@@ -267,6 +269,14 @@ TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
                                 RECEPTEUR='OUI',
                                 SOURCE='OUI',
                                 NUME_MATE=1,),
+                             _F(EPAIS=8.,
+                                RECEPTEUR='OUI',
+                                SOURCE='OUI',
+                                NUME_MATE=1,),
+                             _F(EPAIS=20.,
+                                RECEPTEUR='OUI',
+                                SOURCE='OUI',
+                                NUME_MATE=1,),
                              _F(EPAIS=10.,
                                 RECEPTEUR='OUI',
                                 SOURCE='OUI',
@@ -275,7 +285,7 @@ TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
                                 NUME_MATE=2,),),
                      TITRE='SOL HOMOGENE',);
 
-tfin = 4.0
+tfin = 0.2
 df = 1.0 / tfin
 fmax = 50.0
 pas1 = 1.0E-2
@@ -291,20 +301,24 @@ fonsin = FORMULE(NOM_PARA='INST',
 accsin=CALC_FONC_INTERP(FONCTION=fonsin,
                         NOM_PARA='INST',
                         NOM_RESU='EVOL',
-                        LIST_PARA=ltps)
+                        LIST_PARA=ltps);
+                        
 tabctr=CALC_MISS(TYPE_RESU='TABLE_CONTROL',
                  PROJET='FDLV112E',
                  VERSION='V6.6',
                  TABLE_SOL=TABSOL,
                  MACR_ELEM_DYNA=mael,
+                 #UNITE_RESU_IMPE=25,
+                 #UNITE_RESU_FORC=28,
                  GROUP_MA_INTERF='SURFBAS2',
                  GROUP_MA_FLU_STR='IFLUSTR2',
                  GROUP_MA_FLU_SOL='IFLUSOL2',
                  GROUP_MA_SOL_SOL='SLIBREM2',
                  GROUP_MA_CONTROL='PC',
-                 PARAMETRE=_F(FREQ_MIN=0.1,
-                              FREQ_MAX=3.0,
-                              FREQ_PAS=2.9,
+                 PARAMETRE=_F(
+                              FREQ_MIN=df, #0.1,
+                              FREQ_MAX=fmax, #3.0,
+                              FREQ_PAS=df, #2.9,
                               Z0=5.0,
                               SURF='NON',
                               ISSF='OUI',
@@ -361,17 +375,22 @@ ftz3 = EXTR_TABLE(TABLE     = tabctr,
 TEST_FONCTION(VALEUR=_F(
     FONCTION=ftz1,
     NOM_PARA='FREQ',
-    VALE_PARA=3.0,
-    VALE_CALC_C=0.98252000+6.917140E-03j,
+    VALE_PARA=5.0,
+    VALE_CALC_C=9.84140E-01+4.96964E-03j,
+))
+
+TEST_FONCTION(VALEUR=_F(
+    FONCTION=ftz2,
+    NOM_PARA='FREQ',
+    VALE_PARA=5.0,
+    VALE_CALC_C=9.61780E-01+2.61026E-02j,
 ))
 
 TEST_FONCTION(VALEUR=_F(
     FONCTION=ftz3,
     NOM_PARA='FREQ',
-    VALE_PARA=1.5,
-    VALE_CALC_C=-8.917660E-03+5.644430E-03j,
-    # TOLE_MACHINE en raison des variations observées sur miss
-    TOLE_MACHINE=1.1E-5,
+    VALE_PARA=5.0,
+    VALE_CALC_C=9.51352E-01+2.63920E-02j,
 ))
 
 acce_z1 = EXTR_TABLE(TABLE     = tabctr,
@@ -404,23 +423,26 @@ acce_z3 = EXTR_TABLE(TABLE     = tabctr,
                              _F(NOM_PARA   = 'NOM_PARA',
                                   VALE_K   = 'INST'),),)
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=-1.20417e-4,
-                         VALE_PARA=0.,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.98413987550154,
+                         VALE_PARA=0.05,
                          FONCTION=acce_z1,),
-                      _F(VALE_CALC=2.01229e-04,
-                         VALE_PARA=1.66666666667e-01,
+                      _F(VALE_CALC=0.96177965999206,
+                         VALE_PARA=0.05,
                          FONCTION=acce_z2,),
+                      _F(VALE_CALC=0.95135164903814,
+                         VALE_PARA=0.05,
+                         FONCTION=acce_z3,),
                       ),
               )
 
-IMPR_FONCTION(COURBE=(_F(FONCTION=ftz1),
-                      _F(FONCTION=ftz2),
-                      _F(FONCTION=ftz3),),
-              UNITE=6)
-
-IMPR_FONCTION(COURBE=(_F(FONCTION=acce_z1,),
-                      _F(FONCTION=acce_z2,),
-                      _F(FONCTION=acce_z3,),),
-              UNITE=6,)
+# IMPR_FONCTION(COURBE=(_F(FONCTION=ftz1),
+#                       _F(FONCTION=ftz2),
+#                       _F(FONCTION=ftz3),),
+#               UNITE=8)
+# 
+# IMPR_FONCTION(COURBE=(_F(FONCTION=acce_z1,),
+#                       _F(FONCTION=acce_z2,),
+#                       _F(FONCTION=acce_z3,),),
+#               UNITE=8,)
 
 FIN();
