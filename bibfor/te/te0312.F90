@@ -39,7 +39,6 @@ subroutine te0312(option, nomte)
     spt=1
     poum='+'
 !
-    write(6,*)'AJOJO TE0312'
     if (option.eq.'CHAR_MECA_HYDR_R') then
         call rcvalb(fami, kpg, spt, poum, zi(lmater),&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
