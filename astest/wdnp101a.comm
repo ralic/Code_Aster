@@ -1006,9 +1006,16 @@ TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
 # Les valeurs de reference correspondent a un calcul avec
 # une modelisation "d_plan_hm" avec un maillage raffine (5 mailles /couche)
 # en supposant que ce calcul est suffisamment precis.
+
+# Les tolerances machines sur les 3 TEST_TABLE suivants prennent en compte 
+# la variabilite de comportement en resolution sur base modale selon la 
+# plateforme de traitement quand on doit calculer des modes a frequence nulle 
+# car la structure n'est tenue en dynamique que par les frontieres absorbantes 
+# amortisseuses
+   
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-2,
-#          Variabilité non-expliquee :
+#          Variabilité expliquee ci-dessus :
            TOLE_MACHINE=5.E-5,
            VALE_CALC=1.8602884763866,
            VALE_REFE=1.8628625511053,
@@ -1017,7 +1024,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-1,
-#          Variabilité non-expliquee :
+#          Variabilité expliquee ci-dessus :
            TOLE_MACHINE=4.E-5,
            VALE_CALC=1.2435209353361,
            VALE_REFE=1.107501776192,
@@ -1026,7 +1033,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-1,
-#          Variabilité non-expliquee :
+#          Variabilité expliquee ci-dessus :
            TOLE_MACHINE=2.E-4,
            VALE_CALC=2.2009207174445,
            VALE_REFE=2.4097094098975,
