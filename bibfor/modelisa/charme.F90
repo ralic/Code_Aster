@@ -83,14 +83,15 @@ subroutine charme(load, vale_type)
 !
 !
 ! In  vale_type : affected value type (real, complex or function)
-! In  load      : load
+! In  load      : name of load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, iret, ibid, jlgrf
+    integer :: nb_dim, iret
     character(len=8) :: mesh, model
     character(len=16) :: keywordfact, command
     character(len=19) :: ligrch, ligrmo
+    character(len=8), pointer :: p_ligrch_lgrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,9 +99,9 @@ subroutine charme(load, vale_type)
 ! - Mesh, Ligrel for model, dimension of model
 !
     command = 'AFFE_CHAR_MECA'
-    call cagene(load, command, ligrmo, mesh, ndim)
+    call cagene(load, command, ligrmo, mesh, nb_dim)
     model = ligrmo(1:8)
-    if (ndim .gt. 3) then
+    if (nb_dim .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
 !
@@ -160,7 +161,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- ONDE_PLANE
 !
-        call cbondp(load, ligrmo, mesh, ndim, vale_type)
+        call cbondp(load, ligrmo, mesh, nb_dim, vale_type)
 !
 ! ----- FLUX_THM_REP
 !
@@ -180,7 +181,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- PRES_REP/FORCE_TUYAU
 !
-        call cbpres(load, mesh, ligrmo, ndim, vale_type)
+        call cbpres(load, mesh, ligrmo, nb_dim, vale_type)
 !
 ! ----- PRE_EPSI
 !
@@ -192,7 +193,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- EFFE_FOND
 !
-        call cafond(load, ligrmo, mesh, ndim, vale_type)
+        call cafond(load, ligrmo, mesh, nb_dim, vale_type)
 !
 ! ----- EVOL_CHAR
 !
@@ -200,7 +201,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- PESANTEUR
 !
-        call cbpesa(load, mesh, ndim)
+        call cbpesa(load, mesh, nb_dim)
 !
 ! ----- ROTATION
 !
@@ -224,21 +225,21 @@ subroutine charme(load, vale_type)
 !
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
 !
-        call char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
+        call char_crea_neum(load, ligrmo, mesh, nb_dim, vale_type)
 !
 ! --------------------------------------------------------------------------------------------------
     else if (vale_type .eq. 'COMP') then
 !
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
 !
-        call char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
+        call char_crea_neum(load, ligrmo, mesh, nb_dim, vale_type)
 !
 ! --------------------------------------------------------------------------------------------------
     else if (vale_type .eq. 'FONC') then
 !
 ! ----- PRES_REP/FORCE_TUYAU
 !
-        call cbpres(load, mesh, ligrmo, ndim, vale_type)
+        call cbpres(load, mesh, ligrmo, nb_dim, vale_type)
 !
 ! ----- PRE_EPSI
 !
@@ -250,7 +251,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- EFFE_FOND
 !
-        call cafond(load, ligrmo, mesh, ndim, vale_type)
+        call cafond(load, ligrmo, mesh, nb_dim, vale_type)
 !
 ! ----- FORCE_NODALE
 !
@@ -258,7 +259,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
 !
-        call char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
+        call char_crea_neum(load, ligrmo, mesh, nb_dim, vale_type)
 ! --------------------------------------------------------------------------------------------------
     else
         ASSERT(.false.)
@@ -393,10 +394,10 @@ subroutine charme(load, vale_type)
     if (iret .ne. 0) then
         call adalig(ligrch)
         call cormgi('G', ligrch)
-        call jeecra(ligrch//'.LGRF', 'DOCU', ibid, 'MECA')
+        call jeecra(ligrch//'.LGRF', 'DOCU', cval = 'MECA')
         call initel(ligrch)
-        call jeveuo(ligrch//'.LGRF', 'E', jlgrf)
-        zk8(jlgrf-1+2) = model
+        call jeveuo(ligrch//'.LGRF', 'E', vk8 = p_ligrch_lgrf)
+        p_ligrch_lgrf(2) = model
     endif
 !
 ! - Check mesh orientation (normals)

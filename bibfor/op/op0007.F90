@@ -39,7 +39,7 @@ subroutine op0007()
     character(len=4) :: vale_type
     character(len=8) :: load
     character(len=16) :: command, k16dummy
-    integer :: iatype
+    character(len=8), pointer :: p_load_type(:) => null() 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,13 +59,13 @@ subroutine op0007()
 !
 ! - Load type
 !
-    call wkvect(load//'.TYPE', 'G V K8', 1, iatype)
+    call wkvect(load//'.TYPE', 'G V K8', 1, vk8 = p_load_type)
     if (vale_type.eq.'REEL') then
-        zk8(iatype) = 'MECA_RE'
+        p_load_type(1) = 'MECA_RE'
     else if (vale_type.eq.'FONC') then
-        zk8(iatype) = 'MECA_FO'
+        p_load_type(1) = 'MECA_FO'
     else if (vale_type.eq.'COMP') then
-        zk8(iatype) = 'MECA_RI'
+        p_load_type(1) = 'MECA_RI'
     endif
 !
 ! - Loads treatment

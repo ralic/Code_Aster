@@ -1,5 +1,20 @@
 subroutine ini002(nomte, nmax, itabl, k24tab, nval)
-!-----------------------------------------------------------------------
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jni001.h"
+#include "asterfort/jni002.h"
+#include "asterfort/jni015.h"
+#include "asterfort/jni080.h"
+#include "asterfort/jni091.h"
+#include "asterfort/jni092.h"
+#include "asterfort/nuelrf.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +32,12 @@ subroutine ini002(nomte, nmax, itabl, k24tab, nval)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
+!
+    character(len=16), intent(in) :: nomte
+    integer, intent(in) :: nmax
+    integer, optional, intent(out):: itabl(nmax)
+    character(len=24), optional, intent(inout) :: k24tab(nmax)
+    integer, optional, intent(out):: nval
 !-----------------------------------------------------------------------
 !
 ! BUT :  ROUTINE D'INITIALISATION DES ELEMENTS AYANT DES ELREFE
@@ -32,27 +53,11 @@ subroutine ini002(nomte, nmax, itabl, k24tab, nval)
 !             DES OBJETS DE K24TAB DANS ZR, ZI, ...
 !   -------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    implicit none
-!
-!
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/elref2.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jni001.h"
-#include "asterfort/jni002.h"
-#include "asterfort/jni015.h"
-#include "asterfort/jni080.h"
-#include "asterfort/jni091.h"
-#include "asterfort/jni092.h"
-#include "asterfort/nuelrf.h"
-    character(len=16) :: nomte
+
     character(len=8) :: elrefe, lirefe(10)
-    integer :: nmax, nval, itabl(nmax), nujni
-    character(len=24) :: k24tab(nmax)
+    integer :: nujni
     character(len=24) :: liobj(10)
-    integer :: nbelr, ii, kk, iret, nbobj, k
+    integer :: nbelr, ii, kk, iret, nbobj, k, nb_val
 ! DEB ------------------------------------------------------------------
 !
 ! --- RECUPERATION DE LA LISTE DES ELREFE CORRESPONDANTS AU NOMTE
@@ -62,8 +67,8 @@ subroutine ini002(nomte, nmax, itabl, k24tab, nval)
 !
 !     --BOUCLE SUR LES ELREFE :
 !     -------------------------
-    nval = 0
-    do 20 ii = 1, nbelr
+    nb_val = 0
+    do ii = 1, nbelr
         elrefe = lirefe(ii)
         call nuelrf(elrefe, nujni)
 !
@@ -92,19 +97,29 @@ subroutine ini002(nomte, nmax, itabl, k24tab, nval)
             ASSERT(.false.)
         endif
 !
-        nval = nval + nbobj
-        ASSERT(nval.le.nmax)
-        do 10,k = 1,nbobj
-        k24tab(nval-nbobj+k) = liobj(k)
-10      continue
-20  end do
+        nb_val = nb_val + nbobj
+        ASSERT(nb_val.le.nmax)
 !
+        if (present(k24tab)) then
+            do k = 1, nbobj
+                k24tab(nb_val-nbobj+k) = liobj(k)
+            end do
+        endif
+    end do
+!
+    if (present(nval)) then
+        nval = nb_val
+    endif
 !
 !     RECUPERATION DES ADRESSES DES OBJETS CREES :
 !     ---------------------------------------------
-    do 30,kk = 1,nval
-    call jeexin(k24tab(kk), iret)
-    if (iret .gt. 0) call jeveuo(k24tab(kk), 'L', itabl(kk))
-    30 end do
+    if (present(k24tab)) then
+        do kk = 1, nb_val
+            call jeexin(k24tab(kk), iret)
+            if (iret .gt. 0) then
+                call jeveuo(k24tab(kk), 'L', itabl(kk))
+            endif
+        end do
+    endif
 !
 end subroutine

@@ -16,14 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
-                      noma, fonree, ndim)
+    subroutine caechp(char, ligrch, ligrmo, mesh, fonree,&
+                      ndim)
         character(len=8) :: char
         character(len=*) :: ligrch
         character(len=*) :: ligrmo
-        integer :: igrel
-        integer :: inema
-        character(len=8) :: noma
+        character(len=8) :: mesh
         character(len=4) :: fonree
         integer :: ndim
     end subroutine caechp

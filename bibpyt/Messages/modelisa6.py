@@ -51,9 +51,7 @@ cata_msg = {
   on est sur 2 mailles orthogonales
 """),
 
-9 : _(u"""
- le type de maille est inconnu
-"""),
+
 
 10 : _(u"""
  la maille  %(k1)s  ne fait pas partie du maillage  %(k2)s
@@ -73,10 +71,7 @@ cata_msg = {
  le mot-clé facteur : %(k1)s
 """),
 
-14 : _(u"""
- Pour le chargement thermique ECHANGE_PAROI, le modèle fourni doit être homogène
- en dimension : 3D, 2D ou AXIS.
-"""),
+
 
 
 

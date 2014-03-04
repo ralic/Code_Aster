@@ -1,12 +1,12 @@
-subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
+subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/affono.h"
-#include "asterfort/alcar1.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_nb_ligf.h"
 #include "asterfort/char_crea_ligf.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -30,8 +30,8 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
+    character(len=4) :: vale_type
+    character(len=8) :: char, mesh
     character(len=*) :: ligrcz, ligrmz
 !     -----------------------------------------------------------------
 ! ======================================================================
@@ -58,9 +58,9 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !      IGREL : NUMERO DU GREL DE CHARGE
 !      INEMA : NUMERO  DE LA DERNIERE MAILLE TARDIVE DANS LIGRCH
 !      NBTOUT: NOMBRE TOTAL DE GROUPES, NOEUDS,.. DANS LES OCCURENCES
-!      NOMA  : NOM DU MAILLAGE
+!      mesh  : NOM DU MAILLAGE
 !      LIGRMZ: NOM DU LIGREL DE MODELE
-!      FONREE  : 'FONC' OU 'REEL'
+!      vale_type  : 'FONC' OU 'REEL'
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: nmocl, nfono, n2dl, n3dl, n6dl, ncoq2d, nbcomp
@@ -76,17 +76,17 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     real(kind=8) :: dgrd, valfor(nmocl)
     logical :: verif
     character(len=8) :: nomn, typmcl(2), typlag, valfof(nmocl)
-    character(len=16) :: motcle(nmocl), motclf, motcls(2)
+    character(len=16) :: motcle(nmocl), keywordfact, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
     character(len=24) :: liel, nomnoe, nomele, mesnoe
-    integer :: nb_node, nb_list_elem, nb_list_node
+    integer :: nb_elem_late, nb_noel_maxi
     integer, pointer :: desgi(:) => null()
     character(len=8), pointer :: noms_noeuds(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    motclf = 'FORCE_NODALE'
-    call getfac(motclf, nfono)
+    keywordfact = 'FORCE_NODALE'
+    call getfac(keywordfact, nfono)
     if (nfono .eq. 0) goto 999
 !
     ligrch = ligrcz
@@ -100,19 +100,13 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !
     verif = .true.
 !
-! - Get list of nodes
+! - Count number of late elements
 !
-    call alcar1(noma, motclf, 2, motcls, typmcl,&
-                nb_node)
-    nb_node = max(nb_node,1)
-! - Late element: POI1 - One node by element, nb_list_elem/nb_list_node too long
-    nb_list_elem = 2*nb_node
-    nb_list_node = 2*nb_node
+    call char_nb_ligf(mesh  , keywordfact, 'Node', nb_elem_late, nb_noel_maxi)
 !
-! - Create <LIGREL> on nodes (for "late" elements on nodes)
+! - Create <LIGREL> on late elements
 !
-    call char_crea_ligf(noma, ligrch, nb_node, nb_list_elem, nb_list_node)
-!
+    call char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_2DDL' ), n2dl)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_3DDL' ), n3dl)
@@ -159,7 +153,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     endif
 !
     call jeveuo(ligrch//'.NBNO', 'E', jnbno)
-    nomnoe = noma//'.NOMNOE'
+    nomnoe = mesh//'.NOMNOE'
     call jelira(nomnoe, 'NOMMAX', nbnoeu)
 !
     mesnoe = '&&CAFONO.MES_NOEUDS'
@@ -179,7 +173,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !                         FORCES IMPOSEES PAR NOEUD
 !
     AS_ALLOCATE(vk8=noms_noeuds, size=nbnoeu)
-    if (fonree .eq. 'REEL') then
+    if (vale_type .eq. 'REEL') then
         call wkvect('&&CAFONO.VALDDLR', 'V V R', nbcomp*nbnoeu, jval)
     else
         call wkvect('&&CAFONO.VALDDLF', 'V V K8', nbcomp*nbnoeu, jval)
@@ -187,7 +181,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     AS_ALLOCATE(vi=desgi, size=nbnoeu)
 !
     dgrd = r8dgrd()
-    if (fonree .eq. 'FONC') then
+    if (vale_type .eq. 'FONC') then
         do i = 1, nbcomp*nbnoeu
             zk8(jval-1+i) = '&FOZERO'
         end do
@@ -203,12 +197,12 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
             forimp(ii) = 0
         end do
 !
-        if (fonree .eq. 'REEL') then
+        if (vale_type .eq. 'REEL') then
             do j = 1, 6
-                call getvr8(motclf, motcle(j), iocc=i, scal=valfor(j), nbret=forimp(j))
+                call getvr8(keywordfact, motcle(j), iocc=i, scal=valfor(j), nbret=forimp(j))
             end do
 !
-            call getvr8(motclf, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfor(8),&
+            call getvr8(keywordfact, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfor(8),&
                         nbret=nangl)
             if (nangl .ne. 0) then
 !              --- REPERE UTILISATEUR ---
@@ -223,15 +217,15 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
                 valfor(7) = 0.d0
             endif
 !
-        else if (fonree.eq.'FONC') then
+        else if (vale_type.eq.'FONC') then
             do ii = 1, nbcomp
                 valfof(ii) = '&FOZERO'
             end do
             do j = 1, 6
-                call getvid(motclf, motcle(j), iocc=i, scal=valfof(j), nbret=forimp(j))
+                call getvid(keywordfact, motcle(j), iocc=i, scal=valfof(j), nbret=forimp(j))
             end do
 !
-            call getvid(motclf, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfof(8),&
+            call getvid(keywordfact, 'ANGL_NAUT', iocc=i, nbval=3, vect=valfof(8),&
                         nbret=nangl)
             if (nangl .ne. 0) then
 !              --- REPERE UTILISATEUR ---
@@ -253,7 +247,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !       CAS DE GROUP_NO ET DE NOEUD
 !       ---------------------------
 !
-        call reliem(' ', noma, 'NO_NOEUD', motclf, i,&
+        call reliem(' ', mesh, 'NO_NOEUD', keywordfact, i,&
                     2, motcls, typmcl, mesnoe, nbno)
         if (nbno .eq. 0) goto 110
         call jeveuo(mesnoe, 'L', jno)
@@ -262,7 +256,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
             call jenonu(jexnom(nomnoe, zk8(jno-1+jj)), ino)
             noms_noeuds(ino) = zk8(jno-1+jj)
             call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm- 1+(ino-1)*nbec+1),&
-                        nbcomp, fonree, zk8(jno-1+jj), ino, nsurch,&
+                        nbcomp, vale_type, zk8(jno-1+jj), ino, nsurch,&
                         forimp, valfor, valfof, motcle, verif,&
                         nbec)
         end do
@@ -282,10 +276,10 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
     call jeexin(carte//'.DESC', iret)
 !
     if (iret .eq. 0) then
-        if (fonree .eq. 'REEL') then
-            call alcart('G', carte, noma, 'FORC_R')
-        else if (fonree.eq.'FONC') then
-            call alcart('G', carte, noma, 'FORC_F')
+        if (vale_type .eq. 'REEL') then
+            call alcart('G', carte, mesh, 'FORC_R')
+        else if (vale_type.eq.'FONC') then
+            call alcart('G', carte, mesh, 'FORC_F')
         else
             ASSERT(.false.)
         endif
@@ -335,7 +329,7 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
                         typlag)
 !
             call jeveuo(jexnum(liel, igrel), 'E', jl)
-            if (fonree .eq. 'REEL') then
+            if (vale_type .eq. 'REEL') then
                 do i = 1, nbcomp
                     zr(jvalv-1+i) = zr(jval-1+nbcomp* (ino-1)+i)
                 end do
@@ -357,9 +351,9 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !
     AS_DEALLOCATE(vk8=noms_noeuds)
     AS_DEALLOCATE(vi=desgi)
-    if (fonree .eq. 'REEL') then
+    if (vale_type .eq. 'REEL') then
         call jedetr('&&CAFONO.VALDDLR')
-    else if (fonree.eq.'FONC') then
+    else if (vale_type.eq.'FONC') then
         call jedetr('&&CAFONO.VALDDLF')
     endif
 999 continue

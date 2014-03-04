@@ -1,4 +1,14 @@
 subroutine op0034()
+!
+implicit none
+!
+#include "asterc/getres.h"
+#include "asterfort/charth.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,36 +25,47 @@ subroutine op0034()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-!      OPERATEURS :     AFFE_CHAR_THER AFFE_CHAR_THER_F
+! person_in_charge: mickael.abbas at edf.fr
 !
+
 !
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterfort/charth.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=4) :: type
-    character(len=8) :: char
-    character(len=16) :: concep, oper
-    integer :: iatype
+! --------------------------------------------------------------------------------------------------
+!
+! COMMAND:  AFFE_CHAR_THER_*
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=4) :: vale_type
+    character(len=8) :: load
+    character(len=16) :: command, k16dummy
+    character(len=8), pointer :: p_load_type(:) => null() 
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infmaj()
 !
-    call getres(char, concep, oper)
-    call wkvect(char//'.TYPE', 'G V K8', 1, iatype)
-    if (oper .eq. 'AFFE_CHAR_THER') then
-        type = 'REEL'
-        zk8(iatype) = 'THER_RE'
-    else if (oper .eq. 'AFFE_CHAR_THER_F') then
-        type = 'FONC'
-        zk8(iatype) = 'THER_FO'
+! - Which command ?
+!
+    call getres(load, k16dummy, command)
+    if (command .eq. 'AFFE_CHAR_THER') then
+        vale_type = 'REEL'
+    else if (command .eq. 'AFFE_CHAR_THER_F') then
+        vale_type = 'FONC'
     endif
 !
-    call charth(type)
+! - Load type
+!
+    call wkvect(load//'.TYPE', 'G V K8', 1, vk8 = p_load_type)
+    if (vale_type .eq. 'REEL') then
+        p_load_type(1) = 'THER_RE '
+    else if (vale_type .eq. 'FONC') then
+        p_load_type(1) = 'THER_FO '
+    endif
+!
+! - Loads treatment
+!
+    call charth(load, vale_type)
 !
     call jedema()
 end subroutine

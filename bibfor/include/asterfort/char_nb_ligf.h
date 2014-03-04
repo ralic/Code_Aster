@@ -16,11 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ligecp(noma, nbtout, lonlig, lonema, nbgrel)
-        character(len=8) :: noma
-        integer :: nbtout(10)
-        integer :: lonlig
-        integer :: lonema
-        integer :: nbgrel
-    end subroutine ligecp
+    subroutine char_nb_ligf(mesh  , keywordfact, type_late, nb_elem_late, nb_noel_maxi,&
+                            suffix)
+        character(len=16), intent(in) :: keywordfact
+        character(len=8), intent(in) :: mesh
+        character(len=4), intent(in) :: type_late
+        integer, intent(out) :: nb_elem_late
+        integer, intent(out) :: nb_noel_maxi
+        character(len=*), intent(in), optional :: suffix
+    end subroutine char_nb_ligf
 end interface

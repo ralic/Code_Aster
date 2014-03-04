@@ -1,9 +1,9 @@
-subroutine charth(fonree)
+subroutine charth(load, vale_type)
+!
     implicit none
-#include "jeveux.h"
-#include "asterc/getres.h"
+!
+#include "asterfort/assert.h"
 #include "asterfort/adalig.h"
-#include "asterfort/alligr.h"
 #include "asterfort/caddli.h"
 #include "asterfort/caechp.h"
 #include "asterfort/cagene.h"
@@ -25,8 +25,8 @@ subroutine charth(fonree)
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-    character(len=4) :: fonree
-!---------------------------------------------------------------------
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,122 +43,181 @@ subroutine charth(fonree)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-!      OPERATEURS :     AFFE_CHAR_THER ET AFFE_CHAR_THER_F
+    character(len=4), intent(in) :: vale_type
+    character(len=8), intent(in) :: load
 !
-!      MOTS-CLES ACTUELLEMENT TRAITES:
-!        SOURCE
-!        SOUR_NL
-!        ECHANGE
-!        TEMP_IMPO
-!        FLUX_REP
-!        ECHANGE_PAROI
-!        PRE_GRAD_TEMP
-!        LIAISON_DDL
-!        LIAISON_GROUP
-!        RAYONNEMENT
-!---------------------------------------------------------------------
-    integer :: ibid, igrel, inema, iret, ndim, jlgrf
-    character(len=8) :: char, noma
-    character(len=16) :: type, oper, motfac
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Treatment of loads for AFFE_CHAR_THER_*
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In  vale_type : affected value type (real, complex or function)
+! In  load      : name of load
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_dim, iret
+    character(len=8) :: mesh, model
+    character(len=16) :: keywordfact, command
     character(len=19) :: ligrch, ligrmo
-!     ------------------------------------------------------------------
+    character(len=8), pointer :: p_ligrch_lgrf(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-    call getres(char, type, oper)
 !
-! --- NOMS DE LIGREL, MAILLAGE , DIMENSION DU PB
+! - Mesh, Ligrel for model, dimension of model
 !
-    call cagene(char, oper, ligrmo, noma, ndim)
-!
-! --- ALLOCATION DU LIGREL DE CHARGE (MOTS-CLE: TEMP_IMPO,
-!                          ECHANGE_PAROI, LIAISON_DDL, LIAISON_GROUP )
-!
-    call alligr(char, oper, noma, fonree, ligrch)
-!
-! --- TEMP_IMPO ---
-!
-    igrel = 0
-    inema = 0
-!
-! --- SOURCE ---
-!
-    call cbsour(char, noma, ligrmo, ndim, fonree)
-!
-! --- SOUR_NL---
-!
-    call cbsonl(char, noma, ligrmo, ndim, fonree)
-!
-! --- CONVECTION ---
-!
-    call cbconv(char)
-!
-! --- FLUX_REP ---
-!
-    call cbflux(char, noma, ligrmo, ndim, fonree)
-!
-! --- FLUX_NL
-!
-    call cbflnl(char, noma, ligrmo, fonree)
-!
-! --- RAYONNEMENT ---
-!
-    call cbrayo(char, noma, ligrmo, fonree)
-!
-! --- ECHANGE ---
-!
-    call cbecha(char, noma, ligrmo, ndim, fonree)
-!
-! --- ECHANGE_PAROI ---
-!
-    call caechp(char, ligrch, ligrmo, igrel, inema,&
-                noma, fonree, ndim)
-!
-! --- GRADIENT INITIAL ---
-!
-    call cbgrai(char, noma, ligrmo, fonree)
-!
-! --- TEMP_IMPO ---
-!
-    motfac = 'TEMP_IMPO'
-    call caddli(motfac, char, noma, ligrmo, fonree)
-!
-! --- LIAISON_DDL ---
-!
-    call caliai(fonree, char)
-!
-! --- LIAISON_GROUP ---
-!
-    call caliag(fonree, char)
-!
-! --- LIAISON_UNIF ---
-!
-    call cagrou(char, noma, fonree)
-!
-! --- LIAISON_CHAMNO ---
-!
-    if (fonree .eq. 'REEL') then
-        call calich(char)
+    command = 'AFFE_CHAR_THER'
+    call cagene(load, command, ligrmo, mesh, nb_dim)
+    model  = ligrmo(1:8)
+    if (nb_dim .gt. 3) then
+        call utmess('A', 'CHARGES2_4')
     endif
 !
+! - Ligrel for loads
 !
-! --- LIAISON_MAIL ---
+    ligrch = load//'.CHTH.LIGRE'
 !
-    if (fonree .eq. 'REEL') then
-        call calirc(char)
+    if (vale_type .eq. 'REEL') then
+!
+! ----- SOURCE
+!
+        call cbsour(load, mesh, ligrmo, nb_dim, vale_type)
+!
+! ----- SOUR_NL
+!
+        call cbsonl(load, mesh, ligrmo, nb_dim, vale_type)
+!
+! ----- CONVECTION
+!
+        call cbconv(load)
+!
+! ----- FLUX_REP
+!
+        call cbflux(load, mesh, ligrmo, nb_dim, vale_type)
+!
+! ----- FLUX_NL
+!
+        call cbflnl(load, mesh, ligrmo, vale_type)
+!
+! ----- RAYONNEMENT
+!
+        call cbrayo(load, mesh, ligrmo, vale_type)
+!
+! ----- ECHANGE
+!
+        call cbecha(load, mesh, ligrmo, nb_dim, vale_type)
+!
+! ----- ECHANGE_PAROI
+!
+        call caechp(load, ligrch, ligrmo, mesh, vale_type, &
+                    nb_dim)
+!
+! ----- GRADIENT INITIAL
+!
+        call cbgrai(load, mesh, ligrmo, vale_type)
+!
+! ----- TEMP_IMPO
+!
+        keywordfact = 'TEMP_IMPO'
+        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_DDL
+!
+        call caliai(vale_type, load)
+!
+! ----- LIAISON_GROUP
+!
+        call caliag(vale_type, load)
+!
+! ----- LIAISON_UNIF
+!
+        call cagrou(load, mesh, vale_type)
+!
+! ----- LIAISON_CHAMNO
+!
+        call calich(load)
+!
+! ----- LIAISON_MAIL
+!
+        call calirc(load)
+!
+    else if (vale_type .eq. 'FONC') then
+!
+! ----- SOURCE
+!
+        call cbsour(load, mesh, ligrmo, nb_dim, vale_type)
+!
+! ----- SOUR_NL
+!
+        call cbsonl(load, mesh, ligrmo, nb_dim, vale_type)
+!
+! ----- CONVECTION
+!
+        call cbconv(load)
+!
+! ----- FLUX_REP
+!
+        call cbflux(load, mesh, ligrmo, nb_dim, vale_type)
+!
+! ----- FLUX_NL
+!
+        call cbflnl(load, mesh, ligrmo, vale_type)
+!
+! ----- RAYONNEMENT 
+!
+        call cbrayo(load, mesh, ligrmo, vale_type)
+!
+! ----- ECHANGE 
+!
+        call cbecha(load, mesh, ligrmo, nb_dim, vale_type)
+!
+! ----- ECHANGE_PAROI
+!
+        call caechp(load, ligrch, ligrmo, mesh, vale_type,&
+                    nb_dim)
+!
+! ----- GRADIENT INITIAL
+!
+        call cbgrai(load, mesh, ligrmo, vale_type)
+!
+! ----- TEMP_IMPO
+!
+        keywordfact = 'TEMP_IMPO'
+        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_DDL
+!
+        call caliai(vale_type, load)
+!
+! ----- LIAISON_GROUP
+!
+        call caliag(vale_type, load)
+!
+! ----- LIAISON_UNIF
+!
+        call cagrou(load, mesh, vale_type)
+    else
+        ASSERT(.false.)
     endif
 !
+! - Update loads <LIGREL>
 !
-! --- MISE A JOUR DU LIGREL DE CHARGE :
     call jeexin(ligrch//'.LGRF', iret)
     if (iret .ne. 0) then
         call adalig(ligrch)
         call cormgi('G', ligrch)
-        call jeecra(ligrch//'.LGRF', 'DOCU', ibid, 'THER')
+        call jeecra(ligrch//'.LGRF', 'DOCU', cval = 'THER')
         call initel(ligrch)
-!       -- LIEN ENTRE LE LIGREL DE CHARGE ET LE MODELE :
-        call jeveuo(ligrch//'.LGRF', 'E', jlgrf)
-        zk8(jlgrf-1+2)=ligrmo(1:8)
+        call jeveuo(ligrch//'.LGRF', 'E', vk8 = p_ligrch_lgrf)
+        p_ligrch_lgrf(2) = model
     endif
 !
 end subroutine

@@ -1,4 +1,14 @@
 subroutine op0068()
+!
+implicit none
+!
+#include "asterc/getres.h"
+#include "asterfort/charac.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,36 +25,36 @@ subroutine op0068()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-!                           OPERATEUR :     AFFE_CHAR_ACOU
+! person_in_charge: mickael.abbas at edf.fr
 !
-!      MOTS-CLES ACTUELLEMENT TRAITES:
-!        PRES_IMPO
-!        VITE_FACE
-!        IMPE_FACE
+
 !
+! --------------------------------------------------------------------------------------------------
 !
+! COMMAND:  AFFE_CHAR_ACOU
 !
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterfort/charac.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: char
-    character(len=16) :: type, oper
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: iatype
-!-----------------------------------------------------------------------
+    character(len=4) :: vale_type
+    character(len=8) :: load
+    character(len=16) :: k16dummy
+    character(len=8), pointer :: p_load_type(:) => null() 
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
     call infmaj()
 !
-    call getres(char, type, oper)
-    call wkvect(char//'.TYPE', 'G V K8', 1, iatype)
-    zk8(iatype)='ACOU_RE'
-    call charac('REEL')
+! - Which command ?
+!
+    call getres(load, k16dummy, k16dummy)
+    call wkvect(load//'.TYPE', 'G V K8', 1, vk8 = p_load_type)
+    p_load_type(1) = 'ACOU_RE'
+    vale_type      = 'REEL'
+!
+! - Loads treatment
+!
+    call charac(load, vale_type)
 !
     call jedema()
 end subroutine

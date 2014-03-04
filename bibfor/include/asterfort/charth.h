@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine charth(fonree)
-        character(len=4) :: fonree
+    subroutine charth(load, vale_type)
+        character(len=4), intent(in) :: vale_type
+        character(len=8), intent(in) :: load
     end subroutine charth
 end interface

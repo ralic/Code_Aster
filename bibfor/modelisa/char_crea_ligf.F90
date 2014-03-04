@@ -1,13 +1,10 @@
-subroutine char_crea_ligf(mesh, ligrch, nb_node, nb_list_elem, nb_list_node)
+subroutine char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/jecrec.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -29,51 +26,64 @@ subroutine char_crea_ligf(mesh, ligrch, nb_node, nb_list_elem, nb_list_node)
 !
     character(len=19), intent(in) :: ligrch
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_node
-    integer, intent(in) :: nb_list_elem
-    integer, intent(in) :: nb_list_node
+    integer, intent(in) :: nb_elem_late
+    integer, intent(in) :: nb_noel_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Loads affectation
 !
-! Create <LIGREL> on nodes (for "late" elements on nodes)
+! Create <LIGREL> on late elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ligrch       : name of <LIGREL>
+! In  ligrch       : name of <LIGREL> for load
 ! In  mesh         : name of mesh
-! In  nb_node      : number of nodes
-! In  nb_list_elem : number of list of elements for <LIGREL>
-! In  nb_list_node : number of list of nodes for <LIGREL>
+! In  nb_late_elem : number of "late" elements
+! In  nb_noel_maxi : maximum number of nodes on "late" elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: j_lgrf, j_nbno, j_lgns, nb_grel, iret
+    integer :: nb_grel, iret
+    integer :: lont_liel, lont_nema, nb_node_late
+    character(len=8), pointer :: p_ligrch_lgrf(:) => null()
+    integer, pointer :: p_ligrch_nbno(:) => null()
+    integer, pointer :: p_ligrch_lgns(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    call jemarq()
 !
     call jeexin(ligrch//'.LIEL', iret)
     if (iret .eq. 0) then
-        nb_grel = nb_node
-        call wkvect(ligrch//'.LGRF', 'G V K8', 2, j_lgrf)
-        zk8(j_lgrf) = mesh
 !
-        call wkvect(ligrch//'.NBNO', 'G V I', 1, j_nbno)
-        zi(j_nbno) = 0
+! ----- General objects
 !
+        call wkvect(ligrch//'.LGRF', 'G V K8', 2, vk8 = p_ligrch_lgrf)
+        p_ligrch_lgrf(1) = mesh
+        call wkvect(ligrch//'.NBNO', 'G V I', 1, vi = p_ligrch_nbno)
+        p_ligrch_nbno(1) = 0
+!
+! ----- Number of GRoup of ELements
+!
+        nb_grel      = nb_elem_late
+!
+! ----- LGNS object
+!
+        nb_node_late = nb_elem_late*nb_noel_maxi
+        call wkvect(ligrch//'.LGNS', 'G V I', nb_node_late, vi = p_ligrch_lgns)
+!
+! ----- LIEL object
+!
+        lont_liel    = 2*nb_elem_late  
         call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nb_grel)
-        call jeecra(ligrch//'.LIEL', 'LONT', nb_list_elem, ' ')
+        call jeecra(ligrch//'.LIEL', 'LONT', ival = lont_liel)
 !
+! ----- NEMA object
+!
+        lont_nema    = 2*nb_elem_late*(nb_noel_maxi+1)
         call jecrec(ligrch//'.NEMA', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nb_grel)
-        call jeecra(ligrch//'.NEMA', 'LONT', nb_list_node, ' ')
+        call jeecra(ligrch//'.NEMA', 'LONT', ival = lont_nema)
 !
-        call wkvect(ligrch//'.LGNS', 'G V I', 2*nb_node, j_lgns)
     endif
-!
-    call jedema()
 end subroutine

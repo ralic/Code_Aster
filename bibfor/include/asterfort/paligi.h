@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine paligi(pheno, modl, ligrch, igrel, inema,&
-                      iliste)
-        character(len=4) :: pheno
-        character(len=*) :: modl
-        character(len=*) :: ligrch
-        integer :: igrel
-        integer :: inema
-        integer :: iliste(*)
+    subroutine paligi(modelisa, ligrch, idx_grel, idx_nema, list_elem)
+        character(len=24), intent(in) :: modelisa
+        character(len=*), intent(in) :: ligrch
+        integer, intent(in) :: idx_grel
+        integer, intent(inout) :: idx_nema
+        integer, intent(in) :: list_elem(*)
     end subroutine paligi
 end interface

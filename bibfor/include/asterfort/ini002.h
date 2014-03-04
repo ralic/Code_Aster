@@ -17,10 +17,10 @@
 !
 interface
     subroutine ini002(nomte, nmax, itabl, k24tab, nval)
-        integer :: nmax
-        character(len=16) :: nomte
-        integer :: itabl(nmax)
-        character(len=24) :: k24tab(nmax)
-        integer :: nval
+        character(len=16), intent(in) :: nomte
+        integer, intent(in) :: nmax
+        integer, optional, intent(out):: itabl(nmax)
+        character(len=24), optional, intent(inout) :: k24tab(nmax)
+        integer, optional, intent(out):: nval
     end subroutine ini002
 end interface

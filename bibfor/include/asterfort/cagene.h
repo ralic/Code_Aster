@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cagene(char, oper, ligrmz, noma, ndim)
-        character(len=8) :: char
-        character(len=16) :: oper
-        character(len=*) :: ligrmz
-        character(len=8) :: noma
-        integer :: ndim
+    subroutine cagene(load, command, ligrmo, mesh, nb_dim)
+        character(len=8), intent(in) :: load
+        character(len=16), intent(in) :: command
+        integer, intent(out) :: nb_dim
+        character(len=8), intent(out) :: mesh
+        character(len=19), intent(out) :: ligrmo
     end subroutine cagene
 end interface

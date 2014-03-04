@@ -1,10 +1,12 @@
-subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
-                  noma, fonree, ndim)
+subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
+                  ndim)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_nb_ligf.h"
+#include "asterfort/char_crea_ligf.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -24,9 +26,9 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 #include "asterfort/xtmafi.h"
 #include "asterfort/xvelfm.h"
 !
-    integer :: igrel, inema, ndim
+    integer :: ndim
     character(len=4) :: fonree
-    character(len=8) :: char, noma
+    character(len=8) :: char, mesh
     character(len=*) :: ligrch, ligrmo
 !---------------------------------------------------------------------
 ! ======================================================================
@@ -62,6 +64,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
     integer :: nbtyp, jlistt, nbm, nfiss, nfismx, jma, ntcon
     parameter    (nfismx=100)
     logical :: ltcon, lcoefh
+    integer :: igrel, inema
 !-----------------------------------------------------------------------
     integer :: jligr, ncmp
 !-----------------------------------------------------------------------
@@ -69,29 +72,44 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 ! --- NOMBRE MAX DE TYPE_MAIL DE COUPLAGE ENTRE 2 PAROIS
     real(kind=8) :: t(3), cechpr
     character(len=8) :: mo, k8b, cechpf, fiss(nfismx)
-    character(len=16) :: motclf
-    character(len=24) :: liel, modl, llist1, llist2, llistt
+    character(len=16) :: keywordfact
+    character(len=24) :: liel, modelisa, llist1, llist2, llistt
     character(len=19) :: carte
+    integer :: nb_elem_late, nb_noel_maxi
     character(len=24) :: mesmai, lismai
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    motclf = 'ECHANGE_PAROI'
-    call getfac(motclf, nechp)
+    keywordfact = 'ECHANGE_PAROI'
+    call getfac(keywordfact, nechp)
     if (nechp .eq. 0) goto 999
 !
     liel = ligrch
     liel(20:24) = '.LIEL'
     mo = ligrmo
-    call dismoi('MODELISATION', mo, 'MODELE', repk=modl)
+    igrel = 0
+    inema = 0
+    call dismoi('MODELISATION', mo, 'MODELE', repk=modelisa)
+
+!
+! - Count number of late elements
+!
+    call char_nb_ligf(mesh  , keywordfact, 'Elem', nb_elem_late, nb_noel_maxi, &
+                      suffix = '_1')
+!
+! - Create <LIGREL> on late elements
+!
+    if (nb_elem_late.ne.0) then
+        call char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
+    endif
 !
 !     LE MOT-CLE COEF_H EST-IL PRESENT ?
     lcoefh=.false.
     do iocc = 1, nechp
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'COEF_H', iocc=iocc, scal=cechpr, nbret=nh)
+            call getvr8(keywordfact, 'COEF_H', iocc=iocc, scal=cechpr, nbret=nh)
         else if (fonree.eq.'FONC') then
-            call getvid(motclf, 'COEF_H', iocc=iocc, scal=cechpf, nbret=nh)
+            call getvid(keywordfact, 'COEF_H', iocc=iocc, scal=cechpf, nbret=nh)
         endif
         if (nh .ne. 0) then
             lcoefh=.true.
@@ -104,9 +122,9 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
     if (lcoefh) then
         carte = char//'.CHTH.HECHP'
         if (fonree .eq. 'REEL') then
-            call alcart('G', carte, noma, 'COEH_R')
+            call alcart('G', carte, mesh, 'COEH_R')
         else if (fonree.eq.'FONC') then
-            call alcart('G', carte, noma, 'COEH_F')
+            call alcart('G', carte, mesh, 'COEH_F')
         else
             call utmess('F', 'MODELISA2_37', sk=fonree)
         endif
@@ -124,18 +142,18 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 !
 !       RECUPERATION DU COEFFICIENT D'ECHANGE
         if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'COEF_H', iocc=iocc, scal=cechpr, nbret=nh)
+            call getvr8(keywordfact, 'COEF_H', iocc=iocc, scal=cechpr, nbret=nh)
         else if (fonree.eq.'FONC') then
-            call getvid(motclf, 'COEF_H', iocc=iocc, scal=cechpf, nbret=nh)
+            call getvid(keywordfact, 'COEF_H', iocc=iocc, scal=cechpf, nbret=nh)
         endif
 !
 !       RECUPERATION DU VECTEUR DE TRANSLATION POUR PATRMA
         do i = 1, 3
             t(i) = 0.0d0
         end do
-        call getvr8(motclf, 'TRAN', iocc=iocc, nbval=3, vect=t,&
+        call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=3, vect=t,&
                     nbret=nt)
-        call getvid(motclf, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
+        call getvid(keywordfact, 'FISSURE', iocc=iocc, nbval=0, nbret=nfiss)
 !
 ! ----------------------------------------------------------------------
 ! ----- CAS MOT-CLEF FISSURE (X-FEM)
@@ -144,14 +162,14 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 !
 !         RECUPERATION DU NOM DES FISSURES
             nfiss = -nfiss
-            call getvid(motclf, 'FISSURE', iocc=iocc, nbval=nfiss, vect=fiss,&
+            call getvid(keywordfact, 'FISSURE', iocc=iocc, nbval=nfiss, vect=fiss,&
                         nbret=ibid)
 !         VERIFICATION DE LA COHERENCE ENTRE LES FISSURES ET LE MODELE
             call xvelfm(nfiss, fiss, ligrmo(1:8))
 !
 !         ON SCRUTE LE MC TEMP_CONTINUE
             ltcon=.false.
-            call getvtx(motclf, 'TEMP_CONTINUE', iocc=iocc, scal=k8b, nbret=ntcon)
+            call getvtx(keywordfact, 'TEMP_CONTINUE', iocc=iocc, scal=k8b, nbret=ntcon)
 !         VERIF DE COHERENCE AVEC LE MC COEF_H
             if (ntcon .eq. 1) then
                 ASSERT(k8b(1:3).eq.'OUI'.and. nh.eq.0)
@@ -183,7 +201,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
 !           RECUPERATION DES MAILLES PRINCIPALES XFEM POUR FISS(1:NFISS)
                 mesmai = '&&CAECHP.MES_MAILLES'
                 lismai = '&&CAECHP.NUM_MAILLES'
-                call xtmafi(noma, ndim, fiss, nfiss, lismai,&
+                call xtmafi(mesh, ndim, fiss, nfiss, lismai,&
                             mesmai, nbm)
                 call jeveuo(mesmai, 'L', jma)
 !
@@ -211,20 +229,20 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
             llist2 = '&&CAECHP.LLIST2'
             llistt = '&&CAECHP.LLIST.TRIE'
 !
-            call palima(noma, motclf, 'GROUP_MA_1', 'MAILLE_1', iocc,&
+            call palima(mesh, keywordfact, 'GROUP_MA_1', 'MAILLE_1', iocc,&
                         llist1)
-            call palima(noma, motclf, 'GROUP_MA_2', 'MAILLE_2', iocc,&
+            call palima(mesh, keywordfact, 'GROUP_MA_2', 'MAILLE_2', iocc,&
                         llist2)
 !
-            call patrma(llist1, llist2, t, nbtymx, noma,&
+            call patrma(llist1, llist2, t, nbtymx, mesh,&
                         llistt, nbtyp)
 !
 !         MISE A JOUR DE LIGRCH ET STOCKAGE DANS LA CARTE
             do j = 1, nbtyp
                 igrel = igrel+1
                 call jeveuo(jexnum(llistt, j), 'L', jlistt)
-                call paligi('THER', modl, ligrch, igrel, inema,&
-                            zi(jlistt))
+                call paligi(modelisa, ligrch, igrel, inema, zi(jlistt))
+
 !           STOCKAGE DANS LA CARTE
                 call jeveuo(jexnum(liel, igrel), 'E', jligr)
                 call jelira(jexnum(liel, igrel), 'LONMAX', nbm)

@@ -1,35 +1,7 @@
 subroutine op0030()
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+implicit none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit none
-!
-! ----------------------------------------------------------------------
-!
-! COMMANDE:  DEFI_CONTACT
-!
-! ----------------------------------------------------------------------
-!
-!
-!
-!
-#include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
@@ -52,60 +24,80 @@ subroutine op0030()
 #include "asterfort/jemarq.h"
 #include "asterfort/lgtlgr.h"
 #include "asterfort/wkvect.h"
-    integer :: ifm, niv
-    integer :: iret, noc, ndim, iatype
-    character(len=4) :: k4bid
-    character(len=8) :: noma, nomo, char
-    character(len=16) :: k16bid, pheno, oper
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
+!
+
+!
+! ----------------------------------------------------------------------
+!
+! COMMANDE:  DEFI_CONTACT
+!
+! ----------------------------------------------------------------------
+!
+    integer :: iret, noc, nb_dim
+    character(len=4) :: vale_type
+    character(len=8) :: mesh, model, load
+    character(len=16) :: k16dummy, command
     character(len=16) :: formul
     character(len=19) :: ligrmo, ligret, ligrel, ligrch
     integer :: iform
     logical :: lallv
-    character(len=24) :: defico
+    character(len=24) :: sdcont_defi
+    character(len=8), pointer :: p_load_type(:) => null() 
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! -- TITRE
-!
     call infmaj()
-    call infdbg('CONTACT', ifm, niv)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    formul = ' '
-    iform = 0
-    oper = 'XXXXXXXXXXMEXX'
-    ligret = '&&OP0030.LIGRET'
-    ligrel = '&&OP0030.LIGREL'
+    formul    = ' '
+    iform     = 0
+    ligret    = '&&OP0030.LIGRET'
+    ligrel    = '&&OP0030.LIGREL'
+    vale_type = 'REEL'
 !
-! --- CONCEPT RESULTAT
+! - Which command ?
 !
-    call getres(char, k16bid, k16bid)
-    defico = char(1:8)//'.CONTACT'
+    call getres(load, k16dummy, command)
 !
-! --- NOMS DE LIGREL, MAILLAGE , DIMENSION DU PB
+! - Mesh, Ligrel for model, dimension of model
 !
-    call cagene(char, oper, ligrmo, noma, ndim)
-    nomo = ligrmo(1:8)
+    sdcont_defi = load(1:8)//'.CONTACT'
 !
-! --- LIGREL DE CHARGE
+! - Mesh, Ligrel for model, dimension of model
 !
-    ligrch = char//'.CHME.LIGRE'
-    call wkvect(char//'.TYPE', 'G V K8', 1, iatype)
-    zk8(iatype) = 'MECA_RE'
+    call cagene(load, command, ligrmo, mesh, nb_dim)
+    model  = ligrmo(1:8)
 !
-! --- VERIFICATION QUE LE MODELE EST DE TYPE MECANIQUE
+! - Load type
 !
-    call dismoi('PHENOMENE', nomo, 'MODELE', repk=pheno)
+    ligrch = load//'.CHME.LIGRE'
+    call wkvect(load//'.TYPE', 'G V K8', 1, vk8 = p_load_type)
+    p_load_type(1) = 'MECA_RE'
 !
-! --- RECUPERATION DE LA FORMULATION (UNIQUE !)
+! - Contact formulation
 !
     call getvtx(' ', 'FORMULATION', scal=formul, nbret=noc)
-    if (noc .eq. 0) then
-        ASSERT(.false.)
-    endif
+    ASSERT(noc.ne.0)
 !
     if (formul .eq. 'DISCRETE') then
         iform = 1
@@ -119,34 +111,28 @@ subroutine op0030()
         ASSERT(.false.)
     endif
 !
-! --- LECTURE DES DONNEES
+! - Read data
 !
     if (iform .eq. 4) then
-        call caliun(char, noma, nomo)
+        call caliun(load, mesh, model)
     else
-        call calico(char, noma, nomo, ndim, iform,&
+        call calico(load, mesh, model, nb_dim, iform,&
                     ligret)
     endif
 !
-! --- TYPES DE CONTACT
+! - New <LIGREL>
 !
-    lallv = cfdisl(defico,'ALL_VERIF')
-!
-! --- AJOUT LIGREL ELEMENTS TARDIFS METHODE CONTINUE
-!
+    lallv = cfdisl(sdcont_defi,'ALL_VERIF')
     if (iform .eq. 2) then
         if (.not.lallv) then
-! ---   CREATION DU LIGREL A PARTIR DU LIGRET
             call lgtlgr('V', ligret, ligrel)
             call detrsd('LIGRET', ligret)
-! ---   ON COPIE LE LIGREL
             call copisd('LIGREL', 'G', ligrel, ligrch)
             call detrsd('LIGREL', ligrel)
         endif
     endif
 !
-! --- MISE A JOUR DU LIGREL DE CHARGE SI IL EXISTE EN FONCTION
-!     DE LA TAILLE MAX DES .RESL
+! - Update loads <LIGREL>
 !
     call jeexin(ligrch//'.LGRF', iret)
     if (iret .ne. 0) then
@@ -156,11 +142,10 @@ subroutine op0030()
         call initel(ligrch)
     endif
 !
-! --- VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
-!     POUR LES FORMULATIONS MAILLEES
+! - Check mesh orientation (normals)
 !
     if ((iform.eq.1) .or. (iform.eq.2)) then
-        call chveno(k4bid, noma, nomo)
+        call chveno(vale_type, mesh, model)
     endif
 !
     call jedema()
