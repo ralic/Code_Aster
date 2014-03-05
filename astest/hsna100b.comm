@@ -16,21 +16,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 MAIL=LIRE_MAILLAGE(FORMAT='MED',
                          UNITE=20,
                          VERI_MAIL=_F(VERIF='OUI',
                                       APLAT=1.E-3),
                          INFO=2,
                          );
-MAIL=DEFI_GROUP( reuse=MAIL,        MAILLAGE=MAIL,CREA_GROUP_NO=(
-                        _F( GROUP_MA = 'RGENEF',
-                                       NOM = 'RGENEF',        ),
-                        _F( GROUP_MA = 'L_EXT',
-                                       NOM = 'L_EXT',        ),
-                        _F( GROUP_MA = 'L_INT',
-                                       NOM = 'L_INT',        ))
-                    )
+
 
 BETON=DEFI_MATERIAU(    SECH_GRANGER=_F(  A = 3.8E-13,
                                           B = 0.05,
@@ -254,8 +247,10 @@ COUP=MACR_LIGN_COUPE(RESULTAT=RESUSECH,
                          LIST_INST=LISTSEC2,
                          NOM_CHAM='TEMP',
                          LIGN_COUPE=_F(NOM_CMP=('TEMP'),
-                                       TYPE='GROUP_NO',
-                                       GROUP_NO='RGENEF',),);
+                                       TYPE='GROUP_MA',
+                                       MAILLAGE=MAIL,
+                                       GROUP_MA='RGENEF',),);
+
 IMPR_TABLE(TABLE=COUP,FORMAT='TABLEAU_CROISE', FORMAT_R='F3.12',NOM_PARA=('INST','COOR_X','TEMP'),);
 #-----------------------------------------------------
 # Tests 

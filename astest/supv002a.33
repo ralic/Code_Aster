@@ -345,7 +345,7 @@ def supv002_ops(self, ERREUR, **kwargs):
     # check for installation problem: http://bugs.python.org/issue3770
     do_check = True
     try:
-        self.queue = MPR.Queue()
+        MPR.Queue()
     except ImportError, exc:
         if 'sem_open implementation' in str(exc):
             do_check = False
