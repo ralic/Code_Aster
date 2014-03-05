@@ -76,7 +76,6 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     character(len=8) :: ma, nomgd, nocmp
     character(len=3) :: tsca
     character(len=19) :: cns1, cns2
-    character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cn1c(:) => null()
     character(len=8), pointer :: cn2c(:) => null()
     integer, pointer :: cn1d(:) => null()
@@ -95,14 +94,13 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     endif
 !
 !
-    call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk)
     call jeveuo(cns1//'.CNSD', 'L', vi=cn1d)
     call jeveuo(cns1//'.CNSC', 'L', vk8=cn1c)
     call jeveuo(cns1//'.CNSV', 'L', jcn1v)
     call jeveuo(cns1//'.CNSL', 'L', jcn1l)
 !
-    ma = cnsk(1)
-    nomgd = cnsk(2)
+    call dismoi('NOM_MAILLA', cns1, 'CHAM_NO_S', repk=ma)
+    call dismoi('NOM_GD', cns1, 'CHAM_NO_S', repk=nomgd)
     nbnom = cn1d(1)
     ncmp1 = cn1d(2)
 !

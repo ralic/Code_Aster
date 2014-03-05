@@ -219,7 +219,7 @@ cata_msg = {
 Erreur Programmeur / UTTCPU :
  l"argument "INDI" est non valide
 """),
- 
+
 
 
 
@@ -241,9 +241,9 @@ Erreur Programmeur / UTTCPU  :
  il existe au moins un noeud qui n appartient pas au groupe de mailles.
 """),
 
-60 : _(u"""
- un sous-domaine  est non connexe
-"""),
+
+
+
 
 88 : _(u"""
  L'option " %(k1)s " est à recalculer

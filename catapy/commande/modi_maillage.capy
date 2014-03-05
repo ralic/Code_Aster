@@ -59,11 +59,8 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
          ),
 
          DEFORME         =FACT(statut='f',
-           OPTION          =SIMP(statut='o',typ='TXM',into=("TRAN","TRAN_APPUI") ),
+           OPTION          =SIMP(statut='o',typ='TXM',into=("TRAN",) ),
            DEPL            =SIMP(statut='o',typ=cham_no_sdaster ),
-        b_deform        =BLOC(condition = "OPTION=='TRAN_APPUI'",
-           GROUP_NO_APPUI = SIMP(statut='o',typ=grno,validators=NoRepeat(),max='**' ),
-           GROUP_NO_STRU  = SIMP(statut='o',typ=grno,validators=NoRepeat(),max='**' ),),
          ),
 
          EQUE_PIQUA      =FACT(statut='f',

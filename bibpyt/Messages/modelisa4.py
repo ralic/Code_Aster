@@ -317,13 +317,13 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
   %(k1)s  le groupe  %(k2)s  est vide
 """),
 
-81 : _(u"""
-  %(k1)s  erreur de syntaxe : mot clé " %(k2)s " non reconnu
-"""),
 
-82 : _(u"""
-  %(k1)s  mot clé " %(k2)s " ignore
-"""),
+
+
+
+
+
+
 
 83 : _(u"""
   le vecteur est perpendiculaire à la poutre.

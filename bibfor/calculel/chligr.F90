@@ -124,7 +124,8 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
 !
 ! --- VERIFICATIONS SI VARI_ELGA
 !
-    if (nomgd .eq. 'VARI_ELGA') then
+    if (nomgd .eq. 'VARI_R') then
+        write(6,*) 'AJACOT appel chveva'
         call chveva(nbma, ligr1, ligr2, iret)
         if (iret .ne. 0) then
             valk(1) = chel1

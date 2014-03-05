@@ -34,7 +34,6 @@ subroutine op0154()
 #include "asterfort/chpver.h"
 #include "asterfort/conori.h"
 #include "asterfort/copisd.h"
-#include "asterfort/defapp.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/echell.h"
@@ -114,12 +113,7 @@ subroutine op0154()
         call vtgpld('CUMU', geomi, 1.d0, depla, 'V',&
                     geomf)
         call detrsd('CHAMP_GD', geomi)
-        if (option .eq. 'TRAN_APPUI') then
-            call defapp(ma, geomf, 1.d0, depla, 'G',&
-                        geomi)
-        else
-            call copisd('CHAMP_GD', 'G', geomf, geomi)
-        endif
+        call copisd('CHAMP_GD', 'G', geomf, geomi)
         call detrsd('CHAMP_GD', geomf)
     endif
 !

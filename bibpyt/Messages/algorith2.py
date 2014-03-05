@@ -221,13 +221,13 @@ Risques & conseils :
   (jacobien = 0.)
 """),
 
-61 : _(u"""
- les listes des groupes de noeuds à fournir doivent contenir le même nombre de groupes de noeuds
-"""),
 
-62 : _(u"""
-  les listes des groupes de noeuds doivent contenir le même nombre de noeuds
-"""),
+
+
+
+
+
+
 
 63 : _(u"""
  on n'imprime que des champs réels

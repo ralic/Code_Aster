@@ -25,7 +25,6 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 #include "asterfort/leccoo.h"
 #include "asterfort/lecdbg.h"
 #include "asterfort/lecgrp.h"
-#include "asterfort/lecint.h"
 #include "asterfort/lecmai.h"
 #include "asterfort/lectit.h"
 #include "asterfort/liritm.h"
@@ -341,14 +340,9 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
         goto 9
     endif
 !
-    call lecint(ifl, icl, iv, rv, cv,&
-                cnl, mclint, nbmint, nbg, ier,&
-                irtet)
-    if (irtet .eq. 1) then
-        goto 8
-    else if (irtet .eq. 2) then
-        goto 9
-    endif
+    ASSERT(.false.)
+
+
 !
 ! -   DIMENSIONS GLOBALES DES OBJETS
 !
