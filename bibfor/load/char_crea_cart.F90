@@ -1,5 +1,5 @@
-subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
-                          vale_type, nb_carte, carte)
+subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
+                          nb_carte, carte)
 !
     implicit none
 !
@@ -36,7 +36,6 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
     character(len=16), intent(in) :: load_type
     character(len=8), intent(in) :: load
     character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
     character(len=4), intent(in) :: vale_type
     integer, intent(out) :: nb_carte
     character(len=19), intent(out) :: carte(*)
@@ -53,7 +52,6 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
 ! In  load_type    : type of load
 ! In  mesh         : name of mesh
 ! In  load         : name of load
-! In  ligrmo       : list of elements in model
 ! In  vale_type    : affected value type (real, complex or function)
 ! Out nb_carte     : number of <CARTE> for this Neumann load
 ! Out carte        : <CARTE> for this Neumann load
@@ -79,7 +77,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
 !
 ! - Number of <CARTE> objects - TODO: using lisdef utility
 !
-    if (load_type .eq. 'EFFE_FOND') then
+    if (load_type.eq.'EFFE_FOND') then
         nb_carte = 2
     else if (load_type.eq.'ONDE_PLANE') then
         nb_carte = 2

@@ -1,4 +1,4 @@
-subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
+subroutine cbondp(load, mesh, ndim, vale_type)
 !
     implicit none
 !
@@ -38,7 +38,6 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
     character(len=8), intent(in) :: load
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: ndim
-    character(len=19), intent(in) :: ligrmo
     character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,7 +52,6 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 ! In  mesh      : name of mesh
 ! In  load      : name of load
 ! In  ndim      : space dimension
-! In  ligrmo    : list of elements in model
 ! In  vale_type : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,8 +86,8 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo,&
-                        vale_type, nb_carte, carte)
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, vale_type,&
+                        nb_carte, carte)
     ASSERT(nb_carte.eq.2)
 !
 ! - Loop on factor keyword

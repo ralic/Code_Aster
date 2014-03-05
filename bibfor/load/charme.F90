@@ -2,7 +2,6 @@ subroutine charme(load, vale_type)
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
 #include "asterfort/caarei.h"
@@ -161,7 +160,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- ONDE_PLANE
 !
-        call cbondp(load, ligrmo, mesh, nb_dim, vale_type)
+        call cbondp(load, mesh, nb_dim, vale_type)
 !
 ! ----- FLUX_THM_REP
 !
@@ -205,7 +204,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- ROTATION
 !
-        call carota(load, ligrmo, mesh, vale_type)
+        call carota(load, mesh, vale_type)
 !
 ! ----- FORCE_ELEC
 !

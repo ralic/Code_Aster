@@ -96,8 +96,8 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo,&
-                        vale_type, nb_carte, carte)
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, vale_type, &
+                        nb_carte, carte)
     ASSERT(nb_carte.eq.2)
 !
 ! - For computation of geometric caracteristics (elementary)

@@ -16,13 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
-                              vale_type, nb_carte, carte)
+    subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
+                              nb_carte, carte)
         character(len=*),  intent(in) :: phenom
         character(len=16), intent(in) :: load_type 
         character(len=8), intent(in)  :: load
         character(len=8), intent(in)  :: mesh
-        character(len=19), intent(in) :: ligrmo
         character(len=4), intent(in)  :: vale_type
         integer, intent(out) :: nb_carte
         character(len=19), intent(out) :: carte(*)
