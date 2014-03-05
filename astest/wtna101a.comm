@@ -125,22 +125,19 @@ TEMPS1   = DEFI_LIST_REEL( DEBUT      = 0.,
                            INTERVALLE = _F( JUSQU_A = 1., NOMBRE = 1)
                          )
 
-U1       = STAT_NON_LINE( SOLVEUR=_F(METHODE='MUMPS'),
-                          MODELE     = MODELE,
-                          CHAM_MATER = CHMAT,
-     EXCIT      = ( _F( CHARGE    = PR_LATE,
-                                             FONC_MULT = EVOL_HYD),
-      _F( CHARGE    = PR_V,
-                                             FONC_MULT = EVOL_HYD),
-      _F( CHARGE = DEP_SYM),
-      _F( CHARGE = P0)),
-                          COMPORTEMENT = _F( RELATION     = 'KIT_HM',
+U1       = STAT_NON_LINE( MODELE     = MODELE, CHAM_MATER = CHMAT,
+       SOLVEUR=_F(METHODE='MUMPS',   ),
+       EXCIT      = ( _F( CHARGE    = PR_LATE, FONC_MULT = EVOL_HYD),
+                      _F( CHARGE    = PR_V, FONC_MULT = EVOL_HYD),
+                      _F( CHARGE = DEP_SYM),
+                      _F( CHARGE = P0)),
+       COMPORTEMENT = _F( RELATION     = 'KIT_HM',
                                           RELATION_KIT = ('DRUCK_PRAGER',
                        'LIQU_SATU',
                                                           'HYDR_UTIL'),
                                          ),
                          INCREMENT  = _F( LIST_INST = TEMPS1),
-                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6)
+                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-7)
                         )
 
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
@@ -179,26 +176,30 @@ EVOL_DEV = DEFI_FONCTION( NOM_PARA    = 'INST',
 #***********************************************************************
 #    CALCUL DE LA SOLUTION
 #***********************************************************************
-U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
-                 MODELE     = MODELE,
-                          CHAM_MATER = CHMAT,
-     EXCIT      = (
-                                         _F( CHARGE    = DEP_SYM),
-      _F( CHARGE    = PR_LATE,
-                                             FONC_MULT = EVOL_HYD),
-      _F( CHARGE    = DEP_V,
-                                             FONC_MULT = EVOL_DEV)),
-                          COMPORTEMENT  = _F( RELATION     = 'KIT_HM',
-                                           RELATION_KIT = ('DRUCK_PRAGER',
-                 'LIQU_SATU',
-                                                           'HYDR_UTIL')),
-                          ETAT_INIT  = _F( EVOL_NOLI  = U1,
-                                           NUME_ORDRE = 1),
-                          INCREMENT  = _F( LIST_INST  = TEMPS2),
-                          NEWTON     = _F( MATRICE    = 'TANGENTE',
-                      REAC_ITER  = 1),
-                          CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-6,
-                                           ITER_GLOB_MAXI = 30)
+
+
+
+
+
+
+U2 = STAT_NON_LINE(  MODELE     = MODELE, CHAM_MATER = CHMAT,
+
+#      On utilise le solveur PETSC + NMAX_ITER pour forcer le passage dans la routine ap2foi.F90
+#      (voir issue22110 et issue21962)
+       SOLVEUR=_F(METHODE='PETSC', PCENT_PIVOT=50., NMAX_ITER=40,RESI_RELA=1.e-10),
+      #SOLVEUR=_F(METHODE='MUMPS',   ),
+
+       EXCIT      = (
+          _F( CHARGE    = DEP_SYM),
+          _F( CHARGE    = PR_LATE, FONC_MULT = EVOL_HYD),
+          _F( CHARGE    = DEP_V, FONC_MULT = EVOL_DEV)),
+       COMPORTEMENT  = _F( RELATION     = 'KIT_HM',
+                           RELATION_KIT = ('DRUCK_PRAGER', 'LIQU_SATU', 'HYDR_UTIL')),
+       ETAT_INIT  = _F( EVOL_NOLI  = U1,
+                        NUME_ORDRE = 1),
+       INCREMENT  = _F( LIST_INST  = TEMPS2),
+       NEWTON     = _F( MATRICE    = 'TANGENTE', REAC_ITER  = 1),
+       CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-7, ITER_GLOB_MAXI = 30),
                         )
 
 U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
