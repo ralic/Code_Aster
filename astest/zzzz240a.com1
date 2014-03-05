@@ -13,228 +13,248 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-POURSUITE(CODE='OUI',)
+
+POURSUITE(CODE='OUI',);
 
 # TEST DES FILTRES DANS CALC_TABLE/IMPR_TABLE/EXTR_TABLE/RECU_FONCTION
-
 # POUR AVOIR DES VALEURS POSITIVES ET NEGATIVES
-oper = FORMULE(NOM_PARA=('SIXX'),
-               VALE='SIXX - 0.5')
 
-ttest = CALC_TABLE(TABLE=ML1,
-                   ACTION=_F(OPERATION='OPER',
-                             FORMULE=oper,
-                             NOM_PARA='COL',),)
+oper = FORMULE(VALE='SIXX - 0.5',
+               NOM_PARA='SIXX',);
 
-IMPR_TABLE(TABLE=ttest, UNITE=6)
+ttest=CALC_TABLE(TABLE=ML1,
+                 ACTION=(_F(OPERATION='FILTRE',
+                            VALE_I=2,
+                            NOM_PARA='NUME_ORDRE',),
+                         _F(OPERATION='OPER',
+                            FORMULE=oper,
+                            NOM_PARA='COL',),),)
+
+IMPR_TABLE(TABLE=ttest,
+           UNITE=6,);
 
 # TESTS DES FILTRES
-tab1 = CALC_TABLE(TABLE=ML1,
-                  ACTION=(_F(OPERATION='OPER',
-                             FORMULE=oper,
-                             NOM_PARA='COL',),
-                          _F(OPERATION='FILTRE',
-                             CRIT_COMP='MINI_ABS',
-                             NOM_PARA='COL',),
-                          _F(OPERATION='EXTR',
-                             NOM_PARA=('ABSC_CURV', 'COL'),),),)
 
-tab2 = CALC_TABLE(TABLE=ML1,
-                  ACTION=(_F(OPERATION='OPER',
-                             FORMULE=oper,
-                             NOM_PARA='COL',),
-                          _F(OPERATION='FILTRE',
-                             CRIT_COMP='MAXI_ABS',
-                             NOM_PARA='COL',),
-                          _F(OPERATION='EXTR',
-                             NOM_PARA=('ABSC_CURV', 'COL'),),),)
+tab1=CALC_TABLE(TABLE=ML1,
+                ACTION=(_F(OPERATION='OPER',
+                           FORMULE=oper,
+                           NOM_PARA='COL',),
+                        _F(OPERATION='FILTRE',
+                           VALE_I=2,
+                           NOM_PARA='NUME_ORDRE',),
+                        _F(OPERATION='FILTRE',
+                           NOM_PARA='COL',
+                           CRIT_COMP='MINI_ABS',),
+                        _F(OPERATION='EXTR',
+                           NOM_PARA=('ABSC_CURV','COL',),),),);
+
+tab2=CALC_TABLE(TABLE=ML1,
+                ACTION=(_F(OPERATION='OPER',
+                           FORMULE=oper,
+                           NOM_PARA='COL',),
+                        _F(OPERATION='FILTRE',
+                           VALE_I=2,
+                           NOM_PARA='NUME_ORDRE',),
+                        _F(OPERATION='FILTRE',
+                           NOM_PARA='COL',
+                           CRIT_COMP='MAXI_ABS',),
+                        _F(OPERATION='EXTR',
+                           NOM_PARA=('ABSC_CURV','COL',),),),);
 
 IMPR_TABLE(TABLE=ttest,
-           NOM_PARA=('ABSC_CURV', 'COL'),
-           UNITE=55)
+           UNITE=55,
+           NOM_PARA=('ABSC_CURV','COL',),);
 
 IMPR_TABLE(TABLE=ttest,
-           NOM_PARA=('ABSC_CURV', 'COL'),
+           UNITE=55,
            FILTRE=_F(NOM_PARA='COL',
-                     CRIT_COMP='MINI_ABS'),
-           UNITE=55)
+                     CRIT_COMP='MINI_ABS',),
+           NOM_PARA=('ABSC_CURV','COL',),);
 
 IMPR_TABLE(TABLE=tab1,
-           UNITE=55)
+           UNITE=55,);
 
 IMPR_TABLE(TABLE=ttest,
-           NOM_PARA=('ABSC_CURV', 'COL'),
+           UNITE=55,
            FILTRE=_F(NOM_PARA='COL',
-                     CRIT_COMP='MAXI_ABS'),
-           UNITE=55)
+                     CRIT_COMP='MAXI_ABS',),
+           NOM_PARA=('ABSC_CURV','COL',),);
 
 IMPR_TABLE(TABLE=tab2,
-           UNITE=55)
+           UNITE=55,);
 
 DEFI_FICHIER(ACTION='LIBERER',
-             UNITE=55)
+             UNITE=55,);
 
 # RELECTURE POUR COMPARAISON DES TABLES FILTREES DANS CALC_TABLE OU IMPR_TABLE
-tlu2 = LIRE_TABLE(UNITE=55,
-                  NUME_TABLE=2)
 
-tlu3 = LIRE_TABLE(UNITE=55,
-                  NUME_TABLE=3)
+tlu2=LIRE_TABLE(UNITE=55,
+                NUME_TABLE=2,);
 
-tlu4 = LIRE_TABLE(UNITE=55,
-                  NUME_TABLE=4)
+tlu3=LIRE_TABLE(UNITE=55,
+                NUME_TABLE=3,);
 
-tlu5 = LIRE_TABLE(UNITE=55,
-                  NUME_TABLE=5)
+tlu4=LIRE_TABLE(UNITE=55,
+                NUME_TABLE=4,);
 
-fdiff = FORMULE(NOM_PARA=('COL', 'OTHER'),
-                VALE=('COL - OTHER'))
+tlu5=LIRE_TABLE(UNITE=55,
+                NUME_TABLE=5,);
 
-tdif23 = CALC_TABLE(TABLE=tlu3,
-                    ACTION=(_F(OPERATION='RENOMME',
-                               NOM_PARA=('COL', 'OTHER'),),
-                            _F(OPERATION='COMB',
-                               TABLE=tlu2,
-                               NOM_PARA='ABSC_CURV',),
-                            _F(OPERATION='OPER',
-                               FORMULE=fdiff,
-                               NOM_PARA='DIFF'),),
-                    TITRE='Difference tlu2 - tlu3')
+fdiff = FORMULE(VALE='COL - OTHER',
+                NOM_PARA=('COL','OTHER',),);
 
-tdif45 = CALC_TABLE(TABLE=tlu5,
-                    ACTION=(_F(OPERATION='RENOMME',
-                               NOM_PARA=('COL', 'OTHER'),),
-                            _F(OPERATION='COMB',
-                               TABLE=tlu4,
-                               NOM_PARA='ABSC_CURV',),
-                            _F(OPERATION='OPER',
-                               FORMULE=fdiff,
-                               NOM_PARA='DIFF'),),
-                    TITRE='Difference tlu4 - tlu5')
+tdif23=CALC_TABLE(TABLE=tlu3,
+                  ACTION=(_F(OPERATION='RENOMME',
+                             NOM_PARA=('COL','OTHER',),),
+                          _F(OPERATION='COMB',
+                             TABLE=tlu2,
+                             NOM_PARA='ABSC_CURV',),
+                          _F(OPERATION='OPER',
+                             FORMULE=fdiff,
+                             NOM_PARA='DIFF',),),
+                  TITRE='Difference tlu2 - tlu3',);
 
+tdif45=CALC_TABLE(TABLE=tlu5,
+                  ACTION=(_F(OPERATION='RENOMME',
+                             NOM_PARA=('COL','OTHER',),),
+                          _F(OPERATION='COMB',
+                             TABLE=tlu4,
+                             NOM_PARA='ABSC_CURV',
+                             FORMAT_R="E12.5"),
+                          _F(OPERATION='OPER',
+                             FORMULE=fdiff,
+                             NOM_PARA='DIFF',),),
+                  TITRE='Difference tlu4 - tlu5',);
 IMPR_TABLE(TABLE=tdif23)
 
 IMPR_TABLE(TABLE=tdif45)
 
 TEST_TABLE(TABLE=tdif23,
            NOM_PARA='DIFF',
-           VALE_CALC=0.,
-           VALE_REFE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1.e-8,
-           REFERENCE='ANALYTIQUE')
+           VALE_REFE=0.0,
+           PRECISION=1e-08,
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.0,);
 
 TEST_TABLE(TABLE=tdif45,
            NOM_PARA='DIFF',
-           VALE_CALC=0.,
-           VALE_REFE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1.e-8,
-           REFERENCE='ANALYTIQUE')
+           VALE_REFE=0.0,
+           PRECISION=1e-08,
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.0,);
 
 # TEST EXTR_TABLE
-ft3 = RECU_FONCTION(TABLE=ttest,
-                    PARA_X='COOR_X',
-                    PARA_Y='COL',
-                    FILTRE=_F(VALE_I=2,
-                              NOM_PARA='NUME_ORDRE',),
-                    PROL_GAUCHE='CONSTANT',
-                    PROL_DROITE='CONSTANT',
-                    INTERPOL='LIN',
-                    INFO=2,)
+
+ft3=RECU_FONCTION(TABLE=ttest,
+                  PARA_X='COOR_X',
+                  PARA_Y='COL',
+                  FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                            VALE_I=2,),
+                  INTERPOL='LIN',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',
+                  INFO=2,);
 
 # UNIQUEMENT LE POINT A COOR_X MINI (0.01) POUR LE TEST_FONCTION
-fc3 = RECU_FONCTION(TABLE=ttest,
-                    PARA_X='COOR_X',
-                    PARA_Y='COL',
-                    FILTRE=(_F(VALE_I=2,
-                               NOM_PARA='NUME_ORDRE',),
-                            _F(CRIT_COMP='MINI_ABS',
-                               NOM_PARA='COOR_X'),),
-                    PROL_GAUCHE='CONSTANT',
-                    PROL_DROITE='CONSTANT',
-                    INTERPOL='LIN',
-                    INFO=2,)
 
-ft5 = RECU_FONCTION(TABLE=ttest,
-                    PARA_X='COOR_Y',
-                    PARA_Y='COL',
-                    FILTRE=_F(VALE_I=2,
-                              NOM_PARA='NUME_ORDRE',),
-                    PROL_GAUCHE='CONSTANT',
-                    PROL_DROITE='CONSTANT',
-                    INTERPOL='LIN',
-                    INFO=2,)
+fc3=RECU_FONCTION(TABLE=ttest,
+                  PARA_X='COOR_X',
+                  PARA_Y='COL',
+                  FILTRE=(
+                  _F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+                  _F(NOM_PARA='COOR_X',
+                     CRIT_COMP='MINI_ABS',),),
+                  INTERPOL='LIN',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',
+                  INFO=2,);
+
+ft5=RECU_FONCTION(TABLE=ttest,
+                  PARA_X='COOR_Y',
+                  PARA_Y='COL',
+                  FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                            VALE_I=2,),
+                  INTERPOL='LIN',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',
+                  INFO=2,);
 
 # UNIQUEMENT LE POINT A COOR_X MAXI (0.49) POUR LE TEST_FONCTION
-fc5 = RECU_FONCTION(TABLE=ttest,
-                    PARA_X='COOR_Y',
-                    PARA_Y='COL',
-                    FILTRE=(_F(VALE_I=2,
-                               NOM_PARA='NUME_ORDRE',),
-                            _F(CRIT_COMP='MAXI_ABS',
-                               NOM_PARA='COOR_Y'),),
-                    PROL_GAUCHE='CONSTANT',
-                    PROL_DROITE='CONSTANT',
-                    INTERPOL='LIN',
-                    INFO=2,)
 
-tabf = CALC_TABLE(TABLE=tab1,
-                  ACTION=(_F(OPERATION='AJOUT_COLONNE',
-                             NOM_PARA='FONCT',
-                             VALE=ft3.nom,),
-                          _F(OPERATION='AJOUT_LIGNE',
-                             NOM_PARA=('ABSC_CURV', 'COL','FONCT'),
-                             VALE=(-3., 1., fc5.nom),),),)
+fc5=RECU_FONCTION(TABLE=ttest,
+                  PARA_X='COOR_Y',
+                  PARA_Y='COL',
+                  FILTRE=(
+                  _F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+                  _F(NOM_PARA='COOR_Y',
+                     CRIT_COMP='MAXI_ABS',),),
+                  INTERPOL='LIN',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',
+                  INFO=2,);
 
-IMPR_TABLE(TABLE=tabf)
+tabf=CALC_TABLE(TABLE=tab1,
+                ACTION=(_F(OPERATION='AJOUT_COLONNE',
+                           NOM_PARA='FONCT',
+                           VALE='ft3',),
+                        _F(OPERATION='AJOUT_LIGNE',
+                           NOM_PARA=('ABSC_CURV','COL','FONCT',),
+                           VALE=(-3.0,1.0,'fc5',),),),);
 
-fext3 = EXTR_TABLE(TABLE=tabf,
-                   TYPE_RESU='FONCTION_SDASTER',
-                   NOM_PARA='FONCT',
-                   FILTRE=_F(CRIT_COMP='MINI_ABS',
-                             NOM_PARA='ABSC_CURV',),)
+IMPR_TABLE(TABLE=tabf,);
 
-fext5 = EXTR_TABLE(TABLE=tabf,
-                   TYPE_RESU='FONCTION_SDASTER',
-                   NOM_PARA='FONCT',
-                   FILTRE=_F(CRIT_COMP='MAXI_ABS',
-                             NOM_PARA='ABSC_CURV',),)
+fext3=EXTR_TABLE(TYPE_RESU='FONCTION_SDASTER',
+                 TABLE=tabf,
+                 NOM_PARA='FONCT',
+                 FILTRE=_F(NOM_PARA='ABSC_CURV',
+                           CRIT_COMP='MINI_ABS',),);
 
-IMPR_FONCTION(COURBE=(_F(FONCTION=ft3),
-                      _F(FONCTION=fc3),
-                      _F(FONCTION=fext3),
-                      _F(FONCTION=ft5),
-                      _F(FONCTION=fc5),
-                      _F(FONCTION=fext5),),)
+fext5=EXTR_TABLE(TYPE_RESU='FONCTION_SDASTER',
+                 TABLE=tabf,
+                 NOM_PARA='FONCT',
+                 FILTRE=_F(NOM_PARA='ABSC_CURV',
+                           CRIT_COMP='MAXI_ABS',),);
 
-fdif3 = CALC_FONCTION(COMB=(_F(FONCTION=fext3,
-                               COEF=1.,),
-                            _F(FONCTION=fc3,
-                               COEF=-1.,),),
-                      NOM_PARA='X',)
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=(_F(FONCTION=ft3,),
+                      _F(FONCTION=fc3,),
+                      _F(FONCTION=fext3,),
+                      _F(FONCTION=ft5,),
+                      _F(FONCTION=fc5,),
+                      _F(FONCTION=fext5,),),
+              UNITE=8,);
 
-fdif5 = CALC_FONCTION(COMB=(_F(FONCTION=fext5,
-                               COEF=1.,),
-                            _F(FONCTION=fc5,
-                               COEF=-1.,),),
-                      NOM_PARA='X',)
+fdif3=CALC_FONCTION(COMB=(_F(FONCTION=fext3,
+                             COEF=1.0,),
+                          _F(FONCTION=fc3,
+                             COEF=-1.0,),),
+                    NOM_PARA='X',);
+
+fdif5=CALC_FONCTION(COMB=(_F(FONCTION=fext5,
+                             COEF=1.0,),
+                          _F(FONCTION=fc5,
+                             COEF=-1.0,),),
+                    NOM_PARA='X',);
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=fdif3,
                          NOM_PARA='ABSC_CURV',
                          VALE_PARA=0.01,
-                         VALE_CALC=0.,
-                         VALE_REFE=0.,
                          CRITERE='ABSOLU',
-                         PRECISION=1.e-8,
-                         REFERENCE='ANALYTIQUE'),
+                         VALE_REFE=0.0,
+                         PRECISION=1e-08,
+                         REFERENCE='ANALYTIQUE',
+                         VALE_CALC=0.0,),
                       _F(FONCTION=fdif5,
                          NOM_PARA='ABSC_CURV',
                          VALE_PARA=0.49,
-                         VALE_CALC=0.,
-                         VALE_REFE=0.,
                          CRITERE='ABSOLU',
-                         PRECISION=1.e-8,
-                         REFERENCE='ANALYTIQUE'),),)
+                         VALE_REFE=0.0,
+                         PRECISION=1e-08,
+                         REFERENCE='ANALYTIQUE',
+                         VALE_CALC=0.0,),),);
 
-FIN()
+FIN();

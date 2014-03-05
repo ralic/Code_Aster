@@ -545,6 +545,16 @@ class Table(TableBase):
          dval_self = dict.fromkeys([self._tuplevalues(r) for r in self], 1)
          tmp.extend([r for r in other if dval_self.get(self._tuplevalues(r)) is None])
          return Table(tmp, self.para, self.type[:], self.titr)
+   
+   def difference(self, other):
+      """Différence de deux tables: retire les lignes qui sont dans 'other'"""
+      if other.para != self.para:
+         UTMESS('A','TABLE0_30')
+         return Table()
+      else:
+         dval_other = dict.fromkeys([self._tuplevalues(r) for r in other], 1)
+         tmp = [r for r in self if dval_other.get(self._tuplevalues(r)) is None]
+         return Table(tmp, self.para, self.type[:], self.titr)
 
    def values(self):
       """Renvoie la table sous la forme d'un dictionnaire de listes dont les
