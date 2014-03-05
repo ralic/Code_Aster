@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine extra1(nin, lchin, lpain, opt, nute,&
-                      ligrel)
+    subroutine extra1(nin, lchin, lpain, opt, nute)
         integer :: nin
         character(len=*) :: lchin(*)
         character(len=8) :: lpain(*)
         integer :: opt
         integer :: nute
-        character(len=19) :: ligrel
     end subroutine extra1
 end interface

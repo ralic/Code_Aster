@@ -1,5 +1,4 @@
-subroutine extra1(nin, lchin, lpain, opt, nute,&
-                  ligrel)
+subroutine extra1(nin, lchin, lpain, opt, nute)
     implicit none
 !
 ! ======================================================================
@@ -32,7 +31,6 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
     integer :: nin, opt, nute
     character(len=*) :: lchin(*)
     character(len=8) :: lpain(*)
-    character(len=19) :: ligrel
 ! ----------------------------------------------------------------------
 !     BUT: PREPARER LES CHAMPS LOCAUX "IN"
 !
@@ -66,7 +64,7 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
 !
 !
     npin=nbpara(opt,nute,'IN ')
-    do 90 ipar = 1, npin
+    do ipar = 1, npin
         nompar=nopara(opt,nute,'IN ',ipar)
         iparg=indik8(zk8(iaoppa),nompar,1,npario)
         iparin=indik8(lpain,nompar,1,nin)
@@ -134,7 +132,8 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
         if (type .eq. 'CHML') call exchml(imodat, iparg)
         if (type .eq. 'CHNO') call exchno(imodat, iparg)
         if (type .eq. 'RESL') call exresl(imodat, iparg, chin)
-90  end do
+90  continue
+    end do
 !
 !
 !

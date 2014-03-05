@@ -45,8 +45,7 @@ subroutine extrai(nin, lchin, lpain, opt, nute,&
 !
     if (calvoi .eq. 0) then
         if (init .ne. 'INIT') then
-            call extra1(nin, lchin, lpain, opt, nute,&
-                        ligrel)
+            call extra1(nin, lchin, lpain, opt, nute)
         endif
     else
 !       -- ON PREPARE TOUT LA 1ERE FOIS :
@@ -54,8 +53,7 @@ subroutine extrai(nin, lchin, lpain, opt, nute,&
             do 1, igr=1,nbgr
             nbelgr=nbelem(ligrel,igr)
             nute=typele(ligrel,igr)
-            call extra1(nin, lchin, lpain, opt, nute,&
-                        ligrel)
+            call extra1(nin, lchin, lpain, opt, nute)
  1          continue
         endif
     endif

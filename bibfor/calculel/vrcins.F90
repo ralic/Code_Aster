@@ -31,6 +31,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 #include "asterfort/utmess.h"
 #include "asterfort/vrcin1.h"
 #include "asterfort/vrcin2.h"
+#include "asterfort/detrsd.h"
 !
     character(len=2) :: codret
     character(len=19) :: chvarc
@@ -70,6 +71,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     chmat=chmatz
     carele=carelz
     modele=modelz
+    call detrsd('CHAM_ELEM', chvarc)
 !
 !
     call jeexin(chmat//'.CVRCVARC', iret)
@@ -121,7 +123,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     5 end do
 !
     do 1, ichs=1,nbchs
-    chs=zk24(jlisch-1+ichs)
+    chs=zk24(jlisch-1+ichs)(1:19)
     varc1=zk16(jlissd-1+7*(ichs-1)+4)(1:8)
     call jeveuo(chs//'.CESD', 'L', jcesd)
     call jeveuo(chs//'.CESL', 'L', jcesl)

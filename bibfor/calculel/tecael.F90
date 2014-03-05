@@ -70,9 +70,9 @@ subroutine tecael(iadzi, iazk24)
     character(len=8) :: ma, nomma, nomno
 !
 !
-!     RECUPERATION DU NUMERO DE LA MAILLE ET DU NOMBRE DE NOEUDS :
-!     ------------------------------------------------------------
-    ma = zk24(icaelk-1+1)
+!   -- recuperation du numero de la maille et du nombre de noeuds :
+!   ---------------------------------------------------------------
+    ma = zk24(icaelk-1+1)(1:8)
 !
     ima = zi(ialiel-1+zi(illiel+igr-1)+iel-1)
     if (ima .gt. 0) then

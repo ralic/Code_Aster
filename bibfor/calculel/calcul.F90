@@ -139,7 +139,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     integer :: npario, nbobmx, nparin, n1
     integer :: vali(4)
     integer :: nbobtr, nval
-    character(len=32) :: phemod
     integer :: opt, afaire
     integer :: iel, numc
     integer :: i, ipar, nin2, nin3, nou2, nou3
@@ -350,8 +349,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !     -------------------------------------------------
     call alrslt(opt, ligrel, nou2, lchou2, lpaou2,&
                 base2, ldist)
-    call alchlo(opt, ligrel, nin2, lpain2, lchin2,&
-                nou2, lpaou2)
+    call alchlo(opt, ligrel, nin2, lpain2, nou2, lpaou2)
 !
 !     5- AVANT BOUCLE SUR LES GREL :
 !     QUELQUES ACTIONS HORS BOUCLE GREL DUES A CALVOI==1 :

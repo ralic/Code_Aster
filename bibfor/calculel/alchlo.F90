@@ -1,5 +1,4 @@
-subroutine alchlo(opt, ligrel, nin, lpain, lchin,&
-                  nout, lpaout)
+subroutine alchlo(opt, ligrel, nin, lpain, nout, lpaout)
     implicit none
 !
 ! ======================================================================
@@ -33,7 +32,6 @@ subroutine alchlo(opt, ligrel, nin, lpain, lchin,&
     integer :: opt, nin, nout
     character(len=8) :: lpain(nin), lpaout(nout)
     character(len=19) :: ligrel
-    character(len=19) :: lchin(nin)
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !      OPT : OPTION
@@ -87,7 +85,7 @@ subroutine alchlo(opt, ligrel, nin, lpain, lchin,&
 99  end do
 !
 !
-    do 40 iparg = 1, npario
+    do iparg = 1, npario
         nompar = zk8(iaoppa-1+iparg)
         nochl = '&&CALCUL.'//nompar
         nochl2= '&&CALCUL.'//nompar//'.EXIS'
@@ -118,6 +116,7 @@ subroutine alchlo(opt, ligrel, nin, lpain, lchin,&
         else
             zi(iawloc-1+3*(iparg-1)+1)=-2
         endif
-40  end do
+40  continue
+    end do
 !
 end subroutine
