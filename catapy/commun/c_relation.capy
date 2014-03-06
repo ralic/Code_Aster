@@ -34,7 +34,6 @@ def C_RELATION( COMMAND ):
     elif COMMAND in ('MACR_ASCOUF_CALC','MACR_ASPIC_CALC',):
                    return (             "ELAS",           
                                         "ELAS_VMIS_TRAC",
-                                        "VMIS_ISOT_TRAC",
                                      )
     elif COMMAND =='DEFI_COMPOR' :
                    return (             "ELAS",  #uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
