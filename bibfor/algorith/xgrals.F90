@@ -75,6 +75,8 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
     call cescns(chams, ' ', 'V', grlt, ' ',&
                 ier)
 !
+    call detrsd('CHAM_ELEM_S', chams)
+    call detrsd('CHAM_ELEM'  , chgrlt)
 !
 !     GRADIENT DE LSN
 !     ---------------
@@ -97,6 +99,7 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
                 ier)
 !
     call detrsd('CHAM_ELEM_S', chams)
+    call detrsd('CHAM_ELEM'  , chgrln)
 !
     call jedema()
 end subroutine
