@@ -112,8 +112,8 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     common /caii03/iamaco,ilmaco,iamsco,ilmsco,ialiel,illiel
     common /caii04/iachii,iachik,iachix
     common /caii05/ianoop,ianote,nbobtr,iaobtr,nbobmx
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
     integer :: nbgr, igr, nbelgr, jcteat, lcteat, iawloc, iawlo2, iawtyp
     common /caii06/nbgr,igr,nbelgr,jcteat,lcteat,iawloc,iawlo2,iawtyp
     integer :: nbobj, iainel, ininel
@@ -250,7 +250,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     ier=0
     nbgr=nbgrel(ligrel)
     do j = 1, nbgr
-        nute=typele(ligrel,j)
+        nute=typele(ligrel,j,1)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
         nomtm=typma(nute)
         numc=nucalc(opt,nute,0)
@@ -293,7 +293,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         ipar=indik8(zk8(iaoppa),nompar,1,nin3)
         if (ipar .gt. 0) then
             do j = 1, nbgr
-                nute=typele(ligrel,j)
+                nute=typele(ligrel,j,1)
                 ipar=inpara(opt,nute,'IN ',nompar)
 !
                 if (ipar .eq. 0) goto 40
@@ -320,7 +320,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         ipar=indik8(zk8(iaoppa+nin3),nompar,1,nou3)
         if (ipar .gt. 0) then
             do j = 1, nbgr
-                nute=typele(ligrel,j)
+                nute=typele(ligrel,j,1)
                 ipar=inpara(opt,nute,'OUT',nompar)
 !
                 if (ipar .eq. 0) goto 60
@@ -368,15 +368,12 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 100
 !
 !       -- SI LE GREL EST VIDE, IL FAUT "SAUTER" :
-        nbelgr=nbelem(ligrel,igr)
+        nbelgr=nbelem(ligrel,igr,1)
         if (nbelgr .eq. 0) goto 100
 !
-        nute=typele(ligrel,igr)
+        nute=typele(ligrel,igr,1)
         call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
         nomtm=typma(nute)
-        call dismoi('PHEN_MODE', nomte, 'TYPE_ELEM', repk=phemod)
-        pheno=phemod(1:16)
-        modeli=phemod(17:32)
         call jelira(jexnum('&CATA.TE.CTE_ATTR', nute), 'LONMAX', lcteat)
         if (lcteat .gt. 0) then
             call jeveuo(jexnum('&CATA.TE.CTE_ATTR', nute), 'L', jcteat)

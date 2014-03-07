@@ -28,14 +28,12 @@ subroutine mecoel(iacti2)
 !   IACTI2 : / 1 : ON EST "SOUS" LA ROUTINE CALCUL
 !            / 0 : ON N'EST PAS "SOUS" LA ROUTINE CALCUL
 !======================================================================
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
 !     CE COMMON EST ECRIT  PAR CALCUL :
 !         OPTION : OPTION CALCULEE
 !         NOMTE  : TYPE_ELEMENT COURANT
 !         NOMTM  : TYPE_MAILLE ASSOCIE AU TYPE_ELEMENT
-!         PHENO  : PHENOMENE ASSOCIE AU TYPE_ELEMENT
-!         MODELI : MODELISATION ASSOCIEE AU TYPE_ELEMENT
 !
 !======================================================================
     integer :: igd, nec, ncmpmx, iachin, iachlo, iichin, ianueq, lprno

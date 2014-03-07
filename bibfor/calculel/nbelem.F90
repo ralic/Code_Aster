@@ -1,6 +1,9 @@
-function nbelem(ligrlz, igrel)
+function nbelem(ligrlz, igrel, icalc)
     implicit none
-    integer :: nbelem
+        character(len=*), intent(in) :: ligrlz
+        integer, intent(in) :: igrel
+        integer, intent(in), optional :: icalc
+        integer :: nbelem
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,19 +29,17 @@ function nbelem(ligrlz, igrel)
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jexnum.h"
-    character(len=*) :: ligrlz
-    integer :: igrel
+
 ! ----------------------------------------------------------------------
-!     ENTREES:
-!       LIGRLZ : NOM D'1 LIGREL
-!       IGREL  : NUMERO D'UN GREL DANS LE LIGREL
-!     SORTIES:
-!       NBELEM : NOMBRE D'ELEMENTS DU GREL IGREL
+!     entrees:
+!       ligrel (o) : nom d'1 ligrel
+!       igrel  (o) : numero d'1 grel
+!       icalc  (f) : / 1 :  on est "sous" calcul => on va plus vite
+!                    / None :  => on va moins vite
+!     sorties:
+!       nbelem : nombre d'elements du grel igrel
 ! ----------------------------------------------------------------------
 !     COMMONS DE CALCUL.F :
-    integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
-    common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
-!
     integer :: iamaco, ilmaco, iamsco, ilmsco, ialiel, illiel
     common /caii03/iamaco,ilmaco,iamsco,ilmsco,ialiel,illiel
 ! ----------------------------------------------------------------------
@@ -50,7 +51,8 @@ function nbelem(ligrlz, igrel)
     ASSERT(igrel.gt.0)
 !
 !     -- SI ON EST "SOUS" CALCUL, ON PEUT ALLER PLUS VITE :
-    if (iactif .eq. 1) then
+    if (present(icalc)) then
+        ASSERT(icalc.eq.1)
         n1=zi(illiel-1+igrel+1)-zi(illiel-1+igrel)
     else
         call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)

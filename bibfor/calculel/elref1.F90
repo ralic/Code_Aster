@@ -32,8 +32,8 @@ subroutine elref1(elrefe)
 !   - SI LE TYPE_ELEM N'A PAS D'ELREFE :  ELREFE='XXXXXXXX'
 !----------------------------------------------------------------------
 !
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
 !
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg

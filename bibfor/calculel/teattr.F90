@@ -61,8 +61,8 @@ subroutine teattr(kstop, noattr, vattr, iret, typel)
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
 
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
 
     integer :: nbgr, igr, nbelgr, jcteat, lcteat, iawloc, iawlo2, iawtyp
     common /caii06/nbgr,igr,nbelgr,jcteat,lcteat,iawloc,iawlo2,iawtyp

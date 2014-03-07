@@ -54,8 +54,8 @@ subroutine elref5(elrz, famil, ndim, nno, nnos,&
 !                             DIMMENSIONS DE LA MATRICE: NNO ET NPG
 !
 !   -------------------------------------------------------------------
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
 !

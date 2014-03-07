@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function typele(ligrez, igrel)
-        character(len=*) :: ligrez
-        integer :: igrel
+    function typele(ligrez, igrel, icalc)
+        character(len=*), intent(in) :: ligrez
+        integer, intent(in) :: igrel
+        integer, intent(in), optional :: icalc
         integer :: typele
     end function typele
 end interface

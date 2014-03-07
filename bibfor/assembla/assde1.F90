@@ -1,4 +1,4 @@
-subroutine assde1(champ)
+subroutine assde1(tych,champ)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,13 @@ subroutine assde1(champ)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-    character(len=*) :: champ
+#include "asterfort/assert.h"
+    character(len=*), intent(in) :: champ
+    character(len=*), intent(in) :: tych
 ! ----------------------------------------------------------------------
 !     IN:
 !       NOMU   : NOM D'UN CONCEPT DE TYPE
-!                    CHAMP_GD(K19)
+!                CHAMP / CHAM_NO, CHAM_ELEM, CARTE ou RESUELEM (K19)
 !
 !     RESULTAT:
 !     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CE CONCEPT.
@@ -46,20 +48,53 @@ subroutine assde1(champ)
 !
 !
 !   -- POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
-    call jedetr(champ2//'.CELD')
-    call jedetr(champ2//'.CELV')
-    call jedetr(champ2//'.CELK')
-    call jedetr(champ2//'.DESC')
-    call jedetr(champ2//'.VALE')
-    call jedetr(champ2//'.REFE')
-    call jedetr(champ2//'.LIMA')
-    call jedetr(champ2//'.NOMA')
-    call jedetr(champ2//'.NOLI')
-    call jedetr(champ2//'.RESL')
-    call jedetr(champ2//'.RSVI')
-    call jedetr(champ2//'.VALV')
-    call jedetr(champ2//'.NCMP')
-    call jedetr(champ2//'.PTMA')
-    call jedetr(champ2//'.PTMS')
+    if (tych.eq.'CHAM_ELEM') then
+        call jedetr(champ2//'.CELD')
+        call jedetr(champ2//'.CELV')
+        call jedetr(champ2//'.CELK')
+
+    elseif (tych.eq.'CHAM_NO') then
+        call jedetr(champ2//'.VALE')
+        call jedetr(champ2//'.REFE')
+        call jedetr(champ2//'.DESC')
+
+    elseif (tych.eq.'CARTE') then
+        call jedetr(champ2//'.DESC')
+        call jedetr(champ2//'.NOMA')
+        call jedetr(champ2//'.VALE')
+        call jedetr(champ2//'.NOLI')
+        call jedetr(champ2//'.LIMA')
+        call jedetr(champ2//'.VALV')
+        call jedetr(champ2//'.NCMP')
+        call jedetr(champ2//'.PTMA')
+        call jedetr(champ2//'.PTMS')
+
+    elseif (tych.eq.'RESUELEM') then
+        call jedetr(champ2//'.NOLI')
+        call jedetr(champ2//'.DESC')
+        call jedetr(champ2//'.RESL')
+        call jedetr(champ2//'.RSVI')
+
+    elseif (tych.eq.'CHAMP') then
+        call jedetr(champ2//'.CELD')
+        call jedetr(champ2//'.CELK')
+        call jedetr(champ2//'.CELV')
+        call jedetr(champ2//'.DESC')
+        call jedetr(champ2//'.LIMA')
+        call jedetr(champ2//'.NCMP')
+        call jedetr(champ2//'.NOLI')
+        call jedetr(champ2//'.NOMA')
+        call jedetr(champ2//'.PTMA')
+        call jedetr(champ2//'.PTMS')
+        call jedetr(champ2//'.REFE')
+        call jedetr(champ2//'.RESL')
+        call jedetr(champ2//'.RSVI')
+        call jedetr(champ2//'.VALE')
+        call jedetr(champ2//'.VALV')
+    else
+        ASSERT(.false.)
+    endif
+
+
 !
 end subroutine

@@ -29,7 +29,7 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
 #include "asterfort/contex.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: stopz, nmparz, louez
-    integer, intent(in), optional :: numa 
+    integer, intent(in), optional :: numa
     integer, intent(in), optional :: nval
     integer, intent(out), optional :: itab(*), iad
     integer, intent(out) :: iret
@@ -120,8 +120,8 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
 !
     common /caii02/iaoptt,lgco,iaopmo,ilopmo,iaopno,ilopno,iaopds,&
      &       iaoppa,npario,nparin,iamloc,ilmloc,iadsgd
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
     integer :: nbgr, igr, nbelgr, jcteat, lcteat, iawloc, iawlo2, iawtyp
     common /caii06/nbgr,igr,nbelgr,jcteat,lcteat,iawloc,iawlo2,iawtyp
     common /caii04/iachii,iachik,iachix
@@ -137,15 +137,15 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
     if (present(numa)) then
         inuma = numa
         ASSERT(inuma.ge.0)
-    else 
-        inuma = 0     
+    else
+        inuma = 0
     endif
     if (present(nval)) then
         inval = nval
         ASSERT(.not. present(iad))
         ASSERT(present(itab))
     else
-        inval = 1  
+        inval = 1
         ASSERT(present(iad))
     endif
     if (inuma .eq. 0) then
@@ -376,12 +376,12 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, itab, iad, numa)
     if (inval .lt. 9) goto 20
 !
 20  continue
-    if ( present(iad) ) then 
+    if ( present(iad) ) then
          iad = jtab(1)
-    else 
+    else
          do k=1,inval
               itab(k) =  jtab(k)
-         end do     
+         end do
     endif
 !
 end subroutine

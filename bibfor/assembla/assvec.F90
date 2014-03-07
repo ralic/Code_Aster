@@ -144,7 +144,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
 !
 ! --- SI LE CONCEPT VECAS EXISTE DEJA, ON LE DETRUIT:
-    call detrsd('CHAMP_GD', vecas)
+    call detrsd('CHAM_NO', vecas)
     call wkvect(vecas//'.LIVE', bas//' V K24 ', nbvec, ilivec)
     do i = 1, nbvec
         zk24(ilivec-1+i)=tlivec(i)
@@ -705,7 +705,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 do j = 1, nequa
                     zr(jvale1-1+j)=zr(jvale1-1+j)+zr(jvale2-1+j)
                 end do
-                call detrsd('CHAMP_GD', c19)
+                call detrsd('CHAM_NO', c19)
             endif
         end do
 300     continue

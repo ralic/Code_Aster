@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function nbelem(ligrlz, igrel)
-        character(len=*) :: ligrlz
-        integer :: igrel
+    function nbelem(ligrlz, igrel, icalc)
+        character(len=*), intent(in) :: ligrlz
+        integer, intent(in) :: igrel
+        integer, intent(in), optional :: icalc
         integer :: nbelem
     end function nbelem
 end interface

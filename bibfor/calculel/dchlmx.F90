@@ -64,8 +64,8 @@ subroutine dchlmx(opt, ligrel, iparg, nin, lpain,&
     taille = 0
     debugr=1
     do 30 igr = 1, nbgr
-        te = typele(ligrel,igr)
-        nbelgr = nbelem(ligrel,igr)
+        te = typele(ligrel,igr,1)
+        nbelgr = nbelem(ligrel,igr,1)
         npin = nbpara(opt,te,'IN ')
         npou = nbpara(opt,te,'OUT')
 !

@@ -34,8 +34,8 @@ subroutine jevecd(nompar, jad, valdef)
     character(len=*) :: nompar
     real(kind=8) :: valdef
 !
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
 !
     call tecach('OON', nompar, 'L', iret, nval=8,&
                 itab=itab)

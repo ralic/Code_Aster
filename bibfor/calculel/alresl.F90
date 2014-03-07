@@ -94,7 +94,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 !     ----------------------------------
     iparmx = 0
     do igr = 1, ngrel
-        te = typele(ligrel,igr)
+        te = typele(ligrel,igr,1)
         ipar = inpara(opt,te,'OUT',nompar)
         iparmx = max(iparmx,ipar)
     end do
@@ -139,7 +139,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
                     ngrel)
         lontot=0
         do igr = 1, ngrel
-            nel = nbelem(ligrel,igr)
+            nel = nbelem(ligrel,igr,1)
             lontot=lontot+nel+1
         end do
         call jeecra(nochou//'.RSVI', 'LONT', lontot, ' ')
@@ -152,8 +152,8 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
     zi(desc-1+1) = gd
     zi(desc-1+2) = ngrel
     do igr = 1, ngrel
-        nel = nbelem(ligrel,igr)
-        te = typele(ligrel,igr)
+        nel = nbelem(ligrel,igr,1)
+        te = typele(ligrel,igr,1)
         ipar = inpara(opt,te,'OUT',nompar)
 !
 !        -- SI LE TYPE_ELEMENT NE CONNAIT PAS LE PARAMETRE:

@@ -48,9 +48,6 @@ subroutine tecael(iadzi, iazk24)
 !        V(3+NBNO+1): TYPE_ELEMENT(K16)
 !        V(3+NBNO+2): OPTION QUE L'ON CALCULE (K16)
 !        V(3+NBNO+3): TYPE_MAILLE ASSOCIE AU TYPE_ELEMENT(K8)
-!        V(3+NBNO+4): PHENOMENE ASSOCIE AU TYPE_ELEMENT(K16)
-!        V(3+NBNO+5): NOM DE LA MODELISATION ASSOCIEE AU
-!                     TYPE_ELEMENT(K16)
 !
 !    REMARQUE :
 !   SI LA MAILLE EST TARDIVE SON NOM EST CONVENTIONELLEMENT : ' '
@@ -65,8 +62,8 @@ subroutine tecael(iadzi, iazk24)
     common /caii10/icaeli,icaelk
     common /caii03/iamaco,ilmaco,iamsco,ilmsco,ialiel,illiel
 !
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
     integer :: ialiel, iamaco, iamsco, icaeli, icaelk, iel, illiel, ilmaco
     integer :: ilmsco, ima, ino, nno, nuno
 !
@@ -94,8 +91,6 @@ subroutine tecael(iadzi, iazk24)
     zk24(icaelk-1+3+nno+1) = nomte
     zk24(icaelk-1+3+nno+2) = option
     zk24(icaelk-1+3+nno+3) = nomtm
-    zk24(icaelk-1+3+nno+4) = pheno
-    zk24(icaelk-1+3+nno+5) = modeli
 !
 !     RECUPERATION DES NUMEROS GLOBAUX DES NOEUDS :
 !     ---------------------------------------------

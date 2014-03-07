@@ -43,8 +43,8 @@ subroutine rcvarp(arret, novrc, poum, valvrc, iret)
 !                                   1 -> VARIABLE NON TROUVEE
 !
     character(len=8) :: novr8
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
     integer :: nfpgmx
     parameter (nfpgmx=10)
     integer :: nfpg, jfpgl, decala(nfpgmx), km, kp, kr, iredec

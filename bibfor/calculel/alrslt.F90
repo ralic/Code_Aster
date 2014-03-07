@@ -69,7 +69,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
     integer :: gd, descgd, code, i, iret1, iret2, iret
     character(len=19) :: nochou, dcel
     character(len=8) :: nompar
-    character(len=8) :: kbi1, kbi2
+    character(len=8) :: nomgd, tsca, tych
     character(len=16) :: nomopt
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: celk(:) => null()
@@ -86,9 +86,9 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
         call jeveuo(jexnum('&CATA.GD.DESCRIGD', gd), 'L', descgd)
         code = zi(descgd-1+1)
 !
-        call detrsd('CHAMP', nochou)
 !        -- SI GD EST 1 GRANDEUR_SIMPLE --> CHAM_ELEM
         if (code .eq. 1) then
+            call detrsd('CHAM_ELEM', nochou)
             call exisd('CHAM_ELEM_S', nochou, iret)
             if (iret .gt. 0) then
                 dcel = nochou
@@ -105,6 +105,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !
         else
 !        -- SINON --> RESUELEM
+            call detrsd('RESUELEM', nochou)
             ASSERT((code.ge.3).and.(code.le.5))
             call alresl(iopt, ligrel, nochou, nompar, base)
 !        -- LES RESU_ELEMS SONT INCOMPLETS EN LDIST
@@ -134,14 +135,14 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
         call jeexin(nochou//'.CELD', iret2)
         if ((iret1+iret2) .eq. 0) goto 30
 !
-        call dismoi('NOM_GD', nochou, 'CHAMP', repk=kbi1)
-        call dismoi('TYPE_SCA', kbi1, 'GRANDEUR', repk=kbi2)
-        zk8(iachok-1+2* (i-1)+2) = kbi2
-        call dismoi('TYPE_CHAMP', nochou, 'CHAMP', repk=kbi1)
+        call dismoi('NOM_GD', nochou, 'CHAMP', repk=nomgd)
+        call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
+        zk8(iachok-1+2* (i-1)+2) = tsca
+        call dismoi('TYPE_CHAMP', nochou, 'CHAMP', repk=tych)
 !        -- SI C'EST UN CHAM_ELEM:
 !           ON DOIT FAIRE UN JEVEUO EN ECRITURE POUR RECUPERER
 !           L'ADRESSE DU .CELV
-        if (kbi1(1:2) .eq. 'EL') then
+        if (tych(1:2) .eq. 'EL') then
             call jeveuo(nochou//'.CELD', 'E', zi(iachoi-1+3* (i-1)+1))
             call jeveuo(nochou//'.CELV', 'E', zi(iachoi-1+3* (i-1)+2))
             zk8(iachok-1+2* (i-1)+1) = 'CHML'

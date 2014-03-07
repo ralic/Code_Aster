@@ -44,8 +44,8 @@ subroutine jevech(nmparz, louez, itab)
 !     SORTIES:
 !     ITAB     : ADRESSE DU CHAMP LOCAL CORRESPONDANT A NOMPAR
 !     -----------------------------------------------------------------
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
 !
     integer :: iachlo, iadsgd, iamloc, iaopds, iaopmo, iaopno, iaoppa
     integer :: ilchlo, k, kk, debugr

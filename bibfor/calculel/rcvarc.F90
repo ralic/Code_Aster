@@ -55,8 +55,8 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
     integer :: nbcvrc, jvcnom
     common /caii14/nbcvrc,jvcnom
 
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
 
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg

@@ -551,21 +551,35 @@ subroutine detrsd(typesd, nomsd)
     else if (typ2sd.eq.'VARI_COM') then
 !     -------------------------------------
         com = nomsd
-        call assde1(com//'.TEMP')
-        call assde1(com//'.HYDR')
-        call assde1(com//'.SECH')
-        call assde1(com//'.PHAS')
-        call assde1(com//'.EPAN')
-        call assde1(com//'.INST')
-        call assde1(com//'.TOUT')
+        call assde1('CHAMP',com//'.TEMP')
+        call assde1('CHAMP',com//'.HYDR')
+        call assde1('CHAMP',com//'.SECH')
+        call assde1('CHAMP',com//'.PHAS')
+        call assde1('CHAMP',com//'.EPAN')
+        call assde1('CHAMP',com//'.INST')
+        call assde1('CHAMP',com//'.TOUT')
         call jedetr(com//'.EXISTENCE')
 !
 !     ------------------------------------------------------------------
     else if ((typ2sd.eq.'CHAMP') .or. (typ2sd.eq.'CHAMP_GD')) then
-!     ---------------------------------------
+!     -------------------------------------------------------------
 !       POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
         champ = nomsd
-        call assde1(champ)
+        call jedetr(champ//'.CELD')
+        call jedetr(champ//'.CELK')
+        call jedetr(champ//'.CELV')
+        call jedetr(champ//'.DESC')
+        call jedetr(champ//'.LIMA')
+        call jedetr(champ//'.NCMP')
+        call jedetr(champ//'.NOLI')
+        call jedetr(champ//'.NOMA')
+        call jedetr(champ//'.PTMA')
+        call jedetr(champ//'.PTMS')
+        call jedetr(champ//'.REFE')
+        call jedetr(champ//'.RESL')
+        call jedetr(champ//'.RSVI')
+        call jedetr(champ//'.VALE')
+        call jedetr(champ//'.VALV')
 !
 !     ------------------------------------------------------------------
         else if ((typ2sd.eq.'MATR_ELEM') .or. (typ2sd.eq.'VECT_ELEM'))&
@@ -578,7 +592,7 @@ subroutine detrsd(typesd, nomsd)
         if (nbch .gt. 0) call jeveuo(matel//'.RELR', 'L', vk24=relr)
         do i = 1, nbch
             champ=relr(i)(1:19)
-            call assde1(champ)
+            call assde1('RESUELEM',champ)
         end do
  61     continue
         call jedetr(matel//'.RELR')

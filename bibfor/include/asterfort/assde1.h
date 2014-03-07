@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine assde1(champ)
-        character(len=*) :: champ
+    subroutine assde1(tych,champ)
+    character(len=*), intent(in) :: champ
+    character(len=*), intent(in) :: tych
     end subroutine assde1
 end interface

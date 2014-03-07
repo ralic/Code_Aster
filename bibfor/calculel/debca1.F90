@@ -181,7 +181,6 @@ subroutine debca1(nomop, ligrel, nin)
         call jeexin(ligrel//'.REPE', ier)
         if (ier .eq. 0) call cormgi('V', ligrel)
         call jeveuo(ligrel//'.REPE', 'L', jrepe)
-        call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
         call jeexin(ligrel//'.NVGE', ier)
         if (ier .ne. 0) then
             call jeveuo(ligrel//'.NVGE', 'L', vk16=nvge)
@@ -199,7 +198,7 @@ subroutine debca1(nomop, ligrel, nin)
 !     INITIALISATION DU COMMON CAII10 :
 !     ---------------------------------
     call dismoi('NB_NO_MAX', '&', 'CATALOGUE', repi=nnomx)
-    call wkvect('&&CALCUL.TECAEL_K24', 'V V K24', 8+nnomx, icaelk)
+    call wkvect('&&CALCUL.TECAEL_K24', 'V V K24', 6+nnomx, icaelk)
     nbobtr=nbobtr+1
     zk24(iaobtr-1+nbobtr)='&&CALCUL.TECAEL_K24'
     zk24(icaelk-1+1)=ma

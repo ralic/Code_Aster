@@ -1,4 +1,4 @@
-function typele(ligrez, igrel)
+function typele(ligrez, igrel, icalc)
     implicit none
     integer :: typele
 !
@@ -28,15 +28,19 @@ function typele(ligrez, igrel)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-    character(len=*) :: ligrez
-    integer :: igrel
+#include "asterfort/assert.h"
+    character(len=*), intent(in) :: ligrez
+    integer, intent(in) :: igrel
+    integer, intent(in), optional :: icalc
 ! ----------------------------------------------------------------------
-!     ENTREES:
-!       LIGREL : NOM D'1 LIGREL
-!       IGREL  : NUMERO D'1 GREL
+!     entrees:
+!       ligrel (o) : nom d'1 ligrel
+!       igrel  (o) : numero d'1 grel
+!       icalc  (f) : / 1 :  on est "sous" calcul => on va plus vite
+!                    / None :  => on va moins vite
 !
-!     SORTIES:
-!       TYPELE : TYPE_ELEMENT ASSOCIE AU GREL
+!     sorties:
+!       typele : type_element associe au grel
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
@@ -44,16 +48,14 @@ function typele(ligrez, igrel)
     integer :: liel, n1
 ! ----------------------------------------------------------------------
 !     COMMONS DE CALCUL.F :
-    integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
-    common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
-!
     integer :: iamaco, ilmaco, iamsco, ilmsco, ialiel, illiel
     common /caii03/iamaco,ilmaco,iamsco,ilmsco,ialiel,illiel
 ! ----------------------------------------------------------------------
     ligrel = ligrez
 !
 !     -- SI ON EST "SOUS" CALCUL, ON PEUT ALLER PLUS VITE :
-    if (iactif .eq. 1) then
+    if (present(icalc)) then
+        ASSERT(icalc.eq.1)
         n1=zi(illiel-1+igrel+1)-zi(illiel-1+igrel)
         typele=zi(ialiel-1+zi(illiel-1+igrel)-1+n1)
     else

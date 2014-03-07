@@ -38,8 +38,8 @@ subroutine vrcdec()
     integer :: nfpg, jfpgl, decala(nfpgmx), km, kp, kr, iredec
     common /caii17/nfpg,jfpgl,decala,km,kp,kr,iredec
 !
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
 !
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg

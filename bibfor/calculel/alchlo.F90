@@ -82,7 +82,7 @@ subroutine alchlo(opt, ligrel, nin, lpain, lchin,&
 !
 !     -- INITIALISATION DE CAII06/IAWLO2:
     do 99 igr = 1, nbgr
-        nute=typele(ligrel,igr)
+        nute=typele(ligrel,igr,1)
         call mecoe1(opt, nute)
 99  end do
 !

@@ -37,8 +37,8 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
 !     BUT: PREPARER LES CHAMPS LOCAUX "IN"
 !
 ! ----------------------------------------------------------------------
-    character(len=16) :: option, nomte, nomtm, pheno, modeli
-    common /cakk01/option,nomte,nomtm,pheno,modeli
+    character(len=16) :: option, nomte, nomtm
+    common /cakk01/option,nomte,nomtm
 !
     integer :: igd, nec, ncmpmx, iachin, iachlo, iichin, ianueq, lprno
     integer :: ilchlo, itypgd

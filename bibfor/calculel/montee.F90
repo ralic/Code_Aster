@@ -48,7 +48,7 @@ subroutine montee(opt, ligrel, nout, lchout, lpaout,&
     if (calvoi .eq. 0) then
         if (fin .ne. 'FIN') then
             igr2=igr
-            te2=typele(ligrel,igr2)
+            te2=typele(ligrel,igr2,1)
             call monte1(opt, te2, nout, lchout, lpaout,&
                         igr2)
         endif
@@ -56,7 +56,7 @@ subroutine montee(opt, ligrel, nout, lchout, lpaout,&
 !       -- ON RECOPIE TOUT A LA FIN :
         if (fin .eq. 'FIN') then
             do 1, igr2=1,nbgr
-            te2=typele(ligrel,igr2)
+            te2=typele(ligrel,igr2,1)
             call monte1(opt, te2, nout, lchout, lpaout,&
                         igr2)
  1          continue
