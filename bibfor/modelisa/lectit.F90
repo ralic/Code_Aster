@@ -45,8 +45,6 @@ subroutine lectit(ifl, icl, iv, rv, cv,&
     integer :: dim(nbm), nbt(nbm)
     character(len=14) :: cnl
     character(len=*) :: cv
-    character(len=16) :: nop
-    common          /opmail/        nop
     character(len=80) :: lig
 !-----------------------------------------------------------------------
     integer :: icl, ideb, ifl, ifm, irtet, irteti

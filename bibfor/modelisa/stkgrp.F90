@@ -55,10 +55,8 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     character(len=8) :: mcl(nbm), nom, b8
     character(len=14) :: cnl
     character(len=*) :: cv
-    character(len=16) :: cmd
     character(len=24) :: grn, grm, grp, nomg
     save b8
-    common          /opmail/        cmd
 !-----------------------------------------------------------------------
     integer :: i, iadg, icl, ifl, ifn, iret
     integer :: irtet, irteti, iv, nbitem, num

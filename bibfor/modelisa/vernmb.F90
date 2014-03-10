@@ -29,8 +29,6 @@ subroutine vernmb(icl, cnl, ier, irteti)
 !       ----------------------------------------------------------------
     integer :: icl, ier
     character(len=14) :: cnl
-    character(len=16) :: cmd
-    common          /opmail/                cmd
 !
 !-----------------------------------------------------------------------
     integer :: irteti

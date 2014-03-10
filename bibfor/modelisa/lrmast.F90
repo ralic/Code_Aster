@@ -195,13 +195,12 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     character(len=8) :: nom, nomn
     character(len=8) :: nom1
     character(len=14) :: cnl
-    character(len=16) :: cmd, k16nom
+    character(len=16) :: k16nom
     character(len=24) :: grpnov, grpmav, conxv, gpptnn, gpptnm
     character(len=24) :: valk(2), nomg, gpptnv, gpptmv
     character(len=24) :: nomdbg(50, nbmdbg)
     character(len=80) :: cv, dat
 !
-    common          /opmail/        cmd
 !
     data dat        /' '/
     data mcltit     /'TITRE   '/

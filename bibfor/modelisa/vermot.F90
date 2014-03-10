@@ -32,11 +32,10 @@ subroutine vermot(icl, iv, cv, cnl, ier,&
 !       ----------------------------------------------------------------
     integer :: icl, iv, ier
     character(len=14) :: cnl
-    character(len=16) :: cmd, nom
+    character(len=16) :: nom
     character(len=8) :: mcl
     character(len=*) :: cv
     character(len=24) :: valk(2)
-    common          /opmail/        cmd
 !
 !-----------------------------------------------------------------------
     integer :: irteti, jv

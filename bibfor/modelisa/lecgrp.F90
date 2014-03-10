@@ -49,9 +49,7 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm), deblig
     character(len=14) :: cnl
-    character(len=16) :: cmd
     character(len=24) :: valk(2), nom
-    common          /opmail/        cmd
     character(len=*) :: cv
 !-----------------------------------------------------------------------
     integer :: i, icl, ier, ifl, ifm, ifn, ilec

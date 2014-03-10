@@ -50,8 +50,6 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm), deblig
     character(len=14) :: cnl
-    character(len=16) :: cmd
-    common          /opmail/        cmd
     character(len=*) :: cv
     character(len=24) :: valk(3), nom
 !-----------------------------------------------------------------------

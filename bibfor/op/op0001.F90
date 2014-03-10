@@ -57,8 +57,6 @@ subroutine op0001()
 #include "asterfort/mavegr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    character(len=16) :: cmd
-    common          /opmail/        cmd
 !
 ! ----- DECLARATIONS
 !
@@ -66,7 +64,7 @@ subroutine op0001()
     integer :: nbnoeu, nbmail, nbcoor, nbcgrm
     integer :: nbval, iret, infmed
     character(len=8) :: nomu, totm, fmt, veri
-    character(len=16) :: concep
+    character(len=16) :: concep,cmd
     character(len=24) :: vecgrm
     character(len=64) :: nomamd
     real(kind=8) :: dtol

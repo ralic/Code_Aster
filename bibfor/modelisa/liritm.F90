@@ -51,8 +51,6 @@ subroutine liritm(ifl, icl, iv, rv, cv,&
     character(len=80) :: lig
     character(len=14) :: cnl
     save            lig , ideb
-    character(len=16) :: nop
-    common          /opmail/        nop
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

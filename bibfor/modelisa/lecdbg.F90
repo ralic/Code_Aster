@@ -45,10 +45,8 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), deblig
     character(len=14) :: cnl
-    character(len=16) :: cmd
     character(len=24) :: nob(50, nbm), b24, mtc
     character(len=*) :: cv
-    common          /opmail/        cmd
     save b24
 !-----------------------------------------------------------------------
     integer :: i, icl, ifl, ifm, irtet, irteti

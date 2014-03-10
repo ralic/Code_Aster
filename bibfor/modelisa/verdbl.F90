@@ -29,8 +29,6 @@ subroutine verdbl(deblig, cnl, ier, irteti)
 !       ----------------------------------------------------------------
     integer :: ier, deblig
     character(len=14) :: cnl
-    character(len=16) :: cmd
-    common          /opmail/                cmd
 !
 !-----------------------------------------------------------------------
     integer :: irteti

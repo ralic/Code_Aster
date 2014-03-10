@@ -33,9 +33,7 @@ subroutine lirlig(ifl, cnl, lig, ilec)
 !       ----------------------------------------------------------------
     integer :: nl, nl1, nl2, i
     save                nl1, nl2
-    character(len=16) :: cmd
     character(len=255) :: lirlg
-    common          /opmail/        cmd
     data nl1,nl2    /0,0/
 !
     cnl = ' '

@@ -36,8 +36,6 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
 #include "asterfort/liritm.h"
 #include "asterfort/lirlig.h"
 #include "asterfort/utmess.h"
-    common/opmail/cmd
-    character(len=16) :: cmd
     character(len=14) :: cnl
     character(len=80) :: lig
     character(len=8) :: cvz
