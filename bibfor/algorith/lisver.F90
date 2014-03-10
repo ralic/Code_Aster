@@ -21,7 +21,6 @@ subroutine lisver(lischa)
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/liscft.h"
 #include "asterfort/lisico.h"
 #include "asterfort/lislch.h"
 #include "asterfort/lislco.h"
@@ -49,7 +48,6 @@ subroutine lisver(lischa)
     integer :: genrec
     character(len=16) :: typapp
     logical :: lelim, ldual, levoc
-    logical :: lfont
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,15 +107,6 @@ subroutine lisver(lischa)
         if (levoc) then
             if (typapp .eq. 'FIXE_PILO') then
                 call utmess('F', 'CHARGES5_11', sk=charge)
-            endif
-        endif
-!
-! ----- PAS DE FONCTION DU TEMPS AVEC CHARGES PILOTEES
-!
-        if (typapp .eq. 'FIXE_PILO') then
-            lfont = liscft(lischa,ichar )
-            if (lfont) then
-                call utmess('F', 'CHARGES5_12', sk=charge)
             endif
         endif
 !

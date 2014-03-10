@@ -69,8 +69,4 @@ cata_msg = {
  Les charges de type EVOL_CHAR ne peuvent pas être des charges pilotées.
 """),
 
-12 : _(u"""
- La charge de nom <%(k1)s> ne peut pas être pilotée car elle est fonction du temps.
-"""),
-
 }

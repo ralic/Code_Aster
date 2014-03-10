@@ -26,7 +26,6 @@ subroutine dylach(nomo, mate, carele, lischa, numedd,&
 #include "asterfort/veassc.h"
 #include "asterfort/vechms.h"
 #include "asterfort/vedimd.h"
-#include "asterfort/veevoc.h"
     character(len=8) :: nomo
     character(len=24) :: mate, carele
     character(len=19) :: lischa
@@ -74,8 +73,6 @@ subroutine dylach(nomo, mate, carele, lischa, numedd,&
     call vedimd(nomo, lischa, instan, vediri)
     call vechms(nomo, mate, carele, k19bid, lischa,&
                 partps, veneum)
-    call veevoc(nomo, mate, carele, k19bid, lischa,&
-                partps, vevoch)
     call veassc(lischa, vassec)
 !
 ! --- PREPARATION DE L'ASSEMBLAGE
