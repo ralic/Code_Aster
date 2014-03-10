@@ -1,5 +1,5 @@
 subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
-                   nb_node, model      , suffix)
+                   nb_node, model      , suffix, elem_excl)
 !
     implicit none
 !
@@ -39,6 +39,7 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
     character(len=24), intent(in) :: list_node
     character(len=8), intent(in), optional :: model
     character(len=*), intent(in), optional :: suffix
+    logical, intent(in), optional :: elem_excl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,6 +73,7 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
 ! Out nb_node      : number of nodes read
 ! In  model        : <optional> check nodes belongs to model
 ! In  suffix       : <optional> suffix for read
+! In  elem_excl    : <optional> exlusion of elements keywords
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,6 +90,7 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
     integer :: nb_lect, nb_excl, nb_elim
     integer :: nume_lect, nume_excl
     integer :: i_lect, i_excl, i_node
+    logical :: l_read_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -102,32 +105,38 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
     nb_excl     = 0
     model_name  = ' '
     suffix_name = ' '
+    l_read_elem = .true.
     if (present(model)) then
         model_name = model
     endif
     if (present(suffix)) then
         suffix_name = suffix
     endif
+    if (present(elem_excl)) then
+        l_read_elem = .not.elem_excl
+    endif
 !
 ! - Read nodes
 !
     nb_mocl = 0
-    if (getexm(keywordfact,'TOUT') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = 'TOUT'
-        typmcl(nb_mocl) = 'TOUT'
-    endif
-    keyword = 'GROUP_MA'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'GROUP_MA'
-    endif
-    keyword = 'MAILLE'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'MAILLE'
+    if (l_read_elem) then
+        if (getexm(keywordfact,'TOUT') .eq. 1) then
+            nb_mocl = nb_mocl + 1
+            moclm(nb_mocl) = 'TOUT'
+            typmcl(nb_mocl) = 'TOUT'
+        endif
+        keyword = 'GROUP_MA'//suffix_name
+        if (getexm(keywordfact,keyword) .eq. 1) then
+            nb_mocl = nb_mocl + 1
+            moclm(nb_mocl) = keyword
+            typmcl(nb_mocl) = 'GROUP_MA'
+        endif
+        keyword = 'MAILLE'//suffix_name
+        if (getexm(keywordfact,keyword) .eq. 1) then
+            nb_mocl = nb_mocl + 1
+            moclm(nb_mocl) = keyword
+            typmcl(nb_mocl) = 'MAILLE'
+        endif
     endif
     keyword = 'GROUP_NO'//suffix_name
     if (getexm(keywordfact,keyword) .eq. 1) then
@@ -149,17 +158,19 @@ subroutine getnode(mesh   , keywordfact, iocc  , stop_void, list_node, &
 ! - Read nodes excludes
 !
     nb_mocl = 0
-    keyword = 'SANS_GROUP_MA'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'GROUP_MA'
-    endif
-    keyword = 'SANS_MAILLE'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'MAILLE'
+    if (l_read_elem) then
+        keyword = 'SANS_GROUP_MA'//suffix_name
+        if (getexm(keywordfact,keyword) .eq. 1) then
+            nb_mocl = nb_mocl + 1
+            moclm(nb_mocl) = keyword
+            typmcl(nb_mocl) = 'GROUP_MA'
+        endif
+        keyword = 'SANS_MAILLE'//suffix_name
+        if (getexm(keywordfact,keyword) .eq. 1) then
+            nb_mocl = nb_mocl + 1
+            moclm(nb_mocl) = keyword
+            typmcl(nb_mocl) = 'MAILLE'
+        endif
     endif
     keyword = 'SANS_GROUP_NO'//suffix_name
     if (getexm(keywordfact,keyword) .eq. 1) then

@@ -17,7 +17,7 @@
 !
 interface
     subroutine getnode(mesh   , keywordfact, iocc, stop_void, list_node, &
-                       nb_node, model      , suffix)
+                       nb_node, model      , suffix, elem_excl)
         character(len=8), intent(in) :: mesh
         character(len=16), intent(in) :: keywordfact
         integer, intent(in) :: iocc
@@ -26,5 +26,6 @@ interface
         character(len=24), intent(in) :: list_node
         character(len=8), intent(in), optional :: model
         character(len=*), intent(in), optional :: suffix
+        logical, intent(in), optional :: elem_excl
     end subroutine getnode
 end interface
