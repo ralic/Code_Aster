@@ -90,20 +90,36 @@ CHARGE_F=AFFE_CHAR_MECA_F(MODELE=MODELE_1,
               FORCE_COQUE=_F( TOUT = 'OUI',      PRES = PRES)
 #
                   )
+#
+# -- AFIN DE TESTER UNE PRES_REP POUR LES COQUES 3D, ON UTILISE PRES_REP AU LIEU DE FORCE_COQUE
+#      PRESSION = 1.= 1. (AFFE_CHAR_MECA) + 0. (AFFE_CHAR_MECA_F)
+#     Car les fonctions ne sont actuellement pas disponibles pour PRES_REP + COQUES ---> si PRES[fonction]/= 0. alors <F> ELEMENTS4_92 !
+
+CHARGE_3=AFFE_CHAR_MECA(MODELE=MODELE_1,
+#
+              PRES_REP =_F( TOUT = 'OUI',      PRES = 1.)
+#
+                  )
+#
+PRES2=DEFI_FONCTION(  NOM_PARA='X',  VALE=(0., 0.,  10., 0.,) )
+#
+CHARG2_F=AFFE_CHAR_MECA_F(MODELE=MODELE_1,
+#
+              PRES_REP=_F( TOUT = 'OUI',      PRES = PRES2)
+#
+                  )
 
 CARAC_1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
                                COQUE=_F(  GROUP_MA = 'TOUT',  EPAIS = 0.125)
                             )
 
 #
-
 D_FONC=DEFI_FONCTION(
                             NOM_PARA='INST',
                                 VALE=( 0., 0.,
                                        1., 1.,
                                      )
                          )
-
 #
 #
 
@@ -114,36 +130,54 @@ L_INST=DEFI_LIST_REEL(   DEBUT=0.0,
                          )
 
 #
+# POUR LE CHARGEMENT AVEC FORCE_COQUE
 #
-
-NONLIN=STAT_NON_LINE(
-                            MODELE=MODELE_1,
-                        CHAM_MATER=CH_MAT_1,
-                         CARA_ELEM=CARAC_1,EXCIT=(
-                             _F(
-                CHARGE = CHARGE_1), _F(
-                CHARGE = CHARGE_2,
-                FONC_MULT = D_FONC,
-                TYPE_CHARGE = 'SUIV'), _F(
-                CHARGE = CHARGE_F,
-                FONC_MULT = D_FONC,
-                TYPE_CHARGE = 'SUIV')),
-                         COMPORTEMENT=_F(
-                RELATION = 'ELAS',
-                DEFORMATION = 'GROT_GDEP'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-8,
-                ITER_GLOB_MAXI = 20,
-                ARRET = 'OUI'),
-                            NEWTON=_F(
-                REAC_ITER = 1)
+NONLIN=STAT_NON_LINE(MODELE=MODELE_1,
+                     CHAM_MATER=CH_MAT_1,
+                     CARA_ELEM=CARAC_1,
+                     EXCIT=(_F(CHARGE = CHARGE_1),
+                            _F(CHARGE = CHARGE_2,
+                               FONC_MULT = D_FONC,
+                               TYPE_CHARGE = 'SUIV'),
+                            _F(CHARGE = CHARGE_F,
+                               FONC_MULT = D_FONC,
+                               TYPE_CHARGE = 'SUIV')),
+                     COMPORTEMENT=_F(RELATION = 'ELAS',
+                                     DEFORMATION = 'GROT_GDEP'),
+                     INCREMENT=_F(LIST_INST = L_INST),
+                     CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
+                                    ITER_GLOB_MAXI = 20,
+                                    ARRET = 'OUI'),
+                     NEWTON=_F(REAC_ITER = 1)
               )
-
 #
 #
-
+#
+# POUR LE CHARGEMENT AVEC PRES_REP
+#
+NONLIN2=STAT_NON_LINE(MODELE=MODELE_1,
+                     CHAM_MATER=CH_MAT_1,
+                     CARA_ELEM=CARAC_1,
+                     EXCIT=(_F(CHARGE = CHARGE_1),
+                            _F(CHARGE = CHARGE_3,
+                               FONC_MULT = D_FONC,
+                               TYPE_CHARGE = 'SUIV'),
+                            _F(CHARGE = CHARG2_F,
+                               FONC_MULT = D_FONC,
+                               TYPE_CHARGE = 'SUIV'
+                               ),),
+                     COMPORTEMENT=_F(RELATION = 'ELAS',
+                                     DEFORMATION = 'GROT_GDEP'),
+                     INCREMENT=_F(LIST_INST = L_INST),
+                     CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
+                                    ITER_GLOB_MAXI = 20,
+                                    ARRET = 'OUI'),
+                     NEWTON=_F(REAC_ITER = 1)
+              )
+#
+#
+# TEST_RESU POUR FORCE_COQUE
+#
 TEST_RESU(RESU=_F(GROUP_NO='G_11',
                   INST=0.40000000000000002,
                   RESULTAT=NONLIN,
@@ -161,6 +195,34 @@ TEST_RESU(RESU=_F(GROUP_NO='G_11',
 TEST_RESU(RESU=_F(GROUP_NO='G_11',
                   INST=0.69999999999999996,
                   RESULTAT=NONLIN,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.511224210,
+                  VALE_REFE=-0.51268000000000002,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
+#
+# TEST_RESU POUR PRES_REP
+#
+TEST_RESU(RESU=_F(GROUP_NO='G_11',
+                  INST=0.40000000000000002,
+                  RESULTAT=NONLIN2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=-0.391979455,
+                  VALE_REFE=-0.39300000000000002,
+                  REFERENCE='NON_DEFINI',
+                  CRITERE='RELATIF',
+                  PRECISION=3.0000000000000001E-3,),
+          )
+
+#
+
+TEST_RESU(RESU=_F(GROUP_NO='G_11',
+                  INST=0.69999999999999996,
+                  RESULTAT=NONLIN2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   VALE_CALC=-0.511224210,
