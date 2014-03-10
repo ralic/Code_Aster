@@ -1,0 +1,377 @@
+# -*- coding: utf-8 -*-
+
+###
+### This file is generated automatically by SALOME v6.6.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+sys.path.insert( 0, r'/home/')
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1), True)
+
+#Set up visual properties:
+ipar.setProperty("AP_ACTIVE_VIEW", "VTKViewer_0_0")
+ipar.setProperty("AP_WORKSTACK_INFO", "00000001000000000000000201000000010000044c000000040000000200000001000000080000001a004f00430043005600690065007700650072005f0030005f00300000000002000000080000001a00560054004b005600690065007700650072005f0030005f00300000000102")
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+ipar.setProperty("AP_SAVEPOINT_NAME", "GUI state: 2")
+#Set up lists:
+# fill list AP_VIEWERS_LIST
+ipar.append("AP_VIEWERS_LIST", "OCCViewer_1")
+ipar.append("AP_VIEWERS_LIST", "VTKViewer_2")
+# fill list OCCViewer_1
+ipar.append("OCCViewer_1", "OCC scene:2 - viewer:1")
+ipar.append("OCCViewer_1", "999|scale=5.508171506569e-01*centerX=0.000000000000e+00*centerY=-1.000000133062e+02*projX=1.000000000000e+00*projY=0.000000000000e+00*projZ=0.000000000000e+00*twist=0.000000000000e+00*atX=0.000000000000e+00*atY=0.000000000000e+00*atZ=0.000000000000e+00*eyeX=5.000000000000e+02*eyeY=0.000000000000e+00*eyeZ=0.000000000000e+00*scaleX=1.000000000000e+00*scaleY=1.000000000000e+00*scaleZ=1.000000000000e+00*isVisible=1*size=100.00*gtIsVisible=0*gtDrawNameX=1*gtDrawNameY=1*gtDrawNameZ=1*gtNameX=X*gtNameY=Z*gtNameZ=Z*gtNameColorRX=255*gtNameColorGX=0*gtNameColorBX=0*gtNameColorRY=0*gtNameColorGY=255*gtNameColorBY=0*gtNameColorRZ=0*gtNameColorGZ=0*gtNameColorBZ=255*gtDrawValuesX=1*gtDrawValuesY=1*gtDrawValuesZ=1*gtNbValuesX=3*gtNbValuesY=3*gtNbValuesZ=3*gtOffsetX=2*gtOffsetY=2*gtOffsetZ=2*gtColorRX=255*gtColorGX=0*gtColorBX=0*gtColorRY=0*gtColorGY=255*gtColorBY=0*gtColorRZ=0*gtColorGZ=0*gtColorBZ=255*gtDrawTickmarksX=1*gtDrawTickmarksY=1*gtDrawTickmarksZ=1*gtTickmarkLengthX=5*gtTickmarkLengthY=5*gtTickmarkLengthZ=5*background=bt$1;fn$;tm$0;ts$false;c1$#238891;c2$#238891;gt$-1;gr$")
+# fill list VTKViewer_2
+ipar.append("VTKViewer_2", "VTK scene:1 - viewer:1")
+ipar.append("VTKViewer_2", """<?xml version="1.0"?>
+<ViewState>
+    <Position X="1412.78" Y="934.433" Z="688.225"/>
+    <FocalPoint X="0" Y="0" Z="0"/>
+    <ViewUp X="-0.404012" Y="-0.0613822" Z="0.912692"/>
+    <ViewScale Parallel="122.474" X="1" Y="1" Z="1"/>
+    <DisplayCubeAxis Show="0"/>
+    <GraduatedAxis Axis="X">
+        <Title isVisible="1" Text="X" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="1" G="0" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Y">
+        <Title isVisible="1" Text="Y" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="1" B="0"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <GraduatedAxis Axis="Z">
+        <Title isVisible="1" Text="Z" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Title>
+        <Labels isVisible="1" Number="3" Offset="2" Font="0" Bold="0" Italic="0" Shadow="0">
+            <Color R="0" G="0" B="1"/>
+        </Labels>
+        <TickMarks isVisible="1" Length="5"/>
+    </GraduatedAxis>
+    <Trihedron isShown="1" Size="105"/>
+    <Background Value="bt=1;fn=;tm=0;ts=false;c1=#000000;c2=#000000;gt=-1;gr="/>
+</ViewState>
+""")
+# fill list AP_MODULES_LIST
+ipar.append("AP_MODULES_LIST", "Geometry")
+ipar.append("AP_MODULES_LIST", "Mesh")
+
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+Face_1 = geompy.MakeFaceHW(100, 100, 1)
+Vertex_1 = geompy.MakeVertex(-200, 0, 0)
+Vertex_2 = geompy.MakeVertex(200, 0, 0)
+Vertex_3 = geompy.MakeVertex(0, -200, 0)
+Vertex_4 = geompy.MakeVertex(0, 200, 0)
+Line_1 = geompy.MakeLineTwoPnt(Vertex_1, Vertex_2)
+Line_2 = geompy.MakeLineTwoPnt(Vertex_3, Vertex_4)
+Partition_1 = geompy.MakePartition([Face_1], [Line_1, Line_2], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+Group_quad = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Group_quad, [26, 12])
+Group_tria = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Group_tria, [2, 19])
+Vertex_bas = geompy.MakeVertex(0, 0, -0.5)
+Vertex_haut = geompy.MakeVertex(0, 0, 0.5)
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Plane_bas = geompy.MakePlane(Vertex_bas, OZ, 400)
+Plane_haut = geompy.MakePlane(Vertex_haut, OZ, 400)
+Vertex_5 = geompy.MakeVertex(0, 0, -100)
+Vertex_6 = geompy.MakeVertex(0, 0, 100)
+Plane_BAS = geompy.MakePlane(Vertex_5, OZ, 400)
+Plane_HAU = geompy.MakePlane(Vertex_6, OZ, 400)
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Vertex_1, 'Vertex_1' )
+geompy.addToStudy( Vertex_2, 'Vertex_2' )
+geompy.addToStudy( Vertex_3, 'Vertex_3' )
+geompy.addToStudy( Vertex_4, 'Vertex_4' )
+geompy.addToStudy( Line_1, 'Line_1' )
+geompy.addToStudy( Line_2, 'Line_2' )
+geompy.addToStudy( Partition_1, 'Partition_1' )
+geompy.addToStudyInFather( Partition_1, Group_quad, 'Group_quad' )
+geompy.addToStudyInFather( Partition_1, Group_tria, 'Group_tria' )
+geompy.addToStudy( Vertex_bas, 'Vertex_bas' )
+geompy.addToStudy( Vertex_haut, 'Vertex_haut' )
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Plane_bas, 'Plane_bas' )
+geompy.addToStudy( Plane_haut, 'Plane_haut' )
+geompy.addToStudy( Vertex_5, 'Vertex_5' )
+geompy.addToStudy( Vertex_6, 'Vertex_6' )
+geompy.addToStudy( Plane_BAS, 'Plane_BAS' )
+geompy.addToStudy( Plane_HAU, 'Plane_HAU' )
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "GEOM", 1))
+
+#Set up entries:
+# set up entry GEOM_1 (Face_1) parameters
+objId = geompy.getObjectID(Face_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_10 (Vertex_haut) parameters
+objId = geompy.getObjectID(Vertex_haut)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_15 (Plane_bas) parameters
+objId = geompy.getObjectID(Plane_bas)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_16 (Plane_haut) parameters
+objId = geompy.getObjectID(Plane_haut)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_17 (Vertex_5) parameters
+objId = geompy.getObjectID(Vertex_5)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_18 (Vertex_6) parameters
+objId = geompy.getObjectID(Vertex_6)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_19 (Plane_BAS) parameters
+objId = geompy.getObjectID(Plane_BAS)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+# set up entry GEOM_2 (Vertex_1) parameters
+objId = geompy.getObjectID(Vertex_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_20 (Plane_HAU) parameters
+objId = geompy.getObjectID(Plane_HAU)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+ipar.setParameter(objId, "VTKViewer_1_Color", "1:1:0")
+ipar.setParameter(objId, "VTKViewer_1_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+# set up entry GEOM_3 (Vertex_2) parameters
+objId = geompy.getObjectID(Vertex_2)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_4 (Vertex_3) parameters
+objId = geompy.getObjectID(Vertex_3)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_5 (Vertex_4) parameters
+objId = geompy.getObjectID(Vertex_4)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_6 (Line_1) parameters
+objId = geompy.getObjectID(Line_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_7 (Line_2) parameters
+objId = geompy.getObjectID(Line_2)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_8 (Partition_1) parameters
+objId = geompy.getObjectID(Partition_1)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+# set up entry GEOM_9 (Vertex_bas) parameters
+objId = geompy.getObjectID(Vertex_bas)
+ipar.setParameter(objId, "OCCViewer_0_Visibility", "On")
+ipar.setParameter(objId, "OCCViewer_0_Color", "1:1:0")
+ipar.setParameter(objId, "OCCViewer_0_Material", "Physical=0:Shininess=0.0078125:Transparency=0:Ambient=1:AmbientColor=#333333:AmbientCoefficient=0.5:Diffuse=1:DiffuseColor=#000000:DiffuseCoefficient=0.24:Specular=1:SpecularColor=#ffffff:SpecularCoefficient=0.06:Emissive=0:EmissiveColor=#000000:EmissiveCoefficient=0")
+ipar.setParameter(objId, "OCCViewer_0_EdgeWidth", "1")
+ipar.setParameter(objId, "OCCViewer_0_IsosWidth", "1")
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+aFilterManager = smesh.CreateFilterManager()
+smesh.SetCurrentStudy(theStudy)
+import NETGENPlugin
+import StdMeshers
+
+Mesh_1 = smesh.Mesh(Partition_1)
+
+nbseg = 2
+
+Regular_1D = Mesh_1.Segment(geom=Group_quad)
+Nb_Segments_1 = Regular_1D.NumberOfSegments(nbseg,[],[  ])
+Nb_Segments_1.SetDistrType( 0 )
+SubMesh_1 = Mesh_1.GetSubMesh( Group_quad, 'Quadrangle_2D' )
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE,geom=Group_quad)
+Regular_1D_1 = Mesh_1.Segment(geom=Group_tria)
+status = Mesh_1.AddHypothesis(Nb_Segments_1,Group_tria)
+SubMesh_2 = Mesh_1.GetSubMesh( Group_tria, 'NETGEN_2D_ONLY' )
+NETGEN_2D_ONLY = Mesh_1.Triangle(algo=smesh.NETGEN_2D,geom=Group_tria)
+isDone = Mesh_1.Compute()
+Mesh_1.TranslateObject( Mesh_1, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, -0.5 )), 0 )
+Mesh_1.ExtrusionSweepObject2D( Mesh_1, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, 1 )), 1 )
+[ SubMesh_1, SubMesh_2 ] = Mesh_1.GetMesh().GetSubMeshes()
+aCriteria = []
+aCriterion = smesh.GetCriterion(SMESH.FACE,SMESH.FT_BelongToPlane,SMESH.FT_Undefined,Plane_bas)
+aCriteria.append(aCriterion)
+aFilter_1 = smesh.GetFilterFromCriteria(aCriteria)
+aFilter_1.SetMesh(Mesh_1.GetMesh())
+Group_extr_bas = Mesh_1.GroupOnFilter(SMESH.FACE, 'Group_extr_bas', aFilter_1 )
+Group_extr_bas.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+aCriteria = []
+aCriterion = smesh.GetCriterion(SMESH.FACE,SMESH.FT_BelongToPlane,SMESH.FT_Undefined,Plane_haut)
+aCriteria.append(aCriterion)
+aFilter_2 = smesh.GetFilterFromCriteria(aCriteria)
+aFilter_2.SetMesh(Mesh_1.GetMesh())
+Group_extr_hau = Mesh_1.GroupOnFilter(SMESH.FACE, 'Group_extr_hau', aFilter_2 )
+Group_extr_hau.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+CZM = Mesh_1.CreateEmptyGroup( SMESH.VOLUME, 'CZM' )
+nbAdd = CZM.AddFrom( Mesh_1.GetMesh() )
+CZM.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+
+h2extr = 99.5
+nbseg  = 2*nbseg
+
+[ mat_bas ] = Mesh_1.ExtrusionSweepObject2D( Group_extr_bas, SMESH.DirStruct( SMESH.PointStruct ( 0, 0, -1.*h2extr/nbseg )), nbseg ,True)
+[ mat_hau ] = Mesh_1.ExtrusionSweepObject2D( Group_extr_hau, SMESH.DirStruct( SMESH.PointStruct ( 0, 0,     h2extr/nbseg )), nbseg ,True)
+[ Group_extr_bas, Group_extr_hau, CZM, mat_bas, mat_hau ] = Mesh_1.GetGroups()
+[ SubMesh_1, SubMesh_2 ] = Mesh_1.GetMesh().GetSubMeshes()
+[ Group_extr_bas, Group_extr_hau, CZM, mat_bas, mat_hau ] = Mesh_1.GetGroups()
+[ SubMesh_1, SubMesh_2 ] = Mesh_1.GetMesh().GetSubMeshes()
+[ Group_extr_bas, Group_extr_hau, CZM, mat_bas, mat_hau ] = Mesh_1.GetGroups()
+[ SubMesh_1, SubMesh_2 ] = Mesh_1.GetMesh().GetSubMeshes()
+[ Group_extr_bas, Group_extr_hau, CZM, mat_bas, mat_hau ] = Mesh_1.GetGroups()
+[ SubMesh_1, SubMesh_2 ] = Mesh_1.GetMesh().GetSubMeshes()
+[ Group_extr_bas, Group_extr_hau, CZM, mat_bas, mat_hau ] = Mesh_1.GetGroups()
+[ SubMesh_1, SubMesh_2 ] = Mesh_1.GetMesh().GetSubMeshes()
+[ Group_extr_bas, Group_extr_hau, CZM, mat_bas, mat_hau ] = Mesh_1.GetGroups()
+[ SubMesh_1, SubMesh_2 ] = Mesh_1.GetMesh().GetSubMeshes()
+aCriteria = []
+aCriterion = smesh.GetCriterion(SMESH.FACE,SMESH.FT_BelongToPlane,SMESH.FT_Undefined,Plane_HAU)
+aCriteria.append(aCriterion)
+aFilter_3 = smesh.GetFilterFromCriteria(aCriteria)
+aFilter_3.SetMesh(Mesh_1.GetMesh())
+face_hau = Mesh_1.GroupOnFilter(SMESH.FACE, 'face_bas', aFilter_3 )
+face_hau.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+aCriteria = []
+aCriterion = smesh.GetCriterion(SMESH.FACE,SMESH.FT_BelongToPlane,SMESH.FT_Undefined,Plane_BAS)
+aCriteria.append(aCriterion)
+aFilter_4 = smesh.GetFilterFromCriteria(aCriteria)
+aFilter_4.SetMesh(Mesh_1.GetMesh())
+face_bas = Mesh_1.GroupOnFilter(SMESH.FACE, 'face_hau', aFilter_4 )
+face_bas.SetColor( SALOMEDS.Color( 1, 0.666667, 0 ))
+face_bas.SetName( 'face_bas' )
+face_hau.SetName( 'face_hau' )
+mat_bas.SetName( 'mat_bas' )
+mat_hau.SetName( 'mat_hau' )
+SubMesh_1 = Regular_1D.GetSubMesh()
+SubMesh_2 = Regular_1D_1.GetSubMesh()
+
+## set object names
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+smesh.SetName(NETGEN_2D_ONLY.GetAlgorithm(), 'NETGEN_2D_ONLY')
+smesh.SetName(Group_extr_bas, 'Group_extr_bas')
+smesh.SetName(Group_extr_hau, 'Group_extr_hau')
+smesh.SetName(CZM, 'CZM')
+smesh.SetName(mat_bas, 'mat_bas')
+smesh.SetName(mat_hau, 'mat_hau')
+smesh.SetName(face_hau, 'face_hau')
+smesh.SetName(face_bas, 'face_bas')
+
+### Store presentation parameters of displayed objects
+import iparameters
+ipar = iparameters.IParameters(theStudy.GetModuleParameters("Interface Applicative", "SMESH", 1))
+
+#Set up entries:
+# set up entry SMESH_3 (Mesh_1) parameters
+ipar.setParameter("SMESH_3", "VTKViewer_0_Visibility", "On")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Representation", "2")
+ipar.setParameter("SMESH_3", "VTKViewer_0_IsShrunk", "0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Entities", "e:1:f:1:v:1:0d:0:b:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Colors", "surface:0:0.666667:1:backsurface:-100:volume:1:0:0.666667:-100:edge:0:0.666667:1:node:1:0:0:outline:0:0.27451:0:elem0d:0:1:0:ball:0:0.333333:1:orientation:1:1:1")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Sizes", "line:1:outline:1:elem0d:5:ball:10:shrink:0.75:orientation:0.1:0")
+ipar.setParameter("SMESH_3", "VTKViewer_0_PointMarker", "std:1:9")
+ipar.setParameter("SMESH_3", "VTKViewer_0_Opacity", "1")
+ipar.setParameter("SMESH_3", "VTKViewer_0_ClippingPlane", "Off")
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+  iparameters.getSession().restoreVisualState(1)

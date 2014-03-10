@@ -333,12 +333,14 @@ D_ELAS = POST_RELEVE_T(
 
 # POST TRAITEMENT DE LA LONGUEUR DE FISSURE COHESIVE
 L_CZM_P = POST_CZM_FISS(RESULTAT = U_PLAS, 
+                      OPTION='LONGUEUR', 
                       GROUP_MA='DCBJ', 
                       POINT_ORIG=(0.0,-0.025),
                       VECT_TANG=(1.,0.))
 IMPR_TABLE(TABLE=L_CZM_P);
 
 L_CZM_E = POST_CZM_FISS(RESULTAT = U_ELAS, 
+                      OPTION='LONGUEUR', 
                       GROUP_MA='DCBJ', 
                       POINT_ORIG=(0.0,-0.025),
                       VECT_TANG=(1.0,0.0))

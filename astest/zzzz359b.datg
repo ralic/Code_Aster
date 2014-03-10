@@ -1,0 +1,165 @@
+# -*- coding: utf-8 -*-
+
+###
+### This file is generated automatically by SALOME v6.6.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1), True)
+
+###
+### GEOM component
+###
+
+import GEOM
+import geompy
+import math
+import SALOMEDS
+
+
+geompy.init_geom(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Vertex_1 = geompy.MakeVertex(50, 0, 0)
+Vertex_2 = geompy.MakeVertex(50, 100, 0)
+Vertex_3 = geompy.MakeVertex(-50, 100, 0)
+Vertex_4 = geompy.MakeVertex(-50, 0, 0)
+Line_1 = geompy.MakeLineTwoPnt(Vertex_1, Vertex_2)
+Line_2 = geompy.MakeLineTwoPnt(Vertex_2, Vertex_3)
+Line_3 = geompy.MakeLineTwoPnt(Vertex_3, Vertex_4)
+Line_4 = geompy.MakeLineTwoPnt(Vertex_4, Vertex_1)
+Wire_1 = geompy.MakeWire([Line_1, Line_2, Line_3, Line_4], 1e-07)
+Face_1 = geompy.MakeFaceWires([Wire_1], 1)
+
+Vertex_5 = geompy.MakeVertex(0, -200, 0)
+Vertex_6 = geompy.MakeVertex(0, 200, 0)
+Line_5 = geompy.MakeLineTwoPnt(Vertex_5, Vertex_6)
+Vertex_7 = geompy.MakeVertex(-200, 0.5, 0)
+Vertex_8 = geompy.MakeVertex( 200, 0.5, 0)
+Line_6 = geompy.MakeLineTwoPnt(Vertex_7, Vertex_8)
+Partition_1 = geompy.MakePartition([Face_1], [Line_5, Line_6], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+[Compound_1, Compound_2, Compound_3, Compound_4] = geompy.Propagate(Partition_1)
+
+CZM = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(CZM, [19, 2])
+
+Group_quad = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Group_quad, [12])
+
+Group_tria = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Group_tria, [26])
+
+mat_hau = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(mat_hau, [26, 12])
+
+face_hau = geompy.CreateGroup(Partition_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(face_hau, [28, 16])
+
+face_mil = geompy.CreateGroup(Partition_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(face_mil, [11, 25])
+
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Vertex_1, 'Vertex_1' )
+geompy.addToStudy( Vertex_2, 'Vertex_2' )
+geompy.addToStudy( Vertex_3, 'Vertex_3' )
+geompy.addToStudy( Vertex_4, 'Vertex_4' )
+geompy.addToStudy( Line_1, 'Line_1' )
+geompy.addToStudy( Line_2, 'Line_2' )
+geompy.addToStudy( Line_3, 'Line_3' )
+geompy.addToStudy( Line_4, 'Line_4' )
+geompy.addToStudy( Wire_1, 'Wire_1' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Vertex_5, 'Vertex_5' )
+geompy.addToStudy( Vertex_6, 'Vertex_6' )
+geompy.addToStudy( Line_5, 'Line_5' )
+geompy.addToStudy( Vertex_7, 'Vertex_7' )
+geompy.addToStudy( Vertex_8, 'Vertex_8' )
+geompy.addToStudy( Line_6, 'Line_6' )
+
+geompy.addToStudy( Partition_1, 'Partition_1' )
+
+geompy.addToStudyInFather( Partition_1, Compound_1, 'Compound_1' )
+geompy.addToStudyInFather( Partition_1, Compound_2, 'Compound_2' )
+geompy.addToStudyInFather( Partition_1, Compound_3, 'Compound_3' )
+geompy.addToStudyInFather( Partition_1, Compound_4, 'Compound_4' )
+
+geompy.addToStudyInFather( Partition_1, CZM, 'CZM' )
+geompy.addToStudyInFather( Partition_1, Group_quad, 'Group_quad' )
+geompy.addToStudyInFather( Partition_1, Group_tria, 'Group_tria' )
+geompy.addToStudyInFather( Partition_1, mat_hau, 'mat_hau' )
+geompy.addToStudyInFather( Partition_1, face_hau, 'face_hau' )
+geompy.addToStudyInFather( Partition_1, face_mil, 'face_mil' )
+
+###
+### SMESH component
+###
+
+import smesh, SMESH, SALOMEDS
+
+smesh.SetCurrentStudy(theStudy)
+import StdMeshers
+import NETGENPlugin
+
+Mesh_1 = smesh.Mesh(Partition_1)
+
+Import_1D = Mesh_1.UseExisting1DElements()
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smesh.QUADRANGLE)
+
+Regular_1D = Mesh_1.Segment(geom=Compound_1)
+Nb_Segments_1 = Regular_1D.NumberOfSegments(1)
+Nb_Segments_1.SetDistrType( 0 )
+
+Regular_1D_1 = Mesh_1.Segment(geom=Compound_2)
+Nb_Segments_2 = Regular_1D_1.NumberOfSegments(10)
+Nb_Segments_2.SetDistrType( 0 )
+
+Regular_1D_2 = Mesh_1.Segment(geom=Compound_3)
+Nb_Segments_3 = Regular_1D_2.NumberOfSegments(4)
+Nb_Segments_3.SetDistrType( 0 )
+
+Regular_1D_3 = Mesh_1.Segment(geom=Compound_4)
+Nb_Segments_4 = Regular_1D_3.NumberOfSegments(4)
+Nb_Segments_4.SetDistrType( 0 )
+
+isDone = Mesh_1.Compute()
+SubMesh_1 = Regular_1D.GetSubMesh()
+SubMesh_2 = Regular_1D_1.GetSubMesh()
+SubMesh_3 = Regular_1D_2.GetSubMesh()
+
+Group_tria = Mesh_1.GroupOnGeom(Group_tria,'Group_tria',SMESH.FACE)
+isDone = Mesh_1.SplitQuad( Group_tria.GetListOfID(), 1 )
+
+mat_hau = Mesh_1.GroupOnGeom(mat_hau,'mat_hau',SMESH.FACE)
+CZM = Mesh_1.GroupOnGeom(CZM,'CZM',SMESH.FACE)
+face_hau = Mesh_1.GroupOnGeom(face_hau,'face_hau',SMESH.EDGE)
+face_mil = Mesh_1.GroupOnGeom(face_mil,'face_mil',SMESH.EDGE)
+
+## set object names
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Import_1D.GetAlgorithm(), 'Import_1D')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+smesh.SetName(Nb_Segments_3, 'Nb. Segments_3')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+smesh.SetName(SubMesh_3, 'SubMesh_3')
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

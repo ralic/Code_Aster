@@ -15,21 +15,41 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: jerome.laverne at edf.fr
+# ----------------------------------------------------------------------
+#  POST_CZM_FISS : 
+#  ---------------
+#  OPTION = 'LONGUEUR'
+#    - CALCUL DE LA LONGUEUR DES FISSURES COHESIVES 2D
+#    - PRODUIT UNE TABLE
+#  OPTION = 'TRIAXIALITE'
+#    - CALCUL DE LA TRIAXIALITE DANS LES ELEMENTS MASSIFS CONNECTES A 
+#      L'INTERFACE COHESIVE
+#    - PRODUIT UNE CARTE
+# ----------------------------------------------------------------------
 
-# ---------------------------------------------------------------------------
-#  POST_CZM_FISS CALCUL DE LA LONGUEUR DES FISSURES COHESIVES 2D
-#
+def post_czm_fiss_prod(self,OPTION,**args):
+  if OPTION == 'LONGUEUR'    : return table_sdaster
+  if OPTION == 'TRIAXIALITE' : return carte_sdaster
+  raise AsException("type de concept resultat non prevu")
 
+POST_CZM_FISS=MACRO(
 
-POST_CZM_FISS=MACRO(nom="POST_CZM_FISS",
-                    op=OPS('Macro.post_czm_fiss_ops.post_czm_fiss_ops'),
-                    sd_prod=table_sdaster,
-                    reentrant='n',
-                    UIinfo={"groupes":("Rupture",)},
-                    fr="Calcul de la longueur d'une fissure cohesive 2D",
+  nom="POST_CZM_FISS",
+  op=OPS('Macro.post_czm_fiss_ops.post_czm_fiss_ops'),
+  sd_prod=post_czm_fiss_prod,
+  reentrant='n',
+  UIinfo={"groupes":("Rupture",)},
+  fr="Post-Traiement scpécifiques aux modèles CZM",
 
-                    RESULTAT    = SIMP(statut='o',typ = (evol_noli)),
-                    GROUP_MA    = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
-                    POINT_ORIG  = SIMP(statut='o',typ='R',min=2,max=2),
-                    VECT_TANG   = SIMP(statut='o',typ='R',min=2,max=2),
-                   )
+  OPTION = SIMP(statut='o',typ='TXM',max=1,into=("LONGUEUR","TRIAXIALITE"),),
+
+  RESULTAT = SIMP(statut='o',typ=evol_noli,max=1,),
+
+  b_longueur =BLOC(
+    condition  = "OPTION == 'LONGUEUR' ",
+    GROUP_MA   = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
+    POINT_ORIG = SIMP(statut='o',typ='R',min=2,max=2),
+    VECT_TANG  = SIMP(statut='o',typ='R',min=2,max=2),
+                  ),
+
+                    )

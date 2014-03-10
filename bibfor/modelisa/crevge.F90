@@ -64,7 +64,7 @@ subroutine crevge(ligrel, bas1)
 !
 !
     integer :: nvoima, nscoma
-    parameter(nvoima=100,nscoma=4)
+    parameter(nvoima=200,nscoma=4)
     integer :: touvoi(1:nvoima, 1:nscoma+2)
     integer :: iv, nbma, dim, dimma, iatyma, m0, is, adcom0, nbsom0
     integer :: nbmr, admar, ir, numar, nvtot, iad, dimvlo, jnvge

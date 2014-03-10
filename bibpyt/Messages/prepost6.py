@@ -159,4 +159,9 @@ cata_msg = {
  maillage) si vous voulez que votre chemin ne soit pas tronqué.
 """),
 
+46 : _(u"""
+ Le modèle %(k1)s ne contient aucun élément de joint ou d'interface.
+ Conseil : veuillez revoir la définition de ce modèle
+"""),
+
 }

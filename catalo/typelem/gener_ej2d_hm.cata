@@ -28,6 +28,7 @@ ENTETE__ ELEMENT__ EJHYME_PLQU8        MAILLE__ QUAD8
 ENTETE__ ELEMENT__ MFPLQU8             MAILLE__ QUAD8
    ELREFE__  SE3       GAUSS__  RIGI=FPG2   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
+   ATTRIBUT__  TYPE_VOISIN=A2
    ENS_NOEUD__  EN1     =     1  2  5
    ENS_NOEUD__  EN2     =     3  4  7
    ENS_NOEUD__  EN3     =     6  8
