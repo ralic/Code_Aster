@@ -73,9 +73,9 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
     common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,&
+     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
@@ -95,7 +95,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    character(len=9) :: typoro
+    character(len=9) :: typorot
     character(len=1) :: poum
     logical :: resi, rigi, elas
     integer :: ij, indice
@@ -103,7 +103,8 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
     real(kind=8) :: porom, poro, em(6), ep(6)
     real(kind=8) :: y, ym, x, seuil, dseuil, s, dp
 !
-    parameter (typoro = 'IMPLICITE')
+!    parameter (typoro = 'IMPLICITE')
+!    parameter (typoro = 'EXPLICITE')
 ! ----------------------------------------------------------------------
 !
 !
@@ -136,6 +137,11 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
 !    CARACTERISTIQUES MATERIAU
     call lcroma(fami, kpg, ksp, poum, mate)
+    
+    
+    if (typoro .eq. 1) typorot = 'IMPLICITE'
+    if (typoro .eq. 2) typorot = 'EXPLICITE'
+    
     call gdclel(fami, kpg, ksp, poum, mate,&
                 young, nu)
 !
@@ -147,7 +153,9 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
 ! 3 - CALCUL DE LA POROSITE ET TESTS ASSOCIES
 !
-    if (typoro .eq. 'EXPLICITE') then
+    if (typorot .eq. 'EXPLICITE') then
+
+
 !
 !      POROSITE EXPLICITE
         porom = max(f0,porom)
@@ -155,7 +163,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
         fcd = rousd*poro
         dfcddj = 0.d0
 !
-    else if (typoro .eq. 'IMPLICITE') then
+    else if (typorot .eq. 'IMPLICITE') then
 !
 !    POROSITE FONCTION DE J
         poro = 1 - (1-f0)/jp
@@ -269,7 +277,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 !
 ! 5 - INTEGRATION DE LA POROSITE EN EXPLICITE
 !
-        if (typoro .eq. 'EXPLICITE') then
+        if (typorot .eq. 'EXPLICITE') then
             poro = 1.d0-(1.d0-porom)*exp(-x)
             if (poro .ge. fcr) then
                 poro = 1.d0-(1.d0-porom)*exp(-acce*x)

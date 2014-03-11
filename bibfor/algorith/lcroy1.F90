@@ -42,9 +42,9 @@ function lcroy1()
 #include "asterfort/utmess.h"
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
     common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,&
+     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ

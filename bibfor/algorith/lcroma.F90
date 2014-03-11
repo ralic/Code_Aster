@@ -40,15 +40,15 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 !
     integer :: itemax, jprolp, jvalep, nbvalp, iret
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
-    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi
+    real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi,typoro
     common /lcrou/ prec,young,nu,sigy,sig1,rousd,f0,fcr,acce,&
-     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,&
+     &               pm,rpm,fonc,fcd,dfcddj,dpmaxi,typoro,&
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: icodre(6)
-    character(len=8) :: nomres(6), type
-    real(kind=8) :: r8bid, valres(6), pente, aire, temp, resu, val(1)
+    integer :: icodre(7)
+    character(len=8) :: nomres(7), type
+    real(kind=8) :: r8bid, valres(7), pente, aire, temp, resu, val(1)
 ! ----------------------------------------------------------------------
 !
 !
@@ -87,15 +87,17 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
     nomres(4) = 'PORO_CRIT'
     nomres(5) = 'PORO_ACCE'
     nomres(6) = 'DP_MAXI'
+    nomres(7) = 'PORO_TYPE'
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
                 ' ', 'ROUSSELIER', 0, ' ', [0.d0],&
-                6, nomres, valres, icodre, 2)
+                7, nomres, valres, icodre, 2)
     rousd = valres(1)
     sig1 = valres(2)
     f0 = valres(3)
     fcr = valres(4)
     acce = valres(5)
     dpmaxi= valres(6)
+    typoro = valres(7)
 !
 end subroutine

@@ -467,6 +467,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              AN              =SIMP(statut='f',typ='R',defaut= 0. ),
              DP_MAXI         =SIMP(statut='f',typ='R',defaut= 0.1),
              BETA            =SIMP(statut='f',typ='R',defaut=0.85),
+             PORO_TYPE       =SIMP(statut='f',typ='R',defaut=1.,fr="choix de la modélisation de la porosité : 1 = IMPLICITE, 2 = EXPLICITE"),
+             
+             
            ),
            ROUSSELIER_FO   =FACT(statut='f',
              D               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -479,6 +482,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              AN              =SIMP(statut='f',typ='R',defaut= 0. ),
              DP_MAXI         =SIMP(statut='f',typ='R',defaut= 0.1),
              BETA            =SIMP(statut='f',typ='R',defaut=0.85),
+             PORO_TYPE       =SIMP(statut='f',typ='R',defaut=1.,fr="choix de la modelisation de la porosite : 1 = IMPLICITE, 2 = EXPLICITE"),
+
+
            ),
            VISC_SINH      =FACT(statut='f',
              SIGM_0          =SIMP(statut='o',typ='R'),
