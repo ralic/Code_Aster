@@ -1,0 +1,392 @@
+# TITRE TP ANALYSE DYNAMIQUE - SOUS-STRUCTURATION DYNAMIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: emmanuel.boyere at edf.fr
+#
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MAY_POM=LIRE_MAILLAGE(UNITE=20,
+                      FORMAT='MED',
+                      VERI_MAIL=_F(VERIF='NON',),);
+
+POMPE=AFFE_MODELE(MAILLAGE=MAY_POM,
+                  AFFE=(_F(GROUP_MA=('Pal_3D','Vol_3D','Tuy_3D',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),
+                        _F(GROUP_MA=('Pal_2D','Vol_2D','Tuy_2D',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DKT',),),);
+
+E = 210.E9;
+
+rho = 7800.0;
+
+nu = 0.3;
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=rho,),);
+
+
+MAT_POM=AFFE_MATERIAU(MAILLAGE=MAY_POM,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),);
+
+
+CHA_POM=AFFE_CHAR_MECA(MODELE=POMPE,
+                       DDL_IMPO=_F(GROUP_MA=('BC_pal','BC_vol','BC_tuy',),
+                                   LIAISON='ENCASTRE',),);
+
+
+CAR_POM=AFFE_CARA_ELEM(MODELE=POMPE,
+                       COQUE=(_F(GROUP_MA='Pal_2D',
+                                 EPAIS=0.03,),
+                              _F(GROUP_MA='Tuy_2D',
+                                 EPAIS=0.01,),
+                              _F(GROUP_MA='Vol_2D',
+                                 EPAIS=0.05,),
+                              _F(GROUP_MA=('tuy_vol','vol_tuy',
+                                           'vol_pal','pal_vol',),
+                                 EPAIS=0.05,),),);
+
+
+ASSEMBLAGE(MODELE=POMPE,
+           CHAM_MATER=MAT_POM,
+           CARA_ELEM=CAR_POM,
+           CHARGE=CHA_POM,
+           NUME_DDL=CO('NUME'),
+           MATR_ASSE=(_F(MATRICE=CO('MASS'),
+                         OPTION='MASS_MECA',),
+                      _F(MATRICE=CO('RIGI'),
+                         OPTION='RIGI_MECA',),),);
+
+
+MOD_POMP=MODE_ITER_SIMULT(METHODE='SORENSEN',
+                          TYPE_RESU='DYNAMIQUE',
+                          MATR_RIGI=RIGI,
+                          MATR_MASS=MASS,
+                          CALC_FREQ=_F(OPTION='CENTRE',
+                                       FREQ=60.,
+                                       NMAX_FREQ=10,),
+                          VERI_MODE=_F(SEUIL=1e-05,),);
+
+
+
+
+
+MAY_PAL=LIRE_MAILLAGE(UNITE=21,
+                      FORMAT='MED',);
+
+MAY_VOL=LIRE_MAILLAGE(UNITE=22,
+                      FORMAT='MED',);
+
+MAY_TUY=LIRE_MAILLAGE(UNITE=23,
+                      FORMAT='MED',);
+
+
+PALIER=AFFE_MODELE(MAILLAGE=MAY_PAL,
+                   AFFE=(_F(GROUP_MA='Pal_3D',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA='Pal_2D',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),),);
+
+VOLUTE=AFFE_MODELE(MAILLAGE=MAY_VOL,
+                   AFFE=(_F(GROUP_MA='Vol_3D',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA='Vol_2D',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),),);
+
+TUYAU=AFFE_MODELE(MAILLAGE=MAY_TUY,
+                  AFFE=(_F(GROUP_MA='Tuy_3D',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),
+                        _F(GROUP_MA='Tuy_2D',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DKT',),),);
+
+
+MAT_PAL=AFFE_MATERIAU(MAILLAGE=MAY_PAL,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),);
+
+MAT_VOL=AFFE_MATERIAU(MAILLAGE=MAY_VOL,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),);
+
+MAT_TUY=AFFE_MATERIAU(MAILLAGE=MAY_TUY,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),);
+
+
+CHA_PAL=AFFE_CHAR_MECA(MODELE=PALIER,
+                       DDL_IMPO=(_F(GROUP_MA='BC_pal',
+                                    LIAISON='ENCASTRE',),
+                                 _F(GROUP_MA='pal_vol',
+                                    LIAISON='ENCASTRE',),),);
+
+CHA_VOL=AFFE_CHAR_MECA(MODELE=VOLUTE,
+                       DDL_IMPO=(_F(GROUP_MA='BC_vol',
+                                    LIAISON='ENCASTRE',),
+                                 _F(GROUP_MA=('vol_pal','vol_tuy',),
+                                    LIAISON='ENCASTRE',),),);
+
+CHA_TUY=AFFE_CHAR_MECA(MODELE=TUYAU,
+                       DDL_IMPO=(_F(GROUP_MA='BC_tuy',
+                                    LIAISON='ENCASTRE',),
+                                 _F(GROUP_MA='tuy_vol',
+                                    LIAISON='ENCASTRE',),),);
+
+
+CAR_PAL=AFFE_CARA_ELEM(MODELE=PALIER,
+                       COQUE=(_F(GROUP_MA='Pal_2D',
+                                EPAIS=0.03,),
+                             _F(GROUP_MA='pal_vol',
+                                EPAIS=0.05,),),
+                                );
+
+CAR_VOL=AFFE_CARA_ELEM(MODELE=VOLUTE,
+                       COQUE=(_F(GROUP_MA='Vol_2D',
+                                EPAIS=0.05,),
+                             _F(GROUP_MA=('vol_pal','vol_tuy',),
+                                EPAIS=0.05,),),
+                                );
+
+CAR_TUY=AFFE_CARA_ELEM(MODELE=TUYAU,
+                       COQUE=(_F(GROUP_MA='Tuy_2D',
+                                EPAIS=0.01,),
+                             _F(GROUP_MA='tuy_vol',
+                                EPAIS=0.05,),),   
+                                );
+
+MAC_PAL=CREA_ELEM_SSD(MODELE=PALIER,
+                      CHAM_MATER=MAT_PAL,
+                      CARA_ELEM=CAR_PAL,
+                      CHARGE=CHA_PAL,
+                      INTERFACE=_F(NOM='PAL_VOL',
+                                   TYPE='CRAIGB',
+                                   GROUP_NO='pal_vol',),
+                      BASE_MODALE=_F(TYPE='RITZ',
+                                     TYPE_MODE='INTERFACE',
+                                     NMAX_MODE_INTF=30,),);
+
+MAC_TUY=CREA_ELEM_SSD(MODELE=TUYAU,
+                      CHAM_MATER=MAT_TUY,
+                      CARA_ELEM=CAR_TUY,
+                      CHARGE=CHA_TUY,
+                      INTERFACE=_F(NOM='TUY_VOL',
+                                   TYPE='CRAIGB',
+                                   GROUP_NO='tuy_vol',),
+                      BASE_MODALE=_F(TYPE='RITZ',
+                                     TYPE_MODE='INTERFACE',
+                                     NMAX_MODE_INTF=30,),);
+
+MAC_VOL=CREA_ELEM_SSD(MODELE=VOLUTE,
+                      CHAM_MATER=MAT_VOL,
+                      CARA_ELEM=CAR_VOL,
+                      CHARGE=CHA_VOL,
+                      INTERFACE=(_F(NOM='VOL_PAL',
+                                    TYPE='CRAIGB',
+                                    GROUP_NO='vol_pal',),
+                                 _F(NOM='VOL_TUY',
+                                    TYPE='CRAIGB',
+                                    GROUP_NO='vol_tuy',),),
+                      BASE_MODALE=_F(TYPE='RITZ',
+                                     TYPE_MODE='INTERFACE',
+                                     NMAX_MODE_INTF=30,),);
+
+ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('POMPE_GE'),
+                               NUME_DDL_GENE=CO('NU_GENE'),
+                               RIGI_GENE=CO('RIGI_GE'),
+                               MASS_GENE=CO('MASS_GE'),),
+              SOUS_STRUC=(_F(NOM='PAL_GE',
+                             MACR_ELEM_DYNA=MAC_PAL,
+                             TRANS=(-0.35,0.0,0.0,),),
+                          _F(NOM='VOL_GE',
+                             MACR_ELEM_DYNA=MAC_VOL,
+                             TRANS=(0.0,0.0,0.0,),),
+                          _F(NOM='TUY_GE',
+                             MACR_ELEM_DYNA=MAC_TUY,
+                             TRANS=(0.24,0.0,0.0,),),),
+              LIAISON=(_F(SOUS_STRUC_1='PAL_GE',
+                          INTERFACE_1='PAL_VOL',
+                          SOUS_STRUC_2='VOL_GE',
+                          INTERFACE_2='VOL_PAL',
+                          OPTION='REDUIT',),
+                       _F(SOUS_STRUC_1='TUY_GE',
+                          INTERFACE_1='TUY_VOL',
+                          SOUS_STRUC_2='VOL_GE',
+                          INTERFACE_2='VOL_TUY',
+                          OPTION='REDUIT',),),
+              METHODE='ELIMINE',);
+
+SQUEL=DEFI_SQUELETTE(MODELE_GENE=POMPE_GE,
+                     SOUS_STRUC=(_F(NOM='PAL_GE',
+                                    GROUP_MA=('Pal_3D','Pal_2D',),),
+                                 _F(NOM='VOL_GE',
+                                    GROUP_MA=('Vol_3D','Vol_2D',),),
+                                 _F(NOM='TUY_GE',
+                                    GROUP_MA=('Tuy_3D','Tuy_2D',),),),);
+
+
+MODES_GE=MODE_ITER_SIMULT(MATR_RIGI=RIGI_GE,
+                          MATR_MASS=MASS_GE,
+                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                       NMAX_FREQ=10,),);
+
+
+MODES=REST_SOUS_STRUC(RESU_GENE=MODES_GE,
+                      TOUT_ORDRE='OUI',
+                      NOM_CHAM='DEPL',
+                      SQUELETTE=SQUEL,);
+
+
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=(_F(RESULTAT=MODES,),
+                _F(RESULTAT=MOD_POMP,),),);
+
+      
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=58.3199128567),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=123.4672509166),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=155.274997187),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=190.566620965),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=224.846841505),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=230.773539034),
+                _F(NUME_ORDRE=7,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=249.223496312),
+                _F(NUME_ORDRE=8,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=259.379355318),
+                _F(NUME_ORDRE=9,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=261.071699943),
+                _F(NUME_ORDRE=10,
+                   PARA='FREQ',
+                   RESULTAT=MOD_POMP,
+                   VALE_CALC=278.070045602),),);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=58.3199128567,
+                   VALE_CALC=58.4284084418),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=123.467250916,
+                   VALE_CALC=146.717206496),
+                _F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=20.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=155.274997187,
+                   VALE_CALC=185.430798571 ),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=190.566620965,
+                   VALE_CALC=196.71309698),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=224.846841505,
+                   VALE_CALC=229.519448039),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=230.773539034,
+                   VALE_CALC=236.141638162),
+                _F(NUME_ORDRE=7,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=249.223496312,
+                   VALE_CALC=256.569290343),
+                _F(NUME_ORDRE=8,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=259.379355318,
+                   VALE_CALC=263.874406312),
+                _F(NUME_ORDRE=9,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=261.071699943,
+                   VALE_CALC=275.367470304),
+                _F(NUME_ORDRE=10,
+                   PARA='FREQ',
+                   RESULTAT=MODES,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=25.E-2,
+                   TOLE_MACHINE=20.E-2,
+                   VALE_REFE=278.070045602,
+                   VALE_CALC=287.584609662),),);                   
+
+FIN();
