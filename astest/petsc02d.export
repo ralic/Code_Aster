@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist I 
 
 F comm petsc02d.comm D 1
-F mmed petsc02a.mmed D 20
+F mmed petsc02d.mmed D 20
