@@ -70,7 +70,7 @@ subroutine op0018()
 !
     integer :: vali(4), d1, d2
     character(len=4) :: kioc, cdim
-    character(len=8) :: noma, nomu, k8b, verif(2), exivf, bevois
+    character(len=8) :: noma, nomu, k8b, verif, exivf, bevois
     character(len=8) :: typema
     character(len=16) :: k16bid
     character(len=16) :: concep, cmd, phenom, modeli, lmodel(10)
@@ -117,10 +117,6 @@ subroutine op0018()
     if (nbv .eq. 0) then
         call getvid(' ', 'GRILLE', scal=noma, nbret=nbv)
     endif
-!
-! - VERIF
-!
-    call getvtx(' ', 'VERIF', nbval=2, vect=verif, nbret=nbv)
 !
 ! - GRANDEURS CARACTERISTIQUES
 !
@@ -623,8 +619,8 @@ subroutine op0018()
 !     -- ON VERIFIE QUE LA GEOMETRIE DES MAILLES
 !        N'EST PAS TROP CHAHUTEE :
 !     ---------------------------------------------------
-    call getvtx(' ', 'VERI_JACOBIEN', scal=verif(1), nbret=nbv)
-    if (verif(1) .eq. 'OUI') call calcul('C', 'VERI_JACOBIEN', ligrel, 1, noma//'.COORDO',&
+    call getvtx(' ', 'VERI_JACOBIEN', scal=verif)
+    if (verif .eq. 'OUI') call calcul('C', 'VERI_JACOBIEN', ligrel, 1, noma//'.COORDO',&
                                          'PGEOMER', 1, '&&OP0018.CODRET', 'PCODRET', 'V',&
                                          'OUI')
 !

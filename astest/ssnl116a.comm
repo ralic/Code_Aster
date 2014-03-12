@@ -41,7 +41,7 @@ GF=DEFI_GEOM_FIBRE(SECTION=_F(GROUP_FIBRE='TRAN',
                               COOR_AXE_POUTRE=(0.,0.,),),);
 
 MO=AFFE_MODELE(    MAILLAGE=MA,
-     VERIF=('MAILLE',  'NOEUD',),AFFE=(
+     AFFE=(
      _F(  GROUP_MA = 'GOA',
      PHENOMENE = 'MECANIQUE',
      MODELISATION = 'POU_D_EM'),

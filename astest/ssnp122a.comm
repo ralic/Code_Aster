@@ -42,19 +42,19 @@ MA=DEFI_GROUP(reuse =MA,
                              _F(GROUP_MA='CD')));
 
 MO_L=AFFE_MODELE(MAILLAGE=MA,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN_SI'));
 
 # MO_NL=AFFE_MODELE(MAILLAGE=MA,
-#                VERIF='MAILLE',
+#                
 #                AFFE=_F(TOUT='OUI',
 #                        PHENOMENE='MECANIQUE',
 #                        MODELISATION='D_PLAN_GRAD_VARI'));
 
 MO_NLG=AFFE_MODELE(MAILLAGE=MA,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN_INCO_UPG'));

@@ -37,7 +37,7 @@ DEBUT(CODE=_F(
 M=LIRE_MAILLAGE(FORMAT='MED',);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D_INCO_UPG',),);
@@ -805,7 +805,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='NOEUMI',
 #--------------------------------------------------------------------------------
 
 MOUP=AFFE_MODELE(MAILLAGE=M,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D_INCO_UP',),);
@@ -1164,7 +1164,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M1,
                ADAPTATION='RAFFINEMENT_UNIFORME',);
 
 MOUPL=AFFE_MODELE(MAILLAGE=ML,
-                  VERIF='MAILLE',
+                  
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='3D_INCO_UP',),);
@@ -1514,7 +1514,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
 #--------------------------------------------------------------------------------
 
 MOOS=AFFE_MODELE(MAILLAGE=ML,
-                  VERIF='MAILLE',
+                  
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='3D_INCO_UPO',),);

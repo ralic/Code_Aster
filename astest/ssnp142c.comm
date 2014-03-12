@@ -88,7 +88,7 @@ MA=MODI_MAILLAGE(reuse =MA,
                    INFO=1)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               VERIF='MAILLE',
+               
                AFFE=(_F(GROUP_MA=('BARRAGE','TERRE','BAR_AMON','BAR_AVAL'),
                         PHENOMENE='MECANIQUE',
                         MODELISATION='D_PLAN',),

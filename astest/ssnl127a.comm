@@ -28,7 +28,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        MODELISATION='BARRE',),);
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
-                     VERIF='MAILLE',
+                     
                      BARRE=_F(GROUP_MA='TOUT',
                               SECTION='GENERALE',
                               CARA='A',

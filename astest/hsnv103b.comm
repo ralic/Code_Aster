@@ -244,7 +244,7 @@ CM2=AFFE_MATERIAU(
          )
 
 MO=AFFE_MODELE(
-           MAILLAGE=MAIL,    VERIF='MAILLE',
+           MAILLAGE=MAIL,    
           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'D_PLAN'))
 

@@ -24,7 +24,7 @@ DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 
 MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
-                                VERIF='MAILLE',
+                                
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'THERMIQUE',
                                         MODELISATION = 'AXIS')
@@ -407,7 +407,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 MODEL2=AFFE_MODELE(    MAILLAGE=MAYA,
-                                VERIF='MAILLE',
+                                
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'MECANIQUE',
                                         MODELISATION = 'AXIS')

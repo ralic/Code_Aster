@@ -34,7 +34,7 @@ MA[0]=LIRE_MAILLAGE(FORMAT='MED',);
 FRONT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21);
 
 MO[0]=AFFE_MODELE(MAILLAGE=MA[0],
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);

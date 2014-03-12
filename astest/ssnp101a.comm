@@ -29,7 +29,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 M=LIRE_MAILLAGE();
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN',),);

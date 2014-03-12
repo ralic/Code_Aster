@@ -22,7 +22,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
          GRILLE          =SIMP(statut='f',typ=grille_sdaster),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-         VERIF           =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2,into=("MAILLE","NOEUD") ),
 #
 #====
 # Définition des grandeurs caractéristiques

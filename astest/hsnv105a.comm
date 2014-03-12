@@ -106,7 +106,7 @@ TEMPE=CALC_META(reuse=TEMPE,
 MO=AFFE_MODELE(
 
                MAILLAGE=MA,
-                 VERIF='MAILLE',
+                 
 
                 AFFE=_F(
                 TOUT = 'OUI',

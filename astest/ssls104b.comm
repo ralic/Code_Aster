@@ -71,7 +71,7 @@ MA3=DEFI_GROUP( reuse=MA3,   MAILLAGE=MA3, INFO=2,
 CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MA3,
                             AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
 
-MODELE_1=AFFE_MODELE(  MAILLAGE=MA3, VERIF='MAILLE',
+MODELE_1=AFFE_MODELE(  MAILLAGE=MA3, 
                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
                                 PHENOMENE = 'MECANIQUE') )
 

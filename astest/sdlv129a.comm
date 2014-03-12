@@ -26,7 +26,7 @@ M=MODI_MAILLAGE(reuse =M, MAILLAGE=M,INFO=2,
                        ORIE_PEAU_3D=(_F(GROUP_MA='SLAT2',),),
                        );
 
-MO=AFFE_MODELE(    MAILLAGE=M,    VERIF='MAILLE',
+MO=AFFE_MODELE(    MAILLAGE=M,    
        AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
 
 MAT=DEFI_MATERIAU(

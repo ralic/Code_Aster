@@ -33,7 +33,7 @@ IMPR_RESU(
 MO=AFFE_MODELE(
 
                 MAILLAGE=MA,
-                VERIF='MAILLE',
+                
 
                 AFFE= (
                 _F(

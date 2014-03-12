@@ -37,7 +37,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='SYY1',),),);
 
 MODE=AFFE_MODELE(MAILLAGE=MA,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION=('3D',),),);

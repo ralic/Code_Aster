@@ -33,7 +33,7 @@ DEBUT(CODE=_F(
 M=LIRE_MAILLAGE(FORMAT='MED');
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN_INCO_UP'));

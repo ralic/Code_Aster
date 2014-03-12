@@ -59,7 +59,7 @@ MA_SECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21);
 # ---- MODELE : POUTRE DROITE D'EULER ----
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL1,
-                 VERIF='MAILLE',
+                 
                  AFFE=(_F(GROUP_MA='POU1',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_TGM',),

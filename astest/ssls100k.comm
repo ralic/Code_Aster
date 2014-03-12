@@ -39,7 +39,7 @@ CH_MAT_1=AFFE_MATERIAU(MAILLAGE=MAILLA_1,
                                MATER=MATERI_1,),);
 
 MODELE_1=AFFE_MODELE(MAILLAGE=MAILLA_1,
-                     VERIF='MAILLE',
+                     
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
                              MODELISATION='COQUE_3D',),);

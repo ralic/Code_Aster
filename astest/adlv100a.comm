@@ -36,7 +36,7 @@ CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
                        _F( GROUP_MA = 'HEXAPIST',           MATER = ACIER))
                             )
 
-COLONNE=AFFE_MODELE( MAILLAGE=MAYA,  VERIF='MAILLE',AFFE=(
+COLONNE=AFFE_MODELE( MAILLAGE=MAYA,  AFFE=(
                      _F( GROUP_MA = ('HEXAEAU',  'HEXAAIR',),
                        MODELISATION = '3D_FLUIDE',  PHENOMENE = 'MECANIQUE'),
                      _F( GROUP_MA = ('COUPEAU',  'COUPAIR',),

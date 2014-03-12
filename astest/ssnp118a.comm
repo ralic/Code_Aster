@@ -29,7 +29,7 @@ IMPR_RESU(FORMAT  = 'GMSH',RESU=_F(MAILLAGE=MA),UNITE=19)
 MO=AFFE_MODELE(
 
                 MAILLAGE=MA,
-                VERIF='MAILLE',
+                
 
                 AFFE= (
                 _F(

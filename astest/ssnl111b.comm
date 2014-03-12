@@ -46,7 +46,7 @@ DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 MO=AFFE_MODELE(
 
                MAILLAGE=MA,
-                 VERIF='MAILLE',
+                 
 
                 AFFE=_F(
                 TOUT = 'OUI',
@@ -69,7 +69,7 @@ ACIER=DEFI_MATERIAU(
 
 CARBA=AFFE_CARA_ELEM(
                           MODELE=MO,
-                           VERIF='MAILLE',
+                           
                            BARRE=_F(
        GROUP_MA = 'TOUT',
 

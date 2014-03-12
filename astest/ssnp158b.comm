@@ -29,7 +29,7 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);

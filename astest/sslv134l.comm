@@ -24,7 +24,7 @@ M=MODI_MAILLAGE(reuse=M,
                 ORIE_PEAU_3D=_F(GROUP_MA = ( 'SINF_F','IINF_F' ),),);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F( GROUP_MA = ('MA','SINF_F','IINF_F',),
                         PHENOMENE = 'MECANIQUE',
                         MODELISATION = '3D', ))

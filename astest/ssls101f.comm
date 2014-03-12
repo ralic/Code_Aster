@@ -45,7 +45,7 @@ MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
                           AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
 
-MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    VERIF='MAILLE',
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    
                         AFFE=_F( TOUT = 'OUI',   MODELISATION = 'DST',
                               PHENOMENE = 'MECANIQUE') )
 

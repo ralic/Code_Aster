@@ -34,7 +34,7 @@ DEFI_GROUP(reuse=M,       MAILLAGE=M,CREA_GROUP_NO=(
                 )
 
 MO=AFFE_MODELE(            MAILLAGE=M,
-                                   VERIF='MAILLE',
+                                   
                                   AFFE=_F(  TOUT = 'OUI',
                                          PHENOMENE = 'MECANIQUE',
                                          MODELISATION = '3D',       ))

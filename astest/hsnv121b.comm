@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MA=LIRE_MAILLAGE()
 
 MO=AFFE_MODELE(    MAILLAGE=MA,
-                              VERIF='MAILLE',
+                              
                            AFFE=_F(  TOUT = 'OUI',
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'AXIS')

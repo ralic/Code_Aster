@@ -45,7 +45,7 @@ MALLA = MODI_MAILLAGE (reuse = MALLA,
 #---------------------------------
 
 MODELO=AFFE_MODELE(MAILLAGE=MALLA,
-                   VERIF='MAILLE',
+                   
                    AFFE=(_F(GROUP_MA =('CABOT',
                                        'ACIER',
                                        'BETON',

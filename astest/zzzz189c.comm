@@ -163,7 +163,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL,
                             MATER=MATER,),);
 
 MODEL=AFFE_MODELE(MAILLAGE=MAILL,
-                  VERIF='MAILLE',
+                  
                   AFFE=(_F(GROUP_MA='PLAQUE',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='DKT',),

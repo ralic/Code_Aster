@@ -35,7 +35,7 @@ NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 M=LIRE_MAILLAGE(FORMAT='MED');
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF'),
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D_INCO_UPG'));

@@ -52,7 +52,7 @@ MAILL2=DEFI_GROUP(reuse =MAILL2,
                   );
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL2,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(GROUP_MA='STRUCT',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='COQUE_3D',),);
@@ -77,7 +77,7 @@ MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,
                               NU=0.3333,),);
 
 CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    VERIF='MAILLE',
+                    
                     COQUE=_F(GROUP_MA=('POUTRE1','POUTRE2'),
                              COQUE_NCOU =1,
                              EPAIS=63.5,

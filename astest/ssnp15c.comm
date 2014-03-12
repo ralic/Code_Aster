@@ -30,7 +30,7 @@ M=DEFI_GROUP(reuse =M,
                               TOUT='OUI',),);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='DKT',),);

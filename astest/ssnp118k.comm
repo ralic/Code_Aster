@@ -38,7 +38,7 @@ MA=LIRE_MAILLAGE(FORMAT='MED')
 MO=AFFE_MODELE(
 
                 MAILLAGE=MA,
-                VERIF='MAILLE',
+                
 
                 AFFE= (
                 _F(

@@ -71,7 +71,7 @@ MATAF=AFFE_MATERIAU(MAILLAGE=MAILTOT,
 # -------------------------------------------------
 
 LEMOD=AFFE_MODELE(MAILLAGE=MAILTOT,
-                  VERIF='MAILLE',
+                  
                   AFFE=(
                          _F(GROUP_MA=('ACPLUS','ACMOINS',),
                            PHENOMENE='MECANIQUE',

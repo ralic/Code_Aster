@@ -31,7 +31,7 @@ MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
 
 MODE=AFFE_MODELE(
             MAILLAGE=MA,
-            VERIF='MAILLE',
+            
             AFFE=(
            _F( TOUT='OUI',
                PHENOMENE = 'MECANIQUE',

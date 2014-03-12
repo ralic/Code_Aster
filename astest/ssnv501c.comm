@@ -57,7 +57,7 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
                   INFO=2,);
 
 MODEL=AFFE_MODELE(MAILLAGE=MAILL1,
-                  VERIF='MAILLE',
+                  
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='AXIS',),);

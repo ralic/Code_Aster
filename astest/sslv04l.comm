@@ -39,7 +39,7 @@ M=DEFI_GROUP(reuse=M,  MAILLAGE=M,
                    )
 
 MO=AFFE_MODELE(            MAILLAGE=M,
-                                   VERIF='MAILLE',
+                                   
                           AFFE=_F(  GROUP_MA = ('BORDEF','CYLINT','CYL',),
                                          PHENOMENE = 'MECANIQUE',
                                          MODELISATION = '3D',        ))

@@ -64,7 +64,7 @@ ACIER=DEFI_MATERIAU(   ELAS=_F(  E = 2.E11,
 # AFFECTATION DES MODELES
 # -------------------------------------------------
 #
-LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     
                         AFFE=_F(  GROUP_MA = ('GEOB','GEOBB',),
                                PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'GRILLE_EXCENTRE',

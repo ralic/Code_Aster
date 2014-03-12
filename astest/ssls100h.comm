@@ -44,7 +44,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL,
                             MATER=MATER,),);
 
 MODEL=AFFE_MODELE(MAILLAGE=MAILL,
-                  VERIF='MAILLE',
+                  
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='Q4G',),);

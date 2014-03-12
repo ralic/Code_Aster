@@ -59,7 +59,7 @@ M=DEFI_GROUP(reuse =M,
                                NOM='F')));
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE'),
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D_INCO_UP'));

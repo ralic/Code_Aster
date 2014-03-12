@@ -27,7 +27,7 @@ M=LIRE_MAILLAGE(FORMAT='MED',);
 #--------------------------------------------------------------------
 
 MOTH=AFFE_MODELE(MAILLAGE=M,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
                          MODELISATION='AXIS',),);
@@ -73,7 +73,7 @@ TEMP=RESOUDRE(MATR=KTH,
 #--------------------------------------------------------------------
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS',),);

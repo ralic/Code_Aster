@@ -35,7 +35,7 @@ DEBUT(CODE=_F(
 M=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS',),);
@@ -559,7 +559,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #  TEST DU CHARGEMENT ROTATION EN AXIS_FOURIER
 
 MO2=AFFE_MODELE(MAILLAGE=M,
-                VERIF='MAILLE',
+                
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='AXIS_FOURIER',),);

@@ -29,7 +29,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                INFO=2,
-               VERIF='MAILLE',
+               
                AFFE=_F(GROUP_MA='MAILLAGE',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);

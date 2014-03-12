@@ -136,7 +136,7 @@ modele_aff.append({'GROUP_MA':  MURS,
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                INFO=1,
-               VERIF='MAILLE',
+               
                AFFE=modele_aff,
                 ) ;
 

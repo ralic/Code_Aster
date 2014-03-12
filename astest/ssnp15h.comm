@@ -35,7 +35,7 @@ MA=CREA_MAILLAGE(MAILLAGE=MA0,
                  LINE_QUAD=_F(TOUT='OUI',),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN_SI',),);

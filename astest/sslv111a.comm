@@ -34,7 +34,7 @@ M=LIRE_MAILLAGE(UNITE=80,
                 INFO=2,);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);

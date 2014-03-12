@@ -39,7 +39,7 @@ MA=LIRE_MAILLAGE()
 
 MO=AFFE_MODELE(
                MAILLAGE=MA,
-               VERIF='MAILLE',
+               
                AFFE=_F(
                TOUT = 'OUI',
                PHENOMENE = 'MECANIQUE',

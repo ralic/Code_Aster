@@ -52,7 +52,7 @@ ACIER=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = E_A*section_l,
 # -------------------------------------------------
 LEMOD = AFFE_MODELE(
                 MAILLAGE=MA,
-                VERIF='MAILLE',
+                
                 AFFE=(
                         _F( GROUP_MA = 'GEOB',
                             PHENOMENE = 'MECANIQUE',

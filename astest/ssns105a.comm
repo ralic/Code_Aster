@@ -63,7 +63,7 @@ MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
 # AFFECTATION DES MODELES
 # -------------------------------------------------
 #
-LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     
                         AFFE=(_F(  GROUP_MA = ('GEOB','GEOBB'),
                                PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'GRILLE_MEMBRANE'),

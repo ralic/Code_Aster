@@ -31,7 +31,7 @@ MAIL = DEFI_GROUP ( reuse = MAIL,
                                 _F( GROUP_MA = 'NOTCH'),),);
 
 MO=AFFE_MODELE(MAILLAGE=MAIL,
-               VERIF='MAILLE',
+               
                AFFE=_F(GROUP_MA='STOT',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS_SI',),);

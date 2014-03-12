@@ -34,7 +34,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
 
 
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,
-                 VERIF='MAILLE',
+                 
                  POUTRE=_F(  GROUP_MA = 'TOUT', SECTION = 'CERCLE',
                              CARA = ('R', 'EP'),
                              MODI_METRIQUE = 'OUI',

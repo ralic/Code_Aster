@@ -31,7 +31,7 @@ MAILL=DEFI_GROUP(reuse =MAILL,
                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
-                 VERIF='MAILLE',
+                 
                  AFFE=(_F(GROUP_MA=('PATIN','LESC','FSUP','FLAT','BATI','LMAI'),
                           PHENOMENE='MECANIQUE',
                           MODELISATION='D_PLAN',),

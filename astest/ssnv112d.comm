@@ -38,7 +38,7 @@ PRES_0 = 0.0;
 
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS_INCO_UPG'));

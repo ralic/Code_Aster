@@ -115,7 +115,7 @@ M=LIRE_MAILLAGE(FORMAT='MED');
 # PLAQUE TROUEE : CONTRAINTES PLANES
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);

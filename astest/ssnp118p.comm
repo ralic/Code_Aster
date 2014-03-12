@@ -36,7 +36,7 @@ MA=DEFI_GROUP(reuse=MA,
 
 # meme modelisation pour toutes les mailles
 MO=AFFE_MODELE(MAILLAGE=MA,
-               VERIF='MAILLE',
+               
                AFFE=
                 _F(GROUP_MA = ('G_CUBE','DROITE','GAUCHE'),
                    PHENOMENE = 'MECANIQUE',

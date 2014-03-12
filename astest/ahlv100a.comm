@@ -30,7 +30,7 @@ AIR=DEFI_MATERIAU( FLUIDE=_F( RHO = 1.3, CELE_C = ('RI',343.,0.,)))
 CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,
                                  AFFE=_F( TOUT = 'OUI',  MATER = AIR) )
 
-GUIDE=AFFE_MODELE(  MAILLAGE=MAIL,     VERIF='MAILLE',
+GUIDE=AFFE_MODELE(  MAILLAGE=MAIL,     
                             AFFE=_F( TOUT = 'OUI', MODELISATION = '3D',
                                      PHENOMENE = 'ACOUSTIQUE') )
 

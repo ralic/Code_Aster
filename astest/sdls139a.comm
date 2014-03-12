@@ -41,7 +41,7 @@ MAINUM=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
 #=================================================
 
 MODELNUM=AFFE_MODELE(MAILLAGE=MAINUM,
-                    VERIF='MAILLE',
+                    
                     AFFE=(_F(GROUP_NO=('GRILLE1','GRILLE3','GRILLE6','GRILLE8',),
                              PHENOMENE='MECANIQUE',
                              MODELISATION='DIS_TR',),

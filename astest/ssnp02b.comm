@@ -25,7 +25,7 @@ DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 MAYA=LIRE_MAILLAGE( )
 
 MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
-                                VERIF='MAILLE',
+                                
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'MECANIQUE',
                                         MODELISATION = 'D_PLAN')

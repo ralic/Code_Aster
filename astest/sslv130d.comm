@@ -42,7 +42,7 @@ PRES_0 = FORMULE(VALE='0.',
                  NOM_PARA=('X','Y',),);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS_INCO_UPG',),);
@@ -865,7 +865,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='NOEUMIA',
 #--------------------------------------------------------------------------------
 
 MOUP=AFFE_MODELE(MAILLAGE=M,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='AXIS_INCO_UP',),);
@@ -1220,7 +1220,7 @@ ML=LIRE_MAILLAGE(FORMAT='MED',
                  UNITE=21,);
 
 MOUPL=AFFE_MODELE(MAILLAGE=ML,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='AXIS_INCO_UP',),);
@@ -1579,7 +1579,7 @@ MLOS=LIRE_MAILLAGE(FORMAT='MED',
                    UNITE=22,);
 
 MOOS=AFFE_MODELE(MAILLAGE=MLOS,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='AXIS_INCO_UPO',),);

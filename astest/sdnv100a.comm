@@ -34,7 +34,7 @@ MAILL=DEFI_GROUP( reuse=MAILL,
 
 MODE=AFFE_MODELE(
             MAILLAGE=MAILL,
-            VERIF='MAILLE',
+            
             AFFE=(
            _F(   TOUT = 'OUI',
                  PHENOMENE = 'MECANIQUE',MODELISATION = '3D',),

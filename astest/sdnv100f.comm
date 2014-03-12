@@ -36,7 +36,7 @@ MAILL=DEFI_GROUP(reuse =MAILL,
                  CREA_GROUP_NO=_F(GROUP_MA='BARRE',),);
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
-                 VERIF='MAILLE',
+                 
                  AFFE=(_F(GROUP_MA='BARRE',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='3D',),

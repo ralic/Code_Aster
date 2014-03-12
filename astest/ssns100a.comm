@@ -50,7 +50,7 @@ ACIER=DEFI_MATERIAU(
 # AFFECTATION DES MODELES
 # -------------------------------------------------
 #
-LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     
                         AFFE=_F(  GROUP_MA = ('GEOB','GEOBB'),
                                PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'GRILLE_EXCENTRE',

@@ -50,7 +50,7 @@ ACIER=DEFI_MATERIAU(
 # -------------------------------------------------
 LEMOD = AFFE_MODELE(
                 MAILLAGE=MA,
-                VERIF='MAILLE',
+                
                 AFFE=(
                         _F( GROUP_MA = 'GEOB',
                             PHENOMENE = 'MECANIQUE',

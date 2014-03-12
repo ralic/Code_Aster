@@ -26,7 +26,7 @@ MA=LIRE_MAILLAGE(FORMAT='MED',   )
 # -------------------------------------------------------------- #
 
 MOTH=AFFE_MODELE(         MAILLAGE=MA,
-                            VERIF='MAILLE',
+                            
                               AFFE=_F(  TOUT = 'OUI',
                                       PHENOMENE = 'THERMIQUE',
                                       MODELISATION = 'PLAN') )
@@ -68,7 +68,7 @@ TEMP=RESOUDRE(           MATR=KTH,
 # -------------------------------------------------------------- #
 
 MO=AFFE_MODELE(            MAILLAGE=MA,
-                                 VERIF='MAILLE',
+                                 
                                 AFFE=_F(  TOUT = 'OUI',
                                        PHENOMENE = 'MECANIQUE',
                                        MODELISATION = 'D_PLAN'))

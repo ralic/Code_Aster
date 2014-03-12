@@ -38,7 +38,7 @@ MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                             MATER    = MEMBRANE,)))
 
 MODE=AFFE_MODELE(MAILLAGE = MAIL,
-                 VERIF    = 'MAILLE',
+                 
                  AFFE=(_F(GROUP_MA     = ('FACE'),
                           PHENOMENE    = 'MECANIQUE',
                           MODELISATION = 'MEMBRANE'),

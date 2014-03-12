@@ -35,7 +35,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 MA=LIRE_MAILLAGE(FORMAT='MED',  )
 
 MO=AFFE_MODELE(    MAILLAGE=MA, VERI_JACOBIEN='OUI',
-                        VERIF=('MAILLE', 'NOEUD', ),
                          AFFE=_F(  GROUP_MA = ( 'GMA2', 'GMA3', 'GMA4',
                                                  'GMA5', 'GMA6', 'GMA7', ),
                                 PHENOMENE = 'THERMIQUE',

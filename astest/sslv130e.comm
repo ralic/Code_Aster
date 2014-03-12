@@ -39,7 +39,7 @@ DEBUT(CODE=_F(
 M=LIRE_MAILLAGE(FORMAT='MED',);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
+               
                AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF',),
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D_INCO_UPG',),);
@@ -827,7 +827,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='NOEUMI',
 #--------------------------------------------------------------------------------
 
 MOUP=AFFE_MODELE(MAILLAGE=M,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF',),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D_INCO_UPG',),);
@@ -1185,7 +1185,7 @@ M0=CREA_MAILLAGE(MAILLAGE=M,
                  QUAD_LINE=_F(TOUT='OUI',),);
 
 MOOS=AFFE_MODELE(MAILLAGE=M0,
-                 VERIF='MAILLE',
+                 
                  AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF',),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D_INCO_UPO',),);

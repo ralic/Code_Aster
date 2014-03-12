@@ -33,7 +33,7 @@ MA=CREA_MAILLAGE(       MAILLAGE=MAILQ8,
                      )
 
 MOTHER=AFFE_MODELE(   MAILLAGE=MA,
-                           VERIF='MAILLE',
+                           
                              AFFE=_F(  TOUT = 'OUI',
                                     PHENOMENE = 'THERMIQUE',
                                     MODELISATION = 'AXIS_DIAG')

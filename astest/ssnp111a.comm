@@ -37,7 +37,7 @@ MAYA2=CREA_MAILLAGE(MAILLAGE=MAYA,
                                    OPTION='QUAD8_9',),);
 
 MODEL=AFFE_MODELE(MAILLAGE=MAYA2,
-                  VERIF='MAILLE',
+                  
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='C_PLAN',),);
