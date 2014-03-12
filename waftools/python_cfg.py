@@ -99,7 +99,7 @@ def check_numpy_version(self, minver=None):
     if not self.env['PYTHON']:
         self.fatal('load python tool first')
     assert minver is None or isinstance(minver, tuple)
-    cmd = self.env['PYTHON'] + ['-c', 'import numpy; print(numpy.__version__)']
+    cmd = self.env['PYTHON'] + ['-c', 'import numpy; print(numpy.version.short_version)']
     res = self.cmd_and_log(cmd)
     npyver_tuple = tuple(map(int, res.strip().split('.')))
     result = minver is None or npyver_tuple >= minver
