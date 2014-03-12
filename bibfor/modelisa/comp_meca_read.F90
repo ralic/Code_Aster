@@ -1,4 +1,4 @@
-subroutine comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
+subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali)
 !
     implicit none
 !
@@ -33,8 +33,8 @@ subroutine comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     logical, intent(in) :: l_etat_init
-    character(len=16), pointer, intent(inout) :: p_info_comp_valk(:)
-    integer          , pointer, intent(inout) :: p_info_comp_vali(:)
+    character(len=16), intent(out) :: info_comp_valk(:)
+    integer          , intent(out) :: info_comp_vali(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,8 +44,8 @@ subroutine comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  p_info_comp_valk : pointer to comportment informations (character)
-! IO  p_info_comp_vali : pointer to comportment informations (integer)
+! IO  info_comp_valk : comportment informations (character)
+! IO  info_comp_vali : comportment informations (integer)
 ! In  l_etat_init      : .true. if initial state is defined
 !
 ! --------------------------------------------------------------------------------------------------
@@ -161,24 +161,24 @@ subroutine comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali)
 !
 ! ----- Save options in list
 !
-        p_info_comp_valk(16*(iocc-1) + 1)  = rela_comp
-        p_info_comp_valk(16*(iocc-1) + 2)  = defo_comp
-        p_info_comp_valk(16*(iocc-1) + 3)  = type_comp
-        p_info_comp_valk(16*(iocc-1) + 4)  = type_cpla
-        p_info_comp_valk(16*(iocc-1) + 5)  = kit_comp(1)
-        p_info_comp_valk(16*(iocc-1) + 6)  = kit_comp(2)
-        p_info_comp_valk(16*(iocc-1) + 7)  = kit_comp(3)
-        p_info_comp_valk(16*(iocc-1) + 8)  = kit_comp(4)
-        p_info_comp_valk(16*(iocc-1) + 9)  = kit_comp(5)
-        p_info_comp_valk(16*(iocc-1) + 10) = kit_comp(6)
-        p_info_comp_valk(16*(iocc-1) + 11) = kit_comp(7)
-        p_info_comp_valk(16*(iocc-1) + 12) = kit_comp(8)
-        p_info_comp_valk(16*(iocc-1) + 13) = kit_comp(9)
-        p_info_comp_valk(16*(iocc-1) + 14) = mult_comp
-        p_info_comp_valk(16*(iocc-1) + 15) = type_matg
-        p_info_comp_valk(16*(iocc-1) + 16) = post_iter
-        p_info_comp_vali(2*(iocc-1)  + 1)  = nb_vari_exte
-        p_info_comp_vali(2*(iocc-1)  + 2)  = unit_comp
+        info_comp_valk(16*(iocc-1) + 1)  = rela_comp
+        info_comp_valk(16*(iocc-1) + 2)  = defo_comp
+        info_comp_valk(16*(iocc-1) + 3)  = type_comp
+        info_comp_valk(16*(iocc-1) + 4)  = type_cpla
+        info_comp_valk(16*(iocc-1) + 5)  = kit_comp(1)
+        info_comp_valk(16*(iocc-1) + 6)  = kit_comp(2)
+        info_comp_valk(16*(iocc-1) + 7)  = kit_comp(3)
+        info_comp_valk(16*(iocc-1) + 8)  = kit_comp(4)
+        info_comp_valk(16*(iocc-1) + 9)  = kit_comp(5)
+        info_comp_valk(16*(iocc-1) + 10) = kit_comp(6)
+        info_comp_valk(16*(iocc-1) + 11) = kit_comp(7)
+        info_comp_valk(16*(iocc-1) + 12) = kit_comp(8)
+        info_comp_valk(16*(iocc-1) + 13) = kit_comp(9)
+        info_comp_valk(16*(iocc-1) + 14) = mult_comp
+        info_comp_valk(16*(iocc-1) + 15) = type_matg
+        info_comp_valk(16*(iocc-1) + 16) = post_iter
+        info_comp_vali(2*(iocc-1)  + 1)  = nb_vari_exte
+        info_comp_vali(2*(iocc-1)  + 2)  = unit_comp
     end do
 !
 end subroutine

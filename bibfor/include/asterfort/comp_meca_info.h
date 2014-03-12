@@ -17,9 +17,9 @@
 !
 interface
     subroutine comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
-        character(len=16), pointer, intent(inout) :: p_info_comp_valk(:)
-        integer          , pointer, intent(inout) :: p_info_comp_vali(:)
-        integer          , pointer, intent(inout) :: p_info_comp_nvar(:)
+        character(len=16), pointer, intent(out) :: p_info_comp_valk(:)
+        integer          , pointer, intent(out) :: p_info_comp_vali(:)
+        integer          , pointer, intent(out) :: p_info_comp_nvar(:)
         integer          , intent(out) :: nbocc_compor
     end subroutine comp_meca_info
 end interface

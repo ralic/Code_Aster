@@ -31,16 +31,16 @@ use module_allocate
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
 !
-    logical, pointer, optional :: vl(:)
-    integer, optional, pointer :: vi(:)
-    integer(kind=4), optional, pointer :: vi4(:)
-    real(kind=8), optional, pointer :: vr(:)
-    complex(kind=8), optional, pointer :: vc(:)
-    character(len=8), optional, pointer :: vk8(:)
-    character(len=16), optional, pointer :: vk16(:)
-    character(len=24), optional, pointer :: vk24(:)
-    character(len=32), optional, pointer :: vk32(:)
-    character(len=80), optional, pointer :: vk80(:)
+    logical,           optional, pointer, intent(inout) :: vl(:)
+    integer,           optional, pointer, intent(inout) :: vi(:)
+    integer(kind=4),   optional, pointer, intent(inout) :: vi4(:)
+    real(kind=8),      optional, pointer, intent(inout) :: vr(:)
+    complex(kind=8),   optional, pointer, intent(inout) :: vc(:)
+    character(len=8),  optional, pointer, intent(inout) :: vk8(:)
+    character(len=16), optional, pointer, intent(inout) :: vk16(:)
+    character(len=24), optional, pointer, intent(inout) :: vk24(:)
+    character(len=32), optional, pointer, intent(inout) :: vk32(:)
+    character(len=80), optional, pointer, intent(inout) :: vk80(:)
 !
     character(len=*) :: strdbg
 !

@@ -17,13 +17,13 @@
 !
 interface
     subroutine comp_meca_save(mesh            , chmate          , compor          , nb_cmp,&
-                              p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
+                              info_comp_valk, info_comp_vali, info_comp_nvar)
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: chmate
         character(len=19), intent(in) :: compor
         integer, intent(in) :: nb_cmp
-        character(len=16), pointer, intent(in) :: p_info_comp_valk(:)
-        integer          , pointer, intent(in) :: p_info_comp_vali(:)
-        integer          , pointer, intent(in) :: p_info_comp_nvar(:)
+        character(len=16), intent(in) :: info_comp_valk(:)
+        integer          , intent(in) :: info_comp_vali(:)
+        integer          , intent(in) :: info_comp_nvar(:)
     end subroutine comp_meca_save
 end interface

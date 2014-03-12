@@ -23,9 +23,9 @@ subroutine comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, 
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), pointer, intent(inout) :: p_info_comp_valk(:)
-    integer          , pointer, intent(inout) :: p_info_comp_vali(:)
-    integer          , pointer, intent(inout) :: p_info_comp_nvar(:)
+    character(len=16), pointer, intent(out) :: p_info_comp_valk(:)
+    integer          , pointer, intent(out) :: p_info_comp_vali(:)
+    integer          , pointer, intent(out) :: p_info_comp_nvar(:)
     integer          , intent(out) :: nbocc_compor
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,9 +36,9 @@ subroutine comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  p_info_comp_valk : pointer to comportment informations (character)
-! IO  p_info_comp_vali : pointer to comportment informations (integer)
-! IO  p_info_comp_nvar : pointer to comportment informations (int. vari. count)
+! IO  p_info_comp_valk : comportment informations (character)
+! IO  p_info_comp_vali : comportment informations (integer)
+! IO  p_info_comp_nvar : comportment informations (int. vari. count)
 ! Out nbocc_compor     : number of comportement keywords
 !
 ! --------------------------------------------------------------------------------------------------

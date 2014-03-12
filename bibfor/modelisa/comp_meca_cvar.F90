@@ -1,4 +1,4 @@
-subroutine comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
+subroutine comp_meca_cvar(info_comp_valk, info_comp_vali, info_comp_nvar)
 !
     implicit none
 !
@@ -25,9 +25,9 @@ subroutine comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), pointer, intent(in) :: p_info_comp_valk(:)
-    integer          , pointer, intent(in) :: p_info_comp_vali(:)
-    integer          , pointer, intent(inout) :: p_info_comp_nvar(:)
+    character(len=16), intent(in) :: info_comp_valk(:)
+    integer          , intent(in) :: info_comp_vali(:)
+    integer          , intent(out) :: info_comp_nvar(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,29 +62,29 @@ subroutine comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 ! ----- Init
 !
         nb_vari      = 0
-        nume_comp    = 0 
+        nume_comp    = 0
         do icomp = 1,9
             nb_vari_comp(icomp) = 0
-        enddo 
+        enddo
 !
 ! ----- Options
 !
-        nb_vari_exte = p_info_comp_vali(2*(iocc-1)  + 1)
-        rela_comp    = p_info_comp_valk(16*(iocc-1) + 1)
-        defo_comp    = p_info_comp_valk(16*(iocc-1) + 2)
-        type_cpla    = p_info_comp_valk(16*(iocc-1) + 4)
-        kit_comp(1)  = p_info_comp_valk(16*(iocc-1) + 5)
-        kit_comp(2)  = p_info_comp_valk(16*(iocc-1) + 6)
-        kit_comp(3)  = p_info_comp_valk(16*(iocc-1) + 7)
-        kit_comp(4)  = p_info_comp_valk(16*(iocc-1) + 8)
-        kit_comp(5)  = p_info_comp_valk(16*(iocc-1) + 9)
-        kit_comp(6)  = p_info_comp_valk(16*(iocc-1) + 10)
-        kit_comp(7)  = p_info_comp_valk(16*(iocc-1) + 11)
-        kit_comp(8)  = p_info_comp_valk(16*(iocc-1) + 12)
-        kit_comp(9)  = p_info_comp_valk(16*(iocc-1) + 13)
-        mult_comp    = p_info_comp_valk(16*(iocc-1) + 14)
-        type_matg    = p_info_comp_valk(16*(iocc-1) + 15)
-        post_iter    = p_info_comp_valk(16*(iocc-1) + 16)
+        nb_vari_exte = info_comp_vali(2*(iocc-1)  + 1)
+        rela_comp    = info_comp_valk(16*(iocc-1) + 1)
+        defo_comp    = info_comp_valk(16*(iocc-1) + 2)
+        type_cpla    = info_comp_valk(16*(iocc-1) + 4)
+        kit_comp(1)  = info_comp_valk(16*(iocc-1) + 5)
+        kit_comp(2)  = info_comp_valk(16*(iocc-1) + 6)
+        kit_comp(3)  = info_comp_valk(16*(iocc-1) + 7)
+        kit_comp(4)  = info_comp_valk(16*(iocc-1) + 8)
+        kit_comp(5)  = info_comp_valk(16*(iocc-1) + 9)
+        kit_comp(6)  = info_comp_valk(16*(iocc-1) + 10)
+        kit_comp(7)  = info_comp_valk(16*(iocc-1) + 11)
+        kit_comp(8)  = info_comp_valk(16*(iocc-1) + 12)
+        kit_comp(9)  = info_comp_valk(16*(iocc-1) + 13)
+        mult_comp    = info_comp_valk(16*(iocc-1) + 14)
+        type_matg    = info_comp_valk(16*(iocc-1) + 15)
+        post_iter    = info_comp_valk(16*(iocc-1) + 16)
 !
 ! ----- Detection of specific cases
 !
@@ -100,14 +100,14 @@ subroutine comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 !
 ! ----- Save informations
 !
-        p_info_comp_nvar(10*(iocc-1) + 1) = nume_comp
-        p_info_comp_nvar(10*(iocc-1) + 2) = nb_vari
-        p_info_comp_nvar(10*(iocc-1) + 3) = nb_vari_comp(1)
-        p_info_comp_nvar(10*(iocc-1) + 4) = nb_vari_comp(2)
-        p_info_comp_nvar(10*(iocc-1) + 5) = nb_vari_comp(3)
-        p_info_comp_nvar(10*(iocc-1) + 6) = nb_vari_comp(4)
-        p_info_comp_nvar(10*(iocc-1) + 7) = nb_vari_comp(2)
-        p_info_comp_nvar(10*(iocc-1) + 8) = nb_vari_comp(1)
+        info_comp_nvar(10*(iocc-1) + 1) = nume_comp
+        info_comp_nvar(10*(iocc-1) + 2) = nb_vari
+        info_comp_nvar(10*(iocc-1) + 3) = nb_vari_comp(1)
+        info_comp_nvar(10*(iocc-1) + 4) = nb_vari_comp(2)
+        info_comp_nvar(10*(iocc-1) + 5) = nb_vari_comp(3)
+        info_comp_nvar(10*(iocc-1) + 6) = nb_vari_comp(4)
+        info_comp_nvar(10*(iocc-1) + 7) = nb_vari_comp(2)
+        info_comp_nvar(10*(iocc-1) + 8) = nb_vari_comp(1)
     end do
 !
 end subroutine

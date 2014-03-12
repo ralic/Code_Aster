@@ -17,12 +17,12 @@
 !
 interface
     subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
-                         p_info_carc_valk, p_info_carc_valr)
+                         info_carc_valk, info_carc_valr)
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: carcri
         integer, intent(in) :: nb_cmp
-        character(len=16), pointer, intent(in) :: p_info_carc_valk(:)
-        real(kind=8)     , pointer, intent(in) :: p_info_carc_valr(:)
+        character(len=16), intent(in) :: info_carc_valk(:)
+        real(kind=8)     , intent(in) :: info_carc_valr(:)
     end subroutine carc_save
 end interface

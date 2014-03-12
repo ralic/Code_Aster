@@ -1,4 +1,4 @@
-subroutine comp_meca_chck(model, mesh, full_elem_s, p_info_comp_valk)
+subroutine comp_meca_chck(model, mesh, full_elem_s, info_comp_valk)
 !
     implicit none
 !
@@ -38,7 +38,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, p_info_comp_valk)
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: full_elem_s
-    character(len=16), pointer, intent(in) :: p_info_comp_valk(:)
+    character(len=16), intent(inout) :: info_comp_valk(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, p_info_comp_valk)
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  full_elem_s      : <CHELEM_S> of FULL_MECA option
-! In  p_info_comp_valk : pointer to comportment informations (character)
+! In  info_comp_valk : comportment informations (character)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,9 +100,9 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, p_info_comp_valk)
 !
 ! ----- Get infos
 !
-        rela_comp    = p_info_comp_valk(16*(iocc-1) + 1)
-        defo_comp    = p_info_comp_valk(16*(iocc-1) + 2)
-        kit_comp(1)  = p_info_comp_valk(16*(iocc-1) + 5)
+        rela_comp    = info_comp_valk(16*(iocc-1) + 1)
+        defo_comp    = info_comp_valk(16*(iocc-1) + 2)
+        kit_comp(1)  = info_comp_valk(16*(iocc-1) + 5)
         rela_thmc    = kit_comp(1)
 !
 ! ----- Detection of specific cases
@@ -119,7 +119,7 @@ subroutine comp_meca_chck(model, mesh, full_elem_s, p_info_comp_valk)
         type_cpla = 'VIDE'
         call nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                     rela_comp, rela_comp_py, type_cpla)
-        p_info_comp_valk(16*(iocc-1) + 4) = type_cpla
+        info_comp_valk(16*(iocc-1) + 4) = type_cpla
 !
 ! ----- Check comportment/deformation with Comportement.py
 !

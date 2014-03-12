@@ -24,16 +24,16 @@
     integer, intent(in) :: dim
     integer, intent(out), optional :: jadr
 
-    logical,           pointer, optional, intent(inout) :: vl(:)
-    integer,           pointer, optional, intent(inout) :: vi(:)
-    integer(kind=4),   pointer, optional, intent(inout) :: vi4(:)
-    real(kind=8),      pointer, optional, intent(inout) :: vr(:)
-    complex(kind=8),   pointer, optional, intent(inout) :: vc(:)
-    character(len=8),  pointer, optional, intent(inout) :: vk8(:)
-    character(len=16), pointer, optional, intent(inout) :: vk16(:)
-    character(len=24), pointer, optional, intent(inout) :: vk24(:)
-    character(len=32), pointer, optional, intent(inout) :: vk32(:)
-    character(len=80), pointer, optional, intent(inout) :: vk80(:)
+    logical,           pointer, optional, intent(out) :: vl(:)
+    integer,           pointer, optional, intent(out) :: vi(:)
+    integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
+    real(kind=8),      pointer, optional, intent(out) :: vr(:)
+    complex(kind=8),   pointer, optional, intent(out) :: vc(:)
+    character(len=8),  pointer, optional, intent(out) :: vk8(:)
+    character(len=16), pointer, optional, intent(out) :: vk16(:)
+    character(len=24), pointer, optional, intent(out) :: vk24(:)
+    character(len=32), pointer, optional, intent(out) :: vk32(:)
+    character(len=80), pointer, optional, intent(out) :: vk80(:)
 
             end subroutine wkvect
           end interface

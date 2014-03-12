@@ -1,4 +1,4 @@
-subroutine carc_read(p_info_carc_valk, p_info_carc_valr)
+subroutine carc_read(info_carc_valk, info_carc_valr)
 !
     implicit none
 !
@@ -35,8 +35,8 @@ subroutine carc_read(p_info_carc_valk, p_info_carc_valr)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=16), pointer, intent(inout) :: p_info_carc_valk(:)
-    real(kind=8)     , pointer, intent(inout) :: p_info_carc_valr(:)
+    character(len=16),  intent(out) :: info_carc_valk(:)
+    real(kind=8)     ,  intent(out) :: info_carc_valr(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,15 +46,15 @@ subroutine carc_read(p_info_carc_valk, p_info_carc_valr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  p_info_carc_valk : pointer to carcri informations (character)
-! IO  p_info_carc_valr : pointer to carcri informations (real)
+! IO  info_carc_valk : carcri informations (character)
+! IO  info_carc_valr : carcri informations (real)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
     integer :: iocc, iret, nbocc
     character(len=16) :: algo_inte, type_matr_tang, method, post_iter
-    real(kind=8) :: parm_theta, vale_pert_rela 
+    real(kind=8) :: parm_theta, vale_pert_rela
     real(kind=8) :: resi_cplan_maxi, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
     integer :: type_matr_t, iter_inte_pas, iter_cplan_maxi
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
@@ -107,7 +107,7 @@ subroutine carc_read(p_info_carc_valk, p_info_carc_valr)
                     texte(2) = 'ALGO_INTE'
                     texte(3) = rela_comp
                     call utmess('F', 'COMPOR1_45', nk = 3, valk = texte)
-            endif  
+            endif
         endif
 !
 ! ----- Get ITER_INTE_PAS
@@ -193,7 +193,7 @@ subroutine carc_read(p_info_carc_valk, p_info_carc_valr)
         call getvr8(keywordfact, 'PARM_ALPHA', iocc = iocc, scal = parm_alpha)
 !
 ! ----- Get RESI_RADI_RELA
-! 
+!
         if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
             call getvr8(keywordfact, 'RESI_RADI_RELA', iocc = iocc, scal = resi_radi_rela,&
                         nbret = iret)
@@ -216,21 +216,21 @@ subroutine carc_read(p_info_carc_valk, p_info_carc_valr)
 !
 ! ----- Save options in list
 !
-        p_info_carc_valr(13*(iocc-1) + 1)  = 0.d0
-        p_info_carc_valr(13*(iocc-1) + 2)  = type_matr_t
-        p_info_carc_valr(13*(iocc-1) + 3)  = 0.d0
-        p_info_carc_valr(13*(iocc-1) + 4)  = parm_theta
-        p_info_carc_valr(13*(iocc-1) + 5)  = iter_inte_pas
-        p_info_carc_valr(13*(iocc-1) + 6)  = 0.d0
-        p_info_carc_valr(13*(iocc-1) + 7)  = vale_pert_rela
-        p_info_carc_valr(13*(iocc-1) + 8)  = resi_cplan_maxi
-        p_info_carc_valr(13*(iocc-1) + 9)  = iter_cplan_maxi
-        p_info_carc_valr(13*(iocc-1) + 10) = seuil
-        p_info_carc_valr(13*(iocc-1) + 11) = amplitude
-        p_info_carc_valr(13*(iocc-1) + 12) = taux_retour
-        p_info_carc_valr(13*(iocc-1) + 13) = parm_alpha
-        p_info_carc_valk(2*(iocc-1) + 1) = rela_comp
-        p_info_carc_valk(2*(iocc-1) + 2) = algo_inte
+        info_carc_valr(13*(iocc-1) + 1)  = 0.d0
+        info_carc_valr(13*(iocc-1) + 2)  = type_matr_t
+        info_carc_valr(13*(iocc-1) + 3)  = 0.d0
+        info_carc_valr(13*(iocc-1) + 4)  = parm_theta
+        info_carc_valr(13*(iocc-1) + 5)  = iter_inte_pas
+        info_carc_valr(13*(iocc-1) + 6)  = 0.d0
+        info_carc_valr(13*(iocc-1) + 7)  = vale_pert_rela
+        info_carc_valr(13*(iocc-1) + 8)  = resi_cplan_maxi
+        info_carc_valr(13*(iocc-1) + 9)  = iter_cplan_maxi
+        info_carc_valr(13*(iocc-1) + 10) = seuil
+        info_carc_valr(13*(iocc-1) + 11) = amplitude
+        info_carc_valr(13*(iocc-1) + 12) = taux_retour
+        info_carc_valr(13*(iocc-1) + 13) = parm_alpha
+        info_carc_valk(2*(iocc-1) + 1) = rela_comp
+        info_carc_valk(2*(iocc-1) + 2) = algo_inte
     end do
 !
     call jedema()

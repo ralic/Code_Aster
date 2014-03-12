@@ -1,5 +1,5 @@
 subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
-                     p_info_carc_valk, p_info_carc_valr)
+                     info_carc_valk, info_carc_valr)
 !
     implicit none
 !
@@ -38,8 +38,8 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: carcri
     integer, intent(in) :: nb_cmp
-    character(len=16), pointer, intent(in) :: p_info_carc_valk(:)
-    real(kind=8)     , pointer, intent(in) :: p_info_carc_valr(:)
+    character(len=16), intent(in) :: info_carc_valk(:)
+    real(kind=8)     , intent(in) :: info_carc_valr(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,8 +53,8 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
 ! In  model            : name of model
 ! In  carcri           : name of <CARTE> CARCRI
 ! In  nb_cmp           : number of components in <CARTE> CARCRI
-! In  p_info_carc_valk : pointer to carcri informations (character)
-! In  p_info_carc_valr : pointer to carcri informations (real)
+! In  info_carc_valk : carcri informations (character)
+! In  info_carc_valr : carcri informations (real)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,19 +95,19 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
 !
 ! ----- Get infos
 !
-        type_matr_t     = int(p_info_carc_valr(13*(iocc-1) + 2))
-        parm_theta      =     p_info_carc_valr(13*(iocc-1) + 4)
-        iter_inte_pas   = int(p_info_carc_valr(13*(iocc-1) + 5))
-        algo_inte_r     =     p_info_carc_valr(13*(iocc-1) + 6)
-        vale_pert_rela  =     p_info_carc_valr(13*(iocc-1) + 7)
-        resi_cplan_maxi =     p_info_carc_valr(13*(iocc-1) + 8)
-        iter_cplan_maxi = int(p_info_carc_valr(13*(iocc-1) + 9))
-        seuil           =     p_info_carc_valr(13*(iocc-1) + 10)
-        amplitude       =     p_info_carc_valr(13*(iocc-1) + 11)
-        taux_retour     =     p_info_carc_valr(13*(iocc-1) + 12)
-        parm_alpha      =     p_info_carc_valr(13*(iocc-1) + 13)
-        rela_comp       =     p_info_carc_valk(2*(iocc-1) + 1)
-        algo_inte       =     p_info_carc_valk(2*(iocc-1) + 2)
+        type_matr_t     = int(info_carc_valr(13*(iocc-1) + 2))
+        parm_theta      =     info_carc_valr(13*(iocc-1) + 4)
+        iter_inte_pas   = int(info_carc_valr(13*(iocc-1) + 5))
+        algo_inte_r     =     info_carc_valr(13*(iocc-1) + 6)
+        vale_pert_rela  =     info_carc_valr(13*(iocc-1) + 7)
+        resi_cplan_maxi =     info_carc_valr(13*(iocc-1) + 8)
+        iter_cplan_maxi = int(info_carc_valr(13*(iocc-1) + 9))
+        seuil           =     info_carc_valr(13*(iocc-1) + 10)
+        amplitude       =     info_carc_valr(13*(iocc-1) + 11)
+        taux_retour     =     info_carc_valr(13*(iocc-1) + 12)
+        parm_alpha      =     info_carc_valr(13*(iocc-1) + 13)
+        rela_comp       =     info_carc_valk(2*(iocc-1) + 1)
+        algo_inte       =     info_carc_valk(2*(iocc-1) + 2)
 !
 ! ----- Get mesh
 !

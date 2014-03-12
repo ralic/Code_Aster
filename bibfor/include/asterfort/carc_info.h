@@ -17,8 +17,8 @@
 !
 interface
     subroutine carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_compor)
-        character(len=16), pointer, intent(inout) :: p_info_carc_valk(:)
-        real(kind=8)     , pointer, intent(inout) :: p_info_carc_valr(:)
+        character(len=16), pointer, intent(out) :: p_info_carc_valk(:)
+        real(kind=8)     , pointer, intent(out) :: p_info_carc_valr(:)
         integer          , intent(out) :: nbocc_compor
     end subroutine carc_info
 end interface

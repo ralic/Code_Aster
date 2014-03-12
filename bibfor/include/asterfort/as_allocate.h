@@ -28,16 +28,16 @@ interface
                            vc, vk8, vk16, vk24, vk32, &
                            vk80, strdbg)
         integer :: size
-        logical, pointer, optional :: vl(:)
-        integer, optional, pointer :: vi(:)
-        integer(kind=4), optional, pointer :: vi4(:)
-        real(kind=8), optional, pointer :: vr(:)
-        complex(kind=8), optional, pointer :: vc(:)
-        character(len=8), optional, pointer :: vk8(:)
-        character(len=16), optional, pointer :: vk16(:)
-        character(len=24), optional, pointer :: vk24(:)
-        character(len=32), optional, pointer :: vk32(:)
-        character(len=80), optional, pointer :: vk80(:)
+    logical,           pointer, optional, intent(out) :: vl(:)
+    integer,           pointer, optional, intent(out) :: vi(:)
+    integer(kind=4),   pointer, optional, intent(out) :: vi4(:)
+    real(kind=8),      pointer, optional, intent(out) :: vr(:)
+    complex(kind=8),   pointer, optional, intent(out) :: vc(:)
+    character(len=8),  pointer, optional, intent(out) :: vk8(:)
+    character(len=16), pointer, optional, intent(out) :: vk16(:)
+    character(len=24), pointer, optional, intent(out) :: vk24(:)
+    character(len=32), pointer, optional, intent(out) :: vk32(:)
+    character(len=80), pointer, optional, intent(out) :: vk80(:)
 !
         character(len=*) :: strdbg
     end subroutine as_allocate
