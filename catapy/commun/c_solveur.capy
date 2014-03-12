@@ -256,6 +256,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
       _BlocPE['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="NON" , into=("OUI", "NON"), )
       _BlocMF['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="NON" , into=("OUI", "NON"), )
       _BlocLD['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="NON" , into=("OUI", "NON"), )
+      _BlocGC['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="NON" , into=("OUI", "NON"), )
       _BlocMU['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="LAGR2" , into=("OUI", "NON", "LAGR2"), )
    else :
       _BlocMU['ELIM_LAGR'     ] = SIMP(statut='f', typ='TXM', defaut="LAGR2" , into=("NON", "LAGR2"), )

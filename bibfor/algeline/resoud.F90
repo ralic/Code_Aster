@@ -114,7 +114,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                     chsecm, chsolu, base, rsolu, csolu,&
                     criter, prepos, istop, iret)
     else
-        call elg_resoud(matas1, chcine, nsecm, chsecm, chsolu,&
+        call elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
                         base, rsolu, csolu, criter, prepos,&
                         istop, iret)
     endif

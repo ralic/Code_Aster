@@ -1,4 +1,4 @@
-subroutine elg_resoud(matas1, chcine, nsecm, chsecm, chsolu,&
+subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
                       base, rsolu, csolu, criter, prepos,&
                       istop, iret)
     implicit none
@@ -20,15 +20,19 @@ subroutine elg_resoud(matas1, chcine, nsecm, chsecm, chsolu,&
 ! But : faire "resoud" si ELIM_LAGR='OUI'
 !-----------------------------------------------------------------------
 !
-    character(len=19) :: matas1
-    character(len=*) :: chcine
-    integer :: nsecm
-    character(len=*) :: chsecm, chsolu, base
-    real(kind=8) :: rsolu(*)
-    complex(kind=8) :: csolu(*)
-    character(len=*) :: criter
-    logical :: prepos
-    integer :: istop, iret
+    character(len=19), intent(in) :: matas1
+    character(len=*), intent(in) :: matpre
+    character(len=*), intent(in) :: chcine
+    integer, intent(in) :: nsecm
+    character(len=*), intent(in) :: chsecm
+    character(len=*), intent(in) :: chsolu
+    character(len=*), intent(in) :: base
+    real(kind=8), intent(inout) :: rsolu(*)
+    complex(kind=8), intent(inout) :: csolu(*)
+    character(len=*), intent(in) :: criter
+    logical, intent(in) :: prepos
+    integer, intent(in) :: istop
+    integer, intent(out) :: iret
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +85,7 @@ subroutine elg_resoud(matas1, chcine, nsecm, chsecm, chsolu,&
 !   ------------------------------------------------------------
     call jeveuo(solu2, 'E', jsolu2)
     nsecmb=max(nsecm,1)
-    call resou1(matas2, ' ', solve2, chcine, nsecmb,&
+    call resou1(matas2, matpre, solve2, chcine, nsecmb,&
                 ' ', ' ', 'V', zr(jsolu2), csolu,&
                 criter, prepos, istop, iret)
 !

@@ -30,6 +30,17 @@ MODEL=AFFE_MODELE(  MAILLAGE=MAILL,
 
 LINST=DEFI_LIST_REEL(VALE=(0. , 1.))
 
+# valeurs ne non-regression :
+vcalc=[
+  2.77142857143,  2.77142857143,  2.77142857143,  2.77142857143,  2.77142857143,  2.77142857143,
+  2.77142829771,  2.77142829771,  2.77142857143,  2.77142857143,  2.77142857143,  2.77142857143,
+  2.77142857143,  2.77142857143,  2.45714285714,  2.45714285714,  2.45714285714,  2.45714285714,
+  2.45714285714,  2.45714285714,  2.45714286707,  2.45714286707,  2.45714285714,  2.45714285714,
+  2.45714285714,  2.45714285714,  2.45714285714,  2.45714285714,
+  ]
+
+
+ico=-1
 for czero in (False, True,) :
       if czero :
          c1=0.
@@ -62,15 +73,20 @@ for czero in (False, True,) :
                                       RESULTAT = REREF1, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = 'DY' ))
          VREF=TN1['DY',1]
 
-         for method1 in ('MUMPS','MULT_FRONT','LDLT','PETSC') :
-            for precond in (' ','LDLT_INC','LDLT_SP',) :
-               if method1!='PETSC' and precond!=' ' : continue
-               if method1=='PETSC' and precond==' ' : continue
+         for method1 in ('MUMPS', 'MULT_FRONT', 'LDLT', 'PETSC', 'GCPC') :
+            for precond in (' ', 'LDLT_SP', 'LDLT_INC',) :
+               # precond n'est utile que pour les methodes iteratives :
+               if method1 in ('PETSC', 'GCPC') :
+                  if precond == ' ' : continue
+               else:
+                  if precond != ' ' : continue
 
-               if method1!='PETSC':
+               if method1 not in ('PETSC','GCPC') :
                   solv1=_F(METHODE=method1, ELIM_LAGR='OUI'),
-               else :
+               elif method1=='PETSC' :
                   solv1=_F(METHODE=method1, ELIM_LAGR='OUI',ALGORITHME='GMRES',PRE_COND=precond,RESI_RELA=1.e-8),
+               elif method1=='GCPC' :
+                  solv1=_F(METHODE=method1, ELIM_LAGR='OUI',PRE_COND=precond,RESI_RELA=1.e-8),
 
 
                # Calcul MECA_STATIQUE :
@@ -80,8 +96,10 @@ for czero in (False, True,) :
                          SOLVEUR=solv1,
                          EXCIT=_F(CHARGE = CHAR1))
 
+                  ico+=1
                   TEST_RESU(RESU=_F(NUME_ORDRE=1, NOEUD='N3', RESULTAT=RESU1b,  NOM_CHAM='DEPL', NOM_CMP='DY',
-                                  VALE_CALC=VREF , TOLE_MACHINE=3.e-7))
+                                  REFERENCE='AUTRE_ASTER', VALE_REFE=VREF ,
+                                  VALE_CALC=vcalc[ico], TOLE_MACHINE=3.e-7))
 
                   DETRUIRE(CONCEPT=_F(NOM=RESU1b),INFO=1,)
 
@@ -89,15 +107,17 @@ for czero in (False, True,) :
                # Calcul STAT_NON_LINE :
                #------------------------------------------------------
                if 1 :
-                   RESU3a=STAT_NON_LINE( MODELE=MODEL, CHAM_MATER=CHMAT,
-                         SOLVEUR=solv1,
-                         COMPORTEMENT=_F(RELATION='ELAS',), INCREMENT=_F(LIST_INST=LINST,),
-                         EXCIT=(_F(CHARGE = CHAR1),  ))
+                  RESU3a=STAT_NON_LINE( MODELE=MODEL, CHAM_MATER=CHMAT,
+                        SOLVEUR=solv1,
+                        COMPORTEMENT=_F(RELATION='ELAS',), INCREMENT=_F(LIST_INST=LINST,),
+                        EXCIT=(_F(CHARGE = CHAR1),  ))
 
-                   TEST_RESU(RESU=_F(NUME_ORDRE=1, NOEUD='N3', RESULTAT=RESU3a,  NOM_CHAM='DEPL', NOM_CMP='DY',
-                               VALE_CALC=VREF , TOLE_MACHINE=3.e-7))
+                  ico+=1
+                  TEST_RESU(RESU=_F(NUME_ORDRE=1, NOEUD='N3', RESULTAT=RESU3a,  NOM_CHAM='DEPL', NOM_CMP='DY',
+                              REFERENCE='AUTRE_ASTER', VALE_REFE=VREF ,
+                              VALE_CALC=vcalc[ico], TOLE_MACHINE=3.e-7))
 
-                   DETRUIRE(CONCEPT=_F(NOM=RESU3a),INFO=1,)
+                  DETRUIRE(CONCEPT=_F(NOM=RESU3a),INFO=1,)
 
 
       DETRUIRE(CONCEPT=_F(NOM=CHAR1),INFO=1,)

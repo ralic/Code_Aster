@@ -132,7 +132,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     call jeveuo(kstoc//'.SMHC', 'L', idip)
     call jeveuo(kstoc//'.SMDE', 'L', jsmde)
     neq=zi(jsmde-1+1)
-    if (niter .eq. 0) niter=neq/2
+    if (niter .eq. 0) niter=max(10,neq/2)
     nblc=zi(jsmde-1+3)
     if (nblc .ne. 1) then
         call utmess('F', 'ALGELINE3_22')

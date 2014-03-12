@@ -53,7 +53,6 @@ subroutine dismns(questi, nomobz, repi, repkz, ierd)
     repk = ' '
     repi = 0
     ierd = 0
-    write(6,*) 'AJACOT dismns'
 !
 !
     nomob = nomobz
