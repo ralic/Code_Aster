@@ -29,7 +29,10 @@ subroutine charci(chcine, mfact, mo, type)
 #include "asterfort/reliem.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
 !
     character(len=*) :: chcine, mfact, mo
     character(len=1) :: type
@@ -73,11 +76,11 @@ subroutine charci(chcine, mfact, mo, type)
     parameter (mxcmp=100)
 !
     character(len=2) :: typ
-    character(len=8) :: k8b, ma, nomgd, nogdsi, gdcns
+    character(len=8) :: k8b, ma, nomgd, nogdsi, gdcns,nono
     character(len=8) :: evoim, licmp(20), chcity(mxcmp)
     character(len=16) :: mfac, k16b, motcle(5), phenom, typco, chcino(mxcmp)
     character(len=19) :: chci, cns, cns2, depla, noxfem
-    character(len=24) :: cino, cnuddl, cvlddl, nprol
+    character(len=24) :: cino, cnuddl, cvlddl, nprol,valk(2)
     character(len=80) :: titre
     logical :: lxfem
     data nprol/'                   .PROL'/
@@ -232,20 +235,26 @@ subroutine charci(chcine, mfact, mo, type)
 !
             zk8(idnddl+nbddl) = k16b(1:8)
 !
-! ------- VERIFICATION QUE LA COMPOSANTE EXISTE DANS LA GRANDEUR
+! -------   verification que la composante existe dans la grandeur
             icmp = indik8( zk8(jcmp), k16b(1:8), 1, nbcmp )
             ASSERT(icmp .ne. 0)
-!
-! ------- VERIFICATION DE LA COMPOSANTE SUR LES NOEUDS XFEM
+
+! -------   Pour XFEM : DX=U0 se traduit par une relation lineaire entre plusieurs ddls
+!           => AFFE_CHAR_CINE est interdit :
             if (lxfem) then
-                if (k16b(1:1) .eq. 'D') then
+                if ((k16b.eq.'DX').or.(k16b.eq.'DY').or.(k16b.eq.'DZ')) then
                     do ino = 1, nbno
                         nuno = zi(idino-1+ino)
-                        ASSERT(.not.zl(jnoxfl-1+2*nuno))
+                        if (zl(jnoxfl-1+2*nuno)) then
+                           call jenuno(jexnum(ma//'.NOMNOE',nuno),nono)
+                           valk(1)=k16b
+                           valk(2)=nono
+                           call utmess('F','ALGELINE2_22',nk=2,valk=valk)
+                        endif
                     end do
                 endif
             endif
-!
+
             if (type .eq. 'R') then
                 call getvr8(mfac, k16b, iocc=ioc, scal=zr(idvddl+nbddl), nbret=ila)
             endif
@@ -259,7 +268,7 @@ subroutine charci(chcine, mfact, mo, type)
 110         continue
         end do
 !
-! --- ON RECHERCHE SI UNE QUAND ON A DES FONCT. IL Y EN A UNE = F(TPS)
+! --- on recherche si, quand on a des fonct. il y en a une = f(temps)
 !
         if (type .eq. 'F') then
             do i = 1, nbddl
@@ -277,8 +286,7 @@ subroutine charci(chcine, mfact, mo, type)
         endif
 122     continue
 !
-! ----- AFFECTATION DANS LE CHAM_NO_S
-!
+! ----- affectation dans le cham_no_s
         if (type .eq. 'R') then
             do cmp = 1, nbddl
                 k8b = zk8(idnddl-1+cmp)
@@ -321,16 +329,16 @@ subroutine charci(chcine, mfact, mo, type)
 !
 !
     if (( niv.ge.2) .and. (evoim.eq.' ')) then
-        titre = '******* IMPRESSION DU CHAMP DES DEGRES IMPOSES *******'
+        titre = '******* IMPRESSION DU CHAMP DES DDL IMPOSES *******'
         call imprsd('CHAMP_S', cns, ifm, titre)
     endif
 !
 !
-! --- CREATION DE LA SD AFFE_CHAR_CINE
+!   -- creation de la sd affe_char_cine
     call chcsur(chci, cns, type, mo, nogdsi)
     call detrsd('CHAMP', cns)
 !
-!     -- SI EVOL_IMPO : IL NE FAUT PAS UTILISER LES VALEURS DE CHCI :
+!   -- si evol_impo : il ne faut pas utiliser les valeurs de chci :
     if (evoim .ne. ' ') call jedetr(chci//'.AFCV')
 !
     if (lxfem) then

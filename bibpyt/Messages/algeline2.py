@@ -120,7 +120,14 @@ cata_msg = {
  L'argument de "BLOC_FIN" doit être strictement positif
 """),
 
-
+22 : _(u"""
+Erreur d'utilisation pour AFFE_CHAR_CINE :
+ On veut éliminer un degré de liberté de translation (%(k1)s) sur le noeud %(k2)s.
+ Mais ce noeud est un noeud XFEM et cette translation correspond à une combinaison
+ de plusieurs degrés de liberté.
+ On ne peut donc pas éliminer cette translation avec AFFE_CHAR_CINE.
+ Il faut utiliser AFFE_CHAR_MECA.
+"""),
 
 23 : _(u"""
  On a rencontré un problème à la lecture de la table %(k1)s.
