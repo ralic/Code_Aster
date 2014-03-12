@@ -160,31 +160,19 @@ RESU1=CALC_CHAMP(reuse =RESU1,
 #
 #  VALIDATION DE STANLEY
 #  CALCUL DE CHAMPS  AUX POINTS DE GAUSS
-#  EN ECLATANT VIA ECLA_PG
+#  EN ECLATANT VIA MACR_ECLA_PG
 #
 #  WARNING: S'IL Y A DES ERREURS PRODUITES DANS LES LIGNES
 #  QUI SUIVENT, PENSER A METTRE A JOUR STANLEY APRES CORRECTION
 #**************************************************************
 #
 
+MACR_ECLA_PG(RESU_INIT=RESU1, MODELE_INIT=MODMECA,  GROUP_MA='V', SHRINK=0.9, TAILLE_MIN=0.0,
+             NOM_CHAM=('SIEF_ELGA',),
+             RESULTAT=CO('RESUSTAN'), MAILLAGE=CO('MAILSTAN'),);
 
-MAILSTAN=CREA_MAILLAGE(ECLA_PG=_F(MODELE=MODMECA,
-                                  SHRINK=0.9,
-                                  TAILLE_MIN=0.0,
-                                  NOM_CHAM='SIEF_ELGA',),
-                       INFO=1,);
 
-RESUSTAN=CREA_RESU(OPERATION='ECLA_PG',
-                   TYPE_RESU='EVOL_ELAS',
-                   ECLA_PG=_F(
-                   NOM_CHAM='SIEF_ELGA',
-                   MODELE_INIT=MODMECA,
-                   GROUP_MA='V',
-                   RESU_INIT=RESU1,
-                   MAILLAGE=MAILSTAN,
-                   PRECISION=0.001,
-                   CRITERE='RELATIF',),);
-#
+
 #**************************************************************
 #
 #  VALIDATION DE STANLEY

@@ -83,15 +83,15 @@ U2=CALC_CHAMP(reuse =U2,
               CONTRAINTE='SIGM_ELNO',
               VARI_INTERNE='VARI_ELNO',);
 
+IMPR_RESU(RESU=_F(RESULTAT=U2, NOM_CHAM='SIEF_ELGA'), UNITE=6)
+
 #==============================================================
 # POUR TESTER L'IMPRESSION DU RESULTAT AUX POINTS DE GAUSS:
 # ----------------------------------------------------------
 
-MACR_ECLA_PG(RESU_INIT=U2,
-             MODELE_INIT=MO,
+MACR_ECLA_PG(RESU_INIT=U2,  MODELE_INIT=MO,  TOUT='OUI',
              NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
-             RESULTAT=CO('U2B'),
-             MAILLAGE=CO('MA2'),);
+             RESULTAT=CO('U2B'), MAILLAGE=CO('MA2'),);
 
 
 TEST_RESU(RESU=(_F(RESULTAT=U2B,
@@ -114,20 +114,9 @@ TEST_RESU(RESU=(_F(RESULTAT=U2B,
 # IMPRESSION DU RESULTAT SUR UN BOUT DU MAILLAGE
 # ----------------------------------------------------------
 
-MA3=CREA_MAILLAGE(MAILLAGE=M,
-                  ECLA_PG=_F(MODELE=MO,
-                             GROUP_MA='EXTR1',
-                             SHRINK=0.90,
-                             TAILLE_MIN=0.1,),);
-
-
-U3B=CREA_RESU(OPERATION='ECLA_PG',
-              TYPE_RESU='EVOL_NOLI',
-              ECLA_PG=_F(NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
-                         MODELE_INIT=MO,
-                         GROUP_MA='EXTR1',
-                         RESU_INIT=U2,
-                         MAILLAGE=MA3,),);
+MACR_ECLA_PG(RESU_INIT=U2, MODELE_INIT=MO,  GROUP_MA='EXTR1', SHRINK=0.90, TAILLE_MIN=0.1,
+             NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
+             RESULTAT=CO('U3B'), MAILLAGE=CO('MA3'),);
 
 
 TEST_RESU(RESU=(_F(RESULTAT=U3B,
