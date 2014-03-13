@@ -20,10 +20,11 @@
 cata_msg={
 
 1: _(u"""
-Le système linéaire à résoudre contient %(i1)d noeuds dont:
-   - %(i2)d noeuds portant des degrés de liberté physiques
-   - %(i3)d noeuds portant des degrés de liberté de Lagrange
-Pour un total de %(i4)d équations.
+Le système linéaire à résoudre a %(i1)d degrés de liberté:
+   - %(i2)d sont des degrés de liberté physiques 
+     (ils sont portés par %(i3)d noeuds du maillage)
+   - %(i4)d sont les couples de paramètres de Lagrange associés 
+     aux %(i5)d relations linéaires dualisées.
 """),
 
 2: _(u"""
