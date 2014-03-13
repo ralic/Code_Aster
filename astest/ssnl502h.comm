@@ -1,0 +1,397 @@
+# person_in_charge: patrick.massin at edf.fr
+# DATE   : 04/02/2014
+# AUTEUR : F. LEBOUVIER (DELTACAD)
+# TITRE  : POUTRE EN FLAMBEMENT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#---------------------------------------------------------------------
+#- CALCUL DE LA STABILITE D'UNE POUTRE CONSOLE SOUMISE A UN EFFORT DE
+#  COMPRESSION A UNE EXTREMITE.
+#- VALIDATION DANS LE DOMAINE QUASI-STATIQUE NON-LINEAIRE GEOMETRIQUE
+#  EN GRANDS DEPLACEMENTS ET GRANDES ROTATIONS EN PRESENCE
+#  D'INSTABILITE (FLAMBEMENT D'EULER)
+#- MODELISATION AVEC DES ELEMENTS 'DKTG' (QUAD4)
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+#
+PRE_IDEAS ()
+#
+MA=LIRE_MAILLAGE(INFO=2 )
+MA=DEFI_GROUP( reuse=MA,
+                       MAILLAGE=MA,CREA_GROUP_NO=(
+                       _F(  GROUP_MA = 'TOUT_ELT',  ),)
+                    )
+
+#
+MAIL=CREA_MAILLAGE(MAILLAGE=MA,
+                 QUAD_LINE=_F(TOUT='OUI',),);
+
+MAIL=DEFI_GROUP(reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
+                   _F( NOM = 'C', NOEUD = 'N81'),
+                    ))
+
+#
+MO=AFFE_MODELE(   MAILLAGE=MAIL,
+                        AFFE=(_F( GROUP_MA='TOUT_ELT',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'DKTG'),
+                             _F(GROUP_MA='COTEBC',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = '3D'))
+                  )
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+#
+CAREL=AFFE_CARA_ELEM(   MODELE=MO,
+                           COQUE=_F( GROUP_MA = 'TOUT_ELT',
+                                  EPAIS = 0.0045,
+# ACIS=1.E6*H/L
+#                                 A_CIS    : 9000.
+                             COEF_RIGI_DRZ = 0.001,
+                                  ANGL_REP = (90., 0.,))
+                        )
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+#
+MAT=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,
+                             NU = 0.3)
+                     )
+
+#
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                             AFFE=_F( TOUT = 'OUI', MATER = MAT)
+                       )
+
+#
+#---------------------------------------------------------------------
+#                     CHARGEMENTS
+#---------------------------------------------------------------------
+#
+CON_LIM=AFFE_CHAR_MECA(     MODELE=MO,
+                            DDL_IMPO=(_F( GROUP_NO = 'COTEAD',
+                                      DX = 0., DY = 0., DZ = 0.,
+                                      DRZ = 0., DRX =0.,DRY = 0.),
+#                             _F( TOUT = 'OUI',
+#                                DRX = 0.),
+                           )
+                          )
+
+#
+CHARGE=AFFE_CHAR_MECA(         MODELE=MO,
+                            FORCE_ARETE=_F( GROUP_MA = 'COTEBC',
+                                         FZ = -14989.4667)
+                          )
+
+PERTUR=AFFE_CHAR_MECA(         MODELE=MO,
+                            FORCE_ARETE=_F( GROUP_MA = 'COTEBC',
+                                         FX = 14.9894667)
+                          )
+
+F_PERT=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='EXCLU',
+                                 VALE=( 0.,     0.,
+                                        0.94,   0.,
+                                        0.95,   1.,
+                                        1.015,  1.,
+                                        1.016,  0.,
+                                        2.,     0.,
+                                       )
+                        )
+
+F_CHARGE=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='EXCLU',
+                                 VALE=( 0.,   0.,
+                                        2.,   2.,
+                                       )
+                        )
+
+#
+#---------------------------------------------------------------------
+#                        RESOLUTION
+#---------------------------------------------------------------------
+#
+LIS_INST=DEFI_LIST_REEL(       DEBUT=0.0,INTERVALLE=(
+                           _F( JUSQU_A = 0.94, NOMBRE = 4),
+                           _F( JUSQU_A = 0.98, NOMBRE = 4),
+                           _F( JUSQU_A = 1.01, NOMBRE = 10),
+#
+# DEPLACEMENT IMPOSE U=0.015 : ON COMPLETE LE DEPLACEMENT OBTENU
+# PRECEDEMMENT QUI EST DE W=-4.7898E-3
+# STAT_NON_LINE : COEF_MULT = DELTA_T/DELTA_U
+#
+                           _F( JUSQU_A = 1.0202102, NOMBRE = 10),
+# DEPLACEMENT IMPOSE U=0.0595
+                           _F( JUSQU_A = 1.0647102, NOMBRE = 10),
+# DEPLACEMENT IMPOSE U=0.1295
+                           _F( JUSQU_A = 1.1347102, NOMBRE = 20),
+# DEPLACEMENT IMPOSE U=0.2200
+                           _F( JUSQU_A = 1.2252102, NOMBRE = 20),
+# DEPLACEMENT IMPOSE U=0.2200
+                           _F( JUSQU_A = 1.3252102, NOMBRE = 40),
+# DEPLACEMENT IMPOSE U=0.2200
+                           _F( JUSQU_A = 1.4252102, NOMBRE = 20),
+# DEPLACEMENT IMPOSE U=0.2200
+                           _F( JUSQU_A = 1.5052102, NOMBRE = 20),)
+                           )
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LIS_INST),
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI = 0.00000001),)
+#
+RESULT=STAT_NON_LINE(       MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,EXCIT=(
+                               _F( CHARGE = CON_LIM),
+                                     _F( CHARGE = CHARGE,
+                                      FONC_MULT = F_CHARGE),
+                                     _F( CHARGE = PERTUR,
+                                      FONC_MULT = F_PERT)),
+                           COMPORTEMENT=_F( RELATION = 'ELAS',
+                                      DEFORMATION = 'GROT_GDEP',),
+                           INCREMENT=_F( LIST_INST = DEFLIST,
+                                      NUME_INST_FIN = 4),
+                            SOLVEUR=_F( SYME='OUI',),
+                              NEWTON=_F( REAC_ITER = 1,
+                                      MATRICE = 'TANGENTE',),
+                         CONVERGENCE=_F(
+                                      ITER_GLOB_MAXI = 100,
+                                      RESI_GLOB_RELA = 1.E-6)
+                        )
+
+#
+RESULT=STAT_NON_LINE(reuse=RESULT,      MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,EXCIT=(
+                               _F( CHARGE = CON_LIM),
+                                     _F( CHARGE = PERTUR,
+                                      FONC_MULT = F_PERT),
+                                     _F( CHARGE = CHARGE,
+                                      TYPE_CHARGE = 'FIXE_PILO')),
+                           COMPORTEMENT=_F( RELATION = 'ELAS',
+                                      DEFORMATION = 'GROT_GDEP',),
+                           INCREMENT=_F( LIST_INST = DEFLIST,
+                                      NUME_INST_INIT = 4,
+                                      INST_FIN=1.3952102),
+                            SOLVEUR=_F(  SYME='OUI',),
+                              NEWTON=_F( REAC_ITER = 1,
+                                      MATRICE = 'TANGENTE',),
+                         CONVERGENCE=_F(
+                                      ITER_GLOB_MAXI = 100,
+                                      RESI_GLOB_RELA = 1.E-6),
+                           ETAT_INIT=_F( EVOL_NOLI = RESULT),
+                            PILOTAGE=_F( TYPE = 'LONG_ARC',
+                                      SELECTION='ANGL_INCR_DEPL',
+                                      GROUP_NO = 'TOUT_ELT',
+                                      NOM_CMP = ('DX','DZ',),
+                                      COEF_MULT = -1.,
+                                      ETA_PILO_MAX=20.,)
+                        )
+
+#
+ETA_PILO=RECU_FONCTION(RESULTAT=RESULT,NOM_PARA_RESU='ETA_PILOTAGE')
+
+IMPR_FONCTION(COURBE=_F(FONCTION=ETA_PILO))
+
+DEPL_DX=RECU_FONCTION(RESULTAT=RESULT,NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='C',)
+
+IMPR_FONCTION(COURBE=_F(FONCTION=DEPL_DX))
+
+DEPL_DZ=RECU_FONCTION(RESULTAT=RESULT,NOM_CHAM='DEPL',NOM_CMP='DZ',GROUP_NO='C',)
+
+IMPR_FONCTION(COURBE=_F(FONCTION=DEPL_DZ))
+
+IMPR_FONCTION(COURBE=_F(FONC_X=ETA_PILO,FONC_Y=DEPL_DX))
+IMPR_FONCTION(COURBE=_F(FONC_X=ETA_PILO,FONC_Y=DEPL_DZ))
+
+TABLE_DZ=POST_RELEVE_T(
+                                ACTION=_F( GROUP_NO = 'C',
+                          INTITULE = 'TAB_DZ',
+                          RESULTAT = RESULT,
+                          NOM_CHAM = 'DEPL',
+                          NOM_CMP = 'DZ',
+                          TOUT_ORDRE = 'OUI',
+                          OPERATION = 'EXTRACTION')
+                          )
+
+IMPR_TABLE(  TABLE=TABLE_DZ)
+
+TABLE_DX=POST_RELEVE_T(
+                                ACTION=_F( GROUP_NO = 'C',
+                          INTITULE = 'TAB_DX',
+                          RESULTAT = RESULT,
+                          NOM_CHAM = 'DEPL',
+                          NOM_CMP = 'DX',
+                          TOUT_ORDRE = 'OUI',
+                          OPERATION = 'EXTRACTION')
+                          )
+
+IMPR_TABLE(  TABLE=TABLE_DX)
+
+#
+DEPZ=RECU_FONCTION (   RESULTAT = RESULT,
+                          NOM_CMP = 'DZ',
+                          NOM_CHAM = 'DEPL',
+                          GROUP_NO = 'C',
+                          TOUT_ORDRE = 'OUI')
+
+DEPX=RECU_FONCTION (   RESULTAT = RESULT,
+                          NOM_CMP = 'DX',
+                          NOM_CHAM = 'DEPL',
+                          GROUP_NO = 'C',
+                          TOUT_ORDRE = 'OUI')
+
+ETA=RECU_FONCTION (   RESULTAT = RESULT,
+                          NOM_PARA_RESU = 'ETA_PILOTAGE',
+                          TOUT_ORDRE = 'OUI')
+
+IMPR_FONCTION ( FORMAT='TABLEAU',
+              COURBE=_F( FONCTION = DEPZ),
+              TITRE='Depz en fonction du temps'
+              )
+
+IMPR_FONCTION ( FORMAT='TABLEAU',
+             COURBE=_F( FONCTION = ETA),
+             TITRE='Eta en fonction du temps'
+              )
+
+IMPR_FONCTION ( FORMAT='TABLEAU',
+               COURBE=_F( FONCTION = DEPX),
+    TITRE='Depx en fonction du temps'
+              )
+#---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+#---------------------------------------------------------------------
+TEST_RESU(RESU=(_F(GROUP_NO='C',
+                   INST=0.995,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.014699622539494,
+                   VALE_REFE=-0.015,
+                   PRECISION=0.025),
+                _F(GROUP_NO='C',
+                   INST=0.995,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.10800060871591,
+                   VALE_REFE=0.11,
+                   PRECISION=2.E-2),
+                _F(PARA='ETA_PILOTAGE',
+                   INST=0.995,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   VALE_CALC=1.0290476455977,
+                   VALE_REFE=1.015,
+                   PRECISION=0.015),
+
+                _F(GROUP_NO='C',
+                   INST=1.10671,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.12833032827600,
+                   VALE_REFE=-0.1295,
+                   PRECISION=0.01,),
+                _F(GROUP_NO='C',
+                   INST=1.10671,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.29486613992826,
+                   VALE_REFE=0.2965,
+                   PRECISION=0.007,),
+                _F(PARA='ETA_PILOTAGE',
+                   INST=1.10671,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   VALE_CALC=1.204088768694,
+                   VALE_REFE=1.152,
+                   PRECISION=0.05,),
+
+                _F(GROUP_NO='C',
+                   INST=1.2206852,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.32406706479977,
+                   VALE_REFE=-0.3255,
+                   PRECISION=0.007,),
+                _F(GROUP_NO='C',
+                   INST=1.2206852,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.39436439141371,
+                   VALE_REFE=0.396,
+                   PRECISION=0.005,),
+                _F(PARA='ETA_PILOTAGE',
+                   INST=1.2206852,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   VALE_CALC=1.6323125740409,
+                   VALE_REFE=1.518,
+                   PRECISION=0.08,),
+ 
+                _F(GROUP_NO='C',
+                   INST=1.3452102,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.55354771109954,
+                   VALE_REFE=-0.5535,
+                   PRECISION=0.001,),
+                _F(GROUP_NO='C',
+                   INST=1.3452102,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.37409869597919,
+                   VALE_REFE=0.375,
+                   PRECISION=0.005,),
+                _F(PARA='ETA_PILOTAGE',
+                   INST=1.3452102,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESULT,
+                   VALE_CALC=2.7888490000054,
+                   VALE_REFE=2.541,
+                   PRECISION=0.1,),
+               ),
+          )
+
+FIN()
+#
