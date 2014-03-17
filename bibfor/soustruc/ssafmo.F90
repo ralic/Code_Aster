@@ -1,4 +1,21 @@
-subroutine ssafmo(mo)
+subroutine ssafmo(model)
+!
+    implicit none
+!
+#include "asterc/getfac.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,107 +32,85 @@ subroutine ssafmo(mo)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
 !
-!     ARGUMENTS:
-!     ----------
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
+    character(len=8), intent(in) :: model
 !
-    character(len=8) :: mo
-! ----------------------------------------------------------------------
-!     BUT: TRAITER LE MOT-CLEF AFFE_SOUS_STRUC DE LA COMMANDE
-!          AFFE_MODELE.
+! --------------------------------------------------------------------------------------------------
 !
+! AFFE_MODELE
 !
-!     IN: MO : NOM DU MODELE
+! Macro-elements (AFFE_SOUS_STRUCT)
 !
-!     OUT: MO EST (EVENTUELLEMENT) ENRICHI DE L'OBJET .SSSA
-!        (CET OBJET PRECISE QUELS SONT LES (SUPER)MAILLES DU MAILLAGE
-!         REELLEMENT AFFECTEES PAR DES SOUS_STRUCTURES DANS LE MODELE)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  model        : name of the model
 !
-!     FONCTIONS EXTERNES:
-!     -------------------
+! --------------------------------------------------------------------------------------------------
 !
-!     VARIABLES LOCALES:
-!     ------------------
-    character(len=8) :: ma, kbid, nosma
+    character(len=8) :: mesh, name_super_elem
     character(len=24) :: valk(2)
+    character(len=16) :: keywordfact
+    integer :: ielem, nume_super_elem, ioc, isuperelem
+    integer :: n_affe_all, n1, nb_super_elem, nb_ss_acti, nb_node_lagr
+    integer, pointer          :: p_model_sssa(:) => null()
+    character(len=8), pointer :: p_list_elem(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!-----------------------------------------------------------------------
-    integer :: i, ialmai, iasssa, imas, ioc
-    integer :: iret, n1, n2, nboc, nbsma, nbss, nl
-!
-!-----------------------------------------------------------------------
     call jemarq()
-    call getfac('AFFE_SOUS_STRUC', nboc)
-    if (nboc .eq. 0) goto 999
 !
-    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
-    call dismoi('NB_SM_MAILLA', ma, 'MAILLAGE', repi=nbsma)
-    call dismoi('NB_NL_MAILLA', ma, 'MAILLAGE', repi=nl)
-    if (nbsma .eq. 0) then
+! - Initializations
+!
+    ioc         = 1
+    keywordfact = 'AFFE_SOUS_STRUC'
+!
+! - Access to mesh
+!
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
+    call dismoi('NB_SM_MAILLA', mesh, 'MAILLAGE', repi = nb_super_elem)
+    call dismoi('NB_NL_MAILLA', mesh, 'MAILLAGE', repi = nb_node_lagr)
+    if (nb_super_elem .eq. 0) then
         call utmess('F', 'SOUSTRUC_30')
     endif
 !
-    ioc=1
-    call wkvect(mo//'.MODELE    .SSSA', 'G V I', nbsma+3, iasssa)
+! - Create main object
 !
-!     -- CAS : TOUT: 'OUI' :
-!     ----------------------
-    call getvtx('AFFE_SOUS_STRUC', 'TOUT', iocc=ioc, scal=kbid, nbret=n1)
-    if (n1 .eq. 1) then
-        do i = 1, nbsma
-            zi(iasssa-1+i)=1
+    call wkvect(model//'.MODELE    .SSSA', 'G V I', nb_super_elem+3, vi = p_model_sssa)
+!
+! - TOUT = 'OUI'
+!
+    call getvtx(keywordfact, 'TOUT', iocc=ioc, nbret = n_affe_all)
+    if (n_affe_all .eq. 1) then
+        do ielem = 1, nb_super_elem
+            p_model_sssa(ielem) = 1
         end do
-        nbss= nbsma
-        goto 9998
+        nb_ss_acti = nb_super_elem
+        goto 999
     endif
 !
-!     -- CAS : MAILLE: L_MAIL
-!     -----------------------
-    call getvtx('AFFE_SOUS_STRUC', 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n1)
-    call wkvect('&&SSAFMO.LMAI', 'V V K8', -n1, ialmai)
-    call getvtx('AFFE_SOUS_STRUC', 'SUPER_MAILLE', iocc=ioc, nbval=-n1, vect=zk8(ialmai),&
-                nbret=n2)
-    nbss= -n1
-    do i = 1, -n1
-        nosma=zk8(ialmai-1+i)
-        call jenonu(jexnom(ma//'.SUPMAIL', nosma), imas)
-        if (imas .eq. 0) then
-            valk(1) = nosma
-            valk(2) = ma
+! - SUPER_MAILLE
+!
+    call getvtx(keywordfact, 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n1)
+    nb_ss_acti = -n1
+    AS_ALLOCATE(vk8 = p_list_elem, size = nb_ss_acti)
+    call getvtx(keywordfact, 'SUPER_MAILLE', iocc=ioc, nbval=nb_ss_acti, vect=p_list_elem) 
+    do isuperelem = 1, nb_ss_acti
+        name_super_elem = p_list_elem(isuperelem)
+        call jenonu(jexnom(mesh//'.SUPMAIL', name_super_elem), nume_super_elem)
+        if (nume_super_elem .eq. 0) then
+            valk(1) = name_super_elem
+            valk(2) = mesh
             call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
         else
-            zi(iasssa-1+imas)=1
+            p_model_sssa(nume_super_elem) = 1
         endif
     end do
 !
-!     -- ON REMPLIT LES 3 DERNIERES VALEURS:
-!     --------------------------------------
-9998 continue
-    zi(iasssa-1+nbsma+1)=nbsma
-    zi(iasssa-1+nbsma+2)=nbss
-    zi(iasssa-1+nbsma+3)=nl
-!
-    call jeexin('&&SSAFMO.LMAI', iret)
-    if (iret .gt. 0) call jedetr('&&SSAFMO.LMAI')
-!
-!
 999 continue
+    p_model_sssa(nb_super_elem+1) = nb_super_elem
+    p_model_sssa(nb_super_elem+2) = nb_ss_acti
+    p_model_sssa(nb_super_elem+3) = nb_node_lagr
+!
+    AS_DEALLOCATE(vk8 = p_list_elem)
     call jedema()
 end subroutine

@@ -31,6 +31,7 @@ subroutine modexi(modelz, nomodz, iexi)
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -39,7 +40,6 @@ subroutine modexi(modelz, nomodz, iexi)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 !
     character(len=*) :: modelz, nomodz
 ! -----  VARIABLES LOCALES
@@ -67,9 +67,8 @@ subroutine modexi(modelz, nomodz, iexi)
     call jeexin(nolig//'.LIEL', iret)
     if (iret .ne. 0) then
         call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
-        if (nbgrel .le. 0) then
-            call utmess('F', 'UTILITAI_1')
-        endif
+! le nombre de grels du LIGREL du modele est nul.
+        ASSERT(nbgrel.gt.0)
         nomodl=' '
         do igrel = 1, nbgrel
             call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)

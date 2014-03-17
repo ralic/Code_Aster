@@ -54,13 +54,6 @@ cata_msg = {
  on attend : "CUMU" ou "ZERO"
 """),
 
-9 : _(u"""
- on ne trouve pas la composante "LAGR" dans la grandeur
-"""),
-
-10 : _(u"""
- il est imprévu d avoir la composante "LAGR" au delà de 30
-"""),
 
 11 : _(u"""
  on ne peut assembler que des vecteurs réels ou complexes

@@ -19,14 +19,8 @@
 
 cata_msg = {
 
-# a traduire en français par JP
-1 : _(u"""
- le nombre de grels du LIGREL du modèle est nul.
-"""),
 
-2 : _(u"""
- il ne faut pas demander 'TR' derrière CARA si le type d'élément discret ne prend pas en compte la rotation
-"""),
+
 
 3 : _(u"""
  La conversion d'un champ par éléments aux noeuds en un champ

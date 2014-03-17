@@ -68,7 +68,7 @@ subroutine te0328(option, nomte)
         nno=zi(iadzi-1+2)
         valk(1)=zk24(iazk24-1+3)
         valk(2)=zk24(iazk24-1+3+nno+1)
-        call utmess('A', 'CALCULEL_7', nk=2, valk=valk)
+        call utmess('A', 'MAILLAGE1_1', nk=2, valk=valk)
         codret=1
     endif
 !

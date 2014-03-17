@@ -66,10 +66,10 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
     call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !
 !     -- ON MET LES ADRESSES A ZERO :
-    do 10,k = 1,nmax
-    k24tab(k) = ' '
-    adtabl(k) = 0
-    10 end do
+    do k = 1,nmax
+        k24tab(k) = ' '
+        adtabl(k) = 0
+    end do
 !
     call ini002(nomte, nmax, adtabl, k24tab, nval)
 !

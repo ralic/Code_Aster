@@ -64,16 +64,6 @@ Risques & conseils :
    Pour les commandes de calcul, il ne faut qu'un seul MODELE et qu'un seul CARA_ELEM.
 """),
 
-7 : _(u"""
- Erreur de maillage :
-   La maille %(k1)s de type %(k2)s est trop distordue.
-   Le jacobien de la transformation géométrique n'a pas le même signe sur tous les
-   points de Gauss.
-
- Risques & conseils :
-   Le maillage a-t-il été produit par un mailleur ?
-   La connectivité respecte-t-elle bien la convention Aster ?
-"""),
 
 8 : _(u"""
  sur la maille %(k1)s le calcul est thermo mécanique. Or il manque la température de référence.

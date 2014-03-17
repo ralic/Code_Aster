@@ -129,7 +129,7 @@ subroutine ajlipa(modelz, base)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
     call dismoi('NB_SM_MAILLA', ma, 'MAILLAGE', repi=nbsma)
     if (nbsma .gt. 0) then
-        call utmess('F', 'ALGORITH16_91')
+        call utmess('F', 'PARTITION1_91')
     endif
 !
 ! ----------------------------------------------------------------------
@@ -185,7 +185,7 @@ subroutine ajlipa(modelz, base)
             valk(1) = partit1(1:8)
             valk(2) = modele
             valk(3) = mopart
-            call utmess('F', 'ALGORITH17_17', nk=3, valk=valk)
+            call utmess('F', 'PARTITION1_17', nk=3, valk=valk)
         endif
     endif
 !
@@ -197,26 +197,26 @@ subroutine ajlipa(modelz, base)
         nbsd = fdim(1)
 !       IL FAUT AU MOINS UN SD PAR PROC HORS PROC0
         if (((nbsd-dist0).lt.(nbproc-1)) .and. (dist0.gt.0)) then
-            call utmess('F', 'ALGORITH16_99')
+            call utmess('F', 'PARTITION1_99')
         endif
         if ((nbsd.lt.nbproc) .and. (dist0.eq.0)) then
             vali(1) = nbsd
             vali(2) = nbproc
-            call utmess('F', 'ALGORITH17_1', ni=2, vali=vali)
+            call utmess('F', 'PARTITION1_1', ni=2, vali=vali)
         endif
     else if (kdis(1:4).eq.'MAIL') then
 !       IL FAUT AU MOINS UNE MAILLE PAR PROC
         if (nbmamo .lt. nbproc) then
             vali(1) = nbmamo
             vali(2) = nbproc
-            call utmess('F', 'ALGORITH16_93', ni=2, vali=vali)
+            call utmess('F', 'PARTITION1_93', ni=2, vali=vali)
         endif
     else if (kdis.eq.'GROUP_ELEM') then
 !       IL FAUT AU MOINS UN GREL PAR PROC
         if (nbgrel .lt. nbproc) then
             vali(1) = nbgrel
             vali(2) = nbproc
-            call utmess('F', 'ALGORITH16_97', ni=2, vali=vali)
+            call utmess('F', 'PARTITION1_97', ni=2, vali=vali)
         endif
     else
         ASSERT(.false.)
@@ -242,7 +242,7 @@ subroutine ajlipa(modelz, base)
                     if (zi(jnumsd-1+i2) .ne. -999) then
 !               -- MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
                         vali(1) = i2
-                        call utmess('F', 'ALGORITH16_98', si=vali(1))
+                        call utmess('F', 'PARTITION1_98', si=vali(1))
                     else
                         zi(jnumsd-1+i2) = rang
                     endif

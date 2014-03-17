@@ -179,10 +179,7 @@ Le module de Young est nul.
    élément MECA_HEXS8: élasticité non linéaire non programmée.
 """),
 
-74 : _(u"""
-  Attention l'élément MECA_HEXS8 ne fonctionne correctement que sur les parallélépipèdes.
-  Sur les éléments quelconques on peut obtenir des résultats faux.
-"""),
+
 
 
 

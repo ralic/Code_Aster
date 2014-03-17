@@ -18,13 +18,7 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 cata_msg={
-1: _(u"""
- Il y a moins de sous-domaines (%(i1)d) que de processeurs participant au calcul (%(i2)d).
 
- Conseils :
-   - augmentez le nombre de sous-domaines de la partition du mot-clé PARTITION
-   - diminuez le nombre de processeurs du calcul
-"""),
 
 2: _(u"""
          Comportement %(k1)s non implanté pour l'élément d'interface
@@ -86,11 +80,6 @@ cata_msg={
   Les données matériau RHO_FLUIDE, VISC_FLUIDE et OUV_MIN sont incompatibles avec les modélisations xxx_JOINT
 """),
 
-17 : _(u"""
-  La partition %(k1)s que vous utilisez pour partitionner le modèle %(k2)s en sous-domaines a été construite sur un autre modèle (%(k3)s).
-
-  Conseil : vérifiez la cohérence des modèles.
-"""),
 
 18 : _(u"""
   La base de modes associée au résultat généralisé sous le mot-clé

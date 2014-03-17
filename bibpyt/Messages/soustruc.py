@@ -382,23 +382,6 @@ cata_msg={
  Noeud utilisé pour réaliser l'opération demandée :  %(k2)s
 """),
 
-88: _(u"""
- Erreur dans le maillage :
-"""),
-
-89: _(u"""
-  Pour le noeud %(k1)s de la maille %(k2)s, la coordonnée X est négative (x=%(r1)G).
-"""),
-
-90: _(u"""
- Or, pour une modélisation axisymétrique, la coordonnée X doit être positive, nulle ou
- très faiblement négative ( > -1.d-6 * X_MAX)
-
- Conseils :
-  * Vérifiez votre maillage.
-  * Vous pouvez utiliser MODI_MAILLAGE / DEFORME pour repositionner votre maillage
-    dans le demi espace  X >= 0
-"""),
 
 93: _(u"""
     pour le mode no : %(i1)d taux de flexibilité locale   :  %(r1)f

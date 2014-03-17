@@ -78,10 +78,13 @@ subroutine adalig(ligrz)
     ligr = ligrz
     liel=ligr(1:19)//'.LIEL'
     call jeexin(liel, iret)
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) then
+        goto 999
+    endif
     call jelira(liel, 'NUTIOC', nbgrel)
-    if (nbgrel .eq. 0) goto 9999
-!
+    if (nbgrel .eq. 0) then
+        goto 999
+    endif
 !
     tliel = '&&ADALIG.LIEL'
 !
@@ -106,23 +109,24 @@ subroutine adalig(ligrz)
     call jeveuo(jexatr(tliel, 'LONCUM'), 'L', jtlie2)
     iad = zi(jtlie2)
     nbtype = 0
-    do 1 i = 1, nbtg
+    do i = 1, nbtg
         iadp = zi(jtlie2+i)
         nbelem = iadp-iad-1
         iad = iadp
         if (nbelem .gt. 0) then
             itype = zi(jtliel-1+iadp-1)
-            do 2 j = 1, nbtype
+            do j = 1, nbtype
                 if (itype .eq. teut(j)) then
                     nteut(j) = nteut(j)+ nbelem
                     goto 1
                 endif
- 2          continue
+            end do
             nbtype = nbtype+1
             teut(nbtype) = itype
             nteut(nbtype) = nbelem
         endif
- 1  end do
+ 1      continue
+    end do
 !
 !
 ! --- CALCUL DU NOMBRE DE GRELS DU NOUVEAU .LIEL
@@ -130,7 +134,7 @@ subroutine adalig(ligrz)
     lont = 0
     nbgrel = 0
     nbelmx = int(jevtbl('TAILLE_GROUP_ELEM'))
-    do 3 ktype = 1, nbtype
+    do ktype = 1, nbtype
         nbel = nteut(ktype)
 !
         nspaq=(nbel/nbproc)/nbelmx
@@ -140,7 +144,7 @@ subroutine adalig(ligrz)
         gteut(ktype) = nbg
         nbgrel = nbgrel + nbg
         lont = lont + nbel + nbg
- 3  end do
+    end do
     ASSERT((nbgrel/nbproc)*nbproc.eq.nbgrel)
 !
 !
@@ -150,7 +154,7 @@ subroutine adalig(ligrz)
                 nbgrel)
     call jeecra(liel, 'LONT', lont)
     igrel=0
-    do 41 ktype = 1, nbtype
+    do ktype = 1, nbtype
         itype = teut(ktype)
         ntot = nteut(ktype)
         nbg = gteut(ktype)
@@ -164,23 +168,23 @@ subroutine adalig(ligrz)
 !          LES AUTRES AURONT NBELGR ELEMENTS
         np1=ntot-nbg*nbelgr
         ASSERT(np1.lt.nbg)
-        do 42 k = 1, nbg
+        do k = 1, nbg
             nbelgv=nbelgr
             if (k .le. np1) nbelgv=nbelgv+1
             call jecroc(jexnum(liel, igrel+k))
             call jeecra(jexnum(liel, igrel+k), 'LONMAX', nbelgv+1)
             call jeveuo(jexnum(liel, igrel+k), 'E', jliel)
             zi(jliel+nbelgv) = itype
-42      continue
+        end do
         igrel=igrel+nbg
-41  end do
+    end do
     ASSERT(nbgrel.eq.igrel)
 !
 !
 !     -- REMPLISSAGE DES NOUVEAUX GRELS
 !     ------------------------------------
     igrel = 0
-    do 4 ktype = 1, nbtype
+    do ktype = 1, nbtype
         itype = teut(ktype)
         ntot = nteut(ktype)
         nbg = gteut(ktype)
@@ -196,12 +200,12 @@ subroutine adalig(ligrz)
 !
 !       -- ON REMPLIT LES NOUVEAUX GRELS AVEC LES ELEMENTS DU BON TYPE
         iadt = zi(jtlie2)
-        do 5 j = 1, nbtg
+        do j = 1, nbtg
             iadtp = zi(jtlie2+j)
             jtype = zi(jtliel-2+iadtp)
             if (jtype .eq. itype) then
                 nel = iadtp -iadt -1
-                do 6 k = 1, nel
+                do k = 1, nel
 !             -- IL FAUT CHANGER DE GREL :
                     if (nelem .ge. nbelgv) then
                         igre2 = igre2 + 1
@@ -212,14 +216,14 @@ subroutine adalig(ligrz)
                     endif
                     nelem = nelem + 1
                     zi(jliel-1+nelem) = zi(jtliel-1+iadt+k-1)
- 6              continue
+                end do
             endif
             iadt = iadtp
- 5      continue
+        end do
         ASSERT(igre2.le.nbg)
         ASSERT(nelem.eq.nbelgv)
         igrel=igrel+nbg
- 4  end do
+    end do
     ASSERT(igrel.eq.nbgrel)
 !
 !
@@ -228,6 +232,6 @@ subroutine adalig(ligrz)
     AS_DEALLOCATE(vi=teut)
     AS_DEALLOCATE(vi=nteut)
     AS_DEALLOCATE(vi=gteut)
-9999  continue
+999 continue
     call jedema()
 end subroutine

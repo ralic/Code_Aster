@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine w18imp(ligrel, noma, nomo)
-        character(len=19) :: ligrel
-        character(len=8) :: noma
-        character(len=8) :: nomo
-    end subroutine w18imp
+    subroutine model_check(model, l_veri_elem)
+        character(len=8), intent(in) :: model
+        logical, optional, intent(in) :: l_veri_elem 
+    end subroutine model_check
 end interface

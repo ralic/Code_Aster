@@ -1,7 +1,43 @@
 subroutine op0018()
+!
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
-!     ------------------------------------------------------------------
+!
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/adalig.h"
+#include "asterfort/ajlipa.h"
+#include "asterfort/assert.h"
+#include "asterfort/cetucr.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/crevge.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getnode.h"
+#include "asterfort/getelem.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/initel.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ssafmo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/model_check.h"
+#include "asterfort/model_print.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,620 +54,540 @@ subroutine op0018()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     ------------------------------------------------------------------
+! person_in_charge: jacques.pellet at edf.fr
 !
-!                   AFFE_MODELE
 !
-!     ------------------------------------------------------------------
-!        REMARQUES ET RESTRICTIONS D UTILISATION
+! --------------------------------------------------------------------------------------------------
 !
+! COMMAND:  AFFE_MODELE
+!
+! --------------------------------------------------------------------------------------------------
+!
+! REMARQUES ET RESTRICTIONS D UTILISATION:
 !       LES SEULES VERIFICATIONS FAITES ( FAUX=EXIT ), PORTENT SUR:
 !       - L AFFECTATION D ELEMENTS FINIS A TOUTES LES MAILLES DEMANDEES
 !       - L AFFECTATION D ELEMENTS FINIS A TOUS LES NOEUDS DEMANDES
 !       - L AFFECTATION D ELEMENTS FINIS SUR UNE MAILLE AU MOINS
-!     ------------------------------------------------------------------
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterc/getres.h"
-#include "asterfort/adalig.h"
-#include "asterfort/ajlipa.h"
-#include "asterfort/assert.h"
-#include "asterfort/calcul.h"
-#include "asterfort/cetucr.h"
-#include "asterfort/codent.h"
-#include "asterfort/cormgi.h"
-#include "asterfort/crevge.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/getvem.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/infniv.h"
-#include "asterfort/initel.h"
-#include "asterfort/jecrec.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jerazo.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/modexi.h"
-#include "asterfort/ssafmo.h"
-#include "asterfort/taxis.h"
-#include "asterfort/utmess.h"
-#include "asterfort/w18imp.h"
-#include "asterfort/wkvect.h"
 !
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: vali(4), d1, d2
-    character(len=4) :: kioc, cdim
-    character(len=8) :: noma, nomu, k8b, verif, exivf, bevois
-    character(len=8) :: typema
-    character(len=16) :: k16bid
-    character(len=16) :: concep, cmd, phenom, modeli, lmodel(10)
+    integer :: dim_topo_curr, dim_topo_init
+    integer :: ifm, niv
+    character(len=8) :: mesh, model
+    character(len=8) :: name_elem, name_node
+    character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
+    character(len=16) :: phenom, modeli, list_modelisa(10), keywordfact
     character(len=19) :: ligrel
-    character(len=24) :: nommai, nomnoe, typmai, grpnoe, grpmai, tmpdef
-    character(len=24) :: cptnem, cptnbn, cptlie, cptmai, cptnoe, tmpde2
+    character(len=24) :: mesh_name_elem, mesh_name_node
     character(len=32) :: phemod
-    logical :: lmail, lnoeu, laxis
-    integer :: i, i2d, i3d, ibid, ico, idim, idim2, ifm, ii, imodel, imodl
-    integer :: ioc, j, jdef, jdgm, jdgn, jdli, jdma, jdma2, jdnb, jdef2
-    integer :: jlgrf, jdno, jdnw, jdpm, jdtm, jmut, jmut2, jnut
-    integer :: lonlie, lonnem, nbgrel, nbgrma, nbgrno, nbmaaf, nbmail
-    integer :: nbmpaf, nbmpcf, nbnoaf, nbnoeu, nbnpaf, nbnpcf, nboc
-    integer :: nboc2, nbv, ndgm, ndgn, ndma, ndmax, ndmax1, ndmax2, ndno
-    integer :: ngm, ngn, niv, nma, nmgrel, nmo, nno, nph, nto, ntypoi, nugrel
-    integer :: numail, numnoe, numsup, numvec, nutype, nutypm, idim3
-    integer :: iarg
-    integer, pointer :: tmdim(:) => null()
-!     ------------------------------------------------------------------
+    character(len=24) :: list_elem
+    integer, pointer :: p_list_elem(:) => null()
+    integer :: nb_elem
+    character(len=24) :: list_node
+    integer, pointer :: p_list_node(:) => null()
+    integer :: nb_node
+    logical :: l_elem, l_node, l_grandeur_cara
+    logical :: l_calc_rigi, l_veri_elem, l_volu_fini, l_need_neigh
+    integer :: inode, ielem, iaffe
+    integer :: vali(4),  ico, imodel, idx_modelisa
+    integer, pointer          :: p_cata_dim(:) => null()
+    integer, pointer          :: p_cata_model(:) => null()
+    character(len=24)         :: mesh_type_geom
+    integer, pointer          :: p_mesh_type_geom(:) => null()
+    integer, pointer          :: p_wk_mail1(:) => null()
+    integer, pointer          :: p_wk_mail2(:) => null()
+    integer, pointer          :: p_wk_mail3(:) => null()
+    integer, pointer          :: p_wk_node(:) => null()
+    character(len=24)         :: model_liel
+    integer, pointer          :: p_model_liel(:) => null()
+    character(len=24)         :: model_nema
+    integer, pointer          :: p_model_nema(:) => null()
+    character(len=24)         :: model_maille
+    integer, pointer          :: p_model_maille(:) => null()
+    character(len=24)         :: model_noeud
+    integer, pointer          :: p_model_noeud(:) => null()
+    character(len=8), pointer :: p_model_lgrf(:) => null()
+    integer, pointer          :: p_model_nbno(:) => null()
+    integer :: lont_liel, lont_nema, nb_grel, nb_elem_affe, nb_mesh_elem
+    integer :: nb_elem_naffe, nb_node_affe, nb_mesh_node, nb_node_naffe
+    integer :: nb_affe, nb_affe_ss, nbocc
+    integer :: long_grel, nb_modelisa, nume_type_poi1, nume_grel
+    integer :: nume_elem, nume_node, numsup, idx_in_grel, nume_type_model, nume_type_geom
 !
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-    lmail=.false.
-    lnoeu=.false.
-    laxis=.false.
-!
-!     RECUPERATION DU NIVEAU D'IMPRESSION
-!     -----------------------------------
     call infmaj()
     call infniv(ifm, niv)
 !
-! ---   INITIALISATION DU NB D'ERREUR
+! - Initializations
 !
+    l_elem = .false.
+    l_node = .false.
+    list_elem = '&&OP0018.LIST_ELEM'
+    list_node = '&&OP0018.LIST_NODE'
 !
-! ---   RECUPERATION DES ARGUMENTS  DE LA COMMANDE
+! - Get command parameters
 !
-    call getres(nomu, concep, cmd)
-    ligrel=nomu//'.MODELE'
+    call getres(model, k16dummy, k16dummy)
+    ligrel = model//'.MODELE'
 !
-! - MAILLAGE
+! - Get mesh (or grid)
 !
-    call getvid(' ', 'MAILLAGE', scal=noma, nbret=nbv)
-    if (nbv .eq. 0) then
-        call getvid(' ', 'GRILLE', scal=noma, nbret=nbv)
+    call getvid(' ', 'MAILLAGE', scal=mesh, nbret=nbocc)
+    if (nbocc .eq. 0) then
+        call getvid(' ', 'GRILLE', scal=mesh)
     endif
 !
-! - GRANDEURS CARACTERISTIQUES
+! - Check jacobians
 !
-    k16bid='GRANDEUR_CARA'
-    call getfac(k16bid, nboc)
-    if (nboc .gt. 0) then
-        call cetucr(k16bid, nomu)
-    endif
+    call getvtx(' ', 'VERI_JACOBIEN', scal=repk)
+    l_veri_elem = repk.eq.'OUI'
+!
+! - Grandeurs caracteristiques
+!
+    keywordfact = 'GRANDEUR_CARA'
+    call getfac(keywordfact, nbocc)
+    l_grandeur_cara = nbocc.gt.0
+!
+! - AFFE_SOUS_STRUC
+!
+    keywordfact = 'AFFE_SOUS_STRUC'
+    call getfac(keywordfact, nb_affe_ss)
 !
 ! - AFFE
 !
-    ndgm=0
-    ndgn=0
-    ndma=0
-    ndno=0
+    keywordfact = 'AFFE'
+    call getfac(keywordfact, nb_affe)
 !
-    call getfac('AFFE', nboc)
-    call getfac('AFFE_SOUS_STRUC', nboc2)
+! - Access to catalog
 !
-    do ioc = 1, nboc
-        call codent(ioc, 'G', kioc)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi = p_cata_dim)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), nume_type_poi1)
 !
-        call getvtx('AFFE', 'TOUT', iocc=ioc, nbval=0, nbret=nto)
-        call getvem(noma, 'GROUP_MA', 'AFFE', 'GROUP_MA', ioc,&
-                    iarg, 0, k8b, ngm)
-        call getvem(noma, 'GROUP_NO', 'AFFE', 'GROUP_NO', ioc,&
-                    iarg, 0, k8b, ngn)
-        call getvem(noma, 'MAILLE', 'AFFE', 'MAILLE', ioc,&
-                    iarg, 0, k8b, nma)
-        call getvem(noma, 'NOEUD', 'AFFE', 'NOEUD', ioc,&
-                    iarg, 0, k8b, nno)
+! - Common definition for model SD
 !
+    call wkvect(model//'.MODELE    .LGRF', 'G V K8', 2, vk8 = p_model_lgrf)
+    call wkvect(model//'.MODELE    .NBNO', 'G V I' , 1, vi  = p_model_nbno)
+    p_model_lgrf(1) = mesh
+    p_model_lgrf(2) = model
+    p_model_nbno(1) = 0
 !
-        ndgm=max(ndgm,-ngm)
-        ndgn=max(ndgn,-ngn)
-        ndma=max(ndma,-nma)
-        ndno=max(ndno,-nno)
-    end do
+! - Get phenomenon
 !
-    ndmax1=max(ndgm,ndgn)
-    ndmax2=max(ndma,ndno)
-    ndmax=max(ndmax1,ndmax2)
-    if (ndmax .le. 0) ndmax=1
-!
-!
-!
-!
-!       -- ON TRAITE CE QUI EST COMMUN AUX MODELES AVEC ELEMENTS
-!                           ET AUX MODELES AVEC SOUS-STRUCTURES
-!       ---------------------------------------------------------------
-    cptnbn=nomu//'.MODELE    .NBNO'
-    call wkvect(nomu//'.MODELE    .LGRF', 'G V K8', 2, jlgrf)
-    call wkvect(cptnbn, 'G V I', 1, jdnb)
-    zk8(jlgrf-1+1)=noma
-    zk8(jlgrf-1+2)=nomu
-    zi(jdnb)=0
-!
-!       -- RECHERCHE DU PHENOMENE :
-    if (nboc .gt. 0) then
-        call getvtx('AFFE', 'PHENOMENE', iocc=1, scal=phenom, nbret=ibid)
-    else if (nboc2.gt.0) then
-        call getvtx('AFFE_SOUS_STRUC', 'PHENOMENE', iocc=1, scal=phenom, nbret=ibid)
+    if (nb_affe .gt. 0) then
+        call getvtx('AFFE', 'PHENOMENE', iocc=1, scal=phenom)
+    else if (nb_affe_ss.gt.0) then
+        call getvtx('AFFE_SOUS_STRUC', 'PHENOMENE', iocc=1, scal=phenom)
     endif
-    call jeecra(nomu//'.MODELE    .LGRF', 'DOCU', cval=phenom(1:4))
+    call jeecra(model//'.MODELE    .LGRF', 'DOCU', cval=phenom(1:4))
 !
-!       -- S'IL N'Y A PAS D'ELEMENTS ON SAUTE QUELQUES ETAPES:
-    if (nboc .eq. 0) goto 190
+    if (nb_affe .ne. 0) then
 !
-!       MODELE AVEC ELEMENTS:
-! ---   RECUPERATION DES NOMS JEVEUX DU CONCEPT MAILLAGE
+        keywordfact = 'AFFE'
 !
-    nommai=noma//'.NOMMAI'
-    nomnoe=noma//'.NOMNOE'
-    typmai=noma//'.TYPMAIL'
-    grpnoe=noma//'.GROUPENO'
-    grpmai=noma//'.GROUPEMA'
+! ----- Access to mesh objects
 !
-! ---   CONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
+        mesh_name_elem = mesh//'.NOMMAI'
+        mesh_name_node = mesh//'.NOMNOE'
+        mesh_type_geom = mesh//'.TYPMAIL'
+        call jelira(mesh_name_elem, 'NOMMAX', nb_mesh_elem)
+        call jelira(mesh_name_node, 'NOMMAX', nb_mesh_node)
+        call jeveuo(mesh_type_geom, 'L', vi = p_mesh_type_geom)
 !
-    tmpdef=nomu//'.DEF'
-    call wkvect(tmpdef, 'V V K24', ndmax, jdef)
-    tmpde2=nomu//'.DEF2'
-    call wkvect(tmpde2, 'V V K8', ndmax, jdef2)
+! ----- Name of objects for model
 !
-    cptmai=nomu//'.MAILLE'
-    cptnoe=nomu//'.NOEUD'
-    cptlie=nomu//'.MODELE    .LIEL'
-    cptnem=nomu//'.MODELE    .NEMA'
+        model_maille = model//'.MAILLE'
+        model_noeud  = model//'.NOEUD'
+        model_liel   = model//'.MODELE    .LIEL'
+        model_nema   = model//'.MODELE    .NEMA'
 !
-!     --  CREATION DES VECTEURS TAMPONS MAILLES ET NOEUDS
-    call jelira(nommai, 'NOMMAX', nbmail)
-    call jelira(nomnoe, 'NOMMAX', nbnoeu)
-    call jeveuo(typmai, 'L', jdtm)
+! ----- Create main objects for model
 !
-    call wkvect(cptmai, 'G V I', nbmail, jdma)
-    call wkvect(cptnoe, 'G V I', nbnoeu, jdno)
-    call wkvect('&&OP0018.MAILLE', 'V V I', nbmail, jmut)
-    call wkvect('&&OP0018.MAILLE2', 'V V I', nbmail, jmut2)
-    call wkvect('&&OP0018.MAILLE3', 'V V I', nbmail, jdma2)
-    call wkvect('&&OP0018.NOEUD', 'V V I', nbnoeu, jnut)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntypoi)
-    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
+        call wkvect(model_maille, 'G V I', nb_mesh_elem, vi = p_model_maille)
+        call wkvect(model_noeud , 'G V I', nb_mesh_node, vi = p_model_noeud)
 !
+! ----- Working objects
 !
+        AS_ALLOCATE(vi = p_wk_mail1, size = nb_mesh_elem)
+        AS_ALLOCATE(vi = p_wk_mail2, size = nb_mesh_elem)
+        AS_ALLOCATE(vi = p_wk_mail3, size = nb_mesh_elem)
+        AS_ALLOCATE(vi = p_wk_node , size = nb_mesh_node)
 !
-    do ioc = 1, nboc
-        call getvtx('AFFE', 'PHENOMENE', iocc=ioc, scal=phenom, nbret=nph)
-        call getvtx('AFFE', 'MODELISATION', iocc=ioc, nbval=10, vect=lmodel,&
-                    nbret=nmo)
-        ASSERT(nmo.gt.0)
-        d2=-99
-        call jerazo(tmpdef, ndmax, 1)
-        call jerazo('&&OP0018.MAILLE2', nbmail, 1)
-        call jerazo('&&OP0018.MAILLE3', nbmail, 1)
+! ----- Loop on AFFE keyword
 !
-!       -- RAPPEL : LES MOTS CLES TOUT,GROUP_MA,... S'EXCLUENT
-        call getvtx('AFFE', 'TOUT', iocc=ioc, nbval=0, nbret=nto)
-        call getvem(noma, 'GROUP_MA', 'AFFE', 'GROUP_MA', ioc,&
-                    iarg, ndmax, zk24(jdef), ngm)
-        call getvem(noma, 'MAILLE', 'AFFE', 'MAILLE', ioc,&
-                    iarg, ndmax, zk8(jdef2), nma)
-        call getvem(noma, 'GROUP_NO', 'AFFE', 'GROUP_NO', ioc,&
-                    iarg, ndmax, zk24(jdef), ngn)
-        call getvem(noma, 'NOEUD', 'AFFE', 'NOEUD', ioc,&
-                    iarg, ndmax, zk8(jdef2), nno)
+        do iaffe = 1, nb_affe
 !
-        do imodel = 1, nmo
-            modeli=lmodel(imodel)
-            call jenonu(jexnom('&CATA.'//phenom(1:13)//'.MODL', modeli), imodl)
-            call jeveuo(jexnum('&CATA.'//phenom, imodl), 'L', jdpm)
+            dim_topo_init=-99
+            p_wk_mail2(1:nb_mesh_elem) = 0
+            p_wk_mail3(1:nb_mesh_elem) = 0
 !
-            phemod=phenom//modeli
-            call dismoi('DIM_TOPO', phemod, 'PHEN_MODE', repi=d1)
-            if (d2 .eq. -99) then
-                d2=d1
-            else
-                if (d2 .ne. d1) then
-                    call utmess('F', 'MODELISA5_51')
-                endif
-            endif
+! --------- Get phenomene/modelisation
 !
-            if (modeli(1:4) .eq. 'AXIS' .or. modeli .eq. 'COQUE_AXIS') laxis=.true.
+            call getvtx(keywordfact, 'PHENOMENE'   , iocc=iaffe, scal=phenom)
+            call getvtx(keywordfact, 'MODELISATION', iocc=iaffe, nbval=10, vect=list_modelisa,&
+                        nbret=nb_modelisa)
+            ASSERT(nb_modelisa.gt.0)
+            ASSERT(nb_modelisa.le.10)
 !
-            if (nto .ne. 0) then
-                lmail=.true.
-                do numail = 1, nbmail
-                    nutypm=zi(jdtm+numail-1)
-                    if (zi(jdpm+nutypm-1) .gt. 0) then
-                        zi(jdma+numail-1)=zi(jdpm+nutypm-1)
-                        zi(jdma2+numail-1)=zi(jdpm+nutypm-1)
+! --------- Get elements
+!
+            call jedetr(list_elem)
+            call getelem(mesh   , keywordfact, iaffe , ' ', list_elem,&
+                         nb_elem)
+!
+! --------- Get nodes
+!
+            call jedetr(list_node)
+            call getnode(mesh   , keywordfact, iaffe , ' ', list_node,&
+                         nb_node, elem_excl = .true.)
+!
+! --------- Loop on modelisations
+!
+            do imodel = 1, nb_modelisa
+!
+! ------------- Current modelisation
+!
+                modeli = list_modelisa(imodel)
+                call jenonu(jexnom('&CATA.'//phenom(1:13)//'.MODL', modeli), idx_modelisa)
+                call jeveuo(jexnum('&CATA.'//phenom, idx_modelisa), 'L', vi = p_cata_model)
+                phemod = phenom//modeli
+!
+! ------------- Topological dimensions
+!
+                call dismoi('DIM_TOPO', phemod, 'PHEN_MODE', repi=dim_topo_curr)
+                if (dim_topo_init .eq. -99) then
+                    dim_topo_init = dim_topo_curr
+                else
+                    if (dim_topo_init .ne. dim_topo_curr) then
+                        call utmess('F', 'MODELE1_1')
                     endif
-                    zi(jmut+numail-1)=1
-                    if (tmdim(nutypm) .eq. d2) zi(jmut2+numail-1)= 1
-                end do
-            endif
+                endif
 !
-            if (ngm .ne. 0) then
-                lmail=.true.
-                do i = 1, ngm
-                    call jeveuo(jexnom(grpmai, zk24(jdef+i-1)), 'L', jdgm)
-                    call jelira(jexnom(grpmai, zk24(jdef+i-1)), 'LONUTI', nbgrma)
-                    do j = 1, nbgrma
-                        numail=zi(jdgm+j-1)
-                        nutypm=zi(jdtm+numail-1)
-                        if (zi(jdpm+nutypm-1) .gt. 0) then
-                            zi(jdma+numail-1)=zi(jdpm+nutypm-1)
-                            zi(jdma2+numail-1)=zi(jdpm+nutypm-1)
+! ------------- Loop on elements 
+!
+                if (nb_elem .ne. 0) then
+                    ASSERT(nb_node.eq.0)
+                    l_elem = .true.
+                    call jeveuo(list_elem, 'L', vi = p_list_elem)
+                    do ielem = 1, nb_elem
+                        nume_elem      = p_list_elem(ielem)
+                        nume_type_geom = p_mesh_type_geom(nume_elem)
+                        if (p_cata_model(nume_type_geom) .gt. 0) then
+                            p_model_maille(nume_elem) = p_cata_model(nume_type_geom)
+                            p_wk_mail3(nume_elem)     = p_cata_model(nume_type_geom)
                         endif
-                        zi(jmut+numail-1)=1
-                        if (tmdim(nutypm) .eq. d2) zi(jmut2+numail- 1)=1
+                        p_wk_mail1(nume_elem) = 1
+                        if (p_cata_dim(nume_type_geom) .eq. dim_topo_init) then
+                            p_wk_mail2(nume_elem) = 1
+                        endif
                     end do
-                end do
-            endif
+                endif
 !
-            if (nma .ne. 0) then
-                lmail=.true.
-                do i = 1, nma
-                    call jenonu(jexnom(nommai, zk8(jdef2+i-1)), numail)
-                    nutypm=zi(jdtm+numail-1)
-                    if (zi(jdpm+nutypm-1) .gt. 0) then
-                        zi(jdma+numail-1)=zi(jdpm+nutypm-1)
-                        zi(jdma2+numail-1)=zi(jdpm+nutypm-1)
+! ------------- Loop on nodes 
+!
+                if (nb_node .ne. 0) then
+                    ASSERT(nb_elem.eq.0)
+                    l_node = .true.
+                    call jeveuo(list_node, 'L', vi = p_list_node)
+                    do inode = 1, nb_node
+                        nume_node      = p_list_node(inode)
+                        if (p_cata_model(nume_type_poi1) .gt. 0) then
+                            p_model_noeud(nume_node)= p_cata_model(nume_type_poi1)
+                        endif
+                        p_wk_node(nume_node) = 1
+                    end do
+                endif
+!
+! ------------- ON VERIFIE QU'A CHAQUE OCCURENCE DE AFFE, LES MAILLES
+! ------------- "PRINCIPALES" ONT BIEN ETE AFFECTEES PAR DES ELEMENTS
+! ------------- (PB DES MODELISATIONS A "TROUS") :
+!
+                ico=0
+                do nume_elem = 1, nb_mesh_elem
+                    if ((p_wk_mail2(nume_elem).eq.1) .and. (p_wk_mail3(nume_elem).eq.0)) then
+                        ico=ico+1
                     endif
-                    zi(jmut+numail-1)=1
-                    if (tmdim(nutypm) .eq. d2) zi(jmut2+numail-1)= 1
                 end do
-            endif
+                if (ico .gt. 0) then
+                    vali(1) = iaffe
+                    vali(2) = ico
+                    vali(3) = dim_topo_init
+                    call utmess('A', 'MODELE1_70', ni=3, vali=vali)
+                endif
+            end do
 !
-            if (ngn .ne. 0) then
-                lnoeu=.true.
-                do i = 1, ngn
-                    call jeveuo(jexnom(grpnoe, zk24(jdef+i-1)), 'L', jdgn)
-                    call jelira(jexnom(grpnoe, zk24(jdef+i-1)), 'LONUTI', nbgrno)
-                    do j = 1, nbgrno
-                        numnoe=zi(jdgn+j-1)
-                        if (zi(jdpm+ntypoi-1) .gt. 0) zi(jdno+numnoe-1)= zi(jdpm+ ntypoi-1)
-                        zi(jnut+numnoe-1)=1
-                    end do
-                end do
-            endif
+! --------- Check if user elements have been affected
 !
-            if (nno .ne. 0) then
-                lnoeu=.true.
-                do i = 1, nno
-                    call jenonu(jexnom(nomnoe, zk8(jdef2+i-1)), numnoe)
-                    if (zi(jdpm+ntypoi-1) .gt. 0) zi(jdno+numnoe-1)=zi( jdpm+ ntypoi-1)
-                    zi(jnut+numnoe-1)=1
-                end do
-            endif
+            nb_elem_naffe = 0
+            do ielem = 1, nb_mesh_elem
+                nume_elem = ielem
+                if (p_wk_mail1(nume_elem) .eq. 1) then
+                    if (p_model_maille(nume_elem) .eq. 0) then
+                        nb_elem_naffe  = nb_elem_naffe+1
+                        call jenuno(jexnum(mesh_name_elem, nume_elem), name_elem)
+                        nume_type_geom = p_mesh_type_geom(nume_elem)
+                        call jenuno(jexnum('&CATA.TM.NOMTM', nume_type_geom), name_type_geom)
+                        if (niv .eq. 2) then
+                            valk(1) = name_elem
+                            valk(2) = name_type_geom
+                            call utmess('I','MODELE1_2', nk=2, valk=valk)
+                        endif
+                    endif
+                endif
+            end do
 !
+! --------- Check if user nodes have been affected
+!
+            nb_node_naffe = 0
+            do inode = 1, nb_mesh_node
+                nume_node = inode
+                if (p_wk_node(nume_node) .eq. 1) then
+                    if (p_model_noeud(nume_node) .eq. 0) then
+                        nb_node_naffe = nb_node_naffe+1
+                        call jenuno(jexnum(mesh_name_node, nume_node), name_node)
+                        if (niv .eq. 2) then
+                            call utmess('I','MODELE1_3', sk = name_node)
+                        endif
+                    endif
+                endif
+            end do
         end do
 !
-!       -- ON VERIFIE QU'A CHAQUE OCCURENCE DE AFFE, LES MAILLES
-!          "PRINCIPALES" ONT BIEN ETE AFFECTEES PAR DES ELEMENTS
-!          (PB DES MODELISATIONS A "TROUS") :
-!          ------------------------------------------------------
-        ico=0
-        do numail = 1, nbmail
-            if ((zi(jmut2+numail-1).eq.1) .and. zi(jdma2+numail-1) .eq. 0) ico=ico+1
-        end do
-        if (ico .gt. 0) then
-            vali(1)=ioc
-            vali(2)=ico
-            vali(3)=d2
-            call utmess('A', 'MODELISA8_70', ni=3, vali=vali)
-        endif
-    end do
+! ----- Count number of GREL
 !
+        nb_grel         = 0
 !
-! --- VERIFICATION QUE LES MAILLES "UTILISATEUR" ONT ETE AFFECTEES
-    nbmpcf=0
-    nbmpaf=0
-    do i = 1, nbmail
-        if (zi(jmut+i-1) .eq. 1) then
-            if (zi(jdma+i-1) .eq. 0) then
-                nbmpaf=nbmpaf+1
-                call jenuno(jexnum(nommai, i), k8b)
-                nutypm=zi(jdtm+i-1)
-                call jenuno(jexnum('&CATA.TM.NOMTM', nutypm), typema)
-                if (niv .eq. 2) then
-                    write (ifm,*)'  MAILLE QUE L''ON N''A PAS PU AFFEC',&
-     &          'TER: ',k8b,' DE TYPE: ',typema
+! ----- Count number of GREL - Elements
+!
+        nb_elem_affe    = 0
+        nume_type_model = 0
+        do ielem = 1, nb_mesh_elem
+            nume_elem = ielem
+            if (p_model_maille(nume_elem) .ne. 0) then
+                nb_elem_affe = nb_elem_affe+1
+                if (p_model_maille(nume_elem) .ne. nume_type_model) then
+                    nume_type_model = p_model_maille(nume_elem)
+                    nb_grel         = nb_grel+1
                 endif
             endif
-        else
-            nbmpcf=nbmpcf+1
-        endif
-    end do
+        end do
 !
-! --- VERIFICATION QUE LES NOEUDS "UTILISATEUR" ONT ETE AFFECTES
-    nbnpcf=0
-    nbnpaf=0
-    do i = 1, nbnoeu
-        if (zi(jnut+i-1) .eq. 1) then
-            if (zi(jdno+i-1) .eq. 0) then
-                nbnpaf=nbnpaf+1
-                call jenuno(jexnum(nomnoe, i), k8b)
-                if (niv .eq. 2) then
-                    write (ifm,*)'  NOEUD QUE L''ON N''A PAS PU AFFEC',&
-     &          'TER: ',k8b
+! ----- Count number of GREL - Nodes
+!
+        nb_node_affe    = 0
+        nume_type_model = 0
+        do inode = 1, nb_mesh_node
+            nume_node = inode
+            if (p_model_noeud(nume_node) .ne. 0) then
+                nb_node_affe = nb_node_affe+1
+                if (p_model_noeud(nume_node) .ne. nume_type_model) then
+                    nume_type_model = p_model_noeud(nume_node)
+                    nb_grel         = nb_grel+1
                 endif
             endif
-        else
-            nbnpcf=nbnpcf+1
+        end do
+!
+! ----- Printing informations
+!
+        if (l_elem) then
+            vali(1) = nb_mesh_elem
+            vali(2) = nb_elem_affe+nb_elem_naffe
+            vali(3) = nb_elem_affe
+            call utmess('I','MODELE1_4', sk=mesh, ni = 3, vali = vali)
         endif
-    end do
+        if (l_node) then
+            vali(1) = nb_mesh_node
+            vali(2) = nb_node_affe+nb_node_naffe
+            vali(3) = nb_node_affe
+            call utmess('I','MODELE1_5', sk=mesh, ni = 3, vali = vali)
+        endif
+        if (nb_elem_affe .eq. 0) then
+            call utmess('F', 'MODELE1_6', sk=mesh)
+        endif          
 !
-! ---   DIMENSIONNEMENT DES OBJETS LIEL ET NEMA
-    nbmaaf=0
-    nbnoaf=0
-    nutype=0
-    nbgrel=0
+! ----- Create LIEL
 !
-    do i = 1, nbmail
-        if (zi(jdma+i-1) .ne. 0) then
-            nbmaaf=nbmaaf+1
-            if (zi(jdma+i-1) .ne. nutype) then
-                nutype=zi(jdma+i-1)
-                nbgrel=nbgrel+1
+        lont_liel = nb_grel+nb_elem_affe+nb_node_affe
+        call jecrec(model_liel, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+                    nb_grel)
+        call jeecra(model_liel, 'LONT', lont_liel)
+        call jeveuo(model_liel, 'E', vi = p_model_liel)
+!
+! ----- Store GREL in LIEL - Elements
+!
+        nume_type_model = 0
+        nume_grel       = 0
+        long_grel       = 0
+        idx_in_grel     = 0
+        do nume_elem = 1, nb_mesh_elem
+            if (p_model_maille(nume_elem) .ne. 0) then
+!
+! ------------- Create new GREL
+!
+                if (p_model_maille(nume_elem) .ne. nume_type_model .and. &
+                    nume_type_model .ne. 0) then
+                    nume_grel   = nume_grel+1
+                    long_grel   = long_grel+1
+                    idx_in_grel = idx_in_grel+1
+                    p_model_liel(idx_in_grel) = nume_type_model
+                    call jecroc(jexnum(model_liel, nume_grel))
+                    call jeecra(jexnum(model_liel, nume_grel), 'LONMAX', long_grel)
+                    long_grel   = 0
+                endif
+!
+! -------------- Add element in GREL
+!
+                long_grel   = long_grel+1
+                idx_in_grel = idx_in_grel+1
+                p_model_liel(idx_in_grel) = nume_elem
+                nume_type_model           = p_model_maille(nume_elem)
             endif
-        endif
-    end do
 !
+! --------- Last element
 !
-    if (lmail) then
-        ii=nbmaaf+nbmpaf
-        write (ifm,9000)nbmail,noma,ii,nbmaaf
-    endif
-!
-    if (nbmaaf .eq. 0) then
-        call utmess('F', 'MODELISA5_52', sk=noma)
-    endif
-!
-    nutype=0
-!
-    do i = 1, nbnoeu
-        if (zi(jdno+i-1) .ne. 0) then
-            nbnoaf=nbnoaf+1
-            if (zi(jdno+i-1) .ne. nutype) then
-                nutype=zi(jdno+i-1)
-                nbgrel=nbgrel+1
-            endif
-        endif
-    end do
-!
-!
-    if (lnoeu) then
-        ii=nbnoaf+nbnpaf
-        write (ifm,9010)nbnoeu,noma,ii,nbnoaf
-    endif
-!
-    lonlie=nbgrel+nbmaaf+nbnoaf
-    lonnem=nbnoaf*2
-!
-!
-! ---   CREATION DES OBJETS DU CONCEPT MODELE
-!
-! -     OBJET LIEL
-    call jecrec(cptlie, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
-                nbgrel)
-    call jeecra(cptlie, 'LONT', lonlie)
-    call jeveuo(cptlie, 'E', jdli)
-!
-! -     OBJET NEMA
-    if (nbnoaf .ne. 0) then
-        call jecrec(cptnem, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
-                    nbnoaf)
-        call jeecra(cptnem, 'LONT', lonnem)
-        call jeveuo(cptnem, 'E', jdnw)
-    endif
-!
-! ---   STOCKAGE DES GROUPES ELEMENTS DANS LIEL
-    nutype=0
-    nugrel=0
-    nmgrel=0
-    numvec=0
-!
-    do numail = 1, nbmail
-        if (zi(jdma+numail-1) .ne. 0) then
-            if (zi(jdma+numail-1) .ne. nutype .and. nutype .ne. 0) then
-                nugrel=nugrel+1
-                nmgrel=nmgrel+1
-                numvec=numvec+1
-                zi(jdli+numvec-1)=nutype
-                call jecroc(jexnum(cptlie, nugrel))
-                call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
-                nmgrel=0
-            endif
-            nmgrel=nmgrel+1
-            numvec=numvec+1
-            zi(jdli+numvec-1)=numail
-            nutype=zi(jdma+numail-1)
-        endif
-        if (numail .eq. nbmail .and. nmgrel .ne. 0) then
-            nugrel=nugrel+1
-            nmgrel=nmgrel+1
-            numvec=numvec+1
-            zi(jdli+numvec-1)=nutype
-            call jecroc(jexnum(cptlie, nugrel))
-            call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
-        endif
-    end do
-!
-    nutype=0
-    numsup=0
-    nmgrel=0
-!
-    do numnoe = 1, nbnoeu
-        if (zi(jdno+numnoe-1) .ne. 0) then
-            if (zi(jdno+numnoe-1) .ne. nutype .and. nutype .ne. 0) then
-                nugrel=nugrel+1
-                nmgrel=nmgrel+1
-                numvec=numvec+1
-                zi(jdli+numvec-1)=nutype
-                call jecroc(jexnum(cptlie, nugrel))
-                call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
-                nmgrel=0
-            endif
-            nmgrel=nmgrel+1
-            numvec=numvec+1
-            numsup=numsup+1
-            zi(jdli+numvec-1)=-numsup
-            nutype=zi(jdno+numnoe-1)
-        endif
-        if (numnoe .eq. nbnoeu .and. nmgrel .ne. 0) then
-            nugrel=nugrel+1
-            nmgrel=nmgrel+1
-            numvec=numvec+1
-            zi(jdli+numvec-1)=nutype
-            call jecroc(jexnum(cptlie, nugrel))
-            call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
-        endif
-    end do
-!
-! ---   STOCKAGE DES NOUVELLES MAILLES DANS NEMA
-!
-    if (nbnoaf .ne. 0) then
-        numvec=0
-        numsup=0
-        do numnoe = 1, nbnoeu
-            if (zi(jdno+numnoe-1) .ne. 0) then
-                zi(jdnw+numvec)=numnoe
-                zi(jdnw+numvec+1)=ntypoi
-                numvec=numvec+2
-                numsup=numsup+1
-                call jecroc(jexnum(cptnem, numsup))
-                call jeecra(jexnum(cptnem, numsup), 'LONMAX', 2)
+            if (nume_elem .eq. nb_mesh_elem .and. long_grel .ne. 0) then
+                nume_grel   = nume_grel+1
+                long_grel   = long_grel+1
+                idx_in_grel = idx_in_grel+1
+                p_model_liel(idx_in_grel) = nume_type_model
+                call jecroc(jexnum(model_liel, nume_grel))
+                call jeecra(jexnum(model_liel, nume_grel), 'LONMAX', long_grel)
             endif
         end do
+!
+! ----- Store GREL in LIEL - Nodes
+!
+        nume_type_model=0
+        numsup    = 0
+        long_grel = 0
+        do nume_node = 1, nb_mesh_node
+            if (p_model_noeud(nume_node) .ne. 0) then
+!
+! ------------- Create new GREL
+!
+                if (p_model_noeud(nume_node) .ne. nume_type_model .and. &
+                    nume_type_model .ne. 0) then
+                    nume_grel   = nume_grel+1
+                    long_grel   = long_grel+1
+                    idx_in_grel = idx_in_grel+1
+                    p_model_liel(idx_in_grel) = nume_type_model
+                    call jecroc(jexnum(model_liel, nume_grel))
+                    call jeecra(jexnum(model_liel, nume_grel), 'LONMAX', long_grel)
+                    long_grel   = 0
+                endif
+!
+! ------------- Add node in GREL
+!
+                long_grel   = long_grel+1
+                idx_in_grel = idx_in_grel+1
+                numsup      = numsup+1
+                p_model_liel(idx_in_grel) = -numsup
+                nume_type_model           = p_model_noeud(nume_node)
+            endif
+!
+! --------- Last node
+!
+            if (nume_node .eq. nb_mesh_node .and. long_grel .ne. 0) then
+                nume_grel   = nume_grel+1
+                long_grel   = long_grel+1
+                idx_in_grel = idx_in_grel+1
+                p_model_liel(idx_in_grel) = nume_type_model
+                call jecroc(jexnum(model_liel, nume_grel))
+                call jeecra(jexnum(model_liel, nume_grel), 'LONMAX', long_grel)
+            endif
+        end do
+!
+! ----- Create NEMA
+!
+        lont_nema = nb_node_affe*2
+        if (nb_node_affe .ne. 0) then
+            call jecrec(model_nema, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
+                        nb_node_affe)
+            call jeecra(model_nema, 'LONT', lont_nema)
+            call jeveuo(model_nema, 'E', vi = p_model_nema)
+        endif
+!
+! ----- Store nodes in NEMA
+!
+        if (nb_node_affe .ne. 0) then
+            idx_in_grel = 0
+            numsup      = 0
+            do nume_node = 1, nb_mesh_node
+                if (p_model_noeud(nume_node) .ne. 0) then
+                    p_model_nema(idx_in_grel+1) = nume_node
+                    p_model_nema(idx_in_grel+2) = nume_type_poi1
+                    idx_in_grel = idx_in_grel+2
+                    numsup      = numsup+1
+                    call jecroc(jexnum(model_nema, numsup))
+                    call jeecra(jexnum(model_nema, numsup), 'LONMAX', 2)
+                endif
+            end do
+        endif
+!
+        AS_DEALLOCATE(vi = p_wk_mail1)
+        AS_DEALLOCATE(vi = p_wk_mail2)
+        AS_DEALLOCATE(vi = p_wk_mail3)
+        AS_DEALLOCATE(vi = p_wk_node )
     endif
 !
-190 continue
+! - AFFE_SOUS_STRUCT
 !
-! --- PRISE EN COMPTE DES SOUS-STRUCTURES (MOT CLEF AFFE_SOUS_STRUC):
-    call ssafmo(nomu)
+    if (nb_affe_ss.gt.0) then
+        call ssafmo(model)
+    endif
 !
+! - Automatic GREL size adaptation
 !
-!       ---   ADAPTATION DE LA TAILLE DES GRELS
-!       ----------------------------------------
     call adalig(ligrel)
 !
-!     --- CREATION DE LA CORRESPONDANCE MAILLE --> (IGREL,IM)
-!     -------------------------------------------------------
+! - Set element/(IGREL,IM) object
+!
     call cormgi('G', ligrel)
 !
-!     ---   INITIALISATION DES ELEMENTS POUR CE LIGREL
-!     -------------------------------------------------
-    call initel(ligrel)
+! - Init elements for this LIGREL
 !
-!     ---   IMPRESSION DES ELEMENTS FINIS AFFECTES :
-!     -------------------------------------------------
-    call w18imp(ligrel, noma, nomu)
-!
-!
-!     --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE
-!     ----------------------------------------------------------
-    call dismoi('DIM_GEOM', nomu, 'MODELE', repi=idim)
-    if (idim .gt. 3) then
-        idim2=0
-        call utmess('A', 'MODELISA4_4')
-    else
-        idim2=3
-        idim3=3
-        call dismoi('Z_CST', noma, 'MAILLAGE', repk=cdim)
-        if (cdim .eq. 'OUI') then
-            idim2=2
-            call dismoi('Z_ZERO', noma, 'MAILLAGE', repk=cdim)
-            if (cdim .eq. 'OUI') idim3=2
-        endif
-!
-        if ((idim.eq.3) .and. (idim2.eq.2)) then
-!         -- LES ELEMENTS DE COQUE PEUVENT EXISTER DAS LE PLAN Z=CSTE :
-        else if ((idim.eq.2) .and. (idim2.eq.3)) then
-!         -- DANGER : MODELE 2D SUR UN MAILLAGE COOR_3D
-            call utmess('A', 'MODELISA5_53')
-            elseif ((idim.eq.2) .and. (idim2.eq.2).and. (idim3.eq.3))&
-        then
-!         -- BIZARRE : MODELE 2D SUR UN MAILLAGE Z=CSTE /= 0.
-            call utmess('A', 'MODELISA5_58')
-        endif
+    call initel(ligrel, l_calc_rigi)
+    if ((.not.l_calc_rigi).and.(nb_affe.ne.0)) then
+        call utmess('A', 'MODELE1_64', sk=model)
     endif
 !
+! - Check model
 !
-!     --- VERIFICATION DU FAIT QUE POUR UN MAILLAGE 2D ON NE PEUT
-!     ---- AVOIR A LA FOIS DES ELEMENTS DISCRETS 2D ET 3D :
-!     ---------------------------------------------------
-    call modexi(nomu, 'DIS_', i3d)
-    call modexi(nomu, '2D_DIS_', i2d)
-    if (idim2 .eq. 2 .and. i3d .eq. 1 .and. i2d .eq. 1) then
-        call utmess('F', 'MODELISA5_54')
+    call model_check(model, l_veri_elem)
+!
+! - Print model information
+!
+    if (nb_affe .gt. 0) then
+        call model_print(model)
     endif
 !
+! - SD_PARTITION
 !
-!     ---   VERIFICATION DES X > 0 POUR L'AXIS
-!     -------------------------------------------------
-    if (laxis) then
-        call taxis(noma, zi(jdma), nbmail)
+    call ajlipa(model, 'G')
+!
+! - Create grandeurs caracteristiques
+!
+    if (l_grandeur_cara) then
+        keywordfact = 'GRANDEUR_CARA'
+        call cetucr(keywordfact, model)
     endif
 !
+! - Finite volumes ?
 !
-!     -- AJOUT EVENTUEL DE LA SD_PARTITION  :
-!     ---------------------------------------------------
-    call ajlipa(nomu, 'G')
+    call dismoi('EXI_VF', ligrel, 'LIGREL', repk=repk)
+    l_volu_fini = repk.eq.'OUI'
 !
+! - Need neighbours ?
 !
-!     -- POUR LES VOLUMES FINIS, CREATION DU VOISINAGE :
-!     ---------------------------------------------------
-    call dismoi('EXI_VF', ligrel, 'LIGREL', repk=exivf)
+    call dismoi('BESOIN_VOISIN', ligrel, 'LIGREL', repk=repk)
+    l_need_neigh = repk.eq.'OUI'
 !
-!     -- SCHEMAS NON VF AYANT BESOIN D'UN VOISINAGE :
-!     ---------------------------------------------------
-    call dismoi('BESOIN_VOISIN', ligrel, 'LIGREL', repk=bevois)
+! - Create SD_VOISINAGE if necessary
 !
-!
-!     -- CREATION DE LA SD_VOISINAGE SI NECESSAIRE :
-!     ---------------------------------------------------
-    if ((bevois.eq.'OUI') .or. (exivf.eq.'OUI')) call crevge(ligrel, 'G')
-!
-!
-!     -- ON VERIFIE QUE LA GEOMETRIE DES MAILLES
-!        N'EST PAS TROP CHAHUTEE :
-!     ---------------------------------------------------
-    call getvtx(' ', 'VERI_JACOBIEN', scal=verif)
-    if (verif .eq. 'OUI') call calcul('C', 'VERI_JACOBIEN', ligrel, 1, noma//'.COORDO',&
-                                         'PGEOMER', 1, '&&OP0018.CODRET', 'PCODRET', 'V',&
-                                         'OUI')
-!
-!
+    if (l_volu_fini .or. l_need_neigh) then
+        call crevge(ligrel, 'G')
+    endif
 !
     call jedema()
-!
-    9000 format (/,' SUR LES ',i12,' MAILLES DU MAILLAGE ',a8,/,'    ON A',&
-     &       ' DEMANDE L''AFFECTATION DE ',i12,/,'    ON A PU EN AFFEC',&
-     &       'TER           ',i12)
-    9010 format (/,' SUR LES ',i12,' NOEUDS  DU MAILLAGE ',a8,/,'    ON A',&
-     &       ' DEMANDE L''AFFECTATION DE ',i12,/,'    ON A PU EN AFFEC',&
-     &       'TER           ',i12)
 end subroutine

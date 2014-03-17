@@ -212,35 +212,7 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orie
  le code:  %(i1)d   %(k1)s
 """),
 
-70 : _(u"""
- Possible erreur utilisateur dans la commande AFFE_MODELE :
-   Un problème a été détecté lors de l'affectation des éléments finis.
-   Pour l'occurrence AFFE de numéro %(i1)d, certaines mailles de même dimension topologique
-   que la (ou les) modélisation(s) (ici dimension = %(i3)d) n'ont pas pu être affectées.
 
-   Cela veut dire que la (ou les) modélisation(s) que l'on cherche à affecter
-   ne supporte(nt) pas tous les types de mailles présents dans le maillage.
-
-   Le nombre de mailles que l'on n'a pas pu affecter (pour cette occurrence de AFFE) est :  %(i2)d
-
- Risques & conseils :
-   * Comme certaines mailles n'ont peut-être pas été affectées, il y a un risque
-     de résultats faux (présence de "trous" dans la modélisation).
-     Pour connaître les mailles non affectées (à la fin de l'opérateur), on peut utiliser INFO=2.
-   * Ce problème est fréquent quand on souhaite une modélisation "sous intégrée"
-     (par exemple AXIS_SI). Pour l'éviter, il faut donner une modélisation de
-     "substitution" pour les mailles qui n'existent pas dans la modélisation désirée (ici 'AXIS_SI').
-     On fera par exemple :
-        MO=AFFE_MODELE( MAILLAGE=MA,  INFO=2,
-                        AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS','AXIS_SI')))
-
-     Ce qui aura le même effet (mais sans provoquer l'alarme) que :
-        MO=AFFE_MODELE( MAILLAGE=MA,  INFO=2, AFFE=(
-                        _F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS')),
-                        _F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS_SI')),
-                        ))
-
-"""),
 
 71 : _(u"""
  matériau non valide matériau :  %(k1)s

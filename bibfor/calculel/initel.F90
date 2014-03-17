@@ -1,26 +1,8 @@
-subroutine initel(ligrel)
+subroutine initel(ligrel, l_calc_rigi)
+!
     implicit none
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!     ARGUMENTS:
-!     ----------
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/creprn.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/inigrl.h"
@@ -39,7 +21,26 @@ subroutine initel(ligrel)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=19) :: ligrel
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    character(len=19), intent(in) :: ligrel
+    logical, optional, intent(out) :: l_calc_rigi
+!
 ! ----------------------------------------------------------------------
 !     BUT:
 !     INITIALISER LES TYPE_ELEMENTS PRESENTS DANS LE LIGREL (INI00K)
@@ -51,6 +52,7 @@ subroutine initel(ligrel)
 !     OUT:
 !       - INITIALISATION DES ELREFE PRESENTS DANS LE LIGREL
 !       - CALCUL DES OBJETS : '.PRNM' ET '.PRNS'
+! Out l_calc_rigi : at least one element can support rigidity
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,14 +65,15 @@ subroutine initel(ligrel)
     integer :: adobj(nmaxob)
     character(len=24) :: noobj(nmaxob)
     character(len=1) :: base
-    character(len=8) :: exiele, ma, prin, nomail, resuco
-    character(len=16) :: nomte, nomcmd, typcon
+    character(len=8) :: exiele, ma, prin, nomail
+    character(len=16) :: nomte
     integer, pointer :: vprin(:) => null()
 ! ----------------------------------------------------------------------
 !
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
+!
     call dismoi('EXI_ELEM', ligrel, 'LIGREL', repk=exiele)
     if (exiele(1:3) .eq. 'OUI') then
         call jelira(ligrel//'.LIEL', 'CLAS', cval=base)
@@ -98,8 +101,7 @@ subroutine initel(ligrel)
 !     -- ON VERIFIE QUE LES ELEMENTS DE "BORD" SONT COLLES AUX
 !        ELEMENTS "PRINCIPAUX" (CEUX QUI CALCULENT LA RIGIDITE):
 !     ------------------------------------------------------------
-    call getres(resuco, typcon, nomcmd)
-    if ((exiele(1:3).ne.'OUI') .or. (nomcmd.ne.'AFFE_MODELE')) goto 90
+    if ((exiele(1:3).ne.'OUI') .or. (.not.present(l_calc_rigi))) goto 90
 !
     call jeveuo(ligrel//'.LGRF', 'L', jnoma)
     call jeveuo(ligrel//'.LIEL', 'L', jliel)
@@ -149,7 +151,7 @@ subroutine initel(ligrel)
                 nuno = zi(iconx1-1+zi(iconx2+numa-1)+ino-1)
                 if (vprin(nuno) .ne. 1) then
                     call jenuno(jexnum(ma//'.NOMMAI', numa), nomail)
-                    call utmess('A', 'CALCULEL2_63', sk=nomail)
+                    call utmess('A', 'MODELE1_63', sk=nomail)
                     goto 71
                 endif
             end do
@@ -161,11 +163,11 @@ subroutine initel(ligrel)
 !
 !     -- SI C'EST LE LIGREL DU MODELE, ON VERIFIE QU'IL EXISTE AU MOINS
 !        UN ELEMENT PRINCIPAL (QUI CALCULE DE LA RIGIDITE):
-    if (nomcmd .eq. 'AFFE_MODELE' .and. resuco(1:8) .eq. ligrel(1:8)) then
+    if (present(l_calc_rigi)) then
+        l_calc_rigi = .true.
         if (nbprin .eq. 0) then
-            call utmess('A', 'CALCULEL2_64', sk=resuco)
+            l_calc_rigi = .false.
         endif
-!
     endif
 !
 !

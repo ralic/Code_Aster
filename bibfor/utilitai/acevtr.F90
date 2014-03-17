@@ -20,6 +20,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -65,9 +66,8 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
     call jeexin(nolig//'.LIEL', iret)
     if (iret .ne. 0) then
         call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
-        if (nbgrel .le. 0) then
-            call utmess('F', 'UTILITAI_1')
-        endif
+! le nombre de grels du LIGREL du modele est nul.
+        ASSERT(nbgrel.gt.0)
         nomodl=' '
         ierr=0
         do igrel = 1, nbgrel
@@ -100,7 +100,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
 !     IF (IERR.EQ.1)  WRITE(*,*) 'KMAI',KMAI,'IGREL',IGREL,
 !    .       'NOMODL',NOMODL,'CHAINE',CHAINE
     if (ierr .eq. 1) then
-        call utmess('F', 'UTILITAI_2')
+        call utmess('F', 'DISCRETS_9')
     endif
     call jedema()
 end subroutine

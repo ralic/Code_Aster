@@ -279,12 +279,10 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
         call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
         icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
-        if (icmp .eq. 0) then
-            call utmess('F', 'ASSEMBLA_9')
-        endif
-        if (icmp .gt. 30) then
-            call utmess('F', 'ASSEMBLA_10')
-        endif
+! on ne trouve pas la composante "LAGR" dans la grandeur
+        ASSERT(icmp.ne.0)
+! il est imprévu d avoir la composante "LAGR" au delà de 30
+        ASSERT(icmp.le.30)
 !       -- ICODLA EST L'ENTIER CODE CORRESPONDANT A LA CMP "LAGR"
         jec=(icmp-1)/30+1
         icodla(jec)=lshift(1,icmp)

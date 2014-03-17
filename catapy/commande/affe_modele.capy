@@ -58,7 +58,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                  into=("MECANIQUE","THERMIQUE","ACOUSTIQUE") ),
                 b_mecanique     =BLOC( condition = "PHENOMENE=='MECANIQUE'",
                                         fr="modélisations mécaniques",
-                    MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
+                    MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
                                   "2D_DIS_T",        # RESP. : FLEJOU J.L.FLEJOU
                                   "2D_DIS_TR",       # RESP. : FLEJOU J.L.FLEJOU
                                   "2D_FLUI_ABSO",    # RESP. : DEVESA G.DEVESA
@@ -240,7 +240,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
 
                 b_thermique     =BLOC( condition = "PHENOMENE=='THERMIQUE'",
                                         fr="modélisations thermiques",
-                    MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
+                    MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
                                   "3D",              # RESP. : DURAND C.DURAND
                                   "3D_DIAG",         # RESP. : DURAND C.DURAND
                                   "AXIS",            # RESP. : DURAND C.DURAND
@@ -255,7 +255,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
 
                 b_acoustique    =BLOC( condition = "PHENOMENE=='ACOUSTIQUE'",
                                         fr="modélisations acoustiques",
-                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=(
+                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
                                   "3D",              # RESP. : None
                                   "PLAN"             # RESP. : None
                                                                        ), ),),

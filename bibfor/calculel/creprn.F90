@@ -62,7 +62,6 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 #include "asterfort/nbgrel.h"
 #include "asterfort/nbno.h"
 #include "asterfort/typele.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -283,12 +282,10 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iancmp)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', lgncmp)
         icmp = indik8(zk8(iancmp),'LAGR',1,lgncmp)
-        if (icmp .eq. 0) then
-            call utmess('F', 'ASSEMBLA_9')
-        endif
-        if (icmp .gt. 30) then
-            call utmess('F', 'ASSEMBLA_10')
-        endif
+! on ne trouve pas la composante "LAGR" dans la grandeur
+        ASSERT(icmp.ne.0)
+! il est imprévu d avoir la composante "LAGR" au delà de 30
+        ASSERT(icmp.le.30)
 !
         icodla = lshift(1,icmp)
 !
@@ -320,7 +317,9 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
                                         zi(iaprno-1+ ( nec+2)* (inold-1)+2+ iec))
                         end do
                     else
-                        call utmess('F', 'CALCULEL2_24')
+! on traite un super-élément  et le noeud courant n'est ni un noeud Lagrange,
+! ni un noeud physique du maillage.
+                        ASSERT(.false.)
                     endif
                 end do
             endif

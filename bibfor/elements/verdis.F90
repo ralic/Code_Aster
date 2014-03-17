@@ -65,7 +65,7 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
 !              = 123  : 1D+2D+3D  MELANGE
 !        IBID>3 ==> MELANGE DE MODELISATIONS ==> MESSAGE AFFE_MODELE
         if (ibid .gt. 3) then
-            call utmess('A', 'MODELISA4_4')
+            call utmess('A', 'MODELE1_14')
         endif
 !
         ndim = ibid

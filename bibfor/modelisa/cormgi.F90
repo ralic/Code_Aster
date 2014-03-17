@@ -70,36 +70,40 @@ subroutine cormgi(basez, ligrez)
     ASSERT(nmaila.ne.' ')
 !
     call jeexin(nmaila//'.CONNEX', iret)
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) then
+        goto 999
+    endif
 !
     call jelira(nmaila//'.CONNEX', 'NMAXOC', nbmail)
     call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
-    if (nbmail*nbgrel .eq. 0) goto 9999
-!
+    if (nbmail*nbgrel .eq. 0) then
+        goto 999
+    endif
 !
     call wkvect(ligtmp//'.REPE', 'V V I', 2*nbmail, jrepe)
 !
     exima=.false.
-    do 100,i = 1,nbgrel,1
-    call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nbmgre)
-    call jeveuo(jexnum(ligrel//'.LIEL', i), 'L', jgrel)
-!
-    do 110,j = 1,nbmgre - 1,1
-    if (zi(jgrel+j-1) .gt. 0) then
-        exima=.true.
-        pt = 2* (zi(jgrel+j-1)-1) + 1
-        zi(jrepe+pt-1) = i
-        zi(jrepe+pt) = j
-    endif
-110  continue
-    100 end do
+    do i = 1,nbgrel,1
+        call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nbmgre)
+        call jeveuo(jexnum(ligrel//'.LIEL', i), 'L', jgrel)
+        do j = 1,nbmgre - 1,1
+            if (zi(jgrel+j-1) .gt. 0) then
+                exima=.true.
+                pt = 2* (zi(jgrel+j-1)-1) + 1
+                zi(jrepe+pt-1) = i
+                zi(jrepe+pt) = j
+            endif
+        end do
+    end do
 !
 !     -- .REPE N'EXISTE VRAIMENT QUE SI DES MAILLES DU MAILLAGE
 !         SONT AFFECTEES
-    if (exima) call jedup1(ligtmp//'.REPE', base, ligrel//'.REPE')
+    if (exima) then
+        call jedup1(ligtmp//'.REPE', base, ligrel//'.REPE')
+    endif
 !
 !
-9999  continue
+999 continue
     call jedetr(ligtmp//'.REPE')
 !
     call jedema()

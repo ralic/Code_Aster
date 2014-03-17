@@ -71,29 +71,26 @@ subroutine taxis(noma, indic, nbma)
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', jvale)
     ier=0
-    do 2 ima = 1, nbma
+    do ima = 1, nbma
         if (indic(ima) .ne. 0) then
             call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iacnex)
             call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma)
-            do 3 ino = 1, nbnoma
+            do ino = 1, nbnoma
                 numno=zi(iacnex-1+ino)-1
                 if (zr(jvale+3*numno) .lt. toler) then
                     call jenuno(jexnum(noma//'.NOMNOE', numno+1), k8b)
                     call jenuno(jexnum(noma//'.NOMMAI', ima ), k8a)
-                    if (ier .eq. 0) then
-                        call utmess('F+', 'SOUSTRUC_88')
-                    endif
                     valk (1) = k8b
                     valk (2) = k8a
                     valr (1) = zr(jvale+3*numno)
-                    call utmess('F+', 'SOUSTRUC_89', nk=2, valk=valk, sr=valr(1))
+                    call utmess('F+', 'MAILLAGE1_2', nk=2, valk=valk, sr=valr(1))
                     ier = ier + 1
                 endif
- 3          continue
+            end do
         endif
- 2  end do
+    end do
     if (ier .ne. 0) then
-        call utmess('F', 'SOUSTRUC_90')
+        call utmess('F', 'MAILLAGE1_3')
     endif
 !
     call jedema()

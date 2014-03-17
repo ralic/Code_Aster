@@ -402,24 +402,13 @@ Risques & conseils :
    On passe outre car VERI_PAS = NON
   """),
 
-91 : _(u"""
-   La sous-structuration n'est compatible qu'avec un mode de parallélisme centralisé.
 
-   Conseil :
-     - Renseignez le mot-clé PARTITION/PARALLELISME de AFFE_MODELE (ou MODI_MODELE) avec 'CENTRALISE'
-  """),
 
 92 : _(u"""
    Au noeud de choc %(k1)s
   """),
 
-93 : _(u"""
- Il y a moins de mailles (%(i1)d) dans le modèle que de processeurs participant au calcul (%(i2)d).
 
- Conseils :
-   - vérifiez qu'un calcul parallèle est approprié pour votre modèle
-   - diminuez le nombre de processeurs du calcul
-"""),
 
 94 : _(u"""
   il manque les paramètres de Van Genuchten
@@ -433,29 +422,10 @@ Risques & conseils :
   Comportement ZEDGAR : la dérivée est nulle.
 """),
 
-97 : _(u"""
-Erreur d'utilisation pour le parallélisme :
- Le mode de répartition des éléments entre les différents processeurs (PARTITION / PARALLELISME='GROUP_ELEM')
- ne peut pas être utilisé ici car il y a moins de groupes d'éléments (%(i1)d) que de processeurs (%(i2)d).
- En d'autres termes, il n'y a pas assez d'éléments à répartir (le modèle est trop petit).
 
- Conseils :
-   - diminuez le nombre de processeurs du calcul
-   - changez le mode de distribution des mailles avec le mot-clé PARTITION / PARALLELISME de l'opérateur
-     AFFE_MODELE (ou MODI_MODELE)
-"""),
 
-98: _(u"""
-  La maille de numéro:  %(i1)d appartient à plusieurs sous-domaines !
-"""),
 
-99 : _(u"""
- Le paramètre CHARGE_PROC0_SD du mot-clé facteur PARTITION est mal renseigné.
- Il faut qu'il reste au moins un sous domaine par processeur une fois affectés tous les sous-domaines du processeur 0.
 
- Conseils :
-   - laissez le mot-clé CHARGE_PROC0_SD à sa valeur par défaut
-   - diminuez le nombre de processeurs du calcul ou bien augmentez le nombre de sous-domaines de la partition du mot-clé PARTITION
-"""),
+
 
 }

@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine initel(ligrel)
-        character(len=19) :: ligrel
+    subroutine initel(ligrel, l_calc_rigi)
+        character(len=19), intent(in) :: ligrel
+        logical, optional, intent(out) :: l_calc_rigi
     end subroutine initel
 end interface

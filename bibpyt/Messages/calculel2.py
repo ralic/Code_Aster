@@ -158,10 +158,6 @@ Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
  la grandeur : %(k1)s  n est pas de type réel.
 """),
 
-24: _(u"""
- on traite un super-élément  et le noeud courant n'est ni un noeud Lagrange,
- ni un noeud physique du maillage.
-"""),
 
 25: _(u"""
  le LIGREL :  %(k1)s  ne contient pas d éléments finis
@@ -349,31 +345,7 @@ Conseil :
   Il n'y a rien à calculer car le champ  %(k1)s n'existe pas pour les numéros d'ordre indiqués.
 """),
 
-63: _(u"""
-  -> La maille %(k1)s porte un élément fini de bord, mais elle ne borde
-     aucun élément ayant une "rigidité".
 
-  -> Risque & Conseil :
-     Cela peut entraîner des problèmes de "pivot nul" lors de la résolution.
-     Si la résolution des systèmes linéaires ne pose pas de problèmes, vous
-     pouvez ignorer ce message.
-     Sinon, vérifier la définition du modèle (AFFE_MODELE) en évitant l'utilisation
-     de l'opérande TOUT='OUI'.
-"""),
-
-64: _(u"""
-  -> Le modèle %(k1)s n'a pas d'éléments sachant calculer la rigidité.
-
-  -> Risque & Conseil :
-     Ce modèle ne pourra donc pas (en général) être utilisé pour faire des calculs.
-     Vérifier la définition du modèle (AFFE_MODELE) et assurez-vous que les
-     types de mailles du maillage (SEG2, TRIA3, QUAD4, ...) sont compatibles avec votre
-     modélisation.
-     Exemples d'erreur :
-       * affecter une modélisation "3D" sur un maillage formé de facettes.
-       * affecter une modélisation qui ne sait pas traiter tous les types de mailles du maillage
-         (par exemple 'PLAN_DIAG' en thermique, 'AXIS_SI' en mécanique)
-"""),
 
 65: _(u"""
 Erreur d'utilisation :

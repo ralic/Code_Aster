@@ -87,6 +87,10 @@ Pour information :
    Maille   : <%(k5)s>
 """),
 
+9 : _(u"""
+Il ne faut pas demander TR derrière CARA si le type d'élément discret ne prend pas en compte la rotation.
+"""),
+
 10 : _(u"""
 Pour l'élément DISCRET de modèle <%(k1)s> la matrice de décharge est non développée.
 

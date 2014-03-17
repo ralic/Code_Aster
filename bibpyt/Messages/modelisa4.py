@@ -42,13 +42,7 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
   tous à d'autres mailles quadratiques.
 """),
 
-4 : _(u"""
-  -> Le modèle contient un mélange d'éléments finis 2D (plan Oxy) et 3D
 
-  -> Risque & Conseil :
-     Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
-     Parfois, cela empêche de faire le "bon choix".
-"""),
 
 6 : _(u"""
   -> Phase de vérification du maillage : présence de noeuds orphelins.

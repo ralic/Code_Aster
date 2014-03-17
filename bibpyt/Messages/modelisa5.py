@@ -124,28 +124,8 @@ cata_msg = {
  la grandeur associée au mot clé :  %(k1)s  doit être:  %(k2)s  mais elle est:  %(k3)s
 """),
 
-51 : _(u"""
- pour affecter une liste de modélisations, il faut qu'elles soient de même dimension topologique.
-"""),
 
-52 : _(u"""
- aucune maille n a êtes affectée par des éléments finis pour le maillage  %(k1)s
-"""),
 
-53 : _(u"""
-  -> Le maillage est 3D (tous les noeuds ne sont pas dans le même plan Z = constante),
-     mais les éléments du modèle sont de dimension 2.
-
-  -> Risque & Conseil :
-     Si les facettes supportant les éléments ne sont pas dans un plan Z = constante,
-     les résultats seront faux.
-     Assurez-vous de la cohérence entre les mailles à affecter et la
-     modélisation souhaitée dans la commande AFFE_MODELE.
-"""),
-
-54 : _(u"""
- il est interdit d'avoir ,pour un modèle donne, a la fois des éléments discrets 2d et 3d .
-"""),
 
 55 : _(u"""
  VERIF : 2 arguments max
@@ -157,15 +137,6 @@ cata_msg = {
 
 57 : _(u"""
  erreur(s) rencontrée(s) lors de la vérification des affectations.
-"""),
-
-58 : _(u"""
- -> Bizarre :
-     Les éléments du modèle sont de dimension 2.
-     Mais les noeuds du maillage sont un même plan Z = a avec a != 0.,
-
- -> Risque & Conseil :
-     Il est d'usage d'utiliser un maillage Z=0. pour les modélisations planes ou Axis.
 """),
 
 59 : _(u"""

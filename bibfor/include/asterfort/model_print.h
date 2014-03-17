@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ssafmo(model)
+    subroutine model_print(model)
         character(len=8), intent(in) :: model
-    end subroutine ssafmo
+    end subroutine model_print
 end interface
