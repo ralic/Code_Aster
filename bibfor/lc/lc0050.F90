@@ -70,17 +70,19 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecael.h"
+#include "asterfort/matumat.h"
+#include "asterfort/varcumat.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, iret, nprops
+    integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops
     integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
-    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, nwkout, iret2
+    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, nwkout, ndsde
     parameter     ( npropmax = 197)
     parameter     ( npred = 8)
-    integer ::      neps, nsig, ndsde, iadzi, iazk24
-    real(kind=8) :: crit(*), angmas(*)
+    integer ::      neps, nsig, iadzi, iazk24
+    real(kind=8) :: angmas(*), crit(*)
     real(kind=8) :: instam, instap, drot(3, 3), dstran(9), props(npropmax)
     real(kind=8) :: epsm(6), deps(6), wkin(nwkin), wkout(nwkout)
     real(kind=8) :: sigm(6), stress(6), sse, spd, scd, time(2)
@@ -98,7 +100,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !     POUR TECAEL
     character(len=128) :: nomlib
     character(len=16) :: nomsub
-    integer :: ii, dimaki, nbcoef, icodrb(2)
+    integer :: ii, dimaki
 !     DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
     parameter (dimaki=9)
     data idbg/1/
@@ -136,7 +138,8 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
 
 !   LECTURE DES VARIABLES DE COMMANDE  ET DEFORMATIONS ASSOCIEES
-    call varcumat(fami, kpg, ksp, imate, ifm, niv, idbg,  temp, dtemp, predef, dpred, neps, epsth, depsth )
+    call varcumat(fami, kpg, ksp, imate, ifm, niv, idbg,  temp, dtemp, &
+   &              predef, dpred, neps, epsth, depsth )
 !
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+
 !

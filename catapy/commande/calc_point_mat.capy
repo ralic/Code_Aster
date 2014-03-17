@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,36 +102,30 @@ CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='
      VARI_INIT=FACT(statut='f',
             VALE = SIMP(statut='o',typ='R',max='**'),
                        ),
-     FORMAT_TABLE    =SIMP(statut='f',typ='TXM',max=1,into=("CMP_COLONNE","CMP_LIGNE",),defaut=("CMP_COLONNE"),),
+     FORMAT_TABLE   =SIMP(statut='f',typ='TXM',max=1,into=("CMP_COLONNE","CMP_LIGNE",),defaut=("CMP_COLONNE"),),
 
      NB_VARI_TABLE  =SIMP(statut='f',typ='I',max=1,),
 
-     OPER_TANGENT  =SIMP(statut='f',typ='TXM',max=1,into=("OUI","NON",),defaut="NON",),
+     OPER_TANGENT   =SIMP(statut='f',typ='TXM',max=1,into=("OUI","NON",),defaut="NON",),
 
-     ARCHIVAGE       =FACT(statut='f',
+     ARCHIVAGE      =FACT(statut='f',
        LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
        INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
        PAS_ARCH        =SIMP(statut='f',typ='I' ),
        PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
                            ),
 
-
-     # on permet certaines variables de commandes scalaires, définies par une fonction du temps
-     # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
-     LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA",
-                                                           "M_ACIER","M_ZIRC","NEUT1","NEUT2")),
+    # variables de commandes scalaires, définies par une fonction du temps
 
      AFFE_VARC    = FACT(statut='f',max='**',
-      NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","M_ACIER","M_ZIRC",
-                                                        "EPSA","NEUT1","NEUT2")),
-      VALE_FONC   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
-
-      # VALE_REF est nécessaire pour certaines VARC :
-      B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP', 'SECH')",
-           VALE_REF          =SIMP(statut='o',typ='R'),
-      ),
-      ),
-
-
-
-     );
+        NOM_VARC    = SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","NEUT1","NEUT2",
+                                                 "PFERRITE","PPERLITE","PBAINITE","PMARTENS",  
+                                                 "ALPHPUR","ALPHBETA", #"M_ZIRC",
+                                                 "EPSA",
+                                                  )),
+        VALE_FONC   = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+ 
+        B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP', 'SECH')",
+            VALE_REF         =SIMP(statut='o',typ='R'), ),
+                        ),
+);

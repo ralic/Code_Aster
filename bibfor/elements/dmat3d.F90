@@ -87,7 +87,7 @@ subroutine dmat3d(fami, mater, instan, poum, igau,&
 !      ------------
 ! ---- CAS ISOTROPE
 !      ------------
-    if (phenom .eq. 'ELAS') then
+    if  ((phenom .eq. 'ELAS').or.(phenom .eq. 'ELAS_META')) then
 !
         nomres(1) = 'E'
         nomres(2) = 'NU'

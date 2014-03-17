@@ -1,4 +1,21 @@
-    subroutine varcumat(fami, kpg, ksp, imate, ifm, niv, idbg,  temp, dtemp, predef, dpred, neps, epsth, depsth)
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+    subroutine varcumat(fami, kpg, ksp, imate, ifm, niv, idbg,  temp, dtemp, &
+                        predef, dpred, neps, epsth, depsth)
 !     but: variables de commande pour interface umat
 !       in   fami    famille de point de gauss (rigi,mass,...)
 !            kpg,ksp numero du (sous)point de gauss
@@ -12,13 +29,15 @@
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
+#include "asterfort/rccoma.h"
 #include "asterfort/verift.h"
 !
-    integer           :: imate, ndim, kpg, ksp, i, iret, iret2,  codret(3), npred,  ifm, niv, idbg, ndimloc, neps
+    integer           :: imate, kpg, ksp, i, iret, iret2,  codret(3), npred
+    integer           :: ifm, niv, idbg, ndimloc, neps
     parameter          ( npred = 8)
-    real(kind=8)      :: predef(npred), dpred(npred), vrcm, vrcp, valres(3), valrem(3), temp, dtemp
-    real(kind=8)      :: hydrm, hydrp, sechm, sechp, sref, epsbp, epsbm, bendom, kdessm, bendop, kdessp
-    real(kind=8)      :: depst1, epsth1, epsthm, epsthp, tm , tp, tref, epsth(neps), depsth(neps)
+    real(kind=8)      :: predef(npred),dpred(npred),vrcm,vrcp,valres(3),valrem(3)
+    real(kind=8)      :: hydrm,hydrp,sechm,sechp,sref,epsbp,epsbm,bendom,kdessm,bendop,kdessp
+    real(kind=8)      :: tm,tp,tref,epsth(neps),depsth(neps),temp,dtemp
     character(len=8)  :: nomres(3), lvarc(npred), materi
     character(len=*)  :: fami
     character(len=16) :: mcmate
@@ -59,8 +78,10 @@
         nomres(3) = 'C_ALPHA'
         ndimloc=3
     endif
-    call rcvalb(fami, kpg, ksp, '-', imate,materi, mcmate, 0, ' ', [0.d0], ndimloc, nomres, valrem, codret, 0)
-    call rcvalb(fami, kpg, ksp, '+', imate,materi, mcmate, 0, ' ', [0.d0], ndimloc, nomres, valres, codret, 0)
+    call rcvalb(fami, kpg, ksp, '-', imate,materi, mcmate, 0, ' ', [0.d0],&
+             &  ndimloc, nomres, valrem, codret, 0)
+    call rcvalb(fami, kpg, ksp, '+', imate,materi, mcmate, 0, ' ', [0.d0],&
+             &  ndimloc, nomres, valres, codret, 0)
 
     do i = 1, ndimloc
         depsth(i) = valres(i)*(tp-tref)-valrem(i)*(tm- tref)
@@ -76,9 +97,11 @@
         dpred(1)=vrcp-vrcm
 !        RETRAIT DESSICATION
         nomres(1)='K_DESSIC'
-        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', 0, ' ', [0.d0], 1, nomres, valres, codret, 1)
+        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', 0, ' ', [0.d0],&
+                  & 1, nomres, valres, codret, 1)
         kdessm = valres(1)
-        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0],  1, nomres, valres, codret, 1)
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0],&
+                  & 1, nomres, valres, codret, 1)
         kdessp = valres(1)
         call rcvarc(' ', 'SECH', 'REF', fami, kpg,   ksp, sref, iret2)
         if (iret2 .ne. 0) sref=0.d0
@@ -86,10 +109,6 @@
         sechp=predef(1)+dpred(1)
         epsbm=-kdessm*(sref-sechm)
         epsbp=-kdessp*(sref-sechp)
-!         epsthm=epsth1+epsbm
-!         epsthp=epsth1+depst1+epsbp
-!         depst1=epsthp-epsthm
-!         epsth1=epsthm
         do i = 1, ndimloc
            epsth(i)=epsth(i)+epsbm
            depsth(i)=depsth(i)+epsbp-epsbm
@@ -103,18 +122,16 @@
         dpred(2)=vrcp-vrcm
 !        RETRAIT ENDOGENE
         nomres(1)='B_ENDOGE'
-        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', 0, ' ', [0.d0], 1, nomres, valres, codret, 1)
+        call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ELAS', 0, ' ', [0.d0], &
+                   & 1, nomres, valres, codret, 1)
         bendom = valres(1)
-        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0], 1, nomres, valres, codret, 1)
+        call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ELAS', 0, ' ', [0.d0], &
+                   & 1, nomres, valres, codret, 1)
         bendop = valres(1)
         hydrm=predef(2)
         hydrp=predef(2)+dpred(2)
         epsbm=-bendom*hydrm
         epsbp=-bendop*hydrp
-!         epsthm=epsth1+epsbm
-!         epsthp=epsth1+depst1+epsbp
-!         depst1=epsthp-epsthm
-!         epsth1=epsthm
         do i = 1, ndimloc
            epsth(i)=epsth(i)+epsbm
            depsth(i)=depsth(i)+epsbp-epsbm

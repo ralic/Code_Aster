@@ -1,3 +1,19 @@
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
     subroutine matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
 !     but: coef materiau pour interface umat
 !       in   fami    famille de point de gauss (rigi,mass,...)
@@ -12,11 +28,11 @@
 #include "asterfort/infniv.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-    integer          :: imate, kpg, ksp, nprops, idbg, ifm, niv, nwkin, nwkout, iret2
+    integer          :: imate, kpg, ksp, nprops, idbg, ifm, niv
     integer          :: codrel(197), nbcoef, i
     character(len=*) :: fami
     character(len=8) :: nomres(197)
-    real(kind=8)     :: props(*), r8nnen, propl(197)
+    real(kind=8)     :: props(*), propl(197)
     data nomres/'C1','C2','C3','C4','C5','C6','C7','C8','C9','C10',&
      &'C11','C12','C13','C14','C15','C16','C17','C18','C19','C20','C21',&
      &'C22','C23','C24','C25','C26','C27','C28','C29','C30','C31','C32',&
@@ -42,14 +58,16 @@
     call r8inir(nprops, r8nnem(), props, 1)
 !
 !     LECTURE DU PREMIER PARAMETRE NB, FACULTATIF
-    call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'UMAT', 0, ' ', [0.d0], 1, 'NB_VALE', propl(1), codrel, 0)
+    call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'UMAT', 0, ' ', [0.d0], &
+    &           1, 'NB_VALE', propl(1), codrel, 0)
     if (codrel(1) .eq. 0) then
         nbcoef=nint(propl(1))
     else
         nbcoef=nprops
     endif
 !     lecture des autres parametres
-    call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'UMAT', 0, ' ', [0.d0], nbcoef, nomres, propl, codrel, 0)
+    call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'UMAT', 0, ' ', [0.d0], &
+    &           nbcoef, nomres, propl, codrel, 0)
 !     COMPTAGE DU NOMBRE DE PROPRIETES
 !     CODREL(I)=0 SI LE PARAMETRE EXISTE, 1 SINON
     if ((niv.ge.2) .and. (idbg.eq.1)) then

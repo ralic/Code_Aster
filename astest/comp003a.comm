@@ -241,7 +241,7 @@ for i in range(Ncal):
                                 ITER_INTE_MAXI=100,
                                 RESI_INTE_RELA=1.E-9),
                    ANGLE=angles[i],
-                   SUPPORT='ELEMENT',
+                  # SUPPORT='ELEMENT',
                    AFFE_VARC=(
                    _F(  NOM_VARC='TEMP',
                         VALE_FONC=TIMP,

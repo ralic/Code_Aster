@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -172,14 +173,51 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           if args['NB_VARI_TABLE'] != None:
              motscles['NB_VARI_TABLE']  = args['NB_VARI_TABLE']
 
-       if   ARCHIVAGE   :
+       if ARCHIVAGE   :
          motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()
 
          #     variables de commande
-       mcvarc=[]
        if args.has_key('AFFE_VARC'):
           if args['AFFE_VARC'] != None:
-             motscles['AFFE_VARC']  = args['AFFE_VARC'].List_F()
+             lvarc  = args['AFFE_VARC'].List_F()
+             nbvarc=len(lvarc)
+             lmotcle=[]
+             for ivarc in range(nbvarc) :
+                  print "lvarc=",lvarc[ivarc]
+                  dico={}
+                  if(str(lvarc[ivarc]['NOM_VARC'])=='M_ZIRC'):
+                      dico['NOM_VARC'] = 'ALPHPUR'
+                      dico['VALE_FONC'] =lvarc[ivarc]['V1']
+                      lmotcle.append(dico)
+                      dico={}
+                      dico['NOM_VARC'] = 'ALPHBETA'
+                      dico['VALE_FONC']=lvarc[ivarc]['V2']
+                      lmotcle.append(dico)
+                  elif(str(lvarc[ivarc]['NOM_VARC'])=='M_ACIER'):
+                      dico['NOM_VARC'] = 'PFERRITE'
+                      dico['VALE_FONC']=lvarc[ivarc]['V1']
+                      lmotcle.append(dico)
+                      dico={}
+                      dico['NOM_VARC'] = 'PPERLITE'
+                      dico['VALE_FONC']=lvarc[ivarc]['V2']
+                      lmotcle.append(dico)
+                      dico={}
+                      dico['NOM_VARC'] = 'PBAINITE'
+                      dico['VALE_FONC']=lvarc[ivarc]['V3']
+                      lmotcle.append(dico)
+                      dico={}
+                      dico['NOM_VARC'] = 'PMARTENS'
+                      dico['VALE_FONC']=lvarc[ivarc]['V4']
+                      lmotcle.append(dico)
+                  else:
+                      dico['NOM_VARC']= lvarc[ivarc]['NOM_VARC']
+                      dico['VALE_FONC']=lvarc[ivarc]['VALE_FONC']
+                      
+                      if str(lvarc[ivarc]['NOM_VARC'])=='TEMP' or str(lvarc[ivarc]['NOM_VARC'])=='SECH' :
+                             dico['VALE_REF']=lvarc[ivarc]['VALE_REF']
+                      lmotcle.append(dico)
+             print "lmotcles=",lmotcle
+             motscles['AFFE_VARC']  = lmotcle
 
        self.DeclareOut('REPONSE',self.sd)
 
