@@ -113,6 +113,9 @@ subroutine jeveuo(nomlu, cel, jadr, &
         call jjallc(iclaco, idatco, cel, ibacol)
         ixiadd = iszon ( jiszon + ibacol + idiadd )
         ixdeso = iszon ( jiszon + ibacol + iddeso )
+!
+! ----   on traite l'accès au pointeur de longueur         
+!
         if (noml8 .eq. '$$XATR  ') then
             ixlono = numatr
             iblono = iadm ( jiadm(iclaco) + 2*ixlono-1 )
@@ -121,7 +124,14 @@ subroutine jeveuo(nomlu, cel, jadr, &
             lonoi = lono ( jlono(iclaco) + ixlono ) * ltypi
             call jxlocs(zi, genri, ltypi, lonoi, iblono,&
                         .false., jctab)
-            goto 100
+            n1 = long ( jlong(iclaco) + ixlono )  
+            ktyp='I'     
+            if (present(jadr)) then 
+               goto 100
+            else  
+               jad=jctab              
+               goto 102
+            endif  
         else
             if (noml8 .ne. ' ') then
                 inat = 3
@@ -156,7 +166,7 @@ subroutine jeveuo(nomlu, cel, jadr, &
             jctab = jctab + long(jlong(iclaco)+ixdeso) * (idatoc-1)
         endif
     endif
-100   continue
+100 continue
 
 
 !     -- cas : on demande l'adresse :
@@ -172,7 +182,8 @@ subroutine jeveuo(nomlu, cel, jadr, &
 !     ------------------------------------------------
       call jgetlmx(noml32,n1)
       call jelira(noml32,'TYPELONG',cval=ktyp)
-
+      
+102   continue
 
       if (present(vl)) then
           ASSERT(ktyp.eq.'L')
