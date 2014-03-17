@@ -60,7 +60,7 @@ Le modèle contient un mélange d'éléments finis 2D (plan Oxy) et 3D
      Parfois, cela empêche de faire le "bon choix".
 """),
 
-20 : _(u""" Modélisation    Elément fini    Type maille     Nombre"""),
+20 : _(u""" Modélisation    Élément fini    Type maille     Nombre"""),
 
 21 : _(u""" %(k1)-16s%(k2)-16s%(k3)-16s%(i1)d"""),
 

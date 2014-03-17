@@ -95,7 +95,7 @@ previous_errors = [
     'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn',
     'deltat', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa',
     'er', 'error', 'etanca', 'etenca', 'exchml', 'exe', 'export',
-    'flag', 'fointa', 'fonree', 'grels', 'indn', 'ipos',
+    'flag', 'fointa', 'fonree', 'indn', 'ipos',
     'ligrel', 'lkcaln', 'lmat', 'longt', 'majpad', 'mem',
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp',
     'nomres', 'nomta', 'nomtyp', 'not', 'nt', 'number', 'nume',
