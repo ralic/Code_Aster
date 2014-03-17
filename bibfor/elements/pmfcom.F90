@@ -2,7 +2,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                   nf, instam, instap, icdmat, nbvalc,&
                   defam, defap, varim, varimp, contm,&
                   defm, ddefp, epsm, modf, sigf,&
-                  varip, isecan, codret)
+                  varip, codret)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,15 +20,16 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
 ! aslint: disable=W1504
     implicit none
+!
 #include "asterfort/comp1d.h"
 #include "asterfort/mazu1d.h"
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dco.h"
 #include "asterfort/nm1dis.h"
 #include "asterfort/nm1dpm.h"
-#include "asterfort/nm1tra.h"
 #include "asterfort/nm1vil.h"
 #include "asterfort/paeldt.h"
 #include "asterfort/r8inir.h"
@@ -36,7 +38,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 #include "asterfort/utmess.h"
 #include "asterfort/vmci1d.h"
 #include "blas/dcopy.h"
-    integer :: nf, icdmat, nbvalc, isecan, kpg, debsp
+    integer :: nf, icdmat, nbvalc, kpg, debsp
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
     real(kind=8) :: varimp(nbvalc*nf), varip(nbvalc*nf), varim(nbvalc*nf)
     real(kind=8) :: tempm, tempp, tref, sigx, epsx, depsx, instam, instap
@@ -72,10 +74,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 ! OUT MODF  : MODULE TANGENT DES FIBRES
 ! OUT SIGF  : CONTRAINTE A L'INSTANT ACTUEL DES FIBRES
 ! OUT VARIP : VARIABLES INTERNES A L'INSTANT ACTUEL
-! OUT ISECAN: EVALUATION DU MODULE SECANT
-!              0 :
-!              1 :
-!
 ! --- ------------------------------------------------------------------
     integer :: nbval, nbvari, codrep, ksp
     parameter     (nbval=12)
@@ -120,8 +118,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         em=ep
         depsth=0.d0
      endif
-!   évaluation du module sécant
-    isecan = 0
 !   angle du MOT_CLEF massif (AFFE_CARA_ELEM)
 !   initialise à 0.D0 (on ne s'en sert pas)
     call r8inir(3, 0.d0, angmas, 1)
@@ -221,7 +217,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                         materi, sigf(i), varip(ivari), modf(i))
         enddo
 !
-    else if (compo.eq.'VMIS_ISOT_LINE') then
+    else if ((compo.eq.'VMIS_ISOT_LINE').or.(compo.eq.'VMIS_ISOT_TRAC')) then
         do i = 1, nf
             ivari = nbvalc* (i-1) + 1
             if (ltemp) then
@@ -250,25 +246,11 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             if (codret .ne. 0) goto 999
         enddo
 !
-    else if (compo.eq.'VMIS_ISOT_TRAC') then
-        do i = 1, nf
-            ivari = nbvalc* (i-1) + 1
-            if (ltemp) then
-                ksp=debsp-1+i
-                call paeldt(kpg, ksp, fami, 'T', icdmat,&
-                            materi, em, ep, nu, depsth,&
-                            tplus=tempp)
-            endif
-!           nm1tra ne fonctionne que pour 1 matériau par maille (vérifie dans rctrac)
-            call nm1tra(icdmat, tempp, defm(i), ddefp(i), varim(ivari),&
-                        varim(ivari+1), sigf(i), varip(ivari), varip(ivari+1), modf( i))
-        enddo
-!
-    else if ((compo.eq.'GRAN_IRRA_LOG').or. (compo.eq.'VISC_IRRA_LOG')) then
+    else if ((compo.eq.'GRAN_IRRA_LOG').or.(compo.eq.'VISC_IRRA_LOG')) then
         if (algo(1:10) .eq. 'ANALYTIQUE') then
             if ( .not. ltemp) then
                 call utmess('F', 'CALCULEL_31')
-            endif        
+            endif
             do i = 1, nf
                 ivari = nbvalc* (i-1) + 1
                 if (ltemp) then
@@ -301,26 +283,20 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                             sigf(i), modf(i), codrep)
                 if (codrep .ne. 0) then
                     codret=codrep
-!                   code 3: on continue et on le renvoie à la fin
-!                   autre codes: sortie immédiate
+!                   code 3: on continue et on le renvoie à la fin. Autres codes: sortie immédiate
                     if (codrep .ne. 3) goto 999
                 endif
-!               si module tangent pas calcule exactement -> évaluation
-                isecan = 0
             enddo
         endif
-!
-    else if (compo.eq.'LEMA_SEUIL') then
-        call utmess('F', 'ELEMENTS2_39')
-    else
-!       appel à comp1d pour bénéficier de tous les comportements axis
-!       par une extension de la méthode de DEBORST
-        if ((algo(1:7).ne.'DEBORST') .and. (compo(1:4).ne.'SANS')) then
+    else if (compo.eq.'GRANGER_FP_INDT') then
+!       Appel à comp1d pour bénéficier des comportements AXIS: méthode de DEBORST
+!           La LDC doit retourner le module tangent
+        if ((algo(1:7).ne.'DEBORST').and.(compo(1:4).ne.'SANS')) then
             valkm(1) = compo
             valkm(2) = 'DEFI_COMPOR/MULTIFIBRE'
             call utmess('F', 'ALGORITH6_81', nk=2, valk=valkm)
         else
-            if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9) .eq.'RAPH_MECA')) then
+            if ((option(1:9).eq.'FULL_MECA').or.(option(1:9) .eq.'RAPH_MECA')) then
                 nbvari = nbvalc*nf
                 call dcopy(nbvari, varimp, 1, varip, 1)
             endif
@@ -335,14 +311,13 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                             sigf(i), modf(i), codrep)
                 if (codrep .ne. 0) then
                     codret=codrep
-!                   code 3: on continue et on le renvoie à la fin
-!                   autre codes: sortie immédiate
+!                   code 3: on continue et on le renvoie à la fin. Autre codes: sortie immédiate
                     if (codrep .ne. 3) goto 999
                 endif
-!               si module tangent pas calcule exactement -> évaluation
-                isecan = 1
             enddo
         endif
+    else
+        call utmess('F', 'ELEMENTS2_39',sk=compo)
     endif
 !
 999 continue

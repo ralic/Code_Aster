@@ -20,7 +20,7 @@ interface
                       crit, option, instam, instap,&
                       icdmat, nbvalc, defam, defap, varim,&
                       varimp, contm, defm, defp, epsm,&
-                      modf, sigf, varip, isecan, codret)
+                      modf, sigf, varip, codret)
         integer :: ip
         integer :: nbgf
         integer :: nbfib
@@ -43,7 +43,6 @@ interface
         real(kind=8) :: modf(*)
         real(kind=8) :: sigf(*)
         real(kind=8) :: varip(*)
-        integer :: isecan
         integer :: codret
     end subroutine pmfmcf
 end interface

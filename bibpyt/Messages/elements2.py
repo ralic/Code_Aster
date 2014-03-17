@@ -59,7 +59,7 @@ cata_msg = {
 """),
 
 39 : _(u"""
- loi LEMA_SEUIL non implémentée avec les poutres multifibres
+ La loi %(k1)s n'existe pas pour une utilisation avec des poutres multifibres.
 """),
 
 40 : _(u"""

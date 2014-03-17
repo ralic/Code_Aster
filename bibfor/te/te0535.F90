@@ -63,7 +63,7 @@ subroutine te0535(option, nomte)
 !     NOMTE  : K16 : NOM DU TYPE ELEMENT
 ! --- ------------------------------------------------------------------
     integer :: igeom, icompo, imate, isect, iorien, nd, nk, iret
-    integer :: icarcr, icontm, ideplm, ideplp, imatuu, isecan
+    integer :: icarcr, icontm, ideplm, ideplp, imatuu
     integer :: ivectu, icontp, nno, nc, ivarim, ivarip, i, isicom
     parameter  (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
     real(kind=8) :: e, nu, g, xl, xjx, gxjx, epsm
@@ -76,7 +76,7 @@ subroutine te0535(option, nomte)
     integer :: ip, inbf, jcret, codret, codrep
     integer :: iposcp, iposig, ipomod, iinstp, iinstm
     integer :: icomax, ico, nbgf, isdcom, nbgfmx,ncomp
-    integer :: npg, ndim, nnoel, nnos, ipoids, ivf
+    integer :: npg, nnoel, ipoids, ivf
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
     real(kind=8) :: alicom, dalico, ss1, hv, he, minus
@@ -92,8 +92,7 @@ subroutine te0535(option, nomte)
 !
 ! --- ------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnoel,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf)
+    call elrefe_info(fami='RIGI', nno=nnoel,  npg=npg, jpoids=ipoids, jvf=ivf)
     ASSERT(nno.eq.nnoel)
 !   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
     ncomp = 18
@@ -277,7 +276,7 @@ subroutine te0535(option, nomte)
                         zr(icarcr), option, zr(iinstm), zr(iinstp), zi(imate),&
                         nbvalc, defam, defap, zr(ivarim), zr(ivarmp),&
                         zr(icontm), defmfib, defpfib, epsm, zr(ipomod),&
-                        zr(iposig), zr(ivarip), isecan, codrep)
+                        zr(iposig), zr(ivarip), codrep)
 !
             if (codrep .ne. 0) then
                 codret = codrep

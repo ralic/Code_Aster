@@ -20,7 +20,7 @@ interface
                   nf,instam, instap, icdmat,nbvalc, &
                   defam, defap, varim, varimp,contm, &
                   defm, ddefp, epsm, modf,sigf, &
-                  varip, isecan, codret)
+                  varip, codret)
         integer :: nbvalc
         integer :: nf
         integer :: kpg
@@ -42,7 +42,6 @@ interface
         real(kind=8) :: modf(nf)
         real(kind=8) :: sigf(nf)
         real(kind=8) :: varip(nbvalc*nf)
-        integer :: isecan
         integer :: codret
     end subroutine pmfcom
 end interface

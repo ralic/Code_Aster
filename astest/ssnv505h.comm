@@ -221,30 +221,27 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2414.2109273652,
-           TOLE_MACHINE=2.E-3,               # TODO TOLE_MACHINE
+           VALE_CALC=2414.53,
+           TOLE_MACHINE=2.0E-3,               # TODO TOLE_MACHINE
            NOM_PARA='DY',
            TABLE=T_REA_LA,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
+           FILTRE=_F(NOM_PARA='INST', VALE=0.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2095.704435962,
-           TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
+           VALE_CALC=2095.63,
+           TOLE_MACHINE=1.0E-4,               # TODO TOLE_MACHINE
            NOM_PARA='DY',
            TABLE=T_REA_LA,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8,),
+           FILTRE=_F(NOM_PARA='INST', VALE=0.8,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2352.7564548006,
-           TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
+           VALE_CALC=2352.57,
+           TOLE_MACHINE=1.0E-4,               # TODO TOLE_MACHINE
            NOM_PARA='DY',
            TABLE=T_REA_LA,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
+           FILTRE=_F(NOM_PARA='INST', VALE=1.0,),
            )
 
 #
@@ -313,8 +310,8 @@ T_DEP_CO=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=T_REA_CO,);
-IMPR_TABLE(TABLE=T_DEP_CO,);
+#IMPR_TABLE(TABLE=T_REA_CO,);
+#IMPR_TABLE(TABLE=T_DEP_CO,);
 
 TEST_TABLE(
            VALE_CALC=311.88546916638,
@@ -420,8 +417,8 @@ T_DEP_ES=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=T_REA_ES,);
-IMPR_TABLE(TABLE=T_DEP_ES,);
+#IMPR_TABLE(TABLE=T_REA_ES,);
+#IMPR_TABLE(TABLE=T_DEP_ES,);
 
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=UESCL))
 

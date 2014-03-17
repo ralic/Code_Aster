@@ -2,7 +2,8 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
                   crit, option, instam, instap,&
                   icdmat, nbvalc, defam, defap, varim,&
                   varimp, contm, defm, defp, epsm,&
-                  modf, sigf, varip, isecan, codret)
+                  modf, sigf, varip, codret)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,53 +20,57 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
 ! aslint: disable=W1504
     implicit none
-#include "asterfort/pmfcom.h"
-    integer :: ip, nbgf, nbfib, nbvalc, nugf(*), icdmat, isecan
+    integer :: ip, nbgf, nbfib, nbvalc, nugf(*), icdmat,codret
     character(len=16) :: option
     character(len=24) :: sdcomp(*)
     real(kind=8) :: varim(*), varimp(*), varip(*), contm(*), defm(*), defp(*)
     real(kind=8) :: crit(*), instam, instap, defap(*), defam(*), epsm
     real(kind=8) :: sigf(*), modf(*)
+!
+#include "asterfort/pmfcom.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: ig, ngf, nbfig
     integer :: idcipv, idcipc, idecc, idecv, icp
     integer :: iposv, iposc
-    integer :: codret, codrep
-! --- ------------------------------------------------------------------
+    integer :: codrep
+!
+! --------------------------------------------------------------------------------------------------
+!
     codrep = 0
-! --- BOUCLE SUR LES GROUPES DE FIBRE
+!
     idcipc = nbfib*(ip-1)
     idcipv = nbvalc*idcipc
     idecc = 1
     idecv = 1
-
-    do 510 ig = 1, nbgf
-! ---    NUMERO DU GROUPE DE FIBRE
+    do ig = 1, nbgf
+!       NUMERO DU GROUPE DE FIBRE
         ngf = nugf(ig)
         icp = (ngf-1)*6
-! ---    NOMBRE DE FIBRES DE CE GROUPE
+!       NOMBRE DE FIBRES DE CE GROUPE
         read(sdcomp(icp+6),'(I24)') nbfig
-! ---    AIGUILLAGE SUIVANT COMPORTEMENT
-!        POUR AVOIR MODULE ET CONTRAINTE SUR CHAQUE FIBRE
-!        ATTENTION POSITION DU POINTEUR CONTRAINTE ET VARIABLES INTERNES
+!       AIGUILLAGE SUIVANT COMPORTEMENT :
+!           MODULE ET CONTRAINTE SUR CHAQUE FIBRE
+!           ATTENTION A LA POSITION DU POINTEUR CONTRAINTE ET VARIABLES INTERNES
         iposv = idecv + idcipv
         iposc = idecc + idcipc
         call pmfcom(ip, idecc, option, sdcomp(icp+2), crit, nbfig,&
                     instam, instap, icdmat,&
                     nbvalc, defam, defap, varim(iposv), varimp( iposv),&
                     contm(iposc), defm(idecc), defp(idecc), epsm, modf(idecc),&
-                    sigf(idecc), varip(iposv), isecan, codrep)
+                    sigf(idecc), varip(iposv), codrep)
         if (codrep .ne. 0) then
             codret = codrep
-!           CODE 3: ON CONTINUE ET ON LE RENVOIE A LA FIN
-!           AUTRE CODES: SORTIE IMMEDIATE
+!           code 3: on continue et on le renvoie a la fin. Autres codes: sortie immediate
             if (codrep .ne. 3) goto 900
         endif
         idecc = idecc + nbfig
         idecv = idecv + nbvalc*nbfig
-! --- FIN BOUCLE GROUPES DE FIBRES$
-510  end do
+    enddo
 !
-900  continue
+900 continue
 end subroutine
