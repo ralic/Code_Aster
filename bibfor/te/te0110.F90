@@ -5,7 +5,7 @@ subroutine te0110(option, nomte)
 #include "asterfort/codent.h"
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
@@ -101,8 +101,8 @@ subroutine te0110(option, nomte)
 !     ---------------
     zero = 0.0d0
     un = 1.0d0
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     nompar(1) = 'INST'
     nompar(2) = 'X'
@@ -582,8 +582,8 @@ subroutine te0110(option, nomte)
 !     ------------------------------------------------------------
 ! --- CAS OU LES COEFFICIENTS D'ECHANGES SONT DES FONCTIONS :
         if (icoehf .gt. 0) then
-            call elref4(' ', 'MASS', ndim, nno, nnos,&
-                        npg2, ipoids, ivf, idfde, jgano)
+            call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
             do 100 kp = 1, npg2
                 k = (kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, coor2d,&
@@ -624,8 +624,8 @@ subroutine te0110(option, nomte)
 ! --- DE L'ELEMENT :
 !     ------------
         call cq3d2d(nno, zr(igeom), un, zero, coor2d)
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg1, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- CALCUL DE LA RIGIDITE THERMIQUE DUE A LA PARTIE MEMBRANAIRE
 ! --- DU TENSEUR DE CONDUCTIVITE :
@@ -686,8 +686,8 @@ subroutine te0110(option, nomte)
 ! --- ON PREND LA SECONDE FAMILLE DE POINTS D'INTEGRATION QUI
 ! --- EST D'UN ORDRE PLUS ELEVE :
 !     -------------------------
-        call elref4(' ', 'MASS', ndim, nno, nnos,&
-                    npg2, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     -----------------------------------

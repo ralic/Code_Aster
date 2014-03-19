@@ -40,7 +40,7 @@ subroutine te0027(option, nomte)
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -98,8 +98,8 @@ subroutine te0027(option, nomte)
     typmod(2) = ' '
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     ncmp = 2*ndim
 !

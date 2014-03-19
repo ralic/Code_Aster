@@ -12,8 +12,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/lcegeo.h"
 #include "asterfort/nmcomp.h"
@@ -88,7 +87,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !......................................................................
 !
     integer :: i, ig, iret, j, j1, kkd, kl, kpg, l, m, n, nn, mn
-    integer :: ddls, ddld, cpt, ibid, idfde, ipoids, ivf, dec(nnop)
+    integer :: ddls, ddld, cpt, idfde, ipoids, ivf, dec(nnop)
     integer :: jcoopg, jdfd2, jgano, ndimb, nno, nnops, nnos, npgbis
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6), fe(4), baslog(3*ndim)
@@ -120,8 +119,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     ddls = ddld+ddlc
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
 ! - INITIALISATION
     grdepl = .false.
@@ -129,9 +127,9 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     cplan = typmod(1) .eq. 'C_PLAN'
 !
 !
-    call elref5(elrese, 'XINT', ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
@@ -218,7 +216,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 ! -     CALCUL DE DEPS
         call xcinem(axi, nnop, nnops, ideplp, grdepl, ndim, he,&
                     r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, deps, rbid33) 
+                    fe, dgdgl, ff, dfdi, f, deps, rbid33)
 !
 ! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T-
         if (axi) then

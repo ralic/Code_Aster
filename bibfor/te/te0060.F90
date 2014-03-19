@@ -33,7 +33,7 @@ subroutine te0060(option, nomte)
 !
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
     character(len=8) :: nompar(4)
@@ -50,8 +50,8 @@ subroutine te0060(option, nomte)
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
 !====
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     tz0 = r8t0()

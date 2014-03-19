@@ -6,7 +6,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -55,7 +55,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !
     real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps
     real(kind=8) :: lsnbc
-    integer :: in, inh, i, j, ar(12, 3), nbar, ise, ndim, ibid
+    integer :: in, inh, i, j, ar(12, 3), nbar, ise, ndim
     integer :: a1, a2, a3, a4, a, b, c, iadzi, iazk24, ndime, jdim, n(18)
     integer :: d, e, f, g, h, l, ia, ip1
     integer :: nnop
@@ -67,8 +67,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 ! --------------------------------------------------------------------
     call jemarq()
 !
-    call elref4(' ', 'RIGI', ndime, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndime,nno=nnop)
     zxain = xxmmvd('ZXAIN')
     call tecael(iadzi, iazk24)
     noma=zk24(iazk24)
@@ -162,9 +161,9 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 do 52 i=1,3
                  do 53 j=1,2
                    if (cnset(nnose*(it-1)+ar(i,j)).eq.ip1.and.&
-                      ar(i,3-j).eq.b) e= ar(i,3) 
+                      ar(i,3-j).eq.b) e= ar(i,3)
                     if (cnset(nnose*(it-1)+ar(i,j)).eq.ip1.and.&
-                      ar(i,3-j).eq.c) f= ar(i,3)            
+                      ar(i,3-j).eq.c) f= ar(i,3)
 53                continue
 52              continue
                 ASSERT((e*f).gt.0)
@@ -475,7 +474,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                do 771 i=1,6
                  do 772 j=1,2
                    if (cnset(nnose*(it-1)+ar(i,j)).eq.c.and.&
-                      cnset(nnose*(it-1)+ar(i,3-j)).eq.d) e=ar(i,3)             
+                      cnset(nnose*(it-1)+ar(i,3-j)).eq.d) e=ar(i,3)
 772              continue
 771            continue
                do 773 i=1,6
@@ -507,7 +506,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 cnse(2,8)=cnset(nnose*(it-1)+h)
                 cnse(2,9)=cnset(nnose*(it-1)+l)
                 cnse(2,10)=202
-!           
+!
             elseif (npts .eq.0) then
             nse=6
             ASSERT((a1*a2*a3*a4).ne.0)
@@ -619,7 +618,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 cnse(ise,7)=cnse(ise,8)
                 cnse(ise,8)=inh
             endif
-500      continue   
+500      continue
     endif
 !
 !-----------------------------------------------------------------------

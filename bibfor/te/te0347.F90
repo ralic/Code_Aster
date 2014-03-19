@@ -18,7 +18,7 @@ subroutine te0347(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jsd1ff.h"
 #include "asterfort/matrot.h"
@@ -55,7 +55,7 @@ subroutine te0347(option, nomte)
 !
 ! --- ------------------------------------------------------------------
     integer :: jtab(7), nno, nc, ichg, icompo, ichn, lgpg, nbvar, i, k, npg
-    integer :: lorien, icgp, icontn, icontg, ivectu, in, iret(2), iplouf
+    integer :: lorien, icgp, icontn, icontg, ivectu, in, iret(2)
     integer :: isect, igeom, kp, kk, imate
     integer :: istrxm, iretc
 !
@@ -79,8 +79,7 @@ subroutine te0347(option, nomte)
     nno = 2
     fami = 'RIGI'
 ! --- NOMBRE DE POINTS DE GAUSS
-    call elref4(' ', fami, iplouf, iplouf, iplouf,&
-                npg, iplouf, iplouf, iplouf, iplouf)
+    call elrefe_info(fami=fami,npg=npg)
     ASSERT((npg.eq.2).or.(npg.eq.3))
 !
     if (nomte .eq. 'MECA_POU_D_TG') then

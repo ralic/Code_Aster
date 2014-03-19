@@ -24,7 +24,7 @@ subroutine regini(option, nomte, ivf, ivf2, idfde,&
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
     logical :: axi
     integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
@@ -39,7 +39,7 @@ subroutine regini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: nno2, nnos2, npi2, ibid, def1, def2, def3, cont1, cont2, nnoc
+    integer :: nno2, nnos2, npi2, def1, def2, def3, cont1, cont2, nnoc
     integer :: cont3, adder1, adder2, adder3, adcor1, adcor2, adcor3
     character(len=8) :: elrefe, elrf1, elrf2
 ! ======================================================================
@@ -82,13 +82,13 @@ subroutine regini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! --- FONCTIONS DE FORME P2 --------------------------------------------
 ! ======================================================================
-    call elref4(elrf1, 'RIGI', ndim, nno, nnos,&
-                npi, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=elrf1,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npi,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 ! ======================================================================
 ! --- FONCTIONS DE FORME P1 --------------------------------------------
 ! ======================================================================
-    call elref4(elrf2, 'RIGI', ndim, nno2, nnos2,&
-                npi2, ipoid2, ivf2, idfde2, ibid)
+    call elrefe_info(elrefe=elrf2,fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos2,&
+  npg=npi2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2)
 ! ======================================================================
 ! --- NNOC DESIGNE LE NOMBRE DE NOEUD AU CENTRE DES ELEMENTS -----------
 ! ======================================================================

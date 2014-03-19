@@ -4,7 +4,7 @@ subroutine te0498(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pronor.h"
@@ -51,7 +51,7 @@ subroutine te0498(option, nomte)
     real(kind=8) :: norm, tanx, tany, norx, nory, norz
     real(kind=8) :: taondx, taondy, taondz
     real(kind=8) :: nux, nuy, nuz, scal, coedir
-    real(kind=8) :: r8b, nortan, cele, trace
+    real(kind=8) ::  nortan, cele, trace
     real(kind=8) :: sigma(3, 3), epsi(3, 3), grad(3, 3), valfon
     real(kind=8) :: vondn(3), vondt(3)
     integer :: icodre(3), kpg, spt
@@ -61,8 +61,8 @@ subroutine te0498(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(option.eq.'ONDE_PLAN')
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -91,7 +91,7 @@ subroutine te0498(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 3, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)

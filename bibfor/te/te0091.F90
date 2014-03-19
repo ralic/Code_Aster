@@ -18,7 +18,7 @@ subroutine te0091(option, nomte)
     implicit none
 #include "jeveux.h"
 !
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
@@ -44,8 +44,8 @@ subroutine te0091(option, nomte)
     logical :: laxi
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.

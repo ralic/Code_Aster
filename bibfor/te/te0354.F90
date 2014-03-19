@@ -21,7 +21,7 @@ subroutine te0354(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/foderi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
@@ -85,8 +85,8 @@ subroutine te0354(option, nomte)
 !
 !    ACCES AUX CARACTERISTIQUES DE L'ELEMENT FINI
     call elref1(elrefe)
-    call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
-                npg, iw, ivf, idfde, jgano)
+    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=iw,jvf=ivf,jdfde=idfde,jgano=jgano)
     axi = lteatt('AXIS','OUI')
 !
     do 100 g = 1, npg

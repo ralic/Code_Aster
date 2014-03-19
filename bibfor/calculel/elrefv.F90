@@ -3,7 +3,7 @@ subroutine elrefv(nomte, famil, ndim, nno, nno2,&
                   idfde, idfde2, jgano, jgano2)
     implicit none
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
     character(len=16) :: nomte
     character(len=4) :: famil
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
@@ -62,15 +62,15 @@ subroutine elrefv(nomte, famil, ndim, nno, nno2,&
 !
     call elref1(elrefe)
 !
-    call elref4(elrefe, famil, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=elrefe,fami=famil,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     if (elrefe .eq. 'TR3' .or. elrefe .eq. 'QU4') then
 !
 ! --- CAS LINEAIRE
 !
-        call elref4(elrefe, famil, ndim, nno2, nnos,&
-                    npg, ipoids, ivf2, idfde2, jgano2)
+        call elrefe_info(elrefe=elrefe,fami=famil,ndim=ndim,nno=nno2,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf2,jdfde=idfde2,jgano=jgano2)
     else
 !
 ! --- CAS QUADRATIQUE
@@ -88,8 +88,8 @@ subroutine elrefv(nomte, famil, ndim, nno, nno2,&
         else if (elrefe .eq. 'P13') then
             elref2 = 'PY5'
         endif
-        call elref4(elref2, famil, ndim, nno2, nnos,&
-                    npg, ipoids, ivf2, idfde2, jgano2)
+        call elrefe_info(elrefe=elref2,fami=famil,ndim=ndim,nno=nno2,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf2,jdfde=idfde2,jgano=jgano2)
     endif
 !
 !

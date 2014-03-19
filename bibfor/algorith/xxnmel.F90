@@ -12,7 +12,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
 #include "asterfort/nmcpel.h"
@@ -131,9 +131,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     endif
 !
 !     ADRESSE DES COORD DU SOUS ELT EN QUESTION
-    call elref5(elrese, 'XINT', ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
@@ -188,33 +188,35 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
         endif
 !
-! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE) ET DU DEPL. RADIAL
+! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE):
         if (axi) then
             r = 0.d0
-            ur = 0.d0
             do n = 1, nnop
                 r = r + ff(n)*zr(igeom-1+2*(n-1)+1)
-                ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
-                do ig = 1, nfh
-                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *he(fisno(n,ig))
-!
-                end do
-                do ig = 1, nfe
-                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
-!
-                end do
-!
             end do
 !
             ASSERT(r.gt.0d0)
-!          ATTENTION : LE POIDS N'EST PAS X R
-!          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
+!           ATTENTION : LE POIDS N'EST PAS X R
+!           CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' .or.&
             option(1: 9) .eq. 'RAPH_MECA') then
+! -         CALCUL DU DEPL. RADIAL
+            if (axi) then
+                ur = 0.d0
+                do n = 1, nnop
+                    ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
+                    do ig = 1, nfh
+                        ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *he(fisno(n,ig))
+                    end do
+                    do ig = 1, nfe
+                        ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
+                    end do
+                end do
+            endif
             call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
             call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
                         r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&

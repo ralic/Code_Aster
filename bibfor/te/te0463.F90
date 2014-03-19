@@ -19,7 +19,7 @@ subroutine te0463(option, nomte)
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fmater.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
@@ -73,8 +73,8 @@ subroutine te0463(option, nomte)
     decfpg(1)=0
     do 200 ifpg = 1, nfpg
 !
-        call elref4(' ', fami(ifpg), ndim1, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami=fami(ifpg),ndim=ndim1,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
         if (ifpg .lt. nfpg) decfpg(ifpg+1)=decfpg(ifpg)+npg
 !
 !       POSITION DES POINTS DE GAUSS SUR L'AXE POUR FAMI

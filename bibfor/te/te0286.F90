@@ -18,7 +18,7 @@ subroutine te0286(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/bsigmc.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/ethdst.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
@@ -56,8 +56,8 @@ subroutine te0286(option, nomte)
     real(kind=8) :: enthth, epot, undemi, zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------

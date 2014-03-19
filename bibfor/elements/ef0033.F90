@@ -7,7 +7,7 @@ subroutine ef0033(nomte)
 #include "asterfort/dxefro.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utpvgl.h"
@@ -47,7 +47,8 @@ subroutine ef0033(nomte)
 !
 !
     fami='NOEU'
-    call elref4(' ', fami, ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
 !
     call r8inir(32, 0.d0, effgt, 1)

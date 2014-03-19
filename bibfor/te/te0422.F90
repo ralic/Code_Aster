@@ -8,7 +8,7 @@ subroutine te0422(option, nomte)
 #include "asterfort/dxefro.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utpvgl.h"
@@ -54,7 +54,8 @@ subroutine te0422(option, nomte)
 !
     fami = 'RIGI'
 !
-    call elref4(' ', fami, ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     if (option .ne. 'SIEF_ELGA') ASSERT(.false.)
 !

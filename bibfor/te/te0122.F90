@@ -2,7 +2,7 @@ subroutine te0122(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/tecach.h"
@@ -76,13 +76,13 @@ subroutine te0122(option, nomte)
 !     INFORMATIONS SUR L'ELEMENT DE REFERENCE
     if (quadra) then
         call elref2(nomte, 2, lielrf, ntrou)
-        call elref4(lielrf(2), 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !       DIMENSION ESPACE POUR LES JOINTS QUADRA, HYME OU INTERFACE
         ndime = ndim + 1
     else
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !       DIMENSION DE L'ESPACE POUR LES JOINTS LINEAIRES
         if (jlin2d) ndime = ndim
         if (jlin3d) ndime = ndim + 1

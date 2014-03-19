@@ -12,8 +12,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/lcegeo.h"
 #include "asterfort/matinv.h"
@@ -93,7 +92,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !
     integer :: i, ig, iret, j, j1, k, kk, kkd, kpg, l, m, mn, n, nn
     integer :: ddls, ddld, ddldn, cpt, dec(nnop)
-    integer :: ibid, idfde, ipoids, ivf, jcoopg, jdfd2, jgano
+    integer ::  idfde, ipoids, ivf, jcoopg, jdfd2, jgano
     integer :: ndimb, nno, nnops, nnos, npgbis
     real(kind=8) :: f(3, 3), fm(3, 3), fr(3, 3), epsm(6), epsp(6), deps(6)
     real(kind=8) :: dsidep(6, 6), sigma(6), ftf, detf
@@ -125,8 +124,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
     ddls = ddld+ddlc
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
 ! - INITIALISATION
     grdepl = compor(3) .eq. 'GROT_GDEP'
@@ -139,9 +137,9 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
         call utmess('F', 'XFEM2_5')
     endif
 !
-    call elref5(elrese, 'XINT', ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
@@ -207,7 +205,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !       CALCUL EN T+
         call xcinem(axi, nnop, nnops, ideplp, grdepl, ndim, he,&
                     rbid, rbid, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, epsp, rbid33) 
+                    fe, dgdgl, ff, dfdi, f, epsp, rbid33)
 !
 !       CALCUL DE DEPS POUR LDC
         do i = 1, 6

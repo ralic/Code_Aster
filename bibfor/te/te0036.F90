@@ -46,7 +46,7 @@ subroutine te0036(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevecd.h"
@@ -91,8 +91,7 @@ subroutine te0036(option, nomte)
 !
 !     ELEMENT DE REFERENCE PARENT
     call elref1(elrefp)
-    call elref4(' ', 'RIGI', ndime, nnop, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndime,nno=nnop,nnos=nnops)
     ASSERT(ndime.eq.1.or.ndime.eq.2)
 !
     axi = lteatt('AXIS','OUI')
@@ -114,8 +113,8 @@ subroutine te0036(option, nomte)
         irese=0
     endif
     elref=elrese(ndime+irese)
-    call elref4(elref, 'RIGI', ibid, nno, nnos,&
-                npg, ipoids, ivf, idfde, ibid)
+    call elrefe_info(elrefe=elref,fami='RIGI',nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
 !     IL NE FAUT PAS APPELER XTEINI CAR IL NE GERE PAS LES ELEMENTS

@@ -6,7 +6,7 @@ subroutine te0428(option, nomte)
 #include "asterfort/dktrge.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
@@ -29,10 +29,10 @@ subroutine te0428(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! ajout elements  
+! ajout elements
 !
 !    calcul de la matrice de rigidite geometrique des elements de plaque
-!       => option rigi_meca_ge 
+!       => option rigi_meca_ge
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
     integer :: jgeom, jmatr, iret
@@ -45,8 +45,8 @@ subroutine te0428(option, nomte)
 !
 ! deb ------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
 !

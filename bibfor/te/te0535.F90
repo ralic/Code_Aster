@@ -19,7 +19,7 @@ subroutine te0535(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jevech.h"
@@ -76,7 +76,7 @@ subroutine te0535(option, nomte)
     integer :: ip, inbf, jcret, codret, codrep
     integer :: iposcp, iposig, ipomod, iinstp, iinstm
     integer :: icomax, ico, nbgf, isdcom, nbgfmx,ncomp
-    integer :: npg, ndim, nnoel, nnos, ipoids, ivf, iplouf
+    integer :: npg, ndim, nnoel, nnos, ipoids, ivf
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
     real(kind=8) :: alicom, dalico, ss1, hv, he, minus
@@ -92,8 +92,8 @@ subroutine te0535(option, nomte)
 !
 ! --- ------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nnoel, nnos,&
-                npg, ipoids, ivf, iplouf, iplouf)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnoel,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf)
     ASSERT(nno.eq.nnoel)
 !   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
     ncomp = 18

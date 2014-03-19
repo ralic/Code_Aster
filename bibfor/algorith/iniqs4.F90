@@ -2,7 +2,7 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elraga.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nno
@@ -49,8 +49,8 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
     call elraga(elrefe, famil, ndim, nbpg, coopg,&
                 poipg)
 !
-    call elref4(elrefe, 'MASS', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=elrefe,fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     do 40 i = 1, npg
         k = 2*nno*(i-1)

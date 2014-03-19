@@ -30,8 +30,7 @@ subroutine te0404(option, nomte)
 #include "asterfort/dxmate.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -63,8 +62,8 @@ subroutine te0404(option, nomte)
     read(cnd,'(I8)')  nd
     call jevech('PGEOMER', 'L', igeom)
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !     CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
     dmin = sqrt(&
@@ -119,9 +118,9 @@ subroutine te0404(option, nomte)
         e = valres(1)
         nu = valres(2)
     else if (phenom.eq.'ELAS_COQUE') then
-        call elref5(' ', fami, ndim, nno, nnos,&
-                    npg, ipoids, icoopg, ivf, idfde,&
-                    idfd2, jgano)
+        call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=idfd2,jgano=jgano)
         call jevech('PCACOQU', 'L', jcoqu)
         epais = zr(jcoqu)
         if (nno .eq. 3) then

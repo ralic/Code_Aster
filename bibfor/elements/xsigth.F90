@@ -23,7 +23,7 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/epstmc.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
@@ -88,9 +88,8 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
     else
         irese=0
     endif
-    call elref5(elrese(ndim+irese), fami(ndim+irese), ibid, nno, ibid,&
-                npg, ibid, ibid, ibid, ibid,&
-                ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
+  npg=npg)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=lonch(1)

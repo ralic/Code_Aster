@@ -4,7 +4,7 @@ subroutine te0157(option, nomte)
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
@@ -48,8 +48,8 @@ subroutine te0157(option, nomte)
     character(len=8) :: nomres(nbres), fami, poum
 !     ------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg2, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     zero = 0.d0
     depi = r8depi()

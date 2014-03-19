@@ -18,7 +18,7 @@ subroutine te0358(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcfonc.h"
 #include "asterfort/rctrac.h"
@@ -66,8 +66,8 @@ subroutine te0358(option, nomte)
 ! ---------------------------------------------------------------------
 ! --- FONCTIONS DE FORMES ET POINTS DE GAUSS
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! PARAMETRES EN ENTREE
     call jevech('PGEOMER', 'L', igeom)

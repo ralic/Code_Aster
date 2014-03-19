@@ -23,7 +23,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 #include "asterfort/bcoudc.h"
 #include "asterfort/bcoude.h"
 #include "asterfort/carcou.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
 #include "asterfort/ppgan2.h"
@@ -66,9 +66,9 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
     integer :: nddl, m, idfdk, jdfd2, jgano
 !
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     deuxpi = 2.d0*r8pi()
 !

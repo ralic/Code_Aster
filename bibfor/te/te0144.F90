@@ -2,7 +2,7 @@ subroutine te0144(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
@@ -49,7 +49,7 @@ subroutine te0144(option, nomte)
     real(kind=8) :: zero, deux
     parameter  (zero = 0.d0,deux = 2.d0)
 !
-    integer :: nbres, iplouf, npg, nno, nc, nnoc, ncc, jeffo, lmater, iret
+    integer :: nbres, npg, nno, nc, nnoc, ncc, jeffo, lmater, iret
     integer :: iret1, lsect, itype, lx, lrcou, lorien, jdepl, i, j
     parameter    (nbres=2)
     real(kind=8) :: valres(nbres)
@@ -79,8 +79,7 @@ subroutine te0144(option, nomte)
     endif
 !
 ! --- POINT DE GAUSS DE L'ELEMENT
-    call elref4(' ', 'RIGI', iplouf, iplouf, iplouf,&
-                npg, iplouf, iplouf, iplouf, iplouf)
+    call elrefe_info(fami='RIGI',npg=npg)
     ASSERT((npg.eq.2).or.(npg.eq.3))
 !
 ! --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---

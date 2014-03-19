@@ -4,7 +4,7 @@ subroutine xhmini(nomte, nfh, ddld, ddlm)
 !
 #   include "asterfort/assert.h"
 #   include "asterfort/elref1.h"
-#   include "asterfort/elref4.h"
+#   include "asterfort/elrefe_info.h"
 #   include "asterfort/teattr.h"
 #   include "asterfort/tecach.h"
 #   include "jeveux.h"
@@ -44,15 +44,14 @@ subroutine xhmini(nomte, nfh, ddld, ddlm)
 ! OUT  NFISS  : NOMBRE DE FISSURES
 !     ------------------------------------------------------------------
 !
-    integer :: ndim, nnop, ibid, ier, nnops
+    integer :: ndim, nnop, ier, nnops
     integer :: ddld, jtab(7), iret
     character(len=8) :: elrefp, enr
 !
 ! ----------------------------------------------------------------------
 !
     call elref1(elrefp)
-    call elref4(elrefp, 'RIGI', ndim, nnop, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(elrefe=elrefp, fami='RIGI', ndim=ndim, nno=nnop, nnos=nnops)
 !
 ! --- INITIALISATIONS
 !

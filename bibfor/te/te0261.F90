@@ -32,7 +32,7 @@ subroutine te0261(option, nomte)
 !
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
@@ -53,8 +53,8 @@ subroutine te0261(option, nomte)
 !      ------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     call elref1(elrefp)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT

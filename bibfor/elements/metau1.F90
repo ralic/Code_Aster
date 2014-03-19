@@ -19,7 +19,7 @@ subroutine metau1(option, nomte, iret)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
@@ -77,8 +77,8 @@ subroutine metau1(option, nomte, iret)
         lacier=.true.
     endif
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)

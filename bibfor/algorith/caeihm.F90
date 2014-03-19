@@ -64,7 +64,7 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/greihm.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/modthm.h"
@@ -102,10 +102,10 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 ! ======================================================================
     call elref2(nomte, 2, lielrf, ntrou)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npi, iw, ivf1, idf1, jgano1)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npi, iw, ivf2, idf2, jgano2)
+    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
+  npg=npi,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgano1)
+    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
+  npg=npi,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgano2)
 !
     if (modint .eq. 'RED') then
         npg= npi-nnos

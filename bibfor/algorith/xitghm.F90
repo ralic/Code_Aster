@@ -4,12 +4,11 @@ subroutine xitghm(modint, mecani, press1, ndim, nno,&
                   nnops, nnopm, ipoids, ivf, idfde)
     implicit none
 !
-#   include "asterfort/elref4.h"
-#   include "asterfort/elref5.h"
+#   include "asterfort/elrefe_info.h"
     integer :: mecani(5), press1(7)
     integer :: ndim, nnos, nno, nnom
     integer :: npi, npg, nddls, nddlm, dimuel
-    integer :: ibid, ipoids, ivf, idfde
+    integer ::  ipoids, ivf, idfde
     character(len=3) :: modint
 !
 ! DECLARATION POUR XFEM
@@ -62,13 +61,11 @@ subroutine xitghm(modint, mecani, press1, ndim, nno,&
 ! --- DONNEES POUR XFEM ------------------------------------------------
 ! ======================================================================
 !     RECUPERATION DES NOEUDS DE L'ELEMENT PARENT QUADRATIQUE
-    call elref4(' ', 'RIGI', ndim, nnop, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnops)
 !
 !     RECUPERATION DES PTS DE GAUSS, DES NOEUDS ET FF DES SS-ELEMENTS
-    call elref5(elrese(ndim), fami(ndim), ibid, nno, nnos,&
-                npi, ipoids, ibid, ivf, idfde,&
-                ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim), fami=fami(ndim), nno=nno, nnos=nnos,&
+                npg=npi, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! ======================================================================
 ! --- POUR METHODES CLASSIQUE ET LUMPEE NPG=NPI

@@ -49,7 +49,7 @@ subroutine te0564(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -75,8 +75,8 @@ subroutine te0564(option, nomte)
     zero = 0.0d0
     iopt = 0
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
 ! --- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 !     ----------------------------------------------

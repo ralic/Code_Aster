@@ -36,7 +36,7 @@ subroutine te0382(option, nomte)
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/ermeb2.h"
 #include "asterfort/ermes2.h"
 #include "asterfort/ermev2.h"
@@ -144,8 +144,8 @@ subroutine te0382(option, nomte)
 !
 ! --- ELEMENT PARENT DE REFERENCE : RECUP DE NNO, NPG ET IDFDE
 
-    call elref4(' ', 'RIGI', ndim, nnop, nnosp,&
-                npgp, ipoidp, ivfp, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop,nnos=nnosp,&
+  npg=npgp,jpoids=ipoidp,jvf=ivfp,jdfde=idfde,jgano=jgano)
     ASSERT(ndim.eq.2)
 
 !   la valeur de nomtse est utilisee uniquement pour definir
@@ -161,8 +161,8 @@ subroutine te0382(option, nomte)
         irese=0
     endif
 
-    call elref4(elrese(ndim+irese), fami(ndim+irese), ibid, nno, ibid,&
-                npg, ibid, ibid, idfse, ibid)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
+  npg=npg,jdfde=idfse)
 !
 ! --- RECUPERATION DES CHAMPS IN "CLASSIQUES"
 !

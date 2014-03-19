@@ -31,7 +31,7 @@ subroutine te0187(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -53,8 +53,8 @@ subroutine te0187(option, nomte)
     integer :: ipoids, ivf, mater, ndim, nnos, npg
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
-    call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PPRESSC', 'L', ipres)

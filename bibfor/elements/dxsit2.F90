@@ -2,7 +2,7 @@ subroutine dxsit2(nomte, pgl, sigma)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dxmat2.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvarc.h"
@@ -75,9 +75,9 @@ subroutine dxsit2(nomte, pgl, sigma)
 ! --- INITIALISATIONS :
 !     -----------------
     fami = 'RIGI'
-    call elref5(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
     iret1 = 0
     iret2 = 0

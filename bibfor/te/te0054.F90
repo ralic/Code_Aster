@@ -30,7 +30,7 @@ subroutine te0054(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
@@ -47,11 +47,11 @@ subroutine te0054(option, nomte)
     integer :: nnos, kpg, spt
 !
     if (lteatt('LUMPE','OUI')) then
-        call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                    npg2, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     else
-        call elref4(' ', 'MASS', ndim, nno, nnos,&
-                    npg2, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)

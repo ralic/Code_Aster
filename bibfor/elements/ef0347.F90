@@ -21,11 +21,11 @@ subroutine ef0347(nomte)
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
     character(len=16) :: nomte
     integer :: nc, i, npg
-    integer :: icgp, icontn, iplouf
+    integer :: icgp, icontn
     logical :: okelem
 !
 !
@@ -35,8 +35,7 @@ subroutine ef0347(nomte)
      &       (nomte.eq.'MECA_POU_D_T') .or. (nomte.eq.'MECA_POU_D_E')
     ASSERT(okelem)
 !
-    call elref4(' ', 'RIGI', iplouf, iplouf, iplouf,&
-                npg, iplouf, iplouf, iplouf, iplouf)
+    call elrefe_info(fami='RIGI',npg=npg)
     ASSERT((npg.eq.2) .or. (npg.eq.3))
 !
     if (nomte .eq. 'MECA_POU_D_TG') then

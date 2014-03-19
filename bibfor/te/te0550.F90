@@ -29,7 +29,7 @@ subroutine te0550(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matini.h"
@@ -52,8 +52,8 @@ subroutine te0550(option, nomte)
     integer :: jj, ndim, nnos
     real(kind=8) :: celer(1), r
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     ndi = 2*nno
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.

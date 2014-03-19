@@ -20,7 +20,7 @@ subroutine te0432(option, nomte)
 #include "asterfort/cargri.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmgrib.h"
 #include "asterfort/pmavec.h"
@@ -67,8 +67,8 @@ subroutine te0432(option, nomte)
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     fami = 'MASS'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
                 1, tref, iret)
     call r8inir(8*8*6*6, 0.d0, a, 1)

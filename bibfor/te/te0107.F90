@@ -4,7 +4,7 @@ subroutine te0107(option, nomte)
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 !
@@ -46,8 +46,8 @@ subroutine te0107(option, nomte)
     integer :: ipoids, ivf, idfde, igeom
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     zero = 0.d0
     un = 1.d0
     call jevech('PGEOMER', 'L', igeom)

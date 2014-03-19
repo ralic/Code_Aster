@@ -21,7 +21,7 @@ subroutine te0133(option, nomte)
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/rcangm.h"
@@ -42,8 +42,8 @@ subroutine te0133(option, nomte)
     real(kind=8) :: ang(7), bary(3)
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     ASSERT(nnos.le.8)
 !
     call jevech('PGEOMER', 'L', jgeom)

@@ -17,7 +17,7 @@ subroutine te0290(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -41,8 +41,8 @@ subroutine te0290(option, nomte)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call elref4(' ', 'RIGI', ndim, nno, nsom,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nsom,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)

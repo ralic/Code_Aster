@@ -13,7 +13,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -95,8 +95,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     prec = 1000*r8prem()
     zxain = xxmmvd('ZXAIN')
     call elref1(elp)
-    call elref4(' ', 'RIGI', ndim, nno, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno)
     ASSERT(ndim.eq.2)
 !
 !     1) RECHERCHE DES POINTS D'INTERSECTION
@@ -256,7 +255,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
           n(j)=0
 20      continue
 ! LE NEWTON NE PEUT PAS CONVERGER QUAND NDIM=3
-! IL NOUS MANQUE L INFORMATION SUR LA FACE DE L ELT PARENT 
+! IL NOUS MANQUE L INFORMATION SUR LA FACE DE L ELT PARENT
 ! TRANSPORTEE PAS N(3)
         ASSERT(ndim.lt.3)
 !       RECHERCHE POINT MILIEU FISSURE

@@ -57,7 +57,7 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 ! OUT NPGF   : NOMBRE DE POINTS DE GAUSS PAR FACETTE
 ! OUT SEUIL  : TABLEAU DES SEUILS DE FROTTEMENT
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/teattr.h"
 #include "asterfort/xminte.h"
     integer :: algocr, algofr, cface(5, 3), contac
@@ -95,8 +95,8 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
             elc='SE3'
         endif
     endif
-    call elref4(elc, fpg, ibid, nnof, ibid,&
-                npgf, ipoidf, ivff, idfdef, ibid)
+    call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 ! --- RECUPERATIONS DONNEES ET COEFFS DU CONTACT
 !

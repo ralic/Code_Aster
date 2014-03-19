@@ -6,7 +6,7 @@ subroutine te0032(option, nomte)
 #include "asterfort/dxroep.h"
 #include "asterfort/dxtfor.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecael.h"
@@ -54,8 +54,8 @@ subroutine te0032(option, nomte)
     character(len=24) :: valk
 ! DEB ------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     undemi = 0.5d0
     iplan = 0

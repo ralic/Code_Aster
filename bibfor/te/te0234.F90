@@ -5,7 +5,7 @@ subroutine te0234(option, nomte)
 #include "asterfort/dfdm1d.h"
 #include "asterfort/effi.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytpg.h"
 #include "asterfort/r8inir.h"
@@ -69,8 +69,8 @@ subroutine te0234(option, nomte)
 !DEB
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
 !
 !-- LECTURE DU COMPORTEMENT

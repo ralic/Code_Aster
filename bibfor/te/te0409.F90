@@ -39,7 +39,7 @@ subroutine te0409(option, nomte)
 #include "asterfort/dxtbm.h"
 #include "asterfort/dxtloc.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/glrcmm.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
@@ -205,7 +205,8 @@ subroutine te0409(option, nomte)
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
     lrgm = option.eq.'RIGI_MECA     '
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                     jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
     call jevech('PGEOMER', 'L', igeom)
 !
     if (nno .eq. 3) then

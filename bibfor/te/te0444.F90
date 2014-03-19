@@ -11,7 +11,7 @@ subroutine te0444(option, nomte)
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxroep.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/q4grig.h"
@@ -68,7 +68,8 @@ subroutine te0444(option, nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !

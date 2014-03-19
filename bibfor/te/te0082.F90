@@ -3,7 +3,7 @@ subroutine te0082(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/grdthm.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
@@ -62,8 +62,8 @@ subroutine te0082(option, nomte)
     integer :: idec, iret
 ! ......................................................................
 !
-    call elref4(' ', 'MASS', ndim, nno, nnos,&
-                npg2, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     nddl = 2 * nno
     nvec = nddl * ( nddl + 1 ) / 2
     press1(1) = 0

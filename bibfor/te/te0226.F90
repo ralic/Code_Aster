@@ -4,7 +4,7 @@ subroutine te0226(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/rcvalb.h"
@@ -42,7 +42,7 @@ subroutine te0226(option, nomte)
     character(len=8) :: elrefe, fami, poum
     integer :: icodre(1), kpg, spt
     real(kind=8) :: dfdx(3), r, rm, rf, rmf, poids, cour, nx, ny, h, vfi, vfj
-    real(kind=8) :: matp(9, 9), matv(45), r8b, rho(1)
+    real(kind=8) :: matp(9, 9), matv(45), rho(1)
     integer :: nno, nnos, jgano, ndim, ipoids, ivf, idfdk, igeom, imate, icaco
     integer :: kp, npg, ii, jj, i, j, k, imatuu, kd1, kd2, kd3, ij1, ij2, ij3
     integer :: nddl, nvec, iacce, ivect
@@ -50,8 +50,8 @@ subroutine te0226(option, nomte)
 !
     call elref1(elrefe)
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     nddl = 3*nno
     nvec = nddl* (nddl+1)/2
 !
@@ -65,7 +65,7 @@ subroutine te0226(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
     h = zr(icaco)
     rm = rho(1)*h

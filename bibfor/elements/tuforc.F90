@@ -6,7 +6,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
 #include "asterfort/bcoudc.h"
 #include "asterfort/bcoude.h"
 #include "asterfort/carcou.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
 #include "asterfort/ppgan2.h"
@@ -68,9 +68,9 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
     real(kind=8) :: epsthe(1), alphaf, betaf
     real(kind=8) :: alpham, betam, xa, xb, xc, xd
     real(kind=8) :: sigtmp(4), sigref
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     pi = r8pi()
     deuxpi = 2.d0*pi

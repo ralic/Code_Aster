@@ -20,7 +20,7 @@ subroutine te0440(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -64,8 +64,7 @@ subroutine te0440(option, nomte)
 !
 !     ELEMENT DE REFERENCE PARENT
     call elref1(elrefp)
-    call elref4(' ', 'RIGI', ndim, nnop, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop,nnos=nnops)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG
     if (.not.iselli(elrefp)) then
@@ -73,8 +72,8 @@ subroutine te0440(option, nomte)
     else
         irese=0
     endif
-    call elref4(elrese(ndim+irese), fami(ndim+irese), ibid, nno, nnos,&
-                npg, ibid, ibid, ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,nnos=nnos,&
+  npg=npg)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&

@@ -25,7 +25,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 #include "asterfort/cast3d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elraga.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/invjac.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
@@ -99,8 +99,8 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 ! - INITIALISATION HEXAS8
     call elraga('HE8', 'FPG8    ', ndim, nbpg2, coopg2,&
                 poipg2)
-    call elref4('HE8', 'MASS', ndim, nno, nnos,&
-                nbpg2, ipoid2, ivf2, idfde2, jgano)
+    call elrefe_info(elrefe='HE8',fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=nbpg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
 !
 ! - CALCUL DES COEFFICIENTS BI (MOYENNE DES DERIVEES DES FCTS DE FORME)
     call r8inir(3*nno, 0.d0, bi, 1)

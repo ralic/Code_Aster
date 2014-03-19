@@ -2,7 +2,7 @@ subroutine dxefg2(pgl, sigt)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dxmat1.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
@@ -52,7 +52,8 @@ subroutine dxefg2(pgl, sigt)
     real(kind=8) :: coe1, coe2, epais, tref
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elref5(' ', fami, ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
 !
     call r8inir(32, 0.d0, sigt, 1)
 !

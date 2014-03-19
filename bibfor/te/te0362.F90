@@ -22,7 +22,7 @@ subroutine te0362(option, nomte)
 #include "jeveux.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/subaco.h"
@@ -45,8 +45,8 @@ subroutine te0362(option, nomte)
 ! DEB ------------------------------------------------------------------
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elref4(lielrf(2), 'RIGI', ndim, nno, nnos,&
-                npg, iw, ivf, idf, jgn)
+    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=iw,jvf=ivf,jdfde=idf,jgano=jgn)
     ndim = ndim + 1
 !
     call jevech('PGEOMER', 'L', igeom)

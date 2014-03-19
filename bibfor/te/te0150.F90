@@ -1,7 +1,7 @@
 subroutine te0150(option, nomte)
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -99,8 +99,8 @@ subroutine te0150(option, nomte)
     zero = 0.d0
     fami = 'RIGI'
 !
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
 !     -- POUR LA PESANTEUR ET LA ROTATION, ON N'A BESOIN QUE DE RHO
 !        QUI EST FORCEMENT CONSTANT DANS LA MAILLE

@@ -20,7 +20,7 @@ subroutine te0207(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmfifn.h"
 #include "asterfort/utmess.h"
@@ -43,8 +43,8 @@ subroutine te0207(option, nomte)
 !    ICI AUX FONCTIONS DE FORMES 2D DES FACES DES MAILLES JOINT 3D
 !    PAR EXEMPLE FONCTION DE FORME DU QUAD4 POUR LES HEXA8.
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     if (nno .gt. 4) then
         call utmess('F', 'ELEMENTS5_22')

@@ -4,7 +4,7 @@ subroutine te0413(option, nomte)
 #include "asterfort/crgdm.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
@@ -70,9 +70,9 @@ subroutine te0413(option, nomte)
         call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnoel,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnoel,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCOMPOR', 'L', icompo)

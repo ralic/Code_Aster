@@ -2,7 +2,7 @@ subroutine te0513(option, nomte)
     implicit none
 ! aslint: disable=W0104
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
@@ -75,8 +75,8 @@ subroutine te0513(option, nomte)
 !
     zero = 0.0d0
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !     COQUE ==> 6 DDL PAR NOEUD
     nddlno=6

@@ -20,7 +20,7 @@ subroutine tumass(nomte, nbrddl, mass)
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/carcou.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/klg.h"
 #include "asterfort/klgcou.h"
@@ -65,9 +65,9 @@ subroutine tumass(nomte, nbrddl, mass)
     real(kind=8) :: nvec(6, nbrddl), tnvec(nbrddl, 6)
     real(kind=8) :: mass1(nbrddl, nbrddl)
 ! --------------------------------------------------------------------
-    call elref5(' ', 'MASS', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
 !
     pi = r8pi()

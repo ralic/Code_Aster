@@ -21,7 +21,7 @@ subroutine xthini(nomte, nfh, nfe)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 !
@@ -39,14 +39,13 @@ subroutine xthini(nomte, nfh, nfe)
 ! OUT  NDDL   : NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
 !     ------------------------------------------------------------------
 !
-    integer :: nno, ibid, ier, nnos, nfiss
+    integer :: nno, ier, nnos, nfiss
     integer :: jtab(7), iret
     character(len=8) :: enr
 !
 ! ----------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ibid, nno, nnos,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nno=nno,nnos=nnos)
 !
 ! --- INITIALISATIONS
 !

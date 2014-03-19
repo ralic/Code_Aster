@@ -20,7 +20,7 @@ subroutine te0390(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gddyng.h"
 #include "asterfort/gdecva.h"
 #include "asterfort/gdfine.h"
@@ -92,8 +92,8 @@ subroutine te0390(option, nomte)
     endif
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
     ico = 0
     do 20 kp = 1, npg

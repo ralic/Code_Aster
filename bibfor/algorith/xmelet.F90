@@ -26,7 +26,7 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/ismali.h"
 #include "asterfort/teattr.h"
@@ -84,7 +84,7 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
 !
     character(len=8) :: elrefp, enre, enrm, typma
     character(len=8) :: lielrf(10)
-    integer :: ntrou, ilie, ndimd, nnod, nnosd, ibid, ier, i
+    integer :: ntrou, ilie, ndimd, nnod, nnosd, ier, i
     integer :: iadzi, iazk24
 !
 ! ----------------------------------------------------------------------
@@ -152,8 +152,7 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
     call elref2(nomte, 10, lielrf, ntrou)
 !
     do 190 ilie = 1, ntrou
-        call elref4(lielrf(ilie), 'NOEU', ndimd, nnod, nnosd,&
-                    ibid, ibid, ibid, ibid, ibid)
+        call elrefe_info(elrefe=lielrf(ilie),fami='NOEU',ndim=ndimd,nno=nnod,nnos=nnosd)
         if (ilie .eq. 1) then
             ndim = ndimd
             jnne(1)= nnod

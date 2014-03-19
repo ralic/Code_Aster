@@ -28,8 +28,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -90,7 +89,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: dgdpo(4, 2), dgdlo(4, 3)
     real(kind=8) :: grad(ndim, ndim), dudm(3, 4), poids
     real(kind=8) :: dtdm(3, 4), lsng, lstg
-    real(kind=8) :: rbid, divu
+    real(kind=8) :: rbid
     real(kind=8) :: tthe, r
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref
     real(kind=8) :: crit(3), dfdm(3, 4)
@@ -99,7 +98,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
     logical :: grdepl, cp,  axi
-    integer :: irese, ddli, nnoi, indeni, ibid, nnops, fisno(nnop, nfiss), ifiss
+    integer :: irese, ddli, nnoi, indeni, nnops, fisno(nnop, nfiss), ifiss
 !
 !
     real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6)
@@ -159,8 +158,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -176,9 +174,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     end do
 !
 !     SOUS-ELEMENT DE REFERENCE
-    call elref5(elrese(ndim+irese), fami(ndim+irese), ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
     ASSERT(ndim.eq.ndimb)
 !
 !     TEMPERATURE DE REF

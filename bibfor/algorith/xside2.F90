@@ -9,8 +9,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/epstmc.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/rccoma.h"
@@ -86,7 +85,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     real(kind=8) :: dfdi(nnop, ndim), dgdgl(4, 3)
     real(kind=8) :: grad(3, 3)
     real(kind=8) :: zero, s, sth, d(4, 4), r, epsth(6)
-    integer :: nnops, ibid
+    integer :: nnops
 !
     data    zero / 0d0 /
     data    rac2 / 1.4142135623731d0 /
@@ -111,8 +110,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !      -----------------------------------------
     nbsig = nbsigm()
 !
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
 ! - INITIALISATION
     grdepl = compor(3).eq. 'GROT_GDEP'
@@ -124,9 +122,9 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
         call utmess('F', 'XFEM2_2')
     endif
 !
-    call elref5(elrese, 'XINT', ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS

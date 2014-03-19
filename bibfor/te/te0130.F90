@@ -32,7 +32,7 @@ subroutine te0130(option, nomte)
 #include "jeveux.h"
 !
 #include "asterc/r8t0.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, theta
@@ -47,8 +47,8 @@ subroutine te0130(option, nomte)
 !-----------------------------------------------------------------------
     tz0 = r8t0()
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg2, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
     ndi = nno*(nno+1)/2
 !

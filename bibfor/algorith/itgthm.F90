@@ -8,7 +8,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
     logical :: vf
     integer :: typvf
@@ -64,7 +64,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
 ! IVF2      FONCTIONS DE FORMES LINEAIRES
 ! =====================================================================
-    integer :: nnos2, npi2, ibid
+    integer :: nnos2, npi2
 ! =====================================================================
     call elref1(elrefe)
     if (.not.vf) then
@@ -95,13 +95,13 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
 ! ======================================================================
 ! --- FONCTIONS DE FORME P2 POUR L'INTEGRATION MECANIQUE ---------------
 ! ======================================================================
-    call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
-                npi, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npi,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 ! ======================================================================
 ! --- FONCTIONS DE FORME P1 POUR L'HYDRAULIQUE - THERMIQUE -------------
 ! ======================================================================
-    call elref4(elref2, 'RIGI', ndim, nno2, nnos2,&
-                npi2, ipoid2, ivf2, idfde2, ibid)
+    call elrefe_info(elrefe=elref2,fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos2,&
+  npg=npi2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2)
     ASSERT(nnos.eq.nno2)
 ! ======================================================================
 ! --- NFACE EN VF -------------

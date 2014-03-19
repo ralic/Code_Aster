@@ -21,7 +21,7 @@ subroutine te0519(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/indent.h"
 #include "asterfort/iselli.h"
@@ -64,8 +64,7 @@ subroutine te0519(option, nomte)
 ! --- ET DE SON NOMBRE DE NOEUDS
 !
     call elref1(elref)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
 !
 ! --- INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&

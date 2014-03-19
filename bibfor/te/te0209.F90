@@ -4,7 +4,7 @@ subroutine te0209(option, nomte)
 !
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
@@ -47,8 +47,8 @@ subroutine te0209(option, nomte)
 !
     call elref2(nomte, 2, lirefe, nbelr)
     ASSERT(nbelr.eq.2)
-    call elref4(lirefe(2), 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=lirefe(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)

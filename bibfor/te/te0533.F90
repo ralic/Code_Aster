@@ -5,7 +5,7 @@ subroutine te0533(option, nomte)
 #include "asterfort/confac.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -91,8 +91,8 @@ subroutine te0533(option, nomte)
 ! INTIALISATION JMATE POUR DETECTER EVENTUELLES ERREURS JEVEUX
     jmate=1
     call elref1(elref)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&

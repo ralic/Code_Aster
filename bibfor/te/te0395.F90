@@ -18,7 +18,7 @@ subroutine te0395(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmasf3.h"
 #include "asterfort/r8inir.h"
@@ -44,8 +44,8 @@ subroutine te0395(option, nomte)
 !      ------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! ---- PARAMETRES EN ENTREE
 ! ----     COORDONNEES DES CONNECTIVITES

@@ -38,7 +38,7 @@ subroutine te0282(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -75,9 +75,9 @@ subroutine te0282(option, nomte)
     axis=lteatt('AXIS','OUI')
 !
 ! RECUPERATION DES DONNEES GEOMETRIQUES LIEES AU CALCUL ELEMENTAIRE
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
 !
 ! INIT. POUR LE CALCUL DE G

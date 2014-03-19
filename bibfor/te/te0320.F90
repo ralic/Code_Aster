@@ -2,7 +2,7 @@ subroutine te0320(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -47,8 +47,8 @@ subroutine te0320(option, nomte)
     integer :: imate, itempe, iphasi, iphasn, nval
 !     -----------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !     PARAMETRES EN ENTREE
 !    ---------------------

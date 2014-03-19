@@ -8,8 +8,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
@@ -77,7 +76,6 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !
     logical :: axi
 !
-    integer :: ibid
     data     rac2 / 1.4142135623731d0 /
 !
 !
@@ -91,14 +89,13 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
     ddls=ddld+ddlc
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
     axi = lteatt('AXIS','OUI')
 !
-    call elref5(elrese, 'XINT', ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !-----------------------------------------------------------------------

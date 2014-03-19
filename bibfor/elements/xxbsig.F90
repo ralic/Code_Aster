@@ -10,8 +10,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matini.h"
@@ -78,7 +77,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
 !......................................................................
     integer :: kpg, i, ig, n, nn, m, dec(nnop)
     integer :: ddld, ddls, nno, nnops, nnos, npgbis, cpt, iret
-    integer :: ibid, idfde, ipoids, ivf, jcoopg, jdfd2, jgano
+    integer ::  idfde, ipoids, ivf, jcoopg, jdfd2, jgano
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
     real(kind=8) :: rbid, rbid6(6), rbid33(3, 3)
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
@@ -105,8 +104,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
     grdepl = compor(3) .eq. 'GROT_GDEP'
 !
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
     if (ndim .eq. 2) then
         axi = lteatt('AXIS','OUI')
@@ -114,9 +112,9 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse,&
         axi = .false.
     endif
 !     ADRESSE DES COORD DU SOUS ELT EN QUESTION
-    call elref5(elrese, 'XINT', ndim, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     ASSERT(npg.eq.npgbis)
     do n = 1, nnop

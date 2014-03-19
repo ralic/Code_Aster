@@ -27,7 +27,7 @@ subroutine te0189(option, nomte)
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
     character(len=16) :: option, nomte
     integer :: idino, ino, nno, nnos, ndim, jgano, npg1
@@ -37,8 +37,8 @@ subroutine te0189(option, nomte)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     ASSERT(option.eq.'PRAC_ELNO')
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     call jevech('PPRESSC', 'L', ipres)
     call jevech('PPRAC_R', 'E', ipdeb)

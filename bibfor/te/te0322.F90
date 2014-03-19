@@ -23,7 +23,7 @@ subroutine te0322(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/ejinit.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmfihm.h"
@@ -50,10 +50,10 @@ subroutine te0322(option, nomte)
 !
 ! FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 2, lielrf, ntrou)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npg, iw, ivf1, idf1, jgn)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npg, iw, ivf2, idf2, jgn)
+    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
+  npg=npg,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
+  npg=npg,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
 !
 ! LA DIMENSION DE L'ESPACE EST CELLE DE L'ELEM DE REF SURFACIQUE PLUS 1
     ndim = ndim + 1

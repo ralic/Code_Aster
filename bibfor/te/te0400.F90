@@ -4,7 +4,7 @@ subroutine te0400(option, nomte)
 !
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -54,7 +54,7 @@ subroutine te0400(option, nomte)
     integer :: ninter, nnonsx
     parameter    ( ninter = 3 ,nnonsx=540 )
 !
-    integer :: ndim, nnop, nno, nse, ibid, nnotot
+    integer :: ndim, nnop, nno, nse, nnotot
     integer :: jcnset, jlonch, ivoisx
     integer :: irese, i
     character(len=8) :: elrese(6), fami(6), elrefp
@@ -70,8 +70,7 @@ subroutine te0400(option, nomte)
 !
 !     ELEMENT DE REFERENCE PARENT
     call elref1(elrefp)
-    call elref4(' ', 'RIGI', ndim, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO
     if (.not.iselli(elrefp)) then
@@ -80,8 +79,7 @@ subroutine te0400(option, nomte)
         irese=0
     endif
 !
-    call elref4(elrese(ndim+irese), fami(ndim+irese), ibid, nno, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno)
 !
 ! --- RECUPERATION DES CHAMPS IN ET OUT
 !

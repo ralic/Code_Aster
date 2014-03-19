@@ -112,7 +112,7 @@ subroutine te0491(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/enelpg.h"
 #include "asterfort/eps1mc.h"
 #include "asterfort/epsvmc.h"
@@ -177,8 +177,8 @@ subroutine te0491(option, nomte)
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     axi = .false.
 !

@@ -2,7 +2,7 @@ subroutine te0181(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalc.h"
 !
@@ -46,8 +46,8 @@ subroutine te0181(option, nomte)
 !-----------------------------------------------------------------------
     integer :: l, ndi, ndim, nnos
 !-----------------------------------------------------------------------
-    call elref4(' ', 'MASS', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     ndi = nno* (nno+1)/2
 !
     call jevech('PGEOMER', 'L', igeom)

@@ -5,7 +5,7 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
 !
 #include "jeveux.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/ismali.h"
 #include "asterfort/teattr.h"
@@ -50,15 +50,14 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
 ! OUT  NFISS  : NOMBRE DE FISSURES
 !     ------------------------------------------------------------------
 !
-    integer :: ndim, nno, ibid, ier, nnos
+    integer :: ndim, nno, ier, nnos
     integer :: ddld, iadzi, iazk24, jtab(7), iret
     character(len=8) :: elrefp, enr, typma
 !
 ! ----------------------------------------------------------------------
 !
     call elref1(elrefp)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
 !
 ! --- INITIALISATIONS
 !

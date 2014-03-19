@@ -53,7 +53,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -81,7 +81,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     real(kind=8) :: r
     real(kind=8) :: jac, theta, dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: pdscal
-    integer :: ivf, kpg, ibid, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
+    integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
     integer :: nbddl
     integer :: mxstac, icodre(1), spt, ipoids, idfde, nosema, ind1, lddl, jnp
     integer :: iddlma
@@ -121,9 +121,8 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     poum = '+'
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO,NPG,IPOIDS,IVF,IDFDE
-    call elref5(elrese(ndim), fami(ndim), ibid, nno, ibid,&
-                npg, ipoids, ibid, ivf, idfde,&
-                ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),nno=nno,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
 !
 !     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
     nse=lonch(1)

@@ -4,7 +4,7 @@ subroutine te0292(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -62,8 +62,8 @@ subroutine te0292(option, nomte)
     call jemarq()
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.

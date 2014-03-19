@@ -2,7 +2,7 @@ subroutine te0391(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gdjrg0.h"
 #include "asterfort/gdmmas.h"
 #include "asterfort/jevech.h"
@@ -41,7 +41,7 @@ subroutine te0391(option, nomte)
     character(len=8) :: elrefe, fami, poum
     integer :: icodre(1), kpg, spt
     real(kind=8) :: en(3, 2), enprim(3, 2), x00(3, 3), y0(3), rot0(3, 3), rho(1)
-    real(kind=8) :: grani(4), mass(18, 18), r8bid, zero
+    real(kind=8) :: grani(4), mass(18, 18),  zero
     real(kind=8) :: a, xiy, xiz, xjx, pjacob, ajacob
     integer :: nno, nnos, jgano, ndim, npg, nord, ipoids, ivf, idfdk, kp, ne, ic
     integer :: lsect
@@ -50,8 +50,8 @@ subroutine te0391(option, nomte)
 !
     call elref1(elrefe)
     zero = 0.0d0
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     nord = 6*nno
     fami='FPG1'
     kpg=1
@@ -79,7 +79,7 @@ subroutine te0391(option, nomte)
 !
     call jevech('PMATERC', 'L', imate)
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [r8bid],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

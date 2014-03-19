@@ -25,7 +25,7 @@ subroutine te0350(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmas2d.h"
@@ -53,8 +53,8 @@ subroutine te0350(option, nomte)
 !
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !     MATNS MAL DIMENSIONNEE
     ASSERT(nno.le.9)

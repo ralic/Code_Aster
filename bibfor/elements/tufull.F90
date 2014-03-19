@@ -7,7 +7,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 #include "asterfort/bcoudc.h"
 #include "asterfort/bcoude.h"
 #include "asterfort/carcou.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/epsett.h"
 #include "asterfort/jevech.h"
 #include "asterfort/kcoude.h"
@@ -83,9 +83,9 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
     logical :: vecteu, matric
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     nc = nbrddl* (nbrddl+1)/2
     pi = r8pi()

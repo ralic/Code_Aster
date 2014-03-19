@@ -7,8 +7,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/xrige2.h"
@@ -67,7 +66,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
 !
     integer :: nse, npg
     integer :: j, ise, in, ino, idebs
-    integer :: ibid, idecpg, nbsig, ndim
+    integer ::  idecpg, nbsig, ndim
     integer :: irese, nno
 !
     real(kind=8) :: he, coorse(81)
@@ -86,8 +85,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
     call elref1(elrefp)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
-    call elref4(' ', 'RIGI', ndim, ibid, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
     if (.not.iselli(elrefp) .and. ndim .le. 2) then
@@ -95,9 +93,8 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
     else
         irese=0
     endif
-    call elref5(elrese(ndim+irese), fami(ndim+irese), ibid, nno, ibid,&
-                npg, ibid, ibid, ibid, ibid,&
-                ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
+  npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()

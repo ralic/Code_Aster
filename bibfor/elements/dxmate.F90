@@ -5,7 +5,7 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 #include "asterc/r8prem.h"
 #include "asterfort/codent.h"
 #include "asterfort/coqrep.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moyte2.h"
 #include "asterfort/moytem.h"
@@ -76,7 +76,8 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
     call r8inir(6, zero, dmc, 1)
     call r8inir(6, zero, dfc, 1)
 !
-    call elref4(' ', fami, ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jvf=ivf,jdfde=idfde,jgano=jgano)
     call tecael(iazi, iazk24)
     nomte = zk24(iazk24-1+3+nno+1)(1:16)
 !

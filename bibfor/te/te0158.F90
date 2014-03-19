@@ -1,7 +1,7 @@
 subroutine te0158(option, nomte)
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jpd1ff.h"
 #include "asterfort/jsd1ff.h"
@@ -56,7 +56,7 @@ subroutine te0158(option, nomte)
     character(len=8) :: nomail
     character(len=16) :: ch16
     integer :: lsect2, ipos, in, iadzi, iazk24
-    integer :: npg, ndim, nno, nnos, ipoids, ivf, iplouf
+    integer :: npg, ndim, nno, nnos, ipoids, ivf
     real(kind=8) :: b(4), gg, xi, wi
     real(kind=8) :: ul(14), pgl(3, 3), d1b(6, 12), dege(3, 7), d1btg(7, 14)
     real(kind=8) :: degem(6), alpha
@@ -70,8 +70,8 @@ subroutine te0158(option, nomte)
 !     ------------------------------------------------------------------
 !
     fami = 'RIGI'
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, iplouf, iplouf)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf)
 !
     if (option .eq. 'DEGE_ELNO') then
         call jevech('PDEFOGR', 'E', jeffg)

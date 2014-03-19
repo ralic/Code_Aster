@@ -11,7 +11,7 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
 #include "asterfort/dxhmft.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/dxqbm.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jquad4.h"
     integer :: igau
     real(kind=8) :: xyzl(3, 1), pgl(3, 3), bmat(8, 1), jacgau, caraq4(*)
@@ -57,9 +57,9 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
     logical :: coupmf
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
 ! --- COORDONNEES DU POINT D'INTEGRATION COURANT :
 !     ------------------------------------------

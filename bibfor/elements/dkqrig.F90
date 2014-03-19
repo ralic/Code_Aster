@@ -9,7 +9,7 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 #include "asterfort/dxqbm.h"
 #include "asterfort/dxqloc.h"
 #include "asterfort/dxqloe.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jquad4.h"
@@ -59,7 +59,8 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
     logical :: coupmf, exce, indith
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
 !
     un = 1.0d0
     enerth = 0.0d0

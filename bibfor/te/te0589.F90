@@ -17,7 +17,7 @@ subroutine te0589(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "jeveux.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/tutemp.h"
 #include "asterfort/utmess.h"
     character(len=16) :: option, nomte
@@ -38,9 +38,9 @@ subroutine te0589(option, nomte)
     real(kind=8) :: vtemp(nbrddm), pass(nbrddm, nbrddm)
     integer :: m, nbrddl
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
 !
     m = 3

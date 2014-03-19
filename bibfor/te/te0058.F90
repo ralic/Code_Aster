@@ -18,7 +18,7 @@ subroutine te0058(option, nomte)
     implicit none
 #include "jeveux.h"
 !
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
     character(len=16) :: option, nomte
@@ -45,8 +45,8 @@ subroutine te0058(option, nomte)
     integer :: i, ier, ino, j, jno
     real(kind=8) :: flun, flunp1
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)

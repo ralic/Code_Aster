@@ -7,7 +7,7 @@ subroutine q4gsie(option, fami, xyzl, pgl, depl,&
 #include "asterfort/dxdmul.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/dxqbm.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jquad4.h"
@@ -69,9 +69,9 @@ subroutine q4gsie(option, fami, xyzl, pgl, depl,&
     logical :: coupmf, lcalct
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
 !     ----- RAPPEL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 !           MEMBRANE ET CISAILLEMENT INVERSEES -------------------------

@@ -22,7 +22,7 @@ subroutine ef0409(nomte)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/r8inir.h"
@@ -45,8 +45,8 @@ subroutine ef0409(nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     call jevech('PEFFORR', 'E', ichn)
 !
     call jevech('PGEOMER', 'L', igeom)

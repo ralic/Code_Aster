@@ -20,7 +20,7 @@ subroutine matrc(nno, kcis, matc, vectt)
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/coqrep.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
 #include "asterfort/rccoma.h"
@@ -44,8 +44,8 @@ subroutine matrc(nno, kcis, matc, vectt)
     integer :: ndim, nnos, npg, ipoids, ivf, idfde, jgano, jcou
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     do i = 1, 5
         do j = 1, 5

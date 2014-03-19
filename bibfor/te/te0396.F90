@@ -20,7 +20,7 @@ subroutine te0396(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gdfint.h"
 #include "asterfort/gdjrg0.h"
 #include "asterfort/jevech.h"
@@ -55,8 +55,8 @@ subroutine te0396(option, nomte)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     materi = ' '
 !
     ico = 0

@@ -21,7 +21,7 @@ subroutine te0101(option, nomte)
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mudirx.h"
 #include "asterfort/rccoma.h"
@@ -67,8 +67,8 @@ subroutine te0101(option, nomte)
     integer :: ndim2, nno2, nnos2
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     ---------------
@@ -495,8 +495,8 @@ subroutine te0101(option, nomte)
 ! ---  SUPERIEUR OU EGAL AU NOMBRE DE POINTS UTILISES POUR LA
 ! ---  RIGIDITE MEMBRANAIRE :
 !      --------------------
-        call elref4(' ', 'MASS', ndim2, nno2, nnos2,&
-                    npg2, ipoids, ivf, idfde, jgano2)
+        call elrefe_info(fami='MASS',ndim=ndim2,nno=nno2,nnos=nnos2,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano2)
 !
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 !      -----------------------------------

@@ -18,7 +18,7 @@ subroutine te0493(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
     character(len=16) :: option, nomte
@@ -81,11 +81,11 @@ subroutine te0493(option, nomte)
     endif
 !
     if (tria) then
-        call elref4('TR3', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfdx, jgano)
+        call elrefe_info(elrefe='TR3',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     else
-        call elref4('QU4', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfdx, jgano)
+        call elrefe_info(elrefe='QU4',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     endif
     idfdy=idfdx+1
     call jevech('PGEOMER', 'L', igeom)

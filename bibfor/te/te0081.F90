@@ -21,7 +21,7 @@ subroutine te0081(option, nomte)
 #include "asterfort/bmatmc.h"
 #include "asterfort/btdbmc.h"
 #include "asterfort/dmatmc.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
@@ -52,8 +52,8 @@ subroutine te0081(option, nomte)
     character(len=4) :: fami
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------

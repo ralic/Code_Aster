@@ -5,7 +5,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/reeref.h"
@@ -85,9 +85,9 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 !     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
     ddlt=ddld+ddlc
 !
-    call elref5('TR3', 'XINT', ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe='TR3',fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !

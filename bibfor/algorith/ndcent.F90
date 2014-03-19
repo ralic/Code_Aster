@@ -3,7 +3,7 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
 !
 #include "jeveux.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/matini.h"
 #include "asterfort/reereg.h"
@@ -47,8 +47,7 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
 !
 !
     call elref1(elp)
-    call elref4(elp, 'RIGI', ibid, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(elrefe=elp,fami='RIGI',nno=nnop)
     call matini(3, 7, 0.d0, tx)
     call vecini(7, 0.d0, txlsn)
 !
@@ -114,7 +113,7 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
     endif
 !
 !.....................................................................
-!     CALCUL DE LA LSN DU MILIEU 
+!     CALCUL DE LA LSN DU MILIEU
 !
     do 10 j = 1, nnc
         do 11 i = 1, ndim
@@ -137,5 +136,5 @@ subroutine ndcent(igeom, ndim, lsn, tx, txlsn, nnc)
         do 21 i = 1, ndim
             tx(i,j)=xe(i)
 21      continue
-20  continue 
+20  continue
 end subroutine

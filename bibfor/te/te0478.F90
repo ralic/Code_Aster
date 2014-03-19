@@ -20,7 +20,7 @@ subroutine te0478(option, nomte)
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/ppga1d.h"
@@ -46,8 +46,8 @@ subroutine te0478(option, nomte)
     real(kind=8) :: epcou, alpha, rayon, ep, y, z, hh, r
     real(kind=8) :: dfdx(3), cour, jacp, cosa, sina, spoid
 ! ----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim1, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim1,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     ASSERT(npg.le.4)
 !
 !     NDIM1 EST LA DIMENSION TOPOLOGIQUE. IL FAUT CALCULER LA

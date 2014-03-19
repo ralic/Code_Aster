@@ -30,7 +30,7 @@ subroutine te0374(option, nomte)
 !
 !!
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -48,10 +48,9 @@ subroutine te0374(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ii, ij, ino, ionde, j, jj
     integer :: jno
-    real(kind=8) :: rbid
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg2, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     idfdy = idfdx + 1
     ndi = nno*(2*nno+1)
@@ -69,7 +68,7 @@ subroutine te0374(option, nomte)
     nomres(1) = 'RHO'
     nomres(2) = 'CELE_R'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [rbid],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 1)
     rho = valres(1)
     celer = valres(2)

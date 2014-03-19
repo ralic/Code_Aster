@@ -21,7 +21,7 @@ subroutine te0571(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/xrigth.h"
@@ -41,7 +41,7 @@ subroutine te0571(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim, nfh, nfe, ibid, igeom, nnop, jpintt, imate, itps, jstno
+    integer :: ndim, nfh, nfe, igeom, nnop, jpintt, imate, itps, jstno
     integer :: imattt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, nddlno
     character(len=8) :: elrefp
 !
@@ -70,8 +70,7 @@ subroutine te0571(option, nomte)
     call jevech('PMATTTR', 'E', imattt)
 !
 !     ELT DE REF PARENT : RECUP NDIM ET NNOP (NOEUDS PARENT)
-    call elref4(' ', 'RIGI', ndim, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
 !
 !     NBRE DE DDLS PAR NOEUD
     call xthini(nomte, nfh, nfe)

@@ -9,7 +9,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elelin.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -81,8 +81,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
     call jemarq()
 !
-    call elref4(elc, fpg, ndimf, nnof, ibid,&
-                ibid, ipoidf, ivff, idfdef, ibid)
+    call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nnof,&
+  jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
     axi = lteatt('AXIS','OUI')
     ASSERT(nnof.eq.3)

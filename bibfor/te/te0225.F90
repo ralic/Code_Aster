@@ -2,7 +2,7 @@ subroutine te0225(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm1d.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -55,9 +55,9 @@ subroutine te0225(option, nomte)
     data zero,un,deux/0.d0,1.d0,2.d0/
 !     ------------------------------------------------------------------
     fami = 'RIGI'
-    call elref5(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCACOQU', 'L', icaco)

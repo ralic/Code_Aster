@@ -117,7 +117,7 @@ subroutine te0490(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/enelpg.h"
 #include "asterfort/eps1mc.h"
 #include "asterfort/epsvmc.h"
@@ -187,8 +187,8 @@ subroutine te0490(option, nomte)
 !
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- TYPE DE MODELISATION
 !

@@ -23,7 +23,7 @@ subroutine te0327(option, nomte)
 !
 #include "jeveux.h"
 !
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
@@ -41,8 +41,8 @@ subroutine te0327(option, nomte)
     integer :: i, iacce, idim, idir, ii, ij, ino
     integer :: j, jdir, jj, jno, k
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PACCELR', 'L', iacce)

@@ -30,7 +30,7 @@ subroutine te0123(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/massup.h"
@@ -81,13 +81,13 @@ subroutine te0123(option, nomte)
     ASSERT(ntrou.ge.2)
 !
     if (option(1:9) .eq. 'MASS_MECA') then
-        call elref4(lielrf(1), 'MASS', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(elrefe=lielrf(1),fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     else
-        call elref4(lielrf(1), 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
-        call elref4(lielrf(2), 'RIGI', ndim, nnob, nnos,&
-                    npg, ipoids, ivfb, idfdeb, jgano)
+        call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+        call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nnob,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivfb,jdfde=idfdeb,jgano=jgano)
     endif
 !
 ! - TYPE DE MODELISATION

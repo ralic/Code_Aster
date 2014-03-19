@@ -2,7 +2,7 @@ subroutine te0114(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 !
     character(len=16) :: nomte, option
@@ -42,8 +42,8 @@ subroutine te0114(option, nomte)
     integer :: nno, kp, iharmo, i, idefo, idepl, idpg, igau, isig
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)

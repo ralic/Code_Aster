@@ -17,7 +17,7 @@ subroutine te0553(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
@@ -48,10 +48,9 @@ subroutine te0553(option, nomte)
 !-----------------------------------------------------------------------
     integer :: ij, imate, imatuu, j, jgano, ll, ndim
     integer :: nnos
-    real(kind=8) :: r8b
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PMATUUR', 'E', imatuu)
@@ -67,7 +66,7 @@ subroutine te0553(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 3, nomres, valres, icodre, 1)
 !
     e = valres(1)

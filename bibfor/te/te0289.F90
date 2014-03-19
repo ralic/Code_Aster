@@ -3,7 +3,7 @@ subroutine te0289(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -77,14 +77,13 @@ subroutine te0289(option, nomte)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM ET NNOP
     call elref1(elrefp)
-    call elref4(' ', 'RIGI', ndim, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
     ASSERT(nnop.le.27)
 !
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG, IVF ET JGANO
-    call elref4(elrese(ndim), fami(ndim), ibid, nno, ibid,&
-                npg, ibid, ivf, ibid, jgano)
+    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),nno=nno,&
+  npg=npg,jvf=ivf,jgano=jgano)
 !
     ASSERT(npg.le.15)
 !

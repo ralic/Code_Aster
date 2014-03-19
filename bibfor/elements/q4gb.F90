@@ -4,7 +4,7 @@ subroutine q4gb(caraq4, xyzl, igau, jacgau, bmat)
 #include "asterfort/bcoqaf.h"
 #include "asterfort/dsqbfb.h"
 #include "asterfort/dxqbm.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jquad4.h"
 #include "asterfort/q4gbc.h"
     integer :: igau
@@ -42,9 +42,9 @@ subroutine q4gb(caraq4, xyzl, igau, jacgau, bmat)
     real(kind=8) :: bm(3, 8), bf(3, 12), bc(2, 12), qsi, eta, jacob(5)
 ! ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
 ! --- COORDONNEES DU POINT D'INTEGRATION COURANT :
 !     ------------------------------------------

@@ -18,7 +18,7 @@ subroutine te0353(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcfonc.h"
@@ -63,8 +63,8 @@ subroutine te0353(option, nomte)
     data zirc/'ALPHPUR','ALPHBETA'/
 !
     fami='RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     nbcon=4
     laxi=.false.
     if (lteatt('AXIS','OUI')) laxi=.true.

@@ -4,7 +4,7 @@ subroutine te0514(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -89,8 +89,7 @@ subroutine te0514(option, nomte)
     call jemarq()
 !
     call elref1(elp)
-    call elref4(' ', 'RIGI', ndime, nno, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndime,nno=nno)
 !
     call tecael(iadzi, iazk24)
     noma=zk24(iazk24)(1:8)

@@ -22,7 +22,7 @@ subroutine turigi(nomte, nbrddl, k)
 #include "asterfort/bcoudc.h"
 #include "asterfort/bcoude.h"
 #include "asterfort/carcou.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/kcoude.h"
 #include "asterfort/klg.h"
@@ -70,9 +70,9 @@ subroutine turigi(nomte, nbrddl, k)
     integer :: igau, icou, isect, i, j, lorien, icoud2, mmt
     integer :: jcoopg
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
 !     DIMENSION DE LA MATRICE STOCKEE SOUS FORME VECTEUR
     nc = nbrddl* (nbrddl+1)/2

@@ -18,7 +18,7 @@ subroutine te0426(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/bsigmc.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
@@ -54,8 +54,8 @@ subroutine te0426(option, nomte)
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------

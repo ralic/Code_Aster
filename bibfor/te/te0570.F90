@@ -59,7 +59,7 @@ subroutine te0570(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/angvxy.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
@@ -90,8 +90,8 @@ subroutine te0570(option, nomte)
     iopt = 0
     pi = r8pi()
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
 !
 !

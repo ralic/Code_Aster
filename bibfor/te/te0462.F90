@@ -20,7 +20,7 @@ subroutine te0462(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fmater.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
@@ -102,8 +102,8 @@ subroutine te0462(option, nomte)
     decfpg = 0
     do 200 ifpg = 1, nfpg
 !
-        call elref4(' ', fami(ifpg), ndim1, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami=fami(ifpg),ndim=ndim1,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
         do 100 ig = 1, npg
 !

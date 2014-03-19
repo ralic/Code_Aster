@@ -20,7 +20,7 @@ subroutine te0591(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nifnlg.h"
@@ -50,9 +50,12 @@ subroutine te0591(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.3)
-    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos, npg, iw, ivf3, idf3, jgn)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
+    call elrefe_info(elrefe=lielrf(3),fami='RIGI',ndim=ndim,nno=nno3,nnos=nnos,npg=npg,&
+                    jpoids=iw,jvf=ivf3,jdfde=idf3,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,npg=npg,&
+                    jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,npg=npg,&
+                    jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then

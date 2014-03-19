@@ -20,7 +20,7 @@ subroutine te0578(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/xtelga.h"
@@ -37,7 +37,7 @@ subroutine te0578(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim, nfh, nfe, ibid, itempn, igeom, nnop, itempg, jpintt
+    integer :: ndim, nfh, nfe, itempn, igeom, nnop, itempg, jpintt
     integer :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
     character(len=8) :: elrefp
 !
@@ -64,8 +64,7 @@ subroutine te0578(option, nomte)
 !
 !     ELT DE REF PARENT : RECUP NDIM ET NNOP (NOEUDS PARENT)
 !     -> RQ : 'RIGI' POUR LA FAMILLE DE PG EST DONC SANS CONSQUENCE
-    call elref4(' ', 'RIGI', ndim, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
 !
 !     RECUP DE NFH (NBRE FCT HEAVISIDE) ET NFE (NBRE FCT SINGULIER)
     call xthini(nomte, nfh, nfe)

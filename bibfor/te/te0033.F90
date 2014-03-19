@@ -20,7 +20,7 @@ subroutine te0033(option, nomte)
 #include "asterfort/dxsit2.h"
 #include "asterfort/dxsith.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/q4gedg.h"
 #include "asterfort/q4gsie.h"
@@ -88,7 +88,8 @@ subroutine te0033(option, nomte)
     else
         fami = 'RIGI'
     endif
-    call elref4(' ', fami, ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     if (option .ne. 'SIEF_ELGA' .and. option .ne. 'EPSI_ELGA' .and. &
         option .ne. 'DEGE_ELNO' .and. option .ne. 'DEGE_ELGA') then

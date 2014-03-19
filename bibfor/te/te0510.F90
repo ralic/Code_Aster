@@ -4,7 +4,7 @@ subroutine te0510(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -104,8 +104,7 @@ subroutine te0510(option, nomte)
     ASSERT(zxain.eq.zxainx)
 !
     call elref1(elp)
-    call elref4(elp, 'RIGI', ndim, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(elrefe=elp,fami='RIGI',ndim=ndim,nno=nnop)
     ASSERT(nnop .le. nnopma)
 !
 !     RECUPERATION DES ENTRÉES / SORTIE

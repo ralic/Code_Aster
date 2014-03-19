@@ -6,7 +6,7 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 #include "asterfort/dsxhft.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/dxqbm.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/jquad4.h"
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), edgl(*)
@@ -51,11 +51,13 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 !     ------------------------------------------------------------------
 !
     if (option(6:9) .eq. 'ELGA') then
-        call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                         jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
         ne = npg
         fami='RIGI'
     else if (option(6:9).eq.'ELNO') then
-        call elref5(' ', 'NOEU', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                        jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
         ne = nno
         fami='NOEU'
     endif

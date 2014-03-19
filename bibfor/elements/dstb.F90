@@ -8,7 +8,7 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
 #include "asterfort/dsxhft.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/dxtbm.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
     integer :: igau
     real(kind=8) :: pgl(3, 3), bmat(8, 1), carat3(*), jacgau
 ! ======================================================================
@@ -51,9 +51,9 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     logical :: coupmf
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
 ! --- COORDONNEES DU POINT D'INTEGRATION COURANT :
 !     ------------------------------------------

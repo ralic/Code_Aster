@@ -30,7 +30,7 @@ subroutine te0182(option, nomte)
     implicit none
 !*
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -48,10 +48,9 @@ subroutine te0182(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, iimp, ij, ino, j, jno, mater
 !
-    real(kind=8) :: r8b
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg2, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !**
     idfdy = idfdx + 1
     ndi = nno*(nno+1)/2
@@ -69,7 +68,7 @@ subroutine te0182(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [r8b],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
     do 10 i = 1, ndi

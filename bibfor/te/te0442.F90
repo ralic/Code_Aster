@@ -27,7 +27,7 @@ subroutine te0442(option, nomte)
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxsiro.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
 #include "asterfort/tecach.h"
@@ -134,8 +134,8 @@ subroutine te0442(option, nomte)
         type_pt = pt_gauss
     endif
 ! Infos sur les noeuds et points de Gauss de l'élément
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 ! Nombre de points en fonction de la localisation des champs
     if (pain(4:5) .eq. 'NO') then
         np = nno
@@ -144,7 +144,7 @@ subroutine te0442(option, nomte)
     endif
     ASSERT(np.le.nptmax)
     !
-! Adresses des champs locaux 
+! Adresses des champs locaux
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcara)
     call jevech('PANGREP', 'L', jang)
@@ -152,7 +152,7 @@ subroutine te0442(option, nomte)
     call jevech(paout, 'E', jout)
     call tecach('OOO', pain, 'L', iret2, nval=7,&
                 itab=itab)
-! Nombre de sous-points dans le champ local 
+! Nombre de sous-points dans le champ local
     nbsp = itab(7)
     if ((nbsp.ne.1) .and. (mod(nbsp,3).ne.0)) then
         call utmess('F', 'ELEMENTS5_54', si=nbsp)
@@ -178,10 +178,10 @@ subroutine te0442(option, nomte)
     alpha = zr(jcara-1+2) * r8dgrd()
     beta = zr(jcara-1+3) * r8dgrd()
     excen = zr(jcara-1+5)
-! 
+!
 ! T2iu1 : matrice (2x2) de passage du repère intrinsèque au repère utilisateur 1 de
 ! la variété (défini par l'utilisateur dans caraelem)
-! T2ui1 = tiu1^T 
+! T2ui1 = tiu1^T
     call coqrep(pig, alpha, beta, t2iu1, t2ui1,&
                 c, s)
 !  Type de changement de repère
@@ -235,60 +235,60 @@ subroutine te0442(option, nomte)
         endif
         !
     else if (nint(rep) == 3) then
-!   PASSAGE DES CONTRAINTES DU REPERE LOCAL 1 
-!   A L'ELEMENT AU REPERE CYLINDRIQUE 
-!   REPERE ='COQUE_UTIL_CYL' 
+!   PASSAGE DES CONTRAINTES DU REPERE LOCAL 1
+!   A L'ELEMENT AU REPERE CYLINDRIQUE
+!   REPERE ='COQUE_UTIL_CYL'
         if (option .eq. 'REPE_TENS') then
-! Nombre de couches déclarées dans le caraelem. 
+! Nombre de couches déclarées dans le caraelem.
             call jevech('PNBSP_I', 'L', jnbspi)
             nbcou = zi(jnbspi)
 ! Vérification de cohérence :
-! On vérifie que le nb de sous-points dans le champ local  
-! est bien égal au nombre de sous-points (3 * nbcou) prévus 
-! pour la coque (i.e. qu'on n'a pas extrait un champ sur un 
-! sous point, ce qui rend le calcul de la cote des sous-points 
-! impossible) 
-            ASSERT ( nbsp /= np * 3 * nbcou ) 
+! On vérifie que le nb de sous-points dans le champ local
+! est bien égal au nombre de sous-points (3 * nbcou) prévus
+! pour la coque (i.e. qu'on n'a pas extrait un champ sur un
+! sous point, ce qui rend le calcul de la cote des sous-points
+! impossible)
+            ASSERT ( nbsp /= np * 3 * nbcou )
             hicou = epais/nbcou
-! Définition du repère 
+! Définition du repère
             axe_z(:)= zr(jang-1+4: jang-1+6)
             call normev(axe_z, xnorm)
 ! Si l'axe z n'est pas initialisé dans la carte, on ne veut pas changer de repère
-! => on ne fait rien 
+! => on ne fait rien
             if (xnorm > r8prem()) then
                 orig(:) = zr(jang-1+7: jang-1+9)
-! Passage des contraintes du repère local 1 (repère utilisateur défini par 
+! Passage des contraintes du repère local 1 (repère utilisateur défini par
 ! cara_elem) au repère intrinsèque pour tous les points et sous-points
-! matrice de passage t2ui1 
+! matrice de passage t2ui1
                 call dxsiro(np*nbsp, t2ui1, zr(jin), zr(jout))
 ! Passage des contraintes du repère intrinsèque au repère local cylindrique
                 joff = 0
                 do ipt = 1, np
-! -- Calcul des coordonnées du point  
+! -- Calcul des coordonnées du point
                     x(:) = 0.d0
                     if (type_pt == pt_gauss) then
-!  Le point est un point de Gauss 
+!  Le point est un point de Gauss
                         do ino = 1, nno
                             x(1) = x(1) + zr(jgeom+3* (ino-1)-1+1)*zr(ivf+ (ipt-1)*nno+ ino-1)
                             x(2) = x(2) + zr(jgeom+3* (ino-1)-1+2)*zr(ivf+ (ipt-1)*nno+ ino-1)
                             x(3) = x(3) + zr(jgeom+3* (ino-1)-1+3)*zr(ivf+ (ipt-1)*nno+ ino-1)
                         enddo
                     else if (type_pt == pt_noeud) then
-!  Le point est un noeud de l'élément 
+!  Le point est un noeud de l'élément
                         x(1) = zr(jgeom+3* (ipt-1)-1+1)
                         x(2) = zr(jgeom+3* (ipt-1)-1+2)
                         x(3) = zr(jgeom+3* (ipt-1)-1+3)
                     endif
                     !
 ! Boucle sur les couches
-!       
+!
                     do icou = 1, nbcou
                         !
-!  Boucle sur les sous-points dans l'épaisseur de la couche 
+!  Boucle sur les sous-points dans l'épaisseur de la couche
                         !
                         do isp = 1, 3
-! Calcul de la cote du sous-point par rapport 
-! à la surface moyenne de la coque  
+! Calcul de la cote du sous-point par rapport
+! à la surface moyenne de la coque
                             zic = excen - epais/2.d0 + (icou-1)*hicou
                             if (isp .eq. 1) then
                                 zic = zic
@@ -297,14 +297,14 @@ subroutine te0442(option, nomte)
                             else
                                 zic = zic + hicou
                             endif
-!-- Coordonnées du sous-point (pig(3,:) est la normale à l'élément) 
+!-- Coordonnées du sous-point (pig(3,:) est la normale à l'élément)
                             xsp(:) = x(:) + zic * pig(3,:)
 !-- Calcul de la matrice de passage du repère global au repère local cylindrique
                             ipaxe = 0
                             call cylrep(ndim, xsp, axe_z, orig, pgcyl,&
                                         ipaxe)
                             if (ipaxe > 0) then
-! le point est sur l'axe du repere cylindrique, on essaie de se placer au 
+! le point est sur l'axe du repere cylindrique, on essaie de se placer au
 ! centre de gravité pour calculer le repère
                                 xbary(:) = 0
                                 do ino = 1, nno
@@ -327,18 +327,18 @@ subroutine te0442(option, nomte)
                             call dgemm('N', 'N', 3, 3, 3,&
                                        a, pig(1, 1), 3, pgcyl(1, 1), 3,&
                                        b, picyl(1, 1), 3)
-! Appliquer le changement de base 
+! Appliquer le changement de base
                             call tpsivp(picyl, zr(jout+joff-1+1:jout+joff-1+ncmp))
-! Mettre à jour l'offset (un tenseur 3D symétrique a 6 composantes) 
+! Mettre à jour l'offset (un tenseur 3D symétrique a 6 composantes)
                             joff = joff + ncmp
                         enddo
                     enddo
                 enddo
             else
-! on ne veut pas changer de repère, on recopie le champ 
+! on ne veut pas changer de repère, on recopie le champ
                 zr(jout:jout+np*nbsp*ncmp) = zr(jin:jin+np*nbsp*ncmp)
-            endif 
-        else 
+            endif
+        else
             ASSERT(.false.)
         endif
     endif

@@ -6,7 +6,7 @@ subroutine te0037(option, nomte)
 #include "asterfort/conare.h"
 #include "asterfort/confac.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
@@ -89,8 +89,8 @@ subroutine te0037(option, nomte)
     zxain = xxmmvd('ZXAIN')
 !
     call elref1(elref)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -227,8 +227,8 @@ subroutine te0037(option, nomte)
         endif
 104    continue
 !
-        call elref4(elc, fpg, ibid, nnof, ibid,&
-                    npgf, ipoidf, ivff, idfdef, ibid)
+        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         do ipgf = 1, npgf

@@ -13,7 +13,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 #include "asterfort/dxtbm.h"
 #include "asterfort/dxtloc.h"
 #include "asterfort/dxtloe.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
 #include "asterfort/promat.h"
@@ -86,9 +86,9 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
      &             6, 12, 18, 24, 30, 36 /
 !     ----------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
     zero = 0.0d0
     un = 1.0d0

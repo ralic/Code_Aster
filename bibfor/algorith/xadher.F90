@@ -22,7 +22,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/matini.h"
 #include "asterfort/utbtab.h"
     integer :: algofr
@@ -57,7 +57,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 !
 !
 !
-    integer :: ndim, i, j, k, ibid
+    integer :: ndim, i, j, k
     real(kind=8) :: prec, norme, xab(3, 3), gt(3)
     real(kind=8) :: p2(2, 2), ptknp2(2, 2), kn2(2, 2), xab2(2, 2)
     real(kind=8) :: gt2(3), norme2
@@ -67,8 +67,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 !-----------------------------------------------------------------------
 !     CALCUL DE GT = LAMDBA + RHO [[DX]]/DELTAT ET DE SA PROJECTION
 !
-    call elref4(' ', 'RIGI', ndim, ibid, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim)
     lpenaf = (algofr.eq.2)
     do 10 i = 1, ndim
         vitang(i)=0.d0

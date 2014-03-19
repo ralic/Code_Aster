@@ -20,7 +20,7 @@ subroutine te0221(option, nomte)
 !
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytpg.h"
 #include "asterfort/rcvala.h"
@@ -58,8 +58,8 @@ subroutine te0221(option, nomte)
 !
     data zero,un,deux,trois,douze/0.d0,1.d0,2.d0,3.d0,12.d0/
     call elref1(elrefe)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     eps = 1.d-3
 !
 !

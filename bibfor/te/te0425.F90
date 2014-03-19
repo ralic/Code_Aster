@@ -4,7 +4,7 @@ subroutine te0425(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmpr3d_vect.h"
@@ -72,8 +72,8 @@ subroutine te0425(option, nomte)
 !
 ! - Finite element parameters
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, jpoids, jvf, jdf, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=jpoids,jvf=jvf,jdfde=jdf,jgano=jgano)
     nddl = 3*nno
     ASSERT(nno .le.mxnoeu)
     ASSERT(npg .le.mxnpg)

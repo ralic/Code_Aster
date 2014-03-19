@@ -8,7 +8,7 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
 #include "asterfort/dsxhft.h"
 #include "asterfort/dxhmft.h"
 #include "asterfort/dxqbm.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/jquad4.h"
 #include "asterfort/mgauss.h"
@@ -96,9 +96,9 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
     real(kind=8) :: aa(4, 4), aai(4, 4), caraq4(25), jacob(5)
 !     ------------------------------------------------------------------
 !
-    call elref5('SE2', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(elrefe='SE2',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
     nc = 4
 !
 ! --- INITIALISATIONS :

@@ -3,7 +3,7 @@ subroutine te0233(option, nomte)
 #include "jeveux.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -43,12 +43,12 @@ subroutine te0233(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: jgano, ndim, nnos
-    real(kind=8) :: r8b, rho(1)
+    real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -61,7 +61,7 @@ subroutine te0233(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
     do 40 kp = 1, npg

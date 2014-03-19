@@ -4,7 +4,7 @@ subroutine te0024(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -52,8 +52,8 @@ subroutine te0024(option, nomte)
     call elref1(elp)
 !
 !     ON CALCULE LES GRADIENTS SUR TOUS LES NOEUDS DE L'ELEMENT DE REF
-    call elref4(elp, 'NOEU', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgan)
+    call elrefe_info(elrefe=elp,fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgan)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PNEUTER', 'L', ineut)

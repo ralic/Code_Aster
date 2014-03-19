@@ -2,7 +2,7 @@ subroutine dsqdis(xyzl, caraq4, df, dci, an)
     implicit  none
 #include "jeveux.h"
 #include "asterfort/dsxhft.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jquad4.h"
 #include "asterfort/mgauss.h"
     real(kind=8) :: xyzl(3, *), df(3, 3), dci(2, 2), an(4, 12), caraq4(*)
@@ -33,9 +33,9 @@ subroutine dsqdis(xyzl, caraq4, df, dci, an)
     real(kind=8) :: dib(2, 12), dia(2, 4), aw(4, 12), aa(4, 4), aai(4, 4)
 !     ------------------------------------------------------------------
 !
-    call elref5('SE2', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(elrefe='SE2',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
     nc = 4
 !
     c(1) = caraq4(13)

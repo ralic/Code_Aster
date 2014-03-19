@@ -4,7 +4,7 @@ subroutine te0247(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/carapo.h"
 #include "asterfort/chgrep.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lcsovn.h"
 #include "asterfort/matela.h"
@@ -63,7 +63,7 @@ subroutine te0247(option, nomte)
     integer :: iinstm, iinstp, icarcr, icontm, ideplm, ideplp, imatuu
     integer :: ivectu, icontp, itype, nno, nc, ivarim, ivarip, itemp, i
     integer :: jtab(7), jcret, kk, lgpg, iret, iretm, iretp, iret2
-    integer :: npg, ndimel, nnoel, nnosel, iplouf
+    integer :: npg, ndimel, nnoel, nnosel
     integer :: lx, lrcou, istrxm, istrxp, ldep
     parameter    (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
     real(kind=8) :: e, nu, g, em, num
@@ -122,8 +122,8 @@ subroutine te0247(option, nomte)
 !
 ! --- POINT DE GAUSS DE L'ELEMENT
 !
-    call elref4(' ', 'RIGI', ndimel, nnoel, nnosel,&
-                npg, iplouf, iplouf, iplouf, iplouf)
+    call elrefe_info(fami='RIGI',ndim=ndimel,nno=nnoel,nnos=nnosel,&
+  npg=npg)
     ASSERT((npg.eq.2).or.(npg.eq.3))
 !
 !     -- BOOLEENS PRATIQUES :

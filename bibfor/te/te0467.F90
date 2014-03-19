@@ -19,7 +19,7 @@ subroutine te0467(option, nomte)
 #include "jeveux.h"
 !
 #include "asterfort/dfdm1d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
@@ -39,8 +39,8 @@ subroutine te0467(option, nomte)
     real(kind=8) :: xx, yy, poids, jacp, rbid, rbid2(2)
     logical :: laxi
 !
-    call elref4('SE2', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe='SE2',fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !

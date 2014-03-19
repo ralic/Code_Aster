@@ -10,7 +10,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
 #include "asterfort/dxqloc.h"
 #include "asterfort/dxtbm.h"
 #include "asterfort/dxtloc.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
@@ -153,9 +153,9 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     logical :: vecteu, matric, dkt, dkq, leul
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nnoel, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnoel,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
     deux = 2.d0
     rac2 = sqrt(deux)

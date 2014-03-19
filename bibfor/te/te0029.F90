@@ -30,7 +30,7 @@ subroutine te0029(option, nomte)
 !
 #include "jeveux.h"
 !
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
     character(len=8) :: nompar(4)
@@ -46,8 +46,8 @@ subroutine te0029(option, nomte)
 !
     real(kind=8) :: fx, fy, fz, xx, yy, zz
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)

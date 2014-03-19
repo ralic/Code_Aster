@@ -70,7 +70,7 @@ subroutine te0118(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -117,8 +117,8 @@ subroutine te0118(option, nomte)
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PLONCAR', 'E', ilc)
 !
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
         if (ndime .eq. 3) then
 !  ----------------------------------------------------------
@@ -208,8 +208,8 @@ subroutine te0118(option, nomte)
 !  --------------------------
 !  CALCUL DE GRANDF ET PETITF
 !  --------------------------
-        call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
         neutr = 0.d0
         do 50 ino = 1, nno
             neutr = neutr + zr(ineutr-1+ino)
@@ -229,8 +229,8 @@ subroutine te0118(option, nomte)
         call jevech('PMEAST', 'E', imeast)
         call jevech('PNIELNO', 'E', ini)
 !
-        call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
         ASSERT(nno.le.8)
 !
 !
@@ -241,13 +241,13 @@ subroutine te0118(option, nomte)
         if (ndime .eq. 3) then
 !
             if (typma(1:5) .eq. 'TETRA') then
-                call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                            npg, ipoids, ivf, idfde, jgano)
+                call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
                 ASSERT(npg.eq.1)
                 call dfdm3d(nno, 1, ipoids, idfde, zr(igeom),&
                             meast, dfdx, dfdy, dfdz)
-                call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                            npg, ipoids, ivf, idfde, jgano)
+                call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
             else if (typma(1:4).eq.'HEXA') then
                 norm12=0.d0
@@ -283,13 +283,13 @@ subroutine te0118(option, nomte)
 !       Surface elementaire
                 meast = norm12 * norm14
             else if (typma(1:3).eq.'TRI') then
-                call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                            npg, ipoids, ivf, idfde, jgano)
+                call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !               ASSERT(NPG.EQ.1)
                 call dfdm2d(nno, 1, ipoids, idfde, zr(igeom),&
                             meast, dfdx, dfdy)
-                call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                            npg, ipoids, ivf, idfde, jgano)
+                call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
             endif
         endif
 !  -----------------------
@@ -355,8 +355,8 @@ subroutine te0118(option, nomte)
         call jevech('PGRANDF', 'L', igdf)
         call jevech('PNIELNO', 'L', ini)
 !
-        call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
         ASSERT(nno.le.8)
 !
 !  ------------------------------------------

@@ -35,7 +35,7 @@ subroutine te0378(option, nomte)
 #include "asterfort/calnor.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/elref7.h"
 #include "asterfort/ermeb2.h"
 #include "asterfort/ermes2.h"
@@ -156,8 +156,8 @@ subroutine te0378(option, nomte)
         write(ifm,*) 'MAILLE NUMERO', zi(iadzi),', DE TYPE ', elrefe
     endif
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! 1.3. --- CHAMP DE CONTRAINTES
 !
@@ -464,7 +464,7 @@ subroutine te0378(option, nomte)
                 elrefb)
 !GN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 ! --- CARACTERISTIQUES DES FACES DE BORD -------------------------------
-!     ON EST TENTE DE FAIRE L'APPEL A ELREF4 COMME EN 3D MAIS C'EST EN
+!     on est tente de faire l'appel a elrefe_info comme en 3d mais c'est en
 !     FAIT INUTILE CAR ON N'A BESOIN QUE DE NNOF ET NPGF.
 !     CELA TOMBE BIEN CAR L'APPEL MARCHE RAREMENT ...
 !
@@ -473,7 +473,7 @@ subroutine te0378(option, nomte)
     else
         nnof = 3
     endif
-!GN      CALL ELREF4 ( ELREFF, 'RIGI',
+!GN      CALL ELREF4 ( ELREFF,fami='RIGI',
 !GN     >              NDIMF, NNOF, NNOSF, NPGF, IPOIDF, IVFF,
 !GN     >              IDFDXF, JGANOF )
 !GN      WRITE(IFM,2000) 'NDIMF',NDIMF

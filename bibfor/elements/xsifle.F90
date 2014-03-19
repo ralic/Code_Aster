@@ -31,7 +31,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 #include "asterfort/conare.h"
 #include "asterfort/confac.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/indent.h"
 #include "asterfort/jedema.h"
@@ -96,8 +96,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
     ddls=ddld+ddlc
 !
     call elref1(elref)
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
     call tecael(iadzi, iazk24)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
 !
@@ -148,8 +147,8 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
     endif
 104  continue
 !
-    call elref4(elc, fpg, ibid, nnof, ibid,&
-                npgf, ipoidf, ivff, idfdef, ibid)
+    call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 !     MATÉRIAU HOMOGENE
 !     ON PEUT PAS LE RECUPERER SUR LES POINTS DE GAUSS DES FACETTES

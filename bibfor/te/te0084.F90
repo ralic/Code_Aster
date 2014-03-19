@@ -6,7 +6,7 @@ subroutine te0084(option, nomte)
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
@@ -58,8 +58,8 @@ subroutine te0084(option, nomte)
 !
 ! - Finite element parameters
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! - IN fields
 !

@@ -29,7 +29,7 @@ subroutine te0176(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 !
     character(len=16) :: nomte, option
@@ -43,8 +43,8 @@ subroutine te0176(option, nomte)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     ndi = nno*(nno+1)/2
 !

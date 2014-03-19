@@ -4,7 +4,7 @@ subroutine te0489(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dchapg.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/norsig.h"
@@ -154,8 +154,8 @@ subroutine te0489(option, nomte)
 !
     call jevech('PCONTPR', 'L', isigtp)
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     ASSERT(npg.eq.npg1)
 !
 ! ---- AFFECTATION DES VECTEURS DE TRAVAIL SIGMA1 ET SIGMA2

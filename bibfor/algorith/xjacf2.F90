@@ -9,7 +9,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elelin.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
@@ -76,7 +76,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     logical :: axi
     character(len=8) :: k8bid
     real(kind=8) :: xe(3)
-    integer :: ibid, ibid2, ibid3, nptfmx
+    integer :: ibid, nptfmx
     real(kind=8) :: dfdx(3), rbid2, rbid3, rbid4
 !
     parameter       (nbnomx = 27, nptfmx=4)
@@ -85,8 +85,8 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
     call jemarq()
 !
-    call elref4(elc, fpg, ndimf, nnof, ibid,&
-                ibid2, ipoidf, ivff, idfdef, ibid3)
+    call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nnof,&
+  jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
     axi = lteatt('AXIS','OUI')
 !

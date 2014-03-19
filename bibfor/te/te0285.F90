@@ -6,7 +6,7 @@ subroutine te0285(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
@@ -55,8 +55,8 @@ subroutine te0285(option, nomte)
     zero = 0.d0
     depi = r8depi()
 !
-    call elref4(' ', 'MASS', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     if (option .eq. 'MASS_INER') then
         call jevech('PMATERC', 'L', imate)

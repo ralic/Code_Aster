@@ -32,7 +32,7 @@ subroutine te0239(option, nomte)
 #include "asterfort/dfdm1d.h"
 #include "asterfort/effi.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matdtd.h"
 #include "asterfort/mattge.h"
@@ -87,8 +87,8 @@ subroutine te0239(option, nomte)
     matric = ((option.eq.'FULL_MECA') .or. (option.eq.'RIGI_MECA_TANG'))
 !
     call elref1(elrefe)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
 !       TYPMOD(1) = 'C_PLAN  '
 !       TYPMOD(2) = '        '

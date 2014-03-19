@@ -27,7 +27,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/codere.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gedisc.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmfisa.h"
@@ -87,8 +87,8 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
     if (resi) call r8inir(8, 0.d0, fint, 1)
     if (rigi) call r8inir(64, 0.d0, ktan, 1)
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS
     call gedisc(2, nno, npg, zr(ivf), geom,&

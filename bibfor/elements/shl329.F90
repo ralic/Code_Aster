@@ -23,7 +23,7 @@ subroutine shl329()
 !
 #include "jeveux.h"
 #include "asterfort/codent.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecael.h"
 #include "asterfort/wkvect.h"
@@ -39,9 +39,9 @@ subroutine shl329()
 !
 ! DEB ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
     call jevech('PACCELR', 'L', iacce)
     call jevech('PGEOMER', 'L', igeom)

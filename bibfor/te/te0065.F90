@@ -4,7 +4,7 @@ subroutine te0065(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -101,12 +101,12 @@ subroutine te0065(option, nomte)
         rapp = rapp * rapp / ycell
         yf = zr(lcorr+3)/ycell
         rho(1) = ( rhopou * ayz * rapp ) + ( rhoflu * yf )
-        call elref4(lielrf(1), 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     else
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
         if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH') then
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                         ' ', phenom, 0, ' ', [0.d0],&

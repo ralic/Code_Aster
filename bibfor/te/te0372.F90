@@ -29,7 +29,7 @@ subroutine te0372(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
@@ -51,8 +51,8 @@ subroutine te0372(option, nomte)
     integer :: nnos
     real(kind=8) :: r
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     ndi = nno* (2*nno+1)
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.

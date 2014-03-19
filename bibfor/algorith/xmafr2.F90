@@ -20,7 +20,7 @@ subroutine xmafr2(tau1, tau2, b, abc)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
     real(kind=8) :: tau1(3), tau2(3), b(3, 3), abc(2, 2)
 !
 ! ----------------------------------------------------------------------
@@ -38,11 +38,10 @@ subroutine xmafr2(tau1, tau2, b, abc)
 !
 !
 !
-    integer :: ndim, i, j, k, ibid
+    integer :: ndim, i, j, k
     real(kind=8) :: a(2, 3), bc(3, 2), c(3, 2)
 !
-    call elref4(' ', 'RIGI', ndim, ibid, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim)
 !
 !
 !  CALCUL DE A.B.C AVEC A=(TAU1) EN NLI ET C=(TAU1 TAU2) EN NLJ

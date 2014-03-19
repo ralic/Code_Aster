@@ -32,7 +32,7 @@ subroutine te0392(option, nomte)
 #include "asterfort/dfdm3d.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elraga.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/invjac.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ortrep.h"
@@ -72,8 +72,8 @@ subroutine te0392(option, nomte)
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------
@@ -117,8 +117,8 @@ subroutine te0392(option, nomte)
 ! - INITIALISATION HEXAS8
     call elraga('HE8', 'FPG8    ', ndim, nbpg2, coopg2,&
                 poipg2)
-    call elref4('HE8', 'MASS', ndim, nno, nnos,&
-                nbpg2, ipoid2, ivf2, idfde2, jgano)
+    call elrefe_info(elrefe='HE8',fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=nbpg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
 !
 !
 !  RECUP DU COEF DE POISSON POUR ASQBI

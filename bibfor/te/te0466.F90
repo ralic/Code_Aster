@@ -3,7 +3,7 @@ subroutine te0466(option, nomte)
 #include "jeveux.h"
 #include "asterfort/dimthm.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
@@ -45,7 +45,7 @@ subroutine te0466(option, nomte)
 !
     integer :: ipoids, ivf, idfdx, idfdy, igeom, i, j, l, ifluxf
     integer :: ndim, nno, ipg, npi, ires, iflux, itemps, jgano
-    integer :: idec, jdec, kdec, ldec, ldec2, ino, jno, ibid
+    integer :: idec, jdec, kdec, ldec, ldec2, ino, jno
     integer :: iopt, iret, iforc
     integer :: nno2, nnos2, ipoid2, idfdx2, ivf2
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, valpar(4)
@@ -82,11 +82,11 @@ subroutine te0466(option, nomte)
         call utmess('F', 'DVP_4', sk=elrefe)
     endif
 ! FONCTIONS DE FORMES QUADRATIQUES
-    call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
-                npi, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npi,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 ! FONCTIONS DE FORMES LINEAIRES
-    call elref4(elref2, 'RIGI', ndim, nno2, nnos2,&
-                npi2, ipoid2, ivf2, idfdx2, ibid)
+    call elrefe_info(elrefe=elref2,fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos2,&
+  npg=npi2,jpoids=ipoid2,jvf=ivf2,jdfde=idfdx2)
 !
 ! NB DE DDL A CHAQUE NOEUD
     call dimthm(ndlno, ndlnm, ndim2)

@@ -10,8 +10,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/tecach.h"
@@ -109,8 +108,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
-    call elref4(' ', 'RIGI', ndim, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nnos=nnops)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
     if (.not.iselli(elrefp)) then
@@ -118,9 +116,8 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
     else
         irese=0
     endif
-    call elref5(elrese(ndim+irese), fami(ndim+irese), ibid, nno, ibid,&
-                npg, ibid, ibid, ibid, ibid,&
-                ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
+  npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()

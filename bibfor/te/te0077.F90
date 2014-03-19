@@ -20,7 +20,7 @@ subroutine te0077(option, nomte)
 #include "asterfort/connec.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rccoma.h"
@@ -59,10 +59,10 @@ subroutine te0077(option, nomte)
         if (alias8(6:8) .eq. 'TR6') elrefe='TR3'
     endif
 !
-    call elref4(elrefe, 'NOEU', ndim, nno, nnos,&
-                npg2, ipoid2, ivf2, idfde2, jgano)
-    call elref4(elrefe, 'MASS', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=elrefe,fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
+    call elrefe_info(elrefe=elrefe,fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)

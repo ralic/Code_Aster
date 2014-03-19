@@ -5,7 +5,7 @@ subroutine te0423(option, nomte)
 #include "asterfort/dxefg2.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
@@ -42,7 +42,8 @@ subroutine te0423(option, nomte)
     character(len=16) :: optio2
 ! ----------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcaco)

@@ -21,7 +21,7 @@ subroutine te0135(option, nomte)
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
     character(len=16) :: option, nomte
@@ -39,8 +39,8 @@ subroutine te0135(option, nomte)
     real(kind=8) :: ux(3), uy(3), uz(3)
     real(kind=8) :: ang(3)
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     ASSERT(nnos.le.4)
 !
     call jevech('PCAORIE', 'L', jorie)

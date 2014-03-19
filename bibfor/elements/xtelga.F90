@@ -22,7 +22,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
@@ -69,7 +69,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop)
     real(kind=8) :: he
     real(kind=8) :: ffenr(nnop, 1+nfh+nfe), dfdi(nnop,ndim)
-    integer :: ivf, kpg, ibid, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
+    integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
     integer :: nbddl
     integer :: mxstac
 !
@@ -88,9 +88,8 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     nbddl = 1+nfh+nfe
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO,NPG,IVF
-    call elref5(elrese(ndim), fami(ndim), ibid, nno, ibid,&
-                npg, ibid, ibid, ivf, ibid,&
-                ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),nno=nno,&
+  npg=npg,jvf=ivf)
 !
 !     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
     nse=lonch(1)

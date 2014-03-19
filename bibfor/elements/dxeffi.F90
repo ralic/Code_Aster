@@ -4,7 +4,7 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
 #include "jeveux.h"
 #include "asterfort/dxdmul.h"
 #include "asterfort/dxmate.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
@@ -52,9 +52,9 @@ subroutine dxeffi(option, nomte, pgl, cont, ind,&
     logical :: coupmf
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
     zero = 0.0d0
     deux = 2.0d0

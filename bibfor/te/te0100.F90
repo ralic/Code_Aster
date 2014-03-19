@@ -19,7 +19,7 @@ subroutine te0100(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmdlog.h"
@@ -69,8 +69,8 @@ subroutine te0100(option, nomte)
     ivectu=1
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
 !

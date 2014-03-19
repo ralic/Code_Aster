@@ -2,7 +2,7 @@ subroutine te0472(option, nomte)
     implicit     none
 #include "jeveux.h"
 #include "asterfort/borthm.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/vff2dn.h"
@@ -69,13 +69,13 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- INTERPOLATION (QUADRATIQUE) POUR LA MECANIQUE --------------------
 ! ======================================================================
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 ! ======================================================================
 ! --- INTERPOLATION (LINEAIRE) POUR LA THERMO-HYDRAULIQUE --------------
 ! ======================================================================
-    call elref4('SE2', 'RIGI', ndim, nno2, nnos,&
-                npg, ipoid2, ivf2, idfde2, jgano2)
+    call elrefe_info(elrefe='SE2',fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
+  npg=npg,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano2)
 ! ======================================================================
 ! --- RECUPERATION DES CHAMPS IN ET DES CHAMPS OUT ---------------------
 ! ======================================================================

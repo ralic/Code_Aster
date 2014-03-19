@@ -2,7 +2,7 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
                   vpg, vno)
     implicit     none
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/ppgan2.h"
     integer :: jgano, ncmp, nvim
     real(kind=8) :: vno(*), vpg(*)
@@ -50,7 +50,7 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
 ! =====================================================================
 ! --- * SIEFPG ET SIEFSO DE DIMENSION NNOMAX*DIMMAX -------------------
 ! =====================================================================
-    integer :: i, j, ibid1, ibid2, ibid3, jganpg, jganso
+    integer :: i, j, jganpg, jganso
     integer :: ndim, nno, nnos, npg, ndim2, nno2, nnos2, npg2
     integer :: nvmax, npgmax, nnosma, dimmax, nnomax
     parameter (nvmax  = 60)
@@ -69,13 +69,13 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
 ! =====================================================================
 ! --- MATRICE DE PASSAGE POINTS DE GAUSS -> SOMMETS JGANPG ------------
 ! =====================================================================
-        call elref4(' ', 'MASS', ndim, nno, nnos,&
-                    npg, ibid1, ibid2, ibid3, jganpg)
+        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jgano=jganpg)
 ! =====================================================================
 ! --- MATRICE DE PASSAGE SOMMETS -> SOMMETS : JGANSO ------------------
 ! =====================================================================
-        call elref4(' ', 'NOEU_S', ndim2, nno2, nnos2,&
-                    npg2, ibid1, ibid2, ibid3, jganso)
+        call elrefe_info(fami='NOEU_S',ndim=ndim2,nno=nno2,nnos=nnos2,&
+  npg=npg2,jgano=jganso)
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================

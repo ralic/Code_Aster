@@ -21,7 +21,7 @@ subroutine te0102(option, nomte)
 #include "asterfort/cq3d2d.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -63,11 +63,11 @@ subroutine te0102(option, nomte)
 !
 !
     if (nomte .ne. 'THCPSE3 ' .and. nomte .ne. 'THCASE3 ') then
-        call elref4(' ', 'MASS', ndim, nno, nnos,&
-                    npg2, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     else
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg2, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     endif
 !
 !

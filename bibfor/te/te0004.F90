@@ -2,7 +2,7 @@ subroutine te0004(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte
@@ -177,8 +177,8 @@ subroutine te0004(option, nomte)
 !    -------------------------------------------------------------------
 !
 ! --- IL FAUDRAIT PENSER A RECUPERER FAMI DE MANIERE AUTOMATIQUE ET SURE
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     iinpg=itabin(1)
     ioutno=itabou(1)
 !
@@ -190,8 +190,8 @@ subroutine te0004(option, nomte)
 ! --- ON ESSAIE UNE AUTRE FAMILLE DE POINT DE GAUSS
     if (itabin(3) .ne. npg) then
         fami='MASS'
-        call elref4(' ', fami, ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     endif
     ASSERT(itabin(3).eq.npg)
 !

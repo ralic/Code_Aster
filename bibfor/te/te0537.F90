@@ -18,7 +18,7 @@ subroutine te0537(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/matela.h"
@@ -65,13 +65,13 @@ subroutine te0537(option, nomte)
     integer :: ipos1, ipos2, nbfig, nbgf, ig, nugf, ifb, icp, isdcom, icompo
     character(len=8) :: materi, nomres(2), nomail
     integer :: codres(2), ncomp
-    integer :: npg, ndim, nnoel, nnos, ipoids, ivf, iplouf
+    integer :: npg, ndim, nnoel, nnos, ipoids, ivf
     real(kind=8) :: klv(78),klc(12,12) ,effo(12)
 !     ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nnoel, nnos,&
-                npg, ipoids, ivf, iplouf, iplouf)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnoel,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf)
     ASSERT(nno.eq.nnoel)
 !     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
     call jevech('PNBSP_I', 'L', ifb)

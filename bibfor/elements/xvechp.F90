@@ -57,7 +57,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/confac.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/tecael.h"
@@ -180,8 +180,8 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
         endif
 104      continue
 !
-        call elref4(elc, fpg, ibid, nnof, ibid,&
-                    npgf, ipoidf, ivff, idfdef, ibid)
+        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 !-----------------------------------------------------------------------
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES

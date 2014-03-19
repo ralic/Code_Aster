@@ -2,7 +2,7 @@ subroutine te0163(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -58,8 +58,8 @@ subroutine te0163(option, nomte)
 !-----------------------------------------------------------------------
     call jemarq()
     call elref1(elrefe)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     zero = 0.d0
 !
 !

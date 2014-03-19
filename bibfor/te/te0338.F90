@@ -3,7 +3,7 @@ subroutine te0338(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/epdcp.h"
 #include "asterfort/fgequi.h"
 #include "asterfort/jevech.h"
@@ -66,8 +66,8 @@ subroutine te0338(option, nomte)
 !
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     nbvp = 3
 !

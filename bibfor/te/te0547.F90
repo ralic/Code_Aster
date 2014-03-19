@@ -4,7 +4,7 @@ subroutine te0547(option, nomte)
 #include "asterc/r8vide.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -93,8 +93,8 @@ subroutine te0547(option, nomte)
 !-----------------------------------------------------------------------
 !
     call elref1(elref)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
 !
@@ -172,8 +172,8 @@ subroutine te0547(option, nomte)
     endif
 !
 ! RECUPERATION DU NOMBRE DE POINTS DE GAUSS NPGF
-    call elref4(elc, fpg, ibid, nnof, ibid,&
-                npgf, ipoidf, ivff, idfdef, ibid)
+    call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 !
 ! LISTE DES LAMBDAS ACTIFS

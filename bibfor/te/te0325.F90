@@ -30,7 +30,7 @@ subroutine te0325(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -48,10 +48,10 @@ subroutine te0325(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, iacce, idim, ino, itemp, j, jno
     integer :: k, mater
-    real(kind=8) :: r8b, rho(1)
+    real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -64,7 +64,7 @@ subroutine te0325(option, nomte)
     poum='+'
     mater = zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'THER', 0, ' ', [r8b],&
+                ' ', 'THER', 0, ' ', [0.d0],&
                 1, 'RHO_CP', rho, icodre, 1)
 !
     if (option(16:16) .eq. 'R') then

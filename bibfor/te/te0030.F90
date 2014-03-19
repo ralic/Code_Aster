@@ -21,7 +21,7 @@ subroutine te0030(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cribif.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/hujtid.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
@@ -91,8 +91,8 @@ subroutine te0030(option, nomte)
 ! =====================================================================
 ! --- RECUPERATION DU ELREFE ------------------------------------------
 ! =====================================================================
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 ! =====================================================================
 ! --- PARAMETRES EN ENTREE --------------------------------------------
 ! =====================================================================
@@ -111,7 +111,7 @@ subroutine te0030(option, nomte)
             dimmax = tabthm(2)
             npgu = tabthm(3)
 ! =====================================================================
-! --- ON TESTE LA COHERENCE DES RECUPERATIONS ELREF4 ET TECACH SUR ----
+! --- on teste la coherence des recuperations elrefe_info et tecach sur ----
 ! --- LE NOMBRE DE POINTS DE GAUSS ------------------------------------
 ! =====================================================================
             ASSERT(npgu.eq.npg)

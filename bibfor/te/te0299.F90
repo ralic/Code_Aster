@@ -35,7 +35,7 @@ subroutine te0299(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/chauxi.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gbilin.h"
 #include "asterfort/jedema.h"
@@ -82,8 +82,8 @@ subroutine te0299(option, nomte)
     call jemarq()
 !
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- RECUPERATION DES CHAMPS IN
 !

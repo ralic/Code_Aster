@@ -3,7 +3,7 @@ subroutine te0168(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/biline.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/pmavec.h"
@@ -39,16 +39,16 @@ subroutine te0168(option, nomte)
 !
 !
     integer :: icodre(1)
-    real(kind=8) :: a, rho(1), coef, jacobi, en(3, 2), r8b
-    real(kind=8) :: matp(6, 6), matv(21)
+    real(kind=8) :: rho(1), coef, jacobi, en(3, 2)
+    real(kind=8) :: matp(6, 6), matv(21), a
     integer :: nno, npg, k, kp, i, ii, jj, ki, ky, nddl, nvec, imatuu, lsect
     integer :: ipoids, ivf, iyty, igeom, imate, iacce, ivect
     integer :: ndim, nnos, jgano, idfdk
 ! ......................................................................
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     call jevete('&INEL.CABPOU.YTY', 'L', iyty)
     nddl = 3*nno
     nvec = nddl* (nddl+1)/2
@@ -57,7 +57,7 @@ subroutine te0168(option, nomte)
     call jevech('PMATERC', 'L', imate)
 !
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
     call jevech('PCACABL', 'L', lsect)
     a = zr(lsect)

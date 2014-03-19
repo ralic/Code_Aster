@@ -22,7 +22,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 #include "asterfort/bcoudc.h"
 #include "asterfort/bcoude.h"
 #include "asterfort/carcou.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
 #include "asterfort/rccoma.h"
@@ -59,9 +59,9 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
     integer :: jnbspi, iret, iret2
     integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     pi = r8pi()
     deuxpi = 2.d0*pi

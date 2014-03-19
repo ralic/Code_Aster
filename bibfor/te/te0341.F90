@@ -24,7 +24,7 @@ subroutine te0341(option, nomte)
 #include "asterfort/cginit.h"
 #include "asterfort/cgtang.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/terefe.h"
     character(len=16) :: option, nomte
@@ -48,12 +48,12 @@ subroutine te0341(option, nomte)
 !
 !
     call elref2(nomte, 2, lielrf, ntrou)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npg, iw, ivf1, idf1, jgn)
-    call elref4(lielrf(1), 'NOEU', ndim, nno1, nnos,&
-                npgn, iwn, ivf1n, idf1n, jgnn)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npg, iw, ivf2, idf2, jgn)
+    call elrefe_info(elrefe=lielrf(1),fami='RIGI',ndim=ndim,nno=nno1,nnos=nnos,&
+  npg=npg,jpoids=iw,jvf=ivf1,jdfde=idf1,jgano=jgn)
+    call elrefe_info(elrefe=lielrf(1),fami='NOEU',ndim=ndim,nno=nno1,nnos=nnos,&
+  npg=npgn,jpoids=iwn,jvf=ivf1n,jdfde=idf1n,jgano=jgnn)
+    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno2,nnos=nnos,&
+  npg=npg,jpoids=iw,jvf=ivf2,jdfde=idf2,jgano=jgn)
     ndim=3
     nddl1 = 5
 !

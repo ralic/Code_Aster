@@ -9,8 +9,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/epstmc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
@@ -76,7 +75,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
     character(len=2) :: k2bid
     character(len=16) :: phenom
-    integer :: kpg, n, i, j, iret, ibid, ipg
+    integer :: kpg, n, i, j, iret, ipg
     integer :: nno, npgbis, ddlm, ddld, ndimb, ino
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
     integer :: nbsig, nnops
@@ -120,17 +119,16 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
     nbsig = nbsigm()
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------
     call jevech('PDEPLAR', 'L', idepl)
 !
 !       TE4-'XINT' : SCHÉMAS À 15 POINTS
-    call elref5(elrese, 'XINT', ndimb, nno, ibid,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese,fami='XINT',ndim=ndimb,nno=nno,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !

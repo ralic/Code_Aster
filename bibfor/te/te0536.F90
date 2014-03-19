@@ -3,7 +3,7 @@ subroutine te0536(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
@@ -47,8 +47,8 @@ subroutine te0536(option, nomte)
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref1(elrefp)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !      FAMI='RIGI'
 !     MATNS MAL DIMENSIONNEE
     ASSERT(nno.le.27)

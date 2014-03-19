@@ -25,7 +25,7 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 #include "asterfort/dkqbnl.h"
 #include "asterfort/dxefro.h"
 #include "asterfort/dxqloc.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jquad4.h"
@@ -74,9 +74,9 @@ subroutine dkqrge(nomte, xyzl, pgl, rig)
 !
 ! deb ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
 !     ----- mise a zero des matrices : flex ,memb et mefl :
 !

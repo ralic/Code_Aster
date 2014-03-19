@@ -18,7 +18,7 @@ subroutine te0007(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/bsigmc.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
@@ -44,8 +44,8 @@ subroutine te0007(option, nomte)
 !
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! --- INITIALISATIONS :
 !     -----------------

@@ -6,7 +6,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 #include "jeveux.h"
 #include "blas/ddot.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/provec.h"
@@ -65,8 +65,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 !
     call jemarq()
 !
-    call elref4(elrefp, 'RIGI', ibid, nno, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(elrefe=elrefp,fami='RIGI',nno=nno)
 !
     itemax=100
     epsmax=1.d-8
@@ -97,11 +96,11 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 !   CALCUL D UN POINT DE DEPART POUR LE NEWTON
 !===============================================================
 !   ON DEFINI UN CRITERE SIMPLE POUR PRENDRE EN COMPTE LA COURBURE
-!   CE CRITERE EST EFFICACE QUAND L INTERSECTION DE SURFACE DE L ISO ZERO 
+!   CE CRITERE EST EFFICACE QUAND L INTERSECTION DE SURFACE DE L ISO ZERO
 !   ET DU SOUS TETRAEDRE FORME UN <<POLYEDRE>> NON CONVEXE
 !   SITUATION PLUS PROBABLE LORS DE LA DECOUPE D UN TETRATRAEDRE
 !   EN REVANCHE,
-!   EN RAFINANT LE MAILLAGE, LA SURFACE DE LA LEVEL-SET DEVIENT PLANE DANS 
+!   EN RAFINANT LE MAILLAGE, LA SURFACE DE LA LEVEL-SET DEVIENT PLANE DANS
 !   LES SOUS-TETRAS, LE CRITERE CI DESSOUS N A PLUS D INCIDENCE SUR LE CALCUL
 !
     courbe=.false.
@@ -109,25 +108,25 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     edge=""
 !   ARETE I1-I2
     call xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
-    if (crit .gt. maxi) then 
+    if (crit .gt. maxi) then
       maxi=crit
       edge="A12"
     endif
 !   ARETE I2-I4
     call xcedge(ndime, pinref, pi2, pi4, pmiref, m24, crit)
-    if (crit .gt. maxi) then 
+    if (crit .gt. maxi) then
       maxi=crit
       edge="A24"
     endif
 !   ARETE I3-I4
     call xcedge(ndime, pinref, pi3, pi4, pmiref, m34, crit)
-    if (crit .gt. maxi) then 
+    if (crit .gt. maxi) then
       maxi=crit
       edge="A34"
     endif
 !   ARETE I1-I3
     call xcedge(ndime, pinref, pi1, pi3, pmiref, m13, crit)
-    if (crit .gt. maxi) then 
+    if (crit .gt. maxi) then
       maxi=crit
       edge="A13"
     endif
@@ -137,11 +136,11 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     if ( .not.courbe ) then
         do i=1,ndime
            ptxx(i+ndime)=(pinref(ndime*(pi1-1)+i)+&
-                    pinref(ndime*(pi4-1)+i))/2.d0  
+                    pinref(ndime*(pi4-1)+i))/2.d0
         enddo
     else
         do i=1,ndime
-           if (edge .eq. "A12" .or.  edge .eq. "A34") then 
+           if (edge .eq. "A12" .or.  edge .eq. "A34") then
                ptxx(i+ndime)=(pmiref(ndime*(m12-1)+i)+&
                             pmiref(ndime*(m34-1)+i))/2.d0
            else if(edge .eq. "A13" .or.  edge .eq. "A24") then
@@ -150,9 +149,9 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
            else
                ASSERT(.false.)
            endif
-        enddo    
+        enddo
     endif
-!   
+!
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     call vecini(ndime, 0.d0, ksi)
     call xnewto(elrefp, name, n,&
@@ -165,7 +164,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     enddo
 !
     call xelrex(elrefp, nno, x)
-    call xveri0(ndime, elrefp, cenref, iret)  
+    call xveri0(ndime, elrefp, cenref, iret)
     ASSERT(iret .eq. 0)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL

@@ -30,7 +30,7 @@ subroutine te0183(option, nomte)
 !
 !
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
     integer :: icodre(1), kpg, spt
@@ -47,8 +47,8 @@ subroutine te0183(option, nomte)
     integer :: nddl
     real(kind=8) ::  rho(1)
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     nddl = nno

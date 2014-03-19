@@ -25,7 +25,7 @@ subroutine te0134(option, nomte)
 #include "asterfort/coqrep.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utpvlg.h"
     character(len=16) :: option, nomte
@@ -45,8 +45,8 @@ subroutine te0134(option, nomte)
     real(kind=8) :: coor(12), alpha, beta, c, s
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     ASSERT(nnos.le.8)
 !
     call jevech('PGEOMER', 'L', jgeom)

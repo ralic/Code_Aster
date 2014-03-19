@@ -18,7 +18,7 @@ subroutine te0164(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/biline.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/matvec.h"
@@ -53,8 +53,8 @@ subroutine te0164(option, nomte)
 101      continue
 !
     else if (option.eq.'FORC_NODA') then
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfdk, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
         call jevete('&INEL.CABPOU.YTY', 'L', iyty)
         nordre = 3*nno
 !        PARAMETRES EN ENTREE

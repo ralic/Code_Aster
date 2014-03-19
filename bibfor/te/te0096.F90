@@ -39,7 +39,7 @@ subroutine te0096(option, nomte)
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -93,8 +93,8 @@ subroutine te0096(option, nomte)
 ! =====================================================================
     call jemarq()
     fami = 'RIGI'
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     epsi = r8prem()
     rac2 = sqrt(2.d0)

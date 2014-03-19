@@ -5,7 +5,7 @@ subroutine te0227(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -43,7 +43,7 @@ subroutine te0227(option, nomte)
     character(len=8) :: elrefe, fami, poum
     integer :: icodre(1), kpg, spt
     real(kind=8) :: dfdx(3), r, rm, poids, cour, nx, ny, xg, yg
-    real(kind=8) :: r8b, rho(1), x(3), y(3), xxi, xyi, yyi
+    real(kind=8) :: rho(1), x(3), y(3), xxi, xyi, yyi
     real(kind=8) :: matine(6), volume, depi, zero
     integer :: nno, nnos, jgano, ndim, ipoids, ivf, idfdk, igeom, imate, icaco
     integer :: kp, npg, i, j, k, lcastr
@@ -54,8 +54,8 @@ subroutine te0227(option, nomte)
     depi = r8depi()
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -71,7 +71,7 @@ subroutine te0227(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
     if (rho(1) .le. r8prem()) then
         call utmess('F', 'ELEMENTS5_45')

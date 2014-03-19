@@ -61,7 +61,7 @@ subroutine te0003(option, nomte)
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/elref7.h"
 #include "asterfort/fointe.h"
 #include "asterfort/infniv.h"
@@ -368,8 +368,8 @@ subroutine te0003(option, nomte)
         write(ifm,*) 'MAILLE NUMERO', zi(iadzi),', DE TYPE ', elrefe
     endif
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -738,8 +738,8 @@ subroutine te0003(option, nomte)
 !GN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 ! --- CARACTERISTIQUES DES FACES DE BORD DE LA FAMILLE 1 ---------------
 !GN      WRITE(IFM,*) 'ELREFF : ',ELREFF
-        call elref4(elreff, 'MASS', ndimf, nnof, nnosf,&
-                    npgf, ipoidf, ivff, idfdxf, jganof)
+        call elrefe_info(elrefe=elreff,fami='MASS',ndim=ndimf,nno=nnof,nnos=nnosf,&
+  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdxf,jgano=jganof)
         idfdyf = idfdxf + 1
 !GN      WRITE(IFM,2000) 'NDIMF,NNOF',NDIMF,NNOF
 !GN      WRITE(IFM,2000) 'NNOSF,NPGF',NNOSF,NPGF
@@ -749,8 +749,8 @@ subroutine te0003(option, nomte)
 ! --- MAILLES DE BORD (PENTAEDRE, PYRAMIDE) ---
 !
         if (elrefb(1:1) .ne. ' ') then
-            call elref4(elrefb, 'NOEU', ndimf, nno2, nnos2,&
-                        npg2, ipoid2, ivf2, idfdx2, jgano2)
+            call elrefe_info(elrefe=elrefb,fami='NOEU',ndim=ndimf,nno=nno2,nnos=nnos2,&
+  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfdx2,jgano=jgano2)
             idfdy2 = idfdx2 + 1
 !GN       WRITE(IFM,2000) 'NDIMF,NNO2',NDIMF,NNO2
 !GN       WRITE(IFM,2000) 'NNOS2,NPG2',NNOS2,NPG2

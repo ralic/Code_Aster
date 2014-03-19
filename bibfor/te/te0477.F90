@@ -18,7 +18,7 @@ subroutine te0477(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/idsshb.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
@@ -69,8 +69,8 @@ subroutine te0477(option, nomte)
     real(kind=8) :: duddd(180)
     real(kind=8) :: dsde(20, 6, 6)
     fami = 'RIGI'
-    call elref4(' ', fami, ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 ! --- INITIALISATIONS :
 !     -----------------
     call idsshb(ndim, nno, npg, nomshb)

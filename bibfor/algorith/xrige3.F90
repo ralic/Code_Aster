@@ -8,8 +8,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalfe.h"
@@ -67,7 +66,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !
 !
 !
-    integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret, ij, ibid
+    integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret, ij
     integer :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
     integer :: nnops
@@ -88,13 +87,12 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
     ddls=ddld+ddlc
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
 !       TE4-'XINT' : SCHÉMAS À 15 POINTS
-    call elref5('TE4', 'XINT', ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe='TE4',fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !

@@ -5,7 +5,7 @@ subroutine te0486(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/b1tdb2.h"
 #include "asterfort/btsig.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
@@ -73,8 +73,8 @@ subroutine te0486(option, nomte)
     if (nomte .ne. 'MEC3QU9H' .and. nomte .ne. 'MEC3TR7H') then
 !     --- AUTRES ELEMENTS QUE LA COQUE 3 D ---
 !
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfdx, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
         call tecach('NNN', 'PPRESSR', 'L', iret, iad=ipres)
 !

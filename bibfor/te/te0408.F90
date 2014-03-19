@@ -3,7 +3,7 @@ subroutine te0408(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dxtpif.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
@@ -41,8 +41,8 @@ subroutine te0408(option, nomte)
     grille=lteatt('GRILLE','OUI')
     ASSERT(.not.grille)
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     call jevech('PTEMPCR', 'E', jresu)
     call jevech('PNBSP_I', 'L', jnbspi)
 !     NBCOU : NOMBRE DE COUCHES

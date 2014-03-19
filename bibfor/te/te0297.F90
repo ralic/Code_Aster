@@ -3,7 +3,7 @@ subroutine te0297(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevecd.h"
@@ -69,8 +69,7 @@ subroutine te0297(option, nomte)
 !
     call elref1(elrefp)
     call jevech('PTHETAR', 'L', ithet)
-    call elref4(' ', 'RIGI', ndim, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
 !
 !     SI LA VALEUR DE THETA EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
@@ -89,8 +88,8 @@ subroutine te0297(option, nomte)
     else
         irese=0
     endif
-    call elref4(elrese(ndim+irese), fami(ndim+irese), ibid, nno, ibid,&
-                npg, ibid, ibid, ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
+  npg=npg)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&

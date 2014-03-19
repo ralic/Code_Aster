@@ -1,7 +1,7 @@
 subroutine te0585(option, nomte)
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/tuforc.h"
 #include "asterfort/utmess.h"
 !
@@ -43,9 +43,9 @@ subroutine te0585(option, nomte)
     integer :: npg, ipoids, ivf
     integer :: m, nbrddl
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     m = 3
     if (nomte .eq. 'MET6SEG3') m = 6

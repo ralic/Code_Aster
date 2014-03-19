@@ -30,8 +30,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/chauxi.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gbil3d.h"
 #include "asterfort/gbilin.h"
 #include "asterfort/iselli.h"
@@ -111,7 +110,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     character(len=8) :: nomres(3), elrese(6), fami(6)
     character(len=16) :: phenom
     logical :: lcour, grdepl, axi
-    integer :: irese, nnops, ibid
+    integer :: irese, nnops
     integer :: ddln, nnon, indenn, mxstac
     parameter      (mxstac=1000)
 !
@@ -143,8 +142,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     ncomp = jtab(2)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -164,9 +162,9 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     endif
 !
 !     SOUS-ELEMENT DE REFERENCE
-    call elref5(elrese(ndim+irese), fami(ndim+irese), ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
     ASSERT(ndim.eq.ndimb)
 !
 !     TEMPERATURE DE REF

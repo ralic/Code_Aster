@@ -4,7 +4,7 @@ subroutine te0499(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pronor.h"
@@ -54,14 +54,14 @@ subroutine te0499(option, nomte)
     integer :: ivectu, k, i, mater
     integer :: ier, ii, imate, indic1, indic2, iondc, ionde
     integer :: j, jgano, jinst, ndim, nnos
-    real(kind=8) :: coedir, r8b, typer, valfon
+    real(kind=8) :: coedir, typer, valfon
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(option.eq.'ONDE_PLAN')
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -89,7 +89,7 @@ subroutine te0499(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', [r8b],&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
                 3, nomres, valres, icodre, 1)
 !
     e = valres(1)

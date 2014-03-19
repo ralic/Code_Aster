@@ -9,7 +9,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 #include "asterfort/dxqloe.h"
 #include "asterfort/dxqnim.h"
 #include "asterfort/dxroep.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jquad4.h"
@@ -65,7 +65,8 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
      &   / 3, 7, 12, 16, 17, 21, 26, 30, 35, 39, 44, 48, 49, 53, 58, 62/
 !     ------------------------------------------------------------------
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                    jcoopg=icoopg,jvf=ivf,jdfde=idfdx,jdfd2=idfd2,jgano=jgano)
 !
     zero = 0.0d0
     unquar = 0.25d0

@@ -4,7 +4,7 @@ subroutine te0069(option, nomte)
 #include "asterc/r8dgrd.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -67,8 +67,8 @@ subroutine te0069(option, nomte)
     nbcmp = 2
 !
 !
-    call elref4(elref2, 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=elref2,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES

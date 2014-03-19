@@ -4,8 +4,7 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/xmase2.h"
 #include "asterfort/xmase3.h"
     integer :: nnop, imate, igeom
@@ -62,7 +61,6 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
 !
     integer :: nse, npg, ndim
     integer :: j, ise, in, ino
-    integer :: ibid
 !
     real(kind=8) :: he, coorse(12)
 !
@@ -79,13 +77,11 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
     call elref1(elrefp)
 !
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
-    call elref4(' ', 'RIGI', ndim, ibid, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
-    call elref5(elrese(ndim), fami(ndim), ibid, ibid, ibid,&
-                npg, ibid, ibid, ibid, ibid,&
-                ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),&
+  npg=npg)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=lonch(1)

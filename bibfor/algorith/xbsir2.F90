@@ -8,7 +8,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/elelin.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
@@ -139,8 +139,8 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
             endif
         endif
 !
-        call elref4(elc, fpg, ibid, nnof, ibid,&
-                    npgf, ipoidf, ivff, idfdef, ibid)
+        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
         nface=zi(jlonch+3*(ifiss-1)-1+2)
         nptf=zi(jlonch+3*(ifiss-1)-1+3)
         do i = 1, nface

@@ -4,7 +4,7 @@ subroutine te0143(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/chgrep.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jspgno.h"
 #include "asterfort/matro2.h"
@@ -60,7 +60,7 @@ subroutine te0143(option, nomte)
     real(kind=8) :: itype, iyr2, izr2, xfl, b(14), ksi1, d1b3(2, 3)
     real(kind=8) :: zero, sigma(14), carsec(6)
     integer :: lsect, lsect2, lorien, nno, nc, i, lmat, ncomp
-    integer :: lrcou, ldep, kp, adr, lx, iadzi, iazk24, npg, iplouf, istrxr
+    integer :: lrcou, ldep, kp, adr, lx, iadzi, iazk24, npg, istrxr
     integer :: inbfib, nbfib, jacf
 !     ------------------------------------------------------------------
 !
@@ -174,8 +174,7 @@ subroutine te0143(option, nomte)
         if (nomte .eq. 'MECA_POU_D_T' .or. nomte .eq. 'MECA_POU_D_E' .or. nomte .eq.&
             'MECA_POU_C_T') then
 !           NOMBRE DE POINTS DE GAUSS
-            call elref4(' ', 'RIGI', iplouf, iplouf, iplouf,&
-                        npg, iplouf, iplouf, iplouf, iplouf)
+            call elrefe_info(fami='RIGI',npg=npg)
             ASSERT((npg.eq.2).or.(npg.eq.3))
             if (npg .eq. 2) then
                 do 15 i = 1, nc

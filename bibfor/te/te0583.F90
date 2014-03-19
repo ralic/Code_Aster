@@ -19,7 +19,7 @@ subroutine te0583(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/carcou.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
@@ -60,9 +60,9 @@ subroutine te0583(option, nomte)
     parameter (nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     logical :: normal, global
-    call elref5(' ', 'MASS', ndim, nno, nnos,&
-                npg, ipoids, jcoopg, ivf, idfdk,&
-                jdfd2, jgano)
+    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+  jdfd2=jdfd2,jgano=jgano)
 !
     if (option .eq. 'CHAR_MECA_FC1D1D') then
         icompx = 1

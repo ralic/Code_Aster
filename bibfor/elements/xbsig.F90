@@ -10,7 +10,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/tecach.h"
 #include "asterfort/xxbsig.h"
@@ -72,7 +72,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
     character(len=8) :: elrefp, elrese(6), fami(6)
     integer :: nse, idecpg, idebs, jtab(2), ncomp, iret
     integer :: ise, in, ino, npg, j, codopt
-    integer :: irese, nno, fisno(nnop, nfiss), ifiss, ig, ibid
+    integer :: irese, nno, fisno(nnop, nfiss), ifiss, ig
 !
     data          elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data          fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -93,9 +93,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
     else
         irese=0
     endif
-    call elref5(elrese(ndim+irese), fami(ndim+irese), ibid, nno, ibid,&
-                npg, ibid, ibid, ibid, ibid,&
-                ibid, ibid)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,npg=npg)
 !
 !     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
 !     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ

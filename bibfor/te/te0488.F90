@@ -21,7 +21,7 @@ subroutine te0488(option, nomte)
 #include "asterfort/dfdm3d.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/subaco.h"
@@ -58,11 +58,11 @@ subroutine te0488(option, nomte)
     coq3d= lteatt('CODMOD','CQ3')
     grille= lteatt('CODMOD','GRC')
     if (coq3d) then
-        call elref4(' ', 'MASS', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     else
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)

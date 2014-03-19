@@ -33,7 +33,7 @@ subroutine te0326(option, nomte)
 #include "jeveux.h"
 #include "asterfort/divgra.h"
 #include "asterfort/e1e2nn.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/subacv.h"
@@ -44,7 +44,7 @@ subroutine te0326(option, nomte)
     character(len=16) :: nomte, option
     real(kind=8) :: jac(9), nx(9), ny(9), nz(9)
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9)
-    real(kind=8) :: norm(3, 9), r8b, rho(1)
+    real(kind=8) :: norm(3, 9), rho(1)
     real(kind=8) :: acloc(3, 9), acc(3, 9), flufn(9)
     real(kind=8) :: vibar(2, 9), e1(3, 9), e2(3, 9)
     real(kind=8) :: divsig(9), xin(9), cova(3, 3), metr(2, 2), a(2, 2)
@@ -62,8 +62,8 @@ subroutine te0326(option, nomte)
 !     CALCUL DES DERIVEES PREMIERES DES FONCTIONS DE FORME
 !     POUR LES ELEMENTS QUAD4 ET QUAD8
 !
-    call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
     do 111 ii = 1, nno
         kdec=(ii-1)*nno*ndim
@@ -74,8 +74,8 @@ subroutine te0326(option, nomte)
 211      continue
 111  end do
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -89,7 +89,7 @@ subroutine te0326(option, nomte)
     spt=1
     poum='+'
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'THER', 0, ' ', [r8b],&
+                ' ', 'THER', 0, ' ', [0.d0],&
                 1, 'RHO_CP', rho, icodre, 1)
 !
     do 1200 i = 1, nno

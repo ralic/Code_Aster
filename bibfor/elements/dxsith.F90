@@ -2,7 +2,7 @@ subroutine dxsith(nomte, mater, sigma)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dmatcp.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -57,9 +57,9 @@ subroutine dxsith(nomte, mater, sigma)
 !
     fami = 'RIGI'
     materi = ' '
-    call elref5(' ', fami, ndim, nnoel, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nnoel,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
+  jdfd2=idfd2,jgano=jgano)
 !
     zero = 0.0d0
     call vecini(7, zero, repere)

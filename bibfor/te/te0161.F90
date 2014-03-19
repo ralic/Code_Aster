@@ -19,7 +19,7 @@ subroutine te0161(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/biline.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
@@ -65,8 +65,8 @@ subroutine te0161(option, nomte)
     else
         nddl = 3
     endif
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     call jevete('&INEL.CABPOU.YTY', 'L', iyty)
 !
     nordre = 3*nno

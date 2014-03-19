@@ -9,7 +9,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lteatt.h"
@@ -66,7 +66,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
     real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps, geom(3)
     real(kind=8) :: somlsn(nfisc+1), ff(nnop), rbid2(ndim)
-    integer :: in, inh, i, j, ar(12, 3), nbar, ise, ibid, npent(18)
+    integer :: in, inh, i, j, ar(12, 3), nbar, ise, npent(18)
     integer :: a1, a2, a3, a4, a, b, c, d, ndime
     character(len=8) :: typma, elrese(3)
     integer :: zxain, mxstac
@@ -85,8 +85,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
     ASSERT(ndim.le.mxstac)
 !
 !
-    call elref4(' ', 'RIGI', ndime, ibid, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndime)
     zxain = xxmmvd('ZXAIN')
 !
     axi = lteatt('AXIS','OUI')

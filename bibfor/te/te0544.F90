@@ -20,7 +20,7 @@ subroutine te0544(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lcegeo.h"
 #include "asterfort/lteatt.h"
@@ -64,8 +64,8 @@ subroutine te0544(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS POUR LES DEFO GENERALISEES
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elref4(lielrf(2), 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=lielrf(2),fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     ASSERT(nno .le. 27)
     ASSERT(npg .le. 27)

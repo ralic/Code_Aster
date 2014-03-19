@@ -5,7 +5,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
 #include "asterc/r8prem.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
@@ -67,8 +67,8 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
 ! --- RECUPERATION DES DONNEES RELATIVES A L'INTEGRATION DES ELEMENTS
 ! --- DE TYPE 'FACE6' ET 'FACE8' :
 !     -------------------------
-    call elref4(' ', 'MASS', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
 !
     roep = rho * epais

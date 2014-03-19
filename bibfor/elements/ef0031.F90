@@ -8,7 +8,7 @@ subroutine ef0031(nomte)
 #include "asterfort/dxefro.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/tecach.h"
@@ -46,7 +46,8 @@ subroutine ef0031(nomte)
 !
 ! DEB ------------------------------------------------------------------
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,npg=npg,jpoids=ipoids,&
+                     jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
     call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', ibid, 'S')

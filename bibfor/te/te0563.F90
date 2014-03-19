@@ -4,7 +4,7 @@ subroutine te0563(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 !
@@ -41,7 +41,7 @@ subroutine te0563(option, nomte)
     integer :: ncmp_coor, ncmp_vale, ncmp_coef, npg, iret
     integer :: j_coor_elga, j_vale, j_coef, j_resu, j_calc
     integer :: ndim, nno, nnos, ivf, idfdx, jgano, jtab1(2), jtab2(2)
-    integer :: jtab3(2), ibid, ipg, icmp
+    integer :: jtab3(2), ipg, icmp
     real(kind=8) :: resu, poids_pg, vale_pg, calc_elem
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,8 +50,8 @@ subroutine te0563(option, nomte)
 !
 ! - Finite element parameters
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ibid, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
 ! - Input fields
 !

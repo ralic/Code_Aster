@@ -4,7 +4,7 @@ subroutine te0301(option, nomte)
 !
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 !.......................................................................
@@ -47,8 +47,8 @@ subroutine te0301(option, nomte)
     ASSERT(nbelr.eq.2)
     elrefe = lirefe(2)
 !
-    call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
     ndi = nno*(nno+1)/2
 !

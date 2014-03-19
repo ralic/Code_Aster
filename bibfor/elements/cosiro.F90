@@ -49,7 +49,7 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxsiro.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vdrepe.h"
@@ -115,8 +115,8 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
     else
 !     -- CAS DES ELEMENTS DKT, DST, Q4G  :
 !     ------------------------------------
-        call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                    npg, ipoids, ivf, idfdx, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
         if (sour .eq. 'S') then
             call jevech('PGEOMER', 'L', jgeom)

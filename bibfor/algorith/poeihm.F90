@@ -3,7 +3,7 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
     implicit     none
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/ppgan2.h"
     integer :: jgao, ncmp, nvim
     real(kind=8) :: vno(*), vpg(*)
@@ -43,7 +43,7 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
 ! =====================================================================
 ! OUT VNO : CHAMPS AUX NOEUDS DE L'ELEMENT
 ! =====================================================================
-    integer :: i, j, ibid1, ibid2, ibid3, jgapg1, jgaso1, jgapg2, jgaso2
+    integer :: i, j, jgapg1, jgaso1, jgapg2, jgaso2
     integer :: ndim, nno, npg, ndim2, nno2, nnos2, npg2, nno3, nnos3
     integer :: nno1, nnos1
     integer :: nvmax, npgmax, nnosma, dimmax, nnomax, ntrou
@@ -95,19 +95,19 @@ subroutine poeihm(nomte, option, modint, jgao, nno1,&
         call elref2(nomte, 2, lielrf, ntrou)
 !
 !
-        call elref4(lielrf(1), 'MASS', ndim, nno1, nnos1,&
-                    npg, ibid1, ibid2, ibid3, jgapg1)
+        call elrefe_info(elrefe=lielrf(1),fami='MASS',ndim=ndim,nno=nno1,nnos=nnos1,&
+  npg=npg,jgano=jgapg1)
 !
-        call elref4(lielrf(2), 'MASS', ndim, nno2, nnos2,&
-                    npg, ibid1, ibid2, ibid3, jgapg2)
+        call elrefe_info(elrefe=lielrf(2),fami='MASS',ndim=ndim,nno=nno2,nnos=nnos2,&
+  npg=npg,jgano=jgapg2)
 ! =====================================================================
 ! --- MATRICE DE PASSAGE SOMMETS -> SOMMETS : JGASO ------------------
 ! =====================================================================
-        call elref4(lielrf(1), 'NOEU_S', ndim2, nno3, nnos3,&
-                    npg2, ibid1, ibid2, ibid3, jgaso1)
+        call elrefe_info(elrefe=lielrf(1),fami='NOEU_S',ndim=ndim2,nno=nno3,nnos=nnos3,&
+  npg=npg2,jgano=jgaso1)
 !
-        call elref4(lielrf(2), 'NOEU_S', ndim2, nno3, nnos3,&
-                    npg2, ibid1, ibid2, ibid3, jgaso2)
+        call elrefe_info(elrefe=lielrf(2),fami='NOEU_S',ndim=ndim2,nno=nno3,nnos=nnos3,&
+  npg=npg2,jgano=jgaso2)
 !
         nno=2*nno1+nno2
 ! =====================================================================

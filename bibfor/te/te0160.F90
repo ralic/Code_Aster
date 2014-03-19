@@ -19,7 +19,7 @@ subroutine te0160(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/biline.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/matvec.h"
@@ -55,8 +55,8 @@ subroutine te0160(option, nomte)
     demi = 0.5d0
     materi = ' '
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     call jevete('&INEL.CABPOU.YTY', 'L', iyty)
 ! --- 3 EFFORTS PAR NOEUD
     nordre = 3*nno

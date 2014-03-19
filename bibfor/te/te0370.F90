@@ -28,7 +28,7 @@ subroutine te0370(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -52,10 +52,9 @@ subroutine te0370(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: ideplm, ideplp, npg2
-    real(kind=8) :: r8b
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg2, ipoids, ivf, idfrde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfrde,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -69,7 +68,7 @@ subroutine te0370(option, nomte)
 ! --- CARACTERISTIQUES MATERIAUX
 !
     call rcvalb(fami, kpg, spt, '+', zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [r8b],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 2, nompar, valpar, codret, 1)
     rho = valpar(1)
     pesa = valpar(2)

@@ -2,7 +2,7 @@ subroutine te0335(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/fgequi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -74,11 +74,11 @@ subroutine te0335(option, nomte)
     call jemarq()
 !
     if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H')) then
-        call elref4(' ', 'MASS', ndim1, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='MASS',ndim=ndim1,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     else
-        call elref4(' ', 'RIGI', ndim1, nno, nnos,&
-                    npg, ipoids, ivf, idfde, jgano)
+        call elrefe_info(fami='RIGI',ndim=ndim1,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     endif
 !
     if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELGA')&

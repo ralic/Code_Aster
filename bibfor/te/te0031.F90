@@ -19,7 +19,7 @@ subroutine te0031(option, nomte)
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxroep.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/q4gmas.h"
@@ -115,8 +115,8 @@ subroutine te0031(option, nomte)
 ! DEB ------------------------------------------------------------------
 !
     r8bid=0.d0
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     if (option.ne.'REFE_FORC_NODA')then
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
@@ -413,8 +413,6 @@ subroutine te0031(option, nomte)
         do  i = 1, nno
             effref=(abs(bsigma(k+1))+abs(bsigma(k+2))+abs(bsigma(k+3)))/3.d0
             momref=(abs(bsigma(k+4))+abs(bsigma(k+5))+abs(bsigma(k+6)))/3.d0
-            ASSERT(abs(effref).gt.r8prem())
-            ASSERT(abs(momref).gt.r8prem())
             do  j = 1, 6
                 k=k+1
                 if (j.lt.4) then

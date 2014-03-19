@@ -8,7 +8,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/loncar.h"
@@ -89,8 +89,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
     zxain = xxmmvd('ZXAIN')
     call elref1(elrefp)
-    call elref4(' ', 'RIGI', ndime, nnop, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndime,nno=nnop)
 !
 !     VECTEUR REEL A 4 COMPOSANTES, POUR CHAQUE PT D'INTER :
 !     - NUMERO ARETE CORRESPONDANTE (0 SI C'EST UN NOEUD SOMMET)
@@ -199,7 +198,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                 call xajpin(ndim, pinter, ptmax, ipi, ins,&
                             a, longar, ainter, 0, na,&
                             0.d0, ajout)
-!              
+!
                if (ajout) then
                  do k = 1, ndime
                  pinref(ndime*(ipi-1)+k)=xref(ndime*(na-1)+k)
@@ -253,7 +252,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             if (lsna .ne. 0 .and. lsnb .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
                 call xinter(ndim, ndime, elrefp, zr(igeom), zr(jlsn), na, nb,&
-                  cref, c) 
+                  cref, c)
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
 !           ON AJOUTE A LA LISTE LE POINT C
@@ -311,9 +310,9 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
           a2=nint(ainter(zxain*(ia-1)+1))
           papillon=.true.
           do 224 i = 1,2
-            do 225 j = 1,2            
+            do 225 j = 1,2
               if(ar(a1,i).eq.ar(a2,j)) papillon=.false.
-225         continue          
+225         continue
 224       continue
           if(papillon) then
 !        CONFIGURATION RENCONTREE PAR EXEMPLE DANS SSNV510C
@@ -337,7 +336,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
 !       LA CONFIG 3D / NINTER=4 ET NPTS=2 / NE RESSEMBLE PAS AUTRES CONFIG IMPLEMENTEES
 !       POUR CETTE CONFIG LE NOEUD MILIEU M EST CONSIDERE COMME UN POINT D INTERSECTION
-!       SANS QUE L ARETE NE SOIT COUPEE "TRANSVERSALEMENT" EN M 
+!       SANS QUE L ARETE NE SOIT COUPEE "TRANSVERSALEMENT" EN M
 !       L ALGO NE DOIT PAS LE TRAITER COMME UN POINT D INTERSECTION CLASSIQUE
 !             ==> C EST UN CAS DEGENERE TRES ENNUYEUX
     if (ndime.eq.3.and.ninter .eq. 4 .and. npts.eq.2.and.cut) then
@@ -370,18 +369,18 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
          enddo
         endif
       enddo
-!    ON FORCE ainter(zxain*(4-1)+1)=0 
+!    ON FORCE ainter(zxain*(4-1)+1)=0
 !       CAR LE NOEUD MILIEU EST REELLEMENT DANS LE PLAN DE LA FISSURE
 !       ainter(zxain*(4-1)+1)=0.d0
     endif
 !
-    if (.not.cut) goto 999    
-!  
+    if (.not.cut) goto 999
+!
 ! VERIFICATION DES CONFIGURATIONS AUTORISEES
     call xerfis(ndime, ninter, npts, nptm)
 !
 ! CALCUL DES POINTS MILIEUX
-!  
+!
     pmmax=pmmaxi(ndim)
     call loncar(ndim, typma, tabco, lonref)
 !

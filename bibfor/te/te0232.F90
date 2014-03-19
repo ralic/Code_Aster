@@ -7,7 +7,7 @@ subroutine te0232(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -59,8 +59,8 @@ subroutine te0232(option, nomte)
 ! - Finite element parameters
 !
     call elref1(elrefe)
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdk, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
 ! - IN fields
 !

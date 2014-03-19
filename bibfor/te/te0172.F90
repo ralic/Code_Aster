@@ -28,7 +28,7 @@ subroutine te0172(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -44,10 +44,9 @@ subroutine te0172(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    real(kind=8) :: r8b
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg2, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     fami='FPG1'
     kpg=1
     spt=1
@@ -106,7 +105,7 @@ subroutine te0172(option, nomte)
 120          continue
 !
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                    ' ', 'FLUIDE', 0, ' ', [r8b],&
+                    ' ', 'FLUIDE', 0, ' ', [0.d0],&
                     1, 'RHO', rho, icodre, 1)
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

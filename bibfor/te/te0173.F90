@@ -28,7 +28,7 @@ subroutine te0173(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
@@ -44,10 +44,10 @@ subroutine te0173(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ii, ino, ivnor, j, jno, mater
 !
-    real(kind=8) :: r8b, rho(1)
+    real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
     idfdy = idfdx + 1
     fami='FPG1'
     kpg=1
@@ -59,7 +59,7 @@ subroutine te0173(option, nomte)
     call jevech('PMATERC', 'L', imate)
     mater = zi(imate)
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [r8b],&
+                ' ', 'FLUIDE', 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !
     call jevech('PVECTUR', 'E', ivectu)

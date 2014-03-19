@@ -19,7 +19,7 @@ subroutine te0443(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/tecach.h"
@@ -124,10 +124,10 @@ subroutine te0443(option, nomte)
         endif
     endif
 !
-!  APPEL A ELREF4 POUR RECUPERER NNO ET NPG
+!  appel a elrefe_info pour recuperer nno et npg
 !
-    call elref4(' ', 'MASS', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     if (pain(4:5) .eq. 'NO') then
         np = nno

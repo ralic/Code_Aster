@@ -18,7 +18,7 @@ subroutine te0279(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/ntfcma.h"
@@ -55,14 +55,14 @@ subroutine te0279(option, nomte)
 ! DEB ------------------------------------------------------------------
     call uttgel(nomte, typgeo)
     if ((lteatt('LUMPE','OUI')) .and. (typgeo.ne.'PY')) then
-        call elref4(' ', 'NOEU', ndim, nno, nnos,&
-                    npg2, ipoid2, ivf2, idfde2, jgano)
+        call elrefe_info(fami='NOEU',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
     else
-        call elref4(' ', 'MASS', ndim, nno, nnos,&
-                    npg2, ipoid2, ivf2, idfde2, jgano)
+        call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
     endif
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)

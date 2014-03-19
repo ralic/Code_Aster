@@ -11,7 +11,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
@@ -98,8 +98,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom,&
     minlsn = 1*r8maem()
 !
     zxain = xxmmvd('ZXAIN')
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
 !
     if (ndim .eq. 3) then
         ptmax=6

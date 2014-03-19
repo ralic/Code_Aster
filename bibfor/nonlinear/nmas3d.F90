@@ -29,7 +29,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 #include "asterfort/codere.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elraga.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/invjac.h"
 #include "asterfort/lcegeo.h"
 #include "asterfort/matini.h"
@@ -137,8 +137,8 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 ! - INITIALISATION HEXAS8
     call elraga('HE8', 'FPG8    ', ndim, nbpg2, coopg2,&
                 poipg2)
-    call elref4('HE8', 'MASS', ndim, nno, nnos,&
-                nbpg2, ipoid2, ivf2, idfde2, jgano)
+    call elrefe_info(elrefe='HE8',fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=nbpg2,jpoids=ipoid2,jvf=ivf2,jdfde=idfde2,jgano=jgano)
 !
 ! - CALCUL DES COEFFICIENTS BI (MOYENNE DES DERIVEES DES FCTS DE FORME)
 !

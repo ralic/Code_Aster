@@ -25,8 +25,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/elref4.h"
-#include "asterfort/elref5.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
@@ -66,7 +65,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 ! IN IVECTU   : INDICE DU SECONDE MEMBRE
 !
 !
-    integer :: i, ino, ig, j, n, ibid, jtab(2), iret, ncomp, ifiss
+    integer :: i, ino, ig, j, n, jtab(2), iret, ncomp, ifiss
     integer :: ndimb, nno, nnos, nnops, npgbis, pos
     integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
@@ -84,8 +83,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !
     axi = lteatt('AXIS','OUI')
 !
-    call elref4(' ', 'RIGI', ibid, ibid, nnops,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',nnos=nnops)
 !
 !     SOUS-ELEMENT DE REFERENCE
     if (.not.iselli(elrefp)) then
@@ -93,9 +91,9 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
     else
         irese=0
     endif
-    call elref5(elrese(ndim+irese), fami(ndim+irese), ndimb, nno, nnos,&
-                npgbis, ipoids, jcoopg, ivf, idfde,&
-                jdfd2, jgano)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),ndim=ndimb,nno=nno,nnos=nnos,&
+  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+  jdfd2=jdfd2,jgano=jgano)
     ASSERT(ndim.eq.ndimb)
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
     call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&

@@ -5,7 +5,7 @@ subroutine te0411(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/dffno.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -57,8 +57,8 @@ subroutine te0411(option, nomte)
 !
     call tecael(iadzi, iazk24)
     call elref1(elrefe)
-    call elref4(' ', 'RIGI', ndim, nnop, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
     call jevech('PSIG3D', 'L', isig)
     call jevech('PGEOMER', 'L', igeom)

@@ -21,7 +21,7 @@ subroutine te0433(option, nomte)
 #include "asterfort/cargri.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmgrib.h"
 #include "asterfort/r8inir.h"
@@ -63,8 +63,8 @@ subroutine te0433(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
     fami = 'RIGI'
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! - PARAMETRES EN ENTREE
 !

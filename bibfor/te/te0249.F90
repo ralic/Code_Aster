@@ -40,7 +40,7 @@ subroutine te0249(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/connec.h"
 #include "asterfort/elref1.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
@@ -67,8 +67,8 @@ subroutine te0249(option, nomte)
         if (alias8(6:8) .eq. 'SE3') elrefe='SE2'
     endif
 !
-    call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfde, jgano)
+    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
 ! INITS.
     if (option(11:14) .eq. 'COEF') then

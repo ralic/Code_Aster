@@ -8,7 +8,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lteatt.h"
@@ -88,8 +88,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     ASSERT(ndim.le.mxstac)
 !
     zxain = xxmmvd('ZXAIN')
-    call elref4(' ', 'RIGI', ndime, ibid, ibid,&
-                ibid, ibid, ibid, ibid, ibid)
+    call elrefe_info(fami='RIGI',ndim=ndime)
 !
     axi = lteatt('AXIS','OUI')
 !

@@ -19,7 +19,7 @@ subroutine te0050(option, nomte)
 ! aslint: disable=W0104
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elref4.h"
+#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -56,8 +56,8 @@ subroutine te0050(option, nomte)
     character(len=10) :: phenom
 !
 !
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfdx, jgano)
+    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
+  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
 !     -- RECUPERATION DES CHAMPS PARAMETRES ET DE LEURS LONGUEURS:
 !     ------------------------------------------------------------
