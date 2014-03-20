@@ -128,9 +128,9 @@ subroutine te0431(option, nomte)
 !
 ! - INITIALISATION CODES RETOURS
 !
-    do 1955 kpg = 1, npg
+    do kpg = 1, npg
         cod(kpg)=0
-1955  end do
+    end do
 !
 ! - LECTURE DES CARACTERISTIQUES DE GRILLE ET
 !   CALCUL DE LA DIRECTION D'ARMATURE
@@ -158,15 +158,15 @@ subroutine te0431(option, nomte)
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 800 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! --- MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
 !     ET DES DERIVEES DE FONCTION DE FORME
 !
-        do 11 n = 1, nno
+        do n = 1, nno
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-11      continue
+        enddo
 !
 ! --- CALCUL DE LA MATRICE "B" : DEPL NODAL --> EPS11 ET DU JACOBIEN
 !
@@ -184,18 +184,19 @@ subroutine te0431(option, nomte)
 !
 ! --- RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
 !
-            elseif ((option .eq.'RAPH_MECA').or. (option(1:9)&
+        elseif ((option .eq.'RAPH_MECA').or. (option(1:9)&
         .eq.'FULL_MECA').or. (option(1:10).eq.'RIGI_MECA_')) then
             sigm = zr(icontm+kpg-1)
 !
 !         CALCUL DE LA DEFORMATION DEPS11
             epsm=0.d0
             deps=0.d0
-            do 20 i = 1, nno
-                do 20 j = 1, nddl
+            do i = 1, nno
+                do j = 1, nddl
                     epsm=epsm+b(j,i)*zr(ideplm+(i-1)*nddl+j-1)
                     deps=deps+b(j,i)*zr(ideplp+(i-1)*nddl+j-1)
-20              continue
+                enddo
+            enddo
 !
             call nmco1d(fami, kpg, 1, zi(imate), zk16(icompo),&
                         option, epsm, deps, angmas, sigm,&
@@ -210,19 +211,20 @@ subroutine te0431(option, nomte)
 ! --- RANGEMENT DES RESULTATS
 !
         if (vecteu) then
-            do 100 n = 1, nno
-                do 100 i = 1, nddl
+            do n = 1, nno
+                do i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*nddl+i-&
                     1) +b(i,n)*sig*zr(ipoids+kpg-1)*jac*densit
-100              continue
+                enddo
+            enddo
         endif
 !
         if (matric) then
-            do 200 n = 1, nno
-                do 200 i = 1, nddl
+            do n = 1, nno
+                do i = 1, nddl
                     kkd = (nddl*(n-1)+i-1) * (nddl*(n-1)+i) /2
-                    do 200 j = 1, nddl
-                        do 200 m = 1, n
+                    do j = 1, nddl
+                        do m = 1, n
                             if (m .eq. n) then
                                 j1 = i
                             else
@@ -237,11 +239,14 @@ subroutine te0431(option, nomte)
                                 kk = kkd + nddl*(m-1)+j
                                 zr(imatuu+kk-1) = zr(imatuu+kk-1) + tmp
                             endif
-200                      continue
+                        enddo
+                    enddo
+                enddo
+            enddo
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800  end do
+    end do
 !
     if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
         call codere(cod, npg, zi(jcret))

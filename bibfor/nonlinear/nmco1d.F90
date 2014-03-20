@@ -106,12 +106,12 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
         call rcvalb(fami, kpg, ksp, '-', imate,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'E', val, codres, 1)
-        em=val(1)            
+        em=val(1)
 !       caractéristiques élastiques à t+
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'E', val, codres, 1)
-        ep=val(1)            
+        ep=val(1)
     endif
 !
     if (isot) then
@@ -138,10 +138,10 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
                     ep, sigm, depsm, vim, option,&
                     ' ', sigp, vip, dsidep)
     else if (elas) then
-        if (option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
+        if (option(1:9) .eq. 'FULL_MECA' .or. option(1:10) .eq. 'RIGI_MECA_') then
             dsidep = ep
         endif
-        if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA') then
+        if (option .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
             vip(1) = 0.d0
             call verift(fami, kpg, ksp, 'T', imate,&
                         materi, 'ELAS', iret, epsth=depsth)

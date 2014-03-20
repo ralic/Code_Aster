@@ -106,6 +106,12 @@ U2=STAT_NON_LINE(MODELE=MO1,
                  EXCIT=(_F(CHARGE=CL1,),
                                              ),
                  COMPORTEMENT=_F(GROUP_MA=('SDAL','ARMA'),RELATION='ELAS'),
+                 NEWTON=_F(REAC_INCR=1,
+                            REAC_ITER=1,
+                            REAC_ITER_ELAS=1,
+                            MATRICE='TANGENTE',
+                            PAS_MINI_ELAS=100,
+                            ),
                  INCREMENT=_F(LIST_INST=LINST),
                  );
 
