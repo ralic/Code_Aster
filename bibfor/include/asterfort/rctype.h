@@ -16,13 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
-                      type)
+    subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_vale,&
+                      para_type, keyw_factz  , keywz)
         integer, intent(in) :: jmat
-        integer, intent(in) :: nbpu
-        character(len=*), intent(in) :: nompu(*)
-        real(kind=8), intent(in) :: valpu(*)
-        real(kind=8), intent(out) :: resu
-        character(len=*), intent(out) :: type
+        integer, intent(in) :: nb_para_list
+        character(len=*), intent(in) :: para_list_name(*)
+        real(kind=8), intent(in) :: para_list_vale(*) 
+        real(kind=8), intent(out) :: para_vale
+        character(len=*), intent(out) :: para_type
+        character(len=*), optional, intent(in) :: keyw_factz
+        character(len=*), optional, intent(in) :: keywz
     end subroutine rctype
 end interface

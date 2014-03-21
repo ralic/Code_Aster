@@ -47,8 +47,8 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: icodre(7)
-    character(len=8) :: nomres(7), type
-    real(kind=8) :: r8bid, valres(7), pente, aire, temp, resu, val(1)
+    character(len=8) :: nomres(7), para_type
+    real(kind=8) :: r8bid, valres(7), pente, aire, temp, para_vale, val(1)
 ! ----------------------------------------------------------------------
 !
 !
@@ -60,11 +60,11 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
                 1, 'NU', val, icodre(1), 2)
     nu=val(1)            
     call rcvarc(' ', 'TEMP', poum, fami, kpg, ksp, temp, iret)
-    call rctype(mate, 1, 'TEMP', [temp], resu, type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'CALCULEL_31')
+    call rctype(mate, 1, 'TEMP', [temp], para_vale, para_type)
+    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'COMPOR5_5', sk = para_type)
     endif
-    call rctrac(mate, 1, 'SIGM', resu, jprolp,&
+    call rctrac(mate, 1, 'SIGM', para_vale, jprolp,&
                 jvalep, nbvalp, young)
 !
 !

@@ -65,9 +65,9 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 ! DECLARATION LOCALE
 !
     integer :: icodre(3), lgpg
-    character(len=8) :: nomres(3), kbid, type, materi
+    character(len=8) :: nomres(3), kbid, para_type, materi
     real(kind=8) :: epsthe, sigy, aire, dsde, valrm(2)
-    real(kind=8) :: r8bid, valres(3), resu, apui, npui, rprim
+    real(kind=8) :: r8bid, valres(3), para_vale, apui, npui, rprim
     integer :: iret1, iret2
 ! ----------------------------------------------------------------------
 !
@@ -86,12 +86,12 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
     if (compor(6:14) .eq. 'ISOT_TRAC') then
-        call rctype(mate, 1, 'TEMP', [temp], resu,&
-                    type)
-        if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
-            call utmess('F', 'CALCULEL_31')
+        call rctype(mate, 1, 'TEMP', [temp], para_vale,&
+                    para_type)
+        if ((para_type.eq.'TEMP') .and. (iret1.eq.1)) then
+            call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
-        call rctrac(mate, 1, 'SIGM', resu, jprol,&
+        call rctrac(mate, 1, 'SIGM', para_vale, jprol,&
                     jvale, nbval, young)
     else
         call rcvalb(fami, kpg, ksp, poum, mate,&

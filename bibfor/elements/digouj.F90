@@ -60,8 +60,8 @@ subroutine digouj(option, compor, nno, nbt, neq,&
     integer :: i, nno, jprolp, jvalep, nbvalp, lgpg, jtab(7)
     real(kind=8) :: seuil
     real(kind=8) :: dfl(6), fl(6)
-    real(kind=8) :: nu, resu, valpap
-    character(len=8) :: nompar, type
+    real(kind=8) :: nu, para_vale, valpap
+    character(len=8) :: nompar, para_type
     character(len=24) :: valk(2)
     logical :: plasti
 !
@@ -97,9 +97,9 @@ subroutine digouj(option, compor, nno, nbt, neq,&
         call utmess('F', 'ELEMENTS_32', sk=compor(1))
     endif
 !
-    call rctype(icodma, 0, nompar, [valpap], resu,&
-                type)
-    call rctrac(icodma, 1, 'SIGM', resu, jprolp,&
+    call rctype(icodma, 0, nompar, [valpap], para_vale,&
+                para_type)
+    call rctrac(icodma, 1, 'SIGM', para_vale, jprolp,&
                 jvalep, nbvalp, e)
     if (compor(1) .eq. 'DIS_GOUJ2E_PLAS') then
         call rcfonc('S', 1, jprolp, jvalep, nbvalp,&

@@ -19,6 +19,22 @@
 
 cata_msg={
 
+1 : _(u"""
+On ne trouve pas la courbe de traction (mot-clef %(k1)s) dans le matériau fourni.
+"""),
+
+2 : _(u"""
+La courbe de traction est une fonction du paramètre %(k1)s alors qu'on attend le paramètre EPSI.
+"""),
+
+
+4 : _(u"""
+La courbe de traction est une nappe dont le paramètre qui n'est pas EPSI n'est pas traité dans la loi de comportement.
+"""),
+
+5 : _(u"""
+La courbe de traction est une nappe qui dépend de %(k1)s mais la variable de commande est absente ou mal définie dans le matériau (AFFE_VARC).
+"""),
 
 59 : _(u"""
 La déformation plastique cumulée est négative.
@@ -27,5 +43,7 @@ La déformation plastique cumulée est négative.
 60 : _(u"""
 Le prolongement à droite étant exclu pour la fonction %(k1)s, il n'est pas possible d'extrapoler la fonction R(p) au delà de p = %(r1)f
 """),
+
+
 
 }

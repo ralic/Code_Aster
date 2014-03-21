@@ -63,13 +63,13 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
     integer :: jprol, jvale, nbvale, iret1, iret2
 !
     real(kind=8) :: temp, tref
-    real(kind=8) :: e, nu, demu, k, k3, alpha, dum, resu
+    real(kind=8) :: e, nu, demu, k, k3, alpha, dum, para_vale
     real(kind=8) :: de, dnu, demudt, dk, dalpha
     real(kind=8) :: dsde, sigy, rprim, rp, airep, coco
     real(kind=8) :: dsdedt, dsigy, drprim, dp, drp, dairep
     real(kind=8) :: nrj, dnrj, valres(3), devres(3)
 !
-    character(len=8) :: nomres(3), type
+    character(len=8) :: nomres(3), para_type
 !
     logical :: trac, line, puis
 !
@@ -172,11 +172,11 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
 !
         else if (trac) then
             sieleq = demu * epseq
-            call rctype(imate, 1, 'TEMP', [temp], resu, type)
-            if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
-                call utmess('F', 'CALCULEL_31')
+            call rctype(imate, 1, 'TEMP', [temp], para_vale, para_type)
+            if ((para_type.eq.'TEMP') .and. (iret1.eq.1)) then
+                call utmess('F', 'COMPOR5_5', sk = para_type)
             endif
-            call rctrac(imate, 1, 'SIGM', resu, jprol,&
+            call rctrac(imate, 1, 'SIGM', para_vale, jprol,&
                         jvale, nbvale, e)
             call rcfonc('S', 1, jprol, jvale, nbvale,&
                         sigy = sigy)

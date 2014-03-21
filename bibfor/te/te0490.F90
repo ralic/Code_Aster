@@ -153,10 +153,10 @@ subroutine te0490(option, nomte)
     real(kind=8) :: epsim(nbsgm), delta(nbsgm), sigmm(nbsgm)
     real(kind=8) :: epsi(nbsgm), epssm(mxcmel), epss(mxcmel)
     real(kind=8) :: repere(7), instan, nharm, integ, integ1
-    real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl, xyz(3), resu
+    real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl, xyz(3), para_vale
     real(kind=8) :: f(3, 3), r, eps(6), trav(81), rbid
     character(len=4) :: fami
-    character(len=8) :: nomres(5), type, materi
+    character(len=8) :: nomres(5), para_type, materi
     character(len=16) :: nomte, option, optio2, compor(3)
     logical :: grand, axi
 !-----------------------------------------------------------------------
@@ -439,12 +439,12 @@ subroutine te0490(option, nomte)
 !
                 call rcvarc(' ', 'TEMP', '+', fami, igau,&
                             1, tempg, iret1)
-                call rctype(zi(imate), 1, 'TEMP', [tempg], resu,&
-                            type)
-                if ((type(1:4).eq.'TEMP') .and. (iret1.eq.1)) then
-                    call utmess('F', 'CALCULEL_31')
+                call rctype(zi(imate), 1, 'TEMP', [tempg], para_vale,&
+                            para_type)
+                if ((para_type(1:4).eq.'TEMP') .and. (iret1.eq.1)) then
+                    call utmess('F', 'COMPOR5_5', sk = para_type)
                 endif
-                call rctrac(zi(imate), 1, 'SIGM', resu, jprol,&
+                call rctrac(zi(imate), 1, 'SIGM', para_vale, jprol,&
                             jvale, nbval, e)
 !
 ! --- RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE :

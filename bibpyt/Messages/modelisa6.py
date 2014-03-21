@@ -277,9 +277,7 @@ Solution : Il faut dédoubler le noeud.
  comportement TRACTION non trouvé
 """),
 
-81 : _(u"""
- fonction SIGM non trouvée
-"""),
+
 
 82 : _(u"""
  comportement META_TRACTION non trouvé

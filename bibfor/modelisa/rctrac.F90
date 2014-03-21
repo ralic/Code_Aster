@@ -91,7 +91,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                 goto 40
             endif
 30      continue
-        call utmess('F', 'MODELISA6_81')
+        ASSERT(.false.)
 40      continue
     endif
 !

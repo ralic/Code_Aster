@@ -54,7 +54,7 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: em, ep, et, sigy
-    real(kind=8) :: sigm, deps, pm, vim(*), vip(*), resu
+    real(kind=8) :: sigm, deps, pm, vim(*), vip(*), para_vale
     real(kind=8) :: sigp, dsde, rbid
     character(len=16) :: option, compor(*)
     character(len=*) :: fami, materi
@@ -66,7 +66,7 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
     real(kind=8) :: sieleq, rp, dp, nu, asige
     integer :: jprolm, jvalem, nbvalm, nbvalp, jprolp, jvalep, iret
     integer :: icodre(2)
-    character(len=8) :: nompar, nomecl(2), type
+    character(len=8) :: nompar, nomecl(2), para_type
     data nomecl /'D_SIGM_E','SY'/
 !
 !
@@ -94,18 +94,18 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
     else if (compor(1).eq.'VMIS_ISOT_TRAC') then
         call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                     ksp, valpar, iret)
-        call rctype(imate, 1, nompar, [valpar], resu, type)
-        if ((type.eq.'TEMP') .and. (iret.eq.1)) then
-            call utmess('F', 'CALCULEL_31')
+        call rctype(imate, 1, nompar, [valpar], para_vale, para_type)
+        if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
+            call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
-        call rctrac(imate, 1, 'SIGM', resu, jprolm,&
+        call rctrac(imate, 1, 'SIGM', para_vale, jprolm,&
                     jvalem, nbvalm, em)
         call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, valpar, iret)
-        call rctype(imate, 1, nompar, [valpar], resu, type)
-        if ((type.eq.'TEMP') .and. (iret.eq.1)) then
-            call utmess('F', 'CALCULEL_31')
+        call rctype(imate, 1, nompar, [valpar], para_vale, para_type)
+        if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
+            call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
-        call rctrac(imate, 1, 'SIGM', resu, jprolp,&
+        call rctrac(imate, 1, 'SIGM', para_vale, jprolp,&
                     jvalep, nbvalp, ep)
         call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
                     sigy = sigy)

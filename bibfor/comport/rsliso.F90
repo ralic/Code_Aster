@@ -31,19 +31,19 @@ subroutine rsliso(fami, kpg, ksp, poum, imat,&
 #include "asterfort/rctype.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-    real(kind=8) :: temp, p, rp, e, drdp, airerp, resu
+    real(kind=8) :: temp, p, rp, e, drdp, airerp, para_vale
     integer :: imat, jprol, jvale, nbvale, kpg, ksp, iret
     character(len=*) :: fami
     character(len=1) :: poum
-    character(len=8) :: type
+    character(len=8) :: para_type
 !       ----------------------------------------------------------------
 ! --  TEMPERATURE
     call rcvarc(' ', 'TEMP', poum, fami, kpg, ksp, temp, iret)
-    call rctype(imat, 1, 'TEMP', [temp], resu, type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'CALCULEL_31')
+    call rctype(imat, 1, 'TEMP', [temp], para_vale, para_type)
+    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'COMPOR5_5', sk = para_type)
     endif
-    call rctrac(imat, 1, 'SIGM', resu, jprol,&
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol,&
                 jvale, nbvale, e)
     call rcfonc('V', 1, jprol, jvale, nbvale,&
                 p = p, rp = rp, rprim = drdp, airerp = airerp)

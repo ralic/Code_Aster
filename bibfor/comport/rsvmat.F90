@@ -55,9 +55,9 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
     real(kind=8) :: epsi, vind(nvi), f0
-    real(kind=8) :: resu
+    real(kind=8) :: para_vale
 !
-    character(len=8) :: mod, nomc(16), type
+    character(len=8) :: mod, nomc(16), para_type
     integer :: cerr(16)
     character(len=3) :: matcst
     character(len=*) :: fami
@@ -109,11 +109,11 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
     call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tempd, iret)
-    call rctype(imat, 1, 'TEMP', [tempd], resu, type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'CALCULEL_31')
+    call rctype(imat, 1, 'TEMP', [tempd], para_vale, para_type)
+    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'COMPOR5_5', sk = para_type)
     endif
-    call rctrac(imat, 1, 'SIGM', resu, jprol,&
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol,&
                 jvale, nbvale, materd(1, 1))
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
@@ -136,11 +136,11 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
     call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tempf, iret)
-    call rctype(imat, 1, 'TEMP', [tempf], resu, type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'CALCULEL_31')
+    call rctype(imat, 1, 'TEMP', [tempf], para_vale, para_type)
+    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'COMPOR5_5', sk = para_type)
     endif
-    call rctrac(imat, 1, 'SIGM', resu, jprol,&
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol,&
                 jvale, nbvale, materf(1, 1))
 !
 ! -     MATERIAU CONSTANT ? ------------------------------------------

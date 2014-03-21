@@ -88,13 +88,13 @@ subroutine te0489(option, nomte)
     real(kind=8) :: x1(mxcmel), x2(mxcmel)
     real(kind=8) :: trsig1, trsig2
     real(kind=8) :: e, dsde, sigy, alfafa, coco, unsurn
-    real(kind=8) :: zero, untier, cst1, dum, tp, resu, rbid
+    real(kind=8) :: zero, untier, cst1, dum, tp, para_vale, rbid
     real(kind=8) :: zernor, dchaxm
     real(kind=8) :: valres(3)
     real(kind=8) :: trace, sqrt
     real(kind=8) :: sigeqn
     character(len=4) :: fami
-    character(len=8) :: type
+    character(len=8) :: para_type
     character(len=8) :: nomres(3)
     character(len=16) :: compor
 ! ----------------------------------------------------------------------
@@ -374,12 +374,12 @@ subroutine te0489(option, nomte)
                         else if (compor(10:14) .eq. '_TRAC') then
                             call rcvarc(' ', 'TEMP', '-', fami, igau,&
                                         1, tp, iret)
-                            call rctype(zi(imate), 1, 'TEMP', [tp], resu,&
-                                        type)
-                            if (type .eq. 'TEMP') then
-                                call utmess('F', 'CALCULEL_31')
+                            call rctype(zi(imate), 1, 'TEMP', [tp], para_vale,&
+                                        para_type)
+                            if (para_type .eq. 'TEMP') then
+                                call utmess('F', 'COMPOR5_5', sk = para_type)
                             endif
-                            call rctrac(zi(imate), 1, 'SIGM', resu, jprolp,&
+                            call rctrac(zi(imate), 1, 'SIGM', para_vale, jprolp,&
                                         jvalep, nbvalp, e)
                             call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
                                         sigy = rp0)
@@ -436,12 +436,12 @@ subroutine te0489(option, nomte)
                         else if (compor(10:14) .eq. '_TRAC') then
                             call rcvarc(' ', 'TEMP', '-', fami, igau,&
                                         1, tp, iret)
-                            call rctype(zi(imate), 1, 'TEMP', [tp], resu,&
-                                        type)
-                            if (type .eq. 'TEMP') then
-                                call utmess('F', 'CALCULEL_31')
+                            call rctype(zi(imate), 1, 'TEMP', [tp], para_vale,&
+                                        para_type)
+                            if (para_type .eq. 'TEMP') then
+                                call utmess('F', 'COMPOR5_5', sk = para_type)
                             endif
-                            call rctrac(zi(imate), 1, 'SIGM', resu, jprolp,&
+                            call rctrac(zi(imate), 1, 'SIGM', para_vale, jprolp,&
                                         jvalep, nbvalp, e)
                             call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
                                         sigy = rp0)

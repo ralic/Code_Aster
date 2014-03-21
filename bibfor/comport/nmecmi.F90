@@ -77,7 +77,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
 !
     logical :: cplan, plasti
-    real(kind=8) :: depsth(6), valres(3), pm, xp(6), plast, resu
+    real(kind=8) :: depsth(6), valres(3), pm, xp(6), plast, para_vale
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, hp, gp, g1, rpm
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, xm(6)
     real(kind=8) :: sigedv(6)
@@ -87,7 +87,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
     integer :: jprolp, jvalep, nbvalp, k, l, niter, imate2, ibid
     integer :: icodre(3)
-    character(len=8) :: nomres(3), type, materi
+    character(len=8) :: nomres(3), para_type, materi
 !-----------------------------------------------------------------------
     real(kind=8) :: dp0, xap
 !-----------------------------------------------------------------------
@@ -183,24 +183,24 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
         call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                     ksp, tm, iret2)
-        call rctype(imate, 1, 'TEMP', [tm], resu,&
-                    type)
-        if ((type.eq.'TEMP') .and. (iret2.eq.1)) then
-            call utmess('F', 'CALCULEL_31')
+        call rctype(imate, 1, 'TEMP', [tm], para_vale,&
+                    para_type)
+        if ((para_type.eq.'TEMP') .and. (iret2.eq.1)) then
+            call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
-        call rctrac(imate, 1, 'SIGM', resu, jprolm,&
+        call rctrac(imate, 1, 'SIGM', para_vale, jprolm,&
                     jvalem, nbvalm, em)
         deumum = em/(1.d0+num)
         troikm = em/(1.d0-2.d0*num)
 !
         call rcvarc(' ', 'TEMP', '+', fami, kpg,&
                     ksp, tp, iret1)
-        call rctype(imate, 1, 'TEMP', [tp], resu,&
-                    type)
-        if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
-            call utmess('F', 'CALCULEL_31')
+        call rctype(imate, 1, 'TEMP', [tp], para_vale,&
+                    para_type)
+        if ((para_type.eq.'TEMP') .and. (iret1.eq.1)) then
+            call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
-        call rctrac(imate, 1, 'SIGM', resu, jprolp,&
+        call rctrac(imate, 1, 'SIGM', para_vale, jprolp,&
                     jvalep, nbvalp, e)
         deuxmu = e/(1.d0+nu)
         troisk = e/(1.d0-2.d0*nu)

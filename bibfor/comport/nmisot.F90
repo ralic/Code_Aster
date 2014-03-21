@@ -93,9 +93,9 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     integer :: icodre(3)
     character(len=6) :: epsa(6)
     character(len=8) :: nomres(3)
-    character(len=8) :: nompar(3), type, materi
+    character(len=8) :: nompar(3), para_type, materi
     character(len=10) :: phenom
-    real(kind=8) :: valpam(3), valpap(3), resu, valrm(2)
+    real(kind=8) :: valpam(3), valpap(3), para_vale, valrm(2)
     real(kind=8) :: bendom, bendop, kdessm, kdessp, rac2, xm(6), xp(6)
 !-----------------------------------------------------------------------
     integer :: lgpg
@@ -295,10 +295,10 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         valpam(2)=sechm
         nompar(3)='HYDR'
         valpam(3)=hydrm
-        call rctype(imate, 3, nompar, valpam, resu, type)
+        call rctype(imate, 3, nompar, valpam, para_vale, para_type)
 !
-        if ((type.eq.'TEMP') .and. (iret3.eq.1)) then
-            call utmess('F', 'CALCULEL_31')
+        if ((para_type.eq.'TEMP') .and. (iret3.eq.1)) then
+            call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
         call rctrac(imate, 1, 'SIGM', tm, jprolm, jvalem, nbvalm, em)
 !
@@ -318,11 +318,11 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         valpap(2)=sechp
         nompar(3)='HYDR'
         valpap(3)=hydrp
-        call rctype(imate, 3, nompar, valpap, resu, type)
-        if ((type.eq.'TEMP') .and. (iret4.eq.1)) then
-            call utmess('F', 'CALCULEL_31')
+        call rctype(imate, 3, nompar, valpap, para_vale, para_type)
+        if ((para_type.eq.'TEMP') .and. (iret4.eq.1)) then
+            call utmess('F', 'COMPOR5_5', sk = para_type)
         endif
-        call rctrac(imate, 1, 'SIGM', resu, jprolp, jvalep, nbvalp, e)
+        call rctrac(imate, 1, 'SIGM', para_vale, jprolp, jvalep, nbvalp, e)
 !        CRIT_RUPT VMIS_ISOT_TRAC
         if ((crit(11).gt.0.d0) .and. (vim(8).gt.0.d0)) then
             lgpg = 8

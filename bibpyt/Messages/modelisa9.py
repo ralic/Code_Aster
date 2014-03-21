@@ -313,9 +313,7 @@ Risques et conseils :
 
 """),
 
-73 : _(u"""
- erreur de programmation type de fonction non valide %(k1)s
-"""),
+
 
 74 : _(u"""
  comportement :%(k1)s non trouvé
@@ -349,9 +347,7 @@ Risques et conseils :
   GROUP_MA : %(k1)s
 """),
 
-83 : _(u"""
-  Erreur a l'interpolation, paramètres non trouvé.
-"""),
+
 
 93 : _(u"""
 Erreur Europlexus

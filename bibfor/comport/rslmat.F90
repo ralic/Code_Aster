@@ -55,9 +55,9 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
     real(kind=8) :: epsi, vind(*), f0
-    real(kind=8) :: resu
+    real(kind=8) :: para_vale
 !
-    character(len=8) :: mod, nomc(14), type
+    character(len=8) :: mod, nomc(14), para_type
     integer :: cerr(14)
     character(len=3) :: matcst
     character(len=*) :: fami
@@ -72,18 +72,18 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 ! -   RECUPERATION MATERIAU ------------------------------------------
 !
 !
-    nomc(1) = 'E        '
-    nomc(2) = 'NU       '
-    nomc(3) = 'ALPHA    '
-    nomc(4) = 'B_ENDOGE'
-    nomc(5) = 'K_DESSIC'
-    nomc(6) = 'D        '
-    nomc(7) = 'SIGM_1   '
-    nomc(8) = 'PORO_INIT'
-    nomc(9) = 'PORO_CRIT'
-    nomc(10)= 'PORO_ACCE'
-    nomc(11)= 'PORO_LIMI'
-    nomc(12)= 'D_SIGM_EPSI_NORM'
+    nomc(1) = 'E        '(1:8)
+    nomc(2) = 'NU       '(1:8)
+    nomc(3) = 'ALPHA    '(1:8)
+    nomc(4) = 'B_ENDOGE'(1:8)
+    nomc(5) = 'K_DESSIC'(1:8)
+    nomc(6) = 'D        '(1:8)
+    nomc(7) = 'SIGM_1   '(1:8)
+    nomc(8) = 'PORO_INIT'(1:8)
+    nomc(9) = 'PORO_CRIT'(1:8)
+    nomc(10)= 'PORO_ACCE'(1:8)
+    nomc(11)= 'PORO_LIMI'(1:8)
+    nomc(12)= 'D_SIGM_EPSI_NORM'(1:8)
     nomc(13)= 'AN'
     nomc(14)= 'BETA'
 !
@@ -105,11 +105,11 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
     call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tempd, iret)
-    call rctype(imat, 1, 'TEMP', [tempd], resu, type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'CALCULEL_31')
+    call rctype(imat, 1, 'TEMP', [tempd], para_vale, para_type)
+    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'COMPOR5_5', sk = para_type)
     endif
-    call rctrac(imat, 1, 'SIGM', resu, jprol, jvale, nbvale, materd(1, 1))
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol, jvale, nbvale, materd(1, 1))
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
 !
@@ -128,11 +128,11 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 !         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 !
     call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tempf, iret)
-    call rctype(imat, 1, 'TEMP', [tempf], resu, type)
-    if ((type.eq.'TEMP') .and. (iret.eq.1)) then
-        call utmess('F', 'CALCULEL_31')
+    call rctype(imat, 1, 'TEMP', [tempf], para_vale, para_type)
+    if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then
+        call utmess('F', 'COMPOR5_5', sk = para_type)
     endif
-    call rctrac(imat, 1, 'SIGM', resu, jprol, jvale, nbvale, materf(1, 1))
+    call rctrac(imat, 1, 'SIGM', para_vale, jprol, jvale, nbvale, materf(1, 1))
 !
 ! -     MATERIAU CONSTANT ? ------------------------------------------
 !

@@ -43,7 +43,7 @@ subroutine te0353(option, nomte)
     real(kind=8) :: sigmo
 !-----------------------------------------------------------------------
     parameter(nbres=21)
-    character(len=8) :: nomres(nbres), nomcle(5), acier(4), zirc(2), type
+    character(len=8) :: nomres(nbres), nomcle(5), acier(4), zirc(2), para_type
     character(len=4) :: fami
     integer :: icodre(nbres)
     integer :: test
@@ -53,7 +53,7 @@ subroutine te0353(option, nomte)
     real(kind=8) :: dfdx(9), dfdy(9), tpg, poids, r, co, kron(6)
     real(kind=8) :: r0(5), rprim, vi(5), r8bid
     real(kind=8) :: phas(5), coef, zvarim, zvarip, deltaz, trans
-    real(kind=8) :: phasp(4), phasm(4), resu
+    real(kind=8) :: phasp(4), phasm(4), para_vale
     integer :: nno, kp, npg1, i, ivectu, jtab(7), l, iret
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jprol, jvale, nbval, ndim, nnos, jgano
@@ -256,12 +256,12 @@ subroutine te0353(option, nomte)
                         vi(4)=zr(ivari+(kp-1)*lgpg+3)
                         vi(5)=zr(ivari+(kp-1)*lgpg+4)
                         do 90 i = 1, 5
-                            call rctype(mater, 1, 'TEMP', [tpg], resu,&
-                                        type)
-                            if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
-                                call utmess('F', 'CALCULEL_31')
+                            call rctype(mater, 1, 'TEMP', [tpg], para_vale,&
+                                        para_type, 'META_TRACTION', nomcle(i))
+                            if ((para_type.eq.'TEMP') .and. (iret1.eq.1)) then
+                                call utmess('F', 'COMPOR5_5', sk = para_type)
                             endif
-                            call rctrac(mater, 2, nomcle(i), resu, jprol,&
+                            call rctrac(mater, 2, nomcle(i), para_vale, jprol,&
                                         jvale, nbval, r8bid)
                             call rcfonc('V', 2, jprol, jvale, nbval,&
                                         p = vi(i), rprim = r0(i))
@@ -397,10 +397,10 @@ subroutine te0353(option, nomte)
                     vi(2)=zr(ivari+(kp-1)*lgpg+1)
                     vi(3)=zr(ivari+(kp-1)*lgpg+2)
                     do 120 i = 1, 3
-                        call rctype(mater, 1, 'TEMP', [tpg], resu,&
-                                    type)
-                        if ((type.eq.'TEMP') .and. (iret1.eq.1)) then
-                            call utmess('F', 'CALCULEL_31')
+                        call rctype(mater, 1, 'TEMP', [tpg], para_vale,&
+                                    para_type, 'META_TRACTION', nomcle(i))
+                        if ((para_type.eq.'TEMP') .and. (iret1.eq.1)) then
+                            call utmess('F', 'COMPOR5_5', sk = para_type)
                         endif
                         call rctrac(mater, 3, nomcle(i), tpg, jprol,&
                                     jvale, nbval, r8bid)
