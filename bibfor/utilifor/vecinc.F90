@@ -1,5 +1,6 @@
-subroutine vecinc(n, s, x)
+subroutine vecinc(n, s, x, inc)
     implicit none
+#include "asterfort/assert.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,14 +20,30 @@ subroutine vecinc(n, s, x)
 !     ----------------------------------------------------------------
 !     INITIALISATION DU VECTEUR COMPLEXE   X = S
 !     IN  S      :  COMPLEXE POUR INITIALISER
-!     IN  N      :  DIMENSION DE X
+!     IN  N      :  DIMENSION DE X SI INC=1 (SINON LA DIMENSION EST N*INC)
+!     IN  INC    :  INCREMENT SUR LES INDICES DE X A INITIALISER
 !     OUT X      :  VECTEUR COMPLEXE RESULTAT
 !     POUR TOUS LES TYPES DE DONNEES VOIR AUSSI VECINI, VECINT, VECINK
 !     ET VECINC.
 !     ----------------------------------------------------------------
-    integer :: n, i
-    complex(kind=8) :: x(n), s
-    do 1 i = 1, n
-        x(i)=s
- 1  end do
+!   Obligatory arguments
+    integer,         intent(in)   :: n
+    complex(kind=8), intent(in)   :: s
+    complex(kind=8)               :: x(*)
+!   Optional argument
+    integer, optional, intent(in) :: inc
+!   ------------------------------------------------------------------
+    integer :: i, inc2, ninc
+!   ------------------------------------------------------------------
+    ASSERT(n .ge. 1)
+    inc2 = 1
+    if (present(inc)) then
+        ASSERT(inc .ge. 1)
+        inc2 = inc
+    endif
+    ninc = n*inc2
+    do i = 1, ninc, inc2
+        x(i) = s
+    end do
+!
 end subroutine

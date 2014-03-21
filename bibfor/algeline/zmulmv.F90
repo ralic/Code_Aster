@@ -2,7 +2,7 @@ subroutine zmulmv(trans, m, n, alpha, a,&
                   lda, x, incx, beta, y,&
                   incy)
     implicit none
-#include "asterfort/zinit.h"
+#include "asterfort/vecinc.h"
 #include "asterfort/zmult.h"
 #include "blas/zaxpy.h"
 #include "blas/zdotc.h"
@@ -54,7 +54,7 @@ subroutine zmulmv(trans, m, n, alpha, a,&
     integer :: kx
 !
     if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0,0.0d0) .and. beta .eq. (1.0d0,0.0d0)) &
-    goto 9000
+    goto 999
 !
     if (trans(1:1) .eq. 'N' .or. trans(1:1) .eq. 'n') then
         lenx = n
@@ -77,12 +77,12 @@ subroutine zmulmv(trans, m, n, alpha, a,&
             y(1) = beta**leny*y(1)
         endif
     else if (beta .eq. (0.0d0,0.0d0)) then
-        call zinit(leny, (0.0d0, 0.0d0), y, abs(incy))
+        call vecinc(leny, (0.0d0, 0.0d0), y, inc=abs(incy))
     else
         call zmult(leny, beta, y, abs(incy))
     endif
 !
-    if (alpha .eq. (0.0d0,0.0d0)) goto 9000
+    if (alpha .eq. (0.0d0,0.0d0)) goto 999
 !
     if (trans(1:1) .eq. 'N' .or. trans(1:1) .eq. 'n') then
         kx = ix
@@ -107,5 +107,5 @@ subroutine zmulmv(trans, m, n, alpha, a,&
 30      continue
     endif
 !
-9000  continue
+999  continue
 end subroutine

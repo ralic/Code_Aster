@@ -77,9 +77,9 @@ subroutine op0060()
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
+#include "asterfort/vecinc.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/zinit.h"
 #include "blas/zcopy.h"
     integer :: ibid, nbold, isto1
     real(kind=8) :: r8bid
@@ -369,7 +369,7 @@ subroutine op0060()
     call copisd('CHAMP_GD', 'V', secmbr, vezero)
     call jeveuo(secmbr(1:19)//'.VALE', 'E', jsecmb)
     call jeveuo(vezero(1:19)//'.VALE', 'E', jvezer)
-    call zinit(neq, czero, zc(jvezer), 1)
+    call vecinc(neq, czero, zc(jvezer))
 !
 ! --- INFORMATIONS SOLVEUR
     solveu = '&&OP0060.SOLVEUR'

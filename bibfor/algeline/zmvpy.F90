@@ -1,7 +1,7 @@
 subroutine zmvpy(uplo, n, alpha, a, lda,&
                  x, incx, beta, y, incy)
     implicit none
-#include "asterfort/zinit.h"
+#include "asterfort/vecinc.h"
 #include "asterfort/zmult.h"
 #include "blas/zaxpy.h"
     integer :: n, lda, incx, incy
@@ -45,7 +45,7 @@ subroutine zmvpy(uplo, n, alpha, a, lda,&
     complex(kind=8) :: temp
     real(kind=8) :: dble
 !
-    if (n .eq. 0 .or. (alpha.eq.(0.0d0,0.0d0).and.beta.eq.(1.0d0,0.0d0))) goto 9000
+    if (n .eq. 0 .or. (alpha.eq.(0.0d0,0.0d0).and.beta.eq.(1.0d0,0.0d0))) goto 999
 !
     ix = 1
     iy = 1
@@ -60,12 +60,12 @@ subroutine zmvpy(uplo, n, alpha, a, lda,&
             y(1) = beta**n*y(1)
         endif
     else if (beta .eq. (0.0d0,0.0d0)) then
-        call zinit(n, (0.0d0, 0.0d0), y, abs(incy))
+        call vecinc(n, (0.0d0, 0.0d0), y, inc=abs(incy))
     else
         call zmult(n, beta, y, abs(incy))
     endif
 !
-    if (alpha .eq. (0.0d0,0.0d0)) goto 9000
+    if (alpha .eq. (0.0d0,0.0d0)) goto 999
 !
     if (uplo(1:1) .eq. 'U' .or. uplo(1:1) .eq. 'u') then
         do 20 j = 1, n
@@ -97,5 +97,5 @@ subroutine zmvpy(uplo, n, alpha, a, lda,&
 40      continue
     endif
 !
-9000  continue
+999   continue
 end subroutine

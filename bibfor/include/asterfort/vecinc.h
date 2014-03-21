@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vecinc(n, s, x)
-        integer :: n
-        complex(kind=8) :: s
-        complex(kind=8) :: x(n)
+    subroutine vecinc(n, s, x, inc)
+        integer,         intent(in)   :: n
+        complex(kind=8), intent(in)   :: s
+        complex(kind=8)               :: x(*)
+        integer, optional, intent(in) :: inc
     end subroutine vecinc
 end interface

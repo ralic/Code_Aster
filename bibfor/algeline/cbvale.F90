@@ -16,6 +16,8 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 #include "asterfort/jexnum.h"
 #include "asterfort/mtdsc2.h"
 #include "asterfort/pteddl.h"
+#include "asterfort/vecinc.h"
+#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbcomb, lmat(*), lres
@@ -68,7 +70,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     character(len=19) :: noma
     character(len=2) :: rouc
     integer :: neq, mxddl, lddl, jsmdi, jrefa, jsmhc
-    integer :: ival, iconst, imat, jvamr1, jvamr2, jvami1, jvami2
+    integer :: iconst, imat, jvamr1, jvamr2, jvami1, jvami2
     real(kind=8) :: zero, r8cst, rbid
     complex(kind=8) :: czero, c8cst, cbid
 !     -----------------------------------------------------------------
@@ -119,24 +121,12 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 ! --- MISE A ZERO DE LA MATRICE RESULTAT :
 !     ----------------------------------------
     if (typres .eq. 'R') then
-        do ival = jvamr1, jvamr1 + lgbloc - 1
-            zr(ival) = zero
-        end do
-        if (.not.symr) then
-            do ival = jvamr2, jvamr2 + lgbloc - 1
-                zr(ival) = zero
-            end do
-        endif
+        call vecini(lgbloc, zero, zr(jvamr1))
+        if (.not.symr)  call vecini(lgbloc, zero, zr(jvamr2))
 !
     else if (typres.eq.'C') then
-        do ival = jvamr1, jvamr1 + lgbloc - 1
-            zc(ival) = czero
-        end do
-        if (.not.symr) then
-            do ival = jvamr2, jvamr2 + lgbloc - 1
-                zc(ival) = czero
-            end do
-        endif
+        call vecinc(lgbloc, czero, zc(jvamr1))
+        if (.not.symr)  call vecinc(lgbloc, czero, zc(jvamr2))
     endif
 !
 !

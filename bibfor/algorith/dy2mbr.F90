@@ -27,7 +27,7 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/zinit.h"
+#include "asterfort/vecinc.h"
     character(len=19) :: lischa
     integer :: neq, j2nd
     real(kind=8) :: freq
@@ -60,8 +60,8 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
     integer :: j2nd1, j2nd2, j2nd3, j2nd4, j2nd5
     character(len=1) :: typres
     character(len=8) :: para
-    character(len=19) :: cndiri, cnneum, cnvoch, cnveac, cnvass
-    complex(kind=8) :: czero
+    character(len=19):: cndiri, cnneum, cnvoch, cnveac, cnvass
+    complex(kind=8)  :: czero
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,32 +85,27 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
 !
 ! --- VECTEUR RESULTANT
 !
-    call zinit(neq, czero, zc(j2nd), 1)
+    call vecinc(neq, czero, zc(j2nd))
 !
 ! --- ASSEMBLAGE DES CHARGEMENTS DE DIRICHLET
 !
-    call ascomb(lischa, vediri, typres, para, freq,&
-                cndiri)
+    call ascomb(lischa, vediri, typres, para, freq, cndiri)
 !
 ! --- ASSEMBLAGE DES CHARGEMENTS DE NEUMANN STANDARDS
 !
-    call ascomb(lischa, veneum, typres, para, freq,&
-                cnneum)
+    call ascomb(lischa, veneum, typres, para, freq, cnneum)
 !
 ! --- ASSEMBLAGE DU CHARGEMENT DE TYPE EVOL_CHAR
 !
-    call ascomb(lischa, vevoch, typres, para, freq,&
-                cnvoch)
+    call ascomb(lischa, vevoch, typres, para, freq, cnvoch)
 !
 ! --- ASSEMBLAGE DU CHARGEMENT DE TYPE VECT_ASSE_CHAR
 !
-    call ascomb(lischa, vassec, typres, para, freq,&
-                cnveac)
+    call ascomb(lischa, vassec, typres, para, freq, cnveac)
 !
 ! --- CHARGEMENT DE TYPE VECT_ASSE
 !
-    call cnvesl(lischa, typres, neq, para, freq,&
-                cnvass)
+    call cnvesl(lischa, typres, neq, para, freq, cnvass)
 !
 ! --- CUMUL DES DIFFERENTS TERMES DU SECOND MEMBRE DEFINITIF
 !
@@ -119,10 +114,10 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
     call jeveuo(cnvoch(1:19)//'.VALE', 'L', j2nd3)
     call jeveuo(cnveac(1:19)//'.VALE', 'L', j2nd4)
     call jeveuo(cnvass(1:19)//'.VALE', 'L', j2nd5)
-    do 300 ieq = 1, neq
+    do ieq = 1, neq
         zc(j2nd+ieq-1) = zc(j2nd1+ieq-1) + zc(j2nd2+ieq-1) + zc(j2nd3+ ieq-1) + zc(j2nd4+ieq-1) +&
                          & zc(j2nd5+ieq-1)
-300  end do
+    end do
 !
     call detrsd('CHAMP_GD', cndiri)
     call detrsd('CHAMP_GD', cnneum)
