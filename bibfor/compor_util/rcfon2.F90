@@ -1,6 +1,13 @@
-subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
-                  e, nu, p, rp, rprim,&
-                  c, sieleq, dp)
+subroutine rcfon2(quest, jprol , jvale, nbvale, sigy ,&
+                  e    , nu    , p    , rp    , rprim,&
+                  c    , sieleq, dp)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,76 +24,85 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/utmess.h"
-    character(len=1) :: quest
-    integer :: jprol, jvale, nbvale
-    real(kind=8) :: e, nu, sigy, p, sieleq, rp, rprim, c, dp
-! ----------------------------------------------------------------------
-!     INTERPOLATION SUR UNE FONCTION DE TYPE R(P)
 !
-! IN  QUEST   : 'S' -> CALCUL DE LA LIMITE ELASTIQUE
-!                 OUT: SIGY
-!               'V' -> CALCUL DE RP, RPRIM ET AIRERP
-!                 IN: P  OUT: RP,RPRIM,AIRERP
-!               'E' -> CALCUL DE L'INCREMENT DP, RACINE DE L'EQUATION
-!                 IN : E(T+),NU(T+),P-,SIELEQ+
-!                 OUT: RP(P+),RPRIM(P+),AIRERP(P+),DP
-! IN  JPROL   : ADRESSE DE L'OBJET .PROL DE LA S.D. FONCTION R(P)
-! IN  JVALE   : ADRESSE DE L'OBJET .VALE DE LA S.D. FONCTION R(P)
-! IN  NBVALE  : NOMBRE DE VALEURS DE LA FONCTION R(P)
-! OUT SIGY    : LIMITE D'ELASTICITE
-! IN  E       : MODULE D'YOUNG
-! IN  NU      : COEFFICIENT DE POISSON
-! IN  P       : VARIABLE INTERNE
-! OUT RP      : VALEUR DE R(P).
-! OUT RPRIM   : VALEUR DE LA DERIVEE DE R(P) EN P
-! IN  C       : CONSTANTE DE PRAGER
-! IN  SIELEQ  : CONTRAINTE ELASTIQUE EQUIVALENTE
-! OUT DP      : INCREMENT DE DEFORMATION PLASTIQUE CUMULEE.
+    character(len=1), intent(in) :: quest
+    integer, intent(in) :: jprol
+    integer, intent(in) :: jvale
+    integer, intent(in) :: nbvale
+    real(kind=8), optional, intent(in) :: sieleq
+    real(kind=8), optional, intent(in) :: e
+    real(kind=8), optional, intent(in) :: nu
+    real(kind=8), optional, intent(in) :: p
+    real(kind=8), optional, intent(out) :: sigy
+    real(kind=8), optional, intent(out) :: rp
+    real(kind=8), optional, intent(out) :: rprim
+    real(kind=8), optional, intent(in) :: c
+    real(kind=8), optional, intent(out) :: dp
 !
+! --------------------------------------------------------------------------------------------------
 !
+! Comportment - Utility
 !
+! Get information by interpolation on traction curve R(p) - Prager version
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  Quest   : type of information to get
+!               'S' - Elastic yield
+!               'V' - R(p), dR(p), A[R(p),p]
+!               'E' - R(p), dR(p)/dp, dp, A[R(p),p]
+! In  jprol   : adress of .PROL object for R(p) function
+! In  jvale   : adress of .VALE object for R(p) function
+! In  nbvale  : number of values in R(p) function
+! Out sigy    : elastic yield
+! In  e       : Young modulus
+! In  nu      : Poisson coefficient
+! In  sieleq  : elastic stress
+! In  p       : internal variable (plastic strain)
+! In  c       : Prager constant
+! Out rp      : value of R(p)
+! Out rprim   : value of dR(p)/dp at p
+! Out dp      : cumulutated plastic strain
+!
+! --------------------------------------------------------------------------------------------------
 !
     logical :: tessup
-    character(len=1) :: pro
-    character(len=24) :: nom
+    character(len=1) :: type_prol
+    character(len=24) :: func_name
     integer :: jp, jr, i, i0
     real(kind=8) :: p0, rp0, pp, equ, deuxmu, rpm
 !
+! --------------------------------------------------------------------------------------------------
 !
-! - DESCRIPTIF DE LA COURBE R(P)
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
     jp = jvale
     jr = jvale + nbvale
-    pro = zk24(jprol+4)(2:2)
-    nom = zk24(jprol+5)
+    type_prol = zk24(jprol+4)(2:2)
+    func_name = zk24(jprol+5)
 !
-! - LIMITE D'ELASTICITE
+! - Elastic yield
+!
     if (quest .eq. 'S') then
         sigy = zr(jr)
-        goto 9999
+        goto 999
     endif
 !
+! - Check
 !
-! - INITIALISATION
     if (p .lt. 0) then
-        call utmess('F', 'MODELISA6_59')
+        call utmess('F', 'COMPOR5_59')
     endif
     tessup = .false.
 !
 ! - PARCOURS JUSQU'A P
-    do 10 i = 1, nbvale-1
+    do  i = 1, nbvale-1
         if (p .lt. zr(jp+i)) then
             i0 = i-1
             goto 20
         endif
-10  end do
+    end do
     tessup = .true.
-    if (pro .eq. 'E') then
-        call utmess('F', 'MODELISA6_60', sk=nom, sr=p)
+    if (type_prol .eq. 'E') then
+        call utmess('F', 'COMPOR5_60', sk=func_name, sr=p)
     endif
     i0=nbvale-1
 20  continue
@@ -95,7 +111,7 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
 !
     if (quest .eq. 'V') then
         if (tessup) then
-            if (pro .eq. 'L') then
+            if (type_prol .eq. 'L') then
                 rprim = (zr(jr+i0)-zr(jr+i0-1))/ (zr(jp+i0)-zr(jp+i0- 1))
             else
                 rprim = 0.d0
@@ -108,22 +124,22 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
         rp0 = zr(jr+i0)
         rp = rp0 + rprim*(p-p0) - 1.5d0*c*p
         rprim = rprim - 1.5d0*c
-        goto 9999
+        goto 999
     endif
 !
 ! - RESOLUTION DE L'EQUATION R(P+DP) + 3/2*(2MU+C) DP = SIELEQ
 !
     deuxmu = e/(1+nu)
-    do 30 i = i0+1, nbvale-1
+    do i = i0+1, nbvale-1
         equ = zr(jr+i) + 1.5d0*(deuxmu+c)*(zr(jp+i)-p) - sieleq
         if (equ .gt. 0) then
             i0 = i-1
             goto 40
         endif
-30  end do
+    end do
     tessup = .true.
-    if (pro .eq. 'E') then
-        call utmess('F', 'MODELISA6_60', sk=nom, sr=p)
+    if (type_prol .eq. 'E') then
+        call utmess('F', 'COMPOR5_60', sk=func_name, sr=p)
     endif
     i0 = nbvale-1
 40  continue
@@ -131,7 +147,7 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
 ! - CALCUL DES VALEURS DE DP, R(P+DP), R'(P+DP)
 !
     if (tessup) then
-        if (pro .eq. 'L') then
+        if (type_prol .eq. 'L') then
             rprim = (zr(jr+i0)-zr(jr+i0-1))/ (zr(jp+i0)-zr(jp+i0-1))
         else
             rprim = 0.d0
@@ -148,5 +164,5 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy,&
     rp = rp0 + rprim*(pp-p0)-1.5d0*c*pp
     rprim = rprim - 1.5d0*c
 !
-9999  continue
+999 continue
 end subroutine

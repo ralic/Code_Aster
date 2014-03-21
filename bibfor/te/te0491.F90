@@ -438,8 +438,8 @@ subroutine te0491(option, nomte)
 ! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
                 call rcfonc('V', 1, jprol, jvale, nbval,&
-                            rbid, rbid, rbid, p, rp,&
-                            rprim, airep, rbid, rbid)
+                            p = p, rp = rp,&
+                            rprim = rprim, airerp = airep)
 !
                 eplast = airep
             endif
@@ -620,15 +620,14 @@ subroutine te0491(option, nomte)
 ! --- CALCUL DE LA LIMITE ELASTIQUE SIGY :
 !
                 call rcfonc('S', 1, jprol, jvale, nbval,&
-                            sigy, rbid, rbid, rbid, rbid,&
-                            rbid, rbid, rbid, rbid)
+                            sigy = sigy)
 !
 ! --- CALCUL DU TRAVAIL ELASTIQUE NON-LINEAIRE ET DE LA
 ! --- CONTRAINTE EQUIVALENTE :
 !
                 call rcfonc('E', 1, jprol, jvale, nbval,&
-                            rbid, e, nu, zero, rp,&
-                            rprim, airep, sigeq, p)
+                            e = e, nu = nu, p = zero, rp = rp,&
+                            rprim = rprim, airerp = airep, sieleq = sigeq, dp = p)
 !
 ! --- TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
 !
@@ -834,8 +833,8 @@ subroutine te0491(option, nomte)
 ! ---          TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
                 call rcfonc('V', 1, jprol, jvale, nbval,&
-                            rbid, rbid, rbid, p, rp,&
-                            rprim, airep, rbid, rbid)
+                            p = p, rp = rp,&
+                            rprim = rprim, airerp = airep)
 !
                 eplaeq = rp*p
             else

@@ -135,7 +135,7 @@ subroutine te0353(option, nomte)
     endif
     do 10 i = 1, nbres
 10  end do
-    do 160 kp = 1, npg1
+    do kp = 1, npg1
         k=(kp-1)*nno
         call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids, dfdx, dfdy)
@@ -264,8 +264,7 @@ subroutine te0353(option, nomte)
                             call rctrac(mater, 2, nomcle(i), resu, jprol,&
                                         jvale, nbval, r8bid)
                             call rcfonc('V', 2, jprol, jvale, nbval,&
-                                        r8bid, r8bid, r8bid, vi(i), r8bid,&
-                                        r0(i), r8bid, r8bid, r8bid)
+                                        p = vi(i), rprim = r0(i))
 90                      continue
                     endif
                     if (zfbm .gt. 0.d0) then
@@ -406,8 +405,7 @@ subroutine te0353(option, nomte)
                         call rctrac(mater, 3, nomcle(i), tpg, jprol,&
                                     jvale, nbval, r8bid)
                         call rcfonc('V', 3, jprol, jvale, nbval,&
-                                    r8bid, r8bid, r8bid, vi(i), r8bid,&
-                                    r0(i), r8bid, r8bid, r8bid)
+                                    p = vi(i), rprim = r0(i))
 120                  continue
                 endif
                 if (zalpha .gt. 0.d0) then
@@ -444,5 +442,5 @@ subroutine te0353(option, nomte)
             zr(ivectu+2*i-1)=zr(ivectu+2*i-1)+ poids*(sig(2)*dfdy(i)+&
             sig(4)*dfdx(i))
 150      continue
-160  end do
+    end do
 end subroutine

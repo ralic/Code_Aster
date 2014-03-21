@@ -67,7 +67,6 @@ function lcroy1()
     integer :: iter
     real(kind=8) :: seuil, dseuil, s
     real(kind=8) :: y, dp, yinf, ysup, t, rp, pente, aire
-    real(kind=8) :: r8bid
 !
 ! 1 - CALCUL DU MINORANT
 !
@@ -82,8 +81,8 @@ function lcroy1()
 ! LCROTY RESOUD UNE EQUATION DU TYPE Y*EXP(Y)=CONSTANTE
 !
         call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
-                    r8bid, young, nu, pm, rp,&
-                    pente, aire, 2.d0*mu*eqetr, dp)
+                    e = young, nu = nu, p = pm, rp = rp,&
+                    rprim = pente, airerp = aire, sieleq = 2.d0*mu*eqetr, dp = dp)
         yinf = lcroty(dp*unk*fonc/sig1, prec, itemax)
     endif
 !

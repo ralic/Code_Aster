@@ -60,7 +60,7 @@ subroutine digouj(option, compor, nno, nbt, neq,&
     integer :: i, nno, jprolp, jvalep, nbvalp, lgpg, jtab(7)
     real(kind=8) :: seuil
     real(kind=8) :: dfl(6), fl(6)
-    real(kind=8) :: nu, dum, rbid, resu, valpap
+    real(kind=8) :: nu, resu, valpap
     character(len=8) :: nompar, type
     character(len=24) :: valk(2)
     logical :: plasti
@@ -103,11 +103,9 @@ subroutine digouj(option, compor, nno, nbt, neq,&
                 jvalep, nbvalp, e)
     if (compor(1) .eq. 'DIS_GOUJ2E_PLAS') then
         call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                    sigy, dum, dum, dum, dum,&
-                    dum, dum, dum, dum)
+                    sigy = sigy)
         call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                    rbid, rbid, rbid, varim( 1), rp,&
-                    rprim, airerp, rbid, rbid)
+                    p = varim(1), rp = rp, rprim = rprim, airerp = airerp)
         plasti=(varim(2).ge.0.5d0)
     else if (compor(1).eq.'DIS_GOUJ2E_ELAS') then
         sigy=0.d0
@@ -142,8 +140,8 @@ subroutine digouj(option, compor, nno, nbt, neq,&
                 varip(2) = 1.d0
                 nu=0.5d0
                 call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
-                            rbid, e, nu, varim(1), rp,&
-                            rprim, airerp, sieleq, dp)
+                            e = e, nu = nu, p = varim(1), rp = rp,&
+                            rprim = rprim, airerp = airerp, sieleq = sieleq, dp = dp)
             endif
             varip(1) = varim(1) + dp
             plasti=(varip(2).ge.0.5d0)

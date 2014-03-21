@@ -179,11 +179,10 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
             call rctrac(imate, 1, 'SIGM', resu, jprol,&
                         jvale, nbvale, e)
             call rcfonc('S', 1, jprol, jvale, nbvale,&
-                        sigy, dum, dum, dum, dum,&
-                        dum, dum, dum, dum)
+                        sigy = sigy)
             call rcfonc('E', 1, jprol, jvale, nbvale,&
-                        dum, e, nu, 0.d0, rp,&
-                        rprim, airep, sieleq, p)
+                        e = e, nu = nu, p = 0.d0, rp = rp,&
+                        rprim = rprim, airerp = airep, sieleq = sieleq, dp = p)
             dp = 0.d0
             drp = 0.d0
             dairep = 0.d0

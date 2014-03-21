@@ -71,14 +71,13 @@ function lcroyi()
 ! 2 - CALCUL DU MINORANT
 !
     call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                r8bid, r8bid, r8bid, pm+dp, rp,&
-                pente, aire, r8bid, r8bid)
+                p = pm+dp, rp = rp, rprim = pente, airerp = aire)
     e = sig1*fonc / rp
     yinf = max(0.d0, log(e))
 !
 ! 3 - RESOLUTION PAR UNE METHODE DE NEWTON ENTRE LES BORNES
 !
-    do 10 iter = 1, itemax
+    do iter = 1, itemax
         if (abs(s)/sigy .le. prec) goto 100
 !
         y = y - s/ds
@@ -87,10 +86,10 @@ function lcroyi()
         call lcrofs(y, dp, s, ds)
         if (s .le. 0) yinf = y
         if (s .ge. 0) ysup = y
-10  end do
+    end do
     call utmess('F', 'ALGORITH3_55')
 !
 !
-100  continue
+100 continue
     lcroyi = y
 end function

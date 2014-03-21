@@ -281,8 +281,7 @@ subroutine te0358(option, nomte)
                         call rctrac(mater, 2, nomcle(i), tpg, jprol,&
                                     jvale, nbval, r8bid)
                         call rcfonc('V', 2, jprol, jvale, nbval,&
-                                    r8bid, r8bid, r8bid, vi(i), r8bid,&
-                                    r0(i), r8bid, r8bid, r8bid)
+                                    p = vi(i), rprim = r0(i))
 70                  continue
                 endif
 !
@@ -395,8 +394,7 @@ subroutine te0358(option, nomte)
                         call rctrac(mater, 3, nomcle(i), tpg, jprol,&
                                     jvale, nbval, r8bid)
                         call rcfonc('V', 3, jprol, jvale, nbval,&
-                                    r8bid, r8bid, r8bid, vi(i), r8bid,&
-                                    r0(i), r8bid, r8bid, r8bid)
+                                    p = vi(i), rprim = r0(i))
 100                  continue
                 endif
 !

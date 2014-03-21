@@ -62,8 +62,7 @@ subroutine lcrofs(y, dp, s, ds)
     dp=y*exp(y)*sig1/(fonc*unk)
 !
     call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                r8bid, r8bid, r8bid, pm+dp, rp,&
-                pente, aire, r8bid, r8bid)
+                p = pm+dp, rp = rp, rprim = pente, airerp = aire)
 !
     s = -sig1*fonc*exp(-y) + rp
     ds = sig1*fonc*exp(-y) + pente*sig1*(1+y)*exp(y)/(unk*fonc)

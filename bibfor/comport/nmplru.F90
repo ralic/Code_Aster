@@ -164,8 +164,8 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
         call rctrac(imate, 1, 'SIGM', temp, jprol,&
                     jvale, nbval, e)
         call rcfonc('V', 1, jprol, jvale, nbval,&
-                    rbid, rbid, rbid, ppg, rp,&
-                    rprim, airep, rbid, rbid)
+                    p = ppg, rp = rp,&
+                    rprim = rprim, airerp = airep)
         dairep = 0.d0
 
     else if (elas) then
@@ -185,21 +185,21 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !
     if (cp) eps(3)=-nu/(1.d0-nu)*(eps(1)+eps(2)) +(1.d0+nu)/(1.d0-nu)*ther
     divu = 0.d0
-    do 10 i = 1, 3
+    do i = 1, 3
         epsth(i) = eps(i)-epsp(i)-ther
         epsth(i+3) = eps(i+3)-epsp(i+3)
         divu = divu + epsth(i)
-10  end do
+    end do
     epsmo = divu/3.d0
-    do 20 i = 1, 2*ndim
+    do i = 1, 2*ndim
         epsdv(i) = epsth(i) - epsmo * kron(i)
-20  end do
+    end do
 !
 ! - CALCUL DE LA CONTRAINTE ELASTIQUE EQUIVALENTE
     epseq = 0.d0
-    do 30 i = 1, 2*ndim
+    do i = 1, 2*ndim
         epseq = epseq + epsdv(i)*epsdv(i)
-30  end do
+    end do
     epseq = sqrt(1.5d0*epseq)
 !
 !  CALCUL DE L'ENERGIE LIBRE ET DE LA DERIVEE /TEMPERATURE

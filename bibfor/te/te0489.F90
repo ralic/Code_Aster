@@ -108,7 +108,7 @@ subroutine te0489(option, nomte)
     nbvalp = 0
     ibid = 0
 !
-    do 10 i = 1, mxcmel
+    do i = 1, mxcmel
         sigt1(i) = zero
         sigt2(i) = zero
         sigma1(i) = zero
@@ -116,9 +116,9 @@ subroutine te0489(option, nomte)
         x1(i) = zero
         x2(i) = zero
         xrapel(i) = zero
-10  end do
+    end do
 !
-    do 20 i = 1, nbpgmx
+    do i = 1, nbpgmx
         dchav(i) = zero
         dchat(i) = zero
         dchax(i) = zero
@@ -126,7 +126,7 @@ subroutine te0489(option, nomte)
         radiv(i) = zero
         radit(i) = zero
         cosang(i) = zero
-20  end do
+    end do
 !
 ! ----     DIMENSION DE L'ELEMENT :
 ! ----     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
@@ -382,11 +382,9 @@ subroutine te0489(option, nomte)
                             call rctrac(zi(imate), 1, 'SIGM', resu, jprolp,&
                                         jvalep, nbvalp, e)
                             call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                                        rp0, dum, dum, dum, dum,&
-                                        dum, dum, dum, dum)
+                                        sigy = rp0)
                             call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                                        rbid, rbid, rbid, pm, rp,&
-                                        rbid, rbid, rbid, rbid)
+                                        p = pm, rp = rp)
                         else
                             call utmess('F', 'ELEMENTS_32')
                         endif
@@ -446,11 +444,9 @@ subroutine te0489(option, nomte)
                             call rctrac(zi(imate), 1, 'SIGM', resu, jprolp,&
                                         jvalep, nbvalp, e)
                             call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                                        rp0, dum, dum, dum, dum,&
-                                        dum, dum, dum, dum)
+                                        sigy = rp0)
                             call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                                        rbid, rbid, rbid, pm, rp,&
-                                        rbid, rbid, rbid, rbid)
+                                        p = pm, rp = rp)
                         else
                             call utmess('F', 'ELEMENTS_32')
                         endif
@@ -484,15 +480,15 @@ subroutine te0489(option, nomte)
 ! ---- AVEC LE VECTEUR DES INDICATEURS LOCAUX :
 !      --------------------------------------
     call jevech('PDERAPG', 'E', idera2)
-    do 170 igau = 1, npg
+    do  igau = 1, npg
         zr(idera2+(igau-1)*nbcmp-1+1) = dchav(igau)
         zr(idera2+(igau-1)*nbcmp-1+2) = dchat(igau)
         zr(idera2+(igau-1)*nbcmp-1+3) = dchax(igau)
         zr(idera2+(igau-1)*nbcmp-1+4) = dchay(igau)
-        do 260 isig = 1, nbsig
+        do isig = 1, nbsig
             zr(idera2+(igau-1)*nbcmp+3+isig)=xrapel((igau-1)*6+isig)
-260      continue
+        end do
         zr(idera2+(igau-1)*nbcmp-1+11) = radiv(igau)
         zr(idera2+(igau-1)*nbcmp-1+12) = radit(igau)
-170  end do
+    end do
 end subroutine

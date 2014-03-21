@@ -80,8 +80,7 @@ subroutine lcrotg(indice, dp, e, dtaudf)
     call r8inir(36, 0.d0, dedetr, 1)
     call r8inir(6, 0.d0, dedfcd, 1)
     call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                r8bid, r8bid, r8bid, pm+dp, rp,&
-                drdp, aire, r8bid, r8bid)
+                p = pm+dp, rp = rp, rprim = drdp, airerp = aire)
     tre = e(1)+e(2)+e(3)
     select case (indice)
 !

@@ -237,19 +237,6 @@ Solution : Il faut dédoubler le noeud.
  nappe interdite pour les caractéristiques matériau
 """),
 
-59 : _(u"""
- déformation plastique cumulée p < 0
-"""),
-
-60 : _(u"""
-  Le prolongement à droite étant exclu pour la fonction %(k1)s,
-  il n'est pas possible d'extrapoler la fonction R(p) au delà de p = %(r1)f
-"""),
-
-62 : _(u"""
- la limite d'élasticité est déjà renseignée dans ELAS_META
-"""),
-
 64 : _(u"""
  type sd non traité:  %(k1)s
 """),

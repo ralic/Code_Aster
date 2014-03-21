@@ -216,11 +216,11 @@ subroutine te0490(option, nomte)
     xyz(1) = 0.d0
     xyz(2) = 0.d0
     xyz(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140     continue
-150 end do
+        end do
+    end do
 !
     call ortrep(zi(imate), ndim, xyz, repere)
 !
@@ -454,8 +454,8 @@ subroutine te0490(option, nomte)
 ! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
                 call rcfonc('V', 1, jprol, jvale, nbval,&
-                            rbid, rbid, rbid, p, rp,&
-                            rprim, airep, rbid, rbid)
+                            p = p, rp = rp,&
+                            rprim = rprim, airerp = airep)
 !
                 eplast = airep
             endif
@@ -656,8 +656,7 @@ subroutine te0490(option, nomte)
 ! --- CALCUL DE LA LIMITE ELASTIQUE SIGY :
 !
                 call rcfonc('S', 1, jprol, jvale, nbval,&
-                            sigy, rbid, rbid, rbid, rbid,&
-                            rbid, rbid, rbid, rbid)
+                            sigy = sigy)
 !
                 if (sigeq .ge. sigy) then
 !
@@ -665,8 +664,8 @@ subroutine te0490(option, nomte)
 ! --- CONTRAINTE EQUIVALENTE :
 !
                     call rcfonc('E', 1, jprol, jvale, nbval,&
-                                rbid, e, nu, zero, rp,&
-                                rprim, airep, sigeq, p)
+                                e = e, nu = nu, p = zero, rp = rp,&
+                                rprim = rprim, airerp = airep, sieleq = sigeq, dp = p)
 !
 ! --- TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
 !
@@ -889,8 +888,8 @@ subroutine te0490(option, nomte)
 ! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
 !
                 call rcfonc('V', 1, jprol, jvale, nbval,&
-                            rbid, rbid, rbid, p, rp,&
-                            rprim, airep, rbid, rbid)
+                            p = p, rp = rp,&
+                            rprim = rprim, airerp = airep)
 !
                 eplaeq = rp*p
             else

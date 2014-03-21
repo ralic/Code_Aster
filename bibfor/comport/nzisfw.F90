@@ -469,8 +469,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                             jvale, nbval( k), rbid)
                 call rcfonc('V', 2, jprol, jvale, nbval(k),&
-                            rbid, rbid, rbid, vi(k), r(k),&
-                            h(k), rbid, rbid, rbid)
+                            p = vi(k), rp = r(k), rprim = h(k))
                 r(k) = r(k) + sy(k)
  75         continue
 !
@@ -575,8 +574,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                                             jvale, nbval(k), rbid)
                                 call rcfonc('V', 2, jprol, jvale, nbval(k),&
-                                            rbid, rbid, rbid, vip(k), r(k),&
-                                            h(k), rbid, rbid, rbid)
+                                            p = vip(k), rp = r(k), rprim = h(k))
                                 r(k) = r(k) + sy(k)
                                 if (abs(h(k)-hplus(k)) .gt. precr) test= 1
                             endif

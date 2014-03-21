@@ -52,8 +52,8 @@ function nmcri1(dp)
         rpp = sigy + sigy*(e*(pm+dp)/alfafa/sigy)**unsurn
     else
         call rcfonc('V', 1, jprol2, jvale2, nbval2,&
-                    dum, dum, dum, pm+dp, rpp,&
-                    drdp, airerp, dum, dum)
+                    p = pm+dp, rp = rpp,&
+                    rprim = drdp, airerp = airerp)
     endif
 !
     dx = 3.d0*(1.d0-2.d0*nu)*sigel(3)*dp/(e*dp+2.d0*(1.d0-nu)*rpp)

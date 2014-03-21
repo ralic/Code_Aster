@@ -49,9 +49,9 @@ function nmcri5(dp)
     if (line .ge. 0.5d0) then
         rpp = sigy +rprim*(pm+dp)
     else
-        call rcfon2('V', jprol2, jvale2, nbval2, dum,&
-                    dum, dum, pm+dp, rpp, drdp,&
-                    prag, dum, dum)
+        call rcfon2('V', jprol2, jvale2, nbval2, &
+                    p = pm+dp, rp = rpp, rprim = drdp,&
+                    c = prag)
     endif
     gp=1.d0+1.5d0*prag*dp/rpp
     hp=gp+1.5d0*deuxmu*dp/rpp

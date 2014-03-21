@@ -71,12 +71,10 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 ! 2 - SIGY ET ECROUISSAGE EN P-
 !
     call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                sigy, r8bid, r8bid, r8bid, r8bid,&
-                r8bid, r8bid, r8bid, r8bid)
+                sigy = sigy)
 !
     call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                r8bid, r8bid, r8bid, pm, rpm,&
-                pente, aire, r8bid, r8bid)
+                p = pm, rp = rpm, rprim = pente, airerp = aire)
 !
 !
 ! 3 - PARAMETRES DE CROISSANCE DE CAVITES ET CONTROLE INCR. PLASTIQUE

@@ -119,8 +119,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         call rctrac(mate, 1, 'SIGM', 0.d0, jprol,&
                     jvale, nbvale, young)
         call rcfonc('V', 1, jprol, jvale, nbvale,&
-                    r8bid, r8bid, r8bid, vim(1), rp,&
-                    r8bid, r8bid, r8bid, r8bid)
+                    p =  vim(1), rp = rp)
     endif
 !
     deuxmu = young/(1.d0+nu)

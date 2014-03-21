@@ -31,7 +31,7 @@ subroutine rsliso(fami, kpg, ksp, poum, imat,&
 #include "asterfort/rctype.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-    real(kind=8) :: temp, p, rp, e, drdp, airerp, dum, resu
+    real(kind=8) :: temp, p, rp, e, drdp, airerp, resu
     integer :: imat, jprol, jvale, nbvale, kpg, ksp, iret
     character(len=*) :: fami
     character(len=1) :: poum
@@ -46,6 +46,5 @@ subroutine rsliso(fami, kpg, ksp, poum, imat,&
     call rctrac(imat, 1, 'SIGM', resu, jprol,&
                 jvale, nbvale, e)
     call rcfonc('V', 1, jprol, jvale, nbvale,&
-                dum, dum, dum, p, rp,&
-                drdp, airerp, dum, dum)
+                p = p, rp = rp, rprim = drdp, airerp = airerp)
 end subroutine

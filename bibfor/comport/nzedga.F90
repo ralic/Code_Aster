@@ -134,14 +134,14 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
     if (resi) then
 !
         c1='+'
-        do 5 k = 1, nz-1
+        do k = 1, nz-1
             call rcvarc(' ', zirc(k), '+', fami, kpg,&
                         ksp, phase(k), ire2)
             if (ire2 .eq. 1) phase(k)=0.d0
             call rcvarc(' ', zirc(k), '-', fami, kpg,&
                         ksp, phasm(k), ire2)
             if (ire2 .eq. 1) phasm(k)=0.d0
-  5     continue
+        end do
 !
     else
 !
@@ -445,8 +445,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                             jvale, nbval( k), rbid)
                 call rcfonc('V', 2, jprol, jvale, nbval(k),&
-                            rbid, rbid, rbid, vi(k), r(k),&
-                            h(k), rbid, rbid, rbid)
+                            p =  vi(k), rp = r(k), rprim = h(k))
                 r(k) = r(k) + sy(k)
  75         continue
 !
@@ -481,16 +480,16 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
     trsigm = (sigm(1)+sigm(2)+sigm(3))/3.d0
     trsigp = troisk*(trepsm+trdeps)-troisk*epsth
 !
-    do 80 i = 1, ndimsi
+    do i = 1, ndimsi
         dvdeps(i) = deps(i) - trdeps * kron(i)
         dvsigm(i) = sigm(i) - trsigm * kron(i)
- 80 end do
+    end do
 !
     sieleq = 0.d0
-    do 85 i = 1, ndimsi
+    do i = 1, ndimsi
         sigel(i) = deuxmu*dvsigm(i)/deumum + deuxmu*dvdeps(i)
         sieleq = sieleq + sigel(i)**2
- 85 end do
+    end do
     sieleq = sqrt(1.5d0*sieleq)
 !
     if (sieleq .gt. 0.d0) then
@@ -532,7 +531,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
                 call nzcalc(crit, phase, nz, fmel(1), seuil,&
                             dt, trans, hmoy, deuxmu, eta,&
                             unsurn, dp, iret)
-                if (iret .eq. 1) goto 9999
+                if (iret .eq. 1) goto 999
 !
 ! DANS LE CAS NON LINEAIRE
 ! VERIFICATION QU ON EST DANS LE BON INTERVALLE
@@ -549,8 +548,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
                                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
                                             jvale, nbval(k), rbid)
                                 call rcfonc('V', 2, jprol, jvale, nbval(k),&
-                                            rbid, rbid, rbid, vip(k), r(k),&
-                                            h(k), rbid, rbid, rbid)
+                                            p = vip(k), rp = r(k), rprim = h(k))
                                 r(k) = r(k) + sy(k)
                                 if (abs(h(k)-hplus(k)) .gt. precr) test= 1
                             endif
@@ -578,7 +576,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
                         call nzcalc(crit, phase, nz, fmel(1), seuil,&
                                     dt, trans, hmoy, deuxmu, eta,&
                                     unsurn, dp, iret)
-                        if (iret .eq. 1) goto 9999
+                        if (iret .eq. 1) goto 999
 105                 continue
                     ASSERT((test.ne.1).or.(j.ne.maxval))
 600                 continue
@@ -748,6 +746,6 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
 !
     endif
 !
-9999 continue
+999 continue
 !
 end subroutine

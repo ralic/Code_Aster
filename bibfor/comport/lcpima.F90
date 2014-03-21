@@ -72,6 +72,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 ! ----------------------------------------------------------------------
 !
     materi = ' '
+    r8bid  = 0.d0
 !
 ! 1 - A L INSTANT COURANT YOUNG, MU ET UNK
 !
@@ -118,16 +119,14 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 !
     if (compor(10:14) .eq. '_TRAC') then
         call rcfonc('S', 1, jprol, jvale, nbval,&
-                    sigy, r8bid, r8bid, r8bid, r8bid,&
-                    r8bid, r8bid, r8bid, r8bid)
+                    sigy = sigy)
 !
         call rcfonc('V', 1, jprol, jvale, nbval,&
-                    r8bid, r8bid, r8bid, pm, rpm,&
-                    pente, aire, r8bid, r8bid)
+                    p = pm, rp = rpm, rprim = pente, airerp = aire)
     endif
 !
     if (compor(10:14) .eq. '_LINE') then
-        nomres(1)='D_SIGM_EPSI'
+        nomres(1)='D_SIGM_EPSI'(1:8)
         nomres(2)='SY'
         call rcvalb(fami, kpg, ksp, poum, mate,&
                     ' ', 'ECRO_LINE', 0, kbid, [r8bid],&

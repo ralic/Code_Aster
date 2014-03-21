@@ -329,9 +329,9 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
             call rupmat(fami, kpg, ksp, imate, vim, lgpg, e, sigm)
         endif
 !
-        call rcfonc('S', 1, jprolp, jvalep, nbvalp, sigy, dum, dum, dum, dum, dum, dum, dum, dum)
-        call rcfonc('V', 1, jprolp, jvalep, nbvalp, rbid, rbid, rbid, vim(1), rp,&
-                    rprim, airerp, rbid, rbid)
+        call rcfonc('S', 1, jprolp, jvalep, nbvalp, sigy = sigy)
+        call rcfonc('V', 1, jprolp, jvalep, nbvalp, p =  vim(1),rp = rp,&
+                    rprim = rprim, airerp = airerp)
         if (inco) then
             deuxmu = 2.d0*e/3.d0
             troisk = deuxmu
@@ -416,8 +416,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                 else if (compor(10:14) .eq. '_PUIS') then
                     dp0 = (sieleq - rp)/(1.5d0*deuxmu)
                 else
-                    call rcfonc('E', 1, jprolp, jvalep, nbvalp, rbid, e, nu, pm, rp,&
-                                rprim, airerp, sieleq, dp0)
+                    call rcfonc('E', 1, jprolp, jvalep, nbvalp, e = e, nu = nu, p = pm, rp = rp,&
+                                rprim = rprim, airerp = airerp, sieleq = sieleq, dp = dp0)
                 endif
                 xap = dp0
                 call zerofr(0, 'DEKKER', nmcri1, 0.d0, xap, precr, niter, dp, iret, ibid)
@@ -427,8 +427,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                 else if (line.lt.-0.5d0) then
                     rp=sigy+sigy*(e*(pm+dp)/alfafa/sigy)**unsurn
                 else
-                    call rcfonc('V', 1, jprolp, jvalep, nbvalp, rbid, rbid, rbid, pm+dp, rp,&
-                                rbid2, airerp, rbid, rbid)
+                    call rcfonc('V', 1, jprolp, jvalep, nbvalp, p = pm+dp, rp = rp,&
+                                airerp = airerp)
                 endif
                 dx = 3.d0*(1.d0-2.d0*nu)*sigel(3)*dp/(e*dp+2.d0* (1.d0-nu)*rp)
             else
@@ -450,8 +450,9 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                     call ecpuis(e, sigy, alfafa, unsurn, pm, dp, rp, rprim)
 !
                 else if (compor(10:14) .eq. '_TRAC') then
-                    call rcfonc('E', 1, jprolp, jvalep, nbvalp, rbid, e, nu, vim(1), rp,&
-                                rprim, airerp, sieleq, dp)
+                    call rcfonc('E', 1, jprolp, jvalep, nbvalp, e = e, nu = nu,&
+                                 p = vim(1), rp = rp,&
+                                rprim = rprim, airerp = airerp, sieleq = sieleq, dp = dp)
                 endif
             endif
         endif

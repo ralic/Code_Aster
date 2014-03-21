@@ -166,14 +166,14 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 !
                 call zerofr(0, 'DEKKER', nmcri6, 0.d0, xap,&
                             precr, itmx, dp, iret, n)
-                if (iret .ne. 0) goto 9999
+                if (iret .ne. 0) goto 999
                 call ecpuis(young, sigy, apui, 1.d0/npui, pm,&
                             dp, rp, rprim)
                 pente=rprim
             else if (compor.eq.'VMIS_ISOT_TRAC') then
                 call rcfonc('E', 1, jprol, jvale, nbval,&
-                            r8bid, young* trbetr/3, nu, pm, rp,&
-                            pente, airerp, mu*eqbetr, dp)
+                            e = young* trbetr/3, nu = nu, p = pm, rp = rp,&
+                            rprim = pente, airerp = airerp, sieleq = mu*eqbetr, dp = dp)
             else
 ! CAS VISQUEUX : CALCUL DE DP PAR RESOLUTION DE
 !  FPLAS - (R'+MU TR BEL)DP - PHI(DP) = 0
@@ -182,9 +182,8 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 ! DANS LE CAS NON LINEAIRE ON VERFIE QUE L ON A LA BONNE PENTE
                 if (compor(10:14) .eq. '_TRAC') then
                     call rcfonc('V', 1, jprol, jvale, nbval,&
-                                r8bid, r8bid, r8bid, pm+dp, rp,&
-                                pentep, r8bid, r8bid, r8bid)
-                    do 10 i = 1, nbval
+                                p = pm+dp, rp = rp, rprim = pentep)
+                    do i = 1, nbval
                         if (abs(pente-pentep) .le. 1.d-3) then
                             goto 20
                         else
@@ -193,10 +192,9 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
                             call calcdp(carcri, seuil, dt, pente, mu* trbetr,&
                                         sigm0, epsi0, coefm, dp, iret)
                             call rcfonc('V', 1, jprol, jvale, nbval,&
-                                        r8bid, r8bid, r8bid, vim(1)+dp, rp,&
-                                        pentep, r8bid, r8bid, r8bid)
+                                        p = vim(1)+dp, rp = rp, rprim = pentep)
                         endif
-10                  continue
+                    end do
 20                  continue
                 endif
             endif
@@ -210,16 +208,16 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 !
         trtau = (troisk*(jp**2-1) - 3.d0*cother*(jp+1.d0/jp)) / 2.d0
 !
-        do 30 ij = 1, 6
+        do ij = 1, 6
             taup(ij) = mu*dvbe(ij) + trtau/3.d0*kr(ij)
-30      continue
+        end do
 !
 ! 4.2 - CORRECTION HYDROSTATIQUE A POSTERIORI
 !
-        do 40 ij = 1, 6
+        do  ij = 1, 6
             ep(ij)=(kr(ij)-jp**(2.d0/3.d0)*(dvbe(ij)+trbetr/3.d0*kr(&
             ij))) /2.d0
-40      continue
+        end do
         call gdsmhy(jp, ep)
 !
 ! 4.3 - P, DEFORMATION ELASTIQUE ET INDICE DE PLASTICITE
@@ -245,5 +243,5 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
         call lcpitg(compor, df, line, dp, dvbe,&
                     dtaudf)
     endif
-9999  continue
+999 continue
 end subroutine

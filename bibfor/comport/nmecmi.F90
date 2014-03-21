@@ -107,12 +107,12 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
     pm = vim(1)
     plast = vim(2)
-    do 11 k = 1, 3
+    do k = 1, 3
         xm(k) = vim(k+2)
- 11 end do
-    do 10 k = 4, ndimsi
+    end do
+    do k = 4, ndimsi
         xm(k) = vim(k+2)*sqrt(2.d0)
- 10 end do
+    end do
     dp=0.d0
 !
 !
@@ -205,12 +205,10 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         deuxmu = e/(1.d0+nu)
         troisk = e/(1.d0-2.d0*nu)
 !
-        call rcfon2('S', jprolp, jvalep, nbvalp, sigy,&
-                    dum, dum, dum, dum, dum,&
-                    dum, dum, dum)
-        call rcfon2('V', jprolp, jvalep, nbvalp, rbid,&
-                    rbid, rbid, pm, rpm, rprim,&
-                    prag, rbid, rbid)
+        call rcfon2('S', jprolp, jvalep, nbvalp, sigy = sigy)
+        call rcfon2('V', jprolp, jvalep, nbvalp,&
+                    p = pm, rp = rpm, rprim = rprim,&
+                    c = prag)
     endif
 !
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :
@@ -218,46 +216,46 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     coef = epsthe
     if (cplan) deps(3)=-nu/(1.d0-nu)*(deps(1)+deps(2)) +(1.d0+nu)/(1.d0-nu)*coef
     depsmo = 0.d0
-    do 110 k = 1, 3
+    do k = 1, 3
         depsth(k) = deps(k) -coef
         depsmo = depsmo + depsth(k)
-110 end do
+    end do
     depsmo = depsmo/3.d0
-    do 111 k = 4, ndimsi
+    do k = 4, ndimsi
         depsth(k) = deps(k)
-111 end do
-    do 115 k = 1, ndimsi
+    end do
+    do k = 1, ndimsi
         depsdv(k) = depsth(k) - depsmo * kron(k)
-115 end do
+    end do
 !
 !     -- 5 CALCUL DE SIGMP :
 !     ----------------------
     sigmmo = 0.d0
-    do 113 k = 1, 3
+    do k = 1, 3
         sigmmo = sigmmo + sigm(k)
-113 end do
+    end do
     sigmmo = sigmmo /3.d0
-    do 114 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmp(k)=deuxmu/deumum*(sigm(k)-sigmmo*kron(k)) + troisk/&
         troikm*sigmmo*kron(k)
-114 end do
+    end do
 !
 !     -- 6 CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
 !     -------------------------------------------------------
     sigmmo = 0.d0
-    do 116 k = 1, 3
+    do k = 1, 3
         sigmmo = sigmmo + sigmp(k)
-116 end do
+    end do
     sigmmo = sigmmo /3.d0
     sieleq = 0.d0
-    do 117 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmdv(k) = sigmp(k)- sigmmo * kron(k)
         if (pragm .ne. 0.d0) then
             xm(k)=xm(k)*prag/pragm
         endif
         sigel(k)=sigmdv(k)+deuxmu*depsdv(k)-xm(k)
         sieleq = sieleq + sigel(k)**2
-117 end do
+    end do
     sieleq = sqrt(1.5d0*sieleq)
     seuil = sieleq - rpm
     hp=1.d0
@@ -290,20 +288,20 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
                     jprol2 = jprolp
                     jvale2 = jvalep
                     nbval2 = nbvalp
-                    call rcfon2('E', jprolp, jvalep, nbvalp, rbid,&
-                                e, nu, pm, rp, rprim,&
-                                prag, sieleq, dp0)
+                    call rcfon2('E', jprolp, jvalep, nbvalp,&
+                                e = e, nu = nu, p = pm, rp = rp, rprim = rprim,&
+                                c = prag, sieleq = sieleq, dp=dp0)
                 endif
                 xap = dp0
                 call zerofr(0, 'DEKKER', nmcri5, 0.d0, xap,&
                             precr, niter, dp, iret, ibid)
-                if (iret .eq. 1) goto 9999
+                if (iret .eq. 1) goto 999
                 if (line .ge. 0.5d0) then
                     rp = sigy +rprim*(pm+dp)
                 else
-                    call rcfon2('V', jprolp, jvalep, nbvalp, rbid,&
-                                rbid, rbid, pm+dp, rp, rprim,&
-                                prag, rbid, rbid)
+                    call rcfon2('V', jprolp, jvalep, nbvalp,&
+                                p = pm+dp, rp = rp, rprim = rprim,&
+                                c = prag)
                 endif
             else
                 if (compor(1)(10:14) .eq. '_LINE') then
@@ -311,9 +309,9 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
                     dp = dp / (rprim+1.5d0*(deuxmu+prag))
                     rp = sigy +rprim*(pm+dp)
                 else
-                    call rcfon2('E', jprolp, jvalep, nbvalp, rbid,&
-                                e, nu, pm, rp, rprim,&
-                                prag, sieleq, dp)
+                    call rcfon2('E', jprolp, jvalep, nbvalp,&
+                                e = e, nu = nu, p = pm, rp = rp, rprim = rprim,&
+                                c = prag, sieleq = sieleq, dp = dp)
                 endif
             endif
         endif
@@ -426,5 +424,5 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
  30     continue
     endif
 !
-9999 continue
+999 continue
 end subroutine

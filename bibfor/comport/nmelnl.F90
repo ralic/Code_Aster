@@ -220,8 +220,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
 !
     else if (vmis) then
         call rcfonc('S', 1, jprol, jvale, nbvale,&
-                    sigy, dum, dum, dum, dum,&
-                    dum, dum, dum, dum)
+                    sigy = sigy)
     endif
 !====================================================================
 ! CALCULS DIVERS
@@ -260,21 +259,21 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
 !
     endif
 !
-    do 10 k = 1, 3
+    do k = 1, 3
         epsth(k) = eps(k) - ther - epspto
         epsth(k+3) = eps(k+3)
         epsmo = epsmo + epsth(k)
- 10 end do
+    end do
     epsmo = epsmo/3.d0
 !
-    do 20 k = 1, ndimsi
+    do k = 1, ndimsi
         epsdv(k) = epsth(k) - epsmo * kron(k)
- 20 end do
+    end do
 ! - CALCUL DE LA CONTRAINTE ELASTIQUE EQUIVALENTE
     epseq = 0.d0
-    do 30 k = 1, ndimsi
+    do k = 1, ndimsi
         epseq = epseq + epsdv(k)*epsdv(k)
- 30 end do
+    end do
     epseq = sqrt(1.5d0*epseq)
     sieleq = deuxmu * epseq
     nonlin = .false.
@@ -291,9 +290,9 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
         if (cplan) then
 !        REMPLISSAGE DU COMMON
             pm = 0.d0
-            do 40 k = 1, 4
+            do k = 1, 4
                 sigel(k) = deuxmu*epsdv(k)
- 40         continue
+            end do
             imate2 = imate
             if (line) then
                 rprim = e*dsde/(e-dsde)
@@ -305,8 +304,8 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
                 jvale2 = jvale
                 nbval2 = nbvale
                 call rcfonc('V', 1, jprol, jvale, nbvale,&
-                            dum, e, nu, 0.d0, rp,&
-                            rprim, airerp, dum, dum)
+                            p = 0.d0, rp = rp,&
+                            rprim = rprim, airerp = airerp)
                 lin = 0.d0
             endif
 !         CALCUL DE P (EQUATION PROPRE AUX CONTRAINTES PLANES)
@@ -325,8 +324,8 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
                 call utmess('F', 'ALGORITH_1')
             else
                 call rcfonc('V', 1, jprol, jvale, nbvale,&
-                            dum, e, nu, p, rp,&
-                            rprim, airerp, dum, dum)
+                            p = p, rp = rp,&
+                            rprim = rprim, airerp = airerp)
             endif
 !
             epseq = 1.5d0*p + rp/deuxmu
@@ -365,8 +364,8 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
                             p, rp, rprim)
             else
                 call rcfonc('E', 1, jprol, jvale, nbvale,&
-                            dum, e, nu, 0.d0, rp,&
-                            rprim, airerp, sieleq, p)
+                            e = e, nu = nu, p = 0.d0, rp = rp,&
+                            rprim = rprim, airerp = airerp, sieleq = sieleq, dp = p)
             endif
             g = rp/epseq
         endif
@@ -380,13 +379,13 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
 ! - CALCUL DES CONTRAINTES ET DES PSEUDO VARIABLES INTERNES
 !====================================================================
     if (inco) then
-        do 50 k = 1, ndimsi
+        do k = 1, ndimsi
             sig(k) = g*epsdv(k)
- 50     continue
+        end do
     else
-        do 55 k = 1, ndimsi
+        do k = 1, ndimsi
             sig(k) = troisk*epsmo*kron(k) + g*epsdv(k)
- 55     continue
+        end do
     endif
 !====================================================================
 ! TRAITEMENTS PARTICULIERS
@@ -403,29 +402,29 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option .eq. 'RIGI_MECA' .or. option(1:9) .eq.&
         'FULL_MECA') then
 !
-        do 60, k=1,ndimsi
-        do 70, l=1,ndimsi
-        dsidep(k,l) = 0.d0
- 70     continue
- 60     continue
+        do k=1,ndimsi
+            do l=1,ndimsi
+                dsidep(k,l) = 0.d0
+            end do
+        end do
 !      TERME LINEAIRE
-        do 80 k = 1, 3
-            do 90 l = 1, 3
+        do k = 1, 3
+            do l = 1, 3
                 dsidep(k,l) = (troisk-g)/3.d0
- 90         continue
- 80     continue
-        do 100 k = 1, ndimsi
+            end do
+        end do
+        do k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + g
-100     continue
+        end do
 !      TERME NON LINEAIRE
         if (nonlin .and. (option(11:14).ne.'ELAS')) then
             coef = deuxmu*rprim/(1.5d0*deuxmu+rprim) - g
             coef = coef * 3.d0 / (2.d0*epseq*epseq)
-            do 110 k = 1, ndimsi
-                do 120 l = 1, ndimsi
+            do k = 1, ndimsi
+                do l = 1, ndimsi
                     dsidep(k,l) = dsidep(k,l) + coef*epsdv(k)*epsdv(l)
-120             continue
-110         continue
+                end do
+            end do
         endif
 !      CORRECTION POUR LES CONTRAINTES PLANES
         if (cplan) then

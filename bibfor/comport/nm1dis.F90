@@ -108,11 +108,9 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
         call rctrac(imate, 1, 'SIGM', resu, jprolp,&
                     jvalep, nbvalp, ep)
         call rcfonc('S', 1, jprolp, jvalep, nbvalp,&
-                    sigy, dum, dum, dum, dum,&
-                    dum, dum, dum, dum)
+                    sigy = sigy)
         call rcfonc('V', 1, jprolp, jvalep, nbvalp,&
-                    rbid, rbid, rbid, vim(1), rm,&
-                    rprim, airerp, rbid, rbid)
+                    p = vim(1), rp = rm, rprim = rprim, airerp = airerp)
         et=rprim
     endif
 !     ------------------------------------------------------------------
@@ -146,8 +144,8 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
                 nu=0.5d0
                 asige=abs(sige)
                 call rcfonc('E', 1, jprolp, jvalep, nbvalp,&
-                            rbid, ep, nu, vim(1), rp,&
-                            rprim, airerp, asige, dp)
+                            e = ep, nu = nu, p = vim(1), rp = rp,&
+                            rprim = rprim, airerp = airerp, sieleq = asige, dp = dp)
                 if (option .eq. 'FULL_MECA_ELAS') then
                     dsde = ep
                 else
