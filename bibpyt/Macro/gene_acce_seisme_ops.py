@@ -97,16 +97,10 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
    FREQ_FILTRE=args['FREQ_FILTRE']
    if FREQ_FILTRE!=None :
       F_CORNER=FREQ_FILTRE
+
 # donnees fonction modulation (obligatoire) 
-
    NORME=PESANTEUR
-   ARIAS=MODULATION['INTE_ARIAS']
-   PGA=MODULATION['ACCE_MAX']
-   ECART=MODULATION['ECART_TYPE']
    TYPE=MODULATION['TYPE']
-   if  ECART!= None:
-      ECART=ECART*NORME
-
    if TYPE=='GAMMA':
       INST_INI=MODULATION['INST_INI']
    else:
@@ -114,10 +108,16 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
    print "TYPE MODULATION",  TYPE
 
 
-
 # 1) donnees DSP si present
 
    if DSP !=None :
+
+      ARIAS=MODULATION['INTE_ARIAS']
+      PGA=MODULATION['ACCE_MAX']
+      ECART=MODULATION['ECART_TYPE']
+      if  ECART!= None:
+         ECART=ECART*NORME
+
       amo  =DSP['AMOR_REDUIT']   
       F_RED=DSP['FREQ_FOND']
       wg=F_RED*2.*pi 
@@ -127,6 +127,8 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
       if DSP['FREQ_PENTE'] != None :
          wn=FREQ_PENTE*2.*pi 
       SPECTRE =None
+
+
 
 
 # 2) donnees SRO si present
@@ -245,18 +247,18 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,SPEC_UNIQUE,SPEC_MEDIANE,SPEC_FRACTIL
       elif SPECTRE['FREQ_PAS']!=None:  SRO_args['PAS']=SPECTRE['FREQ_PAS'] 
       else:  SRO_args['PAS']=DW/2./pi
 
+   if DSP!=None:
+      if PGA!= None:      
+         spec=calc_dsp_KT(l_w2,wg, amo, F_CORNER)
+         m0,m1,m2,vop,delta=Rice2(l_w2,spec) 
+         nup=peak(0.5, DUREE, vop,delta)
+         sigma=PGA*NORME/nup
+         if INFO==2:
+            print "FACTEUR DE PIC = ", nup,  " SIGMA = ", sigma
+
 #     ----------------------------------------------------------------- 
 #          MODULATION   GAMMA et JH, constant
 #     -----------------------------------------------------------------
-
-   if PGA!= None:      
-      spec=calc_dsp_KT(l_w2,wg, amo, F_CORNER)
-      m0,m1,m2,vop,delta=Rice2(l_w2,spec) 
-      nup=peak(0.5, DUREE, vop,delta)
-      sigma=PGA*NORME/nup
-      if INFO==2:
-         print "FACTEUR DE PIC = ", nup,  " SIGMA = ", sigma
-
 
 #     -----------------------------------------------------------------
    if TYPE=='GAMMA':
