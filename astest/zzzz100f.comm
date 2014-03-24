@@ -16,14 +16,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
+      IGNORE_ALARM='UTILITAI3_37')
 
 #========================================================================
 #     DEFINITION DES NAPPES ET DES FONCTIONS
 #========================================================================
 
+# inversé pour tester le classement des paramètres => alarme UTILITAI3_37
 N1=DEFI_NAPPE(NOM_PARA='INST',
-              PARA=(111.,222.),
+              PARA=(222., 111.),
               NOM_PARA_FONC='X',
               DEFI_FONCTION=(_F(VALE=(1.0,3.0,2.0,4.0,),),
                              _F(VALE=(1.0,3.0,2.0,4.0,),),),)

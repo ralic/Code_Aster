@@ -26,7 +26,6 @@ subroutine op0004()
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/foimpr.h"
-#include "asterfort/foordn.h"
 #include "asterfort/foston.h"
 #include "asterfort/foverf.h"
 #include "asterfort/fovern.h"
@@ -41,6 +40,7 @@ subroutine op0004()
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/ordon1.h"
+#include "asterfort/ordonn.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttrif.h"
@@ -131,7 +131,7 @@ subroutine op0004()
     call infmaj()
     call infniv(ifm, niv)
 !
-!     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
+!   --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
     nprol = 7 + 2*nbfonc
     ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', nprol, lpro)
@@ -145,7 +145,7 @@ subroutine op0004()
     call getvtx(' ', 'PROL_DROITE', scal=zk24(lpro+4)(2:2), nbret=l)
     zk24(lpro+5) = nomfon
 !
-!     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
+!   --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
     call wkvect(nomfon//'.PARA', 'G V R', nbpara, lpar)
     call getvr8(' ', 'PARA', nbval=nbpara, vect=zr(lpar), nbret=n)
 !
@@ -205,24 +205,21 @@ subroutine op0004()
         call fovern(zk24(lnomf), nbfonc, zk24(lpro), iret)
     endif
 !
-!     --- ON ORDONNE LA NAPPE SUIVANT LES PARAMETRES CROISSANTS ---
-    if (verif .ne. 'CROISSANT') then
-        iret=0
-        call foordn(zr(lpar), zk24(lnomf), nbpara, nbfonc, iret)
-        if (iret .ne. 0) then
-            call utmess('F', 'UTILITAI2_73')
-        endif
-    endif
-!
-!     --- CREATION ET REMPLISSAGE DE LA COLLECTION NOMFON.VALE ---
+!   --- CREATION ET REMPLISSAGE DE LA COLLECTION NOMFON.VALE ---
     call jecrec(nomfon//'.VALE', 'G V R', 'NU', 'CONTIG', 'VARIABLE',&
                 nbfonc)
     call foston(nomfon//'.VALE', zk24(lnomf), nbfonc)
 !
-!     --- CREATION D'UN TITRE ---
+!   --- ON ORDONNE LA NAPPE SUIVANT LES PARAMETRES CROISSANTS ---
+!       CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
+    if (verif .ne. 'CROISSANT') then
+        call ordonn(nomfon, 0)
+    endif
+!
+!   --- CREATION D'UN TITRE ---
     call titre()
 !
-!     --- IMPRESSIONS ---
+!   --- IMPRESSIONS ---
     if (niv .gt. 1) call foimpr(nomfon, niv, ifm, 0, k8b)
 !
     call jedema()

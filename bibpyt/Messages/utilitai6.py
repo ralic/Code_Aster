@@ -93,25 +93,9 @@ cata_msg = {
  borne supérieure    : %(r2)f
 """),
 
-
-
-
-
-
-
-
-
-
-
-
-
 37 : _(u"""
  la fonction  %(k1)s  a  %(i1)d arguments
  le maximum exploitable est  %(i2)d
-"""),
-
-38 : _(u"""
- il y a  %(i1)d paramètre(s) identique(s) dans la définition de la nappe
 """),
 
 44 : _(u"""

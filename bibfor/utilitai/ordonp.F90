@@ -58,7 +58,6 @@ subroutine ordonp(nomfon)
     call jeveuo(sfpar, 'E', ipar)
     call jelira(sfpar, 'LONUTI', nbpara)
 !
-!      CALL JEDUPC('G',CHVAL,1,'V',SFVAL,.FALSE.)
     call jedupo(chval, 'V', sfval, .false.)
 !
     call jedetr(chpar)
@@ -66,13 +65,13 @@ subroutine ordonp(nomfon)
 !
 !     TABLEAU D'ORDRE
     call wkvect(fonc0//'.ORDR', 'V V I', nbpara, ior)
-    do 11 i = 1, nbpara
+    do i = 1, nbpara
         zi(ior-1+i)=i
-11  end do
+    end do
 !
 !     TRI DES PARAMETRES
-    do 10 i = 1, nbpara-1
-        do 10 j = i+1, nbpara
+    do i = 1, nbpara-1
+        do j = i+1, nbpara
             if (zr(ipar-1+i) .gt. zr(ipar-1+j)) then
                 xt = zr(ipar-1+i)
                 it = zi(ior-1+i)
@@ -81,14 +80,15 @@ subroutine ordonp(nomfon)
                 zr(ipar-1+j) = xt
                 zi(ior-1+j) = it
             endif
-10      continue
+        end do
+    end do
 !
 !     CALCULE LA TAILLE CUMULEE DE LA COLLECTION
     nbpt=0
-    do 113 i = 1, nbpara
+    do i = 1, nbpara
         call jelira(jexnum(sfval, i), 'LONMAX', nbp)
         nbpt=nbpt+nbp
-113  end do
+    end do
 !
 !     --- CREATION DE L'OBJET NOMFON.PARA ---
     call wkvect(chpar, 'G V R', nbpara, lpar)
@@ -96,7 +96,7 @@ subroutine ordonp(nomfon)
     call jecrec(chval, 'G V R', 'NU', 'CONTIG', 'VARIABLE',&
                 nbpara)
     call jeecra(chval, 'LONT', nbpt)
-    do 100 i = 1, nbpara
+    do i = 1, nbpara
 !        REMPLISSAGE DU .PARA
         zr(lpar-1+i)=zr(ipar-1+i)
 !        REMPLISSAGE DES .VALE EN FONCTION DE L'ORDRE
@@ -106,10 +106,10 @@ subroutine ordonp(nomfon)
         call jeecra(jexnum(chval, i), 'LONMAX', nbp)
         call jeecra(jexnum(chval, i), 'LONUTI', nbp)
         call jeveuo(jexnum(chval, i), 'E', lval)
-        do 101 j = 1, nbp
+        do j = 1, nbp
             zr(lval+j-1)=zr(ival+j-1)
-101      continue
-100  end do
+        end do
+    end do
 !
 !     DESTRUCTION DES OBJETS DE TRAVAIL
     call jedetr(sfpar)

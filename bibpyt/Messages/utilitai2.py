@@ -183,11 +183,6 @@ Conseil :
 Les paramètres de la nappe ne sont pas croissants !
 """),
 
-73 : _(u"""
-On ne peut pas définir une nappe avec deux fonctions différentes pour la même
-valeur du paramètre.
-"""),
-
 75 : _(u"""
 Les listes NUME_LIGN et LISTE_R/LISTE_K/LISTE_I doivent contenir le même nombre de termes.
 """),
