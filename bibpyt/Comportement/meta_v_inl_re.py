@@ -30,6 +30,6 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'SIMO_MIEHE'),
    nom_varc       = ('TEMP',),
-   algo_inte         = ('ANALYTIQUE',),
+   algo_inte      = ('SPECIFIQUE'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
 )

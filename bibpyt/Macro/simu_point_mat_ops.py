@@ -183,7 +183,6 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
              nbvarc=len(lvarc)
              lmotcle=[]
              for ivarc in range(nbvarc) :
-                  print "lvarc=",lvarc[ivarc]
                   dico={}
                   if(str(lvarc[ivarc]['NOM_VARC'])=='M_ZIRC'):
                       dico['NOM_VARC'] = 'ALPHPUR'
@@ -216,7 +215,6 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                       if str(lvarc[ivarc]['NOM_VARC'])=='TEMP' or str(lvarc[ivarc]['NOM_VARC'])=='SECH' :
                              dico['VALE_REF']=lvarc[ivarc]['VALE_REF']
                       lmotcle.append(dico)
-             print "lmotcles=",lmotcle
              motscles['AFFE_VARC']  = lmotcle
 
        self.DeclareOut('REPONSE',self.sd)
