@@ -71,7 +71,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     real(kind=8) :: sigmh, epsph, epsdh, s0h, s1h, s0(6), s1(6)
     real(kind=8) :: kron(6)
     real(kind=8) :: p0, p1, p2, eta, rac(2)
-    real(kind=8) :: young, nu, deuxmu, rp, r8bid, h, et, sy
+    real(kind=8) :: young, nu, deuxmu, rp, h, et, sy
 !
     data        kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !

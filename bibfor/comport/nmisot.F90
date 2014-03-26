@@ -84,8 +84,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: depsth(6), valres(3), epsthe, pm, co
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, airerp
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, hydrm, hydrp
-    real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6), dum
-    real(kind=8) :: em, num, troikm, deumum, rbid, sigmp(6), sigel(6), a, rbid2
+    real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6)
+    real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigel(6), a
     real(kind=8) :: sechm, sechp, sref, tp, defam(6), defap(6)
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
     integer :: imate2, jprolp, jvalep, nbvalp, k, l, niter, ibid

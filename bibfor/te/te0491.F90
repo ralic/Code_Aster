@@ -138,7 +138,7 @@ subroutine te0491(option, nomte)
     parameter (nbsgm=6)
     real(kind=8) :: airep, c1, c2, deux, deuxmu, dsde, e
     real(kind=8) :: enelas, eneldv, enelsp, enelto, eplaeq, eplast, epseq
-    real(kind=8) :: omega, p, poids, psi, rbid, rp
+    real(kind=8) :: omega, p, poids, psi, rp
     real(kind=8) :: rprim, sigeq, sigy, tempg, trepsm, trois, trsig
     real(kind=8) :: un, undemi, untier, volume, welas, wtotal, zero
     real(kind=8) :: valres(5)

@@ -88,7 +88,7 @@ subroutine te0489(option, nomte)
     real(kind=8) :: x1(mxcmel), x2(mxcmel)
     real(kind=8) :: trsig1, trsig2
     real(kind=8) :: e, dsde, sigy, alfafa, coco, unsurn
-    real(kind=8) :: zero, untier, cst1, dum, tp, para_vale, rbid
+    real(kind=8) :: zero, untier, cst1, tp, para_vale
     real(kind=8) :: zernor, dchaxm
     real(kind=8) :: valres(3)
     real(kind=8) :: trace, sqrt

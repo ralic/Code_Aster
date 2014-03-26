@@ -81,8 +81,8 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, hp, gp, g1, rpm
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, xm(6)
     real(kind=8) :: sigedv(6)
-    real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6), dum, cc
-    real(kind=8) :: em, num, troikm, deumum, rbid, sigmp(6), sigel(6)
+    real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6), cc
+    real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigel(6)
     real(kind=8) :: hsg, pp, prag, pragm, precr, tm, tp, epsthe
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
     integer :: jprolp, jvalep, nbvalp, k, l, niter, imate2, ibid

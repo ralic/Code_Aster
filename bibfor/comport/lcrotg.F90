@@ -69,7 +69,6 @@ subroutine lcrotg(indice, dp, e, dtaudf)
     real(kind=8) :: a3(6), sum
     real(kind=8) :: ddvetr(6, 6), dtretr(6)
     real(kind=8) :: dedetr(6, 6), dedfcd(6)
-    real(kind=8) :: r8bid
 ! ----------------------------------------------------------------------
 !
 !

@@ -106,7 +106,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 ! ----------------------------------------------------------------------
     logical :: resi, rigi, elas
     integer :: i, ij, line, n
-    real(kind=8) :: dp, seuil, r8bid
+    real(kind=8) :: dp, seuil
     real(kind=8) :: rp, pentep, airerp
     real(kind=8) :: em(6), ep(6), trtau, dvbe(6)
 !

@@ -154,7 +154,7 @@ subroutine te0490(option, nomte)
     real(kind=8) :: epsi(nbsgm), epssm(mxcmel), epss(mxcmel)
     real(kind=8) :: repere(7), instan, nharm, integ, integ1
     real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl, xyz(3), para_vale
-    real(kind=8) :: f(3, 3), r, eps(6), trav(81), rbid
+    real(kind=8) :: f(3, 3), r, eps(6), trav(81)
     character(len=4) :: fami
     character(len=8) :: nomres(5), para_type, materi
     character(len=16) :: nomte, option, optio2, compor(3)

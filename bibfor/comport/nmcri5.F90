@@ -39,7 +39,7 @@ function nmcri5(dp)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: imate2, jprol2, jvale2, nbval2
-    real(kind=8) :: drdp, prag, dum, hp, fp, gp, hsg, dx, rpp, demuc, xm(6)
+    real(kind=8) :: drdp, prag, hp, fp, gp, hsg, dx, rpp, demuc, xm(6)
     real(kind=8) :: deuxmu, troisk, sigy, rprim, pm, sigel(6), tp2, line
 !
 ! DEB-------------------------------------------------------------------

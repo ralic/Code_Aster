@@ -79,7 +79,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     real(kind=8) :: valres(5), e, nu, troisk, deuxmu, sigy, dsde
     real(kind=8) :: kdess, bendo, ther, epsth(6), epsmo, epsdv(6), epseq, sieleq
     real(kind=8) :: p, rp, rprim, g, coef, epsi, airerp
-    real(kind=8) :: approx, prec, x, kron(6), dum, divu, biot
+    real(kind=8) :: approx, prec, x, kron(6), divu, biot
     real(kind=8) :: coco, dp0, rprim0, xap, precr
 !
 !====================================================================

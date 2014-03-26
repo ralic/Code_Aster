@@ -55,14 +55,14 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
 #include "asterfort/utmess.h"
     real(kind=8) :: em, ep, et, sigy
     real(kind=8) :: sigm, deps, pm, vim(*), vip(*), para_vale
-    real(kind=8) :: sigp, dsde, rbid
+    real(kind=8) :: sigp, dsde
     character(len=16) :: option, compor(*)
     character(len=*) :: fami, materi
     integer :: kpg, ksp, imate
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES
 !     ------------------------------------------------------------------
-    real(kind=8) :: rprim, rm, sige, valpar, valres(2), airerp, dum
+    real(kind=8) :: rprim, rm, sige, valpar, valres(2), airerp
     real(kind=8) :: sieleq, rp, dp, nu, asige
     integer :: jprolm, jvalem, nbvalm, nbvalp, jprolp, jvalep, iret
     integer :: icodre(2)

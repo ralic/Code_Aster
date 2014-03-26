@@ -61,7 +61,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
     real(kind=8) :: dsdedt, dsigy, drprim, drp, dairep
     real(kind=8) :: nrj, dnrj, valres(3), devres(3)
     real(kind=8) :: epsth(6), epsdv(6), epseq, kron(6)
-    real(kind=8) :: ther, rbid, divu, epsmo, temp, tref
+    real(kind=8) :: ther, divu, epsmo, temp, tref
 !
     integer :: i, jprol, jvale, nbval
 !

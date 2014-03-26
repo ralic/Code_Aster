@@ -42,7 +42,7 @@ function nmcri1(dp)
     common /kconm1/imate2, jprol2, jvale2,nbval2
     real(kind=8) :: deuxmu, nu, e, sigy, rprim, pm, sigel(6), line
     integer :: imate2, jprol2, jvale2, nbval2
-    real(kind=8) :: drdp, airerp, dum, alfafa, unsurn, sieleq
+    real(kind=8) :: drdp, airerp, alfafa, unsurn, sieleq
 !
 ! DEB-------------------------------------------------------------------
 !

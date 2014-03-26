@@ -63,7 +63,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum, imate,&
     integer :: jprol, jvale, nbvale, iret1, iret2
 !
     real(kind=8) :: temp, tref
-    real(kind=8) :: e, nu, demu, k, k3, alpha, dum, para_vale
+    real(kind=8) :: e, nu, demu, k, k3, alpha, para_vale
     real(kind=8) :: de, dnu, demudt, dk, dalpha
     real(kind=8) :: dsde, sigy, rprim, rp, airep, coco
     real(kind=8) :: dsdedt, dsigy, drprim, dp, drp, dairep

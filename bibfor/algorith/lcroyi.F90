@@ -58,7 +58,7 @@ function lcroyi()
 ! ----------------------------------------------------------------------
 !
     integer :: iter
-    real(kind=8) :: y, e, dp, rp, s, ds, yinf, ysup, r8bid, pente, aire
+    real(kind=8) :: y, e, dp, rp, s, ds, yinf, ysup, pente, aire
 !
 !
 ! 1 - CALCUL DU MAJORANT
