@@ -5,6 +5,7 @@ import os
 import os.path as osp
 from functools import partial
 from subprocess import Popen, PIPE
+from distutils.version import LooseVersion
 
 from waflib import Options, Configure, Errors, Utils
 
@@ -98,18 +99,16 @@ def check_numpy_version(self, minver=None):
     """
     if not self.env['PYTHON']:
         self.fatal('load python tool first')
-    assert minver is None or isinstance(minver, tuple)
-    cmd = self.env['PYTHON'] + ['-c', 'import numpy; print(numpy.version.short_version)']
-    res = self.cmd_and_log(cmd)
-    npyver_tuple = tuple(map(int, res.strip().split('.')))
-    result = minver is None or npyver_tuple >= minver
-
-    npyver = '.'.join(map(str, npyver_tuple))
     if minver is None:
         self.msg('Checking for numpy version', npyver)
-    else:
-        minver_str = '.'.join(map(str, minver))
-        self.msg('Checking for numpy version', npyver_tuple, ">= %s" % (minver_str,) and 'GREEN' or 'YELLOW')
+        return
+    assert isinstance(minver, tuple)
+    cmd = self.env['PYTHON'] + ['-c', 'import numpy; print(numpy.__version__)']
+    res = self.cmd_and_log(cmd)
+    npyver = res.strip()
+    minver_str = '.'.join(map(str, minver))
+    result = LooseVersion(npyver) >= LooseVersion(minver_str)
+    self.msg('Checking for numpy version', npyver, ">= %s" % (minver_str,) and 'GREEN' or 'YELLOW')
 
     if not result:
         self.fatal('The NumPy version is too old, expecting %r' % (minver,))
