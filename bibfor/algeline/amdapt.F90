@@ -1,3 +1,25 @@
+!> Brief description of the subroutine,
+!> continuation line
+!>
+!
+!> Detailed description
+!>
+!> The lines must start with '!>' to be extracted by doxygen.
+!>
+!> Paragraphs are separated by a blank line.
+!> Without blank line, the following lines are concatenated in the same paragraph.
+!>
+!> End of line may be inserted to start\n a new line.
+!>
+!> Equations can be inserted in the document using LaTeX syntax.
+!>
+!> Compute \f$ \frac{d\lambda}{dt}, \frac{d\phi}{dt},  \frac{dz}{dt} \f$
+!
+!> @todo all todo comments will be visible in a single page.
+!
+!> @param[in]  neq      number of equations
+!> @param[out] nnv      the output numbering
+!
 subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
                   invp, parent, supnd, adress, lgind,&
                   fctnzs, fctops, llist, nnv)

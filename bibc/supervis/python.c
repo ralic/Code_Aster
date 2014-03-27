@@ -17,6 +17,19 @@
 /* person_in_charge: mathieu.courtois@edf.fr */
 /* Minimal main program -- everything is loaded from the library */
 
+/*! \mainpage Code_Aster Index Page
+ *
+ * \section intro_sec Introduction
+ *
+ * This is the introduction.
+ *
+ * \section install_sec Installation
+ *
+ * \subsection step1 Step 1: Opening the box
+ *
+ * etc...
+ */
+
 /* NOTE: 
  *  Since Python may define some pre-processor definitions which affect the
  *  standard headers on some systems, you must include "Python.h" before any

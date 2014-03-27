@@ -16,22 +16,9 @@
 /* ================================================================== */
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-/* This module defines functions:
- * - to manage the MPI communicators
- * - to properly interrupt a MPI execution.
- * 
- * The communicators are managed in C. Fortran subroutines call these functions.
- * But all the communications are initiated from the Fortran subroutines.
- * 
- * Communicators are store in fortran as Code_Aster mpi_int (== MPI_Fint).
- * They are converted to MPI_Comm with MPI_Comm_f2c((MPI_Fint)fortran_comm)
- * 
- * Naming convention:
- *      aster_mpi_xxx : C functions and global variable
- *      asmpi_xxx : Fortran functions
- */
-/*TODO USE_ASSERT is required in this module */
+/*! @todo add another macro DBG_ASSERT that can be ignored in optimized mode */
 #ifndef USE_ASSERT
+/* USE_ASSERT is required in this module ! */
 #define USE_ASSERT
 #endif
 
@@ -44,23 +31,39 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Global object that store the entire tree */
+/*! Global object that store the entire tree */
 static aster_comm_t aster_mpi_world;
 
-/* and a pointer to the current node */
+/*! and a pointer to the current node */
 static aster_comm_t *aster_mpi_current = NULL;
 
 #ifdef _USE_MPI
 static MPI_Errhandler errhdlr;
 #endif
 
+/*! This module defines functions:
+ * - to manage the MPI communicators
+ * - to properly interrupt a MPI execution.
+ * 
+ * The communicators are managed in C. Fortran subroutines call these functions.
+ * But all the communications are initiated from the Fortran subroutines.
+ * 
+ * Communicators are store in fortran as Code_Aster mpi_int (== MPI_Fint).
+ * They are converted to MPI_Comm with MPI_Comm_f2c((MPI_Fint)fortran_comm)
+ * 
+ * Naming convention:
+ *      aster_mpi_xxx : C functions and global variable
+ *      asmpi_xxx : Fortran functions
+ * 
+ * @todo this text should comment the module file, not the first next subroutine.
+ */
 /*
  *   PUBLIC FUNCTIONS
  * 
  */
 void aster_mpi_init(int argc, char **argv)
 {
-    /* MPI initialization */
+    /*! MPI initialization */
 #ifdef _USE_MPI
 
     AS_ASSERT(MPI_Init(&argc, &argv) == MPI_SUCCESS);
@@ -82,22 +85,26 @@ void aster_mpi_init(int argc, char **argv)
 
 /* API that works on aster_comm_t */
 aster_comm_t* aster_get_comm_world() {
-    /* Return the original "MPI_COMM_WORLD" node */
+    /*! Return the original "MPI_COMM_WORLD" node */
     return &aster_mpi_world;
 }
 
 aster_comm_t* aster_get_current_comm() {
-    /* Return the current node */
+    /*! Return the current node */
     return aster_mpi_current;
 }
 
 void aster_set_current_comm(aster_comm_t *node) {
-    /* Assign the current communicator */
+    /*! Assign the current communicator */
     aster_mpi_current = node;
 }
 
 void aster_get_mpi_info(aster_comm_t *node, int *rank, int *size) {
-    /* Return the rank of the process in `node` and its size */
+    /*! Return the rank of the process in `node` and its size
+     * @param[in]   node    communicator
+     * @param[out]  rank    rank of the current processor
+     * @param[out]  size    number of processors in this communicator
+     */
     *rank = 0;
     *size = 1;
     COMM_DEBUG(*node);
@@ -109,7 +116,7 @@ void aster_get_mpi_info(aster_comm_t *node, int *rank, int *size) {
 }
 
 aster_comm_t* aster_split_comm(aster_comm_t *parent, int color, int key, char *name) {
-    /* Split the given communicator using color/key args,
+    /*! Split the given communicator using color/key args,
      * return the sub-communicator */
     aster_comm_t *new;
 #ifdef _USE_MPI
@@ -139,7 +146,7 @@ aster_comm_t* aster_split_comm(aster_comm_t *parent, int color, int key, char *n
 }
 
 void aster_free_comm(aster_comm_t *node) {
-    /* delete this node */
+    /*! delete this node */
 #ifdef _USE_MPI
     aster_comm_t *parent;
     int i=0;
@@ -180,7 +187,7 @@ void DEFP(ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm) {
 }
 
 void aster_set_mpi_barrier(aster_comm_t *node) {
-    /* Set a MPI barrier */
+    /*! Set a MPI barrier */
 #ifdef _USE_MPI
     AS_ASSERT(MPI_Barrier(node->id) == MPI_SUCCESS);
 #endif
@@ -189,7 +196,7 @@ void aster_set_mpi_barrier(aster_comm_t *node) {
 
 /* Access functions */
 aster_comm_t* _search_id(aster_comm_t *node, MPI_Comm *id) {
-    /* Search for 'id' in 'node' and its childs
+    /*! Search for 'id' in 'node' and its childs
      * Return NULL if not found.
      */
     aster_comm_t *found;
@@ -209,7 +216,7 @@ aster_comm_t* _search_id(aster_comm_t *node, MPI_Comm *id) {
 }
 
 aster_comm_t* get_node_by_id(MPI_Comm *id) {
-    /* Return the node that has the given 'id' */
+    /*! Return the node that has the given 'id' */
     aster_comm_t *node;
     
     node = _search_id(&aster_mpi_world, id);
@@ -223,7 +230,7 @@ aster_comm_t* get_node_by_id(MPI_Comm *id) {
  */
 void DEFSP(ASMPI_COMM, asmpi_comm,_IN char *action, STRING_SIZE lact,
                                 _INOUT MPI_Fint *comm) {
-    /* Wrapper around:
+    /*! Wrapper around:
      *  aster_get_comm_world:   action = 'GET_WORLD', comm is OUT
      *  aster_get_current_comm: action = 'GET',       comm is OUT
      *  aster_set_current_comm: action = 'SET',       comm is IN
@@ -258,7 +265,7 @@ void DEFPPPSP(ASMPI_SPLIT_COMM, asmpi_split_comm,
                     _IN MPI_Fint *color, MPI_Fint *key, 
                     _IN char *name, STRING_SIZE lname,
                    _OUT MPI_Fint *newcomm) {
-    /* Wrapper around aster_split_comm */
+    /*! Wrapper around aster_split_comm */
     MPI_Comm mpicom;
     aster_comm_t *new;
     char *newname;
@@ -272,7 +279,7 @@ void DEFPPPSP(ASMPI_SPLIT_COMM, asmpi_split_comm,
 }
 
 void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *comm, MPI_Fint *rank, MPI_Fint *size) {
-    /* Wrapper around aster_get_mpi_info
+    /*! Wrapper around aster_get_mpi_info
      * Called by the fortran subroutine asmpi_info where all arguments are optional.
      */
     MPI_Comm mpicom;
@@ -398,7 +405,7 @@ void DEFPPPPPP(ASMPI_IRECV_I4, asmpi_irecv_i4, DOUBLE *buf, INTEGER4 *count, INT
     return;
 }
 
-/*
+/*!
  * Wrapper around MPI_Test
  * Do not check returncode because all errors raise
  */
@@ -414,7 +421,7 @@ void DEFPP(ASMPI_TEST, asmpi_test, MPI_Fint *request, INTEGER4 *flag) {
     return;
 }
 
-/*
+/*!
  * Wrapper around MPI_Wtime
  * Do not check returncode because all errors raise
  */
@@ -426,7 +433,7 @@ DOUBLE DEF0(ASMPI_WTIME, asmpi_wtime) {
 #endif
 }
 
-/*
+/*!
  * Wrappers around MPI_Reduce
  * Do not check returncode because all errors raise
  */
@@ -595,7 +602,9 @@ int gErrFlg = 0;
 
 void DEFP( ASABRT, asabrt, _IN INTEGER *iret )
 {
-    /* Function to interrupt the execution.
+    /*! \brief Define a dedicated function to abort a Code_Aster execution.
+     * 
+     * Function to interrupt the execution.
      * - In a sequential version, it just calls abort().
      * - In a MPI execution, it set a global flag and calls `MPI_Abort`.
      * 
@@ -620,7 +629,7 @@ void DEFP( ASABRT, asabrt, _IN INTEGER *iret )
 
 void terminate( void )
 {
-    /* Function registered using atexit() in main.
+    /*! Function registered using atexit() in main.
      */
     printf("End of the Code_Aster execution");
 #ifdef _USE_MPI
@@ -642,7 +651,7 @@ void terminate( void )
  */
 #ifdef _USE_MPI
 void errhdlr_func(MPI_Comm *comm, int *err, ... ) {
-    /* Error handler for calls to MPI functions */
+    /*! Error handler for calls to MPI functions */
     char errstr[MPI_MAX_ERROR_STRING];
     int len;
 
@@ -658,7 +667,7 @@ void errhdlr_func(MPI_Comm *comm, int *err, ... ) {
 /* UNITTEST */
 #ifdef UNITTEST
 void _unittest_aster_mpi() {
-    /* unittest of the functions on aster_comm_t tree */
+    /*! unittest of the functions on aster_comm_t tree */
     int size, rank, npband, npsolv;
     int color;
     aster_comm_t *node, *world, *scband, *sccross, *scsolv;
