@@ -1,49 +1,58 @@
 .. Readme published for the overview of the Code_Aster SRC repository
 
+:home page: http://www.code-aster.org/
+:forge: https://bitbucket.org/code_aster/
+:dev documentation: https://bitbucket.org/code_aster/codeaster-src/src/default/doc/
+:user documentation: http://www.code-aster.org/V2/spip.php?rubrique5
 
-Code_Aster source files are stores into three repositories:
+Repositories
+============
 
-- `src`_: this one containing C, fortran, python source files and its
-  build scripts,
-- *validation*: few testcase files with proprietary datas,
-- *data*: material datas that can not be freely distributed.
+Code_Aster source files are stored into three repositories:
 
+- `src`_: source files (C, fortran, python) and build scripts (~350MB)
+- *validation*: a few testcase files with non-public data (~1GB)
+- *data*: data about materials that can not be freely distributed
 
-Other independant repositories exist:
+Other independent repositories exist:
 
-- `devtools`_: contains helper scripts. 
+- `devtools`_: contains helper scripts
 - `i18n`_: repository created to share the gettext files for Code_Aster
-  messages.
+  messages
 
+Branches and tags
+=================
 
-The size of the `src`_ repository is about 350 MB (for *validation*, it is
-about 1 GB).
+The branches are:
 
-The main branches are:
+* ``default``: version 12, the development branch where the current work goes
 
-* ``default``: the default branch containing all the history of the development
-  version from and to the next testing state (ex.: 12.0.9).
+* ``v11``: version 11, the maintenance branch for the stable version 11
 
-* ``v11``: maintenance branch for the version 11, starting from 11.4.0.
+* ``v10``: version 10, the branch for the old stable version 10
 
-The main tags are:
+Each published version is tagged with its number. Examples: 11.3.22, 12.1.13.
 
-* ``stable``: the last frozen state of the stable version in the
-  current maintenance branch (ex. 11.4.0).
+Two tags are used aliases and moved when new versions are published:
 
-* ``testing``: the last frozen state of the development version in the
-  ``default`` branch (ex. 12.1.0).
+* ``stable``: the latest frozen state of the stable version in the
+  maintenance branch (ex. 11.4.0).
 
-The following names are not really tags but used to identify the code during
-its enhancements:
+* ``testing``: the latest frozen state of the development version in the
+  development branch (ex. 12.1.0).
 
-* ``unstable``: the last state of the development version (ex. 12.1.3). It is
-  the head of the default branch.
+Two names are often used in discussions to identify the code during its
+enhancements:
 
-* ``stable-updates``: the last state of the stable version (ex. 11.4.2). It is
-  a snapshot between two successive ``stable`` versions.
+* ``unstable``: the head of the development branch
 
+* ``stable-updates``: the head of the maintenance branch
 
 .. _src: https://bitbucket.org/code_aster/codeaster-src
 .. _devtools: https://bitbucket.org/code_aster/codeaster-devtools
 .. _i18n: https://bitbucket.org/code_aster/codeaster-i18n
+
+Installation
+============
+
+Look at the doc/ directory in the source tree.
