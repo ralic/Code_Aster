@@ -133,6 +133,9 @@ Le comportement s'intègre avec un algorithme de type analytique.
 On ne peut donc pas utiliser le mot-clé  %(k1)s . On l'ignore.
 """),
 
-
+71 : _(u"""
+La valeur propre numéro %(i1)d du module tangent local est négative et vaut %(r1)f.
+L'énergie libre n'est donc pas convexe ce qui peut mener à des problèmes de convergence.
+"""),
 
 }

@@ -42,6 +42,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utbtab.h"
+#include "asterfort/utmess.h"
 #include "blas/dgeev.h"
 !
     integer :: codret
@@ -96,7 +97,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !                 1 => ABSENCE DE CONVERGENCE
 ! ----------------------------------------------------------------------
 !
-!
     logical :: rigi, resi, coup
     logical :: lelas
 !
@@ -122,7 +122,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     real(kind=8) :: dsidem(3, 3), dsidec(3, 3), dsidef(3, 3)
     real(kind=8) :: dsidmg(3, 3), dsidcg(3, 3), dsidfg(3, 3)
     real(kind=8) :: xab1(3, 3)
-!
 !
 ! --  OPTION ET MODELISATION
     rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
@@ -175,7 +174,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 ! --  INITIALISATION DE D1, D2, EPSP1 ET EPSP2
 ! --  STOCKAGE DES VARIABLES INTERNES DANS UN VECTEUR VINT
-! C --  VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
+! --  VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !
     call r8inir(7, 0.0d0, vint, 1)
     call r8inir(7, 0.0d0, vip, 1)
@@ -190,23 +189,12 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  CALCUL DES TENSEURS DE RAIDEUR A,B,C EN FONCTION DE
 !     L'ENDOMMAGEMENT ET DE LEURS DERIVEES PAR RAPPORT A D1 ET D2
 !
-!
-!
-    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
-                     epsg, vint, a, ap1, ap2,&
-                     as1, as2)
-!
-    call dhrc_calc_b(b0, ab, gb, vint, b,&
-                     bp1, bp2, bs1, bs2)
-!
-    call dhrc_calc_c(c0, ac, gc, vint, c,&
-                     cp1, cp2, cs1, cs2)
-!
+    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vint, a, ap1, ap2, as1, as2)
+    call dhrc_calc_b(b0, ab, gb, vint, b, bp1, bp2, bs1, bs2)
+    call dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
 !
 ! --  CALCUL DES SEUILS
-    call dhrc_seuils(epsg, vint, b, c, ap1,&
-                     bp1, cp1, ap2, bp2, cp2,&
-                     cstseu, neta1, neta2, seuils)
+    call dhrc_seuils(epsg, vint, b, c, ap1, bp1, cp1, ap2, bp2, cp2, cstseu, neta1, neta2, seuils)
 !
     do k = 1, 6
         indip(k)=0
@@ -260,7 +248,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
             goto 555
         else
 !
-!
 !            if ((indi(5).eq.5) .or. (indi(3).eq.3) .or.&
 !                (indi(4).eq.4) .or. (indi(6).eq.6)) then
 !            endif
@@ -291,7 +278,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                 goto 555
             endif
 !
-!
 ! --  CALCUL DE LA JACOBIENNE => JACOB(NBACT,NBACT)
 !
             call matini(6, 6, 0.0d0, jacob)
@@ -302,8 +288,8 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                             neta1, neta2, cstseu, jacob)
 !
 !
-! C --  VERIFICATION DE LA CONVEXITE DE L'ENERGIE LIBRE
-! C --  POUR CE FAIRE ON REGARDE SI LA JACOBIENNE EST DEFINIE POSITIVE
+! --  VERIFICATION DE LA CONVEXITE DE L'ENERGIE LIBRE
+! --  POUR CE FAIRE ON REGARDE SI LA JACOBIENNE EST DEFINIE POSITIVE
 !
 ! --  INVERSION DE LA JACOBIENNE => BOCAJ(NBACT,NBACT)
 !
@@ -313,12 +299,10 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                 bocaj(k,k)=1.0d0
             end do
 !
-            call mgauss('NFSP', jacob, bocaj, 6, nbact,&
-                        6, det, iret)
+            call mgauss('NFSP', jacob, bocaj, 6, nbact, 6, det, iret)
 !
 ! --  MISE A JOUR DES VARIABLES INTERNES
             l=0
-!           WRITE(6,*) 'VINT'
             do k = 1, 6
                 if (k .eq. indi(k)) then
                     l=l+1
@@ -341,20 +325,15 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  CALCUL DES TENSEURS DE RAIDEUR A,B,C EN FONCTION DE
 !     L'ENDOMMAGEMENT ET DE LEURS DERIVEES PAR RAPPORT A D1 ET D2
 !
-                call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
-                                 epsg, vint, a, ap1, ap2,&
-                                 as1, as2)
+                call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vint, a, ap1, ap2, as1, as2)
 !
-                call dhrc_calc_b(b0, ab, gb, vint, b,&
-                                 bp1, bp2, bs1, bs2)
+                call dhrc_calc_b(b0, ab, gb, vint, b, bp1, bp2, bs1, bs2)
 !
-                call dhrc_calc_c(c0, ac, gc, vint, c,&
-                                 cp1, cp2, cs1, cs2)
+                call dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
             endif
 !
 ! --  CALCUL DES SEUILS AVEC VARIABLES ACTUALISEES
-            call dhrc_seuils(epsg, vint, b, c, ap1,&
-                             bp1, cp1, ap2, bp2, cp2,&
+            call dhrc_seuils(epsg, vint, b, c, ap1, bp1, cp1, ap2, bp2, cp2,&
                              cstseu, neta1, neta2, seuils)
 !
             l=0
@@ -384,7 +363,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 555      continue
 !
-!
         do k = 1, 7
             vip(k)=vint(k)
         end do
@@ -408,19 +386,12 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 !
 ! --  CALCUL DES CONTRAINTES
-    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
-                     epsg, vip, a, ap1, ap2,&
-                     as1, as2)
+    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vip, a, ap1, ap2, as1, as2)
 !
-! C     ECRITURE DES VALEURS PROPRES
+! --  ECRITURE DES VALEURS PROPRES
 !
-!
-    call dhrc_calc_b(b0, ab, gb, vip, b,&
-                     bp1, bp2, bs1, bs2)
-!
-    call dhrc_calc_c(c0, ac, gc, vip, c,&
-                     cp1, cp2, cs1, cs2)
-!
+    call dhrc_calc_b(b0, ab, gb, vip, b, bp1, bp2, bs1, bs2)
+    call dhrc_calc_c(c0, ac, gc, vip, c, cp1, cp2, cs1, cs2)
     call dhrc_sig(epsg, vip, a, b, sigg)
 !
 ! ----------------------------------------------------------------------
@@ -440,38 +411,27 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
     if ((.not.rigi) .or. (ntest.eq.0)) then
 !
-!
 ! --  CALCUL DE LA MATRICE ELASTIQUE
-        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
-                         epsg, vip, a, ap1, ap2,&
-                         as1, as2)
+        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vip, a, ap1, ap2, as1, as2)
         call dhrc_mat_elas(a, dsideg)
 !
     else
 !
 ! --  CALCUL DE LA DISSIPATION
         vip(7)=(vip(1)+vip(2))*cstseu(1)
-        vip(8)=vip(8)+(abs(vip(3)-vim(3))+abs(vip(4)-vim(4)) +abs(vip(&
-        5)-vim(5))+abs(vip(6)-vim(6)))*cstseu(2)
+        vip(8)=vip(8)+(abs(vip(3)-vim(3))+abs(vip(4)-vim(4))&
+                      +abs(vip(5)-vim(5))+abs(vip(6)-vim(6)))*cstseu(2)
 !
 ! --  CALCUL DE LA MATRICE TANGENTE
 !
 ! --  CALCUL DE LA JACOBIENNE => JACOB(NBACT,NBACT)
-        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c,&
-                         epsg, vip, a, ap1, ap2,&
-                         as1, as2)
-!
-        call dhrc_calc_b(b0, ab, gb, vip, b,&
-                         bp1, bp2, bs1, bs2)
-!
-        call dhrc_calc_c(c0, ac, gc, vip, c,&
-                         cp1, cp2, cs1, cs2)
+        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vip, a, ap1, ap2, as1, as2)
+        call dhrc_calc_b(b0, ab, gb, vip, b, bp1, bp2, bs1, bs2)
+        call dhrc_calc_c(c0, ac, gc, vip, c, cp1, cp2, cs1, cs2)
 !
         call matini(6, 6, 0.0d0, jacob)
 !
-        call dhrc_jacob(epsg, vip, b, c, bp1,&
-                        cp1, bp2, cp2, as1, bs1,&
-                        cs1, as2, bs2, cs2, indip,&
+        call dhrc_jacob(epsg, vip, b, c, bp1, cp1, bp2, cp2, as1, bs1, cs1, as2, bs2, cs2, indip,&
                         neta1, neta2, cstseu, jacob)
 !
 ! --  INVERSION DE LA JACOBIENNE => BOCAJ(NBACT,NBACT)
@@ -482,11 +442,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
             bocaj(k,k)=1.0d0
         end do
 !
-        call mgauss('NFSP', jacob, bocaj, 6, ntest,&
-                    6, det, iret)
+        call mgauss('NFSP', jacob, bocaj, 6, ntest, 6, det, iret)
 !
-        call dhrc_mat_tan(a, ap1, ap2, b, bp1,&
-                          bp2, bocaj, neta1, neta2, indip,&
+        call dhrc_mat_tan(a, ap1, ap2, b, bp1, bp2, bocaj, neta1, neta2, indip,&
                           cstseu, epsg, vip, dsideg)
     endif
 !
@@ -498,16 +456,13 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         end do
     end do
 !
-    call dgeev('N', 'N', 6, ates, 6,&
-               wr, wi, vl, 1, vr,&
-               1, work, 18, info)
+    call dgeev('N', 'N', 6, ates, 6, wr, wi, vl, 1, vr, 1, work, 18, info)
 !
 !     ECRITURE DES VALEURS PROPRES
 !
     do k = 1, 6
-        if (wr(k) .lt. 0.0d0) write(6,*) 'WARNING NOT POSITIVE', wr(k)
+        if (wr(k) .lt. 0.0d0) call utmess('A', 'COMPOR4_71', si=k, sr=wr(k))
     end do
-!
 !
 ! ---  PASSAGE DES EFFORTS GENERALISES SIGG DU REPERE GLOBAL DE LA COQUE
 ! ---  AU REPERE INTRINSEQUE A L'ELEMENT => SIG
@@ -545,12 +500,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         end do
     end do
 !
-    call utbtab('ZERO', 3, 3, dsidmg, t1ve,&
-                xab1, dsidem)
-    call utbtab('ZERO', 3, 3, dsidcg, t1ve,&
-                xab1, dsidec)
-    call utbtab('ZERO', 3, 3, dsidfg, t1ve,&
-                xab1, dsidef)
+    call utbtab('ZERO', 3, 3, dsidmg, t1ve, xab1, dsidem)
+    call utbtab('ZERO', 3, 3, dsidcg, t1ve, xab1, dsidec)
+    call utbtab('ZERO', 3, 3, dsidfg, t1ve, xab1, dsidef)
 !
     call matini(6, 6, 0.0d0, dsidep)
 !
