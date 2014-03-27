@@ -82,9 +82,6 @@ class AsBase(Type):
         checker.optional = optional
         return checker
 
-    def members( self ):
-        pass
-
     def dump(self, indent=""):
         import pydoc
         l = []
@@ -95,7 +92,6 @@ class AsBase(Type):
         else:
             f = "(o)"
         l.append( f+" "+nomj )
-        #l.append( '-'*(len(nomj)+3) )
         for name in self._subtypes:
             obj = getattr(self, name)
             if isinstance(obj,(AsBase,OJB)):
@@ -146,11 +142,11 @@ class JeveuxAttr(object):
         val = self.__get__( obj, obj.__class__ )
         if callable( checker ):
             return checker( obj, attrname, val, log )
+        elif val == checker:
+           return True
         else:
-            test = val == checker
-            if not test:
-                log.err( obj, "Attribut incorrect %s %r!=%r" % (self.name, val, checker ) )
-            return test
+           log.err( obj, "Attribut incorrect %s %r!=%r" % (self.name, val, checker ) )
+           return False
 
 # -----------------------------------------------------------------------------
 class JeveuxExists(JeveuxAttr):
@@ -204,7 +200,6 @@ class OJB(AsBase):
     xous = JeveuxStrAttr("XOUS")
     docu = JeveuxStrAttr("DOCU")
     exists = JeveuxExists()
-    #optional = False
     nomj = SDNom()
 
     def __init__(self, nomj=None, **attrs):
