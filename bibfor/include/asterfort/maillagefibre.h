@@ -16,11 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine gfmaco(noma, nbnoeu, nbno, icoova, axep)
-        character(len=8) :: noma
-        integer :: nbnoeu
-        integer :: nbno
-        integer :: icoova
-        real(kind=8) :: axep(2)
-    end subroutine gfmaco
+    subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds, &
+                             vigroup, vngroup, vmailgrp, vimailles, ulnbmailles, ncarma )
+        character(len=8), intent(in) :: nogfma
+        integer, intent(in) :: ulnbnoeuds
+        integer, intent(in) :: maxmailgrp
+        integer, intent(in) :: nbgf
+        integer, intent(in) :: ulnbmailles
+        real(kind=8), intent(in) :: vcoord(2*ulnbnoeuds)
+        integer, intent(in) :: nbnoeuds
+        integer, intent(in) :: vmailgrp(nbgf)
+        integer, intent(in) :: vigroup(nbgf*maxmailgrp)
+        character(len=24), intent(in) :: vngroup(nbgf)
+        integer, intent(in) :: ncarma
+        integer, intent(in) :: vimailles(ulnbmailles*ncarma)
+    end subroutine maillagefibre
 end interface

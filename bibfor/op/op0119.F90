@@ -1,4 +1,5 @@
 subroutine op0119()
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,17 +27,12 @@ subroutine op0119()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterfort/cargeo.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/gfmaco.h"
-#include "asterfort/gfmacr.h"
-#include "asterfort/gfmafi.h"
-#include "asterfort/gfmagr.h"
-#include "asterfort/gfmama.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
@@ -44,322 +40,386 @@ subroutine op0119()
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/maillagefibre.h"
 #include "asterfort/pmfsce.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 !
+! --------------------------------------------------------------------------------------------------
+    integer :: ncarfi
+    parameter  (ncarfi=3)
+    real(kind=8) :: pi4
+    parameter  (pi4=0.7853981633974483d+00)
 !
-    integer :: nbvfibre, ncarfi, itrois,maxfibre
-    parameter  (ncarfi=3,itrois=3)
+    integer :: nbvfibre, maxfibre
+    integer :: iret, ifm, niv, nboccs, nboccp, ii, nbmagr, iidepnoeud
+    integer :: nbmaills, nttri3, ntseg2, ntqua4, ntpoi1, correni(4), ncarma
+    integer :: numno
+    integer :: ulnbnoeuds, ulnbmailles, maxmailgrp
+    integer :: iinbnoeuds, iinbmailles
+    integer :: nbnoeuds
+    integer :: nbv, jdtm, nummai, nutyma
+    integer :: nbgf, jptr, ioc, ido, jdo, ipos, in, nno, no, jcf, jdno, jdco, jnfg
+    integer :: ibid, ipointeur, iinbgf, jngfma, jmaill, jcarasd
 !
-    integer :: iret, ifm, niv, nboccs, nboccp, nufib, nbfigr
-    integer :: nbfib, nmails, nttri3, ntseg2, ntqua4, nunoeu
-    integer :: nbv, jdtm, jms, nummai, nutyma, nbnoeu, nbnoma, nbnomm, nbno
-    integer :: nbgf, jpo, ioc, i, j, ipos, in, nno, no, jcf, jdno, jdco, jnfg
-    integer :: ibid, ipoint, ig, numf, jngfma
-!
-    real(kind=8) :: pi4, dtrois, zero
-    parameter  (pi4=0.7853981633974483d+0,dtrois=3.d+0,zero=0.d+0)
     real(kind=8) :: x(4), y(4), centre(2), axep(2), surf
-
-    real(kind=8),pointer :: valfibre(:) => null()
 !
-    character(len=8) :: sdgf, nomas, ktyma, ksudi, nommai, nogfma
-    character(len=6) :: knbv, kioc, knumai
+    character(len=7)  :: k7bid
+    character(len=8)  :: sdgf, nomas, ktyma, ksudi, nommai, nogfma
     character(len=16) :: concep, cmd, limcls(3), ltymcl(3)
     character(len=24) :: mlgtms, mlgcnx, mlgcoo, mlgtma, mlgtno, nomgf
-    character(len=24) :: vnbfig, vcafig, vpocfg, rnomgf, gfmagl, valk(3)
+    character(len=24) :: vnbfig, vcafig, vpocfg, rnomgf, gfmagl, carasd, valk(3)
+!
+    integer, pointer ::             vmailgrp(:)     => null()
+    integer, pointer ::             vimailles(:)    => null()
+    integer, pointer ::             vigroup(:)      => null()
+    integer, pointer ::             vinoeud(:)      => null()
+    real(kind=8),pointer ::         valfibre(:)     => null()
+    real(kind=8),pointer ::         vcoord(:)       => null()
+    character(len=24),pointer ::    vngroup(:)      => null()
 !
     data limcls/'MAILLE_SECT','GROUP_MA_SECT','TOUT_SECT'/
     data ltymcl/'MAILLE','GROUP_MA','TOUT'/
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     iret=0
-! --- ------------------------------------------------------------------
-! --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
+!
+!   RECUPERATION DES ARGUMENTS DE LA COMMANDE
     call getres(sdgf, concep, cmd)
 !
-! --- ------------------------------------------------------------------
-! --- NOMBRE DES GROUPES DE FIBRES POUR DIMENSIONNER LES OBJETS
+!   NOMBRE DES GROUPES DE FIBRES POUR DIMENSIONNER LES OBJETS
     call getfac('SECTION', nboccs)
     call getfac('FIBRE', nboccp)
-    nbgf=nboccs+nboccp
+    nbgf = nboccs + nboccp
+    ASSERT( nbgf.gt.0 )
 !
-! --- ------------------------------------------------------------------
-! --- SD GEOM_FIBRE
-!        NOMS DES GROUPES DE FIBRES (REPERTOIRE DE NOMS)
-!        NOMBRE DE FIBRES PAR GROUPE
-!        CARACTERISTIQUES DE FIBRES (TOUT A LA SUITE EN 1 SEUL VECTEUR)
-!        POINTEUR POUR LES CARACTERISTIQUES POUR FACILITER LES ACCES
-!        NOM DU MAILLAGE GLOBAL DES GROUPES DE FIBRES
-!
+!   SD GEOM_FIBRE
+!       noms des groupes de fibres (répertoire de noms)
+!       nombre de fibres par groupe
+!       caractéristiques de fibres (tout à la suite en 1 seul vecteur)
+!       pointeur pour les caractéristiques pour faciliter les accès
+!       nom du maillage global des groupes de fibres
+!       caractéristiques de la SD (ncarfi, nbgf)
     rnomgf = sdgf//'.NOMS_GROUPES'
     vnbfig = sdgf//'.NB_FIBRE_GROUPE'
     vcafig = sdgf//'.CARFI'
     vpocfg = sdgf//'.POINTEUR'
     gfmagl = sdgf//'.GFMA'
-!
+    carasd = sdgf//'.CARACSD'
 !
     call jecreo(rnomgf, 'G N K24')
     call jeecra(rnomgf, 'NOMMAX', nbgf, ' ')
 !
     call wkvect(vnbfig, 'G V I', nbgf, jnfg)
-    call wkvect(vpocfg, 'G V I', nbgf, jpo)
+    call wkvect(vpocfg, 'G V I', nbgf, jptr)
     call wkvect(gfmagl, 'G V K8', 1, jngfma)
+    call wkvect(carasd, 'G V I', 2,  jcarasd)
 !
-! --- ------------------------------------------------------------------
-! --- CREATION DU NOM DU MAILLAGE GLOBAL
+!   nom du maillage global
     call gcncon('_', nogfma)
     zk8(jngfma) = nogfma
 !
-! --- ------------------------------------------------------------------
-! --- RECUPERATION DU NIVEAU D'IMPRESSION
+!   Récupération du niveau d'impression
     call infmaj()
     call infniv(ifm, niv)
 !
-! --- ------------------------------------------------------------------
-! --- RECUPERATION DES NUMEROS DES TYPES MAILLES TRI3,QUA4
+!   Récuperation des types mailles TRI3, QUAD4, SEG2, POI1
     call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), nttri3)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), ntqua4)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg2)
-!
-! comptage du nombre de fibres total et de noeuds et de mailles
-    nbfib = 0
-    nbnoeu=0
-    nbnoma=0
-!
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'),  ntseg2)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'),  ntpoi1)
+
+!   comptage du nombre de :
+!       - fibres ==> nombre de maille : QUA4 + TRI3 + POI1
+!       - noeuds
+!       - max de maille dans un groupe
+    ulnbnoeuds  = 0
+    ulnbmailles = 0
+    maxmailgrp  = 10
+!   Les sections
     do ioc = 1, nboccs
-        nbfigr=0
-! ---    LES SECTIONS MAINTENANT
         call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
+!       Type de maille dans le maillage associé
         mlgtms = nomas//'.TYPMAIL'
-        mlgcnx = nomas//'.CONNEX'
-        mlgtno = nomas//'.NOMNOE'
-! ---    VERIFICATION MAILLES TRIA3 ET QUAD4 UNIQUEMENT
         call jeveuo(mlgtms, 'L', jdtm)
-! ---    NOMBRE DE FIBRES = NOMBRE DE MAILLES CONCERNEES
+!       nombre de fibres = nombre de mailles concernées
         call reliem(' ', nomas, 'NU_MAILLE', 'SECTION', ioc,&
-                    3, limcls, ltymcl, '&&PMFD00.MAILLSEC', nmails)
-        nbfigr=nmails
-        call jeveuo('&&PMFD00.MAILLSEC', 'L', jms)
-!        RECUPERATION DE LA TAILLE DE NOMAS//'.CONNEX'
-        call jelira(mlgcnx, 'LONT', nbnomm)
-!        RECUPERATION DU NOMBRE DE NOEUX DU MAILLAGE
-        call jelira(mlgtno, 'NOMMAX', nbno)
-        nbnoeu=nbnoeu+nbno
-!
-        do j = 1, nmails
-            nummai = zi(jms+j-1)
+                    3, limcls, ltymcl, '&&OP0119.GRPMAILL', nbmaills)
+        call reliem(' ', nomas, 'NU_NOEUD',  'SECTION', ioc,&
+                    3, limcls, ltymcl, '&&OP0119.GRPNOEUD', nbnoeuds)
+        ulnbnoeuds = ulnbnoeuds + nbnoeuds
+        call jeveuo('&&OP0119.GRPMAILL', 'L', jmaill)
+!       Les mailles : TRIA3 ou QUA4
+!           - les SEG2 sont exclus, ils peuvent servir à la construction
+!           - arrêt dans les autres cas
+        nbmagr = 0
+        do jdo = 1, nbmaills
+            nummai = zi(jmaill+jdo-1)
             nutyma = zi(jdtm+nummai-1)
-            if (nutyma .ne. ntseg2) then
-                if (nutyma .ne. nttri3 .and. nutyma .ne. ntqua4) then
-                    call codent(nummai, 'G', knumai)
-                    call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), ktyma)
-                    valk(1)=nomas
-                    valk(2)=knumai
-                    valk(3)=ktyma
-                    call utmess('F', 'MODELISA6_27', nk=3, valk=valk)
-                endif
+            if (nutyma.eq.ntseg2) cycle
+            if ((nutyma.eq.nttri3).or.(nutyma.eq.ntqua4)) then
+                nbmagr = nbmagr + 1
+                ulnbmailles = ulnbmailles +1
             else
-! ---          ON DEDUIT LES SEG2 DU NB DE FIBRES
-                nbfigr=nbfigr -1
-                nbnomm=nbnomm-2
+                call codent(nummai, 'G', k7bid)
+                call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), ktyma)
+                valk(1)=nomas
+                valk(2)=k7bid
+                valk(3)=ktyma
+                call utmess('F', 'MODELISA6_27', nk=3, valk=valk)
             endif
         enddo
-        nbfib = nbfib + nbfigr
-        nbnoma=nbnoma+nbnomm
-        zi(jnfg-1+ioc)=nbfigr
+        maxmailgrp = max(maxmailgrp,nbmagr)
     enddo
-!
+!   Les fibres ponctuelles
     maxfibre = 10
     do ioc = 1, nboccp
-!       NOMBRE DE FIBRES PONCTUELLES
         call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=0, nbret=nbvfibre)
         nbvfibre = -nbvfibre
         maxfibre = max(maxfibre,nbvfibre)
-!       VERIF MULTIPLE DE 3 POUR 'VALE' DANS 'FIBRE'
-        if (dble(nbvfibre)/dtrois .ne. nbvfibre/itrois) then
+!       Vérification multiple de 'ncarfi' pour 'vale' dans 'fibre'
+        if ( modulo(nbvfibre,ncarfi).ne.0 ) then
             call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
-            call codent(ioc, 'G', kioc)
-            call codent(nbvfibre, 'G', knbv)
+            call codent(nbvfibre, 'G', k7bid)
             valk(1)=nomgf
-            valk(2)=knbv
+            valk(2)=k7bid
             call utmess('F', 'MODELISA6_26', nk=2, valk=valk)
-        else
-            nbfib = nbfib + nbvfibre/itrois
-            nbnoeu = nbnoeu + nbvfibre/itrois
-            nbnoma = nbnoma + nbvfibre/itrois
-            zi(jnfg-1+nboccs+ioc)= nbvfibre/itrois
         endif
+        ulnbmailles = ulnbmailles + nbvfibre/ncarfi
+        ulnbnoeuds  = ulnbnoeuds  + nbvfibre/ncarfi
+        maxmailgrp  = max(maxmailgrp,nbvfibre/ncarfi)
     enddo
-!   CREATION DES ATTIBUTS DE MAILLAGE DE NOGFMA
-    call gfmacr(nogfma, nbfib, nbnoeu, nbnoma, nbgf)
+!   Si pas de noeuds et pas de mailles ==> <F>
+    ASSERT( ulnbnoeuds.gt.0 )
+    ASSERT( ulnbmailles.gt.0 )
 !
-! --- ------------------------------------------------------------------
-! --- VECTEUR DE LA SD GEOM FIBRES (CARFI)
-    call wkvect(vcafig, 'G V R', nbfib*ncarfi, jcf)
-    ipoint = 1
-    ig = 0
-    numf = 0
-! --- ------------------------------------------------------------------
-! --- TRAITEMENT DES SECTIONS
-    nbnoeu=0
-    nufib = 0
+!   Avec    :
+!       nbgf        : Nombre de groupe
+!       ulnbnoeuds  : Nombre de noeuds maximum
+!       ulnbmailles : Nombre exact de mailles
+!       maxmailgrp  : Le maximum de mailles dans un groupe
+!   Dimensionnement des vecteurs de travail
+!       vcoord      :   Coordonnées des fibres dans la section droite, dimension 2.
+!       vngroup     :   Nom des groupes de mailles
+!       vmailgrp    :   Nombre de maille par groupe
+!       vigroup     :   Liste des mailles des groupes.
+!           Pour ième groupe [1..nbgf]
+!                jème maille du groupe [1..vmailgrp(i)]
+!           vigroup( (i-1)*maxmailgrp + j ) c'est la jème maille du ième groupe
+!       vimailles   :   Table de connectivité des mailles
+!           Mailles du type POI1 ou QUAD4 ou TRI3 : 4 noeuds ==> ncarma = 4 + 2
+!           vimailles( (i-1)*ncarma + 1 )       : Type de la ième maille
+!           vimailles( (i-1)*ncarma + 2 )       : Nombre de noeud de la ième maille
+!           vimailles( (i-1)*ncarma + 2 + j )   : jème noeud de la ième maille
+    AS_ALLOCATE( size=ulnbnoeuds*2, vr = vcoord )
+    AS_ALLOCATE( size=nbgf, vk24 = vngroup )
+    AS_ALLOCATE( size=nbgf, vi = vmailgrp )
+    AS_ALLOCATE( size=nbgf*maxmailgrp, vi = vigroup )
+    ncarma = 6
+    AS_ALLOCATE( size=ulnbmailles*ncarma,  vi = vimailles)
+!   Correspondance entre les noeuds du maillage des fibres et du maillage initial de la section
+    AS_ALLOCATE( size=ulnbnoeuds, vi = vinoeud )
+!
+!   Vecteur de la SD GEOM_FIBRES (carfi)
+    call wkvect(vcafig, 'G V R', ulnbmailles*ncarfi, jcf)
+    ipointeur   = 1
+    iinbgf      = 0
+    iinbnoeuds  = 0
+    iinbmailles = 0
+    iidepnoeud  = 1
+! --------------------------------------------------------------------------------------------------
+!   Les fibres à partir des mailles TRIA3, QUAD4
     do ioc = 1, nboccs
-        ig=ig+1
         call getvtx('SECTION', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
-! ---    CREATION DU GROUPE DE MAILLE
-        call gfmagr(nogfma, nomgf, zi(jnfg+ig-1))
         if (niv .eq. 2) write(ifm,800) nomgf
-! ---    ON RECUPERE LE MAILLAGE
+!       On récupère le nom du maillage
         call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
-! ---    RECUPERATION DES COORDONNEES DE L'AXE DE LA POUTRE
+!       Récupération des coordonnées de l'axe de la poutre
         call getvr8('SECTION', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep,&
                     nbret=iret)
-        if (iret .ne. 2) then
-            axep(1) = zero
-            axep(2) = zero
-        endif
-! ---    RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
+        if (iret .ne. 2) axep(1:2) = 0.0d0
+!       Concept maillage associé
         mlgtms = nomas//'.TYPMAIL'
         mlgcnx = nomas//'.CONNEX'
         mlgcoo = nomas//'.COORDO    .VALE'
         mlgtma = nomas//'.NOMMAI'
         mlgtno = nomas//'.NOMNOE'
-! ---    RECUPERATION DES ADRESSES JEVEUX UTILES
+!       Récupération des adresses utiles
         call jeveuo(mlgtms, 'L', jdtm)
         call jeveuo(mlgcoo, 'L', jdco)
-! ---    ON RECUPERE LES MAILLES DE LA SECTION CONCERNEES
+!       On récupère les mailles, les noeuds de la section associés au groupe
         call reliem(' ', nomas, 'NU_MAILLE', 'SECTION', ioc,&
-                    3, limcls, ltymcl, '&&OP0119.MAILLSEC', nmails)
-        call jeveuo('&&OP0119.MAILLSEC', 'L', jms)
-        call jelira(mlgtno, 'NOMMAX', nbno)
-! ---    COPIE DES COORDONNEES DES NOEUDS DU MAILLAGE DU GROUPE
-        call gfmaco(nogfma, nbnoeu, nbno, jdco, axep)
-        nbfib = 0
-        do 70 j = 1, nmails
-            nummai = zi(jms+j-1)
-! ---       COORDONNEES NOEUDS
+                    3, limcls, ltymcl, '&&OP0119.GRPMAILL', nbmaills)
+        call jeveuo('&&OP0119.GRPMAILL', 'L', jmaill)
+!       Nom du groupe de mailles, Nombre de maille du groupe
+        iinbgf = iinbgf + 1
+        vngroup( iinbgf ) = nomgf
+        nbmagr = 0
+        do jdo = 1, nbmaills
+            nummai = zi(jmaill+jdo-1)
+!           Si c'est SEG2 on passe
             nutyma = zi(jdtm+nummai-1)
-            if (nutyma .eq. ntseg2) goto 70
-            nbfib = nbfib + 1
-            nufib = nufib + 1
+            if (nutyma.eq.ntseg2) cycle
+!           Coordonnées des noeuds de la maille
             call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
             nno = 3
-            if (nutyma .eq. ntqua4) nno = 4
-! ---       COPIE DE LA MAILLE
-            call gfmama(nogfma, nufib, nutyma, jdno, nttri3,&
-                        ntqua4, nbnoeu, nomgf, nbfib)
-            do in = 1, nno
+            if (nutyma.eq.ntqua4) nno = 4
+            do in  = 1, nno
                 no = zi(jdno-1+in)
-                x(in) = zr(jdco+ (no-1)*3) - axep(1)
-                y(in) = zr(jdco+ (no-1)*3+1) - axep(2)
+                x(in) = zr(jdco+(no-1)*3)   - axep(1)
+                y(in) = zr(jdco+(no-1)*3+1) - axep(2)
             enddo
-! ---       SURFACE ET CENTRE
+!           Recherche de la correspondance dans le vecteur vinoeud
+            correni(1:4) = 0
+            cin: do in = 1, nno
+                no = zi(jdno-1+in)
+                do ii = iidepnoeud, iinbnoeuds
+                    if ( no.eq.vinoeud(ii) ) then
+                        correni(in) = ii
+                        cycle cin
+                    endif
+                enddo
+                iinbnoeuds = iinbnoeuds + 1
+                vinoeud(iinbnoeuds) = no
+                correni(in) = iinbnoeuds
+            enddo cin
+!           La maille
+            nbmagr = nbmagr + 1
+            iinbmailles = iinbmailles + 1
+            ii = (iinbmailles-1)*ncarma+1
+            vimailles( ii    ) = nutyma
+            vimailles( ii +1 ) = nno
+            vimailles( ii +2 : ii+2+nno ) = correni(1:nno)
+            vigroup( (iinbgf-1)*maxmailgrp +nbmagr ) = iinbmailles
+!           Pour la fibre : surface et centre
             call pmfsce(nno, x, y, surf, centre)
-! ---       STOCKAGE DES CARACTERISTIQUES DE FIBRES DANS
-            ipos = jcf + ipoint - 1 + ncarfi* (nbfib-1)
-            zr(ipos) = centre(1)
+!           Stockage des caractéristiques de fibres dans la SD
+            ipos = jcf + ipointeur - 1 + ncarfi*(nbmagr-1)
+            zr(ipos)   = centre(1)
             zr(ipos+1) = centre(2)
             zr(ipos+2) = surf
             if (niv .eq. 2) then
-                numf = numf + 1
                 call jenuno(jexnum(mlgtma, nummai), nommai)
                 if (nno .eq. 3) then
-                    write (ifm,801) numf,nommai,'TRIA3',centre,surf
+                    write (ifm,801) iinbmailles,nommai,'TRIA3',centre,surf
                 else
-                    write (ifm,801) numf,nommai,'QUAD4',centre,surf
+                    write (ifm,801) iinbmailles,nommai,'QUAD4',centre,surf
                 endif
             endif
-70      continue
+        enddo
+        vmailgrp(iinbgf) = nbmagr
+!       Les nouveaux noeuds
+        do ii = iidepnoeud , iinbnoeuds
+            numno = vinoeud(ii)
+            vcoord( (ii-1)*2 + 1 ) = zr(jdco+(numno-1)*3)   - axep(1)
+            vcoord( (ii-1)*2 + 2 ) = zr(jdco+(numno-1)*3+1) - axep(2)
+        enddo
+        iidepnoeud = iinbnoeuds+1
+!
         call jecroc(jexnom(rnomgf, nomgf))
-        zi(jpo+ig-1)=ipoint
-        ipoint = ipoint + nbfib*ncarfi
-        nbnoeu=nbnoeu+nbno
+        zi(jnfg+iinbgf-1) = nbmagr
+        zi(jptr+iinbgf-1) = ipointeur
+        ipointeur = ipointeur + nbmagr*ncarfi
     enddo
 !
 ! --------------------------------------------------------------------------------------------------
-!   traitement des fibres
-    call wkvect('&&OP0119.VFIBRE', 'V V R', maxfibre, vr=valfibre)
+!   Les fibres à partir des mailles POI1
+    AS_ALLOCATE( size=maxfibre, vr = valfibre )
     do ioc = 1, nboccp
-        ig=ig+1
         call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
-!       CREATION DU GROUPE DE MAILLE
-        call gfmagr(nogfma, nomgf, zi(jnfg+ig-1))
         if (niv .eq. 2) write (ifm,820) nomgf
-!       SURFACE OU DIAMETRE
+!       Surface ou diametre
         call getvtx('FIBRE', 'CARA', iocc=ioc, scal=ksudi, nbret=iret)
         if (iret .eq. 0) ksudi = 'SURFACE '
         call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=maxfibre, vect=valfibre, &
                     nbret=nbvfibre)
-!       RECUPERATION DES COORDONNEES DE L'AXE DE LA POUTRE
+!       Récupération des coordonnées de l'axe de la poutre
         call getvr8('FIBRE', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep,&
                     nbret=iret)
-        if (iret .ne. 2) then
-            axep(1) = zero
-            axep(2) = zero
-        endif
-! ---   CHANGER DIAMETRE EN SURFACE LE CAS ECHEANT
-        nbfib = 0
-        do i = 1, nbvfibre/3
+        if (iret .ne. 2) axep(1:2) = 0.0d0
+!       Nom du groupe de mailles, Nombre de maille du groupe
+        iinbgf = iinbgf + 1
+        vngroup(iinbgf) = nomgf
+!       Si diamètre ==> calcul de la surface
+        nbmagr = 0
+        do ido = 1, nbvfibre/ncarfi
+            centre(1) = valfibre(ncarfi*(ido-1)+1) - axep(1)
+            centre(2) = valfibre(ncarfi*(ido-1)+2) - axep(2)
+!           Le noeud
+            vcoord( (ido+iinbnoeuds-1)*2 + 1 ) = centre(1)
+            vcoord( (ido+iinbnoeuds-1)*2 + 2 ) = centre(2)
             if (ksudi .eq. 'DIAMETRE') then
-                surf = valfibre(3*i)*valfibre(3*i)*pi4
+                surf = valfibre(ncarfi*(ido-1)+3)*valfibre(ncarfi*(ido-1)+3)*pi4
             else
-                surf = valfibre(3*i)
+                surf = valfibre(ncarfi*(ido-1)+3)
             endif
-            if (iret .eq. 2) then
-                centre(1) = valfibre(3*i-2) - axep(1)
-                centre(2) = valfibre(3*i-1) - axep(2)
-            else
-                centre(1) = valfibre(3*i-2)
-                centre(2) = valfibre(3*i-1)
-            endif
-            nbfib = nbfib + 1
-            nufib = nufib +1
-            nunoeu = nbnoeu+i
-            call gfmafi(nogfma, nufib, centre, nunoeu, nomgf,&
-                        nbfib)
-!
-! ---       STOCKAGE DES CARACTERISTIQUES DE FIBRES DANS
-            ipos = jcf + ipoint - 1 + ncarfi* (i-1)
-            zr(ipos) = centre(1)
+!           La maille
+            nbmagr = nbmagr + 1
+            iinbmailles = iinbmailles + 1
+            nno = 1
+            vigroup( (iinbgf-1)*maxmailgrp +nbmagr ) = iinbmailles
+            ii = (iinbmailles-1)*ncarma + 1
+            vimailles( ii    ) = ntpoi1
+            vimailles( ii +1 ) = 1
+            vimailles( ii +2 ) = ido+iinbnoeuds
+!           Stockage des caractéristiques de fibres dans la SD
+            ipos = jcf + ipointeur - 1 + ncarfi*(nbmagr-1)
+            zr(ipos)   = centre(1)
             zr(ipos+1) = centre(2)
             zr(ipos+2) = surf
             if (niv .eq. 2) then
-                numf = numf + 1
-                write (ifm,821) numf,centre,surf
+                write (ifm,821) iinbmailles,centre,surf
             endif
         enddo
-        nbnoeu=nbnoeu+nbvfibre/3
+        vmailgrp(iinbgf) = nbmagr
+        iinbnoeuds       = iinbnoeuds + nbvfibre/ncarfi
+!
         call jecroc(jexnom(rnomgf, nomgf))
-        zi(jnfg+ig-1)=nbfib
-        zi(jpo+ig-1)=ipoint
-        ipoint = ipoint + nbfib*ncarfi
+        zi(jnfg+iinbgf-1) = nbmagr
+        zi(jptr+iinbgf-1) = ipointeur
+        ipointeur = ipointeur + nbmagr*ncarfi
     enddo
 !
+    ASSERT( iinbnoeuds.le.ulnbnoeuds )
+    ASSERT( ulnbmailles.eq.iinbmailles)
+    ASSERT( nbgf.eq.iinbgf )
 !
-! --- CARACTERISTIQUES GEOMETRIQUES :
-!     -----------------------------
-    call cargeo(nogfma)
+!   SD GEOM_FIBRE
+    zi(jcarasd   ) = ncarfi
+    zi(jcarasd +1) = nbgf
 !
-800 format(//,'DETAIL DES FIBRES SURFACIQUES DU GROUPE "',a24,'"',&
+!   Création du maillage des fibres
+    call maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, iinbnoeuds, &
+                       vigroup, vngroup, vmailgrp, vimailles, ulnbmailles, ncarma)
+
+800 format(/,'DETAIL DES FIBRES SURFACIQUES DU GROUPE "',A,'"',&
            /,'NUMF  MAILLE    TYPE        Y        ',&
              '     Z            SURF')
 801 format(i4,2x,a8,2x,a5,3(2x,1pe12.5))
 !
-820 format(//,'DETAIL DES FIBRES PONCTUELLES DU GROUPE "',a24,'"',&
+820 format(/,'DETAIL DES FIBRES PONCTUELLES DU GROUPE "',A,'"',&
             /,'NUMF       Y             Z            SURF')
 821 format(i4,3(2x,1pe12.5))
 !
-    call jedetr('&&OP0119.VFIBRE')
+!   Destructions
+    call jedetr('&&OP0119.GRPMAILL')
+!
+    AS_DEALLOCATE( vr   = vcoord )
+    AS_DEALLOCATE( vi   = vinoeud )
+    AS_DEALLOCATE( vi   = vmailgrp )
+    AS_DEALLOCATE( vr   = valfibre )
+    AS_DEALLOCATE( vi   = vigroup )
+    AS_DEALLOCATE( vi   = vimailles )
+    AS_DEALLOCATE( vk24 = vngroup )
     call jedema()
 end subroutine

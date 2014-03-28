@@ -21,89 +21,90 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # lecture maillage lineique
 MAPOU=LIRE_MAILLAGE(UNITE=20,);
 
-# lecture maillage section1
-MASEC1=LIRE_MAILLAGE(UNITE=18,);
+# lecture maillage section fibres
+MASEC1=LIRE_MAILLAGE(UNITE=18,)
 
 
-MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
-                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),
-                  #AFFE=(
-                        #_F(MAILLE='M1', PHENOMENE='MECANIQUE', MODELISATION='POU_D_E',),
-                        #_F(MAILLE='M2', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),
-                        #)
-                  );
+MOPOU=AFFE_MODELE(
+    MAILLAGE=MAPOU,
+    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),
+)
 
-GF=DEFI_GEOM_FIBRE(
-           # on s'arrange pour utiliser plusieurs occurrences de SECTION :
-           SECTION = (_F ( GROUP_FIBRE='SEC1',
-                            MAILLAGE_SECT = MASEC1 , TOUT_SECT = 'OUI',
-                            COOR_AXE_POUTRE = (0., 1.38889E-02,)),
-                        _F ( GROUP_FIBRE = 'SEC2',
-                            MAILLAGE_SECT = MASEC1 , TOUT_SECT = 'OUI',
-                            COOR_AXE_POUTRE = (0., 1.38889E-02,)),),
+GF=DEFI_GEOM_FIBRE(INFO=1,
+    # on s'arrange pour utiliser plusieurs occurrences de SECTION :
+    SECTION = (
+        _F( GROUP_FIBRE='SEC1',
+            MAILLAGE_SECT = MASEC1 , TOUT_SECT = 'OUI',
+            COOR_AXE_POUTRE = (0., 1.38889E-02,)),
+        _F( GROUP_FIBRE='SEC2',
+            MAILLAGE_SECT= MASEC1 , TOUT_SECT = 'OUI',
+            COOR_AXE_POUTRE = (0., 1.38889E-02,)),
+    ),
+    FIBRE = _F( GROUP_FIBRE = 'SACI', CARA = 'SURFACE',
+                COOR_AXE_POUTRE = (0.0, 0.0,),
+                VALE =(  0.08, -0.15, 2.0E-4,
+                        -0.08, -0.15, 2.0E-4,
+                         0.10,  0.11, 1.5E-4,
+                        -0.10,  0.11, 1.5E-4, ),
+    ),
+)
 
-           FIBRE =_F ( GROUP_FIBRE = 'SACI', CARA = 'SURFACE',
-                            COOR_AXE_POUTRE = (0.,0.,),
-                            VALE =( 0.08 ,-0.15, 2.E-4,
-                                  -0.08, -0.15, 2.E-4,
-                                  0.1, 0.11, 1.5E-4,
-                                  -0.1, 0.11, 1.5E-4, ),  ),
-            )
+POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=1,
+    # caracteristiques des sections, orientations et rigidite de torsion
+    POUTRE=_F(  GROUP_MA=('POUTRE'),
+                SECTION='GENERALE',
+                CARA=('A','IY','IZ','JX'),
+                VALE=(4.57e-2,4.657e-4,1.6806e-4,9.77e-5),
+            ),
+    ORIENTATION=_F(GROUP_MA=('POUTRE'), CARA='ANGL_VRIL', VALE=0.0,),
+    GEOM_FIBRE=GF,
+    MULTIFIBRE = (
+        _F(MAILLE = 'M1',GROUP_FIBRE=('SEC1','SACI')),
+        _F(MAILLE = 'M2',GROUP_FIBRE=('SEC2','SACI')),
+    )
+)
 
-POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=2,
-# caracteristiques des sections, orientations et rigidite de torsion
-           POUTRE=_F(GROUP_MA=('POUTRE'),
-                     SECTION='GENERALE',
-                     CARA=('A','IY','IZ','JX'),
-                     VALE=(4.57e-2,4.657e-4,1.6806e-4,9.77e-5),),
-           ORIENTATION=_F(GROUP_MA=('POUTRE'),
-                          CARA='ANGL_VRIL', VALE=0.0,),
-
-           GEOM_FIBRE=GF,
-           MULTIFIBRE = (_F ( MAILLE = 'M1',GROUP_FIBRE=('SEC1','SACI')),
-                        _F ( MAILLE = 'M2',GROUP_FIBRE=('SEC2','SACI')),
-                        )
-                  )
-#IMPR_CO(CONCEPT=_F(NOM=POUCA))
 
 # LES MATERIAUX
-BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10,
-                            NU=0.25,),);
+BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10, NU=0.25,),);
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
-                            NU=0.3,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11, NU=0.3,),);
 # relation ELAS par defaut
-COMP1=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=BETON,
-                  MULTIFIBRE=(_F(GROUP_FIBRE='SEC1',MATER=BETON),
-                              _F(GROUP_FIBRE='SEC2',MATER=BETON),
-                              _F(GROUP_FIBRE='SACI',MATER=ACIER),))
-
+COMP1=DEFI_COMPOR(
+    GEOM_FIBRE=GF,MATER_SECT=BETON,
+    MULTIFIBRE=(
+        _F(GROUP_FIBRE='SEC1',MATER=BETON),
+        _F(GROUP_FIBRE='SEC2',MATER=BETON),
+        _F(GROUP_FIBRE='SACI',MATER=ACIER),
+    ),
+)
 #
 # LES CHAMPS DE MATERIAUX
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
-                    AFFE=_F(TOUT='OUI', MATER=(BETON,ACIER)),
-                    AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=COMP1),
-                         );
-
+    AFFE=_F(TOUT='OUI', MATER=(BETON,ACIER)),
+    AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=COMP1),
+)
+#
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
-                        DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,  DRX=0.0,  DRZ=0.0,),
-                                  _F(GROUP_NO='B', DZ=0.0,),
-                                  ),)
-
-CHARGT=AFFE_CHAR_MECA(MODELE=MOPOU,
-                      FORCE_NODALE=_F(GROUP_NO='C', FZ=1.E4,),);
-
-
-
+    DDL_IMPO=(
+        _F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,  DRX=0.0,  DRZ=0.0,),
+        _F(GROUP_NO='B', DZ=0.0,),
+    ),
+)
+#
+CHARGT=AFFE_CHAR_MECA(
+    MODELE=MOPOU,
+    FORCE_NODALE=_F(GROUP_NO='C', FZ=1.E4,),
+)
 #
 # RESOLUTION DU PROBLEME ELASTIQUE
-U1=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
-             #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
-                  EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
+U1=MECA_STATIQUE(
+    MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
+    #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
+    EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
 #
 # CALCUL DES EFFORTS GENERALISES
 U1=CALC_CHAMP(reuse=U1,RESULTAT=U1,CONTRAINTE=('EFGE_ELNO'))
-
 
 U1=CALC_CHAMP(reuse =U1, RESULTAT=U1, CONTRAINTE='EFGE_NOEU')
 
@@ -116,107 +117,78 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=5000.0,
                    ),))
 
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='C',
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=2.2295025432911E-03,
-
-                   ),
+                   VALE_CALC=  0.00222931698673, ),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='A',
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRY',
-                   VALE_CALC=-1.3377015259747E-3,
-                   ),
+                   VALE_CALC= -0.00133759019204, ),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='A',
                    RESULTAT=U1,
                    NOM_CHAM='EFGE_NOEU',
                    NOM_CMP='VZ',
-                   VALE_CALC=5000.0,
-
-                   ),
+                   VALE_CALC=5000.0, ),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='C',
                    RESULTAT=U1,
                    NOM_CHAM='EFGE_NOEU',
                    NOM_CMP='MFY',
-                   VALE_CALC=1.2500E4,
-
-                   ),
+                   VALE_CALC=1.2500E4, ),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
                    NOM_CMP='DRY',
-                   VALE_CALC=-1.3377015259747E-3,
-
-                   ),
+                   VALE_CALC= -0.00133759019204, ),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
-                   ),
+                   NOM_CMP='DX', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
-                   ),
+                   NOM_CMP='DY', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE', ),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
-                   ),
+                   NOM_CMP='DZ', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE', ),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
-                   NOM_CMP='DRX',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
-                   ),
+                   NOM_CMP='DRX', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE', ),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
-                   NOM_CMP='DRZ',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
-                   ),
+                   NOM_CMP='DRZ', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE', ),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
                    NOEUD='N2',
                    NOM_CMP='DZ',
-                   VALE_CALC=2.2295025432911E-03,
-
-                   ),
+                   VALE_CALC=  0.00222931698673, ),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD='N1',
-                   NOM_CMP='N',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
+                   NOM_CMP='N', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
@@ -224,46 +196,37 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='N1',
                    NOM_CMP='VZ',
                    VALE_CALC=5000.0,
-
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD='N1',
-                   NOM_CMP='MFY',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
+                   NOM_CMP='MFY', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD='N1',
-                   NOM_CMP='VY',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
+                   NOM_CMP='VY', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD='N1',
-                   NOM_CMP='MT',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
+                   NOM_CMP='MT', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
                    MAILLE='M1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD='N1',
-                   NOM_CMP='MFZ',
-                   VALE_CALC=0.0,
-
-                   CRITERE='ABSOLU',
+                   NOM_CMP='MFZ', ORDRE_GRANDEUR=1.0E-05,
+                   VALE_CALC=0.0, VALE_REFE=0.0, CRITERE='ABSOLU', REFERENCE='ANALYTIQUE',
                    MAILLE='M1',),
                 ),
-          )
+)
 
 # Test de CREA_TABLE/RESU sur des elements a sous-points
 TU1_1 = CREA_TABLE(RESU=_F(RESULTAT=U1,TOUT='OUI',NOM_CHAM='EFGE_NOEU',TOUT_CMP='OUI'))
@@ -306,16 +269,16 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    ),))
 
 TU2_1 = CREA_TABLE(RESU=_F(RESULTAT=U2,TOUT='OUI',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI'))
-IMPR_TABLE(TABLE=TU2_1)
+#IMPR_TABLE(TABLE=TU2_1)
 PourTest = [
    [ 1, 'M1', 2,   1, 'COOR_X',   5.28312E-01 ],
-   [ 1, 'M1', 2,   1, 'SIXX',     617514.30936  ],
+   [ 1, 'M1', 2,   1, 'SIXX',     436557.404914 ],
    [ 1, 'M1', 2,  66, 'COOR_X',   5.28312E-01 ],
-   [ 1, 'M1', 2,  66, 'SIXX',    -83555.8906972 ],
+   [ 1, 'M1', 2,  66, 'SIXX',     278261.568353 ],
    [ 1, 'M2', 1,  23, 'COOR_X',   4.47169E+00 ],
-   [ 1, 'M2', 1,  23, 'SIXX',     527053.638562 ],
+   [ 1, 'M2', 1,  23, 'SIXX',     617466.784938 ],
    [ 1, 'M2', 1, 138, 'COOR_X',   4.47169E+00 ],
-   [ 1, 'M2', 1, 138, 'SIXX',    -603704.741154 ],
+   [ 1, 'M2', 1, 138, 'SIXX',    -701643.679789 ],
 ]
 for numordre,maille,point,spoint,npara,lavale in PourTest:
    TEST_TABLE(
@@ -330,22 +293,13 @@ for numordre,maille,point,spoint,npara,lavale in PourTest:
       VALE_CALC=lavale,
    )
 
-
-# Test du maillage des sections de poutres multifibres
-DEFI_FICHIER(UNITE=82, FICHIER='./fort.82')
-
 # IMPRESSION DU MAILLE GLOBAL SECTION
 MAGF=CREA_MAILLAGE(GEOM_FIBRE=GF)
-IMPR_RESU(UNITE=82,RESU=_F(MAILLAGE=MAGF))
-
-DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
-
-
-TEST_FICHIER(FICHIER='./fort.82',
-             NB_VALE=3017,EXPR_IGNORE = ('ASTER'),
-             VALE_CALC=4.199464199956E+05,
-             TOLE_MACHINE=1.E-5            # ajustement pour clap0f0q
-             )
-
-
-FIN();
+IMPR_RESU(FORMAT='ASTER',UNITE=32,RESU=_F(MAILLAGE=MAGF))
+TEST_FICHIER(
+    FICHIER ='./fort.32',EXPR_IGNORE = ('ASTER'),
+    NB_VALE     =  3623,
+    VALE_CALC   =  6.0025141999560e+05,
+    VALE_CALC_K = "c44dcee219bea31bcd4a1c541a5e341f",
+)
+FIN()
