@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import os
 import shutil
 
 def build(self):
@@ -10,11 +11,20 @@ def build(self):
             shutil.rmtree(env.PYTHONDIR)
         except OSError:
             pass
-    
+
     self(
         features = 'py',
             name = 'bibpyt',
           source = get_srcs('**/*.py'),
     install_from = '.',
     install_path = env.PYTHONDIR,
+    )
+
+    self(
+        features = 'subst py',
+            name = 'osutils',
+          source = 'Execution/osutils.pytmpl',
+          target = 'osutils.py',
+    install_path = os.path.join(env.PYTHONDIR, 'Execution'),
+             use = ['bibpyt'],
     )

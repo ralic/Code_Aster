@@ -37,6 +37,7 @@ import platform
 from optparse import OptionParser
 from functools import partial
 from string import maketrans
+import osutils
 
 # Pas d'import des autres packages d'aster
 # car le premier import de ce module est fait avant l'ajout des paths.
@@ -51,11 +52,6 @@ def check_value(option, opt, value, parser):
     if opt == '--commandes':
         if not osp.isfile(value):
             parser.error("option '%s' expects an existing file" % opt)
-    if opt == '--installdir':
-        if not osp.isdir(value):
-            parser.error("option '%s' expects an existing directory" % opt)
-        if not osp.isdir(osp.join(value, 'share', 'aster')):
-            parser.error("option '%s' should define a directory containing 'share/aster'." % opt)
     setattr(parser.values, option.dest, value)
 
 class CoreOptions(object):
@@ -70,7 +66,10 @@ class CoreOptions(object):
                 ``--bibpyt`` (ajouté en debut de list).
                 "." et "bibpyt/Cata"  sont aussi ajoutés.
     """
-    doc = """usage: ./%%prog %s [-h|--help] [options]""" % sys.argv[0]
+    doc = """usage: ./%%prog %s [-h|--help] [options]
+
+The ASTERDATADIR environment variable changes the data directory.
+""" % sys.argv[0]
 
     def __init__(self):
         """Initialisation."""
@@ -80,9 +79,6 @@ class CoreOptions(object):
         self.info = {}
         self.parser = parser = OptionParser(usage=self.doc,
             prog=osp.basename(sys.executable))
-        parser.add_option('--installdir', dest='installdir', type='string', metavar='DIR',
-            action='callback', callback=check_value,
-            help="path to the installation directory")
         parser.add_option('--commandes', dest='fort1', type='str', metavar='FILE',
             action='callback', callback=check_value,
             help="Code_Aster command file")
@@ -202,17 +198,9 @@ class CoreOptions(object):
 
     def default_values(self):
         """Définit les valeurs par défaut pour certaines options."""
-        locdir = None
-        if self.opts.installdir:
-            locdir = osp.join(self.opts.installdir, 'share', 'locale')
-        else:
-            if self.opts.repmat:
-                # <installdir>/share/aster/materiau
-                path = osp.join(self.opts.repmat, os.pardir, os.pardir, 'locale')
-                locdir = osp.abspath(osp.normpath(path))
-        if locdir:
+        if osutils.locale_dir and os.path.exists(osutils.locale_dir):
             from i18n import localization
-            localization.set_localedir(locdir)
+            localization.set_localedir(osutils.locale_dir)
         if self.opts.tpmax is None and platform.system() == 'Linux':
             # use rlimit to set to the cpu "ulimit"
             import resource
