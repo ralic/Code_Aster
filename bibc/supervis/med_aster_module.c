@@ -76,14 +76,14 @@ PyObject *args;
     return dic_champ_comp;
 }
 
-#ifndef _WITHOUT_PYMOD_
 static PyMethodDef methods[] = {
     {"get_nom_champ_med", aster_nom_ch_med, METH_VARARGS},
     { NULL, NULL, 0, NULL }
 };
 
 
-PyMODINIT_FUNC initmed_fonctions(void)
+#ifndef _WITHOUT_PYMOD_
+PyMODINIT_FUNC initmed_aster(void)
 {
     Py_InitModule("med_aster", methods);
 }

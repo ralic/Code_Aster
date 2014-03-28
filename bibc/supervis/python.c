@@ -33,7 +33,7 @@ extern DL_EXPORT(int) Py_Main();
 extern void initaster();
 extern void initaster_core();
 extern void initaster_fonctions();
-extern void initmed_fonctions();
+extern void initmed_aster();
 
 #ifndef _MAIN_
 #define _MAIN_ main
@@ -53,7 +53,7 @@ _MAIN_(argc, argv)
     /* Module définissant des opérations sur les objets fonction_sdaster */
     PyImport_AppendInittab("aster_fonctions", initaster_fonctions);
 #ifndef _DISABLE_MED
-    PyImport_AppendInittab("med_aster", initmed_fonctions);
+    PyImport_AppendInittab("med_aster", initmed_aster);
 #endif
     ierr= Py_Main(argc, argv);
     return ierr;
