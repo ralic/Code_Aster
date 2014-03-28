@@ -24,7 +24,6 @@ This module manages core settings of aster.
 #   ``_aster_core`` (see ``bibc/astercore_module.c``). They have been
 #   written in python for convenience.
 
-
 # .. note:: the _aster_core module contains globals that is set for a
 #   particular computation. The actual implementation does not allow
 #   to manage more than one computation.
@@ -34,16 +33,24 @@ from string import maketrans
 from functools import partial
 import time
 from datetime import datetime
-import _aster_core
-from _aster_core import *
-import _aster_core
 
-# these variable are required but they begin with `_`, so we shall declare them:
-_USE_MPI = _aster_core._USE_MPI
-_USE_OPENMP = _aster_core._USE_OPENMP
-_USE_64_BITS = _aster_core._USE_64_BITS
-_POSIX = _aster_core._POSIX
-_NO_EXPIR = _aster_core._NO_EXPIR
+import _aster_core
+# methods and attributes of C implementation of the module
+from _aster_core import (
+    register,     
+    matfpe,       
+    get_mem_stat, 
+    set_mem_stat, 
+    mpi_info,     
+    mpi_warn,     
+    mpi_barrier,  
+    _USE_MPI,
+    _USE_OPENMP,
+    _USE_64_BITS,
+    _POSIX,
+    _NO_EXPIR,
+    ASTER_INT_SIZE,
+)
 
 
 def _is_initialized():
