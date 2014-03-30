@@ -49,7 +49,7 @@ typedef int Py_ssize_t;
 /* Utiliser -DUSE_ASSERT pour activer les ASSERT */
 #ifdef USE_ASSERT
 #define AS_ASSERT(condition) if( !(condition) ){ ICI; \
-        fprintf(stderr,"condition %s VIOLEE\n",#condition); INTERRUPTION(17);}
+        fprintf(stderr, "Assertion failed: %s\n", #condition); INTERRUPTION(17); }
 #else
 #define AS_ASSERT(condition)
 #endif

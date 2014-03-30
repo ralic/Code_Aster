@@ -30,8 +30,10 @@
  *      aster_mpi_xxx : C functions and global variable
  *      asmpi_xxx : Fortran functions
  */
-/* USE_ASSERT is required in this module ! */
+/*TODO USE_ASSERT is required in this module */
+#ifndef USE_ASSERT
 #define USE_ASSERT
+#endif
 
 #include "aster.h"
 #include "aster_mpi.h"
