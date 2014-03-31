@@ -115,7 +115,7 @@ subroutine preml1(neq, n2, diag, delg, col,&
 !          EN CAS DE LIAISON DANS UNE MATRICE GENERALISEE
 !          LES DDL SONT CORRECTEMENT ORDONNES A PRIORI
 !          ON NE FAIT PAS DE RENUMEROTATION
-            call utmess('I', 'ALGELINE3_35')
+            call utmess('A', 'ALGELINE3_35')
             renum=3
         endif
     else

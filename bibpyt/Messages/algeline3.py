@@ -169,12 +169,13 @@ Conseils & solution :
 """),
 
 35: _(u"""
-MULT_FRONT factorise une Matrice Généralisée.
-On a détecté l'existence d'au moins une liaison entre degré de liberté.
-On ne renumérote pas car les degrés de liberté sont a priori compris entre  Lagrange1 et Lagrange2 .
+Le solveur linéaire MULT_FRONT factorise une matrice généralisée.
+Il a détecté l'existence d'au moins une liaison entre degrés de liberté.
+Ceci est hors de son périmètre standard et cela peut conduire à un arrêt prochain du code.
 
 Conseil :
-  En cas d'arrêt ultérieur avec MATRICE singulière, il faudra changer de SOLVEUR (MUMPS par exemple).
+  Sur ces cas de figures, utiliser la prochaine fois, plutôt les autres solveurs linéaires directs,
+  par exemple, MUMPS (cf. mot-clé SOLVEUR/METHODE) ou LDLT (si le problème est de petite taille).
  """),
 
 37: _(u"""
