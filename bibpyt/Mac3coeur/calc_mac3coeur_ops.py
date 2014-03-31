@@ -249,6 +249,7 @@ def calc_mac3coeur_ops(self, **args):
        _AVEC_CONTACT = 'OUI'
        _SANS_CONTACT = 'NON'
 
+       _is_archimede='OUI'
 
        _MA_N = _coeur.affectation_maillage(_MA0)
        _MO_N = _coeur.affectation_modele(_MA_N)
@@ -264,7 +265,7 @@ def calc_mac3coeur_ops(self, **args):
        _F_EMBO  = _coeur.definition_effor_maintien(_MO_N)
        _ARCH_1  = _coeur.definition_archimede1(_MO_N)
        _FOARCH_1= _coeur.definition_archimede2(_MO_N)
-       _ARCH_F1 = _coeur.definition_temp_archimede()
+       _ARCH_F1 = _coeur.definition_temp_archimede(_is_archimede)
 
        _CL_LAME = _coeur.affe_char_lame(_MO_N)
 
@@ -353,7 +354,7 @@ def calc_mac3coeur_ops(self, **args):
        _F_EMBO1  = _coeurp1.definition_effor_maintien(_MO_NP1)
        _ARCH_11  = _coeurp1.definition_archimede1(_MO_NP1)
        _FOARCH1  = _coeurp1.definition_archimede2(_MO_NP1)
-       _ARCHF11  = _coeurp1.definition_temp_archimede()
+       _ARCHF11  = _coeurp1.definition_temp_archimede(_is_archimede)
 
        _MA_NP1 = MODI_MAILLAGE( reuse = _MA_NP1, MAILLAGE = _MA_NP1, DEFORME = _F( OPTION = 'TRAN', DEPL = _MVDEPL))
 

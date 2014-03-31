@@ -138,6 +138,7 @@ def makeXMGRACEjeu(unit,post,coeur,valjeuac,valjeucu):
     xmgrfile.close()
 
 def makeXMGRACEdef_amp(unit,post,coeur,valdefac):
+
     def computeColor(value):
         valmin= 0.
         valmax=20.
@@ -191,7 +192,7 @@ def makeXMGRACEdef_amp(unit,post,coeur,valdefac):
             (redF,greenF,blueF,size) = computeColor(min(valdefac[name]))
             titre = 'minimale'
         else :
-            (redF,greenF,blueF,size) = computeColor(valdefac[name][4*(post-1)])
+            (redF,greenF,blueF,size) = computeColor(valdefac[name][post-1])
             titre = 'au niveau des grilles %s'%post
         xmgrfile.write('@kill s%d\n@s%d symbol fill pattern %d\n' \
             '@s%d symbol fill color (%d, %d, %d)\n@s%d symbol 1\n@s%d symbol size %f\n' \
@@ -243,7 +244,7 @@ def makeXMGRACEdef_mod(unit,post,coeur,valdefac):
             (redF,greenF,blueF,value) = computeColor(min(valdefac[name]))
             titre = 'minimales'
         else :
-            (redF,greenF,blueF,value) = computeColor(valdefac[name][4*(post-1)])
+            (redF,greenF,blueF,value) = computeColor(valdefac[name][post-1])
             titre = 'au niveau des grilles %s'%post
         xmgrfile.write('@kill s%d\n@s%d symbol 2\n@s%d symbol pattern 1\n@s%d symbol size 2\n' \
             '@s%d symbol color 1\n@s%d symbol fill pattern 1\n' \
@@ -302,7 +303,7 @@ def makeXMGRACEdef_vec(unit,post,coeur,valdefac,valdirYac,valdirZac):
             (Xvec,Yvec,Rvec) = computeVector(valdefac[name][pos],valdirYac[name][pos],valdirZac[name][pos])
             titre = 'minimale'
         else :
-            (Xvec,Yvec,Rvec) = computeVector(valdefac[name][4*(post-1)],valdirYac[name][4*(post-1)],valdirZac[name][4*(post-1)])
+            (Xvec,Yvec,Rvec) = computeVector(valdefac[name][post-1],valdirYac[name][post-1],valdirZac[name][post-1])
             titre = 'au niveau des grilles %s'%post
         xmgrfile.write('@kill s%d\n@s%d errorbar on\n@s%d errorbar color (%d, %d, %d)\n' \
             '@s%d errorbar place both\n@s%d errorbar pattern 1\n@s%d errorbar size %f\n' \
@@ -331,9 +332,9 @@ def makeXMGRACEdeforme(unit,name,typeAC,coeur,valdefac):
         xmgrfile.write('@with string\n@string on\n@string loctype world\n' \
             '@string color (0,50,120)\n@string char size %f\n@string just 2\n' \
             '@string %f, %f\n@string def \"%10.1f\"\n' \
-            % (0.7,valdefac[name][4*k]+1.0,ac.altitude[k]-0.035,valdefac[name][4*k]))
+            % (0.7,valdefac[name][k]+1.0,ac.altitude[k]-0.035,valdefac[name][k]))
     for k in range(0,len(ac.altitude)):
-        xmgrfile.write('%10.8f %10.8f\n' %(valdefac[name][4*k],ac.altitude[k]))
+        xmgrfile.write('%10.8f %10.8f\n' %(valdefac[name][k],ac.altitude[k]))
 
     xmgrfile.write('&\n@s2 on\n@with s2\n-20.0 -0.1\n&\n@s3 on\n@with s3\n20.0 4.6\n')
     xmgrfile.write('&\n@subtitle \"D\éform\ée de l\'assemblage %s (amplitudes (mm)/ha' \
@@ -474,6 +475,7 @@ def post_mac3coeur_ops(self, **args):
        POSITION = _coeur.get_geom_coeur()
        k=0
        dim=len(POSITION)
+
        for name in POSITION:
           name_AC_aster = name[0]+'_'+name[1]
           _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,
@@ -537,12 +539,12 @@ def post_mac3coeur_ops(self, **args):
              forme = 'CS'   
           
           # creation des dictionnaires                   
-          valdefac[name_AC_aster]  = l_fnor
+          valdefac[name_AC_aster]  = l_fnor_mm
           valdirYac[name_AC_aster] = l_fy_mm
           valdirZac[name_AC_aster] = l_fz_mm
           valrho[name_AC_aster] = rho_mm
           valforme[name_AC_aster]= [formeY,formeZ,forme] 
-          print 'valforme ',[formeY,formeZ,forme] 
+          
           k=k+1
 
        for attr in POST_DEF:
