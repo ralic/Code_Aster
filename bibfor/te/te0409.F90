@@ -118,15 +118,14 @@ subroutine te0409(option, nomte)
 !            EFFINT : EFFORTS DANS LE REPERE DE L'ELEMENT A T "+"
 !            EFFORP : EFFORTS DANS LE REPERE UTILISATEUR  A T "+"
 !
-    real(kind=8) :: df(9), dm(9), dmf(9), dcc(2, 2), dc(2, 2)
-    real(kind=8) :: dff(9), dmm(9), dmff(9)
+    real(kind=8) :: df(9), dm(9), dmf(9), dc(2, 2)
 !            DF :    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (FLEXION)
 !            DM :    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (MEMBRANE)
 !            DMF:    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (COUPLAGE)
 !            DC:     MATRICE DE RIGIDITE ELASTIQUE MATERIELLE
 !                                                         (CISAILLEMENT)
 !
-    real(kind=8) :: dci(4), dmc(6), dfc(6)
+    real(kind=8) :: dff(3, 3), dmm(3, 3), dmff(3, 3), dcc(2, 2), dci(2, 2), dmc(3, 2), dfc(3, 2)
 !
     real(kind=8) :: bf(3, 3*4), bm(3, 2*4), bmq(2, 3), bc(2, 3*4)
 !            BF :    MATRICE "B" (FLEXION)
@@ -164,7 +163,7 @@ subroutine te0409(option, nomte)
     real(kind=8) :: khith
     real(kind=8) :: alpha, beta
 ! VARIABLES POUR DHRC
-    real(kind=8) :: a0(6, 6), b0(6, 2), c0(2, 2, 2)
+    real(kind=8) :: a0(6, 6), c0(2, 2, 2)
     real(kind=8) :: aa_t(6, 6, 2), ab_(6, 2, 2), ac_(2, 2, 2), aa_c(6, 6, 2)
     real(kind=8) :: ga_t(6, 6, 2), gb_(6, 2, 2), gc_(2, 2, 2), ga_c(6, 6, 2)
     real(kind=8) :: cstseu(2)
@@ -444,18 +443,17 @@ subroutine te0409(option, nomte)
                 call dxmate('RIGI', dff, dmm, dmff, dcc, dci, dmc, dfc, nno, pgl, multic, coupmf,&
                             t2iu, t2ui, t1ve)
                 call r8inir(36, 0.d0, dsidep, 1)
+                do i = 1, 3
+                    do j = 1, 3
 ! -- MEMBRANE
-                dsidep(1,1) = dmm(1)
-                dsidep(2,1) = dmm(2)
-                dsidep(1,2) = dmm(4)
-                dsidep(2,2) = dmm(5)
-                dsidep(3,3) = dmm(9)
+                        dsidep(i,j) = dmm(i,j)
 ! -- FLEXION
-                dsidep(4,4) = dff(1)
-                dsidep(5,4) = dff(2)
-                dsidep(4,5) = dff(4)
-                dsidep(5,5) = dff(5)
-                dsidep(6,6) = dff(9)
+                        dsidep(i+3,j+3) = dff(i,j)
+! -- MEMBRANE-FLEXION
+                        dsidep(i,j+3) = dmff(i,j)
+                        dsidep(j+3,i) = dmff(i,j)
+                    end do
+                end do
 !
 ! -- CALCUL DE L'ACCROISSEMENT DE CONTRAINTE
 !
@@ -557,13 +555,13 @@ subroutine te0409(option, nomte)
                     end do
                 endif
 !
-                call dhrc_recup_mate(zi(imate), compor, ep, a0, b0, c0,&
-                                     aa_t, ga_t, ab_, gb_, ac_, gc_, aa_c, ga_c, cstseu)
+                call dhrc_recup_mate(zi(imate), compor, ep, a0, c0,&
+                                    aa_t, ga_t, ab_, gb_, ac_, gc_, aa_c, ga_c, cstseu)
 !
 !     ENDOMMAGEMENT COUPLÉ PLASTICITÉ
 !
                 call r8inir(36, 0.d0, dsidep, 1)
-                call dhrc_lc(epsm, deps, ecr, pgl, option, sig, ecrp, a0, b0, c0, aa_t, ga_t, ab_,&
+                call dhrc_lc(epsm, deps, ecr, pgl, option, sig, ecrp, a0, c0, aa_t, ga_t, ab_,&
                            gb_, ac_, gc_, aa_c, ga_c, cstseu, zr(icarcr), codret, dsidep)
 !
             else if (compor(1:7).eq. 'KIT_DDI') then

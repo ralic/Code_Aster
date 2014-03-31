@@ -59,7 +59,6 @@ subroutine dhrc_calc_g(eps, vint, ap1, bp1, cp1,&
     g1=0.0d0
     g2=0.0d0
 !
-!
     do k = 1, 6
         do i = 1, 6
             g1 = g1 - eps(k) * ap1(k,i) * eps(i)
@@ -72,13 +71,10 @@ subroutine dhrc_calc_g(eps, vint, ap1, bp1, cp1,&
                     g2 = g2 - vint(k+4) * cp2(k,i) * vint(i+4)
                 endif
             endif
-!
         end do
-!
     end do
 !
-    g1 = g1/2.0
-!
-    g2 = g2/2.0
+    g1 = g1*0.5d0
+    g2 = g2*0.5d0
 !
 end subroutine

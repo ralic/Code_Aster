@@ -28,7 +28,6 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
     real(kind=8) :: b(6, 2, 2), bp1(6, 2), bp2(6, 2)
     real(kind=8) :: neta1(2), neta2(2), cstseu(2)
     real(kind=8) :: bocaj(6, 6)
-!
     real(kind=8) :: dsidep(6, 6)
 !
 ! ----------------------------------------------------------------------
@@ -47,8 +46,6 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
     integer :: i, j, jb, k, l, lb
     real(kind=8) :: dsida(6, 6), dsedep(6, 6)
 !
-    call matini(6, 6, 0.0d0, dsidep)
-!
     do k = 1, 6
         do i = 1, 6
             dsidep(k,i)=a(k,i)
@@ -59,28 +56,27 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !     CALCUL DE DSIDA
 ! ----------------------------------------------------------------------
 !     INITIALISATION
-    call matini(6, 6, 0.0d0, dsida)
+    dsida(:,:) = 0.d0
 !
     do k = 1, 6
         do i = 1, 6
             dsida(k,1) = dsida(k,1)+ap1(k,i)*eps(i)
             dsida(k,2) = dsida(k,2)+ap2(k,i)*eps(i)
             if (i .lt. 3) then
-                dsida(k,1) = dsida(k,1)+bp1(k,i)*vint(i+2)/2.0d0
-                dsida(k,2) = dsida(k,2)+bp2(k,i)*vint(i+4)/2.0d0
+                dsida(k,1) = dsida(k,1)+bp1(k,i)*vint(i+2)*0.5d0
+                dsida(k,2) = dsida(k,2)+bp2(k,i)*vint(i+4)*0.5d0
             endif
         end do
-        dsida(k,3) = b(k,1,1)/2.0d0
-        dsida(k,4) = b(k,2,1)/2.0d0
-        dsida(k,5) = b(k,1,2)/2.0d0
-        dsida(k,6) = b(k,2,2)/2.0d0
+        dsida(k,3) = b(k,1,1)*0.5d0
+        dsida(k,4) = b(k,2,1)*0.5d0
+        dsida(k,5) = b(k,1,2)*0.5d0
+        dsida(k,6) = b(k,2,2)*0.5d0
     end do
 !
 !----------------------------------------------------------------------
 !     CALCUL DE DSEDEP
 !----------------------------------------------------------------------
 !     INITIALISATION
-    call matini(6, 6, 0.0d0, dsedep)
 !
     do k = 1, 6
         dsedep(1,k) = dsida(k,1)/cstseu(1)
@@ -105,14 +101,12 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
                     do l = 1, 6
                         if (indip(l) .eq. l) then
                             lb=lb+1
-                            dsidep(k,i)=dsidep(k,i)+ dsida(k,j)*bocaj(&
-                            jb,lb)*dsedep(l,i)
+                            dsidep(k,i)=dsidep(k,i)+ dsida(k,j)*bocaj(jb,lb)*dsedep(l,i)
                         endif
                     end do
                 endif
             end do
         end do
     end do
-!
 !
 end subroutine

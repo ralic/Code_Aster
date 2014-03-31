@@ -66,37 +66,33 @@ subroutine dhrc_jacob(eps, vint, b, c, bp1,&
 !
     do k = 1, 6
         do i = 1, 6
-            jacobt(1,1)=jacobt(1,1)- eps(k)* as1(k,i)* eps(i)/2.0d0
-            jacobt(2,2)=jacobt(2,2)- eps(k)* as2(k,i)* eps(i)/2.0d0
+            jacobt(1,1)=jacobt(1,1)- eps(k)* as1(k,i)* eps(i)*0.5d0
+            jacobt(2,2)=jacobt(2,2)- eps(k)* as2(k,i)* eps(i)*0.5d0
 !
             if (i .lt. 3) then
-                jacobt(1,1)=jacobt(1,1)- eps(k)* bs1(k,i)* vint(i+2)/&
-                2.0d0
-                jacobt(2,2)=jacobt(2,2)- eps(k)* bs2(k,i)* vint(i+4)/&
-                2.0d0
+                jacobt(1,1)=jacobt(1,1)- eps(k)* bs1(k,i)* vint(i+2)*0.5d0
+                jacobt(2,2)=jacobt(2,2)- eps(k)* bs2(k,i)* vint(i+4)*0.5d0
                 if (k .lt. 3) then
-                    jacobt(1,1)=jacobt(1,1)- vint(k+2)* cs1(k,i)*&
-                    vint(i+2) /2.0d0
-                    jacobt(2,2)=jacobt(2,2)- vint(k+4)* cs2(k,i)*&
-                    vint(i+4) /2.0d0
+                    jacobt(1,1)=jacobt(1,1)- vint(k+2)* cs1(k,i)*vint(i+2)*0.5d0
+                    jacobt(2,2)=jacobt(2,2)- vint(k+4)* cs2(k,i)*vint(i+4)*0.5d0
                 endif
             endif
 !
         end do
 !
-        jacobt(1,3)=jacobt(1,3)- eps(k)*bp1(k,1)/2.0d0
-        jacobt(1,4)=jacobt(1,4)- eps(k)*bp1(k,2)/2.0d0
+        jacobt(1,3)=jacobt(1,3)- eps(k)*bp1(k,1)*0.5d0
+        jacobt(1,4)=jacobt(1,4)- eps(k)*bp1(k,2)*0.5d0
 !
-        jacobt(2,5)=jacobt(2,5)- eps(k)*bp2(k,1)/2.0d0
-        jacobt(2,6)=jacobt(2,6)- eps(k)*bp2(k,2)/2.0d0
+        jacobt(2,5)=jacobt(2,5)- eps(k)*bp2(k,1)*0.5d0
+        jacobt(2,6)=jacobt(2,6)- eps(k)*bp2(k,2)*0.5d0
 !
-        jacobt(3,1)=jacobt(3,1)- eps(k)*bp1(k,1)/2.0d0
+        jacobt(3,1)=jacobt(3,1)- eps(k)*bp1(k,1)*0.5d0
 !
-        jacobt(4,1)=jacobt(4,1)- eps(k)*bp1(k,2)/2.0d0
+        jacobt(4,1)=jacobt(4,1)- eps(k)*bp1(k,2)*0.5d0
 !
-        jacobt(5,2)=jacobt(5,2)- eps(k)*bp2(k,1)/2.0d0
+        jacobt(5,2)=jacobt(5,2)- eps(k)*bp2(k,1)*0.5d0
 !
-        jacobt(6,2)=jacobt(6,2)- eps(k)*bp2(k,2)/2.0d0
+        jacobt(6,2)=jacobt(6,2)- eps(k)*bp2(k,2)*0.5d0
 !
         if (k .lt. 3) then
             jacobt(1,3)=jacobt(1,3)- vint(k+2)*cp1(k,1)

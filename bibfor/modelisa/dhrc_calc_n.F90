@@ -57,8 +57,8 @@ subroutine dhrc_calc_n(eps, vint, b, c, neta1,&
     do k = 1, 2
 !     CALCUL DE NETA1 ET NETA2
         do i = 1, 6
-            neta1(k) = neta1(k)-eps(i)*b(i,k,1)/2.0d0
-            neta2(k) = neta2(k)-eps(i)*b(i,k,2)/2.0d0
+            neta1(k) = neta1(k)-eps(i)*b(i,k,1)*0.5d0
+            neta2(k) = neta2(k)-eps(i)*b(i,k,2)*0.5d0
             if (i .lt. 3) then
                 neta1(k) = neta1(k)-vint(i+2)*c(i,k,1)
                 neta2(k) = neta2(k)-vint(i+4)*c(i,k,2)

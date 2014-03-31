@@ -17,10 +17,11 @@
 !
 interface 
     subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
-                      sig, vip, a0, b0, c0,&
+                      sig, vip, a0, c0,&
                       aa_t, ga_t, ab, gb, ac,&
                       gc, aa_c, ga_c, cstseu, crit,&
                       codret, dsidep)
+! aslint: disable=W1504
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: vim(*)
@@ -29,7 +30,6 @@ interface
         real(kind=8) :: sig(8)
         real(kind=8) :: vip(*)
         real(kind=8) :: a0(6, 6)
-        real(kind=8) :: b0(6, 2)
         real(kind=8) :: c0(2, 2, 2)
         real(kind=8) :: aa_t(6, 6, 2)
         real(kind=8) :: ga_t(6, 6, 2)

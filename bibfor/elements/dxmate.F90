@@ -50,6 +50,7 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 !     OUT COUPMF :
 !        .TRUE. POUR UN MATERIAU AVEC COUPLAGE MEMBRANE-FLEXION
 !  ------------------------------------------------------------------
+! aslint: disable=W1501
     integer :: jcoqu, jmate, nbv, i, j, k, nbpar, elasco
     integer :: iazi, iazk24, npg, jcou, ncou, iret, npgh, iret1
     integer :: ndim, nnos, ipoids, ivf, idfde, jgano
@@ -129,6 +130,26 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         nomres(1) = 'E'
         nomres(2) = 'NU'
     else if (phenom.eq.'ELAS_GLRC') then
+!
+        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
+!       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
+!       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
+!
+        t1ve(1) = c*c
+        t1ve(4) = s*s
+        t1ve(7) = c*s
+        t1ve(2) = t1ve(4)
+        t1ve(5) = t1ve(1)
+        t1ve(8) = -t1ve(7)
+        t1ve(3) = -t1ve(7) - t1ve(7)
+        t1ve(6) = t1ve(7) + t1ve(7)
+        t1ve(9) = t1ve(1) - t1ve(4)
+        nbv = 26
+        do i = 1, nbv
+            call codent(i, 'G', nume)
+            nomres(i) = 'HOM_'//nume
+        end do
+!
         nbv = 6
         nomres(1) = 'E_M'
         nomres(2) = 'NU_M'
@@ -211,6 +232,49 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
             nomres(32) = 'C_LZTZ  '
             nomres(33) = 'C_TZTZ  '
         endif
+    else if (phenom.eq.'ELAS_DHRC') then
+!
+        call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
+!       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
+!       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
+!
+        t1ve(1) = c*c
+        t1ve(4) = s*s
+        t1ve(7) = c*s
+        t1ve(2) = t1ve(4)
+        t1ve(5) = t1ve(1)
+        t1ve(8) = -t1ve(7)
+        t1ve(3) = -t1ve(7) - t1ve(7)
+        t1ve(6) = t1ve(7) + t1ve(7)
+        t1ve(9) = t1ve(1) - t1ve(4)
+        nbv = 26
+        do i = 1, nbv
+            call codent(i, 'G', nume)
+            nomres(i) = 'HOM_'//nume
+        end do
+!
+        nbv = 21
+        nomres(1)  = 'A011'
+        nomres(2)  = 'A012'
+        nomres(3)  = 'A013'
+        nomres(4)  = 'A014'
+        nomres(5)  = 'A015'
+        nomres(6)  = 'A016'
+        nomres(7)  = 'A022'
+        nomres(8)  = 'A023'
+        nomres(9)  = 'A024'
+        nomres(10) = 'A025'
+        nomres(11) = 'A026'
+        nomres(12) = 'A033'
+        nomres(13) = 'A034'
+        nomres(14) = 'A035'
+        nomres(15) = 'A036'
+        nomres(16) = 'A044'
+        nomres(17) = 'A045'
+        nomres(18) = 'A046'
+        nomres(19) = 'A055'
+        nomres(20) = 'A056'
+        nomres(21) = 'A066'
     else
         call utmess('F', 'ELEMENTS_42', sk=phenom)
     endif
@@ -559,6 +623,54 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 !
         multic = 1
 !
+    else if (phenom.eq.'ELAS_DHRC') then
+        multic = 0
+        coupmf = .true.
+!        ------ MATERIAU DHRC -----------------------------------
+        call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar], 21,&
+                    nomres, valres, icodre, 1)
+        dm(1,1) = valres(1)
+        dm(1,2) = valres(2)
+        dm(1,3) = valres(3)
+        dm(2,2) = valres(7)
+        dm(2,3) = valres(8)
+        dm(3,3) = valres(12)
+        dm(2,1) = dm(1,2)
+        dm(3,1) = dm(1,3)
+        dm(3,2) = dm(2,3)
+        dmf(1,1) = valres(4)
+        dmf(1,2) = valres(5)
+        dmf(1,3) = valres(6)
+        dmf(2,1) = valres(9)
+        dmf(2,2) = valres(10)
+        dmf(2,3) = valres(11)
+        dmf(3,1) = valres(13)
+        dmf(3,2) = valres(14)
+        dmf(3,3) = valres(15)
+        df(1,1) = valres(16)
+        df(1,2) = valres(17)
+        df(1,3) = valres(18)
+        df(2,2) = valres(19)
+        df(2,3) = valres(20)
+        df(3,3) = valres(21)
+        df(2,1) = df(1,2)
+        df(3,1) = df(1,3)
+        df(3,2) = df(2,3)
+!
+!        --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------
+!        --- REACTUALISATION DE LA MATRICE DE FLEXION          --------
+!        --- DANS LE CAS D'UN EXCENTREMENT                     --------
+        do i = 1, 3
+            do j = 1, 3
+                df(i,j) = df(i,j)+deux*excent*dmf(i,j)+excent*excent* dm(i,j)
+                dmf(i,j)= dmf(i,j) +excent*dm(i,j)
+            end do
+        end do
+!
+!        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
+        call utbtab('ZERO', 3, 3, dm, t1ve, xab1, dm)
+        call utbtab('ZERO', 3, 3, df, t1ve, xab1, df)
+        call utbtab('ZERO', 3, 3, dmf, t1ve, xab1, dmf)
     endif
 !
     do k = 1, 9

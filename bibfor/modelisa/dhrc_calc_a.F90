@@ -1,6 +1,4 @@
-subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
-                  ga_c, eps, vint, a, ap1,&
-                  ap2, as1, as2)
+subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, as2)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,6 +17,7 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
+! aslint: disable=W1502
 !
     implicit none
 !
@@ -27,8 +26,6 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
     real(kind=8) :: vint(7), eps(8)
     real(kind=8) :: a0(6, 6)
     real(kind=8) :: aa_t(6, 6, 2), ga_t(6, 6, 2), aa_c(6, 6, 2), ga_c(6, 6, 2)
-!
-!
     real(kind=8) :: a(6, 6), ap1(6, 6), ap2(6, 6), as1(6, 6), as2(6, 6)
 ! ----------------------------------------------------------------------
 !
@@ -69,7 +66,7 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
     call matini(6, 6, 0.0d0, as2)
 !
     multeps=eps(1)*eps(2)-eps(3)**2.0d0
-    multk=eps(4)*eps(5)-eps(6)**2.0d0
+    multk  =eps(4)*eps(5)-eps(6)**2.0d0
 !
     h=0.1d0
 !
@@ -81,14 +78,14 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !
         if (eps(i) .gt. r8prem()) then
 !
-            a (i,i)= a0(i,i)/2.0d0* ((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))&
+            a (i,i)= a0(i,i)*0.5d0* ((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))&
             /(aa_t(i,i,1)+vint(1)) + (aa_t(i,i,2)+ga_t(i,i,2)*vint(2))&
             /(aa_t(i,i,2)+vint(2)))
 !
-            ap1(i,i)= a0(i,i)/2.0d0* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
+            ap1(i,i)= a0(i,i)*0.5d0* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
             /(aa_t(i,i,1)+vint(1))**2
 !
-            ap2(i,i)= a0(i,i)/2.0d0* aa_t(i,i,2)*(ga_t(i,i,2)-1.0d0)&
+            ap2(i,i)= a0(i,i)*0.5d0* aa_t(i,i,2)*(ga_t(i,i,2)-1.0d0)&
             /(aa_t(i,i,2)+vint(2))**2
 !
             as1(i,i)=-a0(i,i)* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
@@ -99,14 +96,14 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !
         else
 !
-            a (i,i)= a0(i,i)/2.0d0* ((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))&
+            a (i,i)= a0(i,i)*0.5d0* ((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))&
             /(aa_c(i,i,1)+vint(1)) +(aa_c(i,i,2)+ga_c(i,i,2)*vint(2))&
             /(aa_c(i,i,2)+vint(2)))
 !
-            ap1(i,i)= a0(i,i)/2.0d0* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
+            ap1(i,i)= a0(i,i)*0.5d0* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
             /(aa_c(i,i,1)+vint(1))**2
 !
-            ap2(i,i)= a0(i,i)/2.0d0* aa_c(i,i,2)*(ga_c(i,i,2)-1.0d0)&
+            ap2(i,i)= a0(i,i)*0.5d0* aa_c(i,i,2)*(ga_c(i,i,2)-1.0d0)&
             /(aa_c(i,i,2)+vint(2))**2
 !
             as1(i,i)=-a0(i,i)* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
@@ -120,14 +117,14 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
             if (j .ne. i) then
                 if (multeps .gt. r8prem()) then
 !
-                    a (i,j)= a0(i,j)/2.0d0* ((aa_t(i,j,1)+ga_t(i,j,1)*&
+                    a (i,j)= a0(i,j)*0.5d0* ((aa_t(i,j,1)+ga_t(i,j,1)*&
                     vint(1)) /(aa_t(i,j,1)+vint(1)) +(aa_t(i,j,2)+&
                     ga_t(i,j,2)*vint(2)) /(aa_t(i,j,2)+vint(2)))
 !
-                    ap1(i,j)= a0(i,j)/2.0d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
+                    ap1(i,j)= a0(i,j)*0.5d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
                     1.0d0) /(aa_t(i,j,1)+vint(1))**2
 !
-                    ap2(i,j)= a0(i,j)/2.0d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
+                    ap2(i,j)= a0(i,j)*0.5d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
                     1.0d0) /(aa_t(i,j,2)+vint(2))**2
 !
                     as1(i,j)=-a0(i,j)* aa_t(i,j,1)*(ga_t(i,j,1)-1.0d0)&
@@ -138,14 +135,14 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !
                 else
 !
-                    a (i,j)= a0(i,j)/2.0d0* ((aa_c(i,j,1)+ga_c(i,j,1)*&
+                    a (i,j)= a0(i,j)*0.5d0* ((aa_c(i,j,1)+ga_c(i,j,1)*&
                     vint(1)) /(aa_c(i,j,1)+vint(1)) +(aa_c(i,j,2)+&
                     ga_c(i,j,2)*vint(2)) /(aa_c(i,j,2)+vint(2)))
 !
-                    ap1(i,j)= a0(i,j)/2.0d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
+                    ap1(i,j)= a0(i,j)*0.5d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
                     1.0d0) /(aa_c(i,j,1)+vint(1))**2
 !
-                    ap2(i,j)= a0(i,j)/2.0d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
+                    ap2(i,j)= a0(i,j)*0.5d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
                     1.0d0) /(aa_c(i,j,2)+vint(2))**2
 !
                     as1(i,j)=-a0(i,j)* aa_c(i,j,1)*(ga_c(i,j,1)-1.0d0)&
@@ -166,14 +163,14 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !     D'ENDOMMAGEMENT CE QUI FAIT UN FACTEUR 2 A D=0
         if (eps(i) .gt. r8prem()) then
 !
-            a (i,i)= a0(i,i)/2.0d0* ((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))&
+            a (i,i)= a0(i,i)*0.5d0* ((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))&
             /(aa_c(i,i,1)+vint(1)) +(aa_t(i,i,2)+ga_t(i,i,2)*vint(2))&
             /(aa_t(i,i,2)+vint(2)))
 !
-            ap1(i,i)= a0(i,i)/2.0d0* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
+            ap1(i,i)= a0(i,i)*0.5d0* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
             /(aa_c(i,i,1)+vint(1))**2
 !
-            ap2(i,i)= a0(i,i)/2.0d0* aa_t(i,i,2)*(ga_t(i,i,2)-1.0d0)&
+            ap2(i,i)= a0(i,i)*0.5d0* aa_t(i,i,2)*(ga_t(i,i,2)-1.0d0)&
             /(aa_t(i,i,2)+vint(2))**2
 !
             as1(i,i)=-a0(i,i)* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
@@ -184,14 +181,14 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !
         else
 !
-            a (i,i)= a0(i,i)/2.0d0* ((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))&
+            a (i,i)= a0(i,i)*0.5d0* ((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))&
             /(aa_t(i,i,1)+vint(1)) +(aa_c(i,i,2)+ga_c(i,i,2)*vint(2))&
             /(aa_c(i,i,2)+vint(2)))
 !
-            ap1(i,i)= a0(i,i)/2.0d0* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
+            ap1(i,i)= a0(i,i)*0.5d0* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
             /(aa_t(i,i,1)+vint(1))**2
 !
-            ap2(i,i)= a0(i,i)/2.0d0* aa_c(i,i,2)*(ga_c(i,i,2)-1.0d0)&
+            ap2(i,i)= a0(i,i)*0.5d0* aa_c(i,i,2)*(ga_c(i,i,2)-1.0d0)&
             /(aa_c(i,i,2)+vint(2))**2
 !
             as1(i,i)=-a0(i,i)* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
@@ -205,15 +202,15 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
             if (j .ne. i) then
                 if (multk .gt. r8prem()) then
 !
-                    a (i,j)= a0(i,j)/2.0d0* ((aa_c(i,j,1)+ga_c(i,j,1)*&
+                    a (i,j)= a0(i,j)*0.5d0* ((aa_c(i,j,1)+ga_c(i,j,1)*&
                     vint(1)) /(aa_c(i,j,1)+vint(1)) +(aa_t(i,j,2)+&
                     ga_t(i,j,2)*vint(2)) /(aa_t(i,j,2)+vint(2)))
 !
-                    ap1(i,j)= a0(i,j)/2.0d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
+                    ap1(i,j)= a0(i,j)*0.5d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
                     1.0d0) /(aa_c(i,j,1)+vint(1))**2
 !
 !
-                    ap2(i,j)= a0(i,j)/2.0d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
+                    ap2(i,j)= a0(i,j)*0.5d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
                     1.0d0) /(aa_t(i,j,2)+vint(2))**2
 !
                     as1(i,j)=-a0(i,j)* aa_c(i,j,1)*(ga_c(i,j,1)-1.0d0)&
@@ -224,14 +221,14 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !
                 else
 !
-                    a (i,j)= a0(i,j)/2.0d0* ((aa_t(i,j,1)+ga_t(i,j,1)*&
+                    a (i,j)= a0(i,j)*0.5d0* ((aa_t(i,j,1)+ga_t(i,j,1)*&
                     vint(1)) /(aa_t(i,j,1)+vint(1)) +(aa_c(i,j,2)+&
                     ga_c(i,j,2)*vint(2)) /(aa_c(i,j,2)+vint(2)))
 !
-                    ap1(i,j)= a0(i,j)/2.0d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
+                    ap1(i,j)= a0(i,j)*0.5d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
                     1.0d0) /(aa_t(i,j,1)+vint(1))**2
 !
-                    ap2(i,j)= a0(i,j)/2.0d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
+                    ap2(i,j)= a0(i,j)*0.5d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
                     1.0d0) /(aa_c(i,j,2)+vint(2))**2
 !
                     as1(i,j)=-a0(i,j)* aa_t(i,j,1)*(ga_t(i,j,1)-1.0d0)&
@@ -253,10 +250,10 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
             i,i+3,1)*vint(1)) /(aa_t(i,i+3,1)+vint(1)) +(aa_t(i,i+3,2)&
             +ga_t(i,i+3,2)*vint(2)) /(aa_t(i,i+3,2)+vint(2)))
 !
-            ap1(i,i+3)= 1.d0/2.0d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-&
+            ap1(i,i+3)= 0.5d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-&
             1.0d0) /(aa_t(i,i+3,1)+vint(1))**2
 !
-            ap2(i,i+3)= 1.d0/2.0d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-&
+            ap2(i,i+3)= 0.5d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-&
             1.0d0) /(aa_t(i,i+3,2)+vint(2))**2
 !
             as1(i,i+3)=-1.d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-1.0d0)&
@@ -268,15 +265,15 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
         else if ((eps(i)+2.d0*abs(eps(i+3))/h).gt.r8prem()) then
 !
             if (eps(i+3) .gt. r8prem()) then
-                a(i,i+3)= a0(i,i+3)-1.0d0+1.d0/2.d0* ((aa_c(i,i+3,1)+&
+                a(i,i+3)= a0(i,i+3)-1.0d0+0.5d0* ((aa_c(i,i+3,1)+&
                 ga_c(i,i+3,1)*vint(1)) /(aa_c(i,i+3,1)+vint(1))&
                 +(aa_t(i,i+3,2)+ga_t(i,i+3,2)*vint(2)) /(aa_t(i,i+3,2)&
                 +vint(2)))
 !
-                ap1(i,i+3)= 1.d0/2.0d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-&
+                ap1(i,i+3)= 0.5d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-&
                 1.0d0) /(aa_c(i,i+3,1)+vint(1))**2
 !
-                ap2(i,i+3)= 1.d0/2.0d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-&
+                ap2(i,i+3)= 0.5d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-&
                 1.0d0) /(aa_t(i,i+3,2)+vint(2))**2
 !
                 as1(i,i+3)=-1.d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-1.0d0)&
@@ -285,15 +282,15 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
                 as2(i,i+3)=-1.d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-1.0d0)&
                 /(aa_t(i,i+3,2)+vint(2))**3
             else
-                a(i,i+3)= a0(i,i+3)-1.0d0+1.d0/2.d0* ((aa_t(i,i+3,1)+&
+                a(i,i+3)= a0(i,i+3)-1.0d0+0.5d0* ((aa_t(i,i+3,1)+&
                 ga_t(i,i+3,1)*vint(1)) /(aa_t(i,i+3,1)+vint(1))&
                 +(aa_c(i,i+3,2)+ga_c(i,i+3,2)*vint(2)) /(aa_c(i,i+3,2)&
                 +vint(2)))
 !
-                ap1(i,i+3)= 1.d0/2.0d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-&
+                ap1(i,i+3)= 0.5d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-&
                 1.0d0) /(aa_t(i,i+3,1)+vint(1))**2
 !
-                ap2(i,i+3)= 1.d0/2.0d0* aa_c(i,i+3,2)*(ga_c(i,i+3,2)-&
+                ap2(i,i+3)= 0.5d0* aa_c(i,i+3,2)*(ga_c(i,i+3,2)-&
                 1.0d0) /(aa_c(i,i+3,2)+vint(2))**2
 !
                 as1(i,i+3)=-1.d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-1.0d0)&
@@ -305,14 +302,14 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !
         else
 !
-            a(i,i+3)= a0(i,i+3)-1.0d0+1.d0/2.d0* ((aa_c(i,i+3,1)+ga_c(&
+            a(i,i+3)= a0(i,i+3)-1.0d0+0.5d0* ((aa_c(i,i+3,1)+ga_c(&
             i,i+3,1)*vint(1)) /(aa_c(i,i+3,1)+vint(1)) +(aa_c(i,i+3,2)&
             +ga_c(i,i+3,2)*vint(2)) /(aa_c(i,i+3,2)+vint(2)))
 !
-            ap1(i,i+3)= 1.d0/2.0d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-&
+            ap1(i,i+3)= 0.5d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-&
             1.0d0) /(aa_c(i,i+3,1)+vint(1))**2
 !
-            ap2(i,i+3)= 1.d0/2.0d0* aa_c(i,i+3,2)*(ga_c(i,i+3,2)-&
+            ap2(i,i+3)= 0.5d0* aa_c(i,i+3,2)*(ga_c(i,i+3,2)-&
             1.0d0) /(aa_c(i,i+3,2)+vint(2))**2
 !
             as1(i,i+3)=-1.d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-1.0d0)&
@@ -326,15 +323,15 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
             if (j .ne. (i+3)) then
                 if ((multeps-2.d0*abs(multk)/h) .gt. r8prem()) then
 !
-                    a(i,j)= a0(i,j)-1.0d0+1.d0/2.d0* ((aa_t(i,j,1)+&
+                    a(i,j)= a0(i,j)-1.0d0+0.5d0* ((aa_t(i,j,1)+&
                     ga_t(i,j,1)*vint(1)) /(aa_t(i,j,1)+vint(1))&
                     +(aa_t(i,j,2)+ga_t(i,j,2)*vint(2)) /(aa_t(i,j,2)+&
                     vint(2)))
 !
-                    ap1(i,j)= 1.d0/2.0d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
+                    ap1(i,j)= 0.5d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
                     1.0d0) /(aa_t(i,j,1)+vint(1))**2
 !
-                    ap2(i,j)= 1.d0/2.0d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
+                    ap2(i,j)= 0.5d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
                     1.0d0) /(aa_t(i,j,2)+vint(2))**2
 !
                     as1(i,j)=-1.d0* aa_t(i,j,1)*(ga_t(i,j,1)-1.0d0)&
@@ -352,10 +349,10 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
                         +(aa_t(i,j,2)+ga_t(i,j,2)*vint(2)) /(aa_t(i,j,&
                         2)+vint(2)))
 !
-                        ap1(i,j)= 1.d0/2.0d0* aa_c(i,j,1)*(ga_c(i,j,1)&
+                        ap1(i,j)= 0.5d0* aa_c(i,j,1)*(ga_c(i,j,1)&
                         -1.0d0) /(aa_c(i,j,1)+vint(1))**2
 !
-                        ap2(i,j)= 1.d0/2.0d0* aa_t(i,j,2)*(ga_t(i,j,2)&
+                        ap2(i,j)= 0.5d0* aa_t(i,j,2)*(ga_t(i,j,2)&
                         -1.0d0) /(aa_t(i,j,2)+vint(2))**2
 !
                         as1(i,j)=-1.d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
@@ -364,15 +361,15 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
                         as2(i,j)=-1.d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
                         1.0d0) /(aa_t(i,j,2)+vint(2))**3
                     else
-                        a(i,j)= a0(i,j)-1.0d0+1.d0/2.d0* ((aa_t(i,j,1)&
+                        a(i,j)= a0(i,j)-1.0d0+0.5d0* ((aa_t(i,j,1)&
                         +ga_t(i,j,1)*vint(1)) /(aa_t(i,j,1)+vint(1))&
                         +(aa_c(i,j,2)+ga_c(i,j,2)*vint(2)) /(aa_c(i,j,&
                         2)+vint(2)))
 !
-                        ap1(i,j)= 1.d0/2.0d0* aa_t(i,j,1)*(ga_t(i,j,1)&
+                        ap1(i,j)= 0.5d0* aa_t(i,j,1)*(ga_t(i,j,1)&
                         -1.0d0) /(aa_t(i,j,1)+vint(1))**2
 !
-                        ap2(i,j)= 1.d0/2.0d0* aa_c(i,j,2)*(ga_c(i,j,2)&
+                        ap2(i,j)= 0.5d0* aa_c(i,j,2)*(ga_c(i,j,2)&
                         -1.0d0) /(aa_c(i,j,2)+vint(2))**2
 !
                         as1(i,j)=-1.d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
@@ -384,15 +381,15 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
 !
                 else
 !
-                    a(i,j)= a0(i,j)-1.0d0+1.d0/2.d0* ((aa_c(i,j,1)+&
+                    a(i,j)= a0(i,j)-1.0d0+0.5d0* ((aa_c(i,j,1)+&
                     ga_c(i,j,1)*vint(1)) /(aa_c(i,j,1)+vint(1))&
                     +(aa_c(i,j,2)+ga_c(i,j,2)*vint(2)) /(aa_c(i,j,2)+&
                     vint(2)))
 !
-                    ap1(i,j)= 1.d0/2.0d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
+                    ap1(i,j)= 0.5d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
                     1.0d0) /(aa_c(i,j,1)+vint(1))**2
 !
-                    ap2(i,j)= 1.d0/2.0d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
+                    ap2(i,j)= 0.5d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
                     1.0d0) /(aa_c(i,j,2)+vint(2))**2
 !
                     as1(i,j)=-1.d0* aa_c(i,j,1)*(ga_c(i,j,1)-1.0d0)&
@@ -409,7 +406,7 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c,&
     do i = 1, 3
         do j = 1, 3
             if (a(i,j+3) .lt. 100.d0*r8prem()) a(i,j+3)=0.0d0
-            a(j+3,i)=a(i,j+3)
+            a(j+3,i)  =a(i,j+3)
             ap1(j+3,i)=ap1(i,j+3)
             ap2(j+3,i)=ap2(i,j+3)
             as1(j+3,i)=as1(i,j+3)

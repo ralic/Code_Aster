@@ -1,6 +1,4 @@
-subroutine dhrc_seuils(eps, vint, b, c, ap1,&
-                       bp1, cp1, ap2, bp2, cp2,&
-                       cstseu, neta1, neta2, seuils)
+subroutine dhrc_seuils(eps, vint, b, c, ap1, bp1, cp1, ap2, bp2, cp2, cstseu, neta1, neta2, seuils)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,11 +60,9 @@ subroutine dhrc_seuils(eps, vint, b, c, ap1,&
 ! -------CALCUL DES FORCES THERMODYNAMIQUES -------
 ! ----------------------------------------------------------------------
 !
-    call dhrc_calc_g(eps, vint, ap1, bp1, cp1,&
-                     ap2, bp2, cp2, g1, g2)
+    call dhrc_calc_g(eps, vint, ap1, bp1, cp1, ap2, bp2, cp2, g1, g2)
 !
-    call dhrc_calc_n(eps, vint, b, c, neta1,&
-                     neta2)
+    call dhrc_calc_n(eps, vint, b, c, neta1, neta2)
 !
 ! ----------------------------------------------------------------------
 ! -------CALCUL DES SEUILS-------

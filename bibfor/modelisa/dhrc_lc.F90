@@ -1,8 +1,5 @@
-subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
-                   sig, vip, a0, b0, c0,&
-                   aa_t, ga_t, ab, gb, ac,&
-                   gc, aa_c, ga_c, cstseu, crit,&
-                   codret, dsidep)
+subroutine dhrc_lc(epsm, deps, vim, pgl, option, sig, vip, a0, c0,&
+                   aa_t, ga_t, ab, gb, ac, gc, aa_c, ga_c, cstseu, crit, codret, dsidep)
 ! aslint: disable=W1504
 !
 ! ======================================================================
@@ -48,7 +45,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     integer :: codret
 !
     real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), cstseu(2)
-    real(kind=8) :: a0(6, 6), b0(6, 2), c0(2, 2, 2)
+    real(kind=8) :: a0(6, 6), c0(2, 2, 2)
     real(kind=8) :: aa_t(6, 6, 2), ab(6, 2, 2), ac(2, 2, 2)
     real(kind=8) :: ga_t(6, 6, 2), gb(6, 2, 2), gc(2, 2, 2)
     real(kind=8) :: aa_c(6, 6, 2)
@@ -65,7 +62,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !       A0     : RAIDEUR ELASTIQUE (D=0)
 !       AA     : PARAMETRE ALPHA DE LA FONCTION D'ENDOMMAGEMENT
 !       GA     : PARAMETRE GAMMA DE LA FONCTION D'ENDOMMAGEMENT
-!       B0     : RAIDEUR ELASTIQUE (D=0)
 !       AB     : PARAMETRE ALPHA DE LA FONCTION D'ENDOMMAGEMENT
 !       GB     : PARAMETRE GAMMA DE LA FONCTION D'ENDOMMAGEMENT
 !       C0     : RAIDEUR ELASTIQUE (D=0)
@@ -97,7 +93,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !                 1 => ABSENCE DE CONVERGENCE
 ! ----------------------------------------------------------------------
 !
-    logical :: rigi, resi, coup
+    logical :: rigi, resi
     logical :: lelas
 !
     integer :: k, kdmax, indi(6), indip(6), nbact, l, i, iret, kd, kd2
@@ -126,8 +122,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  OPTION ET MODELISATION
     rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
     resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
-    coup = (option(6:9).eq.'COUP')
-    if (coup) rigi=.true.
     lelas = option .eq.'RIGI_MECA       '
 !
 ! -- INITIALISATION
@@ -157,14 +151,13 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! ---------------------------------------------------------------------
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
-    beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2ev2, t2ve2,&
-                cosi, sinu)
+    beta  = zr(jcara+2) * r8dgrd()
+    call coqrep(pgl, alpha, beta, t2ev2, t2ve2, cosi, sinu)
 !
 ! ---   PASSAGE DES DEFORMATIONS EPS DU REPERE INTRINSEQUE
 ! ---   A L'ELEMENT AU REPERE GLOBAL DE LA COQUE
-    eps(3)=eps(3)/2.d0
-    eps(6)=eps(6)/2.d0
+    eps(3)=eps(3)*0.5d0
+    eps(6)=eps(6)*0.5d0
     call r8inir(8, 0.0d0, epsg, 1)
     call dxefro(1, t2ev2, eps, epsg)
     epsg(3)=epsg(3)*2.d0
@@ -176,8 +169,8 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! --  STOCKAGE DES VARIABLES INTERNES DANS UN VECTEUR VINT
 ! --  VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !
-    call r8inir(7, 0.0d0, vint, 1)
-    call r8inir(7, 0.0d0, vip, 1)
+    call r8inir( 7, 0.0d0, vint, 1)
+    call r8inir( 7, 0.0d0,  vip, 1)
     do k = 1, 7
         if (lelas) then
             vint(k) = 0.0d0
@@ -190,7 +183,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !     L'ENDOMMAGEMENT ET DE LEURS DERIVEES PAR RAPPORT A D1 ET D2
 !
     call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vint, a, ap1, ap2, as1, as2)
-    call dhrc_calc_b(b0, ab, gb, vint, b, bp1, bp2, bs1, bs2)
+    call dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
     call dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
 !
 ! --  CALCUL DES SEUILS
@@ -206,7 +199,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         told = crit(3)
         kdmax = nint(crit(1))
 !
-222      continue
+222     continue
 !
 ! --  COMPTEUR D'ITERATIONS
         kd=kd+1
@@ -327,7 +320,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
                 call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vint, a, ap1, ap2, as1, as2)
 !
-                call dhrc_calc_b(b0, ab, gb, vint, b, bp1, bp2, bs1, bs2)
+                call dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
 !
                 call dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
             endif
@@ -384,13 +377,12 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
         endif
     end do
 !
-!
 ! --  CALCUL DES CONTRAINTES
     call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vip, a, ap1, ap2, as1, as2)
 !
 ! --  ECRITURE DES VALEURS PROPRES
 !
-    call dhrc_calc_b(b0, ab, gb, vip, b, bp1, bp2, bs1, bs2)
+    call dhrc_calc_b(ab, gb, vip, b, bp1, bp2, bs1, bs2)
     call dhrc_calc_c(c0, ac, gc, vip, c, cp1, cp2, cs1, cs2)
     call dhrc_sig(epsg, vip, a, b, sigg)
 !
@@ -426,7 +418,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 ! --  CALCUL DE LA JACOBIENNE => JACOB(NBACT,NBACT)
         call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vip, a, ap1, ap2, as1, as2)
-        call dhrc_calc_b(b0, ab, gb, vip, b, bp1, bp2, bs1, bs2)
+        call dhrc_calc_b(ab, gb, vip, b, bp1, bp2, bs1, bs2)
         call dhrc_calc_c(c0, ac, gc, vip, c, cp1, cp2, cs1, cs2)
 !
         call matini(6, 6, 0.0d0, jacob)
@@ -472,18 +464,18 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     endif
 !
 ! ---  PASSAGE DE LA MATRICE TANGENTE DSIDEG DU REPERE GLOBAL DE LA
-! ---   COQUE AU REPERE INTRINSEQUE A L'ELEMENT => DSIDEP
-!     CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
-!     (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
+! ---  COQUE AU REPERE INTRINSEQUE A L'ELEMENT => DSIDEP
+!      CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
+!      (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
     t1ve(1,1) = cosi*cosi
     t1ve(1,2) = sinu*sinu
     t1ve(1,3) = cosi*sinu
     t1ve(2,1) = t1ve(1,2)
     t1ve(2,2) = t1ve(1,1)
-    t1ve(2,3) = -t1ve(1,3)
-    t1ve(3,1) = -t1ve(1,3) *2.d0
-    t1ve(3,2) = t1ve(1,3) *2.d0
-    t1ve(3,3) = t1ve(1,1) -t1ve(1,2)
+    t1ve(2,3) =-t1ve(1,3)
+    t1ve(3,1) =-t1ve(1,3)*2.d0
+    t1ve(3,2) = t1ve(1,3)*2.d0
+    t1ve(3,3) = t1ve(1,1)-t1ve(1,2)
 !
     call matini(3, 3, 0.0d0, dsidmg)
     call matini(3, 3, 0.0d0, dsidcg)

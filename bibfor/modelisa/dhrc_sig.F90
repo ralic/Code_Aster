@@ -23,7 +23,6 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
 #include "asterfort/r8inir.h"
     real(kind=8) :: a(6, 6), b(6, 2, 2)
     real(kind=8) :: vint(7), eps(8)
-!
     real(kind=8) :: sig(8)
 !
 ! ----------------------------------------------------------------------
@@ -40,12 +39,12 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
 !                VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !
 ! OUT:
-!       SIG     : CONTRAINTE ASSOCIEE A LA DEFORMATION MEMBRANAIRE
+!       SIG     : CONTRAINTES GENERALISEES ASSOCIEES AUX
+!       DEFORMATIONS MEMBRANAIRE, DE FLEXION ET DE GLISSEMENT
 !
 ! ----------------------------------------------------------------------
 !
     integer :: i, k
-!
 !
 !     INITIALISATION
     call r8inir(8, 0.0d0, sig, 1)
@@ -55,7 +54,7 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
         do i = 1, 6
             sig(k) = sig(k)+a(k,i)*eps(i)
             if (i .lt. 3) then
-                sig(k) = sig(k)+b(k,i,1)*vint(i+2)/2.0d0 +b(k,i,2)* vint(i+4)/2.0d0
+                sig(k) = sig(k)+(b(k,i,1)*vint(i+2) +b(k,i,2)*vint(i+4))*0.5d0
             endif
         end do
 end do

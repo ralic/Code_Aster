@@ -104,7 +104,8 @@ subroutine te0050(option, nomte)
     mater=zi(imate)
     call rccoma(mater, 'ELAS', 0, phenom, icodre(1))
     if(.not.(phenom .eq. 'ELAS'       .or. phenom .eq. 'ELAS_ORTH'&
-        .or. phenom .eq. 'ELAS_COQMU' .or. phenom .eq. 'ELAS_GLRC')) then
+        .or. phenom .eq. 'ELAS_COQMU' .or. phenom .eq. 'ELAS_GLRC'&
+        .or. phenom .eq. 'ELAS_DHRC')) then
         call utmess('F', 'MODELISA10_3', sk=phenom)
     endif
 !

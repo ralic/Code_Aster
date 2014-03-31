@@ -117,7 +117,7 @@ subroutine te0404(option, nomte)
                     2, nomres, valres, codres, 1)
         e = valres(1)
         nu = valres(2)
-    else if (phenom.eq.'ELAS_COQUE') then
+    else if (phenom.eq.'ELAS_COQUE' .or. phenom.eq.'ELAS_DHRC') then
         call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfde,&
   jdfd2=idfd2,jgano=jgano)

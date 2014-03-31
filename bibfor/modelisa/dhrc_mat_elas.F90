@@ -39,8 +39,6 @@ subroutine dhrc_mat_elas(a, dsidep)
 !
     integer :: i, k
 !
-    call matini(6, 6, 0.0d0, dsidep)
-!
     do k = 1, 6
         do i = 1, 6
             dsidep(k,i)=a(k,i)

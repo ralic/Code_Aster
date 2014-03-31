@@ -58,7 +58,7 @@ subroutine dxroep(rho, epais)
 !
     elseif (phenom .eq. 'ELAS'      .or. phenom .eq. 'ELAS_COQUE' .or.&
             phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_ORTH'  .or.&
-            phenom .eq. 'ELAS_GLRC') then
+            phenom .eq. 'ELAS_GLRC' .or. phenom .eq. 'ELAS_DHRC') then
         nomres(1) = 'RHO'
         nbv = 1
         call rcvala(zi(jmate), ' ', phenom, 0, ' ', [r8bid], nbv, nomres, valres, icodre, 1)

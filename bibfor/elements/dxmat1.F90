@@ -40,15 +40,15 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
 !     ------------------------------------------------------------------
     integer :: jcoqu, jmate, iret
     integer :: nbpar
-    real(kind=8) :: cdf, cdm, valres(5)
+    real(kind=8) :: cdf, cdm, valres(21)
     real(kind=8) :: young, nu, epais, valpar
     real(kind=8) :: dh(3, 3)
     real(kind=8) :: dx, dy, dz, norm
     real(kind=8) :: ps, pjdx, pjdy, pjdz, alphat
     real(kind=8) :: alpha, beta
     real(kind=8) :: em, ef, num, nuf
-    integer :: icodre(5)
-    character(len=8) :: nomres(5), nompar
+    integer :: icodre(21)
+    character(len=8) :: nomres(21), nompar
     character(len=10) :: phenom
 !     ------------------------------------------------------------------
 !
@@ -97,7 +97,9 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
         nomres(3) = 'E_F'
         nomres(4) = 'NU_F'
         nomres(5) = 'ALPHA'
-!
+    else if (phenom .eq. 'ELAS_DHRC') then
+        indith = -1
+        goto 90
     else
         call utmess('F', 'ELEMENTS_44', sk=phenom)
     endif
@@ -140,7 +142,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
         dm(2,2) = dm(1,1)
 !
     else if (phenom .eq. 'ELAS_GLRC') then
-!        ------ MATERIAU ISOTROPE ------------------------------------
+!        ------ MATERIAU GLRC ------------------------------------
 !
         call rcvalb(fami, 1, 1, '+', zi(jmate), ' ', phenom, nbpar, nompar, [valpar],&
                     2, nomres, valres, icodre, 1)
@@ -183,6 +185,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
         dm(1,2) = cdm*num
         dm(2,1) = dm(1,2)
         dm(2,2) = dm(1,1)
+!
     endif
 !
 90  continue
