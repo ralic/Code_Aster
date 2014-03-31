@@ -1,6 +1,6 @@
 subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                   ise, nfh, ddlc, ddlm, nfe,&
-                  rho, puls, lmoda, basloc, nnop,&
+                  puls, basloc, nnop,&
                   idepl, lsn, lst, idecpg, igthet,&
                   fno, nfiss, jfisno)
 !
@@ -55,8 +55,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     integer :: igeom, ndim, nfh, ddlc, ddlm, nfe, nnop, idecpg, idepl
     integer :: nfiss, jfisno, jheavt, ise
     real(kind=8) :: fno(ndim*nnop), coorse(*)
-    real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop), rho, puls
-    logical :: lmoda
+    real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop), puls
 !
 !
 !    - FONCTION REALISEE:  CALCUL DU TAUX DE RESTITUTION D'ENERGIE
@@ -82,7 +81,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 ! IN  IDECPG  : POSITION DANS LA FAMILLE 'XFEM' DU 1ER POINT DE GAUSS
 !               DU SOUS ELEMENT COURRANT (EN FAIT 1ER POINT : IDECPG+1)
 ! IN  FNO     : FORCES VOLUMIQUES AUX NOEUDS DE L'ELEMENT PARENT
-! IN  RHO     : MASSE VOLUMIQUE
 ! OUT IGTHET  : G, K1, K2, K3
 !
 !
@@ -91,9 +89,9 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     integer :: i, j, k, kpg, n, ino, iret, cpt, ig, ipg, in
     integer :: ndimb, nno, nnos, npgbis, ddld, ddls
     integer :: fisno(nnop, nfiss), ifiss
-    real(kind=8) :: g, k1, k2, k3, coefk, coeff3, valres(3), alpha, he(nfiss)
-    real(kind=8) :: devres(3), e, nu, lambda, mu, ka, c1, c2, c3, xg(ndim)
-    real(kind=8) :: fe(4), k3a, val(1)
+    real(kind=8) :: g, k1, k2, k3, coefk, coeff3, valres(4), alpha, he(nfiss)
+    real(kind=8) :: devres(4), e, nu, lambda, mu, ka, c1, c2, c3, xg(ndim)
+    real(kind=8) :: fe(4), k3a
     real(kind=8) :: dgdgl(4, 3), xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
     real(kind=8) :: eps(6), e1(3), e2(3), norme, e3(3), p(3, 3)
     real(kind=8) :: invp(3, 3), rg, tg
@@ -105,16 +103,15 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: du3dme(3, 4)
     real(kind=8) :: u1l(3), u2l(3), u3l(3), u1(3), u2(3), u3(3), ur, r
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref, tempg
-    real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef
-    integer :: icodre(3), codrho(1)
-    character(len=8) :: nomres(3), elrese(6), fami(6)
-    character(len=16) :: phenom
+    real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef, rho
+    integer :: icodre(4)
+    character(len=8) :: nomres(4), elrese(6), fami(6)
     logical :: lcour, grdepl, axi
     integer :: irese, nnops
     integer :: ddln, nnon, indenn, mxstac
     parameter      (mxstac=1000)
 !
-    data     nomres /'E','NU','ALPHA'/
+    data     nomres /'E','NU','ALPHA','RHO'/
     data     elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data     fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
@@ -215,26 +212,22 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       RECUPERATION DES DONNEES MATERIAUX
         ipg = idecpg + kpg
         call rcvad2('XFEM', ipg, 1, '+', zi(imate),&
-                    'ELAS', 3, nomres, valres, devres,&
+                    'ELAS', 4, nomres, valres, devres,&
                     icodre)
         if (icodre(3) .ne. 0) then
             valres(3)= 0.d0
             devres(3)= 0.d0
         endif
+        if (icodre(4) .ne. 0) then
+!       on est sur que RHO est present en modal (te0297 : appel a cgverho)
+            valres(4)= 0.d0
+            devres(4)= 0.d0
+        endif
         e = valres(1)
         nu = valres(2)
         alpha = valres(3)
+        rho = valres(4)
         k3a = alpha * e / (1.d0-2.d0*nu)
-!
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-        call rcvalb('XFEM', ipg, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [0.d0],&
-                    1, 'RHO', val, codrho, 0)
-        rho=val(1)
-!
-        if ((codrho(1).ne.0) .and. lmoda) then
-            call utmess('F', 'RUPTURE1_26')
-        endif
 !
         if (ndim .eq. 3 .or. (ndim.eq.2.and.lteatt('D_PLAN','OUI')) .or. axi) then
 !

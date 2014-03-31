@@ -16,10 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xcgfvo(option, ndim, nnop, fno)
-        integer :: nnop
-        integer :: ndim
-        character(len=16) :: option
-        real(kind=8) :: fno(ndim*nnop)
-    end subroutine xcgfvo
+    function cgverho(imate)
+        integer :: imate
+        logical :: cgverho
+    end function cgverho
 end interface

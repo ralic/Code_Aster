@@ -58,7 +58,7 @@ subroutine te0288(option, nomte)
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, icode
     integer :: ninter, nface, cface(5, 3), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
-    real(kind=8) :: pres, rho, fno(81), coorse(81)
+    real(kind=8) :: pres, fno(81), coorse(81)
     integer :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), nomres(3), nompar(4), enr
     character(len=16) :: compor(4)
@@ -148,7 +148,7 @@ subroutine te0288(option, nomte)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
-    call xcgfvo(option, ndim, nnop, fno, rho)
+    call xcgfvo(option, ndim, nnop, fno)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)

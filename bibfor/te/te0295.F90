@@ -3,6 +3,7 @@ subroutine te0295(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/cgverho.h"
 #include "asterfort/chauxi.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -50,8 +51,7 @@ subroutine te0295(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: icodre(3)
-    integer :: codrho(1)
+    integer :: icodre(4)
     integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos
     integer :: jgano, icomp, ibalo, icour
     integer :: igeom, ithet, ificg, irota, ipesa, idepl, iret
@@ -66,21 +66,21 @@ subroutine te0295(option, nomte)
     real(kind=8) :: du1dm(3, 4), du2dm(3, 4), du3dm(3, 4)
     real(kind=8) :: p(3, 3), invp(3, 3)
     real(kind=8) :: courb(3, 3, 3)
-    real(kind=8) :: rho(1), om, omo, rbid, e, nu, alpha, tref
+    real(kind=8) :: rhocst,rho, om, omo, rbid, e, nu, alpha, tref
     real(kind=8) :: thet, tpg(27), tno(20), tgdm(3), ttrg, la, mu, ka
     real(kind=8) :: xg, yg, zg, ff
     real(kind=8) :: c1, c2, c3, rg, phig
-    real(kind=8) :: valres(3)
+    real(kind=8) :: val(1),valres(4)
     real(kind=8) :: coeff, coeff3
     real(kind=8) :: guv, guv1, guv2, guv3, k1, k2, k3, g, poids
     real(kind=8) :: norme, k3a, ttrgv, tgvdm(3)
     real(kind=8) :: valpar(4), lsng, lstg, puls, coef
 !
     character(len=4) :: fami
-    character(len=8) :: nomres(3), nompar(4)
+    character(len=8) :: nomres(4), nompar(4)
     character(len=16) :: phenom, compor(4)
 !
-    logical :: lcour, lmoda, fonc, lpesa, lrota
+    logical :: lcour, fonc, lpesa, lrota
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,6 +115,7 @@ subroutine te0295(option, nomte)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
+    nomres(4) = 'RHO'
 !
 ! --- PAS DE CALCUL DE G POUR LES ELEMENTS OU THETA EST NULLE
 !
@@ -128,6 +129,9 @@ subroutine te0295(option, nomte)
 10  end do
     if (compt .eq. nno) goto 9999
 !
+! --- VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
+!
+    if ( .not. cgverho(imate) ) call utmess('F', 'RUPTURE1_26')
 !
 ! --- RECUPERATION DES FORCES
 !
@@ -180,13 +184,11 @@ subroutine te0295(option, nomte)
 !
 ! --- RECUPERATION DE LA PULSATION
 !
-    lmoda = .false.
     call tecach('ONN', 'PPULPRO', 'L', iret, nval=7,&
                 itab=jtab)
     ipuls=jtab(1)
     if (iret .eq. 0) then
         puls = zr(ipuls)
-        lmoda = .true.
     else
         puls = 0.d0
     endif
@@ -218,12 +220,13 @@ subroutine te0295(option, nomte)
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
         call rcvalb('RIGI', 1, 1, '+', zi(imate),&
                     ' ', phenom, 1, ' ', [rbid],&
-                    1, 'RHO', rho, icodre, 1)
+                    1, 'RHO', val, icodre, 1)
+        rhocst = val(1)
         if (lpesa) then
             do 95 i = 1, nno
                 do 90 j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rho(1)*zr(ipesa)*zr(ipesa+j)
+                    fno(kk)=fno(kk)+rhocst*zr(ipesa)*zr(ipesa+j)
 90              continue
 95          continue
         endif
@@ -237,7 +240,7 @@ subroutine te0295(option, nomte)
 100              continue
                 do 103 j = 1, ndim
                     kk = ndim*(i-1)+j
-                    fno(kk)=fno(kk)+rho(1)*om*om*(zr(igeom+kk-1)-omo*zr(&
+                    fno(kk)=fno(kk)+rhocst*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
 103              continue
 105          continue
@@ -332,32 +335,26 @@ subroutine te0295(option, nomte)
 !
         call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
-! ----- RECUPERATION DE E, NU ET ALPHA
+! ----- RECUPERATION DE E, NU, ALPHA ET RHO
 !
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     1, r8bid, iret)
         call rcvalb(fami, kp, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', [0.d0],&
-                    3, nomres, valres, icodre, 0)
+                    4, nomres, valres, icodre, 0)
         ASSERT(icodre(1)+icodre(2).eq.0)
         if (icodre(3) .ne. 0) then
             ASSERT(iret.ne.0)
             valres(3) = 0.d0
         endif
-!
-! ----- RECUPERATION DE RHO
-!
-        call rcvalb(fami, kp, 1, '+', zi(imate),&
-                    ' ', phenom, 0, ' ', [0.d0],&
-                    1, 'RHO', rho, codrho, 0)
-!
-        if ((codrho(1).ne.0) .and. lmoda) then
-            call utmess('F', 'RUPTURE1_26')
+        if (icodre(4) .ne. 0) then
+            valres(4) = 0.d0
         endif
 !
         e = valres(1)
         nu = valres(2)
         alpha = valres(3)
+        rho = valres(4)
         k3a = alpha * e / (1.d0-2.d0*nu)
 !
         la = nu*e/((1.d0+nu)*(1.d0-2.d0*nu))
@@ -455,7 +452,7 @@ subroutine te0295(option, nomte)
         coef = 2.d0
         call gbil3d(dudm, dudm, dtdm, dfdm, dfdm,&
                     tgdm, tgdm, ttrg, ttrg, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho(1),&
+                    c1, c2, c3, k3a, alpha, coef, rho,&
                     puls, guv)
         g = g + guv
 !
@@ -463,7 +460,7 @@ subroutine te0295(option, nomte)
         coef = 1.d0
         call gbil3d(dudm, du1dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho(1),&
+                    c1, c2, c3, k3a, alpha, coef, rho,&
                     puls, guv1)
         k1 = k1 + guv1
 !
@@ -471,7 +468,7 @@ subroutine te0295(option, nomte)
         coef = 1.d0
         call gbil3d(dudm, du2dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho(1),&
+                    c1, c2, c3, k3a, alpha, coef, rho,&
                     puls, guv2)
         k2 = k2 + guv2
 !
@@ -479,7 +476,7 @@ subroutine te0295(option, nomte)
         coef = 1.d0
         call gbil3d(dudm, du3dm, dtdm, dfdm, dfvdm,&
                     tgdm, tgvdm, ttrg, ttrgv, poids,&
-                    c1, c2, c3, k3a, alpha, coef, rho(1),&
+                    c1, c2, c3, k3a, alpha, coef, rho,&
                     puls, guv3)
         k3 = k3 + guv3
 !

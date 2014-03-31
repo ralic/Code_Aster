@@ -2,6 +2,7 @@ subroutine te0297(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/cgverho.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -57,11 +58,9 @@ subroutine te0297(option, nomte)
     integer :: nface, cface(5, 3), ifa, singu, jpmilt, ipuls, iret, jtab(7)
     integer :: irese, ddlm, jbasec, nptf, nfiss, jfisno
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
-    real(kind=8) :: pres, fno(81), rho(1), coorse(81), puls
-    integer :: icodre(3), codrho(1)
+    real(kind=8) :: pres, fno(81), coorse(81), puls
+    integer :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), nomres(3), nompar(4), enr
-    character(len=16) :: phenom
-    logical :: lmoda
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
@@ -120,29 +119,21 @@ subroutine te0297(option, nomte)
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
+!     VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
+    if ( .not. cgverho(imate) ) call utmess('F', 'RUPTURE1_26')
+!
 !     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
-    call xcgfvo(option, ndim, nnop, fno, rho(1))
+    call xcgfvo(option, ndim, nnop, fno)
 !
 ! --- RECUPERATION DE LA PULSATION
 !
-    lmoda = .false.
     call tecach('ONN', 'PPULPRO', 'L', iret, nval=7,&
                 itab=jtab)
     ipuls=jtab(1)
     if (iret .eq. 0) then
         puls = zr(ipuls)
-        lmoda = .true.
     else
         puls = 0.d0
-    endif
-!
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-    call rcvalb(fami(1), 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
-                1, 'RHO', rho, codrho, 0)
-!
-    if ((codrho(1).ne.0) .and. lmoda) then
-        call utmess('F', 'RUPTURE1_26')
     endif
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
@@ -174,7 +165,7 @@ subroutine te0297(option, nomte)
 !
         call xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                     ise, nfh, ddlc, ddlm, nfe,&
-                    rho(1), puls, lmoda, zr(jbaslo), nnop,&
+                    puls, zr(jbaslo), nnop,&
                     idepl, zr(jlsn), zr( jlst), idecpg, igthet,&
                     fno, nfiss, jfisno)
 !

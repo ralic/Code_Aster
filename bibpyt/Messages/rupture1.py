@@ -202,9 +202,10 @@ et AFFE_MATERIAU.
 La masse volumique RHO n'a pas été définie.
 
 -> Risque et Conseil :
-Pour le calcul de l'option CALC_K_G avec un résultat de type MODE_MECA,
-il est indispensable de fournir la masse volumique du matériau considéré.
-La masse volumique doit être définie dans l'opérateur DEFI_MATERIAU.
+En présence de forces de pesanteur ou de rotation, ou pour le calcul de 
+l'option CALC_K_G avec un résultat de type MODE_MECA, il est indispensable 
+de fournir la masse volumique du matériau considéré.
+RHO doit être défini dans l'opérateur DEFI_MATERIAU.
 """),
 
 27: _(u"""

@@ -18,7 +18,7 @@
 interface
     subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                       ise, nfh, ddlc, ddlm, nfe,&
-                      rho, puls, lmoda, basloc, nnop,&
+                      puls, basloc, nnop,&
                       idepl, lsn, lst, idecpg, igthet,&
                       fno, nfiss, jfisno)
         integer :: nfiss
