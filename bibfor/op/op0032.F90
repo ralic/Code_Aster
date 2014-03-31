@@ -27,7 +27,6 @@ subroutine op0032()
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
 #include "asterc/getres.h"
-#include "asterfort/apm012.h"
 #include "asterfort/apm345.h"
 #include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -338,11 +337,8 @@ subroutine op0032()
     else if (typmet(1:3).eq.'APM') then
         call getvis('COMPTAGE', 'NBPOINT_CONTOUR', iocc=1, scal=nbtetc, nbret=ibid)
         call getvis('COMPTAGE', 'NMAX_ITER_CONTOUR', iocc=1, scal=niterc, nbret=ibid)
-!     --- TEMPORARY, WE UNPLUG THE USE OF ROMBOUT METHOD, IT NEEDS ---
-!     --- TO BE MORE RELIABLE                                      ---
+! Variante Rombout resorbee en v12.1.13                                       ---
         typcha='LDLT'
-!        TYPCHA='ROMBOUT'
-!        CALL GETVTX('COMPTAGE','POLYNOME_CHARAC',1,IARG,1,TYPCHA,IBID)
     else
         ASSERT(.false.)
     endif
@@ -358,14 +354,7 @@ subroutine op0032()
             call utmess('F', 'ALGELINE4_10')
         endif
     endif
-!
-!     --- CURRENT SCOPE OF USE OF THE OPTION TYPCHA='ROMBOUT'   ---
-    if ((typmet(1:3).eq.'APM') .and. (typcha(1:7).eq.'ROMBOUT')) then
-        if (lc .or. (zk24(jrefa+9)(1:4).eq.'GENE') .or.&
-            (zi(lmasse+3)*zi( lmasse+4)*zi(lraide+3)*zi(lraide+4).ne.1)) then
-            call utmess('F', 'ALGELINE4_17')
-        endif
-    endif
+
 !
 !      --- SCHEMAS PARALLELES
 !
@@ -630,31 +619,12 @@ subroutine op0032()
 !   --- DEVELOPPERS AND FOR DEBBUGING PHASE                   ---
         ltest=.false.
         itest=0
-!       LTEST=.TRUE.
 !
 !   --- FOR PRINT IN THE FILE IFAPM THE DISPLAY Z/ARG(PC(Z)) ONLY  ---
 !   --- FOR DEBUGGING ISSUES                                       ---
         ifapm=18
         impr='OUI'
         impr='NON'
-!
-!   --- FOR TEST ISSUE ONLY (SEE APM012/APTEST)---
-        if ((ltest) .and. (typcha(1:7).eq.'ROMBOUT')) then
-            if (itest .eq. 3) then
-                nk=20
-            else if (itest.eq.4) then
-                nk=10
-            else if (itest.eq.1) then
-                nk=4
-            else if (itest.eq.0) then
-                nk=2
-            endif
-        else
-            nk=zi(lmasse+2)
-        endif
-!   --- STEPS 0/1/2 OF THE APM ALGORITHM IF WE USE ROMBOUT VARIANT ---
-        if (typcha(1:7) .eq. 'ROMBOUT') call apm012(nk, k24rc, ltest, itest, rayonc,&
-                                                    centrc, lraide, lmasse, solveu)
 !
 !   --- STEPS 3, 4 AND 5 OF THE APM ALGORITHM
 !   --- ITERATION LOOP TO DETERMINE THE STABILIZED NUMBER OF   ---
@@ -716,7 +686,7 @@ subroutine op0032()
             endif
 30      continue
 31      continue
-        if (typcha(1:7) .eq. 'ROMBOUT') call jedetr(k24rc)
+
         if (pivot2 .lt. 0) then
             call utmess('F', 'ALGELINE4_22')
         endif

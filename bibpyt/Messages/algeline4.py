@@ -93,9 +93,6 @@ Risques & conseils :
  erreur données GROUP_NO déjà existant :  %(k1)s
 """),
 
-12 : _(u"""
- Réduction sous forme de Hessenberg supérieure: erreur LAPACK %(i1)d !
-"""),
 
 13 : _(u"""
  L'algorithme APM a atteint le nombre maximal de discrétisations du contour,
@@ -133,17 +130,6 @@ Risques & conseils :
  - Changer le paramétrage du solveur linéaire, ou le solveur linéaire lui-même (expert).
 """),
 
-17: _(u"""
- La variante 'ROMBOUT' de la méthode de comptage 'APM' est en cours de fiabilisation.
- Elle n'a pas encore portée pour:
-   - les matrices complexes et/ou non symétriques,
-   - les problèmes quadratiques,
-   - les matrices généralisées.
-
- Conseil :
- Vous pouvez utiliser l'autre variante de la méthode 'APM' via le paramétrage
- COMPTAGE/POLYNOME_CHARAC='LDLT'.
-"""),
 
 19 : _(u"""
  Matrice de masse non définie.

@@ -70,7 +70,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 # uniquement le développeur.
 previous_errors = [
     'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS', 'ASCSEP',
-    'BiCG', 'CHARAC', 'CHARACTER', 'CHNO', 'CHPVER',
+    'BiCG', 'CHARACTER', 'CHNO', 'CHPVER',
     'CINX', 'CINx', 'CLO', 'COMBU', 'CVRC', 'DEEQ', 'DELG',
     'DEP', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
     'DPMAX', 'DPSIDS', 'DRMAX', 'DTREVC', 'ECLAU', 'EDITGD', 'EFNEMA',
@@ -84,9 +84,9 @@ previous_errors = [
     'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
     'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL',
     'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
-    'PARAMETER', 'PATH', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
+    'PARAMETER', 'PATH', 'PFACY', 'PHYSICAL', 'PMAX',
     'PREML', 'PRNO', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF',
-    'ROMBOUT', 'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
+    'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
     'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
     'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'UMC', 'UMOY',
     'USASTE', 'UTTCPU', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
