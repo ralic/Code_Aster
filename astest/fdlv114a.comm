@@ -1,0 +1,300 @@
+# TITRE REPONSE SISMIQUE D'UN RESERVOIR CYLINDRIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      IGNORE_ALARM=('MODELE1_63','MODELE1_64'))
+# IGNORE_ALARM SYSTEMATIQUE POUR LE CALCUL DES MASSES AJOUTEES 3D
+
+
+# FREQUENCE MAX DES MODES EN AIR
+# DOIT VALOIR 300 Hz POUR UN CALCUL PRECIS
+FMAX = 30.0;
+
+
+ma=LIRE_MAILLAGE(FORMAT='MED',);
+
+mo=AFFE_MODELE(MAILLAGE=ma,
+               AFFE=_F(GROUP_MA='STRU_2D',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='DKT',),);
+
+mat=DEFI_MATERIAU(ELAS=_F(E=1.95E11,
+                          NU=0.3,
+                          RHO=7850.,),);
+
+chmt_mat=AFFE_MATERIAU(MAILLAGE=ma,
+                       AFFE=_F(GROUP_MA='STRU_2D',
+                               MATER=mat,),);
+
+aff_meca=AFFE_CHAR_MECA(MODELE=mo,
+                        DDL_IMPO=_F(GROUP_NO='N_CL_FIX',
+                                    DX=0.,
+                                    DY=0.,
+                                    DZ=0.,),);
+
+aff_car=AFFE_CARA_ELEM(MODELE=mo,
+                       COQUE=_F(GROUP_MA='STRU_2D',
+                                EPAIS=0.015,
+                                COQUE_NCOU=1,),);
+
+ASSEMBLAGE(MODELE=mo,
+           CHAM_MATER=chmt_mat,
+           CARA_ELEM=aff_car,
+           CHARGE=aff_meca,
+           NUME_DDL=CO('nddl'),
+           MATR_ASSE=(_F(MATRICE=CO('matrigi'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('matmass'),
+                         OPTION='MASS_MECA',),),);
+
+MASSINER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                   MODELE=mo,
+                   CHAM_MATER=chmt_mat,
+                   CARA_ELEM=aff_car,);
+
+IMPR_TABLE(TABLE=MASSINER,
+           UNITE=8,
+           NOM_PARA=('LIEU','ENTITE','MASSE',),);
+
+modes=MACRO_MODE_MECA(MATR_RIGI=matrigi,
+                      MATR_MASS=matmass,
+                      METHODE='SORENSEN',
+                      CALC_FREQ=_F(FREQ=(0.0,FMAX,),),
+                      VERI_MODE=_F(STOP_ERREUR='OUI',
+                                   STURM='NON',),
+                      NORM_MODE=_F(),
+                      FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',
+                                     SEUIL=0.000001,),
+                      IMPRESSION=_F(TOUT_PARA='NON',
+                                    CRIT_EXTR='MASS_EFFE_UN',),);
+
+# Calcul des matrices de masse et de raideur generalisees 
+
+numgen=NUME_DDL_GENE(BASE=modes,
+                     STOCKAGE='PLEIN',);
+
+mgene=PROJ_MATR_BASE(BASE=modes,
+                     NUME_DDL_GENE=numgen,
+                     MATR_ASSE=matmass,);
+
+riggen=PROJ_MATR_BASE(BASE=modes,
+                      NUME_DDL_GENE=numgen,
+                      MATR_ASSE=matrigi,);
+
+# Calcul de la matrice de masse ajoutee
+
+MACRO_MATR_AJOU(MAILLAGE=ma,
+                GROUP_MA_FLUIDE='VOL_FLU',
+                GROUP_MA_INTERF='STRU_2D',
+                MODELISATION='3D',
+                FLUIDE=_F(RHO=1000.0,),
+                DDL_IMPO=_F(GROUP_NO='N_SF_LIB',
+                            PRES_FLUIDE=0.0,),
+                MODE_MECA=modes,
+                NUME_DDL_GENE=numgen,
+                MATR_MASS_AJOU=CO('massaj'),
+                );
+
+# Calcul de la matrice de masse totale de la structure (matrice de  
+# masse generalisee plus matrice de masse ajoutee)
+
+mastot=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=massaj,
+                                 COEF_R=1.,),
+                              _F(MATR_ASSE=mgene,
+                                 COEF_R=1.,),),);
+
+# Calcul des modes de la structure immergee
+
+modhumi=MODE_ITER_SIMULT(MATR_RIGI=riggen,
+                         MATR_MASS=mastot,
+                         CALC_FREQ=_F(OPTION='BANDE',
+                                      FREQ=(0.0,100.0,),),);
+
+mode_mou=REST_GENE_PHYS(RESU_GENE=modhumi,
+                        MODE_MECA=modes,
+                        TOUT_CHAM='OUI',);
+
+IMPR_RESU(FORMAT='RESULTAT',
+          RESU=(_F(RESULTAT=modes,
+                   TOUT_CHAM='NON',
+                   TOUT_PARA='OUI',),
+                _F(RESULTAT=modhumi,
+                   TOUT_CHAM='NON',
+                   TOUT_PARA='OUI',),
+                _F(RESULTAT=mode_mou,
+                   TOUT_CHAM='NON',
+                   TOUT_PARA='OUI',),),);
+
+TEST_RESU(RESU=_F(RESULTAT=mode_mou,
+                  NUME_MODE=1,
+                  PARA='FREQ',
+                  VALE_REFE=4.29,
+                  VALE_CALC=4.39833,
+                  PRECISION=.03,
+                  REFERENCE='SOURCE_EXTERNE',
+                  LEGENDE='REF=NOVAX',),);
+
+#####################################################################
+# Spectres
+
+HORIZ=DEFI_NAPPE(NOM_PARA='AMOR',
+                 NOM_RESU='ACCE',
+                 PARA=0.04,                        #amortissement
+                 NOM_PARA_FONC='FREQ',
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT',
+                 DEFI_FONCTION=_F(PROL_DROITE='CONSTANT',
+                                  PROL_GAUCHE='CONSTANT',
+                                  VALE=(0.050,0.4074E-01,
+                                        0.100,0.9420E-01,
+                                        0.106,0.9420E-01,
+                                        0.113,0.9420E-01,
+                                        0.240,0.1640E+01,
+                                        0.310,0.3118E+01,
+                                        0.440,0.9190E+01,
+                                        0.785,0.9160E+01,
+                                        0.810,0.9160E+01,
+                                        1.157,0.5371E+01,
+                                        1.430,0.2420E+01,
+                                        1.780,0.1850E+01,
+                                         1.795,0.1210E+01,
+                                        1.911,0.1139E+01,
+                                        2.035,0.1139E+01,
+                                        2.167,0.9863E+00,
+                                        2.307,0.9863E+00,
+                                        2.616,0.9248E+00,
+                                        2.785,0.9248E+00,
+                                        2.966,0.9634E+00,
+                                        3.158,0.9634E+00,
+                                        3.363,0.9950E+00,
+                                        3.813,0.9950E+00,
+                                        4.060,0.9950E+00,
+                                        4.323,0.1169E+01,
+                                        7.605,0.1169E+01,
+                                        8.622,0.1150E+01,
+                                        9.181,0.1115E+01,
+                                        9.776,0.1076E+01,
+                                        13.380,0.1076E+01, 
+                                        15.170,0.8974E+00,
+                                        16.153,0.8974E+00,
+                                        17.199,0.8948E+00,
+                                        19.500,0.8664E+00,
+                                        23.541,0.8565E+00,
+                                        26.690,0.8208E+00,
+                                        41.417,0.8200E+00,
+                                        44.101,0.8111E+00,
+                                        50.000,0.8089E+00,
+                                        100.00,0.8089E+00,),),);
+   
+VERTIC=DEFI_NAPPE(NOM_PARA='AMOR',
+                 NOM_RESU='ACCE',
+                 PARA=0.04,
+                 NOM_PARA_FONC='FREQ',
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT',
+                 DEFI_FONCTION=_F(PROL_DROITE='CONSTANT',
+                                  PROL_GAUCHE='CONSTANT',
+                                  VALE=(0.050,0.2037E-01,
+                                        0.100,0.6760E-01,
+                                        0.106,0.7080E-01,
+                                        0.113,0.7080E-01,
+                                        0.256,0.5548E+00,
+                                        0.273,0.5624E+00,
+                                        0.291,0.7060E+00,
+                                        0.330,0.7060E+00,
+                                        0.451,0.1140E+01,
+                                        0.480,0.1140E+01,
+                                        0.617,0.1911E+01,
+                                        0.657,0.1943E+01,
+                                        0.700,0.2180E+01,
+                                        0.794,0.2277E+01,
+                                        0.900,0.2619E+01,
+                                        0.958,0.2619E+01,
+                                        1.086,0.3399E+01,
+                                        1.157,0.3399E+01,
+                                        1.487,0.2211E+01,
+                                        1.795,0.2890E+01,
+                                        2.035,0.2890E+01,
+                                        2.616,0.3818E+01,
+                                        2.785,0.3818E+01,
+                                        2.966,0.4463E+01,
+                                        3.158,0.4463E+01,
+                                        3.363,0.4787E+01,
+                                        4.901,0.1031E+02,
+                                        8.622,0.1031E+02,
+                                        9.181,0.9300E+01,
+                                        11.801,0.5851E+01,
+                                        17.199,0.5851E+01,
+                                        22.109,0.3108E+01,
+                                        23.541,0.2977E+01,
+                                        28.419,0.2649E+01,
+                                        32.221,0.2649E+01,
+                                        50.000,0.2264E+01,
+                                        100.00,0.2264E+01,),),);
+   
+#####################################################################
+
+#CALCUL SISMIQUE EN AIR
+
+SEISME=COMB_SISM_MODAL(MODE_MECA=modes,
+                       AMOR_REDUIT=0.04,
+                       MASS_INER=MASSINER,
+                       CORR_FREQ='NON',
+                       EXCIT=_F(TRI_SPEC='OUI',
+                                SPEC_OSCI=(HORIZ,HORIZ,VERTIC,),
+                                ECHELLE=(1.,1.,1.,),),
+                       MONO_APPUI='OUI',
+                       COMB_MODE=_F(TYPE='CQC',),
+                       COMB_DIRECTION=_F(TYPE='QUAD',),
+                       OPTION=('DEPL','ACCE_ABSOLU',),
+                       IMPRESSION=_F(NIVEAU='MASS_EFFE',),);
+
+#CALCUL SISMIQUE EN EAU
+
+SEISMOU=COMB_SISM_MODAL(MODE_MECA=mode_mou,
+                        AMOR_REDUIT=0.04,
+                        MASS_INER=MASSINER,
+                        CORR_FREQ='NON',
+                        EXCIT=_F(TRI_SPEC='OUI',
+                                 SPEC_OSCI=(HORIZ,HORIZ,VERTIC,),
+                                 ECHELLE=(1.,1.,1.,),),
+                        MONO_APPUI='OUI',
+                        COMB_MODE=_F(TYPE='CQC',),
+                        COMB_DIRECTION=_F(TYPE='QUAD',),
+                        OPTION=('DEPL','ACCE_ABSOLU',),
+                        IMPRESSION=_F(NIVEAU='MASS_EFFE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=SEISMOU,
+                  GROUP_NO='POINT',
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=.002135969,
+                  VALE_REFE=.00247,
+                  PRECISION=.14,
+                  REFERENCE='SOURCE_EXTERNE',
+                  LEGENDE='REF=NOVAX',),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=(_F(RESULTAT=modes,),
+                _F(RESULTAT=mode_mou,),
+                _F(RESULTAT=SEISMOU,),
+                _F(RESULTAT=SEISME,),),);
+
+FIN();
+

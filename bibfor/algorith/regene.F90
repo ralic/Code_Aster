@@ -65,15 +65,15 @@ subroutine regene(nomres, resgen, profno)
 !
 !
 !
-    integer :: i, iadref, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
+    integer :: i, j, iadref, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
     integer :: jbid, ldnew, llchol, llinsk, llnueq, nbmod, nbnot, neq
-    integer :: nno, numo, iadpar(7), nbmo2, llref2, llref3, llref4, llref5, tmod(1)
-    real(kind=8) :: freq, genek, genem, omeg2, rbid, xsi
+    integer :: nno, iadpar(13), iadpas(13), nbmo2, llref2, llref3, llref4, llref5, tmod(1)
+    real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typsca
     character(len=8) :: basmod, respro, kbid, k8b, modmec, mailsk, modgen
     character(len=14) :: numddl
-    character(len=16) :: depl, nompar(7), typrep
+    character(len=16) :: depl, nompar(13), typrep
     character(len=19) :: chamno, kint, chamne, raid, numgen, profno
     character(len=24) :: chamol, indirf, crefe(2), numedd, basmo2
     character(len=24) :: valk, matric(3)
@@ -81,8 +81,12 @@ subroutine regene(nomres, resgen, profno)
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
-    data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
-     &             'AMOR_REDUIT','TYPE_MODE'/
+    data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2',&
+     &           'AMOR_REDUIT',&
+     &           'FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ',&
+     &           'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',&
+     &           'NUME_MODE',&
+     &           'TYPE_MODE'/
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -218,14 +222,8 @@ subroutine regene(nomres, resgen, profno)
             endif
             call jeveuo(chamne//'.VALE', 'E', ldnew)
 !
-            call rsadpa(resgen, 'L', 6, nompar, iord,&
+            call rsadpa(resgen, 'L', 13, nompar, iord,&
                         0, tjv=iadpar, styp=kbid)
-            freq = zr(iadpar(1))
-            genek = zr(iadpar(2))
-            genem = zr(iadpar(3))
-            omeg2 = zr(iadpar(4))
-            numo = zi(iadpar(5))
-            xsi = zr(iadpar(6))
 !
             if (zcmplx) then
                 call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc( ldnew))
@@ -234,15 +232,13 @@ subroutine regene(nomres, resgen, profno)
             endif
 !
             call rsnoch(nomres, depl, i)
-            call rsadpa(nomres, 'E', 7, nompar, i,&
-                        0, tjv=iadpar, styp=kbid)
-            zr(iadpar(1)) = freq
-            zr(iadpar(2)) = genek
-            zr(iadpar(3)) = genem
-            zr(iadpar(4)) = omeg2
-            zi(iadpar(5)) = numo
-            zr(iadpar(6)) = xsi
-            zk16(iadpar(7)) = 'MODE_DYN'
+            call rsadpa(nomres, 'E', 13, nompar, i,&
+                        0, tjv=iadpas, styp=kbid)
+            do j=1,11
+               zr(iadpas(j)) = zr(iadpar(j))
+            enddo
+            zi(iadpas(12)) = zi(iadpar(12))
+            zk16(iadpas(13)) = 'MODE_DYN'
 !
             call jelibe(chamol)
         end do
@@ -289,14 +285,8 @@ subroutine regene(nomres, resgen, profno)
             endif
             call jeveuo(chamno//'.VALE', 'E', ldnew)
 !
-            call rsadpa(resgen, 'L', 6, nompar, iord,&
+            call rsadpa(resgen, 'L', 13, nompar, iord,&
                         0, tjv=iadpar, styp=kbid)
-            freq = zr(iadpar(1))
-            genek = zr(iadpar(2))
-            genem = zr(iadpar(3))
-            omeg2 = zr(iadpar(4))
-            numo = zi(iadpar(5))
-            xsi = zr(iadpar(6))
 !
             if (zcmplx) then
                 call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc( ldnew))
@@ -306,15 +296,13 @@ subroutine regene(nomres, resgen, profno)
 !
             call rsnoch(nomres, depl, i)
 !
-            call rsadpa(nomres, 'E', 7, nompar, i,&
-                        0, tjv=iadpar, styp=kbid)
-            zr(iadpar(1)) = freq
-            zr(iadpar(2)) = genek
-            zr(iadpar(3)) = genem
-            zr(iadpar(4)) = omeg2
-            zi(iadpar(5)) = numo
-            zr(iadpar(6)) = xsi
-            zk16(iadpar(7)) = 'MODE_DYN'
+            call rsadpa(nomres, 'E', 13, nompar, i,&
+                        0, tjv=iadpas, styp=kbid)
+            do j=1,11
+               zr(iadpas(j)) = zr(iadpar(j))
+            enddo
+            zi(iadpas(12)) = zi(iadpar(12))
+            zk16(iadpas(13)) = 'MODE_DYN'
 !
             call jelibe(chamol)
         end do
