@@ -8,7 +8,5 @@ P testlist C
 F comm umat002a.comm D 1
 F libr umat001a.22 D 22
 F libr umat002a.23 D 23
-F libr umat002a.44 D 44
-F libr umat002a.46 D 46
 F libr umat002a.91 D 91
 F libr umat002a.93 D 93
