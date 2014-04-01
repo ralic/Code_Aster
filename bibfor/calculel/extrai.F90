@@ -50,11 +50,13 @@ subroutine extrai(nin, lchin, lpain, opt, nute,&
     else
 !       -- ON PREPARE TOUT LA 1ERE FOIS :
         if (init .eq. 'INIT') then
-            do 1, igr=1,nbgr
-            nbelgr=nbelem(ligrel,igr)
-            nute=typele(ligrel,igr)
-            call extra1(nin, lchin, lpain, opt, nute)
- 1          continue
+            do igr=1,nbgr
+                nbelgr=nbelem(ligrel,igr)
+                if (nbelgr.gt.0) then
+                    nute=typele(ligrel,igr)
+                    call extra1(nin, lchin, lpain, opt, nute)
+                endif
+            enddo
         endif
     endif
 !
