@@ -371,15 +371,15 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 999 continue
     call jedetr('&&IRTOPO.LIST_TOPO')
     call jedetr('&&IRTOPO.LIST_GRNO')
-    AS_DEALLOCATE(vk80=nom_grno)
     call jedetr('&&IRTOPO.LIST_NOE')
-    AS_DEALLOCATE(vk80=nom_noe)
     call jedetr('&&IRTOPO.LIST_GRMA')
     call jedetr('&&IRTOPO.NOM_GRMA')
     call jedetr('&&IRTOPO.LIST_MAI')
     call jedetr('&&IRTOPO.NOM_MAI')
-    AS_DEALLOCATE(vi=ind_noeu)
     call jedetr('&&IRTOPO.NUMNOE')
+    AS_DEALLOCATE(vk80=nom_noe)
+    AS_DEALLOCATE(vk80=nom_grno)
+    AS_DEALLOCATE(vi=ind_noeu)
     AS_DEALLOCATE(vi=numnos)
     AS_DEALLOCATE(vi=filtre_no)
 !

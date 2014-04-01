@@ -89,8 +89,9 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 !
     AS_ALLOCATE(vk8=nomgds, size=ncmpmx)
     AS_ALLOCATE(vk8=nomchs, size=ncmpmx)
-    call wkvect('&&IRDRSR.NBCMPS', 'V V I', ncmpmx, ibcmps)
     AS_ALLOCATE(vi=ipcmps, size=ncmpmx*ncmpmx)
+
+    call wkvect('&&IRDRSR.NBCMPS', 'V V I', ncmpmx, ibcmps)
 !
     nomst= '&&IRECRI.SOUS_TITRE.TITR'
     call jeveuo(nomst, 'L', jtitr)
@@ -173,10 +174,7 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
 10      continue
         call jedetr('&&IRDRSR.VAL')
         call jedetr('&&IRDRSR.NOM')
-        AS_DEALLOCATE(vk8=nomgds)
-        AS_DEALLOCATE(vk8=nomchs)
         call jedetr('&&IRDRSR.NBCMPS')
-        AS_DEALLOCATE(vi=ipcmps)
 !
 !      =====================
 ! ---- PARTIE 2 : NBCMP.NE.0
@@ -307,6 +305,10 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
         call jedetr('&&IRDESR.CMP')
         call jedetr('&&IRDESR.POS')
     endif
+
+    AS_DEALLOCATE(vk8=nomgds)
+    AS_DEALLOCATE(vk8=nomchs)
+    AS_DEALLOCATE(vi=ipcmps)
 !
 !
     call jedema()
