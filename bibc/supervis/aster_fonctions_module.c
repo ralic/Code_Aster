@@ -30,12 +30,12 @@
 
 //#define __DEBUG__
 
-void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
-                     int len_f, double* l_freq, int len_a, double* l_amor,
-                     double* spectr );
+extern void calc_SPEC_OSCI(int, double *, double *,
+                           int, double *, int, double *,
+                           double *);
 
 
-PyObject* SPEC_OSCI( PyObject* self, PyObject* args )
+static PyObject* SPEC_OSCI( PyObject* self, PyObject* args )
 {
    PyObject *OX, *OY, *OF, *OA;
    PyArrayObject *Vx, *Vy, *Vf, *Va, *Sp;
@@ -96,7 +96,7 @@ PyObject* SPEC_OSCI( PyObject* self, PyObject* args )
 
 #ifdef __DEBUG__
 /* utile pour le remplissage des contiguous array */
-PyObject* _INFO( PyObject* self, PyObject* args )
+static PyObject* _INFO( PyObject* self, PyObject* args )
 {
    PyObject *OX;
    PyArrayObject *Vx;

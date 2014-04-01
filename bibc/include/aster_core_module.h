@@ -19,11 +19,14 @@
 #ifndef ASTER_CORE_H
 #define ASTER_CORE_H
 
+#include "Python.h"
 #include "aster.h"
 /*
  *   PUBLIC FUNCTIONS
  *
  */
+
+extern PyMODINIT_FUNC initaster_core();
 
 INTEGER DEFS( JDCGET, jdcget, _IN char *, STRING_SIZE );
 extern void DEFSP( JDCSET, jdcset, _IN char *, STRING_SIZE, _IN INTEGER * );

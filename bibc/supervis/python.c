@@ -27,13 +27,12 @@
  */
 #include "Python.h"
 #include "aster.h"
-#include "aster_mpi.h"
+#include "aster_module.h"
+#include "aster_core_module.h"
+#include "aster_fonctions_module.h"
+#include "med_aster_module.h"
 
 extern DL_EXPORT(int) Py_Main();
-extern void initaster();
-extern void initaster_core();
-extern void initaster_fonctions();
-extern void initmed_aster();
 
 #ifndef _MAIN_
 #define _MAIN_ main
@@ -54,6 +53,6 @@ _MAIN_(argc, argv)
 #ifndef _DISABLE_MED
     PyImport_AppendInittab("med_aster", initmed_aster);
 #endif
-    ierr= Py_Main(argc, argv);
+    ierr = Py_Main(argc, argv);
     return ierr;
 }

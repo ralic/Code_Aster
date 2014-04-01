@@ -19,11 +19,14 @@
 #ifndef ASTER_MODULE_H
 #define ASTER_MODULE_H
 
+#include "Python.h"
 #include "aster.h"
 /*
  *   PUBLIC FUNCTIONS
  *
  */
+
+extern PyMODINIT_FUNC initaster();
 
 extern void PRE_myabort(_IN const char *nomFichier , _IN const int numeroLigne,
                         _IN const char *message ) ;

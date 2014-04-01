@@ -28,7 +28,7 @@
 
 #include "Python.h"
 #include "aster.h"
-#include "aster_core.h"
+#include "aster_core_module.h"
 #include "shared_vars.h"
 #include "aster_module.h"
 #include "aster_exceptions.h"

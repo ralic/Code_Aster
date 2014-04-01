@@ -29,8 +29,9 @@
  */
 
 #include "Python.h"
-
 #include <stdio.h>
+
+#include "shared_vars.h"
 
 /* Global variables */
 /*! Global variable to handle the JDC object from libaster */

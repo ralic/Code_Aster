@@ -25,7 +25,7 @@
 
 #include "aster.h"
 #include "aster_module.h"
-#include "aster_core.h"
+#include "aster_core_module.h"
 #include "shared_vars.h"
 #include "aster_mpi.h"
 #include "aster_fort.h"
@@ -140,7 +140,8 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
                                                         AS_ASSERT(mcs!=(char*)0);
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
-        res=PyObject_CallMethod(get_sh_etape(),"getltx","ssiii",mfc,mcs,ioc,(int)*mxval, (int)*taille);
+        res=PyObject_CallMethod(get_sh_etape(), "getltx", "ssiii", 
+                                mfc, mcs, ioc, (int)*mxval, (int)*taille);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -2268,7 +2269,7 @@ PyObject *args;
         */
         PyObject *temp = (PyObject*)0 ;
         static int nbPassages=0 ;
-                                            AS_ASSERT((nbPassages==1)||(get_sh_etape()==(PyObject*)0));
+                                        AS_ASSERT((nbPassages==1)||(get_sh_etape()==(PyObject*)0));
         nbPassages++ ;
         if (!PyArg_ParseTuple(args, "O",&temp)) return NULL;
 
@@ -2307,7 +2308,7 @@ PyObject *args;
 {
         PyObject *temp = (PyObject*)0 ;
         static int nbPassages=0 ;
-                                            AS_ASSERT((nbPassages==1)||(get_sh_etape()==(PyObject*)0));
+                                        AS_ASSERT((nbPassages==1)||(get_sh_etape()==(PyObject*)0));
         nbPassages++ ;
         if (!PyArg_ParseTuple(args, "O",&temp)) return NULL;
 
@@ -2658,8 +2659,7 @@ static PyMethodDef aster_methods[] = {
 /* Initialization function for the module (*must* be called initaster) */
 static char aster_module_documentation[] =
 "C implementation of the Python aster module\n"
-"\n"
-;
+"\n";
 
 PyMODINIT_FUNC initaster(void)
 {
