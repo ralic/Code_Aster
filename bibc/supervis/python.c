@@ -45,7 +45,6 @@ _MAIN_(argc, argv)
     char **argv;
 {
     int ierr;
-    aster_mpi_init(argc, argv);
 
     PyImport_AppendInittab("aster_core", initaster_core);
     PyImport_AppendInittab("aster", initaster);

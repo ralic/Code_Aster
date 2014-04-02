@@ -29,44 +29,40 @@
 #include "Python.h"
 #include "aster.h"
 #include "aster_core.h"
+#include "shared_vars.h"
 #include "aster_module.h"
 #include "aster_exceptions.h"
 #include "aster_mpi.h"
 #include "aster_fort.h"
 #include "aster_utils.h"
 
-/*
- * Global variables registered by E_SUPERV.py (main python script)
- */
+/*! aster_core C module */
 static PyObject* aster_core = (PyObject*)0;
-
-static PyObject* gJDC = (PyObject*)0;
-static PyObject* gCoreOpts = (PyObject*)0;
-static PyObject* gMsgLog = (PyObject*)0;
-static PyObject* gPyMod = (PyObject*)0;
 
 static char register_jdc_doc[] = "Enregistre des objets globaux.";
 
-static PyObject* register_jdc(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
+static PyObject* register_jdc(PyObject *self, PyObject *args)
 {
     /*
-     * Register the JDC object as a global variable
+     * Register the Python instances for usage from fortran/libaster
      */
     PyObject *val;
-    if ( !PyArg_ParseTuple(args, "OOOO:register_jdc", &gJDC, &gCoreOpts, &gMsgLog, &gPyMod) )
+    PyObject *jdc, *coreopts, *msglog, *pymod;
+    if ( !PyArg_ParseTuple(args, "OOOO:register_jdc", &jdc, &coreopts, &msglog, &pymod) )
         return NULL;
+    register_sh_jdc(jdc);
+    register_sh_coreopts(coreopts);
+    register_sh_msglog(msglog);
+    register_sh_pymod(pymod);
 
     // Add some wrappers for convenience
-    val = PyObject_GetAttrString(gCoreOpts, "get_option");
+    val = PyObject_GetAttrString(coreopts, "get_option");
     if ( PyObject_SetAttrString(aster_core, "get_option", val) < 0 )
         MYABORT("erreur lors de l'initialisation de 'aster_core.get_option'.");
-    val = PyObject_GetAttrString(gCoreOpts, "set_info");
+    val = PyObject_GetAttrString(coreopts, "set_info");
     if ( PyObject_SetAttrString(aster_core, "set_info", val) < 0 )
         MYABORT("erreur lors de l'initialisation de 'aster_core.set_info'.");
 
-    Py_INCREF(gJDC);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -82,7 +78,7 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, STRING_SIZE l_attr)
     PyObject *val;
     INTEGER value;
 
-    val = PyObject_CallMethod(gJDC, "get_jdc_attr", "s#", attr, l_attr);
+    val = PyObject_CallMethod(get_sh_jdc(), "get_jdc_attr", "s#", attr, l_attr);
     if (val == NULL){
         printf("attribut inexistant dans le jdc : '%s'\n\n", attr);
         MYABORT("erreur dans JDCGET");
@@ -103,7 +99,7 @@ void DEFSP(JDCSET,jdcset,char *attr, STRING_SIZE l_attr, INTEGER *value)
      */
     PyObject *res;
 
-    res = PyObject_CallMethod(gJDC, "set_jdc_attr", "s#l", attr, l_attr, (long)*value);
+    res = PyObject_CallMethod(get_sh_jdc(), "set_jdc_attr", "s#l", attr, l_attr, (long)*value);
     if (res == NULL)
         MYABORT("erreur dans JDCSET");
     Py_XDECREF(res);
@@ -115,7 +111,7 @@ PyObject* GetJdcAttr(_IN char *attribut)
      * Retourne un attribut du 'jdc' en tant que PyObject.
      */
     PyObject *objattr;
-    objattr = PyObject_GetAttrString(gJDC, attribut);
+    objattr = PyObject_GetAttrString(get_sh_jdc(), attribut);
     /* traiter l'erreur "objattr == NULL" dans l'appelant */
     return objattr;
 }
@@ -146,7 +142,7 @@ void DEFP(RDTMAX, rdtmax, _IN DOUBLE *tsub)
      */
     PyObject *res;
 
-    res = PyObject_CallMethod(gCoreOpts, "sub_tpmax", "d", (double)(*tsub));
+    res = PyObject_CallMethod(get_sh_coreopts(), "sub_tpmax", "d", (double)(*tsub));
     if (res == NULL)
         MYABORT("erreur dans RDTMAX");
     // reset du cache
@@ -169,7 +165,7 @@ PyObject* asterc_getopt(_IN char *option)
      */
     PyObject *res;
 
-    res = PyObject_CallMethod(gCoreOpts, "get_option", "s", option);
+    res = PyObject_CallMethod(get_sh_coreopts(), "get_option", "s", option);
     if ( !res ) MYABORT("erreur lors de l'appel a la methode CoreOptions.get_option");
 
     return res;
@@ -447,7 +443,7 @@ void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
        PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble((double)valr[i]) ) ;
     }
 
-    method = PyObject_GetAttrString(gMsgLog, "print_message");
+    method = PyObject_GetAttrString(get_sh_msglog(), "print_message");
     args = Py_BuildValue("s#s#OOOi", typmess, ltype, idmess, lidmess,
                          tup_valk, tup_vali, tup_valr, (int)*exc_typ),
     kwargs = PyDict_New();
@@ -489,7 +485,7 @@ void DEFPP(CHKMSG,chkmsg, _IN INTEGER *info_alarm, _OUT INTEGER *iret)
      */
     PyObject *res;
 
-    res = PyObject_CallMethod(gMsgLog, "check_counter", "i", (int)*info_alarm);
+    res = PyObject_CallMethod(get_sh_msglog(), "check_counter", "i", (int)*info_alarm);
     if ( !res ) MYABORT("erreur lors de l'appel a la methode MessageLog.check_counter");
     *iret = (INTEGER)PyLong_AsLong(res);
 
@@ -511,9 +507,9 @@ void DEFSS(UTALRM,utalrm, _IN char *bool, _IN STRING_SIZE lbool,
     s_id = MakeCStrFromFStr(idmess, lidm);
 
     if ( ! strcmp(onoff, "OFF") ) {
-        res = PyObject_CallMethod(gMsgLog, "disable_alarm", "s", s_id);
+        res = PyObject_CallMethod(get_sh_msglog(), "disable_alarm", "s", s_id);
     } else {
-        res = PyObject_CallMethod(gMsgLog, "reset_alarm", "s", s_id);
+        res = PyObject_CallMethod(get_sh_msglog(), "reset_alarm", "s", s_id);
     }
 
     Py_DECREF(res);
@@ -526,7 +522,7 @@ void DEFP(GTALRM,gtalrm, _OUT INTEGER *nb)
     /* Interface Fortran/Python pour obtenir si des alarmes ont été émises.
      */
     PyObject *res;
-    res = PyObject_CallMethod(gMsgLog, "get_info_alarm_nb", "");
+    res = PyObject_CallMethod(get_sh_msglog(), "get_info_alarm_nb", "");
     if (!res) MYABORT("erreur lors de l'appel a la methode 'get_info_alarm'");
     *nb = (INTEGER)PyLong_AsLong(res);
     Py_DECREF(res);
@@ -543,7 +539,7 @@ void DEFP(PRHEAD,prhead, _IN INTEGER *part)
      * Voir help(E_Core.print_header)
      */
     PyObject *res;
-    res = PyObject_CallMethod(gPyMod, "print_header", "i", (int)(*part));
+    res = PyObject_CallMethod(get_sh_pymod(), "print_header", "i", (int)(*part));
     if (!res) MYABORT("erreur lors de l'appel a la fonction E_Global.print_header");
     Py_DECREF(res);
 }
@@ -561,7 +557,7 @@ void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN STRING_SIZE lnom,
    */
    PyObject *res;
 
-   res = PyObject_CallMethod(gPyMod, "checksd", "s#s#", nomsd, lnom, typsd, ltyp);
+   res = PyObject_CallMethod(get_sh_pymod(), "checksd", "s#s#", nomsd, lnom, typsd, ltyp);
    if (!res) MYABORT("erreur lors de l'appel a la methode CHECKSD");
    *iret = (INTEGER)PyLong_AsLong(res);
 
@@ -588,7 +584,7 @@ void DEFSSPPPPPPPPPPPP(TESTRESU_PRINT,testresu_print,
     PyObject *res, *func, *args, *kwargs, *ref, *val, *comp=NULL;
     int ityp;
 
-    func = PyObject_GetAttrString(gPyMod, "testresu_print");
+    func = PyObject_GetAttrString(get_sh_pymod(), "testresu_print");
     /* positional arguments */
     args = Py_BuildValue("s#s#llld", refer, lref, legend, lleg,
                          (long)(*llab), (long)(*skip), (long)(*rela),
