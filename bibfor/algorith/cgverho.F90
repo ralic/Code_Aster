@@ -60,7 +60,7 @@ function cgverho(imate)
 !   si le champ est present, et rho absent -> NOOK
     cgverho = .true.
     if ( (ipesa.ne.0) .and. rhoabs ) cgverho = .false.
-    if ( (ipesa.ne.0) .and. rhoabs ) cgverho = .false.
-    if ( (ipesa.ne.0) .and. rhoabs ) cgverho = .false.
+    if ( (irota.ne.0) .and. rhoabs ) cgverho = .false.
+    if ( (ipuls.ne.0) .and. rhoabs ) cgverho = .false.
 !
 end function
