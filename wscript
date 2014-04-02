@@ -150,6 +150,11 @@ def configure(self):
 
 def build(self):
     self.env.install_tests = self.options.install_tests or self.env.install_tests
+    # shared the list of dependencies between bibc/bibfor
+    # the order may be important
+    self.env['all_dependencies'] = [
+        'MED', 'HDF5', 'MUMPS', 'METIS', 'SCOTCH',
+        'PETSC', 'MATH', 'MPI', 'OPENMP', 'CLIB', 'SYS']
     get_srcs = self.path.get_src().ant_glob
     if not self.variant:
         self.fatal('Call "waf build_debug" or "waf build_release", and read ' \

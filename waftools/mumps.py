@@ -42,10 +42,6 @@ def check_mumps(self):
     self.get_mumps_version()
     if opts.mumps_libs is None:
         opts.mumps_libs = 'dmumps zmumps smumps cmumps mumps_common pord'
-        # metis has been checked before (and is mandatory)
-        metis = self.env.get_flat('LIB_METIS') or self.env.get_flat('STLIB_METIS')
-        if metis:
-            opts.mumps_libs += " " + metis
     if not opts.parallel:
         opts.mumps_libs += ' mpiseq'
     if opts.mumps_libs:
@@ -58,7 +54,7 @@ def check_mumps(self):
 @Configure.conf
 def check_mumps_libs(self):
     opts = self.options
-    check_mumps = partial(self.check_cc, uselib_store='MUMPS', use='MPI',
+    check_mumps = partial(self.check_cc, uselib_store='MUMPS', use='METIS MPI',
                           mandatory=True)
     if opts.embed_all or opts.embed_mumps:
         check = lambda lib: check_mumps(stlib=lib)

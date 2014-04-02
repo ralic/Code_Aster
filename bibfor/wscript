@@ -48,7 +48,7 @@ def build(self):
             name = 'asterbibfor',
           source = get_srcs('**/*.F90'),
              env = buildenv,
-             use = ['MED', 'HDF5', 'MUMPS', 'SCOTCH', 'PETSC', 'MPI', 'OPENMP'],
+             use = self.env['all_dependencies'],
     )
 
 ###############################################################################

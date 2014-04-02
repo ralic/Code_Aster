@@ -65,17 +65,10 @@ def build(self):
     env = self.all_envs[self.variant]
     buildenv = env.derive()
 
-    # order is important
-    adds = []
-    for deps in ('MED', 'HDF5', 'MUMPS', 'METIS', 'SCOTCH', 'PETSC'):
-        if 'HAVE_' + deps in buildenv[DEFKEYS]:
-            adds.append(deps)
-    uses = adds + ['MATH', 'MPI', 'OPENMP', 'CLIB', 'SYS']
-
     if env.ASTER_EMBEDS and 'bibc' in env.ASTER_EMBEDS:
-        build_as_embeded(self, uses, env)
+        build_as_embeded(self, env)
     else:
-        build_as_shared(self, uses, env)
+        build_as_shared(self, env)
 
     self.add_group()
     # install headers
@@ -91,8 +84,9 @@ def build(self):
         config_includes
     )
 
-def build_as_shared(self, uses, shenv):
+def build_as_shared(self, shenv):
     get_srcs = self.path.get_src().ant_glob
+    uses = self.env['all_dependencies']
 
     self(
         features = 'c cshlib',
@@ -112,7 +106,7 @@ def build_as_shared(self, uses, shenv):
             name = 'aster_core',
           source = get_srcs('**/aster_core_module.c'),
              env = shenv.derive(),
-             use = ['asterlib'],
+             use = ['asterlib'] + uses,
     )
 
     self(
@@ -130,7 +124,7 @@ def build_as_shared(self, uses, shenv):
             name = 'aster_fonctions',
           source = get_srcs('**/aster_fonctions_module.c'),
              env = shenv.derive(),
-             use = ['NUMPY', 'asterlib'],
+             use = ['NUMPY', 'asterlib'] + uses,
     )
 
     if shenv.BUILD_MED:
@@ -140,11 +134,12 @@ def build_as_shared(self, uses, shenv):
                 name = 'med_aster',
               source = get_srcs('**/med_aster_module.c'),
                  env = shenv.derive(),
-                 use = ['asterlib', 'MPI', 'OPENMP', 'MED', 'HDF5', 'MATH'],
+                 use = ['asterlib'] + uses,
         )
 
-def build_as_embeded(self, uses, stenv):
+def build_as_embeded(self, stenv):
     get_srcs = self.path.get_src().ant_glob
+    uses = self.env['all_dependencies']
 
     excl = ['**/med_aster_module.c'] if not stenv.BUILD_MED else []
 
@@ -159,8 +154,7 @@ def build_as_embeded(self, uses, stenv):
           source = get_srcs(['**/*.c'], excl=excl),
          defines = ['_MAIN_=%s' % main],
              env = stenv.derive(),
-             use = ['NUMPY', 'asterbibfor']
-                   + uses,
+             use = ['NUMPY', 'asterbibfor'] + uses,
         )
 
 @Configure.conf
