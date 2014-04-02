@@ -67,20 +67,20 @@ def _env2dict(src, env, install_tests):
     """build dict informations"""
     env = env.derive()
     env['LD_LIBRARY_PATH'] = os.environ.get('LD_LIBRARY_PATH', '').split(os.pathsep)
-    ld_path = list(chain(*[Utils.to_list(env[name])
-                   for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH') if env[name]]))
-    ld_path = [path for path in ld_path if path]
+    ld_path = remove_duplicates(chain(*[Utils.to_list(env[name])
+                for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH') if env[name]]))
     sep = os.pathsep + '\\\n'
     dico = dict([(k, as_str(env[k])) \
                     for k in ('PREFIX', 'PYTHON', 'PYTHONDIR', 'ASTERDATADIR')])
     dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
-    dico['CFG_PYTHONPATH'] = os.pathsep.join(Utils.to_list(env['CFG_PYTHONPATH']))
+    py_path = remove_duplicates(Utils.to_list(env['CFG_PYTHONPATH']))
     dico['PYTHONHOME'] = sys.prefix + '' if sys.prefix == sys.exec_prefix \
                                          else ':' + sys.exec_prefix
     # as_run compatibility
     if env.ASRUN_MPI_VERSION:
         dico['DEFINES'] += ' _USE_MPI'
     dico['LD_LIBRARY_PATH'] = sep.join(ld_path)
+    dico['CFG_PYTHONPATH'] = sep.join(py_path)
     dico['SRC'] = src
     dico['FC'] = env['FC']
     flags = [' '.join(env[i]) for i in env.keys() if i.startswith('FCFLAGS')]
@@ -99,6 +99,14 @@ def _env2dict(src, env, install_tests):
 def as_str(value):
     return value if type(value) not in (list, tuple) else ' '.join(value)
 
+def remove_duplicates(list_in):
+    """Return the list by removing the duplicated elements
+    and by keeping the order"""
+    list_out = []
+    for i in list_in:
+        if i and i not in list_out:
+            list_out.append(i)
+    return list_out
 
 TMPL_CONFIG_TXT = r"""# Configuration file created by waftools/legacy
 # Libraries, compilers are not relevant 
@@ -149,7 +157,8 @@ LD_LIBRARY_PATH=$ASTER_VERSION_DIR/lib:\
 $LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 
-PYTHONPATH=%(CFG_PYTHONPATH)s:\
+PYTHONPATH=\
+%(CFG_PYTHONPATH)s:\
 $PYTHONPATH
 export PYTHONPATH
 
