@@ -41,5 +41,6 @@ OPTION__
         PPMILTO  N480_R
         PBASECO  N120_R
         PFISNO   NEUT_I
+        PABSCUR  ABSC_R 'MAIL!.ABSC_CURV'   << pour les elements de tuyau >>
    OUT__
 PVECTUR VDEP_R RESL__

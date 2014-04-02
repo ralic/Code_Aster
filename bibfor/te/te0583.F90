@@ -30,7 +30,9 @@ subroutine te0583(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/vlggl.h"
 #include "asterfort/vlgglc.h"
+#include "asterfort/assert.h"
     character(len=16) :: option, nomte
+! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DU SECOND MEMBRE : TRAVAIL DE LA
 !                          PRESSION ET FORCES LINEIQUES TUYAUX
 !     OPTIONS :'CHAR_MECA_PESA_R' 'CHAR_MECA_FR1D1D''CHAR_MECA_PRES_R'
@@ -46,24 +48,40 @@ subroutine te0583(option, nomte)
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega
     real(kind=8) :: hk, poids, rayon, theta, tk(4), ck, sk
     real(kind=8) :: cosfi, sinfi, te, pgl4(3, 3), fpesa4(6), xpg(4)
-    real(kind=8) :: r8b=0.d0, rext, sec, rho(1), r, time, valpar(4)
+    real(kind=8) :: r8b=0.d0, rext, sec, rho(1), r, time, valpar(5)
     integer :: codres(1), kpg, spt
-    character(len=8) :: nompar(4), fami, poum
+    character(len=8) :: nompar(5), fami, poum
     character(len=16) :: phenom
     integer :: nbcou, nbsec, m, lorien, icoude
     integer :: ipoids, ivf, i, icou, ibloc, ino, nbpar, icompx, niter, iter
     integer :: icagep, igeom, lmater, jpesa, jout, lforc, iret
     integer :: igau, isect, ipres, k, ivect, nbrddl, indic0
     integer :: indic1, indic2, indic3, indic4, indic5, j
-    integer :: jnbspi, nbsecm, nbcoum, itemps, ier
+    integer :: jnbspi, nbsecm, nbcoum, itemps, ier, labsc, itab(2)
     integer :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano, npg
     parameter (nbsecm=32,nbcoum=10)
-    real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
+    real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1), abscn(4)
     logical :: normal, global
+!----------------------------------------------------------------------
     call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
-  jdfd2=jdfd2,jgano=jgano)
-!
+                     npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
+                     jdfd2=jdfd2,jgano=jgano)
+
+!   -- si l'abscisse curviligne est fournie, on la stocke dans abscn(:)
+    labsc=0
+    if (option .eq. 'CHAR_MECA_PRES_F') then
+        call tecach('ONO', 'PABSCUR', 'L', iret, iad=labsc)
+        if (labsc.ne.0) then
+            ASSERT(iret.eq.0)
+            call tecach('OOO', 'PABSCUR', 'L', iret, nval=2,itab=itab)
+            ASSERT(itab(1).eq.labsc)
+            ASSERT(itab(2).eq.nno)
+            do k=1,nno
+                abscn(k)=zr(labsc-1+k)
+            enddo
+        endif
+    endif
+
     if (option .eq. 'CHAR_MECA_FC1D1D') then
         icompx = 1
         niter = 2
@@ -76,7 +94,7 @@ subroutine te0583(option, nomte)
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)
     nbsec = zi(jnbspi-1+2)
-!
+
 !     -- CALCUL DES POIDS DES COUCHES ET DES SECTEURS:
     poicou(1) = 1.d0/3.d0
     do 10 i = 1, nbcou - 1
@@ -94,8 +112,8 @@ subroutine te0583(option, nomte)
     poisec(2*nbsec+1) = 1.d0/3.d0
     m = 3
     if (nomte .eq. 'MET6SEG3') m = 6
-!
-!
+
+
     do 30 i = 1, npg
         xpg(i) = zr(jcoopg-1+i)
 30  end do
@@ -143,8 +161,11 @@ subroutine te0583(option, nomte)
         tk(3) = theta/3.d0
         tk(4) = 2.d0*theta/3.d0
     endif
-!  LA PRESSION NE TRAVAILLE QUE SUR LE TERME WO
+
+
     if (option(1:14) .eq. 'CHAR_MECA_PRES') then
+!   ---------------------------------------------
+!       -- LA PRESSION NE TRAVAILLE QUE SUR LE TERME WO
         if (option(15:16) .eq. '_R') then
             call jevecd('PPRESSR', ipres, 0.d0)
             do 40 i = 1, nno
@@ -158,21 +179,31 @@ subroutine te0583(option, nomte)
             nompar(1) = 'X'
             nompar(2) = 'Y'
             nompar(3) = 'Z'
+            if (labsc.ne.0) then
+                nompar(5) = 'ABSC'
+                nbpar=5
+            else
+                nbpar=4
+            endif
+
             do 45 i = 1, nno
                 valpar(1) = zr(igeom+3*(i-1) )
                 valpar(2) = zr(igeom+3*(i-1)+1)
                 valpar(3) = zr(igeom+3*(i-1)+2)
-                call fointe('FM', zk8(ipres), 4, nompar, valpar,&
+                if (labsc.ne.0)  valpar(5) = abscn(i)
+                call fointe('FM', zk8(ipres), nbpar, nompar, valpar,&
                             presno(i), ier)
 45          continue
         endif
+
         do 60,igau = 1,npg
-        prespg(igau) = 0.d0
-        do 50,k = 1,nno
-        hk = zr(ivf-1+nno* (igau-1)+k)
-        prespg(igau) = hk*presno(k) + prespg(igau)
-50      continue
+            prespg(igau) = 0.d0
+            do 50,k = 1,nno
+                hk = zr(ivf-1+nno* (igau-1)+k)
+                prespg(igau) = hk*presno(k) + prespg(igau)
+50          continue
 60      continue
+
         call jevech('PVECTUR', 'E', ivect)
         do 90 k = 1, nno
 !           TRAVAIL SUR UX
@@ -188,7 +219,7 @@ subroutine te0583(option, nomte)
 !           TRAVAIL SUR W01
             indic5 = ivect - 1 + (6+6* (m-1)+3)* (k-1) + 3 + 6 + 6* ( m-1)
             do 80 igau = 1, npg
-! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
+!               -- boucle sur les points de simpson dans l'epaisseur
                 hk = zr(ivf-1+nno* (igau-1)+k)
                 if (icoude .eq. 1) then
                     ck = cos((1.d0+xpg(igau))*theta/2.d0-tk(k))
@@ -197,7 +228,7 @@ subroutine te0583(option, nomte)
                     ck = 1.d0
                     sk = 0.d0
                 endif
-! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
+!               -- boucle sur les points de simpson sur la circonference
                 do 70 isect = 1, 2*nbsec + 1
                     if (icoude .eq. 0) then
                         poids = zr(ipoids-1+igau)*poisec(isect)* (l/ 2.d0)* deuxpi/ (2.d0*nbsec)*&
@@ -225,10 +256,13 @@ subroutine te0583(option, nomte)
             call vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
                         pgl4, zr(ivect), 'LG', pass, vtemp)
         endif
-! CAS PESANTEUR ET FORCE LINEIQUE
+
+
         else if ((option.eq.'CHAR_MECA_PESA_R') .or. (&
-    option.eq.'CHAR_MECA_FR1D1D') .or. (option.eq.'CHAR_MECA_FC1D1D'))&
-    then
+                  option.eq.'CHAR_MECA_FR1D1D') .or. (option.eq.'CHAR_MECA_FC1D1D'))&
+!       -----------------------------------------------------------------------------
+!       CAS PESANTEUR ET FORCE LINEIQUE
+        then
         do 250 iter = 1, niter
             if (option .eq. 'CHAR_MECA_PESA_R') then
                 call jevech('PMATERC', 'L', lmater)
@@ -291,12 +325,12 @@ subroutine te0583(option, nomte)
                     call utpvgl(1, 6, pgl4, vpesan(1), fpesa4(1))
                 endif
             endif
-! BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
+!           BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
             do 210 igau = 1, npg
-! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
+!               BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
                 do 200 icou = 1, 2*nbcou + 1
                     r = a + (icou-1)*h/ (2.d0*nbcou) - h/2.d0
-! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
+!                   BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
                     do 190 isect = 1, 2*nbsec + 1
                         if (icoude .eq. 0) then
                             poids = zr(ipoids-1+igau)*poicou(icou)* poisec(isect)* (l/2.d0)*h*deu&
@@ -359,8 +393,12 @@ subroutine te0583(option, nomte)
 240              continue
             endif
 250      continue
-! CAS FORCE LINEIQUE FONCTION
+
+
     else if ((option.eq.'CHAR_MECA_FF1D1D')) then
+!   -----------------------------------------------
+!       -- CAS FORCE LINEIQUE FONCTION
+
         call jevech('PFF1D1D', 'L', lforc)
         normal = zk8(lforc+6) .eq. 'VENT'
         global = zk8(lforc+6) .eq. 'GLOBAL'
@@ -445,12 +483,12 @@ subroutine te0583(option, nomte)
                 call utpvgl(1, 6, pgl4, vpesan(1), fpesa4(1))
             endif
         endif
-! BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
+!       BOUCLE SUR LES POINTS DE GAUSS DANS LA LONGUEUR
         do 400 igau = 1, npg
-! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
+!           BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
             do 390 icou = 1, 2*nbcou + 1
                 r = a + (icou-1)*h/ (2.d0*nbcou) - h/2.d0
-! BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
+!               BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
                 do 380 isect = 1, 2*nbsec + 1
                     if (icoude .eq. 0) then
                         poids = zr(ipoids-1+igau)*poicou(icou)*poisec( isect)* (l/2.d0)*h*deuxpi/&
@@ -496,6 +534,8 @@ subroutine te0583(option, nomte)
 380              continue
 390          continue
 400      continue
+
+
         if (icoude .eq. 0) then
             call vlggl(nno, nbrddl, pgl, f, 'LG',&
                        pass, vtemp)
@@ -505,7 +545,7 @@ subroutine te0583(option, nomte)
         endif
         call jevech('PVECTUR', 'E', jout)
         do 410,i = 1,nbrddl
-        zr(jout-1+i) = f(i)
-410      continue
+            zr(jout-1+i) = f(i)
+410     continue
     endif
 end subroutine

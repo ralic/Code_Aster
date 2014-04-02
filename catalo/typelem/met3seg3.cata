@@ -28,6 +28,7 @@ ENTETE__ ELEMENT__ MET3SEG3         MAILLE__ SEG3
    ELREFE__  SE3       GAUSS__  RIGI=FPG3  MASS=FPG3  FPG1=FPG1 FPG_LISTE__  MATER = (RIGI FPG1)
 
 MODE_LOCAL__
+    CABSCUR  = ABSC_R   ELEM__         (ABSC1    ABSC2   ABSC3  )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAGEPO  = CAGEPO   ELEM__         (R1       EP1      )
@@ -142,7 +143,7 @@ OPTION__
                                 ENBSP_I  PNBSP_I  CPESANR  PPESANR  ZVARCPG  PVARCPR
                           OUT__ MVECTUR  PVECTUR
     CHAR_MECA_PRES_F 583  IN__  CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
-                                CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
+                                CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  CABSCUR  PABSCUR
                           OUT__ MVECTUR  PVECTUR
     CHAR_MECA_PRES_R 583  IN__  CCAGEPO  PCAGEPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
                                 EPRESNO  PPRESSR

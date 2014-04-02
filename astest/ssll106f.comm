@@ -21,6 +21,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 
 MA=LIRE_MAILLAGE( )
+MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ABSC_CURV=_F(GROUP_NO_ORIG='A', GROUP_MA='MA'))
+CHABSC = CREA_CHAMP ( OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R' ,
+                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MA , INFO = 2 , )
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
                CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -34,7 +37,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
 
 
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,
-                 
+
                  POUTRE=_F(  GROUP_MA = 'TOUT', SECTION = 'CERCLE',
                              CARA = ('R', 'EP'),
                              MODI_METRIQUE = 'OUI',
@@ -98,10 +101,18 @@ CHAR6=AFFE_CHAR_MECA(   MODELE=MO,
           FORCE_NODALE=_F( GROUP_NO = 'B', MZ = 5.E2)
             )
 
-CHAR7=AFFE_CHAR_MECA(   MODELE=MO,
-                FORCE_TUYAU=_F(  TOUT = 'OUI',
-                           PRES = 1.E7)
-            )
+# validation de FORCE_TUYAU=F(ABSC) :
+#----------------------------------------
+# On applique 2 pressions = f(absc) dont la somme vaut 1.e7 :
+# La longueur du tuyau est lg
+lg=5.
+#
+presf1 = FORMULE(NOM_PARA=('ABSC',), VALE='1.E7*ABSC/lg')
+presf2 = FORMULE(NOM_PARA=('ABSC',), VALE='1.E7*(lg-ABSC)/lg')
+CHAR71=AFFE_CHAR_MECA_F(   MODELE=MO,
+                FORCE_TUYAU=_F(  GROUP_MA = 'MA',  PRES = presf1))
+CHAR72=AFFE_CHAR_MECA_F(   MODELE=MO,
+                FORCE_TUYAU=_F(  GROUP_MA = 'MA',  PRES = presf2))
 
 RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
             PROL_GAUCHE='LINEAIRE', PROL_DROITE='LINEAIRE',
@@ -540,26 +551,25 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
 
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 U7=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CAREL,EXCIT=(
-                             _F(
-                CHARGE = CHAR0), _F(
-                CHARGE = CHAR7,
-                FONC_MULT = RAMPE)),
-                         COMPORTEMENT=_F( RELATION = 'ELAS'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 2),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 3,
-                RESI_LINE_RELA = 1.E-5)
+                 MODELE=MO,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CAREL,
+                 EXCIT=(
+                        _F( CHARGE = CHAR0),
+                        _F( CHARGE = CHAR71, FONC_MULT = RAMPE),
+                        _F( CHARGE = CHAR72, FONC_MULT = RAMPE),
+                        ),
+                 COMPORTEMENT=_F( RELATION = 'ELAS'),
+                 INCREMENT=_F(
+                          LIST_INST = L_INST,
+                          NUME_INST_FIN = 2),
+                 NEWTON=_F( MATRICE = 'TANGENTE', REAC_ITER = 1),
+                 CONVERGENCE=_F(
+                        RESI_GLOB_RELA = 1.E-6,
+                        ITER_GLOB_MAXI = 10),
+                 RECH_LINEAIRE=_F(
+                        ITER_LINE_MAXI = 3,
+                        RESI_LINE_RELA = 1.E-5)
               )
 
 U7=CALC_CHAMP(reuse=U7,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U7)

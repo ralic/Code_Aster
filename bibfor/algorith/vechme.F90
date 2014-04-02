@@ -40,6 +40,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 #include "asterfort/memare.h"
 #include "asterfort/nmdepr.h"
 #include "asterfort/reajre.h"
+#include "asterfort/dismoi.h"
     character(len=*) :: modelz, chargz, infchz, carele, mate
     character(len=*) :: vrcplu, vecelz, ligrez
     character(len=1) :: stop
@@ -72,7 +73,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 !   1) CERTAINS RESUELEM NE SONT PAS DES RESUELEM MAIS DES
 !      CHAM_NO (.VEASS)
     integer :: nchinx
-    parameter (nchinx=42)
+    parameter (nchinx=43)
     integer :: nbchmx
     parameter (nbchmx=18)
     integer :: jlchin
@@ -83,10 +84,10 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nompar(nbchmx)
     character(len=6) :: nomopf(nbchmx), nomopr(nbchmx)
     character(len=7) :: nomcmp(3)
-    character(len=8) :: nomcha
+    character(len=8) :: nomcha, ma
     character(len=8) :: lpain(nchinx), lpaout, newnom, modele
     character(len=16) :: option
-    character(len=24) :: chgeom, chcara(18), chtime, ligrel
+    character(len=24) :: chcara(18), chtime, ligrel
     character(len=24) :: ligrmo, ligrch
     character(len=19) :: lchout, resufv(3), vecele
     character(len=24) :: lchin(nchinx)
@@ -159,7 +160,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 !
 ! --- CARTES GEOMETRIE ET CARA_ELEM
 !
-    call megeom(modele, chgeom)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
     call mecara(carele, chcara)
 !
 ! --- CARTE INSTANTS
@@ -174,7 +175,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 ! --- CHAMPS IN
 !
     lpain(2) = 'PGEOMER'
-    lchin(2) = chgeom
+    lchin(2) = ma//'.COORDO'
     lpain(3) = 'PTEMPSR'
     lchin(3) = chtime
     lpain(4) = 'PMATERC'
@@ -207,7 +208,10 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     lchin(17) = chcara(15)
     lpain(18) = 'PCOMPOR'
     lchin(18) = mate(1:8)//'.COMPOR'
-    nchin = 18
+    lpain(19) = 'PABSCUR'
+    lchin(19) = ma//'.ABSC_CURV'
+
+    nchin = 19
     if (lxfem) then
         lpain(nchin + 1) = 'PPINTTO'
         lchin(nchin + 1) = modele(1:8)//'.TOPOSE.PIN'
