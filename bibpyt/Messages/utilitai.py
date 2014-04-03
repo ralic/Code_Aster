@@ -106,6 +106,7 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 """),
 
 20 : _(u"""
+Erreur utilisateur dans la commande CREA_CHAMP.
  le champ  %(k1)s n'est pas de type réel
 """),
 
@@ -185,11 +186,18 @@ Erreur utilisateur :
 """),
 
 35 : _(u"""
+Erreur utilisateur dans la commande CREA_CHAMP.
  le champ  %(k1)s n'est pas de type complexe
 """),
 
 36 : _(u"""
- on ne traite que des CHAM_NO réels ou complexes. vraiment désolé !
+ On ne traite que des CHAM_NO réels ou complexes. Désolé !
+"""),
+
+37 : _(u"""
+Erreur utilisateur dans la commande CREA_CHAMP.
+Les options 'R2C' et 'C2R' ne sont autorisées que pour les CHAM_NO.
+Le champ %(k1)s n'est pas un champ aux noeuds.
 """),
 
 40 : _(u"""
