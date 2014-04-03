@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rccoma(jmat, pheno, iarret, phenom, icodre)
-        integer, intent(in) :: jmat, iarret 
-        character(len=*), intent(in) :: pheno
-        character(len=*), intent(out) :: phenom
-        integer, intent(out) :: icodre
+    subroutine rccoma(jmat, mater_typez, iarret, mater_keyword, icodre)
+        integer, intent(in) :: jmat
+        character(len=*), intent(in) :: mater_typez
+        integer, intent(in) :: iarret
+        character(len=*), intent(out) :: mater_keyword
+        integer, optional, intent(out) :: icodre
     end subroutine rccoma
 end interface

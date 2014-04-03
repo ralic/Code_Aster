@@ -221,18 +221,6 @@ Solution : Il faut dédoubler le noeud.
  impossibilité, la surface de raccord de la coque est nulle
 """),
 
-56 : _(u"""
- plusieurs comportements de type  %(k1)s  ont été trouvés
-
-  -> Conseil:
-     Vous avez sans doute enrichi votre matériau. Vous ne pouvez pas
-     avoir en même temps les mots clés 'ELAS', 'ELAS_FO', 'ELAS_xxx',...
-"""),
-
-57 : _(u"""
- comportement de type  %(k1)s  non trouvé
-"""),
-
 58 : _(u"""
  nappe interdite pour les caractéristiques matériau
 """),

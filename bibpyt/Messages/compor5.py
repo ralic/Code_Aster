@@ -36,6 +36,17 @@ La courbe de traction est une nappe dont le paramètre qui n'est pas EPSI n'est 
 La courbe de traction est une nappe qui dépend de %(k1)s mais la variable de commande est absente ou mal définie dans le matériau (AFFE_VARC).
 """),
 
+56 : _(u"""
+Plusieurs matériaux de type %(k1)s ont été trouvés.
+  -> Conseil:
+     Vous avez sans doute enrichi votre matériau. Vous ne pouvez pas
+     avoir en même temps les mots clés 'ELAS', 'ELAS_FO', 'ELAS_xxx',...
+"""),
+
+57 : _(u"""
+Le matériau de type %(k1)s n'a pas été trouvé.
+"""),
+
 59 : _(u"""
 La déformation plastique cumulée est négative.
 """),
