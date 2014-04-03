@@ -104,7 +104,7 @@ def _print_alarm():
     uncommitted = aster_pkginfo.version_info.uncommitted
     if changes:
         UTMESS('A+', 'SUPERVIS_41',
-               valk=aster_pkginfo.version_info.version, vali=changes)
+               valk=__version__, vali=changes)
     if uncommitted and type(uncommitted) is list:
         fnames = ', '.join(uncommitted)
         UTMESS('A+', 'SUPERVIS_42',

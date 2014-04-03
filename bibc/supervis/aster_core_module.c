@@ -22,7 +22,8 @@
  *      - JDC : current JDC object,
  *      - CoreOptions : command line options + basic informations
  *      - MessageLog : utility to print message,
- *      - E_Core : module that define functions more easily in Python than here.
+ *      - aster_core : pure python module that define functions more easily
+ *        than here.
  *  - give informations about the execution.
  */
 
@@ -529,14 +530,14 @@ void DEFP(GTALRM,gtalrm, _OUT INTEGER *nb)
 }
 
 /*
- * Functions defined in E_Core
+ * Functions defined in aster_core
  */
 void DEFP(PRHEAD,prhead, _IN INTEGER *part)
 {
     /*
      * Interface Fortran/Python pour l'affichage des informations systèmes
      * en début d'exécution
-     * Voir help(E_Core.print_header)
+     * Voir help(aster_core.print_header)
      */
     PyObject *res;
     res = PyObject_CallMethod(get_sh_pymod(), "print_header", "i", (int)(*part));
