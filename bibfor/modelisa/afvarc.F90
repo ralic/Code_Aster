@@ -249,14 +249,14 @@ subroutine afvarc(chmat, nomail, nomode)
                 call getvtx('AFFE_VARC', 'PROL_DROITE', iocc=iocc, scal=proldr, nbret=n1)
                 call getvid('AFFE_VARC', 'FONC_INST', iocc=iocc, scal=finst, nbret=n1)
                 if (n1 .eq. 0) finst=' '
-!           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
+!               A FAIRE : VERIFIER QUE EVOL+ NOMCHA => LA BONNE GRANDEUR
             endif
 !
             if (errgd) then
-                valk(1) = mofac
+                valk(1) = novarc
                 valk(2) = nomgd
                 valk(3) = nomgd2
-                call utmess('A', 'MODELISA5_50', nk=3, valk=valk)
+                call utmess('F', 'MODELISA5_50', nk=3, valk=valk)
             endif
 !
 !         2.4 ECRITURE DANS LES CARTES :

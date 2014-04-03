@@ -121,7 +121,9 @@ cata_msg = {
 """),
 
 50 : _(u"""
- la grandeur associée au mot clé :  %(k1)s  doit être:  %(k2)s  mais elle est:  %(k3)s
+Erreur utilisateur dans la commande AFFE_MATERIAU / AFFE_VARC
+  Pour la variable de commande %(k1)s
+  la grandeur associée du champ doit être:  %(k2)s  mais elle est:  %(k3)s
 """),
 
 
