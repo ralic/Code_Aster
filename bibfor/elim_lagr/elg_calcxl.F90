@@ -38,14 +38,21 @@ subroutine elg_calcxl(x1, vlag)
 # include "asterfort/elg_resodr.h"
 !
     Vec :: x1, vlag
+    mpi_int :: mpicou 
+    KSP :: ksp
+    PC :: pc
 !
 !================================================================
-    Mat :: ilt
     PetscInt :: n1, n2, n3
     PetscInt :: ierr
     PetscScalar :: xx(1), m1
     PetscOffset :: xidxay, xidxl
-    Vec :: bx, y, ay
+    Vec :: bx, y, ay, xtmp
+    PetscInt :: its
+    real*8 :: norm
+    PetscScalar neg_one
+!----------------------------------------------------------------
+    neg_one = -1.
 !----------------------------------------------------------------
     call jemarq()
 !
@@ -54,6 +61,7 @@ subroutine elg_calcxl(x1, vlag)
 !       n2 : # lagranges "1"
 !     ----------------------------------------------------------
     call MatGetSize(melim(ke)%ctrans, n1, n2, ierr)
+    print*, "CTRANS: n1=", n1," n2=",n2 
 !
 !     -- vérifs :
     call VecGetSize(x1, n3, ierr)
@@ -79,19 +87,46 @@ subroutine elg_calcxl(x1, vlag)
 !
 !
 !     -- résolution : z = (R*R') \ AY :
-    call VecGetArray(ay, xx, xidxay, ierr)
-    call VecGetArray(vlag, xx, xidxl, ierr)
-    ilt=melim(ke)%rct
-    call elg_resodr(ilt, xx(xidxay+1), xx(xidxl+1))
-    call VecRestoreArray(ay, xx, xidxay, ierr)
-    call VecRestoreArray(vlag, xx, xidxl, ierr)
 !
+    call asmpi_comm('GET', mpicou)
+!
+!   Initialisation du solveur PETSc : on utilise LSQR
+!   qui calcule la solution aux moindres carrés d'un système linéaire sur-déterminé
+!   C^T Vlag = AY
+!   ksp = solver context 
+    call KSPCreate(mpicou, ksp, ierr)
+    ASSERT(ierr.eq.0)
+!   Set linear solver : LSQR
+    call KSPSetType(ksp, KSPLSQR, ierr)
+    ASSERT(ierr.eq.0)
+!   Set linear system 
+    call KSPSetOperators(ksp, melim(ke)%ctrans, melim(ke)%ctrans, DIFFERENT_NONZERO_PATTERN, ierr)
+!   No Precond : matrix ctrans is rectangular and PETSc default preconditioner won't work !
+    call KSPGetPC(ksp,pc,ierr)
+    call PCSetType(pc,PCNONE, ierr)
+    ASSERT(ierr.eq.0)
+!   Solve linear system  C^T * Vlag = AY 
+    call VecGetSize( y, n1, ierr )
+    write(6,*) " Rhs:", n1
+      call VecGetSize( vlag, n1, ierr )
+          write(6,*) " vlag", n1
+    call KSPSolve( ksp, y, vlag, ierr)
+    ASSERT(ierr.eq.0)
+    if (.true.) then
+      call VecDuplicate(y, xtmp , ierr)
+      call MatMult(melim(ke)%ctrans, vlag, xtmp, ierr)
+      call VecAXPY(xtmp,neg_one,y ,ierr)
+      call VecNorm(xtmp,NORM_2,norm,ierr)
+      call KSPGetIterationNumber(ksp,its,ierr)
+      write(6,100) norm,its
+  100 format('CALCXL: Norm of error = ',e11.4,',  Number of iterations = ',i5)
+      call VecDestroy(xtmp, ierr)
+    endif
 !
 !     -- ménage :
     call VecDestroy(bx, ierr)
     call VecDestroy(y, ierr)
     call VecDestroy(ay, ierr)
-!
 !
     call jedema()
 !

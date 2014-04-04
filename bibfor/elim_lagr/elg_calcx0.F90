@@ -40,52 +40,61 @@ subroutine elg_calcx0()
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-# include "asterfort/elg_resodr.h"
-!
 !================================================================
-    PetscInt :: ierr
-    PetscInt :: n1, n2
-    PetscScalar :: xxc(1), xxz(1)
-    PetscOffset :: xidxc, xidxz
-    Mat :: l, lt
-    Vec :: vecz, vbid1
+    Vec :: vbid1
+    Mat :: c
+    KSP :: ksp
+    PC  :: pc
+    mpi_int :: mpicomm
+    PetscInt :: its, ierr
+    real*8 :: norm
+    PetscScalar ::  neg_one
+    logical :: info 
 !----------------------------------------------------------------
+    neg_one = -1.d0
+    info    = .true. 
     call jemarq()
+    !
+!   -- COMMUNICATEUR MPI DE TRAVAIL
+    call asmpi_comm('GET', mpicomm)
 !
-    call MatGetSize(melim(ke)%ctrans, n1, n2, ierr)
+!   C = transpose(Ctrans)
+    call MatTranspose(melim(ke)%ctrans, MAT_INITIAL_MATRIX, c, ierr)
+!   Résolution de C Vx0 = Vec C (PETSc, solveur "least square" LSQR)
+!   Init solver context : ksp 
+    call KSPCreate(mpicomm, ksp, ierr)
+    ASSERT(ierr.eq.0)
+!   Choose LSQR solver
+    call KSPSetType(ksp, KSPLSQR, ierr)
+    ASSERT(ierr.eq.0)
+!   Set the linear system matrix 
+    call KSPSetOperators(ksp, c, c, SAME_PRECONDITIONER, ierr)
+!   No precond : c is rectangular, Petsc default preconditioner ILU won't work
+    call KSPGetPC(ksp,pc,ierr)
+    call PCSetType(pc,PCNONE, ierr)
+    ASSERT(ierr.eq.0)
+!   Solve 
+    call KSPSolve( ksp, melim(ke)%vecc, melim(ke)%vx0, ierr)
+    ASSERT(ierr.eq.0)
 !
-! juste une copie de "pointeur" pour la lisibilité
-    lt=melim(ke)%rct
-!
-!     -- On transpose Lt pour permettre un acces par ligne pour L:
-    call MatTranspose(lt, MAT_INITIAL_MATRIX, l, ierr)
-!
-!
-!     -- Résolution de z   = (L'*L) \  c
-!     ------------------------------------
-    call VecDuplicate(melim(ke)%vecc, vecz, ierr)
-    call VecGetArray(melim(ke)%vecc, xxc, xidxc, ierr)
-    call VecGetArray(vecz, xxz, xidxz, ierr)
-    call elg_resodr(lt, xxc(xidxc+1), xxz(xidxz+1))
-    call VecRestoreArray(melim(ke)%vecc, xxc, xidxc, ierr)
-    call VecRestoreArray(vecz, xxz, xidxz, ierr)
-!
-!
-!     Vx0=A'*VZ :
-!     ---------------
-    call MatMult(melim(ke)%ctrans, vecz, melim(ke)%vx0, ierr)
-!
-!
-!     -- Vérification que A*x0=c
+!     -- Calcul de ||A*x0 - c||
 !     ---------------------------
-    if (.true.) then
-        call VecDuplicate(vecz, vbid1, ierr)
-        call MatMultTranspose(melim(ke)%ctrans, melim(ke)%vx0, vbid1, ierr)
-        call VecDestroy(vbid1, ierr)
+    if (info) then
+      call VecDuplicate(melim(ke)%vecc, vbid1, ierr)
+      call MatMult(c, melim(ke)%vx0, vbid1, ierr)
+      call VecAXPY(vbid1,neg_one,melim(ke)%vecc ,ierr)
+      call VecNorm(vbid1,NORM_2,norm,ierr)
+      call KSPGetIterationNumber(ksp,its,ierr)
+      write(6,100) norm,its
+  100 format('CALCX0: Norm of error = ',e11.4,',  Number of iterations = ',i5)
+      call VecDestroy(vbid1, ierr)
     endif
 !
-    call MatDestroy(l, ierr)
-    call VecDestroy(vecz, ierr)
+    call MatDestroy( c, ierr )
+    ASSERT( ierr == 0 ) 
+    call KSPDestroy( ksp, ierr)
+    ASSERT( ierr == 0 ) 
+
 !
     call jedema()
 !

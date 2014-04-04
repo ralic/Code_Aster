@@ -93,6 +93,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     character(len=4) :: etamat
     character(len=1) :: rouc
     real(kind=8), pointer :: travail(:) => null()
+    logical :: lqr
 !
 !----------------------------------------------------------------
 !
@@ -251,11 +252,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         nomats(kptsc) = matas
         nosols(kptsc) = solveu
         nonus(kptsc) = nu
-        if (action .eq. 'ELIM_LAGR+R') then
-            call elg_apelim(kptsc, .true.)
-        else
-            call elg_apelim(kptsc, .false.)
-        endif
+        lqr=action .eq. 'ELIM_LAGR+R'
+        call elg_apelim(kptsc, lqr)
         iret=0
         goto 999
     else

@@ -476,6 +476,7 @@ subroutine elg_apelim(kptsc, lqr)
 !-- factorisation QR, sans assembler Q  => RCt
 !--
 !
+   lqr = .false. 
     if (lqr) then
         call elg_matrqr(melim(ke)%ctrans, melim(ke)%rct, nbphys, nblag)
         melim(ke)%lqr=.true.

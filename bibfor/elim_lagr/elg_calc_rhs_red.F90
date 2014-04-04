@@ -121,6 +121,7 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !
 !     -- calcul de Vx0 = A \ VecC
     call VecDuplicate(melim(ke)%vecb, melim(ke)%vx0, ierr)
+!
     call elg_calcx0()
 !
 !     -- calcul de BX0 = B*Vx0 :
