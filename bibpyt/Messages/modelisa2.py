@@ -64,7 +64,6 @@ La règle de surcharge est appliquée
   Il n'y a pas d'élément discret fixé au noeud %(k1)s du radier.
 """),
 
-
 9: _(u"""
   Erreur utilisateur :
     l'objet %(k1)s n'existe pas. On ne peut pas continuer.
@@ -78,6 +77,11 @@ La règle de surcharge est appliquée
   Nombre d'éléments discrets         : %(i2)d
 """),
 
+11: _(u"""
+Erreur utilisateur :
+  Le modèle fourni %(k1)s est associé au maillage %(k2)s.
+  Ce maillage est différent du maillage fourni %(k3)s.
+"""),
 
 13: _(u"""
  problème pour récupérer une grandeur dans la table CARA_GEOM
@@ -222,7 +226,7 @@ Risque & Conseil:
  récupération des caractéristiques du matériau ACIER associé au câble no %(k1)s , relation de comportement <BPEL_ACIER> : Le paramètre F_PRG doit être positif et non nul
  """),
 56 : _(u"""
- Pour faire un calcul de relaxation type ETCC_REPRISE, vous devez  renseigner le mot-clé TENSION_CT de DEFI_CABLE pour chaque câble de précontrainte, 
+ Pour faire un calcul de relaxation type ETCC_REPRISE, vous devez  renseigner le mot-clé TENSION_CT de DEFI_CABLE pour chaque câble de précontrainte,
 """),
 
 57: _(u"""
@@ -264,7 +268,7 @@ La table fournie dans DEFI_CABLE doit contenir l'abscisse curviligne et la tensi
 """),
 
 68 : _(u"""
-La table fournie n'a pas la bonne dimension : vérifiez qu'il s'agit du bon câble ou que plusieurs 
+La table fournie n'a pas la bonne dimension : vérifiez qu'il s'agit du bon câble ou que plusieurs
 instants ne sont pas contenus dans la table.
 """),
 
@@ -272,8 +276,8 @@ instants ne sont pas contenus dans la table.
 Les abscisses curvilignes de la table fournie ne correspondent pas à celles du câble étudié
 """),
 
-70 : _(u""" Attention, vous voulez calculer les pertes par relaxation de l'acier, mais 
-      le coefficient RELAX_1000 est nul. Les pertes associées sont donc nulles. 
+70 : _(u""" Attention, vous voulez calculer les pertes par relaxation de l'acier, mais
+      le coefficient RELAX_1000 est nul. Les pertes associées sont donc nulles.
  """),
 
 83: _(u"""

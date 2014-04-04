@@ -25,7 +25,9 @@ subroutine op0006()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/afvarc.h"
+#include "asterfort/assert.h"
 #include "asterfort/cmtref.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infmaj.h"
@@ -34,8 +36,10 @@ subroutine op0006()
 #include "asterfort/jemarq.h"
 #include "asterfort/rccomp.h"
 #include "asterfort/rcmate.h"
-    character(len=8) :: chmat, nomail, nomode
+#include "asterfort/utmess.h"
+    character(len=8) :: chmat, nomail, nomode, nomai2
     character(len=16) :: nomcmd, type
+    character(len=24) :: valk(3)
     integer ::  ifm, n1, niv
 ! ----------------------------------------------------------------------
 !
@@ -44,9 +48,26 @@ subroutine op0006()
     call infniv(ifm, niv)
 !
     nomode = ' '
-    call getvid(' ', 'MODELE', scal=nomode, nbret=n1)
     call getres(chmat, type, nomcmd)
-    call getvid(' ', 'MAILLAGE', scal=nomail, nbret=n1)
+
+!   -- noms du maillage et du modele :
+!   ----------------------------------
+    nomode = ' '
+    nomai2 = ' '
+    call getvid(' ', 'MODELE', scal=nomode, nbret=n1)
+    if (n1.eq.1) then
+        call dismoi('NOM_MAILLA', nomode, 'MODELE', repk=nomail)
+        call getvid(' ', 'MAILLAGE', scal=nomai2, nbret=n1)
+        if (n1.eq.1 .and. nomail.ne.nomai2) then
+            valk(1)=nomode
+            valk(2)=nomai2
+            valk(3)=nomail
+            call utmess('F', 'MODELISA2_11', nk=3, valk=valk)
+        endif
+    else
+        call getvid(' ', 'MAILLAGE', scal=nomail, nbret=n1)
+        ASSERT(n1.eq.1)
+    endif
 !
 !
 !     1- TRAITEMENT DU MOT-CLE AFFE :

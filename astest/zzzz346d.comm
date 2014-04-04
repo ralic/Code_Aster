@@ -1,19 +1,19 @@
 # TITRE BIFURCATION D UNE FISSURE DROITE XFEM
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # zzzz346a.para=tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 
@@ -40,17 +40,17 @@ B2=B1-math.pi
 def LN(x,y):
   global B1,B2
   theta=math.atan2(y-cte,x)
-  if theta>=-math.pi and theta<B2: 
+  if theta>=-math.pi and theta<B2:
     return -x
   if theta>=B2 and theta<=0:
     d1=-x
-    d2=(y-a*x-cte)/math.sqrt(1+a**2)    
+    d2=(y-a*x-cte)/math.sqrt(1+a**2)
     if abs(d1)>abs(d2):  return d2
     else : return d1
-  if theta>0 and theta<B1: 
-    return (y-a*x-cte)/math.sqrt(1+a**2) 
+  if theta>0 and theta<B1:
+    return (y-a*x-cte)/math.sqrt(1+a**2)
   if theta>=B1 and theta<=math.pi:
-    return (x**2+(y-cte)**2)**0.5  
+    return (x**2+(y-cte)**2)**0.5
 
 LSN=FORMULE(NOM_PARA=('X','Y'),VALE='LN(X,Y)');
 
@@ -83,7 +83,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=210.E9,NU=0.,));
 
-CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,MODELE=MODELEK,
+CHAMPMA=AFFE_MATERIAU(MODELE=MODELEK,
                  AFFE=_F(TOUT='OUI',MATER=MAT));
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
