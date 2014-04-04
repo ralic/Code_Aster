@@ -339,7 +339,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! - Final linear relation affectation
 !
-    call aflrch(list_rela, load)
+    call aflrch(list_rela, load, elim='NON')
 !
     call jedetr(keywordexcl)
 !

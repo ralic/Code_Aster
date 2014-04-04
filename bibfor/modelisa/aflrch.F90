@@ -1,4 +1,4 @@
-subroutine aflrch(lisrez, chargz)
+subroutine aflrch(lisrez, chargz, elim)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
@@ -41,27 +41,39 @@ subroutine aflrch(lisrez, chargz)
 #include "asterfort/nbec.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/getvtx.h"
+#include "asterc/getexm.h"
 !
+    character(len=*), intent(in) :: lisrez
+    character(len=*), intent(in) :: chargz
+    character(len=*), intent(in), optional :: elim
 !
+! -------------------------------------------------------
+!  affectation de l'objet de type  liste_rela et de nom
+!  lisrel a l'objet de type charge et de nom charge
+! -------------------------------------------------------
+!     si la sd_liste_rela n'existe pas, on ne fait rien.
+!     la charge doit exister au prealable
+!
+!     la sd_liste_rela est detruite a la fin de la routine
+! -------------------------------------------------------
+!  lisrel        - in    - k24  - : nom de la sd liste_rela
+!                - jxvar -      -
+! -------------------------------------------------------
+!  charge        - in    - k8   - : nom de la sd charge
+!                - jxvar -      -
+! -----------------------------------------------------------
+!  (f) elim  : /'OUI' : on veut eliminer les doublons
+!              /'NON' : on ne veut pas eliminer les doublons
+!  Remarque : l'elimination (ou non) peut etre demandee par
+!             l'utilisateur via le mot clé ELIM_DOUBLON.
+!  S'il y a un conflit entre la volonte de l'utilisateur et
+!  celle du developpeur (via l'argument elim), on donne raison
+!  au developpeur !
+!
+! ------------------------------------------------------------
     character(len=19) :: lisrel
     character(len=8) :: charge
-    character(len=*) :: lisrez, chargz
-! -------------------------------------------------------
-!     AFFECTATION DE L'OBJET DE TYPE  LISTE_RELA ET DE NOM
-!     LISREL A L'OBJET DE TYPE CHARGE ET DE NOM CHARGE
-! -------------------------------------------------------
-!     SI LA SD_LISTE_RELA N'EXISTE PAS, ON NE FAIT RIEN.
-!     LA CHARGE DOIT EXISTER AU PREALABLE
-!
-!     la sd_liste_rela EST DETRUITe A LA FIN DE LA ROUTINE
-! -------------------------------------------------------
-!  LISREL        - IN    - K24  - : NOM DE LA SD LISTE_RELA
-!                - JXVAR -      -
-! -------------------------------------------------------
-!  CHARGE        - IN    - K8   - : NOM DE LA SD CHARGE
-!                - JXVAR -      -
-!
-! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
     parameter(nmocl=300)
     complex(kind=8) :: betac
@@ -69,7 +81,7 @@ subroutine aflrch(lisrez, chargz)
     character(len=24) :: valk(2)
     character(len=7) :: typcha
     character(len=19) :: betaf
-    character(len=8) :: mod, nomgd, nomnoe
+    character(len=8) :: mod, nomgd, nomnoe, kelim
     character(len=8) :: noma, cmp, nomcmp(nmocl), ctype1, ctype2
     character(len=9) :: nomte
     character(len=19) :: ca1, ca2
@@ -85,7 +97,7 @@ subroutine aflrch(lisrez, chargz)
     integer ::    jnoli1, jnoli2, jdesc1, jdesc2, jncmp1,jncmp2
     integer ::    jlclima1, jlclima2,lontav1,lontav2
     integer :: nbcmp, nec, nbnema, nbrela, nbteli, nbterm, nddla
-    integer :: niv, numel, nunewm, nbdual, nbsurc, iexi, jlgns
+    integer :: niv, numel, nunewm, iexi, jlgns
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: rlnr(:) => null()
     character(len=8), pointer :: rltc(:) => null()
@@ -123,14 +135,26 @@ subroutine aflrch(lisrez, chargz)
         nomgd='PRES_C'
         nomte='D_PRES_C_'
     endif
-!
-!
-!     -- REARRANGEMENT DES RELATIONS DE LA LISTE DE RELATIONS
-!     -- PAR ORDRE DE NUMERO DE NOEUD CROISSANT
-!     -- ET SUPPRESSION DES RELATIONS REDONDANTES EN
-!     -- APPLIQUANT LE PRINCIPE DE SURCHARGE
-    call ordlrl(charge, lisrel, nomgd)
-!
+
+
+!   -- Rearrangement des relations de la liste de relations
+!   -- par ordre de numero de noeud croissant
+!   -- et suppression des relations redondantes en
+!   -- appliquant le principe de surcharge
+    if (getexm(' ' ,'ELIM_DOUBLON').eq.1) then
+        call getvtx(' ', 'ELIM_DOUBLON', scal=kelim)
+    else
+        kelim='OUI'
+    endif
+    if (present(elim)) then
+        ASSERT(elim.eq.'OUI'.or.elim.eq.'NON')
+        ! c'est elim le plus fort :
+        kelim=elim
+    endif
+    if (kelim.eq.'OUI') call ordlrl(charge, lisrel, nomgd)
+
+
+
 !
     if (ligrch(12:13) .eq. 'TH') then
         ca1=charge//'.CHTH.CMULT'
@@ -194,7 +218,7 @@ subroutine aflrch(lisrez, chargz)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 
 !   -- les cartes ca1 et ca2 doivent obligatoirement avoir ete
-!   -- creees au prealable
+!   -- crees au prealable
 !   -----------------------------------------------------------
     call jeexin(ca1//'.DESC', iret)
     ASSERT(iret.gt.0)

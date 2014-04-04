@@ -340,7 +340,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                     ASSERT(.false.)
                                 endif
                                 call jedetr(list_node)
-                                call aflrch(list_rela, load)
+                                call aflrch(list_rela, load, elim='NON')
                             endif
 140                         continue
                         enddo
