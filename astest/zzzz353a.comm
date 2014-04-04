@@ -52,7 +52,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
 
 RESSORT=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0E13,
                                      # RIGI_TAN=rigidite_normale_contact,
-                                     COULOMB=0.2,                                     
+                                     COULOMB=0.2,
                                      DIST_1=1.0,),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -71,7 +71,7 @@ L_PRESS=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                                             6.0,0.0,
                                             7.0,0.0,),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-L_TEMP=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,25., 
+L_TEMP=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,25.,
                                            1.0,25.,
                                            2.0,10.,
                                            3.0,10.,
@@ -242,7 +242,7 @@ IMPR_RESU(FORMAT='RESULTAT',
                   NOM_CHAM=('SIGM_ELGA', ),),
           MODELE=MODE,
           UNITE=9,);
- 
+
 ## Calcul de la contrainte de Von Mises maxi aux points de Gauss
 
 MAXVMIS=POST_CHAMP(RESULTAT=RESU,
@@ -370,7 +370,7 @@ C_VMIS_1 = CREA_CHAMP(INFO=1,
 VMIS_1 = DEFI_FONCTION(PROL_DROITE='LINEAIRE',
                        PROL_GAUCHE='LINEAIRE',
                        VALE=(0.56350832689629016, 208767.66075885622, 2.5, 109101.95127626369, 4.4364916731037098, 352004.65048299992, 5.2615251261159415, 558729.64643105329, 6.1602540443207623, 265852.27147409634, 7.0589829625255831, 282154.62658533198, 7.9089288581940398, 347366.94360430457, 9.9310319330425489, 160708.73010064033, 11.95313500723627, 724205.97509553609, 13.366589226886463, 2.0138684812231283e-12, 16.201809808833932, 9.5922118211763608e-14, 19.0370303907814, 4.0362561174213859e-13),
-                       NOM_PARA='ABSC_CURV',
+                       NOM_PARA='ABSC',
                        NOM_RESU='VMIS',
                        VERIF='NON',
                        INTERPOL=('LIN', ),);
