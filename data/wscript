@@ -1,0 +1,87 @@
+# coding=utf-8
+
+"""
+Build some data files (dest: share/aster)
+
+- 'profile.sh': environment script
+- 'config.txt': needed by as_run
+"""
+
+import sys
+import os
+import os.path as osp
+from itertools import chain
+from waflib import Task, TaskGen, Utils
+
+def options(self):
+    group = self.get_option_group("Code_Aster options")
+    # default=False in libaster, True in Code_Aster
+    group.add_option('--legacy', dest='legacy',
+                    default=True, action='store_true',
+                    help='create some legacy files')
+    group.add_option('--nolegacy', dest='legacy',
+                    action='store_false',
+                    help='do not create legacy files')
+
+def configure(self):
+    self.env.legacy = self.options.legacy
+
+def build(self):
+    if not self.env.legacy:
+        return
+    src = osp.dirname(self.path.abspath())
+    dict_conv = _env2dict(src, self.env, self.env.install_tests)
+    self(
+        features = 'subst',
+            name = 'data_files',
+          source = ('config.txt.tmpl', 'profile.sh.tmpl'),
+          target = ('config.txt', 'profile.sh'),
+    install_path = '${ASTERDATADIR}',
+            vars = ['PREFIX', 'DEFINES', 'PYTHON',
+                    'FC', 'FCFLAGS',
+                    'PYTHONDIR', 'LIBPATH', 'LIBDIR', 'CFG_PYTHONPATH',
+                    'ASTERDATADIR', 'OPT_ENV', 'install_tests'],
+     **dict_conv
+    )
+
+def _env2dict(src, env, install_tests):
+    """build dict informations"""
+    env = env.derive()
+    env['LD_LIBRARY_PATH'] = os.environ.get('LD_LIBRARY_PATH', '').split(os.pathsep)
+    ld_path = remove_duplicates(chain(*[Utils.to_list(env[name])
+                for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH') if env[name]]))
+    sep = os.pathsep + '\\\n'
+    dico = {}
+    dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
+    py_path = remove_duplicates(Utils.to_list(env['CFG_PYTHONPATH']))
+    dico['PYTHONHOME'] = sys.prefix + '' if sys.prefix == sys.exec_prefix \
+                                         else ':' + sys.exec_prefix
+    # as_run compatibility
+    if env.ASRUN_MPI_VERSION:
+        dico['DEFINES'] += ' _USE_MPI'
+    dico['LD_LIBRARY_PATH'] = sep.join(ld_path)
+    dico['CFG_PYTHONPATH'] = sep.join(py_path)
+    dico['SRC'] = src
+    dico['FC'] = env['FC']
+    flags = [' '.join(env[i]) for i in env.keys() if i.startswith('FCFLAGS')]
+    dico['FCFLAGS'] = ' '.join(flags)
+    dico['OPT_ENV'] = env['OPT_ENV'] and os.linesep.join(env['OPT_ENV']) or ''
+    dico['ADDMEM'] = env['ADDMEM'] or 250
+    srctest_tmpl = """SRCTEST        | src     | -     | %s"""
+    if install_tests:
+        dico['srctest'] = srctest_tmpl % '$ASTER_VERSION_DIR/tests'
+    else:
+        dico['srctest'] = os.linesep.join([
+            srctest_tmpl % '%(SRC)s/astest' % dico,
+            srctest_tmpl % '%(SRC)s/../validation/astest' % dico])
+    return dico
+
+def remove_duplicates(list_in):
+    """Return the list by removing the duplicated elements
+    and by keeping the order"""
+    list_out = []
+    for i in list_in:
+        if i and i not in list_out:
+            list_out.append(i)
+    return list_out
+

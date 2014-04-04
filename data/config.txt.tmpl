@@ -1,0 +1,36 @@
+# Configuration file created by waf using data/wscript
+# Libraries, compilers are not relevant 
+#
+ENV_SH         | env     | -     | profile.sh
+ADDMEM         | memory  | -     | @ADDMEM@
+DEFS           | defined | -     | @DEFINES@
+#
+PYTHON         | python  | -     | @PYTHON@
+#
+BIN_NODBG      | bin     | -     | @PREFIX@/bin/aster
+BIN_DBG        | bin     | -     | @PREFIX@/bin/asterd
+BINCMDE        | bin     | -     | @PYTHONDIR@/Cata
+BINELE         | bin     | -     | $ASTER_VERSION_DIR/elements
+BINPICKLED     | bin     | -     | @SRC@/build/release/catalo/cata_ele.pickled
+#
+# for as_run --make_shared...
+F90            | compil  | -     | @FC@
+OPTF90_O       | compil  | -     | @FCFLAGS@
+#
+# for as_run --messages, --get, --show..., and astout
+SRCFOR         | src     | -     | @SRC@/bibfor
+SRCC           | src     | -     | @SRC@/bibc
+SRCPY          | src     | -     | @PYTHONDIR@
+SRCCATA        | src     | -     | @SRC@/catalo
+SRCCAPY        | src     | -     | @SRC@/catapy
+@srctest@
+SRCMAT         | src     | -     | @SRC@/../data/materiau
+SRCHIST        | src     | -     | @SRC@/histor
+#
+REPPY          | exec    | -     | Python
+ARGPYT         | exec    | -     | Execution/E_SUPERV.py
+ARGEXE         | exec    | -     | -eficas_path ./Python
+#
+REPOUT         | exec    | -     | $ASTER_ROOT/outils
+REPMAT         | exec    | -     | $ASTER_VERSION_DIR/materiau
+REPDEX         | exec    | -     | $ASTER_VERSION_DIR/datg
