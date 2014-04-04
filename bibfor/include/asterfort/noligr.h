@@ -16,19 +16,21 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine noligr(ligrz, igrel, numel, nb, li,&
-                      lk, code, irepe, inema, nbno,&
-                      typlaz)
-        character(len=*) :: ligrz
-        integer :: igrel
-        integer :: numel
-        integer :: nb
-        integer :: li(*)
-        character(len=*) :: lk(*)
-        integer :: code
-        integer :: irepe
-        integer :: inema
-        integer :: nbno(*)
-        character(len=*) :: typlaz
-    end subroutine noligr
+subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
+                  lk, code, irepe, inema, nbno,&
+                  typlaz,jlgns)
+    character(len=8),intent(in) :: noma
+    character(len=*),intent(in) :: ligrz
+    integer,intent(in) :: igrel
+    integer,intent(in) :: numel
+    integer,intent(in) :: nb
+    integer,intent(in) :: li(*)
+    character(len=*),intent(in) :: lk(*)
+    integer,intent(in) :: code
+    integer,intent(in) :: irepe
+    integer,intent(inout) :: inema
+    integer,intent(inout) :: nbno(*)
+    character(len=*),intent(in) :: typlaz
+    integer,intent(in) :: jlgns
+end subroutine noligr
 end interface

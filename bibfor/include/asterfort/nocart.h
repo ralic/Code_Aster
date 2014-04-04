@@ -15,17 +15,33 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface
-            subroutine nocart(carte,code,ncmp,groupma,mode,nma,limano,  &
-                              limanu,ligrel)
-              character(len=*), intent(in) :: carte
-              integer, intent(in) :: code
-              integer, intent(in) :: ncmp
-              character(len=*) ,optional, intent(in) :: groupma
-              character(len=*) ,optional, intent(in) :: mode
-              integer ,optional, intent(in) :: nma
-              character(len=*) ,optional, intent(in) :: limano(*)
-              integer ,optional, intent(in) :: limanu(*)
-              character(len=*) ,optional, intent(in) :: ligrel
-            end subroutine nocart
-          end interface
+interface
+subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
+                  limano, limanu, ligrel,&
+                  jdesc,jnoma,jncmp,jnoli,jvale,&
+                  jvalv,jnocmp,ncmpmx,nec, ctype,jlclima,lontav)
+
+    character(len=*), intent(in) :: carte
+    integer, intent(in) :: code
+    integer, intent(in) :: ncmp
+    character(len=*), intent(in), optional :: groupma
+    character(len=*),intent(in), optional :: mode
+    integer, intent(in), optional :: nma
+    character(len=*), intent(in), optional :: limano(*)
+    integer, intent(in), optional :: limanu(*)
+    character(len=*), intent(in), optional ::  ligrel
+
+    integer, intent(inout), optional ::  jdesc
+    integer, intent(inout), optional ::  jnoma
+    integer, intent(inout), optional ::  jncmp
+    integer, intent(inout), optional ::  jnoli
+    integer, intent(inout), optional ::  jvale
+    integer, intent(inout), optional ::  jvalv
+    integer, intent(in)   , optional ::  jnocmp
+    integer, intent(in)   , optional ::  ncmpmx
+    integer, intent(in)   , optional ::  nec
+    character(len=8), intent(in), optional ::  ctype
+    integer, intent(inout), optional ::  jlclima
+    integer, intent(inout), optional ::  lontav
+end subroutine nocart
+end interface

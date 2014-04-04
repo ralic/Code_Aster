@@ -16,11 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine editgd(chinz, ncmp, gd, nedit, dg)
-        character(len=*) :: chinz
-        integer :: ncmp
-        integer :: gd
-        integer :: nedit
-        integer :: dg(*)
-    end subroutine editgd
+subroutine editgd(ncmp,nedit,dg,ncmpmx,ctype,&
+                 jnocmp,jncmp,jvalv,jvale)
+    integer, intent(in) :: ncmp
+    integer, intent(in) :: nedit
+    integer, intent(inout) :: dg(*)
+    integer, intent(in) :: ncmpmx
+    character(len=8), intent(in) :: ctype
+    integer, intent(in) :: jnocmp
+    integer, intent(in) :: jncmp
+    integer, intent(in) :: jvalv
+    integer, intent(in) :: jvale
+end subroutine editgd
 end interface

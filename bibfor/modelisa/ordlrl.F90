@@ -253,8 +253,8 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !
 !
-!     2. IDENTIFICATION DES RELATIONS REDONDANTES A 1 TERME
-!     ----------------------------------------------------------------
+!   2. IDENTIFICATION DES RELATIONS REDONDANTES A 1 TERME
+!   ----------------------------------------------------------------
     call jecreo('&&ORDLRL.KIDREL', 'V N K16')
     call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela)
     do irela1 = nbrela, 1, -1
@@ -277,8 +277,8 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !
 !
-!     3. IDENTIFICATION DES RELATIONS REDONDANTES A PLUSIEURS TERMES
-!     ----------------------------------------------------------------
+!   3. IDENTIFICATION DES RELATIONS REDONDANTES A PLUSIEURS TERMES
+!   ----------------------------------------------------------------
     do irela1 = nbrela, 2, -1
         nbter1=rlnt(irela1)
         if (nbter1 .eq. 1) goto 170

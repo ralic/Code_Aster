@@ -1,23 +1,31 @@
-subroutine noligr(ligrz, igrel, numel, nb, li,&
+subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
                   lk, code, irepe, inema, nbno,&
-                  typlaz)
+                  typlaz,jlgns)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jecroc.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/poslag.h"
 #include "asterfort/utmess.h"
+#include "asterfort/assert.h"
 !
-    character(len=*) :: ligrz, lk(*), typlaz
-    character(len=8) :: typlag
-    character(len=19) :: ligr
-    integer :: igrel, numel, nb, li(*), code, irepe, inema, nbno(*)
+    character(len=8),intent(in) :: noma
+    character(len=*),intent(in) :: ligrz
+    integer,intent(in) :: igrel
+    integer,intent(in) :: numel
+    integer,intent(in) :: nb
+    integer,intent(in) :: li(*)
+    character(len=*),intent(in) :: lk(*)
+    integer,intent(in) :: code
+    integer,intent(in) :: irepe
+    integer,intent(inout) :: inema
+    integer,intent(inout) :: nbno(*)
+    character(len=*),intent(in) :: typlaz
+    integer,intent(in) :: jlgns
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,41 +86,34 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
 !                       LE SECOND LAGRANGE EST APRES
 !          : '22'  ==>  LE PREMIER LAGRANGE EST APRES LE NOEUD PHYSIQUE
 !                       LE SECOND LAGRANGE EST APRES
+!------------------------------------------------------------------------
+    character(len=8) :: typlag
+    character(len=19) :: ligr
     integer :: absnb
-    integer :: vali
     character(len=24) :: liel, nema
-    character(len=24) :: valk
-    character(len=8) :: noma
-! --- DEBUT
+    integer :: ic, ilag1, ilag2,jligr, jnema
+    integer :: k, kligr, lonigr, nunoeu
+    integer, save :: iprem=0 , numpoi, numse3
 !-----------------------------------------------------------------------
-    integer :: ic, ilag1, ilag2, jdlgns, jligr, jnema, jnoma
-    integer :: k, kligr, lonigr, numpoi, numseg, nunoeu
-!-----------------------------------------------------------------------
-    call jemarq()
+    iprem=iprem+1
+    if (iprem.eq.1) then
+        call jenonu(jexnom('&CATA.TM.NBNO', 'POI1'), numpoi)
+        call jenonu(jexnom('&CATA.TM.NBNO', 'SEG3'), numse3)
+    endif
+
     typlag = typlaz
     call poslag(typlag, ilag1, ilag2)
     ligr=ligrz
     liel=ligr//'.LIEL'
     nema=ligr//'.NEMA'
     absnb=abs(nb)
-    if (code .eq. 1) then
-        call jenonu(jexnom('&CATA.TM.NBNO', 'POI1'), numpoi)
-    else if (code.eq.2) then
-        call jenonu(jexnom('&CATA.TM.NBNO', 'SEG3'), numseg)
-    else if ((code.eq.3).or.(code.eq.4)) then
-        call jenonu(jexnom('&CATA.TM.NBNO', 'SEG3'), numseg)
-    else
-        vali = code
-        valk = 'EST INCONNU '
-        call utmess('F', 'MODELISA8_69', sk=valk, si=vali)
-    endif
+    ASSERT(code.ge.1 .and. code.le.4)
+
     lonigr = absnb*irepe + 1
     call jecroc(jexnum(liel, igrel))
     call jeecra(jexnum(liel, igrel), 'LONMAX', lonigr)
     call jeveuo(jexnum(liel, igrel), 'E', jligr)
-    call jeveuo(ligr//'.LGNS', 'E', jdlgns)
-    call jeveuo(ligr//'.LGRF', 'E', jnoma)
-    noma=zk8(jnoma)
+
     kligr = 0
     do 130 ic = 1, irepe
         do 110 k = 1, absnb
@@ -140,7 +141,7 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
                 zi(jnema-1+2) = -nbno(1)
                 nbno(1) = nbno(1) + 1
                 zi(jnema-1+3) = -nbno(1)
-                zi(jnema-1+4) = numseg
+                zi(jnema-1+4) = numse3
                 kligr = kligr + 1
                 zi(jligr-1+kligr) = -inema
             else if (code.eq.3) then
@@ -151,11 +152,12 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
                 zi(jnema-1+1) = nunoeu
                 zi(jnema-1+2) = -nbno(1)+1
                 zi(jnema-1+3) = -nbno(1)
-                zi(jnema-1+4) = numseg
+                zi(jnema-1+4) = numse3
                 kligr = kligr + 1
                 zi(jligr-1+kligr) = -inema
-                zi(jdlgns+nbno(1)-2) = ilag1
-                zi(jdlgns+nbno(1)-1) = ilag2
+                ASSERT(jlgns.ne.1)
+                zi(jlgns+nbno(1)-2) = ilag1
+                zi(jlgns+nbno(1)-1) = ilag2
             else if (code.eq.4) then
                 inema = inema + 1
                 call jecroc(jexnum(nema, inema))
@@ -164,12 +166,11 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
                 zi(jnema-1+1) = nunoeu
                 zi(jnema-1+2) = -nbno(k)+1
                 zi(jnema-1+3) = -nbno(k)
-                zi(jnema-1+4) = numseg
+                zi(jnema-1+4) = numse3
                 kligr = kligr + 1
                 zi(jligr-1+kligr) = -inema
             endif
 110      continue
 130  end do
     zi(jligr-1+kligr+1) = numel
-    call jedema()
 end subroutine

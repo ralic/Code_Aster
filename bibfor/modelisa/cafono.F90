@@ -79,7 +79,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     character(len=16) :: motcle(nmocl), keywordfact, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
     character(len=24) :: liel, nomnoe, nomele, mesnoe
-    integer :: nb_elem_late, nb_noel_maxi
+    integer :: nb_elem_late, nb_noel_maxi, jlgns, iexi
     integer, pointer :: desgi(:) => null()
     character(len=8), pointer :: noms_noeuds(:) => null()
 !     ------------------------------------------------------------------
@@ -300,6 +300,12 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     zk8(jncmp-1+10) = 'GAMMA'
 !
     call jeveuo(ligrch//'.NBNO', 'E', jnbno)
+    call jeexin(ligrch//'.LGNS', iexi)
+    if (iexi.gt.0) then
+        call jeveuo(ligrch//'.LGNS', 'E', jlgns)
+    else
+        jlgns=1
+    endif
 !
 !     -----------------------------------------------
 !     BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE
@@ -324,9 +330,9 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
 !
             igrel = igrel + 1
             call jenuno(jexnum('&CATA.TE.NOMTE', numel), nomele)
-            call noligr(ligrch, igrel, numel, 1, [in],&
+            call noligr(mesh, ligrch, igrel, numel, 1, [in],&
                         [' '], 1, 1, inema, zi(jnbno),&
-                        typlag)
+                        typlag,jlgns)
 !
             call jeveuo(jexnum(liel, igrel), 'E', jl)
             if (vale_type .eq. 'REEL') then

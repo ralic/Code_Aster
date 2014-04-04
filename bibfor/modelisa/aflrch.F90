@@ -38,6 +38,9 @@ subroutine aflrch(lisrez, chargz)
 #include "asterfort/noligr.h"
 #include "asterfort/ordlrl.h"
 #include "asterfort/utmess.h"
+#include "asterfort/nbec.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jexatr.h"
 !
 !
     character(len=19) :: lisrel
@@ -57,8 +60,6 @@ subroutine aflrch(lisrez, chargz)
 ! -------------------------------------------------------
 !  CHARGE        - IN    - K8   - : NOM DE LA SD CHARGE
 !                - JXVAR -      -
-! -------------------------------------------------------
-!
 !
 ! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
@@ -69,21 +70,22 @@ subroutine aflrch(lisrez, chargz)
     character(len=7) :: typcha
     character(len=19) :: betaf
     character(len=8) :: mod, nomgd, nomnoe
-    character(len=8) :: noma, cmp, nomcmp(nmocl)
+    character(len=8) :: noma, cmp, nomcmp(nmocl), ctype1, ctype2
     character(len=9) :: nomte
     character(len=19) :: ca1, ca2
     character(len=19) :: ligrmo, ligrch
     integer :: ntypel(nmocl)
     real(kind=8) :: beta
-    integer :: i, icmp, iddl, idecal, ifm, igrel
+    integer :: i, icmp, iddl, idecal, ifm, igrel,gd1,gd2
     integer :: in, indsur, inema, inema0, ino, inom, ipntrl, irela
     integer :: iret, j,     jprnm, jrlbe, jrlco
     integer :: jrlcof, jrldd,  jrlno, idnoeu,   jrlpo
-    integer ::    jvale1, jvale2, jvalv1, jvalv2, kddl
-    integer :: nbcmp, nbec, nbnema, nbrela, nbteli, nbterm, nddla
-    integer :: niv, numel, nunewm, iexi
-    character(len=8), pointer :: ncmp1(:) => null()
-    character(len=8), pointer :: ncmp2(:) => null()
+    integer ::    jvale1, jvale2, jvalv1, jvalv2, kddl, nec1,nec2
+    integer ::    ncmpmx1, ncmpmx2, jnocmp1, jnocmp2, jnoma1,jnoma2
+    integer ::    jnoli1, jnoli2, jdesc1, jdesc2, jncmp1,jncmp2
+    integer ::    jlclima1, jlclima2,lontav1,lontav2
+    integer :: nbcmp, nec, nbnema, nbrela, nbteli, nbterm, nddla
+    integer :: niv, numel, nunewm, nbdual, nbsurc, iexi, jlgns
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: rlnr(:) => null()
     character(len=8), pointer :: rltc(:) => null()
@@ -185,25 +187,47 @@ subroutine aflrch(lisrez, chargz)
         nomcmp(i)=zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i)(1:7)), ntypel(i))
     end do
-    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
+    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
 !
-    ASSERT(nbec.le.10)
+    ASSERT(nec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-!
-! --- LES CARTES CA1 ET CA2 DOIVENT OBLIGATOIREMENT AVOIR ETE
-! --- CREEES AU PREALABLE
+
+!   -- les cartes ca1 et ca2 doivent obligatoirement avoir ete
+!   -- creees au prealable
+!   -----------------------------------------------------------
     call jeexin(ca1//'.DESC', iret)
     ASSERT(iret.gt.0)
-!
-    call jeveuo(ca1//'.NCMP', 'E', vk8=ncmp1)
-    call jeveuo(ca1//'.VALV', 'E', jvalv1)
+
+    call jeveuo(ca1//'.DESC', 'E', jdesc1)
+    call jeveuo(ca1//'.NOMA', 'E', jnoma1)
+    call jeveuo(ca1//'.NOLI', 'E', jnoli1)
     call jeveuo(ca1//'.VALE', 'E', jvale1)
-    call jeveuo(ca2//'.NCMP', 'E', vk8=ncmp2)
-    call jeveuo(ca2//'.VALV', 'E', jvalv2)
+    call jeveuo(ca1//'.NCMP', 'E', jncmp1)
+    call jeveuo(ca1//'.VALV', 'E', jvalv1)
+    call jelira(ca1//'.VALV', 'TYPELONG', cval=ctype1)
+    call jeveuo(jexatr(ca1//'.LIMA', 'LONCUM'), 'L', jlclima1)
+    call jelira(ca1//'.LIMA', 'LONT', lontav1)
+    gd1 = zi(jdesc1-1+1)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', gd1), 'L', jnocmp1)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd1), 'LONMAX', ncmpmx1)
+    nec1 = nbec(gd1)
+
+    call jeveuo(ca2//'.DESC', 'E', jdesc2)
+    call jeveuo(ca2//'.NOMA', 'E', jnoma2)
+    call jeveuo(ca2//'.NOLI', 'E', jnoli2)
     call jeveuo(ca2//'.VALE', 'E', jvale2)
-!
-!
+    call jeveuo(ca2//'.NCMP', 'E', jncmp2)
+    call jeveuo(ca2//'.VALV', 'E', jvalv2)
+    call jelira(ca2//'.VALV', 'TYPELONG', cval=ctype2)
+    call jeveuo(jexatr(ca2//'.LIMA', 'LONCUM'), 'L', jlclima2)
+    call jelira(ca2//'.LIMA', 'LONT', lontav2)
+    gd2 = zi(jdesc2-1+1)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', gd2), 'L', jnocmp2)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd2), 'LONMAX', ncmpmx2)
+    nec2 = nbec(gd2)
+
+
     numel=0
     call jeveuo(ligrch//'.NBNO', 'E', vi=nbno)
     call dismoi('NB_MA_SUP', ligrch, 'LIGREL', repi=inema)
@@ -219,6 +243,12 @@ subroutine aflrch(lisrez, chargz)
     call jeveuo(lisrel//'.RLBE', 'L', jrlbe)
     call jeveuo(lisrel//'.RLLA', 'L', vk8=rlla)
 !
+    call jeexin(ligrch//'.LGNS', iexi)
+    if (iexi.gt.0) then
+        call jeveuo(ligrch//'.LGNS', 'E', jlgns)
+    else
+        jlgns=1
+    endif
 !
 !
     do irela = 1, nbrela
@@ -251,7 +281,7 @@ subroutine aflrch(lisrez, chargz)
             cmp=zk8(iddl+ino-1)
 !
             icmp=indik8(nomcmp,cmp,1,nbcmp)
-            if (.not.exisdg(zi(jprnm-1+(in-1)*nbec+1),icmp)) then
+            if (.not.exisdg(zi(jprnm-1+(in-1)*nec+1),icmp)) then
                 valk(1)=cmp
                 valk(2)=nomnoe
                 call utmess('F', 'CHARGES2_31', nk=2, valk=valk)
@@ -267,21 +297,21 @@ subroutine aflrch(lisrez, chargz)
 !
             if (numel .ne. 0) then
                 igrel=igrel+1
-                call noligr(ligrch, igrel, numel, 1, [in],&
-                            ['        '], 3, 1, inema, nbno,&
-                            rlla(irela))
+                call noligr(noma, ligrch, igrel, numel, 1, [in],&
+                            [' '], 3, 1, inema, nbno,&
+                            rlla(irela),jlgns)
             else
                 call utmess('F', 'CHARGES2_33', sk=nomnoe)
             endif
         enddo
 !
 !
-!
-!       --  STOCKAGE DANS LES CARTES CA1 ET CA2
+!       --  stockage dans les cartes ca1 et ca2
+!       -----------------------------------------
         nbnema=inema-inema0
         ASSERT(nbnema.eq.nbterm)
-        ncmp1(1)='A1'
-        ncmp2(1)='C'
+        zk8(jncmp1-1+1)='A1'
+        zk8(jncmp2-1+1)='C'
         do j = 1, nbnema
             if (typcoe .eq. 'COMP') then
                 zc(jvalv1)=zc(jrlcof-1+j)
@@ -289,8 +319,11 @@ subroutine aflrch(lisrez, chargz)
                 zr(jvalv1)=zr(jrlcof-1+j)
             endif
             nunewm=-(inema0+j)
-            call nocart(ca1, -3, 1, ligrel=ligrch, nma=1,&
-                        limanu=[nunewm])
+            call nocart(ca1, -3, 1, ligrel=ligrch, nma=1,limanu=[nunewm],&
+                        jdesc=jdesc1,jnoma=jnoma1,jncmp=jncmp1,jnoli=jnoli1,&
+                        jvale=jvale1,jvalv=jvalv1,jnocmp=jnocmp1,&
+                        ncmpmx=ncmpmx1,nec=nec1,ctype=ctype1,&
+                        jlclima=jlclima1,lontav=lontav1)
             if (j .lt. nbnema) then
                 if (typval .eq. 'REEL') then
                     zr(jvalv2)=0.d0
@@ -312,8 +345,11 @@ subroutine aflrch(lisrez, chargz)
                     ASSERT(.false.)
                 endif
             endif
-            call nocart(ca2, -3, 1, ligrel=ligrch, nma=1,&
-                        limanu=[nunewm])
+            call nocart(ca2, -3, 1, ligrel=ligrch, nma=1,limanu=[nunewm],&
+                        jdesc=jdesc2,jnoma=jnoma2,jncmp=jncmp2,jnoli=jnoli2,&
+                        jvale=jvale2,jvalv=jvalv2,jnocmp=jnocmp2,&
+                        ncmpmx=ncmpmx2,nec=nec2,ctype=ctype2,&
+                        jlclima=jlclima2,lontav=lontav2)
         enddo
  60     continue
     end do

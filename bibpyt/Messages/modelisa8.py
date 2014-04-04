@@ -208,10 +208,6 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orie
  mot-clé GROUP_MA_ESCL.
 """),
 
-69 : _(u"""
- le code:  %(i1)d   %(k1)s
-"""),
-
 
 
 71 : _(u"""

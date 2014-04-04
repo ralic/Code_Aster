@@ -1,5 +1,5 @@
-subroutine editgd(chinz, ncmp, gd, nedit, dg)
-! aslint: disable=
+subroutine editgd(ncmp,nedit,dg,ncmpmx,ctype,&
+                  jnocmp,jncmp,jvalv,jvale)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,61 +23,50 @@ subroutine editgd(chinz, ncmp, gd, nedit, dg)
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/jacopo.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: dg(*), ncmp, gd, nedit
-    character(len=*) :: chinz
+    integer, intent(in) :: ncmp
+    integer, intent(in) :: nedit
+    integer, intent(inout) :: dg(*)
+    integer, intent(in) :: ncmpmx
+    character(len=8), intent(in) :: ctype
+    integer, intent(in) :: jnocmp
+    integer, intent(in) :: jncmp
+    integer, intent(in) :: jvalv
+    integer, intent(in) :: jvale
 ! ----------------------------------------------------------------------
-!     ENTREES:
-!     CHINZ : NOM DE LA CARTE A METTRE A JOUR
-!     NCMP  : NOMBRE DE CMP A STOCKER
-!     GD  : GRANDEUR
-!     NEDIT : NUMERO DE LA GRANDEUR EDITEE
+!     entrees:
+!     ncmp  : nombre de cmp a stocker
 !
-!     SORTIES:
-!     DG  : DESCRIPTEUR_GRANDEUR A METTRE A JOUR
+!     sorties:
+!     dg  : descripteur_grandeur a mettre a jour
 !
 ! ----------------------------------------------------------------------
-!
-!     FONCTIONS EXTERNES:
-!     -------------------
     integer :: ior
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: i, j, iec, reste, code, ncmpmx, deb2, debgd
-    integer :: nocmp, wnocmp, lshift
-    character(len=8) :: nomcmp, ctype
+    integer :: i, j, iec, reste, code, deb2, debgd
+    integer :: lshift
+    character(len=8) :: nomcmp
     character(len=24) :: valk
-    character(len=19) :: chin
-!
-!
 !-----------------------------------------------------------------------
-    integer :: iad1, iad2, ico, indgd, ncmp2
+    integer :: ico, indgd, ncmp2
 !-----------------------------------------------------------------------
-    call jemarq()
-    chin=chinz
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     debgd = (nedit-1)*ncmpmx
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', nocmp)
-    call jeveuo(chin//'.NCMP', 'L', wnocmp)
 !
-!     -- ON COMPTE LE NOMBRE DE CMPS A NOTER REELLEMENT :
+!   -- on compte le nombre de cmps a noter reellement :
     ncmp2=0
-    do 103,i=1,ncmp
-    if (zk8(wnocmp-1+i)(1:1) .ne. ' ') ncmp2=ncmp2+1
-    103 end do
+    do i=1,ncmp
+        if (zk8(jncmp-1+i)(1:1) .ne. ' ') ncmp2=ncmp2+1
+    enddo
 !
     indgd = 0
     ico=0
-    do 100 i = 1, ncmpmx
-        nomcmp = zk8(nocmp-1+i)
-        j = indik8(zk8(wnocmp),nomcmp,1,ncmp)
+    do i = 1, ncmpmx
+        nomcmp = zk8(jnocmp-1+i)
+        j = indik8(zk8(jncmp),nomcmp,1,ncmp)
         if (j .ne. 0) then
             ico=ico+1
             indgd = indgd + 1
@@ -86,28 +75,24 @@ subroutine editgd(chinz, ncmp, gd, nedit, dg)
             code = lshift(1,reste)
             dg(iec) = ior(dg(iec),code)
             deb2 = debgd + indgd
-            call jeveuo(chin//'.VALV', 'L', iad1)
-            call jelira(chin//'.VALV', 'TYPELONG', cval=ctype)
-            call jeveuo(chin//'.VALE', 'E', iad2)
-            call jacopo(1, ctype, iad1+j-1, iad2+deb2-1)
+            call jacopo(1, ctype, jvalv+j-1, jvale+deb2-1)
         endif
-100  end do
-!
+    enddo
+
     if (ico .ne. ncmp2) then
         call utmess('F+', 'CALCULEL6_68')
-        do 101 i = 1, ncmpmx
-            nomcmp = zk8(nocmp-1+i)
+        do i = 1, ncmpmx
+            nomcmp = zk8(jnocmp-1+i)
             valk = nomcmp
             call utmess('F+', 'CALCULEL6_69', sk=valk)
-101      continue
+        enddo
         call utmess('F+', 'CALCULEL6_70')
-        do 102 i = 1, ncmp
-            nomcmp = zk8(wnocmp-1+i)
+        do i = 1, ncmp
+            nomcmp = zk8(jncmp-1+i)
             valk = nomcmp
             call utmess('F+', 'CALCULEL6_71', sk=valk)
-102      continue
-        call utmess('F', 'VIDE_1')
+         enddo
+         call utmess('F', 'VIDE_1')
     endif
 !
-    call jedema()
 end subroutine
