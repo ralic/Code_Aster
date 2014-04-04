@@ -229,7 +229,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                     call getvid('EXCIT', 'CHARGE', iocc=indic, scal=nomcha, nbret=n1)
                     do ichd = 1, nchar
                         if (nomcha .eq. zk8(jlisdb+ichd-1)) then
-                            call utmess('E', 'CHARGES_1', sk=nomcha)
+                            call utmess('F', 'CHARGES_1', sk=nomcha)
                         endif
                     end do
                 else
