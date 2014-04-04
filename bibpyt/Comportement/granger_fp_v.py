@@ -34,7 +34,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
-   algo_inte         = ('ANALYTIQUE',),
+   algo_inte      = ('SPECIFIQUE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )
