@@ -45,7 +45,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     character(len=8) :: char1
     real(kind=8) :: instap, coefr(2)
     integer ::  neq, ieq, neq2,  iret, j1, jinfc, ichar
-    integer :: nbchar, iexi, jlchar
+    integer :: nbchar, jlchar
     character(len=1) :: typch(2)
     logical :: lvcine
     integer, pointer :: dlci(:) => null()
@@ -81,8 +81,6 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     call jelira(charge, 'LONMAX', ival=nbchar)
     do 11 ichar = 1, nbchar
         char1=zk24(jlchar-1+ichar)(1:8)
-        call jeexin(char1//'.ELIM      .AFCK', iexi)
-        if (iexi .gt. 0) lvcine=.true.
 11  end do
 !
 !     -- S'IL N'Y A PAS DE CHARGES CINEMATIQUES, IL N'Y A RIEN A FAIRE:

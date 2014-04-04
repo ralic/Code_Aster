@@ -50,9 +50,8 @@ subroutine ascima(infcha, nu, matass, cumul)
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     character(len=4) :: cumul
-    character(len=8) ::  charge
     character(len=19) :: infch2
-    integer :: iret, iret1, iret2, iret3, ich, ncharg,   jlchci, ier
+    integer :: iret, iret1, iret2, iret3, ich, ncharg,   jlchci
     integer, pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !-----------------------------------------------------------------------
@@ -86,16 +85,6 @@ subroutine ascima(infcha, nu, matass, cumul)
             if (infc(ich+1) .lt. 0) then
                 nchci = nchci+1
                 zk24(jlchci-1+nchci) = lcha(ich)
-!
-!         -- CAS DES SD_CHAR_MECA POUVANT CONTENIR UNE SD_CHAR_CINE :
-            else if (infc(ich+1).ge.0) then
-                ASSERT(lcha(ich)(9:24).eq.' ')
-                charge=lcha(ich)(1:8)
-                call jeexin(charge//'.ELIM      .AFCK', ier)
-                if (ier .gt. 0) then
-                    nchci = nchci+1
-                    zk24(jlchci-1+nchci) = charge//'.ELIM'
-                endif
             endif
  1      continue
         if (nchci .eq. 0) goto 9999

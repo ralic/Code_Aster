@@ -23,9 +23,6 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
                           'ECHANGE_PAROI','PRE_GRAD_TEMP','LIAISON_DDL','LIAISON_GROUP',
                           'LIAISON_UNIF','LIAISON_CHAMNO','RAYONNEMENT','LIAISON_MAIL' ),),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
-         METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les températures imposées",
-                               into=('DUALISATION',),defaut='DUALISATION',),
-                               # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
 
          TEMP_IMPO       =FACT(statut='f',max='**',
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),

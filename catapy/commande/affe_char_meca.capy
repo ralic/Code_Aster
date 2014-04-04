@@ -41,11 +41,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
             GRAVITE          =SIMP(statut='o',typ='R',min=1,max=1),
             DIRECTION        =SIMP(statut='o',typ='R',min=3,max=3),),
 
-         METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les déplacements imposés",
-                               into=('DUALISATION',),defaut='DUALISATION',),
-                               # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
 
-         ROTATION        =FACT(statut='f', max=1, 
+         ROTATION        =FACT(statut='f', max=1,
              fr="Définition d'un chargement de rotation",
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(), max='**'),
              MAILLE          =SIMP(statut='f',typ=ma, validators=NoRepeat(),max='**'),

@@ -438,7 +438,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.RELR', bas2, k192//'.RELR')
         call jedup1(k191//'.RERR', bas2, k192//'.RERR')
         call jedup1(k191//'.RELC', bas2, k192//'.RELC')
-        call jedup1(k191//'.RECC', bas2, k192//'.RECC')
         call jedup1(k191//'.TITR', bas2, k192//'.TITR')
 !       JE (JP) NE SAIS PAS FAIRE UNE COPIE "PROFONDE" :
 !       QUEL NOM DONNER AUX CH2 ?

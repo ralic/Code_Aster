@@ -597,7 +597,6 @@ subroutine detrsd(typesd, nomsd)
  61     continue
         call jedetr(matel//'.RELR')
         call jedetr(matel//'.RELC')
-        call jedetr(matel//'.RECC')
         call jedetr(matel//'.RERR')
 !
 !     ------------------------------------------------------------------

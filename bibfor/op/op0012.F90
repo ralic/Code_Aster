@@ -1,6 +1,5 @@
 subroutine op0012()
 !======================================================================
-! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +18,6 @@ subroutine op0012()
     implicit none
 !
 !                       OPERATEUR ASSE_MATRICE
-!======================================================================
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
@@ -40,13 +38,12 @@ subroutine op0012()
 #include "asterfort/sdmpic.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8) :: nu, matas, charge, syme, sym2, kmpic
+    character(len=8) :: nu, matas, syme, sym2, kmpic
     character(len=16) :: typm, oper
-    character(len=19) :: matel, solveu
+    character(len=19) :: solveu
     character(len=24) :: lchci, lmatel
-    integer :: itysca, nbchc, nbmat, jlimat, jlchci, ibid, k, j, nbchar
-    integer :: jrecc, ico, iexi, islvk, ilimat
-!-----------------------------------------------------------------------
+    integer :: itysca, nbchc, nbmat, jlimat, jlchci, ibid, k
+    integer :: ico, islvk, ilimat
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -73,41 +70,10 @@ subroutine op0012()
     lchci='&&OP0012.LCHARCINE'
     call getvid(' ', 'CHAR_CINE', nbval=0, nbret=nbchc)
     nbchc = -nbchc
-!     -- LES SD_CHAR_XXX PEUVENT CONTENIR UNE SD_CHAR_CINE :
-    do k = 1, nbmat
-        matel=zk24(jlimat-1+k)
-        ASSERT(zk24(jlimat-1+k)(9:24).eq.' ')
-        call jeexin(matel//'.RECC', iexi)
-        if (iexi .gt. 0) then
-            call jeveuo(matel//'.RECC', 'L', jrecc)
-            call jelira(matel//'.RECC', 'LONMAX', nbchar)
-            do j = 1, nbchar
-                charge=zk8(jrecc-1+j)
-                call jeexin(charge//'.ELIM      .AFCK', iexi)
-                if (iexi .gt. 0) nbchc=nbchc+1
-            end do
-        endif
-    end do
-!
+
     if (nbchc .gt. 0) then
         call wkvect(lchci, 'V V K24', nbchc, jlchci)
         call getvid(' ', 'CHAR_CINE', nbval=nbchc, vect=zk24(jlchci), nbret=ico)
-        do k = 1, nbmat
-            matel=zk24(jlimat-1+k)
-            call jeexin(matel//'.RECC', iexi)
-            if (iexi .gt. 0) then
-                call jeveuo(matel//'.RECC', 'L', jrecc)
-                call jelira(matel//'.RECC', 'LONMAX', nbchar)
-                do j = 1, nbchar
-                    charge=zk8(jrecc-1+j)
-                    call jeexin(charge//'.ELIM      .AFCK', iexi)
-                    if (iexi .gt. 0) then
-                        ico=ico+1
-                        zk24(jlchci-1+ico)=charge//'.ELIM'
-                    endif
-                end do
-            endif
-        end do
     endif
 !
 !

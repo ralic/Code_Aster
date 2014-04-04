@@ -23,7 +23,6 @@ subroutine aflrch(lisrez, chargz)
 #include "asterfort/cragch.h"
 #include "asterfort/craglc.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/elimdi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/impre2.h"
 #include "asterfort/infniv.h"
@@ -82,7 +81,7 @@ subroutine aflrch(lisrez, chargz)
     integer :: jrlcof, jrldd,  jrlno, idnoeu,   jrlpo
     integer ::    jvale1, jvale2, jvalv1, jvalv2, kddl
     integer :: nbcmp, nbec, nbnema, nbrela, nbteli, nbterm, nddla
-    integer :: niv, numel, nunewm, nbdual, nbsurc, iexi
+    integer :: niv, numel, nunewm, iexi
     character(len=8), pointer :: ncmp1(:) => null()
     character(len=8), pointer :: ncmp2(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
@@ -129,10 +128,6 @@ subroutine aflrch(lisrez, chargz)
 !     -- ET SUPPRESSION DES RELATIONS REDONDANTES EN
 !     -- APPLIQUANT LE PRINCIPE DE SURCHARGE
     call ordlrl(charge, lisrel, nomgd)
-!
-!     -- TRAITEMENT DU MOT CLE METHODE='ELIMINATION':
-    call elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
-    if (nbdual .eq. 0) goto 998
 !
 !
     if (ligrch(12:13) .eq. 'TH') then
@@ -325,10 +320,9 @@ subroutine aflrch(lisrez, chargz)
 !
 !
 !
-!     -- IMPRESSION DES RELATIONS REDONDANTES ET DONC SUPPRIMEES :
-!     ------------------------------------------------------------
-998 continue
-    if ((nbsurc.gt.0) .and. (niv.ge.2)) then
+!   -- impression des relations redondantes et donc supprimees :
+!   ------------------------------------------------------------
+    if (niv.ge.2) then
 !
         call utmess('I', 'CHARGES2_34')
 !

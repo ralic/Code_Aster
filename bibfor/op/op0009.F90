@@ -66,7 +66,7 @@ subroutine op0009()
     character(len=19) :: kcha, matel, rigiel, massel, resuel
     character(len=24) :: time2, mate, compor
     logical :: exitim
-    integer :: nchar, n1, jrecc, n2, n3, n4, ier, n5, nh, n6, ncha, icha
+    integer :: n1, n2, n3, n4, ier, n5, nh, n6, ncha, icha
     integer :: nbresu, jrelr, iresu, iexi, n7
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
@@ -187,16 +187,6 @@ subroutine op0009()
     goto 20
 !
  20 continue
-!
-!
-!     -- CREATION DE L'OBJET .RECC :
-!     ------------------------------
-    call getvid(' ', 'CHARGE', nbval=0, nbret=n1)
-    if (n1 .lt. 0) then
-        nchar=-n1
-        call wkvect(matel//'.RECC', 'G V K8', nchar, jrecc)
-        call getvid(' ', 'CHARGE', nbval=nchar, vect=zk8(jrecc), nbret=n1)
-    endif
 !
 !
 !     -- SI MATEL N'EST PAS MPI_COMPLET, ON LE COMPLETE :

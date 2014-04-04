@@ -20,7 +20,6 @@ from SD import *
 
 from SD.sd_ligrel import sd_ligrel
 from SD.sd_carte import sd_carte
-from SD.sd_char_cine import sd_char_cine
 
 
 class sd_char_acou(AsBase):
@@ -31,5 +30,4 @@ class sd_char_acou(AsBase):
     chac_cimpo = Facultatif(sd_carte(SDNom(nomj='.CHAC.CIMPO', fin=19)))
     chac_imped = Facultatif(sd_carte(SDNom(nomj='.CHAC.IMPED', fin=19)))
     chac_ligre = Facultatif(sd_ligrel(SDNom(nomj='.CHAC.LIGRE', fin=19)))
-    ELIM = Facultatif(sd_char_cine())
     TYPE = AsVK8(lonmax=1, )

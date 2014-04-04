@@ -20,7 +20,6 @@ from SD import *
 
 from SD.sd_ligrel import sd_ligrel
 from SD.sd_carte import sd_carte
-from SD.sd_char_cine import sd_char_cine
 
 
 class sd_char_gf_xx(AsBase):
@@ -93,7 +92,6 @@ class sd_char_meca(AsBase):
     TYPE            = AsVK8(lonmax=1)
 
     CHME = Facultatif(sd_char_chme())
-    ELIM = Facultatif(sd_char_cine())
 
     TRANS01 = Facultatif(AsVR(lonmax=6, ))
     TRANS02 = Facultatif(AsVR(lonmax=6, ))

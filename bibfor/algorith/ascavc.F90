@@ -1,5 +1,4 @@
-subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
-                  vci)
+subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci)
     implicit none
 !
 ! ======================================================================
@@ -64,7 +63,6 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
     character(len=19) :: charci, chamno, vci2, ligrel
     character(len=24) :: vachci, valk(2), infobl
     character(len=8) :: charge
-    integer :: ier
     integer, pointer :: dlci(:) => null()
     data chamno/'&&ASCAVC.???????'/
     data vachci/'&&ASCAVC.LISTE_CI'/
@@ -96,8 +94,6 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
         if (icine .lt. 0) nchci=nchci+1
 !       -- UNE CHARGE NON "CINEMATIQUE" PEUT EN CONTENIR UNE :
         charge=zk24(idchar-1+ichar)(1:8)
-        call jeexin(charge//'.ELIM      .AFCK', ier)
-        if (ier .gt. 0) nchci=nchci+1
     end do
 !
 !
@@ -121,20 +117,13 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
         do ichar = 1, nchtot
             charge=zk24(idchar-1+ichar)(1:8)
             icine = zi(jinfc+ichar)
-            call jeexin(charge//'.ELIM      .AFCK', ier)
-            if (icine .lt. 0 .or. ier .gt. 0) then
+            if (icine .lt. 0) then
                 ichci = ichci + 1
                 call gcnco2(newnom)
                 chamno(10:16) = newnom(2:8)
                 call corich('E', chamno, ichar, ibid)
                 zk24(ilchno-1+ichci) = chamno
-                if (icine .lt. 0) then
-                    call calvci(chamno, numedd, 1, charge, inst,&
-                                'V')
-                else
-                    call calvci(chamno, numedd, 1, charge//'.ELIM', inst,&
-                                'V')
-                endif
+                call calvci(chamno, numedd, 1, charge, inst, 'V')
                 call jeveuo(chamno//'.DLCI', 'L', vi=dlci)
 !           --- COMBINAISON DES DLCI (OBJET CONTENANT DES 0 OU DES 1),
 !           --- LES 1 ETANT POUR LES DDL CONTRAINT

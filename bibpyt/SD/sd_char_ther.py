@@ -23,7 +23,6 @@ from SD.sd_cham_elem import sd_cham_elem
 from SD.sd_carte import sd_carte
 from SD.sd_champ import sd_champ
 from SD.sd_fonction import sd_fonction
-from SD.sd_char_cine import sd_char_cine
 
 
 class sd_char_chth(AsBase):
@@ -66,4 +65,3 @@ class sd_char_ther(AsBase):
     nomj = SDNom(fin=8)
     TYPE = AsVK8(lonmax=1)
     CHTH = sd_char_chth()
-    ELIM = Facultatif(sd_char_cine())

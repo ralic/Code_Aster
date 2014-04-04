@@ -28,7 +28,6 @@ class sd_matr_elem(AsBase):
     nomj = SDNom(fin=19)
     RERR = AsVK24(lonmax=5, )
     RELR = Facultatif(AsVK24())
-    RECC = Facultatif(AsVK8())
     TITR = AsVK80(SDNom(debut=19), optional=True)
 
     # indirection par RELR :

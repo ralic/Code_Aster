@@ -27,9 +27,6 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                             'EFFE_FOND','FLUX_THM_REP',),),
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
-         METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les déplacements imposés",
-                               into=('DUALISATION',),defaut='DUALISATION',),
-                               # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
 
          DDL_IMPO        =FACT(statut='f',max='**',
            fr="Impose à des noeuds une ou plusieurs valeurs de déplacement (ou de certaines grandeurs asscociées) fournies"
