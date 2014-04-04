@@ -21,6 +21,8 @@ def configure(self):
     # enable TEST_STRICT on the reference server
     self.env.append_value('DEFINES', ['TEST_STRICT'])
 
+    self.env.append_value('CFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
+    self.env.append_value('FCFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env['ADDMEM'] = 250
     self.env.append_value('OPT_ENV', [
         '. /aster/etc/codeaster/profile.sh',
@@ -48,10 +50,10 @@ def configure(self):
     self.env.append_value('LIB', ('pthread', 'util'))
 
     # to fail if not found
-    self.options.enable_hdf5 = True
-    self.options.enable_med = True
-    self.options.enable_metis = True
-    self.options.enable_mumps = True
-    self.options.enable_scotch = True
+    opts.enable_hdf5 = True
+    opts.enable_med = True
+    opts.enable_metis = True
+    opts.enable_mumps = True
+    opts.enable_scotch = True
 
     opts.enable_petsc = False
