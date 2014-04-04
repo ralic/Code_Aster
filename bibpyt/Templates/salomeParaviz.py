@@ -57,14 +57,8 @@ INPUTFILE2 = os.path.join(root,INPUTFILE1)
 if not os.path.isfile(INPUTFILE2): raise Exception("Fichier %s non present!" % INPUTFILE1)
 
 #%====================Initialisation etude================================%
-if STUDY:
-    # Si on a le nom de l'etude
-    study=myStudyManager.GetStudyByName(STUDY)
-    salome.salome_init(study._get_StudyId())
 
-else:
-    # Sinon on choisit etude courante
-    salome.salome_init()
+salome.salome_init()
 
 #%=================== Initialisation paravis ============================%
 try: pvsimple
@@ -122,7 +116,6 @@ if CHOIX == 'COURBE' :
      display.UseIndexForXAxis = 0
      Render()
      NAME_X = display.GetProperty('SeriesNamesInfo')[0]
-     # NAME_X = 'ABSC_CURV'
      display.XArrayName = NAME_X
      display.UseIndexForXAxis = 0
      display.SeriesVisibility = ['vtkOriginalIndices', '0', NAME_X, '0']
@@ -135,38 +128,33 @@ if CHOIX != 'COURBE' :
      myResult = MEDReader(FileName=INPUTFILE2)
      if myResult is None : raise Exception("Erreur de fichier MED")
 
+     keys=myResult.GetProperty('FieldsTreeInfo')[::2]
+     arrs_with_dis=[elt.split()[-1] for elt in keys]
+     arrs = [elt.split(myResult.GetProperty('Separator').GetData()) for elt in arrs_with_dis]
+     id_champ=[[nom.split('/')[3],type] for nom,type in arrs]
+     
 
-     # Recuperation du nom des champs
-     L_POIN = myResult.GetProperty('PointFieldsArrayInfo')
-     L_CELL = myResult.GetProperty('CellFieldsArrayInfo')
-     L_ELNO = myResult.GetProperty('ElnoFieldsArrayInfo')
-     L_ELGA = myResult.GetProperty('QuadratureFieldsArrayInfo')
-     #print 'L_POIN',L_POIN,'L_CELL',L_CELL,'L_ELNO',L_ELNO,'L_ELGA',L_ELGA
-     NB_CHAMP = len(L_POIN)+len(L_CELL)+len(L_ELNO)+len(L_ELGA)
-     # On ne considere pas ELNO et ON_DEFORMED (comme Gauss)
-     if len(L_ELNO) > 0 :
-         CHOIXF ='ELNO'
-     else :
-         CHOIXF = CHOIX  
-     #print 'NB_CHAMP=',NB_CHAMP
+
+     CHOIXF = CHOIX
 
      # Champ variable ou non
 
-     NB_ORDRE = len(myResult.GetPropertyValue('TimestepValues'))
+     NB_ORDRE = len(myResult.GetProperty('TimestepValues'))
 
 if CHOIXF == 'ISO' :
 
      # Recuperation du champ et application filtre ELNO si necessaire
-     myResult.GenerateVectors = 0
 
      resu = myResult
      
-     if len (L_POIN) > 0 : 
-          NOM_CHAMP = L_POIN[0]
+     NOM_CHAMP = id_champ[0][0]
+     TYPE_CHAMP = id_champ[0][1]
+     if TYPE_CHAMP == "P0" : pd = resu.CellData
+     if TYPE_CHAMP == "P1" : pd = resu.PointData
+     if TYPE_CHAMP == "GSSNE": 
+          resu = ELNOMesh()
           pd = resu.PointData
-     if len (L_CELL) > 0 : 
-          NOM_CHAMP = L_CELL[0]
-          pd = resu.CellData
+
 
      # Recuperation des informations du champ
      for i in range(len(pd)):
@@ -180,42 +168,21 @@ if CHOIXF == 'ISO' :
      TYPE = 'Surface With Edges'
 
 
-if CHOIXF == 'ELNO' :
-
-     # Recuperation du champ et application filtre ELNO si necessaire
-     # choix de visualiser les ELNO en ELGA
-     myResult.GenerateVectors = 0
-     
-     resu = ELNOPoints()
-     resu.SelectSourceArray = ['POINTS', 'ELNO']
-     
-     
-     if len (L_ELNO) > 0 : 
-          NOM_CHAMP = L_ELNO[0]
-          pd = resu.PointData
-
-
-     # Recuperation des informations du champ
-     for i in range(len(pd)):
-          if pd.values()[i-1].GetName()== NOM_CHAMP :
-               NB_CMP = pd.values()[i-1].GetNumberOfComponents()
-               NOM_CMP = pd.values()[i-1].GetComponentName(0)
-               RANGE_CMP = pd.values()[i-1].GetRange()
-
-     # Attributs de visualisation
-     CMP = 'Component'     
-     TYPE = 'Point Sprite'
-
-
 if CHOIXF == 'GAUSS' :
 
      # Application filtre ELGA
-     myResult.GenerateVectors = 0
+
+     for nom,type in id_champ :
+         if type=="GAUSS":
+            NOM_CHAMP = nom
+            break
+
      resu = GaussPoints()
-     resu.SelectSourceArray = ['CELLS', 'ELGA']
-     if len (L_ELGA) > 0 :
-          NOM_CHAMP = L_ELGA[0]
-          pd = resu.PointData
+
+     nom = "ELGA@"+"0"
+     resu.SelectSourceArray = ['CELLS',nom]
+
+     pd = resu.PointData
 
      # Recuperation des informations du champ
      for i in range(len(pd)):
@@ -223,7 +190,6 @@ if CHOIXF == 'GAUSS' :
                NB_CMP = pd.values()[i-1].GetNumberOfComponents()
                NOM_CMP = pd.values()[i-1].GetComponentName(0)
                RANGE_CMP = pd.values()[i-1].GetRange()
-               #print NB_CMP, NOM_CMP, RANGE_CMP
 
      # Attributs de visualisation
      CMP = 'Component'
@@ -232,21 +198,37 @@ if CHOIXF == 'GAUSS' :
 
 if CHOIXF == 'DEPL' :
 
-     # Generation des vecteurs et filtre WarpByVector
-     myResult.GenerateVectors = 1
-     resu = WarpByVector()
+     resu = myResult
+
+     NOM_CHAMP=id_champ[0][0]
+     NOM_CHAMP_DEF=NOM_CHAMP
+
+     # Recuperation des informations du champ DEPL
      pd = resu.PointData
 
-     # Recuperation des informations du champ
      for i in range(len(pd)):
-          if pd.values()[i-1].GetNumberOfComponents() == 3 :
-               NOM_CHAMP = pd.values()[i-1].GetName()
-               NB_CMP = pd.values()[i-1].GetNumberOfComponents()
+          if pd.values()[i-1].GetName() == NOM_CHAMP :
                RANGE_CMP = pd.values()[i-1].GetRange()
-               #print NB_CMP, RANGE_CMP, 
-               #print NOM_CHAMP
+               NB_CMP = pd.values()[i-1].GetNumberOfComponents()
 
-     NOM_CHAMP_DEF = NOM_CHAMP
+     # Filtre calculator si NB_CMP different de 3
+
+     if NB_CMP == 2 :
+         resu=Calculator()
+         resu.Function = NOM_CHAMP_DEF+"_DX*iHat+"+ NOM_CHAMP_DEF+"_DY*jHat+0*kHat"
+         resu.ResultArrayName = NOM_CHAMP_DEF+"_Vector"
+         NOM_CHAMP_DEF = NOM_CHAMP_DEF+"_Vector"
+     if NB_CMP > 3 :
+         resu=Calculator()
+         resu.Function = NOM_CHAMP_DEF+"_DX*iHat+"+ NOM_CHAMP_DEF+"_DY*jHat+"+ NOM_CHAMP_DEF+"_DZ*kHat"
+         resu.ResultArrayName = NOM_CHAMP_DEF+"_Vector"
+         NOM_CHAMP_DEF = NOM_CHAMP_DEF+"_Vector"
+
+     # Filtre Warp by Vector
+     resu = WarpByVector()
+     resu.Vectors = ['POINTS', NOM_CHAMP_DEF]
+     pd = resu.PointData
+
      MAX_CMP = max(abs(RANGE_CMP[0]),abs(RANGE_CMP[1]))
      if MAX_CMP == 0. : MAX_CMP = 1.
      SCALE_FACTOR = 1. / MAX_CMP
@@ -255,42 +237,64 @@ if CHOIXF == 'DEPL' :
      CMP = 'Magnitude'
      TYPE = 'Surface With Edges'
      NOM_CMP =''
+     NB_CMP = 3
      
 
 
 if CHOIXF =='ON_DEFORMED' :
 
-     # Generation des vecteurs et filtre WarpByVector
-     myResult.GenerateVectors = 1
-     resu = myResult
-     
-     #resu = WarpByVector()
-     #pd = resu.PointData
+
+     resu = myResult     
      
      # Recuperation des informations du champ
-     if len(L_CELL) > 0 : 
-        NOM_CHAMP = L_CELL[0]
-        pd = resu.CellData
-     else : 
-        NOM_CHAMP = L_POIN[2]
-        pd = resu.PointData
+     # Initialisation DEPL premier champ
+     NOM_CHAMP = id_champ[1][0]
+     TYPE_CHAMP = id_champ[1][1]
+     NOM_CHAMP_DEF = id_champ[0][0]
+     if TYPE_CHAMP != "P1" : 
+        NOM_CHAMP = id_champ[0][0]
+        TYPE_CHAMP =id_champ[0][1]
+        NOM_CHAMP_DEF = id_champ[1][0]
+     else :
+        if ("DEPL" not in NOM_CHAMP_DEF) and (id_champ[1][1]=="P1"):
+           NOM_CHAMP = id_champ[0][0]
+           TYPE_CHAMP = id_champ[0][1]
+           NOM_CHAMP_DEF = id_champ[1][0]
+
+     # Traitement selon TYPE_CHAMP
+     if TYPE_CHAMP == "P0" : pd = resu.CellData
+     if TYPE_CHAMP == "P1" : pd = resu.PointData
+     if TYPE_CHAMP == "GSSNE":
+          resu = ELNOMesh()
+          pd = resu.PointData
 
      for i in range(len(pd)) :
-         #print i, pd.values()[i-1].GetName(),pd.values()[i-1].GetNumberOfComponents()
          if pd.values()[i-1].GetName() == NOM_CHAMP :
-             #print pd.values()[i-1].GetName(),'COLOR'
              NOM_CMP = pd.values()[i-1].GetComponentName(0)
              NB_CMP = pd.values()[i-1].GetNumberOfComponents()
              RANGE_CMP = pd.values()[i-1].GetRange()
   
      # Recuperation des informations du champ DEPL
-     resu = WarpByVector()
      pd1 = resu.PointData
      for i in range(len(pd1)) :
-         # On ne considere pas le champ vecteur autre que DEPL
-         if NOM_CHAMP not in pd1.values()[i-1].GetName() and pd1.values()[i-1].GetNumberOfComponents() == 3 :
-              NOM_CHAMP_DEF = pd1.values()[i-1].GetName()
-              RANGE_CMP_DEF = pd1.values()[i-1].GetRange()       
+         if pd1.values()[i-1].GetName() == NOM_CHAMP_DEF :
+             NB_CMP_DEF = pd1.values()[i-1].GetNumberOfComponents()
+             RANGE_CMP_DEF = pd1.values()[i-1].GetRange()
+
+
+     if NB_CMP_DEF == 2 :
+         resu=Calculator()
+         resu.Function = NOM_CHAMP_DEF+"_DX*iHat+"+ NOM_CHAMP_DEF+"_DY*jHat+0*kHat"
+         resu.ResultArrayName = NOM_CHAMP_DEF+"_Vector"
+         NOM_CHAMP_DEF = NOM_CHAMP_DEF+"_Vector"
+     if NB_CMP_DEF > 3 :
+         resu=Calculator()
+         resu.Function = NOM_CHAMP_DEF+"_DX*iHat+"+ NOM_CHAMP_DEF+"_DY*jHat+"+ NOM_CHAMP_DEF+"_DZ*kHat"
+         resu.ResultArrayName = NOM_CHAMP_DEF+"_Vector"
+         NOM_CHAMP_DEF = NOM_CHAMP_DEF+"_Vector"
+     
+     resu = WarpByVector()
+     resu.Vectors = ['POINTS', NOM_CHAMP_DEF]
      
      MAX_CMP = max(abs(RANGE_CMP_DEF[0]),abs(RANGE_CMP_DEF[1]))
      if MAX_CMP == 0. : MAX_CMP = 1.
@@ -314,7 +318,6 @@ if CHOIXF != 'COURBE' :
 
 
      if CHOIXF == 'DEPL' or CHOIXF == 'ON_DEFORMED' :
-          resu.Vectors = ['POINTS', NOM_CHAMP_DEF]
           resu.ScaleFactor = SCALE_FACTOR
 
      display = Show()
@@ -324,7 +327,7 @@ if CHOIXF != 'COURBE' :
      display.LookupTable = CH_PVLookupTable
      display.LookupTable = CH_PVLookupTable
 
-     if CHOIXF == 'GAUSS' or CHOIXF =='ELNO' :
+     if CHOIXF == 'GAUSS' :
           display.RadiusArray = [None, NOM_CHAMP]
           display.RadiusMode = 'Scalar'
           display.RadiusScalarRange = RANGE_CMP   
