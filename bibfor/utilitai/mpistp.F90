@@ -41,7 +41,7 @@ subroutine mpistp(imode)
 !     L'APPELANT NE DEVRAIT RIEN EXECUTER APRES L'APPEL A MPISTP.
 !-----------------------------------------------------------------------
 !
-#include "aster_constant.h"
+#include "asterf_constant.h"
     integer :: lout, imod2
     character(len=16) :: compex
     logical :: labort

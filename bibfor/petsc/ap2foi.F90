@@ -19,10 +19,10 @@ subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
-#include "aster_petsc.h"
+#include "asterf_petsc.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apksp.h"
 #include "asterfort/appcpr.h"

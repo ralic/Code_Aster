@@ -1,7 +1,7 @@
 subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
                   epsmat, mixpre, kmd)
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterfort/asmpi_comm_jev.h"

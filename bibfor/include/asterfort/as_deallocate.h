@@ -19,7 +19,7 @@
 !
 ! To have a syntax similar to the standard DEALLOCATE
 #include "asterf.h"
-#include "aster_debug.h"
+#include "asterf_debug.h"
 
 #define AS_DEALLOCATE(arg) DEBUG_LOC("free ", __FILE__, __LINE__) ; call as_deallocate(arg, strdbg=TO_STRING(arg))
 !

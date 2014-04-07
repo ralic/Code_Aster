@@ -1,6 +1,6 @@
 subroutine nupodd(nu, base, rang, nbproc)
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"

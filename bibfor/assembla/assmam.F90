@@ -6,7 +6,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !----------------------------------------------------------------------
     implicit none
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterc/getres.h"

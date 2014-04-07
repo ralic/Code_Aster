@@ -20,7 +20,7 @@ subroutine as_mfdrpw(fid, cha, val, intlac, n,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterfort/utmess.h"
 #include "med/mfdrpw.h"

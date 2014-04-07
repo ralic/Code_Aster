@@ -1,5 +1,5 @@
-#ifndef ASTER_CONSTANT_H
-#define ASTER_CONSTANT_H
+#ifndef ASTERF_CONSTANT_H
+#define ASTERF_CONSTANT_H
 !
 !   COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 !   THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@
 !   ST_TAG_CNT : mpi communication tag for the continue or stop
 !   ST_TAG_ALR : mpi communication tag for the alarm check
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 !
 #define ST_ER       1
 #define ST_OK       0

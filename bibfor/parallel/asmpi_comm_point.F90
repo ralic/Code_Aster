@@ -46,7 +46,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 ! aslint: disable=W1304
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"

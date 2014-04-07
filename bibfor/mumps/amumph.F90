@@ -92,7 +92,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     logical :: prepos
 !
 #ifdef _HAVE_MUMPS
-#include "aster_mumps.h"
+#include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
 !

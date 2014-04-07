@@ -33,7 +33,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -60,7 +60,7 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
 #ifdef _USE_MPI
 #include "mpif.h"
-#include "aster_mpif.h"
+#include "asterf_mpi.h"
 
 ! DECLARATION VARIABLES LOCALES
     integer :: jnomjv, iexi, bcrank, ibid

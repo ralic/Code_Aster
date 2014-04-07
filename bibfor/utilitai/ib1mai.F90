@@ -18,7 +18,7 @@ subroutine ib1mai()
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "aster_constant.h"
+#include "asterf_constant.h"
 #include "asterfort/ststat.h"
 !     INITIALISATION, COMME IB0MAI, POUR LA PARTIE FORTRAN 90
 !

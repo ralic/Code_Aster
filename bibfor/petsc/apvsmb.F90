@@ -18,7 +18,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -41,7 +41,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
 !
-#include "aster_petsc.h"
+#include "asterf_petsc.h"
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, tbloc, rang, nbproc, jnequ, jnequl, jnugl, jnuglp

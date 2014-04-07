@@ -23,7 +23,7 @@ subroutine asmpi_checkalarm()
 !       EN FIN D'EXECUTION, LE PROCESSEUR #0 DONNE A L'UTILISATEUR
 !       LA LISTE DES ALARMES QUI ONT ETE EMISES PAR PROCESSEUR.
 !-----------------------------------------------------------------------
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/gtalrm.h"
@@ -34,7 +34,7 @@ subroutine asmpi_checkalarm()
 #ifdef _USE_MPI
 !
 #include "mpif.h"
-#include "aster_constant.h"
+#include "asterf_constant.h"
 #include "asterc/asmpi_recv_i4.h"
 #include "asterc/asmpi_send_i4.h"
 !

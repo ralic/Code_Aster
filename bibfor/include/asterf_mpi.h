@@ -1,5 +1,5 @@
-#ifndef ASTER_MPIF_H
-#define ASTER_MPIF_H
+#ifndef ASTERF_MPI_H
+#define ASTERF_MPI_H
 !
 !   COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 !   THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@
 !
 #ifdef _USE_MPI
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 !
 #define MPI_MAX4                to_mpi_int(MPI_MAX)
 #define MPI_MIN4                to_mpi_int(MPI_MIN)

@@ -24,7 +24,7 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
 !     nb : nombre de valeurs dans les tableaux vi_ast et vi_med
 !
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=*) :: sens
     aster_int :: nb

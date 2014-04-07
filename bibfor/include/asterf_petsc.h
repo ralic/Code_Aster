@@ -1,5 +1,5 @@
-#ifndef ASTER_PETSC_H
-#define ASTER_PETSC_H
+#ifndef ASTERF_PETSC_H
+#define ASTERF_PETSC_H
 # ifdef _HAVE_PETSC
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -28,7 +28,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/r4maem.h"
@@ -44,7 +44,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     character(len=1) :: type
 !
 #ifdef _HAVE_MUMPS
-#include "aster_mumps.h"
+#include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
     mpi_int :: mpicou, mpimum

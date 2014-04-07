@@ -19,7 +19,7 @@
 !
 ! To have a syntax similar to the standard ALLOCATE
 #include "asterf.h"
-#include "aster_debug.h"
+#include "asterf_debug.h"
 
 #define AS_ALLOCATE(arg, size) DEBUG_LOC("alloc", __FILE__, __LINE__) ; call as_allocate(arg, size, strdbg=TO_STRING((arg, size)))
 !

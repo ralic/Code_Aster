@@ -50,7 +50,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
 !----------------------------------------------------------------------
     implicit none
 
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -92,7 +92,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank, vi,&
 
 #ifdef _USE_MPI
 #include "mpif.h"
-#include "aster_mpif.h"
+#include "asterf_mpi.h"
 
     character(len=1) :: typsc1
     integer, parameter :: tpetit=1000

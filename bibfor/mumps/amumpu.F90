@@ -57,7 +57,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_comm_jev.h"
@@ -82,7 +82,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     logical :: lresol
 !
 #ifdef _HAVE_MUMPS
-#include "aster_mumps.h"
+#include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
     type (smumps_struc) , pointer :: smpsk => null()

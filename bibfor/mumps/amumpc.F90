@@ -50,7 +50,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterc/matfpe.h"
 #include "asterfort/amumpi.h"
 #include "asterfort/amumpm.h"
@@ -74,7 +74,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
     logical :: prepos
 !
 #ifdef _HAVE_MUMPS
-#include "aster_mumps.h"
+#include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
     type (cmumps_struc) , pointer :: cmpsk => null()

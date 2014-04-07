@@ -47,7 +47,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !----------------------------------------------------------------------
     implicit none
 
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -79,7 +79,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 
 #ifdef _USE_MPI
 #include "mpif.h"
-#include "aster_mpif.h"
+#include "asterf_mpi.h"
 
     character(len=1) :: typsc1
 !   attention : tpetit doit etre le meme dans asmpi_comm_mvect.F90

@@ -18,7 +18,7 @@ subroutine appcrs(kptsc, lmd)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -40,7 +40,7 @@ subroutine appcrs(kptsc, lmd)
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "aster_petsc.h"
+#include "asterf_petsc.h"
 #include "asterfort/ldsp1.h"
 #include "asterfort/ldsp2.h"
 !----------------------------------------------------------------

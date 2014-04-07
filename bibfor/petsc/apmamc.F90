@@ -49,7 +49,7 @@ subroutine apmamc(kptsc)
 !
 #ifdef _HAVE_PETSC
 !
-#include "aster_petsc.h"
+#include "asterf_petsc.h"
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES

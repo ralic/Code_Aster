@@ -18,7 +18,7 @@ subroutine asmpi_warn(iexc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
 #include "asterfort/asmpi_check.h"
@@ -36,7 +36,7 @@ subroutine asmpi_warn(iexc)
 #if defined(_USE_MPI) && !defined(ASTER_DISABLE_MPI_CHECK)
 !
 #include "mpif.h"
-#include "aster_constant.h"
+#include "asterf_constant.h"
 !
     mpi_int :: iermpi, rank, nbpro4, mpicou, mpicow
     integer :: iret, ibid

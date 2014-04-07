@@ -99,7 +99,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     implicit none
 !
 ! PARAMETRES D'APPEL
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_barrier.h"

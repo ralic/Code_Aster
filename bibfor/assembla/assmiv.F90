@@ -20,7 +20,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! ======================================================================
 !
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/asmpi_comm_vect.h"

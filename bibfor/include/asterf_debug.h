@@ -16,8 +16,8 @@
 !
 ! person_in_charge: mathieu.courtois@edf.fr
 !
-#ifndef ASTER_DEBUG_H
-#define ASTER_DEBUG_H
+#ifndef ASTERF_DEBUG_H
+#define ASTERF_DEBUG_H
 
 #include "asterf_config.h"
 !

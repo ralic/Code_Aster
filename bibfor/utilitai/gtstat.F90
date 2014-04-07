@@ -19,7 +19,7 @@ function gtstat(istat)
 !
     implicit none
     logical :: gtstat
-#include "aster_constant.h"
+#include "asterf_constant.h"
 !     ARGUMENT IN
     integer :: istat
 !-----------------------------------------------------------------------

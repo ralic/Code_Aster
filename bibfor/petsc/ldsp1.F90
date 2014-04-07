@@ -30,7 +30,7 @@ subroutine ldsp1(pc, ierr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/pcmump.h"
 #ifdef _HAVE_PETSC
-#include "aster_petsc.h"
+#include "asterf_petsc.h"
 !----------------------------------------------------------------
 !     Variables PETSc
 ! because of conditional (if _HAVE_PETSC) and external types

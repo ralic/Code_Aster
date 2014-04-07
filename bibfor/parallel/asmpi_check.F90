@@ -20,7 +20,7 @@ subroutine asmpi_check(nbpro4, iret)
     implicit none
 ! aslint: disable=W1306
 !     ARGUMENT IN
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_wtime.h"
@@ -50,7 +50,7 @@ subroutine asmpi_check(nbpro4, iret)
 # else
 !
 #include "mpif.h"
-#include "aster_constant.h"
+#include "asterf_constant.h"
 #include "asterc/asmpi_irecv_i4.h"
 #include "asterc/asmpi_send_i4.h"
 #include "asterc/asmpi_test.h"

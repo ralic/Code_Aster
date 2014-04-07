@@ -20,7 +20,7 @@ subroutine execop()
 !     EXECUTION DE LA COMMANDE
 !     ------------------------------------------------------------------
 !     COMMON POUR LE NIVEAU D'"INFO"
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/etausr.h"
 #include "asterc/gcecdu.h"

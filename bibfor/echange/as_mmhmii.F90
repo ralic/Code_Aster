@@ -21,7 +21,7 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
 ! because of used in the else block of ifdef
 ! aslint: disable=W0302
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterfort/utmess.h"
 #include "med/mmhmii.h"

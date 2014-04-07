@@ -51,7 +51,7 @@ subroutine elg_apelim(kptsc, lqr)
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-#include "aster_petsc.h"
+#include "asterf_petsc.h"
 #include "asterfort/elg_matrqr.h"
 #include "asterfort/elg_comptt.h"
 #include "asterfort/elg_remplt.h"

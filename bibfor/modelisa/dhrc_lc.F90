@@ -21,7 +21,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option, sig, vip, a0, c0,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/coqrep.h"

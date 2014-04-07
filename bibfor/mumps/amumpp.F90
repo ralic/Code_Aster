@@ -44,7 +44,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/r4maem.h"
 #include "asterc/r4miem.h"
@@ -75,7 +75,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     complex(kind=8) :: csolu(*)
 !
 #ifdef _HAVE_MUMPS
-#include "aster_mumps.h"
+#include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
     type (smumps_struc) , pointer :: smpsk => null()

@@ -23,7 +23,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/indik8.h"

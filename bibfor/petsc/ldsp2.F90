@@ -23,7 +23,7 @@ subroutine ldsp2(pc, x1, y, ierr)
 #include "asterfort/amumph.h"
 #include "asterfort/assert.h"
 #ifdef _HAVE_PETSC
-#include "aster_petsc.h"
+#include "asterf_petsc.h"
     complex(kind=8) :: cbid
     integer :: iret
 !----------------------------------------------------------------

@@ -1,6 +1,6 @@
 subroutine ajlipa(modelz, base)
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"

@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-#include "aster_types.h"
+#include "asterf_types.h"
     subroutine mficom(fname, hdfok, medok, cret)
         character(len=*) :: fname
         med_int :: hdfok

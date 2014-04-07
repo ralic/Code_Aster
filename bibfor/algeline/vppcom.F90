@@ -2,7 +2,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                   resuk, nbpari, nbparr, nbpark, mxresf,&
                   vectr, nconv, neq, typres)
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"

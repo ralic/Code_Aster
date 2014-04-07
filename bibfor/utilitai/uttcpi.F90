@@ -17,7 +17,7 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"

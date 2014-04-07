@@ -21,7 +21,7 @@ use module_allocate
 ! ======================================================================
 ! aslint: disable=W0104,W1304
     implicit none
-#include "aster_debug.h"
+#include "asterf_debug.h"
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeimpm.h"

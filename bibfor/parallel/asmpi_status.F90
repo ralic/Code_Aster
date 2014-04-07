@@ -19,8 +19,8 @@ subroutine asmpi_status(istat, resp0)
 !
     implicit none
 !     ARGUMENTS          IN     OUT
-#include "aster_constant.h"
-#include "aster_types.h"
+#include "asterf_constant.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/uttrst.h"

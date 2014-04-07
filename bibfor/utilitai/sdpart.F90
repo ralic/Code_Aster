@@ -29,7 +29,7 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 ! CORPS DU PROGRAMME
     implicit none
 ! aslint: disable=W1306
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 ! DECLARATION PARAMETRES D'APPELS
     integer :: nbsd, sdloc (nbsd), nbsdp0

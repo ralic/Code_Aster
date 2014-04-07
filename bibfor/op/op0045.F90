@@ -42,7 +42,7 @@ subroutine op0045()
 ! aslint: disable=W1304,W1501
 !
 ! VARIABLES LOCALES
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"

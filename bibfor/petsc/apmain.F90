@@ -44,8 +44,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !---------------------------------------------------------------
 #include "asterf.h"
 #include "jeveux.h"
-#include "aster_types.h"
-#include "aster_petsc.h"
+#include "asterf_types.h"
+#include "asterf_petsc.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/matfpe.h"
 #include "asterfort/apalmc.h"

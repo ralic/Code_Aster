@@ -25,7 +25,7 @@ subroutine fetskp()
 !
     implicit none
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/aplext.h"
 #include "asterc/fetsco.h"

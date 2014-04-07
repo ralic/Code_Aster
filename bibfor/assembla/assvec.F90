@@ -19,7 +19,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 ! ======================================================================
 !
 ! aslint: disable=W1501
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/asmpi_barrier.h"

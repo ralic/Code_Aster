@@ -38,7 +38,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! aslint: disable=W1501
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "asterf.h"
 #include "asterc/getres.h"
 #include "asterc/r4maem.h"
@@ -70,7 +70,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     character(len=24) :: kmonit(12)
 !
 #ifdef _HAVE_MUMPS
-#include "aster_mumps.h"
+#include "asterf_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
 !

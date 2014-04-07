@@ -1,6 +1,6 @@
 subroutine nugrco(nu, base)
     implicit none
-#include "aster_types.h"
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_comm_point.h"
