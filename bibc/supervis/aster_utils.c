@@ -30,7 +30,7 @@ STRING_SIZE FStrlen( _IN char *fstr, _IN STRING_SIZE flen )
     STRING_SIZE n;
     _check_string_length(flen);
     n = flen;
-    while ( n > 1 && fstr[n-1] == ' ') { n--; }
+    while ( n >= 1 && fstr[n-1] == ' ') { n--; }
     return n;
 }
 
