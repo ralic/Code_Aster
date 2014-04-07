@@ -1,5 +1,5 @@
 subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
-                  cmp_index_drz, type_lagr, lisrel)
+                  cmp_index_drz, type_lagr, lisrel, nom_noeuds)
 !
     implicit none
 !
@@ -44,6 +44,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
     character(len=2), intent(in) :: type_lagr
     integer, intent(in) :: cmp_index_drz
     character(len=19), intent(in) :: lisrel
+    character(len=8), intent(out) :: nom_noeuds(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,6 +63,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 ! In  cmp_index_drz : index in DEPL_R <GRANDEUR> for DRZ
 ! In  type_lagr     : choosing lagrange multipliers position
 ! In  lisrel        : list of relations
+! Out nom_noeuds    : nom des noeuds "maitres" pour la relation
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -139,6 +141,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
  30 continue
 !
     call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
+    nom_noeuds(1) = nomnoe_a
 !
 ! - Loop on nodes
 !

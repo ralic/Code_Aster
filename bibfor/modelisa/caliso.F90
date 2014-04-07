@@ -21,16 +21,21 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterfort/getnode.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,15 +79,22 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: iocc
     integer :: jnom, jprnm, n1
     integer :: i_no
-    integer :: nb_cmp, nbec, ndim, nliai
+    integer :: nb_cmp, nbec, ndim, nliai, inema, nbrela, nbterm, irela
     character(len=24) :: list_node
-    integer :: jlino, numnoe
+    integer :: jlino, numnoe, jcolno
     integer :: nb_node
     character(len=2) :: type_lagr
     character(len=8) :: nomg, poslag, model
     real(kind=8) :: dist_mini, dist
-    character(len=8) :: cmp_name
-    character(len=19) :: list_rela
+    character(len=1) :: type_transf
+    character(len=8) :: cmp_name, type_rela, nom_noeuds_tmp(4)
+    character(len=8), pointer :: nom_noeuds(:) => null()
+    character(len=8), pointer :: typ_liais(:) => null()
+    integer, pointer :: lis_nb_ma_ta(:) => null()
+    integer, pointer :: rlnr(:) => null()
+    integer, pointer :: rlnt(:) => null()
+    character(len=19) :: list_rela, coll_lisno, coll_no_maitr, list_type, num_mat_tar
+    character(len=19) :: ligrch
     character(len=16) :: keywordfact
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
@@ -106,6 +118,10 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! - Initializations
 !
     list_rela = '&&CALISO.RLLISTE'
+    coll_lisno = load//'.CHME.RCLIN'
+    coll_no_maitr = load//'.CHME.RCNOM'
+    list_type = load//'.CHME.RCTYR'
+    num_mat_tar = load//'.CHME.NMATA'
     type_lagr = '12'
     l_rota_2d = .false.
     l_rota_3d = .false.
@@ -162,6 +178,17 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     ASSERT(cmp_index_dry.gt.0)
     ASSERT(cmp_index_drz.gt.0)
 !
+! - Creation des collections temporaires contenant la liste de noeuds de chaque relation
+!
+    call jecrec(coll_lisno, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nliai)
+    call jecrec(coll_no_maitr, 'G V K8', 'NU', 'CONTIG', 'CONSTANT', nliai)
+    call jeecra(coll_no_maitr, 'LONMAX', ival = 4)
+    call wkvect(list_type, 'G V K8', nliai, vk8 = typ_liais)
+    call wkvect(num_mat_tar, 'G V I', 2*nliai, vi = lis_nb_ma_ta)
+
+    ligrch = load//'.CHME.LIGRE'
+    call dismoi('NB_MA_SUP', ligrch, 'LIGREL', repi = inema)
+!
 ! - Loop on factor keyword
 !
     do iocc = 1, nliai
@@ -192,6 +219,16 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                      nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
+! ----- Recopie de la liste de noeuds dans la collection
+!
+        call jecroc(jexnum(coll_lisno, iocc))
+        call jeecra(jexnum(coll_lisno, iocc), 'LONMAX', ival = nb_node)
+        call jeveuo(jexnum(coll_lisno, iocc), 'E', jcolno)
+        do i_no = 0, nb_node - 1
+            zi(jcolno + i_no) = zi(jlino + i_no)
+        enddo
+        call jeveuo(jexnum(coll_no_maitr, iocc), 'E', vk8 = nom_noeuds)
+!
 ! ----- Only one node: nothing to do
 !
         if (nb_node .eq. 1) then
@@ -211,6 +248,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
         if (l_tran) then
             call drzrot(mesh, ligrmo, nb_node, list_node, type_lagr,&
                         tran, list_rela)
+            typ_liais(iocc) = "TRAN"
             goto 998
         endif
 !
@@ -234,10 +272,15 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
             if (l_rota_2d) then
                 call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
-                            cmp_index_drz, type_lagr, list_rela)
+                            cmp_index_drz, type_lagr, list_rela, nom_noeuds_tmp)
+                type_rela = "2D0ROTA"
+                nom_noeuds(1) = nom_noeuds_tmp(1)
             else
                 call drz02d(mesh, vale_type, dist_mini, nb_node, list_node,&
-                            type_lagr, list_rela)
+                            type_lagr, list_rela, nom_noeuds_tmp, type_transf)
+                type_rela = "2D"//type_transf
+                nom_noeuds(1) = nom_noeuds_tmp(1)
+                if ( type_transf.eq.'2' ) nom_noeuds(2) = nom_noeuds_tmp(2)
             endif
 !
 ! ----- Model: 3D
@@ -263,12 +306,31 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
             if (l_rota_3d) then
                 call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
-                            cmp_index_dry, cmp_index_drz, type_lagr, list_rela)
+                            cmp_index_dry, cmp_index_drz, type_lagr, list_rela, nom_noeuds_tmp)
+                type_rela = "3D0ROTA"
+                nom_noeuds(1) = nom_noeuds_tmp(1)
             else
                 call drz03d(mesh, vale_type, dist_mini, nb_node, list_node,&
-                            type_lagr, list_rela)
+                            type_lagr, list_rela, nom_noeuds_tmp, type_transf)
+                type_rela = "3D"//type_transf
+                nom_noeuds(1) = nom_noeuds_tmp(1)
+                nom_noeuds(2) = nom_noeuds_tmp(2)
+                if ( type_transf.eq.'1' ) nom_noeuds(3) = nom_noeuds_tmp(3)
             endif
         endif
+        typ_liais(iocc) = type_rela
+!
+        call jeveuo(list_rela//'.RLNR', 'L', vi = rlnr)
+        call jeveuo(list_rela//'.RLNT', 'L', vi = rlnt)
+        lis_nb_ma_ta(iocc*2 - 1) = -(inema+1)
+        nbrela = rlnr(1)
+        nbterm = 0
+        do irela = 1, nbrela
+            nbterm = nbterm + rlnt(irela)
+        enddo
+        lis_nb_ma_ta(iocc*2) = nbterm
+        inema = inema + nbterm
+!
 998     continue
 !
         call jedetr(list_node)

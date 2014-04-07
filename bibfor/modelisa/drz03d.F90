@@ -1,5 +1,5 @@
 subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
-                  type_lagr, lisrel)
+                  type_lagr, lisrel, nom_noeuds, type_transf)
 !
     implicit none
 !
@@ -48,6 +48,8 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
     character(len=24), intent(in) :: list_node
     character(len=2), intent(in) :: type_lagr
     character(len=19), intent(in) :: lisrel
+    character(len=8), intent(out) :: nom_noeuds(:)
+    character(len=1), intent(out) :: type_transf
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,6 +67,8 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 ! In  tran          : vector defining translation
 ! In  type_lagr     : choosing lagrange multipliers position
 ! In  lisrel        : list of relations
+! Out nom_noeuds    : nom des noeuds "maitres" pour la relation
+! Out type_transf   : type de la transformation
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,9 +170,18 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! - Name of nodes
 !
-    if (numnoe_a .ne. 0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
-    if (numnoe_b .ne. 0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_b), nomnoe_b)
-    if (numnoe_c .ne. 0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_c), nomnoe_c)
+    if (numnoe_a .ne. 0) then
+        call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
+        nom_noeuds(1) = nomnoe_a
+    endif
+    if (numnoe_b .ne. 0) then
+        call jenuno(jexnum(noma//'.NOMNOE', numnoe_b), nomnoe_b)
+        nom_noeuds(2) = nomnoe_b
+    endif
+    if (numnoe_c .ne. 0) then
+        call jenuno(jexnum(noma//'.NOMNOE', numnoe_c), nomnoe_c)
+        nom_noeuds(3) = nomnoe_c
+    endif
 !
 ! - Zero_surface triangle - Degenerate case: are all nodes have the same coordinates ?
 !
@@ -191,6 +204,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
     if (l_trian) then
 !
+        type_transf = '1'
         ASSERT(.not.l_same)
 !
 ! ----- Three nodes build non-zero-triangle
@@ -326,6 +340,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! --------- Zero triangle/degenerate case: all nodes have same coordinates
 !
+            type_transf = '2'
             nb_term = 2
             lisno(1) = nomnoe_a
             coer(1) = un
@@ -375,6 +390,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! --------- Zero triangle/degenerate case: other degenerate cases
 !
+            type_transf = '3'
             if (nb_node .eq. 2) then
 !
 ! ------------- Zero triangle/degenerate case: only two nodes in model

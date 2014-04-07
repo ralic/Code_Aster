@@ -17,7 +17,7 @@
 !
 interface
     subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node, &
-                      cmp_index_drz, type_lagr, lisrel)
+                      cmp_index_drz, type_lagr, lisrel, nom_noeuds)
         character(len=8), intent(in)  :: noma
         character(len=19), intent(in) :: ligrmo
         character(len=4), intent(in) :: type_vale
@@ -26,5 +26,6 @@ interface
         character(len=2), intent(in) :: type_lagr
         integer, intent(in) :: cmp_index_drz
         character(len=19), intent(in) :: lisrel
+        character(len=8), intent(out) :: nom_noeuds(:)
     end subroutine drz12d
 end interface

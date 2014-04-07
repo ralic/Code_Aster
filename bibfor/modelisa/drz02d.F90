@@ -1,5 +1,5 @@
 subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
-                  type_lagr, lisrel)
+                  type_lagr, lisrel, nom_noeuds, type_transf)
 !
     implicit none
 !
@@ -45,6 +45,8 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
     character(len=24), intent(in) :: list_node
     character(len=2), intent(in) :: type_lagr
     character(len=19), intent(in) :: lisrel
+    character(len=8), intent(out) :: nom_noeuds(:)
+    character(len=1), intent(out) :: type_transf
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,6 +64,8 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
 ! In  tran          : vector defining translation
 ! In  type_lagr     : choosing lagrange multipliers position
 ! In  lisrel        : list of relations
+! Out nom_noeuds    : nom des noeuds "maitres" pour la relation
+! Out type_transf   : type de la transformation
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,6 +101,7 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
     type_coef = 'REEL'
     ASSERT(type_vale.ne.'COMP')
     ASSERT(dist_mini .gt. 0.d0)
+    type_transf = '1'
 !
 ! - Nodes coordinates
 !
@@ -175,6 +180,8 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
 40  continue
 !
     call jenuno(jexnum(noma//'.NOMNOE', numnoe_b), nomnoe_b)
+    nom_noeuds(2) = nomnoe_b
+    type_transf = '2'
     do i_no = 2, nb_node
         numnoe_m = zi(jlino+i_no-1)
         call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
@@ -256,7 +263,8 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
                 direct, nb_term, vale_real, vale_cplx, vale_fonc,&
                 type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
-999  continue
+999 continue
+    nom_noeuds(1) = nomnoe_a
 !
     AS_DEALLOCATE(vk8=lisno)
     AS_DEALLOCATE(vk8=lisddl)

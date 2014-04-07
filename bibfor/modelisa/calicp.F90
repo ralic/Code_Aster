@@ -62,7 +62,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: k8dummy, poslag, model
+    character(len=8) :: k8dummy, poslag, model, nom_noeuds(3)
     character(len=2) :: type_lagr
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
@@ -204,11 +204,11 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
             zi(j_list_pair-1+2) = nume_node_2
             if (ndim .eq. 2) then
                 call drz12d(mesh, ligrmo, vale_type, 2, list_pair,&
-                            cmp_index_drz, type_lagr, list_rela)
+                            cmp_index_drz, type_lagr, list_rela, nom_noeuds)
             else if (ndim .eq. 3) then
                 call drz13d(mesh, ligrmo, vale_type, 2, list_pair,&
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
-                            cmp_index_dry, cmp_index_drz, type_lagr, list_rela)
+                            cmp_index_dry, cmp_index_drz, type_lagr, list_rela, nom_noeuds)
             endif
         enddo
         call jedetr(list_node_i1)

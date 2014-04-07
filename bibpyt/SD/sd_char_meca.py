@@ -82,6 +82,11 @@ class sd_char_chme(AsBase):
     EVOL_CHAR  = Facultatif(AsVK8(SDNom(nomj='.EVOL.CHAR'), lonmax=1, ))
     TEMPE_TEMP = Facultatif(AsVK8(SDNom(nomj='.TEMPE.TEMP'), lonmax=1, ))
 
+    RCLIN = Facultatif(AsColl(stockage='DISPERSE',modelong='VARIABLE', type='I', ))
+    RCNOM = Facultatif(AsColl(stockage='CONTIG',modelong='CONSTANT', type='K', ))
+    RCTYR = Facultatif(AsVK8(SDNom(nomj='.RCTYR'),))
+    NMATA = Facultatif(AsVI(SDNom(nomj='.NMATA'),))
+
 class sd_char_meca(AsBase):
     nomj = SDNom(fin=8)
 

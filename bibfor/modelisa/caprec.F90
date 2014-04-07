@@ -87,9 +87,10 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
     character(len=2) :: lagr_type
     character(len=8) :: cmp_name
+    character(len=1) :: type_transf
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
-    character(len=8) :: nomg_depl, nomg_sief
+    character(len=8) :: nomg_depl, nomg_sief, nom_noeuds_tmp(4)
     integer :: nb_cmp_depl, nb_cmp_sief
     integer :: j_cmp_depl, j_cmp_sief
     integer :: nbec_depl, nbec_sief
@@ -287,10 +288,11 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
                                     if (l_rota_2d) then
                                         call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
-                                                    cmp_index_drz, lagr_type, list_rela)
+                                                cmp_index_drz, lagr_type, list_rela, nom_noeuds_tmp)
                                     else
                                         call drz02d(mesh, vale_type, dist_mini, nb_node,&
-                                                    list_node, lagr_type, list_rela)
+                                                    list_node, lagr_type, list_rela,&
+                                                    nom_noeuds_tmp, type_transf)
                                     endif
 !
 ! ----------------------------- Set LIAISON_SOLIDE for ndim = 3
@@ -328,10 +330,11 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                         call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
                                                     cmp_index_dx, cmp_index_dy, cmp_index_dz,&
                                                     cmp_index_drx, cmp_index_dry, cmp_index_drz,&
-                                                    lagr_type, list_rela)
+                                                    lagr_type, list_rela, nom_noeuds_tmp)
                                     else
                                         call drz03d(mesh, vale_type, dist_mini, nb_node,&
-                                                    list_node, lagr_type, list_rela)
+                                                    list_node, lagr_type, list_rela,&
+                                                    nom_noeuds_tmp, type_transf)
                                     endif
                                 else
                                     ASSERT(.false.)
