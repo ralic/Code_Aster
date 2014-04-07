@@ -215,7 +215,7 @@ subroutine op0167()
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_91')
         endif
-        call jeexin(nomain//'.ABS_CURV', iret)
+        call jeexin(nomain//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_92')
         endif
@@ -312,7 +312,7 @@ subroutine op0167()
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_94')
         endif
-        call jeexin(nomain//'.ABS_CURV', iret)
+        call jeexin(nomain//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_95')
         endif
@@ -463,7 +463,7 @@ subroutine op0167()
     call jedupo(nomain//'.PARA_R', 'G', nomaou//'.PARA_R', .false.)
     call jedupo(nomain//'.SUPMAIL', 'G', nomaou//'.SUPMAIL', .false.)
     call jedupo(nomain//'.TYPL', 'G', nomaou//'.TYPL', .false.)
-    call jedupo(nomain//'.ABS_CURV', 'G', nomaou//'.ABS_CURV', .false.)
+    call jedupo(nomain//'.ABSC_CURV', 'G', nomaou//'.ABSC_CURV', .false.)
 !
     call jeveuo(cooref, 'E', jrefe)
     zk24(jrefe)=nomaou

@@ -381,14 +381,14 @@ subroutine copisd(typesd, base, sd1, sd2)
         k81 = sd1
         k82 = sd2
         call copich(bas2, k81//'.COORDO', k82//'.COORDO')
-        call copich(bas2, k81//'.ABS_CURV', k82//'.ABS_CURV')
+        call copich(bas2, k81//'.ABSC_CURV', k82//'.ABSC_CURV')
 !       -- LES 2 CHAMPS COPIES DOIVENT S'APPUYER
 !          SUR LE NOUVEAU MAILLAGE :
         call jeveuo(k82//'.COORDO    .REFE', 'E', j1)
         zk24(j1-1+1)=k82
-        call jeexin(k82//'.ABS_CURV  .NOMA', iexi)
+        call jeexin(k82//'.ABSC_CURV .NOMA', iexi)
         if (iexi .gt. 0) then
-            call jeveuo(k82//'.ABS_CURV  .NOMA', 'E', j1)
+            call jeveuo(k82//'.ABSC_CURV .NOMA', 'E', j1)
             zk8(j1-1+1)=k82
         endif
 !

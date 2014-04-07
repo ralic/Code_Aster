@@ -18,11 +18,12 @@
 % ======================================================================
 GRANDEUR_SIMPLE__
 <<  ABSC_R  Type:R  Abscisse curviligne le long d'un maillage filaire
-       ABSC  : abscisse curviligne
-       ABSC1 : abscisse curviligne du 1er noeud d'un SEG2
-       ABSC2 : abscisse curviligne du 2eme noeud d'un SEG2
+       ABSC1 : abscisse curviligne du 1er noeud d'un SEG ou d'un POI1
+       ABSC2 : abscisse curviligne du 2eme noeud d'un SEG
+       ABSC3 : abscisse curviligne du 3eme noeud d'un SEG (s'il existe)
+       ABSC4 : abscisse curviligne du 4eme noeud d'un SEG (s'il existe)
 >>
-       ABSC_R   = R    ABSC     ABSC1    ABSC2
+       ABSC_R   = R    ABSC1    ABSC2    ABSC3    ABSC4
 
 <<  ADRSJEVE  Type:I  Grandeur reservee au materiau code
               Attention : ne pas lui ajouter de composante
@@ -280,7 +281,7 @@ GRANDEUR_SIMPLE__
                       intrinseque de l'element au repere local de l'element
                 = 2 : COQUE_UTIL_INTR permet le passage du repere
                       local de l'element au repere intrinseque de l'element
-       AXE_X : composante X de l'axe du repere cylindrique  
+       AXE_X : composante X de l'axe du repere cylindrique
        AXE_Y : composante Y de l'axe du repere cylindrique
        AXE_Z : composante Z de l'axe du repere cylindrique
        O_X   : composante X de O (origine du repere cylindrique)
@@ -289,7 +290,7 @@ GRANDEUR_SIMPLE__
 >>
     CAORIE   = R    ALPHA    BETA     GAMMA    ALPHA2   BETA2    GAMMA2   ALPHA3   BETA3
                     GAMMA3   ALPHA4   BETA4    GAMMA4   ICOUDE   DN1N2    RCOURB   ANGCOU
-                    ANGZZK   REP      AXE_X    AXE_Y    AXE_Z    O_X      O_Y      O_Z 
+                    ANGZZK   REP      AXE_X    AXE_Y    AXE_Z    O_X      O_Y      O_Z
 
 <<  CAPOUF Type:R Caracteristiques geometriques des elements poutre fluide
        B_T : terme correcteur transverse
@@ -2144,7 +2145,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DTY : derivee de la temperature selon y (n'est pas un ddl)
        DTZ : derivee de la temperature selon z (n'est pas un ddl)
 >>
-    TEMP_R   = R  TEMP   TEMP_MIL TEMP_INF TEMP_SUP LAGR   H1   E1 
+    TEMP_R   = R  TEMP   TEMP_MIL TEMP_INF TEMP_SUP LAGR   H1   E1
                   DTX    DTY     DTZ
 <<  VALO_R Type:R
        VALEUR :

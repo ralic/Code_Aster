@@ -108,7 +108,7 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
         lpain(10) = 'PHARMON'
         lchin(10) = chharm
         lpain(11) = 'PABSCUR'
-        lchin(11) = chgeom(1:8)//'.ABS_CURV'
+        lchin(11) = chgeom(1:8)//'.ABSC_CURV'
         lpain(12) = 'PNBSP_I'
         lchin(12) = chcara(16)
         lpain(13) = 'PFIBRES'

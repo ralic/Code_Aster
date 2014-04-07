@@ -1,0 +1,54 @@
+ COOR_3D
+ N1        0.     0.      0.      % s=0
+ N2        1.     0.      0.      % s=1
+ N3        3.     0.      0.      % s=3
+ N4        3.     1.      0.      % s=4
+ N5        3.     3.      0.      % s=6
+ N6        3.     4.      0.      % s=7
+ N7        3.     4.      2.      % s=9
+ N8        3.     4.      3.      % s=10
+ N9        3.     4.      5.      % s=12
+ N10       3.     4.      6.      % s=13
+ N11       5.     4.      6.      % s=15
+ N12       6.     4.      6.      % s=16
+ N13       8.     4.      6.      % s=18
+ FINSF
+
+ POI1
+ PO2       N2
+ PO4       N4
+ PO9       N9
+ FINSF
+
+ SEG2
+ S21       N2   N1
+ S22       N12  N13
+ FINSF
+
+ SEG3
+ S31       N4   N2  N3
+ S32       N7   N9  N8
+ FINSF
+
+ SEG4
+ S41       N7   N4   N6   N5
+ S42       N9   N12  N10  N11
+ FINSF
+
+ GROUP_NO
+ A
+ N1
+ FINSF
+
+ GROUP_NO
+ B
+ N9
+ FINSF
+
+ % LIGN1= tous les segments + les POI1 :
+ GROUP_MA
+ LIGN1
+ S41  S21  PO2 S42 PO4 S22  PO9  S32  S31
+ FINSF
+
+ FIN

@@ -111,11 +111,13 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 17 : _(u"""
- pour récupérer le champ de géométrie, il faut utiliser le mot clé maillage
+ pour récupérer le champ de géométrie (ou d'abscisse curviligne), 
+ il faut utiliser le mot clé maillage
 """),
 
 18 : _(u"""
- le mot-clé type_champ =  %(k1)s n'est pas cohérent avec le type du champ extrait :  %(k2)s_%(k3)s
+ le mot-clé type_champ =  %(k1)s n'est pas cohérent avec le type 
+ du champ extrait :  %(k2)s_%(k3)s
 """),
 
 19 : _(u"""

@@ -26,7 +26,8 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 from math import log
 
-TUBE=LIRE_MAILLAGE(FORMAT='MED',   ABSC_CURV=_F(  TOUT = 'OUI'))
+TUBE=LIRE_MAILLAGE(FORMAT='MED')
+MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
                        CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -391,7 +392,7 @@ F_INIT   = 1.0
 F_FIN    = 3.848320E+02
 
 N_POIN_0 = 1024*2
-DF       = (F_FIN-F_INIT)/(N_POIN_0-1) 
+DF       = (F_FIN-F_INIT)/(N_POIN_0-1)
 
 NB_TIR = 1
 T_FIN  = NB_TIR/DF
@@ -402,7 +403,7 @@ T_INI  = 0.
 N_POIN_1 = 1./(2.*DF*T_PAS)
 N_POIN_1 = 2.**(int(log(N_POIN_1)/log(2))+1)
 
-F_MAX_GEN = DF * N_POIN_1 
+F_MAX_GEN = DF * N_POIN_1
 T_PAS = 1./F_MAX_GEN
 
 #
@@ -454,8 +455,8 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                    PREC_DUREE=1.000000E-01,
                                    TS_REG_ETAB=T_ETAB,),
                     MATR_MASS=MASSPROJ,
-                    MATR_RIGI=RIGIPROJ,               
-                  AMOR_MODAL=_F(AMOR_REDUIT=( 
+                    MATR_RIGI=RIGIPROJ,
+                  AMOR_MODAL=_F(AMOR_REDUIT=(
                                 1.000000E-02, 1.000000E-02,
                                 1.000000E-02, 1.000000E-02, ),),
                 EXCIT=( _F(  NUME_ORDRE = 1,
@@ -491,7 +492,7 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
           ARCHIVAGE=_F(  PAS_ARCH = 1),
 )
 
-# 
+#
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=0.5,
                                    NOMBRE =1000,
@@ -590,7 +591,7 @@ IMPR_TABLE(  TABLE=T_04_001 )
 TEST_TABLE(VALE_CALC=4.9220287464795E-08,
            NOM_PARA='DOMM_CUMU',
            TABLE=T_04_001,
-           TOLE_MACHINE=0.02, # Variabilité de 2% justifiée en raison de l'utilisation d'un chargement        
+           TOLE_MACHINE=0.02, # Variabilité de 2% justifiée en raison de l'utilisation d'un chargement
            )                  # aléatoire généré à partir d'un spectre de pression turbulente, (issue21791)
 
 FIN( )

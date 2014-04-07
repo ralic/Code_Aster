@@ -108,9 +108,9 @@ cata_msg = {
  paramètre AFFINITE non trouve
 """),
 
-48 : _(u"""
-  option calcul de l ABSC_CURV sur  un GROUP_MA non implantée.
-"""),
+
+
+
 
 49 : _(u"""
   -> La phase de vérification du maillage a été volontairement désactivée.

@@ -22,7 +22,7 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
 !    ET ORDRE D'APPARITION DANS LA LISTE. LECTURE DU NOMBRE DE VALEURS
 !                POUR LE DIMENSIONNEMENT DU .VALE
 ! ----------------------------------------------------------------------
-!  IN : VEC1    : I  LISTE DES NUMEROS DE NOEUDS (ABS_CURV)
+!  IN : VEC1    : I  LISTE DES NUMEROS DE NOEUDS (ABSC_CURV)
 !  IN : NBN     :    DIMENSION DE VEC1
 !  IN : KNOM    : K8 NOM DES NOEUDS
 !  OUT: VEC2    : I  POINTEURS D INDICE DE NOEUDS

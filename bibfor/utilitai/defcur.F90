@@ -72,7 +72,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
 !     --- CONSTRUCTION DES OBJETS DU CONCEPT MAILLAGE ---
 !
     nomnoe = nommai//'.NOMNOE'
-    cooabs = nommai//'.ABS_CURV  .VALE'
+    cooabs = nommai//'.ABSC_CURV .VALE'
     connex = nommai//'.CONNEX'
     typmai = nommai//'.TYPMAIL'
 !
@@ -181,10 +181,10 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     call wkvect('&&DEFOCU.TEMP.VALE', 'V V R8', nv, lvali)
 !
     do 30 i = 1, nbrseg
-        zr(lvali+2*(i-1)) = zr(labs+3*(i-1))
+        zr(lvali+2*(i-1)) = zr(labs+4*(i-1))
 30  end do
 !
-    zr(lvali+2*nbrseg) = zr(labs+3*(nbrseg-1)+1)
+    zr(lvali+2*nbrseg) = zr(labs+4*(nbrseg-1)+1)
 !
     do 40 i = 1, nb
         kk = 2*(zi(pnoe+i-1)-1)+1

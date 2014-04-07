@@ -25,6 +25,7 @@ subroutine op0154()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/abscur.h"
 #include "asterfort/asccou.h"
 #include "asterfort/asceli.h"
 #include "asterfort/ascrep.h"
@@ -287,6 +288,7 @@ subroutine op0154()
         if (coutur .eq. 'OUI') call asceli(ma)
         call asctub(ma)
     endif
+
     call getfac('TUBE_COUDE', nboc2)
     if (nboc2 .ne. 0) then
         call getvr8('TUBE_COUDE', 'L_TUBE_P1', iocc=1, scal=ltchar, nbret=n1)
@@ -297,6 +299,16 @@ subroutine op0154()
     endif
 !
 !
+!     --- TRAITEMENT DU MOT CLEF  "ABSC_CURV" :
+!     ---------------------------------------
+    call getfac('ABSC_CURV', nbocc)
+    if (nbocc .eq. 1) then
+        call abscur(ma)
+    endif
+!
+!
+!     --- on complete le maillage avec quelques objets :
+!     ---------------------------------------------------
     call cargeo(ma)
 !
 !

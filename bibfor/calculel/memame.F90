@@ -76,7 +76,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
     integer :: nbout, nbin
     parameter    (nbout=2, nbin=18)
     character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
+    character(len=24) :: lchout(nbout), lchin(nbin)
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto
 !
@@ -215,7 +215,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
         lpain(11) = 'PCAGEPO'
         lchin(11) = chcara(5)
         lpain(12) = 'PABSCUR'
-        lchin(12) = chgeom(1:8)//'.ABS_CURV'
+        lchin(12) = chgeom(1:8)//'.ABSC_CURV'
         lpain(13) = 'PCAGNBA'
         lchin(13) = chcara(11)
         lpain(14) = 'PCAPOUF'

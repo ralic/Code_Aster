@@ -19,24 +19,28 @@
 
 cata_msg = {
 
-1 : _(u"""
- l'option de calcul d'une abscisse curviligne sur un groupe de mailles
- n'est pas implantée
-"""),
+
+
+
+
 
 2 : _(u"""
+Erreur utilisateur dans MODI_MAILLAGE / ABSC_CURV :
  il est possible de définir une abscisse curviligne uniquement
- pour des mailles de type: POI1 ou SEG2
+ pour des mailles de type: POI1, SEG2, SEG3 et SEG4
 """),
 
 3 : _(u"""
- point non trouvé parmi les SEG2
+Erreur utilisateur dans MODI_MAILLAGE / ABSC_CURV :
+ La maille POI1 %(k1)s n'est pas associée à un noeud "sommet" des segments
+ de la ligne de segments.
 """),
 
-4 : _(u"""
- mauvaise définition pour l'abscisse curviligne
- détection de plusieurs chemins.
-"""),
+
+
+
+
+
 
 6 : _(u"""
  méthode AU-YANG : la géométrie doit être cylindrique

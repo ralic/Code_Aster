@@ -1,5 +1,4 @@
-subroutine abscur(nomu, it)
-!-----------------------------------------------------------------------
+subroutine abscur(ma)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,14 +15,14 @@ subroutine abscur(nomu, it)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!-----------------------------------------------------------------------
     implicit none
+
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/alcart.h"
-#include "asterfort/i2extf.h"
-#include "asterfort/i2sens.h"
-#include "asterfort/i2tgrm.h"
-#include "asterfort/i2vois.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/imprsd.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -34,203 +33,343 @@ subroutine abscur(nomu, it)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-!
-    character(len=8) :: nomu
+#include "asterfort/dismoi.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+
+    character(len=8) :: ma
 !-----------------------------------------------------------------------
-!     CALCUL D'UNE ABSCISSE CURVILIGNE POUR UN GROUPE DE MAILLES
-!     " TOUTES LES MAILLES DOIVENT ETRE DU TYPE 'POI1' OU 'SEG2' "
-!
-!     ARGUMENTS EN ENTREE
+!     calcul d'une abscisse curviligne pour un groupe de mailles :
+!     toutes les mailles doivent etre du type 'poi1' ou 'seg2,3,4'
+
+!     arguments en entree
 !     ------------------
-!
-!     NOMU   : NOM DU MAILLAGE
-!     IT     : =1 CALCUL SUR L'ENSEMBLE DU MAILLAGE
-!
-!     EN SORTIE
+!     ma   : nom du maillage
+
+!     en sortie
 !     ---------
-!
-!     CREATION D'UNE CARTE: (APPEL A ALCART)
-!
-    character(len=8) :: typm
-    character(len=24) :: conseg, typseg
+!     creation d'une carte contenant l'abscisse curviligne
+!-----------------------------------------------------------------------
+
+    character(len=8) :: typm,noma, nono
+    character(len=24) :: mesmai, mesnoe
     character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
-    integer :: ptch, adrm
-!
-!
-!-----------------------------------------------------------------------
-    integer :: iab1, iab2, iach, iacnex, iadr2, iagm, iancmp
-    integer :: iav1, iav2, iavalv, icoo1, icoo2, icor2, ij
-    integer :: im, ima, ima1, ima2, ind, ing, ino
-    integer :: ipoi1, iseg2, isens, it, itym, itypm, ival
-    integer :: jgcnx, kseg, lplace, mi, n, n1, n2
-    integer :: nbchm, nbnoma, nbpoi1, nbrma, nbrma1, nbrma2, nbseg2
-    integer :: numno
-    real(kind=8) :: s, stot, x1, x2, y1, y2, z1
-    real(kind=8) :: z2
+    character(len=16) :: motcle(3), typmcl(3)
+    integer :: adrm, iseg1,iseg2,isegprev,jtmp,kseg,nbextr,nbnot
+    integer :: iab1, iab2, iadr2, iancmp,numa2,nuno1,nuno2
+    integer :: iavalv, icoo1, icoo2, icoo3, icoo4, icor2, kma, nunosuiv, vuorig
+    integer :: jpoi, jseg, ind, ing, ino
+    integer :: ipoi1, iseg, itypm, jcoor
+    integer :: mi, n, n1, n2, nunorig
+    integer :: nbpoi1, nbma, nbseg, nbno
+    integer :: jmesma,jmesno,numa,iexi,nbnoseg
+    real(kind=8) :: s, stot, x1,x2,x3,x4, y1,y2,y3,y4, z1,z2,z3,z4
+    real(kind=8) :: s13, s32, s34, s42
+    logical :: dbg=.false.
+    integer, pointer :: icoseg(:) => null()
+    integer, pointer :: nu2seg(:) => null()
+    integer, pointer :: segordo(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-!
-    call sdmail(nomu, nommai, nomnoe, cooval, coodsc,&
+
+    call sdmail(ma, nommai, nomnoe, cooval, coodsc,&
                 cooref, grpnoe, gpptnn, grpmai, gpptnm,&
                 connex, titre, typmai, adapma)
-!
-    if (it .eq. 1) then
-        nommai = nomu//'.NOMMAI'
-        call jelira(nommai, 'NOMUTI', nbrma)
-        call wkvect('&&ABSCURV.TEMP', 'V V I', nbrma, iagm)
-        do 11 ij = 1, nbrma
-            zi(iagm+ij-1) = ij
-11      continue
-    else
-        call utmess('F', 'MODELISA_1')
-    endif
-!
-    nbrma2 = 2*nbrma
-    nbrma1 = nbrma+1
-!
-!     CREATION D'OBJETS TEMPORAIRES
-!
-    call wkvect('&&ABSCUR.TEMP.VOIS1', 'V V I', nbrma, iav1)
-    call wkvect('&&ABSCUR.TEMP.VOIS2', 'V V I', nbrma, iav2)
-    call wkvect('&&ABSCUR.TEMP.CHM  ', 'V V I', nbrma1, ptch)
-    call wkvect('&&ABSCUR.TEMP.IACHM', 'V V I', nbrma2, iach)
-    call wkvect('&&ABSCUR.TEMP.PLACE', 'V V L', nbrma, lplace)
-    call wkvect('&&ABSCUR.TEMP.IPOI1', 'V V I', nbrma, ima1)
-    call wkvect('&&ABSCUR.TEMP.ISEG2', 'V V I', nbrma, ima2)
-    call wkvect('&&ABSCUR.TEMP.AB1  ', 'V V R', nbrma, iab1)
-    call wkvect('&&ABSCUR.TEMP.AB2  ', 'V V R', nbrma, iab2)
-    call wkvect('&&ABSCUR.TEMP.COR2 ', 'V V I', nbrma, icor2)
-!
-!     TRI DES MAILLES POI1 ET SEG2
-    nbseg2=0
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnot)
+    call jeveuo(cooval, 'L', jcoor)
+
+
+!   -- 1. numero du noeud origine :
+!   -------------------------------
+    mesnoe='&&ABSCUR.MESNOE'
+    motcle(1) = 'GROUP_NO_ORIG'
+    motcle(2) = 'NOEUD_ORIG'
+    typmcl(1) = 'GROUP_NO'
+    typmcl(2) = 'NOEUD'
+    call reliem(' ', ma, 'NU_NOEUD', 'ABSC_CURV', 1,&
+                2, motcle, typmcl, mesnoe, nbno)
+    ASSERT(nbno.eq.1)
+    call jeveuo(mesnoe, 'L', jmesno)
+    nunorig=zi(jmesno)
+
+
+!   -- 2. liste des mailles a traiter :
+!   -----------------------------------
+    mesmai='&&ABSCUR.MESMAI'
+    motcle(1) = 'TOUT'
+    motcle(2) = 'GROUP_MA'
+    motcle(3) = 'MAILLE'
+    typmcl(1) = 'TOUT'
+    typmcl(2) = 'GROUP_MA'
+    typmcl(3) = 'MAILLE'
+    call reliem(' ', ma, 'NU_MAILLE', 'ABSC_CURV', 1,&
+                3, motcle, typmcl, mesmai, nbma)
+    call jeveuo(mesmai, 'L', jmesma)
+
+
+!   --  3. creation d'objets temporaires :
+!   ---------------------------------------
+    call wkvect('&&ABSCUR.IPOI1', 'V V I', nbma, jpoi)
+    call wkvect('&&ABSCUR.SEG', 'V V I', nbma, jseg)
+    call wkvect('&&ABSCUR.AB1  ', 'V V R', nbma, iab1)
+    call wkvect('&&ABSCUR.AB2  ', 'V V R', nbma, iab2)
+    call wkvect('&&ABSCUR.COR2 ', 'V V I', nbma, icor2)
+
+
+!   --  4. tri des mailles poi1 et seg
+!   -----------------------------------
+    call jeveuo(typmai, 'L', itypm)
+    nbseg=0
     nbpoi1=0
-    kseg=0
-    do 12 im = 1, nbrma
-        call jeveuo(typmai, 'L', itypm)
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypm+im-1)), typm)
-        if (typm .eq. 'SEG2') then
-            kseg=zi(itypm+im-1)
-            nbseg2=nbseg2+1
-            zi(ima2+nbseg2-1)=im
+    do 12 kma = 1, nbma
+        numa=zi(jmesma-1+kma)
+        call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypm+numa-1)), typm)
+        if (typm .eq. 'SEG2' .or. typm .eq. 'SEG3' .or. typm .eq. 'SEG4') then
+            nbseg=nbseg+1
+            zi(jseg+nbseg-1)=numa
         else if (typm .eq. 'POI1') then
             nbpoi1=nbpoi1+1
-            zi(ima1+nbpoi1-1)=im
+            zi(jpoi+nbpoi1-1)=numa
         else
             call utmess('F', 'MODELISA_2')
         endif
 12  end do
-    conseg='&&ABSCUR.CONNEX'
-    typseg='&&ABSCUR.TYPMAI'
-    call wkvect(typseg, 'V V I', nbrma, itym)
-    do 13 im = 1, nbrma
-        zi(itym-1+im)=kseg
-13  end do
-!     IL FAUT CREER UNE TABLE DE CONNECTIVITE POUR LES SEG2
-!
-! -     OBJET CONSEG    = FAMILLE CONTIGUE DE VECTEURS N*IS
-!                         POINTEUR DE NOM       = NOMMAI
-!                         POINTEUR DE LONGUEUR  = CONSEG.$$LONC
-!                         LONGUEUR TOTALE       = NBNOMA
-!
-    nbnoma=2*nbseg2
-    call jecrec(conseg, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
-                nbseg2)
-    call jeecra(conseg, 'LONT', nbnoma)
-    do 14 iseg2 = 1, nbseg2
-        im=zi(ima2+iseg2-1)
-        call jelira(jexnum(connex, im ), 'LONMAX', nbnoma)
-        call jeveuo(jexnum(connex, im ), 'L', iacnex)
-        call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma)
-        call jeveuo(jexnum(conseg, iseg2), 'E', jgcnx)
-        do 3 ino = 1, nbnoma
-            numno=zi(iacnex-1+ino)
-            zi(jgcnx+ino-1)=numno
- 3      continue
-14  end do
-!     IL FAUT VERIFIER L'INCLUSION DES POI1
+
+
+!   --  5. Les segments doivent former une ligne ouverte avec
+!          deux extremites.
+!   --------------------------------------------------------
+!   -- 5.1 : on note les noeuds extremites des segments :
+    AS_ALLOCATE(vi=icoseg,size=nbnot)
+    AS_ALLOCATE(vi=nu2seg,size=2*nbnot)
+    do iseg = 1, nbseg
+        numa=zi(jseg-1+iseg)
+        call jeveuo(jexnum(connex, numa), 'L', jtmp)
+        nuno1=zi(jtmp-1+1)
+        nuno2=zi(jtmp-1+2)
+        icoseg(nuno1)=icoseg(nuno1)+1
+        icoseg(nuno2)=icoseg(nuno2)+1
+        if (icoseg(nuno1).le.2) nu2seg(2*(nuno1-1)+icoseg(nuno1))=iseg
+        if (icoseg(nuno2).le.2) nu2seg(2*(nuno2-1)+icoseg(nuno2))=iseg
+    enddo
+
+!   -- 5.2 : on verifie que les segments forment une ligne ouverte
+!            et que l'une des 2 extremites est nunorig :
+    vuorig=0
+    nbextr=0
+    do ino = 1, nbnot
+        if (icoseg(ino).eq.2) then
+        else if (icoseg(ino).eq.1) then
+            nbextr=nbextr+1
+            if (ino.eq.nunorig) then
+                vuorig=vuorig+1
+            endif
+        else if (icoseg(ino).eq.0) then
+        else
+            call jenuno(jexnum(nomnoe, ino), nono)
+            call utmess('F','INTEMAIL_36',sk=nono)
+        endif
+    enddo
+    if (nbextr.ne.2) call utmess('F','INTEMAIL_37',si=nbextr)
+    if (vuorig.ne.1) call utmess('F','INTEMAIL_38')
+
+!   -- 5.3 : on etablit la liste ordonnee des segments
+!   ---------------------------------------------------
+    AS_ALLOCATE(vi=segordo,size=nbseg)
+
+!   -- on initialise la recherche (1er segment):
+    kseg=1
+    nunosuiv=nunorig
+    iseg=nu2seg(2*nunosuiv-1)
+    ASSERT(iseg.gt.0)
+    numa=zi(jseg-1+iseg)
+    call jeveuo(jexnum(connex, numa), 'L', jtmp)
+    ASSERT(nunosuiv.eq.zi(jtmp) .or. nunosuiv.eq.zi(jtmp+1))
+    if (nunosuiv.eq.zi(jtmp)) then
+        segordo(kseg)=+iseg
+        nunosuiv=zi(jtmp+1)
+    else
+        segordo(kseg)=-iseg
+        nunosuiv=zi(jtmp)
+    endif
+    isegprev=iseg
+
+!   -- on met les segments bout a bout :
+    do while (kseg.lt.nbseg)
+        kseg=kseg+1
+        iseg1=nu2seg(2*nunosuiv-1)
+        iseg2=nu2seg(2*nunosuiv)
+        if (iseg1.eq.isegprev) then
+            iseg=iseg2
+        elseif (iseg2.eq.isegprev) then
+            iseg=iseg1
+        else
+            ASSERT(.false.)
+        endif
+        numa=zi(jseg-1+iseg)
+        call jeveuo(jexnum(connex, numa), 'L', jtmp)
+        ASSERT(nunosuiv.eq.zi(jtmp) .or. nunosuiv.eq.zi(jtmp+1))
+        if (nunosuiv.eq.zi(jtmp)) then
+            segordo(kseg)=+iseg
+            nunosuiv=zi(jtmp+1)
+        else
+            segordo(kseg)=-iseg
+            nunosuiv=zi(jtmp)
+        endif
+        isegprev=iseg
+    enddo
+
+
+!   -- 6. On verifie que les POI1 sont sur des segments :
+!   --------------------------------------------------------
     do 15 ipoi1 = 1, nbpoi1
-        im=zi(ima1+ipoi1-1)
-        call jeveuo(jexnum(connex, im), 'L', adrm)
+        numa=zi(jpoi+ipoi1-1)
+        call jeveuo(jexnum(connex, numa), 'L', adrm)
         n = zi(adrm)
-        do 16 iseg2 = 1, nbseg2
-            call jeveuo(jexnum(conseg, iseg2), 'L', iadr2)
+        do 16 iseg = 1, nbseg
+            numa2=zi(jseg-1+iseg)
+            call jeveuo(jexnum(connex, numa2), 'L', iadr2)
             n1 = zi(iadr2)
             n2 = zi(iadr2 + 1)
             if (n1 .eq. n) then
-                zi(icor2+ipoi1-1)= iseg2
+                zi(icor2+ipoi1-1)= iseg
                 goto 15
             else if (n2.eq.n) then
-                zi(icor2+ipoi1-1)=-iseg2
+                zi(icor2+ipoi1-1)=-iseg
                 goto 15
             endif
 16      continue
-        call utmess('F', 'MODELISA_3')
+        call jenuno(jexnum(nommai, numa), noma)
+        call utmess('F', 'MODELISA_3',sk=noma)
 15  continue
-!
-!
-    call i2vois(conseg, typseg, zi(iagm), nbseg2, zi(iav1),&
-                zi(iav2))
-    call i2tgrm(zi(iav1), zi(iav2), nbseg2, zi(iach), zi(ptch),&
-                nbchm)
-!
-    if (nbchm .gt. 1) then
-        call utmess('F', 'MODELISA_4')
+
+
+
+!   --  7. allocation de la carte :
+!   ------------------------------
+    call exisd('CHAMP', ma//'.ABSC_CURV', iexi)
+    if (iexi.eq.1) then
+        call utmess('F','INTEMAIL_35')
+        call detrsd('CHAMP', ma//'.ABSC_CURV')
     endif
-!
-    call i2sens(zi(iach), 2*nbseg2, zi(iagm), nbseg2, conseg,&
-                typseg)
-!
-!     CREATION D'UNE CARTE
-!
-    call alcart('G', nomu//'.ABS_CURV  ', nomu, 'ABSC_R')
-    call jeveuo(nomu//'.ABS_CURV  .NCMP', 'E', iancmp)
-    call jeveuo(nomu//'.ABS_CURV  .VALV', 'E', iavalv)
-    zk8(iancmp) = 'ABSC1'
+    call alcart('G', ma//'.ABSC_CURV', ma, 'ABSC_R')
+    call jeveuo(ma//'.ABSC_CURV .NCMP', 'E', iancmp)
+    call jeveuo(ma//'.ABSC_CURV .VALV', 'E', iavalv)
+    zk8(iancmp)   = 'ABSC1'
     zk8(iancmp+1) = 'ABSC2'
+    zk8(iancmp+2) = 'ABSC3'
+    zk8(iancmp+3) = 'ABSC4'
     stot = 0.d0
-!
-!     CALCUL DE L'ABSCISSE CURVILIGNE
-!
-    do 10 iseg2 = 1, nbseg2
-        isens = 1
-        mi = zi(iach+iseg2-1)
-        if (mi .lt. 0) then
-            mi = - mi
-            isens = -1
-        endif
-        ima=zi(ima2+mi-1)
-        call i2extf(mi, 1, conseg, typseg, ing,&
-                    ind)
-        call jeveuo(cooval, 'L', ival)
-        if (isens .eq. 1) then
-            icoo1 = 3*(ing-1)
-            icoo2 = 3*(ind-1)
+
+
+!   --  8. calcul de l'abscisse curviligne
+!   ---------------------------------------
+    do 10 kseg = 1, nbseg
+        mi = segordo(kseg)
+        numa=zi(jseg-1+abs(mi))
+        call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypm+numa-1)), typm)
+        call jeveuo(jexnum(connex, numa), 'L', jtmp)
+        if (mi.gt.0) then
+            ing=zi(jtmp-1+1)
+            ind=zi(jtmp-1+2)
         else
-            icoo1 = 3*(ind-1)
-            icoo2 = 3*(ing-1)
+            ing=zi(jtmp-1+2)
+            ind=zi(jtmp-1+1)
         endif
-        x1 = zr(ival + icoo1)
-        y1 = zr(ival + icoo1 + 1)
-        z1 = zr(ival + icoo1 + 2)
-        x2 = zr(ival + icoo2)
-        y2 = zr(ival + icoo2 + 1)
-        z2 = zr(ival + icoo2 + 2)
-        s = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
-        zr(iavalv ) = stot
-        zr(iab1+mi-1)= stot
-        stot = stot+s
-        zr(iavalv+1) = stot
-        zr(iab2+mi-1)= stot
-        call nocart(nomu//'.ABS_CURV  ', 3, 2, mode='NUM', nma=1,&
-                    limanu=[ima])
+
+!       noeuds 1 et 2 (extremites) :
+        icoo1 = 3*(ing-1)
+        icoo2 = 3*(ind-1)
+        x1 = zr(jcoor + icoo1)
+        y1 = zr(jcoor + icoo1 + 1)
+        z1 = zr(jcoor + icoo1 + 2)
+        x2 = zr(jcoor + icoo2)
+        y2 = zr(jcoor + icoo2 + 1)
+        z2 = zr(jcoor + icoo2 + 2)
+
+!       noeuds 3 et 4 (si necessaire) :
+        if (typm.eq.'SEG3') then
+            nbnoseg=3
+            icoo3 = 3*(zi(jtmp-1+3)-1)
+            x3 = zr(jcoor + icoo3)
+            y3 = zr(jcoor + icoo3 + 1)
+            z3 = zr(jcoor + icoo3 + 2)
+        elseif (typm.eq.'SEG4') then
+            nbnoseg=4
+            if (mi.gt.0) then
+                icoo3 = 3*(zi(jtmp-1+3)-1)
+                icoo4 = 3*(zi(jtmp-1+4)-1)
+            else
+                icoo3 = 3*(zi(jtmp-1+4)-1)
+                icoo4 = 3*(zi(jtmp-1+3)-1)
+            endif
+            x3 = zr(jcoor + icoo3)
+            y3 = zr(jcoor + icoo3 + 1)
+            z3 = zr(jcoor + icoo3 + 2)
+            x4 = zr(jcoor + icoo4)
+            y4 = zr(jcoor + icoo4 + 1)
+            z4 = zr(jcoor + icoo4 + 2)
+        else
+            ASSERT(typm.eq.'SEG2')
+            nbnoseg=2
+        endif
+
+        if (nbnoseg.eq.2) then
+            s = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
+        elseif (nbnoseg.eq.3) then
+            s13 = sqrt((x3-x1)**2+(y3-y1)**2+(z3-z1)**2)
+            s32 = sqrt((x3-x2)**2+(y3-y2)**2+(z3-z2)**2)
+            s=s13+s32
+        elseif (nbnoseg.eq.4) then
+            s13 = sqrt((x3-x1)**2+(y3-y1)**2+(z3-z1)**2)
+            s34 = sqrt((x3-x4)**2+(y3-y4)**2+(z3-z4)**2)
+            s42 = sqrt((x2-x4)**2+(y2-y4)**2+(z2-z4)**2)
+            s=s13+s34+s42
+        endif
+
+        if (mi .gt. 0) then
+            zr(iavalv ) = stot
+            zr(iab1+abs(mi)-1)= stot
+
+            if (nbnoseg.eq.3) then
+                zr(iavalv+2) = stot+s13
+            elseif (nbnoseg.eq.4) then
+                zr(iavalv+2) = stot+s13
+                zr(iavalv+3) = stot+s13+s34
+            endif
+
+            stot = stot+s
+            zr(iavalv+1) = stot
+            zr(iab2+abs(mi)-1)= stot
+        else
+            zr(iavalv+1 ) = stot
+            zr(iab2+abs(mi)-1)= stot
+
+            if (nbnoseg.eq.3) then
+                zr(iavalv+2) = stot+s13
+            elseif (nbnoseg.eq.4) then
+                zr(iavalv+2) = stot+s13
+                zr(iavalv+3) = stot+s13+s34
+            endif
+
+            stot = stot+s
+            zr(iavalv) = stot
+            zr(iab1+abs(mi)-1)= stot
+        endif
+        call nocart(ma//'.ABSC_CURV', 3, nbnoseg, mode='NUM', nma=1, limanu=[numa])
+
 10  end do
-!     CAS DES POI1
+
+
+!   --  cas des poi1 :
+!   --------------------
     do 20 ipoi1 = 1, nbpoi1
-        ima=zi(ima1+ipoi1-1)
+        numa=zi(jpoi+ipoi1-1)
         mi=zi(icor2+ipoi1-1)
         if (mi .gt. 0) then
             s=zr(iab1+mi-1)
@@ -238,28 +377,29 @@ subroutine abscur(nomu, it)
             s=zr(iab2-mi-1)
         endif
         zr(iavalv ) = s
-        zr(iavalv+1) = s
-        call nocart(nomu//'.ABS_CURV  ', 3, 2, mode='NUM', nma=1,&
-                    limanu=[ima])
+        call nocart(ma//'.ABSC_CURV', 3, 1, mode='NUM', nma=1,&
+                    limanu=[numa])
 20  end do
-!
-! --- MENAGE
-!
-    call jedetr('&&ABSCUR.CONNEX')
-    call jedetr('&&ABSCUR.TEMP.AB1  ')
-    call jedetr('&&ABSCUR.TEMP.AB2  ')
-    call jedetr('&&ABSCUR.TEMP.CHM  ')
-    call jedetr('&&ABSCUR.TEMP.COR2 ')
-    call jedetr('&&ABSCUR.TEMP.IACHM')
-    call jedetr('&&ABSCUR.TEMP.IPOI1')
-    call jedetr('&&ABSCUR.TEMP.ISEG2')
-    call jedetr('&&ABSCUR.TEMP.PLACE')
-    call jedetr('&&ABSCUR.TEMP.VOIS1')
-    call jedetr('&&ABSCUR.TEMP.VOIS2')
-    call jedetr('&&ABSCUR.TYPMAI')
-    call jedetr('&&ABSCURV.TEMP')
-    call jedetr(nomu//'.ABS_CURV  .NCMP')
-    call jedetr(nomu//'.ABS_CURV  .VALV')
-!
+
+
+    dbg=.false.
+    if (dbg) call imprsd('CHAMP', ma//'.ABSC_CURV', 6, 'ABSC_CURV')
+
+
+!   -- menage
+!   ---------
+    AS_DEALLOCATE(vi=icoseg)
+    AS_DEALLOCATE(vi=nu2seg)
+    AS_DEALLOCATE(vi=segordo)
+    call jedetr('&&ABSCUR.AB1')
+    call jedetr('&&ABSCUR.AB2')
+    call jedetr('&&ABSCUR.COR2')
+    call jedetr('&&ABSCUR.IPOI1')
+    call jedetr('&&ABSCUR.SEG')
+    call jedetr(mesnoe)
+    call jedetr(mesmai)
+    call jedetr(ma//'.ABSC_CURV .NCMP')
+    call jedetr(ma//'.ABSC_CURV .VALV')
+
     call jedema()
 end subroutine

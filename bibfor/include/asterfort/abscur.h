@@ -16,8 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine abscur(nomu, it)
-        character(len=8) :: nomu
-        integer :: it
+    subroutine abscur(ma)
+        character(len=8) :: ma
     end subroutine abscur
 end interface

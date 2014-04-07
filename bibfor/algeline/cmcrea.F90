@@ -258,7 +258,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     call jedupo(main//'.PARA_R', 'G', maout//'.PARA_R', .false.)
     call jedupo(main//'.SUPMAIL', 'G', maout//'.SUPMAIL', .false.)
     call jedupo(main//'.TYPL', 'G', maout//'.TYPL', .false.)
-    call jedupo(main//'.ABS_CURV', 'G', maout//'.ABS_CURV', .false.)
+    call jedupo(main//'.ABSC_CURV', 'G', maout//'.ABSC_CURV', .false.)
 !
 !
 ! - AJOUT DES NOUVELLES MAILLES, DES NOUVEAUX GROUP_MA

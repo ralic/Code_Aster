@@ -27,10 +27,6 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
                             fr="Format du fichier : ASTER ou MED.",
                             ang="Format of the file : ASTER or MED.",),
 
-         ABSC_CURV       =FACT(statut='f',min=0,
-               TOUT          =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-         ),
-
          VERI_MAIL       =FACT(statut='d',
                VERIF         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
                APLAT         =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),

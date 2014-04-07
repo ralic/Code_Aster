@@ -73,7 +73,8 @@ subroutine dismcp(questi, nomobz, repi, repkz, ierd)
                 if (iexi .gt. 0) then
                     tych='CNS'
                 else
-                    repk = ' '
+                    repk = '?'
+                    ierd = 1
                     goto 10
                 endif
             endif

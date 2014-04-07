@@ -299,7 +299,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
                 endif
             endif
         endif
-        chc = chgeom(1:8)//'.ABS_CURV'
+        chc = chgeom(1:8)//'.ABSC_CURV'
         call ajchca('PABSCUR', chc, lpain, lchin, nbin,&
                     maxin, 'N')
         call ajchca('PNBSP_I', carel//'.CANBSP', lpain, lchin, nbin,&

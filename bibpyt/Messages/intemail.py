@@ -165,4 +165,30 @@ cata_msg={
 d intersection avec le maillage. Il faut le diviser en %(i2)d segments
 """),
 
+
+
+
+35: _(u"""
+Utilisation de MODI_MAILLAGE / ABSC_CURV :
+  Il existait déjà une carte pour les abscisses curviligne dans le
+  maillage. Celle-ci sera écrasée.
+ """),
+
+36: _(u"""
+Utilisation de MODI_MAILLAGE / ABSC_CURV :
+  L'ensemble des segments ne forme pas une ligne ouverte.
+  Le noeud %(k1)s appartient à plus de deux segments.
+ """),
+
+37: _(u"""
+Utilisation de MODI_MAILLAGE / ABSC_CURV :
+  L'ensemble des segments ne forme pas une ligne ouverte.
+  Il n'y a pas deux extrémités. Il y en a %(i1)d.
+ """),
+
+38: _(u"""
+Utilisation de MODI_MAILLAGE / ABSC_CURV :
+  L'ensemble des segments n'a pas pour extrémité le noeud "origine".
+ """),
+
 }

@@ -94,7 +94,7 @@ subroutine op0142()
 !     --- CONSTRUCTION DES OBJETS DU CONCEPT MAILLAGE ---
 !
     nomnoe = nommai//'.NOMNOE'
-    cooabs = nommai//'.ABS_CURV  .VALE'
+    cooabs = nommai//'.ABSC_CURV .VALE'
     nommas = nommai//'.NOMMAI'
     connex = nommai//'.CONNEX'
     typmai = nommai//'.TYPMAIL'
@@ -248,10 +248,10 @@ subroutine op0142()
     call wkvect(nomfon//'.VALE', 'G V R8', nbrm21, lval)
 !
     do 40 i = 1, nbrseg
-        zr(lval+(i-1)) = zr(labs+3*(i-1))
+        zr(lval+(i-1)) = zr(labs+4*(i-1))
 40  end do
 !
-    zr(lval+nbrseg) = zr(labs+3*(nbrseg-1)+1)
+    zr(lval+nbrseg) = zr(labs+4*(nbrseg-1)+1)
 !
     call getvtx('VITE ', 'PROFIL', iocc=1, scal=tprof, nbret=ibid)
     if (tprof .eq. 'UNIFORME') then

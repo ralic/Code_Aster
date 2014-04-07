@@ -1,19 +1,19 @@
 # TITRE SIMULATION DES ESSAIS ANL (TUBES LONGS) : POUTRE SOUMISE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       A UN ECOULEMENT MONOPHASIQUE AVEC UN AMORTISSEMENT EN
 #       FLUIDE AU REPOS DE 1,3#.
@@ -23,7 +23,8 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-TUBE=LIRE_MAILLAGE(FORMAT='MED', ABSC_CURV=_F(  TOUT = 'OUI'))
+TUBE=LIRE_MAILLAGE(FORMAT='MED')
+MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
                        CREA_GROUP_MA=_F(  NOM = 'POUTRE',
@@ -46,14 +47,14 @@ CARA=AFFE_CARA_ELEM(   MODELE=MODELE,
                                             3.176000E-03, ))
 )
 
-RHOI=DEFI_FONCTION( 
+RHOI=DEFI_FONCTION(
                    NOM_PARA='ABSC',
                    MAILLAGE=TUBE,
                    VALE_Y    =( 1.300000E+00, 1.300000E+00, ),
                    NOEUD_PARA=( 'N_01_001'  , 'N_04_089', )
 )
 
-RHOE=DEFI_FONCTION( 
+RHOE=DEFI_FONCTION(
                    NOM_PARA='ABSC',
                    MAILLAGE=TUBE,
                    VALE_Y=( 1.000000E+03, 1.000000E+03, 1.300000E+00, 1.300000E+00, ),
@@ -63,13 +64,13 @@ RHOE=DEFI_FONCTION(
 PROFVIT1=DEFI_FONC_FLUI(       MAILLAGE=TUBE,
                              NOEUD_INIT='N_02_001',
                               NOEUD_FIN='N_02_060',
-                             VITE=_F( 
+                             VITE=_F(
                                    PROFIL = 'UNIFORME',
                                    VALE = 1.000000E+00)
 )
 
-TYPEFLUI=DEFI_FLUI_STRU( 
-               FAISCEAU_TRANS=_F( 
+TYPEFLUI=DEFI_FLUI_STRU(
+               FAISCEAU_TRANS=_F(
              COUPLAGE = 'OUI',
              CARA_ELEM = CARA,
              PROF_RHO_F_INT = RHOI,
@@ -77,8 +78,8 @@ TYPEFLUI=DEFI_FLUI_STRU(
              COEF_MASS_AJOU = 2.071110E+00,
              NOM_CMP = 'DX',
              TYPE_PAS = 'CARRE_LIGN',
-             TYPE_RESEAU = 1001, 
-             PAS = 1.500000E+00, 
+             TYPE_RESEAU = 1001,
+             PAS = 1.500000E+00,
              PROF_VITE_FLUI = PROFVIT1),
                            INFO=2
 )
@@ -86,7 +87,7 @@ TYPEFLUI=DEFI_FLUI_STRU(
 FONC_CM=FONC_FLUI_STRU(  TYPE_FLUI_STRU=TYPEFLUI
 )
 
-MAT=DEFI_MATERIAU(  ELAS_FLUI=_F( 
+MAT=DEFI_MATERIAU(  ELAS_FLUI=_F(
                                 E = 1.100000E+11,
                                 RHO = 8.330000E+03,
                                 NU = 3.000000E-01,
@@ -101,16 +102,16 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=TUBE,
 )
 
 CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-                           _F(  NOEUD = 'N_01_001', 
-                                      DX = 0.0, 
-                                      DY = 0.0, 
-                                      DZ = 0.0, 
+                           _F(  NOEUD = 'N_01_001',
+                                      DX = 0.0,
+                                      DY = 0.0,
+                                      DZ = 0.0,
                                       DRZ = 0.0,
                                      ),
-                           _F(  NOEUD = 'N_04_001', 
-                                      DX = 0.0, 
-                                      DY = 0.0, 
-                                      DZ = 0.0, 
+                           _F(  NOEUD = 'N_04_001',
+                                      DX = 0.0,
+                                      DY = 0.0,
+                                      DZ = 0.0,
                                       DRZ = 0.0,),
                            _F(GROUP_MA = 'POUTRE',
                               DY = 0.0),)
@@ -144,7 +145,7 @@ MATRM=ASSE_MATRICE(   MATR_ELEM=MELM,
 MODES=MODE_ITER_SIMULT(   MATR_RIGI=MATRR,
                           MATR_MASS=MATRM,
                          METHODE='TRI_DIAG',
-                       CALC_FREQ=_F( 
+                       CALC_FREQ=_F(
                            OPTION = 'PLUS_PETITE',
                            NMAX_FREQ = 2)
 )
@@ -162,7 +163,7 @@ MELFLUI0=CALC_FLUI_STRU(
              VITE_FLUI=_F(  VITE_MIN = vite_min,
                          VITE_MAX = vite_max,
                          NB_POIN = nb_poin),
-             BASE_MODALE=_F(  MODE_MECA = MODES, 
+             BASE_MODALE=_F(  MODE_MECA = MODES,
                           NUME_ORDRE = ( 1,),
                           AMOR_REDUIT = (1.300000E-02,)),
 
@@ -170,7 +171,7 @@ MELFLUI0=CALC_FLUI_STRU(
                  IMPRESSION=_F(  PARA_COUPLAGE = 'OUI')
 )
 
-SPECTRE1=DEFI_SPEC_TURB(  
+SPECTRE1=DEFI_SPEC_TURB(
               SPEC_LONG_COR_3=_F(  LONG_COR = 3.4,
                                 PROF_VITE_FLUI = PROFVIT1)
 )
@@ -198,13 +199,13 @@ for i in range(len(vite)):
                     VITE_FLUI=vite[i],
                )
 
-  RPM0[i]=DYNA_SPEC_MODAL( 
+  RPM0[i]=DYNA_SPEC_MODAL(
               BASE_ELAS_FLUI=MELFLUI0,
                     VITE_FLUI=vite[i],
                        EXCIT=_F(  INTE_SPEC_GENE = SPRJ[i])
               )
 
-  RPP0[i]=REST_SPEC_PHYS( 
+  RPP0[i]=REST_SPEC_PHYS(
                BASE_ELAS_FLUI=MELFLUI0,
                     VITE_FLUI=vite[i],
                INTE_SPEC_GENE=RPM0[i],
@@ -219,7 +220,7 @@ for i in range(len(vite)):
                 OPTION='DIAG'
              ))
 
-F_FREQ=RECU_FONCTION( 
+F_FREQ=RECU_FONCTION(
                  BASE_ELAS_FLUI=MELFLUI0,
                          PARA_X='VITE_FLU',
                          PARA_Y='FREQ',
@@ -281,7 +282,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4439720107,
                         ),
               )
 
-F_AMOR=RECU_FONCTION( 
+F_AMOR=RECU_FONCTION(
                  BASE_ELAS_FLUI=MELFLUI0,
                          PARA_X='VITE_FLU',
                          PARA_Y='AMOR',

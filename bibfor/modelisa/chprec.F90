@@ -88,7 +88,7 @@ subroutine chprec(chou)
     call getvtx(' ', 'TYPE_CHAM', scal=tychlu, nbret=n2)
 !
 !
-!     1. CAS DE LA RECUPERATION DU CHAMP DE GEOMETRIE D'UN MAILLAGE
+!     1a. CAS DE LA RECUPERATION DU CHAMP DE GEOMETRIE D'UN MAILLAGE
 !     ==============================================================
     if (nomch .eq. 'GEOMETRIE') then
         call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
@@ -108,6 +108,30 @@ subroutine chprec(chou)
             call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
         endif
         call copisd('CHAMP_GD', 'G', ma//'.COORDO', noch19)
+        goto 20
+    endif
+!
+!
+!     1b. CAS DE LA RECUPERATION DU CHAMP D'ABSC_CURV D'UN MAILLAGE
+!     ==============================================================
+    if (nomch .eq. 'ABSC_CURV') then
+        call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
+        if (n1 .eq. 0) then
+            call utmess('F', 'MODELISA4_17')
+        endif
+!
+!       ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
+!       TYPE DU CHAMP EXTRAIT.
+        call dismoi('TYPE_CHAMP', ma//'.ABSC_CURV', 'CHAMP', repk=tych)
+        call dismoi('NOM_GD', ma//'.ABSC_CURV', 'CHAMP', repk=nomgd)
+!
+        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
+            valk(1) = tychlu
+            valk(2) = tych(1:4)
+            valk(3) = nomgd
+            call utmess('F', 'MODELISA4_18', nk=3, valk=valk)
+        endif
+        call copisd('CHAMP_GD', 'G', ma//'.ABSC_CURV', noch19)
         goto 20
     endif
 !
@@ -177,7 +201,7 @@ subroutine chprec(chou)
     if (n1 .eq. 1) then
 !
         ASSERT(nomch(1:1).eq.'.')
-        chextr = cara//nomch
+        chextr = cara//nomch(1:11)
         call exisd('CHAMP', chextr, iexi)
         if (iexi .eq. 0) then
             call utmess('F', 'CALCULEL3_17', sk=chextr)
@@ -205,7 +229,7 @@ subroutine chprec(chou)
     if (n1 .eq. 1) then
 !
         ASSERT(nomch(1:1).eq.'.')
-        chextr = charme//nomch
+        chextr = charme//nomch(1:11)
         call exisd('CHAMP', chextr, iexi)
         if (iexi .eq. 0) then
             call utmess('F', 'CALCULEL3_17', sk=chextr)

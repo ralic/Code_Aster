@@ -55,7 +55,7 @@ class sd_maillage(sd_titre):
     TYPL    = Facultatif(AsVI())
 
     # si le sd_maillage est linéique (tube_GV) :
-    abs_curv  = Facultatif(sd_carte(SDNom(nomj='.ABS_CURV')))
+    absc_curv  = Facultatif(sd_carte(SDNom(nomj='.ABSC_CURV')))
 
     ADAPTATION = Facultatif(AsVI(lonmax=1, ))
 

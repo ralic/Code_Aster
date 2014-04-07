@@ -1,5 +1,4 @@
 subroutine op0001()
-!-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,12 +32,9 @@ subroutine op0001()
 !
     implicit none
 !
-!
-!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterfort/abscur.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/chckma.h"
@@ -57,19 +53,19 @@ subroutine op0001()
 #include "asterfort/mavegr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+
 !
 ! ----- DECLARATIONS
 !
-    integer :: i, n1, iaux, niv, ifl, ifm, ioc, itout, ibid
+    integer :: i, iaux, niv, ifl, ifm, ibid
     integer :: nbnoeu, nbmail, nbcoor, nbcgrm
-    integer :: nbval, iret, infmed
-    character(len=8) :: nomu, totm, fmt, veri
+    integer :: iret, infmed
+    character(len=8) :: nomu, fmt, veri
     character(len=16) :: concep,cmd
     character(len=24) :: vecgrm
     character(len=64) :: nomamd
     real(kind=8) :: dtol
     integer :: ilng
-    integer :: iarg
     character(len=80), pointer :: tgrm(:) => null()
     integer, pointer :: dime(:) => null()
 
@@ -125,46 +121,26 @@ subroutine op0001()
                     infmed, nbnoeu, nbmail, nbcoor, vecgrm,&
                     nbcgrm)
     endif
-!
-! --- CALCUL D'UNE ABSCISSE CURVILIGNE SUR LE MAILLAGE :
-!     ------------------------------------------------
-    call getfac('ABSC_CURV', ioc)
-    if (ioc .eq. 1) then
-        itout = 0
-        call getvtx('ABSC_CURV', 'TOUT', iocc=1, nbval=0, nbret=nbval)
-        nbval = abs(nbval)
-        if (nbval .ne. 0) then
-            call getvtx('ABSC_CURV', 'TOUT', iocc=1, scal=totm, nbret=n1)
-            if (n1 .ne. 0) then
-                itout = 1
-                call abscur(nomu, itout)
-!
-            endif
-        else
-            call getvem(nomu, 'GROUP_MA', 'ABSC_CURV', 'GROUP_MA', 1,&
-                        iarg, 0, zk8, nbval)
-            nbval=abs(nbval)
-            if (nbval .ne. 0) then
-                call utmess('E', 'MODELISA5_48')
-            endif
-        endif
-    endif
-!
+
+
 ! --- SUPPRESSION DES GROUPES DE NOEUDS OU MAILLES DE NOM ' ' :
 !     -------------------------------------------------------
     call mavegr(nomu)
-!
+
+
 ! --- CREATION DE L'OBJET .DIME :
 !     -------------------------
     call wkvect(nomu//'.DIME', 'G V I', 6, vi=dime)
     dime(1)= nbnoeu
     dime(3)= nbmail
     dime(6)= nbcoor
-!
+
+
 ! --- CARACTERISTIQUES GEOMETRIQUES :
 !     -----------------------------
     call cargeo(nomu)
-!
+
+
 ! --- PHASE DE VERIFICATION DU MAILLAGE :
 !     ---------------------------------
     call getvtx('VERI_MAIL', 'VERIF', iocc=1, scal=veri, nbret=iret)
@@ -174,8 +150,8 @@ subroutine op0001()
     else
         call utmess('A', 'MODELISA5_49')
     endif
-!
-!
+
+
 !     IMPRESSIONS DU MOT CLE INFO :
 !     ---------------------------
     call infoma(nomu)

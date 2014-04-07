@@ -93,7 +93,7 @@ subroutine vpmain(modele, mate, cara, xmastr)
     lpain(14) = 'PCINFDI'
     lchin(14) = chcara(15)
     lpain(15) = 'PABSCUR'
-    lchin(15) = chgeom(1:8)//'.ABS_CURV'
+    lchin(15) = chgeom(1:8)//'.ABSC_CURV'
     nb = 15
     lpaout(1) = 'PMASSINE'
     lchout(1) = chelem
