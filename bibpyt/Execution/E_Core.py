@@ -31,13 +31,15 @@ B_ETAPE/E_ETAPE) et des concepts/ASSD.
 import sys
 import os
 import os.path as osp
+from warnings import warn, simplefilter
 import platform
 from optparse import OptionParser
-import osutils
+import aster_pkginfo
+import aster
 import aster_core
+from i18n import localization
+from strfunc import convert
 
-# Pas d'import des autres packages d'aster
-# car le premier import de ce module est fait avant l'ajout des paths.
 
 def check_value(option, opt, value, parser):
     """Callback to check some values."""
@@ -130,8 +132,6 @@ The ASTERDATADIR environment variable changes the data directory.
 
     def init_info(self):
         """Stocke les informations générales (machine, os...)."""
-        import aster_core
-        import aster
         # hostname
         self.info['hostname'] = platform.node()
         # ex. i686/x86_64
@@ -142,27 +142,18 @@ The ASTERDATADIR environment variable changes the data directory.
         self.info['architecture'] = platform.architecture()[0]
         # ex. 2.6.32...
         self.info['osrelease'] = platform.release()
-        # Code_Aster version
-        #   version=11.1.4, versionD0=11.01.04, versMAJ=11, versMIN=1, versSUB=4
-        for attr in ('version', 'versionD0', 'versionSTA', 'versLabel', 'date', 'exploit'):
-            self.info[attr] = None
-        self.info['versMAJ'] = self.info['versMIN'] = self.info['versSUB'] = 0
-        from Accas import properties
-        for attr in ('version', 'date', 'exploit', 'parentid',
-                     'branch', 'from_branch', 'changes', 'uncommitted'):
-            self.info[attr] = getattr(properties, attr)
-        vers = self.info['version']
-        if vers:
-            # for backward compatibility
-            lv = vers.split('.')
-            try:
-                self.info['versMAJ'] = int(lv.pop(0))
-                self.info['versMIN'] = int(lv.pop(0))
-                self.info['versSUB'] = int(lv.pop(0))
-            except (IndexError, ValueError):
-                pass
-        self.info['versionD0'] = '%d.%02d.%02d' % (self.info['versMAJ'],
-            self.info['versMIN'], self.info['versSUB'])
+        version = aster_pkginfo.version_info.version
+        self.info['versionSTA'] = None
+        self.info['versLabel'] = None
+        keys = ('parentid', 'branch', 'date', 'from_branch', 'changes', 'uncommitted')
+        self.info.update(zip(keys, aster_pkginfo.version_info[1:]))
+        self.info['version'] = '.'.join(str(i) for i in version)
+        self.info['versMAJ'] = version[0]
+        self.info['versMIN'] = version[1]
+        self.info['versSUB'] = version[2]
+        self.info['exploit'] = aster_pkginfo.version_info.branch.startswith('v')
+        self.info['versionD0'] = '%d.%02d.%02d' % version
+        self.info['versLabel'] = aster_pkginfo.get_version_desc()
 
     def set_info(self, key, value):
         """Définit la valeur d'une information générale."""
@@ -171,9 +162,9 @@ The ASTERDATADIR environment variable changes the data directory.
 
     def default_values(self):
         """Définit les valeurs par défaut pour certaines options."""
-        if osutils.locale_dir and os.path.exists(osutils.locale_dir):
-            from i18n import localization
-            localization.set_localedir(osutils.locale_dir)
+        locale_dir = aster_pkginfo.locale_dir
+        if locale_dir and os.path.exists(locale_dir):
+            localization.set_localedir(locale_dir)
         if self.opts.tpmax is None and platform.system() == 'Linux':
             # use rlimit to set to the cpu "ulimit"
             import resource
@@ -196,7 +187,6 @@ The ASTERDATADIR environment variable changes the data directory.
         else:
             value = self.info.get(option, default)
         if type(value) in (str, unicode):
-            from strfunc import convert
             value = convert(value)
         if self._dbg:
             print "<CoreOptions.get_option> option=%r value=%r" % (option, value)
@@ -213,7 +203,6 @@ def getargs(argv=None):
 def _bwc_arguments(argv):
     """Fonction de compatibilité de transition vers des options "GNU".
     """
-    from warnings import warn, simplefilter
     # DeprecationWarning are ignored in python2.7 by default
     simplefilter('default')
 
@@ -254,6 +243,3 @@ def _bwc_arguments(argv):
         else:
             new.append(arg)
     return new
-
-
-

@@ -34,6 +34,7 @@ from functools import partial
 import time
 from datetime import datetime
 
+import aster_pkginfo
 import _aster_core
 # methods and attributes of C implementation of the module
 from _aster_core import (
@@ -51,10 +52,13 @@ from _aster_core import (
     _NO_EXPIR,
     ASTER_INT_SIZE,
 )
+# for backward compatibility
+__version__ = '.'.join(str(i) for i in aster_pkginfo.version_info.version)
+_aster_core.__version__ = __version__
 
 
 def _is_initialized():
-    return _aster_core.__version__ is not None
+    return getattr(_aster_core, 'get_option', None) is not None
 
 def get_option(option, default=None):
     ''' return the setting parameter value.
@@ -92,47 +96,20 @@ def register(catalog, settings, logger=None):
         from Utilitai.Utmess import MessageLog # prevent cycling import
         logger = MessageLog
     _aster_core.register(catalog, settings, logger, sys.modules[__name__])
-    _aster_core.__version__ = settings.info['version']
-
-def get_version_name():
-    """Return the 'name' of the version.
-    - testing or stable for a frozen version,
-    - stable-updates or unstable
-    """
-    sta = get_option('version').split('.')[-1] == '0'
-    expl = get_option('exploit')
-    if expl:
-        name = 'stable' if sta else 'stable-updates'
-    else:
-        name = 'testing' if sta else 'unstable'
-    return name
-
-def get_version_desc():
-    """Return the description of the version"""
-    name = get_version_name()
-    # could not be global because of the translation system (``_`` not
-    # yet installed by gettext)
-    names = {
-        'stable' : _(u"EXPLOITATION (stable)"),
-        'stable-updates' : _(u"CORRECTIVE AVANT STABILISATION (stable-updates)"),
-        'testing' : _(u"DÉVELOPPEMENT STABILISÉE (testing)"),
-        'unstable' : _(u"DÉVELOPPEMENT (unstable)"),
-    }
-    typvers = names.get(name, _(u"DÉVELOPPEMENT (%s)") % name)
-    return typvers
 
 def _print_alarm():
     import aster_core
     from Utilitai.Utmess import UTMESS
-    changes = aster_core.get_option('changes')
-    uncommitted = aster_core.get_option('uncommitted')
+    changes = aster_pkginfo.version_info.changes
+    uncommitted = aster_pkginfo.version_info.uncommitted
     if changes:
-        UTMESS('A+', 'SUPERVIS_41', valk=aster_core.get_option('version'), vali=changes)
+        UTMESS('A+', 'SUPERVIS_41',
+               valk=aster_pkginfo.version_info.version, vali=changes)
     if uncommitted and type(uncommitted) is list:
         fnames = ', '.join(uncommitted)
-        UTMESS('A+', 'SUPERVIS_42', valk=(aster_core.get_option('parentid'), fnames),)
+        UTMESS('A+', 'SUPERVIS_42',
+               valk=(aster_pkginfo.version_info.parentid, fnames),)
     UTMESS('I', 'VIDE_1')
-
 
 def _print_header():
     """Appelé par entete.F90 pour afficher des informations sur
@@ -140,18 +117,15 @@ def _print_header():
     from i18n import localization
     from Utilitai.Utmess import UTMESS
     import numpy
-    typvers = get_version_desc()
- # XXX not here
-    _aster_core.set_info('versLabel', typvers)
     lang_settings = '%s (%s)' % localization.get_current_settings()
-
-    date_build = get_option('date')
-    UTMESS('I', 'SUPERVIS2_4', valk=typvers)
+    date_build = aster_pkginfo.version_info.date
+    UTMESS('I', 'SUPERVIS2_4',
+           valk=aster_pkginfo.get_version_desc())
     UTMESS('I', 'SUPERVIS2_23',
-        valk=(get_option('version'),
+        valk=(__version__,
               date_build,
-              get_option('parentid'),
-              get_option('branch')),)
+              aster_pkginfo.version_info.parentid,
+              aster_pkginfo.version_info.branch),)
     UTMESS('I', 'SUPERVIS2_10',
         valk=("1991", time.strftime('%Y'),
               time.strftime('%c'),

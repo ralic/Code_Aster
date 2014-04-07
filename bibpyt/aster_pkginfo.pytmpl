@@ -1,0 +1,55 @@
+# -*- coding: utf-8
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+from collections import namedtuple
+
+__all__ = ['locale_dir', 'version_info']
+
+locale_dir = '@LOCALEDIR@'
+
+version_info = namedtuple('aster_version_info', [
+'version', 'parentid', 'branch', 'date', 'from_branch', 'changes', 'uncommitted'
+])(
+*@VERSION_INFO@
+)
+
+
+def get_version_name():
+    """Return the 'name' of the version.
+    - testing or stable for a frozen version,
+    - stable-updates or unstable
+    """
+    sta = version_info.version[-1] == 0
+    expl = version_info.branch.startswith('v')
+    if expl:
+        return 'stable' if sta else 'stable-updates'
+    else:
+        return 'testing' if sta else 'unstable'
+
+def get_version_desc():
+    """Return the description of the version"""
+    name = get_version_name()
+    # could not be global because of the translation system (``_`` not
+    # yet installed by gettext)
+    names = {
+        'stable' : _(u"EXPLOITATION (stable)"),
+        'stable-updates' : _(u"CORRECTIVE AVANT STABILISATION (stable-updates)"),
+        'testing' : _(u"DÉVELOPPEMENT STABILISÉE (testing)"),
+        'unstable' : _(u"DÉVELOPPEMENT (unstable)"),
+    }
+    return names.get(name, _(u"DÉVELOPPEMENT (%s)") % name)
