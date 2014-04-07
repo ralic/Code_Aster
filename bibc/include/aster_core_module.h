@@ -26,7 +26,7 @@
  *
  */
 
-extern PyMODINIT_FUNC initaster_core();
+extern PyMODINIT_FUNC init_aster_core();
 
 INTEGER DEFS( JDCGET, jdcget, _IN char *, STRING_SIZE );
 extern void DEFSP( JDCSET, jdcset, _IN char *, STRING_SIZE, _IN INTEGER * );

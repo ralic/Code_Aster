@@ -48,6 +48,7 @@ for mod in MODULES_RAISING_FPE:
 import E_Core
 from strfunc import convert, ufmt
 from decorators import jdc_required, stop_on_returncode, never_fail
+import aster_core
 
 class Interrupt(Exception):
     """Local exception"""
@@ -102,12 +103,6 @@ class SUPERV:
         pour permettre d'importer Noyau."""
         from Noyau.N_info import message, SUPERV as SUPCAT
         message.error(SUPCAT, *args)
-
-    def register(self):
-        """Enregistre le JDC et les objets nécessaires à aster_core."""
-        import aster_core
-        from Utilitai.Utmess import MessageLog
-        aster_core.register(self.jdc, self.coreopts, MessageLog, E_Core)
 
     def set_i18n(self):
         """Met en place les fonctions d'internationalisation."""
@@ -167,7 +162,7 @@ class SUPERV:
         self.jdc = self.JdC(procedure=text, cata=self.cata, nom=fort1,
                             context_ini=params, **args)
         # on enregistre les objets dans aster_core dès que le jdc est créé
-        self.register()
+        aster_core.register(self.jdc, self.coreopts)
         self.jdc.set_syntax_check(self.coreopts.get_option('syntax'))
 
     @jdc_required

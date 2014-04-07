@@ -717,9 +717,9 @@ static PyMethodDef methods[] = {
 };
 
 #ifndef _WITHOUT_PYMOD_
-PyMODINIT_FUNC initaster_core(void)
+PyMODINIT_FUNC init_aster_core(void)
 {
-    aster_core = Py_InitModule("aster_core", methods);
+    aster_core = Py_InitModule("_aster_core", methods);
 
     // Add macro constant for dependance
 #ifdef _USE_MPI

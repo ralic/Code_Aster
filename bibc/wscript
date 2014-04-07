@@ -102,8 +102,8 @@ def build_as_shared(self, shenv):
 
     self(
         features = 'c cshlib pyext',
-          target = '../bibpyt/aster_core',
-            name = 'aster_core',
+          target = '../bibpyt/_aster_core',
+            name = 'aster_core_module',
           source = get_srcs('**/aster_core_module.c'),
              env = shenv.derive(),
              use = ['asterlib'] + uses,

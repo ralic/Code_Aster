@@ -58,7 +58,7 @@ _MAIN_(argc, argv)
 {
     int ierr;
 
-    PyImport_AppendInittab("aster_core", initaster_core);
+    PyImport_AppendInittab("_aster_core", init_aster_core);
     PyImport_AppendInittab("aster", initaster);
 
     /* Module définissant des opérations sur les objets fonction_sdaster */
