@@ -158,6 +158,11 @@ Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
  la grandeur : %(k1)s  n est pas de type réel.
 """),
 
+24: _(u"""
+Erreur utilisateur dans la commande MACR_ECLA_PG
+ Le CHAM_ELEM (ELGA) %(k1)s ne peut pas être alloué sur le modèle.
+ On ne sait pas où sont ses points de Gauss.
+"""),
 
 25: _(u"""
  le LIGREL :  %(k1)s  ne contient pas d éléments finis

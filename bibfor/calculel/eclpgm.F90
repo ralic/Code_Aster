@@ -30,7 +30,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !  IN/JXIN  CHAM1 : NOM DU CHAM_ELEM/ELGA QUE L'ON VEUT ECLATER
 !           (OU ' ' SI ON UTILISE NCH ET LISCH)
 !  IN       LISCH(*) : LISTE DES NOMS SYMBOLIQUES DES CHAMPS AUXQUELS
-!           ON S'INTERESSE. EX: (SIEF_ELGA, VARI_ELGA_DEPL, ...)
+!           ON S'INTERESSE. EX: (SIEF_ELGA, VARI_ELGA, ...)
 !  IN NCH : DIMENSION DE LISCH  (0 SI CHAM1/=' ')
 !  IN/JXOUT MA2 : NOM DU MAILLAGE A CREER (1 MAILLE PAR POINT DE GAUSS)
 !           LES MAILLES DE MA2 SONT TOUTES DECONNECTEES LES UNES DES
@@ -42,7 +42,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !      (IGNORE SI LONMIN <=0)
 !      CETTE FONCTIONNALITE PERMET D'"EPAISSIR" DES ELEMENTS DE JOINT
 !      POUR QU'ON PUISSE LES VOIR.
-!
+!-----------------------------------------------------------------------
 !
 #include "jeveux.h"
 #include "asterfort/alchml.h"
@@ -54,7 +54,6 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 #include "asterfort/dismoi.h"
 #include "asterfort/eclapp.h"
 #include "asterfort/eclaty.h"
-#include "asterfort/eclau1.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
@@ -86,7 +85,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     integer :: npg1, nbpi,  iagese, nno2, nuse, nse1
     integer :: ima, nbelgr, nupoin, npoini, iterm, ipoini
     integer :: iret, ich, jrefe, nch2
-    character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, famil, nompar
+    character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, nompar
     character(len=8) :: tych
     character(len=16) :: nomte, lisch(nch)
     character(len=19) :: ligrel, ligrmo, cel, cham1, ligre1
@@ -157,7 +156,6 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !
 !
 !    0.1 : ON CHERCHE LE NOM DES FAMILLES DE POINTS DE GAUSS A ECLATER
-!          SI ON N'A PAS ASSEZ DE "BILLES", ON PRENDRA 'RIGI'
 !          SORTIES : NCH2 [+ JOBJ SI NCH2>0]
 !    -----------------------------------------------------------------
     nomobj = '&&ECLPGM.NOMOBJ'
@@ -201,7 +199,10 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
  30         continue
         end do
 !        -- ON N'A PAS TROUVE DE CHAMP ELGA CORRECT :
-        if (ico .eq. 0) nch2=0
+        if (ico .eq. 0) then
+           valk(1) = lisch(1)
+           call utmess('F','CALCULEL2_24',nk=1, valk=valk)
+        endif
     endif
 !
 !
@@ -224,16 +225,13 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     do igr = 1, nbgrel(ligrel)
         te = typele(ligrel,igr)
         nbelgr = nbelem(ligrel,igr)
+        if (nbelgr .eq. 0) goto 1
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !
-        if (nch2 .gt. 0) then
-            numa = numail(igr,1)
-            elrefa = zk16(jobj-1+numa)(1:8)
-            fapg = zk16(jobj-1+numa)(9:16)
-        else
-            famil = 'RIGI'
-            call eclau1(nomte, famil, elrefa, fapg)
-        endif
+        ASSERT(nch2.gt.0)
+        numa = numail(igr,1)
+        elrefa = zk16(jobj-1+numa)(1:8)
+        fapg = zk16(jobj-1+numa)(9:16)
         if (fapg .eq. ' ') goto 1
 !
         call eclaty(nomte, elrefa, fapg, npg1, npoini,&
@@ -281,16 +279,13 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     do igr = 1, nbgrel(ligrel)
         te = typele(ligrel,igr)
         nbelgr = nbelem(ligrel,igr)
+        if (nbelgr .eq. 0) goto 2
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !
-        if (nch2 .gt. 0) then
-            numa = numail(igr,1)
-            elrefa = zk16(jobj-1+numa)(1:8)
-            fapg = zk16(jobj-1+numa)(9:16)
-        else
-            famil = 'RIGI'
-            call eclau1(nomte, famil, elrefa, fapg)
-        endif
+        ASSERT(nch2.gt.0)
+        numa = numail(igr,1)
+        elrefa = zk16(jobj-1+numa)(1:8)
+        fapg = zk16(jobj-1+numa)(9:16)
         if (fapg .eq. ' ') goto 2
 !
         call eclaty(nomte, elrefa, fapg, npg1, npoini,&
