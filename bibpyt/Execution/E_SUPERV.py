@@ -58,19 +58,19 @@ class Interrupt(Exception):
 
 class SUPERV:
     usage="""
-    asteru JDC.py --bibpyt="rep" --commandes="fic_commandes"
+    asteru JDC.py --commandes="fic_commandes"
                 [--memjeveux=taille_en_Mw | --memory=taille_en_Mo]
                 [--rep_mat=repertoire_materiau] [--rep_dex=repertoire_datg]
                 [--interact] [--syntax]
 
     L'ancienne syntaxe reste possible pour des raisons de compatibilité :
-       asteru JDC.py -eficas_path "rep" -commandes "fic_commandes" [-memjeveux taille_en_Mw]
+       asteru JDC.py -commandes "fic_commandes" [-memjeveux taille_en_Mw]
                   [-rep_mat repertoire_materiau] [-rep_dex repertoire_datg]
                   [-interact] [-verif]
 
  Exemple:
 
-    asteru JDC.py ---bibpyt=/opt/aster/stable/bibpyt --commandes=sslp09a.comm --memory=128
+    asteru JDC.py --commandes=sslp09a.comm --memory=128
     """
 
     def __init__(self):
@@ -108,14 +108,6 @@ class SUPERV:
         import aster_core
         from Utilitai.Utmess import MessageLog
         aster_core.register(self.jdc, self.coreopts, MessageLog, E_Core)
-
-    def set_path(self):
-        """Ajout des chemins pour les imports
-        """
-        bibpyt = self.coreopts.get_option('bibpyt')
-        sys.path.insert(0, '.')
-        sys.path.insert(0, bibpyt)
-        sys.path.append(osp.join(bibpyt, 'Cata'))
 
     def set_i18n(self):
         """Met en place les fonctions d'internationalisation."""

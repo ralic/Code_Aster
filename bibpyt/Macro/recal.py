@@ -562,7 +562,6 @@ class CALCULS_ASTER:
          from Accas import _F
 
          # Declaration de toutes les commandes Aster
-         import cata
          from Cata.cata import *
      except Exception, e:
          raise Exception("Le mode INCLUDE doit etre lance depuis Aster : \nErreur : %s" % e)

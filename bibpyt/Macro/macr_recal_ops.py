@@ -190,7 +190,6 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    from Accas import _F
    #from Cata.cata import *
    # Declaration de toutes les commandes Aster
-   import cata
    for k,v in cata.__dict__.items() :
       if isinstance(v, (OPER, MACRO)):
          self.current_context[k]= v

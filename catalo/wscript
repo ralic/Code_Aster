@@ -103,8 +103,7 @@ def build_cata_ele(self, ojb, install_path):
     try:
         #  generate the command line
         exec_pyaster(self, 'Execution/E_SUPERV.py', cwd=bldnode.abspath(),
-                     args=['-eficas_path', '${PYTHONDIR}',
-                           '-commandes', comm.abspath(),
+                     args=['-commandes', comm.abspath(),
                            '-memjeveux', '500',
                            '-tpmax', '120'])
     finally: # fort.4 -> .ojb
