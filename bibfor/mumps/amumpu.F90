@@ -89,7 +89,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     type (cmumps_struc) , pointer :: cmpsk => null()
     type (dmumps_struc) , pointer :: dmpsk => null()
     type (zmumps_struc) , pointer :: zmpsk => null()
-    real(kind=8) :: rval(2), rval1, rval2, rval1b, rval2b, rinf12
+    real(kind=8) :: rval(3), rval1, rval2, rval3, rval2b, rval3b, rinf12
     real(kind=8) :: rinf13
     integer :: info16, info26, vali(10), icoefm, icn22, icn23, rang, n, iaux1
     integer :: info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
@@ -97,9 +97,9 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     integer :: info34, icnt33
     integer :: pid
     mpi_int :: mpicou
-    logical :: lpara, lpeak, lpb1
+    logical :: lpara, lpbmem, lpb1
     character(len=2) :: fstring
-    character(len=8) :: k8tab(2)
+    character(len=8) :: k8tab(3)
     character(len=10) :: strpid
     character(len=24) :: kpiv, ksizemu
     character(len=80) :: nvers
@@ -201,25 +201,42 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !       ------------------------------------------------
     if (option .eq. 1) then
 !
+! ---   INITS GENERALES
+        lpb1=.false.
+        lpbmem=.false.
+        info16=-9999
+        info26=-9999
+        info3=-9999
+        tmax=-9999
+        tmaxb=-9999
+        icn22=-9999
+        icn23=-9999
+        nsizema=-9999
+        rval1=-9999.0
+        rval2=-9999.0
+        rval3=-9999.0
+        rval2b=-9999.0
+        rval3b=-9999.0
 ! ---   INITS. PROPRE A L'OPTION
         select case (type)
-            case ('S')
+        case ('S')
             info16=smpsk%infog(16)
             info26=smpsk%infog(26)
             info3=smpsk%infog(3)*4
-            case ('C')
+        case ('C')
             info16=cmpsk%infog(16)
             info26=cmpsk%infog(26)
             info3=cmpsk%infog(3)*8
-            case ('D')
+        case ('D')
             info16=dmpsk%infog(16)
             info26=dmpsk%infog(26)
             info3=dmpsk%infog(3)*8
-            case ('Z')
+        case ('Z')
             info16=zmpsk%infog(16)
             info26=zmpsk%infog(26)
             info3=zmpsk%infog(3)*16
         end select
+        ASSERT(nbproc>0)
         if (info3 .lt. 0) then
             info3=-info3/nbproc
         else
@@ -231,142 +248,138 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         execmu=30
         ksizemu='&&TAILLE_OBJ_MUMPS'
         call jeveuo(ksizemu, 'L', isizemu)
-        nsizema=-999
-        do i = 1, nbproc
+        do i=1,nbproc
             nsizemu=zi(isizemu+i-1)
-            if (nsizemu .gt. nsizema) nsizema=nsizemu
+            if (nsizemu.gt.nsizema) nsizema=nsizemu
         enddo
 !
-! ---   MARGES POUR LES ESTIMATIONS (EN %) DE MUMPS IC ET OOC PLUS
-! ---   CORRECTION POUR PRENDRE EN COMPTE MAX(A/IRN/JCN,PROC) ET
-! ---   EXECUTABLE MUMPS.
-        if (lpara) then
+! ---   MARGES POUR LES ESTIMATIONS (EN %) DE MUMPS IC ET OOC
 ! ---     MARGE DU AU PARALLELISME
+        if (lpara) then
             icoefm=30
         else
-! ---     MARGE DU AU SEQUENTIEL
+! ---     MARGE EN SEQUENTIEL
             icoefm=10
         endif
 ! ---   MARGE POUR LES TRES PETITS CAS
-        if (n .lt. 100) icoefm=50
+        if (n.lt.100) icoefm=50
 !
-! ---   CONSOS MUMPS IC ET OOC MAX SUR TOUS LES PROCS
-        info16=int(info16*((icoefm+100)*1.d0/100.d0))+nsizema+execmu
-        info26=int(info26*((icoefm+100)*1.d0/100.d0))+nsizema+execmu
-! ---
-! ---   TMAX: MAX DE LA RAM DISPO =
-! ---       MEM_JOB - COURANT_JEVEUX - RELIQUAT (PYTHON, EXEC ASTER...)
-! ---
-        tmax=-999
-        rval1=-999
-        rval2=-999
-        tmaxb=-999
-        rval1b=-999
-        rval2b=-999
-        icn22=-999
-        icn23=-999
-!
-! ---   SI LA MESURE DE VMPEAK N'EST PAS DISPO, ON A MOINS CONFIANCE
-! ---   DANS LA MESURE DE TMAX. DU COUP CERTAINS MSGS NE SONT PAS
-! ---   AFFICHES.
-! ---   SI GESTION_MEMOIRE='AUTO', ON BASCULE AUTOMATIQUEMENT
-! ---   EN MODE OOC
-! ---   SI GESTION_MEMOIRE='EVAL', ON ALERTE L'UTILISATEUR
-!
-        lpb1=.false.
-        call utgtme(1, 'VMPEAK  ', rval, iret)
-        if (rval(1) .le. 0) then
-            lpeak=.false.
-            if (usersm(1:4) .eq. 'AUTO') then
+! ---   CONSO MUMPS  + VERIFICATION DE SA VALIDITE
+        info16=int(info16*((icoefm+100)*1.d0/100.d0))
+        info26=int(info26*((icoefm+100)*1.d0/100.d0))
+        if ((info16.lt.0).or.(info26.lt.0).or.(nsizema.lt.0)) then
+            lpbmem=.true.
+            call utmess('A','FACTOR_83')
+            if (usersm(1:4).eq.'AUTO') then
                 lpb1=.true.
                 usersm='OUT_OF_CORE'
-                if (niv .ge. 2) then
-                    call utmess('I', 'FACTOR_82')
-                endif
             endif
-        else
-            lpeak=.true.
         endif
-        k8tab(1)='MEM_TOTA'
-        k8tab(2)='VMSIZE'
-        call utgtme(2, k8tab, rval, iret)
+
+! ---   MEM ASTER DISPONIBLE + VERIFICATION DE SA VALIDITE
+        k8tab(1)='VMPEAK  '
+        k8tab(2)='MEM_TOTA'
+        k8tab(3)='VMSIZE'
+        call utgtme(3,k8tab,rval,iret)
         rval1=rval(1)
         rval2=rval(2)
-        ASSERT((nbfact.ge.1).and.(nbfact.le.nmxins))
-        if (iret .eq. 0) then
-            tmax=int(rval1-rval2)/nbfact
+        rval3=rval(3)
+        if ((rval1.lt.0.d0).or.(rval2.lt.0.d0).or.(rval3.lt.0.d0).or.(rval2.le.rval3).or.&
+        &   (iret.ne.0)) then
+            lpbmem=.true.
+            call utmess('A','FACTOR_82')
+            if (usersm(1:4).eq.'AUTO') then
+                lpb1=.true.
+                usersm='OUT_OF_CORE'
+            endif
         else
-            ASSERT(.false.)
+            ASSERT((nbfact.ge.1).and.(nbfact.le.nmxins))
+            tmax=max(int(0.95*(rval2-rval3)/nbfact),1)
         endif
-!
+
+        if (niv.ge.2) write(ifm,*)'<AMUMPU> RVAL1/2/3, INFO16/26, NSIZEMA, TMAX ',&
+        &                                   rval1,rval2,rval3,info16,info26,nsizema,tmax
+
         select case (usersm)
-            case('IN_CORE')
+        case('IN_CORE')
 ! --------------
 ! ---   IN-CORE
 ! --------------
             icn22=0
             icn23=0
-            if ((tmax.lt.info16) .and. (lpeak)) then
+            if ((tmax.lt.info16).and.(.not.lpbmem)) then
                 vali(1)=info16
-                vali(2)=icoefm
-                vali(3)=tmax
+                vali(2)=tmax
+                vali(3)=nsizema+execmu
                 vali(4)=nbfact
                 call utmess('A', 'FACTOR_74', ni=4, vali=vali)
             endif
-            case ('OUT_OF_CORE')
+        case ('OUT_OF_CORE')
 ! ------------------
 ! ---   OUT-OF-CORE
 !-------------------
             icn22=1
             icn23=0
-            if ((tmax.lt.info26) .and. (lpeak)) then
+            if ((tmax.lt.info26).and.(.not.lpbmem)) then
                 vali(1)=info26
-                vali(2)=icoefm
-                vali(3)=tmax
+                vali(2)=tmax
+                vali(3)=nsizema+execmu
                 vali(4)=nbfact
                 call utmess('A', 'FACTOR_75', ni=4, vali=vali)
             endif
-            case ('AUTO')
+        case ('AUTO')
 ! -----------------------------------------------------------------
 ! ----- STRATEGIE DECIDEE EN FONCTION DES CAPACITES MACHINES ET DES
 ! ----- CONSOMMATIONS REQUISES PAR MUMPS
 ! -----------------------------------------------------------------
-            if (tmax .ge. info16) then
+            ASSERT((tmax.gt.0).and.(.not.lpbmem).and.(info16.gt.0))
+            ASSERT((info26.gt.0).and.(nsizema.gt.0))
+            if (tmax.ge.info16) then
                 icn22=0
-                icn23=max(int(0.95*tmax),info16)-(nsizema+execmu)
+                icn23=max(min(3*info16,tmax),1)
             else
-                call jjldyn(0, -1, ltot)
+                call jjldyn(0,-1,ltot)
                 k8tab(1)='MEM_TOTA'
                 k8tab(2)='VMSIZE'
-                call utgtme(2, k8tab, rval, iret)
-                rval1b=rval(1)
-                rval2b=rval(2)
-                if (iret .eq. 0) then
-                    tmaxb=int(rval1b-rval2b)/nbfact
+                call utgtme(2,k8tab,rval,iret)
+                rval2b=rval(1)
+                rval3b=rval(2)
+                if ((rval2b.le.0).or.(rval3b.le.0).or.(rval2b.le.rval3b).or.(iret.ne.0)) then
+                    lpbmem=.true.
+                    call utmess('A','FACTOR_82')
                 else
-                    ASSERT(.false.)
+                    tmaxb=max(int(0.95*(rval2b-rval3b)/nbfact),1)
                 endif
-                if (niv .ge. 2) then
-                    vali(1)=int(rval1b-rval1)
-                    call utmess('I', 'FACTOR_51', si=vali(1))
+                if (niv.ge.2) then
+                    write(ifm,*)'<AMUMPU> RVALB2/3, TMAXB ',rval2b,rval3b, tmaxb
+                    if (.not.lpbmem) then
+                        vali(1)=int(rval3-rval3b)
+                        call utmess('I','FACTOR_51',si=vali(1))
+                    endif
                 endif
-                if (tmaxb .ge. info16) then
+                if ((tmaxb.gt.info16).and.(.not.lpbmem)) then
                     icn22=0
-                    icn23=max(int(0.95*tmaxb),info16)-(nsizema+execmu)
-                else if ((tmaxb.ge.info26).and.(tmaxb.lt.info16)) then
+                    icn23=max(min(3*info16,tmaxb),1)
+                else if ((tmaxb.gt.info26).and.(tmaxb.lt.info16).and.(.not.lpbmem)) then
                     icn22=1
-                    icn23=max(int(0.95*tmaxb),info26)-(nsizema+execmu)
+                    icn23=max(min(3*info26,tmaxb),1)
                 else
+                    icn22=1
+                    icn23=0
                     vali(1)=tmax
                     vali(2)=tmaxb
                     vali(3)=info16
                     vali(4)=info26
-                    vali(5)=icoefm
+                    vali(5)=nsizema+execmu
                     vali(6)=nbfact
-                    call utmess('F', 'FACTOR_76', ni=6, vali=vali)
+                    if (.not.lpbmem) then
+                        call utmess('A', 'FACTOR_76',ni=6,vali=vali)
+                    else
+                        call utmess('A', 'FACTOR_69',ni=6,vali=vali)
+                    endif
                 endif
             endif
-            case ('EVAL')
+        case ('EVAL')
 ! --------------------------------------------------
 ! ---   OPTION DE PRE-EVALUATION DES CONSOS MEMOIRE
 ! --------------------------------------------------
@@ -374,26 +387,29 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             icn23=-1
             k8tab(1)='CUSE_JV'
             k8tab(2)='RLQ_MEM'
-            call utgtme(2, k8tab, rval, iret)
-            iaux1=int(rval(1)+rval(2))
+            call utgtme(2,k8tab,rval,iret)
+            rval1=rval(1)
+            rval2=rval(2)
+            if ((rval1.le.0).or.(rval2.le.0).or.(iret.ne.0)) call utmess('A','FACTOR_82')
+            iaux1=int(nbfact*rval1+rval2)
             vali(1)=n
             vali(2)=max(iaux1,1)
-            vali(3)=max(info16*nbfact,1)
-            vali(4)=max(info26*nbfact,1)
+            vali(3)=max((info16+nsizema)*nbfact+execmu,1)
+            vali(4)=max((info26+nsizema)*nbfact+execmu,1)
             vali(5)=max(info3*nbfact,1)
             vali(6)=vali(2)+vali(3)
             vali(7)=vali(2)+vali(4)
             vali(8)=nbfact
             call utmess('I', 'FACTOR_81', ni=8, vali=vali)
-            if (.not.lpeak) then
-                call utmess('A', 'FACTOR_83')
-            endif
         case default
             ASSERT(.false.)
         end select
-! --- CORRECTIF POUR BENEFICIER DES BOUCLES DE RATTRAPAGE SI VMPEAK
-! --- NON EVALUABLE ET GESTION_MEMOIRE='AUTO'
-        if (lpb1) usersm='AUTO'
+! --- CORRECTIF POUR BENEFICIER DES BOUCLES DE RATTRAPAGE SI PB DS L'EVALUATION MEMOIRE
+! --- ET GESTION_MEMOIRE='AUTO'
+        if (lpb1) then
+            ASSERT(usersm(1:11).eq.'OUT_OF_CORE')
+            usersm='AUTO'
+        endif
 !
 ! ---  MODIFICATION DU PARAMETRAGE MUMPS POUR LA SUITE DU PROCESSUS
 ! ---- (FACTORISATION NUMERIQUE + SOLVE)
@@ -449,12 +465,11 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             write(ifm,*)'<AMUMPU> GESTION MEMOIRE USERSM/ICN22/ICN23/NBFACT: ',&
      &      usersm,icn22,icn23,nbfact
             write(ifm,*)'<AMUMPU> CONSO MUMPS EXEC/OBJET_AIRNJCN/IC/OOC ',&
-     &                 execmu,nsizema,info16-(execmu+nsizema),&
-     &                                info26-(execmu+nsizema)
+     &                 execmu,nsizema,info16,info26
             write(ifm,*)'<AMUMPU> 1ERE ESTIMATION VMSIZE/MEM_TOTA/TMAX: ',&
-     &                 rval2,rval1,tmax
+     &                 rval3,rval2,tmax
             write(ifm,*)'<AMUMPU> 2NDE ESTIMATION VMSIZE/MEM_TOTA/TMAX: ',&
-     &                 rval2b,rval1b,tmaxb
+     &                 rval3b,rval2b,tmaxb
             write(ifm,*)'*********************************************'
         endif
 !

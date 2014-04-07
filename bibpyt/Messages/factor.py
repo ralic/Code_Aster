@@ -288,7 +288,28 @@ Conseils :
   Vérifier la cohérence des arguments MATR et CHAM_NO.
 """),
 
+69: _(u"""
+Solveur MUMPS :
+  Pour essayer de passer en mémoire, il a fallu décharger sur disque un maximum d'objets JEVEUX.
+  Ce déchargement a pu ralentir le calcul. Mais Il n'a pas été suffisant car MUMPS a besoin,
+  suivant son mode de gestion mémoire (paramétré par le mot-clé SOLVEUR/GESTION_MEMOIRE),
+  d'au moins:
+     - IN_CORE    : %(i3)d Mo,
+     - OUT_OF_CORE: %(i4)d Mo.
 
+  Le calcul pourrait donc être ralenti ou s'arrêter pour cette raison.
+
+  Pour information: mémoire déjà pré-allouée par MUMPS (exécutable, matrice...)= %(i5)d Mo,
+                    nombre de systèmes linéaires à factoriser en même temps    = %(i6)d.
+
+Conseils :
+  La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul
+  plus économe:
+   - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs ou
+     réduisez celle de JEVEUX en activant l'option MATR_DISTRIBUEE.
+  Ou, plus radicalement:
+   - Utilisez un solveur moins exigeant en mémoire (par exemple: SOLVEUR/METHODE='PETSC' + PRECOND='LDLT_SP').
+"""),
 70: _(u"""
 Solveur MUMPS :
   Vous avez activé l'option IMPR="OUI_SOLVE" en surchargeant AMUMPS.F. La résolution
@@ -336,10 +357,12 @@ Conseils :
 
 74: _(u"""
 Solveur MUMPS :
-  Attention, vous avez demandé un calcul IN_CORE, mais MUMPS estime avoir besoin pour cela de
-  %(i1)d Mo (avec %(i2)d %% de marge), alors qu'il n'y a que %(i3)d Mo de disponible sur ce processeur !
-  Le calcul pourrait donc être ralenti ou achopper pour cette raison.
-  Nombre de systèmes linéaires à factoriser en même temps: %(i4)d.
+  Attention, vous avez demandé un calcul IN_CORE, mais MUMPS estime avoir besoin pour cela d'au moins
+  %(i1)d Mo  alors qu'il n'y a que %(i2)d Mo de disponible sur ce processeur !
+  Le calcul pourrait donc être ralenti ou s'arrêter pour cette raison.
+ 
+  Pour information: mémoire déjà pré-allouée par MUMPS (exécutable, matrice...)= %(i3)d Mo,
+                    nombre de systèmes linéaires à factoriser en même temps    = %(i4)d.
 
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
@@ -351,11 +374,12 @@ Conseils :
 """),
 
 75: _(u"""
-Solveur MUMPS :
-  Attention, vous avez demandé un calcul OUT_OF_CORE, mais MUMPS estime avoir besoin pour cela de
-  %(i1)d Mo (avec %(i2)d %% de marge), alors qu'il n'y a que %(i3)d Mo de disponible sur ce processeur !
-  Le calcul pourrait donc être ralenti ou achopper pour cette raison.
-  Nombre de systèmes linéaires à factoriser en même temps: %(i4)d.
+  Attention, vous avez demandé un calcul OUT_OF_CORE, mais MUMPS estime avoir besoin pour cela d'au moins
+  %(i1)d Mo  alors qu'il n'y a que %(i2)d Mo de disponible sur ce processeur !
+  Le calcul pourrait donc être ralenti ou s'arrêter pour cette raison.
+ 
+  Pour information: mémoire déjà pré-allouée par MUMPS (exécutable, matrice...)= %(i3)d Mo,
+                    nombre de systèmes linéaires à factoriser en même temps    = %(i4)d.
 
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
@@ -375,8 +399,11 @@ Solveur MUMPS :
   d'au moins:
      - IN_CORE    : %(i3)d Mo,
      - OUT_OF_CORE: %(i4)d Mo.
-  Estimations à %(i5)d %% de marge près.
-  Nombre de systèmes linéaires à factoriser en même temps: %(i6)d.
+
+  Le calcul pourrait donc être ralenti ou s'arrêter pour cette raison.
+
+  Pour information: mémoire déjà pré-allouée par MUMPS (exécutable, matrice...)= %(i5)d Mo,
+                    nombre de systèmes linéaires à factoriser en même temps    = %(i6)d.
 
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul
@@ -436,25 +463,19 @@ Conseil :
 """),
 82: _(u"""
 Solveur MUMPS :
-  La machine sur laquelle ce calcul a été lance ne permet pas l'évaluation du pic mémoire
-  'VmPeak'. En mode SOLVEUR/GESTION_MEMOIRE='AUTO' cela peut fausser les évaluations
-  de mémoire disponibles.
-  > Par précaution on bascule automatiquement en mode GESTION_MEMOIRE='OUT_OF_CORE'.
-
-Conseils :
-  Pour accélérer le calcul vous pouvez (conseils cumulatifs):
-    - passer en mode IN_CORE (GESTION_MEMOIRE='IN_CORE'),
-    - lancer le calcul en parallèle,
-    - changer de machine en laissant le mode GESTION_MEMOIRE='AUTO'.
+  Les informations concernant la mémoire disponible ne sont pas utilisables. 
+  Si vous avez choisi le mode GESTION_MEMOIRE='AUTO', par précaution on bascule en mode OUT_OF_CORE.
+  Si vous avez choisi le mode GESTION_MEMOIRE='EVAL', seules les évaluations des consommations MUMPS
+     seront pertinentes, les autres chiffres ne seront pas à prendre en compte.
+  Si vous avez choisi un autre mode, les vérifications liées aux consommations mémoires seront débranchées.  
 """),
 83: _(u"""
 Solveur MUMPS :
-  La machine sur laquelle ce calcul a été lancé ne permet pas l'évaluation du pic mémoire
-  'VmPeak'. En mode SOLVEUR/GESTION_MEMOIRE='EVAL' cela peut fausser la calibration
-  de la mémoire minimale consommée par Code_Aster.
-
-Conseil :
-  Pour lancer le calcul, il faut donc se fier plutôt aux estimations mémoire MUMPS.
+  Les prévisions de consommation de MUMPS ne sont pas utilisables. 
+  Si vous avez choisi le mode GESTION_MEMOIRE='AUTO', par précaution on bascule en mode OUT_OF_CORE.
+  Si vous avez choisi le mode GESTION_MEMOIRE='EVAL', seules les évaluations des consommations Aster
+     seront pertinentes, les autres chiffres ne seront pas à prendre en compte.
+  Si vous avez choisi un autre mode, les vérifications liées aux consommations mémoires seront débranchées.
 """),
 84: _(u"""
 Solveur MUMPS :
