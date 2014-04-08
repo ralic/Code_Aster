@@ -86,12 +86,12 @@ subroutine gefact(duree, nominf)
     character(len=1) :: coli
     character(len=3) :: interp
     character(len=8) :: k8b, intesp
-    character(len=16) :: k16bid, nomcmd, prolgd
+    character(len=16) :: k16bid, nomcmd, prolgd, abscisse
     character(len=19) :: k19bid, nominf, nomint
     character(len=24) :: chvale, chdesc, chnuor, nomobj
-    character(len=24) :: chnumi, chnumj, chfreq, chval
+    character(len=24) :: chnumi, chnumj, chfreq, chval, chrefe
     logical :: lfreqf, lfreqi, lnbpn, linter, lprem, diag
-    integer :: i1, lnumi, lnumj, lfreq, nbfreq
+    integer :: i1, lnumi, lnumj, lfreq, nbfreq, lrefe
 !
 !     ----------------------------------------------------------------
 !     --- INITIALISATION  ---
@@ -105,8 +105,6 @@ subroutine gefact(duree, nominf)
 !===============
 !
     call getvid(' ', 'INTE_SPEC', scal=nomint, nbret=l)
-    write(6,*)"Mon Nom est ",nomint
-
 !
     call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n1)
     linter = (interp.eq.'NON')
@@ -119,9 +117,16 @@ subroutine gefact(duree, nominf)
 !  1.1  RECUPARATION DES DIMENSIONS, DES NUMEROS D'ORDRE, ...
 !=====
     intesp = nomint(1:8)
+    chrefe = intesp//'.REFE'
+    call jeveuo(chrefe, 'L', lrefe)
+    abscisse = zk16(lrefe+2)
+    if (abscisse .ne. 'FREQ') then
+        call utmess('F', 'UTILITAI8_72')
+    endif
+
     chnumi = intesp//'.NUMI'
     chnumj = intesp//'.NUMJ'
-    chfreq = intesp//'.ABS'
+    chfreq = intesp//'.DISC'
     chval = intesp//'.VALE'
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)

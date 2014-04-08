@@ -284,7 +284,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     vitezi = vite*vmoyzi/vmoyto
 !
 ! --- 6.2.1.RECUPERATION DE LA DISCRETISATION FREQUENTIELLE
-    call jeveuo(nomu//'.ABS', 'L', ivale)
+    call jeveuo(nomu//'.DISC', 'L', ivale)
 !
 ! --- 6.2.2.CALCUL DES VALEURS DU SPECTRE
 !

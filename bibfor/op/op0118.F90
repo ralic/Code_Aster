@@ -190,7 +190,7 @@ subroutine op0118()
 !===============
 ! 6.  GENERATION DE L'INTERSPECTRE ET REMPLISSAGE
 !===============
-    chinst = nomvec(1:8)//'.ABS'
+    chinst = nomvec(1:8)//'.DISC'
     call jeexin(chinst, ibid)
     if (ibid .eq. 0) then
         call wkvect(chinst, 'G V R', ln4, linst)
@@ -199,9 +199,10 @@ subroutine op0118()
         end do
     endif
 !
-    call wkvect(nomvec(1:8)//'.REFE', 'G V K16', 2, lrefe)
+    call wkvect(nomvec(1:8)//'.REFE', 'G V K16', 3, lrefe)
     zk16(lrefe) = 'DSP'
     zk16(lrefe+1) = 'TOUT'
+    zk16(lrefe+2) = 'INST'
 !
     call wkvect(nomvec(1:8)//'.NUME_ORDRE', 'G V I', dim, lnuord)
     do ifonc = 1, dim

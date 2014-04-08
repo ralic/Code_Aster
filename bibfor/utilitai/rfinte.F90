@@ -34,6 +34,7 @@ subroutine rfinte(ispec)
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/foattr.h"
 !
     character(len=*) :: ispec
     integer :: nbval
@@ -42,9 +43,8 @@ subroutine rfinte(ispec)
     integer :: ifm, niv, n2, n3, n4, n5, mxval, numi, numj, nbfreq, ifreq, num
     integer :: lnumi, lnumj, lvale, lfreq, lrefe, lnum
     integer :: lnoei, lnoej, lcmpi, lcmpj
-    character(len=4) :: abscisse
     character(len=8) :: nospec, noei, noej, cmpi, cmpj
-    character(len=16) :: nomcmd, typcon, noch, nocham
+    character(len=16) :: nomcmd, typcon, noch, nocham, abscisse
     character(len=19) :: nomfon
     character(len=24) :: chnumi, chnumj, chfreq, chvale, chnum
     character(len=24) :: chnoei, chnoej, chcmpi, chcmpj
@@ -66,6 +66,7 @@ subroutine rfinte(ispec)
     nospec = ispec
     call jeveuo(nospec//'.REFE', 'L', lrefe)
     noch = zk16(lrefe)
+    abscisse = zk16(lrefe+2)
     if (n4 .eq. 0) then
         paray = 'DSP'
     else
@@ -76,7 +77,7 @@ subroutine rfinte(ispec)
         endif
     endif
 !
-    chfreq = nospec//'.ABS'
+    chfreq = nospec//'.DISC'
     call jeveuo(chfreq, 'L', lfreq)
 !
     call getvtx(' ', 'NOEUD_I', nbval=0, nbret=n2)
@@ -85,7 +86,6 @@ subroutine rfinte(ispec)
 !
     indice = .false.
     indi = 0
-    abscisse = 'FREQ'
     if (n2 .lt. 0) then
         call getvtx(' ', 'NOEUD_I', scal=noei, nbret=n4)
         call getvtx(' ', 'NOEUD_J', nbval=0, nbret=n4)
@@ -145,7 +145,6 @@ subroutine rfinte(ispec)
             if ((zi(lnum-1+i1) .eq. num) .and. (.not. indice)) then
                 indi = i1
                 indice = .true.
-                abscisse = 'INST'
             endif
         end do
     endif
@@ -154,7 +153,7 @@ subroutine rfinte(ispec)
         call utmess('F', 'UTILITAI4_53')
     endif
 !
-    chfreq = nospec//'.ABS'
+    chfreq = nospec//'.DISC'
     call jelira(chfreq, 'LONMAX', nbfreq)
     call jeveuo(chfreq, 'L', ifreq)
 !
@@ -170,6 +169,10 @@ subroutine rfinte(ispec)
     zk24(lpro+4) = 'LL      '
     zk24(lpro+5) = nomfon
 !
+! --- SURCHARGE EVENTUELLE DU .PROL
+!
+    call foattr(' ', 1, nomfon)
+
     if (nbval .eq. nbfreq) then
         zk24(lpro) = 'FONCTION'
         call wkvect(nomfon//'.VALE', 'G V R', 2*nbfreq, kvale)

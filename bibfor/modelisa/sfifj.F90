@@ -260,7 +260,7 @@ subroutine sfifj(nomres)
     chvale = nomres//'.VALE'
     call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 mxval)
-    chfreq = nomres//'.ABS'
+    chfreq = nomres//'.DISC'
     call wkvect(chfreq, 'G V R', nbpoin, lfreq)
 !
     do 310 iff = 0, nbpoin-1

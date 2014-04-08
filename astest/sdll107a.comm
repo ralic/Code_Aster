@@ -1658,11 +1658,19 @@ VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
 #
 
 FONCT1=RECU_FONCTION(INTE_SPEC=VECT1,
-                     NUME_ORDRE = 1)
+                     NUME_ORDRE = 1,
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='EXCLU',
+                    )
 #
 
 FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
-                     NUME_ORDRE = 2)
+                     NUME_ORDRE = 2,
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='EXCLU',
+                    )
 
 #
 

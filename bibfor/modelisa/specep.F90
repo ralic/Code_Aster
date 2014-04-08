@@ -220,7 +220,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
     call wkvect('&&SPECEP.TEMP.INTE', 'V V R', dim, iinte)
 !
 ! --- 6.1.RECUPERATION DE LA DISCRETISATION FREQUENTIELLE
-    call jeveuo(nomu//'.ABS', 'L', lwr)
+    call jeveuo(nomu//'.DISC', 'L', lwr)
 !
 ! --- 6.2.INTERPOLATION DES INTERSPECTRES A PROJETER
 !

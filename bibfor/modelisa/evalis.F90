@@ -137,7 +137,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
     chnumj = nomres//'.NUMJ'
     call jeveuo(chnumj, 'E', lnumj)
     chvale = nomres//'.VALE'
-    chfreq = nomres//'.ABS'
+    chfreq = nomres//'.DISC'
     call jelira(chfreq, 'LONMAX', nbpoin)
 !
 ! PRODUIT PHI^T.S.PHI (UNIQUEMENT LA PARTIE TRIANGULAIRE SUPERIEURE)

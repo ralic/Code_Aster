@@ -309,7 +309,11 @@ GENE_KT=GENE_FONC_ALEA(INTE_SPEC=INTKTJ1,
                        INFO=2,);
                          
 FONCT1=RECU_FONCTION(INTE_SPEC=GENE_KT,
-                     NUME_ORDRE = 1);
+                     NUME_ORDRE = 1,
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='EXCLU',
+                    );
                            
 test_KT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FONCT1 ),);    
     

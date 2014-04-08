@@ -77,15 +77,16 @@ subroutine op0115()
 !
     mxval = iocpf+iockt+ioccs
 !
-    call wkvect(nomref//'.REFE', 'G V K16', 2, lrefe)
+    call wkvect(nomref//'.REFE', 'G V K16', 3, lrefe)
     zk16(lrefe) = 'DSP'
     zk16(lrefe+1) = 'TOUT'
+    zk16(lrefe+2) = 'FREQ'
 !
     call wkvect('&&FONC', 'V V K8', mxval, lfonc)
     chvale = nomref//'.VALE'
     call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 mxval)
-    chfreq = nomref//'.ABS'
+    chfreq = nomref//'.DISC'
 !
     k8bid = 'BIDON'
     do ipf = 1, iocpf

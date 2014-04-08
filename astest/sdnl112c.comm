@@ -412,13 +412,29 @@ VECTINT=GENE_FONC_ALEA(INTE_SPEC=TPSB,
                        NB_TIRAGE=NB_TIR,
 )
 EFPROJ1=RECU_FONCTION(INTE_SPEC=VECTINT,
-                      NUME_ORDRE = 1 )
+                      NUME_ORDRE = 1 ,
+                      INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='EXCLU',
+                    )
 EFPROJ2=RECU_FONCTION(INTE_SPEC=VECTINT,
-                      NUME_ORDRE = 2 )
+                      NUME_ORDRE = 2 ,
+                      INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='EXCLU',
+                    )
 EFPROJ3=RECU_FONCTION(INTE_SPEC=VECTINT,
-                      NUME_ORDRE = 3 )
+                      NUME_ORDRE = 3 ,
+                      INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='EXCLU',
+                     )
 EFPROJ4=RECU_FONCTION(INTE_SPEC=VECTINT,
-                      NUME_ORDRE = 4 )
+                      NUME_ORDRE = 4 ,
+                      INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='EXCLU',
+                    )
 
 # OBST1 ---> DEF_CHOC
 OBST1=DEFI_OBSTACLE(  TYPE='PLAN_Y'   )

@@ -19,3 +19,4 @@
 
 class interspectre(ASSD):
     cata_sdj = "SD.sd_interspectre.sd_interspectre"
+

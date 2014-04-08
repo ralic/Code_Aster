@@ -23,8 +23,8 @@ class sd_interspectre(sd_titre):
 #------------------------------------
     nomj = SDNom(fin=8)
 
-    REFE = AsVK16(lonmax=2,)
-    ABS  = AsVR()
+    REFE = AsVK16(lonmax=3,)
+    DISC  = AsVR()
     VALE = AsColl(acces='NU',stockage='DISPERSE',modelong='VARIABLE',type='R',)
 
     NUMI = Facultatif(AsVI())

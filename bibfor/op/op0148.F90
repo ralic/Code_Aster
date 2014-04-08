@@ -179,7 +179,7 @@ subroutine op0148()
 ! --- INTERSPECTRES OU AUTOSPECTRES UNIQUEMENT ---
 !
     chnumi = table//'.NUMI'
-    chfreq = table//'.ABS'
+    chfreq = table//'.DISC'
     call jeveuo(chnumi, 'L', lnumi)
     call jelira(chnumi, 'LONMAX', nbmr)
 !
@@ -287,9 +287,10 @@ subroutine op0148()
     call wkvect('&&OP0148.TEMP.FONI', 'V V R', nbpf*nbfo1, ifoi)
     call wkvect('&&OP0148.TEMP.DISC', 'V V R', nbpf, idis)
 !
-    call wkvect(nomu//'.REFE', 'G V K16', 2, lrefes)
+    call wkvect(nomu//'.REFE', 'G V K16', 3, lrefes)
     zk16(lrefes) = optcha
     zk16(lrefes+1) = optcal
+    zk16(lrefes+2) = 'FREQ'
 !
     do 380 il = 1, nbpf
         zr(idis+il-1) = zr(lfreq+il-1)

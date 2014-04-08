@@ -230,7 +230,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
     call wkvect('&&SPECFF.TEMP.INTE', 'V V R', dim, iinte)
 !
 ! --- 9.1.RECUPERATION DE LA DISCRETISATION FREQUENTIELLE
-    call jeveuo(nomu//'.ABS', 'L', lwr)
+    call jeveuo(nomu//'.DISC', 'L', lwr)
 !
 ! --- 9.2.INTERPOLATION DES INTERSPECTRES A PROJETER
 !
@@ -244,7 +244,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
         call wkvect('&&SPECFF.IRE', 'V V R', nbpf, ire)
         call wkvect('&&SPECFF.IIM', 'V V R', nbpf, iim)
         chtab=table//'.VALE'
-        call jeveuo(table//'.ABS', 'L', ifreq)
+        call jeveuo(table//'.DISC', 'L', ifreq)
         do 60 ifo2 = 1, nbfonc
             ival(2) = ifo2
             do 61 ifo1 = 1, ifo2

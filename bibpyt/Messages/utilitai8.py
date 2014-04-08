@@ -310,4 +310,8 @@ de type valide
  Les cartes n'ont pas la même valeur sur la maille %(k1)s.
 """),
 
+72 : _(u"""
+ On attend des données fréquentielles.
+"""),
+
 }

@@ -104,7 +104,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     call wkvect('&&OP0131.LIADRFEX1', 'V V I', ndim, ilfex)
     call wkvect('&&OP0131.LIADRLEX1', 'V V I', ndim+2, illex)
 !
-    chfreq = intexc//'.ABS'
+    chfreq = intexc//'.DISC'
     call jelira(chfreq, 'LONMAX', nbfreq)
     call jeveuo(chfreq, 'L', ifreq)
     zi(illex) = nbfreq

@@ -144,7 +144,7 @@ subroutine op0146()
 ! --- 2.0 TRAITEMENT SPECIAL POUR SPEC-LONG-COR-5
 !
     call jeveuo(zk8(lspec)//'           .VATE', 'L', ivate)
-    call wkvect(nomu//'.REFE', 'G V K16', 2, lrefe)
+    call wkvect(nomu//'.REFE', 'G V K16', 3, lrefe)
     if (zk16(ivate) .eq. 'SPEC_CORR_CONV_3') then
         zk16(lrefe) = 'DEPL'
         zk16(lrefe+1) = 'TOUT'
@@ -153,6 +153,7 @@ subroutine op0146()
         zk16(lrefe) = 'SPEC_GENE'
         zk16(lrefe+1) = option
     endif
+    zk16(lrefe+2) = 'FREQ'
 !
     if (zk16(ivate)(1:14) .eq. 'SPEC_CORR_CONV') then
         call sfifj(nomu)
@@ -352,7 +353,7 @@ subroutine op0146()
         chvale = nomu//'.VALE'
         call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
                     mxval)
-        chfreq = nomu//'.ABS'
+        chfreq = nomu//'.DISC'
         call wkvect(chfreq, 'G V R', nbpf, lfreq)
 !
 !

@@ -137,9 +137,10 @@ subroutine op0147()
 ! --- 4.CREATION DE LA STRUCTURE RESULTAT ET CALCUL DE LA REPONSE ---
 ! ---   PAR CALCSP                                                ---
 !
-    call wkvect(nomu//'.REFE', 'G V K16', 2, lrefes)
+    call wkvect(nomu//'.REFE', 'G V K16', 3, lrefes)
     zk16(lrefes) = 'DEPL_GENE'
     zk16(lrefes+1) = option
+    zk16(lrefes+2) = 'FREQ'
 !
     call calcsp(casint, nomu, table, zr(ifreq), zr(imasg),&
                 nbm, nbmr, imod1, zi(inuor), ivitef)

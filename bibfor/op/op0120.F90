@@ -93,9 +93,10 @@ subroutine op0120()
 !
     nomref=nomu(1:8)
 !
-    call wkvect(nomref//'.REFE', 'G V K16', 2, lrefe)
+    call wkvect(nomref//'.REFE', 'G V K16', 3, lrefe)
     zk16(lrefe) = 'DSP'
     zk16(lrefe+1) = 'TOUT'
+    zk16(lrefe+2) = 'FREQ'
 !
     durana = tinst2 - tinst1
     call getvr8(' ', 'DUREE_ANALYSE', scal=durana, nbret=nda)
@@ -176,7 +177,7 @@ subroutine op0120()
     chvale = nomref//'.VALE'
     call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 mxval)
-    chfreq = nomref//'.ABS'
+    chfreq = nomref//'.DISC'
     chnumi = nomref//'.NUMI'
     chnumj = nomref//'.NUMJ'
     call wkvect(chnumi, 'G V I', mxval, lnumi)

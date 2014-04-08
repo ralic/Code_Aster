@@ -78,7 +78,6 @@ INT1=DEFI_INTE_SPEC(    DIMENSION=2,PAR_FONCTION=(
                                     NUME_ORDRE_J = 2,
                                     FONCTION = SPECT22))
                           )
-IMPR_CO(CONCEPT=(_F(NOM=INT1)))
 
 POST1=POST_DYNA_ALEA(INTERSPECTRE=_F(
                                     INTE_SPEC=INT1,
@@ -125,10 +124,16 @@ VECT1=GENE_FONC_ALEA(INTE_SPEC=INT1,
 
 FONCT1=RECU_FONCTION(    INTE_SPEC=VECT1,
                          NUME_ORDRE=1,
+                         INTERPOL='LIN',
+                         PROL_DROITE='CONSTANT',
+                         PROL_GAUCHE='EXCLU',
                            )
 
 FONCT2=RECU_FONCTION(    INTE_SPEC=VECT1,
                          NUME_ORDRE=2,
+                         INTERPOL='LIN',
+                         PROL_DROITE='CONSTANT',
+                         PROL_GAUCHE='EXCLU',
                            )
 
 ##############################
@@ -257,7 +262,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 ##############################
 # RECUP. DES MODULES ET PHASES, TEST SUR NORME L2 (VIA LES VALEURS "RMS")
 ##############################
-IMPR_CO(CONCEPT=(_F(NOM=INTERS)))
 
 MF11=RECU_FONCTION(    INTE_SPEC=INTERS,
                     NUME_ORDRE_I = 1,

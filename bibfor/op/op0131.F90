@@ -203,9 +203,10 @@ subroutine op0131()
         nocham = 'ACCE_GENE'
     endif
 !
-    call wkvect(nomref//'.REFE', 'G V K16', 2, lrefe)
+    call wkvect(nomref//'.REFE', 'G V K16', 3, lrefe)
     zk16(lrefe) = nocham
     zk16(lrefe+1) = typopt
+    zk16(lrefe+2) = 'FREQ'
 !
     itail1 = ndimre * ( 1 + ndimre ) / 2
     chnumi = nomref//'.NUMI'
@@ -215,7 +216,7 @@ subroutine op0131()
     chvale = nomref//'.VALE'
     call jecrec(chvale, 'G V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 itail1)
-    chfreq = nomref//'.ABS'
+    chfreq = nomref//'.DISC'
     call wkvect(chfreq, 'G V R', npdsc3, lfreq)
 !
     ij1 = 0
