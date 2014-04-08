@@ -117,12 +117,14 @@ subroutine op0045()
 #include "asterfort/wpfopr.h"
 #include "asterfort/wpsorc.h"
 #include "asterfort/wpsorn.h"
+#include "asterfort/onerrf.h"
+
     mpi_int :: mpicou, mpicow, mrang, mnbproc
     integer :: nbpari, nbparr, nbpark, nbpara, mxddl
     parameter    ( nbpari=8 , nbparr=16 , nbpark=3, nbpara=27 )
     parameter    ( mxddl=1 )
     integer :: iadx, imet, i, iady, ierx, iret, iadrb, iadz, ier1, ifm, itemax, iadrh, ibid, ierd
-    integer :: ifreq
+    integer :: ifreq, lenout
     integer :: lmat(3), lselec, lresid, ldsor, lamor, lbrss, lmasse, iauxk, lmtpsc, lresur, ltypri
     integer :: lworkd, laux, lraide, lsign, lvalpr, lworkl, ldiagr, lresui, lsurdr, lvec, lworkv
     integer :: iauxi, iauxr, lborvp, lmf, lprod, lresuk, ltypre, lxrig, kqrnr, lddl, lmatra, lonwl
@@ -143,7 +145,7 @@ subroutine op0045()
     character(len=8) :: modes, knega, method, arret
     character(len=9) :: typevp
     character(len=14) :: matra, matrb, matrc
-    character(len=16) :: modrig, typcon, nomcmd, optiof, optiov, typres, typeqz, k16bid
+    character(len=16) :: modrig, typcon, nomcmd, optiof, optiov, typres, typeqz, k16bid, compex
     character(len=19) :: masse0, masse, raide0, raide, amor, matpsc, matopa, vecrig, numedd
     character(len=19) :: solveu, tabmod
     character(len=24) :: cborvp, valk(5), nopara(nbpara), metres, kzero
@@ -206,6 +208,9 @@ subroutine op0045()
     eps=1.d+4*r8prem()
     quapi2 = r8depi() * r8depi()
 !
+! --- ON STOCKE LE COMPORTEMENT EN CAS D'ERREUR : COMPEX
+!
+    call onerrf(' ', compex, lenout)
 !
 !     --- RECUPERATION DU RESULTAT  ---
     call getres(modes, typcon, nomcmd)
@@ -1551,6 +1556,10 @@ subroutine op0045()
         call asmpi_barrier()
         call asmpi_comm('SET', mpicou)
     endif
+
+! --- ON PASSE DANS LE MODE "VALIDATION DU CONCEPT EN CAS D'ERREUR"
+    call onerrf('EXCEPTION+VALID', k16bid, ibid)
+
     call vpcntl(ctyp, modes, optiov, omemin, omemax,&
                 seuil, nconv, zi(lresui), lmat, omecor,&
                 precdc, ierx, vpinf, vpmax, zr(lresur),&
@@ -1559,12 +1568,17 @@ subroutine op0045()
     call getvtx('VERI_MODE', 'STOP_ERREUR', iocc=1, scal=optiov, nbret=lmf)
 !
     if ((optiov.eq.'OUI') .and. (ierx.ne.0)) then
-        call utmess('F', 'ALGELINE2_74')
+        call utmess('Z', 'ALGELINE2_74',num_except=33)
     endif
 !
     if (flage) then
         call utmess('F', 'ALGELINE5_75')
     endif
+
+! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
+!
+    call onerrf(compex, k16bid, ibid)
+!
 999 continue
 !
 !
@@ -1598,6 +1612,7 @@ subroutine op0045()
 !        WRITE(IFM,*)'<OP0045> COUT POST 3: ',RETFIN
 !        CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
 !      ENDIF
+!
     call jedema()
 !
 !     FIN DE OP0045
