@@ -1448,7 +1448,7 @@ def get_tabout(self,kg,args,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,i
 
       """retourne la table de sortie"""
       from Accas import _F
-      import aster
+      from Utilitai.utils import get_titre_concept
       import numpy as NP
 
       CREA_TABLE    = self.get_cmd('CREA_TABLE')
@@ -1461,8 +1461,7 @@ def get_tabout(self,kg,args,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,i
       if TITRE != None :
          titre = TITRE
       else :
-         v = aster.__version__
-         titre = 'ASTER %s - CONCEPT CALCULE PAR POST_K1_K2_K3 LE &DATE A &HEURE \n'%v
+         titre = get_titre_concept()
 
       if FOND_FISS and MODELISATION=='3D':
          mcfact.append(_F(PARA='FOND_FISS',LISTE_K=[FOND_FISS.nom,]*3))

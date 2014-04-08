@@ -26,8 +26,6 @@ Ces fonctions sont indépendantes des étapes (sinon elles seraient dans
 B_ETAPE/E_ETAPE) et des concepts/ASSD.
 """
 
-# This package modify the sys.path
-
 import sys
 import os
 import os.path as osp

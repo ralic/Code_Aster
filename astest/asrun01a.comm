@@ -43,15 +43,20 @@ opts_debut = {}
 
 # -----------------------------------------------------------------------------
 # version de Code_Aster
-if hasattr(aster, '__version__'):
-   tv = aster.__version__.split('.')
-   if len(tv) < 3:
-      tv.extend(['x']*(3-len(tv)))
-   elif len(tv) > 3:
-      tv = tv[:3]
-   vers = '%2s.%2s.%2s' % tuple(tv)
-else:
-   vers = ' 6. x. y'
+import aster
+try:
+    import aster_core
+    vers = aster_core.__version__
+except ImportError:
+    if hasattr(aster, '__version__'):
+       tv = aster.__version__.split('.')
+       if len(tv) < 3:
+          tv.extend(['x']*(3-len(tv)))
+       elif len(tv) > 3:
+          tv = tv[:3]
+       vers = '%2s.%2s.%2s' % tuple(tv)
+    else:
+       vers = ' 6. x. y'
 
 if vers < ' 8. 2. 0' :
    raise aster.error, """ <meshtool> doesn't work before version 8.2"""

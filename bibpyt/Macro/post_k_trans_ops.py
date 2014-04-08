@@ -27,6 +27,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
   from Utilitai.Utmess     import  UTMESS
   from types import ListType, TupleType
   from Utilitai.Table      import Table, merge
+  from Utilitai.utils import get_titre_concept
   EnumTypes = (ListType, TupleType)
   
   macro = 'POST_K_TRANS'
@@ -168,8 +169,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
         K2t[num*nbno + x] = K2t[num*nbno + x] + alpha*K2mod[k*nbno + x]
         if DIME == 3 : K3t[num*nbno + x] = K3t[num*nbno + x] + alpha*K3mod[k*nbno + x]
  
-  v = aster.__version__
-  titre = 'ASTER %s - CONCEPT CALCULE PAR POST_K_TRANS LE &DATE A &HEURE \n'%v
+  titre = get_titre_concept()
   if DIME == 2 :
     tabout = CREA_TABLE(LISTE = (_F(LISTE_I =l_ord, PARA = 'NUME_ORDRE'),
                            _F(LISTE_R =l_inst, PARA = 'INST'),

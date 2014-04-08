@@ -64,7 +64,7 @@ def _printDBG(*args):
 def get_titre_concept(co=None):
     """Retourne un titre automatique."""
     # ASTER 10.01.25 CONCEPT tab0 CALCULE LE 21/05/2010 A 17:58:50 DE TYPE TABLE_SDASTER
-    import aster
+    import aster_core
     from Noyau.N_ASSD import ASSD
     if not isinstance(co, ASSD):
         co = None
@@ -77,7 +77,7 @@ def get_titre_concept(co=None):
     }
     format = [fmt["version"], ]
     dfmt = {
-        "version" : aster.__version__,
+        "version" : aster_core.__version__,
         "dateheure" : time.strftime("LE %m/%d/%Y A %H:%M:%S"),
     }
     if co:
