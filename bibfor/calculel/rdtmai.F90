@@ -77,15 +77,15 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     integer :: iad, ntgeo, nbnoou, nbnomx, jwk2, nbgma, jgma, igm, nbma, nbmain
     integer :: jwk3, nbgmin, jgmanv, nbgmnv, k, jnmpg, nmpg, nbgno, jmaor
     integer :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg,  numgno
-    integer :: jcorrm, imain, imaou
+    integer :: jcorrm, imain, imaou, n1, jnuno
     character(len=4) :: docu
     character(len=8) :: typmcl(2), nomres
     character(len=16) :: motcle(2), nomcmd, typres
-    character(len=8) :: nomma, nomno, ttgrma, ttgrno, valk(2)
+    character(len=8) :: nomma, nomno, ttgrma, ttgrno
     character(len=24) :: nommai, nomnoe, grpnoe, cooval, cooref, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
-    character(len=24) :: ptngrn, ptngrm
-    logical :: lvide, lcaay
+    character(len=24) :: ptngrn, ptngrm, valk(2)
+    logical :: lvide
     character(len=24), pointer :: grp_noeu_in(:) => null()
 !
     call jemarq()
@@ -98,9 +98,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !     ============
 !
     call getres(nomres, typres, nomcmd)
-    lcaay=(nomcmd.eq.'IMPR_CAAY')
-!     LCAAY => ON IMPRIME AUSSI LES GROUPES VIDES
-    if (lcaay) ASSERT(nbmal.gt.0)
 !
 !
 ! --- CALCUL DE LA LISTE DES MAILLES SUR LESQUELLES IL FAUT REDUIRE :
@@ -171,6 +168,22 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
             endif
         end do
     end do
+
+!   -- il faut ajouter les noeuds demandes par l'utlisateur :
+    call reliem(' ', noma, 'NU_NOEUD', 'RESTREINT', 1,&
+                1, ['GROUP_NO'], ['GROUP_NO'], '&&RDTMAI.NUM_NOEU_IN', n1)
+    if (n1.gt.0) then
+        call jeveuo('&&RDTMAI.NUM_NOEU_IN', 'L', jnuno)
+        do ino = 1, n1
+            nuno=zi(jnuno-1+ino)
+            if (zi(jwk1+nuno-1) .eq. 0) then
+                nbnoou=nbnoou+1
+                zi(jwk1+nuno-1)=nbnoou
+                zi(jwk2+nbnoou-1)=nuno
+            endif
+        end do
+    endif
+
 !
 !
 ! -2- CREATION DU NOUVEAU MAILLAGE
@@ -305,16 +318,11 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call wkvect('&&RDTMAI_GRMA_NON_VIDES', 'V V I', nbgmin, jgmanv)
         call wkvect('&&RDTMAI_NB_MA_PAR_GRMA', 'V V I', nbgmin, jnmpg)
         nbgmnv=0
-        if (lcaay) nbgmnv=nbgmin
         do igm = 1, nbgmin
             call jeveuo(jexnum(noma//'.GROUPEMA', igm), 'L', jadin)
             call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbma)
             nmpg=0
             lvide=.true.
-            if (lcaay) then
-                lvide=.false.
-                zi(jgmanv-1+igm)=igm
-            endif
             do ima = 1, nbma
                 if (zi(jwk3+zi(jadin+ima-1)-1) .ne. 0) then
                     if (lvide) then
@@ -326,11 +334,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                 endif
             end do
             if (.not.lvide) then
-                if (.not.lcaay) then
-                    zi(jnmpg+nbgmnv-1)=nmpg
-                else
-                    zi(jnmpg+igm-1)=nmpg
-                endif
+                zi(jnmpg+nbgmnv-1)=nmpg
             endif
         end do
         call jecreo(ptngrm, base//' N K24')
@@ -381,7 +385,6 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !
     if (ttgrno .eq. 'NON') then
 !       'TOUT_GROUP_MA'='NON' ET 'GROUP_NO' PRESENT
-        ASSERT(.not.lcaay)
         call wkvect('&&RDTMAI_GRNO_NON_VIDES', 'V V I', nbnoou, jgnonv)
         call wkvect('&&RDTMAI_NB_NO_PAR_GRNO', 'V V I', nbnoou, jnnpg)
         nbgnnv=0
@@ -415,16 +418,11 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         call wkvect('&&RDTMAI_GRNO_NON_VIDES', 'V V I', nbgnin, jgnonv)
         call wkvect('&&RDTMAI_NB_NO_PAR_GRNO', 'V V I', nbgnin, jnnpg)
         nbgnnv=0
-        if (lcaay) nbgnnv=nbgnin
         do ign = 1, nbgnin
             call jeveuo(jexnum(noma//'.GROUPENO', ign), 'L', jadin)
             call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbno)
             nnpg=0
             lvide=.true.
-            if (lcaay) then
-                lvide=.false.
-                zi(jgnonv-1+ign)=ign
-            endif
             do ino = 1, nbno
                 if (zi(jwk1+zi(jadin+ino-1)-1) .ne. 0) then
                     if (lvide) then
@@ -436,11 +434,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                 endif
             end do
             if (.not.lvide) then
-                if (.not.lcaay) then
-                    zi(jnnpg+nbgnnv-1)=nnpg
-                else
-                    zi(jnnpg+ign-1)=nnpg
-                endif
+                zi(jnnpg+nbgnnv-1)=nnpg
             endif
         end do
     endif
@@ -505,6 +499,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call jedetr('&&RDTMAI_NB_NO_PAR_GRNO')
     AS_DEALLOCATE(vk24=grp_noeu_in)
     call jedetr('&&RDTMAI.NUM_MAIL_IN')
+    call jedetr('&&RDTMAI.NUM_NOEU_IN')
 !
     call jedema()
 !
