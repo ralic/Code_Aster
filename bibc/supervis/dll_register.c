@@ -53,11 +53,11 @@ int libsymb_register(PyObject* dict, const char* libname, const char* symbname,
         }
     }
     if ( iret == 0 ) {
-                PYDBG("register key : ", key)
-                PYDBG("     & value : ", value)
-                PYDBG("new dict = ", dict)
+                DEBUG_DLL_PYOB("register key : ", key)
+                DEBUG_DLL_PYOB("     & value : ", value)
+                DEBUG_DLL_PYOB("new dict = ", dict)
     } else {
-                PYDBG("error during registering : ", key)
+                DEBUG_DLL_PYOB("error during registering : ", key)
     }
     Py_XDECREF(key);
     Py_XDECREF(value);
@@ -72,7 +72,7 @@ int libsymb_release(PyObject* dict, const char* libname, const char* symbname)
     int iret;
     
     key = _libsymb_to_key(libname, symbname);
-                PYDBG("release ", key)
+                DEBUG_DLL_PYOB("release ", key)
     iret = PyDict_DelItem( dict, key );
     Py_XDECREF(key);
     return iret;
@@ -86,10 +86,10 @@ int libsymb_is_known(PyObject* dict, const char* libname, const char* symbname)
     int bool = 0;
     
     key = _libsymb_to_key(libname, symbname);
-                PYDBG("is_known key = ", key)
-                //PYDBG("     in dict = ", dict)
+                DEBUG_DLL_PYOB("is_known key = ", key)
+                //DEBUG_DLL_PYOB("     in dict = ", dict)
     bool = PyDict_Contains( dict, key );
-                DBGV(" returns %d\n", bool)
+                DEBUG_DLL_VV(" returns %d%s\n", bool, "")
     Py_XDECREF(key);
     return bool;
 }
@@ -118,9 +118,9 @@ void libsymb_apply_on_all(PyObject* dict, void (*function)(void *handle), int re
     Py_ssize_t pos = 0;
 
     if ( ! dict ) return;
-                PYDBG("dict = ", dict)
+                DEBUG_DLL_PYOB("dict = ", dict)
     while ( PyDict_Next(dict, &pos, &key, &value) ) {
-                PYDBG("callback function called for key : ", key)
+                DEBUG_DLL_PYOB("callback function called for key : ", key)
         ihand = PyTuple_GetItem(value, 0);
         pt = PyLong_AsVoidPtr(ihand);
         (*function)(pt);
@@ -191,28 +191,28 @@ int main()
     
     dll_dict = PyDict_New();
     iret = libsymb_register(dll_dict, "libZmat_base", "", handle_1, (void*)NULL_FUNCTION );
-                DR_ASSERT( iret == 0 )
-                DR_ASSERT( libsymb_is_known(dll_dict, "libZmat_base", "") )
-                DR_ASSERT( ! libsymb_is_known(dll_dict, "libZmat_base", "zaster") )
+                DEBUG_ASSERT( iret == 0 )
+                DEBUG_ASSERT( libsymb_is_known(dll_dict, "libZmat_base", "") )
+                DEBUG_ASSERT( ! libsymb_is_known(dll_dict, "libZmat_base", "zaster") )
     iret = libsymb_register(dll_dict, "libzAster", "zaster", handle_2, (void*)functest );
-                DR_ASSERT( iret == 0 )
-                DR_ASSERT( libsymb_is_known(dll_dict, "libzAster", "zaster") )
+                DEBUG_ASSERT( iret == 0 )
+                DEBUG_ASSERT( libsymb_is_known(dll_dict, "libzAster", "zaster") )
     
     res = libsymb_get_handle(dll_dict, "libZmat_base", "");
-                DR_ASSERT( res == handle_1 )
+                DEBUG_ASSERT( res == handle_1 )
     res = libsymb_get_handle(dll_dict, "libzAster", "unknown");
-                DR_ASSERT( ! res )
+                DEBUG_ASSERT( ! res )
     res = libsymb_get_handle(dll_dict, "libzAster", "zaster");
     vres = (int*)res;
-                DR_ASSERT( res == handle_2 )
-                DR_ASSERT( *vres == 2 )
+                DEBUG_ASSERT( res == handle_2 )
+                DEBUG_ASSERT( *vres == 2 )
     pfres = libsymb_get_symbol(dll_dict, "libzAster", "zaster");
-                DR_ASSERT( (void*)pfres == (void*)functest )
-                DR_ASSERT( (*pfres)(vres) == 5 )
+                DEBUG_ASSERT( (void*)pfres == (void*)functest )
+                DEBUG_ASSERT( (*pfres)(vres) == 5 )
     
     iret = libsymb_release(dll_dict, "libZmat_base", "");
-                DR_ASSERT( ! libsymb_is_known(dll_dict, "libZmat_base", "") )
-                DR_ASSERT( iret == 0 )
+                DEBUG_ASSERT( ! libsymb_is_known(dll_dict, "libZmat_base", "") )
+                DEBUG_ASSERT( iret == 0 )
     
     libsymb_apply_on_all(dll_dict, (void*)callback, 1);
     

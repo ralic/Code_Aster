@@ -21,6 +21,7 @@
 
 #include <setjmp.h>
 #include "aster.h"
+#include "asterc_debug.h"
 #include "aster_module.h"
 
 #define FatalError 18   /* kept for backward compatibility only */
@@ -29,23 +30,18 @@
 
 #define NIVMAX     10
 
-#ifdef __DEBUG__
-#   define _printDBG(func) printf("DEBUG [%s:%d] %s: level=%d\n", __FILE__, __LINE__, func, gExcLvl)
-#else
-#   define _printDBG(func)
-#endif
-
-#define try                 _new_try(); _printDBG("try"); \
+#define try                 _new_try(); DEBUG_EXCEPT("try: level=%d", gExcLvl); \
                             if ((gExcNumb = setjmp(gExcEnv[gExcLvl])) == 0)
 #define interruptTry(val)   if(gExcLvl > 0) { \
-                                _printDBG("interruptTry"); longjmp(gExcEnv[gExcLvl], val); } \
+                                DEBUG_EXCEPT("interruptTry: level=%d", gExcLvl); \
+                                longjmp(gExcEnv[gExcLvl], val); } \
                             else { printf("Exception raised out of Code_Aster commands.\n"); \
                                 _raiseException(val); }
 #define except(val)         else if (gExcNumb == val)
 #define exceptAll           else
-#define endTry()            _end_try(); _printDBG("endTry")
+#define endTry()            _end_try(); DEBUG_EXCEPT("endTry: level=%d", gExcLvl);
 #define raiseException()    _end_try(); \
-                            _printDBG("raiseException"); \
+                            DEBUG_EXCEPT("raiseException: level=%d", gExcLvl); \
                             _raiseException(gExcNumb); \
                             return NULL
 #define raiseExceptionString(exc, args) \

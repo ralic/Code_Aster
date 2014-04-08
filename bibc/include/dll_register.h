@@ -18,24 +18,6 @@
 #ifndef DLL_REGISTER_H
 #define DLL_REGISTER_H
 
-#if dll_register_DEBUG
-#define DBGV(fmt, a) printf(fmt, a); fflush(stdout);
-#define DBGVV(fmt, a, b) printf(fmt, a, b); fflush(stdout);
-#define PYDBG(label, pyobj) fprintf(stdout, label); \
-            PyObject_Print(pyobj, stdout, 0); \
-            fprintf(stdout, "\n"); \
-            fflush(stdout);
-#define DR_ASSERT(cond) if ( !(cond) ) { fprintf(stdout,"--- Assertion FAILED: %s\n", #cond); } \
-            else { fprintf(stdout,"--- OK : %s\n", #cond); } \
-            fflush(stdout);
-#else
-#define DBGV(a, b)
-#define DBGVV(a, b, c)
-#define PYDBG(a, b)
-#define DR_ASSERT(cond)
-#endif
-
-
 /*
  *   PUBLIC FUNCTIONS
  * 

@@ -28,8 +28,6 @@
 
 #include <numpy/arrayobject.h>
 
-//#define __DEBUG__
-
 extern void calc_SPEC_OSCI(int, double *, double *,
                            int, double *, int, double *,
                            double *);
@@ -70,11 +68,6 @@ static PyObject* SPEC_OSCI( PyObject* self, PyObject* args )
    nbpts = PyArray_DIM(Vx, 0);
    len_f = PyArray_DIM(Vf, 0);
    len_a = PyArray_DIM(Va, 0);
-#ifdef __DEBUG__
-   printf("<SPEC_OSCI> Nombre de points de la fonction : %d\n", nbpts);
-   printf("<SPEC_OSCI> Nombre de frequences            : %d\n", len_f);
-   printf("<SPEC_OSCI> Nombre d'amortissements         : %d\n", len_a);
-#endif
 
    dims[0]=(npy_intp)len_a;
    dims[1]=3;
@@ -94,7 +87,7 @@ static PyObject* SPEC_OSCI( PyObject* self, PyObject* args )
 }
 
 
-#ifdef __DEBUG__
+#ifdef __DEBUG_ASTER_FONCTIONS__
 /* utile pour le remplissage des contiguous array */
 static PyObject* _INFO( PyObject* self, PyObject* args )
 {
@@ -154,7 +147,7 @@ static PyObject* _INFO( PyObject* self, PyObject* args )
 #ifndef _WITHOUT_PYMOD_
 static PyMethodDef methods[] = {
    { "SPEC_OSCI", SPEC_OSCI, METH_VARARGS, "Operation SPEC_OSCI de CALC_FONCTION" },
-#ifdef __DEBUG__
+#ifdef __DEBUG_ASTER_FONCTIONS__
    { "_INFO",     _INFO,     METH_VARARGS, "Just for test !" },
 #endif
    { NULL, NULL, 0, NULL }

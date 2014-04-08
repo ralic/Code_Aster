@@ -19,13 +19,12 @@
 #define ASTER_H
 
 #include "Python.h"
+#include <stdio.h>
 
+#include "asterc_debug.h"
 #include "aster_depend.h"
 #include "definition.h"
 
-/* -------------------------------------
-   --          DEBUT aster.h          --
-   ------------------------------------- */
 
 #ifndef min
 #define min(A,B)  ((A) < (B) ? (A) : (B))
@@ -42,35 +41,14 @@
 typedef int Py_ssize_t;
 #endif
 
-/* pour preciser quel fichier affiche les  messages et les valeurs */
-#define INTERRUPTION(code) { ICI; fprintf(stderr,"INTERRUPTION - code retour %d\n",code); abort(); }
-#define ICI fflush(stdout);fprintf( stderr, "%s, #%d: " , __FILE__ , __LINE__  ) ; fflush(stderr);
-
-/* Utiliser -DUSE_ASSERT pour activer les ASSERT */
-#ifdef USE_ASSERT
-#define AS_ASSERT(condition) if( !(condition) ){ ICI; \
-        fprintf(stderr, "Assertion failed: %s\n", #condition); INTERRUPTION(17); }
-#else
-#define AS_ASSERT(condition)
-#endif
-
-#define PRINTERR if(PyErr_Occurred()){ \
-            fprintf(stderr,"Warning: une exception n'a pas ete traitée\n"); \
-            PyErr_Print(); \
-            fprintf(stderr,"Warning: on l'annule pour continuer mais elle "\
-                "aurait du etre traitée avant\n"); \
-            PyErr_Clear(); \
-        }
-
-#define EstValide(c) (isprint((int)c) && (isalnum((int)c) || (c=='_') || (c==' ')))
-
+/* AS_ASSERT is similar to the ASSERT macro used in fortran */
+#define AS_ASSERT(cond) if ( !(cond) ) { \
+            DEBUG_LOC; DBGV("Assertion failed: %s", #cond); \
+            INTERRUPT(17); }
 
 /* deprecated functions on Windows */
 #ifdef _WINDOWS
 #define strdup _strdup
 #endif
 
-/* -------------------------------------
-   --           FIN  aster.h          --
-   ------------------------------------- */
 #endif

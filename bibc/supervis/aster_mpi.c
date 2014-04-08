@@ -16,12 +16,6 @@
 /* ================================================================== */
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-/*! @todo add another macro DBG_ASSERT that can be ignored in optimized mode */
-#ifndef USE_ASSERT
-/* USE_ASSERT is required in this module ! */
-#define USE_ASSERT
-#endif
-
 #include "aster.h"
 #include "aster_mpi.h"
 #include "aster_utils.h"

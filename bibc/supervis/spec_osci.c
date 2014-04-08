@@ -17,9 +17,6 @@
 #include "aster.h"
 #include "aster_fort.h"
 
-/*
-#define __DEBUG__
-*/
 void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
                      int len_f, double* l_freq, int len_a, double* l_amor,
                      double* spectr )
@@ -31,10 +28,6 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
    double   WDDT;
 
    eps = 1.e-6;
-
-#ifdef __DEBUG__
-   printf("<I> <SPEC_OSCI> INTEGRATION PAR LA METHODE DE NIGAM_JENNINGS\n");
-#endif
 
    /* pas constant ou variable */
    DELTAT = vale_x[1]-vale_x[0];
@@ -48,19 +41,9 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
    }
 
    DEUXPI = (double)(2. * CALL_R8PI());
-#ifdef __DEBUG__
-   printf("2*pi : %lf\n", DEUXPI);
-#endif
 
    /* le pas est constant */
-   if (ecart < eps)
-   {
-#ifdef __DEBUG__
-      printf("   AVEC UN PAS CONSTANT\n");
-      printf("      VALEUR DU PAS     : %lf\n", DELTAT);
-      printf("      ECART RELATIF MAX : %lf\n", ecart);
-#endif
-
+   if (ecart < eps) {
       for (a=0; a<len_a; a++) {
          XSI = l_amor[a];
          XSI2 = XSI * XSI;
@@ -101,21 +84,12 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
             spectr[a*3*len_f + 0*len_f + f] = D1;
             spectr[a*3*len_f + 1*len_f + f] = W * D1;
             spectr[a*3*len_f + 2*len_f + f] = W2 * D1;
-#ifdef __DEBUG__
-            printf("spectr[%d,%d,%d] = %lf\n", a, 0, f, a*len_f*3 + 0*len_f + f, D1);
-            printf("spectr[%d,%d,%d] = %lf\n", a, 1, f, a*len_f*3 + 1*len_f + f, W*D1);
-            printf("spectr[%d,%d,%d] = %lf\n", a, 2, f, a*len_f*3 + 2*len_f + f, W2*D1);
-            printf("#C %d %d %lf %lf\n", a+1, f+1, D1, W);
-#endif
          }
       }
    }
    /* le pas est variable */
    else
    {
-#ifdef __DEBUG__
-      printf("   AVEC UN PAS NON CONSTANT\n");
-#endif
 
       for (a=0; a<len_a; a++) {
          XSI = l_amor[a];
@@ -159,12 +133,6 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
             spectr[a*3*len_f + 0*len_f + f] = D1;
             spectr[a*3*len_f + 1*len_f + f] = W * D1;
             spectr[a*3*len_f + 2*len_f + f] = W2 * D1;
-#ifdef __DEBUG__
-            printf("spectr[%d,%d,%d] = %lf\n", a, 0, f, a*len_f*3 + 0*len_f + f, D1);
-            printf("spectr[%d,%d,%d] = %lf\n", a, 1, f, a*len_f*3 + 1*len_f + f, W*D1);
-            printf("spectr[%d,%d,%d] = %lf\n", a, 2, f, a*len_f*3 + 2*len_f + f, W2*D1);
-            printf("#C %d %d %lf %lf\n", a+1, f+1, D1, W);
-#endif
          }
       }
    }

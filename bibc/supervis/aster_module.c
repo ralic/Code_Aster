@@ -135,9 +135,9 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
         int ioc       = 0 ;
 
         mfc = MakeCStrFromFStr(motfac,lfac);
-                                                        AS_ASSERT(mfc!=(char*)0);
+                                                     DEBUG_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
-                                                        AS_ASSERT(mcs!=(char*)0);
+                                                     DEBUG_ASSERT(mcs!=(char*)0);
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
         res=PyObject_CallMethod(get_sh_etape(), "getltx", "ssiii", 
@@ -243,7 +243,7 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
         char *mcs      = (char*)0 ;
         PyObject *res  = (PyObject*)0 ;
         char *nomType  = (char*)0 ;
-                                                              AS_ASSERT(lnom>0) ;
+                                                           DEBUG_ASSERT(lnom>0) ;
         mcs = MakeCStrFromFStr(nomobj,lnom);
 
         /*
@@ -252,9 +252,9 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
         */
         res=PyObject_CallMethod(get_sh_etape(),"gettco","s",mcs);
         if (res == (PyObject*)0)MYABORT("erreur dans la partie Python (gettco)");
-                                                              AS_ASSERT( PyString_Check(res) );
+                                                           DEBUG_ASSERT( PyString_Check(res) );
         nomType=PyString_AsString(res);
-                                                              AS_ASSERT(nomType!=(char*)0) ;
+                                                           DEBUG_ASSERT(nomType!=(char*)0) ;
         CopyCStrToFStr(typobj, nomType, ltyp);
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         FreeStr(mcs);
@@ -276,7 +276,7 @@ void DEFPS(GETMAT,getmat,_OUT INTEGER *nbarg,_OUT char *motcle,_IN STRING_SIZE l
         PyObject *lnom  = (PyObject*)0 ; /* liste python des noms */
         int       nval = 0 ;
         int          k = 0 ;
-                                                                AS_ASSERT(lcle>0);
+                                                             DEBUG_ASSERT(lcle>0);
         for ( k=0 ;k<lcle ; k++ ) motcle[k]=' ' ;
         res=PyObject_CallMethod(get_sh_etape(),"getmat","");
         /*  si le retour est NULL : exception Python a transferer
@@ -328,7 +328,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
         int          k = 0 ;
         int        ioc = 0 ;
         char *mfc;
-                                                                    AS_ASSERT(ltyp>0);
+                                                                 DEBUG_ASSERT(ltyp>0);
         for ( k=0 ;k<ltyp ; k++ ) type[k]=' ' ;
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
@@ -342,7 +342,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
         if(!PyArg_ParseTuple(res,"OO",&lnom,&lty)) MYABORT("erreur dans la partie Python");
         nval=(int)PyList_Size(lnom);
         *nbarg = (INTEGER)( (nval > *nbval) ? -nval : nval );
-                                    AS_ASSERT(((nval<=*nbval)&&(*nbarg==nval))||(*nbarg==-nval)) ;
+                                 DEBUG_ASSERT(((nval<=*nbval)&&(*nbarg==nval))||(*nbarg==-nval)) ;
         if(*nbarg < 0)nval=(int)*nbval;
 
         if ( nval > 0 ){
@@ -363,7 +363,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
                      strncmp( mot , "TX" , 2 )!=0 && strncmp( mot , "C8" , 2 )!=0 ){
                         int j=0 ;
 
-                        AS_ASSERT(ltyp>2);
+                     DEBUG_ASSERT(ltyp>2);
                         mot[0]='C' ;
                         mot[1]='O' ;
                         for ( j=2 ; j<ltyp ; j++ ) mot[j]=' ' ;
@@ -391,7 +391,7 @@ INTEGER DEFSS( GETEXM, getexm, _IN char *motfac,_IN STRING_SIZE lfac,
         PyObject *res  = (PyObject*)0 ;
         char *mfc, *mcs;
         INTEGER presence;
-                                                                    AS_ASSERT(motcle!=(char*)0);
+                                                                 DEBUG_ASSERT(motcle!=(char*)0);
         mfc = MakeCStrFromFStr(motfac, lfac);
         mcs = MakeCStrFromFStr(motcle, lcle);
         res=PyObject_CallMethod(get_sh_etape(),"getexm","ss", mfc, mcs);
@@ -512,7 +512,7 @@ void DEFSSPPPPP(GETVC8_WRAP,getvc8_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
         mfc = MakeCStrFromFStr(motfac,lfac);
-                                                        AS_ASSERT(mfc!=(char*)0);
+                                                     DEBUG_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
@@ -538,7 +538,7 @@ void DEFSSPPPPP(GETVC8_WRAP,getvc8_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
-                                                        AS_ASSERT(PyTuple_Check(res)) ;
+                                                     DEBUG_ASSERT(PyTuple_Check(res)) ;
         ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if(!ok)MYABORT("erreur dans la partie Python");
 
@@ -585,7 +585,7 @@ void DEFSSPPPPP(GETVR8_WRAP,getvr8_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        AS_ASSERT(mfc!=(char*)0);
+                                                     DEBUG_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
          * VERIFICATION
@@ -608,7 +608,7 @@ void DEFSSPPPPP(GETVR8_WRAP,getvr8_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
-                                                       AS_ASSERT(PyTuple_Check(res)) ;
+                                                    DEBUG_ASSERT(PyTuple_Check(res)) ;
         ok = PyArg_ParseTuple(res,"iOi",&nval,&tup,&idef);
         if(!ok)MYABORT("erreur dans la partie Python");
 
@@ -722,9 +722,9 @@ void DEFSSPPPPP(GETVIS_WRAP,getvis_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
-                                                    AS_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
+                                                 DEBUG_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        AS_ASSERT(mfc!=(char*)0);
+                                                     DEBUG_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
@@ -794,9 +794,9 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
-                                                    AS_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
+                                                 DEBUG_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        AS_ASSERT(mfc!=(char*)0);
+                                                     DEBUG_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
@@ -954,9 +954,9 @@ void DEFSSPPPSP(GETVID_WRAP,getvid_wrap,_IN char *motfac,_IN STRING_SIZE lfac,
         int ok,nval,ioc,idef ;
         char *mfc;
         char *mcs;
-                                                    AS_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
+                                                 DEBUG_ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        AS_ASSERT(mfc!=(char*)0);
+                                                     DEBUG_ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
@@ -1058,8 +1058,8 @@ void DEFSSP(GCUCON,gcucon, _IN char *resul, STRING_SIZE lresul,
                resultats produits par les etapes precedentes
    */
    PyObject * res = (PyObject*)0 ;
-                                                                              AS_ASSERT(lresul) ;
-                                                                              AS_ASSERT(lconcep) ;
+                                                                           DEBUG_ASSERT(lresul) ;
+                                                                           DEBUG_ASSERT(lconcep) ;
    res = PyObject_CallMethod(get_sh_etape(),"gcucon","s#s#",resul,lresul,concep,lconcep);
    /*
                Si le retour est NULL : une exception a ete levee dans le code Python appele
@@ -2269,7 +2269,7 @@ PyObject *args;
         */
         PyObject *temp = (PyObject*)0 ;
         static int nbPassages=0 ;
-                                        AS_ASSERT((nbPassages==1)||(get_sh_etape()==(PyObject*)0));
+                                     DEBUG_ASSERT((nbPassages==1)||(get_sh_etape()==(PyObject*)0));
         nbPassages++ ;
         if (!PyArg_ParseTuple(args, "O",&temp)) return NULL;
 
@@ -2308,7 +2308,7 @@ PyObject *args;
 {
         PyObject *temp = (PyObject*)0 ;
         static int nbPassages=0 ;
-                                        AS_ASSERT((nbPassages==1)||(get_sh_etape()==(PyObject*)0));
+                                     DEBUG_ASSERT((nbPassages==1)||(get_sh_etape()==(PyObject*)0));
         nbPassages++ ;
         if (!PyArg_ParseTuple(args, "O",&temp)) return NULL;
 

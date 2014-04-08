@@ -126,8 +126,8 @@ void DEFUMATWRAP(UMATWP, umatwp,
     libname = MakeCStrFromFStr(nomlib, lnomlib);
     symbol = MakeCStrFromFStr(nomsub, lnomsub);
 
-        DBGVV(" libname = >%s<, len = %d\n", libname, lon1)
-        DBGVV("  symbol = >%s<, len = %d\n", symbol, lon2)
+        DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
+        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", symbol, (int)strlen(symbol))
     
     if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
         load_umat_lib(libname, symbol);

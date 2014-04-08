@@ -60,11 +60,6 @@ struct aster_comm_t {
 };
 
 //#define UNITTEST
-//#define COMM_DEBUG(c) printf("%-8s #%d (%d/@", (c).name, (int)MPI_Comm_c2f((c).id), (c).level); \
-                      //if ((c).parent) { printf("%-8s", (c).parent->name); } \
-                      //else { printf("        "); } \
-                      //printf(")\n"); fflush(stdout);
-#define COMM_DEBUG
 
 /*
  *   PUBLIC FUNCTIONS
