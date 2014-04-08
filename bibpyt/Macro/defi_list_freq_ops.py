@@ -45,10 +45,10 @@ def defi_list_freq_ops(self, RAFFINEMENT, INFO, TITRE, **args):
     haveAmor = False
     if RAFFINEMENT['CRITERE']=='LARGEUR_3DB':
         haveAmor = True
-        if self['RAFFINEMENT']['AMOR_MODAL']['AMOR_REDUIT']:
-            l_amor = list(RAFFINEMENT['AMOR_MODAL']['AMOR_REDUIT'])
+        if self['RAFFINEMENT']['AMOR_REDUIT']:
+            l_amor = list(RAFFINEMENT['AMOR_REDUIT'])
         else:
-            l_amor = RAFFINEMENT['AMOR_MODAL']['LIST_AMOR'].Valeurs()
+            l_amor = RAFFINEMENT['LIST_AMOR'].Valeurs()
 
     dfMin = RAFFINEMENT['PAS_MINI']
     nbPtsRaf = RAFFINEMENT['NB_POINTS']

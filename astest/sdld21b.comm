@@ -79,19 +79,24 @@ PROJ_BASE( BASE=MODES,
                              VECTEUR = CO("EFFOGENE"),
                              VECT_ASSE = VECTASS), )
 
-LIFREQ=DEFI_LIST_REEL(DEBUT=5., INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 70))
+LIFREQ=DEFI_LIST_REEL(DEBUT=5.,
+                      INTERVALLE=_F( JUSQU_A = 40.,
+                                     NOMBRE = 70))
 
 lfreq = MODES.LIST_VARI_ACCES()['FREQ']
 
 
-LIFREQA = DEFI_LIST_FREQ(DEBUT=5., INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 70),
-                          RAFFINEMENT=_F(LIST_RAFFINE=lfreq,
-                                      CRITERE="LARGEUR_3DB",
-                                      NB_POINTS=7,
-                                      AMOR_MODAL=_F(AMOR_REDUIT=(8.6824E-3, 0.017101,
-                             0.0250, 3.21393E-2,3.83022E-2, 4.33012E-2,
-                              4.69846E-2, 4.92403E-2,))),
-                          )
+LIFREQA = DEFI_LIST_FREQ(DEBUT=5.,
+                         INTERVALLE=_F( JUSQU_A = 40.,
+                                        NOMBRE = 70),
+                         RAFFINEMENT=_F(LIST_RAFFINE=lfreq,
+                                        CRITERE="LARGEUR_3DB",
+                                        NB_POINTS=7,
+                                        AMOR_REDUIT=(8.6824E-3,  0.017101,
+                                                     0.0250,     3.21393E-2,
+                                                     3.83022E-2, 4.33012E-2,
+                                                     4.69846E-2, 4.92403E-2,)),
+                         )
 
 
 DYNHARGA=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
@@ -165,18 +170,18 @@ TEST_RESU(GENE=(_F(RESU_GENE=DEPLGE05,
                 ),
           )
 
-L_AMORT = DEFI_LIST_REEL(VALE=(8.6824E-3, 0.017101, 0.0250, 3.21393E-2,
+L_AMORT = DEFI_LIST_REEL(VALE=(8.6824E-3,  0.017101,   0.0250,     3.21393E-2,
                                3.83022E-2, 4.33012E-2, 4.69846E-2, 4.92403E-2,),)
 
 
 
 LIFREQB = DEFI_LIST_FREQ(VALE=LIFREQ.Valeurs(),
                          RAFFINEMENT=_F(LIST_RAFFINE=lfreq,
-                                      CRITERE="LARGEUR_3DB",
-                                      NB_POINTS=7,
-                                      PAS_MINI=0.001,
-                                      AMOR_MODAL=_F(LIST_AMOR=L_AMORT)),
-                          )
+                                        CRITERE="LARGEUR_3DB",
+                                        NB_POINTS=7,
+                                        PAS_MINI=0.001,
+                                        LIST_AMOR=L_AMORT),
+                         )
 
 DYNHARGB=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                        MATR_MASS=MASSEGEN, MATR_RIGI=RIGIDGEN,
@@ -1711,23 +1716,25 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #Couverture de la macro-commande DEFI_LIST_FREQ
 
 LIFREQC = DEFI_LIST_FREQ(DEBUT=5.,
-                         INTERVALLE=_F( JUSQU_A = 40., PAS=0.5,),
+                         INTERVALLE=_F( JUSQU_A = 40.,
+                                        PAS=0.5,),
                          RAFFINEMENT=_F(LIST_RAFFINE=lfreq,
-                                      CRITERE="RELATIF",
-                                      NB_POINTS=7,
-                                      DISPERSION=0.01),
-                          )
+                                        CRITERE="RELATIF",
+                                        NB_POINTS=7,
+                                        DISPERSION=0.01),
+                         )
 
 FREQC=CREA_TABLE(LISTE=_F(LISTE_R=LIFREQC.Valeurs(),PARA='FREQ'))
 
 
 LIFREQD = DEFI_LIST_FREQ(DEBUT=5.,
-                         INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 70),
+                         INTERVALLE=_F( JUSQU_A = 40.,
+                                        NOMBRE = 70),
                          RAFFINEMENT=_F(LIST_RAFFINE=lfreq,
-                                      CRITERE="ABSOLU",
-                                      NB_POINTS=7,
-                                      DISPERSION=0.01),
-                          )
+                                        CRITERE="ABSOLU",
+                                        NB_POINTS=7,
+                                        DISPERSION=0.01),
+                         )
 
 FREQD=CREA_TABLE(LISTE=_F(LISTE_R=LIFREQD.Valeurs(),PARA='FREQ'))
 
