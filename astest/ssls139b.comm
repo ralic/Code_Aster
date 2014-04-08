@@ -149,7 +149,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='POINT_2',
                    RESULTAT=RESU,
                    NOM_CHAM='EPSI_NOEU',
-                   NOM_CMP='EPXX',
+                   NOM_CMP='EXX',
                    VALE_CALC=6.2297585999999998E-06,
                    
                    ),
