@@ -103,10 +103,10 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
             call lccree(1, rela_meca, rela_meca_py)
             call lctest(rela_meca_py, 'ALGO_INTE', algo_inte, iret)
             if (iret .eq. 0) then
-                    texte(1) = algo_inte
-                    texte(2) = 'ALGO_INTE'
-                    texte(3) = rela_comp
-                    call utmess('F', 'COMPOR1_45', nk = 3, valk = texte)
+                texte(1) = algo_inte
+                texte(2) = 'ALGO_INTE'
+                texte(3) = rela_comp
+                call utmess('F', 'COMPOR1_45', nk = 3, valk = texte)
             endif
         endif
 !
@@ -118,7 +118,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 ! ----- Get ITER_CPLAN_MAXI/RESI_CPLAN_MAXI/RESI_CPLAN_RELA (Deborst method)
 !
         resi_cplan_maxi = 1.d-6
-        iter_cplan_maxi = 1
+        iter_cplan_maxi = 10
         call getvis(keywordfact, 'ITER_CPLAN_MAXI', iocc = iocc, scal = iter_cplan_maxi)
         call getvr8(keywordfact, 'RESI_CPLAN_MAXI', iocc = iocc, scal = resi_cplan_maxi, &
                     nbret = iret)

@@ -73,6 +73,12 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
             call utmess('A', 'COMPOR4_70', sk=keyword)
             value = -999.d0
         endif
+    else
+        if (algo_inte .eq. 'ANALYTIQUE') then
+            if (keyword .eq. 'ITER_INTE_MAXI') then
+                value = -999.d0
+            endif
+        endif
     endif
 !
     if (keyword .eq. 'RESI_INTE_RELA') then
