@@ -155,7 +155,7 @@ subroutine op0009()
     else if (suropt(1:9).eq.'AMOR_MECA') then
         call meamme(suropt, modele, ncha, zk8(icha), mate,&
                     cara, exitim, time, 'G', rigiel,&
-                    massel, matel)
+                    massel, matel, ' ')
 !
     else if (suropt.eq.'IMPE_MECA') then
         call meimme(modele, ncha, zk8(icha), mate, matel)
@@ -166,7 +166,7 @@ subroutine op0009()
     else if (suropt.eq.'RIGI_MECA_HYST') then
         call meamme(suropt, modele, ncha, zk8(icha), mate,&
                     cara, exitim, time, 'G', rigiel,&
-                    massel, matel)
+                    massel, matel, ' ')
 !
     else if (suropt.eq.'RIGI_THER') then
         call mecact('V', time2, 'MODELE', modele//'.MODELE', 'INST_R',&

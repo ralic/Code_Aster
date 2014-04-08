@@ -1,6 +1,6 @@
 subroutine meamme(optioz, modele, nchar, lchar, mate,&
                   cara, exitim, time, base, merigi,&
-                  memass, meamor)
+                  memass, meamor, varplu)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     integer :: nchar
     real(kind=8) :: time
     character(len=*) :: modele, optioz, cara, mate
-    character(len=*) :: merigi, memass, meamor
+    character(len=*) :: merigi, memass, meamor, varplu
     character(len=8) :: lchar(*)
     logical :: exitim
     character(len=1) :: base
@@ -73,11 +73,11 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=3, nbin=12)
+    parameter    (nbout=3, nbin=13)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: icode, iret, i, icha
+    integer :: icode, iret, i, icha, ires1
     integer :: ialir1, ilires, iarefe
     integer :: nh, nop
     integer :: nbres1
@@ -135,6 +135,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
             call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
             do i = 1, nbres1
                 rigich = zk24(ialir1-1+i)
+                ires1=i
                 call dismoi('NOM_LIGREL', rigich(1:19), 'RESUELEM', repk=ligre1)
                 if (ligre1(1:8) .eq. modele(1:8)) goto 20
             end do
@@ -180,33 +181,49 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 ! --- REMPLISSAGE DES CHAMPS D'ENTREE
 !
     lpain(1) = 'PGEOMER'
-    lchin(1) = chgeom
+    lchin(1) = chgeom(1:19)
     lpain(2) = 'PMATERC'
-    lchin(2) = mate
+    lchin(2) = mate(1:19)
     lpain(3) = 'PCAORIE'
-    lchin(3) = chcara(1)
+    lchin(3) = chcara(1)(1:19)
     lpain(4) = 'PCADISA'
-    lchin(4) = chcara(4)
+    lchin(4) = chcara(4)(1:19)
     lpain(5) = 'PCAGNPO'
-    lchin(5) = chcara(6)
+    lchin(5) = chcara(6)(1:19)
     lpain(6) = 'PCACOQU'
-    lchin(6) = chcara(7)
+    lchin(6) = chcara(7)(1:19)
     lpain(7) = 'PVARCPR'
-    lchin(7) = chvarc
+    lchin(7) = chvarc(1:19)
     lpain(8) = 'PRIGIEL'
     lchin(8) = rigich
+    nop=11
 !
     if (rigich .ne. ' ') then
         call dismoi('NOM_GD', rigich, 'RESUELEM', repk=nomgd)
-        if (nomgd .eq. 'MDNS_R') lpain(8) = 'PRIGINS'
+        if (nomgd .eq. 'MDNS_R') then
+          lpain(8) = 'PRIGINS'
+        else
+          call jeveuo(merigi(1:19)//'.RELR', 'L', ialir1)
+          call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
+          if (ires1 .lt. nbres1) then
+            rigich = zk24(ialir1+ires1)
+            call dismoi('NOM_GD', rigich, 'RESUELEM', repk=nomgd)
+            if (nomgd .eq. 'MDNS_R') then
+              nop=12
+              lpain(12) = 'PRIGINS'
+              lchin(12) = rigich
+            endif
+          endif
+        endif
     endif
-!
+    
     lpain(9) = 'PMASSEL'
-    lchin(9) = massch
+    lchin(9) = massch(1:19)
     lpain(10) = 'PCADISK'
-    lchin(10) = chcara(2)
+    lchin(10) = chcara(2)(1:19)
     lpain(11) = 'PCINFDI'
-    lchin(11) = chcara(15)
+    lchin(11) = chcara(15)(1:19)
+
 !
 ! --- REMPLISSAGE DES CHAMPS DE SORTIE
 !
@@ -225,12 +242,12 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 !
 ! --- APPEL A CALCUL
 !
-!       IF (OPTION.EQ.'AMOR_MECA_ABSO') THEN
-!         NOP = 3
-!       ELSE
-!         NOP = 11
-!       ENDIF
-    nop = 11
+!    nop = 12
+    if (varplu .ne. ' ') then
+      nop=nop+1
+      lpain(nop) = 'PVARIPG'
+      lchin(nop) = varplu(1:19)
+    endif
     call calcul('S', option, ligrmo, nop, lchin,&
                 lpain, 2, lchout, lpaout, base,&
                 'OUI')

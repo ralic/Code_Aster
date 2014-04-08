@@ -93,7 +93,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
     integer :: i
     character(len=16) :: optmat
     character(len=19) :: depmoi, sigplu, vitplu, vitmoi, accmoi, strplu
-    character(len=19) :: depdel
+    character(len=19) :: depdel, varplu
     character(len=24) :: charge, infoch
     character(len=8) :: mailla
     integer :: ifm, niv
@@ -125,6 +125,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
         call nmchex(valinc, 'VALINC', 'VITPLU', vitplu)
         call nmchex(valinc, 'VALINC', 'SIGPLU', sigplu)
         call nmchex(valinc, 'VALINC', 'STRPLU', strplu)
+        call nmchex(valinc, 'VALINC', 'VARMOI', varplu)
     endif
     if (solalg(1)(1:1) .ne. ' ') then
         call nmchex(solalg, 'SOLALG', 'DEPDEL', depdel)
@@ -175,7 +176,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
     else if (typmat.eq.'MEAMOR') then
         call meamme(optmat, modele, nbchar, zk8(jchar2), mate,&
                     carele, .true., instam, 'V', merigi,&
-                    memass, matele)
+                    memass, matele, varplu)
 !
 ! --- MATR_ELEM POUR CHARGES SUIVEUSES
 !

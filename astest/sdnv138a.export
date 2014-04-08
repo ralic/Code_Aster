@@ -1,0 +1,10 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C 
+
+F comm sdnv138a.comm D 1
+F mmed ssnp143b.mmed D 20
+F libr sdnv138a.90 D 90

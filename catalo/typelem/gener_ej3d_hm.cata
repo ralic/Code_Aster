@@ -93,6 +93,9 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
+    AMOR_MECA        324  IN__  CMATERC  PMATERC  MMATUNS  PRIGINS  ZVARIPG  PVARIPG
+                                NGEOMER  PGEOMER
+                          OUT__ MMATUUR  PMATUUR
     CARA_GEOM         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     CHAR_LIMITE       -1  IN__  
@@ -125,8 +128,8 @@ OPTION__
                           OUT__ XXXXXX   XXXXXX   
     INIT_VARC         99  IN__  
                           OUT__ ZVARCPG  PVARCPR  
-    MASS_INER         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
+%    MASS_INER         -1  IN__  ZVARCPG  PVARCPR  
+%                          OUT__ XXXXXX   XXXXXX   
     NORME_L2          -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR  
