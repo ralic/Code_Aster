@@ -22,7 +22,7 @@ def configure(self):
     self.env['ADDMEM'] = 400
 
     self.env.append_value('OPT_ENV', [
-        ' module load intel_mpi'])
+        'module load intel_mpi'])
 
     self.env.prepend_value('LIBPATH', [
         YAMMROOT + 'prerequisites/Mumps_mpi_20141/lib',        

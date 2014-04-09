@@ -22,6 +22,7 @@ def configure(self):
     self.env.append_value('FCFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env['ADDMEM'] = 250
     self.env.append_value('OPT_ENV', [
+        '. /etc/profile.d/003_modules.sh',
         'module load intel_compilers/14.0.0.080',
         '. /home/aster/etc/codeaster/profile_mfront.sh'])
 
