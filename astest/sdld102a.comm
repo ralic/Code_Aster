@@ -233,6 +233,11 @@ FGEN=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
                     CHAR_SOUS_STRUC=_F(SOUS_STRUC='COTE1',
                                        VECT_ASSE=V_ASSE,),);
 
+#-- ajout pour tester la methode 'INITIAL'
+FZERO=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
+                     METHODE='INITIAL',);
+
+
 #---------------------------------------------------------------------
 # TEST IMPR_GENE
 

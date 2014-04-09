@@ -67,7 +67,7 @@ subroutine vecgcy(nomres, numeg)
     zi(iadesc+1) = neq
 !
     do 60 j = 1, neq
-        zr(iavale+j) = 0.d0
+        zr(iavale+j-1) = 0.d0
 60  continue
 !
 !
