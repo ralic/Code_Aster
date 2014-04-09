@@ -1,0 +1,788 @@
+# ------------------------------------------------------------------------------------------
+# TITRE BASCULE D'UN MODELE DE POUTRE A UN MODELE 3D EN DYNAMIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),PAR_LOT='NON',);
+
+
+from Utilitai.partition import *
+import numpy as N
+from numpy import*
+
+_OMEGA = 6.4;
+Fx=-100;
+
+#Choix de l'amortissement numerique pour le modeles de reference 1D, 3D et 1D-3D
+alpha=0.25;
+
+FSIN = FORMULE(VALE='sin((INST)*_OMEGA)',
+               NOM_PARA='INST',);
+Ti=0;
+Tf=3.0;
+Tb=2.0;
+
+dt=0.0015;
+
+Tb_1=Tb-dt;
+Tb_2=Tb+dt;
+
+ModP=LIRE_MAILLAGE(UNITE=22,
+                   FORMAT='ASTER',);
+
+ModP=DEFI_GROUP(reuse =ModP,
+                MAILLAGE=ModP,
+                CREA_GROUP_MA=_F(NOM='AllNode',
+                                 TOUT='OUI',),
+                CREA_GROUP_NO=_F(GROUP_MA='AllNode',),);
+
+MODELP=AFFE_MODELE(MAILLAGE=ModP,
+                   AFFE=(_F(GROUP_MA=('AllNode',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),),);
+
+ModP=DEFI_GROUP(reuse =ModP,
+                  MAILLAGE=ModP,
+                  CREA_GROUP_MA=_F(NOM='Pou1',
+                                   MAILLE=('M0','M1','M2','M3','M4','M5','M6','M7','M8',),),
+                  CREA_GROUP_NO=_F(GROUP_MA='Pou1',),);
+
+ModP=DEFI_GROUP(reuse =ModP,
+                  MAILLAGE=ModP,
+                  CREA_GROUP_MA=_F(NOM='Pou2',
+                                   MAILLE=('M21','M22','M23','M24','M25','M26','M27','M28','M29',),),
+                  CREA_GROUP_NO=_F(GROUP_MA='Pou2',),);
+
+ModP=DEFI_GROUP(reuse =ModP,
+                  MAILLAGE=ModP,
+                  CREA_GROUP_MA=_F(NOM='PouInt',
+                                   MAILLE=('M10' ,'M11' , 'M12' ,'M13' ,'M14' ,'M15', 'M16','M17','M18','M19',),),
+                  CREA_GROUP_NO=_F(GROUP_MA='PouInt',),);
+
+ModP=DEFI_GROUP(reuse =ModP,
+                  MAILLAGE=ModP,
+                  CREA_GROUP_NO=_F(NOEUD=('N0','N30',),
+                                   NOM='CLModP',),);
+
+ModP=DEFI_GROUP(reuse =ModP,
+                  MAILLAGE=ModP,
+                  CREA_GROUP_NO=_F(NOEUD=('N14',),
+                                   NOM='NFP',),);
+
+ModP=DEFI_GROUP(reuse =ModP,
+                  MAILLAGE=ModP,
+                  CREA_GROUP_NO=_F(NOEUD=('N16',),
+                                   NOM='NdP',),);
+
+Carelem=AFFE_CARA_ELEM(MODELE=MODELP,
+                       POUTRE=_F(GROUP_MA=('AllNode',),
+                                 SECTION='CERCLE',
+                                 CARA='R',
+                                 VALE=0.005,),);
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.3,
+                            RHO=7800.,),);
+
+CHMAP=AFFE_MATERIAU(MAILLAGE=ModP,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
+
+CondLP=AFFE_CHAR_MECA(MODELE=MODELP,
+                       DDL_IMPO=_F(GROUP_NO=('CLModP',),
+                                   DX=0,
+                                   DY=0,
+                                   DZ=0,
+                                   DRZ=0,),);
+
+ChargP=AFFE_CHAR_MECA(MODELE=MODELP,
+                      FORCE_NODALE=_F(GROUP_NO='NFP',
+                                      FX=Fx,),);
+
+ASSEMBLAGE(MODELE=MODELP,
+                CHAM_MATER=CHMAP,
+                CARA_ELEM=Carelem,
+                CHARGE=CondLP,
+                NUME_DDL=CO('NUMEP'),
+                MATR_ASSE=(_F(MATRICE=CO('KP'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MP'),
+                              OPTION='MASS_MECA',),
+                           ),);
+
+ForcP_FX=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                       CHARGE=ChargP,);
+
+
+FP_Xass=ASSE_VECTEUR(VECT_ELEM=ForcP_FX,
+                      NUME_DDL=NUMEP,);
+
+
+LISTP=DEFI_LIST_REEL(DEBUT=Ti,
+                    INTERVALLE=(_F(JUSQU_A=Tb_1,
+                                   PAS=dt,),
+                                _F(JUSQU_A=Tb,
+                                   PAS=dt,),
+                                _F(JUSQU_A=Tb_2,
+                                   PAS=dt,),
+                                _F(JUSQU_A=Tf,
+                                   PAS=dt,),
+                                ),);
+
+LISTaP=DEFI_LIST_REEL(DEBUT=Ti,
+                    INTERVALLE=(_F(JUSQU_A=Tb_1,
+                                   PAS=10*dt,),
+                                _F(JUSQU_A=Tb,
+                                   PAS=dt,),
+                                _F(JUSQU_A=Tb_2,
+                                   PAS=dt,),
+                                _F(JUSQU_A=Tf,
+                                   PAS=10*dt,),
+                                ),);
+
+DLT=DYNA_LINE_TRAN(MODELE=MODELP,
+                   CHAM_MATER=CHMAP,
+                   CARA_ELEM=Carelem,
+                   MATR_MASS=MP,
+                   MATR_RIGI=KP,
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                   GAMMA=0.5+alpha,
+                                   BETA=(1+alpha)**2/4,),
+                   EXCIT=(_F(VECT_ASSE=FP_Xass,
+                             FONC_MULT=FSIN),),
+                   INCREMENT=_F(LIST_INST=LISTP,),
+                   ARCHIVAGE=_F(LIST_INST=LISTaP,),);
+
+TP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='NdP',
+                            RESULTAT=DLT,
+                            NOM_CHAM='DEPL',
+                            GROUP_NO='NdP',
+                            NOM_CMP=('DX' ,'DY',),),);
+
+UxP=RECU_FONCTION(TABLE=TP,
+                  PARA_X='INST',
+                  PARA_Y='DX',);
+
+UyP=RECU_FONCTION(TABLE=TP,
+                  PARA_X='INST',
+                  PARA_Y='DY',);
+
+TPV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='NdP',
+                            RESULTAT=DLT,
+                            NOM_CHAM='VITE',
+                            GROUP_NO='NdP',
+                            NOM_CMP=('DX' ,'DY',),),);
+
+VxP=RECU_FONCTION(TABLE=TPV,
+                  PARA_X='INST',
+                  PARA_Y='DX',);
+
+VyP=RECU_FONCTION(TABLE=TPV,
+                  PARA_X='INST',
+                  PARA_Y='DY',);
+TPA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='NdP',
+                            RESULTAT=DLT,
+                            NOM_CHAM='ACCE',
+                            GROUP_NO='NdP',
+                            NOM_CMP=('DX' ,'DY',),),);
+
+AxP=RECU_FONCTION(TABLE=TPA,
+                  PARA_X='INST',
+                  PARA_Y='DX',);
+
+AyP=RECU_FONCTION(TABLE=TPA,
+                  PARA_X='INST',
+                  PARA_Y='DY',);
+
+Pou1=LIRE_MAILLAGE(UNITE=19,);
+
+Pou1=DEFI_GROUP(reuse =Pou1,
+                MAILLAGE=Pou1,
+                CREA_GROUP_MA=_F(NOM='Poutre1',
+                                 TOUT='OUI',),
+                CREA_GROUP_NO=_F(GROUP_MA='Poutre1',),);
+
+Pou2=LIRE_MAILLAGE(UNITE=20,);
+
+Pou2=DEFI_GROUP(reuse =Pou2,
+                MAILLAGE=Pou2,
+                CREA_GROUP_MA=_F(NOM='Poutre2',
+                                 TOUT='OUI',),
+                CREA_GROUP_NO=_F(GROUP_MA='Poutre2',),);
+
+R3D=LIRE_MAILLAGE(UNITE=21,);
+
+R3D=DEFI_GROUP(reuse =R3D,
+               MAILLAGE=R3D,
+               CREA_GROUP_MA=_F(NOM='Ref3D',
+                                TOUT='OUI',),
+               CREA_GROUP_NO=_F(GROUP_MA='Ref3D',),);
+
+M1=ASSE_MAILLAGE(MAILLAGE_1=Pou1,
+                 MAILLAGE_2=Pou2,
+                 OPERATION='SUPERPOSE',);
+
+Mail=ASSE_MAILLAGE(MAILLAGE_1=M1,
+                   MAILLAGE_2=R3D,
+                   OPERATION='SUPERPOSE',);
+
+Mail=DEFI_GROUP(reuse =Mail,
+                MAILLAGE=Mail,
+                CREA_GROUP_MA=_F(NOM='AllNode',
+                                 TOUT='OUI',),
+                CREA_GROUP_NO=_F(GROUP_MA='AllNode',),);
+
+MODELE=AFFE_MODELE(MAILLAGE=Mail,
+                   AFFE=(_F(GROUP_MA='Ref3D',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA=('Poutre1','Poutre2',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),),);
+
+Carel3D=AFFE_CARA_ELEM(MODELE=MODELE,
+                       POUTRE=_F(GROUP_MA=('Poutre1','Poutre2',),
+                                 SECTION='CERCLE',
+                                 CARA='R',
+                                 VALE=0.005,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=Mail,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
+
+CondLim=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO=('CL1','CL2',),
+                                   DX=0,
+                                   DY=0,
+                                   DZ=0,
+                                   DRZ=0,),
+                       LIAISON_ELEM=(_F(OPTION='3D_POU',
+                                        GROUP_MA_1='R3D1',
+                                        GROUP_NO_2='RP1',),
+                                     _F(OPTION='3D_POU',
+                                        GROUP_MA_1='R3D2',
+                                        GROUP_NO_2='RP2',),),);
+
+Charge=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='NF',
+                                      FX=Fx,),);
+
+ASSEMBLAGE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=Carel3D,
+                CHARGE=CondLim,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('AMOR'),
+                              OPTION='AMOR_MECA',),
+                           ),);
+
+Force_FX=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                       CHARGE=Charge,);
+
+
+F_Xass=ASSE_VECTEUR(VECT_ELEM=Force_FX,
+                      NUME_DDL=NUMEDDL,);
+
+#--------------------------------------------------
+Virgule=3 #Attention au nombre de chiffres nÃÂ©cessaire aprÃÅ¡s la virgule
+Pow=10**(Virgule)
+ajust=1/float(10**(Virgule+2)) #au moins faire Virgule+2 en dÃÂ©nominateur
+
+#Choix de l'amortissement numerique pour la bascule
+alphab=0.001;
+#--------------------------------------------------
+
+# Creation du maillage Python vide
+mail_py = MAIL_PY()
+
+# Conversion du maillage Aster en maillage Python
+mail_py.FromAster('Mail')
+
+#Coordonnees des noeuds (c'est un vecteur numeric N*3)
+COORD_3D=mail_py.cn
+
+iPouAllNode=mail_py.gno.get('AllNode') # permet de recuperer dans une liste les noeuds des noeuds appartemant
+#au groupe AllNode dans l'ordre de leur apparition dans le 'Mail', ex, [3, 5, 2, ...., 1000]. 
+#C'est a dire COORD_3D[2] est celle du noeud N2.
+iPouRP1=mail_py.gno.get('RP1')
+iPouRP2=mail_py.gno.get('RP2')
+
+C3DZ=zeros((len(COORD_3D),1))
+for i in range(len(C3DZ)):  
+   C3DZ[i]=COORD_3D[i][2]
+
+C1DZ1=[]
+min=1112
+while (min!=1111):
+   i=0
+   s=int((abs(C3DZ[i])+ajust)*Pow)/float(Pow) 
+   for i in range(len(C3DZ)):
+      if (int((C3DZ[i]+ajust)*Pow)/float(Pow))==min:
+         C3DZ[i]=1111
+      elif( (int((C3DZ[i]+ajust)*Pow)/float(Pow)) < s ):
+         s=int((C3DZ[i]+ajust)*Pow)/float(Pow)
+   if (min!=s):      
+      min=s
+      C1DZ1.append(min)
+
+C1D=zeros((len(C1DZ1)-1,3))
+for i in range(len(C1D)):  
+   C1D[i][0]=0
+   C1D[i][1]=0
+   C1D[i][2]=C1DZ1[i]
+
+#definition d'une fonction pour chercher la section qui correspond a telle valeur de z
+def OrdreSect(z):
+   jk=0
+   while(C1D[jk][2]!=z):
+      jk=jk+1
+   return jk 
+
+temps=NP.array([Tb,Tb_1,Tb_2])
+nbpas=temps.shape[0]
+
+U0=[]
+U1=[]
+U2=[]
+
+for i in range(nbpas):
+   
+   pas = temps[i]
+   
+   DEP=CREA_CHAMP(OPERATION='EXTR',
+               TYPE_CHAM='NOEU_DEPL_R',
+               RESULTAT=DLT,
+               NOM_CHAM='DEPL',
+               INST=pas,
+               PRECISION=1e-15,);
+
+   Upx = DEP.EXTR_COMP('DX',['AllNode']).valeurs;
+   Upy = DEP.EXTR_COMP('DY',['AllNode']).valeurs;
+   Upz = DEP.EXTR_COMP('DZ',['AllNode']).valeurs;
+   Uprx = DEP.EXTR_COMP('DRX',['AllNode']).valeurs;
+   Upry = DEP.EXTR_COMP('DRY',['AllNode']).valeurs;
+   Uprz = DEP.EXTR_COMP('DRZ',['AllNode']).valeurs;
+   
+   ACC=CREA_CHAMP(OPERATION='EXTR',
+                  TYPE_CHAM='NOEU_DEPL_R',
+                  RESULTAT=DLT,
+                  NOM_CHAM='ACCE',
+                  INST=pas,
+                  PRECISION=1e-15,);
+  
+   ddotUpx = ACC.EXTR_COMP('DX',['AllNode']).valeurs;
+   ddotUpy = ACC.EXTR_COMP('DY',['AllNode']).valeurs;
+   ddotUpz = ACC.EXTR_COMP('DZ',['AllNode']).valeurs;
+   ddotUprx = ACC.EXTR_COMP('DRX',['AllNode']).valeurs;
+   ddotUpry = ACC.EXTR_COMP('DRY',['AllNode']).valeurs;
+   ddotUprz = ACC.EXTR_COMP('DRZ',['AllNode']).valeurs;
+
+   PUp=[]
+   ddotPUp=[]
+
+   for i in range(len(COORD_3D)):
+      ind=OrdreSect(int((COORD_3D[i][2]+0.0001)*1000)/float(1000))
+      if (COORD_3D[i][2]<0 or COORD_3D[i][2]>0.05):
+         PUpx=Upx[ind]
+         PUpy=Upy[ind]
+         PUpz=Upz[ind]
+         PUprx=Uprx[ind]
+         PUpry=Upry[ind]
+         PUprz=Uprz[ind]
+         PUp.append([PUpx, PUpy, PUpz, PUprx, PUpry, PUprz])
+         ddotPUpx=ddotUpx[ind]
+         ddotPUpy=ddotUpy[ind]
+         ddotPUpz=ddotUpz[ind]
+         ddotPUprx=ddotUprx[ind]
+         ddotPUpry=ddotUpry[ind]
+         ddotPUprz=ddotUprz[ind]
+         ddotPUp.append([ddotPUpx, ddotPUpy, ddotPUpz, ddotPUprx, ddotPUpry, ddotPUprz])
+         i=i+1
+      
+      elif (COORD_3D[i][2]>0 and COORD_3D[i][2]<0.05): 
+         PUpx=Upx[ind]-Uprz[ind]*COORD_3D[i][1]
+         PUpy=Upy[ind]+Uprz[ind]*COORD_3D[i][0]
+         PUpz=Upz[ind]-Upry[ind]*COORD_3D[i][0]+Uprx[ind]*COORD_3D[i][1]
+         PUp.append([PUpx, PUpy, PUpz])
+         ddotPUpx=ddotUpx[ind]-ddotUprz[ind]*COORD_3D[i][1]
+         ddotPUpy=ddotUpy[ind]+ddotUprz[ind]*COORD_3D[i][0]
+         ddotPUpz=ddotUpz[ind]-ddotUpry[ind]*COORD_3D[i][0]+ddotUprx[ind]*COORD_3D[i][1]
+         ddotPUp.append([ddotPUpx, ddotPUpy, ddotPUpz])
+         i=i+1
+      
+      elif (COORD_3D[i][2]==0 or COORD_3D[i][2]==0.05):
+         if (iPouAllNode[i]==iPouRP1 or iPouAllNode[i]==iPouRP2):
+            PUpx=Upx[ind]
+            PUpy=Upy[ind]
+            PUpz=Upz[ind]
+            PUprx=Uprx[ind]
+            PUpry=Upry[ind]
+            PUprz=Uprz[ind]
+            PUp.append([PUpx, PUpy, PUpz, PUprx, PUpry, PUprz])
+            ddotPUpx=ddotUpx[ind]
+            ddotPUpy=ddotUpy[ind]
+            ddotPUpz=ddotUpz[ind]
+            ddotPUprx=ddotUprx[ind]
+            ddotPUpry=ddotUpry[ind]
+            ddotPUprz=ddotUprz[ind]
+            ddotPUp.append([ddotPUpx, ddotPUpy, ddotPUpz, ddotPUprx, ddotPUpry, ddotPUprz])
+            i=i+1
+         else:
+            PUpx=Upx[ind]-Uprz[ind]*COORD_3D[i][1]
+            PUpy=Upy[ind]+Uprz[ind]*COORD_3D[i][0]
+            PUpz=Upz[ind]-Upry[ind]*COORD_3D[i][0]+Uprx[ind]*COORD_3D[i][1]
+            PUp.append([PUpx, PUpy, PUpz])
+            ddotPUpx=ddotUpx[ind]-ddotUprz[ind]*COORD_3D[i][1]
+            ddotPUpy=ddotUpy[ind]+ddotUprz[ind]*COORD_3D[i][0]
+            ddotPUpz=ddotUpz[ind]-ddotUpry[ind]*COORD_3D[i][0]+ddotUprx[ind]*COORD_3D[i][1]
+            ddotPUp.append([ddotPUpx, ddotPUpy, ddotPUpz])
+            i=i+1
+
+   dictLNo = []
+   dictPUpx = []
+   dictPUpy = []
+   dictPUpz = []
+   dictPUprx = []
+   dictPUpry = []
+   dictPUprz = []
+   dictAccx = []
+   dictAccy = []
+   dictAccz = []
+   dictAccrx = []
+   dictAccry = []
+   dictAccrz = []
+   for i in range(len(PUp)):
+      j=i+1
+      if len(PUp[i])==3:
+         dictLNo.append('N%i'%j);
+         dictPUpx.append(PUp[i][0]);
+         dictPUpy.append(PUp[i][1]);
+         dictPUpz.append(PUp[i][2]);
+         dictAccx.append(ddotPUp[i][0]);
+         dictAccy.append(ddotPUp[i][1]);
+         dictAccz.append(ddotPUp[i][2]);
+      else:
+         dictLNo.append('N%i'%j);
+         dictPUpx.append(PUp[i][0]);
+         dictPUpy.append(PUp[i][1]);
+         dictPUpz.append(PUp[i][2]);
+         dictPUprx.append(PUp[i][3]);
+         dictPUpry.append(PUp[i][4]);
+         dictPUprz.append(PUp[i][5]);
+         dictAccx.append(ddotPUp[i][0]);
+         dictAccy.append(ddotPUp[i][1]);
+         dictAccz.append(ddotPUp[i][2]);
+         dictAccrx.append(ddotPUp[i][3]);
+         dictAccry.append(ddotPUp[i][4]);
+         dictAccrz.append(ddotPUp[i][5]);
+
+   TD=CREA_TABLE(LISTE=(_F(LISTE_K=dictLNo,PARA='NOEUD'),
+                        _F(LISTE_R=dictPUpx,PARA='DX'),
+                        _F(LISTE_R=dictPUpy,PARA='DY'),
+                        _F(LISTE_R=dictPUpz,PARA='DZ'),
+                        _F(LISTE_R=dictPUprx,PARA='DRX'),
+                        _F(LISTE_R=dictPUpry,PARA='DRY'),
+                        _F(LISTE_R=dictPUprz,PARA='DRZ'),))
+   
+   TA=CREA_TABLE(LISTE=(_F(LISTE_K=dictLNo,PARA='NOEUD'),
+                     _F(LISTE_R=dictAccx,PARA='DX'),
+                     _F(LISTE_R=dictAccy,PARA='DY'),
+                     _F(LISTE_R=dictAccz,PARA='DZ'),
+                     _F(LISTE_R=dictAccrx,PARA='DRX'),
+                     _F(LISTE_R=dictAccry,PARA='DRY'),
+                     _F(LISTE_R=dictAccrz,PARA='DRZ'),))
+   
+   DeplPUp=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='EXTR',
+              MAILLAGE=Mail,
+              TABLE=TD,);
+      
+   AccIni=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+           OPERATION='EXTR',
+           MAILLAGE=Mail,
+           TABLE=TA,);
+   
+   FORCE1=PROD_MATR_CHAM(MATR_ASSE=RIGIDITE,
+                  CHAM_NO=DeplPUp,
+                  TITRE='PROD_MATR_CHAM1',);
+
+   TBLf1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                         INTITULE='f1',
+                         CHAM_GD=FORCE1, 
+                         GROUP_NO='AllNode',
+                         NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),),);
+   
+   VARf1=TBLf1.EXTR_TABLE()
+
+   FORCE2=PROD_MATR_CHAM(MATR_ASSE=MASSE,
+                  CHAM_NO=AccIni,
+                  TITRE='PROD_MATR_CHAM2',);
+
+   TBLf2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                         INTITULE='f2',
+                         CHAM_GD=FORCE2, 
+                         GROUP_NO='AllNode',
+                         NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),),);
+   
+   VARf2=TBLf2.EXTR_TABLE()
+   
+   Force = []
+   for i in range(len(VARf1)):
+      if VARf1.DRX[i]==None:
+         Force.append([-VARf1.DX[i]-VARf2.DX[i], -VARf1.DY[i]-VARf2.DY[i], -VARf1.DZ[i]-VARf2.DZ[i]]);
+      else:
+         Force.append([-VARf1.DX[i]-VARf2.DX[i], -VARf1.DY[i]-VARf2.DY[i], -VARf1.DZ[i]-VARf2.DZ[i], -VARf1.DRX[i]-VARf2.DRX[i], -VARf1.DRY[i]-VARf2.DRY[i], -VARf1.DRZ[i]-VARf2.DRZ[i]]);
+
+   Force[591][0]=Force[591][0]+Fx*sin(pas*_OMEGA)
+
+   #en faisant COORD_3D[mail_py.gno.get('NF')] j'ai verifie que 591 correspond bien aÂ l'indice de NF
+
+   dictCharge = []
+   for i in range(len(VARf1)):
+      j=i+1
+      if VARf1.DRX[i]==None:
+         dictCharge.append({'NOEUD':'N%i'%j, 'FX':Force[i][0], 'FY':Force[i][1], 'FZ':Force[i][2],});
+      else:
+         dictCharge.append({'NOEUD':'N%i'%j, 'FX':Force[i][0], 'FY':Force[i][1], 'FZ':Force[i][2], 'MX':Force[i][3], 'MY':Force[i][4], 'MZ':Force[i][5],});
+
+   CHARGE3D=AFFE_CHAR_MECA(MODELE=MODELE,
+                    FORCE_NODALE=(dictCharge),);
+
+   Mstat=MECA_STATIQUE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=Carel3D,
+                 EXCIT=(_F(CHARGE=CondLim,),
+                        _F(CHARGE=CHARGE3D,),),);
+
+   tableUc=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                         INTITULE='U3Dc',
+                         RESULTAT=Mstat,
+                         NOM_CHAM='DEPL',
+                         PRECISION=1e-15,
+                         GROUP_NO='AllNode',
+                         NOM_CMP=('DX','DY','DZ', 'DRX', 'DRY', 'DRZ',),),);
+   
+   TC=tableUc.EXTR_TABLE()
+
+   for i in range(len(TC)):
+      if TC.DRX[i]==None:
+         if pas==Tb:
+            U0.append([PUp[i][0]+TC.DX[i], PUp[i][1]+TC.DY[i], PUp[i][2]+TC.DZ[i]]);
+         elif pas==Tb_1:
+            U1.append([PUp[i][0]+TC.DX[i], PUp[i][1]+TC.DY[i], PUp[i][2]+TC.DZ[i]]);
+         elif pas==Tb_2:
+            U2.append([PUp[i][0]+TC.DX[i], PUp[i][1]+TC.DY[i], PUp[i][2]+TC.DZ[i]]);
+      else:
+         if pas==Tb:
+            U0.append([PUp[i][0]+TC.DX[i], PUp[i][1]+TC.DY[i], PUp[i][2]+TC.DZ[i], PUp[i][3]+TC.DRX[i], PUp[i][4]+TC.DRY[i], PUp[i][5]+TC.DRZ[i]]);
+         elif pas==Tb_1:
+            U1.append([PUp[i][0]+TC.DX[i], PUp[i][1]+TC.DY[i], PUp[i][2]+TC.DZ[i], PUp[i][3]+TC.DRX[i], PUp[i][4]+TC.DRY[i], PUp[i][5]+TC.DRZ[i]]);
+         elif pas==Tb_2:
+            U2.append([PUp[i][0]+TC.DX[i], PUp[i][1]+TC.DY[i], PUp[i][2]+TC.DZ[i], PUp[i][3]+TC.DRX[i], PUp[i][4]+TC.DRY[i], PUp[i][5]+TC.DRZ[i]]);
+   
+   DETRUIRE (CONCEPT=_F(NOM=DEP),);
+   DETRUIRE (CONCEPT=_F(NOM=ACC),);
+   DETRUIRE (CONCEPT=_F(NOM=TD),);
+   DETRUIRE (CONCEPT=_F(NOM=DeplPUp),);
+   DETRUIRE (CONCEPT=_F(NOM=TA),);
+   DETRUIRE (CONCEPT=_F(NOM=AccIni),);
+   DETRUIRE (CONCEPT=_F(NOM=FORCE1),);
+   DETRUIRE (CONCEPT=_F(NOM=TBLf1),);
+   DETRUIRE (CONCEPT=_F(NOM=FORCE2),);
+   DETRUIRE (CONCEPT=_F(NOM=TBLf2),);
+   DETRUIRE (CONCEPT=_F(NOM=CHARGE3D),);
+   DETRUIRE (CONCEPT=_F(NOM=Mstat),);
+   DETRUIRE (CONCEPT=_F(NOM=tableUc),);
+
+#dictionnaire des deplacements au moment de la bascule
+dictDeplx = []
+dictDeply = []
+dictDeplz = []
+dictDeplrx = []
+dictDeplry = []
+dictDeplrz = []
+for i in range(len(U0)):
+   j=i+1
+   if len(U0[i])==3:
+      dictDeplx.append(U0[i][0]);
+      dictDeply.append(U0[i][1]);
+      dictDeplz.append(U0[i][2]);
+   else:
+      dictDeplx.append(U0[i][0]);
+      dictDeply.append(U0[i][1]);
+      dictDeplz.append(U0[i][2]);
+      dictDeplrx.append(U0[i][3]);
+      dictDeplry.append(U0[i][4]);
+      dictDeplrz.append(U0[i][5]);
+
+Dini=CREA_TABLE(LISTE=(_F(LISTE_K=dictLNo,PARA='NOEUD'),
+               _F(LISTE_R=dictDeplx,PARA='DX'),
+               _F(LISTE_R=dictDeply,PARA='DY'),
+               _F(LISTE_R=dictDeplz,PARA='DZ'),
+               _F(LISTE_R=dictDeplrx,PARA='DRX'),
+               _F(LISTE_R=dictDeplry,PARA='DRY'),
+               _F(LISTE_R=dictDeplrz,PARA='DRZ'),))
+
+Dep0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+        OPERATION='EXTR',
+        MAILLAGE=Mail,
+        TABLE=Dini,);
+#********************************--0-- Calcul des vitesses corrigeees --0--********************************
+dictVitex = []
+dictVitey = []
+dictVitez = []
+dictViterx = []
+dictVitery = []
+dictViterz = []
+for i in range(len(U1)):
+    j=i+1
+    if len(U1[i])==3:
+       dictVitex.append((U2[i][0]-U1[i][0])/(2*dt));
+       dictVitey.append((U2[i][1]-U1[i][1])/(2*dt));
+       dictVitez.append((U2[i][2]-U1[i][2])/(2*dt));
+    else:
+       dictVitex.append((U2[i][0]-U1[i][0])/(2*dt));
+       dictVitey.append((U2[i][1]-U1[i][1])/(2*dt));
+       dictVitez.append((U2[i][2]-U1[i][2])/(2*dt));
+       dictViterx.append((U2[i][3]-U1[i][3])/(2*dt));
+       dictVitery.append((U2[i][4]-U1[i][4])/(2*dt));
+       dictViterz.append((U2[i][5]-U1[i][5])/(2*dt));
+
+Vini=CREA_TABLE(LISTE=(_F(LISTE_K=dictLNo,PARA='NOEUD'),
+                        _F(LISTE_R=dictVitex,PARA='DX'),
+                        _F(LISTE_R=dictVitey,PARA='DY'),
+                        _F(LISTE_R=dictVitez,PARA='DZ'),
+                        _F(LISTE_R=dictViterx,PARA='DRX'),
+                        _F(LISTE_R=dictVitery,PARA='DRY'),
+                        _F(LISTE_R=dictViterz,PARA='DRZ'),))
+
+Vit0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='EXTR',
+              MAILLAGE=Mail,
+              TABLE=Vini,);
+
+#********************************--0-- Calcul des accelerations corrigeees --0--********************************
+dictAccex = []
+dictAccey = []
+dictAccez = []
+dictAccerx = []
+dictAccery = []
+dictAccerz = []
+for i in range(len(U1)):
+    j=i+1
+    if len(U1[i])==3:
+       dictAccex.append((U2[i][0]-2*U0[i][0]+U1[i][0])/(dt**2));
+       dictAccey.append((U2[i][1]-2*U0[i][1]+U1[i][1])/(dt**2));
+       dictAccez.append((U2[i][2]-2*U0[i][2]+U1[i][2])/(dt**2));
+    else:
+       dictAccex.append((U2[i][0]-2*U0[i][0]+U1[i][0])/(dt**2));
+       dictAccey.append((U2[i][1]-2*U0[i][1]+U1[i][1])/(dt**2));
+       dictAccez.append((U2[i][2]-2*U0[i][2]+U1[i][2])/(dt**2));
+       dictAccerx.append((U2[i][3]-2*U0[i][3]+U1[i][3])/(dt**2));
+       dictAccery.append((U2[i][4]-2*U0[i][4]+U1[i][4])/(dt**2));
+       dictAccerz.append((U2[i][5]-2*U0[i][5]+U1[i][5])/(dt**2));
+
+Aini=CREA_TABLE(LISTE=(_F(LISTE_K=dictLNo,PARA='NOEUD'),
+                        _F(LISTE_R=dictAccex,PARA='DX'),
+                        _F(LISTE_R=dictAccey,PARA='DY'),
+                        _F(LISTE_R=dictAccez,PARA='DZ'),
+                        _F(LISTE_R=dictAccerx,PARA='DRX'),
+                        _F(LISTE_R=dictAccery,PARA='DRY'),
+                        _F(LISTE_R=dictAccerz,PARA='DRZ'),))
+
+Acc0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='EXTR',
+              MAILLAGE=Mail,
+              TABLE=Aini,);
+
+Chargb=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='NF',
+                                      FX=Fx),);
+
+Forcb_FX=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                       CHARGE=Chargb,);
+
+
+Fb_Yass=ASSE_VECTEUR(VECT_ELEM=Forcb_FX,
+                      NUME_DDL=NUMEDDL,
+                                        );
+
+LISTb1=DEFI_LIST_REEL(DEBUT=Tb,
+                    INTERVALLE=(_F(JUSQU_A=Tb_2,
+                                  PAS=dt,),
+                                _F(JUSQU_A=Tf,
+                                PAS=dt,),),);
+
+LISTab1=DEFI_LIST_REEL(DEBUT=Tb,
+                    INTERVALLE=(_F(JUSQU_A=Tb_2,
+                                   PAS=dt,),
+                                _F(JUSQU_A=Tf,
+                                  PAS=10*dt,),),);
+
+Bascule=DYNA_LINE_TRAN(MODELE=MODELE,
+                      CHAM_MATER=CHMAT,
+                      MATR_MASS=MASSE,
+                      MATR_RIGI=RIGIDITE,
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                      GAMMA=0.5+alphab,
+                                      BETA=(1.0+alphab)**2/4,),   
+                      ETAT_INIT=_F(DEPL=Dep0,
+                                   VITE=Vit0,
+                                   ),
+                      EXCIT=(_F(VECT_ASSE=F_Xass,
+                                FONC_MULT=FSIN),),
+                      INCREMENT=_F(LIST_INST=LISTb1,),
+                      ARCHIVAGE=_F(LIST_INST=LISTab1,),);
+
+Tbas=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='Nd',
+                            RESULTAT=Bascule,
+                            NOM_CHAM='DEPL',
+                            GROUP_NO='Nd',
+                            NOM_CMP=('DX'),),);
+
+Ux3Dbas=RECU_FONCTION(TABLE=Tbas,
+                  PARA_X='INST',
+                  PARA_Y='DX',);
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.0003233375,
+                        VALE_REFE=-0.000326636,
+                        VALE_PARA=2.2115,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=7.E-2,
+                        FONCTION=Ux3Dbas,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0003230845,
+                        VALE_REFE=0.000326380,
+                        REFERENCE='AUTRE_ASTER',
+                        VALE_PARA=2.7065,
+                        PRECISION=7.E-2,
+                        FONCTION=Ux3Dbas,
+                        ),
+              )
+
+FIN();
