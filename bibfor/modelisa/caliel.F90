@@ -28,6 +28,7 @@ subroutine caliel(fonrez, chargz)
 #include "asterfort/nueffe.h"
 #include "asterfort/rapo2d.h"
 #include "asterfort/rapo3d.h"
+#include "asterfort/caarle.h"
 #include "asterfort/rapoco.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: chargz, fonrez
@@ -102,6 +103,8 @@ subroutine caliel(fonrez, chargz)
         call getvtx(motfac, 'OPTION', iocc=iocc, scal=option, nbret=iop)
         if (option .eq. '3D_POU') then
             call rapo3d(numddl, iocc, fonrez, lisrel, chargz)
+        else if (option .eq. '3D_POU_ARLEQUIN') then
+            call caarle(numddl, iocc, lisrel, chargz)
         else if (option.eq.'2D_POU') then
             call rapo2d(numddl, iocc, fonrez, lisrel, chargz)
         else if (option.eq.'3D_TUYAU') then

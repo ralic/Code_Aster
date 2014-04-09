@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine te0399(option, nomte)
-        character(len=16) :: option
-        character(len=16) :: nomte
-    end subroutine te0399
+    subroutine arlpff(x1,x2,x3,xl,phiy,phiz,B1d,B1dnrj)
+        real(kind=8) :: xl,B1d(3,12),B1dnrj(6,12)
+        real(kind=8)  :: phiy,phiz
+        real(kind=8)  :: x1,x2,x3
+    end subroutine arlpff
 end interface

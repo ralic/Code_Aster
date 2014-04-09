@@ -1,0 +1,157 @@
+# TITRE POUTRE BI-APPUYEE SOUMISE A UNE FORCE NODALE SUR SA FIBRE NEUTRE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),);
+
+
+_OMEGA = 6.4;
+Fz=-100;
+
+#Choix de l'amortissement numerique pour le modeles de reference 1D, 3D et 1D-3D
+alpha=0.25;
+
+FSIN = FORMULE(VALE='sin((INST)*_OMEGA)',
+               NOM_PARA='INST',);
+Ti=0;
+Tf=3.0;
+Tb=2.0;
+
+dt=0.0015;
+
+Tb_1=Tb-dt;
+Tb_2=Tb+dt;
+
+Mail=LIRE_MAILLAGE(UNITE=20,);
+
+MODELE=AFFE_MODELE(MAILLAGE=Mail,
+                   AFFE=(_F(GROUP_MA=('Ref3D'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA=('Poutre'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),),);
+
+Carel3D=AFFE_CARA_ELEM(MODELE=MODELE,
+                       POUTRE=_F(GROUP_MA=('Poutre','PCol'),
+                                 SECTION='CERCLE',
+                                 CARA='R',
+                                 VALE=0.005,),);
+
+MATL=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                           NU=0.3,
+                           RHO=7800.0,),);
+
+MATC=DEFI_MATERIAU(ELAS=_F(E=2.E11*0.5,
+                           NU=0.3,
+                           RHO=7800.0*0.5,),);
+
+MATR3=DEFI_MATERIAU(ELAS=_F(E=2.E11*0.99,
+                           NU=0.3,
+                           RHO=7800.0*0.99,),);
+
+MATR1=DEFI_MATERIAU(ELAS=_F(E=2.E11*0.01,
+                           NU=0.3,
+                           RHO=7800.0*0.01,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=Mail,
+                    AFFE=(
+                          _F(GROUP_MA=('Pou1','Pou2'),
+                             MATER=MATL,),
+                          _F(GROUP_MA=('PLib'),
+                             MATER=MATR1,),
+                          _F(GROUP_MA=('PCol'),
+                             MATER=MATC,),
+                          _F(GROUP_MA=('Lib'),
+                             MATER=MATR3,),
+                          _F(GROUP_MA=('Col','ColHexa','ColPenta'),
+                             MATER=MATC,),
+                           ),);
+
+# C'EST OK AVEC DEUX CHARGES ARLEQUIN POUR HEXA (cf. ci-dessous)
+CondLim=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO=('CL1','CL2',),
+                                   DX=0,
+                                   DY=0,
+                                   DZ=0,
+                                   DRZ=0,),
+                       LIAISON_ELEM=(_F(OPTION='3D_POU',
+                                        GROUP_MA_1='R3D1',
+                                        GROUP_NO_2='RP1',),
+                                     _F(OPTION='3D_POU',
+                                        GROUP_MA_1='R3D2',
+                                        GROUP_NO_2='RP2',),),);
+
+Charge=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='NF',
+                                      FZ=Fz,),);
+
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=Carel3D,
+           CHARGE=CondLim,
+           NUME_DDL=CO('NUMEDDL'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSE'),
+                         OPTION='MASS_MECA',),
+                      ),);
+
+LIST3D=DEFI_LIST_REEL(DEBUT=Ti,
+                    INTERVALLE=(_F(JUSQU_A=Tf,
+                                   PAS=10*dt,),
+                                ),);
+
+RefM3D=DYNA_LINE_TRAN(MODELE=MODELE,
+                      CHAM_MATER=CHMAT,
+                      CARA_ELEM=Carel3D,
+                      MATR_MASS=MASSE,
+                      MATR_RIGI=RIGIDITE,
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                      GAMMA=0.5+alpha,
+                                      BETA=(1+alpha)**2/4,),
+                      EXCIT=(_F(CHARGE=CondLim,),
+                             _F(CHARGE=Charge,
+                                FONC_MULT=FSIN),),
+                      INCREMENT=_F(LIST_INST=LIST3D,),);
+
+DN105Z=RECU_FONCTION(RESULTAT=RefM3D,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DZ',
+                     NOEUD='N105',);
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.000327041,
+                        VALE_REFE=-0.000330546,
+                        VALE_PARA=2.205,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=7.E-2,
+                        FONCTION=DN105Z,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000327144,
+                        VALE_REFE=0.000330650,
+                        REFERENCE='AUTRE_ASTER',
+                        VALE_PARA=2.7,
+                        PRECISION=7.E-2,
+                        FONCTION=DN105Z,
+                        ),
+              )
+
+FIN();
+

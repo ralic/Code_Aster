@@ -1,0 +1,133 @@
+# TITRE POUTRE BI-APPUYEE SOUMISE A UNE FORCE NODALE SUR SA FIBRE NEUTRE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),);
+
+
+_OMEGA = 6.4;
+Fz=-100;
+
+#Choix de l'amortissement numerique pour le modeles de reference 1D, 3D et 1D-3D
+alpha=0.25;
+
+FSIN = FORMULE(VALE='sin((INST)*_OMEGA)',
+               NOM_PARA='INST',);
+Ti=0;
+Tf=3.0;
+Tb=2.0;
+
+dt=0.0015;
+
+Tb_1=Tb-dt;
+Tb_2=Tb+dt;
+
+Mail=LIRE_MAILLAGE(UNITE=20,);
+
+Mail=DEFI_GROUP(reuse =Mail,
+                MAILLAGE=Mail,
+                CREA_GROUP_MA=_F(NOM='Poutre',
+                                 TOUT='OUI',),);
+
+MODELE=AFFE_MODELE(MAILLAGE=Mail,
+                   AFFE=(_F(GROUP_MA=('Poutre'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),),);
+
+Carel1D=AFFE_CARA_ELEM(MODELE=MODELE,
+                       POUTRE=_F(GROUP_MA=('Poutre'),
+                                 SECTION='CERCLE',
+                                 CARA='R',
+                                 VALE=0.005,),);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                           NU=0.3,
+                           RHO=7800.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=Mail,
+                    AFFE=(
+                          _F(GROUP_MA=('Poutre'),
+                             MATER=MAT,),
+                           ),);
+
+CondLim=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO=('CL1','CL2',),
+                                   DX=0,
+                                   DY=0,
+                                   DZ=0,
+                                   DRX=0,),
+                        );
+
+Charge=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='NF',
+                                      FZ=Fz,),);
+
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=Carel1D,
+           CHARGE=(CondLim),
+           NUME_DDL=CO('NUMEDDL'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSE'),
+                         OPTION='MASS_MECA',),
+                      _F(MATRICE=CO('AMOR'),
+                         OPTION='AMOR_MECA',),
+                      ),);
+
+LISTa1D=DEFI_LIST_REEL(DEBUT=Ti,
+                    INTERVALLE=(_F(JUSQU_A=Tf,
+                                   PAS=10*dt,),
+                                ),);
+
+RefM1D=DYNA_NON_LINE(MODELE=MODELE,
+                  CHAM_MATER=CHMAT,
+                  CARA_ELEM=Carel1D,
+                  EXCIT=(_F(CHARGE=CondLim,),
+                         _F(CHARGE=Charge,
+                            FONC_MULT=FSIN),),
+                  COMPORTEMENT=_F(RELATION='ELAS',
+                                TOUT='OUI',),
+                  INCREMENT=_F(LIST_INST=LISTa1D,),
+                  SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                  BETA=0.49,
+                                  GAMMA=0.9,
+                                  FORMULATION='DEPLACEMENT',),
+                  NEWTON=_F(MATRICE='ELASTIQUE',),
+                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-2,
+                                 ITER_GLOB_MAXI=20,),);
+
+DEPN14Z=RECU_FONCTION(RESULTAT=RefM1D,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DZ',
+                     NOEUD='N14',);
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.000330546,
+                        VALE_PARA=2.205,
+                        FONCTION=DEPN14Z,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0003306501,
+                        VALE_PARA=2.7,
+                        FONCTION=DEPN14Z,
+                        ),
+              )
+
+FIN();
+

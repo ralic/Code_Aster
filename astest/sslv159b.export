@@ -1,0 +1,9 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist R 
+
+F comm sslv159b.comm D 1
+F mail sslv159b.mail D 20
