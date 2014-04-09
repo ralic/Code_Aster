@@ -749,8 +749,5 @@ PyMODINIT_FUNC init_aster_core(void)
     PyModule_AddIntConstant(aster_core, "_NO_EXPIR", 0);
 #endif
     PyModule_AddIntMacro(aster_core, ASTER_INT_SIZE);
-
-    // fill later (after the arguments have been read)
-    PyModule_AddObject(aster_core, "__version__", Py_None);
 }
 #endif

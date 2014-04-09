@@ -2671,11 +2671,7 @@ PyMODINIT_FUNC initaster(void)
 
     /* Add some symbolic constants to the module */
     dict = PyModule_GetDict(aster);
-
-    // fill later when (after the arguments have been read)
-    PyModule_AddObject(aster, "__version__", Py_None);
     initExceptions(dict);
-
     init_etape_stack();
     /* don't take of mpirun arguments */
     aster_mpi_init(0, NULL);

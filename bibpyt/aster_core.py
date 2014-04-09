@@ -52,16 +52,15 @@ from _aster_core import (
     _NO_EXPIR,
     ASTER_INT_SIZE,
 )
-# for backward compatibility
+# prefer use get_version()
 __version__ = '.'.join(str(i) for i in aster_pkginfo.version_info.version)
-_aster_core.__version__ = __version__
 
 
 def _is_initialized():
     return getattr(_aster_core, 'get_option', None) is not None
 
 def get_option(option, default=None):
-    ''' return the setting parameter value.
+    '''return the setting parameter value.
 
     :option: a string containing the option name
     :default: the value to be returned if the option is not present
@@ -70,6 +69,10 @@ def get_option(option, default=None):
         raise EnvironmentError(
             'aster_core must be initialized before (see aster_core.register) ')
     return _aster_core.get_option(option, default)
+
+def get_version():
+    '''Return the version number as string'''
+    return __version__
 
 def set_info(option, value):
     '''modify the setting parameter value.

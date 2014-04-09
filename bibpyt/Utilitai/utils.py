@@ -77,7 +77,7 @@ def get_titre_concept(co=None):
     }
     format = [fmt["version"], ]
     dfmt = {
-        "version" : aster_core.__version__,
+        "version" : aster_core.get_version(),
         "dateheure" : time.strftime("LE %m/%d/%Y A %H:%M:%S"),
     }
     if co:
