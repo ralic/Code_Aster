@@ -414,14 +414,14 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         end do
 !
     endif
+    nliais=1
+!
+999 continue
 !
 !       --- DESTRUCTION OBJETS SUR VOLATILE
     AS_DEALLOCATE(vi=lista)
     call jedetr('&&VECOMO.LISTB')
 !
-    nliais=1
-!
-999 continue
 !
     call jedema()
 end subroutine
