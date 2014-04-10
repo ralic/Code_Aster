@@ -63,6 +63,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
     integer :: i, icodre(1)
     real(kind=8) :: sigm(6), energi(2), r8bid
     character(len=16) :: phenom
+    real(kind=8) :: crit_loca(13)
 !
 !-----------------------------------------------------------------------
 !
@@ -87,8 +88,13 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
         else if (compor(1)(1:5) .eq. 'ELAS ' .or. compor(1)(1:14) .eq.&
     'ELAS_VMIS_LINE' .or. compor(1)(1:14) .eq. 'ELAS_VMIS_PUIS' .or.&
     compor(1)(1:14) .eq. 'ELAS_VMIS_TRAC' ) then
+        crit_loca(1) = crit(1)
+        crit_loca(2) = crit(2)
+        crit_loca(3) = crit(3)
+        crit_loca(8) = crit(3)
+        crit_loca(9) = 10
         call nmelnl(fami, kpg, ksp, 0, poum, ndim,&
-                    typmod, imate, compor, crit, option,&
+                    typmod, imate, compor, crit_loca, option,&
                     eps, sig, vi(1), dsidep, energi)
 !
 !    LOI ELASTIQUE POUR MODELE SIGNORINI
@@ -96,8 +102,13 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
         if (compor(3) .ne. 'GROT_GDEP') then
             call utmess('F', 'ALGORITH6_96')
         endif
+        crit_loca(1) = crit(1)
+        crit_loca(2) = crit(2)
+        crit_loca(3) = crit(3)
+        crit_loca(8) = crit(3)
+        crit_loca(9) = 10
         call hypela(fami, kpg, ksp, poum, ndim,&
-                    typmod, imate, compor, crit, eps,&
+                    typmod, imate, compor, crit_loca, eps,&
                     sig, dsidep, codret)
 !
     else

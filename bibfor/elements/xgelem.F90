@@ -92,7 +92,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: rbid
     real(kind=8) :: tthe, r
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref
-    real(kind=8) :: crit(3), dfdm(3, 4)
+    real(kind=8) :: crit(13), dfdm(3, 4)
     real(kind=8) :: energi(2), sigl(6), prod, prod2, rac2, sr(3, 3), tcla, divt
     real(kind=8) :: tfor, dsidep(6, 6)
     character(len=8) :: elrese(6), fami(6), typmod(2)
@@ -446,6 +446,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         crit(1) = 300
         crit(2) = 0.d0
         crit(3) = 1.d-3
+        crit(9) = 300
+        crit(8) = 1.d-3
 
         call nmelnl('XFEM', kpg, 1, idecpg, '+', ndim,&
                     typmod, matcod, compor, crit, oprupt,&

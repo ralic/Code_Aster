@@ -2,6 +2,19 @@ subroutine hypela(fami, kpg, ksp, poum, ndim,&
                   typmod, imate, compor, crit, eps,&
                   sig, dsidep, codret)
 !
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/hyp3ci.h"
+#include "asterfort/hyp3cv.h"
+#include "asterfort/hyp3di.h"
+#include "asterfort/hyp3dv.h"
+#include "asterfort/hypcpc.h"
+#include "asterfort/hypcpd.h"
+#include "asterfort/hypmat.h"
+#include "asterfort/utmess.h"
+#include "blas/dscal.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -21,18 +34,7 @@ subroutine hypela(fami, kpg, ksp, poum, ndim,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterfort/assert.h"
-#include "asterfort/hyp3ci.h"
-#include "asterfort/hyp3cv.h"
-#include "asterfort/hyp3di.h"
-#include "asterfort/hyp3dv.h"
-#include "asterfort/hypcpc.h"
-#include "asterfort/hypcpd.h"
-#include "asterfort/hypmat.h"
-#include "asterfort/matini.h"
-#include "asterfort/utmess.h"
-#include "blas/dscal.h"
+
     integer :: kpg, ksp, ndim
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)
@@ -94,11 +96,7 @@ subroutine hypela(fami, kpg, ksp, poum, ndim,&
 !
 ! ----------------------------------------------------------------------
 !
-! --- INITIALISATIONS
-!
-    call matini(6, 6, 0.d0, dsidep)
-    nitmax = int(crit(1))
-    epsi = crit(3)
+    dsidep(:,:) = 0.d0
     ASSERT(compor(4).eq.'COMP_ELAS')
 !
 ! --- LECTURE DES CARACTERISTIQUES MATERIAU
@@ -116,10 +114,10 @@ subroutine hypela(fami, kpg, ksp, poum, ndim,&
 !
 ! --- PRE-TRAITEMENT DES DEFORMATIONS (PAS DE NOTATION DE VOIGT)
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         epstot( i)=eps( i)
         epstot(3+i)=eps(3+i)/sqrt(2.d0)
-10  end do
+    end do
 !
 ! --- CALCUL CONTRAINTES ET MATRICE TANGENTE
 !
@@ -160,17 +158,20 @@ subroutine hypela(fami, kpg, ksp, poum, ndim,&
 ! --- ASSEMBLAGE VOLUMIQUE/ISOTROPIQUE
 ! --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
 ! --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION
-        do 30 i = 1, 3
+        do i = 1, 3
             sig( i) = siso( i)+svol( i)
             sig(3+i) = (siso(3+i)+svol(3+i))/2.d0
-            do 20 j = 1, 3
+            do j = 1, 3
                 dsidep( i, j) = ciso( i, j)+cvol( i, j)
                 dsidep(3+i, j) = (ciso(3+i, j)+cvol(3+i, j))/sqrt( 2.d0)
                 dsidep( i,3+j) = (ciso( i,3+j)+cvol( i,3+j))/sqrt( 2.d0)
                 dsidep(3+i,3+j) = (ciso(3+i,3+j)+cvol(3+i,3+j))/ 2.d0
-20          continue
-30      continue
+            end do
+        end do
     else if (typmod(1)(1:6) .eq. 'C_PLAN') then
+        epsi   = abs(crit(8))
+        nitmax = nint(crit(9))
+
 ! --- CALCUL DES ELONGATIONS
         c11 = 2.d0*epstot(1)+1.d0
         c12 = 2.d0*epstot(4)
@@ -191,23 +192,24 @@ subroutine hypela(fami, kpg, ksp, poum, ndim,&
         endif
 ! --- ON CORRIGE A CE NIVEAU LES TERMES LIES AU CISAILLEMENT
 ! --- A TERME IL FAUDRA RE-ECRIRE LES ROUTINES D'INTEGRATION
-        do 50 i = 1, 3
+        do i = 1, 3
             sig(3+i) = sig(3+i)/2.d0
-            do 40 j = 1, 3
+            do j = 1, 3
                 dsidep(3+i, j) = dsidep(3+i, j)/sqrt(2.d0)
                 dsidep( i,3+j) = dsidep( i,3+j)/sqrt(2.d0)
                 dsidep(3+i,3+j) = dsidep(3+i,3+j)/ 2.d0
-40          continue
-50      continue
+            end do
+        end do
 ! --- PRISE EN COMPTE DE L'HYPOTHESE DE CONTRAINTES PLANES DANS DSIDEP
-        do 70 m = 1, 2*ndim
-            if (m .eq. 3) goto 70
-            do 60 l = 1, 2*ndim
-                if (l .eq. 3) goto 60
-                dsidep(m,l )= dsidep(m,l) - 1.d0/dsidep(3,3)*dsidep(m,&
-                3)*dsidep(3,l)
-60          continue
-70      continue
+        do m = 1, 2*ndim
+            if (m .ne. 3) then
+                do l = 1, 2*ndim
+                    if (l .ne. 3) then
+                        dsidep(m,l )= dsidep(m,l) - 1.d0/dsidep(3,3)*dsidep(m,3)*dsidep(3,l)
+                    endif
+                end do
+            endif
+        end do
     else
         call utmess('F', 'ELASHYPER_97', sk=typmod(1))
     endif

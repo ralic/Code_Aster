@@ -148,7 +148,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                       fr="Critère d'arret relatif pour assurer la condition de contraintes planes"),
                                   ),
 
-              ITER_CPLAN_MAXI =SIMP(statut='f',typ='I',defaut= 1,
+              ITER_CPLAN_MAXI =SIMP(statut='f',typ='I',defaut= 10,
                                       fr="Nombre d'itérations maxi pour assurer la condition de contraintes planes"),
            #
            RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),

@@ -66,7 +66,7 @@ subroutine te0096(option, nomte)
     character(len=16) :: compor(4), oprupt, phenom
 !
     real(kind=8) :: epsref(6), e(1), mu
-    real(kind=8) :: epsi, rac2, crit(3)
+    real(kind=8) :: epsi, rac2, crit(13)
     real(kind=8) :: dfdi(27), f(3, 3), sr(3, 3), sigl(6), sigin(6), dsigin(6, 3)
     real(kind=8) :: eps(6), epsin(6), depsin(6, 3), epsp(6), depsp(6, 3)
     real(kind=8) :: epsino(36), fno(18)
@@ -485,6 +485,8 @@ subroutine te0096(option, nomte)
             crit(1) = 300
             crit(2) = 0.d0
             crit(3) = 1.d-3
+            crit(9) = 300
+            crit(8) = 1.d-3
             call nmelnl(fami, kp, 1, ibid, '+', ndim,&
                         typmod, matcod, compor, crit, oprupt,&
                         eps, sigl, rbid, dsidep, energi)

@@ -95,7 +95,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     character(len=8) :: nomres(3)
     character(len=8) :: nompar(3), para_type, materi
     character(len=10) :: phenom
-    real(kind=8) :: valpam(3), valpap(3), para_vale, valrm(2)
+    real(kind=8) :: valpam(3), valpap(3), para_vale, valrm(2), signul, prec
     real(kind=8) :: bendom, bendop, kdessm, kdessp, rac2, xm(6), xp(6)
 !-----------------------------------------------------------------------
     integer :: lgpg
@@ -115,6 +115,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     jprolp = 0
     jvalep = 0
     materi = ' '
+    signul = crit(3)
 !
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
@@ -402,11 +403,21 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
             vip(2) = 1.d0
             pm = vim(1)
             if (cplan) then
-                niter=nint(crit(1))
+                prec   = crit(8)
+                niter  = nint(crit(9))
+                if (prec .gt. 0.d0) then
+                    if (sigy .lt. signul) then
+                        precr = prec
+                    else
+                        precr = prec*sigy
+                    endif
+                else
+                    precr = abs(prec)
+                endif
                 jprol2 = jprolp
                 jvale2 = jvalep
                 nbval2 = nbvalp
-                precr = crit(3) * sigy
+
 !
 !             CALCUL DE L'APPROXIMATION : DP SANS CONTRAINTE PLANE
 !
