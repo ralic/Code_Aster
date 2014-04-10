@@ -658,8 +658,6 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
         bb=yyi
         des=aa
         if (dt .eq. 0.d0) then
-            print*, 'DT NULL IN BETON3.FOR!'
-            print*, 'TR DEPS : ',yyf
             aa=0.d0
             bb=yyf
         else
@@ -725,7 +723,6 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
                 ded=(epsf(j)-epsi(j))
             endif
             if (dt .eq. 0.d0) then
-                print*, 'DT NULL IN BETON3D.FOR!'
                 if (j .le. 3) then
                     aa=0.d0
                     bb=2.d0*(epsf(j)-yyf/3.d0)

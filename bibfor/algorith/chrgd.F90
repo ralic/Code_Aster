@@ -123,10 +123,9 @@ end select
         if (iad .gt. 0) then
             select case (rc)
                 case('R')        
-                zr(jcesv-1+iad) = val(permvec_loc(ii))
-                print*, 'permvec_loc(',ii,')=', permvec_loc(ii), val(permvec_loc(ii))
+                    zr(jcesv-1+iad) = val(permvec_loc(ii))
                 case('C')
-                zc(jcesv-1+iad) = cmplx( valr(permvec_loc(ii)), vali(permvec_loc(ii)) )
+                    zc(jcesv-1+iad) = cmplx( valr(permvec_loc(ii)), vali(permvec_loc(ii)))
             end select 
         endif
     end do

@@ -12,7 +12,6 @@ subroutine chcoma(tablez, nomaou)
 #include "asterfort/utmess.h"
     character(len=8) :: nomaou
     character(len=*) :: tablez
-!.======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +106,6 @@ subroutine chcoma(tablez, nomaou)
                 [c16b], noma, k8b, [r8b], 'CDG_Y',&
                 k8b, ibid, yg, c16b, k8b,&
                 iret)
-    print*,'IRET ',iret
     if (iret .ne. 0) then
         call utmess('F', 'MODELISA2_89')
     endif
@@ -177,5 +175,4 @@ subroutine chcoma(tablez, nomaou)
     end do
 !
     call jedema()
-!.============================ FIN DE LA ROUTINE ======================
 end subroutine

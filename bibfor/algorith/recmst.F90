@@ -99,7 +99,6 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
     do 214,i1=1,nnoeex
     i2=zi(ilorms+i1-1)
     if (i2 .eq. 0) then
-        print*,'NOEUD-CMP : ',zk8(ilnoex+i1-1),zk8(ilcpex+i1-1)
         call utmess('F', 'ALGORITH10_33')
     endif
     k24bd1=modsta//'           .TACH'
