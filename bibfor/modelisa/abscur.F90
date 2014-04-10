@@ -20,6 +20,7 @@ subroutine abscur(ma)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/alcart.h"
+#include "asterfort/arcseg34.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/imprsd.h"
@@ -68,8 +69,8 @@ subroutine abscur(ma)
     integer :: mi, n, n1, n2, nunorig
     integer :: nbpoi1, nbma, nbseg, nbno
     integer :: jmesma,jmesno,numa,iexi,nbnoseg
-    real(kind=8) :: s, stot, x1,x2,x3,x4, y1,y2,y3,y4, z1,z2,z3,z4
-    real(kind=8) :: s13, s32, s34, s42
+    real(kind=8) :: s, stot
+    real(kind=8) :: s13, s32, s34, s42, abscurv(4), coor(3,4)
     logical :: dbg=.false.
     integer, pointer :: icoseg(:) => null()
     integer, pointer :: nu2seg(:) => null()
@@ -285,50 +286,38 @@ subroutine abscur(ma)
 !       noeuds 1 et 2 (extremites) :
         icoo1 = 3*(ing-1)
         icoo2 = 3*(ind-1)
-        x1 = zr(jcoor + icoo1)
-        y1 = zr(jcoor + icoo1 + 1)
-        z1 = zr(jcoor + icoo1 + 2)
-        x2 = zr(jcoor + icoo2)
-        y2 = zr(jcoor + icoo2 + 1)
-        z2 = zr(jcoor + icoo2 + 2)
+        coor(:,1)=zr(jcoor+icoo1-1+1:jcoor+icoo1-1+3)
+        coor(:,2)=zr(jcoor+icoo2-1+1:jcoor+icoo2-1+3)
 
 !       noeuds 3 et 4 (si necessaire) :
         if (typm.eq.'SEG3') then
             nbnoseg=3
             icoo3 = 3*(zi(jtmp-1+3)-1)
-            x3 = zr(jcoor + icoo3)
-            y3 = zr(jcoor + icoo3 + 1)
-            z3 = zr(jcoor + icoo3 + 2)
+            coor(:,3)=zr(jcoor+icoo3-1+1:jcoor+icoo3-1+3)
         elseif (typm.eq.'SEG4') then
             nbnoseg=4
-            if (mi.gt.0) then
-                icoo3 = 3*(zi(jtmp-1+3)-1)
-                icoo4 = 3*(zi(jtmp-1+4)-1)
-            else
-                icoo3 = 3*(zi(jtmp-1+4)-1)
-                icoo4 = 3*(zi(jtmp-1+3)-1)
-            endif
-            x3 = zr(jcoor + icoo3)
-            y3 = zr(jcoor + icoo3 + 1)
-            z3 = zr(jcoor + icoo3 + 2)
-            x4 = zr(jcoor + icoo4)
-            y4 = zr(jcoor + icoo4 + 1)
-            z4 = zr(jcoor + icoo4 + 2)
+            icoo3 = 3*(zi(jtmp-1+3)-1)
+            icoo4 = 3*(zi(jtmp-1+4)-1)
+            coor(:,3)=zr(jcoor+icoo3-1+1:jcoor+icoo3-1+3)
+            coor(:,4)=zr(jcoor+icoo4-1+1:jcoor+icoo4-1+3)
         else
             ASSERT(typm.eq.'SEG2')
             nbnoseg=2
         endif
 
+!       -- calcul des abscisses curvilignes :
+        call arcseg34(nbnoseg,coor,abscurv)
+
         if (nbnoseg.eq.2) then
-            s = sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
+            s = abscurv(2)-abscurv(1)
         elseif (nbnoseg.eq.3) then
-            s13 = sqrt((x3-x1)**2+(y3-y1)**2+(z3-z1)**2)
-            s32 = sqrt((x3-x2)**2+(y3-y2)**2+(z3-z2)**2)
+            s13 = abscurv(3)-abscurv(1)
+            s32 = abscurv(2)-abscurv(3)
             s=s13+s32
         elseif (nbnoseg.eq.4) then
-            s13 = sqrt((x3-x1)**2+(y3-y1)**2+(z3-z1)**2)
-            s34 = sqrt((x3-x4)**2+(y3-y4)**2+(z3-z4)**2)
-            s42 = sqrt((x2-x4)**2+(y2-y4)**2+(z2-z4)**2)
+            s13 = abscurv(3)-abscurv(1)
+            s34 = abscurv(4)-abscurv(3)
+            s42 = abscurv(2)-abscurv(4)
             s=s13+s34+s42
         endif
 
@@ -377,8 +366,7 @@ subroutine abscur(ma)
             s=zr(iab2-mi-1)
         endif
         zr(iavalv ) = s
-        call nocart(ma//'.ABSC_CURV', 3, 1, mode='NUM', nma=1,&
-                    limanu=[numa])
+        call nocart(ma//'.ABSC_CURV', 3, 1, mode='NUM', nma=1, limanu=[numa])
 20  end do
 
 

@@ -36,6 +36,19 @@ Erreur utilisateur dans MODI_MAILLAGE / ABSC_CURV :
  de la ligne de segments.
 """),
 
+4 : _(u"""
+Erreur utilisateur dans MODI_MAILLAGE / ABSC_CURV :
+ Un segment du maillage a %(i1)d noeuds.
+ Ces noeuds ne sont pas placés sur un arc de cercle (à 1%% près).
+ Coordonnées des noeuds de l'extrémité 1 du segment : %(r1)f %(r2)f %(r3)f
+ Coordonnées des noeuds de l'extrémité 2 du segment : %(r4)f %(r5)f %(r6)f
+
+Risques et conseils :
+ On ne peut pas utiliser la fonctionnalité ABSC_CURV sur de tels
+ segments.
+  
+"""),
+
 
 
 
