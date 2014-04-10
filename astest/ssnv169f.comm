@@ -180,7 +180,7 @@ RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
                               ),
                      COMPORTEMENT = _F(RELATION = 'KIT_DDI',
                                     RELATION_KIT = ('BETON_UMLV_FP', 'MAZARS'),
-                                    DEFORMATION = 'PETIT',
+                                    DEFORMATION = 'PETIT', ITER_CPLAN_MAXI = 1,
                                     GROUP_MA = 'Q',),
                      INCREMENT = _F(LIST_INST = DEFLIST,
                                     INST_FIN = 5250000.,
@@ -193,6 +193,7 @@ RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
                      CONVERGENCE = _F(
                                  RESI_GLOB_RELA = 1.E-5,
                                  ITER_GLOB_MAXI = 100,
+                                
                                      ),
                          );
 
