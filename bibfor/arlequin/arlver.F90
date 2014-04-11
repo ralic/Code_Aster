@@ -91,6 +91,7 @@ subroutine arlver(modele,lgma  ,nbgma,nomsd,model,cine)
     modte = ' '
 
 ! --- ACCES MODELE
+
     call jeveuo(modele(1:8)//'.MODELE    .LGRF','L',jmail)
     call jeveuo(modele(1:8)//'.MODELE    .REPE','L',jrepe)
     call jelira(modele(1:8)//'.MODELE    .LIEL','NMAXOC',nbligr,k8bid)
@@ -101,11 +102,13 @@ subroutine arlver(modele,lgma  ,nbgma,nomsd,model,cine)
     noma = zk8(jmail)
 
 ! --- ALLOCATION OBJETS TEMPORAIRES
+
     call wkvect('&&'//nompro//'.COMPTEUR','V V I',nbligr,jcompt)
     call wkvect('&&'//nompro//'.TE','V V I',nbligr,jte)
 
 ! --- COMPTER LE NOMBRE DE MAILLES AFFECTEES A CHAQUE TYPE D'ELEMENT
 ! --- DONNER LE NUMERO ABSOLU DU NUMERO D'ELEMENT AFFECTE A CHAQUE TYPE
+
     do igma = 1, nbgma
         call jeexin(jexnom(noma(1:8)//'.GROUPEMA',lgma(igma)),iret)
         if (iret == 0) then
@@ -128,6 +131,7 @@ subroutine arlver(modele,lgma  ,nbgma,nomsd,model,cine)
     end do
 
 ! --- VERIFICATION COHERENCE MODELISATION / CINEMATIQUE
+
     ntot = 0
     do 30 iligr = 1, nbligr
         if (zi(jcompt-1+iligr) /= 0) then
@@ -154,14 +158,17 @@ subroutine arlver(modele,lgma  ,nbgma,nomsd,model,cine)
     30 end do
 
 ! --- AUCUNE MAILLE DU GROUPE N'EST UTILISABLE
+
     if (ntot == 0) then
         ASSERT(.false.)
     endif
 
 ! --- ALLOCATION .GROUPEMA
+
     call wkvect(nomsd//'.GROUPEMA','V V I',ntot,jgroup)
 
 ! --- COPIE DES MAILLES VALIDES
+
     icompt = 0
     do igma = 1, nbgma
         call jeveuo(jexnom(noma//'.GROUPEMA',lgma(igma)),'L',jgma)
@@ -184,9 +191,9 @@ subroutine arlver(modele,lgma  ,nbgma,nomsd,model,cine)
     call tri(zi(jgroup),liste,0,nbgma)
 !
 ! --- MENAGE
+
     call jedetr('&&'//nompro//'.COMPTEUR')
     call jedetr('&&'//nompro//'.TE')
-    call jedetr('&&'//nomsd//'.GROUPEMA')
 
     call jedema()
 

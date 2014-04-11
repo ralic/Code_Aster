@@ -20,7 +20,6 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
 #include "asterc/getfac.h"
-#include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -34,9 +33,7 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/jedema.h"
 
-    character(len=8) :: charge
-    character(len=14) :: numddl
-    character(len=19) :: lisrel
+    integer :: iocc
     character(len=*) :: numdlz, chargz, lisrez
 
 ! ----------------------------------------------------------------------
@@ -60,24 +57,23 @@ implicit none
 ! .CHME.CMULT     : CARTE COEFFICIENTS MULTIPLICATEURS
 
 
+    character(len=8) :: charge
+    character(len=14) :: numddl
+    character(len=19) :: lisrel
     character(len=24) :: typmai
     character(len=10) :: noma,nomb,nom1,nom2
     character(len=8) :: nomo,mail,model(3),cine(3)
     character(len=8) :: k8bid
     integer :: dime,nocc,iop
     integer :: nbtyp
-    integer :: iocc,zocc,ibid,i
+    integer :: zocc,ibid,i
     integer :: jtypm,jlgrf
-    integer :: ifm,niv
     character(len=16) :: motfac,option
 
     data typmai /'&&CAARLE.NOMTM'/
 
 ! ----------------------------------------------------------------------
     call jemarq()
-! --- RECUPERATION DES PARAMETRE D IMPRESSION
-    call infniv(ifm, niv)
-! -------------------------------------------------------
 
     numddl = numdlz
     charge = chargz

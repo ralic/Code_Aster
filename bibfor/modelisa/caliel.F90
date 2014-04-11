@@ -19,6 +19,7 @@ subroutine caliel(fonrez, chargz)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/caarle.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -28,7 +29,6 @@ subroutine caliel(fonrez, chargz)
 #include "asterfort/nueffe.h"
 #include "asterfort/rapo2d.h"
 #include "asterfort/rapo3d.h"
-#include "asterfort/caarle.h"
 #include "asterfort/rapoco.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: chargz, fonrez

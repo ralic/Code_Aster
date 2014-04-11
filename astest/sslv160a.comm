@@ -38,9 +38,9 @@ dt=0.0015;
 Tb_1=Tb-dt;
 Tb_2=Tb+dt;
 
-Mail=LIRE_MAILLAGE(UNITE=20,);
+MAIL=LIRE_MAILLAGE(UNITE=20,);
 
-MODELE=AFFE_MODELE(MAILLAGE=Mail,
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA=('Ref3D'),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),
@@ -48,7 +48,7 @@ MODELE=AFFE_MODELE(MAILLAGE=Mail,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='POU_D_T',),),);
 
-Carel3D=AFFE_CARA_ELEM(MODELE=MODELE,
+CAREL3D=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA=('Poutre','PCol'),
                                  SECTION='CERCLE',
                                  CARA='R',
@@ -70,7 +70,7 @@ MATR1=DEFI_MATERIAU(ELAS=_F(E=2.E11*0.5,
                            NU=0.3,
                            RHO=7800.0*0.5,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=Mail,
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(
                           _F(GROUP_MA=('Pou1','Pou2'),
                              MATER=MATL,),
@@ -90,7 +90,7 @@ ARLE=AFFE_CHAR_MECA(MODELE=MODELE,
                               _F(OPTION='3D_POU_ARLEQUIN',
                                  GROUP_MA_1=('ColHexa',),
                                  GROUP_MA_2=('PCol'),
-                                 CARA_ELEM=Carel3D,
+                                 CARA_ELEM=CAREL3D,
                                  CHAM_MATER=CHMAT,),
                               ),);
 
@@ -108,7 +108,7 @@ Charge=AFFE_CHAR_MECA(MODELE=MODELE,
 
 ASSEMBLAGE(MODELE=MODELE,
            CHAM_MATER=CHMAT,
-           CARA_ELEM=Carel3D,
+           CARA_ELEM=CAREL3D,
            CHARGE=(CondLim,ARLE),
            NUME_DDL=CO('NUMEDDL'),
            MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
@@ -124,7 +124,7 @@ LIST3D=DEFI_LIST_REEL(DEBUT=Ti,
 
 RefM3D=DYNA_LINE_TRAN(MODELE=MODELE,
                       CHAM_MATER=CHMAT,
-                      CARA_ELEM=Carel3D,
+                      CARA_ELEM=CAREL3D,
                       MATR_MASS=MASSE,
                       MATR_RIGI=RIGIDITE,
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',

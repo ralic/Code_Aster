@@ -28,6 +28,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
 #include "asterfort/jelira.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesred.h"
 #include "asterfort/jexatr.h"
@@ -40,7 +41,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/assert.h"
-#include "asterfort/detrsd.h"
+#include "asterfort/jedetr.h"
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
 
@@ -63,7 +64,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
 
     integer ::       nbnomx
     parameter    (nbnomx=27)
-    integer ::       iad,noc
+    integer ::       iad,noc,iop
     character(len=19) ::  ngrm1,ngrm2
     integer ::       jgrp1,jgrp2,nbma1,nbma2
     integer ::       jdime,jcoor,jcumu,jconx
@@ -71,7 +72,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
     integer ::       nummc1,nummc2
     integer ::       ncmpi,ncmpf,ncmpr,ncmpc
     integer ::       ima,icmp
-    integer ::       jtypmm,jtypm,iret
+    integer ::       jtypmm,jtypm,jtyp,iret
     character(len=8) ::   nomfam,elref1,elref2
     character(len=19) ::  ctfami,ctinfo
     character(len=19) ::  ctref1,ctcoo1
@@ -81,10 +82,9 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
     character(len=6) ::  nompro
     parameter   (nompro='ARLCHI')
 
-    character(len=8) ::  vfami,vinfo(26),ntmc1,ntmc2,materi,mater
+    character(len=8) ::  vfami,vinfo(26),ntmc1,ntmc2,materi,mater,carael
     character(len=8) ::  vref1,vcoo1(3*nbnomx),vref2,vcoo2(3*nbnomx),kbid,k8b
-    character(len=8) ::  carael
-    character(len=16) :: nocmp(15),nomcmp(3),nomte
+    character(len=16) :: nocmp(15),nomcmp(3),nomte,option
     integer ::      jfamv,jfamd,jfaml,jinfv,jinfd,jinfl
     integer ::      jref1v,jref1d,jref1l,jcoo1v,jcoo1d,jcoo1l
     integer ::      jref2v,jref2d,jref2l,jcoo2v,jcoo2d,jcoo2l
@@ -113,8 +113,8 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
 
 ! --- LECTURE DONNEES GROUPE DE MAILLES
 
-    ngrm1 = nom1(1:10)//'.GROUPEMA       '
-    ngrm2 = nom2(1:10)//'.GROUPEMA       '
+    ngrm1 = nom1(1:10)//'.GROUPEMA'
+    ngrm2 = nom2(1:10)//'.GROUPEMA'
     call jeveuo(ngrm1(1:19),'L',jgrp1)
     call jeveuo(ngrm2(1:19),'L',jgrp2)
     call jelira(ngrm1,'LONMAX',nbma1,kbid)
@@ -128,57 +128,60 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
     ctcoo1 = chames(4)
     ctref2 = chames(5)
     ctcoo2 = chames(6)
-    motfac='LIAISON_ELEM'
-    call getvid(motfac,'CHAM_MATER',iocc=iocc,scal=materi,nbret=noc)
-    call getvid(motfac,'CARA_ELEM',iocc=iocc,scal=carael,nbret=noc)
-    cesmat = '&&'//nompro//'.CESMAT'
-    carte1 = materi//'.CHAMP_MAT '
-    call carces(carte1,'ELEM',' ','V',cesmat,'A',iret)
-    call cesred(cesmat,nbma2,zi(jtabco+nbma1),0,kbid,'V',cesmat)
-    call jeveuo(cesmat//'.CESD', 'L', jcesd1)
-    call jeveuo(cesmat//'.CESV', 'L', jcesv1)
-    call jeveuo(cesmat//'.CESL', 'L', jcesl1)
-    ncmpi = 15
-    carsd = '&&'//nompro//'.CARGENPO'
-    carte = carael//'.CARGENPO  '
-    nocmp(1)  = 'A1      '
-    nocmp(2)  = 'IY1     '
-    nocmp(3)  = 'IZ1     '
-    nocmp(4)  = 'AY1     '
-    nocmp(5)  = 'AZ1     '
-    nocmp(6)  = 'EY1     '
-    nocmp(7)  = 'EZ1     '
-    nocmp(8)  = 'A2      '
-    nocmp(9)  = 'IY2     '
-    nocmp(10) = 'IZ2     '
-    nocmp(11) = 'AY2     '
-    nocmp(12) = 'AZ2     '
-    nocmp(13) = 'EY2     '
-    nocmp(14) = 'EZ2     '
-    nocmp(15) = 'JX1     '
-    call carces(carte ,'ELEM',' ','V',carsd ,'A',iret)
-    call cesred(carsd,nbma2,zi(jtabco+nbma1),ncmpi,nocmp,'V',carsd)
-    call jeveuo(carsd//'.CESD', 'L', jcesd2)
-    call jeveuo(carsd//'.CESV', 'L', jcesv2)
-    call jeveuo(carsd//'.CESL', 'L', jcesl2)
-    carsd1 = '&&'//nompro//'.CARORIEN'
-    call exisd('CARTE', carael//'.CARORIEN', iret)
-    if (iret .ne. 0) then
-        call carces(carael//'.CARORIEN' ,'ELEM',' ','V',carsd1 ,'A',iret)
-        nomcmp(1)  = 'ALPHA   '
-        nomcmp(2)  = 'BETA    '
-        nomcmp(3)  = 'GAMMA   '
-        call cesred(carsd1,nbma2,zi(jtabco+nbma1),3,nomcmp,'V',carsd1)
-        call jeveuo(carsd1//'.CESD', 'L', jcesd3)
-        call jeveuo(carsd1//'.CESV', 'L', jcesv3)
-        call jeveuo(carsd1//'.CESL', 'L', jcesl3)
-    endif
-    
+    motfac = 'LIAISON_ELEM'
+    call getvtx(motfac,'OPTION', iocc=iocc, scal=option, nbret=iop)
+    if (option .eq. '3D_POU_ARLEQUIN') then
+       call getvid(motfac,'CHAM_MATER',iocc=iocc,scal=materi,nbret=noc)
+       cesmat = '&&'//nompro//'.CESMAT'
+       carte1 = materi//'.CHAMP_MAT '
+       call carces(carte1,'ELEM',' ','V',cesmat,'A',iret)
+       call cesred(cesmat,nbma2,zi(jtabco+nbma1),0,kbid,'V',cesmat)
+       call jeveuo(cesmat//'.CESD', 'L', jcesd1)
+       call jeveuo(cesmat//'.CESV', 'L', jcesv1)
+       call jeveuo(cesmat//'.CESL', 'L', jcesl1)
+       call getvid(motfac,'CARA_ELEM',iocc=iocc,scal=carael,nbret=noc)
+       ncmpi = 15
+       carsd = '&&'//nompro//'.CARGENPO'
+       carte = carael//'.CARGENPO  '
+       nocmp(1)  = 'A1      '
+       nocmp(2)  = 'IY1     '
+       nocmp(3)  = 'IZ1     '
+       nocmp(4)  = 'AY1     '
+       nocmp(5)  = 'AZ1     '
+       nocmp(6)  = 'EY1     '
+       nocmp(7)  = 'EZ1     '
+       nocmp(8)  = 'A2      '
+       nocmp(9)  = 'IY2     '
+       nocmp(10) = 'IZ2     '
+       nocmp(11) = 'AY2     '
+       nocmp(12) = 'AZ2     '
+       nocmp(13) = 'EY2     '
+       nocmp(14) = 'EZ2     '
+       nocmp(15) = 'JX1     '
+       call carces(carte ,'ELEM',' ','V',carsd ,'A',iret)
+       call cesred(carsd,nbma2,zi(jtabco+nbma1),ncmpi,nocmp,'V',carsd)
+       call jeveuo(carsd//'.CESD', 'L', jcesd2)
+       call jeveuo(carsd//'.CESV', 'L', jcesv2)
+       call jeveuo(carsd//'.CESL', 'L', jcesl2)
+       carsd1 = '&&'//nompro//'.CARORIEN'
+       call exisd('CARTE', carael//'.CARORIEN', iret)
+       if (iret .ne. 0) then
+           call carces(carael//'.CARORIEN  ' ,'ELEM',' ','V',carsd1 ,'A',iret)
+           nomcmp(1)  = 'ALPHA   '
+           nomcmp(2)  = 'BETA    '
+           nomcmp(3)  = 'GAMMA   '
+           call cesred(carsd1,nbma2,zi(jtabco+nbma1),3,nomcmp,'V',carsd1)
+           call jeveuo(carsd1//'.CESD', 'L', jcesd3)
+           call jeveuo(carsd1//'.CESV', 'L', jcesv3)
+           call jeveuo(carsd1//'.CESL', 'L', jcesl3)
+       endif
+    endif    
 
 ! --- LECTURE SD CONTENANT NOM DES TYPES ELEMENTS (&&CATA.NOMTM)
 
     call jeveuo(typmai,'L',jtypmm)
     call jeveuo(mailar(1:8)//'.TYPMAIL        ','L',jtypm)
+    call jeveuo(mail(1:8)//'.TYPMAIL        ','L',jtyp)
 
 ! --- LECTURE DONNEES MAILLAGE
 
@@ -257,9 +260,9 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
 ! --- NUMERO DES MAILLES CONCERNEES
 
         nummc1 = zi(jtabco+jma1-1)
-        ntmc1 = zk8(jtypmm+zi(jtypm+nummc1-1)-1)
+        ntmc1 = zk8(jtypmm+zi(jtypm+jma1-1)-1)
         nummc2 = zi(jtabco+nbma1+jma2-1)
-        ntmc2 = zk8(jtypmm+zi(jtypm+nummc2-1)-1)
+        ntmc2 = zk8(jtypmm+zi(jtypm+nbma1+jma2-1)-1)
 
 ! --- REMPLISSAGE CTFAMI
 
@@ -476,11 +479,10 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
     90 end do
 
 ! --- MENAGE
-    call detrsd('CARTE', '&&'//nompro//'.CESMAT')
-    call detrsd('CARTE', '&&'//nompro//'.CARGENPO')
-    call detrsd('CHAM_ELEM_S', cesmat)
-    call detrsd('CHAM_ELEM_S', carsd)
-    call detrsd('CHAM_ELEM_S', carsd1)
+
+    call jedetr('&&'//nompro//'.CESMAT')
+    call jedetr('&&'//nompro//'.CARGENPO')
+    call jedetr('&&'//nompro//'.CARORIEN')
 
     call jedema()
 end subroutine

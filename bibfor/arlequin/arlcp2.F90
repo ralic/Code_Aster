@@ -56,7 +56,7 @@ subroutine arlcp2(iocc,mail,nomo,typmai, &
     integer ::       nbchel
     parameter    (nbchel = 6)
     character(len=19) ::  chames(nbchel),chamel(nbchel)
-    character(len=19) ::  ligrmo
+    character(len=19) ::  ligarl
     integer ::       nncp,iret,jma1,jma2
 
     character(len=6) ::  nompro
@@ -66,7 +66,7 @@ subroutine arlcp2(iocc,mail,nomo,typmai, &
 
     call jemarq()
 
-    ligrmo = modarl(1:8)//'.MODELE'
+    ligarl = modarl(1:8)//'.MODELE'
 
     chames(1) = '&&'//nompro//'.ESFAMI'
     chames(2) = '&&'//nompro//'.ESINFO'
@@ -92,27 +92,27 @@ subroutine arlcp2(iocc,mail,nomo,typmai, &
 ! --- DESTRUCTION DES CHAM_ELEM_S CORRESPONDANT DES QU'ILS NE SONT PLUS
 ! --- UTILES
 
-    call cescel(chames(1),ligrmo,'ARLQ_MATR','PFAMILK','NON', &
+    call cescel(chames(1),ligarl,'ARLQ_MATR','PFAMILK','OUI', &
                 nncp,'V',chamel(1),'F',iret)
     call detrsd('CHAM_ELEM_S',chames(1))
 
-    call cescel(chames(2),ligrmo,'ARLQ_MATR','PINFORR','NON', &
+    call cescel(chames(2),ligarl,'ARLQ_MATR','PINFORR','OUI', &
                 nncp,'V',chamel(2),'F',iret)
     call detrsd('CHAM_ELEM_S',chames(2))
 
-    call cescel(chames(3),ligrmo,'ARLQ_MATR','PREFE1K','NON', &
+    call cescel(chames(3),ligarl,'ARLQ_MATR','PREFE1K','OUI', &
                 nncp,'V',chamel(3),'F',iret)
     call detrsd('CHAM_ELEM_S',chames(3))
 
-    call cescel(chames(4),ligrmo,'ARLQ_MATR','PCOOR1R','NON', &
+    call cescel(chames(4),ligarl,'ARLQ_MATR','PCOOR1R','OUI', &
                 nncp,'V',chamel(4),'F',iret)
     call detrsd('CHAM_ELEM_S',chames(4))
 
-    call cescel(chames(5),ligrmo,'ARLQ_MATR','PREFE2K','NON', &
+    call cescel(chames(5),ligarl,'ARLQ_MATR','PREFE2K','OUI', &
                 nncp,'V',chamel(5),'F',iret)
     call detrsd('CHAM_ELEM_S',chames(5))
 
-    call cescel(chames(6),ligrmo,'ARLQ_MATR','PCOOR2R','NON', &
+    call cescel(chames(6),ligarl,'ARLQ_MATR','PCOOR2R','OUI', &
                 nncp,'V',chamel(6),'F',iret)
     call detrsd('CHAM_ELEM_S',chames(6))
 

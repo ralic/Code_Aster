@@ -71,7 +71,7 @@ subroutine arlcpl(zocc ,nbma1 ,nbma2 , &
     integer          ::  jma1,jma2
     integer          ::  nbnoc1,nbnoc2
     integer          ::  chtest,i,j,jj,k
-    character(len=19)::  ligrmo,arlmt1,arlmt2
+    character(len=19)::  ligarl,arlmt1,arlmt2
     real(kind=8)     ::  m1de(nliai,nliai)
     real(kind=8)     ::  m3de(nliai,3*nbnomx)
     character(len=5) ::  ch1,ch2
@@ -119,7 +119,7 @@ subroutine arlcpl(zocc ,nbma1 ,nbma2 , &
                         jma1,jma2,tabcor,mailar,proj)
             if (proj) then
                 iproj = iproj + 1
-                ligrmo = modarl(1:8)//'.MODELE'
+                ligarl = modarl(1:8)//'.MODELE'
                 arlmt2 = marlel(1:8)//'.ARLMT2'
                 call jeexin(jexnum(arlmt2(1:19)//'.RESL',2),iexi)
                 if (iexi == 0) goto 210

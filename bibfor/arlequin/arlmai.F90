@@ -42,6 +42,7 @@ subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
 
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/exisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -84,7 +85,6 @@ subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
     integer :: jdime ,jcoor
     integer :: jcooro,jconxo,jcumuo
     character(len=19) :: ngrm1,ngrm2
-    integer :: jgrp1 ,jgrp2
     integer :: jtabco
 
 ! ----------------------------------------------------------------------
@@ -98,7 +98,10 @@ subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
 
 ! --- DESTRUCTION DU PSEUDO-MAILLAGE S'IL EXISTE
 
-    call detrsd('MAILLAGE',mailar)
+    call exisd('MAILLAGE', mailar, iret)
+    if (iret .ne. 0) then
+       call detrsd('MAILLAGE',mailar)
+    endif
 
 ! --- INITIALISATIONS
 
@@ -106,8 +109,6 @@ subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
     ngrm2 = nom2(1:10)//'.GROUPEMA'
     call jelira(ngrm1,'LONMAX',nbma1,k8bid)
     call jelira(ngrm2,'LONMAX',nbma2,k8bid)
-    call jeveuo(ngrm1(1:19),'L',jgrp1)
-    call jeveuo(ngrm2(1:19),'L',jgrp2)
 
 ! --- MAILLAGE INITIAL
 
@@ -161,7 +162,6 @@ subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
 
 ! --- TABLEAU DE CORRESPONDANCE NOUV. MAILLES -> ANCIENNES MAILLES
 
-    call jedetr(tabcor)
     call wkvect(tabcor,'V V I',nbmat,jtabco)
 
 ! --- INDICES POUR REMPLIR LES TABLEAUX

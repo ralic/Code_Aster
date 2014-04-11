@@ -21,6 +21,7 @@ subroutine arlmod(nomo,mailar,modarl,tabcor)
 
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/exisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/arlmol.h"
 #include "asterfort/arlmom.h"
@@ -30,6 +31,7 @@ subroutine arlmod(nomo,mailar,modarl,tabcor)
 !     ----------
     character(len=8) :: mailar,modarl,nomo
     character(len=24) :: tabcor
+    integer :: iret
 
 ! ----------------------------------------------------------------------
 
@@ -46,22 +48,22 @@ subroutine arlmod(nomo,mailar,modarl,tabcor)
 ! IN  TABCOR : TABLEAU DE CORRESPONDANCE
 !            POUR CHAQUE NOUVEAU NUMERO ABSOLU DANS MAILAR
 !             -> ANCIEN NUMERO ABSOLU DANS MAIL
-!             -> SI NEGATIF, LA NOUVELLE MAILLE EST ISSUE D'UNE
-!                DECOUPE DE LA MAILLE DE NUMERO ABSOLU ABS(NUM) DANS
-!                MAIL
-! IN  MODARL : NOM DU PSEUDO-MODELE
+! OUT MODARL : NOM DU PSEUDO-MODELE
 
 ! ----------------------------------------------------------------------
 
     call jemarq()
 
-! --- DESTRUCTION DU PSEUDO-MODELE S'IL EXISTE
-
-    call detrsd('MODELE',modarl)
-
 ! --- NOM SD TEMPORAIRE
 
     modarl = '&&ARL.MO'
+
+! --- DESTRUCTION DU PSEUDO-MODELE S'IL EXISTE
+
+    call exisd('MODELE', modarl, iret)
+    if (iret .ne. 0) then
+       call detrsd('MODELE',modarl)
+    endif
 
 ! --- CREATION DU LIGREL DU PSEUDO-MODELE
 

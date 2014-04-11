@@ -60,7 +60,7 @@ subroutine arlclc(modarl,nbchel,chamel,marlel)
     character(len=8) ::  lpaout(nbout),lpain(nbin)
     character(len=19) :: lchout(nbout),lchin(nbin)
 
-    character(len=19) :: ligrmo
+    character(len=19) :: ligarl
     character(len=16) :: option
     character(len=19) :: ctfami,ctinfo,ctref1,ctcoo1,ctref2,ctcoo2,chgeom
     integer ::      jarlm1, jarlm2
@@ -71,7 +71,7 @@ subroutine arlclc(modarl,nbchel,chamel,marlel)
 
 ! --- INITIALISATIONS
 
-    ligrmo = modarl(1:8)//'.MODELE'
+    ligarl = modarl(1:8)//'.MODELE'
 
     ctfami = chamel(1)
     ctinfo = chamel(2)
@@ -123,7 +123,7 @@ subroutine arlclc(modarl,nbchel,chamel,marlel)
 
 ! --- APPEL A CALCUL
 
-    call calcul('S',option,ligrmo,nbin  ,lchin ,lpain, &
+    call calcul('S',option,ligarl,nbin  ,lchin ,lpain, &
                 nbout ,lchout,lpaout,'V','OUI')
 
     call jedema()

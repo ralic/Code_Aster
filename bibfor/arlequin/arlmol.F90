@@ -21,6 +21,7 @@ subroutine arlmol(nomo,mailar,modarl,tabcor)
 
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/exisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
@@ -46,8 +47,8 @@ subroutine arlmol(nomo,mailar,modarl,tabcor)
     integer ::      ima,nbma,ibid
     integer ::      jnbno,jad,jlgrf,jdime,jtyel,jtabco
     character(len=8) ::  k8bid
-    character(len=19) :: ligrmo
-    integer ::      numori,ityel
+    character(len=19) :: ligarl
+    integer ::      numori,ityel,iret
 
 ! ----------------------------------------------------------------------
 
@@ -74,11 +75,14 @@ subroutine arlmol(nomo,mailar,modarl,tabcor)
 
 ! --- DESTRUCTION DU LIGREL S'IL EXISTE
 
-    call detrsd('LIGREL',ligrmo)
+    call exisd('LIGREL', ligarl, iret)
+    if (iret .ne. 0) then
+       call detrsd('LIGREL',ligarl)
+    endif
 
 ! --- INITIALISATIONS
 
-    ligrmo = modarl(1:8)//'.MODELE'
+    ligarl = modarl(1:8)//'.MODELE'
 
 ! --- INFORMATIONS SUR LE MODELE ORIGINAL
 
@@ -95,24 +99,24 @@ subroutine arlmol(nomo,mailar,modarl,tabcor)
 
 ! --- CREATION DE .NOMA + ATTRIBUT DOCU
 
-    call wkvect(ligrmo//'.LGRF','V V K8',1,jlgrf)
+    call wkvect(ligarl//'.LGRF','V V K8',1,jlgrf)
     zk8(jlgrf-1+1) = mailar
-    call jeecra(ligrmo//'.LGRF','DOCU',ibid,'MECA')
+    call jeecra(ligarl//'.LGRF','DOCU',ibid,'MECA')
 
 ! --- CREATION DE L'OBJET .LIEL: ON LE CREE AU MAX. AUTANT DE LIEL
 ! --- QUE DE MAILLES
 
-    call jecrec(ligrmo//'.LIEL','V V I','NU','CONTIG','VARIABLE', &
+    call jecrec(ligarl//'.LIEL','V V I','NU','CONTIG','VARIABLE', &
                 nbma)
-    call jeecra(ligrmo//'.LIEL','LONT',2*nbma,k8bid)
+    call jeecra(ligarl//'.LIEL','LONT',2*nbma,k8bid)
 
     do 90 ima = 1,nbma
     
     ! --- CREATION OBJET DE LA COLLECTION
     
-        call jecroc(jexnum(ligrmo//'.LIEL',ima))
-        call jeecra(jexnum(ligrmo//'.LIEL',ima),'LONMAX',2,k8bid)
-        call jeveuo(jexnum(ligrmo//'.LIEL',ima),'E',jad)
+        call jecroc(jexnum(ligarl//'.LIEL',ima))
+        call jeecra(jexnum(ligarl//'.LIEL',ima),'LONMAX',2,k8bid)
+        call jeveuo(jexnum(ligarl//'.LIEL',ima),'E',jad)
     
     ! --- NUMERO DANS LE MAILLAGE ORIGINAL
     
@@ -137,20 +141,20 @@ subroutine arlmol(nomo,mailar,modarl,tabcor)
 
 ! --- PAS DE NOEUDS TARDIFS
 
-    call wkvect(ligrmo//'.NBNO','V V I',1,jnbno)
+    call wkvect(ligarl//'.NBNO','V V I',1,jnbno)
     zi(jnbno-1+1) = 0
 
 ! --- ADAPTATION DE .LIEL
 
-    call adalig(ligrmo)
+    call adalig(ligarl)
 
 ! --- CREATION DE L'OBJET .REPE
 
-    Call cormgi('V',ligrmo)
+    Call cormgi('V',ligarl)
 
 ! --- INITIALISATION DU LIGREL (OBJETS PRNM/PRNS)
 
-    call initel(ligrmo)
+    call initel(ligarl)
 
     call jedema()
 

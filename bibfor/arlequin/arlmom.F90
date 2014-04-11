@@ -51,7 +51,7 @@ subroutine arlmom(mailar,modarl)
     integer :: jmoma
     integer :: jdime
     integer :: nbma
-    character(len=19) :: ligrmo
+    character(len=19) :: ligarl
     integer :: igrel,iel,ima,nute,nbelgr
     integer :: ialiel,illiel,iaux1
 
@@ -71,15 +71,15 @@ subroutine arlmom(mailar,modarl)
 
 ! --- ACCES AU LIGREL
 
-    ligrmo = modarl(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LIEL','L',ialiel)
-    call jeveuo(jexatr(ligrmo//'.LIEL','LONCUM'),'L',illiel)
+    ligarl = modarl(1:8)//'.MODELE'
+    call jeveuo(ligarl//'.LIEL','L',ialiel)
+    call jeveuo(jexatr(ligarl//'.LIEL','LONCUM'),'L',illiel)
 
 ! --- REMPLISSAGE DE LA SD MODELE//'.MAILLE'
 
-    do 10 igrel = 1,nbgrel(ligrmo)
-        nute   = typele(ligrmo,igrel)
-        nbelgr = nbelem(ligrmo,igrel)
+    do 10 igrel = 1,nbgrel(ligarl)
+        nute   = typele(ligarl,igrel)
+        nbelgr = nbelem(ligarl,igrel)
         iaux1  = ialiel-1+zi(illiel-1+igrel)-1
         do 20 iel = 1,nbelgr
             ima    =  zi(iaux1+iel)

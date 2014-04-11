@@ -94,7 +94,8 @@ subroutine arlmaf(mail  ,mailar,dime  ,ngrma  ,ima   , &
 ! --- RECOPIE DU TYPE
 
     call jeveuo(mtypm,'E',jtypm)
-    zi(jtypm+nummai-1)  = itypma
+    call jelira(mtypm,'LONMAX',cxmax,k8bid)
+    zi(jtypm+imail-1)  = itypma
 
 ! --- CREATION DU NOM DE LA MAILLE
 
