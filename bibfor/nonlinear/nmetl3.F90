@@ -149,7 +149,12 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
                             iret)
                 if (iret .ne. 0) compom = ' '
             endif
-            call vrcomp(compom, compor, nomcha, ligrmo, iret)
+            if (compom.eq.' ') then
+                call vrcomp(compor, nomcha, ligrmo, iret)
+            else
+                call vrcomp(compor, nomcha, ligrmo, iret,&
+                            compor_prev = compom)
+            endif
             if (iret.eq.1) then
                 call utmess('F', 'MECANONLINE5_2')
             endif

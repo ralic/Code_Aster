@@ -135,54 +135,26 @@ Erreur lors de la vérification de la cohérence entre les champs de variables i
 Le maillage sur lequel s'appuie le modèle et le maillage du champ des variables internes ne sont pas les mêmes.
 """),
 
-25 : _(u"""
-Possible erreur lors de la vérification de la cohérence entre les champs de variables internes.
-  Pour l'élément porté par la maille %(k1)s, un des champs de variables internes a été calculé avec
-  la relation de comportement %(k2)s, mais le comportement choisi pour l'autre champ de variables internes est différent (%(k3)s).
-
-Risques & conseils :
-  Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
-"""),
-
-26 : _(u"""
-Possible erreur lors de la vérification de la cohérence entre les champs de variables internes..
-  Pour l'élément porté par la maille %(k1)s, un des champs de variables internes n'a pas le même nombre de
-  variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour l'autre champ de variables internes (%(i2)d).
-
-  Il y a donc un changement de comportement pour la maille %(k1)s
-
-  Un changement de comportement lors d'un transitoire est a priori "douteux".
-  Il semble que vous soyez dans l'un des cas tolérés par le code :
-    / comportement "-" élastique
-    / comportement "+" élastique
-
-  Sur cet élément, les variables internes "-" sont mises à zéro.
-
-Risques & conseils :
-  Ce changement de comportement est-il volontaire ou s'agit-il d'une faute de frappe ?
-"""),
-
 27: _(u"""
 Erreur lors de la vérification de la cohérence entre les champs de variables internes.
- Pour l'élément porté par la maille %(k1)s, un des champs de variables internes a %(i1)d sous-points
-  mais l'autre champ de variables internes en a %(i2)d.
+
+On a affiché ci-dessus la liste des mailles pour lesquelles le nombre de sous-points est différent.
 """),
 
 28 : _(u"""
 Erreur lors de la vérification de la cohérence entre les champs de variables internes.
- Pour l'élément porté par la maille %(k1)s, un des champs de variables internes n'a pas de variables internes.
+
+On a affiché ci-dessus la liste des mailles pour lesquelles il n'y a pas de comportement affecté.
 """),
 
 29 : _(u"""
 Erreur lors de la vérification de la cohérence entre les champs de variables internes.
-  Pour l'élément porté par la maille %(k1)s, un des champs de variables internes n'a pas le même nombre de
-  variables internes (%(i1)d) que le nombre attendu par le comportement choisi pour l'autre champ de variables internes (%(i2)d).
 
-  Il y a donc un changement de comportement pour la maille %(k1)s
-  Le code n'accepte de changement de comportement que dans quelques cas très particuliers :
+On a affiché ci-dessus la liste des mailles pour lesquelles le nombre de variables internes est différent.
+
+Le code n'accepte de changement de comportement que dans quelques cas très particuliers :
     - LEMAITRE <-> VMIS_ISOT_XXXX
     - ELAS     <-> XXXX
-  Il ne semble pas que vous soyez dans ce cas de figure. L'exécution est arrêtée.
 
 Risques & conseils :
   Vérifiez le comportement affecté sur cette maille.
@@ -190,7 +162,16 @@ Risques & conseils :
 
 30 : _(u"""
 Erreur lors de la vérification de la cohérence entre les champs de variables internes.
- Pour l'élément porté par la maille %(k3)s, les comportements %(k1)s et %(k2)s sont incompatibles.
+
+On a affiché ci-dessus la liste des mailles pour lesquelles les comportements sont incompatibles.
+
+Le code n'accepte de changement de comportement que dans quelques cas très particuliers :
+    - LEMAITRE <-> VMIS_ISOT_XXXX
+    - ELAS     <-> XXXX
+
+Risques & conseils :
+  Vérifiez le comportement affecté sur cette maille.
+
 """),
 
 31: _(u"""
@@ -312,6 +293,15 @@ Erreur lors de la vérification de la cohérence entre les champs de variables i
   CALC_ESSAI_GEOMECA : Erreur dans la saisie du mot clef simple <TABLE_REF> pour la table <%(k1)s>.
   Les colonnes ABSCISSE et ORDONNEE d'une TABLE_REF doivent avoir même cardinal et contenir des réels.
 """),
+
+50 : _(u"""Maille: %(k1)-8s - Pas de points d'intégration"""),
+
+51 : _(u"""Maille: %(k1)-8s - Comportement précédent: %(k2)-16s - Comportement courant: %(k3)-16s"""),
+
+52 : _(u"""Maille: %(k1)-8s - Nombre de sous-points précédent: %(i1)d - Nombre de sous-points courant: %(i2)d"""),
+
+53 : _(u"""Maille: %(k1)-8s - Nombre de variables internes précédent: %(i1)d - Nombre de variables internes courant: %(i2)d"""),
+
 
 70: _(u"""
 #---------------------------------------------------------------------------------------------------------------------------

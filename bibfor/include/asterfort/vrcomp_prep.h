@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, &
-                      compor_prev, type_stop)
-        character(len=*), intent(in) :: compor_curr
+    subroutine vrcomp_prep(vari, vari_r,&
+                           compor_curr, compor_curr_r,&
+                           compor_prev, compor_prev_r)
         character(len=*), intent(in) :: vari
-        character(len=*), intent(in) :: ligrel_currz
-        integer, intent(out) :: iret
-        character(len=*), optional, intent(in) :: compor_prev
-        character(len=1), optional, intent(in) :: type_stop
-    end subroutine vrcomp
+        character(len=19), intent(out) :: vari_r
+        character(len=*), intent(in)  :: compor_curr
+        character(len=19), intent(out) :: compor_curr_r
+        character(len=*), intent(in)  :: compor_prev
+        character(len=19), intent(out) :: compor_prev_r
+    end subroutine vrcomp_prep
 end interface

@@ -21,7 +21,6 @@ cata_msg = {
 
 1 : _(u"""
   Lors de la construction ou de la lecture d'un résultat non-linéaire, le champ des variables internes lu ou créé n'est pas cohérent avec le comportement donné par le mot-clef COMPORTEMENT.  
-  A cause des erreurs précédentes, le code s'arrête.  
 """),
 
 

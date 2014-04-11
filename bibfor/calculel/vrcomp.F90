@@ -1,5 +1,21 @@
-subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
-                  type_stop)
+subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, &
+                  compor_prev, type_stop)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jedema.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vrcom2.h"
+#include "asterfort/vrcomp_chck_cmp.h"
+#include "asterfort/vrcomp_chck_rela.h"
+#include "asterfort/vrcomp_prep.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,32 +32,31 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/carces.h"
-#include "asterfort/celces.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/cesred.h"
-#include "asterfort/cestas.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vrcom2.h"
+! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=*), intent(in) :: compop
-    character(len=*), intent(in) :: varmoi
-    character(len=*), intent(in) :: compom
-    character(len=*), intent(in) :: ligrep
-    character(len=1), optional, intent(in) :: type_stop
+    character(len=*), intent(in) :: compor_curr
+    character(len=*), intent(in) :: vari
+    character(len=*), intent(in) :: ligrel_currz
     integer, intent(out) :: iret
+    character(len=*), optional, intent(in) :: compor_prev
+    character(len=1), optional, intent(in) :: type_stop
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Check compatibility of comportments
+!
+! Is internal variable field is correct with comportment definition ?
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  vari          : internal variable field
+! In  compor_curr   : current comportment
+! In  ligrel_curr   : current LIGREL
+! In  compor_prev   : previous comportment
+!
+! --------------------------------------------------------------------------------------------------
+!
+
 ! ------------------------------------------------------------------
 ! BUT: VERIFIER LA COHERENCE DU CHAMP DE VARIABLES INTERNES "-" AVEC
 !      LE COMPORTEMENT CHOISI.
@@ -85,320 +100,156 @@ subroutine vrcomp(compom, compop, varmoi, ligrep, iret, &
 !
 !-----------------------------------------------------------------------
 !
-    character(len=24) :: valk(3)
+!   character(len=24) :: valk(3)
 !     ------------------------------------------------------------------
-    integer :: jdceld,  jdcell
-    integer :: jce2d,  jce2l, jce2k
-    integer :: iad1, iad2, nbma, nbspp, nbspm, ncmpp, ncmpm
-    integer :: ima, kma
-    integer :: iadp, jcoppl, jcoppd,   ip
-    integer :: iadm, jcopml, jcopmd,   im
-    integer :: vali(5), tounul, k, nbpgm, n1
-    character(len=8) :: noma, nomail, nomma2, nomma1
-    character(len=16) :: relcop, relcom
-    character(len=19) :: dcel, ces2, copm, copp, coto, lig19p, lig19m
-    character(len=48) :: comp1, comp2
-    character(len=1) :: stop_erre
-    logical :: modif, exip, exim
-    integer, pointer :: repm(:) => null()
-    integer, pointer :: repp(:) => null()
-    real(kind=8), pointer :: ce2v(:) => null()
-    character(len=16), pointer :: copmv(:) => null()
-    character(len=16), pointer :: coppv(:) => null()
-    integer, pointer :: dcelv(:) => null()
-    character(len=8), pointer :: copmk(:) => null()
-    character(len=8), pointer :: coppk(:) => null()
+!    integer :: jdceld,  jdcell
+!    integer :: jce2d,  jce2l, jce2k
+!    integer :: iad1, iad2, nbma, nbspp, nbspm, ncmpp, ncmpm
+!    integer :: ima, kma
+!    integer :: iadp, jcoppl, jcoppd,   ip
+!    integer :: iadm, jcopml, jcopmd,   im
+!    integer :: vali(5), tounul, k, nbpgm, n1
+!    character(len=8) :: noma, nomail
+!    character(len=16) :: relcop, relcom
+! !   , lig19p, lig19m
+!    character(len=19) :: compor_prev_r, compor_curr_r
+!    character(len=48) :: comp1, comp2
+!    
+!    logical :: modif, exip, exim
+!    integer, pointer :: repm(:) => null()
+!    integer, pointer :: repp(:) => null()
+!    real(kind=8), pointer :: ce2v(:) => null()
+!    character(len=16), pointer :: copmv(:) => null()
+!    character(len=16), pointer :: coppv(:) => null()
+!    integer, pointer :: dcelv(:) => null()
+!    character(len=8), pointer :: copmk(:) => null()
+!    character(len=8), pointer :: coppk(:) => null()
+!   
+    logical :: l_modif_vari
+    character(len=1) :: stop_erre 
+    character(len=19) :: vari_r
+    character(len=19) :: compor_curr_r
+    character(len=19) :: compor_prev_r
+    character(len=8)  :: mesh_1, mesh_2
+    character(len=48) :: comp_comb_1
+    character(len=48) :: comp_comb_2
+    logical :: no_same_pg, no_same_spg
+    logical :: no_same_rela, no_same_cmp
+    character(len=19) :: ligrel_curr, ligrel_prev
+    character(len=19) :: dcel
+    integer :: jdceld
     character(len=8), pointer :: dcelk(:) => null()
-!     ------------------------------------------------------------------
+    character(len=8) :: mesh
+    integer :: nb_elem
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
 !     -- MODIF : .TRUE. => IL FAUT MODIFIER VARMOI CAR CERTAINES
 !        MAILLES ONT DISPARU OU SONT NOUVELLES OU ONT CHANGE DE
 !        COMPORTEMENT
-    modif=.false.
+    l_modif_vari = .false.
+    no_same_cmp  = .false.
+    no_same_spg  = .false.
+    no_same_pg   = .false.
+    no_same_rela = .false.
+!
+! - Error management
+!
+    iret = 0
     if (present(type_stop)) then
         stop_erre = type_stop
     else
         stop_erre = 'E'
     endif
 !
-!     COMPORTEMENTS MISCIBLES ENTRE EUX :
-!                     1         2         3         4
-!            123456789012345678901234567890123456789012345678
-    comp1='LEMAITRE        VMIS_ISOT_LINE  VMIS_ISOT_TRAC  '
-    comp2='ELAS            SANS            KIT_CG'
-!     REMARQUES :
-!       'SANS' EST UN COMPORTEMENT INFINIMENT "MOU"
-!              QUI N'A PAS DE VARIABLES INTERNES.
-!              IL EST UTILISE PAR CABL_PRECONT
-!       'ELAS' N'A PAS DE VARIABLES INTERNES.
-!        CES 2 COMPORTEMENTS SONT DONC MISCIBLES AVEC TOUS LES AUTRES.
+! - Acces to reduced CARTE DCEL_I (see CESVAR) on current comportement
 !
-!
-    coto='&&VRCOMP.COTO'
-    copm='&&VRCOMP.COPM'
-    copp='&&VRCOMP.COPP'
-    ces2='&&VRCOMP.VARI_R'
-!
-! --- MAILLAGES ATTACHES
-!
-    call dismoi('NOM_MAILLA', compop, 'CHAMP', repk=nomma1)
-    call dismoi('NOM_MAILLA', varmoi, 'CHAMP', repk=nomma2)
-    if (nomma1 .ne. nomma2) then
-        call utmess('E', 'COMPOR2_24')
-        iret = 1
-        goto 90
-    endif
-!
-    call carces(compop, 'ELEM', ' ', 'V', coto,&
-                'A', iret)
-    call cesred(coto, 0, [0], 1, 'RELCOM',&
-                'V', copp)
-    call detrsd('CHAM_ELEM_S', coto)
-!
-    call jeveuo(copp//'.CESD', 'L', jcoppd)
-    call jeveuo(copp//'.CESV', 'L', vk16=coppv)
-    call jeveuo(copp//'.CESL', 'L', jcoppl)
-    call jeveuo(copp//'.CESK', 'L', vk8=coppk)
-!
-!
-!     DANS COMPOP, ON RECUPERE LE CHAM_ELEM_S DE DCEL_I :
-!     ----------------------------------------------------------------
-    dcel=compop
+    dcel = compor_curr
     call jeveuo(dcel//'.CESD', 'L', jdceld)
-    call jeveuo(dcel//'.CESV', 'L', vi=dcelv)
-    call jeveuo(dcel//'.CESL', 'L', jdcell)
     call jeveuo(dcel//'.CESK', 'L', vk8=dcelk)
-    noma=dcelk(1)
-    nbma=zi(jdceld-1+1)
+    mesh    = dcelk(1)
+    nb_elem = zi(jdceld-1+1)
 !
+! - LIGREL
 !
-!     DANS COMPOP ET COMPOM, 'ELAS' EST AFFECTE PA DEFAUT A TOUTES LES
-!     MAILLES NON AFFECTEES. DU COUP, ON NE PEUT PAS DISTINGUER UNE
-!     MAILLE QUI DISPARAIT (OU QUI APPARAIT) D'UNE MAILLE ELASTIQUE.
-!     IL FAUT REGARDER SI ELLE EST DANS LE MODELE.
-!     -----------------------------------------------------------------
-    lig19p=ligrep
-    call jeveuo(lig19p//'.REPE', 'L', vi=repp)
-    call jelira(lig19p//'.REPE', 'LONMAX', n1)
-    ASSERT(n1.eq.2*nbma)
+    ligrel_curr = ligrel_currz
+    call dismoi('NOM_LIGREL', vari, 'CHAM_ELEM', repk=ligrel_prev)
 !
-    call dismoi('NOM_LIGREL', varmoi, 'CHAM_ELEM', repk=lig19m)
-    call jeveuo(lig19m//'.REPE', 'L', vi=repm)
-    call jelira(lig19m//'.REPE', 'LONMAX', n1)
+! - Comportments can been mixed with each other
 !
+    comp_comb_1 = 'LEMAITRE        VMIS_ISOT_LINE  VMIS_ISOT_TRAC'
 !
+! - Comportments can been mixed with all other ones
 !
+    comp_comb_2 = 'ELAS            SANS            KIT_CG'
 !
-!     -- ON TRANSFORME VARMOI EN CHAM_ELEM_S :
-!     ----------------------------------------------------------------
-    call celces(varmoi, 'V', ces2)
-    call cestas(ces2)
-    call jeveuo(ces2//'.CESD', 'L', jce2d)
-    call jeveuo(ces2//'.CESV', 'L', vr=ce2v)
-    call jeveuo(ces2//'.CESL', 'L', jce2l)
-    call jeveuo(ces2//'.CESK', 'L', jce2k)
+! - Chesk meshes
 !
-!
-    if (compom .ne. ' ') then
-        call carces(compom, 'ELEM', ' ', 'V', coto,&
-                    'A', iret)
-        call cesred(coto, 0, [0], 1, 'RELCOM',&
-                    'V', copm)
-        call detrsd('CHAM_ELEM_S', coto)
-!
-        call jeveuo(copm//'.CESD', 'L', jcopmd)
-        call jeveuo(copm//'.CESV', 'L', vk16=copmv)
-        call jeveuo(copm//'.CESL', 'L', jcopml)
-        call jeveuo(copm//'.CESK', 'L', vk8=copmk)
-!
-        ASSERT(copmk(1).eq.coppk(1))
+    call dismoi('NOM_MAILLA', compor_curr, 'CHAMP', repk=mesh_1)
+    call dismoi('NOM_MAILLA', vari       , 'CHAMP', repk=mesh_2)
+    if (mesh_1 .ne. mesh_2) then
+        call utmess('F', 'COMPOR2_24')
     endif
 !
+! - Prepare fields
 !
-!     1.  SI COMPOM EST DONNE, ON VERIFIE LES NOMS DES COMPORTEMENTS :
-!     ---------------------------------------------------------------
-    if (compom .ne. ' ') then
-        ASSERT(noma.eq.copmk(1))
-!
-        kma=0
-        do ima = 1, nbma
-            exim=repm(2*(ima-1)+1).gt.0
-            exip=repp(2*(ima-1)+1).gt.0
-            kma=kma+1
-            call cesexi('C', jcopmd, jcopml, ima, 1,&
-                        1, 1, iadm)
-            call cesexi('C', jcoppd, jcoppl, ima, 1,&
-                        1, 1, iadp)
-            if (iadp .gt. 0) then
-                relcop=coppv(iadp)
-                if (iadm .le. 0) goto 60
-                relcom=copmv(iadm)
-!
-!           -- SI RELCOP=RELCOM C'EST OK :
-                if (relcom .eq. relcop) goto 10
-!
-!           -- SI RELCOP ET RELCOM SONT MISCIBLES C'EST OK :
-                im=index(comp1,relcom)
-                ip=index(comp1,relcop)
-                if ((im.gt.0) .and. (ip.gt.0)) goto 10
-!
-!           -- SI RELCOP OU RELCOM EST 'ELAS' / 'SANS'  C'EST OK :
-                im=index(comp2,relcom)
-                ip=index(comp2,relcop)
-                if ((im.gt.0) .or. (ip.gt.0)) then
-                    modif=.true.
-                    if (exip .and. exim) then
-                        call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-                        valk(1)=nomail
-                        valk(2)=relcom
-                        valk(3)=relcop
-                        call utmess('A', 'COMPOR2_25', nk=3, valk=valk)
-                    endif
-                    goto 10
-                endif
-                goto 80
-            endif
- 10         continue
-        end do
+    if (present(compor_prev)) then
+        call vrcomp_prep(vari, vari_r,&
+                         compor_curr, compor_curr_r,&
+                         compor_prev, compor_prev_r)
+    else
+        call vrcomp_prep(vari, vari_r,&
+                         compor_curr, compor_curr_r,&
+                         ' '        , compor_prev_r)
     endif
 !
+! - Check if comportments are the same (or compatible)
 !
-!     2.  ON VERIFIE LES NOMBRES DE SOUS-POINTS ET DE CMPS :
-!     ------------------------------------------------------------
-    do ima = 1, nbma
-        exim=repm(2*(ima-1)+1).gt.0
-        exip=repp(2*(ima-1)+1).gt.0
-        call cesexi('C', jdceld, jdcell, ima, 1,&
-                    1, 1, iad1)
-        call cesexi('C', jdceld, jdcell, ima, 1,&
-                    1, 2, iad2)
-        call cesexi('C', jcoppd, jcoppl, ima, 1,&
-                    1, 1, iadp)
+    if (present(compor_prev)) then
+        call vrcomp_chck_rela(mesh, nb_elem,&
+                              compor_curr_r, compor_prev_r,&
+                              ligrel_curr, ligrel_prev,&
+                              comp_comb_1, comp_comb_2,&
+                              no_same_pg, no_same_rela, l_modif_vari)
+    endif
+    if (no_same_pg) then
+        iret = 1
+        call utmess(stop_erre, 'COMPOR2_28')
+    endif
+    if (no_same_rela) then
+        iret = 1
+        call utmess(stop_erre, 'COMPOR2_30')
+    endif
 !
-!       SI LE COMPORTEMENT N'EST PAS PRESENT SUR IMA, ON SAUTE
-!       (C'EST LE CAS POUR UN CALCUL SUR UN GROUPE DE MAILLES :)
-!       LE COMPOR EST ALORS RESTREINT A CE GROUP_MA, ET LES
-!       POUR LES AUTRES MAILLES ON N'A PAS BESOIN DE VERIFIER
+! - Check if elements have the same number of internal variables and Gauss-subpoints
 !
+    call vrcomp_chck_cmp(mesh, nb_elem,&
+                         compor_curr, compor_curr_r, compor_prev_r,&
+                         vari_r, comp_comb_2,&
+                         ligrel_curr, ligrel_prev,&
+                         no_same_spg, no_same_cmp, l_modif_vari)
+    if (no_same_spg) then
+        iret = 1
+        call utmess(stop_erre, 'COMPOR2_27')
+    endif
+    if (no_same_cmp) then
+        iret = 1
+        call utmess(stop_erre, 'COMPOR2_29')
+    endif
 !
-        if (iad1 .le. 0) then
-            nbspp=0
-            ncmpp=0
-        else
-            ASSERT(iad2.gt.0)
-            nbspp=dcelv(iad1)
-            ncmpp=dcelv(iad2)
-        endif
-        nbpgm=zi(jce2d-1+5+4*(ima-1)+1)
-        nbspm=zi(jce2d-1+5+4*(ima-1)+2)
-        ncmpm=zi(jce2d-1+5+4*(ima-1)+3)
-        
+! - Have to change internal variable field
 !
-!       -- PARFOIS LE COMPORTEMENT EST AFFECTE SUR LES MAILLES
-!          DE BORD ALORS QUE CES ELEMENTS N'ONT PAS DE VARIABLES
-!          INTERNES (I.E. ILS IGNORENT RAPH_MECA).
-!          ON NE VEUT PAS FAIRE D'ERREUR <F> :
+    if (l_modif_vari) then
+        call vrcom2(compor_curr, vari, ligrel_curr)
+    endif
 !
-!       -- VERIFICATION DU NOMBRE DE SOUS-POINTS :
-        if (nbspp .ne. 0 .and. nbspm .ne. 0) then
-            if (nbspp .ne. nbspm .and. nbspm .ne. 0) goto 50
-        endif
+! - Clean
 !
-!       -- VERIFICATION DU NOMBRE DE COMPOSANTES :
-        if (ncmpp .ne. ncmpm) then
-            if ((ncmpm.eq.0) .or. (ncmpp.eq.0)) then
-!           -- CE N'EST PAS GRAVE SI LA MAILLE EST NOUVELLE
-!              OU SI ELLE A DISPARU DU CALCUL
-!           (IL N'Y A PAS LIEU D'EMETTRE UNE ALARME)
-                modif=.true.
-                goto 40
-            endif
-!
-!         -- CE N'EST PAS GRAVE SI COMPOR "+" = 'ELAS' :
-            ASSERT(iadp.gt.0)
-            relcop=coppv(iadp)
-            if (relcop .eq. 'ELAS' .or. relcop .eq. 'SANS') goto 30
-!
-!         -- CE N'EST PAS GRAVE SI COMPOR "-" = 'ELAS' :
-            if (compom .ne. ' ') then
-                call cesexi('C', jcopmd, jcopml, ima, 1,&
-                            1, 1, iadm)
-                ASSERT(iadm.gt.0)
-                relcom=copmv(iadm)
-                if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS' .or. relcom .eq. 'KIT_CG') &
-                goto 30
-            else
-!           CE N'EST PAS FACILE A VERIFIER SANS COMPOM !
-!           ON VERIFIE :  NCMPM=1 ET VARIM(*)=0.D0
-                if (ncmpm .eq. 1) then
-                    call cesexi('C', jce2d, jce2l, ima, 1,&
-                                1, 1, iad2)
-                    ASSERT(iad2.gt.0)
-                    tounul=0
-                    do k = 1, nbpgm*nbspp
-                        if (ce2v(iad2+k-1) .ne. 0.d0) tounul=1
-                    end do
-                    if (tounul .eq. 0) goto 30
-                endif
-            endif
-            goto 70
-        endif
-!
-        goto 40
- 30     continue
-        modif=.true.
-!       -- SI COMPOM EST FOURNI, UN MESSAGE PLUS CLAIR
-!          A DEJA ETE EMIS ('CALCULEL3_47')
-        if ((compom.eq.' ') .and. exip .and. exim) then
-            call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-            vali(1)=ncmpm
-            vali(2)=ncmpp
-            call utmess('A', 'COMPOR2_26', sk=nomail, ni=2, vali=vali)
-        endif
- 40     continue
-    end do
-    goto 90
-!
-!
-!     3. MESSAGES D'ERREUR :
-!     ----------------------
- 50 continue
-    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-    vali(1)=nbspm
-    vali(2)=nbspp
-    call utmess(stop_erre, 'COMPOR2_27', sk=nomail, ni=2, vali=vali)
-    iret = 1
-!
- 60 continue
-    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-    call utmess(stop_erre, 'COMPOR2_28', sk=nomail)
-    iret = 1
-!
- 70 continue
-    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-    vali(1)=ncmpm
-    vali(2)=ncmpp
-    call utmess(stop_erre, 'COMPOR2_29', sk=nomail, ni=2, vali=vali)
-    iret = 1
-!
- 80 continue
-    call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-    valk(1)=relcom
-    valk(2)=relcop
-    valk(3)=nomail
-    call utmess(stop_erre, 'COMPOR2_30', nk=3, valk=valk)
-    iret = 1
-!
-!
- 90 continue
-    if (modif) call vrcom2(compop, varmoi, ligrep)
-!
-!     4. MENAGE :
-!     -----------
-    call detrsd('CHAM_ELEM_S', ces2)
-    call detrsd('CHAM_ELEM_S', copm)
-    call detrsd('CHAM_ELEM_S', copp)
+    call detrsd('CHAM_ELEM_S', vari_r)
+    call detrsd('CHAM_ELEM_S', compor_prev_r)
+    call detrsd('CHAM_ELEM_S', compor_curr_r)
 !
     call jedema()
 !

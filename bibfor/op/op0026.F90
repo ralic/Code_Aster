@@ -204,7 +204,7 @@ subroutine op0026()
 !
     call jeexin(compor(1:19)//'.CESD', iret)
     if (iret .gt. 0) then
-        call vrcomp(' ', compor, varmoi, ligrmo, iret)
+        call vrcomp(compor, varmoi, ligrmo, iret)
         if (iret.eq.1) then
             call utmess('F','CALCUL1_5')
         endif

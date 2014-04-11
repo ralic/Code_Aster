@@ -180,8 +180,8 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
                 mod24 = modele
                 car24 = carael
                 call nmdoco(mod24, car24, compor)
-                call vrcomp(' ', compor, vari, ligrmo, iret, &
-                            'A')
+                call vrcomp(compor, vari, ligrmo, iret, &
+                            type_stop = 'A')
                 if (iret.eq.1) then
                     call utmess('A','RESU1_1')
                 endif
