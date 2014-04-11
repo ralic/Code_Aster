@@ -42,7 +42,10 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 
 ACIER=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=40000000000.0,
                                  E_T=10000000000.0,
+                                 E_N=10000000000.0,
                                  NU_LT=0.3,
+                                 NU_LN=0.3,
+                                 NU_TN=0.3,
                                  G_LT=4500000000.0,
                                  G_LN=4500000000.0,
                                  G_TN=3500000000.0,),);

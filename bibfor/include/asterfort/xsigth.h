@@ -16,12 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
-                      inst, nbsig, sigth)
+    subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
         integer :: ndim
-        integer :: nnop
-        integer :: nfh
-        integer :: igeom
         integer :: lonch(10)
         real(kind=8) :: inst
         integer :: nbsig

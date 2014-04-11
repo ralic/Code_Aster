@@ -41,12 +41,15 @@ MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
 
 #
 # DEFINITION DU MATERIAU
-ACIER=DEFI_MATERIAU(     ELAS_ORTH=_F(  E_L = 4.E10,
+ACIER=DEFI_MATERIAU(     ELAS_ORTH=_F( E_L = 4.E10,
                                        E_T = 1.E10,
+                                       E_N = 0.,
                                        G_LT = 0.45E10,
                                        G_TN = 0.35E10,
                                        G_LN = 0.45E10,
-                                       NU_LT = 0.3)
+                                       NU_LT=0.3,
+                                       NU_LN=0.3,
+                                       NU_TN=0.3,)
                       )
 
 #

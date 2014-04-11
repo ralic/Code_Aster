@@ -143,7 +143,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
 !
 ! - CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 ! - ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
-        call dmatmc('RIGI', '  ', mate, 0.d0, '+', g, 1, repere, xyzgau, nbsig, dsidep)
+        call dmatmc('RIGI', mate, 0.d0, '+', g, 1, repere, xyzgau, nbsig, dsidep)
 !
         call dscal(2*ndim-3, rac2, dsidep(4,1), 1)
         call dscal(2*ndim-3, rac2, dsidep(4,2), 1)

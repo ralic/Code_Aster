@@ -63,14 +63,12 @@ subroutine sigimc(fami, nno, ndim, nbsig, npg,&
     k2bid = '  '
     zero = 0.0d0
 !
-    do 10 i = 1, nbsig*npg
-        sigma(i) = zero
-10  end do
+    sigma(1:nbsig*npg) = zero
 !
 ! --- CALCUL DES CONTRAINTES INITIALES :
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-    do 20 igau = 1, npg
+    do igau = 1, npg
 !
 !  --      COORDONNEES AU POINT D'INTEGRATION
 !  --      COURANT
@@ -79,32 +77,29 @@ subroutine sigimc(fami, nno, ndim, nbsig, npg,&
         xyzgau(2) = zero
         xyzgau(3) = zero
 !
-        do 30 i = 1, nno
-!
-            do 40 idim = 1, ndim
+        do i = 1, nno
+            do idim = 1, ndim
                 xyzgau(idim) = xyzgau(idim) + ni(i+nno*(igau-1))*xyz( idim+ndim*(i-1))
-40          continue
-30      continue
+            end do
+        end do
 !
 !  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 !  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !          -------------------------------------------------
-        call dmatmc(fami, k2bid, mater, instan, '+',&
+        call dmatmc(fami, mater, instan, '+',&
                     igau, 1, repere, xyzgau, nbsig,&
                     d)
 !
 !  --      CONTRAINTES INITIALES AU POINT D'INTEGRATION COURANT
 !          ------------------------------------------------------
-        do 50 i = 1, nbsig
-            do 60 j = 1, nbsig
+        do i = 1, nbsig
+            do j = 1, nbsig
                 sigma(i+nbsig*(igau-1)) = sigma(&
                                           i+nbsig*(igau-1)) + d(j+(i-1)*nbsig)*epsini(j+nbsig*(ig&
                                           &au-1)&
                                           )
-60          continue
-50      continue
+            end do
+        end do
 !
-20  end do
-!
-!.============================ FIN DE LA ROUTINE ======================
+    end do
 end subroutine

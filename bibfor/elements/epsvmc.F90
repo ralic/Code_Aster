@@ -67,6 +67,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
     real(kind=8) :: epsth(162), eps2(162), xyzgau(3), d(4, 4)
     real(kind=8) :: zero, un, deux
     integer :: i, igau, icodre(1)
+    logical :: l_modi_cp
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :
@@ -75,11 +76,10 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
     un = 1.0d0
     deux = 2.0d0
 !
-    do 10 i = 1, nbsig*npg
-        epsm(i) = zero
-        eps2(i) = zero
-        epsth(i)= zero
-10  end do
+    epsm(1:nbsig*npg)  = zero
+    eps2(1:nbsig*npg)  = zero
+    epsth(1:nbsig*npg) = zero
+
 !
 !
 ! --- CALCUL DES DEFORMATIONS DU PREMIER ORDRE
@@ -111,14 +111,14 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 !
 ! --- CALCUL DES DEFORMATIONS MECANIQUES AUX POINTS D'INTEGRATION :
 !      ----------------------------------------------------------
-    do 30 i = 1, nbsig*npg
+    do i = 1, nbsig*npg
         epsm(i) = epsm(i) + eps2(i)
-30  end do
+    end do
 !
     if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG') then
-        do 40 i = 1, nbsig*npg
+        do i = 1, nbsig*npg
             epsm(i) = epsm(i) - epsth(i)
-40      continue
+        end do
     endif
 !
 ! --- CAS DES CONTRAINTES PLANES, ON CALCULE EPSZZ A PARTIR
@@ -128,7 +128,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 !
 ! ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 !       -----------------------------------
-        do 50 igau = 1, npg
+        do igau = 1, npg
 !
 !  --      COORDONNEES AU POINT D'INTEGRATION
 !  --      COURANT
@@ -136,13 +136,24 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
             xyzgau(1) = zero
             xyzgau(2) = zero
             xyzgau(3) = zero
+
+!  --     il s'agit de calculer EPS33 : pour cela il faut donner la 
+!  --     condition SIG33=0 dans l'expression complete de la loi de 
+!  --     Hooke c'est à dire avec la loi 3D : 
+!  --     Eps33= -1/D33 (D13.Eps11 +D12.Eps22), ce qui donne (en 
+!  --     isotrope) l'expression classique : 
+!  --     Eps33 = -Nu / (1-Nu) * (Eps11 + Eps22).
+! ---     voir issue12540
+
+
+            l_modi_cp = .true.
 !
 !  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 !  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !          -------------------------------------------------
-            call dmatmc(fami, 'DP', mater, instan, '+',&
-                        igau, 1, repere, xyzgau, nbsig,&
-                        d)
+            call dmatmc(fami, mater, instan, '+', igau, &
+                        1, repere, xyzgau, nbsig, d,&
+                        l_modi_cp)
 !
             if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG') then
                 epsm(nbsig*(igau-1)+3) = -un/d(3,3)* ( d(3,1)*epsm( nbsig*(igau-1)+1) + d(3,2)*ep&
@@ -154,7 +165,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
                                          &sig*(igau-1)+2)) +d(3,4)*(epsm(nbsig*(igau-1)+4) -epsth&
                                          &(nbsig*(igau-1)+ 4))*deux)+epsth(nbsig*(igau-1)+3)
             endif
-50      continue
+        end do
 !
 ! --- CAS DES DEFORMATIONS PLANES,  EPSZZ = 0 :
 !     ---------------------------------------
@@ -162,9 +173,9 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 !
 ! ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 !       -----------------------------------
-        do 70 igau = 1, npg
+        do igau = 1, npg
             epsm(nbsig*(igau-1)+3) = zero
-70      continue
+        end do
 !
     endif
 !

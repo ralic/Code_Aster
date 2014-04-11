@@ -15,19 +15,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dmatmc(fami, modeli, mater, instan, poum,&
-                      igau, isgau, repere, xyzgau, nbsig,&
-                      d)
-        integer :: nbsig
-        character(len=*) :: fami
-        character(len=2) :: modeli
-        integer :: mater
-        real(kind=8) :: instan
-        character(len=*) :: poum
-        integer :: igau
-        integer :: isgau
-        real(kind=8) :: repere(7)
-        real(kind=8) :: xyzgau(3)
-        real(kind=8) :: d(nbsig, 1)
+    subroutine dmatmc(fami, mater , time, poum ,ipg,&
+                      ispg, repere, xyzgau, nbsig,d,&
+                      l_modi_cp)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: mater
+        real(kind=8), intent(in) :: time
+        character(len=*), intent(in) :: poum
+        integer, intent(in) :: ipg
+        integer, intent(in) :: ispg
+        real(kind=8), intent(in) :: repere(7)
+        real(kind=8), intent(in) :: xyzgau(3)
+        integer, intent(in) :: nbsig
+        real(kind=8), intent(out) :: d(nbsig, nbsig)
+        logical, optional, intent(in) :: l_modi_cp
     end subroutine dmatmc
 end interface

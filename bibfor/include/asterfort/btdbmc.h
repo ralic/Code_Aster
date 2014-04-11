@@ -17,14 +17,14 @@
 !
 interface
     subroutine btdbmc(b, d, jacob, ndim, nno,&
-                      nbsig, phenoz, btdb)
-        integer :: nbsig
-        real(kind=8) :: b(nbsig, *)
-        real(kind=8) :: d(nbsig, *)
-        real(kind=8) :: jacob
-        integer :: ndim
-        integer :: nno
-        character(len=*) :: phenoz
-        real(kind=8) :: btdb(81, 81)
+                      nbsig, elas_type, btdb)
+        integer, intent(in) :: nbsig
+        integer, intent(in) :: ndim
+        integer, intent(in) :: nno
+        integer, intent(in) :: elas_type
+        real(kind=8), intent(in) :: b(nbsig, *)
+        real(kind=8), intent(in) :: d(nbsig, *)
+        real(kind=8), intent(in) :: jacob
+        real(kind=8), intent(out) :: btdb(81, 81)
     end subroutine btdbmc
 end interface

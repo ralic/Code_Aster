@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dmatcp(fami, mater, instan, poum, igau,&
-                      isgau, repere, d)
-        character(len=*) :: fami
-        integer :: mater
-        real(kind=8) :: instan
-        character(len=*) :: poum
-        integer :: igau
-        integer :: isgau
-        real(kind=8) :: repere(7)
-        real(kind=8) :: d(4, 4)
+    subroutine dmatcp(fami, mater, time, poum, ipg,&
+                      ispg, repere, d)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: mater
+        real(kind=8), intent(in) :: time
+        character(len=*), intent(in) :: poum
+        integer, intent(in) :: ipg
+        integer, intent(in) :: ispg
+        real(kind=8), intent(in) :: repere(7)
+        real(kind=8), intent(out) :: d(4, 4)
     end subroutine dmatcp
 end interface

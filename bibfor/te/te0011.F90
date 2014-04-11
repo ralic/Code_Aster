@@ -1,4 +1,17 @@
 subroutine te0011(option, nomte)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/bmatmc.h"
+#include "asterfort/btdbmc.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/get_elas_type.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,141 +28,116 @@ subroutine te0011(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!.......................................................................
-    implicit none
+! aslint: disable=W0104
 !
-!          ELEMENTS ISOPARAMETRIQUES 3D
-!    FONCTION REALISEE:
-!            OPTION : 'RIGI_MECA      '
-!                            CALCUL DES MATRICES ELEMENTAIRES  3D
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
-#include "jeveux.h"
-!-----------------------------------------------------------------------
-#include "asterfort/bmatmc.h"
-#include "asterfort/btdbmc.h"
-#include "asterfort/dmatmc.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
-#include "asterfort/rccoma.h"
+! --------------------------------------------------------------------------------------------------
+!
+! Elementary computation
+!
+! Elements: 3D
+! Option: RIGI_MECA
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: i, idecno, idecpg, igau, imate, imatuu, j
-    integer :: jgano, k, nbinco, nbres, nbsig, ndim, nno
+    integer :: k, nbinco, nbsig, ndim, nno
     integer :: nnos, npg1
-!-----------------------------------------------------------------------
-    parameter (nbres=9)
-    integer :: icodre(nbres)
-    character(len=16) :: nomte, option, phenom
     real(kind=8) :: b(486), btdb(81, 81), d(36), jacgau
     real(kind=8) :: repere(7), xyzgau(3), instan, nharm
     real(kind=8) :: bary(3)
     integer :: igeom, ipoids, ivf, idfde, idim
+    character(len=4) :: fami
+    integer :: elas_type
 !
-! ---- INITIALISATION
-! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-! ---- GEOMETRIE ET INTEGRATION
-!      ------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+! --------------------------------------------------------------------------------------------------
 !
-! --- INITIALISATIONS :
-!     -----------------
-    instan = 0.d0
-    nbinco = ndim*nno
-    nharm = 0.d0
 !
-    do 20 i = 1, nbinco
-        do 10 j = 1, nbinco
-            btdb(i,j) = 0.d0
-10      continue
-20  end do
+! - Finite element informations
 !
-! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!      -----------------------------------------
-    nbsig = nbsigm()
+    fami = 'RIGI'
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+                      npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde)
 !
-! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
-!      ----------------------------------------------
+! - Initializations
+!
+    instan    = 0.d0
+    nbinco    = ndim*nno
+    nharm     = 0.d0
+    btdb(:,:) = 0.d0
+    xyzgau(:) = 0.d0
+    bary(:)   = 0.d0
+!
+! - Number of stress components
+!
+    nbsig     = nbsigm()
+!
+! - Geometry
+!
     call jevech('PGEOMER', 'L', igeom)
 !
-! ---- RECUPERATION DU MATERIAU
-!      ------------------------
+! - Material parameters
+! 
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
-! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
-!      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    call get_elas_type(zi(imate), elas_type)
+!
+! - Orthotropic parameters
+!
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call ortrep(zi(imate), ndim, bary, repere)
 !
-! ---  BOUCLE SUR LES POINTS D'INTEGRATION
-!      -----------------------------------
-    do 50 igau = 1, npg1
+! - Compute RIGI_MECA
+!
+    do igau = 1, npg1
 !
         idecpg = nno* (igau-1) - 1
 !
-!  --      COORDONNEES AU POINT D'INTEGRATION COURANT
-!          -------
-        xyzgau(1) = 0.d0
-        xyzgau(2) = 0.d0
-        xyzgau(3) = 0.d0
+! ----- Coordinates for current Gauss point
 !
-        do 30 i = 1, nno
-!
+        xyzgau(:) = 0.d0
+        do i = 1, nno
             idecno = 3* (i-1) - 1
+            xyzgau(1) = xyzgau(1) + zr(ivf+i+idecpg)*zr(igeom+1+idecno)
+            xyzgau(2) = xyzgau(2) + zr(ivf+i+idecpg)*zr(igeom+2+idecno)
+            xyzgau(3) = xyzgau(3) + zr(ivf+i+idecpg)*zr(igeom+3+idecno)
+        end do
 !
-            xyzgau(1) = xyzgau(1) + zr(ivf+i+idecpg)*zr(igeom+1+ idecno)
-            xyzgau(2) = xyzgau(2) + zr(ivf+i+idecpg)*zr(igeom+2+ idecno)
-            xyzgau(3) = xyzgau(3) + zr(ivf+i+idecpg)*zr(igeom+3+ idecno)
+! ----- Compute matrix [B]: displacement -> strain (first order)
 !
-30      continue
-!
-!
-!  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
-!  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
-!  --      COURANT : (EPS_1) = (B)*(UN)
-!          ----------------------------
         call bmatmc(igau, nbsig, zr(igeom), ipoids, ivf,&
                     idfde, nno, nharm, jacgau, b)
 !
+! ----- Compute Hooke matrix [D]
 !
-!
-!  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
-!  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
-!          -------------------------------------------------
-        call dmatmc('RIGI', '  ', zi(imate), instan, '+',&
+        call dmatmc(fami, zi(imate), instan, '+',&
                     igau, 1, repere, xyzgau, nbsig,&
                     d)
-!  --      MATRICE DE RIGIDITE ELEMENTAIRE BT*D*B
-!          ---------------------------------------
+!
+! ----- Compute rigidity matrix [K] = [B]Tx[D]x[B]
+!
         call btdbmc(b, d, jacgau, ndim, nno,&
-                    nbsig, phenom, btdb)
+                    nbsig, elas_type, btdb)
 !
-50  end do
+    end do
 !
-! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
-!      ------------------------------------------------
-!  --  DEMI-MATRICE DE RIGIDITE
+! - Set matrix in output field
+!
     call jevech('PMATUUR', 'E', imatuu)
-!
     k = 0
-    do 70 i = 1, nbinco
-        do 60 j = 1, i
+    do i = 1, nbinco
+        do j = 1, i
             k = k + 1
             zr(imatuu+k-1) = btdb(i,j)
-60      continue
-70  end do
+        end do
+    end do
 !
 end subroutine

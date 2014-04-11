@@ -100,8 +100,7 @@ subroutine te0541(option, nomte)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     CALCUL DES CONTRAINTES THERMIQUES
-    call xsigth(ndim, nno, nfh, igeom, zi(jlonch),&
-                zr(itemps), nbsig, zr(icontt))
+    call xsigth(ndim, zi(jlonch), zr(itemps), nbsig, zr(icontt))
 !
 !     CALCUL DU VECTEUR \INT BT*SIGMA_THERMIQUE
     call xbsig(ndim, nno, nfh, nfe,&

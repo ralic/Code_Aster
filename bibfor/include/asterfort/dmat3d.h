@@ -15,16 +15,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dmat3d(fami, mater, instan, poum, igau,&
-                      isgau, repere, xyzgau, d)
-        character(len=*) :: fami
-        integer :: mater
-        real(kind=8) :: instan
-        character(len=*) :: poum
-        integer :: igau
-        integer :: isgau
-        real(kind=8) :: repere(7)
-        real(kind=8) :: xyzgau(3)
-        real(kind=8) :: d(6, 6)
+    subroutine dmat3d(fami, mater , time  , poum, ipg,&
+                      ispg, repere, xyzgau, d)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: mater
+        real(kind=8), intent(in) :: time
+        character(len=*), intent(in) :: poum
+        integer, intent(in) :: ipg
+        integer, intent(in) :: ispg
+        real(kind=8), intent(in) :: repere(7)
+        real(kind=8), intent(in) :: xyzgau(3)
+        real(kind=8), intent(out) :: d(6, 6)
     end subroutine dmat3d
 end interface

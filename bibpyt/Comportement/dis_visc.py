@@ -28,7 +28,7 @@ loi = LoiComportement(
    modelisation   = ('DIS_T','DIS_TR','2D_DIS_T','2D_DIS_TR'),
    deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
-   algo_inte      = ('ANALYTIQUE'),
+   algo_inte      = ('SPECIFIQUE'),
    type_matr_tang = None,
    proprietes     = None,
 )

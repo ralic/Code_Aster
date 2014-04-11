@@ -1,6 +1,14 @@
-subroutine dmatmc(fami, modeli, mater, instan, poum,&
-                  igau, isgau, repere, xyzgau, nbsig,&
-                  d)
+subroutine dmatmc(fami, mater , time, poum ,ipg,&
+                  ispg, repere, xyzgau, nbsig,d,&
+                  l_modi_cp)
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/dmat3d.h"
+#include "asterfort/dmatcp.h"
+#include "asterfort/dmatdp.h"
+#include "asterfort/lteatt.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,71 +25,67 @@ subroutine dmatmc(fami, modeli, mater, instan, poum,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!.======================================================================
-    implicit none
 !
-!      DMATMC :   CALCUL DE LA MATRICE DE HOOKE POUR LES ELEMENTS
-!                 ISOPARAMETRIQUES POUR DES MATERIAUX ISOTROPE,
-!                 ORTHOTROPE ET ISOTROPE TRANSVERSE
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: mater
+    real(kind=8), intent(in) :: time
+    character(len=*), intent(in) :: poum
+    integer, intent(in) :: ipg
+    integer, intent(in) :: ispg
+    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: xyzgau(3)
+    integer, intent(in) :: nbsig
+    real(kind=8), intent(out) :: d(nbsig, nbsig)
+    logical, optional, intent(in) :: l_modi_cp
 !
-!   ARGUMENT        E/S  TYPE         ROLE
-!    FAMI           IN     K4       FAMILLE DU POINT DE GAUSS
-!    MODELI         IN     K2       MODELISATION
-!    MATER          IN     I        MATERIAU
-!    IGAU           IN     I        POINT DE GAUSS
-!    ISGAU          IN     I        SOUS-POINT DE GAUSS
-!    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
-!    POUM           IN     K1       + OU -
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
-!                                   D'ORTHOTROPIE
-!    XYZGAU(3)      IN     R        COORDONNEES DU POINT D'INTEGRATION
-!    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE A
-!                                   L'ELEMENT
-!    D(NBSIG,1)     OUT    R        MATRICE DE HOOKE
+! --------------------------------------------------------------------------------------------------
 !
+! Elementary computation
 !
+! Hooke matrix for iso-parametric elements
 !
-!.========================= DEBUT DES DECLARATIONS ====================
-! -----  ARGUMENTS
-#include "asterfort/assert.h"
-#include "asterfort/dmat3d.h"
-#include "asterfort/dmatcp.h"
-#include "asterfort/dmatdp.h"
-#include "asterfort/lteatt.h"
-    character(len=*) :: fami, poum
-    character(len=2) :: modeli
-    integer :: mater, nbsig, igau, isgau
-    real(kind=8) :: repere(7), xyzgau(3), d(nbsig, 1), instan
+! --------------------------------------------------------------------------------------------------
 !
-!.========================= DEBUT DU CODE EXECUTABLE ==================
+! In  fami      : Gauss family for integration point rule
+! In  mater     : material parameters
+! In  time      : current time
+! In  poum      : '-' or '+' for parameters evaluation (previous or current temperature)
+! In  ipg       : current point gauss
+! In  ispg      : current "sous-point" gauss
+! In  repere    : definition of basis for orthotropic elasticity
+! In  xyzgau    : coordinates for current Gauss point
+! In  nbsig     : number of components for stress
+! Out d         : Hooke matrix
+! In  l_modi_cp : using plane strain Hooke matrix for plane stress case
 !
-!       ------------------------
-! ----  CAS MASSIF 3D ET FOURIER
-!       ------------------------
-    if (lteatt('DIM_TOPO_MAILLE','3') .or. lteatt('FOURIER','OUI')) then
+! --------------------------------------------------------------------------------------------------
 !
-        call dmat3d(fami, mater, instan, poum, igau,&
-                    isgau, repere, xyzgau, d)
-!
-!       ----------------------------------------
-! ----  CAS DEFORMATIONS PLANES ET AXISYMETRIQUE
-!       ----------------------------------------
-        elseif (lteatt('D_PLAN','OUI').or. lteatt('AXIS','OUI')&
-    .or.modeli.eq.'DP') then
-!
-        call dmatdp(fami, mater, instan, poum, igau,&
-                    isgau, repere, d)
-!
-!       ----------------------
-! ----  CAS CONTRAINTES PLANES
-!       ----------------------
+    if (lteatt('DIM_TOPO_MAILLE','3')) then
+        ASSERT(nbsig.eq.6)
+        call dmat3d(fami, mater , time, poum, ipg,&
+                    ispg, repere, xyzgau, d)
+    elseif (lteatt('FOURIER','OUI')) then
+        ASSERT(nbsig.eq.6)
+        call dmat3d(fami, mater , time, poum, ipg,&
+                    ispg, repere, xyzgau, d)
     else if (lteatt('C_PLAN','OUI')) then
-!
-        call dmatcp(fami, mater, instan, poum, igau,&
-                    isgau, repere, d)
-!
+        ASSERT(nbsig.eq.4)
+        call dmatcp(fami, mater, time, poum, ipg,&
+                    ispg, repere, d)
+        if (present(l_modi_cp)) then
+            ASSERT(l_modi_cp)
+            call dmatdp(fami, mater, time, poum, ipg,&
+                        ispg, repere, d)
+        else
+            call dmatcp(fami, mater, time, poum, ipg,&
+                        ispg, repere, d)            
+        endif
+    elseif (lteatt('D_PLAN','OUI').or. lteatt('AXIS','OUI')) then
+        ASSERT(nbsig.eq.4)
+        call dmatdp(fami, mater, time, poum, ipg,&
+                    ispg, repere, d)
     else
         ASSERT(.false.)
     endif
-!.============================ FIN DE LA ROUTINE ======================
+!
 end subroutine

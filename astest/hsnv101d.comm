@@ -284,6 +284,7 @@ U=STAT_NON_LINE(
 ),
 
                             NEWTON=_F(
+#PREDICTION='ELASTIQUE',
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
                        CONVERGENCE=_F(

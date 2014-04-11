@@ -74,14 +74,12 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
         ndim2 = 2
     endif
 !
-    do 10 i = 1, nbsig*npg
-        sigma(i) = zero
-10  end do
+    sigma(1:nbsig*npg) = zero
 !
 ! --- CALCUL DES CONTRAINTES AUX POINTS D'INTEGRATION
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-    do 20 igau = 1, npg
+    do igau = 1, npg
 !
 !  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
 !  --      COURANT
@@ -90,13 +88,11 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
         xyzgau(2) = zero
         xyzgau(3) = zero
 !
-        do 30 i = 1, nno
-!
-            do 40 idim = 1, ndim2
+        do i = 1, nno
+            do idim = 1, ndim2
                 xyzgau(idim) = xyzgau(idim) + zr(ivf+i+nno*(igau-1)-1) *xyz(idim+ndim2*(i-1))
-40          continue
-!
-30      continue
+            end do
+        end do
 !
 !  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 !  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
@@ -108,7 +104,7 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
 !  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 !  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !          -------------------------------------------------
-        call dmatmc(fami, k2bid, mater, instan, '+',&
+        call dmatmc(fami, mater, instan, '+',&
                     igau, 1, repere, xyzgau, nbsig,&
                     d)
 !
@@ -116,7 +112,7 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
 !          ------------------------------------------------------
         call dbudef(depl, b, d, nbsig, nbinco,&
                     sigma(1+nbsig*(igau-1)))
-20  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

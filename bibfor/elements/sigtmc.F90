@@ -71,14 +71,13 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg,&
         ndim2 = 2
     endif
 !
-    do 10 i = 1, nbsig*npg
-        sigma(i) = zero
-10  end do
+    sigma(1:nbsig*npg) = zero
+
 !
 ! --- CALCUL DES CONTRAINTES D'ORIGINE THERMIQUE/HYDRIQUE/SECHAGE
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-    do 20 igau = 1, npg
+    do igau = 1, npg
 !
 !  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
 !  --      COURANT
@@ -90,12 +89,11 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg,&
 !       REM : HYDRATATION ET SECHAGE ACTIVES POUR CALCUL DU SECOND
 !        MEMBRE CHAR_MECA_* OU CALCUL DES CONTRAINTES VRAIES (SIGVMC.F)
 !
-        do 30 i = 1, nno
-!
-            do 40 idim = 1, ndim2
+        do i = 1, nno
+            do idim = 1, ndim2
                 xyzgau(idim) = xyzgau(idim) + ni(i+nno*(igau-1))*xyz( idim+ndim2*(i-1))
-40          continue
-30      continue
+            end do
+        end do
 !
 !  --      CALCUL DES DEFORMATIONS THERMIQUES/HYDRIQUE/DE SECHAGE
 !  --      AU POINT D'INTEGRATION COURANT
@@ -106,38 +104,35 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg,&
 !
 ! TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
         iepsv=0
-        do 90 i = 1, 6
+        do i = 1, 6
             if (abs(epsth(i)) .gt. r8miem()) iepsv=1
-90      continue
+        end do
 ! TOUTES DES COMPOSANTES SONT NULLES. ON EVITE LE CALCUL DE D ET SIGMA
-        if (iepsv .eq. 0) goto 20
+        if (iepsv .ne. 0) then
 !
 !         PASSAGE DES COMPOSANTES DE CISAILLEMENTS EN CONFORMITE
 !         ( DMATMC RETOURNE UNE MATRICE DE HOOKE EN SUPPOSANT
 !           UN DEUX SUR LES DEFORMATIONS DE CISAILLEMENT )
 !
-        do 50 i = 4, 2*ndim
-            epsth(i)=2.d0*epsth(i)
-50      continue
+            do i = 4, 2*ndim
+                epsth(i)=2.d0*epsth(i)
+            end do
 !  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 !  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 !          -------------------------------------------------
-        call dmatmc(fami, k2bid, mater, instan, '+',&
-                    igau, 1, repere, xyzgau, nbsig,&
-                    d)
+            call dmatmc(fami, mater, instan, '+',igau, &
+                        1, repere, xyzgau, nbsig,d)
 !
 !  --      CONTRAINTES THERMIQUES/HYDRIQUE/DE SECHAGE AU POINT
 !  --      D'INTEGRATION COURANT
 !          ------------------------------------------------------
-        do 60 i = 1, nbsig
-            do 70 j = 1, nbsig
-                sigma(i+nbsig*(igau-1)) = sigma( i+nbsig*(igau-1)) + d(j+(i-1)*nbsig)*epsth(j )
-70          continue
-60      continue
-!
-!
-!
-20  end do
+            do i = 1, nbsig
+                do j = 1, nbsig
+                    sigma(i+nbsig*(igau-1)) = sigma( i+nbsig*(igau-1)) + d(j+(i-1)*nbsig)*epsth(j )
+                end do
+            end do
+        endif
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

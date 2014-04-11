@@ -70,13 +70,13 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     call r8inir(36, 0.d0, dsidep, 1)
 !
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA') then
-        do 1 i = 1, nbsigm
+        do i = 1, nbsigm
             if (i .le. 3) then
                 depstr(i)=deps(i)
             else
                 depstr(i)=deps(i)*rac2
             endif
-  1     end do
+        end do
     endif
 !
     if (angmas(1) .eq. r8vide()) then
@@ -110,9 +110,9 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         call utmess('F', 'ALGORITH8_22')
     endif
 !
-    do 2 i = 1, nbsigm
+    do i = 1, nbsigm
         depgth(i)=0.d0
-  2 end do
+    end do
 !
 !     MATRICES TANGENTES
 !
@@ -130,24 +130,24 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
     else
         if (option .eq. 'RIGI_MECA_TANG') then
-            call dmatmc(fami, k2bid, imate, rbid, '-',&
+            call dmatmc(fami, imate, rbid, '-',&
                         kpg, ksp, repere, xyzgau, nbsigm,&
                         hookf)
         else
             call d1mamc(fami, imate, rbid, '-', kpg,&
                         ksp, repere, xyzgau, nbsigm, mkooh)
-            call dmatmc(fami, k2bid, imate, rbid, '+',&
+            call dmatmc(fami, imate, rbid, '+',&
                         kpg, ksp, repere, xyzgau, nbsigm,&
                         hookf)
         endif
     endif
 !
     if (option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'FULL_MECA') then
-        do 10 i = 1, nbsigm
-            do 20 j = 1, nbsigm
+        do i = 1, nbsigm
+            do j = 1, nbsigm
                 dsidep(i,j)=hookf(nbsigm*(j-1)+i)
- 20         continue
- 10     continue
+            end do
+        end do
     endif
 !
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA') then
@@ -204,54 +204,56 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 ! DOIVENT ETRE MULTIPLIES PAR DEUX POUR ETRE CONFORME AVEC
 ! LA MATRICE DE RIGIDITE ISSU DE DMATMC (ET DONC AVEC DEPSTR AUSSI)
 !
-        do 30 i = 1, nbsigm
+        do i = 1, nbsigm
             if (i .le. 3) then
                 depsme(i)=depstr(i)-depgth(i)
             else
                 depsme(i)=depstr(i)-2.d0*depgth(i)
             endif
- 30     continue
+        end do
 !
 ! CONTRAINTE A L ETAT +
-        do 55 i = 4, nbsigm
+        do i = 4, nbsigm
             sigm(i)=sigm(i)/rac2
- 55     continue
+        end do
 ! MODIFICATIOn DE SIGM POUR PRENDRE EN COMPTE LA VARIATION DE
 ! COEF ELASTIQUES AVEC LA TEMPERATURE
 !
-        do 40 i = 1, nbsigm
+        do i = 1, nbsigm
             epsm2(i)=0.d0
-            do 50 j = 1, nbsigm
+            do j = 1, nbsigm
                 epsm2(i)=epsm2(i)+mkooh(nbsigm*(j-1)+i)*sigm(j)
- 50         continue
- 40     continue
+            end do
+        end do
 !
-        do 60 i = 1, nbsigm
+        do i = 1, nbsigm
             sigp(i)=0.d0
-            do 70 j = 1, nbsigm
+            do j = 1, nbsigm
                 sigp(i)=sigp(i)+hookf(nbsigm*(j-1)+i)*(depsme(j)+&
                 epsm2(j))
- 70         continue
- 60     continue
+            end do
+        end do
 !
 ! PAS DE VARIABLE INTERNE POUR CE COMPORTEMENT
         vip=0.d0
 !
 ! REMISE AU FORMAT ASTER DES VALEURS EXTRA DIAGONALES
-        do 80 i = 4, nbsigm
+        do i = 4, nbsigm
             sigp(i)=sigp(i)*rac2
- 80     continue
+        end do
     endif
 !
     if (option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'FULL_MECA') then
-        do 67 i = 1, 6
-            do 67 j = 4, 6
+        do i = 1, 6
+            do j = 4, 6
                 dsidep(i,j) = dsidep(i,j)*sqrt(2.d0)
- 67         continue
-        do 68 i = 4, 6
-            do 68 j = 1, 6
+            end do
+        end do
+        do i = 4, 6
+            do j = 1, 6
                 dsidep(i,j) = dsidep(i,j)*sqrt(2.d0)
- 68         continue
+            end do
+        end do
     endif
 !
 end subroutine

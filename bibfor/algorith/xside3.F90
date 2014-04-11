@@ -184,7 +184,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
 !
 !       CALCUL DE LA MATRICE DE HOOKE (MATERIAU ISOTROPE)
-        call dmatmc('XFEM', k2bid, imate, instan, '+',&
+        call dmatmc('XFEM', imate, instan, '+',&
                     ipg, 1, r8bi7, r8bi3, nbsig,&
                     d)
 !

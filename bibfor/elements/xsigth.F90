@@ -1,5 +1,4 @@
-subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
-                  inst, nbsig, sigth)
+subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +30,7 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 !
-    integer :: ndim, nnop, nfh, igeom, nbsig, lonch(10)
+    integer :: ndim, nbsig, lonch(10)
     real(kind=8) :: sigth(*), inst
 !
 ! ----------------------------------------------------------------------
@@ -40,9 +39,6 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 !      CALCUL DES CONTRAINTES THERMIQUES POUR LES ELEMENTS X-FEM
 !
 ! IN  NDIM    : DIMENSION DE L'ESPACE
-! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
-! IN  NFH     : NOMBRE DE FONCTIONS HEAVYSIDE
-! IN  IGEOM   : COORDONEES DES NOEUDS
 ! IN  PINTT   : COORDONNÉES DES POINTS D'INTERSECTION
 ! IN  LONCH   : LONGUEURS DES CHAMPS UTILISÉES
 ! IN  SIGMA   : CONTRAINTES DE CAUCHY AUX POINTS DE GAUSS DES SOUS-ÉLTS
@@ -58,7 +54,6 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
     real(kind=8) :: r8bi7(7), r8bi3(3), epsth(6), d(36)
     integer :: nse, idecpg, idebs, iret, ipg, i, ise, npg, j
     integer :: imate, irese, nno, ibid, kpg
-    character(len=2) :: k2bid
     character(len=8) :: elrefp, elrese(6), fami(6)
     character(len=16) :: phenom, option
 !
@@ -95,7 +90,7 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
     nse=lonch(1)
 !
 !       BOUCLE SUR LES NSE SOUS-ELEMENTS
-    do 110 ise = 1, nse
+    do ise = 1, nse
 !
 !       DEBUT DE LA ZONE MÉMOIRE DE SIGMA CORRESPONDANTE
         idecpg = npg * (ise-1)
@@ -107,7 +102,7 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
         endif
 !
 !       BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT
-        do 120 kpg = 1, npg
+        do kpg = 1, npg
 !
 !         NUMERO DU PG DANS LE FAMILLE 'XFEM'
             ipg = idecpg + kpg
@@ -120,22 +115,20 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 !
 !         CALCUL DE LA MATRICE DE HOOKE (MATERIAU ISOTROPE)
             call vecini(36, 0.d0, d)
-            call dmatmc('XFEM', k2bid, zi(imate), inst, '+',&
+            call dmatmc('XFEM', zi(imate), inst, '+',&
                         ipg, 1, r8bi7, r8bi3, nbsig,&
                         d)
 !
 !         CONTRAINTES THERMIQUES AU PG COURANT
-            do 60 i = 1, nbsig
-                do 70 j = 1, nbsig
+            do i = 1, nbsig
+                do j = 1, nbsig
                     sigth(idebs+nbsig*(kpg-1)+i) = sigth(&
                                                    idebs+nbsig*( kpg-1)+i)+d(j+(i-1)*nbsig)*epsth&
                                                    &(j&
                                                    )
-70              continue
-60          continue
-!
-120      continue
-!
-110  end do
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

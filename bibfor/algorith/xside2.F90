@@ -129,19 +129,19 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
-    do 10 kpg = 1, npg
+    do kpg = 1, npg
 !
 !       NUMERO DU PG DANS LE FAMILLE 'XFEM'
         ipg = idecpg + kpg
 !
 !       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
         call vecini(ndim, 0.d0, xg)
-        do 110 i = 1, ndim
-            do 111 n = 1, nno
+        do i = 1, ndim
+            do n = 1, nno
                 xg(i)=xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+&
                 i)
-111          continue
-110      continue
+            end do
+        end do
 !
 !       CALCUL DES FF
         call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
@@ -152,9 +152,9 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
         if (axi) then
             r = 0.d0
-            do 1000 ino = 1, nnop
+            do ino = 1, nnop
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-1000          continue
+            end do
             ASSERT(r.ge.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
@@ -164,13 +164,13 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
             call vecini(6, 0.d0, baslog)
             lsng = 0.d0
             lstg = 0.d0
-            do 113 ino = 1, nnop
+            do ino = 1, nnop
                 lsng = lsng + lsn(ino) * ff(ino)
                 lstg = lstg + lst(ino) * ff(ino)
-                do 114 i = 1, 6
+                do i = 1, 6
                     baslog(i) = baslog(i) + basloc(6*(ino-1)+i) * ff( ino)
-114              continue
-113          continue
+                end do
+            end do
 !
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DERIVEES
@@ -194,22 +194,22 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                     epsth)
 !
 !       CALCUL DE LA MATRICE DE HOOKE (MATERIAU ISOTROPE)
-        call dmatmc('XFEM', k2bid, imate, instan, '+',&
+        call dmatmc('XFEM', imate, instan, '+',&
                     ipg, 1, r8bi7, r8bi3, nbsig,&
                     d)
 !
 !       VECTEUR DES CONTRAINTES
-        do 30 i = 1, nbsig
+        do i = 1, nbsig
             s = zero
             sth = zero
-            do 40 j = 1, nbsig
+            do j = 1, nbsig
                 s = s + eps(j)*d(i,j)
                 sth = sth + epsth(j)*d(i,j)
-40          continue
+            end do
             sig(i,kpg) = s - sth
-30      continue
+        end do
         sig(4,kpg) = sig(4,kpg)*rac2
 !
-10  end do
+    end do
 !
 end subroutine
