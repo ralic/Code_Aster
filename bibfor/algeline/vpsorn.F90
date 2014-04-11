@@ -99,6 +99,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dnaupd.h"
 #include "asterfort/dneupd.h"
 #include "asterfort/mrmult.h"
@@ -120,7 +121,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! POUR LE FONCTIONNEMENT GLOBAL
     integer :: i, j
     complex(kind=8) :: cbid
-    real(kind=8) :: varaux
+    real(kind=8) :: varaux, varaux1
     integer :: iret
 !
 ! POUR ARPACK
@@ -205,20 +206,7 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         vali (1) = info
         call utmess('F', 'ALGELINE5_48', si=vali(1))
     endif
-!
-! GESTION DES MODES CONVERGES
-    if (ido .eq. 99) then
-        if (nconv .lt. nfreq) then
-            vali (1) = nconv
-            vali (2) = nfreq
-            vali (3) = info
-            vali (4) = nbvect
-            vali (5) = maxitr
-            valr (1) = tolsor
-            call utmess('E', 'ALGELINE5_49', ni=5, vali=vali, sr=valr(1))
-            flage = .true.
-        endif
-    endif
+
 !
 !---------------------------------------------------------------------
 ! ZONE GERANT LA 'REVERSE COMMUNICATION' VIA IDO
@@ -279,7 +267,22 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         end do
 ! RETOUR VERS DNAUPD
         goto 20
-!
+
+! GESTION DES MODES CONVERGES
+    else if (ido .eq. 99) then
+        if (nconv .lt. nfreq) then
+            vali (1) = nconv
+            vali (2) = nfreq
+            call utmess('E', 'ALGELINE5_49', ni=2, vali=vali)
+            flage = .true.
+        else if (nconv.gt.nfreq) then
+            vali(1)=nconv
+            vali(2)=nfreq
+            call utmess('I', 'ALGELINE5_50', ni=2, vali=vali)
+            nconv=nfreq
+        endif
+    else
+        ASSERT(.false.)
     endif
 !--------------------------------------------------------------------
 ! CALCUL DES MODES PROPRES APPROCHES DU PB INITIAL
@@ -312,27 +315,22 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 ! POUR TEST
 !      DO 59 J=1,NCONV
 !       WRITE(IFM,*) '******** VALEUR DE RITZ N ********',J
-!       WRITE(IFM,*) 'RE: LANDAJ/ FJ INIT',DSOR(J,1),
+!       WRITE(IFM,*) 'RE: LANDAJ/ FJ INIT',DSOR(J,1),&
 !    &                   FREQOM(DSOR(J,1))
-!       WRITE(IFM,*) 'IM: LANDAJ/ FJ INIT',DSOR(J,2),
+!       WRITE(IFM,*) 'IM: LANDAJ/ FJ INIT',DSOR(J,2),&
 !    &                   FREQOM(DSOR(J,2))
 !  59 CONTINUE
 !
 !
 ! VERIFICATIONS DES VALEURS PROPRES
     do j = 1, nconv
-        varaux = abs(dsor(j,2))
-        if (varaux .gt. omecor) then
+        varaux=abs(dsor(j,2))
+        varaux1=abs(dsor(j,1))
+        if ((varaux1.gt.1.0d+3*omecor).and.(varaux.gt.1.0d-2*varaux1)) then
             vali (1) = j
             valr (1) = dsor(j,1)
             valr (2) = dsor(j,2)
             call utmess('A', 'ALGELINE5_51', si=vali(1), nr=2, valr=valr)
-        endif
-        if ((varaux.ne.0.d0) .and. (niv.ge.1)) then
-            vali(1) = j
-            valr(1) = dsor(j,1)
-            valr(2) = dsor(j,2)
-            call utmess('I', 'ALGELINE5_51', si=vali(1), nr=2, valr=valr)
         endif
     end do
 !
@@ -343,13 +341,11 @@ subroutine vpsorn(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     end do
 !
 ! TRI DES MODES PROPRES PAR RAPPORT AU NCONV DSOR(I)
-    call vpordo(1, 0, nconv, dsor, vect,&
-                nbeq)
+    call vpordo(1, 0, nconv, dsor, vect, nbeq)
 !
 ! RE-ORTHONORMALISATION SUIVANT IGS PAR RAPPORT A B
     call vpgsmm(nbeq, nconv, vect, alpha, lmasse,&
-                1, vaux, ddlexc, workv, dsor,&
-                omecor)
+                1, vaux, ddlexc, workv, dsor, omecor)
 !
 ! FIN DE VPSORN
 !

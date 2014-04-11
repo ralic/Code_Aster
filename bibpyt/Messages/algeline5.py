@@ -225,22 +225,35 @@ cata_msg={
 """),
 
 49: _(u"""
- nombre de valeurs propres convergées  %(i1)d < nombre de fréquences demandées  %(i2)d
- erreur ARPACK numéro :  %(i3)d
- --> le calcul continue, la prochaine fois
- -->   augmenter DIM_SOUS_ESPACE =  %(i4)d
- -->   ou NMAX_ITER_SOREN =  %(i5)d
- -->   ou PREC_SOREN =  %(r1)f
+ Nombre de modes propres convergés  %(i1)d < nombre de fréquences demandées  %(i2)d.
+ --> le calcul continue, on ne prend que les %(i1)d premiers modes convergés.
+
+  CONSEIL
+  -------
+  La prochaine fois, relancer en augmentant la taille de l'espace de projection (mots-clés 
+  COEF_DIM_ESPACE ou DIM_SOUS_ESPACE).
+  Vous pouvez aussi relancer en demandant moins de modes.
+  Si votre problème est fortement amorti, il est possible que des modes propres non calculés soient
+  suramortis, diminuez alors le nombre de modes demandés.
+"""),
+50: _(u"""
+ Nombre de modes propres convergés  %(i1)d > nombre de fréquences demandées  %(i2)d.
+ --> le calcul continue, on ne prend que les %(i2)d premiers modes convergés.
 
 """),
 
 51: _(u"""
- La valeur propre numéro  %(i1)d a une partie imaginaire non nulle.
+ La valeur propre numéro  %(i1)d a une partie imaginaire non négligeable.
  Partie réelle     = %(r1)12.5E
  Partie imaginaire = %(r2)12.5E
 
- Ce phénomène numérique est fréquent sur les premières valeurs propres
- lorsque le spectre recherché est très étendu.
+ Ce phénomène numérique est fréquent sur les valeurs propres en bordure du spectre recherché.
+
+ CONSEIL
+ -------
+  En cas de problème, la prochaine fois, relancer en demandant moins de modes ou en augmentant la
+  taille de l'espace de projection (mots-clés COEF_DIM_ESPACE ou DIM_SOUS_ESPACE).
+
 """),
 
 52: _(u"""

@@ -101,6 +101,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/mcmult.h"
 #include "asterfort/resoud.h"
 #include "asterfort/utmess.h"
@@ -203,19 +204,7 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         vali (1) = info
         call utmess('F', 'ALGELINE4_82', si=vali(1))
     endif
-!
-! GESTION DES MODES CONVERGES
-    if ((nconv.lt.nfreq) .and. (ido.eq.99)) then
-        vali (1) = nconv
-        vali (2) = nfreq
-        vali (3) = info
-        vali (4) = nbvect
-        vali (5) = maxitr
-        valr = tolsor
-        call utmess('E', 'ALGELINE5_49', ni=5, vali=vali, sr=valr)
-        flage = .true.
-    endif
-!
+
 !---------------------------------------------------------------------
 ! ZONE GERANT LA 'REVERSE COMMUNICATION' VIA IDO
 !
@@ -275,7 +264,22 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
         end do
 ! RETOUR VERS DNAUPD
         goto 20
-!
+
+! GESTION DES MODES CONVERGES
+    else if (ido .eq. 99) then
+        if (nconv .lt. nfreq) then
+            vali (1) = nconv
+            vali (2) = nfreq
+            call utmess('E', 'ALGELINE5_49', ni=2, vali=vali)
+            flage = .true.
+        else if (nconv.gt.nfreq) then
+            vali(1)=nconv
+            vali(2)=nfreq
+            call utmess('I', 'ALGELINE5_50', ni=2, vali=vali)
+            nconv=nfreq
+        endif
+    else
+        ASSERT(.false.)
     endif
 !--------------------------------------------------------------------
 ! CALCUL DES MODES PROPRES APPROCHES DU PB INITIAL

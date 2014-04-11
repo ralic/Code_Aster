@@ -111,6 +111,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dnaups.h"
 #include "asterfort/dneupd.h"
 #include "asterfort/resoud.h"
@@ -133,7 +134,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 ! POUR LE FONCTIONNEMENT GLOBAL
     integer :: i, j
     complex(kind=8) :: cbid
-    real(kind=8) :: varaux
+    real(kind=8) :: varaux,varaux1
     integer :: iret
 !
 ! POUR ARPACK
@@ -236,18 +237,6 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
         call utmess('F', 'ALGELINE5_48', si=vali(1))
     endif
 !
-! GESTION DES MODES CONVERGES
-    if ((nconv.lt.nfreq) .and. (ido.eq.99)) then
-        vali (1) = nconv
-        vali (2) = nfreq
-        vali (3) = info
-        vali (4) = nbvect
-        vali (5) = maxitr
-        valr (1) = tolsor
-        call utmess('E', 'ALGELINE5_49', ni=5, vali=vali, sr=valr(1))
-        flage = .true.
-    endif
-!
 !---------------------------------------------------------------------
 ! ZONE GERANT LA 'REVERSE COMMUNICATION' VIA IDO
 !
@@ -318,7 +307,22 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
         end do
 ! RETOUR VERS DNAUPD
         goto 20
-!
+
+! GESTION DES MODES CONVERGES
+    else if (ido .eq. 99) then
+        if (nconv .lt. nfreq) then
+            vali (1) = nconv
+            vali (2) = nfreq
+            call utmess('E', 'ALGELINE5_49', ni=2, vali=vali)
+            flage = .true.
+        else if (nconv.gt.nfreq) then
+            vali(1)=nconv
+            vali(2)=nfreq
+            call utmess('I', 'ALGELINE5_50', ni=2, vali=vali)
+            nconv=nfreq
+        endif
+    else
+        ASSERT(.false.)
     endif
 !--------------------------------------------------------------------
 ! CALCUL DES MODES PROPRES APPROCHES DU PB INITIAL
@@ -360,22 +364,13 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
 !
 ! VERIFICATIONS DES VALEURS PROPRES
     do j = 1, nconv
-        varaux = abs(dsor(j,2))
-        if (varaux .gt. omecor) then
+        varaux=abs(dsor(j,2))
+        varaux1=abs(dsor(j,1))
+        if ((varaux1.gt.1.0d+3*omecor).and.(varaux.gt.1.0d-2*varaux1)) then
             vali (1) = j
             valr (1) = dsor(j,1)
             valr (2) = dsor(j,2)
             call utmess('A', 'ALGELINE5_51', si=vali(1), nr=2, valr=valr)
-        else if ((varaux.ne.0.d0).and.(niv.ge.1)) then
-            write(ifm,*)'<VPSORN/DNEUPD 0> LA VALEUR PROPRE NUMERO ',&
-            j
-            write(ifm,*)'A UNE PARTIE IMAGINAIRE NON NULLE'
-            write(ifm,*)'RE(VP) = ',dsor(j,1)
-            write(ifm,*)'IM(VP) = ',dsor(j,2)
-            write(ifm,*)'--> CE PHENOMENE NUMERIQUE EST FREQUENT'
-            write(ifm,*)'--> SUR LES PREMIERES VALEURS PROPRES'
-            write(ifm,*)'--> LORSQUE LE SPECTRE RECHERCHE EST'
-            write(ifm,*)'--> TRES ETENDU (EN PULSATION) '
         endif
     end do
 !
