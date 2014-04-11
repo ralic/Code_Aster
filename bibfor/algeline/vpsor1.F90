@@ -189,7 +189,7 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor,&
     iparam(11) =0
 !
 ! INIT. OBJETS ASTER
-    matass=zk24(zi(ldynfa+1))
+    matass=zk24(zi(ldynfa+1))(1:19)
     chcine=' '
     criter=' '
     k19bid=' '

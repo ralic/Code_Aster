@@ -122,7 +122,6 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
 !
 ! POUR LE FONCTIONNEMENT GLOBAL
     integer :: i, j
-    real(kind=8) :: valr
     integer :: iret
 !
 ! POUR ARPACK

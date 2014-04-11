@@ -131,7 +131,6 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14)
     real(kind=8) :: sigmar, sigmai
-    real(kind=8) :: valr
     logical :: rvec
     character(len=1) :: bmat
     character(len=2) :: which

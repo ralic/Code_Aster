@@ -120,7 +120,6 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
     integer :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*), neqact, maxitr
     integer :: ifm, niv, priram(8), nconv, lamor
     real(kind=8) :: tolsor, alpha, rwork(*)
-    real(kind=8) :: valr
     logical :: selec(*), flage
     complex(kind=8) :: sigma, vect(nbeq, *), dsor(*), resid(*), workd(*), workl(*), vaux(*)
     complex(kind=8) :: vauc(2*nbeq, *), workv(*)

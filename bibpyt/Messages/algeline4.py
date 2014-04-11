@@ -364,16 +364,4 @@ Risques & conseils :
  On le ramène à la valeur : %(r2)f.
 """),
 
-98 : _(u"""
- nombre de valeurs propres convergées  %(i1)d < nombre de fréquences demandées  %(i2)d
- erreur ARPACK numéro :  %(i3)d
- --> le calcul continue, la prochaine fois
- -->   augmenter DIM_SOUS_ESPACE =  %(i4)d
- -->   ou NMAX_ITER_SOREN =  %(i5)d
- -->   ou PREC_SOREN =  %(r1)f
- si votre problème est fortement amorti, il est possible que
- des modes propres non calculés soient sur amortis
- --> diminuez le nombre de fréquences demandées
-"""),
-
 }
