@@ -27,6 +27,7 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
 #include "asterc/r8vide.h"
 #include "asterfort/eicine.h"
 #include "asterfort/pipeou.h"
+#include "asterfort/pipeex.h"
 #include "asterfort/pipetc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
@@ -95,6 +96,9 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
                         vim(1, g), dtau, copilo(1, g))
         else if (compor.eq.'CZM_OUV_MIX') then
             call pipeou(mat, sup, sud, mup, mud,&
+                        vim(1, g), dtau, copilo(1, g))
+        else if (compor.eq.'CZM_EXP_MIX') then
+            call pipeex(mat, sup, sud, mup, mud,&
                         vim(1, g), dtau, copilo(1, g))
         else
             call utmess('F', 'MECANONLINE_59')

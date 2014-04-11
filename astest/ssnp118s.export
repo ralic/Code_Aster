@@ -3,9 +3,8 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C
+P testlist C 
 
-F comm ssnp118q.comm D 1
-F mail ssnp118g.mail D 20
-
+F comm ssnp118s.comm D 1
+F mmed ssnp118i.mmed D 20
 
