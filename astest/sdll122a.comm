@@ -48,7 +48,7 @@ GF=DEFI_GEOM_FIBRE(INFO=1,
                         -0.10,  0.11, 1.5E-4, ),
     ),
 )
-
+#
 POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=1,
     # caracteristiques des sections, orientations et rigidite de torsion
     POUTRE=_F(  GROUP_MA=('POUTRE'),
@@ -295,9 +295,13 @@ for numordre,maille,point,spoint,npara,lavale in PourTest:
 
 # IMPRESSION DU MAILLE GLOBAL SECTION
 MAGF=CREA_MAILLAGE(GEOM_FIBRE=GF)
-IMPR_RESU(FORMAT='ASTER',UNITE=32,RESU=_F(MAILLAGE=MAGF))
+# DEFI_FICHIER pour forcer la fermeture
+unite=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='./MAGF.mail',ACCES='NEW')
+IMPR_RESU(FORMAT='ASTER',UNITE=unite,RESU=_F(MAILLAGE=MAGF))
+DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
+#
 TEST_FICHIER(
-    FICHIER ='./fort.32',EXPR_IGNORE = ('ASTER'),
+    FICHIER ='./MAGF.mail',EXPR_IGNORE = ('ASTER'),
     NB_VALE     =  3623,
     VALE_CALC   =  6.0025141999560e+05,
     VALE_CALC_K = "c44dcee219bea31bcd4a1c541a5e341f",
