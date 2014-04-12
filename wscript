@@ -29,8 +29,6 @@ def options(self):
         return ori_get_usage() + os.linesep.join((
         '',
         'Environment variables:',
-        '  INCLUDES       : space separated list of directories extending the include'
-        ' path',
         '  CC             : C compiler',
         '  FC             : Fortran compiler',
         '  CXX            : C++ compiler',
