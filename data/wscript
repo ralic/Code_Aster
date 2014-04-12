@@ -39,7 +39,7 @@ def build(self):
     install_path = '${ASTERDATADIR}',
             vars = ['PREFIX', 'DEFINES', 'PYTHON',
                     'FC', 'FCFLAGS',
-                    'PYTHONDIR', 'LIBPATH', 'LIBDIR', 'CFG_PYTHONPATH',
+                    'LIBPATH', 'LIBDIR', 'CFG_PYTHONPATH',
                     'ASTERDATADIR', 'OPT_ENV', 'install_tests'],
      **dict_conv
     )

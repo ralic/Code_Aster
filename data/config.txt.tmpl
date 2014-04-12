@@ -9,7 +9,7 @@ PYTHON         | python  | -     | @PYTHON@
 #
 BIN_NODBG      | bin     | -     | @PREFIX@/bin/aster
 BIN_DBG        | bin     | -     | @PREFIX@/bin/asterd
-BINCMDE        | bin     | -     | @PYTHONDIR@/Cata
+BINCMDE        | bin     | -     | @LIBDIR@/aster/Cata
 BINELE         | bin     | -     | $ASTER_VERSION_DIR/elements
 BINPICKLED     | bin     | -     | @SRC@/build/release/catalo/cata_ele.pickled
 #
@@ -20,7 +20,7 @@ OPTF90_O       | compil  | -     | @FCFLAGS@
 # for as_run --messages, --get, --show..., and astout
 SRCFOR         | src     | -     | @SRC@/bibfor
 SRCC           | src     | -     | @SRC@/bibc
-SRCPY          | src     | -     | @PYTHONDIR@
+SRCPY          | src     | -     | @LIBDIR@/aster
 SRCCATA        | src     | -     | @SRC@/catalo
 SRCCAPY        | src     | -     | @SRC@/catapy
 @srctest@
