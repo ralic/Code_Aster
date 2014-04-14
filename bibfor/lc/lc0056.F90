@@ -22,9 +22,9 @@ subroutine lc0056(fami, kpg, ksp, ndim, imate,&
 !
 ! aslint: disable=W0104,W1504
     implicit none
-#include "asterfort/utmess.h"
+#include "asterfort/lceiex.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
-    real(kind=8) :: crit(*), angmas(3)
+    real(kind=8) :: crit(*), angmas(3),r
     real(kind=8) :: instam, instap, tampon(*)
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), sigp(6)
@@ -33,7 +33,26 @@ subroutine lc0056(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-!   KIT_CG
-!   ON NE DOIT JAMAIS PASSER PAR LA
-    call utmess('F', 'FERMETUR_11')
+!
+! ======================================================================
+!       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+!       IN      KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
+!               DEPS   INCREMENT DE DEFORMATION TOTALE
+!               VIM    VARIABLES INTERNES A T    + INDICATEUR ETAT T
+!    ATTENTION  VIM    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
+!               OPTION     OPTION DE CALCUL A FAIRE
+!                             'RIGI_MECA_TANG'> DSIDEP(T)
+!                             'FULL_MECA'     > DSIDEP(T+DT) , SIG(T+DT)
+!                             'RAPH_MECA'     > SIG(T+DT)
+!       OUT     SIGP    CONTRAINTE A T+DT
+!               VIP     VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
+!               DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+! ======================================================================
+!
+    r=tampon(1)
+    call lceiex(fami, kpg, ksp, imate, option,&
+                epsm, deps, sigp, dsidep, vim,&
+                vip, r,codret)
+    tampon(1)=r
+!
 end subroutine

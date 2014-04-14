@@ -74,6 +74,7 @@ def C_RELATION( COMMAND ):
                                         "CORR_ACIER",
                                         "CZM_EXP",
                                         "CZM_EXP_REG",
+                                        "CZM_EXP_MIX",
                                         "CZM_FAT_MIX",
                                         "CZM_LIN_REG",
                                         "CZM_OUV_MIX",
