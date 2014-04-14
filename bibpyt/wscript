@@ -1,17 +1,10 @@
 # coding=utf-8
 
-import os.path as osp
-import shutil
 from pprint import pformat
 
 def build(self):
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
-    #if self.cmd.startswith('install'):
-        #try:
-            #shutil.rmtree(env.PYTHONDIR)
-        #except OSError:
-            #pass
 
     self(
         features = 'py',

@@ -164,10 +164,18 @@ def build(self):
     if not self.variant:
         self.fatal('Call "waf build_debug" or "waf build_release", and read ' \
                    'the comments in the wscript file!')
+    if self.cmd.startswith('install'):
+        # because we can't know which files are obsolete `rm *.py{,c,o}`
+        instdir = self.root.find_node(self.env.ASTERLIBDIR)
+        if instdir and instdir.abspath().startswith(osp.abspath(self.env['PREFIX'])):
+            files = instdir.ant_glob('**/*.py')
+            files.extend(instdir.ant_glob('**/*.pyc'))
+            files.extend(instdir.ant_glob('**/*.pyo'))
+            for i in [i.abspath() for i in files]:
+                os.remove(i)
 
     self.recurse('bibfor')
     self.recurse('bibc')
-
     self.recurse('bibpyt')
     self.recurse('i18n')
     lsub = ['materiau', 'datg', 'catapy', 'catalo']
