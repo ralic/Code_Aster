@@ -34,12 +34,11 @@ def runtest(self):
         toolargs.append('--exectool=%s' % opts.exectool)
     dtmp = tempfile.mkdtemp(prefix='runtest_')
     Logs.info("destination of output files: %s" % dtmp)
-    versdir = osp.join(self.env['PREFIX'], 'share', 'aster')
     status = 0
     if not opts.testname:
         raise Errors.WafError('no testcase name provided, use the -n option')
     for test in opts.testname:
-        cmd = ['as_run', '--vers=%s' % versdir, '--test', test]
+        cmd = ['as_run', '--vers=%s' % self.env['ASTERDATADIR'], '--test', test]
         if self.variant == 'debug':
             cmd.extend(['-g', '--nodebug_stderr'])
         cmd.extend(toolargs)

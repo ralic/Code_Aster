@@ -10,7 +10,7 @@ from waflib import TaskGen, Logs, Utils, Errors, Task, Context
 def build(self):
     env = self.all_envs[self.variant]
     if self.cmd.startswith('uninstall'):
-        elem = osp.join(env.LIBDIR, 'aster', 'elements')
+        elem = osp.join(env.ASTERLIBDIR, 'elements')
         try:
             os.remove(elem)
         except OSError:
@@ -23,7 +23,7 @@ def build(self):
           target = 'elements',
              env = env,
             vars = ['CATALO_CMD'],
-    install_path = self.options.destdir + osp.join(env.LIBDIR, 'aster'),
+    install_path = self.options.destdir + env.ASTERLIBDIR,
     )
 
 @TaskGen.feature('catalo')

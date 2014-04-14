@@ -21,7 +21,7 @@ def build(self):
        features = 'pkginfo py',
            name = 'pkginfo',
          target = 'pkginfo.py',
-   install_path = osp.join(env.LIBDIR, 'aster', 'Accas'),
+   install_path = osp.join(env.ASTERLIBDIR, 'Accas'),
     )
 
 

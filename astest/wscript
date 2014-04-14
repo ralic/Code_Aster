@@ -6,7 +6,7 @@ def build(self):
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs['default']
     self.install_files(
-        osp.join(*list(env.ASTERDATADIR + ['tests'])),
+        osp.join(env.ASTERDATADIR, 'tests'),
         get_srcs('**/*', excl='wscript'),
         relative_trick=True,
     )

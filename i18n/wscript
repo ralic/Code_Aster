@@ -76,7 +76,7 @@ def build(self):
                     name = 'i18n_' + lang,
                     path = self.path,
                     lang = lang,
-            install_path = '${LOCALEDIR}',
+            install_path = self.env.ASTERLOCALEDIR,
             )
 
 ###############################################################################
@@ -143,9 +143,7 @@ def apply_i18n(self):
     self.create_task('merge_po', src=[inpo, pot], tgt=outpo)
     self.create_task('compile_po', src=outpo, tgt=mof)
 
-    if not self.env.LOCALEDIR:
-        self.env.LOCALEDIR = osp.join(self.env.PREFIX, 'share', 'locale')
-    inst = getattr(self, 'install_path', '${LOCALEDIR}')
+    inst = getattr(self, 'install_path', '${ASTERLOCALEDIR}')
     if inst:
         path = osp.join(inst, self.lang, 'LC_MESSAGES')
         self.bld.install_files(path, mof)

@@ -7,10 +7,10 @@ DEFS           | defined | -     | @DEFINES@
 #
 PYTHON         | python  | -     | @PYTHON@
 #
-BIN_NODBG      | bin     | -     | @PREFIX@/bin/aster
-BIN_DBG        | bin     | -     | @PREFIX@/bin/asterd
-BINCMDE        | bin     | -     | @LIBDIR@/aster/Cata
-BINELE         | bin     | -     | @LIBDIR@/aster/elements
+BIN_NODBG      | bin     | -     | @PREFIX@/bin/aster@astervers@
+BIN_DBG        | bin     | -     | @PREFIX@/bin/asterd@astervers@
+BINCMDE        | bin     | -     | @ASTERLIBDIR@/Cata
+BINELE         | bin     | -     | @ASTERLIBDIR@/elements
 BINPICKLED     | bin     | -     | @SRC@/build/release/catalo/cata_ele.pickled
 #
 # for as_run --make_shared...
@@ -20,7 +20,7 @@ OPTF90_O       | compil  | -     | @FCFLAGS@
 # for as_run --messages, --get, --show..., and astout
 SRCFOR         | src     | -     | @SRC@/bibfor
 SRCC           | src     | -     | @SRC@/bibc
-SRCPY          | src     | -     | @LIBDIR@/aster
+SRCPY          | src     | -     | @ASTERLIBDIR@
 SRCCATA        | src     | -     | @SRC@/catalo
 SRCCAPY        | src     | -     | @SRC@/catapy
 @srctest@

@@ -1,24 +1,24 @@
 # coding=utf-8
 
-import os
+import os.path as osp
 import shutil
 from pprint import pformat
 
 def build(self):
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
-    if self.cmd.startswith('install'):
-        try:
-            shutil.rmtree(env.PYTHONDIR)
-        except OSError:
-            pass
+    #if self.cmd.startswith('install'):
+        #try:
+            #shutil.rmtree(env.PYTHONDIR)
+        #except OSError:
+            #pass
 
     self(
         features = 'py',
             name = 'bibpyt',
           source = get_srcs('**/*.py'),
     install_from = '.',
-    install_path = os.path.join(env.LIBDIR, 'aster'),
+    install_path = env.ASTERLIBDIR,
     )
 
     self(
@@ -26,7 +26,7 @@ def build(self):
             name = 'aster_pkginfo',
           source = 'aster_pkginfo.pytmpl',
           target = 'aster_pkginfo.py',
-    install_path = os.path.join(env.LIBDIR, 'aster'),
+    install_path = env.ASTERLIBDIR,
              use = ['bibpyt'],
     VERSION_INFO = pformat(env['ASTER_VERSION']),
     )

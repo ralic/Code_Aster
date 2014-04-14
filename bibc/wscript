@@ -73,20 +73,20 @@ def build(self):
     self.add_group()
     # install headers
     self.install_files(
-        osp.join(env.INCLUDEDIR, 'aster'),
+        env.ASTERINCLUDEDIR,
         get_srcs('include/*.h')
     )
     # install generated headers (C + fortran)
     bld = self.path.get_bld().parent
     config_includes = bld.ant_glob('aster*_config.h', quiet=True)
     self.install_files(
-        osp.join(env.INCLUDEDIR, 'aster'),
+        env.ASTERINCLUDEDIR,
         config_includes
     )
 
 def build_as_shared(self, shenv):
     get_srcs = self.path.get_src().ant_glob
-    uses = self.env['all_dependencies']
+    uses = shenv['all_dependencies']
 
     self(
         features = 'c cshlib',
@@ -96,6 +96,7 @@ def build_as_shared(self, shenv):
          defines = '_WITHOUT_PYMOD_',
              env = shenv.derive(),
              use = ['PYEMBED', 'NUMPY', 'asterbibfor'] + uses,
+    install_path = shenv.ASTERLIBDIR,
     )
 
     self.add_group()
@@ -107,6 +108,7 @@ def build_as_shared(self, shenv):
           source = get_srcs('**/aster_core_module.c'),
              env = shenv.derive(),
              use = ['asterlib'] + uses,
+    install_path = shenv.ASTERLIBDIR,
     )
 
     self(
@@ -116,6 +118,7 @@ def build_as_shared(self, shenv):
           source = get_srcs('**/aster_module.c'),
              env = shenv.derive(),
              use = ['asterlib'] + uses,
+    install_path = shenv.ASTERLIBDIR,
     )
 
     self(
@@ -125,6 +128,7 @@ def build_as_shared(self, shenv):
           source = get_srcs('**/aster_fonctions_module.c'),
              env = shenv.derive(),
              use = ['NUMPY', 'asterlib'] + uses,
+    install_path = shenv.ASTERLIBDIR,
     )
 
     if shenv.BUILD_MED:
@@ -135,18 +139,19 @@ def build_as_shared(self, shenv):
               source = get_srcs('**/med_aster_module.c'),
                  env = shenv.derive(),
                  use = ['asterlib'] + uses,
+        install_path = shenv.ASTERLIBDIR,
         )
 
 def build_as_embeded(self, stenv):
     get_srcs = self.path.get_src().ant_glob
-    uses = self.env['all_dependencies']
+    uses = stenv['all_dependencies']
 
     excl = ['**/med_aster_module.c'] if not stenv.BUILD_MED else []
 
     # required for Intel compiler
     main = 'main' if stenv.FC_MAIN == -1 or 'ifort' in stenv.LINK_FC else stenv.FC_MAIN
 
-    tgt = (self.variant == 'release' and 'aster') or 'asterd'
+    tgt = (self.variant == 'release' and stenv.ASTERBINOPT) or stenv.ASTERBINDBG
     self(
         features = 'c fcprogram pyembed',
           target = tgt,

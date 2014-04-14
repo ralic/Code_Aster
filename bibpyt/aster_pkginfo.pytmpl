@@ -20,7 +20,7 @@ from collections import namedtuple
 
 __all__ = ['locale_dir', 'version_info']
 
-locale_dir = '@LOCALEDIR@'
+locale_dir = '@ASTERLOCALEDIR@'
 
 version_info = namedtuple('aster_version_info', [
 'version', 'parentid', 'branch', 'date', 'from_branch', 'changes', 'uncommitted'

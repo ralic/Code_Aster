@@ -80,6 +80,11 @@ def options(self):
     group.add_option('--install-tests', dest='install_tests',
                     action='store_true', default=False,
                     help='install the testcases files')
+    group.add_option('--install-as', dest='astervers',
+                    action='store', default='',
+                    help='install as this version name, used for '
+        'subdirectories (example: X.Y will use aster/X.Y/...), '
+        "[Default: '']")
     self.recurse('bibfor')
     self.recurse('bibc')
     self.recurse('i18n')
@@ -91,7 +96,6 @@ def configure(self):
     self.load('ext_aster', tooldir='waftools')
     self.load('use_config', tooldir='waftools')
     self.load('gnu_dirs')
-    self.env.append_value('ASTERDATADIR', osp.join(self.env.DATADIR, 'aster'))
     self.env['BIBPYTPATH'] = self.path.find_dir('bibpyt').abspath()
 
     self.env.ASTER_EMBEDS = []
@@ -116,6 +120,7 @@ def configure(self):
     os.environ['LD_LIBRARY_PATH'] = os.pathsep.join(p for p in paths if p)
 
     self.load('scm_aster', tooldir='waftools')
+    self.set_installdirs()
     self.load('parallel', tooldir='waftools')
     self.check_platform()
 
@@ -208,6 +213,26 @@ class TestContext(Build.BuildContext):
     """Facility to execute a testcase"""
     cmd = 'test'
     fun = 'runtest'
+
+@Configure.conf
+def set_installdirs(self):
+    """Set the installation subdirectories"""
+    vers = self.options.astervers
+    if vers is None:
+        try:
+            vers = str(self.env.ASTER_VERSION[0][0]) + '-dev'
+        except (TypeError, IndexError):
+            vers = 'N-dev'
+    self.env.astervers = vers
+    norm = lambda path : osp.normpath(osp.join(path, 'aster', vers))
+    self.env['ASTERBINOPT'] = 'aster' + vers
+    self.env['ASTERBINDBG'] = 'asterd' + vers
+    self.env['ASTERLIBDIR'] = norm(self.env.LIBDIR)
+    self.env['ASTERINCLUDEDIR'] = norm(self.env.INCLUDEDIR)
+    self.env['ASTERDATADIR'] = norm(self.env.DATADIR)
+    if not self.env.LOCALEDIR:
+        self.env.LOCALEDIR = osp.join(self.env.PREFIX, 'share', 'locale')
+    self.env['ASTERLOCALEDIR'] = norm(self.env.LOCALEDIR)
 
 @Configure.conf
 def uncompress64(self, compressed):

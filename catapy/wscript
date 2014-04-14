@@ -23,7 +23,7 @@ def build(self):
            name = 'catapy',
          target = 'cata.py',
          source = sources,
-   install_path = osp.join(env.LIBDIR, 'aster', 'Cata'),
+   install_path = osp.join(env.ASTERLIBDIR, 'Cata'),
     )
 
 ###############################################################################
