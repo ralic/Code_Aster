@@ -402,6 +402,17 @@ FIN()
                       DEFORMATION='%(k1)s',
 """),
 
+91: _(u"""
+   SIMU_POINT_MAT : META_LEMA_ANI est interdit à cause de la matrice de Hill définie en repère cylindrique.
+   Si la matrice de Hill est isotrope, utiliser SIMU_POINT_MAT avec SUPPORT='ELEMENT'.
+   Sinon, utiliser STAT_NON_LINE sur un maillage adéquat.
+"""),
+
+92: _(u"""
+   SIMU_POINT_MAT : META_LEMA_ANI définit une matrice de Hill définie en repère cylindrique.
+   Il faut donc vérifier que  la matrice de Hill est isotrope.
+   Sinon, utiliser STAT_NON_LINE sur un maillage adéquat.
+"""),
 
 
 }

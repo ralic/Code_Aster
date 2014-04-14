@@ -216,7 +216,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                              dico['VALE_REF']=lvarc[ivarc]['VALE_REF']
                       lmotcle.append(dico)
              motscles['AFFE_VARC']  = lmotcle
-
+       if lcomp['RELATION'] == 'META_LEMA_ANI' :
+           UTMESS('F','COMPOR2_91',valk=lcomp['RELATION'] )
        self.DeclareOut('REPONSE',self.sd)
 
        Titre='CALC_POINT_MAT'
@@ -786,6 +787,9 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
       motscles={}
       if   COMPORTEMENT  :
           motscles['COMPORTEMENT']   = COMPORTEMENT.List_F()
+          
+      if lcomp['RELATION'] == 'META_LEMA_ANI' :
+           UTMESS('A','COMPOR2_92',valk=lcomp['RELATION'] )
 
       motscles['CONVERGENCE'] = CONVERGENCE.List_F()
 
