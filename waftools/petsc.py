@@ -64,7 +64,8 @@ def check_petsc_libs(self, optlibs):
 
 @Configure.conf
 def check_petsc_headers(self):
-    check = partial(self.check, header_name='petsc.h', uselib='PETSC')
+    check = partial(self.check, header_name='petsc.h', uselib='PETSC',
+                    uselib_store='PETSC')
 
     self.start_msg('Checking for header petsc.h')
     try:
