@@ -118,8 +118,8 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
                                         PROL_GAUCHE  = 'CONSTANT',
                                         PROL_DROITE  = 'CONSTANT',
                                         NOEUD        = node , **motscles )
-                  elif args['MULT_APPUI']!=None :
-                    UTMESS('F','SPECTRAL0_13')
+                  elif args.get('MULT_APPUI') != None: 
+                      UTMESS('F','SPECTRAL0_13')
                   if resu['RESULTAT' ]!=None :
                     motscles['RESULTAT']  = resu['RESULTAT']
                     __spo=RECU_FONCTION(NOM_CHAM     = NOM_CHAM,
