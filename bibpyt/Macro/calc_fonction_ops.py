@@ -46,7 +46,7 @@ def calc_fonction_ops(self, **args):
     # éléments de contexte
     ctxt = Context()
 
-    operation = calc_fonction_operation(self, ctxt, args)
+    operation = CalcFonctionOper.factory(self, ctxt, args)
     try:
         operation.run()
     except InterpolationError, msg:
@@ -59,26 +59,27 @@ def calc_fonction_ops(self, **args):
         UTMESS('F', 'FONCT0_30',
                valk=(ctxt.f, str(msg), traceback.format_exc()))
 
-def calc_fonction_operation(macro, ctxt, kwargs):
-    """Factory that returns the operation object."""
-    un_parmi = ('DERIVE', 'INTEGRE', 'SPEC_OSCI', 'DSP', 'FFT', 'CORR_ACCE',
-                'COMB', 'COMB_C', 'MULT', 'ASSE', 'INVERSE', 'ABS',
-                'ENVELOPPE', 'COMPOSE', 'EXTRACTION', 'PUISSANCE',
-                'LISS_ENVELOP', 'FRACTILE', 'REGR_POLYNOMIALE')
-    oper = [key for key in un_parmi if kwargs[key] is not None]
-    try:
-        class_ = globals()['CalcFonction_' + oper[0]]
-    except KeyError:
-        UTMESS('F', 'DVP_1')
-    return class_(macro, oper[0], ctxt, kwargs)
-
-
 class CalcFonctionOper(object):
     """Base of all CALC_FONCTION operations.
 
     Subclasses must implement the '_run' method and, if necessary, may
     overload the '_build_data' method.
     """
+
+    @staticmethod
+    def factory(macro, ctxt, kwargs):
+        """Factory that returns the operation object
+        Subclasses must be named 'CalcFonction_KEYWORD'
+        """
+        types = CalcFonctionOper.__subclasses__()
+        try:
+            for class_ in types:
+                keyw = class_.__name__.replace('CalcFonction_', '')
+                if kwargs[keyw]:
+                    return class_(macro, keyw, ctxt, kwargs)
+        except KeyError:
+            UTMESS('F', 'DVP_1')
+
     def __init__(self, macro, oper, ctxt, kwargs):
         """Initialization"""
         self.macro = macro
