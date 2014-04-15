@@ -1,6 +1,6 @@
 subroutine vecgme(modele, carele, mate, charge, infcha,&
                   instap, depmoz, depdez, vecelz, instam,&
-                  compor, carcri, ligrez, vitez)
+                  compor, carcri, ligrez, vitez, strmoz)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 #include "asterfort/nmvgme.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: mate, ligrez, vecelz, depmoz, depdez, vitez
+    character(len=*) :: mate, ligrez, vecelz, depmoz, depdez, vitez, strmoz
     character(len=19) :: vecele
     character(len=24) :: modele, carele, charge, infcha, compor, carcri
     real(kind=8) :: instap, instam
@@ -72,7 +72,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     character(len=16) :: option
     character(len=24) :: chgeom, chcara(18), chtime, ligrel, ligrmo
     character(len=24) :: lchin(16), chtim2, ligrch, evolch
-    character(len=19) :: resuel, resufv(1), depmoi, depdel, vites
+    character(len=19) :: resuel, resufv(1), depmoi, depdel, vites, strmoi
     integer :: ibid, iret, nchar, ilve, jchar, jinf, k, icha, numchm
     integer :: jlchin, ier
     logical :: bidon
@@ -100,6 +100,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     depmoi = depmoz
     depdel = depdez
     vites = vitez
+    strmoi = strmoz
 !
     bidon = .true.
     call jeexin(charge, iret)
@@ -250,7 +251,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
             resufv(ii) (10:16) = newnom(2:8)
         end do
         call nmvgme(modele, ligrel, carele, charge, icha,&
-                    instap, resufv, depmoi, depdel, vites)
+                    instap, resufv, depmoi, depdel, vites, strmoi)
         do ii = 1, 1
             call reajre(vecele, resufv(ii), 'V')
         end do

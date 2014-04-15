@@ -18,7 +18,7 @@
 interface
     subroutine vecgme(modele, carele, mate, charge, infcha,&
                       instap, depmoz, depdez, vecelz, instam,&
-                      compor, carcri, ligrez, vitez)
+                      compor, carcri, ligrez, vitez, strmoz)
         character(len=24) :: modele
         character(len=24) :: carele
         character(len=*) :: mate
@@ -33,5 +33,6 @@ interface
         character(len=24) :: carcri
         character(len=*) :: ligrez
         character(len=*) :: vitez
+        character(len=*) :: strmoz
     end subroutine vecgme
 end interface

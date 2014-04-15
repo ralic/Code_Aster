@@ -17,7 +17,8 @@
 !
 interface
     subroutine nmvgme(modele, ligrel, carele, charge, icha,&
-                      instan, resufv, depmoi, depdel, vites)
+                      instan, resufv, depmoi, depdel, vites,&
+                      strmoi)
         character(len=*) :: modele
         character(len=*) :: ligrel
         character(len=*) :: carele
@@ -28,5 +29,6 @@ interface
         character(len=*) :: depmoi
         character(len=*) :: depdel
         character(len=*) :: vites
+        character(len=*) :: strmoi
     end subroutine nmvgme
 end interface

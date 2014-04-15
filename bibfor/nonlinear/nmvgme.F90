@@ -1,5 +1,6 @@
 subroutine nmvgme(modele, ligrel, carele, charge, icha,&
-                  instan, resufv, depmoi, depdel, vites)
+                  instan, resufv, depmoi, depdel, vites,&
+                  strmoi)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +45,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 #include "asterfort/vtgpld.h"
 !
     character(len=*) :: modele, carele, resufv(1), ligrel, charge
-    character(len=*) :: depmoi, depdel, vites
+    character(len=*) :: depmoi, depdel, vites, strmoi
     real(kind=8) :: instan
     integer :: icha
 ! ----------------------------------------------------------------------
@@ -73,8 +74,8 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
     character(len=24) :: chgeom, nom24, chcara(18)
     character(len=24) :: valk
 !
-    character(len=8) :: lpain(7), paout
-    character(len=19) :: lchin(7)
+    character(len=8) :: lpain(8), paout
+    character(len=19) :: lchin(8)
 !
     character(len=8) :: noma1, noma2, madef
     character(len=19) :: resu, nuage1, nuage2, method, resu1
@@ -219,11 +220,13 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
         lchin(6) = chcara(6)(1:19)
         lpain(7) = 'PCAORIE'
         lchin(7) = chcara(1)(1:19)
+        lpain(8) = 'PSTRXMR'
+        lchin(8) = strmoi
 !
         paout = 'PVECTUR'
 !
         call corich('E', resufv(1), icha, ibid)
-        call calcul('S', option, ligrel, 7, lchin,&
+        call calcul('S', option, ligrel, 8, lchin,&
                     lpain, 1, resufv(1), paout, 'V',&
                     'OUI')
     endif

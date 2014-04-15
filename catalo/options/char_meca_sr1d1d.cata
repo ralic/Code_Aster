@@ -24,10 +24,11 @@ OPTION__
         PGEOMER  GEOM_R
         PCAGNPO  CAGNPO   << Champ de caracteristiques generales pour les poutres. Concept CARA_ELEM >>
         PCAORIE  CAORIE   << Champ de caracteristiques d'orientation. Concept CARA_ELEM >>
-        
+
         PDEPLMR  DEPL_R
         PDEPLPR  DEPL_R
         PVENTCX  VENTCX_F
         PVITER   DEPL_R
+        PSTRXMR  STRX_R
    OUT__
 PVECTUR VDEP_R RESL__

@@ -24,6 +24,12 @@ cata_msg = {
    pour le calcul de l'option %(k1)s.
 """),
 
+2  : _(u"""
+   La réactualisation de la géométrie pour le chargement de type suiveur n'existe
+   pas pour le type d'élément %(k2)s.
+   Option concernée : %(k1)s
+"""),
+
 27 : _(u"""
  pas d'intersection trouvé
 """),

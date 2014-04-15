@@ -11,6 +11,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
 #include "asterfort/pmfitx.h"
+#include "asterfort/porea2.h"
 #include "asterfort/provec.h"
 #include "asterfort/pscvec.h"
 #include "asterfort/ptfop1.h"
@@ -46,19 +47,19 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 !
     real(kind=8) :: rho(1), coef1, coef2, s, s2, s4, s3, s5
     real(kind=8) :: zero, un, xxx, r8min, r8bid, g
-    real(kind=8) :: u(3), v(3), w(8), w2(3), dw(12), tet1, tet2
+    real(kind=8) :: u(3), v(3), w(8), w2(3), dw(12)
     real(kind=8) :: q(12), qq(12), qqr(12), qqi(12), pta(3), dir(3)
     real(kind=8) :: dir1(3), dir2(3), d1, d2, omeg2, x1(3), x2(3), v1(3), v2(3)
     integer :: icodre(1)
     character(len=8) :: nompar(4)
-    character(len=16) :: ch16
+    character(len=16) :: ch16, messk(2)
     logical :: global, normal
 !
     integer :: ifcx, i, j, nnoc, ncc, lx, iorien, idepla, ideplp, lmate, lpesa
     integer :: lforc, itemps, nbpar, ier, iret, icoer, icoec, iretr, iretc
-    integer :: lrota
+    integer :: lrota, istrxm
     character(len=8) :: nompav(1)
-    real(kind=8) :: valpav(1), fcx, vite2, vp(3), angle(3), casect(6)
+    real(kind=8) :: valpav(1), fcx, vite2, vp(3), casect(6), gamma
     logical :: okvent
     real(kind=8) :: dimag
 !     ------------------------------------------------------------------
@@ -73,15 +74,15 @@ subroutine ptforp(itype, option, nomte, a, a2,&
     r8min = r8miem()
     zero = 0.0d0
     un = 1.0d0
-    do 1 i = 1, 12
+    do i = 1, 12
         q(i) = zero
         qq(i) = zero
         fer(i) = zero
         fei(i) = zero
- 1  end do
-    do 2 i = 1, 3
+    enddo
+    do i = 1, 3
         vp(i) = zero
- 2  end do
+    enddo
     nnoc = 1
     ncc = 6
     global = .false.
@@ -97,21 +98,28 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         if (nomte .eq. 'MECA_POU_C_T') goto 998
         call jevech('PDEPLMR', 'L', idepla)
         call jevech('PDEPLPR', 'L', ideplp)
-        do 8 i = 1, 12
+
+        call tecach('NNN', 'PSTRXMR', 'L', iret, iad=istrxm)
+        if (iret.ne.0) then
+            messk(1) = option
+            messk(2) = nomte
+            call utmess('F', 'ELEMENTS2_2', nk=2 , valk = messk)
+        endif
+        if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
+            gamma = zr(istrxm+18-1)
+        else
+            gamma = zr(istrxm+3-1)
+        endif
+        call porea2(nno, nc, zr(lx+1), gamma, pgl, &
+                    xl)
+        do i = 1, 12
             dw(i) = zr(idepla-1+i) + zr(ideplp-1+i)
- 8      continue
-        do 10 i = 1, 3
+        enddo
+        do i = 1, 3
             w(i) = zr(lx+i) + dw(i)
             w(i+4) = zr(lx+i+3) + dw(i+6)
             w2(i) = w(i+4) - w(i)
-10      continue
-        call angvx(w2, angle(1), angle(2))
-        s=ddot(3,w2,1,w2,1)
-        xl = sqrt(s)
-        tet1=ddot(3,dw(4),1,w2,1)
-        tet2=ddot(3,dw(10),1,w2,1)
-        angle(3) = zr(iorien+2) + (tet1 + tet2)/xl/2.0d0
-        call matrot(angle, pgl)
+        enddo
     else
         do 15 i = 1, 3
             w(i) = zr(lx+i)
@@ -225,7 +233,7 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 40          continue
         endif
 !
-        elseif ( option .eq. 'CHAR_MECA_FF1D1D' .or. option .eq.&
+    elseif ( option .eq. 'CHAR_MECA_FF1D1D' .or. option .eq.&
     'CHAR_MECA_SF1D1D' ) then
 !     --- FORCES REPARTIES PAR FONCTIONS ---
         call tecach('NNN', 'PTEMPSR', 'L', iret, iad=itemps)
@@ -239,13 +247,13 @@ subroutine ptforp(itype, option, nomte, a, a2,&
         call jevech('PFF1D1D', 'L', lforc)
         normal = zk8(lforc+6) .eq. 'VENT'
         global = zk8(lforc+6) .eq. 'GLOBAL'
-        do 50 i = 1, 6
+        do i = 1, 6
             j = i + 6
             call fointe('FM', zk8(lforc+i-1), nbpar, nompar, w(1),&
                         q(i), ier)
             call fointe('FM', zk8(lforc+i-1), nbpar, nompar, w(5),&
                         q(j), ier)
-50      continue
+        enddo
 !
     else
         ch16 = option

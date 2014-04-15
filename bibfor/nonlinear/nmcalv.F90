@@ -237,7 +237,7 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     else if (typvec.eq.'CNFSDO') then
         call vecgme(modele, carele, mate, charge, infoch,&
                     instap, depmoi, depdel, vecele, instam,&
-                    compor, carcri, ' ', vitplu)
+                    compor, carcri, ' ', vitplu, strmoi)
 !
 ! --- FORCE DE REFERENCE
 !
