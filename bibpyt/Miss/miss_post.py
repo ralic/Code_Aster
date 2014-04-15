@@ -60,7 +60,7 @@ FKEY = {
     'DZ' : 'FONC_Z',
 }
 
-class POST_MISS(object):
+class PostMiss(object):
     """Définition d'un post-traitement MISS3D."""
 
     def __init__(self, parent, param):
@@ -260,19 +260,19 @@ class POST_MISS(object):
             self._tline[primkey] = len(self.tab)
             self.tab.append(row)
 
-class POST_MISS_TRAN(POST_MISS):
+class PostMissTran(PostMiss):
     """Post-traitement de type 1, sortie tran_gene"""
 
     def __init__(self, parent, param):
         """Initialisation."""
-        super(POST_MISS_TRAN, self).__init__(parent, param)
+        super(PostMissTran, self).__init__(parent, param)
         self.methode_fft = 'PROL_ZERO'
         self._suppr_matr = True
         self.excit_harmo = []
 
     def argument(self):
         """Vérification des arguments d'entrée."""
-        super(POST_MISS_TRAN, self).argument()
+        super(PostMissTran, self).argument()
         # s'assurer que les unités logiques sont libérées (rewind)
         self.check_datafile_exist()
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_IMPE'])
@@ -301,7 +301,7 @@ class POST_MISS_TRAN(POST_MISS):
 
     def initco(self):
         """Ajoute les concepts"""
-        super(POST_MISS_TRAN, self).initco()
+        super(PostMissTran, self).initco()
         self.dyge = None
 
 
@@ -421,24 +421,24 @@ class POST_MISS_TRAN(POST_MISS):
 
 
 
-class POST_MISS_HARM(POST_MISS_TRAN):
+class PostMissHarm(PostMissTran):
     """Post-traitement de type 1, sortie harm_gene"""
 
     def __init__(self, parent, param):
         """Initialisation."""
-        super(POST_MISS_HARM, self).__init__(parent, param)
+        super(PostMissHarm, self).__init__(parent, param)
         self.methode_fft = 'COMPLET'
         self._suppr_matr = False
 
     def argument(self):
         """Vérification des arguments d'entrée."""
-        super(POST_MISS_HARM, self).argument()
+        super(PostMissHarm, self).argument()
         self.parent.DeclareOut('trangene', self.parent.sd)
         self.suppr_acce_fft()
 
     def concepts_communs(self):
         """Construction des concepts spécifiques au cas HARMO."""
-        super(POST_MISS_HARM, self).concepts_communs()
+        super(PostMissHarm, self).concepts_communs()
         for excit_i in self.excit_kw:
             dExc = excit_i.cree_dict_valeurs(excit_i.mc_liste)
             for mc in dExc.keys():
@@ -462,18 +462,18 @@ class POST_MISS_HARM(POST_MISS_TRAN):
         return trangene
 
 
-class POST_MISS_TAB(POST_MISS):
+class PostMissTabl(PostMiss):
     """Post-traitement de type 2"""
 
     def __init__(self, parent, param):
         """Initialisation."""
-        super(POST_MISS_TAB, self).__init__(parent, param)
+        super(PostMissTabl, self).__init__(parent, param)
         self.methode_fft = 'COMPLET'
         self.init_table()
 
     def argument(self):
         """Vérification des arguments d'entrée."""
-        super(POST_MISS_TAB, self).argument()
+        super(PostMissTabl, self).argument()
         # s'assurer que les unités logiques sont libérées (rewind)
         self.check_datafile_exist()
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_IMPE'])
@@ -500,7 +500,7 @@ class POST_MISS_TAB(POST_MISS):
 
     def initco(self):
         """Ajoute les concepts"""
-        super(POST_MISS_TAB, self).initco()
+        super(PostMissTabl, self).initco()
         self.dyge_x = self.dyge_y = self.dyge_z = None
 
     def boucle_dlh(self):
@@ -641,7 +641,7 @@ class POST_MISS_TAB(POST_MISS):
         self.add_line(gno, cham, 'FREQ', **{ FKEY[dir] : _repfreq.nom })
         self.add_line(gno, cham, 'SPEC_OSCI', **{ FKEY[dir] : _spec.nom })
 
-class POST_MISS_FICHIER(POST_MISS):
+class PostMissFichier(PostMiss):
     """Pas de post-traitement, car on ne sort que les fichiers."""
 
     def argument(self):
@@ -655,12 +655,12 @@ class POST_MISS_FICHIER(POST_MISS):
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
 
-class POST_MISS_CONTROL(POST_MISS):
+class PostMissControl(PostMiss):
     """Produit la table des grandeurs aux points de contrôles"""
 
     def __init__(self, parent, param):
         """Initialisation."""
-        super(POST_MISS_CONTROL, self).__init__(parent, param)
+        super(PostMissControl, self).__init__(parent, param)
         self.init_table()
         self.methode_fft = 'COMPLET'
 
@@ -754,7 +754,7 @@ class POST_MISS_CONTROL(POST_MISS):
         self.add_line(nompc, cham, 'FREQ', **{ fonct_i : _repfreq.nom })
         self.add_line(nompc, cham, 'SPEC_OSCI', **{ fonct_i : _spec.nom })
 
-class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
+class PostMissFichierTemps(PostMissFichier):
     """Pas de post-traitement, car on ne sort que les fichiers."""
 
     def init_attr(self):
@@ -1086,23 +1086,22 @@ class ListPost(list):
             post.run()
 
 def PostMissFactory(type_post, parent, param):
-    """Crée l'objet ou les objets POST_MISS pour le type de post-traitement
-    demandé"""
+    """create the list of instances of a subclass of PostMiss"""
     post = ListPost()
     if type_post == 'HARM_GENE':
-        post.append(POST_MISS_HARM(parent, param))
+        post.append(PostMissHarm(parent, param))
     elif type_post == 'TRAN_GENE':
-        post.append(POST_MISS_TRAN(parent, param))
+        post.append(PostMissTran(parent, param))
     elif type_post == 'TABLE':
-        post.append(POST_MISS_TAB(parent, param))
+        post.append(PostMissTabl(parent, param))
     elif type_post in ('FICHIER', 'TABLE_CONTROL'):
-        post.append(POST_MISS_FICHIER(parent, param))
+        post.append(PostMissFichier(parent, param))
     elif type_post == 'FICHIER_TEMPS':
-        post.append(POST_MISS_FICHIER_TEMPS(parent, param))
+        post.append(PostMissFichierTemps(parent, param))
     else:
-        raise NotImplementedError, type_post
+        raise NotImplementedError(type_post)
     if type_post == 'TABLE_CONTROL':
-        post.append(POST_MISS_CONTROL(parent, param))
+        post.append(PostMissControl(parent, param))
     return post
 
 def info_freq(param):

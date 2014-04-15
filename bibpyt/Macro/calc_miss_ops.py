@@ -29,7 +29,7 @@ def calc_miss_ops(self, **kwargs):
     import aster
     from Utilitai.Utmess  import UTMESS
     from Miss.miss_utils  import MISS_PARAMETER
-    from Miss.miss_calcul import CalculMissFactory
+    from Miss.miss_calcul import CalculMiss
     
     ier = 0
     # La macro compte pour 1 dans la numerotation des commandes
@@ -38,8 +38,8 @@ def calc_miss_ops(self, **kwargs):
     # conteneur des paramètres du calcul
     param = MISS_PARAMETER(initial_dir=os.getcwd(), **kwargs)
     
-    # création de l'objet CALCUL_MISS_xxx
-    calcul = CalculMissFactory(self, param)
+    # création de l'objet CalculMiss_xxx
+    calcul = CalculMiss.factory(self, param)
 
     try:
         calcul.run()

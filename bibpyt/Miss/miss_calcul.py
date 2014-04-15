@@ -20,8 +20,12 @@
 """Module permettant le lancement d'un calcul MISS3D
 
 Les classes définies sont :
-    CALCUL_MISS      : classe générique d'un appel à MISS3D
-    CALCUL_MISS_IMPE : spécialisation au calcul d'impédance
+    CalculMiss      : classe générique d'un appel à MISS3D
+    CalculMissImpe  : spécialisation au calcul d'impédance
+    CalculMissFichierTemps : calcul dans le domained de Laplace
+    CalculMissIssf  : calcul avec prise en compte de l'interaction
+                      sol-structure-fluide
+    CalculMissPost  : étapes limitées au post-traitement
 """
 
 import os
@@ -50,10 +54,23 @@ from Miss.miss_fichier_cmde   import MissCmdeGen
 from Miss.miss_post           import PostMissFactory, info_freq
 
 
-class CALCUL_MISS(object):
+class CalculMiss(object):
     """Définition d'un calcul MISS3D.
     """
     option_calcul = None
+    
+    @staticmethod
+    def factory(parent, param):
+        """Factory that returns the CalculMiss object"""
+        if param['TYPE_RESU'] == 'FICHIER_TEMPS':
+            return CalculMissFichierTemps(parent, param)
+        elif param['TYPE_RESU'] != 'FICHIER' \
+            and not param['_exec_Miss']:
+            return CalculMissPost(parent, param)
+        elif param['ISSF'] == 'OUI':
+            return CalculMissIssf(parent, param)
+        else:
+            return CalculMissImpe(parent, param)
 
     def __init__(self, parent, parameters):
         """Initialisations"""
@@ -312,17 +329,17 @@ class CALCUL_MISS(object):
 
 
 
-class CALCUL_MISS_IMPE(CALCUL_MISS):
+class CalculMissImpe(CalculMiss):
     """Définition d'un calcul MISS3D de type MISS_IMPE."""
     option_calcul = 'MISS_IMPE'
 
 
-class CALCUL_MISS_ISSF(CALCUL_MISS):
+class CalculMissIssf(CalculMiss):
     """Définition d'un calcul MISS3D de type MISS_IMPE avec ISSF."""
     option_calcul = 'MISS_IMPE'
 
 
-class CALCUL_MISS_POST(CALCUL_MISS):
+class CalculMissPost(CalculMiss):
     """Définition d'une exécution de CALC_MISS où seul le
     post-traitement est demandé."""
     option_calcul = 'POST-TRAITEMENT'
@@ -339,9 +356,8 @@ class CALCUL_MISS_POST(CALCUL_MISS):
         """Copie les fichiers résultats dans les unités logiques."""
 
 
-class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
-    """Définition d'une exécution de CALC_MISS dans le domaine de Laplace.
-    """
+class CalculMissFichierTemps(CalculMiss):
+    """Définition d'une exécution de CALC_MISS dans le domaine de Laplace"""
     option_calcul = 'IMPE_LAPL'
 
     def init_attr(self):
@@ -389,7 +405,7 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         if self.param['EXCIT_SOL']:
             copie_fichier(self._fichier_tmp("inci"), self._fichier_tmp("in"))
             aster.affiche("MESSAGE",'LANCEMENT DU CALCUL DE LA FORCE SISMIQUE EN FREQUENCE')
-            CALCUL_MISS.execute(self)
+            CalculMiss.execute(self)
             copie_fichier(self._fichier_tmp("OUT"), self._fichier_tmp("OUT.inci"))
             copie_fichier(self._fichier_tmp("sol"), self._fichier_tmp("sol.inci"))
             fd = open(self._fname2, 'w')
@@ -399,7 +415,7 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
             copie_fichier(self._fichier_forc, self._fichier_aster(self.param['EXCIT_SOL']['UNITE_RESU_FORC']))
         
         fd = open(self._fname, 'w')
-        CALCUL_MISS.cree_fichier_sol(self)
+        CalculMiss.cree_fichier_sol(self)
         aster.affiche("MESSAGE",'BOUCLE SUR LES FREQUENCES COMPLEXES')
         self._exec_boucle_lapl(fd)
         fd.close()                     
@@ -423,21 +439,21 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
                 self.param.set('FREQ_IMAG',(1.5-2.0*rho*cos(2*pi*k/L_points)+0.5*rho*rho*cos(4*pi*k/L_points) )/dt )
 
             self.param.set('_calc_impe', True)
-            CALCUL_MISS.cree_commande_miss(self)
+            CalculMiss.cree_commande_miss(self)
             str00 = str(self.param['FREQ_IMAG'])+' + i . '+str(self.param['LIST_FREQ'][0])+' ('+str(k+1)+'/'+str(self.nbr_freq)+')'
             aster.affiche("MESSAGE",'FREQUENCE COMPLEXE COURANTE =  '+str00)
-            CALCUL_MISS.execute(self)
+            CalculMiss.execute(self)
             
             text = open(self._fichier_impe, 'r').read()
             fd.write(text)
             
         # libérer la structure contenant les données numériques
-        CALCUL_MISS.init_data(self)
+        CalculMiss.init_data(self)
 
 
     def cree_commande_miss(self):
         """Produit le fichier de commandes Miss du champ incident (.inci)"""
-        CALCUL_MISS.cree_commande_miss(self, ext='inci', lapl_temps=True)
+        CalculMiss.cree_commande_miss(self, ext='inci', lapl_temps=True)
 
     def fichier_resultat(self):
         """Libérer la structure contenant les données numériques
@@ -451,19 +467,6 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         """
         pass
 
-
-def CalculMissFactory(parent, param):
-    """Crée l'objet CALCUL_MISS pour résoudre l'option demandée.
-    """
-    if param['TYPE_RESU'] == 'FICHIER_TEMPS':
-        return CALCUL_MISS_FICHIER_TEMPS(parent, param)
-    elif param['TYPE_RESU'] != 'FICHIER' \
-        and not param['_exec_Miss']:
-        return CALCUL_MISS_POST(parent, param)
-    elif param['ISSF'] == 'OUI':
-        return CALCUL_MISS_ISSF(parent, param)
-    else:
-        return CALCUL_MISS_IMPE(parent, param)
 
 def get_number_PC(parent, macr_elem, lgrpc):
     """Retourne le nombre de points de contrôle"""
