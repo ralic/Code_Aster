@@ -38,50 +38,52 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 # ceci remplace l ancien script de l agla : maj_voca
 
 from Cata import cata
-import string
 
-l_commande =[]
-vocabulaire=[]
-com_voca   ={}
-inv_voca   ={}
+commands = []
+vocabulaire = set()
 
-for elem in cata.__dict__.keys() :
-    if   isinstance(cata.__dict__[elem],OPER):  l_commande.append(cata.__dict__[elem])
-    elif isinstance(cata.__dict__[elem],PROC):  l_commande.append(cata.__dict__[elem])
-    elif isinstance(cata.__dict__[elem],MACRO): l_commande.append(cata.__dict__[elem])
+for name, elem in cata.__dict__.items() :
+    if isinstance(elem, OPER):
+        commands.append(elem)
+    elif isinstance(elem, PROC):
+        commands.append(elem)
+    elif isinstance(elem, MACRO):
+        commands.append(elem)
 
-for elem in l_commande :
-    com_voca[elem.nom]=elem.get_mc_simp(niv=2)+elem.get_mc_fact()
-    vocabulaire=vocabulaire+com_voca[elem.nom]
+com_voca = {}
+for cmd in commands :
+    com_voca[cmd.nom] = cmd.get_mc_simp(niv=2) + cmd.get_mc_fact()
+    vocabulaire.update(com_voca[cmd.nom])
 
+vocabulaire = list(vocabulaire)
 vocabulaire.sort()
+print '\n Nombre de mots cles = ', len(vocabulaire)
+
+inv_voca = {}
+for command, words in com_voca.items():
+    for word in words:
+        inv_voca[word] = inv_voca.get(word, set())
+        inv_voca[word].add(command)
+
+lines = []
 for i in vocabulaire:
-    while vocabulaire.count(i)>1 : vocabulaire.pop(vocabulaire.index(i))
-print '\n Nombre de mots cles = ',len(vocabulaire)
+    texte = i.ljust(28) + ' :: '
+    commands = list(inv_voca[i])
+    commands.sort()
+    for j in commands:
+        texte = texte + j.ljust(17) + '/ '
+    lines.append(texte)
+
+print os.linesep.join(lines)
 
 
-for i in vocabulaire:
-    inv_voca[i]=[]
-    for j in com_voca.keys() :
-        if i in com_voca[j] : inv_voca[i].append(j)
-
-for i in vocabulaire:
-    texte=string.ljust(i,28)+' :: '
-    for j in inv_voca[i]:texte=texte+string.ljust(j,17)+'/ '
-    print texte
-
-# un test bidon sur une fonction bidon permet de passer sous les fourches caudines
-# de l agla qui exige au moins un test par cas-test.
-
-FO =DEFI_FONCTION(  NOM_PARA='X',
-                    NOM_RESU='Y',
-                    VALE=(0.,0.) )
+FO = DEFI_FONCTION(NOM_PARA='X',
+                   NOM_RESU='Y',
+                   VALE=(0., 0.),)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0,
                         CRITERE='ABSOLU',
                         VALE_PARA=0.0,
-                        FONCTION=FO,
-                        ),
-              )
+                        FONCTION=FO,),)
 
 FIN()
