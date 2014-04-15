@@ -243,6 +243,8 @@
 #
     Arnaud Alzina <arnaud.alzina .at. unilim.fr>
     Thouraya Baranger <thouraya.baranger .at. univ-lyon1.fr>
+    Nicolas Chauvat <nicolas.chauvat .at. logilab.fr>
     Daniele Colombo <daniele.colombo .at. ifpen.fr>
     Peter Halverson <halverson .at. byu.edu>
+    Denis Laxalde <denis.laxalde .at. logilab.fr>
     Alain Leufroy <alain.leufroy .at. logilab.fr>
