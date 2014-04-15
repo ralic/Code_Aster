@@ -1,5 +1,5 @@
 subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
-                  sigmpg, effgt)
+                  sigmpg, effgt,nbcou)
     implicit none
 #include "jeveux.h"
 #include "asterfort/btdfn.h"
@@ -49,11 +49,11 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
 !-----------------------------------------------------------------------
     integer :: i, icou, indith, inte, intsn, intsr, j
     integer :: jcara, jdepg, k, k1, kpgs, kwgt, lzi
-    integer :: lzr, ncoumx
+    integer :: lzr
     real(kind=8) :: tref
 !-----------------------------------------------------------------------
-    parameter(ncoumx=10)
-    real(kind=8) :: xi(3, 9), sig(ncoumx*162), eps(ncoumx*162), tem(ncoumx*27)
+
+    real(kind=8) :: xi(3, 9), sig(nbcou*162), eps(nbcou*162), tem(nbcou*27)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: hsfm(3, 9), hss(2, 9), hsj1m(3, 9), hsj1s(2, 9)
@@ -201,6 +201,7 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                 else if (option.eq.'SIEF_ELGA') then
                     do i = 1, 6
                         sigmpg(k1+i) = sig(i+6*(kpgs-1))
+!                  write (6,*) "sigmpg(k1+i)",sigmpg(k1+i)
                     end do
                 endif
 !

@@ -66,6 +66,9 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !-----------------------------------------------------------------------
     parameter (nbinco=51)
     parameter (npge=3)
+    integer :: maxpg
+    parameter (maxpg=27*50)
+
 !
     real(kind=8) :: vecu(8, 3), vecthe(9, 3), vecta(9, 2, 3)
     real(kind=8) :: vectpt(9, 2, 3), vectn(9, 3), vecnph(9, 3)
@@ -85,6 +88,19 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
     deux = 2.0d0
 !
     lgreen = .false.
+
+!
+! --- NOMBRE DE COUCHES :
+!     -----------------
+    call jevech('PNBSP_I', 'L', jnbspi)
+    nbcou=zi(jnbspi-1+1)
+!
+    if (nbcou .le. 0) then
+        call utmess('F', 'ELEMENTS_12')
+    endif
+
+
+
 !
 ! --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 !     ----------------------------------------
@@ -104,7 +120,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
         endif
     else
         do 10 i = 1, 6
-            do 10 j = 1, 270
+            do 10 j = 1, maxpg
                 sigma(i,j) = pk2(i,j)
 10          continue
 !
@@ -123,19 +139,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
     eptot = zr(icara)
 ! ---   COORDONNEE MINIMALE SUIVANT L'EPAISSEUR
     zmin = -eptot/deux
-!
-! --- NOMBRE DE COUCHES :
-!     -----------------
-    call jevech('PNBSP_I', 'L', jnbspi)
-    nbcou=zi(jnbspi-1+1)
-!
-    if (nbcou .le. 0) then
-        call utmess('F', 'ELEMENTS_12')
-    endif
-!
-    if (nbcou .gt. 10) then
-        call utmess('F', 'ELEMENTS_13')
-    endif
+
 !
 ! --- EPAISSEUR D'UNE COUCHE :
 !     ----------------------
@@ -143,7 +147,10 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 ! --- RECUPERATION DES OBJETS INITIALISES :
 !     -----------------------------------
+
+
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
+    
 !
 ! --- NOMBRE DE NOEUDS (NB1 : SERENDIP, NB2 : LAGRANGE) :
 !     -------------------------------------------------
@@ -164,11 +171,11 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
             vecu(in,ii) = zr(idepl+6*(in-1)+ii-1)
             vecthe(in,ii) = zr(idepl+6*(in-1)+ii+3-1)
 30      continue
-20  end do
+20  continue
 !
     do 40 ii = 1, 3
         vecthe(nb2,ii) = zr(idepl+6*nb1+ii-1)
-40  end do
+40  continue
 !
 ! --- DETERMINATION DES REPERES LOCAUX AUX NOEUDS DANS LA
 ! --- CONFIGURATION INITIALE
@@ -340,7 +347,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 70          continue
 60      continue
-50  end do
+50  continue
 !
 9999  continue
 !.============================ FIN DE LA ROUTINE ======================

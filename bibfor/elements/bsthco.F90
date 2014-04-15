@@ -90,11 +90,11 @@ subroutine bsthco(nomte, bsigth, indith)
 !
     do 10 i = 1, 42
         bsigt1(i) = zero
-10  end do
+10  continue
 !
     do 20 i = 1, 51
         bsigth(i) = zero
-20  end do
+20  continue
 !
 ! --- RECUPERATION DE L'OBJET .DESI :
 !     -----------------------------
@@ -135,10 +135,7 @@ subroutine bsthco(nomte, bsigth, indith)
         if (nbcou .le. 0) then
             call utmess('F', 'ELEMENTS_12')
         endif
-!
-        if (nbcou .gt. 10) then
-            call utmess('F', 'ELEMENTS_13')
-        endif
+
     endif
 !
 !

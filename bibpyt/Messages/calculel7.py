@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,11 +29,6 @@ cata_msg = {
   Le MODELE doit être le même pour tous les numéros d'ordre du RESULTAT.
   Faire le post-traitement en rentrant le numéro d'ordre ou explicitement
   le nom du modèle.
-"""),
-
-4 : _(u"""
-  Le nombre de couches est limité à %(i1)d, or vous en avez définies %(i2)d !
-  Veuillez contacter votre assistance technique.
 """),
 
 5 : _(u"""

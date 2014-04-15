@@ -13,6 +13,7 @@ subroutine te0040(option, nomte)
 #include "asterfort/vdsiro.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
+#include "asterfort/elno_coq3d.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -42,31 +43,26 @@ subroutine te0040(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ic, icmp, icompo, ii, iinpg, ino
-    integer :: inte, intsn, intsr, ioutno, iret, isp, j
-    integer :: jcara, jgeom, jj, k, k1, kpgs, l
-    integer :: lzi, lzr, nbcou, ncmp, npge, npgt, nso
+    integer ::  icompo,  iinpg
+    integer ::  ioutno, iret
+    integer :: jcara, jgeom
+    integer :: lzi, lzr, nbcou,  nso
 !
-    real(kind=8) :: s, zero
+
 !-----------------------------------------------------------------------
-    parameter(npge=3)
-    parameter(npgt=10)
+
 !
-    integer :: icou, nordo, jmat, jnbspi
+    integer :: jmat, jnbspi
     integer :: nb1, nb2, npgsr, npgsn
 !
-    real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
-    real(kind=8) :: vectg(2, 3), vectt(3, 3)
-    real(kind=8) :: epais
-    real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
-    real(kind=8) :: matpg(6, 270), matno(6, 120), matgn(6, 120)
-    real(kind=8) :: pk2(6, 270), matgnu(6, 120), signo(6, 120)
+
+
 !
     logical :: lgreen
 !
 ! ----------------------------------------------------------------------
 !
-    zero=0.0d0
+
     lgreen=.false.
 !
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
@@ -92,9 +88,11 @@ subroutine te0040(option, nomte)
         call jevech('PDEFONO', 'E', ioutno)
 !
         else if ((option.eq.'SIEF_ELNO') .or. (option.eq.'SIGM_ELNO'))&
+
     then
         call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
                     iinpg, 'S')
+        write(6,*) "zr(iinpg)", zr(iinpg)
         call jevech('PSIEFNOR', 'E', ioutno)
         call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
@@ -109,150 +107,13 @@ subroutine te0040(option, nomte)
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
 !
-    if (nbcou .le. 0) then
-        call utmess('F', 'ELEMENTS_12')
-    endif
-    if (nbcou .gt. 10) then
-        call utmess('F', 'ELEMENTS_13')
-    endif
-!
-    epais=zr(jcara)
-!
-    call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta,&
-                vectn, vectpt)
-!
-    kpgs=0
-    do 40 icou = 1, nbcou
-        do 30 inte = 1, npge
-            do 20 intsn = 1, npgsn
-                kpgs=kpgs+1
-                k1=6*((intsn-1)*npge*nbcou+(icou-1)*npge+inte-1)
-                do 10 i = 1, 6
-                    matpg(i,kpgs)=zr(iinpg-1+k1+i)
-10              continue
-20          continue
-30      continue
-40  end do
-!
-    ncmp=6
-!
-    if (lgreen) then
-!
-! --- AFFECTATION DES CONTRAINTES DE PIOLA-KIRCHHOFF DE
-! --- SECONDE ESPECE :
-!     --------------
-        do 60 i = 1, 6
-            do 50 j = 1, kpgs
-                pk2(i,j)=matpg(i,j)
-50          continue
-60      continue
-!
-! --- TRANSFORMATION DES CONTRAINTES DE PIOLA-KIRCHHOFF DE
-! --- SECONDE ESPECE PK2 EN CONTRAINTES DE CAUCHY :
-!     -------------------------------------------
-        call pk2cau(nomte, ncmp, pk2, matpg)
-    endif
-!
-! ---  DETERMINATION DES REPERES  LOCAUX DE L'ELEMENT AUX POINTS
-! ---  D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR
-!      --------------------------------------------------------------
-    k=0
-    do 90 intsr = 1, npgsr
-        call vectgt(0, nb1, zr(jgeom), zero, intsr,&
-                    zr(lzr), epais, vectn, vectg, vectt)
-!
-        do 80 j = 1, 3
-            do 70 i = 1, 3
-                k=k+1
-                zr(lzr+2000+k-1)=vectt(i,j)
-70          continue
-80      continue
-90  end do
 !
 !---  EXTRAPOLATION VERS LES NOEUDS SOMMETS
 !
     call jevete('&INEL.'//nomte//'.B', ' ', jmat)
-!
-    do 130 icou = 1, nbcou
-        do 120 ic = 1, ncmp
-            do 110 i = 1, npge*nso
-                l=npge*npgsn*(i-1)
-                s=0.d0
-                do 100 j = 1, npge*npgsn
-                    jj=(icou-1)*npge*npgsn+j
-                    s=s+zr(jmat-1+l+j)*matpg(ic,jj)
-100              continue
-                ii=(icou-1)*npge*nso+i
-                matno(ic,ii)=s
-110          continue
-120      continue
-130  end do
-!
-! --- DETERMINATION DES MATRICE DE PASSAGE DES REPERES INTRINSEQUES
-! --- AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
-! --- AU REPERE UTILISATEUR :
-!     ---------------------
-    call vdrepe(nomte, matevn, matevg)
-!
-! --- PASSAGE DU VECTEUR DES CONTRAINTES DEFINI AUX NOEUDS
-! --- DE L'ELEMENT DU REPERE INTRINSEQUE AU REPERE UTILISATEUR :
-!     --------------------------------------------------------
-!
-    do 210 icou = 1, nbcou
-        do 200 nordo = -1, 1
-!
-            isp=npge*(icou-1)+nordo+2
-!
-            do 150 i = 1, ncmp
-                do 140 j = 1, nso
-                    jj=nso*(nordo+1)+nso*npge*(icou-1)+j
-                    matgn(i,j)=matno(i,jj)
-140              continue
-                if (nomte .eq. 'MEC3QU9H') then
-                    matgn(i,5)=(matgn(i,1)+matgn(i,2))/2.d0
-                    matgn(i,6)=(matgn(i,2)+matgn(i,3))/2.d0
-                    matgn(i,7)=(matgn(i,3)+matgn(i,4))/2.d0
-                    matgn(i,8)=(matgn(i,4)+matgn(i,1))/2.d0
-                    matgn(i,9)=(matgn(i,1)+matgn(i,2)+matgn(i,3)+&
-                    matgn(i,4))/ 4.d0
-                else if (nomte.eq.'MEC3TR7H') then
-                    matgn(i,4)=(matgn(i,1)+matgn(i,2))/2.d0
-                    matgn(i,5)=(matgn(i,2)+matgn(i,3))/2.d0
-                    matgn(i,6)=(matgn(i,3)+matgn(i,1))/2.d0
-                    matgn(i,7)=(matgn(i,1)+matgn(i,2)+matgn(i,3))/&
-                    3.d0
-                endif
-150          continue
-!
-            if (lgreen) then
-                call vdsiro(nb2, 1, matevn, 'IU', 'N',&
-                            matgn, matgnu)
-                call caurtg(nomte, ncmp, matgnu, signo)
-            else
-                call vdsiro(nb2, 1, matevn, 'IU', 'N',&
-                            matgn, signo)
-            endif
-!
-            if (option .eq. 'EPSI_ELNO') then
-                do 170 icmp = 1, ncmp
-                    do 160 ino = 1, nb2
-                        zr(ioutno-1+(ino-1)*ncmp*nbcou*npge+(isp-1)*&
-                        ncmp+icmp)= matgn(icmp,ino)
-160                  continue
-170              continue
-                else if ((option.eq.'SIEF_ELNO') .or. (&
-            option.eq.'SIGM_ELNO')) then
-                do 190 icmp = 1, ncmp
-                    do 180 ino = 1, nb2
-                        zr(ioutno-1+(ino-1)*ncmp*nbcou*npge+(isp-1)*&
-                        ncmp+icmp)= signo(icmp,ino)
-180                  continue
-190              continue
-            else
-                ASSERT(.false.)
-            endif
-!
-200      continue
-210  end do
-!
+
+    call elno_coq3d(option,nomte,nb1,nb2,npgsr,npgsn,nso,nbcou, &
+                   zr(jgeom),zr(jcara),zr(iinpg),zr(ioutno),zr(lzr), &
+                   zr(jmat), lgreen)
+   !
 end subroutine

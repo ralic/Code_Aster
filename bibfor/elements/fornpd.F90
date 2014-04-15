@@ -83,9 +83,7 @@ subroutine fornpd(option, nomte)
     if (nbcou .le. 0) then
         call utmess('F', 'ELEMENTS_12')
     endif
-    if (nbcou .gt. 10) then
-        call utmess('F', 'ELEMENTS_13')
-    endif
+
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcara)
     epais = zr(jcara)

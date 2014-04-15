@@ -16,15 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
-                      sigmpg, effgt, nbcou)
+    subroutine postcoq3d(option,nomte,nbcou)
         character(len=16) :: nomte
-        character(len=*) :: option
-        real(kind=8) :: xi(3, 9)
-        integer :: nb1
-        integer :: npgsr
+        character(len=16) :: option
         integer :: nbcou
-        real(kind=8) :: sigmpg(*)
-        real(kind=8) :: effgt(8, 9)
-    end subroutine vdxsig
+    end subroutine postcoq3d
 end interface

@@ -13,6 +13,7 @@ subroutine pmfd02(noma, cesdec)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
+#include "asterfort/utmess.h"
     character(len=8) :: noma
     character(len=19) :: cesdec
 !
@@ -67,7 +68,7 @@ subroutine pmfd02(noma, cesdec)
                         2, mocles, typmcl, mesmai, nbma)
             if (nbma .ne. 0) call jedetr(mesmai)
 105      continue
-100  end do
+100  continue
 !
     if (nbap .eq. 0) then
         call cescre('V', cesdec, 'ELEM', noma, 'NBSP_I',&
@@ -89,12 +90,14 @@ subroutine pmfd02(noma, cesdec)
         call getvis('COQUE', 'COQUE_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
         zk8(jncmp-1+1) = 'COQ_NCOU'
         zi(jvalv-1+1) = nbcou
-!
+!        if (nbcou .gt. 50) then
+!          call  utmess('F', 'ELEMENTS_13')
+!        endif
         call jeveuo(mesmai, 'L', jma)
         call nocart(carte, 3, 1, mode='NUM', nma=nbma,&
                     limanu=zi(jma))
         call jedetr(mesmai)
-210  end do
+210  continue
 !
 ! --- MOT CLE "POUTRE" :
     call getfac('POUTRE', nbocc)
@@ -113,7 +116,7 @@ subroutine pmfd02(noma, cesdec)
         call nocart(carte, 3, 2, mode='NUM', nma=nbma,&
                     limanu=zi(jma))
         call jedetr(mesmai)
-220  end do
+220  continue
 !
 !
 ! --- TRANSFORME LA CARTE EN CHAM_ELEM_S

@@ -104,6 +104,7 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
         endif
 !
 !       -- MODIFICATION DU CHAMP LOCAL
+
         if (goun .eq. 'G') then
             call vdsiro(nbpt, nbsp, matevg, sens, goun,&
                         zr(jtens), zr(jtens))

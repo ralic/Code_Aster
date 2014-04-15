@@ -130,9 +130,6 @@ subroutine forngr(option, nomte)
         call utmess('F', 'ELEMENTS_12')
     endif
 !
-    if (nbcou .gt. 10) then
-        call utmess('F', 'ELEMENTS_13')
-    endif
 !______________________________________________________________________
 !
 !---- RECUPERATION DES POINTEURS ( L : LECTURE )
@@ -233,7 +230,7 @@ subroutine forngr(option, nomte)
             )
 !
 111      continue
-101  end do
+101  continue
 !
 !---- ROTATION TOTALE AUX NOEUDS
 !
@@ -485,7 +482,7 @@ subroutine forngr(option, nomte)
 !
 !---- FIN BOUCLE NBCOU
 !
-600  end do
+600  continue
 !
 !      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE
 !

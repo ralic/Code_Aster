@@ -28,12 +28,12 @@ subroutine ef0410(nomte)
 !
     character(len=16) :: nomte
 !
-    integer :: npgt, ncoumx, vali(2)
+    integer :: npgt, ncoumx
 !-----------------------------------------------------------------------
     integer :: jcou, jeffg, jgeom, lzi, nb2
     integer :: nbcou, np, npgsr
 !-----------------------------------------------------------------------
-    parameter(npgt=10,ncoumx=10)
+    parameter(npgt=10,ncoumx=50)
     integer :: nb1
     real(kind=8) :: effgt(8, 9), sigpg(162*ncoumx)
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
@@ -46,16 +46,11 @@ subroutine ef0410(nomte)
 !
     call jevech('PNBSP_I', 'L', jcou)
     nbcou=zi(jcou)
-    vali(1)=ncoumx
-    vali(2)=nbcou
-    if (nbcou .gt. ncoumx) then
-        call utmess('F', 'CALCULEL7_4', ni=2, vali=vali)
-    endif
 !
 !     LE TABLEAU SIGPG A ETE ALLOUE DE FACON STATIQUE POUR OPTIMISER
 !     LE CPU CAR LES APPELS A WKVECT DANS LES TE SONT COUTEUX.
     call vdxsig(nomte, 'EFGE_ELNO', zr(jgeom), nb1, npgsr,&
-                sigpg, effgt)
+                sigpg, effgt,nbcou)
 !
 ! --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
 ! --- AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
