@@ -58,15 +58,26 @@ for name, elem in cata.__dict__.items() :
 
 # extract fr/ang docstrings
 lang = {}
-for cmd in commands :
+for cmd in commands:
     objs = [cmd] + get_entite(cmd)
     for entity in objs:
         if entity.ang:
             lang[id(entity)] = (entity.fr, entity.ang)
+
+from Execution.strfunc import convert
+phrase_book_tmpl = """
+<phrase>
+    <source>{fr}</source>
+    <target>{en}</target>
+</phrase>"""
+csv_tmpl = "\"{fr}\",\"{en}\""
+template = csv_tmpl
+text = []
 for val in lang.values():
     fr = val[0].replace('"', r'\"')
     en = val[1].replace('"', r'\"')
-    print "\"{0}\",\"{1}\"".format(fr, en)
+    text.append(template.format(fr=convert(fr), en=convert(en)))
+print os.linesep.join(text)
 
 vocabulaire = set()
 com_voca = {}
