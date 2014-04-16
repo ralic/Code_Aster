@@ -1,0 +1,93 @@
+# TITRE : POUTRE VRILLEE SOUS CHARGES CONCENTREES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+# MODELISATION : DST
+# MAILLE       : TRIA3
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),)
+
+ma=LIRE_MAILLAGE(FORMAT='MED',);
+
+mod=AFFE_MODELE(MAILLAGE=ma,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DST',),);
+
+mate=DEFI_MATERIAU(ELAS=_F(E=29e6,
+                           NU=.22,),);
+
+chmate=AFFE_MATERIAU(MAILLAGE=ma,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=mate,),);
+
+cara=AFFE_CARA_ELEM(MODELE=mod,
+                    COQUE=_F(GROUP_MA='Poutre',
+                             EPAIS=0.32,),);
+
+CLIM=AFFE_CHAR_CINE(MODELE=mod,
+                    MECA_IMPO=_F(GROUP_MA='Encas',
+                                 DX=0.,
+                                 DY=0.,
+                                 DZ=0.,
+                                 DRX=0.,
+                                 DRY=0.,
+                                 DRZ=0.,),);
+
+PY=AFFE_CHAR_MECA(MODELE=mod,
+                  FORCE_NODALE=_F(GROUP_NO='A',
+                                  FY=1000,),);
+
+PZ=AFFE_CHAR_MECA(MODELE=mod,
+                  FORCE_NODALE=_F(GROUP_NO='A',
+                                  FZ=1000,),);
+
+Resu_PY=MECA_STATIQUE(MODELE=mod,
+                      CHAM_MATER=chmate,
+                      CARA_ELEM=cara,
+                      EXCIT=(_F(CHARGE=CLIM,),
+                             _F(CHARGE=PY,),),);
+
+Resu_PZ=MECA_STATIQUE(MODELE=mod,
+                      CHAM_MATER=chmate,
+                      CARA_ELEM=cara,
+                      EXCIT=(_F(CHARGE=CLIM,),
+                             _F(CHARGE=PZ,),),);
+
+TEST_RESU(RESU=_F(RESULTAT=Resu_PY,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE_REFE=1.754,
+                  PRECISION=0.15,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=1.5070458300811,),);
+
+TEST_RESU(RESU=_F(RESULTAT=Resu_PZ,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='A',
+                  VALE_REFE=5.424,
+                  PRECISION=0.015,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=5.4683772037812,),);
+
+FIN();
