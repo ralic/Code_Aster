@@ -4,6 +4,7 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dichoc.h"
+#include "asterfort/dis_contact.h"
 #include "asterfort/infdis.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmavec.h"
@@ -14,9 +15,13 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
 #include "asterfort/ut2vlg.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpslg.h"
+#include "asterfort/utpnlg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 !
     character(len=*) :: option, nomte
@@ -57,11 +62,18 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
 !
     integer :: jdc, irep, imat, ivarim, ii, jinst, ivitp, idepen, iviten, neq, igeom, ivarip
     integer :: iretlc, ifono
-    integer :: icontm, icontp
+    integer :: icontm, icontp,nbre1,nbpar
+    parameter     (nbre1=1)
     real(kind=8) :: r8bid, klv(78), varmo(8), varpl(8), dvl(12), dpe(12), dve(12), ulp(12), duly
     real(kind=8) :: force(3)
     real(kind=8) :: klc(144), fl(12)
+    logical      :: statique
     character(len=8) :: k8bid
+    real(kind=8) :: valre1(nbre1), valpar, coulom
+    integer :: codre1(nbre1)
+    character(len=8) :: nompar, nomre1(nbre1)
+!
+    data nomre1 /'COULOMB'/
 !
 !   paramètres en entrée
     call jevech('PCADISK', 'L', jdc)
@@ -89,6 +101,7 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
 !
     call jevech('PINSTPR', 'L', jinst)
 !
+    statique = .false.
     call tecach('ONN', 'PVITPLU', 'L', iretlc, iad=ivitp)
     if (iretlc .eq. 0) then
         if (ndim .eq. 3) then
@@ -97,7 +110,20 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
             call ut2vgl(nno, nc, pgl, zr(ivitp), dvl)
         endif
     else
-        dvl(:) = 0.d0
+        nbpar = 0
+        nompar = ' '
+        valpar = 0.d0
+        call r8inir(nbre1, 0.d0, valre1, 1)
+    ! ---    CARACTERISTIQUES DU MATERIAU
+        call rcvala(zi(imat), ' ', 'DIS_CONTACT', nbpar, nompar,&
+                    [valpar], nbre1, nomre1, valre1, codre1, 0)
+        coulom = valre1(1)
+        if (coulom.ne.0.d0) statique = .true.
+    endif
+    if (statique) then
+        if ((nomte.ne.'MECA_DIS_T_N').and.(nomte.ne.'MECA_DIS_T_L')) then
+          call utmess('F','DISCRETS_50',nk=1,valk=nomte)
+        endif
     endif
 !
     call tecach('ONN', 'PDEPENT', 'L', iretlc, iad=idepen)
@@ -125,17 +151,27 @@ subroutine dicho0(option, nomte, ndim, nbt, nno,&
     neq = nno*nc
     ulp(:) = ulm(:) + dul(:)
 !   relation de comportement de choc
-    call dichoc(nbt, neq, nno, nc, zi(imat),&
+    if (statique) then
+      call dis_contact(ndim,nno,nc,zi(imat),ulp,&
+                       zr(igeom),pgl,force,klv,option,varmo,varpl)
+    else
+      call dichoc(nbt, neq, nno, nc, zi(imat),&
                 dul, ulp, zr(igeom), pgl, klv,&
                 duly, dvl, dpe, dve, force,&
                 varmo, varpl, ndim)
+    endif
 !   actualisation de la matrice tangente
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
-        call jevech('PMATUUR', 'E', imat)
-        if (ndim .eq. 3) then
-            call utpslg(nno, nc, pgl, klv, zr(imat))
-        else if (ndim.eq.2) then
-            call ut2mlg(nno, nc, pgl, klv, zr(imat))
+        if (statique) then
+          call jevech('PMATUNS', 'E', imat)
+          call utpnlg(nno,ndim,pgl, klv, zr(imat))
+        else 
+          call jevech('PMATUUR', 'E', imat)
+          if (ndim .eq. 3) then
+              call utpslg(nno, nc, pgl, klv, zr(imat))
+          else if (ndim.eq.2) then
+              call ut2mlg(nno, nc, pgl, klv, zr(imat))
+          endif
         endif
     endif
 !

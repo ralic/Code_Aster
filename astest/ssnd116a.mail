@@ -1,0 +1,50 @@
+ TITRE
+ME-22-JANV-2014 16:12:02                                                        
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ M1       N1       N2  
+ M2       N1       N2      
+ FINSF
+ %
+ POI1    
+ M3       N1
+ M4       N1 
+ FINSF
+ %
+ GROUP_NO
+ Vertex_1                
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ Vertex_2                
+ N2      
+ FINSF
+ %
+ GROUP_MA
+ Line_1                  
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ Line_2                 
+ M2      
+ FINSF
+%
+ GROUP_MA
+ Line_1P                  
+ M3      
+ FINSF
+ %
+ GROUP_MA
+ Line_2P                
+ M4      
+ FINSF
+ %
+ FIN

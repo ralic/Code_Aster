@@ -1,0 +1,281 @@
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
+              IGNORE_ALARM=('MODELISA4_8',)
+      )
+MA=LIRE_MAILLAGE(UNITE=20,FORMAT='ASTER',INFO=1,)
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA=('Line_1','Line_2',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DIS_T')))
+Knul=0.
+CAR=AFFE_CARA_ELEM(MODELE=MO,
+                  DISCRET=(_F(REPERE='GLOBAL',CARA='K_T_D_L',
+                             GROUP_MA=('Line_1'),
+                             VALE=(Knul,Knul, Knul,)),
+                           _F(REPERE='GLOBAL',CARA='K_T_D_L',
+                             GROUP_MA=('Line_2'),
+                             VALE=(1.,1., Knul, ))))
+
+MAT = DEFI_MATERIAU(DIS_CONTACT=_F (RIGI_NOR = 1.,
+                                    RIGI_TAN = 0.5,
+                                    COULOMB =  0.5,
+                                    DIST_1 =   0.5,
+                                    DIST_2 =   0.))
+
+AFFEMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=_F(GROUP_MA='Line_1',MATER=MAT,),)
+
+ENC=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=(_F(GROUP_NO='Vertex_1',
+                               DX=0. ,DY=0. ,DZ=0.,
+                               ),
+                             _F(GROUP_NO='Vertex_2',
+                                             DZ=0.,
+                               )))
+                   
+FN=AFFE_CHAR_MECA(MODELE=MO,  FORCE_NODALE=_F(GROUP_NO='Vertex_2',FX=-1.,))
+FT=AFFE_CHAR_MECA(MODELE=MO,  FORCE_NODALE=_F(GROUP_NO='Vertex_2',FY=2. ,))
+
+rampeN=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0. , 0.,
+                                            1. , 1.,
+                                            2. , 1.,),)               
+rampeT=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0. , 0.,
+                                            1. , 0.,
+                                            1.5, 1.,
+                                            2. , 0.,),)
+
+lis_re=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=1.,NOMBRE=10,),
+                                  _F(JUSQU_A=2.,NOMBRE=20,)))
+
+list_au=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',LIST_INST=lis_re,),)
+
+calc=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=AFFEMAT,
+                   CARA_ELEM=CAR,
+                   EXCIT=(_F(CHARGE=FN,FONC_MULT=rampeN,),
+                          _F(CHARGE=FT,FONC_MULT=rampeT,),
+                          _F(CHARGE=ENC,),),
+                   COMPORTEMENT=(_F(GROUP_MA='Line_2',RELATION='ELAS',),
+                              _F(GROUP_MA='Line_1',RELATION='DIS_CHOC',DEFORMATION = 'PETIT'),),
+                   INCREMENT=_F(LIST_INST=list_au,),
+                   ARCHIVAGE=_F(LIST_INST=lis_re,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   )
+
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc,
+        INST    =0.5,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DX',
+        GROUP_NO='Vertex_2',
+        VALE_CALC=-0.5,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=-0.5,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc,
+        INST    =1.,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DX',
+        GROUP_NO='Vertex_2',
+        VALE_CALC=-0.75,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=-0.75,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc,
+        INST    =2.,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DX',
+        GROUP_NO='Vertex_2',
+        VALE_CALC=-0.75,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=-0.75,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc,
+        INST    =1.05,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DY',
+        GROUP_NO='Vertex_2',
+        VALE_CALC=0.1333333,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=0.1333333,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc,
+        INST    =1.5,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DY',
+        GROUP_NO='Vertex_2',
+        VALE_CALC=1.875,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=1.875,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc,
+        INST    =1.55,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DY',
+        GROUP_NO='Vertex_2',
+        VALE_CALC=1.7416666,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=1.7416666,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc,
+        INST    =2.,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DY',
+        GROUP_NO='Vertex_2',
+        VALE_CALC=0.125,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=0.125,
+       )
+     )
+
+###################
+
+MO2=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA=('Line_1P','Line_2P',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DIS_T')))
+CAR2=AFFE_CARA_ELEM(MODELE=MO2,
+                  DISCRET=(_F(REPERE='GLOBAL',CARA='K_T_D_N',
+                             GROUP_MA=('Line_1P'),
+                             VALE=(Knul,Knul, Knul)),
+                           _F(REPERE='GLOBAL',CARA='K_T_D_N',
+                             GROUP_MA=('Line_2P'),
+                             VALE=(1.,1., Knul))))
+
+AFFEMAT2=AFFE_MATERIAU(MAILLAGE=MA,AFFE=_F(GROUP_MA='Line_1P',MATER=MAT,),)
+
+ENC2=AFFE_CHAR_MECA(MODELE=MO2,
+                   DDL_IMPO=(
+                             _F(GROUP_NO='Vertex_1',
+                                             DZ=0.,
+                               )))
+                   
+FN2=AFFE_CHAR_MECA(MODELE=MO2,  FORCE_NODALE=_F(GROUP_NO='Vertex_1',FX=-1.,))
+FT2=AFFE_CHAR_MECA(MODELE=MO2,  FORCE_NODALE=_F(GROUP_NO='Vertex_1',FY=2. ,))
+
+calc2=STAT_NON_LINE(MODELE=MO2,
+                   CHAM_MATER=AFFEMAT2,
+                   CARA_ELEM=CAR2,
+                   EXCIT=(_F(CHARGE=FN2,FONC_MULT=rampeN,),
+                          _F(CHARGE=FT2,FONC_MULT=rampeT,),
+                          _F(CHARGE=ENC2,),),
+                   COMPORTEMENT=(_F(GROUP_MA='Line_2P',RELATION='ELAS',),
+                              _F(GROUP_MA='Line_1P',RELATION='DIS_CHOC',DEFORMATION = 'PETIT'),),
+                   INCREMENT=_F(LIST_INST=list_au,),
+                   ARCHIVAGE=_F(LIST_INST=lis_re,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   )
+
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc2,
+        INST    =0.5,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DX',
+        GROUP_NO='Vertex_1',
+        VALE_CALC=-0.5,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=-0.5,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc2,
+        INST    =1.,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DX',
+        GROUP_NO='Vertex_1',
+        VALE_CALC=-0.75,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=-0.75,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc2,
+        INST    =2.,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DX',
+        GROUP_NO='Vertex_1',
+        VALE_CALC=-0.75,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=-0.75,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc2,
+        INST    =1.05,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DY',
+        GROUP_NO='Vertex_1',
+        VALE_CALC=0.1333333,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=0.1333333,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc2,
+        INST    =1.5,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DY',
+        GROUP_NO='Vertex_1',
+        VALE_CALC=1.875,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=1.875,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc2,
+        INST    =1.55,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DY',
+        GROUP_NO='Vertex_1',
+        VALE_CALC=1.7416666,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=1.7416666,
+       )
+     )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=calc2,
+        INST    =2.,
+        NOM_CHAM='DEPL',
+        NOM_CMP ='DY',
+        GROUP_NO='Vertex_1',
+        VALE_CALC=0.125,
+        REFERENCE='ANALYTIQUE',
+        VALE_REFE=0.125,
+       )
+     )
+
+
+FIN()

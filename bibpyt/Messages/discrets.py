@@ -224,4 +224,9 @@ Il n'est pas possible de calculer le vecteur directeur de l'élément.
 
 """),
 
+50 :_(u"""
+L'utilisation du comportement DIS_CHOC avec frottement (COULOMB !=0 dans DEFI_MATERIAU/DIS_CONTACT) 
+n'est pas encore développé pour l'élément %(k1)s
+"""),
+
 }

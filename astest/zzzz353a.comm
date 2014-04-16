@@ -52,7 +52,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
 
 RESSORT=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0E13,
                                      # RIGI_TAN=rigidite_normale_contact,
-                                     COULOMB=0.2,
+                                     COULOMB=0.,                                     
                                      DIST_1=1.0,),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
