@@ -20,36 +20,36 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
-
-
-MA2=CREA_MAILLAGE(MAILLAGE=MA,
-                  QUAD_LINE=_F(TOUT='OUI',),);
-
-
-MA2=DEFI_GROUP(reuse=MA2,
-               MAILLAGE=MA2,
-               CREA_GROUP_NO=(_F(GROUP_MA = ('SSUP_S','FACE2',),),
-                              _F(NOM='LFF',GROUP_MA = 'LFF',OPTION='NOEUD_ORDO'),),
-               CREA_GROUP_MA=_F(NOM='GRMAXP',OPTION='BANDE',POINT=(0.3,0.0,0.0),VECT_NORMALE=(1.,0.,0.),DIST=0.3,),
+MA=LIRE_MAILLAGE(FORMAT='MED')
+                                  
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA = ('SSUP_S','FACE2',),),
+                             _F(NOM='LFF',GROUP_MA = 'LFF',OPTION='NOEUD_ORDO'),),
               )
 
-MO=AFFE_MODELE(MAILLAGE=MA2,
-               AFFE=_F( TOUT = 'OUI',
+# Barsoum
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                GROUP_NO_FOND='LFF'))
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F( GROUP_MA='VMAT',
                         PHENOMENE = 'MECANIQUE',
                         MODELISATION = '3D')
-              );
+              )
 
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                            NU = 0.3,
                            RHO = 7800.)
-                  );
+                  )
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA2,
-                    AFFE=_F( TOUT = 'OUI',
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F( GROUP_MA='VMAT',
                              MATER = MAT1)
-                   );
+                   )
 
 
 ###########################################
@@ -89,14 +89,14 @@ FNZ=DEFI_FONCTION(NOM_PARA='Z',
 
 
 CH1=AFFE_CHAR_MECA_F(MODELE=MO,
-                    FORCE_INTERNE=_F(TOUT='OUI',
-                                     FX=FNX,
-                                     FY=FNY,)
+                     FORCE_INTERNE=_F(GROUP_MA='VMAT',
+                                      FX=FNX,
+                                      FY=FNY,)
                    );
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MO,
-                    FORCE_INTERNE=_F(TOUT='OUI',
-                                     FZ=FNZ,)
+                     FORCE_INTERNE=_F(GROUP_MA='VMAT',
+                                      FZ=FNZ,)
                    );
 
 ##########################
@@ -116,250 +116,153 @@ CHAMDEPL=MECA_STATIQUE(MODELE=MO,
 # DEFINITION DE LA FISSURE
 ###############################
 
-FISS=DEFI_FOND_FISS(MAILLAGE=MA2,
-                  SYME='OUI',
-                  FOND_FISS=_F(GROUP_NO='LFF',),
-                  LEVRE_SUP=_F(GROUP_MA='LEVREINF',),
-                     );
+FISS=DEFI_FOND_FISS(MAILLAGE=MA,
+                    SYME='OUI',
+                    FOND_FISS=_F(GROUP_NO='LFF',),
+                    LEVRE_SUP=_F(GROUP_MA='LEVREINF',),
+                    )
 
 ###################################
 # CALCUL DE G ET DES K LOCAUX
 ###################################
 
 
-RAY_INF1=DEFI_CONSTANTE(   VALE=0.00075);
+R_INF=DEFI_CONSTANTE(VALE=0.00075)
 
-RAY_SUP1=DEFI_CONSTANTE(   VALE=0.0025);
+R_SUP=DEFI_CONSTANTE(VALE=0.0025)
 
+# calcul de G(s) et K(s) avec le lissage Legendre (par defaut)
 GLO1=CALC_G(RESULTAT=CHAMDEPL,
             OPTION='CALC_K_G',
             THETA=_F(FOND_FISS=FISS,
-                     R_INF_FO=RAY_INF1,
-                     R_SUP_FO=RAY_SUP1,),
-            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                       LISSAGE_G='LAGRANGE',),
-            INFO=2,
+                     R_INF_FO=R_INF,
+                     R_SUP_FO=R_SUP,),
+#            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+#                       LISSAGE_G='LAGRANGE',),
            );
 
+
+# solution de reference : calcul ANSYS
+# polynome interpolateur de la solution ANSYS :
+# K1ref(s) = -7.932e14.s^5 + 8.607e13.s^4 - 2.540e12.s^3 - 2.185e10.x^2 + 2.554e9.s + 6.087e7
+K1ref = FORMULE(NOM_PARA='ABSC_CURV',
+                VALE='-7.932e14*ABSC_CURV**5 +  8.607e13*ABSC_CURV**4 - 2.540e12*ABSC_CURV**3 - 2.185e10*ABSC_CURV**2 + 2.554e9*ABSC_CURV + 6.087e7')
+
+Ecart = FORMULE(NOM_PARA=('K1','K1REF'),
+                VALE='abs(K1REF-K1)/K1REF')
+
+GLO1=CALC_TABLE(TABLE=GLO1,
+                reuse=GLO1,
+                ACTION=(_F(OPERATION='OPER',NOM_PARA='K1REF',FORMULE=K1ref),
+                        _F(OPERATION='OPER',NOM_PARA='ECART',FORMULE=Ecart),
+                        ),
+                )
+
+IMPR_TABLE(TABLE=GLO1)
+
 ###########################
-# TEST DES VALEURS
+# TEST DES VALEURS DE K1
 ###########################
-IMPR_TABLE(TABLE=GLO1,)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.12,
-           VALE_CALC=6.336961399357E+07,
-           VALE_REFE=5.6600000E7,
+# a l'abscisse curviligne 0 (point 1)
+TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=1,),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(0.),
+           PRECISION=0.10,
+           VALE_CALC=54962924.9725,
            )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.106,
-           VALE_CALC=6.2278210724233E+07,
-           VALE_REFE=5.9500000E7,
+# a l'abscisse curviligne 5.34881e-3 (point 8)
+TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=2,),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=5.34881e-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(5.34881e-3),
+           PRECISION=0.02,
+           VALE_CALC=74492334.7542,
            )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.10000000000000001,
-           VALE_CALC=6.5426885911065E+07,
-           VALE_REFE=6.2900000E7,
+# a l'abscisse curviligne 3.44482e-2 (point 25)
+TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=3,),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=3.44482e-2),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(3.44482e-2),
+           PRECISION=0.01,
+           VALE_CALC=101906126.573,
            )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=6.6420246084091E+07,
-           VALE_REFE=6.6400000E7,
+# a l'abscisse curviligne 5.36143e-2 (point 33)
+TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=4,),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=5.36143e-2,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(5.36143e-2),
+           PRECISION=0.07,
+           VALE_CALC=96992933.3587,
            )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=6.9413845312653E+07,
-           VALE_REFE=6.9800000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=5,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=7.2861644783148E+07,
-           VALE_REFE=7.2700000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=6,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=7.6081420578262E+07,
-           VALE_REFE=7.5600000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=7,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=8.0554142723604E+07,
-           VALE_REFE=7.9100000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=8,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=8.2619467441977E+07,
-           VALE_REFE=8.2000000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=9,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=8.6970114680491E+07,
-           VALE_REFE=8.5400000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=10,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=8.7847024649877E+07,
-           VALE_REFE=8.8900000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=11,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=9.1902104783696E+07,
-           VALE_REFE=9.1800000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=12,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.040000000000000001,
-           VALE_CALC=9.170032471222E+07,
-           VALE_REFE=9.4700000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=13,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=9.5604325237953E+07,
-           VALE_REFE=9.6400000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=14,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=9.5028264077854E+07,
-           VALE_REFE=9.7500000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=15,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=9.8273158545897E+07,
-           VALE_REFE=9.7500000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=16,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=9.7194800846869E+07,
-           VALE_REFE=9.6400000E7,
-           NOM_PARA='K1',
-           TABLE=GLO1,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=17,),
-           )
 
 # TESTS SUR K2 ET K3 POUR S'ASSURER QU'ILS SONT BIEN NULS
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999998E-17,
-           VALE_CALC=0.0E+00,
-           VALE_REFE=0.0,
+TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K2',
            TYPE_TEST='MAX',
-           TABLE=GLO1,)
-
-TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999998E-17,
-           VALE_CALC=0.0E+00,
-           VALE_REFE=0.0,
+           VALE_REFE=0.,
+           PRECISION=1e-16,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.,
+           ORDRE_GRANDEUR=1e-16,
+           )
+
+TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K2',
            TYPE_TEST='MIN',
-           TABLE=GLO1,)
-
-TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999998E-17,
-           VALE_CALC=0.0E+00,
-           VALE_REFE=0.0,
+           VALE_REFE=0.,
+           PRECISION=1e-16,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.,
+           ORDRE_GRANDEUR=1e-16,
+           )
+
+TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K3',
            TYPE_TEST='MAX',
-           TABLE=GLO1,)
-
-TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999998E-17,
-           VALE_CALC=0.0E+00,
-           VALE_REFE=0.0,
+           VALE_REFE=0.,
+           PRECISION=1e-16,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.,
+           ORDRE_GRANDEUR=1e-16,
+           )
+           
+TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K3',
            TYPE_TEST='MIN',
-           TABLE=GLO1,)
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=0.,
+           PRECISION=1e-16,
+           CRITERE='ABSOLU',
+           VALE_CALC=0.,
+           ORDRE_GRANDEUR=1e-16,
+           )
+           
 
-###################################
+
+##################################################
 # VERIFICATION : SOLUTION IDENTIQUE AVEC ROTATION
-###################################
+##################################################
 
 CH3=AFFE_CHAR_MECA(MODELE=MO,
-                  ROTATION=_F(VITESSE = 500., 
-                              AXE = (0., 0., 1.,),),
+                   ROTATION=_F(VITESSE = 500., 
+                               AXE = (0., 0., 1.,),),
                  );
 
 CHAMDEP2=MECA_STATIQUE(MODELE=MO,
@@ -368,64 +271,100 @@ CHAMDEP2=MECA_STATIQUE(MODELE=MO,
                               _F( CHARGE = CH3))
                       );
 
-# lissage de lagrange
-GLO2=CALC_G(RESULTAT=CHAMDEP2,
-            OPTION='CALC_K_G',
-            THETA=_F(FOND_FISS=FISS,
-                     R_INF_FO=RAY_INF1,
-                     R_SUP_FO=RAY_SUP1,),
-            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                       LISSAGE_G='LAGRANGE',),
-            )
+# lissage de legendre (par defaut)
+GK2leg=CALC_G(RESULTAT=CHAMDEP2,
+              OPTION='CALC_K_G',
+              THETA=_F(FOND_FISS=FISS,
+                       R_INF_FO=R_INF,
+                       R_SUP_FO=R_SUP,),
+              )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.12,
-           VALE_CALC=6.336961399357E+07,
-           VALE_REFE=5.6600000E7,
+GK2leg=CALC_TABLE(TABLE=GK2leg,
+                  reuse=GK2leg,
+                  ACTION=(_F(OPERATION='OPER',NOM_PARA='K1REF',FORMULE=K1ref),
+                          _F(OPERATION='OPER',NOM_PARA='ECART',FORMULE=Ecart),
+                          ),
+                  )
+
+IMPR_TABLE(TABLE=GK2leg)
+
+# a l'abscisse curviligne 0 (point 1)
+TEST_TABLE(TABLE=GK2leg,
            NOM_PARA='K1',
-           TABLE=GLO2,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=1,),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(0.),
+           PRECISION=0.24,
+           VALE_CALC=54962924.9725,
            )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=8.0554142723604E+07,
-           VALE_REFE=7.9100000E7,
+# a l'abscisse curviligne 5.34881e-3 (point 8)
+TEST_TABLE(TABLE=GK2leg,
            NOM_PARA='K1',
-           TABLE=GLO2,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=8,),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=5.34881e-3,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(5.34881e-3),
+           PRECISION=0.08,
+           VALE_CALC=74492334.7542,
            )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=9.7194800846869E+07,
-           VALE_REFE=9.6400000E7,
+# a l'abscisse curviligne 3.44482e-2 (point 25)
+TEST_TABLE(TABLE=GK2leg,
            NOM_PARA='K1',
-           TABLE=GLO2,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=17,),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=3.44482e-2),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(3.44482e-2),
+           PRECISION=0.02,
+           VALE_CALC=101906126.573,
            )
 
-# lissage de lagrange Regu
-GLO4=CALC_G(RESULTAT=CHAMDEP2,
-            OPTION='CALC_K_G',
-            THETA=_F(FOND_FISS=FISS,
-                     R_INF_FO=RAY_INF1,
-                     R_SUP_FO=RAY_SUP1,),
-            LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                       LISSAGE_G='LAGRANGE_REGU',),
-            )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC=9.4544029993447E+07,
-           VALE_REFE=9.6400000E7,
+# a l'abscisse curviligne 5.36143e-2 (point 33)
+TEST_TABLE(TABLE=GK2leg,
            NOM_PARA='K1',
-           TABLE=GLO4,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=17,),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=5.36143e-2,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(5.36143e-2),
+           PRECISION=0.07,
+           VALE_CALC=96992933.3587,
+           )
+
+
+
+
+
+
+# lissage de Lagrange_No_No
+GK2lagno=CALC_G(RESULTAT=CHAMDEP2,
+                OPTION='CALC_K_G',
+                THETA=_F(FOND_FISS=FISS,
+                         R_INF_FO=R_INF,
+                         R_SUP_FO=R_SUP,),
+                LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                           LISSAGE_G='LAGRANGE_NO_NO',),
+                )
+
+GK2lagno=CALC_TABLE(TABLE=GK2lagno,
+                  reuse=GK2lagno,
+                  ACTION=(_F(OPERATION='OPER',NOM_PARA='K1REF',FORMULE=K1ref),
+                          _F(OPERATION='OPER',NOM_PARA='ECART',FORMULE=Ecart),
+                          ),
+                  )
+
+IMPR_TABLE(TABLE=GK2lagno)
+
+# a l'abscisse curviligne 5.36143e-2 (point 33)
+TEST_TABLE(TABLE=GK2lagno,
+           NOM_PARA='K1',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=5.36143e-2,),
+           REFERENCE='SOURCE_EXTERNE',
+           VALE_REFE=K1ref(5.36143e-2),
+           PRECISION=0.01,
+           VALE_CALC=104086238.289,
            )
 
 FIN()
