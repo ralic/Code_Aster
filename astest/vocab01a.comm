@@ -34,14 +34,20 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 #
 # la methode permettant de recuperer le vocabulaire d une commande est
 # get_mc_simp/get_mc_fact de la classe ENTITE (B_ENTITE.py)
-#
-# ceci remplace l ancien script de l agla : maj_voca
 
+from pprint import pprint
 from Cata import cata
 
-commands = []
-vocabulaire = set()
+def get_entite(obj):
+    ret = obj.entites.values()
+    lsub = []
+    for sub in ret:
+        if sub.label in ("BLOC", "FACT"):
+            lsub.extend(get_entite(sub))
+    ret.extend(lsub)
+    return ret
 
+commands = []
 for name, elem in cata.__dict__.items() :
     if isinstance(elem, OPER):
         commands.append(elem)
@@ -50,6 +56,19 @@ for name, elem in cata.__dict__.items() :
     elif isinstance(elem, MACRO):
         commands.append(elem)
 
+# extract fr/ang docstrings
+lang = {}
+for cmd in commands :
+    objs = [cmd] + get_entite(cmd)
+    for entity in objs:
+        if entity.ang:
+            lang[id(entity)] = (entity.fr, entity.ang)
+for val in lang.values():
+    fr = val[0].replace('"', r'\"')
+    en = val[1].replace('"', r'\"')
+    print "\"{0}\",\"{1}\"".format(fr, en)
+
+vocabulaire = set()
 com_voca = {}
 for cmd in commands :
     com_voca[cmd.nom] = cmd.get_mc_simp(niv=2) + cmd.get_mc_fact()
