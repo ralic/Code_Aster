@@ -18,8 +18,41 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 import os
+import os.path as osp
 from math import sin, cos, tan, asin, acos, atan2, atan, sinh, cosh, tanh
-from math import pi ,exp,log, log10, sqrt
+from math import pi, exp, log, log10, sqrt
+
+# translation of the docstrings of the commands and keywords is
+# used within Eficas, that's why we are using PyQt i18n functions here
+try:
+    from PyQt4 import QtCore, QtGui
+    app = QtGui.QApplication
+    # define the tr function
+    try:
+        _encoding = app.UnicodeUTF8
+        def tr(text):
+            return app.translate("@default", text, None, _encoding)
+    except AttributeError:
+        def tr(text):
+            return app.translate("@default", text, None)
+    # install the translator
+    translator = QtCore.QTranslator()
+    # ask Eficas for the selected language
+    try:
+        from Extensions.localisation import get_locale
+        locale = get_locale()
+    except ImportError:
+        locale = QtCore.QLocale.system().name()
+    localedir = osp.normpath(osp.dirname(__file__))
+    if translator.load("catapy_" + locale, localedir):
+        app.installTranslator(translator)
+except ImportError:
+    try:
+        # let gettext function in place
+        tr = _
+    except NameError:
+        def tr(string):
+            return string
 
 import Accas
 from Accas import *
