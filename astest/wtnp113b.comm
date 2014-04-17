@@ -94,9 +94,9 @@ LI=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 # 500 ans :
                        _F(  JUSQU_A =15768.E6,  NOMBRE = 5),
 # 1000 ans :
-                       _F(  JUSQU_A =31536.E6,  NOMBRE = 10),
+                       _F(  JUSQU_A =31536.E6,  NOMBRE = 5),
 # 10000 ans :
-                       _F(  JUSQU_A =31536.E7,  NOMBRE = 10),
+                       _F(  JUSQU_A =31536.E7,  NOMBRE = 5),
                      ),);
 
 
@@ -121,8 +121,10 @@ UN=DEFI_CONSTANTE(    VALE=1.,);
 ZERO=DEFI_CONSTANTE(    VALE=0.,);
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
-                   INTERVALLE=_F(JUSQU_A=1.E10,
-                                 PAS=1.E6,),);
+                    INTERVALLE=(_F(JUSQU_A=1.E6,  PAS=1.E5,),                 
+                                 _F(JUSQU_A=1.E7,  PAS=1.E5,),         
+                                 _F(JUSQU_A=1.E8,  PAS=1.E6,),)
+                   );
 
 LI1=DEFI_LIST_REEL(DEBUT=1.E-5,
                    INTERVALLE=_F(JUSQU_A=1.0,
@@ -385,11 +387,14 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                 CONVERGENCE=_F(ITER_GLOB_MAXI=70,),
               );
 
-RESU0=CALC_CHAMP(reuse=RESU0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU0)
+RESU0=CALC_CHAMP(reuse=RESU0,CONTRAINTE=('SIEF_ELNO'),
+                      NUME_ORDRE=(1,2,3,5,7,9,14,19,24),
+                      VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU0)
 
 
 RESU0=CALC_CHAMP(reuse=RESU0,
         VARI_INTERNE='VARI_NOEU',
+                      NUME_ORDRE=(1,2,3,5,7,9,14,19,24),
         RESULTAT=RESU0,);
 MILIEU=INTE_MAIL_2D(MAILLAGE=MAIL,
                     DEFI_SEGMENT=_F(  ORIGINE = ( 0.,  -450., ),
@@ -399,14 +404,14 @@ TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             CHEMIN=MILIEU,
                             RESULTAT=RESU0,
                             NOM_CHAM='DEPL',
-                  NUME_ORDRE=(1,2,5,7,9,14,24,34),
+                      NUME_ORDRE=(1,2,5,7,9,14,19,24),
                             NOM_CMP=('PRE1'),
                             OPERATION='EXTRACTION',),);
 TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             CHEMIN=MILIEU,
                             RESULTAT=RESU0,
                             NOM_CHAM='VARI_ELNO',
-                  NUME_ORDRE=(1,2,5,7,9,14,24,34),
+                      NUME_ORDRE=(1,2,5,7,9,14,19,24),
                             NOM_CMP=('V3'),
                             OPERATION='EXTRACTION',),);
 
@@ -427,7 +432,7 @@ TRVB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             CHEMIN=VERT,
                             RESULTAT=RESU0,
                             NOM_CHAM='DEPL',
-                      NUME_ORDRE=(1,2,5,7,9,14,24,34),
+                      NUME_ORDRE=(1,2,5,7,9,14,19,24),
                             NOM_CMP=('PRE1'),
                             OPERATION='EXTRACTION',),);
 
@@ -435,7 +440,7 @@ TRVV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             CHEMIN=VERT,
                             RESULTAT=RESU0,
                             NOM_CHAM='VARI_ELNO',
-                      NUME_ORDRE=(1,2,5,7,9,14,24,34),
+                      NUME_ORDRE=(1,2,5,7,9,14,19,24),
                             NOM_CMP=('V3'),
                             OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=TRVB,
@@ -456,19 +461,19 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='DEPL',
                   NOEUD='NO1496',
                   NOM_CMP='PRE1',
-                  VALE_CALC= 2.90088672E+07,
+                  VALE_CALC= 29007708.7879,
                   VALE_REFE=2.9000000E7,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=34,
+TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
                   NOEUD='NO1496',
                   NOM_CMP='PRE1',
-                  VALE_CALC= 4.31570568E+06,
+                  VALE_CALC= 4418129.6442,
                   VALE_REFE=4.350000E6,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
@@ -480,20 +485,20 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='DEPL',
                   NOEUD='NO823',
                   NOM_CMP='PRE1',
-                  VALE_CALC= 3.48193011E+06,
+                  VALE_CALC= 3472287.21266,
                   VALE_REFE=3.600000E6,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=34,
+TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
                   NOEUD='NO823',
                   NOM_CMP='PRE1',
-                  VALE_CALC= 4.31127330E+06,
-                  VALE_REFE=4.350000E6,
+                  VALE_CALC= 4410219.38325,
+                  VALE_REFE=4.340000E6,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
           )
@@ -504,7 +509,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='VARI_NOEU',
                   NOEUD='NO1496',
                   NOM_CMP='V4',
-                  VALE_CALC=0.707665943,
+                  VALE_CALC=0.707673707139,
                   VALE_REFE=0.7,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),

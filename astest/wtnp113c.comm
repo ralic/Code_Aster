@@ -1,5 +1,5 @@
 # ======================================================================
-# TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D ,
+# TITRE RESATURATION D UNE ALVEOLE TEST THHS, 2D ,
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,8 +84,7 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
 #  LISTE DES INSTANTS DE CALCUL
 ####################################
 LI=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
-# 1 an :
-#                      _F(  JUSQU_A = 31536000.,  NOMBRE = XX1),
+
 # 15 ans :
                         _F(  JUSQU_A = 473040000.,  NOMBRE = 2),
 # 50 ans :
@@ -96,10 +95,11 @@ LI=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                        _F(  JUSQU_A =63072.E5,  NOMBRE = 2),
 # 500 ans :
                        _F(  JUSQU_A =15768.E6,  NOMBRE = 5),
+#
 # 1000 ans :
-                       _F(  JUSQU_A =31536.E6,  NOMBRE = 10),
+                       _F(  JUSQU_A =31536.E6,  NOMBRE = 5),
 # 10000 ans :
-                       _F(  JUSQU_A =31536.E7,  NOMBRE = 10),
+                       _F(  JUSQU_A =31536.E7,  NOMBRE = 5),
                      ),);
 
 
@@ -124,8 +124,10 @@ UN=DEFI_CONSTANTE(    VALE=1.,);
 ZERO=DEFI_CONSTANTE(    VALE=0.,);
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
-                   INTERVALLE=_F(JUSQU_A=1.E10,
-                                 PAS=1.E6,),);
+                    INTERVALLE=(_F(JUSQU_A=1.E6,  PAS=1.E5,),                 
+                                 _F(JUSQU_A=1.E7,  PAS=1.E5,),         
+                                 _F(JUSQU_A=1.E8,  PAS=1.E6,),)
+                   );
 
 LI1=DEFI_LIST_REEL(DEBUT=1.E-5,
                    INTERVALLE=_F(JUSQU_A=1.0,
@@ -333,7 +335,8 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                                 DEPL=DEP1,
                                 INST_ETAT_INIT=INST_ETAT_INIT, ),
                 NEWTON=_F(MATRICE='TANGENTE',
-                           REAC_ITER=50,),
+                                  REAC_ITER=50,
+                           ),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=70,),
               );
 
@@ -375,7 +378,10 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                 CONVERGENCE=_F(ITER_GLOB_MAXI=70,),
               );
 
-RESU0=CALC_CHAMP(reuse=RESU0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU0)
+RESU0=CALC_CHAMP(reuse=RESU0,
+                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
+                   CONTRAINTE=('SIEF_ELNO'),
+                   VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU0)
 
 
 RESU0=CALC_CHAMP(reuse=RESU0,
@@ -391,6 +397,7 @@ MODELIN=AFFE_MODELE(   MAILLAGE=MAILIN,
 RESULIN = PROJ_CHAMP(
                METHODE='COLLOCATION',
                RESULTAT=RESU0,
+                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
                MODELE_1=MODELE,
                MODELE_2=MODELIN,
                NOM_CHAM ='DEPL',
@@ -403,7 +410,7 @@ TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             CHEMIN=MILIEU,
                             RESULTAT=RESULIN,
                             NOM_CHAM='DEPL',
-                  NUME_ORDRE=(1,2,5,7,9,14,24,34),
+                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
                             NOM_CMP=('PRE1'),
                             OPERATION='EXTRACTION',),);
 MILQUA=INTE_MAIL_2D(MAILLAGE=MAIL,
@@ -414,7 +421,7 @@ TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             CHEMIN=MILQUA,
                             RESULTAT=RESU0,
                             NOM_CHAM='VARI_ELNO',
-                  NUME_ORDRE=(1,2,5,7,9,14,24,34),
+                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
                             NOM_CMP=('V3'),
                             OPERATION='EXTRACTION',),);
 
@@ -427,7 +434,7 @@ TRVB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             CHEMIN=VERT,
                             RESULTAT=RESULIN,
                             NOM_CHAM='DEPL',
-                      NUME_ORDRE=(1,2,5,7,9,14,24,34),
+                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
                             NOM_CMP=('PRE1'),
                             OPERATION='EXTRACTION',),);
 
@@ -439,7 +446,7 @@ TRVV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             CHEMIN=VERQUA,
                             RESULTAT=RESU0,
                             NOM_CHAM='VARI_ELNO',
-                      NUME_ORDRE=(1,2,5,7,9,14,24,34),
+                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
                             NOM_CMP=('V3'),
                             OPERATION='EXTRACTION',),);
 
@@ -452,19 +459,19 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='DEPL',
                   NOEUD='NO1496',
                   NOM_CMP='PRE1',
-                  VALE_CALC= 2.87023048E+07,
+                  VALE_CALC= 28700921.5516,
                   VALE_REFE=2.9000000E7,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=34,
+TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
                   NOEUD='NO1496',
                   NOM_CMP='PRE1',
-                  VALE_CALC= 4.17521229E+06,
+                  VALE_CALC= 4272681.02593,
                   VALE_REFE=4.350000E6,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
@@ -476,19 +483,19 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='DEPL',
                   NOEUD='NO823',
                   NOM_CMP='PRE1',
-                  VALE_CALC= 2.93060830E+06,
+                  VALE_CALC= 2920057.46602,
                   VALE_REFE=3.600000E6,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=34,
+TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
                   NOEUD='NO823',
                   NOM_CMP='PRE1',
-                  VALE_CALC= 4.17095013E+06,
+                  VALE_CALC= 4265105.59535,
                   VALE_REFE=4.340000E6,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
@@ -500,7 +507,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   NOM_CHAM='VARI_NOEU',
                   NOEUD='NO1496',
                   NOM_CMP='V3',
-                  VALE_CALC=0.709786089,
+                  VALE_CALC=0.70979566386,
                   VALE_REFE=0.7,
                   CRITERE='RELATIF',
                   PRECISION=0.2,),
