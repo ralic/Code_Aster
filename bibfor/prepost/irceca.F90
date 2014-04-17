@@ -356,7 +356,11 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
 !
 !     --- IMPRESSION ---
 !
-    AS_ALLOCATE(vi=bid, size=ncmpmx*icomax)
+    if ( ncmpmx*icomax.gt.4 ) then
+        AS_ALLOCATE(vi=bid, size=ncmpmx*icomax)
+    else
+        AS_ALLOCATE(vi=bid, size=4)
+    endif
     nbmat = longr(nbgrel+1)
     call gicoor()
     nbsmo = zi(jli-1+1)
