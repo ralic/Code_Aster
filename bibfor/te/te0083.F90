@@ -71,13 +71,8 @@ subroutine te0083(option, nomte)
 !      -----------------------------------------
     nbsig = nbsigm()
 !
-    do 10 i = 1, nbsig*npg
-        sigth(i) = zero
-10  end do
-!
-    do 20 i = 1, ndim*nno
-        bsigma(i) = zero
-20  end do
+    sigth(1:nbsig*npg) = zero
+    bsigma(1:ndim*nno) = zero
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 !      ----------------------------------------------
@@ -125,9 +120,9 @@ subroutine te0083(option, nomte)
 !      -------------------------------------
     call jevech('PVECTUR', 'E', ivectu)
 !
-    do 30 i = 1, ndim*nno
+    do i = 1, ndim*nno
         zr(ivectu+i-1) = bsigma(i)
-30  end do
+    end do
 !
 40  continue
 end subroutine

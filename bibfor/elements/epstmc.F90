@@ -39,8 +39,9 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
+#include "asterfort/assert.h"
 #include "asterfort/matrot.h"
-#include "asterfort/rccoma.h"
+#include "asterfort/get_elas_type.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
@@ -62,6 +63,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
     integer :: icodre(nbres)
     character(len=8) :: nomres(nbres), nompar
     character(len=16) :: phenom
+    integer :: elas_type
 !
     real(kind=8) :: valres(nbres), valpar, bendog, kdessi, angl(3)
     real(kind=8) :: dire(3), orig(3), p(3, 3), epsthl(6), troisk
@@ -214,12 +216,17 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !
 ! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 !      --------------------------------------------
-        call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
+!        call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
+
+!
+! ----- Get elasticity type
+!
+        call get_elas_type(mater, elas_type)
 !
 !      ------------
 ! ---- CAS ISOTROPE
 !      ------------
-        if (phenom .eq. 'ELAS') then
+        if (elas_type.eq.1) then
 !
             call verift(fami, igau, isgau, poum, mater,&
                         epsth=epsth(1) )
@@ -229,7 +236,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !      --------------
 ! ---- CAS ORTHOTROPE
 !      --------------
-        else if (phenom.eq.'ELAS_ORTH') then
+        else if (elas_type.eq.2)  then
 !
             if (repere(1) .gt. 0.d0) then
                 angl(1) = repere(2)
@@ -278,7 +285,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !      -----------------------
 ! ---- CAS ISOTROPE-TRANSVERSE
 !      -----------------------
-        else if (phenom.eq.'ELAS_ISTR') then
+        else if (elas_type.eq.3) then
 !
             if (repere(1) .gt. 0.d0) then
                 angl(1) = repere(2)
@@ -324,9 +331,8 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             epsth(5)=vepst2(4)
             epsth(6)=vepst2(5)
             if (ndim .eq. 2) epsth(3)=epsthl(3)
-        else if (phenom.eq.'ELAS_HYPER') then
         else
-            call utmess('F', 'ELEMENTS_15', sk=phenom)
+            ASSERT(.false.)
         endif
     endif
 !
