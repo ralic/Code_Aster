@@ -53,17 +53,14 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !                 CAR IL EN EXISTE FORCEMENT UNE)
 !  OUT   DSIDEP : MATRICE DE RIGIDITE TANGENTE
 !
-!     VARIABLE LOCALE
     real(kind=8) :: rbid, repere(7), hookf(36), mkooh(36), xyzgau(3)
     real(kind=8) :: valres(3), deplth(6), depgth(6), depstr(6)
     real(kind=8) :: depsme(6), rac2, vepst1(6), vepst2(6), epsm2(6)
-    integer :: iret, nbsigm, i, j
+    integer :: nbsigm, i, j
     character(len=2) :: k2bid
-    character(len=8) :: materi
     logical :: vrai
 !
     k2bid = '  '
-    materi = ' '
 !
     rac2=sqrt(2.d0)
     nbsigm=ndim*2
@@ -156,7 +153,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         if (phenom .eq. 'ELAS_ORTH') then
 !
             call verift(fami, kpg, ksp, poum, imate,&
-                        materi, 'ELAS_ORTH', iret, ndim=3, vepsth=valres)
+                        elas_keyword = 'ELAS_ORTH', ndim=3, vepsth=valres)
             deplth(1) = valres(1)
             deplth(2) = valres(2)
             deplth(3) = valres(3)
@@ -167,7 +164,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 ! RECUPERATION DES PARAMETRES MATERIAUX A L INSTANT -
 !
             call verift(fami, kpg, ksp, poum, imate,&
-                        materi, 'ELAS_ISTR', iret, ndim=2, vepsth=valres)
+                        elas_keyword = 'ELAS_ISTR', ndim=2, vepsth=valres)
             deplth(1) = valres(1)
             deplth(2) = valres(1)
             deplth(3) = valres(2)

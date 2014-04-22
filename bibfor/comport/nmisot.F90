@@ -89,11 +89,11 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: sechm, sechp, sref, tp, defam(6), defap(6)
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
     integer :: imate2, jprolp, jvalep, nbvalp, k, l, niter, ibid
-    integer :: iret2, iret3, iret4, iret0, iret5
+    integer :: iret2, iret3, iret4, iret5
     integer :: icodre(3)
     character(len=6) :: epsa(6)
     character(len=8) :: nomres(3)
-    character(len=8) :: nompar(3), para_type, materi
+    character(len=8) :: nompar(3), para_type
     character(len=10) :: phenom
     real(kind=8) :: valpam(3), valpap(3), para_vale, valrm(2), signul, prec
     real(kind=8) :: bendom, bendop, kdessm, kdessp, rac2, xm(6), xp(6)
@@ -114,7 +114,6 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     nbvalp = 0
     jprolp = 0
     jvalep = 0
-    materi = ' '
     signul = crit(3)
 !
     cplan = typmod(1) .eq. 'C_PLAN'
@@ -227,7 +226,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         endif
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret0, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
 ! --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 !

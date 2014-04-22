@@ -68,7 +68,6 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
     real(kind=8) :: vepst1(6), vepst2(6), hydr, sech, sref, ptot, nu
     integer :: i, k, iret, irepto
     character(len=6) :: epsa(6)
-    character(len=8) :: materi
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
      &              'EPSAYZ'/
 !
@@ -79,11 +78,10 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
     zero = 0.0d0
     nompar = 'INST'
     valpar = instan
-    materi = ' '
 !
-    do 10 i = 1, 6
+    do i = 1, 6
         epsth(i) = zero
- 10 end do
+    end do
 !
     call rcvarc(' ', 'HYDR', poum, fami, igau,&
                 isgau, hydr, iret)
@@ -204,11 +202,11 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 ! ---- CALCUL DES DEFORMATIONS ANELASTIQUE (OPTION CHAR_MECA_EPSA_R)
 ! ---- ---------------------------------------------------------------
     else if (option(11:14).eq.'EPSA') then
-        do 20 k = 1, 6
+        do k = 1, 6
             call rcvarc(' ', epsa(k), poum, fami, igau,&
                         isgau, epsth(k), iret)
             if (iret .eq. 1) epsth(k)=0.d0
- 20     end do
+        end do
 !
 !
 ! ---- ------------------------------------------------------------
@@ -227,7 +225,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
         if (phenom .eq. 'ELAS') then
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        materi, 'ELAS', iret, epsth=epsth(1) )
+                        elas_keyword = 'ELAS', epsth=epsth(1) )
             epsth(2) = epsth(1)
             epsth(3) = epsth(1)
 !
@@ -253,7 +251,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             endif
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        materi, phenom, iret, ndim=3, vepsth=epsthl)
+                        elas_keyword = phenom, ndim=3, vepsth=epsthl)
 !
             epsthl(4) = 0.d0
             epsthl(5) = 0.d0
@@ -302,7 +300,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             endif
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        materi, phenom, iret, ndim=2, vepsth=epsthl)
+                        elas_keyword = phenom, ndim=2, vepsth=epsthl)
 !
             epsthl(3) = epsthl(2)
             epsthl(2) = epsthl(1)

@@ -33,7 +33,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
 !
-    integer :: kpg, ksp, ndim, imate, iret, iret0, iret1, iret2
+    integer :: kpg, ksp, ndim, imate, iret, iret1, iret2
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
@@ -87,7 +87,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
     integer :: jprolp, jvalep, nbvalp, k, l, niter, imate2, ibid
     integer :: icodre(3)
-    character(len=8) :: nomres(3), para_type, materi
+    character(len=8) :: nomres(3), para_type
 !-----------------------------------------------------------------------
     real(kind=8) :: dp0, xap
 !-----------------------------------------------------------------------
@@ -102,7 +102,6 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     imate2=imate
     iret=0
     jprolp=1
-    materi = ' '
 !
 ! MISE AU FORMAT DES CONTRAINTES DE RAPPEL
 !
@@ -155,7 +154,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         troisk = e/(1.d0-2.d0*nu)
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret0, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------------

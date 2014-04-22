@@ -91,7 +91,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: coef1, coef2, deltev
     integer :: icodre(5)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(5), nompar(2), materi
+    character(len=8) :: nomres(5), nompar(2)
 ! RMS
     real(kind=8) :: grain, tk, xr, xq1, xq2, dporo, poro, xm1, xm2, xe01, xe02
     real(kind=8) :: fdevpkk, grain0
@@ -100,9 +100,8 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
      &              'EPSAYZ'/
 !
-    materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                 ksp, tm, iret1)
     call rcvarc(' ', 'TEMP', '+', fami, kpg,&
@@ -124,9 +123,9 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
         call utmess('F', 'ALGORITH6_92')
         goto 299
     endif
-    do 90 k = 1, 6
+    do k = 1, 6
         degran(k) = 0.d0
- 90 end do
+    end do
     rac2 = sqrt(2.d0)
     deltat = instap - instam
 !
@@ -139,7 +138,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     endif
 !
 ! VARIABLE DE COMMANDE ANELASTIQUE
-    do 20 k = 1, ndimsi
+    do k = 1, ndimsi
         call rcvarc(' ', epsa(k), '-', fami, kpg,&
                     ksp, defam(k), iret4)
         if (iret4 .eq. 1) defam(k)=0.d0
@@ -147,15 +146,15 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
         call rcvarc(' ', epsa(k), '+', fami, kpg,&
                     ksp, defap(k), iret4)
         if (iret4 .eq. 1) defap(k)=0.d0
- 20 end do
+    end do
 !
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
-    do 105 k = 4, ndimsi
+    do k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
-105 end do
+    end do
 !
     nompar(1)='INST'
     valpar(1)=instam
@@ -234,7 +233,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
 ! --- FIN PARAMETRES LOI VISCOPLASTIQUE GATT - MONERIE -----
 !
     epsmo = 0.d0
-    do 110 k = 1, 3
+    do k = 1, 3
         depsth(k) = deps(k) -epsthe -(defap(k)-defam(k))
         depsth(k) = depsth(k) - degran(k)
         depsth(k) = depsth(k) * theta
@@ -244,35 +243,35 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
             depsth(k+3) = depsth(k+3) * theta
         endif
         epsmo = epsmo + depsth(k)
-110 end do
+    end do
 !
     epsmo = epsmo/3.d0
-    do 115 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = depsth(k) - epsmo * kron(k)
-115 end do
+    end do
 !
     sigmo = 0.d0
-    do 113 k = 1, 3
+    do k = 1, 3
         sigmo = sigmo + sigm(k)
-113 end do
+    end do
     sigmo = sigmo /3.d0
 !
-    do 114 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmp(k)=(theta*deuxmu+(1.d0-theta)*deumum) /deumum*(sigm(k)-&
         sigmo*kron(k))+ (theta*troisk+(1.d0-theta)*troikm)/troikm*&
         sigmo*kron(k)
-114 end do
+    end do
     sigmo = 0.d0
-    do 116 k = 1, 3
+    do k = 1, 3
         sigmo = sigmo + sigmp(k)
-116 end do
+    end do
     sigmo = sigmo /3.d0
     sieleq = 0.d0
-    do 117 k = 1, ndimsi
+    do k = 1, ndimsi
         sigdv(k) = sigmp(k) - sigmo * kron(k)
         sigel(k) = sigdv(k) + deuxmu * depsdv(k)
         sieleq = sieleq + sigel(k)**2
-117 end do
+    end do
     sieleq = sqrt(1.5d0*sieleq)
 !
 !----RESOLUTION CHAINEE DES DEUX EQUATIONS SCALAIRES----
@@ -296,14 +295,14 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
             a0 = a0*sgd
             call zerofr(0, 'DEKKER2', vpagm1, 0.d0, xap,&
                         1.d20, int(niter), poro, iret, ibid)
-            if (iret .ne. 0) goto 9999
+            if (iret .ne. 0) goto 999
         else
             if (xap .ge. 1.d0) then
                 xap = porom + (1.d0-porom)/2.d0
             endif
             call zerofr(0, 'DEKKER2', vpagm1, 0.d0, xap,&
                         prec, int(niter), poro, iret, ibid)
-            if (iret .ne. 0) goto 9999
+            if (iret .ne. 0) goto 999
         endif
     endif
     dporo = poro - porom
@@ -321,13 +320,13 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         deltp2 = 0.d0
-        do 160 k = 1, ndimsi
+        do k = 1, ndimsi
             sigdv(k) = sigel(k) * coef1
             sigp(k) = sigdv(k) + (sigmo + troisk*epsmo)*kron(k)
             sigp(k) = (sigp(k) - sigm(k))/theta + sigm(k)
             deltev = (sigel(k)-sigdv(k))/(deuxmu*theta)
             deltp2 = deltp2 + deltev**2
-160     continue
+        end do
         vip(1) = vim(1) + sqrt(2.d0*deltp2/3.d0)
         vip(2) = porom + dporo/theta
     endif
@@ -341,26 +340,27 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
         else
             coef2 = 0.d0
         endif
-        do 135 k = 1, ndimsi
-            do 135 l = 1, ndimsi
+        do  k = 1, ndimsi
+            do l = 1, ndimsi
                 deltkl = 0.d0
                 if (k .eq. l) deltkl = 1.d0
                 dsidep(k,l) = coef1*(deltkl-kron(k)*kron(l)/3.d0)
                 dsidep(k,l) = deuxmu*(dsidep(k,l)+coef2*sigel(k)* sigel(l))
                 dsidep(k,l) = dsidep(k,l) + troisk*kron(k)*kron(l)/ 3.d0
-135         continue
+            end do
+        end do
     endif
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
-    do 200 k = 4, ndimsi
+    do k = 4, ndimsi
         defam(k) = defam(k)/rac2
         defap(k) = defap(k)/rac2
-200 end do
+    end do
 !
 299 continue
 !
-9999 continue
+999 continue
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

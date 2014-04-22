@@ -51,7 +51,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/verift.h"
     logical :: cplan, inco
     integer :: ndim, imate, kpg, ksp, iret, ndimsi
-    integer :: k, l, iret2, iret3, iret4, iret0, iret5, icodre(3)
+    integer :: k, l, iret2, iret3, iret4, iret5, icodre(3)
     real(kind=8) :: sigm(6), sigp(6), vip(1), dsidep(6, 6)
     real(kind=8) :: deps(6), deuxmu, depsth(6), valres(3), epsthe, co, depsmo
     real(kind=8) :: sigmmo, e, nu, troisk, coef, hydrm, hydrp
@@ -60,7 +60,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: bendom, bendop, kdessm, kdessp, rac2, tm
     character(len=*) :: fami
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(3), typmod(*), materi
+    character(len=8) :: nomres(3), typmod(*)
     character(len=16) :: option
 !-----------------------------------------------------------------------
     data kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -71,7 +71,6 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !     ----------------------
 !
     iret=0
-    materi = ' '
 !
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
@@ -113,12 +112,12 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
                 ksp, sref, iret2)
     if (iret2 .ne. 0) sref=0.d0
 !
-    do 19 k = 1, 6
+    do k = 1, 6
         defam(k) = 0.d0
         defap(k) = 0.d0
- 19 end do
+    end do
 !
-    do 20 k = 1, ndimsi
+    do k = 1, ndimsi
         call rcvarc(' ', epsa(k), '-', fami, kpg,&
                     ksp, defam(k), iret5)
         if (iret5 .ne. 0) defam(k)=0.d0
@@ -126,14 +125,14 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
         call rcvarc(' ', epsa(k), '+', fami, kpg,&
                     ksp, defap(k), iret5)
         if (iret5 .ne. 0) defap(k)=0.d0
- 20 end do
+    end do
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
-    do 105 k = 4, ndimsi
+    do k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
-105 end do
+    end do
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
@@ -163,7 +162,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret0, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
 ! --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 !
@@ -200,34 +199,34 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     if (cplan) deps(3)=-nu/(1.d0-nu)*(deps(1)+deps(2)) +(1.d0+nu)/(1.d0-nu)*coef + nu*(defap(1)-d&
                &efam(1)+defap(2)-defam(2))/(1.d0-nu) + defap(3)-defam(3)
     depsmo = 0.d0
-    do 110 k = 1, 3
+    do k = 1, 3
         depsth(k) = deps(k) -coef -(defap(k)-defam(k))
         depsth(k+3) = deps(k+3)-(defap(k+3)-defam(k+3))
         depsmo = depsmo + depsth(k)
-110 end do
+    end do
     depsmo = depsmo/3.d0
-    do 115 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = depsth(k) - depsmo * kron(k)*co
-115 end do
+    end do
 !
 !     -- 5 CALCUL DE SIGMP :
 !     ----------------------
     sigmmo = 0.d0
-    do 113 k = 1, 3
+    do k = 1, 3
         sigmmo = sigmmo + sigm(k)
-113 end do
+    end do
     sigmmo = sigmmo /3.d0
-    do 114 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmp(k)=deuxmu/deumum*(sigm(k)-sigmmo*kron(k)) + troisk/&
         troikm*sigmmo*kron(k)
-114 end do
+    end do
 !
 !     -- 6 CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
 !     -------------------------------------------------------
     sigmmo = 0.d0
-    do 116 k = 1, 3
+    do k = 1, 3
         sigmmo = sigmmo + sigmp(k)
-116 end do
+    end do
     sigmmo = sigmmo /3.d0
 !
 !     -- 7 CALCUL DE SIGP,SIGPDV,VIP,DP,RP:
@@ -235,9 +234,9 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
 !
-        do 145 k = 1, ndimsi
+        do k = 1, ndimsi
             sigp(k) = sigmp(k)+deuxmu*depsdv(k)+co*troisk*depsmo*kron( k)
-145     continue
+        end do
 !
         vip(1) = 0.d0
 !
@@ -247,31 +246,32 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !     ----------------------------
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
 !
-        do 100, k=1,ndimsi
-        do 101, l=1,ndimsi
-        dsidep(k,l) = 0.d0
-101     continue
-100     continue
+        do k=1,ndimsi
+            do l=1,ndimsi
+                dsidep(k,l) = 0.d0
+            end do
+        end do
 !
-        do 130 k = 1, 3
-            do 131 l = 1, 3
+        do k = 1, 3
+            do l = 1, 3
                 dsidep(k,l) = dsidep(k,l)+co*(troisk/3.d0-deuxmu/3.d0)
-131         continue
-130     continue
-        do 120 k = 1, ndimsi
+            end do
+        end do
+        do k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu
-120     continue
+        end do
 !
 !       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
-            do 136 k = 1, ndimsi
-                if (k .eq. 3) goto 136
-                do 137 l = 1, ndimsi
-                    if (l .eq. 3) goto 137
-                    dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
-                    k,3)*dsidep(3,l)
-137             continue
-136         continue
+            do k = 1, ndimsi
+                if (k .ne. 3) then
+                    do l = 1, ndimsi
+                        if (l .ne. 3) then
+                            dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
+                        endif
+                    end do
+                endif
+            end do
         endif
 !
     endif

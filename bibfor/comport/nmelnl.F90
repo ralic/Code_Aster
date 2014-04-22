@@ -72,7 +72,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
 ! DECLARATION VARIABLES LOCALES
     logical :: cplan, elas, vmis, line, nonlin, inco, puis
     integer :: icodre(5)
-    character(len=8) :: nomres(5), materi
+    character(len=8) :: nomres(5)
     character(len=16) :: phenom
     integer :: jprol, jvale, nbvale, ndimsi, niter, k, l, ibid
 !
@@ -108,7 +108,6 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     epsi = r8prem()
     energi(1) = 0.d0
     energi(2) = 0.d0
-    materi = ' '
 !
     if (.not.(elas .or. vmis)) then
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
@@ -123,16 +122,16 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
 !
 ! TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
     call verift(fami, kpg, ksp, poum, imate,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
     if (fami(1:4) .eq. 'XFEM') then
 
         call verift(fami, kpg + idecpg, ksp, poum, imate,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                    elas_keyword = 'ELAS', epsth=epsthe)
     else
 
         call verift(fami, kpg, ksp, poum, imate,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                    elas_keyword = 'ELAS', epsth=epsthe)
 
     endif
 

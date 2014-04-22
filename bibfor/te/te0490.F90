@@ -156,7 +156,7 @@ subroutine te0490(option, nomte)
     real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl, xyz(3), para_vale
     real(kind=8) :: f(3, 3), r, eps(6), trav(81)
     character(len=4) :: fami
-    character(len=8) :: nomres(5), para_type, materi
+    character(len=8) :: nomres(5), para_type
     character(len=16) :: nomte, option, optio2, compor(3)
     logical :: grand, axi
 !-----------------------------------------------------------------------
@@ -180,7 +180,6 @@ subroutine te0490(option, nomte)
     welas = zero
     wtotal = zero
     instan = zero
-    materi = ' '
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
@@ -403,7 +402,7 @@ subroutine te0490(option, nomte)
 ! --- RECUPERATION DE LA LIMITE D'ELASTICITE SY
 ! --- ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
 !
-                nomres(1) = 'D_SIGM_EPSI'
+                nomres(1) = 'D_SIGM_EPSI'(1:8)
                 nomres(2) = 'SY'
 !
                 call rcvalb(fami, igau, 1, '+', zi(imate),&
@@ -556,7 +555,7 @@ subroutine te0490(option, nomte)
 !  -- DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
             call verift(fami, igau, 1, '+', zi(imate),&
-                        materi, 'ELAS', iret, epsth=epsthe)
+                        elas_keyword = 'ELAS', epsth=epsthe)
 !
 !
 ! --- TRAITEMENT DU CAS CONTRAINTES PLANES :
@@ -617,7 +616,7 @@ subroutine te0490(option, nomte)
 ! --- RECUPERATION DE LA LIMITE D'ELASTICITE SY
 ! --- ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
 !
-                nomres(1) = 'D_SIGM_EPSI'
+                nomres(1) = 'D_SIGM_EPSI'(1:8)
                 nomres(2) = 'SY'
 !
                 call rcvalb(fami, igau, 1, '+', zi(imate),&
@@ -831,7 +830,7 @@ subroutine te0490(option, nomte)
 ! --- RECUPERATION DE LA LIMITE D'ELASTICITE SY
 ! --- ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
 !
-                nomres(1) = 'D_SIGM_EPSI'
+                nomres(1) = 'D_SIGM_EPSI'(1:8)
                 nomres(2) = 'SY'
                 call rcvalb(fami, igau, 1, '+', zi(imate),&
                             ' ', 'ECRO_LINE', 0, ' ', [0.d0],&

@@ -49,14 +49,12 @@ subroutine dxsith(nomte, mater, sigma)
     real(kind=8) :: d(4, 4), repere(7), inst, zero, epsth(nbepsg)
 !
     character(len=4) :: fami
-    character(len=8) :: materi
 !
     logical :: dkg
 !
 ! ----------------------------------------------------------------------
 !
     fami = 'RIGI'
-    materi = ' '
     call elrefe_info(fami=fami,ndim=ndim,nno=nnoel,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfdx,&
   jdfd2=idfd2,jgano=jgano)
@@ -99,9 +97,9 @@ subroutine dxsith(nomte, mater, sigma)
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !     ---------------------------------------------
-    do 100 ipg = 1, npg
-        do 110 icou = 1, nbcou
-            do 120 igauh = 1, npgh
+    do ipg = 1, npg
+        do icou = 1, nbcou
+            do igauh = 1, npgh
                 icpg=nbcmp*npgh*nbcou*(ipg-1)+ nbcmp*npgh*(icou-1)+&
                 nbcmp*(igauh-1)
 !
@@ -109,7 +107,7 @@ subroutine dxsith(nomte, mater, sigma)
 !         ----------------------------------------------------
                 ipgh=npgh*(icou-1)+igauh
                 call verift('RIGI', ipg, ipgh, '+', mater,&
-                            materi, 'ELAS', iret, epsth=epsth(1) )
+                            elas_keyword = 'ELAS', epsth=epsth(1) )
 !
                 epsth(2) = epsth(1)
                 epsth(3) = zero
@@ -125,14 +123,13 @@ subroutine dxsith(nomte, mater, sigma)
 !           -- CALCUL DES CONTRAINTES VRAIES (==SIGMA_MECA - SIGMA_THER)
 !           -- AU POINT D'INTEGRATION COURANT
 !           ------------------------------------------------------------
-                do 130 i = 1, 4
-                    do 131 j = 1, 4
+                do i = 1, 4
+                    do j = 1, 4
                         sigma(icpg+i)=sigma(icpg+i)-epsth(j)*d(i,j)
-131                 continue
-130             continue
-!
-120         continue
-110     continue
-100 end do
+                    end do
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine

@@ -18,8 +18,7 @@
 interface
     subroutine lcimpl(fami, kpg, ksp, imate, em,&
                       ep, sigm, tmoins, tplus, deps,&
-                      vim, option, compor, sigp, vip,&
-                      dsde)
+                      vim, option, sigp, vip, dsde)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
@@ -32,7 +31,6 @@ interface
         real(kind=8) :: deps
         real(kind=8) :: vim(*)
         character(len=16) :: option
-        character(len=16) :: compor(*)
         real(kind=8) :: sigp
         real(kind=8) :: vip(*)
         real(kind=8) :: dsde

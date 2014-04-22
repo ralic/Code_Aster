@@ -64,7 +64,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
     real(kind=8) :: mu, troisk, jac, tau(6), trtau, eqtau, dvtau(6), tlog(6)
     real(kind=8) :: trbe, epsthe, kr(6), pdtsca(6), d1(36), valres(2)
     character(len=4) :: fami
-    character(len=8) :: nomres(2), materi
+    character(len=8) :: nomres(2)
     character(len=16) :: compor(*)
     data kr/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data pdtsca/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/
@@ -80,13 +80,12 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
     jzero = zero
     uzero = zero
     ujac = zero
-    materi = ' '
     mzero = zero
     mjac = zero
     wbe =zero
-    do 10 i = 1, 3
+    do i = 1, 3
         sol(i)=zero
- 10 end do
+    end do
 !
 !
 ! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
@@ -112,18 +111,18 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
         tau(5) = 0.d0
         tau(6) = 0.d0
 !
-        do 60 i = 1, nbsig
+        do i = 1, nbsig
             tau(i) = jac*sigma(i)
- 60     continue
+        end do
 !
 ! ---    CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
 !
         trtau = tau(1) + tau(2) + tau(3)
         eqtau = 0.d0
-        do 70 i = 1, 6
+        do i = 1, 6
             dvtau(i) = tau(i) - kr(i)*trtau/3.d0
             eqtau = eqtau + pdtsca(i)* (dvtau(i)**2.d0)
- 70     continue
+        end do
         eqtau = sqrt(1.5d0*eqtau)
 !
 ! ---    CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
@@ -135,7 +134,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !  ---   DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
         call verift(fami, igau, 1, '+', iadmat,&
-                    materi, 'ELAS', icodre(1), epsth=epsthe)
+                    elas_keyword = 'ELAS', epsth=epsthe)
 !
 !
 ! ---    ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...
@@ -202,8 +201,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 ! --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
 !
 ! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
-        elseif ((compor(3)(1:5).eq.'PETIT').or. (compor(3).eq.'GROT_GDEP')&
-    ) then
+    elseif ((compor(3)(1:5).eq.'PETIT').or. (compor(3).eq.'GROT_GDEP')) then
 !
 !  --    CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
 !  --    POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
@@ -215,13 +213,13 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !  --    D'INTEGRATION COURANT
 !        ---------------------
         call r8inir(6, 0.d0, epsi, 1)
-        do 80 isig = 1, nbsig
-            do 90 jsig = 1, nbsig
+        do isig = 1, nbsig
+            do jsig = 1, nbsig
                 epsi(isig)=epsi(isig)+d1(nbsig*(isig-1)+jsig)*sigma(&
                 jsig)
- 90         continue
+            end do
             enelas = enelas + undemi*sigma(isig)*epsi(isig)
- 80     continue
+        end do
 !
     else
         call utmess('F', 'COMPOR1_77', sk=compor(3))

@@ -37,16 +37,15 @@ subroutine ef0154(nomte)
     real(kind=8) :: ugr(6), ulr(6), flr(6)
     integer :: codres(1)
     character(len=4) :: fami
-    character(len=8) :: nomail, materi
+    character(len=8) :: nomail
     character(len=16) :: ch16
     logical :: lteimp
     real(kind=8) :: a, epsth, e, r8bid, xfl1, xfl4, xl, xrig, val(1)
     integer :: i, j, jdepl, jeffo
-    integer :: lmater, lorien, lsect, iret, lx, nc, nno, iadzi, iazk24
+    integer :: lmater, lorien, lsect, lx, nc, nno, iadzi, iazk24
 !     ------------------------------------------------------------------
 !
     lteimp=.false.
-    materi = ' '
     nno=2
     nc=3
     fami='RIGI'
@@ -60,7 +59,7 @@ subroutine ef0154(nomte)
     call jevech('PMATERC', 'L', lmater)
 !
     call verift(fami, 1, 1, '+', zi(lmater),&
-                materi, 'ELAS', iret, epsth=epsth)
+                elas_keyword = 'ELAS', epsth=epsth)
 !
     r8bid = 0.0d0
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
@@ -95,18 +94,18 @@ subroutine ef0154(nomte)
     call matrot(zr(lorien), pgl)
 !
 !     --- RECUPERATION DES DEPLACEMENTS OU DES VITESSES ----
-    do 10 i = 1, 6
+    do i = 1, 6
         ugr(i)=0.d0
- 10 end do
+    end do
 !
 !
 ! ON RECUPERE DES DEPLACEMENTS
 !
     call jevech('PDEPLAR', 'L', jdepl)
     if (nomte .eq. 'MECA_BARRE') then
-        do 20 i = 1, 6
+        do i = 1, 6
             ugr(i)=zr(jdepl+i-1)
- 20     continue
+        end do
     else if (nomte.eq.'MECA_2D_BARRE') then
         ugr(1)=zr(jdepl+1-1)
         ugr(2)=zr(jdepl+2-1)
@@ -120,11 +119,11 @@ subroutine ef0154(nomte)
     call utpvgl(nno, nc, pgl, ugr, ulr)
 !
 !     --- RIGIDITE ELEMENTAIRE ---
-    do 40 i = 1, 6
-        do 30 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             klc(i,j)=0.d0
- 30     continue
- 40 end do
+        end do
+    end do
 !
     xrig=e*a/xl
     klc(1,1)=xrig

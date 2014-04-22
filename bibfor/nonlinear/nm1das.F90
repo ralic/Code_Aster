@@ -57,8 +57,7 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
 !     VARIABLES LOCALES
 !     ------------------------------------------------------------------
     real(kind=8) :: rmc, rmt, sige, ht, hc, depmec, dpt, rpt, dpc, rpc, sigd
-    integer :: iret, icodma
-    character(len=8) :: materi
+    integer :: icodma
 !
 !     ------------------------------------------------------------------
 !     VARIABLES INTERMEDIAIRES
@@ -70,14 +69,12 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
     xmt = vim(2)
     pmc = vim(3)
     xmc = vim(4)
-!
-    materi = ' '
 !     ------------------------------------------------------------------
 !     DELTA DEFORMATION MECANIQUE
 !     ------------------------------------------------------------------
 !
     call verift(fami, kpg, ksp, 'T', icodma,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
     depmec = deps-epsthe
 !     ------------------------------------------------------------------

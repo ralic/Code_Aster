@@ -39,8 +39,8 @@ subroutine te0396(option, nomte)
 ! ......................................................................
 !
     integer :: nno, npg, ipoids, ivf, idfdk, kp, ne, imate
-    integer :: lsect, lorien, jefint, kc, iret, igeom, i, k0, ifint, ic
-    character(len=8) :: nomres(4), elrefe, materi
+    integer :: lsect, lorien, jefint, kc, igeom, i, k0, ifint, ic
+    character(len=8) :: nomres(4), elrefe
     integer :: icodre(4)
     real(kind=8) :: en(3, 2), enprim(3, 2), valres(4), granc(6), fint(6, 3)
     real(kind=8) :: y0(3), x00(3, 3), x0pg(3), rot0(3, 3), nu, gn(3), gm(3)
@@ -57,16 +57,15 @@ subroutine te0396(option, nomte)
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
-    materi = ' '
 !
     ico = 0
-    do 20 kp = 1, npg
-        do 10 ne = 1, nno
+    do kp = 1, npg
+        do ne = 1, nno
             ico = ico + 1
             en(ne,kp) = zr(ivf-1+ico)
             enprim(ne,kp) = zr(idfdk-1+ico)
- 10     continue
- 20 end do
+        end do
+    end do
 !
 !
 ! PARAMETRES EN ENTREE
@@ -115,53 +114,53 @@ subroutine te0396(option, nomte)
 ! PARAMETRES EN SORTIE
 !
     call jevech('PVECTUR', 'E', jefint)
-    do 40 ne = 1, nno
-        do 30 kc = 1, 6
+    do ne = 1, nno
+        do kc = 1, 6
             fint(kc,ne) = 0.d0
- 30     continue
- 40 end do
+        end do
+    end do
 !
     call jevech('PGEOMER', 'L', igeom)
 !
     k0 = igeom - 1
 !
-    do 70 ne = 1, nno
-        do 60 kc = 1, 3
+    do ne = 1, nno
+        do kc = 1, 3
             k0 = k0 + 1
             x00(kc,ne) = zr(k0)
- 60     continue
- 70 end do
+        end do
+    end do
 !
 !     MATRICE DE ROTATION ASSOCIE AU VECTEUR ROTATION NUL
-    do 80 i = 1, 3
+    do i = 1, 3
         qigk(i) = 0.d0
- 80 end do
+    end do
     call marota(qigk, rotk)
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 140 kp = 1, npg
+    do kp = 1, npg
         call gdjrg0(kp, nno, enprim, x00, y0,&
                     ajacob, rot0)
         pjacob = zr(ipoids-1+kp)*ajacob
         call promat(rotk, 3, 3, 3, rot0,&
                     3, 3, 3, rotabs)
 !
-        do 90 ic = 1, 3
+        do ic = 1, 3
             x0pg(ic) = 0.d0
- 90     continue
+        end do
         unsurj = 1.d0/ajacob
-        do 110 ic = 1, 3
-            do 100 ne = 1, nno
+        do ic = 1, 3
+            do ne = 1, nno
                 x0pg(ic) = x0pg(ic) + unsurj*enprim(ne,kp)*x00(ic,ne)
-100         continue
-110     continue
+            end do
+        end do
         call verift('RIGI', kp, 1, '+', zi(imate),&
-                    materi, 'ELAS', iret, epsth=epsthe)
-        do 130 i = 1, 3
+                    elas_keyword = 'ELAS', epsth=epsthe)
+        do i = 1, 3
             gn(i) = 0.d0
             gm(i) = 0.d0
-130     continue
+        end do
 !
 !        DILATATION THERMIQUE : -E*A*ALPHA*(T-TREF)
 !
@@ -174,15 +173,15 @@ subroutine te0396(option, nomte)
         call gdfint(kp, nno, ajacob, pjacob, en,&
                     enprim, x0pg, pn, pm, fint)
 !
-140 end do
+    end do
 !
 !     FIN DE BOUCLE SUR LES POINTS DE GAUSS
 !
     ifint = jefint - 1
-    do 160 ne = 1, nno
-        do 150 kc = 1, 6
+    do ne = 1, nno
+        do kc = 1, 6
             ifint = ifint + 1
             zr(ifint) = fint(kc,ne)
-150     continue
-160 end do
+        end do
+    end do
 end subroutine

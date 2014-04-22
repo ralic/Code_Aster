@@ -95,7 +95,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(20)
-    character(len=8) :: nomres(20), acier(4), materi
+    character(len=8) :: nomres(20), acier(4)
 !
     logical :: resi, rigi
 !
@@ -109,8 +109,6 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
 !
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
-!
-    materi = ' '
 !
     if (ndim .eq. 2) then
         ndimsi=4
@@ -150,7 +148,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
     endif
 !
     call verift(fami, kpg, ksp, c1, imat,&
-                materi, 'ELAS_META', iret, ndim=2, vepsth=epsthe)
+                elas_keyword = 'ELAS_META', ndim=2, vepsth=epsthe)
 !
     zalpha=phase(1)+phase(2)+phase(3)+phase(4)
     phase(nz)=1.d0-zalpha

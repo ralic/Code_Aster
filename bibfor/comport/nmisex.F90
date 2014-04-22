@@ -75,7 +75,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     logical :: cplan, plasti, inco, dech
     integer :: ndimsi, jprol2, jvale2, nbval2
     integer :: imate2, k, l, niter, ibid
-    integer :: iret0, iret5
+    integer :: iret5
     real(kind=8) :: depsth(6), valres(3), epsthe, pm, co, dt, deuxmu
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, p, dx
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy
@@ -87,7 +87,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: rac2
     integer :: icodre(3)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(3), materi
+    character(len=8) :: nomres(3)
 !
 !----- COMMONS NECESSAIRES A VON_MISES ISOTROPE C_PLAN :
 !      COMMONS COMMUNS A NMCRI1 ET NMISOT
@@ -106,7 +106,6 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     inco = typmod(2) .eq. 'INCO'
     dech = option(11:14).eq.'ELAS'
     signul = crit(3)
-    materi = ' '
     if (inco) then
         co = 0.d0
     else
@@ -174,7 +173,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     endif
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret0, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES

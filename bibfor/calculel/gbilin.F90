@@ -63,7 +63,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     integer :: i, j, k, p, l, m, iret
 !
     integer :: icodre(3)
-    character(len=8) :: nomres(3), materi
+    character(len=8) :: nomres(3)
     real(kind=8) :: valres(3)
     real(kind=8) :: vect(7), s11, s12, s13, s21, s22, s23, s1, s2, puls, rho
     real(kind=8) :: tcla, tfor, tthe, tdyn, divt, divv, s1th, s2th, prod, epsthe
@@ -76,10 +76,9 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
-    materi = ' '
 !
     call verift(fami, kp, 1, '+', imate,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                elas_keyword = 'ELAS', iret = iret, epsth=epsthe)
     call rcvalb(fami, kp, 1, '+', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 1)
@@ -128,51 +127,49 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
               &(3,2)) + (dudm(3,1)+dudm(1,3))*( dvdm(3,1)+dvdm(1,3)&
               )
 ! Calcul de S2
-        do 100 i = 1, 3
-            do 101 j = 1, 3
-                do 102 k = 1, 3
-                    do 103 l = 1, 3
+        do i = 1, 3
+            do j = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         bil(i,j,k,l) = 0.5d0 * ( dudm(i,j)*dvdm(k,l)+ dudm(k,l)*dvdm(i,j) )
-103                 continue
-102             continue
-101         continue
-100     continue
+                    end do
+                end do
+            end do
+        end do
 !
         s21 = 0.d0
-        do 110 k = 1, 3
-            do 120 p = 1, 3
+        do k = 1, 3
+            do p = 1, 3
                 s21 = s21 + bil(k,k,k,p)*dtdm(p,k)
-120         continue
-110     continue
+            end do
+        end do
 !
         s22 = 0.d0
-        do 300 k = 1, 3
-            do 301 l = 1, 3
+        do k = 1, 3
+            do l = 1, 3
                 if (l .ne. k) then
-                    do 302 p = 1, 3
+                    do p = 1, 3
                         s22 = s22 + bil(l,l,k,p)*dtdm(p,k)
-302                 continue
+                    end do
                 endif
-301         continue
-300     continue
+            end do
+        end do
 !
         s23 = 0.d0
-        do 400 k = 1, 3
-            do 401 l = 1, 3
+        do k = 1, 3
+            do l = 1, 3
                 if (l .ne. k) then
-                    do 402 m = 1, 3
+                    do m = 1, 3
                         if (m .ne. k .and. m .ne. l) then
-                            do 403 p = 1, 3
+                            do p = 1, 3
                                 s23 = s23 + bil(l,m,l,p)*dtdm(p,m)
                                 s23 = s23 + bil(l,m,m,p)*dtdm(p,l)
-403                         continue
+                            end do
                         endif
-402                 continue
+                    end do
                 endif
-401         continue
-400     continue
-!
-!
+            end do
+        end do
     endif
 !
     s1 = c1*s11 + c2*s12 + c3*s13
@@ -184,11 +181,11 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 !
     s1th = coef*epsthe*divv*e/(1.d0-2.d0*nu)
     prod = 0.d0
-    do 20 i = 1, 2
-        do 10 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             prod = prod + dvdm(i,j)*dtdm(j,i)
- 10     continue
- 20 end do
+        end do
+    end do
     if (axi) prod = prod+dvdm(3,3)*dtdm(3,3)
     s2th = 0.5d0*th*coef*epsthe*prod*e/(1.d0-2.d0*nu)
 !
@@ -198,9 +195,9 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 !
     prod = 0.d0
     if (iret .eq. 0) then
-        do 50 i = 1, 2
+        do i = 1, 2
             prod = prod + tgdm(i)*dtdm(i,4)
- 50     continue
+        end do
         tthe = poids*prod*divv*coef*alpha*e/(2.d0*(1.d0-2.d0*nu))
     else
         tthe = 0.d0
@@ -209,22 +206,22 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 ! - TERME FORCE VOLUMIQUE
 !
     tfor=0.d0
-    do 80 i = 1, 2
+    do i = 1, 2
         prod=0.d0
-        do 70 j = 1, 2
+        do j = 1, 2
             prod = prod + dfdm(i,j)*dtdm(j,4)
- 70     continue
+        end do
         tfor = tfor + cs*dvdm(i,4)*(prod+dfdm(i,4)*divt)*poids
- 80 end do
+    end do
 !
 ! - TERME DYNAMIQUE
 !
     prod=0.d0
-    do 200 i = 1, 2
-        do 210 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             prod = prod + dudm(i,j)*dtdm(j,4)*dvdm(i,4)+ dvdm(i,j)* dtdm(j,4)*dudm(i,4)
-210     continue
-200 end do
+        end do
+    end do
     tdyn = -0.5d0*rho*(puls**2)*prod*poids
 !
     g = tcla+tthe+tfor+tdyn

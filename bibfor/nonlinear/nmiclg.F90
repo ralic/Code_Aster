@@ -67,9 +67,8 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
 !
     integer :: ncstpm
     parameter (ncstpm=13)
-    character(len=8) :: nomasl(4), materi
+    character(len=8) :: nomasl(4)
     real(kind=8) :: cstpm(ncstpm)
-    integer :: iret
     real(kind=8) :: depsth, depsm, tmoins, tplus
     real(kind=8) :: em, ep, dsdem, dsdep
     real(kind=8) :: valres(4), syc, etc, syt, ett, cr, val(1)
@@ -87,11 +86,9 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
     isotli = .false.
     pinto = .false.
     asyml = .false.
-    materi = ' '
     if (compor(1) .eq. 'ELAS') then
         elas = .true.
-        else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1)&
-    .eq.'VMIS_ISOT_TRAC')) then
+        else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1).eq.'VMIS_ISOT_TRAC')) then
         isot = .true.
         if (compor(1) .eq. 'VMIS_ISOT_LINE') then
             isotli = .true.
@@ -132,14 +129,14 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
 !
     if (isot .and. (.not.impl)) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    materi, 'ELAS', iret, epsth=depsth)
+                    elas_keyword = 'ELAS', epsth=depsth)
         depsm=deps-depsth
         call nm1dis(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
                     compor, ' ', sigp, vip, dsde)
     else if (cine) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    materi, 'ELAS', iret, epsth=depsth)
+                    elas_keyword = 'ELAS', epsth=depsth)
         depsm = deps-depsth
         call nm1dci(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -148,7 +145,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
         dsde = ep
         vip(1) = 0.d0
         call verift(fami, kpg, ksp, 'T', imate,&
-                    materi, 'ELAS', iret, epsth=depsth)
+                    elas_keyword = 'ELAS', epsth=depsth)
         sigp = ep* (sigm/em+deps-depsth)
     else if (corr) then
         call nm1dco(fami, kpg, ksp, option, imate,&
@@ -158,8 +155,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
     else if (impl) then
         call lcimpl(fami, kpg, ksp, imate, em,&
                     ep, sigm, tmoins, tplus, deps,&
-                    vim, option, compor, sigp, vip,&
-                    dsde)
+                    vim, option, sigp, vip, dsde)
     else if (asyml) then
         call nmmaba(imate, compor(1), ep, dsde, sigy,&
                     ncstpm, cstpm)
@@ -188,7 +184,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
         endif
     else if (pinto) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    materi, 'ELAS', iret, epsth=depsth)
+                    elas_keyword = 'ELAS', epsth=depsth)
         depsm=deps-depsth
         call nmmaba(imate, compor(1), ep, dsde, sigy,&
                     ncstpm, cstpm)

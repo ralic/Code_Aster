@@ -40,20 +40,18 @@ subroutine gdsig(fami, kpg, ksp, x0pg, petik,&
 #include "asterfort/transp.h"
 #include "asterfort/verift.h"
     character(len=*) :: fami
-    character(len=8) :: materi
     real(kind=8) :: x0pg(3), petik(3), rot0(3, 3), rotk(3, 3), granc(6), pn(3)
     real(kind=8) :: pm(3), gn(3), gm(3), rotabs(3, 3), rotabt(3, 3), granga(3)
     real(kind=8) :: grank(3)
     integer :: imate
 !
 !-----------------------------------------------------------------------
-    integer :: i, iret, kpg, ksp
+    integer :: i, kpg, ksp
     real(kind=8) :: epsthe, un
 !-----------------------------------------------------------------------
     un = 1.d0
-    materi = ' '
     call verift(fami, kpg, ksp, '+', imate,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
 !
     call promat(rotk, 3, 3, 3, rot0,&

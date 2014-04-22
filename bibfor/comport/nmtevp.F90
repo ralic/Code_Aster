@@ -75,7 +75,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !
     integer :: ndimsi
     integer :: k, l, niter, i
-    integer :: iret3, iret4, iret0, iret5
+    integer :: iret3, iret4, iret5
 !
     real(kind=8) :: depsth(6), valres(8), epsthe, pm, co, dp0, tm, rprim0, precr
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp
@@ -90,7 +90,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !
     integer :: codret(8), iter
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(8), materi
+    character(len=8) :: nomres(8)
     character(len=16) :: meth
 !
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -102,7 +102,6 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !     ----------------------
     inco = typmod(2) .eq. 'INCO'
     dech = option(11:14).eq.'ELAS'
-    materi = ' '
     if (inco) then
         co = 0.d0
     else
@@ -168,7 +167,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
         troisk = e/(1.d0-2.d0*nu)
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret0, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
     if (iret4 .eq. 0) then
         nomres(1)='ALPHA'

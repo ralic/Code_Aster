@@ -47,7 +47,7 @@ subroutine te0430(option, nomte)
 !
     integer :: codres(2)
     character(len=4) :: fami
-    character(len=8) :: nomres(2), materi
+    character(len=8) :: nomres(2)
     integer :: nddl, nno, npg, i, kpg, n, ndim, nnos, jgano
     integer :: ipoids, ivf, idfde, igeom, imate, icontm, ivectu, iret
     integer :: ipesa, iepsin, iadzi, iazk24
@@ -59,7 +59,6 @@ subroutine te0430(option, nomte)
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !
     lexc = (lteatt('CODMOD','GRC'))
-    materi = ' '
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
@@ -159,7 +158,7 @@ subroutine te0430(option, nomte)
 !
             else if (option.eq.'CHAR_MECA_TEMP_R') then
                 call verift(fami, kpg, 1, '+', zi(imate),&
-                            materi, 'ELAS', iret, epsth=epsthe)
+                            elas_keyword = 'ELAS', iret = iret, epsth=epsthe)
                 if (iret .ne. 0) then
                     call tecael(iadzi, iazk24)
                     call utmess('F', 'CALCULEL2_81', sk=zk24(iazk24-1+3))

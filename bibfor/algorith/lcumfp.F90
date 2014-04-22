@@ -203,48 +203,28 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     character(len=16) :: compoz(1)
     real(kind=8) :: det
     integer :: iret
-! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION DE NOMPAR
-!      CHARACTER*8     NOMRES(16),NOMPAR(3)
-    character(len=8) :: nomres(16), materi
+    character(len=8) :: nomres(16)
     integer :: icodre(16)
     real(kind=8) :: cfps, cfpd
-!     NSTRS --> 6 NVARI --> 20
     integer :: i, j, k, l, nstrs, ifou, isph
     real(kind=8) :: tdt
-! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION DE ALPHAP
-!      REAL*8  ALPHAP,YOUN,XNU,DEUMU,TROIK
     real(kind=8) :: youn, xnu
-! MODIFI DU 18 AOUT 2004 - YLP AJOUT CARACTERISTIQUES DU RETRAIT
     real(kind=8) :: bendo, kdess
     real(kind=8) :: krs, etars, kis, etais, krd, etard, etaid
-! MODIFI DU 25 AOUT 2004 - YLP AJOUT VARIABLE DE DESSICCATION DE BAZANT
     real(kind=8) :: etafd
-! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION
-! DE VALPAM ET VALPAP
-!      REAL*8  VALPAM(3),VALPAP(3),SIGM(6),DEPS(6)
     real(kind=8) :: cmat(15), dep(6, 12), depm(6, 6)
     real(kind=8) :: an(6), bn(6, 6), cn(6, 6), valres(16)
     real(kind=8) :: hygrm, hygrp, rbid
-! MODIFI DU 18 AOUT 2004 - YLP AJOUT DE LA DEFORMATION DE RETRAIT
     real(kind=8) :: matn(6, 6), invn(6, 6), eps(6), epsf(6)
     real(kind=8) :: epsrm, epsrp, epsfm(6)
-! MODIFI OCT 2004 - SMP AJOUT DILATATION THERMIQUE
-!      REAL*8 ALPHA
-! MODIFI AVR 2005 - SMP CORRECTION RETRAIT SI COUPLAGE AVEC EIB
     real(kind=8) :: kron(6), epsme(6), epse(6)
-! MODIFI MARS 2006 "NOUVELLE" VARIABLE DE COMMANDE HYDR ET SECH
     real(kind=8) :: hydrm, hydrp, sechm, sechp, sref, tm, tp, tref
-!      INTEGER  IER
-! MODIFI JUIN 2007
     real(kind=8) :: epsthp, epsthm
-    integer :: iret1, iret2
 !
-! MODIFI 20 OCT 2008 - M.B.
     real(kind=8) :: tmaxp, tmaxm, younm, xnum
     real(kind=8) :: sigelm(6), sigelp(6), epsel(6)
     data     kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-!
-    materi = ' '
+
 !
 !   CALCUL DE L'INTERVALLE DE TEMPS
 !
@@ -360,9 +340,9 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     else
 !
         call verift(fami, kpg, ksp, '+', imate,&
-                    materi, 'ELAS', iret1, epsth=epsthp)
+                    elas_keyword = 'ELAS', epsth=epsthp)
         call verift(fami, kpg, ksp, '-', imate,&
-                    materi, 'ELAS', iret2, epsth=epsthm)
+                    elas_keyword = 'ELAS', epsth=epsthm)
     endif
 !
 !
@@ -481,17 +461,15 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !
     cfps = 0.d0
     cfpd = 0.d0
-! MODIFI DU 6 JANVIER 2003 - YLP NSTRS -->  6
-!      DO 11 I=1,NSTRS
-    do 11 i = 1, 6
+!
+    do i = 1, 6
         an(i) = 0.d0
-!        DO 12 J=1,NSTRS
-        do 12 j = 1, 6
+        do j = 1, 6
             dep(i,j) = 0.d0
             bn(i,j) = 0.d0
             cn(i,j) = 0.d0
- 12     continue
- 11 end do
+        end do
+    end do
 !
 !
 !_______________________________________________________________________
@@ -552,9 +530,9 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !
         if (option(2) .eq. 'MAZARS') then
             call r8inir(6, 0.d0, epsel, 1)
-            do 35 k = 1, nstrs
+            do k = 1, nstrs
                 epsel(k) = epsm(k) - epsrm * kron(k) - epsfm(k)
- 35         continue
+            end do
 !
 !
 !  -  ON CALCUL LES CONTRAINTES ELASTIQUES AU TEMP M
@@ -698,32 +676,36 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                 endif
             endif
             call r8inir(36, 0.d0, matn, 1)
-            do 30 i = 1, nstrs
+            do i = 1, nstrs
                 matn(i,i)=1.d0
- 30         continue
+            end do
 !
-            do 31 i = 1, nstrs
-                do 31 j = 1, nstrs
-                    do 31 k = 1, nstrs
+            do i = 1, nstrs
+                do j = 1, nstrs
+                    do k = 1, nstrs
                         matn(i,j)=matn(i,j)+cn(i,k)*dep(k,j)
- 31                 continue
+                    end do
+                end do
+            end do
 !
             call r8inir(36, 0.d0, invn, 1)
 !
-            do 36 i = 1, nstrs
+            do i = 1, nstrs
                 invn(i,i)=1.d0
- 36         continue
+            end do
 !
             call mgauss('NFVP', matn, invn, 6, nstrs,&
                         nstrs, det, iret)
 !
             call r8inir(36, 0.d0, dsidep, 1)
 !
-            do 37 i = 1, nstrs
-                do 37 j = 1, nstrs
-                    do 37 k = 1, nstrs
+            do i = 1, nstrs
+                do j = 1, nstrs
+                    do k = 1, nstrs
                         dsidep(i,j)=dsidep(i,j)+invn(k,j)*dep(i,k)
- 37                 continue
+                    end do
+                end do
+            end do
 !
             if (option(2) .eq. 'ENDO_ISOT_BETON') then
                 if (option(1) .eq. 'RIGI_MECA_TANG') then
@@ -744,9 +726,9 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                     if (iret .ne. 0) sref=0.d0
                     if (nint(vim(23)) .eq. 1) then
                         epsrm = kdess*(sechm-sref)-bendo*hydrm + epsthm
-                        do 40 i = 1, nstrs
+                        do i = 1, nstrs
                             epsme(i)=epsm(i)-epsrm*kron(i)
- 40                     continue
+                        end do
                         call lceibt(nstrs, epsme, epsfm, dep, invn,&
                                     cn, dsidep)
                     endif
@@ -756,9 +738,9 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                         call dcopy(nstrs, epsm, 1, eps, 1)
                         call daxpy(nstrs, 1.d0, deps, 1, eps,&
                                    1)
-                        do 45 i = 1, nstrs
+                        do i = 1, nstrs
                             epse(i)=epsm(i)+deps(i)-epsrp*kron(i)
- 45                     continue
+                        end do
                         call lcumvi('FT', vip, epsf)
                         call lceibt(nstrs, epse, epsf, dep, invn,&
                                     cn, dsidep)

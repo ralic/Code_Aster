@@ -102,7 +102,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: coelem(nbclem), coevil(nbcvil)
     real(kind=8) :: coeint(nbcint)
     character(len=8) :: nomlem(nbclem), nomvil(nbcvil)
-    character(len=8) :: nomint(nbcint), materi
+    character(len=8) :: nomint(nbcint)
     integer :: codvil(nbcvil), codlem(nbclem), codint(nbcint)
     character(len=*) :: fami
 !
@@ -134,14 +134,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
      &              'EPSAYZ'/
 ! DEB ------------------------------------------------------------------
 !
-    materi = ' '
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                 ksp, tm, iret1)
     call rcvarc(' ', 'TEMP', '+', fami, kpg,&
                 ksp, tp, iret2)
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret3, epsth=epsthe)
+                elas_keyword = 'ELAS', iret = iret3, epsth=epsthe)
     theta = crit(4)
 ! TEMPERATURE AU MILIEU DU PAS DE TEMPS
     if (iret3 .eq. 0) then
@@ -199,7 +198,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
                 ksp, irrap, iret2)
     if (iret2 .gt. 0) irrap=0.d0
 !
-    do 20 k = 1, ndimsi
+    do k = 1, ndimsi
         call rcvarc(' ', epsa(k), '-', fami, kpg,&
                     ksp, defam(k), iret2)
         if (iret2 .eq. 1) defam(k)=0.d0
@@ -207,14 +206,14 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         call rcvarc(' ', epsa(k), '+', fami, kpg,&
                     ksp, defap(k), iret2)
         if (iret2 .eq. 1) defap(k)=0.d0
- 20 end do
+    end do
 !
 ! MISE AU FORMAT DES TERMES NON DIAGONAUX
 !
-    do 105 k = 4, ndimsi
+    do k = 4, ndimsi
         defam(k) = defam(k)*rac2
         defap(k) = defap(k)*rac2
-105 end do
+    end do
 !
 ! CARACTERISTIQUES ELASTIQUES VARIABLES
 !
@@ -369,7 +368,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !
     epsmo = 0.d0
 !
-    do 110 k = 1, 3
+    do k = 1, 3
         depsth(k) = deps(k) -epsthe -(defap(k)-defam(k))
         depsth(k) = depsth(k) - degran(k)
         depsth(k) = depsth(k) * theta
@@ -381,53 +380,52 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         endif
 !
         epsmo = epsmo + depsth(k)
-110 end do
+    end do
 !
     epsmo = epsmo/3.d0
-    do 111 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = depsth(k) - epsmo * kron(k)
-111 end do
+    end do
     sigmo = 0.d0
-    do 113 k = 1, 3
+    do k = 1, 3
         sigmo = sigmo + sigm(k)
-113 end do
+    end do
     sigmo = sigmo /3.d0
 !
     sieqm=0.d0
-    do 114 k = 1, ndimsi
+    do k = 1, ndimsi
         sigdv(k) = sigm(k) - sigmo * kron(k)
         sieqm = sieqm + sigdv(k)**2
         sigmp(k)=(theta*deuxmu+(1.d0-theta)*deumum) /deumum*(sigm(k)-&
         sigmo*kron(k))+ (theta*troikp+(1.d0-theta)*troikm)/troikm*&
         sigmo*kron(k)
-114 end do
+    end do
     sieqm=sqrt(1.5d0*sieqm)
     sieqm=sieqm*(theta*deuxmu+(1.d0-theta)*deumum)/deumum
     sigmo = 0.d0
-    do 116 k = 1, 3
+    do k = 1, 3
         sigmo = sigmo + sigmp(k)
-116 end do
+    end do
     sigmo = sigmo /3.d0
 !
 !
     if (compor(1)(1:10) .eq. 'LEMA_SEUIL') then
         sieqp=0.d0
-        do 117 k = 1, ndimsi
+        do k = 1, ndimsi
             sigdv(k) = sigmp(k) - sigmo * kron(k)
             sigel(k) = sigdv(k) + deumup * depsdv(k)/theta
             sieqp = sieqp + sigel(k)**2
-!
-117     continue
+        end do
         sieqp=sqrt(1.5d0*sieqp)
     endif
 !
     sieleq = 0.d0
-    do 118 k = 1, ndimsi
+    do k = 1, ndimsi
         sigdv(k) = sigmp(k) - sigmo * kron(k)
         sigel(k) = sigdv(k) + deumup * depsdv(k)
         sieleq = sieleq + sigel(k)**2
 !
-118 end do
+    end do
     sieleq = sqrt(1.5d0*sieleq)
 !
 !----RESOLUTION DE L'EQUATION SCALAIRE----
@@ -446,7 +444,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         else
             call zerofr(0, 'DEKKER2', vpalem, 0.d0, xap,&
                         prec, int(niter), x, iret, ibid)
-            if (iret .ne. 0) goto 9999
+            if (iret .ne. 0) goto 999
         endif
         call ggplem(x, dpc+(sieleq-x)/(1.5d0*deumup), valden, unsurk, unsurm,&
                     theta, deumup, fg, fdgdst, fdgdev)
@@ -462,7 +460,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         else
             call zerofr(0, 'DEKKER2', vpalem, 0.d0, xap,&
                         prec, int(niter), x, iret, ibid)
-            if (iret .ne. 0) goto 9999
+            if (iret .ne. 0) goto 999
         endif
 ! -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
         if (d .le. 1.d0) then
@@ -492,13 +490,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         deltp2 = 0.d0
-        do 170 k = 1, ndimsi
+        do k = 1, ndimsi
             sigdv(k) = sigel(k) * coef1
             sigp(k) = sigdv(k) + (sigmo + troikp*epsmo)*kron(k)
             sigp(k) = (sigp(k) - sigm(k))/theta + sigm(k)
             deltev = (sigel(k)-sigdv(k))/(deumup*theta)
             deltp2 = deltp2 + deltev**2
-170     continue
+        end do
 !
         if (compor(1)(5:10) .eq. '_IRRA_') then
             call lcdevi(sigp, dev)
@@ -537,19 +535,19 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         else
             coef2 = 0.d0
         endif
-        do 135 k = 1, ndimsi
-            do 135 l = 1, ndimsi
+        do k = 1, ndimsi
+            do l = 1, ndimsi
                 deltkl = 0.d0
                 if (k .eq. l) deltkl = 1.d0
                 dsidep(k,l) = coef1*(deltkl-kron(k)*kron(l)/3.d0)
                 dsidep(k,l) = deumup*(dsidep(k,l)+ coef2*sigel(k)* sigel(l))
                 dsidep(k,l) = dsidep(k,l) + troikp*kron(k)*kron(l)/ 3.d0
-135         continue
+            end do
+        end do
     endif
-!
 !
 299 continue
 !
-9999 continue
+999 continue
 !
 end subroutine

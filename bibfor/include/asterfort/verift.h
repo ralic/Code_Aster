@@ -17,18 +17,16 @@
 !
 interface
     subroutine verift(fami, kpg, ksp, poum, imate,&
-                      materi, compor, iret, ndim, epsth,&
+                      elas_keyword, iret, materiz, ndim, epsth,&
                       vepsth, tmoins, tplus, trefer)
-
-        character(len=*), intent(in) :: fami
-        character(len=*), intent(in) :: poum
-        character(len=*), intent(in) :: compor
-        character(len=8), intent(in) :: materi
+        character(len=*), intent(in) :: fami, poum
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
         integer, intent(in) :: imate
+        character(len=*), intent(in) :: elas_keyword
+        character(len=8), optional, intent(in) :: materiz
         integer, optional, intent(in) :: ndim
-        integer, intent(out) :: iret
+        integer, optional, intent(out) :: iret
         real(kind=8), optional, intent(out) :: epsth
         real(kind=8), optional, intent(out) :: vepsth(*)
         real(kind=8), optional, intent(out) :: tmoins

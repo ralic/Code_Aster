@@ -35,7 +35,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    integer :: imate, nbvar, kpg, ksp, memo, visc, iret, idelta, nrad
+    integer :: imate, nbvar, kpg, ksp, memo, visc, idelta, nrad
     character(len=16) :: compor(3), valk(2)
     real(kind=8) :: mat(18), matel(4)
     character(len=*) :: fami
@@ -44,11 +44,10 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     real(kind=8) :: r0, rinf, b, cinf, k, w, gamma0, epsi
     real(kind=8) :: un, ainf, kvi, valden, unskvi
     integer :: icodre(12)
-    character(len=8) :: nomres(12), nomemo(4), materi
+    character(len=8) :: nomres(12), nomemo(4)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     nbvar=0
-    materi = ' '
     if (compor(1)(6:9) .eq. 'CIN1') then
         nbvar=1
     else if (compor(1)(6:9) .eq. 'CIN2') then
@@ -86,7 +85,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     un = 1.0d0
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret, epsth=coef)
+                elas_keyword = 'ELAS', epsth=coef)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES ELASTIQUES :
 !     ============================================

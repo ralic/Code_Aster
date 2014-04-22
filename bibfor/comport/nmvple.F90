@@ -87,15 +87,14 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: coef1, coef2, deltev
     integer :: icodre(5)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(5), nompar(2), materi
+    character(len=8) :: nomres(5), nompar(2)
     data              kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
      &              'EPSAYZ'/
 ! DEB ------------------------------------------------------------------
 !
-    materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret1, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
     iret=0
     theta = crit(4)

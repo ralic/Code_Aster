@@ -37,10 +37,10 @@ subroutine te0160(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    character(len=8) :: nomres(2), materi
+    character(len=8) :: nomres(2)
     integer :: icodre(2)
     real(kind=8) :: valres(2)
-    integer :: nno, kp, i, j, imatuu, iret
+    integer :: nno, kp, i, j, imatuu
     integer :: ipoids, ivf, igeom, imate, jcret
     real(kind=8) :: a, coef, coef1, coef2, demi
     real(kind=8) :: e, epsth
@@ -53,7 +53,6 @@ subroutine te0160(option, nomte)
     real(kind=8) :: ec, preten, r8bid
 !-----------------------------------------------------------------------
     demi = 0.5d0
-    materi = ' '
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
@@ -102,12 +101,12 @@ subroutine te0160(option, nomte)
         call jevech('PVARIPR', 'E', ivarip)
     endif
 !
-    do 20 i = 1, 3*nno
+    do i = 1, 3*nno
         w(i) = zr(idepla-1+i) + zr(ideplp-1+i)
- 20 end do
-    do 70 kp = 1, npg
+    end do
+    do kp = 1, npg
         call verift('RIGI', kp, 1, '+', zi(imate),&
-                    materi, 'ELAS', iret, epsth=epsth)
+                    elas_keyword = 'ELAS', epsth=epsth)
 !
         k = (kp-1)*nordre*nordre
         jacobi = sqrt(biline(nordre,zr(igeom),zr(iyty+k),zr(igeom)))
@@ -136,24 +135,24 @@ subroutine te0160(option, nomte)
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:14) .eq. 'RIGI_MECA_TANG') then
             nelyty = iyty - 1 - nordre + k
             imat = imatuu - 1
-            do 50 i = 1, nordre
+            do i = 1, nordre
                 nelyty = nelyty + nordre
-                do 40 j = 1, i
+                do j = 1, i
                     imat = imat + 1
                     zr(imat) = zr(imat) + coef1*ytywpq(i)*ytywpq(j) + coef2*zr(nelyty+j)
- 40             continue
- 50         continue
+                end do
+            end do
         endif
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
             coef = nx*zr(ipoids-1+kp)/jacobi
-            do 60 i = 1, nordre
+            do i = 1, nordre
                 zr(jefint-1+i) = zr(jefint-1+i) + coef*ytywpq(i)
- 60         continue
+            end do
             zr(lsigma-1+kp) = nx
 !
             zr(ivarip+kp-1) = 0.0d0
         endif
- 70 end do
+    end do
 !
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then

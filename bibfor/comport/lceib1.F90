@@ -50,15 +50,13 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
 ! ----------------------------------------------------------------------
 !
     integer :: icodre(3)
-    character(len=8) :: nomres(3), materi
+    character(len=8) :: nomres(3)
     integer :: i, k, ndimsi
     real(kind=8) :: valres(3), e, nu
     real(kind=8) :: sref, sechm, hydrm
     real(kind=8) :: k0, k1, sicr, trepsm, eps(6), kron(6)
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
-!
-    materi = ' '
 !
     ndimsi=2*ndim
     t(1,1)=1
@@ -101,9 +99,9 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     2, nomres, valres, icodre, 1)
         call verift(fami, kpg, ksp, '-', imate,&
-                    materi, 'ELAS', icodre(1), epsth=epsthe(1))
+                    elas_keyword = 'ELAS', iret = icodre(1), epsth=epsthe(1))
         call verift(fami, kpg, ksp, '+', imate,&
-                    materi, 'ELAS', icodre(1), epsth=epsthe(2))
+                    elas_keyword = 'ELAS', iret = icodre(1), epsth=epsthe(2))
 !
         e = valres(1)
         nu = valres(2)
@@ -123,7 +121,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
         kdess=valres(2)
 !
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
-        nomres(1) = 'D_SIGM_EPSI'
+        nomres(1) = 'D_SIGM_EPSI'(1:8)
         nomres(2) = 'SYT'
         nomres(3) = 'SYC'
         call rcvalb(fami, 1, 1, '+', imate,&

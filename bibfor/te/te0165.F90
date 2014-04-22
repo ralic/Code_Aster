@@ -39,7 +39,7 @@ subroutine te0165(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    character(len=8) :: nomres(2), materi
+    character(len=8) :: nomres(2)
     integer :: icodre(2)
     real(kind=8) :: a, w(9), nx, l1(3), l2(3), l10(3), l20(3)
     real(kind=8) :: valres(2), e
@@ -47,7 +47,7 @@ subroutine te0165(option, nomte)
     real(kind=8) :: preten, r8bid, epsthe
     integer :: imatuu, jefint, lsigma
     integer :: icompo, lsect, igeom, imate, idepla, ideplp
-    integer :: i, jcret, kc, iret
+    integer :: i, jcret, kc
 !
 !
 !
@@ -55,7 +55,6 @@ subroutine te0165(option, nomte)
 !     PRETEN = 1000.D0
 !***  FIN DE L'ESSAI DE PRETENSION
 !
-    materi = ' '
 !
     call jevech('PCOMPOR', 'L', icompo)
     if (zk16(icompo)(1:4) .ne. 'ELAS') then
@@ -72,7 +71,7 @@ subroutine te0165(option, nomte)
                 ' ', 'ELAS', 0, '  ', [r8bid],&
                 1, nomres, valres, icodre, 1)
     call verift('RIGI', 1, 1, '+', zi(imate),&
-                materi, 'ELAS', iret, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
     e = valres(1)
     call jevech('PCACABL', 'L', lsect)
     a = zr(lsect)
@@ -90,18 +89,18 @@ subroutine te0165(option, nomte)
     endif
 !
 !
-    do 10 i = 1, 9
+    do i = 1, 9
         w(i)=zr(idepla-1+i)+zr(ideplp-1+i)
- 10 end do
+    end do
 !
-    do 21 kc = 1, 3
+    do kc = 1, 3
         l1(kc) = w(kc ) + zr(igeom-1+kc) - w(6+kc) - zr(igeom+5+kc)
         l10(kc) = zr(igeom-1+kc) - zr(igeom+5+kc)
- 21 end do
-    do 22 kc = 1, 3
+    end do
+    do kc = 1, 3
         l2(kc) = w(3+kc) + zr(igeom+2+kc) - w(6+kc) - zr(igeom+5+kc)
         l20(kc) = zr(igeom+2+kc) - zr(igeom+5+kc)
- 22 end do
+    end do
     norml1=ddot(3,l1,1,l1,1)
     norml2=ddot(3,l2,1,l2,1)
     norl10=ddot(3,l10,1,l10,1)

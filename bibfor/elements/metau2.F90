@@ -44,12 +44,12 @@ subroutine metau2(option, nomte, iret)
     real(kind=8) :: rbid, zalpha
 !-----------------------------------------------------------------------
     parameter (nbres=6)
-    character(len=8) :: nomres(nbres), acier(4), zirc(2), materi
+    character(len=8) :: nomres(nbres), acier(4), zirc(2)
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), epsthe(2)
     real(kind=8) :: coef1, coef2, epsth, phaspg(7)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), tpg, coef, poids
-    integer :: ipoids, ivf, idfde, igeom, imate, nz, ire1, ire2, iret1
+    integer :: ipoids, ivf, idfde, igeom, imate, nz, ire1, ire2
     integer :: jgano, nno, kp, npg1, i, l, ivectu
     logical :: lacier
 !
@@ -58,7 +58,6 @@ subroutine metau2(option, nomte, iret)
 !
 !
     iret=1
-    materi = ' '
     lacier=.false.
 !
     call rcvarc(' ', acier(1), '+', 'RIGI', 1,&
@@ -110,7 +109,7 @@ subroutine metau2(option, nomte, iret)
  50     continue
 !
         call verift('RIGI', kp, 1, '+', mater,&
-                    materi, 'ELAS_META', iret1, ndim=2, vepsth=epsthe)
+                    elas_keyword = 'ELAS_META', ndim=2, vepsth=epsthe)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     1, tpg, iret2)
         call rcvalb('RIGI', 1, 1, '+', mater,&

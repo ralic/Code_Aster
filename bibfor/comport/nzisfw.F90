@@ -99,7 +99,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(20), test
-    character(len=8) :: nomres(20), nomcle(5), acier(4), materi
+    character(len=8) :: nomres(20), nomcle(5), acier(4)
 !
     logical :: resi, rigi
 !
@@ -121,7 +121,6 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
     endif
 !
     dt = instap-instam
-    materi = ' '
 !
 ! 1.1 - NOMBRE DE PHASES
 !
@@ -155,7 +154,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
     call rcvarc(' ', 'TEMP', c1, fami, kpg,&
                 ksp, temp, iret2)
     call verift(fami, kpg, ksp, c1, imat,&
-                materi, 'ELAS_META', iret1, ndim=2, vepsth=epsthe)
+                elas_keyword = 'ELAS_META', iret = iret1, ndim=2, vepsth=epsthe)
     zalpha=phase(1)+phase(2)+phase(3)+phase(4)
     phase(nz)=1.d0-zalpha
 !

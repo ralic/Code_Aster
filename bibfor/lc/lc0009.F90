@@ -71,6 +71,6 @@ subroutine lc0009(fami, kpg, ksp, ndim, imate,&
 !               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 ! ======================================================================
     call lclbr1(fami, kpg, ksp, ndim, typmod,&
-                imate, compor, epsm, deps, vim,&
-                option, sigp, vip, dsidep)
+                imate, compor, epsm, deps, &
+                option, sigp, dsidep)
 end subroutine

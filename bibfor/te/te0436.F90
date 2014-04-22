@@ -44,9 +44,8 @@ subroutine te0436(option, nomte)
 !
     integer :: codres(2)
     character(len=4) :: fami
-    character(len=8) :: materi
     integer :: nddl, nno, nnos, npg, ndim, ncomp
-    integer :: i, j, n, c, cc, kpg, iret
+    integer :: i, j, n, c, cc, kpg
     integer :: ipoids, ivf, idfde, jgano
     integer :: igeom, icacoq, imate, idepl, icontp, inr, idefo, imass
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
@@ -56,8 +55,6 @@ subroutine te0436(option, nomte)
     real(kind=8) :: x(8), y(8), z(8), surfac, cdg(3), ppg, xxi, yyi, zzi
     real(kind=8) :: matine(6)
     real(kind=8) :: vro
-!
-    materi = ' '
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -119,11 +116,11 @@ subroutine te0436(option, nomte)
 ! - COORDONNEES PHYSIQUES DES NOEUDS
 !
     if (option .eq. 'MASS_INER') then
-        do 10 i = 1, nno
+        do i = 1, nno
             x(i) = zr(igeom+3* (i-1))
             y(i) = zr(igeom+3*i-2)
             z(i) = zr(igeom+3*i-1)
- 10     continue
+        end do
         call r8inir(3, 0.d0, cdg, 1)
         call r8inir(6, 0.d0, matine, 1)
         surfac = 0.d0
@@ -132,16 +129,16 @@ subroutine te0436(option, nomte)
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 800 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! --- MISE SOUS FORME DE TABLEAU DES VALEURS ET DES DERIVEES
 !     DES FONCTIONS DE FORME
 !
-        do 110 n = 1, nno
+        do n = 1, nno
             vff(n) =zr(ivf+(kpg-1)*nno+n-1)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-110     continue
+        end do
 !
 ! --- CALCUL DE LA MATRICE "B" :
 !              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
@@ -155,16 +152,17 @@ subroutine te0436(option, nomte)
 !
 !         CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
             call r8inir(3, 0.d0, epsm, 1)
-            do 130 n = 1, nno
-                do 130 i = 1, nddl
-                    do 130 c = 1, ncomp
-                        epsm(c)=epsm(c)+b(c,i,n)*zr(idepl+(n-1)*nddl+&
-                        i-1)
-130                 continue
+            do n = 1, nno
+                do i = 1, nddl
+                    do c = 1, ncomp
+                        epsm(c)=epsm(c)+b(c,i,n)*zr(idepl+(n-1)*nddl+i-1)
+                    end do
+                end do
+            end do
 !
 !         RETRAIT DE LA DEFORMATION THERMIQUE
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        materi, 'ELAS_MEMBRANE', iret, epsth=epsthe)
+                        elas_keyword = 'ELAS_MEMBRANE', epsth=epsthe)
             epsm(1) = epsm(1) - epsthe
             epsm(2) = epsm(2) - epsthe
 !
@@ -172,19 +170,20 @@ subroutine te0436(option, nomte)
             call mbrigi(fami, kpg, imate, rig)
 !
             call r8inir(3, 0.d0, sig, 1)
-            do 140 c = 1, ncomp
-                do 140 cc = 1, ncomp
+            do c = 1, ncomp
+                do cc = 1, ncomp
                     sig(c) = sig(c) + epsm(cc)*rig(cc,c)
-140             continue
+                end do
+            end do
 !
             if (option .eq. 'EPOT_ELEM') then
-                do 150 c = 1, ncomp
+                do c = 1, ncomp
                     epot = epot+(sig(c)*epsm(c)*zr(ipoids+kpg-1)*jac)/ 2
-150             continue
+                end do
             else
-                do 160 c = 1, ncomp
+                do c = 1, ncomp
                     sigg(c,kpg) = sig(c)
-160             continue
+                end do
             endif
 !
 ! --- EPSI_ELGA : ON CALCULE LA DEFORMATION AU PG
@@ -192,56 +191,60 @@ subroutine te0436(option, nomte)
         else if (option.eq.'EPSI_ELGA') then
 !
 !         CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
-            do 200 n = 1, nno
-                do 200 i = 1, nddl
-                    do 200 c = 1, ncomp
+            do n = 1, nno
+                do i = 1, nddl
+                    do c = 1, ncomp
                         epsg(c,kpg)= epsg(c,kpg) + b(c,i,n)*zr(idepl+(&
                         n-1)*nddl+i-1)
-200                 continue
+                    end do
+                end do
+            end do
 !
 ! --- MASS_INER : ON SOMME LA CONTRIBUTION DU PG A LA MASSE TOTALE
 !
         else if (option.eq.'MASS_INER') then
             surfac = surfac + zr(ipoids+kpg-1)*jac
             ppg = zr(ipoids+kpg-1)*jac
-            do 300 i = 1, nno
+            do i = 1, nno
                 cdg(1) = cdg(1) + ppg*vff(i)*x(i)
                 cdg(2) = cdg(2) + ppg*vff(i)*y(i)
                 cdg(3) = cdg(3) + ppg*vff(i)*z(i)
                 xxi = 0.d0
                 yyi = 0.d0
                 zzi = 0.d0
-                do 310 j = 1, nno
+                do j = 1, nno
                     xxi = xxi + x(i)*vff(i)*vff(j)*x(j)
                     yyi = yyi + y(i)*vff(i)*vff(j)*y(j)
                     zzi = zzi + z(i)*vff(i)*vff(j)*z(j)
                     matine(2) = matine(2) + x(i)*vff(i)*vff(j)*y(j)* ppg
                     matine(4) = matine(4) + x(i)*vff(i)*vff(j)*z(j)* ppg
                     matine(5) = matine(5) + y(i)*vff(i)*vff(j)*z(j)* ppg
-310             continue
+                end do
                 matine(1) = matine(1) + ppg*(yyi+zzi)
                 matine(3) = matine(3) + ppg*(xxi+zzi)
                 matine(6) = matine(6) + ppg*(xxi+yyi)
-300         continue
+            end do
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800 end do
+    end do
 !
     if (option .eq. 'SIEF_ELGA') then
-        do 500 kpg = 1, npg
-            do 500 c = 1, ncomp
+        do kpg = 1, npg
+            do c = 1, ncomp
                 zr(icontp+(kpg-1)*ncomp+c-1)=sigg(c,kpg)
-500         continue
+            end do
+        end do
 !
     else if (option.eq.'EPOT_ELEM') then
         zr(inr) = epot
 !
     else if (option.eq.'EPSI_ELGA') then
-        do 510 kpg = 1, npg
-            do 510 c = 1, ncomp
+        do kpg = 1, npg
+            do c = 1, ncomp
                 zr(idefo+(kpg-1)*ncomp+c-1) = epsg(c,kpg)
-510         continue
+            end do
+        end do
 !
     else if (option.eq.'MASS_INER') then
         vro = rho(1) / surfac

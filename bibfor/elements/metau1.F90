@@ -48,7 +48,7 @@ subroutine metau1(option, nomte, iret)
     real(kind=8) :: vk3al, valres(nbres), coef1, coef2, epsth
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, phaspg(7), epsthe(2)
     integer :: nno, kp, npg1, i, ivectu, nz, l
-    integer :: ire1, ire2, iret1
+    integer :: ire1, ire2
     logical :: lacier
     integer :: ipoids, ivf, idfde, igeom, imate, ndim, nnos, jgano
 !
@@ -118,7 +118,7 @@ subroutine metau1(option, nomte, iret)
  10     continue
 !
         call verift('RIGI', kp, 1, '+', mater,&
-                    materi, 'ELAS_META', iret1, ndim=2, vepsth=epsthe)
+                    elas_keyword = 'ELAS_META', ndim=2, vepsth=epsthe)
         call rcvalb('RIGI', kp, 1, '+', mater,&
                     ' ', 'ELAS_META', 0, 'TEMP', [0.d0],&
                     6, nomres, valres, icodre, 1)

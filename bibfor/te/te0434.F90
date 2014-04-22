@@ -46,16 +46,13 @@ subroutine te0434(option, nomte)
 !
     integer :: codres(2)
     character(len=4) :: fami
-    character(len=8) :: materi
     integer :: nddl, nno, nnos, npg, ndim, ncomp
-    integer :: i, n, kpg, c, cc, iret
+    integer :: i, n, kpg, c, cc
     integer :: ipoids, ivf, idfde, jgano
     integer :: igeom, icacoq, imate, icontm, ipesa, iepsin, ivectu
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
     real(kind=8) :: alpha, beta, rho(1), rig(3, 3)
     real(kind=8) :: epsthe, epsref, sgmref, sig(3)
-!
-    materi = ' '
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -103,16 +100,16 @@ subroutine te0434(option, nomte)
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 800 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! --- MISE SOUS FORME DE TABLEAU DES VALEURS ET DES DERIVEES
 !     DES FONCTIONS DE FORME
 !
-        do 110 n = 1, nno
+        do n = 1, nno
             vff(n) =zr(ivf+(kpg-1)*nno+n-1)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-110     continue
+        end do
 !
 ! --- CALCUL DE LA MATRICE "B" :
 !              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
@@ -128,9 +125,9 @@ subroutine te0434(option, nomte)
 ! - FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
 !
             if (option .eq. 'FORC_NODA') then
-                do 120 c = 1, ncomp
+                do c = 1, ncomp
                     sig(c) = zr(icontm+(kpg-1)*ncomp+c-1)
-120             continue
+                end do
 !
 ! - CHAR_MECA_EPSI_R : SIG = RIG*EPSIN
 !
@@ -139,34 +136,37 @@ subroutine te0434(option, nomte)
                 call mbrigi(fami, kpg, imate, rig)
 !
                 call r8inir(3, 0.d0, sig, 1)
-                do 130 c = 1, ncomp
-                    do 130 cc = 1, ncomp
+                do c = 1, ncomp
+                    do cc = 1, ncomp
                         sig(c) = sig(c) + zr(iepsin+cc-1)*rig(cc,c)
-130                 continue
+                    end do
+                end do
 !
 ! - CHAR_MECA_TEMP_R : SIG = RIG*EPSTHE
 !
             else if (option.eq.'CHAR_MECA_TEMP_R') then
 !
                 call verift(fami, kpg, 1, '+', zi(imate),&
-                            materi, 'ELAS_MEMBRANE', iret, epsth=epsthe)
+                            elas_keyword = 'ELAS_MEMBRANE', epsth=epsthe)
 !
                 call mbrigi(fami, kpg, imate, rig)
 !
                 call r8inir(3, 0.d0, sig, 1)
-                do 140 c = 1, ncomp
+                do c = 1, ncomp
                     sig(c) = epsthe*(rig(1,c)+rig(2,c))
-140             continue
+                end do
 !
             endif
 !
-            do 150 n = 1, nno
-                do 150 i = 1, nddl
-                    do 150 c = 1, ncomp
+            do n = 1, nno
+                do i = 1, nddl
+                    do c = 1, ncomp
                         zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
                         nddl+i-1) +b(c,i,n)*sig(c)*zr(ipoids+kpg-1)*&
                         jac
-150                 continue
+                    end do
+                end do
+            end do
 !
 ! - REFE_FORC_NODA : ON CALCULE DES FORCES DE REFERENCE
 !
@@ -181,11 +181,12 @@ subroutine te0434(option, nomte)
             sgmref = epsref*(rig(1,1) + rig(2,2))/2.d0
             ASSERT(sgmref.gt.0.d0)
 !
-            do 200 n = 1, nno
-                do 200 i = 1, nddl
+            do n = 1, nno
+                do i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sgmref*sqrt(abs(jac)&
                                                 )/npg
-200             continue
+                end do
+            end do
 !
 ! - CHAR_MECA_PESA_R
 !
@@ -193,16 +194,17 @@ subroutine te0434(option, nomte)
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
                         ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
                         1, 'RHO', rho, codres, 1)
-            do 300 n = 1, nno
-                do 300 i = 1, nddl
+            do n = 1, nno
+                do i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1) = zr(&
                                                 ivectu+(n-1)*nddl+ i-1) + rho(1)*zr(ipesa)* zr(ip&
                                                 &esa+i) *vff(n)*zr( ipoids+kpg-1&
                                                 )*jac
-300             continue
+                end do
+            end do
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800 end do
+    end do
 !
 end subroutine

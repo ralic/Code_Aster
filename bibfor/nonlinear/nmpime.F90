@@ -25,7 +25,7 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
 #include "asterfort/nm1dpm.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/verift.h"
-    integer :: iret, nbt, neq, nvar
+    integer :: nbt, neq, nvar
     real(kind=8) :: dsde
 !-----------------------------------------------------------------------
     parameter   (neq = 6,nbt = 21,nvar=8)
@@ -79,19 +79,17 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
     real(kind=8) :: epsp
     real(kind=8) :: sigp, xrig
     real(kind=8) :: deps, epsthe
-    character(len=8) :: materi
 !
 !
 !----------INITIALISATIONS
 !
     call r8inir(nbt, 0.d0, klv, 1)
     call r8inir(neq, 0.d0, fono, 1)
-    materi = ' '
 !
 !----------RECUPERATION DES CARACTERISTIQUES
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
     epsm = (xlongm-xlong0)/xlong0
     epsp = (xlongm+dlong0-xlong0)/xlong0

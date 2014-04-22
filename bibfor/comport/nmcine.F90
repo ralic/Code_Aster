@@ -66,7 +66,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: em, num, troikm, deumum, plasti
     integer :: ndimsi
     integer :: icodre(3)
-    character(len=8) :: nomres(3), materi
+    character(len=8) :: nomres(3)
     character(len=10) :: phenom
     real(kind=8) :: rac2
 !-----------------------------------------------------------------------
@@ -83,9 +83,8 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
         vim(k) = vim(k)*rac2
     end do
 !
-    materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                materi, 'ELAS', iret, epsth=epsthe)
+                elas_keyword = 'ELAS', epsth=epsthe)
 !
 ! LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (TEMPS - ET +)
 !    RCCOMA POUR GERER KIT_DDI (GLRC+VMIS_ISOT)

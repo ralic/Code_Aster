@@ -44,7 +44,6 @@ subroutine te0435(option, nomte)
 ! ----------------------------------------------------------------------
 !
     character(len=4) :: fami
-    character(len=8) :: materi
     integer :: nddl, nno, nnos, npg, ndim, ncomp, nvari
     integer :: i, j, j1, n, m, c, cc, kpg, kk, kkd, iret, cod(9)
     integer :: ipoids, ivf, idfde, jgano, jtab(7)
@@ -59,8 +58,6 @@ subroutine te0435(option, nomte)
 !
     vecteu = ((option(1:9).eq.'FULL_MECA').or. (option .eq.'RAPH_MECA'))
     matric = ((option(1:9).eq.'FULL_MECA').or. (option(1:9).eq.'RIGI_MECA'))
-!
-    materi = ' '
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -116,9 +113,9 @@ subroutine te0435(option, nomte)
 !
 ! - INITIALISATION CODES RETOURS
 !
-    do 1955 kpg = 1, npg
+    do kpg = 1, npg
         cod(kpg)=0
-1955 end do
+    end do
 !
 ! - DIRECTION DE REFERENCE POUR UN COMPORTEMENT ANISOTROPE
 !
@@ -127,15 +124,15 @@ subroutine te0435(option, nomte)
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 800 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! --- MISE SOUS FORME DE TABLEAU DES VALEURS ET DES DERIVEES
 !     DES FONCTIONS DE FORME
 !
-        do 110 n = 1, nno
+        do n = 1, nno
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
-110     continue
+        end do
 !
 ! --- CALCUL DE LA MATRICE "B" :
 !              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
@@ -157,17 +154,17 @@ subroutine te0435(option, nomte)
 !         CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
             call r8inir(3, 0.d0, epsm, 1)
             call r8inir(3, 0.d0, deps, 1)
-            do 130 n = 1, nno
-                do 130 i = 1, nddl
-                    do 130 c = 1, ncomp
-                        epsm(c)=epsm(c)+b(c,i,n)*zr(ideplm+(n-1)*nddl+&
-                        i-1)
-                        deps(c)=deps(c)+b(c,i,n)*zr(ideplp+(n-1)*nddl+&
-                        i-1)
-130                 continue
+            do n = 1, nno
+                do i = 1, nddl
+                    do c = 1, ncomp
+                        epsm(c)=epsm(c)+b(c,i,n)*zr(ideplm+(n-1)*nddl+i-1)
+                        deps(c)=deps(c)+b(c,i,n)*zr(ideplp+(n-1)*nddl+i-1)
+                    end do
+                end do
+            end do
 !
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        materi, 'ELAS_MEMBRANE', iret, epsth=epsthe)
+                        elas_keyword = 'ELAS_MEMBRANE', epsth=epsthe)
             call r8inir(3, 0.d0, epsth, 1)
             epsth(1) = epsthe
             epsth(2) = epsthe
@@ -175,15 +172,16 @@ subroutine te0435(option, nomte)
             call mbrigi(fami, kpg, imate, rig)
 !
             call r8inir(3, 0.d0, sigp, 1)
-            do 140 c = 1, ncomp
-                do 140 cc = 1, ncomp
+            do c = 1, ncomp
+                do cc = 1, ncomp
                     sigp(c) = sigp(c) + (epsm(cc)+deps(cc)-epsth(cc)) *rig(cc,c)
-140             continue
+                end do
+            end do
 !
             if ((option .eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-                do 150 c = 1, ncomp
+                do c = 1, ncomp
                     zr(icontp+(kpg-1)*ncomp+c-1)=sigp(c)
-150             continue
+                end do
             endif
 !
         endif
@@ -191,21 +189,23 @@ subroutine te0435(option, nomte)
 ! --- RANGEMENT DES RESULTATS
 !
         if (vecteu) then
-            do 160 n = 1, nno
-                do 160 i = 1, nddl
-                    do 160 c = 1, ncomp
+            do n = 1, nno
+                do  i = 1, nddl
+                    do c = 1, ncomp
                         zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
                         nddl+i-1) +b(c,i,n)*sigp(c)*zr(ipoids+kpg-1)*&
                         jac
-160                 continue
+                    end do
+                end do
+            end do
         endif
 !
         if (matric) then
-            do 200 n = 1, nno
-                do 200 i = 1, nddl
+            do n = 1, nno
+                do i = 1, nddl
                     kkd = (nddl*(n-1)+i-1) * (nddl*(n-1)+i) /2
-                    do 200 j = 1, nddl
-                        do 200 m = 1, n
+                    do j = 1, nddl
+                        do m = 1, n
                             if (m .eq. n) then
                                 j1 = i
                             else
@@ -214,22 +214,26 @@ subroutine te0435(option, nomte)
 !
 !                 RIGIDITE ELASTIQUE
                             tmp = 0.d0
-                            do 210 c = 1, ncomp
-                                do 210 cc = 1, ncomp
+                            do c = 1, ncomp
+                                do cc = 1, ncomp
                                     tmp = tmp + b(cc,i,n)*rig(cc,c)*b( c,j,m) *zr(ipoids+kpg-1)*j&
                                           &ac
-210                             continue
+                                end do
+                            end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                             if (j .le. j1) then
                                 kk = kkd + nddl*(m-1)+j
                                 zr(imatuu+kk-1) = zr(imatuu+kk-1) + tmp
                             endif
-200                     continue
+                        end do
+                    end do
+                end do
+            end do
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800 end do
+    end do
 !
     if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
         call codere(cod, npg, zi(jcret))

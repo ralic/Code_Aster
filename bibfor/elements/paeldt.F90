@@ -33,7 +33,7 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
 !        DEFORMATION THERMIQUE POUR UN SOUS-POINT DONNE
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: icodre(2), iret
+    integer :: icodre(2)
     real(kind=8) :: valres(2), tpl, tms, tref
     character(len=8) :: nomres(2)
 !
@@ -54,7 +54,7 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
         nup = valres(2)
 !
         call verift(fami, kpg, ksp, 'T', icdmat,&
-                    materi, 'ELAS', iret, epsth= depsth,&
+                    elas_keyword = 'ELAS', materiz = materi, epsth= depsth,&
                     tmoins=tms, tplus=tpl, trefer=tref)
 !
     else
@@ -65,7 +65,7 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
         nup = valres(2)
         em  = valres(1)
         call verift(fami, kpg, ksp, poum, icdmat,&
-                    materi, 'ELAS', iret, epsth=depsth,&
+                    elas_keyword = 'ELAS', materiz = materi, epsth=depsth,&
                     tmoins=tms, tplus=tpl, trefer=tref)
     endif
 !

@@ -97,7 +97,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(12), test
-    character(len=8) :: nomres(12), nomcle(3), zirc(2), materi
+    character(len=8) :: nomres(12), nomcle(3), zirc(2)
 !
     logical :: resi, rigi
 !
@@ -128,7 +128,6 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
 !
     dt=instap-instam
-    materi = ' '
 !
 ! 1.1 - NOMBRE DE PHASES
 !
@@ -162,7 +161,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
     call rcvarc(' ', 'TEMP', c1, fami, kpg,&
                 ksp, temp, iret1)
     call verift(fami, kpg, ksp, c1, imat,&
-                materi, 'ELAS_MAT', iret1, ndim=2, vepsth=epsthe)
+                elas_keyword = 'ELAS_MAT', iret = iret1, ndim=2, vepsth=epsthe)
 !
     zalpha=phase(1)+phase(2)
     phase(nz)=1.d0-zalpha

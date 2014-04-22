@@ -1,6 +1,6 @@
 subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, epsm, deps, vim,&
-                  option, sig, vip, dsidep)
+                  imate, compor, epsm, deps, &
+                  option, sig, dsidep)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,8 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
     integer :: kpg, ksp, ndim, imate
-    real(kind=8) :: epsm(6), deps(6), vim(2)
-    real(kind=8) :: sig(6), vip(2), dsidep(6, 12)
+    real(kind=8) :: epsm(6), deps(6)
+    real(kind=8) :: sig(6), dsidep(6, 12)
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT BETON REGLEMENTAIRE 2D
 !     ELASTIQUE NON LINEAIRE
@@ -40,19 +40,16 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 ! IN  IMATE   : NATURE DU MATERIAU
 ! IN  EPSM    : DEFORMATION EN T-
 ! IN  DEPS    : INCREMENT DE DEFORMATION
-! IN  VIM     : VARIABLES INTERNES EN T-
 ! IN  OPTION  : OPTION DEMANDEE
 !                 RIGI_MECA_TANG ->     DSIDEP
-!                 FULL_MECA      -> SIG DSIDEP VIP
-!                 RAPH_MECA      -> SIG        VIP
+!                 FULL_MECA      -> SIG DSIDEP
+!                 RAPH_MECA      -> SIG      
 ! OUT SIG     : CONTRAINTE
-! OUT VIP     : VARIABLES INTERNES
-!                 1   -> VALEUR DE L'ENDOMMAGEMENT
 ! OUT DSIDEP  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
     logical :: rigi, resi, coup, plan
-    integer :: ndimsi, k, l, i, j, m, n, t(3, 3), iret1, iret2
+    integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
     real(kind=8) :: eps(6), kron(6)
     real(kind=8) :: rac2, e
     real(kind=8) :: tr(6), rtemp2
@@ -60,7 +57,6 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: deumud(3), sigp(3), rtemp, rtemp3, rtemp4
     real(kind=8) :: gamma
     real(kind=8) :: sigmt, sigmc, epsic, compn, epsthp, epsthm
-    character(len=8) :: materi
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
 ! ----------------------------------------------------------------------
@@ -77,7 +73,6 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
     if (coup) rigi=.true.
     ndimsi = 2*ndim
     rac2=sqrt(2.d0)
-    materi = ' '
 !
 ! -- INITIALISATION
 !
@@ -89,22 +84,22 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 ! -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 !
     call verift(fami, kpg, ksp, '+', imate,&
-                materi, 'ELAS', iret1, epsth=epsthp)
+                elas_keyword = 'ELAS', epsth=epsthp)
     call verift(fami, kpg, ksp, '-', imate,&
-                materi, 'ELAS', iret2, epsth=epsthm)
+                elas_keyword = 'ELAS', epsth=epsthm)
     if (resi) then
-        do 10 k = 1, ndimsi
+        do k = 1, ndimsi
             eps(k) = epsm(k) + deps(k) - epsthp*kron(k)
- 10     continue
+        end do
     else
-        do 40 k = 1, ndimsi
+        do k = 1, ndimsi
             eps(k) = epsm(k) - epsthm*kron(k)
- 40     continue
+        end do
     endif
 !
-    do 45 k = 4, ndimsi
+    do k = 4, ndimsi
         eps(k) = eps(k)/rac2
- 45 end do
+    end do
     eps(3)=0.d0
 !
 ! -- DIAGONALISATION DES DEFORMATIONS
@@ -116,7 +111,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 !
 ! -- CALCUL DES CONTRAINTES
 !
-    do 50 i = 1, 2
+    do i = 1, 2
         if (epsp(i) .le. 0.d0) then
             if (epsp(i) .gt. epsic) then
                 sigp(i)=sigmc*(1.d0-(1.d0-epsp(i)/epsic)**compn)
@@ -138,15 +133,15 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
                 deumud(i)=sigp(i)/epsp(i)
             endif
         endif
- 50 end do
+    end do
     if ((resi) .and. (.not.coup)) then
         call r8inir(6, 0.d0, sig, 1)
-        do 1010 i = 1, 2
+        do i = 1, 2
             rtemp=sigp(i)
             sig(1)=sig(1)+vecp(1,i)*vecp(1,i)*rtemp
             sig(2)=sig(2)+vecp(2,i)*vecp(2,i)*rtemp
             sig(4)=sig(4)+vecp(1,i)*vecp(2,i)*rtemp
-1010     continue
+        end do
         sig(4)=rac2*sig(4)
         sig(3)=0.d0
         sig(5)=0.d0
@@ -163,25 +158,24 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
         else
             call r8inir(36, 0.d0, dsidep, 1)
         endif
-        do 120 k = 1, 2
+        do k = 1, 2
             dspdep(k,k) = dspdep(k,k) + deumud(k)
-120     continue
+        end do
         dspdep(3,3)=e
         if (epsp(1)*epsp(2) .ge. 0.d0) then
             dspdep(4,4)=deumud(1)
         else
-            dspdep(4,4)=(deumud(1)*epsp(1)-deumud(2)*epsp(2)) /(epsp(&
-            1)-epsp(2))
+            dspdep(4,4)=(deumud(1)*epsp(1)-deumud(2)*epsp(2)) /(epsp(1)-epsp(2))
         endif
-        do 20 i = 1, 2
-            do 21 j = i, 2
+        do i = 1, 2
+            do j = i, 2
                 if (i .eq. j) then
                     rtemp3=1.d0
                 else
                     rtemp3=rac2
                 endif
-                do 22 k = 1, 2
-                    do 23 l = 1, 2
+                do k = 1, 2
+                    do l = 1, 2
                         if (t(i,j) .ge. t(k,l)) then
                             if (k .eq. l) then
                                 rtemp4=rtemp3
@@ -189,23 +183,20 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
                                 rtemp4=rtemp3/rac2
                             endif
                             rtemp2=0.d0
-                            do 24 m = 1, 2
-                                do 25 n = 1, 2
+                            do m = 1, 2
+                                do n = 1, 2
                                     rtemp2=rtemp2+vecp(k,m)* vecp(i,n)&
                                     *vecp(j,n)*vecp(l,m)*dspdep(n,m)
- 25                             continue
- 24                         continue
-                            rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*vecp(k,&
-                            1)*vecp(l,2)*dspdep(4,4)
-                            rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*vecp(k,&
-                            2)*vecp(l,1)*dspdep(4,4)
-                            dsidep(t(i,j),t(k,l))=dsidep(t(i,j),t(k,l)&
-                            )+rtemp2*rtemp4
+                                end do
+                            end do
+                            rtemp2=rtemp2+vecp(i,1)*vecp(j,2)*vecp(k,1)*vecp(l,2)*dspdep(4,4)
+                            rtemp2=rtemp2+vecp(i,2)*vecp(j,1)*vecp(k,2)*vecp(l,1)*dspdep(4,4)
+                            dsidep(t(i,j),t(k,l))=dsidep(t(i,j),t(k,l))+rtemp2*rtemp4
                         endif
- 23                 continue
- 22             continue
- 21         continue
- 20     continue
+                    end do
+                end do
+            end do
+        end do
         dsidep(3,3)=dspdep(3,3)
         dsidep(1,2)=dsidep(2,1)
         dsidep(1,4)=dsidep(4,1)

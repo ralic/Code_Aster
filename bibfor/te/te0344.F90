@@ -50,10 +50,10 @@ subroutine te0344(option, nomte)
     parameter     (nbres=2)
     integer :: lmater, jmat, nbmat, imat, icomp, nbpar, i, j, npg, nno, nc
     integer :: ncc, jeffo, iret, lsect, itype, lx
-    integer :: lorien, jdepl, iret1, lforcr, lforcf
+    integer :: lorien, jdepl, lforcr, lforcf
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomres(nbres), materi
+    character(len=8) :: nompar, nomres(nbres)
     character(len=16) :: messk(2)
     real(kind=8) :: valpar, zero, angs2, rad, e, g, a, rbid
     real(kind=8) :: xl, epsith
@@ -67,7 +67,6 @@ subroutine te0344(option, nomte)
 !
     okopt = (option.eq.'SIPM_ELNO') .or. (option.eq.'SIPO_ELNO')
     ASSERT(okopt)
-    materi = ' '
 !
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
@@ -153,7 +152,7 @@ subroutine te0344(option, nomte)
 ! --- ------------------------------------------------------------------
 ! --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION
     call verift('RIGI', npg, 1, '+', zi(lmater),&
-                materi, 'ELAS', iret1, epsth=epsith)
+                elas_keyword = 'ELAS', epsth=epsith)
     do i = 1, 14
         ugr(i) = 0.d0
     end do

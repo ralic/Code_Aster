@@ -74,7 +74,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
 !.......................................................................
 !
     integer :: jprol, jvale, nbval(3), maxval, nz
-    integer :: ndimsi, i, j, k, mode, ire2, iret1, iret2
+    integer :: ndimsi, i, j, k, mode, ire2, iret1
 !
     real(kind=8) :: phase(5), phasm(3), zalpha
     real(kind=8) :: temp, dt
@@ -100,7 +100,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(12), test
-    character(len=8) :: nomres(12), nomcle(3), zirc(2), materi
+    character(len=8) :: nomres(12), nomcle(3), zirc(2)
 !
     logical :: resi, rigi
 !
@@ -115,7 +115,6 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
 !
-    materi = ' '
     if (ndim .eq. 2) then
         ndimsi=4
     else
@@ -157,7 +156,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
     call rcvarc(' ', 'TEMP', c1, fami, kpg,&
                 ksp, temp, iret1)
     call verift(fami, kpg, ksp, c1, imat,&
-                materi, 'ELAS_META', iret2, ndim=2, vepsth=epsthe)
+                elas_keyword = 'ELAS_META', ndim=2, vepsth=epsthe)
 !
     zalpha=phase(1)+phase(2)
     phase(nz)=1.d0-zalpha

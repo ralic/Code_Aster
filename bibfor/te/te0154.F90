@@ -55,7 +55,7 @@ subroutine te0154(option, nomte)
     integer :: codres(1)
     character(len=3) :: stopz
     character(len=4) :: fami
-    character(len=8) :: nomail, materi
+    character(len=8) :: nomail
     character(len=16) :: ch16
     logical :: lteimp
     real(kind=8) :: a, epsth, e(1), r8bid=0.d0, rho(1), xfl1, xfl4, xl, xmas, xrig
@@ -68,7 +68,6 @@ subroutine te0154(option, nomte)
     nno = 2
     nc = 3
     fami = 'RIGI'
-    materi = ' '
 !
     if ((nomte .ne. 'MECA_BARRE') .and. (nomte .ne. 'MECA_2D_BARRE')) then
         ch16 = nomte
@@ -79,7 +78,7 @@ subroutine te0154(option, nomte)
     call jevech('PMATERC', 'L', lmater)
 !
     call verift(fami, 1, 1, '+', zi(lmater),&
-                materi, 'ELAS', iret, epsth=epsth)
+                elas_keyword = 'ELAS', epsth=epsth)
 !
     r8bid = 0.0d0
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
@@ -118,9 +117,9 @@ subroutine te0154(option, nomte)
     call matrot(zr(lorien), pgl)
 !
 !     --- RECUPERATION DES DEPLACEMENTS OU DES VITESSES ----
-    do 19 i = 1, 6
+    do i = 1, 6
         ugr(i) = 0.d0
- 19 end do
+    end do
 !
     if (option .ne. 'ECIN_ELEM') then
 !
@@ -128,9 +127,9 @@ subroutine te0154(option, nomte)
 !
         call jevech('PDEPLAR', 'L', jdepl)
         if (nomte .eq. 'MECA_BARRE') then
-            do 21 i = 1, 6
+            do i = 1, 6
                 ugr(i) = zr(jdepl+i-1)
- 21         continue
+            end do
         else if (nomte.eq.'MECA_2D_BARRE') then
             ugr(1) = zr(jdepl+1-1)
             ugr(2) = zr(jdepl+2-1)
@@ -148,9 +147,9 @@ subroutine te0154(option, nomte)
 ! ON RECUPERE DES VITESSES
 !
             if (nomte .eq. 'MECA_BARRE') then
-                do 22 i = 1, 6
+                do i = 1, 6
                     ugr(i) = zr(jvite+i-1)
- 22             continue
+                end do
             else if (nomte.eq.'MECA_2D_BARRE') then
                 ugr(1) = zr(jvite+1-1)
                 ugr(2) = zr(jvite+2-1)
@@ -165,9 +164,9 @@ subroutine te0154(option, nomte)
             call tecach(stopz, 'PDEPLAR', 'L', iret, iad=jdepl)
             if (iret .eq. 0) then
                 if (nomte .eq. 'MECA_BARRE') then
-                    do 23 i = 1, 6
+                    do i = 1, 6
                         ugr(i) = zr(jdepl+i-1)
- 23                 continue
+                    end do
                 else if (nomte.eq.'MECA_2D_BARRE') then
                     ugr(1) = zr(jdepl+1-1)
                     ugr(2) = zr(jdepl+2-1)
@@ -187,11 +186,11 @@ subroutine te0154(option, nomte)
     call utpvgl(nno, nc, pgl, ugr, ulr)
 !
 !     --- RIGIDITE ELEMENTAIRE ---
-    do 30 i = 1, 6
-        do 32 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             klc(i,j) = 0.d0
- 32     continue
- 30 end do
+        end do
+    end do
 !
 !     --- ENERGIE DE DEFORMATION ----
     if (option .eq. 'EPOT_ELEM') then
