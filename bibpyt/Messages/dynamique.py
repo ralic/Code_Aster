@@ -183,5 +183,8 @@ celle choisie précédemment.
 celle choisie précédemment.
 """),
 
+32: _(u"""
+La condition de stabilité n'a pas pu être calculée car il s'agit d'élasticité non-isotrope.
+"""),
 
 }

@@ -1,4 +1,18 @@
 subroutine te0404(option, nomte)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/teattr.h"
+#include "asterfort/get_elas_type.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,6 +29,8 @@ subroutine te0404(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
+!
 !
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DU PAS DE TEMPS DE COURANT POUR L'ELEMENT
@@ -24,17 +40,7 @@ subroutine te0404(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
 !
-    implicit none
-! aslint: disable=W0104
-#include "jeveux.h"
-#include "asterfort/dxmate.h"
-#include "asterfort/dxqpgl.h"
-#include "asterfort/dxtpgl.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/teattr.h"
+
 !
     character(len=16) :: option, nomte
 !
@@ -43,7 +49,6 @@ subroutine te0404(option, nomte)
     integer :: codres(2)
     character(len=8) :: nomres(2)
     character(len=8) :: cnd
-    character(len=16) :: phenom
     integer :: icour, imate, igeom, nd, ndim, nno, nnos, npg
     integer :: i, j, ipoids, ivf, idfde, jgano, ier, iret
     integer :: jcoqu, multic, idfd2, icoopg
@@ -53,6 +58,8 @@ subroutine te0404(option, nomte)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9), valres(2)
     logical :: coupmf
+    integer :: elas_type
+    character(len=16) :: elas_keyword
 ! DEB ------------------------------------------------------------------
 !
     call jevech('PCOURAN', 'E', icour)
@@ -100,44 +107,50 @@ subroutine te0404(option, nomte)
 !
 !     RECUPERATION DU MODULE D'YOUNG ET DE LA MASSE VOLUMIQUE
     call jevech('PMATERC', 'L', imate)
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-    if (phenom .eq. 'ELAS') then
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        call rcvalb(fami, 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
-                    2, nomres, valres, codres, 1)
-        e = valres(1)
-        nu = valres(2)
-    else if (phenom .eq. 'ELAS_GLRC') then
-        nomres(1) = 'E_M'
-        nomres(2) = 'NU_M'
-        call rcvalb(fami, 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS_GLRC', 0, ' ', [0.d0],&
-                    2, nomres, valres, codres, 1)
-        e = valres(1)
-        nu = valres(2)
-    else if (phenom.eq.'ELAS_COQUE' .or. phenom.eq.'ELAS_DHRC') then
-        call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=idfd2,jgano=jgano)
-        call jevech('PCACOQU', 'L', jcoqu)
-        epais = zr(jcoqu)
-        if (nno .eq. 3) then
-            call dxtpgl(zr(igeom), pgl)
-        else if (nno.eq.4) then
-            call dxqpgl(zr(igeom), pgl, 'S', iret)
-        endif
+
+    call get_elas_type(zi(imate), elas_type, elas_keyword)
+
+    if (elas_type.eq.1) then
+        if (elas_keyword .eq. 'ELAS') then
+            nomres(1) = 'E'
+            nomres(2) = 'NU'
+            call rcvalb(fami, 1, 1, '+', zi(imate),&
+                        ' ', elas_keyword, 0, ' ', [0.d0],&
+                        2, nomres, valres, codres, 1)
+            e = valres(1)
+            nu = valres(2)
+        else if (elas_keyword .eq. 'ELAS_GLRC') then
+            nomres(1) = 'E_M'
+            nomres(2) = 'NU_M'
+            call rcvalb(fami, 1, 1, '+', zi(imate),&
+                        ' ', elas_keyword, 0, ' ', [0.d0],&
+                        2, nomres, valres, codres, 1)
+            e = valres(1)
+            nu = valres(2)
+        else if (elas_keyword.eq.'ELAS_COQUE' .or. elas_keyword.eq.'ELAS_DHRC') then
+            call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+                    npg=npg,jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfde,&
+                   jdfd2=idfd2,jgano=jgano)
+            call jevech('PCACOQU', 'L', jcoqu)
+            epais = zr(jcoqu)
+            if (nno .eq. 3) then
+                call dxtpgl(zr(igeom), pgl)
+            else if (nno.eq.4) then
+                call dxqpgl(zr(igeom), pgl, 'S', iret)
+            endif
 !
-        call dxmate(fami, df, dm, dmf, dc,&
-                    dci, dmc, dfc, nno, pgl,&
-                    multic, coupmf, t2iu, t2ui, t1ve)
-        nu = dm(1,2)/dm(1,1)
-        e = (1.d0-nu**2)*dm(1,1)/epais
+            call dxmate(fami, df, dm, dmf, dc,&
+                        dci, dmc, dfc, nno, pgl,&
+                        multic, coupmf, t2iu, t2ui, t1ve)
+            nu = dm(1,2)/dm(1,1)
+            e = (1.d0-nu**2)*dm(1,1)/epais
+        endif
+    else
+        call utmess('F','DYNAMIQUE_32')
     endif
 !
     call rcvalb(fami, 1, 1, '+', zi(imate),&
-                ' ', phenom, 0, ' ', [0.d0],&
+                ' ', elas_keyword, 0, ' ', [0.d0],&
                 1, 'RHO', rho, icodre(1), 1)
 !
 !     CALCUL DE LA CELERITE DES ONDES DANS LE MATERIAU
