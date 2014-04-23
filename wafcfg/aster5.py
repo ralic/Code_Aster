@@ -27,7 +27,7 @@ def configure(self):
         '. /home/aster/etc/codeaster/profile_mfront.sh'])
 
     self.env.append_value('LIBPATH', [
-        #'/usr/lib/atlas',                           # for NumPy, see issue18751
+        '/usr/lib/atlas-base/atlas',                       # for NumPy, see issue18751
         YAMMROOT + 'prerequisites/Hdf5_1810/lib',
         YAMMROOT + 'tools/Medfichier_307/lib',
         YAMMROOT + 'prerequisites/Mumps_20141/lib',
