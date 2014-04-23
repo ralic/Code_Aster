@@ -15,17 +15,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine get_elas_para(fami, j_mater , time, poum, ipg,&
-                             ispg, elas_type,&
-                             e   , nu , g,&
-                             e1  , e2 , e3, nu12, nu13, nu23, g1, g2, g3)
+    subroutine get_elas_para(fami     , j_mater, poum, ipg, ispg, &
+                             elas_type,&
+                             time     ,&
+                             e   , nu  , g,&
+                             e1  , e2  , e3,&
+                             nu12, nu13, nu23,&
+                             g1  , g2  , g3)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: j_mater
-        real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: poum
         integer, intent(in) :: ipg
         integer, intent(in) :: ispg
         integer, intent(out) :: elas_type
+        real(kind=8), optional, intent(in) :: time
         real(kind=8), optional, intent(out) :: e
         real(kind=8), optional, intent(out) :: nu
         real(kind=8), optional, intent(out) :: e1

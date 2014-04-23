@@ -207,8 +207,8 @@ implicit none
 !
     ipg  = 1
     ispg = 1
-    call get_elas_para('RIGI', zi(imate), 0.d0, '+', ipg,&
-                       ispg, elas_type,&
+    call get_elas_para('RIGI', zi(imate), '+', ipg, ispg, &
+                       elas_type,&
                        nu = nu , nu12 = nu12)
     if (elas_type.eq.1) then
         nub = nu/(1.d0-nu)

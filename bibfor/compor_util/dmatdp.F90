@@ -74,10 +74,13 @@ implicit none
 !
 ! - Get elastic parameters
 !
-    call get_elas_para(fami, mater    , time, poum, ipg,&
-                       ispg, elas_type,&
-                       e   , nu , g,&
-                       e1  , e2 , e3, nu12, nu13, nu23, g1, g2, g3)
+    call get_elas_para(fami, mater    , poum, ipg, ispg, &
+                       elas_type,&
+                       time = time,&
+                       e = e      , nu = nu    , g = g,&
+                       e1 = e1    , e2 = e2    , e3 = e3,& 
+                       nu12 = nu12, nu13 = nu13, nu23 = nu23,&
+                       g1 = g1    , g2 = g2    , g3 = g3)
 !
 ! - Compute Hooke matrix
 !
