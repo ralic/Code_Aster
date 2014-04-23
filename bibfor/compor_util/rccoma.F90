@@ -53,7 +53,7 @@ subroutine rccoma(jmat, mater_typez, iarret, mater_keyword, icodre)
 ! Out mater_keyword : keyword factor linked to type of material parameter
 ! Out icodre        : 0 everything is OK
 !                     1 no mater_keyword found
-!                     2 several mater_keyword found
+!                     2 several DIFFERTENT mater_keyword found
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,10 +83,12 @@ subroutine rccoma(jmat, mater_typez, iarret, mater_keyword, icodre)
                     mater_keyword=zk16(zi(imat)+icomp-1)
                     icodre_in = 0
                 else
-                    if (iarret .eq. 1) then
-                        call utmess('F', 'COMPOR5_56', sk=mater_type)
-                    else
-                        icodre_in = 2
+                    if (mater_keyword.ne.zk16(zi(imat)+icomp-1)) then
+                        if (iarret .eq. 1) then
+                            call utmess('F', 'COMPOR5_56', sk=mater_type)
+                        else
+                            icodre_in = 2
+                        endif
                     endif
                 endif
             endif
