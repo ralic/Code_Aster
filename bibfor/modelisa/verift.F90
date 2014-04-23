@@ -1,12 +1,13 @@
-subroutine verift(fami, kpg, ksp, poum, imate,&
-                  elas_keyword, iret, materiz, ndim, epsth,&
-                  vepsth, tmoins, tplus, trefer)
+subroutine verift(fami         , kpg          , ksp          , poum  , j_mater,&
+                  materiz      , iret         , epsth        , vepsth, &
+                  temp_prev_out, temp_curr_out, temp_refe_out)
 !
 implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/rcvalb.h"
+#include "asterfort/get_elasth_para.h"
+#include "asterfort/get_elas_type.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
@@ -28,191 +29,236 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=*), intent(in) :: fami, poum
+    character(len=*), intent(in) :: fami
     integer, intent(in) :: kpg
     integer, intent(in) :: ksp
-    integer, intent(in) :: imate
-    character(len=*), intent(in) :: elas_keyword
+    character(len=*), intent(in) :: poum
+    integer, intent(in) :: j_mater
     character(len=8), optional, intent(in) :: materiz
-    integer, optional, intent(in) :: ndim
     integer, optional, intent(out) :: iret
     real(kind=8), optional, intent(out) :: epsth
     real(kind=8), optional, intent(out) :: vepsth(*)
-    real(kind=8), optional, intent(out) :: tmoins
-    real(kind=8), optional, intent(out) :: tplus
-    real(kind=8), optional, intent(out) :: trefer
+    real(kind=8), optional, intent(out) :: temp_prev_out
+    real(kind=8), optional, intent(out) :: temp_curr_out
+    real(kind=8), optional, intent(out) :: temp_refe_out
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!  FAMI     : famille de points de gauss
-!  KPG      : numero du point de gauss
-!  KSP      : numero du sous-point de gauss
-!  POUM     : '+' si temperature en temps +
-!             '-' si temperature en temps -
-!             'T' si temperature en temps + et -
-! IMATE     : materiau
-! elas_keyword    : comportement
-! NDIM      : 1 si isotrope
-!             2 si isotrope transverse (ou metallurgique)
-!             3 si orthotrope
-! EPSTH     : incrément de dilatation thermique si poum=T
-!             déformation thermique si poum = + ou -
-! IRET      : code retour concernant la temperature 0 si ok
-!                                                   1 si nook
+! Compute thermic strain
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codrem(3), codrep(3), ndimloc
-    character(len=8) :: nomres(3), valek(2), materi
-    integer :: iret1, iret2, iret3, ind, somire, iadzi, iazk24
-    real(kind=8) :: tm, tref, tp, valrep(3), valrem(3), tpoum, epsth3(3)
+! In  fami         : Gauss family for integration point rule
+! In  j_mater      : coded material address
+! In  poum         : parameters evaluation 
+!                     '-' for previous temperature
+!                     '+' for current temperature
+!                     'T' for current and previous temperature
+! In  kpg          : current point gauss
+! In  ksp          : current "sous-point" gauss
+! In  materi       : name of material if multi-material Gauss point (PMF)
+! In  iret         : 0 if temperature defined
+!                    1 if not
+! Out epsth        : thermic dilatation increment if poum=T
+!                    thermic dilatation if poum = + ou -
+! Out vepsth       : non-isotropic thermic dilatation
+!
 ! --------------------------------------------------------------------------------------------------
-    if ( present(ndim) ) then
-        ASSERT( present(vepsth) )
-        ASSERT( .not.present(epsth) )
-        ndimloc = ndim
-    else
-        ASSERT( present(epsth) )
-        ASSERT( .not.present(vepsth) )
-        ndimloc = 1
-    endif
+!
+    character(len=8) :: elem_name, materi
+    integer :: iret_temp_prev, iret_temp_curr, iret_temp, iret_temp_refe
+    real(kind=8) :: temp_prev, temp_refe, temp_curr, epsth3(3)
+    real(kind=8) :: alpha_p(2)
+    real(kind=8) :: alpha_l_p, alpha_t_p, alpha_n_p
+    real(kind=8) :: alpha_c(2)
+    real(kind=8) :: alpha_l_c, alpha_t_c, alpha_n_c
+    integer :: iadzi, iazk24
+    integer :: elas_type
+    character(len=16) :: elas_keyword
+
+!
+! --------------------------------------------------------------------------------------------------
+!
     materi = ' '
     if (present(materiz)) then
         materi = materiz
     endif
 !
-    iret1 = 0
-    iret2 = 0
-    iret3 = 0
-!   s'il n'y a pas de température, epsth=0.
+    iret_temp      = 0
+    iret_temp_prev = 0
+    iret_temp_curr = 0
+    iret_temp_refe = 0
+    epsth3(1:3)    = 0.d0
+!
+! - No temperature -> thermic strain is zero
+!
     call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                ksp, tp, iret1)
-    if (iret1 .ne. 0) then
-        do ind = 1, ndimloc
-            epsth3(ind) = 0.d0
-        enddo
-        if (present(iret)) then
-            iret = 1
-        endif
+                ksp, temp_curr, iret_temp)
+    if (iret_temp .ne. 0) then
         goto 999
     endif
 !
+! - Get reference temperature
+!
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
-                ksp, tref, iret1)
-    if (iret1 .eq. 1) then
+                ksp, temp_refe, iret_temp_refe)
+    if (iret_temp_refe .eq. 1) then
         call tecael(iadzi, iazk24)
-        valek(1) = zk24(iazk24-1+3) (1:8)
-        call utmess('F', 'CALCULEL_8', sk=valek(1))
-    endif
-    if (present(trefer)) then
-        trefer = tref
+        elem_name = zk24(iazk24-1+3) (1:8)
+        call utmess('F', 'COMPOR5_8', sk=elem_name)
     endif
 !
-    if (elas_keyword .eq. 'ELAS_META') then
-        if (ndimloc .eq. 2) then
-            nomres(1) = 'C_ALPHA'
-            nomres(2) = 'F_ALPHA'
-        else
-            ASSERT(.false.)
-        endif
-    else
-        if      (ndimloc.eq.1) then
-            nomres(1) = 'ALPHA'
-        else if (ndimloc.eq.2) then
-            nomres(1) = 'ALPHA_L'
-            nomres(2) = 'ALPHA_N'
-        else if (ndimloc.eq.3) then
-            nomres(1) = 'ALPHA_L'
-            nomres(2) = 'ALPHA_T'
-            nomres(3) = 'ALPHA_N'
-        else
-            ASSERT(.false.)
+! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
+!
+    call get_elas_type(j_mater, elas_type, elas_keyword)
+!
+! - Get temperatures
+!
+    if (poum.eq.'T'.or.poum.eq.'-') then
+        call rcvarc(' ', 'TEMP', '-', fami, kpg,&
+                    ksp, temp_prev, iret_temp_prev)
+    endif
+    if (poum.eq.'T'.or.poum.eq.'+') then
+        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
+                    ksp, temp_curr, iret_temp_curr)
+    endif
+!
+! - Get elastic parameters for thermic dilatation
+!
+    if (poum.eq.'T'.or.poum.eq.'-') then
+        if (iret_temp_prev.eq.0) then
+            call get_elasth_para(fami     , j_mater     , '-', kpg    , ksp,&
+                                 elas_type, elas_keyword, materi,&
+                                 alpha_p  , alpha_l_p   , alpha_t_p, alpha_n_p)
         endif
     endif
+    if (poum.eq.'T'.or.poum.eq.'+') then
+        if (iret_temp_curr.eq.0) then
+            call get_elasth_para(fami     , j_mater     , '+', kpg    , ksp,&
+                                 elas_type, elas_keyword, materi,&
+                                 alpha_c  , alpha_l_c   , alpha_t_c, alpha_n_c)
+        endif
+    endif
+!
+! - Check non-isotropic material
+!
+    if (elas_type.ne.1) then
+        if (.not.present(vepsth)) then
+            call tecael(iadzi, iazk24)
+            elem_name = zk24(iazk24-1+3) (1:8)
+            call utmess('F', 'COMPOR5_9', sk=elem_name)
+        endif
+    endif
+!
+! - Check metallurgical material
+!
+    if (elas_keyword.eq.'ELAS_META') then
+        if (.not.present(vepsth)) then
+            call tecael(iadzi, iazk24)
+            elem_name = zk24(iazk24-1+3) (1:8)
+            call utmess('F', 'COMPOR5_10', sk=elem_name)
+        endif
+    endif
+!
+! - Compute thermic strain
 !
     if (poum .eq. 'T') then
-        call rcvarc(' ', 'TEMP', '-', fami, kpg,&
-                    ksp, tm, iret2)
-        call rcvalb(fami, kpg, ksp, '-', imate,&
-                    materi, elas_keyword, 0, ' ', [0.d0],&
-                    ndimloc, nomres, valrem, codrem, 0)
-        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                    ksp, tp, iret3)
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    materi, elas_keyword, 0, ' ', [0.d0],&
-                    ndimloc, nomres, valrep, codrep, 0)
-!
-        somire = iret2 + iret3
-        if (somire .eq. 0) then
-            do ind = 1, ndimloc
-                if ((codrem(ind).ne.0) .or. (codrep(ind).ne.0)) then
-                    call tecael(iadzi, iazk24)
-                    valek(1)= zk24(iazk24-1+3) (1:8)
-                    valek(2)=nomres(ind)
-                    call utmess('F', 'CALCULEL_32', nk=2, valk=valek)
+        if (iret_temp_prev+iret_temp_curr.eq.0) then
+            if (elas_type.eq.1) then
+                if (elas_keyword.eq.'ELAS_META') then
+                    epsth3(1) = alpha_c(1)*(temp_curr-temp_refe)-alpha_p(1)*(temp_prev-temp_refe)
+                    epsth3(2) = alpha_c(2)*(temp_curr-temp_refe)-alpha_p(2)*(temp_prev-temp_refe)
+                else
+                    epsth3(1) = alpha_c(1)*(temp_curr-temp_refe)-alpha_p(1)*(temp_prev-temp_refe)
                 endif
-            enddo
-!
-            do ind = 1, ndimloc
-                epsth3(ind) = valrep(ind)*(tp-tref)-valrem(ind)*(tm- tref)
-            enddo
-!
-            if (present(tmoins)) then
-                tmoins = tm
+            elseif (elas_type.eq.2) then
+                epsth3(1) = alpha_l_c*(temp_curr-temp_refe)-alpha_l_p*(temp_prev-temp_refe)
+                epsth3(2) = alpha_t_c*(temp_curr-temp_refe)-alpha_t_p*(temp_prev-temp_refe)
+                epsth3(3) = alpha_n_c*(temp_curr-temp_refe)-alpha_n_p*(temp_prev-temp_refe)
+            elseif (elas_type.eq.3) then
+                epsth3(1) = alpha_l_c*(temp_curr-temp_refe)-alpha_l_p*(temp_prev-temp_refe)
+                epsth3(2) = alpha_n_c*(temp_curr-temp_refe)-alpha_n_p*(temp_prev-temp_refe)
+            else
+                ASSERT(.false.)
             endif
-            if (present(tplus)) then
-                tplus = tp
+        endif
+    else if (poum .eq. '-') then
+        if (iret_temp_prev.eq.0) then
+            if (elas_type.eq.1) then
+                if (elas_keyword.eq.'ELAS_META') then
+                    epsth3(1) = alpha_p(1)*(temp_prev-temp_refe)
+                    epsth3(2) = alpha_p(2)*(temp_prev-temp_refe)
+                else
+                    epsth3(1) = alpha_p(1)*(temp_prev-temp_refe)
+                endif
+            elseif (elas_type.eq.2) then
+                epsth3(1) = alpha_l_p*(temp_prev-temp_refe)
+                epsth3(2) = alpha_t_p*(temp_prev-temp_refe)
+                epsth3(3) = alpha_n_p*(temp_prev-temp_refe)            
+            elseif (elas_type.eq.3) then
+                epsth3(1) = alpha_l_p*(temp_prev-temp_refe)
+                epsth3(2) = alpha_n_p*(temp_prev-temp_refe)
+            else
+                ASSERT(.false.)
             endif
-        else
-            do ind = 1, ndimloc
-                epsth3(ind) = 0.d0
-            enddo
+        endif
+    else if (poum .eq. '+') then
+        if (iret_temp_curr.eq.0) then
+            if (elas_type.eq.1) then
+                if (elas_keyword.eq.'ELAS_META') then
+                    epsth3(1) = alpha_c(1)*(temp_curr-temp_refe)
+                    epsth3(2) = alpha_c(2)*(temp_curr-temp_refe)
+                else
+                    epsth3(1) = alpha_c(1)*(temp_curr-temp_refe)
+                endif
+            elseif (elas_type.eq.2) then
+                epsth3(1) = alpha_l_c*(temp_curr-temp_refe)
+                epsth3(2) = alpha_t_c*(temp_curr-temp_refe)
+                epsth3(3) = alpha_n_c*(temp_curr-temp_refe)            
+            elseif (elas_type.eq.3) then
+                epsth3(1) = alpha_l_c*(temp_curr-temp_refe)
+                epsth3(2) = alpha_n_c*(temp_curr-temp_refe)
+            else
+                ASSERT(.false.)
+            endif
         endif
     else
-        call rcvarc(' ', 'TEMP', poum, fami, kpg,&
-                    ksp, tpoum, iret2)
-        call rcvalb(fami, kpg, ksp, poum, imate,&
-                    materi, elas_keyword, 0, ' ', [0.d0],&
-                    ndimloc, nomres, valrem, codrem, 0)
-!
-        if (iret2 .eq. 0) then
-            do ind = 1, ndimloc
-                if (codrem(ind) .ne. 0) then
-                    call tecael(iadzi, iazk24)
-                    valek(1)= zk24(iazk24-1+3) (1:8)
-                    valek(2)=nomres(ind)
-                    call utmess('F', 'CALCULEL_32', nk=2, valk=valek)
-                endif
-            enddo
-!
-            do ind = 1, ndimloc
-                epsth3(ind) = valrem(ind)*(tpoum-tref)
-            enddo
-!
-            if ( (poum.eq.'-') .and. present(tmoins) ) then
-                tmoins = tpoum
-            endif
-            if ( (poum.eq.'+') .and. present(tplus)) then
-                tplus = tpoum
-            endif
-        else
-            do ind = 1, ndimloc
-                epsth3(ind) = 0.d0
-            enddo
-        endif
+        ASSERT(.false.)
     endif
+!
+999 continue
+!
+! - Output temperature
+!
+    if (present(temp_refe_out)) then
+        temp_refe_out = temp_refe
+    endif
+    if (present(temp_prev_out)) then
+        temp_prev_out = temp_prev
+    endif
+    if (present(temp_curr_out)) then
+        temp_curr_out = temp_curr
+    endif
+!
+! - Output strains
+!
+    if (present(vepsth)) then
+        vepsth(1:3) = epsth3(1:3)
+    endif
+    if (present(epsth)) then
+        epsth = epsth3(1)
+    endif
+!
+! - Output error
 !
     if (present(iret)) then
         iret = 0
-        if ((iret2+iret3) .ge. 1) then 
+        if ((iret_temp_prev+iret_temp_curr) .ne. 0) then 
+            iret = 1
+        endif
+        if (iret_temp .ne. 0) then
             iret = 1
         endif
     endif
 !
-999 continue
-    if ( present(ndim) ) then
-        vepsth(1:ndim) = epsth3(1:ndim)
-    else
-        epsth = epsth3(1)
-    endif
 end subroutine

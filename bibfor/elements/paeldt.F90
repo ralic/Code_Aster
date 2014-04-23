@@ -54,8 +54,8 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
         nup = valres(2)
 !
         call verift(fami, kpg, ksp, 'T', icdmat,&
-                    elas_keyword = 'ELAS', materiz = materi, epsth= depsth,&
-                    tmoins=tms, tplus=tpl, trefer=tref)
+                    materiz = materi, epsth= depsth,&
+                    temp_prev_out=tms, temp_curr_out=tpl, temp_refe_out=tref)
 !
     else
         call rcvalb(fami, kpg, ksp, poum, icdmat,&
@@ -65,8 +65,8 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
         nup = valres(2)
         em  = valres(1)
         call verift(fami, kpg, ksp, poum, icdmat,&
-                    elas_keyword = 'ELAS', materiz = materi, epsth=depsth,&
-                    tmoins=tms, tplus=tpl, trefer=tref)
+                    materiz = materi, epsth=depsth,&
+                    temp_prev_out=tms, temp_curr_out=tpl, temp_refe_out=tref)
     endif
 !
     if (present(tmoins)) then

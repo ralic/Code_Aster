@@ -56,7 +56,11 @@ implicit none
 !
     if (elas_keyword_in.eq.'ELAS'.or.&
         elas_keyword_in.eq.'ELAS_HYPER'.or.&
-        elas_keyword_in.eq.'ELAS_META') then
+        elas_keyword_in.eq.'ELAS_MEMBRANE'.or.&
+        elas_keyword_in.eq.'ELAS_META'.or.&
+        elas_keyword_in.eq.'ELAS_GLRC'.or.&
+        elas_keyword_in.eq.'ELAS_DHRC'.or.&
+        elas_keyword_in.eq.'ELAS_COQUE') then
         elas_type = 1
     elseif (elas_keyword_in.eq.'ELAS_ORTH') then
         elas_type = 2

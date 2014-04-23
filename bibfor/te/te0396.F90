@@ -156,7 +156,7 @@ subroutine te0396(option, nomte)
             end do
         end do
         call verift('RIGI', kp, 1, '+', zi(imate),&
-                    elas_keyword = 'ELAS', epsth=epsthe)
+                    epsth=epsthe)
         do i = 1, 3
             gn(i) = 0.d0
             gm(i) = 0.d0

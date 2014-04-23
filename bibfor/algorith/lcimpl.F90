@@ -64,7 +64,7 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
 !     ESTIMATION ELASTIQUE
 !     ------------------------------------------------------------------
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', epsth=depsth)
+                epsth=depsth)
     sige = ep* (sigm/em+deps-depsth)
     sieleq = abs(sige)
 !     ------------------------------------------------------------------

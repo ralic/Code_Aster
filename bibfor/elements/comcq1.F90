@@ -101,10 +101,9 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                 sigp(1) = ep* (sigm(1)/em+deps(1)-depsth(1))
                 dsde(1,1) = ep
                 dsde(2,2) = ep
-                else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1)&
-            .eq.'VMIS_ISOT_TRAC')) then
+            else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1).eq.'VMIS_ISOT_TRAC')) then
                 call verift(fami, kpg, 1, 'T', imate,&
-                            elas_keyword = 'ELAS', epsth=depsth(1))
+                            epsth=depsth(1))
                 depsm=deps(1)-depsth(1)
                 call nm1dis(fami, kpg, ksp, imate, em,&
                             ep, sigm(1), depsm, vim, option,&
@@ -115,7 +114,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                 sigp(2)=0.d0
             else if (compor(1).eq.'VMIS_CINE_LINE') then
                 call verift(fami, kpg, 1, 'T', imate,&
-                            elas_keyword = 'ELAS', epsth=depsth(1))
+                            epsth=depsth(1))
                 depsm=deps(1)-depsth(1)
                 call nm1dci(fami, kpg, ksp, imate, em,&
                             ep, sigm(1), depsm, vim, option,&

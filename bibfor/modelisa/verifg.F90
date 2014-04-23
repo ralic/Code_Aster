@@ -90,14 +90,14 @@ subroutine verifg(fami, npg, nspg, poum, imate,&
             if (iret1 .eq. 1) then
                 call tecael(iadzi, iazk24)
                 valek(1) = zk24(iazk24-1+3) (1:8)
-                call utmess('F', 'CALCULEL_8', sk=valek(1))
+                call utmess('F', 'COMPOR5_8', sk=valek(1))
             endif
             do 5 ind = 1, ndim
                 if ((codrem(ind).ne.0) .or. (codrep(ind).ne.0)) then
                     call tecael(iadzi, iazk24)
                     valek(1)= zk24(iazk24-1+3) (1:8)
                     valek(2)=nomres(ind)
-                    call utmess('F', 'CALCULEL_32', nk=2, valk=valek)
+                    call utmess('F', 'COMPOR5_32', nk=2, valk=valek)
                 endif
  5          continue
 !
@@ -129,7 +129,7 @@ subroutine verifg(fami, npg, nspg, poum, imate,&
             if (iret1 .eq. 1) then
                 call tecael(iadzi, iazk24)
                 valek(1) = zk24(iazk24-1+3) (1:8)
-                call utmess('F', 'CALCULEL_8', sk=valek(1))
+                call utmess('F', 'COMPOR5_8', sk=valek(1))
             endif
 !
             do 35 ind = 1, ndim
@@ -137,7 +137,7 @@ subroutine verifg(fami, npg, nspg, poum, imate,&
                     call tecael(iadzi, iazk24)
                     valek(1)= zk24(iazk24-1+3) (1:8)
                     valek(2)=nomres(ind)
-                    call utmess('F', 'CALCULEL_32', nk=2, valk=valek)
+                    call utmess('F', 'COMPOR5_32', nk=2, valk=valek)
                 endif
 35          continue
 !

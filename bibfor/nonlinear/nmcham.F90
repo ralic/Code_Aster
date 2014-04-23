@@ -85,7 +85,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     un = 1.0d0
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', epsth=coef)
+                epsth=coef)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES ELASTIQUES :
 !     ============================================

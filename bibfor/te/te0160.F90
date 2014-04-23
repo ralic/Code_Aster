@@ -106,7 +106,7 @@ subroutine te0160(option, nomte)
     end do
     do kp = 1, npg
         call verift('RIGI', kp, 1, '+', zi(imate),&
-                    elas_keyword = 'ELAS', epsth=epsth)
+                    epsth=epsth)
 !
         k = (kp-1)*nordre*nordre
         jacobi = sqrt(biline(nordre,zr(igeom),zr(iyty+k),zr(igeom)))

@@ -84,7 +84,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     end do
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', epsth=epsthe)
+                epsth=epsthe)
 !
 ! LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (TEMPS - ET +)
 !    RCCOMA POUR GERER KIT_DDI (GLRC+VMIS_ISOT)

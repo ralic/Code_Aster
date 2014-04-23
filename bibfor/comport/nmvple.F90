@@ -94,7 +94,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
 ! DEB ------------------------------------------------------------------
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', epsth=epsthe)
+                epsth=epsthe)
 !
     iret=0
     theta = crit(4)

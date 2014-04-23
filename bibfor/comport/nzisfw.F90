@@ -154,7 +154,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
     call rcvarc(' ', 'TEMP', c1, fami, kpg,&
                 ksp, temp, iret2)
     call verift(fami, kpg, ksp, c1, imat,&
-                elas_keyword = 'ELAS_META', iret = iret1, ndim=2, vepsth=epsthe)
+                iret = iret1, vepsth=epsthe)
     zalpha=phase(1)+phase(2)+phase(3)+phase(4)
     phase(nz)=1.d0-zalpha
 !

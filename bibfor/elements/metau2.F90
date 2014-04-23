@@ -109,7 +109,7 @@ subroutine metau2(option, nomte, iret)
  50     continue
 !
         call verift('RIGI', kp, 1, '+', mater,&
-                    elas_keyword = 'ELAS_META', ndim=2, vepsth=epsthe)
+                    vepsth=epsthe)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     1, tpg, iret2)
         call rcvalb('RIGI', 1, 1, '+', mater,&

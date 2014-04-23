@@ -101,7 +101,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
      &              'EPSAYZ'/
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', epsth=epsthe)
+                epsth=epsthe)
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                 ksp, tm, iret1)
     call rcvarc(' ', 'TEMP', '+', fami, kpg,&

@@ -74,7 +74,7 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
 !     ------------------------------------------------------------------
 !
     call verift(fami, kpg, ksp, 'T', icodma,&
-                elas_keyword = 'ELAS', epsth=epsthe)
+                epsth=epsthe)
 !
     depmec = deps-epsthe
 !     ------------------------------------------------------------------

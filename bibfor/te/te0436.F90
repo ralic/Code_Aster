@@ -162,7 +162,7 @@ subroutine te0436(option, nomte)
 !
 !         RETRAIT DE LA DEFORMATION THERMIQUE
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        elas_keyword = 'ELAS_MEMBRANE', epsth=epsthe)
+                        epsth=epsthe)
             epsm(1) = epsm(1) - epsthe
             epsm(2) = epsm(2) - epsthe
 !

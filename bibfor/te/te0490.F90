@@ -555,7 +555,7 @@ subroutine te0490(option, nomte)
 !  -- DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
             call verift(fami, igau, 1, '+', zi(imate),&
-                        elas_keyword = 'ELAS', epsth=epsthe)
+                        epsth=epsthe)
 !
 !
 ! --- TRAITEMENT DU CAS CONTRAINTES PLANES :

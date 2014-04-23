@@ -156,7 +156,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
     call rcvarc(' ', 'TEMP', c1, fami, kpg,&
                 ksp, temp, iret1)
     call verift(fami, kpg, ksp, c1, imat,&
-                elas_keyword = 'ELAS_META', ndim=2, vepsth=epsthe)
+                vepsth=epsthe)
 !
     zalpha=phase(1)+phase(2)
     phase(nz)=1.d0-zalpha

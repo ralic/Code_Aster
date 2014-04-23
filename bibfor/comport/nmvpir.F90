@@ -107,7 +107,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     character(len=*) :: fami
 !
     real(kind=8) :: t1, t2, defam(6), defap(6)
-    integer :: iulmes, iret1, iret2, iret3, ibid
+    integer :: iulmes,  iret2, iret3, ibid
     real(kind=8) :: rac2, tabs
     integer :: k, l
     integer :: ndimsi
@@ -134,13 +134,8 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
      &              'EPSAYZ'/
 ! DEB ------------------------------------------------------------------
 !
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
-                ksp, tm, iret1)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                ksp, tp, iret2)
-!
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', iret = iret3, epsth=epsthe)
+                iret = iret3, epsth=epsthe, temp_prev_out = tm, temp_curr_out = tp)
     theta = crit(4)
 ! TEMPERATURE AU MILIEU DU PAS DE TEMPS
     if (iret3 .eq. 0) then

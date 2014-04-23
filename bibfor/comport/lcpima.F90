@@ -81,7 +81,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
     nu=val(1)            
 !
     call verift(fami, kpg, ksp, poum, mate,&
-                elas_keyword = 'ELAS', iret = iret1, epsth=epsthe)
+                iret = iret1, epsth=epsthe)
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
     if (compor(6:14) .eq. 'ISOT_TRAC') then

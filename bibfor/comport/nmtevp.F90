@@ -167,7 +167,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
         troisk = e/(1.d0-2.d0*nu)
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', epsth=epsthe)
+                epsth=epsthe)
 !
     if (iret4 .eq. 0) then
         nomres(1)='ALPHA'

@@ -148,7 +148,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
     endif
 !
     call verift(fami, kpg, ksp, c1, imat,&
-                elas_keyword = 'ELAS_META', ndim=2, vepsth=epsthe)
+                vepsth=epsthe)
 !
     zalpha=phase(1)+phase(2)+phase(3)+phase(4)
     phase(nz)=1.d0-zalpha

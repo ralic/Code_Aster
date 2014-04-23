@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,20 +15,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine verift(fami         , kpg          , ksp          , poum  , j_mater,&
-                      materiz      , iret         , epsth        , vepsth,&
-                      temp_prev_out, temp_curr_out, temp_refe_out)
+    subroutine get_elasth_para(fami     , j_mater     , poum   , ipg    , ispg,&
+                               elas_type, elas_keyword, materiz,&
+                               alpha    , alpha_l     , alpha_t, alpha_n)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: j_mater
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer, intent(in) :: ipg
+        integer, intent(in) :: ispg
+        integer, intent(in) :: elas_type
+        character(len=16), intent(in) :: elas_keyword
         character(len=8), optional, intent(in) :: materiz
-        integer, optional, intent(out) :: iret
-        real(kind=8), optional, intent(out) :: epsth
-        real(kind=8), optional, intent(out) :: vepsth(*)
-        real(kind=8), optional, intent(out) :: temp_prev_out
-        real(kind=8), optional, intent(out) :: temp_curr_out
-        real(kind=8), optional, intent(out) :: temp_refe_out
-    end subroutine verift
+        real(kind=8), optional, intent(out) :: alpha(2)
+        real(kind=8), optional, intent(out) :: alpha_l
+        real(kind=8), optional, intent(out) :: alpha_t
+        real(kind=8), optional, intent(out) :: alpha_n
+    end subroutine get_elasth_para
 end interface

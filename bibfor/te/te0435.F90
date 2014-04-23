@@ -164,7 +164,7 @@ subroutine te0435(option, nomte)
             end do
 !
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        elas_keyword = 'ELAS_MEMBRANE', epsth=epsthe)
+                        epsth=epsthe)
             call r8inir(3, 0.d0, epsth, 1)
             epsth(1) = epsthe
             epsth(2) = epsthe

@@ -122,16 +122,16 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
 !
 ! TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
     call verift(fami, kpg, ksp, poum, imate,&
-                elas_keyword = 'ELAS', epsth=epsthe)
+                epsth=epsthe)
 !
     if (fami(1:4) .eq. 'XFEM') then
 
         call verift(fami, kpg + idecpg, ksp, poum, imate,&
-                    elas_keyword = 'ELAS', epsth=epsthe)
+                    epsth=epsthe)
     else
 
         call verift(fami, kpg, ksp, poum, imate,&
-                    elas_keyword = 'ELAS', epsth=epsthe)
+                    epsth=epsthe)
 
     endif
 

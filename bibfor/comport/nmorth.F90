@@ -153,7 +153,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         if (phenom .eq. 'ELAS_ORTH') then
 !
             call verift(fami, kpg, ksp, poum, imate,&
-                        elas_keyword = 'ELAS_ORTH', ndim=3, vepsth=valres)
+                        vepsth=valres)
             deplth(1) = valres(1)
             deplth(2) = valres(2)
             deplth(3) = valres(3)
@@ -164,7 +164,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 ! RECUPERATION DES PARAMETRES MATERIAUX A L INSTANT -
 !
             call verift(fami, kpg, ksp, poum, imate,&
-                        elas_keyword = 'ELAS_ISTR', ndim=2, vepsth=valres)
+                        vepsth=valres)
             deplth(1) = valres(1)
             deplth(2) = valres(1)
             deplth(3) = valres(2)

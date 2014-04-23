@@ -340,9 +340,9 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     else
 !
         call verift(fami, kpg, ksp, '+', imate,&
-                    elas_keyword = 'ELAS', epsth=epsthp)
+                   epsth=epsthp)
         call verift(fami, kpg, ksp, '-', imate,&
-                    elas_keyword = 'ELAS', epsth=epsthm)
+                    epsth=epsthm)
     endif
 !
 !

@@ -65,10 +65,7 @@ Risques & conseils :
 """),
 
 
-8 : _(u"""
- sur la maille %(k1)s le calcul est thermo mécanique. Or il manque la température de référence.
- On ne peut donc pas calculer de déformation thermique.
-"""),
+
 
 9 : _(u"""
  Erreur d'utilisation dans AFFE_CHAR_CINE :
@@ -222,15 +219,7 @@ Erreur utilisateur :
   La température n'est pas correctement renseignée
 """),
 
-32 : _(u"""
-Erreur utilisateur :
-  Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau
-  %(k2)s . On ne peut donc pas calculer la déformation thermique.
 
-Conseils :
-  Si le problème concerne TEMP_REF, vérifiez que vous avez bien affecté une température
-  de référence (AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP', VALE_REF=...)
-"""),
 
 33 : _(u"""
 Vous utilisez CALC_CHAMP en reuse en surchargeant le mot-clé

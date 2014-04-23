@@ -118,7 +118,7 @@ subroutine metau1(option, nomte, iret)
  10     continue
 !
         call verift('RIGI', kp, 1, '+', mater,&
-                    elas_keyword = 'ELAS_META', ndim=2, vepsth=epsthe)
+                    vepsth=epsthe)
         call rcvalb('RIGI', kp, 1, '+', mater,&
                     ' ', 'ELAS_META', 0, 'TEMP', [0.d0],&
                     6, nomres, valres, icodre, 1)

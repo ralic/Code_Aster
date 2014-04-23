@@ -108,9 +108,9 @@ subroutine te0430(option, nomte)
             call dxqpgl(zr(igeom), pgl, 'S', iret)
         endif
 !
-        do 8 i = 1, 3
+        do i = 1, 3
             vecn(i)=distn*pgl(3,i)
-  8     continue
+        end do
         nddl=6
 !
     else
@@ -119,16 +119,16 @@ subroutine te0430(option, nomte)
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 800 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! - MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
 !   ET DES DERIVEES DE FONCTION DE FORME
 !
-        do 11 n = 1, nno
+        do n = 1, nno
             vff(n) =zr(ivf+(kpg-1)*nno+n-1)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
- 11     continue
+        end do
 !
 ! - CALCUL DE LA MATRICE "B" : DEPL NODAL --> EPS11 ET DU JACOBIEN
 !
@@ -158,7 +158,7 @@ subroutine te0430(option, nomte)
 !
             else if (option.eq.'CHAR_MECA_TEMP_R') then
                 call verift(fami, kpg, 1, '+', zi(imate),&
-                            elas_keyword = 'ELAS', iret = iret, epsth=epsthe)
+                            iret = iret, epsth=epsthe)
                 if (iret .ne. 0) then
                     call tecael(iadzi, iazk24)
                     call utmess('F', 'CALCULEL2_81', sk=zk24(iazk24-1+3))
@@ -170,11 +170,12 @@ subroutine te0430(option, nomte)
                 sig=valres(1)*epsthe
             endif
 !
-            do 100 n = 1, nno
-                do 100 i = 1, nddl
+            do n = 1, nno
+                do i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*nddl+i-&
                     1) +b(i,n)*sig*zr(ipoids+kpg-1)*jac*densit
-100             continue
+                end do
+            end do
 !
 ! - REFE_FORC_NODA : ON CALCULE DES FORCES DE REFERENCE
 !      (N'EST VALABLE QUE POUR LES GRILLES MEMBRANES)
@@ -191,11 +192,12 @@ subroutine te0430(option, nomte)
                         1, nomres, valres, codres, 1)
             sig=valres(1)*epsref
 !
-            do 110 n = 1, nno
-                do 110 i = 1, nddl
+            do n = 1, nno
+                do i = 1, nddl
                     zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sig*sqrt(abs(jac)&
                                                 )*densit/npg
-110             continue
+                end do
+            end do
 !
 ! - CHAR_MECA_PESA_R
 !
@@ -203,15 +205,16 @@ subroutine te0430(option, nomte)
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
                         ' ', 'ELAS', 0, ' ', [0.d0],&
                         1, 'RHO', rho, codres, 1)
-            do 130 n = 1, nno
-                do 130 i = 1, 3
+            do n = 1, nno
+                do i = 1, 3
                     zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*nddl+i-&
                     1)+ rho(1)*zr(ipoids+kpg-1)*zr(ipesa)*zr(ipesa+i)*&
                     vff(n)*densit*jac
-130             continue
+                end do
+            end do
         endif
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-800 end do
+    end do
 !
 end subroutine

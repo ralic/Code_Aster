@@ -78,7 +78,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     nomres(3) = 'ALPHA'
 !
     call verift(fami, kp, 1, '+', imate,&
-                elas_keyword = 'ELAS', iret = iret, epsth=epsthe)
+                iret = iret, epsth=epsthe)
     call rcvalb(fami, kp, 1, '+', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 1)

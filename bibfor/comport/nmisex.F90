@@ -173,7 +173,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     endif
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', epsth=epsthe)
+                epsth=epsthe)
 !
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES

@@ -134,7 +134,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !  ---   DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
         call verift(fami, igau, 1, '+', iadmat,&
-                    elas_keyword = 'ELAS', epsth=epsthe)
+                    epsth=epsthe)
 !
 !
 ! ---    ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...

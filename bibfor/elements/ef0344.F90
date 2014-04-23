@@ -137,7 +137,7 @@ subroutine ef0344(nomte)
 ! --- ------------------------------------------------------------------
 ! --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION
     call verift('RIGI', npg, 1, '+', zi(lmater),&
-                elas_keyword = 'ELAS', epsth=epsith)
+                epsth=epsith)
     do i = 1, 14
         ugr(i)=0.d0
     end do

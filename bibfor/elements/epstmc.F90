@@ -66,7 +66,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
     real(kind=8) :: valres(nbres), valpar, bendog, kdessi, angl(3)
     real(kind=8) :: dire(3), orig(3), p(3, 3), epsthl(6), troisk
     real(kind=8) :: vepst1(6), vepst2(6), hydr, sech, sref, ptot, nu
-    integer :: i, k, iret, irepto
+    integer :: k, iret, irepto
     character(len=6) :: epsa(6)
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
      &              'EPSAYZ'/
@@ -75,13 +75,10 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !
 ! ---- INITIALISATIONS
 !      ---------------
-    zero = 0.0d0
+    zero = 0.d0
     nompar = 'INST'
     valpar = instan
-!
-    do i = 1, 6
-        epsth(i) = zero
-    end do
+    epsth(1:6) = zero
 !
     call rcvarc(' ', 'HYDR', poum, fami, igau,&
                 isgau, hydr, iret)
@@ -225,7 +222,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
         if (phenom .eq. 'ELAS') then
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        elas_keyword = 'ELAS', epsth=epsth(1) )
+                        epsth=epsth(1) )
             epsth(2) = epsth(1)
             epsth(3) = epsth(1)
 !
@@ -251,7 +248,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             endif
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        elas_keyword = phenom, ndim=3, vepsth=epsthl)
+                        vepsth=epsthl)
 !
             epsthl(4) = 0.d0
             epsthl(5) = 0.d0
@@ -300,7 +297,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             endif
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        elas_keyword = phenom, ndim=2, vepsth=epsthl)
+                        vepsth=epsthl)
 !
             epsthl(3) = epsthl(2)
             epsthl(2) = epsthl(1)

@@ -63,7 +63,7 @@ subroutine btldth(fami, xi3, nb1, kpg, btild,&
             nommai=zk24(iazk24-1+3)(1:8)
             valk(1)=nommai
             valk(2)='TEMP_REF'
-            call utmess('F', 'CALCULEL_32', nk=2, valk=valk)
+            call utmess('F', 'COMPOR5_32', nk=2, valk=valk)
         else
             temper=(tmoy*p1xi3+tinf*p2xi3+tsup*p3xi3)-tref
         endif
@@ -79,14 +79,12 @@ subroutine btldth(fami, xi3, nb1, kpg, btild,&
 !
 !     CONSTRUCTION DES EFFORTS DUS AUX DILATATIONS THERMIQUES
 !
-        do 30 i = 1, 5*nb1+2
+        do i = 1, 5*nb1+2
             forthi(i)=0.d0
-            do 40 k = 1, 2
+            do k = 1, 2
                 forthi(i)=forthi(i)+btild(k,i)*vecthr(k)*wgt
-!        FORTHI(I)=FORTHI(I)+BTILD(K,I)*VECTHR(K)
-40          end do
-30      end do
-!
+            end do
+        end do
     endif
 !
 !

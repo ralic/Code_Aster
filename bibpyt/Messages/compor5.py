@@ -36,6 +36,32 @@ La courbe de traction est une nappe dont le paramètre qui n'est pas EPSI n'est 
 La courbe de traction est une nappe qui dépend de %(k1)s mais la variable de commande est absente ou mal définie dans le matériau (AFFE_VARC).
 """),
 
+6 : _(u"""
+On ne peut pas calculer de déformation thermique pour les matériaux de type ELAS_HYPER.
+"""),
+
+8 : _(u"""
+Erreur utilisateur :
+  Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque la température de référence.
+  On ne peut donc pas calculer de déformation thermique.
+"""),
+
+9 : _(u"""
+  Sur la maille %(k1)s le calcul est thermo mécanique non isotrope. 
+  Le comportement sélectionné ne sait pas gérer ce cas.
+"""),
+
+10 : _(u"""
+  Sur la maille %(k1)s le calcul est thermo mécanique de type métallurgique (avec deux coefficients de dilatation). 
+  Le comportement sélectionné ne sait pas gérer ce cas.
+"""),
+
+32 : _(u"""
+Erreur utilisateur :
+  Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau %(k2)s. 
+  On ne peut donc pas calculer la déformation thermique.
+"""),
+
 15 : _(u"""
  La nature du matériau élastique %(k1)s n'est pas traitée.
 """),

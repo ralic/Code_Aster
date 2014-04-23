@@ -125,14 +125,14 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 !
     if (isot .and. (.not.impl)) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    elas_keyword = 'ELAS', epsth=depsth)
+                    epsth=depsth)
         depsm=deps-depsth
         call nm1dis(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
                     compor, ' ', sigp, vip, dsde)
     else if (cine) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    elas_keyword = 'ELAS', epsth=depsth)
+                    epsth=depsth)
         depsm = deps-depsth
         call nm1dci(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -141,7 +141,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
         dsde = ep
         vip(1) = 0.d0
         call verift(fami, kpg, ksp, 'T', imate,&
-                    elas_keyword = 'ELAS', epsth=depsth)
+                    epsth=depsth)
         sigp = ep* (sigm/em+deps-depsth)
     else if (corr) then
         call nm1dco(fami, kpg, ksp, option, imate,&

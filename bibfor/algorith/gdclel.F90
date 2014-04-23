@@ -53,8 +53,8 @@ subroutine gdclel(fami, kpg, ksp, poum, imate,&
     mu = deuxmu/2
     troisk = young/(1-2*nu)
     unk = troisk/3
-    call verift(fami, kpg, ksp, poum, imate,&
-                elas_keyword = 'ELAS', epsth=epsth)
+    call verift(fami, kpg, ksp, '+', imate,&
+                epsth=epsth)
     cother = troisk*epsth
 !
 end subroutine

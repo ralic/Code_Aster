@@ -226,7 +226,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         endif
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                elas_keyword = 'ELAS', epsth=epsthe)
+                epsth=epsthe)
 !
 ! --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 !

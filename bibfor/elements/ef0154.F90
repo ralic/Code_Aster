@@ -59,7 +59,7 @@ subroutine ef0154(nomte)
     call jevech('PMATERC', 'L', lmater)
 !
     call verift(fami, 1, 1, '+', zi(lmater),&
-                elas_keyword = 'ELAS', epsth=epsth)
+                epsth=epsth)
 !
     r8bid = 0.0d0
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
