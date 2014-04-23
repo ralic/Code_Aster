@@ -26,9 +26,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       IMPR_MACRO='OUI',)
 
 # import la macro
+import sys
 import os
 if os.path.exists('fort.33'):
     os.rename('fort.33', 'ma_macro.py')
+sys.path.insert(0, '.')
 from ma_macro import MA_MACRO
 
 # Le calcul thermique est celui de ttll01b

@@ -25,9 +25,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       IMPR_MACRO='OUI', DEBUG=_F(SDVERI='OUI'))
 
 # import la macro
+import sys
 import os
 if os.path.exists('fort.33'):
     os.rename('fort.33', 'ma_macro.py')
+sys.path.insert(0, '.')
 from ma_macro import MON_INCLUDE
 
 # form n'est utilisable que dans l'INCLUDE, la ou est defini 'para'
