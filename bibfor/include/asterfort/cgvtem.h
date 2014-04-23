@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cgvein(resu, compor, iord0, l_temp)
+    function cgvtem(resu, iord0)
         character(len=8), intent(in) :: resu
-        character(len=19), intent(in) :: compor
         integer, intent(in) :: iord0
-        logical, intent(in) :: l_temp
-    end subroutine cgvein
+        logical :: cgvtem
+    end function cgvtem
 end interface

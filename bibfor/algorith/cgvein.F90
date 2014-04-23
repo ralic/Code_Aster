@@ -1,4 +1,4 @@
-subroutine cgvein(resu, compor, iord0)
+subroutine cgvein(resu, compor, iord0, l_temp)
 !
     implicit none
 !
@@ -9,12 +9,8 @@ subroutine cgvein(resu, compor, iord0)
 #include "asterfort/cesred.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -37,6 +33,7 @@ subroutine cgvein(resu, compor, iord0)
     integer, intent(in) :: iord0
     character(len=8), intent(in) :: resu
     character(len=19), intent(in) :: compor
+    logical, intent(in) :: l_temp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,37 +46,20 @@ subroutine cgvein(resu, compor, iord0)
 ! In resu   : nom du resultat
 ! In compor : carte comportement cree dans cgleco()
 ! In iord0  : premier NUME_ORDRE dans resu
+! In l_temp : .true.  en presence de thermique
+!             .false. sinon
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, jcalv, jcald, jcall, jcalk, jadmat
-    integer :: nvacr, ivarc, nbma, iadc, ima
-    character(len=8) :: noma, chmat, k8b
+    integer :: iret, jcalv, jcald, jcall, jcalk, nbma, iadc, ima
+    character(len=8) :: noma
     character(len=16) :: k16ldc
     character(len=19) :: chcalc, chtmp
-    logical :: exivrc, exitem, lldcok
-    character(len=8), pointer :: cvrcvarc(:) => null()
+    logical :: lldcok
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! - la variable de commande TEMP est-elle presente dans la sd cham_mater du resultat (exitem) ?
-!
-    call rsadpa(resu, 'L', 1, 'CHAMPMAT', iord0, 0, sjv=jadmat, styp=k8b)
-    chmat = zk8(jadmat)
-    call jeexin(chmat//'.CVRCVARC', iret)
-    exivrc = iret .ne. 0
-    exitem = .false.
-!
-    if (exivrc) then
-        call jelira(chmat// '.CVRCVARC', 'LONMAX', ival=nvacr)
-        call jeveuo(chmat// '.CVRCVARC', 'L', vk8=cvrcvarc)
-        do ivarc = 1, nvacr
-            exitem = cvrcvarc(ivarc) .eq. 'TEMP    '
-            if (exitem) exit
-        enddo
-    endif
 !
 ! - les relations de comportement dans la carte compor sont elles autorisees ?
 !
@@ -110,7 +90,7 @@ subroutine cgvein(resu, compor, iord0)
         if (.not.lldcok) call utmess('F', 'RUPTURE1_69', sk=k16ldc)
 !
 !       on interdit VMIS_ISOT_TRAC en presence de thermique
-        if (k16ldc .eq. 'VMIS_ISOT_TRAC  ' .and. exitem) call utmess('F', 'RUPTURE1_70')
+        if (k16ldc .eq. 'VMIS_ISOT_TRAC  ' .and. l_temp) call utmess('F', 'RUPTURE1_70')
     enddo
 !
     call jedema()

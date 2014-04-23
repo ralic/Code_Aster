@@ -4,6 +4,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgvein.h"
+#include "asterfort/cgvtem.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_meca_elas.h"
 #include "asterfort/dismoi.h"
@@ -60,7 +61,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
     character(len=16) :: keywordfact
     character(len=24) :: repk
     character(len=8) :: mesh
-    logical :: limpel, l_etat_init
+    logical :: limpel, l_etat_init, l_temp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -132,10 +133,13 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
 !
     call gverlc(resu, compor, iord0)
 !
+! - Check if TEMP is present or not in result cham_mater
+!
+    l_temp = cgvtem(resu, iord0)
 !
 ! - Check COMPORTEMENT / RELATION in result for incremental comportement 
 !
-    if (incr) call cgvein(resu, compor, iord0)
+    if (incr) call cgvein(resu, compor, iord0, l_temp)
 !
     call jedema()
 !
