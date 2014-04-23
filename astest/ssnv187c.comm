@@ -100,32 +100,10 @@ RUBBER1=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
                                    K=K,
                                    RHO=1000.0),);
 
-# temperature non prise en compte par ELAS_HYPER
-# ici pour valider que le code ne plante pas.
-
-CHT10=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                    OPERATION='AFFE',
-                    MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            NOM_CMP='TEMP',
-                            VALE=10.,),);
-
-RTEMP=CREA_RESU(OPERATION='AFFE',
-                TYPE_RESU='EVOL_THER',
-                NOM_CHAM='TEMP',
-                AFFE=(
-                _F(CHAM_GD=CHT10,INST=0.,),
-                _F(CHAM_GD=CHT10,INST=1.,),
-                ));
-
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODELE,
                     AFFE=_F(TOUT='OUI',
-                            MATER=RUBBER1,),
-                    AFFE_VARC=_F(TOUT='OUI',
-                                   EVOL=RTEMP,
-                                   NOM_VARC='TEMP',
-                                   VALE_REF=10.,),);
+                            MATER=RUBBER1,),);
 
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT1,
