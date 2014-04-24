@@ -1232,6 +1232,7 @@ PyObject *args;
         int inval=0;
         INTEGER nval;
         int long_nomcham=8;
+        int long_nomgrp=24;
         int itopo;
         INTEGER topo;
 
@@ -1246,10 +1247,10 @@ PyObject *args;
         nval=(INTEGER)inval;
         topo=(INTEGER)itopo;
         if (inval > 0) {
-          groups = MakeTabFStr(inval, long_nomcham);
-          converltx(inval,list,groups,long_nomcham); /* conversion  */
+          groups = MakeTabFStr(inval, long_nomgrp);
+          converltx(inval,list,groups,long_nomgrp); /* conversion  */
         } else {
-          groups = MakeBlankFStr(long_nomcham);
+          groups = MakeBlankFStr(long_nomgrp);
         }
 
         try {
