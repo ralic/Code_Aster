@@ -24,6 +24,7 @@ with their keywords.
 
 import os
 
+from Noyau import MAXSIZE, MAXSIZE_MSGKEEP
 from Noyau.N_ASSD import ASSD
 from Noyau.N_types import force_list, is_float
 
@@ -81,6 +82,13 @@ class CommandTextVisitor(JDCVisitor):
             self.lines.append(''.join(self.curline))
         self.curline = []
 
+    def _break(self):
+        """Add a break mark"""
+        self._newline()
+        self.curline.append("[...]")
+        self._newline()
+        print(MAXSIZE_MSGKEEP.format(MAXSIZE, 'unknown'))
+
     def _add_indent(self):
         """Set the next indent spacing."""
         self.indent.append(len(''.join(self.curline)))
@@ -137,6 +145,9 @@ class CommandTextVisitor(JDCVisitor):
             self.curline.append("(")
         self._add_indent()
         for i, data in enumerate(mclist.data):
+            if i > MAXSIZE:
+                self._break()
+                break
             data.accept(self)
             if i + 1 < numb:
                 self._newline()
@@ -153,7 +164,12 @@ class CommandTextVisitor(JDCVisitor):
         if not self.with_default:
             return
         to_add = {}
+        i = 0
         for key, obj in node.definition.entites.items():
+            i += 1
+            if i > MAXSIZE:
+                self._break()
+                break
             has_default = getattr(obj, 'defaut', None) is not None \
                         or getattr(obj, 'statut', None) == 'd'
             if not key in seen and has_default:
@@ -178,6 +194,9 @@ class CommandTextVisitor(JDCVisitor):
         for i, obj in enumerate(compo.mc_liste):
             obj.accept(self)
             seen.add(obj.nom)
+            if i > MAXSIZE:
+                self._break()
+                break
             if i + 1 < numb:
                 self._newline()
         self._visit_default_keywords(compo, seen, numb)

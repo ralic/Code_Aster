@@ -36,6 +36,7 @@ import re
 
 # Modules EFICAS
 import V_MCCOMPO
+from Noyau import MAXSIZE, MAXSIZE_MSGCHK
 from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType
 from Noyau.strfunc import ufmt
@@ -232,6 +233,11 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
         if CONTEXT.debug : traceback.print_exc()
         self.cr.fatal(_(u'Etape : %s ligne : %r fichier : %r %s'),
             self.nom, self.appel[0], self.appel[1], e)
+      i = 0
       for child in self.mc_liste:
-        self.cr.add(child.report())
+          i += 1
+          if i > MAXSIZE:
+              print(MAXSIZE_MSGCHK.format(MAXSIZE, len(self.mc_liste)))
+              break
+          self.cr.add(child.report())
       return self.cr

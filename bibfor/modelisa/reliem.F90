@@ -86,6 +86,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     integer :: iarg
     integer, pointer :: maille(:) => null()
     integer, pointer :: prnm(:) => null()
+! aslint: disable=W1304
     integer(kind=4), pointer :: indic_noeud(:) => null()
 !     ------------------------------------------------------------------
 !
@@ -110,8 +111,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
             if (type2 .eq. 'MAILLE') then
                 ASSERT(.false.)
             endif
-            else if (typmcl.ne.'MAILLE' .and. typmcl.ne.'GROUP_MA' .and.&
-        typmcl.ne.'TOUT') then
+        else if (typmcl.ne.'MAILLE' .and. typmcl.ne.'GROUP_MA' .and. typmcl.ne.'TOUT') then
             ASSERT(.false.)
         endif
     end do

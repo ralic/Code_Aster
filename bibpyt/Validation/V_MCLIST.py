@@ -32,6 +32,7 @@
 import traceback
 
 # Modules EFICAS
+from Noyau import MAXSIZE, MAXSIZE_MSGCHK
 from Noyau import N_CR
 from Noyau.N_Exception import AsException
 from Noyau.strfunc import ufmt
@@ -97,7 +98,12 @@ class MCList:
          # Mot cle facteur multiple
          self.cr=self.CR( debut = u"Mot-clé facteur multiple : "+self.nom,
                   fin = u"Fin Mot-clé facteur multiple : "+self.nom)
+         j = 0
          for i in self.data:
+           j += 1
+           if j > MAXSIZE:
+               print(MAXSIZE_MSGCHK.format(MAXSIZE, len(self.data)))
+               break
            self.cr.add(i.report())
       elif len(self) == 1:
          # Mot cle facteur non multiple

@@ -29,6 +29,7 @@ import os
 import traceback
 
 # Modules EFICAS
+from Noyau import MAXSIZE, MAXSIZE_MSGCHK
 from Noyau import N_CR
 from Noyau.N_Exception import AsException
 from Noyau.strfunc import ufmt, to_unicode
@@ -61,7 +62,12 @@ class MCCOMPO:
       self.cr=self.CR()
       self.cr.debut = self.txt_nat+self.nom
       self.cr.fin = u"Fin "+self.txt_nat+self.nom
+      i = 0
       for child in self.mc_liste:
+        i += 1
+        if i > MAXSIZE:
+            print(MAXSIZE_MSGCHK.format(MAXSIZE, len(self.mc_liste)))
+            break
         self.cr.add(child.report())
       self.state = 'modified'
       try:
