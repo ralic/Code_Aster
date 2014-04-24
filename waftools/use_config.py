@@ -18,7 +18,9 @@ def options(self):
     group.add_option('--use-config-dir', action='store', default=DEFAULT_DIR,
                      metavar='CFG_DIR', dest='use_config_dir',
                      help='path where to find the configuration file, ' \
-                          'may be an url')
+                          'may be an url. The configuration file will be '
+                          'searched from `CFG_DIR/`, then `CFG_DIR/wafcfg/`, '
+                          'then `wafcfg/`.')
 
 def configure(self):
     try:
