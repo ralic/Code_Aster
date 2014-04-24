@@ -1,4 +1,17 @@
-subroutine metau2(option, nomte, iret)
+subroutine metau2(l_meta)
+!
+implicit none
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/get_meta_type.h"
+#include "asterfort/get_meta_phasis.h"
+#include "asterfort/get_elas_para.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/verift.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,124 +28,121 @@ subroutine metau2(option, nomte, iret)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/dfdm3d.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/verift.h"
+! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16) :: nomte, option
-    integer :: iret
+    logical, intent(out) :: l_meta
 !
-!     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
-!          ELEMENTS ISOPARAMETRIQUES 3D METALLURGIQUES
+! --------------------------------------------------------------------------------------------------
 !
-!          OPTION : 'CHAR_MECA_TEMP_Z  '
+! Metallurgy
 !
-!.......................................................................
-!  IN  OPTION K16 : NOM DE L OPTION (CHAR_MECA_TEMP_Z)
-!  IN  NOMTE  K16 : NOM DU TYPE D ELEMENT
-!  OUT IRET   I   : =1 PRESENCE DE METALLURGIE
-!                   =0 PAS DE METALLURGIE
+! Compute CHAR_MECA_TEMP_R - 3D case
 !
-!-----------------------------------------------------------------------
-    integer :: iret2, mater, nbres, ndim, nnos
-    real(kind=8) :: rbid, zalpha
-!-----------------------------------------------------------------------
-    parameter (nbres=6)
-    character(len=8) :: nomres(nbres), acier(4), zirc(2)
+! --------------------------------------------------------------------------------------------------
+!
+! Out l_meta : .true. if metallurgy exists
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nbres
+    parameter (nbres=2)
+    character(len=8) :: nomres(nbres)
     integer :: icodre(nbres)
-    real(kind=8) :: valres(nbres), epsthe(2)
-    real(kind=8) :: coef1, coef2, epsth, phaspg(7)
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), tpg, coef, poids
-    integer :: ipoids, ivf, idfde, igeom, imate, nz, ire1, ire2
-    integer :: jgano, nno, kp, npg1, i, l, ivectu
-    logical :: lacier
+    real(kind=8) :: valres(nbres)  
 !
-    data acier /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
-    data zirc /'ALPHPUR','ALPHBETA'/
+
+    real(kind=8) :: zalpha, zalpha_comp
+    real(kind=8) :: coef, coef1, coef2
+    real(kind=8) :: young, nu
+    real(kind=8) :: epsth, epsthe(2)
+    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)
+    real(kind=8) :: poids
+    real(kind=8) :: phasis(7) 
+    integer :: nb_node, ispg, kp, npg, i_node, elas_type
+    integer :: meta_type, nb_phasis
+    integer :: ipoids, idfde
+    integer :: j_geom, j_mate, j_mater, j_vect
 !
+! --------------------------------------------------------------------------------------------------
 !
-    iret=1
-    lacier=.false.
+    l_meta    = .true.
+    ispg      = 1
+    nomres(1) = 'PHASE_REFE'(1:8)
+    nomres(2) = 'EPSF_EPSC_TREF'(1:8)
 !
-    call rcvarc(' ', acier(1), '+', 'RIGI', 1,&
-                1, rbid, ire1)
-    if (ire1 .eq. 1) then
-        call rcvarc(' ', zirc(1), '+', 'RIGI', 1,&
-                    1, rbid, ire2)
-        if (ire2 .eq. 1) then
-            iret=0
-            goto 9999
-        else
-            nz=2
-        endif
-    else
-        nz=4
-        lacier=.true.
+! - Get metallurgy type
+!
+    call get_meta_type(meta_type, nb_phasis)
+    if (meta_type.eq.0) then
+        l_meta = .false.
+        goto 999
     endif
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+! - Finite element informations
 !
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
+    call elrefe_info(fami='RIGI',nno=nb_node, npg=npg,&
+                     jpoids=ipoids,jdfde=idfde)
 !
-    mater = zi(imate)
+! - Geometry
 !
-    nomres(1) = 'E'
-    nomres(2) = 'NU'
-    nomres(3) = 'F_ALPHA'
-    nomres(4) = 'C_ALPHA'
-    nomres(5) = 'PHASE_REFE'
-    nomres(6) = 'EPSF_EPSC_TREF'
+    call jevech('PGEOMER', 'L', j_geom)
 !
+! - Material parameters
+! 
+    call jevech('PMATERC', 'L', j_mate)
 !
-    call jevech('PVECTUR', 'E', ivectu)
+! - Coded material address
 !
-    do 40 kp = 1, npg1
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+    j_mater = zi(j_mate)
+!
+! - Output field
+!
+    call jevech('PVECTUR', 'E', j_vect)
+!
+    do kp = 1, npg
+!
+! ----- Shape functions derivatives
+!
+        call dfdm3d(nb_node, kp, ipoids, idfde, zr(j_geom),&
                     poids, dfdx, dfdy, dfdz)
 !
-        do 50 l = 1, nz
-            if (lacier) then
-                call rcvarc(' ', acier(l), '+', 'RIGI', kp,&
-                            1, phaspg(l), ire1)
-            else
-                call rcvarc(' ', zirc(l), '+', 'RIGI', kp,&
-                            1, phaspg(l), ire1)
-            endif
- 50     continue
+! ----- Get phasis
 !
-        call verift('RIGI', kp, 1, '+', mater,&
+        call get_meta_phasis('RIGI'   , '+'   , kp    , ispg       , meta_type,&
+                             nb_phasis, phasis, zalpha, zalpha_comp)
+!
+! ----- Compute thermic strain
+!
+        call verift('RIGI', kp, 1, '+', j_mater,&
                     vepsth=epsthe)
-        call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
-                    1, tpg, iret2)
-        call rcvalb('RIGI', 1, 1, '+', mater,&
-                    ' ', 'ELAS_META', 1, 'TEMP', [tpg],&
-                    6, nomres, valres, icodre, 1)
-        coef = valres(1)/ (1.d0-2.d0*valres(2))
-        zalpha=0.d0
-        do 25 i = 1, nz
-            zalpha=zalpha+phaspg(i)
- 25     continue
 !
-        coef1 = (1.d0-zalpha)* (epsthe(1)- (1-valres(5))*valres(6))
-        coef2 = zalpha* (epsthe(2)+valres(5)*valres(6))
+! ----- Get elastic parameters
+!
+        call get_elas_para('RIGI', j_mater , '+', kp,&
+                           ispg, elas_type,&
+                           e  = young , nu = nu)
+        ASSERT(elas_type.eq.1)
+!
+! ----- Get thermal parameters
+!
+        call rcvalb('RIGI', kp, ispg, '+', j_mater,&
+                    ' ', 'ELAS_META', 0, ' ', [0.d0],&
+                    2, nomres, valres, icodre, 1)
+!
+! ----- Compute
+!
+        coef  = young/(1.d0-2.d0*nu)
+        coef1 = zalpha_comp* (epsthe(1)- (1-valres(1))*valres(2))
+        coef2 = zalpha*      (epsthe(2)+valres(1)*valres(2))
         epsth = coef1 + coef2
         poids = poids*coef*epsth
 !
-        do 30 i = 1, nno
-            zr(ivectu+3*i-3) = zr(ivectu+3*i-3) + poids*dfdx(i)
-            zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + poids*dfdy(i)
-            zr(ivectu+3*i-1) = zr(ivectu+3*i-1) + poids*dfdz(i)
- 30     continue
- 40 end do
+        do i_node = 1, nb_node
+            zr(j_vect+3*i_node-3) = zr(j_vect+3*i_node-3) + poids*dfdx(i_node)
+            zr(j_vect+3*i_node-2) = zr(j_vect+3*i_node-2) + poids*dfdy(i_node)
+            zr(j_vect+3*i_node-1) = zr(j_vect+3*i_node-1) + poids*dfdz(i_node)
+        end do
+    end do
 !
-!
-9999 continue
+999 continue
 end subroutine

@@ -1,4 +1,17 @@
 subroutine te0083(option, nomte)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/bsigmc.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/metau1.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/sigtmc.h"
+#include "asterfort/tecach.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,111 +28,95 @@ subroutine te0083(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/bsigmc.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/metau1.h"
-#include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
-#include "asterfort/sigtmc.h"
-#include "asterfort/tecach.h"
-    character(len=16) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!        ELEMENTS 2D
-!                          OPTION : 'CHAR_MECA_TEMP_R'
+! aslint: disable=W0104
+! person_in_charge: mickael.abbas at edf.fr
 !
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Elementary computation
+!
+! Elements: 2D
+! Option: CHAR_MECA_TEMP_R
+!
+! --------------------------------------------------------------------------------------------------
 !
     character(len=4) :: fami
-    real(kind=8) :: bsigma(81), sigth(162), repere(7), instan, nharm, bary(3)
+    real(kind=8) :: bsigma(81), sigth(162), repere(7), time, nharm, bary(3)
     integer :: idim
-!
-!
-!-----------------------------------------------------------------------
     integer :: i, idfde, igeom, imate, ipoids, iret, itemps
-    integer :: ivectu, ivf, jgano, nbsig, ndim, nno, nnos
+    integer :: ivectu, ivf, nbsig, ndim, nno
     integer :: npg
     real(kind=8) :: zero
-!-----------------------------------------------------------------------
-    call metau1(option, nomte, iret)
+    logical :: l_meta
 !
-!     PRESENCE DE METALLURGIE ?
-    if (iret .eq. 1) goto 40
+! --------------------------------------------------------------------------------------------------
 !
+    zero      = 0.d0
+    time      = zero
+    nharm     = zero
+    fami      = 'RIGI'
+    sigth(:)  = zero
+    bsigma(:) = zero
+    bary(:)   = 0.d0
 !
-! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-! ---- GEOMETRIE ET INTEGRATION
-!      ------------------------
-    fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+! - Compute CHAR_MECA_TEMP_R for metallurgy
 !
-! --- INITIALISATIONS :
-!     -----------------
-    zero = 0.0d0
-    instan = zero
-    nharm = zero
-    ndim = 2
+    call metau1(l_meta)
+    if (l_meta) then
+        goto 40
+    endif
 !
-! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!      -----------------------------------------
-    nbsig = nbsigm()
+! - Finite element informations
 !
-    sigth(1:nbsig*npg) = zero
-    bsigma(1:ndim*nno) = zero
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,&
+                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde)
 !
-! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
-!      ----------------------------------------------
+! - Number of stress components
+!
+    nbsig     = nbsigm()
+!
+! - Geometry
+!
     call jevech('PGEOMER', 'L', igeom)
 !
-! ---- RECUPERATION DU MATERIAU
-!      ------------------------
+! - Material parameters
+! 
     call jevech('PMATERC', 'L', imate)
 !
-! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
-!      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+! - Orthotropic parameters
 !
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call ortrep(zi(imate), ndim, bary, repere)
 !
-! ---- RECUPERATION DE L'INSTANT
-!      -------------------------
-    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
-    if (itemps .ne. 0) instan = zr(itemps)
+! - Get time
 !
-! ---- CALCUL DES CONTRAINTES THERMIQUES
-! ---- AUX POINTS D'INTEGRATION DE L'ELEMENT :
-!      --------------------------------------------------------
+    call tecach('ONN', 'PTEMPSR', 'L', iret, iad=itemps)
+    if (itemps .ne. 0) then
+        time = zr(itemps)
+    endif
+!
+! - Compute thermal stresses {SIGTH}
+!
     call sigtmc(fami, nno, ndim, nbsig, npg,&
-                zr(ivf), zr(igeom), instan, zi(imate), repere,&
+                zr(ivf), zr(igeom), time, zi(imate), repere,&
                 option, sigth)
 !
-! ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE
-! ---- OU DE SECHAGE (BT*SIGTH)
-!      ----------------------------------------------------------
+! - Compute CHAR_MECA_TEMP_R: [B]Tx{SIGTH}
+!
     call bsigmc(nno, ndim, nbsig, npg, ipoids,&
                 ivf, idfde, zr(igeom), nharm, sigth,&
                 bsigma)
 !
-! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE
-! ---- VECTEUR DES FORCES D'ORIGINE THERMIQUE
-!      -------------------------------------
-    call jevech('PVECTUR', 'E', ivectu)
+! - Set output vector
 !
+    call jevech('PVECTUR', 'E', ivectu)
     do i = 1, ndim*nno
         zr(ivectu+i-1) = bsigma(i)
     end do

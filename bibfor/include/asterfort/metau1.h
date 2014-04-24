@@ -16,9 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine metau1(option, nomte, iret)
-        character(len=16) :: option
-        character(len=16) :: nomte
-        integer :: iret
+    subroutine metau1(l_meta)
+        logical, intent(out) :: l_meta
     end subroutine metau1
 end interface
