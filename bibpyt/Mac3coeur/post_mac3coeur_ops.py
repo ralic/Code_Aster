@@ -19,6 +19,7 @@
 import aster_core
 from mac3coeur_coeur import CoeurFactory
 
+
 def makeXMGRACEjeu(unit,post,coeur,valjeuac,valjeucu):
     def computeColor(value):
         valmin=0.
@@ -356,13 +357,14 @@ def PostForme(l_f,meth):
 
    return forme
 
-
+   
 def post_mac3coeur_ops(self, **args):
     """Corps principal de la macro de post-traitement de MAC3COEUR"""
     import aster
     from Accas import _F
     from Utilitai.Utmess import  UTMESS
     from math import sqrt
+
 
     CREA_CHAMP    = self.get_cmd('CREA_CHAMP')
     CREA_TABLE    = self.get_cmd('CREA_TABLE')
@@ -383,7 +385,12 @@ def post_mac3coeur_ops(self, **args):
     coeur_factory = CoeurFactory(datg)
     _coeur = coeur_factory.get(_typ_coeur)('post', _typ_coeur, self, datg)
 
+    #############################################################################################################"
+    #                                          MOT-CLE FACTEUR LAME
+    #############################################################################################################"
+
     if (POST_LAME != None) :
+        
        valjeuac={}
        valjeucu={}
        post_table=0
@@ -394,26 +401,37 @@ def post_mac3coeur_ops(self, **args):
 
        _formule = FORMULE(NOM_PARA='V8',VALE='1000.*V8')
 
+#      formule qui permet d'associer les COOR_X "presque" identiques (suite a un calcul LAME)
+       _indicat = FORMULE(NOM_PARA='COOR_X',VALE='int(10*COOR_X)')
+
        UTMESS('I','COEUR0_5')
        k=0
        dim=len(_coeur.nomContactCuve)
+       
        for name in _coeur.nomContactCuve:
+       
           _TAB2 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,NOM_CHAM='VARI_ELGA',NOM_CMP='V8',GROUP_MA=name,INST=_inst))
+
           _TAB2 = CALC_TABLE(reuse=_TAB2,TABLE=_TAB2,
                             ACTION = (_F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE_I=1),
                                       _F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
-                                      _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA=name)))
+                                      _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA=name),
+                                      _F(OPERATION='OPER',FORMULE=_indicat,NOM_PARA='INDICAT'),
+                                      )
+                           )
 
           if (post_table==1):
-             if (len(valjeuac)==0):
+
+             # a la premiere occurence, on cree la table qui sera imprimee (_TAB3), sinon, on concatene les tables
+             if k==0:
                 _TAB3 = CALC_TABLE(TABLE  =  _TAB2,
-                                   ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
+                                   ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X','INDICAT',name))))
              else:
                 
                 _TABTMP = CALC_TABLE(TABLE  =  _TAB2,
-                                      ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
+                                      ACTION = (_F(OPERATION='EXTR',NOM_PARA=('INDICAT',name))))
                 _TAB3   = CALC_TABLE(TABLE=_TAB3,
-                                      ACTION = (_F(OPERATION='COMB',TABLE=_TABTMP,NOM_PARA='COOR_X')))
+                                      ACTION = (_F(OPERATION='COMB',TABLE=_TABTMP,NOM_PARA='INDICAT')))
 
           tab2 = _TAB2.EXTR_TABLE()
           tab2.Renomme(name, 'P_LAME')
@@ -423,44 +441,59 @@ def post_mac3coeur_ops(self, **args):
        UTMESS('I','COEUR0_4')
        k=0
        dim=len(_coeur.nomContactAssLame)
+
        if dim != 0 :
           for name in _coeur.nomContactAssLame:
               _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,NOM_CHAM='VARI_ELGA',NOM_CMP='V8',GROUP_MA=name,INST=_inst))
               _TAB1 = CALC_TABLE(reuse=_TAB1,TABLE=_TAB1,
                                 ACTION = (_F(OPERATION='FILTRE',NOM_PARA='POINT',CRIT_COMP='EQ',VALE_I=1),
                                           _F(OPERATION='TRI',NOM_PARA='COOR_X',ORDRE='CROISSANT'),
-                                          _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA=name)))
+                                          _F(OPERATION='OPER',FORMULE=_formule,NOM_PARA=name),
+                                          _F(OPERATION='OPER',FORMULE=_indicat,NOM_PARA='INDICAT'),
+                                          )
+                                 )
               if (post_table==1):
                 _TABTMP = CALC_TABLE(TABLE  =  _TAB1,
-                                    ACTION = (_F(OPERATION='EXTR',NOM_PARA=('COOR_X',name))))
+                                    ACTION = (_F(OPERATION='EXTR',NOM_PARA=('INDICAT',name))))
                 _TAB3   = CALC_TABLE(TABLE=_TAB3,
-                                    ACTION = (_F(OPERATION='COMB',TABLE=_TABTMP,NOM_PARA='COOR_X')))
+                                    ACTION = (_F(OPERATION='COMB',TABLE=_TABTMP,NOM_PARA='INDICAT')))
               tab1 = _TAB1.EXTR_TABLE()
               tab1.Renomme(name, 'P_LAME')
               valjeuac[name] = tab1.P_LAME.values()
               k=k+1
 
        for attr in POST_LAME:
-          _num_grille = attr['NUME_GRILLE']
           _unit       = attr['UNITE']
-          _extremum   = attr['TYPE_RESU']
           _typ_post   = attr['FORMAT']
 
           DEFI_FICHIER(ACTION='LIBERER',UNITE=_unit)
 
-          if (_extremum == None):
-             post  = _num_grille
-             texte = 'sur la grille '+str(post)
-          else:
-             post = _extremum
-             texte = 'sur la valeur '+post
-
           if (_typ_post=='GRACE'):
+
+             _num_grille = attr['NUME_GRILLE']
+             _extremum   = attr['TYPE_RESU']
+
+             if (_extremum == None):
+                post  = _num_grille
+                texte = 'sur la grille '+str(post)
+             else:
+                post = _extremum
+                texte = 'sur la valeur '+post
+
              makeXMGRACEjeu(_unit,post,_coeur,valjeuac,valjeucu)
+
           elif (_typ_post=='TABLE'):
-             IMPR_TABLE(UNITE=_unit,TABLE=_TAB3)
+
+             # liste des parametres a afficher (dans l'ordre)
+             # Rq : on affiche la premiere occurence de 'COOR_X'
+             l_para=['COOR_X',]+_coeur.nomContactAssLame+_coeur.nomContactCuve
+
+             IMPR_TABLE(UNITE=_unit,TABLE=_TAB3,NOM_PARA=l_para)
 
 
+    #############################################################################################################"
+    #                                          MOT-CLE FACTEUR DEFORMATION
+    #############################################################################################################"
 
 
     if (POST_DEF != None) :
@@ -491,9 +524,7 @@ def post_mac3coeur_ops(self, **args):
 
           
           tab1 = _TAB1.EXTR_TABLE()
-          
-          #IMPR_TABLE(TABLE=_TAB1)
-          
+                    
           l_x_tmp  = tab1.COOR_X.values()
           l_dy_tmp = tab1.DY.values()
           l_dz_tmp = tab1.DZ.values()
