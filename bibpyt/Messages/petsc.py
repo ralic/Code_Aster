@@ -142,12 +142,14 @@ Solveur PETSc :
 
 18 : _(u"""
 Solveur PETSc :
-  La matrice du système linéaire ne comporte pas le même nombre de degrés de liberté en chaque noeud du modèle.
-  Les préconditionneurs 'ML' et 'BOOMER' ne supportent pas ce type de matrice.
-
+  Les préconditionneurs 'ML' et 'BOOMER' ne doivent pas être utilisés lorsque:
+  - soit le modèle comporte des charges dualisées issues de AFFE_CHAR_MECA,
+  - soit les noeuds du modèle ne portent pas tous le même nombre de degrés de liberté. 
+  
   Conseils :
   - ne mélangez pas des modélisations dans votre calcul
-  - utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
+  - remplacez AFFE_CHAR_MECA par AFFE_CHAR_CINE si cela est possible 
+  - utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS').
 """),
 
 19 : _(u"""

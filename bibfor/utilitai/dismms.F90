@@ -54,7 +54,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     character(len=2) :: typmat
 !-----------------------------------------------------------------------
     integer :: i, ibid, ier, nec, ieq, neq
-    integer :: ialime, nblime, nbddl, nbddlc, numno
+    integer :: ialime, nblime, nbddl, nbddlc, numno, icmp 
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -111,16 +111,17 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         if (ierd .ne. 0) goto 999
         call dismnu('NB_EQUA', zk24(jrefa-1+2)(1:14), neq, kbid, ierd)
         if (ierd .ne. 0) goto 999
-!
-        nbddl = zi(jprno-1+2)
+! 
+       nbddl = zi(jprno-1+2)
         do ieq = 2, neq
             numno = zi(jdeeq-1+(ieq -1)* 2 +1)
-            nbddlc=-1
-            if (numno .gt. 0) then
-                nbddlc = zi(jprno-1+(numno-1)*(2+nec)+2)
+            icmp  = zi(jdeeq-1+(ieq -1)* 2 +2)
+            if ((numno .le. 0) .or. (icmp .le. 0)) then
+                repi = -1
+                goto 200
             endif
-!
-            if ((nbddlc.ne.nbddl) .and. (numno .gt. 0)) then
+            nbddlc = zi(jprno-1+(numno-1)*(2+nec)+2)
+            if (nbddlc .ne. nbddl) then
                 repi = -1
                 goto 200
             endif
