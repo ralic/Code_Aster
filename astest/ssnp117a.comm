@@ -200,7 +200,8 @@ TEST_RESU(RESU=_F(INST=10.0,
                   RESULTAT=RESU,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
-                  VALE_CALC=0.032575727960971,
+                  VALE_CALC=0.032575727961,
+                  TOLE_MACHINE=1.E-5,             # TODO TOLE_MACHINE
                   CRITERE='ABSOLU',
                   MAILLE='M1',),
           )
@@ -210,7 +211,7 @@ TEST_RESU(RESU=_F(INST=10.0,
                   RESULTAT=RESU_N,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
-                  VALE_CALC=0.39058042591557,
+                  VALE_CALC=0.390580425916,
                   CRITERE='ABSOLU',
                   MAILLE='M1',),
           )
@@ -220,8 +221,7 @@ TEST_RESU(RESU=_F(INST=10.0,
                   RESULTAT=RESU_V,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
-                  VALE_CALC=0.033347703871830,
-                  TOLE_MACHINE=1.E-5,             # TODO TOLE_MACHINE
+                  VALE_CALC=0.0333477038718,
                   CRITERE='ABSOLU',
                   MAILLE='M1',),
           )
