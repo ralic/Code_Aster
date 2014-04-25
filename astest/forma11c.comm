@@ -96,22 +96,12 @@ TEST_TABLE(
 # FIN DE LA QUESTION 0.
 #FIN();
 
-# QUESTION 1: CALCUL BANDE DES MODES PAR SORENSEN - UTILISATION DE LA
-#             MACRO-COMMANDE "CALC_MODAL"
+# QUESTION 1: CALCUL BANDE DES MODES PAR SORENSEN
 
-
-MODES=CALC_MODAL(MODELE=STRUC,
-                 CHAM_MATER=MATER,
-                 CARA_ELEM=CARA,
-                 CHARGE=FIXA,
-                 CALC_FREQ=_F(OPTION='BANDE',
-                              FREQ=(0.0,4.0,),),);
-
-
-#MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
-#                       MATR_MASS=M_ASSE,
-#                       CALC_FREQ=_F(OPTION='BANDE',
-#                                    FREQ=(0.0,4.0,),),);
+MODES=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
+                      MATR_MASS=M_ASSE,
+                      CALC_FREQ=_F(OPTION='BANDE',
+                                   FREQ=(0.0,4.0,),),);
 
 
 # TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST

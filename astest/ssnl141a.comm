@@ -140,15 +140,22 @@ APPUI=AFFE_CHAR_MECA( MODELE=MODELE,
                                 ),
             )
 
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=CAREL,
+           CHARGE=(ENCADE,APPUI),
+           NUME_DDL=CO('NUM_DDL'),
+           MATR_ASSE=(_F(MATRICE=CO('MATASSR'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MATASSM'),
+                         OPTION='MASS_MECA',),),);
 
+FREQ=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
+                      MATR_MASS=MATASSM,
+                      CALC_FREQ=_F( NMAX_FREQ=7 ),
+                     );
 
-FREQ=CALC_MODAL(MODELE=MODELE,
-                  CHAM_MATER=CHMAT,
-                  CARA_ELEM=CAREL,
-                  CHARGE=(ENCADE,APPUI),
-                  CALC_FREQ=_F(NMAX_FREQ=7,
-         ),);
-
+#
 
 TEST_RESU(RESU=(_F(
                     NUME_ORDRE = 1,

@@ -93,14 +93,23 @@ COND_LIM=AFFE_CHAR_MECA(     MODELE=MODELE,DDL_IMPO=(
 
 ## CALCUL DE LA PLUS GRANDE FREQUENCE PROPRE
 # - avec l'option 'PLUS_GRANDE'
-MODE_PG=CALC_MODAL(MODELE=MODELE,
-                  CHAM_MATER=AFF_MAT,
-                  CARA_ELEM=CARELEM,
-                  CHARGE=COND_LIM,
-                  METHODE='TRI_DIAG',
-                  CALC_FREQ=_F(OPTION='PLUS_GRANDE',),
-                  VERI_MODE=_F(STURM='NON'),
-                  );
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=AFF_MAT,
+           CARA_ELEM=CARELEM,
+           CHARGE=COND_LIM,
+           NUME_DDL=CO('NUM'),
+           MATR_ASSE=(_F(MATRICE=CO('MATASSR'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MATASSM'),
+                         OPTION='MASS_MECA',),),
+           );
+
+MODE_PG=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
+                         MATR_MASS=MATASSM,
+                         METHODE='TRI_DIAG',
+                         CALC_FREQ=_F(OPTION='PLUS_GRANDE',),
+                         VERI_MODE=_F(STURM='NON'),
+                        );
 
 
 #---------------------------------------------------------------------

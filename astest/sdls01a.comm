@@ -62,17 +62,26 @@ CHCAS1=AFFE_CHAR_MECA(MODELE=MO,
                                   DRZ=0.0,),);
 # ---- CAS2: PLAQUE LIBRE-LIBRE   ==>   PAS DE CHCAS2
 #-------------------------------------------------------------------
-# -CALCUL MODAL POUR CAS1 AVEC LE MACRO CALC_MODAL
 
-MODE1=CALC_MODAL(MODELE=MO,
-                       CHAM_MATER=CHMAT,
-                       CARA_ELEM=CARELEM,
-                       CHARGE=CHCAS1,
-                       METHODE='TRI_DIAG',
+
+# _CAS1: ASSEMBLAGE + MODE_ITER_SIMULT
+
+ASSEMBLAGE(MODELE=MO,
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=CARELEM,
+           CHARGE=CHCAS1,
+           NUME_DDL=CO('NUM1'),
+           MATR_ASSE=(_F(MATRICE=CO('MATASSR1'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MATASSM1'),
+                         OPTION='MASS_MECA',),),);
+
+MODE1=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
+                       MATR_MASS=MATASSM1,
                        CALC_FREQ=_F(OPTION='CENTRE',
                                     FREQ=100.0,
-                                    NMAX_FREQ = 20,
-                                    ),);
+                                    NMAX_FREQ = 20 ),
+                      );
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -125,16 +134,16 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-# _CAS2: CALCUL MODAL EN 2 PAS, ASSEMBLAGE + MODE_ITER_SIMULT
+# _CAS2: ASSEMBLAGE + MODE_ITER_SIMULT
 
 ASSEMBLAGE(MODELE=MO,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARELEM,
-                NUME_DDL=CO('NUM2'),
-                MATR_ASSE=(_F(MATRICE=CO('MATASSR2'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MATASSM2'),
-                              OPTION='MASS_MECA',),),);
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=CARELEM,
+           NUME_DDL=CO('NUM2'),
+           MATR_ASSE=(_F(MATRICE=CO('MATASSR2'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MATASSM2'),
+                         OPTION='MASS_MECA',),),);
 
 
 MODE2=MODE_ITER_SIMULT(MATR_RIGI=MATASSR2,

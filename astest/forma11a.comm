@@ -81,24 +81,6 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                                DRY=0.0,
                                DRZ=0.0,),);
 
-#--------------------------------------------------------------------
-# ANALYSE MODALE
-# QUESTION 1: CALCUL SUR LES 10 OU 11 PLUS PETITES FREQUENCES
-
-# ON LANCE LE CALCUL MODAL AVEC UNE SEULE COMMANDE, CALC_MODAL.
-FREQ_0=CALC_MODAL(MODELE=MO,
-                  CHAM_MATER=CHMAT,
-                  CARA_ELEM=CARELEM,
-                  CHARGE=CH1,
-                  METHODE='TRI_DIAG',
-#                 METHODE='SORENSEN',
-                  CALC_FREQ=_F(OPTION='PLUS_PETITE',
-#                              NMAX_FREQ=10,
-                               NMAX_FREQ=11,
-         ),);
- 
-
-#------- ON TESTE LA METHODE QZ ------------------------------------
 # CALCULS DES MATRICES DE MASSE ET DE RIGIDITE
 
 MELR1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
@@ -117,29 +99,49 @@ MATASSR1=ASSE_MATRICE(MATR_ELEM=MELR1,
 MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,
                       NUME_DDL=NUM1,);
 
+#--------------------------------------------------------------------
+# ANALYSE MODALE
+# QUESTION 1: CALCUL SUR LES 10 OU 11 PLUS PETITES FREQUENCES
+
 # CALCUL DES MODES AVEC MODE_ITER_SIMULT
 
+#------- ON TESTE LA METHODE TRI_DIAG ------------------------------------
 
+FREQ_0=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
+                        MATR_MASS=MATASSM1,
+                        METHODE='TRI_DIAG',
+#                       METHODE='SORENSEN',
+                        INFO=2,
+                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                     NMAX_FREQ=11,),
+                        );
+
+#------- ON TESTE LA METHODE QZ ------------------------------------
 
 FREQ_01=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
                         MATR_MASS=MATASSM1,
                         METHODE='QZ',
                         INFO=2,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',NMAX_FREQ=11,
-                        ),);
+                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                     NMAX_FREQ=11),
+                        );
 
 FREQ_02=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
                         MATR_MASS=MATASSM1,
                         METHODE='QZ',
                         INFO=2,
-                        CALC_FREQ=_F(
-                        OPTION='CENTRE',FREQ=2.59704E+03,NMAX_FREQ=11,
-                        ),);
+                        CALC_FREQ=_F(OPTION='CENTRE',
+                                     FREQ=2.59704E+03,
+                                     NMAX_FREQ=11),
+                        );
 
 FREQ_03=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
                         MATR_MASS=MATASSM1,
                         METHODE='QZ',
                         CALC_FREQ=_F(OPTION='TOUT',),);
+
+# Vérification des résultats
+
 TEST_RESU(RESU=_F(NUME_ORDRE=6,
                   PARA='FREQ',
                   RESULTAT=FREQ_01,

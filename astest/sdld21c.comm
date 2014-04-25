@@ -77,15 +77,15 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
 
 
 ASSEMBLAGE(MODELE=MO,
-                CARA_ELEM=CARELEM,
-                CHARGE=CH,
-                NUME_DDL=CO('NUM'),
-                MATR_ASSE=(_F(MATRICE=CO('MATASSR'),
-                              OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MATASSM'),
-                              OPTION='MASS_MECA',),
-                           _F(MATRICE=CO('MATASSC'),
-                              OPTION='AMOR_MECA',),),);
+           CARA_ELEM=CARELEM,
+           CHARGE=CH,
+           NUME_DDL=CO('NUM'),
+           MATR_ASSE=(_F(MATRICE=CO('MATASSR'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MATASSM'),
+                         OPTION='MASS_MECA',),
+                      _F(MATRICE=CO('MATASSC'),
+                         OPTION='AMOR_MECA',),),);
 # --------------------------------------------------------------------
 #
 #
@@ -105,18 +105,14 @@ MODESN=NORM_MODE(MODE=MODES,NORME='MASS_GENE')
 
 # AVEC QZ + OPTION='CENTRE' + 'QZ_SIMPLE'
 
-MODE_QZ1=CALC_MODAL(MODELE=MO,
-                 CHAM_MATER=CHMATER,
-                 CARA_ELEM=CARELEM,
-                 AMORTISSEMENT='OUI',
-                 CHARGE=CH,
-                 METHODE='QZ',TYPE_QZ='QZ_SIMPLE',
-                 CALC_FREQ=_F(OPTION='CENTRE',
-                              FREQ=5.0,
-                              NMAX_FREQ =5,
-                ),);
-
-
+MODE_QZ1=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
+                          MATR_MASS=MATASSM,
+                          MATR_AMOR=MATASSC,
+                          METHODE='QZ', TYPE_QZ='QZ_SIMPLE',
+                          CALC_FREQ=_F(OPTION='CENTRE',
+                                       FREQ=5.0,
+                                       NMAX_FREQ=5),
+                          );
 MODE_QZ1=NORM_MODE(MODE=MODE_QZ1,reuse=MODE_QZ1,NORME='MASS_GENE')
 
 # --------------------------------------------------------------------

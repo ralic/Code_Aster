@@ -55,12 +55,29 @@ CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
 
 
 #
-# CALCL DES MODES EN DEUX BANDES
-MODES_1=CALC_MODAL(MODELE=MODELE, CHAM_MATER=CHAMAT, CARA_ELEM=PARAM, CHARGE=CHARGE,
-                 CALC_FREQ=_F(OPTION='BANDE', FREQ=( 0., 40. )))
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHAMAT,
+           CARA_ELEM=PARAM,
+           CHARGE=CHARGE,
+           NUME_DDL=CO('NUM_DDL'),
+           MATR_ASSE=(_F(MATRICE=CO('MATASSR'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MATASSM'),
+                         OPTION='MASS_MECA',),),);
 
-MODES_2=CALC_MODAL(MODELE=MODELE, CHAM_MATER=CHAMAT, CARA_ELEM=PARAM, CHARGE=CHARGE,
-                 CALC_FREQ=_F(OPTION='BANDE', FREQ=( 40., 100. )))
+
+# CALCL DES MODES EN DEUX BANDES
+MODES_1=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
+                         MATR_MASS=MATASSM,
+                         CALC_FREQ=_F(OPTION='BANDE',
+                                      FREQ=( 0., 40. ),),
+                        );
+
+MODES_2=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
+                         MATR_MASS=MATASSM,
+                         CALC_FREQ=_F(OPTION='BANDE',
+                                      FREQ=( 40., 100. ),),
+                        );
 
 #
 MODES_1=NORM_MODE( reuse=MODES_1, MODE=MODES_1,
