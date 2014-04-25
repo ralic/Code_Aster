@@ -56,23 +56,24 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
     integer :: ibid, nb_cmp
     character(len=19) :: comp_elas
     character(len=19) :: comp_elas_s, comp_noli_s, comp_fuse_s
-    logical :: l_cplx
+    logical :: l_cplx, l_etat_init
 !
     data l_cumu      /.false.,.false./
     data coef_real   /1.d0, 1.d0/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    comp_elas = '&&DYNA_COMP_ELAS'
+    comp_elas   = '&&DYNA_COMP_ELAS'
     comp_elas_s = '&&DYNA_COMP_ELAS_S'
     comp_noli_s = '&&DYNA_COMP_NOLI_S'
     comp_fuse_s = '&&DYNA_COMP_FUSE_S'
     l_cplx      = .false.
+    l_etat_init = .false.
 !
 ! - Create ELAS COMPOR <CARTE>
 !
     call comp_init(mesh, comp_elas, 'V', nb_cmp)
-    call comp_meca_elas(comp_elas, nb_cmp)
+    call comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
 !
 ! - Transform ELAS COMPOR <CARTE> in <CHAM_ELEM_S>
 !

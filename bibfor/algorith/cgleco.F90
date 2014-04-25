@@ -97,7 +97,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, incr)
             limpel = .true.
             compor = '&&CGLECO.COMPOR'
             call comp_init(mesh, compor, 'V', nb_cmp)
-            call comp_meca_elas(compor, nb_cmp)
+            call comp_meca_elas(compor, nb_cmp, l_etat_init)
         endif
     else
 !

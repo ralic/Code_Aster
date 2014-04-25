@@ -1,4 +1,4 @@
-subroutine comp_meca_elas(comp_elas, nb_cmp)
+subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
 !
     implicit none
 !
@@ -24,8 +24,9 @@ subroutine comp_meca_elas(comp_elas, nb_cmp)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-      character(len=19) , intent(in) :: comp_elas
-      integer, intent(in) :: nb_cmp
+    character(len=19) , intent(in) :: comp_elas
+    integer, intent(in) :: nb_cmp
+    logical, intent(in) :: l_etat_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,8 +36,9 @@ subroutine comp_meca_elas(comp_elas, nb_cmp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  comp_elas : name of ELAS <CARTE> COMPOR
-! In  nb_cmp    : number of components in ELAS <CARTE> COMPOR
+! In  comp_elas   : name of ELAS <CARTE> COMPOR
+! In  nb_cmp      : number of components in ELAS <CARTE> COMPOR
+! In  l_etat_init : .true. if initial state is defined
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +64,11 @@ subroutine comp_meca_elas(comp_elas, nb_cmp)
     p_compelas_valv(1)  = 'ELAS'
     p_compelas_valv(2)  = '1'
     p_compelas_valv(3)  = 'PETIT'
-    p_compelas_valv(4)  = 'COMP_ELAS'
+    if (l_etat_init) then
+        p_compelas_valv(4)  = 'COMP_INCR' 
+    else
+        p_compelas_valv(4)  = 'COMP_ELAS'
+    endif
     p_compelas_valv(5)  = 'ANALYTIQUE'
     write (p_compelas_valv(6) ,'(I16)') 1
 ! 99999 = Not affected

@@ -90,7 +90,7 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! - Set ELASTIQUE COMPOR
 !
-    call comp_meca_elas(compor, nb_cmp)
+    call comp_meca_elas(compor, nb_cmp, l_etat_init)
 !
 ! - Default ELASTIQUE COMPOR <CARTE> on all mesh
 !
