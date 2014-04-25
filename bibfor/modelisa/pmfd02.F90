@@ -90,9 +90,9 @@ subroutine pmfd02(noma, cesdec)
         call getvis('COQUE', 'COQUE_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
         zk8(jncmp-1+1) = 'COQ_NCOU'
         zi(jvalv-1+1) = nbcou
-!        if (nbcou .gt. 50) then
-!          call  utmess('F', 'ELEMENTS_13')
-!        endif
+
+
+
         call jeveuo(mesmai, 'L', jma)
         call nocart(carte, 3, 1, mode='NUM', nma=nbma,&
                     limanu=zi(jma))

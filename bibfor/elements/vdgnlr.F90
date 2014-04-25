@@ -176,9 +176,7 @@ subroutine vdgnlr(option, nomte)
         call utmess('F', 'ELEMENTS_12')
     endif
 !
-    if (nbcou .gt. 10) then
-        call utmess('F', 'ELEMENTS_13')
-    endif
+
 !______________________________________________________________________
 !
 !---- RECUPERATION DES POINTEURS ( L : LECTURE )

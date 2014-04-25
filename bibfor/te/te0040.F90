@@ -92,7 +92,7 @@ subroutine te0040(option, nomte)
     then
         call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
                     iinpg, 'S')
-        write(6,*) "zr(iinpg)", zr(iinpg)
+        
         call jevech('PSIEFNOR', 'E', ioutno)
         call tecach('ONN', 'PCOMPOR', 'L', iret, iad=icompo)
         if (icompo .ne. 0) then
@@ -104,6 +104,7 @@ subroutine te0040(option, nomte)
         ASSERT(.false.)
     endif
 !
+
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou=zi(jnbspi-1+1)
 !

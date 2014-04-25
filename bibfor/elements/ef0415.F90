@@ -42,9 +42,10 @@ subroutine ef0415(nomte)
     parameter(npgt=10)
     integer ::  jmat, jnbspi
     integer :: nb1, nb2, npgsr, npgsn
-
-
     logical :: lgreen
+
+
+
 !
 
     lgreen=.false.

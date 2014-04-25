@@ -167,13 +167,16 @@ VT=STAT_NON_LINE( reuse=VT,
                 ITER_GLOB_MAXI = 50)
               )
 
-VT=CALC_CHAMP(reuse=VT,RESULTAT=VT,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
+VT=CALC_CHAMP(reuse=VT,RESULTAT=VT,CONTRAINTE=('SIGM_ELNO','SIGM_ELGA'),VARI_INTERNE=('VARI_ELNO'))
 
 
 VTPOS=POST_CHAMP(RESULTAT=VT,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='MOY',),);
+
+
+
 TEST_RESU(RESU=(_F(NUME_ORDRE=21,
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',

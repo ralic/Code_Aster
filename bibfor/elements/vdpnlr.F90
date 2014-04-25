@@ -229,9 +229,7 @@ subroutine vdpnlr(option, nomte, codret)
         call utmess('F', 'ELEMENTS_12')
     endif
 !
-    if (nbcou .gt. 10) then
-        call utmess('F', 'ELEMENTS_13')
-    endif
+
 !
     read (zk16(icompo-1+2),'(I16)') nbvari
     call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&

@@ -68,10 +68,9 @@ subroutine te0415(optioz, nomtz)
         if (nbcou .le. 0) then
             call utmess('F', 'ELEMENTS_12')
         endif
-!        if (nbcou .gt. 10) then
-!            call utmess('F', 'ELEMENTS_13')
-!        endif
-!
+
+
+
 ! -- RECUPERATION DES VARIABLES INTERNES
 ! -- NBVARI = NOMBRES DE VARIABLES INTERNES
 ! -- STOCKAGE DANS PVARIGR : PAR POINT DE GAUSS DU PREMIER AU DERNIER
