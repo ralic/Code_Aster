@@ -1,4 +1,4 @@
-# TITRE VALIDATION LOI HAYHURST IMPLICITE SUR ESSAI DE FLUAGE
+# TITRE VALIDATION LOI HAYHURST SUR ESSAI DE FLUAGE IMPLICITE NEWTON_PERT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
 
 #########################################################
@@ -81,9 +81,7 @@ char=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
 
 lalist=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=tref,
-                                    NOMBRE=500,
-                                   #  NOMBRE=100,
-                                     ),),);
+                                     NOMBRE=500,),),);
 
 listtps = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lalist,),
                          ECHEC=_F(SUBD_NIVEAU=10,
@@ -97,21 +95,17 @@ listtps = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lalist,),
 listarch=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=tref,NOMBRE=100,),),);
 
-
 soluce=SIMU_POINT_MAT(MATER=MAT,INFO=1,
                      SIGM_IMPOSE=_F(SIYY=char),
                      SUPPORT='ELEMENT',
                      COMPORTEMENT=_F(RELATION='HAYHURST',
-                                  DEFORMATION='GDEF_LOG',
                                   ALGO_INTE='NEWTON_PERT',
                                   PARM_THETA=0.5,
+                                  DEFORMATION='GDEF_LOG',
                                   ),
                      INCREMENT=_F(LIST_INST=listtps,),
-                     NEWTON=_F(REAC_ITER=1,
-                               PREDICTION='EXTRAPOLE',
-                               ),
-                     CONVERGENCE=_F(ITER_GLOB_MAXI=20),
-                     ARCHIVAGE=_F(LIST_INST=listarch,),
+                     NEWTON=_F(REAC_ITER=1,PREDICTION='EXTRAPOLE'),
+                     ARCHIVAGE=_F(LIST_INST=listarch),
                      );
 
 epsYY=RECU_FONCTION(TABLE=soluce,
@@ -124,40 +118,22 @@ endo=RECU_FONCTION(TABLE=soluce,
                    PARA_Y='V11',
                    INTERPOL='LIN');
 
-IMPR_FONCTION(
-            FORMAT='XMGRACE',
-            COURBE=(_F(FONCTION=epsYY,
-                       COULEUR= 0,
-                       LEGENDE= 'EPYY',),),
-            UNITE=36,
-            TITRE='Espilon = f(INST)');
 
-IMPR_FONCTION(
-            FORMAT='XMGRACE',
-            COURBE=(_F(FONCTION=endo,
-                        COULEUR= 0,
-                        LEGENDE= 'endo',),),
-            UNITE=35,
-            TITRE='endo = f(INST)');
-
-
-#fluage secondaire comparaison s ssnv225a
+#fluage secondaire comparaison ssnv225a
 tsec=2000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02089497,
-                        VALE_REFE=0.020968,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02089497365897,
+                        VALE_REFE=0.02089497365045,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.004,
                         VALE_PARA=2000,
                         NOM_PARA='INST',
                         FONCTION=epsYY,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03217489,
-                        VALE_REFE=0.03230,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03217489103946,
+                        VALE_REFE=0.03217489098398,
                         REFERENCE='AUTRE_ASTER',
                         VALE_PARA=2000,
-                        PRECISION=0.005,
                         NOM_PARA='INST',
                         FONCTION=endo,
                         ),
@@ -165,20 +141,18 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03217489,
 
 # fluage tertiaire
 tter=4000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05057478,
-                        VALE_REFE=0.05093,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05057478419831,
+                        VALE_REFE=0.05057479557016,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.01,
                         VALE_PARA=4000,
                         NOM_PARA='INST',
                         FONCTION=epsYY,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06792738,
-                        VALE_REFE=0.06808,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06792737506714,
+                        VALE_REFE=0.06792739444924,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.005,
                         VALE_PARA=4000,
                         NOM_PARA='INST',
                         FONCTION=endo,
@@ -188,27 +162,40 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06792738,
 
 depsdt = CALC_FONCTION( DERIVE=_F( FONCTION= epsYY ),)
 
-IMPR_FONCTION(
-            FORMAT='XMGRACE',
-            COURBE=(_F(FONCTION=depsdt,
-                        COULEUR= 0,
-                        LEGENDE= 'depsdt',),),
-            UNITE=38,
-            TITRE='depsdt = f(INST)');
 
 tvit = 1520.
 
-
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.640908E-06,
-                        VALE_REFE=6.653918E-06,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.640907662355E-06,
+                        VALE_REFE=6.640907659508E-06,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.003,
                         VALE_PARA=1520.0,
                         NOM_PARA='INST',
                         FONCTION=depsdt,
                         ),
               )
 
-IMPR_TABLE(TABLE=soluce,FORMAT_R ="E14.7")
+IMPR_FONCTION(
+            FORMAT='XMGRACE',
+            COURBE=(_F(FONCTION=epsYY,
+                       COULEUR= 0,
+                       LEGENDE= 'EPYY',),),
+            UNITE=38,
+            TITRE='Espilon = f(INST)');
+
+IMPR_FONCTION(
+            FORMAT='XMGRACE',
+            COURBE=(_F(FONCTION=endo,
+                        COULEUR= 0,
+                        LEGENDE= 'endo',),),
+            UNITE=39,
+            TITRE='endo = f(INST)');
+
+IMPR_FONCTION(
+            FORMAT='XMGRACE',
+            COURBE=(_F(FONCTION=depsdt,
+                        COULEUR= 0,
+                        LEGENDE= 'depsdt',),),
+            UNITE=40,
+            TITRE='depsdt = f(INST)');
 
 FIN();
