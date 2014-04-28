@@ -15,13 +15,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine elg_comptt(c, t, nbeq, clag1)
+    subroutine elg_comptt(c, t, nworkt)
 # ifdef _HAVE_PETSC
-        Mat :: c, t
+        Mat, intent(in) :: c
+        Mat, intent(out):: t
 # else
-        integer :: c, t
+        integer, intent(in) :: c
+        integer, intent(out):: t
 # endif
-        integer :: nbeq
-        integer :: clag1
+        integer, intent(out) :: nworkt
     end subroutine elg_comptt
 end interface

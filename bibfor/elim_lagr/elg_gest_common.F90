@@ -19,6 +19,7 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+# include "asterfort/as_deallocate.h"
 # include "asterfort/assert.h"
 # include "asterfort/utmess.h"
 !
@@ -139,7 +140,7 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
         call VecDestroy(melim(ktrou)%vx0, ierr)
         call VecDestroy(melim(ktrou)%vecb, ierr)
         call VecDestroy(melim(ktrou)%vecc, ierr)
-        deallocate(melim(ktrou)%indred)
+        AS_DEALLOCATE(vi4=melim(ktrou)%indred)
 !
         melim(ktrou)%kproj=0
         melim(ktrou)%ctrans=0

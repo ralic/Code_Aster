@@ -15,16 +15,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
-                          nonu)
+    subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 # ifdef _HAVE_PETSC
-        Mat :: c, t
+        Mat, intent(in)    :: c
+        Mat, intent(inout) :: t
 # else
-        integer :: c, t
+        integer, intent(in)    :: c
+        integer, intent(inout) :: t
 # endif
-        integer :: nbeq
-        integer :: clag1
-        integer :: nbnvco
-        character(len=14) :: nonu
+        integer, intent(inout)        :: nbnvco
+        character(len=14), intent(in) :: nonu
+        integer, intent(in)           :: nworkt
     end subroutine elg_remplt
 end interface

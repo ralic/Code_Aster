@@ -1,4 +1,4 @@
-subroutine elg_comptt(c, t, nbeq, clag1)
+subroutine elg_comptt(c, t, nworkt)
     implicit none
 ! aslint: disable=W1304
 ! person_in_charge: mathieu.corus at edf.fr
@@ -23,9 +23,11 @@ subroutine elg_comptt(c, t, nbeq, clag1)
 !----------------------------------------------------!
 !--                                                --!
 !-- Decompte contraite par contrainte              --!
-!-- Allocation de T                                --!
-!-- Remplissage avec des 0. pour garder le profil  --!
-!--  au cours des MatAssembly                      --!
+!-- * Allocation de T                                --!
+!-- * Remplissage avec des 0. pour garder le profil  --!
+!--   au cours des MatAssembly                       --!     
+!-- * Calcul de la taille du tableau de travail      --! 
+!--   nécessaire pour le calcul de T (elg_rempltt)   --!
 !--                                                --!
 !----------------------------------------------------!
 !----------------------------------------------------!
@@ -33,27 +35,36 @@ subroutine elg_comptt(c, t, nbeq, clag1)
 # include "jeveux.h"
 # include "asterc/asmpi_comm.h"
 # include "asterc/r8prem.h"
+# include "asterfort/as_allocate.h"
+# include "asterfort/as_deallocate.h" 
 # include "asterfort/assert.h"
 # include "asterfort/jeveuo.h"
+# include "asterfort/wkvect.h"
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-    Mat :: c, t
-    integer :: nbeq, clag1
+!
+    Mat, intent(in)      :: c
+    Mat, intent(out)     :: t
+    integer, intent(out) :: nworkt 
 !
 !================================================================
     PetscInt :: ierr, numcon, icol
-    integer :: i1
-    PetscInt :: n1, n2
+    integer :: i1, pass
+    PetscInt :: nlag, nbeq
     integer(kind=4) :: nbnzc
-    integer :: nnzt, contr, j1, ctemp
+    integer :: nnzt, contr, j1, ctemp,imax, nbelim
     integer :: nzrow, valrow, k1, indnz, iscons, nblib
-    integer :: nbcont, nbnz, indcon, indlib
-    real(kind=8) :: eps, norm, valt, normc
-    mpi_int :: mpicow
+    integer :: nbcont, nbnz, indcon, indlib,  compnd
+    real(kind=8) :: eps, norm, valt, normc,cmax
+    mpi_int :: mpicomm
+    logical :: info2
 !-----------------------------------------------------------------
-    call MatGetSize(c, n1, n2, ierr)
 !
+  info2 = .false. 
+  if (info2) then 
+    write(6,*),'%-- COMPTT.F90'
+  endif
 !-----------------------------------------!
 !--                                     --!
 !-- Decompte des elements non nuls de T --!
@@ -61,63 +72,129 @@ subroutine elg_comptt(c, t, nbeq, clag1)
 !--                                     --!
 !-----------------------------------------!
 !
-    call asmpi_comm('GET_WORLD', mpicow)
+    call asmpi_comm('GET_WORLD', mpicomm)
     call jeveuo('&&APELIM.NNZ_MAT_T      ', 'E', nnzt)
     call jeveuo('&&APELIM.CONSTRAINED_DDL', 'E', contr)
     call jeveuo('&&APELIM.IND_NZ_ROW     ', 'E', nzrow)
     call jeveuo('&&APELIM.VAL_NZ_ROW     ', 'E', valrow)
     call jeveuo('&&APELIM.IND_NZ_T       ', 'E', indnz)
-    call jeveuo('&&APELIM.IND_CONTRAINTS ', 'E', indcon)
     call jeveuo('&&APELIM.IND_LIBRES     ', 'E', indlib)
     call jeveuo('&&APELIM.LIGNE_C_TEMP   ', 'E', ctemp)
 !
+
+! 
+!   Initialisation
+!   ==============
+!   nlag : nombre de ddls Lagrange 
+!   nbeq : nombre de ddls "physiques" (i.e. non-Lagrange)
+!   La matrice des contraintes C est de taille nlag x nbeq 
+    call MatGetSize(c, nlag, nbeq, ierr)
+    ASSERT(ierr == 0 ) 
+    if (info2) then 
+       write(6,*),'C est de taille nlag= ', nlag,' x neq= ', nbeq
+    endif
+!   Seuil pour le filtrage des valeurs significatives de C   
     eps=r8prem()
+!   Valeur par défaut utilisée pour le remplissage de T     
+    valt = 0.d0
+! 
+!  
+!   On effectue deux passes 
+!   ======================= 
+!   1) compter les termes non nuls de T pour pré-allouer la matrice
+!   2) remplir T avec des zéros pour que le profil soit gardé lors des appels
+!     ultérieurs à MatAssembly 
+    do pass = 1, 2 
+     if ( info2 ) then 
+       write(6,*) " =================== "
+       write(6,*) " Passe ", pass
+       write(6,*) " =================== "
+     endif
 !
+!   Initialisation à 0 du tableau stockant si un ddl est impliqué 
+!   dans une contrainte précédemment éliminée 
+    zi4( contr-1+1: contr-1+nbeq ) = 0 
+!   Initialisation à 1 du tableau stockant le profil de T 
+!   (T est initialisé à l'identité)
+    zi4( nnzt-1+1: nnzt-1+nbeq ) = 1 
+!   Dimensionnement des tableaux intermediaires de elg_remplt.F90
+    nworkt=1
 !---------------------------------------!
 !--                                   --!
 !-- Decompte contraite par contrainte --!
 !--                                   --!
 !---------------------------------------!
 !
-    do i1 = 1, clag1
-! Recherche des indices des DDL impliques  dans la contrainte I1
-! Premier tri PETSc, base uniquement sur la structure de la matrice
-        call MatGetRow(c, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
-                       ierr)
+  do i1 = 1, nlag
+    if (info2) then 
+       write(6,*), 'Contrainte -',i1
+    endif 
 !
+! On traite la contrainte I1 (convention Fortran) / I1-1 (convention C)
+!
+! zi4(nzrow-1+1: nzrow-1+nbnzc) = indices C des colonnes des termes non-nuls 
+! de la ligne  C(i1,:). Il s'agit des termes définis dans la structure creuse de la 
+! matrice, ils peuvent être numériquement égaux à zéro. 
+! zr(valrow-1+1: valrow-1+nbnzc) = valeurs des termes de la ligne. 
+!
+    call MatGetRow(c, i1-1, nbnzc, zi4(nzrow),  zr(valrow),&
+                       ierr)
+! Calcul de la norme de C(i1,:)
         norm=0.d0
         do j1 = 1, nbnzc
             norm=norm+zr(valrow+j1-1)**2
         end do
         norm=sqrt(norm)
 !
-! raffinement, base sur les valeurs - selection avec R8PREM
-! et normalisation des lignes
+! On sélectionne dans la ligne I1 les termes numériquement 
+! non-nuls (selection avec R8PREM) 
+! zi4(indnz-1+k) = indice C  
+! On copie ces termes dans zr(ctemp-1+1:ctemp-1+nbnz)
+! et on normalise ce vecteur.
         nbnz=0
         do j1 = 1, nbnzc
             if (abs(zr(valrow+j1-1))/norm .gt. eps) then
+            !!!!!!!! ATTENTION Convention C pour un tableau fortran 
                 zi4(indnz+nbnz)=j1-1
                 nbnz=nbnz+1
+                zr(ctemp+nbnz-1)=zr(valrow+j1-1)/norm
             endif
-        end do
+        end do     
 !
 ! Comptage des termes pour T
+!
         nblib=0
+        nbcont=0
+        cmax=0.d0
+        imax=0
 !
-        if (nbnz .gt. 1) then
-! Comptage des DDL impliques dans d'autres contraintes
+        if (nbnz .gt. 0) then
+        ! Nombre de ddls qui ont été impliqués dans les lignes de la matrice des 
+        ! contraintes précédemment traitées 
+        nbelim = count(zi4(contr-1+1: contr-1+nbeq) ==1)
+        
+        ! Comptage des DDL impliques dans d'autres contraintes, précédemment éliminées
             do j1 = 1, nbnz
+                ! Indice C global du ddl courant 
                 numcon=zi4(nzrow+zi4(indnz+j1-1))
+                ! Le ddl courant est-il impliqué dans une contrainte
+                ! précédemment éliminée ?    
                 iscons=zi4(contr + numcon)
-!
+                ! Si non, on stocke l'indice dans le tableau des indices "libres"           
                 if (iscons .eq. 0) then
                     zi4(indlib+nblib)=numcon
                     nblib=nblib+1
+                    ! On recherche le terme de module maximum 
+                    if (abs(zr(ctemp+j1-1)) .gt. cmax) then
+                        cmax=abs(zr(ctemp+j1-1))
+                        imax=nblib-1
+                    endif
+                else
+                ! Si oui, on compte 
+                  nbcont=nbcont+1    
                 endif
             end do
 !
-            do j1 = 1, nblib
-                numcon=zi4(indlib+j1-1)
 ! Pistes pour ameliorer les perfs, si besoin :
 ! On surestime, en comptant toutes les colonnes de zeros :
 !   * On pourrait virer la premiere, dont on sait qu'elle sera nulle
@@ -128,171 +205,133 @@ subroutine elg_comptt(c, t, nbeq, clag1)
 !     Tic, celle associee a la valeur max de C(indlib)
 !     => Ne pas compter les autres
 !   La, on compte NBNZ pour toutes les lignes de indlib
-                zi4(nnzt+numcon) = nbnz
-! Chaque contrainte apparait alors comme utilisee
-                zi4(contr + numcon) = 1
-            end do
+!   et on re alloue la ligne pour Tic=Ci\(Cc*Tcc) si besoin
 !
-        else
-            numcon=zi4(nzrow+zi4(indnz))
-            iscons=zi4(contr + numcon)
-            if (iscons .eq. 0) then
-! On alloue juste le terme sur la diagonale si non implique par ailleurs
-! Pour un meilleur comptage, on peut desallouer la valeur
-                zi4(nnzt+numcon)=1
-                zi4(contr+numcon)=1
+! Par ailleurs, on ne tient pas compte des contraintes qui seraient ensuite
+! mal eliminees => on sur alloue ca aussi.
+!
+!
+! On réserve la place nécessaire au stockage du bloc T_{LL} 
+! Chaque ligne est de taille nblib : on surestime en prenant nbnz 
+            do j1 = 1, nblib
+                numcon=zi4(indlib+j1-1)
+! Nombre de termes non-nuls dans la ligne (indice Fortran) numcon+1 de T 
+!                zi4(nnzt+numcon) = nbnz
+               zi4(nnzt+numcon) = nblib 
+                ! nworkt = max (nlib x nlib)
+                if (nblib**2 .gt. nworkt) then
+                   nworkt=nblib**2
+                endif
+ 
+                
+                if (pass == 2) then
+                ! On remplit la ligne courante avec des 0 
+                  do k1 = 1, nblib
+                    icol=zi4(indlib+k1-1)  
+                    call MatSetValues(t, 1, [numcon], 1, [icol],&
+                                    [valt], INSERT_VALUES, ierr)
+                    ASSERT(ierr == 0 ) 
+                  end do
+                endif
+               !
+            end do
+! Si des ddls sont deja contraints, on devra construire deux blocs dans T: T_{LL} et T_{LE}
+! "E" correspond à l'ensemble des ddls non-nuls des contraintes précédemment éliminées
+! (et pas seulement de ceux de C(i1,:))
+! "L" correspond à l'ensemble des ddls non-nuls de C(i1,:) qui n'ont pas été 
+!  impliqués dans une contrainte déjà éliminée
+! On alloue maintenant la place nécessaire pour stocker T_{LE}. 
+! Par construction, une seule ligne de T_{LE}
+! est non-nulle. Il s'agit de la ligne imax, qui compte :
+! nbelim = nbre de ddls participant à une contrainte  déjà éliminée 
+! termes
+            if (nbcont .gt. 0) then
+              numcon=zi4(indlib+imax)
+              zi4(nnzt+numcon) = zi4(nnzt+numcon) + nbelim 
+              !-- il faudra virer ca quand le calcul de (C(i1,con) * T(con,con))
+              !--  sera fait en creux, en extrayant les sous blocs!
+              if ( ( zi4(nnzt+numcon)  )**2 .gt. nworkt) then
+                nworkt=( zi4(nnzt+numcon) )**2
+              endif
+              if (pass == 2) then 
+              ! On remplit la ligne imax avec des zéros
+              ! On boucle sur tous les ddls et on sélectionne ceux qui sont
+              ! impliqués dans une contrainte précedemment éliminée 
+                do icol = 1, nbeq
+                  ! Le ddl courant est-il impliqué dans une contrainte
+                  ! précédemment éliminée ?     
+                  iscons=zi4(contr-1+icol)
+                  if ( iscons == 1 ) then  
+                    call MatSetValues(t, 1, [numcon], 1, [int(icol-1,4)],&
+                                    [valt], INSERT_VALUES, ierr)
+                    ASSERT(ierr == 0 ) 
+                  endif                   
+                end do
+              endif
+              !
             endif
+            !
+            ! Les dls libres sont à présent éliminés: on les marque 
+            do j1 = 1, nblib
+              numcon=zi4(indlib+j1-1)
+              zi4(contr + numcon) = 1
+            enddo
+           !
         endif
+        !
         call MatRestoreRow(c, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
                            ierr)
+        ASSERT(ierr == 0 ) 
     end do
 !
 !
 !   -- Allocation de T :
 !   ---------------------
-    call MatCreateSeqAIJ(mpicow, nbeq, nbeq, int(PETSC_NULL_INTEGER), zi4(nnzt),&
+    if (info2) then 
+     write(6,*),'-- profil de T'
+      do i1=1,nbeq
+        write(6,*),'nnzt(',i1,')=',zi4(nnzt+i1-1)
+      end do
+    endif  
+    !
+    if (pass == 1) then 
+       call MatCreateSeqAIJ(mpicomm, int(nbeq), int(nbeq), int(PETSC_NULL_INTEGER), zi4(nnzt),&
                          t, ierr)
-!
-!   -- Reinitialisation de CONTR et initialisation de la diagonale de T :
-!   --------------------------------------------------------------------
-    valt=0.d0
+       ASSERT( ierr == 0 ) 
+ 
+    !   Initialisation à l'identité 
     do i1 = 1, nbeq
-        zi4(contr+i1-1)=0
         call MatSetValues(t, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
                           [valt], INSERT_VALUES, ierr)
+        ASSERT( ierr == 0 ) 
     end do
+    endif
 !
-!-----------------------------------------!
-!--                                     --!
-!-- Remplissage de epsilon, pour garder --!
-!-- le profil au cours des  MatAssembly --!
-!--                                     --!
-!-----------------------------------------!
+!  Fin de la boucle pass 
 !
-    do i1 = 1, clag1
-!--
-!-- Recuperation de la ligne de C a traiter et normalisation
-!--
-        call MatGetRow(c, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
-                       ierr)
-        nbnz=0
-        norm=0.d0
-        do j1 = 1, nbnzc
-            norm=norm+zr(valrow+j1-1)**2
-        end do
-        norm=sqrt(norm)
-        normc=norm
-        do j1 = 1, nbnzc
-            if (abs(zr(valrow+j1-1))/norm .gt. eps) then
-                zi4(indnz+nbnz)=j1-1
-                nbnz=nbnz+1
-                zr(ctemp+nbnz-1)=zr(valrow+j1-1)/norm
-            endif
-        end do
-!--
-!-- Recherche du remplissage
-!--
-        nbcont=0
-        nblib=0
-        if (nbnz .gt. 1) then
-!-- Comptage des DDL impliques dans d'autres contraintes
-            do j1 = 1, nbnz
-                numcon=zi4(nzrow+zi4(indnz+j1-1))
-                iscons=zi4(contr + numcon)
-                if (iscons .eq. 0) then
-                    zi4(indlib+nblib)=numcon
-                    nblib=nblib+1
-                else
-                    zi4(indcon+nbcont)=numcon
-                    nbcont=nbcont+1
-                endif
-            end do
-!
-            if (nbcont .eq. 0) then
-!-- Insertion d'un bloc plein de taille NBNZ x NBNZ
-                do j1 = 1, nbnz
-                    numcon=zi4(indlib+j1-1)
-                    do k1 = 1, nbnz
-                        icol=zi4(nzrow + zi4(indnz+k1-1))
-                        call MatSetValues(t, 1, [numcon], 1, [icol],&
-                                          [valt], INSERT_VALUES, ierr)
-                    end do
-                    zi4(contr + numcon) = 1
-                end do
-!
-!
-            else if (nblib .gt. 0) then
-!-- cont > 0 et lib > 0 : probleme moindre carre + elg_nllspc
-!
-!-- Insertion d'un bloc plein de taille NBLIB x NBNZ
-!
-! Pour l'instant, pas de comptage "intelligent"
-! Si ca doit se faire, separer les deux parties
-!
-! 1 : Partie T(lib,con) = -C(i1,lib) \ (C(i1,con) * T(con,con))
-! 2 : Partie QR lib-lib
-! La 1 ne prenant qu'une ligne
-!
-                do j1 = 1, nblib
-                    numcon=zi4(indlib+j1-1)
-!
-                    do k1 = 1, nbnz
-                        icol=zi4(nzrow + zi4(indnz+k1-1))
-                        call MatSetValues(t, 1, [numcon], 1, [icol],&
-                                          [valt], INSERT_VALUES, ierr)
-                    end do
-                    zi4(contr + numcon) = 1
-                end do
-!
-            else
-                goto 123
-            endif
-!
-        else
-!-- On alloue tout de meme la place des 0 sur la diagonale
-            numcon=zi4(nzrow+zi4(indnz))
-            iscons=zi4(contr + numcon)
-            if (iscons .eq. 0) then
-                call MatSetValues(t, 1, [numcon], 1, [numcon],&
-                                  [valt], INSERT_VALUES, ierr)
-                zi4(contr + numcon) = 1
-            else
-                goto 123
-            endif
-!
-        endif
-!
-!-- Si la contrainte est deja verifiee, on arrive direct la
-123     continue
-!
-        call MatRestoreRow(c, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
-                           ierr)
-!
-!-- Normalisation de la ligne de C avant reprojection eventuelle
-        do j1 = 1, nbnzc
-            icol=zi4(nzrow+j1-1)
-            call MatSetValues(c, 1, [int(i1-1, 4)], 1, [int(icol, 4)],&
-                              [zr(valrow+j1-1)/normc], INSERT_VALUES, ierr)
-        end do
-!
-        call MatAssemblyBegin(c, MAT_FINAL_ASSEMBLY, ierr)
-        call MatAssemblyEnd(c, MAT_FINAL_ASSEMBLY, ierr)
-!
-!
-    end do
+  if (info2) then 
+    write(6,*) "Fin de la passe "
+  endif
+  !  
+  enddo
 !
 !--
 !-- Assemblage de T avec le bon profil
 !--
     call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
+    ASSERT(ierr == 0 ) 
     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
+    ASSERT(ierr == 0 ) 
 !
+ if (info2) then 
+    write(6,*) "Fin de elg_comptt "
+  endif
 !
 !
 #else
     integer :: c, t
-    integer :: nbeq, clag1
-    t = c + clag1 + nbeq
+    integer :: nworkt
+    t = c + nworkt
     ASSERT(.false.)
 #endif
 !

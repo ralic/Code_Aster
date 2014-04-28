@@ -1,5 +1,4 @@
-subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
-                      nonu)
+subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     implicit none
 ! aslint: disable=W1304
 !
@@ -34,24 +33,27 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
 !
-    Mat :: c, t
-    integer :: nbeq, clag1, nbnvco
-    character(len=14) :: nonu
+    Mat, intent(in)               :: c
+    character(len=14), intent(in) :: nonu
+    integer, intent(in)           :: nworkt
+    Mat, intent(inout)            :: t
+    integer, intent(inout)        :: nbnvco
+
 !
 !================================================================
 !
-    PetscInt :: ierr
+    PetscInt :: ierr, nbeq, clag1
     Vec :: c_temp, v_temp
     integer(kind=4) :: nbnzc
     integer :: i1, ldelg, nnzt, contr, j1, nzrow, valrow, k1, indnz, iscons, numcon, nblib, nbcont
-    integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib, ltcon, nzmax
-    integer :: nvcont, ifm, niv, nblibt
+    integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib,nzmax
+    integer :: nvcont, ifm, niv, nblibt,posind,compnd
     real(kind=8) :: eps, norm, cmax, normc
     logical :: info2
-    mpi_int :: mpicow
+    mpi_int :: mpicomm
 !----------------------------------------------------------------------
     eps=r8prem()
-    call asmpi_comm('GET_WORLD', mpicow)
+    call asmpi_comm('GET_WORLD', mpicomm)
     call infniv(ifm, niv)
     info2=niv.eq.2
 !
@@ -71,6 +73,15 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
     call jeveuo('&&APELIM.CONTR_NON_VERIF', 'E', nvcont)
     call jeveuo('&&APELIM.LIGNE_C_TEMP   ', 'E', ctemp)
 !
+!   nlag : nombre de ddls Lagrange 
+!   nbeq : nombre de ddls "physiques" (i.e. non-Lagrange)
+!   La matrice des contraintes C est de taille nlag x nbeq 
+    call MatGetSize(c, clag1, nbeq, ierr)
+    ASSERT(ierr == 0 ) 
+    if (info2) then 
+       write(6,*),'C est de taille nlag= ', clag1,' x neq= ', nbeq
+    endif
+!
 !--
 !-- Reinitialisation de CONTR et initialisation de diag. de T
 !--
@@ -87,6 +98,7 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
         endif
         if (zi4(nnzt+i1-1) .gt. nzmax) nzmax=zi4(nnzt+i1-1)
     end do
+    !write(6,*),'NZMAX=',nzmax
     call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
 !--
@@ -95,10 +107,12 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
     call wkvect('&&ELG_REMPLT.C_I1.CON', 'V V R', nzmax, lccon)
     call wkvect('&&ELG_REMPLT.C_I1.LIB', 'V V R', nzmax, lclib)
     call wkvect('&&ELG_REMPLT.VEC_WORK1', 'V V R', nzmax, lwork1)
-    call wkvect('&&ELG_REMPLT.T_CON.CON', 'V V R', nzmax**2, ltcon)
-    call wkvect('&&ELG_REMPLT.T_LIB.CON', 'V V R', nzmax**2, ltlib)
-    call VecCreateSeq(mpicow, nbeq, c_temp, ierr)
-    call VecCreateSeq(mpicow, nbeq, v_temp, ierr)
+! 
+    call wkvect('&&ELG_REMPLT.T_LIB.CON', 'V V R', nworkt, ltlib)
+    call wkvect('&&ELG_REMPLT.COMP_IND', 'V V S', nbeq, compnd)
+    posind=0
+    call VecCreateSeq(mpicomm, nbeq, c_temp, ierr)
+    call VecCreateSeq(mpicomm, nbeq, v_temp, ierr)
 !
 !--------------------------------!
 !--                            --!
@@ -106,6 +120,8 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--                            --!
 !--------------------------------!
 !
+    !write(6,*),'%-- REMPLT.F90'
+    !write(6,*),'    nworkt=',nworkt
     do i1 = 1, clag1
         if (info2) write(ifm,*),' '
         if (info2) write(ifm,*),' '
@@ -113,8 +129,10 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
         if (info2) write(ifm,*),' '
         call MatGetRow(c, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
                        ierr)
+        !write(6,*),' OK MatGetRow',ierr              
         call MatRestoreRow(c, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
                            ierr)
+        !write(6,*),' OK MatRestoreRow',ierr               
 !--
 !-- Normalisation de C
 !-- Normalement, les lignes de C sont deja normees
@@ -135,18 +153,26 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
 !--
 !-- Recopie de la contrainte, en normalisant
         call VecSet(c_temp, 0.d0, ierr)
+        !write(6,*),' OK VecSet',ierr
         call VecSet(v_temp, 0.d0, ierr)
+        !write(6,*),' OK VecSet',ierr
+        
         do j1 = 1, nbnz
             numcon=zi4(nzrow+zi4(indnz+j1-1))
             call VecSetValues(c_temp, 1, [int(numcon, 4)], zr(ctemp+j1-1), INSERT_VALUES,&
                               ierr)
         end do
+        !write(6,*),' OK VecSetValues',ierr
         call VecAssemblyBegin(c_temp, ierr)
+        !write(6,*),' OK VecAssemblyBegin',ierr
         call VecAssemblyEnd(c_temp, ierr)
+        !write(6,*),' OK VecAssemblyEnd',ierr
 !--
 !-- Calcul du produit C_temp*T
         call MatMultTranspose(t, c_temp, v_temp, ierr)
+        !write(6,*),' OK MatMultTranspose',ierr
         call VecNorm(v_temp, norm_2, norm, ierr)
+        !write(6,*),' OK VecNorm',ierr
         if (info2) write(ifm,*),'   |C(I1,:).T|=',norm
         if (info2) write(ifm,*),' '
         if (norm .lt. 1e-12) then
@@ -161,7 +187,6 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
         nblibt=0
         cmax=0.d0
         imax=0
-        
         if (nbnz .gt. 1) then
             do j1 = 1, nbnz
                 if (zi4(contr + numcon) .eq. 0) nblibt=nblibt+1
@@ -185,13 +210,15 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                     nbcont=nbcont+1
                 endif
             end do
+            !write(6,*),'  imax=',imax
+            !write(6,*),'  cmax=',cmax
 !
             if (nbcont .eq. 0) then
-!-----------------------------------------------------------------------
-!--                                                                  --!
+!--------------------------------------------------------------------------!
+!--                                                                      --!
 !-- Construction d'une base du noyau de toute la contrainte - elg_nllspc --!
-!--                                                                  --!
-!-----------------------------------------------------------------------
+!--                                                                      --!
+!--------------------------------------------------------------------------!
                 call elg_nllspc(nbnz, zr(lclib), zr(ltlib))
 !            CALL JEVEUO('&&APELIM.T_LIB.CON','E',LTLIB)
                 do j1 = 1, nbnz
@@ -246,24 +273,49 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
 !
                 else
+                    do j1 = 1, nblib
+                        numcon=zi4(indlib+j1-1)
+                        zi4(compnd+posind+j1-1)=numcon
+                     end do
+                     posind=posind+nbnz   
                     if (info2) write(ifm,*),'CAS NBCONT = 0'
                     if (info2) write(ifm,*),'CONTRAINTE BIEN ELIMINEE - ', norm
                 endif
 !
 !
             else if (nblib .gt. 0) then
-!-----------------------------------------------------------!
-!--                                                       --!
+!---------------------------------------------------------------!
+!--                                                           --!
 !-- cont > 0 et lib > 0 : probleme moindre carre + elg_nllspc --!
-!--                                                       --!
-!-----------------------------------------------------------!
+!--                                                           --!
+!---------------------------------------------------------------!
 !--
 !-- Partie T(lib,con) = -C(i1,lib) \ (C(i1,con) * T(con,con)) ;
 !--
-                call MatGetValues(t, nbcont, zi4(indcon), nbcont, zi4( indcon),&
-                                  zr(ltcon), ierr)
+!--
+!--   Pour les perf : faire ca en creux en extrayant les sous blocs
+!--    des matrices! Pas la peine defaire la recopie en plein
+!--
+
+                nbcont=posind
+! zr(ltcon) et zr(ltlib) ne sont jamais utilises ensemble => pas besoin de 2 tableaux
+!              call MatGetValues(t, nbcont, zi4(compnd), nbcont, zi4(compnd),&
+!                zr(ltcon), ierr)
+                call MatGetValues(t, nbcont, zi4(compnd), nbcont, zi4(compnd),&
+                                  zr(ltlib), ierr)
 !--         Retourne la matrice stockee en ligne
-                call dgemv('N', nbcont, nbcont, 1.d0, zr(ltcon),&
+!                call dgemv('N', nbcont, nbcont, 1.d0, zr(ltcon),&
+!                           nbcont, zr(lccon), 1, 0.d0, zr(lwork1),&
+!                           1)
+
+!  Suite changement des indices, on re affecte la partir de C pour le produit 
+!  et on renorme la ligne de C               
+                call MatGetValues(c,1,[int(i1-1,4)], nbcont, zi4(compnd),&
+                                  zr(lccon), ierr)
+                do j1 = 1, nbcont
+                  zr(lccon+j1-1)=zr(lccon+j1-1)/normc
+                end do                  
+                call dgemv('N', nbcont, nbcont, 1.d0, zr(ltlib),&
                            nbcont, zr(lccon), 1, 0.d0, zr(lwork1),&
                            1)
                 numcon=zi4(indlib+imax)
@@ -278,8 +330,9 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                     nbnvco=nbnvco+1
                     goto 123
                 endif
+                !
                 do j1 = 1, nbcont
-                    icol=zi4(indcon+j1-1)
+                    icol=zi4(compnd+j1-1)
                     call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
                                       [-zr(lwork1+ j1-1)/zr(lclib+imax)], INSERT_VALUES, ierr)
                 end do
@@ -354,6 +407,12 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
                     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
 !
                 else
+                    do j1 = 1, nblib
+                        numcon=zi4(indlib+j1-1)
+                        zi4(compnd+posind+j1-1)=numcon
+                     end do
+                     posind=posind+nblib
+                    
                     if (info2) write(ifm,*),'CAS NBLIB < NBNZ'
                     if (info2) write(ifm,*),'CONTRAINTE BIEN ELIMINEE - ', norm
                 endif
@@ -370,12 +429,17 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
         else
             numcon=zi4(nzrow+zi4(indnz))
             iscons=zi4(contr + numcon)
+            !write(6,*),'numcon=',numcon
+            !write(6,*),'iscons=',iscons
+            
             if (iscons .eq. 0) then
                 call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(numcon, 4)],&
                                   [0.d0], INSERT_VALUES, ierr)
                 zi4(contr + numcon) = 1
                 call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
                 call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
+                zi4(compnd+posind)=numcon
+                posind=posind+1 
 !
             else
 !--
@@ -403,13 +467,14 @@ subroutine elg_remplt(c, t, nbeq, clag1, nbnvco,&
     call jedetr('&&ELG_REMPLT.VEC_WORK1')
     call jedetr('&&ELG_REMPLT.T_CON.CON')
     call jedetr('&&ELG_REMPLT.T_LIB.CON')
+    call jedetr('&&ELG_REMPLT.COMP_IND')
 !
 #else
     integer :: c, t
-    integer :: nbeq, clag1, nbnvco
+    integer :: nworkt, nbnvco
     character(len=14) :: nonu
     nonu = ' '
-    t = c + nbeq + clag1 + nbnvco
+    t = c + nworkt + nbnvco
     ASSERT(.false.)
 #endif
 end subroutine

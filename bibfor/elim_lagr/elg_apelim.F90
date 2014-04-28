@@ -26,6 +26,8 @@ subroutine elg_apelim(kptsc, lqr)
 # include "asterc/r8prem.h"
 # include "asterfort/apalmc.h"
 # include "asterfort/apmamc.h"
+# include "asterfort/as_allocate.h"
+# include "asterfort/as_deallocate.h"
 # include "asterfort/assert.h"
 # include "asterfort/dismoi.h"
 # include "asterfort/infniv.h"
@@ -58,9 +60,6 @@ subroutine elg_apelim(kptsc, lqr)
 !
 !================================================================
 !
-!
-!================================================================
-!
 !     VARIABLES LOCALES
     integer :: ifm, niv
     character(len=19) :: nomat, nosolv, rigi1
@@ -68,25 +67,24 @@ subroutine elg_apelim(kptsc, lqr)
     character(len=16) :: concep, nomcmd
     logical :: lmd, info2
     PetscInt :: ierr
-    Mat :: c, c2, c3, t, t2, mtemp
+    Mat :: c, ct,c2, t, t2, mtemp
     IS :: isfull, islag1, isphys, isred
     IS :: isnvco, istout
     integer :: clag1, clag2, cphys, nbphys, nblag, i1, j1, nbelig
-    PetscInt :: n1, n2, nterm
-    integer :: nbeq, ilag1, ilag2, iphys, nnzt, contr
-    integer :: nzrow, valrow, indnz, indcon, indlib
+    PetscInt ::  nterm
+    integer :: nbeq, ilag1, ilag2, iphys, nnzt, contr, pos
+    integer :: nzrow, valrow, indnz, indcon, indlib, nworkt
     integer :: ctemp, redem, nvcont, nbnvco, ifull, nbred
     integer :: ilig, jcol, ico, kterm, ieq, k, kptscr, ktrou
     real(kind=8) :: temp, eps
     character(len=8) :: k8b
-    PetscInt, allocatable :: irow(:), indred_1(:), indred_2(:)
-    real(kind=8), allocatable :: vrow(:)
     integer, pointer :: delg(:) => null()
+    real(kind=8), dimension(:), pointer :: norm_t => null()
     character(len=24), pointer :: slvk(:) => null()
-    mpi_int :: mpicow
+    mpi_int :: mpicomm
 !----------------------------------------------------------------
     call jemarq()
-    call asmpi_comm('GET_WORLD', mpicow)
+    call asmpi_comm('GET_WORLD', mpicomm)
     call infniv(ifm, niv)
     info2=niv.eq.2
 !
@@ -207,20 +205,20 @@ subroutine elg_apelim(kptsc, lqr)
     end do
     ASSERT(cphys.eq.nbphys)
 !
-    call ISCreateGeneral(mpicow, nbeq, zi4(ifull), PETSC_USE_POINTER, isfull,&
+    call ISCreateGeneral(mpicomm, nbeq, zi4(ifull), PETSC_USE_POINTER, isfull,&
                          ierr)
-    call ISCreateGeneral(mpicow, nbphys, zi4(iphys), PETSC_USE_POINTER, isphys,&
+    call ISCreateGeneral(mpicomm, nbphys, zi4(iphys), PETSC_USE_POINTER, isphys,&
                          ierr)
-    call ISCreateGeneral(mpicow, nblag, zi4(ilag1), PETSC_USE_POINTER, islag1,&
+    call ISCreateGeneral(mpicomm, nblag, zi4(ilag1), PETSC_USE_POINTER, islag1,&
                          ierr)
 !
 !
-!-- On extrait toutes les lignes  de la matrice C transposee
+!   -- On extrait la matrice C transposée
     call MatGetSubMatrix(ap(kptscr), isfull, islag1, MAT_INITIAL_MATRIX, melim(ke)%ctrans,&
                          ierr)
 !
 !
-!   --O n annule les lignes associees a ILAG1 et ILAG2
+!   --On annule les lignes associées a ILAG1 et ILAG2
     call MatZeroRows(melim(ke)%ctrans, nblag, zi4(ilag1), 0.d0, 0,&
                      0, ierr)
     call MatZeroRows(melim(ke)%ctrans, nblag, zi4(ilag2), 0.d0, 0,&
@@ -228,16 +226,13 @@ subroutine elg_apelim(kptsc, lqr)
 !   -- On transpose pour avoir C, de la bonne taille
     call MatTranspose(melim(ke)%ctrans, MAT_INITIAL_MATRIX, c, ierr)
 !
-!
-!
-!
 !  -- Allocation et remplissage de Tfinal, qui servira pour la projection de la matrice :
 !  ---------------------------------------------------------------------------------------
     call wkvect('&&APELIM.NNZ_MAT_T      ', 'V V S', nbeq, nnzt)
     do i1 = 1, nbeq
         zi4(nnzt+i1-1)=1
     end do
-    call MatCreateSeqAIJ(mpicow, nbeq, nbeq, int(PETSC_NULL_INTEGER), zi4(nnzt),&
+    call MatCreateSeqAIJ(mpicomm, nbeq, nbeq, int(PETSC_NULL_INTEGER), zi4(nnzt),&
                          melim(ke)%tfinal, ierr)
 !
     do i1 = 1, nbeq
@@ -281,9 +276,7 @@ subroutine elg_apelim(kptsc, lqr)
 !--                                                --!
 !----------------------------------------------------!
 !
-    call MatGetSize(melim(ke)%ctrans, n1, n2, ierr)
-    call MatGetSize(c, n1, n2, ierr)
-    call elg_comptt(c, t, nbeq, clag1)
+    call elg_comptt(c, t, nworkt)
 !
 !--------------------------------!
 !--                            --!
@@ -291,8 +284,7 @@ subroutine elg_apelim(kptsc, lqr)
 !--                            --!
 !--------------------------------!
 !
-    call elg_remplt(c, t, nbeq, clag1, nbnvco,&
-                    nonu)
+    call elg_remplt(c, nonu, nworkt, t, nbnvco)
 !
 !
 !-----------------------------!
@@ -310,31 +302,29 @@ subroutine elg_apelim(kptsc, lqr)
         do j1 = 1, nbnvco
             if (info2) write(ifm,*) j1,' - ',zi4(nvcont+j1-1)+1
         end do
-!
-        call MatDuplicate(c, MAT_COPY_VALUES, c2, ierr)
-        call MatDestroy(c, ierr)
-!
-        call MatMatMult(c2, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION, c3,&
+! CT <- C*T
+        call MatMatMult(c, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION, ct,&
                         ierr)
-        call MatDestroy(c2, ierr)
-!
-        call ISCreateGeneral(mpicow, nbnvco, zi4(nvcont), PETSC_USE_POINTER, isnvco,&
+        call MatDestroy(c, ierr)
+! On extrait de CT la sous-matrice des contraintes qui n'ont pas été éliminées
+! On nomme C cette nouvelle matrice des contraintes 
+        call ISCreateGeneral(mpicomm, nbnvco, zi4(nvcont), PETSC_USE_POINTER, isnvco,&
                              ierr)
-        call MatGetSubMatrix(c3, isnvco, isfull, MAT_INITIAL_MATRIX, c,&
+        call MatGetSubMatrix(ct, isnvco, isfull, MAT_INITIAL_MATRIX, c,&
                              ierr)
-        call MatDestroy(c3, ierr)
-!
+        call MatDestroy(ct, ierr)
+! T2 = TFinal 
         call MatDuplicate(melim(ke)%tfinal, MAT_COPY_VALUES, t2, ierr)
         call MatDestroy(melim(ke)%tfinal, ierr)
+! TFinal = T2 * T 
         call MatMatMult(t2, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION,&
                         melim(ke)%tfinal, ierr)
-!
+! 
         call MatDestroy(t, ierr)
 !
         do i1 = 1, nbnvco
             zi4(nvcont+i1-1)=0
         end do
-        clag1=nbnvco
         nbnvco=0
 !
         do i1 = 1, nbeq
@@ -384,19 +374,13 @@ subroutine elg_apelim(kptsc, lqr)
     end do
 !
 !
-!
-!
-    call MatGetColumnNorms(melim(ke)%tfinal, norm_2, zr(ctemp), ierr)
-    ASSERT(ierr.eq.0)
-!
-!
 !   -- on "retasse" les matrices Ctrans, Tfinal :
 !   ---------------------------------------------
 !
 !   -- Ctrans :
     call MatDuplicate(melim(ke)%ctrans, MAT_COPY_VALUES, mtemp, ierr)
     call MatDestroy(melim(ke)%ctrans, ierr)
-    call ISCreateGeneral(mpicow, nblag, zi4(ifull), PETSC_USE_POINTER, istout,&
+    call ISCreateGeneral(mpicomm, nblag, zi4(ifull), PETSC_USE_POINTER, istout,&
                          ierr)
     call MatGetSubMatrix(mtemp, isphys, istout, MAT_INITIAL_MATRIX, melim(ke)%ctrans,&
                          ierr)
@@ -407,45 +391,24 @@ subroutine elg_apelim(kptsc, lqr)
 !       calcul de isred : indices des colonnes non vides de Tfinal
 !       calcul de nbred : longueur de isred
 !       calcul de indred : tableau fortran stocké dans le common
-    allocate(indred_1(nbeq)); indred_1=0
-    allocate(indred_2(nbeq))
-    allocate(irow(nbeq))
-    allocate(vrow(nbeq))
-    do ilig = 1, nbeq
-        call MatGetRow(melim(ke)%tfinal, ilig-1, nterm, irow(1), vrow(1),&
-                       ierr)
-        if (nterm .gt. 0) then
-            do kterm = 1, nterm
-                if (vrow(kterm) .ne. 0.) then
-                    jcol=irow(kterm)
-                    indred_1(jcol+1)=1
-                endif
-            enddo
-        endif
-        call MatRestoreRow(melim(ke)%tfinal, ilig-1, int(nterm), irow(1), vrow(1),&
-                           ierr)
-    enddo
-    deallocate(irow)
-    deallocate(vrow)
-!
-    ico=0
+    AS_ALLOCATE( vr=norm_t, size=nbeq )
+    call MatGetColumnNorms(melim(ke)%tfinal, norm_2, norm_t(1), ierr)
+    ASSERT( ierr == 0 ) 
+    ! Nombre de colonnes non-nulles de Tfinal 
+    nbred=count( norm_t > r8prem()) 
+    AS_ALLOCATE( vi4=melim(ke)%indred, size=nbred )   
+    ! Indices FORTRAN des colonnes non-nulles de Tfinal
+    pos = 0
     do ieq = 1, nbeq
-        if (indred_1(ieq) .eq. 1) then
-            ico=ico+1
-            indred_2(ico)=ieq
-        endif
+      if ( norm_t(ieq) > r8prem()) then
+        pos = pos+1  
+        melim(ke)%indred(pos) = ieq
+      endif
     enddo
-    nbred=ico
-    ASSERT(.not.associated(melim(ke)%indred))
-    allocate(melim(ke)%indred(nbred))
-    melim(ke)%indred(1:nbred)=indred_2(1:nbred)
 !
-    deallocate(indred_1)
-    deallocate(indred_2)
-!
-!   -- on change les indices temporairement pour appeler petsc (1->0)
-    melim(ke)%indred=melim(ke)%indred-1
-    call ISCreateGeneral(mpicow, nbred, melim(ke)%indred, PETSC_USE_POINTER, isred,&
+!   -- On passe en convention C 
+    melim(ke)%indred(:)=melim(ke)%indred(:)-1
+    call ISCreateGeneral(mpicomm, nbred, melim(ke)%indred, PETSC_USE_POINTER, isred,&
                          ierr)
 !
     call MatDuplicate(melim(ke)%tfinal, MAT_COPY_VALUES, mtemp, ierr)
@@ -453,7 +416,7 @@ subroutine elg_apelim(kptsc, lqr)
     call MatGetSubMatrix(mtemp, isphys, isred, MAT_INITIAL_MATRIX, melim(ke)%tfinal,&
                          ierr)
 !     -- on revient aux indices FORTRAN :
-    melim(ke)%indred=melim(ke)%indred+1
+    melim(ke)%indred(:)=melim(ke)%indred(:)+1
     call MatDestroy(mtemp, ierr)
     call ISDestroy(istout, ierr)
 !
@@ -470,13 +433,9 @@ subroutine elg_apelim(kptsc, lqr)
     call MatPtAP(melim(ke)%matb, melim(ke)%tfinal, MAT_INITIAL_MATRIX, 1.d0, melim(ke)%kproj,&
                  ierr)
 !
-!
-    eps=r8prem()
-    clag1=0
-    do i1 = 1, nbeq
-        temp=zr(ctemp+i1-1)
-        if (abs(temp) .lt. eps) clag1=clag1+1
-    end do
+!  -- Vérification du nombre de contraintes éliminées :
+!  ----------------------------------------------------
+    clag1=count(norm_t < r8prem())
 !
     nbelig=clag1-2*nblag
     if (info2) then
@@ -501,7 +460,6 @@ subroutine elg_apelim(kptsc, lqr)
             ASSERT(.false.)
         endif
     endif
-!
 !
 !--
 !-- On profite de l'extraction de Ctrans pour en faire une
@@ -530,6 +488,7 @@ subroutine elg_apelim(kptsc, lqr)
     call jedetr('&&APELIM.IND_LIBRES')
     call jedetr('&&APELIM.CONTR_NON_VERIF')
     call jedetr('&&APELIM.LIGNE_C_TEMP')
+    AS_DEALLOCATE(vr=norm_t)
 !
 !
     call matfpe(1)
