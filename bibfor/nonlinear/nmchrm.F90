@@ -101,6 +101,9 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 !
 ! --- PARAMETRES
 !
+
+
+
     reincr = nint(parmet(1))
     reiter = nint(parmet(2))
     metcor = method(2)
@@ -197,6 +200,11 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
             call utmess('A', 'MECANONLINE5_5')
             reasma = .true.
         endif
+    endif
+!
+    if (lchoc) then
+        metcor = 'TANGENTE'
+        metpre = 'TANGENTE'
     endif
 !
 ! --- VARIABLES COMMANDES: LA MATRICE ELASTIQUE DOIT ETRE REACTUALISEE
