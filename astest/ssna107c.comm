@@ -1,0 +1,229 @@
+# person_in_charge: philippe.debonnieres at edf.fr
+# TITRE CYLINDRE CREUX VISCOPLASTICITE NON-LINEAIRE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+MA = LIRE_MAILLAGE(FORMAT='MED',);
+
+MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_LIGNE=_F(GROUP_MA ='cyl', 
+                   VECT_TANG =   (0.,1.,0.), 
+                   GROUP_NO=   'B',         
+                   ))
+
+
+MA = DEFI_GROUP(reuse =MA,
+                MAILLAGE=MA,
+                CREA_GROUP_NO =(
+                       _F(TOUT_GROUP_MA = 'OUI',),
+                        )
+                )
+
+MO = AFFE_MODELE( MAILLAGE =MA,
+                  AFFE=_F(
+                       TOUT ='OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = 'COQUE_AXIS',)
+                 )
+
+CARAELE=AFFE_CARA_ELEM(  MODELE=MO,
+                      COQUE=_F( GROUP_MA = 'cyl',
+                                EPAIS = 0.02,
+                                #A_CIS = 0.83333,
+                                #ANGL_REP=(90.0,0,),
+                                ) )
+
+MAT = DEFI_MATERIAU(
+            ELAS=_F( E = 1., NU = 0.3, ALPHA = 0.),
+            CIN1_CHAB=_F( R_0 = 0.,
+                          R_I = 0.,
+                          B   = 0.,
+                          C_I = 0.,
+                          K   = 0.,
+                          W   = 0.,
+                          G_0 = 0.,
+                          A_I = 0.),
+            LEMAITRE=_F( N = 2.,UN_SUR_K = 1.,UN_SUR_M = 0.)
+           )
+CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
+                       AFFE =_F(TOUT='OUI',
+                                MATER = MAT,
+                                )
+                       )
+
+# DEFORMATION AXIALE IMPOSEE
+# ON IMPOSE UN DEPLACEMENT EN DZ SUR LES FACES SUPERIEURES
+# ET INFERIEURES DU CYLINDRE.
+
+
+F_DEPL = DEFI_FONCTION (NOM_PARA = 'INST',
+                        PROL_DROITE = 'CONSTANT',
+                        PROL_GAUCHE = 'CONSTANT',
+                        VALE =( 0.,  0.,
+                                2.,  0.25,
+                                4.,  0.25,),
+                        )
+F_MDEPL = DEFI_FONCTION (NOM_PARA = 'INST',
+                        PROL_DROITE = 'CONSTANT',
+                        PROL_GAUCHE = 'CONSTANT',
+                        VALE =( 0.,  0.,
+                                2.,  -0.25,
+                                4.,  -0.25,),
+                        )
+
+
+CHAR = AFFE_CHAR_MECA_F (MODELE = MO,
+                       DDL_IMPO=(
+                              _F(GROUP_NO ='H',
+                                   DY=F_DEPL),
+                              _F(GROUP_NO ='B',
+                                   DY=F_MDEPL),
+                      ))
+
+
+L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
+                        INTERVALLE=(
+                        _F( PAS = 0.002,        JUSQU_A = 0.1),
+                        _F( PAS = 0.004,        JUSQU_A = 0.3),
+                        _F( PAS = 0.01,        JUSQU_A = 1.),
+                        _F( PAS = 0.02,         JUSQU_A = 4.),
+                                     )
+                      )
+
+RESU = STAT_NON_LINE (MODELE = MO,
+                      CARA_ELEM=CARAELE,
+                      CHAM_MATER = CHMAT,
+                      EXCIT =(
+                         _F( CHARGE = CHAR),),
+                      COMPORTEMENT =_F(RELATION ='VISC_CIN1_CHAB',
+                                    ITER_INTE_MAXI = 1000),
+                      INCREMENT =_F(LIST_INST =L_INST,  ),
+                      NEWTON    =_F(
+                                MATRICE ='TANGENTE',
+                                REAC_ITER= 1),
+                      CONVERGENCE=_F(
+                                RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 25)
+                        )
+
+RESU = CALC_CHAMP( reuse= RESU,
+                  RESULTAT = RESU,
+                   CONTRAINTE=('SIGM_ELNO'),)
+
+
+CHPOSTI=POST_CHAMP(RESULTAT=RESU, 
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1, 
+                                  NIVE_COUCHE='INF',),);
+
+CHPOSTI=CALC_CHAMP(reuse=CHPOSTI,RESULTAT=CHPOSTI,CONTRAINTE=('SIGM_NOEU'))
+
+
+CHPOSTM=POST_CHAMP(RESULTAT=RESU, 
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1, 
+                                  NIVE_COUCHE='MOY',),);
+
+CHPOSTM=CALC_CHAMP(reuse=CHPOSTM,RESULTAT=CHPOSTM,CONTRAINTE=('SIGM_NOEU'))
+
+CHPOSTS=POST_CHAMP(RESULTAT=RESU, 
+                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                                  NUME_COUCHE=1, 
+                                  NIVE_COUCHE='SUP',),);
+
+CHPOSTS=CALC_CHAMP(reuse=CHPOSTS,RESULTAT=CHPOSTS,CONTRAINTE=('SIGM_NOEU'))
+
+
+SILINE=POST_RELEVE_T(ACTION=(
+                           _F(OPERATION='EXTRACTION',
+                                  INTITULE='SI',
+                                  INST=4.,
+                                  RESULTAT=CHPOSTI,
+                                  NOM_CHAM='SIGM_NOEU',
+                                  GROUP_NO='cyl',
+                                  NOM_CMP='SIYY',), 
+
+                           _F(OPERATION='EXTRACTION',
+                                  INTITULE='SI',
+                                  INST=4.,
+                                  RESULTAT=CHPOSTM,
+                                  NOM_CHAM='SIGM_NOEU',
+                                  GROUP_NO='cyl',
+                                  NOM_CMP='SIYY',),  
+
+                           _F(OPERATION='EXTRACTION',
+                                  INTITULE='SI',
+                                  INST=4.,
+                                  RESULTAT=CHPOSTS,
+                                  NOM_CHAM='SIGM_NOEU',
+                                  GROUP_NO='cyl',
+                                  NOM_CMP='SIYY',),
+
+                       )
+);
+
+IMPR_TABLE(TABLE=SILINE,UNITE=11, COMMENTAIRE='#', TRI=_F(NOM_PARA=('COOR_Y'),
+                      ORDRE='CROISSANT'));
+
+
+TEST_RESU(RESU=(_F(INST=4.,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-0.20877887227497,
+                   VALE_REFE=-0.2109,PRECISION=2.E-2,
+                   ),
+                _F(INST=4.,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CHPOSTS,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=0.21644117387282,
+                   VALE_REFE=0.21615999999999999,PRECISION=2.E-2,),
+                _F(INST=4.,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CHPOSTS,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   VALE_CALC= 4.82452910E-09,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(INST=4.,
+                   GROUP_NO='B',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=CHPOSTS,
+                   NOM_CHAM='SIGM_NOEU',
+                   MAILLE='M1',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC= 4.82452898E-09,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',),
+                ),
+          )
+
+
+
+FIN()
