@@ -80,7 +80,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: depsth(6), valres(3), pm, xp(6), plast, para_vale
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, hp, gp, g1, rpm
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy, xm(6)
-    real(kind=8) :: sigedv(6), signul
+    real(kind=8) :: sigedv(6)
     real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6), cc
     real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigel(6)
     real(kind=8) :: hsg, pp, prag, pragm, precr, tm, tp, epsthe
@@ -97,7 +97,6 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !     -- 1 INITIALISATIONS :
 !     ----------------------
     cplan = typmod(1) .eq. 'C_PLAN'
-    signul = crit(3)
     ndimsi = 2*ndim
     imate2=imate
     iret=0
@@ -275,17 +274,9 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         else
             plast = 1.d0
             if (cplan) then
-                prec   = crit(8)
-                niter  = nint(crit(9))
-                if (prec .gt. 0.d0) then
-                    if (sigy .lt. signul) then
-                        precr = prec
-                    else
-                        precr = prec*sigy
-                    endif
-                else
-                    precr = abs(prec)
-                endif
+                prec  = abs(crit(3))
+                niter = abs(nint(crit(1)))
+                precr = prec * sigy
 !
 !             CALCUL DE L'APPROXIMATION : DP SANS CONTRAINTE PLANE
 !

@@ -112,7 +112,7 @@ SOLNL=STAT_NON_LINE(
                 FONC_MULT = COEF,
                 TYPE_CHARGE = 'FIXE_CSTE'),
                          COMPORTEMENT=_F(
-                RESI_CPLAN_RELA=1.E-4,ITER_CPLAN_MAXI=1,
+                RESI_CPLAN_RELA=1.E-4,
                 ALGO_INTE='SECANTE',
                 RELATION = 'VMIS_CIN2_CHAB',
                 DEFORMATION = 'PETIT',

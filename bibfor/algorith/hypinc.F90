@@ -32,6 +32,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
 ! person_in_charge: mickael.abbas at edf.fr
 !
     integer :: kpg, ksp, ndim
@@ -181,8 +182,8 @@ implicit none
             end do
         end do
     else if (typmod(1)(1:6) .eq. 'C_PLAN') then
-        epsi   = abs(crit(8))
-        nitmax = nint(crit(9))
+        epsi   = abs(crit(3))
+        nitmax = abs(nint(crit(1)))
 ! --- CALCUL DES ELONGATIONS
         c11 = 2.d0*epstot(1)+1.d0
         c12 = 2.d0*epstot(4)

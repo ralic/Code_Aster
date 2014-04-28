@@ -169,8 +169,8 @@ implicit none
             end do
         end do
     else if (typmod(1)(1:6) .eq. 'C_PLAN') then
-        epsi   = abs(crit(8))
-        nitmax = nint(crit(9))
+        epsi   = abs(crit(3))
+        nitmax = abs(nint(crit(1)))
 
 ! --- CALCUL DES ELONGATIONS
         c11 = 2.d0*epstot(1)+1.d0

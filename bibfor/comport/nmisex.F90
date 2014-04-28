@@ -82,7 +82,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6)
     real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigel(6), a
     real(kind=8) :: defam(6), defap(6), line
-    real(kind=8) :: precr, dp0, xap, signul, prec
+    real(kind=8) :: precr, dp0, xap
     real(kind=8) :: valrm(2)
     real(kind=8) :: rac2
     integer :: icodre(3)
@@ -105,7 +105,6 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
     dech = option(11:14).eq.'ELAS'
-    signul = crit(3)
     if (inco) then
         co = 0.d0
     else
@@ -284,17 +283,8 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
                 pm = vim(1)
 !
                 if (cplan) then
-                    prec   = crit(8)
-                    niter  = nint(crit(9))
-                    if (prec .gt. 0.d0) then
-                        if (sigy .lt. signul) then
-                            precr = prec
-                        else
-                            precr = prec*sigy
-                        endif
-                    else
-                        precr = abs(prec)
-                    endif
+                    niter = abs(nint(crit(1)))
+                    precr = abs(crit(3)) * sigy
 !
 !             CALCUL DE L'APPROXIMATION : DP SANS CONTRAINTE PLANE
 !

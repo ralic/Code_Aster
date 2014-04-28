@@ -55,8 +55,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
     integer :: iocc, iret, nbocc
     character(len=16) :: algo_inte, type_matr_tang, method, post_iter
     real(kind=8) :: parm_theta, vale_pert_rela
-    real(kind=8) :: resi_cplan_maxi, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
-    integer :: type_matr_t, iter_inte_pas, iter_cplan_maxi
+    real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
+    integer :: type_matr_t, iter_inte_pas, iter_deborst_max
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
     character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
     logical :: l_kit_thm
@@ -117,15 +117,15 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
 !
 ! ----- Get ITER_CPLAN_MAXI/RESI_CPLAN_MAXI/RESI_CPLAN_RELA (Deborst method)
 !
-        resi_cplan_maxi = 1.d-6
-        iter_cplan_maxi = 10
-        call getvis(keywordfact, 'ITER_CPLAN_MAXI', iocc = iocc, scal = iter_cplan_maxi)
-        call getvr8(keywordfact, 'RESI_CPLAN_MAXI', iocc = iocc, scal = resi_cplan_maxi, &
+        resi_deborst_max = 1.d-6
+        iter_deborst_max = 1
+        call getvis(keywordfact, 'ITER_CPLAN_MAXI', iocc = iocc, scal = iter_deborst_max)
+        call getvr8(keywordfact, 'RESI_CPLAN_MAXI', iocc = iocc, scal = resi_deborst_max, &
                     nbret = iret)
         if (iret .ne. 0) then
-            resi_cplan_maxi = -resi_cplan_maxi
+            resi_deborst_max = -resi_deborst_max
         else
-            call getvr8(keywordfact, 'RESI_CPLAN_RELA', iocc = iocc, scal = resi_cplan_maxi)
+            call getvr8(keywordfact, 'RESI_CPLAN_RELA', iocc = iocc, scal = resi_deborst_max)
         endif
 !
 ! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA/SEUIL/AMPLITUDE/TAUX_RETOUR
@@ -223,8 +223,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr)
         info_carc_valr(13*(iocc-1) + 5)  = iter_inte_pas
         info_carc_valr(13*(iocc-1) + 6)  = 0.d0
         info_carc_valr(13*(iocc-1) + 7)  = vale_pert_rela
-        info_carc_valr(13*(iocc-1) + 8)  = resi_cplan_maxi
-        info_carc_valr(13*(iocc-1) + 9)  = iter_cplan_maxi
+        info_carc_valr(13*(iocc-1) + 8)  = resi_deborst_max
+        info_carc_valr(13*(iocc-1) + 9)  = iter_deborst_max
         info_carc_valr(13*(iocc-1) + 10) = seuil
         info_carc_valr(13*(iocc-1) + 11) = amplitude
         info_carc_valr(13*(iocc-1) + 12) = taux_retour

@@ -80,7 +80,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     real(kind=8) :: kdess, bendo, ther, epsth(6), epsmo, epsdv(6), epseq, sieleq
     real(kind=8) :: p, rp, rprim, g, coef, epsi, airerp
     real(kind=8) :: approx, prec, x, kron(6), divu, biot
-    real(kind=8) :: coco, dp0, rprim0, xap, precr, signul
+    real(kind=8) :: coco, dp0, rprim0, xap, precr
 !
 !====================================================================
 !---COMMONS NECESSAIRES A HENCKY C_PLAN (NMCRI1)
@@ -100,7 +100,6 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
     data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
-    signul = crit(8)
     elas = (compor(1)(1:5) .eq. 'ELAS ')
     vmis = (compor(1)(1:9) .eq. 'ELAS_VMIS')
     line = (compor(1)(1:14).eq. 'ELAS_VMIS_LINE')
@@ -310,19 +309,10 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum, ndim,&
             endif
 !         CALCUL DE P (EQUATION PROPRE AUX CONTRAINTES PLANES)
             approx = 2.d0*epseq/3.d0 - sigy/1.5d0/deuxmu
-            prec   = crit(8)
-            niter  = nint(crit(9))
-            if (prec .gt. 0.d0) then
-                if (sigy .lt. signul) then
-                    precr = prec
-                else
-                    precr = prec*sigy
-                endif
-            else
-                precr = abs(prec)
-            endif
+            prec  = abs(crit(3)) * sigy
+            niter = abs(nint(crit(1)))
             call zerofr(0, 'DEKKER', nmcri1, 0.d0, approx,&
-                        precr, niter, p, iret, ibid)
+                        prec, niter, p, iret, ibid)
             if (iret .ne. 0) then
                 call utmess('F', 'ALGORITH8_65')
             endif

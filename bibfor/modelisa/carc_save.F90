@@ -70,8 +70,8 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
     real(kind=8), pointer :: p_carc_valv(:) => null()
     character(len=16) :: algo_inte, rela_comp
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
-    real(kind=8) :: resi_cplan_maxi, seuil, amplitude, taux_retour, parm_alpha
-    integer :: type_matr_t, iter_inte_pas, iter_cplan_maxi
+    real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha
+    integer :: type_matr_t, iter_inte_pas, iter_deborst_max
     logical :: plane_stress
 !
 ! --------------------------------------------------------------------------------------------------
@@ -100,8 +100,8 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
         iter_inte_pas   = int(info_carc_valr(13*(iocc-1) + 5))
         algo_inte_r     =     info_carc_valr(13*(iocc-1) + 6)
         vale_pert_rela  =     info_carc_valr(13*(iocc-1) + 7)
-        resi_cplan_maxi =     info_carc_valr(13*(iocc-1) + 8)
-        iter_cplan_maxi = int(info_carc_valr(13*(iocc-1) + 9))
+        resi_deborst_max =     info_carc_valr(13*(iocc-1) + 8)
+        iter_deborst_max = int(info_carc_valr(13*(iocc-1) + 9))
         seuil           =     info_carc_valr(13*(iocc-1) + 10)
         amplitude       =     info_carc_valr(13*(iocc-1) + 11)
         taux_retour     =     info_carc_valr(13*(iocc-1) + 12)
@@ -134,8 +134,8 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
 !
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
 !
-        call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
-        call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
+        call nmdocv(keywordfact   , iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+        call nmdocv(keywordfact   , iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
 !
 ! ----- Set in <CARTE>
 !
@@ -146,8 +146,8 @@ subroutine carc_save(model           , mesh            , carcri, nb_cmp, &
         p_carc_valv(5)  = iter_inte_pas
         p_carc_valv(6)  = algo_inte_r
         p_carc_valv(7)  = vale_pert_rela
-        p_carc_valv(8)  = resi_cplan_maxi
-        p_carc_valv(9)  = iter_cplan_maxi
+        p_carc_valv(8)  = resi_deborst_max
+        p_carc_valv(9)  = iter_deborst_max
         p_carc_valv(10) = seuil
         p_carc_valv(11) = amplitude
         p_carc_valv(12) = taux_retour

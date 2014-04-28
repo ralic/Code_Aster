@@ -27,8 +27,8 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
 !
     character(len=16), intent(in) :: keywordfact
     integer, intent(in) :: iocc
-    character(len=14), intent(in) :: keyword
     character(len=16), intent(in) :: algo_inte
+    character(len=14), intent(in) :: keyword
     real(kind=8), intent(out) :: value
 !
 ! --------------------------------------------------------------------------------------------------
@@ -39,15 +39,16 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywordfact  : factor keyword to read (COMPORTEMENT)
-! In  iocc         : factor keyword index in COMPORTEMENT
-! In  keyword      : keyword 
-! In  algo_inte    : integration algorithm
-! Out value        : real value of keyword
+! In  keywordfact     : factor keyword to read (COMPORTEMENT)
+! In  iocc            : factor keyword index in COMPORTEMENT
+! In  algo_inte       : integration algorithm
+! In  keyword         : keyword 
+! Out value           : real value of keyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iarg, iret, vali
+    integer :: iarg, iret, vali, iter_cplan
+    real(kind=8) :: inte_rela_anal
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,22 +62,27 @@ subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, value)
     else if (keyword.eq.'ITER_INTE_MAXI') then
         call getvis(keywordfact, keyword, iocc=iocc, scal=vali, nbret=iret,&
                     isdefault=iarg)
-        value = vali
+        value      = vali
+        iter_cplan = value
     endif
 !
     ASSERT(iret.ne.0)
+!
+! - Number of iterations for plane stress
+!
+    inte_rela_anal = -iter_cplan
 !
 ! - Checking
 !
     if (iarg .eq. 0) then
         if (algo_inte .eq. 'ANALYTIQUE') then
             call utmess('A', 'COMPOR4_70', sk=keyword)
-            value = -999.d0
+            value = inte_rela_anal
         endif
     else
         if (algo_inte .eq. 'ANALYTIQUE') then
             if (keyword .eq. 'ITER_INTE_MAXI') then
-                value = -999.d0
+                value = inte_rela_anal
             endif
         endif
     endif
