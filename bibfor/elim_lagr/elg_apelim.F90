@@ -72,7 +72,7 @@ subroutine elg_apelim(kptsc, lqr)
     IS :: isnvco, istout
     integer :: clag1, clag2, cphys, nbphys, nblag, i1, j1, nbelig
     PetscInt ::  nterm
-    integer :: nbeq, ilag1, ilag2, iphys, nnzt, contr, pos
+    integer :: nbeq, ilag1, ilag2, iphys, nnzt, contr, pos, istat 
     integer :: nzrow, valrow, indnz, indcon, indlib, nworkt
     integer :: ctemp, redem, nvcont, nbnvco, ifull, nbred
     integer :: ilig, jcol, ico, kterm, ieq, k, kptscr, ktrou
@@ -396,7 +396,13 @@ subroutine elg_apelim(kptsc, lqr)
     ASSERT( ierr == 0 ) 
     ! Nombre de colonnes non-nulles de Tfinal 
     nbred=count( norm_t > r8prem()) 
-    AS_ALLOCATE( vi4=melim(ke)%indred, size=nbred )   
+    ! Le tableau melim(ke)%indred est dans le common elim_lagr.h 
+    ! il n'est pas forcément désalloué à la fin de la commande courante
+    ! -> allocation avec allocate (et pas AS_ALLOCATE)
+    if (nbred > 0 ) then 
+      allocate( melim(ke)%indred(nbred), stat = istat ) 
+      ASSERT( istat == 0 ) 
+    endif   
     ! Indices FORTRAN des colonnes non-nulles de Tfinal
     pos = 0
     do ieq = 1, nbeq
