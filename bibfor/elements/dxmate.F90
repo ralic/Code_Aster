@@ -106,6 +106,7 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
 !
     if (phenom .eq. 'ELAS_COQMU') then
 !
+     
         call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -158,6 +159,7 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         nomres(5) = 'BT1'
         nomres(6) = 'BT2'
     else if (phenom.eq.'ELAS_COQUE') then
+        call utmess('A', 'ELEMENTS_93', sk=phenom)
 !
         call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
@@ -275,6 +277,10 @@ subroutine dxmate(fami, df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf
         nomres(19) = 'A055'
         nomres(20) = 'A056'
         nomres(21) = 'A066'
+    else if (phenom.eq.'ELAS_ORTH') then
+        call utmess('F', 'ELEMENTS_91', sk=phenom) 
+    else if (phenom.eq.'ELAS_ISTR') then
+        call utmess('F', 'ELEMENTS_92', sk=phenom)
     else
         call utmess('F', 'ELEMENTS_42', sk=phenom)
     endif

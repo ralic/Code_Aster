@@ -65,7 +65,6 @@ CAR_ELE = AFFE_CARA_ELEM( MODELE=MO,
 #                         CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 #
-
 # cf batoz page 246
 MAT = DEFI_MATERIAU( ELAS_ORTH=_F( E_L = 25.,
                                    E_T = 1.,
@@ -91,7 +90,7 @@ MULTI = DEFI_COMPOSITE( COUCHE=( _F( EPAIS = 0.25,
                                      ORIENTATION = 0.),),
                         IMPRESSION=_F(UNITE=8)
                         )
-#
+
 CHAM_MAT = AFFE_MATERIAU( MAILLAGE=MA,
                           AFFE=_F( TOUT = 'OUI',
                                    MATER = MULTI)

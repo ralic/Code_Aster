@@ -235,7 +235,7 @@ La prochaine fois, relancez en augmentant la taille de l'espace de projection (m
 COEF_DIM_ESPACE ou DIM_SOUS_ESPACE).
 Vous pouvez aussi relancer en demandant moins de modes.
 Si votre problème est fortement amorti, il est possible que des modes propres non calculés soient
-suramortis, diminuez alors le nombre de modes demandés.
+sur amortis, diminuez alors le nombre de modes demandés.
 """),
 
 50: _(u"""

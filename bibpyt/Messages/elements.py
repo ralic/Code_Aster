@@ -236,11 +236,19 @@ Conseil :
 """),
 
 42 : _(u"""
- Le comportement matériau %(k1)s n'est pas traité.
-
-Conseil :
- Utilisez la commande DEFI_COMPOSITE pour définir une coque monocouche avec ce
- comportement.
+  Le comportement matériau %(k1)s n'est pas disponible pour ce type de modélisation
+                             
+   Conseils :    
+   * S'il s'agit de ELAS_HYPER changez votre modélisation massif 2D,3D. 
+   * S'il s'agit de ELAS_GLRC utilisez la modélisation DKTG      
+   * S'il s'agit de ELAS_MEMBRANE utilisez la modélisation MEMBRANE&GRILLE_MEMBRANE                              
+   * Si vous modélisez un comportement anisotrope de plaque/coque, utilisez soit
+      ELAS_COQUE ou ELAS_ORTH. 
+   * Dans le cas ELAS_ORTH n'oubliez pas de définir DEFI_COMPOSITE 
+      Vous pouvez aussi utiliser ELAS_ORTH isotropie transverse définissant correctement les paramètres matériaux                                                            
+   * Dans le cas ELAS_COQUE vous n'avez pas besoin de définir DEFI_COMPOSITE. Mais attention :
+      ELAS_COQUE donne les propriétés matériaux (membrane, flexion) dans le repère
+      intrinsèque de la coque.
 """),
 
 43 : _(u"""
@@ -260,6 +268,7 @@ Conseil :
  la commande DEFI_COMPOSITE.
  Seule la définition du comportement ELAS_ORTH est nécessaire.
 """),
+
 
 46 : _(u"""
  nombre de couches négatif ou nul
@@ -378,4 +387,32 @@ Solution :
    Il faut modifier le catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
 """),
 
+91 : _(u"""
+   Le comportement est %(k1)s mais l'option DEFI_COMPOSITE est manquant.      
+                         
+   Conseils :                                                                      
+   1. Il faut utiliser ELAS_COQUE si vous ne voulez pas utiliser DEFI_COMPOSITE. Mais
+attention : ELAS_COQUE donne les propriétés matériaux (membrane, flexion) dans le repère
+intrinsèque de la coque.
+   2. Sinon ELAS_ORTH pour les plaques/coques demandent d'activer DEFI_COMPOSITE
+pour préciser les orientations des couches                      
+"""),
+
+92 : _(u"""
+   Le comportement  %(k1)s n'est pas pris charge actuellement par la modélisation.      
+                         
+   Conseils :                                                                      
+      Vous pouvez aussi utiliser ELAS_ORTH ou ELAS_COQUE  isotropie transverse définissant correctement les paramètres matériaux.
+      Attention avec ELAS_ORTH vous devez absolument définir DEFI_COMPOSITE pour préciser l'orientation des couches.
+      Attention ELAS_COQUE donne les propriétés matériaux (membrane, flexion) dans le repère
+      intrinsèque de la coque.                 
+"""),
+
+
+93 : _(u"""
+  Avertissement :
+  Le comportement  %(k1)s que vous utilisez les propriétés matériaux (membrane, flexion) dans le repère
+  intrinsèque de la coque. Vous devez donc vous assurez des valeurs entrées sinon utilisez ELAS_ORTH et DEFI_COMPOSITE
+  s'il s'agit d'une coque multi couche.    
+"""),
 }
