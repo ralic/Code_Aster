@@ -195,14 +195,16 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !
 !     ON NE PREND PAS EN COMPTE LES POINTS QUI SORTENT DU DOMAINE
 !     ON AJOUTE UN PETIT PREC ICI POUR RAISON DE PRECISION DANS
-!     LA COMPARAISON, CF. LA FICHE 20170
+!     LA COMPARAISON, CF. LA FICHE 20170.
+!     -> PREC*1.d3 POUR ISSUE21167
+!     -> PREC*1.d4 POUR ISSUE22492
     if (alias .eq. 'QU4') then
-        if (abs(epsi(1)) .gt. (1.d0+prec*1.d3)) goto 999
-        if (abs(epsi(2)) .gt. (1.d0+prec*1.d3)) goto 999
+        if (abs(epsi(1)) .gt. (1.d0+prec*1.d4)) goto 999
+        if (abs(epsi(2)) .gt. (1.d0+prec*1.d4)) goto 999
     else if (alias.eq.'TR3') then
-        if (epsi(1) .lt. (0.d0-prec*1.d3)) goto 999
-        if (epsi(2) .lt. (0.d0-prec*1.d3)) goto 999
-        if (epsi(1)+epsi(2) .gt. (1.d0+prec*1.d3)) goto 999
+        if (epsi(1) .lt. (0.d0-prec*1.d4)) goto 999
+        if (epsi(2) .lt. (0.d0-prec*1.d4)) goto 999
+        if (epsi(1)+epsi(2) .gt. (1.d0+prec*1.d4)) goto 999
     endif
 !
     mp(1)=epsi(1)
