@@ -28,6 +28,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 # include "asterfort/jedetr.h"
 # include "asterfort/jeveuo.h"
 # include "asterfort/wkvect.h"
+# include "asterf_types.h"
 # include "blas/dgemv.h"
 !
 #ifdef _HAVE_PETSC
@@ -90,10 +91,10 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     do i1 = 1, nbeq
         zi4(contr+i1-1)=0
         if (zi(ldelg+i1-1) .eq. 0) then
-            call MatSetValues(t, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
+            call MatSetValues(t, 1, [to_petsc_int(i1-1)], 1, [to_petsc_int(i1-1)],&
                               [1.d0], INSERT_VALUES, ierr)
         else
-            call MatSetValues(t, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
+            call MatSetValues(t, 1, [to_petsc_int(i1-1)], 1, [to_petsc_int(i1-1)],&
                               [0.d0], INSERT_VALUES, ierr)
         endif
         if (zi4(nnzt+i1-1) .gt. nzmax) nzmax=zi4(nnzt+i1-1)
@@ -109,10 +110,10 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     call wkvect('&&ELG_REMPLT.VEC_WORK1', 'V V R', nzmax, lwork1)
 ! 
     call wkvect('&&ELG_REMPLT.T_LIB.CON', 'V V R', nworkt, ltlib)
-    call wkvect('&&ELG_REMPLT.COMP_IND', 'V V S', nbeq, compnd)
+    call wkvect('&&ELG_REMPLT.COMP_IND', 'V V S', to_aster_int(nbeq), compnd)
     posind=0
-    call VecCreateSeq(mpicomm, nbeq, c_temp, ierr)
-    call VecCreateSeq(mpicomm, nbeq, v_temp, ierr)
+    call VecCreateSeq(mpicomm, int(nbeq), c_temp, ierr)
+    call VecCreateSeq(mpicomm, int(nbeq), v_temp, ierr)
 !
 !--------------------------------!
 !--                            --!
@@ -159,7 +160,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
         
         do j1 = 1, nbnz
             numcon=zi4(nzrow+zi4(indnz+j1-1))
-            call VecSetValues(c_temp, 1, [int(numcon, 4)], zr(ctemp+j1-1), INSERT_VALUES,&
+            call VecSetValues(c_temp, 1, [to_petsc_int(numcon)], zr(ctemp+j1-1), INSERT_VALUES,&
                               ierr)
         end do
         !write(6,*),' OK VecSetValues',ierr
@@ -225,7 +226,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(nzrow + zi4(indnz+j1-1))
                     do k1 = 1, nbnz
                         icol=zi4(nzrow + zi4(indnz+k1-1))
-                        call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
+                        call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(icol)],&
                                           [zr(ltlib+ nbnz*(k1-1)+j1-1)], INSERT_VALUES, ierr)
                         zr(ltlib+nbnz*(k1-1)+j1-1)=0.d0
                     end do
@@ -259,10 +260,12 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         do k1 = 1, nbnz
                             icol=zi4(nzrow + zi4(indnz+k1-1))
                             if (j1 .eq. k1) then
-                                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
-                                                  [1.d0], INSERT_VALUES, ierr)
+                                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, &
+                                                  [to_petsc_int(icol)], [1.d0], &
+                                                  INSERT_VALUES, ierr)
                             else
-                                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
+                                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, &
+                                                  [to_petsc_int(icol)], &
                                                   [0.d0], INSERT_VALUES, ierr)
                             endif
                         end do
@@ -333,7 +336,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                 !
                 do j1 = 1, nbcont
                     icol=zi4(compnd+j1-1)
-                    call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
+                    call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(icol)],&
                                       [-zr(lwork1+ j1-1)/zr(lclib+imax)], INSERT_VALUES, ierr)
                 end do
 !
@@ -347,7 +350,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(indlib+j1-1)
                     do k1 = 1, nblib
                         icol=zi4(indlib+k1-1)
-                        call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
+                        call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(icol)],&
                                           [zr(ltlib+ nblib*(k1-1)+j1-1)], INSERT_VALUES, ierr)
                         zr(ltlib+nblib*(k1-1)+j1-1)=0.d0
                     end do
@@ -380,7 +383,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(indlib+imax)
                     do j1 = 1, nbcont
                         icol=zi4(indcon+j1-1)
-                        call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
+                        call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(icol)],&
                                           [0.d0], INSERT_VALUES, ierr)
                     end do
 !
@@ -390,10 +393,12 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         do k1 = 1, nblib
                             icol=zi4(indlib+k1-1)
                             if (j1 .eq. k1) then
-                                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
+                                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, &
+                                                  [to_petsc_int(icol)],&
                                                   [1.d0], INSERT_VALUES, ierr)
                             else
-                                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(icol, 4)],&
+                                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, &
+                                                  [to_petsc_int(icol)],&
                                                   [0.d0], INSERT_VALUES, ierr)
                             endif
                         end do
@@ -433,7 +438,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
             !write(6,*),'iscons=',iscons
             
             if (iscons .eq. 0) then
-                call MatSetValues(t, 1, [int(numcon, 4)], 1, [int(numcon, 4)],&
+                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(numcon)],&
                                   [0.d0], INSERT_VALUES, ierr)
                 zi4(contr + numcon) = 1
                 call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
