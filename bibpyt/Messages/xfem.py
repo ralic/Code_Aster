@@ -325,10 +325,6 @@ cata_msg={
       JONCTION=_F(FISSURE=%(k2)s,POINT=...) lorsqu'on appelle DEFI_FISS_XFEM pour définir %(k3)s.
 """),
 
-#48: _(u"""
-     #Le calcul de G avec X-FEM est impossible avec un comportement incrémental.
-#"""),
-
 49: _(u"""
      Le calcul de G avec X-FEM est impossible en grandes déformations.
 """),
@@ -525,7 +521,7 @@ cata_msg={
 """),
 
 78: _(u"""
-  -> Erreur, pour une modélisation %(i1)d, on ne peut définir que des interfaces,
+  -> Erreur, pour une modélisation %(k1)s, on ne peut définir que des interfaces,
      l'introduction de fissures dans le modèle n'est pas possible.
 
 """),
@@ -542,7 +538,7 @@ cata_msg={
   -> En présence du mot-clé MODELE_THER, vous devez renseigner le mot-clé MODELE_IN
      avec un modèle mécanique. Or le modèle %(k1)s n'est pas un modèle mécanique.
   -> Conseil:
-     Revoyez la définition de ce modèle
+     Revoyez la définition de ce modèle.
 """),
 
 81: _(u"""
@@ -565,7 +561,7 @@ cata_msg={
      du même maillage. Or %(k1)s et %(k2)s ont respectivement été définis à partir 
      des maillages %(k3)s et %(k4)s.
   -> Conseil:
-     Revoyez la définition de ces modèles
+     Revoyez la définition de ces modèles.
 """),
 
 84: _(u"""
@@ -578,7 +574,7 @@ cata_msg={
   La maille %(k1)s est affectée par un élément fini thermique dans le modèle thermique enrichi %(k2)s,
   or cette maille n'est affectée par aucun élément fini dans le modèle mécanique sain %(k3)s.
   -> Conseil:
-     Revoyez la définition de ces deux modèles
+     Revoyez la définition de ces deux modèles.
 """),
 
 }
