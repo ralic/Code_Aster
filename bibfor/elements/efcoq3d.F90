@@ -22,7 +22,6 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,&
    implicit none
 
 #include "asterfort/cosiro.h"
-#include "asterfort/pk2cau.h"
 #include "asterfort/vdefgn.h"
 #include "asterfort/vdefro.h"
 #include "asterfort/vdrepe.h"
@@ -47,10 +46,9 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,&
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: epais
-    real(kind=8) :: geom(*),cara(*),chg(*),matr(*),effg(*),lzr(*)
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
+    real(kind=8) :: geom(*),cara(*),chg(*),matr(*),effg(*),lzr(*)
     real(kind=8) :: sigm(6, 270), sigma(6, 120), effgc(8, 9), effgt(8, 9)
-    real(kind=8) :: pk2(6, 270)
 
 
     zero=0.0d0

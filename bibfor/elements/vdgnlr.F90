@@ -347,7 +347,7 @@ subroutine vdgnlr(option, nomte)
             ) + zr ( iup - 1 + 6 * ( in - 1 ) + ii )
 !
 111      continue
-101  end do
+101  continue
 !
 !---- ROTATION TOTALE AUX NOEUDS
 !
