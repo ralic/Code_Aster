@@ -1,6 +1,6 @@
 subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,& 
                    chg,matr,effg,                   &
-                   nbcou,npgsn,npgsr,npge,nso,npgt, lgreen)
+                   nbcou,npgsn,npgsr,npge,nso,npgt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,6 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,&
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
     real(kind=8) :: sigm(6, 270), sigma(6, 120), effgc(8, 9), effgt(8, 9)
     real(kind=8) :: pk2(6, 270)
-    logical :: lgreen
 
 
     zero=0.0d0
@@ -84,22 +83,7 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,&
 30      continue
 40  continue
     ncmp=6
-    if (lgreen) then
-!
-! ---   AFFECTATION DES CONTRAINTES DE PIOLA-KIRCHHOFF DE
-! ---   SECONDE ESPECE :
-!       --------------
-        do 60 i = 1, 6
-            do 50 j = 1, kpgs
-                pk2(i,j)=sigm(i,j)
-50          continue
-60      continue
-!
-! ---   TRANSFORMATION DES CONTRAINTES DE PIOLA-KIRCHHOFF DE
-! ---   SECONDE ESPECE PK2 EN CONTRAINTES DE CAUCHY :
-!       -------------------------------------------
-        call pk2cau(nomte, ncmp, pk2, sigm)
-    endif
+
 !
 ! --- DETERMINATION DES REPERES  LOCAUX DE L'ELEMENT AUX POINTS
 ! --- D'INTEGRATION ET STOCKAGE DE CES REPERES DANS LE VECTEUR .DESR

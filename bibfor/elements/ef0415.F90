@@ -42,13 +42,12 @@ subroutine ef0415(nomte)
     parameter(npgt=10)
     integer ::  jmat, jnbspi
     integer :: nb1, nb2, npgsr, npgsn
-    logical :: lgreen
+
 
 
 
 !
 
-    lgreen=.false.
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
     nb1=zi(lzi-1+1)
     nb2=zi(lzi-1+2)
@@ -83,7 +82,7 @@ subroutine ef0415(nomte)
 
    call efcoq3d(nomte, nb1, nb2, zr(jcara), zr(jgeom), zr(lzr),& 
                 zr(ichg),zr(jmat),zr(jeffg),                   &
-                nbcou,npgsn,npgsr,npge,nso,npgt, lgreen)
+                nbcou,npgsn,npgsr,npge,nso,npgt)
 
 !
 end subroutine

@@ -18,10 +18,9 @@
 interface
     subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,& 
                    chg,matr,effg,                   &
-                   nbcou,npgsn,npgsr,npge,nso,npgt, lgreen)
+                   nbcou,npgsn,npgsr,npge,nso,npgt)
         character(len=16) :: nomte
         integer :: nb1,nb2,npgsn,nso,nbcou,npgt,npgsr,npge
         real(kind=8) :: geom(*),cara(*),lzr(*),matr(*),chg(*),effg(*)
-        logical :: lgreen
     end subroutine efcoq3d
 end interface
