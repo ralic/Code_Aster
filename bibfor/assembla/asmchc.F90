@@ -109,7 +109,10 @@ subroutine asmchc(matas)
 !
 !
 !
-    if (nelim .eq. 0) goto 9999
+    if (nelim .eq. 0) then
+        zk24(jrefa-1+3)='ELIMF'
+        goto 9999
+    endif
 !     -----------------------------------------------------------------
 !
     nomsto = nu//'.SMOS'
@@ -153,11 +156,11 @@ subroutine asmchc(matas)
 !     -- CALCUL DE NCCVA ET .CCLL(3*(I-1)+3) :
 !     -----------------------------------------
     deciel=0
-    do 13,ielim=1,nelim
-    nterm=zi(jccll-1+3*(ielim-1)+2)
-    zi(jccll-1+3*(ielim-1)+3)=deciel
-    deciel=deciel+nterm
-    13 end do
+    do ielim=1,nelim
+        nterm=zi(jccll-1+3*(ielim-1)+2)
+        zi(jccll-1+3*(ielim-1)+3)=deciel
+        deciel=deciel+nterm
+    end do
     nccva=max(deciel,1)
 !
 !

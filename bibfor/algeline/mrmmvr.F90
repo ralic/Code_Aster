@@ -59,7 +59,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
 !
 !
     call jemarq()
-    nom19=zk24(zi(lmat+1))
+    nom19=zk24(zi(lmat+1))(1:19)
 !
     valm=nom19//'.VALM'
     call jelira(valm, 'NMAXOC', nbloc)
@@ -123,14 +123,13 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     else
         refa=nom19//'.REFA'
         call jeveuo(refa, 'L', jrefa)
-        numddl=zk24(jrefa+2-1)
+        numddl=zk24(jrefa+2-1)(1:14)
         call jeveuo(numddl//'.NUML.NULG', 'L', jnulg)
         do 100 jvec = 1, nbvect
             do 70,k=1,neq
             vectmp(k)=vect(k,jvec)
 70          continue
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,&
-                                    1)
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,1)
             numglo=zi(jnulg+1-1)
             xsol(numglo,jvec)=xsol(numglo,jvec)+ zr(jvalms-1+1)*&
             vectmp(numglo)
@@ -150,8 +149,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
                 xsol(iligg,jvec)=xsol(iligg,jvec)+ zr(jvalms+kfin)*&
                 vectmp(iligg)
 90          continue
-            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),&
-                                    1)
+            if (prepos) call mrconl('DIVI', lmat, 0, 'R', xsol(1, jvec),1)
 100      continue
     endif
 !
@@ -162,17 +160,17 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     call jeexin(nom19//'.CCID', iexi)
     if (iexi .ne. 0) then
         call jeveuo(nom19//'.CCID', 'L', jccid)
-        do 110 jvec = 1, nbvect
-            do 111, ieq=1,neq
-            if (lmatd) then
-                keta=zi(jccid-1+zi(jnulg+ieq-1))
-            else
-                keta=zi(jccid-1+ieq)
-            endif
-            ASSERT(keta.eq.1 .or. keta.eq.0)
-            if (keta .eq. 1) xsol(ieq,jvec)=0.d0
-111          continue
-110      continue
+        do jvec = 1, nbvect
+            do ieq=1,neql
+                if (lmatd) then
+                    keta=zi(jccid-1+zi(jnulg+ieq-1))
+                else
+                    keta=zi(jccid-1+ieq)
+                endif
+                ASSERT(keta.eq.1 .or. keta.eq.0)
+                if (keta .eq. 1) xsol(ieq,jvec)=0.d0
+            enddo
+        enddo
     endif
 !
 !
