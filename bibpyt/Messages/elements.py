@@ -92,9 +92,7 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette 
  Le nombre de couche doit être obligatoirement supérieur à zéro.
 """),
 
-13 : _(u"""
- Le nombre de couche est limité à 10 pour la modélisation COQUE_3D.
-"""),
+
 
 14 : _(u"""
  Le type d'élément %(k1)s n'est pas prévu.
