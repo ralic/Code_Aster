@@ -75,11 +75,6 @@ Conseils :
  Attention : MODE_CALCUL_TPLUS = 'IMPLEX' ne permet qu'un mot clé ADAPTATION
 """),
 
-40 : _(u"""
-  Le solveur <%(k1)s> ne permet pas la détection de singularité.
-  La découpe du pas de temps en cas d'erreur (pivot nul) n'est donc pas possible.
-"""),
-
 41 : _(u"""
   Le préconditionneur <%(k1)s> ne supporte pas la réactualisation automatique.
 """),
