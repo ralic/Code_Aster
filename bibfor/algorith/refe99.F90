@@ -99,26 +99,26 @@ subroutine refe99(nomres)
 !
         call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=0, nbret=nbli)
         nbli = -nbli
-        if (nbli .eq. 0) then
-!           Select all modes from each modal base
-            do i = 1, nbmome
-                zi(ltnbmax+i-1) = 9999
-            end do
-        else if (nbli .eq. 1) then
-!           Apply the single NMAX_MODE criterion to all of the modal base
-            call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nbmax, nbret=ier)
-            do i = 1, nbmome
-                zi(ltnbmax+i-1) = nbmax
-            end do
-        else if (nbli .eq. nbmome) then
-!           Use the NMAX_MODE criteria, defined for each modal base separately
-            call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmax),&
-                        nbret=ier)
-        else
-!           Incoherence in the input data
-            vali(1) = nbmome
-            vali(2) = nbli
-            call utmess('F', 'ALGORITH14_31', ni=2, vali=vali)
+!       if nbli = 0: one will take all modes in each MODE_MECA, otherwise:
+        if (nbli .ge. 1) then
+            if (nbli .eq. 1) then
+!               Apply the single NMAX_MODE criterion to all of the modal base
+                nbmax=0
+                call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nbmax, nbret=ier)
+                do i = 1, nbmome
+                    zi(ltnbmax+i-1) = nbmax
+                end do
+            elseif (nbli .eq. nbmome) then
+!               Use the NMAX_MODE criteria, defined for each modal base separately
+                call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, &
+                            vect=zi(ltnbmax), nbret=ier)
+            else
+!               Incoherence in the input data
+                vali(1) = nbmome
+                vali(2) = nbli
+                call utmess('F+','ALGORITH14_31', ni=2, vali=vali)
+                call utmess('F', 'ALGORITH14_32')
+            endif
         endif
 !
         do i = 1, nbmome
@@ -139,15 +139,16 @@ subroutine refe99(nomres)
             call rsorac(momeca, 'LONUTI', 0, rbid, kbid,&
                         cbid, rbid, 'ABSOLU', nbmodo, 1,&
                         ibid)
-            nbmout = zi(ltnbmax+i-1)
-            if (nbmodo(1) .lt. nbmout) then
-                call utmess('I', 'ALGORITH15_92')
-                valk = momeca
-                call utmess('I', 'ALGORITH15_93', sk=valk(1))
-                vali = nbmodo(1)
-                call utmess('I', 'ALGORITH15_94', si=vali(1))
-            else
-                nbmodo(1) = nbmout
+            if (nbli .ge. 1) then
+                nbmout = zi(ltnbmax+i-1)
+                if (nbmodo(1) .lt. nbmout) then
+                    valk = momeca
+                    vali(1) = nbmout
+                    vali(2) = nbmodo(1)
+                    call utmess('I', 'ALGORITH15_92', sk=valk(1), ni=2, vali=vali)
+                else
+                    nbmodo(1) = nbmout
+                endif
             endif
             zi(ltnbmo+i-1) = nbmodo(1)
 !           Add a reference in the dynamic result data structure
@@ -242,11 +243,10 @@ subroutine refe99(nomres)
                             ibid)
                 nbmout = zi(ltnbmax+i-1)
                 if (nbmodo(1) .lt. nbmout) then
-                    call utmess('I', 'ALGORITH15_92')
                     valk = momeca
-                    call utmess('I', 'ALGORITH15_93', sk=valk(1))
-                    vali = nbmodo(1)
-                    call utmess('I', 'ALGORITH15_94', si=vali(1))
+                    vali(1) = nbmout
+                    vali(2) = nbmodo(1)
+                    call utmess('I', 'ALGORITH15_92', sk=valk(1), ni=2, vali=vali)
                 else
                     nbmodo(1) = nbmout
                 endif

@@ -123,9 +123,13 @@ cata_msg = {
  nombre de concepts MODE_MECA dans la liste MODE_MECA     : %(i1)d
  nombre de valeurs de la liste NMAX_MODE                  : %(i2)d
  Conseils & solution:
-  Les deux listes doivent avoir la même taille.
+   Les deux listes doivent avoir la même taille.
 """),
 
+32 : _(u"""
+   Il est aussi possible de renseigner une unique valeur pour NMAX_MODE
+   (dans ce cas, cette valeur sera appliquée à chaque concept MODE_MECA).
+"""),
 
 35 : _(u"""
  aucun champ n'est calculé dans la structure de données  %(k1)s

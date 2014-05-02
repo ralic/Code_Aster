@@ -196,6 +196,8 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
         lpmax = max(lpmax,ln)
     end do
     if (niv .ge. 2) then
+        write (ifm,*) ''
+        write (ifm,*) ' -----------------------------------------'
         write (ifm,*) ' AVANT FACTORISATION LONGUEURS DISPONIBLES (R8)',&
      &        it(1),' ET ',it(2),'LONGUEUR DE LA PILE ',lgpile,&
      &        ', PLUS GRAND BLOC DE FACTOL ',mxbloc

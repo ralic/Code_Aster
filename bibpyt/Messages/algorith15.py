@@ -357,16 +357,13 @@ cata_msg = {
 """),
 
 92 : _(u"""
- Nombre de modes propres calculés insuffisant.
-"""),
-
-93 : _(u"""
  MODE_MECA : %(k1)s
+ Nombre de modes propres calculés insuffisant
+ par rapport au nombre demandé sous NMAX_MODE (%(i1)d).
+ Nombre de modes propres limité à : %(i2)d.
 """),
 
-94 : _(u"""
- Nombre de modes propres limités à : %(i1)d
-"""),
+
 
 95 : _(u"""
  l'entrée d'amortissements réduits est incompatible

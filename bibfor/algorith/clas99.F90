@@ -42,13 +42,11 @@ subroutine clas99(nomres)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: vali
 !
 !
-    character(len=24) :: valk
     character(len=8) :: nomres, intf, kbid
-    character(len=19) :: numddl, raid, mass, raidlt
-    complex(kind=8) :: cbid
+    character(len=19):: numddl, raid, mass, raidlt
+    complex(kind=8)  :: cbid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -57,8 +55,8 @@ subroutine clas99(nomres)
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, ii, inor, lldesc, lrang
-    integer :: ltmome, ltnbmo, nbid, nbmod, nbmodo(1), nbmoma, nbmome
-    integer :: nbmout, nbsdd
+    integer :: ltmome, ltnbmo, nbid, nbnmaxmode, nbmod, nbmodo(1), nbmoma
+    integer :: nbmome, nbmout, nbsdd, nmaxmode
     real(kind=8) :: bid, ebid
 !-----------------------------------------------------------------------
     call jemarq()
@@ -76,6 +74,11 @@ subroutine clas99(nomres)
     call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=0, nbret=nbmome)
     nbmome = -nbmome
 !
+! --- RECUPERATION DU NOMBRE DE VALEURS DE LA LISTE NMAX_MODE
+!
+    call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=0, nbret=nbnmaxmode)
+    nbnmaxmode = -nbnmaxmode
+!
 ! --- CREATION DES OBJETS TEMPORAIRES
 !
     call wkvect('&&CLAS99.LIST.MODE_MECA', 'V V K8', nbmome, ltmome)
@@ -83,7 +86,19 @@ subroutine clas99(nomres)
 !
     call getvid('CLASSIQUE', 'MODE_MECA', iocc=1, nbval=nbmome, vect=zk8(ltmome),&
                 nbret=ibid)
-    call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nbmout, nbret=nbid)
+!
+    if (nbnmaxmode.ge.1) then
+!      length of NMAX_MODE list will be equal to length of MODE_MECA list
+       call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, nbval=nbmome, vect=zi(ltnbmo),&
+                nbret=nbid)
+       if (nbnmaxmode.eq.1) then
+          nmaxmode=0
+          call getvis('CLASSIQUE', 'NMAX_MODE', iocc=1, scal=nmaxmode, nbret=ibid)
+          do i = 1, nbmome
+             zi(ltnbmo+i-1) = nmaxmode
+          end do
+       endif
+    endif
 !
 ! --- DETERMINATION DU NOMBRE TOTAL DE MODES PROPRES DE LA BASE
 !
@@ -95,14 +110,11 @@ subroutine clas99(nomres)
                     cbid, ebid, 'ABSOLU', nbmodo, 1,&
                     nbid)
 !
-        if (nbmodo(1) .lt. nbmout) then
-            call utmess('I', 'ALGORITH15_92')
-            valk = zk8(ltmome-1+i)
-            call utmess('I', 'ALGORITH15_93', sk=valk)
-            vali = nbmodo(1)
-            call utmess('I', 'ALGORITH15_94', si=vali)
-        else
-            nbmodo(1)=nbmout
+!       if NMAX_MODE is set by the user, one takes it into account
+!       otherwise one takes all modes in each MODE_MECA
+        if (nbnmaxmode.ge.1) then
+           nbmout = zi(ltnbmo-1+i)
+           if (nbmout .lt. nbmodo(1))   nbmodo(1)=nbmout
         endif
 !
         zi(ltnbmo+i-1) = nbmodo(1)
