@@ -126,7 +126,7 @@ Il faut avoir la même option pour ALGO_CONT et ALGO_FROT.
 
 93 : _(u"""
 Contact méthode sans résolution.
- -> Interpénétrations des surfaces.
+ -> Interpénétrations des surfaces. Il y a %(i1)d noeuds qui s'interpénètrent.
 
  -> Risque & Conseil :
     Vérifier si le niveau d'interpénétration des surfaces est acceptable dans

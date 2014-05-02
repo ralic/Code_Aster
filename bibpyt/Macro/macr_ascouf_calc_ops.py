@@ -319,7 +319,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                             ZONE =_F(GROUP_MA_MAIT = 'FACE1',
                                      GROUP_MA_ESCL = 'FACE2',
                                      RESOLUTION    = 'NON',
-                                     TOLE_INTERP   = -1.E-6,
+                                     TOLE_INTERP   = 1.E-6,
                                      SANS_GROUP_MA = 'FONDFISS'),)
 #
 #     --- commande STAT_NON_LINE ---
@@ -684,8 +684,9 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                 RESULTAT = nomres,
                                 TOUT_ORDRE = 'OUI',
                                 NOM_CHAM = 'VALE_CONT',
-                                NOM_CMP = 'CONT',
+                                NOM_CMP = ('CONT','JEU'),
                                 OPERATION = 'EXTRACTION'))
+    IMPR_TABLE(TABLE=__tcont,)
     tcont=__tcont.EXTR_TABLE()
     numo = tcont['NUME_ORDRE'].values()['NUME_ORDRE']
     numo=dict([(i,0) for i in numo]).keys()
@@ -693,7 +694,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     for i in range(1,nbinst+1) :
       tabi = tcont.NUME_ORDRE==i
       nbtot = len(tabi)
-      cont_actif=tabi.CONT>0.
+      cont_actif=tabi.CONT>2.5
       nb_no_cont = len(cont_actif)
       if nb_no_cont > 0 :
          UTMESS('A','ASCOUF0_58',vali=[i,nbtot,nb_no_cont])

@@ -1,5 +1,18 @@
 subroutine cfsans(defico, npt, jeux, enti, zone)
 !
+implicit none
+!
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterc/r8prem.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfr.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,16 +31,6 @@ subroutine cfsans(defico, npt, jeux, enti, zone)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mminfr.h"
-#include "asterfort/utmess.h"
     character(len=24) :: defico
     integer :: npt
     character(len=24) :: jeux, enti, zone
@@ -53,75 +56,63 @@ subroutine cfsans(defico, npt, jeux, enti, zone)
 !
     character(len=16) :: noment, nompt
     integer :: interp
-    integer :: ifm, niv
     logical :: lstop
-    real(kind=8) :: jeu, jeuref
+    real(kind=8) :: jeu, jeuref, varc
     integer :: ipt, izone
     integer :: jjeux, jenti, jzone
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('CONTACT', ifm, niv)
+    interp = 0
 !
-! --- ACCES SD PROVISOIRES
+! - Access to data
 !
     call jeveuo(jeux, 'L', jjeux)
     call jeveuo(zone, 'L', jzone)
     call jeveuo(enti, 'L', jenti)
 !
-! --- INITIALISATIONS
-!
-    interp = 0
-!
-! --- ALARME OU ERREUR ?
+! - Alarm or error ?
 !
     lstop = cfdisl(defico,'STOP_INTERP')
 !
-    do 120 ipt = 1, npt
+    do ipt = 1, npt
 !
-! ----- INFORMATIONS SUR LE POINT
+! ----- Information about contact point
 !
         jeu = zr(jjeux+ipt-1)
         izone = zi(jzone+ipt-1)
         nompt = zk16(jenti+2*(ipt-1)+1-1)
         noment = zk16(jenti+2*(ipt-1)+2-1)
 !
-! ----- OPTIONS VERIF
+! ----- Parameters
 !
         jeuref = mminfr(defico,'TOLE_INTERP',izone)
 !
-! ----- TEST DU JEU
+! ----- Test
 !
-        if ((jeu.lt.jeuref) .and. (jeu.ne.r8vide())) then
-            if (niv .ge. 2) then
-                write (ifm,2001) nompt,noment,jeu
+        varc = 0.d0 
+        if (jeu.ne.r8vide()) then
+            if (jeu.gt.r8prem()) then
+                varc = 0.d0 
+            else
+                if (abs(jeu).le.jeuref) then
+                    varc = 0.d0           
+                else
+                    varc = 3.d0 
+                    interp = interp+1     
+                endif
             endif
-            interp = interp+1
         endif
+    end do
 !
-120  end do
-!
-! --- ALARME OU ERREUR FATALE ?
+! - Print
 !
     if (interp .ge. 1) then
-        if (niv .ge. 2) then
-            write (ifm,3000) interp,jeuref
-        endif
         if (lstop) then
-            call utmess('F', 'CONTACT_93')
+            call utmess('F', 'CONTACT_93', si = interp)
         else
-            call utmess('A', 'CONTACT_93')
+            call utmess('A', 'CONTACT_93', si = interp)
         endif
     endif
-!
-    2001 format (' <CONTACT>   * INTERPENETRATION DE <',a16,'> AVEC <',&
-     &        a16,'> * JEU:',1pe12.5)
-    3000 format (' <CONTACT>   * IL Y A ',i6,&
-     &        ' NOEUDS INTERPENETRES (JEU REF.: ',1pe12.5,')')
-!
-! ----------------------------------------------------------------------
-!
-    call jedema()
 !
 end subroutine

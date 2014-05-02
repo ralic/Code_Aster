@@ -16,10 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmvs(resoco, npt, jeux, loca)
+    subroutine cfmmvs(defico, resoco, npt, jeux, loca, zone)
+        character(len=24) :: defico
         character(len=24) :: resoco
         integer :: npt
         character(len=24) :: jeux
         character(len=24) :: loca
+        character(len=24) :: zone
     end subroutine cfmmvs
 end interface

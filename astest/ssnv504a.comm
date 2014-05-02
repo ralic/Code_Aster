@@ -282,6 +282,7 @@ TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                RESULTAT=U2,
                                NOM_CHAM='VALE_CONT',
                                GROUP_NO='SESC1',
+                             
                                NOM_CMP=('CONT','JEU',),),);
 
 IMPR_TABLE(TABLE=TAB_VC);
@@ -319,6 +320,19 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                       VALE=65.0,),
                    _F(NOM_PARA='INST',
                       VALE=155.0,),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=-5.00000E+00,
+           NOM_PARA='JEU',
+           TABLE=TAB_VC,
+           FILTRE=(
+                   _F(NOM_PARA='ABSC_CURV',
+                      VALE=65.0,),
+                   _F(NOM_PARA='CONT',
+                      VALE=3.0),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),
                    ),
            )
 

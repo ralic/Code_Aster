@@ -142,7 +142,7 @@ subroutine cfmmve(noma, defico, resoco, valinc, instan)
 !
 ! --- SAUVEGARDE DANS LA SD RESULTAT
 !
-    call cfmmvs(resoco, npt, jeux, loca)
+    call cfmmvs(defico, resoco, npt, jeux, loca, zone)
 !
 ! --- NETTOYAGE
 !

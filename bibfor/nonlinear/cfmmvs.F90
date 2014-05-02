@@ -1,4 +1,15 @@
-subroutine cfmmvs(resoco, npt, jeux, loca)
+subroutine cfmmvs(defico, resoco, npt, jeux, loca, zone)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,15 +29,9 @@ subroutine cfmmvs(resoco, npt, jeux, loca)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/cfmmvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+    character(len=24) :: defico
     character(len=24) :: resoco
-    character(len=24) :: jeux, loca
+    character(len=24) :: jeux, loca, zone
     integer :: npt
 !
 ! ----------------------------------------------------------------------
@@ -42,6 +47,8 @@ subroutine cfmmvs(resoco, npt, jeux, loca)
 ! IN  JEUX   : NOM DE LA SD STOCKANT LE JEU
 ! IN  LOCA   : NUMERO DU NOEUD POUR LE POINT DE CONTACT (-1 SI LE POINT
 !              N'EST PAS UN NOEUD ! )
+! IN  ZONE   : NOM DE LA SD STOCKANT LA ZONE A LAQUELLE APPARTIENT LE
+!              POINT
 ! IN  NPT    : NOMBRE DE POINTS EN MODE VERIF
 !
 !
@@ -51,9 +58,9 @@ subroutine cfmmvs(resoco, npt, jeux, loca)
     integer :: jnochc
     character(len=19) :: cnsinr
     integer :: jcnsvr, jcnslr
-    integer :: jjeux, jloca
-    integer :: ipt
-    real(kind=8) :: jeu, varc
+    integer :: jjeux, jloca, jzone
+    integer :: ipt, izone
+    real(kind=8) :: jeu, varc, jeuref
     integer :: numnoe
     integer :: zresu
     logical :: lsauv
@@ -81,25 +88,35 @@ subroutine cfmmvs(resoco, npt, jeux, loca)
 !
     call jeveuo(jeux, 'L', jjeux)
     call jeveuo(loca, 'L', jloca)
+    call jeveuo(zone, 'L', jzone)
 !
 ! --- REMPLISSAGE
 !
-    do 10 ipt = 1, npt
+    do ipt = 1, npt
 !
 ! ----- INFORMATIONS SUR LE POINT
 !
         jeu = zr(jjeux+ipt-1)
         numnoe = zi(jloca+ipt-1)
         lsauv = .true.
+        izone = zi(jzone+ipt-1)
+        jeuref = mminfr(defico,'TOLE_INTERP',izone)
 !
 ! ----- ETAT DU CONTACT
 !
-        if (jeu .lt. 0.d0) then
-            varc = 1.d0
-        else
-            varc = 0.d0
+        varc = 0.d0 
+        if (jeu.ne.r8vide()) then
+            if (jeu.gt.r8prem()) then
+                varc = 0.d0 
+            else
+                if (abs(jeu).le.jeuref) then
+                    varc = 0.d0           
+                else
+                    varc = 3.d0   
+                endif
+            endif
         endif
-!
+
         if (numnoe .eq. -1) lsauv = .false.
         if (jeu .eq. r8vide()) lsauv = .false.
 !
@@ -112,7 +129,7 @@ subroutine cfmmvs(resoco, npt, jeux, loca)
             zl(jcnslr-1+zresu*(numnoe-1)+2 ) = .true.
         endif
 !
-10  end do
+    end do
 !
     call jedema()
 end subroutine
