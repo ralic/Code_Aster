@@ -101,7 +101,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   NOM_CMP='TEMP',
                   REFERENCE='ANALYTIQUE',
                   VALE_REFE=27.9689,
-                  VALE_CALC=28.00131817146,
+                  VALE_CALC=28.0013181715,
                   PRECISION=2.E-3,
                   ),
           )
@@ -114,7 +114,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CMP='TEMP',
                   REFERENCE='ANALYTIQUE',
                   VALE_REFE=77.365,
-                  VALE_CALC=77.331905733232,
+                  VALE_CALC=77.3319057332,
                   PRECISION=1.E-3,
                   ),
           )
@@ -127,7 +127,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=412,
                   NOM_CMP='TEMP',
                   REFERENCE='ANALYTIQUE',
                   VALE_REFE=99.835,
-                  VALE_CALC=99.834072867601,
+                  VALE_CALC=99.8340728676,
                   PRECISION=1.E-3,
                   ),
           )
@@ -142,7 +142,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CMP='TEMP',
                   REFERENCE='ANALYTIQUE',
                   VALE_REFE=6.2391,
-                  VALE_CALC=6.2555211244843,
+                  VALE_CALC=6.25552112448,
                   PRECISION=3.E-3,
                   ),
           )
@@ -155,7 +155,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=412,
                   NOM_CMP='TEMP',
                   REFERENCE='ANALYTIQUE',
                   VALE_REFE=99.018,
-                  VALE_CALC=99.01303449141,
+                  VALE_CALC=99.0130344914,
                   PRECISION=1.E-3,
                   ),
           )
@@ -170,7 +170,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CMP='TEMP',
                   REFERENCE='ANALYTIQUE',
                   VALE_REFE=0.1623,
-                  VALE_CALC=0.17859381488941,
+                  VALE_CALC=0.178593814889,
                   PRECISION=1.5E-1,
                   ),
           )
@@ -183,7 +183,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=412,
                   NOM_CMP='TEMP',
                   REFERENCE='ANALYTIQUE',
                   VALE_REFE=98.644,
-                  VALE_CALC=98.637604265983,
+                  VALE_CALC=98.637604266,
                   PRECISION=1.E-3,
                   ),
           )
@@ -373,7 +373,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
                        CHAM_GD=SIGM1A,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=4.584029E6,
-                       VALE_CALC=4.5850881149939E6,
+                       VALE_CALC=4585015.40061,
                        PRECISION=1.E-3,),
           )
 
@@ -526,7 +526,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
                        CHAM_GD=SIGM2A,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=6.397099E7,
-                       VALE_CALC=6.3874702950248E7,
+                       VALE_CALC=63872160.2671,
                        PRECISION=2.E-3,),
           )
 
@@ -675,7 +675,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
                        CHAM_GD=SIGM3A,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=8.200300E5,
-                       VALE_CALC=8.2397450076393E5,
+                       VALE_CALC=823997.368051,
                        PRECISION=5.E-3,),
           )
 
@@ -752,8 +752,8 @@ G01B3=CALC_G(              RESULTAT=CHDEP1B,
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            TOLE_MACHINE=2.E-4,      #TODO variabilite
-           PRECISION=0.29999999999999999,
-           VALE_CALC=294.52315007136,
+           PRECISION=0.31,
+           VALE_CALC=294.573219999,
            VALE_REFE=227.4999,
            NOM_PARA='G',
            TABLE=G01B,)
@@ -762,8 +762,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            TOLE_MACHINE=2.E-4,      #TODO variabilite
-           PRECISION=0.29999999999999999,
-           VALE_CALC=295.59931171633,
+           PRECISION=0.31,
+           VALE_CALC=295.612410421,
            VALE_REFE=227.4999,
            NOM_PARA='G',
            TABLE=G01B1,)
@@ -772,8 +772,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            TOLE_MACHINE=2.E-4,      #TODO variabilite
-           PRECISION=0.29999999999999999,
-           VALE_CALC=295.74533608491,
+           PRECISION=0.31,
+           VALE_CALC=295.753591781,
            VALE_REFE=227.4999,
            NOM_PARA='G',
            TABLE=G01B2,)
@@ -783,7 +783,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            PRECISION=0.31,
-           VALE_CALC=296.03900503919,
+           VALE_CALC=296.044773237,
            VALE_REFE=227.4999,
            NOM_PARA='G',
            TABLE=G01B3,)
@@ -818,8 +818,8 @@ G02B3=CALC_G(        RESULTAT=CHDEP2B,
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            TOLE_MACHINE=5.e-4,      #TODO variabilite
-           PRECISION=0.20000000000000001,
-           VALE_CALC= 1.25031256E+04,
+           PRECISION=0.2,
+           VALE_CALC=12505.1454439,
            VALE_REFE=1.051959E4,
            NOM_PARA='G',
            TABLE=G02B,)
@@ -828,8 +828,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            TOLE_MACHINE=5.e-4,      #TODO variabilite
-           PRECISION=0.20000000000000001,
-           VALE_CALC= 1.25487866E+04,
+           PRECISION=0.2,
+           VALE_CALC=12549.1992597,
            VALE_REFE=1.051959E4,
            NOM_PARA='G',
            TABLE=G02B1,)
@@ -838,8 +838,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            TOLE_MACHINE=5.e-4,      #TODO variabilite
-           PRECISION=0.20000000000000001,
-           VALE_CALC= 1.25552906E+04,
+           PRECISION=0.2,
+           VALE_CALC=12555.4928359,
            VALE_REFE=1.051959E4,
            NOM_PARA='G',
            TABLE=G02B2,)
@@ -848,8 +848,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            TOLE_MACHINE=5.e-4,      #TODO variabilite
-           PRECISION=0.20000000000000001,
-           VALE_CALC= 1.25785482E+04,
+           PRECISION=0.2,
+           VALE_CALC=12578.6421431,
            VALE_REFE=1.051959E4,
            NOM_PARA='G',
            TABLE=G02B3,)
@@ -884,7 +884,7 @@ G03B3=CALC_G(        RESULTAT=CHDEP3B,
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=1.231266956,
+           VALE_CALC=1.23144935668,
            VALE_REFE=1.0519590000000001,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
@@ -894,7 +894,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=1.235784755,
+           VALE_CALC=1.23580633689,
            VALE_REFE=1.0519590000000001,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
@@ -904,7 +904,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=1.235621972,
+           VALE_CALC=1.23562234619,
            VALE_REFE=1.0519590000000001,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
@@ -914,7 +914,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=1.235235065,
+           VALE_CALC=1.23522445628,
            VALE_REFE=1.0519590000000001,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
@@ -930,7 +930,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #
 
 TEST_TABLE(
-           VALE_CALC=294.52315007136,
+           VALE_CALC=294.573219999,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G01B,
@@ -939,7 +939,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=295.59931171633,
+           VALE_CALC=295.612410421,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G01B1,
@@ -948,7 +948,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=295.74533608491,
+           VALE_CALC=295.753591781,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G01B2,
@@ -957,7 +957,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=296.03900503919,
+           VALE_CALC=296.044773237,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G01B3,
@@ -968,7 +968,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=12503.125556382,
+           VALE_CALC=12505.1454439,
            TOLE_MACHINE=3.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G02B,
@@ -977,7 +977,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=12548.786564087,
+           VALE_CALC=12549.1992597,
            TOLE_MACHINE=3.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G02B1,
@@ -986,7 +986,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=12555.290627567,
+           VALE_CALC=12555.4928359,
            TOLE_MACHINE=3.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G02B2,
@@ -995,7 +995,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=12578.548233455,
+           VALE_CALC=12578.6421431,
            TOLE_MACHINE=3.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G02B3,
@@ -1006,7 +1006,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=1.2312669557372,
+           VALE_CALC=1.23144935668,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G03B,
@@ -1015,7 +1015,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=1.2357847547845,
+           VALE_CALC=1.23580633689,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G03B1,
@@ -1024,7 +1024,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=1.2356219716848,
+           VALE_CALC=1.23562234619,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G03B2,
@@ -1033,7 +1033,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=1.2352350650364,
+           VALE_CALC=1.23522445628,
            TOLE_MACHINE=2.E-4,      #TODO variabilite
            NOM_PARA='G',
            TABLE=G03B3,

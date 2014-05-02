@@ -1,4 +1,3 @@
-
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -183,28 +182,28 @@ G4=CALC_G(        THETA=_F(THETA=THETA4),
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC= 1.45874203E-06,
+           VALE_CALC=1.45939827939E-06,
            VALE_REFE=1.4778000000000001E-06,
            NOM_PARA='G',
            TABLE=G1,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC= 1.45907876E-06,
+           VALE_CALC=1.45934811663E-06,
            VALE_REFE=1.4778000000000001E-06,
            NOM_PARA='G',
            TABLE=G2,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC= 1.45870999E-06,
+           VALE_CALC=1.45928176145E-06,
            VALE_REFE=1.4778000000000001E-06,
            NOM_PARA='G',
            TABLE=G3,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC= 1.45913011E-06,
+           VALE_CALC=1.45936164643E-06,
            VALE_REFE=1.4778000000000001E-06,
            NOM_PARA='G',
            TABLE=G4,)
@@ -214,25 +213,25 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #--------------------------------------------------------------------
 
 TEST_TABLE(
-           VALE_CALC=1.4587420274999999E-06,
+           VALE_CALC=1.45939827939E-06,
            NOM_PARA='G',
            TABLE=G1,
            )
 
 TEST_TABLE(
-           VALE_CALC=1.4590787635E-06,
+           VALE_CALC=1.45934811663E-06,
            NOM_PARA='G',
            TABLE=G2,
            )
 
 TEST_TABLE(
-           VALE_CALC=1.45870999368E-06,
+           VALE_CALC=1.45928176145E-06,
            NOM_PARA='G',
            TABLE=G3,
            )
 
 TEST_TABLE(
-           VALE_CALC=1.4591301104E-06,
+           VALE_CALC=1.45936164643E-06,
            NOM_PARA='G',
            TABLE=G4,
            )

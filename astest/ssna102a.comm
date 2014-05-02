@@ -237,7 +237,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.841258704,
+                  VALE_CALC=-0.841259653998,
                   VALE_REFE=-0.81,
                   CRITERE='RELATIF',
                   PRECISION=0.04,),
@@ -267,7 +267,7 @@ REACENC=POST_RELEVE_T(
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.016,
-           VALE_CALC= 1.74965941E+04,
+           VALE_CALC=17496.6104063,
            VALE_REFE=1.7229580000000002E4,
            NOM_PARA='DY',
            TABLE=REACENC,)
@@ -306,7 +306,7 @@ TAB_VC3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 IMPR_TABLE(TABLE=TAB_VC3);
 
 TEST_TABLE(
-           VALE_CALC=-1.7485414747862,
+           VALE_CALC=-1.74853265065,
            NOM_PARA='JEU',
            TYPE_TEST='MIN',
            TABLE=TAB_VC3,
@@ -315,7 +315,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.2799451080147,
+           VALE_CALC=3.27994475079,
            NOM_PARA='JEU',
            TYPE_TEST='MAX',
            TABLE=TAB_VC3,

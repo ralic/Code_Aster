@@ -68,7 +68,7 @@ ENERGIE=POST_ELEM(INTEGRALE=_F(  TOUT = 'OUI',NOM_CHAM='EPOT_ELEM',NOM_CMP='TOTA
                   MODELE=MODELE, RESULTAT=DEF,)
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.012858998,
+           VALE_CALC=0.0128589920863,
            VALE_REFE=0.012799,
            REFERENCE='NON_DEFINI',
            NOM_PARA='INTE_TOTALE',
@@ -81,7 +81,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='N1',
                   NOM_CMP='DY',
-                  VALE_CALC=-4.61690279E-04,
+                  VALE_CALC=-0.000461690079845,
                   VALE_REFE=-4.596E-4,
                   REFERENCE='NON_DEFINI',
                   PRECISION=5.0000000000000001E-3,),
