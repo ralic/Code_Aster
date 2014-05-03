@@ -49,14 +49,13 @@ class BLOC(N_ENTITE.ENTITE):
    class_instance = N_MCBLOC.MCBLOC
    label = 'BLOC'
 
-   def __init__(self,fr="",ang="",docu="",regles=(),statut='f',condition=None,
+   def __init__(self,fr="",docu="",regles=(),statut='f',condition=None,
                      **args):
 
       """
           Un bloc est caractérisé par les attributs suivants :
 
             - fr   : chaine de caractere commentaire pour aide en ligne (en francais)
-            - ang : chaine de caractere commentaire pour aide en ligne (en anglais)
             - regles : liste d'objets de type REGLE pour vérifier la cohérence des sous-objets
             - statut : obligatoire ('o') ou facultatif ('f')
             - condition : chaine de caractère evaluable par l'interpreteur Python
@@ -68,7 +67,7 @@ class BLOC(N_ENTITE.ENTITE):
       """
       # Initialisation des attributs
       self.fr=fr
-      self.ang=ang
+      assert args.get('ang') is None, '"ang" attribute does not exist anymore'
       self.docu=docu
       if type(regles)== types.TupleType:
           self.regles=regles

@@ -46,7 +46,7 @@ class SIMP(N_ENTITE.ENTITE):
    class_instance = N_MCSIMP.MCSIMP
    label = 'SIMP'
 
-   def __init__(self,typ,fr="",ang="",statut='f',into=None,defaut=None,
+   def __init__(self,typ,fr="",statut='f',into=None,defaut=None,
                      min=1,max=1,homo=1,position='local',
                      val_min='**',val_max='**',docu="",validators=None,
                      sug=None):
@@ -54,7 +54,6 @@ class SIMP(N_ENTITE.ENTITE):
           Un mot-clé simple est caractérisé par les attributs suivants :
           - type : cet attribut est obligatoire et indique le type de valeur attendue
           - fr : chaîne documentaire en français
-          - ang : chaîne documentaire en anglais
           - statut : obligatoire ou facultatif ou caché
           - into : valeurs autorisées
           - defaut : valeur par défaut
@@ -74,7 +73,6 @@ class SIMP(N_ENTITE.ENTITE):
       else :
           self.type=(typ,)
       self.fr=fr
-      self.ang=ang
       self.statut=statut
       self.into=into
       self.defaut=defaut

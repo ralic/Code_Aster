@@ -61,7 +61,7 @@ lang = {}
 for cmd in commands:
     objs = [cmd] + get_entite(cmd)
     for entity in objs:
-        if entity.ang:
+        if getattr(entity, 'ang', None):
             lang[id(entity)] = (entity.fr, entity.ang)
 assert len(lang) == 0, "'ang' is deprecated and not used anymore, please remove it"
 
