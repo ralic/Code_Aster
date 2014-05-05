@@ -376,27 +376,27 @@ TEST_RESU(RESU=(_F(RESULTAT=MODEF,
                    NUME_ORDRE=1,
                    PARA='FREQ',
                    CRITERE='RELATIF',
-                   VALE_CALC=3.58165193504,),
+                   VALE_CALC=3.58169520506,),
                 _F(RESULTAT=MODEF,
                    NUME_ORDRE=2,
                    PARA='FREQ',
                    CRITERE='RELATIF',
-                   VALE_CALC=3.64911997809,),
+                   VALE_CALC=3.64911963776,),
                 _F(RESULTAT=MODEF,
                    NUME_ORDRE=3,
                    PARA='FREQ',
                    CRITERE='RELATIF',
-                   VALE_CALC=4.9566445617,),
+                   VALE_CALC=4.95664571196,),
                 _F(RESULTAT=MODEF,
                    NUME_ORDRE=4,
                    PARA='FREQ',
                    CRITERE='RELATIF',
-                   VALE_CALC=6.24930188781,),
+                   VALE_CALC=6.2492752852,),
                 _F(RESULTAT=MODEF,
                    NUME_ORDRE=5,
                    PARA='FREQ',
                    CRITERE='RELATIF',
-                   VALE_CALC=7.45692990834,),),);
+                   VALE_CALC=7.45693197386,),),);
 
 imto=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=imp,
                                COEF_C=(1+0j),),
@@ -454,11 +454,11 @@ mdx253_0=CALC_FONCTION(EXTRACTION=_F(FONCTION=dx253_0,
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=mdx253,
                          VALE_PARA=3.0,
-                         VALE_CALC=5.688324,),
+                         VALE_CALC=5.688322928966,),
                       _F(FONCTION=mdx253_0,
                          VALE_PARA=0.1,
                          TOLE_MACHINE=0.0001,
-                         VALE_CALC=1.001351,),),);
+                         VALE_CALC=1.001433828846,),),);
 
 FIN();
 #CHECKSUM:e58c588108ac5cafa08b970c60460011  -:FIN CHECKSUM
