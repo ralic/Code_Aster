@@ -18,9 +18,6 @@ def configure(self):
 
     intel.configure(self)
 
-    # enable TEST_STRICT on the reference server
-    self.env.append_value('DEFINES', ['TEST_STRICT'])
-
     self.env.append_value('CFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env.append_value('FCFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env['ADDMEM'] = 250
