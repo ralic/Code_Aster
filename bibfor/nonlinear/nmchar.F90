@@ -179,9 +179,9 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
         call nmcvec('AJOU', 'CNVCF0', ' ', .true., .true.,&
                     nbvect, ltypve, loptve, lcalve, lassve)
 !
-! --- FORCES NODALES (POUR PREDICTION)
+! --- FORCES NODALES POUR PREDICTION (SKIP FOR IMPLEX/EXPLICITE)
 !
-        if (.not.lexpl) then
+        if ( .not.(lexpl.or.limpex) ) then
             call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true., .true.,&
                         nbvect, ltypve, loptve, lcalve, lassve)
         endif

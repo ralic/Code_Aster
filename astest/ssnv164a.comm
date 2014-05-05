@@ -165,7 +165,7 @@ CMCAB5=AFFE_CHAR_MECA(MODELE=MO,
 
 
 
-LINST=DEFI_LIST_REEL(VALE=(0.0,150.,300.,450.,600.),);
+LINST=DEFI_LIST_REEL(VALE=(0.0,100.,150.,300.,450.,600.),);
 
 
 # ETAPE 1 : EFFET DE LA PESANTEUR
@@ -182,6 +182,7 @@ RES1 = STAT_NON_LINE(MODELE=MO,
                                _F(CHARGE = CMCAB3),
                                _F(CHARGE = CMCAB4),
                                _F(CHARGE = CMCAB5),),
+                     METHODE = 'IMPLEX',
                      INCREMENT=_F(LIST_INST = LINST,
                                   INST_FIN = 150.),)
 
@@ -1158,5 +1159,22 @@ TEST_RESU(RESU=(_F(INST=600.0,
                    MAILLE='M5754',),
                 ),
           )
+          
+#  TEST DE CONVERGENCE D'IMPLEX
+TEST_RESU(RESU=(_F(INST=150.0,
+                   RESULTAT=RES1,
+                   NOM_CHAM='SIEF_ELNO',
+                   TYPE_TEST = 'MAX',
+                   VALE_CALC = 2.9993845759E+05,
+                   CRITERE='RELATIF',),
+                _F(INST=150.0,
+                   RESULTAT=RES1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST = 'SOMM_ABS',
+                   VALE_CALC = 1.303575298E+06,
+                   CRITERE='RELATIF',),
+                ),
+          )
+          
 
 FIN();

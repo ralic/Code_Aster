@@ -138,6 +138,8 @@ subroutine te0139(option, nomte)
             call utmess('F', 'ELEMENTS5_50')
         endif
         call jevech('PCONTXR', 'E', icontp)
+!       INITIALISATION DE LA CONTRAINTE EXTRAPOLEE CONTXR=CONTMR
+        call dcopy(npg*6, zr(icontm), 1, zr(icontp), 1)        
     endif
 !
     if (zk16(icompo+3) (1:9) .eq. 'COMP_ELAS') then

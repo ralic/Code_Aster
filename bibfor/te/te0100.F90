@@ -152,6 +152,8 @@ subroutine te0100(option, nomte)
             call utmess('F', 'ELEMENTS5_50')
         endif
         call jevech('PCONTXR', 'E', icontp)
+!       INITIALISATION DE LA CONTRAINTE EXTRAPOLEE CONTXR=CONTMR
+        call dcopy(npg1*4, zr(icontm), 1, zr(icontp), 1)          
     endif
 !
 !

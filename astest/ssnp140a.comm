@@ -33,7 +33,8 @@ MODE=AFFE_MODELE(MAILLAGE=MAIL,
 
 # DEFINITION DES PARAMETRES DE LA LOI DE COMPORTEMENT
 MA=DEFI_MATERIAU(ELAS=_F(E=70,
-                         NU=0.2,),
+                         NU=0.2,
+                         RHO=25000,), # RHO HAS NON-PHYSICAL VALUE
                  ECRO_LINE=_F(D_SIGM_EPSI=2.170542,
                               SY=0.24,),);
 
@@ -52,7 +53,13 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODE,
 CHAR2=AFFE_CHAR_MECA(MODELE=MODE,
                      DDL_IMPO=_F(GROUP_MA='34',
                                   DY=0.3,),);
-
+                                  
+# WEIGHT CHARGE IS ONLY NEEDED FOR IMPLEX TEST WITH PRESCRIBED FORCES
+PESANT=AFFE_CHAR_MECA(MODELE=MODE,                                  
+                      PESANTEUR=_F(GRAVITE=9.81,
+                                   DIRECTION=(0.0,0.0,1.0,), ),
+                      )
+                     
 F_DEPL=DEFI_FONCTION(NOM_PARA    = 'INST',
                      VALE        = (0,0, 1,1),
                      PROL_DROITE = 'LINEAIRE',);
@@ -229,5 +236,38 @@ TEST_TABLE(
            TYPE_TEST='SOMM_ABS',
            TABLE=TINT,
            )
+
+
+# RESOLUTION AVEC LA METHODE IMPL-EX EN ELASTICITE
+LISTR=DEFI_LIST_REEL(VALE=(0,1,2),);
+
+RESUIMP=STAT_NON_LINE(MODELE=MODE,
+                     CHAM_MATER=MATE,
+                     EXCIT=(_F(CHARGE=CHAR,),
+                            _F(CHARGE=PESANT,),
+                            _F(CHARGE=CHAR2, FONC_MULT=F_DEPL,),),
+                     COMPORTEMENT=_F(RELATION='ELAS',),
+                     INCREMENT=_F(LIST_INST=LISTR,
+                                  INST_FIN=2,),
+                     METHODE = 'IMPLEX',
+);
+
+#  TEST DE CONVERGENCE D'IMPLEX
+TEST_RESU(RESU=(_F(INST=2,
+                   RESULTAT=RESUIMP,
+                   NOM_CHAM='SIEF_ELGA',
+                   TYPE_TEST = 'MAX',
+                   VALE_CALC = 7.19501889686,
+                   CRITERE='RELATIF',),
+                _F(INST=2,
+                   RESULTAT=RESUIMP,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST = 'SOMM_ABS',
+                   VALE_CALC = 166.341729795,
+                   CRITERE='RELATIF',),
+                ),
+          )
+          
+
 
 FIN();
