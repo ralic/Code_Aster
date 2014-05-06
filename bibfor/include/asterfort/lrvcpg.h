@@ -16,18 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
-                      elrefa, elrefm, fapg, nloc, permu,&
+    subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo,&
+                      elrefa, fapg, nloc, locnam, permu,&
                       nutyma, codret)
         integer :: nbpgm
         integer :: idfimd
         integer :: nbpga
         character(len=8) :: nomtm
-        integer :: tygeos
+        integer :: typgeo
         character(len=8) :: elrefa
-        character(len=8) :: elrefm
         character(len=8) :: fapg
         integer :: nloc
+        character(len=64) :: locnam
         integer :: permu(nbpgm)
         integer :: nutyma
         integer :: codret

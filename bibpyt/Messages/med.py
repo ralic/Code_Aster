@@ -29,8 +29,8 @@ cata_msg = {
 
 2 : _(u"""
   -> Le nombre de points de Gauss est différent entre le fichier MED et Aster:
-      - nombre de points de Gauss contenu dans le fichier MED : %(i2)d
-      - nombre de points de Gauss défini dans Aster           : %(i1)d
+      - nombre de points de Gauss contenu dans le fichier MED : %(i1)d
+      - nombre de points de Gauss défini dans Aster           : %(i2)d
 
      Visiblement les éléments finis décrits dans le fichier MED ne sont pas les
      mêmes que dans Code_Aster.

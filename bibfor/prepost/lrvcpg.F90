@@ -1,5 +1,5 @@
-subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
-                  elrefa, elrefm, fapg, nloc, permu,&
+subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo,&
+                  elrefa, fapg, nloc, locnam, permu,&
                   nutyma, codret)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -66,16 +66,17 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
 !
     integer :: tygeos, nbpgm, nbpga, nloc, nutyma, idfimd
     integer :: permu(nbpgm), codret
-    character(len=8) :: elrefa, elrefm, fapg, nomtm
+    character(len=8) :: elrefa, fapg, nomtm
+    character(len=64) :: locnam
 !
 !
 !
 !
     integer :: vali(2), jcopga, jwpga, ndim, nbfpg, iloc, dime
-    integer :: typgeo, ibid, iret, nnoref, npgref, jrefco, jgscoo, jwg, jcorre
+    integer :: typgeo, nbpg, iret, nnoref, npgref, jrefco, jgscoo, jwg, jcorre
     integer :: ncorre, igau, idim, ad, ipgm, ipga, ada, im, ifm, nivinf
     character(len=8) :: valk(3)
-    character(len=64) :: locnam, nomasu
+    character(len=64) :: locnam2, nomasu
     integer :: edfuin
     parameter (edfuin=0)
     real(kind=8) :: xpgm, ypgm, zpgm, xpga, ypga, zpga, valr(2)
@@ -104,7 +105,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
 !     PREND EN COMPTE LE NOMBRE DE SOUS-POINTS
 !     CECI PEUT ETRE LA CAUSE DE L'EMISSION
 !     DU MESSAGE CI-DESSOUS
-    if (nbpgm .gt. nbpga) then
+    if (nbpgm .ne. nbpga) then
         vali(1)=nbpgm
         vali(2)=nbpga
         call utmess('A', 'MED_2', ni=2, vali=vali)
@@ -122,11 +123,12 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
     if (nivinf .gt. 1) then
         write(ifm,1001) nloc
     endif
-!
     do 130 iloc = 1, nloc
-        call as_mlclci(idfimd, iloc, locnam, typgeo, ibid,&
+        call as_mlclci(idfimd, iloc, locnam2, tygeos, nbpg,&
                        ndim, nomasu, iret)
-        if (tygeos .eq. typgeo) goto 140
+        if ( tygeos.eq.typgeo ) then
+            if ( locnam.eq.' ' .or. locnam.eq.locnam2 ) goto 140
+        endif
 130  end do
 !     SI ON EST ICI, CELA SIGNIFIE QU'AUCUNE LOCALISATION
 !     N'A ETE IDENTIFIEE POUR L'ELEMENT DE REFERENCE EN COURS
@@ -136,6 +138,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
     codret=2
     goto 9999
 140  continue
+!
 !
     if (nivinf .gt. 1) then
         write(ifm,1002) locnam

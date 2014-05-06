@@ -102,7 +102,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     integer :: j, nbgrel, jtypma, jtypge
     integer :: numte, i, ityg, ngaulu, npdt
     integer :: tygeo(ntygeo), nbpg, nbpgm
-    integer :: jtmfpg, nufgpg
+    integer :: jtmfpg, nufgpg, jnoloc
     integer :: dime, jtymed
     integer :: jngalu, nbtyel, nbmag, igr, ima
     integer :: jngaok
@@ -180,6 +180,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     call wkvect('&&LRMPGA_TYPGEO_TYEL_MED', 'V V K8', ntygeo, jtyelm)
     call wkvect('&&LRMPGA_TYPGEO_OKPG_MED', 'V V I', ntygeo, jngaok)
     call wkvect('&&LRMPGA_TYPGEO_TYPGEO', 'V V I', ntygeo, jtypge)
+    call wkvect('&&LRMPGA_TYPGEO_NOMLOC', 'V V K80', ntygeo, jnoloc)
     nbtyel=0
     if (nivinf .gt. 1) then
         write(ifm, 2001) nochmd
@@ -201,6 +202,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
             nbtyel=nbtyel+1
             zk8(jtymed+nbtyel-1)=typma(ityg)
             zk8(jtyelm+nbtyel-1)=tyele(ityg)
+            zk80(jnoloc+nbtyel-1)=nomloc
             zi(jngalu+nbtyel-1)=ngaulu
             zi(jngaok+nbtyel-1)=0
             zi(jtypge+nbtyel-1)=tygeo(ityg)
@@ -302,8 +304,9 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !             VERIFICATION DU NOMBRE DE PG ASTER/MED
 !             COMPARAISON DES COORDONNEES DES PG ASTER/MED
                 call wkvect('&&LRMPGA_PERMUT', 'V V I', nbpg, jperm)
-                call lrvcpg(idfimd, nbpg, zi(jngalu+j-1), nomtm, zi(jtypge+j-1),&
-                            elref, zk8(jtyelm+j-1), fapg, nloc, zi(jperm),&
+                nomloc = zk80(jnoloc+j-1)
+                call lrvcpg(idfimd, zi(jngalu+j-1), nbpg, nomtm, zi(jtypge+j-1),&
+                            elref, fapg, nloc, nomloc, zi(jperm),&
                             nutyma, codret)
                 nbpgm = zi(jngalu+j-1)
 !
@@ -357,6 +360,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     call jedetr('&&LRMPGA_TYPGEO_TYEL_MED')
     call jedetr('&&LRMPGA_TYPGEO_OKPG_MED')
     call jedetr('&&LRMPGA_TYPGEO_TYPGEO')
+    call jedetr('&&LRMPGA_TYPGEO_NOMLOC')
 !
     call jedema()
 !
