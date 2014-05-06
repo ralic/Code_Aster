@@ -18,7 +18,9 @@
 # VALIDATION DE LA METHODE MAILLAGE
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+              DEBUG=_F(SDVERI='OUI'),
+              IGNORE_ALARM=('TEST0_12'))
 
 #***********************************
 # MAILLAGE ET MODELE
@@ -225,18 +227,20 @@ for i in range(1,NPS-1) :
 W=1000;
 sigma=1E6
 
-VALE_CALC=[3.8775426983493E+07,
- -2250.3101892089,
- 3.8458183073042E+07,
- 2500.5666130107,
- 4.1259845152032E+07,
- -4970.2613796784,
- 4.0449326686181E+07,
- 5354.6711895267,
- 4.7554256117803E+07,
- -7585.2123025003,
- 4.7895737210742E+07,
- 8173.3333111975,]
+VALE_CALC=[
+ 3.8775426983500E+07,
+-2.2503101880447E+03,
+ 3.8458183073028E+07,
+ 2.5005666141729E+03,
+ 4.1259845152042E+07,
+-4.9702613785777E+03,
+ 4.0449326686164E+07,
+ 5.3546711905856E+03,
+ 4.7554256117838E+07,
+-7.5852122994155E+03,
+ 4.7895737210625E+07,
+ 8.1733333127673E+03,
+]
 
 for i in range(1,NPS-1) :
 
@@ -258,16 +262,23 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
               VALE_CALC=VALE_CALC[(i-1)*4]  )
+   IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K1');
 
+   # TEST DE REFERENCE SUR K2
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K2',
               PRECISION=TOL_K2,
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
-              TOLE_MACHINE=1.E-05,                    # TODO TOLE_MACHINE
               VALE_REFE=0.,
+              VALE_CALC=0.,    )
+   # TEST DE NON REGRESSION SUR K2
+   TEST_TABLE(TABLE=SIFL[i],
+              NOM_PARA='K2',
+              TYPE_TEST='MAX',
               VALE_CALC=VALE_CALC[(i-1)*4+1]    )
+   IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K2');
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
@@ -276,7 +287,9 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
               VALE_CALC=VALE_CALC[(i-1)*4+2]  )
+   IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K1');
 
+   # TEST DE REFERENCE SUR K2
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K2',
@@ -284,7 +297,12 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              TOLE_MACHINE=6.E-6,        #TODO TOLE_MACHINE variable entre les machines
+              VALE_CALC=0.  )
+   # TEST DE NON REGRESSION SUR K2
+   TEST_TABLE(TABLE=SIFR[i],
+              NOM_PARA='K2',
+              TYPE_TEST='MAX',
               VALE_CALC=VALE_CALC[(i-1)*4+3]  )
+   IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K2');
 
 FIN();

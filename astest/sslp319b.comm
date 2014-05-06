@@ -17,7 +17,9 @@
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+              DEBUG=_F(SDVERI='OUI'),
+              IGNORE_ALARM=('TEST0_12'))
 
 #***********************************
 # MAILLAGE ET MODELE
@@ -179,10 +181,26 @@ for i in range(1,NPS-1) :
 W=1000;
 sigma=1E6
 
-KIL_calc = [ 3.7940271283694E+07,  4.193957568778E+07, 4.6309537573016E+07 ]
-KIIL_calc = [-2164.5420169867, -4496.8420142242, -6289.2095474137 ]
-KIR_calc = [ 3.7877442071324E+07,  4.1570652965447E+07, 4.6728524023436E+07 ]
-KIIR_calc =[2369.3436136001, 4741.5249335054, 6513.8385287555 ]
+KIL_calc = [
+ 3.7940271283701E+07,
+ 4.1939575687789E+07,
+ 4.6309537573042E+07,
+]
+KIIL_calc = [
+-2.1645420158958E+03,
+-4.4968420147400E+03,
+-6.2892095493350E+03,
+]
+KIR_calc = [
+ 3.7877442071310E+07,
+ 4.1570652965428E+07,
+ 4.6728524023391E+07,
+]
+KIIR_calc =[
+ 2.3693436147152E+03,
+ 4.7415249348238E+03,
+ 6.5138385304694E+03,
+]
 for i in range(1,NPS-1) :
    
    a=a0+da_fiss*(i-1)
@@ -203,7 +221,9 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
               VALE_CALC=KIL_calc[i-1]  )
+   IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K1');
 
+   # TEST DE REFERENCE SUR K2
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K2',
@@ -211,9 +231,15 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              TOLE_MACHINE=1.E-5,           #TODO TOLE_MACHINE variable entre les machines
+              VALE_CALC=0.,
+              )
+   # TEST DE NON REGRESSION SUR K2
+   TEST_TABLE(TABLE=SIFL[i],
+              NOM_PARA='K2',
+              TYPE_TEST='MAX',
               VALE_CALC=KIIL_calc[i-1],
               )
+   IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K2');
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
@@ -222,7 +248,9 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
               VALE_CALC=KIR_calc[i-1]  )
+   IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K1');
 
+   # TEST DE REFERENCE SUR K2
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K2',
@@ -230,10 +258,15 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              TOLE_MACHINE=1.E-5,           #TODO TOLE_MACHINE variable entre les machines
+              VALE_CALC=0.,
+               )
+   # TEST DE NON REGRESSION SUR K2
+   TEST_TABLE(TABLE=SIFR[i],
+              NOM_PARA='K2',
+              TYPE_TEST='MAX',
               VALE_CALC=KIIR_calc[i-1],
                )
-
+   IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K2');
 
 #----------------------------------------------
 #         EDITION DE FICHIERS MED
