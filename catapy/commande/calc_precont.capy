@@ -51,7 +51,7 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",
          EXCIT           =FACT(statut='o',max='**',
            CHARGE          =SIMP(statut='o',typ=char_meca),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
-                                 into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI"))
+                                 into=("FIXE_CSTE","DIDI"))
          ),
 
          COMPORTEMENT       =C_COMPORTEMENT(),
