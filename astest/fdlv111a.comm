@@ -121,7 +121,6 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                           ENERGIE=_F(),
                           EXCIT=_F(  VECT_ASSE = VECTASS,
                                   FONC_MULT = FONC),
-####CDURAND###                         ETAT_INIT=_F(  INST_INIT = 0.),
                          INCREMENT=_F( LIST_INST = TEMPLI),
 #                        ARCHIVAGE=_F(  LIST_ARCH = INTLI),
                          SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
@@ -133,11 +132,6 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 #     LA DISSIPATION DU SCHEMA EST TESTEE EN ABSOLU.
 
 ENER1=RECU_TABLE(CO=DYN,NOM_TABLE='PARA_CALC',);
-
-PRECREL1 = 1.E-7
-PRECREL2 = 2.E-5
-PRECABS1 = 3.E-3
-PRECABS2 = 3.5E-1
 
 TEST_TABLE(
            VALE_CALC=16174.2169787,
@@ -209,7 +203,7 @@ TEST_TABLE(
            VALE_CALC=0.135112176215,
            NOM_PARA='ENER_TOT',
            TABLE=ENER1,
-           TOLE_MACHINE=1.E-5,                 # TODO TOLE_MACHINE
+           TOLE_MACHINE=5.E-5,                 # TODO TOLE_MACHINE
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
            )
@@ -262,7 +256,7 @@ TRAVAIL = POST_ELEM(
 
 TEST_TABLE(
            VALE_CALC=0.135112175886,
-           TOLE_MACHINE=1.E-5,                 # TODO TOLE_MACHINE
+           TOLE_MACHINE=5.E-5,                 # TODO TOLE_MACHINE
            NOM_PARA='TRAV_REEL',
            TABLE=TRAVAIL,
            FILTRE=_F(NOM_PARA='INST',
@@ -300,7 +294,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=7137.371197939,
                          FONCTION=PN16,
                          ),
                       _F(VALE_CALC=0.17772626876831,
-                         TOLE_MACHINE=2.E-3,           # TODO TOLE_MACHINE
+                         TOLE_MACHINE=5.E-3,           # TODO TOLE_MACHINE
                          CRITERE='ABSOLU',
                          VALE_PARA=1.27375,
                          FONCTION=PN16,),

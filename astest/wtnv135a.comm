@@ -332,6 +332,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOEUD='NO8',
                   NOM_CMP='SIZZ',
                   VALE_CALC=-11940519.1452,
+                  TOLE_MACHINE=1.e-5,
                   ),
           )
 

@@ -492,7 +492,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX2,  NOM_PARA= ('AMOR', 'FREQ',),
                             VALE_PARA = (amo_sro, 30.0), 
                             VALE_REFE = 2.386E-01 , VALE_CALC=0.23512316649049,
                             CRITERE = 'RELATIF', 
-                            PRECISION=2.E-02, TOLE_MACHINE=1.E-3,
+                            PRECISION=2.E-02, TOLE_MACHINE=3.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
 
 
@@ -508,7 +508,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX3,  NOM_PARA= ('AMOR', 'FREQ',),
                             VALE_PARA = (amo_sro, 30.0), 
                             VALE_REFE = 2.386E-01 , VALE_CALC=0.23367303875905,
                             CRITERE = 'RELATIF', 
-                            PRECISION=2.5E-02, TOLE_MACHINE=1.E-3,
+                            PRECISION=2.5E-02, TOLE_MACHINE=3.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
 
 
@@ -573,7 +573,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX4,  NOM_PARA= ('AMOR', 'FREQ',),
                             VALE_PARA = (amo_sro, 10.0), 
                             VALE_REFE =5.723E-01 , VALE_CALC=0.57565194173470,
                             CRITERE = 'RELATIF', 
-                            PRECISION=1.E-02, TOLE_MACHINE=1.E-3,
+                            PRECISION=1.E-02, TOLE_MACHINE=3.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
 
 FIN();

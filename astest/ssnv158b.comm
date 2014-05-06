@@ -293,7 +293,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    NOEUD='N4',
                    NOM_CMP='SIYY',
                    VALE_CALC=-12.4260254509,
-                   TOLE_MACHINE=1.E-5,              # TODO TOLE_MACHINE
+                   TOLE_MACHINE=5.E-5,              # TODO TOLE_MACHINE
                    ),
                 _F(NUME_ORDRE=40,
                    RESULTAT=U2,

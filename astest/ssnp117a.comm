@@ -222,6 +222,7 @@ TEST_RESU(RESU=_F(INST=10.0,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
                   VALE_CALC=0.0333443501316,
+                  TOLE_MACHINE=5.e-5,
                   CRITERE='ABSOLU',
                   MAILLE='M1',),
           )
