@@ -25,7 +25,7 @@ DEFI_MATER_GC=MACRO(nom="DEFI_MATER_GC",
    #
    regles = (UN_PARMI('MAZARS','ACIER','ENDO_FISS_EXP'), ),
    #
-   REGLE =SIMP(statut='f',typ='TXM',     into=('EC2',),     defaut='EC2'),
+   REGLE =SIMP(statut='f',typ='TXM',     into=('BAEL91',),     defaut='BAEL91'),
    # ============================================================================
    MAZARS      =FACT(statut= 'f',max= 1,
       fr="Paramètres matériaux de MAZARS unilatéral en 1D à partir des caractéristiques du béton",
