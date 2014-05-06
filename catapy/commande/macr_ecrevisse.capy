@@ -61,7 +61,7 @@ MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",
 #      DONNEES GEOMETRIQUES RELATIVES A LA FISSURE
 #      *******************************************
          FISSURE            =FACT(statut='o',min=1,max='**',
-           PREFIXE_FICHIER     =SIMP(statut='f',typ='TXM',validators=LongStr(1,8)),
+           PREFIXE_FICHIER     =SIMP(statut='o',typ='TXM',validators=LongStr(1,8)),
            GROUP_MA            =SIMP(statut='o',typ=grma,validators=NoRepeat(),min=2,max=2,
                                      fr="Groupe(s) des noeuds definissant les levres de la fissure"),
            GROUP_NO_ORIG       =SIMP(statut='o',typ=grno,validators=NoRepeat(),min=2,max=2),
@@ -223,7 +223,7 @@ MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",
          VERSION            = SIMP(statut='f',typ='TXM',into = ("3.2.1",) ),
          ENTETE             = SIMP(statut='f',typ='TXM',max='**',defaut="Titre du calcul Ecrevisse" ),
          IMPRESSION         = SIMP(statut='f',typ='TXM',defaut='NON',into=( 'OUI','NON') ),
-         INFO               = SIMP(statut='f',typ='I',defaut="1",into=(1,2) ),
+         INFO               = SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 
 #      DONNEES POUR STAT_NON_LINE ET THER_NON_LINE
 #      *******************************************
