@@ -50,7 +50,7 @@ subroutine xtopoi(noma, modele)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=5, nbin=4)
+    parameter    (nbout=5, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -122,10 +122,8 @@ subroutine xtopoi(noma, modele)
     lchin(1) = chgeom
     lpain(2) = 'PLEVSET'
     lchin(2) = modele(1:8)//'.LNNO'
-    lpain(3) = 'PGRADLN'
-    lchin(3) = modele(1:8)//'.GRLNNO'
-    lpain(4) = 'PFISCO'
-    lchin(4) = modele(1:8)//'.FISSCO'
+    lpain(3) = 'PFISCO'
+    lchin(3) = modele(1:8)//'.FISSCO'
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

@@ -1,0 +1,261 @@
+# TITRE : COHERENCE DES MODES LOCAUX DES OPTIONS TOPOSE ET TOPOFA (AXIS)
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      PAR_LOT = 'NON',
+      IGNORE_ALARM=('MODELISA4_6','SUPERVIS_1'),
+      DEBUG=_F(SDVERI='OUI'),
+      )
+
+# ###################################################
+# ###################################################
+#
+# Utilisation d'un maillage lineaire pour tester la
+# coherence entre : 
+#
+#  - meca sans contact
+#  - thermique
+#
+#  rq : meca avec contact XFEM n'existe pas en AXIS
+#
+# ###################################################
+# ###################################################
+
+# ###################################################
+# Maillage
+# ###################################################
+
+MA1 = LIRE_MAILLAGE(FORMAT = 'MED',);
+
+MAILLAGE = CREA_MAILLAGE(MAILLAGE = MA1,
+                         CREA_POI1 = (_F(NOM_GROUP_MA = 'POCOUPE1',
+                                         GROUP_NO = 'NORPHHAU',),
+                                      _F(NOM_GROUP_MA = 'POCOUPE2',
+                                         GROUP_NO = 'NORPHBAS',),),)
+
+# ###################################################
+# Definition des modeles sains mecanique et thermique
+# ###################################################
+
+MODMES = AFFE_MODELE(MAILLAGE = MAILLAGE,
+                     AFFE = (
+                             _F(TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'AXIS',),
+                             _F(GROUP_MA = ('POCOUPE1','POCOUPE2',),
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '2D_DIS_T',),
+                             ),)
+
+MODTHS = AFFE_MODELE(MAILLAGE = MAILLAGE,
+                     AFFE = _F(TOUT = 'OUI',
+                               PHENOMENE = 'THERMIQUE',
+                               MODELISATION = 'PLAN',),)
+
+# ###################################################
+# Definition des fissures mecanique et thermique 
+# ###################################################
+
+a = 10.
+h = a/18.
+
+FISSME1 = DEFI_FISS_XFEM(MODELE = MODMES,
+                        TYPE_DISCONTINUITE = 'FISSURE', 
+                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                       PFON = (0.25*a, 0.25*a, 0.),
+                                       DTAN = (1., 0., 0.),),)
+
+FISSTH1 = DEFI_FISS_XFEM(MODELE = MODTHS,
+                        TYPE_DISCONTINUITE = 'FISSURE', 
+                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                       PFON = (0.25*a, 0.25*a, 0.),
+                                       DTAN = (1., 0., 0.),),)
+
+FISSME2 = DEFI_FISS_XFEM(MODELE = MODMES,
+                        TYPE_DISCONTINUITE = 'FISSURE', 
+                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                       PFON = (0.25*a, 0.75*a, 0.),
+                                       DTAN = ( 1., 0., 0.),),)
+
+FISSTH2 = DEFI_FISS_XFEM(MODELE = MODTHS,
+                        TYPE_DISCONTINUITE = 'FISSURE', 
+                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                       PFON = (0.25*a, 0.75*a, 0.),
+                                       DTAN = ( 1., 0., 0.),),)
+
+FISSME3 = DEFI_FISS_XFEM(MODELE = MODMES,
+                        TYPE_DISCONTINUITE = 'FISSURE', 
+                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                       PFON = (a-1.5*h, 0.5*h, 0.),
+                                       DTAN = (-1., 0., 0.),),)
+
+FISSTH3 = DEFI_FISS_XFEM(MODELE = MODTHS,
+                        TYPE_DISCONTINUITE = 'FISSURE', 
+                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                       PFON = (a-1.5*h, 0.5*h, 0.),
+                                       DTAN = (-1., 0., 0.),),)
+
+# ###################################################
+# Definition des modeles xfem mecanique et thermique
+# ###################################################
+
+#  - meca sans contact
+MODMEX = MODI_MODELE_XFEM(MODELE_IN = MODMES,
+                          FISSURE = (FISSME1,FISSME2,FISSME3),)
+
+#  - thermique
+MODTHX = MODI_MODELE_XFEM(MODELE_IN = MODTHS,
+                          FISSURE = (FISSTH1,FISSTH2,FISSTH3),)
+
+# ###################################################
+# Impression du contenu des modeles xfem obtenus :
+# -> meca, sans contact : MODMEX
+# -> meca, avec contact : MODMCX
+# -> thermique          : MODTHX
+# ###################################################
+
+DEFI_FICHIER(UNITE=31, FICHIER='./fort.31')
+DEFI_FICHIER(UNITE=33, FICHIER='./fort.33')
+
+# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
+# car les permutations peuvent changer la somme de controle
+#IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MODMEX),NIVEAU=-1,PERMUTATION='NON',)
+#IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MODTHX),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MODMEX),NIVEAU=-1,)
+IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MODTHX),NIVEAU=-1,)
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
+DEFI_FICHIER(ACTION='LIBERER',UNITE=33)
+
+# ###################################################
+# "Post-traitements" des fichiers obtenus avec IMPR_CO
+# ###################################################
+
+File31 = open('./fort.31', "r")
+File33 = open('./fort.33', "r")
+
+LinesFile31 = File31.readlines()
+LinesFile33 = File33.readlines()
+LinesFile31 = [line.split() for line in LinesFile31]
+LinesFile33 = [line.split() for line in LinesFile33]
+
+File31.close()
+File33.close()
+
+ListME = []
+ListTH = []
+
+for il in xrange(len(LinesFile31)):
+  lF31 = LinesFile31[il]
+  if '&&UTIMSD' in lF31 :
+    ind = lF31.index('MODMEX')
+    lF31[ind] = ''
+    for char in lF31:
+      if ('TOPOFAC' in char) and ('.CELV' in char) or \
+         ('TOPOSE'  in char) and ('.CELV' in char) :
+        ListME.append(lF31)
+        break
+for il in xrange(len(LinesFile33)):
+  lF33 = LinesFile33[il]
+  if '&&UTIMSD' in lF33 :
+    ind = lF33.index('MODTHX')
+    lF33[ind] = ''
+    for char in lF33:
+      if ('TOPOFAC' in char) and ('.CELV' in char) or \
+         ('TOPOSE'  in char) and ('.CELV' in char) :
+        ListTH.append(lF33)
+        break
+
+# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
+# car les permutations peuvent changer la somme de controle
+for i in xrange(len(ListME)):
+  if 'SOMMR=' in ListME[i] : 
+    char = 'SOMMR='
+  elif 'SOMMI=' in ListME[i] :
+    char = 'SOMMI='
+  ind = ListME[i].index(char)
+  ListME[i] = ListME[i][:ind]
+for i in xrange(len(ListTH)):
+  if 'SOMMR=' in ListTH[i] : 
+    char = 'SOMMR='
+  elif 'SOMMI=' in ListTH[i] :
+    char = 'SOMMI='
+  ind = ListTH[i].index(char)
+  ListTH[i] = ListTH[i][:ind]
+
+#assert len(ListTH) == len(ListME)
+#for i in xrange(len(ListTH)):
+  #print ListTH[i] == ListME[i]
+  #print ListTH[i]
+  #print ListME[i]
+  #print "&&"
+
+# ###################################################
+# Tests une fois les infos extraites de ces fichiers
+# ###################################################
+
+# -------
+# nobj_ok == 1 si il y a le meme nombre de cham_elem out
+# de TOPOSE et TOPOFA d'un modele a l'autre
+# nobj_ok == 0 sinon
+# -------
+
+nME = len(ListME)
+nTH = len(ListTH)
+
+# -> entre MODTHX et MODMEX
+nobj_ok = 0
+if (nTH == nME) and (nTH > 0) : nobj_ok = 1
+TOBJTHME = CREA_TABLE(TITRE = '',
+                      LISTE = _F( LISTE_I = [nobj_ok], PARA = 'BOOLEEN'),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TOBJTHME,)
+
+# -------
+# vale_ok == 1 si le "resume" (IMPR_CO/NIVEAU=-1) des .CELV
+# ou .VALE contenus dans les deux modeles sont identiques 
+# (au nom du modele pres) 
+# vale_ok == 0 sinon
+# -------
+
+# -> entre MODTHX et MODMEX
+vale_ok = 0
+if (ListTH == ListME) and (ListTH != []) : vale_ok = 1
+TVALTHME = CREA_TABLE(TITRE = '',
+                      LISTE = _F( LISTE_I = [vale_ok], PARA = 'BOOLEEN'),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TVALTHME,)
+
+# ###################################################
+# ###################################################
+#
+# rq : les elements hydro-meca XFEM n'existent pas 
+#      en AXIS
+#
+# ###################################################
+# ###################################################
+
+FIN()

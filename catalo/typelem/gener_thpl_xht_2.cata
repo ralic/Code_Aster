@@ -49,7 +49,7 @@ MODE_LOCAL__
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     H1       E1       )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E6NEUTR  = N120_R   ELEM__         (X[6]     )
-    E8NEUTR  = N132_R   ELEM__         (X[8]     )
+    E06NEUR  = N132_R   ELEM__         (X[6]     )
     E6NEUTI  = N128_I   ELEM__         (X[6]     )
     E9NEUTI  = N120_I   ELEM__         (X[9]     )
     E12NEUTR = N120_R   ELEM__         (X[12]    )
@@ -74,7 +74,7 @@ OPTION__
                           OUT__ XXXXXX   XXXXXX   
     CHAR_THER_EVOL   577  IN__  N6NEUT_R PBASLOR  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  
                                 E9NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
-                                E8NEUTR  PPINTTO  STANO_I  PSTANO   DDL_THER PTEMPER  CTEMPSR  PTEMPSR  
+                                E06NEUR  PPINTTO  STANO_I  PSTANO   DDL_THER PTEMPER  CTEMPSR  PTEMPSR  
                                 ZVARCPG  PVARCPR  
                           OUT__ MVECTTR  PVECTTR  
     CHAR_THER_PARO_F 599  IN__  E15NEUTR PAINTER  E12NEUTR PBASECO  E3NEUTI  PCFACE   NGEOMER  PGEOMER  
@@ -87,11 +87,11 @@ OPTION__
                           OUT__ MVECTTR  PVECTTR  
     MASS_THER        572  IN__  N6NEUT_R PBASLOR  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  
                                 E9NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
-                                E8NEUTR  PPINTTO  STANO_I  PSTANO   CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  
+                                E06NEUR  PPINTTO  STANO_I  PSTANO   CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  
                           OUT__ MMATTTR  PMATTTR  
     RIGI_THER        571  IN__  N6NEUT_R PBASLOR  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  
                                 E9NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
-                                E8NEUTR  PPINTTO  STANO_I  PSTANO   CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  
+                                E06NEUR  PPINTTO  STANO_I  PSTANO   CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  
                           OUT__ MMATTTR  PMATTTR  
     RIGI_THER_PARO_F 594  IN__  E15NEUTR PAINTER  E12NEUTR PBASECO  E3NEUTI  PCFACE   NGEOMER  PGEOMER  
                                 CHECHPF  PHECHPF  E3NEUTI  PLONGCO  N1NEUT_R PLST     E6NEUTR  PPINTER  
@@ -102,13 +102,13 @@ OPTION__
                                 STANO_I  PSTANO   CTEMPSR  PTEMPSR  
                           OUT__ MMATTTR  PMATTTR  
     TEMP_ELGA        578  IN__  N6NEUT_R PBASLOR  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  
-                                E3NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E8NEUTR  PPINTTO  
+                                E3NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E06NEUR  PPINTTO  
                                 DDL_THER PTEMPER  
                           OUT__ ETEMPPG  PTEMPPG  
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN     
                                 N1NEUT_R PLST     
                           OUT__ E15NEUTR PAINTER  E12NEUTR PBASECO  E3NEUTI  PCFACE   E6NEUTR  PGESCLA  
                                 E6NEUTR  PGESCLO  E6NEUTR  PGMAITR  E3NEUTI  PLONGCO  E6NEUTR  PPINTER  
-    TOPOSE           514  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N1NEUT_R PLEVSET  
-                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  E8NEUTR  PPINTTO  
+    TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET  
+                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  E06NEUR  PPINTTO  
                                 E22NEUTR PPMILTO

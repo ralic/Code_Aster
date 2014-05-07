@@ -24,7 +24,6 @@ OPTION__
    IN__
         PGEOMER  GEOM_R    
         PLEVSET  NEUT_R
-        PGRADLN  NEUT_R
         PFISCO   NEUT_I
    OUT__
         PPINTTO  N132_R ELEM__

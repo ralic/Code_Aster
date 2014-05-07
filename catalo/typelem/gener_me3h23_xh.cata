@@ -191,11 +191,11 @@ MODE_LOCAL__
     E320NEUI = N512_I   ELEM__         (X[320]   )
     E32NEUTI = N128_I   ELEM__         (X[32]    )
     E10NEUTI = N120_I   ELEM__         (X[10]    )
-    E18NEUTR = N120_R   ELEM__         (X[18]    )
-    E30NEUTR = N120_R   ELEM__         (X[30]    )
     E15NEUTI = N120_I   ELEM__         (X[15]    )
+    E21NEUTR = N120_R   ELEM__         (X[21]    )
+    E35NEUTR = N120_R   ELEM__         (X[35]    )
+    E63NEUTR = N120_R   ELEM__         (X[63]    )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
-    E54NEUTR = N120_R   ELEM__         (X[54]    )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
     N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X[3]     )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27]    )
@@ -224,13 +224,13 @@ OPTION__
                                      N1NEUT_R PLSN     N1NEUT_R PLST     E33NEUTR PPINTTO  E320NEUI PCNSETO
                                      E32NEUTI PHEAVTO  E10NEUTI  PLONCHA E195NEUT PPMILTO
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_F    37    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E18NEUTR PPINTER
-                                     E30NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST
-                                     STANO_I  PSTANO   E54NEUTR PBASECO
+    CHAR_MECA_PRES_F    37    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E21NEUTR PPINTER
+                                     E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST
+                                     STANO_I  PSTANO   E63NEUTR PBASECO
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PRES_R    37    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E18NEUTR PPINTER  E30NEUTR PAINTER
+    CHAR_MECA_PRES_R    37    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E21NEUTR PPINTER  E35NEUTR PAINTER
                                      E15NEUTI PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST     STANO_I  PSTANO
-                                     E54NEUTR PBASECO 
+                                     E63NEUTR PBASECO 
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
@@ -331,8 +331,8 @@ OPTION__
                               OUT__  MMATUUR  PSYM
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N3NEUT_R PGRADLT
                                      N3NEUT_R PGRADLN
-                              OUT__  E18NEUTR PPINTER  E30NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
-                                     E54NEUTR PBASECO  E18NEUTR PGESCLA  E18NEUTR PGMAITR  E18NEUTR PGESCLO
+                              OUT__  E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
+                                     E63NEUTR PBASECO  E21NEUTR PGESCLA  E21NEUTR PGMAITR  E21NEUTR PGESCLO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E33NEUTR PPINTTO  E320NEUI PCNSETO  E32NEUTI PHEAVTO  E10NEUTI  PLONCHA
                                      E195NEUT PPMILTO
