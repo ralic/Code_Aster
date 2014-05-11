@@ -17,7 +17,7 @@
 !
 interface
     subroutine oriem0(kdim, type, coor, lino1, nbno1,&
-                      lino2, nbno2, lino3, nbno3, ier,&
+                      lino2, nbno2, lino3, nbno3, ipos,&
                       indmai)
         character(len=2), intent(in) :: kdim
         character(len=8), intent(in) :: type
@@ -28,7 +28,7 @@ interface
         integer, intent(in) :: nbno2
         integer, intent(in) :: lino3(*)
         integer, intent(in) :: nbno3
-        integer, intent(out) :: ier
+        integer, intent(out) :: ipos
         integer, intent(out) :: indmai
     end subroutine oriem0
 end interface

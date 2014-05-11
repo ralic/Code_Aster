@@ -18,7 +18,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-!
+
     integer :: lima(*), nlima, nbmavo, mailvo(*)
     real(kind=8) :: coor(*)
     character(len=2) :: kdim
@@ -41,45 +41,45 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! BUT : RECUPERER LA COUCHE DES MAILLES QUI "BORDENT"
-!       UNE LISTE DE MAILLES DE "PEAU"
-!
-!     PEAU 2D (TRIA,QUAD) => MAILLES 3D
-!     PEAU 1D (SEG)       => MAILLES 2D
-!
-!   ARGUMENTS :
+! but : recuperer la couche des mailles qui "bordent"
+!       une liste de mailles de "peau"
+
+!     peau 2d (tria,quad) => mailles 3d
+!     peau 1d (seg)       => mailles 2d
+
+!   arguments :
 !   -----------
-!     MAIL (IN)  : NOM DU MAILLAGE
-!     KDIM (IN)  : / '3D' RECHERCHE LES MAILLES 3D VOISINES
-!                  / '2D' RECHERCHE LES MAILLES 2D VOISINES
-!     NLIMA (IN)  : NOMBRE DE MAILLES DE LIMA
-!     LIMA  (IN)  : LISTE DES NUMEROS DES MAILLES DE PEAU
-!
-!     NOMOB1 (IN/JXOUT) : NOM DE L' OJB A CREER (VECTEUR D'ENTIERS)
-!       CE VECTEUR EST DE LONGUEUR NLIMA :
-!       POUR CHAQUE MAILLE DE PEAU, IL CONTIENT UNE MAILLE QUI
-!       "BORDE" CETTE MAILLE DE PEAU.
-!
-!     NBMAVO (IN) : / NB DE MAILLES DE MAILVO
+!     mail (in)  : nom du maillage
+!     kdim (in)  : / '3d' recherche les mailles 3d voisines
+!                  / '2d' recherche les mailles 2d voisines
+!     nlima (in)  : nombre de mailles de lima
+!     lima  (in)  : liste des numeros des mailles de peau
+
+!     nomob1 (in/jxout) : nom de l' ojb a creer (vecteur d'entiers)
+!       ce vecteur est de longueur nlima :
+!       pour chaque maille de peau, il contient une maille qui
+!       "borde" cette maille de peau.
+
+!     nbmavo (in) : / nb de mailles de mailvo
 !                   / 0
-!     MAILVO (IN) : / LISTE DE MAILLE "CANDIDATES"
-!                   / 0 (SI NBMAVO=0)
-!     MAILVO EST UN SOUS-ENSEMBLE DES MAILLES DU MAILLAGE
-!     QUI PERMET D'"ORIENTER" LE CHOIX DES MAILLES DE NOMOB1
-!     MAILVO EST UTILISE EN PARTICULIER QUAND ON VEUT REORIENTER
-!     DES FACETTES QUI SONT INSERREES ENTRE DES MAILLES VOLUMIQUES:
-!        ORIE_PEAU_3D ("GROUP_MA_VOLU")
-!        ORIE_PEAU_2D ("GROUP_MA_SURF")
-!
-!     COINCE (IN) : /.TRUE.  /.FALSE.
-!       SI .TRUE. ON ACCEPTE QU'UNE MAILLE DE PEAU SOIT "COINCEE"
-!       ENTRE 2 MAILLES DE PART ET D'AUTRE DE LA PEAU.
-!       SINON, ON EMET UNE ERREUR FATALE.
-!       SI .TRUE., ON CHOISIT LA MAILLE TELLE QUE SA NORMALE SORTANTE
-!       SOIT LA MEME QUE CELLE DE LA MAILLE DE PEAU.
-!
+!     mailvo (in) : / liste de maille "candidates"
+!                   / 0 (si nbmavo=0)
+!     mailvo est un sous-ensemble des mailles du maillage
+!     qui permet d'"orienter" le choix des mailles de nomob1
+!     mailvo est utilise en particulier quand on veut reorienter
+!     des facettes qui sont inserrees entre des mailles volumiques:
+!        orie_peau_3d ("group_ma_volu")
+!        orie_peau_2d ("group_ma_surf")
+
+!     coince (in) : /.true.  /.false.
+!       Si .true. on accepte qu'une maille de peau soit "coincee"
+!       entre 2 mailles de part et d'autre de la peau.
+!       Sinon, on emet une erreur fatale.
+!       si .true., on choisit la maille telle que sa normale sortante
+!       soit la meme que celle de la maille de peau.
+
 !-----------------------------------------------------------------------
-!
+
     integer :: p1, p2, p3, p4, jm3d, nbmat, im1, im2
     integer :: ima, numa, nnoe, ino, nbm, i, k, indi, nnoem, nnoe1
     integer :: ifm, niv, ipos,  nutyma
@@ -92,30 +92,30 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !     ------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
-!
+
     ASSERT(kdim.eq.'3D'.or.kdim.eq.'2D')
     first = .false.
     call getres(k8b, k16b, oper)
-!
+
     call jeveuo(jexatr(mail//'.CONNEX', 'LONCUM'), 'L', p2)
     call jeveuo(mail//'.CONNEX', 'L', p1)
     call jeveuo(mail//'.TYPMAIL', 'L', vi=typmail)
-!
+
 ! --- CREATION DE NOMOB1:
 !     -------------------
     call wkvect(nomob1, 'V V I', nlima, jm3d)
-!
-! --- RECUPERATION DES MAILLES VOISINES DE LIMA :
-!     ---------------------------------------------
+
+!   -- recuperation des mailles voisines de lima :
+!   ----------------------------------------------
     nomavo = '&&UTMASU.MAILLE_VOISINE '
     call utmavo(mail, kdim, lima, nlima, 'V',&
                 nomavo, nbmavo, mailvo)
     call jeveuo(jexatr(nomavo, 'LONCUM'), 'L', p4)
     call jeveuo(nomavo, 'L', p3)
-!
-!
-! --- ON REMPLIT NOMOB1 :
-!     ------------------
+
+
+!   -- on remplit nomob1 :
+!   ----------------------
     do 100 ima = 1, nlima
         numa = lima(ima)
         nutyma=typmail(numa)
@@ -131,7 +131,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
             if (im2 .eq. 0) goto 10
             if (zi(p1+zi(p2+im2-1)-1) .eq. 0) goto 10
             nnoem = zi(p2+im2) - zi(p2-1+im2)
-!
+
             do 12 k = 1, nnoe
                 indi = indiis(zi(p1+zi(p2+im2-1)-1),lisnoe(k),1,nnoem)
                 if (indi .eq. 0) goto 10
@@ -140,8 +140,8 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
             if (nbm .eq. 1) then
                 zi(jm3d+ima-1) = im2
             else
-!              -- CAS OU LA MAILLE DE PEAU EST BORDEE PAR PLUS
-!                 D'UNE MAILLE
+!               -- cas ou la maille de peau est bordee par plus
+!                  d'une maille. Il faut verifier la coherence.
                 im1 = zi(jm3d+ima-1)
                 nnoe1 = zi(p2+im1) - zi(p2-1+im1)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), type)
@@ -149,33 +149,41 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
                             zi(p1+zi(p2+im2-1)-1), nnoem, lisnoe, nnoe, ipos,&
                             indmai)
                 if (ipos .eq. 0) then
-!                -- SI IPOS=0, LES 2 MAILLES SONT DU MEME COTE, ON PEUT
-!                   CONSERVER LA 1ERE.
+!                   -- si ipos=0, les 2 mailles sont du meme cote, on conserve la 1ere.
                 else
                     if (indmai .lt. 0) then
-                        ASSERT(indmai.eq.-1 .or. indmai.eq.-2)
+                        ASSERT(indmai.eq.-1 .or. indmai.eq.-2 .or. indmai.eq.-12)
                         if (indmai .eq. -1) then
                             call jenuno(jexnum(mail//'.NOMMAI', im1), valk( 1))
+                            call utmess('F', 'CALCULEL2_32', sk=valk(1))
+!                           -- C'est la maille 1 qui est degeneree => on prend la 2 :
+                            zi(jm3d+ima-1) = im2
                         else
                             call jenuno(jexnum(mail//'.NOMMAI', im2), valk( 1))
+                            call utmess('F', 'CALCULEL2_32', sk=valk(1))
                         endif
-                        call utmess('F', 'CALCULEL2_32', sk=valk(1))
-                    endif
-!
-!                -- SINON, IM2 ET IM1 SONT DE PART ET D'AUTRE DE NUMA
-                    if (.not.coince) then
-                        call jenuno(jexnum(mail//'.NOMMAI', numa), valk( 1))
-                        call jenuno(jexnum(mail//'.NOMMAI', im1), valk( 2))
-                        call jenuno(jexnum(mail//'.NOMMAI', im2), valk( 3))
-                        call utmess('F', 'PREPOST4_97', nk=3, valk=valk)
+
                     else
-                        zi(jm3d+ima-1) = im2
+
+!                       -- sinon, im2 et im1 sont de part et d'autre de numa
+                        if (.not.coince) then
+                            call jenuno(jexnum(mail//'.NOMMAI', numa), valk( 1))
+                            call jenuno(jexnum(mail//'.NOMMAI', im1), valk( 2))
+                            call jenuno(jexnum(mail//'.NOMMAI', im2), valk( 3))
+                            call utmess('F', 'PREPOST4_97', nk=3, valk=valk)
+                        else
+                            ASSERT(indmai.eq.1 .or. indmai.eq.2)
+                            if (indmai .eq. 2) then
+!                               -- C'est im2 (qui est du cote "-" de ima) qu'il faut retenir :
+                                zi(jm3d+ima-1) = im2
+                            endif
+                        endif
                     endif
                 endif
             endif
 10      continue
-!
-!
+
+
         if (nbm .eq. 0 .and. niv .gt. 1) then
             call jenuno(jexnum(mail//'.NOMMAI', numa), nomail)
             if (first) then
@@ -187,10 +195,10 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
             endif
             first = .true.
         endif
-!
+
 100  end do
-!
+
     call jedetr(nomavo)
     call jedema()
-!
+
 end subroutine

@@ -1,9 +1,14 @@
 subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/alchml.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
@@ -49,11 +54,12 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
 !
     integer :: jma2d, jcoor, jma3d
-    integer :: ima
+    integer :: ima,iret,jcesd,jcesl,iad1
     integer :: nbma, nbmamo, jlima, nbmat, jmato
 !
     character(len=8) :: ma, limocl(3), tymocl(3)
     character(len=24) :: mesmai, limamo
+    character(len=19) :: ces,cel
 !
     data limocl/'TOUT','MAILLE','GROUP_MA'/
     data tymocl/'TOUT','MAILLE','GROUP_MA'/
@@ -62,14 +68,16 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
     call jemarq()
 !
-! --- ON RECUPERE LES MAILLES DE PEAU
+!   -- on recupere les mailles de peau
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
     mesmai = '&&SRLIMA.MAILLU'
     call reliem(mo, ma, 'NU_MAILLE', ' ', 0,&
                 3, limocl, tymocl, mesmai, nbma)
-!
-! --- ON NE GARDE QUE LES MAILLES SURFACIQUES
+
+
+!   -- on ne garde que les mailles surfaciques :
+!   ---------------------------------------------
     call utflmd(ma, mesmai, nbma, 2, ' ',&
                 nbma2d, mail2d)
     if (nbma2d .gt. 0) then
@@ -77,13 +85,35 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     else
         call utmess('F', 'CALCULEL5_54')
     endif
-!
-! --- ON RECHERCHE LA MAILLES 3D SUPPORT DE CHAQUE MAILLE 2D FOURNIE
-! --- IL FAUT SE PROTEGER DES MAILLES QUI NE FONT PAS PARTIE DU MODELE :
+
+
+!   -- on recherche les mailles 3d qui bordent les mailles de peau :
+!   -- il faut se limiter aux mailles du modele qui savent calculer SIGM_ELNO :
+!   ----------------------------------------------------------------------------
+    cel='&&SRLIMA.CEL_ELNO'
+    ces='&&SRLIMA.CES_ELNO'
+    call alchml(mo//'.MODELE', 'SIGM_ELNO', 'PSIEFNOR', 'V', cel, iret, ' ')
+    ASSERT(iret.eq.0)
+    call celces(cel, 'V', ces)
+    call detrsd('CHAMP', cel)
+    call jeveuo(ces//'.CESD', 'L', jcesd)
+    call jeveuo(ces//'.CESL', 'L', jcesl)
+    nbma = zi(jcesd-1+1)
     limamo = '&&SRLIMA.LIMAIL'
-    call utmamo(mo, nbmamo, limamo)
-    call jeveuo(limamo, 'L', jlima)
-!
+    call wkvect(limamo,'V V I',nbma,jlima)
+    nbmamo=0
+    do ima=1,nbma
+       call cesexi('C', jcesd, jcesl, ima, 1, 1, 1, iad1)
+       if (iad1.gt.0) then
+         nbmamo=nbmamo+1
+         zi(jlima-1+nbmamo)=ima
+       endif
+    enddo
+    call detrsd('CHAM_ELEM_S', ces)
+
+
+!   -- on recherche les mailles 3d associees aux mailles de peau :
+!   ---------------------------------------------------------------
     call jeveuo(ma//'.COORDO    .VALE', 'L', jcoor)
     call utmasu(ma, '3D', nbma2d, zi(jma2d), mail3d,&
                 zr(jcoor), nbmamo, zi(jlima), .true.)

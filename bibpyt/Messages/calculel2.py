@@ -201,8 +201,8 @@ Erreur utilisateur dans la commande AFFE_CARA_ELEM :
 Erreur utilisateur :
   On cherche à déterminer de quel coté se situe une maille
   par rapport à une maille de "peau".
-  Mais cette maille est dégénérée : elle a une arrête de longueur nulle,
-  ce qui empêche de calculer sa normale "sortante".
+  Mais cette maille semble dégénérée (sans épaisseur)
+  ce qui empêche de répondre à la question.
   La maille "coupable" est : %(k1)s
 
 Risques et conseils :
