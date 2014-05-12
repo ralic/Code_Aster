@@ -20,6 +20,18 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 from math import *
 
+# LECTURE ET CREATION DES MAILLAGES
+
+MESH_LIN = LIRE_MAILLAGE(FORMAT = 'MED')
+
+MESH_QUA = CREA_MAILLAGE(MAILLAGE  = MESH_LIN,
+                         LINE_QUAD = _F(TOUT='OUI'));
+
+MESH_Q9  = CREA_MAILLAGE(MAILLAGE=MESH_QUA,
+                         MODI_MAILLE=_F(OPTION='QUAD8_9',
+                                        PREF_NOEUD='NM',
+                                        GROUP_MA='BULK_QUAD'))
+
 # Closed-form solution
 
 T0   = 0.0
@@ -27,84 +39,363 @@ w    = 2.0
 tmax = 1.0
 Tmax = T0*exp(-w*tmax) + (1-exp(-w*tmax))/w
 
-SOURCE = DEFI_FONCTION(       # s(T) = 2 - 2*w * T
-  NOM_PARA    = 'TEMP',
-  VALE        = (0,2, 1,2-2*w),
-  PROL_DROITE = 'LINEAIRE',
-  PROL_GAUCHE = 'LINEAIRE',
-  )
+# s(T) = 2 - 2*w * T
 
+SOURCE = DEFI_FONCTION(NOM_PARA    = 'TEMP',
+                       VALE        = (0,2, 1,2-2*w),
+                       PROL_DROITE = 'LINEAIRE',
+                       PROL_GAUCHE = 'LINEAIRE',
+                      )
   
 # Usual data setting
 
 LAMBDA = DEFI_CONSTANTE(VALE = 0)
 RHO_CP = DEFI_CONSTANTE(VALE = 2)
 
-FAKE_MAT = DEFI_MATERIAU(
-  THER_NL = _F(LAMBDA=LAMBDA, RHO_CP=RHO_CP),
-  )
+FAKE_MAT = DEFI_MATERIAU(THER_NL = _F(LAMBDA=LAMBDA, RHO_CP=RHO_CP),
+                        )
+# Computation
   
-MESH = LIRE_MAILLAGE(FORMAT = 'MED')
+TIME = DEFI_LIST_REEL(DEBUT      =  0.0,
+                      INTERVALLE = (_F(JUSQU_A = tmax, NOMBRE = 100),),
+                     )
+#===================================================================
+# Verification des mailles de type TRIA3 avec une modelisation PLAN
+#===================================================================
 
-MAT_FLD = AFFE_MATERIAU(
-  MAILLAGE = MESH,
-  AFFE     = _F(GROUP_MA = 'BULK', MATER = FAKE_MAT),
-  )
-  
-MODEL = AFFE_MODELE(
-  MAILLAGE = MESH,
-  AFFE     = _F(GROUP_MA='BULK',PHENOMENE='THERMIQUE',MODELISATION='PLAN'),
-  )
-  
-# Non linear heating source
-
-HEATING = AFFE_CHAR_THER_F(
-  MODELE  = MODEL,
-  SOUR_NL = _F(GROUP_MA='BULK', SOUR=SOURCE),    
-  )
-
+MAT_T3 = AFFE_MATERIAU(MAILLAGE = MESH_LIN,
+                       AFFE     = _F(GROUP_MA = 'BULK_TRIA', MATER = FAKE_MAT),
+                       )
   
 # Initial temperature field
   
-INI_TEMP = CREA_CHAMP(
-  OPERATION ='AFFE', 
-  TYPE_CHAM ='NOEU_TEMP_R',
-  MAILLAGE  = MESH,
-  AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0),
-  )
+INI_T_T3 = CREA_CHAMP(OPERATION ='AFFE', 
+                      TYPE_CHAM ='NOEU_TEMP_R',
+                      MAILLAGE  = MESH_LIN,
+                      AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
+                     )
 
+MODEL_T3 = AFFE_MODELE(MAILLAGE = MESH_LIN,
+                       AFFE     = _F(GROUP_MA     = 'BULK_TRIA',
+                                     PHENOMENE    = 'THERMIQUE',
+                                     MODELISATION = 'PLAN'),
+                      )
+  
+# Non linear heating source
 
-# Computation
-  
-TIME = DEFI_LIST_REEL(
-  DEBUT      =  0.0,
-  INTERVALLE = (
-    _F(JUSQU_A = tmax, NOMBRE = 100),
-    ),
-  )
-  
-EVOL = THER_NON_LINE(
-  MODELE      = MODEL,
-  INCREMENT   = _F(LIST_INST = TIME),
-  CHAM_MATER  = MAT_FLD,
-  EXCIT       = (
-    _F(CHARGE = HEATING),
-    ),
-  ETAT_INIT   = _F(CHAM_NO = INI_TEMP),
-  CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
-  NEWTON      = _F(REAC_ITER = 1),
-  )
+HEAT_T3 = AFFE_CHAR_THER_F( MODELE  = MODEL_T3,
+                            SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),    
+                          )
 
-  
+EVOL_T3 = THER_NON_LINE( MODELE      = MODEL_T3,
+                         INCREMENT   = _F(LIST_INST = TIME),
+                         CHAM_MATER  = MAT_T3,
+                         EXCIT       = (_F(CHARGE = HEAT_T3),),
+                         ETAT_INIT   = _F(CHAM_NO = INI_T_T3),
+                         CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+                         NEWTON      = _F(REAC_ITER = 1),
+                       )
+
 # Result checking (middle of the rod)
 
 TEST_RESU(RESU=_F(GROUP_NO='PROBE',
                   INST=1.0,
                   REFERENCE='ANALYTIQUE',
-                  RESULTAT=EVOL,
+                  RESULTAT=EVOL_T3,
                   NOM_CHAM='TEMP',
                   NOM_CMP='TEMP',
-                  VALE_CALC=0.432147394,
+                  VALE_CALC=0.432147394089,
+                  VALE_REFE=0.43233235838169365,),
+          )
+#========================================================================
+# Verification des mailles de type TRIA3 avec une modelisation PLAN_DIAG
+#========================================================================
+
+MAT_T3D = AFFE_MATERIAU(MAILLAGE = MESH_LIN,
+                        AFFE     = _F(GROUP_MA = 'BULK_TRIA', MATER = FAKE_MAT),
+                        )
+  
+# Initial temperature field
+  
+INI_T3D = CREA_CHAMP(OPERATION ='AFFE', 
+                       TYPE_CHAM ='NOEU_TEMP_R',
+                       MAILLAGE  = MESH_LIN,
+                       AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
+                      )
+
+MODL_T3D = AFFE_MODELE(MAILLAGE = MESH_LIN,
+                        AFFE     = _F(GROUP_MA     = 'BULK_TRIA',
+                                      PHENOMENE    = 'THERMIQUE',
+                                      MODELISATION = 'PLAN_DIAG'),
+                       )
+  
+# Non linear heating source
+
+HEAT_T3D = AFFE_CHAR_THER_F( MODELE  = MODL_T3D,
+                             SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),    
+                           )
+
+EVOL_T3D = THER_NON_LINE( MODELE      = MODL_T3D,
+                         INCREMENT   = _F(LIST_INST = TIME),
+                         CHAM_MATER  = MAT_T3,
+                         EXCIT       = (_F(CHARGE = HEAT_T3D),),
+                         ETAT_INIT   = _F(CHAM_NO = INI_T3D),
+                         CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+                         NEWTON      = _F(REAC_ITER = 1),
+                       )
+
+# Result checking (middle of the rod)
+
+TEST_RESU(RESU=_F(GROUP_NO='PROBE',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOL_T3D,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.432147394089,
+                  VALE_REFE=0.43233235838169365,),
+          )
+
+#===================================================================
+# Verification des mailles de type TRIA6 avec une modelisation PLAN
+#===================================================================
+
+MAT_T6 = AFFE_MATERIAU(MAILLAGE = MESH_QUA,
+                       AFFE     = _F(GROUP_MA = 'BULK_TRIA', MATER = FAKE_MAT),
+                       )
+  
+# Initial temperature field
+  
+INI_T_T6 = CREA_CHAMP(OPERATION ='AFFE', 
+                      TYPE_CHAM ='NOEU_TEMP_R',
+                      MAILLAGE  = MESH_QUA,
+                      AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
+                     )
+
+MODEL_T6 = AFFE_MODELE(MAILLAGE = MESH_QUA,
+                       AFFE     = _F(GROUP_MA     = 'BULK_TRIA',
+                                     PHENOMENE    = 'THERMIQUE',
+                                     MODELISATION = 'PLAN'),
+                      )
+  
+# Non linear heating source
+
+HEAT_T6 = AFFE_CHAR_THER_F( MODELE  = MODEL_T6,
+                            SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),    
+                          )
+
+EVOL_T6 = THER_NON_LINE( MODELE      = MODEL_T6,
+                         INCREMENT   = _F(LIST_INST = TIME),
+                         CHAM_MATER  = MAT_T6,
+                         EXCIT       = (_F(CHARGE = HEAT_T6),),
+                         ETAT_INIT   = _F(CHAM_NO = INI_T_T6),
+                         CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+                         NEWTON      = _F(REAC_ITER = 1),
+                       )
+
+# Result checking (middle of the rod)
+
+TEST_RESU(RESU=_F(GROUP_NO='PROBE',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOL_T6,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.432147394089,
+                  VALE_REFE=0.43233235838169365,),
+          )
+
+#===================================================================
+# Verification des mailles de type QUAD4 avec une modelisation PLAN
+#===================================================================
+
+MAT_Q4 = AFFE_MATERIAU(MAILLAGE = MESH_LIN,
+                       AFFE     = _F(GROUP_MA = 'BULK_QUAD', MATER = FAKE_MAT),
+                       )
+  
+# Initial temperature field
+  
+INI_T_Q4 = CREA_CHAMP(OPERATION ='AFFE', 
+                      TYPE_CHAM ='NOEU_TEMP_R',
+                      MAILLAGE  = MESH_LIN,
+                      AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
+                     )
+
+MODEL_Q4 = AFFE_MODELE(MAILLAGE = MESH_LIN,
+                       AFFE     = _F(GROUP_MA     = 'BULK_QUAD',
+                                     PHENOMENE    = 'THERMIQUE',
+                                     MODELISATION = 'PLAN'),
+                      )
+  
+# Non linear heating source
+
+HEAT_Q4 = AFFE_CHAR_THER_F( MODELE  = MODEL_Q4,
+                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),    
+                          )
+
+EVOL_Q4 = THER_NON_LINE( MODELE      = MODEL_Q4,
+                         INCREMENT   = _F(LIST_INST = TIME),
+                         CHAM_MATER  = MAT_Q4,
+                         EXCIT       = (_F(CHARGE = HEAT_Q4),),
+                         ETAT_INIT   = _F(CHAM_NO = INI_T_Q4),
+                         CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+                         NEWTON      = _F(REAC_ITER = 1),
+                       )
+
+# Result checking (middle of the rod)
+
+TEST_RESU(RESU=_F(GROUP_NO='PROBE',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOL_Q4,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.432147394089,
+                  VALE_REFE=0.43233235838169365,),
+          )
+#========================================================================
+# Verification des mailles de type QUAD4 avec une modelisation PLAN_DIAG
+#========================================================================
+
+MAT_Q4D = AFFE_MATERIAU(MAILLAGE = MESH_LIN,
+                       AFFE     = _F(GROUP_MA = 'BULK_QUAD', MATER = FAKE_MAT),
+                       )
+  
+# Initial temperature field
+  
+INI_Q4D = CREA_CHAMP(OPERATION ='AFFE', 
+                      TYPE_CHAM ='NOEU_TEMP_R',
+                      MAILLAGE  = MESH_LIN,
+                      AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
+                     )
+
+MODL_Q4D = AFFE_MODELE(MAILLAGE = MESH_LIN,
+                       AFFE     = _F(GROUP_MA     = 'BULK_QUAD',
+                                     PHENOMENE    = 'THERMIQUE',
+                                     MODELISATION = 'PLAN_DIAG'),
+                      )
+  
+# Non linear heating source
+
+HEAT_Q4D = AFFE_CHAR_THER_F( MODELE  = MODL_Q4D,
+                             SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),    
+                           )
+
+EVOL_Q4D = THER_NON_LINE( MODELE      = MODL_Q4D,
+                         INCREMENT   = _F(LIST_INST = TIME),
+                         CHAM_MATER  = MAT_Q4,
+                         EXCIT       = (_F(CHARGE = HEAT_Q4D),),
+                         ETAT_INIT   = _F(CHAM_NO = INI_Q4D),
+                         CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+                         NEWTON      = _F(REAC_ITER = 1),
+                       )
+
+# Result checking (middle of the rod)
+
+TEST_RESU(RESU=_F(GROUP_NO='PROBE',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOL_Q4D,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.432147394089,
+                  VALE_REFE=0.43233235838169365,),
+          )
+#===================================================================
+# Verification des mailles de type QUAD8 avec une modelisation PLAN
+#===================================================================
+
+MAT_Q8 = AFFE_MATERIAU(MAILLAGE = MESH_QUA,
+                       AFFE     = _F(GROUP_MA = 'BULK_QUAD', MATER = FAKE_MAT),
+                       )
+  
+# Initial temperature field
+  
+INI_T_Q8 = CREA_CHAMP(OPERATION ='AFFE', 
+                      TYPE_CHAM ='NOEU_TEMP_R',
+                      MAILLAGE  = MESH_QUA,
+                      AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
+                     )
+
+MODEL_Q8 = AFFE_MODELE(MAILLAGE = MESH_QUA,
+                       AFFE     = _F(GROUP_MA     = 'BULK_QUAD',
+                                     PHENOMENE    = 'THERMIQUE',
+                                     MODELISATION = 'PLAN'),
+                      )
+  
+# Non linear heating source
+
+HEAT_Q8 = AFFE_CHAR_THER_F( MODELE  = MODEL_Q8,
+                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),    
+                          )
+
+EVOL_Q8 = THER_NON_LINE( MODELE      = MODEL_Q8,
+                         INCREMENT   = _F(LIST_INST = TIME),
+                         CHAM_MATER  = MAT_Q8,
+                         EXCIT       = (_F(CHARGE = HEAT_Q8),),
+                         ETAT_INIT   = _F(CHAM_NO = INI_T_Q8),
+                         CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+                         NEWTON      = _F(REAC_ITER = 1),
+                       )
+
+# Result checking (middle of the rod)
+
+TEST_RESU(RESU=_F(GROUP_NO='PROBE',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOL_Q8,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.432147394089,
+                  VALE_REFE=0.43233235838169365,),
+          )
+
+#===================================================================
+# Verification des mailles de type QUAD9 avec une modelisation PLAN
+#===================================================================
+
+MAT_Q9 = AFFE_MATERIAU(MAILLAGE = MESH_Q9,
+                       AFFE     = _F(GROUP_MA = 'BULK_QUAD', MATER = FAKE_MAT),
+                       )
+  
+# Initial temperature field
+  
+INI_T_Q9 = CREA_CHAMP(OPERATION ='AFFE', 
+                      TYPE_CHAM ='NOEU_TEMP_R',
+                      MAILLAGE  = MESH_Q9,
+                      AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
+                     )
+
+MODEL_Q9 = AFFE_MODELE(MAILLAGE = MESH_Q9,
+                       AFFE     = _F(GROUP_MA     = 'BULK_QUAD',
+                                     PHENOMENE    = 'THERMIQUE',
+                                     MODELISATION = 'PLAN'),
+                      )
+  
+# Non linear heating source
+
+HEAT_Q9 = AFFE_CHAR_THER_F( MODELE  = MODEL_Q9,
+                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),    
+                          )
+
+EVOL_Q9 = THER_NON_LINE( MODELE      = MODEL_Q9,
+                         INCREMENT   = _F(LIST_INST = TIME),
+                         CHAM_MATER  = MAT_Q9,
+                         EXCIT       = (_F(CHARGE = HEAT_Q9),),
+                         ETAT_INIT   = _F(CHAM_NO = INI_T_Q9),
+                         CONVERGENCE = _F(RESI_GLOB_MAXI = 1.E-9),
+                         NEWTON      = _F(REAC_ITER = 1),
+                       )
+
+# Result checking (middle of the rod)
+
+TEST_RESU(RESU=_F(GROUP_NO='PROBE',
+                  INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOL_Q9,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  VALE_CALC=0.432147394089,
                   VALE_REFE=0.43233235838169365,),
           )
 
