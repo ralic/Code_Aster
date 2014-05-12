@@ -57,7 +57,7 @@ subroutine te0235(option, nomte)
     real(kind=8) :: zero, un, deux
     real(kind=8) :: e, g, xnu, rho
     real(kind=8) :: a, xiy, xiz, alfay, alfaz
-    real(kind=8) :: pgl(3, 3), mlv(105), matp1(105)
+    real(kind=8) :: pgl(3, 3), mlv(105), matp1(78)
     real(kind=8) :: carsec(6), rbid, casrho(6), casece(6)
 !     ------------------------------------------------------------------
     data nomres/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
@@ -152,7 +152,7 @@ subroutine te0235(option, nomte)
  1  end do
 !
 !CC     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
-    do 20 i = 1, 105
+    do 20 i = 1, 78
         matp1(i) = 0.0d0
 20  continue
 !        --- POUTRE DROITE SECTION CONSTANTE OU VARIABLE (1 OU 2)

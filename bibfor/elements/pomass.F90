@@ -45,13 +45,13 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
     real(kind=8) :: angs2, deux, e, ey, ez, rad, rho
     real(kind=8) :: un, x2iy, x2iz, xfl, xfly, xflz, xiy, xjx, xjx2
     real(kind=8) :: xiy2, xiz, xiz2, xl, xnu, zero, ang_bid(3)
-    real(kind=8) :: pgl_bid(3, 3), mlv2(105)
+    real(kind=8) :: pgl_bid(3, 3), mlv2(78)
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
     g = e/ (deux* (un+xnu))
-    do i = 1, 105
+    do i = 1, 78
         mlv2(i) = 0.0d0
     enddo
 !

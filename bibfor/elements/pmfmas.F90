@@ -45,7 +45,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
     integer :: lx, iadzi, iazk24, itype, i, istruc
     integer :: inbfib, nbfib, jacf, lsect
     real(kind=8) :: casrho(6), xl, rbid, cars1(6) ,co12, co13
-    real(kind=8) :: matp1(105), a, xiy, xiz, rho, casece(6), g, e
+    real(kind=8) :: matp1(78), a, xiy, xiz, rho, casece(6), g, e
     real(kind=8) :: alfay, alfaz, ey, ez, casect(6)
 !     ------------------------------------------------------------------
 !
@@ -110,7 +110,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
 !
         e = casece(1)/a
 !
-        do 20 i = 1, 105
+        do 20 i = 1, 78
             matp1(i) = 0.0d0
 20      continue
         call ptma01(kanl, itype, matp1, istruc, rho,&
