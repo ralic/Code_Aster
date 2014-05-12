@@ -32,7 +32,6 @@ ENTETE__ ELEMENT__ MFPLQU8             MAILLE__ QUAD8
    ENS_NOEUD__  EN1     =     1  2  5
    ENS_NOEUD__  EN2     =     3  4  7
    ENS_NOEUD__  EN3     =     6  8
-   OPTION__   REFE_FORC_NODA -1
    
 MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )

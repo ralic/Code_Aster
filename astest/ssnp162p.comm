@@ -165,7 +165,10 @@ U_F=STAT_NON_LINE(
              MAILLE = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
-  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 20,
+                  RESI_REFE_RELA = 1.E-6,
+                  SIGM_REFE      = sigma_max,
+                  ),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -352,7 +355,10 @@ U_2=STAT_NON_LINE(
              MAILLE = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
-  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 20,
+                  RESI_REFE_RELA = 1.E-6,
+                  SIGM_REFE      = sigma_max,
+                  ),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 

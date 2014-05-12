@@ -190,7 +190,9 @@ U_M=STAT_NON_LINE(MODELE=MO,
                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=12,
-                                 RESI_GLOB_RELA=1E-5),
+                                 RESI_REFE_RELA=1E-5,
+                                 SIGM_REFE=rho_e*ap*h,
+                                 ),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = LR)
                   );
@@ -213,7 +215,8 @@ U_F=STAT_NON_LINE(MODELE=MO,
                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=12,
-                                 RESI_GLOB_RELA=1E-5),
+                                 RESI_REFE_RELA=1E-5,
+                                 SIGM_REFE=rho_e*ap*h,),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = LR)
                   );

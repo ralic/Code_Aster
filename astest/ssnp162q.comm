@@ -149,7 +149,10 @@ U_1=STAT_NON_LINE(MODELE=MO,
                                INST_INIT=1),
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=20,
+                                 RESI_REFE_RELA = 1.E-6,
+                                 SIGM_REFE      = sigma_seuil,
+                  ),
                   );
 
 
@@ -202,7 +205,10 @@ U_1=STAT_NON_LINE(reuse=U_1,
                                INST_INIT=insfin/4),
                   NEWTON=_F(MATRICE='TANGENTE',PREDICTION='TANGENTE',
                             REAC_ITER=2,),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=20,
+                                 RESI_REFE_RELA = 1.E-6,
+                                 SIGM_REFE      = sigma_seuil,
+                  ),
                   );
 
 

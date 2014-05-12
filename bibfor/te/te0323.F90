@@ -70,7 +70,13 @@ subroutine te0323(option, nomte)
     else if (option .eq. 'REFE_FORC_NODA') then
 !
         call terefe('SIGM_REFE', 'THM_JOINT', sigref)
-        call terefe('FLUX_HYD1_REFE', 'THM_JOINT', fhyref)
+
+!      EN MECA PURE ON IMPOSE LA VALEUR DE FLUX DE REFERENCE A 1
+        if (lteatt('TYPMOD2','EJ_HYME')) then      
+            call terefe('FLUX_HYD1_REFE', 'THM_JOINT', fhyref)
+        else if (lteatt('TYPMOD2','ELEMJOIN')) then
+            fhyref = 1.D0
+        endif
 !
         call ejfore(ndim, nddl, axi, nno1, nno2,&
                     npg, iw, zr(iw), zr(ivf1), zr(ivf2),&
