@@ -21,13 +21,13 @@ def configure(self):
     self.env['ADDMEM'] = 400
 
     self.env.append_value('OPT_ENV', [
-        '. /home/projets/aster/etc/codeaster/profile_impi.sh'])
+        '. ' + ASTER_ROOT + '/etc/codeaster/profile_impi.sh'])
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + 'prerequisites/Mumps_mpi_20141/lib',
-        YAMMROOT + 'prerequisites/Petsc_mpi_petsc_aster/lib',
+        YAMMROOT + '/prerequisites/Mumps_mpi_20141/lib',
+        YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster/lib',
         '/logiciels/intel/composerxe-2011.3.174/mkl/lib/intel64'])
     self.env.prepend_value('INCLUDES', [
-        YAMMROOT + 'prerequisites/Petsc_mpi_petsc_aster/include'])
+        YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster/include'])
     
     opts.enable_petsc = True

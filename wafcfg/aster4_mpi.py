@@ -26,12 +26,12 @@ def configure(self):
         '-Wl,--end-group']
     
     self.env.append_value('OPT_ENV', [
-        '. /aster/etc/codeaster/profile_intel_mpi.sh'])
+        '. ' + ASTER_ROOT + '/etc/codeaster/profile_intel_mpi.sh'])
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + 'prerequisites/Mumps_mpi_20141/lib',
-        YAMMROOT + 'prerequisites/Petsc_mpi_petsc_aster/lib'])
+        YAMMROOT + '/prerequisites/Mumps_mpi_20141/lib',
+        YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster/lib'])
     self.env.prepend_value('INCLUDES', [
-        YAMMROOT + 'prerequisites/Petsc_mpi_petsc_aster/include'])
+        YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster/include'])
 
     opts.enable_petsc = True
