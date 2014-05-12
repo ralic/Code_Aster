@@ -20,7 +20,8 @@ subroutine masstg(matin, matout)
 ! ---  BUT : MISE SOUS LA FORME DES MATRICES DE MASSE DES
 !            POU_D_TG(M) DE LA MATRICE ISSUE DE PTMA01
 ! -----------------------------------------------------------
-    real(kind=8) :: matin(105), matout(105)
+    real(kind=8), intent(in) :: matin(78)
+    real(kind=8), intent(out) :: matout(105)
 !
     integer :: i
 !

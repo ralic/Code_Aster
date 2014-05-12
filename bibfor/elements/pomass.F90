@@ -116,7 +116,7 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
         if (nomte.eq. 'MECA_POU_D_TG')then
             call masstg(mlv2, mlv)
         else
-            do i = 1, 105
+            do i = 1, 78
                 mlv(i) = mlv2(i)
             enddo
         endif

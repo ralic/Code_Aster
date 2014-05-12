@@ -17,7 +17,7 @@
 !
 interface
     subroutine masstg(matin, matout)
-        real(kind=8) :: matin(105)
-        real(kind=8) :: matout(105)
+        real(kind=8), intent(in) :: matin(78)
+        real(kind=8), intent(out) :: matout(105)
     end subroutine masstg
 end interface
