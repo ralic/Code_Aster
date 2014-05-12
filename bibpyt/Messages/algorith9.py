@@ -19,6 +19,11 @@
 
 cata_msg = {
 
+1 : _(u"""
+   La projection d'un vecteur complexe sur une base de RITZ n'est pas développée dans l'opérateur PROJ_VECT_BASE. 
+   Contactez l'équipe de développement CODE-ASTER.
+ """),
+
 2 : _(u"""
  la méthode de Newmark est programmée sous sa forme implicite:
  le paramètre BETA ne doit pas être nul.

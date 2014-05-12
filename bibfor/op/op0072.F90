@@ -41,7 +41,6 @@ subroutine op0072()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/rclds.h"
 #include "asterfort/rrlds.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
@@ -109,7 +108,7 @@ subroutine op0072()
                 ier=iret)
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
-        proch1 = zk24(iadref+1)
+        proch1 = zk24(iadref+1)(1:19)
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         if (typeba(1:1) .eq. ' ') then
             call exisd('MATR_ASSE', matric, iret)
@@ -128,12 +127,12 @@ subroutine op0072()
         endif
 !
     else if (typbas(1:9).eq.'MODE_GENE') then
-        numdd1=zk24(iadref+1)
+        numdd1=zk24(iadref+1)(1:14)
         proch1 = numdd1//'.NUME'
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', jrefa)
-        numdd2=zk24(jrefa-1+2)
+        numdd2=zk24(jrefa-1+2)(1:14)
         if (numdd1 .ne. numdd2) then
             call utmess('I', 'ALGORITH9_41')
         endif
@@ -304,8 +303,7 @@ subroutine op0072()
             call rrlds(zr(iamatr), nbmode, nbmode, zr(idvec2), 1)
             call dcopy(nbmode, zr(idvec2), 1, zr(iavale), 1)
         else
-            call rclds(zr(iamatr), nbmode, nbmode, zc(idvec4), 1)
-            call zcopy(nbmode, zc(idvec3), 1, zc(iavale), 1)
+            call utmess('F', 'ALGORITH9_1')
         endif
     endif
 !

@@ -33,7 +33,6 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
 #include "asterfort/locglo.h"
 #include "asterfort/mdfdas.h"
 #include "asterfort/mdflam.h"
-#include "asterfort/mdmasf.h"
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/rk5adp.h"
 #include "asterfort/togene.h"
