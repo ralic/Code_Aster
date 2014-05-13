@@ -302,7 +302,7 @@ subroutine cesgno(ces1, celfpg, ces2)
                     do 50 ino = 1, nno
                         sr = 0.d0
                         do 40 ipg = 1, npg
-                            sr = sr + zr(jmat-1+ (ipg-1)*npg+ino)* vrpg(ipg)
+                            sr = sr + zr(jmat-1+ (ino-1)*npg+ipg)* vrpg(ipg)
  40                     continue
                         vrno(ino) = sr
  50                 continue
@@ -311,7 +311,7 @@ subroutine cesgno(ces1, celfpg, ces2)
                     do 70 ino = 1, nno
                         sc = dcmplx(0.d0,0.d0)
                         do 60 ipg = 1, npg
-                            sc = sc + zr(jmat-1+ (ipg-1)*npg+ino)* vcpg(ipg)
+                            sc = sc + zr(jmat-1+ (ino-1)*npg+ipg)* vcpg(ipg)
  60                     continue
                         vcno(ino) = sc
  70                 continue

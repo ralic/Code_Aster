@@ -117,7 +117,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_D_T,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.042327648723100998,
+                  VALE_CALC=0.0423276487231,
                   ),
           )
 
@@ -162,7 +162,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
                        MAILLE='M1',
                        CHAM_GD=SELG01,
-                       VALE_CALC= 2.00000000E+03,
+                       VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
           )
 
@@ -205,8 +205,8 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
                        NOM_CMP='N',
                        MAILLE='M1',
                        CHAM_GD=SELN01,
-                       VALE_CALC= 3.27524729E+03,
-                       VALE_REFE=3275.25,),
+                       VALE_CALC=2000.0,
+                       VALE_REFE=2000.0,),
           )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
@@ -247,8 +247,8 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE01,
-                     VALE_CALC= 3.27524729E+03,
-                     VALE_REFE=3275.25,),
+                     VALE_CALC=2000.0,
+                     VALE_REFE=2000.0,),
           )
 
 #
@@ -305,7 +305,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_D_E,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.042315004710939998,
+                  VALE_CALC=0.0423150047109,
                   ),
           )
 
@@ -348,7 +348,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
                        MAILLE='M1',
                        CHAM_GD=SELG02,
-                       VALE_CALC= 2.00000000E+03,
+                       VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
           )
 
@@ -390,8 +390,8 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
                        NOM_CMP='N',
                        MAILLE='M1',
                        CHAM_GD=SELN02,
-                       VALE_CALC= 3.27524729E+03,
-                       VALE_REFE=3275.25,),
+                       VALE_CALC=2000.0,
+                       VALE_REFE=2000.0,),
           )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
@@ -431,8 +431,8 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE02,
-                     VALE_CALC= 3.27524729E+03,
-                     VALE_REFE=3275.25,),
+                     VALE_CALC=2000.0,
+                     VALE_REFE=2000.0,),
           )
 
 #-------------------------------------------------------------------------------------
@@ -489,7 +489,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_D_TG,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.042327648723100998,
+                  VALE_CALC=0.0423276487231,
                   ),
           )
 
@@ -532,7 +532,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
                        MAILLE='M1',
                        CHAM_GD=SELG03,
-                       VALE_CALC= 2.00000000E+03,
+                       VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
           )
 
@@ -575,8 +575,8 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
                        NOM_CMP='N',
                        MAILLE='M1',
                        CHAM_GD=SELN03,
-                       VALE_CALC= 3.27524729E+03,
-                       VALE_REFE=3275.25,),
+                       VALE_CALC=2000.0,
+                       VALE_REFE=2000.0,),
           )
 
 # --- validation CREA_CHAMP/'NEUT' aux noeuds  ---
@@ -617,8 +617,8 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE03,
-                     VALE_CALC= 3.27524729E+03,
-                     VALE_REFE=3275.25,),
+                     VALE_CALC=2000.0,
+                     VALE_REFE=2000.0,),
           )
 
 #
@@ -685,7 +685,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_D_EM,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.043854790675854002,
+                  VALE_CALC=0.0438547906759,
                   ),
           )
 
@@ -705,7 +705,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        SOUS_POINT=1,
                        MAILLE='M1',
                        CHAM_GD=NELG04,
-                       VALE_CALC=-2.22090485E+08,
+                       VALE_CALC=-222090484.507,
                        VALE_REFE=-2.220904845E8,),
           )
 
@@ -725,7 +725,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
                        NOM_CMP='X1',
                        MAILLE='M1',
                        CHAM_GD=NELN04,
-                       VALE_CALC= 1.00000000E+03,
+                       VALE_CALC=1000.0,
                        VALE_REFE=1000.0,),
           )
 
@@ -744,7 +744,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='X1',
                      CHAM_GD=NNOE04,
-                     VALE_CALC= 1.00000000E+03,
+                     VALE_CALC=1000.0,
                      VALE_REFE=1000.0,),
           )
 
@@ -811,7 +811,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_D_TGM,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.043867580284803,
+                  VALE_CALC=0.0438675802848,
                   ),
           )
 
@@ -829,7 +829,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        SOUS_POINT=1,
                        MAILLE='M1',
                        CHAM_GD=NELG05,
-                       VALE_CALC=-2.2990950117E+08,
+                       VALE_CALC=-229909501.173,
                        VALE_REFE=-2.2990566066E8,),
           )
 
@@ -849,7 +849,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
                        NOM_CMP='X1',
                        MAILLE='M1',
                        CHAM_GD=NELN05,
-                       VALE_CALC=1000.000000000,
+                       VALE_CALC=1000.0,
                        VALE_REFE=1000.0,),
           )
 
@@ -868,7 +868,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='X1',
                      CHAM_GD=NNOE05,
-                     VALE_CALC=1000.000000000,
+                     VALE_CALC=1000.0,
                      VALE_REFE=1000.0,),
           )
 
@@ -926,7 +926,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_D_TGD,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=3.8851650653901998E-4,
+                  VALE_CALC=0.000388516506539,
                   ),
           )
 
@@ -981,7 +981,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   RESULTAT=RE_C_T,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.013509650140763999,
+                  VALE_CALC=-0.0135096501408,
                   ),
           )
 
@@ -1024,7 +1024,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
                        MAILLE='M2',
                        CHAM_GD=SELG07,
-                       VALE_CALC=-5.00000000E+03,
+                       VALE_CALC=-5000.0,
                        VALE_REFE=-5000.0,),
           )
 
@@ -1066,7 +1066,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
                        NOM_CMP='N',
                        MAILLE='M2',
                        CHAM_GD=SELN07,
-                       VALE_CALC=-6.83012702E+03,
+                       VALE_CALC=-6830.12701892,
                        VALE_REFE=-6830.1270000000004,),
           )
 
@@ -1107,7 +1107,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE07,
-                     VALE_CALC=-6.83012702E+03,
+                     VALE_CALC=-6830.12701892,
                      VALE_REFE=-6830.1270000000004,),
           )
 
@@ -1123,7 +1123,7 @@ vaini=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO_D_EM, INFO
                      _F(MAILLE='M1', NOM_CMP=('V1',), VALE=(3.e-5,)),
                  ))
 TEST_RESU(CHAM_ELEM=_F( CHAM_GD = vaini, MAILLE='M1', POINT=2, SOUS_POINT=92,
-          REFERENCE='ANALYTIQUE', NOM_CMP = 'V1', VALE_REFE=3.e-5, VALE_CALC=3.e-5,))
+          REFERENCE='ANALYTIQUE', NOM_CMP = 'V1', VALE_REFE=3.e-5, VALE_CALC=3E-05,))
 
 
 
@@ -1142,7 +1142,7 @@ XXX1  =STAT_NON_LINE(MODELE     = MO_D_EM,
    );
 TEST_RESU(RESU=_F(GROUP_NO='B', INST=1.0,  RESULTAT=XXX1, NOM_CHAM='DEPL', NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER', VALE_REFE=0.043854790675854002,
-                  VALE_CALC=0.043854790675854002,
+                  VALE_CALC=0.0438547906759,
                   ),
           )
 #-------------------------------------------------------------------------------------
