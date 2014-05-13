@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine tbtrik(ndim, tabcha, tabint)
-        integer :: ndim
-        character(len=*) :: tabcha(*)
-        integer :: tabint(*)
-    end subroutine tbtrik
+    subroutine tbtri(ndim, tabint, tabchi, tabchr, tabchk)
+        integer, intent(in) :: ndim
+        integer, intent(in), optional, target :: tabchi(*)
+        real(kind=8), intent(in), optional, target :: tabchr(*)
+        character(len=*), intent(in), optional, target :: tabchk(*)
+        integer, intent(out), optional, target :: tabint(*)
+    end subroutine tbtri
 end interface

@@ -6,9 +6,7 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/tbtrii.h"
-#include "asterfort/tbtrik.h"
-#include "asterfort/tbtrir.h"
+#include "asterfort/tbtri.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -59,22 +57,22 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
     call wkvect('&&TBTR01.NUME  ', 'V V I', nblign, jnume)
     call wkvect('&&TBTR01.VIDE  ', 'V V I', nblign, jnuvi)
     AS_ALLOCATE(vi=n_vide, size=nblign)
-    do 10 i = 1, nblign
+    do i = 1, nblign
         zi(jnume+i-1) = nume(i)
-10  end do
+    end do
 !
     inpar = nopara
-    do 100 j = 1, nbpara
+    do j = 1, nbpara
         jnpar = zk24(jtblp+4*(j-1))
         if (inpar .eq. jnpar) then
-            type = zk24(jtblp+4*(j-1)+1)
+            type = zk24(jtblp+4*(j-1)+1)(1:4)
             nomjv = zk24(jtblp+4*(j-1)+2)
             nomjvl = zk24(jtblp+4*(j-1)+3)
             call jeveuo(nomjv, 'L', jvale)
             call jeveuo(nomjvl, 'L', jvall)
             nbvid = 0
             nbnvd = 0
-            do 20 i = 1, nblign
+            do i = 1, nblign
                 if (zi(jvall+nume(i)-1) .eq. 0) then
                     nbvid = nbvid + 1
                     zi(jnuvi+nbvid-1) = nume(i)
@@ -82,78 +80,78 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
                     nbnvd = nbnvd + 1
                     n_vide(nbnvd) = nume(i)
                 endif
-20          continue
+            end do
             goto 102
         endif
-100  end do
+     end do
 102  continue
 !
-    if (nbnvd .eq. 0) goto 9999
+    if (nbnvd .eq. 0) goto 999
 !
     AS_ALLOCATE(vi=tri, size=nbnvd)
 !
     if (type(1:1) .eq. 'I') then
         call wkvect('&&TBTR01.VALEUR', 'V V I', nbnvd, lvale)
-        do 210 i = 1, nbnvd
+        do i = 1, nbnvd
             zi(lvale+i-1) = zi(jvale+n_vide(i)-1)
-210      continue
-        call tbtrii(nbnvd, zi(lvale),tri)
+        end do
+        call tbtri(nbnvd, tri, tabchi=zi(lvale))
         call jedetr('&&TBTR01.VALEUR')
     else if (type(1:1) .eq. 'R') then
         call wkvect('&&TBTR01.VALEUR', 'V V R', nbnvd, lvale)
-        do 220 i = 1, nbnvd
+        do i = 1, nbnvd
             zr(lvale+i-1) = zr(jvale+n_vide(i)-1)
-220      continue
-        call tbtrir(nbnvd, zr(lvale),tri)
+        end do
+        call tbtri(nbnvd, tri, tabchr=zr(lvale))
         call jedetr('&&TBTR01.VALEUR')
     else if (type(1:3) .eq. 'K80') then
         call wkvect('&&TBTR01.VALEUR', 'V V K80', nbnvd, lvale)
-        do 230 i = 1, nbnvd
+        do i = 1, nbnvd
             zk80(lvale+i-1) = zk80(jvale+n_vide(i)-1)
-230      continue
-        call tbtrik(nbnvd, zk80(lvale),tri)
+        end do
+        call tbtri(nbnvd, tri, tabchk=zk80(lvale))
         call jedetr('&&TBTR01.VALEUR')
     else if (type(1:3) .eq. 'K32') then
         call wkvect('&&TBTR01.VALEUR', 'V V K32', nbnvd, lvale)
-        do 240 i = 1, nbnvd
+        do i = 1, nbnvd
             zk32(lvale+i-1) = zk32(jvale+n_vide(i)-1)
-240      continue
-        call tbtrik(nbnvd, zk32(lvale),tri)
+        end do
+        call tbtri(nbnvd, tri, tabchk=zk32(lvale))
         call jedetr('&&TBTR01.VALEUR')
     else if (type(1:3) .eq. 'K24') then
         call wkvect('&&TBTR01.VALEUR', 'V V K24', nbnvd, lvale)
-        do 250 i = 1, nbnvd
+        do i = 1, nbnvd
             zk24(lvale+i-1) = zk24(jvale+n_vide(i)-1)
-250      continue
-        call tbtrik(nbnvd, zk24(lvale),tri)
+        end do
+        call tbtri(nbnvd, tri, tabchk=zk24(lvale))
         call jedetr('&&TBTR01.VALEUR')
     else if (type(1:3) .eq. 'K16') then
         call wkvect('&&TBTR01.VALEUR', 'V V K16', nbnvd, lvale)
-        do 260 i = 1, nbnvd
+        do i = 1, nbnvd
             zk16(lvale+i-1) = zk16(jvale+n_vide(i)-1)
-260      continue
-        call tbtrik(nbnvd, zk16(lvale),tri)
+        end do
+        call tbtri(nbnvd, tri, tabchk=zk16(lvale))
         call jedetr('&&TBTR01.VALEUR')
     else if (type(1:2) .eq. 'K8') then
         call wkvect('&&TBTR01.VALEUR', 'V V K8', nbnvd, lvale)
-        do 270 i = 1, nbnvd
+        do i = 1, nbnvd
             zk8(lvale+i-1) = zk8(jvale+n_vide(i)-1)
-270      continue
-        call tbtrik(nbnvd, zk8(lvale),tri)
+        end do
+        call tbtri(nbnvd, tri, tabchk=zk8(lvale))
         call jedetr('&&TBTR01.VALEUR')
     endif
 !
-    do 302 i = 1, nbvid
+    do i = 1, nbvid
         nume(i) = 0
-302  end do
+    end do
 !
-    do 304 i = 1, nbnvd
+    do i = 1, nbnvd
         nume(nbvid+i) = zi(jnume+tri(i)-1)
-304  end do
+    end do
 !
     AS_DEALLOCATE(vi=tri)
 !
-9999  continue
+999   continue
 !
     call jedetr('&&TBTR01.NUME  ')
     call jedetr('&&TBTR01.VIDE  ')

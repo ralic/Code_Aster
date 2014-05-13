@@ -48,7 +48,7 @@ subroutine crprol()
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbextb.h"
 #include "asterfort/tbexve.h"
-#include "asterfort/tbtrir.h"
+#include "asterfort/tbtri.h"
 #include "asterfort/tbutnu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -176,7 +176,7 @@ subroutine crprol()
 !
 ! ------ ON TRIE PAR ORDRE CROISSANT
 !
-        call tbtrir(nbnoi, zr(jtbcor), zi(jtbres))
+        call tbtri(nbnoi, zi(jtbres), tabchr=zr(jtbcor))
 !
         prosca=ddot(3,orig,1,axez,1)
         axer(1) = orig(1) - prosca*axez(1)
