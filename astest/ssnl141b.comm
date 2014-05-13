@@ -29,26 +29,14 @@ GF=DEFI_GEOM_FIBRE(
            FIBRE = (_F( GROUP_FIBRE='SACI',
                        CARA = 'SURFACE',
                            COOR_AXE_POUTRE = (0.,0.,),
-                            VALE =( -3.75E-2, 1.25E-2,6.25E-4,
-                                    -3.75E-2, -3.75E-2,6.25E-4,
-                                    -1.25E-2, -1.25E-2,6.25E-4,
-                                    -1.25E-2, 3.75E-2,6.25E-4,
-                                     1.25E-2, 1.25E-2,6.25E-4,
-                                     1.25E-2, -3.75E-2,6.25E-4,
-                                     3.75E-2, -1.25E-2,6.25E-4,
-                                     3.75E-2, 3.75E-2,6.25E-4,
+                            VALE =(
+                                  -0.012499999999999997, -0.012499999999999997, 0.00062500000000000012, -0.012499999999999997, 0.012499999999999997, 0.00062500000000000012, 0.012499999999999997, -0.012499999999999997, 0.00062500000000000012, 0.012499999999999997, 0.012499999999999997, 0.00062500000000000012
                                   ),),
                     _F( GROUP_FIBRE='SBET',
                        CARA = 'SURFACE',
                            COOR_AXE_POUTRE = (0.,0.,),
-                            VALE =( -3.75E-2, -1.25E-2,6.25E-4,
-                                    -3.75E-2, 3.75E-2,6.25E-4,
-                                    -1.25E-2, 1.25E-2,6.25E-4,
-                                    -1.25E-2, -3.75E-2,6.25E-4,
-                                     1.25E-2, -1.25E-2,6.25E-4,
-                                     1.25E-2, 3.75E-2,6.25E-4,
-                                     3.75E-2, 1.25E-2,6.25E-4,
-                                     3.75E-2, -3.75E-2,6.25E-4,
+                            VALE =(
+                                -0.037500000000000006, -0.037500000000000006, 0.00062500000000000012, -0.037500000000000006, -0.012499999999999997, 0.00062500000000000012, -0.037500000000000006, 0.012499999999999997, 0.00062500000000000012, -0.037500000000000006, 0.037500000000000006, 0.00062500000000000012, -0.012499999999999997, -0.037500000000000006, 0.00062500000000000012, -0.012499999999999997, 0.037500000000000006, 0.00062500000000000012, 0.012499999999999997, -0.037500000000000006, 0.00062500000000000012, 0.012499999999999997, 0.037500000000000006, 0.00062500000000000012, 0.037500000000000006, -0.037500000000000006, 0.00062500000000000012, 0.037500000000000006, -0.012499999999999997, 0.00062500000000000012, 0.037500000000000006, 0.012499999999999997, 0.00062500000000000012, 0.037500000000000006, 0.037500000000000006, 0.00062500000000000012
                                   ),),
                     ),
 
@@ -94,7 +82,7 @@ ENCAST=AFFE_CHAR_MECA( MODELE=MODELE,
 FORC = AFFE_CHAR_MECA( MODELE=MODELE,
                         FORCE_POUTRE=(
                                     _F( GROUP_MA ='POUTRE',
-                                        FZ = -1.0E6),
+                                        FZ = -1.0E4),
                                 ),
             )
 
@@ -157,16 +145,39 @@ FREQ=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
 
 #
 
+
+# CALCUL MODAL EN MASS_DIAG
+
+RIGI=CALC_MATR_ELEM(MODELE=MODELE, OPTION='RIGI_MECA',
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    CHARGE=(ENCADE,APPUI),
+                   )
+MASS=CALC_MATR_ELEM(MODELE=MODELE, OPTION='MASS_MECA_DIAG',
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    CHARGE=(ENCADE,APPUI),)
+NUMDDL=NUME_DDL(MATR_RIGI=RIGI,)
+RIGAS=ASSE_MATRICE(MATR_ELEM=RIGI,NUME_DDL=NUMDDL)
+MASAS=ASSE_MATRICE(MATR_ELEM=MASS,NUME_DDL=NUMDDL)
+
+FREQ_DIA=MODE_ITER_SIMULT(MATR_RIGI  =RIGAS,
+                            MATR_MASS  =MASAS,
+                            CALC_FREQ=_F(
+                                       NMAX_FREQ=8,),
+
+                         )
+
+
 TEST_RESU(RESU=(_F(
                     NUME_ORDRE = 1,
                     RESULTAT=U,
                     NOM_CHAM='DEPL',
                     NOEUD='N21',
                     NOM_CMP='DZ',
-                    VALE_REFE = -2.2260869565217392,
-                    VALE_CALC = -2.2758194186935,
+                    VALE_REFE = -6.64935064935E-2,
+                    VALE_CALC = -6.64935064935E-2,
                     REFERENCE = 'ANALYTIQUE',
-                    PRECISION = 2.5E-2
                     ),
                 ),
             )
@@ -175,13 +186,22 @@ TEST_RESU(RESU=(_F(
                     NUME_ORDRE = 1,
                     RESULTAT=FREQ,
                     PARA='FREQ',
-                    VALE_REFE = 51.742647217688024,
-                    VALE_CALC = 47.72412315235,
+                    VALE_REFE = 34.7665079762,
+                    VALE_CALC = 34.7423820809,
                     REFERENCE = 'ANALYTIQUE',
-                    PRECISION = 8.E-2
                     ),
                     ),
             )
 
+TEST_RESU(RESU=(_F(
+                    NUME_ORDRE = 1,
+                    RESULTAT=FREQ_DIA,
+                    PARA='FREQ',
+                    VALE_REFE = 34.7665079762,
+                    VALE_CALC = 34.7518884796,
+                    REFERENCE = 'ANALYTIQUE',
+                    ),
+                    ),
+            )
 
 FIN()

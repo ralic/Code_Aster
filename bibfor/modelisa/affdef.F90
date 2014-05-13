@@ -85,59 +85,59 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
 !     COMPLETUDE DES DONNES GENERALES
 !
     if (isec .eq. 0) then
-        do 20 j = 1, ng
+        do j = 1, ng
             if (zr(jdge+ogen(j)-1) .eq. tst) then
                 valk(1) = nom
                 valk(2) = tab(ogen(j))
                 call utmess('A', 'MODELISA_77', nk=2, valk=valk)
                 ier = ier + 1
             endif
-20      continue
+        enddo
 !        1:MECA_POU_D_T     4:MECA_POU_C_T
 !        5:MEFS_POU_D_T     6:MECA_POU_D_TG
 !       13:MECA_POU_D_TGM
         if ((nel.eq.ntel(1) ) .or. (nel.eq.ntel(4) ) .or. (nel.eq.ntel(5) ) .or.&
             (nel.eq.ntel(6) ) .or. (nel.eq.ntel(13))) then
-            do 50 j = 1, nt
+            do j = 1, nt
                 if (zr(jdge+otpe(j)-1) .eq. tst) then
                     valk(1) = nom
                     valk(2) = tab(otpe(j))
                     call utmess('A', 'MODELISA_78', nk=2, valk=valk)
                 endif
-50          continue
+            enddo
         endif
     endif
 !
 !     COMPLETUDE DES DONNES GEOMETRIQUES RECTANGLE
 !
     if (isec .eq. 1) then
-        do 30 j = 1, nr
+        do j = 1, nr
             if (zr(jdge+orec(j)-1) .eq. tst) then
                 valk(1) = nom
                 valk(2) = tab(orec(j))
                 call utmess('A', 'MODELISA_79', nk=2, valk=valk)
                 ier = ier + 1
             endif
-30      continue
+        enddo
     endif
 !
 !     COMPLETUDE DES DONNES GEOMETRIQUES CERCLE
 !
     if (isec .eq. 2) then
-        do 40 j = 1, nc
+        do j = 1, nc
             if (zr(jdge+ocer(j)-1) .eq. tst) then
                 valk(1) = nom
                 valk(2) = tab(ocer(j))
                 call utmess('A', 'MODELISA_80', nk=2, valk=valk)
                 ier = ier + 1
             endif
-40      continue
+        enddo
     endif
 !
 !     VERIFICATION DE LA STRICTE POSITIVITE DE  VALEURS GENERALE
 !
     if (isec .eq. 0) then
-        do 130 j = 1, nx
+        do j = 1, nx
             if (zr(jdge+pgen(j)-1) .ne. tst) then
                 if (zr(jdge+pgen(j)-1) .le. 0.d0) then
                     valk(1) = nom
@@ -146,13 +146,13 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                     ier = ier + 1
                 endif
             endif
-130      continue
+        enddo
     endif
 !
 !     VERIFICATION DE LA STRICTE POSITIVITE DE VALEURS RECTANGLE
 !
     if (isec .eq. 1) then
-        do 110 j = 1, ny
+        do j = 1, ny
             if (zr(jdge+prec(j)-1) .ne. tst) then
                 if (zr(jdge+prec(j)-1) .le. 0.d0) then
                     valk(1) = nom
@@ -161,13 +161,13 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                     ier = ier + 1
                 endif
             endif
-110      continue
+        enddo
     endif
 !
 !     VERIFICATION DE LA STRICTE POSITIVITE DE VALEURS CERCLE
 !
     if (isec .eq. 2) then
-        do 120 j = 1, nz
+        do j = 1, nz
             if (zr(jdge+pcer(j)-1) .ne. tst) then
                 if (zr(jdge+pcer(j)-1) .le. 0.d0) then
                     valk(1) = nom
@@ -176,34 +176,34 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                     ier = ier + 1
                 endif
             endif
-120      continue
+        enddo
     endif
 !
-    if (ier .ne. 0) goto 9999
+    if (ier .ne. 0) goto 999
 !
 !     AFFECTATION DES VALEURS PAR DEFAUT POUR LES DONNEES GENERALES
 !
     if (isec .eq. 0) then
 !        EXCENTREMENTS, AIRES INTERIEURES, CONSTANTES DE GAUCHISSEMENT
-        do 60 j = 1, ne
+        do j = 1, ne
             if(zr(jdge+dexc(j)-1).eq.tst)zr(jdge+dexc(j)-1) = 0.d0
-60      continue
+        enddo
 !        DIST. FIBRE EXT.+ RAYON TORSION
-        do 70 j = 1, nd
+        do j = 1, nd
             if(zr(jdge+ddfx(j)-1).eq.tst)zr(jdge+ddfx(j)-1) = 1.d0
-70      continue
+        enddo
 !        EULER
-        if (nel .eq. ntel(2)) then
-            do 80 j = 1, nt
+        if (nel .eq. ntel(2) .or. nel .eq. ntel(12)) then
+            do j = 1, nt
                 zr(jdge+otpe(j)-1) = 0.d0
-80          continue
+            enddo
         endif
     endif
 !
 !     AFFECTATION DES VALEURS PAR DEFAUT POUR LES DONNEES RECTANGLE
 !
     if (isec .eq. 1) then
-        do 90 j = 1, nr
+        do j = 1, nr
             if (zr(jdge+drec(j)-1) .eq. tst) then
                 zr(jdge+drec(j)-1) = zr(jdge+orec(j)-1) / 2.d0
             else
@@ -215,13 +215,13 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                     ier = ier + 1
                 endif
             endif
-90      continue
+        enddo
     endif
 !
 !     AFFECTATION DES VALEURS PAR DEFAUT POUR LES DONNEES CERCLE
 !
     if (isec .eq. 2) then
-        do 100 j = 1, nc
+        do j = 1, nc
             if (zr(jdge+dcer(j)-1) .eq. tst) then
                 zr(jdge+dcer(j)-1) = zr(jdge+ocer(j)-1)
             else
@@ -233,9 +233,9 @@ subroutine affdef(tmp, nom, nel, ntel, tab,&
                     ier = ier + 1
                 endif
             endif
-100      continue
+        enddo
     endif
 !
-9999  continue
+999  continue
     call jedema()
 end subroutine

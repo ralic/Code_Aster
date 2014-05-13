@@ -22,7 +22,7 @@ subroutine pmfrig(nomte, icdmat, klv)
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfitx.h"
 #include "asterfort/pmfk01.h"
-#include "asterfort/ptka21.h"
+#include "asterfort/pmfk21.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomte
@@ -41,7 +41,7 @@ subroutine pmfrig(nomte, icdmat, klv)
     integer :: lx, lsect, iadzi, iazk24
     integer :: inbfib, nbfib, jacf
     real(kind=8) :: g, xjx, gxjx, xl, casect(6)
-    real(kind=8) :: cars1(6), a, alfay, alfaz, e, xiz, xiy, ey, ez, xjg, ea
+    real(kind=8) :: cars1(6), a, alfay, alfaz, ey, ez, xjg
 !     ------------------------------------------------------------------
 !
 !
@@ -83,9 +83,6 @@ subroutine pmfrig(nomte, icdmat, klv)
         call jevech('PFIBRES', 'L', jacf)
         call pmfitg(nbfib, 3, zr(jacf), cars1)
         a = cars1(1)
-        xiy = cars1(5)
-        xiz = cars1(4)
-!
         lsect = lsect-1
         alfay = zr(lsect+4)
         alfaz = zr(lsect+5)
@@ -94,15 +91,9 @@ subroutine pmfrig(nomte, icdmat, klv)
         ez = -zr(lsect+7)
         xjg = zr(lsect+12)
 !
-!
-        ea = casect(1)
-        e= ea/a
-!
-!
-        call ptka21(klv, e, a, xl, xiy,&
-                    xiz, xjx, xjg, g, alfay,&
+        call pmfk21(klv, casect, a, xl, &
+                    xjx, xjg, g, alfay,&
                     alfaz, ey, ez)
     endif
-!
 !
 end subroutine

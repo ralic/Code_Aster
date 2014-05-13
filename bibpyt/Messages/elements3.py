@@ -28,6 +28,13 @@ cata_msg = {
 
 """),
 
+3 : _(u"""
+
+ L'option MASS_FLUI_STRU n'est pas disponible pour les POU_D_TGM en multi-matériaux.
+ Vous ne pouvez définir qu'un seul groupe de fibres.
+
+"""),
+
 10 : _(u"""
  on ne peut pas affecter la modélisation "AXIS_DIAG" aux éléments de l'axe
 """),

@@ -24,7 +24,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfitx.h"
 #include "asterfort/pmfm01.h"
-#include "asterfort/ptma01.h"
+#include "asterfort/pmfm21.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomte, option
@@ -42,10 +42,10 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
 !
     character(len=8) :: nomail
     character(len=16) :: ch16
-    integer :: lx, iadzi, iazk24, itype, i, istruc
+    integer :: lx, iadzi, iazk24, i
     integer :: inbfib, nbfib, jacf, lsect
     real(kind=8) :: casrho(6), xl, rbid, cars1(6) ,co12, co13
-    real(kind=8) :: matp1(78), a, xiy, xiz, rho, casece(6), g, e
+    real(kind=8) :: matp1(78), a, xiy, xiz, casece(6), g
     real(kind=8) :: alfay, alfaz, ey, ez, casect(6)
 !     ------------------------------------------------------------------
 !
@@ -97,26 +97,20 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
         xiz = cars1(4)
 !
         if (option .eq. 'MASS_FLUI_STRU') then
-            rho = rhoflu
-        else
-            rho = casrho(1)/a
+            casrho(1) = rhoflu * a
+            casrho(4) = rhoflu * xiz
+            casrho(5) = rhoflu * xiy
         endif
-!
-        itype = 0
-        istruc = 1
 !
 !    --- APPEL INTEGRATION SUR SECTION
         call pmfitx(icdmat, 1, casece, g)
 !
-        e = casece(1)/a
-!
-        do 20 i = 1, 78
+        do i = 1, 78
             matp1(i) = 0.0d0
-20      continue
-        call ptma01(kanl, itype, matp1, istruc, rho,&
-                    e, a, a, xl, xiy,&
-                    xiy, xiz, xiz, g, alfay,&
-                    alfay, alfaz, alfaz, ey, ez)
+        enddo
+        call pmfm21(kanl,  matp1, casrho, casece, a, &
+                  xl, xiy, xiz, g, alfay,&
+                  alfaz, ey, ez )
 !
         call masstg(matp1, mlv)
 !

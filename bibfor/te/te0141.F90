@@ -67,7 +67,7 @@ subroutine te0141(option, nomte)
     integer :: lorien, iacce, ivect, lrcou, lmat
     integer :: nno, nc, ntc, nbv, kanl, kpg, spt
     integer :: lx, iadzi, iazk24
-    integer :: icompo, isdcom, isicom, nbgfmx
+    integer :: inbf, nbgf
     real(kind=8) :: xl, rad, angs2
     real(kind=8) :: zero, un, deux, absmoy, angarc
     real(kind=8) :: e, g, xnu, rho, rhos, rhofi, rhofe, cm, phie, phii
@@ -89,6 +89,7 @@ subroutine te0141(option, nomte)
     kpg =1
     spt =1
     poum='+'
+    mator = ' '
     if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
         nno = 2
         nc = 7
@@ -113,13 +114,9 @@ subroutine te0141(option, nomte)
         call jevech('PABSCUR', 'L', labsc)
         absmoy = (zr(labsc-1+1)+zr(labsc-1+2))/deux
         if (nomte .eq. 'MECA_POU_D_TGM') then
-            call jevech('PCOMPOR', 'L', icompo)
-            call jeveuo(zk16(icompo-1+7), 'L', isdcom)
-            call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', isicom)
-            nbgfmx = zi(isicom+2)
-            mator = zk24(isdcom-1+nbgfmx*6+1)(1:8)
-        else
-            mator = ' '
+            call jevech('PNBSP_I', 'L', inbf)
+            nbgf=zi(inbf+1)
+            if (nbgf.ne.1) call utmess('F', 'ELEMENTS3_3')
         endif
         call rcvalb(fami, kpg, spt, poum, zi(lmater),&
                     mator, 'ELAS_FLUI', 1, 'ABSC', [absmoy],&
