@@ -198,4 +198,53 @@ IMPR_FONCTION(
             UNITE=40,
             TITRE='depsdt = f(INST)');
 
+
+
+## test de l'intégration explicite
+
+solexpl=SIMU_POINT_MAT(MATER=MAT,INFO=1,
+                     SIGM_IMPOSE=_F(SIYY=char),
+                     SUPPORT='ELEMENT',
+                     COMPORTEMENT=_F(RELATION='HAYHURST',
+                                  ALGO_INTE='RUNGE_KUTTA',
+                                  DEFORMATION='GDEF_LOG',
+                                  ),
+                     INCREMENT=_F(LIST_INST=listtps,INST_FIN=2000.),
+                     NEWTON=_F(REAC_ITER=0,PREDICTION='EXTRAPOLE'),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5),
+                     ARCHIVAGE=_F(LIST_INST=listarch),
+                     );
+
+epsYYexp=RECU_FONCTION(TABLE=solexpl,
+                   PARA_X='INST',
+                   PARA_Y='EPYY',
+                   INTERPOL='LIN');
+
+endoexp=RECU_FONCTION(TABLE=solexpl,
+                   PARA_X='INST',
+                   PARA_Y='V11',
+                   INTERPOL='LIN');
+
+
+#fluage secondaire comparaison ssnv225a
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02096051393883,
+                        VALE_REFE=0.02089497365045,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.005,
+                        VALE_PARA=2000,
+                        NOM_PARA='INST',
+                        FONCTION=epsYYexp,
+                        ),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03228755226222 ,
+                        VALE_REFE=0.03217489098398,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.005,                        
+                        VALE_PARA=2000,
+                        NOM_PARA='INST',
+                        FONCTION=endoexp,
+                        ),
+              )
 FIN();
