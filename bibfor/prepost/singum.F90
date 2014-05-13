@@ -11,6 +11,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nomil.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -81,18 +82,18 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
     integer :: jconn1, jconn2, jcinv1, jcinv2
     integer :: jdime, jmesu, jconn, jcinv, adress
     integer :: inno, inel, jel, nuef, nuno, i
-    integer :: ifac, isur
-    integer :: nfac, nsur, nbpt
+    integer :: ifac, isur, ia
+    integer :: nfac, nsur, nbpt, nbar
     integer :: nsommx, nelcom, nbre, nbef(nnoem)
     integer :: ordre
     integer :: n1, n2, n3, n4, n5, n6, n7, n8
-    integer :: pt1(24), pt2(24)
+    integer :: pt1(24), pt2(24), nm(12)
     integer :: nomili(nnoem)
-    character(len=8) :: typema(nelem)
+    character(len=8) :: typema(nelem), typma2
     character(len=24) :: cinv
     character(len=24) :: chdime, chmesu, chconn, chcinv
     real(kind=8) :: aire, volume
-    logical :: test
+    logical :: test, complet
 !
     call jemarq()
 !
@@ -130,6 +131,8 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
     call wkvect(chconn, 'V V I', nelem*(nsommx+2), jconn)
 !
     ordre=0
+    typma2=' '
+    complet=.false.
     do 20 inel = 1, nelem
         call jenuno(jexnum('&CATA.TM.NOMTM', itype(inel)), typema(inel))
         if (typema(inel)(1:4) .eq. 'HEXA' .or. typema(inel)(1:5) .eq. 'PENTA' .or.&
@@ -396,69 +399,44 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 !
 ! NOEUD MILIEU
 !
-        if (typema(inel)(1:4) .eq. 'SEG3') then
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+3-1))=0
-        endif
-        if (typema(inel)(1:5) .eq. 'TRIA6') then
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+4-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+5-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+6-1))=0
-        endif
-        if (typema(inel)(1:5) .eq. 'QUAD8') then
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+5-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+6-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+7-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+8-1))=0
-        endif
-        if (typema(inel)(1:5) .eq. 'QUAD9') then
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+5-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+6-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+7-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+8-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+9-1))=0
-        endif
-        if (typema(inel)(1:7) .eq. 'TETRA10') then
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+5-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+6-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+7-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+8-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+9-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+10-1))=0
-        endif
-        if (typema(inel)(1:6) .eq. 'HEXA20') then
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+9-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+10-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+11-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+12-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+13-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+14-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+15-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+16-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+17-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+18-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+19-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+20-1))=0
-        endif
-        if (typema(inel)(1:6) .eq. 'HEXA27') then
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+9-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+10-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+11-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+12-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+13-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+14-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+15-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+16-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+17-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+18-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+19-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+20-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+21-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+22-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+23-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+24-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+25-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+26-1))=0
-            nomili(zi(jconn1-1+zi(jconn2+inel-1)+27-1))=0
+        if (typema(inel)(1:4) .eq. 'SEG3' .or.&
+            typema(inel)(1:5) .eq. 'TRIA6' .or. typema(inel)(1:5) .eq. 'QUAD8' .or.&
+            typema(inel)(1:5) .eq. 'QUAD9' .or. typema(inel)(1:7) .eq. 'TETRA10' .or.&
+            typema(inel)(1:6) .eq. 'HEXA20' .or. typema(inel)(1:6) .eq. 'HEXA27') then
+!          * preparation appel a nomil pour recuperer les noeuds milieux de chaque arete
+           typma2=typema(inel)
+           complet=.false.
+!          * passage elements complets vers elements incomplets pour appel a nomil
+           if (typema(inel)(1:5) .eq. 'QUAD9') then
+                 typma2='QUAD8'
+                 complet=.true.
+           endif
+           if (typema(inel)(1:6) .eq. 'HEXA27') then
+                 typma2='HEXA20'
+                 complet=.true.
+           endif
+
+           call nomil(typma2, nm, nbar)
+
+!          * mise a 0 de nomili pour les noeuds milieux des aretes
+           do ia=1, nbar
+               nomili(zi(jconn1-1+zi(jconn2+inel-1)+nm(ia)-1))=0
+           enddo
+!          * traitement des noeuds centraux pour les elements complets
+           if (complet) then
+              if (typema(inel)(1:5) .eq. 'QUAD9') then
+                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+9-1))=0
+              endif
+              if (typema(inel)(1:6) .eq. 'HEXA27') then
+                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+21-1))=0
+                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+22-1))=0
+                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+23-1))=0
+                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+24-1))=0
+                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+25-1))=0
+                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+26-1))=0
+                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+27-1))=0
+              endif
+           endif
         endif
 !
 20  end do

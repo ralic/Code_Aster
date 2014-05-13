@@ -133,7 +133,7 @@ Arrêt suite à l'échec de l'intégration de la loi de comportement.
 """),
 
 92 : _(u"""
- la maille doit être de type TETRA10,PENTA15,HEXA20,QUAD8 ou TRIA6.
+ la maille doit être de type SEG3, TRIA6, QUAD8 TETRA10, PENTA15 ou HEXA20.
  or la maille est de type :  %(k1)s .
 """),
 

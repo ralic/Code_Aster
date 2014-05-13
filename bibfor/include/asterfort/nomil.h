@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function nomil(typma, ia)
-        character(len=8) :: typma
-        integer :: ia
-        integer :: nomil
-    end function nomil
+    subroutine nomil(typma, nm, nbar)
+        character(len=8), intent(in) :: typma
+        integer, intent(out) :: nm(12)
+        integer, intent(out) :: nbar
+    end subroutine nomil
 end interface
