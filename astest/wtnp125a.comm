@@ -367,20 +367,14 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
 
 # PROFILS DE PRESSION
 
-AXE_FISS=INTE_MAIL_2D(MAILLAGE=MA,
-                    DEFI_SEGMENT=_F(  ORIGINE = ( 0.,  0., ),
-                                       EXTREMITE = ( 2500.,  0., ),
-                                       ),
-                    PRECISION=0.0000000000001,
-                                       );
+V_X_01=MACR_LIGN_COUPE(RESULTAT=U_1, INST=(tint,tfin), NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='PRE1 selon x',
+                           NOM_CMP = ( 'PRE1', ),
+                           COOR_ORIG= (    0.,  0., ),
+                           COOR_EXTR= ( 2500.,  0., ),
+                    )))
 
-V_X_01=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='PRE1 selon x',
-                               RESULTAT=U_1,
-                               NOM_CHAM='DEPL',
-                               INST=(tint,tfin),
-                               CHEMIN=AXE_FISS,
-                               NOM_CMP=('PRE1',),),)
 
 IMPR_TABLE(TABLE=V_X_01,
            FORMAT='TABLEAU_CROISE',
@@ -389,13 +383,13 @@ IMPR_TABLE(TABLE=V_X_01,
 
 # PROFILS D'OUVERTURE DE FISSURE
 
-V_X_02=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='V1 selon x',
-                               RESULTAT=U_1,
-                               NOM_CHAM='VARI_ELNO',
-                               INST=(tint,tfin),
-                               CHEMIN=AXE_FISS,
-                               NOM_CMP=('V3',),),);
+V_X_02=MACR_LIGN_COUPE(RESULTAT=U_1, INST=(tint,tfin), NOM_CHAM='VARI_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='V3 selon x',
+                           NOM_CMP = ( 'V3', ),
+                           COOR_ORIG= (    0.,  0., ),
+                           COOR_EXTR= ( 2500.,  0., ),
+                    )))
 
 IMPR_TABLE(TABLE=V_X_02,
            FORMAT='TABLEAU_CROISE',

@@ -254,19 +254,14 @@ RESU0=CALC_CHAMP(reuse=RESU0,
               CONTRAINTE='SIGM_NOEU',
               RESULTAT=RESU0,);
 
-coupe = INTE_MAIL_2D(MAILLAGE=MAILLAGE,
-                     GROUP_MA=Soil,
-                     DEFI_SEGMENT=_F(ORIGINE  = (1.,  0.,),
-                                     EXTREMITE= (1.,-20.,),),);
+TAB_SI0=MACR_LIGN_COUPE(RESULTAT=RESU0,  NOM_CHAM='SIGM_NOEU',
+               LIGN_COUPE=(
+                  _F(TYPE='SEGMENT', NB_POINTS=15, INTITULE='SIEF',
+                     COOR_ORIG= (1.,  0.,),
+                     COOR_EXTR= (1.,-20.,),
+              )))
 
-TAB_SI0=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
-                             CHEMIN=coupe,
-                             RESULTAT=RESU0,
-                             NOM_CHAM='SIGM_NOEU',
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=TAB_SI0, UNITE=8,);
 
 #--------------------------------------------------------------------
 #       Calcul de la fondation rigide avec Mohr-Coulomb
@@ -335,24 +330,6 @@ FRESULT= POST_RELEVE_T(ACTION=_F(INTITULE  = 'F_RESULTANTE',
                                  RESULTANTE= 'DY',
                                  RESULTAT  =  RESU,
                                  TOUT_ORDRE= 'OUI',),);
-
-# TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
-#                              CHEMIN=coupe,
-#                              RESULTAT=RESU,
-#                              NOM_CHAM='SIGM_NOEU',
-#                              TOUT_CMP='OUI',
-#                              OPERATION='EXTRACTION',),);
-#
-# TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
-#                              CHEMIN=coupe,
-#                              RESULTAT=RESU,
-#                              NOM_CHAM='VARI_NOEU',
-#                              TOUT_CMP='OUI',
-#                              OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=FRESULT,  UNITE=8,);
-# IMPR_TABLE(TABLE=TAB_SIEF, UNITE=8,);
-# IMPR_TABLE(TABLE=TAB_VARI, UNITE=8,);
 
 
 TEST_TABLE(NOM_PARA='DY', TABLE=FRESULT,

@@ -95,19 +95,12 @@ IMPR_TABLE(TABLE=SIGBAS,
 
 TELAS = 10.0
 
-# CREATION DU CHEMIN
-CERCLE=INTE_MAIL_2D(MAILLAGE=MAIL,
-                    DEFI_CHEMIN=_F(GROUP_MA='trou',),);
 
-# EXTRACTION VALEURS
-STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
-                               CHEMIN=CERCLE,
-                               RESULTAT=RESUNL,
-                               NOM_CHAM='SIGM_ELNO',
-                               INST=TELAS,
-                               NOM_CMP=('SIXX','SIYY','SIXY',),
-                               REPERE='POLAIRE',
-                               OPERATION='EXTRACTION',),);
+STHETA=MACR_LIGN_COUPE(RESULTAT=RESUNL, INST=TELAS, NOM_CHAM='SIGM_ELNO',
+                       LIGN_COUPE = _F(TYPE='GROUP_MA', REPERE = 'POLAIRE', MAILLAGE=MAIL,
+                                      OPERATION='EXTRACTION', GROUP_MA='trou', INTITULE='STHETA',))
+
+
 # IMPRESSION DE LA TABLE
 IMPR_TABLE( UNITE=8,
             TABLE=STHETA,
@@ -177,17 +170,10 @@ DYG2=RECU_FONCTION(RESULTAT=RESUNL,
                   NOM_CMP='DY',
                   GROUP_NO='G',);
 
-# CREATION DU CHEMIN
-LH=INTE_MAIL_2D(MAILLAGE=MAIL,
-                DEFI_CHEMIN=_F(GROUP_MA='haut',),);
-
-FHAUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
-                              CHEMIN=LH,
-                              RESULTAT=RESUNL,
-                              NOM_CHAM='FORC_NODA',
-                              RESULTANTE=('DX','DY','DZ',),
-                              OPERATION='EXTRACTION',),);
-
+FHAUT=MACR_LIGN_COUPE(RESULTAT=RESUNL, NOM_CHAM='FORC_NODA',
+                       LIGN_COUPE = _F(TYPE='GROUP_MA', MAILLAGE=MAIL,
+                                      RESULTANTE=('DX','DY','DZ',),
+                                      OPERATION='EXTRACTION', GROUP_MA='haut', INTITULE='F_HAUT',))
 
 F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_X='INST',

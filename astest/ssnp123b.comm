@@ -92,67 +92,47 @@ RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              CONTRAINTE='SIGM_NOEU',);
 
-ECHAN=INTE_MAIL_2D(MAILLAGE=MA,
-                   DEFI_SEGMENT=_F(ORIGINE=(0.0,1.0,),
-                                   EXTREMITE=(5.0,1.0,),),
-                   PRECISION=0.001,
-                   INFO=1,);
+S_T=MACR_LIGN_COUPE(RESULTAT=RESU,  NOM_CHAM='SIGM_NOEU', INST=1.0,
+                  LIGN_COUPE=(
+                     _F(TYPE='SEGMENT', NB_POINTS=11, INTITULE='S_EXT', NOM_CMP='SIYY',
+                        COOR_ORIG=(0.0, 1.0,),
+                        COOR_EXTR=(5.0, 1.0,),
+                 )))
 
-S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
-                            CHEMIN=ECHAN,
-                            RESULTAT=RESU,
-                            NOM_CHAM='SIGM_NOEU',
-                            INST=1.0,
-                            CRITERE='RELATIF',
-                            NOM_CMP='SIYY',
-                            REPERE='GLOBAL',
-                            MOYE_NOEUD='OUI',
-                            OPERATION='EXTRACTION',),
-                  INFO=1,);
 
-IMPR_TABLE(TABLE=S_T,);
-# TESTS
-#=======
-# NON REGRESSION
+
+#IMPR_TABLE(TABLE=S_T,);
+
+
+# TESTS NON REGRESSION
+#======================
 
 TEST_TABLE(
            VALE_CALC=234.17369549492,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=0.0,),
+           FILTRE=_F(NOM_PARA='COOR_X', VALE=0.0,),
            )
 
 TEST_TABLE(
-           VALE_CALC=257.41729309271,
+           VALE_CALC=241.963621081,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=1.54051,),
+           FILTRE=_F(NOM_PARA='COOR_X', VALE=1.,),
            )
 
 TEST_TABLE(
-           VALE_CALC=300.3325184181,
+           VALE_CALC=298.02665342,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2679499999999999,),
+           FILTRE=_F(NOM_PARA='COOR_X', VALE=3.,),
            )
 
 TEST_TABLE(
-           VALE_CALC=263.21206094076,
+           VALE_CALC=68.3876262862,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.8340299999999998,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=175.82916193352,
-           NOM_PARA='SIYY',
-           TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.3794199999999996,),
+           FILTRE=_F(NOM_PARA='COOR_X', VALE=4.5,),
            )
 
 #--------------------------------------------------------------------------------

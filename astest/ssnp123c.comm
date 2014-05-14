@@ -100,43 +100,20 @@ RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              CONTRAINTE='SIGM_NOEU',);
 
-ECHAN=INTE_MAIL_3D(MAILLAGE=MA,
-                   DEFI_SEGMENT=_F(ORIGINE=(0.0,1.0,0.0,),
-                                   EXTREMITE=(5.0,1.0,0.0,),),
-                   PRECISION=0.00001,
-                   INFO=1,);
 
-S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
-                            CHEMIN=ECHAN,
-                            RESULTAT=RESU,
-                            NOM_CHAM='SIGM_NOEU',
-                            INST=1.0,
-                            CRITERE='RELATIF',
-                            NOM_CMP='SIYY',
-                            REPERE='GLOBAL',
-                            MOYE_NOEUD='OUI',
-                            OPERATION='EXTRACTION',),
-                  INFO=1,);
 
-IMPR_TABLE(TABLE=S_T,);
+# Abscisse des points d'interet :
+coor1=[0.0, 1.53224, 3.2689, 3.80797,  4.40378, 5.0]
 
-ECHAN2=INTE_MAIL_3D(MAILLAGE=MA,
-                   DEFI_SEGMENT=_F(ORIGINE=(0.1,0.97,-0.03,),
-                                   EXTREMITE=(5.0,0.97,-0.03,),),
-                   PRECISION=0.00001,
-                   INFO=1,);
-
-S_T2=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
-                            CHEMIN=ECHAN2,
-                            RESULTAT=RESU,
-                            NOM_CHAM='SIGM_NOEU',
-                            INST=1.0,
-                            CRITERE='RELATIF',
-                            NOM_CMP='SIYY',
-                            REPERE='GLOBAL',
-                            MOYE_NOEUD='OUI',
-                            OPERATION='EXTRACTION',),
-                  INFO=1,);
+S_T=MACR_LIGN_COUPE(RESULTAT=RESU, INST=1.0, NOM_CHAM='SIGM_NOEU',
+                     LIGN_COUPE=(
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[0],1.0,0.0,), COOR_EXTR=(coor1[1],1.0,0.0,),),
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[1],1.0,0.0,), COOR_EXTR=(coor1[2],1.0,0.0,),),
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[2],1.0,0.0,), COOR_EXTR=(coor1[3],1.0,0.0,),),
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[3],1.0,0.0,), COOR_EXTR=(coor1[4],1.0,0.0,),),
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[4],1.0,0.0,), COOR_EXTR=(coor1[5],1.0,0.0,),),
+                    ))
+#IMPR_TABLE(TABLE=S_T,UNITE=6)
 
 
 
@@ -144,54 +121,39 @@ S_T2=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
 #=======
 # ON TESTE PAR RAPPORT A LA MODELISATION D : ELEMENTS QUASI-INCOMPRESSIBLES
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC=233.34602108728,
-           VALE_REFE=234.12162679423,
-           NOM_PARA='SIYY',
-           TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=0.0,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[0],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
+           VALE_REFE=234.12162679423, VALE_CALC=233.34602108728, PRECISION=1.E-2,
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC=258.31161212553,
-           VALE_REFE=256.98783319353,
-           NOM_PARA='SIYY',
-           TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=1.53224,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[1],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
+           VALE_REFE=256.98783319353, VALE_CALC=258.31161212553, PRECISION=1.E-2,
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC=299.13377622297,
-           VALE_REFE=300.28717383814,
-           NOM_PARA='SIYY',
-           TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2688999999999999,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[2],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
+           VALE_REFE=300.28717383814, VALE_CALC=299.13377622297, PRECISION=1.E-2,
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-2,
-           VALE_CALC=266.40964803695,
-           VALE_REFE=267.55482695734,
-           NOM_PARA='SIYY',
-           TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.8079700000000001,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[3],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
+           VALE_REFE=267.55482695734, VALE_CALC=266.40964803695, PRECISION=1.E-2,
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.08,
-           VALE_CALC=168.85858339317,
-           VALE_REFE=183.4984987651,
-           NOM_PARA='SIYY',
-           TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.4037800000000002,),
+TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[4],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
+           VALE_REFE=183.4984987651, VALE_CALC=168.85858339317, PRECISION=8.E-2,
            )
 
 #--------------------------------------------------------------------------------

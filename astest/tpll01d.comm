@@ -62,28 +62,6 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
 TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'))
 
 
-SEG1=INTE_MAIL_3D( MAILLAGE=MAIL,
-                   PRECISION=1.E-06,
-                   DEFI_SEGMENT=_F( ORIGINE   = (.015, .02, 0. ),
-                                    EXTREMITE = (.055, .05, 0. )),
-                   INFO=2)
-
-SEG2=INTE_MAIL_3D( MAILLAGE=MAIL,
-                   PRECISION=1.E-04,
-                   DEFI_SEGMENT=_F( ORIGINE   = (.015, .02, 0.001 ),
-                                    EXTREMITE = (.055, .05, 0.001 )),
-                   INFO=2)
-
-#
-
-TR2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'ACTION_1',
-                               CHEMIN = SEG1, RESULTAT = TEMPE,
-                               NOM_CHAM = 'TEMP', TOUT_ORDRE = 'OUI',
-                               NOM_CMP = 'TEMP', OPERATION = 'EXTRACTION'))
-
-#
-
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    GROUP_NO='A',
                    RESULTAT=TEMPE,

@@ -383,20 +383,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
 
 # PROFILS DE PRESSION
 
-AXE_COUP=INTE_MAIL_2D(MAILLAGE=MA,
-                    DEFI_SEGMENT=_F(  ORIGINE = ( 4.,  7.5, ),
-                                       EXTREMITE = ( 4.,  -7.5, ),
-                                       ),
-                    PRECISION=0.000001,
-                                       );
-
-V_X_01=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='PRE1 selon x',
-                               RESULTAT=U_1,
-                               NOM_CHAM='DEPL',
-                               NUME_ORDRE=(2,5,7,9,14,24),
-                               CHEMIN=AXE_COUP,
-                               NOM_CMP=('PRE1',),),);
+V_X_01=MACR_LIGN_COUPE(RESULTAT=U_1, NUME_ORDRE=(2,5,7,9,14,24), NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=10, INTITULE='PRE1 selon x',
+                           NOM_CMP = ( 'PRE1', ),
+                           COOR_ORIG= ( 4.,   7.5, ),
+                           COOR_EXTR= ( 4.,  -7.5, ),
+                    )))
 
 IMPR_TABLE(TABLE=V_X_01,
            FORMAT='TABLEAU_CROISE',

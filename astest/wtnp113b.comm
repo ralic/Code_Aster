@@ -121,8 +121,8 @@ UN=DEFI_CONSTANTE(    VALE=1.,);
 ZERO=DEFI_CONSTANTE(    VALE=0.,);
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=(_F(JUSQU_A=1.E6,  PAS=1.E5,),                 
-                                 _F(JUSQU_A=1.E7,  PAS=1.E5,),         
+                    INTERVALLE=(_F(JUSQU_A=1.E6,  PAS=1.E5,),
+                                 _F(JUSQU_A=1.E7,  PAS=1.E5,),
                                  _F(JUSQU_A=1.E8,  PAS=1.E6,),)
                    );
 
@@ -396,24 +396,22 @@ RESU0=CALC_CHAMP(reuse=RESU0,
         VARI_INTERNE='VARI_NOEU',
                       NUME_ORDRE=(1,2,3,5,7,9,14,19,24),
         RESULTAT=RESU0,);
-MILIEU=INTE_MAIL_2D(MAILLAGE=MAIL,
-                    DEFI_SEGMENT=_F(  ORIGINE = ( 0.,  -450., ),
-                                       EXTREMITE = ( 10.,  -450., ))
-                                       )
-TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=MILIEU,
-                            RESULTAT=RESU0,
-                            NOM_CHAM='DEPL',
-                      NUME_ORDRE=(1,2,5,7,9,14,19,24),
-                            NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
-TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=MILIEU,
-                            RESULTAT=RESU0,
-                            NOM_CHAM='VARI_ELNO',
-                      NUME_ORDRE=(1,2,5,7,9,14,19,24),
-                            NOM_CMP=('V3'),
-                            OPERATION='EXTRACTION',),);
+
+TRB=MACR_LIGN_COUPE(RESULTAT=RESU0, NUME_ORDRE=(1,2,5,7,9,14,24,34), NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='DEPL',
+                           NOM_CMP = ( 'PRE1', ),
+                           COOR_ORIG= ( 0.,  -450., ),
+                           COOR_EXTR= (10.,  -450., ),
+                    )))
+
+TRV=MACR_LIGN_COUPE(RESULTAT=RESU0, NUME_ORDRE=(1,2,5,7,9,14,24,34), NOM_CHAM='VARI_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='VARI_ELNO',
+                           NOM_CMP = ( 'V3', ),
+                           COOR_ORIG= ( 0.,  -450., ),
+                           COOR_EXTR= (10.,  -450., ),
+                    )))
 
 IMPR_TABLE(TABLE=TRB,
            FORMAT='AGRAF',
@@ -424,25 +422,22 @@ IMPR_TABLE(TABLE=TRV,
            PAGINATION='INST',
            NOM_PARA=('INST','COOR_X','COOR_Y','V3'),);
 
-VERT=INTE_MAIL_2D(MAILLAGE=MAIL,
-                  PRECISION=1.E-4,
-                  DEFI_SEGMENT=_F(ORIGINE = ( 7.,  -400., ),
-                                  EXTREMITE = ( 7.,  -500., )));
-TRVB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=VERT,
-                            RESULTAT=RESU0,
-                            NOM_CHAM='DEPL',
-                      NUME_ORDRE=(1,2,5,7,9,14,19,24),
-                            NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
+TRVB=MACR_LIGN_COUPE(RESULTAT=RESU0, NUME_ORDRE=(1,2,5,7,9,14,24,34), NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='DEPL',
+                           NOM_CMP = ( 'PRE1', ),
+                           COOR_ORIG=( 7.,  -400., ),
+                           COOR_EXTR=( 7.,  -500., ),
+                    )))
 
-TRVV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=VERT,
-                            RESULTAT=RESU0,
-                            NOM_CHAM='VARI_ELNO',
-                      NUME_ORDRE=(1,2,5,7,9,14,19,24),
-                            NOM_CMP=('V3'),
-                            OPERATION='EXTRACTION',),);
+TRVV=MACR_LIGN_COUPE(RESULTAT=RESU0, NUME_ORDRE=(1,2,5,7,9,14,24,34), NOM_CHAM='VARI_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='VARI_ELNO',
+                           NOM_CMP = ( 'V3', ),
+                           COOR_ORIG= ( 7.,  -400., ),
+                           COOR_EXTR= ( 7.,  -500., ),
+                    )))
+
 IMPR_TABLE(TABLE=TRVB,
            FORMAT='AGRAF',
            PAGINATION='INST',

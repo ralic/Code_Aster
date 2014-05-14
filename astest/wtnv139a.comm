@@ -370,32 +370,21 @@ U0=CALC_CHAMP(reuse=U0,
        INST=T1,
        RESULTAT=U0)
 
-COUPEY = INTE_MAIL_3D ( MAILLAGE = MAIL ,
-                        INFO = 1 ,
-                        DEFI_SEGMENT =_F( ORIGINE   = (0.0 ,0.01,0.5),
-                        EXTREMITE = (0. ,15,0.5),
-       ),
-                        PRECISION=1.E-8,
-   );
 
-SIG_MAY=POST_RELEVE_T(ACTION=_F(INTITULE='SIG_MA',
-                                CHEMIN=COUPEY,
-                               RESULTAT=U0,
-                               INST=(T1),
-                               NOM_CHAM='SIEF_ELNO',
-                               NOM_CMP=('SIXX','SIYY','SIZZ',
-                                        'SIXY','SIXZ','SIYZ',
-                                        'SIPXX','SIPYY','SIPZZ',
-                                        'SIPXY','SIPXZ','SIPYZ',),
-                               OPERATION='EXTRACTION',),
-                         );
-PRES_MAY=POST_RELEVE_T(ACTION=_F(INTITULE='PRES_MA',
-                                CHEMIN=COUPEY,
-                                RESULTAT=U0,
-                               INST=(T1),
-                                NOM_CHAM='DEPL',
-                                NOM_CMP=('PRE1',),
-                                OPERATION='EXTRACTION',),);
+SIG_MAY=MACR_LIGN_COUPE(RESULTAT=U0, INST=(T1), NOM_CHAM='SIEF_ELNO',
+                     LIGN_COUPE=(
+                       _F(INTITULE='SIG_MA', TYPE='SEGMENT', NB_POINTS=2,
+                          COOR_ORIG=(0.0 ,0.01, 0.5), COOR_EXTR=(0.  ,15,   0.5),),
+                    ))
+
+PRES_MAY=MACR_LIGN_COUPE(RESULTAT=U0, INST=(T1), NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                       _F(INTITULE='PRES_MA', TYPE='SEGMENT', NB_POINTS=2,
+                          COOR_ORIG=(0.0 ,0.01, 0.5), COOR_EXTR=(0.  ,15,   0.5),),
+                    ))
+
+
+
 IMPR_TABLE(TABLE=PRES_MAY,
            NOM_PARA=('COOR_Y','PRE1'),
            FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,

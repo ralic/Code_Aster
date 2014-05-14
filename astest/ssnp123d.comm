@@ -102,25 +102,18 @@ RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              CONTRAINTE='SIGM_NOEU',);
 
-ECHAN=INTE_MAIL_3D(MAILLAGE=MA,
-                   DEFI_SEGMENT=_F(ORIGINE=(0.0,1.0,0.0,),
-                                   EXTREMITE=(5.0,1.0,0.0,),),
-                   PRECISION=0.00001,
-                   INFO=1,);
+# Abscisse des points d'interet :
+coor1=[0.0, 1.53224, 3.2689, 3.80797,  4.40378, 5.0]
 
-S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
-                            CHEMIN=ECHAN,
-                            RESULTAT=RESU,
-                            NOM_CHAM='SIGM_NOEU',
-                            INST=1.0,
-                            CRITERE='RELATIF',
-                            NOM_CMP='SIYY',
-                            REPERE='GLOBAL',
-                            MOYE_NOEUD='OUI',
-                            OPERATION='EXTRACTION',),
-                  INFO=1,);
+S_T=MACR_LIGN_COUPE(RESULTAT=RESU, INST=1.0, NOM_CHAM='SIGM_NOEU',
+                     LIGN_COUPE=(
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[0],1.0,0.0,), COOR_EXTR=(coor1[1],1.0,0.0,),),
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[1],1.0,0.0,), COOR_EXTR=(coor1[2],1.0,0.0,),),
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[2],1.0,0.0,), COOR_EXTR=(coor1[3],1.0,0.0,),),
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[3],1.0,0.0,), COOR_EXTR=(coor1[4],1.0,0.0,),),
+                       _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(coor1[4],1.0,0.0,), COOR_EXTR=(coor1[5],1.0,0.0,),),
+                    ))
 
-IMPR_TABLE(TABLE=S_T,);
 
 
 # TESTS
@@ -128,43 +121,48 @@ IMPR_TABLE(TABLE=S_T,);
 # NOn REGRESSION
 
 TEST_TABLE(
-           VALE_CALC=234.12162679423,
+           VALE_CALC=234.069610102,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=0.0,),
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[0],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
            )
 
 TEST_TABLE(
-           VALE_CALC=256.98783319353,
+           VALE_CALC=256.857509992,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=1.53224,),
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[1],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
            )
 
 TEST_TABLE(
-           VALE_CALC=300.28717383814,
+           VALE_CALC=300.286660446,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2688999999999999,),
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[2],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
            )
 
 TEST_TABLE(
-           VALE_CALC=267.55482695734,
+           VALE_CALC=267.546474979,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.8079700000000001,),
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[3],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
            )
 
 TEST_TABLE(
-           VALE_CALC=183.4984987651,
+           VALE_CALC=182.573092891,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.4037800000000002,),
+           FILTRE=(
+             _F(NOM_PARA='COOR_X',    VALE=coor1[4],),
+             _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
            )
 
 #--------------------------------------------------------------------------------
@@ -176,7 +174,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=RESU,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='NUEST',
-                  VALE_CALC=0.14980212215405,
+                  VALE_CALC=0.149802122154,
                   CRITERE='RELATIF',
                   MAILLE='M1294',
                   ),
@@ -187,7 +185,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='ERME_ELNO',
                   NOEUD='N5',
                   NOM_CMP='ERREST',
-                  VALE_CALC=0.010603981954603,
+                  VALE_CALC=0.0106039819546,
                   CRITERE='RELATIF',
                   MAILLE='M1294',
                   ),
@@ -202,7 +200,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIGM_ELNO',
                   NOEUD='N5',
                   NOM_CMP='SIYY',
-                  VALE_CALC=440.20187087436,
+                  VALE_CALC=440.201870874,
                   CRITERE='RELATIF',
                   MAILLE='M1294',
                   ),
@@ -213,7 +211,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIGM_ELNO',
                   NOEUD='N5',
                   NOM_CMP='SIXX',
-                  VALE_CALC=-0.24192753667832,
+                  VALE_CALC=-0.24192753668,
                   CRITERE='RELATIF',
                   MAILLE='M1294',
                   ),

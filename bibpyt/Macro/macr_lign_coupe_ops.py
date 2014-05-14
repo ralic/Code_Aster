@@ -137,6 +137,17 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
        elif dime ==3 :
           LCMP=['SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
           TYPE_CHAM='TENS_3D'
+  elif NOM_CHAM in ('FLUX_ELNO','FLUX_NOEU',):
+       if dime == 2:
+          LCMP=['FLUX','FLUY',]
+          TYPE_CHAM='VECT_2D'
+       elif dime == 3:
+          LCMP=['FLUX','FLUY','FLUZ',]
+          TYPE_CHAM='VECT_3D'
+       else :
+           assert 0
+  else :
+       assert 0
 
 
   if m['TYPE']=='SEGMENT' and m['REPERE'] != 'CYLINDRIQUE' :
@@ -154,11 +165,14 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
       cx1=cx1/nvx
       cx2=cx2/nvx
       cx3=cx3/nvx
-      cy1=m['VECT_Y'][0]
-      cy2=m['VECT_Y'][1]
-      cy3=0.
-      if dime == 3:
-        cy3=m['VECT_Y'][2]
+      if m['VECT_Y'] :
+          cy1=m['VECT_Y'][0]
+          cy2=m['VECT_Y'][1]
+          cy3=0.
+          if dime == 3:
+              cy3=m['VECT_Y'][2]
+      else :
+          UTMESS('F','POST0_50')
       nvy=sqrt(cy1**2+cy2**2+cy3**2)
       if abs(nvy) < epsi:
          UTMESS('F','POST0_2')
@@ -636,6 +650,9 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   MasquerAlarme('CALCULEL2_63')
   MasquerAlarme('CALCULEL2_64')
   MasquerAlarme('MODELISA5_53')
+  MasquerAlarme('MODELE1_58')
+  MasquerAlarme('MODELE1_63')
+  MasquerAlarme('MODELE1_64')
 
   mcORDR={}
 
@@ -677,6 +694,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     if MODELE==None:
       UTMESS('F','POST0_10')
     else : n_modele=MODELE.nom
+
     # récupération de la grandeur du champ
     n_cham=CHAM_GD.nom
     catagd=aster.getvectjev("&CATA.GD.NOMGD")
@@ -686,15 +704,26 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     else:
       celd=aster.getvectjev('%-19s.CELD' % n_cham)
       nomgd=catagd[celd[0]-1]
+
     # détermination du type de résultat à créer
-    if   nomgd[:6] == 'TEMP_R' : TYPE_RESU='EVOL_THER'
-    elif nomgd[:6] == 'DEPL_R' : TYPE_RESU='EVOL_ELAS'
+    if   nomgd[:6] == 'TEMP_R' :
+       TYPE_RESU='EVOL_THER'
+       if not NOM_CHAM : NOM_CHAM='TEMP'
+    elif nomgd[:6] == 'DEPL_R' :
+       TYPE_RESU='EVOL_ELAS'
+       if not NOM_CHAM : NOM_CHAM='DEPL'
+    elif nomgd[:6] == 'NEUT_R' :
+       TYPE_RESU='EVOL_VARC'
+       if not NOM_CHAM : NOM_CHAM='NEUT'
     elif nomgd[:6] == 'EPSI_R' : TYPE_RESU='EVOL_ELAS'
     elif nomgd[:6] == 'VAR2_R' : TYPE_RESU='EVOL_NOLI'
     elif nomgd[:6] == 'VARI_R' : TYPE_RESU='EVOL_NOLI'
     elif nomgd[:6] == 'SIEF_R' :
        if   NOM_CHAM[:4]=='SIGM':TYPE_RESU='EVOL_ELAS'
        elif NOM_CHAM[:4]=='SIEF':TYPE_RESU='EVOL_NOLI'
+    else :
+       assert 0,'grandeur imprevue : '+nomgf
+
     # création d'un concept résultat à partir du champ CHAM_GD
     __resuch=CREA_RESU(OPERATION='AFFE',
                        NOM_CHAM=NOM_CHAM, TYPE_RESU=TYPE_RESU,
@@ -816,7 +845,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
                                 MODELISATION='BARRE',),
                                 PARTITION=_F(PARALLELISME='CENTRALISE'),
                                 );
-  elif AsType(RESULTAT).__name__ in ('evol_ther',) :
+  elif AsType(RESULTAT).__name__ in ('evol_ther','evol_varc',) :
     __mocou=AFFE_MODELE(MAILLAGE=__macou,
                         AFFE=_F(TOUT='OUI',
                                 PHENOMENE='THERMIQUE',
@@ -833,7 +862,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
          motscles['VIS_A_VIS'].append(_F(MAILLE_1 = v['MAILLE_1'],TOUT_2='OUI'),)
 
 
-  if NOM_CHAM[5:9]=='ELGA' : UTMESS('F','POST0_18',valk=[NOM_CHAM,])
+  if NOM_CHAM[5:9]=='ELGA' : UTMESS('A','POST0_18',valk=[NOM_CHAM,])
 
 
   if ( l_mode_meca_sans_modele == False ) :
@@ -869,86 +898,11 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   mcACTION=[]
   angtab=[]
 
-  if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli','mode_meca') :
+  if AsType(RESULTAT).__name__ in ('evol_ther','evol_elas','evol_noli','mode_meca','evol_varc') :
 
-   if  NOM_CHAM in ('DEPL','SIEF_ELNO','SIGM_NOEU','SIGM_ELNO'):icham=1
-   iocc=0
-   for m in LIGN_COUPE :
-
-     iocc=iocc+1
-     motscles={}
-     motscles['OPERATION']=m['OPERATION']
-     if m['NOM_CMP']!=None:
-       motscles['NOM_CMP']=m['NOM_CMP']
-       if m['TRAC_NOR']!=None:
-          motscles['TRAC_NOR']=m['TRAC_NOR']
-       elif m['TRAC_DIR']!=None:
-          motscles['TRAC_DIR']=m['TRAC_DIR']
-          motscles['DIRECTION']=m['DIRECTION']
-     elif m['INVARIANT']!=None:
-       motscles['INVARIANT']=m['INVARIANT']
-     elif m['RESULTANTE']!=None:
-       motscles['RESULTANTE']=m['RESULTANTE']
-     elif m['ELEM_PRINCIPAUX']!=None:
-       motscles['ELEM_PRINCIPAUX']=m['ELEM_PRINCIPAUX']
-     else:
-       motscles['TOUT_CMP']='OUI'
-
-     # on définit le groupe de noeud pour post_releve_t
-     if m['TYPE'] in ('GROUP_NO','GROUP_MA'):
-         groupe=m[m['TYPE']].ljust(8)
-         nomgrma=groupe
-     else:
-         ioc2=ioc2+1
-         groupe='LICOU'+str(ioc2)
-         nomgrma=' '
-         newgrp='LICOF'+str(ioc2)
-         crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__macou)
-         groupe=newgrp
-
-     # on definit l'intitulé
-     if m['INTITULE'] !=None                    : intitl=m['INTITULE']
-     elif  m['TYPE'] in ('GROUP_NO','GROUP_MA') : intitl=groupe
-     else                                       : intitl='l.coupe'+str(ioc2)
-
-
-     # Expression des contraintes aux noeuds ou des déplacements dans le repere local
-     if m['REPERE'] != 'GLOBAL':
-
-        if  icham==1:
-
-          if m['REPERE']=='POLAIRE':
-            mcACTION.append( _F(INTITULE  = intitl,
-                            RESULTAT  = __remodr,
-                            REPERE    = m['REPERE'],
-                            GROUP_NO  = groupe,
-                            NOM_CHAM  = NOM_CHAM,**motscles ),)
-          else:
-            __remodr=crea_resu_local(self,dime,NOM_CHAM,m,__recou,__macou,nomgrma)
-            mcACTION.append( _F(INTITULE  = intitl,
-                            RESULTAT  = __remodr,
-                            GROUP_NO  = groupe,
-                            NOM_CHAM  = NOM_CHAM,**motscles ),)
-
-        else:
-          UTMESS('A','POST0_17',valk=[NOM_CHAM,m['REPERE']])
-          mcACTION.append( _F(INTITULE  = intitl,
-                            RESULTAT  = __recou,
-                            GROUP_NO  = groupe,
-                            NOM_CHAM  = NOM_CHAM,**motscles ),)
-
-     # Expression des contraintes aux noeuds ou des déplacements dans le repere global
-     else:
-
-          mcACTION.append( _F(INTITULE  = intitl,
-                            RESULTAT  = __recou,
-                            GROUP_NO  = groupe,
-                            NOM_CHAM  = NOM_CHAM,**motscles ),)
-
-
-  elif AsType(RESULTAT).__name__ in ('evol_ther',) :
-     iocc=0
-     for m in LIGN_COUPE :
+      if  NOM_CHAM in ('DEPL','SIEF_ELNO','SIGM_NOEU','SIGM_ELNO','FLUX_ELNO','FLUX_NOEU'): icham=1
+      iocc=0
+      for m in LIGN_COUPE :
 
         iocc=iocc+1
         motscles={}
@@ -969,22 +923,59 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
         else:
           motscles['TOUT_CMP']='OUI'
 
-        if m['TYPE'] not in ('GROUP_NO','GROUP_MA') :
-          ioc2=ioc2+1
-          groupe='LICOU'+str(ioc2)
-          newgrp='LICOF'+str(ioc2)
-          crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__macou)
-          groupe=newgrp
-          if m['INTITULE'] !=None : intitl=m['INTITULE']
-          else                    : intitl='l.coupe'+str(ioc2)
+        # on définit le groupe de noeud pour post_releve_t
+        if m['TYPE'] in ('GROUP_NO','GROUP_MA'):
+            groupe=m[m['TYPE']].ljust(8)
+            nomgrma=groupe
         else:
-          groupe=m[m['TYPE']].ljust(8)
-          if m['INTITULE'] !=None : intitl=m['INTITULE']
-          else                    : intitl=groupe
-        mcACTION.append( _F(INTITULE  = intitl,
-                            RESULTAT  = __recou,
-                            GROUP_NO  = groupe,
-                            NOM_CHAM  = NOM_CHAM, **motscles ),)
+            ioc2=ioc2+1
+            groupe='LICOU'+str(ioc2)
+            nomgrma=' '
+            newgrp='LICOF'+str(ioc2)
+            crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__macou)
+            groupe=newgrp
+
+        # on definit l'intitulé
+        if m['INTITULE'] !=None                    : intitl=m['INTITULE']
+        elif  m['TYPE'] in ('GROUP_NO','GROUP_MA') : intitl=groupe
+        else                                       : intitl='l.coupe'+str(ioc2)
+
+        # Expression des contraintes aux noeuds ou des déplacements dans le repere local
+        if m['REPERE'] != 'GLOBAL':
+
+           if  icham==1:
+
+             if m['REPERE']=='POLAIRE':
+               mcACTION.append( _F(INTITULE  = intitl,
+                               RESULTAT  = __remodr,
+                               REPERE    = m['REPERE'],
+                               GROUP_NO  = groupe,
+                               NOM_CHAM  = NOM_CHAM,**motscles ),)
+             else:
+               __remodr=crea_resu_local(self,dime,NOM_CHAM,m,__recou,__macou,nomgrma)
+               mcACTION.append( _F(INTITULE  = intitl,
+                               RESULTAT  = __remodr,
+                               GROUP_NO  = groupe,
+                               NOM_CHAM  = NOM_CHAM,**motscles ),)
+
+           else:
+             UTMESS('A','POST0_17',valk=[NOM_CHAM,m['REPERE']])
+             mcACTION.append( _F(INTITULE  = intitl,
+                               RESULTAT  = __recou,
+                               GROUP_NO  = groupe,
+                               NOM_CHAM  = NOM_CHAM,**motscles ),)
+
+        # Expression des contraintes aux noeuds ou des déplacements dans le repere global
+        else:
+
+             mcACTION.append( _F(INTITULE  = intitl,
+                               RESULTAT  = __recou,
+                               GROUP_NO  = groupe,
+                               NOM_CHAM  = NOM_CHAM,**motscles ),)
+
+
+  else :
+     assert 0
 
   __tabitm=POST_RELEVE_T(ACTION=mcACTION,);
 
@@ -993,7 +984,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   self.DeclareOut('nomres',self.sd)
   dictab=__tabitm.EXTR_TABLE()
-### Ajout de la colonne theta
+  ### Ajout de la colonne theta
   if len(arcgma)>0:
     coltab=[]
     val =  dictab['ABSC_CURV'].values()['ABSC_CURV']
@@ -1005,8 +996,6 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
         for i in range(len(angles[k])) :
           tmp.append(angles[k][i])
     dictab['ANGLE']=tmp
-
-###
 
   if 'RESU' in dictab.para:
     del dictab['RESU']
@@ -1020,4 +1009,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   RetablirAlarme('CALCULEL2_63')
   RetablirAlarme('CALCULEL2_64')
   RetablirAlarme('MODELISA5_53')
+  RetablirAlarme('MODELE1_58')
+  RetablirAlarme('MODELE1_63')
+  RetablirAlarme('MODELE1_64')
   return ier

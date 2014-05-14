@@ -94,25 +94,14 @@ RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              CONTRAINTE='SIGM_NOEU',);
 
-ECHAN=INTE_MAIL_2D(MAILLAGE=MA,
-                   DEFI_SEGMENT=_F(ORIGINE=(0.0,1.0,),
-                                   EXTREMITE=(5.0,1.0,),),
-                   PRECISION=0.001,
-                   INFO=1,);
+S_T=MACR_LIGN_COUPE(RESULTAT=RESU,  NOM_CHAM='SIGM_NOEU', INST=1.0,
+                  LIGN_COUPE=(
+                     _F(TYPE='SEGMENT', NB_POINTS=11, INTITULE='S_EXT', NOM_CMP='SIYY',
+                        COOR_ORIG=(0.0, 1.0,),
+                        COOR_EXTR=(5.0, 1.0,),
+                 )))
 
-S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
-                            CHEMIN=ECHAN,
-                            RESULTAT=RESU,
-                            NOM_CHAM='SIGM_NOEU',
-                            INST=1.0,
-                            CRITERE='RELATIF',
-                            NOM_CMP='SIYY',
-                            REPERE='GLOBAL',
-                            MOYE_NOEUD='OUI',
-                            OPERATION='EXTRACTION',),
-                  INFO=1,);
-
-IMPR_TABLE(TABLE=S_T,);
+#IMPR_TABLE(TABLE=S_T,);
 
 
 # TESTS
@@ -126,49 +115,27 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=234.17369549492,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=0.0,),
+           FILTRE=_F(NOM_PARA='COOR_X', VALE=0.0,),
            )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-3,
-           VALE_CALC=257.20804191469,
-           VALE_REFE=257.41729309271,
+           PRECISION=8.0E-3,
+           VALE_CALC=243.692979728,
+           VALE_REFE=241.963621081,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=1.54051,),
+           FILTRE=_F(NOM_PARA='COOR_X', VALE=1.0,),
            )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=6.0E-3,
-           VALE_CALC=298.68509589677,
-           VALE_REFE=300.3325184181,
+           PRECISION=4.0E-3,
+           VALE_CALC=297.721545562,
+           VALE_REFE=298.02665342,
            NOM_PARA='SIYY',
            TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2679499999999999,),
+           FILTRE=_F(NOM_PARA='COOR_X', VALE=3.0,),
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=6.0E-3,
-           VALE_CALC=261.74595658436,
-           VALE_REFE=263.21206094076,
-           NOM_PARA='SIYY',
-           TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.8340299999999998,),
-           )
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.015,
-           VALE_CALC=173.43968316867,
-           VALE_REFE=175.82916193352,
-           NOM_PARA='SIYY',
-           TABLE=S_T,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.3794199999999996,),
-           )
 
 #--------------------------------------------------------------------------------
 #

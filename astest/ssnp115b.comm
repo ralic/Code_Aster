@@ -100,26 +100,22 @@ TEST_RESU(RESU=_F(GROUP_NO='PHAUTG',
                   VALE_CALC=541.56996562397001,),
           )
 
-# SEGMENT VOISIN DE BD
-LBAS=INTE_MAIL_2D(    MAILLAGE=MAIL,
-                        DEFI_SEGMENT=_F(  ORIGINE = ( 10.,  0.1, ),
-                                       EXTREMITE = ( 100.,  0.1, )))
 
-SYYPRT=POST_RELEVE_T(
-      ACTION=_F(  INTITULE = 'SYYBD',
-              CHEMIN = LBAS, RESULTAT = RESUNL,
-             NOM_CMP = 'SIYY', INST = TDEP,
-            NOM_CHAM = 'SIEF_ELNO',
-           OPERATION = 'EXTRACTION')
-            )
+SYYPRT=MACR_LIGN_COUPE(RESULTAT=RESUNL, INST=TDEP,
+                         MODELE=MO,
+                         NOM_CHAM='SIEF_ELNO',
+                         LIGN_COUPE=_F(NB_POINTS=10,  INTITULE='SYYBD',
+                                       NOM_CMP = 'SIYY',
+                                       COOR_ORIG=( 10.0,  0.1,  0.,),
+                                       COOR_EXTR=(100.0,  0.1,  0.,), ),);
 
 
 SYYMLC10=MACR_LIGN_COUPE(RESULTAT=RESUNL,
                          MODELE=MO,
                          NOM_CHAM='SIEF_NOEU',
                          LIGN_COUPE=_F(NB_POINTS=10,
-                                       COOR_ORIG=(10.0,0.1,0.,),
-                                       COOR_EXTR=(100.0,0.1,0.,), ),);
+                                       COOR_ORIG=( 10.0,  0.1,  0.,),
+                                       COOR_EXTR=(100.0,  0.1,  0.,), ),);
 
 SYYML100=MACR_LIGN_COUPE(RESULTAT=RESUNL,
                          MODELE=MO,

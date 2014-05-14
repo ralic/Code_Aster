@@ -17,7 +17,7 @@
 # ======================================================================
 # person_in_charge: patrick.massin at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='NON')
 
 #----------------------------------------------
 #                 MAILLAGE
@@ -245,26 +245,22 @@ for i in range(nb_step) :
     z=z+da*sin((i+1)*beta)
 
 # ON CALCULE LES VALEURS DES LEVEL SET SUR LA DROITE QUI DONNE LA POSITION
-# DU FOND APRES LA PROPAGATION    
-FOND=INTE_MAIL_3D(MAILLAGE=boxRaf,
-                  DEFI_SEGMENT=_F(ORIGINE=(0,y,z),
-                                  EXTREMITE=(4,y,z),),
-                  );
+# DU FOND APRES LA PROPAGATION
 
-TABLSN=POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
-                               CHEMIN=FOND,
-                               CHAM_GD=LSNresu,
-                               TOUT_CMP='OUI',
-                               OPERATION='EXTRACTION',),);
+TABLSN=MACR_LIGN_COUPE(CHAM_GD=LSNresu, MODELE=MODXlast, NOM_CHAM='NEUT',
+                     LIGN_COUPE=(
+                       _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(4,y,z),),
+                    ))
+#IMPR_TABLE(TABLE=TABLSN,UNITE=6)
 
-TABLST=POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
-                               CHEMIN=FOND,
-                               CHAM_GD=LSTresu,
-                               TOUT_CMP='OUI',
-                               OPERATION='EXTRACTION',),); 
+TABLST=MACR_LIGN_COUPE(CHAM_GD=LSTresu, MODELE=MODXlast, NOM_CHAM='TEMP',
+                     LIGN_COUPE=(
+                       _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(4,y,z),),
+                    ))
+#IMPR_TABLE(TABLE=TABLST,UNITE=6)
 
-IMPR_TABLE(TABLE=TABLSN,);
-IMPR_TABLE(TABLE=TABLST,);
+
+
 
 # TOLERANCE SUR LA DIFFERENCE ENTRE LES LEVEL SETS: 15% LONGUEUR ARETE MAILLAGE
 tol=0.15*0.2

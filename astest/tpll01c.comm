@@ -17,7 +17,7 @@
 # ======================================================================
 # CAS TEST TPLL01C
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='NON')
 
 PHI0=DEFI_CONSTANTE(    NOM_RESU='FLUN',  VALE=0.0         )
 
@@ -57,7 +57,7 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
              CHAM_MATER=CHMAT, EXCIT=_F( CHARGE = CHTH)
              )
 
-TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'))
+TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA',))
 
 
 
@@ -131,19 +131,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                 ),
           )
 
-CHEM=INTE_MAIL_2D(   MAILLAGE=MAIL,
-                      DEFI_SEGMENT=_F( ORIGINE = ( 0.04,  0.07, ),
-                                    EXTREMITE = ( 0.07,  0.03, ))
-                   )
 
-TR1_C=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
-                           CHEMIN = CHEM,
-                           RESULTAT = TEMPE,
-                           TRAC_NOR = 'OUI',
-                           NUME_ORDRE=2,
-                           NOM_CHAM='FLUX_ELNO',
-                           NOM_CMP = ( 'FLUX', 'FLUY', ),
-                           OPERATION = 'EXTRACTION')  )
+TR1_C=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLU_NORM',
+                           DISTANCE_MAX=1.e-6, TRAC_NOR='OUI', NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           COOR_ORIG=( 0.04,  0.07, ),
+                           COOR_EXTR=( 0.07,  0.03, ),
+                    )))
 
 TEST_TABLE(VALE_REFE=1200.0,
            VALE_CALC=1200.0017523818,

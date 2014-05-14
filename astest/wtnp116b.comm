@@ -276,20 +276,19 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
 
 #
 # 5. Post-traitement : graphique de la pression et des deplacements
-# 5.1. Un chemin egal au bord GM3
-
-AXE_Y_00=INTE_MAIL_2D(MAILLAGE=MAIL_00,
-                      DEFI_CHEMIN=_F(GROUP_MA='GM3',),);
 #
 # 5.2. Recuperation des valeurs de pression et deplacement longitudinal
 
-V_X_00=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='Dx, DY et P_liqu selon x',
-                               RESULTAT=RESU_00,
-                               NOM_CHAM='DEPL',
-                               INST=400000.0,
-                               CHEMIN=AXE_Y_00,
-                               NOM_CMP=('PRE1','DX','DY',),),);
+V_X_00=MACR_LIGN_COUPE(RESULTAT=RESU_00, NOM_CHAM='DEPL', INST=400000.0,
+                     LIGN_COUPE=(
+                        _F(TYPE='GROUP_NO',    GROUP_NO='GM3',
+                           INTITULE='Dx, DY et P_liqu selon x',
+                           NOM_CMP = ('PRE1','DX','DY',),
+                  )))
+
+
+
+
 # 5.3. Impressions
 #IMPR_TABLE(TABLE=V_X_00,
 #           NOM_PARA=('ABSC_CURV','COOR_X','PRE1','DX','NOEUD',),);
@@ -472,20 +471,16 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
 
 #
 # 9. Post-traitement : graphique de la pression et des deplacements
-# 9.1. Un chemin egal au bord GM3
-
-AXE_Y_01=INTE_MAIL_2D(MAILLAGE=MAIL_01,
-                      DEFI_CHEMIN=_F(GROUP_MA='GM3',),);
 #
 # 9.2. Recuperation des valeurs de pression et deplacement longitudinal
 
-V_X_01=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='Dx, DY et P_liqu selon x',
-                               RESULTAT=RESU_01,
-                               NOM_CHAM='DEPL',
-                               INST=400000.0,
-                               CHEMIN=AXE_Y_01,
-                               NOM_CMP=('PRE1','DX','DY',),),);
+V_X_01=MACR_LIGN_COUPE(RESULTAT=RESU_01, NOM_CHAM='DEPL', INST=400000.0,
+                     LIGN_COUPE=(
+                        _F(TYPE='GROUP_NO',    GROUP_NO='GM3',
+                           INTITULE='Dx, DY et P_liqu selon x',
+                           NOM_CMP = ('PRE1','DX','DY',),
+                  )))
+
 # 9.3. Impressions
 #IMPR_TABLE(TABLE=V_X_01,
 #           NOM_PARA=('ABSC_CURV','COOR_X','PRE1','DX','NOEUD',),);

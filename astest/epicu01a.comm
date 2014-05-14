@@ -539,67 +539,36 @@ SIG = MECA_STATIQUE ( MODELE     = MO_MECA,
                        LIST_INST  = LINST_ME
                      )
 
-CALC_CHAMP(reuse=SIG,RESULTAT=SIG,CONTRAINTE=('SIGM_ELNO'),LIST_INST=LINST_ME,PRECISION=1.0E-6)
+CALC_CHAMP(reuse=SIG,RESULTAT=SIG,CONTRAINTE=('SIGM_ELNO',),LIST_INST=LINST_ME,PRECISION=1.0E-6)
 
-#
-CHEM1=INTE_MAIL_2D ( MAILLAGE = MAIL,
-                     GROUP_MA = 'R',
-                     INFO = 2,
-                     PRECISION = 1.0E-6,
-                     DEFI_SEGMENT  = _F(
-                                        ORIGINE = (2.0013,0.0,),
-                                        GROUP_NO_EXTR = 'PI',
-                                      )
-                   )
-#
-CHEM2=INTE_MAIL_2D ( MAILLAGE = MAIL,
-                     GROUP_MA = 'M',
-                     PRECISION = 1.0E-6,
-                     INFO = 2,
-                     DEFI_SEGMENT  = _F(
-                                        ORIGINE = (2.0015000000000000001,0.0,),
-                                        EXTREMITE = (2.0073,0.0,),
-                                      )
-                   )
-#
-CHEM3=INTE_MAIL_2D ( MAILLAGE = MAIL,
-                     PRECISION = 1.0E-6,
-                     INFO = 2,
-                     DEFI_SEGMENT  = _F(
-                                        ORIGINE = (2.0013,0.0,),
-                                        EXTREMITE = (2.0073,0.0,),
-                                      )
-                   )
-#
-S1_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
-                                 INTITULE = 'GLOBAL1',
-                                 RESULTAT = SIG,
-                                 TOUT_CMP = 'OUI',
-                                 NOM_CHAM = 'SIGM_ELNO',
-                                 LIST_INST = LINST_ME,
-                                 OPERATION = 'EXTRACTION',
-                              )
-                   )
-#
-S2_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM2,
-                                 INTITULE = 'GLOBAL2',
-                                 RESULTAT = SIG,
-                                 TOUT_CMP = 'OUI',
-                                 NOM_CHAM = 'SIGM_ELNO',
-                                 LIST_INST = LINST_ME,
-                                 OPERATION = 'EXTRACTION',
-                              )
-                   )
-#
-TEMP_G=POST_RELEVE_T(  ACTION=_F(CHEMIN = CHEM3,
-                                 INTITULE = 'GLOBAL3',
-                                 RESULTAT = TEMP,
-                                 TOUT_CMP = 'OUI',
-                                 NOM_CHAM = 'TEMP',
-                                 LIST_INST = LINST_TH,
-                                 OPERATION = 'EXTRACTION',
-                              )
-                   )
+S1_G=MACR_LIGN_COUPE(RESULTAT=SIG, LIST_INST = LINST_ME, NOM_CHAM='SIGM_ELNO',
+                  VIS_A_VIS=_F(GROUP_MA_1='R',),
+                  LIGN_COUPE=(
+                     _F(TYPE='SEGMENT', NB_POINTS=2, INTITULE='GLOBAL1',
+                        COOR_ORIG=(2.0013, 0.0,),
+                        COOR_EXTR=(2.0015, 0.0,),
+                 )))
+
+#IMPR_TABLE(TABLE=S1_G, NOM_PARA=('INTITULE','INST','COOR_X','SIXX'),
+#       FILTRE=_F(NOM_PARA='INST', VALE=2.0,))
+
+
+S2_G=MACR_LIGN_COUPE(RESULTAT=SIG, LIST_INST = LINST_ME, NOM_CHAM='SIGM_ELNO',
+                  VIS_A_VIS=_F(GROUP_MA_1='M',),
+                  LIGN_COUPE=(
+                     _F(TYPE='SEGMENT', NB_POINTS=2, INTITULE='GLOBAL2',
+                        COOR_ORIG=(2.0015, 0.0,),
+                        COOR_EXTR=(2.0073, 0.0,),
+                 )))
+
+
+
+TEMP_G=MACR_LIGN_COUPE(RESULTAT=TEMP, LIST_INST = LINST_TH, NOM_CHAM='TEMP',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=10, INTITULE='GLOBAL3',
+                           COOR_ORIG=(2.0013, 0.0,),
+                           COOR_EXTR=(2.0073, 0.0,),
+                    )))
 
 #===== 4 - POST-TRAITEMENT : CALCUL DES FACTEURS D'INTENSITE  ==========
 #=====     DE CONTRAINTES PAR LA METHODE K-BETA               ==========

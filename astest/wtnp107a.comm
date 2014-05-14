@@ -342,10 +342,6 @@ U0=CALC_CHAMP(reuse=U0,RESULTAT=U0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_
 
 #---------------------------------------------------------------------
 
-ZMP=INTE_MAIL_2D (MAILLAGE=MAIL,
-               DEFI_CHEMIN=_F(GROUP_MA='BAS',),);
-
-
 
 TEST_RESU(RESU=_F(INST=250.0,
                   RESULTAT=U0,

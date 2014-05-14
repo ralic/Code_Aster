@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS TEST TPLL01A
-DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='NON',)
 
 ACIER=DEFI_MATERIAU(  THER=_F(  LAMBDA = 0.75, RHO_CP = 2.0))
 
@@ -49,7 +49,7 @@ TEMPE=THER_LINEAIRE(   MODELE=MOTH,
                        )
 
 
-TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,NUME_ORDRE=0,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'))
+TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,NUME_ORDRE=0,THERMIQUE=('FLUX_ELNO','FLUX_ELGA','FLUX_NOEU',))
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=0,
@@ -125,26 +125,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
 #----------------------------------------------------------------------
 # VALIDATION DE TRAC_NOR DE LA COMMANDE POST_RELEVE_T:
 #
-# CHEMIN ORIENTE DE E VERS D, LA NORMALE VERS L'EXTERIEUR DU DOMAINE
-# --------------------------
 
-CHEM_1=INTE_MAIL_2D(   MAILLAGE=MAIL,
-                         DEFI_SEGMENT=_F( ORIGINE = ( 0.04,  0.07, ),
-                                       EXTREMITE = ( 0.07,  0.03, )),
-                           INFO=2
-                       )
-
-FLUX_G=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_GLO',
-                           CHEMIN = CHEM_1,
-                           RESULTAT = TEMPE,
-                           NUME_ORDRE=0,
-                           NOM_CHAM='FLUX_ELNO',
-                           NOM_CMP = ( 'FLUX', 'FLUY', ),
-                           REPERE = 'GLOBAL',
-                           OPERATION = 'EXTRACTION')  )
-
-IMPR_TABLE(   TABLE=FLUX_G,
-              NOM_PARA=( 'ABSC_CURV', 'FLUX', 'FLUY', )  )
+FLUX_G=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLUX_GLO',
+                           NOM_CMP = ( 'FLUX', 'FLUY', ), DISTANCE_MAX=1.e-5,
+                           COOR_ORIG=( 0.04,  0.07, ),
+                           COOR_EXTR=( 0.07,  0.03, ),
+                    )))
 
 TEST_TABLE(VALE_REFE=960.0,
            VALE_CALC=959.9999476655,
@@ -171,21 +159,22 @@ TEST_TABLE(VALE_REFE=720.0,
 # CALCUL DANS LE REPERE LOCAL :
 # ---------------------------
 
-FLUX_L=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_LOC',
-                           CHEMIN = CHEM_1,
-                           RESULTAT = TEMPE,
-                           NUME_ORDRE=0,
-                           NOM_CHAM='FLUX_ELNO',
-                           NOM_CMP = ( 'FLUX', 'FLUY', ),
-                           REPERE = 'LOCAL',
-                           OPERATION = 'EXTRACTION')  )
 
-IMPR_TABLE(   TABLE=FLUX_L,
-              NOM_PARA=( 'ABSC_CURV', 'FLUX', 'FLUY', )  )
+FLUX_L=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_NOEU',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLUX_LOC',
+                           NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           DISTANCE_MAX=1.e-5, REPERE='LOCAL',  VECT_Y=(0., 1., 0.),
+                           COOR_ORIG=( 0.04,  0.07, ),
+                           COOR_EXTR=( 0.07,  0.03, ),
+                    )))
+#IMPR_TABLE(TABLE=FLUX_L)
+
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE=0.0,
-           VALE_CALC=5.5723224704707E-05,
+           ORDRE_GRANDEUR=1000.,
+           VALE_CALC=0.,
+           VALE_REFE=0.,
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
            NOM_PARA='FLUX',
@@ -205,18 +194,17 @@ TEST_TABLE(VALE_REFE=1200.0,
            )
 
 #
-# LES RESULTATS DOIVENT ETRE IDENTIQUE AU REPERE LOCAL
+# LES RESULTATS DOIVENT ETRE IDENTIQUES AU REPERE LOCAL
 # CALCUL PAR LA TRAC_NORMALE :
 # --------------------------
 
-FLUX_N=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_NOR',
-                           CHEMIN = CHEM_1,
-                           RESULTAT = TEMPE,
-                           NUME_ORDRE=0,
-                           NOM_CHAM='FLUX_ELNO',
-                           TRAC_NOR = 'OUI',
-                           NOM_CMP = ( 'FLUX', 'FLUY', ),
-                           OPERATION = 'EXTRACTION')  )
+FLUX_N=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLUX_NOR',
+                           NOM_CMP = ( 'FLUX', 'FLUY', ), DISTANCE_MAX=1.e-5, TRAC_NOR='OUI',
+                           COOR_ORIG=( 0.04,  0.07, ),
+                           COOR_EXTR=( 0.07,  0.03, ),
+                    )))
 
 TEST_TABLE(VALE_REFE=1200.0,
            VALE_CALC=1199.9999286301,
@@ -291,23 +279,18 @@ TEST_TABLE(VALE_REFE=1200.0,
                      VALE=0.050000000000000003,),
            )
 
+
 # CHEMIN ORIENTE DE D VERS E, LA NORMALE VERS L'INTERIEUR DU DOMAINE
-# --------------------------
+# -------------------------------------------------------------------
 
-CHEM_2=INTE_MAIL_2D(   MAILLAGE=MAIL,
-                         DEFI_SEGMENT=_F( ORIGINE = ( 0.07,  0.03, ),
-                                       EXTREMITE = ( 0.04,  0.07, )),
-                          INFO=2
-                      )
+TR1_C2=MACR_LIGN_COUPE(RESULTAT=TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='FLU_NORM',
+                           DISTANCE_MAX=1.e-6, TRAC_NOR='OUI', NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           COOR_ORIG=( 0.07,  0.03, ),
+                           COOR_EXTR=( 0.04,  0.07, ),
+                    )))
 
-TR1_C2=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
-                           CHEMIN = CHEM_2,
-                           RESULTAT = TEMPE,
-                           NUME_ORDRE=0,
-                           NOM_CHAM='FLUX_ELNO',
-                           TRAC_NOR = 'OUI',
-                           NOM_CMP = ( 'FLUX', 'FLUY', ),
-                           OPERATION = 'EXTRACTION')  )
 
 TEST_TABLE(VALE_REFE=-1200.0,
            VALE_CALC=-1199.9999522298,

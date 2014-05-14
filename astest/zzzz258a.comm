@@ -39,7 +39,7 @@
 #        'RIEN'             ->   'VMIS_CINE_LINE'  (AJOUT D'ELEMENTS)
 
 #-----------------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'), IMPR_MACRO='NON',)
 
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED', )
@@ -196,7 +196,7 @@ CH1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=MAIL, INFO=2,
                     ))
 # dans le sens trigo, on doit retrouver 1. pour ABSC_CURV=1.
 MAIL=DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, DETR_GROUP_NO=_F(NOM='BORD'))
-TB1=MACR_LIGN_COUPE( CHAM_GD= CH1,  MODELE=MOMEC2,  NOM_CHAM='TEMP',
+TB1=MACR_LIGN_COUPE( CHAM_GD= CH1,  MODELE=MOMEC2,
                      LIGN_COUPE = _F( TYPE='GROUP_MA',  MAILLAGE=MAIL, GROUP_MA='BORD',
                                       GROUP_NO_ORIG='A', GROUP_NO_EXTR='A', VECT_ORIE=(1.,0.)
                                     ))
@@ -211,7 +211,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # dans le sens anti-trigo, on doit retrouver 2. pour ABSC_CURV=1.
 MAIL=DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, DETR_GROUP_NO=_F(NOM='BORD'))
-TB2=MACR_LIGN_COUPE( CHAM_GD= CH1,  MODELE=MOMEC2,  NOM_CHAM='TEMP',
+TB2=MACR_LIGN_COUPE( CHAM_GD= CH1,  MODELE=MOMEC2,
                      LIGN_COUPE = _F( TYPE='GROUP_MA',  MAILLAGE=MAIL, GROUP_MA='BORD',
                                       GROUP_NO_ORIG='A', GROUP_NO_EXTR='A', VECT_ORIE=(0.,1.)
                                     ))

@@ -45,8 +45,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE();
 
-DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
+DEFI_GROUP(reuse =MA, MAILLAGE=MA,
               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
@@ -195,13 +194,11 @@ IMPR_FONCTION(UNITE=30,
 IMPR_RESU(MODELE=MOTHER,FORMAT='CASTEM',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=TEMPE,
-                  INST=(0.10000000000000001,4.0,10.0,),),);
+                  INST=(0.1, 4.0, 10.0,),),);
 
-LBAS=INTE_MAIL_2D(MAILLAGE=MA,
-                  DEFI_CHEMIN=_F(GROUP_MA='BAS',),);
 
 T1LBAS=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP',
-                               CHEMIN=LBAS,
+                               GROUP_NO='BAS',
                                RESULTAT=TEMPE,
                                NOM_CHAM='TEMP',
                                INST=4.0,
@@ -210,7 +207,7 @@ T1LBAS=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP',
                      TITRE='TEMPERATURES EN BAS A 4 S NON DIAG',);
 
 T2LBAS=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP',
-                               CHEMIN=LBAS,
+                               GROUP_NO='BAS',
                                RESULTAT=TEMPE2,
                                NOM_CHAM='TEMP',
                                INST=4.0,

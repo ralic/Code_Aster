@@ -403,20 +403,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=29,
 ## DONNEES POUR COURBES DOC V
 ####################################
 
-AXE_COUP=INTE_MAIL_2D(MAILLAGE=MA,
-                    DEFI_SEGMENT=_F(  ORIGINE = ( 0., 51., ),
-                                       EXTREMITE = ( 0.,  -150., ),
-                                       ),
-                    PRECISION=0.0000001,
-                                       );
-
-V_X_01=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='PRE1 selon y',
-                               RESULTAT=U_1,
-                               NOM_CHAM='DEPL',
-                               TOUT_ORDRE='OUI',
-                               CHEMIN=AXE_COUP,
-                               NOM_CMP=('PRE1',),),);
+V_X_01=MACR_LIGN_COUPE(RESULTAT=U_1, NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=10, INTITULE='PRE1 selon y',
+                           NOM_CMP = ( 'PRE1', ),
+                           COOR_ORIG= ( 0.,    51., ),
+                           COOR_EXTR= ( 0.,  -150., ),
+                    )))
 
 IMPR_TABLE(TABLE=V_X_01,
            FORMAT='TABLEAU_CROISE',

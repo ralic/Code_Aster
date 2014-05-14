@@ -124,8 +124,8 @@ UN=DEFI_CONSTANTE(    VALE=1.,);
 ZERO=DEFI_CONSTANTE(    VALE=0.,);
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=(_F(JUSQU_A=1.E6,  PAS=1.E5,),                 
-                                 _F(JUSQU_A=1.E7,  PAS=1.E5,),         
+                    INTERVALLE=(_F(JUSQU_A=1.E6,  PAS=1.E5,),
+                                 _F(JUSQU_A=1.E7,  PAS=1.E5,),
                                  _F(JUSQU_A=1.E8,  PAS=1.E6,),)
                    );
 
@@ -402,53 +402,40 @@ RESULIN = PROJ_CHAMP(
                MODELE_2=MODELIN,
                NOM_CHAM ='DEPL',
                )
-MILIEU=INTE_MAIL_2D(MAILLAGE=MAILIN,
-                    DEFI_SEGMENT=_F(  ORIGINE = ( 0.,  -450., ),
-                                       EXTREMITE = ( 10.,  -450., ))
-                                       )
-TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=MILIEU,
-                            RESULTAT=RESULIN,
-                            NOM_CHAM='DEPL',
-                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
-                            NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
-MILQUA=INTE_MAIL_2D(MAILLAGE=MAIL,
-                    DEFI_SEGMENT=_F(  ORIGINE = ( 0.,  -450., ),
-                                       EXTREMITE = ( 10.,  -450., ))
-                                       )
-TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=MILQUA,
-                            RESULTAT=RESU0,
-                            NOM_CHAM='VARI_ELNO',
-                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
-                            NOM_CMP=('V3'),
-                            OPERATION='EXTRACTION',),);
 
 
-VERT=INTE_MAIL_2D(MAILLAGE=MAILIN,
-                  PRECISION=1.E-4,
-                  DEFI_SEGMENT=_F(ORIGINE = ( 7.,  -400., ),
-                                  EXTREMITE = ( 7.,  -500., )));
-TRVB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=VERT,
-                            RESULTAT=RESULIN,
-                            NOM_CHAM='DEPL',
-                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
-                            NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
+TRB=MACR_LIGN_COUPE(RESULTAT=RESULIN, NUME_ORDRE=(1,2,5,7,9,14,24,34), NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='DEPL',
+                           NOM_CMP = ( 'PRE1', ),
+                           COOR_ORIG=( 0.,  -450., ),
+                           COOR_EXTR=(10.,  -450., ),
+                    )))
 
-VERQUA=INTE_MAIL_2D(MAILLAGE=MAIL,
-                  PRECISION=1.E-4,
-                  DEFI_SEGMENT=_F(ORIGINE = ( 7.,  -400., ),
-                                  EXTREMITE = ( 7.,  -500., )));
-TRVV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=VERQUA,
-                            RESULTAT=RESU0,
-                            NOM_CHAM='VARI_ELNO',
-                  NUME_ORDRE=(1,2,5,7,9,14,19,24),
-                            NOM_CMP=('V3'),
-                            OPERATION='EXTRACTION',),);
+TRV=MACR_LIGN_COUPE(RESULTAT=RESU0, NUME_ORDRE=(1,2,5,7,9,14,24,34), NOM_CHAM='VARI_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='VARI_ELNO',
+                           NOM_CMP = ( 'V3', ),
+                           COOR_ORIG=( 0.,  -450., ),
+                           COOR_EXTR=(10.,  -450., ),
+                    )))
+
+
+TRVB=MACR_LIGN_COUPE(RESULTAT=RESULIN, NUME_ORDRE=(1,2,5,7,9,14,24,34), NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='DEPL',
+                           NOM_CMP = ( 'PRE1', ),
+                           COOR_ORIG=( 7.,  -400., ),
+                           COOR_EXTR=( 7.,  -500., ),
+                    )))
+
+TRVV=MACR_LIGN_COUPE(RESULTAT=RESU0, NUME_ORDRE=(1,2,5,7,9,14,24,34), NOM_CHAM='VARI_ELNO',
+                     LIGN_COUPE=(
+                        _F(TYPE='SEGMENT', NB_POINTS=5, INTITULE='VARI_ELNO',
+                           NOM_CMP = ( 'V3', ),
+                           COOR_ORIG=( 7.,  -400., ),
+                           COOR_EXTR=( 7.,  -500., ),
+                    )))
 
 #
 #  NO1496 (5.014; -450.) et NO1059 (+7 ; -450)

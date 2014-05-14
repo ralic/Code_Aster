@@ -22,10 +22,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 maillage=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(APLAT=1.E-3,),);
 
-maillage=DEFI_GROUP(reuse =maillage,
-                    MAILLAGE=maillage,
-                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
-
 modmeca=AFFE_MODELE(MAILLAGE=maillage,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
@@ -93,18 +89,12 @@ RESU=CALC_CHAMP(reuse =RESU,
 
              );
 
-LH=INTE_MAIL_2D(MAILLAGE=maillage,
-                DEFI_CHEMIN=_F(GROUP_MA='L2',),);
 
-TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
-                                 CHEMIN=LH,
-                                 RESULTAT=RESU,
-                                 NOM_CHAM='FORC_NODA',
-                                 LIST_INST=L_INST,
-                                 RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+TAB_FORC=MACR_LIGN_COUPE(RESULTAT=RESU, LIST_INST=L_INST,  NOM_CHAM='FORC_NODA',
+                       LIGN_COUPE = _F(TYPE='GROUP_MA',  MAILLAGE=maillage, RESULTANTE='DY',
+                                      OPERATION='EXTRACTION', GROUP_MA='L2', INTITULE='FORCE',))
 
-IMPR_TABLE(TABLE=TAB_FORC)
+
 
 FYA=RECU_FONCTION(TABLE=TAB_FORC,
                   PARA_X='INST',

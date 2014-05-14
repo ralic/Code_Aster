@@ -27,10 +27,6 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 #  LISTE DES INSTANTS DE CALCUL
 #
 
-LBA=INTE_MAIL_3D(MAILLAGE=MAIL,
-               TOUT='OUI',
-               DEFI_SEGMENT=_F(NOEUD_ORIG='N1',
-                               NOEUD_EXTR='N192',),);
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=1.E7,
@@ -345,30 +341,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
 
 U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U0)
 
-
-TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=LBA,
-                            RESULTAT=U0,
-                            NOM_CHAM='DEPL',
-                            NUME_ORDRE=(1,10,11,20),
-                            NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
-
-TRB11=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            CHEMIN=LBA,
-                            RESULTAT=U0,
-                            NOM_CHAM='DEPL',
-                            NUME_ORDRE=(11),
-                            NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
-
-TRB2=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
-                             CHEMIN=LBA,
-                             RESULTAT=U0,
-                             NOM_CHAM='SIEF_ELNO',
-
-                             NOM_CMP=('M11','FH11X','FH11Y','FH11Z'),
-                             OPERATION='EXTRACTION',),);
 
 ZTRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              NOEUD=('N203','N199','N10','N186','N178','N174','N166'),

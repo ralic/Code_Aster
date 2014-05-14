@@ -1,8 +1,4 @@
 *----------------------------------------------
-*
-*              Validation de INTE_MAIL_2D
-*
-*----------------------------------------------
 opti dime 2 elem TRI3 ;
 *
 b11  =  0.  0.  ;
@@ -65,7 +61,7 @@ b4b3 = droit nbb2 b24 b23 ;
 b3bb = cerc 1 b23 cen bb ;
 bbb2 = droit nbb  bb b22 ;
 b3b2 = b3bb et bbb2 ;
-elim 0.001 b3b2 ; 
+elim 0.001 b3b2 ;
 cont = b2b5 et b5b4 et b4b3 et b3b2 ;
 trac cont;
 *opti donn 5;
@@ -86,7 +82,7 @@ P1 =  0.894235   1.4324 ;
 P2 =  4.8854     1.1144 ;
 *
 sort sb0 ;
-opti sauv format 
+opti sauv format
  '/home/F94730/zzzz125a.mgib' ;
  sauv format ( sb0 et A et C et P1 et P2 )  ;
 *

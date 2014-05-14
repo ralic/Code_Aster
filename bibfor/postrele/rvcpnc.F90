@@ -223,7 +223,8 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 !
 !      /* LA NORMALE N' EST CALCULEE QUE POUR (X,Y) */
 !
-        if ((option .eq. 'FLUX_ELNO') .or. (option .eq. 'FLUX_NOEU_DEPL')) then
+        if ((option .eq. 'FLUX_ELNO') .or. (option .eq. 'FLUX_NOEU_DEPL')&
+             .or. (option .eq. 'FLUX_NOEU')) then
             call wkvect(nomojb, 'V V K8', 3, avk8)
             do i = 1, 3, 1
                 zk8(avk8 + i-1) = zk8(acpgd + i-1)

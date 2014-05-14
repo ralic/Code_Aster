@@ -583,7 +583,9 @@ LINST_ME = DEFI_LIST_REEL (
 # FIN PARAM
                           )
 )
+
 # 3.6.2 RESOLUTION
+#-------------------
 
 
 SIG = MECA_STATIQUE ( MODELE     = MO_MECA,
@@ -596,65 +598,32 @@ SIG = MECA_STATIQUE ( MODELE     = MO_MECA,
 
 CALC_CHAMP(reuse=SIG,RESULTAT=SIG,CONTRAINTE=('SIGM_ELNO'),LIST_INST=LINST_ME,PRECISION=1.0E-6)
 
-#
-CHEM1=INTE_MAIL_3D ( MAILLAGE = MAIL,
-                     GROUP_MA = 'R',
-                     INFO = 2,
-                     PRECISION = 1.0E-6,
-                     DEFI_SEGMENT  = _F(
-                                        ORIGINE = (2.0013,0.0,0.0030),
-                                        EXTREMITE = (2.0014999999999999,0.0,0.0030),
-                                      )
-                   )
-#
-CHEM2=INTE_MAIL_3D ( MAILLAGE = MAIL,
-                     GROUP_MA = 'M',
-                     PRECISION = 1.0E-6,
-                     INFO = 2,
-                     DEFI_SEGMENT  = _F(
-                                        ORIGINE = (2.0015000000000000001,0.0,0.0030),
-                                        EXTREMITE = (2.0073,0.0,0.0030),
-                                      )
-                   )
-#
-CHEM3=INTE_MAIL_3D ( MAILLAGE = MAIL,
-                     PRECISION = 1.0E-6,
-                     INFO = 2,
-                     DEFI_SEGMENT  = _F(
-                                        ORIGINE = (2.0013,0.0,0.0030),
-                                        EXTREMITE = (2.0073,0.0,0.0030),
-                                      )
-                   )
-#
-S1_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
-                                 INTITULE = 'GLOBAL1',
-                                 RESULTAT = SIG,
-                                 TOUT_CMP = 'OUI',
-                                 NOM_CHAM = 'SIGM_ELNO',
-                                 LIST_INST = LINST_ME,
-                                 OPERATION = 'EXTRACTION',
-                              )
-                   )
-#
-S2_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM2,
-                                 INTITULE = 'GLOBAL2',
-                                 RESULTAT = SIG,
-                                 TOUT_CMP = 'OUI',
-                                 NOM_CHAM = 'SIGM_ELNO',
-                                 LIST_INST = LINST_ME,
-                                 OPERATION = 'EXTRACTION',
-                              )
-                   )
-#
-TEMP_G=POST_RELEVE_T(  ACTION=_F(CHEMIN = CHEM3,
-                                 INTITULE = 'GLOBAL3',
-                                 RESULTAT = TEMP,
-                                 TOUT_CMP = 'OUI',
-                                 NOM_CHAM = 'TEMP',
-                                 LIST_INST = LINST_TH,
-                                 OPERATION = 'EXTRACTION',
-                              )
-                   )
+
+# 3.6.3 releve des valeurs :
+#----------------------------
+S1_G=MACR_LIGN_COUPE(RESULTAT=SIG, LIST_INST = LINST_ME, NOM_CHAM='SIGM_ELNO',
+                     VIS_A_VIS=_F(GROUP_MA_1='R',),
+                     LIGN_COUPE=(
+                       _F(TYPE='SEGMENT', NB_POINTS=2,INTITULE = 'GLOBAL1',
+                          COOR_ORIG=(2.0013,  0.0,  0.0030),
+                          COOR_EXTR=(2.0015,  0.0,  0.0030),
+                    )))
+
+S2_G=MACR_LIGN_COUPE(RESULTAT=SIG, LIST_INST = LINST_ME, NOM_CHAM='SIGM_ELNO',
+                     VIS_A_VIS=_F(GROUP_MA_1='M',),
+                     LIGN_COUPE=(
+                       _F(TYPE='SEGMENT', NB_POINTS=2, INTITULE = 'GLOBAL2',
+                          COOR_ORIG=(2.0015,  0.0,  0.0030),
+                          COOR_EXTR=(2.0073,  0.0,  0.0030),
+                    )))
+
+TEMP_G=MACR_LIGN_COUPE(RESULTAT=TEMP, LIST_INST = LINST_TH, NOM_CHAM='TEMP',
+                     LIGN_COUPE=(
+                       _F(TYPE='SEGMENT', NB_POINTS=2, INTITULE = 'GLOBAL3',
+                          COOR_ORIG=(2.0013,  0.0,  0.0030),
+                          COOR_EXTR=(2.0073,  0.0,  0.0030),
+                    )))
+
 
 #===== 4 - POST-TRAITEMENT : CALCUL DES FACTEURS D'INTENSITE  ==========
 #=====     DE CONTRAINTES PAR LA METHODE K-BETA               ==========
@@ -824,7 +793,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.014999999999999999,
-           VALE_CALC=84.926371117,
+           VALE_CALC= 84.9267824877,
            VALE_REFE=84.879999999999995,
            NOM_PARA='TEMPPF_REV',
            TABLE=TB_KBETA,
@@ -854,12 +823,11 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.014999999999999999,
-           VALE_CALC=86.082616569,
+           VALE_CALC=86.0964046425,
            VALE_REFE=86.040000000000006,
            NOM_PARA='TEMPPF_MDB',
            TABLE=TB_KBETA,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3871.0,),
            )
-
 FIN();

@@ -34,10 +34,15 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # ----------------------------------------------------------------------
 MA=LIRE_MAILLAGE(  )
 
-DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
-#      TRIA3  QUAD4  TRIA6  QUAD8  QUAD9
+DEFI_GROUP( reuse=MA, MAILLAGE=MA,
+                   CREA_GROUP_MA=(
+                        _F(  NOM = 'TOUT', TOUT = 'OUI'),
+                        _F(  NOM = 'CHEM1', MAILLE = ('M99', 'M147', 'M148', 'M100',)),
+                   ),
+                   CREA_GROUP_NO=(
+                        _F(  NOM = 'CHEM1', GROUP_MA = 'CHEM1'),
+                   ))
 
 MO=AFFE_MODELE(    MAILLAGE=MA,
                          AFFE=_F(  TOUT = 'OUI',
@@ -1289,79 +1294,77 @@ FO25=CALC_FONCTION(    ENVELOPPE=_F(  FONCTION = ( FO10, FO11, FO12, ),
 FO26=CALC_FONCTION(    ENVELOPPE=_F(  FONCTION = ( FO11, FO12, ),
                                      CRITERE = 'SUP') )
 
-CHEM1=INTE_MAIL_2D(        MAILLAGE=MA,
-                          DEFI_CHEMIN=_F(  MAILLE = ('M99', 'M147', 'M148', 'M100',)),
-                            PRECISION=1.E-05 )
+TABLE3A=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                INTITULE='TABLE_3A',
+                                RESULTAT=MSLI2,
+                                NOM_CHAM='EPSI_ELNO',
+                                NUME_ORDRE=2,
+                                CRITERE='RELATIF',
+                                PRECISION=1.E-05,
+                                NOEUD=('N109','N110','N111','N104','N103',),
+                                NOM_CMP=('EPXX','EPXY',),
+                                REPERE='LOCAL',
+                                TRAC_DIR='OUI',
+                                DIRECTION=(0.5,0.6,0.3,),),
+                              ))
 
-TABLE3=POST_RELEVE_T( ACTION=(   _F(  NOEUD = ( 'N109', 'N110', 'N111',
-                                                      'N104', 'N103', ),
-                                    RESULTAT = MSLI2,
-                                    NOM_CHAM = 'EPSI_ELNO',
-                                    NUME_ORDRE = 2,
-                                    PRECISION = 1.E-05,
-                                    CRITERE = 'RELATIF',
-                                    NOM_CMP = ('EPXX', 'EPXY',),
-                                    REPERE = 'LOCAL',
-                                    TRAC_DIR = 'OUI',
-                                    DIRECTION = (0.5, 0.6, 0.3,),
-                                    INTITULE = 'TABLE_3A',
-                                    OPERATION = 'EXTRACTION'),
-                           _F(  CHEMIN = CHEM1,
-                                    CHAM_GD = CHAMNO1,
-                                    RESULTANTE = ('DY', 'DX',),
-                                    INTITULE = 'TABLE_3B',
-                                    OPERATION = 'MOYENNE',
-                                    MOYE_NOEUD = 'NON')) )
 
-ENGENDRE_TEST (  CO=TABLE3, )
+TABLE3B=MACR_LIGN_COUPE(CHAM_GD = CHAMNO1, MODELE=MO, NOM_CHAM='DEPL',
+                     LIGN_COUPE=(
+                        _F(INTITULE='TABLE_3B',
+                           RESULTANTE = ('DY', 'DX',),
+                           OPERATION = 'MOYENNE',
+                           TYPE='GROUP_NO',GROUP_NO='CHEM1',),
+                       ))
+
 
 TEST_TABLE(
            VALE_CALC=38.523164553821999,
            NOM_PARA='DX',
            TYPE_TEST='SOMM_ABS',
-           TABLE=TABLE3,
+           TABLE=TABLE3B,
            )
 
 TEST_TABLE(
            VALE_CALC=285.84042059185998,
            NOM_PARA='DY',
            TYPE_TEST='SOMM_ABS',
-           TABLE=TABLE3,
+           TABLE=TABLE3B,
            )
 
 TEST_TABLE(
            VALE_CALC=-20.772856857752998,
            NOM_PARA='TR_DIR_1',
            TYPE_TEST='SOMM',
-           TABLE=TABLE3,
+           TABLE=TABLE3A,
            )
 
 TEST_TABLE(
            VALE_CALC=25.878608006284001,
            NOM_PARA='TR_DIR_2',
            TYPE_TEST='SOMM_ABS',
-           TABLE=TABLE3,
+           TABLE=TABLE3A,
            )
 
 TEST_TABLE(
            VALE_CALC=3.2916534275339,
            NOM_PARA='TR_DIR_2',
            TYPE_TEST='MAX',
-           TABLE=TABLE3,
+           TABLE=TABLE3A,
            )
 
 TEST_TABLE(
            VALE_CALC=-8.3338365704933004,
            NOM_PARA='TR_DIR_2',
            TYPE_TEST='MIN',
-           TABLE=TABLE3,
+           TABLE=TABLE3A,
            )
 
 TEST_TABLE(
            VALE_CALC=-6.3496256810088001,
            NOM_PARA='TR_DIR_3',
            TYPE_TEST='SOMM',
-           TABLE=TABLE3,
+           TABLE=TABLE3A,
            )
 
 FIN( )

@@ -118,10 +118,11 @@ MAIL_00=CREA_MAILLAGE(MAILLAGE=MAIL_AUX,
 # 2.3.Creation de groupes de noeuds
 # 'POURTEST' : noeud au centre pour les TEST_RESU
 
-MAIL_00=DEFI_GROUP(reuse =MAIL_00,
-                   MAILLAGE=MAIL_00,
-                   CREA_GROUP_NO=_F(NOEUD='N14',
-                                    NOM='POURTEST',),);
+DEFI_GROUP(reuse =MAIL_00,  MAILLAGE=MAIL_00,
+           CREA_GROUP_NO=(
+              _F(NOEUD='N14',    NOM='POURTEST',),
+            # _F(GROUP_MA='GM3', NOM='GM3',),
+           ))
 #
 # 3. Calcul en hydro-mecanique permanent sur le maillage 0
 # 3.1. Application du modele et orientation des mailles de bord
@@ -256,27 +257,26 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
 
 #
 # 5. Post-traitement : graphique de la pression et des deplacements
-# 5.1. Un chemin egal au bord GM3
-
-AXE_Y_00=INTE_MAIL_2D(MAILLAGE=MAIL_00,
-                      DEFI_CHEMIN=_F(GROUP_MA='GM3',),);
 #
 # 5.2. Recuperation des valeurs de pression et deplacement longitudinal
-V_X_00=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='Dx et P_liqu selon x',
-                               RESULTAT=RESU_00,
-                               NOM_CHAM='DEPL',
-                               INST=400000.0,
-                               CHEMIN=AXE_Y_00,
-                               NOM_CMP=('PRE1','DX',),),);
+V_X_00=MACR_LIGN_COUPE(RESULTAT=RESU_00, NOM_CHAM='DEPL', INST=400000.0,
+                     LIGN_COUPE=(
+                        _F(TYPE='GROUP_MA',  MAILLAGE=MAIL_00, GROUP_MA='GM3',
+                           INTITULE='Dx et P_liqu selon x',
+                           NOM_CMP = ('PRE1','DX',),
+                           NOEUD_ORIG='N1',
+                           NOEUD_EXTR='N2',
+                  )))
 
-E_X_00=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='Erreur selon x',
-                               RESULTAT=RESU_00,
-                               NOM_CHAM='ERME_NOEU',
-                               INST=400000.0,
-                               CHEMIN=AXE_Y_00,
-                               NOM_CMP='ESTERG1',),);
+
+E_X_00=MACR_LIGN_COUPE(RESULTAT=RESU_00, NOM_CHAM='ERME_NOEU', INST=400000.0,
+                     LIGN_COUPE=(
+                        _F(TYPE='GROUP_MA',  MAILLAGE=MAIL_00, GROUP_MA='GM3',
+                           NOM_CMP = ('ESTERG1',),
+                           NOEUD_ORIG='N1',
+                           NOEUD_EXTR='N2',
+                  )))
+
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=9.8767995015433003E-31,
@@ -287,19 +287,16 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 # 5.3. Impressions
-#IMPR_TABLE(TABLE=V_X_00,
 #           NOM_PARA=('ABSC_CURV','COOR_X','PRE1','DX','NOEUD',),);
 #
 #IMPR_TABLE(TABLE=E_X_00,
 #           NOM_PARA=('ABSC_CURV','COOR_X','ESTER_G1','NOEUD',),);
-#IMPR_TABLE(TABLE=V_X_00,
 #           FORMAT='XMGRACE',
 #           UNITE=25,
 #           NOM_PARA=('COOR_X','PRE1',),
 #           LEGENDE_X='Hauteur',
 #           LEGENDE_Y='Pression',
 #           TITRE='Pression en fonction de la hauteur',);
-#IMPR_TABLE(TABLE=V_X_00,
 #           FORMAT='XMGRACE',
 #           UNITE=26,
 #           NOM_PARA=('COOR_X','DX',),
@@ -436,19 +433,17 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
 
 #
 # 9. Post-traitement : graphique de la pression et des deplacements
-# 9.1. Un chemin egal au bord GM3
-AXE_Y_01=INTE_MAIL_2D(MAILLAGE=MAIL_01,
-                      DEFI_CHEMIN=_F(GROUP_MA='GM3',),);
 #
 # 9.2. Recuperation des valeurs de pression et deplacement longitudinal
 
-V_X_01=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='Dx et P_liqu selon x',
-                               RESULTAT=RESU_01,
-                               NOM_CHAM='DEPL',
-                               INST=400000.0,
-                               CHEMIN=AXE_Y_01,
-                               NOM_CMP=('PRE1','DX',),),);
+V_X_01=MACR_LIGN_COUPE(RESULTAT=RESU_01, NOM_CHAM='DEPL', INST=400000.0,
+                     LIGN_COUPE=(
+                        _F(TYPE='GROUP_MA',  MAILLAGE=MAIL_00, GROUP_MA='GM3',
+                           INTITULE='Dx et P_liqu selon x',
+                           NOM_CMP = ('PRE1','DX',),
+                           NOEUD_ORIG='N1',
+                           NOEUD_EXTR='N2',
+                  )))
 # 9.3. Impressions
 #IMPR_TABLE(TABLE=V_X_01,
 #           NOM_PARA=('ABSC_CURV','COOR_X','PRE1','DX','NOEUD',),);
