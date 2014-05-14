@@ -10,6 +10,7 @@ waf install -p -j 8
 """
 
 import ivanoe
+ASTER_ROOT = ivanoe.ASTER_ROOT
 YAMMROOT = ivanoe.YAMMROOT
 
 def configure(self):

@@ -10,6 +10,7 @@ waf install -p
 """
 
 import aster4
+ASTER_ROOT = aster4.ASTER_ROOT
 YAMMROOT = aster4.YAMMROOT
 
 def configure(self):

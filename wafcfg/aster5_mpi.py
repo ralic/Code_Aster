@@ -10,6 +10,7 @@ waf_mpi install -p
 """
 
 import aster5
+ASTER_ROOT = aster5.ASTER_ROOT
 YAMMROOT = aster5.YAMMROOT
 
 def configure(self):
