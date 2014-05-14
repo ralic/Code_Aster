@@ -198,7 +198,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    RESULTAT=MODE_2,
 # TOLE_MACHINE: Mauvais conditionnement de la matrice (1E+12)
                    TOLE_MACHINE = 6.E-6, 
-                   VALE_CALC=1.78712,
+                   VALE_CALC=1.78711,
                    VALE_REFE=1.75,
                    CRITERE='RELATIF',
                    PRECISION=0.023,),

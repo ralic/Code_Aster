@@ -322,7 +322,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='DEPL',
                   NOEUD='NO8',
                   NOM_CMP='DX',
-                  VALE_CALC=0.0301942354937,
+                  VALE_CALC=0.030194228316090,
                   ),
           )
 
@@ -331,8 +331,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='SIGM_NOEU',
                   NOEUD='NO8',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-11940519.1452,
-                  TOLE_MACHINE=1.e-5,
+                  VALE_CALC=-1.194050238299E+07,
                   ),
           )
 

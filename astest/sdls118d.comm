@@ -471,7 +471,7 @@ SRADBX3=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_2b, LIST_FREQ = L_FREQ,
 
 TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX1,  NOM_PARA= ('AMOR', 'FREQ',),  
                             VALE_PARA = (amo_sro, 30.0), 
-                            VALE_REFE = 2.970E-01, VALE_CALC=0.29629120304100,
+                            VALE_REFE = 2.970E-01, VALE_CALC = 0.29630,
                             CRITERE = 'RELATIF', 
                             PRECISION=1.E-02, TOLE_MACHINE=1.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
@@ -479,7 +479,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX1,  NOM_PARA= ('AMOR', 'FREQ',),
 
 TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX1,  NOM_PARA= ('AMOR', 'FREQ',),  
                             VALE_PARA = (amo_sro, 10.0), 
-                            VALE_REFE =6.573E-01, VALE_CALC=0.65737609639136,
+                            VALE_REFE =6.573E-01, VALE_CALC = 0.65738,
                             CRITERE = 'RELATIF', 
                             PRECISION=1.E-02, TOLE_MACHINE=1.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
@@ -490,7 +490,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX1,  NOM_PARA= ('AMOR', 'FREQ',),
 
 TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX2,  NOM_PARA= ('AMOR', 'FREQ',),  
                             VALE_PARA = (amo_sro, 30.0), 
-                            VALE_REFE = 2.386E-01 , VALE_CALC=0.23512316649049,
+                            VALE_REFE = 2.386E-01 , VALE_CALC = 0.23475,
                             CRITERE = 'RELATIF', 
                             PRECISION=2.E-02, TOLE_MACHINE=3.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
@@ -498,7 +498,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX2,  NOM_PARA= ('AMOR', 'FREQ',),
 
 TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX2,  NOM_PARA= ('AMOR', 'FREQ',),  
                             VALE_PARA = (amo_sro, 10.0), 
-                            VALE_REFE =5.35E-01 , VALE_CALC=0.54281974655360,
+                            VALE_REFE =5.35E-01 , VALE_CALC = 0.5418,
                             CRITERE = 'RELATIF', 
                             PRECISION=2.E-02, TOLE_MACHINE=2.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
@@ -506,7 +506,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX2,  NOM_PARA= ('AMOR', 'FREQ',),
 
 TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX3,  NOM_PARA= ('AMOR', 'FREQ',),  
                             VALE_PARA = (amo_sro, 30.0), 
-                            VALE_REFE = 2.386E-01 , VALE_CALC=0.23367303875905,
+                            VALE_REFE = 2.386E-01 , VALE_CALC = 0.23327,
                             CRITERE = 'RELATIF', 
                             PRECISION=2.5E-02, TOLE_MACHINE=3.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
@@ -514,7 +514,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX3,  NOM_PARA= ('AMOR', 'FREQ',),
 
 TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX3,  NOM_PARA= ('AMOR', 'FREQ',),  
                             VALE_PARA = (amo_sro, 10.0),
-                            VALE_REFE =5.35E-01 , VALE_CALC=0.54282276846831,
+                            VALE_REFE =5.35E-01 , VALE_CALC = 0.5418,
                             CRITERE = 'RELATIF', 
                             PRECISION=2.E-02, TOLE_MACHINE=2.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
@@ -563,7 +563,7 @@ SRADBX4=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_4, LIST_FREQ = L_FREQ,
 
 TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX4,  NOM_PARA= ('AMOR', 'FREQ',),  
                             VALE_PARA = (amo_sro, 30.0), 
-                            VALE_REFE = 2.390E-01 , VALE_CALC=0.23875180260757,
+                            VALE_REFE = 2.390E-01 , VALE_CALC = 0.23877,
                             CRITERE = 'RELATIF', 
                             PRECISION=1.E-02, TOLE_MACHINE=1.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
@@ -571,7 +571,7 @@ TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX4,  NOM_PARA= ('AMOR', 'FREQ',),
 
 TEST_FONCTION( VALEUR = _F(FONCTION=SRADBX4,  NOM_PARA= ('AMOR', 'FREQ',),  
                             VALE_PARA = (amo_sro, 10.0), 
-                            VALE_REFE =5.723E-01 , VALE_CALC=0.57565194173470,
+                            VALE_REFE =5.723E-01 , VALE_CALC = 0.5747,
                             CRITERE = 'RELATIF', 
                             PRECISION=1.E-02, TOLE_MACHINE=3.E-3,
                             REFERENCE = 'AUTRE_ASTER',),);
