@@ -74,6 +74,7 @@ subroutine apmamc(kptsc)
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: low, high, neq, dlow, ierr,jcol
+    PetscInt :: one = 1, zero = 0 
     Mat :: a
 !----------------------------------------------------------------
     call jemarq()
@@ -133,7 +134,7 @@ subroutine apmamc(kptsc)
 !     CAS OU ON POSSEDE LE PREMIER BLOC DE LIGNES:
 !     on initialise directement la valeur du premier terme A(0,0) 
     if (low .eq. 0) then
-        call MatSetValue(a, 0, 0, zr(jvalm), INSERT_VALUES, ierr)
+        call MatSetValue(a, zero, zero, zr(jvalm), INSERT_VALUES, ierr)
         dlow=1
     else
         dlow=0
@@ -200,10 +201,10 @@ subroutine apmamc(kptsc)
         ! que l'on a stocké deux fois (pour C et pour D) 
         jterm=jterm-1
         ! Valeurs de D => on envoie les valeurs de la colonne jcol 
-        call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcol, 4)],&
+        call MatSetValues(a, to_petsc_int(iterm), zi4(jdxi1), one, [to_petsc_int(jcol)],&
                           zr(jdval1), INSERT_VALUES, ierr)
         ! Valeurs de C => on envoie les valeurs de la ligne jcol
-        call MatSetValues(a, 1, [int(jcol, 4)], jterm, zi4(jdxi2),&
+        call MatSetValues(a, one, [to_petsc_int(jcol)], to_petsc_int(jterm), zi4(jdxi2),&
                           zr(jdval2), INSERT_VALUES, ierr)
         iterm=0
         jterm=0
@@ -233,7 +234,7 @@ subroutine apmamc(kptsc)
             endif
         end do
          ! Valeurs de E => on envoie les valeurs de la colonne jcol 
-        call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcol, 4)],&
+        call MatSetValues(a, to_petsc_int(iterm), zi4(jdxi1), one, [to_petsc_int(jcol)],&
                           zr(jdval1), INSERT_VALUES, ierr)
         iterm=0
     end do

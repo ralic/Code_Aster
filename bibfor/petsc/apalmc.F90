@@ -99,9 +99,9 @@ subroutine apalmc(kptsc)
 !     PAR MORCEAUX POUR OBTENIR LE BON DECOUPAGE PAR BLOC
     call VecCreate(mpicou, vtmp, ierr)
     ASSERT(ierr.eq.0)
-    call VecSetBlockSize(vtmp, bs, ierr)
+    call VecSetBlockSize(vtmp, to_petsc_int(bs), ierr)
     ASSERT(ierr.eq.0)
-    call VecSetSizes(vtmp, PETSC_DECIDE, neq, ierr)
+    call VecSetSizes(vtmp, PETSC_DECIDE, to_petsc_int(neq), ierr)
     ASSERT(ierr.eq.0)
     call VecSetType(vtmp, VECMPI, ierr)
     ASSERT(ierr.eq.0)
@@ -173,33 +173,34 @@ subroutine apalmc(kptsc)
 !
     call MatCreate(mpicou, a, ierr)
     ASSERT(ierr.eq.0)
-    call MatSetSizes(a, nblloc, nblloc, neq, neq,&
+    call MatSetSizes(a, to_petsc_int(nblloc), to_petsc_int(nblloc), &
+                     to_petsc_int(neq), to_petsc_int(neq),&
                      ierr)
     ASSERT(ierr.eq.0)
 !
 #ifndef ASTER_PETSC_VERSION_32 
 !   AVEC PETSc >= 3.3
 !   IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION
-    call MatSetBlockSize(a, bs, ierr)
+    call MatSetBlockSize(a, to_petsc_int(bs), ierr)
     ASSERT(ierr.eq.0)
 #endif 
     
     if (nbproc .eq. 1) then
         call MatSetType(a, MATSEQAIJ, ierr)
         ASSERT(ierr.eq.0)
-        call MatSEQAIJSetPreallocation(a, int(PETSC_NULL_INTEGER), zi4( jidxd), ierr)
+        call MatSEQAIJSetPreallocation(a, PETSC_NULL_INTEGER, zi4( jidxd), ierr)
         ASSERT(ierr.eq.0)
     else
         call MatSetType(a, MATMPIAIJ, ierr)
         ASSERT(ierr.eq.0)
-        call MatMPIAIJSetPreallocation(a, int(PETSC_NULL_INTEGER), zi4( jidxd),&
-                                       int(PETSC_NULL_INTEGER), zi4(jidxo), ierr)
+        call MatMPIAIJSetPreallocation(a, PETSC_NULL_INTEGER, zi4( jidxd),&
+                                       PETSC_NULL_INTEGER, zi4(jidxo), ierr)
         ASSERT(ierr.eq.0)
     endif
 !
 #ifdef ASTER_PETSC_VERSION_32 
 !     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI
-      call MatSetBlockSize(a, bs, ierr)
+      call MatSetBlockSize(a, to_petsc_int(bs), ierr)
       ASSERT(ierr.eq.0)
 !     RQ : A PARTIR DE LA VERSION V 3.3 IL DOIT PRECEDER LA PREALLOCATION
 #endif 

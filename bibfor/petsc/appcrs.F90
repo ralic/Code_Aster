@@ -122,7 +122,7 @@ subroutine appcrs(kptsc, lmd)
     if (precon .eq. 'LDLT_INC') then
         call PCSetType(pc, PCILU, ierr)
         ASSERT(ierr.eq.0)
-        call PCFactorSetLevels(pc, fill, ierr)
+        call PCFactorSetLevels(pc, to_petsc_int(fill), ierr)
         ASSERT(ierr.eq.0)
         call PCFactorSetFill(pc, fillp, ierr)
         ASSERT(ierr.eq.0)
@@ -146,13 +146,13 @@ subroutine appcrs(kptsc, lmd)
             end do
 !
             ASSERT(xlocal.eq.0)
-            call VecCreateMPI(mpicou, to_petsc_int(ndprop), neq, xlocal, ierr)
+            call VecCreateMPI(mpicou, to_petsc_int(ndprop), to_petsc_int(neq), xlocal, ierr)
         else
             call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
             neq=nsmdi
 !
             ASSERT(xlocal.eq.0)
-            call VecCreateMPI(mpicou, PETSC_DECIDE, neq, xlocal, ierr)
+            call VecCreateMPI(mpicou, PETSC_DECIDE, to_petsc_int(neq), xlocal, ierr)
         endif
         ASSERT(ierr.eq.0)
 !

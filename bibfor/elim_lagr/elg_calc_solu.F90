@@ -96,7 +96,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !
 !
 !     allocation et remplissage de Y = RSOLU2
-    call elg_allocvr(y, int(n3))
+    call elg_allocvr(y, to_aster_int(n3))
     call VecGetArray(y, xx, xidx, ierr)
     do ieq2 = 1, neq2
         xx(xidx+ieq2)=rsolu2(ieq2)
@@ -105,7 +105,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !
 !
 !     Calcul de TMP1 =  T*Y :
-    call elg_allocvr(tmp1, int(n1))
+    call elg_allocvr(tmp1, to_aster_int(n1))
     call MatMult(melim(ke)%tfinal, y, tmp1, ierr)
 !
 !     Calcul de X1= x0 + T*Y :
@@ -115,7 +115,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     call VecAXPY(x1, p1, tmp1, ierr)
 !
 !     calcul des coefficients de Lagrange :
-    call elg_allocvr(vlag, int(n2))
+    call elg_allocvr(vlag, to_aster_int(n2))
     call elg_calcxl(x1, vlag)
 !
 !

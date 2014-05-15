@@ -1,6 +1,5 @@
 subroutine elg_comptt(c, t, nworkt)
     implicit none
-! aslint: disable=W1304
 ! person_in_charge: mathieu.corus at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,9 +49,9 @@ subroutine elg_comptt(c, t, nworkt)
 !
 !================================================================
     PetscInt :: ierr, numcon, icol
+    PetscInt :: one = 1 
     integer :: i1, pass
-    PetscInt :: nlag, nbeq
-    integer(kind=4) :: nbnzc
+    PetscInt :: nlag, nbeq, nbnzc
     integer :: nnzt, contr, j1, ctemp,imax, nbelim
     integer :: nzrow, valrow, k1, indnz, iscons, nblib
     integer :: nbcont, nbnz, indcon, indlib,  compnd
@@ -137,7 +136,7 @@ subroutine elg_comptt(c, t, nworkt)
 ! matrice, ils peuvent être numériquement égaux à zéro. 
 ! zr(valrow-1+1: valrow-1+nbnzc) = valeurs des termes de la ligne. 
 !
-    call MatGetRow(c, i1-1, nbnzc, zi4(nzrow),  zr(valrow),&
+    call MatGetRow(c, to_petsc_int(i1-1), nbnzc, zi4(nzrow),  zr(valrow),&
                        ierr)
 ! Calcul de la norme de C(i1,:)
         norm=0.d0
@@ -228,7 +227,7 @@ subroutine elg_comptt(c, t, nworkt)
                 ! On remplit la ligne courante avec des 0 
                   do k1 = 1, nblib
                     icol=zi4(indlib+k1-1)  
-                    call MatSetValues(t, 1, [numcon], 1, [icol],&
+                    call MatSetValues(t, one, [to_petsc_int(numcon)], one, [to_petsc_int(icol)],&
                                     [valt], INSERT_VALUES, ierr)
                     ASSERT(ierr == 0 ) 
                   end do
@@ -262,7 +261,7 @@ subroutine elg_comptt(c, t, nworkt)
                   ! précédemment éliminée ?     
                   iscons=zi4(contr-1+icol)
                   if ( iscons == 1 ) then  
-                    call MatSetValues(t, 1, [numcon], 1, [int(icol-1,4)],&
+                    call MatSetValues(t, one, [to_petsc_int(numcon)], one, [to_petsc_int(icol-1)],&
                                     [valt], INSERT_VALUES, ierr)
                     ASSERT(ierr == 0 ) 
                   endif                   
@@ -279,7 +278,7 @@ subroutine elg_comptt(c, t, nworkt)
            !
         endif
         !
-        call MatRestoreRow(c, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
+        call MatRestoreRow(c, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
                            ierr)
         ASSERT(ierr == 0 ) 
     end do
@@ -295,13 +294,13 @@ subroutine elg_comptt(c, t, nworkt)
     endif  
     !
     if (pass == 1) then 
-       call MatCreateSeqAIJ(mpicomm, int(nbeq), int(nbeq), int(PETSC_NULL_INTEGER), zi4(nnzt),&
+       call MatCreateSeqAIJ(mpicomm, nbeq, nbeq, PETSC_NULL_INTEGER, zi4(nnzt),&
                          t, ierr)
        ASSERT( ierr == 0 ) 
  
     !   Initialisation à l'identité 
     do i1 = 1, nbeq
-        call MatSetValues(t, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
+        call MatSetValues(t, one, [to_petsc_int(i1-1)], one, [to_petsc_int(i1-1)],&
                           [valt], INSERT_VALUES, ierr)
         ASSERT( ierr == 0 ) 
     end do

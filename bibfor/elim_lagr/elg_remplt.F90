@@ -43,9 +43,9 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !
 !================================================================
 !
-    PetscInt :: ierr, nbeq, clag1
+    PetscInt :: ierr, nbeq, nlag, nbnzc
+    PetscInt :: one = 1 
     Vec :: c_temp, v_temp
-    integer(kind=4) :: nbnzc
     integer :: i1, ldelg, nnzt, contr, j1, nzrow, valrow, k1, indnz, iscons, numcon, nblib, nbcont
     integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib,nzmax
     integer :: nvcont, ifm, niv, nblibt,posind,compnd
@@ -77,10 +77,10 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !   nlag : nombre de ddls Lagrange 
 !   nbeq : nombre de ddls "physiques" (i.e. non-Lagrange)
 !   La matrice des contraintes C est de taille nlag x nbeq 
-    call MatGetSize(c, clag1, nbeq, ierr)
+    call MatGetSize(c, nlag, nbeq, ierr)
     ASSERT(ierr == 0 ) 
     if (info2) then 
-       write(6,*),'C est de taille nlag= ', clag1,' x neq= ', nbeq
+       write(6,*),'C est de taille nlag= ', nlag,' x neq= ', nbeq
     endif
 !
 !--
@@ -91,10 +91,10 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     do i1 = 1, nbeq
         zi4(contr+i1-1)=0
         if (zi(ldelg+i1-1) .eq. 0) then
-            call MatSetValues(t, 1, [to_petsc_int(i1-1)], 1, [to_petsc_int(i1-1)],&
+            call MatSetValues(t, one, [to_petsc_int(i1-1)], one, [to_petsc_int(i1-1)],&
                               [1.d0], INSERT_VALUES, ierr)
         else
-            call MatSetValues(t, 1, [to_petsc_int(i1-1)], 1, [to_petsc_int(i1-1)],&
+            call MatSetValues(t, one, [to_petsc_int(i1-1)], one, [to_petsc_int(i1-1)],&
                               [0.d0], INSERT_VALUES, ierr)
         endif
         if (zi4(nnzt+i1-1) .gt. nzmax) nzmax=zi4(nnzt+i1-1)
@@ -112,8 +112,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     call wkvect('&&ELG_REMPLT.T_LIB.CON', 'V V R', nworkt, ltlib)
     call wkvect('&&ELG_REMPLT.COMP_IND', 'V V S', to_aster_int(nbeq), compnd)
     posind=0
-    call VecCreateSeq(mpicomm, int(nbeq), c_temp, ierr)
-    call VecCreateSeq(mpicomm, int(nbeq), v_temp, ierr)
+    call VecCreateSeq(mpicomm, nbeq, c_temp, ierr)
+    call VecCreateSeq(mpicomm, nbeq, v_temp, ierr)
 !
 !--------------------------------!
 !--                            --!
@@ -123,17 +123,13 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !
     !write(6,*),'%-- REMPLT.F90'
     !write(6,*),'    nworkt=',nworkt
-    do i1 = 1, clag1
+    do i1 = 1, nlag
         if (info2) write(ifm,*),' '
         if (info2) write(ifm,*),' '
         if (info2) write(ifm,'(A14,I3)'),' CONTRAINTE : ',i1
         if (info2) write(ifm,*),' '
-        call MatGetRow(c, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
-                       ierr)
-        !write(6,*),' OK MatGetRow',ierr              
-        call MatRestoreRow(c, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
-                           ierr)
-        !write(6,*),' OK MatRestoreRow',ierr               
+        call MatGetRow(c, to_petsc_int(i1-1), nbnzc,  zi4(nzrow), zr(valrow),&
+                       ierr)       
 !--
 !-- Normalisation de C
 !-- Normalement, les lignes de C sont deja normees
@@ -154,26 +150,19 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !--
 !-- Recopie de la contrainte, en normalisant
         call VecSet(c_temp, 0.d0, ierr)
-        !write(6,*),' OK VecSet',ierr
         call VecSet(v_temp, 0.d0, ierr)
-        !write(6,*),' OK VecSet',ierr
         
         do j1 = 1, nbnz
             numcon=zi4(nzrow+zi4(indnz+j1-1))
-            call VecSetValues(c_temp, 1, [to_petsc_int(numcon)], zr(ctemp+j1-1), INSERT_VALUES,&
+            call VecSetValues(c_temp, one, [to_petsc_int(numcon)], zr(ctemp+j1-1), INSERT_VALUES,&
                               ierr)
         end do
-        !write(6,*),' OK VecSetValues',ierr
         call VecAssemblyBegin(c_temp, ierr)
-        !write(6,*),' OK VecAssemblyBegin',ierr
         call VecAssemblyEnd(c_temp, ierr)
-        !write(6,*),' OK VecAssemblyEnd',ierr
 !--
 !-- Calcul du produit C_temp*T
         call MatMultTranspose(t, c_temp, v_temp, ierr)
-        !write(6,*),' OK MatMultTranspose',ierr
         call VecNorm(v_temp, norm_2, norm, ierr)
-        !write(6,*),' OK VecNorm',ierr
         if (info2) write(ifm,*),'   |C(I1,:).T|=',norm
         if (info2) write(ifm,*),' '
         if (norm .lt. 1e-12) then
@@ -226,7 +215,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(nzrow + zi4(indnz+j1-1))
                     do k1 = 1, nbnz
                         icol=zi4(nzrow + zi4(indnz+k1-1))
-                        call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(icol)],&
+                        call MatSetValues(t, one, [to_petsc_int(numcon)],&
+                                          one, [to_petsc_int(icol)],&
                                           [zr(ltlib+ nbnz*(k1-1)+j1-1)], INSERT_VALUES, ierr)
                         zr(ltlib+nbnz*(k1-1)+j1-1)=0.d0
                     end do
@@ -260,11 +250,11 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         do k1 = 1, nbnz
                             icol=zi4(nzrow + zi4(indnz+k1-1))
                             if (j1 .eq. k1) then
-                                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, &
+                                call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
                                                   [to_petsc_int(icol)], [1.d0], &
                                                   INSERT_VALUES, ierr)
                             else
-                                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, &
+                                call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
                                                   [to_petsc_int(icol)], &
                                                   [0.d0], INSERT_VALUES, ierr)
                             endif
@@ -304,7 +294,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 ! zr(ltcon) et zr(ltlib) ne sont jamais utilises ensemble => pas besoin de 2 tableaux
 !              call MatGetValues(t, nbcont, zi4(compnd), nbcont, zi4(compnd),&
 !                zr(ltcon), ierr)
-                call MatGetValues(t, nbcont, zi4(compnd), nbcont, zi4(compnd),&
+                call MatGetValues(t, to_petsc_int(nbcont), zi4(compnd), &
+                                  to_petsc_int(nbcont), zi4(compnd),&
                                   zr(ltlib), ierr)
 !--         Retourne la matrice stockee en ligne
 !                call dgemv('N', nbcont, nbcont, 1.d0, zr(ltcon),&
@@ -313,7 +304,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 
 !  Suite changement des indices, on re affecte la partir de C pour le produit 
 !  et on renorme la ligne de C               
-                call MatGetValues(c,1,[int(i1-1,4)], nbcont, zi4(compnd),&
+                call MatGetValues(c, one,[to_petsc_int(i1-1)], to_petsc_int(nbcont), zi4(compnd),&
                                   zr(lccon), ierr)
                 do j1 = 1, nbcont
                   zr(lccon+j1-1)=zr(lccon+j1-1)/normc
@@ -336,7 +327,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                 !
                 do j1 = 1, nbcont
                     icol=zi4(compnd+j1-1)
-                    call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(icol)],&
+                    call MatSetValues(t, one, [to_petsc_int(numcon)], one, [to_petsc_int(icol)],&
                                       [-zr(lwork1+ j1-1)/zr(lclib+imax)], INSERT_VALUES, ierr)
                 end do
 !
@@ -350,7 +341,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(indlib+j1-1)
                     do k1 = 1, nblib
                         icol=zi4(indlib+k1-1)
-                        call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(icol)],&
+                        call MatSetValues(t, one, [to_petsc_int(numcon)], &
+                                          one, [to_petsc_int(icol)],&
                                           [zr(ltlib+ nblib*(k1-1)+j1-1)], INSERT_VALUES, ierr)
                         zr(ltlib+nblib*(k1-1)+j1-1)=0.d0
                     end do
@@ -383,7 +375,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     numcon=zi4(indlib+imax)
                     do j1 = 1, nbcont
                         icol=zi4(indcon+j1-1)
-                        call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(icol)],&
+                        call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
+                                          [to_petsc_int(icol)],&
                                           [0.d0], INSERT_VALUES, ierr)
                     end do
 !
@@ -393,11 +386,11 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         do k1 = 1, nblib
                             icol=zi4(indlib+k1-1)
                             if (j1 .eq. k1) then
-                                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, &
+                                call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
                                                   [to_petsc_int(icol)],&
                                                   [1.d0], INSERT_VALUES, ierr)
                             else
-                                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, &
+                                call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
                                                   [to_petsc_int(icol)],&
                                                   [0.d0], INSERT_VALUES, ierr)
                             endif
@@ -438,7 +431,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
             !write(6,*),'iscons=',iscons
             
             if (iscons .eq. 0) then
-                call MatSetValues(t, 1, [to_petsc_int(numcon)], 1, [to_petsc_int(numcon)],&
+                call MatSetValues(t, one, [to_petsc_int(numcon)], one, [to_petsc_int(numcon)],&
                                   [0.d0], INSERT_VALUES, ierr)
                 zi4(contr + numcon) = 1
                 call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
@@ -461,7 +454,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !--
 123     continue
 !
-!        call MatRestoreRow(C,I1-1,int(nbnzc),ZI4(NZROW),ZR(VALROW),ierr)
+        call MatRestoreRow(c, to_petsc_int(i1-1), nbnzc,  zi4(nzrow), zr(valrow),&
+                           ierr)              
 !
     end do
 !

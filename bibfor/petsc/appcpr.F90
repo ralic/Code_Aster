@@ -115,7 +115,7 @@ subroutine appcpr(kptsc)
     if (precon .eq. 'LDLT_INC') then
         call PCSetType(pc, PCILU, ierr)
         ASSERT(ierr.eq.0)
-        call PCFactorSetLevels(pc, fill, ierr)
+        call PCFactorSetLevels(pc, to_petsc_int(fill), ierr)
         ASSERT(ierr.eq.0)
         call PCFactorSetFill(pc, fillp, ierr)
         ASSERT(ierr.eq.0)

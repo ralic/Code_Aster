@@ -88,6 +88,7 @@ subroutine apmamd(kptsc)
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: neql, neqg, ierr
+    PetscInt :: one = 1 
     Mat :: a
 !----------------------------------------------------------------
     call jemarq()
@@ -145,7 +146,8 @@ subroutine apmamd(kptsc)
 !  le bon processeur
 ! 
 ! Envoi de Aloc(1,1)
-    call MatSetValue(a, zi(jnugll)-1, zi(jnugll)-1, zr(jvalm), ADD_VALUES, ierr)
+    call MatSetValue(a, to_petsc_int(zi(jnugll)-1), to_petsc_int(zi(jnugll)-1), &
+                     zr(jvalm), ADD_VALUES, ierr)
     ASSERT(ierr==0)
 ! 
     do jcoll = 2, nloc
@@ -186,11 +188,11 @@ subroutine apmamd(kptsc)
             endif
         end do
         ! Envoi de la colonne jcolg 
-        call MatSetValues(a, iterm, zi4(jdxi1), 1, [int(jcolg-1, 4)],&
+        call MatSetValues(a, to_petsc_int(iterm), zi4(jdxi1), one, [to_petsc_int(jcolg-1)],&
                           zr(jdval1), ADD_VALUES, ierr)
         ASSERT(ierr==0)
         ! Envoi de la ligne jcolg
-        call MatSetValues(a, 1, [int(jcolg-1, 4)], jterm, zi4(jdxi2),&
+        call MatSetValues(a, one, [to_petsc_int(jcolg-1)], to_petsc_int(jterm), zi4(jdxi2),&
                           zr(jdval2), ADD_VALUES, ierr)      
         ASSERT(ierr==0) 
         iterm=0

@@ -118,7 +118,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     ndiag=0
     nnz2=0
     do ilig = 0, neq2-1
-        call MatGetRow(melim(ke)%kproj, ilig, nterm, irow(1), vrow(1),&
+        call MatGetRow(melim(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                        ierr)
         do k = 1, nterm
             jcol=irow(k)
@@ -128,7 +128,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
                 zi(jnzcol-1+jcol+1)=zi(jnzcol-1+jcol+1)+1
             endif
         enddo
-        call MatRestoreRow(melim(ke)%kproj, ilig, int(nterm), irow(1), vrow(1),&
+        call MatRestoreRow(melim(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                            ierr)
     enddo
     ASSERT(ndiag.eq.neq2)
@@ -159,7 +159,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call wkvect(nu2//'.SMOS.SMHC', bas1//' V S', nnz2, jsmhc2)
     call jerazo('&&ELG_CALC_MATM_RED.NZCO', neq2, 1)
     do ilig = 0, neq2-1
-        call MatGetRow(melim(ke)%kproj, ilig, nterm, irow(1), vrow(1),&
+        call MatGetRow(melim(ke)%kproj,to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                        ierr)
         do k = 1, nterm
             jcol=irow(k)
@@ -175,7 +175,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
                 zi(jnzcol-1+jcol+1)=n1
             endif
         enddo
-        call MatRestoreRow(melim(ke)%kproj, ilig, int(nterm), irow(1), vrow(1),&
+        call MatRestoreRow(melim(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                            ierr)
     enddo
 !

@@ -319,7 +319,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             ASSERT(ierr.eq.0)
 !
             if (fres .gt. sqrt(rtol)*ires) then
-                call utmess('F', 'PETSC_16')
+                call utmess('A', 'PETSC_16')
             endif
         endif
 !

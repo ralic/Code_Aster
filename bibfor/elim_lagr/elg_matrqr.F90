@@ -49,7 +49,8 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
     PetscInt :: n1, n2
     Mat :: c, rt
 !
-    PetscInt :: nbnzc, nbnzc2
+    PetscInt :: nbnzc, nbnzc2, dummy_ncols
+    PetscInt :: one = 1
     integer :: i1, j1, k1, nnzt, nzrow, valrow, varow2, nzrow2, inda, indb, nba, nbb, nbc
     integer :: diagr, vtemp, vtemp2, nzrowc
 !
@@ -92,13 +93,11 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
 ! On remplit maintenant ce tableau avec les bonnes valeurs (nombre de termes non-nuls sur
 ! chaque ligne de ct + terme diagonal )
     do i1 = 1, nbphys
-        call MatGetRow(ct, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
+        call MatGetRow(ct, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
                        ierr)
-        call MatRestoreRow(ct, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
-                           ierr)
         if (i1 .le. nblag) then
             nba=nbnzc
-            call elg_setint(zi4(nzrow), nba, [int(i1-1, 4)], 1, indc,&
+            call elg_setint(zi4(nzrow),nba, [to_petsc_int(i1-1)], 1, indc,&
                             nbc, 'COMPTE')
             if (nbc .eq. 0) then
 !               -- On rajoute le terme diagonal
@@ -109,30 +108,34 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
         else
                 zi4(nnzt+i1-1)=nbnzc
         endif
+        call MatRestoreRow(ct, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
+                           ierr)
     end do
 !
 !-- On alloue
-    call MatCreateSeqAIJ(mpicow, nbphys, nblag, int(PETSC_NULL_INTEGER), zi4(nnzt),&
+    call MatCreateSeqAIJ(mpicow, to_petsc_int(nbphys), to_petsc_int(nblag), &
+                         PETSC_NULL_INTEGER, zi4(nnzt),&
                          ctt, ierr)
 !
 !-- On recopie
     do i1 = 1, nbphys
-        call MatGetRow(ct, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
+        call MatGetRow(ct, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
                        ierr)
-        call MatRestoreRow(ct, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
-                           ierr)
-        call MatSetValues(ctt, 1, [int(i1-1, 4)], int(nbnzc), zi4(nzrow),&
+        call MatSetValues(ctt, one, [to_petsc_int(i1-1)], nbnzc, zi4(nzrow),&
                           zr(valrow), INSERT_VALUES, ierr)
         if (i1 .le. nblag) then
             nba=nbnzc
-            call elg_setint(zi4(nzrow), nba, [int(i1-1, 4)], 1, indc,&
+            call elg_setint(zi4(nzrow), nba, [to_petsc_int(i1-1)], 1, indc,&
                             nbc, 'COMPTE')
             if (nbc .eq. 0) then
 !               -- On rajoute le terme diagonal
-                call MatSetValues(ctt, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
+                call MatSetValues(ctt, one, [to_petsc_int(i1-1)], one, [to_petsc_int(i1-1)],&
                                   [0.d0], INSERT_VALUES, ierr)
             endif
         endif
+!
+        call MatRestoreRow(ct, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
+                           ierr)
 !
     end do
     call MatAssemblyBegin(ctt, MAT_FINAL_ASSEMBLY, ierr)
@@ -162,18 +165,23 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
 !---------------------!
 !
         do i1 = 1, j1-1
-            call MatGetRow(c, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
+            call MatGetRow(c, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
                            ierr)
             zi4(nnzt+i1-1)=nbnzc
-            call MatRestoreRow(c, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
+            call MatRestoreRow(c, to_petsc_int(i1-1),nbnzc, zi4(nzrow), zr(valrow),&
                                ierr)
         end do
 !
 !-- ALLOCATION DE LA COLONNE J1 DE R :
 !-- JUSTE AU DESSUS DE LA DIAGONALE, LE RESTE SERT PAS
-        call MatGetRow(c, j1-1, nbnzc, zi4(nzrow), zr(valrow),&
+        call MatGetRow(c, to_petsc_int(j1-1), nbnzc,  zi4(nzrow), zr(valrow),& 
                        ierr)
-        call MatRestoreRow(c, j1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
+! L'appel à MatRestoreRow remet à zéro l'argument ncols (ici nbnzc). Pour l'éviter, on passe
+! explicitement un autre paramètre ( )  
+! (cf liste petsc-dev: Explicitly pass NULL when we are intentionally using the number of
+!    columns after restoring the row.)
+!
+        call MatRestoreRow(c, to_petsc_int(j1-1), dummy_ncols, zi4(nzrow), zr(valrow),&
                            ierr)
 !
 !-- RECHERCHE DES TERMES AU DELA DE LA DIAGONALE
@@ -191,10 +199,8 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
         if (nba .gt. nbphys) ASSERT(.false.)
 !
         do i1 = j1+1, nblag
-            call MatGetRow(c, i1-1, nbnzc2, zi4(nzrow2), zr(varow2),&
-                           ierr)
-            call MatRestoreRow(c, i1-1, int(nbnzc2), zi4(nzrow2), zr(varow2),&
-                               ierr)
+            call MatGetRow(c, to_petsc_int(i1-1), nbnzc2, zi4(nzrow2), zr(varow2),&
+                           ierr)  
             if (nbnzc2 .gt. nbphys) ASSERT(.false.)
 !
 !-- RECHERCHE DES TERMES AU DELA DE LA DIAGONALE
@@ -218,12 +224,15 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
                 zi4(nnzt+i1-1)=nbnzc2
             endif
 !
+          call MatRestoreRow(c, to_petsc_int(i1-1), nbnzc2, zi4(nzrow2), zr(varow2),&
+                               ierr)
         end do
 !
 !--
 !-- ALLOCATION DE LA MATRICE
 !--
-        call MatCreateSeqAIJ(mpicow, nblag, nbphys, int(PETSC_NULL_INTEGER), zi4(nnzt),&
+        call MatCreateSeqAIJ(mpicow, to_petsc_int(nblag), to_petsc_int(nbphys), &
+                             PETSC_NULL_INTEGER, zi4(nnzt),&
                              rt, ierr)
 !
 !------------------------!
@@ -234,16 +243,20 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
 !
 !-- On recopie les lignes deja traitees
         do i1 = 1, j1-1
-            call MatGetRow(c, i1-1, nbnzc, zi4(nzrow), zr(valrow),&
+            call MatGetRow(c, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
                            ierr)
-            call MatSetValues(rt, 1, [int(i1-1, 4)], int(nbnzc), zi4(nzrow),&
+            call MatSetValues(rt, one, [to_petsc_int(i1-1)], nbnzc, zi4(nzrow),&
                               zr(valrow), INSERT_VALUES, ierr)
-            call MatRestoreRow(c, i1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
+            call MatRestoreRow(c, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
                                ierr)
         end do
-        call MatGetRow(c, j1-1, nbnzc, zi4(nzrow), zr(valrow),&
+        call MatGetRow(c, to_petsc_int(j1-1), nbnzc, zi4(nzrow), zr(valrow),&
                        ierr)
-        call MatRestoreRow(c, j1-1, int(nbnzc), zi4(nzrow), zr(valrow),&
+! L'appel à MatRestoreRow remet à zéro l'argument ncols (ici nbnzc). Pour l'éviter, on passe
+! explicitement dummy_ncols  
+! (cf liste petsc-dev: Explicitly pass NULL when we are intentionally using the number of
+!    columns after restoring the row.)
+        call MatRestoreRow(c, to_petsc_int(j1-1), dummy_ncols, zi4(nzrow), zr(valrow),&
                            ierr)
         zi4(nzrowc:nzrowc+nbnzc)=zi4(nzrow:nzrow+nbnzc)
 !-- RECHERCHE DES TERMES AU DELA DE LA DIAGONALE
@@ -256,7 +269,7 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
         nba=nbnzc-inda
         norm=sqrt(ddot(nba,zr(valrow+inda),1,zr(valrow+inda),1))
         rbid=0.d0
-        call MatGetValues(c, 1, [int(j1-1, 4)], 1, [int(j1-1, 4)],&
+        call MatGetValues(c, one, [to_petsc_int(j1-1)], one, [to_petsc_int(j1-1)],&
                           trbid, ierr)
         rbid=trbid(1)
 !
@@ -271,7 +284,7 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
 !
 !-- ON RECOPIE LE DEBUT DE LA LIGNE J1
         do i1 = 1, inda
-            call MatSetValues(rt, 1, [int(j1-1, 4)], 1, zi4(nzrow+i1-1),&
+            call MatSetValues(rt, one, [to_petsc_int(j1-1)], one, zi4(nzrow+i1-1),&
                               zr(valrow+i1- 1), INSERT_VALUES, ierr)
         end do
 !
@@ -281,7 +294,7 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
 !-- TERME SUR LA DIAGONALE
             if (zi4(nzrow+inda+i1-1) .eq. j1-1) then
                 zr(vtemp+i1-1)=(rbid-dj1)/fak
-                call MatSetValues(rt, 1, [int(j1-1, 4)], 1, [int(j1-1, 4)],&
+                call MatSetValues(rt, one, [to_petsc_int(j1-1)], one, [to_petsc_int(j1-1)],&
                                   [dj1], INSERT_VALUES, ierr)
             endif
         end do
@@ -290,9 +303,13 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
 !-- ON ORTHOGONALISE LES LIGNES RESTANTES
 !--
         do i1 = j1+1, nblag
-            call MatGetRow(c, i1-1, nbnzc2, zi4(nzrow2), zr(varow2),&
+            call MatGetRow(c, to_petsc_int(i1-1), nbnzc2, zi4(nzrow2), zr(varow2),&
                            ierr)
-            call MatRestoreRow(c, i1-1, int(nbnzc2), zi4(nzrow2), zr(varow2),&
+! L'appel à MatRestoreRow remet à zéro l'argument ncols (ici nbnzc2). Pour l'éviter, on passe
+! explicitement dummy_ncols  
+! (cf liste petsc-dev: Explicitly pass NULL when we are intentionally using the number of
+!    columns after restoring the row.)
+            call MatRestoreRow(c, to_petsc_int(i1-1), dummy_ncols, zi4(nzrow2), zr(varow2),&
                                ierr)
 !
 !-- RECHERCHE DES TERMES AU DELA DE LA DIAGONALE
@@ -307,7 +324,7 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
 !--
 !
 !-- RECOPIE DE LA LIGNE I1
-            call MatSetValues(rt, 1, [int(i1-1, 4)], int(nbnzc2), zi4(nzrow2),&
+            call MatSetValues(rt, one, [to_petsc_int(i1-1)], nbnzc2, zi4(nzrow2),&
                               zr(varow2), INSERT_VALUES, ierr)
             zi4(nzrow:nzrow+nbnzc)=zi4(nzrowc:nzrowc+nbnzc)
 !
@@ -328,14 +345,18 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
                     rbid=zr(varow2+indb+ zi4(nzrow2+indb+k1-1) -1 )-&
                     norm*zr(vtemp + zi4(nzrow +inda+k1-1) -1 )
 !
-                    call MatSetValues(rt, 1, [int(i1-1, 4)], 1,&
+                    call MatSetValues(rt, one, [to_petsc_int(i1-1)], one,&
                                       zi4(nzrowc+inda+zi4(nzrow+inda+k1-1)-1), [rbid],&
                                       INSERT_VALUES, ierr)
                 end do
 !
-                call MatGetRow(c, i1-1, nbnzc2, zi4(nzrow2), zr(varow2),&
+                call MatGetRow(c, to_petsc_int(i1-1), nbnzc2, zi4(nzrow2), zr(varow2),&
                                ierr)
-                call MatRestoreRow(c, i1-1, int(nbnzc2), zi4(nzrow2), zr(varow2),&
+! L'appel à MatRestoreRow remet à zéro l'argument ncols (ici nbnzc2). Pour l'éviter, on passe
+! explicitement dummy_ncols  
+! (cf liste petsc-dev: Explicitly pass NULL when we are intentionally using the number of
+!    columns after restoring the row.)
+                call MatRestoreRow(c, to_petsc_int(i1-1), dummy_ncols, zi4(nzrow2), zr(varow2),&
                                    ierr)
                 zi4(nzrow:nzrow+nbnzc)=zi4(nzrowc:nzrowc+nbnzc)
 !
@@ -345,7 +366,7 @@ subroutine elg_matrqr(ct, r, nbphys, nblag)
                                 nbc, 'REMPLI')
                 do k1 = 1, nbc
                     rbid=-norm*zr(vtemp + zi4(nzrow +inda+k1-1) -1)
-                    call MatSetValues(rt, 1, [int(i1-1, 4)], 1,&
+                    call MatSetValues(rt, one, [to_petsc_int(i1-1)], one,&
                                       zi4(nzrowc+inda + zi4(nzrow +inda+k1-1) -1), [rbid],&
                                       INSERT_VALUES, ierr)
                 end do

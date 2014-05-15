@@ -67,6 +67,7 @@ subroutine elg_apelim(kptsc, lqr)
     character(len=16) :: concep, nomcmd
     logical :: lmd, info2
     PetscInt :: ierr
+    PetscInt :: one = 1
     Mat :: c, ct,c2, t, t2, mtemp
     IS :: isfull, islag1, isphys, isred
     IS :: isnvco, istout
@@ -205,11 +206,11 @@ subroutine elg_apelim(kptsc, lqr)
     end do
     ASSERT(cphys.eq.nbphys)
 !
-    call ISCreateGeneral(mpicomm, nbeq, zi4(ifull), PETSC_USE_POINTER, isfull,&
+    call ISCreateGeneral(mpicomm, to_petsc_int(nbeq), zi4(ifull), PETSC_USE_POINTER, isfull,&
                          ierr)
-    call ISCreateGeneral(mpicomm, nbphys, zi4(iphys), PETSC_USE_POINTER, isphys,&
+    call ISCreateGeneral(mpicomm, to_petsc_int(nbphys), zi4(iphys), PETSC_USE_POINTER, isphys,&
                          ierr)
-    call ISCreateGeneral(mpicomm, nblag, zi4(ilag1), PETSC_USE_POINTER, islag1,&
+    call ISCreateGeneral(mpicomm, to_petsc_int(nblag), zi4(ilag1), PETSC_USE_POINTER, islag1,&
                          ierr)
 !
 !
@@ -219,10 +220,10 @@ subroutine elg_apelim(kptsc, lqr)
 !
 !
 !   --On annule les lignes associées a ILAG1 et ILAG2
-    call MatZeroRows(melim(ke)%ctrans, nblag, zi4(ilag1), 0.d0, 0,&
-                     0, ierr)
-    call MatZeroRows(melim(ke)%ctrans, nblag, zi4(ilag2), 0.d0, 0,&
-                     0, ierr)
+    call MatZeroRows(melim(ke)%ctrans, to_petsc_int(nblag), zi4(ilag1), 0.d0, PETSC_NULL_OBJECT,&
+                     PETSC_NULL_OBJECT, ierr)
+    call MatZeroRows(melim(ke)%ctrans, to_petsc_int(nblag), zi4(ilag2), 0.d0, PETSC_NULL_OBJECT,&
+                     PETSC_NULL_OBJECT, ierr)
 !   -- On transpose pour avoir C, de la bonne taille
     call MatTranspose(melim(ke)%ctrans, MAT_INITIAL_MATRIX, c, ierr)
 !
@@ -232,15 +233,18 @@ subroutine elg_apelim(kptsc, lqr)
     do i1 = 1, nbeq
         zi4(nnzt+i1-1)=1
     end do
-    call MatCreateSeqAIJ(mpicomm, nbeq, nbeq, int(PETSC_NULL_INTEGER), zi4(nnzt),&
+    call MatCreateSeqAIJ(mpicomm, to_petsc_int(nbeq), to_petsc_int(nbeq), &
+                         PETSC_NULL_INTEGER, zi4(nnzt),&
                          melim(ke)%tfinal, ierr)
 !
     do i1 = 1, nbeq
         if (delg(i1) .eq. 0) then
-            call MatSetValues(melim(ke)%tfinal, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
+            call MatSetValues(melim(ke)%tfinal, one, [to_petsc_int(i1-1)], &
+                              one, [to_petsc_int(i1-1)],&
                               [1.d0], INSERT_VALUES, ierr)
         else
-            call MatSetValues(melim(ke)%tfinal, 1, [int(i1-1, 4)], 1, [int(i1-1, 4)],&
+            call MatSetValues(melim(ke)%tfinal, one, [to_petsc_int(i1-1)], &
+                              one, [to_petsc_int(i1-1)],&
                               [0.d0], INSERT_VALUES, ierr)
         endif
     end do
@@ -308,7 +312,7 @@ subroutine elg_apelim(kptsc, lqr)
         call MatDestroy(c, ierr)
 ! On extrait de CT la sous-matrice des contraintes qui n'ont pas été éliminées
 ! On nomme C cette nouvelle matrice des contraintes 
-        call ISCreateGeneral(mpicomm, nbnvco, zi4(nvcont), PETSC_USE_POINTER, isnvco,&
+        call ISCreateGeneral(mpicomm, to_petsc_int(nbnvco), zi4(nvcont), PETSC_USE_POINTER, isnvco,&
                              ierr)
         call MatGetSubMatrix(ct, isnvco, isfull, MAT_INITIAL_MATRIX, c,&
                              ierr)
@@ -380,7 +384,7 @@ subroutine elg_apelim(kptsc, lqr)
 !   -- Ctrans :
     call MatDuplicate(melim(ke)%ctrans, MAT_COPY_VALUES, mtemp, ierr)
     call MatDestroy(melim(ke)%ctrans, ierr)
-    call ISCreateGeneral(mpicomm, nblag, zi4(ifull), PETSC_USE_POINTER, istout,&
+    call ISCreateGeneral(mpicomm, to_petsc_int(nblag), zi4(ifull), PETSC_USE_POINTER, istout,&
                          ierr)
     call MatGetSubMatrix(mtemp, isphys, istout, MAT_INITIAL_MATRIX, melim(ke)%ctrans,&
                          ierr)
@@ -414,7 +418,7 @@ subroutine elg_apelim(kptsc, lqr)
 !
 !   -- On passe en convention C 
     melim(ke)%indred(:)=melim(ke)%indred(:)-1
-    call ISCreateGeneral(mpicomm, nbred, melim(ke)%indred, PETSC_USE_POINTER, isred,&
+    call ISCreateGeneral(mpicomm, to_petsc_int(nbred), melim(ke)%indred, PETSC_USE_POINTER, isred,&
                          ierr)
 !
     call MatDuplicate(melim(ke)%tfinal, MAT_COPY_VALUES, mtemp, ierr)

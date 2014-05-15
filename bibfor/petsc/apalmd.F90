@@ -71,7 +71,7 @@ subroutine apalmd(kptsc)
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: low, high, ierr
-    integer :: neql, neqg, bs
+    integer :: neql, neqg, bs 
     Vec :: tmp
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
@@ -117,7 +117,7 @@ subroutine apalmd(kptsc)
         procol = zi(jprddl-1+jcoll)
         if (procol .eq. rang) ndprop = ndprop+1
     end do
-    call VecCreateMPI(mpicou, to_petsc_int(ndprop), neqg, tmp, ierr)
+    call VecCreateMPI(mpicou, to_petsc_int(ndprop), to_petsc_int(neqg), tmp, ierr)
     ASSERT(ierr.eq.0)
 !
     call VecGetOwnershipRange(tmp, low, high, ierr)
@@ -243,7 +243,8 @@ subroutine apalmd(kptsc)
 !
     call MatCreate(mpicou, ap(kptsc), ierr)
     ASSERT(ierr.eq.0)
-    call MatSetSizes(ap(kptsc), ndprop, ndprop, neqg, neqg, ierr)
+    call MatSetSizes(ap(kptsc), to_petsc_int(ndprop), to_petsc_int(ndprop), &
+                     to_petsc_int(neqg), to_petsc_int(neqg), ierr)
     ASSERT(ierr.eq.0)
     call MatSetType(ap(kptsc), MATMPIAIJ, ierr)
     ASSERT(ierr.eq.0)
@@ -251,18 +252,18 @@ subroutine apalmd(kptsc)
 #ifndef ASTER_PETSC_VERSION_32 
 !     AVEC PETSc >= 3.3
 !     IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION 
-    call MatSetBlockSize(ap(kptsc), bs, ierr)
+    call MatSetBlockSize(ap(kptsc), to_petsc_int(bs), ierr)
     ASSERT(ierr.eq.0)
 #endif 
     !
-    call MatMPIAIJSetPreallocation(ap(kptsc), int(PETSC_NULL_INTEGER), zi4(jidxd),&
-                                   int(PETSC_NULL_INTEGER), zi4(jidxo), ierr)
+    call MatMPIAIJSetPreallocation(ap(kptsc), PETSC_NULL_INTEGER, zi4(jidxd),&
+                                       PETSC_NULL_INTEGER, zi4(jidxo), ierr)
     ASSERT(ierr.eq.0)
     !
 #ifdef ASTER_PETSC_VERSION_32
 !     AVEC PETSc <= 3.2
 !     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI
-      call MatSetBlockSize(ap(kptsc), bs, ierr)
+      call MatSetBlockSize(ap(kptsc), to_petsc_int(bs), ierr)
       ASSERT(ierr.eq.0)
 !     RQ : A PARTIR DE LA VERSION V 3.3 IL DOIT PRECEDER LA PREALLOCATION
 #endif 

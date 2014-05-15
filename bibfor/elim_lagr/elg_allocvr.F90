@@ -1,7 +1,6 @@
 subroutine elg_allocvr(vect1, n1)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
-! aslint: disable=W1510
 ! aslint: disable=W0104
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,15 +33,14 @@ subroutine elg_allocvr(vect1, n1)
 !================================================================
     PetscInt :: ierr
     integer :: bs
-    mpi_int :: mpicow
+    mpi_int :: mpicomm
 !----------------------------------------------------------------
     bs=1
-    call asmpi_comm('GET_WORLD', mpicow)
-    call VecCreate(mpicow, vect1, ierr)
-    call VecSetBlockSize(vect1, bs, ierr)
+    call asmpi_comm('GET_WORLD', mpicomm)
+    call VecCreate(mpicomm, vect1, ierr)
+    call VecSetBlockSize(vect1, to_petsc_int(bs), ierr)
     call VecSetType(vect1, VECSEQ, ierr)
-    call VecSetSizes(vect1, PETSC_DECIDE, n1, ierr)
-    ASSERT(ierr.eq.0)
+    call VecSetSizes(vect1, PETSC_DECIDE, to_petsc_int(n1), ierr)
 #else
     integer :: vect1, n1
     call utmess('F', 'ELIMLAGR_1')

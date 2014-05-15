@@ -50,7 +50,7 @@ subroutine apksp(kptsc)
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscInt :: ierr
-    integer :: maxits
+    PetscInt :: maxits
     PetscReal :: rtol, atol, dtol
     Mat :: a
     KSP :: ksp

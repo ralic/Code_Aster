@@ -30,7 +30,7 @@ interface
 !    Définition des interfaces des routines PETSc
 !----------------------------------------------------------------
 !
-#define PETSC_INT_SCAL_IN integer
+#define PETSC_INT_SCAL_IN PetscInt
 #define PETSC_INT_SCAL_OUT PetscInt
 !
     subroutine ISCreateGeneral(comm, n, idx, mode, is,&

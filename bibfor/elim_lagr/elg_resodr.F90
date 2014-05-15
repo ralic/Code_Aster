@@ -36,13 +36,14 @@ subroutine elg_resodr(lt, c, z)
 !----------------------------------------------------------------
 !
 !================================================================
-    integer(kind=4), allocatable :: irow(:)
+    PetscInt, allocatable :: irow(:)
     real(kind=8), allocatable :: vrow(:), y(:)
 !================================================================
     PetscInt :: ierr
     PetscInt :: nterm
     PetscInt :: n1, n2
     PetscInt :: ilig, jcol, kterm, n
+    PetscInt :: zero = 0 
     PetscScalar :: s
     Mat :: l
 !----------------------------------------------------------------
@@ -73,17 +74,17 @@ subroutine elg_resodr(lt, c, z)
 !        Calcul de y = L \ c  (descente)
 !     ------------------------------
 !     -- calcul de y(1) :
-    call MatGetRow(l, 0, nterm, irow(1), vrow(1),&
+    call MatGetRow(l, zero, nterm, irow(1), vrow(1),&
                    ierr)
     ASSERT(nterm.eq.1)
     ASSERT(irow(1).eq.0)
     y(1)=c(1)/vrow(1)
-    call MatRestoreRow(l, 0, int(nterm), irow(1), vrow(1),&
+    call MatRestoreRow(l, zero, nterm, irow(1), vrow(1),&
                        ierr)
 !
 !     -- calcul de y(2:n) :
     do ilig = 2, n
-        call MatGetRow(l, ilig-1, nterm, irow(1), vrow(1),&
+        call MatGetRow(l, to_petsc_int(ilig-1), nterm, irow(1), vrow(1),&
                        ierr)
         ASSERT(nterm.le.n)
 !       -- le terme diagonal est obligatoire.
@@ -100,7 +101,7 @@ subroutine elg_resodr(lt, c, z)
             s=s-vrow(kterm)*y(jcol)
         enddo
         y(ilig)=s/vrow(nterm)
-        call MatRestoreRow(l, ilig-1, int(nterm), irow(1), vrow(1),&
+        call MatRestoreRow(l, to_petsc_int(ilig-1), nterm, irow(1), vrow(1),&
                            ierr)
     enddo
 !
@@ -110,17 +111,17 @@ subroutine elg_resodr(lt, c, z)
 !     ------------------------------------
 !
 !     -- calcul de z(n) :
-    call MatGetRow(lt, n-1, nterm, irow(1), vrow(1),&
+    call MatGetRow(lt, to_petsc_int(n-1), nterm, irow(1), vrow(1),&
                    ierr)
     ASSERT(nterm.eq.1)
     ASSERT(irow(1).eq.n-1)
     z(n)=y(n)/vrow(1)
-    call MatRestoreRow(lt, n-1, int(nterm), irow(1), vrow(1),&
+    call MatRestoreRow(lt, to_petsc_int(n-1), nterm, irow(1), vrow(1),&
                        ierr)
 !
 !     -- calcul de z(n-1:1) :
     do ilig = n-1, 1, -1
-        call MatGetRow(lt, ilig-1, nterm, irow(1), vrow(1),&
+        call MatGetRow(lt, to_petsc_int(ilig-1), nterm, irow(1), vrow(1),&
                        ierr)
         ASSERT(irow(1)+1.eq.ilig)
         s=y(ilig)
@@ -132,7 +133,7 @@ subroutine elg_resodr(lt, c, z)
         enddo
         ASSERT(irow(1)+1.eq.ilig)
         z(ilig)=s/vrow(1)
-        call MatRestoreRow(lt, ilig-1, int(nterm), irow(1), vrow(1),&
+        call MatRestoreRow(lt, to_petsc_int(ilig-1), nterm, irow(1), vrow(1),&
                            ierr)
     enddo
 !
