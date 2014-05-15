@@ -116,14 +116,12 @@ subroutine te0031(option, nomte)
 !
     r8bid=0.d0
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
     if (option.ne.'REFE_FORC_NODA')then
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
-    call cosiro(nomte, 'PCONTMR', 'L', 'UI', 'G',&
-                ibid, 'S')
-    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G',&
-                ibid, 'S')
+    call cosiro(nomte, 'PCONTMR', 'L', 'UI', 'G', ibid, 'S')
+    call cosiro(nomte, 'PCONTRR', 'L', 'UI', 'G', ibid, 'S')
 !
     jnbspi=0
     call tecach('NNN', 'PNBSP_I', 'L', iret1, iad=jnbspi)
@@ -131,18 +129,16 @@ subroutine te0031(option, nomte)
 
 !
     lcqhom=.false.
-    if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option(1:9) .eq.&
-        'RIGI_MECA') then
-!
+    if ( (option.eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA') .or. &
+         (option(1:9).eq.'RIGI_MECA') ) then
         call jevech('PMATERC', 'L', jmate)
-!
 ! ---   COQUE HOMOGENEISEE ?
-!
-        if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq.&
-            'RIGI_MECA_TANG') then
+        if ( (option.eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA').or. &
+             (option.eq.'RIGI_MECA_TANG') ) then
             call rccoma(zi(jmate), 'ELAS', 1, phenom, codret(1))
 !
-            if (phenom .eq. 'ELAS_COQUE' .or. phenom .eq. 'ELAS_COQMU') then
+            if ((phenom.eq.'ELAS_COQUE') .or. (phenom.eq.'ELAS_COQMU') .or. &
+                (phenom.eq.'ELAS_ORTH') )then
                 lcqhom=.true.
             endif
         endif
@@ -201,23 +197,17 @@ subroutine te0031(option, nomte)
 !     --------------------------------------
 !
         if (nomte .eq. 'MEDKTR3') then
-            call dktrig(nomte, xyzl, option, pgl, matloc,&
-                        ener, multic)
+            call dktrig(nomte, xyzl, option, pgl, matloc, ener, multic)
         else if (nomte.eq.'MEDSTR3') then
-            call dstrig(nomte, xyzl, option, pgl, matloc,&
-                        ener)
+            call dstrig(nomte, xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MEDKQU4') then
-            call dkqrig(nomte, xyzl, option, pgl, matloc,&
-                        ener)
+            call dkqrig(nomte, xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MEDSQU4') then
-            call dsqrig(nomte, xyzl, option, pgl, matloc,&
-                        ener)
+            call dsqrig(nomte, xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MEQ4QU4') then
-            call q4grig(nomte, xyzl, option, pgl, matloc,&
-                        ener)
+            call q4grig(nomte, xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MET3TR3') then
-            call t3grig(nomte, xyzl, option, pgl, matloc,&
-                        ener)
+            call t3grig(nomte, xyzl, option, pgl, matloc, ener)
         endif
 !
         if (option .eq. 'RIGI_MECA') then
@@ -226,16 +216,16 @@ subroutine te0031(option, nomte)
 !
         else if (option.eq.'EPOT_ELEM') then
             call jevech('PENERDR', 'E', jener)
-            do 60 i = 1, 3
+            do i = 1, 3
                 zr(jener-1+i)=ener(i)
-60          continue
+            enddo
         endif
 !
 !
-        elseif (option.eq.'MASS_MECA' .or. option.eq.'MASS_MECA_DIAG'&
-    .or. option.eq.'MASS_MECA_EXPLI' .or. option.eq.'M_GAMMA' .or.&
-    option.eq.'ECIN_ELEM') then
-!     ------------------------------------------
+    else if ( (option.eq.'MASS_MECA') .or. (option.eq.'MASS_MECA_DIAG') .or. &
+              (option.eq.'MASS_MECA_EXPLI') .or. (option.eq.'M_GAMMA') .or. &
+              (option.eq.'ECIN_ELEM') ) then
+!
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MET3TR3') then
             call dktmas(xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MEDSTR3') then
@@ -253,9 +243,9 @@ subroutine te0031(option, nomte)
         else if (option.eq.'ECIN_ELEM') then
             call jevech('PENERCR', 'E', jener)
             call jevech('POMEGA2', 'L', jfreq)
-            do 70 i = 1, 3
+            do i = 1, 3
                 zr(jener-1+i)=zr(jfreq)*ener(i)
-70          continue
+            enddo
         else if (option.eq.'M_GAMMA') then
             call jevech('PACCELR', 'L', iacce)
             call jevech('PVECTUR', 'E', ivect)
@@ -264,29 +254,28 @@ subroutine te0031(option, nomte)
             call utpslg(nno, 6, pgl, matloc, matv)
             call vecma(matv, nvec, matp, nddl)
             call pmavec('ZERO', nddl, matp, zr(iacce), zr(ivect))
-            elseif (option.eq.'MASS_MECA_DIAG' .or.&
-     &           option.eq.'MASS_MECA_EXPLI') then
+        else if (option.eq.'MASS_MECA_DIAG' .or. &
+                 option.eq.'MASS_MECA_EXPLI') then
             call jevech('PMATUUR', 'E', jmatr)
             nddl=6*nno
             ndim=nddl*(nddl+1)/2
-            do 80 i = 1, ndim
+            do  i = 1, ndim
                 zr(jmatr-1+i)=matloc(i)
-80          continue
+            enddo
             if (option .eq. 'MASS_MECA_EXPLI') then
-!     CORRECTION DES TERMES CORRESPONDANT AU DDL 6
-!     NON PREVU PAR LA THEORIE DKT. ON RAJOUTE
-!     UN TERME DIAGONAL NON ZERO EGAL A CELUI DU DDL 5.
-!     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
-                do 90 j = 1, nno
+!               CORRECTION DES TERMES CORRESPONDANT AU DDL 6
+!               NON PREVU PAR LA THEORIE DKT. ON RAJOUTE
+!               UN TERME DIAGONAL NON ZERO EGAL A CELUI DU DDL 5.
+!               CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
+                do j = 1, nno
                     n1=6*(j-1)+5
                     n2=6*(j-1)+4
                     ni=6*j
                     ndim=(ni+1)*ni/2
                     n1=(n1+1)*n1/2
                     n2=(n2+1)*n2/2
-                    zr(jmatr-1+ndim)=(zr(jmatr-1+n1)+zr(jmatr-1+n2))*&
-                    0.5d0
-90              continue
+                    zr(jmatr-1+ndim)=(zr(jmatr-1+n1)+zr(jmatr-1+n2))*0.5d0
+                enddo
             endif
         endif
 !
@@ -300,8 +289,8 @@ subroutine te0031(option, nomte)
 !
 !     -- OPTIONS NON-LINEAIRES :
 !     --------------------------
-        elseif (option(1:9).eq.'FULL_MECA'.or. option.eq.'RAPH_MECA'.or.&
-    option(1:10).eq.'RIGI_MECA_') then
+        else if (option(1:9).eq.'FULL_MECA'.or. option.eq.'RAPH_MECA'.or. &
+                 option(1:10).eq.'RIGI_MECA_') then
 !
         call jevech('PDEPLMR', 'L', jdepm)
         call jevech('PDEPLPR', 'L', jdepr)
@@ -310,19 +299,17 @@ subroutine te0031(option, nomte)
             call utmess('F', 'ELEMENTS2_75')
         endif
         if ((zk16(icompo+2)(6:10).eq.'_REAC') .or. (zk16(icompo+2) .eq.'GROT_GDEP')) then
-!            GROT_GDEP CORRESPOND ICI A EULER_ALMANSI
+!           GROT_GDEP CORRESPOND ICI A EULER_ALMANSI
             if (zk16(icompo+2)(6:10) .eq. '_REAC') then
                 call utmess('A', 'ELEMENTS2_72')
             endif
-            do 100 i = 1, nno
+            do i = 1, nno
                 i1=3*(i-1)
                 i2=6*(i-1)
-                zr(jgeom+i1) = zr(jgeom+i1) + zr(jdepm+i2) + zr(jdepr+ i2)
-                zr(jgeom+i1+1)= zr(jgeom+i1+1) + zr(jdepm+i2+1) +&
-                zr(jdepr+i2+1)
-                zr(jgeom+i1+2)= zr(jgeom+i1+2) + zr(jdepm+i2+2) +&
-                zr(jdepr+i2+2)
-100          continue
+                zr(jgeom+i1)   = zr(jgeom+i1)   + zr(jdepm+i2)   + zr(jdepr+i2)
+                zr(jgeom+i1+1) = zr(jgeom+i1+1) + zr(jdepm+i2+1) + zr(jdepr+i2+1)
+                zr(jgeom+i1+2) = zr(jgeom+i1+2) + zr(jdepm+i2+2) + zr(jdepr+i2+2)
+            enddo
 !
             if (nno .eq. 3) then
                 call dxtpgl(zr(jgeom), pgl)
@@ -362,8 +349,7 @@ subroutine te0031(option, nomte)
 !
     else if (option.eq.'FORC_NODA') then
 !     -------------------------------------
-        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7,&
-                    itab=itab)
+        call tecach('OOO', 'PCONTMR', 'L', iret, nval=7, itab=itab)
         icontp=itab(1)
         nbsp=itab(7)
         nbcou=zi(jnbspi)
@@ -373,22 +359,20 @@ subroutine te0031(option, nomte)
         endif
 !
         ind=8
-        call dxeffi(option, nomte, pgl, zr(icontp), ind,&
-                    effgt)
+        call dxeffi(option, nomte, pgl, zr(icontp), ind, effgt)
 !
 ! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, &
-                    option)
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, option)
 !
 ! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', jvect)
         k=0
-        do 120 i = 1, nno
-            do 110 j = 1, 6
+        do i = 1, nno
+            do j = 1, 6
                 k=k+1
                 zr(jvect+k-1)=bsigma(k)
-110          continue
-120      continue
+            enddo
+        enddo
 !
     else if (option.eq.'REFE_FORC_NODA')then
 !     -------------------------------------
@@ -404,8 +388,7 @@ subroutine te0031(option, nomte)
         enddo
 !
 ! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma,&
-                    option)
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, option)
 !
 ! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', jvect)
@@ -423,7 +406,7 @@ subroutine te0031(option, nomte)
             enddo
         enddo
     else
-!C OPTION DE CALCUL INVALIDE
+!       OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
     endif
 !
@@ -434,8 +417,7 @@ subroutine te0031(option, nomte)
 !
     if (option.ne.'REFE_FORC_NODA')then
 ! --- PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
-        call cosiro(nomte, 'PCONTPR', 'E', 'IU', 'G',&
-                ibid, 'R')
+        call cosiro(nomte, 'PCONTPR', 'E', 'IU', 'G', ibid, 'R')
     endif
 !
 end subroutine
