@@ -56,6 +56,7 @@ def _env2dict(src, env, install_tests):
     py_path = remove_duplicates(Utils.to_list(env['CFG_PYTHONPATH']))
     dico['PYTHONHOME'] = sys.prefix + '' if sys.prefix == sys.exec_prefix \
                                          else ':' + sys.exec_prefix
+    dico['PYTHON_DIRNAME'] = osp.dirname(env['PYTHON'][0])
     # as_run compatibility
     if env.ASRUN_MPI_VERSION:
         dico['DEFINES'] += ' _USE_MPI'

@@ -16,5 +16,11 @@ export PYTHONPATH
 PYTHONHOME=@PYTHONHOME@
 export PYTHONHOME
 
+# as PYTHONHOME is changed, path to 'python' must preceed all others if a
+# subprocess call it
+PATH=@PYTHON_DIRNAME@:\
+$PATH
+export PATH
+
 ASTER_LOCALEDIR=@ASTERLOCALEDIR@
 export ASTER_LOCALEDIR
