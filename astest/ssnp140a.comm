@@ -239,9 +239,23 @@ TEST_TABLE(
 
 
 # RESOLUTION AVEC LA METHODE IMPL-EX EN ELASTICITE
-LISTR=DEFI_LIST_REEL(VALE=(0,1,2),);
+# 2 PREMIERS PAS SERVENT A TESTER IMPLEX COMP_ELAS
+LISTR=DEFI_LIST_REEL(VALE=(0,0.5,1,2),);
 
 RESUIMP=STAT_NON_LINE(MODELE=MODE,
+                     CHAM_MATER=MATE,
+                     EXCIT=(_F(CHARGE=CHAR,),
+                            _F(CHARGE=PESANT,),
+                            _F(CHARGE=CHAR2, FONC_MULT=F_DEPL,),),
+                     COMPORTEMENT=_F(RELATION='ELAS',),
+                     INCREMENT=_F(LIST_INST=LISTR,
+                                  INST_FIN=1,),
+                     METHODE = 'IMPLEX',
+);
+# CE PAS SERT A TESTER IMPLEX COMP_INCR
+RESUIMP=STAT_NON_LINE(reuse=RESUIMP,
+                     ETAT_INIT=_F(EVOL_NOLI=RESUIMP,),
+                     MODELE=MODE,
                      CHAM_MATER=MATE,
                      EXCIT=(_F(CHARGE=CHAR,),
                             _F(CHARGE=PESANT,),

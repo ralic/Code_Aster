@@ -231,7 +231,8 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !
 !     -- 7 CALCUL DE SIGP,SIGPDV,VIP,DP,RP:
 !     -------------------------------------
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. &
+        & option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
 !
 !
         do k = 1, ndimsi

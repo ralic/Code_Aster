@@ -165,11 +165,11 @@ CMCAB5=AFFE_CHAR_MECA(MODELE=MO,
 
 
 
-LINST=DEFI_LIST_REEL(VALE=(0.0,100.,150.,300.,450.,600.),);
+LINST=DEFI_LIST_REEL(VALE=(0.0,50.,100.,150.,300.,450.,600.),);
 
 
 # ETAPE 1 : EFFET DE LA PESANTEUR
-
+# 3 PREMIERS PAS EN ELASTICITE SERVENT A TESTER IMPLEX COMP_ELAS ET COMP_INCR
 RES1 = STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CMAT,
                      CARA_ELEM=CE,
@@ -184,7 +184,26 @@ RES1 = STAT_NON_LINE(MODELE=MO,
                                _F(CHARGE = CMCAB5),),
                      METHODE = 'IMPLEX',
                      INCREMENT=_F(LIST_INST = LINST,
+                                  INST_FIN = 100.),)
+                                  
+RES1 = STAT_NON_LINE(reuse=RES1,
+                     ETAT_INIT=_F(EVOL_NOLI=RES1,),
+                     MODELE=MO,
+                     CHAM_MATER=CMAT,
+                     CARA_ELEM=CE,
+                     COMPORTEMENT=(_F( RELATION = 'ELAS',),
+                                _F(RELATION = 'SANS',
+                                   GROUP_MA= ('CABLE'),),),
+                     EXCIT   =(_F(CHARGE = CLIM,),
+                               _F(CHARGE = CMCAB1),
+                               _F(CHARGE = CMCAB2),
+                               _F(CHARGE = CMCAB3),
+                               _F(CHARGE = CMCAB4),
+                               _F(CHARGE = CMCAB5),),
+                     METHODE = 'IMPLEX',
+                     INCREMENT=_F(LIST_INST = LINST,
                                   INST_FIN = 150.),)
+
 
 # chargement 2 : cables 1 et 2
 #--------------------------------------------------------
