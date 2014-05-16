@@ -46,6 +46,7 @@ subroutine op0109()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/refdaj.h"
+#include "asterfort/rsadpa.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbexp2.h"
 #include "asterfort/tbliva.h"
@@ -53,6 +54,7 @@ subroutine op0109()
 #include "asterfort/utmess.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jexnum.h"
 !
     integer :: vali(2)
 !-----------------------------------------------------------------------
@@ -65,7 +67,7 @@ subroutine op0109()
     integer :: nbparr, nbsup, nc, ncd, ncm, ncmt, ndepl
     integer :: neq, nf1, nf2, nimpr, nla, nmm, nmult
     integer :: nna, np, npm, nret1, nret2, ns, nt
-    integer :: nty2
+    integer :: nty2, jomeg, jmasg
     real(kind=8) :: rundef, xcumul, xfm
 !-----------------------------------------------------------------------
     parameter    ( nbpara = 11 )
@@ -159,6 +161,7 @@ subroutine op0109()
     endif
 !
 !     ----- RECUPERATION DES AMORTISSEMENTS -----
+! Traitement du cas AMOR_REDUIT
     call getvr8(' ', 'AMOR_REDUIT', nbval=0, nbret=na1)
     na = na1
     if (na .ne. 0) then
@@ -182,8 +185,10 @@ subroutine op0109()
             end do
             nbamor = nbmode
             jamor = jamo2
+
         endif
     else
+! Traitement du cas LIST_AMOR
         call getvid(' ', 'LIST_AMOR', scal=liar, nbret=nla)
         if (nla .ne. 0) then
             call jelira(liar//'.VALE', 'LONUTI', nbamor)
@@ -204,8 +209,38 @@ subroutine op0109()
             endif
             nbamor = nbmode
         else
-!           A MODIFIER
-            ASSERT(.false.)
+!Traitement du cas AMOR_GENE
+            call getvid(' ','AMOR_GENE', scal=liar, nbret=nla)
+            if ( nla .ne. 0)then
+                call jeveuo(liar//'.DESC', 'L', jamor)
+!               On verifie que AMOR_GENE est une matrice (+ diagonale)
+                if (zi(jamor-1+1).ne.2) ASSERT(.false.)
+                if (zi(jamor-1+3).ne.1) ASSERT(.false.)
+                call jelira(liar//'.VALM','LONO', nbamor)
+                if (nbamor .gt. nbmode) then
+                    vali(1) = nbamor
+                    vali(2) = nbmode
+                    call utmess('F', 'SEISME_11', ni=2, vali=vali)
+                endif
+                call jeveuo(jexnum(liar//'.VALM', 1), 'L', jarm)
+                call wkvect('&&OP0109.AMORTISSEMENT', 'V V R', nbmode, jamor)
+                do iam = 1, nbamor
+                    zr(jamor - 1+iam) = zr(jarm - 1+iam)
+                enddo
+                if (nbamor .lt. nbmode) then
+                    do iam = nbamor, nbmode
+                        zr(jamor+iam-1) = zr(jarm+nbamor-1)
+                    end do
+                endif
+                nbamor = nbmode
+                do iam = 1, nbmode
+                    call rsadpa(meca, 'L', 1, 'MASS_GENE', iam, 0, sjv=jmasg)
+                    call rsadpa(meca, 'L', 1, 'OMEGA2', iam, 0, sjv=jomeg)
+                    zr(jamor - 1+iam) = zr(jamor-1 +iam)/(2 * sqrt(zr(jomeg)) * zr(jmasg))
+                enddo
+                else
+                ASSERT(.false.)
+            endif
         endif
     endif
     if (nbamor .ne. nbmode) then
