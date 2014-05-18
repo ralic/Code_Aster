@@ -2,6 +2,7 @@ subroutine rvchn3(vale, padr, ma, itypm, nbpt,&
                   nbcp, face, cref, nbndf, clocf,&
                   conec, vlccnc, val, ptadr, tabaux)
     implicit none
+#include "asterfort/utmess.h"
 !
     integer :: padr(*), ma(*), face(*), conec(*), vlccnc(*), nbndf(6, *)
     integer :: nbpt, nbcp, ptadr, itypm, clocf(6, 4, *)
@@ -46,35 +47,42 @@ subroutine rvchn3(vale, padr, ma, itypm, nbpt,&
 !
 !======================================================================
 !
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
     unsur4 = 0.25d0
     m = ma(1)
     f = face(1)
     nbnf = nbndf(f,itypm)
-    do 10, i = 1, nbnf, 1
-    nloc = clocf(f,i,itypm)
-    nglo = conec(vlccnc(m) + nloc-1)
-    do 12, j = 1, nbcp, 1
-    tabaux(i,j) = vale(padr(nglo)+j-1)
-12  continue
-    10 end do
-    do 300, ipt = 1, nbpt, 1
-    r = cref(1,ipt)
-    s = cref(2,ipt)
-    do 320, i = 1, nbcp, 1
-    c1 = tabaux(1,i)
-    c2 = tabaux(2,i)
-    c3 = tabaux(3,i)
-    if (nbnf .eq. 3) then
-        c5 = c1 + r*(c2-c1) + s*(c3-c1)
-    else
-        c4 = tabaux(4,i)
-        c5 = r*((c2+c3-c1-c4) + s*(c1+c3-c2-c4))+c1+c2+c3+c4
-        c5 = unsur4*(c5 + s*(c3+c4-c1-c2))
-    endif
-    val(ptadr+nbcp*(ipt-1)+i-1) = c5
-320  continue
-    300 end do
+    do i = 1, nbnf, 1
+        nloc = clocf(f,i,itypm)
+        nglo = conec(vlccnc(m) + nloc-1)
+        write(6,*) 'AJACOT i,nloc=',i, nloc
+        write(6,*) 'AJACOT i,nglo=',i, nglo
+        write(6,*) 'AJACOT i,padr(nglo)=',i, padr(nglo)
+        do j = 1, nbcp, 1
+            write(6,*) 'AJACOT j,v=',j,vale(padr(nglo)+j-1)
+            ! si la valeur vaut r8vide, c'est qu'il y a un probleme !
+            if (abs(vale(padr(nglo)+j-1)).gt.1.e300) then
+                call utmess('F','POSTRELE_67')
+            endif
+            tabaux(i,j) = vale(padr(nglo)+j-1)
+        end do
+    end do
+
+    do ipt = 1, nbpt, 1
+        r = cref(1,ipt)
+        s = cref(2,ipt)
+        do i = 1, nbcp, 1
+            c1 = tabaux(1,i)
+            c2 = tabaux(2,i)
+            c3 = tabaux(3,i)
+            if (nbnf .eq. 3) then
+                c5 = c1 + r*(c2-c1) + s*(c3-c1)
+            else
+                c4 = tabaux(4,i)
+                c5 = r*((c2+c3-c1-c4) + s*(c1+c3-c2-c4))+c1+c2+c3+c4
+                c5 = unsur4*(c5 + s*(c3+c4-c1-c2))
+            endif
+            val(ptadr+nbcp*(ipt-1)+i-1) = c5
+        end do
+    end do
     ptadr = ptadr + nbpt*nbcp
 end subroutine

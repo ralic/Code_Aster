@@ -394,4 +394,15 @@ du résultat %(k3)s
 Dans le cas d'un champ de type ELEM, l'utilisation des mots clés NOEUD, GROUP_NO
 n'a pas de sens, seul le mot clé MAILLE ou GROUP_MA est autorisé.
 """),
+
+67 : _(u"""
+Erreur de programmation dans la commande POST_RELEVE_T : Une incohérence a été détectée. 
+  * Si la commande n'utilise pas le mot clé ACTION / CHEMIN, il faut émettre une
+    fiche d'anomalie.  
+
+  * Si la commande utilise le mot clé ACTION / CHEMIN, il est conseillé de modifier
+    le fichier de commande pour ne plus utiliser le mot clé CHEMIN. 
+    C'est à dire qu'il faut remplacer INTE_MAIL_XX + POST_RELEVE par MACR_LIGN_COUPE.
+ 
+"""),
 }
