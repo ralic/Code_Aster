@@ -129,8 +129,8 @@ def detect_math_lib(self):
     blaslibs, lapacklibs = self.get_mathlib_from_numpy()
     self.check_math_libs('blas', list(BLAS) + blaslibs, embed)
     # lapack
-    if 'openblas' not in self.env.get_flat(varlib):
-        self.check_math_libs('lapack', list(LAPACK) + lapacklibs, embed)
+    self.check_math_libs('lapack', list(LAPACK) + lapacklibs, embed,
+                         optional='openblas' in self.env.get_flat(varlib))
 
     def _scalapack():
         """Check scalapack"""
