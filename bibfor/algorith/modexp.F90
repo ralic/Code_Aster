@@ -52,6 +52,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/infniv.h"
 #include "asterfort/modint.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
@@ -68,7 +69,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     integer :: lmast, numlia, nbno, lnres, lmodet, sizeco, connec, lconnc, nbec
     integer :: lprno, ipos1, lcphi, nbddl, lnoint, lindin, llino, lindno, lipos
     integer :: ik, lddld, linlag, lintrf, linddl, nddlin, nbvect, ltramo, lmatmo
-    integer :: lclin, lwork, jwork, lphiex, lcpet
+    integer :: lclin, lwork, jwork, lphiex, lcpet,ifm,niv
     integer(kind=4) :: info, rank
     real(kind=8) :: shift, swork(1)
     complex(kind=8) :: cbid
@@ -82,6 +83,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     integer, pointer :: vect_clefs(:) => null()
     integer, pointer :: vect_num(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
+    call infniv(ifm, niv)
 !
 !---------------------------------------------------C
 !--                                               --C
@@ -183,15 +185,23 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     nc=int(ibid/nl)
     call jeveuo(tramod, 'L', ltramo)
 !
-    nbvect=1
+!   Par defaut, on double la taille du sous espace de recherche
+    nbvect=2*nbmod
+!
+!-- Factorisation de la matrice de raideur
+    call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
+    call preres(solveu, 'V', ibid, '&&OP0091.MATPRE', raide,&
+                ibid, 1)
 !
 !-- ON BOUCLE POUR AVOIR UNE EXPANSION CORRECTE. TANT QUE C'EST PAS BON,
 !-- ON ENRICHIT LA BASE DES MODES D'INTERFACE
 500 continue
+!  IL FAUDRA TRAVAILLER CE POINT POUR RENDRE L'EXPANSION PLUS ROBUSTE    
     call modint(ssami, raiint, nddlin, nbvect, shift,&
                 matmod, masse, raide, nbeq1, coint,&
                 noddli, nbno, vefreq, 0)
     call jeveuo(matmod, 'L', lmatmo)
+    
 !
 !---------------------------C
 !--                       --C
@@ -216,10 +226,10 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
             do i1 = 1, nl
                 zr(lcphi+(j1-1)*nl+i1-1)=zr(lcphi+(j1-1)*nl+i1-1)+&
                 zr(ltramo+(k1-1)*nl+(i1-1))*zr(lmatmo+(j1-1)*nc+(k1-1)&
-                )
+                )                
             end do
         end do
-    end do
+    end do  
 !      CALL DGEMM('N','N',NL,NBVECT,NC,1.,ZR(LTRAMO),
 !     &            NL,ZR(LMATMO),NC,0.,ZR(LCPHI),NL)
 !
@@ -290,12 +300,21 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
     call matfpe(1)
 !
-    if (swork(1) .gt. 1.d-3) then
+    if (swork(1) .gt. 1.d-1) then
 !
-        if (nbvect .gt. nddlin) then
+        if (nbvect .gt. nddlin/2) then
 !-- ON N'ARRIVE PAS A AVOIR UNE EXPANSION CORRECTE
+            write(ifm,*) '*----------------------------*'
+            write(ifm,*) '*'
+            write(ifm,*) 'Residu de l''expansion :',swork(1)
+            write(ifm,*) '  Taille max. du sous espace atteinte'
+            write(ifm,*) '  Probleme mal conditionne'
+            write(ifm,*) '*'
+            write(ifm,*) '*----------------------------*'
             ASSERT(.false.)
         endif
+!        
+        write(ifm,*) 'Residu de l''expansion :',swork(1)
         nbvect=nbvect+nbmod
 !
         call jedetr('&&OP0091.MAT_SM1XUT')
@@ -313,6 +332,8 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
         call jedetr('&&MODEXP.C_PHI_EXP')
         call jedetr('&&MODEXP.NORM_RESIDU')
         goto 500
+    else
+        write(ifm,*) 'Residu de l''expansion :',swork(1)
     endif
 !
 !-------------------------C
@@ -338,9 +359,6 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
         end do
     end do
 !
-    call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
-    call preres(solveu, 'V', ibid, '&&OP0091.MATPRE', raide,&
-                ibid, 1)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nbmod,&
                 ' ', ' ', ' ', zr(lmodet), [cbid],&
                 ' ', .true., 0, iret)
@@ -374,3 +392,4 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call jedetr('&&MODEXP.VECTEUR_FREQ')
 !
 end subroutine
+

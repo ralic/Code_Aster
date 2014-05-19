@@ -60,14 +60,22 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 #include "jeveux.h"
 #include "asterc/getran.h"
 #include "asterc/matfpe.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/intdis.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/infniv.h"
+#include "asterfort/nmop45.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
@@ -85,6 +93,12 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     real(kind=8) :: shift
     character(len=19) :: masse, raide, ssami, raiint
     character(len=24) :: coint, noddli, matmod, vefreq
+    character(len=8)  :: modes
+    character(len=6)  :: k6bid
+    character(len=24) :: dummy1,dummy3
+    character(len=16) :: nmopt
+    
+    
 !
 !-- VARIABLES DE LA ROUTINE
     integer :: lmatmo, i1, j1, k1, m1, n1, l1, lmakry, linddl, nsekry, lvtemp
@@ -92,10 +106,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     integer :: lkpro,  lmatrm, lmatrk, lwork,   lddld
     integer ::  lkryl,  limped,   lmatma, iret
     integer :: nbvect, ibid, decal,  ldelg, no, nbsst, lindin, coeff, lvp
-    integer :: lintrf
+    integer :: lintrf,tach1,ifm,niv
     integer(kind=4) :: info
     real(kind=8) :: temp, pi, rbid, norm, lambda, comlin(2), swork(1), rand, max
-    real(kind=8) :: abs
+    real(kind=8) :: abs, bande(2)
     parameter    (pi=3.141592653589793238462643d0)
     complex(kind=8) :: cbid
     character(len=1) :: listyp(2)
@@ -120,6 +134,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !-- DEBUT --C
 !
     call jemarq()
+    call infniv(ifm, niv)    
 !
 !------------------------------------------------------------C
 !--                                                        --C
@@ -128,6 +143,9 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !--                                                        --C
 !------------------------------------------------------------C
 !
+!-- ON DESACTIVE LE TEST FPE
+    call matfpe(-1)
+    
     call mtdscr(ssami)
     call jeveuo(ssami(1:19)//'.&INT', 'L', lmatma)
 !
@@ -137,7 +155,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     lismat(2)=ssami
     if (switch .eq. 1) then
         call getvr8('MODE_INTERF', 'SHIFT', iocc=1, scal=rbid, nbret=ibid)
-        shift=-(rbid*2.d0*pi)**2
+        shift=-(rbid*2.d0*pi)**2  
     endif
 !
     comlin(1)=1.d0
@@ -189,174 +207,61 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     endif
     nsekry=int(nbvect*nbsst/coeff)
     coeff=int(nbvect/coeff)
-    write(6,*)'------------------------------------------------',&
+    write(ifm,*)'------------------------------------------------',&
      &'------------------------'
-    write(6,*)' VOUS AVEZ DEMANDE',nbmod,' MODES'
-    write(6,*)' LA TAILE DU SOUS ESPACE RETENU EST',nsekry
-    write(6,*)'------------------------------------------------',&
+    write(ifm,*)' VOUS AVEZ DEMANDE',nbmod,' MODES'
+    write(ifm,*)' LA TAILE DU SOUS ESPACE RETENU EST',nsekry
+    write(ifm,*)'------------------------------------------------',&
      &'------------------------'
-!
-    call wkvect('&&MODINT.VECT_TEMP', 'V V R', 6*nnoint, lvtemp)
-    AS_ALLOCATE(vr=vect_temp_2, size=6*nnoint)
-    call wkvect('&&MODINT.KRYLOV_INT', 'V V R', 6*nnoint*nbvect, lkryl)
-    AS_ALLOCATE(vr=hessenberg, size=nbvect**2)
-!
-!-- ALLOC. DES MATRICES DE TRAVAIL POUR LE CALCUL DES VALEURS PROPRES
-    AS_ALLOCATE(vr=leftmodes, size=nbvect**2)
-    AS_ALLOCATE(vr=rightmodes, size=nbvect**2)
-    no=max(nsekry,nbvect)
-    AS_ALLOCATE(vr=realpart, size=no)
-    AS_ALLOCATE(vr=imagpart, size=no)
-    AS_ALLOCATE(vr=v_f_pro, size=no)
-    AS_ALLOCATE(vi=v_ind_f_pro, size=no)
-!
-!-- ALLOCATION DE LA MATRICE CONTENANT LA BASE DU SE DE KRYLOV
+!--
+!-- Appel a nmop45 pour le calcul des modes du modele d'interface
+!-- 
+    bande(1)=0.d0
+    bande(2)=1.d0
+    nmopt='PLUS_PETITE'
+    modes='&&MODEST'
+    dummy1='&&DUMY1'
+    dummy3='&&DUMMY3'
+    call nmop45(imped, ssami, 0, nmopt, nsekry,&
+                  2, bande, 'VIBR', dummy1, 0,&
+                  modes, '&&DUMMY2', dummy3, 0)
+!    
     call wkvect('&&MODINT.SE_KRYLOV', 'V V R', neq*nsekry, lmakry)
-    call jeveuo('&&MOIN93.IS_DDL_INTERF  ', 'L', lddld)
-!
-!-- VECTEUR D'INDICES
-    call jeveuo('&&MOIN93.V_IND_DDL_INT', 'L', linddl)
     call jeveuo('&&MOIN93.V_IND_LAG', 'L', linlag)
     call jeveuo('&&MOIN93.DDL_ACTIF_INT', 'L', lintrf)
 !
-!--
-!-- BOUCLE SUR LES PARTIES D'INTERFACE DISJOINTES
-!--
-!
-!-- ON DESACTIVE LE TEST FPE
-    call matfpe(-1)
-!
-    do n1 = 1, nbsst
-!
-!-- TIRAGE ALEATOIRE DU VECTEUR INITIAL
-        norm=0.d0
-        do i1 = 1, 6*nnoint
-            call getran(rand)
-            zr(lkryl+i1-1)=(rand*2-1)*zi(lindin+6*nnoint*(n1-1)+i1-1)
-            norm=norm+zr(lkryl+i1-1)**2
-        end do
-!
-        norm=sqrt(norm)
-        do i1 = 1, 6*nnoint
-            zr(lkryl+i1-1)=zr(lkryl+i1-1)/norm
-        end do
-!
-!-- REMPLISSAGE DE LA MATRICE DE HESSENBERG ET DU SE DE KRYLOV ASSOCIE
-        do k1 = 2, nbvect+1
-            do i1 = 1, 6*nnoint
-                zr(lvtemp+i1-1)=zr(lkryl+i1-1+(k1-2)*6*nnoint)
-            end do
-!
-            call mrmult('ZERO', lmatma, zr(lvtemp), vect_temp_2, 1,&
-                        .true.)
-            call resoud(imped, ' ', solveu, ' ', 1,&
-                        ' ', ' ', ' ', vect_temp_2, [cbid],&
-                        ' ', .true., 0, iret)
-            do j1 = 1, k1-1
-                norm=ddot(6*nnoint,vect_temp_2,1, zr(lkryl+(j1-1)*6*&
-                nnoint),1)
-                hessenberg(1+(k1-2)*nbvect+j1-1)=norm
-                do i1 = 1, 6*nnoint
-                    vect_temp_2(i1)=vect_temp_2(i1)- norm*zr(lkryl+(&
-                    j1-1)*6*nnoint+i1-1)
-                end do
-            end do
-!
-            norm=ddot(6*nnoint,vect_temp_2,1,vect_temp_2,1)
-            norm=sqrt(norm)
-            if (k1 .lt. nbvect+1) then
-                hessenberg(1+(k1-2)*nbvect+k1-1)=norm
-                do i1 = 1, 6*nnoint
-                    zr(lkryl+(k1-1)*6*nnoint+i1-1)=vect_temp_2(i1)/&
-                    norm
-                    zr(lvtemp+i1-1)=zr(lkryl+(k1-1)*6*nnoint+i1-1)
-                end do
-            endif
-        end do
-!
-!-- RESOLUTION DU PROBLEME AUX VALEURS PROPRES
-        call dgeev('N', 'V', nbvect, hessenberg, nbvect,&
-                  &realpart, imagpart, leftmodes, nbvect, rightmodes,&
-                  &nbvect, swork, -1, info)
-        lwork=int(swork(1))
-        AS_ALLOCATE(vr=matr_eigen_work, size=lwork)
-        call dgeev('N', 'V', nbvect, hessenberg, nbvect,&
-                  &realpart, imagpart, leftmodes, nbvect, rightmodes,&
-                  &nbvect, matr_eigen_work, lwork, info)
-        AS_DEALLOCATE(vr=matr_eigen_work)
-!
-!-- TRI DES VALEURS PROPRES
-        do i1 = 1, nbvect
-            temp=1.d+16
-            do j1 = 1, nbvect
-                norm=abs(1.d0/sqrt(realpart(j1)**2+imagpart(j1)**2)+&
-                shift)
-                if (norm .lt. temp) then
-                    temp=norm
-                    v_ind_f_pro(i1)=j1
-                endif
-            end do
-!
-            realpart(1+v_ind_f_pro(i1)-1)=1.d-16
-            imagpart(1+v_ind_f_pro(i1)-1)=1.d-16
-        end do
-!
-!-- RAJOUTER LA SELECTION DES DDL
-!-- ON GARDE LES 6 DDL POUR LA CONSTRUCTION DU MODELE D'INTERFACE
-!
-!
-!-- POUR L'EXPANSION : ON NE GARDE EN SORTIE QUE LE SEV SUR L'INTERFACE
-        if (switch .eq. 0) then
-!
-            call wkvect(matmod, 'V V R', nddlin*coeff, lmatmo)
-!
-            do l1 = 1, coeff
-                j1=v_ind_f_pro(l1)
-                do k1 = 1, nbvect
-                    temp=rightmodes(1+(j1-1)*nbvect+k1-1)
-                    do i1 = 1, nddlin
-                        m1=zi(lintrf+i1-1)
-                        zr(lmatmo+(l1-1)*nddlin+i1-1)= zr(lmatmo+(l1-&
-                        1)*nddlin+i1-1) +zr(lkryl+(k1-1)*6*nnoint+m1-&
-                        1)*temp
-                    end do
-                end do
-            end do
-            nbmod=coeff
-            call matfpe(1)
-            goto 999
-!
-        endif
-!
-!-- CONSTRUCTION DU SOUS ESPACE POUR LE PROBLEME COMPLET
-        decal=int((n1-1)*coeff*neq)
-        do l1 = 1, coeff
-            j1=v_ind_f_pro(l1)
-            do k1 = 1, nbvect
-                temp=rightmodes(1+(j1-1)*nbvect+k1-1)
-                do i1 = 1, nddlin
-                    m1=zi(lintrf+i1-1)
-!
-                    zr(lmakry+decal+(l1-1)*neq+zi(linlag+(i1-1)*2)-1)=&
-                    zr(lmakry+decal+(l1-1)*neq+zi(linlag+(i1-1)*2)-1)&
-                    +zr(lkryl+(k1-1)*6*nnoint+m1-1)*temp
-!
-                    zr(lmakry+decal+(l1-1)*neq+zi(linlag+(i1-1)*2+1)-&
-                    1)= zr(lmakry+decal+(l1-1)*neq+zi(linlag+(i1-1)*2+&
-                    1)-1) +zr(lkryl+(k1-1)*6*nnoint+m1-1)*temp
-                end do
-            end do
-        end do
-!
+    do j1 = 1, nsekry
+      ! construction du nom du mode "a la main"
+      call codent(j1-1, 'D0', k6bid)
+      call jeveuo(modes//'.001.'//k6bid//'.VALE', 'L', lvtemp)
+      norm=ddot(6*nnoint,zr(lvtemp),1,zr(lvtemp),1)
+      norm=sqrt(norm)
+      ! normalisation dans L2
+      do i1 = 1, nddlin
+          m1=zi(lintrf+i1-1)
+          zr(lmakry+(j1-1)*neq+zi(linlag+(i1-1)*2)-1)=&
+              zr(lvtemp+m1-1)/norm
+          zr(lmakry+(j1-1)*neq+zi(linlag+(i1-1)*2+1)-1)=&
+              zr(lvtemp+m1-1)/norm
+      end do
     end do
 !
-!
+    !call detrsd('RESULTAT',modes)
+    !call detrsd('RESULTAT','&&DUMMY2')
+    call jedetc('G',modes,1)
+    call jedetc('G','&&DUMMY2',1)
+    
+    
+    no=max(nsekry,nbvect)
+    AS_ALLOCATE(vr=v_f_pro, size=no)
+    AS_ALLOCATE(vi=v_ind_f_pro, size=no)
 !
 !-- RELEVE STATIQUE DU SOUS ESPACE DE KRYLOV SUR LE MODELE COMPLET
+!
     call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nsekry,&
                 ' ', ' ', ' ', zr(lmakry), [cbid],&
-                ' ', .true., 0, iret)
+                ' ', .true., 0, iret)         
 !
 !---------------------------------------------C
 !--                                         --C
@@ -442,7 +347,14 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     end do
 !
 !
-    call wkvect(vefreq, 'V V R', nbmod, lvp)
+    call jeexin(vefreq,iret)
+    if (iret .eq. 0) then
+      call wkvect(vefreq, 'V V R', nbmod, lvp)
+    else
+      ! appel depuis modexp => il faut redimensionner l'objet
+      call jedetr(vefreq)
+      call wkvect(vefreq, 'V V R', nbmod, lvp)
+    endif  
 !
     do i1 = 1, nbmod
         temp=1.d+16
@@ -497,16 +409,16 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
     call detrsd('MATR_ASSE', imped)
 !
-    call jedetr('&&MODINT.VECT_TEMP')
-    AS_DEALLOCATE(vr=vect_temp_2)
-    call jedetr('&&MODINT.KRYLOV_INT')
+!    call jedetr('&&MODINT.VECT_TEMP')
+!    AS_DEALLOCATE(vr=vect_temp_2)
+!    call jedetr('&&MODINT.KRYLOV_INT')
     call jedetr('&&MODINT.SE_KRYLOV')
-    AS_DEALLOCATE(vr=hessenberg)
+!    AS_DEALLOCATE(vr=hessenberg)
 !
-    AS_DEALLOCATE(vr=leftmodes)
-    AS_DEALLOCATE(vr=rightmodes)
-    AS_DEALLOCATE(vr=realpart)
-    AS_DEALLOCATE(vr=imagpart)
+!    AS_DEALLOCATE(vr=leftmodes)
+!    AS_DEALLOCATE(vr=rightmodes)
+!    AS_DEALLOCATE(vr=realpart)
+!    AS_DEALLOCATE(vr=imagpart)
     AS_DEALLOCATE(vr=v_f_pro)
     AS_DEALLOCATE(vi=v_ind_f_pro)
 !
@@ -514,3 +426,4 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
     call jedema()
 end subroutine
+

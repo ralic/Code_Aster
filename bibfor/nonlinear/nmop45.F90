@@ -202,7 +202,11 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !     --- CREATION DE LA MATRICE DYNAMIQUE ET DE SA FACTORISEE ---
 !
     matopa = '&&NMOP45.DYN_FAC_C '
-    solveu='&&OP0070.SOLVEUR'
+!   pour gerer l'appel depuis modint :    
+    call dismoi('SOLVEUR', matrig, 'MATR_ASSE', repk=solveu)
+    if (solveu(1:8) .ne. '&&NUME91') then
+         solveu='&&OP0070.SOLVEUR'
+    endif
 ! --- VERIF SOLVEUR LINEAIRE
     call jeveuo(solveu//'.SLVK', 'L', islvk)
     metres = zk24(islvk)
@@ -530,3 +534,4 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !     FIN DE NMOP45
 !
 end subroutine
+
