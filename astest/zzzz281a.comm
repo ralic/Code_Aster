@@ -22,6 +22,7 @@ import os
 import os.path as osp
 from glob import glob
 
+from asrun.run import AsRunFactory
 from asrun.profil import AsterProfil
 from asrun.config import AsterConfig
 
@@ -31,7 +32,8 @@ from Lecture_Cata_Ele.lecture import lire_cata
 aster_root = os.environ.get('ASTER_ROOT')
 
 fprof = glob('*.export')[0]
-prof = AsterProfil(fprof)
+run = AsRunFactory()
+prof = AsterProfil(fprof, run=run)
 
 rep_vers = osp.join(aster_root, prof.get_version_path())
 

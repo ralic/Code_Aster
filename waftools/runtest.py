@@ -16,7 +16,8 @@ def options(self):
     group.add_option('--exectool', dest='exectool',
                     action='store', default=None,
                     help='run a testcase by passing additional arguments '
-                         '(depends on as_run configuration)')
+                         '(possible values are "debugger", "env" + those '
+                         'defined in the as_run configuration)')
 
 @TaskGen.feature('test')
 def runtest(self):
