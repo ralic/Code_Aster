@@ -40,6 +40,9 @@ def configure(self):
         YAMMROOT + '/prerequisites/Metis_40/Lib',
         YAMMROOT + '/prerequisites/Scotch_5111/include'])
 
+    # openblas from $ASTER_ROOT/public/lib embeds lapack
+    opts.maths_libs = 'openblas'
+
     # to fail if not found
     opts.enable_hdf5 = True
     opts.enable_med = True
