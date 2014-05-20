@@ -54,13 +54,9 @@ subroutine rvchn3(vale, padr, ma, itypm, nbpt,&
     do i = 1, nbnf, 1
         nloc = clocf(f,i,itypm)
         nglo = conec(vlccnc(m) + nloc-1)
-        write(6,*) 'AJACOT i,nloc=',i, nloc
-        write(6,*) 'AJACOT i,nglo=',i, nglo
-        write(6,*) 'AJACOT i,padr(nglo)=',i, padr(nglo)
         do j = 1, nbcp, 1
-            write(6,*) 'AJACOT j,v=',j,vale(padr(nglo)+j-1)
             ! si la valeur vaut r8vide, c'est qu'il y a un probleme !
-            if (abs(vale(padr(nglo)+j-1)).gt.1.e300) then
+            if (abs(vale(padr(nglo)+j-1)).gt.1.d300) then
                 call utmess('F','POSTRELE_67')
             endif
             tabaux(i,j) = vale(padr(nglo)+j-1)
