@@ -119,6 +119,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOEUD='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.0,
+                  CRITERE='ABSOLU',
 
                   ),
           )
