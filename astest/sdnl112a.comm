@@ -187,7 +187,7 @@ FREQ1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=25.39100,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=25.39099699260,
                         VALE_PARA=4.811,
                         FONCTION=FREQ1,
                         ),
@@ -204,7 +204,7 @@ FREQ2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=52.85638,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=52.85637777599,
                         VALE_PARA=4.811,
                         FONCTION=FREQ2,
                         ),
@@ -221,7 +221,7 @@ AMOR1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.02805219,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.02805218744559,
                         VALE_PARA=4.811,
                         FONCTION=AMOR1,
                         ),
@@ -238,7 +238,7 @@ AMOR2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=4.999E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.999000000000E-03,
                         VALE_PARA=4.811,
                         FONCTION=AMOR2,
                         ),
@@ -288,7 +288,7 @@ DYN0=POST_DYNA_ALEA(INTERSPECTRE=_F(
 IMPR_TABLE(  TABLE=DYN0, )
 
 TEST_TABLE(
-           VALE_CALC=2.2842159127376E-3,
+           VALE_CALC=0.00228421358252,
            TOLE_MACHINE=3.E-6,                 # TODO TOLE_MACHINE
            NOM_PARA='ECART',
            TABLE=DYN0,
@@ -332,7 +332,7 @@ REPP45=REST_SPEC_PHYS(BASE_ELAS_FLUI = MELFLU45,
 DYN45=POST_DYNA_ALEA(INTERSPECTRE=_F(INTE_SPEC = REPP45,
                                      OPTION    = 'DIAG'))
 
-TEST_TABLE(VALE_CALC      = 2.39852863262E-31,
+TEST_TABLE(VALE_CALC=7.59125198917E-31,
            CRITERE        = 'ABSOLU',
            ORDRE_GRANDEUR = 2.0E-3, # ~ RMS de déplacement obténu sur les 4 premiers modes
            NOM_PARA       = 'ECART',
