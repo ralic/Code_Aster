@@ -368,7 +368,7 @@ subroutine zneupd(rvec, howmny, select, d, z,&
     integer :: ldq, mode, msglvl, ritz, k, irz, ibd, outncv, np, numcnv, jj
     integer :: ishift
     complex(kind=8) :: rnorm, temp, vl(1)
-    real(kind=8) :: conds, sep, rtemp, eps23, eps
+    real(kind=8) :: rtemp, eps23, eps
     logical :: reord
 !
 !
@@ -633,9 +633,8 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !           | REORDER THE COMPUTED UPPER TRIANGULAR MATRIX. |
 !           %-----------------------------------------------%
 !
-            call gtrsen('N', 'V', select, ncv, workl(iuptri),&
-                        ldh, workl(invsub), ldq, workl(iheig), nconv,&
-                        conds, sep, workev, ncv, ierr)
+            call gtrsen(select, ncv, workl(iuptri), ldh, workl(invsub),&
+                        ldq, workl(iheig), nconv, ierr)
 !
             if (ierr .eq. 1) then
                 info = 1

@@ -1,6 +1,5 @@
-subroutine gtrsen(job, compq, select, n, t,&
-                  ldt, q, ldq, w, m,&
-                  s, sep, work, lwork, info)
+subroutine gtrsen(select, n, t, ldt, q,&
+                  ldq, w, m, info)
 ! ======================================================================
 ! COPYRIGHT (C) LAPACK
 ! COPYRIGHT (C) 2007 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -39,19 +38,6 @@ subroutine gtrsen(job, compq, select, n, t,&
 !  ARGUMENTS
 !  =========
 !
-!  JOB     (INPUT) CHARACTER*1
-!          SPECIFIES WHETHER CONDITION NUMBERS ARE REQUIRED FOR THE
-!          CLUSTER OF EIGENVALUES (S) OR THE INVARIANT SUBSPACE (SEP):
-!          = 'N': NONE;
-!          = 'E': FOR EIGENVALUES ONLY (S);
-!          = 'V': FOR INVARIANT SUBSPACE ONLY (SEP);
-!          = 'B': FOR BOTH EIGENVALUES AND INVARIANT SUBSPACE (S AND
-!                 SEP).
-!
-!  COMPQ   (INPUT) CHARACTER*1
-!          = 'V': UPDATE THE MATRIX Q OF SCHUR VECTORS;
-!          = 'N': DO NOT UPDATE Q.
-!
 !  SELECT  (INPUT) LOGICAL ARRAY, DIMENSION (N)
 !          SELECT SPECIFIES THE EIGENVALUES IN THE SELECTED CLUSTER. TO
 !          SELECT THE J-TH EIGENVALUE, SELECT(J) MUST BE SET TO .TRUE..
@@ -68,16 +54,15 @@ subroutine gtrsen(job, compq, select, n, t,&
 !          THE LEADING DIMENSION OF THE ARRAY T. LDT >= MAX(1,N).
 !
 !  Q       (INPUT/OUTPUT) COMPLEX*16 ARRAY, DIMENSION (LDQ,N)
-!          ON ENTRY, IF COMPQ = 'V', THE MATRIX Q OF SCHUR VECTORS.
-!          ON EXIT, IF COMPQ = 'V', Q HAS BEEN POSTMULTIPLIED BY THE
+!          ON ENTRY, THE MATRIX Q OF SCHUR VECTORS.
+!          ON EXIT, Q HAS BEEN POSTMULTIPLIED BY THE
 !          UNITARY TRANSFORMATION MATRIX WHICH REORDERS T; THE LEADING M
 !          COLUMNS OF Q FORM AN ORTHONORMAL BASIS FOR THE SPECIFIED
 !          INVARIANT SUBSPACE.
-!          IF COMPQ = 'N', Q IS NOT REFERENCED.
 !
 !  LDQ     (INPUT) INTEGER
 !          THE LEADING DIMENSION OF THE ARRAY Q.
-!          LDQ >= 1; AND IF COMPQ = 'V', LDQ >= N.
+!          LDQ >= N.
 !
 !  W       (OUTPUT) COMPLEX*16
 !          THE REORDERED EIGENVALUES OF T, IN THE SAME ORDER AS THEY
@@ -86,28 +71,6 @@ subroutine gtrsen(job, compq, select, n, t,&
 !  M       (OUTPUT) INTEGER
 !          THE DIMENSION OF THE SPECIFIED INVARIANT SUBSPACE.
 !          0 <= M <= N.
-!
-!  S       (OUTPUT) DOUBLE PRECISION
-!          IF JOB = 'E' OR 'B', S IS A LOWER BOUND ON THE RECIPROCAL
-!          CONDITION NUMBER FOR THE SELECTED CLUSTER OF EIGENVALUES.
-!          S CANNOT UNDERESTIMATE THE TRUE RECIPROCAL CONDITION NUMBER
-!          BY MORE THAN A FACTOR OF SQRT(N). IF M = 0 OR N, S = 1.
-!          IF JOB = 'N' OR 'V', S IS NOT REFERENCED.
-!
-!  SEP     (OUTPUT) DOUBLE PRECISION
-!          IF JOB = 'V' OR 'B', SEP IS THE ESTIMATED RECIPROCAL
-!          CONDITION NUMBER OF THE SPECIFIED INVARIANT SUBSPACE. IF
-!          M = 0 OR N, SEP = NORM(T).
-!          IF JOB = 'N' OR 'E', SEP IS NOT REFERENCED.
-!
-!  WORK    (WORKSPACE) COMPLEX*16 ARRAY, DIMENSION (LWORK)
-!          IF JOB = 'N', WORK IS NOT REFERENCED.
-!
-!  LWORK   (INPUT) INTEGER
-!          THE DIMENSION OF THE ARRAY WORK.
-!          IF JOB = 'N', LWORK >= 1;
-!          IF JOB = 'E', LWORK = M*(N-M);
-!          IF JOB = 'V' OR 'B', LWORK >= 2*M*(N-M).
 !
 !  INFO    (OUTPUT) INTEGER
 !          = 0:  SUCCESSFUL EXIT
@@ -188,7 +151,7 @@ subroutine gtrsen(job, compq, select, n, t,&
 !-----------------------------------------------------------------------
 ! ASTER INFORMATION
 ! 14/01/2000 TOILETTAGE DU FORTRAN SUIVANT LES REGLES ASTER,
-!            REMPLACEMENT DE 1 RETURN PAR GOTO 1000,
+!            REMPLACEMENT DE 1 RETURN PAR GOTO 100,
 !            IMPLICIT NONE.
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
@@ -196,163 +159,79 @@ subroutine gtrsen(job, compq, select, n, t,&
 !     .. SCALAR ARGUMENTS ..
 #include "asterc/matfpe.h"
 #include "asterfort/gtrexc.h"
-#include "asterfort/gtrsyl.h"
 #include "asterfort/xerbla.h"
 #include "blas/lsame.h"
 #include "blas/zlacon.h"
 #include "blas/zlacpy.h"
 #include "blas/zlange.h"
-    character(len=1) :: compq, job
-    integer :: info, ldq, ldt, lwork, m, n
-    real(kind=8) :: s, sep
+    integer :: info, ldq, ldt, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     logical :: select( * )
-    complex(kind=8) :: q( ldq, * ), t( ldt, * ), w( * ), work( * )
-!     ..
-!
-!     .. PARAMETERS ..
-    real(kind=8) :: zero, one
-    parameter          ( zero = 0.0d+0, one = 1.0d+0 )
+    complex(kind=8) :: q( ldq, * ), t( ldt, * ), w( * )
 !     ..
 !     .. LOCAL SCALARS ..
-    logical :: wantbh, wantq, wants, wantsp
     integer :: ierr, k, ks, n1, n2, nn
-    integer(kind=4) :: kase
-    real(kind=8) :: est, rnorm, scale
 !     ..
-!     .. LOCAL ARRAYS ..
-    real(kind=8) :: rwork(1)
-!     ..
-!
-!
 !     .. EXECUTABLE STATEMENTS ..
 !
     call matfpe(-1)
 !
 !     DECODE AND TEST THE INPUT PARAMETERS.
 !
-    wantbh = lsame( job, 'B' )
-    wants = lsame( job, 'E' ) .or. wantbh
-    wantsp = lsame( job, 'V' ) .or. wantbh
-    wantq = lsame( compq, 'V' )
-!
 !     SET M TO THE NUMBER OF SELECTED EIGENVALUES.
 !
-    rwork(1)=0.d0
-!
     m = 0
-    do 10 k = 1, n
+    do k = 1, n
         if (select( k )) m = m + 1
-10  end do
+    end do
 !
     n1 = m
     n2 = n - m
     nn = n1*n2
 !
     info = 0
-    if (.not.lsame( job, 'N' ) .and. .not.wants .and. .not.wantsp) then
-        info = -1
-    else if (.not.lsame( compq, 'N' ) .and. .not.wantq) then
-        info = -2
-    else if (n.lt.0) then
+    if (n.lt.0) then
         info = -4
     else if (ldt.lt.max( 1, n )) then
         info = -6
-    else if (ldq.lt.1 .or. ( wantq .and. ldq.lt.n )) then
+    else if (ldq.lt.1 .or. (ldq.lt.n )) then
         info = -8
-        else if( lwork.lt.1 .or. ( ( wants .and. .not.wantsp ) .and.&
-    lwork.lt.nn ) .or. ( wantsp .and. lwork.lt.2*nn ) ) then
-        info = -14
     endif
     if (info .ne. 0) then
         call xerbla('GTRSEN', -info)
-        goto 1000
+        goto 100
     endif
 !
 !     QUICK RETURN IF POSSIBLE
 !
     if (m .eq. n .or. m .eq. 0) then
-        if (wants) s = one
-        if (wantsp) sep = zlange( '1', n, n, t, ldt, rwork )
         goto 40
     endif
 !
 !     COLLECT THE SELECTED EIGENVALUES AT THE TOP LEFT CORNER OF T.
 !
     ks = 0
-    do 20 k = 1, n
+    do k = 1, n
         if (select( k )) then
             ks = ks + 1
 !
 !           SWAP THE K-TH EIGENVALUE TO POSITION KS.
 !
-            if (k .ne. ks) call gtrexc(compq, n, t, ldt, q,&
+            if (k .ne. ks) call gtrexc('V', n, t, ldt, q,&
                                        ldq, k, ks, ierr)
         endif
-20  end do
+    end do
 !
-    if (wants) then
-!
-!        SOLVE THE SYLVESTER EQUATION FOR R:
-!
-!           T11*R - R*T22 = SCALE*T12
-!
-        call zlacpy('F', n1, n2, t( 1, n1+1 ), ldt,&
-                    work, n1)
-        call gtrsyl('N', 'N', -1, n1, n2,&
-                    t, ldt, t( n1+1, n1+1 ), ldt, work,&
-                    n1, scale, ierr)
-!
-!        ESTIMATE THE RECIPROCAL OF THE CONDITION NUMBER OF THE CLUSTER
-!        OF EIGENVALUES.
-!
-        rnorm = zlange( 'F', n1, n2, work, n1, rwork )
-        if (rnorm .eq. zero) then
-            s = one
-        else
-            s = scale / ( sqrt( scale*scale / rnorm+rnorm )* sqrt( rnorm ) )
-        endif
-    endif
-!
-    if (wantsp) then
-!
-!        ESTIMATE SEP(T11,T22).
-!
-        est = zero
-        kase = 0
-30      continue
-        call zlacon(nn, work( nn+1 ), work, est, kase)
-        if (kase .ne. 0) then
-            if (kase .eq. 1) then
-!
-!              SOLVE T11*R - R*T22 = SCALE*X.
-!
-                call gtrsyl('N', 'N', -1, n1, n2,&
-                            t, ldt, t( n1+1, n1+1 ), ldt, work,&
-                            n1, scale, ierr)
-            else
-!
-!              SOLVE T11'*R - R*T22' = SCALE*X.
-!
-                call gtrsyl('C', 'C', -1, n1, n2,&
-                            t, ldt, t( n1+1, n1+1 ), ldt, work,&
-                            n1, scale, ierr)
-            endif
-            goto 30
-        endif
-!
-        sep = scale / est
-    endif
 !
 40  continue
 !
 !     COPY REORDERED EIGENVALUES TO W.
 !
-    do 50 k = 1, n
+    do k = 1, n
         w( k ) = t( k, k )
-50  end do
-1000  continue
+    end do
+100 continue
     call matfpe(1)
 !
 !     END OF GTRSEN
