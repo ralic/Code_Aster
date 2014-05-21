@@ -1017,7 +1017,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-2,
 #          Variabilité expliquee ci-dessus :
            TOLE_MACHINE=5.E-5,
-           VALE_CALC=1.8602884763866,
+           VALE_CALC=1.86028706708,
            VALE_REFE=1.8628625511053,
            NOM_PARA='RMS',
            TABLE=TAB_INF1,);
@@ -1026,7 +1026,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-1,
 #          Variabilité expliquee ci-dessus :
            TOLE_MACHINE=4.E-5,
-           VALE_CALC=1.2435209353361,
+           VALE_CALC=1.24351881808,
            VALE_REFE=1.107501776192,
            NOM_PARA='RMS',
            TABLE=TAB_INF2,);
@@ -1035,7 +1035,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-1,
 #          Variabilité expliquee ci-dessus :
            TOLE_MACHINE=2.E-4,
-           VALE_CALC=2.2009207174445,
+           VALE_CALC=2.20092122269,
            VALE_REFE=2.4097094098975,
            NOM_PARA='RMS',
            TABLE=TAB_INF3,);
@@ -1048,7 +1048,7 @@ MAXSP = INFO_FONCTION(MAX=_F(FONCTION = SPOSCI,),);
 TEST_FONCTION(VALEUR=_F(
 #                          Variabilité non-expliquee :
                            TOLE_MACHINE=3.E-5,
-                           VALE_CALC=0.88086031,
+                           VALE_CALC=0.88085975196576,
                            VALE_REFE=8.798585602334655e-01,
                            VALE_PARA=(0.02, 2.5),
                            REFERENCE='AUTRE_ASTER',
@@ -1164,7 +1164,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
 #          Variabilité non-expliquee :
            TOLE_MACHINE=6.E-5,
-           VALE_CALC=0.17334921052170,
+           VALE_CALC=0.173349516112,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1175,7 +1175,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
 #          Variabilité non-expliquee :
            TOLE_MACHINE=5.E-5,
-           VALE_CALC=0.033066587487551,
+           VALE_CALC=0.0330658093322,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1184,7 +1184,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
 
 TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            VALE_ABS='OUI',
-           VALE_CALC=0.93443823429991,
+           VALE_CALC=0.934438235657,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1195,7 +1195,7 @@ TEST_TABLE(NOM_PARA='SIXY', TABLE=TAB_SIXY, TYPE_TEST='MAX',
            VALE_ABS='OUI',
 #          Variabilité non-expliquee :
            TOLE_MACHINE=6.E-6,
-           VALE_CALC=0.21472309344989,
+           VALE_CALC=0.214722635791,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
