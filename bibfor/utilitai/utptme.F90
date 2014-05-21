@@ -33,6 +33,7 @@ subroutine utptme(nomarg, valarg, iret)
     real(kind=8) :: vmumps, vpetsc, rlqmem, vminit, vmjdc
     common /msolve/ vmumps,vpetsc,rlqmem,vminit,vmjdc
 ! ----------------------------------------------------------------------
+    iret = 0
     if (nomarg .eq. 'MEM_TOTA') then
 !
 ! --------- LIMITE MEMOIRE ALLOUEE LORS DE L'EXECUTION

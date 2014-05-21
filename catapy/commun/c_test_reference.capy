@@ -67,7 +67,7 @@ def C_TEST_REFERENCE(keyword, max=1):       #COMMUN#
         'b_values' : BLOC(condition = "True",
             VALE_CALC    = SIMP(statut='f',typ='R',max=max),
             # tricky because VALE_CALC may be a tuple or a scalar
-            b_ordre_grandeur = BLOC(condition="VALE_CALC is not None and abs(VALE_CALC if type(VALE_CALC) not in (list, tuple) else VALE_CALC[0]) < 1.e16",
+            b_ordre_grandeur = BLOC(condition="VALE_CALC is not None and abs(VALE_CALC if type(VALE_CALC) not in (list, tuple) else VALE_CALC[0]) < 1.e-16",
                 ORDRE_GRANDEUR = SIMP(statut='f',typ='R'),
             ),
             LEGENDE      = SIMP(statut='f',typ='TXM'),
