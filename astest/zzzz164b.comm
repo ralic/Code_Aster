@@ -19,6 +19,8 @@
 # - ROTATION, TRANSLATION, CHANGEMENT DE REPERE
 #   ET D'ECHELLE D'UN MAILLAGE 3D OU 2D
 # - COMPARAISON AVEC RESULTATS ANALYTIQUES
+# - ON VALIDE AUSSI LE PASSAGE DES NOEUDS MILIEU AU QUART DE L ELEMENT
+#   POUR LES PYRA13
 #********************************************************************
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -228,5 +230,89 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 #
 IMPR_RESU( RESU = _F ( MAILLAGE = MA2 , ) , )
+
+
+#==========================================================================================
+# Couverture de barpyr ; MODI_MAILLAGE > OPTION = NOEUD_QUART pour un pyra13
+#
+
+MA3 = LIRE_MAILLAGE ( UNITE = 20,
+                      FORMAT= 'MED',
+                      INFO = 2 )
+
+
+CH_POS2=CREA_CHAMP(TITRE = 'POSITION DES NOEUDS MILIEU',
+                  INFO = 2 ,
+                  TYPE_CHAM = 'NOEU_GEOM_R',
+                  OPERATION = 'EXTR',
+                  MAILLAGE = MA3 ,
+                  NOM_CHAM ='GEOMETRIE',);
+
+MA3=MODI_MAILLAGE( reuse = MA3,
+                   MAILLAGE = MA3,
+                   MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                   GROUP_MA_FOND='gr_seg3',),
+                   INFO= 2,
+                   )
+
+
+CH_POS=CREA_CHAMP(TITRE = 'POSITION DES NOEUDS MILIEU',
+                  INFO = 2 ,
+                  TYPE_CHAM = 'NOEU_GEOM_R',
+                  OPERATION = 'EXTR',
+                  MAILLAGE = MA3 ,
+                  NOM_CHAM ='GEOMETRIE',);
+                  
+
+POS_N17 = POST_RELEVE_T(ACTION=_F(INTITULE = 'POSITION',
+                                 OPERATION = 'EXTRACTION',
+                                 NOEUD = 'N17',
+                                 CHAM_GD = CH_POS,
+                                 TOUT_CMP ='OUI'),
+                                 INFO = 2,)
+
+POS_N24 = POST_RELEVE_T(ACTION=_F(INTITULE = 'POSITION',
+                                 OPERATION = 'EXTRACTION',
+                                 NOEUD = 'N24',
+                                 CHAM_GD = CH_POS,
+                                 TOUT_CMP ='OUI'),
+                                 INFO = 2,)
+
+POS_N12 = POST_RELEVE_T(ACTION=_F(INTITULE = 'POSITION',
+                                 OPERATION = 'EXTRACTION',
+                                 NOEUD = 'N12',
+                                 CHAM_GD = CH_POS,
+                                 TOUT_CMP ='OUI'),
+                                 INFO = 2,)
+#
+TEST_TABLE(TABLE=POS_N12,
+           NOM_PARA='COOR_Z',
+           VALE_REFE= 50.0,
+           VALE_CALC= 50.0,
+           REFERENCE='ANALYTIQUE')
+#
+TEST_TABLE(TABLE=POS_N17,
+           NOM_PARA='COOR_Y',
+           VALE_REFE= 150.0,
+           VALE_CALC= 150.0,
+           REFERENCE='ANALYTIQUE')
+#
+TEST_TABLE(TABLE=POS_N24,
+           NOM_PARA='COOR_X',
+           VALE_REFE= 75.0,
+           VALE_CALC= 75.0,
+           REFERENCE='ANALYTIQUE')
+#
+TEST_TABLE(TABLE=POS_N24,
+           NOM_PARA='COOR_Y',
+           VALE_REFE= 125.0,
+           VALE_CALC= 125.0,
+           REFERENCE='ANALYTIQUE')
+#
+TEST_TABLE(TABLE=POS_N24,
+           NOM_PARA='COOR_Z',
+           VALE_REFE= 75.0,
+           VALE_CALC= 75.0,
+           REFERENCE='ANALYTIQUE')
 #
 FIN ()
