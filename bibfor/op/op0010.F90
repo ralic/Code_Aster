@@ -43,14 +43,17 @@ subroutine op0010()
 #include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/infmaj.h"
+#include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xajuls.h"
@@ -70,7 +73,7 @@ subroutine op0010()
 #include "asterfort/xprtor.h"
 #include "asterfort/xprupw.h"
 #include "asterfort/xprvit.h"
-    integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jconx1, jconx2, nbma, i
+    integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i, ima
     integer :: j
     integer :: iadrma
     real(kind=8) :: lcmin, deltat
@@ -78,10 +81,11 @@ subroutine op0010()
     character(len=16) :: k16bid, typdis
     character(len=19) :: cnsvt, cnsvn, grlt, grln, cnslt, cnsln, cnsen, cnsenr
     character(len=19) :: noesom, isozro, noresi, cnxinv, cnsbl, cnsdis, cnslj
-    character(len=19) :: vpoint, delta
+    character(len=19) :: vpoint, delta, mai
     character(len=24) :: lismae, lisnoe, vcn, grlr, vcnt, grlrt
     real(kind=8) :: meserr(3)
-    character(len=8) :: test, msgout(2)
+    character(len=8) :: test, msgout(2), typma
+    logical :: quad
 !     MESSAGES
 !
 !     CRACK ADVANCEMENT
@@ -233,6 +237,21 @@ subroutine op0010()
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
+!
+!   blindage : interdiction de traiter des mailles quadratiques
+!
+    mai=noma//'.TYPMAIL'
+    call jeveuo(mai, 'L', jma)
+    quad=.false.
+    do ima = 1, nbma
+       call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
+       if (.not.ismali(typma)) then
+          quad=.true.
+          exit
+       endif
+    end do
+
+    if (quad) call utmess('F', 'XFEM_86')
 !
 ! --- CONNECTIVITE INVERSEE
 !

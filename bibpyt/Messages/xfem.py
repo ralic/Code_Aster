@@ -577,4 +577,12 @@ cata_msg={
      Revoyez la définition de ces deux modèles.
 """),
 
+86: _(u"""
+  -> Il n'est pas possible de réaliser la propagation d'une fissure en présence de mailles
+     quadratiques dans le cadre d'un modèle X-FEM.
+
+  -> Risque & Conseil:
+     Veuillez utiliser un maillage linéaire.
+"""),
+
 }
