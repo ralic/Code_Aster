@@ -13,6 +13,8 @@ def options(self):
     group.add_option('-n', '--name', dest='testname',
                     action='append', default=None,
                     help='name of testcases to run (as_run must be in PATH)')
+    group.add_option('--outputdir', action='store', default=None, metavar='DIR',
+                    help='directory to store the output files')
     group.add_option('--exectool', dest='exectool',
                     action='store', default=None,
                     help='run a testcase by passing additional arguments '
@@ -33,7 +35,11 @@ def runtest(self):
         toolargs.append('--run_params=actions=make_env')
     elif opts.exectool is not None:
         toolargs.append('--exectool=%s' % opts.exectool)
-    dtmp = tempfile.mkdtemp(prefix='runtest_')
+    dtmp = opts.outputdir or tempfile.mkdtemp(prefix='runtest_')
+    try:
+        os.makedirs(dtmp)
+    except (OSError, IOError):
+        pass
     Logs.info("destination of output files: %s" % dtmp)
     status = 0
     if not opts.testname:
