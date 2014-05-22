@@ -376,17 +376,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   PARA='RESI_GCPC',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=VECAS,
-                   VALE_CALC=0.000501813135009,
-                   TOLE_MACHINE=1.e-4,           # TODO TOLE_MACHINE
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=0.4,),
-                ),
-          )
 
 # VALEUR DU TENSEUR DES CONTRAINTES PROVENANT D'UN CALCUL PAR PERMAS
 
@@ -757,21 +746,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   PARA='ITER_GCPC',
-                   VALE_CALC_I=3,
-                   RESULTAT=VECAS2,
-                   CRITERE='ABSOLU',),
-                _F(NUME_ORDRE=1,
-                   PARA='RESI_GCPC',
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=VECAS2,
-                   VALE_CALC=0.000185490999336,
-                   VALE_REFE=0.0,
-                   TOLE_MACHINE=2.e-4,           # TODO TOLE_MACHINE
-                   CRITERE='ABSOLU',
-                   PRECISION=0.4,),
-                ),
-          )
 
 FIN();
