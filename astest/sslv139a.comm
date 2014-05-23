@@ -149,7 +149,7 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RES_NORM,
                   VALE_CALC=848469.558281,
-                  TOLE_MACHINE=1.5e-6,      # légère variation
+                  TOLE_MACHINE=2.5e-6,      # légère variation
                   VALE_REFE=8.49350940E+05,
                   PRECISION=2.E-3,),)
 
