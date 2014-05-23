@@ -361,6 +361,31 @@ subroutine te0031(option, nomte)
         ind=8
         call dxeffi(option, nomte, pgl, zr(icontp), ind, effgt)
 !
+        call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
+        if(icompo.ne.0) then
+           if ((zk16(icompo+2)(6:10).eq.'_REAC') .or. (zk16(icompo+2) .eq.'GROT_GDEP')) then
+              if (zk16(icompo+2)(6:10) .eq. '_REAC') then
+                 call utmess('A', 'ELEMENTS2_72')
+              endif
+              call jevech('PDEPLMR', 'L', jdepm )
+              call jevech('PDEPLPR', 'L', jdepr)
+              do i = 1, nno
+                 i1 = 3* (i-1)
+                 i2 = 6* (i-1)
+                 zr(jgeom+i1)   = zr(jgeom+i1)   + zr(jdepm+i2)   + zr(jdepr+i2)
+                 zr(jgeom+i1+1) = zr(jgeom+i1+1) + zr(jdepm+i2+1) + zr(jdepr+i2+1)
+                 zr(jgeom+i1+2) = zr(jgeom+i1+2) + zr(jdepm+i2+2) + zr(jdepr+i2+2)
+              end do
+              if (nno .eq. 3) then
+                 call dxtpgl(zr(jgeom), pgl)
+              else if (nno.eq.4) then
+                 call dxqpgl(zr(jgeom), pgl, 'S', iret)
+              endif
+!
+              call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
+           endif
+        endif
+!
 ! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
         call dxbsig(nomte, xyzl, pgl, effgt, bsigma, option)
 !
