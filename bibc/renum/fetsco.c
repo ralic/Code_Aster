@@ -17,6 +17,8 @@
 #include "aster.h"
 
 #ifndef _DISABLE_SCOTCH
+/* scotch.h may use int64_t without including <sys/types.h> */
+#include <sys/types.h>
 #include "scotch.h"
 #endif
 

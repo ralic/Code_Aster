@@ -68,7 +68,7 @@ def check_scotch_libs(self):
 @Configure.conf
 def check_scotch_headers(self):
     self.start_msg('Checking for header scotch.h')
-    headers = 'stdio.h stdlib.h scotch.h'
+    headers = 'stdio.h stdlib.h sys/types.h scotch.h'
     try:
         check = partial(self.check, header_name=headers,
                         uselib_store='SCOTCH', uselib='SCOTCH MPI')
@@ -84,10 +84,10 @@ def check_scotch_headers(self):
 
 @Configure.conf
 def check_scotch_version(self):
-    # scotch.h may use int64_t without including <stdint.h>
+    # scotch.h may use int64_t without including <sys/types.h>
     fragment = r'''
 #include <stdio.h>
-#include <stdint.h>
+#include <sys/types.h>
 #include "scotch.h"
 
 int main(void){
