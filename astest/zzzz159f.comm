@@ -17,39 +17,21 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
-# person_in_charge: aimery.assire at edf.fr
 
-import os, sys, glob, math
+import sys
+import os
+import os.path as osp
+import glob
 from distutils.sysconfig import get_python_lib
 
 ROOT = os.getcwd()
 
 # Recuperation du chemin du fichier macr_recal_ops.py
-commande = None
-for REPPY in ['Eficas', 'Python']:
-   fic = os.path.join( ROOT, REPPY, 'Macro', 'recal.py' )
-   print fic, os.path.isfile(fic)
-   if os.path.isfile(fic):
-      commande = fic
-      print "Zzzzzzzzzz"
-      break
-if not commande:
-    raise aster.error,"<F> Probleme : impossible de recuperer le chemin de recal.py"
-
-
-ASTER_ROOT = os.environ['ASTER_ROOT']
-sys.path.append(get_python_lib(prefix=ASTER_ROOT))
-sys.path.append(os.path.join(ROOT, REPPY))
-# ne pas exporter le contenu sys.path car il contient les repertoires
-# de la version de python courante (conflit possible si as_run utilise
-# un autre python)
-lpath = os.environ.get('PYTHONPATH', '').split(os.pathsep)
-lpath.append(get_python_lib(prefix=ASTER_ROOT))
-lpath.append(os.path.join(ROOT, REPPY))
-os.environ['PYTHONPATH'] = os.pathsep.join(lpath)
+import Macro
+commande = osp.join(osp.dirname(Macro.__file__), 'recal.py')
 
 from Utilitai.System import ExecCommand
-from asrun.profil import ASTER_PROFIL
+from asrun.profil import AsterProfil
 
 arguments = ' --objective=fcalc --objective_type=float --gradient_type=no --mr_parameters=fort.2 '
 commande = '%s %s %s' % (sys.executable, commande, arguments)
@@ -118,7 +100,7 @@ def fonction(val):
 # - On retire du profil tous les fichiers resultats
 liste = glob.glob('*.export')
 fichier_export = liste[0]
-prof = ASTER_PROFIL(fichier_export)
+prof = AsterProfil(fichier_export)
 for lab in ('data', 'resu'):
    l_fr = getattr(prof, lab)
    l_tmp = l_fr[:]
