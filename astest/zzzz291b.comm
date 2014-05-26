@@ -133,15 +133,15 @@ TEMP22=CREA_CHAMP(OPERATION='EVAL',
 
 Norme00=POST_ELEM(MODELE=MOTH,
                   CHAM_GD=TEMP00,
-                  INTEGRALE=_F(NOM_CHAM='TEMP',NOM_CMP='X1',GROUP_MA='TRIA',),);
+                  INTEGRALE=_F(NOM_CHAM='TEMP',NOM_CMP='X1',GROUP_MA='TRIA',TYPE_MAILLE='2D'),);
 
 Norme11=POST_ELEM(MODELE=MOTH,
                   CHAM_GD=TEMP11,
-                  INTEGRALE=_F(NOM_CHAM='FLUX_ELGA', NOM_CMP='X1',GROUP_MA='TRIA',),);
+                  INTEGRALE=_F(NOM_CHAM='FLUX_ELGA', NOM_CMP='X1',GROUP_MA='TRIA',TYPE_MAILLE='2D'),);
 
 Norme22=POST_ELEM(MODELE=MOTH,
                   CHAM_GD=TEMP22,
-                  INTEGRALE=_F(NOM_CHAM='FLUX_ELNO', NOM_CMP='X1', GROUP_MA='TRIA',),);
+                  INTEGRALE=_F(NOM_CHAM='FLUX_ELNO', NOM_CMP='X1', GROUP_MA='TRIA',TYPE_MAILLE='2D'),);
 
 
 # calcul de la norme (reference):

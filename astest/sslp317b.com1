@@ -77,7 +77,7 @@ CHMATBID=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
 VOLUMEX=POST_ELEM(MODELE=MO,
                   CHAM_MATER=CHMATBID,
                   CHAM_GD=R1ELGA,
-                  INTEGRALE=_F(NOM_CHAM='NEUT',NOM_CMP='X1',GROUP_MA='XFEM',),);
+                  INTEGRALE=_F(NOM_CHAM='NEUT',NOM_CMP='X1',GROUP_MA='XFEM',TYPE_MAILLE='2D'),);
 
 # Suite a issue20559, on teste ici la valeur de la surface du GROUP_MA obtenu en faisant :
 # ->  DEFI_GROUP / CREA_GROUP_MA / OPTION='FISS_XFEM' / TYPE_GROUP='XFEM' / FISSURE

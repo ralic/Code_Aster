@@ -93,7 +93,7 @@ def post_decollement_ops(self,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,**args):
                       AFFE=_F(CHAM_MATER=__chmat0,MODELE=__model,CHAM_GD=__chpg0,INST=0.0),)
 
   __tbSurf0 = POST_ELEM(RESULTAT=__resu0,INST=0.0,MODELE=__model,
-                       INTEGRALE=_F(NOM_CHAM='VARI_ELGA',NOM_CMP='X1',GROUP_MA=GROUP_MA),)
+                       INTEGRALE=_F(NOM_CHAM='VARI_ELGA',NOM_CMP='X1',GROUP_MA=GROUP_MA, TYPE_MAILLE='2D'),)
 
   __surf=__tbSurf0.EXTR_TABLE().values()['INTE_X1'][0]
 
@@ -124,7 +124,7 @@ def post_decollement_ops(self,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,**args):
                       AFFE=_F(CHAM_MATER=__chmat0,MODELE=__model,CHAM_GD=__chg,INST=0.0),)
 
      __tb3 = POST_ELEM(RESULTAT=__resu,INST=0.0,MODELE=__model,
-                          INTEGRALE=_F(NOM_CHAM='VARI_ELGA',NOM_CMP='X1',GROUP_MA=GROUP_MA),)
+                          INTEGRALE=_F(NOM_CHAM='VARI_ELGA',NOM_CMP='X1',GROUP_MA=GROUP_MA,TYPE_MAILLE='2D'),)
 
      __su2=__tb3.EXTR_TABLE().values()['INTE_X1'][0]
 

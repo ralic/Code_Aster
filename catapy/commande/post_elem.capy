@@ -247,6 +247,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                                NOM_CHAM     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
                                NOM_CMP      = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
                                DEJA_INTEGRE = SIMP(statut='f',typ='TXM',into=("OUI","NON",),),
+                               TYPE_MAILLE  = SIMP(statut='o',typ='TXM',into=('1D','2D','3D'))
                               ),
          b_integrale = BLOC(condition = "( INTEGRALE != None )",
                        fr="calcul de la moyenne d'une composante",

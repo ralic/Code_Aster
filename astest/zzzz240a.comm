@@ -239,14 +239,16 @@ IMPR_TABLE(TABLE=ML1,
 
 POST1=POST_ELEM(INTEGRALE=_F(GROUP_MA='GXXXXXX_CARRE1',
                              NOM_CHAM='SIEF_ELGA',
-                             NOM_CMP='SIYY',),
+                             NOM_CMP='SIYY',
+                             TYPE_MAILLE='2D',),
                 MODELE=MO1,
                 RESULTAT=U1,
                 INST=3.0,);
 
 POST2=POST_ELEM(INTEGRALE=_F(GROUP_MA='GXXXXXX_CARRE1',
                              NOM_CHAM='SIEF_ELGA',
-                             NOM_CMP='SIYY',),
+                             NOM_CMP='SIYY',
+                             TYPE_MAILLE='2D',),
                 MODELE=MO2,
                 RESULTAT=U2,
                 INST=3.0,);

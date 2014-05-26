@@ -174,33 +174,33 @@ TEMPBB=CREA_CHAMP(OPERATION='EVAL',
 Norme00=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D',TYPE_MAILLE='3D'));
 
 Norme01=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='CUBE'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='CUBE',TYPE_MAILLE='3D'),);
 
 Norme02=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D',TYPE_MAILLE='3D'),);
 
 Norme03=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='2D'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='2D',TYPE_MAILLE='2D'),);
 
 Norme11=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMPAA,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1', GROUP_MA='CUBE'),);
+                  INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1', GROUP_MA='CUBE',TYPE_MAILLE='3D'),);
 
 
 Norme22=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMPBB,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='SIGM_ELNO', NOM_CMP='X1', GROUP_MA='CUBE'),);
+                  INTEGRALE=_F(NOM_CHAM='SIGM_ELNO', NOM_CMP='X1', GROUP_MA='CUBE',TYPE_MAILLE='3D'),);
 
 
 # calcul de la norme (reference):
@@ -535,7 +535,7 @@ TEMPZZ=CREA_CHAMP(OPERATION='EVAL',
 NormeZZ=POST_ELEM(MODELE=MOMIX,
                   CHAM_GD=TEMPZZ,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D',TYPE_MAILLE='3D'),);
 
 NormZZ=math.sqrt(NormeZZ['INTE_X1',1]);
 

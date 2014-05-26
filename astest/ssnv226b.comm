@@ -148,7 +148,8 @@ INT_SI=POST_ELEM(MODELE=TROISD,
                    RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
 
 IMPR_TABLE(TABLE=INT_SI)
 
@@ -156,7 +157,8 @@ INT_EP=POST_ELEM(MODELE=TROISD,
                    RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='EPSI_ELGA',
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
 
 IMPR_TABLE(TABLE=INT_EP)
 
@@ -185,7 +187,8 @@ INT_VI=POST_ELEM(MODELE=TROISD,
                    RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='VARI_ELGA',
                                 NOM_CMP=('V1','V3','V4','V5','V6','V7','V8'),
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
 
 IMPR_TABLE(TABLE=INT_VI)
 

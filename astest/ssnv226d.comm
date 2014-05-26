@@ -144,15 +144,18 @@ SOLNL=CALC_CHAMP(reuse =SOLNL,
 
 INT_SI=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
                               NOM_CHAM='SIEF_ELGA',
-                              NOM_CMP=('SIXX','SIYY','SIZZ',),),
+                              NOM_CMP=('SIXX','SIYY','SIZZ',),
+                              TYPE_MAILLE='3D'),
                  MODELE=TROISD,
-                 RESULTAT=SOLNL,);
+                 RESULTAT=SOLNL,
+                 );
 
 IMPR_TABLE(TABLE=INT_SI,);
 
 INT_EP=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
                               NOM_CHAM='EPSP_ELGA',
-                              NOM_CMP=('EPXX','EPYY','EPZZ',),),
+                              NOM_CMP=('EPXX','EPYY','EPZZ',),
+                              TYPE_MAILLE='3D'),
                  MODELE=TROISD,
                  RESULTAT=SOLNL,);
 
@@ -168,7 +171,8 @@ F_EP=RECU_FONCTION(TABLE=INT_EP,
 
 INT_VI=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
                               NOM_CHAM='VARI_ELGA',
-                              NOM_CMP=('V1','V14',),),
+                              NOM_CMP=('V1','V14',),
+                              TYPE_MAILLE='3D'),
                  MODELE=TROISD,
                  RESULTAT=SOLNL,);
 

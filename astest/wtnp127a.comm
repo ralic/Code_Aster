@@ -308,7 +308,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
 
 FLUXND=POST_ELEM(INTEGRALE=_F(GROUP_MA='MDROIT',
                               NOM_CHAM='FLHN_ELGA',
-                              NOM_CMP=('FH11','FH12','FH21','FH22')),
+                              NOM_CMP=('FH11','FH12','FH21','FH22'),
+                              TYPE_MAILLE='1D'),
                  MODELE=MODELT,
                  RESULTAT=cal1,
                  INST=TFINAL);
@@ -322,7 +323,8 @@ TEST_TABLE(VALE_REFE=-2.0E-10,
 
 FLUXNM=POST_ELEM(INTEGRALE=_F(GROUP_MA='MMIL',
                               NOM_CHAM='FLHN_ELGA',
-                              NOM_CMP=('FH11','FH12','FH21','FH22')),
+                              NOM_CMP=('FH11','FH12','FH21','FH22'),
+                              TYPE_MAILLE='1D'),
                  MODELE=MODELT,
                  RESULTAT=cal1,
                  INST=TFINAL);
@@ -337,7 +339,8 @@ TEST_TABLE(VALE_REFE=2.0E-10,
 
 FLUXNG=POST_ELEM(INTEGRALE=_F(GROUP_MA='MGAUCHE',
                               NOM_CHAM='FLHN_ELGA',
-                              NOM_CMP=('FH11','FH12','FH21','FH22')),
+                              NOM_CMP=('FH11','FH12','FH21','FH22'),
+                              TYPE_MAILLE='1D'),
                  MODELE=MODELT,
                  RESULTAT=cal1,
                  INST=TFINAL);

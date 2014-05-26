@@ -340,7 +340,7 @@ TEMPAA = CREA_CHAMP(OPERATION='EVAL',
 Norme11 = POST_ELEM(MODELE=MODELE,
                     CHAM_GD=TEMPAA,
                     CHAM_MATER=CHAMPMAT,
-                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1'),);
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1', TYPE_MAILLE='3D'),);
 
 IMPR_TABLE(TABLE=Norme11, )
 #n1 = math.sqrt( Norme11['INTE_X1',1])
@@ -387,7 +387,7 @@ TEMPBB = CREA_CHAMP(OPERATION='EVAL',
 Norme22 = POST_ELEM(MODELE=MODELE,
                     CHAM_GD=TEMPBB,
                     CHAM_MATER=CHAMPMAT,
-                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1'),);
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1', TYPE_MAILLE='3D'),);
 
 IMPR_TABLE(TABLE=Norme22, )
 #n2 = math.sqrt( Norme22['INTE_X1',1])
@@ -442,7 +442,7 @@ TEMPB2 = CREA_CHAMP(OPERATION='EVAL',
 Norme25 = POST_ELEM(MODELE=MODELE,
                     CHAM_GD=TEMPB2,
                     CHAM_MATER=CHAMPMAT,
-                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELNO',NOM_CMP='X1'),);
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELNO',NOM_CMP='X1', TYPE_MAILLE='3D'),);
 
 IMPR_TABLE(TABLE=Norme25, )
 n2 = math.sqrt( Norme25['INTE_X1',1])

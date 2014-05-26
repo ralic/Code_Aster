@@ -325,7 +325,8 @@ FLUXND = POST_ELEM(RESULTAT   = cal1,
               MODELE     = MODELT,
               INTEGRALE=_F(GROUP_MA=('MDROIT'),
               NOM_CHAM='FLHN_ELGA',
-              NOM_CMP=('FH11','FH12','FH21','FH22')))
+              NOM_CMP=('FH11','FH12','FH21','FH22'),
+              TYPE_MAILLE='2D'))
 
 TEST_TABLE(VALE_REFE=-2.0E-10,
            VALE_CALC=-1.9986339399315E-10,
@@ -339,7 +340,8 @@ FLUXNM = POST_ELEM(RESULTAT   = cal1,
               MODELE     = MODELT,
               INTEGRALE=_F(GROUP_MA=('MMIL'),
               NOM_CHAM='FLHN_ELGA',
-              NOM_CMP=('FH11','FH12','FH21','FH22')))
+              NOM_CMP=('FH11','FH12','FH21','FH22'),
+              TYPE_MAILLE='2D'))
 
 TEST_TABLE(VALE_REFE=2.0E-10,
            VALE_CALC=1.9999770053685E-10,
@@ -353,7 +355,8 @@ FLUXNG = POST_ELEM(RESULTAT   = cal1,
               MODELE     = MODELT,
               INTEGRALE=_F(GROUP_MA=('MGAUCHE'),
               NOM_CHAM='FLHN_ELGA',
-              NOM_CMP=('FH11','FH12','FH21','FH22')))
+              NOM_CMP=('FH11','FH12','FH21','FH22'),
+              TYPE_MAILLE='2D'))
 
 TEST_TABLE(VALE_REFE=2.0E-10,
            VALE_CALC=2.0013320640943E-10,

@@ -97,7 +97,7 @@ RESUSECH=THER_NON_LINE(MODELE=MODTHER,
 # =========================================================================
 #Calcul de la masse d'eau moyenne a chaque instant
 CMoy=POST_ELEM(INTEGRALE=_F(GROUP_MA='MAILVOL',
-                               NOM_CMP='TEMP',NOM_CHAM='TEMP'),
+                               NOM_CMP='TEMP',NOM_CHAM='TEMP',TYPE_MAILLE='3D'),
                   RESULTAT=RESUSECH,MODELE=MODTHER,CHAM_MATER=CHMASECH,LIST_INST=lisarch2);
 IMPR_TABLE(TABLE=CMoy,);
 

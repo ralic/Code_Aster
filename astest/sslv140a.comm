@@ -76,7 +76,8 @@ INT_SIYY=POST_ELEM(MODELE=MO,
                    RESULTAT=MESTY,
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIYY'),
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                TYPE_MAILLE= '3D'),)
 
 IMPR_TABLE(TABLE=INT_SIYY)
 
@@ -123,10 +124,12 @@ INT_SIXX=POST_ELEM(MODELE=MO,
                    RESULTAT=MESTX,
                    INTEGRALE=(_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX'),
-                                TOUT='OUI'),
+                                TOUT='OUI',
+                                TYPE_MAILLE= '3D'),
                               _F(NOM_CHAM='SIEQ_ELGA',
                                  NOM_CMP=('VMIS'),
-                                 TOUT='OUI'),),)
+                                 TOUT='OUI',
+                                 TYPE_MAILLE= '3D'),),)
 
 IMPR_TABLE(TABLE=INT_SIXX)
 
@@ -140,8 +143,8 @@ CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 
 INT_SIX1=POST_ELEM(MODELE=MO,CHAM_MATER=CHMAT,
                    CHAM_GD=CONTR1,
-                   INTEGRALE=(_F (TOUT='OUI',NOM_CMP=('SIXX'),),
-                              _F (TOUT='OUI',NOM_CMP=('SIYY'),),),)
+                   INTEGRALE=(_F (TOUT='OUI',NOM_CMP=('SIXX'),TYPE_MAILLE= '3D'),
+                              _F (TOUT='OUI',NOM_CMP=('SIYY'),TYPE_MAILLE= '3D'),),)
 
 IMPR_TABLE(TABLE=INT_SIX1)
 
@@ -154,7 +157,7 @@ CONTR2=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 
 INT_SIX2=POST_ELEM(MODELE=MO,
                    CHAM_GD=CONTR2,
-                   INTEGRALE=_F (TOUT='OUI',NOM_CMP=('VMIS'),),)
+                   INTEGRALE=_F (TOUT='OUI',NOM_CMP=('VMIS'),TYPE_MAILLE= '3D'),)
 
 IMPR_TABLE(TABLE=INT_SIX2)
 
@@ -165,7 +168,8 @@ INT_SIX3=POST_ELEM(MODELE=MO,
                    NUME_ORDRE=1,
                    INTEGRALE=_F(NOM_CHAM='SIEQ_ELGA',
                                 NOM_CMP=('VMIS'),
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                TYPE_MAILLE= '3D'),)
 IMPR_TABLE(TABLE=INT_SIX3)
 
 

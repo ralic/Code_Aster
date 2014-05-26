@@ -344,7 +344,8 @@ FLUXND = POST_ELEM(RESULTAT   = cal1,
               MODELE     = MODELT,
               INTEGRALE=_F(GROUP_MA=('MDROIT'),
               NOM_CHAM='FLHN_ELGA',
-              NOM_CMP=('FH11','FH12','FH21','FH22')))
+              NOM_CMP=('FH11','FH12','FH21','FH22'),
+              TYPE_MAILLE='1D'))
 
 
 TEST_TABLE(VALE_REFE=-1.E-10,
@@ -359,7 +360,8 @@ FLUXNM = POST_ELEM(RESULTAT   = cal1,
               MODELE     = MODELT,
               INTEGRALE=_F(GROUP_MA=('MMIL'),
               NOM_CHAM='FLHN_ELGA',
-              NOM_CMP=('FH11','FH12','FH21','FH22')))
+              NOM_CMP=('FH11','FH12','FH21','FH22'),
+              TYPE_MAILLE='1D'))
 
 TEST_TABLE(VALE_REFE=1.E-10,
            VALE_CALC=9.9998842362084E-11,
@@ -373,7 +375,8 @@ FLUXNG = POST_ELEM(RESULTAT   = cal1,
               MODELE     = MODELT,
               INTEGRALE=_F(GROUP_MA=('MGAUCHE'),
               NOM_CHAM='FLHN_ELGA',
-              NOM_CMP=('FH11','FH12','FH21','FH22')))
+              NOM_CMP=('FH11','FH12','FH21','FH22'),
+              TYPE_MAILLE='1D'))
 
 TEST_TABLE(VALE_REFE=1.E-10,
            VALE_CALC=1.0006740380085E-10,
@@ -389,13 +392,16 @@ INT_SIEF=POST_ELEM(MODELE=MODELT,
                    RESULTAT=cal1,
                    INTEGRALE=(_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('M11'),
-                                TOUT='OUI'),
+                                TOUT='OUI',
+                                TYPE_MAILLE='2D'),
                               _F(NOM_CHAM='SIEF_ELNO',
                                 NOM_CMP=('M11'),
-                                TOUT='OUI'),
+                                TOUT='OUI',
+                                TYPE_MAILLE='2D'),
                               _F(NOM_CHAM='SIEF_NOEU',
                                 NOM_CMP=('M11'),
-                                TOUT='OUI')))
+                                TOUT='OUI',
+                                TYPE_MAILLE='2D')))
 
 TEST_TABLE(VALE_REFE=-2.5E-06,
            VALE_CALC=-2.4992822556852E-06,
@@ -450,7 +456,7 @@ CH4=CREA_CHAMP(TYPE_CHAM = 'NOEU_SIEF_R', OPERATION = 'ASSE',
 INTM11=POST_ELEM(  CHAM_GD=CH4,
                     CHAM_MATER=CHMAT,
                     MODELE=MODELT,
-                    INTEGRALE=_F( NOM_CMP='M11',TOUT='OUI'))
+                    INTEGRALE=_F( NOM_CMP='M11',TOUT='OUI',TYPE_MAILLE='2D'))
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-3,
@@ -552,7 +558,7 @@ CHEVA=CREA_CHAMP(OPERATION='EVAL',
 INTVOL=POST_ELEM( CHAM_GD=CHEVA,
                   CHAM_MATER=CHMAT,
                   MODELE=MODELT,
-                  INTEGRALE=_F( NOM_CMP='X1',GROUP_MA='GAUCHE'))
+                  INTEGRALE=_F( NOM_CMP='X1',GROUP_MA='GAUCHE',TYPE_MAILLE='2D'))
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=20.0,

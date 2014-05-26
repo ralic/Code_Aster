@@ -115,26 +115,31 @@ TEST_TABLE(
 INT_SI=POST_ELEM(  RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
 
 
 INT_EP=POST_ELEM(  RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='EPSP_ELGA',
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
 
 # --------  VALIDATION DE POST_ELEM/INTEGRALE  CHAM_NO  -------------- #
 
 INT1EPX=POST_ELEM(  RESULTAT=SOLNL,
                     INTEGRALE=(_F(NOM_CHAM='EPSP_ELGA',
                                 NOM_CMP=('EPXX'),
-                                TOUT='OUI'),
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),
                               _F(NOM_CHAM='EPSP_ELNO',
                                 NOM_CMP=('EPXX'),
-                                TOUT='OUI'),
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),
                               _F(NOM_CHAM='EPSP_NOEU',
                                 NOM_CMP=('EPXX'),
-                                TOUT='OUI'),),)
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),),)
 TEST_TABLE(
            VALE_CALC=-1.3935522297381E-3,
            NOM_PARA='INTE_EPXX',
@@ -189,7 +194,8 @@ CH4=CREA_CHAMP(TYPE_CHAM = 'NOEU_EPSI_R', OPERATION = 'ASSE',MODELE = TROISD,
 INT2EPX=POST_ELEM(  CHAM_GD=CH4,
                     CHAM_MATER=MAT,
                     MODELE=TROISD,
-                    INTEGRALE=_F( NOM_CMP='EPXX',TOUT='OUI'),)
+                    INTEGRALE=_F( NOM_CMP='EPXX',TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=-1.3935176817989E-03,
@@ -201,13 +207,16 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 INT3EPX=POST_ELEM(  RESULTAT=SOLNL,
                     INTEGRALE=(_F(NOM_CHAM='EPSP_ELGA',
                                 NOM_CMP=('EPXX'),
-                                TOUT='OUI'),
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),
                               _F(NOM_CHAM='EPSP_ELNO',
                                 NOM_CMP=('EPXX'),
-                                TOUT='OUI'),
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),
                               _F(NOM_CHAM='EPSP_NOEU',
                                 NOM_CMP=('EPXX'),
-                                TOUT='OUI'),),)
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),),)
 
 # IMPR_TABLE(TABLE=INT_SI)
 # IMPR_TABLE(TABLE=INT_EP)
@@ -220,7 +229,8 @@ intesig = {}
 intesig['INTEGRALE'] = []                        
 for IP in range (ng):
    intesig['INTEGRALE'].append(_F(NOM_CHAM='SIEF_ELGA', NOM_CMP=('SIXX','SIYY','SIZZ'),
-                                                       GROUP_MA=prefix+str(IP+1)))
+                                                        TYPE_MAILLE='3D',
+                                                        GROUP_MA=prefix+str(IP+1)))
 
 INSIG=POST_ELEM(MODELE=TROISD,RESULTAT=SOLNL, **intesig);
 
@@ -273,7 +283,8 @@ CHEVA=CREA_CHAMP(OPERATION='EVAL',
 INTVOL=POST_ELEM( CHAM_GD=CHEVA,
                   CHAM_MATER=MAT,
                   MODELE=TROISD,
-                  INTEGRALE=_F( NOM_CMP='X1',TOUT='OUI'),)
+                  INTEGRALE=_F( NOM_CMP='X1',TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
@@ -325,7 +336,8 @@ CHEVA3=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD,
 INTVO2=POST_ELEM( CHAM_GD=CHEVA3,
                   CHAM_MATER=MAT,
                   MODELE=TROISD,
-                  INTEGRALE=_F( NOM_CMP='X1',TOUT='OUI'),)
+                  INTEGRALE=_F( NOM_CMP='X1',TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
 
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -468,11 +480,13 @@ for IP in range (NB_GRAINS):
   INS[IP]=POST_ELEM( RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
+                                TYPE_MAILLE='3D',
                                 GROUP_MA = 'GM'+str(IP+1),
                                 ),)
   EPS[IP]=POST_ELEM( RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='EPSI_ELGA',
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
+                                TYPE_MAILLE='3D',
                                 GROUP_MA = 'GM'+str(IP+1),
                                 ),)
   INSX[IP]=CALC_TABLE(TABLE=INS[IP],

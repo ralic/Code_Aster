@@ -46,12 +46,21 @@ Conseil :
   Il faut vérifier votre critère ou le supprimer.
 """),
 
+7 : _(u"""
+Le filtre TYPE_MAILLE a éliminée %(i1)d mailles .
+"""),
+
+8 : _(u"""
+  Aucune maille n'a été trouvée avec le critère donné dans la commande TYPE_MAILLE.
+  Vérifiez la dimension du groupe de mailles utilisé.
+"""),
+
 35 : _(u"""
    désolé on ne sait pas écrire les champs aux noeuds de représentation constante et a valeurs complexes au format  %(k1)s
 """),
 
 36 : _(u"""
-   désole on ne sait pas écrire le champ aux noeuds  %(k1)s  au format  %(k2)s
+   désolé on ne sait pas écrire le champ aux noeuds  %(k1)s  au format  %(k2)s
 """),
 
 40 : _(u"""

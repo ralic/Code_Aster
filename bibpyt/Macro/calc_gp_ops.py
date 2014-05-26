@@ -458,7 +458,8 @@ def calc_gp_ops(self,**args):
                                INTEGRALE=_F(TOUT='OUI',
                                             NOM_CHAM='ENEL_ELGA',
                                             NOM_CMP=nom_cmp,
-                                            DEJA_INTEGRE='NON'),)
+                                            DEJA_INTEGRE='NON',
+                                            TYPE_MAILLE='2D'),)
 
             tabenerel = __tabnrj.EXTR_TABLE().values()
 

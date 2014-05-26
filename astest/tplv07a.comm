@@ -208,10 +208,12 @@ FLUN_N=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   CHAM_PARA=(FLUX,CHNORM),);
 
 FL_NPJI=POST_ELEM(INTEGRALE=_F(GROUP_MA='F_NPJI',
-                              NOM_CMP='X1',),
+                              NOM_CMP='X1',
+                              TYPE_MAILLE='2D'),
                   CHAM_GD=FLUN_N,
                   MODELE=MOTH,
-                  CHAM_MATER=CHMAT,);
+                  CHAM_MATER=CHMAT,
+                  );
 
 IMPR_TABLE(TABLE=FL_NPJI,);
 
