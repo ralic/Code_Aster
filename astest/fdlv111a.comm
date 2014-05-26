@@ -134,7 +134,7 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 ENER1=RECU_TABLE(CO=DYN,NOM_TABLE='PARA_CALC',);
 
 TEST_TABLE(
-           VALE_CALC=1.6174217088701E4,
+           VALE_CALC=16174.2169787,
            NOM_PARA='TRAV_EXT',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -142,7 +142,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8708.2334180757,
+           VALE_CALC=8708.2335481,
            NOM_PARA='ENER_CIN',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -150,7 +150,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1643.199893199,
+           VALE_CALC=1643.19969891,
            NOM_PARA='ENER_TOT',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -158,7 +158,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0,
+           VALE_CALC=0.,
            NOM_PARA='TRAV_AMOR',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -166,7 +166,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5822.7834393976,
+           VALE_CALC=5822.78300559,
            NOM_PARA='TRAV_LIAI',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -174,7 +174,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=3.3802837680473E-04,
+           VALE_CALC=0.000726154790901,
            TOLE_MACHINE=1.E-3,                 # TODO TOLE_MACHINE
            NOM_PARA='DISS_SCH',
            TABLE=ENER1,
@@ -183,7 +183,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=25960.433417725,
+           VALE_CALC=25960.4338334,
            NOM_PARA='TRAV_EXT',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -191,7 +191,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.1890298685735,
+           VALE_CALC=2.18901408015,
            NOM_PARA='ENER_CIN',
            TABLE=ENER1,
            TOLE_MACHINE=1.E-5,                 # TODO TOLE_MACHINE
@@ -200,16 +200,16 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.13511580972602,
+           VALE_CALC=0.135112176215,
            NOM_PARA='ENER_TOT',
            TABLE=ENER1,
-           TOLE_MACHINE=1.E-5,                 # TODO TOLE_MACHINE
+           TOLE_MACHINE=3.E-5,                 # TODO TOLE_MACHINE
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0,
+           VALE_CALC=0.,
            NOM_PARA='TRAV_AMOR',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -217,7 +217,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=25958.109544435,
+           VALE_CALC=25958.1134688,
            NOM_PARA='TRAV_LIAI',
            TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
@@ -225,10 +225,10 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-2.7238870110589E-04,
+           VALE_CALC=-0.00376172320068,
            NOM_PARA='DISS_SCH',
            TABLE=ENER1,
-           TOLE_MACHINE=5.E-3,                 # TODO TOLE_MACHINE
+           TOLE_MACHINE=4.E-3,                 # TODO TOLE_MACHINE
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
            )
@@ -240,7 +240,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=960,
                   NOM_CHAM='VITE',
                   NOEUD='N46',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.4148495367254E-05,
+                  VALE_CALC=-1.4148495922E-05,
                   ),
           )
 
@@ -255,8 +255,8 @@ TRAVAIL = POST_ELEM(
   )
 
 TEST_TABLE(
-           VALE_CALC=0.13511580961060,
-           TOLE_MACHINE=1.E-5,                 # TODO TOLE_MACHINE
+           VALE_CALC=0.135112175886,
+           TOLE_MACHINE=3.E-5,                 # TODO TOLE_MACHINE
            NOM_PARA='TRAV_REEL',
            TABLE=TRAVAIL,
            FILTRE=_F(NOM_PARA='INST',
@@ -283,30 +283,30 @@ PN47=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                         NOM_CMP='PRES'
                       )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=7137.37,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7137.371197939,
                          CRITERE='RELATIF',
                          VALE_PARA=0.47125,
                          FONCTION=PN16,
                          ),
-                      _F(VALE_CALC=-7083.05,
+                      _F(VALE_CALC=-7083.054411650,
                          CRITERE='RELATIF',
                          VALE_PARA=0.72750000000000004,
                          FONCTION=PN16,
                          ),
-                      _F(VALE_CALC=0.182417154312,
-                         TOLE_MACHINE=2.E-3,           # TODO TOLE_MACHINE
+                      _F(VALE_CALC=0.17772626876831,
+                         TOLE_MACHINE=5.E-3,           # TODO TOLE_MACHINE
                          CRITERE='ABSOLU',
                          VALE_PARA=1.27375,
                          FONCTION=PN16,),
                       ),
               )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=7137.3699999999999,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7137.371210098,
                          CRITERE='RELATIF',
                          VALE_PARA=0.47125,
                          FONCTION=PN18,
                          ),
-                      _F(VALE_CALC=7093.21,
+                      _F(VALE_CALC=7093.211418748,
                          CRITERE='RELATIF',
                          VALE_PARA=0.3725,
                          FONCTION=PN47,
@@ -342,7 +342,6 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
                                  REAC_INCR = 0,
                                  REAC_ITER = 0),
                          INCREMENT=_F( LIST_INST = TEMLI),
-###CDURAND###            ARCHIVAGE=_F(  LIST_ARCH = INLI),
                          SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 FORMULATION='DEPLACEMENT',),
                         )
@@ -356,7 +355,7 @@ ENER=RECU_TABLE(CO=DYNA,NOM_TABLE='PARA_CALC',);
 
 
 TEST_TABLE(
-           VALE_CALC=16182.45409801,
+           VALE_CALC=16182.454098,
            NOM_PARA='TRAV_EXT',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -364,7 +363,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8544.6318426999,
+           VALE_CALC=8544.6318427,
            NOM_PARA='ENER_CIN',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -372,7 +371,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1659.4161904773,
+           VALE_CALC=1659.41619048,
            NOM_PARA='ENER_TOT',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -380,7 +379,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0,
+           VALE_CALC=0.,
            NOM_PARA='TRAV_AMOR',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -388,7 +387,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5978.7388102876,
+           VALE_CALC=5978.73881029,
            NOM_PARA='TRAV_LIAI',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -396,7 +395,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.33274545480380,
+           VALE_CALC=-0.332745453358,
            NOM_PARA='DISS_SCH',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -412,7 +411,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.40519354754296,
+           VALE_CALC=0.405193547538,
            NOM_PARA='ENER_CIN',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -420,7 +419,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.031421263947149,
+           VALE_CALC=0.0314212639403,
            NOM_PARA='ENER_TOT',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -428,7 +427,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0,
+           VALE_CALC=0.,
            NOM_PARA='TRAV_AMOR',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -436,7 +435,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=25877.467642007,
+           VALE_CALC=25877.467642,
            NOM_PARA='TRAV_LIAI',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -444,7 +443,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.14713028172853,
+           VALE_CALC=0.14713028489,
            NOM_PARA='DISS_SCH',
            TABLE=ENER,
            FILTRE=_F(NOM_PARA='INST',
@@ -471,21 +470,21 @@ PNA47=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
                         NOM_CMP='PRES'
                       )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=7108.75020871,
-                         VALE_REFE=7114.7299999999996,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7108.750208710,
+                         VALE_REFE=7114.73,
                          REFERENCE='AUTRE_ASTER',
                          CRITERE='RELATIF',
-                         VALE_PARA=0.47099999999999997,
-                         PRECISION=8.9999999999999993E-3,
+                         VALE_PARA=0.471,
+                         PRECISION=9E-3,
                          FONCTION=PNA16,),
-                      _F(VALE_CALC=-7049.03637707,
-                         VALE_REFE=-7000.2200000000003,
+                      _F(VALE_CALC=-7049.036377069,
+                         VALE_REFE=-7000.22,
                          REFERENCE='AUTRE_ASTER',
                          CRITERE='RELATIF',
-                         VALE_PARA=0.72599999999999998,
+                         VALE_PARA=0.726,
                          PRECISION=0.02,
                          FONCTION=PNA16,),
-                      _F(VALE_CALC=-6.41877447595,
+                      _F(VALE_CALC=-6.418774473322,
                          VALE_REFE=0.0,
                          REFERENCE='AUTRE_ASTER',
                          CRITERE='ABSOLU',
@@ -495,15 +494,15 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=7108.75020871,
                       ),
               )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=7108.75020871,
-                         VALE_REFE=7114.7299999999996,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=7108.750208710,
+                         VALE_REFE=7114.73,
                          REFERENCE='AUTRE_ASTER',
                          CRITERE='RELATIF',
                          VALE_PARA=0.471,
-                         PRECISION=8.9999999999999993E-3,
+                         PRECISION=9E-3,
                          FONCTION=PNA18,),
-                      _F(VALE_CALC=7081.74638851,
-                         VALE_REFE=7081.1000000000004,
+                      _F(VALE_CALC=7081.746388512,
+                         VALE_REFE=7081.10,
                          REFERENCE='AUTRE_ASTER',
                          CRITERE='RELATIF',
                          VALE_PARA=0.372,
