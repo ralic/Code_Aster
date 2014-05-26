@@ -19,6 +19,7 @@
 debug = False
 
 import os, commands, string, sys, socket, getpass
+import os.path as osp
 from Utilitai.Utmess import UTMESS
 #from pylotage.TOOLS import *
 from graphiqueTk import *
@@ -27,6 +28,9 @@ cata = cata_champs.CATA_CHAMPS()
 
 from Cata.cata import *
 from Accas import _F
+
+import Templates
+TEMPLATESDIR = osp.join(osp.dirname(Templates))
 
 # Type de visualisation
 DeformedShape        = 'DEPL'
@@ -55,9 +59,9 @@ class VISU:
         if debug: print "AA1/param=", self.param, dir(self.param)
 
         if param['Visualiseur'] == 'POSTPRO':
-            self.chemin_script = './Python/Templates/salomeScript.py'
+            self.chemin_script = osp.join(TEMPLATESDIR, 'salomeScript.py')
         else:
-            self.chemin_script = './Python/Templates/salomeParaviz.py'
+            self.chemin_script = osp.join(TEMPLATESDIR, 'salomeParaviz.py')
 
         # Construction paramètre pour SALOME
         self.salome_host           = param['machine_salome']
@@ -101,7 +105,7 @@ class VISU:
         _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
         unite=_UL['UNITE_LIBRE',1]
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeGetStudies.py',
+        dSALOME = { 'CHEMIN_SCRIPT'    : osp.join(TEMPLATESDIR, 'salomeGetStudies.py'),
                     'SALOME_HOST'      : self.salome_host,
                     'SALOME_PORT'      : self.salome_port,
                     'FICHIERS_SORTIE'  : [ './fort.%s' % unite ],

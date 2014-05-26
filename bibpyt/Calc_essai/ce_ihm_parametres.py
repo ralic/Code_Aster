@@ -23,6 +23,7 @@ import sys
 from subprocess import Popen
 import weakref
 import os
+import os.path as osp
 import time
 import tkFont
 
@@ -39,6 +40,9 @@ from Utilitai.Table import Table
 from Calc_essai.outils_ihm import XmgrManager, MyMenu, MacWindowFrame, StudyList,DispFRFDialogue, DispObs
 from Calc_essai.ce_calcul_expansion import make_mac_salome, make_mesh_mac,CalcEssaiExpansion
 from Calc_essai.cata_ce import  CaraElem, InterSpectre, CalcEssaiObjects, Resultat, ModeMeca, DynaHarmo
+
+import Templates
+TEMPLATESDIR = osp.join(osp.dirname(Templates))
 
 import aster
 
@@ -733,7 +737,7 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
         unite=_UL['UNITE_LIBRE',1]
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeGetStudies.py',
+        dSALOME = { 'CHEMIN_SCRIPT'    : osp.join(TEMPLATESDIR, 'salomeGetStudies.py'),
                     'SALOME_HOST'      : self.machine_name,
                     'SALOME_PORT'      : self.salome_port,
                     'FICHIERS_SORTIE'  : [ './fort.%s' % unite ],
@@ -775,10 +779,10 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         @param  visuType:      type de visualisation
         """
         if self.param_visu.type_visu.get()=='mac' :
-            script = './Python/Templates/salomeParaviz.py'
+            script = osp.join(TEMPLATESDIR, 'salomeParaviz.py')
             choix = 'ISO'
         elif self.param_visu.type_visu.get()=='deformee' :
-            script = './Python/Templates/salomeParaviz.py'
+            script = osp.join(TEMPLATESDIR, 'salomeParaviz.py')
             choix = 'DEPL'
         else:
             print "Le type de deformee a visualiser n'a pas ete defini"
@@ -882,7 +886,7 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
         @param  visuType:      type de visualisation
         """
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : './Python/Templates/salomeParaviz.py',
+        dSALOME = { 'CHEMIN_SCRIPT'    : osp.join(TEMPLATESDIR, 'salomeParaviz.py'),
                     'SALOME_PORT'      : self.salome_port,
                     'FICHIERS_ENTREE'  : [ medFilePath ],
                     #'SALOME_RUNAPPLI'  : self.salome_runscript,
