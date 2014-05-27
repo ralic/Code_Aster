@@ -193,7 +193,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
         endif
     endif
 !
-! --- CONTACT DISCRET - CONTRIBUTION MATRICE TANGENTE
+! --- CONTACT DISCRET OU CHOC - CONTRIBUTION MATRICE TANGENTE
 !
     if (lmodim .or. lchoc) then
         if (.not.reasma) then
@@ -202,9 +202,10 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
         endif
     endif
 !
+! --- CHOC - MATRICE EN CORRECTION
+!
     if (lchoc) then
         metcor = 'TANGENTE'
-        metpre = 'TANGENTE'
     endif
 !
 ! --- VARIABLES COMMANDES: LA MATRICE ELASTIQUE DOIT ETRE REACTUALISEE
