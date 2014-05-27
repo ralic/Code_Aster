@@ -556,9 +556,9 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
                                  into=("K_TR_D_N","K_T_D_N","K_TR_D_L","K_T_D_L",
                                        "A_TR_D_N","A_T_D_N","A_TR_D_L","A_T_D_L"),
                                  fr="Choix des types de discrets du tapis de ressorts." ),
-      b_cara= BLOC(condition =""" au_moins_un(CARA, ["K_TR_D_N","K_T_D_N","K_TR_D_L","K_T_D_L",
-                                            "A_TR_D_N","A_T_D_N","A_TR_D_L","A_T_D_L"]) or \
-                                  (len(CARA)==2 and CARA[0][2:]==CARA[1][2:])""",
+      b_cara= BLOC(condition ="""CARA and (au_moins_un(CARA, ["K_TR_D_N","K_T_D_N","K_TR_D_L","K_T_D_L",
+                                           "A_TR_D_N","A_T_D_N","A_TR_D_L","A_T_D_L"]) or \
+                                           len(CARA) == 2 and CARA[0][2:] == CARA[1][2:])""",
                    fr="Valeurs pour les discrets du tapis de ressorts.",
          VALE = SIMP(statut='o',typ='R',max='**',
               fr="Valeurs pour les discrets du tapis de ressorts.",),
