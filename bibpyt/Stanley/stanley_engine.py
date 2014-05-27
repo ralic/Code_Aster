@@ -2960,13 +2960,10 @@ COLUMN_UNITS: %s""" % ( title, ctitle, cunit)
     _tbl=Table(titr=titr)
     _tbl.extend(t)
     _tbl = _tbl[lnomColonnne]
-    #print _tbl
 
     try:
-        fw=open(datafile, 'w')
-        #fw.write( str(_tbl) )
-        fw.write(str(_tbl).replace(" NUME_ORDRE","#NUME_ORDRE"))  # Patch pour Paraviz
-        fw.close()
+        # mettre un '#' devant les noms de paramètres
+        _tbl.Impr(FICHIER=datafile, FORMAT='TABLEAU', dform={ 'ccpara' : '#' })
     except Exception, e:
         print "Erreur lors de l'ecriture du fichier : %s" % datafile
         print e
