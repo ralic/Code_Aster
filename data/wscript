@@ -49,7 +49,8 @@ def _env2dict(src, env, install_tests):
     env = env.derive()
     env['LD_LIBRARY_PATH'] = os.environ.get('LD_LIBRARY_PATH', '').split(os.pathsep)
     ld_path = remove_duplicates(chain(*[Utils.to_list(env[name])
-                for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH') if env[name]]))
+                for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH',
+                             'ASTERLIBDIR') if env[name]]))
     sep = os.pathsep + '\\\n'
     dico = {}
     dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])

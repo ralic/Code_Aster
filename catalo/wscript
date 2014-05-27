@@ -168,7 +168,7 @@ def get_ld_paths(self):
     # add path where built libs are installed
     try:
         ld_path.insert(0, self.get_tgen_by_name('asterlib').install_task.dest)
-    except Errors.WafError:# depends on --enbed-* options
+    except Errors.WafError:# depends on --embed-* options
         pass
     return [self.options.destdir + p for p in ld_path]
 
