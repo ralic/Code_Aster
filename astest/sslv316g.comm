@@ -237,6 +237,10 @@ for i in range(1,nbcalc) :
 #   VERIFICATION DES VALEURS DES LEVEL SETS. POUR LES POINTS
 #   SELECTIONNES, LES LEVEL SETS DOIVENT ETRE EGAL A ZERO.
 
+#====================================================
+#=================== PROPA 1 ========================
+#====================================================
+
 TEST_TABLE(TABLE=TABLSN[1],
            REFERENCE='ANALYTIQUE',
            NOM_PARA='X1',
@@ -244,7 +248,6 @@ TEST_TABLE(TABLE=TABLSN[1],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.,
-           TOLE_MACHINE=1.e-2,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[1],
@@ -254,7 +257,6 @@ TEST_TABLE(TABLE=TABLSN[1],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.,
-           TOLE_MACHINE=1.e-2,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[1],
@@ -264,7 +266,6 @@ TEST_TABLE(TABLE=TABLST[1],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.00176759985121,
-           TOLE_MACHINE=1.e-2,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[1],
@@ -274,9 +275,11 @@ TEST_TABLE(TABLE=TABLST[1],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.00176759982393,
-           TOLE_MACHINE=1.e-2,
            VALE_REFE=0.0  )
 
+#====================================================
+#=================== PROPA 2 ========================
+#====================================================
 
 TEST_TABLE(TABLE=TABLSN[2],
            REFERENCE='ANALYTIQUE',
@@ -285,7 +288,6 @@ TEST_TABLE(TABLE=TABLSN[2],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=-0.00152593001261,
-           TOLE_MACHINE=1.e-2,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[2],
@@ -295,7 +297,6 @@ TEST_TABLE(TABLE=TABLSN[2],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=-0.00153892126908,
-           TOLE_MACHINE=1.e-2,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
@@ -304,8 +305,8 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.000562400083892,
-           TOLE_MACHINE=1.e-2,
+           VALE_CALC= -0.000562400083891,
+          TOLE_MACHINE=1.2e-4,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
@@ -314,10 +315,13 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.000715056355517,
-           TOLE_MACHINE=1.e-2,
+           VALE_CALC= -0.000715056355519,
+          TOLE_MACHINE=1.1e-4,
            VALE_REFE=0.0  )
 
+#====================================================
+#=================== PROPA 3 ========================
+#====================================================
 
 TEST_TABLE(TABLE=TABLSN[3],
            REFERENCE='ANALYTIQUE',
@@ -325,8 +329,8 @@ TEST_TABLE(TABLE=TABLSN[3],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.00242760461432,
-           TOLE_MACHINE=1.e-2,
+           VALE_CALC=-0.00242760461435 ,
+           TOLE_MACHINE=9.5e-4,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[3],
@@ -335,8 +339,8 @@ TEST_TABLE(TABLE=TABLSN[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.00253314923363,
-           TOLE_MACHINE=1.e-2,
+           VALE_CALC= -0.00253314923362,
+           TOLE_MACHINE=9.3e-4,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -345,8 +349,8 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.000722077738603,
-           TOLE_MACHINE=1.e-2,
+           VALE_CALC= -0.000357033801809,
+           TOLE_MACHINE=3.7e-4,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -355,9 +359,10 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.00116055864696,
-           TOLE_MACHINE=1.e-2,
+           VALE_CALC= -0.000805511015481,
+           TOLE_MACHINE=3.6e-4,
            VALE_REFE=0.0  )
+
 
 #----------------------------------------------
 #         POST TRAITEMENT pour le dernier calcul

@@ -146,7 +146,7 @@ for i in range(1,NPS-1) :
                              ),
                       );
 
-    IMPR_TABLE(TABLE=SIF[i],);
+#    IMPR_TABLE(TABLE=SIF[i],);
 
     if ( i != NPS ) :
       Fiss[i+1]=CO('Fiss_%d'%(i+1))
@@ -172,41 +172,134 @@ for i in range(1,NPS-1) :
 #         VERIFICATION DES RESULTATS
 #----------------------------------------------
 
+
+# TOLERANCE SUR KII. LA VALEUR ANALYTIQUE EST ZERO CAR LA FISSURE
+# PROPAGE EN MODE I. CELA N'EST PAS VERIFIER EXACTEMENT POUR LE
+# MODELE FEM. ON ASSUME QUE LA VALEUR DE KII EST ZERO SI
+# ELLE EST EGAL A 1% DE LA VALEUR DE KI.
+
+
 W=1000;
 sigma=1E6
-KI_calc =[2.2914396426887E+07,2.5803538819812E+07, 2.8809311044511E+07  ]
-KII_calc =[7488.1641027818, 4193.0445613429, 5155.0375733729]
+#==================================
+#Propa 1
+#==================================
+i=1
+a=a0+da_fiss*(i-1)
+KI_broek=sigma*sqrt(3.1415*a/cos(3.1415*a/W));
+TOL_K2=0.01*KI_broek
 
-for i in range(1,NPS-1) :
-   
-   a=a0+da_fiss*(i-1)
-   # VALEUR ANALYTIQUE DE KI (BROEK)
-   KI_broek=sigma*sqrt(3.1415*a/cos(3.1415*a/W));
+#TEST sur KI
+TEST_TABLE(TABLE=SIF_1,
+           NOM_PARA='K1',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=(2.2914396426887E+07, ),
+           TYPE_TEST='MAX',
+           VALE_REFE=KI_broek,
+           PRECISION=0.05,
+           CRITERE='RELATIF',)
 
-#  TOLERANCE SUR KII. LA VALEUR ANALYTIQUE EST ZERO CAR LA FISSURE
-#  PROPAGE EN MODE I. CELA N'EST PAS VERIFIER EXACTEMENT POUR LE
-#  MODELE FEM. ON ASSUME QUE LA VALEUR DE KII EST ZERO SI
-#  ELLE EST EGAL A 1% DE LA VALEUR DE KI.
-   TOL_K2=0.01*KI_broek;
+#TEST ABSOLU sur KII
+TEST_TABLE(TABLE=SIF_1,
+           NOM_PARA='K2',
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=(0 ),
+           TYPE_TEST='MAX',
+           VALE_REFE=(0.0, ),
+           PRECISION=TOL_K2,)
 
-   TEST_TABLE(REFERENCE='ANALYTIQUE',
-              PRECISION=0.050000000000000003,
-              VALE_CALC=KI_calc[i-1],
-              VALE_REFE=KI_broek,
-              NOM_PARA='K1',
-              TYPE_TEST='MAX',
-              TABLE=SIF[i],)
+IMPR_TABLE(TABLE=SIF_1,
+           FORMAT_R='E20.13');
 
-   TEST_TABLE(CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE',
-              PRECISION=TOL_K2,
-              VALE_CALC=KII_calc[i-1],
-              TOLE_MACHINE=1.E-5,       #TODO TOLE_MACHINE variable entre les machines
-              VALE_REFE=0.0,
-              NOM_PARA='K2',
-              TYPE_TEST='MAX',
-              TABLE=SIF[i],)
+#TEST RELATIF sur KII
+TEST_TABLE(TABLE=SIF_1,
+           NOM_PARA='K2',
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           VALE_CALC=(7488.1641027818, ),
+           TYPE_TEST='MAX',
+           VALE_REFE=(7488.1641027818, ),)
 
+#==================================
+#Propa 2
+#==================================
+i=2
+a=a0+da_fiss*(i-1)
+KI_broek=sigma*sqrt(3.1415*a/cos(3.1415*a/W));
+TOL_K2=0.01*KI_broek
+
+#TEST sur KI
+TEST_TABLE(TABLE=SIF_2,
+           NOM_PARA='K1',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=(2.5803538819812E+07 ),
+           TYPE_TEST='MAX',
+           VALE_REFE=KI_broek,
+           PRECISION=0.05,
+           CRITERE='RELATIF',)
+
+#TEST ABSOLU sur KII
+TEST_TABLE(TABLE=SIF_2,
+           NOM_PARA='K2',
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=(0 ),
+           TYPE_TEST='MAX',
+           VALE_REFE=(0.0, ),
+           PRECISION=TOL_K2,)
+
+IMPR_TABLE(TABLE=SIF_2,
+           FORMAT_R='E20.13');
+
+#TEST RELATIF sur KII
+TEST_TABLE(TABLE=SIF_2,
+           NOM_PARA='K2',
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           VALE_CALC=(4193.0445613429, ),
+           TYPE_TEST='MAX',
+           VALE_REFE=(4193.0445613429,),)
+
+#==================================
+#Propa 3
+#==================================
+i=3
+a=a0+da_fiss*(i-1)
+KI_broek=sigma*sqrt(3.1415*a/cos(3.1415*a/W));
+TOL_K2=0.01*KI_broek
+
+#TEST sur KI
+TEST_TABLE(TABLE=SIF_3,
+           NOM_PARA='K1',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=(2.8809311044511E+07,),
+           TYPE_TEST='MAX',
+           VALE_REFE=KI_broek,
+           PRECISION=0.05,
+           CRITERE='RELATIF',)
+
+#TEST ABSOLU sur KII
+TEST_TABLE(TABLE=SIF_3,
+           NOM_PARA='K2',
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=(0 ),
+           TYPE_TEST='MAX',
+           VALE_REFE=(0.0, ),
+           PRECISION=TOL_K2,)
+
+IMPR_TABLE(TABLE=SIF_3,
+           FORMAT_R='E20.13');
+
+#TEST RELATIF sur KII
+TEST_TABLE(TABLE=SIF_3,
+           NOM_PARA='K2',
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           VALE_CALC=(5155.03757475, ),
+           TYPE_TEST='MAX',
+           VALE_REFE=(5155.03757475,  ),)
 #----------------------------------------------
 #         EDITION DE FICHIERS MED
 #----------------------------------------------

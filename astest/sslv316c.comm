@@ -194,18 +194,6 @@ FOND=[None]*nbcalc
 TABLSN=[None]*nbcalc
 TABLST=[None]*nbcalc
 
-VALE_CALC=[1.8041124150159E-16,
- -3.4694469519536E-16,
- 1.8043431119256E-03,
- 1.8043431116201E-03,
- 1.3571022489363E-04,
- 1.357102248898E-04,
- -4.7632761026863E-03,
- -4.7632761030732E-03,
- 4.7044665481213E-04,
- 4.6963179106617E-04,
- 2.4885628523164E-03,
- 2.4032399734274E-03,]
 
 # VERIFICATION DE LA POSITION DU CHAQUE FOND DE FISSURE CALCULE
 for i in range(1,nbcalc) :
@@ -251,42 +239,129 @@ for i in range(1,nbcalc) :
 
 #   VERIFICATION DES VALEURS DES LEVEL SETS. POUR LES POINTS
 #   SELECTIONNES, LES LEVEL SETS DOIVENT ETRE EGAL A ZERO.
-    TEST_TABLE(TABLE=TABLSN[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
-               TYPE_TEST='MAX',
-               CRITERE='ABSOLU',
-               VALE_CALC=VALE_CALC[(i-1)*4],
-               VALE_REFE=0.0  )
 
-    TEST_TABLE(TABLE=TABLSN[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
-               TYPE_TEST='MIN',
-               CRITERE='ABSOLU',
-               VALE_CALC=VALE_CALC[(i-1)*4+1],
-               VALE_REFE=0.0  )
 
-    TEST_TABLE(TABLE=TABLST[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
-               TYPE_TEST='MAX',
-               CRITERE='ABSOLU',
-               VALE_CALC=VALE_CALC[(i-1)*4+2],
-               TOLE_MACHINE=5.E-06,
-               VALE_REFE=0.0  )
+#====================================================
+#=================== PROPA 1 ========================
+#====================================================
 
-    TEST_TABLE(TABLE=TABLST[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
-               TYPE_TEST='MIN',
-               CRITERE='ABSOLU',
-               VALE_CALC=VALE_CALC[(i-1)*4+3],
-               VALE_REFE=0.0  )
+TEST_TABLE(TABLE=TABLSN[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC= 2.08166817117E-16 ,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLSN[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC= -3.46944695195E-16 ,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC= 0.00180434311193,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.00180434311162 ,
+           VALE_REFE=0.0  )
+
+
+#====================================================
+#=================== PROPA 2 ========================
+#====================================================
+
+TEST_TABLE(TABLE=TABLSN[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC= 0.000135710224894,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLSN[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.00013571022489 ,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.00476327610269 ,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.00476327610307 ,
+           VALE_REFE=0.0  )
+
+#====================================================
+#=================== PROPA 3 ========================
+#====================================================
+
+TEST_TABLE(TABLE=TABLSN[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.000470446654812 ,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLSN[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.000469631791067 ,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.00249243844048 ,
+           TOLE_MACHINE=4.E-06,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.00240269440187 ,
+           VALE_REFE=0.0  )
 
 #----------------------------------------------
 #         POST TRAITEMENT
