@@ -30,7 +30,7 @@ from Cata.cata import *
 from Accas import _F
 
 import Templates
-TEMPLATESDIR = osp.join(osp.dirname(Templates))
+TEMPLATESDIR = osp.dirname(Templates)
 
 # Type de visualisation
 DeformedShape        = 'DEPL'
