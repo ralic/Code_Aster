@@ -58,20 +58,22 @@ IMPR_RESU(RESU=_F(RESULTAT=MESTAT1,
 INT_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
                                 NOM_CMP='DZ',
                                 NOM_CHAM='DEPL',
-                                ),
+                                TYPE_MAILLE='2D',),
                    CHAM_MATER=AFMAT,
                    RESULTAT=MESTAT1,
                    );
 
 INT_DEPX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
                                 NOM_CMP='DX',
-                                NOM_CHAM='DEPL',),
+                                NOM_CHAM='DEPL',
+                                TYPE_MAILLE='1D',),
                    CHAM_MATER=AFMAT,
                    RESULTAT=MESTAT1,);
 
 INT_DEPY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
                                 NOM_CMP='DY',
-                                NOM_CHAM='DEPL',),
+                                NOM_CHAM='DEPL',
+                                TYPE_MAILLE='1D',),
                    CHAM_MATER=AFMAT,
                    RESULTAT=MESTAT1,);
 
@@ -116,7 +118,7 @@ IMPR_RESU(RESU=_F(RESULTAT=MESTAT2,
 INT_DZ2=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
                                 NOM_CMP='DZ',
                                 NOM_CHAM='DEPL',
-                                ),
+                                TYPE_MAILLE='2D',),
                    CHAM_MATER=AFMAT,
                    RESULTAT=MESTAT2,
                    );
@@ -163,7 +165,7 @@ IMPR_RESU(RESU=_F(RESULTAT=MESTAT3,
 INT_DZ3=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
                                 NOM_CMP='DZ',
                                 NOM_CHAM='DEPL',
-                                ),
+                                TYPE_MAILLE='2D',),
                    CHAM_MATER=AFMAT,
                    RESULTAT=MESTAT3,
                    );

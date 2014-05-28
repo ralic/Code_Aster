@@ -65,19 +65,22 @@ IMPR_RESU(RESU=_F(RESULTAT=MESTAT,
 
 INT_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
                               NOM_CHAM='DEPL',
-                              NOM_CMP='DZ',),
+                              NOM_CMP='DZ',
+                              TYPE_MAILLE='2D',),
                  CHAM_MATER=AFMAT,
                  RESULTAT=MESTAT,);
 
 INT_DX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
                               NOM_CHAM='DEPL',
-                              NOM_CMP='DX',),
+                              NOM_CMP='DX',
+                              TYPE_MAILLE='1D',),
                  CHAM_MATER=AFMAT,
                  RESULTAT=MESTAT,);
 
 INT_DY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
                               NOM_CHAM='DEPL',
-                              NOM_CMP='DY',),
+                              NOM_CMP='DY',
+                              TYPE_MAILLE='1D',),
                  CHAM_MATER=AFMAT,
                  RESULTAT=MESTAT,);
 
@@ -138,21 +141,24 @@ EVOL=STAT_NON_LINE(MODELE=MO,
 
 EV_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
                              NOM_CHAM='DEPL',
-                             NOM_CMP='DZ',),
+                             NOM_CMP='DZ',
+                             TYPE_MAILLE='2D',),
                 CHAM_MATER=AFMAT,
                 RESULTAT=EVOL,
                 NUME_ORDRE=1,);
 
 EV_DX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
                              NOM_CHAM='DEPL',
-                             NOM_CMP='DX',),
+                             NOM_CMP='DX',
+                             TYPE_MAILLE='1D',),
                 CHAM_MATER=AFMAT,
                 RESULTAT=EVOL,
                 NUME_ORDRE=1,);
 
 EV_DY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
                              NOM_CHAM='DEPL',
-                             NOM_CMP='DY',),
+                             NOM_CMP='DY',
+                             TYPE_MAILLE='1D',),
                 CHAM_MATER=AFMAT,
                 RESULTAT=EVOL,
                 NUME_ORDRE=1,);
