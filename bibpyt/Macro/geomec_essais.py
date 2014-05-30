@@ -561,7 +561,6 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
 
   DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
   CALC_POINT_MAT = self.get_cmd('CALC_POINT_MAT')
-  SIMU_POINT_MAT = self.get_cmd('SIMU_POINT_MAT')
   DETRUIRE       = self.get_cmd('DETRUIRE')
   CREA_TABLE     = self.get_cmd('CREA_TABLE')
   IMPR_TABLE     = self.get_cmd('IMPR_TABLE')
@@ -600,33 +599,35 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
                      Leg_x_niv1,Leg_y_niv1,{},{})
 
   # ---
-  # Creation de la liste d'instants (NB_INST = nombre d'instants par 1/4 de cycle )
+  # Creation de la liste d'instants / 4*NB_INST : nombre d'instants par cycles
+  #                                   duree d'un cycle = 4*10
   # ---
-#  long_cyc = 4*10.
-#  pas_inst = long_cyc/(4.*NB_INST)
-#  inst_ini = 0.
-#  L_inst   = [inst_ini + k*pas_inst for k in xrange(4*NB_INST+1)]
-#
-#  __RLIST = DEFI_LIST_REEL(VALE  = L_inst, INFO = INFO)
-#
-#  __DLIST = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = __RLIST),
-#                           ECHEC=_F(SUBD_METHODE = 'MANUEL',
-#                                    SUBD_PAS     = 10,
-#                                    SUBD_NIVEAU  = 10,),
-#                           INFO = INFO,)
+  __RLIST = DEFI_LIST_REEL(DEBUT = 0.,
+                           INTERVALLE = [_F(JUSQU_A=10.*(k+1), NOMBRE=NB_INST,) \
+                                         for k in xrange(4*NB_CYCLE)],
+                           INFO = INFO)
 
-  NCyc_list  = [[] for k in xrange(len(PRES_CONF))]
-  DSig_list  = [[] for k in xrange(len(PRES_CONF))]
-  inst_list  = [[] for k in xrange(len(PRES_CONF))]
-  epsxx_list = [[] for k in xrange(len(PRES_CONF))]
-  epszz_list = [[] for k in xrange(len(PRES_CONF))]
-  epsv_list  = [[] for k in xrange(len(PRES_CONF))]
-  sigxx_list = [[] for k in xrange(len(PRES_CONF))]
-  sigzz_list = [[] for k in xrange(len(PRES_CONF))]
-  p_list     = [[] for k in xrange(len(PRES_CONF))]
-  q_list     = [[] for k in xrange(len(PRES_CONF))]
-  preau_list = [[] for k in xrange(len(PRES_CONF))]
-  error_list = []
+  __DLIST = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = __RLIST),
+                           ECHEC=_F(SUBD_METHODE = 'MANUEL',
+                                    SUBD_PAS     = 10,
+                                    SUBD_NIVEAU  = 10,),
+                           INFO = INFO,)
+
+  inst_list  = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+  epsxx_list = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+  epszz_list = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+  epsv_list  = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+  sigxx_list = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+  sigzz_list = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+  p_list     = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+  q_list     = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+  preau_list = [[[] for j in xrange(len(SIGM_IMPOSE))] for i in xrange(len(PRES_CONF))]
+
+  # listes qui serviront uniquement pour GRAPHIQUE
+  NCyc_list_graph = [[] for i in xrange(len(PRES_CONF))]
+  DSig_list_graph = [[] for i in xrange(len(PRES_CONF))]
+  # liste qui servira uniquement pour TABLE_RESU
+  NCyc_list_table = [[0]*len(SIGM_IMPOSE) for i in xrange(len(PRES_CONF))]
 
   # ---
   # Boucle sur les pressions de confinement PRES_CONF
@@ -646,224 +647,144 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
 
       affiche_infos_essai(str_n_essai,"TND_C",PRES_CONF[i],SIGM_IMPOSE[j])
 
-      Ltmp_inst = []
-      Ltmp_epxx = []
-      Ltmp_epzz = []
-      Ltmp_epv  = []
-      Ltmp_sixx = []
-      Ltmp_sizz = []
-      Ltmp_p    = []
-      Ltmp_q    = []
-      Ltmp_pre  = []
-
       # ---
-      # Boucle sur les cycles en contrainte
-      # --- 
-      long_cyc = 4*10.
-      inst_ini = -1.*long_cyc
-      pas_inst = long_cyc/(4.*NB_INST)
+      # Definition des chargements                           
+      # ---
+      char1_absc = [0.] + [10.*(2*k+1) for k in xrange(2*NB_CYCLE)] + [10.*(4*NB_CYCLE)]
+      char1_ordo = [PRES_CONF[i]] + [PRES_CONF[i]+SIGM_IMPOSE[j]*(-1)**k \
+                   for k in xrange(2*NB_CYCLE)] + [PRES_CONF[i]]
 
-      for i_cycle in xrange(1,NB_CYCLE+1):
-
-        cycle_ok = True
-        codret   = ""
-
-        # ---
-        # Creation de la liste d'instants (NB_INST = nombre d'instants par 1/4 de cycle )
-        # ---
-        inst_ini += long_cyc
-        L_inst    = [inst_ini + k*pas_inst for k in xrange(4*NB_INST+1)]
-
-        __RLIST = DEFI_LIST_REEL(VALE  = L_inst, INFO = INFO)
-
-        __DLIST = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = __RLIST),
-                                 ECHEC=_F(SUBD_METHODE = 'MANUEL',
-                                          SUBD_PAS     = 10,
-                                          SUBD_NIVEAU  = 10,),
-                                 INFO = INFO,)
-
-        # ---
-        # Definition des chargements                           
-        # ---
-        __CHAR1 = DEFI_FONCTION(INFO = INFO, NOM_PARA = 'INST',
-                                VALE = (inst_ini               , PRES_CONF[i]           ,
-                                        inst_ini+long_cyc/4.   , PRES_CONF[i]+SIGM_IMPOSE[j],
-                                        inst_ini+3.*long_cyc/4., PRES_CONF[i]-SIGM_IMPOSE[j],
-                                        inst_ini+long_cyc      , PRES_CONF[i]           ,))
+      __CHAR1 = DEFI_FONCTION(INFO = INFO, NOM_PARA = 'INST',
+                              ABSCISSE = char1_absc,
+                              ORDONNEE = char1_ordo,
+                              )
                                
-        __CHAR2 = DEFI_FONCTION(INFO = INFO, NOM_PARA = 'INST',
-                                VALE = (inst_ini         , PRES_CONF[i], 
-                                        inst_ini+long_cyc, PRES_CONF[i],),)
+      __CHAR2 = DEFI_FONCTION(INFO = INFO, NOM_PARA = 'INST',
+                              VALE = (0.              , PRES_CONF[i], 
+                                      10.*(4*NB_CYCLE), PRES_CONF[i],),)
 
-
-        # s'il s'agit du premier cycle, Cond_Init toutes a 0.
-        if i_cycle == 1: 
-          Cond_Init = {}
-          Cond_Init['VARI'] = [0.]*nb_vari
-          Cond_Init['SIXX'] = PRES_CONF[i]
-          Cond_Init['SIYY'] = PRES_CONF[i]
-          Cond_Init['SIZZ'] = PRES_CONF[i]
-          Cond_Init['EPXX'] = 0.
-          Cond_Init['EPYY'] = 0.
-          Cond_Init['EPZZ'] = 0.
-          Cond_Init['EPXY'] = 0.
-          Cond_Init['EPXZ'] = 0.
-          Cond_Init['EPYZ'] = 0.
-
-        # ---
-        # Calcul                                                                       
-        # ---
-        try:
-
-          __EVOL = SIMU_POINT_MAT(
-                   INFO=INFO,
-                   COMPORTEMENT=COMPORTEMENT.List_F(),
-                   CONVERGENCE=CONVERGENCE.List_F(),
-                   MATER=MATER,
-                   SUPPORT='POINT',
-                   INCREMENT=_F(LIST_INST=__DLIST,
-                                INST_INIT=inst_ini,
-                                INST_FIN =inst_ini+long_cyc,),
-                   NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-                   ARCHIVAGE=_F(LIST_INST=__RLIST,),
-                   VECT_IMPO=(_F(NUME_LIGNE=1,VALE=__CHAR2),
-                              _F(NUME_LIGNE=2,VALE=__CHAR2),
-                              _F(NUME_LIGNE=3,VALE=__CHAR1),),
-                   MATR_C1=(  _F(NUME_LIGNE=1,NUME_COLONNE=1,VALE=1.),
-                              _F(NUME_LIGNE=2,NUME_COLONNE=2,VALE=1.),
-                              _F(NUME_LIGNE=3,NUME_COLONNE=3,VALE=1.),),
-                   MATR_C2=(  _F(NUME_LIGNE=1,NUME_COLONNE=1,VALE=K_EAU),
-                              _F(NUME_LIGNE=1,NUME_COLONNE=2,VALE=K_EAU),
-                              _F(NUME_LIGNE=1,NUME_COLONNE=3,VALE=K_EAU),
-                              _F(NUME_LIGNE=2,NUME_COLONNE=1,VALE=K_EAU),
-                              _F(NUME_LIGNE=2,NUME_COLONNE=2,VALE=K_EAU),
-                              _F(NUME_LIGNE=2,NUME_COLONNE=3,VALE=K_EAU),
-                              _F(NUME_LIGNE=3,NUME_COLONNE=1,VALE=K_EAU),
-                              _F(NUME_LIGNE=3,NUME_COLONNE=2,VALE=K_EAU),
-                              _F(NUME_LIGNE=3,NUME_COLONNE=3,VALE=K_EAU),),
-                   SIGM_INIT= _F(SIXX=Cond_Init['SIXX'],
-                                 SIYY=Cond_Init['SIYY'],
-                                 SIZZ=Cond_Init['SIZZ'],),
-                   EPSI_INIT= _F(EPXX=Cond_Init['EPXX'],
-                                 EPYY=Cond_Init['EPYY'],
-                                 EPZZ=Cond_Init['EPZZ'],
-                                 EPXY=Cond_Init['EPXY'],
-                                 EPXZ=Cond_Init['EPXZ'],
-                                 EPYZ=Cond_Init['EPYZ'],),
-                   VARI_INIT= _F(VALE=Cond_Init['VARI']),)
-
-        except aster.error: 
-          cycle_ok = False
-          pass
-
-        # ---
-        # Si le calcul s'est bien deroule sur ce cycle...
-        # ---
-        if cycle_ok:
-
-          TabRes = __EVOL.EXTR_TABLE().values()
-          # PostTraiter les grandeurs d'interet...
-          sig_xx = NP.array(TabRes['SIXX'])
-          sig_yy = NP.array(TabRes['SIYY'])
-          sig_zz = NP.array(TabRes['SIZZ'])
-          eps_xx = NP.array(TabRes['EPXX'])
-          eps_yy = NP.array(TabRes['EPYY'])
-          eps_zz = NP.array(TabRes['EPZZ'])
-          eps_xy = NP.array(TabRes['EPXY'])
-          eps_xz = NP.array(TabRes['EPXZ'])
-          eps_yz = NP.array(TabRes['EPYZ'])
-          inst    =         TabRes['INST']
-          eps_vol = eps_xx+eps_yy+eps_zz
-          p       = (sig_xx+sig_yy+sig_zz)/3.
-          q       = abs(sig_zz-sig_xx)
-          coef    = K_EAU/BIOT_COEF
-          pre_eau = -1.*coef*eps_vol     
-          # .. et les stocker
-          Ltmp_inst += inst
-          Ltmp_epxx += list(eps_xx )
-          Ltmp_epzz += list(eps_zz )
-          Ltmp_epv  += list(eps_vol)
-          Ltmp_sixx += list(sig_xx )
-          Ltmp_sizz += list(sig_zz )
-          Ltmp_p    += list(p      )
-          Ltmp_q    += list(q      )
-          Ltmp_pre  += list(pre_eau)
-
-          # Cond_Init : vi, eps, et sig au dernier inst pr CI cycle suivant
-          Cond_Init = {'VARI':[]}
-          for i_vari in xrange(1,nb_vari+1):
-            VarTmp = TabRes["V"+str(i_vari)]
-            Cond_Init['VARI'].append(VarTmp[-1])
-          Cond_Init['SIXX'] = sig_xx[-1]
-          Cond_Init['SIYY'] = sig_yy[-1]
-          Cond_Init['SIZZ'] = sig_zz[-1]
-          Cond_Init['EPXX'] = eps_xx[-1]
-          Cond_Init['EPYY'] = eps_yy[-1]
-          Cond_Init['EPZZ'] = eps_zz[-1]
-          Cond_Init['EPXY'] = eps_xy[-1]
-          Cond_Init['EPXZ'] = eps_xz[-1]
-          Cond_Init['EPYZ'] = eps_yz[-1]
-
-          # Evaluer si le critere de liquefaction est atteint...
-          ru = abs(pre_eau/PRES_CONF[i]) >= ru_max
-          # ... si oui on sort de la boucle sur les cycles
-          if ru.any() :
-            codret = "0"
-            NCyc_list[i].append(i_cycle)
-            DSig_list[i].append(SIGM_IMPOSE[j])
-            DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,__EVOL)), INFO=1)
-            break
-          # si dernier cycle et que rien ne s'est passe :
-          if i_cycle == NB_CYCLE :
-            codret = "1"
-
-        # ---
-        # Sinon, quitter la boucle sur les cycles en contrainte
-        # ---
-        else:
-          if i_cycle == 1:
-            codret = "3"
-          else:
-            codret = "2"
-            NCyc_list[i].append(i_cycle)
-            DSig_list[i].append(SIGM_IMPOSE[j])
-          DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,)), INFO=1)
-          break
-
-        DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST,__CHAR1,__CHAR2,__EVOL)), INFO=1)
       # ---
-      # Fin boucle sur les cycles en contrainte
-      # --- 
+      # Calcul                                                                       
+      # ---
+      calc_ok = True
 
-      # pour la gestion des alarmes
-      dico_tmp = {}
-      dico_tmp['chargements'] = (PRES_CONF[i],SIGM_IMPOSE[j])
-      dico_tmp['code_retour'] = codret
-      error_list.append(dico_tmp)
+      try:
+
+        __EVOL = CALC_POINT_MAT(
+                 INFO=INFO,
+                 COMPORTEMENT=COMPORTEMENT.List_F(),
+                 CONVERGENCE=CONVERGENCE.List_F(),
+                 MATER=MATER,
+                 INCREMENT=_F(LIST_INST=__DLIST,
+                              INST_INIT=0.,
+                              INST_FIN =10.*(4*NB_CYCLE),),
+                 NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
+                 ARCHIVAGE=_F(LIST_INST=__RLIST,),
+                 VECT_IMPO=(_F(NUME_LIGNE=1,VALE=__CHAR2),
+                            _F(NUME_LIGNE=2,VALE=__CHAR2),
+                            _F(NUME_LIGNE=3,VALE=__CHAR1),),
+                 MATR_C1=(  _F(NUME_LIGNE=1,NUME_COLONNE=1,VALE=1.),
+                            _F(NUME_LIGNE=2,NUME_COLONNE=2,VALE=1.),
+                            _F(NUME_LIGNE=3,NUME_COLONNE=3,VALE=1.),),
+                 MATR_C2=(  _F(NUME_LIGNE=1,NUME_COLONNE=1,VALE=K_EAU),
+                            _F(NUME_LIGNE=1,NUME_COLONNE=2,VALE=K_EAU),
+                            _F(NUME_LIGNE=1,NUME_COLONNE=3,VALE=K_EAU),
+                            _F(NUME_LIGNE=2,NUME_COLONNE=1,VALE=K_EAU),
+                            _F(NUME_LIGNE=2,NUME_COLONNE=2,VALE=K_EAU),
+                            _F(NUME_LIGNE=2,NUME_COLONNE=3,VALE=K_EAU),
+                            _F(NUME_LIGNE=3,NUME_COLONNE=1,VALE=K_EAU),
+                            _F(NUME_LIGNE=3,NUME_COLONNE=2,VALE=K_EAU),
+                            _F(NUME_LIGNE=3,NUME_COLONNE=3,VALE=K_EAU),),
+                 SIGM_INIT= _F(SIXX=PRES_CONF[i],
+                               SIYY=PRES_CONF[i],
+                               SIZZ=PRES_CONF[i],),
+                            )
+
+      except aster.NonConvergenceError:
+        calc_ok  = False
+        __EVPOST = self.get_last_concept()
+        TabRes   = __EVPOST.EXTR_TABLE().values()
+        DETRUIRE(CONCEPT=_F(NOM = (__EVPOST)), INFO=1)
+
+      else :
+        TabRes = __EVOL.EXTR_TABLE().values()
+        DETRUIRE(CONCEPT=_F(NOM = (__EVOL)), INFO=1)
+
+      # post-traitements
+      inst    =          TabRes['INST']
+      sig_xx  = NP.array(TabRes['SIXX'])
+      sig_yy  = NP.array(TabRes['SIYY'])
+      sig_zz  = NP.array(TabRes['SIZZ'])
+      eps_xx  = NP.array(TabRes['EPXX'])
+      eps_yy  = NP.array(TabRes['EPYY'])
+      eps_zz  = NP.array(TabRes['EPZZ'])
+      p       = (sig_xx+sig_yy+sig_zz)/3.
+      q       = abs(sig_zz-sig_xx)
+      eps_vol = eps_xx+eps_yy+eps_zz
+      coef    = K_EAU/BIOT_COEF
+      pre_eau = -1.*coef*eps_vol     
+      ru      = abs(pre_eau/PRES_CONF[i]) 
+
+      # le critere de liquefaction est-il atteint?
+      rubool = ru >= ru_max
+      crit   = rubool.any()
+
+      # codret '0' : CALC_POINT_MAT va jusqu'au bout et critere atteint
+      if calc_ok and crit:
+        codret  = '0'
+      # codret '1' : CALC_POINT_MAT va jusqu'au bout et critere non atteint
+      elif calc_ok and not crit:
+        codret  = '1'
+      # codret '2' : CALC_POINT_MAT s'arrete en NonConvergenceError et critere atteint
+      elif not calc_ok and crit:
+        codret  = '2'
+      # codret '3' : CALC_POINT_MAT s'arrete en NonConvergenceError et critere non atteint
+      elif not calc_ok and not crit:
+        codret  = '3'
+
+      # si critere atteint -> MAJ des listes pour "NCYCL-DSIGM"
+      ncycrit = 0
+      if crit:
+        indcrit = list(rubool).index(True)
+        ncycrit = int(inst[indcrit]/40.) + 1
+        NCyc_list_graph[i].append(ncycrit)
+        DSig_list_graph[i].append(SIGM_IMPOSE[j])
+        NCyc_list_table[i][j] = ncycrit
+
+      # si CALC_POINT_MAT s'est arrete en NonConvergenceError
+      # -> recup du numero de cycle d'arret du calcul
+      ncyerro = 0
+      if not calc_ok:
+        ncyerro = int(inst[-1]/40.) + 1
 
       # stockage pour ecriture dans les tables 
-      inst_list[i].append(  Ltmp_inst )
-      epsxx_list[i].append( Ltmp_epxx )
-      epszz_list[i].append( Ltmp_epzz )
-      epsv_list[i].append(  Ltmp_epv  )
-      sigxx_list[i].append( Ltmp_sixx )
-      sigzz_list[i].append( Ltmp_sizz )
-      p_list[i].append(     Ltmp_p    )
-      q_list[i].append(     Ltmp_q    )
-      preau_list[i].append( Ltmp_pre  )
+      inst_list[i][j]  = list(inst)
+      sigxx_list[i][j] = list(sig_xx)
+      sigzz_list[i][j] = list(sig_zz)
+      epsxx_list[i][j] = list(eps_xx)
+      epszz_list[i][j] = list(eps_zz)
+      epsv_list[i][j]  = list(eps_vol)
+      p_list[i][j]     = list(p)
+      q_list[i][j]     = list(q)
+      preau_list[i][j] = list(pre_eau)
 
       # remplissage des graphiques (niveau 2)
       str_leg2 = "PRES_CONF = " + str("%E"%(PRES_CONF[i])) + ", SIGM_IMPOSE = "\
                                 + str("%E"%(SIGM_IMPOSE[j]))
-      remplir_graphique(DicoEssai,Courbes_niv2,Ltmp_p,Ltmp_q,str_leg2,"P-Q")
-      remplir_graphique(DicoEssai,Courbes_niv2,Ltmp_sizz,Ltmp_pre,str_leg2,"SIG_AXI-PRE_EAU")
+      remplir_graphique(DicoEssai,Courbes_niv2,list(p),list(q),str_leg2,"P-Q")
+      remplir_graphique(DicoEssai,Courbes_niv2,list(sig_zz),list(pre_eau),str_leg2,"SIG_AXI-PRE_EAU")
+      
+      # pour la gestion des alarmes
+      affiche_alarm_TND_C(str_n_essai,PRES_CONF[i],SIGM_IMPOSE[j],codret,NB_CYCLE,ncycrit,ncyerro)
+
+      DETRUIRE(CONCEPT=_F(NOM = (__CHAR1,__CHAR2)), INFO=1)
     # ---
     # Fin boucle sur les amplitudes de variation SIGM_IMPOSE
     # --- 
 
     # remplissage des graphiques (niveau 1)
     str_leg1 = "PRES_CONF = " + str("%E"%(PRES_CONF[i]))
-    remplir_graphique(DicoEssai,Courbes_niv1,NCyc_list[i],DSig_list[i],\
+    remplir_graphique(DicoEssai,Courbes_niv1,NCyc_list_graph[i],DSig_list_graph[i],\
                       str_leg1,"NCYCL-DSIGM")
 
     # impression des graphiques (niveau 2)
@@ -872,10 +793,6 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
   # ---
   # Fin boucle sur les sur les pressions de confinement PRES_CONF
   # --- 
-
-  # pour la gestion des alarmes
-  assert len(error_list) == len(PRES_CONF)*len(SIGM_IMPOSE)
-  bilan_alarmes(str_n_essai,"TND_C",DicoEssai,error_list)
 
   # remplissage des tables
   Resu_Essai            = {}
@@ -888,9 +805,11 @@ def essai_TND_C(self,str_n_essai,DicoEssai,MATER,COMPORTEMENT,CONVERGENCE,INFO):
   Resu_Essai['P']       = p_list
   Resu_Essai['Q']       = q_list
   Resu_Essai['PRE_EAU'] = preau_list
-  Resu_Essai['NCYCL']   = NCyc_list
-  Resu_Essai['DSIGM']   = DSig_list
+  Resu_Essai['NCYCL']   = NCyc_list_table
+  Resu_Essai['DSIGM']   = [SIGM_IMPOSE for i in xrange(len(PRES_CONF))]
   remplir_tables(self,"TND_C",str_n_essai,DicoEssai,Resu_Essai)
 
   # impression des graphiques (niveau 1)
   impr_graphique(self,DicoEssai,Courbes_niv1,NomsFich_niv1,Leg_x_niv1,Leg_y_niv1,{},{})
+
+  DETRUIRE(CONCEPT=_F(NOM = (__RLIST,__DLIST),), INFO=1)

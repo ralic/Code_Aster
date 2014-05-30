@@ -372,95 +372,34 @@ def verif_essais(COMPORTEMENT,ESSAI_TD ,
 
 # --------------------------------------------------------------
 # --------------------------------------------------------------
-def bilan_alarmes(str_n_essai,typ_essai,DicoEssai,error_list):
+def affiche_alarm_TND_C(str_n_essai,pres,dsig,codret,NB_CYCLE,ncycrit,ncyerro):
   """
   """
   from Utilitai.Utmess import UTMESS  
 
-  # ---
-  # Essai "TD"
-  # ---  
-  if typ_essai   == "TD":
-    pass
+  assert codret in ['0','1','2','3']
+  charg1 = str("%E"%( pres ))
+  charg2 = str("%E"%( dsig ))
 
-  # ---
-  # Essai "TND"
-  # ---  
-  elif typ_essai == "TND":
-    pass
+  nom_essai = "ESSAI_TND_C"
 
-  # ---
-  # Essai "CISA_C"
-  # ---  
-  elif typ_essai == "CISA_C":
-    pass
+  kval_char1 = "  > PRES_CONF   = " + charg1 + "\n"
+  kval_char2 = "  > SIGM_IMPOSE = " + charg2 + "\n"
+  kval_cycl  = "  > NB_CYCLE    = " + str(NB_CYCLE) +"\n"
 
-  # ---
-  # Essai "TND_C"
-  # ---  
-  elif typ_essai == "TND_C":
-     
-    NB_CYCLE  = DicoEssai['NB_CYCLE']
-    nom_essai = "ESSAI_TND_C numero "+str_n_essai
+  # codret '0' : CALC_POINT_MAT va jusqu'au bout et critere atteint -> pas d'alarme
+  # codret '1' : CALC_POINT_MAT va jusqu'au bout et critere non atteint
+  # codret '2' : CALC_POINT_MAT s'arrete en NonConvergenceError et critere atteint
+  # codret '3' : CALC_POINT_MAT s'arrete en NonConvergenceError et critere non atteint
 
-    kvals_cod1 = ""
-    kvals_cod2 = ""
-    kvals_cod3 = ""
+  Lk = [nom_essai,str_n_essai,kval_char1,kval_char2,kval_cycl]
 
-    for dico in error_list:
-
-      charg1 = str("%E"%(dico['chargements'][0]))
-      charg2 = str("%E"%(dico['chargements'][1]))
-      charg3 = str(NB_CYCLE)
-      codret = dico['code_retour']
-      assert codret in ['0','1','2','3']
-
-      # codret '0' : le calcul s'est bien deroule et le critere de
-      #              liquefaction a ete atteint avant le nombre de
-      #              cycles max donne par l'utilisateur
-      #              -> tout es OK : rien a faire
-      #
-      # codret '1' : le calcul s'est bien deroule mais le critere n'a 
-      #              pas ete atteint  avec le nb de cycles max donne 
-      #              par l'utilisateur
-      #              -> ALARME pour signaler que les valeurs qui correpondent
-      #                 a ces chargements ne seront reportees ni dans les 
-      #                 graphiques ni dans les tables...
-      #
-      # codret '2' : le calcul a plante dans un cycle>=2 : on considere qu'il 
-      #              s'agit d'une erreur de cvgce due au fait que le crit de 
-      #              liquefaction a ete atteint pendant ce cycle (sale mais 
-      #              seule solution pr l'instant : fiche 19056)
-      #              -> ALARME pour en informer l'utilisateur
-      #
-      # codret '3' : le calcul a plante, au 1er cycle, on ne peut donc 
-      #              post-traiter aucun resultat
-      #              -> ALARME pour signaler que les valeurs qui correpondent
-      #                 a ces chargements ne seront reportees ni dans les 
-      #                 graphiques ni dans les tables...
-
-      if   codret == '1':
-        kvals_cod1 += "    > (PRES_CONF,SIGM_IMPOSE) = ("+charg1+","+charg2+"),\n"
-      elif codret == '2':
-        kvals_cod2 += "    > (PRES_CONF,SIGM_IMPOSE) = ("+charg1+","+charg2+"),\n"
-      elif codret == '3':
-        kvals_cod3 += "    > (PRES_CONF,SIGM_IMPOSE) = ("+charg1+","+charg2+"),\n"
-
-    if len(kvals_cod1) > 0:
-      UTMESS('A','COMPOR2_40',valk=(nom_essai,kvals_cod1,
-             'NCYCL-DSIGM','NCYCL','DSIGM'),vali=NB_CYCLE)
-    if len(kvals_cod2) > 0:
-      UTMESS('A','COMPOR2_41',valk=(nom_essai,kvals_cod2))
-    if len(kvals_cod3) > 0:
-      UTMESS('A','COMPOR2_42',valk=(nom_essai,kvals_cod3))
-
-  # ---
-  # Essai "XXX"
-  # ---  
-  #elif typ_essai == "XXX":
-  #  pass
-
-  else : assert False
+  if codret ==  '1':
+    UTMESS('A','COMPOR2_40',valk=Lk,vali=NB_CYCLE)
+  elif codret ==  '2':
+    UTMESS('A','COMPOR2_41',valk=Lk,vali=(ncyerro,ncycrit))
+  elif codret ==  '3':
+    UTMESS('A','COMPOR2_42',valk=Lk,vali=ncyerro)
 # --------------------------------------------------------------
 # --------------------------------------------------------------  
 
@@ -784,17 +723,6 @@ def remplir_tables(self,typ_essai,str_n_essai,DicoEssai,Resu_in):
                     +" / PRES_CONF = "+str("%E"%(PRES_CONF[i]))+"\n"
         LdicoRes = []
         for j in xrange(len(SIGM_IMPOSE)):
-          resu_vide =              Resu_in['EPS_AXI'][i][j] == []
-          resu_vide = resu_vide or Resu_in['EPS_LAT'][i][j] == []
-          resu_vide = resu_vide or Resu_in['EPS_VOL'][i][j] == []
-          resu_vide = resu_vide or Resu_in['SIG_AXI'][i][j] == []
-          resu_vide = resu_vide or Resu_in['SIG_LAT'][i][j] == []
-          resu_vide = resu_vide or Resu_in['INST'][i][j]    == []
-          resu_vide = resu_vide or Resu_in['P'][i][j]       == []
-          resu_vide = resu_vide or Resu_in['Q'][i][j]       == []
-          resu_vide = resu_vide or Resu_in['PRE_EAU'][i][j] == []
-          # en cas d'abscence de resultats on passe a l'iteration suivante (boucle j)
-          if resu_vide : continue
           stjp1 = int_2_str(j+1,len(SIGM_IMPOSE))
           LdicoRes += [{'PARA':'SIGM_IMPOSE_'+stjp1,'LISTE_R':[SIGM_IMPOSE[j]]        }]
           LdicoRes += [{'PARA':'INST_'       +stjp1,'LISTE_R':Resu_in['INST'][i][j]   }]
@@ -806,27 +734,16 @@ def remplir_tables(self,typ_essai,str_n_essai,DicoEssai,Resu_in):
           LdicoRes += [{'PARA':'P_'          +stjp1,'LISTE_R':Resu_in['P'      ][i][j]}]
           LdicoRes += [{'PARA':'Q_'          +stjp1,'LISTE_R':Resu_in['Q'      ][i][j]}]
           LdicoRes += [{'PARA':'PRE_EAU_'    +stjp1,'LISTE_R':Resu_in['PRE_EAU'][i][j]}]
-        # si il n'y a aucun resultat ds LdicoRes on cree une table vide
-        if LdicoRes == []:
-          TABLRES = CREA_TABLE(TITRE=titre_table)
-        else:
-          TABLRES = CREA_TABLE(TITRE=titre_table,LISTE=(LdicoRes))
+        TABLRES = CREA_TABLE(TITRE=titre_table,LISTE=(LdicoRes))
 
-        resu_vide = Resu_in['NCYCL'][i] == [] or Resu_in['DSIGM'][i] == []
-        # en cas d'abscence de resultats on passe a l'iteration suivante (boucle i)
-        if resu_vide : continue
         stip1 = int_2_str(i+1,len(PRES_CONF))
         LdicoResGlob += [{'PARA':'PRES_CONF_'  +stip1,'LISTE_R':[PRES_CONF[i]]     }]
-        LdicoResGlob += [{'PARA':'NCYCL_'      +stip1,'LISTE_R':Resu_in['NCYCL'][i]}]
+        LdicoResGlob += [{'PARA':'NCYCL_'      +stip1,'LISTE_I':Resu_in['NCYCL'][i]}]
         LdicoResGlob += [{'PARA':'SIGM_IMPOSE_'+stip1,'LISTE_R':Resu_in['DSIGM'][i]}]
 
       self.DeclareOut('TABLRES',DicoEssai['TABLE_RESU'][-1])
-      titre_table = "Resultats globaux : ESSAI_CISA_C numero "+str_n_essai+"\n"
-      # si il n'y a aucun resultat ds LdicoResGlob on cree une table vide
-      if LdicoResGlob == []:
-        TABLRES = CREA_TABLE(TITRE=titre_table)
-      else:
-        TABLRES = CREA_TABLE(TITRE=titre_table,LISTE=(LdicoResGlob))
+      titre_table = "Resultats globaux : ESSAI_TND_C numero "+str_n_essai+"\n"
+      TABLRES = CREA_TABLE(TITRE=titre_table,LISTE=(LdicoResGlob))
 
     # ---
     # Pour nouvel essai

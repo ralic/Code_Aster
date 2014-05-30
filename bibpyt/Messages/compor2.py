@@ -230,43 +230,47 @@ Risques & conseils :
 """),
 
 40: _(u"""
-  CALC_ESSAI_GEOMECA : Bilan de l'essai %(k1)s.
+  CALC_ESSAI_GEOMECA : %(k1)s numéro %(k2)s.
 
-  Pour les chargements suivants : 
-    %(k2)s
-  le critère de liquéfaction n'a pas été atteint au bout de NB_CYCLE = %(i1)d cycles.
-  
-  - Si vous avez demandé des graphiques en sortie (mot clef facteur 'GRAPHIQUE'), les valeurs qui correspondent à ces chargements
-    ne seront pas reportées dans le graphique de type TYPE = '%(k3)s'
-  - Si vous avez demandé des tables en sortie (mot clef simple 'TABLE_RESU'), les lignes des colonnes %(k4)s et %(k5)s qui 
-    correspondent à ces chargements ne seront pas reportées dans les tables.
+  Pour le chargement :
+    %(k3)s
+    %(k4)s
+  avec un nombre total de cycles :
+    %(k5)s
 
-  Conseil : augmentez la valeur de NB_CYCLE
+  Le calcul a été mené jusqu'à %(i1)d cycles.
+
+  Le critère de liquéfaction n'a pas été atteint.
 """),
 
 41: _(u"""
-  CALC_ESSAI_GEOMECA : Bilan de l'essai %(k1)s.
+  CALC_ESSAI_GEOMECA : %(k1)s numéro %(k2)s.
 
-  Pour les chargements suivants : 
-    %(k2)s
-  Le calcul s'est arrêté en erreur fatale au cours d'un cycle postérieur au premier cycle. Ces erreurs ont été interceptées, 
-  et les résultats obtenus jusqu'au cycle précédent ont été sauvegardés. Ces erreurs sont supposées correspondre au dépassement 
-  du critère de liquéfaction pour chacun de ces chargements.
+  Pour le chargement :
+    %(k3)s
+    %(k4)s
+  avec un nombre total de cycles :
+    %(k5)s
 
+  Le calcul s'est arrêté au cours du cycle numéro %(i1)d pour cause d'absence de convergence,
+  les pas archivés avant l'arrêt ont été sauvegardés.
+
+  Le critère de liquéfaction a été atteint au cours du cycle numéro %(i2)d.
 """),
 
 42: _(u"""
-  CALC_ESSAI_GEOMECA : Bilan de l'essai %(k1)s.
+  CALC_ESSAI_GEOMECA : %(k1)s numéro %(k2)s.
 
-  Pour les chargements suivants : 
-    %(k2)s
-  Le calcul s'est arrêté en erreur fatale au cours du premier cycle.
+  Pour le chargement :
+    %(k3)s
+    %(k4)s
+  avec un nombre total de cycles :
+    %(k5)s
 
-  - Si vous avez demandé des graphiques en sortie (mot clef facteur 'GRAPHIQUE'), les valeurs qui correspondent à ces chargements
-    ne seront pas reportées dans les graphiques.
-  - Si vous avez demandé des tables en sortie (mot clef simple 'TABLE_RESU'), les valeurs qui correspondent à ces chargements
-    ne seront pas reportées dans les tables.
+  Le calcul s'est arrêté au cours du cycle numéro %(i1)d pour cause d'absence de convergence,
+  les pas archivés avant l'arrêt ont été sauvegardés.
 
+  Le critère de liquéfaction n'a pas été atteint.
 """),
 
 43: _(u"""
@@ -413,6 +417,5 @@ FIN()
    Il faut donc vérifier que  la matrice de Hill est isotrope.
    Sinon, utiliser STAT_NON_LINE sur un maillage adéquat.
 """),
-
 
 }

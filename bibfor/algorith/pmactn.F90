@@ -146,7 +146,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 ! ----- ON ARRETE TOUT
 !
         action = 0
-        call utmess('F', 'MECANONLINE9_7')
+        call utmess('Z', 'MECANONLINE9_7', num_except=22)
 !
     else if ((retact.eq.4).and.(.not.arret).and.itemax) then
 !
