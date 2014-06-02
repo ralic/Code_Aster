@@ -862,9 +862,8 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
         table = table[l_colonnes]
 
         self.defi_fichier()
-        fw=open('fort.%s' %self.unite_logique, 'w')
-        fw.write( str(table).replace(" "+legende_x,"#"+legende_x) )
-        fw.close()
+        datafile = 'fort.%s' % self.unite_logique
+        table.Impr(FICHIER=datafile, FORMAT='TABLEAU', dform={ 'ccpara' : '#' })
 
         # recuperation des noms des etudes Salome ouvertes
         if not self.study_name:
