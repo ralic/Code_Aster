@@ -42,7 +42,7 @@ from Calc_essai.ce_calcul_expansion import make_mac_salome, make_mesh_mac,CalcEs
 from Calc_essai.cata_ce import  CaraElem, InterSpectre, CalcEssaiObjects, Resultat, ModeMeca, DynaHarmo
 
 import Templates
-TEMPLATESDIR = osp.dirname(Templates)
+TEMPLATESDIR = osp.dirname(Templates.__file__)
 
 import aster
 
