@@ -248,3 +248,4 @@
     Peter Halverson <halverson .at. byu.edu>
     Denis Laxalde <denis.laxalde .at. logilab.fr>
     Alain Leufroy <alain.leufroy .at. logilab.fr>
+    Thierry Thomas <thierry .at. FreeBSD.org>
