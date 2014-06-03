@@ -323,8 +323,14 @@ if CHOIXF != 'COURBE' :
      display = Show()
      display.ColorArrayName = NOM_CHAMP
      display.Representation = TYPE
-     CH_PVLookupTable = GetLookupTableForArray( NOM_CHAMP, NB_CMP, VectorMode = CMP, RGBPoints=[RANGE_CMP[0], 0.0, 0.0, 1.0, RANGE_CMP[1], 1.0, 0.0, 0.0], ScalarRangeInitialized=1.0)
-     display.LookupTable = CH_PVLookupTable
+     if RANGE_CMP[0] == RANGE_CMP[1]:
+         max_scalar = 1.01 * RANGE_CMP[1]
+     else:
+         max_scalar = RANGE_CMP[1]
+     CH_PVLookupTable = GetLookupTableForArray(NOM_CHAMP, NB_CMP,
+                                               VectorMode = CMP,
+                                               RGBPoints=[RANGE_CMP[0], 0.0, 0.0, 1.0, max_scalar, 1.0, 0.0, 0.0],
+                                               ScalarRangeInitialized=1.0)
      display.LookupTable = CH_PVLookupTable
 
      if CHOIXF == 'GAUSS' :
