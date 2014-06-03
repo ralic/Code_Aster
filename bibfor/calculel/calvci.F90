@@ -1,4 +1,4 @@
-subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
+subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst,&
                   base)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -41,7 +41,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=*) :: nomci, lchci(*), nomnu
+    character(len=*) :: nomci, lchci(*), nume_ddlz
     character(len=1) :: base
     real(kind=8) :: inst
     integer :: nbchci
@@ -61,7 +61,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 ! ----------------------------------------------------------------------
 ! IN/JXVAR  K*19 NOMCI  : NOM DU CHAM_NO CREE A PARTIR DE LA LISTE DE
 !                   CHAR_CINE ET AYANT COMME PROF_CHNO CELUI DE NOMNU
-! IN  K*14 NOMNU  : NOM DE LA NUMEROTATION SUPPORTANT LE CHAM_NO
+! IN  K*14 NUME_DDL  : NOM DE LA NUMEROTATION SUPPORTANT LE CHAM_NO
 ! IN  I    NBCHCI : NOMBRE DE CHAR_CINE DE LA LISTE LCHCI
 ! IN  K*24 LCHCI  : LISTE DES NOMS DES CHARGES CINEMATIQUES ENTRANT
 !                   DANS LE CALCUL DU CHAM_NO NOMCI
@@ -76,23 +76,24 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: iddes, nec, ivvale,  jprno,  ichcin, jafci
-    integer :: jafcv, nbimp, nimp, n, ni, nddl, nn, nueq, ier
-    integer :: neq, numgd,  jdlci
-    integer :: jcn1k,    jcn1l, icmp, icmp1, ino, jnocmp
-    integer :: nbcmp1,  imaill, vali(1)
+    integer :: iddes, nec, ivvale,  jprno,  ichcin
+    integer :: jafcv, nb_affe_cine, i_affe_cine, i_node, i_cmp, i_eq, ier
+    integer :: neq, numgd,  jdlci, i_nueq
+    integer :: jcn1l, i_cmp_gran, i_cmp_gran1, jnocmp
+    integer :: nbcmp1,  i_ligr_mesh, vali(1)
     character(len=1) :: typval
     character(len=4) :: phen
     aster_logical :: fonc
     real(kind=8) :: valp(4), res, valr(1)
-    character(len=8) :: nomma, gd, nomf, evoim, nocmp, nomch
-    character(len=14) :: nu
+    character(len=8) :: mesh, gd, nomf, evoim, cmp_name, nomch
+    character(len=14) :: nume_ddl
     character(len=16) :: nomp(4)
-    character(len=19) :: vcine, charci, cnoimp, cnsimp
+    character(len=19) :: vcine, charci, cnoimp, cnsimp, prof_chno
     character(len=24) :: vvale, valk(4)
+    integer, pointer :: afci(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: afck(:) => null()
-    integer, pointer :: vnueq(:) => null()
+    integer, pointer :: p_nueq(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -104,49 +105,58 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
     call jemarq()
     if (nbchci .eq. 0) goto 999
     vcine = nomci
-    nu = nomnu
+    nume_ddl = nume_ddlz
     vvale = vcine//'.VALE'
     valr(1)=inst
     cnoimp='&&CALVCI.CNOIMP'
     cnsimp='&&CALVCI.CNSIMP'
 !
+! - Get informations about NUME_DDL
 !
-! --- CREATION DU CHAM_NO ( SI IL EXISTE DEJA ON LE DETRUIT )
-!     ---------------------------------------------------------
-    call detrsd('CHAMP_GD', vcine)
-    call jedetr(vcine//'.DLCI')
-    call dismoi('NOM_GD', nu, 'NUME_DDL', repk=gd)
-    call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=nomma)
+    call dismoi('NOM_GD'    , nume_ddl, 'NUME_DDL', repk=gd)
+    call dismoi('NOM_MAILLA', nume_ddl, 'NUME_DDL', repk=mesh)
+    call dismoi('PROF_CHNO' , nume_ddl, 'NUME_DDL', repk=prof_chno)
+!
+! - Get informations about GRANDEUR
+!
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
     call jeveuo('&CATA.GD.TYPEGD', 'L', vk8=typegd)
     typval = typegd(numgd)(1:1)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', numgd), 'L', iddes)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', jnocmp)
     nec = zi(iddes+2 )
+!
+! - Create CHAM_NO
+!
+    call detrsd('CHAMP_GD', vcine)
     call vtcreb(vcine, base, typval,&
-                nume_ddlz = nomnu,&
+                nume_ddlz = nume_ddl,&
                 nb_equa_outz = neq)
 !
-! --- ALLOCATION DE VCINE.DLCI QUI SERVIRA DANS NMCVCI :
+! - Create DLCI object (see nmcvci.F90)
+!
+    call jedetr(vcine//'.DLCI')
     call wkvect(vcine//'.DLCI', 'V V I', neq, jdlci)
 !
     call jeveuo(vvale, 'E', ivvale)
-    call jeveuo(nu//'.NUME.NUEQ', 'L', vi=vnueq)
-    call jeveuo(nu//'.NUME.DEEQ', 'L', vi=deeq)
-    call jenonu(jexnom(nu//'.NUME.LILI', '&MAILLA'), imaill)
-    call jeveuo(jexnum(nu//'.NUME.PRNO', imaill), 'L', jprno)
-    call jeveuo(nomma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(prof_chno//'.NUEQ', 'L', vi=p_nueq)
+    call jeveuo(prof_chno//'.DEEQ', 'L', vi=deeq)
+    call jenonu(jexnom(prof_chno//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(prof_chno//'.PRNO', i_ligr_mesh), 'L', jprno)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=vale)
 !
+! - Loop on kinematic loads
 !
-! --- BOUCLE SUR LES CHARGES CINEMATIQUES :
     do ichcin = 1, nbchci
         charci = lchci(ichcin)
         call jeveuo(charci//'.AFCK', 'L', vk8=afck)
         phen=afck(1)(1:4)
         fonc=afck(1)(5:7).eq.'_FT'
         evoim=afck(3)
-        call jeveuo(charci//'.AFCI', 'L', jafci)
-        if (evoim .eq. ' ') call jeveuo(charci//'.AFCV', 'L', jafcv)
+        call jeveuo(charci//'.AFCI', 'L', vi = afci)
+        if (evoim .eq. ' ') then
+            call jeveuo(charci//'.AFCV', 'L', jafcv)
+        endif
 !
 !
 !       -- CAS DE EVOL_IMPO : ON PREPARE ...
@@ -165,7 +175,6 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                         'EXCLU', 'EXCLU', 2, 'V', ier)
             call cnocns(cnoimp, 'V', cnsimp)
             call detrsd('CHAMP', cnoimp)
-            call jeveuo(cnsimp//'.CNSK', 'L', jcn1k)
             call jeveuo(cnsimp//'.CNSD', 'L', vi=cnsd)
             call jeveuo(cnsimp//'.CNSC', 'L', vk8=cnsc)
             call jelira(cnsimp//'.CNSC', 'LONMAX', nbcmp1)
@@ -178,68 +187,63 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !
 !       -- AFFECTATION DES VALEURS IMPOSEES
 !       ---------------------------------------
-        nbimp = zi(jafci)
+        nb_affe_cine = afci(1)
 !
 !
 !
 !       -- CAS DES VALEURS REELLES :
 !       ---------------------------------
         if (typval .eq. 'R') then
-            do nimp = 1, nbimp
-                n =3*(nimp-1)+jafci
-!           -- NI : NUMERO DU NOEUD
-                ni = zi(n+1)
-!           -- NDDL : NUMERO DE LA COMPOSANTE (POUR LE NOEUD NI)
-                nddl = zi(n+2)
-                nn = (nec+2)*(ni-1)
-                nueq =vnueq(zi(jprno+nn)+nddl-1)
-!
+            do i_affe_cine = 1, nb_affe_cine
+! ------------- i_node: index of node
+! ------------- i_cmp : index of component for LOCAL grandeur for current node
+                i_node = afci(3*(i_affe_cine-1)+2)
+                i_cmp  = afci(3*(i_affe_cine-1)+3)
+                i_nueq = zi(jprno+(nec+2)*(i_node-1))
+                i_eq   = p_nueq(i_nueq+i_cmp-1)
 !
 !           -- CAS EVOL_IMPO (CNSIMP):
 !           ----------------------------------
                 if (evoim .ne. ' ') then
-                    ino=deeq(2*(nueq-1)+1)
-                    icmp=deeq(2*(nueq-1)+2)
-                    ASSERT(ino.eq.ni)
-                    nocmp=zk8(jnocmp-1+icmp)
-                    vali(1)=ino
-                    valk(2)=nocmp
-                    icmp1=indik8(cnsc,nocmp,1,nbcmp1)
-                    ASSERT(icmp1.gt.0)
-                    if (.not.zl(jcn1l-1+(ino-1)*nbcmp1+icmp1)) then
+                    i_cmp_gran = deeq(2*(i_eq-1)+2)
+                    cmp_name   = zk8(jnocmp-1+i_cmp_gran)
+                    vali(1)    = i_node
+                    valk(2)    = cmp_name
+                    i_cmp_gran1=indik8(cnsc,cmp_name,1,nbcmp1)
+                    ASSERT(i_cmp_gran1.gt.0)
+                    if (.not.zl(jcn1l-1+(i_node-1)*nbcmp1+i_cmp_gran1)) then
                         call utmess('F', 'CALCULEL_2', nk=2, valk=valk, si=vali(1),&
                                     sr=valr(1))
                     endif
-                    res = cnsv((ino-1)*nbcmp1+icmp1)
-                    zr(ivvale-1+nueq) = res
+                    zr(ivvale-1+i_eq) = cnsv((i_node-1)*nbcmp1+i_cmp_gran1)
 !
 !
 !           -- CAS "NORMAL" (OBJET .AFCV) :
 !           ----------------------------------
                 else if (.not.fonc) then
-                    zr(ivvale-1+nueq) = zr(jafcv-1+nimp)
+                    zr(ivvale-1+i_eq) = zr(jafcv-1+i_affe_cine)
 !
 !
 !           -- CAS FONCTION :
 !           -----------------
                 else if (fonc) then
-                    nomf = zk8(jafcv-1+nimp)
+                    nomf = zk8(jafcv-1+i_affe_cine)
                     nomp(1)='INST'
                     nomp(2)='X'
                     nomp(3)='Y'
                     nomp(4)='Z'
                     valp(1)=inst
-                    valp(2)=vale(1+3*(ni-1)+0)
-                    valp(3)=vale(1+3*(ni-1)+1)
-                    valp(4)=vale(1+3*(ni-1)+2)
+                    valp(2)=vale(1+3*(i_node-1)+0)
+                    valp(3)=vale(1+3*(i_node-1)+1)
+                    valp(4)=vale(1+3*(i_node-1)+2)
                     call fointe('F ', nomf, 4, nomp, valp,&
                                 res, ier)
-                    zr(ivvale-1+nueq) = res
+                    zr(ivvale-1+i_eq) = res
                 else
                     call utmess('F', 'CALCULEL_37')
                 endif
 !
-                zi(jdlci-1+nueq) = 1
+                zi(jdlci-1+i_eq) = 1
             end do
 !
 !
@@ -249,14 +253,16 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
         else if (typval.eq.'C') then
             ASSERT(phen.eq.'CIAC')
             ASSERT(.not.fonc)
-            do nimp = 1, nbimp
-                n =3*(nimp-1)+jafci
-                ni = zi(n+1)
-                nddl = zi(n+2)
-                nn = (nec+2)*(ni-1)
-                nueq =vnueq(zi(jprno+nn)+nddl-1)
-                zc(ivvale-1+nueq) = zc(jafcv-1+nimp)
-                zi(jdlci-1+nueq) = 1
+            do i_affe_cine = 1, nb_affe_cine
+! ------------- i_node: index of node
+! ------------- i_cmp : index of component for LOCAL grandeur for current node
+                i_node = afci(3*(i_affe_cine-1)+2)
+                i_cmp  = afci(3*(i_affe_cine-1)+3)
+                i_nueq = zi(jprno+(nec+2)*(i_node-1))
+                i_eq   = p_nueq(i_nueq+i_cmp-1)
+
+                zc(ivvale-1+i_eq) = zc(jafcv-1+i_affe_cine)
+                zi(jdlci-1+i_eq) = 1
             end do
 !
 !

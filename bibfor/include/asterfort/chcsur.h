@@ -16,11 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine chcsur(chcine, cnsz, type, mo, nomgd)
-        character(len=*) :: chcine
-        character(len=*) :: cnsz
+    subroutine chcsur(chcinez, chamnosz, type, modelz, gran_name)
         character(len=1) :: type
-        character(len=*) :: mo
-        character(len=8) :: nomgd
+        character(len=8) :: gran_name
+        character(len=*) :: chcinez, chamnosz, modelz
     end subroutine chcsur
 end interface

@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
+    subroutine calvci(nomci, nume_ddlz, nbchci, lchci, inst,&
                       base)
         character(len=*) :: nomci
-        character(len=*) :: nomnu
+        character(len=*) :: nume_ddlz
         integer :: nbchci
         character(len=*) :: lchci(*)
         real(kind=8) :: inst
