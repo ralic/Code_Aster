@@ -1,6 +1,7 @@
-subroutine mminit(noma, defico, resoco, sddyna, valinc)
+subroutine mminit(noma, defico, resoco, sddyna, valinc,&
+                  sdnume)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -36,10 +37,11 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    character(len=19) :: valinc(*)
-    character(len=19) :: sddyna
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: defico, resoco
+    character(len=19), intent(in) :: valinc(*)
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: sdnume
 !
 ! ----------------------------------------------------------------------
 !
@@ -106,10 +108,10 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
     if (ltfcm) then
         call xmiszl(depmoi, defico, noma)
     else if (lctcc) then
-        call misazl(depmoi, defico)
+        call misazl(sdnume, depmoi)
         if (ldyna) then
-            call misazl(accplu, defico)
-            call misazl(vitplu, defico)
+            call misazl(sdnume, accplu)
+            call misazl(sdnume, vitplu)
         endif
     endif
 !

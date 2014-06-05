@@ -1,4 +1,9 @@
-subroutine misazl(vecinc, defico)
+subroutine misazl(sdnume, vecinc)
+!
+implicit none
+!
+#include "asterfort/jeveuo.h"
+#include "asterfort/jelira.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,23 +22,8 @@ subroutine misazl(vecinc, defico)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfnumn.h"
-#include "asterfort/cftypn.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/iposdg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-!
-    character(len=19) :: vecinc
-    character(len=24) :: defico
+    character(len=19), intent(in) :: sdnume
+    character(len=19), intent(in) :: vecinc
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,99 +33,23 @@ subroutine misazl(vecinc, defico)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! I/O VECINC : VECTEUR DES INCONNUES
-!
-!
-!
-!
-    integer :: nnoco, ntnoe
-    integer :: ino, nbno, nec, ncmpmx, numno(1)
-    integer :: ino_ind(1)
-    integer :: jnocmp, jprno,   jdg
-    integer :: numlc, numlf1, numlf2
-    integer :: poslc, poslf1, poslf2
-    integer :: inueq, ivalc, ivalf1, ivalf2
-    character(len=4) :: typno
-    character(len=8) :: nomgd
-    character(len=19) :: prno
-    real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: nueq(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
+    integer :: i_equa, nb_equa
+    character(len=24) :: sdnuco
+    integer, pointer :: p_nuco(:) => null()
+    real(kind=8), pointer :: p_vale(:) => null()
 !
-! --- INITIALISATIONS
+! ----------------------------------------------------------------------
 !
-    nnoco = cfdisi(defico,'NNOCO')
-    ntnoe = cfdisi(defico,'NTNOE')
-    nbno = 0
-!
-! --- ACCES AU NOM DE LA GRANDEUR
-!
-    call dismoi('NOM_GD', vecinc, 'CHAM_NO', repk=nomgd)
-!
-! --- ACCES AU NOM ET AU NOMBRE DES COMPOSANTES DE LA GRANDEUR
-!
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnocmp)
-    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
-!
-! --- ACCES AU PROF_CHNO ET AU POINTEUR .NUEQ
-!
-    call dismoi('PROF_CHNO', vecinc, 'CHAM_NO', repk=prno)
-    call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
-    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
-!
-! --- ACCES AU NOMBRE D'ENTIERS CODES POUR PARCOURIR LE .PRNO
-!
-    call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
-!
-! --- ACCES AU .VALE DU CHAMP VECINC
-!
-    call jeveuo(vecinc//'.VALE', 'E', vr=vale)
-!
-! -- RECHERCHE DES NUMEROS DES COMPOSANTES DANS LA GRANDEUR
-!
-    numlc = indik8(zk8(jnocmp),'LAGS_C' ,1,ncmpmx)
-    numlf1 = indik8(zk8(jnocmp),'LAGS_F1',1,ncmpmx)
-    numlf2 = indik8(zk8(jnocmp),'LAGS_F2',1,ncmpmx)
-!
-! --- PARCOURS DES NOEUDS ESCLAVES ET ANNULATION DES LAGR. DANS LE .VALE
-!
-    do ino = 1, nnoco
-!       NOEUDS ESCLAVES
-        call cftypn(defico, ino, typno)
-        if (typno .eq. 'ESCL') then
-            nbno = nbno+1
-!         NUMERO ABSOLU DU NOEUD ESCLAVE
-            ino_ind(1) = ino
-            call cfnumn(defico, 1, ino_ind, numno)
-!         DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD ESCLAVE
-            jdg = jprno - 1 + (numno(1)-1)*(2+nec) + 1 + 2
-!         POSITIONS DES LAGRANGES DANS LE DG
-            poslc = iposdg(zi(jdg),numlc )
-            poslf1 = iposdg(zi(jdg),numlf1)
-            poslf2 = iposdg(zi(jdg),numlf2)
-!         INDIRECTION VERS LE .NUEQ
-            inueq = zi(jprno - 1 + (numno(1)-1)*(2+nec) + 1)
-            ASSERT(poslc.ne.0)
-!         ADRESSE DU DDL LAGS_C DANS LE .VALE
-            ivalc = nueq(inueq - 1 + poslc)
-            vale(ivalc) = 0.d0
-            if (poslf1 .ne. 0) then
-!           ADRESSE DU DDL LAGS_F1 DANS LE .VALE
-                ivalf1 = nueq(inueq - 1 + poslf1)
-                vale(ivalf1) = 0.d0
-                if (poslf2 .ne. 0) then
-!              ADRESSE DU DDL LAGS_F2 DANS LE .VALE
-                    ivalf2 = nueq(inueq - 1 + poslf2)
-                    vale(ivalf2) = 0.d0
-                endif
-            endif
+    call jeveuo(vecinc//'.VALE', 'E', vr = p_vale)
+    call jelira(vecinc//'.VALE', 'LONMAX', nb_equa)
+    sdnuco = sdnume(1:19)//'.NUCO'
+    call jeveuo(sdnuco, 'L', vi = p_nuco)
+    do i_equa = 1,nb_equa
+        if (p_nuco(i_equa) .eq. 1) then
+            p_vale(i_equa) = 0.d0
         endif
     end do
-    ASSERT(nbno.eq.ntnoe)
-!
-    call jedema()
 end subroutine

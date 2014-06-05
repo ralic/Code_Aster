@@ -1,5 +1,18 @@
 subroutine cfinit(noma, fonact, defico, resoco, numins,&
-                  sddyna, valinc)
+                  sddyna, valinc, sdnume)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mminit.h"
+#include "asterfort/vtzero.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,23 +32,14 @@ subroutine cfinit(noma, fonact, defico, resoco, numins,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mmbouc.h"
-#include "asterfort/mminit.h"
-#include "asterfort/vtzero.h"
-    character(len=8) :: noma
-    character(len=24) :: defico, resoco
-    integer :: numins
-    integer :: fonact(*)
-    character(len=19) :: valinc(*)
-    character(len=19) :: sddyna
+    character(len=8), intent(in) :: noma
+    character(len=24), intent(in) :: defico
+    character(len=24), intent(in) :: resoco
+    integer, intent(in) :: numins
+    integer, intent(in) :: fonact(*)
+    character(len=19), intent(in) :: valinc(*)
+    character(len=19), intent(in) :: sddyna
+    character(len=19), intent(in) :: sdnume
 !
 ! ----------------------------------------------------------------------
 !
@@ -117,7 +121,8 @@ subroutine cfinit(noma, fonact, defico, resoco, numins,&
 ! --- INITIALISATIONS POUR CONTACT CONTINU ET XFEM
 !
     if (leltc) then
-        call mminit(noma, defico, resoco, sddyna, valinc)
+        call mminit(noma, defico, resoco, sddyna, valinc,&
+                    sdnume)
     endif
 !
  99 continue

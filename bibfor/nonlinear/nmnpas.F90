@@ -195,7 +195,7 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 !
     if (lcont) then
         call cfinit(noma, fonact, defico, resoco, numins,&
-                    sddyna, valinc)
+                    sddyna, valinc, sdnume)
     endif
 !
 ! --- APPARIEMENT INITIAL POUR CONTACT CONTINU

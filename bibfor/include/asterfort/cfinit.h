@@ -17,13 +17,14 @@
 !
 interface
     subroutine cfinit(noma, fonact, defico, resoco, numins,&
-                      sddyna, valinc)
-        character(len=8) :: noma
-        integer :: fonact(*)
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        integer :: numins
-        character(len=19) :: sddyna
-        character(len=19) :: valinc(*)
+                      sddyna, valinc, sdnume)
+        character(len=8), intent(in) :: noma
+        character(len=24), intent(in) :: defico
+        character(len=24), intent(in) :: resoco
+        integer, intent(in) :: numins
+        integer, intent(in) :: fonact(*)
+        character(len=19), intent(in) :: valinc(*)
+        character(len=19), intent(in) :: sddyna
+        character(len=19), intent(in) :: sdnume
     end subroutine cfinit
 end interface

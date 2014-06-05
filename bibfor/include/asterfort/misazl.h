@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine misazl(vecinc, defico)
-        character(len=19) :: vecinc
-        character(len=24) :: defico
+    subroutine misazl(sdnume, vecinc)
+        character(len=19), intent(in) :: sdnume
+        character(len=19), intent(in) :: vecinc
     end subroutine misazl
 end interface
