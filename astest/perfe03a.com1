@@ -1,0 +1,175 @@
+
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+#
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+import numpy as NP
+import random
+    
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET',), PAR_LOT='NON')
+
+MAILLA2=LIRE_MAILLAGE(UNITE=20,FORMAT='MED',);
+                   
+MODEL2=AFFE_MODELE(MAILLAGE=MAILLA2,
+               AFFE=_F(
+                       TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',
+                       ),);
+
+RESUV2=LIRE_RESU(  TYPE_RESU='EVOL_NOLI', FORMAT='MED',  MODELE=MODEL2, TOUT_ORDRE='OUI',UNITE=87,
+         FORMAT_MED=(_F( NOM_RESU    ='SIG',
+                         NOM_CHAM    ='VARI_ELGA',
+                         NOM_CMP=('V79','V80'),  
+                         NOM_CMP_MED=('V79','V80'),)),);
+
+SIGMOY2=LIRE_FONCTION(   UNITE=81,  NOM_PARA='INST',NOM_RESU='MOYE_SIZZ_1', 
+                         PROL_GAUCHE='LINEAIRE',PROL_DROITE='LINEAIRE',INDIC_RESU =[1,3],)
+
+"""procedure of creation of random ditribution of carbides on all Gauss points.
+     At each Gauss point we can have a random number of carbides n and to each one
+     cooresponds a random radius r."""  
+
+listcar = []
+
+# sigma(Griffith)
+def SIG_GRIFFITH(X):
+         # n cardibes suit une loi normale tronquée de moyenne 0.603 et d'écart type 4
+         # mesh in mm
+         E=210000.e6
+         nu=0.3
+         mean=0.603
+         sigma=4
+         nr=random.normalvariate(mean, sigma)
+         ncar=max(0, int(nr))
+         sigma_griffith=17000.e6
+         gammar=2.E-2
+         if ncar > 0:
+            a=-2.7
+            b=0.036e-6
+            # definition de max_r a affiner
+            rmax=1.e-6
+            max_r=0
+            for i in range(ncar):
+               x=random.random()
+               r=b*((-log(x))**(1./a))         
+               max_r=max(r,max_r)
+            if max_r > rmax :
+               max_r=rmax
+            sigma_griffith=NP.sqrt(NP.pi*E*gammar/2.0/(1-nu**2)/max_r)
+         return sigma_griffith
+
+CARBUR = FORMULE(NOM_PARA='X',VALE='SIG_GRIFFITH(X)');
+
+# essais de la formule et impression des quelques valeurs
+for i in range(20):
+   print 'Sig-Griffith',CARBUR(1)
+
+CHBID=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R', OPERATION='AFFE',MODELE=MODEL2, PROL_ZERO='OUI',
+              AFFE=_F( TOUT='OUI',  NOM_CMP=('X',),   VALE=1.),);
+dico = RESUV2.LIST_VARI_ACCES()
+NBNUM  = dico['NUME_ORDRE'][-1]
+instants   = dico['INST']
+print instants
+
+listrup =[]
+listeps =[]
+
+ntirage=4
+
+# minimum equivalent strain
+epspmin=1.e-16
+maxdif1=-17000.
+
+# voir si on peut se passer de detruire
+CHGRIF=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F', OPERATION='AFFE', MODELE=MODEL2,PROL_ZERO='OUI',
+                      AFFE=_F(TOUT='OUI',NOM_CMP='X1',VALE_F=CARBUR),);
+for itirage in range(ntirage):
+
+    print '================================'
+    print '- tirage numero ',itirage, '----'
+    print '================================'
+            
+    CHGRIR=CREA_CHAMP(TYPE_CHAM ='ELGA_NEUT_R', OPERATION ='EVAL',CHAM_F= CHGRIF,CHAM_PARA = CHBID);               
+    SIGRIF=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',OPERATION='ASSE',MODELE = MODEL2,PROL_ZERO='OUI',
+               ASSE=_F( TOUT='OUI', CHAM_GD=CHGRIR,   NOM_CMP=('X1'),  NOM_CMP_RESU=('V79'), ),);
+    for step in range(NBNUM):
+    
+        t2=instants[step+1]
+        t1=instants[step]
+        print '--------------------------------'
+        print 'step=',step,'t=',t2    
+        print '--------------------------------'
+        # extraction of the field of stress tensor at gauss points
+        VAR2=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',OPERATION='EXTR', RESULTAT=RESUV2,
+                        NOM_CHAM='VARI_ELGA', NUME_ORDRE=step+1,  );
+                        
+        # compute Sig-Clivage - Sig-Griffith
+        DIF=CREA_CHAMP(TYPE_CHAM ='ELGA_VARI_R',MODELE = MODEL2,OPERATION ='ASSE',PROL_ZERO='OUI',
+             ASSE=( _F(CHAM_GD=SIGRIF, COEF_R=-1., TOUT='OUI', CUMUL='OUI',NOM_CMP='V79'),
+                    _F(CHAM_GD=VAR2, COEF_R= 1., TOUT='OUI', CUMUL='OUI',NOM_CMP='V79'),));
+                    
+        # extract max of (Sig-Clivage - Sig-Griffith)
+        MDIF=POST_ELEM(MINMAX=_F(MODELE=MODEL2,NOM_CMP='V79',TOUT='OUI',CHAM_GD=DIF))
+        DETRUIRE(CONCEPT=_F(NOM=DIF,),);
+                
+        maxdif2=MDIF['MAX_V79',1]                
+        if maxdif2 >= 0 :
+           ma_dif2=MDIF['MA_MAX_V79',1]        
+           pg_dif2=MDIF['PT_MAX_V79',1]                
+           # equivalent plastic strain at point pg_diff2 for wich Sig_Cliv > Sig_Griffith 
+           feps2 = RECU_FONCTION(CHAM_GD=VAR2, NOM_CMP='V80',MAILLE=ma_dif2,POINT=pg_dif2)
+           epspeq=feps2(t2)                             
+           DETRUIRE(CONCEPT=_F(NOM=feps2,),);
+           DETRUIRE(CONCEPT=_F(NOM=VAR2,),);
+           DETRUIRE(CONCEPT=_F(NOM=MDIF,),);
+           if epspeq > epspmin :
+               fcliv=RECU_FONCTION(RESULTAT=RESUV2,NOM_CHAM='VARI_ELGA',NOM_CMP='V79',
+                                   MAILLE=ma_dif2,POINT=pg_dif2)
+               scliv1=fcliv(t1)
+               scliv2=fcliv(t2)
+               DETRUIRE(CONCEPT=_F(NOM=fcliv,),);
+               sgrif=scliv2-maxdif2
+               maxdif1=scliv1-sgrif           
+               tr=-maxdif1*(t2-t1)/(maxdif2-maxdif1)+t1
+               listrup.append(tr)
+               break
+        else:
+           DETRUIRE(CONCEPT=_F(NOM=VAR2,),);
+           DETRUIRE(CONCEPT=_F(NOM=MDIF,),);
+        # fin de la boucle sur les instants          
+    DETRUIRE(CONCEPT=_F(NOM=SIGRIF,),);
+    DETRUIRE(CONCEPT=_F(NOM=CHGRIR,),);
+    # fin de la boucle sur les tirages
+    
+print 'list of rupture time',listrup
+
+# proba rupture
+n=len(listrup)
+listrup2=NP.sort(listrup)
+P=[None]*n
+S=[None]*n
+for i in range(n):
+   P[i]=(i+0.5)/n
+   S[i]=SIGMOY2(listrup2[i])
+   
+print 'Pobability of failure',P
+print 'Stress',S
+
+if n > 1 :   
+    PROBAS=DEFI_FONCTION(  NOM_PARA='SIGM', ABSCISSE=S,  ORDONNEE=P , VERIF='NON'   )                         
+    IMPR_FONCTION(     COURBE=_F(  FONCTION = PROBAS), )
+    IMPR_FONCTION(     COURBE=_F(  FONCTION = PROBAS),FORMAT='XMGRACE',UNITE=39,   )
+
+FIN() ;

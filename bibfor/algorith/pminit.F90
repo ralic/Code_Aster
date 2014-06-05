@@ -451,11 +451,6 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 !     ----------------------------------------
 !     LECTURE DE NEWTON
 !     ----------------------------------------
-    pred=1
-    call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=predic, nbret=n1)
-    if (n1 .ne. 0) then
-        if (predic .eq. 'ELASTIQUE') pred=0
-    endif
     matrel=0
     option='FULL_MECA'
     call getvtx('NEWTON', 'MATRICE', iocc=1, scal=matric, nbret=n1)
@@ -464,6 +459,16 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
             matrel=1
             pred=0
             option='RAPH_MECA'
+        endif
+    endif
+    
+    pred=1
+    call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=predic, nbret=n1)
+    if (n1 .ne. 0) then
+        if (predic .eq. 'ELASTIQUE') then
+            pred=0
+        elseif (predic .eq. 'EXTRAPOLE') then
+            pred=-1
         endif
     endif
 !     ----------------------------------------

@@ -1,0 +1,219 @@
+# TITRE NON REGRESSION DU CALCUL POLYCRISTAL BZ DU MODULE TOUGHNESS DE PERFECT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: felix.latourte at edf.fr
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+
+import numpy as np
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                            NU=0.3,),
+                    MONO_VISC1=_F(N=12.0,
+                                  K=15.0,
+                                  C=0.0,),
+                    MONO_ISOT1=_F(R_0=175.0,
+                                  Q=20.0,
+                                  B=30.0,
+                                  H1=0.1,
+                                  H2=0.7,
+                                  H3=0.1,
+                                  H4=0.1),
+                    MONO_CINE1=_F(D=0.0,),);
+
+
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
+                                   ELAS='ELAS',
+                                   ECOULEMENT='MONO_VISC1',
+                                   ECRO_ISOT='MONO_ISOT1',
+                                   ECRO_CINE='MONO_CINE1',
+                                   FAMI_SYST_GLIS='BCC24',),);
+
+
+COMPORP=DEFI_COMPOR(POLYCRISTAL=(_F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(84.0,349.0,233.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(348.0,24.0,172.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(327.0,126.0,335.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(235.0,7.0,184.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(72.0,338.0,73.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(136.0,285.0,103.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(96.0,128.0,46.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(253.0,265.0,288.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(329.0,184.0,274.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(164.0,169.0,107.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(220.0,26.0,179.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(79.0,14.0,203.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(251.0,342.0,329.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(226.0,217.0,337.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(51.0,290.0,315.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(124.0,67.0,241.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(228.0,163.0,9.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(274.0,56.0,275.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(203.0,25.0,99.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(118.0,190.0,269.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(225.0,50.0,295.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(45.0,129.0,310.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(248.0,21.0,292.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(218.0,247.0,150.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(196.0,299.0,81.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(152.0,64.0,148.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(33.0,292.0,311.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(43.0,207.0,8.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(318.0,51.0,34.0,),),
+                                 _F(MONOCRISTAL=COMPORT,
+                                    FRAC_VOL=0.033333,
+                                    ANGL_REP=(58.0,169.0,224.0,),),),
+                    LOCALISATION='BZ',);
+
+# 3.4 IMPOSED LOADING ALONG UZ AXIS
+
+EPSZZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          100.0,0.1,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+TFIN = 10.0;
+
+T2 = 4.0;
+
+NPAS1 = 100;
+
+NPAS2 = 500;
+
+NARCH1 = 10;
+
+NARCH2 = 50;
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=( _F(JUSQU_A=4.,
+                                    NOMBRE=60,),
+                                 _F(JUSQU_A=10.,
+                                    NOMBRE=30),),);
+
+LINSTA=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=4.,
+                                     NOMBRE=20,),
+                                  _F(JUSQU_A=10.,
+                                     NOMBRE=3),),);
+                                     
+LISTPS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),                          
+                         ECHEC=_F(SUBD_NIVEAU=10,
+                                  SUBD_METHODE='MANUEL',
+                                  SUBD_PAS=10,
+                                  EVENEMENT='ERREUR',
+                                  SUBD_PAS_MINI=1e-8,
+                                  ACTION='DECOUPE'),
+                                  );
+                                  
+                                  
+SIGEPS=SIMU_POINT_MAT(INFO=2,
+                   COMPORTEMENT=_F(
+                                RELATION='POLYCRISTAL',
+                                COMPOR=COMPORP,
+                                ),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5, ITER_GLOB_MAXI=10, ),
+                   NEWTON=_F( MATRICE='ELASTIQUE', PREDICTION='EXTRAPOLE', ),
+
+                   FORMAT_TABLE='CMP_COLONNE',  NB_VARI_TABLE=6,
+
+                   MATER      = ACIER,
+                   INCREMENT=_F(LIST_INST=LISTPS),
+                   ARCHIVAGE=_F(LIST_INST=LINSTA),
+                   EPSI_IMPOSE=_F(EPZZ=EPSZZ),
+                        );
+
+
+
+IMPR_TABLE(TABLE=SIGEPS,
+           FORMAT='TABLEAU',
+           UNITE=38,
+           NOM_PARA=('INST','EPZZ','SIZZ',),
+           TITRE='Courbe SigZZ_moy=f(EpsZZ_moy)',);
+
+TEST_TABLE(
+           VALE_CALC=440.511663307,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='SIZZ',
+           TABLE=SIGEPS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.0,),
+           )
+
+FSIGEPS=RECU_FONCTION(TABLE=SIGEPS,
+                      PARA_X='EPZZ',
+                      PARA_Y='SIZZ',);
+
+#IMPR_FONCTION(FORMAT='XMGRACE',COURBE=_F(FONCTION=FSIGEPS,),UNITE=39,PILOTE='INTERACTIF');
+
+FIN();

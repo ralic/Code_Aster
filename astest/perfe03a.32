@@ -1,0 +1,37 @@
+def DEFI_ANGLES(Ng,prefix_nomgr,**args):
+###################################################################
+#affectation aleatoire des orientations de chaque grain
+###################################################################
+#en entree :
+#Ng : NOMBRE DE GERMES
+#en sortie :
+#LISTE_GROUP : MOT-CLE FACTEUR MASSIF de AFFE_CARA_ELEM
+###################################################################
+
+
+   # On boucle sur les arguments de la fonction pour
+   # creer une liste de mots-cle facteurs que l'on va
+   # retourner pour l'utiliser dans AFFE_CARA_ELEM
+   # Noter que comme MASSIF est un mot-cle facteur, il
+   # contient une liste de dictionnaires
+   import copy, math
+   from random import *
+   
+   # coef=2*math.pi
+   coef=360.
+
+   LISTE_ANGLES=[]
+   for ig in range(Ng):
+
+      mon_dico={}
+      mon_dico["GROUP_MA"]=prefix_nomgr+str(ig+1)
+      angles=[coef*random(), coef/(2.*math.pi)*math.acos(2.*(random()-1./2.)), coef*random()]
+      mon_dico["ANGL_EULER"]=angles
+      LISTE_ANGLES.append(mon_dico)
+      
+   return LISTE_ANGLES
+###################################################################
+
+
+LISTE_ANGL=DEFI_ANGLES(Ng, prefix_nomgr)
+ORIELEM=AFFE_CARA_ELEM(MODELE=MO,MASSIF=LISTE_ANGL)

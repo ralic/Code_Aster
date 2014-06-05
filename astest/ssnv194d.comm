@@ -151,7 +151,7 @@ SOLNL=SIMU_POINT_MAT(INFO=2,
                              REAC_ITER=0
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  RESI_GLOB_RELA=1.E-3
+                                  RESI_GLOB_RELA=1.E-4,
                                      ),
                    MATER      = ACIERDD,
 
@@ -193,7 +193,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10000000,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=815.7863,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=815.5439588316,
                         VALE_PARA=333.33333333333337,
                         NOM_PARA='INST',
                         FONCTION=F_SI,

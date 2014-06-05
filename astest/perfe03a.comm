@@ -1,0 +1,331 @@
+# TITRE NON REGRESSION DU CALCUL D'AGREGAT DU MODULE TOUGHNESS DE PERFECT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: jean-michel.proix at edf.fr
+# ======================================================================
+# NON REGRESSION : CALCUL EN 3D_SI JUSQU'A t=1.5
+# pour le calcul complet (t=30, Epsmax=10%) il faut changer :
+# TFIN=30
+# on peu utiliser SOLVEUR = MUMPS et tourner sur plusieurs processeurs
+# ce calcul complet permet de construire le fichier resultat MED pour
+# le post-traitement de Griffith, contenu dans perfe03a.com1.
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+
+################################################################################
+# DataDescription
+#    """Template file for the generation of a tensile test on an aggregate
+#    Calculation using F.E. code Code_Aster (c).
+#    Freely inspired by a command file given by J.-M. Proix (EDF R&D)
+#    (sorry for some of the comments in french...).
+#    The chosen single-crystal law is the Cailletaud one (1 isotropic
+#    hardening and 1 kinematic non--linear hardening).
+#    Cooked by S. Bugat [EDF R&D] for the PERFECT consortium
+#    Date: 08/2006
+################################################################################
+# DataVersion
+#01.00.00
+################################################################################
+# DataAsterVersion
+#9.3
+# the PAR_LOT='NON' is mandatory if  python macro-commands are defined :
+#    defi_group=1  or/and  defi_orientation=1
+#    mail_libre=1 for a free mesh of the RVE (TETRA)
+
+mail_libre=0
+defi_groups=0
+defi_orientations=0
+#    prefix_nomgr specifies the prefix of the names of the grains (GROUP_MA)
+prefix_nomgr="GRAI"
+# setting the number of germs (this can be independant from the number
+# of orientations in the texture)
+Ng = 300
+
+
+#=====  1 - MESH READING  AND MODEL DEFINITION =================================
+
+MAIL=LIRE_MAILLAGE(UNITE=20,
+                   FORMAT='MED',);
+
+# changing the scale of the RVE if necessary
+MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL, ECHELLE=1.)
+
+# global dimension
+
+TABG=RECU_TABLE(CO=MAIL,
+                NOM_TABLE='CARA_GEOM',);
+
+IMPR_TABLE(TABLE=TABG,);
+
+if defi_groups==1 :
+   xmin=TABG['X_MIN',1]
+   xmax=TABG['X_MAX',1]
+   ymin=TABG['Y_MIN',1]
+   ymax=TABG['Y_MAX',1]
+   zmin=TABG['Z_MIN',1]
+   zmax=TABG['Z_MAX',1]
+else:
+# 50 microns, en m
+   xmin = 0.0;
+   xmax = 5e-05;
+   ymin = 0.0;
+   ymax = 5e-05;
+   zmin = 0.0;
+   zmax = 5e-05;
+dim=zmax-zmin
+
+print 'Dimensions x',xmin,xmax
+print 'Dimensions y',ymin,ymax
+print 'Dimensions z',zmin,zmax
+
+haut = (zmax - zmin);
+
+precis = (haut / 100.0);
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(OPTION='PLAN',
+                                  NOM='FAC1XY',
+                                  POINT=(0.,0.,zmax,),
+                                  VECT_NORMALE=(0.,0.,1.0,),
+                                  PRECISION=precis,),
+                               _F(OPTION='PLAN',
+                                  NOM='FACXY',
+                                  POINT=(0.,0.,zmin,),
+                                  VECT_NORMALE=(0.,0.,1.0,),
+                                  PRECISION=precis,),
+                               _F(OPTION='PLAN',
+                                  NOM='FAC1XZ',
+                                  POINT=(0.,ymax,0.,),
+                                  VECT_NORMALE=(0.,1.0,0.,),
+                                  PRECISION=precis,),
+                               _F(OPTION='PLAN',
+                                  NOM='FACXZ',
+                                  POINT=(0.,ymin,0.,),
+                                  VECT_NORMALE=(0.,1.0,0.,),
+                                  PRECISION=precis,),
+                               _F(OPTION='PLAN',
+                                  NOM='FAC1YZ',
+                                  POINT=(xmax,0.,0.,),
+                                  VECT_NORMALE=(1.0,0.,0.,),
+                                  PRECISION=precis,),
+                               _F(OPTION='PLAN',
+                                  NOM='FACYZ',
+                                  POINT=(xmin,0.,0.,),
+                                  VECT_NORMALE=(1.0,0.,0.,),
+                                  PRECISION=precis,),),);
+
+
+# evaluate the elsets for each grain and add it to the mesh
+if mail_libre==0 :
+   if defi_groups==1 :
+       INCLUDE(UNITE=21,);
+   else :
+       INCLUDE(UNITE=22,);
+
+
+MO=AFFE_MODELE(MAILLAGE=MAIL,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+# define the orientations of each elset for each germ
+if defi_orientations==1 :
+   INCLUDE(UNITE=32,);
+else:
+   INCLUDE(UNITE=31,);
+
+#=====  2 - MATERIAL DEFINITION ================================================
+#print "Defining the material..."
+Coef = 1000000.0;
+
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=(210000.0 * Coef),
+                            NU=0.3,),
+                    MONO_VISC1=_F(N=12.0,
+                                  K=(15.0 * Coef),
+                                  C=0.0,),
+                    MONO_ISOT1=_F(R_0=(175.0 * Coef),
+                                  Q=(20.0 * Coef),
+                                  B=30.0,
+                                  H1=1.0,
+                                  H2=1.0,
+                                  H3=1.0,
+                                  H4=1.0,),
+                    MONO_CINE1=_F(D=0.0,),);
+
+COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
+                                   ECOULEMENT='MONO_VISC1',
+                                   ECRO_ISOT='MONO_ISOT1',
+                                   ECRO_CINE='MONO_CINE1',
+                                   FAMI_SYST_GLIS='BCC24',),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+
+#=====  3 - LOADING AND MATERIAL AFFECTATION ===================================
+
+TRAC1=AFFE_CHAR_CINE(MODELE=MO,
+                     MECA_IMPO=(_F(GROUP_NO='FACXY',
+                                   DZ=0.0,),
+                                _F(GROUP_NO='FACXZ',
+                                   DY=0.0,),
+                                _F(GROUP_NO='FACYZ',
+                                   DX=0.0,),),);
+
+FO_EZ=LIRE_FONCTION(UNITE=33,
+                    NOM_PARA='INST',
+                    NOM_RESU='EPYY_0',
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+FO_UZ=CALC_FONCTION(COMB=_F(FONCTION=FO_EZ,
+                            COEF=haut,),);
+
+TRAC2=AFFE_CHAR_MECA_F(MODELE=MO,
+                       DDL_IMPO=_F(GROUP_NO='FAC1XY',
+                                   DZ=FO_UZ,),);
+
+TRAC3=AFFE_CHAR_MECA(MODELE=MO,
+                     LIAISON_UNIF=(_F(GROUP_NO='FAC1XZ',
+                                      DDL='DY',),
+                                   _F(GROUP_NO='FAC1YZ',
+                                      DDL='DX',),),);
+TMAX = 27.5;
+
+
+#TFIN = TMAX;
+TFIN = 1.4;
+
+NPAS = 200;
+
+NARCH = 20;
+
+
+# this list corresponds to the list of the 'archiving' instants
+
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(_F(JUSQU_A=1.2,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=1.4,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=TMAX,
+                                    NOMBRE=NARCH,),),);
+
+# for the resolution, a maximum increment of deformation of 0.05%
+# is required... Therefore, the number of steps is multiplied so
+# that the increment of deformation is under 5.E-4
+
+LINSTC=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=1.2,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=1.4,
+                                     NOMBRE=2,),
+                                  _F(JUSQU_A=TMAX,
+                                     NOMBRE=NPAS,),),);
+
+#=====  4 - RESOLUTION ============================================
+
+SIG=STAT_NON_LINE(MODELE=MO,
+                  CHAM_MATER=CHMAT,
+                  CARA_ELEM=ORIELEM,
+                  EXCIT=(_F(CHARGE=TRAC1,),
+                         _F(CHARGE=TRAC2,),),
+                  COMPORTEMENT=_F(RELATION='MONOCRISTAL',
+                               COMPOR=COMPORT,
+                             #  DEFORMATION='GREEN',
+                               RESI_INTE_RELA=1.E-6,
+                               ITER_INTE_MAXI=100,),
+                  INCREMENT=_F(LIST_INST=LINSTC,
+                               INST_FIN=TFIN,),
+                  NEWTON=_F(PREDICTION='EXTRAPOLE',
+                            REAC_ITER=1,),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,),
+                  ARCHIVAGE=_F(LIST_INST=LINST,),
+                  SUIVI_DDL=(_F(NOM_CMP    ='V80',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V81',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='SIZZ',
+                                 NOM_CHAM   ='SIEF_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                                 ),
+                  );
+
+#=====  5 - OUTPUT FIELDS CALCULATIONS =========================================
+# calculation of stress fields at nodes from gauss points
+# and strain field at nodes from displacement
+
+SIG=CALC_CHAMP(reuse =SIG,
+
+
+              RESULTAT=SIG,
+               DEFORMATION=('EPSI_ELGA'),);
+
+# Calcul des moyennes
+
+INT_SI=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIZZ',
+                              TYPE_MAILLE='3D',),
+                 MODELE=MO,
+                 RESULTAT=SIG,);
+
+INT_EP=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
+                              NOM_CHAM='EPSI_ELGA',
+                              NOM_CMP='EPZZ',
+                              TYPE_MAILLE='3D',),
+                 MODELE=MO,
+                 RESULTAT=SIG,);
+
+FSI=RECU_FONCTION(TABLE=INT_SI,
+                  PARA_X='INST',
+                  PARA_Y='MOYE_SIZZ',);
+
+FEP=RECU_FONCTION(TABLE=INT_EP,
+                  PARA_X='INST',
+                  PARA_Y='MOYE_EPZZ',);
+
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=_F(FONCTION=FSI,),
+              UNITE=8,);
+
+TEST_TABLE(
+           VALE_CALC=3.7035669605053002E8,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='MOYE_SIZZ',
+           TABLE=INT_SI,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.3999999999999999,),
+           )
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=87,
+          RESU=_F(RESULTAT=SIG,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP=('V79','V80',),),);
+
+FIN();

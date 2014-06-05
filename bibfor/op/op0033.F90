@@ -90,7 +90,7 @@ subroutine op0033()
     real(kind=8) :: dsidep(6, 9), drdy(12, 12), kel(6, 6), cimpo(6, 12), ym(12)
     real(kind=8) :: work(10), sdeps(6), ssigp(6), smatr(36), r1(12)
     real(kind=8) :: matper(36), varia(2*36), epsilo, pgl(3, 3), vimp33(3, 3)
-    real(kind=8) :: vimp2(3, 3), coef, parcri(7), jm, jp, jd, rbid(1)
+    real(kind=8) :: vimp2(3, 3), coef, parcri(7), jm, jp, jd, rbid(1), coefextra
     logical :: finpas, itemax, conver
     character(len=19) :: nomvi
     character(len=19) :: vim, vip, vim2, svip
@@ -266,13 +266,13 @@ subroutine op0033()
 !
 !        INITIALISATION DE L'ALGO DE NEWTON
 !
-    call r8inir(12, 0.d0, dy, 1)
-    call r8inir(6, 0.d0, deps, 1)
     call dcopy(6, sigm, 1, ym, 1)
     call dscal(6, 1.d0/coef, ym, 1)
     call dcopy(6, epsm, 1, ym(7), 1)
 !
     if (pred .eq. 1) then
+        call r8inir(12, 0.d0, dy, 1)
+        call r8inir(6, 0.d0, deps, 1)
         opt2='RIGI_MECA_TANG'
         call dcopy(nbvari, zr(lvim), 1, zr(lsvip), 1)
         if (incela .eq. 1) then
@@ -294,8 +294,9 @@ subroutine op0033()
             call pmdrdy(dsidep, coef, cimpo, valimp, ym,&
                         sigm, r, drdy)
         endif
-    endif
-    if (pred .eq. 0) then
+    elseif ((pred .eq. 0).or.((pred.eq.-1).and.(numins.eq.1))) then
+        call r8inir(12, 0.d0, dy, 1)
+        call r8inir(6, 0.d0, deps, 1)
         call pmdrdy(kel, coef, cimpo, valimp, ym,&
                     sigm, r, drdy)
     endif
@@ -314,21 +315,30 @@ subroutine op0033()
 300  continue
 !
     iter = iter + 1
-    call dcopy(12, r, 1, ddy, 1)
+
+    if ((iter.eq.1).and.(pred.eq.-1).and.(numins.gt.1)) then
+!   prediction='extrapole'
+       coefextra = (instap-instam)/(instam-diinst(sddisc, numins-2))
+!       dy = dy * (ti - ti-1)/(ti-1 - ti-2)
+       call dscal(12, coefextra, dy, 1)
+    else
+    
+       call dcopy(12, r, 1, ddy, 1)
 !
-!           RESOLUTION DE DRDY*DDY = - R(Y)  CARGAU = 'NCSP'
-    cargau = 'NCWP'
-    call mgauss(cargau, drdy, ddy, 12, 12,&
-                1, r8b, iret)
-    if (iret .ne. 0) then
-        liccvg(5) = 1
-        conver = .false.
-        goto 500
+!      RESOLUTION DE DRDY*DDY = - R(Y)  CARGAU = 'NCSP'
+       cargau = 'NCWP'
+       call mgauss(cargau, drdy, ddy, 12, 12, 1, r8b, iret)
+       if (iret .ne. 0) then
+           liccvg(5) = 1
+           conver = .false.
+           goto 500
+       endif
+!
+!      REACTUALISATION DE DY = DY + DDY
+       call daxpy(12, 1.d0, ddy, 1, dy, 1)
+       
     endif
-!
-!           REACTUALISATION DE DY = DY + DDY
-    call daxpy(12, 1.d0, ddy, 1, dy,&
-               1)
+    
     call dcopy(6, dy(7), 1, deps, 1)
 !
 !           POUR LE CALCUL DE LA MATRICE TANGENTE PAR PERTURBATION

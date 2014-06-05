@@ -1,0 +1,247 @@
+# TITRE NON REGRESSION DU CALCUL D'EPROUVETTE CT DU MODULE TOUGHNESS DE PERFECT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: jean-michel.proix at edf.fr
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+################################################################################
+
+
+# DataDescription
+#
+#    """Template file for the generation of CT calculation with Weibull post-treatment using
+#    F.E. code Code_Aster (c).
+#    Freely inspired by a command file given by O. Diard (sorry for some of the comments in french...).
+#    Cooked by S. Bugat [EDF R&D] for the PERFECT consortium
+#    Date: 03/2006
+################################################################################
+
+
+#-----------------------------------------------------------------------
+#    * GOUPILLE MAILLEE AFIN DE MIEUX REPRESENTER L'APPLICATION
+#      DU CHARGEMENT (ICI FORCE IMPOSEE)
+#
+#    * CONDITIONS AUX LIMITES (1/2 DE L'EPROUVETTE MAILLE) :
+#
+#      - DEPLACEMENT BLOQUE SUIVANT DY SUR LE LIGAMENT
+#
+#      - FORCE IMPOSEE MONOTONE CROISSANTE AU CENTRE DE LA GOUPILLE
+#
+#----------------------------------------------------------------------
+
+MAILCT45=LIRE_MAILLAGE(UNITE=20,
+                       FORMAT='MED',);
+
+MAILCT45=DEFI_GROUP(reuse =MAILCT45,
+                    MAILLAGE=MAILCT45,
+                    CREA_GROUP_NO=_F(GROUP_MA='LIG',),);
+
+#----------------  AFFECTATION MODELE MECANIQUE    --------------------
+
+MO_MEC45=AFFE_MODELE(MAILLAGE=MAILCT45,
+                     AFFE=_F(GROUP_MA=('SEPROUV','SGOUP',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='D_PLAN',),);
+
+#---------------- DONNEES MECANIQUES ACIER  -------------------
+
+ECR245=LIRE_FONCTION(UNITE=31,
+                     NOM_PARA='EPSI',
+                     PROL_DROITE='LINEAIRE',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              COURBE=_F(FONCTION=ECR245,),);
+
+ECR245G=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.002720,54400.,
+                            0.16,56000.,
+                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+
+MA_EP245=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                               NU=0.3,
+                               ALPHA=1.E-2,),
+                       TRACTION=_F(SIGM=ECR245,),
+                       WEIBULL=_F(M=20.0,
+                                  VOLU_REFE=0.000125,
+                                  SIGM_REFE=2750.0,),);
+
+#---------------- DONNEES MECANIQUES GOUPILLE  -------------------
+
+MAGOUP45=DEFI_MATERIAU(ELAS=_F(E=2.E6,
+                               NU=0.29999999999999999,
+                               ALPHA=1.E-2,),
+                       TRACTION=_F(SIGM=ECR245G,),);
+
+#---------    AFFECTATION CARACTERISTIQUES MECANIQUES     -----------
+
+CM245=AFFE_MATERIAU(MAILLAGE=MAILCT45,
+                    AFFE=(_F(GROUP_MA='SEPROUV',
+                             MATER=MA_EP245,),
+                          _F(GROUP_MA='SGOUP',
+                             MATER=MAGOUP45,),),);
+TMAX = 49.993923025;
+
+FMAX = 2915.0;
+
+NPAS = 20;
+
+
+F_T45=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          TMAX,FMAX,
+                          ),PROL_GAUCHE='CONSTANT',);
+
+L_INST45=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=TMAX,
+                                      NOMBRE=NPAS,),);
+
+CO_LIM45=AFFE_CHAR_CINE(MODELE=MO_MEC45,
+                        MECA_IMPO=(_F(GROUP_NO='LIG',
+                                      DY=0.0,),
+                                   _F(GROUP_NO='PLOAD',
+                                      DX=0.0,),),);
+
+CHAR45=AFFE_CHAR_MECA_F(MODELE=MO_MEC45,
+                        FORCE_NODALE=_F(GROUP_NO='PLOAD',
+                                        FY=F_T45,),);
+
+# RESOLUTION
+TFIN = TMAX;
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST45),
+                        ECHEC=_F(ACTION='ITER_SUPPL',
+                                 SUBD_METHODE='MANUEL',
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=0.00001),)
+
+
+UP245=STAT_NON_LINE(MODELE=MO_MEC45,
+                    CHAM_MATER=CM245,
+                    EXCIT=(_F(CHARGE=CO_LIM45,),
+                           _F(CHARGE=CHAR45,),),
+                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',
+                                 DEFORMATION='SIMO_MIEHE',
+                                 GROUP_MA=('SEPROUV','SGOUP',)),
+                    INCREMENT=_F(LIST_INST=DEFLIST,
+                                 INST_FIN=TFIN,
+                                 ),
+                    NEWTON=_F(REAC_ITER=1,),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                    ARCHIVAGE=_F(LIST_INST=L_INST45,),);
+
+# IMPRESSION DES RESULTATS
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=UP245,),);
+
+UP245=CALC_CHAMP(reuse =UP245,
+                RESULTAT=UP245,
+                 DEFORMATION=('EPSG_ELGA'),);
+
+UP245=CALC_CHAMP(reuse =UP245,
+              RESULTAT=UP245,
+              FORCE='FORC_NODA',
+
+              );
+
+# get the applied displacement
+
+DLC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='U_LDC',
+                            RESULTAT=UP245,
+                            NOM_CHAM='DEPL',
+                            GROUP_NO='PLOAD',
+                            TOUT_CMP='OUI',),);
+
+# get the applied force
+
+FG45=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='Force Goupille',
+                             RESULTAT=UP245,
+                             NOM_CHAM='FORC_NODA',
+                             GROUP_NO='PLOAD',
+                             TOUT_CMP='OUI',),);
+
+# largeur de la CT
+B = 25.4;
+
+
+# # extraction of the python tables from the Aster tables
+# # we also multiply the lineic force by the thickness B of the CT
+# dlc_tab, fg_tab = DLC.EXTR_TABLE(), FG45.EXTR_TABLE()
+# time_ext = dlc_tab.values()['INST']
+# dlc_ext  = dlc_tab.values()['DY']
+# fg_ext   = fg_tab.values()['DY']
+# loading_curve = [ [time_ext[i], dlc_ext[i], fg_ext[i]*B] for i in \
+#                     range(len(time_ext)) ]
+#
+# # storage in a file using pickle
+# print "Storage of the loading curve"
+# fout = open("./REPE_OUT/loading_curve.pic","w")
+# pickle.dump(loading_curve, fout)
+# fout.close()
+
+MULTB = FORMULE(VALE='DY*B',
+                NOM_PARA='DY',);
+
+FODEP=CALC_TABLE(TABLE=FG45,
+                 ACTION=_F(OPERATION='OPER',
+                           FORMULE=MULTB,
+                           NOM_PARA='FG_EXT',),);
+
+FODEP=CALC_TABLE(reuse =FODEP,
+                 TABLE=FODEP,
+                 ACTION=_F(OPERATION='COMB',
+                           TABLE=DLC,
+                           NOM_PARA='INST',),);
+
+IMPR_TABLE(TABLE=FODEP,
+           NOM_PARA=('INST','DY','FG_EXT',),
+           TITRE='CT : Courbe Force Deplacement',);
+
+TEST_TABLE(
+           VALE_CALC=74040.999999,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='FG_EXT',
+           TABLE=FODEP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=49.993923025000001,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=3.38221454633,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=FODEP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=49.993923025000001,),
+           )
+
+FIN();
+
+# TWEIB45B=POST_ELEM(WEIBULL=_F(GROUP_MA='SEPROUV',
+#                               OPTION='SIGM_ELMOY',
+#                               CORR_PLAST='OUI',
+#                               COEF_MULT=50.8,),
+#                    RESULTAT=UP245,
+#                    TITRE='Weibull post-treatment, norder, INST, SIGw, Pf ',);
+# extraction of the python tables from the Aster tables
+### first we output the full table because it can contain usefull informations
+### for the user
+
+
+# IMPR_TABLE(TABLE=None,
+#            FORMAT='TABLEAU',);

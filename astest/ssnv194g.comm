@@ -184,10 +184,9 @@ SOLNLi=SIMU_POINT_MAT(INFO=1,
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
                              PREDICTION='EXTRAPOLE',
-                             REAC_ITER=0
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  RESI_GLOB_RELA=1.E-3
+                                  RESI_GLOB_RELA=1.E-4,
                                      ),
                    MATER      = ACIERDDi,
 
@@ -231,10 +230,9 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
                              PREDICTION='EXTRAPOLE',
-                             REAC_ITER=0
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  RESI_GLOB_RELA=1.E-3
+                                  RESI_GLOB_RELA=1.E-4,
                                      ),
                    MATER      = ACIERDD,
 
@@ -249,7 +247,7 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                         );
 
 
-IMPR_TABLE(TABLE=SOLNL)
+#IMPR_TABLE(TABLE=SOLNL)
 
 F_SI=RECU_FONCTION(TABLE=SOLNL,
                            PARA_X='INST',
@@ -281,7 +279,7 @@ IMPR_FONCTION(
 
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=658.5459,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=658.4318810550,
                         VALE_PARA=1.,
                         NOM_PARA='INST',
                         FONCTION=F_SIi,
@@ -289,7 +287,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=658.5459,
               )
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=461.9796,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=461.8218055678,
                         VALE_PARA=1.,
                         NOM_PARA='INST',
                         FONCTION=F_SI,

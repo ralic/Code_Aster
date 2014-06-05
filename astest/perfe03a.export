@@ -1,0 +1,16 @@
+P time_limit 480
+P memory_limit 768
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm perfe03a.comm D 1
+F comm perfe03a.com1 D 1
+F mmed perfe03a.mmed D 20
+F libr perfe03a.21 D 21
+F libr perfe03a.22 D 22
+F libr perfe03a.31 D 31
+F libr perfe03a.32 D 32
+F libr perfe03a.33 D 33
+F libr perfe03a.81 D 81

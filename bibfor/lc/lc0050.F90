@@ -91,7 +91,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: ddsdde(36), dfgrd0(3, 3), dfgrd1(3, 3)
     real(kind=8) :: ddsddt(6), drplde(6), celent, stran(9), dsidep(6, 6)
     real(kind=8) :: dtime, temp, dtemp, coords(3), rpl, pnewdt, drpldt
-    real(kind=8) :: depsth(6), epsth(6), rac2, usrac2, drott(3, 3)
+    real(kind=8) :: depsth(6), epsth(6), rac2, usrac2, drott(3, 3),detf
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
@@ -150,8 +150,8 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
         else
             call dcopy(neps, dfgrd0, 1, dfgrd1, 1)
         endif
-        call r8inir(neps, 0.d0, stran, 1)
-        call r8inir(neps, 0.d0, dstran, 1)
+        call dcopy(neps, dfgrd0, 1, stran, 1)
+        call dcopy(neps, dfgrd1, 1, dstran, 1)
 !
     else if (neps.eq.6) then
 !
@@ -175,6 +175,8 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     if (compor(3) .eq. 'GDEF_LOG') then
+        nstatv=nvi-6
+    elseif (compor(3) .eq. 'SIMO_MIEHE') then
         nstatv=nvi-6
     else
         nstatv=nvi
@@ -294,6 +296,11 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call dscal(3, rac2, stress(4), 1)
+        if (compor(3) .eq. 'SIMO_MIEHE') then
+! transformation cauchy kirchhoff
+           call lcdetf(3, dfgrd1, detf)  
+           call dscal(3, detf, stress, 1)
+        endif
     endif
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then

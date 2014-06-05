@@ -174,10 +174,9 @@ SOLNL=SIMU_POINT_MAT(INFO=2,
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
                              PREDICTION='EXTRAPOLE',
-                             REAC_ITER=0
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  RESI_GLOB_RELA=1.E-3
+                                  RESI_GLOB_RELA=1.E-4,
                                      ),
                    MATER      = ACIERDD,
 
@@ -223,7 +222,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.14999999999999999,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=856.554410185,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=856.1316110463,
                         VALE_REFE=856.58699999999999,
                         VALE_PARA=500.0,
                         REFERENCE='NON_DEFINI',

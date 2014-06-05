@@ -1,0 +1,98 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+POURSUITE(CODE='OUI', PAR_LOT='OUI');
+
+resu='UP245___'
+
+depl=resu+'DEPL'
+
+sigm=resu+'SIEF_ELGA'
+
+vari=resu+'VARI_ELGA'
+
+UP245B=LIRE_RESU(
+         TYPE_RESU='EVOL_NOLI',
+         CHAM_MATER=CM245,
+         FORMAT='MED',
+         MODELE=MO_MEC45,
+         FORMAT_MED=(_F( NOM_CHAM_MED=depl,
+                         NOM_CHAM    ='DEPL' ),
+                     _F( NOM_CHAM_MED=sigm,
+                         NOM_CHAM    ='SIEF_ELGA'),
+                     _F( NOM_CHAM_MED=vari,
+                         NOM_CHAM    ='VARI_ELGA',
+                         NOM_CMP=('V1','V2','V3','V4','V5','V6','V7','V8'),
+                         NOM_CMP_MED=('V1','V2','V3','V4','V5','V6','V7','V8'),
+                         )
+                          ),
+          UNITE=80,
+                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',
+                                 DEFORMATION='SIMO_MIEHE',
+                                 GROUP_MA=('SEPROUV','SGOUP',),),
+          TOUT_ORDRE='OUI',);
+
+#IMPR_RESU(RESU=_F(RESULTAT=UP245B, NOM_CHAM='VARI_ELGA',VALE_MAX='OUI'))
+
+
+UP245B=CALC_CHAMP(reuse =UP245B,
+                  RESULTAT=UP245B,
+                  CONTRAINTE=('SIEF_ELNO',),
+                  DEFORMATION=('EPSG_ELGA',),);
+
+# Weibull post-processing
+
+TWEIB45=POST_ELEM(WEIBULL=_F(GROUP_MA='SEPROUV',
+                             OPTION='SIGM_ELMOY',
+                             CORR_PLAST='OUI',
+                             COEF_MULT=50.8,),
+                  RESULTAT=UP245B,
+                  TITRE='Weibull post-treatment, norder, INST, SIGw, Pf ',);
+
+# extraction of the python tables from the Aster tables
+### first we output the full table because it can contain usefull informations
+### for the user
+
+
+IMPR_TABLE(TABLE=TWEIB45,
+           FORMAT='TABLEAU',);
+
+# ### after we just extract the list of instants and the failure probabilities
+# weibull_tab = TWEIB45.EXTR_TABLE()
+# time_ext = weibull_tab.values()['INST']
+# Pf_ext   = weibull_tab.values()['PROBA_WEIBULL']
+# time_failure_curve = [ [time_ext[i], Pf_ext[i]] for i in range(len(time_ext)) ]
+#
+# # storage in a file using pickle
+# print "Storage of the time-failure curve"
+# fout = open("./REPE_OUT/time_failure_curve.pic","w")
+# pickle.dump(time_failure_curve, fout)
+# fout.close()
+
+IMPR_TABLE(TABLE=TWEIB45,
+           NOM_PARA=('INST','PROBA_WEIBULL',),
+           TITRE='CT : failure probabilities',);
+
+TEST_TABLE(
+           VALE_CALC=0.786642592131,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='PROBA_WEIBULL',
+           TABLE=TWEIB45,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=49.993923025000001,),
+           )
+
+FIN()
