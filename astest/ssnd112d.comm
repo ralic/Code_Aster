@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # TITRE : GRANDES DEFORMATIONS SUR UN CUBE MONOCRISTALLIN LOI MONO_DD_CC
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +41,6 @@ b      = 2.48e-7 # mm
 DeltaG0= 0.84     # eV
 ## epsi_1 = 1.e-5    # s**-1
 D      = 10.e-6   # mm
-beta   = 0.2
 d_lat  = 1.
 K_f    = 30.
 K_self = 100.
@@ -68,8 +68,6 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                     N       =N,
                                     RHO_MOB =rho_mob,
                                     D       =D,
-                                    #T       =TEMP,
-                                    BETA    =beta,
                                     D_LAT   =d_lat,
                                     Y_AT    =y_at,
                                     K_F     =K_f,
@@ -81,7 +79,6 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                     H4      =a_ncol,
                                     H5      =a_ncol,
                                     H6      =a_ncol,
-                                    DELTA1=0.,
                                      ),
                     );
 
@@ -435,42 +432,42 @@ DEFI_FICHIER(UNITE = 28,
 
 
 tdep=tmax
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.48563589,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.48758130412863,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=epsDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=341.8414,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=269.2778989699,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=sigDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.196425E+08,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.716212532914E+07,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=rho_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.45298902,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.42962858525023,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.186523E+07,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.844363959052E+07,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=rho_8,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.23727698,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.26115932829521,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_8,

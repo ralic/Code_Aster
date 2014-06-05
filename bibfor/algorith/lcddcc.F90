@@ -76,7 +76,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     d=     coeft(ifl+5)
     gamma0=coeft(ifl+6)
     n     =coeft(ifl+7)
-    beta=  coeft(ifl+8)
+    depdt =coeft(ifl+8)
     yat   =coeft(ifl+9)
     dlat=  coeft(ifl+10)
     kf=    coeft(ifl+11)
@@ -84,21 +84,14 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     tauf=  coeft(ifl+13)
     rhomob=coeft(ifl+14)
     kboltz=coeft(ifl+15)
-    delta1=coeft(ifl+16)
-    delta2=coeft(ifl+17)
-    depdt =coeft(ifl+18)
-    temp=  coeft(ifl+19)
-    mu    =coeft(ifl+20)
-    irr2   =nint(coeft(ifl+21))
+    temp=  coeft(ifl+16)
+    mu    =coeft(ifl+17)
+    irr2   =nint(coeft(ifl+18))
     ASSERT(irr2.eq.irr)
     if (irr .gt. 0) then
-        airr =coeft(ifl+22)
-!         XI    =COEFT(IFL+23)
+        airr =coeft(ifl+19)
+!         XI    =COEFT(IFL+20)
     endif
-!
-!     DELTA1=1 par defaut : nouvelle formulation. Sinon, ancienne
-    new=(abs(delta1-1.d0).lt.1.d-6)
-!
 ! initialisation des arguments en sortie
     dgamma=0.d0
     dalpha=0.d0
@@ -121,17 +114,12 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 !
 ! 1.  CALCUL de DeltaG approximatif
     rhotot=0.d0
-    if (new) then
 ! rho tot represente rho_f (foret)
         do 11 ir = 1, 12
             if (ir .eq. is) goto 11
             rhotot=rhotot+rhop(ir)
 11      continue
-    else
-        do 10 ir = 1, 12
-            rhotot=rhotot+rhop(ir)
-10      continue
-    endif
+
     if (rhotot .lt. rmin) then
         iret=1
         goto 9999
@@ -169,17 +157,13 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     lambda=1.d0/t2 - d
 !
 ! 4.  calcul de Alpha-s_AT et Ls
+
     alphat=0.d0
-    if (new) then
         do 21 ir = 1, 12
             if (ir .eq. is) goto 21
             alphat=alphat+rhop(ir)*hsr(is,ir)
 21      continue
-    else
-        do 20 ir = 1, 12
-            alphat=alphat+rhop(ir)*hsr(is,ir)
-20      continue
-    endif
+
     if (alphat .lt. rmin) then
         iret=1
         goto 9999
@@ -195,27 +179,17 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 ! 5.  calcul de Taus_LT
     t3 = 2.d0*alphat*rs+lc
     t4=1.d0/lambda-1.d0/t3
-    if (new) then
-        tauslt=max(0.d0,(alphat*mu*b*t4))
-    else
-        tauslt=max(0.d0,((1.d0-beta)*alphat*mu*b*t4))
-    endif
-!
+
+    tauslt=max(0.d0,(alphat*mu*b*t4))
+
 ! 6.  calcul de Taus_LR
-    if (new) then
-        tauslr=mu*b*sqrt(rhop(is)*hsr(is,is))
-    else
-        tauslr=beta*alphat*mu*b*sqrt(rhotot)
-    endif
-!
+
+    tauslr=mu*b*sqrt(rhop(is)*hsr(is,is))
+
 ! 7.  calcul de Taus_eff
-    if (new) then
-        tauc=tauf + sqrt( tauslt**2+tauslr**2)
-        taueff=abs(taus)-tauc
-    else
-        taueff=abs(taus)-tauf - tauslt - tauslr
-    endif
-!
+    tauc=tauf + sqrt( tauslt**2+tauslr**2)
+    taueff=abs(taus)-tauc
+
     if (abs(taus) .gt. rmin) then
         sgns=taus/abs(taus)
     else
@@ -232,16 +206,13 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
         t5=sqrt(taueff/tau0)
     endif
     gamnuc=rhomob*b*h*ls*exp(-deltg0*(1.d0-t5)/kboltz/temp)
+
 !     ON POURRAIT DESACTIVER CE SYSTEME SI TAU_EFF < 0
+
     gamnuc=gamnuc*sgns
 !
 ! 9.  calcul de gamma_prob
-    if (new) then
-        gampro=gamma0*(abs(taus)/tauc)**n
-    else
-        t6=tauf+tauslr+(1.d0-beta)*alphat*mu*b/lambda
-        gampro=gamma0*(abs(taus)/t6)**n
-    endif
+    gampro=gamma0*(abs(taus)/tauc)**n
     gampro=gampro*sgns
 !
 ! 10. ECOULEMENT CALCUL DE DGAMMA,DP
@@ -260,42 +231,21 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
         dp=abs(dgamma)
     endif
 !
-    if (new) then
-        t10=1.d0
-        if (taueff .gt. rmin) t10=(1.d0-delta1*taueff/tau0)
-    endif
+    t10=1.d0
+    if (taueff .gt. rmin) t10=(1.d0-taueff/tau0)
 !
 ! 11. CALCUL DE RHO_POINT RENOMME DALPHA
     if (rhop(is) .gt. rmin) then
-        if (new) then
-            t7= sqrt(hsr(is,is)*rhop(is))*t10
-        else
-            t7= sqrt(hsr(is,is)*rhop(is))
-        endif
+        t7= sqrt(hsr(is,is)*rhop(is))*t10
     else
         t7=0.d0
 !        ou bien IRET=1, a voir
     endif
 !
-    if (new) then
-        t8=alphat*rhotot*lambda*t10
-    else
-        t8=0.d0
-        do 30 ir = 1, 12
-            if (ir .eq. is) goto 30
-            if (taueff .gt. rmin) then
-                asr=hsr(is,ir)*(1.d0-delta2*taueff/tau0)
-            else
-                asr=hsr(is,ir)
-            endif
-            if (rhop(ir) .gt. rmin) then
-                t8=t8+sqrt(asr*rhop(ir))
-            endif
-30      continue
-    endif
+    t8=alphat*rhotot*lambda*t10
 !
     if (taueff .gt. rmin) then
-        t9=1.d0/yat+delta2*2.d0*r8pi()*taueff/mu/b
+        t9=1.d0/yat+2.d0*r8pi()*taueff/mu/b
     else
         t9=1.d0/yat
     endif

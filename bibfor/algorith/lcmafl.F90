@@ -139,7 +139,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
 !
     endif
     if (necoul(1:10) .eq. 'MONO_DD_CC') then
-        nbval=18
+        nbval=15
         nomres(1)='B'
         nomres(2)='GH'
         nomres(3)='DELTAG0'
@@ -147,7 +147,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(5)='D'
         nomres(6)='GAMMA0'
         nomres(7)='N'
-        nomres(8)='BETA'
+        nomres(8)='DEPDT'
         nomres(9)='Y_AT'
         nomres(10)='D_LAT'
         nomres(11)='K_F'
@@ -155,9 +155,6 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         nomres(13)='TAU_F'
         nomres(14)='RHO_MOB'
         nomres(15)='K_BOLTZ'
-        nomres(16)='DELTA1'
-        nomres(17)='DELTA2'
-        nomres(18)='DEPDT'
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # TITRE VALIDATION POLYCRISTAL LOI DD_CC THERMIQUE + A-THERMIQUE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +50,6 @@ b      = 2.48e-7/coef      # m
 DeltaG0= 0.84              # eV
 epsi_1 = 3.e-4             # s**-1
 D      = 10.e-6/coef       # m
-beta   = 0.2
 d_lat  = 0.25/coef
 K_self = 100.
 k      = 8.62E-5  # "Constante de Boltzmann, en eV/K"
@@ -75,7 +75,6 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                     N       =N,
                                     RHO_MOB =rho_ini,
                                     D       =D,
-                                    BETA    =beta,
                                     D_LAT   =d_lat,
                                     Y_AT    =y_at,
                                     K_F     =K_f,

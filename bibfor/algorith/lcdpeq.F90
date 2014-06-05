@@ -86,7 +86,7 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
                         ng, lg, 0, qm)
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
                 call dcopy(12, vind(nsfv+3*nbsys+1), 1, rhoirr, 1)
-                xi=materf(ifl+23,2)
+                xi=materf(ifl+20,2)
                 irr=1
                 irr2=1
             else if (necoul.eq.'MONO_DD_CFC_IRRA') then
@@ -253,7 +253,7 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
                     nbsys=12
                     call dcopy(12, vind(decirr+numirr+1), 1, rhoirr, 1)
                     ifl=nbcomm(indpha+ifa,1)
-                    xi=materf(ifl+23,2)
+                    xi=materf(ifl+20,2)
                     do 31 is = 1, nbsys
 !                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                         nuvi=nsfv+3*(is-1)+3
