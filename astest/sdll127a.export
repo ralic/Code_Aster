@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm sdll127a.comm D 1
+F com1 sdll127a.com1 D 1
 F mmed sdll127a.mmed D 20
