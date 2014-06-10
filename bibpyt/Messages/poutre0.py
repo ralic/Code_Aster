@@ -30,4 +30,26 @@ GROUP_MA et NOEUD incohérents.
 Il faut donner un noeud unique.
 """),
 
+4: _(u"""
+Poutre circulaire à variation de section homothétique.
+
+Le rapport d'homothétie est assez différent entre les rayons et les épaisseurs :
+    - rayon 1 = %(r1)16.9g
+    - rayon 2 = %(r2)16.9g
+        `- rapport d'homothétie = %(r5)16.9g
+
+    - épaisseur 1 = %(r3)16.9g
+    - épaisseur 2 = %(r4)16.9g
+        `- rapport d'homothétie = %(r6)16.9g
+
+La différence entre les rapports d'homothétie est supérieure à 1%%.
+Les hypothèses du modèle de poutre à variation homothétique ne sont donc pas
+respectées (consultez la documentation de référence des éléments poutre).
+
+
+Risques et conseil:
+    - Les calculs seront inexacts.
+    - Raffiner le maillage permet de minimiser les écarts.
+"""),
+
 }

@@ -2,6 +2,8 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/check_homo_ratio.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -43,6 +45,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
 !-----------------------------------------------------------------------
     integer :: i, ioc, nc, ncar, ng, nm, ns
     integer :: nsom, nv, nval, nvs
+    real(kind=8) :: vale(100)
 !-----------------------------------------------------------------------
     call jemarq()
     call getres(nomu, concep, cmd)
@@ -57,8 +60,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
         call getvtx('POUTRE', 'VARI_SECT', iocc=ioc, scal=vsec, nbret=nvs)
         call getvtx('POUTRE', 'CARA', iocc=ioc, nbval=0, nbret=nc)
         ncar = -nc
-        call getvtx('POUTRE', 'CARA', iocc=ioc, nbval=ncar, vect=cara,&
-                    nbret=nc)
+        call getvtx('POUTRE', 'CARA', iocc=ioc, nbval=ncar, vect=cara)
         call getvr8('POUTRE', 'VALE', iocc=ioc, nbval=0, nbret=nv)
         nval = -nv
 !
@@ -84,6 +86,10 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
                     call utmess('E', 'MODELISA_66', sk=kioc)
                     ier = ier + 1
                 endif
+            else if (vsec .eq. 'HOMOTHETIQUE') then
+                ASSERT(nval .le. 100)
+                call getvr8('POUTRE', 'VALE', iocc=ioc, nbval=nval, vect=vale)
+                call check_homo_ratio(cara, vale, min(nval, ncar))
             endif
         endif
 !
