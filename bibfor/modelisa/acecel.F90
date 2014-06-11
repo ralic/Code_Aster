@@ -143,7 +143,7 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
     if (nbarre .gt. 0) write(ifm,1045)nbarre
     if (ngrill .gt. 0) write(ifm,1047)ngrill
     if (ngribt .gt. 0) write(ifm,1048)ngribt
-    if (nmembr .gt. 0) write(ifm,1049)ngribt
+    if (nmembr .gt. 0) write(ifm,1049)nmembr
     1000 format(/,5x,'LE MODELE ',a8,' CONTIENT : ')
     1041 format(35x,i6,' ELEMENT(S) POUTRE')
     1042 format(35x,i6,' ELEMENT(S) DISCRET')
