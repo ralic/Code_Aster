@@ -1,5 +1,5 @@
-subroutine pteequ(prof_chno, base, neq, igds, nb_cmp_field,&
-                  corr2)
+subroutine pteequ(prof_chno    , base, neq, igds, nb_cmp_field,&
+                  field_to_cata)
 !
 implicit none
 !
@@ -37,7 +37,7 @@ implicit none
     integer, intent(in) :: neq
     integer, intent(in) :: igds
     integer, intent(in) :: nb_cmp_field
-    integer, intent(in) :: corr2(nb_cmp_field)
+    integer, pointer, intent(in) :: field_to_cata(:)
     character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ implicit none
 ! In  neq            : number of equations
 ! In  igds           : index of GRANDEUR used to numbering
 ! In  nb_cmp_field   : number of components in field
-! In  coor2          : link between global component in GRANDEUR to local component in field
+! In  field_to_cata  : pointer to converter from local components (field) to global (catalog)
 !
 ! Object   : PROF_CHNO.DEEQ 
 ! Dimension: vector of size (2*neq)
@@ -74,9 +74,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdeeq, nb_cmp_fieldmx, nec, jnueq, nb_ligr, l, jprno, i_cmp_field
-    integer :: nb_node, i_node, iddl, iadg, i_cmp, ieq
+    integer :: nb_cmp_fieldmx, nec, nb_ligr, l, jprno, i_cmp_field
+    integer :: nb_node, i_node, iddl, iadg, i_cmp_cata, i_equa
     character(len=24) :: prno, nueq, deeq
+    integer, pointer :: p_nueq(:) => null()
+    integer, pointer :: p_deeq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,7 +98,7 @@ implicit none
 ! - Create .DEEQ object
 !
     call jedetr(deeq)
-    call wkvect(deeq, base//' V I', 2*neq, jdeeq)
+    call wkvect(deeq, base//' V I', 2*neq, vi = p_deeq)
 !
 ! - Access to PRNO object
 !
@@ -109,19 +111,19 @@ implicit none
 !
 ! - Access to NUEQ object
 !
-    call jeveuo(nueq, 'L', jnueq)
+    call jeveuo(nueq, 'L', vi = p_nueq)
 !
     nb_node = l/(nec+2)
     do i_node = 1, nb_node
         iddl = zi(jprno-1+ (i_node-1)* (nec+2)+1) - 1
         iadg = jprno - 1 + (i_node-1)* (nec+2) + 3
         do i_cmp_field = 1, nb_cmp_field
-            i_cmp = corr2(i_cmp_field)
-            if (exisdg(zi(iadg),i_cmp)) then
+            i_cmp_cata = field_to_cata(i_cmp_field)
+            if (exisdg(zi(iadg),i_cmp_cata)) then
                 iddl = iddl + 1
-                ieq  = zi(jnueq-1+iddl)
-                zi(jdeeq-1+2* (ieq-1)+1) = i_node
-                zi(jdeeq-1+2* (ieq-1)+2) = i_cmp
+                i_equa = p_nueq(iddl)
+                p_deeq(2*(i_equa-1)+1) = i_node
+                p_deeq(2*(i_equa-1)+2) = i_cmp_cata
             endif
         end do
     end do
