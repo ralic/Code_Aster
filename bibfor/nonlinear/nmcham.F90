@@ -36,7 +36,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     integer :: imate, nbvar, kpg, ksp, memo, visc, idelta, nrad
-    character(len=16) :: compor(3), valk(2)
+    character(len=16) :: compor(3), valk(2), texte(2)
     real(kind=8) :: mat(18), matel(4)
     character(len=*) :: fami
 ! ---- VARIABLES LOCALES
@@ -221,7 +221,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
         nomres(3) = 'UN_SUR_M'
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'LEMAITRE', 0, ' ', [0.d0],&
-                    3, nomres, valres, icodre, 1)
+                    3, nomres, valres, icodre, 0)
 !
         if (icodre(1) .eq. 0) then
             valden = valres(1)
@@ -237,7 +237,9 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
                 call utmess('F', 'ALGORITH6_69')
             endif
         else
-            call utmess('F', 'COMPOR1_32')
+            texte(1)=compor(1)
+            texte(2)="VMIS"//compor(1)(5:16)
+            call utmess('F', 'COMPOR1_32',nk=2, valk=texte)
         endif
     else
         valden = un

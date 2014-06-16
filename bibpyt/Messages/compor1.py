@@ -170,8 +170,8 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 32: _(u"""
- VISC_CINx_CHAB : pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU.
- Si vous voulez seulement de l'élastoplasticité, il faut utiliser VMIS_CINx_CHAB.
+ Comportement  %(k1)s : pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU.
+ Si vous voulez seulement de l'élastoplasticité, il faut utiliser %(k2)s
 """),
 
 33: _(u"""
