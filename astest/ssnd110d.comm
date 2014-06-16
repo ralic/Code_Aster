@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # TITRE VALIDATION MONOCRISTAL LOI DD_CC_IRRA THERMIQUE + A-THERMIQUE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,9 +55,21 @@ alpha_self=sqrt(a_self)
 
 RHO_0  = rho_ini    # en m**-2
 
-ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
-                            NU=Nu,
-                            ALPHA=0.),
+ACIERDD=DEFI_MATERIAU(
+                      #ELAS=_F(E=E,
+                            #NU=Nu,
+                            #ALPHA=0.),
+
+                 ELAS_ORTH=_F(  E_L = E,
+                                E_T = E,
+                                E_N = E,
+                                NU_LT = Nu,
+                                NU_LN = Nu,
+                                NU_TN = Nu,
+                                G_LT = MU,
+                                G_LN = MU,
+                                G_TN = MU,),
+                                
                       MONO_DD_CC_IRRA=_F(
                                     B       =b,
                                     GH       =GH,
@@ -81,6 +94,7 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                     A_IRRA=0.3,
                                     XI_IRRA=4.,
                                     DEPDT=1.E-4,
+                                    MU_MOY = MU,
                                      ),
                     );
 

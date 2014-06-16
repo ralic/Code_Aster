@@ -171,23 +171,9 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
             granb(i)=granb(i)+fv*vini(7+6*(iphas-1)+i)
 54      continue
 !
-!
 !     DEBUT DES VARIABLES INTERNES DES SYSTEMES DE GLISSEMENT
     nuvi=7+6*nbphas
     decal=nuvi
-!
-!     E et NU  sont utiles pour les règles de localisation
-    if (coel(nmat) .eq. 0) then
-!        CAS ISOTROPE
-        e=coel(1)
-        nu=coel(2)
-    else if (coel(nmat).eq.1) then
-!        CAS ANISOTROPE
-!        pour calculer Mu. On prend la moyenne des Gij
-        e=1.d0/coel(36+22)+(1.d0/coel(36+29))+(1.d0/coel(72))
-        e=2.d0*e/3.d0
-        nu=0.d0
-    endif
 !
     nbsyst=0
 !
@@ -199,7 +185,7 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 !         recuperer l'orientation de la phase et la proportion
 !         INDORI=INDFV+1
         fv=coeft(indfv)
-        call lcloca(coeft, e, nu, nmat, nbcomm,&
+        call lcloca(coeft, nmat, nbcomm,&
                     nbphas, sigi, vini, iphas, granb,&
                     loca, sigg)
         nbfsys=nbcomm(indpha,1)
@@ -324,8 +310,8 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
         devgeq=lcnrts(devg)/1.5d0
 !         localisation BETA
         if (loca .eq. 'BETA') then
-            dl=coeft(nbcomm((nbphas+2),1))
-            da=coeft(nbcomm((nbphas+2),1)+1)
+            dl=coeft(nbcomm((nbphas+2),1)+1)
+            da=coeft(nbcomm((nbphas+2),1)+2)
             do 21 i = 1, 6
                 beta=vini(7+6*(iphas-1)+i)
                 dbeta=devg(i)-dl*(beta-da*evg(i))*devgeq

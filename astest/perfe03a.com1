@@ -17,7 +17,7 @@
 import numpy as NP
 import random
     
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET',), PAR_LOT='NON')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),PAR_LOT='NON')
 
 MAILLA2=LIRE_MAILLAGE(UNITE=20,FORMAT='MED',);
                    

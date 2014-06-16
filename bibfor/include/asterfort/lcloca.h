@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcloca(coeft, e, nu, nmat, nbcomm,&
+    subroutine lcloca(coeft, nmat, nbcomm,&
                       nphas, sigi, vini, iphas, granb,&
                       loca, sigg)
         integer :: nmat
         real(kind=8) :: coeft(nmat)
-        real(kind=8) :: e
-        real(kind=8) :: nu
         integer :: nbcomm(nmat, 3)
         integer :: nphas
         real(kind=8) :: sigi(6)

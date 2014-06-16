@@ -114,7 +114,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
     endif
 !
 !     COMPTAGE
-    irr=0
+!     irr=0
     decirr=0
     nbsyst=0
     decal=0
@@ -133,6 +133,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
 !           UNE SEULE FAMILLE
             ASSERT(nbcomm(nmat, 2).eq.1)
             necoul=cpmono(3)
+            irr=0
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
                 irr=1
                 decirr=6+3*12
@@ -160,12 +161,6 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
                 indfa=indpha+ifa
                 ifl=nbcomm(indfa,1)
                 nuecou=nint(materf(ifl,2))
-!              IRRADIATION
-                if (nuecou .eq. 7) then
-                    if (nint(materf(ifl+21,2)) .eq. 1) then
-                        irr=1
-                    endif
-                endif
                 nbsys=12
                 nsfv=nsfv+nbsys*3
 32          continue

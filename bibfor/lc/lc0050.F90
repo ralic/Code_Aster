@@ -72,11 +72,12 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/tecael.h"
 #include "asterfort/matumat.h"
 #include "asterfort/varcumat.h"
+#include "asterfort/lcdetf.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops
+    integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, czm
     integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
     integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, nwkout, ndsde
     parameter     ( npropmax = 197)
@@ -124,7 +125,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     rac2=sqrt(2.d0)
     usrac2=rac2*0.5d0
     nprops = npropmax
-!
+
 !     IMPRESSIONS EVENTUELLES EN DEBUG
     call infniv(ifm, niv)
 !
@@ -143,6 +144,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+
 !
+    czm=0
     if (neps .eq. 9) then
         call dcopy(neps, epsm, 1, dfgrd0, 1)
         if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
@@ -170,6 +172,20 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
         call dscal(3, rac2, stran(4), 1)
         call r8inir(9, 0.d0, dfgrd0, 1)
         call r8inir(9, 0.d0, dfgrd1, 1)
+
+    else if ((neps.eq.3).and.(typmod(2).eq.'ELEMJOIN')) then
+! PETITES DEFORMATIONS : CZM
+        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+            call dcopy(neps, deps, 1, dstran, 1)
+        else
+            call r8inir(neps, 0.d0, dstran, 1)
+        endif
+        call dcopy(neps, epsm, 1, stran, 1)
+        call r8inir(9, 0.d0, dfgrd0, 1)
+        call r8inir(9, 0.d0, dfgrd1, 1)
+        ntens=6
+        nshr=3
+        czm=1
     else
         ASSERT(.false.)
     endif
@@ -305,15 +321,24 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call r8inir(36, 0.d0, dsidep, 1)
-        call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
-        do 40 i = 1, 6
-            do 40 j = 4, 6
-                dsidep(i,j) = dsidep(i,j)*rac2
- 40         continue
-        do 50 i = 4, 6
-            do 50 j = 1, 6
-                dsidep(i,j) = dsidep(i,j)*rac2
- 50         continue
+!       cas des CZM
+        if (czm.eq.1) then
+            do i=1,3
+               do j=1,3
+                  dsidep(i,j)=ddsdde(3*(i-1)+j)
+               enddo
+            enddo
+        else
+            call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
+            do 40 i = 1, 6
+                do 40 j = 4, 6
+                    dsidep(i,j) = dsidep(i,j)*rac2
+    40         continue
+            do 50 i = 4, 6
+                do 50 j = 1, 6
+                    dsidep(i,j) = dsidep(i,j)*rac2
+    50         continue
+        endif 
         if ((niv.ge.2) .and. (idbg.eq.1)) then
             write(ifm,*)'APRES APPEL UMAT,OPERATEUR TANGENT DSIDEP='
             do 60 i = 1, 6

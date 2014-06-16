@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -422,6 +423,10 @@ Le ratio FC/FT (%(r1)E) est inférieur à 5.83 (valeur limite pour le modèle EN
 
 87 : _(u"""
 L'identification numérique des paramètres SIG0 et TAU à partir de FT et FC a échoué : valeurs exotiques ?
+"""),
+
+88 : _(u"""
+Comportement  %(k1)s : avec ELAS_ORTH, il faut renseigner le mot clé MU_MOY.
 """),
 
 

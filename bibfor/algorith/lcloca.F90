@@ -1,7 +1,8 @@
-subroutine lcloca(coeft, e, nu, nmat, nbcomm,&
+subroutine lcloca(coeft,nmat, nbcomm,&
                   nphas, sigi, vini, iphas, granb,&
                   loca, sigg)
 !
+
     implicit none
 #include "asterc/r8miem.h"
 #include "asterfort/lcdevi.h"
@@ -31,21 +32,21 @@ subroutine lcloca(coeft, e, nu, nmat, nbcomm,&
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
-!       IN
-!          COEFT    : COEF MATERIAU
-!          COEFL    : COEF ELASTIQUES
-!           NMAT    : NOMBRE  MAXI DE COEF MATERIAU
-!         NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
-!         CPMONO :  NOMS DES LOIS MATERIAU PAR FAMILLE
-!           PGL   : MATRICE DE PASSAGE GLOBAL LOCAL
-!           NVI     :  NOMBRE DE VARIABLES INTERNES
-!           VINI    :  VARIABLES INTERNES A T
-!           SIGI    :  CONTRAINTES A L'INSTANT COURANT
-!     OUT:
-!           SIGG    : TENSEUR DES CONTRAINTES POUR LA PHASE IPHAS
-! INTEGRATION DES LOIS POLYCRISTALLINES PAR UNE METHODE DE RUNGE KUTTA
+!       in
+!           coeft    :  coef materiau
+!           nmat     :  nombre  maxi de coef materiau
+!           nbcomm   :  nombre de coef materiau par famille
+!           nphas    :  nombre de phases
+!           sigi     :  contraintes a l'instant courant
+!           vini     :  variables internes a t
+!           iphas    :  phase courante
+!           granb    :  variables internes pour la règle en Beta
+!           loca     :  nom de la règle de localisation
+!     out:
+!           sigg    : tenseur des contraintes pour la phase iphas
+! integration des lois polycristallines par une methode de runge kutta
 !
-!     CETTE ROUTINE PERMET D'APPLIQUER LA METHODE DE LOCALISATION
+!     cette routine permet d'appliquer la methode de localisation
 !
 !     7 variables : tenseur EVP + Norme(EVP)
 !    description des variables internes :
@@ -57,7 +58,7 @@ subroutine lcloca(coeft, e, nu, nmat, nbcomm,&
 !    1 variable : indic
 ! ======================================================================
 !
-    mu=e/2.d0/(1.d0+nu)
+    mu=coeft(nbcomm((nphas+2),1)+0)
 !
 ! --  METHODE LOCALISATION
     if (loca .eq. 'BZ') then

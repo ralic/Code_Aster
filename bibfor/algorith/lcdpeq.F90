@@ -229,9 +229,7 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
             indfv=nbcomm(1+iphas,3)
 !         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
             fv=materf(indfv,2)
-            e =materf(1,1)
-            nu=materf(2,1)
-            call lcloca(materf(1, 2), e, nu, nmat, nbcomm,&
+            call lcloca(materf(1, 2), nmat, nbcomm,&
                         nbphas, sig, vinf, iphas, granb,&
                         loca, sigg)
             do 2 i = 1, 6

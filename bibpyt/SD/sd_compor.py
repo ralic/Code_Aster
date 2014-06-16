@@ -108,7 +108,7 @@ class sd_compor(AsBase):
         nbmono=cpri[3]
         assert nbmono > 0         ,cpri
         nbpara  =cpri[6+3*nbphases-1]
-        assert nbpara in (0,1,2)  ,cpri
+        assert nbpara in (0,1,2,3)  ,cpri
         for k in range(nbphases):
             nbfam1 = cpri[4+3*k+0]
             numono = cpri[4+3*k+1]

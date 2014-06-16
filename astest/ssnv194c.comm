@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,6 +75,8 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(6.86224,41.5917,142.138,),),
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
+                    MU_LOCA=145200./2.6,
+                    
                     )
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # person_in_charge: jean-michel.proix at edf.fr
@@ -313,6 +314,7 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                         _F(MONOCRISTAL=COMPORKR,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
+                    MU_LOCA=275200/2.6,
                     );
 
 ORIENKR=AFFE_CARA_ELEM(MODELE=TROISD,
@@ -899,6 +901,7 @@ COMPORZ3=DEFI_COMPOR(POLYCRISTAL=(
                         _F(MONOCRISTAL=COMPORZ2,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
+                    MU_LOCA=145200.,
                     );
 
 IMPR_CO(CONCEPT=_F(NOM=COMPORZ3))
@@ -1185,6 +1188,7 @@ COMPORZ5=DEFI_COMPOR(POLYCRISTAL=(
                         _F(MONOCRISTAL=COMPORZ4,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
+                    MU_LOCA=145200.,
                     );
 
 

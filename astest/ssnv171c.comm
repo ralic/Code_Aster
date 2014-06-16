@@ -35,6 +35,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H=0.0,),
                     MONO_CINE1=_F(D=36.68,),);
 
+MU=145200./2.6
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
                                    ECOULEMENT='MONO_VISC1',
@@ -47,8 +48,12 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=_F(MONOCRISTAL=COMPORT,
                                    FRAC_VOL=1.0,
                                    ANGL_REP=(15.,0.,0.,),),
                     LOCALISATION='BETA',
-                    DL=0.,
-                    DA=0.,);
+                    MU_LOCA=MU,
+                    DL=4.,
+                    DA=5.,);
+
+IMPR_CO(CONCEPT=_F(NOM=COMPORP))
+
 
 CHARGE=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,140.0,),

@@ -100,5 +100,7 @@ COMPORP=DEFI_COMPOR(
                                  _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.01,ANGL_EULER=(26.992677507732129, 268.11756481051447, 180.8973383246084),),
                                  _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.01,ANGL_EULER=(241.28759966229376, 61.888838262650957, 343.30079732904699),),
                                  _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.01,ANGL_EULER=(169.42871440599433, 195.88172809658724, 62.678421538707326),),
-                                 ),LOCALISATION='BZ',
+                                 ),
+                                  LOCALISATION='BZ',
+                                  MU_LOCA=MU,
                     )

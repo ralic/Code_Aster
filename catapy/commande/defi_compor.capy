@@ -84,10 +84,13 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                                 ),
 
 
-          b_poly      =BLOC( condition = "POLYCRISTAL!='None'",
-          LOCALISATION     =SIMP(statut='f', typ='TXM', max=1, into=('BZ', 'BETA', 'RL',),
-                fr="Donner le nom de la règle de localisation"),
+          b_poly      =BLOC( condition = "POLYCRISTAL!=None",
+          
+           MU_LOCA            =SIMP(statut='o',typ='R',max=1),
 
+          LOCALISATION     =SIMP(statut='f', typ='TXM', max=1, into=('BZ', 'BETA',),
+                fr="Donner le nom de la règle de localisation"),
+                
            b_beta      =BLOC( condition = "LOCALISATION=='BETA'",
              DL            =SIMP(statut='o',typ='R',max=1),
              DA            =SIMP(statut='o',typ='R',max=1),

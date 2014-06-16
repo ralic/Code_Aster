@@ -3770,6 +3770,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              H5              =SIMP(statut='f',typ='R',defaut=0.),
              H6              =SIMP(statut='f',typ='R',defaut=0.),
              DEPDT           =SIMP(statut='f',typ='R',defaut=0.,fr="parametre dEps/dT pour le calcul de DeltaG"),
+             MU_MOY          =SIMP(statut='f',typ='R'),
            ),
 
           MONO_DD_CC_IRRA =FACT(statut='f',
@@ -3797,6 +3798,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              DEPDT           =SIMP(statut='f',typ='R',defaut=0.,fr="parametre dEps/dT pour le calcul de DeltaG"),
              A_IRRA          =SIMP(statut='o',typ='R',fr="Parametre a_loops pour irradiation"),
              XI_IRRA         =SIMP(statut='o',typ='R',fr="Parametre xi pour irradiation"),
+             MU_MOY          =SIMP(statut='f',typ='R'),
            ),
 
 

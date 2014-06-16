@@ -105,7 +105,6 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                     N       =N,
                                     RHO_MOB =rho_mob,
                                     D       =D,
-                                    BETA    =beta,
                                     D_LAT   =d_lat,
                                     Y_AT    =y_at,
                                     K_F     =K_f,
@@ -221,7 +220,8 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(_F(MONOCRISTAL=COMPORT,
                                  _F(MONOCRISTAL=COMPORT,
                                     FRAC_VOL=0.033333,
                                     ANGL_REP=(58.0,169.0,224.0,),),),
-                    LOCALISATION='BZ',);
+                    LOCALISATION='BZ',
+                    MU_LOCA=MU,);
 
 ##chargement
 

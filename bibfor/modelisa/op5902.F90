@@ -49,7 +49,7 @@ subroutine op5902(nboccp, sdcomp)
     character(len=8) :: mono, chaine
     character(len=16) :: loca, noms(6)
     character(len=24) :: nomvar(100)
-    real(kind=8) :: fvol, orie(3), dl, da, euler(3), fvolt
+    real(kind=8) :: fvol, orie(3), dl, da, euler(3), fvolt, mu_loca
     integer :: iocc, nloc, ndl, nda, itbint, nums(3)
     integer :: i, nmono, imk, imi, ipk, ipi, ipr, iorie, irra
     integer :: ncpri, ncprk, ncprr, jcprk, jcprr, jcpri, nvit, lmk, ifvol, ipl
@@ -63,11 +63,12 @@ subroutine op5902(nboccp, sdcomp)
     call getvtx(' ', 'LOCALISATION', scal=loca, nbret=nloc)
     dl=0.d0
     da=0.d0
-    nvloc=0
+    nvloc=1
+    call getvr8(' ', 'MU_LOCA', scal=mu_loca, nbret=nloc)
     if (loca .eq. 'BETA') then
         call getvr8(' ', 'DL', scal=dl, nbret=ndl)
         call getvr8(' ', 'DA', scal=da, nbret=nda)
-        nvloc=2
+        nvloc=nvloc+2
     endif
 !
 !
@@ -143,7 +144,7 @@ subroutine op5902(nboccp, sdcomp)
 !
     end do
 !
-    ncprr=4*nboccp+2
+    ncprr=4*nboccp+3
 !
     call wkvect(sdcomp//'.CPRR', 'G V R', ncprr, ipr)
     jcprr=0
@@ -194,8 +195,9 @@ subroutine op5902(nboccp, sdcomp)
         call utmess('F', 'COMPOR2_8', sr=fvolt)
     endif
 !
-    zr(ipr-1+jcprr+1)=dl
-    zr(ipr-1+jcprr+2)=da
+    zr(ipr-1+jcprr+1)=mu_loca
+    zr(ipr-1+jcprr+2)=dl
+    zr(ipr-1+jcprr+3)=da
 !
 !      NOMBRE DE VAR INT TOTAL + 8 (TENSEUR B OU EVP + NORME+INDIC)
     nvit=nvit+8

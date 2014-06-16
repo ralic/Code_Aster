@@ -159,24 +159,28 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
 !
-!         CALCUL ET STOCKAGE DE MU
-        call rccoma(imat, 'ELAS', 1, phenom, icodre(1))
-!
-        if (phenom .eq. 'ELAS') then
-            call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', [0.d0],&
-                        1, 'E', val, icodre, 1)
-            e=val(1)            
-            call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', 'ELAS', 0, ' ', [0.d0],&
-                        1, 'NU', val, icodre, 1)
-            nu=val(1)            
-            mu=e/(2.0d0+2.0d0*nu)
+!       LECTURE OU CALCUL ET STOCKAGE DE MU
+        nomres(16)='MU_MOY'
+        call rcvalb(fami, kpg, ksp, poum, imat,&
+                    nmater, necoul, 0, ' ', [0.d0],&
+                    1, nomres(16), vallue(16), icodre(16), 0)
+        if (icodre(16).eq.0) then
+            mu=vallue(16)
         else
-            call rcvalb(fami, kpg, ksp, poum, imat,&
-                        ' ', phenom, 0, ' ', [0.d0],&
-                        1, 'G_LN', val, icodre, 1)
-            mu=val(1)            
+            call rccoma(imat, 'ELAS', 1, phenom, icodre(1))
+            if (phenom .eq. 'ELAS') then
+                call rcvalb(fami, kpg, ksp, poum, imat,&
+                            ' ', 'ELAS', 0, ' ', [0.d0],&
+                            1, 'E', val, icodre, 1)
+                e=val(1)            
+                call rcvalb(fami, kpg, ksp, poum, imat,&
+                            ' ', 'ELAS', 0, ' ', [0.d0],&
+                            1, 'NU', val, icodre, 1)
+                nu=val(1)            
+                mu=e/(2.0d0+2.0d0*nu)
+            else
+                call utmess('F', 'COMPOR1_88', sk=necoul)
+            endif
         endif
         call rcvarc('F', 'TEMP', poum, fami, kpg,&
                     ksp, tempf, iret2)

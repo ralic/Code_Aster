@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # TITRE VALIDATION MONOCRISTAL CHARGEMENT CYCLIQUE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,6 +64,7 @@ CMP_POLY=DEFI_COMPOR(POLYCRISTAL=(
                         _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
+                    MU_LOCA=190000/2.6,
                     );
 
 DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
