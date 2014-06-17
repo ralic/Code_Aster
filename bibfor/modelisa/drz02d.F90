@@ -72,7 +72,7 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
     integer :: i_no
     integer :: numnoe_m, numnoe_a, numnoe_b
     character(len=8) :: nomnoe_m, nomnoe_a, nomnoe_b
-    integer :: jcoor,   jlino
+    integer ::    jlino
 
     integer :: nb_maxi, nb_term
     real(kind=8) :: d2, d21, un, x, x0, y, y0
@@ -87,6 +87,7 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,7 +106,7 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! - Nodes coordinates
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! - List of nodes to apply linear relation
 !
@@ -130,8 +131,8 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
     do i_no = 2, nb_node
         numnoe_m = zi(jlino+i_no-1)
-        x = zr(jcoor-1+3* (numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1)+1)
-        y = zr(jcoor-1+3* (numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1)+2)
+        x = vale(3* (numnoe_m-1)+1) - vale(3*(numnoe_a-1)+1)
+        y = vale(3* (numnoe_m-1)+2) - vale(3*(numnoe_a-1)+2)
         numnoe_b = numnoe_m
         x0 = x
         y0 = y
@@ -187,8 +188,8 @@ subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
         call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
         if (numnoe_m .ne. numnoe_b) then
 !
-            x = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1)+1)
-            y = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1)+2)
+            x = vale(3*(numnoe_m-1)+1) - vale(3*(numnoe_a-1)+1)
+            y = vale(3*(numnoe_m-1)+2) - vale(3*(numnoe_a-1)+2)
 !
             nb_term = 5
             lisno(1) = nomnoe_m

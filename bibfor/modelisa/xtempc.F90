@@ -51,8 +51,9 @@ subroutine xtempc(nfiss, fiss, fonree, char)
     character(len=8) :: noma, nomo, betaf, nomnoe(1), ddlh(1), ddle(1)
     character(len=4) :: typval
     complex(kind=8) :: cbid
-    integer :: nrel, ifiss, jstano, nbno, ino, istan, ndim(1)
+    integer :: nrel, ifiss,  nbno, ino, istan, ndim(1)
     real(kind=8) :: betar, coefr(1)
+    integer, pointer :: vale(:) => null()
 !
     data ddlh /'H1'/
     data ddle /'E1'/
@@ -86,14 +87,14 @@ subroutine xtempc(nfiss, fiss, fonree, char)
     do ifiss = 1, nfiss
 !
         stano=fiss(ifiss)//'.STNO'
-        call jeveuo(stano//'.VALE', 'L', jstano)
+        call jeveuo(stano//'.VALE', 'L', vi=vale)
 !
 !       -------------------------------------
 ! ----- BOUCLE SUR LES NOEUDS DU MAILLAGE
 !       -------------------------------------
 !
         do ino = 1, nbno
-            istan = zi(jstano-1+ino)
+            istan = vale(ino)
             if (istan .gt. 0) then
                 call jenuno(jexnum(noma(1:8)//'.NOMNOE', ino), nomnoe(1))
 !

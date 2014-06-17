@@ -51,11 +51,13 @@ subroutine cgvein(resu, compor, iord0, l_temp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, jcalv, jcald, jcall, jcalk, nbma, iadc, ima
+    integer :: iret,  jcald, jcall,  nbma, iadc, ima
     character(len=8) :: noma
     character(len=16) :: k16ldc
     character(len=19) :: chcalc, chtmp
     logical :: lldcok
+    character(len=16), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,18 +72,18 @@ subroutine cgvein(resu, compor, iord0, l_temp)
     call cesred(chtmp, 0, [0], 1, 'RELCOM', 'V', chcalc)
     call detrsd('CHAM_ELEM_S', chtmp)
     call jeveuo(chcalc//'.CESD', 'L', jcald)
-    call jeveuo(chcalc//'.CESV', 'L', jcalv)
+    call jeveuo(chcalc//'.CESV', 'L', vk16=cesv)
     call jeveuo(chcalc//'.CESL', 'L', jcall)
-    call jeveuo(chcalc//'.CESK', 'L', jcalk)
+    call jeveuo(chcalc//'.CESK', 'L', vk8=cesk)
 !
-    noma = zk8(jcalk-1+1)
+    noma = cesk(1)
     nbma = zi(jcald-1+1)
 !
     do ima = 1, nbma
 !
         call cesexi('C', jcald, jcall, ima, 1, 1, 1, iadc)
         ASSERT(iadc .gt. 0)
-        k16ldc = zk16(jcalv+iadc-1)
+        k16ldc = cesv(iadc)
 !
 !       seules relations de type COMP_INCR autorisees
         lldcok = k16ldc .eq. 'ELAS            ' .or.&

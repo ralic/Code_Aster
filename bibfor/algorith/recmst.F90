@@ -61,8 +61,9 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
 !
 !-----------------------------------------------------------------------
     integer :: i1, i2, i3, i3b, i4, ibid, ilamsc
-    integer :: ilamst, ilcpex, ilnoex, ilorms, jordr, jpara, n
+    integer :: ilamst, ilcpex, ilnoex, ilorms,  jpara, n
     integer :: nmost1, nmost2, nnoeex
+    integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getvid(' ', 'MODE_STAT', nbval=0, nbret=n)
@@ -79,12 +80,12 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
 !     CALL JELIRA(K24BD1,'LONMAX',NMOST2,K24BD2)
 !     CALL JEVEUO(K24BD1,'L',IAD1)
     call jelira(modsta//'           .ORDR', 'LONMAX', nmost2)
-    call jeveuo(modsta//'           .ORDR', 'L', jordr)
+    call jeveuo(modsta//'           .ORDR', 'L', vi=ordr)
     call wkvect('&&OP0131.LISTADORMOSTA', 'V V I', nnoeex, ilorms)
     do 212,i1=1,nnoeex
     zi(ilorms+i1-1)=0
     do 213,i2=1,nmost2
-    call rsadpa(modsta, 'L', 1, 'NOEUD_CMP', zi(jordr-1+i2),&
+    call rsadpa(modsta, 'L', 1, 'NOEUD_CMP', ordr(i2),&
                 0, sjv=jpara, styp=kbid)
     if ((zk8(ilnoex+i1-1)//zk8(ilcpex+i1-1)) .eq. zk16(jpara)) then
         zi(ilorms+i1-1)=i2

@@ -44,7 +44,7 @@ subroutine op0115()
     integer :: iocpf, iockt, ioccs
     integer :: ipf, ifonc, inum, ifreq, ikt, ics, ispec
     integer :: mxval, ibid, nbabs, nbfreq, nbval
-    integer :: lnumi, lnumj, lfonc, lvale, lprol, lfreq, lrefe, nbvalr
+    integer :: lnumi, lnumj, lfonc,   lfreq, lrefe, nbvalr
     integer :: lnoei, lnoej, lcmpi, lcmpj, n2, n3, n4, n5, n6, n7
 !
     real(kind=8) :: valr, fmoy, ared, fmin, fmax, pas, freq, depi, num, den
@@ -58,6 +58,8 @@ subroutine op0115()
     character(len=19) :: chfonc
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     character(len=24) :: chnoei, chnoej, chcmpi, chcmpj
+    character(len=24), pointer :: prol(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -127,10 +129,10 @@ subroutine op0115()
     do ifonc = 1, iocpf
         fonc = zk8(lfonc-1+ifonc)
         chfonc = fonc//'           '
-        call jeveuo(chfonc//'.VALE', 'L', lvale)
+        call jeveuo(chfonc//'.VALE', 'L', vr=vale)
         call jelira(chfonc//'.VALE', 'LONMAX', nbval)
-        call jeveuo(chfonc//'.PROL', 'L', lprol)
-        tfonc = zk24(lprol)(1:8)
+        call jeveuo(chfonc//'.PROL', 'L', vk24=prol)
+        tfonc = prol(1)(1:8)
         if (tfonc .eq. 'FONCTION') nbfreq = nbval/2
         if (tfonc .eq. 'FONCT_C') nbfreq = nbval/3
         diag = .false.
@@ -156,17 +158,17 @@ subroutine op0115()
         call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
         if ((diag) .and. (tfonc .eq. 'FONCT_C')) then
             do inum = 1, nbabs
-                zr(ispec-1+inum) = zr(lvale-1+nbfreq+2*(inum-1)+1)
+                zr(ispec-1+inum) = vale(nbfreq+2*(inum-1)+1)
             end do
         else if ((.not.diag) .and. (tfonc .eq. 'FONCTION')) then
             do inum = 1, nbfreq
-                zr(ispec-1+2*inum-1) = zr(lvale-1+nbfreq+inum)
+                zr(ispec-1+2*inum-1) = vale(nbfreq+inum)
                 zr(ispec-1+2*inum) = 0.d0
             end do
         else
             nbabs = nbval - nbfreq
             do inum = 1, nbabs
-                zr(ispec-1+inum) = zr(lvale-1+nbfreq+inum)
+                zr(ispec-1+inum) = vale(nbfreq+inum)
             end do
         endif
     end do
@@ -176,7 +178,7 @@ subroutine op0115()
         if (ibid .eq. 0) then
             call wkvect(chfreq, 'G V R', nbfreq, lfreq)
             do ifreq = 1, nbfreq
-                zr(lfreq-1+ifreq) = zr(lvale-1+ifreq)
+                zr(lfreq-1+ifreq) = vale(ifreq)
             end do
         endif
     endif

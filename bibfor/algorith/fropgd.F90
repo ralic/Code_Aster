@@ -128,13 +128,17 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
     character(len=19) :: macont
     integer :: ldscon, lmat, lmaf1
     character(len=19) :: matrcf, fro1, fro2
-    integer :: jdepde, nmult
+    integer ::  nmult
     character(len=19) :: atmu, afmu
     integer :: jatmu, jafmu
     character(len=19) :: ddeplc, ddepl0, ddelt, deplc
-    integer :: jddepc, jddep0, jddelt, jdepc
     integer :: itemax, isto, itemul, spavan
     real(kind=8) :: glitol, glimin, glimax
+    real(kind=8), pointer :: vddelt(:) => null()
+    real(kind=8), pointer :: ddep0(:) => null()
+    real(kind=8), pointer :: ddepc(:) => null()
+    real(kind=8), pointer :: depc(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -176,11 +180,11 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
     ddeplc = resoco(1:14)//'.DELC'
     ddelt = resoco(1:14)//'.DDEL'
     deplc = resoco(1:14)//'.DEPC'
-    call jeveuo(ddepl0(1:19)//'.VALE', 'L', jddep0)
-    call jeveuo(ddeplc(1:19)//'.VALE', 'E', jddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'E', jddelt)
-    call jeveuo(deplc (1:19)//'.VALE', 'E', jdepc)
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
+    call jeveuo(ddelt (1:19)//'.VALE', 'E', vr=vddelt)
+    call jeveuo(deplc (1:19)//'.VALE', 'E', vr=depc)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
 !
 ! --- PREPARATION DE LA MATRICE DE CONTACT
 !
@@ -237,7 +241,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 ! --- MISE A JOUR DE LA SOLUTION ITERATION DE CONTACT
 !
     do 50 ieq = 1, neq
-        zr(jddelt+ieq-1) = zr(jddep0+ieq-1) - zr(jddepc-1+ieq)
+        vddelt(ieq) = ddep0(ieq) - ddepc(ieq)
 50  end do
 !
 ! --- RESOLUTION MATRICIELLE POUR DES LIAISONS ACTIVES
@@ -299,7 +303,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 !
 ! --- ACTUALISATION DE DELTA: DELTA = DELTA + RHO .DDELT
 !
-    call daxpy(neq, rho, zr(jddelt), 1, zr(jddepc),&
+    call daxpy(neq, rho, vddelt, 1, ddepc,&
                1)
 !
 ! --- AJOUT DE LA "PIRE" LIAISON SI NECESSAIRE
@@ -349,7 +353,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 ! --- CALCUL DE DEPLC = DEPDEL + DDELT
 !
     do 240 ieq = 1, neq
-        zr(jdepc+ieq-1) = zr(jdepde+ieq-1) + zr(jddepc+ieq-1)
+        depc(ieq) = depde(ieq) + ddepc(ieq)
 240  end do
 !
 ! --- CALCUL DES FORCES DE CONTACT (AT.MU)
@@ -389,7 +393,7 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 !
     call mtdscr(maf1)
     call jeveuo(maf1//'.&INT', 'L', lmaf1)
-    call mrmult('ZERO', lmaf1, zr(jdepc), zr(jafmu), 1,&
+    call mrmult('ZERO', lmaf1, depc, zr(jafmu), 1,&
                 .true.)
 !
 ! --- CREATION DE LA MATRICE FRO2 = E_T*AT (TERME NEGATIF)

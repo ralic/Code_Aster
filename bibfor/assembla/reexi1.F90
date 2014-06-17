@@ -103,10 +103,11 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iaconx, iaexi1, iagrel, ialiel, iamail, ianbno
-    integer :: ianema, iasssa, iel, igrel
+    integer :: ianema,  iel, igrel
     integer :: iino, ilconx, ili, illiel, ilnema, ima, ino
     integer :: iret, j, jjno, jno, nbel, nbgrel, nbnm
     integer :: nbnom, nbnot, nbsma, nbssa, nma
+    integer, pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jelira(nu//'.NUME.LILI', 'NOMMAX', nlili)
@@ -158,13 +159,13 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
     call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
     call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
     if (nbssa .gt. 0) then
-        call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
+        call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
     else
         goto 22
     endif
 !
     do ima = 1, nbsma
-        if (zi(iasssa-1+ima) .eq. 1) then
+        if (sssa(ima) .eq. 1) then
             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
             call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
             do i = 1, nbnm

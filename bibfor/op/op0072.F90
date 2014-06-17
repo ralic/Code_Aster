@@ -53,7 +53,6 @@ subroutine op0072()
 #include "blas/zcopy.h"
 #include "blas/zdotc.h"
 !
-    integer :: jsmde
     character(len=1) :: typvec
     character(len=8) :: nomres, basemo, vectas, nomtyp, maill1, maill2, k8bid
     character(len=14) :: numgen, numdd1, numdd2
@@ -67,12 +66,16 @@ subroutine op0072()
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadesc, iadref, iadvec, iamatr, iarefe
+    integer :: i, iadesc,  iadvec, iamatr, iarefe
     integer :: iavale, ibid, icod, idbase, iddeeq, idvec1, idvec2
-    integer :: idvec3, idvec4, idvect, iret, j, jrefa, llnequ
+    integer :: idvec3, idvec4, idvect, iret, j
     integer :: n0, n1, n2, n3, n4, nbid, nbmode, tmod(1)
     integer :: neq
     real(kind=8) :: bid, ebid, pij
+    integer, pointer :: smde(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: nequ(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -96,19 +99,19 @@ subroutine op0072()
     nbmode=tmod(1)
 !
 !
-    call jeveuo(numgen//'.SMOS.SMDE', 'L', jsmde)
+    call jeveuo(numgen//'.SMOS.SMDE', 'L', vi=smde)
 !
 ! --- VERIFICATION DE LA CONFORMITE DES NUMEROTATIONS
 !     DES MODES ET DU VECTEUR ASSEMBLE
 !
     call jeveuo(vectas//'           .VALE', 'L', iadvec)
-    call jeveuo(vectas//'           .REFE', 'L', iadref)
+    call jeveuo(vectas//'           .REFE', 'L', vk24=refe)
     call jelira(vectas//'           .VALE', 'TYPE', cval=typvec)
     call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C',&
                 ier=iret)
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
-        proch1 = zk24(iadref+1)(1:19)
+        proch1 = refe(2)(1:19)
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         if (typeba(1:1) .eq. ' ') then
             call exisd('MATR_ASSE', matric, iret)
@@ -127,12 +130,12 @@ subroutine op0072()
         endif
 !
     else if (typbas(1:9).eq.'MODE_GENE') then
-        numdd1=zk24(iadref+1)(1:14)
+        numdd1=refe(2)(1:14)
         proch1 = numdd1//'.NUME'
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         matri2 = matric(1:16)
-        call jeveuo(matri2//'   .REFA', 'L', jrefa)
-        numdd2=zk24(jrefa-1+2)(1:14)
+        call jeveuo(matri2//'   .REFA', 'L', vk24=refa)
+        numdd2=refa(2)(1:14)
         if (numdd1 .ne. numdd2) then
             call utmess('I', 'ALGORITH9_41')
         endif
@@ -145,8 +148,8 @@ subroutine op0072()
         call dismoi('NB_EQUA', vectas, 'CHAM_NO', repi=neq)
         deeq = proch1//'.DEEQ'
     else if (typbas(1:9).eq.'MODE_GENE') then
-        call jeveuo(numdd1//'.NUME.NEQU', 'L', llnequ)
-        neq = zi(llnequ)
+        call jeveuo(numdd1//'.NUME.NEQU', 'L', vi=nequ)
+        neq = nequ(1)
         deeq = numdd1//'.NUME.DEEQ'
     endif
 !
@@ -172,7 +175,7 @@ subroutine op0072()
     zi(iadesc+1) = nbmode
 !
 !   LE STOCKAGE EST-IL DIAGONAL ?
-    if (zi(jsmde-1+4) .eq. zi(jsmde-1+1)) then
+    if (smde(4) .eq. smde(1)) then
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2

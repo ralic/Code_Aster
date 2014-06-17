@@ -37,8 +37,10 @@ subroutine amogen(mat19)
     integer :: nbid, jamog, iamog, idiff
     integer :: vali(3)
     integer :: iamat, n, m, m2, i, iam, iak, j, nbamor, nlist
-    integer :: iblo, idesc, ialime, iaconl, jrefa, jrefa2, iadesc, n2, n1
+    integer :: iblo,  ialime, iaconl,  jrefa2, iadesc, n2, n1
     real(kind=8) :: kmin, valmin, kmax, rk
+    integer, pointer :: desc(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !
     call jemarq()
 !
@@ -47,8 +49,8 @@ subroutine amogen(mat19)
     call getvid(nomcmd, 'RIGI_GENE', iocc=1, scal=raid, nbret=nbid)
     call getvr8(nomcmd, 'AMOR_REDUIT', iocc=1, nbval=0, nbret=n1)
     call getvid(nomcmd, 'LIST_AMOR', iocc=1, nbval=0, nbret=n2)
-    call jeveuo(masse//'           .DESC', 'E', idesc)
-    n=zi(idesc+1)
+    call jeveuo(masse//'           .DESC', 'E', vi=desc)
+    n=desc(2)
     call jelira(masse//'           .VALM', 'LONMAX', m)
     call jelira(raid//'           .VALM', 'LONMAX', m2)
     if (m2 .ne. m) then
@@ -104,7 +106,7 @@ subroutine amogen(mat19)
         endif
     endif
     iblo=1
-    call jeveuo(masse//'           .REFA', 'E', jrefa)
+    call jeveuo(masse//'           .REFA', 'E', vk24=refa)
 !
 !   CREATION DES BASES DE DONNEES DE LA MATRICE A GENERER.
 !   SUIVANT LE MODELE DE OP0071
@@ -117,8 +119,8 @@ subroutine amogen(mat19)
     call wkvect(mat19//'.CONL', 'G V R', n, iaconl)
     call wkvect(mat19//'.REFA', 'G V K24', 20, jrefa2)
     zk24(jrefa2-1+11)='MPI_COMPLET'
-    zk24(jrefa2-1+1) = zk24(jrefa-1+1)
-    zk24(jrefa2-1+2) = zk24(jrefa-1+2)
+    zk24(jrefa2-1+1) = refa(1)
+    zk24(jrefa2-1+2) = refa(2)
     zk24(jrefa2-1+9) = 'MS'
     zk24(jrefa2-1+10) = 'GENE'
 !

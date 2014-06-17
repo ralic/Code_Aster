@@ -77,8 +77,9 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
     integer :: nbv, i, ibid
     real(kind=8) :: r8bid
     character(len=24) :: k24bid
-    integer :: init, ides
     character(len=16) :: optrig
+    character(len=16), pointer :: vale(:) => null()
+    integer, pointer :: desc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -100,15 +101,15 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
 !
 ! --- TYPE DE DEFORMATIONS
 !
-    call jeveuo(compor(1:19)//'.VALE', 'L', init)
-    call jeveuo(compor(1:19)//'.DESC', 'L', ides)
-    nbv = zi(ides-1+3)
+    call jeveuo(compor(1:19)//'.VALE', 'L', vk16=vale)
+    call jeveuo(compor(1:19)//'.DESC', 'L', vi=desc)
+    nbv = desc(3)
 !     RIGIDITE GEOMETRIQUE INTEGREE A LA MATRICE TANGENTE
     do 10 i = 1, nbv
-        if ((zk16(init+2+20*(i-1)).eq.'GROT_GDEP') .or.&
-            (zk16(init+2+20*(i-1)).eq.'GDEF_HYPO_ELAS') .or.&
-            (zk16(init+2+20*(i-1)).eq.'SIMO_MIEHE') .or.&
-            (zk16(init+2+20*(i-1)).eq.'GDEF_LOG')) then
+        if ((vale(1+2+20*(i-1)).eq.'GROT_GDEP') .or.&
+            (vale(1+2+20*(i-1)).eq.'GDEF_HYPO_ELAS') .or.&
+            (vale(1+2+20*(i-1)).eq.'SIMO_MIEHE') .or.&
+            (vale(1+2+20*(i-1)).eq.'GDEF_LOG')) then
             defo = 1
         endif
 10  enddo

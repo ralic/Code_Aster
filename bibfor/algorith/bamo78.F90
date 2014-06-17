@@ -105,10 +105,11 @@ subroutine bamo78(nomres, trange, typres)
     complex(kind=8) :: lcoec(2)
     logical :: lcumu(2), lcoc(2)
 !-----------------------------------------------------------------------
-    integer :: iarc2, ievnew, iopt, jordr, lpar, n, nbins2
+    integer :: iarc2, ievnew, iopt,  lpar, n, nbins2
     integer :: nbtrou, nc, nh, nncp, num0, nume0
     real(kind=8) :: alpha, epsi, rundf, time
     real(kind=8), pointer :: base(:) => null()
+    integer, pointer :: ordr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -200,7 +201,7 @@ subroutine bamo78(nomres, trange, typres)
         call jeveuo(kinst, 'L', jinst)
         call jeveuo(knume, 'L', jnume)
     endif
-    call jeveuo(trange//'.ORDR', 'L', jordr)
+    call jeveuo(trange//'.ORDR', 'L', vi=ordr)
     call getvr8(' ', 'PRECISION', scal=epsi, nbret=n)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=n)
 !
@@ -229,7 +230,7 @@ subroutine bamo78(nomres, trange, typres)
         do iarch = 1, nbinst
             time = zr(jinst+iarch-1)
             num0 = zi(jnume+iarch-1)
-            nume = zi(jordr+num0-1)
+            nume = ordr(num0)
             iarc2 = iarch + nume0-1
 !
 !         --- RECUP POINTEUR SUR CHAMP GENERALISE
@@ -329,7 +330,7 @@ subroutine bamo78(nomres, trange, typres)
     call meharm(modele, nh, chharm)
     do iarch = 1, nbinst
         num0 = zi(jnume+iarch-1)
-        nume = zi(jordr+num0-1)
+        nume = ordr(num0)
         time = zr(jinst+iarch-1)
         call mechti(chgeom(1:8), time, rundf, rundf, chtime)
         call vrcins(modele, mate, carele, time, chvarc(1:19),&

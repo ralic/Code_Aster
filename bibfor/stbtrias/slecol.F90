@@ -55,7 +55,8 @@ subroutine slecol(imod, nbmail)
 !  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
 !-----------------------------------------------------------------------
     integer :: i, ic, icmax, icol, imod, inum, ipos
-    integer :: j, jinfo, nbma, nbmail, nbmax, nbtot
+    integer :: j,  nbma, nbmail, nbmax, nbtot
+    integer, pointer :: maille(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -69,12 +70,12 @@ subroutine slecol(imod, nbmail)
 10  end do
 !
     nbmax = 1000
-    call jeveuo('&&PRESUP.INFO.MAILLE', 'L', jinfo)
+    call jeveuo('&&PRESUP.INFO.MAILLE', 'L', vi=maille)
     do 100 i = 1, nbmail
-        inum = zi(jinfo-1+(i-1)*4+1)
+        inum = maille((i-1)*4+1)
         call codnop(chmail, prfmai, 1, 1)
         call codent(inum, 'G', chmail(2:8))
-        icol = zi(jinfo-1+(i-1)*4+4)
+        icol = maille((i-1)*4+4)
         ipos = icol + 1
         if (ipos .gt. icmax) then
             call utmess('A', 'STBTRIAS_2')

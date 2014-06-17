@@ -82,16 +82,18 @@ subroutine op0091()
     character(len=14) :: nume14
     character(len=19) :: imped, nume91, solveu, nompar(4), typpar(4)
     character(len=24) :: indin1, indin2, lino1, lino2, tramo1, tramo2
-    integer :: i1, l1, ibid, lmodge, lresge, nblia, lllia, iret, nbsst, llipr
+    integer :: i1, l1, ibid, lmodge, lresge, nblia, lllia, iret, nbsst
     integer :: j1, k1, imast1, imast2, nbeq1, nbeq2, ddla1, ddla2, nbmod, lnosst
     integer :: lnusst, isst1, nl, nc, nbddl1, tach1, nbexp, lomeg, lmod1, lmass
     integer :: lbid, ltrsst, nbsla, lraid, leff1, leff2, ltrain, lintf, nbint
     integer :: lcopy1, lsecme, limped, unit, lmasst, nbmas, lslast, nindep, jadr
-    integer :: ltramo, lmatro,  kk1, ll1
+    integer :: ltramo,   kk1, ll1
     real(kind=8) :: trvint, rbid, vr(2), temp
     complex(kind=8) :: cbid
     character(len=24) :: lisint, modet
     real(kind=8), pointer :: vec_obs_temp_ro(:) => null()
+    real(kind=8), pointer :: matr_rotation(:) => null()
+    integer, pointer :: lipr(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
     cbid=(0.d0,0.d0)
@@ -113,7 +115,7 @@ subroutine op0091()
 !
 !-- RECUPERATION DES INFOS
     call jelira(modgen//'      .MODG.LIDF', 'NMAXOC', nblia)
-    call jeveuo(modgen//'      .MODG.LIPR', 'L', llipr)
+    call jeveuo(modgen//'      .MODG.LIPR', 'L', vi=lipr)
     call jelira(resgen//'           .ORDR', 'LONMAX', nbmod)
     call wkvect('&&OP0091.PULSA_PROPRES', 'V V R', nbmod, lomeg)
     do i1 = 1, nbmod
@@ -154,15 +156,15 @@ subroutine op0091()
         lino1='&&VECT_NOEUD_INTERF1'
         indin1='&&VEC_DDL_INTF_'//intf1
         tramo1='&&MATR_TRACE_MODE_INT1'
-        nbeq1=zi(llipr+(i1-1)*9+1)
+        nbeq1=lipr(1+(i1-1)*9+1)
 !-- SOUS STRUCTURE 2
         lino2='&&VECT_NOEUD_INTERF2'
         indin2='&&VEC_DDL_INTF_'//intf2
         tramo2='&&MATR_TRACE_MODE_INT2'
-        nbeq2=zi(llipr+(i1-1)*9+4)
+        nbeq2=lipr(1+(i1-1)*9+4)
 !-- RECHERCHE DE LA SOUS STRUCTURE ESCLAVE DE LA LIAISON EN CHERCHANT LE
 !-- FACTEUR MULTIPLICATEUR DANS LA MATRICE DE LIAISON LAGRANGE/LAGRANGE
-        call jeveuo(jexnum(modgen//'      .MODG.LIMA', zi(llipr+(i1-1)*9+8)), 'L', ibid)
+        call jeveuo(jexnum(modgen//'      .MODG.LIMA', lipr(1+(i1-1)*9+8)), 'L', ibid)
 !-- L'INTERFACE MAITRE EST CELLE DONT LE NUMERO EST NEGATIF
         if (int(zr(ibid)) .eq. -2) then
             imast1=1
@@ -211,7 +213,7 @@ subroutine op0091()
         endif
 !
         AS_ALLOCATE(vr=vec_obs_temp_ro, size=nl*nc)
-        call jeveuo('&&ROTLIR.MATR_ROTATION', 'L', lmatro)
+        call jeveuo('&&ROTLIR.MATR_ROTATION', 'L', vr=matr_rotation)
         do j1 = 1, nc
             do k1 = 1, nl
                 temp=zr(ltramo+(j1-1)*nl + k1-1 )
@@ -219,7 +221,7 @@ subroutine op0091()
                     kk1=(k1-1)/3
                     ll1=(l1-1)/3
                     if (kk1 .eq. ll1) then
-                        rbid=zr(lmatro+ (k1-kk1*3 -1)*3+ (l1-ll1*3 -1)&
+                        rbid=matr_rotation(1+ (k1-kk1*3 -1)*3+ (l1-ll1*3 -1)&
                         )
                         vec_obs_temp_ro(1+(j1-1)*nl+ l1-1 )= vec_obs_temp_ro(1+(j1-1)*&
                         nl+ l1-1 )+temp*rbid

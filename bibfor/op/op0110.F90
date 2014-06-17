@@ -41,9 +41,11 @@ subroutine op0110()
 #include "asterfort/rec110.h"
 #include "asterfort/titre.h"
 !
-    integer :: ioc1, ioc2, ioc3, ioc11, llref, llnbs, nbsect, ioc12, ibid
+    integer :: ioc1, ioc2, ioc3, ioc11,   nbsect, ioc12, ibid
     character(len=8) :: modelg, rescyc, nomres, noma, nomsqu
     character(len=16) :: nomope, nomcmd
+    integer, pointer :: cycl_nbsc(:) => null()
+    character(len=24), pointer :: cycl_refe(:) => null()
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -60,10 +62,10 @@ subroutine op0110()
     if (ioc1 .gt. 0) then
         call getvid('CYCLIQUE', 'MODE_CYCL', iocc=1, scal=rescyc, nbret=ioc11)
         if (ioc11 .gt. 0) then
-            call jeveuo(rescyc//'.CYCL_REFE', 'L', llref)
-            noma = zk24(llref)
-            call jeveuo(rescyc//'.CYCL_NBSC', 'L', llnbs)
-            nbsect = zi(llnbs)
+            call jeveuo(rescyc//'.CYCL_REFE', 'L', vk24=cycl_refe)
+            noma = cycl_refe(1)
+            call jeveuo(rescyc//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+            nbsect = cycl_nbsc(1)
         else
             call getvid('CYCLIQUE', 'MAILLAGE', iocc=1, scal=noma, nbret=ioc12)
             call getvis('CYCLIQUE', 'NB_SECTEUR', iocc=1, scal=nbsect, nbret=ibid)

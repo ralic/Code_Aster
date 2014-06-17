@@ -59,13 +59,14 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 !
 !
     integer :: iaux
-    integer :: adtabo, jordr, jtach
+    integer :: adtabo,  jtach
     integer :: nbtono
 !
     character(len=16) :: nomsym
     character(len=19) :: noresu
     character(len=24) :: chextr
     character(len=24) :: valk(2)
+    integer, pointer :: ordr(:) => null()
 !
 !====
 ! 1. PREALABLE
@@ -90,7 +91,7 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 ! NBTONO : NOMBRE TOTAL DE NUMEROS D'ORDRE DANS LA STRUCTURE NORESU
 !
     call jelira(noresu//'.ORDR', 'LONUTI', nbtono)
-    call jeveuo(noresu//'.ORDR', 'L', jordr)
+    call jeveuo(noresu//'.ORDR', 'L', vi=ordr)
     call jenonu(jexnom(noresu//'.DESC', nomsym), iaux)
     call jeveuo(jexnum(noresu//'.TACH', iaux), 'L', jtach)
 !
@@ -109,7 +110,7 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 !
     chextr = zk24(jtach+iaux)
     if (chextr .ne. ' ') then
-        zi(adtabo+nbordr) = zi(jordr+iaux)
+        zi(adtabo+nbordr) = ordr(iaux+1)
         nbordr = nbordr + 1
     endif
 !

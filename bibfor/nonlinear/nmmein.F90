@@ -60,16 +60,17 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
     integer :: alglag, i, nddl
     character(len=8) :: nomap, nomo
     character(len=19) :: nlisco, nliseq, nlisrl, nbasco
-    integer :: jlicmp, iadrma
+    integer :: jlicmp
     integer :: nbarvi, ibid
+    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
     call jeveuo(liscmp, 'E', jlicmp)
     call jelira(liscmp, 'LONMAX', ival=nddl)
     call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
-    call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', iadrma)
-    nomap = zk8(iadrma)
+    call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', vk8=lgrf)
+    nomap = lgrf(1)
     call dismoi('DIM_GEOM', nomap, 'MAILLAGE', repi=ndim)
 !
     nliseq = '&&NMMEIN.LISEQ'

@@ -46,7 +46,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !     OUT : LONG : LONGUEUR DU CONTOUR
 !
 !
-    integer :: jma, ifm, niv, jnoma, idtyma,   ima, numa, idcoor
+    integer :: jma, ifm, niv,     ima, numa
     integer :: nutyma, nbel, jdno, nbext1, nbext2, iext1
     integer :: iext2, ni1, ni2, nj1, nj2, nbe, nj3, nj0, jdco
     real(kind=8) :: orig(3), zero, vgn1(3), vn1n2(3), aire1, aire2, vgn3(3)
@@ -60,6 +60,9 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     integer, pointer :: mailles(:) => null()
     integer, pointer :: noeud1(:) => null()
     integer, pointer :: noeud2(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: typmail(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
 !
     call jemarq()
 !
@@ -69,13 +72,13 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     orig(1) = zero
     orig(2) = zero
     orig(3) = zero
-    call jeveuo(modele(1:8)//'.MODELE    .LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(modele(1:8)//'.MODELE    .LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
     mlgnma = noma//'.NOMMAI'
     mlgcnx = noma//'.CONNEX'
 !
-    call jeveuo(noma//'.TYPMAIL', 'L', idtyma)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
     AS_ALLOCATE(vi=noeud1, size=nbma*3)
     AS_ALLOCATE(vi=noeud2, size=nbma*3)
@@ -91,7 +94,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
 !        TYPE DE LA MAILLE COURANTE :
 !
-        nutyma = zi(idtyma+numa-1)
+        nutyma = typmail(numa)
         call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
 !
         if (typel(1:3) .ne. 'SEG') then
@@ -106,26 +109,26 @@ subroutine peair1(modele, nbma, lisma, aire, long)
         noeud1(3*nbel-1) = zi(jdno+1)
         if (typel(1:4) .eq. 'SEG3') then
             noeud1(3*nbel) = zi(jdno+2)
-            x1 = zr(idcoor+3*(zi(jdno )-1)+1-1)
-            y1 = zr(idcoor+3*(zi(jdno )-1)+2-1)
-            z1 = zr(idcoor+3*(zi(jdno )-1)+3-1)
-            x2 = zr(idcoor+3*(zi(jdno+2)-1)+1-1)
-            y2 = zr(idcoor+3*(zi(jdno+2)-1)+2-1)
-            z2 = zr(idcoor+3*(zi(jdno+2)-1)+3-1)
+            x1 = vale(1+3*(zi(jdno )-1)+1-1)
+            y1 = vale(1+3*(zi(jdno )-1)+2-1)
+            z1 = vale(1+3*(zi(jdno )-1)+3-1)
+            x2 = vale(1+3*(zi(jdno+2)-1)+1-1)
+            y2 = vale(1+3*(zi(jdno+2)-1)+2-1)
+            z2 = vale(1+3*(zi(jdno+2)-1)+3-1)
             xxl = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2)
             long = long + sqrt( xxl )
-            x1 = zr(idcoor+3*(zi(jdno+1)-1)+1-1)
-            y1 = zr(idcoor+3*(zi(jdno+1)-1)+2-1)
-            z1 = zr(idcoor+3*(zi(jdno+1)-1)+3-1)
+            x1 = vale(1+3*(zi(jdno+1)-1)+1-1)
+            y1 = vale(1+3*(zi(jdno+1)-1)+2-1)
+            z1 = vale(1+3*(zi(jdno+1)-1)+3-1)
             xxl = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2)
             long = long + sqrt( xxl )
         else
-            x1 = zr(idcoor+3*(zi(jdno )-1)+1-1)
-            y1 = zr(idcoor+3*(zi(jdno )-1)+2-1)
-            z1 = zr(idcoor+3*(zi(jdno )-1)+3-1)
-            x2 = zr(idcoor+3*(zi(jdno+1)-1)+1-1)
-            y2 = zr(idcoor+3*(zi(jdno+1)-1)+2-1)
-            z2 = zr(idcoor+3*(zi(jdno+1)-1)+3-1)
+            x1 = vale(1+3*(zi(jdno )-1)+1-1)
+            y1 = vale(1+3*(zi(jdno )-1)+2-1)
+            z1 = vale(1+3*(zi(jdno )-1)+3-1)
+            x2 = vale(1+3*(zi(jdno+1)-1)+1-1)
+            y2 = vale(1+3*(zi(jdno+1)-1)+2-1)
+            z2 = vale(1+3*(zi(jdno+1)-1)+3-1)
             xxl = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2)
             long = long + sqrt( xxl )
         endif

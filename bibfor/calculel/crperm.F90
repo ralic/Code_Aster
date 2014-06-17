@@ -51,7 +51,7 @@ subroutine crperm()
 !
 !
 !
-    integer :: n1, nbcham, iord1(1), iord2, nbperm, jordr, nbtrou, ip, ibid, ic
+    integer :: n1, nbcham, iord1(1), iord2, nbperm,  nbtrou, ip, ibid, ic
     integer :: iret, jlim1, jlim2, nbma, jlino, nbno2, nncp
     real(kind=8) :: inst1, tran(3), prec
     real(kind=8) :: valr
@@ -63,6 +63,7 @@ subroutine crperm()
     character(len=24) :: ch1, ch2, chs1, chs2, linoeu, gma1, gma2, lima1, lima2
     character(len=24) :: ligrel, chsi1(4), chsi2(4)
     integer :: iarg
+    integer, pointer :: ordr(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -75,8 +76,8 @@ subroutine crperm()
     call getvr8(' ', 'INST_INIT', scal=inst1, nbret=n1)
     if (n1 .eq. 0) then
         call jelira(resu1//'           .ORDR', 'LONUTI', ibid)
-        call jeveuo(resu1//'           .ORDR', 'L', jordr)
-        iord1(1) = zi(jordr+ibid-1)
+        call jeveuo(resu1//'           .ORDR', 'L', vi=ordr)
+        iord1(1) = ordr(ibid)
     else
         call getvr8(' ', 'PRECISION', scal=prec, nbret=n1)
         call getvtx(' ', 'CRITERE', scal=crit, nbret=n1)

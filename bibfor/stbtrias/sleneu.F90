@@ -88,7 +88,7 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
     real(kind=8) :: ama, bma, cma, ami, bmi, cmi
 !  --> DECLARATION DES VARIABLES LOCALES
     character(len=80) :: cbuf
-    integer :: node, i, icnode, ind, j, itmp, inus, jsys
+    integer :: node, i, icnode, ind, j, itmp, inus
     real(kind=8) :: x, y, z
 !
 !  ---------- FIN DECLARATION -----------
@@ -96,6 +96,7 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
 !-----------------------------------------------------------------------
     integer :: imes, ire1, ire2, iret, isyst, iter
     integer :: iunv, jcoor, jinfo, ndeca, niter, ntail
+    integer, pointer :: syst(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nbnode=0
@@ -150,8 +151,8 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
 !
         call jeexin('&&IDEAS.SYST', iret)
         if (iret .ne. 0) then
-            call jeveuo('&&IDEAS.SYST', 'L', jsys)
-            isyst = zi(jsys-1+i)
+            call jeveuo('&&IDEAS.SYST', 'L', vi=syst)
+            isyst = syst(i)
         endif
 !
 !        On ne teste ici que si le systeme de coordonnne est cartesien,

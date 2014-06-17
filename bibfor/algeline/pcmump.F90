@@ -39,10 +39,13 @@ subroutine pcmump(matasz, solvez, iretz)
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: jslvk, jslvi, iterpr, reacpr, pcpiv, jrefa, iret
+    integer ::   iterpr, reacpr, pcpiv,  iret
     complex(kind=8) :: cbid
     character(len=19) :: solveu, matass
     character(len=24) :: precon, solvbd
+    integer, pointer :: slvi(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -51,28 +54,28 @@ subroutine pcmump(matasz, solvez, iretz)
     cbid=dcmplx(0.d0,0.d0)
 !
 ! --  PARAMETRES DU PRECONDITIONNEUR
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    call jeveuo(solveu//'.SLVI', 'L', jslvi)
-    precon=zk24(jslvk-1+2)
-    iterpr=zi(jslvi-1+5)
-    reacpr=zi(jslvi-1+6)
-    pcpiv =zi(jslvi-1+7)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
+    precon=slvk(2)
+    iterpr=slvi(5)
+    reacpr=slvi(6)
+    pcpiv =slvi(7)
 !
     ASSERT(precon.eq.'LDLT_SP')
 !
 ! --  PRISE EN COMPTE DES CHARGEMENTS CINEMATIQUES
 ! --  SAUF DANS LE CAS OU LE SOLVEUR EST PETSC
 ! --  CAR DEJA FAIT DANS APETSC
-    if (zk24(jslvk) .ne. 'PETSC') then
-        call jeveuo(matass//'.REFA', 'L', jrefa)
-        ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
-        if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(matass, 'ELIMF')
-        ASSERT(zk24(jrefa-1+3).ne.'ELIML')
+    if (slvk(1) .ne. 'PETSC') then
+        call jeveuo(matass//'.REFA', 'L', vk24=refa)
+        ASSERT(refa(3).ne.'ELIMF')
+        if (refa(3) .eq. 'ELIML') call mtmchc(matass, 'ELIMF')
+        ASSERT(refa(3).ne.'ELIML')
     endif
 !
 ! --  CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
 ! --  (A DETRUIRE A LA SORTIE)
-    solvbd=zk24(jslvk-1+3)
+    solvbd=slvk(3)
     call crsmsp(solvbd, matass, pcpiv)
 !
 ! --  APPEL AU PRECONDITIONNEUR

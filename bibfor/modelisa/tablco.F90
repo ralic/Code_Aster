@@ -60,7 +60,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 !
 !
 !
-    integer ::  ilmaco, iamaco
+    integer ::  ilmaco
     integer :: ima, ino, nbid, i, no
     integer :: numno, numa
     integer :: nmax, nbno, nbma
@@ -76,6 +76,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
     character(len=19) :: coninv
     integer :: nmano, nnoma
     integer, pointer :: trav2(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +84,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 #define nbnom(ima) zi(ilmaco+ima)-zi(ilmaco-1+ima)
 !
 !     FONCTION "FORMULE" D'ACCES A LA CONNECTIVITE DES MAILLES
-#define numglm(ima,ino) zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
+#define numglm(ima,ino) connex(zi(ilmaco+ima-1)+ino-1)
 !
 ! ----------------------------------------------------------------------
 !
@@ -112,7 +113,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 !
     coninv='&&TABLCO.CONINV'
     call cncinv(noma, zi(jmaco), nmaco, 'V', coninv)
-    call jeveuo(noma//'.CONNEX', 'L', iamaco)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilmaco)
 !
 !

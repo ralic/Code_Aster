@@ -51,12 +51,12 @@ subroutine xfem_rel_lin(char, noma, nomo)
     parameter    (nfismx=100)
     integer :: ier, ifiss
     integer :: nfiss, nrel
-    integer :: jnfis
     character(len=19) :: lisrel
     character(len=24) :: sd_cont_defi
     character(len=24) :: xnrell
     integer :: jxnrel
     character(len=19) :: nliseq
+    integer, pointer :: nfis(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,8 +73,8 @@ subroutine xfem_rel_lin(char, noma, nomo)
     if (ier .eq. 0) then
         call utmess('F', 'XFEM2_8', sk=nomo)
     endif
-    call jeveuo(nomo(1:8)//'.NFIS', 'L', jnfis)
-    nfiss = zi(jnfis)
+    call jeveuo(nomo(1:8)//'.NFIS', 'L', vi=nfis)
+    nfiss = nfis(1)
     if (nfiss .gt. nfismx) then
         call utmess('F', 'XFEM_2', si=nfismx)
     endif

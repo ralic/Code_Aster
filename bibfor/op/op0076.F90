@@ -44,8 +44,10 @@ subroutine op0076()
     character(len=24) :: nddlge
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadesc, idcham, iddesc, idinst, idrefe, idvecg
+    integer ::  idcham, iddesc,  idrefe, idvecg
     integer :: ierd, n1, nbinst, nbmode, nt, nf, ni
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -66,8 +68,8 @@ subroutine op0076()
 !
 !     --- RECUPERATION DES INFORMATIONS MODALES ---
 !
-    call jeveuo(trange//'           .DESC', 'L', iadesc)
-    call jeveuo(trange//'           .DISC', 'L', idinst)
+    call jeveuo(trange//'           .DESC', 'L', vi=desc)
+    call jeveuo(trange//'           .DISC', 'L', vr=disc)
     call jelira(trange//'           .DISC', 'LONMAX', nbinst)
     call jeveuo(trange//'           .'//nomcha(1:4), 'L', idcham)
 !
@@ -75,7 +77,7 @@ subroutine op0076()
     call dismoi('NUME_DDL', trange, 'RESU_DYNA', repk=nddlge)
 !     --- RECUPERATION DE LA BASE MODALE ET LE NOMBRE DE MODES
     call dismoi('BASE_MODALE', trange, 'RESU_DYNA', repk=basemo)
-    nbmode = zi(iadesc+1)
+    nbmode = desc(2)
 !
     call wkvect(nomres//'           .REFE', 'G V K24', 2, idrefe)
     call wkvect(nomres//'           .DESC', 'G V I', 2, iddesc)
@@ -88,7 +90,7 @@ subroutine op0076()
     zk24(idrefe+1) = nddlge
 !
 !     --- CAS DU TRAN_GENE
-    if (zi(iadesc) .ne. 4) then
+    if (desc(1) .ne. 4) then
 !
 !       ---  ON PLANTE SI LE MOT CLE DEMANDE EST FREQ POUR UN TRAN_GENE
         if (nf .ne. 0) then
@@ -99,7 +101,7 @@ subroutine op0076()
         call wkvect(nomres//'           .VALE', 'G V R', nbmode, idvecg)
 !
 !       --- RECUPERATION DU CHAMP ---
-        call extrac(interp, prec, crit, nbinst, zr(idinst),&
+        call extrac(interp, prec, crit, nbinst, disc,&
                     temps, zr( idcham), nbmode, zr(idvecg), ierd)
 !
         if (ierd .ne. 0) then
@@ -118,7 +120,7 @@ subroutine op0076()
         call wkvect(nomres//'           .VALE', 'G V C', nbmode, idvecg)
 !
 !       --- RECUPERATION DU CHAMP ---
-        call zxtrac('NON', 0.d0, 'RELATIF', nbinst, zr(idinst),&
+        call zxtrac('NON', 0.d0, 'RELATIF', nbinst, disc,&
                     freq, zc(idcham), nbmode, zc(idvecg), ierd)
 !
         if (ierd .ne. 0) then

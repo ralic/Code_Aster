@@ -55,9 +55,11 @@ subroutine argu80(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibaxe, ibid, lddnbs, lddnin, lddtbm, lddtyp, llref
+    integer :: ibaxe, ibid, lddnbs, lddnin,  lddtyp
     integer :: nbsec, ndist, numa, numd, numg, nveri
     real(kind=8) :: dist, prec
+    character(len=24), pointer :: cycl_refe(:) => null()
+    character(len=8), pointer :: idc_type(:) => null()
 !-----------------------------------------------------------------------
     data blanc /'  '/
 !-----------------------------------------------------------------------
@@ -72,8 +74,8 @@ subroutine argu80(nomres)
 !
 !--------------------RECUPERATION DES CONCEPTS AMONTS-------------------
 !
-    call jeveuo(nomres//'.CYCL_REFE', 'L', llref)
-    intf=zk24(llref+1)(1:8)
+    call jeveuo(nomres//'.CYCL_REFE', 'L', vk24=cycl_refe)
+    intf=cycl_refe(2)(1:8)
 !
 !----------RECUPERATION NOM DES INTERFACES DE LIAISON-------------------
 !
@@ -125,11 +127,11 @@ subroutine argu80(nomres)
 !
 !   RECUPERATION DES TYPES DES INTERFACES
 !
-    call jeveuo(intf//'.IDC_TYPE', 'L', lddtbm)
-    typd=zk8(lddtbm+numd-1)
-    typg=zk8(lddtbm+numg-1)
+    call jeveuo(intf//'.IDC_TYPE', 'L', vk8=idc_type)
+    typd=idc_type(numd)
+    typg=idc_type(numg)
     if (numa .gt. 0) then
-        typa=zk8(lddtbm+numa-1)
+        typa=idc_type(numa)
     else
         typa=typd
     endif

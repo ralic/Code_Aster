@@ -50,7 +50,9 @@ subroutine mnlcdl(imat, numedd, xcdl, nd,lcine)
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     character(len=19) :: matk
-    integer :: lccid, iind, neq, icidk, k, ideeq, j, tcmp, ndlag
+    integer :: lccid, iind, neq,  k,  j, tcmp, ndlag
+    integer, pointer :: ccid(:) => null()
+    integer, pointer :: deeq(:) => null()
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -68,26 +70,26 @@ subroutine mnlcdl(imat, numedd, xcdl, nd,lcine)
 ! --- CAS MATR_ASSE_GENE
     if (lccid.gt.0) then
 ! --- CAS AFFE_CHAR_CINE
-        call jeveuo(matk//'.CCID', 'L', icidk)
+        call jeveuo(matk//'.CCID', 'L', vi=ccid)
         do 10 k = 1, neq
-            zi(iind-1+k)=zi(icidk-1+k)
+            zi(iind-1+k)=ccid(k)
 10      continue
-        nd=neq-zi(icidk-1+neq+1)
+        nd=neq-ccid(neq+1)
         lcine = .true.
     else
 ! --- CAS AFFE_CHAR_MECA
         lcine = .false.
-        call jeveuo(numedd//'.NUME.DEEQ', 'L', ideeq)
+        call jeveuo(numedd//'.NUME.DEEQ', 'L', vi=deeq)
         do 20 k = 1, neq
-            if (zi(ideeq-1+2*(k-1)+2) .gt. 0) then
+            if (deeq(2*(k-1)+2) .gt. 0) then
                 zi(iind-1+k)=0
-            else if (zi(ideeq-1+2*(k-1)+2).lt.0) then
+            else if (deeq(2*(k-1)+2).lt.0) then
                 zi(iind-1+k)=1
                 j=1
-                tcmp=-zi(ideeq-1+2*(k-1)+2)
+                tcmp=-deeq(2*(k-1)+2)
 21              continue
-                if (zi(ideeq-1+2*(j-1)+1) .ne. zi(ideeq-1+2*(k-1)+1) .or.&
-                    zi(ideeq-1+2*(j-1)+2) .ne. tcmp) then
+                if (deeq(2*(j-1)+1) .ne. deeq(2*(k-1)+1) .or.&
+                    deeq(2*(j-1)+2) .ne. tcmp) then
                     j=j+1
                     goto 21
                 endif

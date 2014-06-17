@@ -58,18 +58,21 @@ subroutine expcar(carte)
 !
 !-----------------------------------------------------------------------
     integer :: i1, i2, i3, i4, i5, iadesc, iadgp
-    integer :: ialima, ianoli, ianoma, ianumt, iavale, iavalp, icode
+    integer :: ialima,    iavale, iavalp, icode
     integer :: iedit, ient, igd, ima, iret, j
     integer :: nbedit, nbgdmx, nbma, nbmato, ncmpmx, nec, num1
     integer :: num2, numat
+    integer, pointer :: numt(:) => null()
+    character(len=24), pointer :: vnoli(:) => null()
+    character(len=8), pointer :: vnoma(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(carte//'.DESC', 'L', iadesc)
     call jeveuo(carte//'.LIMA', 'L', ialima)
     call jeveuo(carte//'.VALE', 'L', iavale)
-    call jeveuo(carte//'.NOMA', 'L', ianoma)
+    call jeveuo(carte//'.NOMA', 'L', vk8=vnoma)
 !
-    noma = zk8(ianoma-1+1)
+    noma = vnoma(1)
 !
     igd = zi(iadesc-1+1)
     nec = nbec(igd)
@@ -101,28 +104,28 @@ subroutine expcar(carte)
 !
     call jeexin(carte//'.NOLI', iret)
     ASSERT(iret.ne.0)
-    call jeveuo(carte//'.NOLI', 'L', ianoli)
+    call jeveuo(carte//'.NOLI', 'L', vk24=vnoli)
     call jecreo(carte//'.NUMT', 'V V I')
     call jeecra(carte//'.NUMT', 'LONMAX', 3*nbedit)
-    call jeveuo(carte//'.NUMT', 'E', ianumt)
+    call jeveuo(carte//'.NUMT', 'E', vi=numt)
     nbmato = 0
     do iedit = 1, nbedit
         icode = zi(iadesc-1+3+2* (iedit-1)+1)
-        noli = zk24(ianoli-1+iedit)
+        noli = vnoli(iedit)
         dejavu = .false.
         do j = iedit - 1, 1, -1
-            if (noli .eq. zk24(ianoli-1+j)) then
+            if (noli .eq. vnoli(j)) then
                 dejavu = .true.
                 goto 3
             endif
         end do
   3     continue
         if (dejavu) then
-            zi(ianumt-1+3* (iedit-1)+1) = zi(ianumt-1+3* (j-1)+1)
-            zi(ianumt-1+3* (iedit-1)+2) = zi(ianumt-1+3* (j-1)+2)
-            zi(ianumt-1+3* (iedit-1)+3) = 0
+            numt(3* (iedit-1)+1) = numt(3* (j-1)+1)
+            numt(3* (iedit-1)+2) = numt(3* (j-1)+2)
+            numt(3* (iedit-1)+3) = 0
         else
-            zi(ianumt-1+3* (iedit-1)+1) = nbmato + 1
+            numt(3* (iedit-1)+1) = nbmato + 1
             if (noli(1:8) .eq. '        ') then
 !              MAILLES DU MAILLAGE:
                 call jelira(noma//'.NOMMAI', 'NOMMAX', nbma)
@@ -134,8 +137,8 @@ subroutine expcar(carte)
                 call dismoi('NB_MA_SUP', noli, 'LIGREL', repi=nbma)
                 nbmato = nbmato + nbma
             endif
-            zi(ianumt-1+3* (iedit-1)+2) = nbmato
-            zi(ianumt-1+3* (iedit-1)+3) = 1
+            numt(3* (iedit-1)+2) = nbmato
+            numt(3* (iedit-1)+3) = 1
         endif
     end do
 !
@@ -155,11 +158,11 @@ subroutine expcar(carte)
     do iedit = 1, nbedit
         i1 = iavale + (iedit-1)*ncmpmx
         i3 = iadesc - 1 + 3 + 2*nbgdmx + (iedit-1)*nec + 1
-        num1 = zi(ianumt-1+ (iedit-1)*3+1)
-        num2 = zi(ianumt-1+ (iedit-1)*3+2)
+        num1 = numt((iedit-1)*3+1)
+        num2 = numt((iedit-1)*3+2)
         icode = zi(iadesc-1+3+2* (iedit-1)+1)
         ient = zi(iadesc-1+3+2* (iedit-1)+2)
-        noli = zk24(ianoli-1+iedit)
+        noli = vnoli(iedit)
         if (abs(icode) .eq. 1) then
 !            -- GROUPE 'TOUT':
             nbma = num2 - num1 + 1

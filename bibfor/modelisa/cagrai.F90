@@ -43,12 +43,13 @@ subroutine cagrai(char, ligrmo, noma, fonree)
 !      NOMA   : NOM DU MAILLAGE
 !      FONREE : FONC OU REEL
 !-----------------------------------------------------------------------
-    integer :: nchgi, jvalv, jncmp, nx, ny, nz, i, iocc, nbtou, nbma, jma
+    integer :: nchgi, jvalv,  nx, ny, nz, i, iocc, nbtou, nbma, jma
     real(kind=8) :: grx, gry, grz
     character(len=8) :: k8b, typmcl(2), grxf, gryf, grzf
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
+    character(len=8), pointer :: ncmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -65,12 +66,12 @@ subroutine cagrai(char, ligrmo, noma, fonree)
         call utmess('F', 'MODELISA2_37', sk=fonree)
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
-    zk8(jncmp-1+1) = 'FLUX'
-    zk8(jncmp-1+2) = 'FLUY'
-    zk8(jncmp-1+3) = 'FLUZ'
+    ncmp(1) = 'FLUX'
+    ncmp(2) = 'FLUY'
+    ncmp(3) = 'FLUZ'
     if (fonree .eq. 'REEL') then
         do 10 i = 1, 3
             zr(jvalv-1+i) = 0.d0

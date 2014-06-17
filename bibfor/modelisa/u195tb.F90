@@ -46,11 +46,12 @@ subroutine u195tb(chou)
 !
 !      ==> VARIABLES LOCALES
 !
-    integer :: n1, n2, jnoma, ibid, nncp
+    integer :: n1, n2,  ibid, nncp
     character(len=3) :: prol0
     character(len=8) :: nomgd, ma, mo
     character(len=16) :: tychlu, option, typchs, typch2
     character(len=19) :: chs, tabin, ligrel
+    character(len=8), pointer :: lgrf(:) => null()
 !
     call jemarq()
 !
@@ -86,8 +87,8 @@ subroutine u195tb(chou)
         if (n1 .eq. 0 .or. n2 .eq. 0) then
             call utmess('F', 'MODELISA7_62')
         endif
-        call jeveuo(mo//'.MODELE    .LGRF', 'L', jnoma)
-        ma=zk8(jnoma)
+        call jeveuo(mo//'.MODELE    .LGRF', 'L', vk8=lgrf)
+        ma=lgrf(1)
     endif
 !
 !     CREATION DU CHAMP SIMPLE

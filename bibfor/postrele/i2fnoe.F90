@@ -50,7 +50,8 @@ subroutine i2fnoe(courbe, listnd)
     character(len=15) :: nconec
     character(len=19) :: nmail1
     integer :: adr, pt, nbnd, nbtnd, alstnd, m, p, nbpart, im, in, n, i
-    integer :: adrndm, adrm1, nbmail, nbndm, vlcmai, vlccou, asds, aconec
+    integer :: adrndm, adrm1, nbmail, nbndm, vlcmai, vlccou,  aconec
+    character(len=24), pointer :: nsds(:) => null()
 !
 !================= CORPS DE LA ROUTINE ===============================
 !
@@ -76,9 +77,9 @@ subroutine i2fnoe(courbe, listnd)
     end do
     if (n .ne. 0) then
         call jelira(courbe//'.NSDS', 'LONMAX', nbpart)
-        call jeveuo(courbe//'.NSDS', 'L', asds)
+        call jeveuo(courbe//'.NSDS', 'L', vk24=nsds)
         do p = 1, nbpart, 1
-            nmail1 = zk24(asds+p-1)(1:13)//'.MAIL'
+            nmail1 = nsds(p)(1:13)//'.MAIL'
             call jeveuo(jexatr(nmail1, 'LONCUM'), 'L', vlccou)
             call jelira(nmail1, 'NMAXOC', nbmail)
             call jeveuo(jexnum(nmail1, 1), 'L', adrm1)

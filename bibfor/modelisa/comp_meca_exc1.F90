@@ -54,8 +54,8 @@ subroutine comp_meca_exc1(defo_comp  , mult_comp  , nb_vari_exte, l_kit_meta, l_
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: sdcomp
-    integer :: j_cpri
     integer :: nb_vari_cris
+    integer, pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,8 +71,8 @@ subroutine comp_meca_exc1(defo_comp  , mult_comp  , nb_vari_exte, l_kit_meta, l_
 !
     if (l_cristal) then
         sdcomp = mult_comp(1:8)
-        call jeveuo(sdcomp//'.CPRI', 'L', j_cpri)
-        nb_vari_cris = zi(j_cpri-1+3)
+        call jeveuo(sdcomp//'.CPRI', 'L', vi=cpri)
+        nb_vari_cris = cpri(3)
         nb_vari = nb_vari + nb_vari_cris
         if (defo_comp .eq. 'SIMO_MIEHE') nb_vari = nb_vari + 3 + 9
     endif

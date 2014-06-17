@@ -44,11 +44,11 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: debugr
-    integer :: jceld, gd, iad, ncmpmx, nec, tabec(10), iavale, iacelk
-    integer :: irepe, im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
+    integer ::  gd, iad, ncmpmx, nec, tabec(10), iavale
+    integer ::  im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
     integer :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
     integer :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, i, jlongr
-    integer :: jligr, jpnt, ipoin, ianoma, nunoe, axyzm, jcnx, imodel, ilong
+    integer ::  jpnt, ipoin,  nunoe,   imodel, ilong
     integer :: ind
     real(kind=8) :: sg(6), sl(6), pgl(3, 3), pscal
     real(kind=8) :: valr
@@ -58,6 +58,13 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
     character(len=16) :: option
     character(len=19) :: chelm, noligr
     logical :: inivid
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: repe(:) => null()
+    character(len=24), pointer :: celk(:) => null()
+    integer, pointer :: liel(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: celd(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -67,8 +74,8 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 !
-    call jeveuo(chelm//'.CELD', 'L', jceld)
-    gd = zi(jceld-1+1)
+    call jeveuo(chelm//'.CELD', 'L', vi=celd)
+    gd = celd(1)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
@@ -98,35 +105,35 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
     call jedupo(chelm//'.CELV', 'V', nomjv, .false.)
     call jeveuo(nomjv, 'E', iavale)
 !
-    call jeveuo(chelm//'.CELK', 'L', iacelk)
-    noligr = zk24(iacelk)(1:19)
-    call jeveuo(noligr//'.REPE', 'L', irepe)
-    call jeveuo(noligr//'.LIEL', 'L', jligr)
+    call jeveuo(chelm//'.CELK', 'L', vk24=celk)
+    noligr = celk(1)(1:19)
+    call jeveuo(noligr//'.REPE', 'L', vi=repe)
+    call jeveuo(noligr//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(noligr//'.LIEL', 'LONCUM'), 'L', jlongr)
     call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel)
-    call jeveuo(noligr//'.LGRF', 'L', ianoma)
-    nomma = zk8(ianoma)
+    call jeveuo(noligr//'.LGRF', 'L', vk8=lgrf)
+    nomma = lgrf(1)
     call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpnt)
-    call jeveuo(nomma//'.CONNEX', 'L', jcnx)
+    call jeveuo(nomma//'.CONNEX', 'L', vi=connex)
 !
-    call jeveuo(nomma//'.COORDO    .VALE', 'L', axyzm)
+    call jeveuo(nomma//'.COORDO    .VALE', 'L', vr=vale)
 !
     do im = 1, nbel
         imail = numail(im)
-        igrel = zi(irepe-1+2*(imail-1)+1)
-        ielg = zi(irepe-1+2*(imail-1)+2)
+        igrel = repe(2*(imail-1)+1)
+        ielg = repe(2*(imail-1)+2)
         if (igrel .eq. 0) goto 20
-        mode=zi(jceld-1+zi(jceld-1+4+igrel) +2)
+        mode=celd(celd(4+igrel) +2)
         if (mode .eq. 0) goto 20
         call dgmode(mode, imodel, ilong, nec, tabec)
         nscal = digdel( mode )
-        icoef=max(1,zi(jceld-1+4))
+        icoef=max(1,celd(4))
         if (icoef .gt. 1) then
             call utmess('F', 'POSTRELE_15')
         endif
         nsca = nscal*icoef
         ipoin = zi(jlongr-1+igrel)
-        iel = zi(jligr-1+ipoin+ielg-1)
+        iel = liel(ipoin+ielg-1)
         nnoe = zi(jpnt-1+iel+1) - zi(jpnt-1+iel)
         ncmpp = 0
         do icmp = 1, ncmpmx
@@ -136,12 +143,12 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
         end do
         npcalc = nscal / ncmpp
         ncou = npcalc / nnoe
-        debugr=zi(jceld-1+zi(jceld-1+4+igrel)+8)
+        debugr=celd(celd(4+igrel)+8)
         iachml = debugr + nsca*(ielg-1)
         do icou = 1, ncou
             do ino = 1, nnoe
 !
-                nunoe = zi(jcnx-1+zi(jpnt-1+iel)-1+ino)
+                nunoe = connex(zi(jpnt-1+iel)-1+ino)
                 inivid = .false.
                 if (nbnac .ne. 0) then
                     ind = indiis ( nnoeud, nunoe, 1, nbnac )
@@ -154,9 +161,9 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                     endif
                 endif
 !
-                axer(1) = zr(axyzm+3*(nunoe-1) ) - orig(1)
-                axer(2) = zr(axyzm+3*(nunoe-1)+1) - orig(2)
-                axer(3) = zr(axyzm+3*(nunoe-1)+2) - orig(3)
+                axer(1) = vale(1+3*(nunoe-1) ) - orig(1)
+                axer(2) = vale(1+3*(nunoe-1)+1) - orig(2)
+                axer(3) = vale(1+3*(nunoe-1)+2) - orig(3)
                 pscal = axer(1)*axez(1)+axer(2)*axez(2)+axer(3)*axez( 3)
                 axer(1) = axer(1) - pscal*axez(1)
                 axer(2) = axer(2) - pscal*axez(2)
@@ -170,7 +177,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                     call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
                     valk (1) = nomail
                     valk (2) = nonoeu
-                    valr = zr(axyzm+3*(nunoe-1))
+                    valr = vale(1+3*(nunoe-1))
                     call utmess('F', 'POSTRELE_27', nk=2, valk=valk, sr=valr)
                 endif
                 xnormr = 1.0d0 / sqrt( xnormr )
@@ -189,7 +196,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig,&
                     call jenuno(jexnum(nomma//'.NOMNOE', nunoe), nonoeu)
                     valk (1) = nomail
                     valk (2) = nonoeu
-                    valr = zr(axyzm+3*(nunoe-1))
+                    valr = vale(1+3*(nunoe-1))
                     call utmess('F', 'POSTRELE_27', nk=2, valk=valk, sr=valr)
                 endif
                 do i = 1, 3

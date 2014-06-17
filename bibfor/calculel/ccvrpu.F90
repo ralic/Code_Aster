@@ -49,13 +49,15 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 ! ----------------------------------------------------------------------
 !
     integer :: jordr, iordr, numord, jpara, n1, n2, n3, nchalu, icharg
-    integer :: lchalu, fchalu, nchasd, jlcha, jinfc, jfcha, ilu, isd
+    integer :: lchalu, fchalu, nchasd,   jfcha, ilu, isd
 !
     character(len=8) :: k8b, modelu, carelu, chmatu, modelr, carelr, chmatr
     character(len=8) :: fonclu
     character(len=16) :: valk(3)
     character(len=19) :: kcha, kfon, excit
     character(len=24) :: excisd
+    integer, pointer :: infc(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
 !
     kcha = '&&CCVRPU.CHARGE    '
     kfon = '&&CCVRPU.FONC_MULT '
@@ -143,17 +145,17 @@ subroutine ccvrpu(resuin, lisord, nbordr)
             nchasd=0
             if (excisd .ne. ' ') then
                 excit=excisd(1:19)
-                call jeveuo(excit//'.LCHA', 'L', jlcha)
-                call jeveuo(excit//'.INFC', 'L', jinfc)
+                call jeveuo(excit//'.LCHA', 'L', vk24=lcha)
+                call jeveuo(excit//'.INFC', 'L', vi=infc)
                 call jeveuo(excit//'.FCHA', 'L', jfcha)
-                nchasd = zi(jinfc)
+                nchasd = infc(1)
                 if (nchasd .ne. nchalu) then
                     call utmess('F', 'CALCULEL_39')
                     ASSERT(.false.)
                 endif
                 do 40 ilu = 1, nchalu
                     do 50 isd = 1, nchasd
-                        if (zk8(lchalu-1+ilu) .eq. zk24(jlcha-1+isd)( 1:8)) goto 30
+                        if (zk8(lchalu-1+ilu) .eq. lcha(isd)( 1:8)) goto 30
 50                  continue
                     call utmess('F', 'CALCULEL_39')
 30                  continue

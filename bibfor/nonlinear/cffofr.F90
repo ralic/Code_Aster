@@ -46,7 +46,8 @@ subroutine cffofr(numedd, resoco, cnfofr)
 !
 !
     integer :: neq, iconta, i
-    integer :: jafmu, jcnfr
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: afmu(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,15 +56,15 @@ subroutine cffofr(numedd, resoco, cnfofr)
 ! --- INITIALISATIONS
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call jeveuo(cnfofr(1:19)//'.VALE', 'E', jcnfr)
+    call jeveuo(cnfofr(1:19)//'.VALE', 'E', vr=vale)
 !
 ! --- CALCUL DU VECT_ASSE
 !
     call jeexin(resoco(1:14)//'.AFMU', iconta)
     if (iconta .ne. 0) then
-        call jeveuo(resoco(1:14)//'.AFMU', 'L', jafmu)
+        call jeveuo(resoco(1:14)//'.AFMU', 'L', vr=afmu)
         do i = 1, neq
-            zr(jcnfr+i-1) = zr(jafmu+i-1)
+            vale(i) = afmu(i)
         end do
     endif
 !

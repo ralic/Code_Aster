@@ -55,12 +55,14 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: iret, npvneg, islvk, islvi, iold, iold2
+    integer :: iret, npvneg,   iold, iold2
     real(kind=8) :: valr
     complex(kind=8) :: cbid
     character(len=19) :: matpre, matass
     character(len=24) :: metres
     logical :: caldet, calfac
+    integer, pointer :: slvi(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -68,9 +70,9 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
     call jemarq()
 !
 !     --- INITIALISATION ---
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
-    metres=zk24(islvk)
-    call jeveuo(solveu//'.SLVI', 'E', islvi)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    metres=slvk(1)
+    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
 !
 !
 ! ---- OPTIMISATION MUMPS VIA CALFAC/CALDET: PART 1/2
@@ -82,12 +84,12 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
     iold2=-9999
     if (metres(1:5) .eq. 'MUMPS') then
         if (.not.calfac) then
-            iold=zi(islvi-1+4)
-            zi(islvi-1+4)=1
+            iold=slvi(4)
+            slvi(4)=1
         endif
         if (caldet) then
-            iold2=zi(islvi-1+5)
-            zi(islvi-1+5)=1
+            iold2=slvi(5)
+            slvi(5)=1
         endif
     endif
 !
@@ -125,8 +127,8 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
 ! ---- ON REMET DANS LA SD_SOLVEUR.SLVI(4) L'ANCIENNE VALEUR
 ! ---- (NORMALEMENT LA VALEUR INITIALISEE PAR DEFAUT -9999).
     if (metres(1:5) .eq. 'MUMPS') then
-        if (.not.calfac) zi(islvi-1+4)=iold
-        if (caldet) zi(islvi-1+5)=iold2
+        if (.not.calfac) slvi(4)=iold
+        if (caldet) slvi(5)=iold2
     endif
 !
     call jedema()

@@ -74,7 +74,7 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
     integer :: n1, n2, n3, iret
     integer :: ntpt, ntspt
     character(len=16) :: valk(2)
-    integer :: jcesd
+    integer, pointer :: cesd(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,7 +92,7 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
         call sdmpic('CHAM_ELEM', champ)
         call celces(champ, 'V', nomchs)
     endif
-    call jeveuo(nomchs(1:19)//'.CESD', 'L', jcesd)
+    call jeveuo(nomchs(1:19)//'.CESD', 'L', vi=cesd)
 !
 ! --- LECTURE TYPE EXTRACTION
 !
@@ -104,8 +104,8 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 !
 ! --- MAX. DE POINTS/SOUS-POINTS SUR LE CHAMP
 !
-    ntpt = zi(jcesd+3-1)
-    ntspt = zi(jcesd+4-1)
+    ntpt = cesd(3)
+    ntspt = cesd(4)
 !
 ! --- COMPTE NOMBRE DE POINTS
 !

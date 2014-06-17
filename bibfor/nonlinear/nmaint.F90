@@ -66,8 +66,8 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
     character(len=19) :: cncont, cnsstr
     integer :: neq, i, endo
     integer :: endop1, endop2
-    integer :: jfint
     logical :: lendo
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,7 +104,7 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
 !
     if (lendo) then
         call jeveuo(sdnume(1:19)//'.ENDO', 'L', endo)
-        call jeveuo(cnfint(1:19)//'.VALE', 'E', jfint)
+        call jeveuo(cnfint(1:19)//'.VALE', 'E', vr=vale)
 !
         call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
@@ -114,9 +114,9 @@ subroutine nmaint(numedd, fonact, defico, veasse, vefint,&
         do i = 1, neq
 !
             if (zi(endo+i-1) .eq. 2) then
-                if (zr(jfint+i-1) .ge. 0.d0) then
+                if (vale(i) .ge. 0.d0) then
                     endop2 = endop2+1
-                    zr(jfint+i-1) = 0.d0
+                    vale(i) = 0.d0
                 else
                     endop1 = endop1+1
                 endif

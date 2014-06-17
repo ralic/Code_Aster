@@ -64,19 +64,22 @@ subroutine ssdmgn(mag)
     character(len=24) :: valk(2)
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i1noe, iadim2, iadime, iagnl, iagno, ialino
-    integer :: ianmcr,  igno, ii, inol
+    integer :: i1, i1noe,   iagnl, iagno, ialino
+    integer ::   igno, ii, inol
     integer :: iocc, iret, isma, kk, lgnl, lmail, longt
     integer :: lont, lpref, n, n1, n2, n3, nbgno, lpr(1)
     integer :: nbgno2, nbgnot, nbid, nbno, nbnoex, nbsma, nocc
     integer :: nusma
     integer, pointer :: work1(:) => null()
+    integer, pointer :: dime(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: dime_2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    call jeveuo(mag//'.DIME', 'L', iadime)
-    call jeveuo(mag//'.DIME_2', 'L', iadim2)
-    call jeveuo(mag//'.NOMACR', 'L', ianmcr)
-    nbsma= zi(iadime-1+4)
+    call jeveuo(mag//'.DIME', 'L', vi=dime)
+    call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
+    call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
+    nbsma= dime(4)
 !
 !
 !
@@ -115,7 +118,7 @@ subroutine ssdmgn(mag)
 !
             do isma = 1, nbsma
                 if ((n2.eq.1) .and. (nusma.ne.isma)) goto 21
-                nomacr= zk8(ianmcr-1+isma)
+                nomacr= vnomacr(isma)
                 call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
                 call jeexin(mal//'.GROUPENO', iret)
                 if (iret .eq. 0) goto 21
@@ -136,7 +139,7 @@ subroutine ssdmgn(mag)
             call getvtx('DEFI_GROUP_NO', 'GROUP_NO_INIT', iocc=iocc, scal=nomgnl, nbret=n)
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
-            nomacr= zk8(ianmcr-1+isma)
+            nomacr= vnomacr(isma)
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
             call jelira(jexnom(mal//'.GROUPENO', nomgnl), 'LONUTI', n3)
             nbgnot= nbgnot+1
@@ -196,9 +199,9 @@ subroutine ssdmgn(mag)
 !
             do isma = 1, nbsma
                 if ((n2.eq.1) .and. (nusma.ne.isma)) goto 51
-                nomacr= zk8(ianmcr-1+isma)
+                nomacr= vnomacr(isma)
                 call jenuno(jexnum(mag//'.SUPMAIL', isma), nomail)
-                i1noe=zi(iadim2-1+4*(isma-1)+3)
+                i1noe=dime_2(4*(isma-1)+3)
                 call jeveuo(nomacr//'.LINO', 'L', ialino)
                 call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
                 call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
@@ -253,8 +256,8 @@ subroutine ssdmgn(mag)
             call getvtx('DEFI_GROUP_NO', 'GROUP_NO_FIN', iocc=iocc, scal=nomgng, nbret=n)
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
-            i1noe=zi(iadim2-1+4*(isma-1)+3)
-            nomacr= zk8(ianmcr-1+isma)
+            i1noe=dime_2(4*(isma-1)+3)
+            nomacr= vnomacr(isma)
             call jeveuo(nomacr//'.LINO', 'L', ialino)
             call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)

@@ -64,10 +64,10 @@ subroutine op0184()
     integer :: nbv, nbmapl, ibid, ntout, nnume, np, iul
     integer :: vali(2)
     integer :: nbordr, jnume, n1, nlinst, jlist, nbinst, nis, nc, nfor
-    integer :: iret, jtitr, nbtitr, ifsig, l, ipas, k, numpas, ino
+    integer :: iret,  nbtitr, ifsig, l, ipas, k, numpas, ino
     integer :: ivar(6), iord, jpres, ima, nbnoas, jnoma, i, nnu
     integer :: iadrno, imp, jdme, ntseg, imamin, jdco, jdno, no1, no2, nutyel
-    integer :: jcelv, jceld, idec, nbelgr, liel, iel, iadno, nno
+    integer :: jcelv,  idec, nbelgr, liel, iel, iadno, nno
     integer :: jinst, nbtrou, lordr, ntpoi, itest, iad, imapl
     integer :: nbordt, te, nbgr, igr, tord(1)
     real(kind=8) :: rbid, pres, epsi, temps, tref, cm(3), a(3), b(3), la, lb, d2
@@ -82,6 +82,8 @@ subroutine op0184()
     character(len=24) :: coorn, typma, coorp, mlgcnx, lchin(1), lchout(1)
     character(len=24) :: noliel, chgeom, option, connex
     character(len=80) :: k80b, k80bm, k80bid
+    integer, pointer :: celd(:) => null()
+    character(len=80), pointer :: titr(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -197,10 +199,10 @@ subroutine op0184()
     if (iret .eq. 0) then
         call utmess('F', 'UTILITAI3_12')
     else
-        call jeveuo(nomapl//'           .TITR', 'L', jtitr)
+        call jeveuo(nomapl//'           .TITR', 'L', vk80=titr)
         call jelira(nomapl//'           .TITR', 'LONMAX', nbtitr)
         if (nbtitr .ge. 1) then
-            if (zk80(jtitr) (10:31) .ne. 'AUTEUR=INTERFACE_IDEAS') then
+            if (titr(1) (10:31) .ne. 'AUTEUR=INTERFACE_IDEAS') then
                 call utmess('F', 'UTILITAI3_12')
             endif
         else
@@ -227,7 +229,7 @@ subroutine op0184()
     call calcul('S', option, ligrmo, 1, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
-    call jeveuo(chpres//'.CELD', 'L', jceld)
+    call jeveuo(chpres//'.CELD', 'L', vi=celd)
     call jeveuo(chpres//'.CELV', 'E', jcelv)
     connex = nomast//'.CONNEX'
     noliel = ligrmo//'.LIEL'
@@ -360,7 +362,7 @@ subroutine op0184()
 110 continue
 !
     do igr = 1, nbgr
-        idec = zi(jceld-1+zi(jceld-1+4+igr)+8)
+        idec = celd(celd(4+igr)+8)
         te = typele(ligrmo,igr)
         call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
         if (nomte .eq. 'MEDKTR3' .or. nomte .eq. 'MEDKQU4' .or. nomte .eq. 'MET3SEG3' .or.&

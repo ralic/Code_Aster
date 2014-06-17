@@ -45,12 +45,19 @@ subroutine assach(preel2, pimag2, base2, chout2, parout)
 !
 !
     integer :: i, ier, gdr, gdi, gdcpx, jncmpr, jncmpc
-    integer :: nmax1, nmax2, nbvalr, ivalr, nbvali, ivali, jvale, iret
-    integer :: jceldr, jceldi, jcelkr, nbvalc, jcelk
+    integer :: nmax1, nmax2, nbvalr,  nbvali,   iret
+    integer ::    nbvalc
 !
     character(len=8) :: nomgdr, nomgdi, nomcpx, kmpicr, kmpici
     character(len=24) :: ligrel, option, param
     character(len=24) :: valk(2)
+    integer, pointer :: celdi(:) => null()
+    integer, pointer :: celdr(:) => null()
+    character(len=24), pointer :: celk(:) => null()
+    character(len=24), pointer :: celkr(:) => null()
+    real(kind=8), pointer :: vali(:) => null()
+    real(kind=8), pointer :: valr(:) => null()
+    complex(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,15 +77,15 @@ subroutine assach(preel2, pimag2, base2, chout2, parout)
 !
 !
 !
-    call jeveuo(preel//'.CELD', 'L', jceldr)
-    gdr=zi(jceldr)
+    call jeveuo(preel//'.CELD', 'L', vi=celdr)
+    gdr=celdr(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', gdr), nomgdr)
     if ((nomgdr(7:7).ne.' ') .or. (nomgdr(5:6).ne.'_R')) then
         call utmess('F', 'CALCULEL_20', sk=nomgdr)
     endif
 !
-    call jeveuo(pimag//'.CELD', 'L', jceldi)
-    gdi=zi(jceldi)
+    call jeveuo(pimag//'.CELD', 'L', vi=celdi)
+    gdi=celdi(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', gdi), nomgdi)
 !
     if ((nomgdi(7:7).ne.' ') .or. (nomgdi(5:6).ne.'_R')) then
@@ -116,9 +123,9 @@ subroutine assach(preel2, pimag2, base2, chout2, parout)
         call utmess('F', 'CALCULEL_23', nk=2, valk=valk)
     endif
 !
-    call jeveuo(preel//'.CELK', 'L', jcelkr)
-    ligrel=zk24(jcelkr)
-    option=zk24(jcelkr+1)
+    call jeveuo(preel//'.CELK', 'L', vk24=celkr)
+    ligrel=celkr(1)
+    option=celkr(2)
 !
     if (present(parout)) then
         param=parout
@@ -136,28 +143,28 @@ subroutine assach(preel2, pimag2, base2, chout2, parout)
     endif
 !
     call jelira(preel//'.CELV', 'LONMAX', nbvalr)
-    call jeveuo(preel//'.CELV', 'L', ivalr)
+    call jeveuo(preel//'.CELV', 'L', vr=valr)
     call jelira(pimag//'.CELV', 'LONMAX', nbvali)
-    call jeveuo(pimag//'.CELV', 'L', ivali)
+    call jeveuo(pimag//'.CELV', 'L', vr=vali)
     ASSERT(nbvalr.eq.nbvali)
 !
-    call jeveuo(chout//'.CELV', 'E', jvale)
+    call jeveuo(chout//'.CELV', 'E', vc=vale)
     call jelira(chout//'.CELV', 'LONMAX', nbvalc)
     ASSERT(nbvalr.eq.nbvalc)
 !
     do i = 1, nbvalr
-        zc(jvale-1+i)=dcmplx(zr(ivalr-1+i),zr(ivali-1+i))
+        vale(i)=dcmplx(valr(i),vali(i))
     end do
 !
     call dismoi('MPI_COMPLET', preel, 'CHAM_ELEM', repk=kmpicr)
     call dismoi('MPI_COMPLET', pimag, 'CHAM_ELEM', repk=kmpici)
     ASSERT(kmpicr.eq.kmpici)
 !
-    call jeveuo(chout//'.CELK', 'E', jcelk)
+    call jeveuo(chout//'.CELK', 'E', vk24=celk)
     if (kmpicr .eq. 'OUI') then
-        zk24(jcelk-1+7)='MPI_COMPLET'
+        celk(7)='MPI_COMPLET'
     else
-        zk24(jcelk-1+7)='MPI_INCOMPLET'
+        celk(7)='MPI_INCOMPLET'
     endif
 !
     call jedema()

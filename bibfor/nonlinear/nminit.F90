@@ -113,7 +113,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, ibid, islvi
+    integer :: iret, ibid
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
     character(len=19) :: commoi
@@ -123,6 +123,7 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
     integer :: ifm, niv
     character(len=19) :: ligrcf, ligrxf
     character(len=8) :: nomo
+    integer, pointer :: slvi(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -182,12 +183,12 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !     CE N'EST VRAIMENT UTILE QUE SI SOLVEUR/GESTION_MEMOIRE='AUTO'.
     if (isfonc(fonact,'MUMPS')) then
         if (isfonc(fonact,'CRIT_STAB') .or. isfonc(fonact,'MODE_VIBR')) then
-            call jeveuo(solveu//'.SLVI', 'E', islvi)
-            if (zi(islvi-1+6) .lt. 0) then
+            call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+            if (slvi(6) .lt. 0) then
 ! --- PB INITIALISATION DE LA SD_SOLVEUR
                 ASSERT(.false.)
             else
-                zi(islvi-1+6)=2
+                slvi(6)=2
             endif
         endif
     endif

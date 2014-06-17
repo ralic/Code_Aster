@@ -45,13 +45,15 @@ subroutine crvrc2()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
-    integer :: nbfac, n1, nbinst, kinst, jordr1, iordr
-    integer :: nbin, iret, jinst, jtemp, iexi
+    integer :: nbfac, n1, nbinst, kinst,  iordr
+    integer :: nbin, iret, jinst,  iexi
     real(kind=8) :: vinst
     character(len=8) :: kbid, resu, modele, model2, carele, paout, lpain(10)
     character(len=16) :: type, oper
     character(len=19) :: ligrel, chout, resu1, chtemp
     character(len=24) :: chcara(18), lchin(10)
+    integer, pointer :: ordr(:) => null()
+    character(len=24), pointer :: celk(:) => null()
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -71,8 +73,8 @@ subroutine crvrc2()
     if (iexi .eq. 0) then
         call utmess('F', 'CALCULEL4_14', sk=carele)
     endif
-    call jeveuo(carele//'.CANBSP    .CELK', 'L', jtemp)
-    model2=zk24(jtemp-1+1)(1:8)
+    call jeveuo(carele//'.CANBSP    .CELK', 'L', vk24=celk)
+    model2=celk(1)(1:8)
     if (model2 .ne. modele) then
         call utmess('F', 'CALCULEL4_15', sk=carele)
     endif
@@ -81,7 +83,7 @@ subroutine crvrc2()
 !
 !
     call jelira(resu1//'.ORDR', 'LONUTI', nbinst)
-    call jeveuo(resu1//'.ORDR', 'L', jordr1)
+    call jeveuo(resu1//'.ORDR', 'L', vi=ordr)
     ASSERT(nbinst.gt.0)
 !
     call jeexin(resu//'           .DESC', iret)
@@ -106,7 +108,7 @@ subroutine crvrc2()
 !     -- BOUCLE SUR LES INSTANTS :
 !     --------------------------------
     do kinst = 1,nbinst
-        iordr = zi(jordr1+kinst-1)
+        iordr = ordr(kinst)
         call rsexch('F', resu1, 'TEMP', iordr, chtemp,&
                     iret)
         lchin(2) = chtemp

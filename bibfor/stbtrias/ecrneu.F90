@@ -106,7 +106,9 @@ subroutine ecrneu(imod, nbnode, ama, bma, cma,&
 !
 !  --> N  D'UNITE LOGIQUE ASSOCIE AU FICHIER
 !-----------------------------------------------------------------------
-    integer :: i, imod, jcoor, jinfo
+    integer :: i, imod
+    real(kind=8), pointer :: coor(:) => null()
+    integer, pointer :: info(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -128,8 +130,8 @@ subroutine ecrneu(imod, nbnode, ama, bma, cma,&
 !
 ! --- RECUPERATION DES VECTEURS DE TRAVAIL :
 !     ------------------------------------
-    call jeveuo('&&PRESUP.INFO.NOEUDS', 'L', jinfo)
-    call jeveuo('&&PRESUP.COOR.NOEUDS', 'L', jcoor)
+    call jeveuo('&&PRESUP.INFO.NOEUDS', 'L', vi=info)
+    call jeveuo('&&PRESUP.COOR.NOEUDS', 'L', vr=coor)
 !
     call codent(nbnode, 'G', chenti(7:12))
     call codent(min, 'G', chnomi(7:12))
@@ -169,11 +171,11 @@ subroutine ecrneu(imod, nbnode, ama, bma, cma,&
     endif
 !
     do 15 i = 1, nbnode
-        node = zi(jinfo-1+(i-1)*3+1)
-        isc = zi(jinfo-1+(i-1)*3+2)
-        x = zr(jcoor-1+(i-1)*3+1)
-        y = zr(jcoor-1+(i-1)*3+2)
-        z = zr(jcoor-1+(i-1)*3+3)
+        node = info((i-1)*3+1)
+        isc = info((i-1)*3+2)
+        x = coor((i-1)*3+1)
+        y = coor((i-1)*3+2)
+        z = coor((i-1)*3+3)
 !
         call codnop(chnode, prfnoe, 1, 1)
         call codent(node, 'G', chnode(2:8))

@@ -66,8 +66,9 @@ subroutine ddlact(nomres, numddl)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iec, ino, j, ldact, lldeeq
-    integer :: lldes, llnoe, lltypi, ltcono, ltidec, ltmat, ltnono
+    integer :: lldes, llnoe,  ltcono, ltidec, ltmat, ltnono
     integer :: nbcmp, nbec, nbint, nbno, nbnot, neq, nomax
+    character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------
     data pgc /'DDLACT'/
@@ -98,7 +99,7 @@ subroutine ddlact(nomres, numddl)
 !
 !---------------RECUPERATION DES TYPES D'INTERFACE ---------------------
 !
-    call jeveuo(nomres//'.IDC_TYPE', 'L', lltypi)
+    call jeveuo(nomres//'.IDC_TYPE', 'L', vk8=idc_type)
 !
 !----------------COMPTAGE DU NOMBRE MAX DE NOEUDS DES INTERFACE---------
 !
@@ -144,7 +145,7 @@ subroutine ddlact(nomres, numddl)
         call recddl(nbcmp, zi(ltnono), nbno, nbec, zi(lldeeq),&
                     neq, zi(ltmat), zi(ltidec))
 !
-        typint=zk8(lltypi+i-1)
+        typint=idc_type(i)
 !
         if (typint .eq. 'CRAIGB  ' .or. typint .eq. 'CB_HARMO') then
             call acticb(nbcmp, nbno, nbec, zi(ltmat), zi(ltcono),&

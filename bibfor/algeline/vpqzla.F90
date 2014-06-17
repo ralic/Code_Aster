@@ -80,8 +80,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 !
 ! OUT FLAGE  : LO : FLAG PERMETTANT DE GERER LES IMPRESSIONS
 !-----------------------------------------------------------------------
-! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1504
+! aslint: disable=W1304,W1504,C9991
+! C9991 : a cause du compilo gfortran 4.4.5 qui se plante
+
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -136,7 +137,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 !
     integer :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret
     integer :: ivalr
-    integer :: ivalm, iadia, ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
+    integer :: ivalm,  ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
     integer :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1
     integer :: j2m1, iaux21, ics1
     integer :: ldvl
@@ -150,6 +151,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     character(len=1) :: kbal, ksens, valk
     character(len=24) :: nomrai, nommas, nomamo
     logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
+    integer, pointer :: smdi(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -240,7 +242,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         if (lnsa) call jeveuo(jexnum(nomamo(1:19)//'.VALM', 2), 'L', ivala1)
     endif
     call jeveuo(numedd(1:14)//'.SMOS.SMHC', 'L', ihcol)
-    call jeveuo(numedd(1:14)//'.SMOS.SMDI', 'L', iadia)
+    call jeveuo(numedd(1:14)//'.SMOS.SMDI', 'L', vi=smdi)
 !
 ! ---- PB MODAL GENERALISE
     if (.not.lc) then
@@ -249,7 +251,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             ideb = 1
             do 31 j = 1, qrn
                 jm1=j-1
-                ifin = zi(iadia+jm1)
+                ifin = smdi(jm1+1)
                 do 30 i = ideb, ifin
                     im1=i-1
                     iauxh=zi4(ihcol+im1)
@@ -271,7 +273,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             ideb = 1
             do 33 j = 1, qrn
                 jm1=j-1
-                ifin = zi(iadia-1+j)
+                ifin = smdi(j)
                 do 32 i = ideb, ifin
                     im1=i-1
                     iauxh=zi4(ihcol+im1)
@@ -315,7 +317,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         ideb = 1
 ! ---   J: NUMERO DE COLONNE, IAUXH: DE LIGNE
         do 39 j = 1, qrns2
-            ifin = zi(iadia-1+j)
+            ifin = smdi(j)
             jm1=j-1
             do 38 i = ideb, ifin
                 im1=i-1
@@ -396,7 +398,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             jm1=j-1
             j2=j+qrns2
             j2m1=j2-1
-            ifin = zi(iadia+jm1)
+            ifin = smdi(jm1+1)
             do 36 i = ideb, ifin
                 im1=i-1
 !           IAUXH NUMERO DE LIGNE

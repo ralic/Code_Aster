@@ -72,7 +72,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 !-----------------------------------------------------------------------
     integer :: i, iatyma, ibid, idgm, idgrma, idlima, idm
     integer :: idn,  ier, igm, ima, ino, ipoin
-    integer :: itype, itypgm, j, jconx, jcoor, jdnbnu, jpoin
+    integer :: itype, itypgm, j,    jpoin
     integer :: nbelgm, nbgrm, nbm, nbma2, nbmli, ndim, nno
     integer :: nnoe, numgrm, numgrx
 !-----------------------------------------------------------------------
@@ -84,6 +84,9 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     character(len=8) :: nmtyp(ntyele), blanc8
     integer :: nbtyp(ntyele), ifm, niv, vali
     integer, pointer :: numgrma(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: nbnune(:) => null()
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -133,11 +136,11 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
     call irgmm3(noma, nomaou, 0, [ibid], 'V',&
                 nobj, nbel, versio)
 !
-    call jeveuo(nomaou//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(nomaou//'.CONNEX', 'L', jconx)
+    call jeveuo(nomaou//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(nomaou//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(nomaou//'.CONNEX', 'LONCUM'), 'L', jpoin)
     call jeveuo(typmai, 'L', iatyma)
-    call jeveuo(nomaou//'.NBNUNE', 'L', jdnbnu)
+    call jeveuo(nomaou//'.NBNUNE', 'L', vi=nbnune)
 !
 ! --- ECRITURE DES NOEUDS DU MAILLAGE SUR LE FICHIER GMSH :
 !     ===================================================
@@ -153,9 +156,9 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
             call codent(ino, 'D', k7no)
         endif
         if (ndim .eq. 3) then
-            write(ifc,1001) k7no, (zr(jcoor+3*(ino-1)+j-1),j=1,ndim)
+            write(ifc,1001) k7no, (vale(1+3*(ino-1)+j-1),j=1,ndim)
         else if (ndim.eq.2) then
-            write(ifc,1001) k7no, (zr(jcoor+3*(ino-1)+j-1),j=1,ndim),&
+            write(ifc,1001) k7no, (vale(1+3*(ino-1)+j-1),j=1,ndim),&
             zero
         endif
 10  end do
@@ -197,7 +200,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
         endif
         call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm)
         do 40 i = 1, nbm
-            nbmli = zi(jdnbnu+zi(idgrma+i-1)-1)
+            nbmli = nbnune(1+zi(idgrma+i-1)-1)
             call jeveuo(jexnum( '&&IRMGMS.LISMA', zi(idgrma+i-1) ), 'L', idlima)
             do 50 j = 1, nbmli
                 numgrma(1+zi(idlima+j-1)-1) = numgrm
@@ -250,9 +253,9 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
         endif
         do 61 ino = 1, nnoe
             if (lgmsh) then
-                tk7no(ino)=nonoe(zi(jconx+ipoin-1+ino-1))(idn:8)
+                tk7no(ino)=nonoe(connex(1+ipoin-1+ino-1))(idn:8)
             else
-                call codent(zi(jconx+ipoin-1+ino-1), 'D', tk7no(ino))
+                call codent(connex(1+ipoin-1+ino-1), 'D', tk7no(ino))
             endif
 61      continue
         write(ifc,1003) k7ma,itypgm,numgrma(ima),numgrma(ima),&

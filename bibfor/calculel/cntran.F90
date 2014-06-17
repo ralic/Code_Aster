@@ -34,34 +34,40 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
 !
 !
-    integer :: ncmp1, ncmp2, ino1, ino2, jcn1k, jcn1d, jcn1c, jcn1v, jcn1l
-    integer :: icmp1, jcn2k, jcn2d, jcn2c, jcn2v, jcn2l, icmp2
+    integer :: ncmp1, ncmp2, ino1, ino2,    jcn1v, jcn1l
+    integer :: icmp1,    jcn2v, jcn2l, icmp2
     character(len=3) :: tsca
     character(len=8) :: nomgd, nomgd2, nocmp
     character(len=19) :: cns1, cns2
+    integer, pointer :: cn1d(:) => null()
+    integer, pointer :: cn2d(:) => null()
+    character(len=8), pointer :: cn1c(:) => null()
+    character(len=8), pointer :: cn2c(:) => null()
+    character(len=8), pointer :: cn1k(:) => null()
+    character(len=8), pointer :: cn2k(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
     cns1 = chs1
     cns2 = chs2
 !
-    call jeveuo(cns1//'.CNSK', 'L', jcn1k)
-    call jeveuo(cns1//'.CNSD', 'L', jcn1d)
-    call jeveuo(cns1//'.CNSC', 'L', jcn1c)
+    call jeveuo(cns1//'.CNSK', 'L', vk8=cn1k)
+    call jeveuo(cns1//'.CNSD', 'L', vi=cn1d)
+    call jeveuo(cns1//'.CNSC', 'L', vk8=cn1c)
     call jeveuo(cns1//'.CNSV', 'L', jcn1v)
     call jeveuo(cns1//'.CNSL', 'E', jcn1l)
 !
-    call jeveuo(cns2//'.CNSK', 'L', jcn2k)
-    call jeveuo(cns2//'.CNSD', 'L', jcn2d)
-    call jeveuo(cns2//'.CNSC', 'L', jcn2c)
+    call jeveuo(cns2//'.CNSK', 'L', vk8=cn2k)
+    call jeveuo(cns2//'.CNSD', 'L', vi=cn2d)
+    call jeveuo(cns2//'.CNSC', 'L', vk8=cn2c)
     call jeveuo(cns2//'.CNSV', 'E', jcn2v)
     call jeveuo(cns2//'.CNSL', 'E', jcn2l)
 !
-    nomgd = zk8(jcn1k-1+2)
-    ncmp1 = zi(jcn1d-1+2)
+    nomgd = cn1k(2)
+    ncmp1 = cn1d(2)
 !
-    nomgd2 = zk8(jcn2k-1+2)
-    ncmp2 = zi(jcn2d-1+2)
+    nomgd2 = cn2k(2)
+    ncmp2 = cn2d(2)
 !
     ASSERT(nomgd2.eq.nomgd)
 !
@@ -74,9 +80,9 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
         do icmp2 = 1, ncmp2
 !
-            nocmp = zk8(jcn2c-1+icmp2)
+            nocmp = cn2c(icmp2)
 !
-            icmp1 = indik8( zk8(jcn1c), nocmp, 1, ncmp1 )
+            icmp1 = indik8( cn1c, nocmp, 1, ncmp1 )
             if (icmp1 .eq. 0) goto 20
             if (.not. zl(jcn1l-1+(ino1-1)*ncmp1+icmp1)) goto 20
 !

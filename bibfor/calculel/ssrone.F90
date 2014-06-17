@@ -42,14 +42,15 @@ subroutine ssrone(mag, isma, rota)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iaparr, iret, k
+    integer ::  iret, k
+    real(kind=8), pointer :: para_r(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeexin(mag//'.PARA_R', iret)
     if (iret .gt. 0) then
 !         -- ROT1= 1 : PEUT-ETRE , 0 : NON , 2 : OUI
         rot1=1
-        call jeveuo(mag//'.PARA_R', 'L', iaparr)
+        call jeveuo(mag//'.PARA_R', 'L', vr=para_r)
     else
         rot1=0
     endif
@@ -57,7 +58,7 @@ subroutine ssrone(mag, isma, rota)
     if (rot2 .eq. 1) then
         r1=0.0d0
         do 3,k=4,6
-        r1= r1+ abs(zr(iaparr-1+14*(isma-1)+k))
+        r1= r1+ abs(para_r(14*(isma-1)+k))
  3      continue
         rot1=0
         if (r1 .gt. 1.d-6) rot1=2

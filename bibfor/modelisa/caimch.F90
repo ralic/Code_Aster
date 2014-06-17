@@ -71,11 +71,13 @@ subroutine caimch(chargz)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idcoec, idcoer, idddl, ideeq, idimen, idirec
-    integer :: idnoeu, idvale, iequa, ino, inocmp, iocc
+    integer :: ibid, idcoec, idcoer, idddl,  idimen, idirec
+    integer :: idnoeu,  iequa, ino, inocmp, iocc
     integer :: iret, k, nb, nbcmp, nbec, nbnoeu, nbterm
     integer :: nequa, nliai, nucmp
     real(kind=8) :: vale, zero
+    integer, pointer :: deeq(:) => null()
+    real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -201,11 +203,11 @@ subroutine caimch(chargz)
 !
 ! ---   RECUPERATION DU .VALE DU CHAM_NO
 !       --------------------------------
-        call jeveuo(cham19//'.VALE', 'E', idvale)
+        call jeveuo(cham19//'.VALE', 'E', vr=vvale)
 !
 ! ---   RECUPERATION DU .DEEQ DU PROF_CHNO
 !       ----------------------------------
-        call jeveuo(prchno//'.DEEQ', 'L', ideeq)
+        call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
 !
         nbterm = nequa
 !
@@ -239,11 +241,11 @@ subroutine caimch(chargz)
 !
 ! ---     INO  : NUMERO DU NOEUD INO CORRESPONDANT AU DDL IEQUA
 !
-            ino = zi(ideeq+2* (iequa-1)+1-1)
+            ino = deeq(1+2* (iequa-1)+1-1)
 !
 ! ---     NUCMP  : NUMERO DE COMPOSANTE CORRESPONDANTE AU DDL IEQUA
 !
-            nucmp = zi(ideeq+2* (iequa-1)+2-1)
+            nucmp = deeq(1+2* (iequa-1)+2-1)
 !
 ! ---     ON NE PREND PAS EN COMPTE LES MULTIPLICATEURS DE LAGRANGE
 ! ---     (CAS OU NUCMP < 0)
@@ -254,7 +256,7 @@ subroutine caimch(chargz)
 !
                 call jenuno(jexnum(noeuma, ino), nomnoe)
 !
-                vale = zr(idvale+iequa-1)
+                vale = vvale(iequa)
 !
                 k = k + 1
                 nomcmp = zk8(inocmp+nucmp-1)

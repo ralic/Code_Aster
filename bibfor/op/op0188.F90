@@ -48,14 +48,18 @@ subroutine op0188()
 !
 !
     integer :: ibid, iret, i, j, ino, nuno, numa, nbnozo
-    integer :: jncmp, jvalv, ncmp, jmafon, nmafon, jma, nbma, nbno, nbmali
-    integer :: jlst, jlsn, jnoeu, nbmac, jadr, adrvlc, acncin
+    integer ::   ncmp, jmafon, nmafon, jma, nbma, nbno, nbmali
+    integer ::   jnoeu, nbmac, jadr, adrvlc, acncin
     integer :: idlima, nbmazo
     real(kind=8) :: rayon, dist
     character(len=8) :: fiss, modele, ma, chout
     character(len=16) :: typdis, k16bid
     character(len=19) :: carte, cnslt, cnsln
     character(len=24) :: mafond, listma, cnxinv, lisnoz, lismaz
+    real(kind=8), pointer :: valv(:) => null()
+    character(len=8), pointer :: vncmp(:) => null()
+    real(kind=8), pointer :: lsn(:) => null()
+    real(kind=8), pointer :: lst(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -88,11 +92,11 @@ subroutine op0188()
 !     INITIALISATION DE LA CARTE AVEC LA VALEUR 0
     carte = chout
     call alcart('G', carte, ma, 'NEUT_R')
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
-    call jeveuo(carte//'.VALV', 'E', jvalv)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
+    call jeveuo(carte//'.VALV', 'E', vr=valv)
     ncmp = 1
-    zk8(jncmp-1+1) = 'X1'
-    zr(jvalv-1+1) = 0.d0
+    vncmp(1) = 'X1'
+    valv(1) = 0.d0
     call nocart(carte, 1, ncmp)
 !
 !     CREATION DE LA LISTE DES MAILLES QUI AURONT LA VALEUR 1
@@ -139,19 +143,19 @@ subroutine op0188()
     cnslt = '&&OP0188.CNSLT'
     cnsln = '&&OP0188.CNSLN'
     call cnocns(fiss//'.LNNO', 'V', cnsln)
-    call jeveuo(cnsln//'.CNSV', 'L', jlsn)
+    call jeveuo(cnsln//'.CNSV', 'L', vr=lsn)
     if (typdis .eq. 'FISSURE') then
         call cnocns(fiss//'.LTNO', 'V', cnslt)
-        call jeveuo(cnslt//'.CNSV', 'L', jlst)
+        call jeveuo(cnslt//'.CNSV', 'L', vr=lst)
     endif
 !
 !     REMPLISSAGE DE LA LISTE DES NOEUDS QUI SONT LA ZONE
     nbnozo=0
     do ino = 1, nbno
         if (typdis .eq. 'FISSURE') then
-            dist=sqrt(zr(jlst-1+ino)**2+zr(jlsn-1+ino)**2)
+            dist=sqrt(lst(ino)**2+lsn(ino)**2)
         else if (typdis.eq.'INTERFACE') then
-            dist=sqrt(zr(jlsn-1+ino)**2)
+            dist=sqrt(lsn(ino)**2)
         endif
         if (dist .le. rayon) then
             nbnozo = nbnozo + 1
@@ -201,8 +205,8 @@ subroutine op0188()
 !     --------------------------------------------------------------
 !
 !     STOCKAGE DANS LA CARTE
-    zk8(jncmp-1+1) = 'X1'
-    zr(jvalv-1+1) = 1.d0
+    vncmp(1) = 'X1'
+    valv(1) = 1.d0
     call nocart(carte, 3, ncmp, mode='NUM', nma=nbmali,&
                 limanu=zi(jma))
     call tecart(carte)

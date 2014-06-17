@@ -58,9 +58,11 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     character(len=19) :: ligrel, ligrmo
     character(len=24) :: cptlie
     integer :: i, j, lont, numvec, numail, igrel, nbmam, k
-    integer :: lcliel, adliel, jrepe, jdnb, iadm, jdli
+    integer :: lcliel,   jdnb, iadm, jdli
     integer :: jtyp, jnel, typele, typel1, nbtyel, itype, nmel,nbmail_nz
     integer, pointer :: lismai_nz(:) => null()
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: repe(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -77,9 +79,9 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 !     ----------------
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
-    call jeveuo(ligrmo//'.REPE', 'L', jrepe)
+    call jeveuo(ligrmo//'.REPE', 'L', vi=repe)
     call jeveuo(jexatr(ligrmo//'.LIEL', 'LONCUM'), 'L', lcliel)
-    call jeveuo(ligrmo//'.LIEL', 'L', adliel)
+    call jeveuo(ligrmo//'.LIEL', 'L', vi=liel)
 !
 ! --- OBJET NBNO
 !     ----------
@@ -113,13 +115,13 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     itype = 0
     do i = 1, nbmail_nz
         numail = lismai_nz(i)
-        igrel = zi(jrepe+2*(numail-1))
+        igrel = repe(1+2*(numail-1))
         if (igrel .eq. 0) then
             call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
             call utmess('F', 'MODELISA4_50', sk=nomail)
         endif
         iadm = zi(lcliel+igrel)
-        typele = zi(adliel-1+iadm-1)
+        typele = liel(iadm-1)
         if (typele .eq. typel1) then
             zi(jnel-1+itype) = zi(jnel-1+itype) + 1
         else

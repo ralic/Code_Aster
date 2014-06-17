@@ -58,7 +58,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE GRILLE
 ! ----------------------------------------------------------------------
     integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, n3, n4, n5, jdls2
-    integer :: i, axyzm, nbmat, nbma, n1f, n3f, iret
+    integer :: i,  nbmat, nbma, n1f, n3f, iret
     integer :: ima, nbno,  adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3, iarg, jdccf, jdvcf
     real(kind=8) :: ang(2), sl, ez, ctr, axey(3), xnorm, epsi
@@ -69,10 +69,11 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     character(len=32) :: kjexn
     logical :: lcartf
     integer, pointer :: nume_ma(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', axyzm)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat0)
     AS_ALLOCATE(vi=nume_ma, size=nbmat0)
     nomagr = noma//'.GROUPEMA'
@@ -234,9 +235,9 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                 noe2 = zi(adrm+2-1)
                 noe3 = zi(adrm+3-1)
                 do i = 1, 3
-                    vn1n2(i)= zr(axyzm+3*(noe2-1)+i-1) -zr(axyzm+3*(&
+                    vn1n2(i)= vale(1+3*(noe2-1)+i-1) -vale(1+3*(&
                     noe1-1)+i-1)
-                    vn1n3(i)= zr(axyzm+3*(noe3-1)+i-1) -zr(axyzm+3*(&
+                    vn1n3(i)= vale(1+3*(noe3-1)+i-1) -vale(1+3*(&
                     noe1-1)+i-1)
                 end do
                 vecnor(1) = vn1n2(2)*vn1n3(3) - vn1n2(3)*vn1n3(2)

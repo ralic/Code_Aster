@@ -61,22 +61,31 @@ subroutine ssdein(ul, ug, mail, nocas)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iabido, iaconx, iadesc, iadgg, iadgl, ialica
-    integer :: ialich, iamacr, ianueg, ianuel, iaparr, iaphi0, iaphie
-    integer :: iaprng, iaprnl, iarefe, iasupm, iavalg, iavall, iavalp
-    integer :: iavalt, ibid, iblph, icmp, icog, icol
+    integer :: i,   iadesc, iadgg, iadgl, ialica
+    integer :: ialich,     iaphi0, iaphie
+    integer :: iaprng, iaprnl, iarefe, iasupm,  iavall, iavalp
+    integer ::  ibid, iblph, icmp, icog, icol
     integer :: ieqg, ieql, iiblph, ili, inoe, inog
-    integer :: inol, iret, isma, j, jdesm, lgblph, nblph
+    integer :: inol, iret, isma, j,  lgblph, nblph
     integer :: nbnoet, ncmpmx, nddle, nddli, nddlt, nec, nlblph
     integer :: nueqg, nueql
+    integer, pointer :: desm(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    real(kind=8), pointer :: para_r(:) => null()
+    integer, pointer :: nueg(:) => null()
+    integer, pointer :: nuel(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: conx(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ug2= ug
     ul2= ul
 !
     call dismoi('NOM_MAILLA', ug, 'CHAM_NO', repk=mag)
-    call jeveuo(ug2//'.REFE', 'L', iavalt)
-    nug2=zk24(iavalt+1)(1:19)
+    call jeveuo(ug2//'.REFE', 'L', vk24=refe)
+    nug2=refe(2)(1:19)
     call dismoi('NOM_GD', ug, 'CHAM_NO', repk=nomgd)
     if (nomgd(1:6) .ne. 'DEPL_R') then
         call utmess('F', 'SOUSTRUC_43', sk=nomgd)
@@ -85,7 +94,7 @@ subroutine ssdein(ul, ug, mail, nocas)
 !
 !     1- RECUPERATION DU NOM DU MACR_ELEM:
 !     ------------------------------------
-    call jeveuo(mag//'.NOMACR', 'L', iamacr)
+    call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
     call jenonu(jexnom(mag//'.SUPMAIL', mail), isma)
     if (isma .le. 0) then
         ch8(1)=mail
@@ -93,24 +102,24 @@ subroutine ssdein(ul, ug, mail, nocas)
         call utmess('F', 'SOUSTRUC_44', nk=2, valk=ch8)
     endif
     call jeveuo(jexnom(mag//'.SUPMAIL', mail), 'L', iasupm)
-    nomacr= zk8(iamacr-1+isma)
+    nomacr= vnomacr(isma)
     nul= nomacr
     nul2=nul//'.NUME'
 !
     call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
-    call jeveuo(nomacr//'.CONX', 'L', iaconx)
-    call jeveuo(nomacr//'.DESM', 'L', jdesm)
-    nbnoet= zi(jdesm-1+2)+zi(jdesm-1+8)+zi(jdesm-1+9)
-    nddle= zi(jdesm-1+4)
-    nddli= zi(jdesm-1+5)
+    call jeveuo(nomacr//'.CONX', 'L', vi=conx)
+    call jeveuo(nomacr//'.DESM', 'L', vi=desm)
+    nbnoet= desm(2)+desm(8)+desm(9)
+    nddle= desm(4)
+    nddli= desm(5)
     nddlt= nddle+nddli
 !                 '&&SSDEIN.VALP' EST UN VECTEUR DE TRAVAIL :
     call wkvect('&&SSDEIN.VALP', 'V V R', nddlt, iavalp)
 !
-    call jeveuo(ug2//'.VALE', 'L', iavalg)
+    call jeveuo(ug2//'.VALE', 'L', vr=vale)
     call jeveuo(jexnum(nug2//'.PRNO', 1), 'L', iaprng)
-    call jeveuo(nug2//'.NUEQ', 'L', ianueg)
-    call jeveuo(nul2//'.NUEQ', 'L', ianuel)
+    call jeveuo(nug2//'.NUEQ', 'L', vi=nueg)
+    call jeveuo(nul2//'.NUEQ', 'L', vi=nuel)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
 !
@@ -119,8 +128,8 @@ subroutine ssdein(ul, ug, mail, nocas)
 !     --------------------------------------
 !     .DESC:
     call wkvect(ul2//'.DESC', 'G V I', 2, iadesc)
-    call jeveuo(ug2//'.DESC', 'L', iabido)
-    zi(iadesc-1+1)=zi(iabido-1+1)
+    call jeveuo(ug2//'.DESC', 'L', vi=desc)
+    zi(iadesc-1+1)=desc(1)
     zi(iadesc-1+2)=1
     call jeecra(ul2//'.DESC', 'DOCU', ibid, 'CHNO')
 !     .REFE:
@@ -138,14 +147,14 @@ subroutine ssdein(ul, ug, mail, nocas)
 !     ---------------------------------
     do inoe = 1, nbnoet
         inog=zi(iasupm-1+inoe)
-        inol= zi(iaconx-1+3*(inoe-1)+2)
-        ili= zi(iaconx-1+3*(inoe-1)+1)
+        inol= conx(3*(inoe-1)+2)
+        ili= conx(3*(inoe-1)+1)
 !
         call jeveuo(jexnum(nul2//'.PRNO', ili), 'L', iaprnl)
 !
         nueql = zi(iaprnl-1+ (inol-1)* (nec+2)+1)
         iadgl = iaprnl - 1 + (inol-1)* (nec+2)+3
-        ieql=zi(ianuel-1+nueql)
+        ieql=nuel(nueql)
         if (ieql .le. nddli) then
             call utmess('F', 'SOUSTRUC_45')
         endif
@@ -161,9 +170,9 @@ subroutine ssdein(ul, ug, mail, nocas)
         if (exil) icol=icol+1
         if (exig) icog=icog+1
         if (exig .and. exil) then
-            ieql= zi(ianuel-1+nueql-1+icol)
-            ieqg= zi(ianueg-1+nueqg-1+icog)
-            zr(iavall-1+ieql) = zr(iavalg-1+ieqg)
+            ieql= nuel(nueql-1+icol)
+            ieqg= nueg(nueqg-1+icog)
+            zr(iavall-1+ieql) = vale(ieqg)
         endif
   2     continue
     end do
@@ -175,10 +184,10 @@ subroutine ssdein(ul, ug, mail, nocas)
     call ssrone(mag, isma, rota)
 !
     if (rota(1:3) .eq. 'OUI') then
-        call jeveuo(mag//'.PARA_R', 'L', iaparr)
-        angl(1) = zr(iaparr-1+14*(isma-1)+4)
-        angl(2) = zr(iaparr-1+14*(isma-1)+5)
-        angl(3) = zr(iaparr-1+14*(isma-1)+6)
+        call jeveuo(mag//'.PARA_R', 'L', vr=para_r)
+        angl(1) = para_r(14*(isma-1)+4)
+        angl(2) = para_r(14*(isma-1)+5)
+        angl(3) = para_r(14*(isma-1)+6)
         call matrot(angl, pgl)
         do i = 1, 3
             do j = 1, 3

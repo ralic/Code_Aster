@@ -77,7 +77,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
     character(len=24) :: nsocp, nsova
     character(len=4) :: docul, docu
 !
-    integer :: avale, apnbn, apadr, amoye, aabsc, atab, adr1, adr2
+    integer :: avale,   amoye, aabsc, atab, adr1, adr2
     integer :: deb, fin, lmoye, nbcp, nbco, nbsp, nboc, nbsgt, nres, nmom
     integer :: l1, l2, l3, l5, ioc, i, j, k, l, n, nbpt
 !
@@ -88,6 +88,8 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
 !-----------------------------------------------------------------------
     integer :: lll
+    integer, pointer :: pnbn(:) => null()
+    integer, pointer :: padr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.0d0
@@ -115,8 +117,8 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
     nbsp = zi(i)
 !
     call jeveuo(sdeval//'.VALE', 'L', avale)
-    call jeveuo(sdeval//'.PADR', 'L', apadr)
-    call jeveuo(sdeval//'.PNBN', 'L', apnbn)
+    call jeveuo(sdeval//'.PADR', 'L', vi=padr)
+    call jeveuo(sdeval//'.PNBN', 'L', vi=pnbn)
 !
     l2 = nbsp*nbcp
     l1 = nbco*l2
@@ -173,8 +175,8 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
         do 200, i = 1, nbpt, 1
 !
-        adr1 = zi(apadr + deb + i-2)
-        n = zi(apnbn + deb + i-2)
+        adr1 = padr(1+ deb + i-2)
+        n = pnbn(1+ deb + i-2)
 !
         do 210, j = 1, nbco, 1
 !
@@ -211,7 +213,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
     else
 !
-        adr1 = zi(apadr + deb-1)
+        adr1 = padr(deb)
         do 241, i = 1, nbco, 1
         l5 = (i-1)*l2
         do 242, j = 1, l2, 1
@@ -225,7 +227,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
         do 240, i = 1, nbsgt-1, 1
 !
-        adr1 = zi(apadr + deb + i-2)
+        adr1 = padr(1+ deb + i-2)
 !
         do 250, j = 1, nbco, 1
 !
@@ -251,7 +253,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
 240      continue
 !
-        adr1 = avale + zi(apadr + deb + nbsgt-2)-1
+        adr1 = avale + padr(1+ deb + nbsgt-2)-1
         adr2 = atab + nbsgt*l1
         do 243, j = 1, nbco, 1
         l5 = (j-1)*l2

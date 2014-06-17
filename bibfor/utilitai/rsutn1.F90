@@ -45,13 +45,14 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
 ! OUT : OBJVEU : NOM JEVEUX DU VECTEUR ZI POUR ECRIRE LA LISTE DES NUME
 ! OUT : NBORDR : NOMBRE DE NUMERO D'ORDRE VALIDE POUR LE NOPARA
 !     ------------------------------------------------------------------
-    integer :: iret, ii, iordr, lordr, jordr, np, nc, irang, nbacc, nbpar, lacce
+    integer :: iret, ii, iordr, lordr, jordr, np, nc, irang, nbacc, nbpar
     integer :: nbtord
     real(kind=8) :: prec
     character(len=8) :: k8b, crit
     character(len=24) :: knume
     character(len=24) :: valk(2)
     integer :: nrang
+    character(len=16), pointer :: acces(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -76,9 +77,9 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
     call rsnopa(resu, 1, '&&RSUTN1.PARA.ACCES', nbacc, nbpar)
     call jeexin('&&RSUTN1.PARA.ACCES', iret)
     if (iret .gt. 0) then
-        call jeveuo('&&RSUTN1.PARA.ACCES', 'L', lacce)
+        call jeveuo('&&RSUTN1.PARA.ACCES', 'L', vk16=acces)
         do 10 iordr = 1, nbpar
-            if (nopara .eq. zk16(lacce+iordr-1)) goto 12
+            if (nopara .eq. acces(iordr)) goto 12
 10      continue
         k8b = resu
         valk (1) = nopara

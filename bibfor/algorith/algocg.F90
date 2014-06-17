@@ -99,9 +99,10 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
     character(len=19) :: mu
     integer :: jmu
     character(len=19) :: ddeplc, ddelt
-    integer :: jddepc, jddelt
     real(kind=8) :: tole, coefrs
     real(kind=8) :: ninf, ninfpc, alpha, epsi
+    real(kind=8), pointer :: vddelt(:) => null()
+    real(kind=8), pointer :: ddepc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -244,9 +245,9 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
 !
 ! --- ACTUALISATION DE {DDEPLC} = {DDEPLC} - ALPHA . {DDELT}
 !
-    call jeveuo(ddelt(1:19) //'.VALE', 'L', jddelt)
-    call jeveuo(ddeplc(1:19)//'.VALE', 'E', jddepc)
-    call daxpy(neq, -alpha, zr(jddelt), 1, zr(jddepc),&
+    call jeveuo(ddelt(1:19) //'.VALE', 'L', vr=vddelt)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
+    call daxpy(neq, -alpha, vddelt, 1, ddepc,&
                1)
 !
 ! --- ON VERIFIE SI L'ETAT DE CONTACT A CHANGE (ON NE CONJUGUE PAS)

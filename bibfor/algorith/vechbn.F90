@@ -51,9 +51,15 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
 !
 !-----------------------------------------------------------------------
     integer :: ibid, iliai, inoeu, jlino1, jlino2, jnoeu1, jnoeu2
-    integer :: ldefo1, ldefo2, lliai, llino1, llino2
-    integer :: llnom1, llnom2, lmacr1, lmacr2, lrefe1, lrefe2, nbliai
+    integer ::   lliai, llino1, llino2
+    integer :: llnom1, llnom2,     nbliai
     integer :: nbnoeu
+    character(len=24), pointer :: nlrefe1(:) => null()
+    character(len=24), pointer :: nlrefe2(:) => null()
+    character(len=24), pointer :: nlmacr1(:) => null()
+    character(len=24), pointer :: nlmacr2(:) => null()
+    integer, pointer :: nldefo1(:) => null()
+    integer, pointer :: nldefo2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     mdliai = mdgene(1:14)//'.MODG.LIDF'
@@ -76,10 +82,10 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
             call jeveuo(jexnum(mdnoms, ibid), 'L', llnom2)
             macro1 = zk8(llnom1)
             macro2 = zk8(llnom2)
-            call jeveuo(macro1//'.MAEL_MASS_REFE', 'L', lmacr1)
-            call jeveuo(macro2//'.MAEL_MASS_REFE', 'L', lmacr2)
-            bamo1 = zk24(lmacr1)
-            bamo2 = zk24(lmacr2)
+            call jeveuo(macro1//'.MAEL_MASS_REFE', 'L', vk24=nlmacr1)
+            call jeveuo(macro2//'.MAEL_MASS_REFE', 'L', vk24=nlmacr2)
+            bamo1 = nlmacr1(1)
+            bamo2 = nlmacr2(1)
             call dismoi('REF_INTD_PREM', bamo1, 'RESU_DYNA', repk=intf1)
             call dismoi('REF_INTD_PREM', bamo2, 'RESU_DYNA', repk=intf2)
             lino1 = intf1(1:8)//'.IDC_LINO'
@@ -90,20 +96,20 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
             call jeveuo(jexnum(lino2, ibid), 'L', llino2)
             k8bid = '        '
             call jelira(jexnum(lino2, ibid), 'LONMAX', nbnoeu)
-            call jeveuo(intf1(1:8)//'.IDC_DEFO', 'L', ldefo1)
-            call jeveuo(intf2(1:8)//'.IDC_DEFO', 'L', ldefo2)
-            call jeveuo(intf1(1:8)//'.IDC_REFE', 'L', lrefe1)
-            call jeveuo(intf2(1:8)//'.IDC_REFE', 'L', lrefe2)
-            maya1 = zk24(lrefe1)(1:8)//'.NOMNOE'
-            maya2 = zk24(lrefe2)(1:8)//'.NOMNOE'
+            call jeveuo(intf1(1:8)//'.IDC_DEFO', 'L', vi=nldefo1)
+            call jeveuo(intf2(1:8)//'.IDC_DEFO', 'L', vi=nldefo2)
+            call jeveuo(intf1(1:8)//'.IDC_REFE', 'L', vk24=nlrefe1)
+            call jeveuo(intf2(1:8)//'.IDC_REFE', 'L', vk24=nlrefe2)
+            maya1 = nlrefe1(1)(1:8)//'.NOMNOE'
+            maya2 = nlrefe2(1)(1:8)//'.NOMNOE'
 !
 ! ------- LES NOEUDS NOMNO1 ET NOMNO2 SONT-ILS LIAISONNES
 !
             do inoeu = 1, nbnoeu
                 jlino1 = zi(llino1-1+inoeu)
                 jlino2 = zi(llino2-1+inoeu)
-                jnoeu1 = zi(ldefo1+jlino1-1)
-                jnoeu2 = zi(ldefo2+jlino2-1)
+                jnoeu1 = nldefo1(jlino1)
+                jnoeu2 = nldefo2(jlino2)
                 call jenuno(jexnum(maya1, jnoeu1), noeud1)
                 call jenuno(jexnum(maya2, jnoeu2), noeud2)
 !

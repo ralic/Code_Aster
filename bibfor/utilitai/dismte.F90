@@ -53,9 +53,10 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
     character(len=8) :: nomtm
     character(len=16) :: nophen, nomodl
     integer :: ite, nbphen, nbtm, ico, iphen, nbmodl, imodl, iamodl, ii
-    integer :: iaopte, nbopt, iopt, ioptte, nrig, irig
+    integer ::  nbopt, iopt, ioptte, nrig, irig
     parameter(nrig=5)
     character(len=16) :: optrig(nrig)
+    integer, pointer :: optte(:) => null()
     data optrig/'RIGI_ACOU','RIGI_THER','RIGI_MECA','RIGI_MECA_TANG',&
      &     'FULL_MECA'/
 !
@@ -183,12 +184,12 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
     else if (questi.eq.'CALC_RIGI') then
 !     --------------------------------------
         repk='NON'
-        call jeveuo('&CATA.TE.OPTTE', 'L', iaopte)
+        call jeveuo('&CATA.TE.OPTTE', 'L', vi=optte)
         call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
         do 90,irig=1,nrig
         call jenonu(jexnom('&CATA.OP.NOMOPT', optrig(irig)), iopt)
         ASSERT(iopt.gt.0)
-        ioptte=zi(iaopte-1+(ite-1)*nbopt+iopt)
+        ioptte=optte((ite-1)*nbopt+iopt)
         if (ioptte .eq. 0) goto 90
         repk='OUI'
         goto 100

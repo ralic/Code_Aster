@@ -71,7 +71,7 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
     character(len=24) :: nvale, npadr, nnumlo, nnoma
     character(len=8) :: mailla
 !
-    integer :: avale, apadr, anumlo, apnco, apnsp, nbtnd
+    integer :: avale, apadr, anumlo, apnco,  nbtnd
     integer :: adr, aconec, i, nd, nloc, j, adrm, adrn, lcoi, lndi, lndo, lcoo
 !
     logical :: trouve
@@ -80,6 +80,7 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
 !
 !-----------------------------------------------------------------------
     integer :: k
+    integer, pointer :: pnsp(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nvale = ssch19//'.VALE'
@@ -91,7 +92,7 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
     call jeveuo(nvale, 'L', avale)
     call jeveuo(npadr, 'L', apadr)
     call jeveuo(ssch19//'.PNCO', 'L', apnco)
-    call jeveuo(ssch19//'.PNSP', 'L', apnsp)
+    call jeveuo(ssch19//'.PNSP', 'L', vi=pnsp)
 !
     adrm = zi(apadr + m2d-1)
 !
@@ -100,7 +101,7 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
     call jeveuo(jexnum(mailla//'.CONNEX', m2d), 'L', aconec)
     call jelira(jexnum(mailla//'.CONNEX', m2d), 'LONMAX', nbtnd)
 !
-    lndi = nbcmp*zi(apnsp + m2d-1)
+    lndi = nbcmp*pnsp(m2d)
     lcoi = lndi*nbtnd
     lndo = nbcmp*nbsp
     lcoo = lndo*nbn

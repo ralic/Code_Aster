@@ -49,7 +49,8 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
     character(len=24) :: valm
     complex(kind=8) :: czero
     logical :: nonsym
-    integer :: keta, iexi, jccid, ieq
+    integer :: keta, iexi,  ieq
+    integer, pointer :: ccid(:) => null()
 !     ------------------------------------------------------------------
 !
 !
@@ -113,10 +114,10 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
 !     -------------------------------------------------------------
     call jeexin(nom19//'.CCID', iexi)
     if (iexi .ne. 0) then
-        call jeveuo(nom19//'.CCID', 'L', jccid)
+        call jeveuo(nom19//'.CCID', 'L', vi=ccid)
         do 110 jvec = 1, nbvect
             do 111, ieq=1,neq
-            keta=zi(jccid-1+ieq)
+            keta=ccid(ieq)
             ASSERT(keta.eq.1 .or. keta.eq.0)
             if (keta .eq. 1) xsol(ieq,jvec)=dcmplx(0.d0,0.d0)
 111          continue

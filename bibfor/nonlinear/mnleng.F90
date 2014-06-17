@@ -75,11 +75,16 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
     real(kind=8) :: omega, alpha, jeu, rayon, origx, origy, ratio
     integer :: ix, iy, idy, imdy, iky
     integer :: ius, ieng, k, icdl, neq,     i
-    integer :: ityp, inddl, ireg, ijeu, iraid, iorig, nddl, nddlx, nddly
+    integer ::   ireg,    nddl, nddlx, nddly
     real(kind=8), pointer :: dye(:) => null()
     real(kind=8), pointer :: kye(:) => null()
     real(kind=8), pointer :: mdye(:) => null()
     real(kind=8), pointer :: ye(:) => null()
+    real(kind=8), pointer :: vjeu(:) => null()
+    real(kind=8), pointer :: raid(:) => null()
+    integer, pointer :: vnddl(:) => null()
+    character(len=8), pointer :: type(:) => null()
+    real(kind=8), pointer :: orig(:) => null()
 !
     call jemarq()
 !
@@ -90,12 +95,12 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
     call jeveuo(xeng, 'E', ieng)
     call dscal(nbpt-1, 0.d0, zr(ieng), 1)
     call jeveuo(xcdl, 'L', icdl)
-    call jeveuo(parcho//'.TYPE', 'L', ityp)
-    call jeveuo(parcho//'.NDDL', 'L', inddl)
+    call jeveuo(parcho//'.TYPE', 'L', vk8=type)
+    call jeveuo(parcho//'.NDDL', 'L', vi=vnddl)
     call jeveuo(parcho//'.REG', 'L', ireg)
-    call jeveuo(parcho//'.JEU', 'L', ijeu)
-    call jeveuo(parcho//'.RAID', 'L', iraid)
-    call jeveuo(parcho//'.ORIG', 'L', iorig)
+    call jeveuo(parcho//'.JEU', 'L', vr=vjeu)
+    call jeveuo(parcho//'.RAID', 'L', vr=raid)
+    call jeveuo(parcho//'.ORIG', 'L', vr=orig)
     neq = zi(imat(1)+2)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION VECTEURS TEMPORAIRES
@@ -166,25 +171,25 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
         e=ddot(nd, zr(iy),1,zr(iky),1)/2
         e=e+ddot(nd,zr(idy),1,zr(imdy),1)/2
         do 40 k=1,nchoc
-            alpha=zr(iraid-1+k)
-            jeu=zr(ijeu-1+k)
-            if(zk8(ityp-1+k)(1:4).eq.'PLAN') then
-                nddl=zi(inddl-1+6*(k-1)+1)
+            alpha=raid(k)
+            jeu=vjeu(k)
+            if(type(k)(1:4).eq.'PLAN') then
+                nddl=vnddl(6*(k-1)+1)
                 if(zr(iy-1+nddl).gt.jeu) then
                     e=e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
                 endif
-            else if(zk8(ityp-1+k)(1:7).eq.'BI_PLAN') then
-                nddl=zi(inddl-1+6*(k-1)+1)
+            else if(type(k)(1:7).eq.'BI_PLAN') then
+                nddl=vnddl(6*(k-1)+1)
                 if(zr(iy-1+nddl).gt.jeu) then
                     e=e+0.5*alpha*(zr(iy-1+nddl)-jeu)**2
                 else if(zr(iy-1+nddl).lt.(-1.d0*jeu)) then
                     e=e+0.5*alpha*(zr(iy-1+nddl)+jeu)**2
                 endif
-            else if(zk8(ityp-1+k)(1:6).eq.'CERCLE') then
-                nddlx=zi(inddl-1+6*(k-1)+1)
-                nddly=zi(inddl-1+6*(k-1)+2)
-                origx=zr(iorig-1+3*(k-1)+1)
-                origy=zr(iorig-1+3*(k-1)+2)
+            else if(type(k)(1:6).eq.'CERCLE') then
+                nddlx=vnddl(6*(k-1)+1)
+                nddly=vnddl(6*(k-1)+2)
+                origx=orig(3*(k-1)+1)
+                origy=orig(3*(k-1)+2)
                 rayon=sqrt((zr(iy-1+nddlx)-origx)**2+(zr(iy-1+nddly)-origy)**2)
                 if(rayon.gt.jeu) then
                     e=e+alpha*(rayon-jeu)**2

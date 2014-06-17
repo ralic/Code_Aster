@@ -87,9 +87,10 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     integer :: jbl1
     integer :: iblav, idhcoi, icum, ismdi, lsmhc, nterm, idsmhc, l, jsmde
     integer :: itbloc, nbloc, kbloc, jrefa, idrefi, idconl, ieq
-    integer :: ier, jsmde1, neq, k, htc
+    integer :: ier,  neq, k, htc
     integer, pointer :: ibl(:) => null()
     integer, pointer :: pbl(:) => null()
+    integer, pointer :: smde(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -137,8 +138,8 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
 ! --- RECUPERATION DU NOMBRE D'EQUATIONS DE LA PREMIERE MATRICE
 ! --- A COMBINER (C'EST LE MEME POUR TOUTES LES MATRICES) :
 !     ---------------------------------------------------
-    call jeveuo(numdd1//'.SMOS.SMDE', 'L', jsmde1)
-    neq = zi(jsmde1-1+1)
+    call jeveuo(numdd1//'.SMOS.SMDE', 'L', vi=smde)
+    neq = smde(1)
 !
 !
 !     7) CONSTRUCTION DE L'OBJET KLISTE QUI CONTIENDRA LES DIFFERENTS

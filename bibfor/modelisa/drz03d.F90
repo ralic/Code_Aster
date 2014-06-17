@@ -72,7 +72,6 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcoor
     integer ::   jlino
     integer :: nb_maxi, nb_term
     real(kind=8) :: un, zero
@@ -95,6 +94,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -143,7 +143,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! - Nodes coordinates
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! - List of nodes to apply linear relation
 !
@@ -165,7 +165,7 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
 ! - Find a triangle (three nodes) with non-zero surface
 !
-    call drz03d_tria(dist_mini, nb_node, zi(jlino), zr(jcoor), numnoe_a,&
+    call drz03d_tria(dist_mini, nb_node, zi(jlino), vale, numnoe_a,&
                      numnoe_b, numnoe_c, ab, ac, l_trian)
 !
 ! - Name of nodes
@@ -189,9 +189,9 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
         l_same = .true.
         do i_no = 2, nb_node
             numnoe_m = zi(jlino+i_no-1)
-            am(1) = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1) +1)
-            am(2) = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1) +2)
-            am(3) = zr(jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1) +3)
+            am(1) = vale(3*(numnoe_m-1)+1) - vale(3*(numnoe_a-1) +1)
+            am(2) = vale(3*(numnoe_m-1)+2) - vale(3*(numnoe_a-1) +2)
+            am(3) = vale(3*(numnoe_m-1)+3) - vale(3*(numnoe_a-1) +3)
             if ((abs(am(1)).gt.dist_mini) .or. (abs(am(2)).gt.dist_mini) .or.&
                 (abs(am(3)).gt.dist_mini)) then
                 l_same = .false.
@@ -296,9 +296,9 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
             call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
             if ((numnoe_m .ne. numnoe_b) .and. (numnoe_m .ne. numnoe_c)) then
 !
-                am(1) = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1) +1)
-                am(2) = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1) +2)
-                am(3) = zr(jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1) +3)
+                am(1) = vale(3*(numnoe_m-1)+1) - vale(3*(numnoe_a-1) +1)
+                am(2) = vale(3*(numnoe_m-1)+2) - vale(3*(numnoe_a-1) +2)
+                am(3) = vale(3*(numnoe_m-1)+3) - vale(3*(numnoe_a-1) +3)
 !
 ! ------------- Computation of matrix for solid movement in 3D - Second part
 !
@@ -427,9 +427,9 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
                 do i_no = 2, nb_node
                     numnoe_b = zi(jlino+i_no-1)
                     call jenuno(jexnum(noma//'.NOMNOE', numnoe_b ), nomnoe_b)
-                    ab(1) = zr( jcoor-1+3*(numnoe_b-1)+1) - zr(jcoor-1+3*(numnoe_a-1)+1)
-                    ab(2) = zr( jcoor-1+3*(numnoe_b-1)+2) - zr(jcoor-1+3*(numnoe_a-1)+2)
-                    ab(3) = zr( jcoor-1+3*(numnoe_b-1)+3) - zr(jcoor-1+3*(numnoe_a-1)+3)
+                    ab(1) = vale(3*(numnoe_b-1)+1) - vale(3*(numnoe_a-1)+1)
+                    ab(2) = vale(3*(numnoe_b-1)+2) - vale(3*(numnoe_a-1)+2)
+                    ab(3) = vale(3*(numnoe_b-1)+3) - vale(3*(numnoe_a-1)+3)
                     lab = sqrt(ab(1)*ab(1)+ab(2)*ab(2)+ab(3)*ab(3))
                     if (lab .gt. dist_mini) goto 260
                 enddo
@@ -462,9 +462,9 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
 !
                 do i_no = 2, nb_node
                     numnoe_m = zi(jlino+i_no-1)
-                    am(1) = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1) +1)
-                    am(2) = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1) +2)
-                    am(3) = zr(jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1) +3)
+                    am(1) = vale(3*(numnoe_m-1)+1) - vale(3*(numnoe_a-1) +1)
+                    am(2) = vale(3*(numnoe_m-1)+2) - vale(3*(numnoe_a-1) +2)
+                    am(3) = vale(3*(numnoe_m-1)+3) - vale(3*(numnoe_a-1) +3)
                     abm(1) = ab(2)*am(3) - ab(3)*am(2)
                     abm(2) = ab(3)*am(1) - ab(1)*am(3)
                     abm(3) = ab(1)*am(2) - ab(2)*am(1)
@@ -525,9 +525,9 @@ subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node,&
                     call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
                     if (numnoe_m .ne. numnoe_b) then
 !
-                        am(1) = zr( jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1)+1)
-                        am(2) = zr( jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1)+2)
-                        am(3) = zr( jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1)+3)
+                        am(1) = vale(3*(numnoe_m-1)+1) - vale(3*(numnoe_a-1)+1)
+                        am(2) = vale(3*(numnoe_m-1)+2) - vale(3*(numnoe_a-1)+2)
+                        am(3) = vale(3*(numnoe_m-1)+3) - vale(3*(numnoe_a-1)+3)
 !
 ! --------------------- Matrix matr_8
 !

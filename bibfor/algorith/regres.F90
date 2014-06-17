@@ -57,10 +57,15 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
 !-----------------------------------------------------------------------
     integer :: i, iadnew, iadold, ieq, igd
-    integer :: iold, iord, iret, j, k, lcorr, ldeeq
-    integer :: lnequ, lnunew, lnuold, lord, lprnew, lprold, lrefe
-    integer :: lvnew, lvold, nbord, nbval, ncmp, nddl, ndeeq
+    integer :: iold, iord, iret, j, k,  ldeeq
+    integer :: lnequ, lnunew,   lprnew, lprold
+    integer :: lvnew,  nbord, nbval, ncmp, nddl, ndeeq
     integer :: ndi, nec, nnodes
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: corres(:) => null()
+    integer, pointer :: nueq(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -73,12 +78,12 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     call copisd('RESULTAT', 'G', result, nomres)
 !
 !
-    call jeveuo(mailsk//'.CORRES', 'L', lcorr)
+    call jeveuo(mailsk//'.CORRES', 'L', vi=corres)
     call jelira(mailsk//'.CORRES', 'LONUTI', nnodes)
     call jeveuo(jexnum(pfchn1//'.PRNO', 1), 'L', lprold)
-    call jeveuo(pfchn1//'.NUEQ', 'L', lnuold)
+    call jeveuo(pfchn1//'.NUEQ', 'L', vi=nueq)
     call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
-    call jeveuo(nomres//'           .ORDR', 'L', lord)
+    call jeveuo(nomres//'           .ORDR', 'L', vi=ordr)
 !
     call dismoi('NUM_GD', chamno, 'CHAM_NO', repi=igd)
 !
@@ -88,7 +93,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 ! --- CALCUL DU NOMBRE DE DDL ---
     nddl = 0
     do i = 1, nnodes
-        iold = zi(lcorr-1+i)
+        iold = corres(i)
         nddl = nddl + zi(lprold+(iold-1)*ndi+1)
     end do
 !
@@ -126,20 +131,20 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
 !
     do iord = 1, nbord
-        call rsexch('F', result, 'DEPL', zi(lord-1+iord), chexin,&
+        call rsexch('F', result, 'DEPL', ordr(iord), chexin,&
                     iret)
-        call rsexch('F', nomres, 'DEPL', zi(lord-1+iord), chexou,&
+        call rsexch('F', nomres, 'DEPL', ordr(iord), chexou,&
                     iret)
 !
 !     --- MISE A JOUR DU .REFE
-        call jeveuo(chexou//'.REFE', 'E', lrefe)
-        zk24(lrefe) = mailsk
-        call detrsd('PROF_CHNO', zk24(lrefe+1))
-        zk24(lrefe+1) = nomres//'.PROFC.NUME'
+        call jeveuo(chexou//'.REFE', 'E', vk24=refe)
+        refe(1) = mailsk
+        call detrsd('PROF_CHNO', refe(2))
+        refe(2) = nomres//'.PROFC.NUME'
 !
         ieq = 1
         do i = 1, nnodes
-            iold = zi(lcorr-1+i)
+            iold = corres(i)
             ncmp = zi(lprold+(iold-1)*ndi+1)
             zi(lprnew+(i-1)*ndi) = ieq
             zi(lprnew+(i-1)*ndi+1) = ncmp
@@ -155,14 +160,14 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         if (iret .ne. 0) then
             call jedetr(chexou//'.VALE')
             call wkvect(chexou//'.VALE', 'G V R', nddl, lvnew)
-            call jeveuo(chexin//'.VALE', 'L', lvold)
+            call jeveuo(chexin//'.VALE', 'L', vr=vale)
             do i = 1, nnodes
-                iold = zi(lcorr-1+i)
+                iold = corres(i)
                 ncmp = zi(lprold+(iold-1)*ndi+1)
-                iadold = zi(lnuold-1+zi(lprold+(iold-1)*ndi))
+                iadold = nueq(zi(lprold+(iold-1)*ndi))
                 iadnew = zi(lnunew-1+zi(lprnew+(i-1)*ndi))
                 do j = 1, ncmp
-                    zr(lvnew-1+iadnew+j-1)=zr(lvold-1+iadold+j-1)
+                    zr(lvnew-1+iadnew+j-1)=vale(iadold+j-1)
                 end do
             end do
         endif

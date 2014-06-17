@@ -56,7 +56,8 @@ subroutine snecol(imod, nbnode)
 !  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
 !-----------------------------------------------------------------------
     integer :: i, ic, icmax, icol, imod, inum, ipos
-    integer :: j, jinfo, nbmax, nbno, nbnode, nbtot
+    integer :: j,  nbmax, nbno, nbnode, nbtot
+    integer, pointer :: noeuds(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -71,12 +72,12 @@ subroutine snecol(imod, nbnode)
 10  end do
 !
     nbmax = 1000
-    call jeveuo('&&PRESUP.INFO.NOEUDS', 'L', jinfo)
+    call jeveuo('&&PRESUP.INFO.NOEUDS', 'L', vi=noeuds)
     do 100 i = 1, nbnode
-        inum = zi(jinfo-1+(i-1)*3+1)
+        inum = noeuds((i-1)*3+1)
         call codnop(chnode, prfnoe, 1, 1)
         call codent(inum, 'G', chnode(2:8))
-        icol = zi(jinfo-1+(i-1)*3+3)
+        icol = noeuds((i-1)*3+3)
         ipos = icol + 1
         if (ipos .gt. icmax) then
             call utmess('A', 'STBTRIAS_2')

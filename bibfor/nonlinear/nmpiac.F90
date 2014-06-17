@@ -40,26 +40,27 @@ subroutine nmpiac(sdpilo, eta)
 !
 !
     character(len=24) :: evolpa, typsel, typpil
-    integer :: jpltk, jplir
+    real(kind=8), pointer :: plir(:) => null()
+    character(len=24), pointer :: pltk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
-    call jeveuo(sdpilo(1:19)// '.PLTK', 'L', jpltk)
-    typpil = zk24(jpltk)
-    typsel = zk24(jpltk+5)
-    evolpa = zk24(jpltk+6)
-    call jeveuo(sdpilo(1:19)// '.PLIR', 'E', jplir)
+    call jeveuo(sdpilo(1:19)// '.PLTK', 'L', vk24=pltk)
+    typpil = pltk(1)
+    typsel = pltk(6)
+    evolpa = pltk(7)
+    call jeveuo(sdpilo(1:19)// '.PLIR', 'E', vr=plir)
     if (typsel .eq. 'ANGL_INCR_DEPL' .and.&
         (typpil.eq.'LONG_ARC' .or.typpil.eq.'SAUT_LONG_ARC')) then
-        zr(jplir-1+6)=zr(jplir)
+        plir(6)=plir(1)
     endif
 !
 !
     if (evolpa .eq. 'SANS') goto 9999
     if (evolpa .eq. 'CROISSANT') then
-        zr(jplir+4) = eta
+        plir(5) = eta
     else
-        zr(jplir+3) = eta
+        plir(4) = eta
     endif
 !
 9999  continue

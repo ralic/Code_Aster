@@ -65,7 +65,7 @@ subroutine fetcrf(sdpart1)
     integer :: j, nbsd, intbuf, nec30
     integer :: nbnot2, iret, ier, nbnoto, ialino, jtrav, ianbno
     integer :: nbmail, ialima, nbnosd, nb, ianbma, is9, incrs, l, xt
-    integer :: yt, zt, k, nbma, linoma, jnoma, jprnm
+    integer :: yt, zt, k, nbma, linoma,  jprnm
     integer :: nec, n, ino, ialsk, ialspo, ipos, jtmp
     integer ::  nbmato
     integer :: nbmama
@@ -79,6 +79,7 @@ subroutine fetcrf(sdpart1)
 
     character(len=24) ::  nomgma, nomref, grpma
     character(len=24) ::  k24buf
+    character(len=8), pointer :: lgrf(:) => null()
 !
 !
 ! CORPS DU PROGRAMME
@@ -114,8 +115,8 @@ subroutine fetcrf(sdpart1)
     zk8(jadr)=nomo
 
 !     MA: MAILLAGE ASSOCIE AU MODELE
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    ma = zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    ma = lgrf(1)
 
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnoto)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)

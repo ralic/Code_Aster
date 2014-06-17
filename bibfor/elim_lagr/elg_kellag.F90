@@ -34,9 +34,10 @@ subroutine elg_kellag(matass, solveu, kellag)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    integer ::  jslvk1, n1
+    integer ::   n1
     character(len=19) :: matas1, solve1
     character(len=3) :: kbid
+    character(len=24), pointer :: slvk(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -47,10 +48,10 @@ subroutine elg_kellag(matass, solveu, kellag)
     matas1=matass
     solve1=solveu
     if (solve1 .eq. ' ') call dismoi('SOLVEUR', matas1, 'MATR_ASSE', repk=solve1)
-    call jeveuo(solve1//'.SLVK', 'L', jslvk1)
+    call jeveuo(solve1//'.SLVK', 'L', vk24=slvk)
     call jelira(solve1//'.SLVK', 'LONMAX', n1, kbid)
     ASSERT(n1.eq.13)
-    kellag=zk24(jslvk1-1+13)(1:3)
+    kellag=slvk(13)(1:3)
     ASSERT(kellag.eq.' '.or.kellag.eq.'OUI'.or.kellag.eq.'NON')
 !
     call jedema()

@@ -53,7 +53,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !
     integer :: i, ii, ima, ifiss, ino, n
     integer :: nbno, nbnot, nfiss, nmax, nbmalo, nbmala
-    integer :: jlmas, idlist,  jtem3, jtem4,  jstno
+    integer :: jlmas, idlist,  jtem3, jtem4
     integer :: ibid, test, valeno
     character(len=8) :: noma, nomail, fiss
     character(len=16) :: motfac, typgrp
@@ -61,6 +61,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=24) :: lismai, lismar, lisman, maifis
     character(len=8), pointer :: vfiss(:) => null()
     integer, pointer :: tem5(:) => null()
+    integer, pointer :: vale(:) => null()
 !
 !     -----------------------------------------------------------------
 !
@@ -159,7 +160,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
         do ifiss = 1, nfiss
             fiss = vfiss(ifiss)
             stno = fiss//'.STNO'
-            call jeveuo(stno//'.VALE', 'L', jstno)
+            call jeveuo(stno//'.VALE', 'L', vi=vale)
 !
 !         RECUPERATION DE TOUTES MAILLES XFEM DE LA FISSURE COURANTE
             lisman = '&&CGMAXF.TEM1'
@@ -175,7 +176,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !           TRI DES NOEUDS SELON LEUR STATUS XFEM
                 test = 1
                 do ino = 1, nbno
-                    valeno = zi(jstno+zi(jtem4+ino-1)-1)
+                    valeno = vale(1+zi(jtem4+ino-1)-1)
                     if (valeno .eq. 0) then
                         test = 0
                     endif

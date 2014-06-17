@@ -64,13 +64,15 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
 !   EXIPOU  L    LOGIQUE INDIQUANT LE PRESENCE DE POUTRES
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: ierd, jcha, ltymo, nbmaal
-    integer :: jlisma, n1, n2
+    integer :: ierd,  ltymo, nbmaal
+    integer ::  n1, n2
 !
     character(len=8) :: k8b
     character(len=16) :: typemo
     character(len=19) :: refe, masse, chdynr, chdepl
     character(len=24) :: noojb
+    integer, pointer :: liste_mailles(:) => null()
+    character(len=8), pointer :: lcha(:) => null()
 !
     call jemarq()
 !
@@ -89,12 +91,12 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
         call exlima(' ', 0, 'V', modele, ligrel)
     else
         call utmamo(modele, nbmaal, '&&CCVEPO.LISTE_MAILLES')
-        call jeveuo('&&CCVEPO.LISTE_MAILLES', 'L', jlisma)
+        call jeveuo('&&CCVEPO.LISTE_MAILLES', 'L', vi=liste_mailles)
         noojb='12345678.LIGR000000.LIEL'
         call gnomsd(' ', noojb, 14, 19)
         ligrel=noojb(1:19)
         ASSERT(ligrel.ne.' ')
-        call exlim1(zi(jlisma), nbmaal, modele, 'V', ligrel)
+        call exlim1(liste_mailles, nbmaal, modele, 'V', ligrel)
         call jedetr('&&CCVEPO.LISTE_MAILLES')
     endif
 !
@@ -119,10 +121,10 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
             chdynr='&&MECALM.M.GAMMA'
             call copich('V', chdepl(1:19), chdynr)
         endif
-        call jeveuo(lischa//'.LCHA', 'L', jcha)
+        call jeveuo(lischa//'.LCHA', 'L', vk8=lcha)
 !       VERIFIE L'UNICITE DE LA CHARGE REPARTIE
         ioccur=0
-        call cochre(zk8(jcha), nbchar, nbchre, ioccur)
+        call cochre(lcha, nbchar, nbchre, ioccur)
         if (nbchre .gt. 1) then
             call utmess('F', 'CALCULEL2_92')
         endif

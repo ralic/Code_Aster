@@ -41,14 +41,14 @@ subroutine megeom(modelz, chgeoz)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=24) :: chgeom
-    integer :: jlgrf
+    character(len=8), pointer :: lgrf(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     modele = modelz
 !
     ASSERT(modele.ne.' ')
-    call jeveuo(modele//'.MODELE    .LGRF', 'L', jlgrf)
-    chgeom = zk8(jlgrf-1+1)//'.COORDO'
+    call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
     chgeoz = chgeom
     call jedema()
 end subroutine

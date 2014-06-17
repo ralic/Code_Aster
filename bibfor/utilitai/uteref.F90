@@ -92,7 +92,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
     integer :: nbpg00(nbfamx), imolo, nec, kfpg, nbfpg, nbfpg2, ifam
     integer :: itype, nb1, nbelr, jmolo, idime, ipg
-    integer :: ifm, nivinf, jcelk, jceld, igrel
+    integer :: ifm, nivinf,   igrel
     integer :: ierd, jliel, nbgrel, iordr
     integer :: iaux, dimtopo
     logical :: ljoint, lpenta
@@ -109,6 +109,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     character(len=19) :: ligrel, resu
 !
     real(kind=8) :: vol
+    integer, pointer :: celd(:) => null()
+    character(len=24), pointer :: celk(:) => null()
 !-----------------------------------------------------------------------
 !     1- PREALABLES
 !     ---------------
@@ -136,11 +138,11 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
         call dismoi('TYPE_CHAMP', chanom, 'CHAMP', repk=tych)
         ASSERT(tych.eq.typech)
-        call jeveuo(chanom//'.CELK', 'L', jcelk)
-        call jeveuo(chanom//'.CELD', 'L', jceld)
-        ligrel = zk24(jcelk-1+1)(1:19)
-        ASSERT(zk24(jcelk-1+3)(1:19).eq.typech)
-        nbgrel = zi(jceld-1+2)
+        call jeveuo(chanom//'.CELK', 'L', vk24=celk)
+        call jeveuo(chanom//'.CELD', 'L', vi=celd)
+        ligrel = celk(1)(1:19)
+        ASSERT(celk(3)(1:19).eq.typech)
+        nbgrel = celd(2)
 !
     endif
 !
@@ -157,7 +159,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
         itype = zi(jliel-1+nb1)
 !
         if (itype .eq. tyelas) then
-            imolo = zi(jceld-1+zi(jceld-1+4+igrel)+2)
+            imolo = celd(celd(4+igrel)+2)
             if (imolo .eq. 0) then
                 codret = 1
                 if (nivinf .gt. 1) then

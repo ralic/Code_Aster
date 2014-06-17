@@ -45,11 +45,13 @@ subroutine iredmi(macr)
 !
 !-----------------------------------------------------------------------
     integer :: i, i2, iam, icamor, icmass, icrigi
-    integer :: iret, isamor, ismass, isrigi, ival1, ival2, ival3
+    integer :: iret, isamor, ismass, isrigi,   ival3
     integer :: j, j2, jamo2, jamor, jfreq, jmass, jordr
     integer :: jrefe, jrigi, k, lamor, n1, n2
     integer :: nbamor, nbmode, nbmods, nbmodt
     real(kind=8) :: petir8, pi
+    real(kind=8), pointer :: mael_raid_vale(:) => null()
+    real(kind=8), pointer :: mael_mass_vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     mael = macr
@@ -105,32 +107,32 @@ subroutine iredmi(macr)
         call wkvect('&&IREDMI.CAMOR', 'V V R', nbmode*nbmods, icamor)
     endif
 !
-    call jeveuo(mael//'.MAEL_MASS_VALE', 'L', ival1)
-    call jeveuo(mael//'.MAEL_RAID_VALE', 'L', ival2)
+    call jeveuo(mael//'.MAEL_MASS_VALE', 'L', vr=mael_mass_vale)
+    call jeveuo(mael//'.MAEL_RAID_VALE', 'L', vr=mael_raid_vale)
     do j = 1, nbmode
         do i = 1, j
             k =j*(j-1)/2 + i
-            zr(jmass+i-1+(j-1)*nbmode) = zr(ival1+k-1) + petir8
-            zr(jmass+j-1+(i-1)*nbmode) = zr(ival1+k-1) + petir8
-            zr(jrigi+i-1+(j-1)*nbmode) = zr(ival2+k-1) + petir8
-            zr(jrigi+j-1+(i-1)*nbmode) = zr(ival2+k-1) + petir8
+            zr(jmass+i-1+(j-1)*nbmode) = mael_mass_vale(k) + petir8
+            zr(jmass+j-1+(i-1)*nbmode) = mael_mass_vale(k) + petir8
+            zr(jrigi+i-1+(j-1)*nbmode) = mael_raid_vale(k) + petir8
+            zr(jrigi+j-1+(i-1)*nbmode) = mael_raid_vale(k) + petir8
         end do
     end do
     do j = nbmode+1, nbmodt
         do i = 1, nbmode
             k = j*(j-1)/2 + i
             j2 = j - nbmode
-            zr(icmass+j2-1+(i-1)*nbmods) = zr(ival1+k-1) + petir8
-            zr(icrigi+j2-1+(i-1)*nbmods) = zr(ival2+k-1) + petir8
+            zr(icmass+j2-1+(i-1)*nbmods) = mael_mass_vale(k) + petir8
+            zr(icrigi+j2-1+(i-1)*nbmods) = mael_raid_vale(k) + petir8
         end do
         do i = nbmode+1, j
             k = j*(j-1)/2 + i
             i2 = i - nbmode
             j2 = j - nbmode
-            zr(ismass+i2-1+(j2-1)*nbmods) = zr(ival1+k-1) + petir8
-            zr(ismass+j2-1+(i2-1)*nbmods) = zr(ival1+k-1) + petir8
-            zr(isrigi+i2-1+(j2-1)*nbmods) = zr(ival2+k-1) + petir8
-            zr(isrigi+j2-1+(i2-1)*nbmods) = zr(ival2+k-1) + petir8
+            zr(ismass+i2-1+(j2-1)*nbmods) = mael_mass_vale(k) + petir8
+            zr(ismass+j2-1+(i2-1)*nbmods) = mael_mass_vale(k) + petir8
+            zr(isrigi+i2-1+(j2-1)*nbmods) = mael_raid_vale(k) + petir8
+            zr(isrigi+j2-1+(i2-1)*nbmods) = mael_raid_vale(k) + petir8
         end do
     end do
 !

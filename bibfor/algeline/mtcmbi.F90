@@ -58,9 +58,10 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 !-----------------------------------------------------------------------
     integer :: i, iatmai, iatmat, iatrei, iatres, ibid, icoef
     integer :: idebli, iequa, ifinli, ilig, ind, ival
-    integer :: jrefa, jsmdi, jsmhc, kin, lddl, neq
+    integer ::  jsmdi, jsmhc, kin, lddl, neq
 !
     real(kind=8) :: coef, zero
+    character(len=24), pointer :: refa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -87,9 +88,9 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     call mtdsc2(zk24(zi(lres+1)), 'SMDI', 'L', jsmdi)
     lgbloc = zi(lres+14)
     matres = zk24(zi(lres+1)) (1:19)
-    call jeveuo(matres//'.REFA', 'L', jrefa)
-    call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
-    call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMDI', 'L', ibid)
+    call jeveuo(matres//'.REFA', 'L', vk24=refa)
+    call jeveuo(refa(2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
+    call jeveuo(refa(2)(1:14)//'.SMOS.SMDI', 'L', ibid)
     ASSERT(ibid.eq.jsmdi)
 !
     valmr = matres//'.VALM'

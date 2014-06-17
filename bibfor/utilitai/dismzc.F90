@@ -48,15 +48,21 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
     character(len=19) :: nolig
     character(len=24) :: nema
     character(len=32) :: repk
-    integer :: iadime, iamaco, ianbno, ianoma, iatypm, idnema, ier
-    integer :: ii, ilmaco, ima, ino, iocc, itypm, jcoor
+    integer ::      idnema, ier
+    integer :: ii, ilmaco, ima, ino, iocc, itypm
     integer :: jima, jnbno, nbma, nbnoma, nbnot, nbpt, numail
     integer :: nunoel, nunota, nutioc
     real(kind=8) :: z1
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: dime(:) => null()
+    character(len=8), pointer :: typema(:) => null()
+    integer, pointer :: nbno(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 ! -----  FONCTIONS FORMULES
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-#define numglm(numail,ino) zi(iamaco-1+zi(ilmaco+numail-1)+ino-1)
+#define numglm(numail,ino) connex(zi(ilmaco+numail-1)+ino-1)
 ! --------------------------------------------------------------------
     call jemarq()
     ASSERT(questi.eq.'Z_CST')
@@ -68,35 +74,35 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 !
 ! --- LE MODELE
 !
-    call jeveuo(nolig//'.LGRF', 'L', ianoma)
+    call jeveuo(nolig//'.LGRF', 'L', vk8=lgrf)
     call jelira(nolig//'.LIEL', 'NUTIOC', nutioc)
     nema = nolig//'.NEMA'
     call jeexin(nema, ier)
 !
 ! --- LE MAILLAGE
 !
-    ma = zk8(ianoma-1+1)
-    call jeveuo(ma//'.CONNEX', 'L', iamaco)
+    ma = lgrf(1)
+    call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilmaco)
-    call jeveuo(ma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(ma//'.DIME', 'L', iadime)
-    nbnoma = zi(iadime-1+1)
+    call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(ma//'.DIME', 'L', vi=dime)
+    nbnoma = dime(1)
 !
 ! --- ON CREE UN TABLEAU DONT LA COMPOSANTE I VAUDRA 1 SI LE NOEUD I
 !     APPARTIENT AU MODELE
 !
     call wkvect('&&DISMZC.TRAV.NOEUDS', 'V V I', nbnoma, jnbno)
 !
-    call jeveuo('&CATA.TE.TYPEMA', 'L', iatypm)
-    call jeveuo('&CATA.TM.NBNO', 'L', ianbno)
+    call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
+    call jeveuo('&CATA.TM.NBNO', 'L', vi=nbno)
 !
     do 10 iocc = 1, nutioc
 !
         call jelira(jexnum(nolig//'.LIEL', iocc), 'LONMAX', nbma)
         call jeveuo(jexnum(nolig//'.LIEL', iocc), 'L', jima)
-        typma = zk8(iatypm-1+zi(jima+nbma-1))
+        typma = typema(zi(jima+nbma-1))
         call jenonu(jexnom('&CATA.TM.NOMTM', typma), itypm)
-        nbpt = zi(ianbno-1+itypm)
+        nbpt = nbno(itypm)
         nbma = nbma - 1
 !
         do 15 ii = 1, nbma
@@ -138,7 +144,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 !
     do 24 ino = 1, nbnoma
         if (zi(jnbno+ino-1) .ne. 0) then
-            z1 = zr(jcoor-1+3*(ino-1)+3)
+            z1 = vale(3*(ino-1)+3)
             goto 26
         endif
 24  end do
@@ -146,7 +152,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 !
     do 25 ino = 1, nbnoma
         if (zi(jnbno+ino-1) .ne. 0) then
-            if (zr(jcoor-1+3*(ino-1)+3) .ne. z1) goto 30
+            if (vale(3*(ino-1)+3) .ne. z1) goto 30
         endif
 25  end do
     repk = 'OUI'

@@ -46,8 +46,9 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=7) :: typmat, kmpic, zero
-    integer :: iret, i, i1, ialire, iarefe, nbresu, iexi
+    integer :: iret, i, i1, ialire,  nbresu, iexi
     character(len=8) :: mo, partit
+    character(len=24), pointer :: rerr(:) => null()
 !
 !
 !
@@ -57,8 +58,8 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
     ierd = 0
 !
     nomob = nomobz
-    call jeveuo(nomob//'.RERR', 'L', iarefe)
-    mo = zk24(iarefe-1+1)(1:8)
+    call jeveuo(nomob//'.RERR', 'L', vk24=rerr)
+    mo = rerr(1)(1:8)
 !
     if (questi .eq. 'NOM_MODELE') then
         repk = mo
@@ -131,10 +132,10 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         endif
 !
     else if (questi.eq.'CHAM_MATER') then
-        repk=zk24(iarefe-1+4)
+        repk=rerr(4)
 !
     else if (questi.eq.'CARA_ELEM') then
-        repk=zk24(iarefe-1+5)
+        repk=rerr(5)
 !
     else if (questi.eq.'NOM_MAILLA') then
         call dismmo(questi, mo, repi, repk, ierd)
@@ -143,10 +144,10 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         call dismmo(questi, mo, repi, repk, ierd)
 !
     else if (questi.eq.'SUR_OPTION') then
-        repk= zk24(iarefe-1+2)(1:16)
+        repk= rerr(2)(1:16)
 !
     else if (questi.eq.'NB_SS_ACTI') then
-        if (zk24(iarefe-1+3) .eq. 'OUI_SOUS_STRUC') then
+        if (rerr(3) .eq. 'OUI_SOUS_STRUC') then
             call dismmo(questi, mo, repi, repk, ierd)
         else
             repi= 0

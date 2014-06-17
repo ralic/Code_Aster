@@ -56,7 +56,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
 !-----------------------------------------------------------------------
     integer :: i,    ii, iunite
-    integer :: ij, im, in, inoe, iret,  jcoor
+    integer :: ij, im, in, inoe, iret
     integer :: ldgm, ldnm, ltyp, nb, nbma
     integer :: nfg, nm, nn, noemax, ntopo, numa
 
@@ -81,6 +81,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     real(kind=8), pointer :: surma5(:) => null()
     real(kind=8), pointer :: surma6(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -102,7 +103,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
 !
 !     --- DESCRIPTION NOEUDS STRUCTURE ---
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !
 !       RECUPERATION DES COEFS OU FONCTIONS DE GROUPE
@@ -200,9 +201,9 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 parno(inoe) = parno(inoe) + 1
-                x(nn) = zr(jcoor+3*(inoe-1)+1-1)
-                y(nn) = zr(jcoor+3*(inoe-1)+2-1)
-                z(nn) = zr(jcoor+3*(inoe-1)+3-1)
+                x(nn) = vale(1+3*(inoe-1)+1-1)
+                y(nn) = vale(1+3*(inoe-1)+2-1)
+                z(nn) = vale(1+3*(inoe-1)+3-1)
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)

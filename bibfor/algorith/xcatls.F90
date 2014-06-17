@@ -59,12 +59,13 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !            QUANTITES DEFINISSANT LA GEO DE LA FISS
 !     ------------------------------------------------------------------
 !
-    integer :: ino, nbno, jcoor, i, j
+    integer :: ino, nbno,  i, j
     real(kind=8) :: p2d(2), p3d(3), norme, vect3(3), mat(3, 3), ploc(3)
     real(kind=8) :: h
     real(kind=8) :: nori(3), next(3), nmil(3), vseg(3), nseg
     character(len=8) :: fiss
     character(len=16) :: valk(3), typdis, k16bid
+    real(kind=8), pointer :: vale(:) => null()
 !
     call jemarq()
 !
@@ -72,7 +73,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
     call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     VERIFICATIONS (CAR REGLES INMPOSSIBLES DANS CAPY)
     if (.not.callst) then
@@ -114,7 +115,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
             do i = 1, ndim
-                p3d(i)=zr(jcoor-1+3*(ino-1)+i)
+                p3d(i)=vale(3*(ino-1)+i)
             end do
 !
 !         BASE LOCALE : (VECT1,VECT2,VECT3)
@@ -200,7 +201,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
             do i = 1, ndim
-                p3d(i)=zr(jcoor-1+3*(ino-1)+i)
+                p3d(i)=vale(3*(ino-1)+i)
             end do
 !
 !         BASE LOCALE : (VECT2,VECT3,VECT1)
@@ -255,7 +256,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             do i = 1, ndim
-                p2d(i)=zr(jcoor-1+3*(ino-1)+i)
+                p2d(i)=vale(3*(ino-1)+i)
             end do
 !
             vect3(1) = 0.d0
@@ -311,7 +312,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 !
 !         COORDONNEES 2D DU POINT DANS LE REPERE GLOBAL
             do i = 1, ndim
-                p2d(i)=zr(jcoor-1+3*(ino-1)+i)
+                p2d(i)=vale(3*(ino-1)+i)
             end do
 !
             vect3(1) = 0.d0

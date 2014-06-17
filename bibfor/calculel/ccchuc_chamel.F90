@@ -78,8 +78,11 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp,&
     integer :: j_resu, j_elem
     character(len=24) :: work_val, work_cmp
     integer :: j_val, j_cmp
-    integer :: jchsc, jchsv, jchsl, jchsd
-    integer :: jchrd, jchrl, jchrv
+    integer ::   jchsl, jchsd
+    integer :: jchrd, jchrl
+    real(kind=8), pointer :: chrv(:) => null()
+    real(kind=8), pointer :: chsv(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,15 +98,15 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp,&
 ! - Access to input field
 !
     call jeveuo(field_in_s//'.CESL', 'L', jchsl)
-    call jeveuo(field_in_s//'.CESV', 'L', jchsv)
-    call jeveuo(field_in_s//'.CESC', 'L', jchsc)
+    call jeveuo(field_in_s//'.CESV', 'L', vr=chsv)
+    call jeveuo(field_in_s//'.CESC', 'L', vk8=cesc)
     call jeveuo(field_in_s//'.CESD', 'L', jchsd)
 !
 ! - Access to output field
 !
     call jeveuo(field_out_s//'.CESL', 'E', jchrl)
     call jeveuo(field_out_s//'.CESD', 'E', jchrd)
-    call jeveuo(field_out_s//'.CESV', 'E', jchrv)
+    call jeveuo(field_out_s//'.CESV', 'E', vr=chrv)
 !
 ! - Access to output working vector
 !
@@ -139,8 +142,8 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp,&
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
                         nb_val_in = nb_val_in + 1
-                        zr(j_val-1+nb_val_in) = zr(jchsv-1+iad)
-                        zk8(j_cmp-1+nb_val_in) = zk8(jchsc-1+icmp)
+                        zr(j_val-1+nb_val_in) = chsv(iad)
+                        zk8(j_cmp-1+nb_val_in) = cesc(icmp)
                     endif 
                 enddo
 !
@@ -166,7 +169,7 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, nb_cmp, type_comp,&
                                     isp, icmp, iad)
                         iad = -iad
                         zl(jchrl-1+iad) = .true.
-                        zr(jchrv-1+iad) = zr(j_resu-1+icmp)
+                        chrv(iad) = zr(j_resu-1+icmp)
                     enddo
                 endif
             enddo

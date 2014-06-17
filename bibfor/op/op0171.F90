@@ -65,12 +65,12 @@ subroutine op0171()
 #include "asterfort/wkvect.h"
 !
     logical :: matcst, coecst, prem, reasmt, reasvt
-    integer :: parcri(9), iifm, jlagpp, jlagpm, jlagp, jinst
+    integer :: parcri(9), iifm,   jlagp, jinst
     integer :: ibid, k, neq, iret
     integer :: itmaxl, iterl, ifm, niv, num
     integer :: iocc, n1, n2
     integer :: jtemp, jtempm, jtempp, j2nd, lonch, lglap
-    integer :: jlcha, ialich, nchar, jinfc, jinf
+    integer :: jlcha,  nchar, jinfc
     integer :: i, jfcha, ialifc
     real(kind=8) :: tpsthe(6), tpsnp1, testn, testr
     real(kind=8) :: tps1(4), tps2(4), tpex
@@ -89,6 +89,10 @@ subroutine op0171()
     character(len=76) :: fmt
     integer :: vali(2)
     real(kind=8) :: valr(2)
+    integer, pointer :: infc(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
+    real(kind=8), pointer :: lagpm(:) => null()
+    real(kind=8), pointer :: lagpp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -291,14 +295,14 @@ subroutine op0171()
 !
         else
 !
-            call jeveuo(chlapm(1:19)//'.CELV', 'E', jlagpm)
-            call jeveuo(chlapp(1:19)//'.CELV', 'L', jlagpp)
+            call jeveuo(chlapm(1:19)//'.CELV', 'E', vr=lagpm)
+            call jeveuo(chlapp(1:19)//'.CELV', 'L', vr=lagpp)
             testr = 0.d0
             testn = 0.d0
             do 200 k = 1, lglap
-                testr = testr + (zr(jlagpp+k-1)-zr(jlagpm+k-1))**2
-                testn = testn + zr(jlagpp+k-1)**2
-                zr(jlagpm+k-1) = zr(jlagpp+k-1)
+                testr = testr + (lagpp(k)-lagpm(k))**2
+                testn = testn + lagpp(k)**2
+                lagpm(k) = lagpp(k)
 200          continue
             testr = sqrt(testr/testn)
 !
@@ -349,19 +353,19 @@ subroutine op0171()
     call getfac('EXCIT', nchar)
     call jedetr(lischa//'.LCHA')
     call wkvect(lischa//'.LCHA', 'G V K24', nchar, jlcha)
-    call jeveuo(infcha//'.LCHA', 'L', ialich)
+    call jeveuo(infcha//'.LCHA', 'L', vk24=lcha)
     call jedetr(lischa//'.FCHA')
     call wkvect(lischa//'.FCHA', 'G V K24', nchar, jfcha)
     call jeveuo(fomult, 'L', ialifc)
     do 51 i = 1, nchar
-        zk24(jlcha+i-1)=zk24(ialich+i-1)
+        zk24(jlcha+i-1)=lcha(i)
         zk24(jfcha+i-1)=zk24(ialifc+i-1)
 51  continue
     call jedetr(lischa//'.INFC')
     call wkvect(lischa//'.INFC', 'G V IS', 2*nchar+1, jinfc)
-    call jeveuo(infcha//'.INFC', 'L', jinf)
+    call jeveuo(infcha//'.INFC', 'L', vi=infc)
     do 52 i = 1, 2*nchar+1
-        zi(jinfc+i-1)=zi(jinf+i-1)
+        zi(jinfc+i-1)=infc(i)
 52  continue
 !
     call uttcpu('CPU.OP0171.1', 'FIN', ' ')

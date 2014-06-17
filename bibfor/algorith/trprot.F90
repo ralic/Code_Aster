@@ -103,10 +103,14 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
     character(len=*) :: mate
     complex(kind=8) :: cbid
     integer :: iadg, iadx, iady, iadz, iaut, ichad, ichar
-    integer :: ichav, idsc, ilires, imodg, inoe, inomcd
-    integer :: inomcr, inomcv, inueq, iprn, iref, iret, ival
+    integer :: ichav, idsc, ilires, imodg, inoe
+    integer ::    iprn, iref, iret, ival
     integer :: ivaleu, k, nbchad, nbchar, nbchav, nbnoe, ncmp
     integer :: nec
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: nueq(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: desc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data maprec   /'&&OP0152.MAPREC'/
@@ -138,11 +142,11 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 ! POUR CHAQUE MODE, ON FAIT SUBIR AU CHAMNO ASSOCIE
 ! LA ROTATION DEFINIE POUR LA SOUS-STRUCTURE EN QUESTION
 !
-    call jeveuo(nomcha(1:19)//'.VALE', 'L', inomcv)
+    call jeveuo(nomcha(1:19)//'.VALE', 'L', vr=vale)
     call jelira(nomcha(1:19)//'.VALE', 'LONMAX', nbchav)
-    call jeveuo(nomcha(1:19)//'.REFE', 'L', inomcr)
+    call jeveuo(nomcha(1:19)//'.REFE', 'L', vk24=refe)
     call jelira(nomcha(1:19)//'.REFE', 'LONMAX', nbchar)
-    call jeveuo(nomcha(1:19)//'.DESC', 'L', inomcd)
+    call jeveuo(nomcha(1:19)//'.DESC', 'L', vi=desc)
     call jelira(nomcha(1:19)//'.DESC', 'LONMAX', nbchad)
 !
 !
@@ -158,7 +162,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
     call jenonu(jexnom(pchno//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno//'.PRNO', ibid), 'L', iprn)
-    call jeveuo(pchno//'.NUEQ', 'L', inueq)
+    call jeveuo(pchno//'.NUEQ', 'L', vi=nueq)
 !
     newcha='&&TRPROT.NCHNO'
 !
@@ -196,8 +200,8 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
                     if (i .le. 2) then
 !
-                        iad(i)=zi(inueq-1+ivaleu+i-1)
-                        val(i)=zr(inomcv-1+iad(i))
+                        iad(i)=nueq(ivaleu+i-1)
+                        val(i)=vale(iad(i))
 !
                     else
 !
@@ -205,7 +209,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 ! LES COMPOSANTES DE ROTATION APRES LES DEUX COMPOSANTES
 ! DE TRANSLATION DX ET DY
 !
-                        iaut=zi(inueq-1+ivaleu+i-1)
+                        iaut=nueq(ivaleu+i-1)
                         zr(ival-1+iaut+i-1-2)=0.0d0
 !
                     endif
@@ -227,7 +231,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
             else
 !
                 do i = 1, ncmp
-                    iaut=zi(inueq-1+ivaleu+i-1)
+                    iaut=nueq(ivaleu+i-1)
                     zr(ival-1+iaut+i-1)=0.0d0
                 end do
 !
@@ -244,12 +248,12 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
                     if (i .le. 3) then
 !
-                        iad3d(i)=zi(inueq-1+ivaleu+i-1)
-                        val3d(i)=zr(inomcv-1+iad3d(i))
+                        iad3d(i)=nueq(ivaleu+i-1)
+                        val3d(i)=vale(iad3d(i))
 !
                     else
 !
-                        iaut=zi(inueq-1+ivaleu+i-1)
+                        iaut=nueq(ivaleu+i-1)
 ! DEBUG
 !               IF ((IAUT+I-1-1-3).GT.36576) THEN
 !
@@ -292,7 +296,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
             else
 !
                 do i = 1, ncmp
-                    iaut=zi(inueq-1+ivaleu+i-1)
+                    iaut=nueq(ivaleu+i-1)
                     zr(ival-1+iaut+i-1)=0.0d0
                 end do
 !
@@ -304,11 +308,11 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !
 !
     do ichar = 1, nbchar
-        zk24(iref+ichar-1)= zk24(inomcr+ichar-1)
+        zk24(iref+ichar-1)= refe(ichar)
     end do
 !
     do ichad = 1, nbchad
-        zi(idsc+ichad-1)= zi(inomcd+ichad-1)
+        zi(idsc+ichad-1)= desc(ichad)
     end do
 !
 !

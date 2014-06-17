@@ -76,8 +76,8 @@ subroutine rfrgen(trange)
 !-----------------------------------------------------------------------
     integer :: i, iagno, idbase, iddl, idinsg, idvecf,  ie
     integer :: ier, ierd, ign2, ii, ino, inoeud, iordr
-    integer :: ip, ipas, ipsdel, iret, itresu, jfon, jinst
-    integer :: ldesc, lfon, lg1, lg2, lordr,  lpro
+    integer :: ip,   iret, itresu, jfon, jinst
+    integer ::  lfon, lg1, lg2, lordr,  lpro
     integer :: lvar, n1, n2, n3, nbexci, nbinsg
     integer :: nbmode, nbordr, nbpas, neq
     integer :: nfonct, ngn, numcmp
@@ -85,6 +85,9 @@ subroutine rfrgen(trange)
     complex(kind=8) :: cbid
     real(kind=8), pointer :: dt(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: ipsd(:) => null()
+    real(kind=8), pointer :: ptem(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -165,13 +168,13 @@ subroutine rfrgen(trange)
 !----------------------------------------------------------------------
 !
     if (nomcha(1:4) .eq. 'PTEM') then
-        call jeveuo(resu//'.PTEM', 'L', ipas)
+        call jeveuo(resu//'.PTEM', 'L', vr=ptem)
         call jelira(resu//'.PTEM', 'LONMAX', nbpas)
 ! NORMALEMENT ON SORT LE dt SI ADAPT. MAIS AVEC DYNA_GENE ON PEUT
 ! TOUJOURS LE SORTIR
         AS_ALLOCATE(vr=dt, size=nbpas)
         do ip = 1, nbpas
-            dt(ip) = zr(ipas+ip-1)
+            dt(ip) = ptem(ip)
 !            ZR(LPAS+IP-1) = LOG10(ZR(IPAS+IP-1))
         end do
 !
@@ -200,8 +203,8 @@ subroutine rfrgen(trange)
 !----------------------------------------------------------------------
 !
     else
-        call jeveuo(resu//'.DESC', 'L', ldesc)
-        nbmode = zi(ldesc+1)
+        call jeveuo(resu//'.DESC', 'L', vi=desc)
+        nbmode = desc(2)
         call getvis(' ', 'NUME_CMP_GENE', scal=numcmp, nbret=n1)
         if (n1 .ne. 0) then
             if (numcmp .gt. nbmode) then
@@ -304,11 +307,11 @@ subroutine rfrgen(trange)
             if (monmot(1) .eq. 'OUI' .or. monmot(2) .eq. 'OUI') nonmot= 'OUI'
             if (nonmot(1:3) .eq. 'OUI') then
                 call jeveuo(resu//'.F'//nomcha(1:3), 'L', jfon)
-                call jeveuo(resu//'.IPSD', 'L', ipsdel)
+                call jeveuo(resu//'.IPSD', 'L', vr=ipsd)
                 call jelira(resu//'.F'//nomcha(1:3), 'LONMAX', nbexci)
                 nbexci = nbexci / 2
                 do iordr = 0, nbordr-1
-                    call mdgep4(neq, nbexci, zr(ipsdel), zr(lvar+ iordr), zk8(jfon),&
+                    call mdgep4(neq, nbexci, ipsd, zr(lvar+ iordr), zk8(jfon),&
                                 iddl, rep)
                     zr(lfon+iordr) = zr(lfon+iordr) + rep
                 end do

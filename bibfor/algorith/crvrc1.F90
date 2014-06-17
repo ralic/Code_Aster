@@ -50,7 +50,7 @@ subroutine crvrc1()
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: nbfac, n1, nbinst, kinst, jinst
-    integer :: nbin, iret, iexi, jtemp
+    integer :: nbin, iret, iexi
     real(kind=8) :: vinst
     character(len=8) :: kbid, resu, carele, paout, lpain(10), tempef
     character(len=8) :: model2, modele
@@ -58,6 +58,7 @@ subroutine crvrc1()
     character(len=19) :: ligrmo, chout, chinst
     character(len=24) :: chcara(18), lchin(10)
     real(kind=8), pointer :: linst(:) => null()
+    character(len=24), pointer :: celk(:) => null()
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -77,8 +78,8 @@ subroutine crvrc1()
     if (iexi .eq. 0) then
         call utmess('F', 'CALCULEL4_14', sk=carele)
     endif
-    call jeveuo(carele//'.CANBSP    .CELK', 'L', jtemp)
-    model2=zk24(jtemp-1+1)(1:8)
+    call jeveuo(carele//'.CANBSP    .CELK', 'L', vk24=celk)
+    model2=celk(1)(1:8)
     if (model2 .ne. modele) then
         call utmess('F', 'CALCULEL4_15', sk=carele)
     endif

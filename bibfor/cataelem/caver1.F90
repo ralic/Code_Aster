@@ -49,23 +49,26 @@ subroutine caver1()
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, iamolo, ianblc, iaopmo, iaopno, iaopte, iapara
+    integer :: iadesc, iamolo,  iaopmo, iaopno,  iapara
     integer :: icode, ier, igd, igdop, imolo, ioptte, ipara
-    integer :: iret, itrou, jnbno, jnocm1, jnocm2, jtypma, k
+    integer :: iret, itrou, jnbno, jnocm1, jnocm2,  k
     integer :: kk, lgco, n1, n2, nbgd, nbin, nbinte
     integer :: nbno, nbopt, nbout, nboute, nbpt1, nbpt2, nbte
     integer :: nbvol, nucalc
+    integer, pointer :: nbligcol(:) => null()
+    integer, pointer :: optte(:) => null()
+    character(len=8), pointer :: typema(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
     call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)
-    call jeveuo('&CATA.TE.OPTTE', 'L', iaopte)
-    call jeveuo('&CATA.TE.NBLIGCOL', 'L', ianblc)
-    lgco = zi(ianblc-1+1)
+    call jeveuo('&CATA.TE.OPTTE', 'L', vi=optte)
+    call jeveuo('&CATA.TE.NBLIGCOL', 'L', vi=nbligcol)
+    lgco = nbligcol(1)
 !
     ier = 0
 !
-    call jeveuo('&CATA.TE.TYPEMA', 'L', jtypma)
+    call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
 !
 !
     do 40,opt = 1,nbopt
@@ -92,14 +95,14 @@ subroutine caver1()
 !
     do 30,te = 1,nbte
     call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-    ioptte = zi(iaopte-1+ (te-1)*lgco+opt)
+    ioptte = optte((te-1)*lgco+opt)
     if (ioptte .eq. 0) goto 30
     call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
     call jeveuo(jexnum('&CATA.TE.OPTNOM', ioptte), 'L', iaopno)
     nucalc = zi(iaopmo-1+1)
     nbinte = zi(iaopmo-1+2)
 !
-    typmai = zk8(jtypma-1+te)
+    typmai = typema(te)
     call jeveuo(jexnom('&CATA.TM.NBNO', typmai), 'L', jnbno)
     nbno = zi(jnbno)
 !

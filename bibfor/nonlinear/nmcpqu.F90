@@ -57,9 +57,10 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
     character(len=24) :: nomcmp
     character(len=16) :: nompar, comp
     integer :: iret, ima, jdecal
-    integer :: jcesd, jcesl, jcesv
+    integer :: jcesd, jcesl
     integer :: nbma
     character(len=19) :: coto, copm
+    character(len=16), pointer :: cesv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -88,13 +89,13 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
 !
     call jeveuo(copm(1:19)//'.CESD', 'L', jcesd)
     call jeveuo(copm(1:19)//'.CESL', 'L', jcesl)
-    call jeveuo(copm(1:19)//'.CESV', 'L', jcesv)
+    call jeveuo(copm(1:19)//'.CESV', 'L', vk16=cesv)
     nbma = zi(jcesd-1+1)
 !
     do 60 ima = 1, nbma
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 1, jdecal)
-        comp = zk16(jcesv-1+jdecal)
+        comp = cesv(jdecal)
         if (comp .eq. nompar) then
             exist = .true.
             goto 99

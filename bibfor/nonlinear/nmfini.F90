@@ -88,35 +88,41 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 !
     character(len=19) :: masse, amort, vitmoi, accmoi
     character(len=19) :: fexmoi, fammoi, flimoi
-    integer :: imasse, iamort, ivitmo, iaccmo
-    integer :: ifexmo, ifammo, iflimo
+    integer :: imasse, iamort
     integer :: neq, iaux
     logical :: lamor, ldyna
-    integer :: nbvect, icnfno, ifnomo
+    integer :: nbvect
     character(len=16) :: loptve(20)
     character(len=6) :: ltypve(20)
     logical :: lassve(20), lcalve(20)
     character(len=19) :: cnfnod, fnomoi
     real(kind=8), pointer :: cv(:) => null()
     real(kind=8), pointer :: ma(:) => null()
+    real(kind=8), pointer :: ccmo(:) => null()
+    real(kind=8), pointer :: cnfno(:) => null()
+    real(kind=8), pointer :: fammo(:) => null()
+    real(kind=8), pointer :: fexmo(:) => null()
+    real(kind=8), pointer :: flimo(:) => null()
+    real(kind=8), pointer :: fnomo(:) => null()
+    real(kind=8), pointer :: vitmo(:) => null()
 !
     call jemarq()
 !
     lamor = ndynlo(sddyna,'MAT_AMORT')
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
     call nmchex(valinc, 'VALINC', 'FEXMOI', fexmoi)
-    call jeveuo(fexmoi//'.VALE', 'E', ifexmo)
+    call jeveuo(fexmoi//'.VALE', 'E', vr=fexmo)
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- AJOUT DE LA FORCE DE LIAISON ET DE LA FORCE D AMORTISSEMENT
 ! --- MODAL
 !
     call nmchex(valinc, 'VALINC', 'FAMMOI', fammoi)
-    call jeveuo(fammoi//'.VALE', 'L', ifammo)
+    call jeveuo(fammoi//'.VALE', 'L', vr=fammo)
     call nmchex(valinc, 'VALINC', 'FLIMOI', flimoi)
-    call jeveuo(flimoi//'.VALE', 'L', iflimo)
+    call jeveuo(flimoi//'.VALE', 'L', vr=flimo)
     do iaux = 1, neq
-        zr(ifexmo-1+iaux)=zr(ifammo-1+iaux)+zr(iflimo-1+iaux)
+        fexmo(iaux)=fammo(iaux)+flimo(iaux)
     end do
 !
 ! --- AJOUT DU TERME C.V
@@ -126,12 +132,12 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
         call mtdscr(amort)
         call jeveuo(amort//'.&INT', 'L', iamort)
         call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
-        call jeveuo(vitmoi//'.VALE', 'L', ivitmo)
+        call jeveuo(vitmoi//'.VALE', 'L', vr=vitmo)
         AS_ALLOCATE(vr=cv, size=neq)
-        call mrmult('ZERO', iamort, zr(ivitmo), cv, 1,&
+        call mrmult('ZERO', iamort, vitmo, cv, 1,&
                     .true.)
         do iaux = 1, neq
-            zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + cv(iaux)
+            fexmo(iaux) = fexmo(iaux) + cv(iaux)
         end do
         AS_DEALLOCATE(vr=cv)
     endif
@@ -143,12 +149,12 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
         call mtdscr(masse)
         call jeveuo(masse//'.&INT', 'L', imasse)
         call nmchex(valinc, 'VALINC', 'ACCMOI', accmoi)
-        call jeveuo(accmoi//'.VALE', 'L', iaccmo)
+        call jeveuo(accmoi//'.VALE', 'L', vr=ccmo)
         AS_ALLOCATE(vr=ma, size=neq)
-        call mrmult('ZERO', imasse, zr(iaccmo), ma, 1,&
+        call mrmult('ZERO', imasse, ccmo, ma, 1,&
                     .true.)
         do iaux = 1, neq
-            zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + ma(iaux)
+            fexmo(iaux) = fexmo(iaux) + ma(iaux)
         end do
         AS_DEALLOCATE(vr=ma)
     endif
@@ -164,17 +170,17 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
                 numedd, parcon, veelem, veasse, measse,&
                 nbvect, ltypve, lcalve, loptve, lassve)
     call nmchex(veasse, 'VEASSE', 'CNFNOD', cnfnod)
-    call jeveuo(cnfnod//'.VALE', 'L', icnfno)
+    call jeveuo(cnfnod//'.VALE', 'L', vr=cnfno)
     do iaux = 1, neq
-        zr(ifexmo-1+iaux) = zr(ifexmo-1+iaux) + zr(icnfno-1+iaux)
+        fexmo(iaux) = fexmo(iaux) + cnfno(iaux)
     end do
 !
 ! --- INITIALISATION DES FORCES INTERNES
 !
     call nmchex(valinc, 'VALINC', 'FNOMOI', fnomoi)
-    call jeveuo(fnomoi//'.VALE', 'E', ifnomo)
+    call jeveuo(fnomoi//'.VALE', 'E', vr=fnomo)
     do iaux = 1, neq
-        zr(ifnomo-1+iaux) = zr(icnfno-1+iaux)
+        fnomo(iaux) = cnfno(iaux)
     end do
 !
     call jedema()

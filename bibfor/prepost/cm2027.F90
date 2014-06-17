@@ -63,12 +63,13 @@ subroutine cm2027(main, maout, nbma, lima, prefix,&
     parameter    ( nbtyma = 27, nfmax = 24 )
     integer :: jnomim, jnomip, jmilie, jdim, nbno
     integer :: nbnomi, nbnohe, nbtot, no, jcoor, nbnomx, nbmato
-    integer :: deffac(8, 0:6, nbtyma), jtypma, jrefe, reftyp(nbtyma)
+    integer :: deffac(8, 0:6, nbtyma), jtypma,  reftyp(nbtyma)
     integer :: nbref(nbtyma), impmai(nbtyma)
     character(len=8) :: nomnd, kbid, nomast(nbtyma)
     character(len=19) :: coordo
     character(len=24) :: nomima, milieu, nomipe, nomnoe, nomnoi
     character(len=24) :: typema, connei, conneo
+    character(len=24), pointer :: refe(:) => null()
 !
 !     MAILLES TRAITEES PAR LA COMMANDE :
 !
@@ -204,8 +205,8 @@ subroutine cm2027(main, maout, nbma, lima, prefix,&
 !
     coordo = maout // '.COORDO'
     call copisd('CHAMP_GD', 'G', main//'.COORDO', coordo)
-    call jeveuo(coordo//'.REFE', 'E', jrefe)
-    zk24(jrefe) = maout
+    call jeveuo(coordo//'.REFE', 'E', vk24=refe)
+    refe(1) = maout
     call juveca(coordo//'.VALE', nbtot*3)
 !
 ! --- MISE A JOUR DES NOUVEAUX NOEUDS (NOM ET COORDONNEES)

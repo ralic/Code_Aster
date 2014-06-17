@@ -82,8 +82,8 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
 !
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
-    integer :: nbno, nbma, jcoor, jconx1, jconx2, jmai, itypma
-    integer :: ifm, niv, ndim, ndime, dimuns, jtmdim
+    integer :: nbno, nbma,   jconx2,  itypma
+    integer :: ifm, niv, ndim, ndime, dimuns
     character(len=8) :: typma
     integer :: i, j
 !
@@ -98,6 +98,10 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
     real(kind=8) :: nodxyz(2, 3), absxyz(3), locxyz(3)
     integer :: nodcon(3), eldef(8), nocur, orph, unsupp, ar(12, 3), nbar
     integer :: maxedg(3), numnod(3)
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -124,14 +128,14 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 ! RETRIEVE THE COORDINATES OF THE NODES
 !                12345678901234567890
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 ! RETRIEVE THE DEFINITION OF THE ELEMENTS IN TERMS OF NODES
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 ! RETRIEVE THE TYPE OF EACH ELEMENT IN THE MESH
-    call jeveuo(noma//'.TYPMAIL', 'L', jmai)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 ! RETRIEVE THE DIMENSIONS OF THE EXISTING ELEMENTS
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 ! RETRIEVE THE DIMENSION OF THE PROBLEM (2D AND 3D ARE SUPPORTED)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
@@ -152,7 +156,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
 !     SEARCH THE FIRST SUPPORTED ELEMENT IN THE MESH
     do i = 1, nbma
-        itypma=zi(jmai-1+i)
+        itypma=typmail(i)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
         if (((ndim.eq.2).and.(typma(1:5).eq.'QUAD4')) .or.&
             ((ndim.eq.3) .and.(typma(1:5).eq.'HEXA8'))) then
@@ -198,18 +202,18 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
     ASSERT(j.eq.maxedg(ndim))
 !
 !     RETRIEVE THE COORDINATES OF THE ORIGIN
-    j = zi(jconx1-1+zi(jconx2-1+elmori)+1-1)
-    nodref(1,1) = zr(jcoor-1+3*(j-1)+1)
-    nodref(1,2) = zr(jcoor-1+3*(j-1)+2)
-    nodref(1,3) = zr(jcoor-1+3*(j-1)+3)
+    j = connex(zi(jconx2-1+elmori)+1-1)
+    nodref(1,1) = vale(3*(j-1)+1)
+    nodref(1,2) = vale(3*(j-1)+2)
+    nodref(1,3) = vale(3*(j-1)+3)
 !
 !     RETRIEVE THE COORDINATES OF THE OTHER NODES DEFINING THE LOCAL
 !     AXES (Xl,Yl,Zl)
     do i = 1, ndim
-        j = zi(jconx1-1+zi(jconx2-1+elmori)+nodcon(i)-1)
-        nodref(i+1,1) = zr(jcoor-1+3*(j-1)+1)
-        nodref(i+1,2) = zr(jcoor-1+3*(j-1)+2)
-        nodref(i+1,3) = zr(jcoor-1+3*(j-1)+3)
+        j = connex(zi(jconx2-1+elmori)+nodcon(i)-1)
+        nodref(i+1,1) = vale(3*(j-1)+1)
+        nodref(i+1,2) = vale(3*(j-1)+2)
+        nodref(i+1,3) = vale(3*(j-1)+3)
     end do
 !
 !     EVALUATE THE UNIT VECTORS DEFINING THE THREE LOCAL AXES
@@ -302,9 +306,9 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
     do node = 1, nbno
 !
 !        RETRIEVE THE COORDINATES OF THE NODE
-        nodxyz(1,1) = zr(jcoor-1+3*(node-1)+1)
-        nodxyz(1,2) = zr(jcoor-1+3*(node-1)+2)
-        nodxyz(1,3) = zr(jcoor-1+3*(node-1)+3)
+        nodxyz(1,1) = vale(3*(node-1)+1)
+        nodxyz(1,2) = vale(3*(node-1)+2)
+        nodxyz(1,3) = vale(3*(node-1)+3)
 !
 !        RETRIEVE THE ELEMENTS CONTAINING THE NODE
         call jelira(jexnum(cnxinv, node), 'LONMAX', nbelno)
@@ -318,7 +322,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
             elno = zi(jelno-1+elnol)
 !
 !           ONLY THE SUPPORTED ELEMENTS ARE CONSIDERED
-            itypma=zi(jmai-1+elno)
+            itypma=typmail(elno)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
             if (((typma(1:5).eq.'HEXA8').and.(ndim.eq.3)) .or.&
@@ -328,7 +332,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !              ELEMENT DEFINITION
                 nodeps = 0
                 do nocur = 1, numnod(ndim)
-                    eldef(nocur) = zi(jconx1-1+zi(jconx2-1+elno)+ nocur-1)
+                    eldef(nocur) = connex(zi(jconx2-1+elno)+ nocur-1)
                     if (eldef(nocur) .eq. node) nodeps=nocur
                 end do
 !
@@ -376,9 +380,9 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !              DIRECTION
                 do i = 1, maxedg(ndim)
                     nodedg = eldef(nodcon(i))
-                    nodxyz(2,1) = zr(jcoor-1+3*(nodedg-1)+1)
-                    nodxyz(2,2) = zr(jcoor-1+3*(nodedg-1)+2)
-                    nodxyz(2,3) = zr(jcoor-1+3*(nodedg-1)+3)
+                    nodxyz(2,1) = vale(3*(nodedg-1)+1)
+                    nodxyz(2,2) = vale(3*(nodedg-1)+2)
+                    nodxyz(2,3) = vale(3*(nodedg-1)+3)
 !
                     nodxyz(2,1) = nodxyz(2,1) - nodxyz(1,1)
                     nodxyz(2,2) = nodxyz(2,2) - nodxyz(1,2)
@@ -504,7 +508,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
                 unsupp = unsupp + 1
 !
 !               CHECK THE DIMENSION OF THE UNSUPPORTED ELEMENT
-                ndime=zi(jtmdim-1+itypma)
+                ndime=tmdim(itypma)
 !
 !               STORE THE MAXIMUM DIMENSION OF THE UNSUPPORTED ELEMENTS
                 if (ndime .gt. dimuns) dimuns=ndime

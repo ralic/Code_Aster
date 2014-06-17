@@ -51,18 +51,26 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
 !
 !
     character(len=19) :: vitplu, accplu
-    integer :: jvitp, jaccp
     character(len=19) :: ddepla, dvitla, daccla
-    integer :: jddepl, jdvite, jdacce
     character(len=19) :: romk
-    integer :: jromk
-    integer :: i, icomp, iran(3), indro
+    integer :: i, icomp, iran(3)
     integer :: neq
     real(kind=8) :: theta1(3), theta2(3), deldet(3)
     character(len=19) :: depplu, depdel
-    integer :: jdepp, jdepde
     character(len=19) :: depkm1, vitkm1, acckm1, romkm1
-    integer :: jdepkm, jvitkm, jacckm, jromkm
+    real(kind=8), pointer :: acckm(:) => null()
+    real(kind=8), pointer :: accp(:) => null()
+    real(kind=8), pointer :: dacce(:) => null()
+    real(kind=8), pointer :: ddepl(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
+    real(kind=8), pointer :: depkm(:) => null()
+    real(kind=8), pointer :: depp(:) => null()
+    real(kind=8), pointer :: dvite(:) => null()
+    real(kind=8), pointer :: romkm(:) => null()
+    real(kind=8), pointer :: vromk(:) => null()
+    real(kind=8), pointer :: vitkm(:) => null()
+    real(kind=8), pointer :: vitp(:) => null()
+    integer, pointer :: ndro(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,7 +78,7 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
 !
 ! --- POUTRES EN GRANDES ROTATIONS
 !
-    call jeveuo(sdnume//'.NDRO', 'L', indro)
+    call jeveuo(sdnume//'.NDRO', 'L', vi=ndro)
 !
 ! --- INITIALISATIONS
 !
@@ -93,38 +101,38 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
 !
 ! --- RECUPERATION DES ADRESSES
 !
-    call jeveuo(ddepla(1:19)//'.VALE', 'L', jddepl)
-    call jeveuo(dvitla(1:19)//'.VALE', 'L', jdvite)
-    call jeveuo(daccla(1:19)//'.VALE', 'L', jdacce)
-    call jeveuo(depdel(1:19)//'.VALE', 'E', jdepde)
-    call jeveuo(depplu(1:19)//'.VALE', 'E', jdepp)
-    call jeveuo(vitplu(1:19)//'.VALE', 'E', jvitp)
-    call jeveuo(accplu(1:19)//'.VALE', 'E', jaccp)
-    call jeveuo(depkm1(1:19)//'.VALE', 'E', jdepkm)
-    call jeveuo(vitkm1(1:19)//'.VALE', 'E', jvitkm)
-    call jeveuo(acckm1(1:19)//'.VALE', 'E', jacckm)
-    call jeveuo(romkm1(1:19)//'.VALE', 'E', jromkm)
-    call jeveuo(romk(1:19) //'.VALE', 'L', jromk)
+    call jeveuo(ddepla(1:19)//'.VALE', 'L', vr=ddepl)
+    call jeveuo(dvitla(1:19)//'.VALE', 'L', vr=dvite)
+    call jeveuo(daccla(1:19)//'.VALE', 'L', vr=dacce)
+    call jeveuo(depdel(1:19)//'.VALE', 'E', vr=depde)
+    call jeveuo(depplu(1:19)//'.VALE', 'E', vr=depp)
+    call jeveuo(vitplu(1:19)//'.VALE', 'E', vr=vitp)
+    call jeveuo(accplu(1:19)//'.VALE', 'E', vr=accp)
+    call jeveuo(depkm1(1:19)//'.VALE', 'E', vr=depkm)
+    call jeveuo(vitkm1(1:19)//'.VALE', 'E', vr=vitkm)
+    call jeveuo(acckm1(1:19)//'.VALE', 'E', vr=acckm)
+    call jeveuo(romkm1(1:19)//'.VALE', 'E', vr=romkm)
+    call jeveuo(romk(1:19) //'.VALE', 'L', vr=vromk)
 !
 ! --- MISE A JOUR DEPL/VITE/ACCE
 !
     icomp = 0
     do i = 1, neq
-        if (zi(indro+i-1) .eq. 0) then
-            zr(jdepde+i-1) = zr(jdepde+i-1) + zr(jddepl+i-1)
-            zr(jdepp+i-1) = zr(jdepp+i-1) + zr(jddepl+i-1)
-            zr(jvitp+i-1) = zr(jvitp+i-1) + zr(jdvite+i-1)
-            zr(jaccp+i-1) = zr(jaccp+i-1) + zr(jdacce+i-1)
-        else if (zi(indro+i-1).eq.1) then
-            zr(jdepkm+i-1) = zr(jdepp+i-1)
-            zr(jvitkm+i-1) = zr(jvitp+i-1)
-            zr(jacckm+i-1) = zr(jaccp+i-1)
-            zr(jromkm+i-1) = zr(jromk+i-1)
+        if (ndro(i) .eq. 0) then
+            depde(i) = depde(i) + ddepl(i)
+            depp(i) = depp(i) + ddepl(i)
+            vitp(i) = vitp(i) + dvite(i)
+            accp(i) = accp(i) + dacce(i)
+        else if (ndro(i).eq.1) then
+            depkm(i) = depp(i)
+            vitkm(i) = vitp(i)
+            acckm(i) = accp(i)
+            romkm(i) = vromk(i)
             icomp = icomp + 1
             iran(icomp) = i
-            deldet(icomp) = zr(jddepl+i-1)
-            theta1(icomp) = zr(jdepp+i-1)
-            theta2(icomp) = zr(jromk+i-1)
+            deldet(icomp) = ddepl(i)
+            theta1(icomp) = depp(i)
+            theta2(icomp) = vromk(i)
             if (icomp .eq. 3) then
                 icomp = 0
                 call ndgrot(sddyna, valinc, solalg, deldet, theta1,&

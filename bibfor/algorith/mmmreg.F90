@@ -67,16 +67,18 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
     integer :: izone, imae, iptc, iptm, i
     integer :: nuno, ibid, jdecme
     integer :: posmae, nummae, nummam
-    integer :: iconex, ilong
+    integer ::  ilong
     real(kind=8) :: ksipc1, ksipc2, ksipr1, ksipr2
     integer :: jglie, jglim
     integer :: ztabf
     character(len=19) :: depcn
-    integer :: jdepdl, jdepde
+    integer :: jdepdl
     real(kind=8) :: deplpm(3), deplpe(3)
     real(kind=8) :: tau1(3), tau2(3), ff(9)
     character(len=8) :: aliase, aliasm
     logical :: lveri
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,7 +87,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 ! --- ACCES AU MAILLAGE
 !
     call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', ilong)
-    call jeveuo(noma(1:8)//'.CONNEX', 'L', iconex)
+    call jeveuo(noma(1:8)//'.CONNEX', 'L', vi=connex)
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 !
@@ -102,7 +104,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 !
 ! --- ACCES AU CHAM_NO_S POUR LES DEPLACEMENTS/LAGRANGES
 !
-    call jeveuo(depcn(1:19)//'.CNSV', 'L', jdepde)
+    call jeveuo(depcn(1:19)//'.CNSV', 'L', vr=cnsv)
     call jeveuo(depcn(1:19)//'.CNSL', 'L', jdepdl)
 !
 ! --- CREATION D OBJETS DE TRAVAIL
@@ -180,10 +182,10 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 ! --------- SUR LA MAILLE MAITRE POUR LE CALCUL DU GLISSEMENT
 !
                 do 33 i = 1, nne
-                    nuno = zi(iconex+zi(ilong-1+nummae)+i-2)
-                    deplpe(1) = deplpe(1)+zr(jdepde-1+ndd1*(nuno-1)+1) *ff(i)
-                    deplpe(2) = deplpe(2)+zr(jdepde-1+ndd1*(nuno-1)+2) *ff(i)
-                    deplpe(3) = deplpe(3)+zr(jdepde-1+ndd1*(nuno-1)+3) *ff(i)
+                    nuno = connex(1+zi(ilong-1+nummae)+i-2)
+                    deplpe(1) = deplpe(1)+cnsv(ndd1*(nuno-1)+1) *ff(i)
+                    deplpe(2) = deplpe(2)+cnsv(ndd1*(nuno-1)+2) *ff(i)
+                    deplpe(3) = deplpe(3)+cnsv(ndd1*(nuno-1)+3) *ff(i)
 33              continue
 !
 ! --------- DEPLACEMENT DU NOEUD MAITRE,
@@ -200,14 +202,14 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 ! --------- SUR LA MAILLE MAITRE
 !
                 do 40 i = 1, nnm
-                    nuno = zi(iconex+zi(ilong-1+nummam)+i-2)
+                    nuno = connex(1+zi(ilong-1+nummam)+i-2)
                     ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+1))
                     ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+2))
-                    deplpm(1) = deplpm(1)+zr(jdepde-1+ndd1*(nuno-1)+1) *ff(i)
-                    deplpm(2) = deplpm(2)+zr(jdepde-1+ndd1*(nuno-1)+2) *ff(i)
+                    deplpm(1) = deplpm(1)+cnsv(ndd1*(nuno-1)+1) *ff(i)
+                    deplpm(2) = deplpm(2)+cnsv(ndd1*(nuno-1)+2) *ff(i)
                     if (ndimg .eq. 3) then
                         ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+3))
-                        deplpm(3) = deplpm(3)+zr(jdepde-1+ndd1*(nuno- 1)+3)*ff(i)
+                        deplpm(3) = deplpm(3)+cnsv(ndd1*(nuno- 1)+3)*ff(i)
                     endif
 40              continue
 !

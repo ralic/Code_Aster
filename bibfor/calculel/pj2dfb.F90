@@ -49,17 +49,19 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
 !
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iabtco, iabtdi, iabtlc, iabtnb, iabtvr, ialin1
-    integer :: ialin2, ib, ifm, ino, iposi, k
+    integer :: i, iabtco, iabtdi, iabtlc, iabtnb, iabtvr
+    integer ::  ib, ifm, ino, iposi, k
     integer :: lont, nno1, nno2, ntr3
+    integer, pointer :: lino2(:) => null()
+    integer, pointer :: lino1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ntr3 = tria3(1)
     rbig = r8maem()
     ASSERT(ntr3.ne.0)
 !
-    call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
-    call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
+    call jeveuo('&&PJXXCO.LINO1', 'L', vi=lino1)
+    call jeveuo('&&PJXXCO.LINO2', 'L', vi=lino2)
     call jelira('&&PJXXCO.LINO1', 'LONMAX', nno1)
     call jelira('&&PJXXCO.LINO2', 'LONMAX', nno2)
 !
@@ -71,14 +73,14 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     xmax = -rbig
     ymax = -rbig
     do 10,i = 1,nno1
-    if (zi(ialin1-1+i) .eq. 0) goto 10
+    if (lino1(i) .eq. 0) goto 10
     xmin = min(xmin,geom1(3* (i-1)+1))
     xmax = max(xmax,geom1(3* (i-1)+1))
     ymin = min(ymin,geom1(3* (i-1)+2))
     ymax = max(ymax,geom1(3* (i-1)+2))
     10 end do
     do 20,i = 1,nno2
-    if (zi(ialin2-1+i) .eq. 0) goto 20
+    if (lino2(i) .eq. 0) goto 20
     xmin = min(xmin,geom2(3* (i-1)+1))
     xmax = max(xmax,geom2(3* (i-1)+1))
     ymin = min(ymin,geom2(3* (i-1)+2))

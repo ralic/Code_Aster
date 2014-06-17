@@ -39,12 +39,13 @@ subroutine vecgcy(nomres, numeg)
 #include "asterfort/wkvect.h"
     character(len=8) :: nomres, numeg, modgen
     character(len=19) :: nomnum, nomsto
-    integer :: llref, iavale, iarefe, iadesc, j, neq
+    integer ::  iavale, iarefe, iadesc, j, neq
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: jscde
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: scde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -52,11 +53,11 @@ subroutine vecgcy(nomres, numeg)
 !     =======================================
     nomnum = numeg//'      .NUME'
     nomsto = numeg//'      .SLCS'
-    call jeveuo(nomnum//'.REFN', 'L', llref)
-    modgen=zk24(llref)(1:8)
+    call jeveuo(nomnum//'.REFN', 'L', vk24=refn)
+    modgen=refn(1)(1:8)
 !
-    call jeveuo(nomsto//'.SCDE', 'L', jscde)
-    neq=zi(jscde-1+1)
+    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
+    neq=scde(1)
 !
     call wkvect(nomres//'           .VALE', 'G V R', neq, iavale)
     call wkvect(nomres//'           .REFE', 'G V K24', 2, iarefe)

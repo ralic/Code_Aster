@@ -95,7 +95,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     parameter (ntymax=69)
     parameter (nmaxfi=10)
     integer :: ifm, nivinf, ibid, iret, iaux, jaux, kaux, ima, jcesd, laux
-    integer :: jcesc, jcesl, jcesv, nrefma,  jchfpg
+    integer :: jcesc, jcesl, jcesv, nrefma
     integer :: nrcmp, nrpg, nrsp, nbpg, nbsp, nval, typmas, nbimp0, nrimpr
     integer :: nmaty0(ntymax), adraux(ntymax), nbcou, nbsec, nbfib
     integer :: adcaii, adcaik, nbgrf, nugrfi(nmaxfi)
@@ -107,6 +107,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 !
     logical :: exicar, grfidt
     character(len=16), pointer :: tabnofpg(:) => null()
+    character(len=16), pointer :: nofpgma(:) => null()
 !
 !====
 ! 1. PREALABLES
@@ -194,7 +195,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     if (typech(1:4) .eq. 'ELGA') then
         call celfpg(chanom, '&&IRCMPE.NOFPGMA', ibid)
         AS_ALLOCATE(vk16=tabnofpg, size=nval)
-        call jeveuo('&&IRCMPE.NOFPGMA', 'L', jchfpg)
+        call jeveuo('&&IRCMPE.NOFPGMA', 'L', vk16=nofpgma)
     endif
 !
     call jeexin(sdcarm//'.CANBSP    .CESV', iret)
@@ -215,7 +216,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
     nbpg = zi(laux)
     nbsp = zi(laux+1)
     if (typech(1:4) .eq. 'ELGA') then
-        nomfpg = zk16(jchfpg+ima-1)
+        nomfpg = nofpgma(ima)
     endif
     nbcou = 0
     nbsec = 0

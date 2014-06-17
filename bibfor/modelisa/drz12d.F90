@@ -68,7 +68,6 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_no
-    integer :: jcoor
     integer ::   jprnm
     integer :: nbec
     integer :: jlino, numnoe_m, numnoe_a
@@ -85,6 +84,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -108,7 +108,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! - Nodes coordinates
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! - List of nodes to apply linear relation
 !
@@ -153,8 +153,8 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
 ! --------- Distances: x = DX(A) - DX(M) and y = DY(A) - DY(M)
 !
-            x = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1)+1)
-            y = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1)+2)
+            x = vale(3*(numnoe_m-1)+1) - vale(3*(numnoe_a-1)+1)
+            y = vale(3*(numnoe_m-1)+2) - vale(3*(numnoe_a-1)+2)
 !
 ! --------- First relation: DX(M) - DX(A) + Y*DRZ(A) = 0
 !

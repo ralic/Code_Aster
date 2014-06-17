@@ -47,8 +47,8 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
 !     POUR LE RACCORD (COQUE OU 3D)_TUYAU
 !
 !
-    integer :: nma, ima, inopou, iconex, nbno, ier, i, j, ntseg3, jdtm, nutyma
-    integer :: idesc, ncmpmx, ivale, iptma, igd, idebgd, jcoor
+    integer :: nma, ima, inopou, iconex, nbno, ier, i, j, ntseg3,  nutyma
+    integer :: idesc, ncmpmx, ivale,  igd, idebgd
     integer :: inopo1, inopo2, icoude, nno, ntseg4
     character(len=8) :: nomgd, nocmp(3), noepo1, noepo2, typrac
     character(len=19) :: chcara
@@ -57,6 +57,9 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     real(kind=8) :: rayon
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), l, omega, theta
     real(kind=8) :: pgl4(3, 3)
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: coor(:) => null()
+    integer, pointer :: ptma(:) => null()
 !
     call jemarq()
     call infniv(ifm, info)
@@ -86,8 +89,8 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
 !
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG3'), ntseg3)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG4'), ntseg4)
-    call jeveuo(noma//'.TYPMAIL', 'L', jdtm)
-    nutyma = zi(jdtm+ima-1)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    nutyma = typmail(ima)
     if (nutyma .eq. ntseg3) then
         nno=3
     else if (nutyma.eq.ntseg4) then
@@ -114,12 +117,12 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
 !
 ! --- RECUPERATION DU VECTEUR D'ADRESSAGE DANS LA CARTE CREE PAR ETENCA
 !
-    call jeveuo(chcara//'.PTMA', 'L', iptma)
+    call jeveuo(chcara//'.PTMA', 'L', vi=ptma)
 !
 !     RECUPERATION DES ANGLES NAUTIQUES
 !
-    if (zi(iptma+ima-1) .ne. 0) then
-        igd = zi(iptma+ima-1)
+    if (ptma(ima) .ne. 0) then
+        igd = ptma(ima)
         idebgd = (igd-1)*ncmpmx
 !        RECUPERATION DE L'ORIENTATION
 !         DO 10 I=1,3
@@ -134,13 +137,13 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
 !
 !     CALCUL DU VECTEUR E1 ORIENTANT LA MAILLE TUYAU
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    coono1(1) = zr(jcoor-1+3*(inopo1-1)+1)
-    coono1(2) = zr(jcoor-1+3*(inopo1-1)+2)
-    coono1(3) = zr(jcoor-1+3*(inopo1-1)+3)
-    coono2(1) = zr(jcoor-1+3*(inopo2-1)+1)
-    coono2(2) = zr(jcoor-1+3*(inopo2-1)+2)
-    coono2(3) = zr(jcoor-1+3*(inopo2-1)+3)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coor)
+    coono1(1) = coor(3*(inopo1-1)+1)
+    coono1(2) = coor(3*(inopo1-1)+2)
+    coono1(3) = coor(3*(inopo1-1)+3)
+    coono2(1) = coor(3*(inopo2-1)+1)
+    coono2(2) = coor(3*(inopo2-1)+2)
+    coono2(3) = coor(3*(inopo2-1)+3)
     call vdiff(3, coono2, coono1, e1)
     call normev(e1, nore1)
     nocmp(1) = 'X'

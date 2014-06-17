@@ -50,16 +50,18 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer ::  jsolu1, jsolu2, jsecm, jrefa1, nsecmb
+    integer ::  jsolu1, jsolu2,   nsecmb
     character(len=19) :: matas2, secm19, solve2, solu19
     character(len=24) :: solu2
+    real(kind=8), pointer :: secm(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
 !
-    call jeveuo(matas1//'.REFA', 'L', jrefa1)
-    matas2=zk24(jrefa1-1+19)(1:19)
+    call jeveuo(matas1//'.REFA', 'L', vk24=refa)
+    matas2=refa(19)(1:19)
     ASSERT(matas2.ne.' ')
     call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solve2)
 !
@@ -73,8 +75,8 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm, chsolu,&
     solu2='&&ELG_RESOUD.SOLU2'
     if (nsecm .eq. 0) then
         secm19=chsecm
-        call jeveuo(secm19//'.VALE', 'L', jsecm)
-        call elg_calc_rhs_red(matas1, 1, zr(jsecm), solu2)
+        call jeveuo(secm19//'.VALE', 'L', vr=secm)
+        call elg_calc_rhs_red(matas1, 1, secm, solu2)
     else
         ASSERT(nsecm.gt.0)
         call elg_calc_rhs_red(matas1, nsecm, rsolu, solu2)

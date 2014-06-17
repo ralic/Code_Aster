@@ -51,8 +51,12 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, icoef, idecgr, iel, im, inum
-    integer :: j, jceld, jligr, k, lcelk, lvale, nbgr
+    integer :: j,   k,   nbgr
     integer :: nel
+    character(len=24), pointer :: celk(:) => null()
+    real(kind=8), pointer :: celv(:) => null()
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: celd(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     champ2 = champ
@@ -66,13 +70,13 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
     if (docu .ne. 'CHML') then
         call utmess('F', 'CALCULEL3_52')
     endif
-    call jeveuo(champ2//'.CELK', 'L', lcelk)
-    ligrel = zk24(lcelk)(1:19)
+    call jeveuo(champ2//'.CELK', 'L', vk24=celk)
+    ligrel = celk(1)(1:19)
 !
-    call jeveuo(champ2//'.CELD', 'L', jceld)
+    call jeveuo(champ2//'.CELD', 'L', vi=celd)
 !
 !     --- TYPE DE LA GRANDEUR ---
-    scal= scalai(zi(jceld))
+    scal= scalai(celd(1))
 !
     nbgr = nbgrel(ligrel)
 !
@@ -85,21 +89,21 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
         call utmess('F', 'CALCULEL3_74', sk=scal)
     endif
 !
-    call jeveuo(champ2//'.CELV', 'L', lvale)
+    call jeveuo(champ2//'.CELV', 'L', vr=celv)
     if (nbmail .le. 0) then
         do 30 j = 1, nbgr
-            mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+            mode=celd(celd(4+j) +2)
             if (mode .eq. 0) goto 30
             longt = digdel(mode)
-            icoef=max(1,zi(jceld-1+4))
+            icoef=max(1,celd(4))
             longt = longt * icoef
             nel = nbelem(ligrel,j)
-            idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+            idecgr=celd(celd(4+j)+8)
             do 32 k = 1, nel
 !
 !              --- TOTALE ---
                 i = 1
-                ztot = zr(lvale-1+idecgr+(k-1)*longt+i-1)
+                ztot = celv(idecgr+(k-1)*longt+i-1)
                 vr(1) = vr(1)+ ztot
 32          continue
 30      continue
@@ -107,22 +111,22 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
     else
         ztot = rzero
         do 34 j = 1, nbgr
-            mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+            mode=celd(celd(4+j) +2)
             if (mode .eq. 0) goto 34
             longt = digdel(mode)
-            icoef=max(1,zi(jceld-1+4))
+            icoef=max(1,celd(4))
             longt = longt * icoef
             nel = nbelem(ligrel,j)
-            idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+            idecgr=celd(celd(4+j)+8)
             do 36 k = 1, nel
-                ztot = ztot + zr(lvale-1+idecgr+(k-1)*longt)
+                ztot = ztot + celv(idecgr+(k-1)*longt)
 36          continue
 34      continue
-        call jeveuo(ligrel//'.LIEL', 'L', jligr)
+        call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
         do 40 im = 1, nbmail
             inum = 0
             do 42 j = 1, nbgr
-                mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+                mode=celd(celd(4+j) +2)
                 nel = nbelem(ligrel,j)
 !
                 if (mode .eq. 0) then
@@ -130,17 +134,17 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
                     goto 42
                 endif
                 longt = digdel(mode)
-                icoef=max(1,zi(jceld-1+4))
+                icoef=max(1,celd(4))
                 longt = longt * icoef
 !
-                idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+                idecgr=celd(celd(4+j)+8)
                 do 44 k = 1, nel
-                    iel = zi(jligr+inum+k-1)
+                    iel = liel(1+inum+k-1)
                     if (iel .ne. nummai(im)) goto 44
 !
 !                 --- TOTALE ---
                     i = 1
-                    vr(1) = vr(1)+ zr(lvale-1+idecgr+(k-1)*longt+i-1)
+                    vr(1) = vr(1)+ celv(idecgr+(k-1)*longt+i-1)
                     goto 40
 44              continue
                 inum = inum + nel + 1

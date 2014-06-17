@@ -64,8 +64,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 !     ------------------------------------------------------------------
 !
     integer :: nbsigr, jnsg, is1, ioc1, is2, ioc2, inds, ifm, niv, jcombi
-    integer :: jpresa, jpresb, jmomea, jmomeb, jnbocc, nbth1, jth1, nbth2, jth2
-    integer :: jchmat,  ndim,  nscy, ns,  nbsig2, i1, i2, indi
+    integer ::      nbth1, jth1, nbth2, jth2
+    integer ::   ndim,  nscy, ns,  nbsig2, i1, i2, indi
     integer ::   nbsitu
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij, ug, sn, sp, smm, mpi(3), mpj(3)
     real(kind=8) :: mqi(3), mqj(3), mse(3), matpi(14), matpj(14), matqi(14)
@@ -78,6 +78,12 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
     real(kind=8), pointer :: matrice_salt(:) => null()
     real(kind=8), pointer :: matrice_sn(:) => null()
     integer, pointer :: nb_occurr(:) => null()
+    integer, pointer :: situ_nb_occur(:) => null()
+    real(kind=8), pointer :: situ_pres_b(:) => null()
+    character(len=24), pointer :: situ_moment_b(:) => null()
+    character(len=24), pointer :: situ_moment_a(:) => null()
+    real(kind=8), pointer :: situ_pres_a(:) => null()
+    character(len=24), pointer :: materiau(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -85,13 +91,13 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 !
     call jeveuo('&&RC3600.SITU_NUMERO', 'L', vi=situ_numero)
     call jeveuo('&&RC3600.SITU_COMBINABLE', 'L', jcombi)
-    call jeveuo('&&RC3600.SITU_PRES_A', 'L', jpresa)
-    call jeveuo('&&RC3600.SITU_PRES_B', 'L', jpresb)
-    call jeveuo('&&RC3600.SITU_MOMENT_A', 'L', jmomea)
-    call jeveuo('&&RC3600.SITU_MOMENT_B', 'L', jmomeb)
-    call jeveuo('&&RC3600.SITU_NB_OCCUR', 'L', jnbocc)
+    call jeveuo('&&RC3600.SITU_PRES_A', 'L', vr=situ_pres_a)
+    call jeveuo('&&RC3600.SITU_PRES_B', 'L', vr=situ_pres_b)
+    call jeveuo('&&RC3600.SITU_MOMENT_A', 'L', vk24=situ_moment_a)
+    call jeveuo('&&RC3600.SITU_MOMENT_B', 'L', vk24=situ_moment_b)
+    call jeveuo('&&RC3600.SITU_NB_OCCUR', 'L', vi=situ_nb_occur)
 !
-    call jeveuo('&&RC3600.MATERIAU', 'L', jchmat)
+    call jeveuo('&&RC3600.MATERIAU', 'L', vk24=materiau)
 !
     call jelira('&&RC3600.SITU_PRES_A', 'LONUTI', nbsitu)
     call jelira(jexnum('&&RC3600.LES_GROUPES', ig), 'LONMAX', nbsigr)
@@ -116,16 +122,16 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 !
     ns = 0
     if (seisme) then
-        momepi = zk24(jmomea+nbsitu+iocs-1)
+        momepi = situ_moment_a(1+nbsitu+iocs-1)
         call rcmo01(momepi, ima, ipt, mse)
         mse(1) = 2*mse(1)
         mse(2) = 2*mse(2)
         mse(3) = 2*mse(3)
-        matepi = zk24(jchmat+2*(nbsitu+iocs)-1)
+        matepi = materiau(1+2*(nbsitu+iocs)-1)
         call rcma01(matepi, ima, ipt, nbm, adrm,&
                     matse)
-        ns = zi(jnbocc+2*(nbsitu+iocs)-2)
-        nscy = zi(jnbocc+2*(nbsitu+iocs)-1)
+        ns = situ_nb_occur(1+2*(nbsitu+iocs)-2)
+        nscy = situ_nb_occur(1+2*(nbsitu+iocs)-1)
     else
         mse(1) = 0.d0
         mse(2) = 0.d0
@@ -143,23 +149,23 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
         if (ioc1 .gt. nbsitu) goto 20
 !
         i1 = i1 + 1
-        nb_occurr(2* (i1-1)+1) = zi(jnbocc+2*ioc1-2)
-        nb_occurr(2* (i1-1)+2) = zi(jnbocc+2*ioc1-2)
+        nb_occurr(2* (i1-1)+1) = situ_nb_occur(1+2*ioc1-2)
+        nb_occurr(2* (i1-1)+2) = situ_nb_occur(1+2*ioc1-2)
         impr_situ(2* (i1-1)+1) = ioc1
         impr_situ(2* (i1-1)+2) = ioc1
 !
-        ppi = zr(jpresa+ioc1-1)
-        momepi = zk24(jmomea+ioc1-1)
+        ppi = situ_pres_a(ioc1)
+        momepi = situ_moment_a(ioc1)
         call rcmo01(momepi, ima, ipt, mpi)
-        matepi = zk24(jchmat+2*ioc1-1)
+        matepi = materiau(1+2*ioc1-1)
         call rcma01(matepi, ima, ipt, nbm, adrm,&
                     matpi)
         typeke = matpi(14)
 !
-        ppj = zr(jpresb+ioc1-1)
-        momepj = zk24(jmomeb+ioc1-1)
+        ppj = situ_pres_b(ioc1)
+        momepj = situ_moment_b(ioc1)
         call rcmo01(momepj, ima, ipt, mpj)
-        matepj = zk24(jchmat+2*ioc1-2)
+        matepj = materiau(1+2*ioc1-2)
         call rcma01(matepj, ima, ipt, nbm, adrm,&
                     matpj)
 !
@@ -234,17 +240,17 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
             if (ioc2 .gt. nbsitu) goto 10
             i2 = i2 + 1
 !
-            pqi = zr(jpresa+ioc2-1)
-            momeqi = zk24(jmomea+ioc2-1)
+            pqi = situ_pres_a(ioc2)
+            momeqi = situ_moment_a(ioc2)
             call rcmo01(momeqi, ima, ipt, mqi)
-            mateqi = zk24(jchmat+2*ioc2-1)
+            mateqi = materiau(1+2*ioc2-1)
             call rcma01(mateqi, ima, ipt, nbm, adrm,&
                         matqi)
 !
-            pqj = zr(jpresb+ioc2-1)
-            momeqj = zk24(jmomeb+ioc2-1)
+            pqj = situ_pres_b(ioc2)
+            momeqj = situ_moment_b(ioc2)
             call rcmo01(momeqj, ima, ipt, mqj)
-            mateqj = zk24(jchmat+2*ioc2-2)
+            mateqj = materiau(1+2*ioc2-2)
             call rcma01(mateqj, ima, ipt, nbm, adrm,&
                         matqj)
 !

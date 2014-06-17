@@ -67,8 +67,11 @@ subroutine xgecfi(modele, depgeo)
     character(len=19) :: gesclo, ltno, fissno, heavfa
     character(len=1) :: base
     logical :: debug
-    integer :: ifmdbg, nivdbg, iret, jnoma, nbma, ima
-    integer :: jcesd, jcesl, jcesd2, jcesv, iad
+    integer :: ifmdbg, nivdbg, iret,  nbma, ima
+    integer :: jcesd, jcesl,   iad
+    integer, pointer :: cesv(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: cesd2(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,23 +106,23 @@ subroutine xgecfi(modele, depgeo)
 !
 ! --- RECOPIE DU NOMBRE DE SOUS POINTS DE TOPOFAC.OE DANS TOPOFAC.GE/M
 !
-        call jeveuo(modele//'.MODELE    .LGRF', 'L', jnoma)
-        noma = zk8(jnoma)
+        call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
+        noma = lgrf(1)
         call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
         call celces(gesclo, 'V', '&&XGECFI.GESCLO')
-        call jeveuo('&&XGECFI.GESCLO    .CESD', 'L', jcesd2)
+        call jeveuo('&&XGECFI.GESCLO    .CESD', 'L', vi=cesd2)
         licmp(1) = 'NPG_DYN'
         licmp(2) = 'NCMP_DYN'
         call cescre('V', newges, 'ELEM', noma, 'DCEL_I',&
                     2, licmp, [0], [-1], [-2])
         call jeveuo(newges//'.CESD', 'L', jcesd)
-        call jeveuo(newges//'.CESV', 'E', jcesv)
+        call jeveuo(newges//'.CESV', 'E', vi=cesv)
         call jeveuo(newges//'.CESL', 'E', jcesl)
         do ima = 1, nbma
             call cesexi('S', jcesd, jcesl, ima, 1,&
                         1, 1, iad)
             zl(jcesl-1-iad) = .true.
-            zi(jcesv-1-iad) = zi(jcesd2-1+5+4*(ima-1)+2)
+            cesv(1-1-iad) = cesd2(5+4*(ima-1)+2)
         end do
         call copisd('CHAM_ELEM_S', 'V', newges, newgem)
         call detrsd('CHAM_ELEM_S', '&&XGECFI.GESCLO')

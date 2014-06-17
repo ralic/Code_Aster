@@ -44,29 +44,32 @@ subroutine gicnx2()
     character(len=8) :: nomobj
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacnex, iacnx2, iadesc, ianoob, ima, imat
+    integer :: i,  iacnx2,   ima, imat
     integer :: ino, iret, lont, nbel, nbmato, nbno, nbobj
     integer :: nbobj4
+    integer, pointer :: descobj(:) => null()
+    character(len=8), pointer :: vnomobj(:) => null()
+    integer, pointer :: connex(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeexin('&&GILIRE.NOMOBJ', iret)
     if (iret .eq. 0) then
         call utmess('F', 'PREPOST_46')
     endif
-    call jeveuo('&&GILIRE.NOMOBJ', 'L', ianoob)
+    call jeveuo('&&GILIRE.NOMOBJ', 'L', vk8=vnomobj)
 !
 !     -- RECUPERATION DU NOMBRE D'OBJETS LUS:
     call jelira('&&GILIRE.DESCOBJ', 'LONMAX', nbobj4)
-    call jeveuo('&&GILIRE.DESCOBJ', 'L', iadesc)
+    call jeveuo('&&GILIRE.DESCOBJ', 'L', vi=descobj)
     nbobj = nbobj4/4
 !
 !     -- CALCUL DES DIMENSIONS DE L'OBJET .CONNEX2:
     nbmato=0
     lont  =0
     do 1 i = 1, nbobj
-        if (zi(iadesc-1+4*(i-1)+1) .ne. 0) goto 1
-        nbno=zi(iadesc-1+4*(i-1)+3)
-        nbel=zi(iadesc-1+4*(i-1)+4)
+        if (descobj(4*(i-1)+1) .ne. 0) goto 1
+        nbno=descobj(4*(i-1)+3)
+        nbel=descobj(4*(i-1)+4)
         nbmato=nbmato+nbel
         lont= lont+nbel*nbno
  1  end do
@@ -77,19 +80,19 @@ subroutine gicnx2()
     call jeecra('&&GILIRE.CONNEX2', 'LONT', lont)
     imat=0
     do 2 i = 1, nbobj
-        if (zi(iadesc-1+4*(i-1)+1) .ne. 0) goto 2
-        nbno=zi(iadesc-1+4*(i-1)+3)
-        nbel=zi(iadesc-1+4*(i-1)+4)
-        nomobj=zk8(ianoob-1+2*(i-1)+1)
+        if (descobj(4*(i-1)+1) .ne. 0) goto 2
+        nbno=descobj(4*(i-1)+3)
+        nbel=descobj(4*(i-1)+4)
+        nomobj=vnomobj(2*(i-1)+1)
         if (nbel .eq. 0) goto 2
-        call jeveuo('&&GILIRE'//nomobj//'.CONNEX', 'L', iacnex)
+        call jeveuo('&&GILIRE'//nomobj//'.CONNEX', 'L', vi=connex)
         do 3 ima = 1, nbel
             imat = imat +1
             call jecroc(jexnum('&&GILIRE.CONNEX2', imat))
             call jeecra(jexnum('&&GILIRE.CONNEX2', imat), 'LONMAX', nbno)
             call jeveuo(jexnum('&&GILIRE.CONNEX2', imat), 'E', iacnx2)
             do 4 ino = 1, nbno
-                zi(iacnx2-1+ino)=zi(iacnex-1+nbno*(ima-1)+ino)
+                zi(iacnx2-1+ino)=connex(nbno*(ima-1)+ino)
  4          continue
  3      continue
  2  end do

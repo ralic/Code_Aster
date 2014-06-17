@@ -78,8 +78,8 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 #include "mpif.h"
 #include "jeveux.h"
     type (zmumps_struc) , pointer :: zmpsk => null()
-    integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
-    integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
+    integer ::   rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
+    integer :: ietrat,  nprec,  ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) :: rouc, type, prec
     character(len=5) :: etam, klag2
     character(len=8) :: ktypr
@@ -90,6 +90,10 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
     real(kind=8) :: epsmax, valr(2), rctdeb, rbid(1), temps(6), epsmat
     logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
     logical :: lopfac
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: slvi(:) => null()
+    real(kind=8), pointer :: slvr(:) => null()
+    character(len=24), pointer :: refa(:) => null()
     call jemarq()
 !
 !       ------------------------------------------------
@@ -116,57 +120,57 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
     ASSERT((rouc.eq.'C').and.(prec.eq.'D'))
     zmpsk=>zmps(kxmps)
     iret=0
-    call jeveuo(nosolv//'.SLVK', 'E', jslvk)
-    call jeveuo(nosolv//'.SLVR', 'L', jslvr)
-    call jeveuo(nosolv//'.SLVI', 'E', jslvi)
+    call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
+    call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
+    call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
 !
 ! --- L'UTILISATEUR VEUT-IL UNE ESTIMATION DE LA QUALITE DE LA SOL ?
 ! --- => LQUALI
-    epsmax=zr(jslvr-1+2)
+    epsmax=slvr(2)
     lquali=(epsmax.gt.0.d0)
 !
 ! --- POUR "ELIMINER" LE 2EME LAGRANGE :
 ! --- OPTION DEBRANCHEE SI CALCUL DE DETERMINANT
-    klag2=zk24(jslvk-1+6)
+    klag2=slvk(6)
     lbis=klag2(1:5).eq.'LAGR2'
 !
 ! --- TRES PROBABLEMENT COMMANDE FACTORISER (POSTTRAITEMENTS
 ! --- INITIALISE A 'XXXX'). ON NE DETRUIRA RIEN A L'ISSU DE LA
 ! --- FACTO, AU CAS OU UN OP. RESOUDRE + RESI_RELA>0 SUIVRAIT
-    if (zk24(jslvk-1+11)(1:4) .eq. 'XXXX') then
+    if (slvk(11)(1:4) .eq. 'XXXX') then
         lopfac=.true.
     else
         lopfac=.false.
     endif
 !
 ! --- TYPE DE RESOLUTION
-    ktypr=zk24(jslvk-1+3)
+    ktypr=slvk(3)
     if (ktypr(1:6) .eq. 'SYMDEF') then
         call utmess('F', 'FACTOR_80')
     endif
 !
 ! --- PARAMETRE NPREC
-    nprec=zi(jslvi)
+    nprec=slvi(1)
 !
 ! --- MUMPS PARALLELE DISTRIBUE ?
-    call jeveuo(nomat//'.REFA', 'L', jrefa)
-    ldist=(zk24(jrefa-1+11).ne.'MPI_COMPLET')
+    call jeveuo(nomat//'.REFA', 'L', vk24=refa)
+    ldist=(refa(11).ne.'MPI_COMPLET')
     rang=zmpsk%myid
     nbproc=zmpsk%nprocs
 !
 ! --- MATRICE ASTER DISTRIBUEE ?
-    lmd = zk24(jslvk-1+10)(1:3).eq.'OUI'
+    lmd = slvk(10)(1:3).eq.'OUI'
 !
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)
-    lpreco = zk24(jslvk-1+8)(1:3).eq.'OUI'
+    lpreco = slvk(8)(1:3).eq.'OUI'
 !
 ! --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
-    epsmat=zr(jslvr-1+1)
+    epsmat=slvr(1)
 !
 ! --- STRATEGIE MEMOIRE POUR MUMPS
-    usersm=zk24(jslvk-1+9)
-    nbfact=zi(jslvi-1+6)
+    usersm=slvk(9)
+    nbfact=slvi(6)
 !
 ! --- POUR MONITORING
     call amumpt(0, kmonit, temps, rang, nbproc,&
@@ -198,13 +202,13 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !       ----------------------------------------------------------
         call amumpu(3, type, kxmps, k12bid, ibid,&
                     lbid, kvers, ibid)
-        zk24(jslvk-1+12)=kvers
+        slvk(12)=kvers
 !
 !       -----------------------------------------------------
 !       CALCUL DU DETERMINANT PART I ?
 !       -----------------------------------------------------
         ldet=.false.
-        if (zi(jslvi-1+5) .eq. 1) then
+        if (slvi(5) .eq. 1) then
             select case (kvers)
                 case('4.10.0')
 ! --- ON DEBRANCHE ELIM_LAGR='LAGR2' CAR CELA FAUSSE LA VALEUR DU DETER
@@ -212,7 +216,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
                 if ((niv.ge.2) .and. (lbis) .and. (.not.lpreco)) then
                     call utmess('I', 'FACTOR_88')
                 endif
-                zk24(jslvk-1+6)='NON'
+                slvk(6)='NON'
                 klag2='NON'
                 lbis=.false.
                 ldet=.true.
@@ -234,7 +238,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !       -----------------------------------------------------
 !       CONSERVE-T-ON LES FACTEURS OU NON ?
 !       -----------------------------------------------------
-        if (zi(jslvi-1+4) .eq. 1) then
+        if (slvi(4) .eq. 1) then
             select case (kvers)
                 case('4.10.0')
                 zmpsk%icntl(31)=1
@@ -288,9 +292,9 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
                 endif
             endif
         endif
-        if (zk24(jslvk-1+4) .ne. 'AUTO' .and. zmpsk%icntl(7) .ne. zmpsk% infog(7) .and.&
+        if (slvk(4) .ne. 'AUTO' .and. zmpsk%icntl(7) .ne. zmpsk% infog(7) .and.&
             (.not.lpreco)) then
-            call utmess('A', 'FACTOR_50', sk=zk24(jslvk-1+4))
+            call utmess('A', 'FACTOR_50', sk=slvk(4))
         endif
 !
 !       -----------------------------------------------------
@@ -350,7 +354,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
                     else
 ! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
                         zmpsk%icntl(14)=zmpsk%icntl(14) * to_mumps_int(pcentp(2))
-                        zi(jslvi-1+2)=zmpsk%icntl(14)
+                        slvi(2)=zmpsk%icntl(14)
                         if ((niv.ge.2) .and. (.not.lpreco)) then
                             vali(1)=zmpsk%icntl(14)/pcentp(2)
                             vali(2)=zmpsk%icntl(14)

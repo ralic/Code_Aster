@@ -59,8 +59,11 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialsch, iamacr, iarefr, iasssa
+    integer :: i, ialsch
     integer :: iret, nbsma, nbssa
+    character(len=24), pointer :: rerr(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
@@ -69,11 +72,11 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !
     if (nbssa .eq. 0) goto 999
 !
-    call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
-    call jeveuo(ma//'.NOMACR', 'L', iamacr)
+    call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
+    call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
 !
-    call jeveuo(vecel//'.RERR', 'E', iarefr)
-    zk24(iarefr-1+3)(1:3)='OUI'
+    call jeveuo(vecel//'.RERR', 'E', vk24=rerr)
+    rerr(3)(1:3)='OUI'
 !
     call jecrec(vecel//'.RELC', 'V V I', 'NO', 'CONTIG', 'CONSTANT',&
                 1)
@@ -88,9 +91,9 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !     -- ON VERIFIE QUE LES VECTEURS ELEMENTAIRES SONT CALCULES:
 !     ----------------------------------------------------------
     do i = 1, nbsma
-        if (zi(iasssa-1+i) .eq. 0) goto 3
+        if (sssa(i) .eq. 0) goto 3
         call jenuno(jexnum(ma//'.SUPMAIL', i), nosma)
-        nomacr= zk8(iamacr-1+i)
+        nomacr= vnomacr(i)
         call jeexin(jexnom(nomacr//'.LICA', nomcas), iret)
         if (iret .gt. 0) then
             zi(ialsch-1+i)=1

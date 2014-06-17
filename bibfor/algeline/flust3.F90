@@ -92,13 +92,14 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     integer :: imatra, inbmag, inbneq, inbnog, inomcy, inomeq, inum
     integer :: ior, iphix, iphiy, ireq, irint
     integer :: irugg, ixint, iyint, iz, izg, izint, j
-    integer :: jdco, jtypg, lfacx, lmasg, lrigg, n, n1
+    integer ::  jtypg, lfacx, lmasg, lrigg, n, n1
     integer :: nbcyl, nbddl, nbfin, nbgrma, nbgrmx, nbgrp, nbgtot
     integer :: nbnoe, nbtot, nbtron, nbz, ncoor, ndir, neq
     integer :: nima, nima2, nn, nt, ntypg, numno1, numno2
 !
     real(kind=8) :: ang, epsit, g, pi, x1
     real(kind=8) :: x2, y1, y2, z1, z2, zmax, zmin
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     data iddl    /1,2,3,4,5,6/
@@ -290,7 +291,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     call dismoi('NB_EQUA', matria, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_MAILLA', matria, 'MATR_ASSE', repk=mailla)
     call jelira(mailla//'.NOMNOE', 'NOMUTI', nbnoe)
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', jdco)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
 !
 ! --- 2.RECHERCHE DES NOMS DES GROUPES DE NOEUDS DONNES SOUS UNE
@@ -370,12 +371,12 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 !
     numno1 = zi(zi(iadnog) )
     numno2 = zi(zi(iadnog)+1)
-    x1 = zr(jdco+(numno1-1)*3 )
-    y1 = zr(jdco+(numno1-1)*3+1)
-    z1 = zr(jdco+(numno1-1)*3+2)
-    x2 = zr(jdco+(numno2-1)*3 )
-    y2 = zr(jdco+(numno2-1)*3+1)
-    z2 = zr(jdco+(numno2-1)*3+2)
+    x1 = vale(1+(numno1-1)*3 )
+    y1 = vale(1+(numno1-1)*3+1)
+    z1 = vale(1+(numno1-1)*3+2)
+    x2 = vale(1+(numno2-1)*3 )
+    y2 = vale(1+(numno2-1)*3+1)
+    z2 = vale(1+(numno2-1)*3+2)
     if (abs(x1-x2) .lt. epsit .and. abs(y1-y2) .lt. epsit) then
         ndir = 3
         irot(1) = 1
@@ -429,7 +430,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
     irint = izint + nbz*nbfin
 !
     call mefcen(caelem, iequiv, nbcyl, nbz, irot,&
-                zi(iadnog), zi(inbnog), zi(iadmag), zi(igreq), zr(jdco),&
+                zi(iadnog), zi(inbnog), zi(iadmag), zi(igreq), vale,&
                 zr(icency), zr(ireq), zr(ixint), zr(iyint), zr(izint),&
                 zr(irint), nbgrp)
 !

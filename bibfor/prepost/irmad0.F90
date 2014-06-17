@@ -54,22 +54,24 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadesc, iaec, ianueq, iaprno, iarefe
+    integer :: i, iad, iadesc, iaec,  iaprno
     integer :: ibid, ifc, ino, iret, itype
     integer ::  nbno, ncmpmx, nec
     character(len=8), pointer :: nomnoe(:) => null()
     integer, pointer :: numnoe(:) => null()
+    integer, pointer :: nueq(:) => null()
+    character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     chamn = chamno(1)
 !
-    call jeveuo(chamn//'.REFE', 'L', iarefe)
+    call jeveuo(chamn//'.REFE', 'L', vk24=refe)
 !
 !     --- NOM DU MAILLAGE
-    nomma = zk24(iarefe-1+1) (1:8)
+    nomma = refe(1) (1:8)
 !
 !     --- NOM DU PROFIL AUX NOEUDS ASSOCIE S'IL EXISTE
-    nomnu = zk24(iarefe-1+2)
+    nomnu = refe(2)
 !
     call jelira(chamn//'.VALE', 'TYPE', cval=type)
     if (type .eq. 'R') then
@@ -118,7 +120,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !
 !     --- SI LE CHAMP EST DECRIT PAR UN "PRNO":
     if (num .ge. 0) then
-        call jeveuo(nomnu(1:19)//'.NUEQ', 'L', ianueq)
+        call jeveuo(nomnu(1:19)//'.NUEQ', 'L', vi=nueq)
         call jenonu(jexnom(nomnu(1:19)//'.LILI', '&MAILLA'), ibid)
         call jeveuo(jexnum(nomnu(1:19)//'.PRNO', ibid), 'L', iaprno)
     endif
@@ -136,7 +138,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !
     if (num .ge. 0) then
         ncmpmx = 6
-        call irmad1(ifc, versio, nbno, zi(iaprno), zi(ianueq),&
+        call irmad1(ifc, versio, nbno, zi(iaprno), nueq,&
                     nec, zi(iaec), ncmpmx, itype, nstat,&
                     chamno, zk8(iad), nomsym,numnoe)
     else

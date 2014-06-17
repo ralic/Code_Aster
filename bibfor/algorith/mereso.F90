@@ -80,8 +80,8 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
     character(len=6) :: nompro
     parameter ( nompro = 'MERESO' )
-    integer :: jcri, jcrr, jcrk
-    integer :: jpara, iainst, islvk
+    integer ::   jcrk
+    integer :: jpara, iainst
     integer :: iret
     integer :: ifm, niv
     character(len=8) :: k8bid
@@ -90,6 +90,9 @@ subroutine mereso(result, modele, mate, carele, fomult,&
     character(len=24) :: criter
     character(len=24) :: depl
     complex(kind=8) :: cbid
+    integer, pointer :: crti(:) => null()
+    real(kind=8), pointer :: crtr(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! DEB-------------------------------------------------------------------
@@ -103,7 +106,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
 ! 1.2. ==> NOM DES STRUCTURES
 !
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     chsol = '&&'//nompro//'_SOLUTION  '
     criter = '&&'//nompro//'_RESGRA_GCPC    '
 !
@@ -165,13 +168,13 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
     call rsadpa(result, 'E', 1, 'METHODE', itps,&
                 0, sjv=jpara, styp=k8bid)
-    zk16(jpara) = zk24(islvk)(1:16)
+    zk16(jpara) = slvk(1)(1:16)
     call rsadpa(result, 'E', 1, 'RENUM', itps,&
                 0, sjv=jpara, styp=k8bid)
-    zk16(jpara) = zk24(islvk+3)(1:16)
+    zk16(jpara) = slvk(4)(1:16)
     call rsadpa(result, 'E', 1, 'STOCKAGE', itps,&
                 0, sjv=jpara, styp=k8bid)
-    if (zk24(islvk)(1:4) .eq. 'LDLT') then
+    if (slvk(1)(1:4) .eq. 'LDLT') then
         zk16(jpara) = 'LIGN_CIEL'
     else
         zk16(jpara) = 'MORSE'
@@ -181,15 +184,15 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 !
     call jeexin(criter(1:19)//'.CRTI', iret)
     if (iret .ne. 0) then
-        call jeveuo(criter(1:19)//'.CRTI', 'L', jcri)
-        call jeveuo(criter(1:19)//'.CRTR', 'L', jcrr)
+        call jeveuo(criter(1:19)//'.CRTI', 'L', vi=crti)
+        call jeveuo(criter(1:19)//'.CRTR', 'L', vr=crtr)
         call jeveuo(criter(1:19)//'.CRDE', 'L', jcrk)
         call rsadpa(result, 'E', 1, zk16(jcrk), itps,&
                     0, sjv=jpara, styp=k8bid)
-        zi(jpara) = zi(jcri)
+        zi(jpara) = crti(1)
         call rsadpa(result, 'E', 1, zk16(jcrk+1), itps,&
                     0, sjv=jpara, styp=k8bid)
-        zr(jpara) = zr(jcrr)
+        zr(jpara) = crtr(1)
     endif
     call uttcpu('CPU.OP0046.3', 'FIN', ' ')
 !

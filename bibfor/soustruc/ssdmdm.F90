@@ -57,7 +57,7 @@ subroutine ssdmdm(mag)
     real(kind=8) :: lisr8(9), dist, a1, a2, a3, dmin, dmax, r1
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1noe, i1nol, iaconx, iacoo2, iacoor, iadesm
+    integer :: i, i1noe, i1nol,  iacoo2, iacoor
     integer :: iadim2, iadime,   ianmcr, iaparr, iasupm
     integer :: idim, idimto, ino, inold, iocc
     integer :: iret, isma, itrou, j, jno, k, n1
@@ -65,6 +65,8 @@ subroutine ssdmdm(mag)
     integer :: nbsma, nnnoe, nnnol, nocc
     character(len=8), pointer :: lk81(:) => null()
     character(len=8), pointer :: lk82(:) => null()
+    integer, pointer :: desm(:) => null()
+    integer, pointer :: conx(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     r1= r8dgrd()
@@ -158,9 +160,9 @@ subroutine ssdmdm(mag)
             if (iret .eq. 0) then
                 call utmess('F', 'SOUSTRUC_56', sk=nomacr)
             endif
-            call jeveuo(nomacr//'.DESM', 'L', iadesm)
-            nbnoe=zi(iadesm-1+2)
-            nbnol=zi(iadesm-1+8)+zi(iadesm-1+9)
+            call jeveuo(nomacr//'.DESM', 'L', vi=desm)
+            nbnoe=desm(2)
+            nbnol=desm(8)+desm(9)
             nbnoet =nbnoe+nbnol
             zi(iadim2-1+4*(isma-1)+1)= nbnoe
             zi(iadim2-1+4*(isma-1)+2)= nbnol
@@ -201,7 +203,7 @@ subroutine ssdmdm(mag)
     call wkvect(mag//'.COORDO_2', 'V V R', 3*nnnoe, iacoo2)
     do isma = 1, nbsma
         nomacr=zk8(ianmcr-1+isma)
-        call jeveuo(nomacr//'.CONX', 'L', iaconx)
+        call jeveuo(nomacr//'.CONX', 'L', vi=conx)
         call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
         call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=ma)
         call jeveuo(ma//'.COORDO    .VALE', 'L', iacoor)
@@ -214,8 +216,8 @@ subroutine ssdmdm(mag)
         do ino = 1, nbnoet
 !
 !         -- SI C'EST UN NOEUD PHYSIQUE:
-            if ((zi(iaconx-1+3*(ino-1)+1).eq.1) .and. (zi(iaconx-1+3*( ino-1)+3).eq.0)) then
-                inold=zi(iaconx-1+3*(ino-1)+2)
+            if ((conx(3*(ino-1)+1).eq.1) .and. (conx(3*( ino-1)+3).eq.0)) then
+                inold=conx(3*(ino-1)+2)
                 i1noe=i1noe+1
                 zi(iasupm-1+ino)=i1noe
                 call ssdmge(zr(iacoor+3*(inold-1)), zr(iacoo2+3*( i1noe-1)),&

@@ -56,11 +56,15 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, ic, icoef, idecgr
-    integer :: igrel, im, ino, ip, iret, ival, jceld
-    integer :: jcelk, jcelv, jdesc, jprno, jrefe, jvale, k
+    integer :: igrel, im, ino, ip, iret, ival
+    integer ::   jdesc,  jrefe, jvale, k
     integer :: kdesc, krefe, kvale, lvale, nbdesc, nbec, nbelgr
     integer :: nbgr, nbnoeu, nbpt, nbrefe, nbscal, nbvale
     real(kind=8) :: ang
+    integer, pointer :: celd(:) => null()
+    real(kind=8), pointer :: celv(:) => null()
+    character(len=24), pointer :: celk(:) => null()
+    integer, pointer :: prno(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     base = basz
@@ -125,7 +129,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
     call wkvect('&&REFODE.VALE', 'V V R', nbvale, lvale)
 !
     if (docu .eq. 'CHNO') then
-        call jeveuo(zk24(jrefe+1)(1:19)//'.PRNO', 'L', jprno)
+        call jeveuo(zk24(jrefe+1)(1:19)//'.PRNO', 'L', vi=prno)
         do i = 0, nbrefe-1
             zk24(krefe+i) = zk24(jrefe+i)
         end do
@@ -145,7 +149,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                 if (tyharm(im)(1:4) .eq. 'SYME') then
 !
                     do ino = 1, nbnoeu
-                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        i = prno(1+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* cos(ang)* zr(jvale+i+1)
                             zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* cos(ang)* zr(jvale+i+2)
@@ -156,7 +160,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                 else if (tyharm(im)(1:4).eq.'ANTI') then
 !
                     do ino = 1, nbnoeu
-                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        i = prno(1+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)* zr(jvale+i+1)
                             zr(lvale+i+2) = zr(lvale+i+2) + coef(im)* sin(ang)* zr(jvale+i+2)
@@ -167,7 +171,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                 else if (tyharm(im)(1:4).eq.'TOUS') then
 !
                     do ino = 1, nbnoeu
-                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        i = prno(1+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)*zr(jvale+i+1) + co&
                                             &ef(im)*cos(ang) *zr(jvale+i+1)
@@ -185,7 +189,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                 if (tyharm(im)(1:4) .eq. 'SYME') then
 !
                     do ino = 1, nbnoeu
-                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        i = prno(1+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* cos(ang)* zr(jvale+i+1)
                         endif
@@ -194,7 +198,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                 else if (tyharm(im)(1:4).eq.'ANTI') then
 !
                     do ino = 1, nbnoeu
-                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        i = prno(1+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)* zr(jvale+i+1)
                         endif
@@ -203,7 +207,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                 else if (tyharm(im)(1:4).eq.'TOUS') then
 !
                     do ino = 1, nbnoeu
-                        i = zi(jprno+(ino-1)*(nbec+2))-2
+                        i = prno(1+(ino-1)*(nbec+2))-2
                         if (i .ne. -2) then
                             zr(lvale+i+1) = zr(lvale+i+1) + coef(im)* sin(ang)*zr(jvale+i+1) + co&
                                             &ef(im)*cos(ang) *zr(jvale+i+1)
@@ -229,22 +233,22 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
             call celver(ch19, 'NBVARI_CST', 'STOP', ibid)
             call celver(ch19, 'NBSPT_1', 'STOP', ibid)
 !
-            call jeveuo(ch19//'.CELD', 'L', jceld)
-            call jeveuo(ch19//'.CELK', 'L', jcelk)
-            call jeveuo(ch19//'.CELV', 'L', jcelv)
-            nbgr = zi(jceld-1+2)
-            ligrel = zk24(jcelk)(1:19)
+            call jeveuo(ch19//'.CELD', 'L', vi=celd)
+            call jeveuo(ch19//'.CELK', 'L', vk24=celk)
+            call jeveuo(ch19//'.CELV', 'L', vr=celv)
+            nbgr = celd(2)
+            ligrel = celk(1)(1:19)
 !
             do igrel = 1, nbgr
-                mode=zi(jceld-1+zi(jceld-1+4+igrel) +2)
+                mode=celd(celd(4+igrel) +2)
                 if (mode .eq. 0) goto 210
                 nbscal = digdel(mode)
-                icoef=max(1,zi(jceld-1+4))
+                icoef=max(1,celd(4))
                 if (icoef .ne. 1) then
                     call utmess('F', 'ALGELINE3_33')
                 endif
                 nbelgr = nbelem(ligrel,igrel)
-                idecgr=zi(jceld-1+zi(jceld-1+4+igrel)+8)
+                idecgr=celd(celd(4+igrel)+8)
 !
                 if (lmeca) then
 !              --- ON EST EN AXIS, IL Y A 6 COMPOSANTES PAR POINT ---
@@ -257,27 +261,27 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                             end do
                         end do
@@ -289,27 +293,27 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                             end do
                         end do
@@ -321,33 +325,33 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                             end do
                         end do
@@ -364,15 +368,15 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) - coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                             end do
                         end do
@@ -384,15 +388,15 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* zr(jcelv-1+idec&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)* celv(idec&
                                                &gr+(k-1)* nbscal+ic)
                             end do
                         end do
@@ -404,18 +408,18 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                             do ip = 1, nbpt
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *sin(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) + coef(im)*cos(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                                 i1 = i1 + 1
                                 ic = ic + 1
-                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*zr(jcelv-1+idecg&
-                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*zr( jcelv&
+                                zr(lvale+i1) = zr(lvale+i1) + coef(im) *cos(ang)*celv(idecg&
+                                               &r+(k-1)* nbscal+ic) - coef(im)*sin(ang)*celv(1&
                                                &-1+idecgr+(k-1)*nbscal+ic)
                             end do
                         end do

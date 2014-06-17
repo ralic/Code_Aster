@@ -71,10 +71,10 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     character(len=14) :: num2
     integer :: gd, nec, nlili
 !-----------------------------------------------------------------------
-    integer :: i, i1, iaconx, iad1, iadlie, iadnem, iadval
-    integer :: ialcha, iamail, iancmp, ianmcr, ianueq, ianulo, iaprol
-    integer :: iapsdl, iasssa, ichar, icmp, iconx1, iconx2, idnequ
-    integer :: idprn1, idprn2, idresl, idveds, idverf, idvref, iec
+    integer :: i, i1,  iad1, iadlie, iadnem, iadval
+    integer :: ialcha, iamail, iancmp,  ianueq, ianulo, iaprol
+    integer :: iapsdl,  ichar, icmp, iconx1, iconx2, idnequ
+    integer :: idprn1, idprn2, idresl, idveds, idverf,  iec
     integer :: ierd, il, ilim, ilimnu, ilivec, ima
     integer :: inold, iret, jec, k1, lgncmp, n1, nbchar
     integer :: nbecmx, nbelm, nbnoss, nbsma, nbssa, ncmp, ncmpel
@@ -92,6 +92,10 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     integer :: admodl, lcmodl, ifm, niv
     integer :: jfonct
     real(kind=8) :: rcoef
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: sssa(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: conx(:) => null()
 !
 ! --- DEBUT ------------------------------------------------------------
     call jemarq()
@@ -143,8 +147,8 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
     nudev=nu
     if (nudev(1:1) .eq. ' ') then
         vprof=vecpro
-        call jeveuo(vprof//'.REFE', 'L', idvref)
-        nudev=zk24(idvref-1+2)(1:14)
+        call jeveuo(vprof//'.REFE', 'L', vk24=refe)
+        nudev=refe(2)(1:14)
     endif
 !
 !
@@ -176,7 +180,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 !
     call jeexin(ma//'.NOMACR', iret)
     if (iret .gt. 0) then
-        call jeveuo(ma//'.NOMACR', 'L', ianmcr)
+        call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
         call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
         icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
@@ -243,7 +247,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
         nomcas=' '
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
-        call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
+        call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
         call ssvalv('DEBUT', nomcas, mo, ma, 0,&
                     idresl, ncmpel)
         call jelira(vecel//'.RELC', 'NUTIOC', nbchar)
@@ -260,15 +264,15 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
             endif
             do ima = 1, nbsma
 !               -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
-                if (zi(iasssa-1+ima) .eq. 0) goto 70
+                if (sssa(ima) .eq. 0) goto 70
                 if (zi(ialcha-1+ima) .eq. 0) goto 70
                 call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
                 call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
                 call ssvalv(' ', nomcas, mo, ma, ima,&
                             idresl, ncmpel)
-                nomacr=zk8(ianmcr-1+ima)
+                nomacr=vnomacr(ima)
                 call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
-                call jeveuo(nomacr//'.CONX', 'L', iaconx)
+                call jeveuo(nomacr//'.CONX', 'L', vi=conx)
                 call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprol)
                 il=0
                 do k1 = 1, nnoe
@@ -278,7 +282,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
                             icodge(iec)=icodla(iec)
                         end do
                     else
-                        inold=zi(iaconx-1+3*(k1-1)+2)
+                        inold=conx(3*(k1-1)+2)
                         do iec = 1, nec
                             icodge(iec)=zi(iaprol-1+(nec+2)*(&
                                     inold-1)+2+iec)

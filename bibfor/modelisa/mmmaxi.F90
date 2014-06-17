@@ -67,7 +67,8 @@ function mmmaxi(modelz, lisma, nbma)
     integer :: numail, nutyel
     integer :: ima
     integer :: numsup, nbaxis, mailvo(1)
-    integer :: jmaisu, ilmail, itypel, jcoor
+    integer :: jmaisu, ilmail, itypel
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,11 +85,11 @@ function mmmaxi(modelz, lisma, nbma)
 !
 ! --- RECHERCHE DES MAILLES 2D SUPPORTS DES MAILLES DE LISMA
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call jeveuo(lisma, 'L', ilmail)
     call infmue()
     call utmasu(noma, '2D', nbma, zi(ilmail), maisup,&
-                zr(jcoor), 0, mailvo, .false.)
+                vale, 0, mailvo, .false.)
     call infbav()
     call jeveuo(maisup, 'L', jmaisu)
 !

@@ -38,12 +38,13 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ibid, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno, jnueq
+    integer :: ibid, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno
     integer :: iad, tabec(10), iavald, nunoe, numdx, numdy, numdz, numdrx
     integer :: numdry, numdrz, nuddl
     real(kind=8) :: valed(3), vald(3), valer(3), valr(3)
     character(len=8) :: k8b, nomcmp
     character(len=19) :: prno, depla
+    integer, pointer :: nueq(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -58,7 +59,7 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
 !
     call jenonu(jexnom(prno//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(prno//'.PRNO', ibid), 'L', jprno)
-    call jeveuo(prno//'.NUEQ', 'L', jnueq)
+    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
 !
     nec = nbec( gd )
     if (nec .gt. 10) then
@@ -92,7 +93,7 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
             if (exisdg(tabec,icmp)) then
                 icompt = icompt + 1
                 nomcmp = zk8(iad-1+icmp)
-                nuddl = zi(jnueq+zi(jprno+(nec+2)*(nunoe-1))-1)+ icompt-1
+                nuddl = nueq(1+zi(jprno+(nec+2)*(nunoe-1))-1)+ icompt-1
                 if (nomcmp .eq. 'DX') then
                     numdx = nuddl
                     valed(1) = zr(iavald-1+numdx)

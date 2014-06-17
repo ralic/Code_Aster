@@ -60,13 +60,16 @@ subroutine calcyc(nomres)
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, icomp, icone, idia, idiam
     integer :: if, imes, ldfre, ldmoc, ldnbd, llitmp
-    integer :: llnbs, llnum, llref, lltyp, lteig, ltkcom, ltlax0
+    integer ::  llnum,   lteig, ltkcom, ltlax0
     integer :: ltlax1, ltlbid, ltmcom, ltnbd, ltrv1, ltrv2, lttrge
     integer :: ltzm1, ltzm2, ltzv1, ltzv2, ltzv3, maxdia, nbdax
     integer :: nbdax0, nbdax1, nbddef, nbddg, nbddr, nbdia, nbdia1
     integer :: nbdia2, nblif, nbmcal, nbmobt, nbmos, nbnew, nbsec
     integer :: nbtmp, nmaxit, ntail, ntt, numa
     real(kind=8) :: beta, omeg2, pi, pima, precaj, precse
+    integer, pointer :: cycl_nbsc(:) => null()
+    character(len=8), pointer :: cycl_type(:) => null()
+    character(len=24), pointer :: cycl_refe(:) => null()
 !
 !-----------------------------------------------------------------------
     data pgc /'CALCYC'/
@@ -83,13 +86,13 @@ subroutine calcyc(nomres)
 !
 !-----------------RECUPERATION DU TYPE D'INTERFACE----------------------
 !
-    call jeveuo(nomres//'.CYCL_TYPE', 'L', lltyp)
-    typint=zk8(lltyp)
+    call jeveuo(nomres//'.CYCL_TYPE', 'L', vk8=cycl_type)
+    typint=cycl_type(1)
 !
 !-----------------RECUPERATION DU NOMBRE DE SECTEURS--------------------
 !
-    call jeveuo(nomres//'.CYCL_NBSC', 'L', llnbs)
-    nbsec=zi(llnbs)
+    call jeveuo(nomres//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+    nbsec=cycl_nbsc(1)
     maxdia=int((nbsec+1)/2)
 !
 !----------RECUPERATION DU NOMBRE DE DIAMETRES NODAUX EN COMMANDE-------
@@ -217,8 +220,8 @@ subroutine calcyc(nomres)
     if (nbdax .gt. 0) then
         call jeveuo(nomres//'.CYCL_NUIN', 'L', llnum)
         numa=zi(llnum+2)
-        call jeveuo(nomres//'.CYCL_REFE', 'L', llref)
-        basmod=zk24(llref+2)(1:8)
+        call jeveuo(nomres//'.CYCL_REFE', 'L', vk24=cycl_refe)
+        basmod=cycl_refe(3)(1:8)
 !
         call axacti(basmod, numa, 0, [ibid], 0,&
                     nbdax0)

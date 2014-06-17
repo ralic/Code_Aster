@@ -74,9 +74,10 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
     character(len=24) :: jeuite
     integer :: jjeuit
     character(len=19) :: ddeplc, ddelt
-    integer :: jddepc, jddelt
     integer :: nbddl, jdecal
     character(len=2) :: typec0
+    real(kind=8), pointer :: vddelt(:) => null()
+    real(kind=8), pointer :: ddepc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,8 +102,8 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
 !
     ddeplc = resoco(1:14)//'.DELC'
     ddelt = resoco(1:14)//'.DDEL'
-    call jeveuo(ddeplc(1:19)//'.VALE', 'L', jddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'L', jddelt)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'L', vr=ddepc)
+    call jeveuo(ddelt (1:19)//'.VALE', 'L', vr=vddelt)
 !
 ! --- INITIALISATIONS
 !
@@ -141,7 +142,7 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
 !
                 jdecal = zi(japptr+iliai-1)
                 nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
-                call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jddelt),&
+                call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), vddelt,&
                             aadelt)
 !
 ! --------- SI [A].{DDELT} EST POSITIF: LIAISON ACTIVEE
@@ -162,7 +163,7 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
 !
 ! ------------- CALCUL DE [A].{DDEPLC} - CORRECTION DU JEU
 !
-                        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jddepc),&
+                        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), ddepc,&
                                     jeuinc)
 !
 ! ------------- CALCUL DE {JEU(DEPTOT) - [A].{DDEPLC}}/[A].{DDELT}

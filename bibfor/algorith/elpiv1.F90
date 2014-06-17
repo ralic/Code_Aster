@@ -81,8 +81,10 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
     integer :: iblc
     integer :: niv, ifm
     integer :: bloc, dercol
-    integer :: jscib, jscbl, jscde
     logical :: pivnul
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: scde(:) => null()
+    integer, pointer :: scib(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,9 +99,9 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
     stoc = resoco(1:14)//'.SLCS'
     call jeveuo(liac, 'E', jliac)
     call jeveuo(liot, 'E', jliot)
-    call jeveuo(stoc//'.SCIB', 'L', jscib)
-    call jeveuo(stoc//'.SCBL', 'L', jscbl)
-    call jeveuo(stoc//'.SCDE', 'L', jscde)
+    call jeveuo(stoc//'.SCIB', 'L', vi=scib)
+    call jeveuo(stoc//'.SCBL', 'L', vi=scbl)
+    call jeveuo(stoc//'.SCDE', 'L', vi=scde)
 !
 ! --- INITIALISATIONS
 !
@@ -111,7 +113,7 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
     llf = 0
     llf1 = 0
     llf2 = 0
-    nbbloc = zi(jscde-1+3)
+    nbbloc = scde(3)
 !
 ! --- BLOC EN LECTURE
 !
@@ -129,8 +131,8 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
                 kk1f = kk1
                 kk2f = kk2
             endif
-            iblc = zi(jscib-1+kk1f)
-            dercol = zi(jscbl+iblc-1)
+            iblc = scib(kk1f)
+            dercol = scbl(iblc)
             bloc = dercol*(dercol+1)/2
 !
 ! ------- ON ACCEDE AU BLOC

@@ -60,9 +60,13 @@ subroutine nmpial(numedd, depdel, depmoi, cnfepi, ddepl0,&
 !
 !
     real(kind=8) :: du, rn, rd, um
-    integer :: jline, jdepde, jdepm, jdep0, jdep1
     integer :: neq
     integer :: ifm, niv
+    real(kind=8), pointer :: dep0(:) => null()
+    real(kind=8), pointer :: dep1(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
+    real(kind=8), pointer :: depm(:) => null()
+    real(kind=8), pointer :: line(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,18 +86,18 @@ subroutine nmpial(numedd, depdel, depmoi, cnfepi, ddepl0,&
 !
 ! --- ACCES OBJETS JEVEUX
 !
-    call jeveuo(ddepl0(1:19)//'.VALE', 'L', jdep0)
-    call jeveuo(ddepl1(1:19)//'.VALE', 'L', jdep1)
-    call jeveuo(depmoi(1:19)//'.VALE', 'L', jdepm)
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
-    call jeveuo(cnfepi(1:19)//'.VALE', 'L', jline)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=dep0)
+    call jeveuo(ddepl1(1:19)//'.VALE', 'L', vr=dep1)
+    call jeveuo(depmoi(1:19)//'.VALE', 'L', vr=depm)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
+    call jeveuo(cnfepi(1:19)//'.VALE', 'L', vr=line)
 !
 ! --- RESOLUTION DE L'EQUATION
 !
-    um = ddot(neq,zr(jdepm) ,1,zr(jline),1)
-    du = ddot(neq,zr(jdepde),1,zr(jline),1)
-    rn = ddot(neq,zr(jdep0) ,1,zr(jline),1)
-    rd = ddot(neq,zr(jdep1) ,1,zr(jline),1)
+    um = ddot(neq,depm,1,line,1)
+    du = ddot(neq,depde,1,line,1)
+    rn = ddot(neq,dep0,1,line,1)
+    rd = ddot(neq,dep1,1,line,1)
     if (rd .eq. 0.d0) then
         pilcvg = 1
     else

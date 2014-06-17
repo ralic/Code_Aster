@@ -97,9 +97,9 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     parameter   (nbinmx=50,nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
-    integer :: i, ibid,  inorma, init, ifm, niv, jnor, jbasfo
+    integer :: i, ibid,  inorma, init, ifm, niv,  jbasfo
     integer :: iadrma, iadrff, icoode, iadrco, iadrno
-    integer :: lobj2, ndimte, nunoff, ndim, nchin, ixfem, jfond, numfon
+    integer :: lobj2, ndimte, nunoff, ndim, nchin, ixfem,  numfon
     integer :: iret, livi(nbmxpa), nbchar
     real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
     integer :: mxstac
@@ -120,6 +120,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=24) :: obj1, obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
     real(kind=8), pointer :: valg(:) => null()
+    real(kind=8), pointer :: basefond(:) => null()
+    real(kind=8), pointer :: fondfiss(:) => null()
 !
     data chvarc/'&&CAKG2D.CH_VARC_R'/
     data chvref/'&&CAKG2D.CHVREF'/
@@ -248,13 +250,13 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         rcmp(1) = zr(iadrco+ndim* (nunoff-1))
         rcmp(2) = zr(iadrco+ndim* (nunoff-1)+1)
     else
-        call jeveuo(fiss//'.FONDFISS', 'L', jfond)
+        call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
         call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
-        rcmp(1) = zr(jfond-1+4*(numfon-1)+1)
-        rcmp(2) = zr(jfond-1+4*(numfon-1)+2)
-        call jeveuo(fiss//'.BASEFOND', 'L', jnor)
-        rcmp(3) = -zr(jnor-1+4*(numfon-1)+4)
-        rcmp(4) = zr(jnor-1+4*(numfon-1)+3)
+        rcmp(1) = fondfiss(4*(numfon-1)+1)
+        rcmp(2) = fondfiss(4*(numfon-1)+2)
+        call jeveuo(fiss//'.BASEFOND', 'L', vr=basefond)
+        rcmp(3) = -basefond(4*(numfon-1)+4)
+        rcmp(4) = basefond(4*(numfon-1)+3)
         write(ifm,*)'   '
         write(ifm,*)'    TRAITEMENT DU FOND DE FISSURE NUMERO ',numfon
         write(ifm,*)'    NOMME ',noeud

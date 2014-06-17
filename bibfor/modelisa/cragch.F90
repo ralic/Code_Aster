@@ -63,7 +63,9 @@ subroutine cragch(long, typcoe, typval, ligrch)
 ! --------- VARIABLES LOCALES ------------------------------------------
     character(len=8) :: noma, mod, base
     character(len=19) :: ca1, ca2
-    integer :: iret, longut, jnoma, jdesc, ngdmx, nedit, ndisp
+    integer :: iret, longut,   ngdmx, nedit, ndisp
+    integer, pointer :: desc(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
     call jemarq()
@@ -95,8 +97,8 @@ subroutine cragch(long, typcoe, typval, ligrch)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE ---
 !
-        call jeveuo(mod(1:8)//'.MODELE    '//'.LGRF', 'L', jnoma)
-        noma = zk8(jnoma)
+        call jeveuo(mod(1:8)//'.MODELE    '//'.LGRF', 'L', vk8=lgrf)
+        noma = lgrf(1)
 !
         if (typcoe .eq. 'REEL' .or. typcoe .eq. 'FONC') then
             call alcart('G', ca1, noma, 'DDLM_R')
@@ -122,9 +124,9 @@ subroutine cragch(long, typcoe, typval, ligrch)
 ! --- VERIFICATION DE L'ADEQUATION DE LA TAILLE DES CARTES ---
 ! --- .CMULT ET .CIMPO DE LA CHARGE                        ---
 !
-    call jeveuo(ca1(1:19)//'.DESC', 'L', jdesc)
-    ngdmx = zi(jdesc-1+2)
-    nedit = zi(jdesc-1+3)
+    call jeveuo(ca1(1:19)//'.DESC', 'L', vi=desc)
+    ngdmx = desc(2)
+    nedit = desc(3)
     ndisp = ngdmx - nedit
     ASSERT(ndisp.ge.0)
     if (long .gt. ndisp) then

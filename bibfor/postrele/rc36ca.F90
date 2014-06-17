@@ -47,12 +47,13 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
 !     ------------------------------------------------------------------
 !
     integer :: nbcmp, iret, im, ima, nbpt, decal, ipt, icmp, iad, iadc, ncmp
-    integer :: jcesd, jcesv, jcesl, jcesdc, jcesvc, jceslc
+    integer :: jcesd,  jcesl, jcesdc, jcesvc, jceslc
     integer :: jcesd1, jcesv1, jcesl1, jcesd2, jcesv2, jcesl2
     real(kind=8) :: vc
     character(len=8) :: nomgd
     character(len=16) :: nocmp(4)
     character(len=19) :: k19b, ces1, ces2
+    real(kind=8), pointer :: cesv(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -67,7 +68,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
                 listma, chcara)
 !
     call jeveuo(chcara(1:19)//'.CESD', 'E', jcesd)
-    call jeveuo(chcara(1:19)//'.CESV', 'E', jcesv)
+    call jeveuo(chcara(1:19)//'.CESV', 'E', vr=cesv)
     call jeveuo(chcara(1:19)//'.CESL', 'E', jcesl)
 !
     k19b = carael//'.CARGENPO'
@@ -148,7 +149,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
                 if (iad .lt. 0) then
                     iad = -iad
                 endif
-                zr(jcesv-1+iad) = vc
+                cesv(iad) = vc
                 zl(jcesl-1+iad) = .true.
 120          continue
 110      continue

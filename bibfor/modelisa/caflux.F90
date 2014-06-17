@@ -52,7 +52,7 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
 !      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, nflux, jvalv1, jvalv2, jncmp1, jncmp2, iocc, n, n1, n2, n3
+    integer :: ibid, nflux, jvalv1, jvalv2,   iocc, n, n1, n2, n3
     integer :: n4, n5, n6, n7, n8, n11, n12, ngr, ncmp, ncmp1, ncmps(2)
     integer :: ncmp2, iret
     real(kind=8) :: r8b, aire, xlong
@@ -64,6 +64,8 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
     character(len=24) :: para, mongrm
     character(len=24) :: valk(2)
     integer :: iarg
+    character(len=8), pointer :: vncmp1(:) => null()
+    character(len=8), pointer :: vncmp2(:) => null()
 ! ----------------------------------------------------------------------
 !
 !     VERIFICATION DE L'EXCLUSION :   / FLUN FLUN_INF FLUN_SUP
@@ -124,11 +126,11 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
     endif
 !
     if (icre1) then
-        call jeveuo(cart1//'.NCMP', 'E', jncmp1)
+        call jeveuo(cart1//'.NCMP', 'E', vk8=vncmp1)
         call jeveuo(cart1//'.VALV', 'E', jvalv1)
     endif
     if (icre2) then
-        call jeveuo(cart2//'.NCMP', 'E', jncmp2)
+        call jeveuo(cart2//'.NCMP', 'E', vk8=vncmp2)
         call jeveuo(cart2//'.VALV', 'E', jvalv2)
     endif
 !
@@ -136,9 +138,9 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
 !
     if (icre1) then
         ncmp=3
-        zk8(jncmp1-1+1) = 'FLUN'
-        zk8(jncmp1-1+2) = 'FLUN_INF'
-        zk8(jncmp1-1+3) = 'FLUN_SUP'
+        vncmp1(1) = 'FLUN'
+        vncmp1(2) = 'FLUN_INF'
+        vncmp1(3) = 'FLUN_SUP'
         if (fonree .eq. 'REEL') then
             zr(jvalv1-1+1) = 0.d0
             zr(jvalv1-1+2) = 0.d0
@@ -153,9 +155,9 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
 !
     if (icre2) then
         ncmp=3
-        zk8(jncmp2-1+1) = 'FLUX'
-        zk8(jncmp2-1+2) = 'FLUY'
-        zk8(jncmp2-1+3) = 'FLUZ'
+        vncmp2(1) = 'FLUX'
+        vncmp2(2) = 'FLUY'
+        vncmp2(3) = 'FLUZ'
         if (fonree .eq. 'REEL') then
             zr(jvalv2-1+1) = 0.d0
             zr(jvalv2-1+2) = 0.d0
@@ -218,25 +220,25 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
                     call utmess('F', 'MODELISA8_36', sk=valk(1))
                 endif
                 ncmp1 = ncmp1 + 1
-                zk8(jncmp1-1 + ncmp1) = 'FLUN'
+                vncmp1(ncmp1) = 'FLUN'
                 zr(jvalv1-1 + ncmp1) = 2.0d0 * aire / xlong
             endif
             call getvr8(motclf, 'FLUN', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
-                zk8(jncmp1-1 + ncmp1) = 'FLUN'
+                vncmp1(ncmp1) = 'FLUN'
                 zr(jvalv1-1 + ncmp1) = r8b
             endif
             call getvr8(motclf, 'FLUN_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
-                zk8(jncmp1-1 + ncmp1) = 'FLUN_INF'
+                vncmp1(ncmp1) = 'FLUN_INF'
                 zr(jvalv1-1 + ncmp1) = r8b
             endif
             call getvr8(motclf, 'FLUN_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
-                zk8(jncmp1-1 + ncmp1) = 'FLUN_SUP'
+                vncmp1(ncmp1) = 'FLUN_SUP'
                 zr(jvalv1-1 + ncmp1) = r8b
             endif
 !
@@ -244,38 +246,38 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
             call getvid(motclf, 'FLUN', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
-                zk8(jncmp1-1 + ncmp1) = 'FLUN'
+                vncmp1(ncmp1) = 'FLUN'
                 zk8(jvalv1-1 + ncmp1) = k8b
             endif
             call getvid(motclf, 'FLUN_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
-                zk8(jncmp1-1 + ncmp1) = 'FLUN_INF'
+                vncmp1(ncmp1) = 'FLUN_INF'
                 zk8(jvalv1-1 + ncmp1) = k8b
             endif
             call getvid(motclf, 'FLUN_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
-                zk8(jncmp1-1 + ncmp1) = 'FLUN_SUP'
+                vncmp1(ncmp1) = 'FLUN_SUP'
                 zk8(jvalv1-1 + ncmp1) = k8b
             endif
 !
             call getvid(motclf, 'FLUX_X', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
-                zk8(jncmp2-1 + ncmp2) = 'FLUX'
+                vncmp2(ncmp2) = 'FLUX'
                 zk8(jvalv2-1 + ncmp2) = k8b
             endif
             call getvid(motclf, 'FLUX_Y', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
-                zk8(jncmp2-1 + ncmp2) = 'FLUY'
+                vncmp2(ncmp2) = 'FLUY'
                 zk8(jvalv2-1 + ncmp2) = k8b
             endif
             call getvid(motclf, 'FLUX_Z', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
-                zk8(jncmp2-1 + ncmp2) = 'FLUZ'
+                vncmp2(ncmp2) = 'FLUZ'
                 zk8(jvalv2-1 + ncmp2) = k8b
             endif
         endif

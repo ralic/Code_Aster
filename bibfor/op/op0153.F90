@@ -59,8 +59,8 @@ subroutine op0153()
     integer :: i, ibid, idangt, idcotu, idvcob, idvctu, ifires
     integer :: indic, info, iobst, ipoupr, ipourp, iprfuo, iprfut
     integer :: ipus, ire1, ire2, iret, itube, ivuso
-    integer :: ivusob, ivust, ivustu, jfn, jins2, jinst, jinst3
-    integer :: jinst5, jprut, jsect, jusuo, jusut, jvg, k
+    integer :: ivusob, ivust, ivustu, jfn, jins2, jinst
+    integer ::  jprut, jsect, jusuo, jusut, jvg, k
     integer :: n0, n1, n5, na, nbinst, nbpair, nbpar
     integer :: nbpar2, nbpmr, nbpt, nbsec2, nbsect, nbtota, nbv
     integer :: nbvpu, ni1, nis, npu, ntn
@@ -78,6 +78,8 @@ subroutine op0153()
     character(len=19) :: tabpus, nomta, newtab
     character(len=24) :: type, valk(2)
     complex(kind=8) :: c16b
+    real(kind=8), pointer :: ins3(:) => null()
+    real(kind=8), pointer :: ins5(:) => null()
     data nopar  / 'PUIS_USUR_GLOBAL' ,&
      &              'INST' , 'DUREE' , 'ORIG_INST' ,&
      &              'V_USUR_TUBE' , 'V_USUR_OBST' , 'P_USUR_TUBE' ,&
@@ -368,8 +370,8 @@ subroutine op0153()
         call tbexp2(nomta, 'V_USUR_TUBE_CUMU')
         call tbexve(nomta, 'INST', '&&OP0153.INS3', 'V', nbvpu,&
                     type)
-        call jeveuo('&&OP0153.INS3', 'L', jinst3)
-        insdeb = zr(jinst3+nbvpu-1)
+        call jeveuo('&&OP0153.INS3', 'L', vr=ins3)
+        insdeb = ins3(nbvpu)
         call tbexve(nomta, 'SECTEUR', '&&OP0153.SECT', 'V', nbvpu,&
                     type)
         call jeveuo('&&OP0153.SECT', 'L', jsect)
@@ -411,8 +413,8 @@ subroutine op0153()
             endif
             call tbexve(nomta, 'INST', '&&OP0153.INS5', 'V', nbvpu,&
                         type)
-            call jeveuo('&&OP0153.INS5', 'L', jinst5)
-            dinst = zr(jinst5+nbvpu-1)
+            call jeveuo('&&OP0153.INS5', 'L', vr=ins5)
+            dinst = ins5(nbvpu)
         endif
 !
 !        DETERMINATION PAR SECTEUR DES VOLUS PAR TUBE ET OBST A DINST

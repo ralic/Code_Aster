@@ -52,8 +52,10 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
 !
 !
     integer :: ier, jliseq, neq, jlisla, i, nuno, ima, ino, ifiss
-    integer :: jcnsl, jcnsv, jcesd, jcesv, jcesl, iad
+    integer :: jcnsl,  jcesd,  jcesl, iad
     character(len=19) :: noxfem, heavno
+    integer, pointer :: cesv(:) => null()
+    integer, pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -71,14 +73,14 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
     noxfem = '&&XLAG2S.NOXFEM'
     call cnocns(nomo//'.NOXFEM', 'V', noxfem)
     call jeveuo(noxfem//'.CNSL', 'L', jcnsl)
-    call jeveuo(noxfem//'.CNSV', 'L', jcnsv)
+    call jeveuo(noxfem//'.CNSV', 'L', vi=cnsv)
 !
 ! --- RECUPÉRATION DE HEAVNO
 !
     heavno = '&&XLAG2S.HEAVNO'
     call celces(nomo//'.HEAVNO', 'V', heavno)
     call jeveuo(heavno//'.CESD', 'L', jcesd)
-    call jeveuo(heavno//'.CESV', 'L', jcesv)
+    call jeveuo(heavno//'.CESV', 'L', vi=cesv)
     call jeveuo(heavno//'.CESL', 'L', jcesl)
 !
 ! --- CREATION DE LA SD FISS.LISEQ_LAGR
@@ -88,13 +90,13 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
     do 10 i = 1, neq
         nuno = zi(jliseq-1+i)
         ASSERT(zl(jcnsl-1+2*nuno))
-        ima = zi(jcnsv-1+2*(nuno-1)+1)
-        ino = zi(jcnsv-1+2*(nuno-1)+2)
+        ima = cnsv(2*(nuno-1)+1)
+        ino = cnsv(2*(nuno-1)+2)
         ifiss = zi(jnbpt-1+ima)
         call cesexi('C', jcesd, jcesl, ima, ino,&
                     ifiss, 1, iad)
         if (iad .gt. 0) then
-            zi(jlisla-1+i) = zi(jcesv-1+iad)
+            zi(jlisla-1+i) = cesv(iad)
         else
             zi(jlisla-1+i) = 1
         endif

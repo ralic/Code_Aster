@@ -36,9 +36,9 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
     integer :: loncum, ino, nbstoc, nbsto1, nbvint
     integer :: jdeps, jvits, jaccs, jpass, jords, jinst, jfcho, jdcho, jvcho
     integer :: jicho, jredc, jredd, jrevc, jrevv, jdepl, jvite, jacce
-    integer :: jdisc, jordr, jptem, jfc, jdl, jvc, jic, jvi, jvir, jedc, jedd
-    integer :: jevc, jevd, decal1, decal2, decal3, decal4, decal5, decal6, decal7
-    integer :: nm, jrefa
+    integer :: jdisc, jordr, jptem,    jic,  jvir, jedc
+    integer :: jevc,  decal1, decal2, decal3, decal4, decal5, decal6, decal7
+    integer :: nm
 !
     character(len=4) :: nom4rk, intk
     character(len=8) :: nom8rk, nomres, intitu(*), noecho(nbchoc, *)
@@ -46,14 +46,21 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
     character(len=*) :: basemo, masgen, riggen, amogen
     character(len=16) :: method
     real(kind=8) :: dt, facobj
+    real(kind=8), pointer :: dloc(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    real(kind=8), pointer :: vcho(:) => null()
+    real(kind=8), pointer :: vi(:) => null()
+    real(kind=8), pointer :: revv(:) => null()
+    real(kind=8), pointer :: fcho(:) => null()
+    real(kind=8), pointer :: redd(:) => null()
 !
 !    ALLOCATION DES OBJETS DEFINITIFS
 !
 !     GESTION DU .REFD EN CAS DE SOUS-STRUCTURATION
     if (basemo .eq. '        ') then
         call getvid(' ', 'MATR_MASS', scal=nommat, nbret=nm)
-        call jeveuo(nommat//'           .REFA', 'L', jrefa)
-        krefd = zk24(jrefa-1+2)(1:8)
+        call jeveuo(nommat//'           .REFA', 'L', vk24=refa)
+        krefd = refa(2)(1:8)
     else
         krefd = basemo
     endif
@@ -119,17 +126,17 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
             nbstoc = 3 * nbchoc * nbsauv
             nbsto1 = nbchoc * nbsauv
             nbvint = nbchoc * nbsauv * mdtr74grd('MAXVINT')
-            call jeveuo(nom8rk//'           .FCHO', 'L', jfc)
-            call jeveuo(nom8rk//'           .DLOC', 'L', jdl)
-            call jeveuo(nom8rk//'           .VCHO', 'L', jvc)
+            call jeveuo(nom8rk//'           .FCHO', 'L', vr=fcho)
+            call jeveuo(nom8rk//'           .DLOC', 'L', vr=dloc)
+            call jeveuo(nom8rk//'           .VCHO', 'L', vr=vcho)
             call jeveuo(nom8rk//'           .ICHO', 'L', jic)
-            call jeveuo(nom8rk//'           .VINT', 'L', jvi)
+            call jeveuo(nom8rk//'           .VINT', 'L', vr=vi)
 !
-            call dcopy(nbstoc, zr(jfc), 1, zr(jfcho+decal3), 1)
-            call dcopy(2*nbstoc, zr(jdl), 1, zr(jdcho+2*decal3), 1)
-            call dcopy(nbstoc, zr(jvc), 1, zr(jvcho+decal3), 1)
+            call dcopy(nbstoc, fcho, 1, zr(jfcho+decal3), 1)
+            call dcopy(2*nbstoc, dloc, 1, zr(jdcho+2*decal3), 1)
+            call dcopy(nbstoc, vcho, 1, zr(jvcho+decal3), 1)
             call jacopo(nbsto1, 'I', jic, jicho+decal4)
-            call dcopy(nbvint, zr(jvi), 1, zr(jvir+decal7), 1)
+            call dcopy(nbvint, vi, 1, zr(jvir+decal7), 1)
 !
             call jedetr(nom8rk//'           .FCHO')
             call jedetr(nom8rk//'           .DLOC')
@@ -142,10 +149,10 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
         if (nbrede .ne. 0) then
             nbstoc = nbrede * nbsauv
             call jeveuo(nom8rk//'           .REDC', 'L', jedc)
-            call jeveuo(nom8rk//'           .REDD', 'L', jedd)
+            call jeveuo(nom8rk//'           .REDD', 'L', vr=redd)
 !
             call jacopo(nbstoc, 'I', jedc, jredc+decal5)
-            call dcopy(nbstoc, zr(jedd), 1, zr(jredd+decal5), 1)
+            call dcopy(nbstoc, redd, 1, zr(jredd+decal5), 1)
 !
             call jedetr(nom8rk//'           .REDC')
             call jedetr(nom8rk//'           .REDD')
@@ -155,10 +162,10 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
         if (nbrevi .ne. 0) then
             nbstoc = nbrevi * nbsauv
             call jeveuo(nom8rk//'           .REVC', 'L', jevc)
-            call jeveuo(nom8rk//'           .REVV', 'L', jevd)
+            call jeveuo(nom8rk//'           .REVV', 'L', vr=revv)
 !
             call jacopo(nbstoc, 'I', jevc, jrevc+decal6)
-            call dcopy(nbstoc, zr(jevd), 1, zr(jrevv+decal6), 1)
+            call dcopy(nbstoc, revv, 1, zr(jrevv+decal6), 1)
 !
             call jedetr(nom8rk//'           .REVC')
             call jedetr(nom8rk//'           .REVV')

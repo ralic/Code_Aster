@@ -68,7 +68,6 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
     real(kind=8) :: group
     character(len=24) :: tabfin
     integer :: ztabf
-    integer :: jvalv, jvald
     character(len=24) :: nosdco
     integer :: jnosdc
     character(len=19) :: ligrxf, cindco
@@ -79,6 +78,8 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
     integer :: ifm, niv, ifmdbg, nivdbg
     integer :: igr, igr2, ngrel, iel, iel2, nel, nel2
     integer :: adiel, adiel2, jad, jad2, debgr, debgr2
+    integer, pointer :: celd(:) => null()
+    integer, pointer :: celv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -164,43 +165,43 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 !
 ! --- ON RECUPÈRE LES VARIABLES CHANGEMENT DE STATUT/STATUT/MEMCO
 !
-    call jeveuo(cindco//'.CELV', 'L', jvalv)
-    call jeveuo(cindco//'.CELD', 'L', jvald)
-    ngrel = zi(jvald-1+2)
+    call jeveuo(cindco//'.CELV', 'L', vi=celv)
+    call jeveuo(cindco//'.CELD', 'L', vi=celd)
+    ngrel = celd(2)
 !
 ! --- ON INTERVERTI LE STATUT DES ARETES SI NECESSAIRE
 !
     do 10 igr = 1, ngrel
-        debgr = zi(jvald-1+4+igr)
-        nel = zi(jvald-1+debgr+1)
+        debgr = celd(4+igr)
+        nel = celd(debgr+1)
         call jeveuo(jexnum(ligrxf//'.LIEL', igr), 'L', jad)
         do 20 iel = 1, nel
-            adiel = zi(jvald-1+debgr+4+4*(iel-1)+4)
+            adiel = celd(debgr+4+4*(iel-1)+4)
 ! --- SI PAS DE CHANGEMENT DE STATUT DU POINT D'INTEGRATION, ON SORT
-            if (zi(jvalv-1+adiel) .eq. 0) goto 20
+            if (celv(adiel) .eq. 0) goto 20
             ipc = -zi(jad-1+iel)
             group = zr(jtabf+ztabf*(ipc-1)+4)
 ! --- SI LE POINT D'INTEGRATION N'APPARTIENT PAS À UN GROUPE, ON SORT
             if (group .eq. 0.d0) goto 20
 ! --- SI LE POINT EST VITAL OU NON CONTACTANT, ON SORT
             if (zr(jtabf+ztabf*(ipc-1)+27) .eq. 1) goto 20
-            if (zi(jvalv-1+adiel+1) .eq. 0) goto 20
+            if (celv(adiel+1) .eq. 0) goto 20
 !
 ! --- SI LE PT D'INTEG EST SUR UNE ARETE NON VITAL ET DEVIENT CONTACTANT
 ! --- ON REGARDE SI UN PT SUR L'ARETE VITALE DE CE GROUPE DEVIENT OU
 ! --- RESTE CONTACTANT
             naret = nint(zr(jtabf+ztabf*(ipc-1)+5))
             do 30 igr2 = 1, ngrel
-                debgr2 = zi(jvald-1+4+igr2)
-                nel2 = zi(jvald-1+debgr2+1)
+                debgr2 = celd(4+igr2)
+                nel2 = celd(debgr2+1)
                 call jeveuo(jexnum(ligrxf//'.LIEL', igr2), 'L', jad2)
                 do 40 iel2 = 1, nel2
-                    adiel2=zi(jvald-1+debgr2+4+4*(iel2-1)+4)
+                    adiel2=celd(debgr2+4+4*(iel2-1)+4)
                     ipc2 = -zi(jad2-1+iel2)
                     if (zr(jtabf+ztabf*(ipc2-1)+4) .ne. group) goto 40
                     if (zr(jtabf+ztabf*(ipc2-1)+27) .eq. 0) goto 40
 ! --- LE PT VITAL EST CONTACTANT
-                    if (zi(jvalv-1+adiel2+1) .eq. 1) goto 20
+                    if (celv(adiel2+1) .eq. 1) goto 20
 !              ASSERT(ZI(JVALV-1+ADIEL2+2).EQ.0)
 ! --- ATTENTION,LE PT VITAL EST NON CONTACTNT
                     naret2 = int(zr(jtabf+ztabf*(ipc2-1)+5))
@@ -226,15 +227,15 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 ! --- SINCO = SOMME DES CICOCA SUR LES ÉLTS DU LIGREL
 !
     do 60 igr = 1, ngrel
-        debgr = zi(jvald-1+4+igr)
-        nel = zi(jvald-1+debgr+1)
+        debgr = celd(4+igr)
+        nel = celd(debgr+1)
         call jeveuo(jexnum(ligrxf//'.LIEL', igr), 'L', jad)
         do 70 iel = 1, nel
-            adiel = zi(jvald-1+debgr+4+4*(iel-1)+4)
+            adiel = celd(debgr+4+4*(iel-1)+4)
             ipc = -zi(jad-1+iel)
-            zr(jtabf+ztabf*(ipc-1)+13) = zi(jvalv-1+adiel+1)
-            zr(jtabf+ztabf*(ipc-1)+28) = zi(jvalv-1+adiel+2)
-            sinco = sinco + zi(jvalv-1+adiel)
+            zr(jtabf+ztabf*(ipc-1)+13) = celv(adiel+1)
+            zr(jtabf+ztabf*(ipc-1)+28) = celv(adiel+2)
+            sinco = sinco + celv(adiel)
 70      continue
 60  end do
 !

@@ -109,7 +109,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 !
 !
-    integer :: ldccv(2), ierm, indic, jplir, jpltk, sel
+    integer :: ldccv(2), ierm, indic,   sel
     real(kind=8) :: f(2), r8bid
     character(len=8) :: choix, txt
     character(len=19) :: depold, depdel, deppr1, deppr2
@@ -118,6 +118,8 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
     logical :: swloun, isxfe
     logical :: switch, mixte
     real(kind=8) :: miincr, miresi, contra, precyc, fnid(2)
+    real(kind=8), pointer :: plir(:) => null()
+    character(len=24), pointer :: pltk(:) => null()
     parameter     (contra=0.1d0,precyc=5.d-2)
 !
 ! ----------------------------------------------------------------------
@@ -131,8 +133,8 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 ! --- INITIALISATIONS
 !
-    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', jpltk)
-    typpil = zk24(jpltk)
+    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
+    typpil = pltk(1)
     f(1) = 0.d0
     f(2) = 0.d0
     ldccv(1) = -1
@@ -175,8 +177,8 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
     if (typsel .eq. 'ANGL_INCR_DEPL') then
 !
         if (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') then
-            call jeveuo(sdpilo(1:19)//'.PLIR', 'L', jplir)
-            swloun = zr(jplir)*zr(jplir-1+6).lt.0.d0
+            call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
+            swloun = plir(1)*plir(6).lt.0.d0
         endif
 !
         call nmceai(numedd, depdel, deppr1, deppr2, depold,&

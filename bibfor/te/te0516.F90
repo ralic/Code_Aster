@@ -90,7 +90,7 @@ subroutine te0516(option, nomte)
     real(kind=8) :: rigge0(2*nc, 2*nc), ksi1, d1b3(2, 3), sigfib, mflex(4)
     real(kind=8) :: ddu(2*nc), carsec(6)
     integer :: ne, cara, idepla, iiter, iterat, nint, ifgp
-    integer :: nbgf, isicom, nbgfmx
+    integer :: nbgf,  nbgfmx
     character(len=8) :: mator
     character(len=4) :: fami
     character(len=24) :: valk(2)
@@ -99,6 +99,7 @@ subroutine te0516(option, nomte)
     real(kind=8), pointer :: modufib(:) => null()
     real(kind=8), pointer :: vsigfib(:) => null()
     real(kind=8), pointer :: varfib(:) => null()
+    integer, pointer :: cpri(:) => null()
 !     ------------------------------------------------------------------
 !
     fami = 'RIGI'
@@ -261,8 +262,8 @@ subroutine te0516(option, nomte)
                 iret)
 !   CARACTERISTIQUES ELASTIQUES (PAS DE TEMPERATURE POUR L'INSTANT)
 !   ON PREND LE E ET NU DU MATERIAU TORSION (VOIR OP0059)
-    call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', isicom)
-    nbgfmx = zi(isicom+2)
+    call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
+    nbgfmx = cpri(3)
     mator = zk24(isdcom-1+nbgfmx*6+1)(1:8)
     call matela(zi(imate), mator, 1, temp, e,&
                 nu)

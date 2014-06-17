@@ -38,14 +38,18 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, jcesd, jcesv, im, ima, decal, nbcmp, nbpt, ipt, ino, jconx1
-    integer :: jconx2, jcinv, jcind, npara, nbcin, decin, icmp, iad
+    integer :: ibid,   im, ima, decal, nbcmp, nbpt, ipt, ino, jconx1
+    integer :: jconx2,   npara, nbcin, decin, icmp, iad
     parameter   ( npara = 8 )
     real(kind=8) :: valer(5), type
     complex(kind=8) :: c16b
     character(len=8) :: valek(3), typara(npara)
     character(len=16) :: nopara(npara)
     character(len=24) :: connex, nommai, nomnoe
+    integer, pointer :: cesd(:) => null()
+    integer, pointer :: cind(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    real(kind=8), pointer :: cinv(:) => null()
 !     ------------------------------------------------------------------
     data nopara / 'MAILLE', 'TYPE_MAILLE', 'NOEUD' ,  'SM',&
      &              'SN_MAX', 'SN/3SM', 'SALT_MAX' , 'FACT_USAGE_CUMU' /
@@ -66,30 +70,30 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
 !
 ! --- LE CHAMP INDICE DE CONTRAINTES
 !
-    call jeveuo(chindi(1:19)//'.CESV', 'L', jcinv)
-    call jeveuo(chindi(1:19)//'.CESD', 'L', jcind)
-    nbcin = zi(jcind-1+2)
+    call jeveuo(chindi(1:19)//'.CESV', 'L', vr=cinv)
+    call jeveuo(chindi(1:19)//'.CESD', 'L', vi=cind)
+    nbcin = cind(2)
 !
 ! --- LE CHAM_ELEM RESULTAT
 !
-    call jeveuo(chresu(1:19)//'.CESD', 'L', jcesd)
-    call jeveuo(chresu(1:19)//'.CESV', 'L', jcesv)
-    nbcmp = zi(jcesd-1+2)
+    call jeveuo(chresu(1:19)//'.CESD', 'L', vi=cesd)
+    call jeveuo(chresu(1:19)//'.CESV', 'L', vr=cesv)
+    nbcmp = cesd(2)
 !
     do 10 im = 1, nbma
 !
         ima = listma(im)
         call jenuno(jexnum(nommai, ima), valek(1))
 !
-        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-        decal = zi(jcesd-1+5+4*(ima-1)+4)
-        decin = zi(jcind-1+5+4*(ima-1)+4)
+        nbpt = cesd(5+4*(ima-1)+1)
+        decal = cesd(5+4*(ima-1)+4)
+        decin = cind(5+4*(ima-1)+4)
 !
         do 20 ipt = 1, nbpt
 !
             icmp = 7
             iad = decin + (ipt-1)*nbcin + icmp
-            type = zr(jcinv-1+iad)
+            type = cinv(iad)
             if (type .eq. 0.d0) then
                 valek(2) = '???'
             else if (type .eq. 10.d0) then
@@ -108,7 +112,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
             do 30 icmp = 1, nbcmp
 !
                 iad = decal + (ipt-1)*nbcmp + icmp
-                valer(icmp) = zr(jcesv-1+iad)
+                valer(icmp) = cesv(iad)
 !
 30          continue
 !

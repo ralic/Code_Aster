@@ -67,7 +67,7 @@ subroutine pevolu(resu, modele, nbocc)
     integer :: nn, nbmaf
     integer :: nbpar, nbpmax, iocc, inum, numo, jin, nbmato, iresma, ncmpm, ifm
     integer :: nbcmp, nbint, jbpct, ivalr, ii, i, ib, jvalr, jvali, jvalk, niv
-    integer :: jlicmp,   nucmp, ivali, bfix, ivol(2), tord(1)
+    integer ::    nucmp, ivali, bfix, ivol(2), tord(1)
     parameter(nbpmax=13)
     character(len=4) :: tych, ki
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd
@@ -83,6 +83,7 @@ subroutine pevolu(resu, modele, nbocc)
     logical :: exiord, toneut, lseuil
     character(len=8), pointer :: cmp1(:) => null()
     character(len=8), pointer :: cmp2(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -284,14 +285,14 @@ subroutine pevolu(resu, modele, nbocc)
                 toneut=.true.
                 chamtm='&&PEVOLU.CHS1'
                 call cnocns(cham2, 'V', chamtm)
-                call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
+                call jeveuo(chamtm//'.CNSC', 'L', vk8=cnsc)
                 call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
                 AS_ALLOCATE(vk8=cmp1, size=ncmpm)
                 AS_ALLOCATE(vk8=cmp2, size=ncmpm)
                 do i = 1, ncmpm
                     call codent(i, 'G', ki)
                     cmp2(i)='X'//ki(1:len(ki))
-                    cmp1(i)=zk8(jlicmp+i-1)
+                    cmp1(i)=cnsc(i)
                 end do
                 call chsut1(chamtm, 'NEUT_R', ncmpm, cmp1, cmp2,&
                             'V', chamtm)

@@ -49,7 +49,10 @@ subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta,&
 !
 !
 !
-    integer :: i, jdu0, jdu1, jddepl
+    integer :: i
+    real(kind=8), pointer :: ddepl(:) => null()
+    real(kind=8), pointer :: du0(:) => null()
+    real(kind=8), pointer :: du1(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,14 +60,14 @@ subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta,&
 !
 ! --- INITIALISATIONS
 !
-    call jeveuo(incpr1(1:19)//'.VALE', 'L', jdu0)
-    call jeveuo(incpr2(1:19)//'.VALE', 'L', jdu1)
-    call jeveuo(ddincc(1:19)//'.VALE', 'E', jddepl)
+    call jeveuo(incpr1(1:19)//'.VALE', 'L', vr=du0)
+    call jeveuo(incpr2(1:19)//'.VALE', 'L', vr=du1)
+    call jeveuo(ddincc(1:19)//'.VALE', 'E', vr=ddepl)
 !
 ! --- CALCUL
 !
     do 10 i = 1, neq
-        zr(jddepl+i-1) = rho*zr(jdu0+i-1) + (eta-offset)*zr(jdu1+i-1)
+        ddepl(i) = rho*du0(i) + (eta-offset)*du1(i)
 10  end do
 !
     call jedema()

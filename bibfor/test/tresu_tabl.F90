@@ -57,7 +57,7 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
 ! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, jvale, jvall, nblign, nbpara, i, jtbnp, jtblp, ipar
+    integer :: vali, jvale, jvall, nblign, nbpara, i,   ipar
     real(kind=8) :: valr
     complex(kind=8) :: valc
     logical :: exist
@@ -68,6 +68,8 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
     character(len=24) :: valk(2)
     logical :: skip
     real(kind=8) :: ordgrd
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 !     ------------------------------------------------------------------
 !
     skip = .false.
@@ -101,17 +103,17 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt,&
         goto 9999
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     do 10 ipar = 1, nbpara
-        if (inpar .eq. zk24(jtblp+4*(ipar-1))) goto 12
+        if (inpar .eq. tblp(1+4*(ipar-1))) goto 12
 10  end do
 12  continue
-    call jeveuo(zk24(jtblp+4*(ipar-1)+2), 'L', jvale)
-    call jeveuo(zk24(jtblp+4*(ipar-1)+3), 'L', jvall)
+    call jeveuo(tblp(1+4*(ipar-1)+2), 'L', jvale)
+    call jeveuo(tblp(1+4*(ipar-1)+3), 'L', jvall)
 !
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then

@@ -69,9 +69,10 @@ subroutine gesdef(nomres, numddl)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad1, iad2, ik, lddesc, lldeeq
+    integer :: i, iad1, iad2, ik,  lldeeq
     integer :: lldes, ltidec, ltmat, nbcmp, nbdef, nbec, nbno
     integer :: nbnot, nbtem, neq, nomax
+    integer, pointer :: idc_desc(:) => null()
 !-----------------------------------------------------------------------
     data pgc/'GESDEF'/
 !-----------------------------------------------------------------------
@@ -192,8 +193,8 @@ subroutine gesdef(nomres, numddl)
 !
 !------------------------FINITION DU .DESC------------------------------
 !
-    call jeveuo(nomres//'.IDC_DESC', 'E', lddesc)
-    zi(lddesc+4) = nbdef
+    call jeveuo(nomres//'.IDC_DESC', 'E', vi=idc_desc)
+    idc_desc(5) = nbdef
 !
 !---------------------LIBERATION DES OBJETS-----------------------------
 !

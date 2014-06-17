@@ -69,7 +69,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i, ic, idrayo, idthet, im, imode, j, kfext, ktext, kinti, kncho
+    integer :: i, ic, idrayo, idthet, im, imode, j
     integer :: n2, nbseg, nbseg0, nitmax, np3, nbchoc
     integer :: jtran
     integer :: iamo00, ipuld, ipul00, ifmo0, ifmoa, idepg, ivitg, iaccg, iaccg0
@@ -93,6 +93,10 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
     character(len=16) :: typres, nomcmd
     character(len=24) :: nomfon
     character(len=24) :: valk(2)
+    character(len=8), pointer :: ncho(:) => null()
+    character(len=8), pointer :: inti(:) => null()
+    real(kind=8), pointer :: nkfext(:) => null()
+    real(kind=8), pointer :: nktext(:) => null()
 !
 ! ROUTINES EXTERNES
 ! -----------------
@@ -136,17 +140,17 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
     call wkvect('&&MDITM1.FEXTTR', 'V V R8', nbm, ifxtr)
     call wkvect('&&MDITM1.FEXTT0', 'V V R8', nbm, ifx0)
     vecgen = tabexc(1)
-    call jeveuo(vecgen//'           .VALE', 'L', ktext)
+    call jeveuo(vecgen//'           .VALE', 'L', vr=nktext)
     do 20 i = 1, nbf
-        zr(itx+i-1) = zr(ktext+i-1)
+        zr(itx+i-1) = nktext(i)
 20  end do
     dttr = (zr(itx+1) - zr(itx)) * 1.0d-02
     do 30 i = 1, nexcit
         vecgen = tabexc(i)
-        call jeveuo(vecgen//'           .VALE', 'L', kfext)
+        call jeveuo(vecgen//'           .VALE', 'L', vr=nkfext)
         imode = numexc(i)
         do 31 j = 1, nbf
-            zr(ifx+(imode-1)*nbf+j-1) = zr(kfext+nbf+j-1)
+            zr(ifx+(imode-1)*nbf+j-1) = nkfext(1+nbf+j-1)
 31      continue
 30  end do
 !
@@ -252,11 +256,11 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
         call wkvect('&&MDITM1.LOC', 'V V L', nbm, iloc)
 !
         call getres(resu, typres, nomcmd)
-        call jeveuo(resu//'           .NCHO', 'E', kncho)
-        call jeveuo(resu//'           .INTI', 'E', kinti)
+        call jeveuo(resu//'           .NCHO', 'E', vk8=ncho)
+        call jeveuo(resu//'           .INTI', 'E', vk8=inti)
         do 50 ic = 1, nbnl
-            zk8(kinti+ic-1) = intitu(ic)
-            zk8(kncho+ic-1) = noecho(ic,1)
+            inti(ic) = intitu(ic)
+            ncho(ic) = noecho(ic,1)
 50      end do
 !
         call wkvect('&&MDITM1.TCONF1', 'V V R8', 4*nbnl, jc1)

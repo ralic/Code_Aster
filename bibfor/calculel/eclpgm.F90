@@ -78,13 +78,13 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !
 !
     integer :: k, te, tabno(27), iret1, jobj, numa, nch
-    integer :: igr, iel, iacoor, iamaco, ilmaco, ialiel, illiel
+    integer :: igr, iel,   ilmaco,  illiel
     integer :: dimgeo,  ibid, ino, ino1, ino2
     integer :: nbmail, nbnoeu, nbcoor, iadime, kse
     integer :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
     integer :: npg1, nbpi,  iagese, nno2, nuse, nse1
     integer :: ima, nbelgr, nupoin, npoini, iterm, ipoini
-    integer :: iret, ich, jrefe, nch2
+    integer :: iret, ich,  nch2
     character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, nompar
     character(len=8) :: tych
     character(len=16) :: nomte, lisch(nch)
@@ -116,16 +116,20 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     integer :: opt, iadesc, iaoppa, nbin
     integer, pointer :: connexse(:) => null()
     real(kind=8), pointer :: geopoini(:) => null()
+    integer, pointer :: liel(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: maco(:) => null()
 ! ----------------------------------------------------------------------
 !
 !     FONCTIONS FORMULES :
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
-#define numail(igr,iel) zi(ialiel-1+zi(illiel+igr-1)+iel-1)
+#define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
 #define nbnoma(ima) zi(ilmaco-1+ima+1)-zi(ilmaco-1+ima)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
-#define numglm(ima,ino) zi(iamaco-1+zi(ilmaco+ima-1)+ino-1)
+#define numglm(ima,ino) maco(zi(ilmaco+ima-1)+ino-1)
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -133,8 +137,8 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !
 !
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma1)
-    call jeveuo(ma1//'.COORDO    .VALE', 'L', iacoor)
-    call jeveuo(ma1//'.CONNEX', 'L', iamaco)
+    call jeveuo(ma1//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(ma1//'.CONNEX', 'L', vi=maco)
     call jeveuo(jexatr(ma1//'.CONNEX', 'LONCUM'), 'L', ilmaco)
 !
 !
@@ -211,7 +215,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !           L'UTILISATEUR :
 !     ----------------------------------------------------------------
     if (ligrel .eq. ' ') ligrel=ligrmo
-    call jeveuo(ligrel//'.LIEL', 'L', ialiel)
+    call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
 !
 !
@@ -308,7 +312,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                 do k = 1, dimgeo
                     x=0.d0
                     do iterm = 1, nterm1(ipoini)
-                        x=x+csomm1(ipoini,iterm)* zr(iacoor-1+3*(&
+                        x=x+csomm1(ipoini,iterm)* vale(3*(&
                         tabno(nsomm1(ipoini,iterm))-1)+k)
                     end do
                     geopoini((nupoin-1)*dimgeo+k)=x
@@ -401,8 +405,8 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     call copisd('CHAMP_GD', 'G', ma1//'.COORDO', ma2//'.COORDO')
     call jedetr(ma2//'.COORDO    .VALE')
     call wkvect(ma2//'.COORDO    .VALE', 'G V R', 3*nbnoeu, ibid)
-    call jeveuo(ma2//'.COORDO    .REFE', 'E', jrefe)
-    zk24(jrefe-1+1)=ma2
+    call jeveuo(ma2//'.COORDO    .REFE', 'E', vk24=refe)
+    refe(1)=ma2
 !
     do k = 1, dimgeo
         nuno2=0

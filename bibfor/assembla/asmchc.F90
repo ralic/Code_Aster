@@ -47,12 +47,16 @@ subroutine asmchc(matas)
     character(len=14) :: nu
     character(len=19) :: mat, nomsto
     integer :: typmat, ielim, jelim, kdeb, kfin, nccva,  ilig, jcol
-    integer :: jsmhc, jsmdi, jvalm, jvalm2, jccva, jccll, nelim, jnulg
-    integer :: jrefa, iret2, jnequ, ieq, k, deciel, nterm, neq, ier, imatd
-    integer ::  nblocm, jccii,  decjel, iremp, jccid, keta
+    integer :: jsmhc,  jvalm, jvalm2, jccva, jccll, nelim
+    integer ::  iret2, jnequ, ieq, k, deciel, nterm, neq, ier, imatd
+    integer ::  nblocm, jccii,  decjel, iremp,  keta
     logical :: nonsym
     integer, pointer :: elim(:) => null()
     integer, pointer :: remplis(:) => null()
+    integer, pointer :: ccid(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: smdi(:) => null()
+    integer, pointer :: nulg(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
     mat = matas
@@ -63,12 +67,12 @@ subroutine asmchc(matas)
     if (ier .eq. 0) goto 9999
 !
     call jelira(mat//'.REFA', 'CLAS', cval=base)
-    call jeveuo(mat//'.REFA', 'E', jrefa)
-    nu = zk24(jrefa-1+2)(1:14)
+    call jeveuo(mat//'.REFA', 'E', vk24=refa)
+    nu = refa(2)(1:14)
     call jeexin(nu//'.NUML.DELG', imatd)
     if (imatd .ne. 0) then
         call jeveuo(nu//'.NUML.NEQU', 'L', jnequ)
-        call jeveuo(nu//'.NUML.NULG', 'L', jnulg)
+        call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
     else
         call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
     endif
@@ -76,7 +80,7 @@ subroutine asmchc(matas)
 !
 !
 !     -- ON DETRUIT LES OBJETS S'ILS EXISTENT DEJA :
-    ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
+    ASSERT(refa(3).ne.'ELIMF')
     call jedetr(mat//'.CCLL')
     call jedetr(mat//'.CCVA')
     call jedetr(mat//'.CCII')
@@ -90,13 +94,13 @@ subroutine asmchc(matas)
 !                                         / IELIM  -> ELIMINE
 !     NELIM   I       : NOMBRE D'EQUATIONS DE LA MATRICE A ELIMINER
     AS_ALLOCATE(vi=elim, size=neq)
-    call jeveuo(mat//'.CCID', 'L', jccid)
+    call jeveuo(mat//'.CCID', 'L', vi=ccid)
     nelim=0
     do 1, ieq=1,neq
     if (imatd .ne. 0) then
-        keta=zi(jccid-1+zi(jnulg+ieq-1))
+        keta=ccid(nulg(ieq))
     else
-        keta=zi(jccid-1+ieq)
+        keta=ccid(ieq)
     endif
     ASSERT(keta.eq.1 .or. keta.eq.0)
     if (keta .eq. 1) then
@@ -110,7 +114,7 @@ subroutine asmchc(matas)
 !
 !
     if (nelim .eq. 0) then
-        zk24(jrefa-1+3)='ELIMF'
+        refa(3)='ELIMF'
         goto 9999
     endif
 !     -----------------------------------------------------------------
@@ -121,7 +125,7 @@ subroutine asmchc(matas)
     call jeexin(nomsto//'.SMHC', iret2)
     ASSERT(iret2.gt.0)
     call jeveuo(nomsto//'.SMHC', 'L', jsmhc)
-    call jeveuo(nomsto//'.SMDI', 'L', jsmdi)
+    call jeveuo(nomsto//'.SMDI', 'L', vi=smdi)
 !
 !
 !
@@ -132,7 +136,7 @@ subroutine asmchc(matas)
     kfin=0
     do 21 jcol = 1, neq
         kdeb = kfin + 1
-        kfin = zi(jsmdi-1+jcol)
+        kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
@@ -191,7 +195,7 @@ subroutine asmchc(matas)
     kfin=0
     do 121 jcol = 1, neq
         kdeb = kfin + 1
-        kfin = zi(jsmdi-1+jcol)
+        kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
@@ -248,7 +252,7 @@ subroutine asmchc(matas)
     kfin=0
     do 221 jcol = 1, neq
         kdeb = kfin + 1
-        kfin = zi(jsmdi-1+jcol)
+        kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
@@ -290,7 +294,7 @@ subroutine asmchc(matas)
 !
 221  end do
 !
-    zk24(jrefa-1+3)='ELIMF'
+    refa(3)='ELIMF'
 !
 !
 !

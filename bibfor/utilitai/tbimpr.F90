@@ -53,10 +53,12 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: iret, jtbnp, nbpara, nblign
-    integer :: ltitr, lonmax, ititr
+    integer :: iret,  nbpara, nblign
+    integer ::  lonmax, ititr
     character(len=8) :: format
     character(len=19) :: nomtab
+    integer, pointer :: tbnp(:) => null()
+    character(len=80), pointer :: titr(:) => null()
 !     ------------------------------------------------------------------
 !
 !====
@@ -78,9 +80,9 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
         goto 9999
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('A', 'UTILITAI4_65')
         goto 9999
@@ -99,13 +101,13 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 !
     call jeexin(nomtab//'.TITR', iret)
     if (iret .ne. 0) then
-        call jeveuo(nomtab//'.TITR', 'L', ltitr)
+        call jeveuo(nomtab//'.TITR', 'L', vk80=titr)
         call jelira(nomtab//'.TITR', 'LONMAX', lonmax)
         do 10 ititr = 1, lonmax
             if (format .eq. 'ASTER') then
-                write(ifr,2000) '#TITRE',zk80(ltitr+ititr-1)
+                write(ifr,2000) '#TITRE',titr(ititr)
             else
-                write(ifr,'(1X,A)') zk80(ltitr+ititr-1)
+                write(ifr,'(1X,A)') titr(ititr)
             endif
 10      continue
     endif

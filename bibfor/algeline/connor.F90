@@ -68,7 +68,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     real(kind=8) :: coef(nbm), delta(nbm), rhotub, rhos
     integer :: imode, im, ifsvr, ifsvi, nbma, nbzex, nmamin, nmamax
     integer :: iener, ima, izone, ivcn, iven, icste, modul, nbval, i, j
-    integer :: jconn, modul2, k, jzone, ifsvk, ide, neq, idep
+    integer :: jconn, modul2, k,  ifsvk, ide, neq, idep
     integer :: ldepl(6), lmasg, increm, id, irap
     real(kind=8) :: di, de, mastub, ltube, numera(nbm), denomi
     real(kind=8) :: pas, correl, a, b, c, d, e, f, mphi2(nbm)
@@ -80,6 +80,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     character(len=14) :: numddl
     character(len=19) :: masse
     character(len=24) :: fsvr, fsvi, fsvk
+    integer, pointer :: tempo(:) => null()
     data depla  /'DX      ','DY      ','DZ      '/
     data ldepl  /1,2,3,4,5,6/
 !-----------------------------------------------------------------------
@@ -97,7 +98,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
     fsvk = typflu//'           .FSVK'
     call jeveuo(fsvk, 'L', ifsvk)
 !
-    call jeveuo('&&MDCONF.TEMPO', 'L', jzone)
+    call jeveuo('&&MDCONF.TEMPO', 'L', vi=tempo)
 !
     de = carac(1)
     di = carac(1)-2*carac(2)
@@ -195,8 +196,8 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !
         do izone = 1, nbzex
 !
-            nmamin=zi(jzone+2*(izone-1)+1)
-            nmamax=zi(jzone+2*(izone-1)+2)-1
+            nmamin=tempo(1+2*(izone-1)+1)
+            nmamax=tempo(1+2*(izone-1)+2)-1
 !     RHO EST DE LA FORME A*S+B
 !     V   EST DE LA FORME C*S+D
 !     PHI EST DE LA FORME E*S+F
@@ -323,8 +324,8 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !
         do izone = 1, nbzex
 !
-            nmamin=zi(jzone+2*(izone-1)+1)
-            nmamax=zi(jzone+2*(izone-1)+2)-1
+            nmamin=tempo(1+2*(izone-1)+1)
+            nmamax=tempo(1+2*(izone-1)+2)-1
 !     RHO EST DE LA FORME A*S+B
 !     V   EST DE LA FORME C*S+D
 !     PHI EST DE LA FORME E*S+F

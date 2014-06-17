@@ -46,13 +46,14 @@ subroutine op0008()
 #include "asterfort/utmess.h"
 !
     integer :: ibid, ich, icha, ncha, nh
-    integer :: n1, n3, n4, n5, n7, n9, iresu, jrelr, iexi, nbresu
+    integer :: n1, n3, n4, n5, n7, n9, iresu,  iexi, nbresu
     real(kind=8) :: time, tps(6), vcmpth(4)
     character(len=8) :: matez, modele, cara, k8bid, kmpic
     character(len=8) :: nomcmp(6), mo1, materi, ncmpth(4)
     character(len=16) :: type, oper, suropt
     character(len=19) :: matel, resuel
     character(len=24) :: time2, mate
+    character(len=24), pointer :: relr(:) => null()
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
     data ncmpth/'TEMP','TEMP_MIL','TEMP_INF','TEMP_SUP'/
@@ -172,9 +173,9 @@ subroutine op0008()
 !     -- SI MATEL N'EST PAS MPI_COMPLET, ON LE COMPLETE :
 !     ----------------------------------------------------
     call jelira(matel//'.RELR', 'LONMAX', nbresu)
-    call jeveuo(matel//'.RELR', 'L', jrelr)
+    call jeveuo(matel//'.RELR', 'L', vk24=relr)
     do iresu = 1, nbresu
-        resuel=zk24(jrelr+iresu-1)(1:19)
+        resuel=relr(iresu)(1:19)
         call jeexin(resuel//'.RESL', iexi)
         if (iexi .eq. 0) goto 101
         call dismoi('MPI_COMPLET', resuel, 'RESUELEM', repk=kmpic)

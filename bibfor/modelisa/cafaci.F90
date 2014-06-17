@@ -80,7 +80,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
     integer :: iocc
     integer :: nbnoeu, jdirec
-    integer :: idim, nume_node, jnorm, jtang, nfaci
+    integer :: idim, nume_node,   nfaci
     integer :: ibid, ndim
     integer :: ino, jprnm, nbec
     integer :: nbcmp, inom
@@ -111,6 +111,8 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
     integer, pointer :: icompt(:) => null()
+    real(kind=8), pointer :: tangent(:) => null()
+    real(kind=8), pointer :: normale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -214,12 +216,12 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
         if (l_dnor) then
             call canort(mesh, nb_elem, zi(jlima), ndim, nb_node,&
                         zi(jlino), 1)
-            call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
+            call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
         endif
         if (l_dtan) then
             call canort(mesh, nb_elem, zi(jlima), ndim, nb_node,&
                         zi(jlino), 2)
-            call jeveuo('&&CANORT.TANGENT', 'L', jtang)
+            call jeveuo('&&CANORT.TANGENT', 'L', vr=tangent)
         endif
 !
 ! ----- If DNOR exists
@@ -229,7 +231,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, ndim
-                    repe_defi(idim) = zr(jnorm-1+ndim*(ino-1)+idim)
+                    repe_defi(idim) = normale(ndim*(ino-1)+idim)
                 end do
 !
                 if (lxfem) then
@@ -258,7 +260,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, ndim
-                    repe_defi(idim) = zr(jtang-1+ndim* (ino-1)+idim)
+                    repe_defi(idim) = tangent(ndim* (ino-1)+idim)
                 end do
 !
                 if (lxfem) then

@@ -52,12 +52,13 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
 !      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
-    integer :: npres, jncmp, jvalv, ncmp, iocc, npr, iatyma, nbma, i, ima
+    integer :: npres,  jvalv, ncmp, iocc, npr, iatyma, nbma, i, ima
     integer :: iadtyp, jma, nmatot, nbtou
     character(len=8) :: k8b, maille, type, typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai, valk(4)
+    character(len=8), pointer :: vncmp(:) => null()
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -79,13 +80,13 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nmatot)
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
 ! --- STOCKAGE DE PRESSIONS NULLES SUR TOUT LE MAILLAGE
 !
     ncmp = 1
-    zk8(jncmp) = 'PRES'
+    vncmp(1) = 'PRES'
     if (ialloc .eq. 0) then
         if (fonree .eq. 'REEL') then
             zr(jvalv) = 0.d0

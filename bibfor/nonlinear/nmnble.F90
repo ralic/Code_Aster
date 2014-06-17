@@ -74,10 +74,11 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
     integer :: neq
     character(len=19) :: depmoi, depplu
     character(len=19) :: depdel, ddepla
-    integer :: jdepde, jddepl
     character(len=19) :: vitini, accini, vitplu, accplu
     logical :: loptin, lallv, leltc, ldyna
     integer :: mmitgo, mmitfr, mmitca
+    real(kind=8), pointer :: ddepl(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,10 +116,10 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 ! --- INITIALISATION DES CHAMPS DE DEPLACEMENT
 !
     call copisd('CHAMP_GD', 'V', depmoi, depplu)
-    call jeveuo(depdel(1:19)//'.VALE', 'E', jdepde)
-    call jeveuo(ddepla(1:19)//'.VALE', 'E', jddepl)
-    call r8inir(neq, 0.d0, zr(jdepde), 1)
-    call r8inir(neq, 0.d0, zr(jddepl), 1)
+    call jeveuo(depdel(1:19)//'.VALE', 'E', vr=depde)
+    call jeveuo(ddepla(1:19)//'.VALE', 'E', vr=ddepl)
+    call r8inir(neq, 0.d0, depde, 1)
+    call r8inir(neq, 0.d0, ddepl, 1)
 !
 ! --- AFIN QUE LE VECTEUR DES FORCES D'INERTIE NE SOIT PAS MODIFIE AU
 ! --- COURS DE LA BOUCLE DES CONTRAINTES ACTIVES PAR L'APPEL A OP0070

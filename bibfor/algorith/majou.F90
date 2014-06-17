@@ -91,9 +91,11 @@ subroutine majou(model, modmec, solveu, num, nu,&
 ! DEFINI
 !-----------------------------------------------------------------------
     integer :: iadirg, iadpr, iadx, iady, iadz, idesp
-    integer :: irefp, iret, ivalp, jchflu, jordr, jpara, nbnumo
+    integer :: irefp, iret, ivalp,   jpara, nbnumo
 !
     real(kind=8) :: bid, ebid
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -177,10 +179,10 @@ subroutine majou(model, modmec, solveu, num, nu,&
 ! UTILISES
 !      CALL JEVEUO(MODMEC//'           .NUMO','L',INUMO)
     call jelira(modmec//'           .ORDR', 'LONMAX', nbnumo)
-    call jeveuo(modmec//'           .ORDR', 'L', jordr)
+    call jeveuo(modmec//'           .ORDR', 'L', vi=ordr)
     do jj = 1, nbsel
         do kk = 1, nbnumo
-            call rsadpa(modmec, 'L', 1, 'NUME_MODE', zi(jordr-1+kk),&
+            call rsadpa(modmec, 'L', 1, 'NUME_MODE', ordr(kk),&
                         0, sjv=jpara, styp=k8bid)
             if (zi(idsel+jj-1) .eq. zi(jpara)) goto 100
         end do
@@ -294,9 +296,9 @@ subroutine majou(model, modmec, solveu, num, nu,&
 !
 !----ON RESOUT L EQUATION DE LAPLACE
 !
-        call jeveuo(chflu//'.VALE', 'E', jchflu)
+        call jeveuo(chflu//'.VALE', 'E', vr=vale)
         call resoud(ma, ' ', solveu, ' ', 1,&
-                    ' ', ' ', ' ', zr(jchflu), [cbid],&
+                    ' ', ' ', ' ', vale, [cbid],&
                     ' ', .true., 0, iret)
 !
 !

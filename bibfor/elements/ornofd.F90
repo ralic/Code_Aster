@@ -62,12 +62,13 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 !
     integer :: iatyma, jtypm,   jmail
     integer :: im, nid, nig, njonc, n, i, k, nbno
-    integer :: jrdm, jnoe, ntemp, jcoor
+    integer :: jrdm, jnoe, ntemp
     character(len=8) :: typm
     character(len=8) :: noeud
     character(len=24) :: conec, typp, nomnoe
     integer, pointer :: mailles_triee(:) => null()
     integer, pointer :: noeuds_extrem(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !
@@ -216,20 +217,20 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
     if (ps1 .gt. 0.d0) then
         ASSERT(nbno.ge.3)
         ASSERT(zi(jnoe-1+1).eq.zi(jnoe-1+nbno))
-        call jeveuo(nomail//'.COORDO    .VALE', 'L', jcoor)
+        call jeveuo(nomail//'.COORDO    .VALE', 'L', vr=vale)
 !
 !       PS1 : DDOT(VECORI,(1,2))/NORME((1,2))
         do 77, k=1,3
-        vecta(k)=zr(jcoor-1+3*(zi(jnoe-1+2)-1)+k)
-        vecta(k)=vecta(k)-zr(jcoor-1+3*(zi(jnoe-1+1)-1)+k)
+        vecta(k)=vale(3*(zi(jnoe-1+2)-1)+k)
+        vecta(k)=vecta(k)-vale(3*(zi(jnoe-1+1)-1)+k)
 77      continue
         ps1=ddot(3,vecta,1,vecori,1)
         ps1=ps1/sqrt(ddot(3,vecta,1,vecta,1))
 !
 !       PS2 : DDOT(VECORI,(N,N-1))/NORME((N,N-1))
         do 78, k=1,3
-        vecta(k)=zr(jcoor-1+3*(zi(jnoe-1+nbno-1)-1)+k)
-        vecta(k)=vecta(k)-zr(jcoor-1+3*(zi(jnoe-1+nbno)-1)+k)
+        vecta(k)=vale(3*(zi(jnoe-1+nbno-1)-1)+k)
+        vecta(k)=vecta(k)-vale(3*(zi(jnoe-1+nbno)-1)+k)
 78      continue
         ps2=ddot(3,vecta,1,vecori,1)
         ps2=ps2/sqrt(ddot(3,vecta,1,vecta,1))

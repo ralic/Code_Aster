@@ -52,9 +52,10 @@ subroutine te0163(option, nomte)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, idfdk, ilapl, ilist, ima, ipoids, ivect
-    integer :: ivf, j, jgano, jgeom, jlima, k, kp
+    integer :: ivf, j, jgano,  jlima, k, kp
     integer :: lx, nbma, nbma2, nddl, ndim, nno, nnos
     integer :: no1, no2, npg
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call elref1(elrefe)
@@ -87,7 +88,7 @@ subroutine te0163(option, nomte)
     listma = zk16(ilist)
     ltrans = zk16(ilist+1)
     chgeom = zk24(ilapl+1) (1:19)
-    call jeveuo(chgeom//'.VALE', 'L', jgeom)
+    call jeveuo(chgeom//'.VALE', 'L', vr=vale)
 !
     e1 = zr(lx+4) - zr(lx+1)
     e2 = zr(lx+5) - zr(lx+2)
@@ -104,9 +105,9 @@ subroutine te0163(option, nomte)
     do 50 ima = 1, nbma
         no1 = zi(jlima+2*ima-2)
         no2 = zi(jlima+2*ima-1)
-        g1 = zr(jgeom+3*no2-3) - zr(jgeom+3*no1-3)
-        g2 = zr(jgeom+3*no2-2) - zr(jgeom+3*no1-2)
-        g3 = zr(jgeom+3*no2-1) - zr(jgeom+3*no1-1)
+        g1 = vale(1+3*no2-3) - vale(1+3*no1-3)
+        g2 = vale(1+3*no2-2) - vale(1+3*no1-2)
+        g3 = vale(1+3*no2-1) - vale(1+3*no1-1)
         s = sqrt(g1**2+g2**2+g3**2)
         f1 = g1/s
         f2 = g2/s
@@ -114,9 +115,9 @@ subroutine te0163(option, nomte)
         do 40 kp = 1, npg
             k = (kp-1)*nno
             if (ima .eq. 1) call vff3d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(lx+1), poids(kp))
-            r1 = -zr(jgeom+3*no2-3)
-            r2 = -zr(jgeom+3*no2-2)
-            r3 = -zr(jgeom+3*no2-1)
+            r1 = -vale(1+3*no2-3)
+            r2 = -vale(1+3*no2-2)
+            r3 = -vale(1+3*no2-1)
             do 10 i = 1, nno
                 r1 = r1 + zr(lx+1+3* (i-1))*zr(ivf+k+i-1)
                 r2 = r2 + zr(lx+2+3* (i-1))*zr(ivf+k+i-1)

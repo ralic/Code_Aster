@@ -51,10 +51,11 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     integer :: ia, ibid, ic, icas, id, idep, ifm
     integer :: ii, il, ino, iocc, iordr, iq, is
     integer :: jcas, jdir, jkno, jno,  jnref
-    integer :: jord, jref, jtyp, lnod, nbno, nboc, ncas
+    integer :: jord, jref,  lnod, nbno, nboc, ncas
     integer :: ndep, nucas, nume
     real(kind=8) :: epsima, vale
     character(len=8), pointer :: noeuds(:) => null()
+    integer, pointer :: type(:) => null()
 !-----------------------------------------------------------------------
     epsima = r8vide()
     call jemarq()
@@ -129,7 +130,7 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 !
     call getfac('COMB_DEPL_APPUI', nboc)
     call getfac('DEPL_MULT_APPUI', ndep)
-    call jeveuo('&&ASENAP.TYPE', 'L', jtyp)
+    call jeveuo('&&ASENAP.TYPE', 'L', vi=type)
     noref = '-'
     write(ifm,1190)
     write(ifm,1200)
@@ -181,9 +182,9 @@ subroutine asimpr(nbsup, tcosup, nomsup)
         call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)
         write(ifm,1220)
-        if (zi(jtyp+iocc-1) .eq. 1) typdir = 'QUAD'
-        if (zi(jtyp+iocc-1) .eq. 2) typdir = 'LINE'
-        if (zi(jtyp+iocc-1) .eq. 3) typdir = 'ABS'
+        if (type(iocc) .eq. 1) typdir = 'QUAD'
+        if (type(iocc) .eq. 2) typdir = 'LINE'
+        if (type(iocc) .eq. 3) typdir = 'ABS'
         iordr = zi(jord+iocc-1)
         write(ifm,1230)
         write(ifm,1240)iordr,typdir,( zi(jcas+ic-1),ic=1,ncas)

@@ -33,39 +33,44 @@ subroutine filter_smd(nommat, vsmb)
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: ieql, ieqg, jrefa, jnulg, jnequ, jnequl, jpddl, neqg, neql
-    integer :: iccid, jccid, rang  
+    integer :: ieql, ieqg,     jpddl, neqg, neql
+    integer :: iccid,  rang  
     character(len=14) :: nu
     character(len=19) :: mat
     mpi_int :: mrank, msize
     logical :: is_ddl_cine, iam_sole_owner
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: ccid(:) => null()
+    integer, pointer :: nulg(:) => null()
+    integer, pointer :: nequl(:) => null()
+    integer, pointer :: nequ(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT
     call jemarq()
 !-----------------------------------------------------------------------
     mat = nommat
 !
-    call jeveuo(mat//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
+    call jeveuo(mat//'.REFA', 'L', vk24=refa)
+    if (refa(11) .eq. 'MATR_DISTR') then
         ! Infos du processeur courant
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         ! Infos du NUME_DDL
-        nu = zk24(jrefa-1+2)(1:14)
-        call jeveuo(nu//'.NUML.NULG', 'L', jnulg) 
+        nu = refa(2)(1:14)
+        call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
         call jeveuo(nu//'.NUML.PDDL','L',jpddl)
-        call jeveuo(nu//'.NUML.NEQU','L', jnequl)
-        call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
-        neqg=zi(jnequ)
-        neql=zi(jnequl)
+        call jeveuo(nu//'.NUML.NEQU','L', vi=nequl)
+        call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
+        neqg=nequ(1)
+        neql=nequl(1)
         call jeexin(mat//'.CCID', iccid)
 !
         if (iccid .ne. 0) then
-            call jeveuo(mat//'.CCID', 'L', jccid)
+            call jeveuo(mat//'.CCID', 'L', vi=ccid)
         endif
 !        
         do ieql=1, neql
-           ieqg=zi(jnulg-1+ieql)
+           ieqg=nulg(ieql)
         ! Le dl courant est-il fixé par une charge cinématique ? 
           if ( iccid == 0 ) then 
           ! Il n'y a pas de charge cinématique sur le modèle  
@@ -73,7 +78,7 @@ subroutine filter_smd(nommat, vsmb)
           else 
           ! Il existe au moins une charge cinématique. On vérifie si
           ! le numéro global de dl est concerné 
-          is_ddl_cine=zi(jccid-1+ieqg).eq.1
+          is_ddl_cine=ccid(ieqg).eq.1
           endif
           ! Suis-je le proriétaire exclusif (PETSc) de ce ddl ? 
           iam_sole_owner= zi(jpddl-1+ieql) .eq. rang

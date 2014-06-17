@@ -54,9 +54,12 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, nbno, jvtno, jvnno, jltno, ifm, niv, cptzo, cptaju
+    integer :: i, nbno,    ifm, niv, cptzo, cptaju
     integer :: jlisno
     real(kind=8) :: modzon, dmin
+    real(kind=8), pointer :: ltno(:) => null()
+    real(kind=8), pointer :: vnno(:) => null()
+    real(kind=8), pointer :: vtno(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -69,11 +72,11 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 !   RECUPERATION DES ADRESSES DES CHAMPS DE VITESSE AUX NOEUDS
-    call jeveuo(cnsvt//'.CNSV', 'L', jvtno)
-    call jeveuo(cnsvn//'.CNSV', 'E', jvnno)
+    call jeveuo(cnsvt//'.CNSV', 'L', vr=vtno)
+    call jeveuo(cnsvn//'.CNSV', 'E', vr=vnno)
 !
 !   RECUPERATION DE L'ADRESSE DES VALEURS DE LST
-    call jeveuo(cnslt//'.CNSV', 'L', jltno)
+    call jeveuo(cnslt//'.CNSV', 'L', vr=ltno)
 !
 !   RETRIEVE THE LIST OF THE NODES THAT MUST TO BE USED IN THE
 !   CALCULUS
@@ -89,14 +92,14 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
 !
         if (zl(jlisno-1+i)) then
 !
-            if (zr(jltno-1+i) .le. dmin) then
+            if (ltno(i) .le. dmin) then
 !
 !             THE NODE (OR ITS PROJECTION) IS ON THE EXISTING CRACK
 !             SURFACE. ITS NORMAL SPEED MUST BE SET TO ZERO.
-                zr(jvnno-1+i) = 0
+                vnno(i) = 0
 !
 !             CALCULATE THE MAXIMUM VALUE OF THE SPEED COMPONENTS
-                if (abs(zr(jvtno-1+i)) .gt. vmax) vmax=abs(zr(jvtno-1+i) )
+                if (abs(vtno(i)) .gt. vmax) vmax=abs(vtno(i) )
 !
                 cptzo = cptzo+1
 !
@@ -105,12 +108,12 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn,&
 !             THE NODE (OR ITS PROJECTION) IS AHEAD OF THE CRACK TIP.
 !             ITS NORMAL SPEED MUST BE RECALCULATED USING A LINEAR
 !             EXTRAPOLATION.
-                modzon = zr(jvtno-1+i)*deltat
-                zr(jvnno-1+i) = zr(jvnno-1+i)*zr(jltno-1+i)/modzon
+                modzon = vtno(i)*deltat
+                vnno(i) = vnno(i)*ltno(i)/modzon
 !
 !             CALCULATE THE MAXIMUM VALUE OF THE SPEED COMPONENTS
-                if (abs(zr(jvtno-1+i)) .gt. vmax) vmax=abs(zr(jvtno-1+i) )
-                if (abs(zr(jvnno-1+i)) .gt. vmax) vmax=abs(zr(jvnno-1+i) )
+                if (abs(vtno(i)) .gt. vmax) vmax=abs(vtno(i) )
+                if (abs(vnno(i)) .gt. vmax) vmax=abs(vnno(i) )
 !
                 cptaju = cptaju+1
 !

@@ -43,11 +43,12 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  iret, gd, jceld, jcelk
+    integer ::  iret, gd,  jcelk
     character(len=8) :: nogd, docu
     character(len=19) :: nomob
     character(len=24) :: questl, k24
     character(len=32) :: repk
+    integer, pointer :: celd(:) => null()
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
@@ -65,10 +66,10 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
         goto 9999
     endif
 !
-    call jeveuo(nomob//'.CELD', 'L', jceld)
+    call jeveuo(nomob//'.CELD', 'L', vi=celd)
     call jelira(nomob//'.CELD', 'DOCU', cval=docu)
     ASSERT(docu.eq. 'CHML')
-    gd = zi(jceld)
+    gd = celd(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nogd)
 !
     if (questi .eq. 'TYPE_CHAMP') then
@@ -115,10 +116,10 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
         call dismlg(questi, zk24(jcelk), repi, repk, ierd)
 !
     else if (questi .eq. 'MXNBSP') then
-        repi=max(1,zi(jceld-1+3))
+        repi=max(1,celd(3))
 !
     else if (questi .eq. 'MXVARI') then
-        repi=max(1,zi(jceld-1+4))
+        repi=max(1,celd(4))
 !
     else if (questi .eq. 'TYPE_SCA') then
         call dismgd(questi, nogd, repi, repk, ierd)

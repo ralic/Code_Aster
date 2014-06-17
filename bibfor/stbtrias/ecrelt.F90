@@ -105,8 +105,10 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifo, ima, imod, ipos, jconn, jinfo
+    integer :: i, ifo, ima, imod, ipos
     integer :: k, nbmtot
+    integer, pointer :: conn(:) => null()
+    integer, pointer :: info(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     prfnoe='N'
@@ -156,8 +158,8 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
 !
 !  --> N  D'UNITES LOGIQUES DES FICHIERS
 !
-    call jeveuo('&&PRESUP.INFO.MAILLE', 'L', jinfo)
-    call jeveuo('&&PRESUP.CONN.MAILLE', 'L', jconn)
+    call jeveuo('&&PRESUP.INFO.MAILLE', 'L', vi=info)
+    call jeveuo('&&PRESUP.CONN.MAILLE', 'L', vi=conn)
     do 2 in = 1, maxnod
         chtab(in) = '        '
  2  end do
@@ -190,16 +192,16 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
         write(imod,'(A)') chfoma(nte)
 !
         do 100 ima = 1, nbmtot
-            ityp = zi(jinfo-1+(ima-1)*4+2)
-            neul = zi(jinfo-1+(ima-1)*4+3)
+            ityp = info((ima-1)*4+2)
+            neul = info((ima-1)*4+3)
             if (ityp .eq. nte) then
 !
-                inum = zi(jinfo-1+(ima-1)*4+1)
+                inum = info((ima-1)*4+1)
                 call codnop(chmail, prfmai, 1, 1)
                 call codent(inum, 'G', chmail(2:8))
 !
                 do 12 in = 1, neul
-                    neu2(in) = zi(jconn-1+ipos+in)
+                    neu2(in) = conn(ipos+in)
                     call codnop(chtab(in), prfnoe, 1, 1)
                     call codent(neu2(in), 'G', chtab(in)(2:8))
 12              continue

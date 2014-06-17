@@ -66,8 +66,8 @@ subroutine veimpd(modele, mate, vitini, sddyna, vecelz)
     character(len=24) :: chgeom, ligrmo
     character(len=19) :: vitent
     logical :: debug
-    integer :: jnoma
     integer :: ifmdbg, nivdbg
+    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,8 +79,8 @@ subroutine veimpd(modele, mate, vitini, sddyna, vecelz)
     vecele = vecelz
     ligrmo = modele(1:8)//'.MODELE'
     call ndynkk(sddyna, 'VITENT', vitent)
-    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', jnoma)
-    chgeom = zk8(jnoma)//'.COORDO'
+    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
     option = 'IMPE_ABSO'
     if (nivdbg .ge. 2) then
         debug = .true.

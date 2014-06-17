@@ -48,10 +48,12 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, nbcol, jtbnp
-    integer :: jtblp, i, ki, kr, kc, kk
+    integer :: iret, nbcol
+    integer ::  i, ki, kr, kc, kk
     character(len=19) :: nomtab
     character(len=24) :: type, nomcol
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,9 +69,9 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
         call utmess('F', 'UTILITAI4_68')
     endif
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-    nbcol = zi(jtbnp )
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+    nbcol = tbnp(1)
     ASSERT(nbcol.ne.0)
     ASSERT(nbcol.eq.nbpara)
 !
@@ -78,8 +80,8 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
     kc = 0
     kk = 0
     do 10 i = 1, nbcol
-        nomcol = zk24(jtblp-1+4*(i-1)+1)
-        type = zk24(jtblp-1+4*(i-1)+2)
+        nomcol = tblp(4*(i-1)+1)
+        type = tblp(4*(i-1)+2)
         if (type(1:1) .eq. 'I') then
             ki = ki + 1
             if (nompar .eq. nomcol) then

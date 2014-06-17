@@ -69,7 +69,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
 !
     integer :: ztabf
     integer :: iptc, ntpc, ityp
-    integer :: jtymai, jtynma
+    integer ::  jtynma
     integer :: nummam, nummae, izone
     integer :: ndimg
     integer :: nndel, numtyp
@@ -79,6 +79,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
     integer :: jtabf
     integer :: ifm, niv
     logical :: lfrott
+    integer, pointer :: typmail(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +90,7 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
 !
     tabfin = resoco(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'L', jtabf)
-    call jeveuo(noma//'.TYPMAIL', 'L', jtymai)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
     ztabf = cfmmvd('ZTABF')
 !
 ! --- INITIALISATIONS
@@ -129,8 +130,8 @@ subroutine mmlige(noma, defico, resoco, typelt, nbtyp,&
 !
         izone = nint(zr(jtabf+ztabf*(iptc-1)+13))
         lfrott = mminfl(defico,'FROTTEMENT_ZONE',izone )
-        itymae = zi(jtymai-1+nummae)
-        itymam = zi(jtymai-1+nummam)
+        itymae = typmail(nummae)
+        itymam = typmail(nummam)
         call jenuno(jexnum('&CATA.TM.NOMTM', itymae), ntymae)
         call jenuno(jexnum('&CATA.TM.NOMTM', itymam), ntymam)
 !

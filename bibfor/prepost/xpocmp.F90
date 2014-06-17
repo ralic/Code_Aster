@@ -53,16 +53,17 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 !     CMP    : POSITION DES DDLS DE DEPL X-FEM DANS LE CHAMP_NO DE DEPL1
 !
 !
-    integer :: jcnsc1, jcnsl1, i, j, k, ino, icmp, ndc, ipos, nnos, ibid
+    integer ::  jcnsl1, i, j, k, ino, icmp, ndc, ipos, nnos, ibid
     logical :: exist(n, nbcmp), contas
     character(len=8) :: nomcmp, k8bid
+    character(len=8), pointer :: cnsc(:) => null()
 !
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
 !     COMPOSANTES DU CHAMP DE DEPLACEMENT 1
-    call jeveuo(cns1//'.CNSC', 'L', jcnsc1)
+    call jeveuo(cns1//'.CNSC', 'L', vk8=cnsc)
     call jeveuo(cns1//'.CNSL', 'L', jcnsl1)
 !
     do 110 j = 1, n
@@ -84,7 +85,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
     call elelin(1, elrefp, k8bid, ibid, nnos)
 !
     do 21 i = 1, nbcmp
-        nomcmp = zk8(jcnsc1-1+i)
+        nomcmp = cnsc(i)
 !
         if (nomcmp(1:4) .eq. 'LAGS') then
             do 22 k = 1, nnos

@@ -56,13 +56,14 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 !
     integer :: nbrgpn, nbneud, aneud, agrpn, alndtp, alstnd, agneud
     integer :: i, j, k, libre, numnd, nbtnd, n1, nbn, iret, iera
-    integer :: asgtu, i1, i2, jvale, ny
+    integer :: asgtu, i1, i2,  ny
     real(kind=8) :: vecty(3), tole
     character(len=8) :: courbe, crit
     character(len=24) :: nomgrn
     character(len=15) :: nrepnd
     character(len=17) :: nrepgn
     integer :: iarg
+    real(kind=8), pointer :: vale(:) => null()
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -195,22 +196,22 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
         i1=zi(alstnd-1+1)
 !       EXTREMITE
         i2=zi(alstnd-1+libre-1)
-        call jeveuo(nmaila//'.COORDO    .VALE', 'L', jvale)
+        call jeveuo(nmaila//'.COORDO    .VALE', 'L', vr=vale)
 !       TOLERANCE
         call getvtx(mcf, 'CRITERE', iocc=iocc, scal=crit, nbret=n1)
         call getvr8(mcf, 'PRECISION', iocc=iocc, scal=tole, nbret=n1)
 !       VERIFICATION QUE LES POINTS SONT ALIGNES
         call oreino(nmaila, zi(alstnd), libre-1, i1, i2,&
-                    zr(jvale), crit, tole, iera, iret)
+                    vale, crit, tole, iera, iret)
         if (iret .ne. 0) then
             call utmess('F', 'POSTRELE_60')
         endif
-        zr(asgtu-1+1)=zr(jvale-1+3*(i1-1)+1)
-        zr(asgtu-1+2)=zr(jvale-1+3*(i1-1)+2)
-        zr(asgtu-1+3)=zr(jvale-1+3*(i1-1)+3)
-        zr(asgtu-1+4)=zr(jvale-1+3*(i2-1)+1)
-        zr(asgtu-1+5)=zr(jvale-1+3*(i2-1)+2)
-        zr(asgtu-1+6)=zr(jvale-1+3*(i2-1)+3)
+        zr(asgtu-1+1)=vale(3*(i1-1)+1)
+        zr(asgtu-1+2)=vale(3*(i1-1)+2)
+        zr(asgtu-1+3)=vale(3*(i1-1)+3)
+        zr(asgtu-1+4)=vale(3*(i2-1)+1)
+        zr(asgtu-1+5)=vale(3*(i2-1)+2)
+        zr(asgtu-1+6)=vale(3*(i2-1)+3)
     endif
 !
     call jeexin('&OP0051.NOM.NOEUD', n1)

@@ -48,7 +48,8 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, jdes1, jdes2, jref1, jref2
+    integer :: i, jdes1,  jref1, jref2
+    integer, pointer :: des2(:) => null()
 !-----------------------------------------------------------------------
     data k8b /'        '/
     data k14b /'              '/
@@ -75,9 +76,9 @@ subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
         endif
 !
         call jeveuo(masgen//'           .DESC', 'L', jdes1)
-        call jeveuo(riggen//'           .DESC', 'L', jdes2)
+        call jeveuo(riggen//'           .DESC', 'L', vi=des2)
         nvec1 = zi(jdes1+1)
-        nvec2 = zi(jdes2+1)
+        nvec2 = des2(2)
         if (nvec1 .ne. nbmode) then
             ier = ier + 1
             call utmess('E', 'ALGORITH5_43')

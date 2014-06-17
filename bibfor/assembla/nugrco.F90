@@ -48,16 +48,21 @@ subroutine nugrco(nu, base)
 !                    (SAUF LE PROF_CHNO)
 !                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 !
-    integer :: rang, nbproc, jpddl, jcomm1, iddl, jnequl, neql, jgraco
+    integer :: rang, nbproc,  jcomm1, iddl,  neql, jgraco
     integer :: iproc, nbedge, iaux,  jtmp, nmatch, iproc1
-    integer :: iproc2, posit, jordjo, num, jnequg, neqg, jnugl, nulodd
-    integer ::  nbddlj, jjoint, curpos, numpro, jjoin2, jnulg
+    integer :: iproc2, posit, jordjo, num,  neqg,  nulodd
+    integer ::  nbddlj, jjoint, curpos, numpro, jjoin2
     integer :: iddlg, iddll
 !
     character(len=4) :: chnbjo
     character(len=24) :: nojoin, nogrco
     integer, pointer :: masque(:) => null()
     integer, pointer :: posproc(:) => null()
+    integer, pointer :: nulg(:) => null()
+    integer, pointer :: nugl(:) => null()
+    integer, pointer :: nequg(:) => null()
+    integer, pointer :: nequl(:) => null()
+    integer, pointer :: pddl(:) => null()
     mpi_int :: mrank, msize
     parameter    (nogrco='&&NUGRCO.GRAPH_COMM')
 !
@@ -67,18 +72,18 @@ subroutine nugrco(nu, base)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-    call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
-    call jeveuo(nu//'.NUML.NULG', 'L', jnulg)
-    call jeveuo(nu//'.NUML.PDDL', 'L', jpddl)
-    call jeveuo(nu//'.NUML.NEQU', 'L', jnequl)
-    call jeveuo(nu//'.NUME.NEQU', 'L', jnequg)
-    neql=zi(jnequl)
-    neqg=zi(jnequg)
+    call jeveuo(nu//'.NUML.NUGL', 'L', vi=nugl)
+    call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
+    call jeveuo(nu//'.NUML.PDDL', 'L', vi=pddl)
+    call jeveuo(nu//'.NUML.NEQU', 'L', vi=nequl)
+    call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequg)
+    neql=nequl(1)
+    neqg=nequg(1)
     call wkvect('&&NUGRCO.COMM1', 'V V I', nbproc, jcomm1)
 !
 !---- DETERMINATION DE QUI COMMUNIQUE AVEC QUI
     do 10 iddl = 0, neql-1
-        numpro=zi(jpddl+iddl)
+        numpro=pddl(iddl+1)
         ASSERT(numpro.lt.nbproc)
         zi(jcomm1+numpro)=zi(jcomm1+numpro)+1
 10  end do
@@ -158,9 +163,9 @@ subroutine nugrco(nu, base)
     90 end do
 !
     do 100, iddl=0,neqg-1
-    nulodd=zi(jnugl+iddl)
+    nulodd=nugl(iddl+1)
     if (nulodd .ne. 0) then
-        numpro=zi(jpddl+nulodd-1)
+        numpro=pddl(nulodd)
         if (numpro .ne. rang) then
             jjoint=posproc(1+2*numpro)
             ASSERT(jjoint.ne.-1)
@@ -183,7 +188,7 @@ subroutine nugrco(nu, base)
         jjoint=posproc(1+2*numpro)
         call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
         do 120, iddl=0,nbddlj-1
-        iddlg=zi(jnulg+zi(jjoint+iddl)-1)
+        iddlg=nulg(1+zi(jjoint+iddl)-1)
         ASSERT(iddlg.ne.0)
         zi(jjoin2+iddl)=iddlg
 120      continue
@@ -203,7 +208,7 @@ subroutine nugrco(nu, base)
         call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
                               vi=zi(jjoin2))
         do 130, iddl=0,nbddlj-1
-        iddll=zi(jnugl+zi(jjoin2+iddl)-1)
+        iddll=nugl(1+zi(jjoin2+iddl)-1)
         ASSERT(iddll.ne.0)
         zi(jjoint+iddl)=iddll
 130      continue

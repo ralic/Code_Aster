@@ -91,7 +91,8 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
     character(len=24) :: tabfin, maescx
     integer :: jtabf, jmaesx, ninter
     logical :: projin, lcinit, lgliss
-    integer :: jxc, jfimai, ifiss, ifism, ipc2, numpi
+    integer ::  jfimai, ifiss, ifism, ipc2, numpi
+    integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -178,10 +179,10 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
         nbpc = zi(jmaesx+zmesx*(imae-1)+3-1)
         statue = zi(jmaesx+zmesx*(imae-1)+4-1)
 !
-        call jeveuo(modele//'.XFEM_CONT', 'L', jxc)
+        call jeveuo(modele//'.XFEM_CONT', 'L', vi=xfem_cont)
         if (ndim .eq. 2) then
-            if (zi(jxc) .le. 2) alias='SE2'
-            if (zi(jxc) .eq. 3) alias='SE3'
+            if (xfem_cont(1) .le. 2) alias='SE2'
+            if (xfem_cont(1) .eq. 3) alias='SE3'
         else if (ndim.eq.3) then
             alias='TR3'
         endif

@@ -60,8 +60,9 @@ subroutine numgcy(nugene, modgen)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: icompl, icomps, ifimes, lldesc, llprof, nblia
+    integer :: icompl, icomps, ifimes,  llprof, nblia
     integer :: nblig, nbmod, nbsst, neq
+    integer, pointer :: mael_raid_desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ifimes=iunifi('MESSAGE')
@@ -121,8 +122,8 @@ subroutine numgcy(nugene, modgen)
     do 10 i = 1, nbsst
         call mgutdm(modgen, kbid, i, 'NOM_MACR_ELEM', ibid,&
                     nomcou)
-        call jeveuo(nomcou//'.MAEL_RAID_DESC', 'L', lldesc)
-        nbmod=zi(lldesc+1)
+        call jeveuo(nomcou//'.MAEL_RAID_DESC', 'L', vi=mael_raid_desc)
+        nbmod=mael_raid_desc(2)
         icomps=icomps+nbmod
 10  end do
 !

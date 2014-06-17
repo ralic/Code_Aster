@@ -67,7 +67,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 !     ------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    integer :: j, nkm1, nbcmb, ibid, iret, jmatc, islvk, islvi, lmatsh
+    integer :: j, nkm1, nbcmb, ibid, iret, jmatc,   lmatsh
     real(kind=8) :: rauxx, rauxy, rauxm, prec, prec1, pi, coef(6), valr(2), rmin
     real(kind=8) :: rayon, r8bid, rindc
     complex(kind=8) :: caux2
@@ -75,6 +75,8 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
     character(len=8) :: nomddl
     character(len=19) :: matpre
     character(len=24) :: nmat(3), nmatsh, metres
+    integer, pointer :: slvi(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !
 !     ------------------------------------------------------------------
     data typcst /'C','C','C'/
@@ -143,12 +145,12 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
 !   --- STEP 1.5: IF LINEAR SOLVER='MUMPS'
 !   --- WE CHANGE TWO PARAMETERS OF THE SD_SOLVER RECORD TO ORDER MUMPS
 !   --- TO COMPUTE THE DETERMINANT WITHOUT KEEPING THE FACTORS
-        call jeveuo(solveu//'.SLVK', 'L', islvk)
-        metres=zk24(islvk)
-        call jeveuo(solveu//'.SLVI', 'E', islvi)
+        call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+        metres=slvk(1)
+        call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
         if (metres(1:5) .eq. 'MUMPS') then
-            zi(islvi-1+4)=1
-            zi(islvi-1+5)=1
+            slvi(4)=1
+            slvi(5)=1
         endif
 !
 !   --- STEP 2: FACTORIZATION OF THIS DYNAMIC MATRIX              ---

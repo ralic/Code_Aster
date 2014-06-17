@@ -53,12 +53,15 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: jdim, nbtno, jnon, i, inoeu, nbno, nbtgno, nbnogr, jname, jval1
-    integer :: jval2, j, jgnoi, jgnou, kk,  jrefe, iret, ij
+    integer :: jdim, nbtno, jnon, i, inoeu, nbno, nbtgno, nbnogr, jname
+    integer ::  j, jgnoi, jgnou, kk,   iret, ij
     character(len=8) :: nnoi
     character(len=19) :: coordo, coordi
     character(len=24) :: nom, nomnoi, nomnoe, grpno, dime, gpptnn
     integer, pointer :: noeud_group(:) => null()
+    real(kind=8), pointer :: val1(:) => null()
+    real(kind=8), pointer :: val2(:) => null()
+    character(len=24), pointer :: refe(:) => null()
 !
     call jemarq()
 !
@@ -110,18 +113,18 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 !     ----------------------------
     call jedupo(coordi//'.DESC', 'G', coordo//'.DESC', .false.)
     call jedupo(coordi//'.REFE', 'G', coordo//'.REFE', .false.)
-    call jeveuo(coordo//'.REFE', 'E', jrefe)
-    zk24(jrefe) = maout
+    call jeveuo(coordo//'.REFE', 'E', vk24=refe)
+    refe(1) = maout
     call jecreo(coordo//'.VALE', 'G V R')
     call jeecra(coordo//'.VALE', 'LONMAX', nbno*3)
-    call jeveuo(main//'.COORDO    .VALE', 'L', jval1)
-    call jeveuo(coordo//'.VALE', 'E', jval2)
+    call jeveuo(main//'.COORDO    .VALE', 'L', vr=val1)
+    call jeveuo(coordo//'.VALE', 'E', vr=val2)
     do 40 i = 1, nbno
         call jenuno(jexnum(nomnoe, i), nom)
         call jenonu(jexnom(nomnoi, nom), inoeu)
-        zr(jval2+3*(i-1) )=zr(jval1+3*(inoeu-1) )
-        zr(jval2+3*(i-1)+1)=zr(jval1+3*(inoeu-1)+1)
-        zr(jval2+3*(i-1)+2)=zr(jval1+3*(inoeu-1)+2)
+        val2(1+3*(i-1) )=val1(1+3*(inoeu-1) )
+        val2(1+3*(i-1)+1)=val1(1+3*(inoeu-1)+1)
+        val2(1+3*(i-1)+2)=val1(1+3*(inoeu-1)+2)
 40  end do
 !
 !

@@ -77,9 +77,9 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
 !
     integer :: ifm, niv, nno1, nno2, nma1, nma2, k
     integer :: ima, ino2, ico
-    integer :: iatr3, iacoo1, iacoo2, iabtdi, iabtvr, iabtnb, iabtlc
+    integer :: iatr3, iacoo1, iacoo2
     integer :: iabtco, jxxk1, iaconu, iacocf, iacotr
-    integer :: ialim1, ialin1, iacnx1, ilcnx1, ialin2, iatym1
+    integer :: ialim1, ialin1,  ilcnx1, ialin2
     integer :: iaconb, itypm, idecal, itr3, nbtrou
 !
     logical :: dbg, ldmax, loin
@@ -90,6 +90,12 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     parameter (nbmax=5)
     integer :: tino2m(nbmax), nbnod, nbnodm
     real(kind=8) :: tdmin2(nbmax)
+    integer, pointer :: bt3ddi(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: bt3dlc(:) => null()
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: bt3dvr(:) => null()
+    integer, pointer :: bt3dnb(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -122,11 +128,11 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
 !           V(1+6(I-1)+4) : NUMERO DU 4EME NOEUD DU IEME TETR4
 !           V(1+6(I-1)+5) : NUMERO DE LA MAILLE MERE DU IEME TETR4
 !           V(1+6(I-1)+6) : NUMERO DU TETRAEDRE DANS LA MAILLE
-    call jeveuo(m1//'.TYPMAIL', 'L', iatym1)
+    call jeveuo(m1//'.TYPMAIL', 'L', vi=typmail)
     ico=0
     do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 51
-        itypm=zi(iatym1-1+ima)
+        itypm=typmail(ima)
 !       -- TETRA :
         if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2))) then
             ico=ico+1
@@ -152,22 +158,22 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
         call utmess('F', 'CALCULEL4_55')
     endif
 !
-    call jeveuo(m1//'.CONNEX', 'L', iacnx1)
+    call jeveuo(m1//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
     do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 52
-        itypm=zi(iatym1-1+ima)
+        itypm=typmail(ima)
 !
 !       -- TETRA :
         if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2))) then
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=1
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+4)
 !
 !       -- PENTA :
             else if ((itypm.eq.nutm(3)).or.(itypm.eq.nutm(4)).or. (&
@@ -175,24 +181,24 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=1
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+6)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+5)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+6)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+5)
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=2
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+6)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+5)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+6)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+4)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+5)
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=3
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+5)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+5)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+2)
 !
 !       -- HEXA :
             else if ((itypm.eq.nutm(6)).or.(itypm.eq.nutm(7)).or. (&
@@ -200,63 +206,63 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=1
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+8)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+6)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+4)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+8)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+6)
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=2
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+8)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+6)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+5)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+8)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+6)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+5)
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=3
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+6)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+4)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+6)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+2)
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=4
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+8)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+7)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+4)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+8)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+7)
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=5
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+8)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+6)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+7)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+8)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+6)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+7)
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=6
 !
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+7)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+4)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+7)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+3)
 !
 !       -- PYRA :
         else if ((itypm.eq.nutm(9)).or.(itypm.eq.nutm(10))) then
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=1
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+5)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+5)
             ico=ico+1
             zi(iatr3+(ico-1)*6+5)=ima
             zi(iatr3+(ico-1)*6+6)=2
-            zi(iatr3+(ico-1)*6+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*6+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
-            zi(iatr3+(ico-1)*6+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
-            zi(iatr3+(ico-1)*6+4)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+5)
+            zi(iatr3+(ico-1)*6+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*6+2)=connex(1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*6+3)=connex(1+ zi(ilcnx1-1+ima)-2+4)
+            zi(iatr3+(ico-1)*6+4)=connex(1+ zi(ilcnx1-1+ima)-2+5)
         endif
  52     continue
     end do
@@ -277,10 +283,10 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
 !
     boite='&&PJ3DCO.BOITE'
     call pj3dfb(boite, '&&PJXXCO.TETR4', zr(iacoo1), zr(iacoo2))
-    call jeveuo(boite//'.BT3DDI', 'L', iabtdi)
-    call jeveuo(boite//'.BT3DVR', 'L', iabtvr)
-    call jeveuo(boite//'.BT3DNB', 'L', iabtnb)
-    call jeveuo(boite//'.BT3DLC', 'L', iabtlc)
+    call jeveuo(boite//'.BT3DDI', 'L', vi=bt3ddi)
+    call jeveuo(boite//'.BT3DVR', 'L', vr=bt3dvr)
+    call jeveuo(boite//'.BT3DNB', 'L', vi=bt3dnb)
+    call jeveuo(boite//'.BT3DLC', 'L', vi=bt3dlc)
     call jeveuo(boite//'.BT3DCO', 'L', iabtco)
 !
 !     DESCRIPTION DE LA SD BOITE_3D :
@@ -349,8 +355,8 @@ subroutine pj3dco(mocle, moa1, moa2, nbma1, lima1,&
     do ino2 = 1, nno2
         if (zi(ialin2-1+ino2) .eq. 0) goto 6
         call pj3dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
-                    cobary, itr3, nbtrou, zi(iabtdi), zr(iabtvr),&
-                    zi(iabtnb), zi(iabtlc), zi( iabtco), ifm, niv,&
+                    cobary, itr3, nbtrou, bt3ddi, bt3dvr,&
+                    bt3dnb, bt3dlc, zi( iabtco), ifm, niv,&
                     ldmax, distma, loin, dmin)
         if (loin) then
             nbnodm = nbnodm + 1

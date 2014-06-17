@@ -88,11 +88,11 @@ subroutine tran75(nomres, typres, nomin, basemo)
     integer :: iexi
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadesc, iarchi, ibid, ich, id
-    integer ::  idec, idefm, idinsg, idresu,  ie
+    integer ::  iarchi, ibid, ich, id
+    integer ::  idec, idefm,  idresu,  ie
     integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
-    integer :: irou, j3refe, jc,  jinst, jnoacc
-    integer :: jnodep, jnovit, jnume, jpsdel, jvec, linst, llcha
+    integer :: irou,  jc,  jinst
+    integer ::   jnume, jpsdel, jvec, linst, llcha
     integer :: lpsdel, lval2, lvale, n1, n2, n3
     integer :: n4, nbcham, nbd, nbdir, nbexci, nbinsg, nbinst
     integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0
@@ -100,6 +100,12 @@ subroutine tran75(nomres, typres, nomin, basemo)
     real(kind=8), pointer :: base(:) => null()
     integer, pointer :: ddl(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
+    character(len=8), pointer :: fvit(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    character(len=8), pointer :: facc(:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
+    character(len=8), pointer :: fdep(:) => null()
 !-----------------------------------------------------------------------
     data blanc    /'        '/
     data chamn2   /'&&TRAN75.CHAMN2'/
@@ -151,8 +157,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !     --- RECUPERATION DE LA BASE MODALE ---
 !
 !
-    call jeveuo(trange//'.DESC', 'L', iadesc)
-    nbmode = zi(iadesc+1)
+    call jeveuo(trange//'.DESC', 'L', vi=desc)
+    nbmode = desc(2)
 !
 !
     if (mode .eq. blanc) then
@@ -189,8 +195,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 numddl = matric(1:8)
             endif
             prchno=numddl//'.NUME'
-            call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
-            matric = zk24(j3refe)
+            call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
+            matric = refn(1)
             mailla = matric(1:8)
             call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
             if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
@@ -250,9 +256,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
 ! --- MULTI-APPUIS : RECUP DE L EXCITATION ET DE PSI*DELTA
 !
     if (multap) then
-        call jeveuo(trange//'.FDEP', 'L', jnodep)
-        call jeveuo(trange//'.FVIT', 'L', jnovit)
-        call jeveuo(trange//'.FACC', 'L', jnoacc)
+        call jeveuo(trange//'.FDEP', 'L', vk8=fdep)
+        call jeveuo(trange//'.FVIT', 'L', vk8=fvit)
+        call jeveuo(trange//'.FACC', 'L', vk8=facc)
         call jeveuo(trange//'.IPSD', 'L', ipsdel)
         call jelira(trange//'.FDEP', 'LONMAX', nbexci)
         nbexci = nbexci/2
@@ -321,7 +327,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         )) then
         call utmess('F', 'ALGORITH10_95')
     endif
-    call jeveuo(trange//'.DISC', 'L', idinsg)
+    call jeveuo(trange//'.DISC', 'L', vr=disc)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
     AS_ALLOCATE(vr=vectgene, size=nbmode)
     neq0 = neq
@@ -428,7 +434,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
             if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
             if (interp(1:3) .ne. 'NON') then
-                call extrac(interp, epsi, crit, nbinsg, zr(idinsg),&
+                call extrac(interp, epsi, crit, nbinsg, disc,&
                             zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
                 call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
             else
@@ -437,13 +443,13 @@ subroutine tran75(nomres, typres, nomin, basemo)
             endif
             if (multap) then
                 if (type(ich) .eq. 'DEPL') call mdgep3(neq, nbexci, zr( lpsdel), zr(jinst+i),&
-                                                       zk8(jnodep), zr(lval2))
+                                                       fdep, zr(lval2))
                 if (type(ich) .eq. 'VITE') call mdgep3(neq, nbexci, zr( lpsdel), zr(jinst+i),&
-                                                       zk8(jnovit), zr(lval2))
+                                                       fvit, zr(lval2))
                 if (type(ich) .eq. 'ACCE') call mdgep3(neq, nbexci, zr( lpsdel), zr(jinst+i),&
-                                                       zk8(jnoacc), zr(lval2))
+                                                       facc, zr(lval2))
                 if (type(ich) .eq. 'ACCE_ABSOLU') call mdgep3(neq, nbexci, zr(lpsdel),&
-                                                              zr(jinst+i), zk8(jnoacc),&
+                                                              zr(jinst+i), facc,&
                                                               zr(lval2))
                 do ie = 1, neq
                     zr(lvale+ie-1)=zr(lvale+ie-1)+zr(lval2+ie-1)

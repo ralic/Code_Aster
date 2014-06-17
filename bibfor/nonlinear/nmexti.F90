@@ -61,9 +61,10 @@ subroutine nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
     real(kind=8) :: valcmp(nparx)
     integer :: neff
     integer :: ieff, icmp, ipar
-    integer :: jcmp, jchamp
+    integer :: jcmp
     character(len=8) :: cmp
     integer :: nuno, nuddl
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,7 +77,7 @@ subroutine nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
 !
 ! --- ACCES CHAMP
 !
-    call jeveuo(champ //'.VALE', 'L', jchamp)
+    call jeveuo(champ //'.VALE', 'L', vr=vale)
 !
 ! --- NOM DES COMPOSANTES
 !
@@ -93,7 +94,7 @@ subroutine nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
         call posddl('CHAM_NO', champ, nomnoe, cmp, nuno,&
                     nuddl)
         if ((nuno.ne.0) .and. (nuddl.ne.0)) then
-            valcmp(ieff) = zr(jchamp+nuddl-1)
+            valcmp(ieff) = vale(nuddl)
             ieff = ieff + 1
         endif
 30  end do

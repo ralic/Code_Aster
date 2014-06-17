@@ -38,16 +38,16 @@ subroutine mecoor(nomo, chgeom)
 !
 !
 !
-    integer :: jnoma
     character(len=19) :: ligrmo
+    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
     ligrmo = nomo(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    chgeom = zk8(jnoma-1+1)//'.COORDO'
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
 !
     call jedema()
 !

@@ -80,10 +80,11 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
     character(len=16) :: typeco
     complex(kind=8) :: valc8
     integer ::   ibk, nbmax, vali
-    integer :: i, k, ii, jfct, jrpv, jvale, nbcoup, n
+    integer :: i, k, ii,  jrpv, jvale, nbcoup, n
     integer :: iret, nbfct, nbpts, jprol, nbptm, lpro1, lpro2
     character(len=16), pointer :: nomobj(:) => null()
     character(len=8), pointer :: typobj(:) => null()
+    character(len=24), pointer :: prol(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -269,8 +270,8 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
             call utmess('F', 'MODELISA6_70', sk=nomcle(ii))
 151          continue
 !
-            call jeveuo(nomfct//'.PROL', 'L', jfct)
-            if (zk24(jfct)(1:1) .eq. 'F') then
+            call jeveuo(nomfct//'.PROL', 'L', vk24=prol)
+            if (prol(1)(1:1) .eq. 'F') then
                 call jelira(nomfct//'.VALE', 'LONMAX', nbptm)
                 if (nomrc(1:8) .eq. 'TRACTION') then
                     if (nbptm .lt. 4) then
@@ -328,7 +329,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                     call utmess('F', 'MODELISA6_73')
                 endif
 !
-            else if (zk24(jfct)(1:1) .eq. 'N') then
+            else if (prol(1)(1:1) .eq. 'N') then
                 call jelira(nomfct//'.VALE', 'NUTIOC', nbfct)
                 nbptm = 0
                 do 160 k = 1, nbfct
@@ -396,7 +397,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
         zk24(jprol ) = 'FONCTION'
         zk24(jprol+1) = 'LIN LIN '
         zk24(jprol+2) = 'EPSI    '
-        zk24(jprol+3) = zk24(jfct+3)
+        zk24(jprol+3) = prol(4)
         call wkvect(rdep//'.VALE', 'G V R', 2*nbmax, jvale)
     endif
 !

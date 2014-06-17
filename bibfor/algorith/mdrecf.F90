@@ -70,7 +70,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !
 !
 !
-    integer :: i, ier, ninst, jinst, jprol, nexcit
+    integer :: i, ier, ninst,  jprol, nexcit
     real(kind=8) :: alpha
     real(kind=8) :: coef
     character(len=2) :: ires
@@ -84,10 +84,14 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     integer :: jpsdel, npsdel, iipsdl
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iddeeq, ieq, ii, iinst, imod
-    integer :: imodco, inum, iret, jdepl, jmod, jordr
+    integer :: iddeeq, ieq, ii, iinst
+    integer ::  inum, iret, jdepl, jmod
     integer :: jvale, l1, lprol, m1, n1, n2, n3
     integer :: n4, n5, na, nbv, nf, nm
+    real(kind=8), pointer :: modco(:) => null()
+    real(kind=8), pointer :: mod(:) => null()
+    integer, pointer :: ordr(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
@@ -239,19 +243,19 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !
                 call rsexch('F', modcor, 'DEPL', i, chamno,&
                             iret)
-                call jeveuo(chamno//'.VALE', 'L', imodco)
+                call jeveuo(chamno//'.VALE', 'L', vr=modco)
                 do ieq = 1, neq
-                    zr(jpsdel+ieq-1+(i-1)*neq) = zr(imodco+ieq-1)
+                    zr(jpsdel+ieq-1+(i-1)*neq) = modco(ieq)
                 end do
                 do nm = 1, nbmode
                     coef = zr(iadvec(i)+nm-1)/riggen(nm)
                     call rsexch('F', basemo, 'DEPL', nm, chamn2,&
                                 iret)
-                    call jeveuo(chamn2//'.VALE', 'L', imod)
+                    call jeveuo(chamn2//'.VALE', 'L', vr=mod)
                     do ieq = 1, neq
                         zr(jpsdel+ieq-1+(i-1)*neq) = zr(&
                                                      jpsdel+ieq-1+(i-1)* neq&
-                                                     ) - coef*zr(imod+ieq-1&
+                                                     ) - coef*mod(1+ieq-1&
                                                      )
                     end do
                     call jelibe(chamn2//'.VALE')
@@ -274,14 +278,14 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 ! ON TRANSFORME CES EXCITATIONS SOUS LA FORME D'EXCTATIONS MODALES
 ! (MC NUME_ORDRE), ASSOCIEES A UNE FONCTION MULTIPLICATRICE
 !
-    call jeveuo(basemo//'           .ORDR', 'L', jordr)
+    call jeveuo(basemo//'           .ORDR', 'L', vi=ordr)
     do i = 1, nexcir
 !
         call getvid('EXCIT_RESU', 'RESULTAT', iocc=i, scal=resu, nbret=l1)
         call getvr8('EXCIT_RESU', 'COEF_MULT', iocc=i, scal=alpha, nbret=m1)
 ! ----- NOMBRE DE PAS DE TEMPS DU RESULTAT
         call jelira(resu//'.DISC', 'LONMAX', ninst)
-        call jeveuo(resu//'.DISC', 'L', jinst)
+        call jeveuo(resu//'.DISC', 'L', vr=disc)
 ! ----- EXCITATION STOCKEE DANS LE CHAMP DEPL (IDEM QUE DYNA_LINE_TRAN)
         call jeveuo(resu//'.DEPL', 'L', jdepl)
 !
@@ -294,7 +298,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
             nofk19 = nomfon(ii+jmod)
             call wkvect(nofk19//'.VALE', 'V V R8', 2*ninst, jvale)
             do iinst = 1, ninst
-                zr(jvale-1+iinst) = zr(jinst-1+iinst)
+                zr(jvale-1+iinst) = disc(iinst)
                 zr(jvale-1+ninst+iinst) = alpha* zr( jdepl-1+nbmode*( iinst-1)+jmod)
             end do
 !
@@ -308,7 +312,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 !
             nomfon(nexcit+ii+jmod) = zk24(jprol)(1:8)
 !
-            inumor(ii+jmod)=zi(jordr-1+jmod)
+            inumor(ii+jmod)=ordr(jmod)
             idescf(ii+jmod)=2
 !
         end do

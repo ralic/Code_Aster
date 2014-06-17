@@ -55,12 +55,15 @@ subroutine xprmil(noma, cnslt, cnsln)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, nbma, jma, jconx1, jconx2, jlnno, jltno, ima
+    integer :: ifm, niv, nbma, jma,  jconx2,   ima
     integer :: ar(12, 3), nbar, ia, na, nb, nunoa, nunob, nmil, nunom
     integer :: nm(12), nbar2
     real(kind=8) :: lsna, lsnb, lsta, lstb
     character(len=8) :: typma
     character(len=19) :: mai
+    real(kind=8), pointer :: lnno(:) => null()
+    real(kind=8), pointer :: ltno(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -73,11 +76,11 @@ subroutine xprmil(noma, cnslt, cnsln)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
-    call jeveuo(cnsln//'.CNSV', 'E', jlnno)
-    call jeveuo(cnslt//'.CNSV', 'E', jltno)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=lnno)
+    call jeveuo(cnslt//'.CNSV', 'E', vr=ltno)
 !
 !     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
     do ima = 1, nbma
@@ -98,22 +101,22 @@ subroutine xprmil(noma, cnslt, cnsln)
 !       ON RECUPERE LES NUMEROS DES 2 NOEUDS DE L'ARETE
             na=ar(ia,1)
             nb=ar(ia,2)
-            nunoa=zi(jconx1-1+zi(jconx2+ima-1)+na-1)
-            nunob=zi(jconx1-1+zi(jconx2+ima-1)+nb-1)
+            nunoa=connex(zi(jconx2+ima-1)+na-1)
+            nunob=connex(zi(jconx2+ima-1)+nb-1)
 !
 !       ON CALCULE LES LEVEL SETS AUX 2 NOEUDS
-            lsna=zr(jlnno-1+(nunoa-1)+1)
-            lsnb=zr(jlnno-1+(nunob-1)+1)
-            lsta=zr(jltno-1+(nunoa-1)+1)
-            lstb=zr(jltno-1+(nunob-1)+1)
+            lsna=lnno((nunoa-1)+1)
+            lsnb=lnno((nunob-1)+1)
+            lsta=ltno((nunoa-1)+1)
+            lstb=ltno((nunob-1)+1)
 !
 !       ON RECUPERE LE NUMERO DU NOEUD MILIEU
             nmil=nm(ia)
-            nunom=zi(jconx1-1+zi(jconx2+ima-1)+nmil-1)
+            nunom=connex(zi(jconx2+ima-1)+nmil-1)
 !
 !       ON REMPLI LES CHAM_NO_S AVEC LES VALEUR DE LEVEL SETS MOYENNES
-            zr(jlnno-1+(nunom-1)+1) = (lsna+lsnb)/2.d0
-            zr(jltno-1+(nunom-1)+1) = (lsta+lstb)/2.d0
+            lnno((nunom-1)+1) = (lsna+lsnb)/2.d0
+            ltno((nunom-1)+1) = (lsta+lstb)/2.d0
 !
         end do
 100     continue

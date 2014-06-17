@@ -93,7 +93,7 @@ subroutine op0151()
     logical :: fordef, crsigm, crepst, crepse, crepsp
     real(kind=8) :: prec, instic
 !
-    integer :: nval, impr, ifm, jordr, jcoef, jcelk, jcelv
+    integer :: nval, impr, ifm, jordr, jcoef, jcelk
     integer :: nbpt, nbord, nbcmp, numcmp(6), ntcmp, ibid
     integer :: ivdmg, numsym, nbpt2, nbord2, iret, ivch
     integer :: vali(2), paract(35)
@@ -101,6 +101,7 @@ subroutine op0151()
 ! ------------
 !-----------------------------------------------------------------------
     integer :: i
+    real(kind=8), pointer :: celv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -587,11 +588,11 @@ subroutine op0151()
     ASSERT(iret.eq.0)
 !
 !
-    call jeveuo(chelem//'.CELV', 'E', jcelv)
+    call jeveuo(chelem//'.CELV', 'E', vr=celv)
     call jelira(chelem//'.CELV', 'LONMAX', ibid)
     ASSERT(ibid.eq.nbpt)
     do 222 i = 1, nbpt
-        zr(jcelv+i-1) = zr(ivdmg+i-1)
+        celv(i) = zr(ivdmg+i-1)
 222  end do
     call jedetr('&&OP0151.DOMMAGE')
 !

@@ -72,7 +72,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 !
     integer :: ztabf
     integer :: ico, jco, iptc, ityp, ino, izone
-    integer :: jtynma, iacnx1, ilcnx1
+    integer :: jtynma,  ilcnx1
     integer :: nummam, nummae
     integer :: jnbno, long, jad, ityte, ityma
     integer :: nndel, ntpc, nbnom, nbnoe, nbgrel, nndtot
@@ -86,6 +86,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
     character(len=24) :: nosdco
     integer :: jnosdc
     logical :: lappar, laxis, lfrot
+    integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -135,7 +136,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 !
 ! --- ACCES MAILLAGE
 !
-    call jeveuo(noma//'.CONNEX', 'L', iacnx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
 ! --- LISTE DES ELEMENTS DE CONTACT
@@ -177,13 +178,13 @@ subroutine mmligr(noma, nomo, defico, resoco)
 ! --- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE ESCLAVE
 !
         do 30 ino = 1, nbnoe
-            zi(jad-1+ino) = zi(iacnx1+zi(ilcnx1-1+nummae)-2+ino)
+            zi(jad-1+ino) = connex(1+zi(ilcnx1-1+nummae)-2+ino)
 30      continue
 !
 ! --- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE MAITRE
 !
         do 40 ino = 1, nbnom
-            zi(jad-1+nbnoe+ino) = zi(iacnx1+zi(ilcnx1-1+nummam)-2+ino)
+            zi(jad-1+nbnoe+ino) = connex(1+zi(ilcnx1-1+nummam)-2+ino)
 40      continue
 !
 50  end do

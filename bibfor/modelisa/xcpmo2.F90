@@ -73,10 +73,10 @@ subroutine xcpmo2(modx1, modx2)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, icopy, ncopy, ima, icode, iopt, jcelk2, jceld2
-    integer :: jcelv2, jcelk1, jceld1, jcelv1, nbel2, iel2, iel1
+    integer :: iret, icopy, ncopy, ima, icode, iopt, jcelk2
+    integer :: jcelv2, jcelk1,  jcelv1, nbel2, iel2, iel1
     integer :: lgel2, lgel1, debgr2, debgr1, igr2, igr1, advel2, advel1
-    integer :: imolo2, imolo1, amolo2, amolo1, nbgr2, aliel2, jrepe1
+    integer :: imolo2, imolo1, amolo2, amolo1, nbgr2, aliel2
     integer :: lgcat2, nute2
 !
     character(len=4) :: k4typ2
@@ -112,6 +112,9 @@ subroutine xcpmo2(modx1, modx2)
     parameter ( nelaxmex = (  nma2d+nma1d)*nenrch )
     parameter ( nelemex  = nel3dmex+nelplmex+nelaxmex )
     character(len=16) :: elemex(nelemex)
+    integer, pointer :: repe(:) => null()
+    integer, pointer :: celd1(:) => null()
+    integer, pointer :: celd2(:) => null()
 !
 !   elements mecaniques X-FEM
 !   -------------------------------------------------------------------
@@ -215,14 +218,14 @@ subroutine xcpmo2(modx1, modx2)
         ASSERT(iret.eq.0)
 
         call jeveuo(chele2//'.CELK', 'L', jcelk2)
-        call jeveuo(chele2//'.CELD', 'L', jceld2)
+        call jeveuo(chele2//'.CELD', 'L', vi=celd2)
         call jeveuo(chele2//'.CELV', 'E', jcelv2)
 
         chele1 = modx1//lcham(icopy)(9:19)
         call jeveuo(chele1//'.CELK', 'L', jcelk1)
-        call jeveuo(chele1//'.CELD', 'L', jceld1)
+        call jeveuo(chele1//'.CELD', 'L', vi=celd1)
         call jeveuo(chele1//'.CELV', 'L', jcelv1)
-        call jeveuo(ligr1//'.REPE', 'L', jrepe1)
+        call jeveuo(ligr1//'.REPE', 'L', vi=repe)
         
         call jelira(chele2//'.CELV', 'TYPELONG', cval=k4typ2)
         
@@ -230,14 +233,14 @@ subroutine xcpmo2(modx1, modx2)
 !       boucle sur les grels de ligr2
 ! ----------------------------------------------------------------------
 !
-        nbgr2 = zi(jceld2-1+2)
+        nbgr2 = celd2(2)
 !
         do igr2 = 1, nbgr2
 
-            debgr2 = zi(jceld2-1+4+igr2)
-            nbel2  = zi(jceld2-1+debgr2+1)
-            imolo2 = zi(jceld2-1+debgr2+2)
-            lgcat2 = zi(jceld2-1+debgr2+3)
+            debgr2 = celd2(4+igr2)
+            nbel2  = celd2(debgr2+1)
+            imolo2 = celd2(debgr2+2)
+            lgcat2 = celd2(debgr2+3)
 
 !           si les elts de ce grel savent calculer "option"
             if (imolo2 .gt. 0) then
@@ -266,12 +269,12 @@ subroutine xcpmo2(modx1, modx2)
                     ima = zi(aliel2-1+iel2)
 
 !                   infos sur la position de l'element porte par ima dans ligr1
-                    igr1 = zi(jrepe1-1+2*(ima-1)+1)
-                    iel1 = zi(jrepe1-1+2*(ima-1)+2)
-                    debgr1 = zi(jceld1-1+4+igr1)
+                    igr1 = repe(2*(ima-1)+1)
+                    iel1 = repe(2*(ima-1)+2)
+                    debgr1 = celd1(4+igr1)
 
 !                   verification de coherence sur le mode_local dans chele2 et chele1
-                    imolo1 = zi(jceld1-1+debgr1+2)
+                    imolo1 = celd1(debgr1+2)
                     ASSERT( imolo1 .gt. 0 )
                     call jeveuo(jexnum('&CATA.TE.MODELOC', imolo1), 'L', amolo1)
                     call jenuno(jexnum('&CATA.TE.NOMMOLOC', imolo1), nomol1)
@@ -281,17 +284,17 @@ subroutine xcpmo2(modx1, modx2)
                     enddo
 
 !                   verification longueur locale du champ dans chele2 et chele1
-                    lgel2 = zi(jceld2-1+debgr2+4+4*(iel2-1)+3) 
-                    lgel1 = zi(jceld1-1+debgr1+4+4*(iel1-1)+3) 
+                    lgel2 = celd2(debgr2+4+4*(iel2-1)+3) 
+                    lgel1 = celd1(debgr1+4+4*(iel1-1)+3) 
                     ASSERT( lgel2 .eq. lgel1)
 
 !                   verification permettant d'exclure les sous-points et VARI_R
                     ASSERT( lgel2 .eq. lgcat2 )
 
 !                   copie de chele1 dans chele2 (valeurs de iel1 dans iel2)
-                    advel2 = zi(jceld2-1+debgr2+4+4*(iel2-1)+4)
+                    advel2 = celd2(debgr2+4+4*(iel2-1)+4)
                     advel2 = jcelv2-1+advel2
-                    advel1 = zi(jceld1-1+debgr1+4+4*(iel1-1)+4)
+                    advel1 = celd1(debgr1+4+4*(iel1-1)+4)
                     advel1 = jcelv1-1+advel1
 !                   les types autorises sont reel ou entier
                     if     (k4typ2 .eq. 'R') then

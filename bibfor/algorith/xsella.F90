@@ -56,7 +56,7 @@ subroutine xsella(fiss, nbno, narz, tabnoz, pickno,&
     integer :: tabno(narz, 3), ii, cpt
     real(kind=8) :: scorn2(2*narz), scora2(narz), li, lj, maxr
     character(len=19) :: cnsln
-    integer :: jlnsv
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ subroutine xsella(fiss, nbno, narz, tabnoz, pickno,&
 !
     cnsln = '&&XSELLA.CNSLN'
     call cnocns(fiss(1:8)//'.LNNO', 'V', cnsln)
-    call jeveuo(cnsln(1:19)//'.CNSV', 'L', jlnsv)
+    call jeveuo(cnsln(1:19)//'.CNSV', 'L', vr=cnsv)
 !
 ! --- INITIALISATIONS
 !
@@ -97,7 +97,7 @@ subroutine xsella(fiss, nbno, narz, tabnoz, pickno,&
                 cpt = cpt+1
                 noeud(cpt) = tabno(i,j)
                 tabdir(i,j) = cpt
-                scorn2(cpt) = abs(zr(jlnsv-1+tabno(i,j)))
+                scorn2(cpt) = abs(cnsv(tabno(i,j)))
             else
                 tabdir(i,j) = ik
             endif
@@ -118,8 +118,8 @@ subroutine xsella(fiss, nbno, narz, tabnoz, pickno,&
             ni = scorno(tabdir(ia,1))
             nj = scorno(tabdir(ia,2))
             scorar(ia) = abs(ni-nj)
-            li = abs(zr(jlnsv-1+tabno(ia,1)))
-            lj = abs(zr(jlnsv-1+tabno(ia,2)))
+            li = abs(cnsv(tabno(ia,1)))
+            lj = abs(cnsv(tabno(ia,2)))
             if (ni .gt. nj) scora2(ia)=li/(li+lj)
             if (ni .lt. nj) scora2(ia)=lj/(li+lj)
             if (ni .eq. nj) scora2(ia)=min(li,lj)/(li+lj)

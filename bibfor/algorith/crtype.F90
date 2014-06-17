@@ -70,8 +70,8 @@ subroutine crtype()
 !
     integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
     integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
-    integer ::  jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf, nuprev
-    integer :: ino, nbv(1), jrefe, jlcha, nchar, jfcha, iadesc, icmpd, icmpi
+    integer ::   iad, jinst,     nbpf, nuprev
+    integer :: ino, nbv(1), jrefe,  nchar, jfcha,  icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
 !
@@ -93,6 +93,13 @@ subroutine crtype()
     character(len=24) :: valkk(4), matric(3)
     character(len=32) :: kjexn
     character(len=8), pointer :: champs(:) => null()
+    real(kind=8), pointer :: coor(:) => null()
+    character(len=8), pointer :: vnomf(:) => null()
+    real(kind=8), pointer :: val(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: deeq(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
+    character(len=24), pointer :: prol(:) => null()
 !
     data linst,listr8,lcpt/'&&CRTYPE_LINST','&&CRTYPE_LISR8',&
      &     '&&CPT_CRTYPE'/
@@ -139,9 +146,9 @@ subroutine crtype()
             excit = noojb(1:19)
 !           ON CREE LA SD_INFO_CHARGE
             call lisccr(excit, nchar, 'G')
-            call jeveuo(excit//'.LCHA', 'E', jlcha)
+            call jeveuo(excit//'.LCHA', 'E', vk24=lcha)
             call jeveuo(excit//'.FCHA', 'E', jfcha)
-            call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=nchar, vect=zk24(jlcha),&
+            call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=nchar, vect=lcha,&
                         nbret=n1)
         endif
 !
@@ -165,7 +172,7 @@ subroutine crtype()
         endif
 !
         call dismoi('TYPE_SUPERVIS', champ, 'CHAMP', repk=k24)
-        call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+        call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coor)
 !
 !        CALCUL DE LFONC ET TYPEGD
         lfonc = .false.
@@ -397,7 +404,7 @@ subroutine crtype()
             nbinst = min(nbinst,nbval)
 !
             call wkvect(linst, 'V V R', nbinst, jinst)
-            call jeveuo(listr8//'.VALE', 'L', jval)
+            call jeveuo(listr8//'.VALE', 'L', vr=val)
             call rsorac(resu, 'LONUTI', 0, rbid, k8b,&
                         cbid, rbid, k8b, nbv, 1,&
                         ibid)
@@ -408,9 +415,9 @@ subroutine crtype()
                 if (k .lt. numini) goto 40
                 if (k .gt. numfin) goto 40
                 j = j + 1
-                zr(jinst-1+j) = zr(jval-1+k)
+                zr(jinst-1+j) = val(k)
                 if (nbv(1) .gt. 0) then
-                    call rsorac(resu, typabs, ibid, zr(jval-1+k), k8b,&
+                    call rsorac(resu, typabs, ibid, val(k), k8b,&
                                 cbid, prec, criter, tnum, 1,&
                                 nbr)
                     nume=tnum(1)
@@ -524,34 +531,34 @@ subroutine crtype()
 !
             if (lfonc) then
                 call jelira(champ//'.VALE', 'LONMAX', lg)
-                call jeveuo(champ//'.VALE', 'L', jnomf)
+                call jeveuo(champ//'.VALE', 'L', vk8=vnomf)
                 call jeveuo(champ//'.REFE', 'L', jrefe)
-                call jeveuo(zk24(jrefe+1)(1:19)//'.DEEQ', 'L', jdeeq)
+                call jeveuo(zk24(jrefe+1)(1:19)//'.DEEQ', 'L', vi=deeq)
 !
-                call jeveuo(nomch//'.DESC', 'E', iadesc)
+                call jeveuo(nomch//'.DESC', 'E', vi=desc)
                 call jenonu(jexnom('&CATA.GD.NOMGD', typegd), igd)
-                zi(iadesc-1+1) = igd
+                desc(1) = igd
                 call jedetr(nomch//'.VALE')
                 call wkvect(nomch//'.VALE', 'G V R', lg, jc)
 !              CHAM_NO DE FONCTIONS A EVALUER
                 call jeveuo(nomch//'.VALE', 'E', jc)
                 do l = 1, lg
-                    nomf = zk8(jnomf+l-1)
+                    nomf = vnomf(l)
                     if (nomf .eq. ' ') goto 60
-                    call jeveuo(nomf//'           .PROL', 'L', lprol)
-                    call fonbpa(nomf, zk24(lprol), k16b, mxpara, nbpf,&
+                    call jeveuo(nomf//'           .PROL', 'L', vk24=prol)
+                    call fonbpa(nomf, prol, k16b, mxpara, nbpf,&
                                 nomp)
-                    ino = zi(jdeeq+2* (l-1))
+                    ino = deeq(1+2* (l-1))
                     if (ino .eq. 0) goto 60
                     do ip = 1, nbpf
                         if (nomp(ip) .eq. 'INST') then
                             valpu(ip) = tps
                         else if (nomp(ip).eq.'X') then
-                            valpu(ip) = zr(jcoor-1+3* (ino-1)+1)
+                            valpu(ip) = coor(3* (ino-1)+1)
                         else if (nomp(ip).eq.'Y') then
-                            valpu(ip) = zr(jcoor-1+3* (ino-1)+2)
+                            valpu(ip) = coor(3* (ino-1)+2)
                         else if (nomp(ip).eq.'Z') then
-                            valpu(ip) = zr(jcoor-1+3* (ino-1)+3)
+                            valpu(ip) = coor(3* (ino-1)+3)
                         else
                             call utmess('F', 'ALGORITH2_50')
                         endif

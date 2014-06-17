@@ -43,7 +43,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     integer :: nodegl, inol, ino2, mailrf, nbpgrf
     integer :: inog2, ii, ima1, ima, inom1, inom2, inom3
     integer :: nbmag1, nbnog2, nbnog
-    integer :: ialim1, ialin2, jcoor1, jcoor2, icxma1, jtypma
+    integer :: ialim1, ialin2, jcoor1,  icxma1
     integer :: iacono, iaconb, iacom1, iaconu, iacocf
     integer :: listno(27)
     real(kind=8) :: normgl, rbid, normlo
@@ -52,6 +52,8 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     character(len=8) :: ntypma, elref, cbt(15)
     character(len=24) :: grpma, grpno
     logical :: inmail
+    real(kind=8), pointer :: coor2(:) => null()
+    integer, pointer :: typmail(:) => null()
 ! ======================================================================
 !
 !     MAILLES UTILES DU MAILLAGE 1
@@ -79,7 +81,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !     COORDONNEES DES NOEUDS DES MAILLAGES 1 ET 2
 !     ===========================================
     call jeveuo(ma1//'.COORDO    .VALE', 'L', jcoor1)
-    call jeveuo(ma2//'.COORDO    .VALE', 'L', jcoor2)
+    call jeveuo(ma2//'.COORDO    .VALE', 'L', vr=coor2)
 !
 !
 !     CREATION D'UNE SD CORRESP_2_MAILLA
@@ -107,7 +109,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !
         ino2 = zi(ialin2-1+inog2)
         do 20 ii = 1, 3
-            con1m2(ii) = zr(jcoor2-1+3*(ino2-1)+ii)
+            con1m2(ii) = coor2(3*(ino2-1)+ii)
 20      continue
         mailrf = 0
 !
@@ -122,8 +124,8 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !-----------------------------------------------------------------------
             call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog)
             call jeveuo(jexnum(ma1//'.CONNEX', ima), 'L', icxma1)
-            call jeveuo(ma1//'.TYPMAIL', 'L', jtypma)
-            itypma = zi(jtypma-1 + ima)
+            call jeveuo(ma1//'.TYPMAIL', 'L', vi=typmail)
+            itypma = typmail(ima)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), ntypma)
             ii=5
             if (ntypma(1:3) .eq. 'SEG') ii=4

@@ -78,11 +78,16 @@ subroutine vecgen(nomres, numeg)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iadmod, iavale, iddeeq, idvale, idvect, ioc
-    integer :: ipos, iret, j, ladrve, lddesc, ldesc, ldnddl
-    integer :: ldnsst, ldnvec, ldprs, ldstr, llneq, llref
-    integer :: lrdesc, lrefe, lrref, lrval, nbchar, nbmod, nddl0
+    integer :: ipos, iret, j,  lddesc,  ldnddl
+    integer :: ldnsst, ldnvec, ldprs, ldstr
+    integer :: lrdesc,  lrref, lrval, nbchar, nbmod, nddl0
     integer :: neq, neqgen, num, nusst
     real(kind=8) :: rbid
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: nllneq(:) => null()
+    integer, pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     data pgc/'VECGEN'/
 !-----------------------------------------------------------------------
@@ -94,8 +99,8 @@ subroutine vecgen(nomres, numeg)
 !-----------------------------------------------------------------------
 !
     profg = numeg//'      .NUME'
-    call jeveuo(profg//'.REFN', 'E', llref)
-    modgen = zk24(llref) (1:8)
+    call jeveuo(profg//'.REFN', 'E', vk24=refn)
+    modgen = refn(1) (1:8)
 !
 !     0/ TEST SI ON ELIMINE LES CONTRAINTES
 !     =====================================
@@ -187,8 +192,8 @@ subroutine vecgen(nomres, numeg)
 !
 !     RECUPERATION DU NOMBRE TOTAL DE D.D.L. GENERALISES, POUR
 !     L'ALLOCATION DU .VALE.
-    call jeveuo(profg//'.NEQU', 'L', llneq)
-    neqgen = zi(llneq)
+    call jeveuo(profg//'.NEQU', 'L', vi=nllneq)
+    neqgen = nllneq(1)
 !
     call wkvect(resval, 'G V R', neqgen, lrval)
     call wkvect(chadsc, 'V V I', 1, lddesc)
@@ -260,18 +265,18 @@ subroutine vecgen(nomres, numeg)
 !     .REFE DU CHAMNO SECOND MEMBRE. POUR CE FAIRE, ON CONTROLE QUE
 !     LA VALEUR DE NUME DANS LE .DESC EST BIEN POSITIVE.
 !
-        call jeveuo(nom2mb//'           .DESC', 'L', ldesc)
-        num = zi(ldesc+1)
+        call jeveuo(nom2mb//'           .DESC', 'L', vi=desc)
+        num = desc(2)
         if (num .lt. 0) then
             valk (1) = nom2mb
             call utmess('F', 'ALGORITH15_72', sk=valk(1))
         endif
-        call jeveuo(nom2mb//'           .REFE', 'L', lrefe)
-        nuchar = zk24(lrefe+1)
+        call jeveuo(nom2mb//'           .REFE', 'L', vk24=refe)
+        nuchar = refe(2)
 !
 !     VERIFICATION DE LA COHERENCE DES GRANDEURS ENTRE CHARGEMENTS.
 !
-        gd = zi(ldesc)
+        gd = desc(1)
         if (i .eq. 1) then
             gd0 = gd
         endif
@@ -321,7 +326,7 @@ subroutine vecgen(nomres, numeg)
     end do
 !
 !     ECRITURE DU .REFE
-    zk24(llref) = modgen
+    refn(1) = modgen
     zk24(lrref+1) = profg
 !
 !     ECRITURE DU .DESC
@@ -356,7 +361,7 @@ subroutine vecgen(nomres, numeg)
         nbmod=tmod(1)
 !
 !     RECUPERATION DU .VALE ASSOCIE AU SECOND MEMBRE
-        call jeveuo(nom2mb//'           .VALE', 'L', ladrve)
+        call jeveuo(nom2mb//'           .VALE', 'L', vr=vale)
         call jelira(nom2mb//'           .VALE', 'TYPE', cval=typve)
 !
 !     NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE, POUR LA SOUS-STRUCTURE
@@ -400,7 +405,7 @@ subroutine vecgen(nomres, numeg)
             call zerlag(neq, zi(iddeeq), vectr=zr(idvect))
 !
 !     PRODUIT SCALAIRE SECOND MEMBRE ET MODE
-            zr(iavale+j-1) = ddot(neq,zr(idvect),1,zr(ladrve),1)
+            zr(iavale+j-1) = ddot(neq,zr(idvect),1,vale,1)
 !
         end do
         call jedetr('&&'//pgc//'.VECTA')

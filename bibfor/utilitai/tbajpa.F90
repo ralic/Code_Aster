@@ -38,13 +38,15 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 ! IN  : TYPPAR : TYPES DES PARAMETRES.
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbba, jtbnp, nbpm, nbpu
+    integer :: iret, nbpara, nblign,   nbpm, nbpu
     integer :: ndim, jtblp, i, j, k, ideb, jnjv, nbpar1
     character(len=1) :: base
     character(len=3) :: type
     character(len=4) :: knume
     character(len=19) :: nomtab
     character(len=24) :: nomjv, inpar, jnpar
+    character(len=8), pointer :: tbba(:) => null()
+    integer, pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -59,12 +61,12 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         call utmess('F', 'UTILITAI4_68')
     endif
 !
-    call jeveuo(nomtab//'.TBBA', 'L', jtbba)
-    base = zk8(jtbba)(1:1)
+    call jeveuo(nomtab//'.TBBA', 'L', vk8=tbba)
+    base = tbba(1)(1:1)
 !
-    call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = max ( zi(jtbnp+1) , 10 )
+    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = max ( tbnp(2) , 10 )
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,7 +74,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 !
     if (nbpara .eq. 0) then
 !
-        zi(jtbnp) = nbpar
+        tbnp(1) = nbpar
         ndim = 4 * nbpar
 !
         call jecreo(nomtab//'.TBLP', base//' V K24')
@@ -135,7 +137,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 !
         ideb = nbpara
         nbpara = nbpara + nbpar1
-        zi(jtbnp) = nbpara
+        tbnp(1) = nbpara
         ndim = 4*nbpara
 !
         if (ndim .gt. nbpm) then

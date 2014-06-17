@@ -64,8 +64,8 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, icomp, iec, ieq, ipoint
-    integer :: j, lddeeq, ldnueq, ldprno, linueq, llinsk
-    integer :: llnoms, llnueq, llprno, llref1, ltinse, lttds
+    integer :: j, lddeeq, ldnueq, ldprno, linueq
+    integer ::   llprno,  ltinse, lttds
     integer :: nbcmp, nbcpmx, nbddl, nbec, nbnot, nbsec, nddlt
     integer :: neqsec, nsecpr, ntail, numnos, numsec
 !-----------------------------------------------------------------------
@@ -75,6 +75,10 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
     character(len=19) :: numddl, profno
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx)
+    character(len=24), pointer :: cycl_refe(:) => null()
+    integer, pointer :: skeleton(:) => null()
+    integer, pointer :: cycl_nbsc(:) => null()
+    integer, pointer :: vnueq(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -84,8 +88,8 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !-------------------RECUPERATION DE LA BASE MODALE----------------------
 !
-    call jeveuo(modcyc//'.CYCL_REFE', 'L', llref1)
-    basmod=zk24(llref1+2)
+    call jeveuo(modcyc//'.CYCL_REFE', 'L', vk24=cycl_refe)
+    basmod=cycl_refe(3)
     call jelibe(modcyc//'.CYCL_REFE')
 !
 !----------------RECUPERATION DU NUMDDLET DE L'INTERF_DYNA--------------
@@ -108,8 +112,8 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !---------------RECUPERATION DU NOMBRE DE SECTEURS----------------------
 !
 !
-    call jeveuo(modcyc//'.CYCL_NBSC', 'L', llnoms)
-    nbsec=zi(llnoms)
+    call jeveuo(modcyc//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+    nbsec=cycl_nbsc(1)
     call jelibe(modcyc//'.CYCL_NBSC')
 !
 !-------------RECUPERATION DIMENSION MAILLAGE SQUELETTE-----------------
@@ -118,7 +122,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !------------RECUPERATION DU .INV.SKELETON------------------------------
 !
-    call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
+    call jeveuo(mailsk//'.INV.SKELETON', 'L', vi=skeleton)
 !
 !--------------RECUPERATION DU PRNO DU SECTEUR--------------------------
 !
@@ -126,7 +130,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
     numddl(15:19)='.NUME'
     call jenonu(jexnom(numddl//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(numddl//'.PRNO', ibid), 'L', llprno)
-    call jeveuo(numddl//'.NUEQ', 'L', llnueq)
+    call jeveuo(numddl//'.NUEQ', 'L', vi=vnueq)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqsec)
 !
 !--------------------ALLOCATION DU VECTEUR DE TRAVAIL-------------------
@@ -138,8 +142,8 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
     nddlt=0
     do i = 1, nbnot
-        numsec=zi(llinsk+i-1)
-        numnos=zi(llinsk+nbnot+i-1)
+        numsec=skeleton(i)
+        numnos=skeleton(1+nbnot+i-1)
         nddlt=nddlt+zi(llprno+(numnos-1)*(2+nbec)+1)
         zi(lttds+numsec-1)=zi(lttds+numsec-1)+ zi(llprno+(numnos-1)*(&
         2+nbec)+1)
@@ -199,8 +203,8 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
     icomp=0
     do i = 1, nbnot
 !
-        numsec=zi(llinsk+i-1)
-        numnos=zi(llinsk+nbnot+i-1)
+        numsec=skeleton(i)
+        numnos=skeleton(1+nbnot+i-1)
         ieq=zi(llprno+(numnos-1)*(2+nbec))
         nbddl=zi(llprno+(numnos-1)*(2+nbec)+1)
         call isdeco(zi(llprno+(numnos-1)*(2+nbec)+2), idec, nbcmp)
@@ -224,7 +228,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
                 zi(lddeeq+(icomp-1)*2)=i
                 zi(lddeeq+(icomp-1)*2+1)=j
                 zi(ldnueq+icomp-1)=icomp
-                linueq=zi(llnueq+ieq+iad-2)
+                linueq=vnueq(1+ieq+iad-2)
                 ipoint=ltinse-1+2*zi(lttds+numsec-1)
                 zi(ipoint+1)=linueq
                 zi(ipoint+2)=icomp

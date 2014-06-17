@@ -43,8 +43,7 @@ subroutine pronua(method, nuag1, nuag2)
 ! IN  NUAG2 (JXVAR)   : SD NUAGE A EVALUER
 !
 ! VARIABLES LOCALES :
-    integer :: inuai1, inuai2, inuax1, inuax2
-    integer :: inuav1, inuav2
+    integer :: inuai1,   inuax2
     integer :: iret, inual1, inual2, ip2, ic2, ip1, ic1
     integer :: nx1, nx2, np1, np2, gd1, gd2, nc1, nc2
     integer :: i1, i2, ii2, i
@@ -56,29 +55,33 @@ subroutine pronua(method, nuag1, nuag2)
     logical :: ldref
     integer, pointer :: corresp(:) => null()
     real(kind=8), pointer :: dref(:) => null()
+    real(kind=8), pointer :: nuax1(:) => null()
+    real(kind=8), pointer :: nuav1(:) => null()
+    real(kind=8), pointer :: nuav2(:) => null()
+    integer, pointer :: nuai2(:) => null()
 !
 ! DEB-------------------------------------------------------------------
     call jemarq()
     nua1 = nuag1
     nua2 = nuag2
     call jeveuo(nua1//'.NUAI', 'L', inuai1)
-    call jeveuo(nua2//'.NUAI', 'L', inuai2)
-    call jeveuo(nua1//'.NUAX', 'L', inuax1)
-    call jeveuo(nua1//'.NUAV', 'L', inuav1)
+    call jeveuo(nua2//'.NUAI', 'L', vi=nuai2)
+    call jeveuo(nua1//'.NUAX', 'L', vr=nuax1)
+    call jeveuo(nua1//'.NUAV', 'L', vr=nuav1)
     call jeveuo(nua2//'.NUAX', 'L', inuax2)
-    call jeveuo(nua2//'.NUAV', 'E', inuav2)
+    call jeveuo(nua2//'.NUAV', 'E', vr=nuav2)
 !
     nx1 = zi(inuai1-1+2)
-    nx2 = zi(inuai2-1+2)
+    nx2 = nuai2(2)
     if (nx1 .ne. nx2) then
         valk(1) = nua1
         valk(2) = nua2
         call utmess('F', 'UTILITAI3_89', nk=2, valk=valk)
     endif
     np1 = zi(inuai1-1+1)
-    np2 = zi(inuai2-1+1)
+    np2 = nuai2(1)
     gd1 = zi(inuai1-1+4)
-    gd2 = zi(inuai2-1+4)
+    gd2 = nuai2(4)
     if (gd1 .ne. gd2) then
         valk(1) = nua1
         valk(2) = nua2
@@ -88,7 +91,7 @@ subroutine pronua(method, nuag1, nuag2)
     call dismoi('TYPE_SCA', nogd, 'GRANDEUR', repk=tysca)
 !
     nc1 = zi(inuai1-1+3)
-    nc2 = zi(inuai2-1+3)
+    nc2 = nuai2(3)
 !
 !
 !     -- L'OBJET '&&PRONUA.DREF' DONNE LA DISTANCE**2 DE REFERENCE
@@ -102,7 +105,7 @@ subroutine pronua(method, nuag1, nuag2)
 !        -----------------------------------------------------
     AS_ALLOCATE(vi=corresp, size=nc2)
     do i2 = 1, nc2
-        ii2=zi(inuai2-1+5+i2)
+        ii2=nuai2(5+i2)
         i1=indiis(zi(inuai1-1+6),ii2,1,nc1)
         if (i1 .eq. 0) then
             call utmess('F', 'UTILITAI3_91', sk=nua1)
@@ -166,11 +169,11 @@ subroutine pronua(method, nuag1, nuag2)
             do ip2 = 1, np2
                 if (zl(inual2-1+ (ip2-1)*nc2+ic2)) then
                     call nuainr(method, np1, nx1, nc1, ic1,&
-                                zr(inuax1), zl(inual1), zr(inuav1), zr(inuax2-1+ (ip2-1)*nx2+ 1),&
+                                nuax1, zl(inual1), nuav1, zr(inuax2-1+ (ip2-1)*nx2+ 1),&
                                 dref(ip2), val2r)
-                    zr(inuav2-1+ (ip2-1)*nc2+ic2) = val2r
+                    nuav2((ip2-1)*nc2+ic2) = val2r
                 else
-                    zr(inuav2-1+ (ip2-1)*nc2+ic2) = 0.d0
+                    nuav2((ip2-1)*nc2+ic2) = 0.d0
                 endif
             end do
 !

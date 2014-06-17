@@ -53,10 +53,10 @@ subroutine op0111()
 !     ------------------------------------------------------------------
     integer :: ibid, icode, icmp, ino1, ino2, ii, idecal
     integer :: iresu, ietin, idepl, ivite, iacce, icmpg, iocc
-    integer :: jdepsk, jdepsd, jdepsc, jdepsv, jdepsl, jdepl
-    integer :: jvitsk, jvitsd, jvitsc, jvitsv, jvitsl, jvite
-    integer :: jaccsk, jaccsd, jaccsc, jaccsv, jaccsl, jacce
-    integer :: jacono, jaconb, jaconu, jacocf, ialin2
+    integer ::    jdepsv, jdepsl, jdepl
+    integer ::    jvitsv, jvitsl, jvite
+    integer ::    jaccsv, jaccsl, jacce
+    integer :: jacono,    ialin2
     integer :: jj, ilengt
     integer :: nordre, nbno1, nbcmp, nbno2, nbocc
     integer :: ddldep(3), ddlvit(3), ddlacc(3)
@@ -74,6 +74,18 @@ subroutine op0111()
     integer :: icompo, numpas, iadr
     real(kind=8) :: tf, dt
     character(len=24) :: ayacs
+    character(len=8), pointer :: accsk(:) => null()
+    character(len=8), pointer :: depsk(:) => null()
+    character(len=8), pointer :: vitsk(:) => null()
+    integer, pointer :: pjef_nu(:) => null()
+    integer, pointer :: pjef_nb(:) => null()
+    character(len=8), pointer :: accsc(:) => null()
+    character(len=8), pointer :: depsc(:) => null()
+    character(len=8), pointer :: vitsc(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    integer, pointer :: accsd(:) => null()
+    integer, pointer :: depsd(:) => null()
+    integer, pointer :: vitsd(:) => null()
 !     COUPLAGE <=
 !     ------------------------------------------------------------------
     call jemarq()
@@ -143,47 +155,47 @@ subroutine op0111()
     if (idepl .eq. 1) then
         chdeps = '&&IRGMCN.DEPL'
         call cnocns(chdepl, 'V', chdeps)
-        call jeveuo(chdeps//'.CNSK', 'L', jdepsk)
-        call jeveuo(chdeps//'.CNSD', 'L', jdepsd)
-        call jeveuo(chdeps//'.CNSC', 'L', jdepsc)
+        call jeveuo(chdeps//'.CNSK', 'L', vk8=depsk)
+        call jeveuo(chdeps//'.CNSD', 'L', vi=depsd)
+        call jeveuo(chdeps//'.CNSC', 'L', vk8=depsc)
         call jeveuo(chdeps//'.CNSV', 'L', jdepsv)
         call jeveuo(chdeps//'.CNSL', 'L', jdepsl)
-        ma = zk8(jdepsk)
-        nbno1 = zi(jdepsd-1+1)
-        nbcmp = zi(jdepsd-1+2)
+        ma = depsk(1)
+        nbno1 = depsd(1)
+        nbcmp = depsd(2)
     endif
     if (ivite .eq. 1) then
         chvits = '&&IRGMCN.VITE'
         call cnocns(chvite, 'V', chvits)
-        call jeveuo(chvits//'.CNSK', 'L', jvitsk)
-        call jeveuo(chvits//'.CNSD', 'L', jvitsd)
-        call jeveuo(chvits//'.CNSC', 'L', jvitsc)
+        call jeveuo(chvits//'.CNSK', 'L', vk8=vitsk)
+        call jeveuo(chvits//'.CNSD', 'L', vi=vitsd)
+        call jeveuo(chvits//'.CNSC', 'L', vk8=vitsc)
         call jeveuo(chvits//'.CNSV', 'L', jvitsv)
         call jeveuo(chvits//'.CNSL', 'L', jvitsl)
-        ma = zk8(jvitsk)
-        nbno1 = zi(jvitsd-1+1)
-        nbcmp = zi(jvitsd-1+2)
+        ma = vitsk(1)
+        nbno1 = vitsd(1)
+        nbcmp = vitsd(2)
     endif
     if (iacce .eq. 1) then
         chaccs = '&&IRGMCN.ACCE'
         call cnocns(chacce, 'V', chaccs)
-        call jeveuo(chaccs//'.CNSK', 'L', jaccsk)
-        call jeveuo(chaccs//'.CNSD', 'L', jaccsd)
-        call jeveuo(chaccs//'.CNSC', 'L', jaccsc)
+        call jeveuo(chaccs//'.CNSK', 'L', vk8=accsk)
+        call jeveuo(chaccs//'.CNSD', 'L', vi=accsd)
+        call jeveuo(chaccs//'.CNSC', 'L', vk8=accsc)
         call jeveuo(chaccs//'.CNSV', 'L', jaccsv)
         call jeveuo(chaccs//'.CNSL', 'L', jaccsl)
-        ma = zk8(jaccsk)
-        nbno1 = zi(jaccsd-1+1)
-        nbcmp = zi(jaccsd-1+2)
+        ma = accsk(1)
+        nbno1 = accsd(1)
+        nbcmp = accsd(2)
     endif
 !     ! ========================================== !
 !     ! APPEL DES POINTEURS DE CORRESP_2_MAILLAGES !
 !     ! ========================================== !
 !      CALL JEVEUO(CORRES//'.PJEF_NO', 'L', JACONO)
     call jeveuo(corres//'.PJXX_K1', 'L', jacono)
-    call jeveuo(corres//'.PJEF_NB', 'L', jaconb)
-    call jeveuo(corres//'.PJEF_NU', 'L', jaconu)
-    call jeveuo(corres//'.PJEF_CF', 'L', jacocf)
+    call jeveuo(corres//'.PJEF_NB', 'L', vi=pjef_nb)
+    call jeveuo(corres//'.PJEF_NU', 'L', vi=pjef_nu)
+    call jeveuo(corres//'.PJEF_CF', 'L', vr=pjef_cf)
 !     ! ===================================================== !
 !     ! VERIFICATIONS ELEMENTAIRES SUR LES NOMS DES MAILLAGES !
 !     ! ===================================================== !
@@ -204,19 +216,19 @@ subroutine op0111()
     end do
     do icmp = 1, nbcmp
         if (idepl .eq. 1) then
-            if (zk8(jdepsc-1+icmp) .eq. 'DX') ddldep(1) = icmp
-            if (zk8(jdepsc-1+icmp) .eq. 'DY') ddldep(2) = icmp
-            if (zk8(jdepsc-1+icmp) .eq. 'DZ') ddldep(3) = icmp
+            if (depsc(icmp) .eq. 'DX') ddldep(1) = icmp
+            if (depsc(icmp) .eq. 'DY') ddldep(2) = icmp
+            if (depsc(icmp) .eq. 'DZ') ddldep(3) = icmp
         endif
         if (ivite .eq. 1) then
-            if (zk8(jvitsc-1+icmp) .eq. 'DX') ddlvit(1) = icmp
-            if (zk8(jvitsc-1+icmp) .eq. 'DY') ddlvit(2) = icmp
-            if (zk8(jvitsc-1+icmp) .eq. 'DZ') ddlvit(3) = icmp
+            if (vitsc(icmp) .eq. 'DX') ddlvit(1) = icmp
+            if (vitsc(icmp) .eq. 'DY') ddlvit(2) = icmp
+            if (vitsc(icmp) .eq. 'DZ') ddlvit(3) = icmp
         endif
         if (iacce .eq. 1) then
-            if (zk8(jaccsc-1+icmp) .eq. 'DX') ddlacc(1) = icmp
-            if (zk8(jaccsc-1+icmp) .eq. 'DY') ddlacc(2) = icmp
-            if (zk8(jaccsc-1+icmp) .eq. 'DZ') ddlacc(3) = icmp
+            if (accsc(icmp) .eq. 'DX') ddlacc(1) = icmp
+            if (accsc(icmp) .eq. 'DY') ddlacc(2) = icmp
+            if (accsc(icmp) .eq. 'DZ') ddlacc(3) = icmp
         endif
     end do
 !     ! ======================================= !
@@ -247,15 +259,15 @@ subroutine op0111()
             call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
             do jj = 1, nbno2
                 ino2 = zi(ialin2-1+jj)
-                do ii = 1, zi(jaconb-1+ilengt+jj)
-                    ino1 = zi(jaconu-1+idecal+ii)
+                do ii = 1, pjef_nb(ilengt+jj)
+                    ino1 = pjef_nu(idecal+ii)
                     do icmp = 1, 3
                         if (ddldep(icmp) .ne. 0) then
                             icmpg = ddldep(icmp)+nbcmp*(ino1-1)
                             if (zl(jdepsl-1+icmpg)) then
                                 zr(jdepl-1+3*(ino2-1)+icmp) = + zr(&
                                                               jdepl-1+3*(ino2-1)+icmp) + zr(jdeps&
-                                                              &v- 1+icmpg)*zr(jacocf-1+idecal+ii&
+                                                              &v- 1+icmpg)*pjef_cf(idecal+ii&
                                                               )
                             endif
                         endif
@@ -264,7 +276,7 @@ subroutine op0111()
                             if (zl(jvitsl-1+icmpg)) then
                                 zr(jvite-1+3*(ino2-1)+icmp) = + zr(&
                                                               jvite-1+3*(ino2-1)+icmp) + zr(jvits&
-                                                              &v- 1+icmpg)*zr(jacocf-1+idecal+ii&
+                                                              &v- 1+icmpg)*pjef_cf(idecal+ii&
                                                               )
                             endif
                         endif
@@ -273,13 +285,13 @@ subroutine op0111()
                             if (zl(jaccsl-1+icmpg)) then
                                 zr(jacce-1+3*(ino2-1)+icmp) = + zr(&
                                                               jacce-1+3*(ino2-1)+icmp) + zr(jaccs&
-                                                              &v- 1+icmpg)*zr(jacocf-1+idecal+ii&
+                                                              &v- 1+icmpg)*pjef_cf(idecal+ii&
                                                               )
                             endif
                         endif
                     end do
                 end do
-                idecal = idecal + zi(jaconb-1+ilengt+jj)
+                idecal = idecal + pjef_nb(ilengt+jj)
             end do
             ilengt = ilengt + nbno2
         end do

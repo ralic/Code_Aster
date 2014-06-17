@@ -51,10 +51,13 @@ subroutine aniver(mater)
 !      ---------------
 !-----------------------------------------------------------------------
     integer :: i, iel, ien, iet, igln, iglt, igtn
-    integer :: inuln, inult, inutn, j, jnomrc, jtypfo, jvalrk
-    integer :: jvalrm, k, nbcrme, nbr, ndim
+    integer :: inuln, inult, inutn, j,  jtypfo
+    integer ::  k, nbcrme, nbr, ndim
     real(kind=8) :: c1, delta, deux, e1, e2, e3, g12
     real(kind=8) :: g13, g23, un, undemi, zero
+    real(kind=8), pointer :: valr(:) => null()
+    character(len=16), pointer :: vnomrc(:) => null()
+    character(len=8), pointer :: valk(:) => null()
 !-----------------------------------------------------------------------
     zero = 0.0d0
     undemi = 0.5d0
@@ -85,7 +88,7 @@ subroutine aniver(mater)
 !
 ! --- RECUPERATION DU TABLEAU DES RELATIONS DE COMPORTEMENT :
 !     -----------------------------------------------------
-    call jeveuo(mater//'.MATERIAU.NOMRC', 'L', jnomrc)
+    call jeveuo(mater//'.MATERIAU.NOMRC', 'L', vk16=vnomrc)
 !
 ! --- RECUPERATION DE L'INFORMATION MATERIAU FONCTION OU NON :
 !     ------------------------------------------------------
@@ -94,8 +97,8 @@ subroutine aniver(mater)
 ! --- BOUCLE SUR LES RELATIONS DE COMPORTEMENT :
 !     ----------------------------------------
     do 20 k = 1, nbcrme
-        nomrc = zk16(jnomrc+k-1)
-        noobrc = mater//'.'//zk16(jnomrc+k-1)(1:10)
+        nomrc = vnomrc(k)
+        noobrc = mater//'.'//vnomrc(k)(1:10)
 !
 ! --- SI LE MATERIAU N'EST PAS UNE FONCTION :
 !     -------------------------------------
@@ -108,8 +111,8 @@ subroutine aniver(mater)
 ! ---     RECUPERATION DU NOM DES COMPOSANTES ET DES VALEURS
 ! ---     DEFINISSANT LE MATERIAU :
 !         -----------------------
-                call jeveuo(noobrc//'.VALR', 'L', jvalrm)
-                call jeveuo(noobrc//'.VALK', 'L', jvalrk)
+                call jeveuo(noobrc//'.VALR', 'L', vr=valr)
+                call jeveuo(noobrc//'.VALK', 'L', vk8=valk)
 !
 ! ---     LONGUEUR DU TABLEAU DES COMPOSANTES :
 !         -----------------------------------
@@ -119,32 +122,32 @@ subroutine aniver(mater)
 ! ---     A L'ORTHOTROPIE ET A L'ISOTROPIE TRANSVERSE DANS
 ! ---     LE TABLEAU DU NOM DES COMPOSANTES :
 !         ---------------------------------
-                iel = indik8(zk8(jvalrk),'E_L',1,nbr)
-                iet = indik8(zk8(jvalrk),'E_T',1,nbr)
-                ien = indik8(zk8(jvalrk),'E_N',1,nbr)
+                iel = indik8(valk,'E_L',1,nbr)
+                iet = indik8(valk,'E_T',1,nbr)
+                ien = indik8(valk,'E_N',1,nbr)
 !
-                iglt = indik8(zk8(jvalrk),'G_LT',1,nbr)
-                igtn = indik8(zk8(jvalrk),'G_TN',1,nbr)
-                igln = indik8(zk8(jvalrk),'G_LN',1,nbr)
+                iglt = indik8(valk,'G_LT',1,nbr)
+                igtn = indik8(valk,'G_TN',1,nbr)
+                igln = indik8(valk,'G_LN',1,nbr)
 !
-                inult = indik8(zk8(jvalrk),'NU_LT',1,nbr)
-                inutn = indik8(zk8(jvalrk),'NU_TN',1,nbr)
-                inuln = indik8(zk8(jvalrk),'NU_LN',1,nbr)
+                inult = indik8(valk,'NU_LT',1,nbr)
+                inutn = indik8(valk,'NU_TN',1,nbr)
+                inuln = indik8(valk,'NU_LN',1,nbr)
 !
 ! ---     RECUPERATION DES COMPOSANTES RELATIVES A L'ORTHOTROPIE
 ! ---     ET A L'ISOTROPIE TRANSVERSE :
 !         ---------------------------
-                if (iel .ne. 0) e1 = zr(jvalrm+iel-1)
-                if (iet .ne. 0) e2 = zr(jvalrm+iet-1)
-                if (ien .ne. 0) e3 = zr(jvalrm+ien-1)
+                if (iel .ne. 0) e1 = valr(iel)
+                if (iet .ne. 0) e2 = valr(iet)
+                if (ien .ne. 0) e3 = valr(ien)
 !
-                if (iglt .ne. 0) g12 = zr(jvalrm+iglt-1)
-                if (igtn .ne. 0) g23 = zr(jvalrm+igtn-1)
-                if (igln .ne. 0) g13 = zr(jvalrm+igln-1)
+                if (iglt .ne. 0) g12 = valr(iglt)
+                if (igtn .ne. 0) g23 = valr(igtn)
+                if (igln .ne. 0) g13 = valr(igln)
 !
-                if (inult .ne. 0) nu12 = zr(jvalrm+inult-1)
-                if (inutn .ne. 0) nu23 = zr(jvalrm+inutn-1)
-                if (inuln .ne. 0) nu13 = zr(jvalrm+inuln-1)
+                if (inult .ne. 0) nu12 = valr(inult)
+                if (inutn .ne. 0) nu23 = valr(inutn)
+                if (inuln .ne. 0) nu13 = valr(inuln)
 !
 ! ---     TRAITEMENT DU CAS DE L'ISOTROPIE TRANSVERSE :
 !         -------------------------------------------

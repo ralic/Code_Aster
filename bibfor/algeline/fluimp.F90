@@ -57,16 +57,16 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: itypfl, nivpar, nivdef, nbm, npv, nuor(nbm), jvcn, jven
-    integer :: nive, nbval, lfsvi, pas, jconn, jrap
+    integer :: itypfl, nivpar, nivdef, nbm, npv, nuor(nbm)
+    integer :: nive, nbval, lfsvi, pas
     character(len=19) :: melflu
     character(len=8) :: typflu
     real(kind=8) :: carac(2), freq(2*nbm*npv), freqi(*), vite(npv), amoc(*)
     real(kind=8) :: vrmin, vrmax, vrmin1, vrmin2, vrmax1, vrmax2
     real(kind=8) :: vmoy, vmoyto, reduit, rappor, rappo2
 !
-    integer ::     jvit1, jvit2, jzone
-    integer :: jtr1, jtr2, jvrzo, lfsvr
+    integer ::     jvit1, jvit2
+    integer :: jtr1, jtr2
     integer :: lprofv, lnoe, iret, modul, modul2
     character(len=3) :: i3
     character(len=8) :: k8bid, nomsym, nomcmp(6), formar, numzo, nbpzon
@@ -86,7 +86,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifr, ik, im, imod, ind
-    integer :: iv, j, jprofv,  k, l1
+    integer :: iv, j,   k, l1
     integer :: l2, l3, n1, n2, npasv, nzone
 !
     real(kind=8) :: amor1, bmax, bmin, dif1, freq1, rbid, vred
@@ -96,6 +96,14 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     character(len=80), pointer :: trav3(:) => null()
     character(len=80), pointer :: trav4(:) => null()
     character(len=80), pointer :: trav5(:) => null()
+    real(kind=8), pointer :: rap(:) => null()
+    real(kind=8), pointer :: profv(:) => null()
+    integer, pointer :: tempo(:) => null()
+    real(kind=8), pointer :: fsvr(:) => null()
+    real(kind=8), pointer :: ven(:) => null()
+    real(kind=8), pointer :: vcn(:) => null()
+    real(kind=8), pointer :: vrzo(:) => null()
+    real(kind=8), pointer :: mass(:) => null()
 !
 !-----------------------------------------------------------------------
     data           nomcmp /'DX      ','DY      ','DZ      ',&
@@ -162,22 +170,22 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
             if (iret .ne. 0) then
                 call jelira('&&FLUST1.TEMP.PROFV', 'LONMAX', lprofv)
                 lnoe = (lprofv-1)/2
-                call jeveuo('&&FLUST1.TEMP.PROFV', 'L', jprofv)
-                vmoyto = zr(jprofv-1+lprofv)
+                call jeveuo('&&FLUST1.TEMP.PROFV', 'L', vr=profv)
+                vmoyto = profv(lprofv)
                 write (ifr,1001) vmoyto
                 write (ifr,*)
             endif
         endif
         if (itypfl .eq. 1) then
-            call jeveuo('&&MDCONF.TEMPO', 'L', jzone)
-            nzone = zi(jzone-1+1)
+            call jeveuo('&&MDCONF.TEMPO', 'L', vi=tempo)
+            nzone = tempo(1)
             if (calcul(2)) then
-                call jeveuo(melflu(1:8)//'.VEN', 'L', jven)
-                call jeveuo(melflu(1:8)//'.VCN', 'L', jvcn)
-                call jeveuo(melflu(1:8)//'.MASS', 'L', jconn)
-                call jeveuo(melflu(1:8)//'.RAP', 'L', jrap)
+                call jeveuo(melflu(1:8)//'.VEN', 'L', vr=ven)
+                call jeveuo(melflu(1:8)//'.VCN', 'L', vr=vcn)
+                call jeveuo(melflu(1:8)//'.MASS', 'L', vr=mass)
+                call jeveuo(melflu(1:8)//'.RAP', 'L', vr=rap)
 !
-                call jeveuo(typflu//'           .FSVR', 'L', lfsvr)
+                call jeveuo(typflu//'           .FSVR', 'L', vr=fsvr)
                 fsvi = typflu//'           .FSVI'
                 call jeveuo(fsvi, 'L', lfsvi)
                 nbval=1
@@ -239,16 +247,16 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                     AS_ALLOCATE(vk80=trav3, size=nzone)
                     AS_ALLOCATE(vk80=trav4, size=nzone)
 !
-                    call jeveuo('&&COEFMO.VRZO', 'L', jvrzo)
+                    call jeveuo('&&COEFMO.VRZO', 'L', vr=vrzo)
 !
                     do 15 j = 1, nzone
-                        n1 = zi(jzone+2*(j-1)+1)
-                        n2 = zi(jzone+2*(j-1)+2)
+                        n1 = tempo(1+2*(j-1)+1)
+                        n2 = tempo(1+2*(j-1)+2)
 !                CONVERSION EN CHAINES DE CARACTERES
                         call codent(j, 'G', numzo)
                         call codent(n2-n1+1, 'G', nbpzon)
 !
-                        vrmin = zr(jvrzo+2*(j-1)+0)
+                        vrmin = vrzo(1+2*(j-1)+0)
                         call codree(vrmin, 'E', xvmin)
                         if (vrmin .lt. 0.d0) then
                             xvmin = '-'//xvmin
@@ -256,7 +264,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                             xvmin = ' '//xvmin
                         endif
 !
-                        vrmax = zr(jvrzo+2*(j-1)+1)
+                        vrmax = vrzo(1+2*(j-1)+1)
                         call codree(vrmax, 'E', xvmax)
                         if (vrmax .lt. 0.d0) then
                             xvmax = '-'//xvmax
@@ -265,7 +273,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                         endif
 !
                         if (iret .ne. 0) then
-                            vmoy = zr(jprofv+lnoe+n1)
+                            vmoy = profv(1+lnoe+n1)
                             call codree(vmoy, 'E', xvmoy)
                             if (vmoy .lt. 0.d0) then
                                 xvmoy = '-'//xvmoy
@@ -450,8 +458,8 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 write (ifr,*)
                 write (ifr,*) '==============================================='
                 write (ifr,*)
-                write (ifr,1003) zr(jconn)
-                write (ifr,1004) zr(jconn+1)
+                write (ifr,1003) mass(1)
+                write (ifr,1004) mass(2)
 !
                 if (calcul(1)) then
 !
@@ -465,7 +473,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !
                     write (ifr,5007)('*',j=1,117)
                     write (ifr,5001) imod,freqi(imod),(amoc(im)*100),&
-                    zr(jven-1+im),zr(jven-1+nbm+im)
+                    ven(im),ven(nbm+im)
                     write (ifr,5007)('*',j=1,117)
                     write (ifr,*)
 !
@@ -478,7 +486,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 write(ifr,5005) (cham30,j=1,nzone)
                 write(ifr,5003) ('ZONE',i,i=1,nzone)
                 write(ifr,5005) (cham30,j=1,nzone)
-                write(ifr,5004) (zr(lfsvr+3+2*(j-1)), zr(lfsvr+3+2*(j-&
+                write(ifr,5004) (fsvr(1+3+2*(j-1)), fsvr(1+3+2*(j-&
                 1)+1),j=1,nzone)
                 write(ifr,5005) (cham30,j=1,nzone)
                 write(ifr,*)
@@ -515,19 +523,19 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                             modul2=modul*zi(lfsvi+1+nzone+j)
                             pas=(mod((i-1),modul2))/modul
                         endif
-                        cste(j)=zr(lfsvr+3+2*(j-1))+pas*&
-                        (zr(lfsvr+3+2*(j-1)+1)-zr(lfsvr+3+2*(j-1)))&
+                        cste(j)=fsvr(1+3+2*(j-1))+pas*&
+                        (fsvr(1+3+2*(j-1)+1)-fsvr(1+3+2*(j-1)))&
                         /(zi(lfsvi+1+nzone+j)-1)
                         call codree(cste(j), 'E', ccste)
                         ctrav1((3+(30*(j-1))):(3+(30*j)))='  '//ccste//'  *'
 !
 110                  continue
-                    reduit=zr(jvcn-1+(im-1)*nbval+i)/(freqi(imod)*&
+                    reduit=vcn((im-1)*nbval+i)/(freqi(imod)*&
                     carac(1))
-                    rappor=zr(jrap-1+(im-1)*nbval+i)
-                    rappo2=zr(jrap-1+nbm*nbval+(im-1)*nbval+i)
+                    rappor=rap((im-1)*nbval+i)
+                    rappo2=rap(nbm*nbval+(im-1)*nbval+i)
 !
-                    write(ifr,5006) cste, zr(jvcn-1+(im-1)*nbval+&
+                    write(ifr,5006) cste, vcn((im-1)*nbval+&
                     i), reduit,rappor,rappo2
 !
 100              continue

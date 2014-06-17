@@ -33,7 +33,9 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jcesd, jcesv, jcesl, im, ima, nbpt, decal, iad, ipt, icmp, iret
+    integer ::   jcesl, im, ima, nbpt, decal, iad, ipt, icmp, iret
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: cesd(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -44,19 +46,19 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
                     nbcmp, nocmp, [-1], [-1], [-nbcmp])
     endif
 !
-    call jeveuo(chelem(1:19)//'.CESD', 'L', jcesd)
-    call jeveuo(chelem(1:19)//'.CESV', 'E', jcesv)
+    call jeveuo(chelem(1:19)//'.CESD', 'L', vi=cesd)
+    call jeveuo(chelem(1:19)//'.CESV', 'E', vr=cesv)
     call jeveuo(chelem(1:19)//'.CESL', 'E', jcesl)
 !
     do 20 im = 1, nbma
         ima = listma(im)
-        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-        decal = zi(jcesd-1+5+4*(ima-1)+4)
+        nbpt = cesd(5+4*(ima-1)+1)
+        decal = cesd(5+4*(ima-1)+4)
         do 22 ipt = 1, nbpt
             do 24 icmp = 1, nbcmp
                 iad = decal + (ipt-1)*nbcmp + icmp
                 zl(jcesl-1+iad) = .true.
-                zr(jcesv-1+iad) = 0.d0
+                cesv(iad) = 0.d0
 24          continue
 22      continue
 20  end do

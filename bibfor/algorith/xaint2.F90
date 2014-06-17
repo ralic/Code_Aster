@@ -79,17 +79,24 @@ subroutine xaint2(noma, modele)
     character(len=19) :: ces(5), cel(5), cnxinv, ligrel
     character(len=8) :: typma, nomfis
     character(len=2) :: ch2
-    integer :: jtypma, jcesd(5), jcesl(5), jcesv(5), iad, iret
-    integer :: jxc, itypma, nncp, ibid, ier
-    integer :: jnbsp, jnbsp2
-    integer :: jconx1, jconx2, jtmdim, ndime, ndim
+    integer ::  jcesd(5), jcesl(5), jcesv(5), iad, iret
+    integer ::  itypma, nncp, ibid, ier
+    integer ::  jnbsp2
+    integer ::  jconx2,  ndime, ndim
     integer :: nuno(2), nuno2(2), ino(2), ino2, ima, ima2
     integer :: nfis, ifis
     integer :: i, j, k, nfiss, ifiss, nfis2, ifis2, ifis3
     logical :: elim(2), verif
-    integer :: igrp, nbma, jnfis, jmofis, nmaenr, jg
+    integer :: igrp, nbma,   nmaenr, jg
     integer :: nface, ninter, inter, zxain, ia, ifh, nfh, nmasup, jmasup
     integer :: heav, he, ar(12, 3), nbar, nno2, nngl, inte2, ninte2
+    integer, pointer :: nbsp(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
+    integer, pointer :: typmail(:) => null()
+    character(len=8), pointer :: fiss(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    integer, pointer :: vnfis(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -97,19 +104,19 @@ subroutine xaint2(noma, modele)
     call jemarq()
 !
 ! --- ON VERIFIE QUE L'ON A CONTACT P1P1
-    call jeveuo(modele//'.XFEM_CONT', 'L', jxc)
-    if (zi(jxc) .ne. 1) goto 999
+    call jeveuo(modele//'.XFEM_CONT', 'L', vi=xfem_cont)
+    if (xfem_cont(1) .ne. 1) goto 999
 !
     zxain  =xxmmvd('ZXAIN')
 !
 ! --- RECUPERATION DES DONNEES SUR LE MAILLAGE
 !      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IBID)
 !      CALL JEVEUO(MODELE//'.MAILLE','L',JMAIL)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-    call jeveuo(noma//'.TYPMAIL', 'L', jtypma)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 ! --- CONNECTIVITE INVERSEE
@@ -119,7 +126,7 @@ subroutine xaint2(noma, modele)
 !
 ! --- RECUPERATION DES DONNEES ELEMENTAIRES XFEM
 !
-    call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
+    call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
     cel(1) = modele//'.TOPOFAC.LO'
     cel(2) = modele//'.TOPOFAC.AI'
     cel(3) = modele//'.STNO'
@@ -143,11 +150,11 @@ subroutine xaint2(noma, modele)
 !
 !     BOUCLE SUR LES FISSURES
 !
-    call jeveuo(modele//'.NFIS', 'L', jnfis)
-    nfis = zi(jnfis)
-    call jeveuo(modele//'.FISS', 'L', jmofis)
+    call jeveuo(modele//'.NFIS', 'L', vi=vnfis)
+    nfis = vnfis(1)
+    call jeveuo(modele//'.FISS', 'L', vk8=fiss)
     do ifis = 1, nfis
-        nomfis = zk8(jmofis-1 + ifis)
+        nomfis = fiss(ifis)
         grp(1)=nomfis//'.MAILFISS.HEAV'
         grp(2)=nomfis//'.MAILFISS.CTIP'
         grp(3)=nomfis//'.MAILFISS.HECT'
@@ -174,8 +181,8 @@ subroutine xaint2(noma, modele)
 !           BOUCLE SUR LES MAILLES DU GROUPE
                 do i = 1, nmaenr
                     ima = zi(jg-1+i)
-                    itypma=zi(jtypma-1+ima)
-                    ndime= zi(jtmdim-1+itypma)
+                    itypma=typmail(ima)
+                    ndime= tmdim(itypma)
                     if (ndime .lt. ndim) goto 220
                     ifiss = zi(jnbsp2-1+ima)
                     call cesexi('S', jcesd(1), jcesl(1), ima, 1,&
@@ -184,7 +191,7 @@ subroutine xaint2(noma, modele)
                     call cesexi('S', jcesd(1), jcesl(1), ima, 1,&
                                 ifiss, 1, iad)
                     ninter = zi(jcesv(1)-1+iad)
-                    nfiss = zi(jnbsp-1+ima)
+                    nfiss = nbsp(ima)
 !             ON NE TRAITE QUE LES ELEMENTS MULTI-HEAVISIDE COUPÉS
                     if (nfiss .le. 1 .or. ninter .eq. 0) goto 220
                     if (nface .eq. 0) then
@@ -207,7 +214,7 @@ subroutine xaint2(noma, modele)
 !               RÉCUP DES NOEUDS J DE L'ARETE
                         do j = 1, 2
                             ino(j) = ar(ia,j)
-                            nuno(j) = zi(jconx1-1+zi(jconx2+ima-1)+ ino(j)-1)
+                            nuno(j) = connex(zi(jconx2+ima-1)+ ino(j)-1)
                             elim(j) = .false.
                         end do
 !
@@ -228,11 +235,11 @@ subroutine xaint2(noma, modele)
                             heav = 0
                             do k = 1, nmasup
                                 ima2 = zi(jmasup-1+k)
-                                itypma=zi(jtypma-1+ima2)
-                                ndime= zi(jtmdim-1+itypma)
+                                itypma=typmail(ima2)
+                                ndime= tmdim(itypma)
                                 if (ndime .lt. ndim) goto 250
                                 ifis2 = zi(jnbsp2-1+ima2)
-                                nfis2 = zi(jnbsp-1+ima2)
+                                nfis2 = nbsp(ima2)
                                 call cesexi('S', jcesd(1), jcesl(1), ima2, 1,&
                                             ifis2, 2, iad)
 !      SI PAS DE FACETTE DANS CETTE MAILLE POUR CETTE FISSURE, ON SORT
@@ -240,7 +247,7 @@ subroutine xaint2(noma, modele)
 !      RECUPÉRATION DU NUMÉRO DE NOEUD INO2 CORRESPONDANT À J DANS IMA2
                                 call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX', nno2)
                                 do ino2 = 1, nno2
-                                    nngl=zi(jconx1-1+zi(jconx2+ima2-1)&
+                                    nngl=connex(zi(jconx2+ima2-1)&
                                     +ino2-1)
                                     if (nngl .eq. nuno(j)) goto 270
                                 end do
@@ -285,8 +292,8 @@ subroutine xaint2(noma, modele)
 !                 BOUCLE SUR LES ELEM CONEXES
                             do k = 1, nmasup
                                 ima2 = zi(jmasup-1+k)
-                                itypma=zi(jtypma-1+ima2)
-                                ndime= zi(jtmdim-1+itypma)
+                                itypma=typmail(ima2)
+                                ndime= tmdim(itypma)
                                 if (ndime .lt. ndim) goto 350
                                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                                 call conare(typma, ar, nbar)
@@ -302,9 +309,9 @@ subroutine xaint2(noma, modele)
                                     ia = abs(nint(zr(jcesv(2)-1+iad)))
 !
                                     if (ia .eq. 0) goto 360
-                                    nuno2(1)=zi(jconx1-1+zi(jconx2+&
+                                    nuno2(1)=connex(zi(jconx2+&
                                     ima2-1)+ar(ia,1)-1)
-                                    nuno2(2)=zi(jconx1-1+zi(jconx2+&
+                                    nuno2(2)=connex(zi(jconx2+&
                                     ima2-1)+ar(ia,2)-1)
 !         SI LE NOEUD J N'APPARTIENT PAS À L'ARETE, ON SORT
                                     if (nuno(j) .ne. nuno2(1) .and. nuno( j) .ne. nuno2(2)) &

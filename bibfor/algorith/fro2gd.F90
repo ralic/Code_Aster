@@ -117,8 +117,10 @@ subroutine fro2gd(sdstat, defico, resoco, solveu, matass,&
     character(len=19) :: mu
     integer :: jmu
     character(len=19) :: ddeplc, ddepl0, ddelt
-    integer :: jddepc, jddep0, jddelt
     integer :: itemax, isto, itemul
+    real(kind=8), pointer :: vddelt(:) => null()
+    real(kind=8), pointer :: ddep0(:) => null()
+    real(kind=8), pointer :: ddepc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -146,9 +148,9 @@ subroutine fro2gd(sdstat, defico, resoco, solveu, matass,&
     ddepl0 = resoco(1:14)//'.DEL0'
     ddeplc = resoco(1:14)//'.DELC'
     ddelt = resoco(1:14)//'.DDEL'
-    call jeveuo(ddepl0(1:19)//'.VALE', 'L', jddep0)
-    call jeveuo(ddeplc(1:19)//'.VALE', 'E', jddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'E', jddelt)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
+    call jeveuo(ddelt (1:19)//'.VALE', 'E', vr=vddelt)
 !
 ! --- PREPARATION DE LA MATRICE DE CONTACT
 !
@@ -204,7 +206,7 @@ subroutine fro2gd(sdstat, defico, resoco, solveu, matass,&
 ! --- MISE A JOUR DE LA SOLUTION ITERATION DE CONTACT
 !
     do 50 ieq = 1, neq
-        zr(jddelt+ieq-1) = zr(jddep0+ieq-1) - zr(jddepc-1+ieq)
+        vddelt(ieq) = ddep0(ieq) - ddepc(ieq)
 50  end do
 !
 ! --- RESOLUTION MATRICIELLE POUR DES LIAISONS ACTIVES
@@ -279,7 +281,7 @@ subroutine fro2gd(sdstat, defico, resoco, solveu, matass,&
 !
 ! --- ACTUALISATION DE DELTA: DELTA = DELTA + RHO .DDELT
 !
-    call daxpy(neq, rho, zr(jddelt), 1, zr(jddepc),&
+    call daxpy(neq, rho, vddelt, 1, ddepc,&
                1)
 !
 ! --- AJOUT DE LA "PIRE" LIAISON SI NECESSAIRE

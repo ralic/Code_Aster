@@ -49,7 +49,8 @@ subroutine rvfmai(courbe, listma)
     character(len=14) :: nmail1, nmail2
     character(len=24) :: nmail
     integer :: adr, pt, nbma, nbtma, alstma, m, p, nbpart, im, i
-    integer :: adrm1, nbmail, adrm2, d3, asds, vlccou
+    integer :: adrm1, nbmail, adrm2, d3,  vlccou
+    character(len=24), pointer :: nsds(:) => null()
 !
 !================= CORPS DE LA ROUTINE ===============================
 !
@@ -72,9 +73,9 @@ subroutine rvfmai(courbe, listma)
     end do
     if (d3 .ne. 0) then
         call jelira(courbe//'.NSDS', 'LONMAX', nbpart)
-        call jeveuo(courbe//'.NSDS', 'L', asds)
+        call jeveuo(courbe//'.NSDS', 'L', vk24=nsds)
         do p = 1, nbpart, 1
-            nmail = zk24(asds + p-1)(1:13)//'.MAIL'
+            nmail = nsds(p)(1:13)//'.MAIL'
             call jeveuo(jexatr(nmail, 'LONCUM'), 'L', vlccou)
             call jelira(nmail, 'NMAXOC', nbmail)
             call jeveuo(nmail, 'L', adrm1)

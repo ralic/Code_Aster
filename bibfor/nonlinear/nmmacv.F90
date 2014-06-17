@@ -44,7 +44,9 @@ subroutine nmmacv(vecdep, sstru, vecass)
 !
 !
 !
-    integer :: jcnfi, jdepl, jrsst
+    integer ::   jrsst
+    real(kind=8), pointer :: cnfi(:) => null()
+    real(kind=8), pointer :: depl(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,10 +54,10 @@ subroutine nmmacv(vecdep, sstru, vecass)
 !
 ! --- CALCUL VECT_ASSE(MACR_ELEM) = MATR_ASSE(MACR_ELEM) * VECT_DEPL
 !
-    call jeveuo(vecass(1:19)//'.VALE', 'E', jcnfi)
-    call jeveuo(vecdep(1:19)//'.VALE', 'L', jdepl)
+    call jeveuo(vecass(1:19)//'.VALE', 'E', vr=cnfi)
+    call jeveuo(vecdep(1:19)//'.VALE', 'L', vr=depl)
     call jeveuo(sstru(1:19) //'.&INT', 'L', jrsst)
-    call mrmult('ZERO', jrsst, zr(jdepl), zr(jcnfi), 1,&
+    call mrmult('ZERO', jrsst, depl, cnfi, 1,&
                 .true.)
 !
     call jedema()

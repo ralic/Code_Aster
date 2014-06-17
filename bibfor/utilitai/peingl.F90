@@ -151,7 +151,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! -----  VARIABLES LOCALES
     integer :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
     integer :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
-    integer :: idesc, ngdmax, ncmpmx, ivale, iptma, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
+    integer ::  ngdmax, ncmpmx,   igd, idebgd, dg, ima, iconex, nbno, nec, ivari
     integer :: i
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec, energi
     complex(kind=8) :: c16b
@@ -169,6 +169,9 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     character(len=24) :: chsigm, chdepm, chbid
     logical :: evol
     integer :: iarg
+    integer, pointer :: ptma(:) => null()
+    integer, pointer :: desc(:) => null()
+    character(len=16), pointer :: vale(:) => null()
 !
     data typarr/'I','R','K24','K8','R','R','R','R','R'/
     data chvarc,chvref /'&&PEINGL.CHVARC','&&PEINGL.CHVARC.REF'/
@@ -330,8 +333,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---    RECUPERATION DE LA GRANDEUR (ICI COMPOR)  ---
 ! ---    REFERENCEE PAR LA CARTE COMPO             ---
 !
-            call jeveuo(compor//'.DESC', 'L', idesc)
-            ngdmax = zi(idesc+2-1)
+            call jeveuo(compor//'.DESC', 'L', vi=desc)
+            ngdmax = desc(2)
 !
             nomgd = 'COMPOR  '
 !
@@ -349,12 +352,12 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---    TABLEAU DE VALEURS DE LA CARTE COMPO     ---
 ! ---    (CONTENANT LES VALEURS DU COMPORTEMENT)  ---
 !
-            call jeveuo(compor//'.VALE', 'L', ivale)
+            call jeveuo(compor//'.VALE', 'L', vk16=vale)
 !
 ! ---    RECUPERATION DU VECTEUR D'ADRESSAGE DANS LA CARTE  ---
 ! ---    CREE PAR ETENCA                                    ---
 !
-            call jeveuo(compor//'.PTMA', 'L', iptma)
+            call jeveuo(compor//'.PTMA', 'L', vi=ptma)
 !
 ! ---    AFFECTATION DU TABLEAU DES NOEUDS  ---
 !
@@ -363,10 +366,10 @@ subroutine peingl(resu, modele, mate, cara, nh,&
             call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
             do ima = 1, nbma
-                if (zi(iptma+ima-1) .ne. 0) then
-                    igd = zi(iptma+ima-1)
+                if (ptma(ima) .ne. 0) then
+                    igd = ptma(ima)
                     idebgd = (igd-1)*ncmpmx
-                    dg = zi(idesc+3+2*ngdmax+zi(iptma+ima-1)-1)
+                    dg = desc(1+3+2*ngdmax+ptma(ima)-1)
 !
 ! ---        ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 ! ---        QUI EST RELCOM A BIEN ETE AFFECTEE
@@ -375,7 +378,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         call utmess('F', 'UTILITAI2_63')
                     endif
 ! ---        RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
-                    compt = zk16(ivale+idebgd+1-1)
+                    compt = vale(1+idebgd+1-1)
 !
 ! ---        RECUPERATION DES NUMEROS DES NOEUDS DE LA MAILLE
                     call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)

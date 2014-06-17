@@ -50,13 +50,14 @@ subroutine cormgi(basez, ligrez)
 !**********************************************************************
 !
     character(len=8) :: nmaila
-    integer :: i, j, pt, nbmail, nbgrel, jlgrf, iret
+    integer :: i, j, pt, nbmail, nbgrel,  iret
     integer :: jrepe, jgrel, nbmgre
     logical :: exima
 !
 !
 !
     character(len=19) :: ligtmp
+    character(len=8), pointer :: lgrf(:) => null()
 !
     call jemarq()
     base = basez
@@ -65,8 +66,8 @@ subroutine cormgi(basez, ligrez)
     call jedetr(ligrel//'.REPE')
 !
 !
-    call jeveuo(ligrel//'.LGRF', 'L', jlgrf)
-    nmaila = zk8(jlgrf)
+    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+    nmaila = lgrf(1)
     ASSERT(nmaila.ne.' ')
 !
     call jeexin(nmaila//'.CONNEX', iret)

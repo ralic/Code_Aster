@@ -55,7 +55,7 @@ subroutine te0517(option, nomte)
     integer :: nbfib, kp, ncomp, i, jacf
     integer :: icompo, iorien, ivectu
     integer :: jtab(7), ino, istrxm, nbsp
-    integer :: isicom, nbgfmx, isdcom
+    integer ::  nbgfmx, isdcom
 !
     integer :: igeom, iret, isect, imate, k, npg, ifgm, iretc
     real(kind=8) :: xd(3), ey, ez, temp
@@ -64,6 +64,7 @@ subroutine te0517(option, nomte)
     real(kind=8) :: phiz
     real(kind=8) :: forref, momref, carsec(6)
     logical :: reactu
+    integer, pointer :: cpri(:) => null()
 !
 ! ----------------------------------------------------------------------
     nno = 2
@@ -159,9 +160,9 @@ subroutine te0517(option, nomte)
             call moytem('RIGI', npg, 1, '+', temp,&
                         iret)
 !
-            call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', isicom)
+            call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
             call jeveuo(zk16(icompo-1+7), 'L', isdcom)
-            nbgfmx = zi(isicom+2)
+            nbgfmx = cpri(3)
             mator = zk24(isdcom-1+nbgfmx*6+1)(1:8)
             call matela(zi(imate), mator, 1, temp, e,&
                         nu)

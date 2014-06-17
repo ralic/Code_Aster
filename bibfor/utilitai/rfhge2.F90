@@ -61,14 +61,16 @@ subroutine rfhge2(harmge)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iagno, idbase, iddl, idinsg
-    integer :: ie, ierd, ign2, ii, ino, inoeud, iordr, ldesc
+    integer :: iagno, idbase, iddl
+    integer :: ie, ierd, ign2, ii, ino, inoeud, iordr
     integer :: iret, itresu, jinst, jj, lfon, lg1, lg2
     integer :: lordr, lpro, lvar, n1, n2
     integer :: n3, nbinsg, nbmode, nbordr
     integer :: neq, ngn, numcmp
     real(kind=8) :: epsi
     complex(kind=8), pointer :: vectgene(:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -127,8 +129,8 @@ subroutine rfhge2(harmge)
 ! --- ABSCISSES +  ( PARTIE REELLE | PARTIE IMAGINAIRE )
     call wkvect(nomfon//'.VALE', 'G V R', 3*nbordr, lvar)
 !
-    call jeveuo(resu//'.DESC', 'L', ldesc)
-    nbmode = zi(ldesc+1)
+    call jeveuo(resu//'.DESC', 'L', vi=desc)
+    nbmode = desc(2)
     call getvis(' ', 'NUME_CMP_GENE', scal=numcmp, nbret=n1)
     lfon = lvar + nbordr
 !
@@ -194,12 +196,12 @@ subroutine rfhge2(harmge)
         jj = 0
         if (intres(1:3) .ne. 'NON') then
 ! ---   CAS OU ON INTERPOLE
-            call jeveuo(resu//'.DISC', 'L', idinsg)
+            call jeveuo(resu//'.DISC', 'L', vr=disc)
             call jelira(resu//'.DISC', 'LONMAX', nbinsg)
             AS_ALLOCATE(vc=vectgene, size=nbmode)
             do iordr = 0, nbordr-1
 !             EXTRACTION ET INTERPOLATION
-                call zxtrac(intres, epsi, crit, nbinsg, zr(idinsg),&
+                call zxtrac(intres, epsi, crit, nbinsg, disc,&
                             zr(jinst+iordr), zc(itresu), nbmode, vectgene, ierd)
 !             PASSAGE EN BASE PHYSIQUE
                 call mdgep5(neq, nbmode, zr(idbase), vectgene, iddl,&

@@ -58,7 +58,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
 !-----------------------------------------------------------------------
     integer :: i, iad, ideu, ierd, ior, irest
     integer :: iret, iseize, itype, iun, izero, j
-    integer :: jlast, jposi, jtabl, nbobj, nfor, np
+    integer ::  jposi, jtabl, nbobj, nfor, np
 !
 !-----------------------------------------------------------------------
     parameter ( maxlen = 255)
@@ -66,6 +66,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
     character(len=72) :: ctmp
     integer :: nbcara, iob, il
     integer, pointer :: entier(:) => null()
+    integer, pointer :: last(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -87,7 +88,7 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
 !
 ! ECRITURE DE ENREGISTREMENT 27
 !
-    call jeveuo('&&OP0039.LAST', 'E', jlast)
+    call jeveuo('&&OP0039.LAST', 'E', vi=last)
     do i = 1, nbacc
         toto = chacc(i)
         il = lxlgut(toto)
@@ -109,18 +110,18 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
                         ier=ierd)
             if (tych(1:4) .eq. 'NOEU') then
                 zi(jtabl-1+(nbacc+1)*4+(j-1)*4+1) = 27
-                zi(jtabl-1+(nbacc+1)*4+(j-1)*4+2)=zi(jlast-1+8)+i+&
+                zi(jtabl-1+(nbacc+1)*4+(j-1)*4+2)=last(8)+i+&
                 nbacc+1
                 zi(jtabl-1+(nbacc+1)*4+(j-1)*4+3) = 2
-                zi(jlast-1+4) = zi(jlast-1+4) + 1
-                zi(jtabl-1+(nbacc+1)*4+(j-1)*4+4) = zi(jlast-1+4)
+                last(4) = last(4) + 1
+                zi(jtabl-1+(nbacc+1)*4+(j-1)*4+4) = last(4)
             else if (tych(1:4).eq.'ELNO') then
                 zi(jtabl-1+(nbacc+1)*4+(j-1)*4+1) = 27
-                zi(jtabl-1+(nbacc+1)*4+(j-1)*4+2)=zi(jlast-1+8)+i+&
+                zi(jtabl-1+(nbacc+1)*4+(j-1)*4+2)=last(8)+i+&
                 nbacc+1
                 zi(jtabl-1+(nbacc+1)*4+(j-1)*4+3) = 39
-                zi(jlast-1+5) = zi(jlast-1+5) + 1
-                zi(jtabl-1+(nbacc+1)*4+(j-1)*4+4) = zi(jlast-1+5)
+                last(5) = last(5) + 1
+                zi(jtabl-1+(nbacc+1)*4+(j-1)*4+4) = last(5)
             endif
         endif
         toto = chamca(i)
@@ -188,12 +189,12 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
             write(ifi,'(I8)') 2*nbordr
         endif
         write(ifi,'(7I11)') (entier(ior),ior=1,2*nbordr)
-        zi(jlast-1+1) = zi(jlast-1+1)+2*nbordr
+        last(1) = last(1)+2*nbordr
     endif
     zi(jtabl-1+1) = 27
-    zi(jtabl-1+2) = zi(jlast-1+8)+iun
+    zi(jtabl-1+2) = last(8)+iun
     zi(jtabl-1+3) = 26
-    zi(jtabl-1+4) = zi(jlast-1+7)+iocc*2
+    zi(jtabl-1+4) = last(7)+iocc*2
 !
 ! ECRITURE DES ENREGISTREMENTS ASSOCIES AUX VARIABLES ACCES
 !
@@ -214,10 +215,10 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
             endif
             write(ifi,'(1X,1PE21.14)') zr(iad)
             zi(jtabl-1+(i-1)*4+5) = 27
-            zi(jtabl-1+(i-1)*4+6) = zi(jlast-1+8)+i+1
+            zi(jtabl-1+(i-1)*4+6) = last(8)+i+1
             zi(jtabl-1+(i-1)*4+7) = 25
-            zi(jlast-1+2) = zi(jlast-1+2) + 1
-            zi(jtabl-1+(i-1)*4+8) = zi(jlast-1+2)
+            last(2) = last(2) + 1
+            zi(jtabl-1+(i-1)*4+8) = last(2)
         else if (ctype(1:1).eq.'I') then
             itype = 26
             write (ifi,'(A,I4)') ' ENREGISTREMENT DE TYPE',ideu
@@ -231,11 +232,11 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
                 write(ifi,'(I8)') iun
             endif
             write(ifi,'(2I11)') zi(iad)
-            zi(jlast-1+1) = zi(jlast-1+1)+1
+            last(1) = last(1)+1
             zi(jtabl-1+(i-1)*4+5) = 27
-            zi(jtabl-1+(i-1)*4+6) = zi(jlast-1+8)+i+1
+            zi(jtabl-1+(i-1)*4+6) = last(8)+i+1
             zi(jtabl-1+(i-1)*4+7) = 26
-            zi(jtabl-1+(i-1)*4+8) = zi(jlast-1+1)
+            zi(jtabl-1+(i-1)*4+8) = last(1)
         else if (ctype(1:3).eq.'K16') then
             itype = 27
             iseize = 16
@@ -254,10 +255,10 @@ subroutine irpaca(nomcom, ifi, nbordr, iocc, ordr,&
                 write(ifi,'(I8)') iseize
             endif
             zi(jtabl-1+(i-1)*4+5) = 27
-            zi(jtabl-1+(i-1)*4+6) = zi(jlast-1+8)+i+1
+            zi(jtabl-1+(i-1)*4+6) = last(8)+i+1
             zi(jtabl-1+(i-1)*4+7) = 27
-            zi(jlast-1+3) = zi(jlast-1+3)+1
-            zi(jtabl-1+(i-1)*4+8) = zi(jlast-1+3)+nbobj
+            last(3) = last(3)+1
+            zi(jtabl-1+(i-1)*4+8) = last(3)+nbobj
             nbk16 = nbk16 + 1
         endif
     end do

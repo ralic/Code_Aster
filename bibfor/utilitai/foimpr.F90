@@ -49,10 +49,11 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ideb, ifin, ii, iret, ival, jval
-    integer :: lfon, lfon1, lnova, lprol, lprol1, ltitr, lval
+    integer :: lfon, lfon1,  lprol, lprol1, ltitr, lval
     integer :: lval1, nbfonc, nbnova, nbtitr, nbv, nbv2
     integer :: nbval
     real(kind=8) :: resuim, resure
+    character(len=8), pointer :: nova(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     if (impr .le. 0) goto 9999
@@ -84,7 +85,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
 !     --- CAS D'UNE FONCTION "FORMULE" ---
     call jeexin(nomfon//'.NOVA', iret)
     if (iret .ne. 0 .and. ind .ne. 0) then
-        call jeveuo(nomfon//'.NOVA', 'L', lnova)
+        call jeveuo(nomfon//'.NOVA', 'L', vk8=nova)
         call jelira(nomfon//'.NOVA', 'LONUTI', nbnova)
         if (nbnova .ne. 1) then
             call utmess('A', 'UTILITAI2_8')
@@ -97,7 +98,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         lfon1 = lval1 + nbval
         do 100 ival = 0, nbval-1
             zr(lval1+ival) = zr(jval+ival)
-            call fointe('F ', nomfon, nbnova, zk8(lnova), zr(lval1+ival),&
+            call fointe('F ', nomfon, nbnova, nova, zr(lval1+ival),&
                         zr(lfon1+ival), iret)
 100      continue
 !
@@ -105,7 +106,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         call wkvect(nomf1//'.PROL', 'V V K24', 6, lprol1)
         zk24(lprol1) = 'FONCTION'
         zk24(lprol1+1) = 'LIN LIN '
-        zk24(lprol1+2) = zk8(lnova)
+        zk24(lprol1+2) = nova(1)
         zk24(lprol1+3) = 'TOUTRESU'
         zk24(lprol1+4) = 'EE'
         zk24(lprol1+5) = nomf1

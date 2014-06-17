@@ -78,7 +78,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: icode, iret, i, icha, ires1
-    integer :: ialir1, ilires, iarefe
+    integer :: ialir1, ilires
     integer :: nh, nop
     integer :: nbres1
     character(len=2) :: codret
@@ -89,6 +89,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     character(len=16) :: option
     logical :: debug
     integer :: ifmdbg, nivdbg
+    character(len=24), pointer :: rerr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -175,8 +176,8 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     call memare(base, meamor(1:19), modele(1:8), mate, cara(1:8),&
                 'AMOR_MECA')
 !     SI LA MATRICE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
-    call jeveuo(meamor(1:19)//'.RERR', 'E', iarefe)
-    zk24(iarefe-1+3) (1:3) = 'OUI'
+    call jeveuo(meamor(1:19)//'.RERR', 'E', vk24=rerr)
+    rerr(3) (1:3) = 'OUI'
 !
 ! --- REMPLISSAGE DES CHAMPS D'ENTREE
 !

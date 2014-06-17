@@ -51,10 +51,11 @@ subroutine op5902(nboccp, sdcomp)
     character(len=24) :: nomvar(100)
     real(kind=8) :: fvol, orie(3), dl, da, euler(3), fvolt, mu_loca
     integer :: iocc, nloc, ndl, nda, itbint, nums(3)
-    integer :: i, nmono, imk, imi, ipk, ipi, ipr, iorie, irra
+    integer :: i, nmono,  imi, ipk, ipi, ipr, iorie, irra
     integer :: ncpri, ncprk, ncprr, jcprk, jcprr, jcpri, nvit, lmk, ifvol, ipl
     integer :: imono, nbmono, nvloc, indvar
     integer :: nbsyst, nbsysm
+    character(len=24), pointer :: cprk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -130,17 +131,17 @@ subroutine op5902(nboccp, sdcomp)
     do imono = 1, nbmono
         mono=zk8(ipl-1+imono)
         call jelira(mono//'.CPRK', 'LONMAX', lmk)
-        call jeveuo(mono//'.CPRK', 'L', imk)
+        call jeveuo(mono//'.CPRK', 'L', vk24=cprk)
         call jeveuo(mono//'.CPRI', 'L', imi)
 !        RECOPIE DU VECTEUR K16 DU MONOCRISTAL DANS CELUI DU POLY
         zk24(ipk-1+jcprk+1)=mono
         write(zk24(ipk-1+jcprk+2),'(I24)') zi(imi-1+5)
         do i = 1, lmk
-            zk24(ipk-1+jcprk+2+i)=zk24(imk-1+i)
+            zk24(ipk-1+jcprk+2+i)=cprk(i)
         end do
         jcprk=jcprk+lmk+2
-        if (zk24(imk-1+3) .eq. 'MONO_DD_CC_IRRA') irra=1
-        if (zk24(imk-1+3) .eq. 'MONO_DD_CFC_IRRA') irra=2
+        if (cprk(3) .eq. 'MONO_DD_CC_IRRA') irra=1
+        if (cprk(3) .eq. 'MONO_DD_CFC_IRRA') irra=2
 !
     end do
 !

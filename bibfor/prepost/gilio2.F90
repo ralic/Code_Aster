@@ -48,8 +48,10 @@ subroutine gilio2(nfic, iobj, nbele, niv)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacnex, iacoul, iadsob, ianoob, iarefe, iasoob
+    integer :: i, iacnex, iacoul,   iarefe, iasoob
     integer :: icoj, j, nbfois, nbno, nbref, nbrest, nbsoob
+    integer, pointer :: descobj(:) => null()
+    character(len=8), pointer :: nomobj(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -69,10 +71,10 @@ subroutine gilio2(nfic, iobj, nbele, niv)
     if (iret .eq. 0) then
         call utmess('F', 'PREPOST_46')
     endif
-    call jeveuo('&&GILIRE.NOMOBJ', 'E', ianoob)
-    call jeveuo('&&GILIRE.DESCOBJ', 'E', iadsob)
+    call jeveuo('&&GILIRE.NOMOBJ', 'E', vk8=nomobj)
+    call jeveuo('&&GILIRE.DESCOBJ', 'E', vi=descobj)
     call codent(iobj, 'D', k5bid)
-    zk8(ianoob-1+2* (iobj-1)+1) = '.OB'//k5bid
+    nomobj(2* (iobj-1)+1) = '.OB'//k5bid
 !
 ! -- CONVERSION NUMERO TYPE MAILLE AVEC CODE TYPE MAILLE --
 !
@@ -139,11 +141,11 @@ subroutine gilio2(nfic, iobj, nbele, niv)
         call utmess('F', 'PREPOST4_94', ni=5, vali=vali)
     endif
 !
-    zk8(ianoob-1+2* (iobj-1)+2) = typmai
-    zi(iadsob-1+4* (iobj-1)+1) = nbsoob
-    zi(iadsob-1+4* (iobj-1)+2) = nbref
-    zi(iadsob-1+4* (iobj-1)+3) = nbno
-    zi(iadsob-1+4* (iobj-1)+4) = nbele
+    nomobj(2* (iobj-1)+2) = typmai
+    descobj(4* (iobj-1)+1) = nbsoob
+    descobj(4* (iobj-1)+2) = nbref
+    descobj(4* (iobj-1)+3) = nbno
+    descobj(4* (iobj-1)+4) = nbele
 !
 ! ---------------------------------
     k16obj = '&&GILIRE'//'.OB'//k5bid

@@ -39,12 +39,14 @@ subroutine caelec(char, ligrmo, noma)
 !      LIGRMO : NOM DU LIGREL DE MODELE
 !      NOMA   : NOM DU MAILLAGE
 ! ----------------------------------------------------------------------
-    integer :: i, n, nbfel, jvalv, jncmp, iocc, nbtou, nbma, jma
+    integer :: i, n, nbfel,   iocc, nbtou, nbma, jma
     real(kind=8) :: p1(3), p2(3), zcod, d
     character(len=8) :: k8b, code, typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
+    character(len=8), pointer :: ncmp(:) => null()
+    real(kind=8), pointer :: valv(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -55,20 +57,20 @@ subroutine caelec(char, ligrmo, noma)
     carte = char//'.CHME.'//'FELEC'
     call alcart('G', carte, noma, 'FELECR')
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
-    call jeveuo(carte//'.VALV', 'E', jvalv)
+    call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
+    call jeveuo(carte//'.VALV', 'E', vr=valv)
 !
 ! --- STOCKAGE DE FORCES NULLES SUR TOUT LE MAILLAGE
 !
-    zk8(jncmp-1+1) = 'X1'
-    zk8(jncmp-1+2) = 'Y1'
-    zk8(jncmp-1+3) = 'Z1'
-    zk8(jncmp-1+4) = 'X2'
-    zk8(jncmp-1+5) = 'Y2'
-    zk8(jncmp-1+6) = 'Z2'
-    zk8(jncmp-1+7) = 'CODE'
+    ncmp(1) = 'X1'
+    ncmp(2) = 'Y1'
+    ncmp(3) = 'Z1'
+    ncmp(4) = 'X2'
+    ncmp(5) = 'Y2'
+    ncmp(6) = 'Z2'
+    ncmp(7) = 'CODE'
     do 100 i = 1, 7
-        zr(jvalv-1+i) = 0.d0
+        valv(i) = 0.d0
 100  end do
     call nocart(carte, 1, 7)
 !
@@ -125,13 +127,13 @@ subroutine caelec(char, ligrmo, noma)
             endif
         endif
 !
-        zr(jvalv-1+1) = p1(1)
-        zr(jvalv-1+2) = p1(2)
-        zr(jvalv-1+3) = p1(3)
-        zr(jvalv-1+4) = p2(1)
-        zr(jvalv-1+5) = p2(2)
-        zr(jvalv-1+6) = p2(3)
-        zr(jvalv-1+7) = zcod
+        valv(1) = p1(1)
+        valv(2) = p1(2)
+        valv(3) = p1(3)
+        valv(4) = p2(1)
+        valv(5) = p2(2)
+        valv(6) = p2(3)
+        valv(7) = zcod
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
 !

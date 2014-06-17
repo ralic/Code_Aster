@@ -60,8 +60,9 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
 !
     integer :: n2, n3, i, iret
     character(len=19) :: list
-    integer :: jlist, jslist
+    integer ::  jslist
     character(len=16) :: motfac
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,9 +105,9 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
         call getvr8(motfac, 'INST', iocc=iocc, nbval=nbinst, vect=zr(jslist),&
                     nbret=iret)
     else
-        call jeveuo(list//'.VALE', 'L', jlist)
+        call jeveuo(list//'.VALE', 'L', vr=vale)
         do 43 i = 1, nbinst
-            zr(jslist+i-1) = zr(jlist+i-1)
+            zr(jslist+i-1) = vale(i)
 43      continue
     endif
 !

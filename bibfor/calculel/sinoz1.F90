@@ -67,9 +67,17 @@ subroutine sinoz1(modele, sigma, signo)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ieq, ier, indeq, jkmoch, jnueq, jprno
-    integer :: jsig, jsixx, jsixy, jsixz, jsiyy, jsiyz, jsizz
-    integer :: jslvi, jvecas, nbligr, nbno
+    integer :: i, ieq, ier, indeq, jkmoch,  jprno
+    integer ::  jvecas, nbligr, nbno
+    real(kind=8), pointer :: sig(:) => null()
+    real(kind=8), pointer :: sixx(:) => null()
+    real(kind=8), pointer :: sixy(:) => null()
+    real(kind=8), pointer :: sixz(:) => null()
+    real(kind=8), pointer :: siyy(:) => null()
+    real(kind=8), pointer :: siyz(:) => null()
+    real(kind=8), pointer :: sizz(:) => null()
+    integer, pointer :: slvi(:) => null()
+    integer, pointer :: nueq(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -137,8 +145,8 @@ subroutine sinoz1(modele, sigma, signo)
 !
 !     RESOLUTIONS SANS DIRICHLET
 !     -- ON FORCE STOP_SINGULIER='NON' MAIS POURQUOI ??
-    call jeveuo(solveu//'.SLVI', 'E', jslvi)
-    zi(jslvi-1+3)=1
+    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+    slvi(3)=1
     matpre='&&SINOZ1.MATPRE'
     call preres(solveu, 'V', ier, matpre, '&&MASSAS',&
                 ibid, -9999)
@@ -167,29 +175,29 @@ subroutine sinoz1(modele, sigma, signo)
     call dismoi('NOM_MAILLA', sigma(1:19), 'CHAM_ELEM', repk=ma)
     call crcnct('G', signo, ma, 'SIEF_R', nbcmp,&
                 licmp, rcmp)
-    call jeveuo(signo(1:19)//'.VALE', 'E', jsig)
-    call jeveuo(vect(1) (1:19)//'.VALE', 'E', jsixx)
-    call jeveuo(vect(2) (1:19)//'.VALE', 'E', jsiyy)
-    call jeveuo(vect(3) (1:19)//'.VALE', 'E', jsizz)
-    call jeveuo(vect(4) (1:19)//'.VALE', 'E', jsixy)
+    call jeveuo(signo(1:19)//'.VALE', 'E', vr=sig)
+    call jeveuo(vect(1) (1:19)//'.VALE', 'E', vr=sixx)
+    call jeveuo(vect(2) (1:19)//'.VALE', 'E', vr=siyy)
+    call jeveuo(vect(3) (1:19)//'.VALE', 'E', vr=sizz)
+    call jeveuo(vect(4) (1:19)//'.VALE', 'E', vr=sixy)
     if (nbcmp .eq. 6) then
-        call jeveuo(vect(5) (1:19)//'.VALE', 'E', jsixz)
-        call jeveuo(vect(6) (1:19)//'.VALE', 'E', jsiyz)
+        call jeveuo(vect(5) (1:19)//'.VALE', 'E', vr=sixz)
+        call jeveuo(vect(6) (1:19)//'.VALE', 'E', vr=siyz)
     endif
     call jeveuo(jexnum(nume(1:14)//'.NUME.PRNO', 1), 'L', jprno)
-    call jeveuo(nume(1:14)//'.NUME.NUEQ', 'L', jnueq)
+    call jeveuo(nume(1:14)//'.NUME.NUEQ', 'L', vi=nueq)
 !
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     do i = 1, nbno
         indeq = zi(jprno-1+3* (i-1)+1)
-        ieq = zi(jnueq-1+indeq)
-        zr(jsig-1+nbcmp* (i-1)+1) = zr(jsixx-1+ieq)
-        zr(jsig-1+nbcmp* (i-1)+2) = zr(jsiyy-1+ieq)
-        zr(jsig-1+nbcmp* (i-1)+3) = zr(jsizz-1+ieq)
-        zr(jsig-1+nbcmp* (i-1)+4) = zr(jsixy-1+ieq)
+        ieq = nueq(indeq)
+        sig(nbcmp* (i-1)+1) = sixx(ieq)
+        sig(nbcmp* (i-1)+2) = siyy(ieq)
+        sig(nbcmp* (i-1)+3) = sizz(ieq)
+        sig(nbcmp* (i-1)+4) = sixy(ieq)
         if (nbcmp .eq. 6) then
-            zr(jsig-1+nbcmp* (i-1)+5) = zr(jsixz-1+ieq)
-            zr(jsig-1+nbcmp* (i-1)+6) = zr(jsiyz-1+ieq)
+            sig(nbcmp* (i-1)+5) = sixz(ieq)
+            sig(nbcmp* (i-1)+6) = siyz(ieq)
         endif
     end do
 !

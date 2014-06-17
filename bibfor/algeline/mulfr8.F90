@@ -92,10 +92,12 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
     integer :: lgpile, nbloc, mxmate, ln, adbl1
     integer :: desc, it(5), mxbloc, ltempr, nb
     real(kind=8) :: temps(6)
-    integer :: nproc, ifm, niv, lpmax, iadigs
+    integer :: nproc, ifm, niv, lpmax
 !     NB : ORDRE DES MATRICES CL ET CU (LES PRODUITS MATRICE*MATRICE)
 !     96 EST OPTIMUM POUR EV68, 32 EST OPTIMUM POUR PENTIUM 4
-    integer :: cl, cu, jrefa, lm, lr, ni, vali(2)
+    integer :: cl, cu,  lm, lr, ni, vali(2)
+    real(kind=8), pointer :: digs(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
     data nompr1/'&&MULFR8.PROVISOI.REELS1'/
     data nmprvi/'&&MULFR8.PROVISOI_ENTIE '/
@@ -275,11 +277,11 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
     do i = 1, neq
         if (zr(ldiag+i-1) .lt. 0.d0) npivot = npivot - 1
     end do
-    call jeveuo(noma19//'.DIGS', 'E', iadigs)
+    call jeveuo(noma19//'.DIGS', 'E', vr=digs)
 !
     do i = 1, neq
         j = zi(anc-1+i)
-        zr(iadigs-1+neq+j) = zr(ldiag+i-1)
+        digs(neq+j) = zr(ldiag+i-1)
     end do
 !
 !
@@ -291,8 +293,8 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
     endif
 !
 !
-    call jeveuo(noma19//'.REFA', 'E', jrefa)
-    zk24(jrefa-1+8)='DECT'
+    call jeveuo(noma19//'.REFA', 'E', vk24=refa)
+    refa(8)='DECT'
 !
     call uttcpu('CPU.MULFR8', 'FIN', ' ')
     call uttcpr('CPU.MULFR8', 6, temps)

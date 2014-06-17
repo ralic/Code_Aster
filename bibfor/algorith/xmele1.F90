@@ -71,16 +71,20 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
     integer :: ifm, niv
     integer :: ibid, iad, ispt, i, ima, ifis, izone
-    integer :: ifima, jcesd1, jcesl1, jcesv1, jxc
+    integer :: ifima, jcesd1, jcesl1
     integer :: ndim, nface, nfisc, nnint, npg, typint, nfisc2
-    integer :: nbma, nmaenr, jcesd2, jcesl2, jcesv2
+    integer :: nbma, nmaenr, jcesd2, jcesl2
     character(len=8) :: nomfis, nomgd, elc, nomfi2, licmp3(3)
-    integer :: jcesl, jcesv, jcesd, jmofis, ncmp, icmp
+    integer :: jcesl, jcesv, jcesd,  ncmp, icmp
     character(len=24) :: grp
     integer :: jgrp, iret, jnbsp, ifiss
     logical :: vall, isint
     character(len=19) :: chelsi, cmafis, faclon, chnbsp
     real(kind=8) :: valr
+    character(len=8), pointer :: fiss(:) => null()
+    character(len=8), pointer :: cesv1(:) => null()
+    integer, pointer :: cesv2(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
 !
     data licmp3    / 'X1', 'X2', 'X3'/
 !
@@ -104,17 +108,17 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- RECUPERATION DES INFOS SUR LE MAILLAGE ET LE MODELE
 !
-    call jeveuo(modele//'.FISS', 'L', jmofis)
+    call jeveuo(modele//'.FISS', 'L', vk8=fiss)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call dismoi('DIM_GEOM', modele, 'MODELE', repi=ndim)
-    call jeveuo(modele//'.XFEM_CONT', 'L', jxc)
+    call jeveuo(modele//'.XFEM_CONT', 'L', vi=xfem_cont)
 !
 ! --- ELEMENT DE REFERENCE ASSOCIE A UNE FACETTE DE CONTACT
 !
     if (ndim .eq. 3) then
         elc='TR3'
     else if (ndim.eq.2) then
-        if (zi(jxc) .le. 2) then
+        if (xfem_cont(1) .le. 2) then
             elc='SE2'
         else
             elc='SE3'
@@ -141,11 +145,11 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
     call celces(modele//'.TOPOFAC.LO', 'V', faclon)
     call jeveuo(faclon(1:19)//'.CESD', 'L', jcesd2)
     call jeveuo(faclon(1:19)//'.CESL', 'L', jcesl2)
-    call jeveuo(faclon(1:19)//'.CESV', 'L', jcesv2)
+    call jeveuo(faclon(1:19)//'.CESV', 'L', vi=cesv2)
     call celces(modele//'.XMAFIS', 'V', cmafis)
     call jeveuo(cmafis(1:19)//'.CESD', 'L', jcesd1)
     call jeveuo(cmafis(1:19)//'.CESL', 'L', jcesl1)
-    call jeveuo(cmafis(1:19)//'.CESV', 'L', jcesv1)
+    call jeveuo(cmafis(1:19)//'.CESV', 'L', vk8=cesv1)
     call wkvect(chnbsp, 'V V I', nbma, jnbsp)
 !
 ! --- TEST EXISTENCE DU CHAM_ELEM OU NON
@@ -161,7 +165,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- RECUPERATION NOMBRE DE POINTS DE GAUSS PAR FACETTE
 !
-            nomfis = zk8(jmofis-1 + ifiss)
+            nomfis = fiss(ifiss)
             izone = xxconi(defico,nomfis,'MAIT')
             typint = mminfi(defico,'INTEGRATION',izone )
             call xmelin(elc, typint, nnint)
@@ -190,7 +194,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                 do ifima = 1, nfisc
                     call cesexi('S', jcesd1, jcesl1, ima, 1,&
                                 ifima, 1, iad)
-                    nomfi2 = zk8(jcesv1-1+iad)
+                    nomfi2 = cesv1(iad)
 !
 ! --- S IL S AGIT DE LA FISSURE COURANTE
 ! --- ON RECUPERE LE NOMBRE DE FACETTES ET ON INCREMENTE
@@ -200,7 +204,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                         ASSERT(nface.eq.0)
                         call cesexi('S', jcesd2, jcesl2, ima, 1,&
                                     ifima, 2, iad)
-                        nface = zi(jcesv2-1+iad)
+                        nface = cesv2(iad)
                         ASSERT(nface.le.6)
                         zi(jnbsp-1+ima) = zi(jnbsp-1+ima)+nface*nnint
                     endif
@@ -234,7 +238,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- ACCES FISSURE COURANTE
 !
-        nomfis = zk8(jmofis-1 + ifis)
+        nomfis = fiss(ifis)
         grp = nomfis(1:8)//'.MAILFISS.CONT'
         call jeexin(grp, iret)
         if (iret .ne. 0) call jeveuo(grp, 'L', jgrp)
@@ -284,11 +288,11 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
                     do ifima = 1, nfisc
                         call cesexi('S', jcesd1, jcesl1, ima, 1,&
                                     ifima, 1, iad)
-                        nomfi2 = zk8(jcesv1-1+iad)
+                        nomfi2 = cesv1(iad)
                         if (nomfis .eq. nomfi2) then
                             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                                         ifima, 2, iad)
-                            nface = zi(jcesv2-1+iad)
+                            nface = cesv2(iad)
                             npg = nface*nnint
                         endif
                     end do

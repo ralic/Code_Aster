@@ -78,8 +78,8 @@ subroutine calich(chargz)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid,    ideeq
-    integer ::   idvale, iequa, ino, inocmp
+    integer :: i, ibid
+    integer ::    iequa, ino, inocmp
     integer :: iocc, iret, k, nb, nbcmp, nbec, nbnoeu
     integer :: nbterm, nequa, nliai, nucmp
     real(kind=8) :: beta, vale, zero
@@ -89,6 +89,8 @@ subroutine calich(chargz)
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
+    integer, pointer :: deeq(:) => null()
+    real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -203,17 +205,17 @@ subroutine calich(chargz)
 !
 ! ---   RECUPERATION DU .VALE DU CHAM_NO
 !       --------------------------------
-        call jeveuo(cham19//'.VALE', 'E', idvale)
+        call jeveuo(cham19//'.VALE', 'E', vr=vvale)
 !
 ! ---   RECUPERATION DU .DEEQ DU PROF_CHNO
 !       ----------------------------------
-        call jeveuo(prchno//'.DEEQ', 'L', ideeq)
+        call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
 !
 ! ---   DETERMINATION DU NOMBRE DE COMPOSANTES NON-NULLES DU CHAM_NO
 !       ------------------------------------------------------------
         k = 0
         do i = 1, nequa
-            if (zr(idvale+i-1) .ne. zero) then
+            if (vvale(i) .ne. zero) then
                 k = k + 1
             endif
         end do
@@ -254,11 +256,11 @@ subroutine calich(chargz)
 !
 ! ---     INO  : NUMERO DU NOEUD INO CORRESPONDANT AU DDL IEQUA
 !
-            ino = zi(ideeq+2* (iequa-1)+1-1)
+            ino = deeq(1+2* (iequa-1)+1-1)
 !
 ! ---     NUCMP  : NUMERO DE COMPOSANTE CORRESPONDANTE AU DDL IEQUA
 !
-            nucmp = zi(ideeq+2* (iequa-1)+2-1)
+            nucmp = deeq(1+2* (iequa-1)+2-1)
 !
 ! ---     ON NE PREND PAS EN COMPTE LES MULTIPLICATEURS DE LAGRANGE
 ! ---     (CAS OU NUCMP < 0)
@@ -269,7 +271,7 @@ subroutine calich(chargz)
 !
                 call jenuno(jexnum(noeuma, ino), nomnoe)
 !
-                vale = zr(idvale+iequa-1)
+                vale = vvale(iequa)
 !
                 if (vale .ne. zero) then
                     k = k + 1

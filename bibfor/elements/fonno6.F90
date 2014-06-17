@@ -72,7 +72,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !
 !       ----------------------------------------------------
 !
-    integer :: jmale, iamase, ityp, iatyma, jtano, jtane, jbasse
+    integer ::  iamase, ityp, iatyma, jtano,  jbasse
     integer :: i, j, iret, inp, compt, ino, ifl
     integer :: ilev, itano, itane
     integer :: nblev, nn
@@ -81,6 +81,8 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
     real(kind=8) :: p, prvd1, prvd2
     character(len=6) :: syme
     character(len=8) :: type
+    character(len=8), pointer :: mail(:) => null()
+    real(kind=8), pointer :: dtan_extremite(:) => null()
     parameter    (angmax=2.5d0)
 !
 !     -----------------------------------------------------------------
@@ -98,7 +100,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !
 !     DIRECTION TANGENTE AU POINT EXTREMITE
     call jeexin(resu//'.DTAN_EXTREMITE', itane)
-    if (itane .ne. 0) call jeveuo(resu//'.DTAN_EXTREMITE', 'L', jtane)
+    if (itane .ne. 0) call jeveuo(resu//'.DTAN_EXTREMITE', 'L', vr=dtan_extremite)
 !
     call jeexin(resu//'.LEVRESUP.MAIL', ilev)
 !
@@ -151,14 +153,14 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !       CAS OU LES LEVRES SONT DONNEES
         if (ilev .ne. 0) then
 !
-            call jeveuo(resu//'.LEVRESUP.MAIL', 'L', jmale)
+            call jeveuo(resu//'.LEVRESUP.MAIL', 'L', vk8=mail)
             call jelira(resu//'.LEVRESUP.MAIL', 'LONUTI', nblev)
 !
             call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 !
 !         BOUCLE SUR LES MAILLES DES LEVRES POUR TROUVER LE BON COTE
             do i = 1, nblev
-                call jenonu(jexnom(noma//'.NOMMAI', zk8(jmale-1 + i)), iret)
+                call jenonu(jexnom(noma//'.NOMMAI', mail(i)), iret)
                 call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', iamase)
                 ityp = iatyma-1+iret
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
@@ -303,12 +305,12 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !
 !     SI DTAN_EXTR EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
     if (itane .ne. 0 .and. iseg .eq. nseg) then
-        s = ddot(ndim,zr(jtane),1,vecdir,1)
+        s = ddot(ndim,dtan_extremite,1,vecdir,1)
         if (s .le. 0.d0) then
             call utmess('A', 'RUPTURE0_36', nr=3, valr=vecdir)
         endif
         do i = 1, ndim
-            vecdir(i) = zr(jtane-1+i)
+            vecdir(i) = dtan_extremite(i)
         end do
     endif
 !

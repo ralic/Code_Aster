@@ -59,7 +59,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 !
 !
     integer :: nbhist, iadtrc(2), long, jordr, nbordr(1), i, iret, vali(2), iad
-    integer :: ifm, jmate, ibid, num0, num1, num2, num3, iord, iainst, numphi
+    integer :: ifm,  ibid, num0, num1, num2, num3, iord, iainst, numphi
     real(kind=8) :: r8b, time(6), inst0, inst1, inst2, dt3
     real(kind=8) :: valr(2)
     integer :: valii
@@ -70,6 +70,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
     character(len=19) :: sdtemp, lchin(8), lchout(2)
     character(len=24) :: ch24, ligrmo, tempe, tempa, nomch, chtime, kordre
     character(len=24) :: chmate, tempi, chftrc
+    character(len=8), pointer :: vale(:) => null()
 !
     data timcmp/ 'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ',&
      &             'R       ', 'RHO     '/
@@ -89,7 +90,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 !
     ch24 = mate(1:8)//'.CHAMP_MAT'
     chmate = mate(1:8)//'.MATE_CODE'
-    call jeveuo(ch24(1:19)//'.VALE', 'E', jmate)
+    call jeveuo(ch24(1:19)//'.VALE', 'E', vk8=vale)
     call jelira(ch24(1:19)//'.VALE', 'LONMAX', long)
     call exlima(' ', 0, 'V', modele, ligrmo)
 !
@@ -99,7 +100,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
     iadtrc(2) = 0
 !
     do i = 1, long
-        mater = zk8(jmate+i-1)
+        mater = vale(i)
         if (mater .ne. '        ') then
             call rcadme(mater, 'META_ACIER', 'TRC', iadtrc, icodre,&
                         0)

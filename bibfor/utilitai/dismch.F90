@@ -50,7 +50,10 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ianomo, iatype, ier1, ier2, iphen, jafck
+    integer ::   ier1, ier2, iphen
+    character(len=8), pointer :: type(:) => null()
+    character(len=8), pointer :: nomo(:) => null()
+    character(len=8), pointer :: afck(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -69,12 +72,12 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
     endif
 !
     if (ier1 .gt. 0) then
-        call jeveuo(nomob//'.TYPE', 'L', iatype)
-        ktyp=zk8(iatype)
+        call jeveuo(nomob//'.TYPE', 'L', vk8=type)
+        ktyp=type(1)
     else if (ier2.gt.0) then
-        call jeveuo(nom19//'.AFCK', 'L', jafck)
-        ktyp=zk8(jafck)
-        modele=zk8(jafck-1+2)
+        call jeveuo(nom19//'.AFCK', 'L', vk8=afck)
+        ktyp=afck(1)
+        modele=afck(2)
     endif
 !
     if (ktyp(1:5) .eq. 'MECA_') then
@@ -104,8 +107,8 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
     endif
 !
     if ((suf(1:2).eq.'CH') .and. (ktyp(1:3).ne.'ME ')) then
-        call jeveuo(nomob//'.'//suf//'.MODEL.NOMO', 'L', ianomo)
-        modele = zk8(ianomo)
+        call jeveuo(nomob//'.'//suf//'.MODEL.NOMO', 'L', vk8=nomo)
+        modele = nomo(1)
     endif
 !
 !

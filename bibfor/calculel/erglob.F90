@@ -64,10 +64,11 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
 !
 !
 !
-    integer :: ibid, longt, long2, mode, j, iavale, icoef, nbgr, jceld, iacelk
+    integer :: ibid, longt, long2, mode, j, iavale, icoef, nbgr, jceld
     character(len=4) :: docu
     character(len=19) :: chele2, ligrel
     logical :: first
+    character(len=24), pointer :: celk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,8 +95,8 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
 !
 ! 1.3. ON RETROUVE LE NOM DU LIGREL
 !
-    call jeveuo(chele2//'.CELK', 'L', iacelk)
-    ligrel = zk24(iacelk-1+1)(1:19)
+    call jeveuo(chele2//'.CELK', 'L', vk24=celk)
+    ligrel = celk(1)(1:19)
     call jeveuo(chele2//'.CELD', 'L', jceld)
 !
 ! 1.4. ON VERIFIE LA LONGUEUR DES CHAMPS LOCAUX POUR L'OPTION

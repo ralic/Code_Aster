@@ -40,8 +40,9 @@ subroutine conlag(matasz, cond)
 !
 !
 !
-    integer :: jconl, neq, iret, jcol
+    integer ::  neq, iret, jcol
     character(len=19) :: matass
+    real(kind=8), pointer :: conl(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,9 +55,9 @@ subroutine conlag(matasz, cond)
     call jeexin(matass//'.CONL', iret)
     if (iret .ne. 0) then
         call dismoi('NB_EQUA', matass, 'MATR_ASSE', repi=neq)
-        call jeveuo(matass//'.CONL', 'L', jconl)
+        call jeveuo(matass//'.CONL', 'L', vr=conl)
         do jcol = 1, neq
-            cond = 1.d0/zr(jconl-1+jcol)
+            cond = 1.d0/conl(jcol)
             if (cond .ne. 1.d0) goto 999
         end do
     endif

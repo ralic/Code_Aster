@@ -33,9 +33,11 @@ subroutine tbexip(nomta, para, exist, typpar)
 ! OUT : TYPPAR : TYPE DU PARAMETRE (S'IL EXISTE) : I/R/C/K8/K16,...
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, jtbnp, jtblp, ipar
+    integer :: iret, nbpara,   ipar
     character(len=19) :: nomtab
     character(len=24) :: inpar, jnpar
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 ! DEB------------------------------------------------------------------
 !
     call jemarq()
@@ -52,20 +54,20 @@ subroutine tbexip(nomta, para, exist, typpar)
         call utmess('F', 'UTILITAI4_79', sk=nomtab)
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp )
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_80', sk=nomtab)
     endif
 !
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     do 10 ipar = 1, nbpara
-        jnpar = zk24(jtblp+4*(ipar-1))
+        jnpar = tblp(1+4*(ipar-1))
         if (inpar .eq. jnpar) then
             exist = .true.
-            typpar = zk24(jtblp-1+4*(ipar-1)+2)
+            typpar = tblp(4*(ipar-1)+2)
             goto 12
         endif
 10  end do

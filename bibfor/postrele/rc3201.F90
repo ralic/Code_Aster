@@ -76,8 +76,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbsigr, nbsig2, jnsg, is1, ioc1, is2, ioc2, inds, jcombi, jpresa
-    integer :: jpresb, jnbocc, ifm, niv, i1, i2, ndim,  nscy, ns, jmsn
+    integer :: nbsigr, nbsig2, jnsg, is1, ioc1, is2, ioc2, inds, jcombi
+    integer ::   ifm, niv, i1, i2, ndim,  nscy, ns, jmsn
     integer ::  nsitup, nsituq, indi,  i, icas, icss, nbsitu, i4
     integer :: jmfu,   nbthep, nbtheq
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij(2), salijs(2), ug, sn, sp(2), smm
@@ -100,14 +100,17 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     real(kind=8), pointer :: matrice_fu_b(:) => null()
     real(kind=8), pointer :: matrice_fu_s(:) => null()
     integer, pointer :: nb_occurr(:) => null()
+    real(kind=8), pointer :: situ_pres_a(:) => null()
+    integer, pointer :: situ_nb_occur(:) => null()
+    real(kind=8), pointer :: situ_pres_b(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
     call jeveuo('&&RC3200.SITU_NUMERO', 'L', vi=situ_numero)
     call jeveuo('&&RC3200.SITU_COMBINABLE', 'L', jcombi)
-    call jeveuo('&&RC3200.SITU_PRES_A', 'L', jpresa)
-    call jeveuo('&&RC3200.SITU_PRES_B', 'L', jpresb)
-    call jeveuo('&&RC3200.SITU_NB_OCCUR', 'L', jnbocc)
+    call jeveuo('&&RC3200.SITU_PRES_A', 'L', vr=situ_pres_a)
+    call jeveuo('&&RC3200.SITU_PRES_B', 'L', vr=situ_pres_b)
+    call jeveuo('&&RC3200.SITU_NB_OCCUR', 'L', vi=situ_nb_occur)
 !
     call jelira('&&RC3200.SITU_PRES_A', 'LONUTI', nbsitu)
     call jelira(jexnum('&&RC3200.LES_GROUPES', ig), 'LONUTI', nbsigr)
@@ -150,8 +153,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 16      continue
         call utmess('F', 'POSTRCCM_30')
 18      continue
-        ns = zi(jnbocc+2*(nbsitu+iocs)-2)
-        nscy = zi(jnbocc+2*(nbsitu+iocs)-1)
+        ns = situ_nb_occur(1+2*(nbsitu+iocs)-2)
+        nscy = situ_nb_occur(1+2*(nbsitu+iocs)-1)
         ppi = 0.d0
         nsitup = situ_numero(1+zi(jnsg+is1-1)-1)
         call rcmo02('S', nsitup, mse)
@@ -236,16 +239,16 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
         if (.not.zl(jcombi+ioc1-1)) goto 20
 !
         i1 = i1 + 1
-        nb_occurr(i1) = zi(jnbocc+2*ioc1-2)
+        nb_occurr(i1) = situ_nb_occur(1+2*ioc1-2)
         impr_situ(i1) = situ_numero(ioc1)
 !
         nsitup = situ_numero(ioc1)
         nsituq = 0
-        ppi = zr(jpresa+ioc1-1)
+        ppi = situ_pres_a(ioc1)
         call rcmo02('A', nsitup, mpi)
         call rcma02('A', ioc1, matpi)
         typeke = matpi(8)
-        ppj = zr(jpresb+ioc1-1)
+        ppj = situ_pres_b(ioc1)
         call rcmo02('B', nsitup, mpj)
         call rcma02('B', ioc1, matpj)
         pms = 0.d0
@@ -344,7 +347,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
         if ((lpmpb .or. lsn .or. lsnet) .and. .not.lfatig) goto 20
 !
-        nocc = zi(jnbocc+2*ioc1-2)
+        nocc = situ_nb_occur(1+2*ioc1-2)
         call rc32sp('SP_SITU', lieu, nsitup, ppi, mpi,&
                     nsituq, ppj, mpj, .false., mse,&
                     sp, typeke, spmeca, spthep)
@@ -423,12 +426,12 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
             nsituq = situ_numero(ioc2)
 !
-            pqi = zr(jpresa+ioc2-1)
+            pqi = situ_pres_a(ioc2)
             call rcmo02('A', nsituq, mqi)
             call rcma02('A', ioc2, matqi)
             typeke = matpi(8)
 !
-            pqj = zr(jpresb+ioc2-1)
+            pqj = situ_pres_b(ioc2)
             call rcmo02('B', nsituq, mqj)
             call rcma02('B', ioc2, matqj)
 !

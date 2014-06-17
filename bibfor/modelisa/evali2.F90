@@ -52,10 +52,10 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: icmpi, icmpj, ier, ifo, itblp, itbnp
-    integer :: ili, nbpara, ipara, nbl, ipg, jpg, nbpg, idpg, jma
-    integer :: modj, nbcmp, nbm, nbsp, nma, iphi, posma, ivfi, idfi, ilfi
-    integer :: ikfi, icfi, icmp, iret, ivpg, isphi, posmai, posmaj, ivsfi
+    integer :: icmpi, icmpj, ier, ifo
+    integer :: ili, nbpara, ipara, nbl, ipg, jpg, nbpg,  jma
+    integer :: modj, nbcmp, nbm, nbsp, nma, iphi, posma,  idfi, ilfi
+    integer :: ikfi,  icmp, iret, ivpg, isphi, posmai, posmaj
     integer :: jcmp
     real(kind=8) :: valpar(7), pdgj, pdgi, valphi, zerod
     real(kind=8) :: resur, resui
@@ -64,6 +64,12 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
     character(len=24) :: k24, cmpis, cmpjs, nofos
     character(len=8) :: nompar(7), fonc, cmpi, cmpj, nocmpi, nocmpj
     character(len=8) ::  isz
+    integer, pointer :: tbnp(:) => null()
+    integer, pointer :: vpg(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    real(kind=8), pointer :: vfi(:) => null()
+    complex(kind=8), pointer :: vsfi(:) => null()
 !-----------------------------------------------------------------------
 !                         _       _    _   _
 !   CALCUL DE LA MATRICE | SXX SXY |  | PHI |
@@ -106,24 +112,24 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 ! EXPLORATION DE LA TABLE INTER-SPECTRE CONTENANT LES FONCTIONS DE FORME
     is='                   '
     is(1:8)=isz
-    call jeveuo(is//'.TBNP', 'L', itbnp)
-    call jeveuo(is//'.TBLP', 'L', itblp)
-    nbpara=zi(itbnp)
-    nbl=zi(itbnp+1)
+    call jeveuo(is//'.TBNP', 'L', vi=tbnp)
+    call jeveuo(is//'.TBLP', 'L', vk24=tblp)
+    nbpara=tbnp(1)
+    nbl=tbnp(2)
     do 1 ipara = 1, nbpara
-        k24=zk24(itblp-4+ipara*4)
+        k24=tblp(1-4+ipara*4)
         if (k24(1:10) .eq. 'FONCTION_C') then
-            nofos=zk24(itblp-4+ipara*4+2)
+            nofos=tblp(1-4+ipara*4+2)
         else if (k24(1:12).eq.'NUME_ORDRE_I') then
-            cmpis=zk24(itblp-4+ipara*4+2)
+            cmpis=tblp(1-4+ipara*4+2)
         else if (k24(1:12).eq.'NUME_ORDRE_J') then
-            cmpjs=zk24(itblp-4+ipara*4+2)
+            cmpjs=tblp(1-4+ipara*4+2)
         endif
  1  end do
 !
 ! CHAMP CONTENANT LES COORDONNEES DES POINTS DE GAUSS DU MAILLAGE
     call jeveuo(pg//'.CESV', 'L', ivpg)
-    call jeveuo(pg//'.CESD', 'L', idpg)
+    call jeveuo(pg//'.CESD', 'L', vi=vpg)
 !
 ! RECUPERATION DES NOMS DES CHAMPS PHI ET SPHI
     call jeveuo(phi, 'L', iphi)
@@ -144,9 +150,9 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 ! DE L'IS CORRESPONDANT AUX COMP CMPI ET CMPJ
         do 4 jma = 1, nma
 !  NOMBRE DE PDG ET DE SOUS PDG DE LA MAILLE JMA
-            nbpg=zi(idpg-1+5+4*(jma-1)+1)
-            nbsp=zi(idpg-1+5+4*(jma-1)+2)
-            posma=zi(idpg-1+5+4*(jma-1)+4)
+            nbpg=vpg(5+4*(jma-1)+1)
+            nbsp=vpg(5+4*(jma-1)+2)
+            posma=vpg(5+4*(jma-1)+4)
             ASSERT(nbsp.eq.1)
             do 5 jpg = 1, nbpg
 !  COORDONNEES DU POINT DE GAUSS JPG X2,Y2,Z2
@@ -164,27 +170,27 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 ! POUR LA COMPOSANTE DONNEE
                     phii=zk24(iphi-1+modj)(1:19)
                     sphii=zk24(isphi-1+modj)(1:19)
-                    call jeveuo(phii//'.CESV', 'L', ivfi)
+                    call jeveuo(phii//'.CESV', 'L', vr=vfi)
                     call jeveuo(phii//'.CESD', 'L', idfi)
                     call jeveuo(phii//'.CESL', 'L', ilfi)
                     call jeveuo(phii//'.CESK', 'L', ikfi)
-                    call jeveuo(phii//'.CESC', 'L', icfi)
-                    call jeveuo(sphii//'.CESV', 'E', ivsfi)
+                    call jeveuo(phii//'.CESC', 'L', vk8=cesc)
+                    call jeveuo(sphii//'.CESV', 'E', vc=vsfi)
                     nbcmp=zi(idfi-1+5+4*(jma-1)+3)
                     posmaj=zi(idfi-1+5+4*(jma-1)+4)
                     do 7 jcmp = 1, nbcmp
-                        nocmpj=zk8(icfi-1+jcmp)
+                        nocmpj=cesc(jcmp)
                         if ((nocmpj.eq.cmpj) .and. (nocmpi.eq.cmpi)) then
                             call cesexi('S', idfi, ilfi, jma, jpg,&
                                         1, jcmp, iret)
                             if (iret .lt. 0) goto 8
-                            valphi=zr(ivfi+posmaj+nbcmp*(jpg-1)+jcmp-&
+                            valphi=vfi(1+posmaj+nbcmp*(jpg-1)+jcmp-&
                             1)
 ! CALCUL DE WI.WJ.SFF(XI,XJ,FREQ).PHI(XJ,MODJ)
-                            valsph = zc(ivsfi+posmai+nbcmp*(ipg-1)+ icmp-1)
+                            valsph = vsfi(1+posmai+nbcmp*(ipg-1)+ icmp-1)
                             valsph = valsph + dcmplx(valphi,zerod)* resu *dcmplx(pdgi,zerod)*dcmp&
                                      &lx(pdgj, zerod)
-                            zc(ivsfi+posmai+nbcmp*(ipg-1)+icmp-1) =&
+                            vsfi(1+posmai+nbcmp*(ipg-1)+icmp-1) =&
                             valsph
                         endif
  8                      continue

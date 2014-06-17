@@ -62,15 +62,18 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
     character(len=19) :: chamno, ch1s, ch2s
     character(len=24) :: vorien
 !
-    integer :: lord, lred, lori, lrange
+    integer ::  lred, lori, lrange
     integer :: imesu, ii, imode, iret
     integer :: iposd, icmp, ino
     integer :: lnoeud, nnoema, ncmpma
-    integer :: jcnsd, jcnsc, jcnsv, jcnsl, jcnsk
+    integer ::   jcnsv, jcnsl, jcnsk
     integer :: ibid, nbcmpi, nbcham, lch, ich, lcham
 !
     real(kind=8) :: vori(3)
     real(kind=8) :: val, vect(3)
+    integer, pointer :: ordr(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    integer, pointer :: cnsd(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -133,7 +136,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 ! MEMES VECTEURS DE BASE POUR LES DEFORMATIONS
         if (nomch(1:4) .eq. 'EPSI') nomch = 'EPSI_NOEU'
 !
-        call jeveuo(basemo//'           .ORDR', 'L', lord)
+        call jeveuo(basemo//'           .ORDR', 'L', vi=ordr)
 !
         ch1s='&&PJEFPR.CH1S'
         ch2s='&&PJEFPR.CH2S'
@@ -142,7 +145,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
         do 10 imode = 1, nbmtot
 !
-            call rsexch('F', basemo, nomch, zi(lord-1+imode), chamno,&
+            call rsexch('F', basemo, nomch, ordr(imode), chamno,&
                         iret)
 !
 !       2-1 : TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CH1S
@@ -157,12 +160,12 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
             endif
 !
             call jeveuo(ch2s//'.CNSK', 'L', jcnsk)
-            call jeveuo(ch2s//'.CNSD', 'L', jcnsd)
-            call jeveuo(ch2s//'.CNSC', 'L', jcnsc)
+            call jeveuo(ch2s//'.CNSD', 'L', vi=cnsd)
+            call jeveuo(ch2s//'.CNSC', 'L', vk8=cnsc)
             call jeveuo(ch2s//'.CNSV', 'L', jcnsv)
             call jeveuo(ch2s//'.CNSL', 'L', jcnsl)
 !
-            nbcmpi = zi(jcnsd-1 + 2)
+            nbcmpi = cnsd(2)
 !
 ! BOUCLE SUR LES POINTS DE MESURE
 !
@@ -202,11 +205,11 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 ! RECUPERATION DU CHAMP AU NOEUD (BASE)
 !
                     do 101 icmp = 1, nbcmpi
-                        if (zk8(jcnsc-1 +icmp) .eq. 'DX') vect(1) = zr(&
+                        if (cnsc(icmp) .eq. 'DX') vect(1) = zr(&
                                                                     jcnsv-1 +(ino-1)*nbcmpi+icmp)
-                        if (zk8(jcnsc-1 +icmp) .eq. 'DY') vect(2) = zr(&
+                        if (cnsc(icmp) .eq. 'DY') vect(2) = zr(&
                                                                     jcnsv-1 +(ino-1)*nbcmpi+icmp)
-                        if (zk8(jcnsc-1 +icmp) .eq. 'DZ') vect(3) = zr(&
+                        if (cnsc(icmp) .eq. 'DZ') vect(3) = zr(&
                                                                     jcnsv-1 +(ino-1)*nbcmpi+icmp)
 101                  continue
 !
@@ -224,7 +227,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
                     iposd = (imode-1)*nbmesu + imesu
                     do 401 icmp = 1, nbcmpi
-                        if (zk8(jcnsc-1 +icmp) .eq. zk8(lrange-1 + imesu)) zr(lred-1 +iposd) = &
+                        if (cnsc(icmp) .eq. zk8(lrange-1 + imesu)) zr(lred-1 +iposd) = &
                                                                            zr(&
                                                                            jcnsv-1 +(ino- 1&
                                                                            )*nbcmpi+icmp&
@@ -236,7 +239,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
                     iposd = (imode-1)*nbmesu + imesu
                     do 501 icmp = 1, nbcmpi
-                        if (zk8(jcnsc-1 +icmp) .eq. zk8(lrange-1 + imesu)) zr(lred-1 +iposd) = &
+                        if (cnsc(icmp) .eq. zk8(lrange-1 + imesu)) zr(lred-1 +iposd) = &
                                                                            zr(&
                                                                            jcnsv-1 +(ino- 1&
                                                                            )*nbcmpi+icmp&

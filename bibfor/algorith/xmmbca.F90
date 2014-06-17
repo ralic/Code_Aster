@@ -71,10 +71,10 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     character(len=19) :: ligrmo, cicoca, cindoo, cmemco, ltno
     character(len=19) :: pinter, ainter, cface, faclon, baseco, xcoheo
     character(len=19) :: fissno, heavno, heavfa
-    integer :: jxc
     logical :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     character(len=19) :: oldgeo, depmoi, depplu
+    integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -114,8 +114,8 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 !
 ! --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÉRIFICATION
 !
-    call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
-    lcontx = zi(jxc) .ge. 1
+    call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
+    lcontx = xfem_cont(1) .ge. 1
     if (.not.lcontx) then
         mmcvca = .true.
         goto 999

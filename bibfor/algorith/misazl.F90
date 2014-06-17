@@ -52,13 +52,15 @@ subroutine misazl(vecinc, defico)
     integer :: nnoco, ntnoe
     integer :: ino, nbno, nec, ncmpmx, numno(1)
     integer :: ino_ind(1)
-    integer :: jnocmp, jprno, jnueq, jvale, jdg
+    integer :: jnocmp, jprno,   jdg
     integer :: numlc, numlf1, numlf2
     integer :: poslc, poslf1, poslf2
     integer :: inueq, ivalc, ivalf1, ivalf2
     character(len=4) :: typno
     character(len=8) :: nomgd
     character(len=19) :: prno
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: nueq(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,7 +85,7 @@ subroutine misazl(vecinc, defico)
 !
     call dismoi('PROF_CHNO', vecinc, 'CHAM_NO', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
-    call jeveuo(prno//'.NUEQ', 'L', jnueq)
+    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
 !
 ! --- ACCES AU NOMBRE D'ENTIERS CODES POUR PARCOURIR LE .PRNO
 !
@@ -91,7 +93,7 @@ subroutine misazl(vecinc, defico)
 !
 ! --- ACCES AU .VALE DU CHAMP VECINC
 !
-    call jeveuo(vecinc//'.VALE', 'E', jvale)
+    call jeveuo(vecinc//'.VALE', 'E', vr=vale)
 !
 ! -- RECHERCHE DES NUMEROS DES COMPOSANTES DANS LA GRANDEUR
 !
@@ -119,16 +121,16 @@ subroutine misazl(vecinc, defico)
             inueq = zi(jprno - 1 + (numno(1)-1)*(2+nec) + 1)
             ASSERT(poslc.ne.0)
 !         ADRESSE DU DDL LAGS_C DANS LE .VALE
-            ivalc = zi(jnueq - 1 + inueq - 1 + poslc)
-            zr(jvale - 1 + ivalc) = 0.d0
+            ivalc = nueq(inueq - 1 + poslc)
+            vale(ivalc) = 0.d0
             if (poslf1 .ne. 0) then
 !           ADRESSE DU DDL LAGS_F1 DANS LE .VALE
-                ivalf1 = zi(jnueq - 1 + inueq - 1 + poslf1)
-                zr(jvale - 1 + ivalf1) = 0.d0
+                ivalf1 = nueq(inueq - 1 + poslf1)
+                vale(ivalf1) = 0.d0
                 if (poslf2 .ne. 0) then
 !              ADRESSE DU DDL LAGS_F2 DANS LE .VALE
-                    ivalf2 = zi(jnueq - 1 + inueq - 1 + poslf2)
-                    zr(jvale - 1 + ivalf2) = 0.d0
+                    ivalf2 = nueq(inueq - 1 + poslf2)
+                    vale(ivalf2) = 0.d0
                 endif
             endif
         endif

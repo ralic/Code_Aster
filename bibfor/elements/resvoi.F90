@@ -58,17 +58,19 @@ subroutine resvoi(moz, maz, chvoiz)
     integer :: ibidt(1), vali(2)
     integer :: nbno, nbma, nbs, nbf, tymvol
     integer :: ima, ino, ino1, ino2, ino3, ino4, kma, jma
-    integer :: iamav1, iamav2, iamav3, iamav4, iarepe, iavale
+    integer :: iamav1, iamav2, iamav3, iamav4,  iavale
     integer :: ifa, ima1, ima2, ima3, ima4
     integer :: igrel, iel, igrelv, ielv
     integer :: iaval1, iaval2, jad, iad, iadv
-    integer :: jceld, nbmav1, nbmav2, nbmav3, nbmav4
+    integer ::  nbmav1, nbmav2, nbmav3, nbmav4
     integer :: numav1, numav2, numav3, numav4, typ, som(4, 6, 4), iatyma
 !
 !
     logical :: troisd
 !
     integer :: debugr
+    integer, pointer :: repe(:) => null()
+    integer, pointer :: celd(:) => null()
 !
 !   INITIALISATION DES NUMEROS DE SOMMETS DES FACES D'ELEMENTS 3D
 !     SOM (IN,IFA,TYMVOL) : IN     : NUMERO DU SOMMET DANS LA FACE
@@ -132,13 +134,13 @@ subroutine resvoi(moz, maz, chvoiz)
 ! ----------- RECHERCHE DES ADRESSES DE STOCKAGE POUR CHVOIS -------
 !
     ligrmo = mo//'.MODELE'
-    call jeveuo(ligrmo//'.REPE', 'L', iarepe)
+    call jeveuo(ligrmo//'.REPE', 'L', vi=repe)
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celver(chvois, 'NBVARI_CST', 'STOP', ibid)
     call celver(chvois, 'NBSPT_1', 'STOP', ibid)
 !
-    call jeveuo(chvois//'.CELD', 'L', jceld)
+    call jeveuo(chvois//'.CELD', 'L', vi=celd)
     call jeveuo(chvois//'.CELV', 'E', iavale)
 !
 !   RECHERCHE DES VOISINS DE CHAQUE MAILLE
@@ -151,8 +153,8 @@ subroutine resvoi(moz, maz, chvoiz)
 !
         do 801 , ima = 1 , nbma
 !
-        igrel = zi(iarepe-1+2*(ima-1)+1)
-        iel = zi(iarepe-1+2*(ima-1)+2)
+        igrel = repe(2*(ima-1)+1)
+        iel = repe(2*(ima-1)+2)
         if ((igrel.eq.0) .and. (iel.eq.0)) goto 801
 !
         call jeveuo(jexnum(connex, ima), 'L', jad)
@@ -176,10 +178,10 @@ subroutine resvoi(moz, maz, chvoiz)
             goto 801
         endif
 !
-        igrel = zi(iarepe-1+2*(ima-1)+1)
-        iel = zi(iarepe-1+2*(ima-1)+2)
+        igrel = repe(2*(ima-1)+1)
+        iel = repe(2*(ima-1)+2)
         if (iel .eq. 0) goto 801
-        debugr=zi(jceld-1+zi(jceld-1+4+igrel)+8)
+        debugr=celd(celd(4+igrel)+8)
         iaval1 = iavale - 1 + debugr
         iaval2 = iaval1 + 14*(iel-1)
 !
@@ -266,8 +268,8 @@ subroutine resvoi(moz, maz, chvoiz)
 !- ------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
 !
 !                         SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
-                                igrelv = zi(iarepe-1+2*( numav1-1)+1)
-                                ielv = zi(iarepe-1+2*(numav1- 1)+2)
+                                igrelv = repe(2*( numav1-1)+1)
+                                ielv = repe(2*(numav1- 1)+2)
                                 if ((igrelv.eq.0) .and. ( ielv.eq.0)) goto 803
 !
                                 nbvois = nbvois + 1
@@ -288,8 +290,8 @@ subroutine resvoi(moz, maz, chvoiz)
 !
 !-------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
 !                       SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
-                        igrelv = zi(iarepe-1+2*( numav1-1)+1)
-                        ielv = zi(iarepe-1+2*(numav1- 1)+2)
+                        igrelv = repe(2*( numav1-1)+1)
+                        ielv = repe(2*(numav1- 1)+2)
                         if ((igrelv.eq.0) .and. ( ielv.eq.0)) goto 803
 !
                         nbvois = nbvois + 1
@@ -341,8 +343,8 @@ subroutine resvoi(moz, maz, chvoiz)
         do ima = 1, nbma
 !
 !       SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
-            igrel = zi(iarepe-1+2*(ima-1)+1)
-            iel = zi(iarepe-1+2*(ima-1)+2)
+            igrel = repe(2*(ima-1)+1)
+            iel = repe(2*(ima-1)+2)
             if ((igrel.eq.0) .and. (iel.eq.0)) goto 601
 !
             call jeveuo(jexnum(connex, ima), 'L', jad)
@@ -357,10 +359,10 @@ subroutine resvoi(moz, maz, chvoiz)
                 goto 601
             endif
 !
-            igrel = zi(iarepe-1+2*(ima-1)+1)
-            iel = zi(iarepe-1+2*(ima-1)+2)
+            igrel = repe(2*(ima-1)+1)
+            iel = repe(2*(ima-1)+2)
             if (iel .eq. 0) goto 601
-            debugr=zi(jceld-1+zi(jceld-1+4+igrel)+8)
+            debugr=celd(celd(4+igrel)+8)
             iaval1 = iavale - 1 + debugr
 !
 ! ---------- BOUCLE SUR LES SOMMETS DE LA MAILLE -------------------
@@ -390,8 +392,8 @@ subroutine resvoi(moz, maz, chvoiz)
 ! --------- STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
 !
 !                 SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
-                                igrelv = zi(iarepe-1+2*(numav1-1)+1)
-                                ielv = zi(iarepe-1+2*(numav1-1)+2)
+                                igrelv = repe(2*(numav1-1)+1)
+                                ielv = repe(2*(numav1-1)+2)
                                 if ((igrelv.eq.0) .and. (ielv.eq.0)) goto 603
 !
                                 nbvois = nbvois + 1

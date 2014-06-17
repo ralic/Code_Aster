@@ -52,10 +52,16 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
 ! ----------------------------------------------------------------------
     real(kind=8) :: jeu, alpha, coef
     integer :: iq2, itemp1, itemp2, itemp3, itemp4
-    integer :: iddl, i, nddl, iraid, inddl, ijmax
-    integer :: ijeu, icdl, iadim, itemp, k, ivec, nt, ih, puismax
-    integer :: ineqs, ityp, neqs, deb, hind, ddl, nddlx, nddly
+    integer :: iddl, i, nddl
+    integer ::  icdl, iadim, itemp, k, ivec, nt, ih, puismax
+    integer ::   neqs, deb, hind, ddl, nddlx, nddly
     logical :: stp
+    integer, pointer :: vneqs(:) => null()
+    real(kind=8), pointer :: jeumax(:) => null()
+    real(kind=8), pointer :: vjeu(:) => null()
+    character(len=8), pointer :: type(:) => null()
+    integer, pointer :: vnddl(:) => null()
+    real(kind=8), pointer :: raid(:) => null()
 !
     call jemarq()
 !
@@ -68,12 +74,12 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
     call wkvect('&&mnlqd2.temp4', 'V V R', 2*hf+1, itemp4)
     stp=.true.
 !
-    call jeveuo(parcho//'.RAID', 'L', iraid)
-    call jeveuo(parcho//'.NDDL', 'L', inddl)
-    call jeveuo(parcho//'.JEU', 'L', ijeu)
-    call jeveuo(parcho//'.JEUMAX', 'L', ijmax)
-    call jeveuo(parcho//'.NEQS', 'L', ineqs)
-    call jeveuo(parcho//'.TYPE', 'L', ityp)
+    call jeveuo(parcho//'.RAID', 'L', vr=raid)
+    call jeveuo(parcho//'.NDDL', 'L', vi=vnddl)
+    call jeveuo(parcho//'.JEU', 'L', vr=vjeu)
+    call jeveuo(parcho//'.JEUMAX', 'L', vr=jeumax)
+    call jeveuo(parcho//'.NEQS', 'L', vi=vneqs)
+    call jeveuo(parcho//'.TYPE', 'L', vk8=type)
     call jeveuo(xcdl, 'L', icdl)
     call jeveuo(adime, 'L', iadim)
     call jeveuo(xvect, 'L', ivec)
@@ -119,10 +125,10 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
     neqs=0
     deb=nd*(2*h+1)
     do 60 i = 1, nchoc
-        alpha=zr(iraid-1+i)/zr(iadim-1+1)
-        jeu=zr(ijeu-1+i)/zr(ijmax)
-        if (zk8(ityp-1+i)(1:7) .eq. 'BI_PLAN') then
-            nddl=zi(inddl-1+6*(i-1)+1)
+        alpha=raid(i)/zr(iadim-1+1)
+        jeu=vjeu(i)/jeumax(1)
+        if (type(i)(1:7) .eq. 'BI_PLAN') then
+            nddl=vnddl(6*(i-1)+1)
             if ((ind.le.nd*(2*h+1)) .or. ((ind.gt.deb).and.(ind.le.(deb+ (2*hf+1))))) then
 ! ---     (F/ALPHA-XG))
                 call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
@@ -166,9 +172,9 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
                 call dcopy(2*hf+1, zr(ivec-1+deb+1), 1, zr(itemp4), 1)
                 call mnlaft(zr(itemp4), zr(itemp3), hf, nt, zr(iq2-1+deb+1))
             endif
-        else if (zk8(ityp-1+i)(1:6).eq.'CERCLE') then
-            nddlx=zi(inddl-1+6*(i-1)+1)
-            nddly=zi(inddl-1+6*(i-1)+2)
+        else if (type(i)(1:6).eq.'CERCLE') then
+            nddlx=vnddl(6*(i-1)+1)
+            nddly=vnddl(6*(i-1)+2)
             if (ind .le. nd*(2*h+1)) then
                 hind=int((ind-1)/nd)
                 ddl=ind-nd*hind
@@ -222,8 +228,8 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
                 call daxpy(2*hf+1, 1.d0/alpha, zr(ivec+deb+3*(2*hf+1)), 1, zr(itemp3), 1)
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+3*(2*hf+1)+1))
             endif
-        else if (zk8(ityp-1+i)(1:4).eq.'PLAN') then
-            nddl=zi(inddl-1+6*(i-1)+1)
+        else if (type(i)(1:4).eq.'PLAN') then
+            nddl=vnddl(6*(i-1)+1)
             call dscal(2*hf+1, 0.d0, zr(itemp3), 1)
             call dscal(2*hf+1, 0.d0, zr(itemp4), 1)
             if (ind .gt. deb .and. ind .le. deb+(2*hf+1)) then
@@ -236,8 +242,8 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd,&
                 call mnlaft(zr(itemp3), zr(itemp4), hf, nt, zr(iq2-1+deb+1))
             endif
         endif
-        neqs=neqs+zi(ineqs-1+i)
-        deb=deb+zi(ineqs-1+i)*(2*hf+1)
+        neqs=neqs+vneqs(i)
+        deb=deb+vneqs(i)*(2*hf+1)
 60  continue
 !
 ! ----------------------------------------------------------------------

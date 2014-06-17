@@ -63,8 +63,17 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect,&
 ! ----------------------------------------------------------------------
     real(kind=8) :: alpha, eta, jeu
     integer :: neq, ivect, icdl, iline, ivect1, ivect2, j, i, k
-    integer :: ireg, inddl, ijeu, ijmax, nddl, iadim, incmp, ineqs
-    integer :: ityp, neqs, ncmp, iraid, iorig, nddlx, nddly
+    integer ::     nddl, iadim
+    integer ::  neqs, ncmp,   nddlx, nddly
+    real(kind=8), pointer :: orig(:) => null()
+    real(kind=8), pointer :: reg(:) => null()
+    real(kind=8), pointer :: raid(:) => null()
+    real(kind=8), pointer :: vjeu(:) => null()
+    real(kind=8), pointer :: jeumax(:) => null()
+    integer, pointer :: vnddl(:) => null()
+    character(len=8), pointer :: type(:) => null()
+    integer, pointer :: vneqs(:) => null()
+    integer, pointer :: vncmp(:) => null()
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -78,15 +87,15 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect,&
     call jeveuo(xcdl, 'L', icdl)
     call jeveuo(adime, 'L', iadim)
     call jeveuo(xline, 'E', iline)
-    call jeveuo(parcho//'.RAID', 'L', iraid)
-    call jeveuo(parcho//'.REG', 'L', ireg)
-    call jeveuo(parcho//'.NDDL', 'L', inddl)
-    call jeveuo(parcho//'.JEU', 'L', ijeu)
-    call jeveuo(parcho//'.JEUMAX', 'L', ijmax)
-    call jeveuo(parcho//'.NCMP', 'L', incmp)
-    call jeveuo(parcho//'.NEQS', 'L', ineqs)
-    call jeveuo(parcho//'.TYPE', 'L', ityp)
-    call jeveuo(parcho//'.ORIG', 'L', iorig)
+    call jeveuo(parcho//'.RAID', 'L', vr=raid)
+    call jeveuo(parcho//'.REG', 'L', vr=reg)
+    call jeveuo(parcho//'.NDDL', 'L', vi=vnddl)
+    call jeveuo(parcho//'.JEU', 'L', vr=vjeu)
+    call jeveuo(parcho//'.JEUMAX', 'L', vr=jeumax)
+    call jeveuo(parcho//'.NCMP', 'L', vi=vncmp)
+    call jeveuo(parcho//'.NEQS', 'L', vi=vneqs)
+    call jeveuo(parcho//'.TYPE', 'L', vk8=type)
+    call jeveuo(parcho//'.ORIG', 'L', vr=orig)
     call dscal(ninc-1, 0.d0, zr(iline), 1)
 ! ----------------------------------------------------------------------
 ! --- CREATION D'UN VECTEUR TEMPORAIRE
@@ -128,11 +137,11 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect,&
 ! ----------------------------------------------------------------------
     neqs=0
     do 100 i = 1, nchoc
-        eta=zr(ireg-1+i)
-        jeu=zr(ijeu-1+i)/zr(ijmax)
-        ncmp=zi(incmp-1+i)
+        eta=reg(i)
+        jeu=vjeu(i)/jeumax(1)
+        ncmp=vncmp(i)
         do 101 j = 1, ncmp
-            nddl=zi(inddl-1+6*(i-1)+j)
+            nddl=vnddl(6*(i-1)+j)
 ! ---       CSTE & COS
             call daxpy(h+1, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2* hf+1)), 1,&
                            zr(iline-1+nddl), nd)
@@ -140,7 +149,7 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect,&
             call daxpy(h, jeu, zr(ivect+nd*(2*h+1)+(neqs+j-1)*(2* hf+1)+hf+1), 1,&
                            zr(iline-1+nd*(h+1)+nddl), nd)
 101      continue
-        neqs=neqs+zi(ineqs-1+i)
+        neqs=neqs+vneqs(i)
 100  continue
 ! ----------------------------------------------------------------------
 ! --- EQUATION SUPPLEMENTAIRE POUR DEFINIR LA FORCE NON-LINEAIRE
@@ -148,11 +157,11 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect,&
 ! ----------------------------------------------------------------------
     neqs=0
     do 110 i = 1, nchoc
-        alpha=zr(iraid-1+i)/zr(iadim-1+1)
-        eta=zr(ireg-1+i)
-        jeu=zr(ijeu-1+i)/zr(ijmax)
-        if (zk8(ityp-1+i)(1:7) .eq. 'BI_PLAN') then
-            nddl=zi(inddl-1+6*(i-1)+1)
+        alpha=raid(i)/zr(iadim-1+1)
+        eta=reg(i)
+        jeu=vjeu(i)/jeumax(1)
+        if (type(i)(1:7) .eq. 'BI_PLAN') then
+            nddl=vnddl(6*(i-1)+1)
 ! ---     F -ETA*XG
 ! ---       -ETA*XG (CSTE & COS)
             call daxpy(h+1, -eta/jeu, zr(ivect-1+nddl), nd,&
@@ -166,34 +175,34 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect,&
 ! ---     Z
             call daxpy(2*hf+1, 1.d0, zr(ivect-1+nd*(2*h+1)+(neqs+1)*(2* hf+1)+1), 1,&
                        zr(iline-1+nd*(2*h+1)+(neqs+1)*(2*hf+1)+1), 1)
-        else if (zk8(ityp-1+i)(1:6).eq.'CERCLE') then
-            nddlx=zi(inddl-1+6*(i-1)+1)
-            nddly=zi(inddl-1+6*(i-1)+2)
+        else if (type(i)(1:6).eq.'CERCLE') then
+            nddlx=vnddl(6*(i-1)+1)
+            nddly=vnddl(6*(i-1)+2)
 ! ---     + ORIG1*[FN]
-            call daxpy(2*hf+1, zr(iorig+3*(i-1))/jeu, zr(ivect+nd*(2*h+ 1)+(neqs+3)*(2*hf+1)), 1,&
+            call daxpy(2*hf+1, orig(1+3*(i-1))/jeu, zr(ivect+nd*(2*h+ 1)+(neqs+3)*(2*hf+1)), 1,&
                        zr(iline-1+nd*(2*h+1)+neqs*(2*hf+ 1)+1), 1)
 ! ---     + ORIG2*[FN]
-            call daxpy(2*hf+1, zr(iorig+3*(i-1)+1)/jeu, zr(ivect+nd*(2* h+1)+(neqs+3)*(2*hf+1)),&
+            call daxpy(2*hf+1, orig(1+3*(i-1)+1)/jeu, zr(ivect+nd*(2* h+1)+(neqs+3)*(2*hf+1)),&
                        1, zr(iline-1+nd*(2*h+1)+(neqs+1)* (2*hf+1)+1), 1)
 ! ---     + 2*ORIG1*UX + 2*ORIG2*UY (CSTE & COS)
-            call daxpy(h+1, 2*zr(iorig+3*(i-1))/jeu**2, zr(ivect-1+ nddlx), nd,&
+            call daxpy(h+1, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+ nddlx), nd,&
                        zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+1), 1)
-            call daxpy(h+1, 2*zr(iorig+3*(i-1)+1)/jeu**2, zr(ivect-1+ nddly), nd,&
+            call daxpy(h+1, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+ nddly), nd,&
                        zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+1), 1)
 ! ---     + 2*ORIG1*UX + 2*ORIG2*UY (SIN)
-            call daxpy(h, 2*zr(iorig+3*(i-1))/jeu**2, zr(ivect-1+nd*(h+ 1)+nddlx), nd,&
+            call daxpy(h, 2*orig(1+3*(i-1))/jeu**2, zr(ivect-1+nd*(h+ 1)+nddlx), nd,&
                        zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+hf+ 2), 1)
-            call daxpy(h, 2*zr(iorig+3*(i-1)+1)/jeu**2, zr(ivect-1+nd*( h+1)+nddly), nd,&
+            call daxpy(h, 2*orig(1+3*(i-1)+1)/jeu**2, zr(ivect-1+nd*( h+1)+nddly), nd,&
                        zr(iline-1+nd*(2*h+1)+(neqs+2)*(2*hf+1)+ hf+2), 1)
 ! ---     FN
             call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1,&
                        zr(iline+nd*(2*h+1)+(neqs+3)*(2*hf+1)), 1)
-        else if (zk8(ityp-1+i)(1:4).eq.'PLAN') then
+        else if (type(i)(1:4).eq.'PLAN') then
 ! ---     F
             call dcopy(2*hf+1, zr(ivect+nd*(2*h+1)+neqs*(2*hf+1)), 1,&
                        zr(iline+nd*(2*h+1)+neqs*(2*hf+1)), 1)
         endif
-        neqs=neqs+zi(ineqs-1+i)
+        neqs=neqs+vneqs(i)
 110  continue
 ! ----------------------------------------------------------------------
 ! --- AUTRES EQUATIONS

@@ -55,11 +55,13 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
     integer :: nb_elem_affe, nocc, nt
     character(len=24) :: list_elem_affe
     integer :: j_elem_affe
-    integer :: j_lvali, j_lvalk, jvalv
     character(len=16) :: rela_comp
     integer :: nb_vari
     character(len=16) :: keywordfact
     logical :: l_affe_all
+    integer, pointer :: vali(:) => null()
+    character(len=16), pointer :: valv(:) => null()
+    character(len=24), pointer :: valk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,12 +76,12 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
 !
 ! - Access to COMPOR <CARTE>
 !
-    call jeveuo(compor//'.VALV', 'E', jvalv)
+    call jeveuo(compor//'.VALV', 'E', vk16=valv)
 !
 ! - Access to list
 !
-    call jeveuo(list_vale(1:19)//'.VALI', 'L', j_lvali)
-    call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
+    call jeveuo(list_vale(1:19)//'.VALI', 'L', vi=vali)
+    call jeveuo(list_vale(1:19)//'.VALK', 'L', vk24=valk)
 !
 ! - Read list
 !
@@ -87,13 +89,13 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
 !
 ! ----- Get options
 !
-        nb_vari   = zi(j_lvali-1 + 1)
-        rela_comp = zk24(j_lvalk-1 + 1)(1:16)
+        nb_vari   = vali(1)
+        rela_comp = valk(1)(1:16)
 !
 ! ----- Set options in COMPOR <CARTE>
 !
-        zk16(jvalv-1+1)  = rela_comp
-        write (zk16(jvalv-1+2),'(I16)') nb_vari
+        valv(1)  = rela_comp
+        write (valv(2),'(I16)') nb_vari
 !
 ! ----- Get mesh
 !

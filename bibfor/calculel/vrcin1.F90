@@ -88,9 +88,9 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !
     real(kind=8) :: instev
 !
-    integer :: n1, ibid, nbma, jcesd1, jcesl1, jcesv1, iad, lonk80
+    integer :: n1, ibid, nbma, jcesd1, jcesl1,  iad, lonk80
     integer :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
-    integer :: nbcvrc, jcvgd, jlisch, nval1
+    integer :: nbcvrc,  jlisch, nval1
     character(len=8) :: varc, mailla, tysd, proldr, prolga, nomevo, finst
     character(len=8) :: ma2
     character(len=8) :: nomgd, nomgd2, tych, nomsd
@@ -100,6 +100,8 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     character(len=24) :: valk(3)
     character(len=80) :: k80, k80pre
     character(len=8), pointer :: cvrcvarc(:) => null()
+    character(len=16), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cvrcgd(:) => null()
     save nval1
 ! ----------------------------------------------------------------------
 !
@@ -111,7 +113,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     ligrmo=modele//'.MODELE'
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
-    call jeveuo(chmat//'.CVRCGD', 'L', jcvgd)
+    call jeveuo(chmat//'.CVRCGD', 'L', vk8=cvrcgd)
 !
 !     INITIALISATION
 !
@@ -137,18 +139,18 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             ASSERT(iret.eq.0)
             call jeveuo(ces1//'.CESD', 'L', jcesd1)
             call jeveuo(ces1//'.CESL', 'L', jcesl1)
-            call jeveuo(ces1//'.CESV', 'L', jcesv1)
+            call jeveuo(ces1//'.CESV', 'L', vk16=cesv)
             do ima = 1, nbma
                 call cesexi('C', jcesd1, jcesl1, ima, 1,&
                             1, 1, iad)
                 if (iad .le. 0) goto 2
                 iad=iad-1
-                tysd=zk16(jcesv1-1+iad+2)(1:8)
-                nomsd =zk16(jcesv1-1+iad+3)(1:8)
-                nomsym=zk16(jcesv1-1+iad+4)
-                prolga=zk16(jcesv1-1+iad+5)(1:8)
-                proldr=zk16(jcesv1-1+iad+6)(1:8)
-                finst =zk16(jcesv1-1+iad+7)(1:8)
+                tysd=cesv(iad+2)(1:8)
+                nomsd =cesv(iad+3)(1:8)
+                nomsym=cesv(iad+4)
+                prolga=cesv(iad+5)(1:8)
+                proldr=cesv(iad+6)(1:8)
+                finst =cesv(iad+7)(1:8)
                 ASSERT((tysd.eq.'EVOL') .or. (tysd.eq.'CHAMP') .or. (tysd.eq.'VIDE'))
                 if (tysd .eq. 'VIDE') goto 2
 !
@@ -282,7 +284,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !         -- VERIFICATION DE NOMCH :
         itrou=indik8(cvrcvarc,varc,1,nbcvrc)
         ASSERT(itrou.gt.0)
-        nomgd=zk8(jcvgd-1+itrou)
+        nomgd=cvrcgd(itrou)
         call dismoi('NOM_GD', nomch, 'CHAMP', repk=nomgd2)
         if (nomgd .ne. nomgd2) then
             valk(1) = varc

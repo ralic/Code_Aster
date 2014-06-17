@@ -36,11 +36,15 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
 !
     integer :: nbpt, nbpt2, nbsp, nbsp2, ncmp1, ncmp2, ipt, isp, iad1
-    integer :: iad2, jce1k, jce1d, jce1c, jce1v, jce1l, icmp1, jce2k, jce2d
-    integer :: jce2c, jce2v, jce2l, icmp2, ima, ima1, ima2
+    integer :: iad2,  jce1d,  jce1v, jce1l, icmp1,  jce2d
+    integer ::  jce2v, jce2l, icmp2, ima, ima1, ima2
     character(len=3) :: tsca
     character(len=8) :: nomgd, nomgd2, nocmp
     character(len=19) :: ces1, ces2
+    character(len=8), pointer :: ce1k(:) => null()
+    character(len=8), pointer :: ce2k(:) => null()
+    character(len=8), pointer :: ce1c(:) => null()
+    character(len=8), pointer :: ce2c(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -48,22 +52,22 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
     ces1 = chs1
     ces2 = chs2
 !
-    call jeveuo(ces1//'.CESK', 'L', jce1k)
+    call jeveuo(ces1//'.CESK', 'L', vk8=ce1k)
     call jeveuo(ces1//'.CESD', 'L', jce1d)
-    call jeveuo(ces1//'.CESC', 'L', jce1c)
+    call jeveuo(ces1//'.CESC', 'L', vk8=ce1c)
     call jeveuo(ces1//'.CESV', 'L', jce1v)
     call jeveuo(ces1//'.CESL', 'L', jce1l)
 !
-    call jeveuo(ces2//'.CESK', 'L', jce2k)
+    call jeveuo(ces2//'.CESK', 'L', vk8=ce2k)
     call jeveuo(ces2//'.CESD', 'L', jce2d)
-    call jeveuo(ces2//'.CESC', 'L', jce2c)
+    call jeveuo(ces2//'.CESC', 'L', vk8=ce2c)
     call jeveuo(ces2//'.CESV', 'E', jce2v)
     call jeveuo(ces2//'.CESL', 'E', jce2l)
 !
-    nomgd = zk8(jce1k-1+2)
+    nomgd = ce1k(2)
     ncmp1 = zi(jce1d-1+2)
 !
-    nomgd2 = zk8(jce2k-1+2)
+    nomgd2 = ce2k(2)
     ncmp2 = zi(jce2d-1+2)
 !
     ASSERT(nomgd2.eq.nomgd)
@@ -85,9 +89,9 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
         do icmp2 = 1, ncmp2
 !
-            nocmp = zk8(jce2c-1+icmp2)
+            nocmp = ce2c(icmp2)
 !
-            icmp1 = indik8( zk8(jce1c), nocmp, 1, ncmp1 )
+            icmp1 = indik8( ce1c, nocmp, 1, ncmp1 )
             if (icmp1 .eq. 0) goto 20
 !
             do ipt = 1, nbpt

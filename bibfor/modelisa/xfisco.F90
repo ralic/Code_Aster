@@ -38,18 +38,23 @@ subroutine xfisco(noma, modelx)
 !
 !
 !
-    integer :: jnbsp, jcesd, jcesv, jcesl, ibid, iret, nncp
-    integer :: jcesd2, jcesv2, jcesl2, jjonf, jjonc, iad, iad3
+    integer ::  jcesd,  jcesl, ibid, iret, nncp
+    integer :: jcesd2,  jcesl2,   iad, iad3
     integer :: ima, nbma, ifiss, ifis2, ifis3, nfiss, nfis2
     character(len=19) :: ces, ces2, ligrel, chglo
     character(len=8) :: nomfis, nomfi3, licmp(2), valk(3)
+    character(len=8), pointer :: jonfiss(:) => null()
+    integer, pointer :: joncoef(:) => null()
+    integer, pointer :: nbsp(:) => null()
+    character(len=8), pointer :: cesv2(:) => null()
+    integer, pointer :: cesv(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
 ! --- RECUPERATION DU NOMBRE DE SOUS POINT (NBRE DE FISSURES VUES)
 !
-    call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
+    call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
 !
 ! --- CONSTRUCTION DU CHAMP SIMPLE TEMPORAIRE
 !
@@ -58,16 +63,16 @@ subroutine xfisco(noma, modelx)
     licmp(2) = 'X2'
 !
     call cescre('V', ces, 'ELEM', noma, 'NEUT_I',&
-                2, licmp, [ibid], zi(jnbsp), [-2])
+                2, licmp, [ibid], nbsp, [-2])
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESV', 'E', jcesv)
+    call jeveuo(ces//'.CESV', 'E', vi=cesv)
     call jeveuo(ces//'.CESL', 'E', jcesl)
 !
 ! --- RECUPERATION DU CHAMP ELEM S CONTENANT LE NOM DES FISSURES VUES
 !
     ces2 = '&&XCONNO.CES2'
     call jeveuo(ces2//'.CESD', 'L', jcesd2)
-    call jeveuo(ces2//'.CESV', 'E', jcesv2)
+    call jeveuo(ces2//'.CESV', 'E', vk8=cesv2)
     call jeveuo(ces2//'.CESL', 'E', jcesl2)
 !
 ! --- RECUPERATION NOMBRE DE MAILLES
@@ -77,7 +82,7 @@ subroutine xfisco(noma, modelx)
 ! --- BOUCLE SUR LES MAILLES
 !
     do ima = 1, nbma
-        nfiss = zi(jnbsp-1+ima)
+        nfiss = nbsp(ima)
 !
 ! --- BOUCLE SUR LES FISSURE DE LA MAILLE
 !
@@ -85,11 +90,11 @@ subroutine xfisco(noma, modelx)
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         ifiss, 1, iad)
             ASSERT(iad.gt.0)
-            nomfis = zk8(jcesv2-1+iad)
+            nomfis = cesv2(iad)
             call jeexin(nomfis//'.JONFISS', iret)
             if (iret .ne. 0) then
-                call jeveuo(nomfis//'.JONFISS', 'L', jjonf)
-                call jeveuo(nomfis//'.JONCOEF', 'L', jjonc)
+                call jeveuo(nomfis//'.JONFISS', 'L', vk8=jonfiss)
+                call jeveuo(nomfis//'.JONCOEF', 'L', vi=joncoef)
                 call jelira(nomfis//'.JONFISS', 'LONMAX', nfis2)
 !
 ! --- BOUCLE SUR LES FISSURES DE LA MAILLE IFIS3, AUTRE QUE IFISS
@@ -101,12 +106,12 @@ subroutine xfisco(noma, modelx)
 !
                     call cesexi('S', jcesd2, jcesl2, ima, 1,&
                                 ifis3, 1, iad)
-                    nomfi3 = zk8(jcesv2-1+iad)
+                    nomfi3 = cesv2(iad)
 !
 ! --- ON REGARDE SI LA FISSURE NOMFI3 EST CONNECTÉ À NOMFIS
 !
                     do ifis2 = 1, nfis2
-                        if (zk8(jjonf-1+ifis2) .eq. nomfi3) then
+                        if (jonfiss(ifis2) .eq. nomfi3) then
                             if (ifis3 .gt. ifiss) then
                                 valk(1) = nomfis
                                 valk(2) = nomfi3
@@ -117,7 +122,7 @@ subroutine xfisco(noma, modelx)
                             if (iad .gt. 0) then
                                 call cesexi('S', jcesd, jcesl, ima, 1,&
                                             ifis3, 1, iad3)
-                                if (zi(jcesv-1+iad) .eq. zi(jcesv-1+ iad3)) then
+                                if (cesv(iad) .eq. cesv(iad3)) then
                                     iad = -iad
                                 else
                                     valk(1) = nomfis
@@ -127,12 +132,12 @@ subroutine xfisco(noma, modelx)
                             endif
                             valk(2) = nomfi3
                             zl(jcesl-1-iad) = .true.
-                            zi(jcesv-1-iad) = ifis3
+                            cesv(1-1-iad) = ifis3
                             call cesexi('S', jcesd, jcesl, ima, 1,&
                                         ifiss, 2, iad)
                             if (iad .gt. 0) iad = -iad
                             zl(jcesl-1-iad) = .true.
-                            zi(jcesv-1-iad) = zi(jjonc-1+ifis2)
+                            cesv(1-1-iad) = joncoef(ifis2)
                         endif
                     end do
 130                 continue
@@ -145,12 +150,12 @@ subroutine xfisco(noma, modelx)
                         ifiss, 1, iad)
             if (iad .lt. 0) then
                 zl(jcesl-1-iad) = .true.
-                zi(jcesv-1-iad) = 0
+                cesv(1-1-iad) = 0
                 call cesexi('S', jcesd, jcesl, ima, 1,&
                             ifiss, 2, iad)
                 ASSERT(iad.lt.0)
                 zl(jcesl-1-iad) = .true.
-                zi(jcesv-1-iad) = 0
+                cesv(1-1-iad) = 0
             endif
         end do
 !

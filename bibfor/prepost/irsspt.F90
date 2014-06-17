@@ -57,7 +57,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 ! LMIN   IN       L   : =.TRUE.  INDIQUE IMPRESSION VALEUR MINIMALE
 ! ---------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: jcesk, jcesd, jcesc, jcesv, jcesl, ncmpc, icmp, i
+    integer ::  jcesd,   jcesl, ncmpc, icmp, i
     integer :: ncmp,  nbmac, nbma, nbpt, nbsp, j, ipt, isp, iad
     integer :: ispmin, ispmax, ispmi2, ispma2, ispmi3, ispma3
     integer :: iptmin, iptmax, iptmi2, iptma2
@@ -69,6 +69,9 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     logical :: lmamin, lmamax, lptmin, lptmax, lspmin, lspmax
     integer, pointer :: num_cmp_cham(:) => null()
     integer, pointer :: num_mail_cham(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -77,13 +80,13 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
 !     ---------------
     ces = cesz
 !
-    call jeveuo(ces//'.CESK', 'L', jcesk)
+    call jeveuo(ces//'.CESK', 'L', vk8=cesk)
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESC', 'L', jcesc)
-    call jeveuo(ces//'.CESV', 'L', jcesv)
+    call jeveuo(ces//'.CESC', 'L', vk8=cesc)
+    call jeveuo(ces//'.CESV', 'L', vr=cesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
     call jelira(ces//'.CESC', 'LONMAX', ncmpc)
-    ma = zk8(jcesk-1+1)
+    ma = cesk(1)
     nbmac = zi(jcesd-1+1)
 !
     AS_ALLOCATE(vi=num_cmp_cham, size=ncmpc)
@@ -96,7 +99,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     if (nbcmp .ne. 0) then
         ncmp=0
         do 10 i = 1, nbcmp
-            icmp=indik8(zk8(jcesc),nomcmp(i),1,ncmpc)
+            icmp=indik8(cesc,nomcmp(i),1,ncmpc)
             if (icmp .ne. 0) then
                 num_cmp_cham(ncmp+1)=icmp
                 ncmp=ncmp+1
@@ -169,7 +172,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
 !
-                        valr=zr(jcesv+iad-1)
+                        valr=cesv(iad)
 !
 !                SI VALE_MAX
                         if (lmax) then
@@ -327,7 +330,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
         if (lmax .and. .not.lmamax) then
             call jenuno(jexnum(ma//'.NOMMAI', imamax), noma)
             write(unite,*)' '
-            write(unite,2000)'LA VALEUR MAXIMALE DE ',zk8(jcesc+icmp-&
+            write(unite,2000)'LA VALEUR MAXIMALE DE ',cesc(1+icmp-&
             1), 'EST: ',vmamax
             write(unite,2001)'OBTENUE DANS LA MAILLE ',noma,&
      &    'AU SOUS_POINT ',ispmax,' DU POINT ',iptmax
@@ -336,7 +339,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
         if (lmin .and. .not.lmamin) then
             call jenuno(jexnum(ma//'.NOMMAI', imamin), noma)
             write(unite,*)' '
-            write(unite,2000)'LA VALEUR MINIMALE DE ',zk8(jcesc+icmp-&
+            write(unite,2000)'LA VALEUR MINIMALE DE ',cesc(1+icmp-&
             1), 'EST: ',vmamin
             write(unite,2001)'OBTENUE DANS LA MAILLE ',noma,&
      &    'AU SOUS_POINT ',ispmin,' DU POINT ',iptmin

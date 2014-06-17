@@ -67,7 +67,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     parameter   (nbpabm=10)
     integer :: ldpar(nbpabm), ldpa2(nbpabm)
     integer :: nbcham, nbold(1), nbtrou, vali
-    integer :: i, ii, jtyp, ier, iorol, ire, ibid, jordr
+    integer :: i, ii, jtyp, ier, iorol, ire, ibid
     integer :: llkge, llmge, llncp, llom2, lltmo, llval2, llvalo
 !
     real(kind=8) :: genek, genem, omeg2, rbid, epsi
@@ -78,6 +78,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     character(len=24) :: type, typeba
 !
     complex(kind=8) :: cbid
+    integer, pointer :: ordr(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -132,11 +133,11 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 ! ----- RECUPERATION DU NOMBRE DE CHAMP POSSIBLE DE LA SD
     call jelira(resul//'           .DESC', 'NOMMAX', nbcham)
 !
-    call jeveuo(resul//'           .ORDR', 'L', jordr)
+    call jeveuo(resul//'           .ORDR', 'L', vi=ordr)
     do i = 1, nbmod
 !       LRANG : CONTIENT DES NUMEROS DE RANGEMENT : 1,2, ..., NBMOD
         ASSERT(lrang(i).eq.i)
-        iorol=zi(jordr-1+lrang(i))
+        iorol=ordr(lrang(i))
 !
 ! ------BOUCLE SUR LA LISTE DE CHAMPS AFIN D'IDENTIFIER CEUX QUI
 !       SONT PRESENTES DANS L'ANCIEN RESULT

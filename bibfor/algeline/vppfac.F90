@@ -48,7 +48,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, jref, iadpar(1), l1, ibid
+    integer :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl,  iadpar(1), l1, ibid
     parameter     ( mxddl=6 )
     character(len=8) :: nomddl(mxddl),basemo,k8b
     character(len=14) :: nume
@@ -57,6 +57,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     character(len=24) :: posddl, vecau1, vecau2
     real(kind=8) :: rmin, rmax, raux, rval
     logical :: gene
+    character(len=24), pointer :: refn(:) => null()
 !     ------------------------------------------------------------------
     data nomddl / 'DX      ', 'DY      ', 'DZ      ' ,&
      &              'DRX     ', 'DRY     ', 'DRZ     ' /
@@ -93,8 +94,8 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     gene = .false.
     if (typmas(1:14).eq.'MATR_ASSE_GENE') then
 ! SI MATR_ASSE_GENE : BASE GENERALISEE
-           call jeveuo(nume(1:14)//'.NUME.REFN', 'L', jref)
-           basemo = zk24(jref)(1:8)
+           call jeveuo(nume(1:14)//'.NUME.REFN', 'L', vk24=refn)
+           basemo = refn(1)(1:8)
 ! SAUF SI NUME.REFN POINTE VERS UN MODELE_GENE ET NON VERS UNE BASE
 ! ALORS CAS DE LA SSD, TRAITE COMME UN MODE_MECA CLASSIQUE
            call gettco(basemo, typbas)

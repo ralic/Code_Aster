@@ -76,10 +76,10 @@ character(len=8) :: modmes, modthx, modmex
     character(len=16) :: ktyelt, ktyelm
     character(len=8) :: noma, valk8(3), nommax
     character(len=1) :: k1bid
-    integer :: igr, jeltp, jlgftp, imx
+    integer :: igr, jeltp,  imx
     integer :: ima, iexi
-    integer :: jmmes, jmmex, nmamex
-    integer :: jmthx, nfiss, nbmx, nutyelt, nutyelm
+    integer ::   nmamex
+    integer ::  nfiss, nbmx, nutyelt, nutyelm
     integer :: nbelmx, nbel2, cpt
 !
     integer, pointer :: tabmx(:) => null()
@@ -198,6 +198,10 @@ character(len=8) :: modmes, modthx, modmex
     character(len=16) :: ele3dmec(nel3dmec)
     character(len=16) :: eleplmec(nelplmec)
     character(len=16) :: eleaxmec(nelaxmec)
+    integer, pointer :: mmes(:) => null()
+    integer, pointer :: mmex(:) => null()
+    integer, pointer :: mthx(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
 !
 !   elements 3D lineaires mecaniques classiques
 ! ---------------------------------------------------------------------
@@ -258,8 +262,8 @@ character(len=8) :: modmes, modthx, modmex
 
 ! - recuperation du '.MAILLE' de modthx et modmes
 
-    call jeveuo(modthx//'.MAILLE', 'L', jmthx)
-    call jeveuo(modmes//'.MAILLE', 'L', jmmes)
+    call jeveuo(modthx//'.MAILLE', 'L', vi=mthx)
+    call jeveuo(modmes//'.MAILLE', 'L', vi=mmes)
 
 ! - on s'assure que toute maille affectee par un element thermique
 ! - enrichi dans modthx est bien affectee par un element mecanique 
@@ -269,8 +273,8 @@ character(len=8) :: modmes, modthx, modmex
 
         imx = tabmx(ima)
 
-        nutyelt = zi(jmthx-1+imx)
-        nutyelm = zi(jmmes-1+imx)
+        nutyelt = mthx(imx)
+        nutyelm = mmes(imx)
 
         if ( nutyelm .eq. 0 ) then
             call jenuno(jexnum(noma//'.NOMMAI', imx), nommax)
@@ -295,7 +299,7 @@ character(len=8) :: modmes, modthx, modmex
 
 ! - recuperation du '.MAILLE' de modmex
 
-    call jeveuo(modmex//'.MAILLE', 'E', jmmex)
+    call jeveuo(modmex//'.MAILLE', 'E', vi=mmex)
     call jelira(modmex//'.MAILLE', 'LONMAX', nmamex, k1bid)
 
 ! - modification du '.MAILLE' de modmex pour les mailles fissurees
@@ -304,10 +308,10 @@ character(len=8) :: modmes, modthx, modmex
 
         imx = tabmx(ima)
 
-        nutyelt = zi(jmthx-1+imx)
+        nutyelt = mthx(imx)
         call jenuno(jexnum('&CATA.TE.NOMTE', nutyelt), ktyelt)
 
-        nutyelm = zi(jmmex-1+imx)
+        nutyelm = mmex(imx)
         call jenuno(jexnum('&CATA.TE.NOMTE', nutyelm), ktyelm)
 
 !       MECANIQUE 3D
@@ -334,7 +338,7 @@ character(len=8) :: modmes, modthx, modmex
         endif
 
         call jenonu(jexnom('&CATA.TE.NOMTE', ktyelm), nutyelm)
-        zi(jmmex-1+imx) = nutyelm
+        mmex(imx) = nutyelm
 
    enddo
 
@@ -353,13 +357,13 @@ character(len=8) :: modmes, modthx, modmex
 
     cpt = 0
     do ima = 1, nmamex
-        if (zi(jmmex-1+ima) .eq. 0) cycle
+        if (mmex(ima) .eq. 0) cycle
         cpt = cpt+1
         call jecroc(jexnum(lieltp, cpt))
         call jeecra(jexnum(lieltp, cpt), 'LONMAX', 2)
         call jeveuo(jexnum(lieltp, cpt), 'E', jeltp)
         zi(jeltp-1+1) = ima
-        zi(jeltp-1+2) = zi(jmmex-1+ima)
+        zi(jeltp-1+2) = mmex(ima)
     end do
 
     call jelira(lieltp, 'NUTIOC', nbel2)
@@ -367,8 +371,8 @@ character(len=8) :: modmes, modthx, modmex
 
     call jedupo(ligmex//'.NBNO', 'G', ligrtp//'.NBNO', .false.)
     call jedupo(ligmex//'.LGRF', 'G', ligrtp//'.LGRF', .false.)
-    call jeveuo(ligrtp//'.LGRF', 'E', jlgftp)
-    zk8(jlgftp-1+2) = modmex
+    call jeveuo(ligrtp//'.LGRF', 'E', vk8=lgrf)
+    lgrf(2) = modmex
 
 ! - on ecrase ligmex avec ligrtp
 

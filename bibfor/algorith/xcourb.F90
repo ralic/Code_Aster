@@ -47,11 +47,13 @@ subroutine xcourb(basloc, noma, modele, courb)
 !.......................................................................
 !
     integer :: ino, i, j, nbno, ibid, nchin
-    integer :: jrsv, jrsl, jgl, jgb
+    integer ::  jrsl, jgl
     real(kind=8) :: el1(3), el2(3), el3(3), p(3, 3), invp(3, 3), norme
     character(len=8) :: lpain(2), lpaout(1), licmp(9)
     character(len=19) :: cnsr, matpas, cnsg
     character(len=24) :: lchin(2), lchout(1), ligrmo
+    real(kind=8), pointer :: gb(:) => null()
+    real(kind=8), pointer :: rsv(:) => null()
 !
 !
     call jemarq()
@@ -59,7 +61,7 @@ subroutine xcourb(basloc, noma, modele, courb)
     cnsg='&&XCOURB.CNSGT'
     call cnocns(basloc, 'V', cnsg)
 !
-    call jeveuo(cnsg//'.CNSV', 'L', jgb)
+    call jeveuo(cnsg//'.CNSV', 'L', vr=gb)
     call jeveuo(cnsg//'.CNSL', 'L', jgl)
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
@@ -79,15 +81,15 @@ subroutine xcourb(basloc, noma, modele, courb)
     licmp(9) = 'X9'
     call cnscre(noma, 'NEUT_R', 9, licmp, 'V',&
                 cnsr)
-    call jeveuo(cnsr//'.CNSV', 'E', jrsv)
+    call jeveuo(cnsr//'.CNSV', 'E', vr=rsv)
     call jeveuo(cnsr//'.CNSL', 'E', jrsl)
 !
     do ino = 1, nbno
 !       ON VÉRIFIE QUE LE NOEUD A BIEN UNE VALEUR DE GRADLST ASSOCIÉE
         if (.not.zl(jgl-1+3*3*(ino-1)+4)) goto 100
         do i = 1, 3
-            el1(i) = zr(jgb-1+3*3*(ino-1)+i+3)
-            el2(i) = zr(jgb-1+3*3*(ino-1)+i+6)
+            el1(i) = gb(3*3*(ino-1)+i+3)
+            el2(i) = gb(3*3*(ino-1)+i+6)
         end do
 !
 !       NORMALISATION DE LA BASE
@@ -107,11 +109,11 @@ subroutine xcourb(basloc, noma, modele, courb)
             end do
         end do
         do i = 1, 3
-            zr(jrsv-1+9*(ino-1)+i)=invp(i,1)
+            rsv(9*(ino-1)+i)=invp(i,1)
             zl(jrsl-1+9*(ino-1)+i)=.true.
-            zr(jrsv-1+9*(ino-1)+i+3)=invp(i,2)
+            rsv(9*(ino-1)+i+3)=invp(i,2)
             zl(jrsl-1+9*(ino-1)+i+3)=.true.
-            zr(jrsv-1+9*(ino-1)+i+6)=invp(i,3)
+            rsv(9*(ino-1)+i+6)=invp(i,3)
             zl(jrsl-1+9*(ino-1)+i+6)=.true.
         end do
 !

@@ -51,9 +51,10 @@ subroutine ssdege(nomu)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iaexte, ialino, iaprnm, iarefm, ibid(1), iec
+    integer :: iaexte, ialino,  iarefm, ibid(1), iec
     integer :: ier, ii, ino, jdesm, jvarm, n1, nbc
     integer :: nbec, nbnoto, nch, nchar, nvalap
+    integer, pointer :: prnm(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getvid('DEFINITION', 'CHAR_MACR_ELEM', iocc=1, nbval=0, nbret=n1)
@@ -131,12 +132,12 @@ subroutine ssdege(nomu)
 !     -- ON MET "A ZERO" LES NOEUDS EXTERNES QUI NE PORTENT
 !        AUCUN DDL POUR LE MODELE.
 !     --------------------------------------------------------
-    call jeveuo(nomo//'.MODELE    .PRNM', 'L', iaprnm)
+    call jeveuo(nomo//'.MODELE    .PRNM', 'L', vi=prnm)
     lmess=.false.
     do ii = 1, nbnoto
         ino=zi(iaexte-1+ii)
         do iec = 1, nbec
-            if (zi(iaprnm-1+nbec*(ino-1)+iec) .ne. 0) goto 11
+            if (prnm(nbec*(ino-1)+iec) .ne. 0) goto 11
             zi(iaexte-1+ii)=0
             lmess=.true.
         end do

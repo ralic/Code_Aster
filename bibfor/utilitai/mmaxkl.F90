@@ -93,7 +93,6 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     integer :: i, j, k,     nbcol
     integer :: iad, init
     integer ::   iret, iord, jinst, nborn,  nbval
-    integer :: ik1, ik2, ik3, labscu, igl, iglm
     integer ::  ityp, mxval, nbv, itmp
     real(kind=8) :: kmoy, time, puls
     complex(kind=8) :: cbid
@@ -114,6 +113,12 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
     real(kind=8), pointer :: tabr(:) => null()
     character(len=8), pointer :: type_char(:) => null()
     character(len=8), pointer :: typr(:) => null()
+    real(kind=8), pointer :: abscur(:) => null()
+    real(kind=8), pointer :: gmax(:) => null()
+    real(kind=8), pointer :: gloc(:) => null()
+    real(kind=8), pointer :: k2loc(:) => null()
+    real(kind=8), pointer :: k3loc(:) => null()
+    real(kind=8), pointer :: k1loc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -171,19 +176,19 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !
     call tbexve(latabl, 'K1', '&&MMAXKL.K1LOC', 'V', nbval,&
                 k8b)
-    call jeveuo('&&MMAXKL.K1LOC', 'L', ik1)
+    call jeveuo('&&MMAXKL.K1LOC', 'L', vr=k1loc)
     call tbexve(latabl, 'K2', '&&MMAXKL.K2LOC', 'V', nbval,&
                 k8b)
-    call jeveuo('&&MMAXKL.K2LOC', 'L', ik2)
+    call jeveuo('&&MMAXKL.K2LOC', 'L', vr=k2loc)
     call tbexve(latabl, 'K3', '&&MMAXKL.K3LOC', 'V', nbval,&
                 k8b)
-    call jeveuo('&&MMAXKL.K3LOC', 'L', ik3)
+    call jeveuo('&&MMAXKL.K3LOC', 'L', vr=k3loc)
     call tbexve(latabl, 'ABSC_CURV', '&&MMAXKL.ABSCUR', 'V', nbval,&
                 k8b)
-    call jeveuo('&&MMAXKL.ABSCUR', 'L', labscu)
+    call jeveuo('&&MMAXKL.ABSCUR', 'L', vr=abscur)
     call tbexve(latabl, 'G', '&&MMAXKL.GLOC', 'V', nbval,&
                 k8b)
-    call jeveuo('&&MMAXKL.GLOC', 'L', igl)
+    call jeveuo('&&MMAXKL.GLOC', 'L', vr=gloc)
 !
 !
 ! RECUPERATION DU TYPE DE CHARGE ET MAXIMISATION DE K
@@ -216,7 +221,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         kmoy = 0.d0
         if (type_char(i) .ne. 'SIGNE') then
             do 11 j = 1, nnoff
-                kmoy = kmoy + zr(ik1+j-1+(i-1)*nnoff)
+                kmoy = kmoy + k1loc(1+j-1+(i-1)*nnoff)
 11          continue
             if (kmoy .le. 0.d0) then
                 coef(i) = -1
@@ -236,11 +241,11 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
         kmax2(j) = 0.d0
         kmax3(j) = 0.d0
         do 21 i = 1, lonvec
-            kmax1(j)=kmax1(j)+coef(i)*zr(ik1+j-1+(i-1)*&
+            kmax1(j)=kmax1(j)+coef(i)*k1loc(1+j-1+(i-1)*&
             nnoff)
-            kmax2(j)=kmax2(j)+coef(i)*zr(ik2+j-1+(i-1)*&
+            kmax2(j)=kmax2(j)+coef(i)*k2loc(1+j-1+(i-1)*&
             nnoff)
-            kmax3(j)=kmax3(j)+coef(i)*zr(ik3+j-1+(i-1)*&
+            kmax3(j)=kmax3(j)+coef(i)*k3loc(1+j-1+(i-1)*&
             nnoff)
 21      continue
 20  continue
@@ -275,7 +280,7 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !
     call tbexve(latabl, 'G', '&&MMAXKL.GMAX', 'V', nbval,&
                 k8b)
-    call jeveuo('&&MMAXKL.GMAX', 'L', iglm)
+    call jeveuo('&&MMAXKL.GMAX', 'L', vr=gmax)
     call detrsd('TABLE', latabl)
 !
 !
@@ -316,11 +321,11 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
 !
         do 42 j = 1, nnoff
             tabi(lonvec+1) = j
-            tabr(1) = zr(labscu+j-1)
-            tabr(1+1) = zr(ik1+j+(i-1)*nnoff-1)
-            tabr(1+2) = zr(ik2+j+(i-1)*nnoff-1)
-            tabr(1+3) = zr(ik3+j+(i-1)*nnoff-1)
-            tabr(1+4) = zr(igl+j+(i-1)*nnoff-1)
+            tabr(1) = abscur(j)
+            tabr(1+1) = k1loc(1+j+(i-1)*nnoff-1)
+            tabr(1+2) = k2loc(1+j+(i-1)*nnoff-1)
+            tabr(1+3) = k3loc(1+j+(i-1)*nnoff-1)
+            tabr(1+4) = gloc(1+j+(i-1)*nnoff-1)
             call tbajli('T4', nbcol, noru, tabi, tabr,&
                         [cbid], k8b, 0)
 42      continue
@@ -331,11 +336,11 @@ subroutine mmaxkl(latabl, modele, thetai, mate, compor,&
             tabi(k) = nint(coef(k))
 51      continue
         tabi(lonvec+1) = j
-        tabr(1) = zr(labscu+j-1)
+        tabr(1) = abscur(j)
         tabr(1+1) = kmax1(j)
         tabr(1+2) = kmax2(j)
         tabr(1+3) = kmax3(j)
-        tabr(1+4) = zr(iglm+j-1+nnoff*lonvec)
+        tabr(1+4) = gmax(1+j-1+nnoff*lonvec)
         call tbajli('T4', nbcol, noru, tabi, tabr,&
                     [cbid], k8b, 0)
 50  continue

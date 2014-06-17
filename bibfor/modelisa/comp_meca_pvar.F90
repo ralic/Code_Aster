@@ -69,7 +69,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
     character(len=16) :: rela_comp, defo_comp, type_cpla, type_matg, post_iter
     character(len=16) :: kit_comp(9)
     character(len=16) :: comp_code_py, rela_code_py, meta_code_py
-    integer :: j_comp_d, j_comp_v, j_comp_l, iadc
+    integer :: j_comp_d,  j_comp_l, iadc
     logical :: l_kit_meta, l_affe
     logical :: l_cristal, l_exte_comp, l_pmf, l_matr_tgsc, l_crit_rupt
     logical :: l_excl
@@ -77,6 +77,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
     integer :: i_elem, iocc, i_kit
     integer :: idummy
     integer :: nume_elem, old_nume
+    character(len=16), pointer :: cesv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,7 +97,7 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
         call carces(compor_cart, 'ELEM', ' ', 'V', compor_s, &
                     'A', idummy)
         call jeveuo(compor_s//'.CESD', 'L', j_comp_d)
-        call jeveuo(compor_s//'.CESV', 'L', j_comp_v)
+        call jeveuo(compor_s//'.CESV', 'L', vk16=cesv)
         call jeveuo(compor_s//'.CESL', 'L', j_comp_l)
     endif
 !
@@ -122,14 +123,14 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
             call cesexi('C', j_comp_d, j_comp_l, nume_elem, 1,&
                         1, 1, iadc)
             if (iadc .gt. 0) then
-                rela_comp = zk16(j_comp_v+iadc-2+1)
+                rela_comp = cesv(1+iadc-2+1)
                 call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
                 call comp_meca_l(rela_comp, 'PMF'      , l_pmf)
                 
                 if (.not.l_exte_comp .and. .not. l_pmf) then
-                    read (zk16(j_comp_v+iadc-2+12),'(I16)') iocc
+                    read (cesv(1+iadc-2+12),'(I16)') iocc
                     l_affe = (iocc.ne.99999)
-                    read (zk16(j_comp_v+iadc-2+2 ),'(I16)') nb_vari
+                    read (cesv(1+iadc-2+2 ),'(I16)') nb_vari
                     if (l_affe) then
                         old_nume = zi(j_list_occ-1+iocc)
                         if (old_nume .eq. 0) then
@@ -192,17 +193,17 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
             call cesexi('C', j_comp_d, j_comp_l, nume_elem, 1,&
                         1, 1, iadc)
             if (iadc .gt. 0) then
-                rela_comp = zk16(j_comp_v+iadc-2+1)
-                read (zk16(j_comp_v+iadc-2+2 ),'(I16)') nb_vari
-                defo_comp = zk16(j_comp_v+iadc-2+3)
-                type_cpla = zk16(j_comp_v+iadc-2+5)
-                type_matg = zk16(j_comp_v+iadc-2+13)
-                post_iter = zk16(j_comp_v+iadc-2+14)
+                rela_comp = cesv(1+iadc-2+1)
+                read (cesv(1+iadc-2+2 ),'(I16)') nb_vari
+                defo_comp = cesv(1+iadc-2+3)
+                type_cpla = cesv(1+iadc-2+5)
+                type_matg = cesv(1+iadc-2+13)
+                post_iter = cesv(1+iadc-2+14)
                 call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
                 call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
                 call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
                 do i_kit = 1,9
-                    kit_comp(i_kit) = zk16(j_comp_v+iadc-2+7+i_kit)
+                    kit_comp(i_kit) = cesv(1+iadc-2+7+i_kit)
                 end do
                 if (.not.l_exte_comp) kit_comp(5) = 'VIDE'
                 if (.not.l_matr_tgsc) kit_comp(6) = 'VIDE'

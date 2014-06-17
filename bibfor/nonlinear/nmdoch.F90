@@ -68,8 +68,6 @@ subroutine nmdoch(lischa, iexcit, excit)
     integer :: n1, nocc, iexc, incha1, iret2
     integer :: npilo, nexci, nchar, nchar1, nchar2, nchar3
     integer :: infmax, indic, ich, iret, infc, j, ichar
-    integer :: jinfch, jlcha, jinfc
-    integer :: jlcha2, jinfc2
     integer :: jlisdb, ichd
     character(len=5) :: suffix
     character(len=8) :: k8bid, affcha, parcha, typcha
@@ -93,6 +91,11 @@ subroutine nmdoch(lischa, iexcit, excit)
     integer :: nbtych
     parameter    (nbtych=18)
     character(len=6) :: nomlig(nbtych)
+    integer, pointer :: infc2(:) => null()
+    integer, pointer :: infch(:) => null()
+    integer, pointer :: vinfc(:) => null()
+    character(len=24), pointer :: lcha2(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
 !
     data nomlig  /'.FORNO','.F3D3D','.F2D3D','.F1D3D',&
      &              '.F2D2D','.F1D2D','.F1D1D','.PESAN',&
@@ -151,16 +154,16 @@ subroutine nmdoch(lischa, iexcit, excit)
 !     ON CREE UNE SD CHARGE CONTENANT 1 CHARGE FICTIVE
             if (nomcmd .eq. 'DYNA_NON_LINE') then
                 call lisccr(lischa, 1, 'V')
-                call jeveuo(lischa(1:19)//'.INFC', 'E', jinfch)
+                call jeveuo(lischa(1:19)//'.INFC', 'E', vi=infch)
                 nchar=0
-                zi(jinfch) = nchar
+                infch(1) = nchar
             else if (nomcmd.eq.'STAT_NON_LINE') then
                 call utmess('F', 'CHARGES_2')
             endif
         endif
     else
-        call jeveuo(excit(1:19)//'.INFC', 'L', jinfc)
-        nchar = zi(jinfc)
+        call jeveuo(excit(1:19)//'.INFC', 'L', vi=vinfc)
+        nchar = vinfc(1)
 !
 !
 ! --- POUR CALC_CHAMP : AFFE_CHAR_CINE EST ILLICITE: ON LES ENLEVE
@@ -168,9 +171,9 @@ subroutine nmdoch(lischa, iexcit, excit)
         if (nomcmd .eq. 'CALC_CHAMP') then
             nchar1 = nchar
             nchar2 = 0
-            call jeveuo(excit(1:19)//'.LCHA', 'L', jlcha)
+            call jeveuo(excit(1:19)//'.LCHA', 'L', vk24=lcha)
             do ich = 1, nchar1
-                nomcha = zk24(jlcha-1+ich)(1:8)
+                nomcha = lcha(ich)(1:8)
 !
                 call jeexin(nomcha//'.CHME.SIGIN', iret)
                 if (nomcha .ne. ' ') then
@@ -204,8 +207,8 @@ subroutine nmdoch(lischa, iexcit, excit)
             endif
         endif
 !
-        call jeveuo(excit(1:19)//'.INFC', 'L', jinfc2)
-        call jeveuo(excit(1:19)//'.LCHA', 'L', jlcha2)
+        call jeveuo(excit(1:19)//'.INFC', 'L', vi=infc2)
+        call jeveuo(excit(1:19)//'.LCHA', 'L', vk24=lcha2)
     endif
 !
     if (nchar .ne. 0) then
@@ -237,7 +240,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                     goto 30
                 endif
             else
-                nomcha = zk24(jlcha2+ich-1)(1:8)
+                nomcha = lcha2(ich)(1:8)
             endif
             zk8(jlisdb+ich-1) = nomcha(1:8)
 !
@@ -256,12 +259,12 @@ subroutine nmdoch(lischa, iexcit, excit)
             else
                 typcha = 'FIXE_CST'
                 if (nomcmd .eq. 'CALC_CHAMP') then
-                    if (zi(jinfc2+ich) .eq. 4 .or. zi(jinfc2+nchar+ich) .eq. 4) then
+                    if (infc2(ich+1) .eq. 4 .or. infc2(1+nchar+ich) .eq. 4) then
                         typcha = 'SUIV'
-                        elseif (zi(jinfc2+ich).eq.5 .or. zi(jinfc2+nchar+&
+                        elseif (infc2(ich+1).eq.5 .or. infc2(1+nchar+&
                     ich).eq.5) then
                         typcha = 'FIXE_PIL'
-                    else if (zi(jinfc2+3*nchar+2+ich).eq.1) then
+                    else if (infc2(1+3*nchar+2+ich).eq.1) then
                         typcha = 'DIDI'
                     endif
                 endif

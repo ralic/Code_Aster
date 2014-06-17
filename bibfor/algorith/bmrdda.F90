@@ -56,8 +56,8 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !
 !
     integer :: nbcpmx, nbddl, nbdif, numint, i, j, nbec, nbcmp, neq
-    integer :: nunoe, iran(1), lldesc, ord, nliais, llint3, llint4, llact, llnoe
-    integer :: lldeeq, nbnoe, inoe
+    integer :: nunoe, iran(1),  ord, nliais, llint3, llint4, llact, llnoe
+    integer ::  nbnoe, inoe
     parameter (nbcpmx=300)
     integer :: idec(nbcpmx), ivddl(nbddl)
     character(len=4) :: nliai
@@ -65,6 +65,8 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
     character(len=19) :: numddl
     character(len=24) :: noeint, actint, ordol, ordod
     character(len=24) :: valk(2)
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: idc_defo(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -131,20 +133,20 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
 !
 !---------------RECUPERATION DU DESCRIPTEUR DES DEFORMEES---------------
 !
-    call jeveuo(intf//'.IDC_DEFO', 'L', lldesc)
+    call jeveuo(intf//'.IDC_DEFO', 'L', vi=idc_defo)
 !
 !------------------RECUPERATION ADRESSE DEEQ----------------------------
 !
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
-    call jeveuo(numddl//'.DEEQ', 'L', lldeeq)
+    call jeveuo(numddl//'.DEEQ', 'L', vi=deeq)
 !
 !------------------------RECUPERATION DES RANG--------------------------
 !
     do i = 1, nbnoe
         if (ord .eq. 0) then
             inoe=zi(llnoe+i-1)
-            nunoe=zi(lldesc+inoe-1)
+            nunoe=idc_defo(inoe)
             call isdeco(zi(llact+(i-1)*nbec+1-1), idec, nbcmp)
         else
             temp='&&OP0126'
@@ -154,14 +156,14 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
             ordod=temp//'      .LDAC.'//nliai
             call jeveuo(ordod, 'L', llint4)
             inoe=zi(llint3+i-1)
-            nunoe=zi(lldesc+inoe-1)
+            nunoe=idc_defo(inoe)
             call isdeco(zi(llint4+(i-1)*nbec+1-1), idec, nbcmp)
         endif
         do j = 1, nbcmp
             if (idec(j) .gt. 0) then
                 nbdif=nbdif-1
                 if (nbdif .ge. 0) then
-                    call cheddl(zi(lldeeq), neq, nunoe, j, iran,&
+                    call cheddl(deeq, neq, nunoe, j, iran,&
                                 1)
                     ivddl(nbddl-nbdif)=iran(1)
                 endif

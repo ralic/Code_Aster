@@ -78,8 +78,8 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer :: nbno, nbar, nbarto, itypma
     integer :: ar(12, 3), na, nb, nunoa, mxar
     integer :: nunob, nunom, nunoaa, nunobb
-    integer :: ia, iia, ia1, ia2, i, k, iret, ima, jma
-    integer :: jconx1, jconx2, jmail
+    integer :: ia, iia, ia1, ia2, i, k, iret, ima
+    integer ::  jconx2, jmail
     integer :: npil
     real(kind=8) :: c(ndim), cc(ndim)
     character(len=8) :: typma
@@ -92,10 +92,15 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     character(len=19) :: chsoe, chslo, chsba, chsai
     integer :: jcesl2, jcesl3, jcesl4, jcesl5
     integer :: jcesd2, jcesd3, jcesd4, jcesd5
-    integer :: jcesv2, jcesv3, jcesv4, jcesv5
+    integer ::    jcesv5
     integer :: iad2, iad3, iad4, ninter, pint, ifiss
     character(len=24) :: grp(3), gr
     integer :: nmaenr, ienr, jgrp, jxc, ier, jnbpt
+    integer, pointer :: cesv2(:) => null()
+    real(kind=8), pointer :: cesv3(:) => null()
+    real(kind=8), pointer :: cesv4(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -113,7 +118,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
     call celces(nomo//'.TOPOFAC.LO', 'V', chslo)
     call jeveuo(chslo//'.CESD', 'L', jcesd2)
-    call jeveuo(chslo//'.CESV', 'L', jcesv2)
+    call jeveuo(chslo//'.CESV', 'L', vi=cesv2)
     call jeveuo(chslo//'.CESL', 'L', jcesl2)
 !
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.AI EN CHAMP SIMPLE
@@ -121,14 +126,14 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     zxain = xxmmvd('ZXAIN')
     call celces(nomo//'.TOPOFAC.AI', 'V', chsai)
     call jeveuo(chsai//'.CESD', 'L', jcesd3)
-    call jeveuo(chsai//'.CESV', 'L', jcesv3)
+    call jeveuo(chsai//'.CESV', 'L', vr=cesv3)
     call jeveuo(chsai//'.CESL', 'L', jcesl3)
 !
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.OE EN CHAMP SIMPLE
 !
     call celces(nomo//'.TOPOFAC.OE', 'V', chsoe)
     call jeveuo(chsoe//'.CESD', 'L', jcesd4)
-    call jeveuo(chsoe//'.CESV', 'L', jcesv4)
+    call jeveuo(chsoe//'.CESV', 'L', vr=cesv4)
     call jeveuo(chsoe//'.CESL', 'L', jcesl4)
 !
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.BA EN CHAMP SIMPLE
@@ -142,8 +147,8 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! --- RECUPERATION DE DONNEES RELATIVES AU MAILLAGE
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', jma)
-    call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(noma(1:8)//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
 ! --- RECUPERATION DES MAILLES DU MODELE
     call jeveuo(nomo//'.MAILLE', 'L', jmail)
@@ -219,7 +224,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     do ienr = 1, nmaenr
         ima = zi(jgrp-1+ienr)
         if (lmulti) ifiss = zi(jnbpt-1+ima)
-        itypma = zi(jma-1+ima)
+        itypma = typmail(ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
         call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
 !
@@ -227,7 +232,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
         call cesexi('C', jcesd2, jcesl2, ima, 1,&
                     ifiss, 1, iad2)
-        ninter = zi(jcesv2-1+iad2)
+        ninter = cesv2(iad2)
 ! --- NINTER DOIT DÉPENDRE DE LA FISS QUI COUPE SI ELEMENT XH2C,3C OU 4C
 !          IF (LMULTI) THEN
 !            IF (ENR.EQ.'XH2C'.OR.ENR.EQ.'XH3C'.OR.ENR.EQ.'XH4C') THEN
@@ -249,7 +254,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
             call cesexi('S', jcesd3, jcesl3, ima, 1,&
                         ifiss, zxain*(pint-1)+ 1, iad3)
             ASSERT(iad3.gt.0)
-            ia=nint(zr(jcesv3-1+iad3))
+            ia=nint(cesv3(iad3))
 ! - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
             if (getexm('PILOTAGE','DIRE_PILO') .eq. 1) then
                 call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=0, nbret=npil)
@@ -258,7 +263,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
                     if (ia .eq. 0) then
                         call cesexi('S', jcesd3, jcesl3, ima, 1,&
                                     ifiss, zxain*(pint-1)+2, iad3)
-                        na=nint(zr(jcesv3-1+iad3))
+                        na=nint(cesv3(iad3))
                         nb=na
                     else
                         na = ar(ia,1)
@@ -274,8 +279,8 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! --- RECUPERATION DES NOEUDS
 !
-            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+na-1)
-            nunob = zi(jconx1-1+zi(jconx2+ima-1)+nb-1)
+            nunoa = connex(zi(jconx2+ima-1)+na-1)
+            nunob = connex(zi(jconx2+ima-1)+nb-1)
             nunom=0
 !
 ! --- EST-CE QUE L'ARETE EST DEJA VUE ?
@@ -299,7 +304,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
                 call cesexi('S', jcesd4, jcesl4, ima, 1,&
                             ifiss, ndim*(pint- 1)+i, iad4)
                 ASSERT(iad4.gt.0)
-                c(i) = zr(jcesv4-1+iad4)
+                c(i) = cesv4(iad4)
                 zr(jtabin-1+ndim*(nbarto-1)+i) = c(i)
             end do
 !

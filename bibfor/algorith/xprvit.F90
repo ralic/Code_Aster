@@ -101,14 +101,14 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, j, jcoor, nbno, jmin, nbptff, ibid, jdelta, lsn, lst
-    integer :: jfonf,   jvtl, jvtv, jvnl, jvnv, ifm, niv, jvit
+    integer :: i, j,  nbno, jmin, nbptff, ibid, jdelta
+    integer :: jfonf,   jvtl,  jvnl,  ifm, niv, jvit
     integer :: jbeta, jdisfr, cfv, bfv, vfv, afv, nfv
     real(kind=8) :: eps, xm, ym, zm, dmin, smin, xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, xim, yim, zim, s, norm2, xn, yn, zn, d
     real(kind=8) :: radimp, radtor
     character(len=8) :: typcmp(6), method
-    integer ::  jbasef, jbl, jdis, k
+    integer ::  jbasef,   k
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, pi(3), normij
     real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan
@@ -135,6 +135,13 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     real(kind=8), pointer :: vn_propa_ff(:) => null()
     real(kind=8), pointer :: v_propa_ff(:) => null()
     real(kind=8), pointer :: vt_propa_ff(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: bl(:) => null()
+    real(kind=8), pointer :: dis(:) => null()
+    real(kind=8), pointer :: vnv(:) => null()
+    real(kind=8), pointer :: vtv(:) => null()
+    real(kind=8), pointer :: nlsn(:) => null()
+    real(kind=8), pointer :: nlst(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -155,7 +162,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     RECUPERATION DU FOND DE FISSURE
     call jeveuo(fiss//'.FONDFISS', 'L', jfonf)
@@ -193,8 +200,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         fvirtu = .true.
 !
 !     EXTRACTION des valeurs des levels sets au noeud
-        call jeveuo(ucnsln//'.CNSV', 'L', lsn)
-        call jeveuo(ucnslt//'.CNSV', 'L', lst)
+        call jeveuo(ucnsln//'.CNSV', 'L', vr=nlsn)
+        call jeveuo(ucnslt//'.CNSV', 'L', vr=nlst)
 !
 !     Creation de vecteur ou sont stocke les coordonnes et les
 !     bases associees du font de fissure virtuel
@@ -263,8 +270,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     cnsdis)
     endif
 !
-    call jeveuo(cnsbl//'.CNSV', 'E', jbl)
-    call jeveuo(cnsdis//'.CNSV', 'E', jdis)
+    call jeveuo(cnsbl//'.CNSV', 'E', vr=bl)
+    call jeveuo(cnsdis//'.CNSV', 'E', vr=dis)
 !
 !     CREATION DES CHAM_NO_S CONTENANT LES COMPOSANTES DU VECTEUR V
 !     (VT & VN)
@@ -296,9 +303,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !     ARE STORED FOR EACH POINT
     call wkvect(listp, 'V V R8', 3*nbno, jlistp)
 !
-    call jeveuo(cnsvt//'.CNSV', 'E', jvtv)
+    call jeveuo(cnsvt//'.CNSV', 'E', vr=vtv)
     call jeveuo(cnsvt//'.CNSL', 'E', jvtl)
-    call jeveuo(cnsvn//'.CNSV', 'E', jvnv)
+    call jeveuo(cnsvn//'.CNSV', 'E', vr=vnv)
     call jeveuo(cnsvn//'.CNSL', 'E', jvnl)
 !
 !     CREATE THE VECTOR WHERE THE EULER AXIS AND THE EULER ANGLE ARE
@@ -548,9 +555,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     do i = 1, nbno
 !
 !        COORD DU NOEUD M DU MAILLAGE
-        xm=zr(jcoor-1+(i-1)*3+1)
-        ym=zr(jcoor-1+(i-1)*3+2)
-        zm=zr(jcoor-1+(i-1)*3+3)
+        xm=vale((i-1)*3+1)
+        ym=vale((i-1)*3+2)
+        zm=vale((i-1)*3+3)
 !
 !        THE PROJ(V)=V IS NEEDED ONLY FOR THE 3D CASE
         if (ndim .eq. 3) then
@@ -604,9 +611,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     jmin = j
                     smin = s
 !              STORE THE DISTANCE VECTOR
-                    zr(jdis-1+3*(i-1)+1) = xm-xn
-                    zr(jdis-1+3*(i-1)+2) = ym-yn
-                    zr(jdis-1+3*(i-1)+3) = zm-zn
+                    dis(3*(i-1)+1) = xm-xn
+                    dis(3*(i-1)+2) = ym-yn
+                    dis(3*(i-1)+3) = zm-zn
                 endif
 210             continue
             end do
@@ -628,8 +635,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                     dmin = d
                     jmin = j
 !                 STORE THE DISTANCE VECTOR
-                    zr(jdis-1+2*(i-1)+1) = xm-xi1
-                    zr(jdis-1+2*(i-1)+2) = ym-yi1
+                    dis(2*(i-1)+1) = xm-xi1
+                    dis(2*(i-1)+2) = ym-yi1
 !
 !                 STORE THE PROJECTED POINT
                     zr(jlistp-1+3*(i-1)+1) = xi1
@@ -697,9 +704,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 norm2 = sqrt(xij*xij + yij*yij + zij*zij)
 !
 !              COORD DU NOEUD M DU MAILLAGE
-                xm=zr(jcoor-1+(i-1)*3+1)
-                ym=zr(jcoor-1+(i-1)*3+2)
-                zm=zr(jcoor-1+(i-1)*3+3)
+                xm=vale((i-1)*3+1)
+                ym=vale((i-1)*3+2)
+                zm=vale((i-1)*3+3)
 !
 !              CALCULATE THE EULER ANGLE FOR THE NODE
                 alfa = euler(7*(jmin-1)+1)*smin
@@ -826,9 +833,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             zr(jlistp-1+3*(i-1)+3) = zn
 !
 !           STORE THE DISTANCE VECTOR
-            zr(jdis-1+3*(i-1)+1) = xm-xn
-            zr(jdis-1+3*(i-1)+2) = ym-yn
-            zr(jdis-1+3*(i-1)+3) = zm-zn
+            dis(3*(i-1)+1) = xm-xn
+            dis(3*(i-1)+2) = ym-yn
+            dis(3*(i-1)+3) = zm-zn
             zr(jdisfr+i-1) = dmin
 !
 !          SI ON UTILISE LA METHODE UPWIND AVEC UNE GRILLE ET QU'IL
@@ -854,20 +861,20 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
                 if (fonvir) then
 !          CALCUL DE LA VALEUR DE LA LEVEL SET NORMALE RECHERCHEE
-                    lsnth(1)= zr(jdis-1+3*(i-1)+1)*zr(jbasef+6*(jmin-&
-                    1)-1+1) +zr(jdis-1+3*(i-1)+2)*zr(jbasef+6*(jmin-1)&
-                    -1+2) +zr(jdis-1+3*(i-1)+3)*zr(jbasef+6*(jmin-1)-&
+                    lsnth(1)= dis(3*(i-1)+1)*zr(jbasef+6*(jmin-&
+                    1)-1+1) +dis(3*(i-1)+2)*zr(jbasef+6*(jmin-1)&
+                    -1+2) +dis(3*(i-1)+3)*zr(jbasef+6*(jmin-1)-&
                     1+3)
 !
 !          CALCUL DE LA VALEUR DE LA LEVEL SET TANGENTEE RECHERCHEE
-                    lstth(1)= zr(jdis-1+3*(i-1)+1)*zr(jbasef+6*&
-                    (jmin-1)-1+4)+zr(jdis-1+3*(i-1)+2)*zr(jbasef+6*(&
-                    jmin-1)-1+5) +zr(jdis-1+3*(i-1)+3)*zr(jbasef+6*(&
+                    lstth(1)= dis(3*(i-1)+1)*zr(jbasef+6*&
+                    (jmin-1)-1+4)+dis(3*(i-1)+2)*zr(jbasef+6*(&
+                    jmin-1)-1+5) +dis(3*(i-1)+3)*zr(jbasef+6*(&
                     jmin-1)-1+6)
 !
 !          CALCUL DE LA CORRECTION A APPORTER
-                    zr(jdelta+2*(i-1))= lsnth(1)-zr(lsn+i-1)
-                    zr(jdelta+2*(i-1)+1)= lstth(1)-zr(lst+i-1)
+                    zr(jdelta+2*(i-1))= lsnth(1)-nlsn(i)
+                    zr(jdelta+2*(i-1)+1)= lstth(1)-nlst(i)
                 endif
 !
             endif
@@ -947,11 +954,11 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !           IN THE 2D CASE THERE'S NO NEED TO CALCULATE THE INTERMEDIATE
 !           LOCAL BASE
 !           N-AXIS
-            zr(jbl-1+2*ndim*(i-1)+1) = zr(jbasef-1+2*ndim*(jmin-1)+1)
-            zr(jbl-1+2*ndim*(i-1)+2) = zr(jbasef-1+2*ndim*(jmin-1)+2)
+            bl(2*ndim*(i-1)+1) = zr(jbasef-1+2*ndim*(jmin-1)+1)
+            bl(2*ndim*(i-1)+2) = zr(jbasef-1+2*ndim*(jmin-1)+2)
 !           T-AXIS
-            zr(jbl-1+2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1)+ ndim+1)
-            zr(jbl-1+2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1)+ ndim+2)
+            bl(2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1)+ ndim+1)
+            bl(2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1)+ ndim+2)
 !
         else
 !
@@ -1008,30 +1015,30 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
                 ASSERT(modvec.gt.r8prem())
 !
-                zr(jbl-1+2*ndim*(i-1)+1) = n(1)/modvec
-                zr(jbl-1+2*ndim*(i-1)+2) = n(2)/modvec
-                zr(jbl-1+2*ndim*(i-1)+3) = n(3)/modvec
+                bl(2*ndim*(i-1)+1) = n(1)/modvec
+                bl(2*ndim*(i-1)+2) = n(2)/modvec
+                bl(2*ndim*(i-1)+3) = n(3)/modvec
 !              T-AXIS
                 modvec = (n(1)**2+n(2)**2+n(3)**2)**0.5d0
 !
                 ASSERT(modvec.gt.r8prem())
 !
-                zr(jbl-1+2*ndim*(i-1)+4) = t(1)/modvec
-                zr(jbl-1+2*ndim*(i-1)+5) = t(2)/modvec
-                zr(jbl-1+2*ndim*(i-1)+6) = t(3)/modvec
+                bl(2*ndim*(i-1)+4) = t(1)/modvec
+                bl(2*ndim*(i-1)+5) = t(2)/modvec
+                bl(2*ndim*(i-1)+6) = t(3)/modvec
 !
             else
 !
                 if (alfa .gt. t180) jmin=jmin+1
 !
 !              N-AXIS
-                zr(jbl-1+2*ndim*(i-1)+1) = zr(jbasef-1+2*ndim*(jmin-1) +1)
-                zr(jbl-1+2*ndim*(i-1)+2) = zr(jbasef-1+2*ndim*(jmin-1) +2)
-                zr(jbl-1+2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1) +3)
+                bl(2*ndim*(i-1)+1) = zr(jbasef-1+2*ndim*(jmin-1) +1)
+                bl(2*ndim*(i-1)+2) = zr(jbasef-1+2*ndim*(jmin-1) +2)
+                bl(2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1) +3)
 !              T-AXIS
-                zr(jbl-1+2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+1)
-                zr(jbl-1+2*ndim*(i-1)+5) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+2)
-                zr(jbl-1+2*ndim*(i-1)+6) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+3)
+                bl(2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+1)
+                bl(2*ndim*(i-1)+5) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+2)
+                bl(2*ndim*(i-1)+6) = zr(jbasef-1+2*ndim*(jmin-1) +ndim+3)
 !
             endif
 !
@@ -1040,9 +1047,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             if ((method.eq.'GEOMETRI') .and. endpnt) then
 !
 !              NORMAL AXIS OF THE LOCAL BASE
-                n(1) = zr(jbl-1+2*ndim*(i-1)+1)
-                n(2) = zr(jbl-1+2*ndim*(i-1)+2)
-                n(3) = zr(jbl-1+2*ndim*(i-1)+3)
+                n(1) = bl(2*ndim*(i-1)+1)
+                n(2) = bl(2*ndim*(i-1)+2)
+                n(3) = bl(2*ndim*(i-1)+3)
 !
 !              Q->P
                 modvec =(xm-xn)*n(1)+(ym-yn)*n(2)+(zm-zn)*n(3)
@@ -1057,8 +1064,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !              CHECK THE DIRECTION OF THE NEW T-AXIS WITH RESPECT TO THE
 !              ORIGINAL T-AXIS
-                modvec=zr(jbl-1+2*ndim*(i-1)+4)*t(1)+ zr(jbl-1+2*ndim*&
-                (i-1)+5)*t(2)+ zr(jbl-1+2*ndim*(i-1)+6)*t(3)
+                modvec=bl(2*ndim*(i-1)+4)*t(1)+ bl(2*ndim*&
+                (i-1)+5)*t(2)+ bl(2*ndim*(i-1)+6)*t(3)
                 if (modvec .lt. 0.d0) then
 !                 MODULUS OF THE NEW T-AXIS. ITS DIRECTION MUST BE
 !                 CHANGED (-1)
@@ -1070,9 +1077,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !              STORE THE NEW T-AXIS (THE CORRECT DIRECTION IS DETERMINED
 !              BY THE SIGN OF MODVEC)
-                zr(jbl-1+2*ndim*(i-1)+4) = t(1)/modvec
-                zr(jbl-1+2*ndim*(i-1)+5) = t(2)/modvec
-                zr(jbl-1+2*ndim*(i-1)+6) = t(3)/modvec
+                bl(2*ndim*(i-1)+4) = t(1)/modvec
+                bl(2*ndim*(i-1)+5) = t(2)/modvec
+                bl(2*ndim*(i-1)+6) = t(3)/modvec
 !
             endif
 !
@@ -1083,18 +1090,18 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 do k = 1, (numfon-1)
                     if ((jmin) .eq. (zi(nfv+2*k-1))) then
 !
-                        lsnth(1)= zr(jdis-1+3*(i-1)+1)*zr(jbl-1+2*&
-                        ndim*(i-1)+1) +zr(jdis-1+3*(i-1)+2)*zr(jbl-1+&
-                        2*ndim*(i-1)+2) +zr(jdis-1+3*(i-1)+3)*zr(jbl-&
+                        lsnth(1)= dis(3*(i-1)+1)*bl(2*&
+                        ndim*(i-1)+1) +dis(3*(i-1)+2)*bl(&
+                        2*ndim*(i-1)+2) +dis(3*(i-1)+3)*bl(1-&
                         1+2*ndim*(i-1)+3)
 !
-                        lstth(1)= zr(jdis-1+3*(i-1)+1)*zr(jbl-1+2*&
-                        ndim*(i-1)+4) +zr(jdis-1+3*(i-1)+2)*zr(jbl-1+&
-                        2*ndim*(i-1)+5) +zr(jdis-1+3*(i-1)+3)*zr(jbl-&
+                        lstth(1)= dis(3*(i-1)+1)*bl(2*&
+                        ndim*(i-1)+4) +dis(3*(i-1)+2)*bl(&
+                        2*ndim*(i-1)+5) +dis(3*(i-1)+3)*bl(1-&
                         1+2*ndim*(i-1)+6)
 !
-                        zr(jdelta+2*(i-1))= lsnth(1)-zr(lsn+i-1)
-                        zr(jdelta+2*(i-1)+1)= lstth(1)-zr(lst+i-1)
+                        zr(jdelta+2*(i-1))= lsnth(1)-nlsn(i)
+                        zr(jdelta+2*(i-1)+1)= lstth(1)-nlst(i)
 !
                     endif
                 end do
@@ -1121,8 +1128,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
         endif
 !
-        zr(jvnv+i-1)=vp*sin(betap)
-        zr(jvtv+i-1)=vp*cos(betap)
+        vnv(i)=vp*sin(betap)
+        vtv(i)=vp*cos(betap)
         zl(jvtl+i-1) = .true.
         zl(jvnl+i-1) = .true.
 !

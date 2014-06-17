@@ -57,18 +57,19 @@ subroutine fonno5(noma, indic, nbnoff, noe, na,&
 !
 !     ----------------------------------------------------
 !
-    integer :: jcoor, compte
+    integer ::  compte
     integer :: indice, inp, ino1, ino2, ico
     integer :: m(8)
     real(kind=8) :: vect1(3), vect2(3), vect3(3), vect4(3), norm1
     real(kind=8) :: coord(3, 4)
+    real(kind=8), pointer :: vale(:) => null()
 !
 !     -----------------------------------------------------------------
 !
     call jemarq()
 !
 !     RECUPERATION DE L'ADRESSE DES COORDONNEES
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
     compte = 0
     indice = 0
@@ -106,7 +107,7 @@ subroutine fonno5(noma, indic, nbnoff, noe, na,&
 152              continue
                 do 155 ico = 1, 3
                     do 156 ino1 = 1, nbnoel
-                        coord(ico,ino1) = zr(jcoor-1 + (noe(inp,ino1)- 1)*3+ico )
+                        coord(ico,ino1) = vale((noe(inp,ino1)- 1)*3+ico )
 156                  continue
                     vect1(ico) = coord(ico,2) - coord(ico,1)
 155              continue
@@ -133,7 +134,7 @@ subroutine fonno5(noma, indic, nbnoff, noe, na,&
 !           CALCUL DU VECTEUR DIRECTION DE PROPAGATION
                 do 158 ico = 1, 3
                     do 159 ino1 = 1, 2
-                        coord(ico,ino1) = zr(jcoor-1 + (noe(inp,ino1)- 1)*3+ico )
+                        coord(ico,ino1) = vale((noe(inp,ino1)- 1)*3+ico )
 159                  continue
                     vect1(ico) = coord(ico,1) - coord(ico,2)
 158              continue

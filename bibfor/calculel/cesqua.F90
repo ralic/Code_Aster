@@ -66,8 +66,8 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbma, n1, k
-    integer :: jce3d, jce3v, jce3l, jce3c
+    integer :: jce1k, jce1d,  jce1l, jce1c, nbma, n1, k
+    integer :: jce3d,  jce3l
     integer :: jcmpgd,  ichs, icmp, icmp3, ncmp3
     integer :: ncmpmx, ncmp1, icmp1
     integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, ncmp
@@ -81,6 +81,9 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
     integer, pointer :: vnbpt(:) => null()
     integer, pointer :: vnbsp(:) => null()
     integer, pointer :: nucmp(:) => null()
+    real(kind=8), pointer :: ce1v(:) => null()
+    real(kind=8), pointer :: ce3v(:) => null()
+    character(len=8), pointer :: ce3c(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -240,8 +243,8 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
     call cescre(base, ces3, typces, ma, nomgd,&
                 ncmp3, licmp, vnbpt, vnbsp,nbcmp)
     call jeveuo(ces3//'.CESD', 'L', jce3d)
-    call jeveuo(ces3//'.CESC', 'L', jce3c)
-    call jeveuo(ces3//'.CESV', 'E', jce3v)
+    call jeveuo(ces3//'.CESC', 'L', vk8=ce3c)
+    call jeveuo(ces3//'.CESV', 'E', vr=ce3v)
     call jeveuo(ces3//'.CESL', 'E', jce3l)
 !
 !     5- RECOPIE DE CES1 DANS CES3 :
@@ -251,7 +254,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !
         call jeveuo(ces1//'.CESD', 'L', jce1d)
         call jeveuo(ces1//'.CESC', 'L', jce1c)
-        call jeveuo(ces1//'.CESV', 'L', jce1v)
+        call jeveuo(ces1//'.CESV', 'L', vr=ce1v)
         call jeveuo(ces1//'.CESL', 'L', jce1l)
         ncmp1 = zi(jce1d-1+2)
 !
@@ -259,7 +262,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !
         do icmp1 = 1, ncmp1
             nocmp = zk8(jce1c-1+icmp1)
-            icmp3 = indik8(zk8(jce3c),nocmp,1,ncmp3)
+            icmp3 = indik8(ce3c,nocmp,1,ncmp3)
             do ima = 1, nbma
                 nbpt = zi(jce3d-1+5+4* (ima-1)+1)
                 nbsp = zi(jce3d-1+5+4* (ima-1)+2)
@@ -279,7 +282,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
                             zl(jce3l-1+iad3) = .true.
 !
                             if (tsca .eq. 'R') then
-                                zr(jce3v-1+iad3) = zr(jce1v-1+iad1)** 2
+                                ce3v(iad3) = ce1v(iad1)** 2
                             else
                                 ASSERT(.false.)
                             endif
@@ -288,7 +291,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
                         else
 !
                             if (tsca .eq. 'R') then
-                                zr(jce3v-1+iad3) = zr(jce3v-1+iad3) + zr(jce1v-1+iad1)**2
+                                ce3v(iad3) = ce3v(iad3) + ce1v(iad1)**2
                             else
                                 ASSERT(.false.)
                             endif
@@ -320,7 +323,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
                     if (iad3 .eq. 0) goto 230
 !
                     if (tsca .eq. 'R') then
-                        zr(jce3v-1+iad3) = sqrt( zr(jce3v-1+iad3) )
+                        ce3v(iad3) = sqrt( ce3v(iad3) )
                     endif
 230                 continue
                 end do

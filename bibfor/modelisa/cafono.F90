@@ -66,7 +66,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     integer :: nmocl, nfono, n2dl, n3dl, n6dl, ncoq2d, nbcomp
 !-----------------------------------------------------------------------
     integer :: i, idgex, ii, in, ino, iret
-    integer :: j,  jj, jl, jnbno, jncmp, jno
+    integer :: j,  jj, jl, jnbno,  jno
     integer ::  jprnm, jval, jvalv, nangl, nbec, nbecf
     integer :: nbno, nbnoeu, nsurch, numel
     integer :: igrel, inema
@@ -82,6 +82,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     integer :: nb_elem_late, nb_noel_maxi, jlgns, iexi
     integer, pointer :: desgi(:) => null()
     character(len=8), pointer :: noms_noeuds(:) => null()
+    character(len=8), pointer :: ncmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -285,19 +286,19 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
         endif
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
-    zk8(jncmp-1+1) = 'FX'
-    zk8(jncmp-1+2) = 'FY'
-    zk8(jncmp-1+3) = 'FZ'
-    zk8(jncmp-1+4) = 'MX'
-    zk8(jncmp-1+5) = 'MY'
-    zk8(jncmp-1+6) = 'MZ'
-    zk8(jncmp-1+7) = 'REP'
-    zk8(jncmp-1+8) = 'ALPHA'
-    zk8(jncmp-1+9) = 'BETA'
-    zk8(jncmp-1+10) = 'GAMMA'
+    ncmp(1) = 'FX'
+    ncmp(2) = 'FY'
+    ncmp(3) = 'FZ'
+    ncmp(4) = 'MX'
+    ncmp(5) = 'MY'
+    ncmp(6) = 'MZ'
+    ncmp(7) = 'REP'
+    ncmp(8) = 'ALPHA'
+    ncmp(9) = 'BETA'
+    ncmp(10) = 'GAMMA'
 !
     call jeveuo(ligrch//'.NBNO', 'E', jnbno)
     call jeexin(ligrch//'.LGNS', iexi)

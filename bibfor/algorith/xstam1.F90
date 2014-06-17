@@ -63,11 +63,13 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 !
 !
 !
-    integer :: jmoma, jma, nuno, jconx1, jconx2
+    integer ::  jma, nuno,  jconx2
     integer :: i, im1, im2, im3, ima, itypma, in, imae
     integer :: em, em1, em2, nmaabs, nbnott(3), nno, en
     character(len=8) :: typma
     character(len=19) :: mai
+    integer, pointer :: maille(:) => null()
+    integer, pointer :: connex(:) => null()
 !
     call jemarq()
 !
@@ -78,8 +80,8 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 !
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
-    call jeveuo(nomo//'.MAILLE', 'L', jmoma)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(nomo//'.MAILLE', 'L', vi=maille)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !
@@ -93,7 +95,7 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
         if (typma(1:3) .eq. 'POI') goto 310
 !
 !       ON ZAPPE LES MAILLES SANS MODELE
-        if (zi(jmoma-1+nmaabs) .eq. 0) goto 310
+        if (maille(nmaabs) .eq. 0) goto 310
 !
         em=0
         em1=0
@@ -103,7 +105,7 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 !
 !       BOUCLE SUR LES NOEUDS DE LA MAILLE
         do 311 in = 1, nno
-            nuno = zi(jconx1-1+zi(jconx2+nmaabs-1)+in-1)
+            nuno = connex(zi(jconx2+nmaabs-1)+in-1)
             en = stano(nuno)
             if (en .eq. 1 .or. en .eq. 3) em1=em1+1
             if (en .eq. 2 .or. en .eq. 3) em2=em2+1

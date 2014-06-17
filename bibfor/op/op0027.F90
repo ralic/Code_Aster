@@ -46,11 +46,12 @@ subroutine op0027()
 #include "asterfort/wkvect.h"
 !
     integer :: iret, n1, n, i, m, iak, iadr, iadr1, iadr2
-    integer :: idesc, ialime, iaconl, jrefa2, jrefa1
+    integer :: idesc, ialime, iaconl, jrefa2
     integer :: jump, iret2
     real(kind=8) :: delta
     character(len=8) :: nomres, nommat
     character(len=16) :: nomcmd, concep
+    character(len=24), pointer :: refa(:) => null()
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
@@ -85,7 +86,7 @@ subroutine op0027()
         call jeexin(nomres//'           .VALM', iret)
 !
         if (iret .eq. 0) then
-            call jeveuo(nommat//'           .REFA', 'L', jrefa1)
+            call jeveuo(nommat//'           .REFA', 'L', vk24=refa)
 !
 ! ------ CREATION DES BASES DE DONNEES DE LA MATRICE A GENERER.
 !        SUIVANT LE MODELE DE OP0071
@@ -111,10 +112,10 @@ subroutine op0027()
 !
             call wkvect(nomres//'           .REFA', 'G V K24', 20, jrefa2)
             zk24(jrefa2-1+11)='MPI_COMPLET'
-            zk24(jrefa2-1+1) = zk24(jrefa1-1+1)
-            zk24(jrefa2-1+2) = zk24(jrefa1-1+2)
-            zk24(jrefa2-1+9) = zk24(jrefa1-1+9)
-            zk24(jrefa2-1+10) = zk24(jrefa1-1+10)
+            zk24(jrefa2-1+1) = refa(1)
+            zk24(jrefa2-1+2) = refa(2)
+            zk24(jrefa2-1+9) = refa(9)
+            zk24(jrefa2-1+10) = refa(10)
 !
         endif
 !

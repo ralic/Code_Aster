@@ -38,7 +38,7 @@ subroutine op0036()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iocc, ni, nr, nk, i, j, ir, jvale, jp, ndim, jt
-    integer :: nocc, nocc2, nindi, iii, dimmax, jy, jlng, jprol, jd
+    integer :: nocc, nocc2, nindi, iii, dimmax, jy, jlng,  jd
     integer :: jtrav1, jtrav2, jtrav3, jtrav4, jtrav5, npar
     integer :: longco, nocc3
     complex(kind=8) :: cbid
@@ -50,6 +50,7 @@ subroutine op0036()
     character(len=24) :: trav, ldbl, indic, ltyp, work
     character(len=24) :: vectcr, vectci
     integer :: ivcr, ivci
+    character(len=24), pointer :: prol(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
     data typarr / 'R'       , 'R'       /
     data typarc / 'R'       , 'R'       , 'R'       /
@@ -215,17 +216,17 @@ subroutine op0036()
 !
         call jelira(nfct//'.VALE', 'LONMAX', ndim)
         call jeveuo(nfct//'.VALE', 'L', jvale)
-        call jeveuo(nfct//'.PROL', 'L', jprol)
+        call jeveuo(nfct//'.PROL', 'L', vk24=prol)
 !
-        if (zk24(jprol) .ne. 'FONCTION' .and. zk24(jprol) .ne. 'CONSTANT' .and. zk24(jprol)&
+        if (prol(1) .ne. 'FONCTION' .and. prol(1) .ne. 'CONSTANT' .and. prol(1)&
             .ne. 'FONCT_C') then
             call utmess('F', 'UTILITAI2_78', sk=nomcmd)
         endif
         call getvtx('FONCTION', 'PARA', iocc=1, nbval=2, vect=nmparf,&
                     nbret=ir)
         if (ir .eq. 0) then
-            nmparf(1)=zk24(jprol+2)(1:16)
-            nmparf(2)=zk24(jprol+3)(1:16)
+            nmparf(1)=prol(3)(1:16)
+            nmparf(2)=prol(4)(1:16)
         endif
         if (nmparf(1) .eq. nmparf(2)) then
             call utmess('F', 'UTILITAI2_79')
@@ -233,7 +234,7 @@ subroutine op0036()
 !
 !       ---CAS CREATION D UNE NOUVELLE TABLE
 !       ---
-        if (zk24(jprol) .eq. 'FONCT_C') then
+        if (prol(1) .eq. 'FONCT_C') then
             nmparc(1)=nmparf(1)
             npar =lxlgut(nmparf(2))
             nmparc(2)=nmparf(2)(1:npar)//'_R'

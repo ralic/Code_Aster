@@ -36,7 +36,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !     POST-TRAITEMENT DE "RELA_EFFO_DEPL"
 !
 ! ----------------------------------------------------------------------
-    integer :: jdesc, jredn, jredc, jredd, jinst, nbinst, nbred, inume, jdepl
+    integer ::      nbinst, nbred, inume, jdepl
     integer ::    i, nbmax, ii, ic, imax, nbpara
     parameter    ( nbpara = 8 )
     real(kind=8) :: para(nbpara), xmax, temd, temf, temm
@@ -48,6 +48,11 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     real(kind=8), pointer :: deplmax(:) => null()
     real(kind=8), pointer :: instmax(:) => null()
     integer, pointer :: nlin(:) => null()
+    character(len=24), pointer :: redn(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: redc(:) => null()
+    real(kind=8), pointer :: redd(:) => null()
 !
     data nopara / 'RELATION' , 'NOEUD'      , 'CMP',&
      &              'PHASE'    , 'INST_INIT'  , 'INST_FIN',&
@@ -67,21 +72,21 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, nbpara, nopara, typara)
 !
-    call jeveuo(nomk19//'.DESC', 'L', jdesc)
-    call jeveuo(nomk19//'.REDN', 'L', jredn)
-    call jeveuo(nomk19//'.REDC', 'L', jredc)
-    call jeveuo(nomk19//'.REDD', 'L', jredd)
-    call jeveuo(nomk19//'.DISC', 'L', jinst)
+    call jeveuo(nomk19//'.DESC', 'L', vi=desc)
+    call jeveuo(nomk19//'.REDN', 'L', vk24=redn)
+    call jeveuo(nomk19//'.REDC', 'L', vi=redc)
+    call jeveuo(nomk19//'.REDD', 'L', vr=redd)
+    call jeveuo(nomk19//'.DISC', 'L', vr=disc)
     call jelira(nomk19//'.DISC', 'LONUTI', nbinst)
-    nbred = zi(jdesc+3)
+    nbred = desc(4)
 !
     do 10 inume = 0, nbred-1
-        if (zk24(jredn+inume)(1:16) .eq. nomk24) goto 12
+        if (redn(inume+1)(1:16) .eq. nomk24) goto 12
 10  end do
     call utmess('F', 'PREPOST4_57')
 !
 12  continue
-    valek(1) = zk24(jredn+inume)(17:24)
+    valek(1) = redn(inume+1)(17:24)
     valek(2) = noeu
     valek(3) = cmp
 !
@@ -91,10 +96,10 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     AS_ALLOCATE(vr=instmax, size=nbinst)
     AS_ALLOCATE(vr=deplmax, size=nbinst)
     do 14 i = 0, nbinst-1
-        zr(jdepl+i) = zr(jredd+inume+nbred*i)
-        nlin(1+i) = zi(jredc+inume+nbred*i)
+        zr(jdepl+i) = redd(1+inume+nbred*i)
+        nlin(1+i) = redc(1+inume+nbred*i)
 14  end do
-    call foc1ma(nbinst, zr(jinst), zr(jdepl), nbmax, instmax,&
+    call foc1ma(nbinst, disc, zr(jdepl), nbmax, instmax,&
 deplmax)
 !
 !     --- RECHERCHE DES PHASES NON-LINEAIRE ---
@@ -113,7 +118,7 @@ deplmax)
             imax = i
             ic = 1
             ii = ii + 1
-            temd = zr(jinst+i)
+            temd = disc(1+i)
         else if (nlin(1+i) .eq. 1) then
             if (abs(zr(jdepl+i)) .gt. abs(xmax)) then
                 xmax = zr(jdepl+i)
@@ -121,8 +126,8 @@ deplmax)
             endif
         else if (nlin(1+i).eq.0 .and. ic.eq.1) then
             ic = 0
-            temf = zr(jinst+i-1)
-            temm = zr(jinst+imax)
+            temf = disc(i)
+            temm = disc(imax+1)
             para(1) = temd
             para(2) = temf
             para(3) = xmax
@@ -132,8 +137,8 @@ deplmax)
         endif
 30  end do
     if (ic .eq. 1) then
-        temf = zr(jinst+nbinst-1)
-        temm = zr(jinst+imax)
+        temf = disc(nbinst)
+        temm = disc(imax+1)
         para(1) = temd
         para(2) = temf
         para(3) = xmax

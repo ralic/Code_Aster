@@ -52,13 +52,23 @@ subroutine giecas(nfic, ndim, nbobj)
 !
     character(len=1) :: cbid
 !-----------------------------------------------------------------------
-    integer :: i, iacoor, iacuel, iadsob, ianema, ianoob, iaobno
-    integer :: iaobnu, iaptin, iaptno, iaptnu, iasoob, iassob, icok
+    integer :: i,    ianema
+    integer ::  iaptin,     icok
     integer :: icoma, iecrit, iecrma, ii, il, ima, imb
     integer :: ino, inu, inutri, iret, itot, itrnu, j
     integer :: jj, k, kk, l, nbelc, nbele, nbelim
     integer :: nbelt, nbfois, nbno, nbnono, nbnoto, nbobno, nbrest
     integer :: nbsoob, ncoo, nmelim, nono, numno
+    character(len=8), pointer :: objet_nom(:) => null()
+    real(kind=8), pointer :: coordo(:) => null()
+    integer, pointer :: objet_num(:) => null()
+    character(len=8), pointer :: point_nom(:) => null()
+    integer, pointer :: descobj(:) => null()
+    character(len=8), pointer :: vnomobj(:) => null()
+    integer, pointer :: soob(:) => null()
+    integer, pointer :: ssob(:) => null()
+    integer, pointer :: point_num(:) => null()
+    integer, pointer :: cumul_ele(:) => null()
 !-----------------------------------------------------------------------
     data cbid/' '/
 !
@@ -68,19 +78,19 @@ subroutine giecas(nfic, ndim, nbobj)
     call jemarq()
     call giinco()
 !
-    call jeveuo('&&GILIRE.COORDO   ', 'L', iacoor)
+    call jeveuo('&&GILIRE.COORDO   ', 'L', vr=coordo)
     call jelira('&&GILIRE.COORDO   ', 'LONMAX', ncoo)
 !
     call jeexin('&&GILIRE.NOMOBJ', iret)
     if (iret .eq. 0) then
         call utmess('F', 'PREPOST_46')
     endif
-    call jeveuo('&&GILIRE.NOMOBJ', 'L', ianoob)
-    call jeveuo('&&GILIRE.DESCOBJ', 'L', iadsob)
-    call jeveuo('&&GILIRE.CUMUL_ELE', 'L', iacuel)
+    call jeveuo('&&GILIRE.NOMOBJ', 'L', vk8=vnomobj)
+    call jeveuo('&&GILIRE.DESCOBJ', 'L', vi=descobj)
+    call jeveuo('&&GILIRE.CUMUL_ELE', 'L', vi=cumul_ele)
 !
-    call jeveuo('&&GILIRE.OBJET_NOM', 'L', iaobno)
-    call jeveuo('&&GILIRE.OBJET_NUM', 'L', iaobnu)
+    call jeveuo('&&GILIRE.OBJET_NOM', 'L', vk8=objet_nom)
+    call jeveuo('&&GILIRE.OBJET_NUM', 'L', vi=objet_num)
 !
     call jeveuo('&&GILIRE.NUMANEW', 'L', ianema)
 !
@@ -130,7 +140,7 @@ subroutine giecas(nfic, ndim, nbobj)
         nono = ino
     endif
     call codent(nono, 'G', k7bid)
-    write(nfic,1001) 'N'//k7bid, (zr(iacoor-1+ndim*(nono-1)+j),j=&
+    write(nfic,1001) 'N'//k7bid, (coordo(ndim*(nono-1)+j),j=&
         1,ndim)
     1 end do
 !
@@ -157,7 +167,7 @@ subroutine giecas(nfic, ndim, nbobj)
 18  end do
     imb = 1
     do 14 ima = 1, nbobno
-        ii = zi(iaobnu+ima-1)
+        ii = objet_num(ima)
         if (.not.(zl(iecrit+ii-1))) then
             zi(itrnu+imb-1) = ii
             imb =imb + 1
@@ -166,13 +176,13 @@ subroutine giecas(nfic, ndim, nbobj)
 14  end do
 !
     do 15 i = 1, nbobno
-        ii = zi(iaobnu+i-1)
-        nbsoob = zi(iadsob-1+4*(ii-1)+1)
-        nomobj=zk8(ianoob-1+2*(ii-1)+1)
+        ii = objet_num(i)
+        nbsoob = descobj(4*(ii-1)+1)
+        nomobj=vnomobj(2*(ii-1)+1)
         if (nbsoob .ne. 0) then
-            call jeveuo('&&GILIRE'//nomobj//'.SOUSOB', 'L', iasoob)
+            call jeveuo('&&GILIRE'//nomobj//'.SOUSOB', 'L', vi=soob)
             do 16 kk = 1, nbsoob
-                jj = zi(iasoob+kk-1)
+                jj = soob(kk)
                 if (.not.(zl(iecrit+jj-1))) then
                     zi(itrnu+imb-1)= jj
                     zl(iecrit+jj-1)=.true.
@@ -207,10 +217,10 @@ subroutine giecas(nfic, ndim, nbobj)
 12  continue
 13  continue
 !
-    nbno =zi(iadsob-1+4*(i-1)+3)
-    nbele =zi(iadsob-1+4*(i-1)+4)
-    nomobj =zk8(ianoob-1+2*(i-1)+1)
-    tymail =zk8(ianoob-1+2*(i-1)+2)
+    nbno =descobj(4*(i-1)+3)
+    nbele =descobj(4*(i-1)+4)
+    nomobj =vnomobj(2*(i-1)+1)
+    tymail =vnomobj(2*(i-1)+2)
     nbelt = nbelt+nbele
     if (trouve) nbelc = nbelc +nbele
 !
@@ -236,17 +246,17 @@ subroutine giecas(nfic, ndim, nbobj)
 !
     call jeexin('&&GILIRE.POINT_NOM', iret)
     if (iret .gt. 0) then
-        call jeveuo('&&GILIRE.POINT_NOM', 'L', iaptno)
-        call jeveuo('&&GILIRE.POINT_NUM', 'L', iaptnu)
+        call jeveuo('&&GILIRE.POINT_NOM', 'L', vk8=point_nom)
+        call jeveuo('&&GILIRE.POINT_NUM', 'L', vi=point_num)
         call jelira('&&GILIRE.POINT_NOM', 'LONMAX', nbnono)
     else
         nbnono=0
     endif
 !
     do 3, i=1,nbnono
-    nomno =zk8(iaptno-1+i)
+    nomno =point_nom(i)
     if (nomno(1:1) .eq. '#') goto 3
-    numno =zi (iaptnu-1+i)
+    numno =point_num(i)
     call codent(numno, 'G', k7bid)
     write(nfic,*) 'GROUP_NO'
     write(nfic,1002) nomno,'N'//k7bid
@@ -262,13 +272,13 @@ subroutine giecas(nfic, ndim, nbobj)
     do 4, ii=1,nbobj
     trouve =.false.
     do 21 inu = 1, nbobno
-        if (zi(iaobnu-1+inu) .eq. ii) then
+        if (objet_num(inu) .eq. ii) then
             trouve = .true.
-            nomobg=zk8(iaobno-1+inu)
+            nomobg=objet_nom(inu)
             if (nomobg(1:1) .eq. '#') goto 21
             write(nfic,*) 'GROUP_MA'
             write(nfic,*) '  ',nomobg
-            nbsoob =zi(iadsob-1+4*(ii-1)+1)
+            nbsoob =descobj(4*(ii-1)+1)
             if (nbsoob .eq. 0) then
 !
 !           -- ON FAIT COMME SI L'OBJET SE CONTENAIT LUI-MEME:
@@ -276,8 +286,8 @@ subroutine giecas(nfic, ndim, nbobj)
                 magoui=.true.
             else
                 magoui=.false.
-                nomobj=zk8(ianoob-1+2*(ii-1)+1)
-                call jeveuo('&&GILIRE'//nomobj//'.SOUSOB', 'L', iassob)
+                nomobj=vnomobj(2*(ii-1)+1)
+                call jeveuo('&&GILIRE'//nomobj//'.SOUSOB', 'L', vi=ssob)
             endif
             do 5,j=1,nbsoob
 !
@@ -285,14 +295,14 @@ subroutine giecas(nfic, ndim, nbobj)
             if (magoui) then
                 jj= ii
             else
-                jj= zi(iassob-1+j)
+                jj= ssob(j)
             endif
-            nomobj=zk8(ianoob-1+2*(jj-1)+1)
-            nbno =zi(iadsob-1+4*(jj-1)+3)
-            nbele =zi(iadsob-1+4*(jj-1)+4)
+            nomobj=vnomobj(2*(jj-1)+1)
+            nbno =descobj(4*(jj-1)+3)
+            nbele =descobj(4*(jj-1)+4)
             nbfois = nbele/7
             nbrest= nbele-7*nbfois
-            icok= zi(iacuel-1+jj)
+            icok= cumul_ele(jj)
 !
             do 6, k=1,nbfois
             do 7, kk=1,7

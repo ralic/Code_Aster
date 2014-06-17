@@ -67,17 +67,18 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, iret, j,  llrefe
+    integer :: ibid, iret, j
     integer :: nc, nf, nn, ns
     real(kind=8), pointer :: dplcho(:) => null()
+    character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
     call gettco(numddl, typnum)
 !
     if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
-        call jeveuo(numddl//'.NUME.REFE', 'L', llrefe)
-        mdgene = zk24(llrefe)
+        call jeveuo(numddl//'.NUME.REFE', 'L', vk24=refe)
+        mdgene = refe(1)
         mdssno = mdgene(1:14)//'.MODG.SSNO'
         numero(1:14) = numddl
     endif

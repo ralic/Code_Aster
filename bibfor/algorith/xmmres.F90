@@ -67,16 +67,14 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
 !
     integer :: ifm, niv
-    integer :: jcesv1, jcesv2, jcesv3, jcesv4, jcesv5
-    integer :: jcesl1, jcesl2, jcesl3, jcesl4, jcesl5, jtmdim, ndime
+    integer :: jcesl1, jcesl2, jcesl3, jcesl4, jcesl5,  ndime
     integer :: jcesd1, jcesd2, jcesd3, jcesd4, jcesd5
-    integer :: jcont, jconl, jfrot, jfrol, jdepl, jlagv
-    integer :: jcesk1, nbma, ima, iad, i, ia, in, iadb, k
-    integer :: ninter, jmai, itypma, nuno, jconx1, jconx2, j, ndim
-    integer :: jdepv, jcnsvr, jcnslr
+    integer ::  jconl,  jfrol, jdepl
+    integer ::  nbma, ima, iad, i, ia, in, iadb, k
+    integer :: ninter,  itypma, nuno,  jconx2, j, ndim
+    integer ::   jcnslr
     integer :: nsom, nosom(2), ar(12, 3), nbar, zresu
     integer :: zxain
-    integer :: jxc
     integer :: nbno
     character(len=8) :: noma, typma
     character(len=19) :: depdes, depcn, fcont, fconts
@@ -92,6 +90,21 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     real(kind=8) :: lagsf, rr, rnxyz(3), rn, alpha, longar, levels
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: rnx, rny, rnz, rtxyz(3), rtgx, rtgy, rtgz, rtax, rtay, rtaz
+    integer, pointer :: cesv1(:) => null()
+    real(kind=8), pointer :: cesv2(:) => null()
+    real(kind=8), pointer :: cesv3(:) => null()
+    real(kind=8), pointer :: cesv4(:) => null()
+    real(kind=8), pointer :: cesv5(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    real(kind=8), pointer :: cnsvr(:) => null()
+    real(kind=8), pointer :: vcont(:) => null()
+    real(kind=8), pointer :: depv(:) => null()
+    real(kind=8), pointer :: frot(:) => null()
+    real(kind=8), pointer :: lagv(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -148,11 +161,11 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     call jeveuo(basecs//'.CESD', 'L', jcesd4)
     call jeveuo(lstno//'.CESD', 'L', jcesd5)
 !
-    call jeveuo(faclos//'.CESV', 'L', jcesv1)
-    call jeveuo(aintes//'.CESV', 'L', jcesv2)
-    call jeveuo(pintes//'.CESV', 'L', jcesv3)
-    call jeveuo(basecs//'.CESV', 'L', jcesv4)
-    call jeveuo(lstno//'.CESV', 'L', jcesv5)
+    call jeveuo(faclos//'.CESV', 'L', vi=cesv1)
+    call jeveuo(aintes//'.CESV', 'L', vr=cesv2)
+    call jeveuo(pintes//'.CESV', 'L', vr=cesv3)
+    call jeveuo(basecs//'.CESV', 'L', vr=cesv4)
+    call jeveuo(lstno//'.CESV', 'L', vr=cesv5)
 !
     call jeveuo(faclos//'.CESL', 'L', jcesl1)
     call jeveuo(aintes//'.CESL', 'L', jcesl2)
@@ -165,14 +178,14 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
 ! --- DONNEES RELATIVES AU MAILLAGE
 !
-    call jeveuo(faclos//'.CESK', 'L', jcesk1)
-    noma = zk8(jcesk1-1+1)
+    call jeveuo(faclos//'.CESK', 'L', vk8=cesk)
+    noma = cesk(1)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-    call jeveuo(noma//'.TYPMAIL', 'L', jmai)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 ! --- SD TEMPORAIRE POUR VERIF NOEUDS DEJA CALCULES
 !
@@ -187,27 +200,27 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
 ! --- ACCES CHAM_NO
 !
-    call jeveuo(lagcn//'.CNSV', 'L', jlagv)
-    call jeveuo(depcn//'.CNSV', 'L', jdepv)
+    call jeveuo(lagcn//'.CNSV', 'L', vr=lagv)
+    call jeveuo(depcn//'.CNSV', 'L', vr=depv)
     call jeveuo(depcn//'.CNSL', 'L', jdepl)
-    call jeveuo(fctcn//'.CNSV', 'L', jcont)
+    call jeveuo(fctcn//'.CNSV', 'L', vr=vcont)
     call jeveuo(fctcn//'.CNSL', 'L', jconl)
-    call jeveuo(ffrocn//'.CNSV', 'L', jfrot)
+    call jeveuo(ffrocn//'.CNSV', 'L', vr=frot)
     call jeveuo(ffrocn//'.CNSL', 'L', jfrol)
 !
 ! --- ACCES AU CHAM_NO_S VALE_CONT
 !
-    call jeveuo(cnsinr//'.CNSV', 'E', jcnsvr)
+    call jeveuo(cnsinr//'.CNSV', 'E', vr=cnsvr)
     call jeveuo(cnsinr//'.CNSL', 'E', jcnslr)
 !
 ! --- BOUCLE SUR LES MAILLES
 !
     do ima = 1, nbma
 !
-        itypma=zi(jmai-1+ima)
+        itypma=typmail(ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !       NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-        ndime= zi(jtmdim-1+itypma)
+        ndime= tmdim(itypma)
 !
 !       ON ZAPPE LES MAILLES DE BORD (MAILLES NON PRINCIPALES)
         if (ndim .ne. ndime) goto 100
@@ -218,28 +231,28 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                     1, 1, iad)
         if (iad .le. 0) goto 100
 !
-        call jeveuo(modele//'.XFEM_CONT', 'L', jxc)
-        ninter = zi(jcesv1-1+iad)
+        call jeveuo(modele//'.XFEM_CONT', 'L', vi=xfem_cont)
+        ninter = cesv1(iad)
 !
 !       BOUCLE SUR LES POINTS D'INTERSECTION
         do i = 1, ninter
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+1, iad)
             ASSERT(iad.gt.0)
-            ia = nint(zr(jcesv2-1+iad))
+            ia = nint(cesv2(iad))
             ASSERT(ia.le.nbar)
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+2, iad)
             ASSERT(iad.gt.0)
-            in = nint(zr(jcesv2-1+iad))
+            in = nint(cesv2(iad))
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+3, iad)
             ASSERT(iad.gt.0)
-            longar =zr(jcesv2-1+iad)
+            longar =cesv2(iad)
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+4, iad)
             ASSERT(iad.gt.0)
-            alpha = zr(jcesv2-1+iad)
+            alpha = cesv2(iad)
 !
 !         ADRESSE DU DEBUT MEMOIRE DE LA BASE COVARIANTE
             call cesexi('S', jcesd4, jcesl4, ima, 1,&
@@ -252,19 +265,19 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                 call cesexi('S', jcesd3, jcesl3, ima, 1,&
                             1, ndim*(i-1)+j, iad)
                 ASSERT(iad.gt.0)
-                xyz(j)=zr(jcesv3-1+iad)
+                xyz(j)=cesv3(iad)
             end do
 !
 !         RECUP DES NUMEROS GLOBAUX DES NOEUDS DE L'ARETE/NOEUD SOMMET
             if (in .gt. 0) then
                 nsom = 1
-                nosom(1) = zi(jconx1-1+zi(jconx2+ima-1)+in-1)
+                nosom(1) = connex(zi(jconx2+ima-1)+in-1)
                 ff(1)=1.d0
                 mult=0.5d0
             else if (ia.gt.0) then
                 nsom = 2
-                nosom(1)=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,1)-1)
-                nosom(2)=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,2)-1)
+                nosom(1)=connex(zi(jconx2+ima-1)+ar(ia,1)-1)
+                nosom(2)=connex(zi(jconx2+ima-1)+ar(ia,2)-1)
                 ff(1) = 1.d0 - alpha/longar
                 ff(2) = alpha/longar
                 mult=1.0d0
@@ -273,13 +286,13 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             endif
 !
 !         RECUPERATION DU NUMERO DU NOEUD OU EST STOCKE LE LAGS_C
-            if (zi(jxc) .eq. 1 .or. zi(jxc) .eq. 3) then
+            if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 3) then
 !           CAS LAGRANGES AUX NOEUDS
 !           VALE_CONT SUR LE PREMIER NOEUD DE L'ARETE
                 if (ia .ne. 0) then
-                    nuno=zi(jconx1-1+zi(jconx2+ima-1)+ar(ia,1)-1)
+                    nuno=connex(zi(jconx2+ima-1)+ar(ia,1)-1)
                 else if (in.ne.0) then
-                    nuno=zi(jconx1-1+zi(jconx2+ima-1)+in-1)
+                    nuno=connex(zi(jconx2+ima-1)+in-1)
                 endif
             endif
 !         VERIFICATION SI ON A DEJA ENREGISTRE CE POINT
@@ -291,7 +304,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                             1, 1, iad)
 !         C'EST FAUX MAIS C'ETAIT DEJA COMME CA
 !         IL FAUT RECUPERER LES FF DE FORMES
-                levels = levels + zr(jcesv5-1+iad)
+                levels = levels + cesv5(iad)
             end do
             rr =sqrt(abs(levels))
 !
@@ -300,9 +313,9 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             tau1(3)=0.d0
 !
             do j = 1, ndim
-                n(j) =zr(jcesv4-1+iadb-1+j)
-                tau1(j)=zr(jcesv4-1+iadb-1+ndim+j)
-                if (ndim .eq. 3) tau2(j)=zr(jcesv4-1+iadb-1+2*ndim+j)
+                n(j) =cesv4(iadb-1+j)
+                tau1(j)=cesv4(iadb-1+ndim+j)
+                if (ndim .eq. 3) tau2(j)=cesv4(iadb-1+2*ndim+j)
             end do
 !
 !         INDICATEUR DE CONTACT
@@ -314,11 +327,11 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                 do k = 1, nsom
 !             DDL HEAVISIDE
                     if (zl(jdepl-1+2*ndim*(nosom(k)-1)+j)) then
-                        saut(j) = saut(j) - 2.d0 * ff(k) * zr(jdepv-1+ 2*ndim*(nosom(k)-1)+j)
+                        saut(j) = saut(j) - 2.d0 * ff(k) * depv(2*ndim*(nosom(k)-1)+j)
                     endif
 !             DDL ASYMPTOTIQUE
                     if (zl(jdepl-1+2*ndim*(nosom(k)-1)+ndim+j)) then
-                        saut(j) = saut(j) - 2.d0 * ff(k) * rr * zr(jdepv-1+2*ndim*(nosom(k)-1)+nd&
+                        saut(j) = saut(j) - 2.d0 * ff(k) * rr * depv(2*ndim*(nosom(k)-1)+nd&
                                   &im+j)
                     endif
                 end do
@@ -329,15 +342,15 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             call vecini(3, 0.d0, rnxyz)
             do j = 1, ndim
                 do k = 1, nsom
-                    rnxyz(j) = rnxyz(j) + ff(k) * mult * zr(jcont-1+3* ndim*(nosom(k)-1)+j)
+                    rnxyz(j) = rnxyz(j) + ff(k) * mult * vcont(3* ndim*(nosom(k)-1)+j)
 !             DDL HEAVISIDE
                     if (zl(jconl-1+3*ndim*(nosom(k)-1)+ndim+1)) then
-                        rnxyz(j) = rnxyz(j) - ff(k) * mult * zr(jcont- 1+3*ndim*(nosom(k)-1)+ndim&
+                        rnxyz(j) = rnxyz(j) - ff(k) * mult * vcont(3*ndim*(nosom(k)-1)+ndim&
                                    &+j)
                     endif
 !             DDL ASYMPTOTIQUE
                     if (zl(jconl-1+3*ndim*(nosom(k)-1)+2*ndim+1)) then
-                        rnxyz(j) = rnxyz(j) - ff(k) * rr * mult * zr(jcont-1+3*ndim*(nosom(k)-1)+&
+                        rnxyz(j) = rnxyz(j) - ff(k) * rr * mult * vcont(3*ndim*(nosom(k)-1)+&
                                    &2*ndim+j)
                     endif
                 end do
@@ -363,23 +376,23 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
             do j = 1, ndim
                 do k = 1, nsom
-                    lagfro(j) = lagfro(j) + ff(k) * zr(jlagv-1+ndim*( nosom(k)-1)+2) * tau1(j)
-                    if (ndim .eq. 3) lagfro(j) = lagfro(j) + ff(k) * zr(jlagv-1+ndim*(nosom(k)-1)&
+                    lagfro(j) = lagfro(j) + ff(k) * lagv(ndim*( nosom(k)-1)+2) * tau1(j)
+                    if (ndim .eq. 3) lagfro(j) = lagfro(j) + ff(k) * lagv(ndim*(nosom(k)-1)&
                                                  &+3) * tau2(j)
                 end do
             end do
 !
             do j = 1, ndim
                 do k = 1, nsom
-                    rtxyz(j) = rtxyz(j) + ff(k) * mult * zr(jfrot-1+3* ndim*(nosom(k)-1)+j)
+                    rtxyz(j) = rtxyz(j) + ff(k) * mult * frot(3* ndim*(nosom(k)-1)+j)
 !             DDL HEAVISIDE
                     if (zl(jfrol-1+3*ndim*(nosom(k)-1)+ndim+1)) then
-                        rtxyz(j) = rtxyz(j) - ff(k) * mult * zr(jfrot- 1+3*ndim*(nosom(k)-1)+ndim&
+                        rtxyz(j) = rtxyz(j) - ff(k) * mult * frot(3*ndim*(nosom(k)-1)+ndim&
                                    &+j)
                     endif
 !             DDL ASYMPTOTIQUE
                     if (zl(jfrol-1+3*ndim*(nosom(k)-1)+2*ndim+1)) then
-                        rtxyz(j) = rtxyz(j) - ff(k) * rr * mult * zr(jfrot-1+3*ndim*(nosom(k)-1)+&
+                        rtxyz(j) = rtxyz(j) - ff(k) * rr * mult * frot(3*ndim*(nosom(k)-1)+&
                                    &2*ndim+j)
                     endif
                 end do
@@ -407,27 +420,27 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             endif
 !
 !         LAGRANGES AUX NOEUDS, VALE_CONT SUR LE PREMIER NOEUD DE L'AR
-            zr(jcnsvr-1+zresu*(nuno-1)+1)=cont
-            zr(jcnsvr-1+zresu*(nuno-1)+2)=jeu
-            zr(jcnsvr-1+zresu*(nuno-1)+3)=rn
-            zr(jcnsvr-1+zresu*(nuno-1)+4)=rnx
-            zr(jcnsvr-1+zresu*(nuno-1)+5)=rny
-            zr(jcnsvr-1+zresu*(nuno-1)+6)=rnz
-            zr(jcnsvr-1+zresu*(nuno-1)+9)=gli
-            zr(jcnsvr-1+zresu*(nuno-1)+10)=rtax
-            zr(jcnsvr-1+zresu*(nuno-1)+11)=rtay
-            zr(jcnsvr-1+zresu*(nuno-1)+12)=rtaz
-            zr(jcnsvr-1+zresu*(nuno-1)+13)=rtgx
-            zr(jcnsvr-1+zresu*(nuno-1)+14)=rtgy
-            zr(jcnsvr-1+zresu*(nuno-1)+15)=rtgz
-            zr(jcnsvr-1+zresu*(nuno-1)+16)= rnx + rtax + rtgx
-            zr(jcnsvr-1+zresu*(nuno-1)+17)= rny + rtay + rtgy
-            zr(jcnsvr-1+zresu*(nuno-1)+18)= rnz + rtaz + rtgz
-            zr(jcnsvr-1+zresu*(nuno-1)+19)= sqrt((rnx+rtax+rtgx)**2 +&
+            cnsvr(zresu*(nuno-1)+1)=cont
+            cnsvr(zresu*(nuno-1)+2)=jeu
+            cnsvr(zresu*(nuno-1)+3)=rn
+            cnsvr(zresu*(nuno-1)+4)=rnx
+            cnsvr(zresu*(nuno-1)+5)=rny
+            cnsvr(zresu*(nuno-1)+6)=rnz
+            cnsvr(zresu*(nuno-1)+9)=gli
+            cnsvr(zresu*(nuno-1)+10)=rtax
+            cnsvr(zresu*(nuno-1)+11)=rtay
+            cnsvr(zresu*(nuno-1)+12)=rtaz
+            cnsvr(zresu*(nuno-1)+13)=rtgx
+            cnsvr(zresu*(nuno-1)+14)=rtgy
+            cnsvr(zresu*(nuno-1)+15)=rtgz
+            cnsvr(zresu*(nuno-1)+16)= rnx + rtax + rtgx
+            cnsvr(zresu*(nuno-1)+17)= rny + rtay + rtgy
+            cnsvr(zresu*(nuno-1)+18)= rnz + rtaz + rtgz
+            cnsvr(zresu*(nuno-1)+19)= sqrt((rnx+rtax+rtgx)**2 +&
             (rny+rtay+rtgy)**2 + (rnz+rtaz+rtgz)**2)
-            zr(jcnsvr-1+zresu*(nuno-1)+25)=xyz(1)
-            zr(jcnsvr-1+zresu*(nuno-1)+26)=xyz(2)
-            zr(jcnsvr-1+zresu*(nuno-1)+27)=xyz(3)
+            cnsvr(zresu*(nuno-1)+25)=xyz(1)
+            cnsvr(zresu*(nuno-1)+26)=xyz(2)
+            cnsvr(zresu*(nuno-1)+27)=xyz(3)
 !
             zl(jcnslr-1+zresu*(nuno-1)+1)=.true.
             zl(jcnslr-1+zresu*(nuno-1)+2)=.true.

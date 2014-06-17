@@ -61,7 +61,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     integer :: jlchin, nbchmx
 !-----------------------------------------------------------------------
     parameter (nbchmx=14)
-    integer :: jchar, jinf, jtyp
+    integer :: jchar, jinf
     integer :: ibid, iret, nchar, k, icha, numchm, ier, nchin
     character(len=5) :: suffix
     character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nompar(nbchmx)
@@ -73,6 +73,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     character(len=24) :: ligrmo, ligrch, lchin(27), lchout(1)
     character(len=24) :: charge, infcha
     logical :: bidon
+    character(len=8), pointer :: type(:) => null()
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
      &   '.F1D1D','.PRESS','.FCO3D','.FCO2D','.FLUX','.PESAN','.VEASS','.EFOND'/
@@ -166,11 +167,11 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
                 lchin(1) = ligrch(1:13)//nomlig(k)//suffix
                 call jeexin(lchin(1), iret)
                 if (iret .ne. 0) then
-                    call jeveuo(nomcha//'.TYPE', 'L', jtyp)
-                    if (zk8(jtyp) .eq. 'MECA_RE ') then
+                    call jeveuo(nomcha//'.TYPE', 'L', vk8=type)
+                    if (type(1) .eq. 'MECA_RE ') then
                         option = 'CHAR_MECA_'//nomopr(k)
                         lpain(1) = 'P'//nompar(k)
-                    else if (zk8(jtyp).eq.'MECA_FO ') then
+                    else if (type(1).eq.'MECA_FO ') then
                         option = 'CHAR_MECA_'//nomopf(k)
                         lpain(1) = 'P'//nompaf(k)
                     endif

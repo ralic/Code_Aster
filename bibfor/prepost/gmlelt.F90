@@ -61,10 +61,11 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
     integer :: imes, nbmxte, nbtag, i, ij, k, icurgr
     integer :: nbgrou, indgro, ima, ibid, ityp, ino, node, indmax
     integer :: jnuma, jtypma, jgroma, jnbnma, jnoma, jnbmag, jnbtym
-    integer :: jindma, jdetr, jtag, jgr
+    integer :: jindma,  jtag, jgr
 !
     parameter   (nbmxte=19)
     integer :: nbno(nbmxte)
+    integer, pointer :: noeuds(:) => null()
     data        nbno/ 2, 3, 4, 4, 8, 6, 5, 3, 6, 9,10,27,&
      &                      18,14, 1, 8,20,15,13/
 !
@@ -115,7 +116,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
 ! --- NUMEROS DES GROUPES DE MAILLES :
     call wkvect('&&PREGMS.INDICE.GROUP_MA', 'V V I', nbmail, jindma)
 ! --- INDICATION DE DESTRUCTION DES NOEUDS
-    call jeveuo('&&PREGMS.DETR.NOEUDS', 'E', jdetr)
+    call jeveuo('&&PREGMS.DETR.NOEUDS', 'E', vi=noeuds)
 ! --- TAGS POUR LE FORMAT VERSION 2 :
 ! --- DIMENSIONNE A 2*NBMAIL CAR 2 TAGS PAS DEFAUT DANS GMSH
     if (versio .eq. 2) then
@@ -170,7 +171,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
         ityp = zi(jtypma+ima-1)
         do 12 ino = 1, nbnoma(ityp)
             node = zi(jnoma+ij+nuconn(ityp,ino)-1)
-            zi(jdetr+node) = 1
+            noeuds(node+1) = 1
 12      continue
 !
         if (icurgr .ne. zi(jgroma+ima-1)) then

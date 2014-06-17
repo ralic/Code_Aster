@@ -62,17 +62,23 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     character(len=19) :: imped, lismat(2), nume91, solveu
     character(len=24) :: indin1
     integer :: i1, ibid, iret, j1, k1, l1, nbeq1, nbmod, isst1, llint1, nbddl1
-    integer :: tach1, lomeg, lmod1, lmass, lbid, ltrsst, lraid, leff1, leff2
-    integer :: lintf, nbint, ideeq, lcopy1, lsecme, limped, unit, numsst
+    integer :: tach1,  lmod1,  lbid,   leff1
+    integer :: lintf, nbint,  lcopy1, lsecme, limped, unit, numsst
     real(kind=8) :: travm, travk, traint, comlin(2), shift
     character(len=24) :: lisint
+    real(kind=8), pointer :: mode_sst1_eff2(:) => null()
+    real(kind=8), pointer :: pulsa_propres(:) => null()
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: matrice_mass(:) => null()
+    real(kind=8), pointer :: trav_sst(:) => null()
+    integer, pointer :: matrice_raid(:) => null()
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     i1=numsst
 !
 !-- RECHERCHE DU MACRO ELEMENT ASSOCIE A LA SST
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
-    call jeveuo(zk8(ibid)//'      .NUME.DEEQ', 'L', ideeq)
+    call jeveuo(zk8(ibid)//'      .NUME.DEEQ', 'L', vi=deeq)
 !
 !------------------------------------------------------------C
 !--                                                        --C
@@ -118,14 +124,14 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     call jeveuo(jexnum(rest1//'           .TACH', 1), 'L', tach1)
     call jeveuo('&&OP0091.MODE_SST1', 'E', lmod1)
     call jeveuo('&&OP0091.MODE_SST1_EFF1', 'E', leff1)
-    call jeveuo('&&OP0091.MODE_SST1_EFF2', 'E', leff2)
+    call jeveuo('&&OP0091.MODE_SST1_EFF2', 'E', vr=mode_sst1_eff2)
     call jeveuo('&&OP0091.MODE_SST1_COPY', 'E', lcopy1)
     call jeveuo(lisint, 'L', lintf)
 !
-    call jeveuo('&&OP0091.MATRICE_MASS', 'L', lmass)
-    call jeveuo('&&OP0091.MATRICE_RAID', 'L', lraid)
-    call jeveuo('&&OP0091.TRAV_SST', 'E', ltrsst)
-    call jeveuo('&&OP0091.PULSA_PROPRES', 'L', lomeg)
+    call jeveuo('&&OP0091.MATRICE_MASS', 'L', vi=matrice_mass)
+    call jeveuo('&&OP0091.MATRICE_RAID', 'L', vi=matrice_raid)
+    call jeveuo('&&OP0091.TRAV_SST', 'E', vr=trav_sst)
+    call jeveuo('&&OP0091.PULSA_PROPRES', 'L', vr=pulsa_propres)
     call jeveuo('&&OP0091.MODE_INTF_DEPL', 'E', lsecme)
 !
 !-- BOUCLE SUR LES MODES
@@ -136,7 +142,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
         call lceqvn(nbeq1, zr(ibid), zr(lcopy1))
 !
 !-- ANNULATION DES DDL DE LAGRANGE
-        call zerlag(nbeq1, zi(ideeq), vectr=zr(lcopy1))
+        call zerlag(nbeq1, deeq, vectr=zr(lcopy1))
 !
 !-- NOUVELLE COPIE
         call lceqvn(nbeq1, zr(lcopy1), zr(lmod1))
@@ -154,24 +160,24 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
         end do
 !
 !-- CALCUL DES TRAVAUX
-        call mrmult('ZERO', zi(lmass+isst1-1), zr(lcopy1), zr(leff1), 1,&
+        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1,&
                     .true.)
 !
         travm=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
-        call mrmult('ZERO', zi(lraid+isst1-1), zr(lcopy1), zr(leff2), 1,&
+        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), mode_sst1_eff2, 1,&
                     .true.)
-        travk=ddot(nbeq1,zr(lmod1),1,zr(leff2),1)
-        traint=travk-(zr(lomeg+j1-1)**2)*travm
-        if (zr(lomeg+j1-1) .gt. 1) traint=traint/zr(lomeg+j1-1)
+        travk=ddot(nbeq1,zr(lmod1),1,mode_sst1_eff2,1)
+        traint=travk-(pulsa_propres(j1)**2)*travm
+        if (pulsa_propres(j1) .gt. 1) traint=traint/pulsa_propres(j1)
         write(unit,*)'MODE ',j1,' -  TRAVAIL SST =',traint
-        zr(ltrsst+nbmod*(i1-1)+j1-1)=traint
+        trav_sst(1+nbmod*(i1-1)+j1-1)=traint
 !
 !--
 !-- CALCUL DU SECOND MEMBRE ET DES ENRICHISSEMENTS
 !--
-        call daxpy(nbeq1, -(zr(lomeg+j1-1)**2), zr(leff1), 1, zr(leff2),&
+        call daxpy(nbeq1, -(pulsa_propres(j1)**2), zr(leff1), 1, mode_sst1_eff2,&
                    1)
-        call zerlag(nbeq1, zi(ideeq), vectr=zr(leff1))
+        call zerlag(nbeq1, deeq, vectr=zr(leff1))
         lbid=lsecme
         call lceqvn(nbeq1, zr(leff1), zr(lsecme+nbeq1*(j1-1)))
 !

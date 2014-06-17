@@ -47,12 +47,13 @@ subroutine capesa(char, noma, ipesa, ndim)
     character(len=8) :: licmp(4)
     character(len=19) :: carte
     integer :: iocc, nbmail, nbgpma
-    integer :: jncmp, jvalv
     integer :: nbma, ncmp, npesa
     character(len=8) :: k8b
     character(len=16) :: motclf
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
+    real(kind=8), pointer :: valv(:) => null()
+    character(len=8), pointer :: vncmp(:) => null()
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -98,30 +99,30 @@ subroutine capesa(char, noma, ipesa, ndim)
 !
             carte=char//'.CHME.PESAN'
             call alcart('G', carte, noma, 'PESA_R')
-            call jeveuo(carte//'.NCMP', 'E', jncmp)
-            call jeveuo(carte//'.VALV', 'E', jvalv)
+            call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
+            call jeveuo(carte//'.VALV', 'E', vr=valv)
 !
 ! --- STOCKAGE DE FORCES NULLES SUR TOUT LE MAILLAGE
 !
             ncmp = 4
-            zk8(jncmp) = 'G'
-            zk8(jncmp+1) = 'AG'
-            zk8(jncmp+2) = 'BG'
-            zk8(jncmp+3) = 'CG'
+            vncmp(1) = 'G'
+            vncmp(2) = 'AG'
+            vncmp(3) = 'BG'
+            vncmp(4) = 'CG'
 !
-            zr(jvalv) = 0.d0
-            zr(jvalv+1) = 0.d0
-            zr(jvalv+2) = 0.d0
-            zr(jvalv+3) = 0.d0
+            valv(1) = 0.d0
+            valv(2) = 0.d0
+            valv(3) = 0.d0
+            valv(4) = 0.d0
             call nocart(carte, 1, ncmp)
 !
 !
 ! --- STOCKAGE DANS LA CARTE
 !
-            zr(jvalv) = pesa(1)
-            zr(jvalv+1) = pesa(2)
-            zr(jvalv+2) = pesa(3)
-            zr(jvalv+3) = pesa(4)
+            valv(1) = pesa(1)
+            valv(2) = pesa(2)
+            valv(3) = pesa(3)
+            valv(4) = pesa(4)
             cartes(1) = carte
             ncmps(1) = ncmp
             call char_affe_neum(noma, ndim, motclf, iocc, 1,&

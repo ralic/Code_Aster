@@ -62,7 +62,8 @@ subroutine meriac(modelz, nchar, lchar, mate, matelz)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, jlire1, long1
+    integer :: i,  long1
+    character(len=24), pointer :: relr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     modele = modelz
@@ -75,7 +76,7 @@ subroutine meriac(modelz, nchar, lchar, mate, matelz)
 !     -- ON RECOPIE LES .RELR DE &MERIAC1 DANS MATEL.
 !
     call jelira('&MERIAC1           .RELR', 'LONUTI', long1)
-    call jeveuo('&MERIAC1           .RELR', 'L', jlire1)
+    call jeveuo('&MERIAC1           .RELR', 'L', vk24=relr)
 !
     call jedetr(matel//'.RERR')
     call jedetr(matel//'.RELR')
@@ -83,7 +84,7 @@ subroutine meriac(modelz, nchar, lchar, mate, matelz)
     call memare('G', matel, modele, mate, ' ',&
                 'RIGI_ACOU')
     do 1,i = 1,long1
-    call reajre(matel, zk24(jlire1-1+i), 'G')
+    call reajre(matel, relr(i), 'G')
     1 end do
 ! --- MENAGE
     call jedetr('&MERIAC1           .RERR')

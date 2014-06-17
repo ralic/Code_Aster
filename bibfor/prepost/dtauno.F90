@@ -84,7 +84,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !    NOEUDS DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer :: ki, l, jcnrd, jcnrl, jcnrv, ibidno
+    integer :: ki, l, jcnrd, jcnrl,  ibidno
     integer :: iret, nbma, adrma, icesd, icesl, icesv
     integer :: inop, nunoe
     integer :: jtypma
@@ -99,6 +99,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
     character(len=10) :: optio
     character(len=19) :: chmat, cesmat, ncncin
     character(len=24) :: typma
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 !-----------------------------------------------------------------------
 !234567                                                              012
@@ -112,7 +113,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
     if (.not. post) then
         call jeveuo(cnsr//'.CNSD', 'L', jcnrd)
         call jeveuo(cnsr//'.CNSL', 'E', jcnrl)
-        call jeveuo(cnsr//'.CNSV', 'E', jcnrv)
+        call jeveuo(cnsr//'.CNSV', 'E', vr=cnsv)
 !
 ! RECUPERATION DU COEFFICIENT DE PRE-ECROUISSAGE DONNE PAR L'UTILISATEUR
 !
@@ -214,7 +215,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
             do icmp = 1, 24
                 jad = 24*(nunoe-1) + icmp
                 zl(jcnrl - 1 + jad) = .true.
-                zr(jcnrv - 1 + jad) = vresu(icmp)
+                cnsv(jad) = vresu(icmp)
 !
             end do
         endif

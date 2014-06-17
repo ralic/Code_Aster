@@ -38,7 +38,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
 ! IN  : BASFON : BASE SUR LAQUELLE ON CREE LA FONCTION
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, jtblp, nbval
+    integer :: iret, nbpara, nblign,   nbval
     integer :: iparx, ipary, lpro
     integer :: i, iv, jvalex, jvaley, jvallx, jvally, kvale, nbfon
     character(len=1) :: base
@@ -46,6 +46,8 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
     character(len=19) :: nomtab, nomfon
     character(len=24) :: nojvx, nojvlx, nojvy, nojvly, inpar, jnpar
     character(len=24) :: valk
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
 !
 ! DEB------------------------------------------------------------------
 !
@@ -66,9 +68,9 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
         call utmess('F', 'UTILITAI4_64')
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -78,10 +80,10 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     inpar = parax
     do 10 iparx = 1, nbpara
-        jnpar = zk24(jtblp+4*(iparx-1))
+        jnpar = tblp(1+4*(iparx-1))
         if (inpar .eq. jnpar) goto 12
 10  continue
     valk = inpar
@@ -89,19 +91,19 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
 12  continue
     inpar = paray
     do 14 ipary = 1, nbpara
-        jnpar = zk24(jtblp+4*(ipary-1))
+        jnpar = tblp(1+4*(ipary-1))
         if (inpar .eq. jnpar) goto 16
 14  continue
     valk = inpar
     call utmess('F', 'UTILITAI6_89', sk=valk)
 16  continue
 !
-    typex = zk24(jtblp+4*(iparx-1)+1)
-    nojvx = zk24(jtblp+4*(iparx-1)+2)
-    nojvlx = zk24(jtblp+4*(iparx-1)+3)
-    typey = zk24(jtblp+4*(ipary-1)+1)
-    nojvy = zk24(jtblp+4*(ipary-1)+2)
-    nojvly = zk24(jtblp+4*(ipary-1)+3)
+    typex = tblp(1+4*(iparx-1)+1)
+    nojvx = tblp(1+4*(iparx-1)+2)
+    nojvlx = tblp(1+4*(iparx-1)+3)
+    typey = tblp(1+4*(ipary-1)+1)
+    nojvy = tblp(1+4*(ipary-1)+2)
+    nojvly = tblp(1+4*(ipary-1)+3)
 !
     if (typex .ne. typey) then
         if ((typex(1:1).eq.'I' .and. typey(1:1).eq.'R') .or.&

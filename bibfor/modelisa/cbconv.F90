@@ -43,7 +43,8 @@ subroutine cbconv(char)
 !     CREATION ET CHARGEMENT DE L'OBJET 'CHAR'.CHTH.CONVE
 !
 !-----------------------------------------------------------------------
-    integer :: iad, ier, nconv, nvites
+    integer ::  ier, nconv, nvites
+    character(len=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     vitess = '        '
@@ -54,10 +55,10 @@ subroutine cbconv(char)
         carte = char//'.CHTH.CONVE'
         call jecreo(carte//'.VALE', 'G V K8')
         call jeecra(carte//'.VALE', 'LONMAX', 1)
-        call jeveuo(carte//'.VALE', 'E', iad)
+        call jeveuo(carte//'.VALE', 'E', vk8=vale)
         call getvid('CONVECTION', 'VITESSE', iocc=1, scal=vitess, nbret=nvites)
-        zk8(iad-1+1) = vitess
-        call chpver('F', zk8(iad-1+1), 'NOEU', 'DEPL_R', ier)
+        vale(1) = vitess
+        call chpver('F', vale(1), 'NOEU', 'DEPL_R', ier)
     endif
     call jedema()
 end subroutine

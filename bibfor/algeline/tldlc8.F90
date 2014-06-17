@@ -96,8 +96,7 @@ subroutine tldlc8(nommat, hcol, adia, ablo, npivot,&
     integer :: imini, iequa, i, jblmin, jbloc, jl1, jl2
     integer :: iab, ilong, iadia, ide, idl
     integer :: jnmini, jequa, jlong, jadia, jde, jdl, ibcl1
-    integer :: lm, ica, icb, icd, jrefa
-    integer :: iadigs
+    integer :: lm, ica, icb, icd
 !
 !     ----- CNJ --------------------------------------------------------
 !     ----- CNJ --------------------------------------------------------
@@ -105,6 +104,8 @@ subroutine tldlc8(nommat, hcol, adia, ablo, npivot,&
     complex(kind=8) :: val
     character(len=19) :: noma19
     character(len=24) :: nomdia, ualf, nomtra
+    complex(kind=8), pointer :: digs(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -131,7 +132,7 @@ subroutine tldlc8(nommat, hcol, adia, ablo, npivot,&
 !     --- CREATION D'UN TABLEAU POUR STOCKER LA DIAGONALE
 !
     call wkvect(nomdia, 'V V C', neq, ldiag)
-    call jeveuo(noma19//'.DIGS', 'E', iadigs)
+    call jeveuo(noma19//'.DIGS', 'E', vc=digs)
 !
 !     --- CREATION D'UN TABLEAU INTERMEDIAIRE (D'UNE COLONNE)
 !
@@ -282,7 +283,7 @@ subroutine tldlc8(nommat, hcol, adia, ablo, npivot,&
                 val = val - zc(ica+i)*zc(ltrav+i)
 140          continue
             zc(iadia) = val
-            zc(iadigs-1+neq+iequa) = zc(iadia)
+            digs(neq+iequa) = zc(iadia)
             zc(ldiag+iequa-1) = val
 !
 !           --- LE PIVOT EST-IL NUL ? ----------------------------------
@@ -304,11 +305,11 @@ subroutine tldlc8(nommat, hcol, adia, ablo, npivot,&
 170  continue
 9999  continue
 !
-    call jeveuo(noma19//'.REFA', 'E', jrefa)
+    call jeveuo(noma19//'.REFA', 'E', vk24=refa)
     if (ilfin .eq. neq) then
-        zk24(jrefa-1+8)='DECT'
+        refa(8)='DECT'
     else
-        zk24(jrefa-1+8)='DECP'
+        refa(8)='DECP'
     endif
     call jedetr(nomdia)
     call jedetr(nomtra)

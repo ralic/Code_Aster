@@ -64,13 +64,15 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: iret, nchar, ndir, icha, ibid
-    integer :: jchar, jinf, ifmdbg, nivdbg
+    integer ::   ifmdbg, nivdbg
     real(kind=8) :: alpha
     character(len=8) :: nomcha, masque, modele
     character(len=16) :: option
     character(len=19) :: depla, vecele, matass
     character(len=24) :: ligrch, chalph
     logical :: debug
+    integer, pointer :: infc(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,8 +103,8 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
     call jeexin(lischa(1:19)//'.LCHA', iret)
     if (iret .eq. 0) goto 9999
     call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
-    call jeveuo(lischa(1:19)//'.LCHA', 'L', jchar)
-    call jeveuo(lischa(1:19)//'.INFC', 'L', jinf)
+    call jeveuo(lischa(1:19)//'.LCHA', 'L', vk24=lcha)
+    call jeveuo(lischa(1:19)//'.INFC', 'L', vi=infc)
 !
 ! --- ALLOCATION DE LA CARTE DU CONDITIONNEMENT DES LAGRANGES
 !
@@ -123,8 +125,8 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
 !
     ndir = 0
     do 10 icha = 1, nchar
-        if (zi(jinf+icha) .le. 0) goto 10
-        nomcha = zk24(jchar+icha-1) (1:8)
+        if (infc(icha+1) .le. 0) goto 10
+        nomcha = lcha(icha) (1:8)
         ligrch = nomcha//'.CHME.LIGRE'
         call jeexin(nomcha//'.CHME.LIGRE.LIEL', iret)
         if (iret .le. 0) goto 10

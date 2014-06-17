@@ -85,9 +85,10 @@ subroutine memame(option, modele, nchar, lchar, mate,&
     character(len=24) :: ligrmo
     character(len=24) :: chgeom, chcara(18), chharm
     integer :: nbout2
-    integer :: nh, iret, icode, iarefe
+    integer :: nh, iret, icode
     integer :: ifmdbg, nivdbg, ier
     logical :: debug
+    character(len=24), pointer :: rerr(:) => null()
     data chvarc /'&&MEMAME.VARC'/
 !
 ! ----------------------------------------------------------------------
@@ -129,8 +130,8 @@ subroutine memame(option, modele, nchar, lchar, mate,&
 !
     call memare(base, matele, modele, mate, carele,&
                 option)
-    call jeveuo(matele(1:19)//'.RERR', 'E', iarefe)
-    zk24(iarefe-1+3) (1:3) = 'OUI'
+    call jeveuo(matele(1:19)//'.RERR', 'E', vk24=rerr)
+    rerr(3) (1:3) = 'OUI'
     call jeexin(matele(1:19)//'.RELR', iret)
     if (iret .gt. 0) call jedetr(matele(1:19)//'.RELR')
     if (icode .eq. 1) goto 10

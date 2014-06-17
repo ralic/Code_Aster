@@ -56,9 +56,9 @@ subroutine diag99(nomres)
 !----------------------------------------------------------------------
 !
 !
-    integer :: iad, jiad, ier, jordm, idmode, lmasse, idstat, jords
+    integer :: iad, jiad, ier,  idmode, lmasse, idstat
     integer ::     jnsta, i, j, k, ieq, nbord
-    integer :: nbmode, nbstat, neq, n1, iorne, iorol, jvale
+    integer :: nbmode, nbstat, neq, n1, iorne, iorol
     real(kind=8) :: alpha, r8scal
     complex(kind=8) :: cbid
     character(len=8) :: k8b, meca, stat
@@ -69,6 +69,9 @@ subroutine diag99(nomres)
     real(kind=8), pointer :: trav2(:) => null()
     real(kind=8), pointer :: trav3(:) => null()
     integer, pointer :: trav4(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: ordm(:) => null()
+    integer, pointer :: ords(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !----------------------------------------------------------------------
     call jemarq()
@@ -80,7 +83,7 @@ subroutine diag99(nomres)
     call getvid('DIAG_MASS', 'MODE_MECA', iocc=1, scal=meca, nbret=n1)
 !
     call jelira(meca//'           .ORDR', 'LONUTI', nbmode)
-    call jeveuo(meca//'           .ORDR', 'L', jordm)
+    call jeveuo(meca//'           .ORDR', 'L', vi=ordm)
 !
 !
     call dismoi('REF_MASS_PREM', nomres, 'RESU_DYNA', repk=masse)
@@ -100,7 +103,7 @@ subroutine diag99(nomres)
     call getvid('DIAG_MASS', 'MODE_STAT', iocc=1, scal=stat, nbret=n1)
 !
     call jelira(stat//'           .ORDR', 'LONUTI', nbstat)
-    call jeveuo(stat//'           .ORDR', 'L', jords)
+    call jeveuo(stat//'           .ORDR', 'L', vi=ords)
     call wkvect('&&DIAG99.MODE_STAT', 'V V R', nbstat*neq, idstat)
     call copmod(stat, bmodr=zr(idstat), numer=nu)
 !
@@ -162,7 +165,7 @@ subroutine diag99(nomres)
 !
     iorne =0
     do i = 1, nbmode
-        iorol = zi(jordm+i-1)
+        iorol = ordm(i)
         iorne = iorne+1
 !
         call rsexch('F', meca, 'DEPL', iorol, chamol,&
@@ -217,7 +220,7 @@ subroutine diag99(nomres)
     end do
 !
     do i = 1, nbstat
-        iorol = zi(jords+i-1)
+        iorol = ords(i)
         iorne = iorne+1
 !
         call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne,&
@@ -261,9 +264,9 @@ subroutine diag99(nomres)
         call rsexch(' ', nomres, 'DEPL', iorne, chamol,&
                     ier)
         call vtcrem(chamol, masse, 'G', 'R')
-        call jeveuo(chamol//'.VALE', 'E', jvale)
+        call jeveuo(chamol//'.VALE', 'E', vr=vale)
         do ieq = 1, neq
-            zr(jvale+ieq-1) = zr(jnsta+(i-1)*neq+ieq-1)
+            vale(ieq) = zr(jnsta+(i-1)*neq+ieq-1)
         end do
         call rsnoch(nomres, 'DEPL', iorne)
     end do

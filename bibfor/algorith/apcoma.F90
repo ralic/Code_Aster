@@ -57,7 +57,8 @@ subroutine apcoma(sdappa, noma, newgeo, numma, nnosdm,&
     parameter   (nbnmax = 9)
 !
     integer :: no(nbnmax), ino
-    integer :: jcoor, i, jdec
+    integer ::  i, jdec
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,11 +84,11 @@ subroutine apcoma(sdappa, noma, newgeo, numma, nnosdm,&
 !
 ! --- COORDONNEES DES NOEUDS DE LA MAILLE
 !
-    call jeveuo(newgeo(1:19)//'.VALE', 'L', jcoor)
+    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=vale)
     do 70 ino = 1, nnosdm
-        coorma(3*(ino-1)+1) = zr(jcoor+3*(no(ino)-1))
-        coorma(3*(ino-1)+2) = zr(jcoor+3*(no(ino)-1)+1)
-        coorma(3*(ino-1)+3) = zr(jcoor+3*(no(ino)-1)+2)
+        coorma(3*(ino-1)+1) = vale(1+3*(no(ino)-1))
+        coorma(3*(ino-1)+2) = vale(1+3*(no(ino)-1)+1)
+        coorma(3*(ino-1)+3) = vale(1+3*(no(ino)-1)+2)
 70  end do
 !
     call jedema()

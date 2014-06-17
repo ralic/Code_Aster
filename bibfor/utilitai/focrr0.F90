@@ -69,9 +69,10 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
 !
 !-----------------------------------------------------------------------
     integer :: ibid, iddl, ie, ii, inoeud, iordr
-    integer :: iret, lacce, lfon, lg1, lg2, lpro, lvacc
+    integer :: iret, lacce, lfon, lg1, lg2, lpro
     integer :: lvale, lvar, nbacc, nusp, vali
     real(kind=8) :: valr
+    character(len=16), pointer :: acces(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getres(k8b, typcon, nomcmd)
@@ -82,8 +83,8 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
     call rsnopa(resu, 0, '&&FOCRR0.VAR.ACCES', nbacc, ibid)
     call jeexin('&&FOCRR0.VAR.ACCES', iret)
     if (iret .gt. 0) then
-        call jeveuo('&&FOCRR0.VAR.ACCES', 'E', lvacc)
-        nomacc = zk16(lvacc)
+        call jeveuo('&&FOCRR0.VAR.ACCES', 'E', vk16=acces)
+        nomacc = acces(1)
     else
         nomacc = ' '
     endif

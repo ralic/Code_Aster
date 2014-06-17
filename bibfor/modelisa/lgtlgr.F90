@@ -63,11 +63,19 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 ! ====================== DEBUT DU CODE EXECUTABLE ======================
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, idapma, idapno, idligi, idlima, idlino
-    integer :: idlity, idmode, idnema, idphen, idpoma, idpono
+    integer :: i, ibid,   idligi
+    integer ::   idnema, idphen
     integer :: ij, imodl, iret, j, jdnbno, jdpm, k
     integer :: k1, lonlie, nbapma, nbapno, nbmato, nbmaty, nbno
     integer :: nbno2, nbnoto, ntypoi, nutyp1, nutype
+    integer, pointer :: pono(:) => null()
+    integer, pointer :: lity(:) => null()
+    integer, pointer :: poma(:) => null()
+    integer, pointer :: lima(:) => null()
+    integer, pointer :: apno(:) => null()
+    character(len=16), pointer :: mode(:) => null()
+    integer, pointer :: lino(:) => null()
+    integer, pointer :: apma(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -92,15 +100,15 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! --- VECTEUR DE LA LISTE DES MAILLES CUMULEES DU LIGRET :
 !     --------------------------------------------------
-    call jeveuo(ligret//'.LIMA', 'L', idlima)
+    call jeveuo(ligret//'.LIMA', 'L', vi=lima)
 !
 ! --- VECTEUR DES TYPES DES MAILLES CUMULEES DU LIGRET :
 !     ------------------------------------------------
-    call jeveuo(ligret//'.LITY', 'L', idlity)
+    call jeveuo(ligret//'.LITY', 'L', vi=lity)
 !
 ! --- NOM DE LA MODELISATION :
 !     ----------------------
-    call jeveuo(ligret//'.MODE', 'L', idmode)
+    call jeveuo(ligret//'.MODE', 'L', vk16=mode)
 !
 ! --- NOM DU PHENOMENE :
 !     ----------------
@@ -108,39 +116,39 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! --- TABLEAU DE POINTEURS DANS LA LISTE DES MAILLES :
 !     ----------------------------------------------
-    call jeveuo(ligret//'.POMA', 'L', idpoma)
+    call jeveuo(ligret//'.POMA', 'L', vi=poma)
 !
 ! --- TABLEAU DE POINTEURS DANS LA LISTE DES NOEUDS :
 !     ---------------------------------------------
-    call jeveuo(ligret//'.PONO', 'L', idpono)
+    call jeveuo(ligret//'.PONO', 'L', vi=pono)
 !
 ! --- VECTEUR DE LA LISTE DES NOEUDS CUMULES DU LIGRET :
 !     ------------------------------------------------
-    call jeveuo(ligret//'.LINO', 'L', idlino)
+    call jeveuo(ligret//'.LINO', 'L', vi=lino)
 !
 ! --- NOMBRE D'AFFECTATIONS DE MAILLES AU LIGRET :
 !     ------------------------------------------
-    call jeveuo(ligret//'.APMA', 'L', idapma)
+    call jeveuo(ligret//'.APMA', 'L', vi=apma)
 !
 ! --- NOMBRE D'AFFECTATIONS DE NOEUDS AU LIGRET :
 !     -----------------------------------------
-    call jeveuo(ligret//'.APNO', 'L', idapno)
+    call jeveuo(ligret//'.APNO', 'L', vi=apno)
 !
-    nbapma = zi(idapma)
-    nbapno = zi(idapno)
+    nbapma = apma(1)
+    nbapno = apno(1)
 !
 ! --- NOMBRE TOTAL DE MAILLES :
 !     -----------------------
-    nbmato = zi(idpoma+nbapma)
+    nbmato = poma(nbapma+1)
 !
 ! --- NOMBRE TOTAL DE NOEUDS :
 !     ----------------------
-    nbnoto = zi(idpono+nbapno)
+    nbnoto = pono(nbapno+1)
 !
     k1 = 1
-    nutyp1 = zi(idlity)
+    nutyp1 = lity(1)
     do i = 1, nbmato
-        nutype = zi(idlity+i-1)
+        nutype = lity(i)
         if (nutype .ne. nutyp1) then
             nutyp1 = nutype
             k1 = k1 + 1
@@ -175,7 +183,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
         call jedupo(ligret//'.LGRF', 'V', ligrel//'.LGRF', .false.)
         call jeecra(ligrel//'.LGRF', 'DOCU', ibid, 'MECA')
 !
-        nutyp1 = zi(idlity)
+        nutyp1 = lity(1)
         k = 0
         nbmaty = 0
         ij = 0
@@ -184,7 +192,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !       -------------------------------------------------------------
         do i = 1, nbmato
 !
-            nutype = zi(idlity+i-1)
+            nutype = lity(i)
 !
             if (nutype .ne. nutyp1) then
 !
@@ -206,7 +214,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
                 do j = 1, nbmaty
                     ij = ij + 1
-                    zi(idligi+j-1) = zi(idlima+ij-1)
+                    zi(idligi+j-1) = lima(ij)
                 end do
 !
                 zi(idligi+nbmaty) = nutyp1
@@ -241,7 +249,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
             do j = 1, nbmaty
                 ij = ij + 1
-                zi(idligi+j-1) = zi(idlima+ij-1)
+                zi(idligi+j-1) = lima(ij)
             end do
 !
             zi(idligi+nbmaty) = nutyp1
@@ -249,7 +257,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! --- RECHERCHE DU TYPE DES POI1 :
 !     --------------------------
-        call jenonu(jexnom('&CATA.'//zk16(idphen)(1:13)//'.MODL', zk16(idmode)), imodl)
+        call jenonu(jexnom('&CATA.'//zk16(idphen)(1:13)//'.MODL', mode(1)), imodl)
         call jeveuo(jexnum('&CATA.'//zk16(idphen), imodl), 'L', jdpm)
 !
         nutype = zi(jdpm+ntypoi-1)
@@ -260,7 +268,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---     NOMBRE DE NOEUDS POUR LA IEME OCCURENCE :
 !         ---------------------------------------
-            nbno = zi(idpono+i) - zi(idpono+i-1)
+            nbno = pono(1+i) - pono(i)
 !
 ! ---     CREATION DU IEME OBJET DE COLLECTION :
 !         ------------------------------------
@@ -301,7 +309,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---     NOMBRE DE NOEUDS POUR LA IEME OCCURENCE :
 !         ---------------------------------------
-            nbno = zi(idpono+i) - zi(idpono+i-1)
+            nbno = pono(1+i) - pono(i)
             if (nbno .gt. 0) then
                 nbno2 = nbno
             else
@@ -320,7 +328,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !         ---------------------------------------
             call jeveuo(jexnum(ligrel//'.NEMA', i), 'E', idnema)
 !
-            zi(idnema+1-1) = zi(idlino+zi(idpono+i-1))
+            zi(idnema+1-1) = lino(1+pono(i))
             zi(idnema+2-1) = 1
 !
         end do

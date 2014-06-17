@@ -48,9 +48,10 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ima, imai, ino, inoe, ipoin, jconx
+    integer :: ima, imai, ino, inoe, ipoin
     integer ::  jpoin, nbnoe, num
     integer, pointer :: vnumnos(:) => null()
+    integer, pointer :: connex(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nomma=noma
@@ -64,14 +65,14 @@ subroutine irmano(noma, nbma, numai, nbnos, numnos)
         vnumnos(ino) = 0
     end do
 !     --- RECHERCHE DES NOEUDS SOMMETS ----
-    call jeveuo(nomma//'.CONNEX', 'L', jconx)
+    call jeveuo(nomma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpoin)
     do ima = 1, nbma
         imai=numai(ima)
         ipoin= zi(jpoin-1+imai)
         nnoe = zi(jpoin-1+imai+1)-ipoin
         do inoe = 1, nnoe
-            num=zi(jconx-1+ipoin-1+inoe)
+            num=connex(ipoin-1+inoe)
             vnumnos(num) =1
         end do
     end do

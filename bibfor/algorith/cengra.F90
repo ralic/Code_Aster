@@ -40,17 +40,20 @@ subroutine cengra(noma, nmaabs, coorg)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ino, itypma, jcoor, jconx1, jconx2, jma, nbnott(3), nuno
+    integer :: ino, itypma,   jconx2,  nbnott(3), nuno
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: typmail(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
 !
 !     RECUPERATION DES DONNEES DU MAILLAGE
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    call jeveuo(noma//'.TYPMAIL', 'L', jma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
-    itypma = zi(jma-1+nmaabs)
+    itypma = typmail(nmaabs)
     call panbno(itypma, nbnott)
 !
 !     CALCUL DES COORDONNEES DU CENTRE DE GRAVITE
@@ -59,11 +62,11 @@ subroutine cengra(noma, nmaabs, coorg)
     coorg(3) = 0
 !
     do 10 ino = 1, nbnott(1)
-        nuno = zi(jconx1-1+zi(jconx2+nmaabs-1)+ino-1)
+        nuno = connex(zi(jconx2+nmaabs-1)+ino-1)
 !
-        coorg(1) = coorg(1) + zr(jcoor-1+3*(nuno-1)+1)
-        coorg(2) = coorg(2) + zr(jcoor-1+3*(nuno-1)+2)
-        coorg(3) = coorg(3) + zr(jcoor-1+3*(nuno-1)+3)
+        coorg(1) = coorg(1) + vale(3*(nuno-1)+1)
+        coorg(2) = coorg(2) + vale(3*(nuno-1)+2)
+        coorg(3) = coorg(3) + vale(3*(nuno-1)+3)
 10  end do
     coorg(1) = coorg(1) / nbnott(1)
     coorg(2) = coorg(2) / nbnott(1)

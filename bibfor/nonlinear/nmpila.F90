@@ -64,10 +64,14 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
 !
     integer :: i, j, nrac
     real(kind=8) :: r0, d0, r1, d1, r2, dtau2, rac(2)
-    integer :: jdep0, jdep1, jdepde, jcoef, jcoee
+    integer ::   jdepde
     integer :: neq
     integer :: ifm, niv
     character(len=19) :: chapil, chapic
+    real(kind=8), pointer :: coee(:) => null()
+    real(kind=8), pointer :: coef(:) => null()
+    real(kind=8), pointer :: dep0(:) => null()
+    real(kind=8), pointer :: dep1(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,32 +95,32 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
 !
 ! --- ACCES OBJETS JEVEUX
 !
-    call jeveuo(ddepl0(1:19)//'.VALE', 'L', jdep0)
-    call jeveuo(ddepl1(1:19)//'.VALE', 'L', jdep1)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=dep0)
+    call jeveuo(ddepl1(1:19)//'.VALE', 'L', vr=dep1)
     call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
     chapil = sdpilo(1:14)//'.PLCR'
-    call jeveuo(chapil(1:19)//'.VALE', 'L', jcoef)
+    call jeveuo(chapil(1:19)//'.VALE', 'L', vr=coef)
     if (isxfe) then
         chapic = sdpilo(1:14)//'.PLCI'
-        call jeveuo(chapic(1:19)//'.VALE', 'L', jcoee)
+        call jeveuo(chapic(1:19)//'.VALE', 'L', vr=coee)
     endif
 !
 ! --- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
 !
     if (isxfe) then
         do i = 1, neq
-            if (zr(jcoee+i-1) .eq. 0.d0) then
-                r0 = r0 + zr(jcoef+i-1)**2* (zr(jdepde+i-1)+zr(jdep0+ i-1))**2
-                r1 = r1 + zr(jcoef+i-1)**2* (zr(jdepde+i-1)+zr(jdep0+ i-1))*zr(jdep1+i-1)
-                r2 = r2 + zr(jcoef+i-1)**2* zr(jdep1+i-1) * zr(jdep1+ i-1)
+            if (coee(i) .eq. 0.d0) then
+                r0 = r0 + coef(i)**2* (zr(jdepde+i-1)+dep0(i))**2
+                r1 = r1 + coef(i)**2* (zr(jdepde+i-1)+dep0(i))*dep1(i)
+                r2 = r2 + coef(i)**2* dep1(i) * dep1(i)
             else
                 d0 = 0.d0
                 d1 = 0.d0
                 do j = i+1, neq
-                    if (zr(jcoee+i-1) .eq. zr(jcoee+j-1)) then
-                        d0 = d0 + zr(jcoef+i-1)*(zr(jdepde+i-1)+zr( jdep0+i-1))+ zr(jcoef+j-1)*(z&
-                             &r(jdepde+j-1)+zr( jdep0+j-1))
-                        d1 = d1 + zr(jcoef+i-1)*zr(jdep1+i-1)+ zr(jcoef+j-1)*zr(jdep1+j-1)
+                    if (coee(i) .eq. coee(j)) then
+                        d0 = d0 + coef(i)*(zr(jdepde+i-1)+dep0(i))+ coef(j)*(z&
+                             &r(jdepde+j-1)+dep0(j))
+                        d1 = d1 + coef(i)*dep1(i)+ coef(j)*dep1(j)
                     endif
                 end do
                 r0 = r0 + d0**2
@@ -126,9 +130,9 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
         end do
     else
         do i = 1, neq
-            r0 = r0 + zr(jcoef+i-1) * (zr(jdepde+i-1)+zr(jdep0+i-1))** 2
-            r1 = r1 + zr(jcoef+i-1) * (zr(jdepde+i-1)+zr(jdep0+i-1))* zr(jdep1+i-1)
-            r2 = r2 + zr(jcoef+i-1) * zr(jdep1+i-1) * zr(jdep1+i-1)
+            r0 = r0 + coef(i) * (zr(jdepde+i-1)+dep0(i))** 2
+            r1 = r1 + coef(i) * (zr(jdepde+i-1)+dep0(i))* dep1(i)
+            r2 = r2 + coef(i) * dep1(i) * dep1(i)
         end do
     endif
 !

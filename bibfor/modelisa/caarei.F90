@@ -87,7 +87,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     character(len=8) :: vale_func(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
-    integer :: jtang,  jdirec, jprnm
+    integer ::   jdirec, jprnm
     integer :: iocc, nume_node, ibid
     integer :: ino, inom, idim
     integer :: nbnoeu, narei, nbcmp, nbec, ndim
@@ -118,6 +118,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
     integer, pointer :: icompt(:) => null()
+    real(kind=8), pointer :: tangent(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -208,7 +209,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
         if (l_dtan) then
             call catang(mesh, nb_elem, zi(jlima), nb_node, zi(jlino))
-            call jeveuo('&&CATANG.TANGENT', 'L', jtang)
+            call jeveuo('&&CATANG.TANGENT', 'L', vr=tangent)
         endif
 !
 ! ----- If DTAN exists
@@ -218,7 +219,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, ndim
-                    repe_defi(idim) = zr(jtang-1+ndim* (ino-1)+idim)
+                    repe_defi(idim) = tangent(ndim* (ino-1)+idim)
                 end do
 !
                 if (lxfem) then

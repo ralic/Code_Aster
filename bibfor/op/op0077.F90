@@ -65,13 +65,16 @@ subroutine op0077()
     character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, vbl24(1)
-    integer :: ioc1, jord, nbord, i, iord, lpaout(3)
+    integer :: ioc1,  nbord, i, iord, lpaout(3)
 !
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibid, ir, ir1, iret, isk, j
     integer :: j2refe, j3refe, jrefn, jrefnb, lmacr, lmodge
-    integer :: lrefm, n1, n2, nbcham, numsec
+    integer ::  n1, n2, nbcham, numsec
+    integer, pointer :: ordr(:) => null()
+    character(len=8), pointer :: refm(:) => null()
+    character(len=24), pointer :: nlnume(:) => null()
 !-----------------------------------------------------------------------
     data k8b/'        '/
     data param/'MODELE','CHAMPMAT','CARAELEM'/
@@ -289,7 +292,7 @@ subroutine op0077()
     call gettco(resin, concep)
     if ((concep(1:9).ne.'TRAN_GENE') .and. (concep(1:9).ne.'MODE_CYCL') .and.&
         (concep(1:9).ne.'HARM_GENE')) then
-        call jeveuo(nomres//'           .ORDR', 'L', jord)
+        call jeveuo(nomres//'           .ORDR', 'L', vi=ordr)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
 !
@@ -299,8 +302,8 @@ subroutine op0077()
 !
 !-- RECUPERATION DU MACRO ELEMENT ASSOCIE A LA SOUS STRUCTURE
 !           call dismoi('F', 'REF_RIGI_PREM', resin, 'RESU_DYNA', ibid, raide, ir)
-!           call jeveuo(raide(1:8)//'           .REFA', 'L', lnume)
-!           call jeveuo(zk24(lnume+1)(1:14)//'.NUME.REFN', 'L', lmodge)
+!           call jeveuo(raide(1:8)//'           .REFA', 'L', vk24=nlnume)
+!           call jeveuo(nlnume(2)(1:14)//'.NUME.REFN', 'L', lmodge)
 !
             call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen)
             call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', lmodge)
@@ -308,13 +311,13 @@ subroutine op0077()
             call jeveuo(jexnum(zk24(lmodge)(1:8)//'      .MODG.SSME', iret), 'L', lmacr)
 !-- RECUPERATION DES INFOS CARA_ELEM / MATER / MODELE POUR LES SST
 !-- DANS LE .REFM DANS LE MACRO ELEMENT CORRESPONDANT
-            call jeveuo(zk8(lmacr)//'.REFM', 'L', lrefm)
+            call jeveuo(zk8(lmacr)//'.REFM', 'L', vk8=refm)
             do iord = 1, nbord
-                call rsadpa(nomres, 'E', 3, param, zi(jord+iord-1),&
+                call rsadpa(nomres, 'E', 3, param, ordr(iord),&
                             0, tjv=lpaout, styp=k8b)
-                zk8(lpaout(1))=zk8(lrefm)
-                zk8(lpaout(2))=zk8(lrefm+2)
-                zk8(lpaout(3))=zk8(lrefm+3)
+                zk8(lpaout(1))=refm(1)
+                zk8(lpaout(2))=refm(3)
+                zk8(lpaout(3))=refm(4)
             end do
         endif
 !

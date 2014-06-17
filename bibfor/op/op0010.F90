@@ -92,7 +92,7 @@ subroutine op0010()
     real(kind=8) :: damax, dttot, vmax, rayon, dafiss, bmax
     character(len=24) :: vvit, vbeta
     character(len=19) :: cnsbet, listp
-    integer :: crack, jbeta, jvit, jfiss, nbval, nfiss
+    integer :: crack, jbeta, jvit,  nbval, nfiss
     integer :: numfis
 !
 !     LEVELSET AUXILIARY MESH
@@ -115,7 +115,7 @@ subroutine op0010()
     real(kind=8) :: dist, distol
 !
 !     DOMAINE LOCALISATION
-    integer :: nbno, jgltp, jglnp, jglt, jgln, jgltl, jglnl
+    integer :: nbno,     jgltl, jglnl
     character(len=19) :: grltc, grlnc
     logical :: ldpre
     real(kind=8) :: radimp, radlim
@@ -124,6 +124,11 @@ subroutine op0010()
     logical :: goinop
     character(len=19) :: cnseg, cnseng, cnsljg
     character(len=24) :: lismag, lisnog
+    real(kind=8), pointer :: gln(:) => null()
+    real(kind=8), pointer :: glnp(:) => null()
+    real(kind=8), pointer :: glt(:) => null()
+    real(kind=8), pointer :: gltp(:) => null()
+    character(len=8), pointer :: vfiss(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -159,13 +164,13 @@ subroutine op0010()
     endif
 !
 !     RETRIEVE THE NAME OF THE DATA STRUCTURE CONTAINING EACH CRACK
-    call jeveuo(nomo//'.FISS', 'L', jfiss)
+    call jeveuo(nomo//'.FISS', 'L', vk8=vfiss)
 !
     numfis=0
 !     SEARCH FOR THE CRACK THAT MUST BE PROPAGATED
     do crack = 1, nfiss
 !
-        ncrack = zk8(jfiss-1+crack)
+        ncrack = vfiss(crack)
         if (ncrack .eq. fispre) numfis=crack
 !
     end do
@@ -895,32 +900,32 @@ subroutine op0010()
         call cnocns(fispre//'.GRLTNO', 'V', grltc)
         call cnocns(fispre//'.GRLNNO', 'V', grlnc)
 !
-        call jeveuo(grltc//'.CNSV', 'L', jgltp)
-        call jeveuo(grlnc//'.CNSV', 'L', jglnp)
+        call jeveuo(grltc//'.CNSV', 'L', vr=gltp)
+        call jeveuo(grlnc//'.CNSV', 'L', vr=glnp)
 !
-        call jeveuo(grlt//'.CNSV', 'E', jglt)
+        call jeveuo(grlt//'.CNSV', 'E', vr=glt)
         call jeveuo(grlt//'.CNSL', 'E', jgltl)
-        call jeveuo(grln//'.CNSV', 'E', jgln)
+        call jeveuo(grln//'.CNSV', 'E', vr=gln)
         call jeveuo(grln//'.CNSL', 'E', jglnl)
 !
         do i = 1, nbno
 !
             if (.not.zl(jlisno-1+i)) then
-                zr(jglt-1+ndim*(i-1)+1) = zr(jgltp-1+ndim*(i-1)+1)
+                glt(ndim*(i-1)+1) = gltp(ndim*(i-1)+1)
                 zl(jgltl-1+ndim*(i-1)+1) = .true.
-                zr(jglt-1+ndim*(i-1)+2) = zr(jgltp-1+ndim*(i-1)+2)
+                glt(ndim*(i-1)+2) = gltp(ndim*(i-1)+2)
                 zl(jgltl-1+ndim*(i-1)+2) = .true.
 !
-                zr(jgln-1+ndim*(i-1)+1) = zr(jglnp-1+ndim*(i-1)+1)
+                gln(ndim*(i-1)+1) = glnp(ndim*(i-1)+1)
                 zl(jglnl-1+ndim*(i-1)+1) = .true.
-                zr(jgln-1+ndim*(i-1)+2) = zr(jglnp-1+ndim*(i-1)+2)
+                gln(ndim*(i-1)+2) = glnp(ndim*(i-1)+2)
                 zl(jglnl-1+ndim*(i-1)+2) = .true.
 !
                 if (ndim .eq. 3) then
-                    zr(jglt-1+ndim*(i-1)+3) = zr(jgltp-1+ndim*(i-1)+3)
+                    glt(ndim*(i-1)+3) = gltp(ndim*(i-1)+3)
                     zl(jgltl-1+ndim*(i-1)+3) = .true.
 !
-                    zr(jgln-1+ndim*(i-1)+3) = zr(jglnp-1+ndim*(i-1)+3)
+                    gln(ndim*(i-1)+3) = glnp(ndim*(i-1)+3)
                     zl(jglnl-1+ndim*(i-1)+3) = .true.
                 endif
 !

@@ -39,7 +39,8 @@ subroutine rsutor(nomsd, champ, nomsym, iordr)
     character(len=3) :: chnoch
     character(len=6) :: chorch
     character(len=19) :: nomd2
-    integer :: nunoch, jordr, irang, i1, nbordr
+    integer :: nunoch,  irang, i1, nbordr
+    integer, pointer :: ordr(:) => null()
 !
     nomd2 = nomsd
 !
@@ -53,8 +54,8 @@ subroutine rsutor(nomsd, champ, nomsym, iordr)
     call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     ASSERT(irang.ge.1 .and. irang.le.nbordr)
 !
-    call jeveuo(nomd2//'.ORDR', 'L', jordr)
-    iordr = zi(jordr-1+irang)
+    call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
+    iordr = ordr(irang)
     call jenuno(jexnum(nomd2//'.DESC', nunoch), nomsym)
 !
 end subroutine

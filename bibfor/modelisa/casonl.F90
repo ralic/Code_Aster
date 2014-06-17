@@ -45,11 +45,12 @@ subroutine casonl(char, ligrmo, noma, ndim)
 !      NOMA   : NOM DU MAILLAGE
 !      NDIM   : DIMENSION DU PROBLEME (2D/3D) POUR FILTRER LES MAILLES
 !-----------------------------------------------------------------------
-    integer :: nsour, jvalv, jncmp, n1, ncmp, iocc
+    integer :: nsour, jvalv,  n1, ncmp, iocc
     character(len=16) :: motclf
     character(len=19) :: carte
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
+    character(len=8), pointer :: vncmp(:) => null()
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -60,9 +61,9 @@ subroutine casonl(char, ligrmo, noma, ndim)
 !
     carte = char//'.CHTH.SOUNL'
     call alcart('G', carte, noma, 'SOUR_F')
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
-    zk8(jncmp) = 'SOUR'
+    vncmp(1) = 'SOUR'
 !
 !
 ! --- DEFAUT: STOCKAGE D'UNE SOURCE NULLE SUR TOUT LE MAILLAGE

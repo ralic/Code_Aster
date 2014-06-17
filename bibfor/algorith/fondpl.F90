@@ -31,7 +31,7 @@ subroutine fondpl(modele, mate, numedd, neq, chondp,&
 #include "asterfort/mecact.h"
 #include "asterfort/reajre.h"
 !
-    integer :: i, ibid, iret, j, jnoma, jreond, jvaond
+    integer :: i, ibid, iret, j,   jvaond
     integer :: nchond, neq, npain
     character(len=8) :: lpain(5), lpaout(1), chondp(nchond)
     character(len=24) :: modele, mate, numedd, vecond
@@ -39,6 +39,8 @@ subroutine fondpl(modele, mate, numedd, neq, chondp,&
     character(len=24) :: veonde, vaonde, lchin(5), lchout(1)
     character(len=24) :: chgeom, ligrel
     real(kind=8) :: foonde(neq), temps
+    character(len=8), pointer :: lgrf(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -51,8 +53,8 @@ subroutine fondpl(modele, mate, numedd, neq, chondp,&
     call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R',&
                 ncmp=1, nomcmp='INST', sr=temps)
     ligrel = modele(1:8)//'.MODELE'
-    call jeveuo(ligrel(1:19)//'.LGRF', 'L', jnoma)
-    chgeom = zk8(jnoma)//'.COORDO'
+    call jeveuo(ligrel(1:19)//'.LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     lpain(2) = 'PMATERC'
@@ -86,10 +88,10 @@ subroutine fondpl(modele, mate, numedd, neq, chondp,&
             call asasve(veonde, numedd, 'R', vaonde)
 !
             call jeveuo(vaonde, 'L', jvaond)
-            call jeveuo(zk24(jvaond) (1:19)//'.VALE', 'L', jreond)
+            call jeveuo(zk24(jvaond) (1:19)//'.VALE', 'L', vr=vale)
 !
             do 20 j = 1, neq
-                foonde(j) = foonde(j) + zr(jreond+j-1)
+                foonde(j) = foonde(j) + vale(j)
 20          continue
             call detrsd('CHAMP_GD', zk24(jvaond) (1:19))
 !

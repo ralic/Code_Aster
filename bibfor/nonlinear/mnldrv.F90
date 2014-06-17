@@ -82,13 +82,14 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
     integer :: ivect, ismct, ivat1, ivat2, ivinf, iiinf, ininf
     integer :: ivei, itemp, idrvj, ninf, ndrdv, ind, i, j, ival1, ival2
-    integer :: ismhc, ismdi, ismde, iret, ibid, irefa, ndrva, nzmk, nind
+    integer :: ismhc, ismdi,  iret, ibid, irefa, ndrva, nzmk, nind
     character(len=14) :: xei, xtemp, xdrvj, xiinf, xsmct, xvat1, xvat2, xvinf
     character(len=14) :: xninf, numedd, xtemp2
     character(len=8) :: kbid
     character(len=19) :: matk
     real(kind=8) :: eps, cle, res
     integer :: neq, itep2
+    integer, pointer :: smde(:) => null()
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -305,8 +306,8 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
             end do
             zi(ismdi-1+j)=ndrdv
         end do
-        call jeveuo(numdrv//'.SMOS.SMDE', 'E', ismde)
-        zi(ismde-1+2)=ndrdv
+        call jeveuo(numdrv//'.SMOS.SMDE', 'E', vi=smde)
+        smde(2)=ndrdv
 ! ---   DESTRUCTION DES CHAMPS A REMPLIR
         call jedetr(matdrv//'.VALM')
         call jedetr(numdrv//'.SMOS.SMHC')

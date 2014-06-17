@@ -44,9 +44,10 @@ subroutine dltp0(t0, nume)
     complex(kind=8) :: c16b
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, jadr, jbint, jordr, n1, nbordr(1), tnume(1)
+    integer :: i, ibid, jadr,  jordr, n1, nbordr(1), tnume(1)
     integer :: nbtrou, nc, ndy, nni, np, nt
     real(kind=8) :: prec, r8b, temps
+    real(kind=8), pointer :: bint(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getres(nomres, typres, nomcmd)
@@ -112,8 +113,8 @@ subroutine dltp0(t0, nume)
 !
         call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=li, nbret=n1)
         if (n1 .ne. 0) then
-            call jeveuo(li//'           .BINT', 'L', jbint)
-            t0 = zr (jbint)
+            call jeveuo(li//'           .BINT', 'L', vr=bint)
+            t0 = bint(1)
         else
 !
 !

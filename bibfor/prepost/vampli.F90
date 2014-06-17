@@ -64,10 +64,10 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !  - LA TAILLE DU SOUS-PAQUET EST EGALE A LA TAILLE DU <<PAQUET>> DE
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
-    integer :: nnoini, nbnop, nbnot, jcnrd, jcnrl, jcnrv
+    integer :: nnoini, nbnop, nbnot, jcnrd, jcnrl
     integer :: l, cnbno, kwork, somnow, ibidno, nunoe, inop
     integer :: decal, i, j, adrsi, adrsj, k, icmp
-    integer :: jad, nmaini, nbmap, nbpgt, jcerd, jcerl, jcerv
+    integer :: jad, nmaini, nbmap, nbpgt, jcerd, jcerl
     integer :: nbpg, nbpgp, sompgw, imap, ipg
 !
     real(kind=8) :: vresu(24)
@@ -75,6 +75,8 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
     real(kind=8) :: tensi(6), tensj(6), dtens(6)
 !
     character(len=19) :: cnsr, cesr
+    real(kind=8), pointer :: cesv(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -95,7 +97,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
         call jeveuo(cnsr//'.CNSD', 'L', jcnrd)
         call jeveuo(cnsr//'.CNSL', 'E', jcnrl)
-        call jeveuo(cnsr//'.CNSV', 'E', jcnrv)
+        call jeveuo(cnsr//'.CNSV', 'E', vr=cnsv)
 !
 !
 !   CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
@@ -188,7 +190,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
             do 70 icmp = 1, 24
                 jad = 24*(nunoe-1) + icmp
                 zl(jcnrl - 1 + jad) = .true.
-                zr(jcnrv - 1 + jad) = vresu(icmp)
+                cnsv(jad) = vresu(icmp)
 70          continue
 !
 10      continue
@@ -210,7 +212,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 !
         call jeveuo(cesr//'.CESD', 'L', jcerd)
         call jeveuo(cesr//'.CESL', 'E', jcerl)
-        call jeveuo(cesr//'.CESV', 'E', jcerv)
+        call jeveuo(cesr//'.CESV', 'E', vr=cesv)
 !
 !
 !  CONSTRUCTION DU VECTEUR : CISAILLEMENT = F(NUMERO D'ORDRE) EN CHAQUE
@@ -318,7 +320,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                     ASSERT(jad .ne. 0)
                     jad = abs(jad)
                     zl(jcerl - 1 + jad) = .true.
-                    zr(jcerv - 1 + jad) = vresu(icmp)
+                    cesv(jad) = vresu(icmp)
 !
 170              continue
 !

@@ -70,7 +70,7 @@ subroutine charci(chcine, mfact, mo, type)
     complex(kind=8) :: cbid
     integer :: ibid, ifm, niv, icmp, cmp, ier, ino, nbno, nuno
     integer :: ioc, jcnsv, jcnsl, idino, nbobm
-    integer :: idnddl, idvddl, nbddl, iddl, i, idprol, jafck
+    integer :: idnddl, idvddl, nbddl, iddl, i, idprol
     integer :: ila, nbcmp, jcmp, noc, n1, iord(1), iret
     integer :: jnoxfl, nlicmp, mxcmp, icmpmx
     parameter (mxcmp=100)
@@ -83,6 +83,7 @@ subroutine charci(chcine, mfact, mo, type)
     character(len=24) :: cino, cnuddl, cvlddl, nprol,valk(2)
     character(len=80) :: titre
     logical :: lxfem
+    character(len=8), pointer :: afck(:) => null()
     data nprol/'                   .PROL'/
 ! --- DEBUT -----------------------------------------------------------
 !
@@ -90,7 +91,7 @@ subroutine charci(chcine, mfact, mo, type)
     call infniv(ifm, niv)
 !
     chci = chcine
-    call jeveuo(chci//'.AFCK', 'E', jafck)
+    call jeveuo(chci//'.AFCK', 'E', vk8=afck)
     mfac = mfact
     call getfac(mfac, noc)
 !
@@ -127,13 +128,13 @@ subroutine charci(chcine, mfact, mo, type)
 !
         call gettco(evoim, typco)
         if (typco .eq. 'EVOL_THER') then
-            zk8(jafck-1+1)='CITH_FT'
+            afck(1)='CITH_FT'
         else if (typco.eq.'EVOL_ELAS'.or.typco.eq.'EVOL_NOLI') then
-            zk8(jafck-1+1)='CIME_FT'
+            afck(1)='CIME_FT'
         else
             ASSERT(.false.)
         endif
-        zk8(jafck-1+3)=evoim
+        afck(3)=evoim
 !
 !       -- C'EST LE CHAMP DU 1ER NUMERO D'ORDRE QUI IMPOSE SA LOI:
         call rsorac(evoim, 'PREMIER', ibid, rbid, k8b,&
@@ -275,11 +276,11 @@ subroutine charci(chcine, mfact, mo, type)
                 nprol(1:8) = zk8(idvddl-1+i)
                 call jeveuo(nprol, 'L', idprol)
                 if (zk24(idprol+2) .eq. 'INST') then
-                    zk8(jafck)(5:7) = '_FT'
+                    afck(1)(5:7) = '_FT'
                     goto 122
                     else if (( zk24(idprol).eq.'NAPPE').and. ( zk24(&
                 idprol+6).eq.'INST')) then
-                    zk8(jafck)(5:7) = '_FT'
+                    afck(1)(5:7) = '_FT'
                     goto 122
                 endif
             end do

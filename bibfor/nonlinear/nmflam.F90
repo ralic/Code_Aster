@@ -103,7 +103,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
     logical :: linsta
     integer :: nfreq, nfreqc
-    integer :: i, islvk, ljeveu, ibid, iret
+    integer :: i,  ljeveu, ibid, iret
     integer :: defo, ldccvg, numord
     integer :: nddle, nsta, ljeve2, cdsp
     real(kind=8) :: bande(2), r8bid
@@ -116,6 +116,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
     character(len=19) :: matgeo, matas2, vecmod, champ
     character(len=19) :: champ2, vecmo2
     character(len=24) :: k24bid, ddlexc, ddlsta
+    character(len=24), pointer :: slvk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -123,7 +124,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
 ! --- INITIALISATIONS
 !
-    call jeveuo(solveu(1:19)//'.SLVK', 'E', islvk)
+    call jeveuo(solveu(1:19)//'.SLVK', 'E', vk24=slvk)
     matgeo = '&&NMFLAM.MAGEOM'
     matas2 = '&&NMFLAM.MATASS'
     linsta = .false.
@@ -141,8 +142,8 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
 ! --- ON FORCE LA MATRICE TANGENTE EN SYMETRIQUE A CAUSE DE SORENSEN
 !
-    syme = zk24(islvk+5-1)(1:8)
-    zk24(islvk+5-1) = 'OUI'
+    syme = slvk(5)(1:8)
+    slvk(5) = 'OUI'
 !
 ! --- CALCUL DE LA MATRICE TANGENTE ASSEMBLEE ET DE LA MATRICE GEOM.
 !
@@ -157,7 +158,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
 ! --- RETABLISSEMENTS VALEURS
 !
-    zk24(islvk+5-1) = syme(1:3)
+    slvk(5) = syme(1:3)
 !
 ! --- CALCUL DES MODES PROPRES
 !

@@ -69,7 +69,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
 !                TCOSUP(I) = 3 : COMBINAISON ABSOLUE
 !     ------------------------------------------------------------------
     integer :: id, iddl, ier, igr, im, in, ino, ioc, iret, is, jddl1
-    integer :: jddl2, jdgn,   lvale, nba, nbb, n1, nbbd, nbl, nbliai
+    integer :: jddl2, jdgn,    nba, nbb, n1, nbbd, nbl, nbliai
     integer :: nbocc, nbtrou, ngr, nno, nt, vali(2), tabord(1)
     character(len=4) :: ctyp, dir(3)
     character(len=8) :: k8b, noma, noeu, nomcmp(3)
@@ -79,6 +79,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
     character(len=24) :: obj1, obj2, valk(2), grnoeu
     character(len=24), pointer :: group_no(:) => null()
     character(len=8), pointer :: noeud(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     data  dir / 'X' , 'Y' , 'Z' /
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
@@ -132,14 +133,14 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
     do im = 1, nbmode
         call rsexch('F', meca, nomsy, lordr(im), cham19,&
                     iret)
-        call jeveuo(cham19//'.VALE', 'L', lvale)
+        call jeveuo(cham19//'.VALE', 'L', vr=vale)
         do id = 1, 3
             if (ndir(id) .eq. 1) then
                 do is = 1, nsupp(id)
                     noeu = nomsup(is,id)
                     call posddl('NUME_DDL', nume, noeu, nomcmp(id), ino,&
                                 iddl)
-                    reasup(is,im,id) = zr(lvale+iddl-1)
+                    reasup(is,im,id) = vale(iddl)
                 end do
             endif
         end do

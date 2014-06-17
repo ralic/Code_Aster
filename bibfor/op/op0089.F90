@@ -39,10 +39,12 @@ subroutine op0089()
     character(len=16) :: kbi1, kbi2, corres, tysd
     character(len=8) :: ouiri, ouima, affick(2)
 !
-    integer :: isma, iamacr, iarefm, ie, n1, lref
+    integer :: isma,   ie, n1, lref
     character(len=8) :: noma, macrel, promes, modlms, noca
     character(len=19) :: method
     character(len=24) :: vref
+    character(len=8), pointer :: nomacr(:) => null()
+    character(len=8), pointer :: refm(:) => null()
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -57,7 +59,7 @@ subroutine op0089()
     if (tysd(1:4) .ne. 'CHAM') then
 !       UG DE TYPE RESULTAT (POUR MODIF STRUCTURALE)
         call dismoi('NOM_MAILLA', ug, 'RESULTAT', repk=noma)
-        call jeveuo(noma//'.NOMACR', 'L', iamacr)
+        call jeveuo(noma//'.NOMACR', 'L', vk8=nomacr)
 !
         call jenonu(jexnom(noma//'.SUPMAIL', mail), isma)
 !
@@ -67,7 +69,7 @@ subroutine op0089()
             call utmess('F', 'SOUSTRUC_26', nk=2, valk=affick)
         endif
 !
-        macrel= zk8(iamacr-1+isma)
+        macrel= nomacr(isma)
 !
         call dismoi('NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', repk=promes)
         if (promes .eq. ' ') then
@@ -81,14 +83,14 @@ subroutine op0089()
 !
 !       VERIFIER SI LES MATRICES MASSE ET RAIDEUR CONDENSEES
 !       ONT ETE CALCULEES
-        call jeveuo(macrel//'.REFM', 'L', iarefm)
+        call jeveuo(macrel//'.REFM', 'L', vk8=refm)
 !
-        ouiri = zk8(iarefm-1+6)
+        ouiri = refm(6)
         if (ouiri .ne. 'OUI_RIGI') then
             call utmess('F', 'SOUSTRUC_80')
         endif
 !
-        ouima = zk8(iarefm-1+7)
+        ouima = refm(7)
         if (ouima .ne. 'OUI_MASS') then
             call utmess('F', 'SOUSTRUC_81')
         endif

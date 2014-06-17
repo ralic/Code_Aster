@@ -40,13 +40,14 @@ subroutine imppiv(nu, ieq)
 ! IN  : NU     : NOM D'UN NUME_DDL OU D'UN PROF_CHNO
 ! IN  : IEQ    : NUMERO D'UNE EQUATION DANS UN SYSTEME ASSEMBLE
 ! ----------------------------------------------------------------------
-    integer :: gd, nec, jprno, jnueq, ifm
+    integer :: gd, nec, jprno,  ifm
     integer :: nlili, i, ilo, nbno, ino, ideb, ncmp, icmp, iieq, nuli
     integer :: nuno
     integer :: nbmas, k, kk, jnuno, kno
     character(len=8) :: noma, nomeq, nomno
     character(len=19) :: prno, ligrel
     logical :: trouve
+    integer, pointer :: nueq(:) => null()
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -59,7 +60,7 @@ subroutine imppiv(nu, ieq)
     prno(15:19) = '.NUME'
     nec = nbec(gd)
 !
-    call jeveuo(prno//'.NUEQ', 'L', jnueq)
+    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
 !
     call jelira(prno//'.PRNO', 'NMAXOC', nlili)
     trouve = .false.
@@ -73,7 +74,7 @@ subroutine imppiv(nu, ieq)
             ideb = zi(jprno-1+(ino-1)*(nec+2)+1)
             ncmp = zi(jprno-1+(ino-1)*(nec+2)+2)
             do icmp = 1, ncmp
-                iieq = zi(jnueq-1+ideb-1+icmp)
+                iieq = nueq(ideb-1+icmp)
                 if (ieq .eq. iieq) then
                     trouve = .true.
                     nuli = i

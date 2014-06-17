@@ -34,8 +34,8 @@ subroutine rc32r1(nomres)
 !     ------------------------------------------------------------------
 !
     integer :: ibid, npar2, npar1, npar4, npar6, im, ig, is, i3, nbsigr
-    integer :: valei(3), jnumgr,  jnsg, jvale, jpmpb, nbgr, ioc, numgr
-    integer :: is1, is2, jreas, jress, n1, jseigr, jcombi, ioc1, ioc2, iocs, ii
+    integer :: valei(3),   jnsg, jvale, jpmpb, nbgr, ioc, numgr
+    integer :: is1, is2, jreas, jress, n1,  jcombi, ioc1, ioc2, iocs, ii
     integer :: npar0
     parameter    ( npar0 = 35, npar2 = 7, npar1 = 11, npar4 = 15,&
      &               npar6 = 13 )
@@ -47,6 +47,8 @@ subroutine rc32r1(nomres)
     character(len=16) :: nopar6(npar6), nopar0(npar0)
     character(len=24) :: k24b, k24c, k24t
     integer, pointer :: situ_numero(:) => null()
+    integer, pointer :: situ_seisme(:) => null()
+    integer, pointer :: situ_nume_group(:) => null()
 !     ------------------------------------------------------------------
     data lieu   / 'ORIG' , 'EXTR' /
 !
@@ -96,8 +98,8 @@ subroutine rc32r1(nomres)
     call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
 !
     call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
-    call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
-    call jeveuo('&&RC3200.SITU_SEISME', 'L', jseigr)
+    call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', vi=situ_nume_group)
+    call jeveuo('&&RC3200.SITU_SEISME', 'L', vi=situ_seisme)
 !
     call jeveuo('&&RC3200.SITU_NUMERO', 'L', vi=situ_numero)
     call jeveuo('&&RC3200.SITU_COMBINABLE', 'L', jcombi)
@@ -131,8 +133,8 @@ subroutine rc32r1(nomres)
 !     -----------------------------------------------------------------
 !
     do 100 ig = 1, nbgr
-        numgr = abs(zi(jnumgr+ig-1))
-        iocs = zi(jseigr+ig-1)
+        numgr = abs(situ_nume_group(ig))
+        iocs = situ_seisme(ig)
         valei(1) = numgr
         call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONMAX', nbsigr)
         call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)

@@ -74,11 +74,11 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacoor, iad,  iamav, ianew, ianob
-    integer :: ianov, iarepe, iatyma, ibid, ic, icmp
-    integer ::  ima, ino, inob, inoma, ipa, jceld
-    integer :: jcelv, jcon, jconin, jelfa,   jpa
-    integer ::  jprno, jrefe, jrefn, jsig, jval, k
+    integer :: i,  iad,  iamav, ianew, ianob
+    integer :: ianov,  iatyma, ibid, ic, icmp
+    integer ::  ima, ino, inob, inoma, ipa
+    integer ::  jcon, jconin, jelfa,   jpa
+    integer ::  jprno,  jrefn,   k
     integer :: nb, nbcmp, nbec, nbma, nbmav, nbn, nbno
     integer :: nbnob, nbnobp, nbnoma, nqua, ntri, num, numav
     integer :: numc, numel, numeq, numgr, numloc
@@ -89,6 +89,13 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     integer, pointer :: nbpatchmil(:) => null()
     logical, pointer :: noeubord(:) => null()
     integer, pointer :: numnb(:) => null()
+    integer, pointer :: celd(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: repe(:) => null()
+    real(kind=8), pointer :: coor(:) => null()
+    real(kind=8), pointer :: sig(:) => null()
+    real(kind=8), pointer :: val(:) => null()
+    real(kind=8), pointer :: celv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -176,14 +183,14 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     call detrsd('NUME_DDL', nu14)
 !
     noeub = vecass
-    call jeveuo(noeub//'.REFE', 'E', jrefe)
-    zk24(jrefe+1)=pfchno
+    call jeveuo(noeub//'.REFE', 'E', vk24=refe)
+    refe(2)=pfchno
 !
     AS_ALLOCATE(vl=noeubord, size=nbno)
 !
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
     call jeveuo(jexnum(pfchno//'.PRNO', 1), 'L', jprno)
-    call jeveuo(noeub//'.VALE', 'L', jval)
+    call jeveuo(noeub//'.VALE', 'L', vr=val)
     eps = 1.d-06
     nbnob = 0
     do ino = 1, nbno
@@ -191,7 +198,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
         nbcmp = zi(jprno-1+ (nbec+2)* (ino-1)+2)
         xnorm = 0.d0
         do icmp = 1, nbcmp
-            xnorm = xnorm + zr(jval-1+numeq-1+icmp)**2
+            xnorm = xnorm + val(numeq-1+icmp)**2
         end do
         if (xnorm .le. eps) then
             noeubord(ino) = .false.
@@ -241,7 +248,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     endif
 !
     mo = modele//'.MODELE    '
-    call jeveuo(mo//'.REPE', 'L', iarepe)
+    call jeveuo(mo//'.REPE', 'L', vi=repe)
 !
     rcmp(1) = 0.d0
     rcmp(2) = 0.d0
@@ -253,10 +260,10 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     licmp(4) = 'SIXY'
     call crcnct('G', signo, ma, 'SIEF_R', 4,&
                 licmp, rcmp)
-    call jeveuo(signo(1:19)//'.VALE', 'E', jsig)
-    call jeveuo(ma//'.COORDO    .VALE', 'L', iacoor)
-    call jeveuo(sigel(1:19)//'.CELD', 'L', jceld)
-    call jeveuo(sigel(1:19)//'.CELV', 'L', jcelv)
+    call jeveuo(signo(1:19)//'.VALE', 'E', vr=sig)
+    call jeveuo(ma//'.COORDO    .VALE', 'L', vr=coor)
+    call jeveuo(sigel(1:19)//'.CELD', 'L', vi=celd)
+    call jeveuo(sigel(1:19)//'.CELV', 'L', vr=celv)
 !
 ! --- RECUPERATION DE L'ELREFE ET DE LA FAMILLE POUR CHAQUE MAILLE
 !
@@ -301,8 +308,8 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                     call jeveuo(jexnum(connex, numav), 'L', ianov)
                     do inoma = 1, nbnoma
                         num = zi(ianov-1+inoma)
-                        x(inoma) = zr(iacoor-1+3* (num-1)+1)
-                        y(inoma) = zr(iacoor-1+3* (num-1)+2)
+                        x(inoma) = coor(3* (num-1)+1)
+                        y(inoma) = coor(3* (num-1)+2)
                         if (x(inoma) .le. xmin) xmin = x(inoma)
                         if (y(inoma) .le. ymin) ymin = y(inoma)
                         if (x(inoma) .ge. xmax) xmax = x(inoma)
@@ -314,8 +321,8 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
                 do ima = 1, nbmav
                     numav = zi(iamav-1+ima)
-                    numgr = zi(iarepe-1+2*(numav-1)+1)
-                    numel = zi(iarepe-1+2*(numav-1)+2)
+                    numgr = repe(2*(numav-1)+1)
+                    numel = repe(2*(numav-1)+2)
                     call jelira(jexnum(connex, numav), 'LONMAX', nbnoma)
                     call jeveuo(jexnum(connex, numav), 'L', ianov)
 !
@@ -331,8 +338,8 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                                 zi(ianew-1+nbnobp) = num
                             endif
                         endif
-                        x(inoma) = zr(iacoor-1+3* (num-1)+1)
-                        y(inoma) = zr(iacoor-1+3* (num-1)+2)
+                        x(inoma) = coor(3* (num-1)+1)
+                        y(inoma) = coor(3* (num-1)+2)
                     end do
 !
 !        RECUPERATION DES FCTS DE FORME DE L'ELEMENT
@@ -349,7 +356,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !    CALCUL DU SECOND MEMBRE B
 !
                     call zzcalb(numgr, numel, npg, nno, zr(ivf),&
-                                zi(jceld), zr(jcelv), x, y, xmin,&
+                                celd, celv, x, y, xmin,&
                                 xmax, ymin, ymax, b)
 !
                     call jedetr(nomjv)
@@ -369,15 +376,15 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                     end do
                 end do
 !
-                xino = zr(iacoor-1+3* (ino-1)+1)
-                yino = zr(iacoor-1+3* (ino-1)+2)
+                xino = coor(3* (ino-1)+1)
+                yino = coor(3* (ino-1)+2)
 !
                 xino = -1.d0 + 2.d0* (xino-xmin)/ (xmax-xmin)
                 yino = -1.d0 + 2.d0* (yino-ymin)/ (ymax-ymin)
 !
 !   CALCUL DES CONTRAINTES LISSEES AU NOEUD INO
 !
-                call zzpoly(nno, ino, xino, yino, zr(jsig),&
+                call zzpoly(nno, ino, xino, yino, sig,&
                             b)
 !
 !    TRAITEMENT DES NOEUDS BORD DU PATCH
@@ -390,11 +397,11 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                             zi(jpa-1+k) = zi(jpa-1+k) + 1
                         endif
                     end do
-                    xinob = zr(iacoor-1+3* (num-1)+1)
-                    yinob = zr(iacoor-1+3* (num-1)+2)
+                    xinob = coor(3* (num-1)+1)
+                    yinob = coor(3* (num-1)+2)
                     xinob = -1.d0 + 2.d0* (xinob-xmin)/ (xmax-xmin)
                     yinob = -1.d0 + 2.d0* (yinob-ymin)/ (ymax-ymin)
-                    call zzpoly(nno, num, xinob, yinob, zr(jsig),&
+                    call zzpoly(nno, num, xinob, yinob, sig,&
                                 b)
                 end do
                 call jedetr('&&SINOZ2.NOEBOPA')
@@ -422,11 +429,11 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                         if (nno .eq. 9) numloc = numloc + 4
                         num = zi(ianov-1+numloc)
                         nbpatchmil(num) = nbpatchmil(num) + 1
-                        xinomi = zr(iacoor-1+3* (num-1)+1)
-                        yinomi = zr(iacoor-1+3* (num-1)+2)
+                        xinomi = coor(3* (num-1)+1)
+                        yinomi = coor(3* (num-1)+2)
                         xinomi = -1.d0 + 2.d0* (xinomi-xmin)/ (xmax- xmin)
                         yinomi = -1.d0 + 2.d0* (yinomi-ymin)/ (ymax- ymin)
-                        call zzpoly(nno, num, xinomi, yinomi, zr(jsig),&
+                        call zzpoly(nno, num, xinomi, yinomi, sig,&
                                     b)
                     end do
 !
@@ -444,11 +451,11 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
                         num = zi(ianov-1+nbnoma)
                         nbpatchmil(num) = nbpatchmil(num) + 1
-                        xinomi = zr(iacoor-1+3* (num-1)+1)
-                        yinomi = zr(iacoor-1+3* (num-1)+2)
+                        xinomi = coor(3* (num-1)+1)
+                        yinomi = coor(3* (num-1)+2)
                         xinomi = -1.d0 + 2.d0* (xinomi-xmin)/ (xmax- xmin)
                         yinomi = -1.d0 + 2.d0* (yinomi-ymin)/ (ymax- ymin)
-                        call zzpoly(nno, num, xinomi, yinomi, zr(jsig),&
+                        call zzpoly(nno, num, xinomi, yinomi, sig,&
                                     b)
                     end do
                 endif
@@ -465,7 +472,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
             call utmess('F', 'CALCULEL4_89')
         endif
         do ic = 1, 4
-            zr(jsig-1+4* (num-1)+ic) = zr(jsig-1+4* (num-1)+ic)/ zi(jpa-1+i)
+            sig(4* (num-1)+ic) = sig(4* (num-1)+ic)/ zi(jpa-1+i)
         end do
     end do
 !
@@ -478,7 +485,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 nbpatchmil(ino) = 1
             endif
             do ic = 1, 4
-                zr(jsig-1+4* (ino-1)+ic) = zr( jsig-1+4* (ino-1)+ic )/ nbpatchmil(ino )
+                sig(4* (ino-1)+ic) = sig(4* (ino-1)+ic )/ nbpatchmil(ino )
             end do
         endif
     end do

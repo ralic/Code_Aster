@@ -71,7 +71,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     real(kind=8) :: vale_real, mrota(3, 3)
     complex(kind=8) :: coef_cplx_unit
     real(kind=8) :: coef_real_unit
-    integer :: jlino, jcoor, jprnm, jgeom2, jnom
+    integer :: jlino,  jprnm, jgeom2, jnom
     integer :: i_no, i_cmp, i
     integer :: cmp_index
     integer :: nbcmp, nbec
@@ -79,6 +79,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
     real(kind=8) :: cent(3)
     logical :: l_angl_naut, l_tran
     real(kind=8) :: angl_naut(3)
+    real(kind=8), pointer :: vale(:) => null()
 !
     data nomcmp /'DX', 'DY', 'DZ' /
 !
@@ -107,7 +108,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
 !
 ! - Access to geometry and list of nodes
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call jeveuo(list_node, 'L', jlino)
     geom2 = '&&DRZROT.GEOM_TRANSF'
 !
@@ -131,7 +132,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
             cmp_index = indik8(zk8(jnom), cmp_name, 1, nbcmp)
             ASSERT(cmp_index.gt.0)
             if (exisdg(zi(jprnm-1+(numnoe_m-1)*nbec+1),cmp_index)) then
-                vale_real = zr(jgeom2-1+3*(i_no-1)+i_cmp) - zr(jcoor -1+3*(i_no-1)+i_cmp)
+                vale_real = zr(jgeom2-1+3*(i_no-1)+i_cmp) - vale(3*(i_no-1)+i_cmp)
                 call afrela([coef_real_unit], [coef_cplx_unit], cmp_name, nomnoe_m, [0],&
                             [0.d0], 1, vale_real, c16bid, ' ',&
                             'REEL', 'REEL', type_lagr, 0.d0, lisrel)

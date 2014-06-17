@@ -52,14 +52,18 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 ! ----------------------------------------------------------------------
     integer :: ibid, i, j, tabec(10), ncmpmx
     integer :: nec, gd, iad, iec
-    integer :: jnueq, nlili, jprno, nbno, ival, ncmp, icompt
-    integer :: icmp, ieq, nucmp, jdeeq, nleq, numno, jlili, ino
-    integer :: ieql, jnugl, imatd, iexi, jdesc
+    integer ::  nlili, jprno, nbno, ival, ncmp, icompt
+    integer :: icmp, ieq, nucmp,  nleq, numno,  ino
+    integer :: ieql, jnugl, imatd, iexi
     character(len=8) :: nomma
     character(len=19) :: nomnu, prno
     character(len=24) :: nolili
     logical :: matd, lnuge
     integer, pointer :: nume_cmp(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: vnbno(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -113,7 +117,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
             nume_cmp(1+i)=indik8(lnocmp,zk8(iad+i),1,nbcmp)
         end do
 !
-        call jeveuo(prno//'.NUEQ', 'L', jnueq)
+        call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
 !
         call jelira(prno//'.PRNO', 'NMAXOC', nlili)
         do i = 1, nlili
@@ -127,8 +131,8 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
             if (nolili(1:8) .eq. '&MAILLA ') then
                 call jelira(nomma//'.NOMNOE', 'NOMMAX', nbno)
             else
-                call jeveuo(nolili(1:19)//'.NBNO', 'L', jlili)
-                nbno=zi(jlili-1+1)
+                call jeveuo(nolili(1:19)//'.NBNO', 'L', vi=vnbno)
+                nbno=vnbno(1)
             endif
             do ino = 1, nbno
 !           NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
@@ -145,7 +149,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
                 do icmp = 1, ncmpmx
                     if (exisdg(tabec,icmp)) then
                         icompt=icompt+1
-                        ieq=zi(jnueq-1+ival-1+icompt)
+                        ieq=nueq(ival-1+icompt)
                         nucmp=nume_cmp(icmp)
                         if (.not.matd) then
                             ieql=ieq
@@ -165,16 +169,16 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 !     -- CAS NUME_DDL_GENE :
 !     ----------------------
     else
-        call jeveuo(nomnu//'.DESC', 'L', jdesc)
-        ASSERT(zi(jdesc).eq.2)
+        call jeveuo(nomnu//'.DESC', 'L', vi=desc)
+        ASSERT(desc(1).eq.2)
         if (matd) ASSERT(.false.)
-        call jeveuo(nomnu//'.DEEQ', 'L', jdeeq)
+        call jeveuo(nomnu//'.DEEQ', 'L', vi=deeq)
         call jelira(nomnu//'.DEEQ', 'LONMAX', nleq)
         nleq=nleq/2
 !       VERIFICATION DE LA COMPATIBILITE DU NB D EQUATIONS
         ASSERT(nleq.eq.neq)
         do ieq = 1, neq
-            numno=zi(jdeeq+2*ieq-1)
+            numno=deeq(1+2*ieq-1)
             do j = 1, nbcmp
                 if (lnocmp(j) .eq. 'LAGR' .and. numno .lt. 0) ivec(ieq,j)= 1
                 if (lnocmp(j) .eq. 'GENE' .and. numno .gt. 0) ivec(ieq,j)= 1

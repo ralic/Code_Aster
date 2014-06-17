@@ -67,7 +67,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
 !
 !
     integer :: i, j, k, n, ibid, nbprup, nbpar, ncomb, nfreq, init
-    integer :: ig, ind, indold, iprov, iq, igq, ipa, inopr, itypr, ni, nj
+    integer ::  ind, indold, iprov, iq, igq, ipa, inopr, itypr, ni, nj
     integer :: irmax, ikmax
 !
     real(kind=8) :: mgmax, gmax, s
@@ -77,6 +77,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
     character(len=8) :: k8bid, tabgma, table(2)
     character(len=24) :: collec, chsigi
     character(len=16) :: valk
+    real(kind=8), pointer :: g(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -208,11 +209,11 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
 !
         call tbexve(tabgma, 'G', '&&MMAXGL.G', 'V', ncomb,&
                     k8bid)
-        call jeveuo('&&MMAXGL.G', 'L', ig)
+        call jeveuo('&&MMAXGL.G', 'L', vr=g)
 !
         do 220 k = 1, ncomb
 !
-            if (zr(ig+k-1) .eq. gmax) then
+            if (g(k) .eq. gmax) then
                 call jeveuo(jexnum(collec, k), 'L', iq)
                 do 230 i = 1, lonvec
                     zr(ipa+i-1) = zr(iq+i-1)

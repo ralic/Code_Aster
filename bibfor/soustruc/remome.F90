@@ -49,13 +49,17 @@ subroutine remome(promes, modmes, nommac)
     character(len=19) :: chamno, chs
     character(len=24) :: vnoeud, vrange, vmes, vorien, vref
 !
-    integer :: nbmesu, nbmtot, numord, lmesu, imes, lord, lrange, lori, ii
-    integer :: iret, icmp, ino, lnoeud, idesc, gd, nbcmp, ibid, lref
-    integer :: jcnsd, jcnsc, jcnsv, jcnsl, jcnsk, tord(1)
+    integer :: nbmesu, nbmtot, numord, lmesu, imes,  lrange, lori, ii
+    integer :: iret, icmp, ino, lnoeud,  gd, nbcmp, ibid, lref
+    integer ::   jcnsv, jcnsl, jcnsk, tord(1)
 !
     real(kind=8) :: rbid, vori(3), val, vect(3)
 !
     complex(kind=8) :: cbid, valc, vectc(3)
+    character(len=8), pointer :: cnsc(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    integer, pointer :: ordr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,7 +84,7 @@ subroutine remome(promes, modmes, nommac)
 !
 ! RECUPERATION ADRESSE DES NUMEROS D'ORDRE ET DU NOM SYMBOLIQUE
 !
-    call jeveuo(modmes//'           .ORDR', 'L', lord)
+    call jeveuo(modmes//'           .ORDR', 'L', vi=ordr)
 !
     chs = '&&MESURE.CHS'
 !
@@ -95,11 +99,11 @@ subroutine remome(promes, modmes, nommac)
 !
     do 110 numord = 1, nbmtot
 !        -> EXISTENCE DES CHAMPS DANS LA STRUCTURE DE DONNEES MESURE
-        call rsexch('F', modmes, nomcha, zi(lord-1+numord), chamno,&
+        call rsexch('F', modmes, nomcha, ordr(numord), chamno,&
                     iret)
         if (numord .le. 1) then
-            call jeveuo(chamno//'.DESC', 'L', idesc)
-            gd = zi(idesc-1 +1)
+            call jeveuo(chamno//'.DESC', 'L', vi=desc)
+            gd = desc(1)
             scal = scalai(gd)
             typval = scal(1:1)
             if (typval .eq. 'C') then
@@ -116,12 +120,12 @@ subroutine remome(promes, modmes, nommac)
         call detrsd('CHAM_NO_S', chs)
         call cnocns(chamno, 'V', chs)
         call jeveuo(chs//'.CNSK', 'L', jcnsk)
-        call jeveuo(chs//'.CNSD', 'L', jcnsd)
-        call jeveuo(chs//'.CNSC', 'L', jcnsc)
+        call jeveuo(chs//'.CNSD', 'L', vi=cnsd)
+        call jeveuo(chs//'.CNSC', 'L', vk8=cnsc)
         call jeveuo(chs//'.CNSV', 'L', jcnsv)
         call jeveuo(chs//'.CNSL', 'L', jcnsl)
 !
-        nbcmp = zi(jcnsd-1 + 2)
+        nbcmp = cnsd(2)
 !
         do 120 imes = 1, nbmesu
             ino = zi(lnoeud-1 +imes)
@@ -143,11 +147,11 @@ subroutine remome(promes, modmes, nommac)
 !
             if (zcmplx) then
                 do 130 icmp = 1, nbcmp
-                    if (zk8(jcnsc-1 +icmp) .eq. 'DX') vectc(1) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
+                    if (cnsc(icmp) .eq. 'DX') vectc(1) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
                                                                  )
-                    if (zk8(jcnsc-1 +icmp) .eq. 'DY') vectc(2) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
+                    if (cnsc(icmp) .eq. 'DY') vectc(2) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
                                                                  )
-                    if (zk8(jcnsc-1 +icmp) .eq. 'DZ') vectc(3) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
+                    if (cnsc(icmp) .eq. 'DZ') vectc(3) = zc(jcnsv-1 +( ino-1 )*nbcmp+icmp&
                                                                  )
 130              continue
 !
@@ -159,9 +163,9 @@ subroutine remome(promes, modmes, nommac)
                 zc(lmesu-1 +(numord-1)*nbmesu+imes) = valc
             else
                 do 230 icmp = 1, nbcmp
-                    if (zk8(jcnsc-1 +icmp) .eq. 'DX') vect(1) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
-                    if (zk8(jcnsc-1 +icmp) .eq. 'DY') vect(2) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
-                    if (zk8(jcnsc-1 +icmp) .eq. 'DZ') vect(3) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
+                    if (cnsc(icmp) .eq. 'DX') vect(1) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
+                    if (cnsc(icmp) .eq. 'DY') vect(2) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
+                    if (cnsc(icmp) .eq. 'DZ') vect(3) = zr(jcnsv-1 +(ino-1 )*nbcmp+icmp)
 230              continue
                 val = 0.d0
                 do 320 ii = 1, 3

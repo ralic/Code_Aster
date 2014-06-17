@@ -44,7 +44,8 @@ subroutine projcy(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: lddtyp, llref
+    integer ::  llref
+    character(len=8), pointer :: cycl_type(:) => null()
 !-----------------------------------------------------------------------
     data nook /.true./
 !-----------------------------------------------------------------------
@@ -61,8 +62,8 @@ subroutine projcy(nomres)
 !
 !--------------RECUPERATION DU TYPE D'INTERFACE-------------------------
 !
-    call jeveuo(nomres//'.CYCL_TYPE', 'L', lddtyp)
-    typint=zk8(lddtyp)
+    call jeveuo(nomres//'.CYCL_TYPE', 'L', vk8=cycl_type)
+    typint=cycl_type(1)
 !
 !----------------CALCUL SOUS-MATRICES DANS LE CAS CRAIG-BAMPTON---------
 !                        ET CRAIG-BAMPTON HARMONIQUE

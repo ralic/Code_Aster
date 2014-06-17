@@ -65,10 +65,11 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
     character(len=24) :: tabfin
     integer :: jtabf
     logical :: lveri, lnoeu
-    integer :: jcnsvr, jcnslr
+    integer ::  jcnslr
     integer :: nbliac, nbliaf
     character(len=24) :: dejcal
     integer :: jdejca
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -105,7 +106,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 !
 ! --- ACCES AU CHAM_NO_S POUR LE CONTACT
 !
-    call jeveuo(cnsinr(1:19)//'.CNSV', 'L', jcnsvr)
+    call jeveuo(cnsinr(1:19)//'.CNSV', 'L', vr=cnsv)
     call jeveuo(cnsinr(1:19)//'.CNSL', 'L', jcnslr)
 !
 ! --- BOUCLE SUR LES ZONES
@@ -146,7 +147,7 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
                 numnoe = nint(zr(jtabf+ztabf*(iptc-1)+24))
                 if (numnoe .gt. 0) then
                     if (zi(jdejca+numnoe-1) .eq. 0) then
-                        cont = nint(zr(jcnsvr+zresu*(numnoe-1)+1 -1))
+                        cont = nint(cnsv(1+zresu*(numnoe-1)+1 -1))
                         if (cont .ge. 1) then
                             nbliac = nbliac + 1
                             if (cont .eq. 1) then

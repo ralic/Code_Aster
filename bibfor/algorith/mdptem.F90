@@ -58,7 +58,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 ! OUT : LISINS : LISTE DES INSTANTS POUR L'ARCHIVAGE
 ! ----------------------------------------------------------------------
     integer :: ic, ia, i, j, iveri, ibid
-    integer :: jbint, jlpas, jvale, jvalr, jinst, jordr
+    integer :: jbint,  jvale, jvalr, jinst
     integer :: n1, n2, n3, n4, n5, n6, nr, nt, nni
     integer :: nbgrpa, nbinst, nbinsr, numef, nbordr
     integer :: vali
@@ -71,6 +71,8 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 !
 !-----------------------------------------------------------------------
     integer :: k, n7, nume
+    integer, pointer :: ordr(:) => null()
+    real(kind=8), pointer :: lpas(:) => null()
 !-----------------------------------------------------------------------
     call getres(nomres, typres, nomcmd)
 !
@@ -106,10 +108,10 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
                 tinit = zr(jinst+nbinst-1)
             endif
         else
-            call jeveuo(tran//'           .ORDR', 'L', jordr)
+            call jeveuo(tran//'           .ORDR', 'L', vi=ordr)
             call jelira(tran//'           .ORDR', 'LONUTI', nbordr)
             do 100 i = 1, nbordr
-                if (zi(jordr+i-1) .eq. nume) goto 101
+                if (ordr(i) .eq. nume) goto 101
 100          continue
             call utmess('F', 'ALGORITH3_36', sk=tran)
 101          continue
@@ -136,23 +138,23 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             call utmess('F', 'ALGORITH3_9')
         endif
         call jeveuo(li//'           .BINT', 'L', jbint)
-        call jeveuo(li//'           .LPAS', 'L', jlpas)
+        call jeveuo(li//'           .LPAS', 'L', vr=lpas)
         call jeveuo(li//'           .VALE', 'L', jvale)
         call jelira(li//'           .VALE', 'LONUTI', nbinst)
         call jelira(li//'           .NBPA', 'LONUTI', nbgrpa)
 !
         if (nbgrpa .eq. 1) then
-            dtu = zr (jlpas)
+            dtu = lpas(1)
             tfin = zr (jbint+1)
         else
 !              CHOIX DTU PLUS PETIT DE LA LISTE
-            dtu = zr(jlpas)
+            dtu = lpas(1)
             do 32 j = 1, nbgrpa-1
-                dtu = min(dtu,zr(jlpas+j))
+                dtu = min(dtu,lpas(1+j))
 32          continue
 !              TEST PAS DE TEMPS CONSTANT SI PLUSIEURS INTERVALLES
             do 33 i = 1, nbgrpa-1
-                if ((abs(zr(jlpas+i)-dtu)) .ge. (1.d-6*dtu)) then
+                if ((abs(lpas(1+i)-dtu)) .ge. (1.d-6*dtu)) then
                     call utmess('F', 'ALGORITH3_18')
                 endif
 33          continue

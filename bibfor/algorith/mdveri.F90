@@ -31,7 +31,7 @@ subroutine mdveri()
 #include "asterfort/getvtx.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: i, nbchoc, nbrede, nbrevi, ibid, jref1, jref2
+    integer :: i, nbchoc, nbrede, nbrevi, ibid, jref1
     character(len=8) :: nomres, method, amogen, ouinon, channo
     character(len=8) :: matr1, matr2, basemo
     character(len=24) :: ref1, ref2
@@ -42,6 +42,7 @@ subroutine mdveri()
 !-----------------------------------------------------------------------
     integer :: kf, n1, nagen, nared, nbasfl, nbexc, nm
     integer :: npas, nts
+    character(len=24), pointer :: vref2(:) => null()
 !-----------------------------------------------------------------------
     call getres(nomres, typres, nomcmd)
     call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=method, nbret=n1)
@@ -127,9 +128,9 @@ subroutine mdveri()
     call getvid(' ', 'MATR_MASS', scal=matr1, nbret=ibid)
     call getvid(' ', 'MATR_RIGI', scal=matr2, nbret=ibid)
     call jeveuo(matr1//'           .REFA', 'L', jref1)
-    call jeveuo(matr2//'           .REFA', 'L', jref2)
+    call jeveuo(matr2//'           .REFA', 'L', vk24=vref2)
     ref1=zk24(jref1)
-    ref2=zk24(jref2)
+    ref2=vref2(1)
     if (ref1(1:8) .ne. ref2(1:8)) then
         call utmess('E', 'ALGORITH5_42')
     endif

@@ -63,7 +63,7 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
     character(len=19) :: mu, cm1a, liac
     integer :: jmu, jcm1a, jliac
     character(len=19) :: ddelt
-    integer :: jddelt
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +87,7 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
 ! --- ACCES AUX CHAMPS DE TRAVAIL
 !
     ddelt = resoco(1:14)//'.DDEL'
-    call jeveuo(ddelt(1:19)//'.VALE', 'E', jddelt)
+    call jeveuo(ddelt(1:19)//'.VALE', 'E', vr=vale)
 !
 ! --- ON REORDONNE LE VECTEUR MU
 !
@@ -106,7 +106,7 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
         case (1)
             posnbl = posnbl + 1
             call jeveuo(jexnum(cm1a, iliai), 'L', jcm1a)
-            call daxpy(neq, -zr(jmu-1+posnbl), zr(jcm1a), 1, zr(jddelt),&
+            call daxpy(neq, -zr(jmu-1+posnbl), zr(jcm1a), 1, vale,&
                        1)
             call jelibe(jexnum(cm1a, iliai))
 !
@@ -115,12 +115,12 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
         case (2)
             poslf0 = poslf0 + 1
             call jeveuo(jexnum(cm1a, iliai+nbliai), 'L', jcm1a)
-            call daxpy(neq, -zr(jmu-1+poslf0), zr(jcm1a), 1, zr(jddelt),&
+            call daxpy(neq, -zr(jmu-1+poslf0), zr(jcm1a), 1, vale,&
                        1)
             call jelibe(jexnum(cm1a, iliai+nbliai))
             if (ndim .eq. 3) then
                 call jeveuo(jexnum(cm1a, iliai+(ndim-1)*nbliai), 'L', jcm1a)
-                call daxpy(neq, -zr(jmu-1+poslf0+llf), zr(jcm1a), 1, zr(jddelt),&
+                call daxpy(neq, -zr(jmu-1+poslf0+llf), zr(jcm1a), 1, vale,&
                            1)
                 call jelibe(jexnum(cm1a, iliai+(ndim-1)*nbliai))
             endif
@@ -130,7 +130,7 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
         case (3)
             poslf1 = poslf1 + 1
             call jeveuo(jexnum(cm1a, iliai+nbliai), 'L', jcm1a)
-            call daxpy(neq, -zr(jmu-1+poslf1), zr(jcm1a), 1, zr(jddelt),&
+            call daxpy(neq, -zr(jmu-1+poslf1), zr(jcm1a), 1, vale,&
                        1)
             call jelibe(jexnum(cm1a, iliai+nbliai))
 !
@@ -139,7 +139,7 @@ subroutine cfmajf(resoco, neq, ndim, nbliai, nbliac,&
         case (4)
             poslf2 = poslf2 + 1
             call jeveuo(jexnum(cm1a, iliai+(ndim-1)*nbliai), 'L', jcm1a)
-            call daxpy(neq, -zr(jmu-1+poslf2), zr(jcm1a), 1, zr(jddelt),&
+            call daxpy(neq, -zr(jmu-1+poslf2), zr(jcm1a), 1, vale,&
                        1)
             call jelibe(jexnum(cm1a, iliai+(ndim-1)*nbliai))
         end select

@@ -62,8 +62,8 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
 ! ---------------------------------------------------------------------
 !
     integer :: i, nbno, ino,  ibid
-    integer :: axyzm, ii, nbma, ipt2, inel
-    integer :: jcnsd, jcnsk, jcnsv, jconx1, jconx2, nbpt
+    integer ::  ii, nbma, ipt2, inel
+    integer ::   jcnsv, jconx1, jconx2, nbpt
     integer :: ipt, inot, ndim, licmpu(6), jcnsl
     integer :: nbn, idnoeu, nbnoeu, inoe
     real(kind=8) :: angnot(3), pgl(3, 3), valer(6), valed(6)
@@ -79,6 +79,9 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     character(len=24) :: mesnoe
     character(len=24) :: valk
     character(len=8), pointer :: nom_cmp(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
 !
     call jemarq()
     epsi = 1.0d-6
@@ -109,13 +112,13 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
     call cnsred(chams0, 0, [0], nbcmp, nom_cmp,&
                 'V', chams1)
     call detrsd('CHAM_NO_S', chams0)
-    call jeveuo(chams1//'.CNSK', 'L', jcnsk)
-    call jeveuo(chams1//'.CNSD', 'L', jcnsd)
-    ma = zk8(jcnsk-1+1)
-    nomgd = zk8(jcnsk-1+2)
+    call jeveuo(chams1//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(chams1//'.CNSD', 'L', vi=cnsd)
+    ma = cnsk(1)
+    nomgd = cnsk(2)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
-    nbno = zi(jcnsd-1+1)
+    nbno = cnsd(1)
     call jeveuo(chams1//'.CNSV', 'E', jcnsv)
     call jeveuo(chams1//'.CNSL', 'E', jcnsl)
     call dismoi('Z_CST', ma, 'MAILLAGE', repk=k8b)
@@ -349,7 +352,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
         endif
         xnormr = 0.0d0
         call normev(axez, xnormr)
-        call jeveuo(ma//'.COORDO    .VALE', 'L', axyzm)
+        call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
         if (type(1:4) .eq. 'TENS') then
             if (ndim .eq. 2) then
                 licmpu(1)=1
@@ -364,10 +367,10 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 else
                     inoe = ino
                 endif
-                axer(1) = zr(axyzm+3*(inoe-1) ) - orig(1)
-                axer(2) = zr(axyzm+3*(inoe-1)+1) - orig(2)
+                axer(1) = vale(1+3*(inoe-1) ) - orig(1)
+                axer(2) = vale(1+3*(inoe-1)+1) - orig(2)
                 if (ndim .eq. 3) then
-                    axer(3) = zr(axyzm+3*(inoe-1)+2) - orig(3)
+                    axer(3) = vale(1+3*(inoe-1)+2) - orig(3)
                 else
                     axer(3) = 0.0d0
                 endif
@@ -397,10 +400,10 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                                 axer(3) = 0.0d0
                                 do ipt2 = 1, nbpt
                                     inot = zi( jconx1-1 + zi(jconx2-1+ inel)+ipt2-1 )
-                                    axer(1) = axer(1) + zr(axyzm+3*( inot-1) )
-                                    axer(2) = axer(2) + zr(axyzm+3*( inot-1)+1)
+                                    axer(1) = axer(1) + vale(1+3*( inot-1) )
+                                    axer(2) = axer(2) + vale(1+3*( inot-1)+1)
                                     if (ndim .eq. 3) then
-                                        axer(3) = axer(3) + zr(axyzm+ 3*(inot-1)+2)
+                                        axer(3) = axer(3) + vale(1+ 3*(inot-1)+2)
                                     endif
                                 end do
                                 axer(1) = axer(1)/nbpt
@@ -523,10 +526,10 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 else
                     inoe = ino
                 endif
-                axer(1) = zr(axyzm+3*(inoe-1) ) - orig(1)
-                axer(2) = zr(axyzm+3*(inoe-1)+1) - orig(2)
+                axer(1) = vale(1+3*(inoe-1) ) - orig(1)
+                axer(2) = vale(1+3*(inoe-1)+1) - orig(2)
                 if (ndim .eq. 3) then
-                    axer(3) = zr(axyzm+3*(inoe-1)+2) - orig(3)
+                    axer(3) = vale(1+3*(inoe-1)+2) - orig(3)
                 else
                     axer(3) = 0.0d0
                 endif
@@ -556,10 +559,10 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                                 axer(3) = 0.0d0
                                 do ipt2 = 1, nbpt
                                     inot = zi( jconx1-1 + zi(jconx2-1+ inel)+ipt2-1 )
-                                    axer(1) = axer(1) + zr(axyzm+3*( inot-1) )
-                                    axer(2) = axer(2) + zr(axyzm+3*( inot-1)+1)
+                                    axer(1) = axer(1) + vale(1+3*( inot-1) )
+                                    axer(2) = axer(2) + vale(1+3*( inot-1)+1)
                                     if (ndim .eq. 3) then
-                                        axer(3) = axer(3) + zr(axyzm+ 3*(inot-1)+2)
+                                        axer(3) = axer(3) + vale(1+ 3*(inot-1)+2)
                                     endif
                                 end do
                                 axer(1) = axer(1)/nbpt

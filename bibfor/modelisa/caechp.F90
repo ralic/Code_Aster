@@ -60,7 +60,7 @@ subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
 ! IN   NOMA   K8  : NOM DU MAILLAGE
 ! IN   FONREE K4  : 'FONC' OU 'REEL'
 !
-    integer :: nbtymx, nechp, ibid, jncmp, jvalv, iocc, nh, nt, i, j
+    integer :: nbtymx, nechp, ibid,  jvalv, iocc, nh, nt, i, j
     integer :: nbtyp, jlistt, nbm, nfiss, nfismx, jma, ntcon
     parameter    (nfismx=100)
     logical :: ltcon, lcoefh
@@ -77,6 +77,7 @@ subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
     character(len=19) :: carte
     integer :: nb_elem_late, nb_noel_maxi
     character(len=24) :: mesmai, lismai
+    character(len=8), pointer :: vncmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -129,10 +130,10 @@ subroutine caechp(char, ligrch, ligrmo, mesh, fonree, &
             call utmess('F', 'MODELISA2_37', sk=fonree)
         endif
 !       NOM DE LA CMP DU COEFFICIENT D'ECHANGE DANS LA CARTE
-        call jeveuo(carte//'.NCMP', 'E', jncmp)
+        call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
         call jeveuo(carte//'.VALV', 'E', jvalv)
         ncmp = 1
-        zk8(jncmp) = 'H'
+        vncmp(1) = 'H'
     endif
 !
 ! ----------------------------------------------------------------------

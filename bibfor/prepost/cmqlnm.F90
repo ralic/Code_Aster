@@ -71,13 +71,16 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !
     logical :: isasup
 !
-    integer :: jtyp, iacnx1, ilcnx1, jdime, ii, nbmato,  numma, iacnx2
+    integer ::  iacnx1, ilcnx1,  ii, nbmato,  numma
     integer :: ilcnx2, nbtyma, nbnoto, jj, jmaqu, nbnosu, numamo, nbnomi
     integer :: ponomi, jco, nunomi, nbm1, kk, numa2, jnomi
     parameter(nbtyma=27)
     integer :: nbnmtm(nbtyma), ppnm(nbtyma)
     integer, pointer :: tab_ma(:) => null()
     integer, pointer :: tab_no(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: coninv(:) => null()
+    integer, pointer :: dime(:) => null()
 !
 !     NBNMTM: NOMBRE DE NOEUDS MILIEU PAR TYPE DE MAILLE
 !     PPNM:   POSITION DU PREMIER NOEUD MILIEU PAR TYPE DE MAILLE
@@ -90,13 +93,13 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
     ASSERT(nbma.gt.0)
 !
     call jeveuo(nomaqu, 'L', jmaqu)
-    call jeveuo(main//'.TYPMAIL', 'L', jtyp)
+    call jeveuo(main//'.TYPMAIL', 'L', vi=typmail)
     call jeveuo(main//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(main//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
-    call jeveuo(main//'.DIME', 'L', jdime)
-    nbmato = zi(jdime+2)
-    nbnoto = zi(jdime)
+    call jeveuo(main//'.DIME', 'L', vi=dime)
+    nbmato = dime(3)
+    nbnoto = dime(1)
 !
     AS_ALLOCATE(vi=tab_ma, size=nbmato)
     do 10 ii = 1, nbmato
@@ -115,15 +118,15 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !
 !     CREATION DE LA CONNECTIVITE INVERSE
     call cncinv(main, [0], 0, 'V', '&&CMQLNM.CONINV')
-    call jeveuo('&&CMQLNM.CONINV', 'L', iacnx2)
+    call jeveuo('&&CMQLNM.CONINV', 'L', vi=coninv)
     call jeveuo(jexatr('&&CMQLNM.CONINV', 'LONCUM'), 'L', ilcnx2)
 !
 !     BOUCLE SUR LES MAILLES A MODIFIER
     nbnosu = 0
     do 30 ii = 1, nbma
         numamo = zi(jmaqu+ii-1)
-        nbnomi = nbnmtm(zi(jtyp+numamo-1))
-        ponomi = ppnm(zi(jtyp+numamo-1))
+        nbnomi = nbnmtm(typmail(numamo))
+        ponomi = ppnm(typmail(numamo))
 !
         jco=iacnx1+ zi(ilcnx1-1+numamo)-1
 !       BOUCLE SUR LES NOEUDS MILIEUX DE CES MAILLES
@@ -138,7 +141,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !         BOUCLE SUR LES MAILLES AUXQUELLES SONT LIEES CE NOEUD
             isasup = .true.
             do 50 kk = 1, nbm1
-                numa2 = zi(iacnx2+zi(ilcnx2-1+nunomi)-1+kk-1)
+                numa2 = coninv(1+zi(ilcnx2-1+nunomi)-1+kk-1)
 !           SI UNE DE CES MAILLES N'EST PAS A MODIFIER ALORS ON
 !           NE DOIT PAS SUPPRIMER LE NOEUD
                 if (tab_ma(numa2) .eq. 0) isasup = .false.

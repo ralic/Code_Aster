@@ -28,7 +28,8 @@ function rsmxno(nomsd)
 ! ----------------------------------------------------------------------
 ! IN  : NOMSD  : NOM DE LA STRUCTURE "RESULTAT"
     character(len=19) :: nomd2
-    integer :: nbordr, jordr, k, ival
+    integer :: nbordr,  k, ival
+    integer, pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
     ival = 0
@@ -36,10 +37,10 @@ function rsmxno(nomsd)
 !
     call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     if (nbordr .gt. 0) then
-        call jeveuo(nomd2//'.ORDR', 'L', jordr)
-        ival = zi(jordr)
+        call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
+        ival = ordr(1)
         do 10 k = 1, nbordr
-            ival = max (ival,zi(jordr+k-1))
+            ival = max (ival,ordr(k))
 10      continue
     endif
     rsmxno = ival

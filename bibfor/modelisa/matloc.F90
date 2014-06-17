@@ -64,13 +64,15 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc, i, j, jadrm, jtypma, jadrvlc, jcoord
+    integer :: nocc, i, j, jadrm,  jadrvlc
     integer :: nb_conn_elem, elem_nume
     integer :: node_nume_1, node_nume_2
     real(kind=8) :: vx(3), vy(3), vz(3), vecty(3), vxn, vyn, vyp, dgrd, angl_naut(3)
     real(kind=8) :: alpha, beta, gamma
     character(len=8) :: k8bid, type_elem, elem_name, valk(2)
     character(len=24) :: connex
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,8 +88,8 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
 ! - Access to mesh
 !
     connex = mesh//'.CONNEX'
-    call jeveuo(mesh//'.TYPMAIL', 'L', jtypma)
-    call jeveuo(mesh//'.COORDO    .VALE', 'L', jcoord)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! - Get element connected to node
 !
@@ -113,7 +115,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
 !
 ! - Check element type
 !
-    call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+elem_nume-1)), type_elem)
+    call jenuno(jexnum('&CATA.TM.NOMTM', typmail(elem_nume)), type_elem)
     call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
     valk(2) = node_name
     valk(1) = elem_name
@@ -134,9 +136,9 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume,&
 !
 ! - Construct colinear vector to element
 !
-    vx(1) = zr(jcoord+3*(node_nume_2-1) ) - zr(jcoord+3*(node_nume_1-1) )
-    vx(2) = zr(jcoord+3*(node_nume_2-1)+1) - zr(jcoord+3*(node_nume_1-1)+1)
-    vx(3) = zr(jcoord+3*(node_nume_2-1)+2) - zr(jcoord+3*(node_nume_1-1)+2)
+    vx(1) = vale(1+3*(node_nume_2-1) ) - vale(1+3*(node_nume_1-1) )
+    vx(2) = vale(1+3*(node_nume_2-1)+1) - vale(1+3*(node_nume_1-1)+1)
+    vx(3) = vale(1+3*(node_nume_2-1)+2) - vale(1+3*(node_nume_1-1)+2)
     vxn = sqrt( vx(1)**2 + vx(2)**2 + vx(3)**2 )
     valk(2) = node_name
     valk(1) = elem_name

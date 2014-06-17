@@ -108,7 +108,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf, jtblp, jtbnp, nblign
+    integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf,   nblign
     integer :: nbpara, n1, irt, jtabx, jtaby, nbval
     real(kind=8) :: df, flim, krelax, fi, f2
     complex(kind=8) :: cbid
@@ -120,6 +120,8 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
     character(len=24) :: tabx, taby
 !
     character(len=24) :: param, parcr(2)
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
     data          param /'TENSION                 '/
     data          parcr /'ABSC_CURV               ',&
      &                     'ALPHA                   '/
@@ -136,8 +138,8 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
 !     NBNO = NBNOCA(ICABL)
 !
-    call jeveuo(tablca//'.TBNP', 'L', jtbnp)
-    nblign = zi(jtbnp+1)
+    call jeveuo(tablca//'.TBNP', 'L', vi=tbnp)
+    nblign = tbnp(2)
     idecno = nblign - nbnoca
 !
     if ((f0.eq.0.0d0) .or. (nbf0.eq.0)) then
@@ -153,19 +155,19 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !     CUMULEE LE LONG DU CABLE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    nbpara = zi(jtbnp)
-    call jeveuo(tablca//'.TBLP', 'L', jtblp)
+    nbpara = tbnp(1)
+    call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
     trouv1 = .false.
     trouv2 = .false.
     do 20 ipara = 1, nbpara
-        if (zk24(jtblp+4*(ipara-1)) .eq. parcr(1)) then
+        if (tblp(1+4*(ipara-1)) .eq. parcr(1)) then
             trouv1 = .true.
-            abscca = zk24(jtblp+4*(ipara-1)+2)
+            abscca = tblp(1+4*(ipara-1)+2)
             call jeveuo(abscca, 'L', jabsc)
         endif
-        if (zk24(jtblp+4*(ipara-1)) .eq. parcr(2)) then
+        if (tblp(1+4*(ipara-1)) .eq. parcr(2)) then
             trouv2 = .true.
-            alphca = zk24(jtblp+4*(ipara-1)+2)
+            alphca = tblp(1+4*(ipara-1)+2)
             call jeveuo(alphca, 'L', jalph)
         endif
         if (trouv1 .and. trouv2) goto 30

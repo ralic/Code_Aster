@@ -52,7 +52,8 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iarefe, nbddlb, nbnos, nequ, nlili
+    integer :: i,  nbddlb, nbnos, nequ, nlili
+    character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nomob = nomobz
@@ -82,8 +83,8 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     --------------------------------
 !       QUESTION POURRIE !! (VALABLE SUR NUME_EQUA)
 !       CETTE QUESTION NE DEVRAIT PAS ETRE UTILISEE
-        call jeveuo(nomob//'.REFN', 'L', iarefe)
-        repk = zk24(iarefe+1) (1:8)
+        call jeveuo(nomob//'.REFN', 'L', vk24=refn)
+        repk = refn(2) (1:8)
 !
 !
     else if (questi.eq.'NOM_MODELE') then

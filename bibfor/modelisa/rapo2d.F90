@@ -84,7 +84,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=14) :: numddl
     character(len=19) :: lisrel
     integer :: ntypel(nmocl), icmp(6), niv, ifm, vali(2)
-    integer :: iop, nliai, i, narl, nrl, jnoma, jcoor, inom
+    integer :: iop, nliai, i, narl, nrl,   inom
     integer :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
     integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
     integer :: ino,  idch1, idch2, nbterm
@@ -101,6 +101,8 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     real(kind=8), pointer :: inertie_raccord(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()
@@ -181,14 +183,14 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 ! --- MAILLAGE ASSOCIE AU MODELE
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
     noeuma = noma//'.NOMNOE'
     grnoma = noma//'.GROUPENO'
 !
 ! --- -----------------------------------------------------------------
 ! --- RECUPERATION DU TABLEAU DES COORDONNEES
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- -----------------------------------------------------------------
 ! --- RECUPERATION DES NOMS DES DDLS
@@ -295,8 +297,8 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- NUMERO DU NOEUD POUTRE A LIER
     call jenonu(jexnom(noeuma, noepou), numnop)
 ! --- COORDONNEES DU NOEUD POUTRE
-    xpou = zr(jcoor-1+3*(numnop-1)+1)
-    ypou = zr(jcoor-1+3*(numnop-1)+2)
+    xpou = vale(3*(numnop-1)+1)
+    ypou = vale(3*(numnop-1)+2)
 !
 ! --- -----------------------------------------------------------------
 ! --- CALCUL SUR CHAQUE ELEMENT DE BORD A RELIER A LA POUTRE

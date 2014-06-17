@@ -52,7 +52,6 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
 !
 !
     integer :: ifm, niv
-    integer :: jddepl
     integer :: iliai, jdecal, nbddl
     real(kind=8) :: jeuini, jeuold, jeuinc
     real(kind=8) :: jexnew, jexold, jexinc
@@ -64,6 +63,7 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
     character(len=24) :: jeuite, jeux
     integer :: jjeuit, jjeux
     integer :: nbliai, neq, ndimg
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -106,7 +106,7 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
 !
 ! --- ACCES VECTEUR DEPLACEMENTS
 !
-    call jeveuo(ddepla(1:19)//'.VALE', 'L', jddepl)
+    call jeveuo(ddepla(1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- MISE A JOUR DES JEUX
 !
@@ -117,13 +117,13 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
         else
             jdecal = zi(japptr+iliai-1)
             nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
-            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jddepl),&
+            call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
                         jeuinc)
             jeuold = zr(jjeuit+3*(iliai-1)+1-1)
             zr(jjeuit+3*(iliai-1)+1-1) = jeuold - jeuinc
             if (llagrf .and. ndimg .eq. 2) then
                 jexold = zr(jjeuit+3*(iliai-1)+2-1)
-                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jddepl),&
+                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), vale,&
                             jexinc)
                 jexnew = jexold + jexinc
                 zr(jjeuit+3*(iliai-1)+2-1) = jexnew

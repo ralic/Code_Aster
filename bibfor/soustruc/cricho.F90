@@ -55,7 +55,6 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     integer :: nbchoc, info, nbmode, irigi, indic(nbmode), ibid
     integer :: vali
     integer :: neq, nbnli, istoav, iret, ifac
-    integer :: jslvi
     real(kind=8) :: riggen(*), seuil, parcho(nbnli, *)
     character(len=8) :: noecho(nbnli, *)
     real(kind=8) :: trloc(nbmode), soupl(nbmode), trlocj
@@ -81,6 +80,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
     real(kind=8), pointer :: u(:) => null()
     real(kind=8), pointer :: v(:) => null()
     real(kind=8), pointer :: w(:) => null()
+    integer, pointer :: slvi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 !
@@ -151,13 +151,13 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !
 !             ISTOP MIS A 2 POUR NE PAS ARRETER L'EXECUTION EN CAS
 !             DE MATRICE SINGULIERE (MODES STATIQUES)
-                    call jeveuo(solveu//'.SLVI', 'E', jslvi)
-                    istoav=zi(jslvi-1+3)
-                    zi(jslvi-1+3)=2
+                    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+                    istoav=slvi(3)
+                    slvi(3)=2
                     call preres(solveu, 'V', iret, matpre, marig,&
                                 ibid, - 9999)
 !             -- ON RETABLIT ISTOP
-                    zi(jslvi-1+3)=istoav
+                    slvi(3)=istoav
                     if (iret .eq. 2) then
                         call utmess('A', 'SOUSTRUC_7')
                         goto 999

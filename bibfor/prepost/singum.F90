@@ -79,7 +79,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 !
 !
 !
-    integer :: jconn1, jconn2, jcinv1, jcinv2
+    integer ::  jconn2, jcinv1, jcinv2
     integer :: jdime, jmesu, jconn, jcinv, adress
     integer :: inno, inel, jel, nuef, nuno, i
     integer :: ifac, isur, ia
@@ -94,13 +94,14 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
     character(len=24) :: chdime, chmesu, chconn, chcinv
     real(kind=8) :: aire, volume
     logical :: test, complet
+    integer, pointer :: connex(:) => null()
 !
     call jemarq()
 !
 ! 1 - ADRESSES DE CONNECTIVITE EF=>NOEUDS CONNECTES
 !                           ET NOEUD=>EF CONNECTES
 !
-    call jeveuo(nomail//'.CONNEX', 'L', jconn1)
+    call jeveuo(nomail//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(nomail//'.CONNEX', 'LONCUM'), 'L', jconn2)
 !
     cinv = '&&SINGU.CONNECINVERSE   '
@@ -160,7 +161,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
             endif
         endif
         do 30 inno = 1, zi(adress+1-1)
-            nuno=zi(jconn1-1+zi(jconn2+inel-1)+inno-1)
+            nuno=connex(zi(jconn2+inel-1)+inno-1)
             zi(adress+inno+2-1)=nuno
 30      continue
 !
@@ -169,9 +170,9 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
         zr(jmesu+inel-1)=0.d0
         if (ndim .eq. 2) then
             if (typema(inel)(1:4) .eq. 'TRIA') then
-                n1=zi(jconn1-1+zi(jconn2+inel-1)+1-1)
-                n2=zi(jconn1-1+zi(jconn2+inel-1)+2-1)
-                n3=zi(jconn1-1+zi(jconn2+inel-1)+3-1)
+                n1=connex(zi(jconn2+inel-1)+1-1)
+                n2=connex(zi(jconn2+inel-1)+2-1)
+                n3=connex(zi(jconn2+inel-1)+3-1)
                 aire=(xy(1,n2)-xy(1,n1))*(xy(2,n3)-xy(2,n1)) -(xy(2,&
                 n2)-xy(2,n1))*(xy(1,n3)-xy(1,n1))
                 zr(jmesu+inel-1)=abs(aire)/2.d0
@@ -182,10 +183,10 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                 pt1(4)=n1
             endif
             if (typema(inel)(1:4) .eq. 'QUAD') then
-                n1=zi(jconn1-1+zi(jconn2+inel-1)+1-1)
-                n2=zi(jconn1-1+zi(jconn2+inel-1)+2-1)
-                n3=zi(jconn1-1+zi(jconn2+inel-1)+3-1)
-                n4=zi(jconn1-1+zi(jconn2+inel-1)+4-1)
+                n1=connex(zi(jconn2+inel-1)+1-1)
+                n2=connex(zi(jconn2+inel-1)+2-1)
+                n3=connex(zi(jconn2+inel-1)+3-1)
+                n4=connex(zi(jconn2+inel-1)+4-1)
                 aire =((xy(1,n2)-xy(1,n1))*(xy(2,n4)-xy(2,n1))-&
                 (xy(2,n2)-xy(2,n1))*(xy(1,n4)-xy(1,n1))) +((xy(1,n4)-&
                 xy(1,n3))*(xy(2,n2)-xy(2,n3))- (xy(2,n4)-xy(2,n3))*(&
@@ -200,10 +201,10 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
             endif
         else
             if (typema(inel)(1:5) .eq. 'TETRA') then
-                n1=zi(jconn1-1+zi(jconn2+inel-1)+1-1)
-                n2=zi(jconn1-1+zi(jconn2+inel-1)+2-1)
-                n3=zi(jconn1-1+zi(jconn2+inel-1)+3-1)
-                n4=zi(jconn1-1+zi(jconn2+inel-1)+4-1)
+                n1=connex(zi(jconn2+inel-1)+1-1)
+                n2=connex(zi(jconn2+inel-1)+2-1)
+                n3=connex(zi(jconn2+inel-1)+3-1)
+                n4=connex(zi(jconn2+inel-1)+4-1)
                 volume =(xy(1,n1)-xy(1,n2))* ((xy(2,n1)-xy(2,n3))*(xy(&
                 3,n1)-xy(3,n4)) -(xy(2,n1)-xy(2,n4))*(xy(3,n1)-xy(3,&
                 n3)))
@@ -232,14 +233,14 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                 pt1(12)=n4
             endif
             if (typema(inel)(1:4) .eq. 'HEXA') then
-                n1=zi(jconn1-1+zi(jconn2+inel-1)+1-1)
-                n2=zi(jconn1-1+zi(jconn2+inel-1)+2-1)
-                n3=zi(jconn1-1+zi(jconn2+inel-1)+3-1)
-                n4=zi(jconn1-1+zi(jconn2+inel-1)+4-1)
-                n5=zi(jconn1-1+zi(jconn2+inel-1)+5-1)
-                n6=zi(jconn1-1+zi(jconn2+inel-1)+6-1)
-                n7=zi(jconn1-1+zi(jconn2+inel-1)+7-1)
-                n8=zi(jconn1-1+zi(jconn2+inel-1)+8-1)
+                n1=connex(zi(jconn2+inel-1)+1-1)
+                n2=connex(zi(jconn2+inel-1)+2-1)
+                n3=connex(zi(jconn2+inel-1)+3-1)
+                n4=connex(zi(jconn2+inel-1)+4-1)
+                n5=connex(zi(jconn2+inel-1)+5-1)
+                n6=connex(zi(jconn2+inel-1)+6-1)
+                n7=connex(zi(jconn2+inel-1)+7-1)
+                n8=connex(zi(jconn2+inel-1)+8-1)
                 nfac=6
                 nbpt=4
                 pt1(1)=n1
@@ -286,61 +287,61 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
                 if (ndim .eq. 2) then
                     if (typema(jel)(1:4) .eq. 'TRIA') then
                         nsur=3
-                        pt2(1)=zi(jconn1-1+zi(jconn2+jel-1)+1-1)
-                        pt2(2)=zi(jconn1-1+zi(jconn2+jel-1)+2-1)
-                        pt2(3)=zi(jconn1-1+zi(jconn2+jel-1)+3-1)
-                        pt2(4)=zi(jconn1-1+zi(jconn2+jel-1)+1-1)
+                        pt2(1)=connex(zi(jconn2+jel-1)+1-1)
+                        pt2(2)=connex(zi(jconn2+jel-1)+2-1)
+                        pt2(3)=connex(zi(jconn2+jel-1)+3-1)
+                        pt2(4)=connex(zi(jconn2+jel-1)+1-1)
                     else if (typema(jel)(1:4).eq.'QUAD') then
                         nsur=4
-                        pt2(1)=zi(jconn1-1+zi(jconn2+jel-1)+1-1)
-                        pt2(2)=zi(jconn1-1+zi(jconn2+jel-1)+2-1)
-                        pt2(3)=zi(jconn1-1+zi(jconn2+jel-1)+3-1)
-                        pt2(4)=zi(jconn1-1+zi(jconn2+jel-1)+4-1)
-                        pt2(5)=zi(jconn1-1+zi(jconn2+jel-1)+1-1)
+                        pt2(1)=connex(zi(jconn2+jel-1)+1-1)
+                        pt2(2)=connex(zi(jconn2+jel-1)+2-1)
+                        pt2(3)=connex(zi(jconn2+jel-1)+3-1)
+                        pt2(4)=connex(zi(jconn2+jel-1)+4-1)
+                        pt2(5)=connex(zi(jconn2+jel-1)+1-1)
                     else
                         goto 50
                     endif
                 else
                     if (typema(jel)(1:5) .eq. 'TETRA') then
                         nsur=4
-                        pt2(1)=zi(jconn1-1+zi(jconn2+jel-1)+1-1)
-                        pt2(2)=zi(jconn1-1+zi(jconn2+jel-1)+2-1)
-                        pt2(3)=zi(jconn1-1+zi(jconn2+jel-1)+3-1)
-                        pt2(4)=zi(jconn1-1+zi(jconn2+jel-1)+1-1)
-                        pt2(5)=zi(jconn1-1+zi(jconn2+jel-1)+3-1)
-                        pt2(6)=zi(jconn1-1+zi(jconn2+jel-1)+4-1)
-                        pt2(7)=zi(jconn1-1+zi(jconn2+jel-1)+2-1)
-                        pt2(8)=zi(jconn1-1+zi(jconn2+jel-1)+3-1)
-                        pt2(9)=zi(jconn1-1+zi(jconn2+jel-1)+4-1)
-                        pt2(10)=zi(jconn1-1+zi(jconn2+jel-1)+1-1)
-                        pt2(11)=zi(jconn1-1+zi(jconn2+jel-1)+2-1)
-                        pt2(12)=zi(jconn1-1+zi(jconn2+jel-1)+4-1)
+                        pt2(1)=connex(zi(jconn2+jel-1)+1-1)
+                        pt2(2)=connex(zi(jconn2+jel-1)+2-1)
+                        pt2(3)=connex(zi(jconn2+jel-1)+3-1)
+                        pt2(4)=connex(zi(jconn2+jel-1)+1-1)
+                        pt2(5)=connex(zi(jconn2+jel-1)+3-1)
+                        pt2(6)=connex(zi(jconn2+jel-1)+4-1)
+                        pt2(7)=connex(zi(jconn2+jel-1)+2-1)
+                        pt2(8)=connex(zi(jconn2+jel-1)+3-1)
+                        pt2(9)=connex(zi(jconn2+jel-1)+4-1)
+                        pt2(10)=connex(zi(jconn2+jel-1)+1-1)
+                        pt2(11)=connex(zi(jconn2+jel-1)+2-1)
+                        pt2(12)=connex(zi(jconn2+jel-1)+4-1)
                     else if (typema(jel)(1:4).eq.'HEXA') then
                         nsur=6
-                        pt2(1)= zi(jconn1-1+zi(jconn2+jel-1)+1-1)
-                        pt2(2)= zi(jconn1-1+zi(jconn2+jel-1)+2-1)
-                        pt2(3)= zi(jconn1-1+zi(jconn2+jel-1)+3-1)
-                        pt2(4)= zi(jconn1-1+zi(jconn2+jel-1)+4-1)
-                        pt2(5)= zi(jconn1-1+zi(jconn2+jel-1)+5-1)
-                        pt2(6)= zi(jconn1-1+zi(jconn2+jel-1)+6-1)
-                        pt2(7)= zi(jconn1-1+zi(jconn2+jel-1)+7-1)
-                        pt2(8)= zi(jconn1-1+zi(jconn2+jel-1)+8-1)
-                        pt2(9)= zi(jconn1-1+zi(jconn2+jel-1)+1-1)
-                        pt2(10)=zi(jconn1-1+zi(jconn2+jel-1)+2-1)
-                        pt2(11)=zi(jconn1-1+zi(jconn2+jel-1)+6-1)
-                        pt2(12)=zi(jconn1-1+zi(jconn2+jel-1)+5-1)
-                        pt2(13)=zi(jconn1-1+zi(jconn2+jel-1)+4-1)
-                        pt2(14)=zi(jconn1-1+zi(jconn2+jel-1)+3-1)
-                        pt2(15)=zi(jconn1-1+zi(jconn2+jel-1)+7-1)
-                        pt2(16)=zi(jconn1-1+zi(jconn2+jel-1)+8-1)
-                        pt2(17)=zi(jconn1-1+zi(jconn2+jel-1)+2-1)
-                        pt2(18)=zi(jconn1-1+zi(jconn2+jel-1)+3-1)
-                        pt2(19)=zi(jconn1-1+zi(jconn2+jel-1)+7-1)
-                        pt2(20)=zi(jconn1-1+zi(jconn2+jel-1)+6-1)
-                        pt2(21)=zi(jconn1-1+zi(jconn2+jel-1)+1-1)
-                        pt2(22)=zi(jconn1-1+zi(jconn2+jel-1)+4-1)
-                        pt2(23)=zi(jconn1-1+zi(jconn2+jel-1)+8-1)
-                        pt2(24)=zi(jconn1-1+zi(jconn2+jel-1)+5-1)
+                        pt2(1)= connex(zi(jconn2+jel-1)+1-1)
+                        pt2(2)= connex(zi(jconn2+jel-1)+2-1)
+                        pt2(3)= connex(zi(jconn2+jel-1)+3-1)
+                        pt2(4)= connex(zi(jconn2+jel-1)+4-1)
+                        pt2(5)= connex(zi(jconn2+jel-1)+5-1)
+                        pt2(6)= connex(zi(jconn2+jel-1)+6-1)
+                        pt2(7)= connex(zi(jconn2+jel-1)+7-1)
+                        pt2(8)= connex(zi(jconn2+jel-1)+8-1)
+                        pt2(9)= connex(zi(jconn2+jel-1)+1-1)
+                        pt2(10)=connex(zi(jconn2+jel-1)+2-1)
+                        pt2(11)=connex(zi(jconn2+jel-1)+6-1)
+                        pt2(12)=connex(zi(jconn2+jel-1)+5-1)
+                        pt2(13)=connex(zi(jconn2+jel-1)+4-1)
+                        pt2(14)=connex(zi(jconn2+jel-1)+3-1)
+                        pt2(15)=connex(zi(jconn2+jel-1)+7-1)
+                        pt2(16)=connex(zi(jconn2+jel-1)+8-1)
+                        pt2(17)=connex(zi(jconn2+jel-1)+2-1)
+                        pt2(18)=connex(zi(jconn2+jel-1)+3-1)
+                        pt2(19)=connex(zi(jconn2+jel-1)+7-1)
+                        pt2(20)=connex(zi(jconn2+jel-1)+6-1)
+                        pt2(21)=connex(zi(jconn2+jel-1)+1-1)
+                        pt2(22)=connex(zi(jconn2+jel-1)+4-1)
+                        pt2(23)=connex(zi(jconn2+jel-1)+8-1)
+                        pt2(24)=connex(zi(jconn2+jel-1)+5-1)
                     else
                         goto 50
                     endif
@@ -420,21 +421,21 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype,&
 
 !          * mise a 0 de nomili pour les noeuds milieux des aretes
            do ia=1, nbar
-               nomili(zi(jconn1-1+zi(jconn2+inel-1)+nm(ia)-1))=0
+               nomili(connex(zi(jconn2+inel-1)+nm(ia)-1))=0
            enddo
 !          * traitement des noeuds centraux pour les elements complets
            if (complet) then
               if (typema(inel)(1:5) .eq. 'QUAD9') then
-                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+9-1))=0
+                  nomili(connex(zi(jconn2+inel-1)+9-1))=0
               endif
               if (typema(inel)(1:6) .eq. 'HEXA27') then
-                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+21-1))=0
-                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+22-1))=0
-                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+23-1))=0
-                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+24-1))=0
-                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+25-1))=0
-                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+26-1))=0
-                  nomili(zi(jconn1-1+zi(jconn2+inel-1)+27-1))=0
+                  nomili(connex(zi(jconn2+inel-1)+21-1))=0
+                  nomili(connex(zi(jconn2+inel-1)+22-1))=0
+                  nomili(connex(zi(jconn2+inel-1)+23-1))=0
+                  nomili(connex(zi(jconn2+inel-1)+24-1))=0
+                  nomili(connex(zi(jconn2+inel-1)+25-1))=0
+                  nomili(connex(zi(jconn2+inel-1)+26-1))=0
+                  nomili(connex(zi(jconn2+inel-1)+27-1))=0
               endif
            endif
         endif

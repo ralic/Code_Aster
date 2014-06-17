@@ -57,13 +57,14 @@ implicit none
     character(len=24) :: nochco
     integer :: jnochc
     character(len=19) :: cnsinr
-    integer :: jcnsvr, jcnslr
+    integer ::  jcnslr
     integer :: jjeux, jloca, jzone
     integer :: ipt, izone
     real(kind=8) :: jeu, varc, jeuref
     integer :: numnoe
     integer :: zresu
     logical :: lsauv
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,7 +82,7 @@ implicit none
 !
 ! --- ACCES AU CHAM_NO_S POUR LE CONTACT
 !
-    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', jcnsvr)
+    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=cnsv)
     call jeveuo(cnsinr(1:19)//'.CNSL', 'E', jcnslr)
 !
 ! --- ACCES SD PROVISOIRES
@@ -123,8 +124,8 @@ implicit none
 ! ----- REMPLISSAGE EFFECTIF
 !
         if (lsauv) then
-            zr(jcnsvr-1+zresu*(numnoe-1)+1 ) = varc
-            zr(jcnsvr-1+zresu*(numnoe-1)+2 ) = jeu
+            cnsv(zresu*(numnoe-1)+1 ) = varc
+            cnsv(zresu*(numnoe-1)+2 ) = jeu
             zl(jcnslr-1+zresu*(numnoe-1)+1 ) = .true.
             zl(jcnslr-1+zresu*(numnoe-1)+2 ) = .true.
         endif

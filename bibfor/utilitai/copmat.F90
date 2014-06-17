@@ -49,10 +49,15 @@ subroutine copmat(matr, numddl, mat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ib, iscdi, ischc, j, jblo2, jbloc
-    integer :: jrefa, jscbl, jscde, n1bloc, n2bloc, nbbloc, neq
+    integer :: i, ib,   j, jblo2, jbloc
+    integer ::    n1bloc, n2bloc, nbbloc, neq
 !
     real(kind=8) :: pji
+    integer, pointer :: schc(:) => null()
+    integer, pointer :: scde(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: scdi(:) => null()
 !-----------------------------------------------------------------------
     data kbid /'        '/
 !-----------------------------------------------------------------------
@@ -63,22 +68,22 @@ subroutine copmat(matr, numddl, mat)
         call utmess('F', 'UTILITAI_43', sk=matr)
 !
     else
-        call jeveuo(numddl(1:8)//'      .SLCS.SCDE', 'L', jscde)
-        neq = zi(jscde-1+1)
-        nbbloc = zi(jscde-1+3)
+        call jeveuo(numddl(1:8)//'      .SLCS.SCDE', 'L', vi=scde)
+        neq = scde(1)
+        nbbloc = scde(3)
         call jelibe(numddl(1:8)//'      .SLCS.SCDE')
 !
 !
-        call jeveuo(numddl(1:8)//'      .SLCS.SCBL', 'L', jscbl)
-        call jeveuo(numddl(1:8)//'      .SLCS.SCDI', 'L', iscdi)
-        call jeveuo(numddl(1:8)//'      .SLCS.SCHC', 'L', ischc)
-        call jeveuo(matr//'           .REFA', 'L', jrefa)
-        lsym=zk24(jrefa-1+9) .eq. 'MS'
+        call jeveuo(numddl(1:8)//'      .SLCS.SCBL', 'L', vi=scbl)
+        call jeveuo(numddl(1:8)//'      .SLCS.SCDI', 'L', vi=scdi)
+        call jeveuo(numddl(1:8)//'      .SLCS.SCHC', 'L', vi=schc)
+        call jeveuo(matr//'           .REFA', 'L', vk24=refa)
+        lsym=refa(9) .eq. 'MS'
         if (lsym) then
             do 20 ib = 1, nbbloc
                 call jeveuo(jexnum(matr//'           .VALM', ib), 'L', jbloc)
-                n1bloc=zi(jscbl+ib-1)+1
-                n2bloc=zi(jscbl+ib)
+                n1bloc=scbl(ib)+1
+                n2bloc=scbl(ib+1)
 !
 !           BOUCLE SUR LES COLONNES DU BLOC
 !
@@ -86,8 +91,8 @@ subroutine copmat(matr, numddl, mat)
 !
 !           BOUCLE SUR LES LIGNES DANS LA COLONNE
 !
-                    do 30 i = (j-zi(ischc+j-1)+1), j
-                        pij = zr(jbloc+zi(iscdi+j-1)+i-j-1)
+                    do 30 i = (j-schc(j)+1), j
+                        pij = zr(jbloc+scdi(j)+i-j-1)
                         mat(i+ (j-1)*neq) = pij
                         mat(j+ (i-1)*neq) = pij
 30                  continue
@@ -108,9 +113,9 @@ subroutine copmat(matr, numddl, mat)
 !
 !           BOUCLE SUR LES LIGNES DANS LA COLONNE
 !
-                do 50 i = (j-zi(ischc+j-1)+1), j
-                    pij = zr(jbloc+zi(iscdi+j-1)+i-j-1)
-                    pji = zr(jblo2+zi(iscdi+j-1)+i-j-1)
+                do 50 i = (j-schc(j)+1), j
+                    pij = zr(jbloc+scdi(j)+i-j-1)
+                    pji = zr(jblo2+scdi(j)+i-j-1)
                     mat(i+ (j-1)*neq) = pij
                     mat(j+ (i-1)*neq) = pji
 50              continue

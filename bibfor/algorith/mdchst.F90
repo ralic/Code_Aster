@@ -74,7 +74,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 ! OUT : IER    : NIVEAU D'ERREUR
 !     ------------------------------------------------------------------
 !
-    integer :: nbchoc, nbsism(2), nbflam, nbocc, i, j, ioc, ibid, il, jcoor, jmama
+    integer :: nbchoc, nbsism(2), nbflam, nbocc, i, j, ioc, ibid, il,  jmama
     integer :: nbnma, kma, nn1, nn2, ino1, ino2, ig, n1, namtan, iret, nmliai
     integer :: jmail, im, iliai, nmgr, ngrm, numai, irett, compt1, compt2
     integer :: nbmail, nbno, j1, j2, bono1, bono2, vali
@@ -105,6 +105,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
     integer :: iadrk
     character(len=24) :: cpal, cnpal(palmax)
     integer :: iarg
+    real(kind=8), pointer :: vale(:) => null()
 !
     call jemarq()
     call getfac('CHOC', nbchoc)
@@ -115,7 +116,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
     mdgene = ' '
     call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
 !
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
     do il = 1, nbnli
         noecho(il,3) = numddl(1:8)
@@ -285,8 +286,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             call jenonu(jexnom(mailla//'.NOMNOE', noecho(iliai, 1)), ino1)
             call jenonu(jexnom(mailla//'.NOMNOE', noecho(iliai, 5)), ino2)
             do j = 1, 3
-                parcho(iliai,7+j) = zr(jcoor+3*(ino1-1)+j-1)
-                parcho(iliai,10+j) = zr(jcoor+3*(ino2-1)+j-1)
+                parcho(iliai,7+j) = vale(1+3*(ino1-1)+j-1)
+                parcho(iliai,10+j) = vale(1+3*(ino2-1)+j-1)
             enddo
 !
             ktang = 0.d0
@@ -606,7 +607,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
             ASSERT(compt2 .ge. 1)
 !
             do j = 1, 3
-                axe(j)=zr(jcoor+3*(bono1-1)+j-1) - zr(jcoor+3*(bono2-1)+j-1)
+                axe(j)=vale(1+3*(bono1-1)+j-1) - vale(1+3*(bono2-1)+j-1)
             enddo
 !
 !           ORIENTATION DU ROTOR

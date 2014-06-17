@@ -63,10 +63,11 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
     character(len=16) :: concep, cmd
     character(len=24) :: grmama, mailma, cara, nogrm
     character(len=24) :: valk(4)
-    integer :: idtyma, i3d, i2d, ndim1, ioc, nc, ng, nm, nj, nn, nsom, nbmail
+    integer ::  i3d, i2d, ndim1, ioc, nc, ng, nm, nj, nn, nsom, nbmail
     integer :: n1, ima, nbgrm,  ig, jmail, numa, nutyma, lmax2
     integer :: iarg
     character(len=24), pointer :: group_ma(:) => null()
+    integer, pointer :: typmail(:) => null()
 !     ------------------------------------------------------------------
     call getres(nomu, concep, cmd)
 !
@@ -81,7 +82,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 !
 ! --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
 !     ---------------------------------------
-    call jeveuo(noma//'.TYPMAIL', 'L', idtyma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
 ! --- VERIFICATION DES DIMENSIONS / MODELISATIONS
     call verdis(nomo, noma, 'E', i3d, i2d,&
@@ -128,7 +129,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                 nomail = zk8(jmail+ima-1)
                 call verima(noma, nomail, 1, 'MAILLE')
                 call jenonu(jexnom(mailma, nomail), numa)
-                nutyma = zi(idtyma+numa-1)
+                nutyma = typmail(numa)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
                 if (typel(1:4) .ne. type) then
                     valk(1) = nomail
@@ -153,7 +154,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                 call jeveuo(jexnom(grmama, nogrm), 'L', jmail)
                 do 16 ima = 1, nbmail
                     numa = zi(jmail+ima-1)
-                    nutyma = zi(idtyma+numa-1)
+                    nutyma = typmail(numa)
                     call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
                     if (typel(1:4) .ne. type) then
                         call jenuno(jexnum(mailma, numa), nomail)

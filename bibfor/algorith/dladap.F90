@@ -111,7 +111,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     parameter ( nbtyar = 6 )
     integer :: ifm, niv, alarm
     integer :: iv1, iv2, ieq
-    integer :: jdepl, jdep2
+    integer :: jdepl
     integer :: jvite, jvit2
     integer :: jacce, jacc2
     integer :: jind1, jind2
@@ -143,6 +143,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     integer :: adeeq
     integer :: ibid
     logical :: ener
+    real(kind=8), pointer :: vale(:) => null()
 !
 !     -----------------------------------------------------------------
     call jemarq()
@@ -169,7 +170,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     call wkvect('&&DLADAP.F2', 'V V R', neq, iwk2)
     call wkvect('&&DLADAP.DEPL', 'V V R', neq, jdepl)
     call vtcreb('&&DLADAP.DEP2', numedd, 'V', 'R', neq)
-    call jeveuo('&&DLADAP.DEP2      '//'.VALE', 'E', jdep2)
+    call jeveuo('&&DLADAP.DEP2      '//'.VALE', 'E', vr=vale)
     call wkvect('&&DLADAP.VITE', 'V V R', neq, jvite)
     call wkvect('&&DLADAP.VIT2', 'V V R', neq, jvit2)
     call wkvect('&&DLADAP.VIP1', 'V V R', neq, jvip1)
@@ -380,7 +381,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !            --- VITESSES AUX INSTANTS INTERMEDIAIRES ------
                 zr(jvit2+ieq) = zr(jvite+ieq) + pas1 * zr(jacce+ieq)
 !            --- DEPLACEMENTS AUX INSTANTS 'TEMPS+DT2' ---------
-                zr(jdep2+ieq) = zr(jdepl+ieq) + (dt2 * zr(jvit2+ieq))
+                vale(ieq+1) = zr(jdepl+ieq) + (dt2 * zr(jvit2+ieq))
             end do
 ! ------------- CALCUL DU SECOND MEMBRE F*
             r8val = temps+dt2
@@ -395,7 +396,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
             endif
 !
 ! ------------- FORCE DYNAMIQUE F* = F* - K DEP - C VIT
-            call dlfdyn(imat(1), imat(3), lamort, neq, zr(jdep2),&
+            call dlfdyn(imat(1), imat(3), lamort, neq, vale,&
                         zr( jvit2), zr(iforc1), zr(iwk0))
 !
 ! ------------- RESOLUTION DE M . A = F ET CALCUL DE VITESSE STOCKEE
@@ -427,7 +428,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
             endif
 !
 !        --- CALCUL DE FREQ. APPARENTE ET ERREUR ---
-            call frqapp(dt2, neq, zr(jdepl), zr(jdep2), zr(jacce),&
+            call frqapp(dt2, neq, zr(jdepl), vale, zr(jacce),&
                         zr( jacc2), zr(jvmin), freq)
             err = nper * freq * dt2
 !
@@ -471,7 +472,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
                 tarchi = temp2
                 call dlarch(result, neq, istoc, iarchi, ' ',&
                             alarm, ifm, temp2, nbtyar, typear,&
-                            masse, zr(jdep2), zr( jvip2), zr(jacc2), fexte(1+neq),&
+                            masse, vale, zr( jvip2), zr(jacc2), fexte(1+neq),&
                             famor(1+neq), fliai(1+ neq))
             else
                 tarchi = temps
@@ -491,7 +492,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
             call wkvect('FNODABID', 'V V R', 2*neq, ifnobi)
             call wkvect('FCINEBID', 'V V R', 2*neq, ifcibi)
 ! ON CALCULE LA VITESSE A T N-1
-            call enerca(k19bid, zr(jdepl), zr(jvip1), zr(jdep2), zr(jvip2),&
+            call enerca(k19bid, zr(jdepl), zr(jvip1), vale, zr(jvip2),&
                         masse1, amort1, rigid1, fexte, famor,&
                         fliai, zr(ifnobi), zr(ifcibi), lamort, .true.,&
                         .false., sdener, '&&DLADAP')
@@ -505,7 +506,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
 ! ------------- TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
         temps = temp2
-        call dcopy(neq, zr(jdep2), 1, zr(jdepl), 1)
+        call dcopy(neq, vale, 1, zr(jdepl), 1)
         call dcopy(neq, zr(jvit2), 1, zr(jvite), 1)
         call dcopy(neq, zr(jvip2), 1, zr(jvip1), 1)
         call dcopy(neq, zr(jacc2), 1, zr(jacce), 1)

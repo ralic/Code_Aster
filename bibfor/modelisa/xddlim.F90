@@ -67,18 +67,25 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 !
     integer :: nbxcmp
     parameter  (nbxcmp=18)
-    integer :: ier, stano(4), jstnol, jstnov, jstnod, nrel
-    integer :: jlsnv, jlsnl, jlsnd, jlstv, jlstl, jlstd
-    integer :: jfisnv, jfisnl, jfisnd, nfh, ifh
+    integer :: ier, stano(4), jstnol,  jstnod, nrel
+    integer ::  jlsnl, jlsnd,  jlstl, jlstd
+    integer ::  jfisnl, jfisnd, nfh, ifh
     integer :: i, j, nterm, irel, dimens(nbxcmp), ifiss, nfiss
-    integer :: ialino, nbno, nbmano, adrma, ima, numa, nbnoma, nuno, nuno2
-    integer :: jconx1, jconx2, idnoma, iad, fisno(4)
+    integer ::  nbno, nbmano, adrma, ima, numa, nbnoma, nuno, nuno2
+    integer ::  jconx2,  iad, fisno(4)
     real(kind=8) :: r, theta(2), he(2, 4), t, coef(nbxcmp), sign
     real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, lsn2
     character(len=8) :: ddl(nbxcmp), noeud(nbxcmp), axes(3), noma
     character(len=19) :: ch1, ch2, ch3, ch4
     complex(kind=8) :: cbid, valimc
     character(len=1) :: ch
+    integer, pointer :: nunotmp(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: fisnv(:) => null()
+    real(kind=8), pointer :: lsnv(:) => null()
+    real(kind=8), pointer :: lstv(:) => null()
+    integer, pointer :: stnov(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
     data        axes /'X','Y','Z'/
 !
@@ -94,13 +101,13 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 !      LES NOEUDS ET SUR LES DDLS BLOQUES N'EST PAS OPTIMAL DU POINT
 !      DE VUE DES PERFORMANCES, MAIS A PRIORI, CA NE DEVRAIT PAS ETRE
 !      POUR BEAUCOUP DE NOEUDS
-    call jeveuo(ch1//'.CESV', 'L', jstnov)
+    call jeveuo(ch1//'.CESV', 'L', vi=stnov)
     call jeveuo(ch1//'.CESL', 'L', jstnol)
     call jeveuo(ch1//'.CESD', 'L', jstnod)
-    call jeveuo(ch2//'.CESV', 'L', jlsnv)
+    call jeveuo(ch2//'.CESV', 'L', vr=lsnv)
     call jeveuo(ch2//'.CESL', 'L', jlsnl)
     call jeveuo(ch2//'.CESD', 'L', jlsnd)
-    call jeveuo(ch3//'.CESV', 'L', jlstv)
+    call jeveuo(ch3//'.CESV', 'L', vr=lstv)
     call jeveuo(ch3//'.CESL', 'L', jlstl)
     call jeveuo(ch3//'.CESD', 'L', jlstd)
 !
@@ -110,7 +117,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     if (nfiss .gt. 1) then
         ch4 = '&&XDDLIM.CHS4'
         call celces(modele//'.FISSNO', 'V', ch4)
-        call jeveuo(ch4//'.CESV', 'L', jfisnv)
+        call jeveuo(ch4//'.CESV', 'L', vi=fisnv)
         call jeveuo(ch4//'.CESL', 'L', jfisnl)
         call jeveuo(ch4//'.CESD', 'L', jfisnd)
 ! --- NOMBRE DE DDLS HEAVISIDES DANS LA MAILLE
@@ -118,19 +125,19 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
         do i = 1, nfh
             call cesexi('S', jfisnd, jfisnl, numa, nuno,&
                         i, 1, iad)
-            fisno(i) = zi(jfisnv-1+iad)
+            fisno(i) = fisnv(iad)
         end do
     endif
     do ifiss = 1, nfiss
         call cesexi('S', jstnod, jstnol, numa, nuno,&
                     ifiss, 1, iad)
-        stano(ifiss)=zi(jstnov-1+iad)
+        stano(ifiss)=stnov(iad)
         call cesexi('S', jlsnd, jlsnl, numa, nuno,&
                     ifiss, 1, iad)
-        lsn(ifiss) = zr(jlsnv-1+iad)
+        lsn(ifiss) = lsnv(iad)
         call cesexi('S', jlstd, jlstl, numa, nuno,&
                     ifiss, 1, iad)
-        lst(ifiss) = zr(jlstv-1+iad)
+        lst(ifiss) = lstv(iad)
     end do
 !
 !
@@ -145,17 +152,17 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! ---     RECUPERATION DE LA LISTE DES NOEUDS AFFECTÉS PAR LA CONDITION
             call jeexin('&&CADDLI.NUNOTMP', ier)
             if (ier .ne. 0) then
-                call jeveuo('&&CADDLI.NUNOTMP', 'L', ialino)
+                call jeveuo('&&CADDLI.NUNOTMP', 'L', vi=nunotmp)
                 call jelira('&&CADDLI.NUNOTMP', 'LONMAX', nbno)
             else
 ! ---       ON ZAPPE SI ON N'EST PAS EN MODE DDL_IMPO
                 nbno=0
             endif
 ! ---     RECUPERATION DU NOM DU MAILLAGE :
-            call jeveuo(modele//'.MODELE    .LGRF', 'L', idnoma)
-            noma = zk8(idnoma)
+            call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
+            noma = lgrf(1)
 ! ---     RECUPERATION DES MAILLES CONTENANT LE NOEUD
-            call jeveuo(noma//'.CONNEX', 'L', jconx1)
+            call jeveuo(noma//'.CONNEX', 'L', vi=connex)
             call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
             call jelira(jexnum(cnxinv, ino), 'LONMAX', nbmano)
             call jeveuo(jexnum(cnxinv, ino), 'L', adrma)
@@ -166,15 +173,15 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! ---       BOUCLE SUR LES NOEUDS DE LA MAILLE
 ! ---       ATTENTION ON NE PREND EN COMPTE QUE LES MAILLES LINEAIRES !
                 do i = 1, nbnoma
-                    nuno = zi(jconx1-1+zi(jconx2+numa-1)+i-1)
+                    nuno = connex(zi(jconx2+numa-1)+i-1)
 ! ---         ON REGARDE SI LE NOEUD APPARTIENT AU GRP DE NOEUD AFFECTÉ
                     do j = 1, nbno
-                        nuno2 = zi(ialino-1+j)
+                        nuno2 = nunotmp(j)
                         if (nuno2 .eq. nuno) then
                             call cesexi('C', jlsnd, jlsnl, numa, i,&
                                         1, 1, iad)
                             if (iad .le. 0) goto 110
-                            lsn2 = zr(jlsnv-1+iad)
+                            lsn2 = lsnv(iad)
 !                  LSN2 = ZR(JLSN-1+NUNO)
                             if (lsn2 .lt. minlsn) minlsn=lsn2
                             if (lsn2 .gt. maxlsn) maxlsn=lsn2

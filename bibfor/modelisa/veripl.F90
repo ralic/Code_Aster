@@ -26,7 +26,7 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 #include "asterfort/utmess.h"
 !
     character(len=*) :: ma
-    integer :: nbma, jcoor, jconx, ima, k, iprem, numai1, numail, linuma(nbma)
+    integer :: nbma,  jconx, ima, k, iprem, numai1, numail, linuma(nbma)
     real(kind=8) :: n1(3), n(3), ab(3), ac(3), nn, n1n, n1n1
     real(kind=8) :: cos2b, cos2a, a(3), b(3), c(3), ang
     character(len=1) :: typerr
@@ -54,12 +54,13 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 !   (LE PROGRAMME NE VERIFIE PAS CETTE CONDITION)
 ! -------------------------------------------------------
     character(len=24) :: valk(2)
+    real(kind=8), pointer :: vale(:) => null()
 !
 !
     call jemarq()
     ma2 = ma
 !
-    call jeveuo(ma2//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(ma2//'.COORDO    .VALE', 'L', vr=vale)
 !
     cos2b = cos(ang*r8dgrd())**2
 !
@@ -72,9 +73,9 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 !
 !       CALCUL DE LA NORMALE (N) A LA FACETTE IMA :
     do 10,k = 1,3
-    a(k) = zr(jcoor-1+3* (zi(jconx-1+1)-1)+k)
-    b(k) = zr(jcoor-1+3* (zi(jconx-1+2)-1)+k)
-    c(k) = zr(jcoor-1+3* (zi(jconx-1+3)-1)+k)
+    a(k) = vale(3* (zi(jconx-1+1)-1)+k)
+    b(k) = vale(3* (zi(jconx-1+2)-1)+k)
+    c(k) = vale(3* (zi(jconx-1+3)-1)+k)
     ab(k) = b(k) - a(k)
     ac(k) = c(k) - a(k)
 10  continue

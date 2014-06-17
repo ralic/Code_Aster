@@ -54,57 +54,60 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
 ! IN  : NSST   : PRISE EN COMPTE DU NOM D'UNE SOUS-STRUCTURE
 ! OUT : IER    : CODE RETOUR, = 0 : OK
 !     ------------------------------------------------------------------
-    integer :: jsst
     character(len=8) :: k8b
     character(len=16) :: nomcmd
     character(len=19) :: fonct1, fonct2
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ic, ichoc, idec, ie, ival, jdesc, jinst
-    integer :: jinti, jncho, jparx, jpary, jval, jvalx, jvaly
+    integer :: ic, ichoc, idec, ie, ival,  jinst
+    integer ::   jparx, jpary, jval, jvalx, jvaly
     integer :: lfon, lg, lpro, lval, nbchoc, nbinst, nbpara
     integer :: nbval
+    character(len=8), pointer :: vsst(:) => null()
+    character(len=8), pointer :: ncho(:) => null()
+    character(len=8), pointer :: inti(:) => null()
+    integer, pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 9999
     call getres(k8b, k8b, nomcmd)
 !
-    call jeveuo(resu//'.DESC', 'L', jdesc)
-    nbchoc = zi(jdesc+2)
+    call jeveuo(resu//'.DESC', 'L', vi=desc)
+    nbchoc = desc(3)
     call jelira(resu//'.DISC', 'LONUTI', nbinst)
     call jeveuo(resu//'.DISC', 'L', jinst)
-    call jeveuo(resu//'.NCHO', 'L', jncho)
-    call jeveuo(resu//'.INTI', 'L', jinti)
-    if (nsst .ne. 0) call jeveuo(resu//'.SST', 'L', jsst)
+    call jeveuo(resu//'.NCHO', 'L', vk8=ncho)
+    call jeveuo(resu//'.INTI', 'L', vk8=inti)
+    if (nsst .ne. 0) call jeveuo(resu//'.SST', 'L', vk8=vsst)
     ic = 1
     if (int .ne. 0) then
         do 2 ichoc = 1, nbchoc
-            if (zk8(jinti+ichoc-1) .eq. intitu) goto 4
+            if (inti(ichoc) .eq. intitu) goto 4
  2      continue
         call utmess('A', 'UTILITAI_86', sk=intitu)
         goto 9999
  4      continue
         if (nsst .eq. 0) then
-            if (zk8(jncho+ichoc-1) .eq. noeud) goto 16
+            if (ncho(ichoc) .eq. noeud) goto 16
             ic = 2
-            if (zk8(jncho+nbchoc+ichoc-1) .eq. noeud) goto 16
+            if (ncho(1+nbchoc+ichoc-1) .eq. noeud) goto 16
             lg = max(1,lxlgut(noeud))
             call utmess('A', 'UTILITAI_87', sk=noeud(1:lg))
             goto 9999
         else
-            if (zk8(jsst+ichoc-1) .eq. sst) goto 116
-            if (zk8(jsst+nbchoc+ichoc-1) .eq. sst) goto 116
+            if (vsst(ichoc) .eq. sst) goto 116
+            if (vsst(1+nbchoc+ichoc-1) .eq. sst) goto 116
             call utmess('A', 'UTILITAI_88')
             goto 9999
 116          continue
-            if (zk8(jncho+ichoc-1) .ne. noeud .and. zk8(jncho+nbchoc+ ichoc-1) .ne. noeud) then
+            if (ncho(ichoc) .ne. noeud .and. ncho(1+nbchoc+ ichoc-1) .ne. noeud) then
                 lg = max(1,lxlgut(noeud))
                 call utmess('A', 'UTILITAI_89', sk=noeud(1:lg))
                 goto 9999
             endif
-            if (zk8(jncho+ichoc-1) .eq. noeud .and. zk8(jsst+ichoc-1) .eq. sst) goto 16
+            if (ncho(ichoc) .eq. noeud .and. vsst(ichoc) .eq. sst) goto 16
             ic = 2
-            if (zk8(jncho+nbchoc+ichoc-1) .eq. noeud .and. zk8(jsst+ nbchoc+ichoc-1) .eq. sst) &
+            if (ncho(1+nbchoc+ichoc-1) .eq. noeud .and. vsst(1+ nbchoc+ichoc-1) .eq. sst) &
             goto 16
             lg = max(1,lxlgut(noeud))
             call utmess('A', 'UTILITAI_90', sk=noeud(1:lg))
@@ -113,12 +116,12 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     endif
 !     --- RECHERCHE DU NOEUD_1 DE CHOC ---
     do 10 ichoc = 1, nbchoc
-        if (zk8(jncho+ichoc-1) .eq. noeud) goto 16
+        if (ncho(ichoc) .eq. noeud) goto 16
 10  end do
 !     --- RECHERCHE DU NOEUD_2 DE CHOC ---
     ic = 2
     do 12 ichoc = 1, nbchoc
-        if (zk8(jncho+nbchoc+ichoc-1) .eq. noeud) goto 16
+        if (ncho(1+nbchoc+ichoc-1) .eq. noeud) goto 16
 12  end do
     lg = max(1,lxlgut(noeud))
     call utmess('A', 'UTILITAI_87', sk=noeud(1:lg))

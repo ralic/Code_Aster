@@ -52,12 +52,16 @@ subroutine ssdmrg(mag)
     integer :: iarg
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iacoo2, iadim2, iadime,   iancnf
-    integer :: iaparr, iasupi, iasupj, iconf, ii, inoi, inoj
+    integer :: i, iacoo2
+    integer ::  iasupi, iasupj, iconf, ii, inoi, inoj
     integer :: iocc, isma, j, jj, jsma, n1, nbnoi
     integer :: nbnoj, nbsma, nbsmar, nnnoe, nocc
     integer, pointer :: liis(:) => null()
     character(len=8), pointer :: lik8(:) => null()
+    real(kind=8), pointer :: para_r(:) => null()
+    integer, pointer :: dime(:) => null()
+    integer, pointer :: dime_2(:) => null()
+    integer, pointer :: noeud_conf(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getfac('RECO_GLOBAL', nocc)
@@ -65,15 +69,15 @@ subroutine ssdmrg(mag)
 !
 !     -- ON RECUPERE CERTAINES DIMENSIONS:
 !     ------------------------------------
-    call jeveuo(mag//'.DIME', 'L', iadime)
-    nbsma=zi(iadime-1+4)
-    nnnoe=zi(iadime-1+1)
+    call jeveuo(mag//'.DIME', 'L', vi=dime)
+    nbsma=dime(4)
+    nnnoe=dime(1)
 !
-    call jeveuo(mag//'.NOEUD_CONF', 'E', iancnf)
+    call jeveuo(mag//'.NOEUD_CONF', 'E', vi=noeud_conf)
 !
     call jeveuo(mag//'.COORDO_2', 'L', iacoo2)
-    call jeveuo(mag//'.DIME_2', 'L', iadim2)
-    call jeveuo(mag//'.PARA_R', 'L', iaparr)
+    call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
+    call jeveuo(mag//'.PARA_R', 'L', vr=para_r)
     AS_ALLOCATE(vk8=lik8, size=nbsma)
     AS_ALLOCATE(vi=liis, size=nbsma)
 !
@@ -109,14 +113,14 @@ subroutine ssdmrg(mag)
     do 5, i=1,nbsmar
     isma=liis(i)
     call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupi)
-    nbnoi=zi(iadim2-1+4*(isma-1)+1)+zi(iadim2-1+4*(isma-1)+2)
-    di=zr(iaparr-1+14*(isma-1)+13)
+    nbnoi=dime_2(4*(isma-1)+1)+dime_2(4*(isma-1)+2)
+    di=para_r(14*(isma-1)+13)
     do 6, j=i+1,nbsmar
     jsma=liis(j)
     call jeveuo(jexnum(mag//'.SUPMAIL', jsma), 'L', iasupj)
-    nbnoj=zi(iadim2-1+4*(jsma-1)+1)+zi(iadim2-1+4*(jsma-1)&
+    nbnoj=dime_2(4*(jsma-1)+1)+dime_2(4*(jsma-1)&
                 +2)
-    dj=zr(iaparr-1+14*(jsma-1)+13)
+    dj=para_r(14*(jsma-1)+13)
     dj=min(di,dj)
     do 7, ii=1,nbnoi
     inoi=zi(iasupi-1+ii)
@@ -129,9 +133,9 @@ subroutine ssdmrg(mag)
                 iconf)
     if (iconf .eq. 0) then
         if (inoi .lt. inoj) then
-            zi(iancnf-1+inoj)=inoi
+            noeud_conf(inoj)=inoi
         else
-            zi(iancnf-1+inoi)=inoj
+            noeud_conf(inoi)=inoj
         endif
     endif
  8  continue

@@ -48,11 +48,12 @@ subroutine op0149()
 !-----------------------------------------------------------------------
     integer :: i, iamo1, iamo2, iamor, ibid, idec, ifm
     integer :: ifsic, ifsvi, imasse, imin, inumo, inuo1, inuo2
-    integer :: inuor, ireffl, itypfl, j, jordr, jpara, k
+    integer :: inuor, ireffl, itypfl, j,  jpara, k
     integer :: na1, nbamo1, nbamun, nbmfl, nbmod2, nbmode, nbnuo1
     integer :: nbnuo2, nbnuor, nbvite, niv, numode, numvit, nuomin
 !
     real(kind=8) :: amorun, rtamp
+    integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -138,7 +139,7 @@ subroutine op0149()
 !         INVALIDE POUR LE MOT-CLE <AMOR_REDUIT>
 !
     call jelira(basemo//'           .ORDR', 'LONUTI', nbmode)
-    call jeveuo(basemo//'           .ORDR', 'L', jordr)
+    call jeveuo(basemo//'           .ORDR', 'L', vi=ordr)
 !
 !
 !--------------------------------------------------------------------
@@ -189,7 +190,7 @@ subroutine op0149()
 11              continue
 12              continue
                 do 13 k = 1, nbmode
-                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', zi(jordr-1+k),&
+                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k),&
                                 0, sjv=jpara, styp=kbid)
                     if (zi(jpara) .eq. numode) then
                         numok = .true.
@@ -253,7 +254,7 @@ subroutine op0149()
                 call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
                 call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
                 do 30 i = 1, nbnuor
-                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', zi(jordr-1+i),&
+                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i),&
                                 0, sjv=jpara, styp=kbid)
                     zi(inuor+i-1) = zi(jpara)
 30              continue
@@ -300,7 +301,7 @@ subroutine op0149()
         call wkvect('&&OP0149.TEMP.NUOR', 'V V I', nbnuor, inuor)
         call wkvect('&&OP0149.TEMP.AMOR', 'V V I', nbnuor, iamor)
         do 50 i = 1, nbnuor
-            call rsadpa(basemo, 'L', 1, 'NUME_MODE', zi(jordr-1+i),&
+            call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(i),&
                         0, sjv=jpara, styp=kbid)
             zi(inuor+i-1) = zi(jpara)
 50      continue
@@ -317,7 +318,7 @@ subroutine op0149()
 52              continue
 53              continue
                 do 54 k = 1, nbmode
-                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', zi(jordr-1+k),&
+                    call rsadpa(basemo, 'L', 1, 'NUME_MODE', ordr(k),&
                                 0, sjv=jpara, styp=kbid)
                     if (zi(jpara) .eq. numode) then
                         numok = .true.

@@ -52,17 +52,19 @@ subroutine pjmasp(moa2, masp, corres, noca)
     character(len=8) :: masp, moa2, noca
 ! ----------------------------------------------------------------------
     integer :: ntgeo, ipo, ipg, nuno2
-    integer :: ibid, nbnosp, nno2, ino2p
+    integer ::  nbnosp, nno2, ino2p
     integer :: k, j1, j4, ipoi1
     integer :: nbma, nbpt, nbsp, nbcmp
     integer :: ima, ipt, isp, icmp, iad, iadime
     integer :: jtypma, jpo2
-    integer :: jcesd, jcesl, jcesv, iatypm
+    integer :: jcesd, jcesl,  iatypm
     integer :: nchi, nbpgmx, nbspmx
     character(len=8) :: nom, mail2, lpain(6)
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc
     character(len=24) :: lchin(6)
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: connex(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -104,7 +106,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESL', 'L', jcesl)
-    call jeveuo(ces//'.CESV', 'E', jcesv)
+    call jeveuo(ces//'.CESV', 'E', vr=cesv)
     nbma=zi(jcesd-1+1)
 !
 !
@@ -182,7 +184,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
     call jecrec(masp//'.CONNEX', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbnosp)
     call jeecra(masp//'.CONNEX', 'LONT', nbnosp, ' ')
-    call jeveuo(masp//'.CONNEX', 'E', ibid)
+    call jeveuo(masp//'.CONNEX', 'E', vi=connex)
 !
     call wkvect(masp//'.TYPMAIL', 'V V I', nbnosp, iatypm)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ipoi1)
@@ -194,7 +196,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
         call jecroc(jexnum(masp//'.CONNEX', ima))
         call jeecra(jexnum(masp//'.CONNEX', ima), 'LONMAX', nno2)
         nuno2=nuno2+1
-        zi(ibid-1+nuno2)=nuno2
+        connex(nuno2)=nuno2
     end do
 !
 !
@@ -223,7 +225,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
                     call cesexi('C', jcesd, jcesl, ima, ipt,&
                                 isp, icmp, iad)
                     if (iad .gt. 0) then
-                        zr(j1-1+3*(ino2p-1)+icmp)=zr(jcesv-1+iad)
+                        zr(j1-1+3*(ino2p-1)+icmp)=cesv(iad)
                     endif
                 end do
             end do

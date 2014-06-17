@@ -91,7 +91,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     integer :: iret, ier, i, k, icha, inum
     integer :: somme
     logical :: prem
-    integer :: jchar, jinf, jlme
+    integer :: jchar, jinf
     integer :: nchar, numchm, nbchme
     integer :: ifm, niv
 !
@@ -100,6 +100,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     integer :: nbopt(nbchmx), tab(nbchmx)
     character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nomopf(nbchmx)
     character(len=6) :: nompar(nbchmx), nomopr(nbchmx)
+    character(len=24), pointer :: relr(:) => null()
     data nomlig/'.ROTAT','.PESAN','.PRESS','.FCO3D','.EFOND'/
     data nomopf/'??????','??????','PRSU_F','SFCO3D','EFON_F'/
     data nompaf/'??????','??????','PRESSF','FFCO3D','PEFOND'/
@@ -150,7 +151,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     else
         prem = .false.
         call jelira(mesuiv//'.RELR', 'LONUTI', nbchme)
-        if (nbchme .gt. 0) call jeveuo(mesuiv//'.RELR', 'L', jlme)
+        if (nbchme .gt. 0) call jeveuo(mesuiv//'.RELR', 'L', vk24=relr)
     endif
 !
 ! --- CHAMP DE GEOMETRIE
@@ -281,8 +282,8 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
         ligrel = ligrmo
 !
         do i = 1, nbchme
-            if (zk24(jlme-1+i) (10:10) .eq. 'G') then
-                call lxliis(zk24(jlme-1+i) (7:8), icha, ier)
+            if (relr(i) (10:10) .eq. 'G') then
+                call lxliis(relr(i) (7:8), icha, ier)
                 nomcha = zk24(jchar+icha-1) (1:8)
                 ligrch = nomcha//'.CHME.LIGRE'
 !
@@ -294,7 +295,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
                     call exisd('CHAMP_GD', lchin(1), iret)
                     if (iret .ne. 0) then
                         if (k .ne. 2) then
-                            lchout(1) = zk24(jlme-1+i)(1:19)
+                            lchout(1) = relr(i)(1:19)
                             if (affcha(5:7) .eq. '_FO') then
                                 option = 'RIGI_MECA_'//nomopf(k)
                                 lpain(1) = 'P'//nompaf(k)

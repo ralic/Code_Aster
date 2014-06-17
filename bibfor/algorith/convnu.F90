@@ -63,8 +63,10 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iran(1), ityp, ldcvn, lldein, lldeou
+    integer :: i, iran(1), ityp, ldcvn
     integer :: neqin, neqout, nuno
+    integer, pointer :: nlldein(:) => null()
+    integer, pointer :: nlldeou(:) => null()
 !-----------------------------------------------------------------------
     data ibid/0/
 !-----------------------------------------------------------------------
@@ -99,17 +101,17 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
 !-----------REQUETTE DES DEEQ DES NUMEROTATIONS-------------------------
 !
-    call jeveuo(numin//'.DEEQ', 'L', lldein)
-    call jeveuo(numout//'.DEEQ', 'L', lldeou)
+    call jeveuo(numin//'.DEEQ', 'L', vi=nlldein)
+    call jeveuo(numout//'.DEEQ', 'L', vi=nlldeou)
 !
 !
 !------------------BOUCLE SUR LES DDL-----------------------------------
 !
     do i = 1, neqout
-        nuno=zi(lldeou+2*(i-1))
-        ityp=zi(lldeou+2*(i-1)+1)
+        nuno=nlldeou(1+2*(i-1))
+        ityp=nlldeou(1+2*(i-1)+1)
         if (ityp .gt. 0) then
-            call cheddl(zi(lldein), neqin, nuno, ityp, iran,&
+            call cheddl(nlldein, neqin, nuno, ityp, iran,&
                         1)
             if (iran(1) .eq. 0) then
                 erreur=.true.

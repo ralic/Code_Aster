@@ -37,7 +37,7 @@ subroutine tbexlr(nomta, listr, basout)
 ! IN  : BASOUT : BASE DE CREATION DE "LISTR"
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp,  nbpr, nblg, ipar, ndim, jtblp
+    integer :: iret, nbpara, nblign,   nbpr, nblg, ipar, ndim
     integer :: i, j, jvale, jlogq,  nbvale, k1, kcol, klig, ideb1, ideb2
     integer :: ifin1, ifin2, nbcl, ivide, ilig, ibloc, jpas, jnbp, jbor, k
     integer ::   kcol1, kcol2
@@ -50,6 +50,8 @@ subroutine tbexlr(nomta, listr, basout)
     integer, pointer :: nume_lign(:) => null()
     integer, pointer :: nume_para(:) => null()
     real(kind=8), pointer :: vale_r(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -65,9 +67,9 @@ subroutine tbexlr(nomta, listr, basout)
     endif
     base = basout(1:1)
 !
-    call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -75,14 +77,14 @@ subroutine tbexlr(nomta, listr, basout)
         call utmess('F', 'UTILITAI4_76')
     endif
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !
 !     --- ON NE RETIENT QUE LES PARAMETRES DE TYPE "I" ET "R" ---
 !
     AS_ALLOCATE(vi=nume_para, size=nbpara)
     nbpr = 0
     do 10 i = 1, nbpara
-        type = zk24(jtblp+4*(i-1)+1)
+        type = tblp(1+4*(i-1)+1)
         if (type(1:1) .eq. 'I') then
             nbpr = nbpr + 1
             nume_para(nbpr) = i
@@ -103,7 +105,7 @@ subroutine tbexlr(nomta, listr, basout)
         nbcl = 0
         do 22 j = 1, nbpr
             ipar = nume_para(j)
-            nomjvl = zk24(jtblp+4*(ipar-1)+3)
+            nomjvl = tblp(1+4*(ipar-1)+3)
             call jeveuo(nomjvl, 'L', jlogq)
             if (zi(jlogq+i-1) .eq. 1) nbcl = nbcl + 1
 22      continue
@@ -133,9 +135,9 @@ subroutine tbexlr(nomta, listr, basout)
         kcol1 = 0
         do 32 j = 1, nbpr
             ipar = nume_para(j)
-            type = zk24(jtblp+4*(ipar-1)+1)
-            nomjv = zk24(jtblp+4*(ipar-1)+2)
-            nomjvl = zk24(jtblp+4*(ipar-1)+3)
+            type = tblp(1+4*(ipar-1)+1)
+            nomjv = tblp(1+4*(ipar-1)+2)
+            nomjvl = tblp(1+4*(ipar-1)+3)
             call jeveuo(nomjv, 'L', jvale)
             call jeveuo(nomjvl, 'L', jlogq)
             if (zi(jlogq+ilig-1) .eq. 1) then

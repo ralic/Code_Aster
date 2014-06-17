@@ -63,8 +63,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcmp, jkcha, jlno, jrval, jival, jniord, jcoor, i, jcnsv, nbnox
-    integer :: jcnsl, jcnsd, jcnsc, nbcmpx, n,   ino, indno
+    integer :: jcmp, jkcha, jlno, jrval, jival, jniord,  i,  nbnox
+    integer :: jcnsl,   nbcmpx, n,   ino, indno
     integer :: kcp, icmp, indcmp, ni, nr, nk,    kk, nbpara
     integer ::  j, ibid
     complex(kind=8) :: cbid
@@ -76,6 +76,10 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     character(len=16), pointer :: table_valk(:) => null()
     real(kind=8), pointer :: table_valr(:) => null()
     real(kind=8), pointer :: val_cmp(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -90,7 +94,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
     call jeveuo(nrval, 'L', jrval)
     call jeveuo(nival, 'L', jival)
     call jeveuo(niord, 'L', jniord)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     TABLEAU DES VALEURS ENTIERES DE LA TABLE: ZI(JI)
 !     TABLEAU DES VALEURS REELES DE LA TABLE: ZR(JR)
@@ -108,15 +112,15 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !
 !            -- PASSAGE CHAM_NO => CHAM_NO_S
             call cnocns(zk24(jkcha+i-1), 'V', chamns)
-            call jeveuo(chamns//'.CNSV', 'L', jcnsv)
+            call jeveuo(chamns//'.CNSV', 'L', vr=cnsv)
             call jeveuo(chamns//'.CNSL', 'L', jcnsl)
-            call jeveuo(chamns//'.CNSD', 'L', jcnsd)
-            call jeveuo(chamns//'.CNSC', 'L', jcnsc)
+            call jeveuo(chamns//'.CNSD', 'L', vi=cnsd)
+            call jeveuo(chamns//'.CNSC', 'L', vk8=cnsc)
 !
 !             NOMBRE DE NOEUDS MAX DU CHAMP: NBNOX
-            nbnox=zi(jcnsd)
+            nbnox=cnsd(1)
 !             NOMBRE DE COMPOSANTES MAX DU CHAMP : NBCMPX
-            nbcmpx=zi(jcnsd+1)
+            nbcmpx=cnsd(2)
 !
 !             NOMBRE DE COMPOSANTES DESIREES : N
             if (toucmp) then
@@ -146,7 +150,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !                    -SI LA COMPOSANTE FAIT PARTIE DES COMPOSANTES
 !                     DESIREES, ON POURSUIT, SINON ON VA A LA
 !                     COMPOSANTE SUIVANTE
-                        indcmp=indik8(zk8(jcmp),zk8(jcnsc+icmp-1),&
+                        indcmp=indik8(zk8(jcmp),cnsc(icmp),&
                         1,nbcmp)
                         if (indcmp .eq. 0) goto 120
                     endif
@@ -154,8 +158,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
 !                  STOCKE LE NOM ET LA VALEUR DE COMPOSANTE :
                     if (.not.zl(jcnsl+nbcmpx*(ino-1)+icmp-1)) goto 120
                     kcp=kcp+1
-                    val_cmp(kcp)=zr(jcnsv+nbcmpx*(ino-1)+icmp-1)
-                    nom_cmp(kcp)=zk8(jcnsc+icmp-1)
+                    val_cmp(kcp)=cnsv(1+nbcmpx*(ino-1)+icmp-1)
+                    nom_cmp(kcp)=cnsc(icmp)
 120             continue
 !
 !               SOIT NI LE NOMBRE DE VALEURS ENTIERES DE LA TABLE
@@ -184,7 +188,7 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                     kk=kk+1
                 endif
                 do 121 j = 1, ndim
-                    table_valr(kk+1)=zr(jcoor+3*(ino-1)+j-1)
+                    table_valr(kk+1)=vale(1+3*(ino-1)+j-1)
                     kk=kk+1
 121              continue
                 do 122 j = 1, kcp

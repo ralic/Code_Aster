@@ -61,7 +61,7 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
 !
 !
 !
-    integer :: repi, iret, lldesc, llmcl, llref, nuss, nusst
+    integer :: repi, iret,  llmcl, llref, nuss, nusst
     integer :: vali
     character(len=*) :: questi
     character(len=24) :: repk
@@ -69,6 +69,7 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
     character(len=8) :: modgen, nommcl, basmod, nomsst
     character(len=14) :: llref2
     character(len=*) :: mdgenz, nmsstz, repkz
+    integer, pointer :: desc(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -134,8 +135,8 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi,&
         call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=repk, arret='C',&
                     ier=iret)
     else if (questi(1:10).eq.'NB_CMP_MAX') then
-        call jeveuo(modgen//'      .MODG.DESC', 'L', lldesc)
-        repi=zi(lldesc+1)
+        call jeveuo(modgen//'      .MODG.DESC', 'L', vi=desc)
+        repi=desc(2)
     else
         repk = questi
         call utmess('F', 'UTILITAI_49', sk=repk)

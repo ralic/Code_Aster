@@ -50,10 +50,12 @@ subroutine nmiret(codret, tabret)
 !
 !
 !
-    integer :: iret, jcesk, jcesd, jcesv, jcesl, nbmail, icmp
+    integer :: iret,  jcesd,  jcesl, nbmail, icmp
     integer :: ima, iad, vali
     character(len=8) :: nomgd
     character(len=19) :: chamns
+    integer, pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,9 +76,9 @@ subroutine nmiret(codret, tabret)
 !
 ! --- ACCES AU CHAM_ELEM_S
 !
-    call jeveuo(chamns//'.CESK', 'L', jcesk)
+    call jeveuo(chamns//'.CESK', 'L', vk8=cesk)
     call jeveuo(chamns//'.CESD', 'L', jcesd)
-    call jeveuo(chamns//'.CESV', 'L', jcesv)
+    call jeveuo(chamns//'.CESV', 'L', vi=cesv)
     call jeveuo(chamns//'.CESL', 'L', jcesl)
 !
 !     CHAM_ELEM/ELGA MAIS EN FAIT : 1 POINT ET 1 SOUS_POINT PAR ELEMENT
@@ -84,7 +86,7 @@ subroutine nmiret(codret, tabret)
         ASSERT(.false.)
     endif
 !
-    nomgd = zk8(jcesk-1+2)
+    nomgd = cesk(2)
     if (nomgd .ne. 'CODE_I') then
         ASSERT(.false.)
     endif
@@ -101,7 +103,7 @@ subroutine nmiret(codret, tabret)
                     1, icmp, iad)
         if (iad .le. 0) goto 20
 !
-        iret = zi(jcesv-1+iad)
+        iret = cesv(iad)
         if (iret .eq. 0) then
         else if (iret .lt. 11 .and. iret .gt. 0) then
             tabret(iret) = .true.

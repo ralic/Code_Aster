@@ -67,8 +67,8 @@ subroutine op0096()
     integer :: atmp1, atmp2, atmp3, atmp4, atmp5, atmp6, atmp7, atmp8
     integer :: atmp9, atmp10, atmp13, atmp14
     integer :: nbsgt, nbsgel, isgt, nbtma, nbnma, nbn, tete, queue, nil
-    integer :: asucc, aprec, adesc, axyzm, axyzn, aconec, adrvlc, adrmc
-    integer :: asds, adescm, aindir, cpsgt, nnbm, inn, iatyma
+    integer :: asucc, aprec, adesc,  axyzn,  adrvlc, adrmc
+    integer :: asds, adescm, aindir, cpsgt, nnbm, inn
     integer :: k, im1, if1, iao1, iae1, im2, if2, iao2
     integer :: jnuma, ima, n1, n2, ndim, iret, nbpar, ibid
     real(kind=8) :: epsi, zero, sgt(6), rbi, xa, ya, za, xb, yb, zb, r8b
@@ -88,6 +88,9 @@ subroutine op0096()
     character(len=24) :: nsds8, nsds9, nsds10, nsds11, nsds12, nsds13, nsds14
     character(len=24) :: nommai, lismai, para
     logical :: coupe, fini, swap, egfac
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !===================================================================
 !
@@ -112,9 +115,9 @@ subroutine op0096()
 !
     call dismoi('NB_MA_MAILLA', nomail, 'MAILLAGE', repi=nbtma)
     call dismoi('NB_NO_MAILLA', nomail, 'MAILLAGE', repi=nbnma)
-    call jeveuo(nomail//'.COORDO    .VALE', 'L', axyzm)
-    call jeveuo(nomail//'.CONNEX         ', 'L', aconec)
-    call jeveuo(nomail//'.TYPMAIL        ', 'L', iatyma)
+    call jeveuo(nomail//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(nomail//'.CONNEX         ', 'L', vi=connex)
+    call jeveuo(nomail//'.TYPMAIL        ', 'L', vi=typmail)
     call jeveuo(jexatr(nomail//'.CONNEX', 'LONCUM'), 'L', adrvlc)
     nommai = nomail//'.NOMMAI         '
 !
@@ -206,7 +209,7 @@ subroutine op0096()
             zr(axyzn + 3*(n-1)+2-1) = zero
             zr(axyzn + 3*(n-1)+3-1) = zero
         end do
-        call i3chgr(sgtu, sgtu(4), zr(axyzm), zr(axyzn), nbnma)
+        call i3chgr(sgtu, sgtu(4), vale, zr(axyzn), nbnma)
         rbi = zero
         do n = 1, 3, 1
             rbi = rbi + (sgtu(n+3)-sgtu(n))*(sgtu(n+3)-sgtu(n))
@@ -230,7 +233,7 @@ subroutine op0096()
             ima = zi(jnuma+m-1)
             call jeveuo(jexnum(nomail//'.CONNEX', ima), 'L', adrmc)
             call jelira(jexnum(nomail//'.CONNEX', ima), 'LONMAX', nbn)
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+ima)), typm)
+            call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typm)
             call jenuno(jexnum(nommai, ima), nomm1)
 !
             if (typm(1:5) .eq. 'TETRA' .or. typm(1:5) .eq. 'PENTA' .or. typm(1:4) .eq.&
@@ -254,7 +257,7 @@ subroutine op0096()
         end do
 !
         call i3imas(epsi, nil, tete, queue, zi(asucc),&
-                    zi(aprec), zi(adesc), zi(adescm), sgt, zi(aconec),&
+                    zi(aprec), zi(adesc), zi(adescm), sgt, connex,&
                     zi(adrvlc), zr(axyzn), sd1tmp, sd2tmp, nbsgel)
 !
         temp1 = sd1tmp(1:13)//'.SGTEL.ORIG'
@@ -416,7 +419,7 @@ subroutine op0096()
                 iao2 = zi(asds9+i-1)
                 absco = zr(asds1+i-1)
                 egfac = i3egfa(&
-                        zi(adesc), zi(adescm), zi(aconec), zi(adrvlc), im1, if1, iao1, iae1, im2,&
+                        zi(adesc), zi(adescm), connex, zi(adrvlc), im1, if1, iao1, iae1, im2,&
                         if2, iao2&
                         )
                 if (.not. egfac) then

@@ -53,12 +53,14 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 !
     real(kind=8) :: point(3), dist, dmin
     integer :: jjonf, jjonc, jjon3,  ino, nbno, iret, ibid
-    integer :: nfini, ifiss, nfis2, nfis3, ifis2, ifis3, cpt, jcnsvt, nfisd
-    integer :: jcnsv, jcnsl, jcnsvn, coefln(10),  iadrco, nuno
+    integer :: nfini, ifiss, nfis2, nfis3, ifis2, ifis3, cpt,  nfisd
+    integer ::  jcnsl, jcnsvn, coefln(10),  iadrco, nuno
     character(len=8) :: ch, nomfis(10)
     character(len=19) :: cnsln, cnslt, jonfis, joncoe
     character(len=8), pointer :: vfiss(:) => null()
     character(len=8), pointer :: licmp(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
+    real(kind=8), pointer :: cnsvt(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -178,22 +180,22 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 !
     call cnscre(noma, 'N120_R', 2*nfiss, licmp, 'V',&
                 cnslj)
-    call jeveuo(cnslj//'.CNSV', 'E', jcnsv)
+    call jeveuo(cnslj//'.CNSV', 'E', vr=cnsv)
     call jeveuo(cnslj//'.CNSL', 'E', jcnsl)
     do ifiss = 1, nfiss
         call cnocns(nomfis(ifiss)//'.LNNO', 'V', cnsln)
         call jeveuo(cnsln//'.CNSV', 'L', jcnsvn)
         call cnocns(nomfis(ifiss)//'.LTNO', 'V', cnslt)
-        call jeveuo(cnslt//'.CNSV', 'L', jcnsvt)
+        call jeveuo(cnslt//'.CNSV', 'L', vr=cnsvt)
         do ino = 1, nbno
             zl(jcnsl-1+2*nfiss*(ino-1)+2*(ifiss-1)+1) = .true.
-            zr(jcnsv-1+2*nfiss*(ino-1)+2*(ifiss-1)+1) = coefln(ifiss)* zr(jcnsvn-1+ino)
+            cnsv(2*nfiss*(ino-1)+2*(ifiss-1)+1) = coefln(ifiss)* zr(jcnsvn-1+ino)
             zl(jcnsl-1+2*nfiss*(ino-1)+2*(ifiss-1)+2) = .true.
             if (ifiss .le. nfisd) then
-                zr(jcnsv-1+2*nfiss*(ino-1)+2*(ifiss-1)+2) = -1
+                cnsv(2*nfiss*(ino-1)+2*(ifiss-1)+2) = -1
             else
 ! --- CRITERE SUR LA LST POUR LES FISS NON DECLAREES PAR L'UTILISATEUR
-                zr(jcnsv-1+2*nfiss*(ino-1)+2*(ifiss-1)+2) = zr(jcnsvt- 1+ino)
+                cnsv(2*nfiss*(ino-1)+2*(ifiss-1)+2) = cnsvt(ino)
             endif
         end do
     end do

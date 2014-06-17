@@ -52,15 +52,20 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: n1, iret, iad, ichs, nbchs, isp, ipt, jlissd, jcesvi
-    integer :: k, k2, nbma, ncmp, icmp, jcesl2, jcesv2, jcesd2
+    integer :: n1, iret, iad, ichs, nbchs, isp, ipt,  jcesvi
+    integer :: k, k2, nbma, ncmp, icmp, jcesl2,  jcesd2
     integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc
-    integer :: jdcld, jdcll, jdclv, jcesk, jcesk2
+    integer :: jdcld, jdcll
     character(len=16) :: tysd1, tysd2, nosd1, nosd2, nosy1, nosy2
     character(len=8) :: varc
     character(len=19) :: dceli, celmod, cart2, ces2, ligrmo
     character(len=24) :: valk(5)
     character(len=8), pointer :: cvrcvarc(:) => null()
+    character(len=16), pointer :: liste_sd(:) => null()
+    character(len=8), pointer :: cesk2(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=16), pointer :: cesv2(:) => null()
+    integer, pointer :: dclv(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -71,7 +76,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 !
 !     -- CALCUL DE JLISSD ET NBCHS :
     call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs)
-    call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
+    call jeveuo(chmat//'.LISTE_SD', 'L', vk16=liste_sd)
     call jelira(chmat//'.LISTE_SD', 'LONMAX', n1)
     ASSERT(n1.eq.nbchs*7)
 !
@@ -86,7 +91,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 !        NBCVRC COMPOSANTES.
     call jeveuo(dceli//'.CESD', 'L', jdcld)
     call jeveuo(dceli//'.CESL', 'L', jdcll)
-    call jeveuo(dceli//'.CESV', 'E', jdclv)
+    call jeveuo(dceli//'.CESV', 'E', vi=dclv)
     nbma = zi(jdcld-1+1)
 !
     do 170,ima = 1,nbma
@@ -96,7 +101,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     ASSERT(nbsp.eq.1)
     call cesexi('C', jdcld, jdcll, ima, 1,&
                 1, 2, iad)
-    if (iad .gt. 0) zi(jdclv-1+iad)=nbcvrc
+    if (iad .gt. 0) dclv(iad)=nbcvrc
     170 end do
 !
     call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
@@ -109,7 +114,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     call jelira(chvars//'.CESV', 'LONMAX', n1)
     call wkvect(chmat//'.CESVI', 'V V I', n1, jcesvi)
 !
-    call jeveuo(chvars//'.CESK', 'L', jcesk)
+    call jeveuo(chvars//'.CESK', 'L', vk8=cesk)
     call jeveuo(chvars//'.CESD', 'L', jcesd)
     call jeveuo(chvars//'.CESL', 'E', jcesl)
     call jelira(chvars//'.CESL', 'LONMAX', n1)
@@ -136,14 +141,14 @@ subroutine vrcin2(modele, chmat, carele, chvars)
                 'A', iret)
     ASSERT(iret.eq.0)
 !
-    call jeveuo(ces2//'.CESK', 'L', jcesk2)
+    call jeveuo(ces2//'.CESK', 'L', vk8=cesk2)
     call jeveuo(ces2//'.CESD', 'L', jcesd2)
-    call jeveuo(ces2//'.CESV', 'L', jcesv2)
+    call jeveuo(ces2//'.CESV', 'L', vk16=cesv2)
     call jeveuo(ces2//'.CESL', 'L', jcesl2)
 !
-    if (zk8(jcesk) .ne. zk8(jcesk2)) then
-        valk(1)=zk8(jcesk)
-        valk(2)=zk8(jcesk2)
+    if (cesk(1) .ne. cesk2(1)) then
+        valk(1)=cesk(1)
+        valk(2)=cesk2(1)
         call utmess('F', 'CALCULEL2_11', nk=2, valk=valk)
     endif
     nbma = zi(jcesd-1+1)
@@ -164,13 +169,13 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     if (iad .le. 0) goto 70
 !
 !         -- CALCUL DE ICHS :
-    tysd1=zk16(jcesv2-1+iad+1)
-    nosd1=zk16(jcesv2-1+iad+2)
-    nosy1=zk16(jcesv2-1+iad+3)
+    tysd1=cesv2(iad+1)
+    nosd1=cesv2(iad+2)
+    nosy1=cesv2(iad+3)
     do 71, ichs=1,nbchs
-    tysd2=zk16(jlissd-1+7*(ichs-1)+1)(1:8)
-    nosd2=zk16(jlissd-1+7*(ichs-1)+2)(1:8)
-    nosy2=zk16(jlissd-1+7*(ichs-1)+3)
+    tysd2=liste_sd(7*(ichs-1)+1)(1:8)
+    nosd2=liste_sd(7*(ichs-1)+2)(1:8)
+    nosy2=liste_sd(7*(ichs-1)+3)
     if ((tysd1.eq.tysd2) .and. (nosd1.eq.nosd2) .and. ( nosy1.eq.nosy2)) goto 72
 71  continue
     ASSERT(.false.)

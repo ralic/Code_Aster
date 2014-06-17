@@ -88,7 +88,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
     integer :: compt0
     real(kind=8) :: ajeufx, ajeufy, glis, coefff
     character(len=19) :: deplc
-    integer :: jdepc
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -139,7 +139,7 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
 ! ---         DU PAS DE TEMPS AVEC CORRECTION DU CONTACT
 !
     deplc = resoco(1:14)//'.DEPC'
-    call jeveuo(deplc (1:19)//'.VALE', 'L', jdepc)
+    call jeveuo(deplc (1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
 !
@@ -172,14 +172,14 @@ subroutine cfgli3(noma, defico, resoco, neq, nesmax,&
             ajeufy = 0.d0
             call cfelpv(iliai1, typef1, resoco, nbliai, lelpi1)
             if (.not.lelpi1) then
-                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jdepc),&
+                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), vale,&
                             ajeufx)
             endif
 !
             call cfelpv(iliai1, typef2, resoco, nbliai, lelpi2)
             if (.not.lelpi2) then
                 call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jdepc), ajeufy)
+                            vale, ajeufy)
             endif
             glis = sqrt( ajeufx**2 + ajeufy**2 )
 !

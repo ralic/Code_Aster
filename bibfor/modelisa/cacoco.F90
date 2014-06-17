@@ -59,7 +59,7 @@ subroutine cacoco(char, motfac, noma)
 !
 !
     integer :: iret, noc, nbnma, iacnex
-    integer :: icesc, icesd, icesl, icesv, npmax
+    integer ::  icesd, icesl,  npmax
     integer :: rangr0, rangr1, iad1
     integer :: nzoco, nbmae
     integer :: posmae, nummae
@@ -73,6 +73,8 @@ subroutine cacoco(char, motfac, noma)
     integer :: jmaco, jjcoq
     character(len=19) :: carsd, carte
     logical :: ldcoq
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -120,16 +122,16 @@ subroutine cacoco(char, motfac, noma)
 ! --- RECUPERATION DES GRANDEURS (EPAIS, EXCENT)
 ! --- REFERENCEE PAR LA CARTE CARGEOPO
 !
-    call jeveuo(carsd//'.CESC', 'L', icesc)
+    call jeveuo(carsd//'.CESC', 'L', vk8=cesc)
     call jeveuo(carsd//'.CESD', 'L', icesd)
     call jeveuo(carsd//'.CESL', 'L', icesl)
-    call jeveuo(carsd//'.CESV', 'L', icesv)
+    call jeveuo(carsd//'.CESV', 'L', vr=cesv)
 !
 ! --- ON RECUPERE L'EPAISSEUR DE LA COQUE
 !
     npmax = zi(icesd-1+2)
-    rangr0 = indik8(zk8(icesc),'EP      ',1,npmax)
-    rangr1 = indik8(zk8(icesc),'EXCENT  ',1,npmax)
+    rangr0 = indik8(cesc,'EP      ',1,npmax)
+    rangr1 = indik8(cesc,'EXCENT  ',1,npmax)
 !
     do 20 izone = 1, nzoco
         ldcoq = mminfl(defico,'DIST_COQUE',izone )
@@ -149,7 +151,7 @@ subroutine cacoco(char, motfac, noma)
                 call cesexi('C', icesd, icesl, nummae, 1,&
                             1, rangr0, iad1)
                 if (iad1 .gt. 0) then
-                    ep = zr(icesv-1+iad1)
+                    ep = cesv(iad1)
                 else
                     call utmess('F', 'CONTACT3_39', sk=nommae)
                 endif
@@ -159,7 +161,7 @@ subroutine cacoco(char, motfac, noma)
                 call cesexi('C', icesd, icesl, nummae, 1,&
                             1, rangr1, iad1)
                 if (iad1 .gt. 0) then
-                    exc = zr(icesv-1+iad1)
+                    exc = cesv(iad1)
                     if (exc .ne. 0.d0) then
                         call utmess('F', 'CONTACT3_40', sk=nommae)
                     endif

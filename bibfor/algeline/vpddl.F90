@@ -49,11 +49,12 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 !
 !
 !
-    integer :: jccid, iercon, nbprno, ieq, mxddl, nba, nbb, nbl, nbliai, ifm, niv
+    integer ::  iercon, nbprno, ieq, mxddl, nba, nbb, nbl, nbliai, ifm, niv
     integer :: vali(4)
     character(len=14) :: nume
     parameter (mxddl=1)
     character(len=8) :: nomddl(mxddl)
+    integer, pointer :: ccid(:) => null()
 !
     data nomddl/'LAGR'/
 !
@@ -97,14 +98,14 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
     call jeexin(masse//'.CCID', iercon)
     nbcine = 0
     if (iercon .ne. 0) then
-        call jeveuo(masse//'.CCID', 'E', jccid)
+        call jeveuo(masse//'.CCID', 'E', vi=ccid)
         do ieq = 1, neq
-            dbloq(ieq) = dbloq(ieq)*abs(zi(jccid+ieq-1)-1)
+            dbloq(ieq) = dbloq(ieq)*abs(ccid(ieq)-1)
         end do
 !
 !       --- CALCUL DU NOMBRE DE DDL BLOQUE PAR CETTE METHODE : NCINE ---
         do ieq = 1, neq
-            nbcine = nbcine + zi(jccid+ieq-1)
+            nbcine = nbcine + ccid(ieq)
         end do
     endif
 !

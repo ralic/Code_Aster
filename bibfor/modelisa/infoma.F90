@@ -37,12 +37,14 @@ subroutine infoma(nomu)
     character(len=24) :: conxv, grpnov, grpmav, nomnoe, titre, cooval
     character(len=24) :: nom, nommai
     character(len=8) :: type
-    integer :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor, jtyma, nbma
+    integer :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor,  nbma
     integer :: nbltit, iad, i, nbnoeu, nbmail, nbgrno, nbgrma
     integer :: nbmmai, n1, nbmmax, ityp
     parameter (nbmmax=100)
-    integer :: dimmai(nbmmax), jdime, iret
+    integer :: dimmai(nbmmax),  iret
     character(len=8) :: mclmai(nbmmax)
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: dime(:) => null()
 !
 !
 !
@@ -87,9 +89,9 @@ subroutine infoma(nomu)
     call jelira(titre, 'LONMAX', nbltit)
     call jelira(nomnoe, 'NOMMAX', nbnoeu)
     call jelira(nommai, 'NOMMAX', nbmail)
-    call jeveuo(nomu//'.DIME', 'L', jdime)
-    call jeveuo(nomu//'.TYPMAIL', 'L', jtyma)
-    nbcoor=zi(jdime-1+6)
+    call jeveuo(nomu//'.DIME', 'L', vi=dime)
+    call jeveuo(nomu//'.TYPMAIL', 'L', vi=typmail)
+    nbcoor=dime(6)
 !
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai)
@@ -98,7 +100,7 @@ subroutine infoma(nomu)
         call jenuno(jexnum('&CATA.TM.NOMTM', i), mclmai(i))
 20  end do
     do 21 i = 1, nbmail
-        ityp=zi(jtyma-1+i)
+        ityp=typmail(i)
         ASSERT((ityp.gt.0).and.(ityp.lt.100))
         dimmai(ityp)=dimmai(ityp)+1
 21  end do
@@ -160,7 +162,7 @@ subroutine infoma(nomu)
             call jenuno(jexnum(nommai, i), nom)
             call jeveuo(jexnum(conxv, i), 'L', iad1)
             call jelira(jexnum(conxv, i), 'LONMAX', nbno)
-            ityp=zi(jtyma-1+i)
+            ityp=typmail(i)
             call jenuno(jexnum('&CATA.TM.NOMTM', ityp), type)
             if (nbno .le. 5) then
                 write (ifm,702) i,nom,type, (zi(iad1+j-1),j=1,nbno)

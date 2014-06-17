@@ -58,7 +58,9 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
     integer :: vali(1)
 !
     integer :: iad, ima
-    integer :: jcesl, jcesv, jcesd, jcesd2
+    integer :: jcesl,  jcesd
+    integer, pointer :: cesd2(:) => null()
+    integer, pointer :: cesv(:) => null()
 !
     data licmp    / 'NPG_DYN', 'NCMP_DYN'/
 !
@@ -75,12 +77,12 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
 !
     call jeveuo(chelex(1:19)//'.CESD', 'L', jcesd)
     call jeveuo(chelex(1:19)//'.CESL', 'E', jcesl)
-    call jeveuo(chelex(1:19)//'.CESV', 'E', jcesv)
+    call jeveuo(chelex(1:19)//'.CESV', 'E', vi=cesv)
 !
 ! --- TRANSFORMATION CHAMP MODELE EN CHAMP SIMPLE
     chelsi = '&&XMCHEX.CHELSI'
     call celces(chpmod, 'V', chelsi)
-    call jeveuo(chelsi(1:19)//'.CESD', 'L', jcesd2)
+    call jeveuo(chelsi(1:19)//'.CESD', 'L', vi=cesd2)
 !
 ! --- AFFECTATION DES COMPOSANTES DU CHAM_ELEM_S
 !
@@ -94,7 +96,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
             call utmess('F', 'CATAELEM_20', nk=2, valk=valk, si=vali(1))
         endif
         zl(jcesl-1-iad) = .true.
-        zi(jcesv-1-iad) = zi(jcesd2-1+5+4*(ima-1)+2)
+        cesv(1-1-iad) = cesd2(5+4*(ima-1)+2)
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 2, iad)
         if (iad .ge. 0) then
@@ -104,7 +106,7 @@ subroutine xmchex(noma, nbma, chpmod, chelex)
             call utmess('F', 'CATAELEM_20', nk=2, valk=valk, si=vali(1))
         endif
         zl(jcesl-1-iad) = .true.
-        zi(jcesv-1-iad) = zi(jcesd2-1+5+4*(ima-1)+3)
+        cesv(1-1-iad) = cesd2(5+4*(ima-1)+3)
 100  end do
 !
     call detrsd('CHAM_ELEM_S', chelsi)

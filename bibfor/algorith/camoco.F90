@@ -56,7 +56,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
 !-----------------------------------------------------------------------
     integer :: i, iad, ier, ik, ino, inord
     integer :: j, jj, lldeeq, lldes, llncmp, llnoin
-    integer :: lltyp, ltddl, ltpar, nbcb, nbcmp, nbcont, nbcpmx
+    integer ::  ltddl, ltpar, nbcb, nbcmp, nbcont, nbcpmx
     integer :: nbdeb, nbec, nbfin, nbint, nbnoe, nbnot, neq
     integer :: ntail1, ntail2, numgd
 !-----------------------------------------------------------------------
@@ -68,6 +68,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
     character(len=16) :: typdef
     character(len=24) :: desdef, deeq, temddl, tempar
     integer :: idec(nbcpmx)
+    character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------
     data pgc /'CAMOCO'/
@@ -114,7 +115,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
 !------------REQUETTE ADRESSE DEFINITION INTERFACE ET TYPE--------------
 !
     call jelira(intf//'.IDC_LINO', 'NMAXOC', nbint)
-    call jeveuo(intf//'.IDC_TYPE', 'L', lltyp)
+    call jeveuo(intf//'.IDC_TYPE', 'L', vk8=idc_type)
 !
 !-----------COMPTAGE DU NOMBRE DE NOEUDS CRAIG BAMPT--------------------
 !
@@ -123,7 +124,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
 !
     do j = 1, nbint
         call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe)
-        typcou=zk8(lltyp+j-1)
+        typcou=idc_type(j)
         if (typcou .eq. 'CRAIGB   ') then
             call jeveuo(jexnum(intf//'.IDC_LINO', j), 'L', llnoin)
             do i = 1, nbnoe

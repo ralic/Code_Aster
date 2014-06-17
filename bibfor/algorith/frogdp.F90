@@ -100,7 +100,7 @@ subroutine frogdp(sdstat, resoco, numedd, matass, resigr)
     character(len=19) :: atmu, afmu
     integer :: jatmu, jafmu
     character(len=19) :: depl0
-    integer :: jdepl0
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -135,7 +135,7 @@ subroutine frogdp(sdstat, resoco, numedd, matass, resigr)
 ! ---        DU PAS DE TEMPS SANS CORRECTION DU CONTACT
 !
     depl0 = resoco(1:14)//'.DEP0'
-    call jeveuo(depl0 (1:19)//'.VALE', 'L', jdepl0)
+    call jeveuo(depl0 (1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE GLOBALE
 !
@@ -186,7 +186,7 @@ subroutine frogdp(sdstat, resoco, numedd, matass, resigr)
 !
     call mtdscr(maf1)
     call jeveuo(maf1//'.&INT', 'L', lmaf1)
-    call mrmult('ZERO', lmaf1, zr(jdepl0), zr(jafmu), 1,&
+    call mrmult('ZERO', lmaf1, vale, zr(jafmu), 1,&
                 .true.)
 !
 ! --- CREATION DE FRO2 = E_T*AT

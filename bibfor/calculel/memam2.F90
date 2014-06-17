@@ -65,7 +65,8 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
     character(len=24) :: ligrmo, lchin(18), lchout(1), compor
     character(len=24) :: chgeom, chcara(18), chharm, vecelz
 !-----------------------------------------------------------------------
-    integer :: iarefe, ibid, icode, iret, nh
+    integer ::  ibid, icode, iret, nh
+    character(len=24), pointer :: rerr(:) => null()
 !-----------------------------------------------------------------------
     data chvarc /'&&MEMAM2.VARC'/
     call jemarq()
@@ -84,8 +85,8 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
 !
     call memare(base, vecel, modele, mate, cara,&
                 option)
-    call jeveuo(vecelz(1:19)//'.RERR', 'E', iarefe)
-    zk24(iarefe-1+3) (1:3) = 'OUI'
+    call jeveuo(vecelz(1:19)//'.RERR', 'E', vk24=rerr)
+    rerr(3) (1:3) = 'OUI'
 !
     call jeexin(vecelz(1:19)//'.RELR', iret)
     if (iret .gt. 0) call jedetr(vecelz(1:19)//'.RELR')

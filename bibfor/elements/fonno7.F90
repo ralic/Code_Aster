@@ -53,24 +53,26 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
 !
     integer :: adra, ar(12, 3)
     integer :: iatyma, iar, ima, ino1, ino2, ityp
-    integer :: jcncin, jconx1, jconx2, jcoor, jdrvlc, k
+    integer :: jcncin,  jconx2,  jdrvlc, k
     integer :: nbar, nbmaca, ndime, nno, nno1, nno2, numac
     real(kind=8) :: coor(3), vect(3), p, cos70, cosinu, normv
     character(len=8) :: type
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
 !
 !     RECUPERATION DES DONNEES SUR LE MAILLAGE
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     RECUPERATION DES COORDONNNES DE NA
-    coor(1) = zr(jcoor-1 + (na-1)*3 + 1)
-    coor(2) = zr(jcoor-1 + (na-1)*3 + 2)
-    coor(3) = zr(jcoor-1 + (na-1)*3 + 3)
+    coor(1) = vale((na-1)*3 + 1)
+    coor(2) = vale((na-1)*3 + 2)
+    coor(3) = vale((na-1)*3 + 3)
 !
 !     RECUPERATION DE LA CONNECTIVITE INVERSE
     call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', jdrvlc)
@@ -98,9 +100,9 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
         do iar = 1, nbar
 !
             ino1 = ar(iar,1)
-            nno1 = zi(jconx1-1 + zi(jconx2+numac-1) +ino1-1)
+            nno1 = connex(zi(jconx2+numac-1) +ino1-1)
             ino2 = ar(iar,2)
-            nno2 = zi(jconx1-1 + zi(jconx2+numac-1) +ino2-1)
+            nno2 = connex(zi(jconx2+numac-1) +ino2-1)
 !
             if (na .eq. nno1) then
                 nno = nno2
@@ -112,7 +114,7 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
 !
 !          VECTEUR REPRESENTANT L'ARETE NA-NNO
             do k = 1, ndim
-                vect(k) = zr(jcoor-1+ (nno-1)*3+k) - coor(k)
+                vect(k) = vale((nno-1)*3+k) - coor(k)
             end do
 !
 !          PROJECTION DE L'ARETE SUR LE VECTEUR TANGENT

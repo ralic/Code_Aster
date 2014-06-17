@@ -74,13 +74,15 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
 !
     integer :: itheta, i, irefe, idesc, num, nbel, numa
-    integer :: nec, ibid, jfond, numfon, n1, n2, ndim, jgt, jgtl
+    integer :: nec, ibid,  numfon, n1, n2, ndim,  jgtl
     parameter     (ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy
     character(len=8) :: k8b, fiss
     character(len=16) :: k16b, nomcmd
     character(len=19) :: grlt, chgrs
     character(len=24) :: chamno
+    real(kind=8), pointer :: fondfiss(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -155,16 +157,16 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !     CAS X-FEM
     else if (n2.ne.0) then
         call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
-        call jeveuo(fiss//'.FONDFISS', 'L', jfond)
-        xi = zr(jfond-1+4*(numfon-1)+1)
-        yi = zr(jfond-1+4*(numfon-1)+2)
+        call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
+        xi = fondfiss(4*(numfon-1)+1)
+        yi = fondfiss(4*(numfon-1)+2)
         if (.not.ldirec) then
             call utmess('I', 'XFEM_10')
 !         RÉCUPÉRATION DU GRADIENT DE LST
             grlt = fiss//'.GRLTNO'
             chgrs = '&&GCOU2D.GRLT'
             call cnocns(grlt, 'V', chgrs)
-            call jeveuo(chgrs//'.CNSV', 'L', jgt)
+            call jeveuo(chgrs//'.CNSV', 'L', vr=cnsv)
             call jeveuo(chgrs//'.CNSL', 'L', jgtl)
         endif
     endif
@@ -181,8 +183,8 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
             if (.not.ldirec) then
 !           LE GRANDIENT EST DÉFINI
                 if (zl(jgtl-1+ndim*(i-1)+1)) then
-                    dir(1) = zr(jgt-1+ndim*(i-1)+1)
-                    dir(2) = zr(jgt-1+ndim*(i-1)+2)
+                    dir(1) = cnsv(ndim*(i-1)+1)
+                    dir(2) = cnsv(ndim*(i-1)+2)
                     norme = sqrt(dir(1)**2+dir(2)**2)
                 else
 !           LE GRANDIENT N'EST PAS DÉFINI

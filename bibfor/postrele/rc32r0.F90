@@ -34,7 +34,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: npar0, npar1, npar2, im, ig, is, nbsigr, valei(2), jnumgr
+    integer :: npar0, npar1, npar2, im, ig, is, nbsigr, valei(2)
     integer :: jnsg, jpmpba, jpmpbs, nbgr, ioc, numgr, jvale, ibid, n1
     parameter    ( npar0 = 15 , npar1 = 7 , npar2 = 10 )
     real(kind=8) :: valer(5)
@@ -44,6 +44,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     character(len=16) :: nopar0(npar0), nopar1(npar1), nopar2(npar2)
     character(len=24) :: k24a, k24s
     integer, pointer :: situ_numero(:) => null()
+    integer, pointer :: situ_nume_group(:) => null()
 !     ------------------------------------------------------------------
     data lieu   / 'ORIG' , 'EXTR' /
 !
@@ -66,7 +67,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
 !
     call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
-    call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
+    call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', vi=situ_nume_group)
 !
     call jeveuo('&&RC3200.SITU_NUMERO', 'L', vi=situ_numero)
 !
@@ -121,7 +122,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !
     valek(1) = 'SITU'
     do 200 ig = 1, nbgr
-        numgr = abs(zi(jnumgr+ig-1))
+        numgr = abs(situ_nume_group(ig))
         valei(1) = numgr
         call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONMAX', nbsigr)
         call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)

@@ -59,9 +59,10 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: idcoor, idlino, ino, iocc, iret, nb
+    integer ::  idlino, ino, iocc, iret, nb
     integer :: nbno, nbnoe, ndim, nprec, nrayon
     real(kind=8) :: d2, dist, prec, rayon, zero
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -96,7 +97,7 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DU CENTRE DE LA SPHERE (OU DU CERCLE) :
 !     --------------------------------------------------
@@ -146,10 +147,10 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! ---     COORDONNEES DU NOEUD :
 !         --------------------
-        x(1) = zr(idcoor-1+3*(ino-1)+1)
-        x(2) = zr(idcoor-1+3*(ino-1)+2)
+        x(1) = vale(3*(ino-1)+1)
+        x(2) = vale(3*(ino-1)+2)
         if (ndim .eq. 3) then
-            x(3) = zr(idcoor-1+3*(ino-1)+3)
+            x(3) = vale(3*(ino-1)+3)
         endif
 !
 ! ---     DISTANCE DU NOEUD COURANT AU CENTRE DE LA SPHERE :

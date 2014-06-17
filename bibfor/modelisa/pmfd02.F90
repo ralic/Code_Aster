@@ -47,10 +47,12 @@ subroutine pmfd02(noma, cesdec)
 ! ----------------------------------------------------------------------
 !
     integer :: nbocc, iocc, iret, nbma, nbcou, nbv, nbsec
-    integer :: nbap, k, i, jncmp, jvalv, jma
+    integer :: nbap, k, i,   jma
     character(len=16) :: mocles(2), typmcl(2), moclef(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
+    character(len=8), pointer :: ncmp(:) => null()
+    integer, pointer :: valv(:) => null()
 !
     data mocles/'MAILLE','GROUP_MA'/
     data typmcl/'MAILLE','GROUP_MA'/
@@ -78,8 +80,8 @@ subroutine pmfd02(noma, cesdec)
 !
     carte='&&PMFD02.NBSP_I'
     call alcart('V', carte, noma, 'NBSP_I')
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
-    call jeveuo(carte//'.VALV', 'E', jvalv)
+    call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
+    call jeveuo(carte//'.VALV', 'E', vi=valv)
 !
 ! --- MOT CLE "COQUE" :
     call getfac('COQUE', nbocc)
@@ -88,8 +90,8 @@ subroutine pmfd02(noma, cesdec)
                     2, mocles, typmcl, mesmai, nbma)
 !
         call getvis('COQUE', 'COQUE_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
-        zk8(jncmp-1+1) = 'COQ_NCOU'
-        zi(jvalv-1+1) = nbcou
+        ncmp(1) = 'COQ_NCOU'
+        valv(1) = nbcou
 
 
 
@@ -107,10 +109,10 @@ subroutine pmfd02(noma, cesdec)
 !
         call getvis('POUTRE', 'TUYAU_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
         call getvis('POUTRE', 'TUYAU_NSEC', iocc=iocc, scal=nbsec, nbret=nbv)
-        zk8(jncmp-1+1) = 'TUY_NCOU'
-        zk8(jncmp-1+2) = 'TUY_NSEC'
-        zi(jvalv-1+1) = nbcou
-        zi(jvalv-1+2) = nbsec
+        ncmp(1) = 'TUY_NCOU'
+        ncmp(2) = 'TUY_NSEC'
+        valv(1) = nbcou
+        valv(2) = nbsec
 !
         call jeveuo(mesmai, 'L', jma)
         call nocart(carte, 3, 2, mode='NUM', nma=nbma,&

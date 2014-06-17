@@ -67,7 +67,7 @@ subroutine peeint(resu, modele, nbocc)
     integer :: iret, nbcmp, nzero, ibid, nbordr, iocc, jnuma, nbma, ncmpm
     integer :: jcmp, n1, numa, nr, np, nc, im, ni, no, jno, jin, numo, i
     integer :: nbgma, jgma, nma, jma, igm, nbpa1, nbpa2, nn, inum, nli, nlo
-    integer :: nd, ib, jlicmp,   nucmp,  tord(1), iresma, nbmaf, vali
+    integer :: nd, ib,    nucmp,  tord(1), iresma, nbmaf, vali
     parameter(nzero=0,nbpa1=4,nbpa2=2)
     real(kind=8) :: prec, inst
     complex(kind=8) :: cbid
@@ -83,6 +83,7 @@ subroutine peeint(resu, modele, nbocc)
     character(len=8), pointer :: cmp1(:) => null()
     character(len=8), pointer :: cmp2(:) => null()
     character(len=8), pointer :: cmp_init(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
     data nompa1/'NOM_CHAM','NUME_ORDRE','INST','VOL'/
     data typpa1/'K16','I','R','R'/
     data nompa2/'CHAM_GD','VOL'/
@@ -236,14 +237,14 @@ subroutine peeint(resu, modele, nbocc)
                 toneut=.true.
                 chamtm='&&PEEINT.CHS1'
                 call cnocns(cham2, 'V', chamtm)
-                call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
+                call jeveuo(chamtm//'.CNSC', 'L', vk8=cnsc)
                 call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
                 AS_ALLOCATE(vk8=cmp1, size=ncmpm)
                 AS_ALLOCATE(vk8=cmp2, size=ncmpm)
                 do i = 1, ncmpm
                     call codent(i, 'G', ki)
                     cmp2(i)='X'//ki(1:len(ki))
-                    cmp1(i)=zk8(jlicmp+i-1)
+                    cmp1(i)=cnsc(i)
                 end do
                 call chsut1(chamtm, 'NEUT_R', ncmpm, cmp1, cmp2,&
                             'V', chamtm)

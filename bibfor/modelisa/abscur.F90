@@ -62,8 +62,8 @@ subroutine abscur(ma)
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
     character(len=16) :: motcle(3), typmcl(3)
     integer :: adrm, iseg1,iseg2,isegprev,jtmp,kseg,nbextr,nbnot
-    integer :: iab1, iab2, iadr2, iancmp,numa2,nuno1,nuno2
-    integer :: iavalv, icoo1, icoo2, icoo3, icoo4, icor2, kma, nunosuiv, vuorig
+    integer :: iab1, iab2, iadr2, numa2,nuno1,nuno2
+    integer ::  icoo1, icoo2, icoo3, icoo4, icor2, kma, nunosuiv, vuorig
     integer :: jpoi, jseg, ind, ing, ino
     integer :: ipoi1, iseg, itypm, jcoor
     integer :: mi, n, n1, n2, nunorig
@@ -75,6 +75,8 @@ subroutine abscur(ma)
     integer, pointer :: icoseg(:) => null()
     integer, pointer :: nu2seg(:) => null()
     integer, pointer :: segordo(:) => null()
+    real(kind=8), pointer :: valv(:) => null()
+    character(len=8), pointer :: ncmp(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 
@@ -259,12 +261,12 @@ subroutine abscur(ma)
         call detrsd('CHAMP', ma//'.ABSC_CURV')
     endif
     call alcart('G', ma//'.ABSC_CURV', ma, 'ABSC_R')
-    call jeveuo(ma//'.ABSC_CURV .NCMP', 'E', iancmp)
-    call jeveuo(ma//'.ABSC_CURV .VALV', 'E', iavalv)
-    zk8(iancmp)   = 'ABSC1'
-    zk8(iancmp+1) = 'ABSC2'
-    zk8(iancmp+2) = 'ABSC3'
-    zk8(iancmp+3) = 'ABSC4'
+    call jeveuo(ma//'.ABSC_CURV .NCMP', 'E', vk8=ncmp)
+    call jeveuo(ma//'.ABSC_CURV .VALV', 'E', vr=valv)
+    ncmp(1)   = 'ABSC1'
+    ncmp(2) = 'ABSC2'
+    ncmp(3) = 'ABSC3'
+    ncmp(4) = 'ABSC4'
     stot = 0.d0
 
 
@@ -322,32 +324,32 @@ subroutine abscur(ma)
         endif
 
         if (mi .gt. 0) then
-            zr(iavalv ) = stot
+            valv(1) = stot
             zr(iab1+abs(mi)-1)= stot
 
             if (nbnoseg.eq.3) then
-                zr(iavalv+2) = stot+s13
+                valv(3) = stot+s13
             elseif (nbnoseg.eq.4) then
-                zr(iavalv+2) = stot+s13
-                zr(iavalv+3) = stot+s13+s34
+                valv(3) = stot+s13
+                valv(4) = stot+s13+s34
             endif
 
             stot = stot+s
-            zr(iavalv+1) = stot
+            valv(2) = stot
             zr(iab2+abs(mi)-1)= stot
         else
-            zr(iavalv+1 ) = stot
+            valv(2) = stot
             zr(iab2+abs(mi)-1)= stot
 
             if (nbnoseg.eq.3) then
-                zr(iavalv+2) = stot+s13
+                valv(3) = stot+s13
             elseif (nbnoseg.eq.4) then
-                zr(iavalv+2) = stot+s13
-                zr(iavalv+3) = stot+s13+s34
+                valv(3) = stot+s13
+                valv(4) = stot+s13+s34
             endif
 
             stot = stot+s
-            zr(iavalv) = stot
+            valv(1) = stot
             zr(iab1+abs(mi)-1)= stot
         endif
         call nocart(ma//'.ABSC_CURV', 3, nbnoseg, mode='NUM', nma=1, limanu=[numa])
@@ -365,7 +367,7 @@ subroutine abscur(ma)
         else
             s=zr(iab2-mi-1)
         endif
-        zr(iavalv ) = s
+        valv(1) = s
         call nocart(ma//'.ABSC_CURV', 3, 1, mode='NUM', nma=1, limanu=[numa])
 20  end do
 

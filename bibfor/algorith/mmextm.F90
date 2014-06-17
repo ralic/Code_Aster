@@ -54,7 +54,7 @@ subroutine mmextm(defico, cnsmul, posmae, mlagr)
 !
     integer :: ino, nnomai
     integer :: numnno(nbnmax), posnno(nbnmax)
-    integer :: jcnslb
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,9 +77,9 @@ subroutine mmextm(defico, cnsmul, posmae, mlagr)
 !
 ! --- EXTRACTION DU MULTIPLICATEUR
 !
-    call jeveuo(cnsmul//'.CNSV', 'L', jcnslb)
+    call jeveuo(cnsmul//'.CNSV', 'L', vr=cnsv)
     do ino = 1, nnomai
-        mlagr(ino) = zr(jcnslb-1+numnno(ino))
+        mlagr(ino) = cnsv(numnno(ino))
     end do
 !
     call jedema()

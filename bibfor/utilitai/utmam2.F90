@@ -55,15 +55,15 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 !.......................................................................
 !
     integer :: nbmail, ima, itrou
-    integer ::  jmamo
     integer, pointer :: liste_m_temp(:) => null()
+    integer, pointer :: maille(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jeveuo(modele//'.MAILLE', 'L', jmamo)
+    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
     call jelira(modele//'.MAILLE', 'LONMAX', nbmail)
     ASSERT(nbma.eq.nbmail)
 !
@@ -72,7 +72,7 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
     nbtrou = 0
 !
     do 10, ima=1,nbmail
-    if (zi(jmamo-1+ima) .gt. 0) then
+    if (maille(ima) .gt. 0) then
         nbtrou=nbtrou+1
         liste_m_temp(nbtrou)=ima
     endif

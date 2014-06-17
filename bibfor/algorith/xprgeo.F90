@@ -79,12 +79,16 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifm, niv, nbno, jltno, jlnno, ndim, j, jnodto, node, ier
-    integer :: ibid, jbl, jbeta, jlistp, jcoor, pos, pos1, jvp
+    integer :: i, ifm, niv, nbno,   ndim, j, jnodto, node, ier
+    integer :: ibid,  jbeta, jlistp,  pos, pos1, jvp
     character(len=8) :: lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)
     real(kind=8) :: t1(3), n1(3), p1(3), deltaa, newlsn, newlst, cbeta, sbeta
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: bl(:) => null()
+    real(kind=8), pointer :: lnno(:) => null()
+    real(kind=8), pointer :: ltno(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -95,11 +99,11 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
     call infniv(ifm, niv)
 !
 !     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE IN THE MESH
-    call jeveuo(cnsbl//'.CNSV', 'E', jbl)
+    call jeveuo(cnsbl//'.CNSV', 'E', vr=bl)
 !
 !     RETRIEVE THE DIMENSION OF THE PROBLEM (2D AND 3D ARE SUPPORTED)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
 !     CALCULUS (SAME ORDER THAN THE ONE USED IN THE CONNECTION TABLE)
@@ -117,8 +121,8 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 ! ***************************************************************
 !
 !     RECUPERATION DE L'ADRESSE DES VALEURS DE LT ET LN
-    call jeveuo(cnslt//'.CNSV', 'E', jltno)
-    call jeveuo(cnsln//'.CNSV', 'E', jlnno)
+    call jeveuo(cnslt//'.CNSV', 'E', vr=ltno)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=lnno)
 !
 !     UPDATE THE LEVEL SETS FOR EACH NODE IN THE TORE
     do i = 1, nbno
@@ -143,22 +147,22 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !
         do j = 1, ndim
 !            NEW T-AXIS BY A RIGID ROTATION AT THE NEW CRACK TIP
-            t1(j) = cbeta*zr(jbl-1+pos+ndim+j)+sbeta*zr(jbl-1+pos+j)
+            t1(j) = cbeta*bl(pos+ndim+j)+sbeta*bl(pos+j)
 !            NEW N-AXIS BY A RIGID ROTATION AT THE NEW CRACK TIP
-            n1(j) = cbeta*zr(jbl-1+pos+j)-sbeta*zr(jbl-1+pos+ndim+j)
+            n1(j) = cbeta*bl(pos+j)-sbeta*bl(pos+ndim+j)
 !            NEW CRACK TIP POSITION
             p1(j) = zr(jlistp-1+pos1+j)+deltaa*t1(j)
 !            NEW VALUES OF THE TWO LEVEL SETS
-            newlsn = newlsn+(zr(jcoor-1+pos1+j)-p1(j))*n1(j)
-            newlst = newlst+(zr(jcoor-1+pos1+j)-p1(j))*t1(j)
+            newlsn = newlsn+(vale(pos1+j)-p1(j))*n1(j)
+            newlst = newlst+(vale(pos1+j)-p1(j))*t1(j)
         end do
 !
 !         MODIFY THE NORMAL LEVEL SET ONLY IN THE POINTS WHERE THE
 !         TANGENTIAL LEVEL SET IS POSITIVE
-        if (zr(jltno-1+node) .gt. 0.d0) zr(jlnno-1+node) = newlsn
+        if (ltno(node) .gt. 0.d0) lnno(node) = newlsn
 !
 !         STORE THE NEW VALUE OF THE TANTENGIAL LEVEL SET
-        zr(jltno-1+node) = newlst
+        ltno(node) = newlst
 !
     end do
 !

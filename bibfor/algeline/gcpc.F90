@@ -90,9 +90,11 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     real(kind=8) :: zero, bnorm, anorm, epsix, anormx, rrri, gama, rrrim1
     real(kind=8) :: paraaf, anorxx, rau, valr(2)
     integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali
-    integer :: jslvk, jslvi, jsmbr
+    integer ::   jsmbr
     character(len=24) :: precon, solvbd
     complex(kind=8) :: cbid
+    integer, pointer :: slvi(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -115,10 +117,10 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !-----RECUPERATION DU PRECONDITIONNEUR
 !  -- CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
 !  -- (A DETRUIRE A LA SORTIE)
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    precon=zk24(jslvk-1+2)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    precon=slvk(2)
     if (precon .eq. 'LDLT_SP') then
-        solvbd = zk24(jslvk-1+3)
+        solvbd = slvk(3)
         call crsmsp(solvbd, matas, 0)
     endif
 !
@@ -279,8 +281,8 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     if (precon .eq. 'LDLT_SP') then
         call detrsd('SOLVEUR', solvbd)
 !       ON STOCKE LE NOMBRE D'ITERATIONS DU GCPC
-        call jeveuo(solveu//'.SLVI', 'E', jslvi)
-        zi(jslvi-1+5)=iter
+        call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+        slvi(5)=iter
     endif
 !
     call matfpe(1)

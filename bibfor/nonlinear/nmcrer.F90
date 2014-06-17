@@ -43,11 +43,12 @@ subroutine nmcrer(carcri, sdcriq)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer ::  ibid, jvale
+    integer ::  ibid
     character(len=24) :: errthm
     integer :: jerrt
     character(len=16) :: motfac, chaine
     real(kind=8) :: theta
+    real(kind=8), pointer :: valv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,8 +67,8 @@ subroutine nmcrer(carcri, sdcriq)
 !
 ! --- VALEUR DE THETA
 !
-    call jeveuo(carcri(1:19)//'.VALV', 'L', jvale)
-    theta = zr(jvale+3)
+    call jeveuo(carcri(1:19)//'.VALV', 'L', vr=valv)
+    theta = valv(4)
 !
 ! --- ERREUR EN TEMPS (THM)
 !

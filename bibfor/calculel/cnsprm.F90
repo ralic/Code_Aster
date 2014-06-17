@@ -61,14 +61,19 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     character(len=19) :: cns1, cns2, trav
     character(len=24) :: vnoeud, vrange, vnoeum, vrangm, vmes, vsu, k24bid
     character(len=24) :: valk(2), vorien, vref, vrefpm
-    integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d, icmp1, icmp2
-    integer :: jcns2c, jcns2l, jcns2v, jcns2k, jcns2d, lvsu, lcmp
+    integer ::  jcns1l, jcns1v,   icmp1, icmp2
+    integer ::  jcns2l, jcns2v, jcns2k, jcns2d, lvsu, lcmp
     integer :: ncmp, ibid, gd, ncmp2, ino2, icmp, ino1, icmpd
-    integer :: iamacr, isma, lori, lref, lrefms
+    integer ::  isma, lori, lref, lrefms
     integer :: iddl, jddl, imod, ipos, iposi, iposj, lnoeud, lrange
     integer :: lnoeum, lrangm, nbmesu, nbord, nddle, lmesu, ltrav
     real(kind=8) :: v1, v2, coef1, valx, valy, valz, eps
     complex(kind=8) :: v1c, v2c
+    character(len=8), pointer :: cns1k(:) => null()
+    character(len=8), pointer :: nomacr(:) => null()
+    character(len=8), pointer :: cns1c(:) => null()
+    character(len=8), pointer :: cns2c(:) => null()
+    integer, pointer :: cns1d(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -79,20 +84,20 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
 ! RECUPERATION DES OBJETS ET INFORMATIONS DE CNS1 :
 !
-    call jeveuo(cns1//'.CNSK', 'L', jcns1k)
-    call jeveuo(cns1//'.CNSD', 'L', jcns1d)
-    call jeveuo(cns1//'.CNSC', 'L', jcns1c)
+    call jeveuo(cns1//'.CNSK', 'L', vk8=cns1k)
+    call jeveuo(cns1//'.CNSD', 'L', vi=cns1d)
+    call jeveuo(cns1//'.CNSC', 'L', vk8=cns1c)
     call jeveuo(cns1//'.CNSV', 'L', jcns1v)
     call jeveuo(cns1//'.CNSL', 'L', jcns1l)
 !
 ! MA1 : MAILLAGE DE LA MODIFICATION
-    ma1 = zk8(jcns1k-1+1)
-    nomgd = zk8(jcns1k-1+2)
-    ncmp = zi(jcns1d-1+2)
+    ma1 = cns1k(1)
+    nomgd = cns1k(2)
+    ncmp = cns1d(2)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
-    call jeveuo(ma1//'.NOMACR', 'L', iamacr)
+    call jeveuo(ma1//'.NOMACR', 'L', vk8=nomacr)
 !
     call getvtx(' ', 'SUPER_MAILLE', scal=mail, nbret=ibid)
 !
@@ -102,7 +107,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
         valk(2)=ma1
         call utmess('F', 'CALCULEL5_53', nk=2, valk=valk)
     endif
-    macrel= zk8(iamacr-1+isma)
+    macrel= nomacr(isma)
 !
     call dismoi('NOM_PROJ_MESU', macrel, 'MACR_ELEM_STAT', repk=promes)
 !
@@ -158,7 +163,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     licmp = '&&LICMP'
     call wkvect(licmp, 'V V K8', 3*ncmp, lcmp)
     do icmp = 1, ncmp
-        zk8(lcmp-1+icmp)=zk8(jcns1c-1+icmp)
+        zk8(lcmp-1+icmp)=cns1c(icmp)
     end do
     ncmp2 = ncmp
     do iddl = 1, nbmesu
@@ -178,7 +183,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
                 cns2)
     call jeveuo(cns2//'.CNSK', 'L', jcns2k)
     call jeveuo(cns2//'.CNSD', 'L', jcns2d)
-    call jeveuo(cns2//'.CNSC', 'L', jcns2c)
+    call jeveuo(cns2//'.CNSC', 'L', vk8=cns2c)
     call jeveuo(cns2//'.CNSV', 'E', jcns2v)
     call jeveuo(cns2//'.CNSL', 'E', jcns2l)
 !
@@ -240,7 +245,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
         kcmp2 = zk8(lrange-1+iddl)
 !
         do icmp = 1, ncmp2
-            if (zk8(jcns2c-1+icmp) .eq. kcmp2) then
+            if (cns2c(icmp) .eq. kcmp2) then
                 icmp2=icmp
                 goto 60
             endif
@@ -258,7 +263,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
             call jenonu(jexnom(ma1//'.NOMNOE', nono), ino1)
 !
             do icmp = 1, ncmp
-                if (zk8(jcns1c-1+icmp) .eq. kcmp) then
+                if (cns1c(icmp) .eq. kcmp) then
                     icmp1=icmp
                     goto 160
                 endif
@@ -312,7 +317,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 !
             if (axe) then
                 do icmp = 1, ncmp2
-                    if (zk8(jcns2c-1+icmp) .eq. dir) then
+                    if (cns2c(icmp) .eq. dir) then
                         icmpd=icmp
                         goto 260
                     endif

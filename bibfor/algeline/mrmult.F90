@@ -59,10 +59,11 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic, kmatd
     character(len=19) :: matas
-    integer :: neq,  neql, jrefa, jsmhc, jsmdi
+    integer :: neq,  neql,  jsmhc, jsmdi
     logical :: lmatd
     real(kind=8), pointer :: vectmp(:) => null()
     real(kind=8), pointer :: xtemp(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !     ---------------------------------------------------------------
 !
     prepo2=prepos
@@ -70,12 +71,12 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
     ASSERT(cumul.eq.'ZERO' .or. cumul.eq.'CUMU')
     matas=zk24(zi(lmat+1))(1:19)
     ASSERT(zi(lmat+3).eq.1)
-    call jeveuo(matas//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
+    call jeveuo(matas//'.REFA', 'L', vk24=refa)
+    if (refa(3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
     neq=zi(lmat+2)
     AS_ALLOCATE(vr=vectmp, size=neq)
 !
-    call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
+    call jeveuo(refa(2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
     call mtdsc2(zk24(zi(lmat+1)), 'SMDI', 'L', jsmdi)
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
 !

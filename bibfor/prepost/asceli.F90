@@ -52,9 +52,12 @@ subroutine asceli(mailla)
 !
     integer :: inuma, nbpt, jpoin, ino, inov, nbmat, ifm, jpoin2
     integer :: nbno, jgrn1, jgrn2, jvi1, jvi2, iret, igr, k, jind2
-    integer :: idime, nbnot, nbgrno, jcoor, i, jind, nbno2, jcor, kk
+    integer ::  nbnot, nbgrno,  i, jind, nbno2,  kk
     character(len=8) :: tmp, nomno
     character(len=24) :: grpnoe, connex, liso1, liso2, nogrn1, nogrn2, nomgrn
+    integer, pointer :: dime(:) => null()
+    real(kind=8), pointer :: coor(:) => null()
+    real(kind=8), pointer :: cor(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -83,9 +86,9 @@ subroutine asceli(mailla)
                 liso2)
     call jeveuo(liso1, 'L', jvi1)
     call jeveuo(liso2, 'L', jvi2)
-    call jeveuo(mailla//'.DIME', 'E', idime)
-    nbnot = zi(idime)
-    nbmat = zi(idime+2)
+    call jeveuo(mailla//'.DIME', 'E', vi=dime)
+    nbnot = dime(1)
+    nbmat = dime(3)
 !
     write(ifm,*) 'COUTURE - NOMBRE DE NOEUDS ELIMINES: ',nbno
     write(ifm,*) 'COUTURE - NOMBRE DE NOEUDS TOTAL   : ',nbnot-nbno
@@ -131,7 +134,7 @@ subroutine asceli(mailla)
 !     ------------------------------------------------------------
     tmp='TMP'
     nbno2=nbnot-nbno
-    zi(idime)=nbno2
+    dime(1)=nbno2
 !
     call jedup1(mailla//'.NOMNOE', 'V', tmp//'.NOMNOE')
     call jedup1(mailla//'.CONNEX', 'V', tmp//'.CONNEX')
@@ -145,8 +148,8 @@ subroutine asceli(mailla)
     call jedetr(mailla//'.COORDO    .VALE')
     call jecreo(mailla//'.COORDO    .VALE', 'G V R')
     call jeecra(mailla//'.COORDO    .VALE', 'LONMAX', 3*nbno2)
-    call jeveuo(mailla//'.COORDO    .VALE', 'E', jcoor)
-    call jeveuo(tmp//'.COORDO    .VALE', 'L', jcor)
+    call jeveuo(mailla//'.COORDO    .VALE', 'E', vr=coor)
+    call jeveuo(tmp//'.COORDO    .VALE', 'L', vr=cor)
 !
 !     TABLEAUX DE TRAVAIL:
 !     - ZI(JIND) INDIQUE LES NOEUDS A SUPPRIMER PAR UNE VALEUR 1
@@ -169,9 +172,9 @@ subroutine asceli(mailla)
             k=k+1
             call jenuno(jexnum(tmp//'.NOMNOE', i), nomno)
             call jecroc(jexnom(mailla//'.NOMNOE', nomno))
-            zr(jcoor+3*(k-1)) =zr(jcor+3*(i-1))
-            zr(jcoor+3*(k-1)+1)=zr(jcor+3*(i-1)+1)
-            zr(jcoor+3*(k-1)+2)=zr(jcor+3*(i-1)+2)
+            coor(1+3*(k-1)) =cor(1+3*(i-1))
+            coor(1+3*(k-1)+1)=cor(1+3*(i-1)+1)
+            coor(1+3*(k-1)+2)=cor(1+3*(i-1)+2)
             zi(jind2+i-1)=kk
         else
             kk=kk+1

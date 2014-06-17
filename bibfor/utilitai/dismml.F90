@@ -42,8 +42,9 @@ subroutine dismml(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: jrefm, iexi
+    integer ::  iexi
     character(len=8) :: modele
+    character(len=8), pointer :: refm(:) => null()
 !
 !
 !
@@ -54,18 +55,18 @@ subroutine dismml(questi, nomobz, repi, repkz, ierd)
 !
     nomob = nomobz
 !
-    call jeveuo(nomob//'.REFM', 'L', jrefm)
+    call jeveuo(nomob//'.REFM', 'L', vk8=refm)
     if (questi .eq. 'NOM_MAILLA') then
-        repk= zk8(jrefm-1+2)
+        repk= refm(2)
     else if (questi.eq.'NOM_MODELE') then
-        repk= zk8(jrefm-1+1)
+        repk= refm(1)
     else if (questi.eq.'NOM_NUME_DDL') then
-        repk= zk8(jrefm-1+5)
+        repk= refm(5)
     else if (questi.eq.'NOM_PROJ_MESU') then
-        repk= zk8(jrefm-1+9)
+        repk= refm(9)
 !
     else if (questi.eq.'DIM_GEOM') then
-        modele=zk8(jrefm)
+        modele=refm(1)
         call dismmo(questi, modele, repi, repk, ierd)
 !
     else if (questi.eq.'EXI_AMOR') then

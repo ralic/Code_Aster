@@ -97,13 +97,12 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
 !
 !
-    integer :: ier, nbmac, nbma2, nbno, nbno2, iret, jdime, igeomr, nbid
+    integer :: ier, nbmac, nbma2, nbno, nbno2, iret,  igeomr, nbid
     integer :: iadesc, iarefe, iacoo2, jtypm2,  jno, jmac
     integer :: ndim, jord, iord, i, ifm, niv, nmaxsp, nmaxcm, nbcham
-    integer :: jcnsk1, jcvid1,  jcesd2
-    integer :: jcnsk2, jcnsd2, jcnsc2, jdirgr
+    integer ::    jdirgr
     integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
-    integer :: jresd1, jresc1, nbcmp
+    integer ::  jresc1, nbcmp
     logical :: pre1
     character(len=3) :: tsca
     character(len=8) :: k8b, ldep3(6), ldep2(4), ltemp(1), ldep1(3), ldep4(4)
@@ -114,6 +113,14 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     character(len=24) :: comp1
     integer, pointer :: litrav(:) => null()
     integer, pointer :: nbpt(:) => null()
+    integer, pointer :: dime(:) => null()
+    integer, pointer :: cesd2(:) => null()
+    integer, pointer :: cvid1(:) => null()
+    integer, pointer :: resd1(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    character(len=8), pointer :: cnsk1(:) => null()
+    character(len=8), pointer :: cnsk2(:) => null()
+    integer, pointer :: cnsd(:) => null()
     data          ldep3/ 'DX','DY','DZ','LAGS_C','LAGS_F1','LAGS_F2'/
     data          ldep2/ 'DX','DY',     'LAGS_C','LAGS_F1'          /
     data          ldep1/ 'DX','DY','PRE1'                           /
@@ -158,12 +165,12 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !       .DIME(1) : NOMBRE DE NOEUDS PHYSIQUES DU MAILLAGE
 !       .DIME(3) : NOMBRE DE MAILLES DU MAILLAGE
         call jedup1(malini//'.DIME', 'G', maxfem//'.DIME')
-        call jeveuo(maxfem//'.DIME', 'E', jdime)
-        zi(jdime-1+1) = nbno2
-        zi(jdime-1+3) = nbma2
-        ASSERT(zi(jdime-1+2).eq.0)
-        ASSERT(zi(jdime-1+4).eq.0)
-        ASSERT(zi(jdime-1+5).eq.0)
+        call jeveuo(maxfem//'.DIME', 'E', vi=dime)
+        dime(1) = nbno2
+        dime(3) = nbma2
+        ASSERT(dime(2).eq.0)
+        ASSERT(dime(4).eq.0)
+        ASSERT(dime(5).eq.0)
 !
 !       CREATION DES .NOMMAI, .NOMNOE, .TYPMAIL, .COORDO  .CONNEX
 !       DU MAILLAGE 2
@@ -268,7 +275,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         call rsexch('F', resuco, zk16(jlicha-1+1), iord, chn1,&
                     ier)
         call cnocns(chn1, 'V', cns1)
-        call jeveuo(cns1//'.CNSK', 'L', jcnsk1)
+        call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk1)
 !
 !       CREATION D'UN CHAMP SIMPLE : CNS2
         if (xismec()) then
@@ -299,35 +306,35 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                         cns2)
         endif
 !
-        call jeveuo(cns2//'.CNSK', 'E', jcnsk2)
-        call jeveuo(cns2//'.CNSD', 'E', jcnsd2)
-        call jeveuo(cns2//'.CNSC', 'E', jcnsc2)
+        call jeveuo(cns2//'.CNSK', 'E', vk8=cnsk2)
+        call jeveuo(cns2//'.CNSD', 'E', vi=cnsd)
+        call jeveuo(cns2//'.CNSC', 'E', vk8=cnsc)
 !
 !       REMPLISSAGE DES DIFFERENTS OBJETS DU CNS2
-        zk8(jcnsk2-1+1)=maxfem
-        zk8(jcnsk2-1+2)=zk8(jcnsk1-1+2)
+        cnsk2(1)=maxfem
+        cnsk2(2)=cnsk1(2)
 !
-        zi(jcnsd2-1+1)=nbno2
+        cnsd(1)=nbno2
         if (xismec()) then
             if (pre1) then
 !           CAS DE L'HYDRO-MECANIQUE
-                zi(jcnsd2-1+2)=ndim+1
+                cnsd(2)=ndim+1
                 do i = 1, ndim+1
-                    if (ndim .eq. 2) zk8(jcnsc2-1+i)=ldep1(i)
-                    if (ndim .eq. 3) zk8(jcnsc2-1+i)=ldep4(i)
+                    if (ndim .eq. 2) cnsc(i)=ldep1(i)
+                    if (ndim .eq. 3) cnsc(i)=ldep4(i)
                 end do
             else
 !           CAS DE LA MECANIQUE
-                zi(jcnsd2-1+2)=2*ndim
+                cnsd(2)=2*ndim
                 do i = 1, 2*ndim
-                    if (ndim .eq. 3) zk8(jcnsc2-1+i)=ldep3(i)
-                    if (ndim .eq. 2) zk8(jcnsc2-1+i)=ldep2(i)
+                    if (ndim .eq. 3) cnsc(i)=ldep3(i)
+                    if (ndim .eq. 2) cnsc(i)=ldep2(i)
                 end do
             endif
         else
 !         CAS DE LA THERMIQUE
-            zi(jcnsd2-1+2)=1
-            zk8(jcnsc2-1+1)=ltemp(1)
+            cnsd(2)=1
+            cnsc(1)=ltemp(1)
         endif
 !
 !       CONTRAINTES
@@ -359,15 +366,15 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !           TROUVER LES VALEURS MAJORANTES DU NOMBRE DE POINTS DE GAUSS,
 !           NOMBRE DES SOUS-POINTS ET NOMBRE DE COMPOSANTES
 !
-                call jeveuo(cesvi1//'.CESD', 'L', jcvid1)
-                call jeveuo(ces2//'.CESD', 'L', jcesd2)
+                call jeveuo(cesvi1//'.CESD', 'L', vi=cvid1)
+                call jeveuo(ces2//'.CESD', 'L', vi=cesd2)
 !
-                nmaxsp = zi(jcvid1-1 +4)
-                nmaxcm = zi(jcvid1-1 +5)
+                nmaxsp = cvid1(4)
+                nmaxcm = cvid1(5)
                 AS_ALLOCATE(vi=nbpt, size=nbma2)
 !
                 do i = 1, nbma2
-                    nbpt(i) = zi(jcesd2-1+5 + 4*(i-1) + 1)
+                    nbpt(i) = cesd2(5 + 4*(i-1) + 1)
 !
                 end do
 !
@@ -393,11 +400,11 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !         CREATION CHAM_ELEM_S 1 A PARTIR DE LA CARTE 1
             call carces(comp1, 'ELEM', ' ', 'V', comps1,&
                         'A', iret)
-            call jeveuo(comps1//'.CESD', 'L', jresd1)
+            call jeveuo(comps1//'.CESD', 'L', vi=resd1)
             call jeveuo(comps1//'.CESC', 'L', jresc1)
 !
 !         NB CMP
-            nbcmp = zi(jresd1-1+2)
+            nbcmp = resd1(2)
 !
 !         CREATION CHAM_ELEM_S 2 : COMPS2
             call cescre('V', comps2, 'ELEM', maxfem, nomgd,&

@@ -54,10 +54,11 @@ subroutine clas99(nomres)
 ! --- RECUPERATION DES CONCEPTS AMONT
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ii, inor, lldesc, lrang
+    integer :: i, ibid, ii, inor,  lrang
     integer :: ltmome, ltnbmo, nbid, nbnmaxmode, nbmod, nbmodo(1), nbmoma
     integer :: nbmome, nbmout, nbsdd, nmaxmode
     real(kind=8) :: bid, ebid
+    integer, pointer :: idc_desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -131,8 +132,8 @@ subroutine clas99(nomres)
 ! --- DETERMINATION NOMBRE TOTAL DE MODES ET DEFORMEES
 !
     ASSERT(intf(1:8) .ne. ' ')
-    call jeveuo(intf//'.IDC_DESC', 'L', lldesc)
-    nbsdd=nbmod+zi(lldesc+4)
+    call jeveuo(intf//'.IDC_DESC', 'L', vi=idc_desc)
+    nbsdd=nbmod+idc_desc(5)
 !      NBSDD1=ZI(LLDESC+4)
 !
 !

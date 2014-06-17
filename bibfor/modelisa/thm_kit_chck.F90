@@ -53,7 +53,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: notype
-    integer :: j_mail, j_elem_affe
+    integer ::  j_elem_affe
     integer :: nb_elem_mesh, nb_elem
     integer :: nume_elem
     integer ::  ielem
@@ -61,6 +61,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
     character(len=16) :: modeli
     character(len=8) :: mesh, name_elem
     character(len=24) :: valk(2)
+    integer, pointer :: maille(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +69,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 !
 ! - Access to model and mesh
 !
-    call jeveuo(model//'.MAILLE', 'L', j_mail)
+    call jeveuo(model//'.MAILLE', 'L', vi=maille)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !
@@ -96,7 +97,7 @@ subroutine thm_kit_chck(model, l_affe_all, list_elem_affe, nb_elem_affe, rela_th
 !
 ! ----- Access to element type
 !
-        nutyel = zi(j_mail-1+nume_elem)
+        nutyel = maille(nume_elem)
         if (nutyel .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
             call dismoi('MODELISATION', notype, 'TYPE_ELEM', repk=modeli)

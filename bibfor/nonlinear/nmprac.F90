@@ -82,10 +82,11 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
     integer :: ieq, ibid, numins
     integer :: iadia, neq, lres, neql
     character(len=8) :: kmatd
-    integer :: jvalm, islvi, zislv1, zislv3
+    integer :: jvalm,  zislv1, zislv3
     integer :: ifm, niv
     character(len=16) :: optass
     character(len=19) :: masse
+    integer, pointer :: slvi(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -147,11 +148,11 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! --- ON ACTIVE LA DETECTION DE SINGULARITE (NPREC=8)
 ! --- ON EVITE L'ARRET FATAL LORS DE L'INVERSION DE LA MATRICE
 !
-    call jeveuo(solveu//'.SLVI', 'E', islvi)
-    zislv1 = zi(islvi-1+1)
-    zislv3 = zi(islvi-1+3)
-    zi(islvi-1+1) = 8
-    zi(islvi-1+3) = 2
+    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+    zislv1 = slvi(1)
+    zislv3 = slvi(3)
+    slvi(1) = 8
+    slvi(3) = 2
 !
 ! --- FACTORISATION DE LA MATRICE ASSEMBLEE GLOBALE
 !
@@ -164,8 +165,8 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 !
 ! --- RETABLISSEMENT CODE
 !
-    zi(islvi-1+1) = zislv1
-    zi(islvi-1+3) = zislv3
+    slvi(1) = zislv1
+    slvi(3) = zislv3
 !
 ! --- LA MATRICE PEUT ETRE QUASI-SINGULIERE PAR EXEMPLE POUR LES DKT
 !

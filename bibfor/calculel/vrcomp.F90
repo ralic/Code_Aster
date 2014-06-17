@@ -102,7 +102,7 @@ implicit none
 !
 !   character(len=24) :: valk(3)
 !     ------------------------------------------------------------------
-!    integer :: jdceld,  jdcell
+!    integer ::   jdcell
 !    integer :: jce2d,  jce2l, jce2k
 !    integer :: iad1, iad2, nbma, nbspp, nbspm, ncmpp, ncmpm
 !    integer :: ima, kma
@@ -137,10 +137,10 @@ implicit none
     logical :: no_same_rela, no_same_cmp
     character(len=19) :: ligrel_curr, ligrel_prev
     character(len=19) :: dcel
-    integer :: jdceld
     character(len=8), pointer :: dcelk(:) => null()
     character(len=8) :: mesh
     integer :: nb_elem
+    integer, pointer :: cesd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -167,10 +167,10 @@ implicit none
 ! - Acces to reduced CARTE DCEL_I (see CESVAR) on current comportement
 !
     dcel = compor_curr
-    call jeveuo(dcel//'.CESD', 'L', jdceld)
+    call jeveuo(dcel//'.CESD', 'L', vi=cesd)
     call jeveuo(dcel//'.CESK', 'L', vk8=dcelk)
     mesh    = dcelk(1)
-    nb_elem = zi(jdceld-1+1)
+    nb_elem = cesd(1)
 !
 ! - LIGREL
 !

@@ -64,13 +64,14 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
     integer :: aopnbn, aovale, aopadr, aopcmp, aoerre, ainugd, aivale, aopnsp
     integer :: arefe, adesc, nbcmp, i, anumnd, acmpgd, lpt, aopnb2
     integer :: nbmpst, nbnpst, nbocer, n, m, adrin, adrou, nbm, numm
-    integer :: nbtcmp, sdnund, sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
+    integer :: nbtcmp,  sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
     integer :: indi1, indi2
     integer :: vali, ilong, k, l, lnc, ncom, nspm
 !
     logical :: trouve
 !
     character(len=1) :: cbid
+    integer, pointer :: nund(:) => null()
     data cbid/' '/
 !
 !==================== CORPS DE LA ROUTINE =============================
@@ -162,7 +163,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
         call wkvect(oupnco, 'V V I', nbnpst, aopnco)
         call wkvect(oupnsp, 'V V I', nbnpst, aopnsp)
         call wkvect(nindir, 'V V I', nbnpst, aindir)
-        call jeveuo(sdemno//'.NUND', 'L', sdnund)
+        call jeveuo(sdemno//'.NUND', 'L', vi=nund)
         call jelira(sdemno//'.NUND', 'LONMAX', lpt)
         call jeveuo(inpnco, 'L', aipnco)
         call jeveuo(inpnsp, 'L', aipnsp)
@@ -174,7 +175,7 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
         n = zi(anumnd + i-1)
 210      continue
         if ((.not. trouve) .and. (pt .le. lpt)) then
-            if (zi(sdnund + pt-1) .eq. n) then
+            if (nund(pt) .eq. n) then
                 trouve = .true.
                 call jelira(jexnum(sdemno//'.NUMA', pt), 'LONMAX', nbm)
                 zi(aindir + i-1) = pt

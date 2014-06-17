@@ -72,9 +72,11 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     integer :: i, j, k, iad2, inok
     integer :: jmabet, jconn, jtabco, jgmai
     integer :: nunoe(27)
-    integer :: idesc, ivale, igrand, iasmax, iasedi, inomcp
+    integer ::   igrand, iasmax, iasedi, inomcp
     integer :: nbcmp, nbec, irep, iasbon, ii, icode, izone
     integer :: ilima, nbmaza, irvep, jj
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: desc(:) => null()
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -130,11 +132,11 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     if (mail2d) then
 !       DETERMINATION DE LA PLUS GRANDE EPAISSEUR
         carte=caelem//'.CARCOQUE  '
-        call jeveuo(carte//'.DESC', 'L', idesc)
-        call jeveuo(carte//'.VALE', 'L', ivale)
-        igrand = zi(idesc)
-        iasmax = zi(idesc+1)
-        iasedi = zi(idesc+2)
+        call jeveuo(carte//'.DESC', 'L', vi=desc)
+        call jeveuo(carte//'.VALE', 'L', vr=vale)
+        igrand = desc(1)
+        iasmax = desc(2)
+        iasedi = desc(3)
         call jenuno(jexnum('&CATA.GD.NOMGD', igrand), ngrand)
         call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', igrand), 'L', inomcp)
@@ -148,8 +150,8 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
 !           RECHERCHE DE LA ZONE COMTENANT IMA
             iasbon = 0
             do ii = 1, iasedi
-                icode = zi(idesc+3+2*(ii-1))
-                izone = zi(idesc+3+2*(ii-1)+1)
+                icode = desc(1+3+2*(ii-1))
+                izone = desc(1+3+2*(ii-1)+1)
 !              SI C'EST UNE LISTE DE MAILLE
                 if (icode .eq. 3) then
                     k24bid = carte//'.LIMA'
@@ -176,13 +178,13 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
                 end do
             end do
 160         continue
-            icode = zi(idesc+3+2*iasmax+nbec*(iasbon-1))
+            icode = desc(1+3+2*iasmax+nbec*(iasbon-1))
             irvep = rgcmpg(icode,irep)
             if (irvep .eq. 0) then
                 call jenuno(jexnum(mommai, ima), nomai)
                 call utmess('F', 'MODELISA8_3', sk=nomai)
             endif
-            ep=zr(ivale+(iasbon-1)*nbcmp + irvep - 1)
+            ep=vale(1+(iasbon-1)*nbcmp + irvep - 1)
             if (ep.gt.epmax) epmax = ep
         enddo
 !

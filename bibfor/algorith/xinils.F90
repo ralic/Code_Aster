@@ -75,7 +75,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
     integer :: jconx1, jconx2, jdlima, jdlise
     integer :: nbma, nbsef
-    integer :: jcnv, jcnl, jctv, jctl, jcnd, jctd, nbmagr, jcong1, jcong2, nbnoc
+    integer ::  jcnl,  jctl,   nbmagr, jcong1, jcong2, nbnoc
     integer :: jcoorc
     real(kind=8) :: xln, xlt
     integer :: ndim, dimno
@@ -89,6 +89,10 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     character(len=24) :: lisma, lisse
     logical :: callst
     integer :: ifm, niv
+    integer, pointer :: cnd(:) => null()
+    integer, pointer :: ctd(:) => null()
+    real(kind=8), pointer :: cnv(:) => null()
+    real(kind=8), pointer :: ctv(:) => null()
 !
 !
     call jemarq()
@@ -232,23 +236,23 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
         if (callst) call cnocns(nchamt, 'V', chslst)
 !
 !       ON VERIFIE LE NOMBRE DE COMPOSANTES = 1  (LSN OU LST)
-        call jeveuo(chslsn//'.CNSD', 'L', jcnd)
-        ASSERT(zi(jcnd+1).eq.1)
-        if (callst) call jeveuo(chslst//'.CNSD', 'L', jctd)
-        if (callst) ASSERT(zi(jctd+1).eq.1)
+        call jeveuo(chslsn//'.CNSD', 'L', vi=cnd)
+        ASSERT(cnd(2).eq.1)
+        if (callst) call jeveuo(chslst//'.CNSD', 'L', vi=ctd)
+        if (callst) ASSERT(ctd(2).eq.1)
 !
-        call jeveuo(chslsn//'.CNSV', 'L', jcnv)
+        call jeveuo(chslsn//'.CNSV', 'L', vr=cnv)
         call jeveuo(chslsn//'.CNSL', 'L', jcnl)
-        if (callst) call jeveuo(chslst//'.CNSV', 'L', jctv)
+        if (callst) call jeveuo(chslst//'.CNSV', 'L', vr=ctv)
         if (callst) call jeveuo(chslst//'.CNSL', 'L', jctl)
 !
         do ino = 1, nbno
 !           ON VERIFIE QUE LE NOEUD POSSEDE CETTE COMPOSANTE
             ASSERT(zl(jcnl+ino-1))
             if (callst) ASSERT(zl(jctl+ino-1))
-            zr(jlnsv-1+(ino-1)+1)=zr(jcnv+ino-1)
+            zr(jlnsv-1+(ino-1)+1)=cnv(ino)
             zl(jlnsl-1+(ino-1)+1)=.true.
-            if (callst) zr(jltsv-1+(ino-1)+1)=zr(jctv+ino-1)
+            if (callst) zr(jltsv-1+(ino-1)+1)=ctv(ino)
             if (.not.callst) zr(jltsv-1+(ino-1)+1)= -1.d0
             zl(jltsl-1+(ino-1)+1)=.true.
         end do

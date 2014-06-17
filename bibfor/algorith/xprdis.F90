@@ -58,10 +58,13 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, jfonr, nbptfr, jfmult, numfon, jfond, nbptfd, i, j, fon
+    integer :: ifm, niv,  nbptfr,  numfon,  nbptfd, i, j, fon
     real(kind=8) :: eps, xm, ym, zm, xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij
     real(kind=8) :: xim, yim, zim, s, norm2, xn, yn, zn, d, dmin
     real(kind=8) :: dismin, dismax, difmin, difmax
+    real(kind=8), pointer :: fond(:) => null()
+    real(kind=8), pointer :: fonr(:) => null()
+    integer, pointer :: fondmult(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -73,17 +76,17 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !     ---- FISREF ----
 !
 !     RETREIVE THE CRACK FRONT (FISREF)
-    call jeveuo(fisref//'.FONDFISS', 'L', jfonr)
+    call jeveuo(fisref//'.FONDFISS', 'L', vr=fonr)
     call dismoi('NB_POINT_FOND', fisref, 'FISS_XFEM', repi=nbptfr)
 !
 !     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
-    call jeveuo(fisref//'.FONDMULT', 'L', jfmult)
+    call jeveuo(fisref//'.FONDMULT', 'L', vi=fondmult)
     call dismoi('NB_FOND', fisref, 'FISS_XFEM', repi=numfon)
 !
 !     ---- FISDIS ----
 !
 !     RETREIVE THE CRACK FRONT (FISDIF)
-    call jeveuo(fisdis//'.FONDFISS', 'L', jfond)
+    call jeveuo(fisdis//'.FONDFISS', 'L', vr=fond)
     call dismoi('NB_POINT_FOND', fisdis, 'FISS_XFEM', repi=nbptfd)
 !
 !     ***************************************************************
@@ -99,9 +102,9 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
     do i = 1, nbptfd
 !
 !        COORDINATES OF THE POINT M OF THE FRONT FISDIS
-        xm=zr(jfond-1+4*(i-1)+1)
-        ym=zr(jfond-1+4*(i-1)+2)
-        zm=zr(jfond-1+4*(i-1)+3)
+        xm=fond(4*(i-1)+1)
+        ym=fond(4*(i-1)+2)
+        zm=fond(4*(i-1)+3)
 !
 !        INITIALISATION
         dmin = r8maem()
@@ -113,17 +116,17 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !           MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE FORMING THE
 !           FRONT)
             do fon = 1, numfon
-                if ((j.eq.zi(jfmult-1+2*fon)) .and. (j.lt.nbptfr)) goto 210
+                if ((j.eq.fondmult(2*fon)) .and. (j.lt.nbptfr)) goto 210
             end do
 !
 !           COORD PT I, ET J
-            xi1 = zr(jfonr-1+4*(j-1)+1)
-            yi1 = zr(jfonr-1+4*(j-1)+2)
-            zi1 = zr(jfonr-1+4*(j-1)+3)
+            xi1 = fonr(4*(j-1)+1)
+            yi1 = fonr(4*(j-1)+2)
+            zi1 = fonr(4*(j-1)+3)
 !
-            xj1 = zr(jfonr-1+4*(j-1+1)+1)
-            yj1 = zr(jfonr-1+4*(j-1+1)+2)
-            zj1 = zr(jfonr-1+4*(j-1+1)+3)
+            xj1 = fonr(4*(j-1+1)+1)
+            yj1 = fonr(4*(j-1+1)+2)
+            zj1 = fonr(4*(j-1+1)+3)
 !
 !           VECTEUR IJ ET IM
             xij = xj1-xi1

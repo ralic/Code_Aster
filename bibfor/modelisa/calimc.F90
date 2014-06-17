@@ -77,11 +77,11 @@ subroutine calimc(chargz)
     character(len=3) :: ttran
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i2, i3, iaconx, iadref, iaprno
+    integer :: i, i2, i3,   iaprno
     integer :: ibid, icmp, icmp2, idbase
     integer :: iddl, iddl2,    ii
     integer :: imod, imod2, inoe, iocc, j, j2
-    integer :: j3, jj,   k, lldef, n2
+    integer :: j3, jj,   k,  n2
     integer :: nbec, nbmdef, nbmdyn, nbmode(1), nbnde2, nbndef, nbndyn
     integer :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq
     integer :: nmc
@@ -94,6 +94,9 @@ subroutine calimc(chargz)
     character(len=8), pointer :: lisno(:) => null()
     character(len=8), pointer :: ncmpin(:) => null()
     character(len=8), pointer :: ncmpsd(:) => null()
+    integer, pointer :: idc_defo(:) => null()
+    character(len=24), pointer :: mael_refe(:) => null()
+    integer, pointer :: lino(:) => null()
 !-----------------------------------------------------------------------
     data liscmp   /'DX      ','DY      ','DZ      ',&
      &               'DRX     ','DRY     ','DRZ     '/
@@ -151,8 +154,8 @@ subroutine calimc(chargz)
 !        ENDIF
         typlag = '12'
         call getvid(motfac, 'MACR_ELEM_DYNA', iocc=iocc, scal=macrel, nbret=nmc)
-        call jeveuo(macrel//'.MAEL_REFE', 'L', iadref)
-        basemo = zk24(iadref)
+        call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
+        basemo = mael_refe(1)
         call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
                     cbid, rbid, k8b, nbmode, 1,&
                     ibid)
@@ -162,7 +165,7 @@ subroutine calimc(chargz)
 ! On recupere le nbre de noeuds presents dans interf_dyna
         call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
 ! On recupere la liste des noeuds presents dans interf_dyna
-        call jeveuo(lintf//'.IDC_DEFO', 'L', lldef)
+        call jeveuo(lintf//'.IDC_DEFO', 'L', vi=idc_defo)
 ! On recupere le nbre de modes statiques dans la base
         call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmdef)
         call jelira(macrel//'.LINO', 'LONMAX', nbntot)
@@ -174,10 +177,10 @@ subroutine calimc(chargz)
         ASSERT(nbndef.eq.nbnde2)
 !       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
         AS_ALLOCATE(vk8=ncmpsd, size=2*nbmdef)
-        call jeveuo(macrel//'.LINO', 'L', iaconx)
+        call jeveuo(macrel//'.LINO', 'L', vi=lino)
         do i = 1, nbndef
             i2 = i+nbndyn
-            call jenuno(jexnum(mailla//'.NOMNOE', zi(iaconx+i2-1)), nomnol)
+            call jenuno(jexnum(mailla//'.NOMNOE', lino(i2)), nomnol)
             do j = 1, nec
                 ncmpsd(1+2*nec*(i-1)+2*j-2) = nomnol
                 ncmpsd(1+2*nec*(i-1)+2*j-1) = liscmp(j)
@@ -185,7 +188,7 @@ subroutine calimc(chargz)
         end do
         AS_ALLOCATE(vk8=ncmpin, size=2*nbnoe*nec)
         do i = 1, nbnoe
-            call jenuno(jexnum(mailla//'.NOMNOE', zi(lldef+i-1)), nomnol)
+            call jenuno(jexnum(mailla//'.NOMNOE', idc_defo(i)), nomnol)
             do j = 1, nec
                 ncmpin(1+2*nec*(i-1)+2*j-2) = nomnol
                 ncmpin(1+2*nec*(i-1)+2*j-1) = liscmp(j)

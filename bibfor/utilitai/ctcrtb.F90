@@ -53,11 +53,13 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpara, n, jkcha, jcnsd, jcnsc, jcesd, jcesc
+    integer :: nbpara, n, jkcha,   jcesd, jcesc
     integer :: kk, i, j, jcmp, iret
     character(len=19) :: chamns, chames
     character(len=16), pointer :: table_parak(:) => null()
     character(len=8), pointer :: table_typek(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -130,9 +132,9 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
             if (toucmp) then
                 if (tych .eq. 'NOEU') then
                     call cnocns(zk24(jkcha+i-1), 'V', chamns)
-                    call jeveuo(chamns//'.CNSD', 'L', jcnsd)
-                    call jeveuo(chamns//'.CNSC', 'L', jcnsc)
-                    n=zi(jcnsd+1)
+                    call jeveuo(chamns//'.CNSD', 'L', vi=cnsd)
+                    call jeveuo(chamns//'.CNSC', 'L', vk8=cnsc)
+                    n=cnsd(2)
                 else if (tych(1:2).eq.'EL') then
                     call celces(zk24(jkcha+i-1), 'V', chames)
                     call jeveuo(chames//'.CESD', 'L', jcesd)
@@ -226,7 +228,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     if (toucmp) then
         if (tych .eq. 'NOEU') then
             do 90 j = 1, n
-                table_parak(kk+1)=zk8(jcnsc+j-1)
+                table_parak(kk+1)=cnsc(j)
                 table_typek(kk+1)='R'
                 kk=kk+1
 90          continue

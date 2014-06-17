@@ -86,12 +86,12 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 ! OUT : CHRESU : CHAM_ELEM RESULTAT
 !     ------------------------------------------------------------------
 !
-    integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi, jpresa
-    integer :: jpresb, jmomea, jmomeb, jnbocc, i1, nbth1, jth1, nbth2, nbcrs
-    integer :: nbcin, nbcca,  jchmat, jmat, jcesd, jcesv, jcesl, jcinv
-    integer :: jcind, jccav, jccad, im, ima, nbpt, decrs, decin, decca, ipt, ino
-    integer :: adrm, nbm, icmp, jconx1, jconx2, jfact, jnumgr, jpassa, npass
-    integer :: ifm, niv, iocs, iad, jseigr, ioc2, jcinl, jccal, nbp12, nbp23
+    integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi
+    integer ::     i1, nbth1, jth1, nbth2, nbcrs
+    integer :: nbcin, nbcca,      jcesl
+    integer ::    im, ima, nbpt, decrs, decin, decca, ipt, ino
+    integer :: adrm, nbm, icmp, jconx1, jconx2, jfact,  jpassa, npass
+    integer :: ifm, niv, iocs, iad,  ioc2, jcinl, jccal, nbp12, nbp23
     integer :: nbp13
     real(kind=8) :: ppi, ppj, snmax, samax, utot, saltij, ug, nadm(1), mpi(3)
     real(kind=8) :: mpj(3), sm, sn, sp, c(3), k(3), cara(3), matpi(14)
@@ -102,6 +102,21 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
     character(len=24) :: momepi, momepj, nommai, nomnoe, connex, matepi, matepj
     real(kind=8) :: typeke, spmeca, spther
     integer, pointer :: situ_numero(:) => null()
+    character(len=24), pointer :: materiau(:) => null()
+    integer, pointer :: situ_nb_occur(:) => null()
+    real(kind=8), pointer :: situ_pres_a(:) => null()
+    character(len=24), pointer :: situ_moment_b(:) => null()
+    character(len=24), pointer :: situ_moment_a(:) => null()
+    integer, pointer :: ccad(:) => null()
+    integer, pointer :: cesd(:) => null()
+    integer, pointer :: cind(:) => null()
+    real(kind=8), pointer :: situ_pres_b(:) => null()
+    integer, pointer :: situ_seisme(:) => null()
+    real(kind=8), pointer :: ccav(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    real(kind=8), pointer :: cinv(:) => null()
+    character(len=8), pointer :: nom_materiau(:) => null()
+    integer, pointer :: situ_nume_group(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -115,44 +130,44 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
     call jeveuo('&&RC3600.SITU_NUMERO', 'L', vi=situ_numero)
     call jelira('&&RC3600.SITU_NUME_GROUP', 'LONMAX', nbgr)
-    call jeveuo('&&RC3600.SITU_NUME_GROUP', 'L', jnumgr)
-    call jeveuo('&&RC3600.SITU_SEISME', 'L', jseigr)
+    call jeveuo('&&RC3600.SITU_NUME_GROUP', 'L', vi=situ_nume_group)
+    call jeveuo('&&RC3600.SITU_SEISME', 'L', vi=situ_seisme)
 !
     call jeveuo('&&RC3600.SITU_COMBINABLE', 'L', jcombi)
-    call jeveuo('&&RC3600.SITU_PRES_A', 'L', jpresa)
-    call jeveuo('&&RC3600.SITU_PRES_B', 'L', jpresb)
-    call jeveuo('&&RC3600.SITU_MOMENT_A', 'L', jmomea)
-    call jeveuo('&&RC3600.SITU_MOMENT_B', 'L', jmomeb)
-    call jeveuo('&&RC3600.SITU_NB_OCCUR', 'L', jnbocc)
+    call jeveuo('&&RC3600.SITU_PRES_A', 'L', vr=situ_pres_a)
+    call jeveuo('&&RC3600.SITU_PRES_B', 'L', vr=situ_pres_b)
+    call jeveuo('&&RC3600.SITU_MOMENT_A', 'L', vk24=situ_moment_a)
+    call jeveuo('&&RC3600.SITU_MOMENT_B', 'L', vk24=situ_moment_b)
+    call jeveuo('&&RC3600.SITU_NB_OCCUR', 'L', vi=situ_nb_occur)
     call jeveuo('&&RC3600.SITU_PASSAGE', 'L', jpassa)
 !
     call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12)
     call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23)
     call jelira('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13)
 !
-    call jeveuo('&&RC3600.MATERIAU', 'L', jchmat)
-    call jeveuo('&&RC3600.NOM_MATERIAU', 'L', jmat)
+    call jeveuo('&&RC3600.MATERIAU', 'L', vk24=materiau)
+    call jeveuo('&&RC3600.NOM_MATERIAU', 'L', vk8=nom_materiau)
 !
 ! --- LE CHAM_ELEM RESULTAT
 !
-    call jeveuo(chresu(1:19)//'.CESD', 'L', jcesd)
-    call jeveuo(chresu(1:19)//'.CESV', 'E', jcesv)
+    call jeveuo(chresu(1:19)//'.CESD', 'L', vi=cesd)
+    call jeveuo(chresu(1:19)//'.CESV', 'E', vr=cesv)
     call jeveuo(chresu(1:19)//'.CESL', 'E', jcesl)
-    nbcrs = zi(jcesd-1+2)
+    nbcrs = cesd(2)
 !
 ! --- LE CHAMP INDICE DE CONTRAINTES
 !
-    call jeveuo(chindi(1:19)//'.CESV', 'L', jcinv)
-    call jeveuo(chindi(1:19)//'.CESD', 'L', jcind)
+    call jeveuo(chindi(1:19)//'.CESV', 'L', vr=cinv)
+    call jeveuo(chindi(1:19)//'.CESD', 'L', vi=cind)
     call jeveuo(chindi(1:19)//'.CESL', 'L', jcinl)
-    nbcin = zi(jcind-1+2)
+    nbcin = cind(2)
 !
 ! --- LE CHAMP CARACTERISTIQUES
 !
-    call jeveuo(chcara(1:19)//'.CESV', 'L', jccav)
-    call jeveuo(chcara(1:19)//'.CESD', 'L', jccad)
+    call jeveuo(chcara(1:19)//'.CESV', 'L', vr=ccav)
+    call jeveuo(chcara(1:19)//'.CESD', 'L', vi=ccad)
     call jeveuo(chcara(1:19)//'.CESL', 'L', jccal)
-    nbcca = zi(jccad-1+2)
+    nbcca = ccad(2)
 !
     call wkvect('&&RC36AC_TRAVAIL', 'V V R', 4*50, jfact)
 !
@@ -162,12 +177,12 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
     do 10 im = 1, nbma
 !
         ima = listma(im)
-        nommat = zk8(jmat+ima-1)
+        nommat = nom_materiau(ima)
 !
-        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-        decrs = zi(jcesd-1+5+4*(ima-1)+4)
-        decin = zi(jcind-1+5+4*(ima-1)+4)
-        decca = zi(jccad-1+5+4*(ima-1)+4)
+        nbpt = cesd(5+4*(ima-1)+1)
+        decrs = cesd(5+4*(ima-1)+4)
+        decin = cind(5+4*(ima-1)+4)
+        decca = ccad(5+4*(ima-1)+4)
 !
         do 20 ipt = 1, nbpt
 !
@@ -199,7 +214,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     endif
                     call utmess('F', 'POSTRCCM_9', nk=3, valk=valk)
                 endif
-                c(icmp) = zr(jcinv-1+iad)
+                c(icmp) = cinv(iad)
                 iad = decin + (ipt-1)*nbcin + icmp + 3
                 if (.not. zl(jcinl-1+iad)) then
                     call jenuno(jexnum(nomnoe, ino), valk(1))
@@ -213,7 +228,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     endif
                     call utmess('F', 'POSTRCCM_9', nk=3, valk=valk)
                 endif
-                k(icmp) = zr(jcinv-1+iad)
+                k(icmp) = cinv(iad)
 202          continue
 !
 ! ------- LES CARATERISTIQUES : INERTIE, DIAMETRE, EPAISSEUR
@@ -225,7 +240,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     call jenuno(jexnum(nommai, ima), valk(2))
                     call utmess('F', 'POSTRCCM_8', nk=2, valk=valk)
                 endif
-                cara(icmp-1) = zr(jccav-1+iad)
+                cara(icmp-1) = ccav(iad)
 204          continue
 !
             sm = 0.d0
@@ -242,9 +257,9 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
             do 100 ig = 1, nbgr
 !
-                numgr = zi(jnumgr+ig-1)
+                numgr = situ_nume_group(ig)
                 if (numgr .lt. 0) goto 100
-                iocs = zi(jseigr+ig-1)
+                iocs = situ_seisme(ig)
 !
                 npass = 0
                 seisme = .false.
@@ -296,7 +311,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
             do 200 ig = 1, nbgr
 !
-                numgr = zi(jnumgr+ig-1)
+                numgr = situ_nume_group(ig)
                 if (numgr .lt. 0) goto 200
 !
                 call jelira(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr)
@@ -308,19 +323,19 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     ioc1 = zi(jnsg+is1-1)
                     if (zl(jcombi+ioc1-1)) goto 210
 !
-                    nocc = zi(jnbocc+2*ioc1-2)
+                    nocc = situ_nb_occur(1+2*ioc1-2)
 !
-                    ppi = zr(jpresa+ioc1-1)
-                    momepi = zk24(jmomea+ioc1-1)
+                    ppi = situ_pres_a(ioc1)
+                    momepi = situ_moment_a(ioc1)
                     call rcmo01(momepi, ima, ipt, mpi)
-                    matepi = zk24(jchmat+2*ioc1-1)
+                    matepi = materiau(1+2*ioc1-1)
                     call rcma01(matepi, ima, ipt, nbm, zi(adrm),&
                                 matpi)
 !
-                    ppj = zr(jpresb+ioc1-1)
-                    momepj = zk24(jmomeb+ioc1-1)
+                    ppj = situ_pres_b(ioc1)
+                    momepj = situ_moment_b(ioc1)
                     call rcmo01(momepj, ima, ipt, mpj)
-                    matepj = zk24(jchmat+2*ioc1-2)
+                    matepj = materiau(1+2*ioc1-2)
                     call rcma01(matepj, ima, ipt, nbm, zi(adrm),&
                                 matpj)
 !
@@ -395,10 +410,10 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
             do 310 ig = 1, nbgr
 !
-                numgr = zi(jnumgr+ig-1)
+                numgr = situ_nume_group(ig)
                 if (numgr .ge. 0) goto 310
                 numgr = -numgr
-                iocs = zi(jseigr+ig-1)
+                iocs = situ_seisme(ig)
                 if (iocs .eq. 0) then
                     seisme = .false.
                 else
@@ -430,27 +445,27 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !         - LE SM
             icmp = 1
             iad = decrs + (ipt-1)*nbcrs + icmp
-            zr(jcesv-1+iad) = sm
+            cesv(iad) = sm
 !         - LE SN
             icmp = 2
             iad = decrs + (ipt-1)*nbcrs + icmp
-            zr(jcesv-1+iad) = snmax
+            cesv(iad) = snmax
 !         - LE SN/3SM
             icmp = 3
             iad = decrs + (ipt-1)*nbcrs + icmp
             if (sm .eq. 0.d0) then
-                zr(jcesv-1+iad) = 0.d0
+                cesv(iad) = 0.d0
             else
-                zr(jcesv-1+iad) = snmax / ( 3 * sm )
+                cesv(iad) = snmax / ( 3 * sm )
             endif
 !         - LE SALT
             icmp = 4
             iad = decrs + (ipt-1)*nbcrs + icmp
-            zr(jcesv-1+iad) = samax
+            cesv(iad) = samax
 !         - LE U_TOTAL
             icmp = 5
             iad = decrs + (ipt-1)*nbcrs + icmp
-            zr(jcesv-1+iad) = utot
+            cesv(iad) = utot
 !
 20      continue
 !

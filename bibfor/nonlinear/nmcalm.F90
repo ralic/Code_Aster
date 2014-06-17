@@ -88,7 +88,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
 !
     character(len=19) :: memass, merigi
     character(len=24) :: modele
-    integer :: jinfc, jchar, jchar2, iarefe
+    integer :: jinfc, jchar, jchar2
     integer :: nbchar
     integer :: i
     character(len=16) :: optmat
@@ -97,6 +97,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
     character(len=24) :: charge, infoch
     character(len=8) :: mailla
     integer :: ifm, niv
+    character(len=24), pointer :: rerr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -191,8 +192,8 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
     else if (typmat.eq.'MESSTR') then
         call memare(base, matele, modele(1:8), mate, carele,&
                     optmat)
-        call jeveuo(matele//'.RERR', 'E', iarefe)
-        zk24(iarefe-1+3) = 'OUI_SOUS_STRUC'
+        call jeveuo(matele//'.RERR', 'E', vk24=rerr)
+        rerr(3) = 'OUI_SOUS_STRUC'
 !
 ! --- MATR_ELEM DES ELTS DE CONTACT (XFEM+CONTINUE)
 !

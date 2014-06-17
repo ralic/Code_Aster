@@ -49,15 +49,18 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     integer :: ifiss, ifon, ifon1, ifon2, ino, j, ima
     integer :: nfiss, nfond, nfon, ntseg2, ntpoi1
     integer :: icompt, ncompt, nufon, iagma, iagno
-    integer :: ntail, ndim, nbmax, iacoo2
+    integer :: ntail, ndim, nbmax
     integer :: ibid, nnntot, iret, jconx, igr
-    integer :: jva00, jva0, jva1, jva2, jva3, jfmult
-    integer :: jtypm2, jnom
+    integer :: jva00, jva0, jva1, jva2, jva3
+    integer ::  jnom
     character(len=2) :: chn1, chn2
     character(len=6) :: chn
     character(len=8) :: fiss, mo
     character(len=19) :: nomtab, coord2
     character(len=24) :: nom, nogno, nogma
+    integer, pointer :: fondmult(:) => null()
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !
 !
@@ -76,7 +79,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
         call utmess('F', 'MODELISA2_6')
     endif
 !
-    call jeveuo(maxfem//'.TYPMAIL', 'E', jtypm2)
+    call jeveuo(maxfem//'.TYPMAIL', 'E', vi=typmail)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntpoi1)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg2)
 !
@@ -96,14 +99,14 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
         ncompt = 0
         icompt = 0
         coord2= maxfem//'.COORDO'
-        call jeveuo(coord2//'.VALE', 'E', iacoo2)
+        call jeveuo(coord2//'.VALE', 'E', vr=vale)
 !
         do ifiss = 1, nfiss
 !
             fiss = zk8(jnom)
             call jeexin(fiss//'.FONDFISS', iret)
             if (iret .ne. 0) then
-                call jeveuo(fiss//'.FONDMULT', 'L', jfmult)
+                call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
                 call ltnotb(fiss, 'FOND_FISS', nomtab)
                 call jeveuo(nomtab//'.0001', 'L', jva0)
                 call jelira(nomtab//'.0001', 'LONUTI', nfon)
@@ -134,7 +137,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                         call utmess('F', 'SOUSTRUC_37', sk=nogno)
                     endif
 !
-                    ntail = zi(jfmult-1+2*ifon)-zi(jfmult-1+2*ifon-1)+ 1
+                    ntail = fondmult(2*ifon)-fondmult(2*ifon-1)+ 1
 !
 !           CONSTRUCTION DES GROUPES DE MAILLES DU FOND DE FISSURE
                     call jecroc(jexnom(maxfem//'.GROUPEMA', nogma))
@@ -153,28 +156,28 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 !           COORDONNEES DES NOEUDS
                     if (ndim .eq. 3) then
                         do ifon2 = 1, ntail
-                            ifon1 = ifon2+zi(jfmult-1+2*ifon-1)-1
+                            ifon1 = ifon2+fondmult(2*ifon-1)-1
                             ino = nnntot-nftot+ifon1+ncompt
-                            zr(iacoo2+3*(ino-1)-1+1) = zr(jva1-1+ ifon1)
-                            zr(iacoo2+3*(ino-1)-1+2) = zr(jva2-1+ ifon1)
-                            zr(iacoo2+3*(ino-1)-1+3) = zr(jva3-1+ ifon1)
+                            vale(1+3*(ino-1)-1+1) = zr(jva1-1+ ifon1)
+                            vale(1+3*(ino-1)-1+2) = zr(jva2-1+ ifon1)
+                            vale(1+3*(ino-1)-1+3) = zr(jva3-1+ ifon1)
                         end do
                     else
-                        ifon1 = zi(jfmult-1+2*ifon-1)
+                        ifon1 = fondmult(2*ifon-1)
                         ino = nnntot-nftot+ifon1+ncompt
-                        zr(iacoo2+3*(ino-1)-1+1) = zr(jva1-1+ifon1)
-                        zr(iacoo2+3*(ino-1)-1+2) = zr(jva2-1+ifon1)
+                        vale(1+3*(ino-1)-1+1) = zr(jva1-1+ifon1)
+                        vale(1+3*(ino-1)-1+2) = zr(jva2-1+ifon1)
                     endif
 !
 !           CONNEXITE DES NOEUDS
                     do ifon2 = 1, ntail
-                        ifon1 = ifon2+zi(jfmult-1+2*ifon-1)-1
+                        ifon1 = ifon2+fondmult(2*ifon-1)-1
                         ino = nnntot-nftot+ifon1+ncompt
                         if (ndim .eq. 3) then
                             nufon = zi(jva00-1+ifon1)
                             if (nufon .gt. 1) then
                                 ima = nbmax-mftot+icompt+1
-                                zi(jtypm2-1+ima) = ntseg2
+                                typmail(ima) = ntseg2
                                 call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 2)
                                 call jeveuo(jexnum(maxfem//'.CONNEX', ima), 'E', jconx)
                                 do j = 1, 2
@@ -185,7 +188,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                             endif
                         else if (ntail.eq.1) then
                             ima = nbmax-mftot+icompt+1
-                            zi(jtypm2-1+ima) = ntpoi1
+                            typmail(ima) = ntpoi1
                             call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 1)
                             call jeveuo(jexnum(maxfem//'.CONNEX', ima), 'E', jconx)
                             zi(jconx) = ino

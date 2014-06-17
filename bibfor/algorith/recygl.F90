@@ -60,8 +60,12 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, icomp, idia, iret, lldesc, lldia, llnoms
-    integer :: llref, lltyp, mdiapa, nbdia, nbmcal, nbmor, nbsec
+    integer :: i, icomp, idia, iret
+    integer :: llref,  mdiapa, nbdia, nbmcal, nbmor, nbsec
+    integer, pointer :: cycl_desc(:) => null()
+    integer, pointer :: cycl_nbsc(:) => null()
+    integer, pointer :: cycl_diam(:) => null()
+    character(len=8), pointer :: cycl_type(:) => null()
 !
 !-----------------------------------------------------------------------
     data pgc /'RECYGL'/
@@ -94,33 +98,33 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 !-----------------------RECUPERATION DU TYPE INTERFACE------------------
 !
 !
-    call jeveuo(modcyc//'.CYCL_TYPE', 'L', lltyp)
-    typint=zk8(lltyp)
+    call jeveuo(modcyc//'.CYCL_TYPE', 'L', vk8=cycl_type)
+    typint=cycl_type(1)
 !
 !
 !------------------RECUPERATION DU NOMBRE DE SECTEURS-------------------
 !
 !
-    call jeveuo(modcyc//'.CYCL_NBSC', 'L', llnoms)
-    nbsec=zi(llnoms)
+    call jeveuo(modcyc//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+    nbsec=cycl_nbsc(1)
     mdiapa=int(nbsec/2)*int(1-nbsec+(2*int(nbsec/2)))
 !
 !-----RECUPERATION NOMBRE MODES PROPRES UTILISES POUR CALCUL CYCLIQUE---
 !            ET NOMBRE DE MODES CALCULES PAR DIAMETRE NODAUX
 !
-    call jeveuo(modcyc//'.CYCL_DESC', 'L', lldesc)
-    nbmcal=zi(lldesc+3)
+    call jeveuo(modcyc//'.CYCL_DESC', 'L', vi=cycl_desc)
+    nbmcal=cycl_desc(4)
 !
 !----------DETERMINATION DU NOMBRE DE MODES PHYSIQUE A RESTITUER--------
 !
-    call jeveuo(modcyc//'.CYCL_DIAM', 'L', lldia)
+    call jeveuo(modcyc//'.CYCL_DIAM', 'L', vi=cycl_diam)
     call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia)
     nbdia=nbdia/2
 !
     icomp=0
     do 10 i = 1, nbdia
-        idia=zi(lldia+i-1)
-        nbmcal=zi(lldia+nbdia+i-1)
+        idia=cycl_diam(i)
+        nbmcal=cycl_diam(1+nbdia+i-1)
         if (idia .eq. 0 .or. idia .eq. mdiapa) then
             icomp=icomp+nbmcal
         else

@@ -64,14 +64,17 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
 !-----------------------------------------------------------------------
     integer :: i, iatyma, ibid, icomp, igd, ioctou
-    integer :: itcon, j, k, ldcone, ldcoo, lddesc, lddime
-    integer :: ldgrma, ldref, ldskin, ldtyp, llcona, llcoo, llcox
+    integer :: itcon, j, k,  ldcoo, lddesc, lddime
+    integer :: ldgrma, ldref, ldskin,  llcona,  llcox
     integer :: lltitr, lltyp, ltnmgr, ltnmma, ltnuma, ltnuno, nbcon
     integer :: nbgr, nbid, nbma, nbmato, nbno, nbnoto, nbsect
     integer :: nbskma, nbskno, nbtemp, nbtout, nbuf, ntacon, ntemna
     integer :: ntemno, numa, numma, numno, nunew
     real(kind=8) :: teta, tetsec, xanc, xnew, yanc, ynew, zanc
     real(kind=8) :: znew
+    integer, pointer :: nldtyp(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: connex(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     depi = r8depi()
@@ -270,13 +273,13 @@ subroutine cyc110(nomres, mailla, nbsect)
     itcon = 0
 !
 !
-    call jeveuo(nomres//'.TYPMAIL', 'E', ldtyp)
-    call jeveuo(nomres//'.CONNEX', 'E', ldcone)
+    call jeveuo(nomres//'.TYPMAIL', 'E', vi=nldtyp)
+    call jeveuo(nomres//'.CONNEX', 'E', vi=connex)
 !
 !
 !    REQUETTE COORDONNEES ANCIEN MAILLAGE
 !
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', llcoo)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
     do i = 1, nbsect
         teta = tetsec* (i-1)
@@ -304,9 +307,9 @@ subroutine cyc110(nomres, mailla, nbsect)
             zi(ldskin+nbnoto+ntemno-1) = numno
 !
 !
-            xanc = zr(llcoo+3* (numno-1))
-            yanc = zr(llcoo+3* (numno-1)+1)
-            zanc = zr(llcoo+3* (numno-1)+2)
+            xanc = vale(1+3* (numno-1))
+            yanc = vale(1+3* (numno-1)+1)
+            zanc = vale(1+3* (numno-1)+2)
 !
             xnew = xanc*cos(teta) - sin(teta)*yanc
             ynew = yanc*cos(teta) + sin(teta)*xanc
@@ -342,12 +345,12 @@ subroutine cyc110(nomres, mailla, nbsect)
                 ligne(1) = i
                 ligne(2) = zi(llcona+k-1)
                 call trnuli(zi(ldskin), nbnoto, 2, ligne, nunew)
-                zi(ldcone+itcon-1) = nunew
+                connex(itcon) = nunew
             end do
 !
             call jeveuo(mailla//'.TYPMAIL', 'L', iatyma)
             lltyp=iatyma-1+numma
-            zi(ldtyp+ntemna-1) = zi(lltyp)
+            nldtyp(ntemna) = zi(lltyp)
 !
         end do
 !

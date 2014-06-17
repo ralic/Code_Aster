@@ -70,9 +70,9 @@ subroutine pmfd00()
     integer :: nbvm, nmailp, numail, nbfib, icode, igrand, ima, inomcp
     integer :: ii, jj, ioc, ipos, izone, nbcmp, nbec
     integer :: ira1, iriy1, iriz1, irva1, irviy1, irviz1
-    integer :: jdnm, jnf, jmp
+    integer :: jdnm, jnf
     integer :: jnbfg, nbgf, jngf, jcarfi, jpoint, ipoint, ngf, ig, ng, ig1
-    integer :: nummai, nbmaza, idesc, ilima, ivale, nbfig
+    integer :: nummai, nbmaza,  ilima,  nbfig
 !
 !     NB DE GROUPES MAX PAR ELEMENT
 !     CE NOMBRE DOIT ETRE EN ACCORD AVEC LES CATALOGUES
@@ -96,6 +96,9 @@ subroutine pmfd00()
     integer :: valmi
     real(kind=8) :: valmr(4)
     character(len=80) :: valmk(2)
+    integer, pointer :: maillsep(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: desc(:) => null()
 !
     data ltymcl/'MAILLE','GROUP_MA','TOUT'/
 ! --- ------------------------------------------------------------------
@@ -158,13 +161,13 @@ subroutine pmfd00()
     call wkvect(vnbfib, 'V V I', nmailp*(2+ngmxel), jnf)
 !
 !     DESCRIPTEUR DE LA CARTE
-    call jeveuo(carele//'.CARGENPO  .DESC', 'L', idesc)
+    call jeveuo(carele//'.CARGENPO  .DESC', 'L', vi=desc)
 !     NUMERO DE LA GRANDEUR DANS LE CATALOGUE DE GRANDEUR
-    igrand = zi(idesc)
+    igrand = desc(1)
 !     NOMBRE DE ZONE MAX DANS LA CARTE
-    iasmax = zi(idesc+1)
+    iasmax = desc(2)
 !     NOMBRE DE ZONE AFFECTEE DANS LA CARTE
-    iasedi = zi(idesc+2)
+    iasedi = desc(3)
 !     NOM DE LA GRANDEUR
     call jenuno(jexnum('&CATA.GD.NOMGD', igrand), ngrand)
 !     NOMBRE ET NOM DES COMPOSANTES DANS LA GRANDEUR
@@ -178,7 +181,7 @@ subroutine pmfd00()
 !     NOMBRE D'ENTIER CODE DANS LA CARTE
     call dismoi('NB_EC', ngrand, 'GRANDEUR', repi=nbec)
 !     VALEURS
-    call jeveuo(carele//'.CARGENPO  .VALE', 'L', ivale)
+    call jeveuo(carele//'.CARGENPO  .VALE', 'L', vr=vale)
 !
     valmi = 0
     do ioc = 1, nbocc0
@@ -187,7 +190,7 @@ subroutine pmfd00()
         end do
         call reliem(nomo, noma, 'NU_MAILLE', 'MULTIFIBRE', ioc,&
                     2, ltymcl, ltymcl, '&&PMFD00.MAILLSEP', nmailp)
-        call jeveuo('&&PMFD00.MAILLSEP', 'L', jmp)
+        call jeveuo('&&PMFD00.MAILLSEP', 'L', vi=maillsep)
 ! ---    NOMBRE DE GROUPES A AFFECTER
         call getvtx('MULTIFIBRE', 'GROUP_FIBRE', iocc=ioc, nbval=0, nbret=ngf)
         ngf=-ngf
@@ -210,7 +213,7 @@ subroutine pmfd00()
 !        POUR CHAQUE EL : NB DE FIBRE, NB DE GROUPES DE FIBRES
 !        ET NUMERO DES GROUPES
         do jj = 1, nmailp
-            numail = zi(jmp+jj-1)
+            numail = maillsep(jj)
             ipos = jnf+(numail-1)*(2+ngmxel)
             zi(ipos) = nbfib
             zi(ipos+1) = ngf
@@ -235,12 +238,12 @@ subroutine pmfd00()
 !
 !        BOUCLE SUR LES MAILLES
         do ima = 1, nmailp
-            nummai=zi(jmp + ima -1)
+            nummai=maillsep(ima)
 !           RECHERCHE DE LA ZONE COMTENANT NUMMAI
             iasbon = 0
             do ii = 1, iasedi
-                icode = zi(idesc+3+2*(ii-1))
-                izone = zi(idesc+3+2*(ii-1)+1)
+                icode = desc(1+3+2*(ii-1))
+                izone = desc(1+3+2*(ii-1)+1)
 !              SI C'EST UNE LISTE DE MAILLE
                 if (icode .eq. 3) then
                     k24bid = carele//'.CARGENPO  .LIMA'
@@ -272,7 +275,7 @@ subroutine pmfd00()
             endif
 160         continue
 !           ENTIER CODE DE LA ZONE
-            icode = zi(idesc+3+2*iasmax+nbec*(iasbon-1))
+            icode = desc(1+3+2*iasmax+nbec*(iasbon-1))
 !           RANG DE LA VALEUR DANS L'ENTIER CODE (0 SI N'EXISTE PAS)
             irva1 = rgcmpg(icode,ira1)
             irviy1 = rgcmpg(icode,iriy1)
@@ -282,9 +285,9 @@ subroutine pmfd00()
                 call utmess('F', 'MODELISA8_3', sk=valmk(1))
             endif
 !           ON RECUPERE LES COMPOSANTES : A1, IY1, IZ1 DE CETTE ZONE
-            airpou=zr(ivale+(iasbon-1)*nbcmp + irva1 - 1)
-            moinoy=zr(ivale+(iasbon-1)*nbcmp + irviy1 - 1)
-            moinoz=zr(ivale+(iasbon-1)*nbcmp + irviz1 - 1)
+            airpou=vale(1+(iasbon-1)*nbcmp + irva1 - 1)
+            moinoy=vale(1+(iasbon-1)*nbcmp + irviy1 - 1)
+            moinoz=vale(1+(iasbon-1)*nbcmp + irviz1 - 1)
             if (airpou .eq. zero) then
                 call jenuno(jexnum(mommai, nummai), valmk(1))
                 call utmess('F', 'MODELISA8_1', sk=valmk(1))

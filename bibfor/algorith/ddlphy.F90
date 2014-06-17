@@ -51,11 +51,12 @@ subroutine ddlphy(depplu, neq, vect, desc)
 !
     character(len=8) :: nomgd, noma, exclus(200)
     character(len=19) :: prno
-    integer :: iaux, jnocmp, ncmpmx, jprno, jnueq, nec
+    integer :: iaux, jnocmp, ncmpmx, jprno,  nec
     integer :: jdg, inueq, jaux, kaux
     integer :: nbnot
     integer :: nbexcl, ival, pos, ivect2
     logical :: garder
+    integer, pointer :: nueq(:) => null()
 !
     call jemarq()
 !
@@ -73,7 +74,7 @@ subroutine ddlphy(depplu, neq, vect, desc)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=ncmpmx)
     call dismoi('PROF_CHNO', depplu, 'CHAM_NO', repk=prno)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
-    call jeveuo(prno//'.NUEQ', 'L', jnueq)
+    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('NOM_MAILLA', depplu, 'CHAM_NO', repk=noma)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnot)
@@ -96,7 +97,7 @@ subroutine ddlphy(depplu, neq, vect, desc)
                     endif
                 end do
 !           ADRESSE DU DDL DANS LE .VALE
-                ival = zi(jnueq - 1 + inueq - 1 + pos)
+                ival = nueq(inueq - 1 + pos)
                 desc(ival) = zk8(jnocmp-1+jaux)
                 if (garder) then
                     vect(ival) = zr(ivect2-1+ival)

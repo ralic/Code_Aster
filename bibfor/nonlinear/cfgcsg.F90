@@ -57,7 +57,7 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
     character(len=24) :: jeuite
     integer :: jjeuit
     character(len=19) :: ddeplc
-    integer :: jddepc
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
 ! --- DDEPLC: INCREMENT DE SOLUTION APRES CORRECTION DU CONTACT
 !
     ddeplc = resoco(1:14)//'.DELC'
-    call jeveuo(ddeplc(1:19)//'.VALE', 'L', jddepc)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- CALCUL DU SOUS-GRADIENT
 !
@@ -90,7 +90,7 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
         jdecal = zi(japptr+iliai-1)
         nbddl = zi(japptr+iliai) - zi(japptr+iliai-1)
         jeuold = zr(jjeuit+3*(iliai-1)+1-1)
-        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jddepc),&
+        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
                     jeuinc)
         jeunew = jeuold - jeuinc
         ssgrad = -jeunew

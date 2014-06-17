@@ -37,7 +37,7 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: ivale, idesc, irefe, ivalp, idesp, irefp, j, k
+    integer ::    ivalp, idesp, irefp, j, k
     integer :: nbrefe, nbvale, nbdesc, iad, nbvec
     character(len=19) :: vecsol, vestoc
     character(len=24) :: chaine
@@ -50,6 +50,9 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
 !
 !-----------------------------------------------------------------------
     integer :: kb
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     chaine = 'CBIDON'
@@ -61,21 +64,21 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
     call wkvect(zk24(iad+k-1)(1:19)//'.REFE', 'V V K24', nbrefe, irefp)
     call wkvect(zk24(iad+k-1)(1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
-    call jeveuo(vecsol//'.VALE', 'L', ivale)
+    call jeveuo(vecsol//'.VALE', 'L', vr=vale)
     call jelira(vecsol//'.VALE', 'LONMAX', nbvec)
-    call jeveuo(vecsol//'.DESC', 'L', idesc)
-    call jeveuo(vecsol//'.REFE', 'L', irefe)
+    call jeveuo(vecsol//'.DESC', 'L', vi=desc)
+    call jeveuo(vecsol//'.REFE', 'L', vk24=refe)
 !
 !-------------STOCKAGE DANS LE VECTEUR CREE -------------------------
 !
-    call dcopy(nbvec, zr(ivale), 1, zr(ivalp), 1)
+    call dcopy(nbvec, vale, 1, zr(ivalp), 1)
 !
     do 13 kb = 1, nbdesc
-        zi(idesp+kb-1) = zi(idesc+kb-1)
+        zi(idesp+kb-1) = desc(kb)
 13  continue
 !
     do 14 kb = 1, nbrefe
-        zk24(irefp+kb-1) = zk24(irefe+kb-1)
+        zk24(irefp+kb-1) = refe(kb)
 14  continue
 !
 !

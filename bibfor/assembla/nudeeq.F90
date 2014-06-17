@@ -96,11 +96,12 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !
 !-----------------------------------------------------------------------
     integer :: i, iadg, iddl, ieq, ier
-    integer :: ilag, j, jdeeq, jdelg,  jncmp, jnueq
+    integer :: ilag, j, jdeeq, jdelg,  jncmp
     integer :: jprno, jtypl, k, l, nblag, nbligr, nbnl
     integer :: nbnm, nbno, ncmpmx, nddlb, nec, nob, nucmp
     integer :: nuno
     integer, pointer :: lnobloq(:) => null()
+    integer, pointer :: nueq(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     numeqa=nu14//'.NUME'
@@ -120,7 +121,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !
 !
 !     - ADRESSE DE ".NUEQ":
-    call jeveuo(numeqa//'.NUEQ', 'L', jnueq)
+    call jeveuo(numeqa//'.NUEQ', 'L', vi=nueq)
 !
     call jelira(jexnum('&CATA.GD.NOMCMP', gds), 'LONMAX', ncmpmx)
     nec = nbec(gds)
@@ -154,7 +155,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
                 do k = 1, ncmpmx
                     if (exisdg(zi(iadg),k)) then
                         iddl = iddl + 1
-                        ieq = zi(jnueq-1+iddl)
+                        ieq = nueq(iddl)
 !
                         if (i .eq. 1) then
                             ASSERT((nbnl.le.0) .or. (ieq.eq.iddl))

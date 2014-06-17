@@ -105,7 +105,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     logical :: reinit
 !
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
-    integer :: nbno, nbnoma, jcoor, jcnsls, jgrls
+    integer :: nbno, nbnoma,  jcnsls, jgrls
     integer :: jlsv, jgrlsv, node, nodeps, ndim
     integer :: ifm, niv, jnores, jnodto, jelcal, neleto
     integer :: i, j, k
@@ -141,6 +141,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     integer :: jforce
     real(kind=8) :: p(3), lvsp, lsnpc, lstpc
     logical :: grad0
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -218,7 +219,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
 !     RETRIEVE THE COORDINATES OF THE NODES
 !                12345678901234567890
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     RETRIEVE THE NODES IN WHICH THE LOCAL RESIDUAL MUST BE CALCULATED
     call jeveuo(noresi, 'L', jnores)
@@ -404,9 +405,9 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !                       THIS NODE AND NOT UPDATED USING UPWIND
                             zl(jforce-1+k) = .true.
 !                       RETREIVE THE COORDINATES OF THE PROBLEMATIC NODE
-                            p(1) = zr(jcoor-1+3*(node-1)+1)
-                            p(2) = zr(jcoor-1+3*(node-1)+2)
-                            p(3) = zr(jcoor-1+3*(node-1)+3)
+                            p(1) = vale(3*(node-1)+1)
+                            p(2) = vale(3*(node-1)+2)
+                            p(3) = vale(3*(node-1)+3)
 !                       RETREIVE THE VALUE OF THE LEVEL SET THAT IS
 !                       BEING UPDATED
                             lvsp = zr(jcnsls-1+node)
@@ -449,9 +450,9 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !                       THIS NODE AND NOT UPDATED USING UPWIND
                             zl(jforce-1+k) = .true.
 !                       RETREIVE THE COORDINATES OF THE PROBLEMATIC NODE
-                            p(1) = zr(jcoor-1+3*(node-1)+1)
-                            p(2) = zr(jcoor-1+3*(node-1)+2)
-                            p(3) = zr(jcoor-1+3*(node-1)+3)
+                            p(1) = vale(3*(node-1)+1)
+                            p(2) = vale(3*(node-1)+2)
+                            p(3) = vale(3*(node-1)+3)
 !                       RETREIVE THE VALUE OF THE LEVEL SET THAT IS
 !                       BEING UPDATED
                             lvsp = zr(jcnsls-1+node)

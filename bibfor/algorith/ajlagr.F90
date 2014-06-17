@@ -58,8 +58,11 @@ subroutine ajlagr(rigid, masse, masinv)
 !
 !-----------------------------------------------------------------------
     integer :: i, imati, imatm, imatr, imtrer, j, jconl
-    integer :: jmass, jraid, jrefa1, jrefa2, jsmde,  nbmat
+    integer :: jmass, jraid,     nbmat
     integer, pointer :: lagr(:) => null()
+    integer, pointer :: smde(:) => null()
+    character(len=24), pointer :: refa1(:) => null()
+    character(len=24), pointer :: refa2(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -78,8 +81,8 @@ subroutine ajlagr(rigid, masse, masinv)
     else
         call utmess('F', 'ALGORITH_3')
     endif
-    call jeveuo(raid//'           .REFA', 'L', jrefa1)
-    numddl = zk24(jrefa1-1+2)(1:14)
+    call jeveuo(raid//'           .REFA', 'L', vk24=refa1)
+    numddl = refa1(2)(1:14)
 !
     mass = masse
     call mtdscr(masse)
@@ -93,8 +96,8 @@ subroutine ajlagr(rigid, masse, masinv)
     else
         call utmess('F', 'ALGORITH_3')
     endif
-    call jeveuo(mass//'           .REFA', 'L', jrefa2)
-    nu2ddl = zk24(jrefa2-1+2)(1:14)
+    call jeveuo(mass//'           .REFA', 'L', vk24=refa2)
+    nu2ddl = refa2(2)(1:14)
 !
     if (typma2 .ne. typmat) then
         valk (1) = typmat
@@ -108,10 +111,10 @@ subroutine ajlagr(rigid, masse, masinv)
     endif
 !
 !
-    call jeveuo(numddl//'.SMOS.SMDE', 'L', jsmde)
-    neq = zi(jsmde-1+1)
-    hbloc = zi(jsmde-1+2)
-    nbbloc = zi(jsmde-1+3)
+    call jeveuo(numddl//'.SMOS.SMDE', 'L', vi=smde)
+    neq = smde(1)
+    hbloc = smde(2)
+    nbbloc = smde(3)
     ASSERT(nbbloc.eq.1)
 !
 !     --- DETERMINATION DU COEFFICIENT DE CONDITIONNEMENT ---

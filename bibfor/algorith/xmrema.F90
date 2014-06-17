@@ -111,7 +111,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     character(len=24) :: maescx
     integer :: jmaesx
     integer :: statum
-    integer :: jconx1, jconx2
+    integer ::  jconx2
     integer :: nummai, nunoin, nunog, nugla, nuglb, nbnott(3)
     integer :: n1, n2, nbnos, ntmae, nfacem
     integer :: ino, ifacem, ima
@@ -124,7 +124,9 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     character(len=8) :: typma
     logical :: dirapp, noapar, lappar
     integer :: iproj, iprojm
-    integer :: iad, jma, itypma, nptm, ifiss
+    integer :: iad,  itypma, nptm, ifiss
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -189,13 +191,13 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
 ! --- ON RECUPERE LA CONNECTIVITE DU MAILLAGE
 !
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 ! ----- NB: ON SE BASE SUR LE TYPE DE LA MAILLE MAITRE.
 !
-    call jeveuo(noma//'.TYPMAIL', 'L', jma)
-    itypma = zi(jma-1+mmait)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    itypma = typmail(mmait)
     call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
 ! ----- SI LE POINT DE CONTACT EST SUR UNE ARETE
@@ -204,13 +206,13 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
         call conare(typma, ar, nbar)
         na = ar(amait,1)
         nb = ar(amait,2)
-        nunoa = zi(jconx1-1+zi(jconx2+mmait-1)+na-1)
-        nunob = zi(jconx1-1+zi(jconx2+mmait-1)+nb-1)
+        nunoa = connex(zi(jconx2+mmait-1)+na-1)
+        nunob = connex(zi(jconx2+mmait-1)+nb-1)
 !
 ! ----- SI LE POINT DE CONTACT EST SUR UN NOEUD
 !
     else if (nmait.gt.0) then
-        nunog = zi(jconx1-1+zi(jconx2+mmait-1)+nmait-1)
+        nunog = connex(zi(jconx2+mmait-1)+nmait-1)
         call panbno(itypma, nbnott)
         nbnos = nbnott(1)
         if (typma .eq. 'QUAD8') nbnos=8
@@ -245,8 +247,8 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
             do 110 ia = 1, nbar
                 n1 = ar(ia,1)
                 n2 = ar(ia,2)
-                nugla = zi(jconx1-1+zi(jconx2+nummai-1)+n1-1)
-                nuglb = zi(jconx1-1+zi(jconx2+nummai-1)+n2-1)
+                nugla = connex(zi(jconx2+nummai-1)+n1-1)
+                nuglb = connex(zi(jconx2+nummai-1)+n2-1)
 !
                 if (((nugla.eq.nunoa).and.(nuglb.eq.nunob)) .or.&
                     ((nugla.eq.nunob).and.(nuglb.eq.nunoa))) then
@@ -260,7 +262,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 ! ----- ON REGARDE SI LE NOEUD APPARTIENT A CETTE MAILLE
 !
             do 120 ino = 1, nbnos
-                nunoin=zi(jconx1-1+zi(jconx2+nummai-1)+ino-1)
+                nunoin=connex(zi(jconx2+nummai-1)+ino-1)
                 if (nunoin .eq. nunog) then
                     noapar=.false.
                 endif

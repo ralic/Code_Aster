@@ -41,12 +41,15 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, itypfl, j, jcompt, jextr
-    integer :: jzone, k, k1, k10, k11, k12, k2
+    integer ::  k, k1, k10, k11, k12, k2
     integer :: k3, k4, k5, k6, k7, k8, k9
-    integer :: l1, l2, l3, lfsic, lfsvr, nb, nt
+    integer :: l1, l2, l3,   nb, nt
     integer :: nzone
     real(kind=8) :: bmax, bmin, delta, hmoy, pi, pulsam
     real(kind=8) :: visc
+    integer, pointer :: fsic(:) => null()
+    real(kind=8), pointer :: fsvr(:) => null()
+    integer, pointer :: tempo(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -55,13 +58,13 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
 !
     veriu0 = .false.
     kcaj = 0.d0
-    call jeveuo(typflu//'           .FSIC', 'L', lfsic)
-    itypfl = zi(lfsic)
+    call jeveuo(typflu//'           .FSIC', 'L', vi=fsic)
+    itypfl = fsic(1)
     if (itypfl .eq. 4) then
         if (indic .eq. 1) then
             veriu0 = .true.
-            call jeveuo(typflu//'           .FSVR', 'L', lfsvr)
-            visc = zr(lfsvr+1)
+            call jeveuo(typflu//'           .FSVR', 'L', vr=fsvr)
+            visc = fsvr(2)
             hmoy = vecr4(1)
             kcaj = 12.d0*visc/(hmoy*hmoy)
         endif
@@ -83,8 +86,8 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
     k12 = k11 + nt
 !
     if (itypfl .eq. 1) then
-        call jeveuo('&&MDCONF.TEMPO', 'L', jzone)
-        nzone = zi(jzone-1+1)
+        call jeveuo('&&MDCONF.TEMPO', 'L', vi=tempo)
+        nzone = tempo(1)
         nb = nbno*nbpv*nzone
         call wkvect('&&PACOUC.TRAV1', 'V V R', 2*nb, jtrav1)
         call wkvect('&&PACOUC.TRAV2', 'V V I', 3*nb, jtrav2)

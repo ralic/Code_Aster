@@ -61,14 +61,13 @@ subroutine calyrc(chargz)
 !-----------------------------------------------------------------------
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
-    integer :: jnoma, nnomx, idmax
-    integer ::   iagma1, iagma2, nbma1, nbma2
+    integer ::  nnomx, idmax
+    integer ::     nbma1, nbma2
     integer :: nbno2, idcal1, idcal2, nul
-    integer :: iconb1, iconu1, icocf1, iconb2, iconu2, icocf2
     integer :: nno11, nno12, i, indire, lno
     integer :: nbtyp, nddl2, jlistk, jdim, ndim1
-    integer :: jnunoe, jnorm, idim, ij, norien, ntrait
-    integer :: icoef1, icoef2, icoef3, iagno3, nbno3, nbma3, idmai3
+    integer ::   idim, ij, norien, ntrait
+    integer :: icoef1, icoef2, icoef3, iagno3, nbno3, nbma3
     logical :: lrota, dnor, lreori
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     real(kind=8) :: r8b
@@ -98,6 +97,18 @@ subroutine calyrc(chargz)
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()
+    integer, pointer :: conu1(:) => null()
+    integer, pointer :: conu2(:) => null()
+    integer, pointer :: limanu3(:) => null()
+    integer, pointer :: ln(:) => null()
+    integer, pointer :: limanu2(:) => null()
+    real(kind=8), pointer :: cocf1(:) => null()
+    real(kind=8), pointer :: cocf2(:) => null()
+    real(kind=8), pointer :: normale(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: conb1(:) => null()
+    integer, pointer :: conb2(:) => null()
+    integer, pointer :: limanu1(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -132,8 +143,8 @@ subroutine calyrc(chargz)
 !
     call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mo)
     ligrmo = mo//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
 !
     call dismoi('DIM_GEOM', mo, 'MODELE', repi=ndim)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) then
@@ -188,7 +199,7 @@ subroutine calyrc(chargz)
         tymocl(2) = 'GROUP_MA'
         call reliem(mo, noma, 'NU_MAILLE', motfac, iocc,&
                     2, motcle, tymocl, '&&CALYRC.LIMANU1', nbma1)
-        call jeveuo('&&CALYRC.LIMANU1', 'L', iagma1)
+        call jeveuo('&&CALYRC.LIMANU1', 'L', vi=limanu1)
 !        -- 2eme groupe maitre --
         motcle(1) = 'MAILLE_MAIT2'
         tymocl(1) = 'MAILLE'
@@ -197,7 +208,7 @@ subroutine calyrc(chargz)
         call reliem(mo, noma, 'NU_MAILLE', motfac, iocc,&
                     2, motcle, tymocl, '&&CALYRC.LIMANU2', nbma2)
         if (nbma2 .gt. 0) then
-            call jeveuo('&&CALYRC.LIMANU2', 'L', iagma2)
+            call jeveuo('&&CALYRC.LIMANU2', 'L', vi=limanu2)
         endif
 !
 !        1.2 RECUPERATION DES NOEUD_ESCL
@@ -233,10 +244,10 @@ subroutine calyrc(chargz)
                 valk(2) = motcle(2)
                 call utmess('F', 'MODELISA8_49', nk=2, valk=valk)
             endif
-            call jeveuo('&&CALYRC.LIMANU3', 'L', idmai3)
+            call jeveuo('&&CALYRC.LIMANU3', 'L', vi=limanu3)
 !
             norien = 0
-            call orilma(noma, ndim, zi(idmai3), nbma3, norien,&
+            call orilma(noma, ndim, limanu3, nbma3, norien,&
                         ntrait, lreori, 0, [0])
             if (norien .ne. 0) then
                 call utmess('F', 'MODELISA3_19')
@@ -246,13 +257,13 @@ subroutine calyrc(chargz)
 ! ---        ET DES NOMBRES D'OCCURENCES DE CES NOEUDS '&&NBNLMA.NBN'
 ! ---        DES MAILLES DE PEAU MAILLE_ESCL :
 !            -------------------------------
-            call nbnlma(noma, nbma3, zi(idmai3), nbtyp, listyp,&
+            call nbnlma(noma, nbma3, limanu3, nbtyp, listyp,&
                         nbno3)
 !
 ! ---        CALCUL DES NORMALES EN CHAQUE NOEUD :
 !            -----------------------------------
             call wkvect('&&CALYRC.LISTK', 'V V K8', 1, jlistk)
-            call jeveuo('&&NBNLMA.LN', 'L', jnunoe)
+            call jeveuo('&&NBNLMA.LN', 'L', vi=ln)
 !
 ! ---        CREATION DU TABLEAU D'INDIRECTION ENTRE LES INDICES
 ! ---        DU TABLEAU DES NORMALES ET LES NUMEROS DES NOEUDS :
@@ -261,12 +272,12 @@ subroutine calyrc(chargz)
             call jelira('&&NBNLMA.LN', 'LONUTI', lno)
 !
             do i = 1, lno
-                zi(indire+zi(jnunoe+i-1)-1) = i
+                zi(indire+ln(i)-1) = i
             end do
 !
-            call canort(noma, nbma3, zi(idmai3), ndim, nbno3,&
-                        zi(jnunoe), 1)
-            call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
+            call canort(noma, nbma3, limanu3, ndim, nbno3,&
+                        ln, 1)
+            call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
             call jedupo('&&NBNLMA.LN3', 'V', '&&CALYRC.LINONU', .false.)
             call jeveuo('&&CALYRC.LINONU', 'L', iagno3)
         endif
@@ -287,39 +298,39 @@ subroutine calyrc(chargz)
 !       -------------------
         if (ndim .eq. 2) then
 !        -- 1er groupe esclave / 1er groupe maitre --
-            call pj2dco('PARTIE', mo, mo, nbma1, zi(iagma1),&
+            call pj2dco('PARTIE', mo, mo, nbma1, limanu1,&
                         nbno3, zi( iagno3), ' ', geom3, cores1,&
                         .false., r8b)
             if (nbma2 .gt. 0) then
 !        -- 1er groupe esclave  / 2eme groupe maitre --
-                call pj2dco('PARTIE', mo, mo, nbma2, zi(iagma2),&
+                call pj2dco('PARTIE', mo, mo, nbma2, limanu2,&
                             nbno3, zi( iagno3), ' ', geom3, cores2,&
                             .false., r8b)
             endif
         else if (ndim.eq.3) then
 !        -- 1er groupe esclave / 1er groupe maitre --
-            call pj3dco('PARTIE', mo, mo, nbma1, zi(iagma1),&
+            call pj3dco('PARTIE', mo, mo, nbma1, limanu1,&
                         nbno3, zi( iagno3), ' ', geom3, cores1,&
                         .false., r8b)
             if (nbma2 .gt. 0) then
 !        -- 1er groupe esclave  / 2eme groupe maitre --
-                call pj3dco('PARTIE', mo, mo, nbma2, zi(iagma2),&
+                call pj3dco('PARTIE', mo, mo, nbma2, limanu2,&
                             nbno3, zi( iagno3), ' ', geom3, cores2,&
                             .false., r8b)
             endif
         endif
 !
 !        -- 1er groupe maitre --
-        call jeveuo(cores1//'.PJEF_NB', 'L', iconb1)
-        call jeveuo(cores1//'.PJEF_NU', 'L', iconu1)
-        call jeveuo(cores1//'.PJEF_CF', 'L', icocf1)
+        call jeveuo(cores1//'.PJEF_NB', 'L', vi=conb1)
+        call jeveuo(cores1//'.PJEF_NU', 'L', vi=conu1)
+        call jeveuo(cores1//'.PJEF_CF', 'L', vr=cocf1)
         call jelira(cores1//'.PJEF_NB', 'LONMAX', nbno2)
 !
         if (nbma2 .gt. 0) then
 !        -- 2eme groupe maitre --
-            call jeveuo(cores2//'.PJEF_NB', 'L', iconb2)
-            call jeveuo(cores2//'.PJEF_NU', 'L', iconu2)
-            call jeveuo(cores2//'.PJEF_CF', 'L', icocf2)
+            call jeveuo(cores2//'.PJEF_NB', 'L', vi=conb2)
+            call jeveuo(cores2//'.PJEF_NU', 'L', vi=conu2)
+            call jeveuo(cores2//'.PJEF_CF', 'L', vr=cocf2)
 !         CALL JELIRA(CORES2//'.PJEF_NB','LONMAX',NBNO2,KB)
         endif
 !
@@ -358,10 +369,10 @@ subroutine calyrc(chargz)
                 idcal2 = 0
                 do ino2 = 1, nbno3
 !           NNO11: NB DE NOEUD_MAIT LIES A INO2 SELON CORES1
-                    nno11 = zi(iconb1-1+ino2)
+                    nno11 = conb1(ino2)
 !           NNO12: NB DE NOEUD_MAIT LIES A INO2 SELON CORES2
                     if (nbma2 .gt. 0) then
-                        nno12 = zi(iconb2-1+ino2)
+                        nno12 = conb2(ino2)
                     else
                         nno12 = 0
                     endif
@@ -374,15 +385,15 @@ subroutine calyrc(chargz)
                     coef(1) = -1.d0*coef3
 !
                     do ino1 = 1, nno11
-                        nuno1 = zi(iconu1+idcal1-1+ino1)
-                        coef1 = zr(icocf1+idcal1-1+ino1)
+                        nuno1 = conu1(1+idcal1-1+ino1)
+                        coef1 = cocf1(1+idcal1-1+ino1)
                         call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
                         nomnoe(ino1+1) = nono1
                         coef(ino1+1) = coef1*coef11
                     end do
                     do ino1 = 1, nno12
-                        nuno1 = zi(iconu2+idcal2-1+ino1)
-                        coef1 = zr(icocf2+idcal2-1+ino1)
+                        nuno1 = conu2(1+idcal2-1+ino1)
+                        coef1 = cocf2(1+idcal2-1+ino1)
                         call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
                         nomnoe(1+nno11+ino1) = nono1
                         coef(1+nno11+ino1) = coef1*coef12
@@ -396,7 +407,7 @@ subroutine calyrc(chargz)
                             nomddl(ino1) = 'DEPL'
                             do idim = 1, ndim
                                 direct(1+ (ino1-1)*ndim1+idim-1) =&
-                                zr(jnorm+ (zi(indire+ino2-1)-1)*ndim+&
+                                normale(1+ (zi(indire+ino2-1)-1)*ndim+&
                                 idim-1)
                             end do
                         end do
@@ -434,9 +445,9 @@ subroutine calyrc(chargz)
 !
 ! ---       NNO1: NB DE NOEUD_MAIT LIES A INO2 :
 !           ------------------------------------
-                    nno11 = zi(iconb1-1+ino2)
+                    nno11 = conb1(ino2)
                     if (nbma2 .gt. 0) then
-                        nno12 = zi(iconb2-1+ino2)
+                        nno12 = conb2(ino2)
                     else
                         nno12 = 0
                     endif
@@ -465,15 +476,15 @@ subroutine calyrc(chargz)
                     endif
 !
                     do ino1 = 1, nno11
-                        nuno1 = zi(iconu1+idcal1-1+ino1)
-                        coef1 = zr(icocf1+idcal1-1+ino1)
+                        nuno1 = conu1(1+idcal1-1+ino1)
+                        coef1 = cocf1(1+idcal1-1+ino1)
                         call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
                         nomnoe(1+ij+ino1-1) = nono1
                         coef(1+ij+ino1-1) = coef1*coef11
                     end do
                     do ino1 = 1, nno12
-                        nuno1 = zi(iconu2+idcal2-1+ino1)
-                        coef1 = zr(icocf2+idcal2-1+ino1)
+                        nuno1 = conu2(1+idcal2-1+ino1)
+                        coef1 = cocf2(1+idcal2-1+ino1)
                         call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
                         nomnoe(1+nno11+ij+ino1-1) = nono1
                         coef(1+nno11+ij+ino1-1) = coef1*coef12
@@ -485,7 +496,7 @@ subroutine calyrc(chargz)
                     if (dnor) then
                         do idim = 1, ndim
                             do jdim = 1, ndim
-                                normal(idim) = normal(idim) + mrota( jdim,idim)*zr(jnorm+ (zi(ind&
+                                normal(idim) = normal(idim) + mrota( jdim,idim)*normale(1+ (zi(ind&
                                                &ire+ino2- 1)-1)*ndim+jdim-1)
                             end do
                         end do
@@ -494,7 +505,7 @@ subroutine calyrc(chargz)
                         nomddl(1) = 'DEPL'
                         dim(1) = ndim
                         do idim = 1, ndim
-                            direct(idim) = zr( jnorm+ (zi(indire+ ino2-1)-1 )*ndim+idim-1 )
+                            direct(idim) = normale(1+ (zi(indire+ ino2-1)-1 )*ndim+idim-1 )
                         end do
                         do ino1 = 2, nno11 + 1
                             dim(ino1) = ndim
@@ -555,8 +566,8 @@ subroutine calyrc(chargz)
             idcal2 = 0
             do ino2 = 1, nbno2
 !           NNO1: NB DE NOEUD_MAIT LIES A INO2
-                nno11 = zi(iconb1-1+ino2)
-                nno12 = zi(iconb2-1+ino2)
+                nno11 = conb1(ino2)
+                nno12 = conb2(ino2)
                 if ((nno11.eq.0) .and. (nno12.eq.0)) goto 290
 !
                 nuno2 = ino2
@@ -566,15 +577,15 @@ subroutine calyrc(chargz)
                 coef(1) = -1.d0*coef3
 !
                 do ino1 = 1, nno11
-                    nuno1 = zi(iconu1+idcal1-1+ino1)
-                    coef1 = zr(icocf1+idcal1-1+ino1)
+                    nuno1 = conu1(1+idcal1-1+ino1)
+                    coef1 = cocf1(1+idcal1-1+ino1)
                     call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
                     nomnoe(ino1+1) = nono1
                     coef(ino1+1) = coef1*coef11
                 end do
                 do ino1 = 1, nno12
-                    nuno1 = zi(iconu2+idcal2-1+ino1)
-                    coef1 = zr(icocf2+idcal2-1+ino1)
+                    nuno1 = conu2(1+idcal2-1+ino1)
+                    coef1 = cocf2(1+idcal2-1+ino1)
                     call jenuno(jexnum(noma//'.NOMNOE', nuno1), nono1)
                     nomnoe(1+nno11+ino1) = nono1
                     coef(1+nno11+ino1) = coef1*coef12

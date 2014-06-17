@@ -40,14 +40,16 @@ subroutine momaba(mailla)
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
-    integer :: jtyma, nbmc, nbma, jnuma, i, j, ityp, jcoor, n1, n2, i1, i2, nbno
-    integer :: nbmat, jpoin, ifm, niv, jcon, jconm, ndim, nn, jnbma, ncount
-    integer :: jdim
+    integer :: jtyma, nbmc, nbma, jnuma, i, j, ityp,  n1, n2, i1, i2, nbno
+    integer :: nbmat, jpoin, ifm, niv, jcon,  ndim, nn, jnbma, ncount
     logical :: lnmf, lmodi
     parameter(nbmc=2)
     character(len=8) :: k8b, type
     character(len=16) :: tymocl(nbmc), motcle(nbmc)
     character(len=24) :: connex, nommai, nomnoe, nomjv
+    integer, pointer :: dime(:) => null()
+    real(kind=8), pointer :: conm(:) => null()
+    real(kind=8), pointer :: coor(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -57,8 +59,8 @@ subroutine momaba(mailla)
     nommai=mailla//'.NOMMAI'
     nomnoe=mailla//'.NOMNOE'
     call jeveuo(mailla//'.TYPMAIL        ', 'L', jtyma)
-    call jeveuo(mailla//'.COORDO    .VALE', 'E', jcoor)
-    call jeveuo(mailla//'.DIME           ', 'L', jdim)
+    call jeveuo(mailla//'.COORDO    .VALE', 'E', vr=coor)
+    call jeveuo(mailla//'.DIME           ', 'L', vi=dime)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbmat)
     lmodi=.false.
 !     ------------------------------------------------------------------
@@ -81,7 +83,7 @@ subroutine momaba(mailla)
 !
 !     ON INTERDIT 'GROUP_MA_FOND' ET 'MAILLE_FOND'
 !     SI LE MAILLAGE EST DE DIMENSION 2.
-    if (zi(jdim+5) .eq. 2) then
+    if (dime(6) .eq. 2) then
         call utmess('F', 'ALGORITH6_16')
     endif
 !
@@ -116,7 +118,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
-                            call bartri(i1, n2, zr(jcoor), zi(jpoin))
+                            call bartri(i1, n2, coor, zi(jpoin))
                             if (niv .eq. 2) then
                                 call jenuno(jexnum(nommai, j), k8b)
                                 write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -127,7 +129,7 @@ subroutine momaba(mailla)
                             do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
-                                    call bartri(i1, i2, zr(jcoor), zi( jpoin))
+                                    call bartri(i1, i2, coor, zi( jpoin))
                                     if (niv .eq. 2) then
                                         call jenuno(jexnum(nommai, j), k8b)
                                         write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -148,7 +150,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
-                            call barqua(i1, n2, zr(jcoor), zi(jpoin))
+                            call barqua(i1, n2, coor, zi(jpoin))
                             if (niv .eq. 2) then
                                 call jenuno(jexnum(nommai, j), k8b)
                                 write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -159,7 +161,7 @@ subroutine momaba(mailla)
                             do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
-                                    call barqua(i1, i2, zr(jcoor), zi( jpoin))
+                                    call barqua(i1, i2, coor, zi( jpoin))
                                     if (niv .eq. 2) then
                                         call jenuno(jexnum(nommai, j), k8b)
                                         write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -180,7 +182,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
-                            call bartet(i1, n2, zr(jcoor), zi(jpoin))
+                            call bartet(i1, n2, coor, zi(jpoin))
                             if (niv .eq. 2) then
                                 call jenuno(jexnum(nommai, j), k8b)
                                 write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -191,7 +193,7 @@ subroutine momaba(mailla)
                             do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
-                                    call bartet(i1, i2, zr(jcoor), zi( jpoin))
+                                    call bartet(i1, i2, coor, zi( jpoin))
                                     if (niv .eq. 2) then
                                         call jenuno(jexnum(nommai, j), k8b)
                                         write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -212,7 +214,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
-                            call barpen(i1, n2, zr(jcoor), zi(jpoin))
+                            call barpen(i1, n2, coor, zi(jpoin))
                             if (niv .eq. 2) then
                                 call jenuno(jexnum(nommai, j), k8b)
                                 write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -223,7 +225,7 @@ subroutine momaba(mailla)
                             do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
-                                    call barpen(i1, i2, zr(jcoor), zi( jpoin))
+                                    call barpen(i1, i2, coor, zi( jpoin))
                                     if (niv .eq. 2) then
                                         call jenuno(jexnum(nommai, j), k8b)
                                         write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -244,7 +246,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
-                            call barpyr(i1, n2, zr(jcoor), zi(jpoin))
+                            call barpyr(i1, n2, coor, zi(jpoin))
                             if (niv .eq. 2) then
                                 call jenuno(jexnum(nommai, j), k8b)
                                 write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -255,7 +257,7 @@ subroutine momaba(mailla)
                             do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
-                                    call barpyr(i1, i2, zr(jcoor), zi( jpoin))
+                                    call barpyr(i1, i2, coor, zi( jpoin))
                                     if (niv .eq. 2) then
                                         call jenuno(jexnum(nommai, j), k8b)
                                         write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -276,7 +278,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         if (n2 .eq. 0) then
                             lmodi=.true.
-                            call barhex(i1, n2, zr(jcoor), zi(jpoin))
+                            call barhex(i1, n2, coor, zi(jpoin))
                             if (niv .eq. 2) then
                                 call jenuno(jexnum(nommai, j), k8b)
                                 write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -287,7 +289,7 @@ subroutine momaba(mailla)
                             do i2 = 1, nbno
                                 if (zi(jpoin+i2-1) .eq. n2) then
                                     lmodi=.true.
-                                    call barhex(i1, i2, zr(jcoor), zi( jpoin))
+                                    call barhex(i1, i2, coor, zi( jpoin))
                                     if (niv .eq. 2) then
                                         call jenuno(jexnum(nommai, j), k8b)
                                         write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -317,14 +319,14 @@ subroutine momaba(mailla)
 !
 ! --- LECTURE DE LA LISTE DE NOEUDS
 !
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', jconm)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=conm)
     call jelira(mailla//'.COORDO    .VALE', 'LONMAX', ndim)
 !
 !     ON STOCKE LES COORDONNEES DES NOEUDS DU FOND DE FISSURE AVANT
 !     LEURS MODIFICATIONS
     call wkvect('&&COORD_NOEUDS', 'V V R', ndim, jcon)
     do i = 1, ndim
-        zr(jcon+i-1)=zr(jconm+i-1)
+        zr(jcon+i-1)=conm(i)
     end do
 !
     motcle(1)='GROUP_NO_FOND'
@@ -338,7 +340,7 @@ subroutine momaba(mailla)
 !
 !     ON VERIFIE L'UNICITE DU NOEUD DU FOND DE FISSURE POUR UN
 !     MAILLAGE DE DIMENSION 2
-    if (zi(jdim+5) .eq. 2 .and. nbma .gt. 1) then
+    if (dime(6) .eq. 2 .and. nbma .gt. 1) then
         call utmess('F', 'ALGORITH6_18')
     endif
 !
@@ -367,7 +369,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
-                        call bartri(i1, n2, zr(jcoor), zi(jpoin))
+                        call bartri(i1, n2, coor, zi(jpoin))
                         if (niv .eq. 2) then
                             call jenuno(jexnum(nommai, j), k8b)
                             write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -385,7 +387,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
-                        call barqua(i1, n2, zr(jcoor), zi(jpoin))
+                        call barqua(i1, n2, coor, zi(jpoin))
                         if (niv .eq. 2) then
                             call jenuno(jexnum(nommai, j), k8b)
                             write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -403,7 +405,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
-                        call bartet(i1, n2, zr(jcoor), zi(jpoin))
+                        call bartet(i1, n2, coor, zi(jpoin))
                         if (niv .eq. 2) then
                             call jenuno(jexnum(nommai, j), k8b)
                             write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -421,7 +423,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
-                        call barpen(i1, n2, zr(jcoor), zi(jpoin))
+                        call barpen(i1, n2, coor, zi(jpoin))
                         if (niv .eq. 2) then
                             call jenuno(jexnum(nommai, j), k8b)
                             write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -439,7 +441,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
-                        call barpyr(i1, n2, zr(jcoor), zi(jpoin))
+                        call barpyr(i1, n2, coor, zi(jpoin))
                         if (niv .eq. 2) then
                             call jenuno(jexnum(nommai, j), k8b)
                             write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -457,7 +459,7 @@ subroutine momaba(mailla)
                     if (zi(jpoin+i1-1) .eq. n1) then
                         lnmf=.false.
                         lmodi=.true.
-                        call barhex(i1, n2, zr(jcoor), zi(jpoin))
+                        call barhex(i1, n2, coor, zi(jpoin))
                         if (niv .eq. 2) then
                             call jenuno(jexnum(nommai, j), k8b)
                             write (ifm,*)'   MAILLE MODIFIEE ',k8b
@@ -486,9 +488,9 @@ subroutine momaba(mailla)
 !       ON REAJUSTE LES COORDONNEES DES NOEUDS MILIEU
 !       DU FOND DE FISSURE
         nn=3*(zi(jnbma+i-1)-1)
-        zr(jcoor+nn)=zr(jcon+nn)
-        zr(jcoor+nn+1)=zr(jcon+nn+1)
-        zr(jcoor+nn+2)=zr(jcon+nn+2)
+        coor(nn+1)=zr(jcon+nn)
+        coor(1+nn+1)=zr(jcon+nn+1)
+        coor(1+nn+2)=zr(jcon+nn+2)
     end do
 !
     if (.not.lmodi) then

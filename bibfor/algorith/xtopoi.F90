@@ -54,13 +54,15 @@ subroutine xtopoi(noma, modele)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: jnoma
     character(len=19) :: ligrel, chgeom
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
     logical :: debug
-    integer :: ifm, niv, ifmdbg, nivdbg, jnbsp, ima, nbma
-    integer :: jcesd, jcesv, jcesl, iad
+    integer :: ifm, niv, ifmdbg, nivdbg,  ima, nbma
+    integer :: jcesd,  jcesl, iad
     character(len=16) :: option
+    integer, pointer :: nbsp(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: cesv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,8 +79,8 @@ subroutine xtopoi(noma, modele)
     else
         debug = .false.
     endif
-    call jeveuo(modele//'.MODELE    .LGRF', 'L', jnoma)
-    chgeom = zk8(jnoma)//'.COORDO'
+    call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
@@ -98,12 +100,12 @@ subroutine xtopoi(noma, modele)
     call cescre('V', heavto, 'ELEM', noma, 'DCEL_I',&
                 2, licmp, [0], [-1], [-2])
     call jeveuo(heavto//'.CESD', 'L', jcesd)
-    call jeveuo(heavto//'.CESV', 'E', jcesv)
+    call jeveuo(heavto//'.CESV', 'E', vi=cesv)
     call jeveuo(heavto//'.CESL', 'E', jcesl)
 !
 ! --- RECUPERATION DU NOMBRE DE FISSURES VUES
 !
-    call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
+    call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
 !
 ! --- REMPLISSAGE DES SOUS POINT DE HEAVTO
 !
@@ -112,7 +114,7 @@ subroutine xtopoi(noma, modele)
         call cesexi('S', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
         zl(jcesl-1-iad) = .true.
-        zi(jcesv-1-iad) = zi(jnbsp-1+ima)
+        cesv(1-1-iad) = nbsp(ima)
 !
     end do
 !

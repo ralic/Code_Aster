@@ -73,7 +73,7 @@ subroutine rc36ma(nommat, noma)
 !
     integer :: nbcmp
     parameter (nbcmp=9)
-    integer :: nbpa, nbpb, nbpt, ipt, nbseis, ndim, jcesvm, jcesdm, jceslm, isp
+    integer :: nbpa, nbpb, nbpt, ipt, nbseis, ndim,  jcesdm, jceslm, isp
     integer :: icmp, iad, im, nbmail, jcesla, jcesva, jcesda, jceslb
     integer :: jcesvb, jcesdb, ier, iocc, nbsitu, jchmat, na, nb, jmater
     real(kind=8) :: para(nbcmp), tempa, tempra, tempb, temprb, tke
@@ -83,6 +83,7 @@ subroutine rc36ma(nommat, noma)
     character(len=16) :: phenom, motcl1, motcl2
     character(len=19) :: chnmat, chsmat, chsma2
     character(len=24) :: chmata, chmatb
+    character(len=8), pointer :: cesvm(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -124,7 +125,7 @@ subroutine rc36ma(nommat, noma)
                 'V', chsma2)
     call detrsd('CHAM_ELEM_S', chsmat)
 !
-    call jeveuo(chsma2//'.CESV', 'L', jcesvm)
+    call jeveuo(chsma2//'.CESV', 'L', vk8=cesvm)
     call jeveuo(chsma2//'.CESD', 'L', jcesdm)
     call jeveuo(chsma2//'.CESL', 'L', jceslm)
 !
@@ -193,7 +194,7 @@ subroutine rc36ma(nommat, noma)
             call cesexi('C', jcesdm, jceslm, im, 1,&
                         1, 1, iad)
             if (iad .gt. 0) then
-                mater = zk8(jcesvm-1+iad)
+                mater = cesvm(iad)
             else
                 call codent(im, 'D', k8b)
                 call utmess('F', 'POSTRCCM_10', sk=k8b)
@@ -203,7 +204,7 @@ subroutine rc36ma(nommat, noma)
             call cesexi('C', jcesdm, jceslm, im, 1,&
                         1, 2, iad)
             if (iad .gt. 0) then
-                ktref = zk8(jcesvm-1+iad)
+                ktref = cesvm(iad)
                 if (ktref .eq. 'NAN') then
                     tempra=r8vide()
                 else
@@ -345,7 +346,7 @@ subroutine rc36ma(nommat, noma)
             call cesexi('C', jcesdm, jceslm, im, 1,&
                         1, 1, iad)
             if (iad .gt. 0) then
-                mater = zk8(jcesvm-1+iad)
+                mater = cesvm(iad)
             else
                 call codent(im, 'D', k8b)
                 call utmess('F', 'POSTRCCM_10', sk=k8b)
@@ -355,7 +356,7 @@ subroutine rc36ma(nommat, noma)
             call cesexi('C', jcesdm, jceslm, im, 1,&
                         1, 2, iad)
             if (iad .gt. 0) then
-                ktref = zk8(jcesvm-1+iad)
+                ktref = cesvm(iad)
                 if (ktref .eq. 'NAN') then
                     tempra=r8vide()
                 else

@@ -70,7 +70,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, icomp, iec, ieq, ier
     integer :: ipoint, j, lddeeq, ldnueq, ldprno, linueq
-    integer :: llinsk, llnueq, llprno, ltinse, lttds, nbcmp, nbcpmx
+    integer ::   llprno, ltinse, lttds, nbcmp, nbcpmx
     integer :: nbddl, nbmcal, nbnot, nbsec, nddlt, neqsec, nsecpr
     integer :: ntail, nugd, numnos, numsec
 !-----------------------------------------------------------------------
@@ -80,6 +80,8 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
     character(len=19) :: pfchno, profno, chamno
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx), nec
+    integer, pointer :: skeleton(:) => null()
+    integer, pointer :: vnueq(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -110,13 +112,13 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
 !------------RECUPERATION DU .INV.SKELETON------------------------------
 !
-    call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
+    call jeveuo(mailsk//'.INV.SKELETON', 'L', vi=skeleton)
 !
 !--------------RECUPERATION DU PRNO DU SECTEUR--------------------------
 !
     call jenonu(jexnom(pfchno//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pfchno//'.PRNO', ibid), 'L', llprno)
-    call jeveuo(pfchno//'.NUEQ', 'L', llnueq)
+    call jeveuo(pfchno//'.NUEQ', 'L', vi=vnueq)
     call dismoi('NB_EQUA', pfchno, 'PROF_CHNO', repi=neqsec)
 !
 !--------------------ALLOCATION DU VECTEUR DE TRAVAIL-------------------
@@ -128,8 +130,8 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
     nddlt=0
     do i = 1, nbnot
-        numsec=zi(llinsk+i-1)
-        numnos=zi(llinsk+nbnot+i-1)
+        numsec=skeleton(i)
+        numnos=skeleton(1+nbnot+i-1)
         nddlt=nddlt+zi(llprno+(numnos-1)*(2+nec)+1)
         zi(lttds+numsec-1)=zi(lttds+numsec-1)+ zi(llprno+(numnos-1)*(&
         2+nec)+1)
@@ -185,8 +187,8 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
     icomp=0
     do i = 1, nbnot
 !
-        numsec=zi(llinsk+i-1)
-        numnos=zi(llinsk+nbnot+i-1)
+        numsec=skeleton(i)
+        numnos=skeleton(1+nbnot+i-1)
         ieq=zi(llprno+(numnos-1)*(2+nec))
         nbddl=zi(llprno+(numnos-1)*(2+nec)+1)
         call isdeco(zi(llprno+(numnos-1)*(2+nec)+2), idec, nbcmp)
@@ -210,7 +212,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
                 zi(lddeeq+(icomp-1)*2)=i
                 zi(lddeeq+(icomp-1)*2+1)=j
                 zi(ldnueq+icomp-1)=icomp
-                linueq=zi(llnueq+ieq+iad-2)
+                linueq=vnueq(1+ieq+iad-2)
                 ipoint=ltinse-1+2*zi(lttds+numsec-1)
                 zi(ipoint+1)=linueq
                 zi(ipoint+2)=icomp

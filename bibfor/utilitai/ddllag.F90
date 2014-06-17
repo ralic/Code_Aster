@@ -38,7 +38,8 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
     character(len=24) :: nomnu
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadeeq, icas, icmp, inoe, nc, nn
+    integer :: i,  icas, icmp, inoe, nc, nn
+    integer, pointer :: deeq(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -46,14 +47,14 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
     lagr2 = 0
     nomnu(1:14) = nume
     nomnu(15:19) = '.NUME'
-    call jeveuo(nomnu(1:19)//'.DEEQ', 'L', iadeeq)
+    call jeveuo(nomnu(1:19)//'.DEEQ', 'L', vi=deeq)
 !
-    inoe = zi(iadeeq + (2*(iddl-1)) + 1 - 1 )
-    icmp = -zi(iadeeq + (2*(iddl-1)) + 2 - 1 )
+    inoe = deeq(1+ (2*(iddl-1)) + 1 - 1 )
+    icmp = -deeq(1+ (2*(iddl-1)) + 2 - 1 )
     icas = 1
     do 10 i = 1, neq
-        nn = zi(iadeeq + (2*(i-1)) + 1 - 1 )
-        nc = zi(iadeeq + (2*(i-1)) + 2 - 1 )
+        nn = deeq(1+ (2*(i-1)) + 1 - 1 )
+        nc = deeq(1+ (2*(i-1)) + 2 - 1 )
         if (nn .eq. inoe .and. nc .eq. icmp) then
             if (icas .eq. 1) then
                 lagr1 = i

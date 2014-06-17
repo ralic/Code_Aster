@@ -51,7 +51,8 @@ subroutine taxis(noma, indic, nbma)
     character(len=19) :: tablg
 !
 !-----------------------------------------------------------------------
-    integer :: iacnex, ier, ima, ino, jvale, nbnoma, numno, iret, ibid
+    integer :: iacnex, ier, ima, ino,  nbnoma, numno, iret, ibid
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -69,7 +70,7 @@ subroutine taxis(noma, indic, nbma)
 !
 !     -- ON PARCOURE LA LISTE DES MAILLES ET ON TESTE LES NOEUDS
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jvale)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     ier=0
     do ima = 1, nbma
         if (indic(ima) .ne. 0) then
@@ -77,12 +78,12 @@ subroutine taxis(noma, indic, nbma)
             call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma)
             do ino = 1, nbnoma
                 numno=zi(iacnex-1+ino)-1
-                if (zr(jvale+3*numno) .lt. toler) then
+                if (vale(1+3*numno) .lt. toler) then
                     call jenuno(jexnum(noma//'.NOMNOE', numno+1), k8b)
                     call jenuno(jexnum(noma//'.NOMMAI', ima ), k8a)
                     valk (1) = k8b
                     valk (2) = k8a
-                    valr (1) = zr(jvale+3*numno)
+                    valr (1) = vale(1+3*numno)
                     call utmess('F+', 'MAILLAGE1_2', nk=2, valk=valk, sr=valr(1))
                     ier = ier + 1
                 endif

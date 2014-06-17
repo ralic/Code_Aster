@@ -64,7 +64,6 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 #include "asterfort/wkvect.h"
 !
     integer :: nuord, np, nc, iexcit, jordr
-    integer :: jlcha, jinfc, jfcha
     integer :: nbordr
     character(len=8) :: result, crit
     character(len=16) :: k16bid, nomcmd
@@ -94,6 +93,9 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
     integer :: nbtych
     parameter   (nbtych = 11)
     character(len=6) :: nomlig(nbtych)
+    character(len=24), pointer :: lcha(:) => null()
+    character(len=24), pointer :: fcha(:) => null()
+    integer, pointer :: infc(:) => null()
 !
     data nomlig/&
      &     '.CIMPO'  ,'.SOURE'  ,'.FLURE'  ,'.FLUR2'  ,&
@@ -169,8 +171,8 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
     if (iexcit .eq. 1) then
         call getfac(nomexc, nchar)
     else
-        call jeveuo(excit//'.INFC', 'L', jinfc)
-        nchar = zi(jinfc)
+        call jeveuo(excit//'.INFC', 'L', vi=infc)
+        nchar = infc(1)
     endif
     if (nchar .ne. 0) then
 ! 3.1. ==> LISTE DES CHARGES
@@ -195,9 +197,9 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
             call getvid(nomexc, 'CHARGE', iocc=ich, scal=nomcha, nbret=n1)
             zk24(ialich+ich-1) = nomcha
         else
-            call jeveuo(excit//'.LCHA', 'L', jlcha)
-            zk24(ialich+ich-1) = zk24(jlcha+ich-1)
-            nomcha = zk24(jlcha+ich-1)
+            call jeveuo(excit//'.LCHA', 'L', vk24=lcha)
+            zk24(ialich+ich-1) = lcha(ich)
+            nomcha = lcha(ich)
         endif
 !
 ! 3.2.2. ==> TYPES DE CHARGES UTILISEES
@@ -244,11 +246,11 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
         if (iexcit .eq. 1) then
             call getvid(nomexc, 'FONC_MULT', iocc=ich, scal=zk24( ialifc+ich-1), nbret=n1)
         else
-            call jeveuo(excit//'.FCHA', 'L', jfcha)
+            call jeveuo(excit//'.FCHA', 'L', vk24=fcha)
             n1=0
-            if (zk24(jfcha-1+ich)(1:2) .ne. '&&') then
+            if (fcha(ich)(1:2) .ne. '&&') then
                 n1 = 1
-                zk24(ialifc+ich-1)=zk24(jfcha+ich-1)
+                zk24(ialifc+ich-1)=fcha(ich)
             endif
         endif
         if (n1 .eq. 0) then

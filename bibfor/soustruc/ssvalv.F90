@@ -80,19 +80,21 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 !     1- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :
 !     ----------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadesm, ialica, ialich, ianmcr, iaparr, iasssa
+    integer :: i, iadesm, ialica, ialich, ianmcr
     integer :: idres2, iret, j, jsma, long, nbsma
     integer :: nbssa, nddle, nddli, nddlt, nmxval
+    real(kind=8), pointer :: para_r(:) => null()
+    integer, pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
     if (statut(1:5) .eq. 'DEBUT') then
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
         call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
         if (nbssa .gt. 0) then
-            call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
+            call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
             call jeveuo(ma//'.NOMACR', 'L', ianmcr)
             nmxval=0
             do jsma = 1, nbsma
-                if (zi(iasssa-1+jsma) .eq. 1) then
+                if (sssa(jsma) .eq. 1) then
                     nomacr= zk8(ianmcr-1+jsma)
                     call jeveuo(nomacr//'.DESM', 'L', iadesm)
                     nddle = zi(iadesm-1+4)
@@ -151,10 +153,10 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
 !
         else if (rota(1:3).eq.'OUI') then
 !         ROTATION:
-            call jeveuo(ma//'.PARA_R', 'L', iaparr)
-            angl(1) = zr(iaparr-1+14*(isma-1)+4)
-            angl(2) = zr(iaparr-1+14*(isma-1)+5)
-            angl(3) = zr(iaparr-1+14*(isma-1)+6)
+            call jeveuo(ma//'.PARA_R', 'L', vr=para_r)
+            angl(1) = para_r(14*(isma-1)+4)
+            angl(2) = para_r(14*(isma-1)+5)
+            angl(3) = para_r(14*(isma-1)+6)
             call matrot(angl, pgl)
             do i = 1, 3
                 do j = 1, 3

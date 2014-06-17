@@ -52,8 +52,9 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
 !     ------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iadgd, iancmp, iatype, ibid, icode, igdco, igdli
+    integer :: iadgd, iancmp,  ibid, icode, igdco, igdli
     integer :: nmax, numgd
+    character(len=8), pointer :: typegd(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -148,9 +149,9 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
         endif
 !
     else if (questi.eq.'TYPE_SCA') then
-        call jeveuo('&CATA.GD.TYPEGD', 'L', iatype)
+        call jeveuo('&CATA.GD.TYPEGD', 'L', vk8=typegd)
         call jenonu(jexnom('&CATA.GD.NOMGD', nomob), numgd)
-        repk= zk8(iatype-1+numgd)
+        repk= typegd(numgd)
     else
         ierd=1
     endif

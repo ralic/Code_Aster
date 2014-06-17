@@ -49,10 +49,12 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     real(kind=8) :: dz, ddz, zmin, zmax, zzmin, zzmax
     character(len=24) :: maille
     integer :: p1, q1, r1, p2, q2, r2, p, q, r, nx, ny, nz, ndec, nno
-    integer :: iatr3, ntr3, ialin1, ialin2, nno1, nno2, i, iposi, ifm, niv
+    integer :: iatr3, ntr3,   nno1, nno2, i, iposi, ifm, niv
     integer :: iabtdi, iabtvr, iabtnb, iabtlc, k, ino, ib, lont, iabtco
     integer :: nbtot, nbmax, nbmin, nbtet
     logical :: dbg
+    integer, pointer :: lino1(:) => null()
+    integer, pointer :: lino2(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -77,8 +79,8 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
         call utmess('F', 'CALCULEL4_57')
     endif
 !
-    call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
-    call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
+    call jeveuo('&&PJXXCO.LINO1', 'L', vi=lino1)
+    call jeveuo('&&PJXXCO.LINO2', 'L', vi=lino2)
     call jelira('&&PJXXCO.LINO1', 'LONMAX', nno1)
     call jelira('&&PJXXCO.LINO2', 'LONMAX', nno2)
 !
@@ -92,7 +94,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     ymax = -rbig
     zmax = -rbig
     do 10,i = 1,nno1
-    if (zi(ialin1-1+i) .eq. 0) goto 10
+    if (lino1(i) .eq. 0) goto 10
     xmin = min(xmin,geom1(3* (i-1)+1))
     xmax = max(xmax,geom1(3* (i-1)+1))
     ymin = min(ymin,geom1(3* (i-1)+2))
@@ -101,7 +103,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     zmax = max(zmax,geom1(3* (i-1)+3))
     10 end do
     do 20,i = 1,nno2
-    if (zi(ialin2-1+i) .eq. 0) goto 20
+    if (lino2(i) .eq. 0) goto 20
     xmin = min(xmin,geom2(3* (i-1)+1))
     xmax = max(xmax,geom2(3* (i-1)+1))
     ymin = min(ymin,geom2(3* (i-1)+2))

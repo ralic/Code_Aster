@@ -51,10 +51,12 @@ subroutine desccy(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid(1), lddnin, ldnoea, ldnoed, ldnoeg, ldnumg
-    integer :: lldesc, llref, nba, nbd, nbda, nbdd, nbdg
+    integer :: ibid(1),  ldnoea, ldnoed, ldnoeg, ldnumg
+    integer :: lldesc,  nba, nbd, nbda, nbdd, nbdg
     integer :: nbg, nbmcal, nbmod, nbmod1, nbmod2, nbnot, nboc
     integer :: nbtemp, numa, numd, numg
+    integer, pointer :: cycl_nuin(:) => null()
+    character(len=24), pointer :: cycl_refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     kbid=' '
@@ -62,16 +64,16 @@ subroutine desccy(nomres)
 !
 !------------------RECUPERATION CONCEPT AMONT---------------------------
 !
-    call jeveuo(nomres//'.CYCL_REFE', 'L', llref)
-    intf=zk24(llref+1)
-    basmod=zk24(llref+2)
+    call jeveuo(nomres//'.CYCL_REFE', 'L', vk24=cycl_refe)
+    intf=cycl_refe(2)
+    basmod=cycl_refe(3)
 !
 !-----RECUPERATION NUMEROS INTERFACES DROITE GAUCHE ET AXE--------------
 !
-    call jeveuo(nomres//'.CYCL_NUIN', 'L', lddnin)
-    numd=zi(lddnin)
-    numg=zi(lddnin+1)
-    numa=zi(lddnin+2)
+    call jeveuo(nomres//'.CYCL_NUIN', 'L', vi=cycl_nuin)
+    numd=cycl_nuin(1)
+    numg=cycl_nuin(2)
+    numa=cycl_nuin(3)
 !
 !----------RECUPERATION DU DESCRIPTEUR DES DEFORMEES STATIQUES----------
 !

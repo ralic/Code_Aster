@@ -57,20 +57,22 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !     -- SI LE MODELE N'A PAS DE SOUS-STRUCTURES ON RESSORT :
 !     --------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i,  iamail,  iasssa, iatypl, ico
+    integer :: i,  iamail,    ico
     integer :: icol, il, ima, ino, inomax, inomin
     integer :: iold, iprem, iret, itypi, nbnm, nbsma, nbssa
     integer, pointer :: avap(:) => null()
     integer, pointer :: oldt(:) => null()
+    integer, pointer :: sssa(:) => null()
+    integer, pointer :: typl(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
     call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
     call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
     if (nbssa .gt. 0) then
-        call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
+        call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
         call jeexin(ma//'.TYPL', iret)
-        if (iret .gt. 0) call jeveuo(ma//'.TYPL', 'L', iatypl)
+        if (iret .gt. 0) call jeveuo(ma//'.TYPL', 'L', vi=typl)
     else
         goto 999
     endif
@@ -91,7 +93,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
     icol= 0
     do ima = 1, nbsma
         exilag=.false.
-        if (zi(iasssa-1+ima) .eq. 1) then
+        if (sssa(ima) .eq. 1) then
             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
             call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
 !
@@ -125,7 +127,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
                 ino=zi(iamail-1+i)
                 if (ino .gt. nm) then
                     exilag=.true.
-                    itypi=zi(iatypl-1+ino-nm)
+                    itypi=typl(ino-nm)
                     if (itypi .eq. -1) then
                         newn(ino)=-inomin
                     else if (itypi.eq.-2) then

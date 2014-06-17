@@ -60,9 +60,13 @@ subroutine ssvau1(nomacr, iavein, iaveou)
     character(len=19) :: matas, stock, nu
 !
 !-----------------------------------------------------------------------
-    integer :: iadesm, iascbl, iascdi, iaschc, iascib, iblold, j
-    integer :: jrefa, jualf, k, kk, lmat, nbbloc, nddle
+    integer ::  iascbl, iascdi,   iblold, j
+    integer ::  jualf, k, kk, lmat, nbbloc, nddle
     integer :: nddli, nddlt
+    integer, pointer :: desm(:) => null()
+    integer, pointer :: vschc(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: scib(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -70,12 +74,12 @@ subroutine ssvau1(nomacr, iavein, iaveou)
     nu=nomacr
     nu=nu(1:14)//'.NUME'
     stock=nu(1:14)//'.SLCS'
-    call jeveuo(stock//'.SCIB', 'L', iascib)
+    call jeveuo(stock//'.SCIB', 'L', vi=scib)
 !
 !
-    call jeveuo(nomacr//'.DESM', 'L', iadesm)
-    nddle=zi(iadesm-1+4)
-    nddli=zi(iadesm-1+5)
+    call jeveuo(nomacr//'.DESM', 'L', vi=desm)
+    nddle=desm(4)
+    nddli=desm(5)
     nddlt=nddli+nddle
 !
 !
@@ -96,13 +100,13 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 !
 !     -- CALCUL DE QI0 = (K_II**(-1))*F_I DANS : VECOUT(1->NDDLI):
 !     ------------------- ----------------------------------------
-    call jeveuo(zk24(zi(lmat+1))(1:19)//'.REFA', 'L', jrefa)
-    call jeveuo(zk24(jrefa-1+2)(1:14)//'.SLCS.SCHC', 'L', iaschc)
+    call jeveuo(zk24(zi(lmat+1))(1:19)//'.REFA', 'L', vk24=refa)
+    call jeveuo(refa(2)(1:14)//'.SLCS.SCHC', 'L', vi=vschc)
     call mtdsc2(zk24(zi(lmat+1)), 'SCDI', 'L', iascdi)
     call mtdsc2(zk24(zi(lmat+1)), 'SCBL', 'L', iascbl)
     call jelira(matas//'.UALF', 'NMAXOC', nbbloc)
 !
-    call rldlr8(zk24(zi(lmat+1)), zi(iaschc), zi(iascdi), zi(iascbl), nddli,&
+    call rldlr8(zk24(zi(lmat+1)), vschc, zi(iascdi), zi(iascbl), nddli,&
                 nbbloc, zr(iaveou), 1)
 !
 !
@@ -110,9 +114,9 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 !     -----------------------------------------------------------------
     iblold=0
     do 30,j=1,nddle
-    iblo=zi(iascib-1+nddli+j)
+    iblo=scib(nddli+j)
     scdi=zi(iascdi-1+nddli+j)
-    schc=zi(iaschc-1+nddli+j)
+    schc=vschc(nddli+j)
     if (iblo .ne. iblold) then
         if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
         call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
@@ -128,7 +132,7 @@ subroutine ssvau1(nomacr, iavein, iaveou)
     if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
 !
 !
-    call jelibe(zk24(jrefa-1+2)(1:14)//'.SLCS.SCHC')
+    call jelibe(refa(2)(1:14)//'.SLCS.SCHC')
 !
     call jedema()
 end subroutine

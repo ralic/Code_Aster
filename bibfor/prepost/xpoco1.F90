@@ -54,19 +54,23 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
 !
 !
 !
-    integer :: jtypm1, jtypm2, i, j, ino1, iret, nbgn, iagno
-    integer :: iacoo1, iacoo2, iacon1, n, iacon2
+    integer ::   i, j, ino1, iret, nbgn, iagno
+    integer ::   iacon1, n, iacon2
     integer :: ino2, nbgm2, i1, i2, iagma1, iagma2, n1, n2, ima
     character(len=8) :: noma2, nono2
     character(len=24) :: nogma
+    integer, pointer :: typm1(:) => null()
+    integer, pointer :: typm2(:) => null()
+    real(kind=8), pointer :: coo1(:) => null()
+    real(kind=8), pointer :: coo2(:) => null()
 !
     call jemarq()
 !
 !     RECUP DES .TYPMAIL, .COORDO DU MAILLAGE 1 ET 2
-    call jeveuo(ma1//'.TYPMAIL', 'L', jtypm1)
-    call jeveuo(ma2//'.TYPMAIL', 'E', jtypm2)
-    call jeveuo(ma1//'.COORDO    .VALE', 'L', iacoo1)
-    call jeveuo(ma2//'.COORDO    .VALE', 'E', iacoo2)
+    call jeveuo(ma1//'.TYPMAIL', 'L', vi=typm1)
+    call jeveuo(ma2//'.TYPMAIL', 'E', vi=typm2)
+    call jeveuo(ma1//'.COORDO    .VALE', 'L', vr=coo1)
+    call jeveuo(ma2//'.COORDO    .VALE', 'E', vr=coo2)
 !
     call jeexin(ma2//'.GROUPENO', iret)
     nbgn = 0
@@ -85,7 +89,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
         if (dirma(i) .ne. 0) then
             call jenuno(jexnum(ma1//'.NOMMAI', dirma(i)), noma2)
             call jecroc(jexnom(ma2//'.NOMMAI', noma2))
-            zi(jtypm2-1+dirma(i)) = zi(jtypm1-1+i)
+            typm2(dirma(i)) = typm1(i)
         endif
 100  end do
 !
@@ -101,7 +105,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
     do 300 i = 1, nbno
         if (dirno(i) .ne. 0) then
             do 310 j = 1, 3
-                zr(iacoo2-1+3*(dirno(i)-1)+j)=zr(iacoo1-1+3*(i-1)+j)
+                coo2(3*(dirno(i)-1)+j)=coo1(3*(i-1)+j)
 310          continue
         endif
 300  end do

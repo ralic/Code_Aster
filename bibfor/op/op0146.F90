@@ -53,7 +53,7 @@ subroutine op0146()
 !-----------------------------------------------------------------------
     integer :: ideb, idisc, ifreq, ik, im1, im2
     integer :: inumo, ipf, ipv, is, ispect, iv, ivali
-    integer :: ivate, ivite, iz, js, jvavf, lbaref, lfsvi
+    integer ::  ivite, iz, js,  lbaref, lfsvi
     integer :: lfsvk, linds, lnoe, lnozo, lpasf, lspec
     integer :: nbpf, nbspec, nff, nfi, nmodf, nmodi, npoi
     integer :: npv, nspelo, nuzo, nzex
@@ -72,6 +72,8 @@ subroutine op0146()
     character(len=24) :: valk(3)
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     integer :: mxval
+    character(len=16), pointer :: vate(:) => null()
+    character(len=8), pointer :: vavf(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -143,9 +145,9 @@ subroutine op0146()
 !
 ! --- 2.0 TRAITEMENT SPECIAL POUR SPEC-LONG-COR-5
 !
-    call jeveuo(zk8(lspec)//'           .VATE', 'L', ivate)
+    call jeveuo(zk8(lspec)//'           .VATE', 'L', vk16=vate)
     call wkvect(nomu//'.REFE', 'G V K16', 3, lrefe)
-    if (zk16(ivate) .eq. 'SPEC_CORR_CONV_3') then
+    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
         zk16(lrefe) = 'DEPL'
         zk16(lrefe+1) = 'TOUT'
     else
@@ -155,7 +157,7 @@ subroutine op0146()
     endif
     zk16(lrefe+2) = 'FREQ'
 !
-    if (zk16(ivate)(1:14) .eq. 'SPEC_CORR_CONV') then
+    if (vate(1)(1:14) .eq. 'SPEC_CORR_CONV') then
         call sfifj(nomu)
     else
 !
@@ -198,8 +200,8 @@ subroutine op0146()
             call wkvect('&&OP0146.TEMP.NOZ', 'V V K16', nbspec, lnozo)
             do 11 is = 1, nbspec
                 spectr = zk8(lspec+is-1)
-                call jeveuo(spectr//'.VAVF', 'L', jvavf)
-                zk16(lnozo+is-1) = zk8(jvavf)
+                call jeveuo(spectr//'.VAVF', 'L', vk8=vavf)
+                zk16(lnozo+is-1) = vavf(1)
 11          continue
 !
 !

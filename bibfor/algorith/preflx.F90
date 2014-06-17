@@ -63,7 +63,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
     character(len=24) :: lifex2, lifex3
 !
 !-----------------------------------------------------------------------
-    integer :: iad1, iaddx, iadesc, iadfx2, iadfx3, iadlma, iadr
+    integer :: iad1, iaddx,  iadfx2, iadfx3, iadlma, iadr
     integer :: iadrho, iadsc3, iadsec, iapp1, iapp1b, iapp2, iapp2b
     integer :: icode, idec1, iexc1, ifreq1, igrma1, igrma2, ij1
     integer :: ij2, ilfex2, ilfex3, ilien1, ilien2, ilima, ilnoex
@@ -74,6 +74,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
     real(kind=8) :: dx, dx1, dx2, omega, pi, rho
     real(kind=8) :: rho1, rho2, sect1, sect2, sign, x1, x2
     real(kind=8) :: y1, y2, z1, z2
+    integer, pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     if (graexc(1:5) .ne. 'SOUR_') goto 9999
@@ -152,10 +153,10 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !--------ON RECHERCHE LE MATERIAU CORRESPONDANT AU GROUPE DE MAILLES
 !        IL EST REPERE PAR SON NUMERO D ORDRE ILIEN1
 !
-        call jeveuo(chamat//'.CHAMP_MAT .DESC', 'L', iadesc)
-        inlien=zi(iadesc-1+3)
+        call jeveuo(chamat//'.CHAMP_MAT .DESC', 'L', vi=desc)
+        inlien=desc(3)
         do 310 ilien1 = 1, inlien
-            icode=zi(iadesc+3-1+2*(ilien1-1)+1)
+            icode=desc(1+3-1+2*(ilien1-1)+1)
             if (icode .eq. 1) then
 !----- -----DANS CE CAS TOUTES LES MAILLES ONT LE MEME CHAMAT
                 ilien2=1
@@ -178,14 +179,14 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 313                  continue
 312              continue
 314              continue
-                igrma2=zi(iadesc+3-1+2*ilien1)
+                igrma2=desc(1+3-1+2*ilien1)
                 if (igrma1 .eq. igrma2) then
                     ilien2=ilien1
                     goto 311
                 endif
             else if (icode.eq.3) then
 !----------DANS CE CAS LA MAILLE A ETE DEFINIE PAR AFFE_MATERIAU
-                ilima=zi(iadesc+3-1+2*ilien1)
+                ilima=desc(1+3-1+2*ilien1)
                 call jeveuo(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'L', iadlma)
                 call jelira(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'LONMAX', nmalim)
                 do 326 ima1 = 1, nmalim

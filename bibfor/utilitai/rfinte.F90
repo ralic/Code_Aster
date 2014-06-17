@@ -41,7 +41,7 @@ subroutine rfinte(ispec)
     integer :: lpro, i1, indi
     integer :: i, kvale
     integer :: ifm, niv, n2, n3, n4, n5, mxval, numi, numj, nbfreq, ifreq, num
-    integer :: lnumi, lnumj, lvale, lfreq, lrefe, lnum
+    integer :: lnumi, lnumj, lvale, lfreq,  lnum
     integer :: lnoei, lnoej, lcmpi, lcmpj
     character(len=8) :: nospec, noei, noej, cmpi, cmpj
     character(len=16) :: nomcmd, typcon, noch, nocham, abscisse
@@ -50,6 +50,7 @@ subroutine rfinte(ispec)
     character(len=24) :: chnoei, chnoej, chcmpi, chcmpj
     character(len=24) :: paray
     logical :: indice
+    character(len=16), pointer :: refe(:) => null()
 !
 ! DEB------------------------------------------------------------------
 !
@@ -64,9 +65,9 @@ subroutine rfinte(ispec)
     call getvtx(' ', 'NOM_CHAM', scal=nocham, nbret=n4)
 !
     nospec = ispec
-    call jeveuo(nospec//'.REFE', 'L', lrefe)
-    noch = zk16(lrefe)
-    abscisse = zk16(lrefe+2)
+    call jeveuo(nospec//'.REFE', 'L', vk16=refe)
+    noch = refe(1)
+    abscisse = refe(3)
     if (n4 .eq. 0) then
         paray = 'DSP'
     else

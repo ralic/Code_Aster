@@ -61,7 +61,7 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
 !
     real(kind=8) :: vecori(3)
 !
-    integer :: jcour2,  jtypm, iatyma, idnono, idlino, jtyp
+    integer :: jcour2,  jtypm, iatyma, idnono, idlino
     integer :: i, nbma, n1, im, nig
     integer :: nid, numno, iret, trouv, numma
     character(len=8) :: k8b, nomma, typm, ndorig, ndextr
@@ -71,6 +71,7 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
     character(len=24) :: conec, typp, nommai, nomnoe, noeord
     character(len=24) :: mesnoe, mafour, nogrp
     integer, pointer :: maillestriees(:) => null()
+    character(len=8), pointer :: type(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !
@@ -194,10 +195,10 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
         call wkvect(resu//'.FOND.TYPE', 'G V K8', 1, jtypm)
         zk8(jtypm) = typm
     else
-        call jeveuo(resu//'.FOND.TYPE', 'L', jtyp)
-        if (typm .eq. zk8(jtyp)) then
+        call jeveuo(resu//'.FOND.TYPE', 'L', vk8=type)
+        if (typm .eq. type(1)) then
             valk(1) = typm
-            valk(2) = zk8(jtyp)
+            valk(2) = type(1)
             call utmess('F', 'RUPTURE0_68', nk=2, valk=valk)
         endif
     endif

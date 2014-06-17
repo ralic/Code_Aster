@@ -68,10 +68,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !
     integer :: i, iad, iar, ibid, idep, ieq, ier, iord, iret, j, jbid, k, l
-    integer :: ldnew, llchab, llchol, llind, lliner, llinsk, llmass, i1, k1
-    integer :: llnueq, llors, llprs, llrot
-    integer :: ltype, nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod(1), nbnot, nbsst
-    integer :: neq, neqs, nno, numo, nutars, llref2, llref3, elim, lmoet
+    integer ::  llchab, llchol, llind,   llmass, i1, k1
+    integer ::  llors, llprs, llrot
+    integer ::  nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod(1), nbnot, nbsst
+    integer :: neq, neqs, nno, numo, nutars,   elim, lmoet
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst
     integer :: iadpar(12)
     integer :: vali(2)
@@ -88,6 +88,13 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     real(kind=8), pointer :: roty(:) => null()
     real(kind=8), pointer :: rotz(:) => null()
     real(kind=8), pointer :: trav(:) => null()
+    integer, pointer :: skeleton(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=8), pointer :: idc_type(:) => null()
+    integer, pointer :: nueq(:) => null()
+    real(kind=8), pointer :: mael_iner_vale(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
@@ -113,19 +120,19 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         valk = mailsk
         call utmess('F', 'ALGORITH14_27', sk=valk)
     endif
-    call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
+    call jeveuo(mailsk//'.INV.SKELETON', 'L', vi=skeleton)
 !
 !-----RECUPERATION DU MODELE GENERALISE--------------------------------
 !
     call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
-    call jeveuo(raid//'.REFA', 'L', llref2)
-    numgen(1:14)=zk24(llref2+1)
+    call jeveuo(raid//'.REFA', 'L', vk24=refa)
+    numgen(1:14)=refa(2)
     numgen(15:19)='.NUME'
     call jelibe(raid//'.REFA')
 !
-    call jeveuo(numgen//'.REFN', 'L', llref3)
-    modgen=zk24(llref3)
+    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
+    modgen=refn(1)
     call jelibe(numgen//'.REFN')
 !
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
@@ -214,7 +221,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !CC---RESTITUTION PROPREMENT DITE---------------------------------------
 !C
 !
-    call jeveuo(numgen//'.NUEQ', 'L', llnueq)
+    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
     call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
     call jeveuo(jexnum(numgen//'.ORIG', ibid), 'L', llors)
     call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
@@ -247,7 +254,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         call rsexch(' ', nomres, depl, i, chamne,&
                     ier)
         call vtcrea(chamne, crefe, 'G', 'R', neq)
-        call jeveuo(chamne//'.VALE', 'E', ldnew)
+        call jeveuo(chamne//'.VALE', 'E', vr=vale)
 !
         call rsadpa(resgen, 'L', 8, nompar, iord,&
                     0, tjv=iadpar, styp=kbid)
@@ -289,8 +296,8 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                             basmod)
 !
                 call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
-                call jeveuo(intf(1:8)//'.IDC_TYPE', 'L', ltype)
-                if (zk8(ltype) .eq. 'AUCUN') then
+                call jeveuo(intf(1:8)//'.IDC_TYPE', 'L', vk8=idc_type)
+                if (idc_type(1) .eq. 'AUCUN') then
                     vali (1) = k
                     vali (2) = k
                     call utmess('A', 'ALGORITH14_28', ni=2, vali=vali)
@@ -300,7 +307,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 call jeveuo(macrel//'.MAEL_MASS_VALE', 'L', llmass)
                 call jelira(macrel//'.MAEL_MASS_VALE', 'LONMAX', nbmax)
                 call jelira(macrel//'.MAEL_MASS_VALE', 'LONUTI', nbmas)
-                call jeveuo(macrel//'.MAEL_INER_VALE', 'L', lliner)
+                call jeveuo(macrel//'.MAEL_INER_VALE', 'L', vr=mael_iner_vale)
 !
 !           --- CALCUL DE LA MATRICE DE ROTAION ---
                 call jeveuo(jexnum(modgen//'      .MODG.SSOR', k), 'L', llrot)
@@ -324,15 +331,15 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     if (elim .ne. 0) then
                         iad=llchol+ieq+j-1
                     else
-                        iad=llchol+zi(llnueq+ieq+j-2)-1
+                        iad=llchol+nueq(1+ieq+j-2)-1
                     endif
 !
 !-- DANS LE CAS ELIM, CHANGER LE IAD, le ZI(LLNUEQ EST PAS BON)
 !
 !           --- CALCUL DES MASSES EFFECTIVES ---
-                    compx = zr(lliner+j-1)
-                    compy = zr(lliner+nbbas+j-1)
-                    compz = zr(lliner+2*nbbas+j-1)
+                    compx = mael_iner_vale(j)
+                    compy = mael_iner_vale(1+nbbas+j-1)
+                    compz = mael_iner_vale(1+2*nbbas+j-1)
 !             --- UTILISATION DE MAT TRANSPOSEE (TRANSFORMATION INVERSE)
                     efmasx = efmasx + zr(iad)*(compx*mat(1,1) + compy* mat(2,1) + compz*mat(3,1))
                     efmasy = efmasy + zr(iad)*(compx*mat(1,2) + compy* mat(2,2) + compz*mat(3,2))
@@ -353,7 +360,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 do l = 1, nbcou
                     idep=zi(llind+(l-1)*2)
                     iar=zi(llind+(l-1)*2+1)
-                    zr(ldnew+iar-1)=trav(idep)
+                    vale(iar)=trav(idep)
                 end do
                 call jelibe(jexnum(indirf, k))
                 AS_DEALLOCATE(vr=trav)
@@ -386,11 +393,11 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !
 !  ROTATION DU CHAMPS AUX NOEUDS
 !
-        call rotchm(profno, zr(ldnew), rotz, nbsst, zi(llinsk),&
+        call rotchm(profno, vale, rotz, nbsst, skeleton,&
                     nbnot, nbcmp, 3)
-        call rotchm(profno, zr(ldnew), roty, nbsst, zi(llinsk),&
+        call rotchm(profno, vale, roty, nbsst, skeleton,&
                     nbnot, nbcmp, 2)
-        call rotchm(profno, zr(ldnew), rotx, nbsst, zi(llinsk),&
+        call rotchm(profno, vale, rotx, nbsst, skeleton,&
                     nbnot, nbcmp, 1)
     end do
 !

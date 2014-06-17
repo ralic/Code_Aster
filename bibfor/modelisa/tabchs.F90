@@ -69,11 +69,11 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !
 !
 !      ==> VARIABLES LOCALES
-    integer :: jtbnp, jtblp, ncmp,  jcnsl, jcnsv, i
+    integer ::   ncmp,  jcnsl,  i
     integer :: vali(2), nblig, isp
     integer :: nbval
     integer :: nuno, numa, nbma, jcesd, nbssp
-    integer :: jcesl, jcesv, jcesc, iad
+    integer :: jcesl,  jcesc, iad
     integer :: nbcol, nbno, ksp, kpt, jcon1, jcon2
     integer :: jcolma, jcolno, jcolpt, jcolsp, ipt
     integer :: icmp, ili, iret,  jobj2, jobj3
@@ -85,15 +85,19 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
     integer, pointer :: ncmp2(:) => null()
     integer, pointer :: pg_tot(:) => null()
     integer, pointer :: sp_tot(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
+    integer, pointer :: tbnp(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 ! ---------------------------------------------------------------------
 !
 !
     call jemarq()
 !
-    call jeveuo(tabin//'.TBNP', 'L', jtbnp)
-    nbcol=zi(jtbnp-1+1)
-    nblig=zi(jtbnp-1+2)
-    call jeveuo(tabin//'.TBLP', 'L', jtblp)
+    call jeveuo(tabin//'.TBNP', 'L', vi=tbnp)
+    nbcol=tbnp(1)
+    nblig=tbnp(2)
+    call jeveuo(tabin//'.TBLP', 'L', vk24=tblp)
 !
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -199,10 +203,10 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
     AS_ALLOCATE(vi=ncmp2, size=nbcol)
     ncmp=0
     do i = 1, nbcol
-        if (zk24(jtblp+4*(i-1)) .ne. 'MAILLE' .and. zk24(jtblp+4*(i-1)) .ne. 'NOEUD' .and.&
-            zk24(jtblp+4*(i-1)) .ne. 'POINT' .and. zk24(jtblp+4*(i-1)) .ne. 'SOUS_POINT') then
+        if (tblp(1+4*(i-1)) .ne. 'MAILLE' .and. tblp(1+4*(i-1)) .ne. 'NOEUD' .and.&
+            tblp(1+4*(i-1)) .ne. 'POINT' .and. tblp(1+4*(i-1)) .ne. 'SOUS_POINT') then
             ncmp=ncmp+1
-            ncmp1(ncmp)=zk24(jtblp+4*(i-1))
+            ncmp1(ncmp)=tblp(1+4*(i-1))
             ncmp2(ncmp)=i
         endif
     end do
@@ -224,20 +228,20 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                     chs)
 !
 ! ---    REMPLISSAGE DU CHAM_S
-        call jeveuo(chs//'.CNSV', 'E', jcnsv)
+        call jeveuo(chs//'.CNSV', 'E', vr=cnsv)
         call jeveuo(chs//'.CNSL', 'E', jcnsl)
 !
         do icmp = 1, ncmp
-            objlg=zk24(jtblp+4*(ncmp2(icmp)-1)+3)
+            objlg=tblp(1+4*(ncmp2(icmp)-1)+3)
             call jeveuo(objlg, 'L', jobj2)
-            objr=zk24(jtblp+4*(ncmp2(icmp)-1)+2)
+            objr=tblp(1+4*(ncmp2(icmp)-1)+2)
             call jeveuo(objr, 'L', jobj3)
             do ili = 1, nblig
                 if (zi(jobj2+ili-1) .eq. 1) then
                     nono=zk8(jcolno+ili-1)
                     call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
                     ASSERT(nuno.gt.0)
-                    zr(jcnsv+(nuno-1)*ncmp+icmp-1)=zr(jobj3+ili-1)
+                    cnsv(1+(nuno-1)*ncmp+icmp-1)=zr(jobj3+ili-1)
                     zl(jcnsl+(nuno-1)*ncmp+icmp-1)=.true.
                 endif
             end do
@@ -338,15 +342,15 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !
 ! ---   REMPLISSAGE DU CHAM_S
         call jeveuo(chs//'.CESD', 'L', jcesd)
-        call jeveuo(chs//'.CESV', 'E', jcesv)
+        call jeveuo(chs//'.CESV', 'E', vr=cesv)
         call jeveuo(chs//'.CESL', 'E', jcesl)
         call jeveuo(chs//'.CESC', 'L', jcesc)
 !
 !
         do icmp = 1, ncmp
-            objlg=zk24(jtblp+4*(ncmp2(icmp)-1)+3)
+            objlg=tblp(1+4*(ncmp2(icmp)-1)+3)
             call jeveuo(objlg, 'L', jobj2)
-            objr=zk24(jtblp+4*(ncmp2(icmp)-1)+2)
+            objr=tblp(1+4*(ncmp2(icmp)-1)+2)
             call jeveuo(objr, 'L', jobj3)
 !
             do ili = 1, nblig
@@ -381,7 +385,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                     call utmess('F', 'MODELISA9_6', nk=3, valk=valk, ni=2,&
                                 vali=vali)
                 endif
-                zr(jcesv+iad-1)=zr(jobj3+ili-1)
+                cesv(iad)=zr(jobj3+ili-1)
                 zl(jcesl+iad-1)=.true.
  70             continue
             end do

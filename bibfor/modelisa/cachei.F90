@@ -50,7 +50,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
 !
 !-----------------------------------------------------------------------
 !
-    integer :: i, nchei, ncmp, jvale, jvalv, jncmp, iocc, nxx, nyy, nzz
+    integer :: i, nchei, ncmp, jvale, jvalv,  iocc, nxx, nyy, nzz
     integer :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
     integer :: nbtou, nbma, jma
     real(kind=8) :: epxx, epyy, epzz, epxy, epxz, epyz, epx, xky, xkz, xexx
@@ -60,6 +60,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
+    character(len=8), pointer :: vncmp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -85,29 +86,29 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
         call utmess('F', 'MODELISA2_37', sk=fonree)
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
     call jeveuo(carte//'.VALE', 'E', jvale)
 !
     ncmp = 6
     if (fonree .eq. 'REEL') ncmp = 15
 !
-    zk8(jncmp-1+1) = 'EPXX'
-    zk8(jncmp-1+2) = 'EPYY'
-    zk8(jncmp-1+3) = 'EPZZ'
-    zk8(jncmp-1+4) = 'EPXY'
-    zk8(jncmp-1+5) = 'EPXZ'
-    zk8(jncmp-1+6) = 'EPYZ'
+    vncmp(1) = 'EPXX'
+    vncmp(2) = 'EPYY'
+    vncmp(3) = 'EPZZ'
+    vncmp(4) = 'EPXY'
+    vncmp(5) = 'EPXZ'
+    vncmp(6) = 'EPYZ'
     if (fonree .eq. 'REEL') then
-        zk8(jncmp-1+7) = 'EPX'
-        zk8(jncmp-1+8) = 'KY'
-        zk8(jncmp-1+9) = 'KZ'
-        zk8(jncmp-1+10) = 'EXX'
-        zk8(jncmp-1+11) = 'EYY'
-        zk8(jncmp-1+12) = 'EXY'
-        zk8(jncmp-1+13) = 'KXX'
-        zk8(jncmp-1+14) = 'KYY'
-        zk8(jncmp-1+15) = 'KXY'
+        vncmp(7) = 'EPX'
+        vncmp(8) = 'KY'
+        vncmp(9) = 'KZ'
+        vncmp(10) = 'EXX'
+        vncmp(11) = 'EYY'
+        vncmp(12) = 'EXY'
+        vncmp(13) = 'KXX'
+        vncmp(14) = 'KYY'
+        vncmp(15) = 'KXY'
     endif
     if (fonree .eq. 'REEL') then
         do i = 1, ncmp

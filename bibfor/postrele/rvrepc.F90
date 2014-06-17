@@ -64,10 +64,14 @@ subroutine rvrepc(courbe, repere, sdnewr)
 !
     character(len=14) :: nabscr, nabsce, ncnxor, ncnxex
     character(len=24) :: nvec1, nvec2
-    integer :: aabscr, avec1, avec2, aasgt, absgt, acarc, asarc, ararc
+    integer :: aabscr, avec1, avec2,    asarc
     integer :: nbpart, nbsgt, nbarc, ipart, nbpt, ipt, aabsce, acnxe, acnxo
     integer :: nbcx, icx, pt, dcx, fcx
     real(kind=8) :: x, y, xa, xb, xc, ya, yb, yc, r, s, t1, t2, n1, n2
+    real(kind=8), pointer :: xybsgt(:) => null()
+    real(kind=8), pointer :: xrarc(:) => null()
+    real(kind=8), pointer :: xycarc(:) => null()
+    real(kind=8), pointer :: xyasgt(:) => null()
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
@@ -83,10 +87,10 @@ subroutine rvrepc(courbe, repere, sdnewr)
 !
     call jelira(courbe//'.XYASGT', 'LONMAX', nbsgt)
     call jelira(courbe//'.XYCARC', 'LONMAX', nbarc)
-    call jeveuo(courbe//'.XYASGT', 'L', aasgt)
-    call jeveuo(courbe//'.XYBSGT', 'L', absgt)
-    call jeveuo(courbe//'.XYCARC', 'L', acarc)
-    call jeveuo(courbe//'.XRARC', 'L', ararc)
+    call jeveuo(courbe//'.XYASGT', 'L', vr=xyasgt)
+    call jeveuo(courbe//'.XYBSGT', 'L', vr=xybsgt)
+    call jeveuo(courbe//'.XYCARC', 'L', vr=xycarc)
+    call jeveuo(courbe//'.XRARC', 'L', vr=xrarc)
     call jeveuo(courbe//'.XSARC', 'L', asarc)
 !
     nbsgt = (nbsgt/2) - 1
@@ -113,13 +117,13 @@ subroutine rvrepc(courbe, repere, sdnewr)
     call jeecra(jexnum(nvec2, ipart), 'LONMAX', 2*(nbpt+nbcx))
     call jeveuo(jexnum(nvec2, ipart), 'E', avec2)
 !
-    xa = zr(aasgt + 2*ipart+1 -1)
-    ya = zr(aasgt + 2*ipart+2 -1)
-    xb = zr(absgt + 2*ipart+1 -1)
-    yb = zr(absgt + 2*ipart+2 -1)
-    xc = zr(acarc + 2*ipart+1 -1)
-    yc = zr(acarc + 2*ipart+2 -1)
-    r = zr(ararc + ipart+1 -1)
+    xa = xyasgt(1+ 2*ipart+1 -1)
+    ya = xyasgt(1+ 2*ipart+2 -1)
+    xb = xybsgt(1+ 2*ipart+1 -1)
+    yb = xybsgt(1+ 2*ipart+2 -1)
+    xc = xycarc(1+ 2*ipart+1 -1)
+    yc = xycarc(1+ 2*ipart+2 -1)
+    r = xrarc(1+ ipart+1 -1)
 !
     pt = 1
 !

@@ -77,8 +77,12 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
     real(kind=8) :: taberr(2), theta, valr, chcrit, freqr, coef, chstab
     real(kind=8) :: instam
     integer :: iret
-    integer :: jinst, jerrt, jpara, jcrr, jcrk, jacces, jpltk, jplir
+    integer :: jinst, jerrt, jpara,   jacces
     integer :: jacce2
+    real(kind=8), pointer :: plir(:) => null()
+    real(kind=8), pointer :: crtr(:) => null()
+    character(len=24), pointer :: pltk(:) => null()
+    character(len=16), pointer :: crde(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -167,20 +171,20 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 !
 ! --- ARCHIVAGE DES CRITERES DE CONVERGENCE
 !
-    call jeveuo(sdcrit//'.CRTR', 'L', jcrr)
-    call jeveuo(sdcrit//'.CRDE', 'L', jcrk)
-    valr = zr(jcrr+1-1)
-    valk = zk16(jcrk+1-1)
+    call jeveuo(sdcrit//'.CRTR', 'L', vr=crtr)
+    call jeveuo(sdcrit//'.CRDE', 'L', vk16=crde)
+    valr = crtr(1)
+    valk = crde(1)
     call rsadpa(result, 'E', 1, valk, numarc,&
                 0, sjv=jpara, styp=k8bid)
     zi(jpara) = nint(valr)
-    valr = zr(jcrr+5-1)
-    valk = zk16(jcrk+5-1)
+    valr = crtr(5)
+    valk = crde(5)
     call rsadpa(result, 'E', 1, valk, numarc,&
                 0, sjv=jpara, styp=k8bid)
     zr(jpara) = valr
-    valr = zr(jcrr+6-1)
-    valk = zk16(jcrk+6-1)
+    valr = crtr(6)
+    valk = crde(6)
     call rsadpa(result, 'E', 1, valk, numarc,&
                 0, sjv=jpara, styp=k8bid)
     zr(jpara) = valr
@@ -203,13 +207,13 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 ! --- ARCHIVAGE DE COEF_MULT SI PILOTAGE
 !
     if (lpilo) then
-        call jeveuo(sdpilo(1:19)//'.PLTK', 'L', jpltk)
-        typpil = zk24(jpltk)
-        typsel = zk24(jpltk+5)
+        call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
+        typpil = pltk(1)
+        typsel = pltk(6)
         if ((typpil.eq.'LONG_ARC'.or.typpil.eq.'SAUT_LONG_ARC') .and. typsel .eq.&
             'ANGL_INCR_DEPL') then
-            call jeveuo(sdpilo(1:19)//'.PLIR', 'L', jplir)
-            coef = zr(jplir)
+            call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
+            coef = plir(1)
             call rsadpa(result, 'E', 1, 'COEF_MULT', numarc,&
                         0, sjv=jinst, styp=k8bid)
             zr(jinst) = coef

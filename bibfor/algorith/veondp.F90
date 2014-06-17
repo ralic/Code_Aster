@@ -66,13 +66,13 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
     integer :: ibid, i, iret, iondp
     character(len=19) :: vecele
     character(len=24) :: chinst
-    integer :: jnoma
     character(len=24) :: chgeom, ligrmo
     integer :: nchond
     character(len=19) :: chondp
     logical :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
+    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,8 +85,8 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
     nchond = ndynin(sddyna,'NBRE_ONDE_PLANE')
     vecele = vecelz
     ligrmo = modele(1:8)//'.MODELE'
-    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', jnoma)
-    chgeom = zk8(jnoma)//'.COORDO'
+    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
     option = 'ONDE_PLAN'
     chinst = '&&CHINST'
     if (nivdbg .ge. 2) then

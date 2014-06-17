@@ -46,10 +46,12 @@ subroutine cbsint(char, noma, ligrmo, fonree)
 !
     integer :: nbfac
     character(len=5) :: param
-    integer :: ibid, nchei, ncmp, jvalv, jncmp
+    integer :: ibid, nchei, ncmp
     character(len=16) :: motclf
     character(len=19) :: carte
     character(len=24) :: chsig
+    character(len=8), pointer :: valv(:) => null()
+    character(len=8), pointer :: vncmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -67,13 +69,13 @@ subroutine cbsint(char, noma, ligrmo, fonree)
 ! ---        MODELE ASSOCIE AU LIGREL DE CHARGE
 !
             call alcart('G', carte, noma, 'NEUT_K8')
-            call jeveuo(carte//'.NCMP', 'E', jncmp)
-            call jeveuo(carte//'.VALV', 'E', jvalv)
+            call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
+            call jeveuo(carte//'.VALV', 'E', vk8=valv)
 !
             ncmp = 1
-            zk8(jncmp-1+1) = 'Z1'
+            vncmp(1) = 'Z1'
             call getvid(motclf, 'SIGM', iocc=1, scal=chsig, nbret=ibid)
-            zk8(jvalv-1+1) = chsig
+            valv(1) = chsig
             call nocart(carte, 1, ncmp)
 !
         endif

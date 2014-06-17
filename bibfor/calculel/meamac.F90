@@ -61,7 +61,8 @@ subroutine meamac(modelz, ncha, lcha, mate, matelz)
     character(len=19) :: matel
 !
 !-----------------------------------------------------------------------
-    integer :: i, jlire2, long2
+    integer :: i,  long2
+    character(len=24), pointer :: relr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     modele = modelz
@@ -74,7 +75,7 @@ subroutine meamac(modelz, ncha, lcha, mate, matelz)
 !*    -- ON RECOPIE LES .RELR DE &MEAMAC2 DANS MATEL.
 !**
     call jelira('&MEAMAC2           .RELR', 'LONUTI', long2)
-    call jeveuo('&MEAMAC2           .RELR', 'L', jlire2)
+    call jeveuo('&MEAMAC2           .RELR', 'L', vk24=relr)
 !**
     call jedetr(matel//'.RERR')
     call jedetr(matel//'.RELR')
@@ -83,7 +84,7 @@ subroutine meamac(modelz, ncha, lcha, mate, matelz)
                 'AMOR_ACOU')
 !
     do 1,i = 1,long2
-    call reajre(matel, zk24(jlire2-1+i), 'G')
+    call reajre(matel, relr(i), 'G')
     1 end do
 ! --- MENAGE
     call jedetr('&MEAMAC2           .RELR')

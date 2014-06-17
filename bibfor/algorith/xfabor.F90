@@ -52,16 +52,17 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 !
     integer :: jma, nmanoa, nmanob, nmanoc, jmanoa, jmanob, jmanoc
     integer :: imaa, imab, imac, itypma, numaa, numab, numac, nbmaco
-    integer :: ndime, jtmdim
+    integer :: ndime
     character(len=19) :: mai
     character(len=8) ::  typma
+    integer, pointer :: tmdim(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 !     RECUPERATION DES MAILLES CONTENANT LE NOEUD A
     call jelira(jexnum(cnxinv, nunoa), 'LONMAX', nmanoa)
@@ -86,7 +87,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
 !       NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-        ndime= zi(jtmdim-1+itypma)
+        ndime= tmdim(itypma)
 !
 !       SI MAILLE NON VOLUMIQUE ON CONTINUE À 100
         if (ndime .ne. 3) goto 100
@@ -98,7 +99,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
             itypma = zi(jma-1+numab)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
-            ndime= zi(jtmdim-1+itypma)
+            ndime= tmdim(itypma)
 !
 !         SI MAILLE NON VOLUMIQUE ON CONTINUE À 110
             if (ndime .ne. 3) goto 110
@@ -112,7 +113,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
                     itypma = zi(jma-1+numac)
                     call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
-                    ndime= zi(jtmdim-1+itypma)
+                    ndime= tmdim(itypma)
 !
 !             SI MAILLE NON VOLUMIQUE ON CONTINUE À 120
                     if (ndime .ne. 3) goto 120

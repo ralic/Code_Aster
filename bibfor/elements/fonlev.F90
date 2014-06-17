@@ -48,7 +48,7 @@ subroutine fonlev(resu, noma, nbnoff)
 !     -----------------------------------------------------------------
 !
     integer :: jmai1, jadr, jnoe1, jmai2, jmaii, jjj, iatyma
-    integer :: jinf, jsup, iamase, ityp, jvale, jfinf, jfsup
+    integer ::   iamase, ityp
     integer :: jufinf, jufsup, juinf2
     integer :: igr, ngr, ino, i, j, k, ibid, k2, j2
     integer :: nbmai, nent, indice
@@ -60,6 +60,11 @@ subroutine fonlev(resu, noma, nbnoff)
     character(len=8) :: maille, type, noeug, typmcl(2), motcle(2)
     character(len=9) :: typlev(2), motfac, valk(2)
     character(len=24) :: nomobj, grouma, nommai, conec, trav, trav2
+    character(len=8), pointer :: inf(:) => null()
+    character(len=8), pointer :: sup(:) => null()
+    character(len=8), pointer :: finf(:) => null()
+    character(len=8), pointer :: fsup(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
     parameter(prec=1.d-1)
 !     -----------------------------------------------------------------
 !
@@ -272,14 +277,14 @@ subroutine fonlev(resu, noma, nbnoff)
     call jeexin(resu//'.LEVRESUP.MAIL', iret1)
     call jeexin(resu//'.LEVREINF.MAIL', iret2)
     if ((iret1.ne.0) .and. (iret2.ne.0)) then
-        call jeveuo(resu//'.LEVRESUP.MAIL', 'L', jsup)
-        call jeveuo(resu//'.LEVREINF.MAIL', 'L', jinf)
+        call jeveuo(resu//'.LEVRESUP.MAIL', 'L', vk8=sup)
+        call jeveuo(resu//'.LEVREINF.MAIL', 'L', vk8=inf)
         call jelira(resu//'.LEVRESUP.MAIL', 'LONMAX', nbmas1)
         call jelira(resu//'.LEVRESUP.MAIL', 'LONMAX', nbmas2)
         do i = 1, nbmas1
             do j = 1, nbmas2
-                if (zk8(jsup-1 + i) .eq. zk8(jinf-1 + j)) then
-                    call utmess('F', 'RUPTURE0_73', sk=zk8(jsup-1 + i))
+                if (sup(i) .eq. inf(j)) then
+                    call utmess('F', 'RUPTURE0_73', sk=sup(i))
                 endif
             end do
         end do
@@ -288,27 +293,27 @@ subroutine fonlev(resu, noma, nbnoff)
 !
 !     LORSQUE LE FOND DE FISSURE EST DEFINI PAR FOND_INF ET FOND_SUP,
 !     ON VERIFIE QUE LES NOEUDS SONT EN VIV A VIS
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jvale)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call jeexin(resu//'.FOND_INF.NOEU', iret1)
     call jeexin(resu//'.FOND_SUP.NOEU', iret2)
     if (iret1 .ne. 0 .and. iret2 .ne. 0) then
-        call jeveuo(resu//'.FOND_INF.NOEU', 'L', jfinf)
-        call jeveuo(resu//'.FOND_SUP.NOEU', 'L', jfsup)
-        call jenonu(jexnom(noma//'.NOMNOE', zk8(jfinf)), jufinf)
-        call jenonu(jexnom(noma//'.NOMNOE', zk8(jfinf+1)), juinf2)
-        d = abs(zr(jvale+3*(jufinf-1))- zr(jvale+3*(juinf2-1)))
-        d = d+abs(zr(jvale+3*(jufinf-1)+1)- zr(jvale+3*(juinf2-1)+1))
-        d = d+abs(zr(jvale+3*(jufinf-1)+2)- zr(jvale+3*(juinf2-1)+2))
+        call jeveuo(resu//'.FOND_INF.NOEU', 'L', vk8=finf)
+        call jeveuo(resu//'.FOND_SUP.NOEU', 'L', vk8=fsup)
+        call jenonu(jexnom(noma//'.NOMNOE', finf(1)), jufinf)
+        call jenonu(jexnom(noma//'.NOMNOE', finf(2)), juinf2)
+        d = abs(vale(1+3*(jufinf-1))- vale(1+3*(juinf2-1)))
+        d = d+abs(vale(1+3*(jufinf-1)+1)- vale(1+3*(juinf2-1)+1))
+        d = d+abs(vale(1+3*(jufinf-1)+2)- vale(1+3*(juinf2-1)+2))
         precr = prec*d
         do ino = 1, nbnoff
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jfinf-1+ino)), jufinf)
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jfsup-1+ino)), jufsup)
-            d = abs(zr(jvale+3*(jufinf-1))- zr(jvale+3*(jufsup-1)))
-            d = d+abs(zr(jvale+3*(jufinf-1)+1)- zr(jvale+3*(jufsup-1)+ 1))
-            d = d+abs(zr(jvale+3*(jufinf-1)+2)- zr(jvale+3*(jufsup-1)+ 2))
+            call jenonu(jexnom(noma//'.NOMNOE', finf(ino)), jufinf)
+            call jenonu(jexnom(noma//'.NOMNOE', fsup(ino)), jufsup)
+            d = abs(vale(1+3*(jufinf-1))- vale(1+3*(jufsup-1)))
+            d = d+abs(vale(1+3*(jufinf-1)+1)- vale(1+3*(jufsup-1)+ 1))
+            d = d+abs(vale(1+3*(jufinf-1)+2)- vale(1+3*(jufsup-1)+ 2))
             if (sqrt(d) .gt. precr) then
-                valk(1) = zk8(jfinf+ino-1)
-                valk(2) = zk8(jfsup+ino-1)
+                valk(1) = finf(ino)
+                valk(2) = fsup(ino)
                 call utmess('F', 'RUPTURE0_69', nk=2, valk=valk)
             endif
         end do

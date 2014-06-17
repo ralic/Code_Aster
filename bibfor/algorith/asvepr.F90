@@ -73,7 +73,6 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 !
     character(len=19) :: vecele, chamno
-    integer :: jvec
     character(len=24) :: vachar
     integer :: jvacha
     character(len=24) :: resuel
@@ -83,6 +82,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     integer :: iret, ibid, ivec, ichar, ityprs
     character(len=4) :: tyresl
     character(len=1) :: typchn
+    character(len=24), pointer :: relr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -147,7 +147,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 ! --- INITIALISER L'OBJET .RELR DU VECT_ELEM
 !
     call reajre('&&ASVEPR', ' ', 'V')
-    call jeveuo(vecele//'.RELR', 'E', jvec)
+    call jeveuo(vecele//'.RELR', 'E', vk24=relr)
 !
 ! --- ASSEMBLAGE DES VECT_ELEM
 !
@@ -155,7 +155,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 ! ----- NOM DU RESU_ELEM
 !
-        resuel = zk24(jvec-1+ivec)
+        resuel = relr(ivec)
 !
 ! ----- PREPARATION DU NOM DU CHAM_NO
 !
@@ -214,7 +214,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
     call jeexin(vecele//'.RELR', iret)
     do ivec = 1, nbvec
-        resuel = zk24(jvec-1+ivec)
+        resuel = relr(ivec)
         call corich('S', resuel, ibid, ibid)
         call detrsd('CHAMP_GD', resuel)
     end do

@@ -63,7 +63,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
 !     ------------------------------------------------------------------
 !
     integer :: nbchoc, i, j, ibid, jcoor1, jcoor2, irett, nn1, nn2, ino1, ino2
-    integer :: n1, n2, iret, llrefe
+    integer :: n1, n2, iret
     real(kind=8) :: ktang, ctang, k, coor1(3), coor2(3), xjeu, r8bid
     complex(kind=8) :: cbid
     logical :: lnoue2
@@ -73,12 +73,13 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
     character(len=14) :: nume1, nume2
     character(len=24) :: mdgene, mdssno, refo, nomgr1, nomgr2
     character(len=24) :: valk(2)
+    character(len=24), pointer :: refn(:) => null()
 !     ------------------------------------------------------------------
 !
     call getfac('CHOC', nbchoc)
 !
-    call jeveuo(numddl//'.NUME.REFN', 'L', llrefe)
-    mdgene = zk24(llrefe)
+    call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
+    mdgene = refn(1)
     mdssno = mdgene(1:14)//'.MODG.SSNO'
 !
     motfac = 'CHOC'

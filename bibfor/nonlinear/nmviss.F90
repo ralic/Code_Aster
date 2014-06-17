@@ -74,12 +74,17 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
     real(kind=8) :: impe12, r8bid
     integer :: iordr, iarc, iarc2, iret, ibid
     integer :: id1, id2, ifreq
-    integer :: ivald, ivalv, ivala, ivad2, ivav2, ivaa2
     integer :: jinst, ldnew
     integer :: nddint, unitef, nbmode, tnum(1)
     character(len=16) :: motfac
     character(len=8) :: criter
     real(kind=8) :: prec
+    real(kind=8), pointer :: vaa2(:) => null()
+    real(kind=8), pointer :: vad2(:) => null()
+    real(kind=8), pointer :: vala(:) => null()
+    real(kind=8), pointer :: vald(:) => null()
+    real(kind=8), pointer :: valv(:) => null()
+    real(kind=8), pointer :: vav2(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -164,23 +169,23 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
         iarc2 = nume+1-iordr
         call rsexch('F', result, 'DEPL', iarc2, chamnd,&
                     iret)
-        call jeveuo(chamnd(1:19)//'.VALE', 'L', ivald)
+        call jeveuo(chamnd(1:19)//'.VALE', 'L', vr=vald)
         call rsexch('F', result, 'VITE', iarc2, chamnv,&
                     iret)
-        call jeveuo(chamnv(1:19)//'.VALE', 'L', ivalv)
+        call jeveuo(chamnv(1:19)//'.VALE', 'L', vr=valv)
         call rsexch('F', result, 'ACCE', iarc2, chamna,&
                     iret)
-        call jeveuo(chamna(1:19)//'.VALE', 'L', ivala)
+        call jeveuo(chamna(1:19)//'.VALE', 'L', vr=vala)
         if (iarc2 .gt. 0) then
             call rsexch('F', result, 'DEPL', iarc2-1, chand2,&
                         iret)
-            call jeveuo(chand2(1:19)//'.VALE', 'L', ivad2)
+            call jeveuo(chand2(1:19)//'.VALE', 'L', vr=vad2)
             call rsexch('F', result, 'VITE', iarc2-1, chanv2,&
                         iret)
-            call jeveuo(chanv2(1:19)//'.VALE', 'L', ivav2)
+            call jeveuo(chanv2(1:19)//'.VALE', 'L', vr=vav2)
             call rsexch('F', result, 'ACCE', iarc2-1, chana2,&
                         iret)
-            call jeveuo(chana2(1:19)//'.VALE', 'L', ivaa2)
+            call jeveuo(chana2(1:19)//'.VALE', 'L', vr=vaa2)
         endif
         if (iordr .eq. (nume+1-nume0)) then
             inst=instd+pas
@@ -197,28 +202,28 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
                 1)*nbmode+id1-1)+ zr(jrigt+(ifreq-1)*nbmode*nbmode+(&
                 id1-1)*nbmode+id2-1))
                 zr(ldnew+zi(ieqint+id1-1)-1)= zr(ldnew+zi(ieqint+id1-&
-                1)-1)-impe12* zr(ivald+zi(ieqint+id2-1)-1)*coef1
+                1)-1)-impe12* vald(1+zi(ieqint+id2-1)-1)*coef1
                 if (iarc2 .gt. 0) zr(&
                                   ldnew+zi(ieqint+id1-1)-1)= zr( ldnew+zi(ieqint+id1-1)-1)-impe12&
-                                  &* zr(ivad2+zi(ieqint+ id2-1)-1&
+                                  &* vad2(1+zi(ieqint+ id2-1)-1&
                                   )*coef2
                 impe12=0.5d0* (zr(jmast+(ifreq-1)*nbmode*nbmode+(id2-&
                 1)*nbmode+id1-1)+ zr(jmast+(ifreq-1)*nbmode*nbmode+(&
                 id1-1)*nbmode+id2-1))
                 zr(ldnew+zi(ieqint+id1-1)-1)= zr(ldnew+zi(ieqint+id1-&
-                1)-1)-impe12* zr(ivala+zi(ieqint+id2-1)-1)*coef1
+                1)-1)-impe12* vala(1+zi(ieqint+id2-1)-1)*coef1
                 if (iarc2 .gt. 0) zr(&
                                   ldnew+zi(ieqint+id1-1)-1)= zr( ldnew+zi(ieqint+id1-1)-1)-impe12&
-                                  &* zr(ivaa2+zi(ieqint+ id2-1)-1&
+                                  &* vaa2(1+zi(ieqint+ id2-1)-1&
                                   )*coef2
                 impe12=0.5d0* (zr(jamot+(ifreq-1)*nbmode*nbmode+(id2-&
                 1)*nbmode+id1-1)+ zr(jamot+(ifreq-1)*nbmode*nbmode+(&
                 id1-1)*nbmode+id2-1))
                 zr(ldnew+zi(ieqint+id1-1)-1)= zr(ldnew+zi(ieqint+id1-&
-                1)-1)-impe12* zr(ivalv+zi(ieqint+id2-1)-1)*coef1
+                1)-1)-impe12* valv(1+zi(ieqint+id2-1)-1)*coef1
                 if (iarc2 .gt. 0) zr(&
                                   ldnew+zi(ieqint+id1-1)-1)= zr( ldnew+zi(ieqint+id1-1)-1)-impe12&
-                                  &* zr(ivav2+zi(ieqint+ id2-1)-1&
+                                  &* vav2(1+zi(ieqint+ id2-1)-1&
                                   )*coef2
             end do
         end do

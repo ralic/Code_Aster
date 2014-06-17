@@ -82,8 +82,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     type (cmumps_struc) , pointer :: cmpsk => null()
     type (dmumps_struc) , pointer :: dmpsk => null()
     type (zmumps_struc) , pointer :: zmpsk => null()
-    integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, jdelg, k, ifm, niv
-    integer :: jdlg2, jj
+    integer :: n, nnbsol, rang, lmat, i, ierd, idvalc,  k, ifm, niv
+    integer ::  jj
     character(len=1) :: rouc
     character(len=4) :: etam
     character(len=14) :: nonu
@@ -92,6 +92,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     logical :: ltypr
     real(kind=8) :: rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
+    integer, pointer :: delg(:) => null()
+    integer, pointer :: dlg2(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
@@ -352,15 +354,15 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !           -- LAGR1 = LAGR1/2 PUIS LAGR2 = LAGR1
 !           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
 !           -- BROADCAST LA SOLUTION APRES
-                call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
+                call jeveuo(nonu//'.NUME.DELG', 'L', vi=delg)
                 call nudlg2(nonu)
-                call jeveuo(nonu//'.NUME.DLG2', 'L', jdlg2)
+                call jeveuo(nonu//'.NUME.DLG2', 'L', vi=dlg2)
                 if (ltypr) then
                     do i = 1, nbsol
                         do k = 1, n
-                            if (zi(jdelg-1+k) .eq. -1) then
+                            if (delg(k) .eq. -1) then
                                 rsolu((i-1)*n+k)= 0.5d0 * rsolu((i-1)*n+k)
-                                jj = zi(jdlg2-1+k)
+                                jj = dlg2(k)
                                 rsolu((i-1)*n+jj) = rsolu((i-1)*n+k)
                             endif
                         enddo
@@ -368,9 +370,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 else
                     do i = 1, nbsol
                         do k = 1, n
-                            if (zi(jdelg-1+k) .eq. -1) then
+                            if (delg(k) .eq. -1) then
                                 csolu((i-1)*n+k) = 0.5d0*csolu((i-1)*n+k)
-                                jj = zi(jdlg2-1+k)
+                                jj = dlg2(k)
                                 csolu((i-1)*n+jj) = csolu((i-1)*n+k)
                             endif
                         enddo

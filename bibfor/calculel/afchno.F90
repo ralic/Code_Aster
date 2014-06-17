@@ -47,8 +47,9 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 !
 !-----------------------------------------------------------------------
     integer :: i1, ic, idec, iec, ii, inec
-    integer :: ino, jj, lnueq, lonval, lprno, lvale, nbnoeu
+    integer :: ino, jj, lnueq, lonval,  lvale, nbnoeu
     integer :: nec, nn, numgd
+    integer, pointer :: prno(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     chamno = chamn
@@ -68,15 +69,15 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 !
 !     --- AFFECTATION DU .PRNO DE L'OBJET PROF_CHNO ---
 !
-    call jeveuo(chamno//'.PRNO', 'E', lprno)
+    call jeveuo(chamno//'.PRNO', 'E', vi=prno)
     ii = 0
     idec = 1
     do ino = 1, nbnoeu
-        zi(lprno-1+ (nec+2)*(ino-1)+1) = idec
-        zi(lprno-1+ (nec+2)*(ino-1)+2) = nbcpno(ino)
+        prno((nec+2)*(ino-1)+1) = idec
+        prno((nec+2)*(ino-1)+2) = nbcpno(ino)
         do inec = 1, nec
             ii = ii + 1
-            zi(lprno-1+ (nec+2)*(ino-1)+2+inec) = desc(ii)
+            prno((nec+2)*(ino-1)+2+inec) = desc(ii)
         end do
         idec = idec + nbcpno(ino)
     end do
@@ -86,7 +87,7 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
     call jeveuo(chamno//'.VALE', 'E', lvale)
     call jeveuo(chamno//'.NUEQ', 'E', lnueq)
     do ino = 1, nbnoeu
-        i1 = zi(lprno-1+ (nec+2)*(ino-1)+1) + lnueq - 1
+        i1 = prno((nec+2)*(ino-1)+1) + lnueq - 1
         do ic = 1, ncmpmx
             iec = ( ic - 1 ) / 30 + 1
             jj = ic - 30 * ( iec - 1 )

@@ -72,7 +72,7 @@ subroutine cla110(nomres, modgen)
     integer :: i, iad, iatyma, icomp, igd, igr, igrma
     integer :: ilstgr, ioc, iret, is, itcon, j, k
     integer :: l, ldcone, ldcoo, lddes, lddime, ldgrma, ldref
-    integer :: ldskin, ldtitr, ldtyp, llcona, llcoo, llma, llrot
+    integer :: ldskin, ldtitr,  llcona,  llma, llrot
     integer :: lltra, lltyp, lstac, ltdesc, ltfac, ltino, ltinv
     integer :: ltlima, ltlino, ltmail, ltnbgr, ltnbma, ltnbno, ltnogr
     integer :: ltnoma, ltrot, lttra, lutgma, lutnom, lutsst, maxgr
@@ -93,6 +93,8 @@ subroutine cla110(nomres, modgen)
     real(kind=8) :: matbuf(nbcmpm, nbcmpm), mattmp(nbcmpm, nbcmpm)
     character(len=8) :: k8bid, exclu
     integer :: iarg
+    integer, pointer :: nldtyp(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     data tt      /'&&CLA110'/
@@ -450,13 +452,13 @@ subroutine cla110(nomres, modgen)
     nbtgrm=0
     nbincr=0
     itcon=0
-    call jeveuo(nomres//'.TYPMAIL', 'E', ldtyp)
+    call jeveuo(nomres//'.TYPMAIL', 'E', vi=nldtyp)
     call jeveuo(nomcon, 'E', ldcone)
 !
     do i = 1, nbstac
         mailla=zk8(ltmail+i-1)
         maicon = mailla//'.CONNEX'
-        call jeveuo(mailla//'.COORDO    .VALE', 'L', llcoo)
+        call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
         call jenuno(jexnum(tt//'.NOM.SST', i), nomsst)
         zk8(lstac-1+i) = nomsst
 !
@@ -508,7 +510,7 @@ subroutine cla110(nomres, modgen)
             end do
             zi(ldskin+nbnot+nbtmno-1)=numno
             do k = 1, 3
-                xanc(k)=zr(llcoo+(numno-1)*3+k-1)
+                xanc(k)=vale(1+(numno-1)*3+k-1)
             end do
             do k = 1, 3
                 xnew=0.d0
@@ -555,7 +557,7 @@ subroutine cla110(nomres, modgen)
 !
             call jeveuo(mailla//'.TYPMAIL', 'L', iatyma)
             lltyp=iatyma-1+numma
-            zi(ldtyp+nbtmma-1)=zi(lltyp)
+            nldtyp(nbtmma)=zi(lltyp)
         end do
 !
         nbgr = zi(ltnbgr-1+i)

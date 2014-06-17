@@ -57,8 +57,10 @@ subroutine ssrige(nomu)
     character(len=24) :: mate
 !
 !-----------------------------------------------------------------------
-    integer :: iarefm, ibid, jdesm, jvarm
+    integer :: iarefm, ibid
     real(kind=8) :: time
+    integer, pointer :: desm(:) => null()
+    real(kind=8), pointer :: varm(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nu = nomu
@@ -67,8 +69,8 @@ subroutine ssrige(nomu)
     matel = '&&MATEL'
     matas = nomu//'.RIGIMECA'
 !
-    call jeveuo(nomu//'.DESM', 'L', jdesm)
-    nchaci = zi(jdesm-1+6)
+    call jeveuo(nomu//'.DESM', 'L', vi=desm)
+    nchaci = desm(6)
 !
     call jeveuo(nomu//'.REFM', 'E', iarefm)
     nomo = zk8(iarefm-1+1)
@@ -80,8 +82,8 @@ subroutine ssrige(nomu)
         call rcmfmc(materi, mate)
     endif
 !
-    call jeveuo(nomu//'.VARM', 'L', jvarm)
-    time = zr(jvarm-1+2)
+    call jeveuo(nomu//'.VARM', 'L', vr=varm)
+    time = varm(2)
 !
 !        -- CALCULS MATRICES ELEMENTAIRES DE RIGIDITE:
     call merime(nomo, nchaci, zk8(iarefm-1+9+1), mate, cara,&
@@ -96,7 +98,7 @@ subroutine ssrige(nomu)
 !           AVANT DE CONSTRUIRE LE PROFIL :
     call ssriu1(nomu)
     call promor(nu, 'G')
-    rtbloc=zr(jvarm-1+1)
+    rtbloc=varm(1)
     call smosli(nu//'.SMOS', nu//'.SLCS', 'G', rtbloc)
 !
 !        -- ASSEMBLAGE:

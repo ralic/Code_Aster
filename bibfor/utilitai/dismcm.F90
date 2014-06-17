@@ -57,7 +57,9 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
     integer :: ianorc, iaobj, iaprol, iavale, iavalk, if, ii
     integer :: iii, imax, irc, iret, jdesc, lonobj, n
     integer :: n1, nbrc, nbzone, nc, nf, nmat, nr
-    integer :: n2, jvale, jcvar1, nbvarc, nedit, kvarc, kedit
+    integer :: n2,   nbvarc, nedit, kvarc, kedit
+    character(len=8), pointer :: cvrcvarc(:) => null()
+    character(len=16), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     parameter(nbmax=30)
@@ -283,20 +285,20 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
         repk='NON'
         call jeexin(nomob//'.CVRCVARC', iret)
         if (iret .ne. 0) then
-            call jeveuo(nomob//'.CVRCVARC', 'L', jcvar1)
+            call jeveuo(nomob//'.CVRCVARC', 'L', vk8=cvrcvarc)
             call jelira(nomob//'.CVRCVARC', 'LONMAX', nbvarc)
             do kvarc=1,nbvarc
-                novarc=zk8(jcvar1-1+kvarc)
+                novarc=cvrcvarc(kvarc)
                 nomcar2=nomob//'.'//novarc
                 nomcar2=nomcar2(1:17)//'.2'
                 call jeveuo(nomcar2//'.DESC', 'L', jdesc)
                 nedit=zi(jdesc-1+3)
-                call jeveuo(nomcar2//'.VALE', 'L', jvale)
+                call jeveuo(nomcar2//'.VALE', 'L', vk16=vale)
                 call jelira(nomcar2//'.VALE', 'LONMAX', n1)
                 n2=n1/nedit
                 ASSERT(n1.eq.nedit*n2)
                 do kedit=1,nedit
-                    ktyp=zk16(jvale-1+(kedit-1)*n2+2)
+                    ktyp=vale((kedit-1)*n2+2)
                     ASSERT(ktyp.eq.'EVOL' .or.ktyp.eq.'CHAMP')
                     if (ktyp.eq.'EVOL') then
                         repk='OUI'

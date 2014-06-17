@@ -42,11 +42,12 @@ subroutine caflnl(char, ligrmo, noma)
 !      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
-    integer :: nflux, jvalv, jncmp, nf, iocc, nbtou, nbma, jma, ncmp
+    integer :: nflux, jvalv,  nf, iocc, nbtou, nbma, jma, ncmp
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
+    character(len=8), pointer :: vncmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -55,15 +56,15 @@ subroutine caflnl(char, ligrmo, noma)
 !
     carte = char//'.CHTH.FLUNL'
     call alcart('G', carte, noma, 'FLUN_F')
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
 ! --- STOCKAGE DE FLUX NULS SUR TOUT LE MAILLAGE
 !
     ncmp = 3
-    zk8(jncmp-1+1) = 'FLUN'
-    zk8(jncmp-1+2) = 'FLUN_INF'
-    zk8(jncmp-1+3) = 'FLUN_SUP'
+    vncmp(1) = 'FLUN'
+    vncmp(2) = 'FLUN_INF'
+    vncmp(3) = 'FLUN_SUP'
     zk8(jvalv-1+1) = '&FOZERO'
     zk8(jvalv-1+2) = '&FOZERO'
     zk8(jvalv-1+3) = '&FOZERO'

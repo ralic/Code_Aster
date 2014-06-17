@@ -66,12 +66,17 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 !
     integer :: iad, ibid, icompt, igd, ival, ldim
     integer :: nbno, ncmp, ncmpmx, nec, num
-    integer :: iadesc, iaprno, iarefe, iavald, iavalf, iavali
+    integer ::  iaprno
     integer :: icmp, ino
     real(kind=8) :: rdepla
     character(len=8) :: noma, nomgd, ktype
     character(len=19) :: geomi, depla, geomf
     character(len=24) :: nomnu
+    real(kind=8), pointer :: vald(:) => null()
+    real(kind=8), pointer :: valf(:) => null()
+    real(kind=8), pointer :: vali(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: desc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -106,17 +111,17 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 !
 ! --- ACCES AUX CHAMPS
 !
-    call jeveuo(geomi//'.VALE', 'L', iavali)
-    call jeveuo(geomf//'.VALE', 'E', iavalf)
-    call jeveuo(depla//'.REFE', 'L', iarefe)
-    call jeveuo(depla//'.VALE', 'L', iavald)
-    call jeveuo(depla//'.DESC', 'L', iadesc)
+    call jeveuo(geomi//'.VALE', 'L', vr=vali)
+    call jeveuo(geomf//'.VALE', 'E', vr=valf)
+    call jeveuo(depla//'.REFE', 'L', vk24=refe)
+    call jeveuo(depla//'.VALE', 'L', vr=vald)
+    call jeveuo(depla//'.DESC', 'L', vi=desc)
 !
 ! --- INFORMATIONS SUR LE CHAMP DE DEPLACEMENT
 !
-    nomnu = zk24(iarefe-1+2)
-    igd = zi(iadesc-1+1)
-    num = zi(iadesc-1+2)
+    nomnu = refe(2)
+    igd = desc(1)
+    num = desc(2)
     nec = nbec(igd)
     ASSERT(nec.le.10)
     call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx)
@@ -130,11 +135,11 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
     if (num .lt. 0) then
         do ino = 1, nbno
             do icmp = 1, 3
-                rdepla = zr(iavald-1+3*(ino-1)+icmp)
+                rdepla = vald(3*(ino-1)+icmp)
                 if (cumul .eq. 'CUMU') then
-                    zr(iavalf-1+3*(ino-1)+icmp) = zr(iavali-1+3*(ino- 1)+icmp )+alpha*rdepla
+                    valf(3*(ino-1)+icmp) = vali(3*(ino- 1)+icmp )+alpha*rdepla
                 else if (cumul.eq.'ZERO') then
-                    zr(iavalf-1+3*(ino-1)+icmp) = alpha*rdepla
+                    valf(3*(ino-1)+icmp) = alpha*rdepla
                 else
                     ASSERT(.false.)
                 endif
@@ -155,12 +160,12 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
                 do icmp = 1, 3
                     if (exisdg(zi(iaprno-1+(ino-1)*(nec+2)+3),icmp)) then
                         icompt = icompt + 1
-                        rdepla = zr(iavald-1+ival-1+icompt)
+                        rdepla = vald(ival-1+icompt)
                         if (cumul .eq. 'CUMU') then
-                            zr(iavalf-1+3*(ino-1)+icmp)= zr(iavali-1+&
+                            valf(3*(ino-1)+icmp)= vali(&
                             3*(ino-1)+icmp)+alpha*rdepla
                         else if (cumul.eq.'ZERO') then
-                            zr(iavalf-1+3*(ino-1)+icmp)= alpha*rdepla
+                            valf(3*(ino-1)+icmp)= alpha*rdepla
                         else
                             ASSERT(.false.)
                         endif

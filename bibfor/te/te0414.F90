@@ -40,13 +40,14 @@ subroutine te0414(optioz, nomtz)
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, ibid, icompo, ideplm, ideplp
-    integer :: jgeom, jmatr, lzi, lzr, nb2, nddlet
+    integer :: jgeom, jmatr,  lzr, nb2, nddlet
+    integer, pointer :: desi(:) => null()
 !-----------------------------------------------------------------------
     option = optioz
     nomte = nomtz
 !
-    call jeveuo('&INEL.'//nomte(1:8)//'.DESI', 'L', lzi)
-    nb2 = zi(lzi-1+2)
+    call jeveuo('&INEL.'//nomte(1:8)//'.DESI', 'L', vi=desi)
+    nb2 = desi(2)
 !
     if (option .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq.&
         'RIGI_MECA') then

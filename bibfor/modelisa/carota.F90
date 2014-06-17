@@ -63,13 +63,13 @@ subroutine carota(load, ligrmo, mesh, vale_type)
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
     real(kind=8) :: norme
     integer :: iocc, nrota, nb_cmp, val_nb
-    integer :: jvalv
     character(len=16) :: keywordfact
     character(len=24) :: list_elem
     integer :: j_elem
     integer :: nb_elem
     character(len=19) :: carte
     integer :: nb_carte
+    real(kind=8), pointer :: valv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,15 +122,15 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
 ! ----- Affectation of values in <CARTE>
 !
-        call jeveuo(carte//'.VALV', 'E', jvalv)
+        call jeveuo(carte//'.VALV', 'E', vr=valv)
         nb_cmp = 7
-        zr(jvalv-1+1) = rota_speed
-        zr(jvalv-1+2) = rota_axis(1)
-        zr(jvalv-1+3) = rota_axis(2)
-        zr(jvalv-1+4) = rota_axis(3)
-        zr(jvalv-1+5) = rota_cent(1)
-        zr(jvalv-1+6) = rota_cent(2)
-        zr(jvalv-1+7) = rota_cent(3)
+        valv(1) = rota_speed
+        valv(2) = rota_axis(1)
+        valv(3) = rota_axis(2)
+        valv(4) = rota_axis(3)
+        valv(5) = rota_cent(1)
+        valv(6) = rota_cent(2)
+        valv(7) = rota_cent(3)
         call nocart(carte, 3, nb_cmp, mode='NUM', nma=nb_elem,&
                     limanu=zi(j_elem))
 !

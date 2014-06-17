@@ -71,8 +71,8 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcmp, jkcha, jlma, jrval, jival, jniord, jcoor, jconx1, jconx2
-    integer :: jcpgv, jcpgl, jcpgd, i, j, jcesv, jcesl, jcesd, jcesc, nbmax
+    integer :: jcmp, jkcha, jlma, jrval, jival, jniord,   jconx2
+    integer ::  jcpgl, jcpgd, i, j,  jcesl, jcesd,  nbmax
     integer :: nbcmpx
     integer :: n,   ima, ipt, ispt, icmp, indma, nbpt, kk
     integer :: nbcmpt, nbspt, inot, kcp, indcmp, iad, ni, nk, nr
@@ -86,6 +86,11 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     character(len=16), pointer :: table_valk(:) => null()
     real(kind=8), pointer :: table_valr(:) => null()
     real(kind=8), pointer :: val_cmp(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    real(kind=8), pointer :: cpgv(:) => null()
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !
 !
@@ -104,11 +109,11 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     call jeveuo(nrval, 'L', jrval)
     call jeveuo(nival, 'L', jival)
     call jeveuo(niord, 'L', jniord)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     if (tych .eq. 'ELGA') then
-        call jeveuo(chpgs//'.CESV', 'L', jcpgv)
+        call jeveuo(chpgs//'.CESV', 'L', vr=cpgv)
         call jeveuo(chpgs//'.CESL', 'L', jcpgl)
         call jeveuo(chpgs//'.CESD', 'L', jcpgd)
     endif
@@ -140,10 +145,10 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
             else
                 ASSERT(.false.)
             endif
-            call jeveuo(chames//'.CESV', 'L', jcesv)
+            call jeveuo(chames//'.CESV', 'L', vr=cesv)
             call jeveuo(chames//'.CESL', 'L', jcesl)
             call jeveuo(chames//'.CESD', 'L', jcesd)
-            call jeveuo(chames//'.CESC', 'L', jcesc)
+            call jeveuo(chames//'.CESC', 'L', vk8=cesc)
 !
 !             NOMBRE DE MAILLES MAX DU CHAMP : NBMAX
             nbmax=zi(jcesd)
@@ -186,7 +191,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                 do 220 ipt = 1, nbpt
 !
 !                 NUMERO DU POINT (DU MAILLAGE GLOBAL): INOT
-                    inot = zi(jconx1-1+zi(jconx2-1+ima)+ipt-1)
+                    inot = connex(zi(jconx2-1+ima)+ipt-1)
 !
 !                 -- ON PARCOURT LES SOUS-POINTS DE LA MAILLE IMA
                     do 225 ispt = 1, nbspt
@@ -200,7 +205,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !                        -SI LA COMPOSANTE FAIT PARTIE DES
 !                         COMPOSANTES DESIREES, ON POURSUIT,
 !                         SINON ON VA A LA COMPOSANTE SUIVANTE
-                                indcmp=indik8(zk8(jcmp),zk8(jcesc+&
+                                indcmp=indik8(zk8(jcmp),cesc(1+&
                                 icmp-1), 1,nbcmp)
                                 if (indcmp .eq. 0) goto 230
                             endif
@@ -211,8 +216,8 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                                         ispt, icmp, iad)
                             if (iad .gt. 0) then
                                 kcp=kcp+1
-                                val_cmp(kcp)=zr(jcesv+iad-1)
-                                nom_cmp(kcp)=zk8(jcesc+icmp-1)
+                                val_cmp(kcp)=cesv(iad)
+                                nom_cmp(kcp)=cesc(icmp)
                             endif
 !
 230                      continue
@@ -259,7 +264,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                         endif
                         if (tych .eq. 'ELNO') then
                             do 240 j = 1, ndim
-                                table_valr(kk+1)=zr(jcoor+3*(inot-1)+j-1)
+                                table_valr(kk+1)=vale(1+3*(inot-1)+j-1)
                                 kk=kk+1
 240                          continue
                         else if (tych.eq.'ELGA') then
@@ -267,7 +272,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                                 call cesexi('C', jcpgd, jcpgl, ima, ipt,&
                                             ispt, j, iad)
                                 if (iad .gt. 0) then
-                                    table_valr(kk+1)=zr(jcpgv+iad-1)
+                                    table_valr(kk+1)=cpgv(iad)
                                     kk=kk+1
                                 endif
 241                          continue

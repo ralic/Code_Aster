@@ -38,29 +38,30 @@ subroutine crsvsi(solveu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: islvi, islvk
     integer :: nprec
     character(len=24) :: nomslv
+    integer, pointer :: slvi(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
-    call jeveuo(solveu//'.SLVI', 'E', islvi)
-    nomslv = zk24(islvk-1+1)
-    nprec = zi(islvi-1+1)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+    nomslv = slvk(1)
+    nprec = slvi(1)
 !
     if ((nomslv.eq.'MUMPS' ) .or. (nomslv.eq.'MULT_FRONT') .or. (nomslv.eq.'LDLT' )) then
         if (nprec .gt. 0) then
-            zi(islvi-1+3) = 2
+            slvi(3) = 2
         else
             call utmess('I', 'DISCRETISATION_43')
         endif
     elseif ( (nomslv.eq.'GCPC') .or. (nomslv.eq.'PETSC') ) then 
     ! Lorsque le solveur est itératif, on active la remontée du code de retour du solveur,
     ! afin de déclencher le découpage 
-        zi(islvi-1+8) = 2
+        slvi(8) = 2
     endif
     
     

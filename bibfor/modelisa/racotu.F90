@@ -46,7 +46,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 ! -------------------------------------------------------
 !     RACCORD COQUE_TUYAU PAR DES RELATIONS LINEAIRES
 !
-    integer :: nbcmp, nbmode, numno1, jcoor
+    integer :: nbcmp, nbmode, numno1
     parameter (nbmode=3,nbcmp=6* (nbmode-1))
     character(len=8) :: nocmp(nbcmp), lpain(6), lpaout(3), nomddl(4)
     character(len=24) :: lchin(6), lchout(3), valech
@@ -54,17 +54,18 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     real(kind=8) :: rayon, coori1(3), gp1(3)
     integer :: imod, info, ifm
     integer :: nbcoef, idec
+    real(kind=8), pointer :: vale(:) => null()
 !
     call jemarq()
     call infniv(ifm, info)
 !
 !     CALCUL DU RAYON DU MAILLAGE COQUE A L'AIDE DU PREMIER N
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call jenonu(jexnom(noma//'.NOMNOE', klisno(1)), numno1)
-    coori1(1) = zr(jcoor-1+3* (numno1-1)+1)
-    coori1(2) = zr(jcoor-1+3* (numno1-1)+2)
-    coori1(3) = zr(jcoor-1+3* (numno1-1)+3)
+    coori1(1) = vale(3* (numno1-1)+1)
+    coori1(2) = vale(3* (numno1-1)+2)
+    coori1(3) = vale(3* (numno1-1)+3)
     call vdiff(3, coorig, coori1, gp1)
     call normev(gp1, rayon)
 !

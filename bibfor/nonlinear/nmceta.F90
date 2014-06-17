@@ -96,7 +96,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 !
     logical :: bormin, bormax
-    integer :: jpltk, jplir, j, i
+    integer ::   j, i
     integer :: licite(2)
     real(kind=8) :: infini
     real(kind=8) :: etamin, etamax, conmin, conmax
@@ -104,6 +104,8 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
     character(len=24) :: projbo, typsel
     character(len=19) :: sddisc
     integer :: ifm, niv
+    real(kind=8), pointer :: plir(:) => null()
+    character(len=24), pointer :: pltk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -128,35 +130,35 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 ! --- LECTURE DONNEES PILOTAGE
 !
-    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', jpltk)
-    call jeveuo(sdpilo(1:19)//'.PLIR', 'L', jplir)
-    projbo = zk24(jpltk+4)
-    typsel = zk24(jpltk+5)
+    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
+    call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
+    projbo = pltk(5)
+    typsel = pltk(6)
 !
-    if (zr(jplir+1) .ne. r8vide()) then
-        etamax = zr(jplir+1)
+    if (plir(2) .ne. r8vide()) then
+        etamax = plir(2)
         bormax = .true.
     else
         etamax = r8vide()
         bormax = .false.
     endif
 !
-    if (zr(jplir+2) .ne. r8vide()) then
-        etamin = zr(jplir+2)
+    if (plir(3) .ne. r8vide()) then
+        etamin = plir(3)
         bormin = .true.
     else
         etamin = r8vide()
         bormin = .false.
     endif
 !
-    if (zr(jplir+3) .ne. r8vide()) then
-        conmax = zr(jplir+3)
+    if (plir(4) .ne. r8vide()) then
+        conmax = plir(4)
     else
         conmax = infini
     endif
 !
-    if (zr(jplir+4) .ne. r8vide()) then
-        conmin = zr(jplir+4)
+    if (plir(5) .ne. r8vide()) then
+        conmin = plir(5)
     else
         conmin = -infini
     endif

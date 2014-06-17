@@ -60,10 +60,11 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     character(len=15) :: nrepnd
     character(len=8) :: nresu, nomcmp, nmaich, nmaili, nomcrb, nomnd
     character(len=4) :: docu
-    integer :: acheff, amaicb, agrpnd, alneud, anumcp, anomcp, nbcmp
+    integer :: acheff, amaicb,  alneud, anumcp, anomcp, nbcmp
     integer :: nbgrpn, nbneud, nbcrb, grel, nbgrel, jceld, amod, mod
     integer :: j, k, n1, ibid
     logical :: chelok
+    character(len=24), pointer :: grpn(:) => null()
 !
 !=====================================================================
 !
@@ -162,11 +163,11 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             if (nbgrpn .ne. 0) then
                 call jecreo('&&OP0051.NOM.GRPN', 'V V K24')
                 call jeecra('&&OP0051.NOM.GRPN', 'LONMAX', nbgrpn)
-                call jeveuo('&&OP0051.NOM.GRPN', 'E', agrpnd)
-                call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=nbgrpn, vect=zk24(agrpnd),&
+                call jeveuo('&&OP0051.NOM.GRPN', 'E', vk24=grpn)
+                call getvtx('ACTION', 'GROUP_NO', iocc=i, nbval=nbgrpn, vect=grpn,&
                             nbret=n1)
                 do k = 1, nbgrpn, 1
-                    nomgrn = zk24(agrpnd + k-1)
+                    nomgrn = grpn(k)
                     call jenonu(jexnom(nmaich//'.GROUPENO', nomgrn), n1)
                     if (n1 .eq. 0) then
                         call utmess('F', 'POSTRELE_50', sk=nomgrn, si=i)

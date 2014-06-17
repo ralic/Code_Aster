@@ -67,8 +67,9 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
     character(len=8) :: nomno1, nomno2, nomno3
     character(len=24) :: lisou1, lisou2, nomnoe
     character(len=24) :: valk(3)
-    integer :: iret, idlou1, idlou2, ino1, iageom, lonlim
+    integer :: iret, idlou1, idlou2, ino1,  lonlim
     integer :: lonmax, idlinv, i1, nuno1, j2, i2, ino2, nuno2, j1
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -79,7 +80,7 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
     noma = nomaz
 !
     nomnoe = noma//'.NOMNOE         '
-    call jeveuo(noma//'.COORDO    .VALE', 'L', iageom)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
     call jeexin(lisou1, iret)
     if (iret .ne. 0) then
@@ -117,16 +118,16 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
     if (lonli1 .le. lonli2) then
         do 10 i1 = 1, lonli1
             nuno1 = noeud1(i1)
-            x1(1) = zr(iageom-1+3*(nuno1-1)+1)
-            x1(2) = zr(iageom-1+3*(nuno1-1)+2)
-            x1(3) = zr(iageom-1+3*(nuno1-1)+3)
+            x1(1) = vale(3*(nuno1-1)+1)
+            x1(2) = vale(3*(nuno1-1)+2)
+            x1(3) = vale(3*(nuno1-1)+3)
             dmin = dmin0
             j2 = 0
             do 20 i2 = 1, lonli2
                 ino2 = noeud2(i2)
-                x2(1) = zr(iageom-1+3*(ino2-1)+1)
-                x2(2) = zr(iageom-1+3*(ino2-1)+2)
-                x2(3) = zr(iageom-1+3*(ino2-1)+3)
+                x2(1) = vale(3*(ino2-1)+1)
+                x2(2) = vale(3*(ino2-1)+2)
+                x2(3) = vale(3*(ino2-1)+3)
                 d = padist( 3, x1, x2 )
                 if (d .lt. dmin) then
                     dmin = d
@@ -160,16 +161,16 @@ subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
     else
         do 30 i2 = 1, lonli2
             nuno2 = noeud2(i2)
-            x2(1) = zr(iageom-1+3*(nuno2-1)+1)
-            x2(2) = zr(iageom-1+3*(nuno2-1)+2)
-            x2(3) = zr(iageom-1+3*(nuno2-1)+3)
+            x2(1) = vale(3*(nuno2-1)+1)
+            x2(2) = vale(3*(nuno2-1)+2)
+            x2(3) = vale(3*(nuno2-1)+3)
             dmin = dmin0
             j1 = 0
             do 40 i1 = 1, lonli1
                 ino1 = noeud1(i1)
-                x1(1) = zr(iageom-1+3*(ino1-1)+1)
-                x1(2) = zr(iageom-1+3*(ino1-1)+2)
-                x1(3) = zr(iageom-1+3*(ino1-1)+3)
+                x1(1) = vale(3*(ino1-1)+1)
+                x1(2) = vale(3*(ino1-1)+2)
+                x1(3) = vale(3*(ino1-1)+3)
                 d = padist( 3, x1, x2 )
                 if (d .lt. dmin) then
                     dmin = d

@@ -68,8 +68,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     integer :: i,   iamor, ibid, ic, idbase
     integer :: iddl, iddl0,  idgm2, idgm3, idgm4, idgm5
     integer ::  ifmis, ii, ij, imess, in
-    integer :: ino, inoe,  j, j2, jcoor
-    integer :: jtyp, k, l, ldgm, ldnm, nb
+    integer :: ino, inoe,  j, j2
+    integer ::  k, l, ldgm, ldnm, nb
     integer :: nbgr, nbgr2, nbgr3, nbgr4, nbgr5, nbma, nbma2
     integer :: nbma3, nbma4, nbma5, nbmode, nbmods, nbmodt, nbno
     integer :: nbnoeu, nbv, ncmp, nec, neq, nf, ni
@@ -81,6 +81,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     integer, pointer :: parno(:) => null()
     real(kind=8), pointer :: vect1(:) => null()
     real(kind=8), pointer :: vect2(:) => null()
+    character(len=8), pointer :: idc_type(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     call jemarq()
@@ -104,8 +106,8 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=interf, arret='C',&
                 ier=ir)
     if (interf .ne. ' ') then
-        call jeveuo(interf//'.IDC_TYPE', 'L', jtyp)
-        typi = zk8(jtyp)
+        call jeveuo(interf//'.IDC_TYPE', 'L', vk8=idc_type)
+        typi = idc_type(1)
     else
         typi = 'CRAIGB'
     endif
@@ -280,7 +282,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 !
 !
 !     --- ECRITURE DESCRIPTION NOEUDS STRUCTURE ---
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     nprno = nume//'.NUME.PRNO'
     call jenonu(jexnom(nprno(1:19)//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(nprno, ibid), 'L', aprno)
@@ -290,7 +292,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     do ino = 1, nbno
         inoe = noeud(ino)
         ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
-        write(ifmis,'(3(1X,1PE12.5))') ( zr(jcoor+3*(inoe-1)+in-1) ,&
+        write(ifmis,'(3(1X,1PE12.5))') ( vale(1+3*(inoe-1)+in-1) ,&
         in=1,3 )
     end do
     write(imess,'(1X,I6,1X,''ELEMENTS SOLSTRU'')') nbma

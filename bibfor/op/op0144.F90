@@ -81,10 +81,11 @@ subroutine op0144()
     integer :: iec, ifact, ifm, ifr, ifreq, ifsic
     integer :: ii, imasg, inec, ino, inumo, io, ipar
     integer :: irefe, itypfl, iv, ivite
-    integer :: j, jcdesc, jcrefe, jdesc, jj, jprno, long
+    integer :: j, jcdesc, jcrefe, jdesc, jj,  long
     integer :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
     integer :: nec, nivdef, nivpar, numgd
     real(kind=8) :: amor, umin, vmax, vmin, vmoy, vpas
+    integer, pointer :: prno(:) => null()
     ibid = 0
 !
 !-----------------------------------------------------------------------
@@ -358,15 +359,15 @@ subroutine op0144()
             if (io .eq. 1 .and. ipar .eq. 1) then
                 zk24(jcrefe+1) = cham19
                 call crprno(cham19, 'G', nbnoeu, long)
-                call jeveuo(cham19//'.PRNO', 'E', jprno)
+                call jeveuo(cham19//'.PRNO', 'E', vi=prno)
                 idec = 1
                 ii = 0
                 do ino = 1, nbnoeu
-                    zi(jprno-1+(nec+2)*(ino-1)+1) = idec
-                    zi(jprno-1+(nec+2)*(ino-1)+2) = 6
+                    prno((nec+2)*(ino-1)+1) = idec
+                    prno((nec+2)*(ino-1)+2) = 6
                     do inec = 1, nec
                         ii = ii + 1
-                        zi(jprno-1+(nec+2)*(ino-1)+2+inec) = zi(jdesc+ ii-1)
+                        prno((nec+2)*(ino-1)+2+inec) = zi(jdesc+ ii-1)
                     end do
                     idec = idec + 6
                 end do

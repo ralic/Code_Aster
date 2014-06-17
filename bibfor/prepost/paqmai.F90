@@ -70,7 +70,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 ! TYPCHA     IN    K16: TYPE DE CHARGEMENT (PERIODIQUE OU NON).
 ! PROAXE     IN    K16: TYPE DE PROJECTION (UN OU DEUX AXES).
 !-----------------------------------------------------------------------
-    integer :: ibid, ierd, lordr,  nbordr, ndim, iret, jcesd
+    integer :: ibid, ierd, lordr,  nbordr, ndim, iret
     integer :: nbma, nbpgt, nbpgmx, jnbpg, ima, tdisp(1), jrwork, tpaq
     integer :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax
     integer :: nmaini, nbmap, tspaq, iordr, jad, tord(1)
@@ -96,6 +96,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     logical :: lbid, crsigm, crepst, crepse, crepsp, creppe
     integer, pointer :: nume_ordre(:) => null()
     integer, pointer :: paqma(:) => null()
+    integer, pointer :: cesd(:) => null()
 !
 !-----------------------------------------------------------------------
 !234567                                                              012
@@ -211,8 +212,8 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 iret)
     chsigs = '&&PAQMAI.SIELGA'
     call celces(chsig, 'V', chsigs)
-    call jeveuo(chsigs(1:19)//'.CESD', 'L', jcesd)
-    nbma = zi(jcesd-1+1)
+    call jeveuo(chsigs(1:19)//'.CESD', 'L', vi=cesd)
+    nbma = cesd(1)
 !
 ! CAS OU L'ON CALCULE LA FATIGUE SUR UN OU DES GROUPES DE MAILLES
 !
@@ -253,15 +254,15 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     nbpggm = 0
 !
     do ima = 1, nbma
-        zi(jnbpg - 1 + ima) = zi(jcesd-1 + 5 + 4*(ima-1) + 1)
-        nbpgt = nbpgt + zi(jcesd-1 + 5 + 4*(ima-1) + 1)
-        if (zi(jcesd-1 + 5 + 4*(ima-1) + 1) .gt. nbpgmx) then
-            nbpgmx = zi(jcesd-1 + 5 + 4*(ima-1) + 1)
+        zi(jnbpg - 1 + ima) = cesd(5 + 4*(ima-1) + 1)
+        nbpgt = nbpgt + cesd(5 + 4*(ima-1) + 1)
+        if (cesd(5 + 4*(ima-1) + 1) .gt. nbpgmx) then
+            nbpgmx = cesd(5 + 4*(ima-1) + 1)
         endif
     end do
     if (nommai .ne. '        ') then
         do ima = 1, nbmagm
-            nbpggm=nbpggm + zi(jcesd-1 + 5 + 4*(zi(jmail+ima-1)-1) +&
+            nbpggm=nbpggm + cesd(5 + 4*(zi(jmail+ima-1)-1) +&
             1)
         end do
         write(6,*)'NOMBRE DE POINTS DE GAUSS DU GROUPE DE MAILLES ==>',&

@@ -52,8 +52,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
 !
     integer :: vali(2)
 !
-    integer :: i, j, ire1, ire2, iadin, iadou, iret, jlgrf
-    integer :: jmaor, cret
+    integer :: i, j, ire1, ire2, iadin, iadou, iret
+    integer ::  cret
     character(len=3) :: type, kchml
     character(len=4) :: tych
     character(len=8) :: noma1, noma2, nomavr
@@ -62,6 +62,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     character(len=19) :: resuin, resuou, ligrel
     character(len=24) :: chamin, chamou, corrn, corrm
     character(len=24) :: valk
+    character(len=8), pointer :: lgrf(:) => null()
+    character(len=8), pointer :: maor(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -84,16 +86,16 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
         call dismoi('EXI_CHAM_ELEM', resuin, 'RESULTAT', repk=kchml, arret='C',&
                     ier=iret)
         if (kchml .eq. 'OUI' .and. modele .ne. ' ') then
-            call jeveuo(modele//'.MODELE    .LGRF', 'L', jlgrf)
-            noma2=zk8(jlgrf)
+            call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
+            noma2=lgrf(1)
             ligrel=modele//'.MODELE'
         else
             ASSERT(mailla.ne.' ')
             noma2=mailla
             ligrel=' '
         endif
-        call jeveuo(noma2//'.MAOR', 'L', jmaor)
-        noma1=zk8(jmaor)
+        call jeveuo(noma2//'.MAOR', 'L', vk8=maor)
+        noma1=maor(1)
         corrn=noma2//'.CRNO'
         corrm=noma2//'.CRMA'
     endif

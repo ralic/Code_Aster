@@ -55,12 +55,14 @@ subroutine mpjeft(corres)
     character(len=8) :: lisin1, lisin2, lisou1, lisou2
     character(len=16) :: tymocl(2), motcle(2)
     integer :: ndim, ncas, n1, nbocc, iocc, nbno2, nuno1, nuno2
-    integer :: iagno2, idecal, ino, irep
+    integer ::  idecal, ino, irep
     integer :: llin1, llin2, llou2, nbncal, nbnlis
-    integer :: kk, nbnmes, nbno1, iagno1, jxxk1, iaconb, iaconu, iacocf, i
+    integer :: kk, nbnmes, nbno1,  jxxk1, iaconb, iaconu, iacocf, i
     integer :: nbold
     integer :: ndecal, it1, it2, it3, ifres
     real(kind=8) :: coef, rbid
+    integer, pointer :: linonu1(:) => null()
+    integer, pointer :: linonu2(:) => null()
 !----------------------------------------------------------------------
 !       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES
 !       --------------------------------------------------------
@@ -256,7 +258,7 @@ subroutine mpjeft(corres)
             if (nbno1 .eq. 0) then
                 call utmess('F', 'ALGORITH6_21')
             endif
-            call jeveuo('&&PJEFTE.LINONU1', 'L', iagno1)
+            call jeveuo('&&PJEFTE.LINONU1', 'L', vi=linonu1)
 !
 !
 !        -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 (MESURE):
@@ -268,7 +270,7 @@ subroutine mpjeft(corres)
             if (nbno2 .eq. 0) then
                 call utmess('F', 'ALGORITH6_22')
             endif
-            call jeveuo('&&PJEFTE.LINONU2', 'L', iagno2)
+            call jeveuo('&&PJEFTE.LINONU2', 'L', vi=linonu2)
 !
 !        -- REACTUALISATION DU CORRESP_2_MAILLA POUR IOCC
 !        ----------------------------------------------
@@ -279,8 +281,8 @@ subroutine mpjeft(corres)
                 call utmess('F', 'ALGORITH6_24')
             endif
 !        -- RECUPERATION DES NUMEROS DES NOEUDS
-            nuno1 = zi(iagno1)
-            nuno2 = zi(iagno2)
+            nuno1 = linonu1(1)
+            nuno2 = linonu2(1)
 !
 !        -- RECUPERATION DES ADRESSES SD CORRES
 !     ------------------------------------------------

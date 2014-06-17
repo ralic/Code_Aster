@@ -89,7 +89,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: ibid, idecal, ino, ipara, iret, isub,  jalph, jcoor
-    integer :: jnoca, jtblp, jtbnp,    jx, jy, jz, nblign, nbno
+    integer :: jnoca,      jx, jy, jz, nblign, nbno
     integer :: nbpara, numnoe, icmima,  nbvar, nbvar2, svar, vali(3)
     real(kind=8) :: absc, alpha, corde, alphcu, d1m, d1p, dcp, d1x, d1x1
     real(kind=8) :: d1xn, d1y, d1y1, d1yn, d1z, d1z1, d1zn, d2x, d2y, d2z, dc
@@ -110,6 +110,8 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     real(kind=8), pointer :: vd2x(:) => null()
     real(kind=8), pointer :: vd2y(:) => null()
     real(kind=8), pointer :: vd2z(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
     data          param /'ABSC_CURV               ',&
      &                     'ALPHA                   '/
     data          parcr /'NOEUD_CABLE             '/
@@ -137,13 +139,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 ! 2   RECUPERATION DES COORDONNEES DES NOEUDS DU CABLE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    call jeveuo(tablca//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp)
-    nblign = zi(jtbnp+1)
-    call jeveuo(tablca//'.TBLP', 'L', jtblp)
+    call jeveuo(tablca//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
+    call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
     do 10 ipara = 1, nbpara
-        if (zk24(jtblp+4*(ipara-1)) .eq. parcr) then
-            nonoca = zk24(jtblp+4*(ipara-1)+2)
+        if (tblp(1+4*(ipara-1)) .eq. parcr) then
+            nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 20
         endif

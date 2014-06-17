@@ -79,7 +79,8 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
     character(len=16) :: option
     character(len=24) :: lchin(5), lchout(1), ligrmo, ligrch
     character(len=24) :: chgeom
-    integer :: icha, iret, ilires, jnomo
+    integer :: icha, iret, ilires
+    character(len=8), pointer :: nomo(:) => null()
 !
 !
 !-----------------------------------------------------------------------
@@ -122,8 +123,8 @@ subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
             ligrmo = modele//'.MODELE'
         else
             lcharz = lchar(1)
-            call jeveuo(lcharz//'.CHTH      .NOMO', 'L', jnomo)
-            ligrmo = zk8(jnomo)//'.MODELE'
+            call jeveuo(lcharz//'.CHTH      .NOMO', 'L', vk8=nomo)
+            ligrmo = nomo(1)//'.MODELE'
         endif
         do icha = 1, nchar
             lcharz = lchar(icha)

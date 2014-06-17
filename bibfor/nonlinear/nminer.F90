@@ -43,7 +43,9 @@ subroutine nminer(masse, accplu, cniner)
 !
 !
 !
-    integer :: jaccp, jmass, jiner
+    integer ::  jmass
+    real(kind=8), pointer :: accp(:) => null()
+    real(kind=8), pointer :: iner(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,13 +53,13 @@ subroutine nminer(masse, accplu, cniner)
 !
 ! --- ACCES OBJETS JEVEUX
 !
-    call jeveuo(accplu(1:19)//'.VALE', 'L', jaccp)
+    call jeveuo(accplu(1:19)//'.VALE', 'L', vr=accp)
     call jeveuo(masse(1:19) //'.&INT', 'L', jmass)
-    call jeveuo(cniner(1:19)//'.VALE', 'E', jiner)
+    call jeveuo(cniner(1:19)//'.VALE', 'E', vr=iner)
 !
 ! --- CALCUL FORCES INERTIE
 !
-    call mrmult('ZERO', jmass, zr(jaccp), zr(jiner), 1,&
+    call mrmult('ZERO', jmass, accp, iner, 1,&
                 .true.)
 !
     call jedema()

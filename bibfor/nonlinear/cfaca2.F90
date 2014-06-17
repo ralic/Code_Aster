@@ -80,11 +80,13 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
     character(len=19) :: liac, cm1a, typl
     integer :: jliac, jcm1a, jtypl
     character(len=19) :: stoc
-    integer :: jscbl, jscib, jscde
     character(len=19) :: ouvert, macont
     integer :: jouv
     character(len=24) :: appoin, apddl, apcoef, apcofr
     integer :: japptr, japddl, japcoe, japcof
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: scde(:) => null()
+    integer, pointer :: scib(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -110,16 +112,16 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
         call jeveuo(apcofr, 'L', japcof)
     endif
     call jeveuo(typl, 'L', jtypl)
-    call jeveuo(stoc//'.SCIB', 'L', jscib)
-    call jeveuo(stoc//'.SCBL', 'L', jscbl)
-    call jeveuo(stoc//'.SCDE', 'L', jscde)
+    call jeveuo(stoc//'.SCIB', 'L', vi=scib)
+    call jeveuo(stoc//'.SCBL', 'L', vi=scbl)
+    call jeveuo(stoc//'.SCDE', 'L', vi=scde)
 !
 ! --- INITIALISATIONS
 !
     typef0 = 'F0'
     neq = zi(lmat+2)
     deklag = 0
-    nbbloc = zi(jscde-1+3)
+    nbbloc = scde(3)
     ouvert = '&CFACA2.TRAV'
 !
     call wkvect(ouvert, 'V V L', nbbloc, jouv)
@@ -144,8 +146,8 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
 ! ======================================================================
         case (1)
             call jeveuo(jexnum(cm1a, lliac), 'L', jcm1a)
-            ii = zi(jscib-1+iliac+deklag)
-            dercol=zi(jscbl+ii-1)
+            ii = scib(iliac+deklag)
+            dercol=scbl(ii)
             bloc=dercol*(dercol+1)/2
             if (.not.zl(jouv-1+ii)) then
                 if (ii .gt. 1) then
@@ -216,8 +218,8 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
 ! ======================================================================
         case (2)
             call jeveuo(jexnum(cm1a, lliac+nbliai), 'L', jcm1a)
-            ii = zi(jscib-1+iliac+deklag)
-            dercol=zi(jscbl+ii-1)
+            ii = scib(iliac+deklag)
+            dercol=scbl(ii)
             bloc=dercol*(dercol+1)/2
             if (.not.zl(jouv-1+ii)) then
                 if (ii .gt. 1) then
@@ -298,8 +300,8 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
 ! ======================================================================
                 call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'L', jcm1a)
                 deklag = deklag + 1
-                ii = zi(jscib-1+iliac+deklag)
-                dercol=zi(jscbl+ii-1)
+                ii = scib(iliac+deklag)
+                dercol=scbl(ii)
                 bloc=dercol*(dercol+1)/2
                 if (.not.zl(jouv-1+ii)) then
                     if (ii .gt. 1) then
@@ -372,8 +374,8 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
 ! ======================================================================
         case (3)
             call jeveuo(jexnum(cm1a, lliac+nbliai), 'L', jcm1a)
-            ii = zi(jscib-1+iliac+deklag)
-            dercol=zi(jscbl+ii-1)
+            ii = scib(iliac+deklag)
+            dercol=scbl(ii)
             bloc=dercol*(dercol+1)/2
             if (.not.zl(jouv-1+ii)) then
                 if (ii .gt. 1) then
@@ -444,8 +446,8 @@ subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
 ! ======================================================================
         case (4)
             call jeveuo(jexnum(cm1a, lliac+(ndim-1)*nbliai), 'L', jcm1a)
-            ii = zi(jscib-1+iliac+deklag)
-            dercol=zi(jscbl+ii-1)
+            ii = scib(iliac+deklag)
+            dercol=scbl(ii)
             bloc=dercol*(dercol+1)/2
             if (.not.zl(jouv-1+ii)) then
                 if (ii .gt. 1) then

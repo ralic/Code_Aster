@@ -54,9 +54,9 @@ subroutine op0112()
 !
     integer :: nbval, icmp, ibid, idecal, ino2
     integer :: ino1, ii, jj, icmpg, iocc, ima, nbnog1, nbmag1
-    integer :: jnomo, jchnsk, jchnsd, jchnsc, jchnsv, jchnsl
-    integer :: jacono, jaconb, jaconu, jacocf,  ialin2
-    integer :: jncmp, jvalv, jligr, jalim1, jcxma1
+    integer ::  jchnsk, jchnsd, jchnsc,  jchnsl
+    integer :: jacono,     ialin2
+    integer ::   jligr, jalim1, jcxma1
     integer ::  ilengt
     integer :: nbcmpg, nbno2, nbno1, nbocc
     integer :: ddlfor(3)
@@ -76,6 +76,13 @@ subroutine op0112()
     character(len=24) :: ayacs
     integer, pointer :: flagn1(:) => null()
     real(kind=8), pointer :: force2(:) => null()
+    real(kind=8), pointer :: valv(:) => null()
+    integer, pointer :: pjef_nb(:) => null()
+    character(len=8), pointer :: ncmp(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    integer, pointer :: pjef_nu(:) => null()
+    character(len=8), pointer :: nomo(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 !     COUPLAGE <=
 !
     call jemarq()
@@ -120,8 +127,8 @@ subroutine op0112()
 !     ! =============================== !
 !     ! RECUPERATION DU NOM DU MAILLAGE !
 !     ! =============================== !
-    call jeveuo(charg//'.CHME.MODEL.NOMO', 'L', jnomo)
-    modele = zk8(jnomo)
+    call jeveuo(charg//'.CHME.MODEL.NOMO', 'L', vk8=nomo)
+    modele = nomo(1)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
 !
 !      ! ========================= !
@@ -133,7 +140,7 @@ subroutine op0112()
     call jeveuo(chnos//'.CNSK', 'L', jchnsk)
     call jeveuo(chnos//'.CNSD', 'L', jchnsd)
     call jeveuo(chnos//'.CNSC', 'L', jchnsc)
-    call jeveuo(chnos//'.CNSV', 'E', jchnsv)
+    call jeveuo(chnos//'.CNSV', 'E', vr=cnsv)
     call jeveuo(chnos//'.CNSL', 'E', jchnsl)
 !
 !     ! ======================================== !
@@ -141,9 +148,9 @@ subroutine op0112()
 !     ! ======================================== !
 !      CALL JEVEUO(CORRES//'.PJEF_NO','L',JACONO)
     call jeveuo(corres//'.PJXX_K1', 'L', jacono)
-    call jeveuo(corres//'.PJEF_NB', 'L', jaconb)
-    call jeveuo(corres//'.PJEF_NU', 'L', jaconu)
-    call jeveuo(corres//'.PJEF_CF', 'L', jacocf)
+    call jeveuo(corres//'.PJEF_NB', 'L', vi=pjef_nb)
+    call jeveuo(corres//'.PJEF_NU', 'L', vi=pjef_nu)
+    call jeveuo(corres//'.PJEF_CF', 'L', vr=pjef_cf)
 !     ! ================= !
 !     ! NOM DES MAILLAGES !
 !     ! ================= !
@@ -192,7 +199,7 @@ subroutine op0112()
     do ino1 = 1, nbno1
         flagn1(ino1) = 0
         do icmp = 1, nbcmpg
-            zr(jchnsv-1+nbcmpg*(ino1-1)+icmp) = 0.d0
+            cnsv(nbcmpg*(ino1-1)+icmp) = 0.d0
         end do
     end do
     grpma = ma1//'.GROUPEMA'
@@ -225,17 +232,17 @@ subroutine op0112()
         call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
         do jj = 1, nbno2
             ino2 = zi(ialin2-1+jj)
-            do ii = 1, zi(jaconb-1+ilengt+jj)
-                ino1 = zi(jaconu-1+idecal+ii)
+            do ii = 1, pjef_nb(ilengt+jj)
+                ino1 = pjef_nu(idecal+ii)
                 do icmp = 1, 3
                     if (ddlfor(icmp) .eq. 1) then
                         icmpg = nbcmpg*(ino1-1)+icmp
-                        zr(jchnsv-1+icmpg) = zr(jchnsv-1+icmpg) + force2(3*(ino2-1)+icmp) * &
-                                             &zr(jacocf-1+ idecal+ii)
+                        cnsv(icmpg) = cnsv(icmpg) + force2(3*(ino2-1)+icmp) * &
+                                             &pjef_cf(idecal+ii)
                     endif
                 end do
             end do
-            idecal = idecal + zi(jaconb-1+ilengt+jj)
+            idecal = idecal + pjef_nb(ilengt+jj)
         end do
         ilengt = ilengt + nbno2
     end do
@@ -252,21 +259,21 @@ subroutine op0112()
     endif
     call detrsd('CARTE', carte)
     call alcart('G', carte, ma, 'FORC_R')
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
-    call jeveuo(carte//'.VALV', 'E', jvalv)
+    call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
+    call jeveuo(carte//'.VALV', 'E', vr=valv)
     call jeveuo(jexnum(liel, 1), 'L', jligr)
     do icmp = 1, nbcmpg
-        zk8(jncmp-1+icmp) = ncmpgd(icmp)(1:8)
+        ncmp(icmp) = ncmpgd(icmp)(1:8)
     end do
     idecal = 0
     do ino1 = 1, nbno1
         if (flagn1(ino1) .eq. 1) then
             idecal = idecal + 1
             do icmp = 1, 3
-                zr(jvalv-1+icmp) = zr(jchnsv-1+nbcmpg*(ino1-1)+icmp)
+                valv(icmp) = cnsv(nbcmpg*(ino1-1)+icmp)
             end do
             do icmp = 4, nbcmpg
-                zr(jvalv-1+icmp) = 0.d0
+                valv(icmp) = 0.d0
             end do
             ii = zi(jligr-1+idecal)
             call nocart(carte, -3, nbcmpg, ligrel=liel, nma=1,&

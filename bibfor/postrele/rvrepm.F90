@@ -68,7 +68,8 @@ subroutine rvrepm(mailla, courbe, repere, sdnewr)
     character(len=15) :: nchmin
     character(len=24) :: nvec1, nvec2, ntabnd, nkarnd
     integer :: avec1, avec2, atabnd
-    integer :: nbchm, ichm, nbm, achm, acoord, nbpt
+    integer :: nbchm, ichm, nbm, achm,  nbpt
+    real(kind=8), pointer :: vale(:) => null()
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
@@ -83,7 +84,7 @@ subroutine rvrepm(mailla, courbe, repere, sdnewr)
     nkarnd = '&&RVREPM.LISTE.NOMND'
 !
     call jelira(nchmin, 'NMAXOC', nbchm)
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', acoord)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
     call jecrec(nvec1, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbchm)
@@ -107,7 +108,7 @@ subroutine rvrepm(mailla, courbe, repere, sdnewr)
     call jeecra(jexnum(nvec2, ichm), 'LONMAX', 2*nbpt)
     call jeveuo(jexnum(nvec2, ichm), 'E', avec2)
 !
-    call rvrlln(zr(acoord), zi(atabnd), nbpt, repere, zr(avec1),&
+    call rvrlln(vale, zi(atabnd), nbpt, repere, zr(avec1),&
                 zr( avec2))
 !
     call jedetr(ntabnd)

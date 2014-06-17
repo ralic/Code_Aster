@@ -91,11 +91,14 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
     integer ::      cxno1(nbnomx),cxno2(2)
     integer ::      jadf,jadi,jadc,jadr,jtabco
     integer ::      icodre(3),iado,iadc
-    integer ::      jcesv1,jcesd1,jcesl1,jcesv2,jcesd2,jcesl2
-    integer ::      jtyel,ityel,ipt,nbpt,decal,i,j,l,jcesv3,jcesd3,jcesl3
+    integer ::      jcesd1,jcesl1,jcesd2,jcesl2
+    integer ::      jtyel,ityel,ipt,nbpt,decal,i,j,l,jcesd3,jcesl3
     real(kind=8) ::  cpara(15),corie(3),para(3),rbid(1)
 
     character(len=16) ::  motfac
+    character(len=8), pointer :: cesv1(:) => null()
+    real(kind=8), pointer :: cesv2(:) => null()
+    real(kind=8), pointer :: cesv3(:) => null()
 
 
 ! ----------------------------------------------------------------------
@@ -137,7 +140,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
        call carces(carte1,'ELEM',' ','V',cesmat,'A',iret)
        call cesred(cesmat,nbma2,zi(jtabco+nbma1),0,kbid,'V',cesmat)
        call jeveuo(cesmat//'.CESD', 'L', jcesd1)
-       call jeveuo(cesmat//'.CESV', 'L', jcesv1)
+       call jeveuo(cesmat//'.CESV', 'L', vk8=cesv1)
        call jeveuo(cesmat//'.CESL', 'L', jcesl1)
        call getvid(motfac,'CARA_ELEM',iocc=iocc,scal=carael,nbret=noc)
        ncmpi = 15
@@ -161,7 +164,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
        call carces(carte ,'ELEM',' ','V',carsd ,'A',iret)
        call cesred(carsd,nbma2,zi(jtabco+nbma1),ncmpi,nocmp,'V',carsd)
        call jeveuo(carsd//'.CESD', 'L', jcesd2)
-       call jeveuo(carsd//'.CESV', 'L', jcesv2)
+       call jeveuo(carsd//'.CESV', 'L', vr=cesv2)
        call jeveuo(carsd//'.CESL', 'L', jcesl2)
        carsd1 = '&&'//nompro//'.CARORIEN'
        call exisd('CARTE', carael//'.CARORIEN', iret)
@@ -172,7 +175,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
            nomcmp(3)  = 'GAMMA   '
            call cesred(carsd1,nbma2,zi(jtabco+nbma1),3,nomcmp,'V',carsd1)
            call jeveuo(carsd1//'.CESD', 'L', jcesd3)
-           call jeveuo(carsd1//'.CESV', 'L', jcesv3)
+           call jeveuo(carsd1//'.CESV', 'L', vr=cesv3)
            call jeveuo(carsd1//'.CESL', 'L', jcesl3)
        endif
     endif    
@@ -331,7 +334,7 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
 
         call cesexi('C',jcesd1,jcesl1,nummc2,1,1,1,iad)
         if (iad > 0) then
-            mater = zk8(jcesv1-1+iad)
+            mater = cesv1(iad)
         end if
         call rcvale(mater,'ELAS',0,k8b,rbid(1), &
                     1,'E       ',para(1),icodre,1)
@@ -357,13 +360,13 @@ subroutine arlchi(iocc,mail,nomo,nom1,nom2,mailar, &
                     call cesexi('S',jcesd2,jcesl2,nummc2,ipt,1, &
                                 icmp+decal,iadc)
                     ASSERT(iadc.gt.0)
-                    cpara(icmp) = zr(jcesv2-1+iadc)
+                    cpara(icmp) = cesv2(iadc)
                 120 end do
                 do 130 icmp = 1, 3
                     call cesexi('S', jcesd3, jcesl3, nummc2,ipt,&
                                 1,icmp,iado)
                     ASSERT(iad.gt.0)
-                    corie(icmp) = zr(jcesv3-1+iado)
+                    corie(icmp) = cesv3(iado)
                 130 end do
             110 end do
         else

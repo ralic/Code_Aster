@@ -42,9 +42,10 @@ subroutine nmnkft(solveu, sddisc, iterat)
 !
 !
 !
-    integer :: jslvr, ibid
+    integer ::  ibid
     real(kind=8) :: epsi, epsold, resnew(1), resold(1), epsmin
     character(len=19) :: solveu
+    real(kind=8), pointer :: slvr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -56,7 +57,7 @@ subroutine nmnkft(solveu, sddisc, iterat)
 !
 ! --- SHEMA DE CALCUL INPIRE DE "SOLVING NONLINEAR EQUATION WITH
 !     NEWTON'S METHOD", C.T. KELLEY, SIAM, PAGE 62-63
-    call jeveuo(solveu//'.SLVR', 'E', jslvr)
+    call jeveuo(solveu//'.SLVR', 'E', vr=slvr)
     if (iterat .eq. -1) then
         call nmlerr(sddisc, 'L', 'INIT_NEWTON_KRYLOV', epsi, ibid)
     else
@@ -75,7 +76,7 @@ subroutine nmnkft(solveu, sddisc, iterat)
             epsi=min(max(0.1d0*resnew(1)**2/resold(1)**2,0.9d0*epsold**2)&
             ,4.d-1*epsold)
         else
-            epsmin = zr(jslvr)
+            epsmin = slvr(1)
             epsi=max(min(0.1d0*resnew(1)**2/resold(1)**2,4.d-1*epsold)&
             ,epsmin)
 !
@@ -92,7 +93,7 @@ subroutine nmnkft(solveu, sddisc, iterat)
 !
 ! --- COPIE DE LA PRECISION CALCULEE DANS LA SD SOLVEUR
 !
-    zr(jslvr+1)=epsi
+    slvr(2)=epsi
 !
 !
     call jedema()

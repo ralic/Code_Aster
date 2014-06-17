@@ -59,8 +59,8 @@ subroutine orth99(nomres, ritz)
 !
 !
     integer :: ifm, niv, n1, ier, ibid, imatra, nbmode, jordm, iddeeq
-    integer :: llnequ, neq, idmode,    iorol, iorne, iad
-    integer :: jiad, jvale, ieq, i, nindep, ir, tmod(1)
+    integer ::  neq, idmode,    iorol, iorne, iad
+    integer :: jiad,  ieq, i, nindep, ir, tmod(1)
     real(kind=8) :: alpha, rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, matras, base, ortho, intf
@@ -70,6 +70,8 @@ subroutine orth99(nomres, ritz)
     real(kind=8), pointer :: trav1(:) => null()
     real(kind=8), pointer :: trav3(:) => null()
     integer, pointer :: trav4(:) => null()
+    integer, pointer :: nequ(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -147,8 +149,8 @@ subroutine orth99(nomres, ritz)
     endif
     nu = numdda(1:14)
     call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)
-    call jeveuo(nu//'.NUME.NEQU', 'L', llnequ)
-    neq = zi(llnequ)
+    call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequ)
+    neq = nequ(1)
     call wkvect('&&ORTH99.BASE', 'V V R', nbmode*neq, idmode)
     call copmod(base, numer=nu, bmodr=zr(idmode))
 !-- FINALEMENT SI, DONC RECOPIE OK
@@ -211,9 +213,9 @@ subroutine orth99(nomres, ritz)
         call rsexch(' ', nomres, 'DEPL', iorne, chamol,&
                     ier)
         call vtcrem(chamol, matras, 'G', 'R')
-        call jeveuo(chamol//'.VALE', 'E', jvale)
+        call jeveuo(chamol//'.VALE', 'E', vr=vale)
         do ieq = 1, neq
-            zr(jvale+ieq-1) = zr(idmode+(i-1)*neq+ieq-1)
+            vale(ieq) = zr(idmode+(i-1)*neq+ieq-1)
         end do
         call rsnoch(nomres, 'DEPL', iorne)
 !

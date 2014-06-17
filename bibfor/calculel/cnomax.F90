@@ -44,10 +44,12 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
 !
 !
 !
-    integer :: jcnsd, jcnsv, jcnsl
+    integer ::   jcnsl
     integer :: nbno, k, ino
     character(len=19) :: cno, cns1, cns
     real(kind=8) :: norme
+    integer, pointer :: cnsd(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,16 +64,16 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
     call cnsred(cns1, 0, [0], ncmp, licmp,&
                 'V', cns)
 !
-    call jeveuo(cns//'.CNSD', 'L', jcnsd)
-    call jeveuo(cns//'.CNSV', 'L', jcnsv)
+    call jeveuo(cns//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(cns//'.CNSV', 'L', vr=cnsv)
     call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
-    nbno = zi(jcnsd-1+1)
+    nbno = cnsd(1)
     do 10,ino = 1,nbno
     norme=0.d0
     do 30,k = 1,ncmp
     if (zl(jcnsl-1+ (ino-1)*ncmp+k)) then
-        norme=norme+zr(jcnsv-1+ (ino-1)*ncmp+k)**2
+        norme=norme+cnsv((ino-1)*ncmp+k)**2
     endif
 30  continue
     if (sqrt(norme) .ge. rmax) then

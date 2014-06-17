@@ -140,7 +140,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     integer :: isto3, istoav, iv, iveri
     integer :: jcho2, jchor
     integer :: jmass, jredi
-    integer :: jredr, jslvi, jvint
+    integer :: jredr,  jvint
     integer :: nbacc, nbexci, nbmod1, nbpasc
     integer :: nbrede, nbrevi, nbsauv, nbscho, ndt, npas, nbschor
     integer :: nper, nr, nrmax, nbvint
@@ -171,6 +171,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     real(kind=8), pointer :: vit2(:) => null()
     real(kind=8), pointer :: vite(:) => null()
     real(kind=8), pointer :: vmin(:) => null()
+    integer, pointer :: slvi(:) => null()
 !
     call jemarq()
 !
@@ -233,13 +234,13 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 !
 !       ISTOP MIS A 1 POUR NE PAS ARRETER L'EXECUTION EN CAS
 !       DE MATRICE SINGULIERE (MODES STATIQUES)
-        call jeveuo(solveu//'.SLVI', 'E', jslvi)
-        istoav=zi(jslvi-1+3)
-        zi(jslvi-1+3)=1
+        call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+        istoav=slvi(3)
+        slvi(3)=1
         call preres(solveu, 'V', iret, matpre, mamass,&
                     ibid, -9999)
 !       -- ON RETABLIT ISTOP
-        zi(jslvi-1+3)=istoav
+        slvi(3)=istoav
     else
         call wkvect('&&MDADAP.MASS', 'V V R8', neqgen, jmass)
         call dcopy(neqgen, masgen, 1, zr(jmass), 1)

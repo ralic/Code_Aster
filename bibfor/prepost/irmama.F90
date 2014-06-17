@@ -54,8 +54,9 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
 !     ------------------------------------------------------------------
     character(len=8) :: nomma
     integer :: jnuma, ima, iad, in, jtopo, imai, igr, iret, nbn, lnuma
-    integer :: jdime, nbmama,  numa
+    integer ::  nbmama,  numa
     integer, pointer :: mailles(:) => null()
+    integer, pointer :: dime(:) => null()
 !
 !
     call jemarq()
@@ -89,8 +90,8 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
 !  --- TRAITEMENT DES LISTES DE GROUPES DE MAILLES---
     if (nbgr .ne. 0) then
 !     --- RECUPERATION DU NUMERO DE MAILLE----
-        call jeveuo(nomma//'.DIME', 'L', jdime)
-        nbmama = zi(jdime+3-1)
+        call jeveuo(nomma//'.DIME', 'L', vi=dime)
+        nbmama = dime(3)
         AS_ALLOCATE(vi=mailles, size=nbmama)
         do 13 igr = 1, nbgr
             call jeexin(jexnom(nomma//'.GROUPEMA', nogrm(igr)), iret)

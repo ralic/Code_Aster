@@ -149,7 +149,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     integer :: ncmput
     integer :: existc
     integer :: ndim
-    integer :: npas, adinst, adnume
+    integer :: npas
     integer :: lgproa
     integer :: ifm, nivinf
     integer :: tygeom, nbtyp
@@ -157,8 +157,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
     integer :: typgeo(ntymax), lygeom(ntymax), lypent(ntymax), ltyp(ntymax)
     integer :: renumd(ntymax), nlyval(ntymax), nuanom(ntymax, nnomax)
     integer :: nbtylu, iaux2, k, nbty(ntymax)
-    integer :: jtypma, nbnoma, nmatyp, jntpro, lgprof, cptyma
-    integer :: jnumty, numma, ima, hdfok, medok, jlgrf, jmaill
+    integer ::  nbnoma, nmatyp, jntpro, lgprof, cptyma
+    integer :: jnumty, numma, ima, hdfok, medok,  jmaill
 !
     character(len=1) :: saux01
     character(len=8) :: saux08, modele
@@ -176,6 +176,10 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !
     logical :: existm, existt
     logical :: logaux
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: nume(:) => null()
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: vinst(:) => null()
 !
     call jemarq()
 !
@@ -399,22 +403,22 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                         prefix, npas, codret)
 !
             if (npas .ne. 0) then
-                call jeveuo(prefix//'.INST', 'L', adinst)
-                call jeveuo(prefix//'.NUME', 'L', adnume)
+                call jeveuo(prefix//'.INST', 'L', vr=vinst)
+                call jeveuo(prefix//'.NUME', 'L', vi=nume)
                 logaux = .false.
                 do 222 , iaux2 = 1 , npas
                 if (crit(1:4) .eq. 'RELA') then
-                    if (abs(zr(adinst-1+iaux2)-inst) .le. abs( prec*inst)) then
+                    if (abs(vinst(iaux2)-inst) .le. abs( prec*inst)) then
                         logaux = .true.
                     endif
                 else if (crit(1:4).eq.'ABSO') then
-                    if (abs(zr(adinst-1+iaux2)-inst) .le. abs( prec)) then
+                    if (abs(vinst(iaux2)-inst) .le. abs( prec)) then
                         logaux = .true.
                     endif
                 endif
                 if (logaux) then
-                    numpt = zi(adnume+2*iaux2-2)
-                    numord = zi(adnume+2*iaux2-1)
+                    numpt = nume(1+2*iaux2-2)
+                    numord = nume(1+2*iaux2-1)
                     goto 2221
                 endif
 222             continue
@@ -601,7 +605,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !       - POUR UN ELGA : VARIABLE (INFO PRESENTE DANS LE TABLEAU NPGMA)
 !
         nbma=zi(adsd)
-        call jeveuo(nomaas(1:8)//'.TYPMAIL', 'L', jtypma)
+        call jeveuo(nomaas(1:8)//'.TYPMAIL', 'L', vi=typmail)
 !
         do 71 , letype = 1 , nbtylu
 !
@@ -647,8 +651,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !         MED ONT BIEN LE MEME NOMBRE DE MAILLE DE CHAQUE TYPE
         call jeexin(ligrel//'.LGRF', iret)
         if (iret .ne. 0) then
-            call jeveuo(ligrel//'.LGRF', 'L', jlgrf)
-            modele=zk8(jlgrf+1)
+            call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+            modele=lgrf(2)
             call jeveuo(modele//'.MAILLE', 'L', jmaill)
         else
             jmaill=0
@@ -658,7 +662,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
         k=0
         if (lgproa .eq. 0) then
             do ima = 1, nbma
-                if (zi(jtypma+ima-1) .eq. ltyp(letype)) then
+                if (typmail(ima) .eq. ltyp(letype)) then
                     if (jmaill .eq. 0 .or. (jmaill.ne.0.and.zi(jmaill+ ima-1).ne.0)) then
                         k=k+1
                         zi(jnumty+k-1)=ima
@@ -672,7 +676,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
             k=0
             cptyma=1
             do ima = 1, nbma
-                if (zi(jtypma+ima-1) .eq. ltyp(letype)) then
+                if (typmail(ima) .eq. ltyp(letype)) then
                     if (zi(jntpro+k) .eq. cptyma) then
                         if (jmaill .eq. 0 .or. (jmaill.ne.0.and.zi( jmaill+ima-1).ne.0)) then
                             k=k+1

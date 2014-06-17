@@ -122,15 +122,14 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
     real(kind=8) :: meserr(2)
 !
 !     TORUS
-    integer :: jlisno, nnodgr, jnocal, jdisfr, nnodto, nbelno, jnoel, jconx1
-    integer :: jconx2, nocur, numelm, jmai, itypma, nbma, jelcal, neleto, jeleca
-    integer :: jaux, jtmdim, nodins
+    integer :: jlisno, nnodgr, jnocal, jdisfr, nnodto, nbelno, jnoel
+    integer :: jconx2, nocur, numelm,  itypma, nbma, jelcal, neleto, jeleca
+    integer :: jaux,  nodins
     integer :: jndsup
     character(len=19) :: listel
     real(kind=8) :: rdnew
 !
 !     LEVEL SETS AND LOCAL BASE
-    integer :: jlsn, jlst, jbl, jdisv
 !
 !     NODAL CONNECTION TABLE
     integer :: jvcn, jvcnd, jvcnt, jvcndt, jlisol, jgrlr, jgrlrt
@@ -140,6 +139,13 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
     character(len=8) :: lpain(4), lpaout(2)
     character(len=19) :: cnoln, cnolt, celgls, chams
     character(len=24) :: lchin(4), lchout(2)
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: bl(:) => null()
+    real(kind=8), pointer :: disv(:) => null()
+    real(kind=8), pointer :: lsn(:) => null()
+    real(kind=8), pointer :: lst(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -155,16 +161,16 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
 !     RETRIEVE THE TYPE OF EACH ELEMENT IN THE MESH
-    call jeveuo(noma//'.TYPMAIL', 'L', jmai)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
 !     RETRIEVE THE DIMENSIONS OF THE EXISTING ELEMENTS
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 !     RETRIEVE THE PROBLEM DIMENSION
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     RETRIEVE THE DEFINITION OF THE ELEMENTS IN TERMS OF NODES
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !     ELABORATE THE TORUS ONLY IF THE LOCALIZATION HAS BEEN REQUESTED
@@ -194,8 +200,8 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
 !           WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
 !           THE MODEL
-            itypma=zi(jmai-1+i)
-            eldim=zi(jtmdim-1+itypma)
+            itypma=typmail(i)
+            eldim=tmdim(itypma)
 !
             if (eldim .eq. ndim) then
 !
@@ -210,7 +216,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                 do k = 1, zi(jaux)
 !
 !                 SELECT EACH NODE OF THE ELEMENT
-                    nocur = zi(jconx1-1+zi(jconx2-1+i)+k-1)
+                    nocur = connex(zi(jconx2-1+i)+k-1)
 !
 !                 MARK THE NODE AS INSIDE THE DOMAIN
                     if (.not.zl(jlisno-1+nocur)) then
@@ -261,14 +267,14 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
         call jeveuo(disfr, 'L', jdisfr)
 !
 !        RETRIEVE THE DISTANCE VECTOR AS WELL
-        call jeveuo(cnsdis//'.CNSV', 'L', jdisv)
+        call jeveuo(cnsdis//'.CNSV', 'L', vr=disv)
 !
 !        RETRIEVE THE LEVEL SETS
-        call jeveuo(cnsln//'.CNSV', 'E', jlsn)
-        call jeveuo(cnslt//'.CNSV', 'E', jlst)
+        call jeveuo(cnsln//'.CNSV', 'E', vr=lsn)
+        call jeveuo(cnslt//'.CNSV', 'E', vr=lst)
 !
 !        RETRIEVE THE LOCAL BASE FOR EACH NODE OF THE GRID
-        call jeveuo(cnsbl//'.CNSV', 'L', jbl)
+        call jeveuo(cnsbl//'.CNSV', 'L', vr=bl)
 !
 !        CREATE THE BOOLEAN LIST TO MARK THE ELEMENTS THAT ARE INSIDE
 !        THE TORUS
@@ -340,8 +346,8 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
 !                 WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
 !                 THE MODEL
-                    itypma=zi(jmai-1+numelm)
-                    eldim=zi(jtmdim-1+itypma)
+                    itypma=typmail(numelm)
+                    eldim=tmdim(itypma)
 !
                     if (eldim .eq. ndim) then
 !
@@ -350,7 +356,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
                         do k = 1, zi(jaux)
 !                       SELECT EACH NODE OF THE ELEMENT
-                            nocur = zi(jconx1-1+zi(jconx2-1+numelm)+k- 1)
+                            nocur = connex(zi(jconx2-1+numelm)+k- 1)
 !                       UPDATE THE RADIUS OF THE TORUS
                             if (zr(jdisfr-1+nocur) .gt. rdnew) rdnew=zr( jdisfr-1+nocur)
                         end do
@@ -419,8 +425,8 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
 !                 WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
 !                 THE MODEL
-                    itypma=zi(jmai-1+numelm)
-                    eldim=zi(jtmdim-1+itypma)
+                    itypma=typmail(numelm)
+                    eldim=tmdim(itypma)
 !
                     if (eldim .eq. ndim) then
 !
@@ -433,7 +439,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
                         do k = 1, zi(jaux)
 !
-                            nocur = zi(jconx1-1+zi(jconx2-1+numelm)+k- 1)
+                            nocur = connex(zi(jconx2-1+numelm)+k- 1)
                             if (zl(jlisno-1+nocur)) nodins=nodins+1
 !
                         end do
@@ -493,19 +499,19 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                     if (.not.zl(jlisol-1+i)) then
 !
 !                    YES, THE LEVEL SET VALUE MUST BE UPDATED
-                        zr(jlsn-1+i) = 0.d0
-                        zr(jlst-1+i) = 0.d0
+                        lsn(i) = 0.d0
+                        lst(i) = 0.d0
 !
 !                    CALCULATE THE NORMAL AND TANGENTIAL DISTANCES AS
 !                    A SCALAR PRODUCT BETWEEN THE DISTANCE VECTOR AND
 !                    THE AXIS OF THE LOCAL BASE IN THE NODE
                         do j = 1, ndim
 !
-                            zr(jlsn-1+i)=zr(jlsn-1+i)+zr(jdisv-1+ndim*&
-                            (i-1)+j)* zr(jbl-1+2*ndim*(i-1)+j)
+                            lsn(i)=lsn(i)+disv(ndim*&
+                            (i-1)+j)* bl(2*ndim*(i-1)+j)
 !
-                            zr(jlst-1+i)=zr(jlst-1+i)+zr(jdisv-1+ndim*&
-                            (i-1)+j)* zr(jbl-1+2*ndim*(i-1)+j+ndim)
+                            lst(i)=lst(i)+disv(ndim*&
+                            (i-1)+j)* bl(2*ndim*(i-1)+j+ndim)
 !
                         end do
 !

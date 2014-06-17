@@ -96,12 +96,21 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     character(len=19) :: lisbid
     character(len=8) :: k8bid
     character(len=6) :: tychap_out
-    integer :: idepmo, ideppl, ivitmo, ivitpl
-    integer :: neq, i, j, iveass, long
-    integer :: ifexmo, ifammo, iflimo, ifnomo
-    integer :: ifexpl, ifampl, iflipl, ifnopl
+    integer ::   ivitmo, ivitpl
+    integer :: neq, i, j,  long
     integer :: ifexte, ifamor, ifliai, ifcine, ifnoda
     logical :: ldyna, lamor, lexpl, reassm
+    real(kind=8), pointer :: epmo(:) => null()
+    real(kind=8), pointer :: eppl(:) => null()
+    real(kind=8), pointer :: fammo(:) => null()
+    real(kind=8), pointer :: fampl(:) => null()
+    real(kind=8), pointer :: fexmo(:) => null()
+    real(kind=8), pointer :: fexpl(:) => null()
+    real(kind=8), pointer :: flimo(:) => null()
+    real(kind=8), pointer :: flipl(:) => null()
+    real(kind=8), pointer :: fnomo(:) => null()
+    real(kind=8), pointer :: fnopl(:) => null()
+    real(kind=8), pointer :: veass(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -145,9 +154,9 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     k8bid=' '
     reassm=.false.
     call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
-    call jeveuo(depmoi//'.VALE', 'L', idepmo)
+    call jeveuo(depmoi//'.VALE', 'L', vr=epmo)
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
-    call jeveuo(depplu//'.VALE', 'L', ideppl)
+    call jeveuo(depplu//'.VALE', 'L', vr=eppl)
     call jelira(depmoi//'.VALE', 'LONMAX', ival=neq)
     ldyna=ndynlo(sddyna,'DYNAMIQUE')
     lamor=ndynlo(sddyna,'MAT_AMORT')
@@ -179,20 +188,20 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
         call jeexin(veasse(i)//'.VALE', iret(i))
     end do
 !
-    call jeveuo(fexmoi//'.VALE', 'L', ifexmo)
-    call jeveuo(fammoi//'.VALE', 'L', ifammo)
-    call jeveuo(flimoi//'.VALE', 'L', iflimo)
-    call jeveuo(fnomoi//'.VALE', 'L', ifnomo)
-    call jeveuo(fexplu//'.VALE', 'E', ifexpl)
-    call jeveuo(famplu//'.VALE', 'E', ifampl)
-    call jeveuo(fliplu//'.VALE', 'E', iflipl)
-    call jeveuo(fnoplu//'.VALE', 'E', ifnopl)
+    call jeveuo(fexmoi//'.VALE', 'L', vr=fexmo)
+    call jeveuo(fammoi//'.VALE', 'L', vr=fammo)
+    call jeveuo(flimoi//'.VALE', 'L', vr=flimo)
+    call jeveuo(fnomoi//'.VALE', 'L', vr=fnomo)
+    call jeveuo(fexplu//'.VALE', 'E', vr=fexpl)
+    call jeveuo(famplu//'.VALE', 'E', vr=fampl)
+    call jeveuo(fliplu//'.VALE', 'E', vr=flipl)
+    call jeveuo(fnoplu//'.VALE', 'E', vr=fnopl)
 !
     do i = 1, neq
-        zr(ifexpl-1+i)=0.d0
-        zr(ifampl-1+i)=0.d0
-        zr(iflipl-1+i)=0.d0
-        zr(ifnopl-1+i)=0.d0
+        fexpl(i)=0.d0
+        fampl(i)=0.d0
+        flipl(i)=0.d0
+        fnopl(i)=0.d0
     end do
 !
     call wkvect('FEXTE', 'V V R', 2*neq, ifexte)
@@ -205,7 +214,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 !
     do i = 1, zveass
         if (iret(i) .ne. 0) then
-            call jeveuo(veasse(i)//'.VALE', 'L', iveass)
+            call jeveuo(veasse(i)//'.VALE', 'L', vr=veass)
 ! --------------------------------------------------------------------
 ! 7  - CNFEDO : CHARGES MECANIQUES FIXES DONNEES
 ! 9  - CNLAPL : FORCES DE LAPLACE
@@ -214,26 +223,26 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! --------------------------------------------------------------------
             if ((i.eq.7 ) .or. (i.eq.9 ) .or. (i.eq.11) .or. (i.eq.15)) then
                 do j = 1, neq
-                    zr(ifexpl-1+j)=zr(ifexpl-1+j)+zr(iveass-1+j)
+                    fexpl(j)=fexpl(j)+veass(j)
                 end do
 ! --------------------------------------------------------------------
 ! 20 - CNVCF0 : FORCE DE REFERENCE LIEE AUX VAR. COMMANDES EN T+
 ! --------------------------------------------------------------------
             else if (i.eq.20) then
                 do j = 1, neq
-                    zr(ifexpl-1+j)=zr(ifexpl-1+j)+zr(iveass-1+j)
+                    fexpl(j)=fexpl(j)+veass(j)
                 end do
 ! ON AJOUTE LES CONTRAINTES ISSUES DES VARIABLES DE COMMANDE AUX
 ! FORCES INTERNES EGALEMENT
                 do j = 1, neq
-                    zr(ifnopl-1+j)=zr(ifnopl-1+j)+zr(iveass-1+j)
+                    fnopl(j)=fnopl(j)+veass(j)
                 end do
 ! --------------------------------------------------------------------
 ! 8  - CNFEPI : FORCES PILOTEES PARAMETRE ETA A PRENDRE EN COMPTE
 ! --------------------------------------------------------------------
             else if (i.eq.8) then
                 do j = 1, neq
-                    zr(ifexpl-1+j)=zr(ifexpl-1+j)+eta*zr(iveass-1+j)
+                    fexpl(j)=fexpl(j)+eta*veass(j)
                 end do
 ! --------------------------------------------------------------------
 ! 2  - CNDIRI : BtLAMBDA                : IL FAUT PRENDRE L OPPOSE
@@ -241,14 +250,14 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! --------------------------------------------------------------------
             else if ((i.eq.2).or.(i.eq.10)) then
                 do j = 1, neq
-                    zr(ifexpl-1+j)=zr(ifexpl-1+j)-zr(iveass-1+j)
+                    fexpl(j)=fexpl(j)-veass(j)
                 end do
 ! --------------------------------------------------------------------
 ! 27 - CNMODC : FORCE D AMORTISSEMENT MODAL
 ! --------------------------------------------------------------------
             else if (i.eq.27) then
                 do j = 1, neq
-                    zr(ifampl-1+j)=zr(ifampl-1+j)+zr(iveass-1+j)
+                    fampl(j)=fampl(j)+veass(j)
                 end do
 ! --------------------------------------------------------------------
 ! 16 - CNELTC : FORCES ELEMENTS DE CONTACT (CONTINU + XFEM)
@@ -261,13 +270,13 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
                 else if ((i.eq.16).or.(i.eq.17).or.(i.eq.31).or. (i.eq.23)&
             .or.(i.eq.28).or.(i.eq.29)) then
                 do j = 1, neq
-                    zr(iflipl-1+j)=zr(iflipl-1+j)+zr(iveass-1+j)
+                    flipl(j)=flipl(j)+veass(j)
                 end do
                 if ((i.eq.16) .or. (i.eq.17)) then
 ! ON ENLEVE LA CONTRIBUTION DU CONTACT (CONTINU + XFEM) DANS
 ! LES FORCES INTERNES (VOIR ROUTINE NMAINT)
                     do j = 1, neq
-                        zr(ifnopl-1+j)=zr(ifnopl-1+j)-zr(iveass-1+j)
+                        fnopl(j)=fnopl(j)-veass(j)
                     end do
                 endif
 ! CNDIRI CONTIENT BTLAMBDA PLUS CONTRIBUTION CNCTDF DU CONTACT.
@@ -275,7 +284,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! MAIS IL FAUT ALORS LUI RETRANCHER -CNCTDF.
                 if (i .eq. 23) then
                     do j = 1, neq
-                        zr(ifexpl-1+j)=zr(ifexpl-1+j)+zr(iveass-1+j)
+                        fexpl(j)=fexpl(j)+veass(j)
                     end do
                 endif
 ! --------------------------------------------------------------------
@@ -285,7 +294,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! CHARGEMENT FORCE_SOL CNVISS. SI ON COMPTE SA CONTRIBUTION EN TANT
 ! QUE FORCE DISSIPATIVE DE LIAISON, ON DOIT PRENDRE L OPPOSE.
                 do j = 1, neq
-                    zr(iflipl-1+j)=zr(iflipl-1+j)-zr(iveass-1+j)
+                    flipl(j)=flipl(j)-veass(j)
                 end do
 ! --------------------------------------------------------------------
 !  1  - CNFINT : FORCES INTERNES
@@ -294,7 +303,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! CONTIENT UNE CONTRIBUTION DU CONTACT QU ON ENLEVE PAR AILLEURS.
 ! CONTIENT LA CONTRIBUTION DES MACRO ELEMENTS.
                 do j = 1, neq
-                    zr(ifnopl-1+j)=zr(ifnopl-1+j)+zr(iveass-1+j)
+                    fnopl(j)=fnopl(j)+veass(j)
                 end do
 ! --------------------------------------------------------------------
 ! 21 - CNCINE : INCREMENTS DE DEPLACEMENT IMPOSES (AFFE_CHAR_CINE)
@@ -304,7 +313,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! POUR SUPPRIMER DES DEGRES DE LIBERTE EN RAISON DE AFFE_CHAR_CINE.
                 reassm=.true.
                 do j = 1, neq
-                    zr(ifcine-1+j)=zr(ifcine-1+j)+zr(iveass-1+j)
+                    zr(ifcine-1+j)=zr(ifcine-1+j)+veass(j)
                 end do
             endif
         endif
@@ -331,17 +340,17 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 ! --- PREPARATION DES CHAMPS DE FORCE
 !
     do i = 1, neq
-        zr(ifexte-1+i+neq)=zr(ifexpl-1+i)
-        zr(ifexte-1+i)=zr(ifexmo-1+i)
-        zr(ifliai-1+i+neq)=zr(iflipl-1+i)
-        zr(ifliai-1+i)=zr(iflimo-1+i)
-        zr(ifamor-1+i+neq)=zr(ifampl-1+i)
-        zr(ifamor-1+i)=zr(ifammo-1+i)
-        zr(ifnoda-1+i+neq)=zr(ifnopl-1+i)
-        zr(ifnoda-1+i)=zr(ifnomo-1+i)
+        zr(ifexte-1+i+neq)=fexpl(i)
+        zr(ifexte-1+i)=fexmo(i)
+        zr(ifliai-1+i+neq)=flipl(i)
+        zr(ifliai-1+i)=flimo(i)
+        zr(ifamor-1+i+neq)=fampl(i)
+        zr(ifamor-1+i)=fammo(i)
+        zr(ifnoda-1+i+neq)=fnopl(i)
+        zr(ifnoda-1+i)=fnomo(i)
     end do
 !
-    call enerca(valinc, zr(idepmo), zr(ivitmo), zr(ideppl), zr(ivitpl),&
+    call enerca(valinc, epmo, zr(ivitmo), eppl, zr(ivitpl),&
                 masse, amort, rigid, zr(ifexte), zr(ifamor),&
                 zr(ifliai), zr(ifnoda), zr(ifcine), lamor, ldyna,&
                 lexpl, sdener, k8bid)

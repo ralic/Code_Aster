@@ -57,7 +57,7 @@ subroutine op0141()
 !
     integer :: n1, n2, n3, ibid, nbmod1, nbmod2, neq, idbas1
     integer :: idbas2, idbas3, idvec3, i, j, nbpara, inom, ityp, ind, imatra
-    integer :: idvec1, iddeeq, idvec2, ifm, niv, llneq1, neq1, llneq2, iret
+    integer :: idvec1,  idvec2, ifm, niv,  neq1, llneq2, iret
     integer :: iddl, indv, tmod(1)
     real(kind=8) :: rbid, pij, pii, pjj
     complex(kind=8) :: cbid, dcmplx, ztemp, dconjg
@@ -68,6 +68,8 @@ subroutine op0141()
     character(len=19) :: matr, pronu1, pronu2, pronua
     character(len=24) :: chamol
     logical :: c1, c2, zcmplx, ieri
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: nllneq1(:) => null()
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
@@ -160,8 +162,8 @@ subroutine op0141()
         call utmess('F', 'CALCESSAI0_14', sk=base1)
     endif
 !
-    call jeveuo(numdd1//'.NUME.NEQU', 'L', llneq1)
-    neq1 = zi(llneq1)
+    call jeveuo(numdd1//'.NUME.NEQU', 'L', vi=nllneq1)
+    neq1 = nllneq1(1)
 !
 !
     if ((typba2(1:9).eq.'MODE_MECA') .or. (typba2(1:9).eq.'MODE_GENE')) then
@@ -195,7 +197,7 @@ subroutine op0141()
             call utmess('F', 'ALGELINE2_81')
         endif
         nu = numdda(1:14)
-        call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)
+        call jeveuo(nu//'.NUME.DEEQ', 'L', vi=deeq)
     else
         nu = numdd1(1:14)
         neq=neq1
@@ -252,7 +254,7 @@ subroutine op0141()
                             .true.)
 !
                 do iddl = 1, neq
-                    if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec1-1+iddl) = dcmplx(0.d0,0.d0)
+                    if (deeq(2*iddl) .le. 0) zc(idvec1-1+iddl) = dcmplx(0.d0,0.d0)
                 end do
 !
             else
@@ -276,7 +278,7 @@ subroutine op0141()
                                 .true.)
 !
                     do iddl = 1, neq
-                        if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec2-1+iddl) = dcmplx(0.d0,0.d0)
+                        if (deeq(2*iddl) .le. 0) zc(idvec2-1+iddl) = dcmplx(0.d0,0.d0)
                     end do
 !
                 else
@@ -297,7 +299,7 @@ subroutine op0141()
                     call mcmult('ZERO', imatra, zc(idbas3), zc(idvec3), 1,&
                                 .true.)
                     do iddl = 1, neq
-                        if (zi(iddeeq-1+2*iddl) .le. 0) zc(idvec3-1+iddl) = dcmplx(0.d0,0.d0)
+                        if (deeq(2*iddl) .le. 0) zc(idvec3-1+iddl) = dcmplx(0.d0,0.d0)
                     end do
 !
                     ztemp = dcmplx(0.0d0,0.0d0)
@@ -341,7 +343,7 @@ subroutine op0141()
             if (matr .ne. ' ') then
                 call mrmult('ZERO', imatra, zr(idbas1+(i-1)*neq), zr(idvec1), 1,&
                             .true.)
-                call zerlag(neq, zi(iddeeq), vectr=zr(idvec1))
+                call zerlag(neq, deeq, vectr=zr(idvec1))
             else
                 call dcopy(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec1), 1)
             endif
@@ -356,7 +358,7 @@ subroutine op0141()
                 if (matr .ne. ' ') then
                     call mrmult('ZERO', imatra, zr(idbas2+(j-1)*neq), zr(idvec2), 1,&
                                 .true.)
-                    call zerlag(neq, zi( iddeeq), vectr=zr(idvec2))
+                    call zerlag(neq, deeq, vectr=zr(idvec2))
                 else
                     call dcopy(neq, zr(idbas2+(j-1)*neq), 1, zr(idvec2), 1)
                 endif
@@ -367,7 +369,7 @@ subroutine op0141()
                     call vdiff(neq, zr(idbas1+(i-1)*neq), zr(idbas2+(j- 1)*neq), zr(idbas3))
                     call mrmult('ZERO', imatra, zr(idbas3), zr(idvec3), 1,&
                                 .true.)
-                    call zerlag(neq, zi( iddeeq), vectr=zr(idvec3))
+                    call zerlag(neq, deeq, vectr=zr(idvec3))
 !
                     pij = abs(ddot( neq,zr(idbas3) ,1, zr(idvec3),1))
 !

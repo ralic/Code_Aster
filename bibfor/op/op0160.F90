@@ -35,7 +35,9 @@ subroutine op0160()
     integer :: versio, n1, ific, vali(2)
     character(len=8) :: format, macrel, basemo, k8b
     character(len=16) :: fichie
-    integer :: jrefe, nbmodt, nbvect, jdesm
+    integer ::  nbmodt, nbvect
+    integer, pointer :: desm(:) => null()
+    character(len=24), pointer :: mael_refe(:) => null()
 !     ------------------------------------------------------------------
     call infmaj()
 !
@@ -47,13 +49,13 @@ subroutine op0160()
 !     ----- VERIFICATION QUE LA BASE MODALE EST A JOUR -----
 !
 !     1. RECUPERATION DU NOMBRE DES MODES -----
-    call jeveuo(macrel//'.MAEL_REFE', 'L', jrefe)
-    basemo = zk24(jrefe)(1:8)
+    call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
+    basemo = mael_refe(1)(1:8)
     call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt, k8b)
 !
 !     2. RECUPERATION DU NOMBRE DE VECTEURS DE BASE -----
-    call jeveuo(macrel//'.DESM', 'L', jdesm)
-    nbvect = zi(jdesm+3)
+    call jeveuo(macrel//'.DESM', 'L', vi=desm)
+    nbvect = desm(4)
 !
 !     3. VERIFICATION QUE LA BASE MODALE EST A JOUR -----
     if (nbvect .ne. nbmodt) then

@@ -82,7 +82,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     character(len=24) :: nomchs
     logical :: evonol, leinit
     integer :: neq, nocc, numein, iret, i
-    integer :: jpltk, icham
+    integer ::  icham
     character(len=8) :: k8bid
     character(len=8) :: calcri, result
     character(len=16) :: motfac
@@ -90,12 +90,17 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
     character(len=24) :: typpil, typsel
     character(len=19) :: depold
     character(len=24) :: champ1, champ2, dep2, dep1, errthm
-    integer :: jdep1, jdep2, jdepol, jplir, jinst, jerrt
+    integer ::     jinst, jerrt
     logical :: lpilo, lpiarc, lctcc
     logical :: lexge, lreuse, lerrt
     logical :: lzero
     real(kind=8) :: coefav
     integer :: ifm, niv
+    real(kind=8), pointer :: plir(:) => null()
+    character(len=24), pointer :: pltk(:) => null()
+    real(kind=8), pointer :: vdep1(:) => null()
+    real(kind=8), pointer :: vdep2(:) => null()
+    real(kind=8), pointer :: depol(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -145,9 +150,9 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 ! --- DERNIERS DEPLACEMENTS POUR QUE CA MARCHE (CHAMP DEPOLD)
 !
     if (lpilo) then
-        call jeveuo(sdpilo(1:19)//'.PLTK', 'L', jpltk)
-        typpil = zk24(jpltk)
-        typsel = zk24(jpltk+5)
+        call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
+        typpil = pltk(1)
+        typsel = pltk(6)
         lpiarc = .false.
         if (typpil .eq. 'LONG_ARC' .or. typpil .eq. 'SAUT_LONG_ARC') then
             if (typsel(1:14) .eq. 'ANGL_INCR_DEPL') then
@@ -243,18 +248,18 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
         endif
         call vtcopy(champ1, dep1, 'F', iret)
         call vtcopy(champ2, dep2, 'F', iret)
-        call jeveuo(dep1(1:19)//'.VALE', 'L', jdep1)
-        call jeveuo(dep2(1:19)//'.VALE', 'L', jdep2)
-        call jeveuo(depold(1:19)//'.VALE', 'E', jdepol)
+        call jeveuo(dep1(1:19)//'.VALE', 'L', vr=vdep1)
+        call jeveuo(dep2(1:19)//'.VALE', 'L', vr=vdep2)
+        call jeveuo(depold(1:19)//'.VALE', 'E', vr=depol)
         do i = 1, neq
-            zr(jdepol-1+i) = zr(jdep1-1+i) - zr(jdep2-1+i)
+            depol(i) = vdep1(i) - vdep2(i)
         end do
-        call jeveuo(sdpilo(1:19)//'.PLIR', 'E', jplir)
+        call jeveuo(sdpilo(1:19)//'.PLIR', 'E', vr=plir)
         call rsadpa(result, 'L', 1, 'COEF_MULT', numein,&
                     0, sjv=jinst, styp=k8bid)
         coefav = zr(jinst)
         if (coefav .ne. 0.d0 .and. coefav .ne. r8vide()) then
-            zr(jplir+5) = coefav
+            plir(6) = coefav
         endif
     endif
 !

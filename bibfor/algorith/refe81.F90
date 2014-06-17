@@ -54,8 +54,10 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadref, ioc, iret, lddesc, lldesc
-    integer :: llref, nbval
+    integer :: iadref, ioc, iret, lddesc
+    integer ::  nbval
+    integer, pointer :: idc_desc(:) => null()
+    character(len=24), pointer :: idc_refe(:) => null()
 !-----------------------------------------------------------------------
     data bl8         /'        '/
 !-----------------------------------------------------------------------
@@ -118,8 +120,8 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
 ! --- RECUPERATION MAILLAGE
 !
     if (lintf .ne. bl8) then
-        call jeveuo(lintf//'.IDC_REFE', 'L', llref)
-        mailla = zk24(llref)
+        call jeveuo(lintf//'.IDC_REFE', 'L', vk24=idc_refe)
+        mailla = idc_refe(1)
     else
         call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
     endif
@@ -171,10 +173,10 @@ subroutine refe81(nomres, basmod, raid, mass, amor,&
 !
     call wkvect(nomres//'.MAEL_DESC', 'G V I', 3, lddesc)
     if (lintf .ne. bl8) then
-        call jeveuo(lintf//'.IDC_DESC', 'L', lldesc)
-        zi(lddesc) = zi(lldesc+1)
-        zi(lddesc+1) = zi(lldesc+2)
-        zi(lddesc+2) = zi(lldesc+3)
+        call jeveuo(lintf//'.IDC_DESC', 'L', vi=idc_desc)
+        zi(lddesc) = idc_desc(2)
+        zi(lddesc+1) = idc_desc(3)
+        zi(lddesc+2) = idc_desc(4)
     endif
 !
     call jedema()

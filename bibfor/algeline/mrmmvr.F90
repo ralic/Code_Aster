@@ -51,9 +51,11 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     character(len=19) :: nom19
     character(len=24) :: valm, refa
     integer :: kfin, jvalms, jvalmi, jvec, ki, kdeb, nbloc
-    integer :: ilig, jcol, jrefa, jnulg, iligg, jcolg, numglo, k
-    integer :: keta, iexi, jccid, ieq
+    integer :: ilig, jcol, jrefa,  iligg, jcolg, numglo, k
+    integer :: keta, iexi,  ieq
     logical :: nonsym
+    integer, pointer :: nulg(:) => null()
+    integer, pointer :: ccid(:) => null()
 !     ------------------------------------------------------------------
 !
 !
@@ -124,23 +126,23 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
         refa=nom19//'.REFA'
         call jeveuo(refa, 'L', jrefa)
         numddl=zk24(jrefa+2-1)(1:14)
-        call jeveuo(numddl//'.NUML.NULG', 'L', jnulg)
+        call jeveuo(numddl//'.NUML.NULG', 'L', vi=nulg)
         do 100 jvec = 1, nbvect
             do 70,k=1,neq
             vectmp(k)=vect(k,jvec)
 70          continue
             if (prepos) call mrconl('DIVI', lmat, 0, 'R', vectmp,1)
-            numglo=zi(jnulg+1-1)
+            numglo=nulg(1)
             xsol(numglo,jvec)=xsol(numglo,jvec)+ zr(jvalms-1+1)*&
             vectmp(numglo)
             do 90 ilig = 2, neql
-                iligg=zi(jnulg+ilig-1)
+                iligg=nulg(ilig)
                 kdeb=smdi(ilig-1)+1
                 kfin=smdi(ilig)-1
 !           CDIR$ IVDEP
                 do 80 ki = kdeb, kfin
                     jcol=smhc(ki)
-                    jcolg=zi(jnulg+jcol-1)
+                    jcolg=nulg(jcol)
                     xsol(iligg,jvec)=xsol(iligg,jvec)+ zr(jvalmi-1+ki)&
                     *vectmp(jcolg)
                     xsol(jcolg,jvec)=xsol(jcolg,jvec)+ zr(jvalms-1+ki)&
@@ -159,13 +161,13 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
 !     -------------------------------------------------------------
     call jeexin(nom19//'.CCID', iexi)
     if (iexi .ne. 0) then
-        call jeveuo(nom19//'.CCID', 'L', jccid)
+        call jeveuo(nom19//'.CCID', 'L', vi=ccid)
         do jvec = 1, nbvect
             do ieq=1,neql
                 if (lmatd) then
-                    keta=zi(jccid-1+zi(jnulg+ieq-1))
+                    keta=ccid(nulg(ieq))
                 else
-                    keta=zi(jccid-1+ieq)
+                    keta=ccid(ieq)
                 endif
                 ASSERT(keta.eq.1 .or. keta.eq.0)
                 if (keta .eq. 1) xsol(ieq,jvec)=0.d0

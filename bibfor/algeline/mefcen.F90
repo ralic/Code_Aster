@@ -82,9 +82,11 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iad, icesc, icesd, icesl, icesv, icmp, idesc
+    integer :: iad, icesc, icesd, icesl,  icmp
     integer :: npmax, numma, numno1, numno2
     real(kind=8) :: epsit
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     epsit = 1.d-5
@@ -153,12 +155,12 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
         call jeveuo(carsd//'.CESC', 'L', icesc)
         call jeveuo(carsd//'.CESD', 'L', icesd)
         call jeveuo(carsd//'.CESL', 'L', icesl)
-        call jeveuo(carsd//'.CESV', 'L', icesv)
+        call jeveuo(carsd//'.CESV', 'L', vr=cesv)
 !
-        call jeveuo(carte//'.DESC', 'L', idesc)
+        call jeveuo(carte//'.DESC', 'L', vi=desc)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO'), 'L', icmp)
 !
-        call jelira(jexnum('&CATA.GD.NOMCMP', zi(idesc)), 'LONMAX', npmax)
+        call jelira(jexnum('&CATA.GD.NOMCMP', desc(1)), 'LONMAX', npmax)
 !
         rangr1= indik8(zk8(icmp),'R1      ',1,npmax)
 !
@@ -174,7 +176,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 ! ---       RECUPERATION DU RAYON DE LA PREMIERE MAILLE DE CHAQUE
 ! ---       CYLINDRE
 !
-                rint(i)=zr(icesv-1+abs(iad))
+                rint(i)=cesv(abs(iad))
 !
             else
                 call utmess('F', 'ALGELINE_75')

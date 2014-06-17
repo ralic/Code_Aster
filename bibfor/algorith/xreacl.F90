@@ -62,9 +62,9 @@ subroutine xreacl(noma, nomo, valinc, resoco)
     character(len=16) :: option
     character(len=24) :: ainter, cface, faclon, pinter, chgeom, baseco
     character(len=19) :: depplu
-    integer :: jxc
     logical :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
+    integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,8 +92,8 @@ subroutine xreacl(noma, nomo, valinc, resoco)
 !
 ! --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÉRIFICATION
 !
-    call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
-    lcontx = zi(jxc) .ge. 1
+    call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
+    lcontx = xfem_cont(1) .ge. 1
     if (.not.lcontx) then
         goto 999
     endif

@@ -53,13 +53,14 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
     character(len=24) :: valk(2)
 !
 ! VARIABLES LOCALES
-    integer :: ic, typobs, nbs, ino1, jcoor1, i, j, k, nbno
+    integer :: ic, typobs, nbs, ino1,  i, j, k, nbno
     real(kind=8) :: xloc(3), xglo(3)
     real(kind=8) :: xjeu, sint, cost, dnorm
     real(kind=8) :: xorig(3), xoriv(3), sina, cosa, sinb, cosb, sing, cosg
     real(kind=8) :: epsi, coor(3, 3), vect(3), tot
     character(len=3) :: inum
     character(len=8) :: mailla, nomnoe
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ****************** DEBUT DU CODE EXECUTABLE ************************
 !
@@ -156,7 +157,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
 !
         endif
 !
-        call jeveuo(mailla//'.COORDO    .VALE', 'L', jcoor1)
+        call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
         call jenonu(jexnom(mailla//'.NOMNOE', nomnoe), ino1)
         call dismoi('NB_NO_MAILLA', mailla, 'MAILLAGE', repi=nbno)
         if (ino1 .gt. 1) then
@@ -167,7 +168,7 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
         endif
         do k = 1, 3
             do j = 1, 3
-                coor(k,j) = zr(jcoor1+3*(ino1+k-2)+j-1)
+                coor(k,j) = vale(1+3*(ino1+k-2)+j-1)
             end do
         end do
         tot = 0.d0

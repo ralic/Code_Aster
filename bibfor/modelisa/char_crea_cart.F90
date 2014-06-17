@@ -64,8 +64,9 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
     character(len=13) :: obje_pref
     character(len=8) :: gran_name(2)
     character(len=4) :: cart_type(2)
-    integer :: jncmp, jvalv, i_carte, i_cmp, iret
+    integer ::  jvalv, i_carte, i_cmp, iret
     logical :: l_init(2)
+    character(len=8), pointer :: ncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -204,10 +205,10 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
 !
     do i_carte = 1, nb_carte
         if (l_init(i_carte)) then
-            call jeveuo(carte(i_carte)//'.NCMP', 'E', jncmp)
+            call jeveuo(carte(i_carte)//'.NCMP', 'E', vk8=ncmp)
             call jeveuo(carte(i_carte)//'.VALV', 'E', jvalv)
             do i_cmp = 1, nb_cmp(i_carte)
-                zk8(jncmp-1+i_cmp) = name_cmp(i_carte,i_cmp)
+                ncmp(i_cmp) = name_cmp(i_carte,i_cmp)
                 if (cart_type(i_carte) .eq. 'R') then
                     zr(jvalv-1+i_cmp) = 0.d0
                 else if (cart_type(i_carte) .eq.'K8') then

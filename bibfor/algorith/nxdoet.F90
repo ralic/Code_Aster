@@ -77,10 +77,10 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
     integer :: icham
     character(len=16) :: motfac
     integer :: i, neq, nocc, numein
-    integer :: jtemp
     real(kind=8) :: tempct
     integer :: ifm, niv
     logical :: evonol, leinit
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -186,7 +186,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
             call nmetnc(sdieto, icham, nomcha)
 !
             if (nomchs .eq. 'TEMP') then
-                call jeveuo(nomcha(1:19)//'.VALE', 'E', jtemp)
+                call jeveuo(nomcha(1:19)//'.VALE', 'E', vr=vale)
 !
 ! ----------- TEMPERATURE INITIALE PAR UN CHAMP
 !
@@ -214,7 +214,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
                 if (nocc .gt. 0) then
                     initpr = 1
                     do i = 1, neq
-                        zr(jtemp+i-1) = tempct
+                        vale(i) = tempct
                         zk24(jiolch+zioch*(icham-1)+4-1) = 'VALE'
                     end do
                 endif

@@ -98,7 +98,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: nbcmp
     integer :: narl, naxe, lonlis, k, j, in, ino,  i, ival, n1
     integer :: nbgno
-    integer :: jnoma, jprnm, jlisma,     jgro, jcoor
+    integer ::   jlisma,     jgro
     integer ::  iaprno, idch2, idch1, ilisno, inom
     real(kind=8) :: ig(6), coorig(3), axepou(3), valr(9)
     real(kind=8) :: ayz, axx, ax, ay, axz, axy, ayy, azz, az, beta, dnorme, eps
@@ -113,6 +113,9 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     real(kind=8), pointer :: inertie_raccord(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: prnm(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()
@@ -200,15 +203,15 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE :
 !     --------------------------
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
 !
     noeuma = noma//'.NOMNOE'
     grnoma = noma//'.GROUPENO'
 !
 ! --- RECUPERATION DU TABLEAU DES COORDONNEES :
 !     ---------------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DES NOMS DES DDLS :
 !     ------------------------------
@@ -234,7 +237,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     else
-        call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+        call jeveuo(ligrmo//'.PRNM', 'L', vi=prnm)
     endif
 !
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE :
@@ -361,9 +364,9 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! ---  COORDONNEES DU NOEUD POUTRE :
 !      ---------------------------
-    xpou = zr(jcoor-1+3* (numnop-1)+1)
-    ypou = zr(jcoor-1+3* (numnop-1)+2)
-    zpou = zr(jcoor-1+3* (numnop-1)+3)
+    xpou = vale(3* (numnop-1)+1)
+    ypou = vale(3* (numnop-1)+2)
+    zpou = vale(3* (numnop-1)+3)
 !
 ! --- VERIFICATION DU FAIT QUE LES NOEUDS DE LISNOE (DONC
 ! --- APPARTENANT A LA COQUE)  PORTENT LES DDLS DE ROTATION :
@@ -372,7 +375,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! ---     NUMERO DU NOEUD COURANT DE LA LISTE
         call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1)), ino)
 !
-        dg = zi(jprnm-1+ (ino-1)*nbec+1)
+        dg = prnm((ino-1)*nbec+1)
         do j = 4, 6
             icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
             if (.not.exisdg([dg],icmp(j))) then
@@ -386,7 +389,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- VERIFICATION DU FAIT QUE LE NOEUD POUTRE A RACCORDER PORTE
 ! --- LES 3 DDLS DE TRANSLATION ET LES 3 DDLS DE ROTATION :
 !     ---------------------------------------------------
-    dg = zi(jprnm-1+ (numnop-1)*nbec+1)
+    dg = prnm((numnop-1)*nbec+1)
     do j = 1, 6
         icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
         if (.not.exisdg([dg],icmp(j))) then

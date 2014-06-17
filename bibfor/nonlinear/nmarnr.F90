@@ -49,13 +49,14 @@ subroutine nmarnr(result, typtaz, numreu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, jtbnp, nblign
+    integer :: iret,  nblign
     character(len=19) :: nomtab
     character(len=16) :: typtab
     character(len=2) :: typvar
     logical :: lexist
     character(len=19) :: lisres
     integer :: jlisre, nval, ival, vali
+    integer, pointer :: tbnp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,8 +93,8 @@ subroutine nmarnr(result, typtaz, numreu)
 !
 ! ----- NOMBRE DE LIGNES
 !
-        call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-        nblign = zi(jtbnp+1)
+        call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+        nblign = tbnp(2)
         if (nblign .eq. 0) then
             numreu = 0
             goto 99

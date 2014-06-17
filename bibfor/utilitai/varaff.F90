@@ -48,12 +48,13 @@ subroutine varaff(noma, gran, base, ceselz)
     character(len=16) :: motclf, motcls(2)
     character(len=19) :: ceselm
     character(len=24) :: mesmai
-    integer :: nvarmx, jcesd, jcesl, jcesv,   jlvavx
+    integer :: nvarmx, jcesd, jcesl,    jlvavx
     integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
     parameter  (nvarmx=10000)
     logical :: ltou
     character(len=8), pointer :: lnova(:) => null()
     character(len=8), pointer :: lnovx(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 !   ------------------------------------------------------------------
     call jemarq()
 !
@@ -105,7 +106,7 @@ subroutine varaff(noma, gran, base, ceselz)
                 nuvamx, lnova, [0], [-1], [-nuvamx])
 !
     call jeveuo(ceselm//'.CESD', 'L', jcesd)
-    call jeveuo(ceselm//'.CESV', 'E', jcesv)
+    call jeveuo(ceselm//'.CESV', 'E', vr=cesv)
     call jeveuo(ceselm//'.CESL', 'E', jcesl)
 !
 !
@@ -161,7 +162,7 @@ subroutine varaff(noma, gran, base, ceselz)
 !
 !               -- RECOPIE DE LA VALEUR:
                 zl(jcesl-1+iad) = .true.
-                zr(jcesv-1+iad) = zr(jlvavx-1+kvari)
+                cesv(iad) = zr(jlvavx-1+kvari)
             end do
         end do
 !

@@ -73,14 +73,17 @@ subroutine tran77(nomres, typres, nomin, basemo)
     logical :: tousno, multap, leffor, prems
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadesc, iarchi, ibid, ich,  iadrif
-    integer :: idec, idefm, idinsg, idresu,  inocmp
+    integer ::  iarchi, ibid, ich,  iadrif
+    integer :: idec, idefm,  idresu,  inocmp
     integer :: inoecp, inuddl, inumno, iret, iretou, isk
-    integer :: j3refe, jc, jinst, jnume, linst, llcha
+    integer ::  jc, jinst, jnume, linst, llcha
     integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
     integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct
     real(kind=8), pointer :: base(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data blanc    /'        '/
@@ -107,8 +110,8 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
 !     --- RECUPERATION DE LA BASE MODALE ---
 !
-    call jeveuo(trange//'.DESC', 'L', iadesc)
-    nbmode = zi(iadesc+1)
+    call jeveuo(trange//'.DESC', 'L', vi=desc)
+    nbmode = desc(2)
 !
 !
     if (mode .eq. blanc) then
@@ -135,8 +138,8 @@ subroutine tran77(nomres, typres, nomin, basemo)
             else
                 numddl = matric(1:8)
             endif
-            call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
-            matric = zk24(j3refe)
+            call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
+            matric = refn(1)
             mailla = matric(1:8)
             call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
             if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
@@ -246,7 +249,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
         call utmess('F', 'ALGORITH10_95')
     endif
 !
-    call jeveuo(trange//'.DISC', 'L', idinsg)
+    call jeveuo(trange//'.DISC', 'L', vr=disc)
     call jelira(trange//'.DISC', 'LONMAX', nbinsg)
     AS_ALLOCATE(vr=vectgene, size=nbmode)
     do ich = 1, nbcham
@@ -340,7 +343,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
             if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
             if (interp(1:3) .ne. 'NON') then
-                call extrac(interp, epsi, crit, nbinsg, zr(idinsg),&
+                call extrac(interp, epsi, crit, nbinsg, disc,&
                             zr(jinst+i), zr(idresu), nbmode, vectgene, ibid)
                 call mdgeph(neq, nbmode, base, vectgene, zr(lvale))
             else

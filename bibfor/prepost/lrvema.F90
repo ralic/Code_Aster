@@ -53,7 +53,7 @@ subroutine lrvema(nomail, mfich, nochmd)
     integer :: iret, nmatyp, ncmp
     integer :: nbma, jnbtyp, jmatyp, nbtym, nbtv, codret
     integer :: i, j, idfimd, iaux, jnbty2
-    integer :: vali(2), lnomam, jtymas
+    integer :: vali(2), lnomam
     integer :: edlect
     parameter (edlect=0)
     integer :: ntymax
@@ -74,6 +74,7 @@ subroutine lrvema(nomail, mfich, nochmd)
     logical :: lfirst
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
     data nomast  /'POI1    ','SEG2    ','SEG22   ','SEG3    ',&
      &              'SEG33   ','SEG4    ',&
@@ -165,9 +166,9 @@ subroutine lrvema(nomail, mfich, nochmd)
         zi(jmatyp+i-1)=0
     end do
 !
-    call jeveuo(nomail//'.TYPMAIL', 'L', jtymas)
+    call jeveuo(nomail//'.TYPMAIL', 'L', vi=typmail)
     do i = 1, nbma
-        zi(jmatyp+i-1)=nummed(zi(jtymas+i-1))
+        zi(jmatyp+i-1)=nummed(typmail(i))
     end do
 !
     do i = 1, ntymax

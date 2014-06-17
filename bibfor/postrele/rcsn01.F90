@@ -32,26 +32,29 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
 !     ------------------------------------------------------------------
     integer :: vali(3)
 !
-    integer :: jchth, iad, icmp, nbcmp, decal, jcesd, jcesv, jcesl, nbinst, i
+    integer ::  iad, icmp, nbcmp, decal,   jcesl, nbinst, i
     integer :: jmoye, jmoy2
     real(kind=8) :: ta, tb, tab, dt1, dt1max, tabmax
     character(len=24) :: chtemp
+    integer, pointer :: cesd(:) => null()
+    character(len=24), pointer :: cham_ther(:) => null()
+    character(len=24), pointer :: cesv(:) => null()
 !
 ! DEB ------------------------------------------------------------------
 !
     sn6 = 0.d0
     if (nbth .eq. 0) goto 9999
 !
-    call jeveuo('&&RC3600.CHAM_THER', 'L', jchth)
+    call jeveuo('&&RC3600.CHAM_THER', 'L', vk24=cham_ther)
 !
-    chtemp = zk24(jchth+iocs-1)
+    chtemp = cham_ther(iocs)
 !
-    call jeveuo(chtemp(1:19)//'.CESD', 'L', jcesd)
-    call jeveuo(chtemp(1:19)//'.CESV', 'L', jcesv)
+    call jeveuo(chtemp(1:19)//'.CESD', 'L', vi=cesd)
+    call jeveuo(chtemp(1:19)//'.CESV', 'L', vk24=cesv)
     call jeveuo(chtemp(1:19)//'.CESL', 'L', jcesl)
 !
-    nbcmp = zi(jcesd-1+2)
-    decal = zi(jcesd-1+5+4*(adrm(1)-1)+4)
+    nbcmp = cesd(2)
+    decal = cesd(5+4*(adrm(1)-1)+4)
     icmp = 2
     iad = decal + (ipt-1)*nbcmp + icmp
     if (.not.zl(jcesl-1+iad)) then
@@ -59,12 +62,12 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
         vali(2) = adrm(1)
         call utmess('F', 'POSTRCCM_15', sk='RESU_THER', ni=2, vali=vali)
     endif
-    call jeveuo(zk24(jcesv-1+iad), 'L', jmoye)
-    call jelira(zk24(jcesv-1+iad), 'LONMAX', nbinst)
+    call jeveuo(cesv(iad), 'L', jmoye)
+    call jelira(cesv(iad), 'LONMAX', nbinst)
     nbinst = nbinst / 2
 !
     if (nbm .gt. 1) then
-        decal = zi(jcesd-1+5+4*(adrm(2)-1)+4)
+        decal = cesd(5+4*(adrm(2)-1)+4)
         icmp = 2
         iad = decal + (ipt-1)*nbcmp + icmp
         if (.not.zl(jcesl-1+iad)) then
@@ -72,7 +75,7 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
             vali(2) = adrm(2)
             call utmess('F', 'POSTRCCM_15', sk='RESU_THER_MOYE', ni=2, vali=vali)
         endif
-        call jeveuo(zk24(jcesv-1+iad), 'L', jmoy2)
+        call jeveuo(cesv(iad), 'L', jmoy2)
     endif
 !
 ! --- ON BOUCLE SUR LES INSTANTS :

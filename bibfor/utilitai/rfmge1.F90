@@ -40,13 +40,17 @@ subroutine rfmge1(modgen)
 !                                CONCEPT MODE_GENE
 !     ------------------------------------------------------------------
     integer :: n1, ncmp, iret, jordr, lpro, lvar, lfon, nbordr, im, iord, iad
-    integer :: jvale, jrefe, jdeeq, jnume, nbmode, i, istru
+    integer ::     nbmode, i, istru
     real(kind=8) :: epsi
     character(len=4) :: interp(2)
     character(len=8) :: k8b, crit, mode
     character(len=14) :: nugene
     character(len=16) :: k16b, nomcmd, typcon, nomcha, npara
     character(len=19) :: noch19, nomfon, knume
+    integer, pointer :: nequ(:) => null()
+    integer, pointer :: deeq(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: refe(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -109,22 +113,22 @@ subroutine rfmge1(modgen)
                     0, sjv=iad, styp=k8b)
         zr(lvar+iord) = zr(iad)
 !
-        call jeveuo(noch19//'.VALE', 'L', jvale)
+        call jeveuo(noch19//'.VALE', 'L', vr=vale)
         call jelira(noch19//'.VALE', 'TYPE', cval=k16b)
         if (k16b(1:1) .ne. 'R') then
             call utmess('F', 'UTILITAI4_17')
         endif
 !
-        call jeveuo(noch19//'.REFE', 'L', jrefe)
-        mode = zk24(jrefe)(1:8)
+        call jeveuo(noch19//'.REFE', 'L', vk24=refe)
+        mode = refe(1)(1:8)
         if (mode .eq. '        ') then
-            nugene = zk24(jrefe+1)(1:14)
-            call jeveuo(nugene//'.NUME.DEEQ', 'L', jdeeq)
-            call jeveuo(nugene//'.NUME.NEQU', 'L', jnume)
-            nbmode = zi(jnume)
+            nugene = refe(2)(1:14)
+            call jeveuo(nugene//'.NUME.DEEQ', 'L', vi=deeq)
+            call jeveuo(nugene//'.NUME.NEQU', 'L', vi=nequ)
+            nbmode = nequ(1)
             im = 0
             do 110 i = 1, nbmode
-                istru = zi(jdeeq+2*(i-1)+2-1)
+                istru = deeq(1+2*(i-1)+2-1)
                 if (istru .lt. 0) goto 110
                 im = im + 1
                 if (im .eq. ncmp) goto 114
@@ -136,7 +140,7 @@ subroutine rfmge1(modgen)
             im = ncmp
         endif
 !
-        zr(lfon+iord) = zr(jvale+im-1)
+        zr(lfon+iord) = vale(im)
 !
 100  end do
 !

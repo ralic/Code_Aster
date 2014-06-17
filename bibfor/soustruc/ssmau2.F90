@@ -66,10 +66,14 @@ subroutine ssmau2(nomu, option)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iampee, iaphi0, iaphie, iascdi, iaschc, iascib, iatmi0
+    integer :: iampee, iaphi0, iaphie, iascdi,   iatmi0
     integer :: iatmie, iblold, iblph, ii, iiblph, j
-    integer :: jblph, jdesm, jjblph, jrefa, jualf, k, kk
+    integer :: jblph,  jjblph,  jualf, k, kk
     integer :: lgblph, lmat, nblph, nddle, nddli, nlblph
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: desm(:) => null()
+    integer, pointer :: scib(:) => null()
+    integer, pointer :: vschc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     optio2 = option
@@ -93,9 +97,9 @@ subroutine ssmau2(nomu, option)
     if (promes .eq. ' ') mostru = .false.
 !
 !
-    call jeveuo(nomu//'.DESM', 'E', jdesm)
-    nddle = zi(jdesm-1+4)
-    nddli = zi(jdesm-1+5)
+    call jeveuo(nomu//'.DESM', 'E', vi=desm)
+    nddle = desm(4)
+    nddli = desm(5)
 !
 !
 !     -- ALLOCATION DE TMP_IE (TEMPORAIRE LIKE PHI_IE )
@@ -134,15 +138,15 @@ subroutine ssmau2(nomu, option)
         call mtdscr(matas)
         call jeveuo(matas(1:19)//'.&INT', 'E', lmat)
         call mtdsc2(zk24(zi(lmat+1)), 'SCDI', 'L', iascdi)
-        call jeveuo(zk24(zi(lmat+1)) (1:19)//'.REFA', 'L', jrefa)
-        call jeveuo(zk24(jrefa-1+2) (1:14)//'.SLCS.SCHC', 'L', iaschc)
-        call jeveuo(stock//'.SCIB', 'L', iascib)
+        call jeveuo(zk24(zi(lmat+1)) (1:19)//'.REFA', 'L', vk24=refa)
+        call jeveuo(refa(2) (1:14)//'.SLCS.SCHC', 'L', vi=vschc)
+        call jeveuo(stock//'.SCIB', 'L', vi=scib)
 !
         iblold = 0
         do j = 1, nddle
-            iblo = zi(iascib-1+nddli+j)
+            iblo = scib(nddli+j)
             scdi = zi(iascdi-1+nddli+j)
-            schc = zi(iaschc-1+nddli+j)
+            schc = vschc(nddli+j)
             if (iblo .ne. iblold) then
                 if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
@@ -161,9 +165,9 @@ subroutine ssmau2(nomu, option)
 !     --------------------------------------------------------
         iblold = 0
         do j = 1, nddle
-            iblo = zi(iascib-1+nddli+j)
+            iblo = scib(nddli+j)
             scdi = zi(iascdi-1+nddli+j)
-            schc = zi(iaschc-1+nddli+j)
+            schc = vschc(nddli+j)
             if (iblo .ne. iblold) then
                 if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
@@ -248,9 +252,9 @@ subroutine ssmau2(nomu, option)
 !
                 iblold = 0
                 do j = 1, nddli
-                    iblo = zi(iascib-1+j)
+                    iblo = scib(j)
                     scdi = zi(iascdi-1+j)
-                    schc = zi(iaschc-1+j)
+                    schc = vschc(j)
                     if (iblo .ne. iblold) then
                         if (iblold .gt. 0) call jelibe(jexnum(matas// '.UALF', iblold))
                         call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)

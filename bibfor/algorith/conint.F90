@@ -72,14 +72,17 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !-- VARIABLES DE LA ROUTINE
     integer :: ibid, i1, j1, k1, l1, m1, n1, lraide, lsmdi, lsmhc, neq
     integer :: lprno, lnddli, ipos1, ipos2, noeu, nbec, icon1, icon2, noeuco
-    integer :: numno, lconnc, lrefn, ldprs, ldors, lddeeq, lipos, ldnueq, lddelg
-    integer :: neqddl, nozero, no1, no2, lindno, indeq, ismhc, indddl, neqd2
-    integer :: nbvois, iret, nbvmax, lcoord, lraint, lmaint
+    integer :: numno, lconnc, lrefn, ldprs, ldors, lddeeq,  ldnueq, lddelg
+    integer :: neqddl, nozero, no1, no2,  indeq, ismhc, indddl, neqd2
+    integer :: nbvois, iret, nbvmax,  lraint, lmaint
     real(kind=8) :: rayon, dist, mindis, maxdis, kr(12, 12), mr(12, 12)
     real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3)
     character(len=8) :: nomma
     character(len=19) :: prgene, prno, raiint, ssami, solveu
     character(len=24) :: repsst, nommcl
+    integer, pointer :: ipos_ddl_interf(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: ind_noeud(:) => null()
 !
 !-----------C
 !--       --C
@@ -237,12 +240,12 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     call wkvect(nume91//'.SMOS.SMDI', 'V V I', neq, lsmdi)
     call wkvect(nume91//'.SMOS.SMHC', 'V V S', nozero, lsmhc)
 !
-    call jeveuo('&&MOIN93.IND_NOEUD', 'E', lindno)
-    call jeveuo('&&MOIN93.IPOS_DDL_INTERF', 'E', lipos)
+    call jeveuo('&&MOIN93.IND_NOEUD', 'E', vi=ind_noeud)
+    call jeveuo('&&MOIN93.IPOS_DDL_INTERF', 'E', vi=ipos_ddl_interf)
     j1=0
     do i1 = 1, nnoint
-        zi(lindno+zi(lnddli+i1-1)-1)=i1
-        zi(lipos+i1-1)=j1
+        ind_noeud(1+zi(lnddli+i1-1)-1)=i1
+        ipos_ddl_interf(i1)=j1
         j1=j1+zi(lnddli+2*nnoint+i1-1)
     end do
 !
@@ -260,7 +263,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
             do k1 = 1, nbvois
                 no2=zi(lconnc+i1-1+k1*nnoint)
                 neqd2=6
-                indddl=zi(lipos+zi(lindno+no2-1)-1)
+                indddl=ipos_ddl_interf(1+ind_noeud(no2)-1)
 !
                 do l1 = 1, neqd2
                     zi4(lsmhc+ismhc)=indddl+l1
@@ -269,7 +272,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
             end do
 !
 !-- ON REMPLIT LE BLOC DIAGONAL DU NOEUD COURANT
-            indddl=zi(lipos+i1-1)
+            indddl=ipos_ddl_interf(i1)
             do l1 = 1, j1
                 zi4(lsmhc+ismhc)=indddl+l1
                 ismhc=ismhc+1
@@ -303,7 +306,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !-----------------------------------------------------C
 !
     call dismoi('NOM_MAILLA', raide, 'MATR_ASSE', repk=nomma)
-    call jeveuo(nomma//'.COORDO    .VALE', 'L', lcoord)
+    call jeveuo(nomma//'.COORDO    .VALE', 'L', vr=vale)
 !
     mindis=1.d16
     maxdis=0.d0
@@ -313,9 +316,9 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
         nbvois=zi(lconnc+i1-1)
         do j1 = 1, nbvois
             no2=zi(lconnc+i1-1+j1*nnoint)
-            dist=(zr(lcoord+(no2-1)*3)-zr(lcoord+(no1-1)*3))**2+&
-            (zr(lcoord+(no2-1)*3+1)-zr(lcoord+(no1-1)*3+1))**2+&
-            (zr(lcoord+(no2-1)*3+2)-zr(lcoord+(no1-1)*3+2))**2
+            dist=(vale(1+(no2-1)*3)-vale(1+(no1-1)*3))**2+&
+            (vale(1+(no2-1)*3+1)-vale(1+(no1-1)*3+1))**2+&
+            (vale(1+(no2-1)*3+2)-vale(1+(no1-1)*3+2))**2
             dist=sqrt(dist)
             if (dist .lt. mindis) then
                 mindis=dist
@@ -349,12 +352,12 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
         nbvois=zi(lconnc+i1-1)
         do j1 = 1, nbvois
             no2=zi(lconnc+i1-1+j1*nnoint)
-            direc(1)=zr(lcoord+(no2-1)*3)-zr(lcoord+(no1-1)*3)
-            direc(2)=zr(lcoord+(no2-1)*3+1)-zr(lcoord+(no1-1)*3+1)
-            direc(3)=zr(lcoord+(no2-1)*3+2)-zr(lcoord+(no1-1)*3+2)
-            vtest(1)=ptref(1)-zr(lcoord+(no1-1)*3)
-            vtest(2)=ptref(2)-zr(lcoord+(no1-1)*3+1)
-            vtest(3)=ptref(3)-zr(lcoord+(no1-1)*3+2)
+            direc(1)=vale(1+(no2-1)*3)-vale(1+(no1-1)*3)
+            direc(2)=vale(1+(no2-1)*3+1)-vale(1+(no1-1)*3+1)
+            direc(3)=vale(1+(no2-1)*3+2)-vale(1+(no1-1)*3+2)
+            vtest(1)=ptref(1)-vale(1+(no1-1)*3)
+            vtest(2)=ptref(2)-vale(1+(no1-1)*3+1)
+            vtest(3)=ptref(3)-vale(1+(no1-1)*3+2)
             dist=sqrt( (direc(2)*vtest(3)-direc(3)*vtest(2))**2+&
             (direc(1)*vtest(3)-direc(3)*vtest(1))**2+ (direc(2)*vtest(&
             1)-direc(1)*vtest(2))**2 )
@@ -390,14 +393,14 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !
 !-- CONSTRUCTION DES MATRICES ELEMENTAIRES
             do k1 = 1, 3
-                direc(k1)=zr(lcoord+(no2-1)*3+k1-1)- zr(lcoord+(no1-1)&
+                direc(k1)=vale(1+(no2-1)*3+k1-1)- vale(1+(no1-1)&
                 *3+k1-1)
-                vtest(k1)=ptref(k1)-zr(lcoord+(no1-1)*3+k1-1)
+                vtest(k1)=ptref(k1)-vale(1+(no1-1)*3+k1-1)
             end do
 !
             call matint(kr, mr, direc, vtest, rayon)
             no1=i1
-            no2=zi(lindno+no2-1)
+            no2=ind_noeud(no2)
             neqddl=zi(lnddli+2*nnoint+no1-1)
             neqd2=zi(lnddli+2*nnoint+no2-1)
 !--
@@ -407,7 +410,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !-- REMPLISSAGE DES BLOCS SUR LA DIAGONALE
 !
             do k1 = 1, neqddl
-                ipos1=zi(lipos+no1-1)+k1
+                ipos1=ipos_ddl_interf(no1)+k1
                 ipos2=zi(lsmdi+ipos1-1)-1
                 m1=zi(lnddli+nnoint*(2+k1)+no1-1)
                 do l1 = 1, k1
@@ -419,7 +422,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                 end do
             end do
             do k1 = 1, neqd2
-                ipos1=zi(lipos+no2-1)+k1
+                ipos1=ipos_ddl_interf(no2)+k1
                 ipos2=zi(lsmdi+ipos1-1)-1
                 m1=6+zi(lnddli+nnoint*(2+k1)+no2-1)
                 do l1 = 1, k1
@@ -433,9 +436,9 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !
 !-- REMPLISSAGE DU BLOC DE COUPLAGE
 !
-            ipos1=zi(lsmdi+ zi(lipos+no1-1) -1 )
-            ipos2=zi(lsmdi+ zi(lipos+no1-1) )-ipos1
-            m1=zi(lipos+no2-1)+1
+            ipos1=zi(lsmdi+ ipos_ddl_interf(no1) -1 )
+            ipos2=zi(lsmdi+ ipos_ddl_interf(no1) )-ipos1
+            m1=ipos_ddl_interf(no2)+1
             do l1 = 1, ipos2-1
                 if (zi4(lsmhc+ipos1+l1-1) .eq. m1) then
                     indeq=l1
@@ -443,7 +446,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
             end do
 !
             do k1 = 1, neqddl
-                ipos1=zi(lsmdi+ zi(lipos+no1-1)+k1-2 )
+                ipos1=zi(lsmdi+ ipos_ddl_interf(no1)+k1-2 )
                 m1=zi(lnddli+nnoint*(2+k1)+no2-1)
                 do l1 = 1, neqd2
                     n1=6+zi(lnddli+nnoint*(2+l1)+no1-1)

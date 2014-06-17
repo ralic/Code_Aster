@@ -36,21 +36,23 @@ subroutine c3drep(nomte, epais, alpha, beta, coord,&
 !         DE PASSAGE GLOBAL -> LOCAL) AINSI QUE SON INVERSE
 !
 !     ------------------------------------------------------------------
-    integer :: nb1, nb2, npgsr, i, j, k, ind, intsr, lzi, lzr
+    integer :: nb1, nb2, npgsr, i, j, k, ind, intsr
 !
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectg(2, 3), vectt(3, 3)
     real(kind=8) :: zero, vectpt(9, 2, 3), vectmp(3, 3), pgltmp(3, 3)
     real(kind=8) :: matevn(2, 2, 10), matevg(2, 2, 10), v
+    real(kind=8), pointer :: desr(:) => null()
+    integer, pointer :: desi(:) => null()
 !
     zero=0.d0
-    call jeveuo('&INEL.'//nomte(1:8)//'.DESI', 'L', lzi)
-    call jeveuo('&INEL.'//nomte(1:8)//'.DESR', 'L', lzr)
-    nb1  =zi(lzi-1+1)
-    nb2  =zi(lzi-1+2)
-    npgsr=zi(lzi-1+3)
+    call jeveuo('&INEL.'//nomte(1:8)//'.DESI', 'L', vi=desi)
+    call jeveuo('&INEL.'//nomte(1:8)//'.DESR', 'L', vr=desr)
+    nb1  =desi(1)
+    nb2  =desi(2)
+    npgsr=desi(3)
 !
 !     -- POUR REMPLIR LZR+1090+...  ET CALCULER VECTN :
-    call vectan(nb1, nb2, coord, zr(lzr), vecta,&
+    call vectan(nb1, nb2, coord, desr, vecta,&
                 vectn, vectpt)
 !
 !     -- POUR REMPLIR LZR+2000+... :
@@ -61,16 +63,16 @@ subroutine c3drep(nomte, epais, alpha, beta, coord,&
     k = 0
     do 110 intsr = 1, npgsr
         call vectgt(ind, nb1, coord, zero, intsr,&
-                    zr(lzr), epais, vectn, vectg, vectt)
+                    desr, epais, vectn, vectg, vectt)
         do 120 j = 1, 3
             do 130 i = 1, 3
                 k = k + 1
-                zr(lzr+2000+k-1) = vectt(i,j)
+                desr(1+2000+k-1) = vectt(i,j)
 130          continue
 120      continue
 110  end do
 !
-    call vdrep2(alpha, beta, zi(lzi), zr(lzr), matevn,&
+    call vdrep2(alpha, beta, desi, desr, matevn,&
                 matevg)
 !
     vectmp(1,1) = matevn(1,1,numnoe)
@@ -87,7 +89,7 @@ subroutine c3drep(nomte, epais, alpha, beta, coord,&
     do 20 j = 1, 3
         do 30 i = 1, 3
             k = k + 1
-            pgltmp(i,j) = zr(lzr+1090+(numnoe-1)*9+k-1)
+            pgltmp(i,j) = desr(1+1090+(numnoe-1)*9+k-1)
 30      continue
 20  end do
     do 1 i = 1, 3

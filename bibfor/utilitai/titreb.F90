@@ -57,7 +57,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
     integer :: ival, igen, iposa, iposb, iposc, mxdemo, iacc, iad, lenf
     integer :: ibid, iclass, ideb, ierd, ilg, iplace, iret, itit, iuti, jad
-    integer :: jpara, ltit, nbacce, nbpa, nbpara, nl, itmp
+    integer :: jpara,  nbacce, nbpa, nbpara, nl, itmp
     integer :: deb, fin, leng
 !
     real(kind=8) :: rval, rbid
@@ -74,6 +74,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
     character(len=16) :: demons(mxdemo), cbid, k16bid, tysd
     character(len=24) :: para(2)
     integer :: mxpara(mxdemo)
+    character(len=80), pointer :: titr(:) => null()
 !     ------------------------------------------------------------------
 !     --- LISTE DES DEMONS RECONNUS ---
     data demons/&
@@ -196,7 +197,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                             ier=ierd)
                 if (ierd .ne. 0) goto 900
             endif
-            call jeveuo(cbid(1:8)//'           .TITR', 'L', ltit)
+            call jeveuo(cbid(1:8)//'           .TITR', 'L', vk80=titr)
             call jelira(cbid(1:8)//'           .TITR', 'LONMAX', nl, cbid(9:))
 !                 ---> LA RECOPIE SE FAIT ICI
             if (icols+igen-1 .gt. len(sortie(1))) then
@@ -204,7 +205,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                 icols = 1
             endif
             do itit = 1, nl
-                sortie(iligs)(icols:) = zk80(ltit+itit-1)
+                sortie(iligs)(icols:) = titr(itit)
                 iligs = iligs + 1
                 icols = 1
             end do

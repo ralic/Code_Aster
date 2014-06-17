@@ -50,7 +50,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
 !                < 0 , PLUSIEURS LIGNES RECUPEREES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, nbpu,  jtblp, i, j, k, n
+    integer :: iret, nbpara, nblign,  nbpu,   i, j, k, n
     integer :: jvale, itrouv, ki, kr, kc, kk, jvall
     real(kind=8) :: prec, refr
     character(len=4) :: type, crit
@@ -59,6 +59,8 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
     character(len=24) :: valk
     logical :: lok
     integer, pointer :: numero(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -73,9 +75,9 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
         call utmess('F', 'UTILITAI4_64')
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -83,18 +85,18 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     do 10 i = 1, npacri
         inpar = lipacr(i)
         do 12 j = 1, nbpara
-            jnpar = zk24(jtblp+4*(j-1))
+            jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) goto 10
 12      continue
         valk = inpar
         call utmess('F', 'UTILITAI6_89', sk=valk)
 10  end do
 !
-    nomjv = zk24(jtblp+2)
+    nomjv = tblp(3)
     call jelira(nomjv, 'LONUTI', nbpu)
     AS_ALLOCATE(vi=numero, size=nbpu)
     do 18 i = 1, nbpu
@@ -109,11 +111,11 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
         itrouv = 0
         inpar = lipacr(i)
         do 22 j = 1, nbpara
-            jnpar = zk24(jtblp+4*(j-1))
+            jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) then
-                type = zk24(jtblp+4*(j-1)+1)
-                nomjv = zk24(jtblp+4*(j-1)+2)
-                nomjvl = zk24(jtblp+4*(j-1)+3)
+                type = tblp(1+4*(j-1)+1)
+                nomjv = tblp(1+4*(j-1)+2)
+                nomjvl = tblp(1+4*(j-1)+3)
                 call jeveuo(nomjv, 'L', jvale)
                 call jeveuo(nomjvl, 'L', jvall)
                 if (type(1:1) .eq. 'I') then

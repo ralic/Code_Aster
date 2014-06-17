@@ -43,24 +43,25 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, i1a4, nsitup, ifm, niv, icompt
-    integer :: jspas, nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
+    integer ::  nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
     real(kind=8) :: saltm, nadm(1), ukl, vale(2)
     logical :: trouve, endur, yapass
     integer :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=3) :: typass
     character(len=8) :: k8b
+    integer, pointer :: passage_sit(:) => null()
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
 !
-    call jeveuo('&&RC32SI.PASSAGE_SIT', 'L', jspas)
+    call jeveuo('&&RC32SI.PASSAGE_SIT', 'L', vi=passage_sit)
     call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12)
     call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23)
     call jelira('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13)
-    nbsg1 = zi(jspas )
-    nbsg2 = zi(jspas+1)
-    nbsg3 = zi(jspas+2)
+    nbsg1 = passage_sit(1)
+    nbsg2 = passage_sit(2)
+    nbsg3 = passage_sit(3)
 !
 ! --- MISE A ZERO DES LIGNES ET COLONNES DE LA MATRICE SALT
 !     S'IL N'EXISTE PAS DE SITUATIONS DE PASSAGE

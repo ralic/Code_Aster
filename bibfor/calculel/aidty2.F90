@@ -34,15 +34,16 @@ subroutine aidty2(impr)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
     character(len=16) :: nomte, noop
-    integer :: iaopte, nbte, nbop, ianop2, iop, ite, ioptte, iaopmo, nucalc
+    integer ::  nbte, nbop, ianop2, iop, ite, ioptte, iaopmo, nucalc
     integer :: impr
+    integer, pointer :: optte(:) => null()
 !
     call jemarq()
 !
 !     1) IMPRESSION DES LIGNES DU TYPE :
 !        &&CALCUL/MECA_XT_FACE3   /CHAR_MECA_PRES_R
 !     ------------------------------------------------------------------
-    call jeveuo('&CATA.TE.OPTTE', 'L', iaopte)
+    call jeveuo('&CATA.TE.OPTTE', 'L', vi=optte)
     call jelira('&CATA.TE.NOMTE', 'NOMUTI', nbte)
     call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop)
 !
@@ -58,7 +59,7 @@ subroutine aidty2(impr)
     do 10,ite=1,nbte
     call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
     do 101,iop=1,nbop
-    ioptte= zi(iaopte-1+nbop*(ite-1)+iop)
+    ioptte= optte(nbop*(ite-1)+iop)
     if (ioptte .eq. 0) goto 101
     call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
     nucalc= zi(iaopmo)

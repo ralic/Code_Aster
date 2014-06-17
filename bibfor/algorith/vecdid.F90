@@ -69,7 +69,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: numref, n1, nevo, iret
-    integer :: nchar, nbres, jchar, jinf, icha
+    integer :: nchar, nbres,   icha
     real(kind=8) :: alpha
     character(len=8) :: nomcha
     character(len=19) :: vecele
@@ -79,6 +79,8 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
     character(len=24) :: ligrch, chalph
     logical :: debug
     integer :: ifmdbg, nivdbg
+    integer, pointer :: infc(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -124,8 +126,8 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 ! --- LISTE DES CHARGES
 !
     call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
-    call jeveuo(lischa(1:19)//'.LCHA', 'L', jchar)
-    call jeveuo(lischa(1:19)//'.INFC', 'L', jinf)
+    call jeveuo(lischa(1:19)//'.LCHA', 'L', vk24=lcha)
+    call jeveuo(lischa(1:19)//'.INFC', 'L', vi=infc)
 !
 ! --- ALLOCATION DE LA CARTE DU CONDITIONNEMENT DES LAGRANGES
 ! REM : A CE STADE, ON FIXE LE COND A 1
@@ -153,10 +155,10 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 !
 ! --- VERIF SI CHARGE DE TYPE DIRICHLET DIFFERENTIEL
 !
-        if (zi(jinf+icha) .le. 0 .or. zi(jinf+3*nchar+2+icha) .eq. 0) then
+        if (infc(icha+1) .le. 0 .or. infc(1+3*nchar+2+icha) .eq. 0) then
             goto 10
         endif
-        nomcha = zk24(jchar+icha-1)(1:8)
+        nomcha = lcha(icha)(1:8)
         call jeexin(nomcha(1:8)//'.CHME.LIGRE.LIEL', iret)
         if (iret .le. 0) goto 10
         call exisd('CHAMP_GD', nomcha(1:8)//'.CHME.CMULT', iret)

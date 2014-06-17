@@ -36,7 +36,7 @@ subroutine op0063()
 #include "asterfort/vprecu.h"
     integer :: iordr, ival(1), ibid, iret, neq
     integer :: nbpara, nbtrou, nbmode, npari, nparr, npark, lvect
-    integer :: ktbnp, nblig
+    integer ::  nblig
     integer :: inbpt
     character(len=4) :: nomsym(1)
     character(len=8) :: k8b, modein, nomres, modenl, kvide
@@ -46,6 +46,7 @@ subroutine op0063()
     real(kind=8) :: rvide
     real(kind=8) :: r8b
     complex(kind=8) :: c16b, cvide
+    integer, pointer :: tbnp(:) => null()
 !
     call jemarq()
     call getres(nomres, typres, nomcmd)
@@ -56,9 +57,9 @@ subroutine op0063()
 !
     call getvid(' ', 'MODE_NON_LINE', scal=modenl)
 !
-    call jeveuo(modenl//'           .TBNP', 'L', ktbnp)
-    nbpara = zi(ktbnp )
-    nblig = zi(ktbnp+1)
+    call jeveuo(modenl//'           .TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblig = tbnp(2)
 !
     call getvis(' ', 'NUME_ORDRE', scal=iordr)
     call getvis(' ', 'NB_INST', scal=inbpt)

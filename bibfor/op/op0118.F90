@@ -48,7 +48,7 @@ subroutine op0118()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: npfft, dim, dim2, l, nbtir
-    integer :: ifm, niv, nbval, lvale, ldesc, nbfreq, k
+    integer :: ifm, niv, nbval,   nbfreq, k
     integer :: nbfc, long, ln, ln2, lonv, lvalf, lvalc, lr, lv
     integer :: lx, ly, ln4, kf, ifo, kt, it
     integer :: ix, iy, lnr, kk, ifft
@@ -64,6 +64,8 @@ subroutine op0118()
     character(len=16) :: typvec, nomcmd
     character(len=19) :: nominf
     character(len=24) :: chinst, chvale
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -101,14 +103,14 @@ subroutine op0118()
 !===============
 ! on lit les valeurs de l'interspectre factorisé
     call jelira(nominf//'.VALE', 'LONUTI', nbval)
-    call jeveuo(nominf//'.VALE', 'L', lvale)
-    call jeveuo(nominf//'.DESC', 'L', ldesc)
+    call jeveuo(nominf//'.VALE', 'L', vr=vale)
+    call jeveuo(nominf//'.DESC', 'L', vi=desc)
     call jeveuo(nominf//'.NUOR', 'L', lnuor)
 ! celui-ci est discrétisé sur nbfreq
-    nbfreq = zi(ldesc)
+    nbfreq = desc(1)
 ! 
-    dim = zi(ldesc+1)
-    nbfc = zi(ldesc+2)
+    dim = desc(2)
+    nbfc = desc(3)
 !                        => NBFC = (DIM*(DIM+1))/2
     long = nbfreq + nbfc*2*nbfreq
     if (long .ne. nbval) then
@@ -131,8 +133,8 @@ subroutine op0118()
     ln2 = ln*2
     dim2 = dim*dim
     lonv = ln2*dim
-    freini = zr(lvale)
-    frefin = zr(lvale+ln-1)
+    freini = vale(1)
+    frefin = vale(ln)
 !
     dfreq = (frefin - freini)/(ln-1)
     tt = 1.d0 / dfreq
@@ -155,7 +157,7 @@ subroutine op0118()
 !===============
     do it = 1, nbtir
 !
-        call genale(zr(lvale), zr(lvalf), zc(lr), zc(lv), zc(lx),&
+        call genale(vale, zr(lvalf), zc(lr), zc(lv), zc(lx),&
                     dim, long, lonv, ln)
 !
         do kf = 1, dim

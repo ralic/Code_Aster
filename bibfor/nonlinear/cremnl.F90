@@ -68,14 +68,23 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
     character(len=19) :: nompar(12), chamno
     character(len=19) :: nompat(11)
     character(len=24) :: numedd, rigid, masse, valkt(4), matrice(3)
-    integer :: iordr, numrep, nbordr0, nbordr, nbpt, vali(4), nbhar, nbsym, isort, lvale
+    integer :: iordr, numrep, nbordr0, nbordr, nbpt, vali(4), nbhar, nbsym, isort
     integer :: neq, imat(2), iadd, ieq, ier, ihar, ladpa
     integer :: nbpar, neqv, nmodes, iomega, valit(1), nbpart
-    integer :: nbchoc, ityp, iraid, ireg, ijeu, inoe, icmp, iorig
-    integer :: harmaxa, harmax, ibif, inspec
+    integer :: nbchoc
+    integer :: harmaxa, harmax,  inspec
     real(kind=8) :: rvide, valr(2), freq, energ, xnorm, valrt(6)
     real(kind=8) :: espec(nbhar+1), nspec(neq)
     complex(kind=8) :: cvide
+    character(len=8), pointer :: cmp(:) => null()
+    real(kind=8), pointer :: orig(:) => null()
+    integer, pointer :: bif(:) => null()
+    character(len=8), pointer :: noeu(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=8), pointer :: type(:) => null()
+    real(kind=8), pointer :: raid(:) => null()
+    real(kind=8), pointer :: jeu(:) => null()
+    real(kind=8), pointer :: reg(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
     call getres(nomres, typres, nomcmd)   
@@ -135,7 +144,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
     endif
 !
     call jeveuo(baseno//'.SORTI', 'L', isort)
-    call jeveuo(baseno//'.BIF', 'L', ibif)
+    call jeveuo(baseno//'.BIF', 'L', vi=bif)
 !
     nmodes = 2*nbhar+1
 !
@@ -160,11 +169,11 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
                 call utmess('F', 'ALGELINE3_11')
             endif
 !
-            call jeveuo(chamno//'.VALE', 'E', lvale)
+            call jeveuo(chamno//'.VALE', 'E', vr=vale)
             xnorm = 0.d0
             do 44 ieq = 1, neq
                 iadd = (iordr-1)*(neq*nmodes+2)+(ihar-1)*neq+ieq
-                zr(lvale+ieq-1) = zr(isort-1+iadd)
+                vale(ieq) = zr(isort-1+iadd)
                 xnorm = xnorm + zr(isort-1+iadd)*zr(isort-1+iadd)
 44          continue
             call rsnoch(nomrep, nomsym(1), ihar)
@@ -220,7 +229,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
         if(harmaxa.gt.harmax) then
             harmax=harmaxa
         endif
-        if (zi(ibif+int(iordr/(nbpt-1))) .eq. 1) then
+        if (bif(1+int(iordr/(nbpt-1))) .eq. 1) then
             kbif='OUI'
         else
             kbif='NON'
@@ -255,13 +264,13 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
 ! TABLE POUR LES CARACTERISTIQUES DE CHOC
         call tbcrsd(nomtab, 'G')
         nbpart = 11
-        call jeveuo(parcho//'.RAID', 'L', iraid)
-        call jeveuo(parcho//'.JEU', 'L', ijeu)
-        call jeveuo(parcho//'.REG', 'L', ireg)
-        call jeveuo(parcho//'.TYPE', 'L', ityp)
-        call jeveuo(parcho//'.NOEU', 'L', inoe)
-        call jeveuo(parcho//'.CMP', 'L', icmp)
-        call jeveuo(parcho//'.ORIG', 'L', iorig)
+        call jeveuo(parcho//'.RAID', 'L', vr=raid)
+        call jeveuo(parcho//'.JEU', 'L', vr=jeu)
+        call jeveuo(parcho//'.REG', 'L', vr=reg)
+        call jeveuo(parcho//'.TYPE', 'L', vk8=type)
+        call jeveuo(parcho//'.NOEU', 'L', vk8=noeu)
+        call jeveuo(parcho//'.CMP', 'L', vk8=cmp)
+        call jeveuo(parcho//'.ORIG', 'L', vr=orig)
 !
         nompat(1)='NUME_CHOC'
         typpat(1)='I'
@@ -289,16 +298,16 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
 !
         do 300 iordr = 1, nbchoc
             valit(1) = iordr
-            valkt(1) = zk8(ityp-1+iordr)
-            valkt(2) = zk8(inoe-1+iordr)
-            valkt(3) = zk8(icmp-1+2*(iordr-1)+1)
-            valkt(4) = zk8(icmp-1+2*(iordr-1)+2)
-            valrt(1) = zr(iraid-1+iordr)
-            valrt(2) = zr(ireg-1+iordr)
-            valrt(3) = zr(ijeu-1+iordr)
-            valrt(4) = zr(iorig-1+(iordr-1)*3+1)
-            valrt(5) = zr(iorig-1+(iordr-1)*3+2)
-            valrt(6) = zr(iorig-1+(iordr-1)*3+3)
+            valkt(1) = type(iordr)
+            valkt(2) = noeu(iordr)
+            valkt(3) = cmp(2*(iordr-1)+1)
+            valkt(4) = cmp(2*(iordr-1)+2)
+            valrt(1) = raid(iordr)
+            valrt(2) = reg(iordr)
+            valrt(3) = jeu(iordr)
+            valrt(4) = orig((iordr-1)*3+1)
+            valrt(5) = orig((iordr-1)*3+2)
+            valrt(6) = orig((iordr-1)*3+3)
             call tbajli(nomtab, nbpart, nompat, valit, valrt,&
                     [cvide], valkt, 0)
 300      continue

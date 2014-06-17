@@ -41,9 +41,10 @@ subroutine detlsp(matasz, solvez)
 !
     character(len=19) :: solveu, matass
     character(len=24) :: metres, precon, solvbd
-    integer :: jslvk, iret
-    real(kind=8) :: r8bid
-    complex(kind=8) :: c16bid
+    integer ::  iret
+    real(kind=8) :: r8bid=0.d0
+    complex(kind=8) :: c16bid=dcmplx(0.d0,0.d0)
+    character(len=24), pointer :: slvk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,12 +53,12 @@ subroutine detlsp(matasz, solvez)
     solveu = solvez
     matass = matasz
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    metres = zk24(jslvk-1+1)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    metres = slvk(1)
     if (metres .eq. 'PETSC' .or. metres .eq. 'GCPC') then
-        precon = zk24(jslvk-1+2)
+        precon = slvk(2)
         if (precon .eq. 'LDLT_SP') then
-            solvbd = zk24(jslvk-1+3)
+            solvbd = slvk(3)
             call crsmsp(solvbd, matass, 0)
             call amumph('DETR_MAT', solvbd, matass, [r8bid], [c16bid],&
                         ' ', 0, iret, .true.)

@@ -54,11 +54,12 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=8) :: typm, notyma(19)
-    integer :: posini, posfin, jtypm, sel, nutyma
+    integer :: posini, posfin,  sel, nutyma
     integer :: pini(3, 19), pfin(3, 19)
 !
 !-----------------------------------------------------------------------
     integer :: i, iacnex, ima, ino, nbnoma, numno
+    integer, pointer :: typmail(:) => null()
 !-----------------------------------------------------------------------
     data notyma / 'POI1'  ,&
      &              'SEG2'  , 'SEG3'   ,&
@@ -119,7 +120,7 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
 !
     call jemarq()
     selec = selez
-    call jeveuo(noma // '.TYPMAIL', 'L', jtypm)
+    call jeveuo(noma // '.TYPMAIL', 'L', vi=typmail)
 !
     if (selec .eq. 'TOUS') sel=0
     if (selec .eq. 'SOMMET') sel=1
@@ -139,7 +140,7 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
             posini = 1
             posfin = nbnoma
         else
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypm+ima-1)), typm)
+            call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typm)
             do 10 nutyma = 1, 18
                 if (typm .eq. notyma(nutyma)) then
                     posini = pini(sel,nutyma)

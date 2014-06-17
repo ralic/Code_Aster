@@ -56,7 +56,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
 ! ---------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::  nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd, jnulg
+    integer ::  nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
     integer :: jcol, nlong,  jvalm1, jcolg
     character(len=1) ::  ktyp, base1
     character(len=14) :: nonu
@@ -65,6 +65,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
     integer, pointer :: smdi(:) => null()
     real(kind=8), pointer :: rdiag(:) => null()
     complex(kind=8), pointer :: zdiag(:) => null()
+    integer, pointer :: nlgp(:) => null()
 !=================================================================
     call jemarq()
 !
@@ -91,7 +92,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
     !
     call jeexin(nonu//'.NUML.NLGP', imatd)
     if (imatd .ne. 0) then 
-      call jeveuo(nonu//'.NUML.NLGP', 'L', jnulg)
+      call jeveuo(nonu//'.NUML.NLGP', 'L', vi=nlgp)
     endif
 !
     call jelira(mat19//'.VALM', 'TYPE', cval=ktyp)
@@ -124,7 +125,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
     endif
 !   Indice dans la matrice globale Aster de la colonne locale jcol
     if (imatd.ne.0) then 
-       jcolg = zi(jnulg-1+jcol)
+       jcolg = nlgp(jcol)
     else
        jcolg = jcol 
     endif

@@ -70,14 +70,14 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !                  LESQUELLES IL FAUT REDUIRE LE MAILLAGE.
 ! ======================================================================
 !
-    integer :: nbmaou, nbnoin, iret, jnuma, jwk1, jconx1, jconx2, ima, numa
+    integer :: nbmaou, nbnoin, iret, jnuma, jwk1,  jconx2, ima, numa
     integer :: nbno
-    integer :: ino, nuno, jdim, itypou, itypin, jadin, jadou, ibid, jcorin
+    integer :: ino, nuno, jdim, itypou,  jadin, jadou, ibid
     integer :: jcorou
     integer :: iad, ntgeo, nbnoou, nbnomx, jwk2, nbgma, jgma, igm, nbma, nbmain
     integer :: jwk3, nbgmin, jgmanv, nbgmnv, k, jnmpg, nmpg, nbgno, jmaor
     integer :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg,  numgno
-    integer :: jcorrm, imain, imaou, n1, jnuno
+    integer :: jcorrm, imain, imaou, n1
     character(len=4) :: docu
     character(len=8) :: typmcl(2), nomres
     character(len=16) :: motcle(2), nomcmd, typres
@@ -87,6 +87,10 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     character(len=24) :: ptngrn, ptngrm, valk(2)
     logical :: lvide
     character(len=24), pointer :: grp_noeu_in(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: vconnex(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: num_noeu_in(:) => null()
 !
     call jemarq()
 !
@@ -152,7 +156,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !
 !
 ! ---  REMPLISSAGE DES TABLEAUX DE TRAVAIL
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=vconnex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     nbnoou=0
     do ima = 1, nbmaou
@@ -160,7 +164,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
         zi(jwk3+numa-1)=ima
         nbno=zi(jconx2+numa)-zi(jconx2+numa-1)
         do ino = 1, nbno
-            nuno=zi(jconx1-1+zi(jconx2+numa-1)+ino-1)
+            nuno=vconnex(zi(jconx2+numa-1)+ino-1)
             if (zi(jwk1+nuno-1) .eq. 0) then
                 nbnoou=nbnoou+1
                 zi(jwk1+nuno-1)=nbnoou
@@ -173,9 +177,9 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call reliem(' ', noma, 'NU_NOEUD', 'RESTREINT', 1,&
                 1, ['GROUP_NO'], ['GROUP_NO'], '&&RDTMAI.NUM_NOEU_IN', n1)
     if (n1.gt.0) then
-        call jeveuo('&&RDTMAI.NUM_NOEU_IN', 'L', jnuno)
+        call jeveuo('&&RDTMAI.NUM_NOEU_IN', 'L', vi=num_noeu_in)
         do ino = 1, n1
-            nuno=zi(jnuno-1+ino)
+            nuno=num_noeu_in(ino)
             if (zi(jwk1+nuno-1) .eq. 0) then
                 nbnoou=nbnoou+1
                 zi(jwk1+nuno-1)=nbnoou
@@ -220,9 +224,9 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !
 ! --- OBJET .TYPMAIL
     call wkvect(typmai, base//' V I', nbmaou, itypou)
-    call jeveuo(noma//'.TYPMAIL', 'L', itypin)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
     do ima = 1, nbmaou
-        zi(itypou-1+ima)=zi(itypin-1+zi(jnuma+ima-1))
+        zi(itypou-1+ima)=typmail(zi(jnuma+ima-1))
     end do
 !
 ! --- OBJET .CONNEX
@@ -254,13 +258,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call jeecra(cooval, 'LONMAX', nbnoou*3)
     call jelira(noma//'.COORDO    .VALE', 'DOCU', cval=docu)
     call jeecra(cooval, 'DOCU', cval=docu)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcorin)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call jeveuo(cooval, 'E', jcorou)
     do ino = 1, nbnoin
         if (zi(jwk1+ino-1) .ne. 0) then
-            zr(jcorou+3*(zi(jwk1+ino-1)-1))=zr(jcorin+3*(ino-1))
-            zr(jcorou+3*(zi(jwk1+ino-1)-1)+1)=zr(jcorin+3*(ino-1)+1)
-            zr(jcorou+3*(zi(jwk1+ino-1)-1)+2)=zr(jcorin+3*(ino-1)+2)
+            zr(jcorou+3*(zi(jwk1+ino-1)-1))=vale(1+3*(ino-1))
+            zr(jcorou+3*(zi(jwk1+ino-1)-1)+1)=vale(1+3*(ino-1)+1)
+            zr(jcorou+3*(zi(jwk1+ino-1)-1)+2)=vale(1+3*(ino-1)+2)
         endif
     end do
 !

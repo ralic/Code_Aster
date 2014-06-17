@@ -74,9 +74,11 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
     character(len=24) :: nomob
 !-----------------------------------------------------------------------
-    integer :: i, iadesm, ianmcr, iaparr, iasssa, iavmat
+    integer :: i, iadesm, ianmcr,   iavmat
     integer :: iret, j, jsma, nbsma, nbssa, nbvel, nddle
     integer :: ndim, nmxval
+    integer, pointer :: sssa(:) => null()
+    real(kind=8), pointer :: para_r(:) => null()
 !-----------------------------------------------------------------------
     optio2=option
 !
@@ -86,11 +88,11 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
         call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
         if (nbssa .gt. 0) then
-            call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
+            call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
             call jeveuo(ma//'.NOMACR', 'L', ianmcr)
             nmxval=0
             do jsma = 1, nbsma
-                if (zi(iasssa-1+jsma) .eq. 1) then
+                if (sssa(jsma) .eq. 1) then
                     nomacr=zk8(ianmcr-1+jsma)
                     call jeveuo(nomacr//'.DESM', 'L', iadesm)
                     nddle=zi(iadesm-1+4)
@@ -153,10 +155,10 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
             end do
         else if (rota(1:3).eq.'OUI') then
 !         ROTATION:
-            call jeveuo(ma//'.PARA_R', 'L', iaparr)
-            angl(1)=zr(iaparr-1+14*(isma-1)+4)
-            angl(2)=zr(iaparr-1+14*(isma-1)+5)
-            angl(3)=zr(iaparr-1+14*(isma-1)+6)
+            call jeveuo(ma//'.PARA_R', 'L', vr=para_r)
+            angl(1)=para_r(14*(isma-1)+4)
+            angl(2)=para_r(14*(isma-1)+5)
+            angl(3)=para_r(14*(isma-1)+6)
             call matrot(angl, pgl)
             do i = 1, 3
                 do j = 1, 3

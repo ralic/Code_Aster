@@ -95,12 +95,16 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
     integer :: imult
     character(len=8) :: dof_name_tran(3), dof_name_rota(3)
     character(len=19) :: lisrel
-    integer :: idbeta, idcoef, iddl, idim, idlagr, idnbre
-    integer :: idnoeu, idpoin, idsurc, idterm, ifm, ipoint, iret
+    integer :: idbeta, idcoef,  idim,  idnbre
+    integer ::  idpoin, idsurc,  ifm, ipoint, iret
     integer :: iterm, idirect, lonuti, lveclr, mdim, nbrel0
     integer :: nbrela, nbrmax, nbterr, niv, k
     real(kind=8) :: norm_coef
     logical :: l_rota
+    character(len=8), pointer :: rlla(:) => null()
+    integer, pointer :: rlnt(:) => null()
+    character(len=8), pointer :: rlno(:) => null()
+    character(len=8), pointer :: rldd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -274,24 +278,24 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
     call jeveuo(lisrel//'.RLNR', 'E', idnbre)
     call jeveuo(lisrel//'.RLCO', 'E', idcoef)
-    call jeveuo(lisrel//'.RLDD', 'E', iddl)
-    call jeveuo(lisrel//'.RLNO', 'E', idnoeu)
+    call jeveuo(lisrel//'.RLDD', 'E', vk8=rldd)
+    call jeveuo(lisrel//'.RLNO', 'E', vk8=rlno)
     call jeveuo(lisrel//'.RLBE', 'E', idbeta)
-    call jeveuo(lisrel//'.RLNT', 'E', idterm)
+    call jeveuo(lisrel//'.RLNT', 'E', vi=rlnt)
     call jeveuo(lisrel//'.RLPO', 'E', idpoin)
     call jeveuo(lisrel//'.RLSU', 'E', idsurc)
-    call jeveuo(lisrel//'.RLLA', 'E', idlagr)
+    call jeveuo(lisrel//'.RLLA', 'E', vk8=rlla)
 !
 ! - New length
 !
     zi(idnbre) = nbrela
-    zk8(idlagr+nbrela-1) (1:2) = type_lagr
+    rlla(nbrela) (1:2) = type_lagr
     if (nbrel0 .eq. 0) then
         ipoint = 0
     else
         ipoint = zi(idpoin+nbrel0-1)
     endif
-    zi(idterm+nbrela-1) = nbterr
+    rlnt(nbrela) = nbterr
     if (nbrel0 .eq. 0) then
         zi(idpoin) = nbterr
     else
@@ -311,8 +315,8 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
                     k = k + 1
                     zc(idcoef+ipoint+k-1) = coef_cplx(iterm)/norm_coef
-                    zk8(iddl+ipoint+k-1) = dof_name(iterm)
-                    zk8(idnoeu+ipoint+k-1) = node_name(iterm)
+                    rldd(1+ipoint+k-1) = dof_name(iterm)
+                    rlno(1+ipoint+k-1) = node_name(iterm)
                 else
 !
 ! ----------------- Local coordinate system: rotation or translation ?
@@ -333,11 +337,11 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
                     do idim = 1, mdim
                         k = k + 1
                         zc(idcoef+ipoint+k-1) = coef_cplx(iterm)/norm_coef*repe_defi(idim,iterm)
-                        zk8(idnoeu+ipoint+k-1) = node_name(iterm)
+                        rlno(1+ipoint+k-1) = node_name(iterm)
                         if (.not.l_rota) then
-                            zk8(iddl+ipoint+k-1) = dof_name_tran(idim)
+                            rldd(1+ipoint+k-1) = dof_name_tran(idim)
                         else
-                            zk8(iddl+ipoint+k-1) = dof_name_rota(idim)
+                            rldd(1+ipoint+k-1) = dof_name_rota(idim)
                         endif
                     enddo
                 endif
@@ -353,8 +357,8 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
                     k = k + 1
                     zr(idcoef+ipoint+k-1) = coef_real(iterm)/norm_coef
-                    zk8(iddl+ipoint+k-1) = dof_name(iterm)
-                    zk8(idnoeu+ipoint+k-1) = node_name(iterm)
+                    rldd(1+ipoint+k-1) = dof_name(iterm)
+                    rlno(1+ipoint+k-1) = node_name(iterm)
                 else
 !
 ! ----------------- Local coordinate system: rotation or translation ?
@@ -375,11 +379,11 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
                     do idim = 1, mdim
                         k = k + 1
                         zr(idcoef+ipoint+k-1) = coef_real(iterm)/norm_coef*repe_defi(idim,iterm)
-                        zk8(idnoeu+ipoint+k-1) = node_name(iterm)
+                        rlno(1+ipoint+k-1) = node_name(iterm)
                         if (.not.l_rota) then
-                            zk8(iddl+ipoint+k-1) = dof_name_tran(idim)
+                            rldd(1+ipoint+k-1) = dof_name_tran(idim)
                         else
-                            zk8(iddl+ipoint+k-1) = dof_name_rota(idim)
+                            rldd(1+ipoint+k-1) = dof_name_rota(idim)
                         endif
                     enddo
                 endif

@@ -64,7 +64,8 @@ subroutine rvrepn(mailla, nlsnac, repere, sdnewr)
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer :: acoord, avec1, avec2, nbn, alsnac
+    integer ::  avec1, avec2, nbn, alsnac
+    real(kind=8), pointer :: vale(:) => null()
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
@@ -74,7 +75,7 @@ subroutine rvrepn(mailla, nlsnac, repere, sdnewr)
     call jelira(nlsnac, 'LONMAX', nbn)
     call jeveuo(nlsnac, 'L', alsnac)
 !
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', acoord)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
     call jecrec(sdnewr//'.VEC1', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 1)
@@ -87,7 +88,7 @@ subroutine rvrepn(mailla, nlsnac, repere, sdnewr)
     call jeveuo(jexnum(sdnewr//'.VEC1', 1), 'E', avec1)
     call jeveuo(jexnum(sdnewr//'.VEC2', 1), 'E', avec2)
 !
-    call rvrlln(zr(acoord), zi(alsnac), nbn, repere, zr(avec1),&
+    call rvrlln(vale, zi(alsnac), nbn, repere, zr(avec1),&
                 zr(avec2))
 !
     call jedema()

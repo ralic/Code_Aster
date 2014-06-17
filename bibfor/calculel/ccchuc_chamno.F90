@@ -74,8 +74,11 @@ implicit none
     integer :: j_resu
     character(len=19) :: work_val, work_cmp
     integer :: j_val, j_cmp
-    integer :: jchsc, jchsv, jchsl
-    integer :: jchrl, jchrv
+    integer ::   jchsl
+    integer :: jchrl
+    character(len=8), pointer :: cnsc(:) => null()
+    real(kind=8), pointer :: chrv(:) => null()
+    real(kind=8), pointer :: chsv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,14 +93,14 @@ implicit none
 !
 ! - Access to input field
 !
-    call jeveuo(field_in_s//'.CNSC', 'L', jchsc)
-    call jeveuo(field_in_s//'.CNSV', 'L', jchsv)
+    call jeveuo(field_in_s//'.CNSC', 'L', vk8=cnsc)
+    call jeveuo(field_in_s//'.CNSV', 'L', vr=chsv)
     call jeveuo(field_in_s//'.CNSL', 'L', jchsl)
 !
 ! - Access to output field
 !
     call jeveuo(field_out_s//'.CNSL', 'E', jchrl)
-    call jeveuo(field_out_s//'.CNSV', 'E', jchrv)
+    call jeveuo(field_out_s//'.CNSV', 'E', vr=chrv)
 !
 ! - Access to output working vector
 !
@@ -121,8 +124,8 @@ implicit none
         do icmp = 1, nb_cmp
             if (zl(jchsl-1+(ino-1)*nb_cmp+icmp)) then
                 nb_val_in = nb_val_in + 1
-                zr(j_val-1+nb_val_in)  = zr(jchsv-1+(ino-1)*nb_cmp+icmp)
-                zk8(j_cmp-1+nb_val_in) = zk8(jchsc-1+icmp)
+                zr(j_val-1+nb_val_in)  = chsv((ino-1)*nb_cmp+icmp)
+                zk8(j_cmp-1+nb_val_in) = cnsc(icmp)
             endif
         enddo
 !
@@ -146,7 +149,7 @@ implicit none
             nb_node_out = nb_node_out + 1
             do icmp = 1, nb_cmp_resu
                 zl(jchrl-1+(ino-1)*nb_cmp_resu+icmp) = .true.
-                zr(jchrv-1+(ino-1)*nb_cmp_resu+icmp) = zr(j_resu-1+icmp)
+                chrv((ino-1)*nb_cmp_resu+icmp) = zr(j_resu-1+icmp)
             enddo
         endif
     enddo

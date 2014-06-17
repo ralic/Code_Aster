@@ -56,21 +56,22 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer :: acoord, i
+    integer ::  i
     real(kind=8) :: xc, xp, yc, yp, l, zzc, zzp
+    real(kind=8), pointer :: vale(:) => null()
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', acoord)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
     tabsc(1) = 0.0d0
 !
-    xp = zr(acoord + (tnd(1)-1)*3 + 1-1)
-    yp = zr(acoord + (tnd(1)-1)*3 + 2-1)
-    zzp = zr(acoord + (tnd(1)-1)*3 + 3-1)
+    xp = vale(1+ (tnd(1)-1)*3 + 1-1)
+    yp = vale(1+ (tnd(1)-1)*3 + 2-1)
+    zzp = vale(1+ (tnd(1)-1)*3 + 3-1)
 !
     tcoor(1) = xp
     tcoor(2) = yp
@@ -78,9 +79,9 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
 !
     do 10, i = 2, nbn, 1
 !
-    xc = zr(acoord + (tnd(i)-1)*3 + 1-1)
-    yc = zr(acoord + (tnd(i)-1)*3 + 2-1)
-    zzc = zr(acoord + (tnd(i)-1)*3 + 3-1)
+    xc = vale(1+ (tnd(i)-1)*3 + 1-1)
+    yc = vale(1+ (tnd(i)-1)*3 + 2-1)
+    zzc = vale(1+ (tnd(i)-1)*3 + 3-1)
 !
     l = sqrt((xc-xp)*(xc-xp)+(yc-yp)*(yc-yp)+(zzc-zzp)*(zzc-zzp))
 !

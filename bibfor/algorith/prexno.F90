@@ -45,7 +45,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcnsk, jcnsd, jcnsv, jcnsl, jcnsc, nbno, ncmp, nbn
+    integer ::    jcnsl,  nbno, ncmp, nbn
     integer :: ibid, nbnoeu, idnoeu, nbc, nbcmp
     integer :: i100, i110, icp, ino, inomax, inomin, inamax, inamin
     real(kind=8) :: x
@@ -54,6 +54,10 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
     character(len=19) :: chams1
     character(len=24) :: mesnoe
     character(len=8), pointer :: nom_cmp(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_NO'
@@ -69,14 +73,14 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
     chams1 = '&&PREXNO.CHAMS1'
     call cnocns(champ, 'V', chams1)
 !
-    call jeveuo(chams1//'.CNSK', 'L', jcnsk)
-    call jeveuo(chams1//'.CNSD', 'L', jcnsd)
-    call jeveuo(chams1//'.CNSC', 'L', jcnsc)
-    call jeveuo(chams1//'.CNSV', 'L', jcnsv)
+    call jeveuo(chams1//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(chams1//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(chams1//'.CNSC', 'L', vk8=cnsc)
+    call jeveuo(chams1//'.CNSV', 'L', vr=cnsv)
     call jeveuo(chams1//'.CNSL', 'L', jcnsl)
-    ma = zk8(jcnsk-1+1)
-    nbno = zi(jcnsd-1+1)
-    ncmp = zi(jcnsd-1+2)
+    ma = cnsk(1)
+    nbno = cnsd(1)
+    ncmp = cnsd(2)
 !
     call reliem(' ', ma, 'NU_NOEUD', 'ACTION', ioc,&
                 4, motcle, typmcl, mesnoe, nbn)
@@ -110,11 +114,11 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
     do 100 i100 = 1, nbcmp
         if (nbc .ne. 0) then
             nocmp = nom_cmp(i100)
-            icp = indik8( zk8(jcnsc), nocmp, 1, ncmp )
+            icp = indik8( cnsc, nocmp, 1, ncmp )
             if (icp .eq. 0) goto 100
         else
             icp = i100
-            nocmp = zk8(jcnsc+i100-1)
+            nocmp = cnsc(i100)
         endif
 !
         do 110 i110 = 1, nbnoeu
@@ -126,7 +130,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
 !
             if (zl(jcnsl-1+(ino-1)*ncmp+icp)) then
 !
-                x = zr(jcnsv-1+(ino-1)*ncmp+icp)
+                x = cnsv((ino-1)*ncmp+icp)
 !
                 if (x .gt. valmax) then
                     inomax = ino

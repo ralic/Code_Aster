@@ -73,16 +73,18 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, j, jcoor, nbno, jfonf, ifm, niv, jvit, jbeta, cfv, bfv
+    integer :: i, j, jcoor, nbno,  ifm, niv, jvit, jbeta, cfv, bfv
     integer :: vfv, afv, cfvpr, bfvpr, vfvpr, afvpr, nfv, npoin, nfvpr
     real(kind=8) :: v1, v2, ai, aj, ak, al, da1, da2, a1, a2
-    integer :: jbasef, k
+    integer ::  k
 !
     real(kind=8) :: pi(3), pj(3), pk(3), pl(3), pij(3), pkl(3), p1(3), p2(3), vi
     real(kind=8) :: vj, vk, vl, dv1, dv2, normij, normkl, normj1, normk2, normjk
 !
 !     MULTIPLE CRACK FRONTS
-    integer :: jfmult
+    real(kind=8), pointer :: basefond(:) => null()
+    integer, pointer :: fondmult(:) => null()
+    real(kind=8), pointer :: fondfiss(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT
 !-----------------------------------------------------------------------
@@ -96,14 +98,14 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
 !     RECUPERATION DU FOND DE FISSURE
-    call jeveuo(fiss//'.FONDFISS', 'L', jfonf)
+    call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
     call dismoi('NB_POINT_FOND', fiss, 'FISS_XFEM', repi=nbptff)
 !
 !     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
-    call jeveuo(fiss//'.FONDMULT', 'L', jfmult)
+    call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
 !
 !     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE ON THE FRONT
-    call jeveuo(fiss//'.BASEFOND', 'L', jbasef)
+    call jeveuo(fiss//'.BASEFOND', 'L', vr=basefond)
 !
 !     RETRIEVE THE CRACK'S SPEED AND PROPAGATION ANGLE FOR EACH NODE
 !     ON THE FRONT
@@ -130,12 +132,12 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
 !
 !     ON INITIALISE LES FONDS DE FISSURE ACTUEL
     do i = 1, (4*nbptff)
-        zr(cfv+i-1)=zr(jfonf+i-1)
-        zr(cfvpr+i-1)=zr(jfonf+i-1)
+        zr(cfv+i-1)=fondfiss(i)
+        zr(cfvpr+i-1)=fondfiss(i)
     end do
     do i = 1, 6*(nbptff)
-        zr(bfv+i-1)=zr(jbasef+i-1)
-        zr(bfvpr+i-1)=zr(jbasef+i-1)
+        zr(bfv+i-1)=basefond(i)
+        zr(bfvpr+i-1)=basefond(i)
     end do
     do i = 1, (nbptff)
         zr(vfv+i-1)=zr(jvit+i-1)
@@ -146,8 +148,8 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir,&
         zr(afvpr+i-1)=zr(jbeta+i-1)
     end do
     do i = 1, (2*numfon)
-        zi(nfv+i-1)=zi(jfmult+i-1)
-        zi(nfvpr+i-1)=zi(jfmult+i-1)
+        zi(nfv+i-1)=fondmult(i)
+        zi(nfvpr+i-1)=fondmult(i)
     end do
     if (niv .ge. 1) then
         write(ifm,*) ' '

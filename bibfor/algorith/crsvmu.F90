@@ -55,18 +55,27 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 ! IN  K3 KMD     :                           MATR_DISTRIBUEE
 ! ----------------------------------------------------------
 !
-    integer :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux, jrefa
-    integer :: monit(12), jnumsd, n1, vali(2), compt
-    integer :: jmail, nbma, islvk, islvr, islvi
+    integer :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux
+    integer :: monit(12),  n1, vali(2), compt
+    integer ::  nbma
     real(kind=8) :: eps
     character(len=5) :: klag2
     character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra
     character(len=12) :: kooc
     character(len=19) :: k19b
     character(len=24) :: kmonit(12)
-    integer :: eximo1, eximo2, eximo3, eximc, eximod, jprti, jprtk
-    integer :: jpart, iexi
+    integer :: eximo1, eximo2, eximo3, eximc, eximod
+    integer ::  iexi
     logical :: ldgrel
+    character(len=8), pointer :: vpartit(:) => null()
+    real(kind=8), pointer :: slvr(:) => null()
+    character(len=24), pointer :: prtk(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: prti(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: mail(:) => null()
+    integer, pointer :: numsd(:) => null()
+    integer, pointer :: slvi(:) => null()
     mpi_int :: mrank, msize
 !------------------------------------------------------------------
     call jemarq()
@@ -104,11 +113,11 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             if (eximo3.eq.1) call getvid(' ', 'MATR_A', scal=matra, nbret=ibid)
             if (matra .eq. ' ') goto 70
             k19b=matra
-            call jeveuo(k19b//'.REFA', 'L', jrefa)
-            if (zk24(jrefa+9)(1:4) .eq. 'GENE') then
+            call jeveuo(k19b//'.REFA', 'L', vk24=refa)
+            if (refa(10)(1:4) .eq. 'GENE') then
 !               --  CAS PARTICULIER DU NUME_DDL_GENE
                 goto 70
-            else if (zk24(jrefa+9)(1:4).eq.'NOEU') then
+            else if (refa(10)(1:4).eq.'NOEU') then
                 call dismoi('NOM_MODELE', matra, 'MATR_ASSE', repk=modele)
             else
 !               --- CAS NON PREVU
@@ -120,40 +129,40 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
         partit=' '
         call jeexin(modele//'.PARTIT', iexi)
         if (iexi .gt. 0) then
-            call jeveuo(modele//'.PARTIT', 'L', jpart)
-            if (zk8(jpart-1+1) .ne. ' ') then
-                partit=zk8(jpart-1+1)
+            call jeveuo(modele//'.PARTIT', 'L', vk8=vpartit)
+            if (vpartit(1) .ne. ' ') then
+                partit=vpartit(1)
             endif
         endif
 !
         if (partit .ne. ' ') then
 !         -- CALCUL DISTRIBUE :
-            call jeveuo(partit//'.PRTI', 'L', jprti)
-            if (zi(jprti) .ne. nbproc) then
-                vali(1)=zi(jprti)
+            call jeveuo(partit//'.PRTI', 'L', vi=prti)
+            if (prti(1) .ne. nbproc) then
+                vali(1)=prti(1)
                 vali(2)=nbproc
                 call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
             endif
 !
-            call jeveuo(partit//'.PRTK', 'L', jprtk)
-            ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
+            call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+            ldgrel=prtk(1).eq.'GROUP_ELEM'
             if (.not.ldgrel) then
-                call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
+                call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=numsd)
                 call jelira(partit//'.NUPROC.MAILLE', 'LONMAX', n1)
-                ASSERT(zi(jnumsd-1+n1).eq.nbproc)
+                ASSERT(numsd(n1).eq.nbproc)
                 nbma=n1-1
                 compt=0
                 do i = 1, nbma
-                    if (zi(jnumsd-1+i) .eq. rang) compt=compt+1
+                    if (numsd(i) .eq. rang) compt=compt+1
                 end do
             endif
         else
 !       -- CENTRALISE
-            call jeveuo(modele//'.MAILLE', 'L', jmail)
+            call jeveuo(modele//'.MAILLE', 'L', vi=mail)
             call jelira(modele//'.MAILLE', 'LONMAX', nbma)
             compt=0
             do i = 1, nbma
-                if (zi(jmail-1+i) .ne. 0) compt=compt+1
+                if (mail(i) .ne. 0) compt=compt+1
             end do
         endif
     endif
@@ -229,36 +238,36 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 ! --- ON REMPLIT LA SD_SOLVEUR
 ! --- ATTENTION A LA COHERENCE AVEC CRSMSP
 !
-    call jeveuo(solveu//'.SLVK', 'E', islvk)
-    call jeveuo(solveu//'.SLVR', 'E', islvr)
-    call jeveuo(solveu//'.SLVI', 'E', islvi)
+    call jeveuo(solveu//'.SLVK', 'E', vk24=slvk)
+    call jeveuo(solveu//'.SLVR', 'E', vr=slvr)
+    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
 !
-    zk24(islvk-1+1) = 'MUMPS'
-    zk24(islvk-1+2) = ktyps
-    zk24(islvk-1+3) = ktypr
-    zk24(islvk-1+4) = ktyprn
-    zk24(islvk-1+5) = syme
-    zk24(islvk-1+6) = klag2
-    zk24(islvk-1+7) = mixpre
-    zk24(islvk-1+8) = 'NON'
-    zk24(islvk-1+9) = kooc
-    zk24(islvk-1+10) = kmd
-    zk24(islvk-1+11) = ktypp
-    zk24(islvk-1+12) = 'XXXX'
+    slvk(1) = 'MUMPS'
+    slvk(2) = ktyps
+    slvk(3) = ktypr
+    slvk(4) = ktyprn
+    slvk(5) = syme
+    slvk(6) = klag2
+    slvk(7) = mixpre
+    slvk(8) = 'NON'
+    slvk(9) = kooc
+    slvk(10) = kmd
+    slvk(11) = ktypp
+    slvk(12) = 'XXXX'
 !
-    zr(islvr-1+1) = epsmat
-    zr(islvr-1+2) = eps
-    zr(islvr-1+3) = 0.d0
-    zr(islvr-1+4) = 0.d0
+    slvr(1) = epsmat
+    slvr(2) = eps
+    slvr(3) = 0.d0
+    slvr(4) = 0.d0
 !
-    zi(islvi-1+1) = nprec
-    zi(islvi-1+2) = pcpiv
-    zi(islvi-1+3) = istop
-    zi(islvi-1+4) = -9999
-    zi(islvi-1+5) = -9999
-    zi(islvi-1+6) = 1
-    zi(islvi-1+7) = -9999
-    zi(islvi-1+8) = 0
+    slvi(1) = nprec
+    slvi(2) = pcpiv
+    slvi(3) = istop
+    slvi(4) = -9999
+    slvi(5) = -9999
+    slvi(6) = 1
+    slvi(7) = -9999
+    slvi(8) = 0
 !
     call jedema()
 end subroutine

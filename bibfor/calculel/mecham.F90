@@ -52,8 +52,10 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
     character(len=24) :: chgeom, chharm
 !
 !-----------------------------------------------------------------------
-    integer :: ianmcr, iasssa, ier, ima, iexi, nbsma
+    integer ::   ier, ima, iexi, nbsma
     integer :: nbss
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     chgeom=' '
@@ -67,15 +69,15 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
     if (nbss .gt. 0) then
         call dismoi('NB_SM_MAILLA', nomo, 'MODELE', repi=nbsma)
         call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
-        call jeveuo(noma//'.NOMACR', 'L', ianmcr)
-        call jeveuo(nomo//'.MODELE    .SSSA', 'L', iasssa)
+        call jeveuo(noma//'.NOMACR', 'L', vk8=vnomacr)
+        call jeveuo(nomo//'.MODELE    .SSSA', 'L', vi=sssa)
 !
 !        --- BOUCLE SUR LES (SUPER)MAILLES ---
         ier=0
         if (option(1:9) .eq. 'MASS_MECA') then
             do ima = 1, nbsma
-                if (zi(iasssa-1+ima) .eq. 1) then
-                    nomacr=zk8(ianmcr-1+ima)
+                if (sssa(ima) .eq. 1) then
+                    nomacr=vnomacr(ima)
                     call jeexin(nomacr//'.MAEL_MASS_VALE', iexi)
                     if (iexi .eq. 0) then
                         ier=ier+1
@@ -88,8 +90,8 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
             endif
         else if (option(1:9).eq.'RIGI_MECA') then
             do ima = 1, nbsma
-                if (zi(iasssa-1+ima) .eq. 1) then
-                    nomacr=zk8(ianmcr-1+ima)
+                if (sssa(ima) .eq. 1) then
+                    nomacr=vnomacr(ima)
                     call jeexin(nomacr//'.MAEL_RAID_VALE', iexi)
                     if (iexi .eq. 0) then
                         ier=ier+1
@@ -102,8 +104,8 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
             endif
         else if (option(1:9).eq.'AMOR_MECA') then
             do ima = 1, nbsma
-                if (zi(iasssa-1+ima) .eq. 1) then
-                    nomacr=zk8(ianmcr-1+ima)
+                if (sssa(ima) .eq. 1) then
+                    nomacr=vnomacr(ima)
                     call jeexin(nomacr//'.MAEL_AMOR_VALE', iexi)
                     if (iexi .eq. 0) then
                         ier=ier+1

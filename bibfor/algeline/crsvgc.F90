@@ -48,11 +48,14 @@ subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
 !
 !
 !
-    integer :: ibid, islvk, islvi, islvr, nmaxit, niremp, reacpr, pcpiv
+    integer :: ibid,    nmaxit, niremp, reacpr, pcpiv
     real(kind=8) :: resire
     character(len=8) :: precon
     character(len=19) :: solvbd
     character(len=8) :: renum
+    real(kind=8), pointer :: slvr(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: slvi(:) => null()
 !
 !------------------------------------------------------------------
     call jemarq()
@@ -95,40 +98,40 @@ subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
     endif
 !
 ! --- ON REMPLIT LA SD_SOLVEUR
-    call jeveuo(solveu//'.SLVK', 'E', islvk)
-    call jeveuo(solveu//'.SLVR', 'E', islvr)
-    call jeveuo(solveu//'.SLVI', 'E', islvi)
+    call jeveuo(solveu//'.SLVK', 'E', vk24=slvk)
+    call jeveuo(solveu//'.SLVR', 'E', vr=slvr)
+    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
 !
-    zk24(islvk-1+1) = 'GCPC'
-    zk24(islvk-1+2) = precon
-    zk24(islvk-1+3) = solvbd
-    zk24(islvk-1+4) = renum
-    zk24(islvk-1+5) = syme
-    zk24(islvk-1+6) = 'XXXX'
-    zk24(islvk-1+7) = 'XXXX'
-    zk24(islvk-1+8) = 'XXXX'
-    zk24(islvk-1+9) = 'XXXX'
-    zk24(islvk-1+10)= 'XXXX'
-    zk24(islvk-1+11)= 'XXXX'
-    zk24(islvk-1+12)= 'XXXX'
+    slvk(1) = 'GCPC'
+    slvk(2) = precon
+    slvk(3) = solvbd
+    slvk(4) = renum
+    slvk(5) = syme
+    slvk(6) = 'XXXX'
+    slvk(7) = 'XXXX'
+    slvk(8) = 'XXXX'
+    slvk(9) = 'XXXX'
+    slvk(10)= 'XXXX'
+    slvk(11)= 'XXXX'
+    slvk(12)= 'XXXX'
 !
 !     POUR NEWTON_KRYLOV LE RESI_RELA VARIE A CHAQUE
 !     ITERATION DE NEWTON, CEPENDANT LE RESI_RELA DONNE
 !     PAR L'UTILISATEUR TOUT DE MEME NECESSAIRE
 !     C'EST POURQUOI ON EN FAIT UNE COPIE EN POSITION 1
-    zr(islvr-1+1) = resire
-    zr(islvr-1+2) = resire
-    zr(islvr-1+3) = 0.d0
-    zr(islvr-1+4) = 0.d0
+    slvr(1) = resire
+    slvr(2) = resire
+    slvr(3) = 0.d0
+    slvr(4) = 0.d0
 !
-    zi(islvi-1+1) = -9999
-    zi(islvi-1+2) = nmaxit
-    zi(islvi-1+3) = -9999
-    zi(islvi-1+4) = niremp
-    zi(islvi-1+5) = 0
-    zi(islvi-1+6) = reacpr
-    zi(islvi-1+7) = pcpiv
-    zi(islvi-1+8) = 0
+    slvi(1) = -9999
+    slvi(2) = nmaxit
+    slvi(3) = -9999
+    slvi(4) = niremp
+    slvi(5) = 0
+    slvi(6) = reacpr
+    slvi(7) = pcpiv
+    slvi(8) = 0
 !
 !
     call jedema()

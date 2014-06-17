@@ -83,7 +83,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !   --------------------------------------------------
 !
     character(len=24) :: npnbn, npadr, npcmp, nvale, nnoma, nnugd
-    integer :: apnbn, apadr, apcmp, avale, anoma, anugd, apnco, apnsp
+    integer :: apnbn, apadr, apcmp, avale, anoma, anugd
 !
 !   NOMS ET ADRESSES DES OJB ASSOCIES A LA SD
 !   -----------------------------------------
@@ -95,7 +95,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !   ADRESSE DE NUMERO DE CMP CONCERNEES PAR L' EXTRACTION
 !   -----------------------------------------------------
 !
-    integer :: libre, nbnm, nbtcmp, numcp, gd, aconec, acmpgd, aliste
+    integer :: libre, nbnm, nbtcmp, numcp, gd, aconec, acmpgd
 !
 !   DIVERS
 !   ------
@@ -106,6 +106,9 @@ subroutine tremno(ncmp, nssche, nomsd)
     character(len=24) :: nconec, ncncin
     character(len=8) :: tk8(1), nmaila
     logical :: trouve
+    integer, pointer :: entier(:) => null()
+    integer, pointer :: pnco(:) => null()
+    integer, pointer :: pnsp(:) => null()
 !
 !================= FIN DES DECLARATIONS ============================
 !
@@ -126,8 +129,8 @@ subroutine tremno(ncmp, nssche, nomsd)
     call jeveuo(nvale, 'L', avale)
     call jeveuo(nnoma, 'L', anoma)
     call jeveuo(nnugd, 'L', anugd)
-    call jeveuo(nssche//'.PNCO', 'L', apnco)
-    call jeveuo(nssche//'.PNSP', 'L', apnsp)
+    call jeveuo(nssche//'.PNCO', 'L', vi=pnco)
+    call jeveuo(nssche//'.PNSP', 'L', vi=pnsp)
 !
     nmaila = zk8(anoma)
 !
@@ -189,7 +192,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     call jecreo('&&TREMNO.LISTE.ENTIER', 'V V I')
     call jeecra('&&TREMNO.LISTE.ENTIER', 'LONMAX', nbtnd)
-    call jeveuo('&&TREMNO.LISTE.ENTIER', 'E', aliste)
+    call jeveuo('&&TREMNO.LISTE.ENTIER', 'E', vi=entier)
     call jeveuo(nconec, 'L', iconec)
     call jeveuo(jexatr(nconec, 'LONCUM'), 'L', lconec)
     call jeveuo(ncncin, 'L', icncin)
@@ -206,7 +209,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
             nbn = zi(apnbn + im-1)
 !
-            call i2trgi(zi(aliste), zi(adrm), nbn, libre)
+            call i2trgi(entier, zi(adrm), nbn, libre)
 !
         endif
 !
@@ -220,7 +223,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
     do in = 1, nbtnd, 1
 !
-        zi(anund + in-1) = zi(aliste + in-1)
+        zi(anund + in-1) = entier(in)
 !
     end do
 !
@@ -252,7 +255,7 @@ subroutine tremno(ncmp, nssche, nomsd)
             if (m .ne. 0) then
 !
                 lngm = lngm + min(zi(apadr + m-1),1)
-                lngv = lngv + min(zi(apadr + m-1),1)*zi(apnco + m-1)* zi(apnsp + m-1)
+                lngv = lngv + min(zi(apadr + m-1),1)*pnco(m)* pnsp(m)
 !
             endif
 !
@@ -284,8 +287,8 @@ subroutine tremno(ncmp, nssche, nomsd)
 !
                 if (zi(apadr + m-1) .ne. 0) then
 !
-                    nbco = zi(apnco + m-1)
-                    nbsp = zi(apnsp + m-1)
+                    nbco = pnco(m)
+                    nbsp = pnsp(m)
                     ndloc = 1
                     trouve = .false.
 !

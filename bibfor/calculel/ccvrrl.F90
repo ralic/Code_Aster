@@ -71,7 +71,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: jmai, nbma, ier, nbno, jconi1, jconi2, ima, ncmax, i
     integer :: posit, posma, numma, ima2, numma2, ino, jcesd, jcesl
-    integer :: jcesv, iexori, jrepe, iepais, nbmato, jdime, jvect, idir
+    integer :: jcesv, iexori, jrepe, iepais, nbmato,  jvect, idir
     integer :: jconx1, jconx2, jcoord, jcesdc, ialpha, ibeta
     integer :: jalpha, jbeta, jgamma, jcesc, jcescc, jcesdd, jceslc, jcesvc
     integer :: adcar1(3), adcar2(3)
@@ -85,6 +85,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     character(len=24) :: carori, carcoq
 !
     logical :: llimai, lprobm
+    integer, pointer :: dime(:) => null()
     parameter    (maxtol = 8.7266463d-2)
     parameter    (pi = 3.14159265358979d0)
 !
@@ -161,8 +162,8 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 !     CREATION DE LA CONNECTIVITE INVERSE
     call cncinv(nommai, zi(jmai), nbma, 'V', cnxinv)
 !
-    call jeveuo(nommai//'.DIME', 'L', jdime)
-    nbmato = zi(jdime+2)
+    call jeveuo(nommai//'.DIME', 'L', vi=dime)
+    nbmato = dime(3)
     call wkvect(vecsau, 'V V R', 6*nbmato, jvect)
     do 80 i = 1, 6*nbmato
         zr(jvect+i-1) = 0.d0

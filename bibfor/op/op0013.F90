@@ -43,7 +43,8 @@ subroutine op0013()
 !
     character(len=19) :: ch19
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ifm, ilicoe, ilivec, nbvec, niv
+    integer :: i, ibid, ifm,  ilivec, nbvec, niv
+    real(kind=8), pointer :: licoef(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -67,14 +68,14 @@ subroutine op0013()
 !
     call jecreo(vecas//'.LICOEF', 'V V R ')
     call jeecra(vecas//'.LICOEF', 'LONMAX', nbvec)
-    call jeveuo(vecas//'.LICOEF', 'E', ilicoe)
+    call jeveuo(vecas//'.LICOEF', 'E', vr=licoef)
     do 5 i = 1, nbvec
-        zr(ilicoe-1+i) = 1.0d0
+        licoef(i) = 1.0d0
  5  end do
 !
     call getvid(' ', 'NUME_DDL', scal=nu, nbret=ibid)
     vprof = '        '
-    call assvec('G', vecas, nbvec, zk8(ilivec), zr(ilicoe),&
+    call assvec('G', vecas, nbvec, zk8(ilivec), licoef,&
                 nu, vprof, 'ZERO', type)
     ch19 = vecas
     call jedetr(ch19//'.LILI')

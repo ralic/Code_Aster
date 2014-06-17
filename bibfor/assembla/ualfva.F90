@@ -56,10 +56,17 @@ subroutine ualfva(mataz, basz)
     character(len=14) :: nu
     character(len=19) :: stomor, stolci, matas
     logical :: ldiag, lplein
-    integer :: jscde, neq, nbloc, nblocm, iret
-    integer :: jsmhc, jsmdi, jscdi, jschc, jsmde
+    integer ::  neq, nbloc, nblocm, iret
+    integer :: jsmhc
     integer :: itbloc, ieq, ibloc, jualf, jvale, kterm, nbterm, ilig
-    integer :: ismdi, ismdi0, ibloav, iscdi, jrefa, jscib, kblocm, nblocl
+    integer :: ismdi, ismdi0, ibloav, iscdi,   kblocm, nblocl
+    integer, pointer :: scdi(:) => null()
+    integer, pointer :: smde(:) => null()
+    integer, pointer :: scib(:) => null()
+    integer, pointer :: schc(:) => null()
+    integer, pointer :: smdi(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: scde(:) => null()
 !     ------------------------------------------------------------------
 !
 !
@@ -73,17 +80,17 @@ subroutine ualfva(mataz, basz)
     call jeexin(matas//'.VALM', iret)
     ASSERT(iret.eq.0)
 !
-    call jeveuo(matas//'.REFA', 'L', jrefa)
-    nu=zk24(jrefa-1+2)(1:14)
+    call jeveuo(matas//'.REFA', 'L', vk24=refa)
+    nu=refa(2)(1:14)
     stomor=nu//'.SMOS'
     stolci=nu//'.SLCS'
 !
-    call jeveuo(stolci//'.SCDE', 'L', jscde)
-    call jeveuo(stolci//'.SCDI', 'L', jscdi)
-    call jeveuo(stolci//'.SCHC', 'L', jschc)
-    call jeveuo(stolci//'.SCIB', 'L', jscib)
-    neq=zi(jscde-1+1)
-    nbloc= zi(jscde-1+3)
+    call jeveuo(stolci//'.SCDE', 'L', vi=scde)
+    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
+    call jeveuo(stolci//'.SCHC', 'L', vi=schc)
+    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
+    neq=scde(1)
+    nbloc= scde(3)
 !
 !     -- SI STOMOR N'EXISTE PAS, ON LE CREE :
     call jeexin(stomor//'.SMDI', iret)
@@ -92,8 +99,8 @@ subroutine ualfva(mataz, basz)
         ldiag=.true.
         lplein=.true.
         do 5,ieq=1,neq
-        if (zi(jschc-1+ieq) .ne. 1) ldiag=.false.
-        if (zi(jschc-1+ieq) .ne. ieq) lplein=.false.
+        if (schc(ieq) .ne. 1) ldiag=.false.
+        if (schc(ieq) .ne. ieq) lplein=.false.
  5      continue
         if (ldiag) then
             call crsmos(stomor, 'DIAG', neq)
@@ -106,10 +113,10 @@ subroutine ualfva(mataz, basz)
         endif
     endif
 !
-    call jeveuo(stomor//'.SMDI', 'L', jsmdi)
+    call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
     call jeveuo(stomor//'.SMHC', 'L', jsmhc)
-    call jeveuo(stomor//'.SMDE', 'L', jsmde)
-    itbloc= zi(jsmde-1+2)
+    call jeveuo(stomor//'.SMDE', 'L', vi=smde)
+    itbloc= smde(2)
 !
     call jelira(matas//'.UALF', 'NMAXOC', nblocl)
     ASSERT(nblocl.eq.nbloc .or. nblocl.eq.2*nbloc)
@@ -138,8 +145,8 @@ subroutine ualfva(mataz, basz)
     ibloav=0+nbloc*(kblocm-1)
     ismdi0=0
     do 1, ieq=1,neq
-    iscdi=zi(jscdi-1+ieq)
-    ibloc=zi(jscib-1+ieq)+nbloc*(kblocm-1)
+    iscdi=scdi(ieq)
+    ibloc=scib(ieq)+nbloc*(kblocm-1)
 !
 !          -- ON RAMENE LE BLOC EN MEMOIRE SI NECESSAIRE:
     if (ibloc .ne. ibloav) then
@@ -150,7 +157,7 @@ subroutine ualfva(mataz, basz)
         ibloav=ibloc
     endif
 !
-    ismdi=zi(jsmdi-1+ieq)
+    ismdi=smdi(ieq)
     nbterm=ismdi-ismdi0
 !
     do 2, kterm=1,nbterm

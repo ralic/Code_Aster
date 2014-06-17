@@ -70,8 +70,8 @@ subroutine op0180()
 #include "asterfort/voisca.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ibid, icabl, icmp, irana1, iret, jcaba, jnbno, jncmp, jsief
-    integer :: jvalv, n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
+    integer :: ibid, icabl, icmp, irana1, iret, jcaba, jnbno,  jsief
+    integer ::  n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
     integer :: ncaba, nsief, nbmabe, jlimab, nbnoca
     real(kind=8) :: delta, ea, f0, frco, frli, mu0, rh1000, sa, fprg, xflu, xret
     real(kind=8) :: trelax, valr(2),rbid
@@ -93,6 +93,8 @@ subroutine op0180()
     parameter    (nbpar2=11)
     character(len=3) :: typpa2(nbpar2)
     character(len=24) :: nompa2(nbpar2)
+    character(len=8), pointer :: ncmp(:) => null()
+    real(kind=8), pointer :: valv(:) => null()
 !
     data          aire  /'A1      '/
     data          effnor/'N       ','CONT_X  ','CONT_Y  '/
@@ -355,16 +357,16 @@ subroutine op0180()
 !
     call jelira(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'LONMAX', nsief)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'L', jsief)
-    call jeveuo(carsig//'.NCMP', 'E', jncmp)
-    call jeveuo(carsig//'.VALV', 'E', jvalv)
+    call jeveuo(carsig//'.NCMP', 'E', vk8=ncmp)
+    call jeveuo(carsig//'.VALV', 'E', vr=valv)
     do icmp = 1, nsief
-        zk8(jncmp+icmp-1) = zk8(jsief+icmp-1)
-        zr(jvalv+icmp-1) = 0.0d0
+        ncmp(icmp) = zk8(jsief+icmp-1)
+        valv(icmp) = 0.0d0
     end do
     call nocart(carsig, 1, nsief)
-    zk8(jncmp) = effnor(1)
-    zk8(jncmp+1) = effnor(2)
-    zk8(jncmp+2) = effnor(3)
+    ncmp(1) = effnor(1)
+    ncmp(2) = effnor(2)
+    ncmp(3) = effnor(3)
 !
 ! 4.6 CREATION DE LA SD DE TYPE LISTE_DE_RELATIONS
 ! ---

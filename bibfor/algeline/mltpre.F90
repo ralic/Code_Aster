@@ -48,7 +48,7 @@ subroutine mltpre(mat19, renumz)
     integer :: nec, i, icol
     character(len=8) :: nomgd
     character(len=8) :: renum, renum2
-    integer :: ismdi, ismhc, idelg, ideeq, iprno, diag, inueq, jsmde
+    integer ::  ismhc,   iprno, diag
     integer :: lgadjn, adjnc1, adjnc2, desc
     integer :: supnd, anc, nouv, fils, frere, lgsn, lfront, nbass
     integer :: debfsn, adpile, adress, nblign, lgbloc, ncbloc, lbd1, lbd2, rl
@@ -57,7 +57,7 @@ subroutine mltpre(mat19, renumz)
     integer :: lmat, lgind, global, local, decal
     integer :: mrl, ino, nbsn, iddl, nbloc, neq, nrl, lgpile
     integer :: n2, lt, lglist, deb, vois1, vois2, suit1, suit2, globa, loca
-    integer :: iret, optnum, ier, jrenu, jslvk, jrefa
+    integer :: iret, optnum, ier, jrenu
     integer :: noeud, ddl, permnd, invpnd, spndnd, ddlmoy, xadjd
     character(len=24) :: nomloc, nomad1, nomad2, nomglo, nomadi
     character(len=24) :: nomdeb, nomvoi, nomsui, nopglo, noploc
@@ -69,6 +69,13 @@ subroutine mltpre(mat19, renumz)
     character(len=24) :: nomp08, nomp09, nomp10, nomp11, nomp12, nomp13
     character(len=24) :: nomp14, nomp15, nomp16, nomp17, nomp18, nomp19, nomp20
     logical :: nivdbg, matgen
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: smde(:) => null()
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: smdi(:) => null()
+    integer, pointer :: delg(:) => null()
     data nomglo/'              .MLTF.GLOB'/
     data nomloc/'              .MLTF.LOCL'/
     data nomadi/'              .MLTF.ADNT'/
@@ -119,9 +126,9 @@ subroutine mltpre(mat19, renumz)
 !     -- RENUM : RENUMEROTATION SOUHAITEE POUR LA RESOLUTION
     if (renumz .eq. ' ') then
         call dismoi('SOLVEUR', mat19, 'MATR_ASSE', repk=solv19)
-        call jeveuo(solv19//'.SLVK', 'L', jslvk)
-        ASSERT(zk24(jslvk-1+1).eq.'MULT_FRONT')
-        renum=zk24(jslvk-1+4)
+        call jeveuo(solv19//'.SLVK', 'L', vk24=slvk)
+        ASSERT(slvk(1).eq.'MULT_FRONT')
+        renum=slvk(4)
     else
         renum=renumz
     endif
@@ -167,20 +174,20 @@ subroutine mltpre(mat19, renumz)
     call jeexin(noploc, iret)
     if (iret .ne. 0) call jedetr(noploc)
 !
-    call jeveuo(nu//'.NUME.DELG', 'L', idelg)
-    call jeveuo(nu//'.NUME.DEEQ', 'L', ideeq)
-    call jeveuo(nu//'.NUME.NUEQ', 'L', inueq)
+    call jeveuo(nu//'.NUME.DELG', 'L', vi=delg)
+    call jeveuo(nu//'.NUME.DEEQ', 'L', vi=deeq)
+    call jeveuo(nu//'.NUME.NUEQ', 'L', vi=nueq)
     call jeveuo(jexnum(nu//'.NUME.PRNO', 1), 'L', iprno)
     call jeveuo(nu//'.SMOS.SMHC', 'L', icol)
-    call jeveuo(nu//'.SMOS.SMDI', 'L', ismdi)
-    call jeveuo(nu//'.SMOS.SMDE', 'L', jsmde)
+    call jeveuo(nu//'.SMOS.SMDI', 'L', vi=smdi)
+    call jeveuo(nu//'.SMOS.SMDE', 'L', vi=smde)
 !
-    neq = zi(jsmde-1+1)
+    neq = smde(1)
     do i = 1, neq
-        ASSERT(zi(inueq+i-1).eq.i)
+        ASSERT(nueq(i).eq.i)
     end do
     call jelibe(nu//'.NUME.NUEQ')
-    lmat = zi(ismdi+neq-1)
+    lmat = smdi(neq)
 !     LA STRUCTURE NOMADI A LA LONGUEUR EXACTE: LMAT
 !     ET N' EST PAS SURDIMENSIONNEE COMME SMOS.SMHC
     call wkvect(nomadi, base//' V I ', lmat, ismhc)
@@ -188,9 +195,9 @@ subroutine mltpre(mat19, renumz)
         zi(ismhc+i) = zi4(icol+i)
     end do
     call jelibe(nu//'.SMOS.SMHC')
-    call jeveuo(mat19//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+10) .ne. 'NOEU') then
-        ASSERT(zk24(jrefa-1+10).eq.'GENE')
+    call jeveuo(mat19//'.REFA', 'L', vk24=refa)
+    if (refa(10) .ne. 'NOEU') then
+        ASSERT(refa(10).eq.'GENE')
         matgen=.true.
     else
         matgen=.false.
@@ -201,8 +208,8 @@ subroutine mltpre(mat19, renumz)
 !     SERT A DIMENSIONNER AU PLUS JUSTE LE TABLEAU RL
     mrl = 1
     do iddl = 1, neq
-        if (zi(idelg+iddl-1) .ne. 0) then
-            ino = zi(ideeq+2* (iddl-1))
+        if (delg(iddl) .ne. 0) then
+            ino = deeq(1+2* (iddl-1))
             if (ino .eq. 0) mrl = mrl + 1
         endif
 !
@@ -216,7 +223,7 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomp02, base//' V I ', neq+1, diag)
 !     COPIE DE SMDI DANS DIAG
     do i = 1, neq
-        zi(diag+i) = zi(ismdi+i-1)
+        zi(diag+i) = smdi(i)
     end do
     call jelibe(nu//'.SMOS.SMDI')
     zi(diag) = 0
@@ -250,8 +257,8 @@ subroutine mltpre(mat19, renumz)
 !     SUPPLEMENTAIRES INDUITS PAR LES RELA. LINEAIRES
 !------------------------------------------------------------
 !
-    call preml0(neq, n2, zi(diag), zi(ismhc), zi(idelg),&
-                zi(iprno), zi(ideeq), nec, zi(p), zi(q),&
+    call preml0(neq, n2, zi(diag), zi(ismhc), delg,&
+                zi(iprno), deeq, nec, zi(p), zi(q),&
                 zi(lbd1), zi(lbd2), zi(rl), zi(rl1), zi(rl2),&
                 nrl, lt, lmat)
 !
@@ -349,13 +356,13 @@ subroutine mltpre(mat19, renumz)
     call wkvect(nomt25, ' V V I ', neq, spndnd)
     call wkvect(nomt27, ' V V I ', neq+1, xadjd)
 !
-    call preml1(neq, n2, zi(diag), zi(idelg), zi(ismhc),&
+    call preml1(neq, n2, zi(diag), delg, zi(ismhc),&
                 zi(xadj2), zi(adjnc2), zi(seq), zi(adress), zi(supnd2),&
                 zi(trav1), zi(trav2), zi(trav3), zi(trav4), zi(p),&
                 zi(q), zi(invp), zi(perm), lgind, ddlmoy,&
                 nbsn, optnum, lgadjn, nrl, zi(deb),&
                 zi(vois1), zi(suit1), ier, nec, zi(iprno),&
-                zi(ideeq), zi(noeud), zi(ddl), zi(invpnd), zi(permnd),&
+                deeq, zi(noeud), zi(ddl), zi(invpnd), zi(permnd),&
                 zi(spndnd), zi(xadjd), matgen)
     call jedetr(nomt25)
     call jedetr(nomt22)
@@ -465,7 +472,7 @@ subroutine mltpre(mat19, renumz)
  90 continue
     call wkvect(nopglo, ' V V S ', lgind, global)
     call wkvect(noploc, ' V V S ', lgind, local)
-    call preml2(neq, zi(diag), zi(ismhc), zi(idelg), zi(xadj1),&
+    call preml2(neq, zi(diag), zi(ismhc), delg, zi(xadj1),&
                 zi(adjnc1), lgpile, zi(adress), zi(parend), zi(fils),&
                 zi(frere), zi(anc), zi(nouv), zi(supnd), zi(trav1),&
                 zi(trav2), zi(trav3), zi(trav4), zi(invsup), zi4(local),&

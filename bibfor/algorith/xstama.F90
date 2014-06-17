@@ -83,15 +83,18 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
 !
 !
-    integer :: jma, igeom,  jconx1, jconx2
+    integer :: jma,    jconx2
     integer :: ima, itypma, j, idim, ndim
     integer :: nuno, ifm, niv
     integer :: nbnoe, ino, nabs, jdlino, nbnoma
-    integer :: jltsv, jlnsv
     real(kind=8) :: hff, diam, lsn, lst, rayon
     character(len=8) :: typma
     character(len=19) :: mai
     real(kind=8), pointer :: macoord(:) => null()
+    real(kind=8), pointer :: lnsv(:) => null()
+    real(kind=8), pointer :: ltsv(:) => null()
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !
     call jemarq()
@@ -99,8 +102,8 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', igeom)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !     1) STATUT DES MAILLES SANS TENIR COMPTE DE NB_COUCHES
@@ -123,8 +126,8 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
         call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !       LEVEL SETS
-        call jeveuo(cnslt//'.CNSV', 'L', jltsv)
-        call jeveuo(cnsln//'.CNSV', 'L', jlnsv)
+        call jeveuo(cnslt//'.CNSV', 'L', vr=ltsv)
+        call jeveuo(cnsln//'.CNSV', 'L', vr=lnsv)
 !
 !       CALCUL DE HFF : TAILLE MINIMALE D'UNE MAILLE DE MAFON
         hff = r8maem()
@@ -137,9 +140,9 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
             nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
             AS_ALLOCATE(vr=macoord, size=ndim*nbnoma)
             do ino = 1, nbnoma
-                nuno = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
+                nuno = connex(zi(jconx2+ima-1)+ino-1)
                 do idim = 1, ndim
-                    macoord(ndim*(ino-1)+idim)=zr(igeom-1+3*(nuno-&
+                    macoord(ndim*(ino-1)+idim)=vale(3*(nuno-&
                     1)+idim)
                 end do
             end do
@@ -160,8 +163,8 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
         do ino = 1, nbnoe
             nabs=zi(jdlino-1+(ino-1)+1)
             if (stano(nabs) .le. 1) then
-                lsn=zr(jlnsv-1+(nabs-1)+1)
-                lst=zr(jltsv-1+(nabs-1)+1)
+                lsn=lnsv((nabs-1)+1)
+                lst=ltsv((nabs-1)+1)
                 if (sqrt(lsn**2+lst**2) .le. rayon) then
                     stano(nabs) = stano(nabs) + 2
                 endif

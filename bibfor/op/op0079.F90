@@ -56,9 +56,9 @@ subroutine op0079()
     integer :: jsmde, nbmode, nbo, ii, iret, nbsym, idbase
 
 !-----------------------------------------------------------------------
-    integer :: iadvec,  ibid, icod, iadref
-    integer :: iddeeq,  iliord, imod, ind, iord, isym
-    integer :: jmod, jrefa, llnequ, n0, n1, n2, n4
+    integer ::   ibid, icod, iadref
+    integer :: iddeeq,   imod, ind, iord, isym
+    integer :: jmod,   n0, n1, n2, n4
     integer :: nbid, neq, tmod(1)
     real(kind=8) :: bid, ebid, pij
 !-----------------------------------------------------------------------
@@ -76,6 +76,10 @@ subroutine op0079()
     real(kind=8), pointer :: vectass1(:) => null()
     real(kind=8), pointer :: vectass2(:) => null()
     real(kind=8), pointer :: vectasse(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: ordr(:) => null()
+    integer, pointer :: nequ(:) => null()
     data  nosyin / 'DEPL','VITE','ACCE'/
     data  nosyou / 'DEPL','VITE','ACCE'/
 !
@@ -121,7 +125,7 @@ subroutine op0079()
                 cbid, ebid, 'ABSOLU', tmod, 1,&
                 nbid)
     nbo=tmod(1)
-    call jeveuo(res//'           .ORDR', 'L', iliord)
+    call jeveuo(res//'           .ORDR', 'L', vi=ordr)
 !
 !
 ! --- VERIFICATION DE LA CONFORMITE DES NUMEROTATIONS
@@ -166,8 +170,8 @@ subroutine op0079()
         call dismoi('NUME_DDL', res, 'RESU_DYNA', repk=nu)
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         matri2 = matric(1:16)
-        call jeveuo(matri2//'   .REFA', 'L', jrefa)
-        numdd2=zk24(jrefa-1+2)
+        call jeveuo(matri2//'   .REFA', 'L', vk24=refa)
+        numdd2=refa(2)
     endif
 !
     if (numdd1 .ne. numdd2) then
@@ -179,8 +183,8 @@ subroutine op0079()
     if ((typbas(1:9).eq.'MODE_MECA')) then
         call dismoi('NB_EQUA', numdd1, 'NUME_DDL', repi=neq)
     else if (typbas(1:9).eq.'MODE_GENE') then
-        call jeveuo(numdd1//'.NUME.NEQU', 'L', llnequ)
-        neq = zi(llnequ)
+        call jeveuo(numdd1//'.NUME.NEQU', 'L', vi=nequ)
+        neq = nequ(1)
     endif
 !
     deeq = nu//'.NUME.DEEQ'
@@ -206,10 +210,10 @@ subroutine op0079()
             nosy=nosyou(isym)
 !
 ! --- RECUP DU CHAMP DE LA SDIN CORRESPONDANT AU NUME_ORDR ET ISYM
-            call rsexch(' ', res, nosyin(isym), zi(iliord-1+iord), nochno,&
+            call rsexch(' ', res, nosyin(isym), ordr(iord), nochno,&
                         iret)
             if (iret .ne. 0) goto 40
-            call jeveuo(nochno//'.VALE', 'L', iadvec)
+            call jeveuo(nochno//'.VALE', 'L', vr=vale)
             call jeveuo(nochno//'.REFE', 'L', iadref)
             call jelira(nochno//'.VALE', 'TYPE', cval=typvec)
 ! --- LE CAS COMPLEXE (SD HARMONIQUES) N'EST PAS TRAITE
@@ -239,7 +243,7 @@ subroutine op0079()
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
                     ind = ii-1+(iord-1)*nbmode+imod
-                    zr(ind) = ddot(neq,vectasse,1,zr(iadvec),1)
+                    zr(ind) = ddot(neq,vectasse,1,vale,1)
 !
 ! ------- LIBERATION DU VECTEUR TEMP
                 end do
@@ -297,7 +301,7 @@ subroutine op0079()
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
-                    vectass2(imod) = ddot(neq,vectass1,1,zr( iadvec),1)
+                    vectass2(imod) = ddot(neq,vectass1,1,vale,1)
 !
                 end do
 !

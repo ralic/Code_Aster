@@ -73,11 +73,12 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idcoor, idlima, idnoeu, ima, ino
+    integer :: ibid,  idlima, idnoeu, ima, ino
     integer :: iocc, iret, nangle, nb, nbma, nbmai, nbno
     integer :: nbnod, ndim, ndim1, ndist, numnoe, nv, nvect
 !
     real(kind=8) :: d, dist, xnorm, xnorm2, zero
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -125,7 +126,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DU POINT SITUE SUR LE PLAN MILIEU :
 !     ----------------------------------------------
@@ -256,9 +257,9 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! ---        COORDONNEES DU NOEUD :
 !            --------------------
-            x(1) = zr(idcoor-1+3*(numnoe-1)+1)
-            x(2) = zr(idcoor-1+3*(numnoe-1)+2)
-            x(3) = zr(idcoor-1+3*(numnoe-1)+3)
+            x(1) = vale(3*(numnoe-1)+1)
+            x(2) = vale(3*(numnoe-1)+2)
+            x(3) = vale(3*(numnoe-1)+3)
 !
             xx0(1) = x(1) - x0(1)
             xx0(2) = x(2) - x0(2)

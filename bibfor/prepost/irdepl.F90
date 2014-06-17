@@ -102,13 +102,18 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadesc, iaec, ianueq, iaprno, iarefe
-    integer :: iavale, ibid, ino, iret, itype, jcoor
-    integer :: jncmp,   jtitr, nbcmpt
+    integer :: i, iad,  iaec,  iaprno
+    integer :: iavale, ibid, ino, iret, itype
+    integer :: jncmp,    nbcmpt
     integer :: nbno, nbnot2, nbtitr, ncmpmx, ndim, nec, num
     character(len=8), pointer :: nomnoe(:) => null()
     integer, pointer :: vnumnoe(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    real(kind=8), pointer :: coor(:) => null()
+    integer, pointer :: desc(:) => null()
+    character(len=80), pointer :: titr(:) => null()
+    integer, pointer :: nueq(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -117,11 +122,11 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     forma = form
     nosy16 = nomsym
     nbcmpt=0
-    call jeveuo(chamn//'.REFE', 'L', iarefe)
+    call jeveuo(chamn//'.REFE', 'L', vk24=refe)
 !     --- NOM DU MAILLAGE
-    nomma = zk24(iarefe-1+1) (1:8)
+    nomma = refe(1) (1:8)
 !     --- NOM DU PROFIL AUX NOEUDS ASSOCIE S'IL EXISTE
-    nomnu = zk24(iarefe-1+2)
+    nomnu = refe(2)
 !
     call jelira(chamn//'.VALE', 'TYPE', cval=type)
     if (type(1:1) .eq. 'R') then
@@ -140,9 +145,9 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !
     call jeveuo(chamn//'.VALE', 'L', iavale)
 !
-    call jeveuo(chamn//'.DESC', 'L', iadesc)
-    gd = zi(iadesc-1+1)
-    num = zi(iadesc-1+2)
+    call jeveuo(chamn//'.DESC', 'L', vi=desc)
+    gd = desc(1)
+    num = desc(2)
 !
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
 !
@@ -170,7 +175,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !
 !     --- SI LE CHAMP EST DECRIT PAR UN "PRNO":
     if (num .ge. 0) then
-        call jeveuo(nomnu(1:19)//'.NUEQ', 'L', ianueq)
+        call jeveuo(nomnu(1:19)//'.NUEQ', 'L', vi=nueq)
         call jenonu(jexnom(nomnu(1:19)//'.LILI', '&MAILLA'), ibid)
         call jeveuo(jexnum(nomnu(1:19)//'.PRNO', ibid), 'L', iaprno)
     endif
@@ -202,25 +207,25 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     endif
 ! --- RECHERCHE DES COORDONNEES ET DE LA DIMENSION -----
     call dismoi('DIM_GEOM_B', nomma, 'MAILLAGE', repi=ndim)
-    call jeveuo(nomma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(nomma//'.COORDO    .VALE', 'L', vr=coor)
 !
     if (form .eq. 'RESULTAT') then
         if (itype .eq. 1 .and. num .ge. 0) then
-            call ircnrl(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
+            call ircnrl(ifi, nbnot2, zi(iaprno), nueq, nec,&
                         zi(iaec), ncmpmx, zr(iavale), zk8(iad), nomnoe,&
-                        lcor, ndim, zr(jcoor), vnumnoe, nbcmpt,&
+                        lcor, ndim, coor, vnumnoe, nbcmpt,&
                         zi(jncmp), lsup, borsup, linf, borinf,&
                         lmax, lmin, formr)
         else if (itype.eq.1.and.num.lt.0) then
-            call ircrrl(ifi, nbnot2, zi(iadesc), nec, zi(iaec),&
+            call ircrrl(ifi, nbnot2, desc, nec, zi(iaec),&
                         ncmpmx, zr( iavale), zk8(iad), nomnoe, lcor,&
-                        ndim, zr(jcoor), vnumnoe, nbcmpt, zi(jncmp),&
+                        ndim, coor, vnumnoe, nbcmpt, zi(jncmp),&
                         lsup, borsup, linf, borinf, lmax,&
                         lmin, formr)
         else if (itype.eq.2.and.num.ge.0) then
-            call ircnc8(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
+            call ircnc8(ifi, nbnot2, zi(iaprno), nueq, nec,&
                         zi(iaec), ncmpmx, zc(iavale), zk8(iad), nomnoe,&
-                        lcor, ndim, zr(jcoor), vnumnoe, nbcmpt,&
+                        lcor, ndim, coor, vnumnoe, nbcmpt,&
                         zi(jncmp), lsup, borsup, linf, borinf,&
                         lmax, lmin, formr)
         else if (itype.eq.2.and.num.lt.0) then
@@ -236,12 +241,12 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         if (.not. lresu) call lxcaps(nosy16)
 !
         if (itype .eq. 1 .and. num .ge. 0) then
-            call irdeca(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
+            call irdeca(ifi, nbnot2, zi(iaprno), nueq, nec,&
                         zi(iaec), ncmpmx, zr(iavale), nomgd, zk8(iad),&
                         nosy16, vnumnoe, lresu, nbcmp, nomcmp,&
                         nive)
         else if (itype.eq.1.and.num.lt.0) then
-            call irdrca(ifi, nbnot2, zi(iadesc), nec, zi(iaec),&
+            call irdrca(ifi, nbnot2, desc, nec, zi(iaec),&
                         ncmpmx, zr( iavale), nomgd, zk8(iad), nosy16,&
                         vnumnoe, lresu, nbcmp, nomcmp, nive)
         else if (itype.eq.2.and.num.ge.0) then
@@ -259,7 +264,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
             else
                 call utmess('F', 'PREPOST2_4')
             endif
-            call irdeca(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
+            call irdeca(ifi, nbnot2, zi(iaprno), nueq, nec,&
                         zi(iaec), ncmpmx, vale, nomgd, zk8(iad),&
                         nosy16, vnumnoe, lresu, nbcmp, nomcmp,&
                         nive)
@@ -274,10 +279,10 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         lmasu=.false.
         call jeexin(nomma//'           .TITR', iret)
         if (iret .ne. 0) then
-            call jeveuo(nomma//'           .TITR', 'L', jtitr)
+            call jeveuo(nomma//'           .TITR', 'L', vk80=titr)
             call jelira(nomma//'           .TITR', 'LONMAX', nbtitr)
             if (nbtitr .ge. 1) then
-                titmai=zk80(jtitr-1+1)
+                titmai=titr(1)
                 if (titmai(10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') then
                     lmasu=.true.
                 endif
@@ -285,17 +290,17 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         endif
 !
         if (itype .eq. 1 .and. num .ge. 0) then
-            call irdesr(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
+            call irdesr(ifi, nbnot2, zi(iaprno), nueq, nec,&
                         zi(iaec), ncmpmx, zr(iavale), zk8(iad), titre,&
                         nomnoe, nomsd, nomsym, numord, vnumnoe,&
                         lmasu, nbcmp, zi(jncmp), nomcmp)
         else if (itype.eq.1.and.num.lt.0) then
-            call irdrsr(ifi, nbnot2, zi(iadesc), nec, zi(iaec),&
+            call irdrsr(ifi, nbnot2, desc, nec, zi(iaec),&
                         ncmpmx, zr( iavale), zk8(iad), titre, nomnoe,&
                         nomsd, nomsym, numord, vnumnoe, lmasu,&
                         nbcmp, zi(jncmp), nomcmp)
         else if (itype.eq.2.and.num.ge.0) then
-            call irdesc(ifi, nbnot2, zi(iaprno), zi(ianueq), nec,&
+            call irdesc(ifi, nbnot2, zi(iaprno), nueq, nec,&
                         zi(iaec), ncmpmx, zc(iavale), zk8(iad), titre,&
                         nomnoe, nomsd, nomsym, numord, vnumnoe,&
                         lmasu)

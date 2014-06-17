@@ -59,14 +59,16 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
 !
 !
-    integer :: ibid, jcesd, jcesl, jcesv, n1, i
-    integer :: nbma, ima, iad, jinst, nbinst, nbmcfl
+    integer :: ibid, jcesd, jcesl,  n1, i
+    integer :: nbma, ima, iad,  nbinst, nbmcfl
     real(kind=8) :: dtcou, valeur, phi, r8b
     logical :: booneg, boopos, exicar
     character(len=6) :: nompro
     character(len=8) :: k8bid, mo, lpain(3), lpaout(1), stocfl, maicfl, mail
     character(len=19) :: chams
     character(len=24) :: chgeom, ligrel, lchin(3), lchout(1), chcara(18)
+    real(kind=8), pointer :: ditr(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 !
 ! ---------------------------------------------------------------------
 !
@@ -113,7 +115,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
     call jelira(mo//'.MAILLE', 'LONMAX', nbma)
     call jeveuo(chams//'.CESL', 'L', jcesl)
-    call jeveuo(chams//'.CESV', 'L', jcesv)
+    call jeveuo(chams//'.CESV', 'L', vr=cesv)
 !
 !     INITIALISATION DE DTCOU
 !
@@ -129,7 +131,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
         if (iad .gt. 0) then
-            valeur = zr(jcesv-1+iad)
+            valeur = cesv(iad)
         else if (iad.eq.0) then
             goto 10
         endif
@@ -160,7 +162,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !       VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
         call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
                     r8b, nbinst, k8bid)
-        call jeveuo(sddisc//'.DITR', 'L', jinst)
+        call jeveuo(sddisc//'.DITR', 'L', vr=ditr)
 !
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=mail)
         call jenuno(jexnum(mail//'.NOMMAI', nbmcfl), maicfl)
@@ -180,7 +182,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
         endif
 !
         do i = 1, nbinst-1
-            if (zr(jinst-1+i+1)-zr(jinst-1+i) .gt. dtcou) then
+            if (ditr(i+1)-ditr(i) .gt. dtcou) then
                 if (stocfl(1:3) .eq. 'OUI') then
                     call utmess('F', 'DYNAMIQUE_2')
                 else

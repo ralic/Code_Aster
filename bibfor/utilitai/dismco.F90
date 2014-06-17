@@ -47,10 +47,12 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
 ! ======================================================================
 !
     character(len=19) :: chtmp, chcalc
-    integer :: iret, jcalv, jcald, jcall, jcalk, nbma, ima, iadc
+    integer :: iret,  jcald, jcall,  nbma, ima, iadc
     character(len=6) :: lcham(3)
     character(len=8) :: noma, nomail
     logical :: incr, elas
+    character(len=8), pointer :: cesk(:) => null()
+    character(len=16), pointer :: cesv(:) => null()
     data  lcham/ 'RELCOM', 'DEFORM', 'INCELA'/
 !
 !
@@ -79,11 +81,11 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
     call detrsd('CHAM_ELEM_S', chtmp)
 !
     call jeveuo(chcalc//'.CESD', 'L', jcald)
-    call jeveuo(chcalc//'.CESV', 'L', jcalv)
+    call jeveuo(chcalc//'.CESV', 'L', vk16=cesv)
     call jeveuo(chcalc//'.CESL', 'L', jcall)
-    call jeveuo(chcalc//'.CESK', 'L', jcalk)
+    call jeveuo(chcalc//'.CESK', 'L', vk8=cesk)
 !
-    noma = zk8(jcalk-1+1)
+    noma = cesk(1)
     nbma = zi(jcald-1+1)
 !
     do 10 ima = 1, nbma
@@ -95,10 +97,10 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
 !
         if (iadc .gt. 0) then
             call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-            if (zk16(jcalv+iadc-1+2)(1:9) .eq. 'COMP_INCR') then
+            if (cesv(1+iadc-1+2)(1:9) .eq. 'COMP_INCR') then
                 incr = .true.
             endif
-            if (zk16(jcalv+iadc-1+2)(1:9) .eq. 'COMP_ELAS') then
+            if (cesv(1+iadc-1+2)(1:9) .eq. 'COMP_ELAS') then
                 elas = .true.
             endif
         endif

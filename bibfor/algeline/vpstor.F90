@@ -62,7 +62,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     integer :: vali(3), jpara
     integer :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
     integer :: nbpast, irang, iret, jmodg, jmacr, jbasm
-    integer :: jmod2, jlime, jmeri
+    integer :: jmod2, jlime
     parameter    ( nbpast = 19 )
     character(len=8) :: res, k8b, modele, chmat, carael, basemo
     character(len=16) :: typcon, nomcmd, nosy, typmod
@@ -70,6 +70,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     character(len=24) :: nume, nopast(nbpast)
     character(len=24) :: valk, typeba, raide, raide2, k24b
     logical :: lrefd, lbasm, lstock
+    character(len=24), pointer :: rerr(:) => null()
 !     ------------------------------------------------------------------
 ! --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE
     data  nopast /        'NUME_MODE'       ,&
@@ -206,10 +207,10 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                             basemo = zk24(jbasm)(1:8)
                             call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=raide2)
                             call jeveuo(raide2(1:19)//'.LIME', 'L', jlime)
-                            call jeveuo(zk24(jlime)(1:8)//'           .RERR', 'L', jmeri)
-                            modele = zk24(jmeri)(1:8)
-                            chmat = zk24(jmeri+3)(1:8)
-                            carael = zk24(jmeri+4)(1:8)
+                            call jeveuo(zk24(jlime)(1:8)//'           .RERR', 'L', vk24=rerr)
+                            modele = rerr(1)(1:8)
+                            chmat = rerr(4)(1:8)
+                            carael = rerr(5)(1:8)
                             goto 39
                         endif
                     endif

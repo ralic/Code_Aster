@@ -48,7 +48,8 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
 !
 !-----------------------------------------------------------------------
     integer ::  ire1, ire2, ire3, ire4, ire5, ire6
-    integer :: ire7, iret, jpro
+    integer :: ire7, iret
+    character(len=24), pointer :: prol(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -125,9 +126,9 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
 !
         call jeexin(nomob//'.PROL', ire1)
         if (ire1 .gt. 0) then
-            call jeveuo(nomob//'.PROL', 'L', jpro)
-            if (zk24(jpro) .eq. 'CONSTANTE' .or. zk24(jpro) .eq. 'FONCTION' .or. zk24(jpro)&
-                .eq. 'NAPPE' .or. zk24(jpro) .eq. 'FONCT_C') then
+            call jeveuo(nomob//'.PROL', 'L', vk24=prol)
+            if (prol(1) .eq. 'CONSTANTE' .or. prol(1) .eq. 'FONCTION' .or. prol(1)&
+                .eq. 'NAPPE' .or. prol(1) .eq. 'FONCT_C') then
                 repk='FONCTION'
                 goto 9999
             endif

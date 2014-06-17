@@ -66,7 +66,7 @@ subroutine caliag(fonrez, chargz)
     integer :: icmpz, idco1, idco2,  idconi, idconr, iddl1
     integer :: iddl2, idg1, idg2, idim,   idmax
     integer ::    iec, iexcm1, iexcm2, imult1
-    integer :: imult2, ino1, ino2, inom,  jnoma, jprnm
+    integer :: imult2, ino1, ino2, inom,   jprnm
     integer :: lonli1, lonli2, nb, nbcmp, nbec, nbno, nbterm
     integer :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
 !-----------------------------------------------------------------------
@@ -90,6 +90,7 @@ subroutine caliag(fonrez, chargz)
     integer, pointer :: nbnor(:) => null()
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,8 +116,8 @@ subroutine caliag(fonrez, chargz)
 !
     call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
     ligrmo = mod(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
 !
     mcgrex = 'SANS_GROUP_NO'
     mcex = 'SANS_NOEUD'

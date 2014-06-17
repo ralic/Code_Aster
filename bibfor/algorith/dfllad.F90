@@ -96,12 +96,12 @@ subroutine dfllad(sdlist)
     integer :: iadapt
     character(len=16) :: even, nopara, cricom, modetp, nocham
     character(len=8) :: nomgd, nocmp
-    integer :: jlinr
     real(kind=8) :: pcent, valere, vale
     integer :: valei, nucmp(1)
     character(len=24) :: lisavr, lisavk, listpr, listpk
     integer :: laevr, laevk, latpr, latpk
     integer :: jaevr, jaevk, jatpr, jatpk
+    real(kind=8), pointer :: infor(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -111,7 +111,7 @@ subroutine dfllad(sdlist)
 !
     mcfact = 'ADAPTATION'
     nadapt = 0
-    call jeveuo(sdlist//'.LIST.INFOR', 'E', jlinr)
+    call jeveuo(sdlist//'.LIST.INFOR', 'E', vr=infor)
 !
 ! --- TAILLE DES VECTEURS
 !
@@ -134,7 +134,7 @@ subroutine dfllad(sdlist)
     call wkvect(lisavk, 'G V K8', nadapt*laevk, jaevk)
     call wkvect(listpr, 'G V R', nadapt*latpr, jatpr)
     call wkvect(listpk, 'G V K16', nadapt*latpk, jatpk)
-    zr(jlinr-1+10) = nadapt
+    infor(10) = nadapt
 !
 ! --- LECTURE INFOS
 !

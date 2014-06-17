@@ -53,7 +53,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !
 !
 !
-    integer :: nfiss, jnfis, nfismx
+    integer :: nfiss,  nfismx
     parameter    (nfismx=100)
     integer :: ifm, niv
     character(len=24) :: tabfin
@@ -63,6 +63,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
     character(len=19) :: ligrel
     character(len=19) :: xindc0, xseuc0, xcohe0
     logical :: lxffm, lxfcm, lxczm
+    integer, pointer :: nfis(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,8 +84,8 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !
 ! --- NOMBRE DE FISSURES
 !
-    call jeveuo(nomo//'.NFIS', 'L', jnfis)
-    nfiss = zi(jnfis)
+    call jeveuo(nomo//'.NFIS', 'L', vi=nfis)
+    nfiss = nfis(1)
     if (nfiss .gt. nfismx) then
         call utmess('F', 'XFEM_2', si=nfismx)
     endif

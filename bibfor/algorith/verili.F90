@@ -54,7 +54,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 !
 !-----------------------------------------------------------------------
     integer :: i, idim1, idim2, ii, iret, j
-    integer :: lldesc, lllia, llncmp, llpl1, llpl2, nbcmpm, nbec
+    integer ::  lllia, llncmp, llpl1, llpl2, nbcmpm, nbec
     integer :: nbecmx, nbnoe1, nbnoe2, numgd
 !-----------------------------------------------------------------------
     parameter (nbcmpm =  10)
@@ -66,6 +66,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     integer :: idecp(nbcmpm), idecm(nbcmpm)
     integer :: vali(2)
     integer :: icodp(nbecmx), icodm(nbecmx)
+    integer, pointer :: desc(:) => null()
 !
 !-----------------------------------------------------------------------
     data blanc /' '/
@@ -112,8 +113,8 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 !
 !--------RECUPERATION DU NUMERO DE GRANDEUR SOUS-JACENTE----------------
 !
-    call jeveuo(nomres//'      .MODG.DESC', 'L', lldesc)
-    numgd=zi(lldesc+2)
+    call jeveuo(nomres//'      .MODG.DESC', 'L', vi=desc)
+    numgd=desc(3)
 !
 !-----------------VERIFICATION SUR LES COMPOSANTES----------------------
 !

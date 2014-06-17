@@ -51,9 +51,10 @@ subroutine simono()
     character(len=19) :: resu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idchm, in,  jvec, nbd
+    integer :: i,  in,  jvec, nbd
     integer :: nbdir, nbv
     integer, pointer :: ddl(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     data   tabcmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 !     ------------------------------------------------------------------
@@ -104,9 +105,9 @@ ddl)
 !     --- CREATION DU CHAMNO ---
 !
     call vtcrem(resu, masse, 'G', 'R')
-    call jeveuo(resu//'.VALE', 'E', idchm)
+    call jeveuo(resu//'.VALE', 'E', vr=vale)
 !
-    call mrmult('ZERO', lmat, zr(jvec), zr(idchm), 1,&
+    call mrmult('ZERO', lmat, zr(jvec), vale, 1,&
                 .true.)
 !
 !      CALL WKVECT('&&SIMONO.DDL.BLOQUE','V V I',NEQ,IDDL)

@@ -81,12 +81,15 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
     integer :: kk1, kk2, jva, niv, iliac, ifm
     integer :: note2, note1, note12, note, nbliai, llf0
     integer :: pivot2, lliac, ibid, posit
-    integer :: btotal, deklag, pivot, jscde, nbbloc, jouv
+    integer :: btotal, deklag, pivot,  nbbloc, jouv
     real(kind=8) :: copmax
     character(len=1) :: typeaj, typesp
     character(len=2) :: typec0, typef0, typef1, typef2
     character(len=19) :: liac, liot, macont, stoc, ouvert
-    integer :: jliac, jliot, jvale, iscib, ii, dercol, bloc, jscbl
+    integer :: jliac, jliot, jvale,  ii, dercol, bloc
+    integer, pointer :: scib(:) => null()
+    integer, pointer :: scde(:) => null()
+    integer, pointer :: scbl(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,13 +104,13 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
     stoc = resoco(1:14)//'.SLCS'
     call jeveuo(liac, 'E', jliac)
     call jeveuo(liot, 'E', jliot)
-    call jeveuo(stoc//'.SCIB', 'L', iscib)
-    call jeveuo(stoc//'.SCBL', 'L', jscbl)
-    call jeveuo(stoc//'.SCDE', 'L', jscde)
+    call jeveuo(stoc//'.SCIB', 'L', vi=scib)
+    call jeveuo(stoc//'.SCBL', 'L', vi=scbl)
+    call jeveuo(stoc//'.SCDE', 'L', vi=scde)
 !
 ! --- INITIALISATIONS
 !
-    nbbloc = zi(jscde-1+3)
+    nbbloc = scde(3)
     nbliai = cfdisd(resoco,'NBLIAI')
     ibid = 0
     pivot = 0
@@ -140,8 +143,8 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 ! ======================================================================
 ! --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE CONTACT
 ! ======================================================================
-            ii = zi(iscib-1+iliac+llf0-deklag)
-            dercol=zi(jscbl+ii-1)
+            ii = scib(iliac+llf0-deklag)
+            dercol=scbl(ii)
             bloc=dercol*(dercol+1)/2
             if (.not.zl(jouv-1+ii)) then
                 if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
@@ -186,8 +189,8 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 ! ======================================================================
             if (ndim .eq. 3) then
                 deklag = deklag + 1
-                ii = zi(iscib-1+iliac+llf0-deklag)
-                dercol=zi(jscbl+ii-1)
+                ii = scib(iliac+llf0-deklag)
+                dercol=scbl(ii)
                 bloc=dercol*(dercol+1)/2
                 if (.not.zl(jouv-1+ii)) then
                     if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
@@ -287,8 +290,8 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
                     endif
                 endif
             else
-                ii = zi(iscib-1+iliac+llf0-deklag)
-                dercol=zi(jscbl+ii-1)
+                ii = scib(iliac+llf0-deklag)
+                dercol=scbl(ii)
                 bloc=dercol*(dercol+1)/2
                 if (.not.zl(jouv-1+ii)) then
                     if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
@@ -329,8 +332,8 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 ! --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
 ! --- SUIVANT LA PREMIERE DIRECTION EN 3D
 ! ======================================================================
-            ii = zi(iscib-1+iliac+llf0-deklag)
-            dercol=zi(jscbl+ii-1)
+            ii = scib(iliac+llf0-deklag)
+            dercol=scbl(ii)
             bloc=dercol*(dercol+1)/2
             if (.not.zl(jouv-1+ii)) then
                 if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then
@@ -370,8 +373,8 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 ! --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT
 ! --- SUIVANT LA SECONDE DIRECTION EN 3D
 ! ======================================================================
-            ii = zi(iscib-1+iliac+llf0-deklag)
-            dercol=zi(jscbl+ii-1)
+            ii = scib(iliac+llf0-deklag)
+            dercol=scbl(ii)
             bloc=dercol*(dercol+1)/2
             if (.not.zl(jouv-1+ii)) then
                 if ((ii.lt.nbbloc) .and. (iliac.ne.(btotal+1))) then

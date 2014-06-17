@@ -119,7 +119,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
     logical :: exopt, mieux, irecli
     integer :: itrlmx, iterho, act, opt
     integer :: pilopt
-    integer :: nbeffe, jpltk
+    integer :: nbeffe
     integer :: nr, pos, nbsto, n, nbatte, nmax
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp, relirl, fcvg
     real(kind=8) :: rhoopt, f0, fopt, proeta(2)
@@ -133,6 +133,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
     character(len=19) :: sigplt, varplt, depplt
     character(len=24) :: typilo
     integer :: ifm, niv
+    character(len=24), pointer :: pltk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -183,8 +184,8 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
 !
 ! --- LECTURE DONNEES PILOTAGE
 !
-    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', jpltk)
-    typilo = zk24(jpltk)
+    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
+    typilo = pltk(1)
 !
 ! --- FONCTIONS DE PILOTAGE LINEAIRES : RECHERCHE LINEAIRE STANDARD
 !

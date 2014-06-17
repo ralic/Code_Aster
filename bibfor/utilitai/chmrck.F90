@@ -49,19 +49,21 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
 ! --- VARIABLES LOCALES ---
     character(len=8) :: kmat, kbid
     character(len=24) :: krc
-    integer :: jvale, arc, imat, nbrc, ipos, ncmpmx, jdesc, izone, i, nbzone
+    integer ::  arc, imat, nbrc, ipos, ncmpmx,  izone, i, nbzone
     integer :: l1, nbzmax
+    integer, pointer :: desc(:) => null()
+    character(len=8), pointer :: vale(:) => null()
     parameter (ncmpmx=30)
 !
 ! ====================== DEBUT DU PROGRAMME ============================
 !
     call jemarq()
     kbid = ' '
-    call jeveuo(chmat//'.CHAMP_MAT .VALE', 'L', jvale)
+    call jeveuo(chmat//'.CHAMP_MAT .VALE', 'L', vk8=vale)
     call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', l1)
-    call jeveuo(chmat//'.CHAMP_MAT .DESC', 'L', jdesc)
-    nbzmax=zi(jdesc-1+2)
-    nbzone=zi(jdesc-1+3)
+    call jeveuo(chmat//'.CHAMP_MAT .DESC', 'L', vi=desc)
+    nbzmax=desc(2)
+    nbzone=desc(3)
 !     ON VERIFIE QUE LA TAILLE DE LA CARTE EST BIEN TOUJOURS DE 30
 !     PAR ZONE
     ASSERT(l1.eq.(nbzmax*ncmpmx))
@@ -71,7 +73,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
     do 50 izone = 1, nbzone
         do 100 i = 1, ncmpmx
             imat=(izone-1)*ncmpmx+i
-            kmat = zk8(jvale-1 + imat)
+            kmat = vale(imat)
             if (kmat .eq. ' ') goto 50
             if (kmat .eq. 'TREF=>') goto 50
             krc = kmat//'.MATERIAU.NOMRC'

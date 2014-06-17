@@ -48,10 +48,11 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
 !
 !
-    integer :: ifm, niv, nfiss, jnfis, nfismx
+    integer :: ifm, niv, nfiss,  nfismx
     character(len=19) :: ligrel
     character(len=19) :: xdonco, xindco, xseuco, xmemco, xgliss, xcohes
     character(len=19) :: xindcp, xmemcp, xseucp, xcohep
+    integer, pointer :: nfis(:) => null()
     parameter    (nfismx=100)
 !
 ! ----------------------------------------------------------------------
@@ -71,8 +72,8 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
 ! --- NOMBRE DE FISSURES
 !
-    call jeveuo(modele//'.NFIS', 'L', jnfis)
-    nfiss = zi(jnfis)
+    call jeveuo(modele//'.NFIS', 'L', vi=nfis)
+    nfiss = nfis(1)
     if (nfiss .gt. nfismx) then
         call utmess('F', 'XFEM_2', si=nfismx)
     endif

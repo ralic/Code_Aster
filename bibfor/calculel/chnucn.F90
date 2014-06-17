@@ -142,12 +142,15 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2
-    integer :: iaval1, iaval2, ibid, ico1, ico2,  ieq1
-    integer :: ieq2, ino, inueq1, inueq2, iprn1, iprn2
+    integer ::  iaval2, ibid, ico1, ico2,  ieq1
+    integer :: ieq2, ino,   iprn1, iprn2
     integer :: iret, ival1, ival2, j1, j2, nbno, ncmmx1
     integer :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nugd2, nval1
     integer :: nval2
     integer, pointer :: corr2(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: nueq1(:) => null()
+    integer, pointer :: nueq2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     base2 = base
@@ -197,14 +200,14 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
     call dismoi('NB_EQUA', nu2, 'NUME_DDL', repi=nval2)
     call wkvect(cn2//'.VALE', base2//' V R', nval2, iaval2)
-    call jeveuo(cn1//'.VALE', 'L', iaval1)
+    call jeveuo(cn1//'.VALE', 'L', vr=vale)
 !
     call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno1//'.PRNO', ibid), 'L', iprn1)
     call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
-    call jeveuo(pchno1//'.NUEQ', 'L', inueq1)
-    call jeveuo(pchno2//'.NUEQ', 'L', inueq2)
+    call jeveuo(pchno1//'.NUEQ', 'L', vi=nueq1)
+    call jeveuo(pchno2//'.NUEQ', 'L', vi=nueq2)
 !
     call dismoi('NOM_MAILLA', cn1, 'CHAM_NO', repk=ma)
     call dismoi('NOM_MAILLA', nu2, 'NUME_DDL', repk=repk)
@@ -264,9 +267,9 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
                 if (ico1 .gt. 0) then
 !             --RECOPIE D'UNE VALEUR :
-                    ieq1 = zi(inueq1-1+ival1-1+ico1)
-                    ieq2 = zi(inueq2-1+ival2-1+ico2)
-                    zr(iaval2-1+ieq2)=zr(iaval1-1+ieq1)
+                    ieq1 = nueq1(ival1-1+ico1)
+                    ieq2 = nueq2(ival2-1+ico2)
+                    zr(iaval2-1+ieq2)=vale(ieq1)
                 endif
 !
             endif

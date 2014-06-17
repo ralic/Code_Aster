@@ -61,7 +61,7 @@ subroutine xmiszl(vecinc, defico, noma)
 !
 !
 !
-    integer :: ntmae, jconx1, jconx2
+    integer :: ntmae,  jconx2
     integer :: numno, nummae, nno, posmae
     integer :: ino, imae, i
     integer :: ibid, nbno,  zmesx
@@ -70,12 +70,15 @@ subroutine xmiszl(vecinc, defico, noma)
     character(len=19) :: prno, lichs(4)
     character(len=19) :: cns1, cns1c
     character(len=19) :: cns1b, cns1d, cns1e
-    integer :: jcns1b, jcns1d, jcns1e
     character(len=24) :: maescx
     integer :: jmaesx
     complex(kind=8) :: c16bid
     character(len=8) :: nommae
     integer, pointer :: vnno(:) => null()
+    real(kind=8), pointer :: vcns1b(:) => null()
+    real(kind=8), pointer :: vcns1d(:) => null()
+    real(kind=8), pointer :: vcns1e(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +92,7 @@ subroutine xmiszl(vecinc, defico, noma)
 !
 ! --- INITIALISATIONS
 !
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     ntmae = cfdisi(defico,'NTMAE')
     nbno = 0
@@ -104,7 +107,7 @@ subroutine xmiszl(vecinc, defico, noma)
         call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
         call jelira(jexnum(noma//'.CONNEX', nummae), 'LONMAX', nno)
         do ino = 1, nno
-            numno = zi(jconx1-1+zi(jconx2+nummae-1)+ino-1)
+            numno = connex(zi(jconx2+nummae-1)+ino-1)
             do i = 1, nbno
                 if (numno .eq. vnno(i)) goto 20
             end do
@@ -132,16 +135,16 @@ subroutine xmiszl(vecinc, defico, noma)
                 'V', cns1d)
     call cnsred(cns1, nbno, vnno, 1, ['LAGS_F2'],&
                 'V', cns1e)
-    call jeveuo(cns1b//'.CNSV', 'E', jcns1b)
-    call jeveuo(cns1d//'.CNSV', 'E', jcns1d)
-    call jeveuo(cns1e//'.CNSV', 'E', jcns1e)
+    call jeveuo(cns1b//'.CNSV', 'E', vr=vcns1b)
+    call jeveuo(cns1d//'.CNSV', 'E', vr=vcns1d)
+    call jeveuo(cns1e//'.CNSV', 'E', vr=vcns1e)
 !
 ! --- MISE A ZERO LAGRANGIENS
 !
     do ino = 1, nbno
-        zr(jcns1b-1+vnno(ino)) = 0.d0
-        zr(jcns1d-1+vnno(ino)) = 0.d0
-        zr(jcns1e-1+vnno(ino)) = 0.d0
+        vcns1b(vnno(ino)) = 0.d0
+        vcns1d(vnno(ino)) = 0.d0
+        vcns1e(vnno(ino)) = 0.d0
     end do
 !
 ! --- FUSION CHAM_NO_S POUR CREATION CHAM_NO_S CNS1C

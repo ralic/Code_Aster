@@ -102,7 +102,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jccid, jfint, jdiri, jfext, jvcfo, jrefe, jiner, jvcf1
+    integer :: jccid,  jdiri,  jvcfo,  jiner
     integer :: ifm, niv, nocc
     integer :: neq
     character(len=8) :: noddlm
@@ -111,7 +111,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     character(len=19) :: commoi, depmoi
     character(len=19) :: cndiri, cnbudi, cnvcfo, cnfext, cnvcf1, cnrefe, cnfint
     character(len=19) :: cnfnod, cndipi, cndfdo
-    integer :: jdeeq, jfnod, jbudi, jdfdo, jdipi
+    integer ::  jfnod
     integer :: ieq
     logical :: lrefe, linit, lcmp
     real(kind=8) :: val1, val4, val5
@@ -121,6 +121,14 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
     character(len=16) :: nfrot, ngeom
     character(len=24) :: sdnuco
     integer :: jnuco
+    real(kind=8), pointer :: budi(:) => null()
+    real(kind=8), pointer :: dfdo(:) => null()
+    real(kind=8), pointer :: dipi(:) => null()
+    real(kind=8), pointer :: fext(:) => null()
+    real(kind=8), pointer :: fint(:) => null()
+    real(kind=8), pointer :: refe(:) => null()
+    real(kind=8), pointer :: vcf1(:) => null()
+    integer, pointer :: deeq(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -209,7 +217,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! --- ACCES NUMEROTATION DUALISATION DES EQUATIONS
 !
     call dismoi('PROF_CHNO', depmoi, 'CHAM_NO', repk=profch)
-    call jeveuo(profch(1:19)//'.DEEQ', 'L', jdeeq)
+    call jeveuo(profch(1:19)//'.DEEQ', 'L', vi=deeq)
 !
 !
 ! --- CALCULE LE MAX DES RESIDUS PAR CMP POUR LE RESIDU RESI_COMP_RELA
@@ -221,23 +229,23 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! --- ACCES AUX CHAM_NO
 !
-    call jeveuo(cnfint(1:19)//'.VALE', 'L', jfint)
+    call jeveuo(cnfint(1:19)//'.VALE', 'L', vr=fint)
     call jeveuo(cndiri(1:19)//'.VALE', 'L', jdiri)
-    call jeveuo(cnfext(1:19)//'.VALE', 'L', jfext)
+    call jeveuo(cnfext(1:19)//'.VALE', 'L', vr=fext)
     call jeveuo(cnvcfo(1:19)//'.VALE', 'L', jvcfo)
-    call jeveuo(cnbudi(1:19)//'.VALE', 'L', jbudi)
-    call jeveuo(cndfdo(1:19)//'.VALE', 'L', jdfdo)
+    call jeveuo(cnbudi(1:19)//'.VALE', 'L', vr=budi)
+    call jeveuo(cndfdo(1:19)//'.VALE', 'L', vr=dfdo)
     if (lpilo) then
-        call jeveuo(cndipi(1:19)//'.VALE', 'L', jdipi)
+        call jeveuo(cndipi(1:19)//'.VALE', 'L', vr=dipi)
     endif
     if (ldyna) then
         call jeveuo(foiner(1:19)//'.VALE', 'L', jiner)
     endif
     if (linit) then
-        call jeveuo(cnvcf1(1:19)//'.VALE', 'L', jvcf1)
+        call jeveuo(cnvcf1(1:19)//'.VALE', 'L', vr=vcf1)
     endif
     if (lrefe) then
-        call jeveuo(cnrefe(1:19)//'.VALE', 'L', jrefe)
+        call jeveuo(cnrefe(1:19)//'.VALE', 'L', vr=refe)
     endif
     if (lcine) then
         call jeveuo(cnfnod(1:19)//'.VALE', 'L', jfnod)
@@ -277,12 +285,12 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
         if (lpilo) then
             val1 = abs(&
-                   zr(jfint+ieq-1)+zr(jdiri+ieq-1)+zr(jbudi+ieq-1) -zr(jfext+ieq-1)-zr(jdfdo+ieq-&
-                   &1)-eta*zr(jdipi+ieq-1)&
+                   fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1+ieq-&
+                   &1)-eta*dipi(ieq)&
                    )
         else
             val1 = abs(&
-                   zr(jfint+ieq-1)+zr(jdiri+ieq-1)+zr(jbudi+ieq-1) -zr(jfext+ieq-1)-zr(jdfdo+ieq-&
+                   fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1+ieq-&
                    &1)&
                    )
         endif
@@ -297,10 +305,10 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! --- SI CONVERGENCE EN CONTRAINTE ACTIVE
 !
         if (lrefe) then
-            if (zi(jdeeq-1 + 2*ieq) .gt. 0) then
+            if (deeq(2*ieq) .gt. 0) then
                 val4 = abs(&
-                       zr(jfint+ieq-1)+zr(jdiri+ieq-1)+zr(jbudi+ ieq-1) -zr(jfext+ieq-1)-zr(jdfdo&
-                       &+ieq-1))/zr(jrefe+ieq- 1&
+                       fint(ieq)+zr(jdiri+ieq-1)+budi(ieq) -fext(ieq)-dfdo(1&
+                       &+ieq-1))/refe(1+ieq- 1&
                        )
                 if (vrefe .le. val4) then
                     vrefe = val4
@@ -312,7 +320,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 ! --- SI TEST CONTRAINTES INITIALES
 !
         if (linit) then
-            val5 = abs(zr(jvcf1+ieq-1))
+            val5 = abs(vcf1(ieq))
             if (vinit .le. val5) then
                 vinit = val5
             endif

@@ -56,7 +56,7 @@ subroutine asmaco(ma1, ma2, mag)
     integer :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
     integer :: nbngm1, nbngm2, nbngm, nno1, nno2, ianode, nnodif
     integer :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv, j
-    integer :: iadim1, iadim2, iadime
+    integer ::   iadime
     integer :: iagma1, iagma2, iagmax
     integer :: iacon1, iacon2, iaconx
     integer :: iagno1, iagno2, iagnox
@@ -69,6 +69,8 @@ subroutine asmaco(ma1, ma2, mag)
     real(kind=8) :: prec1, prec2, prec, dist, x1, y1, z1, x2, y2, z2, r8b, armin
     real(kind=8) :: xi1, yi1, zi1
     complex(kind=8) :: c16b
+    integer, pointer :: dim1(:) => null()
+    integer, pointer :: dim2(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -237,8 +239,8 @@ subroutine asmaco(ma1, ma2, mag)
 !CC   ------------------------------------------------------------------
 !CC   --OBJET .DIME :
 !CC   ------------------------------------------------------------------
-    call jeveuo(ma1//'.DIME', 'L', iadim1)
-    call jeveuo(ma2//'.DIME', 'L', iadim2)
+    call jeveuo(ma1//'.DIME', 'L', vi=dim1)
+    call jeveuo(ma2//'.DIME', 'L', vi=dim2)
     call wkvect(mag//'.DIME', 'G V I', 6, iadime)
 !CC SOMME POUR : 1 LE NB DE NOEUDS - ON LAISSE LES NOEUDS EN DOUBLE
 !CC                                  INUTILISES DANS LA CONNECTIVITE
@@ -247,29 +249,29 @@ subroutine asmaco(ma1, ma2, mag)
 !CC                                   POUR LES 2 MAILLAGES
 !CC              4       DE SUPER MAILLES
 !CC              5       DU MAJORANT DE SUPER MAILLES
-    zi(iadime-1+1)=zi(iadim1-1+1)+zi(iadim2-1+1)
-    zi(iadime-1+2)=zi(iadim1-1+2)+zi(iadim2-1+2)
+    zi(iadime-1+1)=dim1(1)+dim2(1)
+    zi(iadime-1+2)=dim1(2)+dim2(2)
     if (elim) then
 !CC   SI ELIM : ON SUPPRIME LES MAILLES DES 2 GROUPES CGPM1 ET CGPM2
-        zi(iadime-1+3)=zi(iadim1-1+3)+zi(iadim2-1+3)-2*nbngm
+        zi(iadime-1+3)=dim1(3)+dim2(3)-2*nbngm
     else
 !CC   SINON, SEULES LES MAILLES DE CGPM1 SONT SUPPRIMEES
-        zi(iadime-1+3)=zi(iadim1-1+3)+zi(iadim2-1+3)-nbngm
+        zi(iadime-1+3)=dim1(3)+dim2(3)-nbngm
     endif
 !
-    zi(iadime-1+4)=zi(iadim1-1+4)+zi(iadim2-1+4)
-    zi(iadime-1+5)=zi(iadim1-1+5)+zi(iadim2-1+5)
+    zi(iadime-1+4)=dim1(4)+dim2(4)
+    zi(iadime-1+5)=dim1(5)+dim2(5)
 !
-    ncoor=max(zi(iadim1-1+6),zi(iadim2-1+6))
+    ncoor=max(dim1(6),dim2(6))
     zi(iadime-1+6)=ncoor
 !
     nbma=zi(iadime-1+3)
-    nbm1=zi(iadim1-1+3)
-    nbm2=zi(iadim2-1+3)
+    nbm1=dim1(3)
+    nbm2=dim2(3)
 !
     nbno=zi(iadime-1+1)
-    nbn1=zi(iadim1-1+1)
-    nbn2=zi(iadim2-1+1)
+    nbn1=dim1(1)
+    nbn2=dim2(1)
 !CC   ------------------------------------------------------------------
 !CC   --OBJET .NOMMAI:
 !CC   ON SUPPRIME LES NBNGM MAILLES DU GROUP_MA A COLLER DANS LES 2

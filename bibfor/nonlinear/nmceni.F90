@@ -52,19 +52,24 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
 !
 !
 !
-    integer :: jdepde, jdu0, jdu1, ideeq, jcoee, jcoef
     character(len=19) :: profch, chapil, chapic
     integer :: neq, i, j
     real(kind=8) :: dn, dc, dp
+    integer, pointer :: deeq(:) => null()
+    real(kind=8), pointer :: coee(:) => null()
+    real(kind=8), pointer :: coef(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
+    real(kind=8), pointer :: du0(:) => null()
+    real(kind=8), pointer :: du1(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     if (isxfe) then
         chapil = sdpilo(1:14)//'.PLCR'
-        call jeveuo(chapil(1:19)//'.VALE', 'L', jcoef)
+        call jeveuo(chapil(1:19)//'.VALE', 'L', vr=coef)
         chapic = sdpilo(1:14)//'.PLCI'
-        call jeveuo(chapic(1:19)//'.VALE', 'L', jcoee)
+        call jeveuo(chapic(1:19)//'.VALE', 'L', vr=coee)
     endif
 !
 ! --- INITIALISATIONS
@@ -75,32 +80,32 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=profch)
-    call jeveuo(profch(1:19)//'.DEEQ', 'L', ideeq)
+    call jeveuo(profch(1:19)//'.DEEQ', 'L', vi=deeq)
 !
 ! --- ACCES AUX VECTEURS SOLUTIONS
 !
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
-    call jeveuo(deppr1(1:19)//'.VALE', 'L', jdu0)
-    call jeveuo(deppr2(1:19)//'.VALE', 'L', jdu1)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
+    call jeveuo(deppr1(1:19)//'.VALE', 'L', vr=du0)
+    call jeveuo(deppr2(1:19)//'.VALE', 'L', vr=du1)
 !
 !
 ! --- CALCUL DE LA NORME
 !
     if (isxfe) then
         do i = 1, neq
-            if (zi(ideeq-1 + 2*i ) .gt. 0) then
-                if (zr(jcoee+i-1) .eq. 0.d0) then
-                    f = f + zr(jcoef+i-1)**2* (zr(jdepde-1+i)+rho*zr( jdu0-1+i)+ eta*zr(jdu1-1+i)&
+            if (deeq(2*i ) .gt. 0) then
+                if (coee(i) .eq. 0.d0) then
+                    f = f + coef(i)**2* (depde(i)+rho*du0(i)+ eta*du1(i)&
                         &)**2
                 else
                     dn = 0.d0
                     dc = 0.d0
                     dp = 0.d0
                     do j = i+1, neq
-                        if (zr(jcoee+i-1) .eq. zr(jcoee+j-1)) then
-                            dn = dn + zr(jcoef+i-1)*zr(jdepde+i-1)+ zr(jcoef+j-1)*zr(jdepde+j-1)
-                            dc = dc + zr(jcoef+i-1)*zr(jdu0-1+i)+ zr(jcoef+j-1)*zr(jdu0-1+j)
-                            dp = dp + zr(jcoef+i-1)*zr(jdu1-1+i)+ zr(jcoef+j-1)*zr(jdu1-1+j)
+                        if (coee(i) .eq. coee(j)) then
+                            dn = dn + coef(i)*depde(i)+ coef(j)*depde(j)
+                            dc = dc + coef(i)*du0(i)+ coef(j)*du0(j)
+                            dp = dp + coef(i)*du1(i)+ coef(j)*du1(j)
                         endif
                     end do
                     f = f + (dn+rho*dc+eta*dp)**2
@@ -109,8 +114,8 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
         end do
     else
         do i = 1, neq
-            if (zi(ideeq-1 + 2*i + 2) .gt. 0) then
-                f = f + (zr(jdepde+i)+rho*zr(jdu0+i)+eta*zr(jdu1+i))** 2
+            if (deeq(2*i + 2) .gt. 0) then
+                f = f + (depde(1+i)+rho*du0(1+i)+eta*du1(1+i))** 2
             endif
         end do
     endif

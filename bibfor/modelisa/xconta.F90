@@ -60,13 +60,15 @@ subroutine xconta(char, noma, nomo, ndim)
 !
     integer :: ifiss, algola, izone
     integer :: nfiss, ier
-    integer :: jfiss, jnfis, nbma, ibid, jnbpt
+    integer ::   nbma, ibid, jnbpt
     character(len=8) :: fiscou
     character(len=24) :: defico
     character(len=16) :: valk(2)
     character(len=24) :: xnrell
     integer :: jxnrel
     character(len=19) :: nliseq, faclon, ainter
+    character(len=8), pointer :: fiss(:) => null()
+    integer, pointer :: nfis(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,9 +87,9 @@ subroutine xconta(char, noma, nomo, ndim)
         valk(1) = nomo
         call utmess('F', 'XFEM2_8', sk=valk(1))
     endif
-    call jeveuo(nomo(1:8)//'.FISS', 'L', jfiss)
-    call jeveuo(nomo(1:8)//'.NFIS', 'L', jnfis)
-    nfiss = zi(jnfis)
+    call jeveuo(nomo(1:8)//'.FISS', 'L', vk8=fiss)
+    call jeveuo(nomo(1:8)//'.NFIS', 'L', vi=nfis)
+    nfiss = nfis(1)
     if (nfiss .gt. nfismx) then
         call utmess('F', 'XFEM_2', si=nfismx)
     endif
@@ -113,7 +115,7 @@ subroutine xconta(char, noma, nomo, ndim)
 !
 ! --- FISSURE COURANTE
 !
-        fiscou = zk8(jfiss+ifiss-1)
+        fiscou = fiss(ifiss)
 !
 ! --- NOM DES SD POUR REL. LIN.
 !

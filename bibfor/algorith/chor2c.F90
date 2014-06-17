@@ -57,10 +57,11 @@ subroutine chor2c(lischa, vecele)
     character(len=24) :: resuel
     character(len=8) :: typech, typsca
     integer :: iret,  ibid, ichar
-    integer :: ivec, nbvec, nbvdim, ivale, nbvale, jvec
+    integer :: ivec, nbvec, nbvdim, ivale, nbvale
     character(len=4) :: tyresl
     character(len=1) :: typchn
     real(kind=8), pointer :: copie_travail(:) => null()
+    character(len=24), pointer :: relr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,7 +79,7 @@ subroutine chor2c(lischa, vecele)
 !
     call jeveuo(vachar, 'L', jvacha)
     chamno = zk24(jvacha+1-1)(1:19)
-    call jeveuo(vecele//'.RELR', 'L', jvec)
+    call jeveuo(vecele//'.RELR', 'L', vk24=relr)
     call jelira(chamno//'.VALE', 'LONMAX', nbvdim)
     AS_ALLOCATE(vr=copie_travail, size=nbvdim)
 !
@@ -88,7 +89,7 @@ subroutine chor2c(lischa, vecele)
 !
 ! ----- NOM DU RESU_ELEM
 !
-        resuel = zk24(jvec-1+ivec)
+        resuel = relr(ivec)
 !
 ! ----- NOM DU CHAMNO
 !

@@ -67,7 +67,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 !
 !
 !
-    integer :: jdepde, ii, numno1, numno2
+    integer ::  ii, numno1, numno2
     integer :: neq
     integer :: ncmp, mmitgo, nbreag, maxgeo
     real(kind=8) :: autono, temp1, temp2, epsgeo, rmin
@@ -75,8 +75,11 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
     logical :: premie, alarme
     character(len=19) :: depdel
     character(len=24) :: maxdep, autoc1, autoc2
-    integer :: jmaxde, jauto1, jauto2
+    integer :: jmaxde
     logical :: geoala
+    real(kind=8), pointer :: auto1(:) => null()
+    real(kind=8), pointer :: auto2(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,9 +94,9 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
     autoc1 = resoco(1:14)//'.REA1'
     autoc2 = resoco(1:14)//'.REA2'
     maxdep = resoco(1:14)//'.MAXD'
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
-    call jeveuo(autoc1(1:19)//'.VALE', 'E', jauto1)
-    call jeveuo(autoc2(1:19)//'.VALE', 'E', jauto2)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
+    call jeveuo(autoc1(1:19)//'.VALE', 'E', vr=auto1)
+    call jeveuo(autoc2(1:19)//'.VALE', 'E', vr=auto2)
     call jeveuo(maxdep, 'E', jmaxde)
 !
 ! --- TOLERANCE POUR REACTUALISATION GEOMETRIQUE AUTOMATIQUE
@@ -120,8 +123,8 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 ! --- CALCUL DU DEPLACEMENT
 !
     do 10 ii = 1, neq
-        zr(jauto2-1+ii) = zr(jauto2-1+ii) + zr(jauto1-1+ii)
-        zr(jauto1-1+ii) = zr(jdepde-1+ii) - zr(jauto2-1+ii)
+        auto2(ii) = auto2(ii) + auto1(ii)
+        auto1(ii) = depde(ii) - auto2(ii)
 10  end do
 !
 ! --- CALCUL DU MAX DE LA NORME DU DEPLACEMENT (SAUF LAGRANGES)

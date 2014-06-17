@@ -74,11 +74,12 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer :: i, nd, nbnac, ind, alsnac, acoord, ierd
+    integer :: i, nd, nbnac, ind, alsnac,  ierd
     logical :: egal
     real(kind=8) :: znd, zref, aux
     character(len=8) :: k8b
     character(len=24) :: valk(2)
+    real(kind=8), pointer :: vale(:) => null()
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
@@ -125,17 +126,17 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !
         call jelira(nlsnac, 'LONMAX', nbnac)
         call jeveuo(nlsnac, 'L', alsnac)
-        call jeveuo(mailla//'.COORDO    .VALE', 'L', acoord)
+        call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
         nd = zi(alsnac + 1-1)
 !
-        zref = zr(acoord + 3-1)
+        zref = vale(3)
 !
  10     continue
         if ((iret .ne. 0) .and. (ind .le. nbnac)) then
 !
             nd = zi(alsnac + ind-1)
-            znd = zr(acoord + 3*nd-1)
+            znd = vale(1+ 3*nd-1)
 !
             call rvegal(1.0d-3, 'R', zref, znd, egal,&
                         aux)

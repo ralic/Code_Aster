@@ -50,7 +50,7 @@ subroutine op0131()
 #include "asterfort/wkvect.h"
     integer :: iderex, iderre, iret, ilnoex, ilcpex, i1, ilvaex, napexc, nindex
     integer :: nnoeex, ncmpex, nvasex, i2, nbptmd, iadfrq, ilamor, ij1, igim
-    integer :: igre, ilmode, ilamsc, nmost1, iadpim, iadsc3, n1, iadhii, imoddy
+    integer :: igre, ilmode, ilamsc, nmost1,  iadsc3, n1, iadhii, imoddy
     integer :: ifreq2, ifreq1, nmost3, ndimre, ni, itail1, iexp, isign, iadj, j
     integer :: iadjs, iadg, iadjg, iadjgj, nj, ni1, ni2, i, nk, ij, nbmode
     integer :: nbddl, nbamor, npdsc3
@@ -64,6 +64,7 @@ subroutine op0131()
     character(len=8) :: chamat, celem, tymmec
     character(len=16) :: tyconc, nomcmd, graexc, grdmod, nocham
     character(len=24) :: lifex2, chvale, chfreq, chnumi, chnumj
+    real(kind=8), pointer :: vpim(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -138,7 +139,7 @@ subroutine op0131()
     call calpim(graexc, excmod, napexc, nbmode, tymmec,&
                 mtrmas, numer, nbddl, zk8(ilnoex), zk8(ilcpex),&
                 nvasex, zk8(ilvaex))
-    call jeveuo('&&OP0131.PIM', 'L', iadpim)
+    call jeveuo('&&OP0131.PIM', 'L', vr=vpim)
 !
 !---3-----MISE AU POINT DE LA DISCRETISATION FREQUENTIELLE
 !   4-----ET RECALCUL DES DSP EXCITS DANS LA DISCRETISATION REPONSE
@@ -296,7 +297,7 @@ subroutine op0131()
                 zc(iadjs-1+nj*(j-1)+j) = dconjg(xcj)
             endif
             do 612 i = 1, ni2
-                pim = zr(iadpim+(j-1)*ni2+i-1)
+                pim = vpim(1+(j-1)*ni2+i-1)
                 xcj = r8bid1*pim*zc(iadhii-1+npdsc3*(i-1)+ifreq1)
                 zc(iadj -1+ni*(j-1)+ni1+i) = xcj
                 zc(iadjs-1+nj*(i+ni1-1)+j) = dconjg(xcj)

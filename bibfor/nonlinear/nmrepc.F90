@@ -45,8 +45,9 @@ subroutine nmrepc(sddisc, solveu, ievdac, retrpc)
 !
 !
     real(kind=8) :: r8bid
-    integer :: ireapc, jslvi
+    integer :: ireapc
     character(len=8) :: k8bid
+    integer, pointer :: slvi(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,8 +77,8 @@ subroutine nmrepc(sddisc, solveu, ievdac, retrpc)
 ! ----- ON RETENTE EN REACTUALISANT LE PRECONDITIONNEUR
 !
         ireapc = 1
-        call jeveuo(solveu//'.SLVI', 'E', jslvi)
-        zi(jslvi-1+5) = 0
+        call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+        slvi(5) = 0
         retrpc = 1
         call utmess('I', 'MECANONLINE10_41')
     else

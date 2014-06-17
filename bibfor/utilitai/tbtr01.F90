@@ -40,19 +40,20 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
 !                      LES "VIDE" EN TETE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: jtblp, jnuvi,  i, j, jvale, jvall, nbvid, nbnvd
+    integer ::  jnuvi,  i, j, jvale, jvall, nbvid, nbnvd
     integer :: lvale, jnume
     character(len=4) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     integer, pointer :: n_vide(:) => null()
     integer, pointer :: tri(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
     nomtab = tabin
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !
     call wkvect('&&TBTR01.NUME  ', 'V V I', nblign, jnume)
     call wkvect('&&TBTR01.VIDE  ', 'V V I', nblign, jnuvi)
@@ -63,11 +64,11 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
 !
     inpar = nopara
     do j = 1, nbpara
-        jnpar = zk24(jtblp+4*(j-1))
+        jnpar = tblp(1+4*(j-1))
         if (inpar .eq. jnpar) then
-            type = zk24(jtblp+4*(j-1)+1)(1:4)
-            nomjv = zk24(jtblp+4*(j-1)+2)
-            nomjvl = zk24(jtblp+4*(j-1)+3)
+            type = tblp(1+4*(j-1)+1)(1:4)
+            nomjv = tblp(1+4*(j-1)+2)
+            nomjvl = tblp(1+4*(j-1)+3)
             call jeveuo(nomjv, 'L', jvale)
             call jeveuo(nomjvl, 'L', jvall)
             nbvid = 0

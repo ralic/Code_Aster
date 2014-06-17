@@ -37,26 +37,27 @@ subroutine rcmate(chmat, nomail, nomode)
 !  IN : NOMAIL : NOM DU MAILLAGE
 ! ----------------------------------------------------------------------
 !
-    integer :: nocc, i, nm, nt, jncmp, jvalv, nbma, jmail, nbcmp
+    integer :: nocc, i, nm, nt,  jvalv, nbma, jmail, nbcmp
     integer :: jad
     character(len=4) :: oui
     character(len=8) :: nommat, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=24) :: chamat, mesmai
+    character(len=8), pointer :: ncmp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     chamat = chmat//'.CHAMP_MAT'
 !
     call alcart('G', chamat, nomail, 'NOMMATER')
-    call jeveuo(chamat(1:19)//'.NCMP', 'E', jncmp)
+    call jeveuo(chamat(1:19)//'.NCMP', 'E', vk8=ncmp)
     call jeveuo(chamat(1:19)//'.VALV', 'E', jvalv)
 !
     call dismoi('NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', repi=nbcmp)
     ASSERT(nbcmp.eq.30)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'L', jad)
     do i = 1, nbcmp
-        zk8(jncmp-1+i) = zk8(jad-1+i)
+        ncmp(i) = zk8(jad-1+i)
     end do
 !
     call getfac('AFFE', nocc)

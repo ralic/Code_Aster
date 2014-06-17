@@ -69,7 +69,9 @@ subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine,&
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: neq, nimpo, jccll, jccii, eccll
+    integer :: neq, nimpo,   eccll
+    integer, pointer :: ccll(:) => null()
+    integer, pointer :: ccii(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT
 !-----------------------------------------------------------------------
@@ -90,8 +92,8 @@ subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine,&
     call jeexin(zk24(zi(lmat+1))(1:19)//'.CCLL', eccll)
     if (eccll .eq. 0) goto 10
 !
-    call jeveuo(zk24(zi(lmat+1))(1:19)//'.CCLL', 'L', jccll)
-    call jeveuo(zk24(zi(lmat+1))(1:19)//'.CCII', 'L', jccii)
+    call jeveuo(zk24(zi(lmat+1))(1:19)//'.CCLL', 'L', vi=ccll)
+    call jeveuo(zk24(zi(lmat+1))(1:19)//'.CCII', 'L', vi=ccii)
 !
 !     ------------------------------------------------------------------
 !
@@ -99,14 +101,14 @@ subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine,&
 !
 !        --- SYSTEME REEL:
         ASSERT(type.eq.'R')
-        call csmbr8(zk24(zi(lmat+1)), zi(jccll), zi(jccii), neq, vcine,&
+        call csmbr8(zk24(zi(lmat+1)), ccll, ccii, neq, vcine,&
                     vsmb)
 !
     else if (zi(lmat+3).eq.2) then
 !
 !        --- SYSTEME COMPLEXE:
         ASSERT(type.eq.'C')
-        call csmbc8(zk24(zi(lmat+1)), zi(jccll), zi(jccii), neq, cvcine,&
+        call csmbc8(zk24(zi(lmat+1)), ccll, ccii, neq, cvcine,&
                     cvsmb)
     endif
 !

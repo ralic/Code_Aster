@@ -70,7 +70,7 @@ subroutine op0189()
     integer :: i, j, iret, iel, ima, nbordr, iorfin, jptvoi, jelvoi
     integer :: cpt, itypel, igrel, numa, numaco, ndim, dimmai, dimmod
     integer :: nbma, nbgrmo, nbel, nbelco, nbelma
-    integer :: jrepmo, nbvois, nbvmas, numavo, jcesd, jcesv, jcesl, iad
+    integer :: jrepmo, nbvois, nbvmas, numavo, jcesd,  jcesl, iad
     integer :: jcelds, jcelvs
     integer, pointer :: numeor(:) => null(), tab_typel(:) => null()
     integer, pointer :: tab_tra(:) => null(), tab_numa(:) => null()
@@ -97,6 +97,7 @@ subroutine op0189()
     integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     integer :: livmas(2)
+    real(kind=8), pointer :: cesv(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -162,7 +163,7 @@ subroutine op0189()
     call cescre('V', cestmp, 'ELEM', mailla, 'NEUT_R',&
                 1, 'X1', [0], [-1], [-1])
     call jeveuo(cestmp//'.CESD', 'L', jcesd)
-    call jeveuo(cestmp//'.CESV', 'E', jcesv)
+    call jeveuo(cestmp//'.CESV', 'E', vr=cesv)
     call jeveuo(cestmp//'.CESL', 'E', jcesl)
 !
 ! --- allocation du tableau de travail "tab_tra"
@@ -286,7 +287,7 @@ subroutine op0189()
         ASSERT(iad.lt.0)
         iad = -iad
         zl(jcesl-1+iad) = .true.
-        zr(jcesv-1+iad) = trxmoy
+        cesv(iad) = trxmoy
 
     enddo
 !

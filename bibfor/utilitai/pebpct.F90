@@ -76,8 +76,8 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbmat, i, nbintv, jcesc
-    integer :: jcesv, jcesl, jcesd, jcesk, jpoiv, jpoil, jpoid, jpdsm, jval
+    integer :: nbmat, i, nbintv
+    integer ::  jcesl, jcesd, jcesk,  jpoil, jpoid,  jval
     integer :: jvol
     integer :: ima, nbsp, nbpt, iad, ipt, j, jnuma, nbptmx, k
     real(kind=8) :: volpt, pas, p0, valmin, valmax, pdiv
@@ -87,6 +87,10 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     character(len=19) :: ligrel, cesout, cespoi, chams
     character(len=24) :: tabval, tabvol
     logical :: first
+    character(len=8), pointer :: cesc(:) => null()
+    real(kind=8), pointer :: pdsm(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    real(kind=8), pointer :: poiv(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -105,10 +109,10 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
 !     PASSAGE AU CHAMP SIMPLE
     call celces(cham, 'V', chams)
-    call jeveuo(chams//'.CESV', 'L', jcesv)
+    call jeveuo(chams//'.CESV', 'L', vr=cesv)
     call jeveuo(chams//'.CESL', 'L', jcesl)
     call jeveuo(chams//'.CESD', 'L', jcesd)
-    call jeveuo(chams//'.CESC', 'L', jcesc)
+    call jeveuo(chams//'.CESC', 'L', vk8=cesc)
     call jeveuo(chams//'.CESK', 'L', jcesk)
     nbptmx=zi(jcesd+2)
 !
@@ -117,10 +121,10 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych)
     call chpond(tych, non, cham, cesout, cespoi,&
                 modele)
-    call jeveuo(cespoi//'.CESV', 'L', jpoiv)
+    call jeveuo(cespoi//'.CESV', 'L', vr=poiv)
     call jeveuo(cespoi//'.CESL', 'L', jpoil)
     call jeveuo(cespoi//'.CESD', 'L', jpoid)
-    if (tych .ne. 'ELGA') call jeveuo(cespoi//'.PDSM', 'L', jpdsm)
+    if (tych .ne. 'ELGA') call jeveuo(cespoi//'.PDSM', 'L', vr=pdsm)
 !
 !     CREATION DES TABLEAUX RECENSANT LES VALEURS DE LA COMPOSANTE
 !     (VAL) ET LE VOLUME*POIDS (VOL) ASSOCIE
@@ -128,7 +132,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     call wkvect(tabvol, 'V V R', nbma*nbptmx, jvol)
 !
     call jelira(chams//'.CESC', 'LONMAX', ncmpm)
-    nucmp=indik8(zk8(jcesc),nomcmp,1,ncmpm)
+    nucmp=indik8(cesc,nomcmp,1,ncmpm)
     ASSERT(nucmp.ge.0)
 !
 !     MAILLES A CONSIDERER
@@ -156,19 +160,19 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
             if ((iad.gt.0) .and. (bfix.eq.0)) then
 !
                 k=k+1
-                zr(jval+k-1)=zr(jcesv-1+iad)
+                zr(jval+k-1)=cesv(iad)
 !
                 if (tych .eq. 'ELGA') then
                     call cesexi('C', jpoid, jpoil, ima, ipt,&
                                 1, 1, iad)
                     ASSERT(iad.gt.0)
-                    volpt=zr(jpoiv-1+iad)
+                    volpt=poiv(iad)
                 else if (tych.eq.'ELEM') then
                     ASSERT(nbpt.eq.1)
-                    volpt=zr(jpdsm-1+ima)
+                    volpt=pdsm(ima)
                 else if (tych.eq.'ELNO') then
                     ASSERT(nbpt.ge.1)
-                    volpt=zr(jpdsm-1+ima)/nbpt
+                    volpt=pdsm(ima)/nbpt
                 endif
 !
                 zr(jvol+k-1)=volpt
@@ -185,21 +189,21 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
             else if ((iad.gt.0).and.(bfix.eq.1)) then
 !
-                if ((zr(jcesv-1+iad).ge.borne(1)) .and. (zr(jcesv-1+ iad).le.borne(2))) then
+                if ((cesv(iad).ge.borne(1)) .and. (cesv(iad).le.borne(2))) then
                     k=k+1
-                    zr(jval+k-1)=zr(jcesv-1+iad)
+                    zr(jval+k-1)=cesv(iad)
 !
                     if (tych .eq. 'ELGA') then
                         call cesexi('C', jpoid, jpoil, ima, ipt,&
                                     1, 1, iad)
                         ASSERT(iad.gt.0)
-                        volpt=zr(jpoiv-1+iad)
+                        volpt=poiv(iad)
                     else if (tych.eq.'ELEM') then
                         ASSERT(nbpt.eq.1)
-                        volpt=zr(jpdsm-1+ima)
+                        volpt=pdsm(ima)
                     else if (tych.eq.'ELNO') then
                         ASSERT(nbpt.ge.1)
-                        volpt=zr(jpdsm-1+ima)/nbpt
+                        volpt=pdsm(ima)/nbpt
                     endif
 !
                     zr(jvol+k-1)=volpt

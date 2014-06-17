@@ -92,8 +92,8 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=24) :: lchin(2), lchout(2), nolili, lismai, valk(2)
     character(len=24) :: lisnoe, noeuma, vale1, vale2, grnoma, nogrno
     integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, vali(2)
-    integer :: iop, nliai, i, narl, nrl, ibid, jnoma, jcoor, inom
-    integer :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
+    integer :: iop, nliai, i, narl, nrl, ibid,   inom
+    integer :: nbcmp, nddla, nbec,  nlili, k, iaprno, lonlis, ilisno
     integer :: jlisma, nbma, nbno, nbgno, nno, n1, jgro, in, numnop
     integer :: ino, j,  idch1, idch2, nbterm
     integer ::       ival
@@ -110,6 +110,9 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     real(kind=8), pointer :: inertie_raccord(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: prnm(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()
@@ -205,14 +208,14 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 ! --- MAILLAGE ASSOCIE AU MODELE
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
     noeuma = noma//'.NOMNOE'
     grnoma = noma//'.GROUPENO'
 !
 ! --- -----------------------------------------------------------------
 ! --- RECUPERATION DU TABLEAU DES COORDONNEES
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- -----------------------------------------------------------------
 ! --- RECUPERATION DES NOMS DES DDLS
@@ -238,7 +241,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     if (nbec .gt. 10) then
         call utmess('F', 'MODELISA_94')
     else
-        call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+        call jeveuo(ligrmo//'.PRNM', 'L', vi=prnm)
     endif
 !
 ! --- -----------------------------------------------------------------
@@ -328,9 +331,9 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- NUMERO DU NOEUD POUTRE A LIER
     call jenonu(jexnom(noeuma, noepou), numnop)
 ! --- COORDONNEES DU NOEUD POUTRE
-    xpou = zr(jcoor-1+3*(numnop-1)+1)
-    ypou = zr(jcoor-1+3*(numnop-1)+2)
-    zpou = zr(jcoor-1+3*(numnop-1)+3)
+    xpou = vale(3*(numnop-1)+1)
+    ypou = vale(3*(numnop-1)+2)
+    zpou = vale(3*(numnop-1)+3)
 !
 ! --- -----------------------------------------------------------------
 ! --- VERIFICATION DU FAIT QUE LES NOEUDS DE LISNOE :
@@ -350,7 +353,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
                 call utmess('F', 'MODELISA6_28', sk=valk(1), si=vali(1), nr=3,&
                             valr=valr)
             endif
-            dg = zi(jprnm-1+ (ino-1)*nbec+1)
+            dg = prnm((ino-1)*nbec+1)
             do j = 4, 6
                 icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
                 if (.not. exisdg([dg],icmp(j))) then
@@ -364,7 +367,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         do i = 1, lonlis
 !           NUMERO DU NOEUD COURANT DE LA LISTE
             call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1)), ino)
-            dg = zi(jprnm-1+ (ino-1)*nbec+1)
+            dg = prnm((ino-1)*nbec+1)
             do j = 4, 6
                 icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
                 if (exisdg([dg],icmp(j))) then
@@ -379,7 +382,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --- -----------------------------------------------------------------
 ! --- VERIFICATION DU FAIT QUE LE NOEUD POUTRE A RACCORDER PORTE
 !     LES 3 DDLS DE TRANSLATION ET LES 3 DDLS DE ROTATION.
-    dg = zi(jprnm-1+ (numnop-1)*nbec+1)
+    dg = prnm((numnop-1)*nbec+1)
     do j = 1, 6
         icmp(j) = indik8(nomcmp,cmp(j),1,nddla)
         if (.not.exisdg([dg],icmp(j))) then

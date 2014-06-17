@@ -64,7 +64,7 @@ subroutine op0113()
     real(kind=8) :: crimax
     integer :: ibid, iel, ima, nmoth
     integer :: i, j2
-    integer :: jlgrf1, jlgrf2, jmofis
+    integer ::   jmofis
     integer :: nbma, nelt
     integer :: nb1
     integer :: nfiss, jnfis
@@ -77,6 +77,8 @@ subroutine op0113()
     integer :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, modthx, noma, k8cont
     logical :: linter
+    character(len=8), pointer :: lgrf1(:) => null()
+    character(len=8), pointer :: lgrf2(:) => null()
 !
     data motfac /' '/
 !
@@ -98,8 +100,8 @@ subroutine op0113()
 !
 ! --- ACCES AU MAILLAGE INITIAL
 !
-    call jeveuo(ligr1//'.LGRF', 'L', jlgrf1)
-    noma = zk8(jlgrf1-1+1)
+    call jeveuo(ligr1//'.LGRF', 'L', vk8=lgrf1)
+    noma = lgrf1(1)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
@@ -228,8 +230,8 @@ subroutine op0113()
 !
     call jedupo(ligr1//'.NBNO', 'G', ligr2//'.NBNO', .false.)
     call jedupo(ligr1//'.LGRF', 'G', ligr2//'.LGRF', .false.)
-    call jeveuo(ligr2//'.LGRF', 'E', jlgrf2)
-    zk8(jlgrf2-1+2)=modelx
+    call jeveuo(ligr2//'.LGRF', 'E', vk8=lgrf2)
+    lgrf2(2)=modelx
 !
     call jedup1(mod1//'.NEMA', 'G', modelx//'.NEMA')
     call jedup1(mod1//'.SSSA', 'G', modelx//'.SSSA')

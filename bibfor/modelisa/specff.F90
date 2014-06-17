@@ -67,7 +67,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
     character(len=8) :: nomu, caelem, modele, table, nomnoa, noma
     character(len=19) :: spectr, base, typflu
 !
-    integer :: ibid, dim, dimint, mxval, itab, nbfreq, nbval, ifreq
+    integer :: ibid, dim, dimint, mxval, itab, nbfreq, nbval
     integer :: ire, iim, isre, isim, i1, ind, lnumi, lnumj, ier2, ij, iprol
     integer :: iaxe, ichref, ideb, idebit, idec, idefm, idiax
     integer :: idife, idiff, ifo, ifo1, ifo2, ifoi, ifsic, iinte, il, im1
@@ -78,6 +78,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
     real(kind=8) :: beta11, beta12, beta21, beta22, phase, ptf, s0
     character(len=24) :: spvain, spvate, spnnoe
     character(len=24) :: remf, fsic, chrefe, chvale, chnumi, chnumj, chtab
+    real(kind=8), pointer :: freq(:) => null()
 !
     data pla180 / 8.d-1  , 1.d0   , 1.3d0  , 1.5d-1 , 2.d-1  ,&
      &              4.d-2  , 2.4d-1 , 3.4d-1 , 6.d-2  , 2.8d-1 ,&
@@ -244,7 +245,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
         call wkvect('&&SPECFF.IRE', 'V V R', nbpf, ire)
         call wkvect('&&SPECFF.IIM', 'V V R', nbpf, iim)
         chtab=table//'.VALE'
-        call jeveuo(table//'.DISC', 'L', ifreq)
+        call jeveuo(table//'.DISC', 'L', vr=freq)
         do 60 ifo2 = 1, nbfonc
             ival(2) = ifo2
             do 61 ifo1 = 1, ifo2
@@ -269,7 +270,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                         call wkvect('&&SPECFF.SRE', 'V V R', nbfreq, isre)
                         call wkvect('&&SPECFF.SIM', 'V V R', nbfreq, isim)
                     endif
-                    call fointr(' ', zk24(iprol), nbfreq, zr(ifreq), zr( itab),&
+                    call fointr(' ', zk24(iprol), nbfreq, freq, zr( itab),&
                                 nbpf, zr(lwr), zr(isre), ier2)
                     do 210 i1 = 1, nbfreq
                         zr(isim-1+i1) = 0.d0
@@ -285,9 +286,9 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
                         zr(ire-1+i1) = zr(itab+2*(i1-1))
                         zr(iim-1+i1) = zr(itab+2*(i1-1)+1)
 310                  continue
-                    call fointr(' ', zk24(iprol), nbfreq, zr(ifreq), zr( ire),&
+                    call fointr(' ', zk24(iprol), nbfreq, freq, zr( ire),&
                                 nbpf, zr(lwr), zr(isre), ier2)
-                    call fointr(' ', zk24(iprol), nbfreq, zr(ifreq), zr( iim),&
+                    call fointr(' ', zk24(iprol), nbfreq, freq, zr( iim),&
                                 nbpf, zr(lwr), zr(isim), ier2)
                 endif
                 do 62 il = 1, nbpf

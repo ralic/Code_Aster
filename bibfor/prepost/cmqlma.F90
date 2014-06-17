@@ -70,12 +70,15 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !
     integer :: nbtyma
     parameter(nbtyma=27)
-    integer :: jdim, i, nbtma,  jtypm1, jtypm2, jconn1, jconn2
-    integer :: tymal(nbtyma), num1, num2, nbnol(nbtyma), ityp, j, inom, nbnomx
+    integer ::  i, nbtma,   jtypm2, jconn1, jconn2
+    integer :: tymal(nbtyma), num1, num2, nbnol(nbtyma), ityp, j,  nbnomx
     integer :: ndim, ij
     character(len=8) :: nomnoi
     character(len=24) :: connex, typma
     integer, pointer :: maille(:) => null()
+    integer, pointer :: nbno(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: dime(:) => null()
 !
 !     TYMAL: TYPE DES MAILLES APRES LINEARISATION (CF. CI-DESSUS)
 !     NBNOL: NOMBRE DE NOEUDS APRES LINEARISATION (CF. CI-DESSUS)
@@ -91,8 +94,8 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !     MAILLAGE INITIAL PERMETTANT DE SAVOIR SI LA MAILLE EN COURS
 !     SERA LINEAIRE OU NON.
 !     -----------------------------------------------------------
-    call jeveuo(main//'.DIME', 'L', jdim)
-    nbtma=zi(jdim+2)
+    call jeveuo(main//'.DIME', 'L', vi=dime)
+    nbtma=dime(3)
     AS_ALLOCATE(vi=maille, size=nbtma)
     do i = 1, nbtma
         maille(i)=0
@@ -106,29 +109,29 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !
     call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
     call jecrec(maout//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
-                zi(jdim+2))
-    ndim=nbnomx*zi(jdim+2)
+                dime(3))
+    ndim=nbnomx*dime(3)
     call jeecra(maout//'.CONNEX', 'LONT', ndim)
-    call jeveuo(main//'.TYPMAIL', 'L', jtypm1)
+    call jeveuo(main//'.TYPMAIL', 'L', vi=typmail)
     call jeveuo(typma, 'E', jtypm2)
-    call jeveuo('&CATA.TM.NBNO', 'L', inom)
+    call jeveuo('&CATA.TM.NBNO', 'L', vi=nbno)
 !
 !     NUM1:NOMBRE DE NOEUDS DE LA MAILLE INITIALE
 !     NUM2:NOMBRE DE NOEUDS DE LA MAILLE LINEARISEE
 !
 !     ON PARCOURT LES MAILLES DU MAILLAGE
     do i = 1, nbtma
-        num1=zi(inom+zi(jtypm1+i-1)-1)
+        num1=nbno(1+typmail(i)-1)
 !
 !        '.TYPMAIL':
 !        ----------
 !        SI LA MAILLE N'EST PAS A LINEARISER
         if (maille(i) .eq. 0) then
-            zi(jtypm2+i-1)=zi(jtypm1+i-1)
+            zi(jtypm2+i-1)=typmail(i)
             num2=num1
 !        SI LA MAILLE EST A LINEARISER
         else
-            ityp=zi(jtypm1+i-1)
+            ityp=typmail(i)
             zi(jtypm2+i-1)=tymal(ityp)
             num2=nbnol(ityp)
         endif

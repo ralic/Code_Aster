@@ -46,7 +46,7 @@ subroutine imbint(nomres, ifm)
 !-----------------------------------------------------------------------
     integer :: i, ibid(1), idau, idcb, idda, idha, idmn
     integer :: ifau, ifcb, ifha, ifmn, ino, ipoin
-    integer :: ityp, j, k, llact, lldes, lldesc, llncmp
+    integer :: ityp, j, k, llact, lldes,  llncmp
     integer :: llnoe, lltyp, nbcmp, nbcpmx, nbdef, nbec, nbint
     integer :: nbno, nbnot, ncomp, numgd
 !-----------------------------------------------------------------------
@@ -60,6 +60,7 @@ subroutine imbint(nomres, ifm)
     integer :: idec(nbcpmx), ifm
 !
     integer :: ibid1
+    integer, pointer :: idc_desc(:) => null()
     data ibid1/0/
 !
 !-----------------------------------------------------------------------
@@ -85,8 +86,8 @@ subroutine imbint(nomres, ifm)
 !
 !--------------RECUPERATION TYPE LIST_INTERFACE-------------------------
 !
-    call jeveuo(nomres//'.IDC_DESC', 'L', lldesc)
-    ityp=zi(lldesc)
+    call jeveuo(nomres//'.IDC_DESC', 'L', vi=idc_desc)
+    ityp=idc_desc(1)
     call jelibe(nomres//'.IDC_DESC')
 !
     nomtyp=typbas(ityp)

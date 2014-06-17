@@ -54,7 +54,7 @@ subroutine apmamc(kptsc)
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, n, nz, nvalm, nlong
-    integer :: jsmdi, jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
+    integer ::  jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
     integer :: k, ilig,  nzdeb, nzfin
     integer :: iterm, jterm
 !
@@ -65,6 +65,7 @@ subroutine apmamc(kptsc)
     logical :: lmnsy
 !
     real(kind=8) :: valm
+    integer, pointer :: smdi(:) => null()
 !
     parameter (idxi1 ='&&APMAMC.IDXI1__')
     parameter (idxi2 ='&&APMAMC.IDXI2__')
@@ -85,7 +86,7 @@ subroutine apmamc(kptsc)
     nonu = nonus(kptsc)
     a = ap(kptsc)
 !
-    call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
+    call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
@@ -94,7 +95,7 @@ subroutine apmamc(kptsc)
     neq=n
 !   nz: nombre de termes non-nuls (dans la partie triangulaire supérieure 
 !                                             ou inférieure de la matrice) 
-    nz=zi(jsmdi-1+n)
+    nz=smdi(n)
 !   la matrice est-elle symétrique ?   
     call jelira(nomat//'.VALM', 'NMAXOC', nvalm)
     if (nvalm .eq. 1) then
@@ -162,8 +163,8 @@ subroutine apmamc(kptsc)
     ! Les termes non-nuls de A(1:jcol,jcol) sont stockés dans valm (nzdeb:nzfin)
     ! Si A n'est pas symétrique, les termes non-nuls de A(jcol,1:jcol) sont stockés
     ! dans valm2 (nzdeb:nzfin) 
-        nzdeb = zi(jsmdi+jcol-1) + 1
-        nzfin = zi(jsmdi+jcol)
+        nzdeb = smdi(jcol) + 1
+        nzfin = smdi(jcol+1)
         do k = nzdeb, nzfin
         ! indice ligne (fortran) du terme courant dans la matrice Aster 
             ilig = zi4(jsmhc-1+k)
@@ -215,8 +216,8 @@ subroutine apmamc(kptsc)
 !   
 ! On lit colonne par colonne upper(A( :,high:))
     do jcol = high, neq-1
-        nzdeb = zi(jsmdi+jcol-1) + 1
-        nzfin = zi(jsmdi+jcol)
+        nzdeb = smdi(jcol) + 1
+        nzfin = smdi(jcol+1)
         do k = nzdeb, nzfin
             ilig = zi4(jsmhc-1+k)
             ! On ignore les lignes avant low 

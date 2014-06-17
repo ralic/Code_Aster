@@ -79,10 +79,10 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     type (cmumps_struc) , pointer :: cmpsk => null()
     type (dmumps_struc) , pointer :: dmpsk => null()
     type (zmumps_struc) , pointer :: zmpsk => null()
-    integer :: jsmdi, nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
+    integer ::  nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
     integer :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k
     integer :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp
-    integer :: jnequ, kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2
+    integer ::  kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2
     integer :: nfilt3, isizemu, nsizemu, rang, esizemu
     mumps_int :: nbeq, nz2, iligg, jcolg
     character(len=4) :: etam
@@ -94,6 +94,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     real(kind=8) :: raux, rfiltr, epsmac, rmax, rmin, rtest
     complex(kind=8) :: caux
     logical :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl, lcmde
+    integer, pointer :: smdi(:) => null()
+    integer, pointer :: nequ(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -189,7 +191,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 !        lecture d'adresses et de parametres preliminaires
 !       ------------------------------------------------
     if (((rang.eq.0).and.(.not.ldist)) .or. (ldist)) then
-        call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
+        call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
         call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
         call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
         call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
@@ -200,8 +202,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
             call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
         endif
-        call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
-        nbeq=to_mumps_int(zi(jnequ))
+        call jeveuo(nonu//'.NUME.NEQU', 'L', vi=nequ)
+        nbeq=to_mumps_int(nequ(1))
         ASSERT(n1.eq.nsmdi)
 ! --- CALCUL DE N
         n=nsmdi
@@ -222,7 +224,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     end select
 !
 ! --- CALCUL DE NZ2
-        nz=zi(jsmdi-1+n)
+        nz=smdi(n)
         ASSERT(nz.le.nsmhc)
         nz2=to_mumps_int(nz)
         if (sym .eq. 0) nz2=to_mumps_int(2*nz-n)
@@ -252,11 +254,11 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             call wkvect(kfiltr, 'V V R', n, ifiltr)
             if (ltypr) then
                 do k = 1, n
-                    zr(ifiltr-1+k)=epsmat*abs(zr(jvale-1+zi(jsmdi-1+k)))
+                    zr(ifiltr-1+k)=epsmat*abs(zr(jvale-1+smdi(k)))
                 enddo
             else
                 do k = 1, n
-                    zr(ifiltr-1+k)=epsmat*abs(zc(jvale-1+zi(jsmdi-1+k)))
+                    zr(ifiltr-1+k)=epsmat*abs(zc(jvale-1+smdi(k)))
                 enddo
             endif
 ! --- SEUILLAGE DES TERMES DE FILTRAGE POUR EVITER LES VALEURS ABBERANTE
@@ -312,7 +314,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         do kterm = 1, nz
 !
 ! --- PREPARATION DES DONNES (NUM DE COLONNE, TERME DE FILTRAGE...)
-            if (zi(jsmdi-1+jcoll) .lt. kterm) jcoll=jcoll+1
+            if (smdi(jcoll) .lt. kterm) jcoll=jcoll+1
             iligl=zi4(jsmhc-1+kterm)
             if (lfiltr) then
                 rfiltr=zr(ifiltr-1+iligl)+zr(ifiltr-1+jcoll)
@@ -550,7 +552,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         iterm=0
         do kterm = 1, nz
 !
-            if (zi(jsmdi-1+jcoll) .lt. kterm) jcoll=jcoll+1
+            if (smdi(jcoll) .lt. kterm) jcoll=jcoll+1
             iligl=zi4(jsmhc-1+kterm)
             lnn=.false.
 ! --- PARTIE TRIANGULAIRE INF. SI REEL

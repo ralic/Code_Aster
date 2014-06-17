@@ -70,8 +70,8 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     logical :: exif1d
 !
-    integer :: ltymo, ldepl, lfreq, neq, lvale, lacce, ii, i
-    integer :: l1, l3, jlcha, jfcha, n1, ipara, ier, linst
+    integer :: ltymo,  lfreq, neq, lvale, lacce, ii, i
+    integer :: l1, l3,   n1, ipara, ier, linst
 !
     real(kind=8) :: zero, un, coeff, valres
     real(kind=8) :: alpha, tps(11), freq, inst
@@ -87,6 +87,9 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
     character(len=16) :: typemo
     character(len=19) :: chdynr, chacce
     character(len=24) :: chamgd, nochin, nochi1, chdepl, ligrmo
+    character(len=8), pointer :: fcha(:) => null()
+    real(kind=8), pointer :: nldepl(:) => null()
+    character(len=8), pointer :: lcha(:) => null()
 !
     data         ncmppe/ 'G' , 'AG' , 'BG' , 'CG' /
     data         ncmpfo/ 'FX' , 'FY' , 'FZ' , 'MX' , 'MY' , 'MZ' ,&
@@ -116,11 +119,11 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
         call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
         call rsexch('F', resuin, 'DEPL', nordre, chamgd,&
                     ier)
-        call jeveuo(chamgd(1:19)//'.VALE', 'L', ldepl)
+        call jeveuo(chamgd(1:19)//'.VALE', 'L', vr=nldepl)
         call rsadpa(resuin, 'L', 1, 'OMEGA2', nordre,&
                     0, sjv=lfreq, styp=k8b)
         do ii = 0, neq - 1
-            zr(lvale+ii) = -zr(lfreq)*zr(ldepl+ii)
+            zr(lvale+ii) = -zr(lfreq)*nldepl(ii+1)
         end do
         call jelibe(chamgd(1:19)//'.VALE')
     else if (typesd.eq.'DYNA_TRANS') then
@@ -178,10 +181,10 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 !           DANS KCHARG
         call getvid('EXCIT', 'CHARGE', iocc=ioccur, scal=charge, nbret=n1)
         if (n1 .eq. 0) then
-            call jeveuo(kcharg//'.LCHA', 'L', jlcha)
-            call jeveuo(kcharg//'.FCHA', 'L', jfcha)
-            charge = zk8(jlcha-1+ioccur)
-            fmult = zk8(jfcha-1+ioccur)
+            call jeveuo(kcharg//'.LCHA', 'L', vk8=lcha)
+            call jeveuo(kcharg//'.FCHA', 'L', vk8=fcha)
+            charge = lcha(ioccur)
+            fmult = fcha(ioccur)
 !           LA FONCTION PEUT AVOIR ETE CREEE, SUR LA BASE V
 !           SI C'EST LE CAS C'EST LA FONCTION UNITE
             if (fmult(1:2) .eq. '&&') then

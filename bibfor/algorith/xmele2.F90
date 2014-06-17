@@ -77,13 +77,15 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
     integer :: ibid, iad, i, ima, ifis, izone
     integer :: nmaenr, nbma,  ispt, icmp
     character(len=8) :: nomfis
-    integer :: jcesl, jcesv, jcesd, jmofis
+    integer :: jcesl,  jcesd
     character(len=24) :: grp
     integer :: jgrp
     character(len=19) :: chelsi
     real(kind=8) :: coef(nbcmp)
     integer :: jmail
     integer, pointer :: nbsp(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: fiss(:) => null()
 !
     data licmp    /'RHON','MU','RHOTK','INTEG','COECH',&
      &    'COSTCO','COSTFR','COPECO','COPEFR','RELA'/
@@ -124,11 +126,11 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
     call jeveuo(chelsi//'.CESD', 'L', jcesd)
     call jeveuo(chelsi//'.CESL', 'E', jcesl)
-    call jeveuo(chelsi//'.CESV', 'E', jcesv)
+    call jeveuo(chelsi//'.CESV', 'E', vr=cesv)
 !
 ! --- ACCES AUX FISSURES
 !
-    call jeveuo(modele//'.FISS', 'L', jmofis)
+    call jeveuo(modele//'.FISS', 'L', vk8=fiss)
 !
 ! --- RECUPERATION DES MAILLES DU MODELE
     call jeveuo(modele//'.MAILLE', 'L', jmail)
@@ -139,7 +141,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- ACCES FISSURE COURANTE
 !
-        nomfis = zk8(jmofis-1 + ifis)
+        nomfis = fiss(ifis)
 !
 ! --- INFORMATIONS SUR LA FISSURE
 !
@@ -186,7 +188,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
                     call cesexi('S', jcesd, jcesl, ima, 1,&
                                 ispt, icmp, iad)
                     zl(jcesl-1-iad) = .true.
-                    zr(jcesv-1-iad) = coef(icmp)
+                    cesv(1-1-iad) = coef(icmp)
                 end do
             end do
         endif

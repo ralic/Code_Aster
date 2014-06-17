@@ -87,8 +87,9 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
     character(len=8) :: nomvar
     integer :: ivari
     character(len=16) :: valk(2)
-    integer :: jcesd, jcesl, jcesv, jcesc
+    integer :: jcesd, jcesl, jcesv
     integer :: vali(4)
+    character(len=8), pointer :: cesc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,7 +105,7 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
         call jeveuo(nomchs(1:19)//'.CESD', 'L', jcesd)
         call jeveuo(nomchs(1:19)//'.CESL', 'L', jcesl)
         call jeveuo(nomchs(1:19)//'.CESV', 'L', jcesv)
-        call jeveuo(nomchs(1:19)//'.CESC', 'L', jcesc)
+        call jeveuo(nomchs(1:19)//'.CESC', 'L', vk8=cesc)
         nbcmpx = zi(jcesd+4)
     endif
 !
@@ -182,7 +183,7 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
                     icmp = ivari
                 else
                     do 32 i = 1, nbcmpx
-                        if (nomcmp .eq. zk8(jcesc-1+i)) icmp=i
+                        if (nomcmp .eq. cesc(i)) icmp=i
 32                  continue
                 endif
                 do 45 ipi = 1, npi

@@ -58,11 +58,13 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
     integer :: jma, ima, itypma, ar(12, 3), nbar, ia
     integer :: na, nb, nm, nunoa, nunob, nunom
-    integer :: jlnsv, jltsv, nmaabs, ndime, ndim
+    integer ::   nmaabs, ndime, ndim
     real(kind=8) :: d1, lsna, lsnb, crilsn, lsta, lstb, crilst, d2
     real(kind=8) :: lsnm, lstm, lsnmax, lstmax
     character(len=19) :: mai
     character(len=8) :: typma
+    real(kind=8), pointer :: lnsv(:) => null()
+    real(kind=8), pointer :: ltsv(:) => null()
 !
     parameter     (crilsn=1.d-2, crilst=1.d-3)
 !
@@ -71,8 +73,8 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call jeveuo(cnsln//'.CNSV', 'E', jlnsv)
-    call jeveuo(cnslt//'.CNSV', 'E', jltsv)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=lnsv)
+    call jeveuo(cnslt//'.CNSV', 'E', vr=ltsv)
 !
     d2=999.d0
 !
@@ -111,10 +113,10 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
             nb=ar(ia,2)
             nunoa=zi(jconx1-1+zi(jconx2+nmaabs-1)+na-1)
             nunob=zi(jconx1-1+zi(jconx2+nmaabs-1)+nb-1)
-            lsna=zr(jlnsv-1+(nunoa-1)+1)
-            lsnb=zr(jlnsv-1+(nunob-1)+1)
-            lsta=zr(jltsv-1+(nunoa-1)+1)
-            lstb=zr(jltsv-1+(nunob-1)+1)
+            lsna=lnsv((nunoa-1)+1)
+            lsnb=lnsv((nunob-1)+1)
+            lsta=ltsv((nunoa-1)+1)
+            lstb=ltsv((nunob-1)+1)
             if (abs(lsna) .gt. lsnmax) lsnmax=abs(lsna)
             if (abs(lsnb) .gt. lsnmax) lsnmax=abs(lsnb)
             if (abs(lsta) .gt. lstmax) lstmax=abs(lsta)
@@ -128,12 +130,12 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                 d1=lsna/(lsna-lsnb)
                 if (abs(d1) .le. crilsn) then
 !              REAJUSTEMENT DE LSNA
-                    zr(jlnsv-1+(nunoa-1)+1)=0.d0
+                    lnsv((nunoa-1)+1)=0.d0
                     clsm=clsm+1
                 endif
                 if (abs(d1-1.d0) .le. (crilsn)) then
 !              REAJUSTEMENT DE LSNB
-                    zr(jlnsv-1+(nunob-1)+1)=0.d0
+                    lnsv((nunob-1)+1)=0.d0
                     clsm=clsm+1
                 endif
             endif
@@ -147,12 +149,12 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                 d1=lsta/(lsta-lstb)
                 if (abs(d1) .le. crilst) then
 !              REAJUSTEMENT DE LSTA
-                    zr(jltsv-1+(nunoa-1)+1)=0.d0
+                    ltsv((nunoa-1)+1)=0.d0
                     clsm=clsm+1
                 endif
                 if (abs(d1-1.d0) .le. (crilst)) then
 !              REAJUSTEMENT DE LSTB
-                    zr(jltsv-1+(nunob-1)+1)=0.d0
+                    ltsv((nunob-1)+1)=0.d0
                     clsm=clsm+1
                 endif
             endif
@@ -169,20 +171,20 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                 nm=ar(ia,3)
                 nunom=zi(jconx1-1+zi(jconx2+nmaabs-1)+nm-1)
 !
-                lsna=zr(jlnsv-1+(nunoa-1)+1)
-                lsnb=zr(jlnsv-1+(nunob-1)+1)
+                lsna=lnsv((nunoa-1)+1)
+                lsnb=lnsv((nunob-1)+1)
 !
-                lsnm=zr(jlnsv-1+(nunom-1)+1)
-                lstm=zr(jltsv-1+(nunom-1)+1)
+                lsnm=lnsv((nunom-1)+1)
+                lstm=ltsv((nunom-1)+1)
 !            REAJUSTEMENT DES CONFIGURATIONS RENTRANTES
 !                if ((lsna*lsnb).ge.0.d0.and.(lsna*lsnm).le.0.d0) &
-!                   zr(jlnsv-1+(nunom-1)+1)=0.d0
-                if (lsna.eq.0.d0.and.lsnb.eq.0.d0.and.lsnm.ne.0.d0) zr(jlnsv-1+(nunom-1)+1)=0.d0
-                if ((lsna*lsnm).lt.0.d0.and.(lsnb*lsnm).lt.0.d0) zr(jlnsv-1+(nunom-1)+1)=0.d0
-                if (lsna.eq.0.d0.and.(lsnb*lsnm).lt.0.d0) zr(jlnsv-1+(nunom-1)+1)=0.d0
-                if ((lsna*lsnm).lt.0.d0.and.lsnb.eq.0.d0) zr(jlnsv-1+(nunom-1)+1)=0.d0
+!                   lnsv((nunom-1)+1)=0.d0
+                if (lsna.eq.0.d0.and.lsnb.eq.0.d0.and.lsnm.ne.0.d0) lnsv((nunom-1)+1)=0.d0
+                if ((lsna*lsnm).lt.0.d0.and.(lsnb*lsnm).lt.0.d0) lnsv((nunom-1)+1)=0.d0
+                if (lsna.eq.0.d0.and.(lsnb*lsnm).lt.0.d0) lnsv((nunom-1)+1)=0.d0
+                if ((lsna*lsnm).lt.0.d0.and.lsnb.eq.0.d0) lnsv((nunom-1)+1)=0.d0
 !
-                if (zr(jlnsv-1+(nunoa-1)+1) .eq. 0.d0 .and. zr(jlnsv-1+( nunob-1)+1) .eq.&
+                if (lnsv((nunoa-1)+1) .eq. 0.d0 .and. lnsv(( nunob-1)+1) .eq.&
                     0.d0) then
                     d2=lsnm/lsnmax
                     if (abs(d2) .le. crilsn) then
@@ -190,13 +192,13 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !             D'UN LSNM SUR LA VALEUR LSNM LE PLUS GRAND DANS LE MEME
 !             ELEMENT EST INFERIEURE A UN CERTAIN NOMBRE, ON MET LES
 !             LSN A ZERO.
-                        zr(jlnsv-1+(nunom-1)+1)=0.d0
+                        lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
                     else
                         call utmess('A', 'XFEM_63')
                     endif
                 endif
-                if (zr(jltsv-1+(nunoa-1)+1) .eq. 0.d0 .and. zr(jltsv-1+( nunob-1)+1) .eq.&
+                if (ltsv((nunoa-1)+1) .eq. 0.d0 .and. ltsv(( nunob-1)+1) .eq.&
                     0.d0) then
                     d2=lstm/lstmax
                     if (abs(d2) .le. crilst) then
@@ -204,7 +206,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !             D'UN LSTM SUR LA VALEUR LSTM LE PLUS GRAND DANS LE MEME
 !             ELEMENT EST INFERIEURE A UN CERTAIN NOMBRE, ON MET LES
 !             LST A ZERO.
-                        zr(jltsv-1+(nunom-1)+1)=0.d0
+                        ltsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
                     else
                         call utmess('A', 'XFEM_63')

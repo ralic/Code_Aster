@@ -78,7 +78,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: dimcoo, i, ifonc, ibid, iret, jnorm, isom, in
-    integer :: idobj2, jcoor, iatyma, jcoode, ij, ino
+    integer :: idobj2,    ij, ino
     integer :: n, nocc, nno, nnos, nnn
     integer :: iinver, imail, numail, ityp, jdes, nn, numno, lino(9)
     real(kind=8) :: coor(3, 9), a, b, c, pvec(3), norme
@@ -91,6 +91,9 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     real(kind=8) :: dfqu4(32), dfqu8(128), dfqu9(162)
     real(kind=8) :: eksix, eksiy, eksiz, eetax, eetay, eetaz
     real(kind=8) :: vnorm, cosvec, sinvec, angl, atan2
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,8 +121,8 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     call jeecra(nomobj, 'LONMAX', ndim*nbno)
     call jeveuo(nomobj, 'E', jnorm)
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
     prec = armin(noma)*1.d-06
     ASSERT(abs(nbma).gt.0)
@@ -138,7 +141,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !
     call wkvect(nomob2, 'V V R', ndim*isom, idobj2)
 !
-    call jeveuo(noma//'.COORDO    .DESC', 'L', jcoode)
+    call jeveuo(noma//'.COORDO    .DESC', 'L', vi=desc)
 !
     ij=0
 !     BOUCLE SUR TOUS LES NOEUDS CONCERNES
@@ -153,18 +156,18 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !           NUMERO ABSOLUE DE LA MAILLE
 !
             numail=listma(zi(iinver-1+imail))
-            ityp=zi(iatyma-1+numail)
+            ityp=typmail(numail)
             call jenuno(jexnum('&CATA.TM.NOMTM', ityp), nomtyp)
             call jeveuo(jexnum(noma//'.CONNEX', numail), 'L', jdes)
             call jelira(jexnum(noma//'.CONNEX', numail), 'LONMAX', nn)
             if (ndim .eq. 2 .and. nomtyp(1:4) .eq. 'SEG2') then
-                dimcoo = -zi(jcoode-1+2)
+                dimcoo = -desc(2)
                 lino(1)=zi(jdes-1+1)
                 lino(2)=zi(jdes-1+2)
-                coor(1,1)=zr(jcoor-1+dimcoo*(lino(1)-1)+1)
-                coor(2,1)=zr(jcoor-1+dimcoo*(lino(1)-1)+2)
-                coor(1,2)=zr(jcoor-1+dimcoo*(lino(2)-1)+1)
-                coor(2,2)=zr(jcoor-1+dimcoo*(lino(2)-1)+2)
+                coor(1,1)=vale(dimcoo*(lino(1)-1)+1)
+                coor(2,1)=vale(dimcoo*(lino(1)-1)+2)
+                coor(1,2)=vale(dimcoo*(lino(2)-1)+1)
+                coor(2,2)=vale(dimcoo*(lino(2)-1)+2)
                 eksix=coor(1,1)*dfse2(1)+coor(1,2)*dfse2(2)
                 eksiy=coor(2,1)*dfse2(1)+coor(2,2)*dfse2(2)
                 if (type_calc .eq. 2) then
@@ -195,10 +198,10 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                 zr(idobj2-1+2*(ij-1)+2) = b
             else if (ndim.eq.2.and.nomtyp(1:4).eq.'SEG3') then
                 do i = 1, nn
-                    dimcoo = -zi(jcoode-1+2)
+                    dimcoo = -desc(2)
                     lino(i)=zi(jdes-1+i)
-                    coor(1,i)=zr(jcoor-1+dimcoo*(lino(i)-1)+1)
-                    coor(2,i)=zr(jcoor-1+dimcoo*(lino(i)-1)+2)
+                    coor(1,i)=vale(dimcoo*(lino(i)-1)+1)
+                    coor(2,i)=vale(dimcoo*(lino(i)-1)+2)
                     coor(3,i)=0.d0
                     if (numno .eq. lino(i)) in=i
                 end do
@@ -244,9 +247,9 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD4') then
                 do i = 1, nn
                     lino(i)=zi(jdes-1+i)
-                    coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
-                    coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
-                    coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
+                    coor(1,i)=vale(3*(lino(i)-1)+1)
+                    coor(2,i)=vale(3*(lino(i)-1)+2)
+                    coor(3,i)=vale(3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
                 end do
                 eksix=0.d0
@@ -300,9 +303,9 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD8') then
                 do i = 1, nn
                     lino(i)=zi(jdes-1+i)
-                    coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
-                    coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
-                    coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
+                    coor(1,i)=vale(3*(lino(i)-1)+1)
+                    coor(2,i)=vale(3*(lino(i)-1)+2)
+                    coor(3,i)=vale(3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
                 end do
                 eksix=0.d0
@@ -355,9 +358,9 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD9') then
                 do i = 1, nn
                     lino(i)=zi(jdes-1+i)
-                    coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
-                    coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
-                    coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
+                    coor(1,i)=vale(3*(lino(i)-1)+1)
+                    coor(2,i)=vale(3*(lino(i)-1)+2)
+                    coor(3,i)=vale(3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
                 end do
                 eksix=0.d0
@@ -409,9 +412,9 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA3') then
                 do i = 1, nn
                     lino(i)=zi(jdes-1+i)
-                    coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
-                    coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
-                    coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
+                    coor(1,i)=vale(3*(lino(i)-1)+1)
+                    coor(2,i)=vale(3*(lino(i)-1)+2)
+                    coor(3,i)=vale(3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
                 end do
 !              CALCUL DES DEUX VECTEURS TANGENTS
@@ -463,9 +466,9 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA6') then
                 do i = 1, nn
                     lino(i)=zi(jdes-1+i)
-                    coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
-                    coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
-                    coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
+                    coor(1,i)=vale(3*(lino(i)-1)+1)
+                    coor(2,i)=vale(3*(lino(i)-1)+2)
+                    coor(3,i)=vale(3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
                 end do
 !              CALCUL DES DEUX VECTEURS TANGENTS
@@ -517,9 +520,9 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA7') then
                 do i = 1, nn
                     lino(i)=zi(jdes-1+i)
-                    coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
-                    coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
-                    coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
+                    coor(1,i)=vale(3*(lino(i)-1)+1)
+                    coor(2,i)=vale(3*(lino(i)-1)+2)
+                    coor(3,i)=vale(3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
                 end do
 !              CALCUL DES DEUX VECTEURS TANGENTS

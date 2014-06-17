@@ -66,8 +66,11 @@ subroutine resyme(resu1z, basez, resu2z)
     character(len=16) :: phenom, option
     character(len=19) :: resl1, resl2, resul1, resul2
     character(len=19) :: ligrel
-    integer :: nbresu, idlre1, idlre2, iresu, iret, kresu
-    integer :: jresl1, jresl2, igr, nbgr
+    integer :: nbresu,  idlre2, iresu, iret, kresu
+    integer ::   igr, nbgr
+    character(len=24), pointer :: relr(:) => null()
+    integer, pointer :: vresl1(:) => null()
+    integer, pointer :: vresl2(:) => null()
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     call jemarq()
@@ -97,7 +100,7 @@ subroutine resyme(resu1z, basez, resu2z)
                 .false.)
     call jelira(resul1//'.RELR', 'LONUTI', nbresu)
     call wkvect(resul2//'.RELR', base//' V K24', nbresu, idlre2)
-    call jeveuo(resul1//'.RELR', 'L', idlre1)
+    call jeveuo(resul1//'.RELR', 'L', vk24=relr)
 !
 !
 !
@@ -109,7 +112,7 @@ subroutine resyme(resu1z, basez, resu2z)
 !
     kresu=0
     do iresu = 1, nbresu
-        resl1 = zk24(idlre1+iresu-1)(1:19)
+        resl1 = relr(iresu)(1:19)
         call jeexin(resl1//'.RESL', iret)
         if (iret .ne. 0) then
             kresu=kresu+1
@@ -123,13 +126,13 @@ subroutine resyme(resu1z, basez, resu2z)
                             'OUI')
 !           -- ON VERIFIE QUE LES DIFFERENTS TYPE_ELEMENT ON FAIT LEUR
 !              TRAVAIL :
-                call jeveuo(resl1//'.DESC', 'L', jresl1)
-                call jeveuo(resl2//'.DESC', 'L', jresl2)
-                nbgr=zi(jresl1-1+2)
-                ASSERT(nbgr.eq.zi(jresl2-1+2))
+                call jeveuo(resl1//'.DESC', 'L', vi=vresl1)
+                call jeveuo(resl2//'.DESC', 'L', vi=vresl2)
+                nbgr=vresl1(2)
+                ASSERT(nbgr.eq.vresl2(2))
                 do igr = 1, nbgr
-                    if (zi(jresl1-1+2+igr) .gt. 0) then
-                        ASSERT(zi(jresl2-1+2+igr).ne.0)
+                    if (vresl1(2+igr) .gt. 0) then
+                        ASSERT(vresl2(2+igr).ne.0)
                     endif
                 end do
             else

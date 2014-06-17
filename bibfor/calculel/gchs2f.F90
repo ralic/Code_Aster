@@ -46,11 +46,15 @@ subroutine gchs2f(char1, char2, char3)
 !
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer :: jdes1, jdes2, jdes3, ncmp1, ncmp2, i, jval1, jval3, k, izo, jfpro
+    integer ::    ncmp1, ncmp2, i,  jval3, k, izo, jfpro
     integer :: jfval, kk, iec, reste, code, jncmp1, jncmp2, j, nec, ior
     real(kind=8) :: epsi
     character(len=8) ::  nocmp1, nomfon
     character(len=19) :: nomf19
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: des1(:) => null()
+    integer, pointer :: des2(:) => null()
+    integer, pointer :: des3(:) => null()
 !
     call jemarq()
 !
@@ -64,19 +68,19 @@ subroutine gchs2f(char1, char2, char3)
     call jedupo(char1//'.LIMA', 'V', char3//'.LIMA', .false.)
 !
 !     DESC (MAJ 1/2)
-    call jeveuo(char1//'.DESC', 'L', jdes1)
-    call jeveuo(char2//'.DESC', 'L', jdes2)
-    call jeveuo(char3//'.DESC', 'E', jdes3)
-    zi(jdes3)=zi(jdes2)
+    call jeveuo(char1//'.DESC', 'L', vi=des1)
+    call jeveuo(char2//'.DESC', 'L', vi=des2)
+    call jeveuo(char3//'.DESC', 'E', vi=des3)
+    des3(1)=des2(1)
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'LONMAX', ncmp1)
-    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes2)), 'LONMAX', ncmp2)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'L', jncmp1)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', zi(jdes2)), 'L', jncmp2)
+    call jelira(jexnum('&CATA.GD.NOMCMP', des1(1)), 'LONMAX', ncmp1)
+    call jelira(jexnum('&CATA.GD.NOMCMP', des2(1)), 'LONMAX', ncmp2)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', des1(1)), 'L', jncmp1)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', des2(1)), 'L', jncmp2)
 !
 !     VALE
-    call jeveuo(char1//'.VALE', 'L', jval1)
-    call wkvect(char3//'.VALE', 'V V K8', ncmp2*zi(jdes3+3-1), jval3)
+    call jeveuo(char1//'.VALE', 'L', vr=vale)
+    call wkvect(char3//'.VALE', 'V V K8', ncmp2*des3(3), jval3)
 !
     k=0
     kk=0
@@ -90,8 +94,8 @@ subroutine gchs2f(char1, char2, char3)
                 reste = i - 30* (iec-1)
                 code = 2**reste
             endif
-            do 20 izo = 1, zi(jdes1+3-1)
-                if (abs(zr(jval1+(izo-1)*ncmp1+i-1)) .gt. epsi) then
+            do 20 izo = 1, des1(3)
+                if (abs(vale(1+(izo-1)*ncmp1+i-1)) .gt. epsi) then
                     kk=kk+1
                     call codent(kk, 'D0', nomfon(7:8))
                     nomf19=nomfon
@@ -105,7 +109,7 @@ subroutine gchs2f(char1, char2, char3)
                     zk24(jfpro+5)=nomf19
                     call wkvect(nomf19//'.VALE', 'V V R', 2, jfval)
                     zr(jfval)=1.d0
-                    zr(jfval+1)=zr(jval1+(izo-1)*ncmp1+i-1)
+                    zr(jfval+1)=vale(1+(izo-1)*ncmp1+i-1)
                     zk8(jval3+(izo-1)*ncmp2+j-1)=nomfon
                 else
                     zk8(jval3+(izo-1)*ncmp2+j-1)='&FOZERO'
@@ -115,9 +119,9 @@ subroutine gchs2f(char1, char2, char3)
 10  end do
 !
 !     DESC (MAJ 2/2)
-    nec = nbec(zi(jdes3))
-    do 30 i = 1, nec*zi(jdes3+3-1)
-        zi(jdes3+3+2*zi(jdes3+3-1)+i-1)= ior(zi(jdes3+3+2*zi(jdes3+3-&
+    nec = nbec(des3(1))
+    do 30 i = 1, nec*des3(3)
+        des3(1+3+2*des3(3)+i-1)= ior(des3(1+3+2*des3(1+3-&
         1)+i-1),code)
 30  end do
 !

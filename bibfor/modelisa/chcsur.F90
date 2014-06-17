@@ -49,12 +49,14 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 !-----------------------------------------------------------------------
 !
     integer :: nbloc, ibloc, icmp, ncmp, ino, nbno, nbec, ii
-    integer :: jcnsd, jcnsv, jcnsl, jafci, jafcv, iaprnm, jcnsc, kcmp
+    integer ::  jcnsv, jcnsl, jafci, jafcv, iaprnm,  kcmp
     integer :: jcmp, ncmpmx
     character(len=8) :: nomo
     character(len=19) :: chci, cns
     character(len=24) :: cafci, cafcv
     integer, pointer :: corres(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    integer, pointer :: cnsd(:) => null()
 !
     data cafci /'                   .AFCI'/
     data cafcv /'                   .AFCV'/
@@ -72,13 +74,13 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     cafci(1:19) = chci
     cafcv(1:19) = chci
 !
-    call jeveuo(cns//'.CNSD', 'L', jcnsd)
-    call jeveuo(cns//'.CNSC', 'L', jcnsc)
+    call jeveuo(cns//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(cns//'.CNSC', 'L', vk8=cnsc)
     call jeveuo(cns//'.CNSV', 'L', jcnsv)
     call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
-    nbno = zi(jcnsd)
-    ncmp = zi(jcnsd+1)
+    nbno = cnsd(1)
+    ncmp = cnsd(2)
 !
 !
 !     -- ON CALCULE LA CORRESPONDANCE ENTRE LES CMPS DE CNS
@@ -87,7 +89,7 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     AS_ALLOCATE(vi=corres, size=ncmpmx)
     do kcmp = 1, ncmpmx
-        icmp = indik8(zk8(jcnsc),zk8(jcmp-1+kcmp),1,ncmp)
+        icmp = indik8(cnsc,zk8(jcmp-1+kcmp),1,ncmp)
         corres(kcmp)=icmp
     end do
 !

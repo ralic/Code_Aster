@@ -51,9 +51,11 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     logical :: exisgr
 !
 !
-    integer :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym, jgroma
-    integer :: jindma, jdetr, ij, icurgr, nbgrou, indgro, ima
+    integer :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym
+    integer :: jindma,  ij, icurgr, nbgrou, indgro, ima
     integer :: ityp, ino, node, i, indmax, jgr
+    integer, pointer :: noeuds(:) => null()
+    integer, pointer :: mailles(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
     call jemarq()
@@ -84,7 +86,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     call wkvect('&&PRECOU.TYPE.MAILLES', 'V V I', nbmail, jtypma)
 ! --- VECTEUR DU NUMERO DE GROUPE DES MAILLES
 !FH      CALL WKVECT('&&PRECOU.GROUPE.MAILLES','V V I',NBMAIL,JGROMA)
-    call jeveuo('&&PRECOU.GROUPE.MAILLES', 'L', jgroma)
+    call jeveuo('&&PRECOU.GROUPE.MAILLES', 'L', vi=mailles)
 ! --- VECTEUR DU NOMBRE DE CONNECTIVITES DES MAILLES
     call wkvect('&&PRECOU.NBNO.MAILLES', 'V V I', nbmail, jnbnma)
 ! --- VECTEUR DES CONNECTIVITES DES MAILLES
@@ -97,7 +99,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 ! --- NUMEROS DES GROUPES DE MAILLES :
     call wkvect('&&PRECOU.INDICE.GROUP_MA', 'V V I', nbmail, jindma)
 ! --- INDICATION DE DESTRUCTION DES NOEUDS
-    call jeveuo('&&PRECOU.DETR.NOEUDS', 'E', jdetr)
+    call jeveuo('&&PRECOU.DETR.NOEUDS', 'E', vi=noeuds)
 !
 !
 ! --- LECTURE DES ENREGISTREMENTS RELATIFS AUX MAILLES ET AFFECTATION
@@ -126,11 +128,11 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
         ityp = zi(jtypma+ima-1)
         do 12 ino = 1, nbnoma(ityp)
             node = zi(jnoma+ij+nuconn(ityp,ino)-1)
-            zi(jdetr+node) = 1
+            noeuds(node+1) = 1
 12      continue
 !
-        if (icurgr .ne. zi(jgroma+ima-1)) then
-            icurgr = zi(jgroma+ima-1)
+        if (icurgr .ne. mailles(ima)) then
+            icurgr = mailles(ima)
             exisgr = .false.
             do 20 i = 1, nbgrou
 ! CAS_VIV ICURGR=0 et ZI(JINDMA+I-1)=1
@@ -144,7 +146,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
             if (.not.exisgr) then
                 nbgrou = nbgrou + 1
                 indgro = nbgrou
-                zi(jindma+indgro-1) = zi(jgroma+ima-1)
+                zi(jindma+indgro-1) = mailles(ima)
             endif
         endif
 !MH
@@ -182,8 +184,8 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
     nbgrou = 0
     indgro = 0
     do 50 ima = 1, nbmail
-        if (icurgr .ne. zi(jgroma+ima-1)) then
-            icurgr = zi(jgroma+ima-1)
+        if (icurgr .ne. mailles(ima)) then
+            icurgr = mailles(ima)
             exisgr = .false.
             do 60 i = 1, nbgrou
                 if (icurgr .eq. zi(jindma+i-1)) then
@@ -203,7 +205,7 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 !MH
         zi(jnbmag+indgro-1) = zi(jnbmag+indgro-1) + 1
 !
-        zi(jindma+indgro-1) = zi(jgroma+ima-1)
+        zi(jindma+indgro-1) = mailles(ima)
         call jeveuo(jexnum('&&PRECOU.LISTE.GROUP_MA', indgro), 'E', jgr)
         zi(jgr+zi(jnbmag+indgro-1)-1) = zi(jnuma+ima-1)
 50  end do

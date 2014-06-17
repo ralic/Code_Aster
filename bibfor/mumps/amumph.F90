@@ -102,7 +102,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     type (dmumps_struc) , pointer :: dmpsk => null()
     type (zmumps_struc) , pointer :: zmpsk => null()
     integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
-    integer :: jslvk, jslvi, nprec, iretz, pcentp(2)
+    integer ::   nprec, iretz, pcentp(2)
     logical :: lbid, lpreco
     character(len=1) :: rouc, prec
     character(len=4) :: etamat, etam
@@ -110,6 +110,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     character(len=14) :: nonu, nu, impr
     character(len=19) :: matas, vcine, nomat, nosolv, solveu
     character(len=24) :: kvers
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: slvi(:) => null()
 !----------------------------------------------------------------
     save iprem
     data  iprem /0/
@@ -211,21 +213,21 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     if (action(1:8) .eq. 'DETR_OCC') ASSERT(solveu.ne.' ')
     call jeexin(solveu//'.SLVK', ibid)
     if (ibid .ne. 0) then
-        call jeveuo(solveu//'.SLVK', 'L', jslvk)
-        if (zk24(jslvk)(1:5) .eq. 'MUMPS') then
+        call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+        if (slvk(1)(1:5) .eq. 'MUMPS') then
 ! --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! --- SI OUI, ON DEBRANCHE LES ALARMES ET INFO (PAS LES UTMESS_F)
-            lpreco = zk24(jslvk-1+8)(1:3).eq.'OUI'
+            lpreco = slvk(8)(1:3).eq.'OUI'
 ! --- ON RECUPERE UNIQUEMENT UN NUMERO DE VERSION LICITE
             if (action(1:7) .eq. 'VERSION') then
-                if (zk24(jslvk-1+12)(1:4) .eq. 'XXXX') then
+                if (slvk(12)(1:4) .eq. 'XXXX') then
                     call amumpu(31, rouc, ibid, k12bid, ibid,&
                                 lbid, kvers, ibid)
-                    zk24(jslvk-1+12)=kvers
+                    slvk(12)=kvers
                 else
 ! --- ON TESTE JUSTE LE CARACTERE LICITE DU NUMERO DE VERSION DEJA
 ! --- STOCKE DANS LA SD_SOLVEUR
-                    kvers=trim(adjustl(zk24(jslvk-1+12)))
+                    kvers=trim(adjustl(slvk(12)))
                     select case (kvers)
                         case('4.9.2','4.10.0')
                     case default
@@ -234,9 +236,9 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                 endif
                 goto 999
             endif
-            if (zk24(jslvk-1+7)(1:3) .eq. 'OUI') then
+            if (slvk(7)(1:3) .eq. 'OUI') then
                 prec='S'
-            else if (zk24(jslvk-1+7)(1:3).eq.'NON') then
+            else if (slvk(7)(1:3).eq.'NON') then
                 prec='D'
             else
 ! --- ON A OUBLIE UNE INITIALISATION AMONT DE MIXPRE DS .SLVK
@@ -341,8 +343,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         endif
 !
 !        --- PARAMETRE NPREC
-        call jeveuo(nosolv//'.SLVI', 'L', jslvi)
-        nprec=zi(jslvi)
+        call jeveuo(nosolv//'.SLVI', 'L', vi=slvi)
+        nprec=slvi(1)
 !
     else if (action(1:6).eq.'RESOUD') then
         ASSERT(nbsol.ge.1)
@@ -404,7 +406,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 ! --- NETTOYAGE DES OCCURENCES MUMPS EN MODE GESTION_MEMOIRE='EVAL' POUR
 ! --- PAR EXEMPLE NE PAS DEPASSER 5 OCCURENCES SIMULTANNEES EN CAS
 ! --- D'USAGE DU MECANISME TRY_EXCEPT PYTHON
-    if ((action(1:6).eq.'PRERES') .and. (zk24(jslvk+8)(1:4).eq.'EVAL')) then
+    if ((action(1:6).eq.'PRERES') .and. (slvk(9)(1:4).eq.'EVAL')) then
         if (rouc .eq. 'R') then
             if (prec .eq. 'S') then
                 call amumps('DETR_OCC', kxmps, rsolu, vcine, nbsol,&

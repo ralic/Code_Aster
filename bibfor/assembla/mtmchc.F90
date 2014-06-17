@@ -54,19 +54,23 @@ subroutine mtmchc(matas, action)
     character(len=14) :: nu
     character(len=19) :: mat, nomsto
     integer :: typmat, ielim, jelim, kdeb, kfin,  ilig, jcol
-    integer :: jsmhc, jsmdi, jvalm, jvalm2, jccva, jccll, nelim
-    integer :: jrefa, jnequ, ieq, k, deciel, neq, ier, jnulg
+    integer :: jsmhc,  jvalm, jvalm2, jccva,  nelim
+    integer ::  jnequ, ieq, k, deciel, neq, ier
     integer ::  nblocm,  decjel, iremp, jccid, keta, imatd
     logical :: nonsym
     integer, pointer :: elim(:) => null()
     integer, pointer :: remplis(:) => null()
+    integer, pointer :: ccll(:) => null()
+    integer, pointer :: smdi(:) => null()
+    integer, pointer :: nulg(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
     mat = matas
 !     CALL CHEKSD('sd_matr_asse',MAT,IRET)
-    call jeveuo(mat//'.REFA', 'E', jrefa)
+    call jeveuo(mat//'.REFA', 'E', vk24=refa)
     call jeexin(mat//'.CCID', ier)
-    if (zk24(jrefa-1+3) .eq. ' ') then
+    if (refa(3) .eq. ' ') then
         ASSERT(ier.eq.0)
         goto 9999
     else
@@ -74,11 +78,11 @@ subroutine mtmchc(matas, action)
     endif
 !
     if (action .eq. 'ELIMF') then
-        ASSERT(zk24(jrefa-1+3).eq.'ELIML')
+        ASSERT(refa(3).eq.'ELIML')
         call asmchc(mat)
         goto 9999
     else if (action.eq.'ELIML') then
-        ASSERT(zk24(jrefa-1+3).eq.'ELIMF')
+        ASSERT(refa(3).eq.'ELIMF')
 !        TRAITEMENT CI-DESSOUS
     else
         ASSERT(.false.)
@@ -86,16 +90,16 @@ subroutine mtmchc(matas, action)
 !
 !
     call jeveuo(mat//'.CCVA', 'L', jccva)
-    call jeveuo(mat//'.CCLL', 'L', jccll)
+    call jeveuo(mat//'.CCLL', 'L', vi=ccll)
     call jeveuo(mat//'.CCID', 'L', jccid)
 !
 !
 !
-    nu = zk24(jrefa-1+2)(1:14)
+    nu = refa(2)(1:14)
     call jeexin(nu//'.NUML.DELG', imatd)
     if (imatd .ne. 0) then
         call jeveuo(nu//'.NUML.NEQU', 'L', jnequ)
-        call jeveuo(nu//'.NUML.NULG', 'L', jnulg)
+        call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
     else
         call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
     endif
@@ -104,7 +108,7 @@ subroutine mtmchc(matas, action)
 !
     nomsto = nu//'.SMOS'
     call jeveuo(nomsto//'.SMHC', 'L', jsmhc)
-    call jeveuo(nomsto//'.SMDI', 'L', jsmdi)
+    call jeveuo(nomsto//'.SMDI', 'L', vi=smdi)
 !
 !
 !     -- RECUPERATION DE .VALM
@@ -134,7 +138,7 @@ subroutine mtmchc(matas, action)
     nelim=0
     do 1, ieq=1,neq
     if (imatd .ne. 0) then
-        keta=zi(jccid-1+zi(jnulg+ieq-1))
+        keta=zi(jccid-1+nulg(ieq))
     else
         keta=zi(jccid-1+ieq)
     endif
@@ -154,11 +158,11 @@ subroutine mtmchc(matas, action)
     kfin=0
     do 121 jcol = 1, neq
         kdeb = kfin + 1
-        kfin = zi(jsmdi-1+jcol)
+        kfin = smdi(jcol)
         jelim = elim(jcol)
 !
         if (jelim .ne. 0) then
-            deciel=zi(jccll-1+3*(jelim-1)+3)
+            deciel=ccll(3*(jelim-1)+3)
             do 111, k=kdeb, kfin - 1
             ilig = zi4(jsmhc-1+k)
             ielim = elim(ilig)
@@ -177,7 +181,7 @@ subroutine mtmchc(matas, action)
             do 112 k = kdeb, kfin - 1
                 ilig = zi4(jsmhc-1+k)
                 ielim = elim(ilig)
-                decjel=zi(jccll-1+3*(ielim-1)+3)
+                decjel=ccll(3*(ielim-1)+3)
                 if (ielim .ne. 0) then
                     remplis(ielim)=remplis(ielim)+1
                     iremp=remplis(ielim)
@@ -201,7 +205,7 @@ subroutine mtmchc(matas, action)
 121  end do
 !
 !
-    zk24(jrefa-1+3)='ELIML'
+    refa(3)='ELIML'
     call jedetr(mat//'.CCVA')
     call jedetr(mat//'.CCLL')
     call jedetr(mat//'.CCII')

@@ -36,9 +36,12 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !     IN  CHAMNA    :  K*  : CHAM_NO MAITRE 1
 !     IN/OUT CHAMNB :  K*  : CHAM_NO MAITRE 2
 !----------------------------------------------------------------------
-    integer :: neq, ival1, ival2, i, jnum
+    integer :: neq,   i
     character(len=19) :: prno
     character(len=24) :: chamn1, chamn2
+    integer, pointer :: delg(:) => null()
+    real(kind=8), pointer :: val1(:) => null()
+    real(kind=8), pointer :: val2(:) => null()
 !----------------------------------------------------------------------
 !
     call jemarq()
@@ -47,15 +50,15 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !
 ! --- NUMEROTATION POUR TRIER LES LAGRANGE ET LES DDLS PHYSIQUES
     call dismoi('PROF_CHNO', chamn1, 'CHAM_NO', repk=prno)
-    call jeveuo(prno(1:14)// '.NUME.DELG', 'L', jnum)
+    call jeveuo(prno(1:14)// '.NUME.DELG', 'L', vi=delg)
 !
 !
 ! --- MISE A JOUR DES VALEURS DES LAGRANGE
-    call jeveuo(chamn1(1:19)//'.VALE', 'L', ival1)
-    call jeveuo(chamn2(1:19)//'.VALE', 'E', ival2)
+    call jeveuo(chamn1(1:19)//'.VALE', 'L', vr=val1)
+    call jeveuo(chamn2(1:19)//'.VALE', 'E', vr=val2)
     call jelira(chamn2(1:19)//'.VALE', 'LONMAX', neq)
     do i = 1, neq
-        if (zi(jnum-1+i) .ne. 0) zr(ival2-1+i)=alpha*zr(ival1-1+i) + zr( ival2-1+i)
+        if (delg(i) .ne. 0) val2(i)=alpha*val1(i) + val2(i)
     end do
 !
     call jedema()

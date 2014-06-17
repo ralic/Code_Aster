@@ -43,8 +43,8 @@ subroutine rc36in(noma, nbma, listma, chindi)
 ! OUT : CHINDI : CHAM_ELEM DE TYPE ELNO D'INDICES DE CONTRAINTES
 !     ------------------------------------------------------------------
 !
-    integer :: n1, n2, nbindi, iocc, nbcmp, decal, ipt, icmp, iad, nbpt, jcesd
-    integer :: jcesv, jconx1, jconx2, in, im, ima, ino, nbnoeu, jnoeu, nbmail
+    integer :: n1, n2, nbindi, iocc, nbcmp, decal, ipt, icmp, iad, nbpt
+    integer ::   jconx2, in, im, ima, ino, nbnoeu, jnoeu, nbmail
     integer :: jmail, nbtou, im1
     parameter  ( nbcmp = 7 )
     real(kind=8) :: vale(nbcmp)
@@ -52,6 +52,9 @@ subroutine rc36in(noma, nbma, listma, chindi)
     character(len=8) :: motcls(2), typmcs(2), motcln(2), typmcn(2)
     character(len=16) :: motclf, nocmp(nbcmp)
     character(len=24) :: mesmai, mesnoe
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: cesd(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -82,10 +85,10 @@ subroutine rc36in(noma, nbma, listma, chindi)
     call rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
                 listma, chindi)
 !
-    call jeveuo(chindi(1:19)//'.CESD', 'L', jcesd)
-    call jeveuo(chindi(1:19)//'.CESV', 'E', jcesv)
+    call jeveuo(chindi(1:19)//'.CESD', 'L', vi=cesd)
+    call jeveuo(chindi(1:19)//'.CESV', 'E', vr=cesv)
 !
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
     do 10, iocc = 1, nbindi, 1
@@ -121,12 +124,12 @@ subroutine rc36in(noma, nbma, listma, chindi)
     if (nbtou .ne. 0) then
         do 100 im = 1, nbma
             ima = listma(im)
-            nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-            decal= zi(jcesd-1+5+4*(ima-1)+4)
+            nbpt = cesd(5+4*(ima-1)+1)
+            decal= cesd(5+4*(ima-1)+4)
             do 110,ipt = 1,nbpt
             do 120,icmp = 1,nbcmp
             iad = decal + (ipt-1)*nbcmp + icmp
-            zr(jcesv-1+iad) = vale(icmp)
+            cesv(iad) = vale(icmp)
 120          continue
 110          continue
 100      continue
@@ -144,13 +147,13 @@ subroutine rc36in(noma, nbma, listma, chindi)
 202              continue
                 goto 200
 204              continue
-                nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-                decal= zi(jcesd-1+5+4*(ima-1)+4)
+                nbpt = cesd(5+4*(ima-1)+1)
+                decal= cesd(5+4*(ima-1)+4)
                 do 210,ipt = 1,nbpt
-                ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
+                ino = connex(zi(jconx2+ima-1)+ipt-1)
                 do 220,icmp = 1,nbcmp
                 iad = decal + (ipt-1)*nbcmp + icmp
-                zr(jcesv-1+iad) = vale(icmp)
+                cesv(iad) = vale(icmp)
 220              continue
 210              continue
 200          continue
@@ -162,15 +165,15 @@ subroutine rc36in(noma, nbma, listma, chindi)
 302              continue
                 goto 300
 304              continue
-                nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-                decal= zi(jcesd-1+5+4*(ima-1)+4)
+                nbpt = cesd(5+4*(ima-1)+1)
+                decal= cesd(5+4*(ima-1)+4)
                 do 310,ipt = 1,nbpt
-                ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
+                ino = connex(zi(jconx2+ima-1)+ipt-1)
                 do 320,in = 1,nbnoeu
                 if (zi(jnoeu+in-1) .eq. ino) then
                     do 330,icmp = 1,nbcmp
                     iad = decal + (ipt-1)*nbcmp + icmp
-                    zr(jcesv-1+iad) = vale(icmp)
+                    cesv(iad) = vale(icmp)
 330                  continue
                     goto 310
                 endif

@@ -56,10 +56,12 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef,&
 !
 !
 !
-    integer :: jdepp, jdepm, jddepl
     integer :: neq
     character(len=24) :: incplu, incmoi
     character(len=24) :: ddincc
+    real(kind=8), pointer :: ddepl(:) => null()
+    real(kind=8), pointer :: depm(:) => null()
+    real(kind=8), pointer :: depp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,14 +74,14 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef,&
     ddincc = ddincz
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call jeveuo(incmoi(1:19)//'.VALE', 'L', jdepm)
-    call jeveuo(incplu(1:19)//'.VALE', 'E', jdepp)
-    call jeveuo(ddincc(1:19)//'.VALE', 'E', jddepl)
+    call jeveuo(incmoi(1:19)//'.VALE', 'L', vr=depm)
+    call jeveuo(incplu(1:19)//'.VALE', 'E', vr=depp)
+    call jeveuo(ddincc(1:19)//'.VALE', 'E', vr=ddepl)
 !
 ! --- MISE A JOUR
 !
-    call majour(neq, lgrot, lendo, sdnume, zr(jdepm),&
-                zr(jddepl), coef, zr(jdepp), ordre)
+    call majour(neq, lgrot, lendo, sdnume, depm,&
+                ddepl, coef, depp, ordre)
 !
     call jedema()
 end subroutine

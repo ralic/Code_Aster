@@ -81,10 +81,13 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     integer :: idep, idresu, ieq, ire1
     integer :: ire2, ire3, iret, iretou, j, jfreq, jnume
     integer :: k, k1, l, ldnew, lfreq, llchab, llind
-    integer :: llinsk, llnequ, llnueq, llors, llprs, llref2
+    integer :: llinsk,   llors, llprs
     integer :: llrot, ltrotx, ltroty, ltrotz, ltvec, n1
     integer :: nbbas, nbcham, nbcmp, nbcou, nbfreq, nbnot
     integer :: nbsst, neq, neqgen, neqs, numsst, nutars
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: nllnequ(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     data pgc   /'REHAGL'/
     data soutr /'&SOUSSTR'/
@@ -193,15 +196,15 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=k24bid)
     numgen(1:14)=k24bid(1:14)
     numgen(15:19) = '.NUME'
-    call jeveuo(numgen//'.REFN', 'L', llref2)
-    k24bid=zk24(llref2)
+    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
+    k24bid=refn(1)
     modgen = k24bid(1:8)
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
     k8bid = '  '
     call mgutdm(modgen, k8bid, 1, 'NB_CMP_MAX', nbcmp,&
                 k8bid)
-    call jeveuo(numgen//'.NEQU', 'L', llnequ)
-    neqgen = zi(llnequ)
+    call jeveuo(numgen//'.NEQU', 'L', vi=nllnequ)
+    neqgen = nllnequ(1)
 !
 ! --- RECUPERATION DES ROTATIONS
     call wkvect('&&'//pgc//'ROTX', 'V V R', nbsst, ltrotx)
@@ -272,7 +275,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 ! --- RESTITUTION SUR BASE PHYSIQUE ---
 ! -------------------------------------
 !
-    call jeveuo(numgen//'.NUEQ', 'L', llnueq)
+    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
     call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
     call jeveuo(jexnum(numgen//'.ORIG', ibid), 'L', llors)
     call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
@@ -361,7 +364,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                                 iad=lmoet+ieq+j-1
                             else
                                 iad=idresu+(zi(jnume+i)-1)*neqgen+&
-                                zi(llnueq+ieq+j-2)-1
+                                nueq(1+ieq+j-2)-1
                             endif
 !
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES

@@ -110,14 +110,18 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
     character(len=19) :: valint(zvalin)
     character(len=19) :: solalt(zsolal)
     character(len=19) :: depdet, depdel, deppr1, deppr2
-    integer :: jdepdt, jdepdl, jdu0, jdu1
     character(len=19) :: depplt, ddep
-    integer :: jdeppt, jddepl
     character(len=19) :: depplu
-    integer :: jdeppl
     character(len=19) :: sigplu, varplu, complu
     character(len=19) :: depl, vite, acce, k19bla
     integer :: ifm, niv
+    real(kind=8), pointer :: ddepl(:) => null()
+    real(kind=8), pointer :: depdl(:) => null()
+    real(kind=8), pointer :: depdt(:) => null()
+    real(kind=8), pointer :: deppl(:) => null()
+    real(kind=8), pointer :: deppt(:) => null()
+    real(kind=8), pointer :: du0(:) => null()
+    real(kind=8), pointer :: du1(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -165,29 +169,29 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 ! --- MISE A JOUR DEPLACEMENT
 ! --- DDEP = RHO*DEPPRE(1) + (ETA-OFFSET)*DEPPRE(2)
 !
-    call jeveuo(deppr1(1:19)//'.VALE', 'L', jdu0)
-    call jeveuo(deppr2(1:19)//'.VALE', 'L', jdu1)
-    call jeveuo(ddep(1:19) //'.VALE', 'E', jddepl)
-    call r8inir(neq, 0.d0, zr(jddepl), 1)
-    call daxpy(neq, rho, zr(jdu0), 1, zr(jddepl),&
+    call jeveuo(deppr1(1:19)//'.VALE', 'L', vr=du0)
+    call jeveuo(deppr2(1:19)//'.VALE', 'L', vr=du1)
+    call jeveuo(ddep(1:19) //'.VALE', 'E', vr=ddepl)
+    call r8inir(neq, 0.d0, ddepl, 1)
+    call daxpy(neq, rho, du0, 1, ddepl,&
                1)
-    call daxpy(neq, eta-offset, zr(jdu1), 1, zr(jddepl),&
+    call daxpy(neq, eta-offset, du1, 1, ddepl,&
                1)
 !
 ! --- MISE A JOUR DE L'INCREMENT DE DEPLACEMENT DEPUIS LE DEBUT
 ! --- DU PAS DE TEMPS DEPDET = DEPDEL+DDEP
 !
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepdl)
-    call jeveuo(depdet(1:19)//'.VALE', 'E', jdepdt)
-    call majour(neq, lgrot, lendo, sdnume, zr(jdepdl),&
-                zr(jddepl), 1.d0, zr(jdepdt), 0)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depdl)
+    call jeveuo(depdet(1:19)//'.VALE', 'E', vr=depdt)
+    call majour(neq, lgrot, lendo, sdnume, depdl,&
+                ddepl, 1.d0, depdt, 0)
 !
 ! --- MISE A JOUR DU DEPLACEMENT DEPPLT = DEPPLU+DDEP
 !
-    call jeveuo(depplu(1:19)//'.VALE', 'L', jdeppl)
-    call jeveuo(depplt(1:19)//'.VALE', 'E', jdeppt)
-    call majour(neq, lgrot, lendo, sdnume, zr(jdeppl),&
-                zr(jddepl), 1.d0, zr(jdeppt), 1)
+    call jeveuo(depplu(1:19)//'.VALE', 'L', vr=deppl)
+    call jeveuo(depplt(1:19)//'.VALE', 'E', vr=deppt)
+    call majour(neq, lgrot, lendo, sdnume, deppl,&
+                ddepl, 1.d0, deppt, 1)
 !
 ! --- RECONSTRUCTION DES VARIABLES CHAPEAUX
 !

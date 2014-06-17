@@ -67,11 +67,12 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 !-----------------------------------------------------------------------
     integer :: i, iad, iadr,  ibid, ic, icm
     integer :: icmp, iec, inno, ino,  inum
-    integer :: irval, iun, iva, ival, izero, jlast
+    integer :: irval, iun, iva, ival, izero
     integer :: ncmp
     integer, pointer :: bid(:) => null()
     character(len=8), pointer :: nom(:) => null()
     integer, pointer :: pos(:) => null()
+    integer, pointer :: last(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     blanc = '      '
@@ -83,8 +84,8 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
     endif
 !
     if (.not.lresu) then
-        call jeveuo('&&OP0039.LAST', 'E', jlast)
-        inum = zi(jlast-1+4) + 1
+        call jeveuo('&&OP0039.LAST', 'E', vi=last)
+        inum = last(4) + 1
     else
         inum = 0
     endif
@@ -222,7 +223,7 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
 12      continue
 22  end do
     write(ifi,'(3(1X,E21.13E3))') (zr(irval-1+i),i=1,nbcmp*nbno)
-    if (.not.lresu) zi(jlast-1+4)=inum
+    if (.not.lresu) last(4)=inum
     call jedetr('&&IRDRCA.VALE')
     AS_DEALLOCATE(vi=bid)
     AS_DEALLOCATE(vk8=nom)

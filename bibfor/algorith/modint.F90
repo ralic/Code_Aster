@@ -101,12 +101,12 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: lmatmo, i1, j1, k1, m1, n1, l1, lmakry, linddl, nsekry, lvtemp
-    integer ::    linlag,   lmatk, lmatm, lmapro
+    integer :: lmatmo, i1, j1, k1, m1, n1, l1, lmakry, linddl, nsekry
+    integer ::       lmatk, lmatm, lmapro
     integer :: lkpro,  lmatrm, lmatrk, lwork,   lddld
     integer ::  lkryl,  limped,   lmatma, iret
-    integer :: nbvect, ibid, decal,  ldelg, no, nbsst, lindin, coeff, lvp
-    integer :: lintrf,tach1,ifm,niv
+    integer :: nbvect, ibid, decal,   no, nbsst, lindin, coeff, lvp
+    integer :: tach1,ifm,niv
     integer(kind=4) :: info
     real(kind=8) :: temp, pi, rbid, norm, lambda, comlin(2), swork(1), rand, max
     real(kind=8) :: abs, bande(2)
@@ -129,6 +129,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     real(kind=8), pointer :: vect_temp_2(:) => null()
     real(kind=8), pointer :: v_f_pro(:) => null()
     integer, pointer :: v_ind_f_pro(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: v_ind_lag(:) => null()
+    integer, pointer :: delg(:) => null()
+    integer, pointer :: ddl_actif_int(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 !-- DEBUT --C
@@ -227,22 +231,22 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
                   modes, '&&DUMMY2', dummy3, 0)
 !    
     call wkvect('&&MODINT.SE_KRYLOV', 'V V R', neq*nsekry, lmakry)
-    call jeveuo('&&MOIN93.V_IND_LAG', 'L', linlag)
-    call jeveuo('&&MOIN93.DDL_ACTIF_INT', 'L', lintrf)
+    call jeveuo('&&MOIN93.V_IND_LAG', 'L', vi=v_ind_lag)
+    call jeveuo('&&MOIN93.DDL_ACTIF_INT', 'L', vi=ddl_actif_int)
 !
     do j1 = 1, nsekry
       ! construction du nom du mode "a la main"
       call codent(j1-1, 'D0', k6bid)
-      call jeveuo(modes//'.001.'//k6bid//'.VALE', 'L', lvtemp)
-      norm=ddot(6*nnoint,zr(lvtemp),1,zr(lvtemp),1)
+      call jeveuo(modes//'.001.'//k6bid//'.VALE', 'L', vr=vale)
+      norm=ddot(6*nnoint,vale,1,vale,1)
       norm=sqrt(norm)
       ! normalisation dans L2
       do i1 = 1, nddlin
-          m1=zi(lintrf+i1-1)
-          zr(lmakry+(j1-1)*neq+zi(linlag+(i1-1)*2)-1)=&
-              zr(lvtemp+m1-1)/norm
-          zr(lmakry+(j1-1)*neq+zi(linlag+(i1-1)*2+1)-1)=&
-              zr(lvtemp+m1-1)/norm
+          m1=ddl_actif_int(i1)
+          zr(lmakry+(j1-1)*neq+v_ind_lag(1+(i1-1)*2)-1)=&
+              vale(m1)/norm
+          zr(lmakry+(j1-1)*neq+v_ind_lag(1+(i1-1)*2+1)-1)=&
+              vale(m1)/norm
       end do
     end do
 !
@@ -277,10 +281,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !-- MISE A 0 DES DDL DE LAGRANGE
     call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
     call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
-    call jeveuo(prno//'.DELG', 'L', ldelg)
+    call jeveuo(prno//'.DELG', 'L', vi=delg)
 !
     do i1 = 1, neq
-        if (zi(ldelg+i1-1) .lt. 0) then
+        if (delg(i1) .lt. 0) then
             do j1 = 1, nsekry
                 zr(lmakry+(j1-1)*neq+i1-1)=0.d0
             end do

@@ -43,7 +43,9 @@ subroutine op0012()
     character(len=19) :: solveu
     character(len=24) :: lchci, lmatel
     integer :: itysca, nbchc, nbmat, jlimat, jlchci, ibid, k
-    integer :: ico, islvk, ilimat
+    integer :: ico
+    character(len=24), pointer :: slvk(:) => null()
+    character(len=24), pointer :: lime(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
 !
@@ -85,15 +87,15 @@ subroutine op0012()
     call getvtx(' ', 'SYME', scal=syme, nbret=ibid)
     if (syme .eq. 'OUI') then
         call dismoi('SOLVEUR', nu, 'NUME_DDL', repk=solveu)
-        call jeveuo(solveu(1:19)//'.SLVK', 'E', islvk)
-        sym2 = zk24(islvk+5-1)(1:8)
-        zk24(islvk+5-1)='OUI'
+        call jeveuo(solveu(1:19)//'.SLVK', 'E', vk24=slvk)
+        sym2 = slvk(5)(1:8)
+        slvk(5)='OUI'
         call asmatr(nbmat, zk24(jlimat), ' ', nu, solveu,&
                     lchci, 'ZERO', 'G', itysca, matas)
-        zk24(islvk+5-1)=sym2(1:3)
-        call jeveuo(matas//'           .LIME', 'E', ilimat)
+        slvk(5)=sym2(1:3)
+        call jeveuo(matas//'           .LIME', 'E', vk24=lime)
         do k = 1, nbmat
-            zk24(ilimat-1+k)=zk24(jlimat-1+k)
+            lime(k)=zk24(jlimat-1+k)
         end do
     else
         call asmatr(nbmat, zk24(jlimat), ' ', nu, ' ',&

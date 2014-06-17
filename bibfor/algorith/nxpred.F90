@@ -55,15 +55,20 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
     complex(kind=8) :: cbid
 !
 !
-    integer :: k, j2nd, jdirp, j2ni
-    integer :: jtemp, jtempm, jtempp
-    integer :: jvare, jbtla, jbuem
+    integer :: k, j2nd,  j2ni
+    integer ::  jtempm
+    integer ::   jbuem
     real(kind=8) :: rbid
     character(len=1) :: typres
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla, criter
     character(len=24) :: vebuem, vabuem, cnvabt, cnvabu
     integer :: iret
+    real(kind=8), pointer :: btla(:) => null()
+    real(kind=8), pointer :: dirp(:) => null()
+    real(kind=8), pointer :: tempp(:) => null()
+    real(kind=8), pointer :: temp(:) => null()
+    real(kind=8), pointer :: vare(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
     data typres        /'R'/
@@ -88,10 +93,10 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 !
     call jeveuo(vec2nd(1:19)//'.VALE', 'L', j2nd)
     call jeveuo(vec2ni(1:19)//'.VALE', 'L', j2ni)
-    call jeveuo(cndirp(1:19)//'.VALE', 'L', jdirp)
-    call jeveuo(vtempp(1:19)//'.VALE', 'E', jtempp)
+    call jeveuo(cndirp(1:19)//'.VALE', 'L', vr=dirp)
+    call jeveuo(vtempp(1:19)//'.VALE', 'E', vr=tempp)
     call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
-    call jeveuo(vtemp(1:19)//'.VALE', 'L', jtemp)
+    call jeveuo(vtemp(1:19)//'.VALE', 'L', vr=temp)
 !
     if (lostat) then
 !
@@ -107,7 +112,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
         call asasve(veresi, numedd, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', rbid,&
                     typres, cnresi)
-        call jeveuo(cnresi(1:19)//'.VALE', 'L', jvare)
+        call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=vare)
 !
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
@@ -116,7 +121,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
         call asasve(vebtla, numedd, typres, vabtla)
         call ascova('D', vabtla, bidon, 'INST', rbid,&
                     typres, cnvabt)
-        call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)
+        call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr=btla)
 !
 ! --- B . TEMPERATURE - CALCUL ET ASSEMBLAGE
 !
@@ -128,7 +133,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
         call jeveuo(cnvabu(1:19)//'.VALE', 'L', jbuem)
 !
         do k = 1, lonch
-            zr(jtempp+k-1) = zr(j2nd+k-1) - zr(jvare+k-1) + zr(jdirp+ k-1) - zr(jbtla+k-1)- zr(jb&
+            tempp(k) = zr(j2nd+k-1) - vare(k) + dirp(k) - btla(k)- zr(jb&
                              &uem+k-1)
         end do
 !
@@ -143,7 +148,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
         call copisd('CHAMP_GD', 'V', chsol, vtempm(1:19))
         call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
         do k = 1, lonch
-            zr(jtempm+k-1) = zr(jtempm+k-1) + zr(jtemp+k-1)
+            zr(jtempm+k-1) = zr(jtempm+k-1) + temp(k)
         end do
 !
     else
@@ -153,7 +158,7 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 !=======================================================================
 !
         do k = 1, lonch
-            zr(jtempp+k-1) = zr(j2ni+k-1) + zr(jdirp+k-1)
+            tempp(k) = zr(j2ni+k-1) + dirp(k)
         end do
 !
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)

@@ -57,21 +57,22 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect,&
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic
     character(len=19) :: matas
-    integer :: jrefa, jsmdi, jsmhc,  neq
+    integer ::  jsmdi, jsmhc,  neq
     complex(kind=8), pointer :: vectmp(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !
     call jemarq()
     prepo2=prepos
     matas=zk24(zi(lmat+1))(1:19)
-    call jeveuo(matas//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
+    call jeveuo(matas//'.REFA', 'L', vk24=refa)
+    if (refa(3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
 !
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     if (kmpic .ne. 'OUI') then
         call utmess('F', 'CALCULEL6_54')
     endif
 !
-    call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
+    call jeveuo(refa(2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
     neq=zi(lmat+2)
     AS_ALLOCATE(vc=vectmp, size=neq)
 !

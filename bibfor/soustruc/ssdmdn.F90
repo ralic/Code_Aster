@@ -53,19 +53,25 @@ subroutine ssdmdn(mag)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, iaconx, iadim2, iadime, ialino, iancnf
-    integer :: ianmcr, ianon2, iasupm, ino, ino1
+    integer :: i, i1
+    integer ::  ianon2, iasupm, ino, ino1
     integer :: inol, iocc, isma, kk, lmail, lnoeu, longt
     integer :: lpref, n1, n2, n3, nbnoe, nbnoet, nbnoex, lpr(1)
     integer :: nbnol, nbsma, nnnoe, nocc
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: dime_2(:) => null()
+    integer, pointer :: conx(:) => null()
+    integer, pointer :: dime(:) => null()
+    integer, pointer :: lino(:) => null()
+    integer, pointer :: noeud_conf(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    call jeveuo(mag//'.DIME', 'L', iadime)
-    call jeveuo(mag//'.DIME_2', 'L', iadim2)
-    call jeveuo(mag//'.NOEUD_CONF', 'L', iancnf)
-    call jeveuo(mag//'.NOMACR', 'L', ianmcr)
-    nnnoe= zi(iadime-1+1)
-    nbsma= zi(iadime-1+4)
+    call jeveuo(mag//'.DIME', 'L', vi=dime)
+    call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
+    call jeveuo(mag//'.NOEUD_CONF', 'L', vi=noeud_conf)
+    call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
+    nnnoe= dime(1)
+    nbsma= dime(4)
 !
     call wkvect(mag//'.NOMNOE_2', 'V V K8', nnnoe, ianon2)
 !
@@ -100,16 +106,16 @@ subroutine ssdmdn(mag)
             do isma = 1, nbsma
                 call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupm)
                 call jenuno(jexnum(mag//'.SUPMAIL', isma), nosma)
-                nomacr= zk8(ianmcr-1+isma)
-                call jeveuo(nomacr//'.CONX', 'L', iaconx)
+                nomacr= vnomacr(isma)
+                call jeveuo(nomacr//'.CONX', 'L', vi=conx)
                 call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
-                nbnoe=zi(iadim2-1+4*(isma-1)+1)
-                nbnol=zi(iadim2-1+4*(isma-1)+2)
+                nbnoe=dime_2(4*(isma-1)+1)
+                nbnol=dime_2(4*(isma-1)+2)
                 nbnoet=nbnoe+nbnol
                 do i = 1, nbnoet
                     ino= zi(iasupm-1+i)
                     if (ino .gt. nnnoe) goto 3
-                    ino1= zi(iaconx-1+3*(i-1)+2)
+                    ino1= conx(3*(i-1)+2)
                     call jenuno(jexnum(mal//'.NOMNOE', ino1), nomnol)
                     i1=1
                     if (lpref .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lpref) = pref(1:lpref)
@@ -133,12 +139,12 @@ subroutine ssdmdn(mag)
             endif
 !
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
-            nomacr= zk8(ianmcr-1+isma)
-            call jeveuo(nomacr//'.LINO', 'L', ialino)
+            nomacr= vnomacr(isma)
+            call jeveuo(nomacr//'.LINO', 'L', vi=lino)
             call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
             call jenonu(jexnom(mal//'.NOMNOE', nomnol), inol)
-            kk= indiis(zi(ialino),inol,1,nbnoex)
+            kk= indiis(lino,inol,1,nbnoex)
             if (kk .eq. 0) then
                 valk(1) = nomnol
                 valk(2) = nosma
@@ -146,8 +152,8 @@ subroutine ssdmdn(mag)
                 goto 1
             endif
 !
-            ino=zi(iadim2-1+4*(isma-1)+3)+kk
-            if (zi(iancnf-1+ino) .eq. ino) then
+            ino=dime_2(4*(isma-1)+3)+kk
+            if (noeud_conf(ino) .eq. ino) then
                 zk8(ianon2-1+ino)= nomnog
             else
                 valk(1) = nomnol

@@ -38,10 +38,11 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iinst, inord, iordr, iptem, jacce, jvite, jdepl, jpass
+    integer :: iinst, inord,  iptem, jacce, jvite, jdepl, jpass
     integer :: ibid, jinst, jordr, nbmode, nbo
     real(kind=8) :: dtbid
     character(len=8) :: k8b
+    integer, pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     blanc8 = '        '
     blan16 = '                '
@@ -66,10 +67,10 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
     endif
 ! --- REMPLISSAGE DU .ORDR ET DU .DISC
 !
-    call jeveuo(res//'           .ORDR', 'E', iordr)
+    call jeveuo(res//'           .ORDR', 'E', vi=ordr)
     do 10 inord = 1, nbo
-        zi(jordr-1+inord) = zi(iordr-1+inord)
-        call rsadpa(res, 'L', 1, 'INST', zi(iordr-1+inord),&
+        zi(jordr-1+inord) = ordr(inord)
+        call rsadpa(res, 'L', 1, 'INST', ordr(inord),&
                     0, sjv=iinst, styp=k8b)
         zr(jinst-1+inord) = zr(iinst)
 10  continue

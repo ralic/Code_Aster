@@ -44,25 +44,29 @@ subroutine calcin(option, max, may, maz, model,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
-    integer :: ipres, i, j
+    integer ::  i, j
     real(kind=8) :: mij
     character(len=*) :: model, option
     character(len=19) :: modx, mody, modz, veprj, max, may, maz
 !--------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: imatx, imaty, imatz, imodx, imody, imodz
+    integer :: imatx, imaty, imatz
     integer ::   nbpres
     real(kind=8) :: rx, ry, rz
     real(kind=8), pointer :: vectx(:) => null()
     real(kind=8), pointer :: vecty(:) => null()
     real(kind=8), pointer :: vectz(:) => null()
+    real(kind=8), pointer :: vmodx(:) => null()
+    real(kind=8), pointer :: vmody(:) => null()
+    real(kind=8), pointer :: vmodz(:) => null()
+    real(kind=8), pointer :: pres(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    call jeveuo(modx//'.VALE', 'L', imodx)
-    call jeveuo(mody//'.VALE', 'L', imody)
+    call jeveuo(modx//'.VALE', 'L', vr=vmodx)
+    call jeveuo(mody//'.VALE', 'L', vr=vmody)
 !
-    call jeveuo(veprj//'.VALE', 'L', ipres)
+    call jeveuo(veprj//'.VALE', 'L', vr=pres)
     call jelira(veprj//'.VALE', 'LONMAX', nbpres)
 !
     AS_ALLOCATE(vr=vectx, size=nbpres)
@@ -78,15 +82,15 @@ subroutine calcin(option, max, may, maz, model,&
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-    call mrmult('ZERO', imatx, zr(imodx), vectx, 1,&
+    call mrmult('ZERO', imatx, vmodx, vectx, 1,&
                 .true.)
-    call mrmult('ZERO', imaty, zr(imody), vecty, 1,&
+    call mrmult('ZERO', imaty, vmody, vecty, 1,&
                 .true.)
 !
 !--PRODUITS SCALAIRES VECTEURS PRESSION PAR MAX*MODX ET MAY*MODY
 !
-    rx= ddot(nbpres,zr(ipres), 1,vectx,1)
-    ry= ddot(nbpres,zr(ipres), 1,vecty,1)
+    rx= ddot(nbpres,pres, 1,vectx,1)
+    ry= ddot(nbpres,pres, 1,vecty,1)
 !
 !
 !---------------- MENAGE SUR LA VOLATILE ---------------------------
@@ -106,13 +110,13 @@ subroutine calcin(option, max, may, maz, model,&
 !--------------------------+ PRESSION*MAZ*MODZ  EN 3D---------------
     if (model .eq. '3D') then
 !
-        call jeveuo(modz//'.VALE', 'L', imodz)
+        call jeveuo(modz//'.VALE', 'L', vr=vmodz)
         AS_ALLOCATE(vr=vectz, size=nbpres)
         call mtdscr(maz)
         call jeveuo(maz(1:19)//'.&INT', 'E', imatz)
-        call mrmult('ZERO', imatz, zr(imodz), vectz, 1,&
+        call mrmult('ZERO', imatz, vmodz, vectz, 1,&
                     .true.)
-        rz= ddot(nbpres,zr(ipres), 1,vectz,1)
+        rz= ddot(nbpres,pres, 1,vectz,1)
         AS_DEALLOCATE(vr=vectz)
         call detrsd('CHAM_NO', modz)
         mij = rx+ry+rz

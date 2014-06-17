@@ -60,7 +60,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 ! ---------------------------------------------------------------------
 !
     integer :: reincr
-    integer :: jslvk, n1
+    integer ::  n1
     logical :: lcont, lallv, lctcc, lctcd, lpena, leltc
     logical :: lpilo, lreli, lmacr, lunil
     logical :: lmvib, lflam, lexpl, lxfem, lmodim
@@ -70,6 +70,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     integer :: ifm, niv
     character(len=24) :: typilo, typrel, metres
     character(len=3)  :: mfdet
+    character(len=24), pointer :: slvk(:) => null()
 !
 ! ---------------------------------------------------------------------
 !
@@ -104,8 +105,8 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
     lpetsc = isfonc(fonact,'PETSC')
     lldsp = isfonc(fonact,'LDLT_SP')
 !
-    call jeveuo(solveu//'.SLVK', 'E', jslvk)
-    metres = zk24(jslvk)
+    call jeveuo(solveu//'.SLVK', 'E', vk24=slvk)
+    metres = slvk(1)
 !
 ! --- INITIALISATIONS
 !
@@ -113,9 +114,9 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 !
 ! --- TYPE DE SOLVEUR
 !
-    lrcmk = zk24(jslvk-1+4) .eq. 'RCMK'
-    lamg = ((zk24(jslvk-1+2).eq.'ML') .or. (zk24(jslvk-1+2).eq.'BOOMER'))
-    lsyme = zk24(jslvk-1+5).eq.'OUI'
+    lrcmk = slvk(4) .eq. 'RCMK'
+    lamg = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
+    lsyme = slvk(5).eq.'OUI'
 !
 ! --- CONTACT DISCRET
 !
@@ -145,7 +146,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
         endif
 !       ON FORCE SYME='OUI' AVEC LE CONTACT DISCRET
         if (.not.(lsyme.or.lallv)) then
-            zk24(jslvk+4) = 'OUI'
+            slvk(5) = 'OUI'
             call utmess('A', 'CONTACT_1')
         endif
         if ((lmvib.or.lflam) .and. lmodim) then
@@ -164,10 +165,10 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
             call utmess('F', 'MECANONLINE3_91')
         endif
         if (lrcmk) then
-            call utmess('F', 'MECANONLINE3_93', sk=zk24(jslvk))
+            call utmess('F', 'MECANONLINE3_93', sk=slvk(1))
         endif
         if (lamg) then
-            call utmess('F', 'MECANONLINE3_97', sk=zk24(jslvk-1+2))
+            call utmess('F', 'MECANONLINE3_97', sk=slvk(2))
         endif
         if (lpetsc .and. lmatdi) then
             call utmess('F', 'MECANONLINE3_98')
@@ -184,11 +185,11 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
             call utmess('A', 'MECANONLINE3_95')
         endif
         if (lgcpc .or. lpetsc) then
-            call utmess('F', 'MECANONLINE3_96', sk=zk24(jslvk))
+            call utmess('F', 'MECANONLINE3_96', sk=slvk(1))
         endif
 !       ON FORCE SYME='OUI' AVEC LIAISON_UNILATER
         if (.not.lsyme) then
-            zk24(jslvk+4)='OUI'
+            slvk(5)='OUI'
             call utmess('A', 'UNILATER_1')
         endif
     endif
@@ -197,7 +198,7 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 !
     if (lmvib .or. lflam) then
         if (lgcpc .or. lpetsc) then
-            call utmess('F', 'FACTOR_52', sk=zk24(jslvk))
+            call utmess('F', 'FACTOR_52', sk=slvk(1))
         endif
         if (leltc) then
             call utmess('F', 'MECANONLINE5_3')

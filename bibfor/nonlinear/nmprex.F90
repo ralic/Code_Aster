@@ -57,11 +57,13 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
 !
 !
 !
-    integer :: jdepes, jinces, jold
     integer :: neq
     character(len=19) :: depold
     integer :: ifm, niv
     real(kind=8) :: instam, instap, instaa, coef
+    real(kind=8), pointer :: depes(:) => null()
+    real(kind=8), pointer :: inces(:) => null()
+    real(kind=8), pointer :: old(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,12 +89,12 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
 ! --- INITIALISATION DU DEPLACEMENT ESTIME
 !
     call copisd('CHAMP_GD', 'V', depmoi, depest)
-    call jeveuo(depest(1:19)//'.VALE', 'E', jdepes)
+    call jeveuo(depest(1:19)//'.VALE', 'E', vr=depes)
 !
 ! --- INITIALISATION DE L'INCREMENT
 !
-    call jeveuo(incest(1:19)//'.VALE', 'E', jinces)
-    call r8inir(neq, 0.d0, zr(jinces), 1)
+    call jeveuo(incest(1:19)//'.VALE', 'E', vr=inces)
+    call r8inir(neq, 0.d0, inces, 1)
 !
 ! --- EXTRAPOLATION DES DEPLACEMENTS S'IL EXISTE UN PAS PRECEDENT
 !
@@ -102,10 +104,10 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
             call utmess('F', 'ALGORITH8_28')
         endif
         coef = (instap-instam) / (instam-instaa)
-        call jeveuo(depold(1:19)// '.VALE', 'L', jold)
-        call daxpy(neq, coef, zr(jold), 1, zr(jdepes),&
+        call jeveuo(depold(1:19)// '.VALE', 'L', vr=old)
+        call daxpy(neq, coef, old, 1, depes,&
                    1)
-        call daxpy(neq, coef, zr(jold), 1, zr(jinces),&
+        call daxpy(neq, coef, old, 1, inces,&
                    1)
     endif
 !

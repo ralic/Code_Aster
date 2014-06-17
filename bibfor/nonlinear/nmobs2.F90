@@ -89,13 +89,14 @@ subroutine nmobs2(noma, sdobse, nomtab, instan, titobs,&
 !
     integer :: ino, ima, ipi, ispi, icmp
     integer :: nbnor, nbmar, iret
-    integer :: ivalcp, jcesd
+    integer :: ivalcp
     real(kind=8) :: valr
     integer :: nvalcp
     integer :: num, snum, npi, nspi, nmapt, nmaspt, nbpir, nbspir
     integer :: numnoe, nummai
     character(len=8) :: nomnoe, nommai, nomcmp
     integer :: jno, jma, jpi, jspi, jnoeu, jelga, jcmp
+    integer, pointer :: cesd(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -109,7 +110,7 @@ subroutine nmobs2(noma, sdobse, nomtab, instan, titobs,&
             call sdmpic('CHAM_ELEM', champ)
             call celces(champ, 'V', nomchs)
         endif
-        call jeveuo(nomchs(1:19)//'.CESD', 'L', jcesd)
+        call jeveuo(nomchs(1:19)//'.CESD', 'L', vi=cesd)
     endif
 !
 ! --- NOMBRE DE NOEUDS POUR LA BOUCLE
@@ -200,8 +201,8 @@ subroutine nmobs2(noma, sdobse, nomtab, instan, titobs,&
 !
 ! ------- NOMBRE EFFECTIF DE POINTS/SOUS-POINTS SUR LA MAILLE
 !
-            nmapt = zi(jcesd+5+4*(nummai-1))
-            nmaspt = zi(jcesd+5+4*(nummai-1)+1)
+            nmapt = cesd(1+5+4*(nummai-1))
+            nmaspt = cesd(1+5+4*(nummai-1)+1)
 !
 ! ------- PLAFONNEMENT
 !

@@ -65,8 +65,9 @@ subroutine mmimp1(ifm, noma, defico, resoco)
     integer :: jtabf
     integer :: iptm, izone, imae, inoe, iptc
     integer :: ndimg, nzoco, nnoe, nptm, nbmae
-    integer :: iacnx1, ilcnx1
+    integer ::  ilcnx1
     logical :: lveri
+    integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,7 +87,7 @@ subroutine mmimp1(ifm, noma, defico, resoco)
 !
 ! --- ACCES MAILLAGE
 !
-    call jeveuo(noma//'.CONNEX', 'L', iacnx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
 ! --- BOUCLE SUR LES ZONES
@@ -129,7 +130,7 @@ subroutine mmimp1(ifm, noma, defico, resoco)
      &           i5,' NOEUDS ) - (',&
      &           i5,' POINTS DE CONTACT )' )
             do 21 inoe = 1, nnoe
-                numnoe = zi(iacnx1+zi(ilcnx1-1+nummae)-2+inoe)
+                numnoe = connex(1+zi(ilcnx1-1+nummae)-2+inoe)
                 call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
                 write (ifm,1001) nomnoe
 21          continue

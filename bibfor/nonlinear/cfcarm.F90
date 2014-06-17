@@ -71,7 +71,8 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 !
     integer :: no(nbnmax)
     integer :: ino, i, ibid
-    integer :: jdec, jcoor
+    integer :: jdec
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,7 +80,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 !
 ! --- RECUPERATION DE QUELQUES DONNEES
 !
-    call jeveuo(newgeo(1:19)//'.VALE', 'L', jcoor)
+    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- INITIALISATIONS
 !
@@ -116,9 +117,9 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 ! --- COORDONNEES DES NOEUDS DE LA MAILLE
 !
     do 70 ino = 1, nnomam
-        coorma(3*(ino-1)+1) = zr(jcoor+3*(no(ino)-1))
-        coorma(3*(ino-1)+2) = zr(jcoor+3*(no(ino)-1)+1)
-        coorma(3*(ino-1)+3) = zr(jcoor+3*(no(ino)-1)+2)
+        coorma(3*(ino-1)+1) = vale(1+3*(no(ino)-1))
+        coorma(3*(ino-1)+2) = vale(1+3*(no(ino)-1)+1)
+        coorma(3*(ino-1)+3) = vale(1+3*(no(ino)-1)+2)
 70  end do
 !
 ! --- NOM DE LA MAILLE

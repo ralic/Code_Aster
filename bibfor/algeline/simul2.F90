@@ -61,11 +61,12 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
     complex(kind=8) :: c16b
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id, idchm, iddl, idmst
+    integer :: i, id, idchm, iddl
     integer :: in, iret, nba, nbb, nbl, nbliai, nbtrou
 !
     real(kind=8) :: xd
     real(kind=8), pointer :: vecteur(:) => null()
+    real(kind=8), pointer :: mst(:) => null()
 !-----------------------------------------------------------------------
     data cmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 !     ------------------------------------------------------------------
@@ -126,11 +127,11 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir,&
                     call utmess('E', 'ALGELINE5_43', nk=3, valk=valk)
                     goto 20
                 else
-                    call jeveuo(chamno//'.VALE', 'L', idmst)
+                    call jeveuo(chamno//'.VALE', 'L', vr=mst)
 !
 !                 --- ON EFFECTUE LE PRODUIT  MASSE * CHAM_NO ---
                     do i = 0, neq-1
-                        vecteur(1+i) = -xd * zr(idmst+i)
+                        vecteur(1+i) = -xd * mst(1+i)
                     end do
                     call jelibe(chamno//'.VALE')
                     call mrmult('CUMU', lmat, vecteur, zr(idchm), 1,&

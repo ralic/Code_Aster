@@ -112,8 +112,10 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     integer :: iun, ideu
     integer :: iord, iordr, ivsi
     integer :: iret
-    integer :: jcham, jlast, jpara, jtabl, jtitr, jtot
+    integer :: jcham,  jpara,  jtitr, jtot
     integer :: nbobj, nbtitr
+    integer, pointer :: castem(:) => null()
+    integer, pointer :: last(:) => null()
 !     ------------------------------------------------------------------
 !     --- IMPRESSION D'UN TABLEAU SYNTHETIQUE DES PARAMETRES-----
 !         (UNIQUEMENT FORMAT 'RESULTAT')
@@ -264,15 +266,15 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 !
 !       --- IMPRESSION  DE LA TABLE SI FORMAT 'CASTEM'
             if (form .eq. 'CASTEM' .and. lresu .and. nbordr .ne. 0) then
-                call jeveuo('&&IRPACA.TABL.CASTEM', 'L', jtabl)
-                call jeveuo('&&OP0039.LAST', 'E', jlast)
+                call jeveuo('&&IRPACA.TABL.CASTEM', 'L', vi=castem)
+                call jeveuo('&&OP0039.LAST', 'E', vi=last)
                 nbcara = 4*nbobj
                 itype = 10
                 ivsi = 26
                 zi(jtot-1+(iordr-1)*4+1)= ivsi
-                zi(jtot-1+(iordr-1)*4+2)= zi(jlast-1+7)+iordr*2-1
+                zi(jtot-1+(iordr-1)*4+2)= last(7)+iordr*2-1
                 zi(jtot-1+(iordr-1)*4+3)= itype
-                zi(jtot-1+(iordr-1)*4+4)= zi(jlast-1+6)*2+1
+                zi(jtot-1+(iordr-1)*4+4)= last(6)*2+1
                 iun = 1
                 ideu = 2
                 itype = 10
@@ -289,19 +291,19 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                 call lxcaps(nomco)
                 write(ifi,'(1X,A8)') nomco
                 if (nive .eq. 3) then
-                    write(ifi,'(I5)') zi(jlast-1+6)*2+2
+                    write(ifi,'(I5)') last(6)*2+2
                     write(ifi,'(I5)') nbcara
-                    write(ifi,'(16I5)') (zi(jtabl-1+i),i=1,nbobj*4)
+                    write(ifi,'(16I5)') (castem(i),i=1,nbobj*4)
                     write(ifi,'(I5)') 4*iordr
                     write(ifi,'(16I5)') (zi(jtot-1+i),i=1,iordr*4)
                 else if (nive.eq.10) then
-                    write(ifi,'(I8)') zi(jlast-1+6)*2+2
+                    write(ifi,'(I8)') last(6)*2+2
                     write(ifi,'(I8)') nbcara
-                    write(ifi,'(10I8)') (zi(jtabl-1+i),i=1,nbobj*4)
+                    write(ifi,'(10I8)') (castem(i),i=1,nbobj*4)
                     write(ifi,'(I8)') 4*iordr
                     write(ifi,'(10I8)') (zi(jtot-1+i),i=1,iordr*4)
                 endif
-                zi(jlast-1+6) = zi(jlast-1+6) + 1
+                last(6) = last(6) + 1
                 call jedetr('&&IRPACA.TABL.CASTEM')
             endif
  22         continue
@@ -309,9 +311,9 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
         end do
 !
         if (lresu .and. form .eq. 'CASTEM' .and. nbordr .ne. 0) then
-            zi(jlast-1+7) = zi(jlast-1+1)
-            zi(jlast-1+8) = zi(jlast-1+8) + nbobj + nbrk16
-            zi(jlast-1+3) = zi(jlast-1+3) + nbobj
+            last(7) = last(1)
+            last(8) = last(8) + nbobj + nbrk16
+            last(3) = last(3) + nbobj
         endif
 !
     endif

@@ -104,10 +104,10 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     integer :: i, ier, jmax, nbmax, ich, ima, nse, ise, in
     integer :: jcesd(11), jcesv(11), jcesl(11), iad, jconx1, jconx2
     integer :: j, ino, n, jdirno, jlsn, inn, nnn, nbnoma, nfiss, ifiss
-    integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, jtmdim, inm
-    integer :: jtypm1, jtypm2, inmtot, itypse(6), iad1, iadc, iadv
-    integer :: jcnse, iad4, iad3, jmail, itypel, nbelr, jhea
-    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(50), jcnsd1, jlst, jfisno
+    integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime,  inm
+    integer ::  jtypm2, inmtot, itypse(6), iad1, iadc, iadv
+    integer :: jcnse, iad4, iad3,  itypel, nbelr, jhea
+    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(50),  jlst, jfisno
     integer :: nbcmp, jcnsv1, jcnsv2, nbnofi, inofi
     integer :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2
     integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter
@@ -119,8 +119,14 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, fisno, hea, nogno
     logical :: opmail, lmeca, pre1
     integer :: iad9, irese, nnose, tabse(6), ncomp
-    integer :: iviex, iret, jtypma, jconq1, jconq2, jcnsk1, jxc
+    integer :: iviex, iret,  jconq1, jconq2,  jxc
     integer :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2
+    integer, pointer :: maille(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
+    integer, pointer :: typm1(:) => null()
+    integer, pointer :: vtypma(:) => null()
 !
     data  typese /'SEG2','TRIA3','TETRA4','SEG3','TRIA6','TETRA10'/
     data  tabse  /   2  ,   3   ,   4    ,   3  ,   6   ,   10    /
@@ -215,14 +221,14 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     call jeveuo(malini//'.COORDO    .VALE', 'L', iacoo1)
     call jeveuo(maxfem//'.COORDO    .VALE', 'E', iacoo2)
 !
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
-    call jeveuo(malini//'.TYPMAIL', 'L', jtypm1)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
+    call jeveuo(malini//'.TYPMAIL', 'L', vi=typm1)
     call jeveuo(maxfem//'.TYPMAIL', 'E', jtypm2)
-    call jeveuo(mo//'.MAILLE', 'L', jmail)
+    call jeveuo(mo//'.MAILLE', 'L', vi=maille)
 !
     if (.not.opmail) then
-        call jeveuo(cns1//'.CNSK', 'L', jcnsk1)
-        call jeveuo(cns1//'.CNSD', 'L', jcnsd1)
+        call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk)
+        call jeveuo(cns1//'.CNSD', 'L', vi=cnsd)
         call jeveuo(cns1//'.CNSV', 'L', jcnsv1)
         call jeveuo(cns2//'.CNSV', 'E', jcnsv2)
         call jeveuo(cns2//'.CNSL', 'E', jcnsl2)
@@ -330,8 +336,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 !     RECUPERATION DES INFOS DU MAILLAGE SAIN
     if (.not.opmail) then
-        noma=zk8(jcnsk1-1+1)
-        call jeveuo(noma//'.TYPMAIL        ', 'L', jtypma)
+        noma=cnsk(1)
+        call jeveuo(noma//'.TYPMAIL        ', 'L', vi=vtypma)
     endif
 !
     call jeveuo(mo//'.XFEM_CONT', 'L', jxc)
@@ -385,10 +391,10 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !        CALL WKVECT(DIRNO,'V V I',(N+NPI+NMI)*3,JDIRNO)
 !
 !       DIMENSION TOPOLOGIQUE DE LA MAILLE
-        ndime= zi(jtmdim-1+zi(jtypm1-1+ima))
+        ndime= tmdim(typm1(ima))
 !
 !       1ER ELEMENT DE REFERENCE ASSOCIE A LA MAILLE
-        itypel = zi(jmail-1+ima)
+        itypel = maille(ima)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)
         call elref2(notype, 10, lirefe, nbelr)
         elrefp= lirefe(1)
@@ -421,7 +427,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
         if (.not.opmail) then
 !         TYPE DE LA MAILLE PARENT
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma-1+ima)), typma)
+            call jenuno(jexnum('&CATA.TM.NOMTM', vtypma(ima)), typma)
 !         CONNECTIVITES DU MAILLAGE QUADRATIQUE
 !         POUR RECUPERER LES LAGRANGES
             call jeveuo(noma//'.CONNEX', 'L', jconq1)
@@ -431,7 +437,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !       COMPOSANTES DU CHAMP DE DEPLACEMENT 1 POUR LA MAILLE IMA
 !       ET RECUPERATION DES CONTRAINTES 1
         if (.not.opmail) then
-            nbcmp = zi(jcnsd1-1+2)
+            nbcmp = cnsd(2)
             call xpocmp(elrefp, cns1, ima, n, jconx1,&
                         jconx2, ndim, nfh, nfe, ddlc,&
                         nbcmp, cmp, lmeca, pre1)

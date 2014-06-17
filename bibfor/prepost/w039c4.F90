@@ -49,10 +49,11 @@ subroutine w039c4(carte, ifi, form)
 !
 !
     integer :: iret, nugd, n1, jnocmp
-    integer :: jcesk, jcesd, jcesc, jcesv, jcesl, jdesc
+    integer :: jcesk, jcesd, jcesc, jcesv, jcesl
     character(len=8) :: typech, tsca, nomgd, k8bid
     character(len=19) :: cart1, chels1, chels2
     character(len=64) :: nommed
+    integer, pointer :: desc(:) => null()
 ! ----------------------------------------------------------------------
 
     call jemarq()
@@ -66,8 +67,8 @@ subroutine w039c4(carte, ifi, form)
 
     cart1=carte
 !   --- que des reels
-    call jeveuo(cart1//'.DESC', 'L', jdesc)
-    nugd = zi(jdesc)
+    call jeveuo(cart1//'.DESC', 'L', vi=desc)
+    nugd = desc(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', nugd), nomgd)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     ASSERT(tsca.eq.'R')

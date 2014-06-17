@@ -46,8 +46,10 @@ subroutine op0075()
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, basemo
     logical :: prsimp
-    integer :: jord, nbord, i, iord, lpain(3), lpaout(3), ibid, ir1, iret
-    integer :: j, j2refe, j3refe, jrefn, n1, nbcham
+    integer ::  nbord, i, iord, lpain(3), lpaout(3), ibid, ir1, iret
+    integer :: j,  j3refe, jrefn, n1, nbcham
+    integer, pointer :: ordr(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -109,8 +111,8 @@ subroutine op0075()
 !           - SUR UN POTENTIEL MODE_GENE (CAS D'UNE DOUBLE-RESTITUTION)
             if (numgen(1:8) .eq. blanc8) then
 !           --- PAS D'ENTREE DANS LE .REFD => CHERCHER DANS LA MATRICE K
-                call jeveuo(matgen(1:8)//'           .REFA', 'L', j2refe)
-                numgen=zk24(j2refe+1)(1:14)
+                call jeveuo(matgen(1:8)//'           .REFA', 'L', vk24=refa)
+                numgen=refa(2)(1:14)
             endif
             call jeveuo(numgen(1:14)//'.NUME.REFN', 'L', j3refe)
             call gettco(zk24(j3refe), typrep)
@@ -170,12 +172,12 @@ subroutine op0075()
 !     --- STOCKAGE DES RESULTATS
     call gettco(resin, concep)
     if ((concep(1:9).eq.'MODE_GENE')) then
-        call jeveuo(nomres//'           .ORDR', 'L', jord)
+        call jeveuo(nomres//'           .ORDR', 'L', vi=ordr)
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         do iord = 1, nbord
-            call rsadpa(resin, 'L', 3, param, zi(jord+iord-1),&
+            call rsadpa(resin, 'L', 3, param, ordr(iord),&
                         0, tjv=lpain, styp=k8bid)
-            call rsadpa(nomres, 'E', 3, param, zi(jord+iord-1),&
+            call rsadpa(nomres, 'E', 3, param, ordr(iord),&
                         0, tjv=lpaout, styp=k8bid)
             do i = 1, 3
                 zk8(lpaout(i))=zk8(lpain(i))

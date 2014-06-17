@@ -79,8 +79,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: ipt, ima, i, j, ibid, ndim, ino, k, ifq, ifm, niv
     integer :: nmaabs, nbf, nbnoma, nuno, nunoa, nunob, nunoc, nunod
     integer :: fa(6, 4), ibid3(12, 3), vecind(5)
-    integer :: jconx1, jconx2, jcoor, jltsv, jlnsv, jma
-    integer ::   jglsn, jglst, igeom, jgt, jgn, itypma
+    integer :: jconx1, jconx2, jcoor
+    integer ::   jglsn, jglst, igeom,   itypma
     integer :: indipt,  jborl, jdirol, jnvdir, jlistp
     integer :: nbfacb, iptbor(2), nbptma, ndime, indptf(3), codret
     integer :: nunopa, nunopb, nunopc, nunopd
@@ -93,6 +93,11 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     real(kind=8), pointer :: lsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
     logical, pointer :: ptbord(:) => null()
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: gn(:) => null()
+    real(kind=8), pointer :: gt(:) => null()
+    real(kind=8), pointer :: lnsv(:) => null()
+    real(kind=8), pointer :: ltsv(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
     call infdbg('XFEM', ifm, niv)
@@ -100,10 +105,10 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    call jeveuo(noma//'.TYPMAIL', 'L', jma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
-    call jeveuo(cnslt//'.CNSV', 'L', jltsv)
-    call jeveuo(cnsln//'.CNSV', 'L', jlnsv)
+    call jeveuo(cnslt//'.CNSV', 'L', vr=ltsv)
+    call jeveuo(cnsln//'.CNSV', 'L', vr=lnsv)
 !
 !     GRADIENT LST
     if (goinop) then
@@ -113,7 +118,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     endif
     chgrt = '&&XPTFON.GRLN'
     call cnocns(grlt, 'V', chgrt)
-    call jeveuo(chgrt//'.CNSV', 'L', jgt)
+    call jeveuo(chgrt//'.CNSV', 'L', vr=gt)
 !
 !     GRADIENT LSN
     if (goinop) then
@@ -123,7 +128,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     endif
     chgrn = '&&XPTFON.GRLT'
     call cnocns(grln, 'V', chgrn)
-    call jeveuo(chgrn//'.CNSV', 'L', jgn)
+    call jeveuo(chgrn//'.CNSV', 'L', vr=gn)
 !
     AS_ALLOCATE(vl=ptbord, size=nxptff)
 !
@@ -158,7 +163,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     do ima = 1, nmafon
 !
         nmaabs = zi(jmafon-1+(ima-1)+1)
-        itypma = zi(jma-1+nmaabs)
+        itypma = typmail(nmaabs)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
         call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndime)
 !
@@ -173,11 +178,11 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         call wkvect('&&XPTFON.IGEOM', 'V V R', nbnoma*ndim, igeom)
         do ino = 1, nbnoma
             nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+ino-1)
-            lsn(ino) = zr(jlnsv-1+nuno)
-            lst(ino) = zr(jltsv-1+nuno)
+            lsn(ino) = lnsv(nuno)
+            lst(ino) = ltsv(nuno)
             do j = 1, ndim
-                zr(jglsn-1+ndim*(ino-1)+j) = zr(jgn-1+ndim*(nuno-1)+j)
-                zr(jglst-1+ndim*(ino-1)+j) = zr(jgt-1+ndim*(nuno-1)+j)
+                zr(jglsn-1+ndim*(ino-1)+j) = gn(ndim*(nuno-1)+j)
+                zr(jglst-1+ndim*(ino-1)+j) = gt(ndim*(nuno-1)+j)
                 zr(igeom-1+ndim*(ino-1)+j) = zr(jcoor-1+3*(nuno-1)+j)
             end do
         end do

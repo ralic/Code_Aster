@@ -40,13 +40,15 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ibid, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno, jnueq
+    integer :: ibid, gd, iec, nec, ncmpmx, icompt, ino, icmp, jprno
     integer :: iad, tabec(10), iavald, nunoe, numdx, numdy, numdz, numdrx
-    integer :: numdry, numdrz, nuddl, i, axyzm
+    integer :: numdry, numdrz, nuddl, i
     real(kind=8) :: valed(3), vald(3), valer(3), valr(3), pscal
     real(kind=8) :: xnormr, epsi, axer(3), axet(3), pgl(3, 3)
     character(len=8) :: k8b, nomcmp, nomail
     character(len=19) :: prno, depla
+    integer, pointer :: nueq(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -60,11 +62,11 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
     if (k8b(1:6) .ne. 'DEPL_R') then
         call utmess('F', 'POSTRELE_17')
     endif
-    call jeveuo(nomail//'.COORDO    .VALE', 'L', axyzm)
+    call jeveuo(nomail//'.COORDO    .VALE', 'L', vr=vale)
 !
     call jenonu(jexnom(prno//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(prno//'.PRNO', ibid), 'L', jprno)
-    call jeveuo(prno//'.NUEQ', 'L', jnueq)
+    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
 !
     nec = nbec( gd )
     if (nec .gt. 10) then
@@ -80,9 +82,9 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
 !
         nunoe = numnd(ino)
 !
-        axer(1) = zr(axyzm+3*(nunoe-1) ) - orig(1)
-        axer(2) = zr(axyzm+3*(nunoe-1)+1) - orig(2)
-        axer(3) = zr(axyzm+3*(nunoe-1)+2) - orig(3)
+        axer(1) = vale(1+3*(nunoe-1) ) - orig(1)
+        axer(2) = vale(1+3*(nunoe-1)+1) - orig(2)
+        axer(3) = vale(1+3*(nunoe-1)+2) - orig(3)
         pscal = axer(1)*axez(1)+axer(2)*axez(2)+axer(3)*axez(3)
         axer(1) = axer(1) - pscal*axez(1)
         axer(2) = axer(2) - pscal*axez(2)
@@ -136,7 +138,7 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig,&
             if (exisdg(tabec,icmp)) then
                 icompt = icompt + 1
                 nomcmp = zk8(iad-1+icmp)
-                nuddl = zi(jnueq+zi(jprno+(nec+2)*(nunoe-1))-1)+ icompt-1
+                nuddl = nueq(1+zi(jprno+(nec+2)*(nunoe-1))-1)+ icompt-1
                 if (nomcmp .eq. 'DX') then
                     numdx = nuddl
                     valed(1) = zr(iavald-1+numdx)

@@ -49,8 +49,8 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 !-----------------------------------------------------------------------
 !
-    integer :: iddeeq, jscde, nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
-    integer :: i, j, k, imatra, jscdi, jscbl, jschc, iblo, ldblo, n1bloc, n2bloc
+    integer :: iddeeq,  nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
+    integer :: i, j, k, imatra,    iblo, ldblo, n1bloc, n2bloc
 
     complex(kind=8) :: pij
     character(len=16) :: typbas
@@ -60,6 +60,10 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     real(kind=8), pointer :: vbasemo(:) => null()
     complex(kind=8), pointer :: vectass2(:) => null()
     complex(kind=8), pointer :: vectass3(:) => null()
+    integer, pointer :: scde(:) => null()
+    integer, pointer :: schc(:) => null()
+    integer, pointer :: scdi(:) => null()
+    integer, pointer :: scbl(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
@@ -72,10 +76,10 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)
 !
     nomsto=nugene//'.SLCS'
-    call jeveuo(nomsto//'.SCDE', 'L', jscde)
-    nueq = zi(jscde-1+1)
-    ntbloc = zi(jscde-1+2)
-    nbloc = zi(jscde-1+3)
+    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
+    nueq = scde(1)
+    ntbloc = scde(2)
+    nbloc = scde(3)
 !
     call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
@@ -101,7 +105,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     zi(iadesc+1) = nueq
 !   ON TESTE LA HAUTEUR MAXIMALE DES COLONNES DE LA MATRICE
 !   SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
-    if (zi(jscde-1+4) .eq. 1) then
+    if (scde(4) .eq. 1) then
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2
@@ -118,9 +122,9 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 ! --- RECUPERATION DE LA STRUCTURE DE LA MATR_ASSE_GENE
 !
-    call jeveuo(nomsto//'.SCDI', 'L', jscdi)
-    call jeveuo(nomsto//'.SCBL', 'L', jscbl)
-    call jeveuo(nomsto//'.SCHC', 'L', jschc)
+    call jeveuo(nomsto//'.SCDI', 'L', vi=scdi)
+    call jeveuo(nomsto//'.SCBL', 'L', vi=scbl)
+    call jeveuo(nomsto//'.SCHC', 'L', vi=schc)
 !
     do iblo = 1, nbloc
 !
@@ -131,8 +135,8 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 !        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-        n1bloc = zi(jscbl+iblo-1)+1
-        n2bloc = zi(jscbl+iblo)
+        n1bloc = scbl(iblo)+1
+        n2bloc = scbl(iblo+1)
 !
         do i = n1bloc, n2bloc
 !
@@ -148,7 +152,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
-            do j = (i-zi(jschc+i-1)+1), i
+            do j = (i-schc(i)+1), i
 !
 ! ----------- PRODUIT SCALAIRE VECTASS * MODE
 !
@@ -159,7 +163,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 ! ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
 !
-                zc(ldblo+zi(jscdi+i-1)+j-i-1) = pij
+                zc(ldblo+scdi(i)+j-i-1) = pij
 !
             end do
         end do

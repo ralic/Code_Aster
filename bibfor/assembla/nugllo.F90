@@ -54,24 +54,32 @@ subroutine nugllo(nu, base, solveu)
 !----------------------------------------------------------------------
 !
 !
-    integer :: nbma, jconx1, jconx2, jdime
-    integer :: jnumsd, rang, numa, nbnoma, nbno, ino, nuno
-    integer :: nec, nlili, neql, idprn1, idprn2, ili, ntot
+    integer :: nbma,  jconx2
+    integer ::  rang, numa, nbnoma, nbno, ino, nuno
+    integer :: nec, nlili, neql,  idprn2, ili, ntot
     integer :: idpr21, idpr22, numinc, numec, nddl
-    integer ::  neqg,  iddl, jnulg, jslvk
-    integer :: jnueql, ddl1g, ddl1l, jdelgg, jdelgl, j1
-    integer :: jadne, jadli, iel, igr, nel, k1, n1, j, ilib
+    integer ::  neqg,  iddl, jnulg
+    integer :: jnueql, ddl1g, ddl1l,  jdelgl, j1
+    integer ::   iel, igr, nel, k1, n1, j, ilib
     integer ::   nbproc, vali(1), jnugl, ieqg
 !
     character(len=8) :: noma, partit, mo
     character(len=19) :: ligrmo, nomlig
 !----------------------------------------------------------------------
-    integer :: jprtk
     logical :: ldgrel, ldist
     integer, pointer :: ddl_pres(:) => null()
     integer, pointer :: delg_tmp(:) => null()
     integer, pointer :: tab_eq(:) => null()
     integer, pointer :: tab_no(:) => null()
+    integer, pointer :: adli(:) => null()
+    integer, pointer :: connex(:) => null()
+    character(len=24), pointer :: prtk(:) => null()
+    integer, pointer :: delg(:) => null()
+    integer, pointer :: adne(:) => null()
+    integer, pointer :: dime(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: prn1(:) => null()
+    integer, pointer :: maille(:) => null()
     mpi_int :: mrank, msize
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
@@ -85,7 +93,7 @@ subroutine nugllo(nu, base, solveu)
 !
 !      IZZPRN(ILI,NUNOEL,L) = (IDPRN1-1+ZI(IDPRN2+ILI-1)+
 !     &                       (NUNOEL-1)* (NEC+2)+L-1)
-#define zzprno(ili,nunoel,l) zi(idprn1-1+zi(idprn2+ili-1)+ \
+#define zzprno(ili,nunoel,l) prn1(zi(idprn2+ili-1)+ \
     (nunoel-1)*(nec+2)+l-1)
 !
 #define izzpr2(ili,nunoel,l) (idpr21-1+zi(idpr22+ili-1)+ \
@@ -95,13 +103,13 @@ subroutine nugllo(nu, base, solveu)
 !
 !---- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
 !
-#define zzngel(ili) zi(jadli+3*(ili-1))
+#define zzngel(ili) adli(1+3*(ili-1))
 !
 !---- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE TEMP.
 !     .MATAS.LILI(DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
 !
-#define zznelg(ili,igrel) zi(zi(jadli+3*(ili-1)+2)+igrel)- \
-    zi(zi(jadli+3*(ili-1)+2)+igrel-1)-1
+#define zznelg(ili,igrel) zi(adli(1+3*(ili-1)+2)+igrel)- \
+    zi(adli(1+3*(ili-1)+2)+igrel-1)-1
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -110,21 +118,21 @@ subroutine nugllo(nu, base, solveu)
 !          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
 !          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
 !
-#define zzliel(ili,igrel,j) zi(zi(jadli+3*(ili-1)+1)-1+ \
-    zi(zi(jadli+3*(ili-1)+2)+igrel-1)+j-1)
+#define zzliel(ili,igrel,j) zi(adli(1+3*(ili-1)+1)-1+ \
+    zi(adli(1+3*(ili-1)+2)+igrel-1)+j-1)
 !
 !---- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 !     DU LIGREL ILI REPERTOIRE .LILI
 !     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
 !
-#define zznsup(ili,iel) zi(zi(jadne+3*(ili-1)+2)+iel)- \
-    zi(zi(jadne+3*(ili-1)+2)+iel-1)-1
+#define zznsup(ili,iel) zi(adne(1+3*(ili-1)+2)+iel)- \
+    zi(adne(1+3*(ili-1)+2)+iel-1)-1
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 !     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
 !
-#define zznema(ili,iel,j) zi(zi(jadne+3*(ili-1)+1)-1+ \
-    zi(zi(jadne+3*(ili-1)+2)+iel-1)+j-1)
+#define zznema(ili,iel,j) zi(adne(1+3*(ili-1)+1)-1+ \
+    zi(adne(1+3*(ili-1)+2)+iel-1)+j-1)
 !
 !----------------------------------------------------------------------
 !
@@ -139,15 +147,15 @@ subroutine nugllo(nu, base, solveu)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
 !
 !---- ON VERIFIE QU'IL N'Y A PAS DE SUPER-MAILLES
-    call jeveuo(noma//'.DIME', 'L', jdime)
-    ASSERT(zi(jdime+3).eq.0)
+    call jeveuo(noma//'.DIME', 'L', vi=dime)
+    ASSERT(dime(4).eq.0)
 !
 !---- ON RAMENE EN MEMOIRE LES OBJETS DU .NUME :
 !     CALCUL DE NEQG, NLILI
-    call jeveuo(nu//'     .ADNE', 'L', jadne)
-    call jeveuo(nu//'     .ADLI', 'L', jadli)
-    call jeveuo(nu//'.NUME.DELG', 'L', jdelgg)
-    call jeveuo(nu//'.NUME.PRNO', 'L', idprn1)
+    call jeveuo(nu//'     .ADNE', 'L', vi=adne)
+    call jeveuo(nu//'     .ADLI', 'L', vi=adli)
+    call jeveuo(nu//'.NUME.DELG', 'L', vi=delg)
+    call jeveuo(nu//'.NUME.PRNO', 'L', vi=prn1)
     call jeveuo(jexatr(nu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
     call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili)
     call jeveuo(nu//'.NUME.NEQU', 'L', j1)
@@ -173,10 +181,10 @@ subroutine nugllo(nu, base, solveu)
     if (partit .ne. ' ') then
         ASSERT(nbproc.gt.1)
         ldist=.true.
-        call jeveuo(partit//'.PRTK', 'L', jprtk)
-        ldgrel=zk24(jprtk-1+1) .eq. 'GROUP_ELEM'
+        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+        ldgrel=prtk(1) .eq. 'GROUP_ELEM'
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
+            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
         endif
     endif
     ASSERT(ldist)
@@ -192,7 +200,7 @@ subroutine nugllo(nu, base, solveu)
     end do
 !
 !---- LECTURE DE LA CONNECTIVITE
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !---- RECHERCHE DES ADRESSES DU .PRNO DE .NUML
@@ -218,7 +226,7 @@ subroutine nugllo(nu, base, solveu)
                 ASSERT(numa.ne.0)
                 if (.not.ldgrel) then
                     if (numa .gt. 0) then
-                        if (zi(jnumsd-1+numa) .ne. rang) goto 80
+                        if (maille(numa) .ne. rang) goto 80
                     else
                         if (rang .ne. 0) goto 80
                     endif
@@ -228,7 +236,7 @@ subroutine nugllo(nu, base, solveu)
 !             -- MAILLE DU MAILLAGE :
                     nbno=zi(jconx2+numa)-zi(jconx2+numa-1)
                     do ino = 1, nbno
-                        nuno=zi(jconx1-1+zi(jconx2+numa-1)+ino-1)
+                        nuno=connex(zi(jconx2+numa-1)+ino-1)
                         if (tab_no(nuno) .eq. 1) goto 40
 !
                         ddl1g=zzprno(1,nuno,1)
@@ -274,7 +282,7 @@ subroutine nugllo(nu, base, solveu)
                         do iddl = 1, nddl
                             ddl_pres(1+ddl1g+iddl-2)=1
                             tab_eq(1+numinc-1+iddl-1)=ddl1g+iddl-1
-                            delg_tmp(1+numinc-1+iddl-1)=zi(jdelgg+&
+                            delg_tmp(1+numinc-1+iddl-1)=delg(1+&
                             ddl1g-1+iddl-1)
                         end do
                         numinc=numinc+nddl
@@ -327,9 +335,9 @@ subroutine nugllo(nu, base, solveu)
         end do
     end do
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
 !     POUR PETSC ON A BESOIN D'INFORMATIONS SUPPLEMENTAIRES
-    if (zk24(jslvk) .eq. 'PETSC') call nupodd(nu, base, rang, nbproc)
+    if (slvk(1) .eq. 'PETSC') call nupodd(nu, base, rang, nbproc)
 !
     AS_DEALLOCATE(vi=tab_no)
     AS_DEALLOCATE(vi=tab_eq)

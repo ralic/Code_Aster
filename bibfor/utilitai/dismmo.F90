@@ -44,7 +44,7 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 ! ----------------------------------------------------------------------
 !
-    integer :: ialiel, ianoma, ico, igrel, jnfis
+    integer :: ialiel,  ico, igrel
     integer :: iret, itypel, nbgrel, nel
 !
     character(len=4) :: tytm
@@ -52,6 +52,8 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
     character(len=16) :: nomte, nomodl, nomod2
     character(len=19) :: nolig
     character(len=32) :: repk
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: nfis(:) => null()
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
@@ -62,8 +64,8 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
     nomob=nomobz
     nolig=nomob//'.MODELE'
 !
-    call jeveuo(nolig//'.LGRF', 'L', ianoma)
-    ma=zk8(ianoma-1+1)
+    call jeveuo(nolig//'.LGRF', 'L', vk8=lgrf)
+    ma=lgrf(1)
 !
 !     --------------------------------
     if (questi .eq. 'NOM_LIGREL') then
@@ -153,8 +155,8 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !     ------------------------------------
         call jeexin(nomob//'.NFIS', iret)
         if (iret .gt. 0) then
-            call jeveuo(nomob//'.NFIS', 'L', jnfis)
-            repi=zi(jnfis)
+            call jeveuo(nomob//'.NFIS', 'L', vi=nfis)
+            repi=nfis(1)
         else
             repi=0
         endif

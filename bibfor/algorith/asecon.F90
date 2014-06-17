@@ -59,7 +59,7 @@ subroutine asecon(nomsy, neq, mome, resu)
 !     ------------------------------------------------------------------
     integer :: iad, ibid, icas, idep, idir, ier, ii, in, ino, ioc, iocc, iordr
     integer :: iorst, iret,   jcas,  jdir,  jno, jord
-    integer ::  jsta, jtyp, jvale, jval1, lnod, nbmode, nbno, nboc, nbtrou
+    integer ::    jvale, jval1, lnod, nbmode, nbno, nboc, nbtrou
     integer :: ncas, ndep, nucas, nume, tordr(1)
     real(kind=8) :: r8b, epsmac, xxx, xx1, xx2, xx3
     complex(kind=8) :: cbid
@@ -74,6 +74,8 @@ subroutine asecon(nomsy, neq, mome, resu)
     real(kind=8), pointer :: line(:) => null()
     real(kind=8), pointer :: quad(:) => null()
     real(kind=8), pointer :: rep(:) => null()
+    integer, pointer :: type(:) => null()
+    character(len=8), pointer :: vstat(:) => null()
 !     ------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
     data  vale / '                   .VALE' /
@@ -111,7 +113,7 @@ subroutine asecon(nomsy, neq, mome, resu)
     iordr = 200
 !           --- CHAMP PAR OCCURENCE DE COMB_DPL_APPUI ---
 !
-    call jeveuo('&&ASENAP.TYPE', 'L', jtyp)
+    call jeveuo('&&ASENAP.TYPE', 'L', vi=type)
     AS_ALLOCATE(vr=rep, size=neq)
     AS_ALLOCATE(vr=quad, size=neq)
     AS_ALLOCATE(vr=line, size=neq)
@@ -166,8 +168,8 @@ subroutine asecon(nomsy, neq, mome, resu)
                     lnod = 3*nbno
                     call jelira(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', lnod)
                     call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'L', jdir)
-                    call jeveuo('&&ASENAP.STAT', 'L', jsta)
-                    stat = zk8(jsta+icas-1)
+                    call jeveuo('&&ASENAP.STAT', 'L', vk8=vstat)
+                    stat = vstat(icas)
                     do 12 ino = 1, nbno
                         noeu =zk8(jno+ino-1)
                         do 14 idir = 1, 3
@@ -190,14 +192,14 @@ subroutine asecon(nomsy, neq, mome, resu)
                                 do 16 in = 1, neq
                                     rep(in) = zr(jval1+in-1) * xx1
 16                              continue
-                                if (zi(jtyp+iocc-1) .eq. 1) then
+                                if (type(iocc) .eq. 1) then
 !                 --- COMBINAISON QUADRATIQUE ---
                                     do 24 in = 1, neq
                                         xxx = rep(in)
                                         quad(in)= quad(in)+&
                                         xxx*xxx
 24                                  continue
-                                else if (zi(jtyp+iocc-1).eq.2) then
+                                else if (type(iocc).eq.2) then
 !               --- COMBINAISON LINEAIRE ---
                                     do 18 in = 1, neq
                                         line(in)= line(in)+&

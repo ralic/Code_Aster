@@ -62,16 +62,22 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
 !
     character(len=3) :: tsca
     integer :: cmpmax
-    integer :: jvcfos
     character(len=19) :: cfnos, cfnint, cfndir, cfnfex
     integer :: i, k
     real(kind=8) :: resim, fonam, res
-    integer :: jcnsd, jfints, jdiris, jfexts, jcnsl, jcnsc
-    integer :: jcnsk, licmpu(999)
+    integer ::     jcnsl
+    integer ::  licmpu(999)
     integer :: nbcmp, nbno, inc, ino, nbcmpu
     character(len=8) :: nomgd
     integer :: jfint, jdiri, jfext, jvcfo, jfnod
     real(kind=8) :: epsi
+    real(kind=8), pointer :: diris(:) => null()
+    real(kind=8), pointer :: fexts(:) => null()
+    real(kind=8), pointer :: fints(:) => null()
+    real(kind=8), pointer :: vcfos(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
+    integer, pointer :: cnsd(:) => null()
     parameter    (epsi = 1.d-50)
 !
 ! ----------------------------------------------------------------------
@@ -99,18 +105,18 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
 !
 ! --- ACDES VALEURES
 !
-    call jeveuo(cfnos (1:19)//'.CNSV', 'L', jvcfos)
-    call jeveuo(cfnint(1:19)//'.CNSV', 'L', jfints)
-    call jeveuo(cfndir(1:19)//'.CNSV', 'L', jdiris)
-    call jeveuo(cfnfex(1:19)//'.CNSV', 'L', jfexts)
-    call jeveuo(cfnos(1:19)//'.CNSD', 'L', jcnsd)
+    call jeveuo(cfnos (1:19)//'.CNSV', 'L', vr=vcfos)
+    call jeveuo(cfnint(1:19)//'.CNSV', 'L', vr=fints)
+    call jeveuo(cfndir(1:19)//'.CNSV', 'L', vr=diris)
+    call jeveuo(cfnfex(1:19)//'.CNSV', 'L', vr=fexts)
+    call jeveuo(cfnos(1:19)//'.CNSD', 'L', vi=cnsd)
     call jeveuo(cfnos(1:19)//'.CNSL', 'L', jcnsl)
-    call jeveuo(cfnos(1:19)//'.CNSC', 'L', jcnsc)
-    call jeveuo(cfnos(1:19)//'.CNSK', 'L', jcnsk)
+    call jeveuo(cfnos(1:19)//'.CNSC', 'L', vk8=cnsc)
+    call jeveuo(cfnos(1:19)//'.CNSK', 'L', vk8=cnsk)
 !
-    nbcmp = zi(jcnsd-1+2)
-    nbno = zi(jcnsd-1+1)
-    nomgd = zk8(jcnsk-1+2)
+    nbcmp = cnsd(2)
+    nbno = cnsd(1)
+    nomgd = cnsk(2)
 !
 ! --- NB DE CMP DANS LE CHAMP
 !
@@ -132,7 +138,7 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
     if (tsca .ne. 'R') ASSERT(.false.)
 !
     do inc = 1, nbcmpu
-        nomddl(inc) = zk8(jcnsc-1+licmpu(inc))
+        nomddl(inc) = cnsc(licmpu(inc))
         maxddf(inc) = 0.d0
         maxddr(inc) = 0.d0
         numnod(inc) = 0
@@ -144,9 +150,9 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
             k = licmpu(inc)
             if (zl(jcnsl-1+(ino-1)*nbcmp+k)) then
                 i = nbcmp*(ino-1)+k
-                resim=abs(zr(jfints+i-1)+zr(jdiris+i-1)-zr(jfexts+i-1)&
+                resim=abs(fints(i)+diris(i)-fexts(i)&
                 )
-                fonam = abs(zr(jvcfos+i-1))
+                fonam = abs(vcfos(i))
                 if (resim .gt. maxddr(inc)) then
                     maxddr(inc)= resim
                     numnod(inc)= ino

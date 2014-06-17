@@ -55,9 +55,11 @@ subroutine pascom(meca, sddyna, sddisc)
     integer :: n1, i, ibid
     integer :: iad, nbinst
     integer :: nbmode
-    integer :: iorol, jordm, jinst
+    integer :: iorol
     real(kind=8) :: dtcou, phi, dt, r8b
     character(len=8) :: k8bid, stocfl
+    integer, pointer :: ordr(:) => null()
+    real(kind=8), pointer :: ditr(:) => null()
 !
 ! ---------------------------------------------------------------------
 !
@@ -73,8 +75,8 @@ subroutine pascom(meca, sddyna, sddisc)
 !     --- RECUPERATION DES FREQUENCES PROPRES
 !
     call jelira(meca//'           .ORDR', 'LONUTI', nbmode)
-    call jeveuo(meca//'           .ORDR', 'L', jordm)
-    iorol = zi(jordm)
+    call jeveuo(meca//'           .ORDR', 'L', vi=ordr)
+    iorol = ordr(1)
     call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
                 0, sjv=iad, styp=k8bid)
     if (zr(iad) .lt. 0.d0 .or. abs(zr(iad)) .lt. r8prem( )) then
@@ -83,7 +85,7 @@ subroutine pascom(meca, sddyna, sddisc)
         dtcou = 1.d0 / sqrt(zr(iad))
     endif
     do 21 i = 1, nbmode-1
-        iorol = zi(jordm+i)
+        iorol = ordr(1+i)
         call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
                     0, sjv=iad, styp=k8bid)
         if (zr(iad) .lt. 0.d0 .or. abs(zr(iad)) .lt. r8prem( )) then
@@ -100,7 +102,7 @@ subroutine pascom(meca, sddyna, sddisc)
 !     VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
     call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
                 r8b, nbinst, k8bid)
-    call jeveuo(sddisc//'.DITR', 'L', jinst)
+    call jeveuo(sddisc//'.DITR', 'L', vr=ditr)
 !
     if (ndynlo(sddyna,'DIFF_CENT')) then
         dtcou =dtcou/(2.d0)
@@ -116,7 +118,7 @@ subroutine pascom(meca, sddyna, sddisc)
     endif
 !
     do 20 i = 1, nbinst-1
-        if (zr(jinst-1+i+1)-zr(jinst-1+i) .gt. dtcou) then
+        if (ditr(i+1)-ditr(i) .gt. dtcou) then
             if (stocfl(1:3) .eq. 'OUI') then
                 call utmess('F', 'DYNAMIQUE_2')
             else

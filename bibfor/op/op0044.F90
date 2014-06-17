@@ -94,8 +94,8 @@ subroutine op0044()
     integer :: lraide, ldynam, lfreq, lamort, lddl, lprod, nblagr, lresui
     integer :: lresur, lresuk, lvalp, lvec, lenout
     integer :: mxfreq, ncritr, nbrss, nitsep, nitaju, nitv, idet(2), nfreqr
-    integer :: nfreq, ncrit, nbmod, na1, namorr, niv, nbcine, krefa, neqact
-    integer :: nfreqb, mxresf, ndim, nparr, neq, islvk, islvi, jrefa
+    integer :: nfreq, ncrit, nbmod, na1, namorr, niv, nbcine,  neqact
+    integer :: nfreqb, mxresf, ndim, nparr, neq,  islvi, jrefa
 !
     real(kind=8) :: tolsep, tolaju, tolv, fcorig, omecor, precsh, omeg, det1
     real(kind=8) :: det2, fr, am, zam(3), zfr(3), seuil, fmin, fmax, omgmin
@@ -111,6 +111,8 @@ subroutine op0044()
     complex(kind=8) :: cbid, dcmplx
     logical :: lbid
     character(len=1) :: ktyp
+    character(len=24), pointer :: nkrefa(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------
     data zam     / 0.01d0 , 0.02d0 , 0.03d0 /
     data zfr     / -1.0d0 , 1.00d0 , 0.00d0 /
@@ -304,9 +306,9 @@ subroutine op0044()
     call jeveuo(raide//'.REFA', 'L', jrefa)
     solveu='&&OP0044.SOLVEUR'
     call cresol(solveu)
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     call jeveuo(solveu//'.SLVI', 'L', islvi)
-    metres=zk24(islvk)
+    metres=slvk(1)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
         (metres(1:5).ne.'MUMPS')) then
         call utmess('F', 'ALGELINE5_71')
@@ -316,8 +318,8 @@ subroutine op0044()
     typer = 'R'
     dynam = '&&OP0044.DYNAMIQUE'
     call mtdefs(dynam, raide, 'V', typer)
-    call jeveuo(dynam(1:19)//'.REFA', 'E', krefa)
-    zk24(krefa-1+7)=solveu
+    call jeveuo(dynam(1:19)//'.REFA', 'E', vk24=nkrefa)
+    nkrefa(7)=solveu
 !
 !     --- CREATION DES DESCRIPTEURS NORMALISES DE MATRICE ---
     call mtdscr(masse)

@@ -38,7 +38,8 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
     character(len=24) :: vecteu
 !
     real(kind=8) :: a, b
-    integer :: i, jval, kval, n1, neq
+    integer :: i,  kval, n1, neq
+    complex(kind=8), pointer :: vale(:) => null()
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -50,26 +51,26 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
         call utmess('F', 'POSTRELE_11')
     endif
     call jelira(nch19//'.VALE', 'LONMAX', neq)
-    call jeveuo(nch19//'.VALE', 'L', jval)
+    call jeveuo(nch19//'.VALE', 'L', vc=vale)
     call wkvect(vecteu, 'V V R', neq, kval)
 !
     call getvtx(mcf, 'FORMAT_C', iocc=iocc, scal=form, nbret=n1)
 !
     if (form .eq. 'MODULE') then
         do 11 i = 0, neq-1
-            a = dble( zc(jval+i) )
-            b = dimag( zc(jval+i) )
+            a = dble( vale(1+i) )
+            b = dimag( vale(1+i) )
             zr(kval+i) = sqrt( a*a + b*b )
 11      continue
 !
     else if (form .eq. 'REEL') then
         do 20 i = 0, neq-1
-            zr(kval+i) = dble( zc(jval+i) )
+            zr(kval+i) = dble( vale(1+i) )
 20      continue
 !
     else if (form .eq. 'IMAG') then
         do 30 i = 0, neq-1
-            zr(kval+i) = dimag( zc(jval+i) )
+            zr(kval+i) = dimag( vale(1+i) )
 30      continue
 !
     else

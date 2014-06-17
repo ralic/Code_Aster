@@ -109,9 +109,10 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad, iarefr, icomp, idimli, idlres
+    integer :: iad,  icomp, idimli, idlres
     integer :: ili, imat, iresu, iret, iret1, n1
     integer :: nbgr, nbmo, nbresu, nbsup, ncmp
+    character(len=24), pointer :: rerr(:) => null()
 !
 !-----------------------------------------------------------------------
     k24lil = lili
@@ -131,9 +132,9 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         matel = zk24(ilimat+imat-1)(1:19)
         call jeexin(matel//'.RERR', iret1)
         ASSERT(iret1.gt.0)
-        call jeveuo(matel//'.RERR', 'L', iarefr)
-        modele= zk24(iarefr-1+1)(1:8)
-        suropt= zk24(iarefr-1+2)(1:16)
+        call jeveuo(matel//'.RERR', 'L', vk24=rerr)
+        modele= rerr(1)(1:8)
+        suropt= rerr(2)(1:16)
         if (((modele.ne.models).and.(models.ne.' ')) .or.&
             ((suropt(5:9) .ne.surops(5:9)).and.(surops.ne.' '))) then
 !        LE TEST SUIVANT PLANTE LA THERMIQUE OU ON ASSEMBLE

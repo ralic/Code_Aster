@@ -89,7 +89,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: ielg, ielt, igr, igre, igrel, ij, inos
     integer :: inum, iobj, ipoin1, ipoin2, iret, iso, isp
     integer :: ispv, ityca, iutil, ivari, j, jadr
-    integer ::  jlast, jli,  jmod
+    integer ::   jli,  jmod
     integer ::  jv,  jvale, lkname, mode
     integer :: nbelgr, nbgr, nbsmo, nbsobj, nbva, ncmp, ncmpp
     integer :: nec, nnoe, npcalc, nsca, nscal
@@ -100,12 +100,13 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer, pointer :: nbrcmp(:) => null()
     character(len=8), pointer :: nomvar(:) => null()
     integer, pointer :: posvar(:) => null()
+    integer, pointer :: last(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
     if (.not.lresu) then
-        call jeveuo('&&OP0039.LAST', 'E', jlast)
-        inum = zi(jlast-1+5) + 1
+        call jeveuo('&&OP0039.LAST', 'E', vi=last)
+        inum = last(5) + 1
     else
         inum = 0
     endif
@@ -511,7 +512,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
     endif
 !     ------------------------------------------------------------------
 9999  continue
-    if (.not.lresu) zi(jlast-1+5) = inum
+    if (.not.lresu) last(5) = inum
     call jedetr('&&GILIRE.CORR_ASTER_GIBI')
     AS_DEALLOCATE(vi=bid)
     AS_DEALLOCATE(vi=entete)

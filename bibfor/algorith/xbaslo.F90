@@ -64,10 +64,13 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
     character(len=24) :: xfonfi
     integer :: ifon, npoint, ifm, niv, ier, ibid
     character(len=19) :: cnsbas, basloc
-    integer :: iadrco, jgsv, jgsl, jgt, jgtl, jgn
+    integer :: iadrco,  jgsl,  jgtl
     integer :: long, nfon, nbno, ino, j
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij, eps, d, norm2
     real(kind=8) :: xm, ym, zm, xim, yim, zim, s, dmin, xn, yn, zn, a(3)
+    real(kind=8), pointer :: gn(:) => null()
+    real(kind=8), pointer :: gsv(:) => null()
+    real(kind=8), pointer :: gt(:) => null()
 !
     data licmp / 'X1','X2','X3',&
      &             'X4','X5','X6',&
@@ -84,7 +87,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
     nbcmp = ndim*3
     call cnscre(noma, 'NEUT_R', nbcmp, licmp, 'V',&
                 cnsbas)
-    call jeveuo(cnsbas//'.CNSV', 'E', jgsv)
+    call jeveuo(cnsbas//'.CNSV', 'E', vr=gsv)
     call jeveuo(cnsbas//'.CNSL', 'E', jgsl)
 !
 ! --- ACCES AU MAILLAGE
@@ -102,11 +105,11 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !       ON MET TOUT A ZERO ET ON SORT
         do ino = 1, nbno
             do j = 1, ndim
-                zr(jgsv-1+3*ndim*(ino-1)+j)=0.d0
+                gsv(3*ndim*(ino-1)+j)=0.d0
                 zl(jgsl-1+3*ndim*(ino-1)+j)=.true.
-                zr(jgsv-1+3*ndim*(ino-1)+j+ndim)=0.d0
+                gsv(3*ndim*(ino-1)+j+ndim)=0.d0
                 zl(jgsl-1+3*ndim*(ino-1)+j+ndim)=.true.
-                zr(jgsv-1+3*ndim*(ino-1)+j+2*ndim)=0.d0
+                gsv(3*ndim*(ino-1)+j+2*ndim)=0.d0
                 zl(jgsl-1+3*ndim*(ino-1)+j+2*ndim)=.true.
             end do
         end do
@@ -119,9 +122,9 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !
 ! --- RÉCUPÉRATION DES GRADIENTS DE LST ET LSN
 !
-    call jeveuo(grlt//'.CNSV', 'L', jgt)
+    call jeveuo(grlt//'.CNSV', 'L', vr=gt)
     call jeveuo(grlt//'.CNSL', 'L', jgtl)
-    call jeveuo(grln//'.CNSV', 'L', jgn)
+    call jeveuo(grln//'.CNSV', 'L', vr=gn)
 !
 !     CALCUL DES PROJETÉS DES NOEUDS SUR LE FOND DE FISSURE
     eps = 1.d-12
@@ -182,11 +185,11 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
         end do
 !       STOCKAGE DU PROJETÉ ET DES GRADIENTS
         do j = 1, ndim
-            zr(jgsv-1+3*ndim*(ino-1)+j)=a(j)
+            gsv(3*ndim*(ino-1)+j)=a(j)
             zl(jgsl-1+3*ndim*(ino-1)+j)=.true.
-            zr(jgsv-1+3*ndim*(ino-1)+j+ndim)=zr(jgt-1+ndim*(ino-1)+j)
+            gsv(3*ndim*(ino-1)+j+ndim)=gt(ndim*(ino-1)+j)
             zl(jgsl-1+3*ndim*(ino-1)+j+ndim)=.true.
-            zr(jgsv-1+3*ndim*(ino-1)+j+2*ndim)=zr(jgn-1+ndim*(ino-1)+&
+            gsv(3*ndim*(ino-1)+j+2*ndim)=gn(ndim*(ino-1)+&
             j)
             zl(jgsl-1+3*ndim*(ino-1)+j+2*ndim)=.true.
         end do

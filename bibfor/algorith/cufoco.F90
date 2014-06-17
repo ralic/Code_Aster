@@ -45,7 +45,8 @@ subroutine cufoco(numedd, resocu, cnunil)
 !
 !
     integer :: neq, i
-    integer :: jatmu, junil
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: atmu(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,13 +55,13 @@ subroutine cufoco(numedd, resocu, cnunil)
 ! --- INITIALISATIONS
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    call jeveuo(cnunil(1:19)//'.VALE', 'E', junil)
+    call jeveuo(cnunil(1:19)//'.VALE', 'E', vr=vale)
 !
 ! --- CALCUL DU VECT_ASSE
 !
-    call jeveuo(resocu(1:14)//'.ATMU', 'L', jatmu)
+    call jeveuo(resocu(1:14)//'.ATMU', 'L', vr=atmu)
     do i = 1, neq
-        zr(junil+i-1) = zr(jatmu+i-1)
+        vale(i) = atmu(i)
     end do
 !
     call jedema()

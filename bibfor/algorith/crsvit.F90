@@ -37,21 +37,22 @@ subroutine crsvit(solveu)
 !
 !
 !
-    integer :: islvi, islvk
     character(len=24) :: nomslv, nompre
+    integer, pointer :: slvi(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
-    call jeveuo(solveu//'.SLVI', 'E', islvi)
-    nomslv = zk24(islvk-1+1)
-    nompre = zk24(islvk-1+2)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+    nomslv = slvk(1)
+    nompre = slvk(2)
 !
     if ((nomslv.eq.'GCPC' ) .or. (nomslv.eq.'PETSC')) then
         if (nompre .eq. 'LDLT_SP') then
-            zi(islvi-1+8) = 2
+            slvi(8) = 2
         else
             call utmess('I', 'DISCRETISATION_41', sk=nompre)
         endif

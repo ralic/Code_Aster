@@ -60,9 +60,14 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     logical :: first
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacelk, iaval1, iaval2, ibid, icoef, idecg1
-    integer :: idecg2, iel, im, inum, jceld1, jceld2, jligr
+    integer :: i, iacelk,   ibid, icoef, idecg1
+    integer :: idecg2, iel, im, inum
     integer :: k, mode1, mode2, nbgr, nel
+    integer, pointer :: liel(:) => null()
+    integer, pointer :: celd1(:) => null()
+    integer, pointer :: celd2(:) => null()
+    real(kind=8), pointer :: val1(:) => null()
+    real(kind=8), pointer :: val2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     champ1 = champa
@@ -94,8 +99,8 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     call celver(champ1, 'NBVARI_CST', 'STOP', ibid)
     call celver(champ1, 'NBSPT_1', 'STOP', ibid)
 !
-    call jeveuo(champ1//'.CELD', 'L', jceld1)
-    igd1 = zi(jceld1-1+1)
+    call jeveuo(champ1//'.CELD', 'L', vi=celd1)
+    igd1 = celd1(1)
     scal1 = scalai(igd1)
     if (scal1(1:1) .ne. 'R') then
         call utmess('F', 'CALCULEL3_53')
@@ -110,8 +115,8 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
     call celver(champ2, 'NBSPT_1', 'STOP', ibid)
 !
-    call jeveuo(champ2//'.CELD', 'L', jceld2)
-    igd2 = zi(jceld2-1+1)
+    call jeveuo(champ2//'.CELD', 'L', vi=celd2)
+    igd2 = celd2(1)
     scal2 = scalai(igd2)
     if (scal2(1:1) .ne. 'R') then
         call utmess('F', 'CALCULEL3_53')
@@ -122,10 +127,10 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     first = .true.
     nbgr = nbgrel(ligrel)
     do 1 ,j = 1,nbgr
-    mode=zi(jceld1-1+zi(jceld1-1+4+j) +2)
+    mode=celd1(celd1(4+j) +2)
     if (mode .eq. 0) goto 1
     ncmpel = digdel(mode)
-    icoef=max(1,zi(jceld1-1+4))
+    icoef=max(1,celd1(4))
     ncmpel = ncmpel * icoef
     if (first) then
         longt1 = ncmpel
@@ -140,10 +145,10 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
     first = .true.
     nbgr = nbgrel(ligrel)
     do 100 ,j = 1,nbgr
-    mode=zi(jceld2-1+zi(jceld2-1+4+j) +2)
+    mode=celd2(celd2(4+j) +2)
     if (mode .eq. 0) goto 100
     ncmpel = digdel(mode)
-    icoef=max(1,zi(jceld2-1+4))
+    icoef=max(1,celd2(4))
     ncmpel = ncmpel * icoef
     if (first) then
         longt2 = ncmpel
@@ -168,43 +173,43 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr,&
 ! --- ON MOYENNE :
 !     ------------
 !
-    call jeveuo(champ1//'.CELV', 'L', iaval1)
-    call jeveuo(champ2//'.CELV', 'L', iaval2)
+    call jeveuo(champ1//'.CELV', 'L', vr=val1)
+    call jeveuo(champ2//'.CELV', 'L', vr=val2)
     if (nbmail .le. 0) then
         do 2 ,j = 1,nbgr
-        mode1 = zi(jceld1-1+zi(jceld1-1+4+j) +2)
-        mode2 = zi(jceld2-1+zi(jceld2-1+4+j) +2)
+        mode1 = celd1(celd1(4+j) +2)
+        mode2 = celd2(celd2(4+j) +2)
         if ((mode1.eq.0 ) .or. (mode2.eq.0)) goto 2
         nel = nbelem(ligrel,j)
-        idecg1 = zi(jceld1-1+zi(jceld1-1+4+j)+8)
-        idecg2 = zi(jceld2-1+zi(jceld2-1+4+j)+8)
+        idecg1 = celd1(celd1(4+j)+8)
+        idecg2 = celd2(celd2(4+j)+8)
         do 3 , k = 1,nel
-        vr(1) = vr(1) + zr(iaval1-1+idecg1+(k-1)*longt1+ncpa- 1) *zr(iaval2-1+idecg2+(k-1)*longt2&
+        vr(1) = vr(1) + val1(idecg1+(k-1)*longt1+ncpa- 1) *val2(idecg2+(k-1)*longt2&
                 &+ncpb-1)
-        vr(2) = vr(2) + zr(iaval2-1+idecg2+(k-1)*longt2+ncpb- 1)
+        vr(2) = vr(2) + val2(idecg2+(k-1)*longt2+ncpb- 1)
  3      continue
  2      continue
         vr(1) = vr(1)/vr(2)
     else
-        call jeveuo(ligrel//'.LIEL', 'L', jligr)
+        call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
         do 30 im = 1, nbmail
             inum = 0
             do 20 j = 1, nbgr
-                mode1 = zi(jceld1-1+zi(jceld1-1+4+j) +2)
-                mode2 = zi(jceld2-1+zi(jceld2-1+4+j) +2)
+                mode1 = celd1(celd1(4+j) +2)
+                mode2 = celd2(celd2(4+j) +2)
                 nel = nbelem(ligrel,j)
                 if ((mode1.eq.0 ) .or. (mode2.eq.0)) then
                     inum = inum + nel + 1
                     goto 20
                 endif
-                idecg1 = zi(jceld1-1+zi(jceld1-1+4+j)+8)
-                idecg2 = zi(jceld2-1+zi(jceld2-1+4+j)+8)
+                idecg1 = celd1(celd1(4+j)+8)
+                idecg2 = celd2(celd2(4+j)+8)
                 do 22 k = 1, nel
-                    iel = zi(jligr+inum+k-1)
+                    iel = liel(1+inum+k-1)
                     if (iel .ne. numail(im)) goto 22
-                    vr(1) =vr(1) + zr(iaval1-1+idecg1+(k-1)*longt1+&
-                    ncpa-1) *zr(iaval2-1+idecg2+(k-1)*longt2+ncpb-1)
-                    vr(2)= vr(2) + zr(iaval2-1+idecg2+(k-1)*longt2+&
+                    vr(1) =vr(1) + val1(idecg1+(k-1)*longt1+&
+                    ncpa-1) *val2(idecg2+(k-1)*longt2+ncpb-1)
+                    vr(2)= vr(2) + val2(idecg2+(k-1)*longt2+&
                     ncpb-1)
                     goto 30
 22              continue

@@ -113,7 +113,8 @@ subroutine renuno(nu, renum)
 !     -- CALCUL DE .EXI1 :
 !     --------------------
 !-----------------------------------------------------------------------
-    integer :: i, iaexi1, ianewn, iaoldn, ico, nlili
+    integer :: i,  ianewn, iaoldn, ico, nlili
+    integer, pointer :: exi1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call reexi1(nu, mo, ma, nlili, nm,&
@@ -130,7 +131,7 @@ subroutine renuno(nu, renum)
 !     (A LA FIN DE CETTE ETAPE, NEWN ET OLDN CONCERNENT UNIQUEMENT
 !     LES NOEUDS PHYSIQUES (1->NM))
 !     --------------------------------------------------------------
-    call jeveuo(nu//'.EXI1', 'L', iaexi1)
+    call jeveuo(nu//'.EXI1', 'L', vi=exi1)
 !
     if (renum(1:4) .eq. 'RCMK') then
 !     -- 'REVERSE-CUTHIL-MAC-KEE':
@@ -143,7 +144,7 @@ subroutine renuno(nu, renum)
 !     -- 'SANS RENUMEROTATION CUTHIL-MAC-KEE':
         ico = 0
         do 10,i = 1,nm
-        if (zi(iaexi1+i) .gt. 0) then
+        if (exi1(1+i) .gt. 0) then
             ico = ico + 1
             zi(ianewn-1+i) = ico
             zi(iaoldn-1+ico) = i

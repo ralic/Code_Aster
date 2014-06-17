@@ -57,10 +57,12 @@ subroutine comp_comp_save(mesh, compor, nb_cmp, list_vale)
     character(len=16) :: motcle(2)
     integer :: iocc
     integer :: nocc, nt
-    integer :: j_lvali, j_lvalk, j_cart_val
     character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, mult_comp
     integer :: nb_vari, nume_comp, nb_vari_exte, unit_comp
     character(len=16) :: keywordfact
+    character(len=16), pointer :: valv(:) => null()
+    integer, pointer :: vali(:) => null()
+    character(len=24), pointer :: valk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,12 +77,12 @@ subroutine comp_comp_save(mesh, compor, nb_cmp, list_vale)
 !
 ! - Access to COMPOR <CARTE>
 !
-    call jeveuo(compor//'.VALV', 'E', j_cart_val)
+    call jeveuo(compor//'.VALV', 'E', vk16=valv)
 !
 ! - Access to list
 !
-    call jeveuo(list_vale(1:19)//'.VALI', 'L', j_lvali)
-    call jeveuo(list_vale(1:19)//'.VALK', 'L', j_lvalk)
+    call jeveuo(list_vale(1:19)//'.VALI', 'L', vi=vali)
+    call jeveuo(list_vale(1:19)//'.VALK', 'L', vk24=valk)
 !
 ! - Read list
 !
@@ -88,25 +90,25 @@ subroutine comp_comp_save(mesh, compor, nb_cmp, list_vale)
 !
 ! ----- Get options
 !
-        nb_vari_exte = zi(j_lvali+4*(iocc-1) -1 + 1)
-        unit_comp    = zi(j_lvali+4*(iocc-1) -1 + 2)
-        nb_vari      = zi(j_lvali+4*(iocc-1) -1 + 3)
-        nume_comp    = zi(j_lvali+4*(iocc-1) -1 + 4)
-        rela_comp = zk24(j_lvalk+16*(iocc-1) -1 + 1)(1:16)
-        defo_comp = zk24(j_lvalk+16*(iocc-1) -1 + 2)(1:16)
-        type_comp = zk24(j_lvalk+16*(iocc-1) -1 + 3)(1:16)
-        type_cpla = zk24(j_lvalk+16*(iocc-1) -1 + 4)(1:16)
-        mult_comp = zk24(j_lvalk+16*(iocc-1) -1 + 14)(1:16)
+        nb_vari_exte = vali(1+4*(iocc-1) -1 + 1)
+        unit_comp    = vali(1+4*(iocc-1) -1 + 2)
+        nb_vari      = vali(1+4*(iocc-1) -1 + 3)
+        nume_comp    = vali(1+4*(iocc-1) -1 + 4)
+        rela_comp = valk(1+16*(iocc-1) -1 + 1)(1:16)
+        defo_comp = valk(1+16*(iocc-1) -1 + 2)(1:16)
+        type_comp = valk(1+16*(iocc-1) -1 + 3)(1:16)
+        type_cpla = valk(1+16*(iocc-1) -1 + 4)(1:16)
+        mult_comp = valk(1+16*(iocc-1) -1 + 14)(1:16)
 !
 ! ----- Set options in COMPOR <CARTE>
 !
-        zk16(j_cart_val-1+1)  = rela_comp
-        write (zk16(j_cart_val-1+2),'(I16)') nb_vari
-        zk16(j_cart_val-1+3)  = defo_comp
-        zk16(j_cart_val-1+4)  = type_comp
-        zk16(j_cart_val-1+5)  = type_cpla
-        write (zk16(j_cart_val-1+6),'(I16)') nume_comp
-        zk16(j_cart_val-1+7)  = mult_comp
+        valv(1)  = rela_comp
+        write (valv(2),'(I16)') nb_vari
+        valv(3)  = defo_comp
+        valv(4)  = type_comp
+        valv(5)  = type_cpla
+        write (valv(6),'(I16)') nume_comp
+        valv(7)  = mult_comp
 !
 ! ----- Get mesh
 !

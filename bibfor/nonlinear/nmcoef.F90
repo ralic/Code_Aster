@@ -50,13 +50,14 @@ subroutine nmcoef(noeu1, noeu2, typpil, nbno, cnsln,&
 !
 !
 !
-    integer :: jlsn, coefii
+    integer ::  coefii
     real(kind=8) :: lsn1, lsn2, vect(3), nbnor, deno, eps
     character(len=24) :: typpil
+    real(kind=8), pointer :: cnsv(:) => null()
 !
-    call jeveuo(cnsln//'.CNSV', 'E', jlsn)
-    lsn1 = zr(jlsn-1+noeu1)
-    lsn2 = zr(jlsn-1+noeu2)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=cnsv)
+    lsn1 = cnsv(noeu1)
+    lsn2 = cnsv(noeu2)
     eps = r8prem()
     nbnor=1.d0*nbno
     if ((abs(lsn1).le.eps) .and. (abs(lsn2).le.eps)) then

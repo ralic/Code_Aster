@@ -73,7 +73,7 @@ subroutine op0048()
     integer :: ialifo, iaadve, nondp, ifexte, ifamor, ifliai
     integer :: neq, idepl0, ivite0, iacce0, iwk, iordr
     integer :: iinteg, iret
-    integer :: jord, nbord, jchar
+    integer ::  nbord, jchar
     integer :: lresu, lcrre, iresu, nbexre, l
     integer :: nbchre, iocc, nfon
     real(kind=8) :: t0, time, rundf, alpha
@@ -91,6 +91,7 @@ subroutine op0048()
     character(len=19) :: force0, force1
 !
     logical :: lamort, lcrea, lprem, exipou
+    integer, pointer :: ordr(:) => null()
 !     -----------------------------------------------------------------
     data modele   /'                        '/
 !                     123456789012345678901234
@@ -234,16 +235,16 @@ subroutine op0048()
 !====
 !
 !
-    call jeveuo(result//'           .ORDR', 'L', jord)
+    call jeveuo(result//'           .ORDR', 'L', vi=ordr)
     call jelira(result//'           .ORDR', 'LONUTI', nbord)
     do iordr = 1, nbord
-        call rsadpa(result, 'E', 1, 'MODELE', zi(jord+iordr-1),&
+        call rsadpa(result, 'E', 1, 'MODELE', ordr(iordr),&
                     0, sjv=ladpa, styp=k8b)
         zk8(ladpa)=modele(1:8)
-        call rsadpa(result, 'E', 1, 'CHAMPMAT', zi(jord+iordr-1),&
+        call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(iordr),&
                     0, sjv=ladpa, styp=k8b)
         zk8(ladpa)=materi
-        call rsadpa(result, 'E', 1, 'CARAELEM', zi(jord+iordr-1),&
+        call rsadpa(result, 'E', 1, 'CARAELEM', ordr(iordr),&
                     0, sjv=ladpa, styp=k8b)
         zk8(ladpa)=carael
     end do

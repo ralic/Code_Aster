@@ -54,8 +54,8 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !-----------------------------------------------------------------------
 !
     integer :: ibid, ifon, indica, indicb, ina, inb, ino
-    integer :: iseg, jbas, jcoor
-    integer :: jgsl, jgsv, jlnsv, jlnsl, jltsv, jltsl, jtyp
+    integer :: iseg, jbas
+    integer :: jgsl,   jlnsl,  jltsl, jtyp
     integer :: k, nbno, ndim, nseg
     real(kind=8) :: d, dmin, eps, norm2, s, sn, xln, xlt
     real(kind=8) :: xa, ya, za, xb, yb, zb, xm, ym, zm
@@ -65,6 +65,10 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
     character(len=8) :: licmp(9), typfon
     character(len=16) :: casfon
     character(len=19) :: cnsbas, cnsln, cnslt
+    real(kind=8), pointer :: gsv(:) => null()
+    real(kind=8), pointer :: lnsv(:) => null()
+    real(kind=8), pointer :: ltsv(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
     data licmp / 'X1','X2','X3',&
      &             'X4','X5','X6',&
@@ -81,7 +85,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !     RECUPERATION DES INFORMATIONS RELATIVES AU MAILLAGE
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     NSEG : NOMBRE DE "SEGMENTS" DU FOND A TRAITER
     if (ndim .eq. 2) then
@@ -107,16 +111,16 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
                 cnsln)
 !
-    call jeveuo(cnslt//'.CNSV', 'E', jltsv)
+    call jeveuo(cnslt//'.CNSV', 'E', vr=ltsv)
     call jeveuo(cnslt//'.CNSL', 'E', jltsl)
-    call jeveuo(cnsln//'.CNSV', 'E', jlnsv)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=lnsv)
     call jeveuo(cnsln//'.CNSL', 'E', jlnsl)
 !
 !     INITIALISATION DU CHAMP SIMPLE DE LA BASE LOCALE
     cnsbas = '&&FONBAS.CNSBAS'
     call cnscre(noma, 'NEUT_R', ndim*3, licmp, 'V',&
                 cnsbas)
-    call jeveuo(cnsbas//'.CNSV', 'E', jgsv)
+    call jeveuo(cnsbas//'.CNSV', 'E', vr=gsv)
     call jeveuo(cnsbas//'.CNSL', 'E', jgsl)
 !
     call jeveuo(fonfis, 'L', ifon)
@@ -130,9 +134,9 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
     do ino = 1, nbno
 !
 !       COORD DU NOEUD M DU MAILLAGE
-        xm = zr(jcoor+(ino-1)*3+1-1)
-        ym = zr(jcoor+(ino-1)*3+2-1)
-        zm = zr(jcoor+(ino-1)*3+3-1)
+        xm = vale(1+(ino-1)*3+1-1)
+        ym = vale(1+(ino-1)*3+2-1)
+        zm = vale(1+(ino-1)*3+3-1)
 !
 !       CAS 2D : LE PROJETE EST TRIVIAL !
         if (ndim .eq. 2) then
@@ -148,18 +152,18 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !
 !         STOCKAGE DES VECTEURS DE LA BASE
             do k = 1, ndim
-                zr(jgsv-1+3*ndim*(ino-1)+k) = n(k)
+                gsv(3*ndim*(ino-1)+k) = n(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k) = .true.
-                zr(jgsv-1+3*ndim*(ino-1)+k+2) = zr(jbas-1+k)
+                gsv(3*ndim*(ino-1)+k+2) = zr(jbas-1+k)
                 zl(jgsl-1+3*ndim*(ino-1)+k+2) = .true.
-                zr(jgsv-1+3*ndim*(ino-1)+k+4) = zr(jbas-1+k+ndim)
+                gsv(3*ndim*(ino-1)+k+4) = zr(jbas-1+k+ndim)
                 zl(jgsl-1+3*ndim*(ino-1)+k+4) = .true.
             end do
 !
 !         STOCKAGE DES LEVEL-SETS
-            zr(jlnsv-1+(ino-1)+1)=nm(1)*zr(jbas-1+1)+nm(2)*zr(jbas-1+&
+            lnsv((ino-1)+1)=nm(1)*zr(jbas-1+1)+nm(2)*zr(jbas-1+&
             2)
-            zr(jltsv-1+(ino-1)+1)=nm(1)*zr(jbas-1+3)+nm(2)*zr(jbas-1+&
+            ltsv((ino-1)+1)=nm(1)*zr(jbas-1+3)+nm(2)*zr(jbas-1+&
             4)
             zl(jlnsl-1+(ino-1)+1)=.true.
             zl(jltsl-1+(ino-1)+1)=.true.
@@ -245,11 +249,11 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
                 vdirn(k) = sn*vdirb(k)+(1-sn)*vdira(k)
 !
 !           STOCKAGE DU PROJETE ET DES GRADIENTS
-                zr(jgsv-1+3*ndim*(ino-1)+k) = n(k)
+                gsv(3*ndim*(ino-1)+k) = n(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k) = .true.
-                zr(jgsv-1+3*ndim*(ino-1)+k+3) = vdirn(k)
+                gsv(3*ndim*(ino-1)+k+3) = vdirn(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k+3) = .true.
-                zr(jgsv-1+3*ndim*(ino-1)+k+6) = vnorn(k)
+                gsv(3*ndim*(ino-1)+k+6) = vnorn(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k+6) = .true.
 !
             end do
@@ -257,8 +261,8 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !         STOCKAGE DES LEVEL-SETS
             xln = nm(1)*vnorn(1)+nm(2)*vnorn(2)+nm(3)*vnorn(3)
             xlt = nm(1)*vdirn(1)+nm(2)*vdirn(2)+nm(3)*vdirn(3)
-            zr(jlnsv-1+(ino-1)+1) = xln
-            zr(jltsv-1+(ino-1)+1) = xlt
+            lnsv((ino-1)+1) = xln
+            ltsv((ino-1)+1) = xlt
 !
             zl(jlnsl-1+(ino-1)+1) = .true.
             zl(jltsl-1+(ino-1)+1) = .true.

@@ -70,15 +70,18 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
     character(len=24) :: indirf, crefe(2), nomchc, pfchno, nomchs
     real(kind=8) :: depi, genek, beta
     integer :: nbmode, ibid, iret, neqsec,  llfreq, ltveco, ldfreq, ldkge
-    integer :: ldmge, ldom2, ldomo, nbnot, nbcmp, llcham, nbsec, neq, ires2
-    integer :: numdia, ltvesi
+    integer :: ldmge, ldom2, ldomo, nbnot, nbcmp,  nbsec, neq, ires2
+    integer :: numdia
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, icomp, ieqf, ieqi, ier, j, k
-    integer :: ldtyd, llinsk, ltinds, n1, nddcou
+    integer :: ldtyd,  ltinds, n1, nddcou
     real(kind=8), pointer :: teta_secteur(:) => null()
+    integer, pointer :: skeleton(:) => null()
+    real(kind=8), pointer :: nllcham(:) => null()
+    real(kind=8), pointer :: nltvesi(:) => null()
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
 !
@@ -130,7 +133,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
 !
-    call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
+    call jeveuo(mailsk//'.INV.SKELETON', 'L', vi=skeleton)
     call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 !***********************************************************************
@@ -153,7 +156,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
         if (ires2 .ne. 0) then
             call rsexch('F', modcys, 'DEPL', i, nomchs,&
                         iret)
-            call jeveuo(nomchs(1:19)//'.VALE', 'L', ltvesi)
+            call jeveuo(nomchs(1:19)//'.VALE', 'L', vr=nltvesi)
         endif
 !
 !
@@ -163,7 +166,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
                     iret)
         call vtcrea(chamva, crefe, 'G', 'R', neq)
         call rsnoch(nomres, depl, i)
-        call jeveuo(chamva//'.VALE', 'E', llcham)
+        call jeveuo(chamva//'.VALE', 'E', vr=nllcham)
 !
 !  COMMUN POUR MODE_MECA ET BASE_MODALE
 !
@@ -206,19 +209,19 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
                 ieqi = zi(ltinds+(j-1)*2)
                 ieqf = zi(ltinds+(j-1)*2+1)
                 if (ires2 .ne. 0) then
-                    zr(llcham+ieqf-1) = sin(&
-                                        (k-1)*beta)*zr(ltveco+ ieqi-1) +cos((k-1)*beta)*zr(ltvesi&
+                    nllcham(ieqf) = sin(&
+                                        (k-1)*beta)*zr(ltveco+ ieqi-1) +cos((k-1)*beta)*nltvesi(1&
                                         &+ieqi-1&
                                         )
                 else
-                    zr(llcham+ieqf-1) = zr(ltveco+ieqi-1)
+                    nllcham(ieqf) = zr(ltveco+ieqi-1)
                 endif
             end do
         end do
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-        call rotchm(profno, zr(llcham), teta_secteur, nbsec, zi(llinsk),&
+        call rotchm(profno, nllcham, teta_secteur, nbsec, skeleton,&
                     nbnot, nbcmp, 3)
 !
         call jelibe(nomchc(1:19)//'.VALE')

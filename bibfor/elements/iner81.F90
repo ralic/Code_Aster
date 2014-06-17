@@ -47,7 +47,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 !-----------------------------------------------------------------------
-    integer :: i, ia, iad, idbase, iddeeq, ieq
+    integer :: i, ia, iad, idbase,  ieq
     integer :: ier, if, ldref, ldres, lmat, ltvec1
     integer :: ltvec2, ltvec3, mxddl, nbdef, neq
 !-----------------------------------------------------------------------
@@ -61,6 +61,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
     character(len=24) :: nomres
     character(len=24) :: valk
     complex(kind=8) :: cbid
+    integer, pointer :: deeq(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------
@@ -111,7 +112,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
     call pteddl('NUME_DDL', num, mxddl, nomddl, neq,&
                 zi(ltvec3))
 !
-    call jeveuo(num//'.NUME.DEEQ', 'L', iddeeq)
+    call jeveuo(num//'.NUME.DEEQ', 'L', vi=deeq)
     call wkvect('&&'//pgc//'.BASEMO', 'V V R', nbdef*neq, idbase)
     call copmod(basmod, numer=num, bmodr=zr(idbase))
 !
@@ -136,7 +137,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
         iad = (if-1)*nbdef
         do i = 1, nbdef
             call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(ltvec1), 1)
-            call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
+            call zerlag(neq, deeq, vectr=zr(ltvec1))
             zr(ldres+iad+i-1) = ddot(neq,zr(ltvec1),1,zr(ltvec2),1)
         end do
 !

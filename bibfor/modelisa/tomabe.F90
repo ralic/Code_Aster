@@ -90,7 +90,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! -----------------
     integer :: ias, icste, idecal, imail, ino, iret, jconx, jncoch, jnumab
     integer :: jnunob, jptma, jtyma, jvalk, jvalr, nbconx, nbcste, ntyma, numail
-    integer :: numnoe, jcesd, jcesl, jcesv, iad
+    integer :: numnoe, jcesd, jcesl,  iad
 !
     integer :: ntri3, ntri6, nqua4, nqua8, nqua9, ntet4, ntet10, npyr5, npyr13
     integer :: npen6, npen15, nhex8, nhex20, nhex27
@@ -104,6 +104,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     character(len=8) :: bpelb(2)
     character(len=4) :: regl
     real(kind=8) :: crite
+    character(len=8), pointer :: cesv(:) => null()
     data          bpelb  /'PERT_FLU','PERT_RET'/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -257,7 +258,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 'A', iret)
     call jeveuo(chsmat//'.CESD', 'L', jcesd)
     call jeveuo(chsmat//'.CESL', 'L', jcesl)
-    call jeveuo(chsmat//'.CESV', 'L', jcesv)
+    call jeveuo(chsmat//'.CESV', 'L', vk8=cesv)
 !
     numail = zi(jnumab+1-1)
     call cesexi('C', jcesd, jcesl, numail, 1,&
@@ -268,7 +269,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !     LE CATALOGUE QU'UN SEUL COMPORTEMENT ETAIT POSSIBLE)
 !
     regl='BPEL'
-    beton=zk8(jcesv-1+iad)
+    beton=cesv(iad)
     nomrc = beton//'.BPEL_BETON'
     rcvalk = nomrc//'.VALK'
     call jeexin(rcvalk, iret)
@@ -317,7 +318,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 numail = zi(jnumab+imail-1)
                 call cesexi('C', jcesd, jcesl, numail, 1,&
                             1, 1, iad)
-                beton=zk8(jcesv-1+iad)
+                beton=cesv(iad)
                 nomrc = beton//'.BPEL_BETON'
                 rcvalk = nomrc//'.VALK'
                 rcvalr = nomrc//'.VALR'

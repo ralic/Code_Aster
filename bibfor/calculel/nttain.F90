@@ -56,7 +56,7 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
     complex(kind=8) :: cbid
 !
 !
-    integer :: k, jvare, j2nd, jtempm, jtempp, jtemp
+    integer :: k,  j2nd,  jtempp
     real(kind=8) :: r8bid, testn
     character(len=1) :: typres
     character(len=19) :: chsol
@@ -64,6 +64,9 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 !
 !-----------------------------------------------------------------------
     integer :: iret
+    real(kind=8), pointer :: tempm(:) => null()
+    real(kind=8), pointer :: temp(:) => null()
+    real(kind=8), pointer :: vare(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     data typres        /'R'/
@@ -96,13 +99,13 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
     call asasve(veresi, numedd, typres, varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid,&
                 typres, cnresi)
-    call jeveuo(cnresi(1:19)//'.VALE', 'L', jvare)
+    call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=vare)
 !
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
     call jeveuo(vtempp(1:19)//'.VALE', 'E', jtempp)
     do k = 1, lonch
-        zr(jtempp+k-1) = zr(j2nd+k-1) + zr(jvare+k-1)
+        zr(jtempp+k-1) = zr(j2nd+k-1) + vare(k)
     end do
 !
     call resoud(matass, maprec, solveu, cnchci, 0,&
@@ -112,8 +115,8 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 ! --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL
 !
     call copisd('CHAMP_GD', 'V', chsol, vtempp(1:19))
-    call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
-    call jeveuo(vtemp(1:19)//'.VALE', 'E', jtemp)
+    call jeveuo(vtempm(1:19)//'.VALE', 'E', vr=tempm)
+    call jeveuo(vtemp(1:19)//'.VALE', 'E', vr=temp)
     call jeveuo(vtempp(1:19)//'.VALE', 'L', jtempp)
 !
 ! --- EVALUATION DE !!T(I+1)-T(I)!! ET ACTUALISATION DE LA TEMPERATURE
@@ -121,10 +124,10 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
     testi = 0.d0
     testn = 0.d0
     do k = 1, lonch
-        testi = testi + (zr(jtempp+k-1)-zr(jtempm+k-1))**2
+        testi = testi + (zr(jtempp+k-1)-tempm(k))**2
         testn = testn + (zr(jtempp+k-1))**2
-        zr(jtemp +k-1) = zr(jtempm+k-1)
-        zr(jtempm+k-1) = zr(jtempp+k-1)
+        temp(k) = tempm(k)
+        tempm(k) = zr(jtempp+k-1)
     end do
     if (testn .gt. 0) testi = testi/testn
 !

@@ -47,16 +47,18 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-    integer :: ima, nma, nbpg, nbsp, idpg, ivpg, ipg, posma, lvale
+    integer :: ima, nma, nbpg, nbsp,  ivpg, ipg, posma, lvale
     integer :: im1, im2, ivfi, ivsfi, nbval, iphi, isphi, nbm, icmp, idfi, ilfi
     integer :: iret, nbcmp, ival, ind, iff
-    integer :: icfi, posmai, nbpoin
+    integer ::  posmai, nbpoin
     integer :: lnumi, lnumj, nbabs
     real(kind=8) :: valpar(7), freq, pdgi
     complex(kind=8) :: val
     character(len=8) :: isz, nocmpi, nomres
     character(len=19) :: pg, phi, sphi, phii, sphii
     character(len=24) :: chnumi, chnumj, chfreq, chvale
+    integer, pointer :: vpg(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -64,10 +66,10 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 !
 ! CHAMP CONTENANT LES POINTS DE GAUSS
     call jeveuo(pg//'.CESV', 'L', ivpg)
-    call jeveuo(pg//'.CESD', 'L', idpg)
+    call jeveuo(pg//'.CESD', 'L', vi=vpg)
 !
 ! NOMBRE DE MAILLES
-    nma=zi(idpg)
+    nma=vpg(1)
 !
 ! NOMBRE DE MODES
     call jelira(phi, 'LONMAX', nbm)
@@ -85,15 +87,15 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
     call jeveuo(phii//'.CESV', 'L', ivfi)
     call jeveuo(phii//'.CESD', 'L', idfi)
     call jeveuo(phii//'.CESL', 'L', ilfi)
-    call jeveuo(phii//'.CESC', 'L', icfi)
+    call jeveuo(phii//'.CESC', 'L', vk8=cesc)
 !
 ! CALCUL DE LA MATRICE S.PHI
 ! BOUCLE SUR LES MAILLES ET POINTS DE GAUSS I
     do 4 ima = 1, nma
 !  NOMBRE DE PDG ET DE SOUS PDG DE LA MAILLE IMA
-        nbpg=zi(idpg-1+5+4*(ima-1)+1)
-        nbsp=zi(idpg-1+5+4*(ima-1)+2)
-        posma=zi(idpg-1+5+4*(ima-1)+4)
+        nbpg=vpg(5+4*(ima-1)+1)
+        nbsp=vpg(5+4*(ima-1)+2)
+        posma=vpg(5+4*(ima-1)+4)
         ASSERT(nbsp.eq.1)
         do 5 ipg = 1, nbpg
 !  COORDONNEES DU POINT DE GAUSS IPG X1,Y1,Z1 ET POIDS DE GAUSS
@@ -104,7 +106,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
             nbcmp=zi(idfi-1+5+4*(ima-1)+3)
             posmai=zi(idfi-1+5+4*(ima-1)+4)
             do 6 icmp = 1, nbcmp
-                nocmpi=zk8(icfi-1+icmp)
+                nocmpi=cesc(icmp)
                 call cesexi('S', idfi, ilfi, ima, ipg,&
                             1, icmp, iret)
                 if (iret .lt. 0) goto 7

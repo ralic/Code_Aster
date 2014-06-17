@@ -60,7 +60,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, j, jnode, llcoo, llintg
+    integer :: i, ibid, j, jnode,  llintg
     integer :: llista, llistb, ltnd, ltng, nbd, nbg, nbpbax
     integer :: nbpbr, nbpbse, nbpbto, nbpbvt, nbsec, numd, numg
     integer :: nunod, nunog
@@ -68,6 +68,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
     real(kind=8) :: distrj, distz, distzj, pi, prec, pvdif, rd
     real(kind=8) :: rg, teta, xd, xg, yd, yg, zd
     real(kind=8) :: zg, zpv, zpvref
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     data pgc /'VERECY'/
 !-----------------------------------------------------------------------
@@ -112,7 +113,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
     call bmnoin(' ', intf, kbid, numg, nbg,&
                 zi(ltng), ibid)
 !
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', llcoo)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=vale)
 !
     teta=2.d0*pi/nbsec
 !
@@ -134,9 +135,9 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
         nunod=zi(ltnd+i-1)
         call jenuno(jexnum(mailla//'.NOMNOE', nunod), nomnod)
 !
-        xd=zr(llcoo+3*(nunod-1))
-        yd=zr(llcoo+3*(nunod-1)+1)
-        zd=zr(llcoo+3*(nunod-1)+2)
+        xd=vale(1+3*(nunod-1))
+        yd=vale(1+3*(nunod-1)+1)
+        zd=vale(1+3*(nunod-1)+2)
         rd = sqrt(xd*xd+yd*yd)
 !
 !       RECHERCHE DU NOEUD J (GAUCHE) LE PLUS PROCHE DE I (DROITE)
@@ -144,9 +145,9 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
 !       --- BOUCLE SUR LES NOEUDS DE L'INTERFACE GAUCHE ---
             nunog=zi(ltng+j-1)
             call jenuno(jexnum(mailla//'.NOMNOE', nunog), nomnog)
-            xg=zr(llcoo+3*(nunog-1))
-            yg=zr(llcoo+3*(nunog-1)+1)
-            zg=zr(llcoo+3*(nunog-1)+2)
+            xg=vale(1+3*(nunog-1))
+            yg=vale(1+3*(nunog-1)+1)
+            zg=vale(1+3*(nunog-1)+2)
             rg = sqrt(xg*xg+yg*yg)
             distr = abs(rd-rg)
             distz = abs(zd-zg)
@@ -186,9 +187,9 @@ subroutine verecy(intf, numd, numg, nbsec, prec,&
         if (jnode .ne. i) ordre = .false.
         nunog=zi(ltng+jnode-1)
         call jenuno(jexnum(mailla//'.NOMNOE', nunog), nomnog)
-        xg=zr(llcoo+3*(nunog-1))
-        yg=zr(llcoo+3*(nunog-1)+1)
-        zg=zr(llcoo+3*(nunog-1)+2)
+        xg=vale(1+3*(nunog-1))
+        yg=vale(1+3*(nunog-1)+1)
+        zg=vale(1+3*(nunog-1)+2)
 !
 ! VERIFICATION OZ AXE REPETITIVITE
 !

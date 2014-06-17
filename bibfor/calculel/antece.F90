@@ -51,21 +51,22 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
 !
 !
 !
-    integer :: igeom, nbno
+    integer ::  nbno
     real(kind=8) :: x1, y1, z1, x2, y2, z2, xp1, yp1, zp1, distan
     real(kind=8) :: ca(3), sa(3), rot(3)
 !
 !-----------------------------------------------------------------------
     integer :: ino1, nbid
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getvr8(' ', 'DIST_REFE', scal=tailmi, nbret=nbid)
 !
-    call jeveuo(mail//'.COORDO    .VALE', 'L', igeom)
+    call jeveuo(mail//'.COORDO    .VALE', 'L', vr=vale)
 !
-    x2 = zr(igeom -1 + (ino2 -1)*3 +1)
-    y2 = zr(igeom -1 + (ino2 -1)*3 +2)
-    z2 = zr(igeom -1 + (ino2 -1)*3 +3)
+    x2 = vale((ino2 -1)*3 +1)
+    y2 = vale((ino2 -1)*3 +2)
+    z2 = vale((ino2 -1)*3 +3)
 !
     call dismoi('NB_NO_MAILLA', mail, 'MAILLAGE', repi=nbno)
 !
@@ -84,9 +85,9 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
 !
     do ino1 = 1, nbno
 !
-        x1 = zr(igeom -1 + (ino1 -1)*3 +1)
-        y1 = zr(igeom -1 + (ino1 -1)*3 +2)
-        z1 = zr(igeom -1 + (ino1 -1)*3 +3)
+        x1 = vale((ino1 -1)*3 +1)
+        y1 = vale((ino1 -1)*3 +2)
+        z1 = vale((ino1 -1)*3 +3)
 !
 !
         rot(1)=ca(2)*ca(1)*x1+y1*(sa(3)*sa(2)*ca(1) -ca(3)*sa(1)) +z1*&

@@ -55,10 +55,11 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
 !
 !
 !
-    integer :: nbchme, jmec, iret
+    integer :: nbchme,  iret
     integer :: k, jcoef, jlicoe
     character(len=24) :: licoef
     character(len=19) :: mesuiv
+    character(len=24), pointer :: relr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,7 +77,7 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
         goto 999
     else
         call jelira(licoef, 'LONUTI', nbchme)
-        call jeveuo(mesuiv(1:19)//'.RELR', 'L', jmec)
+        call jeveuo(mesuiv(1:19)//'.RELR', 'L', vk24=relr)
         call jeveuo(licoef, 'L', jlicoe)
     endif
 !
@@ -86,7 +87,7 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
     call wkvect('&&ASCOMA.LISTE_COEF', 'V V R', 1, jcoef)
     do 777 k = 1, nbchme
         call jedetr('&&ASCOMA           .RELR')
-        call reajre('&&ASCOMA', zk24(jmec+k-1), 'V')
+        call reajre('&&ASCOMA', relr(k), 'V')
         zr(jcoef) = zr(jlicoe+k-1)
         call asmatr(1, '&&ASCOMA           ', '&&ASCOMA.LISTE_COEF', numedd, solveu,&
                     lischa, 'CUMU', 'V', 1, matass)

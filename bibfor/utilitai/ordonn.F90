@@ -45,20 +45,22 @@ subroutine ordonn(nomfon, iret)
 ! IN     : IRET   : SI 1, ON S'ARRETE EN <F> SI ABSC. NON MONOTONES
 !                   SI 0, ON FORCE LE TRI
 ! ----------------------------------------------------------------------
-    integer :: ival, lprol
-    integer :: ipar, nbpara
+    integer :: ival
+    integer ::  nbpara
     integer :: nbval, nbpts, ier, i
     logical :: isnap, inv
     character(len=1) :: codmes
     character(len=16) :: typfon
     character(len=24) :: chval
+    real(kind=8), pointer :: para(:) => null()
+    character(len=24), pointer :: prol(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
     chval=nomfon//'.VALE'
-    call jeveuo(nomfon//'.PROL', 'L', lprol)
-    typfon = zk24(lprol)(1:16)
+    call jeveuo(nomfon//'.PROL', 'L', vk24=prol)
+    typfon = prol(1)(1:16)
 !
     isnap = .false.
     inv = .false.
@@ -120,10 +122,10 @@ subroutine ordonn(nomfon, iret)
 !     --------------------------------------------
     else if (typfon.eq.'NAPPE') then
         isnap=.true.
-        call jeveuo(nomfon//'.PARA', 'E', ipar)
+        call jeveuo(nomfon//'.PARA', 'E', vr=para)
         call jelira(nomfon//'.PARA', 'LONUTI', nbpara)
         ier=0
-        call foverf(zr(ipar), nbpara, ier)
+        call foverf(para, nbpara, ier)
         if (ier .le. 0) then
 !           LES PARAMETRES NE SONT PAS CROISSANTS (SENS LARGE)
             call ordonp(nomfon)

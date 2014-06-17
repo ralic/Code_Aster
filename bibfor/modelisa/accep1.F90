@@ -49,7 +49,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/as_allocate.h"
 !
     integer :: nbm, i
-    integer :: iret, ilime, inoli, ngrel, ipg, n1, jlgrf
+    integer :: iret,   ngrel, ipg, n1
     integer :: ncham,  nn, nbelto, nbelgr, ntail, ialiel
     integer :: igr, ima, ii, iel, ive, itab, imo
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
@@ -61,6 +61,9 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     logical :: yang
     character(len=8), pointer :: vec(:) => null()
+    character(len=24), pointer :: noli(:) => null()
+    character(len=24), pointer :: lime(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -76,9 +79,9 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
             call rsexch(' ', modmec, 'DEPL', 1, nomcha,&
                         iret)
             call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matas)
-            call jeveuo(matas//'.LIME', 'L', ilime)
-            call jeveuo(zk24(ilime)(1:8)//'.ME001     .NOLI', 'L', inoli)
-            modele = zk24(inoli) (1:8)
+            call jeveuo(matas//'.LIME', 'L', vk24=lime)
+            call jeveuo(lime(1)(1:8)//'.ME001     .NOLI', 'L', vk24=noli)
+            modele = noli(1) (1:8)
         else
 !         --- DEFORMEES MODALES PAR DES CHAM_NO MAIS AUCUNE INFORMATION
 !             N'EST PRESENTE SUR LE MODELE EF...
@@ -104,8 +107,8 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     endif
 !
 ! CALCULS ELEMENTAIRES
-    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', jlgrf)
-    chgeom = zk8(jlgrf-1+1)//'.COORDO'
+    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom

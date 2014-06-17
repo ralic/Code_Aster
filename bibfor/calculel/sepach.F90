@@ -47,14 +47,20 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !-----------------------------------------------------------------------
 !
 !
-    integer :: gd, gdre, jdesc, jdescr, jdesci, nbval, nbval2
+    integer :: gd, gdre,  jdescr, jdesci, nbval, nbval2
     integer :: jvaler, jvalei, ivale, ier, iret1, iret2
-    integer :: nmax1, nmax2, jncmpr, jncmpc, i, jceld, jcelk, icelv, jcelvr
-    integer :: jcelvi, nbsp
+    integer :: nmax1, nmax2, jncmpr, jncmpc, i
+    integer ::  nbsp
     character(len=8) :: nomgd, nomre
     character(len=4) :: typch
     character(len=19) :: canbva, chin
     character(len=24) :: ligrel, option, param, valk(2)
+    character(len=24), pointer :: celk(:) => null()
+    complex(kind=8), pointer :: celv(:) => null()
+    real(kind=8), pointer :: celvi(:) => null()
+    real(kind=8), pointer :: celvr(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: celd(:) => null()
 !
     call jemarq()
 !
@@ -80,11 +86,11 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     ier=0
 !
     if (typch .eq. 'CHNO' .or. typch .eq. 'CART') then
-        call jeveuo(chin//'.DESC', 'L', jdesc)
-        gd=zi(jdesc)
+        call jeveuo(chin//'.DESC', 'L', vi=desc)
+        gd=desc(1)
     else
-        call jeveuo(chin//'.CELD', 'L', jceld)
-        gd=zi(jceld)
+        call jeveuo(chin//'.CELD', 'L', vi=celd)
+        gd=celd(1)
     endif
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     if ((nomgd(7:7).ne.' ') .or. (nomgd(5:6).ne.'_C')) then
@@ -147,9 +153,9 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !     -- CHAM_ELEM :
 !     -------------------
     else if (typch.eq.'CHML') then
-        call jeveuo(chin//'.CELK', 'L', jcelk)
-        ligrel=zk24(jcelk)
-        option=zk24(jcelk+1)
+        call jeveuo(chin//'.CELK', 'L', vk24=celk)
+        ligrel=celk(1)
+        option=celk(2)
 !
         param=nopar2(option,nomre,'OUT')
 !
@@ -174,7 +180,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         ASSERT((iret1.eq.0).or.(iret2.eq.0))
 !
         call jelira(chin//'.CELV', 'LONMAX', nbval)
-        call jeveuo(chin//'.CELV', 'L', icelv)
+        call jeveuo(chin//'.CELV', 'L', vc=celv)
 !
         call jelira(chreel//'.CELV', 'LONMAX', nbval2)
         if (nbval2 .ne. nbval) then
@@ -184,13 +190,13 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         endif
 !
 !
-        call jeveuo(chreel//'.CELV', 'E', jcelvr)
-        call jeveuo(chimag//'.CELV', 'E', jcelvi)
+        call jeveuo(chreel//'.CELV', 'E', vr=celvr)
+        call jeveuo(chimag//'.CELV', 'E', vr=celvi)
 !
 !
         do i = 1, nbval
-            zr(jcelvr-1+i)=dble(zc(icelv-1+i))
-            zr(jcelvi-1+i)=dimag(zc(icelv-1+i))
+            celvr(i)=dble(celv(i))
+            celvi(i)=dimag(celv(i))
         end do
 !
 !     -- CART :

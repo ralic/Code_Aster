@@ -73,7 +73,6 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
     character(len=24) :: tacfin, appoin, apcofr, apddl
     integer :: jtacf, japptr, japcof, japddl
     character(len=19) :: ddeplc, ddepl0, ddelt
-    integer :: jddepc, jddep0, jddelt
     character(len=24) :: jeuite
     integer :: jjeuit
     integer :: llf1, llf2, btotal, lfmin
@@ -85,6 +84,9 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
     character(len=2) :: typlia, typec0, typef0
     integer :: ztacf
     logical :: lelpiv
+    real(kind=8), pointer :: vddelt(:) => null()
+    real(kind=8), pointer :: ddep0(:) => null()
+    real(kind=8), pointer :: ddepc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -129,9 +131,9 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
     ddepl0 = resoco(1:14)//'.DEL0'
     ddeplc = resoco(1:14)//'.DELC'
     ddelt = resoco(1:14)//'.DDEL'
-    call jeveuo(ddepl0(1:19)//'.VALE', 'L', jddep0)
-    call jeveuo(ddeplc(1:19)//'.VALE', 'L', jddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'L', jddelt)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'L', vr=ddepc)
+    call jeveuo(ddelt (1:19)//'.VALE', 'L', vr=vddelt)
 !
 ! --- LIAISON GLISSANTE ?
 !
@@ -158,9 +160,9 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
 !
 ! ------- CALCUL DU JEU TANGENT TOTAL
 !
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr(jddelt),&
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), vddelt,&
                         val1)
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr(jddepc),&
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), ddepc,&
                         val2)
             jexnew = jexold + val1 + val2
             xpdt = zr(jmu+3*nbliai+iliai-1)*jexnew
@@ -181,7 +183,7 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
 ! --------- LA LIAISON EST BIEN GLISSANTE
 ! --------- ON MET A JOUR MU_G
 !
-                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), zr(jddep0),&
+                call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), ddep0,&
                             jexinc)
                 jexnew = jexold + jexinc
                 if (abs(jexnew) .le. r8miem()) then

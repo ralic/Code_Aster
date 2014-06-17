@@ -57,7 +57,7 @@ subroutine crprol()
     integer :: ibid, ndimf, nbnoi, nbnof, nbinst, iad
     integer :: vali, iret
     integer :: jinst, iord, jcnsvl, jcnsle, nbval
-    integer :: jcnsve, axyzmf, jtbcor, jtbres
+    integer ::  axyzmf, jtbcor, jtbres
     integer :: imin, imax, inoi, inof, indice, jtbpdg
     integer :: jtbnoe, ordef, ino, inomin, inomax
     real(kind=8) :: xnormr, prec, rmin, rmax
@@ -72,6 +72,7 @@ subroutine crprol()
     character(len=19) :: cnoinr, cnsinr
     character(len=24) :: knum, tabl2
     character(len=24) :: valk(2)
+    real(kind=8), pointer :: cnsv(:) => null()
 !
     call jemarq()
 !
@@ -190,7 +191,7 @@ subroutine crprol()
         licmpr = 'TEMP'
         call cnscre(nommaf, nomgd, 1, licmpr, 'V',&
                     cnsinr)
-        call jeveuo(cnsinr//'.CNSV', 'E', jcnsve)
+        call jeveuo(cnsinr//'.CNSV', 'E', vr=cnsv)
         call jeveuo(cnsinr//'.CNSL', 'E', jcnsle)
 !
         indice = 0
@@ -230,7 +231,7 @@ subroutine crprol()
                 call utmess('F', 'ALGORITH12_70')
             endif
             lambda = ( rval - rmin )/( rmax - rmin )
-            zr(jcnsve-1+(inof-1)+1)=(1-lambda)*zr(jcnsvl-1+(imin-1)+1)&
+            cnsv((inof-1)+1)=(1-lambda)*zr(jcnsvl-1+(imin-1)+1)&
             + lambda*zr(jcnsvl-1+(imax-1)+1)
             zl(jcnsle-1+(inof-1)+1) = .true.
   3         continue
@@ -245,7 +246,7 @@ subroutine crprol()
                     call utmess('F', 'ALGORITH12_71', sk=valk(1))
                 else if (pgauch.eq.'CONSTANT') then
                     inomin = zi(jtbres)
-                    zr(jcnsve-1+(ino-1)+1) = zr(jcnsvl-1+(inomin-1)+1)
+                    cnsv((ino-1)+1) = zr(jcnsvl-1+(inomin-1)+1)
                     zl(jcnsle-1+(ino-1)+1) = .true.
                 else
                     inomin = zi(jtbres)
@@ -253,7 +254,7 @@ subroutine crprol()
                     rmin = zr(jtbcor-1+inomin)
                     rmax = zr(jtbcor-1+inomax)
                     lambda = (rmin - rval)/(rmax - rval)
-                    zr(jcnsve-1+(ino-1)+1) = (&
+                    cnsv((ino-1)+1) = (&
                                              zr(&
                                              jcnsvl-1+(inomin-1)+ 1)- zr(jcnsvl-1+(inomax-1)+1)*l&
                                              &ambda&
@@ -268,7 +269,7 @@ subroutine crprol()
                     call utmess('F', 'ALGORITH12_72', sk=valk(1))
                 else if (pdroit.eq.'CONSTANT') then
                     inomax = zi(jtbres-1+nbnoi)
-                    zr(jcnsve-1+(ino-1)+1) = zr(jcnsvl-1+(inomax-1)+1)
+                    cnsv((ino-1)+1) = zr(jcnsvl-1+(inomax-1)+1)
                     zl(jcnsle-1+(ino-1)+1) = .true.
                 else
                     inomin = zi(jtbres-1+nbnoi-1)
@@ -276,7 +277,7 @@ subroutine crprol()
                     rmin = zr(jtbcor-1+inomin)
                     rmax = zr(jtbcor-1+inomax)
                     lambda = (rmax - rmin)/(rval - rmin)
-                    zr(jcnsve-1+(ino-1)+1) = (&
+                    cnsv((ino-1)+1) = (&
                                              zr(&
                                              jcnsvl-1+(inomax-1)+ 1)- zr(jcnsvl-1+(inomin-1)+1)*(&
                                              &1-lambda&

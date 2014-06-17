@@ -57,8 +57,7 @@ subroutine ssdmrm(mag)
     character(len=24) :: valk(2), nognoi, nognoj
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iacoo2, iadim2, iadime, iagno, ialiii, ialiij
-    integer ::   ialini, ialinj, iamacr, iancnf, iaparr
+    integer :: i, iacoo2,   iagno, ialiii, ialiij
     integer :: ibid(1), ico, iconf, ii, inoi
     integer :: inoii, inoj, inojj, iocc, ismai, ismaj, j
     integer :: jj, kk, longi, longj, n1, n2, n3
@@ -66,6 +65,13 @@ subroutine ssdmrm(mag)
     integer :: nbsma, nbsmar, nocc
     character(len=24), pointer :: likg(:) => null()
     character(len=8), pointer :: likm(:) => null()
+    integer, pointer :: noeud_conf(:) => null()
+    real(kind=8), pointer :: para_r(:) => null()
+    integer, pointer :: dime(:) => null()
+    integer, pointer :: dime_2(:) => null()
+    integer, pointer :: lini(:) => null()
+    integer, pointer :: linj(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getfac('RECO_SUPER_MAILLE', nocc)
@@ -73,15 +79,15 @@ subroutine ssdmrm(mag)
 !
 !     -- ON RECUPERE CERTAINES DIMENSIONS:
 !     ------------------------------------
-    call jeveuo(mag//'.DIME', 'L', iadime)
-    nbsma=zi(iadime-1+4)
+    call jeveuo(mag//'.DIME', 'L', vi=dime)
+    nbsma=dime(4)
 !
-    call jeveuo(mag//'.NOMACR', 'L', iamacr)
-    call jeveuo(mag//'.NOEUD_CONF', 'E', iancnf)
+    call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
+    call jeveuo(mag//'.NOEUD_CONF', 'E', vi=noeud_conf)
 !
     call jeveuo(mag//'.COORDO_2', 'L', iacoo2)
-    call jeveuo(mag//'.DIME_2', 'L', iadim2)
-    call jeveuo(mag//'.PARA_R', 'L', iaparr)
+    call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
+    call jeveuo(mag//'.PARA_R', 'L', vr=para_r)
     AS_ALLOCATE(vk8=likm, size=nbsma)
     AS_ALLOCATE(vk24=likg, size=nbsma)
 !
@@ -120,14 +126,14 @@ subroutine ssdmrm(mag)
             nosma= likm(i)
             nognoi= likg(i)
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), ismai)
-            di=zr(iaparr-1+14*(ismai-1)+13)
-            nomacr= zk8(iamacr-1+ismai)
+            di=para_r(14*(ismai-1)+13)
+            nomacr= vnomacr(ismai)
             call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
-            call jeveuo(nomacr//'.LINO', 'L', ialini)
+            call jeveuo(nomacr//'.LINO', 'L', vi=lini)
             call jelira(nomacr//'.LINO', 'LONUTI', nbexti)
             call jeveuo(jexnom(mal//'.GROUPENO', nognoi), 'L', iagno)
             call jelira(jexnom(mal//'.GROUPENO', nognoi), 'LONUTI', nbngno)
-            call utlisi('INTER', zi(iagno), nbngno, zi(ialini), nbexti,&
+            call utlisi('INTER', zi(iagno), nbngno, lini, nbexti,&
                         ibid, 0, n3)
             nbnori=-n3
             if (nbnori .gt. longi) then
@@ -136,20 +142,20 @@ subroutine ssdmrm(mag)
                 longi=(nbnori+10)*2
                 call wkvect('&&SSDMRM.LIII', 'V V I', longi, ialiii)
             endif
-            call utlisi('INTER', zi(iagno), nbngno, zi(ialini), nbexti,&
+            call utlisi('INTER', zi(iagno), nbngno, lini, nbexti,&
                         zi(ialiii), nbnori, nbid)
             do j = i+1, nbsmar
                 nosma= likm(j)
                 nognoj= likg(j)
                 call jenonu(jexnom(mag//'.SUPMAIL', nosma), ismaj)
-                dj=zr(iaparr-1+14*(ismaj-1)+13)
-                nomacr= zk8(iamacr-1+ismaj)
+                dj=para_r(14*(ismaj-1)+13)
+                nomacr= vnomacr(ismaj)
                 call dismoi('NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', repk=mal)
-                call jeveuo(nomacr//'.LINO', 'L', ialinj)
+                call jeveuo(nomacr//'.LINO', 'L', vi=linj)
                 call jelira(nomacr//'.LINO', 'LONUTI', nbextj)
                 call jeveuo(jexnom(mal//'.GROUPENO', nognoj), 'L', iagno)
                 call jelira(jexnom(mal//'.GROUPENO', nognoj), 'LONUTI', nbngno)
-                call utlisi('INTER', zi(iagno), nbngno, zi(ialinj), nbextj,&
+                call utlisi('INTER', zi(iagno), nbngno, linj, nbextj,&
                             ibid, 0, n3)
                 nbnorj=-n3
                 if (nbnorj .gt. longj) then
@@ -157,7 +163,7 @@ subroutine ssdmrm(mag)
                     longj=(nbnorj+10)*2
                     call wkvect('&&SSDMRM.LIIJ', 'V V I', longj, ialiij)
                 endif
-                call utlisi('INTER', zi(iagno), nbngno, zi(ialinj), nbextj,&
+                call utlisi('INTER', zi(iagno), nbngno, linj, nbextj,&
                             zi(ialiij), nbnorj, nbid)
 !
                 dj=min(di,dj)
@@ -173,16 +179,16 @@ subroutine ssdmrm(mag)
                 if (option(1:13) .eq. 'NOEUD_A_NOEUD') then
 !           ---------------------------------
                     do ii = 1, nbnore
-                        inoii=indiis(zi(ialini),zi(ialiii-1+ii),1,&
+                        inoii=indiis(lini,zi(ialiii-1+ii),1,&
                         nbexti)
-                        inojj=indiis(zi(ialinj),zi(ialiij-1+ii),1,&
+                        inojj=indiis(linj,zi(ialiij-1+ii),1,&
                         nbextj)
-                        inoi= zi(iadim2-1+4*(ismai-1)+3)+inoii
-                        inoj= zi(iadim2-1+4*(ismaj-1)+3)+inojj
+                        inoi= dime_2(4*(ismai-1)+3)+inoii
+                        inoj= dime_2(4*(ismaj-1)+3)+inojj
                         if (inoi .lt. inoj) then
-                            zi(iancnf-1+inoj)=inoi
+                            noeud_conf(inoj)=inoi
                         else
-                            zi(iancnf-1+inoi)=inoj
+                            noeud_conf(inoi)=inoj
                         endif
                     end do
 !
@@ -192,20 +198,20 @@ subroutine ssdmrm(mag)
                     do ii = 1, nbnore
                         if (i .eq. 1) then
                             kk=nbnore+1-ii
-                            inoii=indiis(zi(ialini),zi(ialiii-1+kk),1,&
+                            inoii=indiis(lini,zi(ialiii-1+kk),1,&
                             nbexti)
                         else
-                            inoii=indiis(zi(ialini),zi(ialiii-1+ii),1,&
+                            inoii=indiis(lini,zi(ialiii-1+ii),1,&
                             nbexti)
                         endif
-                        inojj=indiis(zi(ialinj),zi(ialiij-1+ii),1,&
+                        inojj=indiis(linj,zi(ialiij-1+ii),1,&
                         nbextj)
-                        inoi= zi(iadim2-1+4*(ismai-1)+3)+inoii
-                        inoj= zi(iadim2-1+4*(ismaj-1)+3)+inojj
+                        inoi= dime_2(4*(ismai-1)+3)+inoii
+                        inoj= dime_2(4*(ismaj-1)+3)+inojj
                         if (inoi .lt. inoj) then
-                            zi(iancnf-1+inoj)=inoi
+                            noeud_conf(inoj)=inoi
                         else
-                            zi(iancnf-1+inoi)=inoj
+                            noeud_conf(inoi)=inoj
                         endif
                     end do
 !
@@ -214,20 +220,20 @@ subroutine ssdmrm(mag)
 !           --------------------------------------
                     ico=0
                     do ii = 1, nbnore
-                        inoii=indiis(zi(ialini),zi(ialiii-1+ii),1,&
+                        inoii=indiis(lini,zi(ialiii-1+ii),1,&
                         nbexti)
-                        inoi= zi(iadim2-1+4*(ismai-1)+3)+inoii
+                        inoi= dime_2(4*(ismai-1)+3)+inoii
                         do jj = 1, nbnore
-                            inojj=indiis(zi(ialinj),zi(ialiij-1+jj),1,&
+                            inojj=indiis(linj,zi(ialiij-1+jj),1,&
                             nbextj)
-                            inoj= zi(iadim2-1+4*(ismaj-1)+3)+inojj
+                            inoj= dime_2(4*(ismaj-1)+3)+inojj
                             call ssdmu1(dj, crit, prec, zr(iacoo2+3*( inoi-1)),&
                                         zr(iacoo2+3*(inoj-1)), iconf)
                             if (iconf .eq. 0) then
                                 if (inoi .lt. inoj) then
-                                    zi(iancnf-1+inoj)=inoi
+                                    noeud_conf(inoj)=inoi
                                 else
-                                    zi(iancnf-1+inoi)=inoj
+                                    noeud_conf(inoi)=inoj
                                 endif
                                 ico=ico+1
                                 goto 63

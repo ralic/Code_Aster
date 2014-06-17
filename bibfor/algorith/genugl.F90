@@ -63,7 +63,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !-----------------------------------------------------------------------
     integer :: i, ibid, icomp, iddn, idds, iec, ieq
     integer :: ipoint, j, k, lddeeq, ldinse, ldnueq
-    integer :: ldprno, linueq, llinsk, llnueq, llprno, lttds, nbcmp
+    integer :: ldprno, linueq,   llprno, lttds, nbcmp
     integer :: nbcou, nbcpmx, nbddl, nbec, nbnot, nbsst, nddlt
     integer :: ntail, numno, nusst
 !-----------------------------------------------------------------------
@@ -74,6 +74,8 @@ subroutine genugl(profno, indirf, modgen, mailsk)
     character(len=19) :: numddl, profno
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx)
+    integer, pointer :: vnueq(:) => null()
+    integer, pointer :: skeleton(:) => null()
 !
 !-----------------------------------------------------------------------
     data pgc /'GENUGL'/
@@ -101,7 +103,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !-----RECUPERATION DU .INV.SKELETON-------------------------------------
 !
-    call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
+    call jeveuo(mailsk//'.INV.SKELETON', 'L', vi=skeleton)
 !
 !-----ALLOCATION DU VECTEUR DE TRAVAIL POUR STOCKAGE NOMBRE DE DDL
 !     GLOBAUX ENGENDRE PAR SOUS STRUCTURE
@@ -119,8 +121,8 @@ subroutine genugl(profno, indirf, modgen, mailsk)
         call jenonu(jexnom(numddl//'.LILI', '&MAILLA'), ibid)
         call jeveuo(jexnum(numddl//'.PRNO', ibid), 'L', llprno)
         do j = 1, nbnot
-            nusst=zi(llinsk+j-1)
-            numno=zi(llinsk+nbnot+j-1)
+            nusst=skeleton(j)
+            numno=skeleton(1+nbnot+j-1)
             if (nusst .eq. i) then
                 nddlt=nddlt+zi(llprno+(numno-1)*(2+nbec)+1)
                 zi(lttds+i-1)=zi(lttds+i-1)+zi(llprno+(numno-1)*(2+&
@@ -183,18 +185,18 @@ subroutine genugl(profno, indirf, modgen, mailsk)
             numddl(15:19)='.NUME'
             call jenonu(jexnom(numddl//'.LILI', '&MAILLA'), ibid)
             call jeveuo(jexnum(numddl//'.PRNO', ibid), 'L', llprno)
-            call jeveuo(numddl//'.NUEQ', 'L', llnueq)
+            call jeveuo(numddl//'.NUEQ', 'L', vi=vnueq)
             call jeveuo(jexnum(indirf, i), 'E', ldinse)
 !
 !  BOUCLE SUR LES DDL GLOBAUX
 !
             do j = 1, nbnot
-                nusst=zi(llinsk+j-1)
+                nusst=skeleton(j)
 !
 !  TEST SI LE NOEUD GLOBAL EST ENGENDRE PAR LA SST
 !
                 if (nusst .eq. i) then
-                    numno=zi(llinsk+nbnot+j-1)
+                    numno=skeleton(1+nbnot+j-1)
                     ieq=zi(llprno+(numno-1)*(2+nbec))
                     nbddl=zi(llprno+(numno-1)*(2+nbec)+1)
                     call isdeco(zi(llprno+(numno-1)*(2+nbec)+2), idec, nbcmp)
@@ -212,7 +214,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
                             zi(lddeeq+(icomp-1)*2)=j
                             zi(lddeeq+(icomp-1)*2+1)=k
                             zi(ldnueq+icomp-1)=icomp
-                            linueq=zi(llnueq+ieq+iddn-2)
+                            linueq=vnueq(1+ieq+iddn-2)
                             ipoint=ldinse+2*idds-1
                             zi(ipoint+1)=linueq
                             zi(ipoint+2)=icomp

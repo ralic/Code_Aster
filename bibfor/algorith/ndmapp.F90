@@ -48,11 +48,17 @@ subroutine ndmapp(sddyna, valinc)
     logical :: lmuap
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depent, vitent, accent
-    integer :: jdepen, jviten, jaccen
     character(len=19) :: depabs, vitabs, accabs
-    integer :: jdepab, jvitab, jaccab
-    integer :: jdepp, jvitp, jaccp
     integer :: neq, ie
+    real(kind=8), pointer :: accab(:) => null()
+    real(kind=8), pointer :: accen(:) => null()
+    real(kind=8), pointer :: accp(:) => null()
+    real(kind=8), pointer :: depab(:) => null()
+    real(kind=8), pointer :: depen(:) => null()
+    real(kind=8), pointer :: depp(:) => null()
+    real(kind=8), pointer :: vitab(:) => null()
+    real(kind=8), pointer :: viten(:) => null()
+    real(kind=8), pointer :: vitp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,20 +83,20 @@ subroutine ndmapp(sddyna, valinc)
         call ndynkk(sddyna, 'DEPABS', depabs)
         call ndynkk(sddyna, 'VITABS', vitabs)
         call ndynkk(sddyna, 'ACCABS', accabs)
-        call jeveuo(depent(1:19)//'.VALE', 'L', jdepen)
-        call jeveuo(vitent(1:19)//'.VALE', 'L', jviten)
-        call jeveuo(accent(1:19)//'.VALE', 'L', jaccen)
-        call jeveuo(depplu(1:19)//'.VALE', 'L', jdepp)
-        call jeveuo(vitplu(1:19)//'.VALE', 'L', jvitp)
-        call jeveuo(accplu(1:19)//'.VALE', 'L', jaccp)
-        call jeveuo(depabs(1:19)//'.VALE', 'E', jdepab)
-        call jeveuo(vitabs(1:19)//'.VALE', 'E', jvitab)
-        call jeveuo(accabs(1:19)//'.VALE', 'E', jaccab)
+        call jeveuo(depent(1:19)//'.VALE', 'L', vr=depen)
+        call jeveuo(vitent(1:19)//'.VALE', 'L', vr=viten)
+        call jeveuo(accent(1:19)//'.VALE', 'L', vr=accen)
+        call jeveuo(depplu(1:19)//'.VALE', 'L', vr=depp)
+        call jeveuo(vitplu(1:19)//'.VALE', 'L', vr=vitp)
+        call jeveuo(accplu(1:19)//'.VALE', 'L', vr=accp)
+        call jeveuo(depabs(1:19)//'.VALE', 'E', vr=depab)
+        call jeveuo(vitabs(1:19)//'.VALE', 'E', vr=vitab)
+        call jeveuo(accabs(1:19)//'.VALE', 'E', vr=accab)
         call jelira(depent(1:19)//'.VALE', 'LONMAX', neq)
         do 20 ie = 1, neq
-            zr(jdepab+ie-1) = zr(jdepen+ie-1) + zr(jdepp+ie-1)
-            zr(jvitab+ie-1) = zr(jviten+ie-1) + zr(jvitp+ie-1)
-            zr(jaccab+ie-1) = zr(jaccen+ie-1) + zr(jaccp+ie-1)
+            depab(ie) = depen(ie) + depp(ie)
+            vitab(ie) = viten(ie) + vitp(ie)
+            accab(ie) = accen(ie) + accp(ie)
 20      continue
     endif
 !

@@ -54,7 +54,7 @@ subroutine capoco(char, motfac)
 !
 !
     integer :: iret, noc
-    integer :: icesc, icesd, icesl, icesv, npmax, isec
+    integer ::  icesd, icesl,  npmax, isec
     integer :: posmae, nummae
     integer :: jdecme
     integer :: izone, imae
@@ -69,6 +69,8 @@ subroutine capoco(char, motfac)
     integer :: jmaco, jjpou
     character(len=19) :: carsd, carte
     logical :: ldpou
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -118,17 +120,17 @@ subroutine capoco(char, motfac)
 ! --- RECUPERATION DES GRANDEURS (TSEC, R1, R2)
 ! --- REFERENCEE PAR LA CARTE CARGEOPO
 !
-    call jeveuo(carsd//'.CESC', 'L', icesc)
+    call jeveuo(carsd//'.CESC', 'L', vk8=cesc)
     call jeveuo(carsd//'.CESD', 'L', icesd)
     call jeveuo(carsd//'.CESL', 'L', icesl)
-    call jeveuo(carsd//'.CESV', 'L', icesv)
+    call jeveuo(carsd//'.CESV', 'L', vr=cesv)
 !
 ! --- ON RECUPERE LE RAYON EXTERIEUR DE LA POUTRE
 !
     npmax = zi(icesd-1+2)
-    rangr0 = indik8(zk8(icesc),'TSEC    ',1,npmax)
-    rangr1 = indik8(zk8(icesc),'R1      ',1,npmax)
-    rangr2 = indik8(zk8(icesc),'R2      ',1,npmax)
+    rangr0 = indik8(cesc,'TSEC    ',1,npmax)
+    rangr1 = indik8(cesc,'R1      ',1,npmax)
+    rangr2 = indik8(cesc,'R2      ',1,npmax)
 !
     do 20 izone = 1, nzoco
         ldpou = mminfl(defico,'DIST_POUTRE',izone )
@@ -149,7 +151,7 @@ subroutine capoco(char, motfac)
                 call cesexi('C', icesd, icesl, nummae, 1,&
                             1, rangr0, iad1)
                 if (iad1 .gt. 0) then
-                    isec = nint( zr(icesv-1+abs(iad1)) )
+                    isec = nint( cesv(abs(iad1)) )
                 else
                     isec = 0
                 endif
@@ -165,13 +167,13 @@ subroutine capoco(char, motfac)
                             1, rangr2, iad2)
 !
                 if (iad1 .gt. 0) then
-                    r1 = zr(icesv-1+iad1)
+                    r1 = cesv(iad1)
                 else
                     ASSERT(.false.)
                 endif
 !
                 if (iad2 .gt. 0) then
-                    r2 = zr(icesv-1+iad2)
+                    r2 = cesv(iad2)
                 else
                     ASSERT(.false.)
                 endif

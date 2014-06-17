@@ -71,10 +71,12 @@ subroutine cfmxr0(defico, resoco, noma)
     character(len=24) :: nochco
     integer :: jnochc
     character(len=19) :: cnsinr, cnsper, cnoinr
-    integer :: jcnsvr, jcnslr
-    integer :: jcnsvp, jcnslp
+    integer ::  jcnslr
+    integer ::  jcnslp
     integer :: jdecne
     logical :: lctcc, lctcd, lmail
+    real(kind=8), pointer :: cnsvp(:) => null()
+    real(kind=8), pointer :: cnsvr(:) => null()
 ! ----------------------------------------------------------------------
     data nomcmp&
      &   / 'CONT'  ,'JEU'   ,'RN'    ,&
@@ -133,7 +135,7 @@ subroutine cfmxr0(defico, resoco, noma)
 !
     call cnscre(noma, 'INFC_R', zresu, nomcmp, 'V',&
                 cnsinr)
-    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', jcnsvr)
+    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=cnsvr)
     call jeveuo(cnsinr(1:19)//'.CNSL', 'E', jcnslr)
 !
 ! --- INITIALISATION DU CHAM_NO_S VALE_CONT
@@ -146,7 +148,7 @@ subroutine cfmxr0(defico, resoco, noma)
                 posnoe(1) = inoe + jdecne
                 call cfnumn(defico, 1, posnoe(1), numnoe(1))
                 do icmp = 1, zresu
-                    zr(jcnsvr-1+zresu*(numnoe(1)-1)+icmp) = 0.d0
+                    cnsvr(zresu*(numnoe(1)-1)+icmp) = 0.d0
                     zl(jcnslr-1+zresu*(numnoe(1)-1)+icmp) = .true.
                 end do
             end do
@@ -155,7 +157,7 @@ subroutine cfmxr0(defico, resoco, noma)
         do ino = 1, nbno
             numno = ino
             do icmp = 1, zresu
-                zr(jcnsvr-1+zresu*(numno-1)+icmp) = 0.d0
+                cnsvr(zresu*(numno-1)+icmp) = 0.d0
                 zl(jcnslr-1+zresu*(numno-1)+icmp) = .true.
             end do
         end do
@@ -172,7 +174,7 @@ subroutine cfmxr0(defico, resoco, noma)
 ! --- ON NE REMET PAS A ZERO D'UN PAS A L'AUTRE
 !
     if (lmail) then
-        call jeveuo(cnsper(1:19)//'.CNSV', 'E', jcnsvp)
+        call jeveuo(cnsper(1:19)//'.CNSV', 'E', vr=cnsvp)
         call jeveuo(cnsper(1:19)//'.CNSL', 'E', jcnslp)
         do izone = 1, nzoco
             jdecne = mminfi(defico,'JDECNE',izone )
@@ -181,7 +183,7 @@ subroutine cfmxr0(defico, resoco, noma)
                 posnoe(1) = inoe + jdecne
                 call cfnumn(defico, 1, posnoe(1), numnoe(1))
                 do icmp = 1, zperc
-                    zr(jcnsvp-1+zperc*(numnoe(1)-1)+icmp) = 0.d0
+                    cnsvp(zperc*(numnoe(1)-1)+icmp) = 0.d0
                     zl(jcnslp-1+zperc*(numnoe(1)-1)+icmp) = .false.
                 end do
             end do

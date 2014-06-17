@@ -99,10 +99,10 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !
     integer :: ifm, nivinf, ncmp
     integer :: idfimd, codret, nloc, iret, igrel, jtyelm
-    integer :: j, nbgrel, jtypma, jtypge
+    integer :: j, nbgrel,  jtypge
     integer :: numte, i, ityg, ngaulu, npdt
     integer :: tygeo(ntygeo), nbpg, nbpgm
-    integer :: jtmfpg, nufgpg, jnoloc
+    integer ::  nufgpg, jnoloc
     integer :: dime, jtymed
     integer :: jngalu, nbtyel, nbmag, igr, ima
     integer :: jngaok
@@ -120,6 +120,8 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     character(len=255) :: kfic
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
+    character(len=8), pointer :: typema(:) => null()
+    integer, pointer :: tmfpg(:) => null()
 !
     data tygeo /    1,          102,        103,        104,&
      &                203,        204,        206,        207,&
@@ -252,7 +254,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !  =========================================
 !
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
-    call jeveuo('&CATA.TE.TYPEMA', 'L', jtypma)
+    call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
 !
 !     ON PARCOURT LES GROUPES D'ELEMENTS PRESENTS DANS LE MODELE
     do 20 , igrel=1,nbgrel
@@ -283,10 +285,10 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
         elref= nofgpg(1:8)
         fapg = nofgpg(9:16)
 !         NOMBRE DE PG : NBPG
-        call jeveuo('&CATA.TM.TMFPG', 'L', jtmfpg)
-        nbpg=zi(jtmfpg+nufgpg-1)
+        call jeveuo('&CATA.TM.TMFPG', 'L', vi=tmfpg)
+        nbpg=tmfpg(nufgpg)
 !
-        nomtm=zk8(jtypma-1+numte)
+        nomtm=typema(numte)
 !
         if (nivinf .gt. 1) then
             write(ifm,2003) nomte, fapg

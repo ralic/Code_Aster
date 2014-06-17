@@ -59,8 +59,8 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, ier, ik, ino, inord
-    integer :: j, jj, lldeeq, lldes, llfreq, llncmp
-    integer :: llnoin, lltyp, lmat, ltddl, ltpar, nbcb, nbcmp
+    integer :: j, jj, lldeeq, lldes,  llncmp
+    integer :: llnoin,  lmat, ltddl, ltpar, nbcb, nbcmp
     integer :: nbcont, nbcpmx, nbdeb, nbec, nbfin, nbint, nbnoe
     integer :: nbnot, neq, ntail1, ntail2, numgd
     real(kind=8) :: freq, omega, pi
@@ -77,6 +77,8 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
     real(kind=8) :: const(2)
     integer :: idec(nbcpmx)
     character(len=24) :: nmat(2), nlmat
+    character(len=8), pointer :: idc_type(:) => null()
+    real(kind=8), pointer :: idc_dy_freq(:) => null()
 !
 !-----------------------------------------------------------------------
     data nomddl /'        '/
@@ -125,7 +127,7 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !------------REQUETTE ADRESSE DEFINITION INTERFACE ET TYPE--------------
 !
     call jelira(intf//'.IDC_LINO', 'NMAXOC', nbint)
-    call jeveuo(intf//'.IDC_TYPE', 'L', lltyp)
+    call jeveuo(intf//'.IDC_TYPE', 'L', vk8=idc_type)
 !
 !-----------COMPTAGE DU NOMBRE DE NOEUDS CB-HARM------------------------
 !
@@ -134,7 +136,7 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !
     do j = 1, nbint
         call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe)
-        typcou=zk8(lltyp+j-1)
+        typcou=idc_type(j)
         if (typcou .eq. 'CB_HARMO') then
             call jeveuo(jexnum(intf//'.IDC_LINO', j), 'L', llnoin)
             do i = 1, nbnoe
@@ -166,8 +168,8 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
     if (ntail1 .eq. 0) goto 999
 !
 !
-    call jeveuo(intf//'.IDC_DY_FREQ', 'L', llfreq)
-    freq=zr(llfreq)
+    call jeveuo(intf//'.IDC_DY_FREQ', 'L', vr=idc_dy_freq)
+    freq=idc_dy_freq(1)
     call jelibe(intf//'.IDC_DY_FREQ')
     omega=2.d0*pi*freq
 !

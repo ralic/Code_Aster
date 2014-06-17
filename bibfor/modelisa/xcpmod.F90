@@ -55,10 +55,12 @@ subroutine xcpmod(modmes, modthx, modmex)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, jlgrf1, jlgrf2, iret1, iret2, iret3, iret4, iret5
+    integer :: iret,   iret1, iret2, iret3, iret4, iret5
     character(len=8) :: noma1, noma2, valk(4), k8cont
     character(len=19) :: ligr1, ligr2
     character(len=24) :: pheno
+    character(len=8), pointer :: lgrf1(:) => null()
+    character(len=8), pointer :: lgrf2(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,10 +88,10 @@ subroutine xcpmod(modmes, modthx, modmex)
 !   modmes et modthx doivent avoir ete crees a partir du meme maillage
     ligr1 = modmes//'.MODELE'
     ligr2 = modthx//'.MODELE'
-    call jeveuo(ligr1//'.LGRF', 'L', jlgrf1)
-    call jeveuo(ligr2//'.LGRF', 'L', jlgrf2)
-    noma1 = zk8(jlgrf1-1+1)
-    noma2 = zk8(jlgrf2-1+1)
+    call jeveuo(ligr1//'.LGRF', 'L', vk8=lgrf1)
+    call jeveuo(ligr2//'.LGRF', 'L', vk8=lgrf2)
+    noma1 = lgrf1(1)
+    noma2 = lgrf2(1)
     if (noma1 .ne. noma2) then
         valk(1) = modmes
         valk(2) = modthx

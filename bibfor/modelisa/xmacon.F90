@@ -69,16 +69,19 @@ subroutine xmacon(char, noma, nomo)
     integer :: ndim, jtypma, itypma
     integer :: nzoco
     integer :: ntmae, nbma, ntmano, nface, ninter
-    integer :: jcesd2, jcesv2, jcesl2
+    integer :: jcesd2,  jcesl2
     integer :: jconx1, jconx2
-    integer :: jcesd, jcesl, jcesv, jmail, ityele
+    integer :: jcesd, jcesl,  jmail, ityele
     integer :: izone, ima, ntpc, iad, posmae
     integer :: iad1, iad2, statut, ibid, nfiss, ifiss
     character(len=8) :: nomfis, nomzon, typma, elrefe
     character(len=19) :: chs, faclon, chs2, typmai, maille
     character(len=16) :: typele, enr
     logical :: lmalin
-    integer :: typint, nnint, jxc
+    integer :: typint, nnint
+    integer, pointer :: cesv2(:) => null()
+    character(len=8), pointer :: cesv(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,7 +101,7 @@ subroutine xmacon(char, noma, nomo)
     ndimco = defico(1:16)//'.NDIMCO'
     call jeveuo(ndimco, 'E', jdim)
     call jeveuo(xfimai, 'L', jfimai)
-    call jeveuo(nomo//'.XFEM_CONT', 'L', jxc)
+    call jeveuo(nomo//'.XFEM_CONT', 'L', vi=xfem_cont)
 !
 ! --- ON RECUPERE LE NOMBRE TOTAL DE MAILLES DU MAILLAGE ET SA DIMENSION
 !
@@ -118,7 +121,7 @@ subroutine xmacon(char, noma, nomo)
 !
     call celces(nomo//'.XMAFIS', 'V', chs)
     call jeveuo(chs//'.CESD', 'L', jcesd)
-    call jeveuo(chs//'.CESV', 'L', jcesv)
+    call jeveuo(chs//'.CESV', 'L', vk8=cesv)
     call jeveuo(chs//'.CESL', 'L', jcesl)
 !
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.LO EN CHAMP SIMPLE
@@ -126,7 +129,7 @@ subroutine xmacon(char, noma, nomo)
     faclon = nomo//'.TOPOFAC.LO'
     call celces(faclon, 'V', chs2)
     call jeveuo(chs2//'.CESD', 'L', jcesd2)
-    call jeveuo(chs2//'.CESV', 'L', jcesv2)
+    call jeveuo(chs2//'.CESV', 'L', vi=cesv2)
     call jeveuo(chs2//'.CESL', 'L', jcesl2)
 !
 ! --- NOMBRE TOTAL DES MAILLES ESCLAVES DE CONTACT.
@@ -144,7 +147,7 @@ subroutine xmacon(char, noma, nomo)
             do ifiss = 1, nfiss
                 call cesexi('C', jcesd2, jcesl2, ima, 1,&
                             ifiss, 1, iad2)
-                ninter = zi(jcesv2-1+iad2)
+                ninter = cesv2(iad2)
                 if (ninter .gt. 0) ntmae=ntmae+1
             end do
 !          ENDIF
@@ -166,8 +169,8 @@ subroutine xmacon(char, noma, nomo)
 !
 ! --- ON RECUPERE LE NOMBRE DE POINTS D'INTEGRATION PAR FACETTE
         if (ndim .eq. 2) then
-            if (zi(jxc) .le. 2) elrefe='SE2'
-            if (zi(jxc) .eq. 3) elrefe='SE3'
+            if (xfem_cont(1) .le. 2) elrefe='SE2'
+            if (xfem_cont(1) .eq. 3) elrefe='SE3'
         else if (ndim.eq.3) then
             elrefe='TR3'
         endif
@@ -186,7 +189,7 @@ subroutine xmacon(char, noma, nomo)
             do ifiss = 1, nfiss
                 call cesexi('C', jcesd, jcesl, ima, 1,&
                             ifiss, 1, iad1)
-                nomfis = zk8(jcesv-1+iad1)
+                nomfis = cesv(iad1)
                 if (nomzon .eq. nomfis) goto 230
             end do
 ! --- ON SORT SI LA MAILLE NE CONTIENT PAS LA FISSURE EN COURS
@@ -196,12 +199,12 @@ subroutine xmacon(char, noma, nomo)
 ! --- ON SORT SI PAS DE POINTS D'INTERSECTIONS
             call cesexi('C', jcesd2, jcesl2, ima, 1,&
                         ifiss, 1, iad2)
-            ninter = zi(jcesv2-1+iad2)
+            ninter = cesv2(iad2)
             if (ninter .eq. 0) goto 210
 ! --- ON RECUPERE LE NOMBRE DE FACETTES DE CONTACT
             call cesexi('C', jcesd2, jcesl2, ima, 1,&
                         ifiss, 2, iad2)
-            nface = zi(jcesv2-1+iad2)
+            nface = cesv2(iad2)
 !
             ityele=zi(jmail-1+ima)
             call jenuno(jexnum('&CATA.TE.NOMTE', ityele), typele)

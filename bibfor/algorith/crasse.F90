@@ -47,12 +47,13 @@ subroutine crasse()
 !
 !
     integer :: iret, nbfac, iocc, nbord1, iord2, iord1
-    integer :: kord1, iad, jord1, jord2, n1, nordmx
+    integer :: kord1, iad,  jord2, n1, nordmx
     real(kind=8) :: inst1, inst2, trans, tprev, valr(2)
     character(len=8) :: k8b, resu2, resu1
     character(len=16) :: type, oper, chter
     character(len=19) :: nomch, cham1, resu19
     integer :: nbcham, kch
+    integer, pointer :: ord1(:) => null()
 !
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -94,13 +95,13 @@ subroutine crasse()
         call getvid('ASSE', 'RESULTAT', iocc=iocc, scal=resu1, nbret=n1)
         resu19=resu1
         call jelira(resu19//'.ORDR', 'LONUTI', nbord1)
-        call jeveuo(resu19//'.ORDR', 'L', jord1)
+        call jeveuo(resu19//'.ORDR', 'L', vi=ord1)
         call jelira(resu19//'.DESC', 'NOMUTI', nbcham)
 !
 !       BOUCLE SUR LES CHAMPS 'TEMP' DE RESU1 ET RECOPIE DANS RESU2:
 !       -----------------------------------------------------------
         do 110, kord1=1,nbord1
-        iord1 = zi(jord1-1+kord1)
+        iord1 = ord1(kord1)
         iord2 = iord2 + 1
 !
 !         -- STOCKAGE DE L'INSTANT :

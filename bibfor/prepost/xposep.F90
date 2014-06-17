@@ -68,20 +68,24 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !       LOGRMA : LONGUEUR DES NOUVEAUX GROUP_MA
 !       LISTGR : LISTE DES GROUPES CONTENANT CHAQUE MAILLE
 !
-    integer :: nbma, isepma, jcesd, jcesl, iad, ima, jcesv
+    integer :: nbma, isepma, jcesd, jcesl, iad, ima
     integer :: nbman, nbmac, nbmax, ngr, igr, j1, n1, nbelt, iel, nsetot
     integer :: imac, imax, jmac, jmax, nnntot, ncotot, nse, n, nbgma
-    integer :: jtmdim, ndime, jtypm, iret1, jlogma, jtma
+    integer ::  ndime,  iret1, jlogma
     character(len=8) :: massmo, typma
     character(len=19) :: ces, ligrel
     character(len=24) :: sepmai, liel
+    integer, pointer :: tmdim(:) => null()
+    integer, pointer :: tma(:) => null()
+    integer, pointer :: typm(:) => null()
+    integer, pointer :: cesv(:) => null()
     parameter     (massmo = 'NON')
 !
 !
     call jemarq()
 !
     call dismoi('NB_MA_MAILLA', malini, 'MAILLAGE', repi=nbma)
-    call jeveuo(malini//'.TYPMAIL', 'L', jtma)
+    call jeveuo(malini//'.TYPMAIL', 'L', vi=tma)
 !
 !     TABLEAU D'ENTIERS DIMENSIONNÉ AU NOMBRE DE MAILLE DU MAILLAGE
 !     INITIAL, INDIQUANT L'APPARTENANCE DES MAILLES A UN DES 2 GROUPES :
@@ -104,7 +108,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
         nbelt=n1-1
         do iel = 1, nbelt
             ima=zi(j1-1+iel)
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtma-1+ima)), typma)
+            call jenuno(jexnum('&CATA.TM.NOMTM', tma(ima)), typma)
             if (typma .eq. 'POI1') goto 100
             zi(isepma-1+ima)=-1
         end do
@@ -114,11 +118,11 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
     ces = '&&XPOSEP.TOPOSE.LON'
     call celces(mo//'.TOPOSE.LON', 'V', ces)
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESV', 'L', jcesv)
+    call jeveuo(ces//'.CESV', 'L', vi=cesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
 !
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
-    call jeveuo(malini//'.TYPMAIL', 'L', jtypm)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
+    call jeveuo(malini//'.TYPMAIL', 'L', vi=typm)
 !
 !     CREATION DE LA LISTE DES GROUPES CONTENANT CHAQUE MAILLE
     call ligrma(malini, listgr)
@@ -137,7 +141,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !
 !     BOUCLE SUR LES MAILLES
     do ima = 1, nbma
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtma-1+ima)), typma)
+        call jenuno(jexnum('&CATA.TM.NOMTM', tma(ima)), typma)
 !
 !       SI MASSMO = 'NON' : ON ZAPPE LES MAILLES SANS MODELE
         if (massmo .eq. 'NON' .and. zi(isepma-1+ima) .eq. 0) goto 200
@@ -146,7 +150,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
         if (iad .ne. 0) then
-            nse=zi(jcesv-1+iad)
+            nse=cesv(iad)
         else
             nse=0
         endif
@@ -157,12 +161,12 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
             zi(isepma-1+ima)= 2
             nbmax = nbmax + 1
 !         DIMENSION TOPOLOGIQUE DE LA MAILLE
-            ndime= zi(jtmdim-1+zi(jtypm-1+ima))
+            ndime= tmdim(typm(ima))
 !
 !         AUGMENTATION DE NSETOT AVEC LE NOMBRE DE NSE SUR LA MAILLE
             nsetot = nsetot + nse
 !         AUGMENTATION DU NOMBRE DE NOUVEAUX NOEUDS (NNNTOT)
-            nnntot = nnntot + zi(jcesv-1+iad+2)
+            nnntot = nnntot + cesv(iad+2)
 !         AUGMENTATION DU NOMBRE DE NOEUDS DANS LA CONNECTIVITE TOT   
             if (ismali(typma)) then
                 ncotot = ncotot + nse * (ndime + 1)

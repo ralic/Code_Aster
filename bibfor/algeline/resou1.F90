@@ -104,12 +104,16 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     character(len=19) :: secm19, csol19, crit19
     character(len=24) :: metres
 !
-    integer :: jslvk, jslvr, jslvi, idbgav, neq, neq1, ier, niter, lmat, jvals
-    integer :: jtrav, jval2, imd, jrefa, istopz
+    integer ::    idbgav, neq, neq1, ier, niter, lmat, jvals
+    integer :: jtrav, jval2, imd,  istopz
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
     logical :: dbg
     character(len=1) :: ftype(2)
+    character(len=24), pointer :: slvk(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    real(kind=8), pointer :: slvr(:) => null()
+    integer, pointer :: slvi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
     data         ftype/'R','C'/
 ! ----------------------------------------------------------------------
@@ -131,17 +135,17 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     call dismoi('MPI_COMPLET', matr19, 'MATR_ASSE', repk=kmpic)
 !
     if (solv19 .eq. ' ') call dismoi('SOLVEUR', matr19, 'MATR_ASSE', repk=solv19)
-    call jeveuo(solv19//'.SLVK', 'L', jslvk)
-    call jeveuo(solv19//'.SLVR', 'L', jslvr)
-    call jeveuo(solv19//'.SLVI', 'L', jslvi)
-    metres = zk24(jslvk)
+    call jeveuo(solv19//'.SLVK', 'L', vk24=slvk)
+    call jeveuo(solv19//'.SLVR', 'L', vr=slvr)
+    call jeveuo(solv19//'.SLVI', 'L', vi=slvi)
+    metres = slvk(1)
     ASSERT(metres.ne.' ')
     if (kmpic .eq. 'NON') ASSERT(metres.eq. 'MUMPS' .or. metres .eq.'PETSC')
 !
 !     VERIFICATIONS ET INITIALISATIONS
     ASSERT((istop.eq.0).or.(istop.eq.2).or.(istop.eq.-9999))
     if (istop .eq. -9999) then
-        istopz = zi(jslvi-1+8)
+        istopz = slvi(8)
     else
         istopz = istop
     endif
@@ -153,8 +157,8 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     type=ftype(zi(lmat+3))
 !
     ASSERT(nsecm.ge.0)
-    call jeveuo(matr19//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
+    call jeveuo(matr19//'.REFA', 'L', vk24=refa)
+    if (refa(11) .eq. 'MATR_DISTR') then
         imd=1
     else
         imd=0
@@ -249,8 +253,8 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
 !
     else if (metres.eq.'GCPC') then
 !     ----------------------------------
-        niter = zi(jslvi-1+2)
-        epsi = zr(jslvr-1+2)
+        niter = slvi(2)
+        epsi = slvr(2)
         ASSERT(type.eq.'R')
         if (nsecm .gt. 0) then
             call resgra(matr19, mpre19, cine19, niter, epsi,&

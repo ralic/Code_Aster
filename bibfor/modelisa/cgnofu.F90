@@ -58,7 +58,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! ----------------------------------------------------------------------
     real(kind=8) :: vecori(3)
 !
-    integer :: nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j, idcoor
+    integer :: nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j
     integer :: jmail,  idlino,   idnono, ino1, ino2, ino
     integer ::  nbnor, irest, nbma
     real(kind=8) :: c1(3), c2(3), nb(3), c1nb(3), c1c2(3), lc1c2, psca, zero
@@ -72,6 +72,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     integer, pointer :: noeuds_cube(:) => null()
     integer, pointer :: noeuds_trouves(:) => null()
     integer, pointer :: travail(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -86,7 +87,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE :
 !     ---------------------------------------------
@@ -165,9 +166,9 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
         ino1 = zi(idnono+i-1)
         ino2 = zi(idnono+i )
 !
-        c1(1) = zr(idcoor-1+3*(ino1-1)+1)
-        c1(2) = zr(idcoor-1+3*(ino1-1)+2)
-        c1(3) = zr(idcoor-1+3*(ino1-1)+3)
+        c1(1) = vale(3*(ino1-1)+1)
+        c1(2) = vale(3*(ino1-1)+2)
+        c1(3) = vale(3*(ino1-1)+3)
         xmax = c1(1) + rfut
         xmin = c1(1) - rfut
         ymax = c1(2) + rfut
@@ -175,9 +176,9 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
         zmax = c1(3) + rfut
         zmin = c1(3) - rfut
 !
-        c2(1) = zr(idcoor-1+3*(ino2-1)+1)
-        c2(2) = zr(idcoor-1+3*(ino2-1)+2)
-        c2(3) = zr(idcoor-1+3*(ino2-1)+3)
+        c2(1) = vale(3*(ino2-1)+1)
+        c2(2) = vale(3*(ino2-1)+2)
+        c2(3) = vale(3*(ino2-1)+3)
         xmax = max ( xmax, (c2(1) + rfut) )
         xmin = min ( xmin, (c2(1) - rfut) )
         ymax = max ( ymax, (c2(2) + rfut) )
@@ -219,9 +220,9 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
         nbnor = 0
         do j = 1, nbnb
             ino = noeud_beton(j)
-            x = zr(idcoor-1+3*(ino-1)+1)
-            y = zr(idcoor-1+3*(ino-1)+2)
-            z = zr(idcoor-1+3*(ino-1)+3)
+            x = vale(3*(ino-1)+1)
+            y = vale(3*(ino-1)+2)
+            z = vale(3*(ino-1)+3)
             if ((x.le.xmax .and. x.ge.xmin) .and. (y.le.ymax .and. y.ge.ymin) .and.&
                 (z.le.zmax .and. z.ge.zmin)) then
                 nbnor = nbnor + 1
@@ -234,9 +235,9 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
         do j = 1, nbnor
             ino = noeuds_cube(j)
 !
-            nb(1) = zr(idcoor-1+3*(ino-1)+1)
-            nb(2) = zr(idcoor-1+3*(ino-1)+2)
-            nb(3) = zr(idcoor-1+3*(ino-1)+3)
+            nb(1) = vale(3*(ino-1)+1)
+            nb(2) = vale(3*(ino-1)+2)
+            nb(3) = vale(3*(ino-1)+3)
 !
             c1nb(1) = nb(1) - c1(1)
             c1nb(2) = nb(2) - c1(2)

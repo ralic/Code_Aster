@@ -43,7 +43,8 @@ function ndynre(sddyna, chaine)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jpsche, jcfsc
+    real(kind=8), pointer :: coef_sch(:) => null()
+    real(kind=8), pointer :: para_sch(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,78 +52,78 @@ function ndynre(sddyna, chaine)
 !
 ! --- INITIALISATIONS
 !
-    call jeveuo(sddyna(1:15)//'.PARA_SCH', 'L', jpsche)
-    call jeveuo(sddyna(1:15)//'.COEF_SCH', 'L', jcfsc)
+    call jeveuo(sddyna(1:15)//'.PARA_SCH', 'L', vr=para_sch)
+    call jeveuo(sddyna(1:15)//'.COEF_SCH', 'L', vr=coef_sch)
 !
     if (chaine .eq. 'BETA') then
-        ndynre = zr(jpsche+1-1)
+        ndynre = para_sch(1)
     else if (chaine.eq.'GAMMA') then
-        ndynre = zr(jpsche+2-1)
+        ndynre = para_sch(2)
     else if (chaine.eq.'PHI') then
-        ndynre = zr(jpsche+3-1)
+        ndynre = para_sch(3)
     else if (chaine.eq.'THETA') then
-        ndynre = zr(jpsche+4-1)
+        ndynre = para_sch(4)
     else if (chaine.eq.'KAPPA') then
-        ndynre = zr(jpsche+5-1)
+        ndynre = para_sch(5)
     else if (chaine.eq.'COEF_MASS_SHIFT') then
-        ndynre = zr(jpsche+6-1)
+        ndynre = para_sch(6)
     else if (chaine.eq.'ALPHA') then
-        ndynre = zr(jpsche+7-1)
+        ndynre = para_sch(7)
 !
     else if (chaine.eq.'COEF_MATR_RIGI') then
-        ndynre = zr(jcfsc+1-1)
+        ndynre = coef_sch(1)
     else if (chaine.eq.'COEF_MATR_AMOR') then
-        ndynre = zr(jcfsc+2-1)
+        ndynre = coef_sch(2)
     else if (chaine.eq.'COEF_MATR_MASS') then
-        ndynre = zr(jcfsc+3-1)
+        ndynre = coef_sch(3)
 !
     else if (chaine.eq.'COEF_DEPL_DEPL') then
-        ndynre = zr(jcfsc+4-1)
+        ndynre = coef_sch(4)
     else if (chaine.eq.'COEF_DEPL_VITE') then
-        ndynre = zr(jcfsc+5-1)
+        ndynre = coef_sch(5)
     else if (chaine.eq.'COEF_DEPL_ACCE') then
-        ndynre = zr(jcfsc+6-1)
+        ndynre = coef_sch(6)
     else if (chaine.eq.'COEF_VITE_DEPL') then
-        ndynre = zr(jcfsc+7-1)
+        ndynre = coef_sch(7)
     else if (chaine.eq.'COEF_VITE_VITE') then
-        ndynre = zr(jcfsc+8-1)
+        ndynre = coef_sch(8)
     else if (chaine.eq.'COEF_VITE_ACCE') then
-        ndynre = zr(jcfsc+9-1)
+        ndynre = coef_sch(9)
     else if (chaine.eq.'COEF_ACCE_DEPL') then
-        ndynre = zr(jcfsc+10-1)
+        ndynre = coef_sch(10)
     else if (chaine.eq.'COEF_ACCE_VITE') then
-        ndynre = zr(jcfsc+11-1)
+        ndynre = coef_sch(11)
     else if (chaine.eq.'COEF_ACCE_ACCE') then
-        ndynre = zr(jcfsc+12-1)
+        ndynre = coef_sch(12)
 !
     else if (chaine.eq.'COEF_DEPL') then
-        ndynre = zr(jcfsc+13-1)
+        ndynre = coef_sch(13)
     else if (chaine.eq.'COEF_VITE') then
-        ndynre = zr(jcfsc+14-1)
+        ndynre = coef_sch(14)
     else if (chaine.eq.'COEF_ACCE') then
-        ndynre = zr(jcfsc+15-1)
+        ndynre = coef_sch(15)
 !
     else if (chaine.eq.'COEF_MPAS_FEXT_PREC') then
-        ndynre = zr(jcfsc+16-1)
+        ndynre = coef_sch(16)
     else if (chaine.eq.'COEF_MPAS_EQUI_COUR') then
-        ndynre = zr(jcfsc+17-1)
+        ndynre = coef_sch(17)
     else if (chaine.eq.'COEF_MPAS_FINT_PREC') then
-        ndynre = zr(jcfsc+18-1)
+        ndynre = coef_sch(18)
     else if (chaine.eq.'COEF_MPAS_FEXT_COUR') then
-        ndynre = zr(jcfsc+19-1)
+        ndynre = coef_sch(19)
 !
     else if (chaine.eq.'COEF_FDYN_MASSE') then
-        ndynre = zr(jcfsc+20-1)
+        ndynre = coef_sch(20)
     else if (chaine.eq.'COEF_FDYN_AMORT') then
-        ndynre = zr(jcfsc+21-1)
+        ndynre = coef_sch(21)
     else if (chaine.eq.'COEF_FDYN_RIGID') then
-        ndynre = zr(jcfsc+22-1)
+        ndynre = coef_sch(22)
 !
     else if (chaine.eq.'COEF_FORC_INER') then
-        ndynre = zr(jcfsc+23-1)
+        ndynre = coef_sch(23)
 !
     else if (chaine.eq.'INST_PREC') then
-        ndynre = zr(jcfsc+24-1)
+        ndynre = coef_sch(24)
 !
     else
         ASSERT(.false.)

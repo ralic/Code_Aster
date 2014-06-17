@@ -49,10 +49,12 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
 !
 !
     integer :: ibid, niremp, nmaxit, reacpr, pcpiv
-    integer :: islvk, islvi, islvr
     real(kind=8) :: fillin, epsmax, resipc
     character(len=8) :: kalgo, kprec, renum
     character(len=19) :: solvbd
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: slvi(:) => null()
+    real(kind=8), pointer :: slvr(:) => null()
 !
 !------------------------------------------------------------------
     call jemarq()
@@ -114,41 +116,41 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
     endif
 !
 ! --- ON REMPLIT LA SD_SOLVEUR
-    call jeveuo(solveu//'.SLVK', 'E', islvk)
-    call jeveuo(solveu//'.SLVR', 'E', islvr)
-    call jeveuo(solveu//'.SLVI', 'E', islvi)
+    call jeveuo(solveu//'.SLVK', 'E', vk24=slvk)
+    call jeveuo(solveu//'.SLVR', 'E', vr=slvr)
+    call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
 !
-    zk24(islvk-1+1) = 'PETSC'
-    zk24(islvk-1+2) = kprec
-    zk24(islvk-1+3) = solvbd
-    zk24(islvk-1+4) = renum
-    zk24(islvk-1+5) = syme
-    zk24(islvk-1+6) = kalgo
-    zk24(islvk-1+7) = 'XXXX'
-    zk24(islvk-1+8) = 'XXXX'
-    zk24(islvk-1+9) = 'XXXX'
-    zk24(islvk-1+10)= kmd
-    zk24(islvk-1+11)= 'XXXX'
-    zk24(islvk-1+12)= 'XXXX'
+    slvk(1) = 'PETSC'
+    slvk(2) = kprec
+    slvk(3) = solvbd
+    slvk(4) = renum
+    slvk(5) = syme
+    slvk(6) = kalgo
+    slvk(7) = 'XXXX'
+    slvk(8) = 'XXXX'
+    slvk(9) = 'XXXX'
+    slvk(10)= kmd
+    slvk(11)= 'XXXX'
+    slvk(12)= 'XXXX'
 !
 !
 !     POUR NEWTON_KRYLOV LE RESI_RELA VARIE A CHAQUE
 !     ITERATION DE NEWTON, CEPENDANT LE RESI_RELA DONNE
 !     PAR L'UTILISATEUR TOUT DE MEME NECESSAIRE
 !     C'EST POURQUOI ON EN FAIT UNE COPIE EN POSITION 1
-    zr(islvr-1+1) = epsmax
-    zr(islvr-1+2) = epsmax
-    zr(islvr-1+3) = fillin
-    zr(islvr-1+4) = resipc
+    slvr(1) = epsmax
+    slvr(2) = epsmax
+    slvr(3) = fillin
+    slvr(4) = resipc
 !
-    zi(islvi-1+1) = -9999
-    zi(islvi-1+2) = nmaxit
-    zi(islvi-1+3) = -9999
-    zi(islvi-1+4) = niremp
-    zi(islvi-1+5) = 0
-    zi(islvi-1+6) = reacpr
-    zi(islvi-1+7) = pcpiv
-    zi(islvi-1+8) = 0
+    slvi(1) = -9999
+    slvi(2) = nmaxit
+    slvi(3) = -9999
+    slvi(4) = niremp
+    slvi(5) = 0
+    slvi(6) = reacpr
+    slvi(7) = pcpiv
+    slvi(8) = 0
 !
 !
 ! FIN ------------------------------------------------------

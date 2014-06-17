@@ -87,12 +87,12 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, nbnom, jconx1, jconx2, jmai, ibid, ndim, jlsno
-    integer :: jvi, jvil, jwi, jwil, jptf, jptfl, jgdf, jgdfl, jfel, jfell
-    integer :: jfeld, jmeast, jmestl, jmestd, itemp, nbnoma, itypma, iadf
-    integer :: iadmet, iaddfi, ino, ima, iadalp, nuno, nbma, jdelfi, jdefil
-    integer :: jdefid, jalpha, jalphl, j, i, jalphd, jglsno, jzero, jnosom
-    integer :: jresdu, nmanoi, jmanoi, imai, numai, jcoor, jtmdim, ndime, numin
+    integer :: ifm, niv, nbnom,  jconx2, jmai, ibid, ndim, jlsno
+    integer ::  jvil,  jwil,  jptfl,  jgdfl, jfel, jfell
+    integer :: jfeld,  jmestl, jmestd, itemp, nbnoma, itypma, iadf
+    integer :: iadmet, iaddfi, ino, ima, iadalp, nuno, nbma,  jdefil
+    integer :: jdefid,  jalphl, j, i, jalphd, jglsno, jzero, jnosom
+    integer :: jresdu, nmanoi, jmanoi, imai, numai,   ndime, numin
     integer :: ier
     real(kind=8) :: signls, sigmls, sdiff, lsprec, siglst, sdifft, lsnouv, ji(3)
     real(kind=8) :: dist, dismin
@@ -114,6 +114,16 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !
 !     DOMAIN LOCALIZATION
     integer :: jnodto, nbno, jelcal, node
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: alpha(:) => null()
+    real(kind=8), pointer :: delfi(:) => null()
+    real(kind=8), pointer :: meast(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    real(kind=8), pointer :: gdf(:) => null()
+    real(kind=8), pointer :: ptf(:) => null()
+    real(kind=8), pointer :: vi(:) => null()
+    real(kind=8), pointer :: wi(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -129,13 +139,13 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !
 !  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnom)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jmai)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 !     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
 !     CALCULUS (SAME ORDER THAN THE ONE USED IN THE CONNECTION TABLE)
@@ -174,13 +184,13 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     cnsvi = '&&XPRREI.CNSVI'
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
                 cnsvi)
-    call jeveuo(cnsvi//'.CNSV', 'E', jvi)
+    call jeveuo(cnsvi//'.CNSV', 'E', vr=vi)
     call jeveuo(cnsvi//'.CNSL', 'E', jvil)
 !   W AU NOEUDS
     cnswi = '&&XPRREI.CNSWI'
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
                 cnswi)
-    call jeveuo(cnswi//'.CNSV', 'E', jwi)
+    call jeveuo(cnswi//'.CNSV', 'E', vr=wi)
     call jeveuo(cnswi//'.CNSL', 'E', jwil)
 !
 !   DELTA_PHI
@@ -207,7 +217,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     cnsptf = '&&XPRREI.CNSPTF'
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
                 cnsptf)
-    call jeveuo(cnsptf//'.CNSV', 'E', jptf)
+    call jeveuo(cnsptf//'.CNSV', 'E', vr=ptf)
     call jeveuo(cnsptf//'.CNSL', 'E', jptfl)
     do i = 1, nbno
 !        RETREIVE THE NODE NUMBER
@@ -216,7 +226,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
         if (abs(zr(jlsno-1+node)) .gt. r8prem()) signls = zr(jlsno-1+ node) / abs(zr(jlsno-1+node&
                                                           &))
         zl(jptfl-1+node) = .true.
-        zr(jptf-1+node) = signls
+        ptf(node) = signls
     end do
     cnoptf = '&&XPRREI.CNOPTF'
     call cnscno(cnsptf, ' ', 'NON', 'V', cnoptf,&
@@ -244,7 +254,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !----------------------------------------
 !   RECUPERATION DE |T| SUR LES ELEMENTS
 !----------------------------------------
-    call jeveuo(fiss//'.PRO.MES_EL'//'.CESV', 'L', jmeast)
+    call jeveuo(fiss//'.PRO.MES_EL'//'.CESV', 'L', vr=meast)
     call jeveuo(fiss//'.PRO.MES_EL'//'.CESL', 'L', jmestl)
     call jeveuo(fiss//'.PRO.MES_EL'//'.CESD', 'L', jmestd)
 !
@@ -253,7 +263,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     cnsgdf = '&&XPRREI.CNSGDF'
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
                 cnsgdf)
-    call jeveuo(cnsgdf//'.CNSV', 'E', jgdf)
+    call jeveuo(cnsgdf//'.CNSV', 'E', vr=gdf)
 !
     call jeveuo(cnsgdf//'.CNSL', 'E', jgdfl)
 !
@@ -274,8 +284,8 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
             node = zi(jnodto-1+i)
             zl(jvil-1+node) = .true.
             zl(jwil-1+node) = .true.
-            zr(jvi-1+node) = 0.d0
-            zr(jwi-1+node) = 0.d0
+            vi(node) = 0.d0
+            wi(node) = 0.d0
         end do
 !
 !--------------------------------------
@@ -288,7 +298,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
             if (abs(zr(jlsno-1+node)) .gt. r8prem()) signls = zr(jlsno- 1+node) / abs(zr(jlsno-1+&
                                                               &node))
             zl(jgdfl-1+node) = .true.
-            zr(jgdf-1+node) = signls
+            gdf(node) = signls
 !
         end do
         call cnscno(cnsgdf, ' ', 'NON', 'V', cnogdf,&
@@ -333,11 +343,11 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !
 !
         call celces(celdfi, 'V', cesdfi)
-        call jeveuo(cesdfi//'.CESV', 'L', jdelfi)
+        call jeveuo(cesdfi//'.CESV', 'L', vr=delfi)
         call jeveuo(cesdfi//'.CESL', 'L', jdefil)
         call jeveuo(cesdfi//'.CESD', 'L', jdefid)
         call celces(celalf, 'V', cesalf)
-        call jeveuo(cesalf//'.CESV', 'L', jalpha)
+        call jeveuo(cesalf//'.CESV', 'L', vr=alpha)
         call jeveuo(cesalf//'.CESL', 'L', jalphl)
         call jeveuo(cesalf//'.CESD', 'L', jalphd)
 !
@@ -351,7 +361,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
             nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
 !   VERIFICATION DU TYPE DE MAILLE
 !           NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-            ndime = zi(jtmdim-1+zi(jmai-1+ima))
+            ndime = tmdim(zi(jmai-1+ima))
             if (ndime .ne. ndim) goto 120
 !
 !   BOUCLE SUR LES NOEUDS DE LA MAILLE
@@ -364,12 +374,12 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
             do ino = 1, nbnoma
                 call cesexi('S', jalphd, jalphl, ima, ino,&
                             1, 1, iadalp)
-                nuno = zi(jconx1-1+zi(jconx2+ima-1)+ino-1)
+                nuno = connex(zi(jconx2+ima-1)+ino-1)
 !
-                zr(jvi-1+nuno) = zr(jvi-1+nuno) + zr(jalpha-1+iadalp) * (zr(jdelfi-1+iaddfi)-zr(j&
-                                 &fel-1+iadf) * zr(jmeast-1+ iadmet))
+                vi(nuno) = vi(nuno) + alpha(iadalp) * (delfi(iaddfi)-zr(j&
+                                 &fel-1+iadf) * meast(iadmet))
 !
-                zr(jwi-1+nuno) = zr(jwi-1+nuno) + zr(jalpha-1+iadalp) * zr(jmeast-1+iadmet)
+                wi(nuno) = wi(nuno) + alpha(iadalp) * meast(iadmet)
 !
             end do
 120         continue
@@ -392,9 +402,9 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
             if (zl(jzero-1+node)) goto 200
             lsprec = zr(jlsno-1+node)
-            if (abs(zr(jwi-1+node)) .gt. r8prem()) then
+            if (abs(wi(node)) .gt. r8prem()) then
 !           WRITE(*,*)'La reinit du noeud d"indice',I,' se fait a WI>0'
-                lsnouv = zr(jlsno-1+node)-deltat*(zr(jvi-1+node)/ zr(jwi-1+node))
+                lsnouv = zr(jlsno-1+node)-deltat*(vi(node)/ wi(node))
                 zr(jlsno-1+node) = lsnouv
                 if (zl(jresdu-1+node)) then
                     sdiff = sdiff + (lsnouv-lsprec)**2.0d0
@@ -429,7 +439,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
             if (zl(jzero-1+node)) goto 800
 !
-            if (abs(zr(jwi-1+node)) .lt. r8prem()) then
+            if (abs(wi(node)) .lt. r8prem()) then
 !           WRITE(*,*)'La reinit du noeud d"indice',I,' se fait a WI=0'
 !
 !    RECUPERATION DES MAILLES CONTENANT LE NOEUD I
@@ -462,14 +472,14 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
 !   et uniquement a elles!)
 !
                     do ino = 1, nbnoma
-                        nuno=zi(jconx1-1+zi(jconx2+numai-1)+ino-1)
+                        nuno=connex(zi(jconx2+numai-1)+ino-1)
                         if (.not.zl(jnosom-1+nuno)) goto 170
 !
-                        if (abs(zr(jwi-1+nuno)) .gt. r8prem()) then
+                        if (abs(wi(nuno)) .gt. r8prem()) then
 !
                             dist=0.d0
                             do j = 1, ndim
-                                ji(j) = zr( jcoor-1+3*(node-1)+j) - zr(jcoor-1+3*(nuno-1)+j )
+                                ji(j) = vale(3*(node-1)+j) - vale(3*(nuno-1)+j )
                                 dist=dist+ji(j)**2
                             end do
                             dist=dist**0.5d0
@@ -486,7 +496,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                 end do
 ! On affecte au noeud I (WI=0), la reactualisation du noeud NUMIN (WI>0)
                 lsprec = zr(jlsno-1+node)
-                lsnouv = zr(jlsno-1+node) -deltat*(zr(jvi-1+numin)/zr( jwi-1+numin))
+                lsnouv = zr(jlsno-1+node) -deltat*(vi(numin)/wi(numin))
                 zr(jlsno-1+node) = lsnouv
             endif
 !

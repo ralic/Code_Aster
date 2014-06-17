@@ -53,7 +53,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 ! OUT : NBCHEX : NOMBRE DE NOMS DES CHAMPS EXCLUS
 ! OUT : LICHEX : NOMS DES CHAMPS EXCLUS
 ! ----------------------------------------------------------------------
-    integer :: ibid, jarch, jchex, n1, nbocc, jnum, lnum, k, ier, ipach, karch
+    integer :: ibid, jarch, jchex, n1, nbocc,  lnum, k, ier, ipach, karch
     integer :: jordr, nbtrou, nbordr(1), iocc, n2, nbcham, i, j, iret, iflag
     integer :: irang
     real(kind=8) :: r8b, prec
@@ -62,6 +62,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
     character(len=16) :: motcle, nomsym
     character(len=19) :: numarc, knum, resu
     character(len=16), pointer :: trav1(:) => null()
+    integer, pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -150,10 +151,10 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
 !
     call getvid(motcle, 'LIST_ARCH', iocc=iocc, scal=numarc, nbret=n1)
     if (n1 .ne. 0) then
-        call jeveuo(numarc//'.VALE', 'L', jnum)
+        call jeveuo(numarc//'.VALE', 'L', vi=vale)
         call jelira(numarc//'.VALE', 'LONUTI', lnum)
         do 10 k = 1, lnum
-            karch = zi(jnum+k-1)
+            karch = vale(k)
             if (karch .le. 0) then
                 goto 10
             else if (karch .gt. nbordr(1)) then

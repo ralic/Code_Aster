@@ -53,8 +53,9 @@ subroutine te0148(option, nomte)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ilapl, ilist, ima, ivect, j, jgeom
+    integer :: i, ilapl, ilist, ima, ivect, j
     integer :: jlima, jtran, lx, nbma, nbma2, no1, no2
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -84,7 +85,7 @@ subroutine te0148(option, nomte)
     listma=zk16(ilist)
     ltrans=zk16(ilist+1)
     chgeom=zk24(ilapl+1)(1:19)
-    call jeveuo(chgeom//'.VALE', 'L', jgeom)
+    call jeveuo(chgeom//'.VALE', 'L', vr=vale)
 !
     e1=zr(lx+4)-zr(lx+1)
     e2=zr(lx+5)-zr(lx+2)
@@ -109,12 +110,12 @@ subroutine te0148(option, nomte)
         no1=zi(jlima+2*ima-2)
         no2=zi(jlima+2*ima-1)
         if (a .ne. 0.0d0 .or. b .ne. 0.0d0 .or. c .ne. 0.0d0) then
-            x1=zr(jgeom+3*no1-3)
-            y1=zr(jgeom+3*no1-2)
-            z1=zr(jgeom+3*no1-1)
-            x2=zr(jgeom+3*no2-3)
-            y2=zr(jgeom+3*no2-2)
-            z2=zr(jgeom+3*no2-1)
+            x1=vale(1+3*no1-3)
+            y1=vale(1+3*no1-2)
+            z1=vale(1+3*no1-1)
+            x2=vale(1+3*no2-3)
+            y2=vale(1+3*no2-2)
+            z2=vale(1+3*no2-1)
             lam1=(a*(x1-x0)+b*(y1-y0)+c*(z1-z0))/(a**2+b**2+c**2)
             lam2=(a*(x2-x0)+b*(y2-y0)+c*(z2-z0))/(a**2+b**2+c**2)
             f1=x2-x1-2.d0*(lam2-lam1)*a
@@ -125,9 +126,9 @@ subroutine te0148(option, nomte)
             f2=f2/s
             f3=f3/s
         else
-            f1=zr(jgeom+3*no2-3)-zr(jgeom+3*no1-3)
-            f2=zr(jgeom+3*no2-2)-zr(jgeom+3*no1-2)
-            f3=zr(jgeom+3*no2-1)-zr(jgeom+3*no1-1)
+            f1=vale(1+3*no2-3)-vale(1+3*no1-3)
+            f2=vale(1+3*no2-2)-vale(1+3*no1-2)
+            f3=vale(1+3*no2-1)-vale(1+3*no1-1)
             s=sqrt(f1**2+f2**2+f3**2)
             f1=f1/s
             f2=f2/s
@@ -143,17 +144,17 @@ subroutine te0148(option, nomte)
 31          continue
             if (a .eq. 0.0d0 .and. b .eq. 0.0d0 .and. c .eq. 0.0d0) then
 !C           CAS DES TRANSLATIONS
-                r1=zr(lx+4)*(1.d0-alp(i))+zr(lx+1)*alp(i)-zr(jgeom+3*&
+                r1=zr(lx+4)*(1.d0-alp(i))+zr(lx+1)*alp(i)-vale(1+3*&
                 no2-3) -zr(jtran)
-                r2=zr(lx+5)*(1.d0-alp(i))+zr(lx+2)*alp(i)-zr(jgeom+3*&
+                r2=zr(lx+5)*(1.d0-alp(i))+zr(lx+2)*alp(i)-vale(1+3*&
                 no2-2) -zr(jtran+1)
-                r3=zr(lx+6)*(1.d0-alp(i))+zr(lx+3)*alp(i)-zr(jgeom+3*&
+                r3=zr(lx+6)*(1.d0-alp(i))+zr(lx+3)*alp(i)-vale(1+3*&
                 no2-1) -zr(jtran+2)
-                q1=zr(lx+4)*(1.d0-alp(i))+zr(lx+1)*alp(i)-zr(jgeom+3*&
+                q1=zr(lx+4)*(1.d0-alp(i))+zr(lx+1)*alp(i)-vale(1+3*&
                 no1-3) -zr(jtran)
-                q2=zr(lx+5)*(1.d0-alp(i))+zr(lx+2)*alp(i)-zr(jgeom+3*&
+                q2=zr(lx+5)*(1.d0-alp(i))+zr(lx+2)*alp(i)-vale(1+3*&
                 no1-2) -zr(jtran+1)
-                q3=zr(lx+6)*(1.d0-alp(i))+zr(lx+3)*alp(i)-zr(jgeom+3*&
+                q3=zr(lx+6)*(1.d0-alp(i))+zr(lx+3)*alp(i)-vale(1+3*&
                 no1-1) -zr(jtran+2)
             else
 !C           CAS DES SYMETRIES

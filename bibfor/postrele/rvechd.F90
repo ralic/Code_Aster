@@ -79,13 +79,16 @@ subroutine rvechd(dim, epsi, ssch19, nbcp, nbco,&
     character(len=8) :: nmaila
     character(len=4) :: docu
 !
-    integer :: atabv, atabf, atabr, apnco, apnsp, apnbn
-    integer :: m, f, i, adr, j, nbpara, nbpt
+    integer :: atabv, atabf, atabr,   apnbn
+    integer :: m, f, i,  j, nbpara, nbpt
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
 !-----------------------------------------------------------------------
     integer :: nbcm, nbco, nbsm, nbsp
+    integer, pointer :: pnsp(:) => null()
+    character(len=8), pointer :: noma(:) => null()
+    integer, pointer :: pnco(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -98,10 +101,10 @@ subroutine rvechd(dim, epsi, ssch19, nbcp, nbco,&
 !
     nbpt = 2
 !
-    call jeveuo(ssch19//'.NOMA', 'L', adr)
+    call jeveuo(ssch19//'.NOMA', 'L', vk8=noma)
     call jelira(ssch19//'.VALE', 'DOCU', cval=docu)
 !
-    nmaila = zk8(adr)
+    nmaila = noma(1)
 !
     if (dim .eq. '3D') then
 !
@@ -139,8 +142,8 @@ subroutine rvechd(dim, epsi, ssch19, nbcp, nbco,&
 !
     else
 !
-        call jeveuo(ssch19//'.PNCO', 'L', apnco)
-        call jeveuo(ssch19//'.PNSP', 'L', apnsp)
+        call jeveuo(ssch19//'.PNCO', 'L', vi=pnco)
+        call jeveuo(ssch19//'.PNSP', 'L', vi=pnsp)
         call jeveuo(ssch19//'.PNBN', 'L', apnbn)
 !
         do 200, i = 1, n, 1
@@ -151,8 +154,8 @@ subroutine rvechd(dim, epsi, ssch19, nbcp, nbco,&
         zr(atabr + 1-1) = ror(i)
         zr(atabr + 2-1) = rex(i)
 !
-        nbcm = zi(apnco + m-1)
-        nbsm = zi(apnsp + m-1)
+        nbcm = pnco(m)
+        nbsm = pnsp(m)
 !
         call rvchlo(epsi, ssch19, nbcp, nbco, nbsp,&
                     nbcm, nbsm, m, zi(atabf), nbpt,&

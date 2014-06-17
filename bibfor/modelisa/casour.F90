@@ -47,11 +47,12 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 !      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
-    integer :: nsour, jvalv, jncmp, n1, ncmp, iocc
+    integer :: nsour, jvalv,  n1, ncmp, iocc
     character(len=16) :: motclf
     character(len=19) :: carte
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
+    character(len=8), pointer :: vncmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -68,13 +69,13 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
         ASSERT(.false.)
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
 ! --- STOCKAGE DE SOURCES NULLES SUR TOUT LE MAILLAGE
 !
     ncmp = 1
-    zk8(jncmp) = 'SOUR'
+    vncmp(1) = 'SOUR'
     if (fonree .eq. 'REEL') then
         zr(jvalv) = 0.d0
     else

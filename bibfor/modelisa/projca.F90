@@ -92,7 +92,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 ! VARIABLES LOCALES
 ! -----------------
     integer :: ideca, inobe, inoca, ipara, iproj, itria, jcoor,  jnoca
-    integer :: jnunob, jtblp, jtbnp, jxca,  jyca, jzca, nbcnx, nblign
+    integer :: jnunob,   jxca,  jyca, jzca, nbcnx, nblign
     integer :: nbno, nbpara, nnomax, noe, noebe, numail
     real(kind=8) :: d2, d2min, dx, dy, dz, excent, normal(3), x3dca(3), xbar(3)
     complex(kind=8) :: cbid
@@ -104,6 +104,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     character(len=24) :: param(4), parcr
     integer, pointer :: cnx_maille(:) => null()
     real(kind=8), pointer :: xyz_noemai(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
     data          param /'MAILLE_BETON_VOISINE    ',&
      &                     'NOEUD_BETON_VOISIN      ',&
      &                     'INDICE_PROJECTION       ',&
@@ -134,14 +136,14 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !
 !.... NOMS DES NOEUDS
 !
-    call jeveuo(tablca//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp)
-    nblign = zi(jtbnp+1)
+    call jeveuo(tablca//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     ideca = nblign - nbno
-    call jeveuo(tablca//'.TBLP', 'L', jtblp)
+    call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
     do 10 ipara = 1, nbpara
-        if (zk24(jtblp+4*(ipara-1)) .eq. parcr) then
-            nonoca = zk24(jtblp+4*(ipara-1)+2)
+        if (tblp(1+4*(ipara-1)) .eq. parcr) then
+            nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 11
         endif

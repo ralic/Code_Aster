@@ -85,10 +85,8 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 !
 !
     integer :: neq, i, ierm
-    integer :: jpltk, jplir, jdu0, jdu1
     real(kind=8) :: dtau, etrmin, etrmax, coef
     character(len=19) :: ddepl0, ddepl1
-    integer :: jdep0, jdep1
     character(len=24) :: typpil
     character(len=19) :: ligrpi, cartyp, careta
     character(len=19) :: depmoi, depdel, deppr1, deppr2
@@ -96,6 +94,12 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
     character(len=3) :: mfdet
     integer :: ifm, niv
     logical :: isxfe
+    real(kind=8), pointer :: dep0(:) => null()
+    real(kind=8), pointer :: dep1(:) => null()
+    real(kind=8), pointer :: du0(:) => null()
+    real(kind=8), pointer :: du1(:) => null()
+    character(len=24), pointer :: pltk(:) => null()
+    real(kind=8), pointer :: plir(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -127,16 +131,16 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 !
 ! --- LECTURE DONNEES PILOTAGE
 !
-    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', jpltk)
-    call jeveuo(sdpilo(1:19)//'.PLIR', 'L', jplir)
-    etrmin = zr(jplir+4)
-    etrmax = zr(jplir+3)
-    typpil = zk24(jpltk)
-    coef = zr(jplir)
+    call jeveuo(sdpilo(1:19)//'.PLTK', 'L', vk24=pltk)
+    call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
+    etrmin = plir(5)
+    etrmax = plir(4)
+    typpil = pltk(1)
+    coef = plir(1)
     dtau = deltat / coef
-    ligrpi = zk24(jpltk+1)(1:19)
-    cartyp = zk24(jpltk+2)(1:19)
-    careta = zk24(jpltk+3)(1:19)
+    ligrpi = pltk(2)(1:19)
+    cartyp = pltk(3)(1:19)
+    careta = pltk(4)(1:19)
 !
 ! --- VERIFICATION QUE LES VARIABLES DE COMMANDE NE DEPENDENT PAS DU TEMPS
 !
@@ -147,13 +151,13 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 !
 ! --- INCREMENTS DE DEPLACEMENT RHO.DU0 ET RHO.DU1
 !
-    call jeveuo(deppr1(1:19)//'.VALE', 'L', jdu0)
-    call jeveuo(deppr2(1:19)//'.VALE', 'L', jdu1)
-    call jeveuo(ddepl0(1:19)//'.VALE', 'E', jdep0)
-    call jeveuo(ddepl1(1:19)//'.VALE', 'E', jdep1)
+    call jeveuo(deppr1(1:19)//'.VALE', 'L', vr=du0)
+    call jeveuo(deppr2(1:19)//'.VALE', 'L', vr=du1)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'E', vr=dep0)
+    call jeveuo(ddepl1(1:19)//'.VALE', 'E', vr=dep1)
     do i = 1, neq
-        zr(jdep0+i-1) = rho * zr(jdu0+i-1)
-        zr(jdep1+i-1) = zr(jdu1+i-1)
+        dep0(i) = rho * du0(i)
+        dep1(i) = du1(i)
     end do
 !
     if (niv .ge. 2) then

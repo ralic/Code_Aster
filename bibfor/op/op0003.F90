@@ -43,8 +43,8 @@ subroutine op0003()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: i, iret, ibid, ival, jval, jfon, ifm
-    integer :: jpar, lpara, lpar2, l, lpro, n1, n2, n3, n4, n5, niv
+    integer :: i, iret, ibid, ival, jval,  ifm
+    integer ::  lpara, lpar2, l, lpro, n1, n2, n3, n4, n5, niv
     integer :: jnoe, n, nbval, lval, lfon
     integer :: nbcoup, nbcou2
     integer :: nblr, nblv, nbrma, nbln, nbvc, nbvr, nbla, nblo
@@ -57,6 +57,8 @@ subroutine op0003()
     character(len=24) :: nommas
     character(len=24) :: valk(2)
     integer :: iarg
+    real(kind=8), pointer :: fon(:) => null()
+    real(kind=8), pointer :: par(:) => null()
 !     ------------------------------------------------------------------
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
@@ -246,12 +248,12 @@ subroutine op0003()
         endif
         nbval = nbcoup * 2
         call wkvect(nomfon//'.VALE', 'G V R', nbval, lval)
-        call jeveuo(listpa//'.VALE', 'L', jpar)
-        call jeveuo(listfo//'.VALE', 'L', jfon)
+        call jeveuo(listpa//'.VALE', 'L', vr=par)
+        call jeveuo(listfo//'.VALE', 'L', vr=fon)
         lfon = lval + nbcoup
         do 30 ival = 0, nbcoup-1
-            zr(lval+ival) = zr(jpar+ival)
-            zr(lfon+ival) = zr(jfon+ival)
+            zr(lval+ival) = par(ival+1)
+            zr(lfon+ival) = fon(ival+1)
             if (zr(lval+ival) .lt. min1) min1=zr(lval+ival)
             if (zr(lfon+ival) .lt. min2) min2=zr(lfon+ival)
 30      continue

@@ -41,13 +41,15 @@ subroutine tbexv1(nomta, para, nomobj, basobj, nbval,&
 ! OUT : TYPVAL : TYPE JEVEUX DES VALEURS EXTRAITES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, jtblp, ipar
+    integer :: iret, nbpara, nblign,   ipar
     integer :: i, j, iv, jvale, jvall, kvale
     character(len=1) :: base
     character(len=4) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     character(len=24) :: valk
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 ! DEB------------------------------------------------------------------
 !
     call jemarq()
@@ -67,9 +69,9 @@ subroutine tbexv1(nomta, para, nomobj, basobj, nbval,&
         call utmess('F', 'UTILITAI4_64')
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -79,18 +81,18 @@ subroutine tbexv1(nomta, para, nomobj, basobj, nbval,&
 !
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     do 10 ipar = 1, nbpara
-        jnpar = zk24(jtblp+4*(ipar-1))
+        jnpar = tblp(1+4*(ipar-1))
         if (inpar .eq. jnpar) goto 12
 10  continue
     valk = inpar
     call utmess('F', 'UTILITAI6_89', sk=valk)
 12  continue
 !
-    type = zk24(jtblp+4*(ipar-1)+1)
-    nomjv = zk24(jtblp+4*(ipar-1)+2)
-    nomjvl = zk24(jtblp+4*(ipar-1)+3)
+    type = tblp(1+4*(ipar-1)+1)
+    nomjv = tblp(1+4*(ipar-1)+2)
+    nomjvl = tblp(1+4*(ipar-1)+3)
 !
     call jeveuo(nomjv, 'L', jvale)
     call jeveuo(nomjvl, 'L', jvall)

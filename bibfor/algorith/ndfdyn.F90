@@ -58,10 +58,12 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
     character(len=19) :: vites, accel, vite2
     character(len=19) :: cniner, cnhyst
     character(len=24) :: nu
-    integer :: jprov, jdeeq, jrefa, neq
+    integer :: jprov,   neq
     real(kind=8) :: coerma, coeram, coerri
     logical :: lamor, limpl
     logical :: lnewma, ltheta, lthetd, lthetv, lkrenk
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: deeq(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -133,14 +135,14 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
             vite2 = '&&NDFDYN.VITE'
             call copisd('CHAMP_GD', 'V', vites, vite2)
             call jeveuo(vite2(1:19)//'.VALE', 'E', jprov)
-            call jeveuo(rigid//'.REFA', 'L', jrefa)
-            nu = zk24(jrefa-1+2)
-            call jeveuo(nu(1:14)//'.NUME.DEEQ', 'L', jdeeq)
+            call jeveuo(rigid//'.REFA', 'L', vk24=refa)
+            nu = refa(2)
+            call jeveuo(nu(1:14)//'.NUME.DEEQ', 'L', vi=deeq)
             call jelira(vite2(1:19)//'.VALE', 'LONMAX', neq)
-            call zerlag(neq, zi(jdeeq), vectr=zr(jprov))
+            call zerlag(neq, deeq, vectr=zr(jprov))
             call nminer(rigid, vite2, cniner)
             call jeveuo(cniner(1:19)//'.VALE', 'E', jprov)
-            call zerlag(neq, zi(jdeeq), vectr=zr(jprov))
+            call zerlag(neq, deeq, vectr=zr(jprov))
             call vtaxpy(coerri, cniner, cndyna)
             call jeveuo(cndyna(1:19)//'.VALE', 'E', jprov)
         else

@@ -58,12 +58,15 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     character(len=8) :: valk(5)
     character(len=19) :: chsref, chscom
     character(len=24) :: vrcplu, vrcref
-    integer :: jcesd, jcesl, jcesv, nbma, nbpt, nbsp, icmp
-    integer :: jcrsd, jcrsl, jcrsv, ima, ipt, isp, iad, iad2
-    integer :: imamax, imamin, jnom,  iref
+    integer :: jcesd, jcesl,  nbma, nbpt, nbsp, icmp
+    integer :: jcrsd, jcrsl,  ima, ipt, isp, iad, iad2
+    integer :: imamax, imamin,   iref
     real(kind=8) :: valmin, valmax, valr(2)
     real(kind=8) :: valeur, valref
     character(len=8), pointer :: cvrcvarc(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    real(kind=8), pointer :: crsv(:) => null()
+    character(len=8), pointer :: cvrcnom(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,12 +98,12 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     call jeveuo(chscom//'.CESL', 'L', jcesl)
     call jeveuo(chsref//'.CESL', 'L', jcrsl)
 !     VALEUR DES CMP (R)
-    call jeveuo(chscom//'.CESV', 'L', jcesv)
-    call jeveuo(chsref//'.CESV', 'L', jcrsv)
+    call jeveuo(chscom//'.CESV', 'L', vr=cesv)
+    call jeveuo(chsref//'.CESV', 'L', vr=crsv)
 !
 !     RECUPERATION DES NOMS DES VARC
     call jelira(mate(1:8)//'.CVRCNOM', 'LONMAX', ival=nbcmp2)
-    call jeveuo(mate(1:8)//'.CVRCNOM', 'L', jnom)
+    call jeveuo(mate(1:8)//'.CVRCNOM', 'L', vk8=cvrcnom)
     call jeveuo(mate(1:8)//'.CVRCVARC', 'L', vk8=cvrcvarc)
 !
     nbma = zi(jcesd-1+1)
@@ -127,7 +130,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     if (iref .eq. 1) then
         call cesexi('C', jcrsd, jcrsl, ima, 1,&
                     1, icmp, iad2)
-        valref = zr(jcrsv-1+iad2)
+        valref = crsv(iad2)
     endif
     nbpt = zi(jcesd-1+5+4* (ima-1)+1)
     nbsp = zi(jcesd-1+5+4* (ima-1)+2)
@@ -136,7 +139,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     call cesexi('C', jcesd, jcesl, ima, ipt,&
                 isp, icmp, iad)
     if (iad .gt. 0) then
-        valeur = zr(jcesv-1+iad)
+        valeur = cesv(iad)
         if (iisnan(valeur) .ne. 0) goto 20
 !
         if (iref .eq. 1) then
@@ -155,7 +158,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 30  continue
 40  continue
     if (imamax .gt. 0) then
-        valk(2)=zk8(jnom-1+icmp)
+        valk(2)=cvrcnom(icmp)
         valk(1)=cvrcvarc(icmp)
         valr(1)=valmax
         valr(2)=valmin

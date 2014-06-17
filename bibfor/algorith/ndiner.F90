@@ -59,12 +59,14 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 !
 !
     integer :: ifm, niv
-    integer :: jmasse, jfoine, jvitp, jvitm, jvect
+    integer :: jmasse,   jvitm, jvect
     integer :: neq
     real(kind=8) :: coiner
     logical :: lnewma, lthetv, lthetd, lkrenk, ldepl, lvite
     character(len=19) :: vitmoi, vitplu, vector
     character(len=19) :: masse
+    real(kind=8), pointer :: foine(:) => null()
+    real(kind=8), pointer :: vitp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,8 +106,8 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 ! --- ACCES SD
 !
     call jeveuo(masse(1:19)//'.&INT', 'L', jmasse)
-    call jeveuo(foiner(1:19)//'.VALE', 'E', jfoine)
-    call jeveuo(vitplu(1:19)//'.VALE', 'L', jvitp)
+    call jeveuo(foiner(1:19)//'.VALE', 'E', vr=foine)
+    call jeveuo(vitplu(1:19)//'.VALE', 'L', vr=vitp)
     call jeveuo(vitmoi(1:19)//'.VALE', 'L', jvitm)
     call jeveuo(vector(1:19)//'.VALE', 'L', jvect)
 !
@@ -114,17 +116,17 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 ! --- CALCUL DU TERME D'INERTIE
 !
     if (lnewma) then
-        call mrmult('ZERO', jmasse, zr(jvitp), zr(jfoine), 1,&
+        call mrmult('ZERO', jmasse, vitp, foine, 1,&
                     .true.)
-        call dscal(neq, coiner, zr(jfoine), 1)
+        call dscal(neq, coiner, foine, 1)
         elseif (lthetv.or.(lkrenk.and.lvite).or.lthetd .or.(&
     lkrenk.and.ldepl)) then
         call vtaxpy(-1.d0, vitplu, vector)
         call vtaxpy(1.d0, vitmoi, vector)
         call jeveuo(vector(1:19)//'.VALE', 'L', jvect)
-        call mrmult('ZERO', jmasse, zr(jvect), zr(jfoine), 1,&
+        call mrmult('ZERO', jmasse, zr(jvect), foine, 1,&
                     .true.)
-        call dscal(neq, coiner, zr(jfoine), 1)
+        call dscal(neq, coiner, foine, 1)
     else
         ASSERT(.false.)
     endif

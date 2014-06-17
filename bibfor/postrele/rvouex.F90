@@ -78,10 +78,10 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !
 !  VARIABLES LOCALES
 !  -----------------
-    integer :: adr, aliste, acncin, alsmac, alsnac, acmp, adrvlc, arepe
+    integer :: adr,  acncin, alsmac, alsnac, acmp, adrvlc, arepe
     integer :: nbtma, nbm, nbmac, nbnac, nbcrb, nbmalu
     integer :: i, in, n, m, libre, n1, ibid, igrel, jnuma, j
-    integer :: ibib, imolo, jceld, n2, kk, ier, nbvari, nbr
+    integer :: ibib, imolo,  n2, kk, ier, nbvari, nbr
     integer :: ii, jmmail, nbtrou, nbcmp, nbcmp1, nc, jcmp, jcmp1, ntc
     character(len=4) :: docu
     character(len=8) :: nmaila, courbe, nomgd, resuco, nomvar, num
@@ -89,6 +89,8 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
     character(len=16) :: motcle(2), typmcl(2), nchsym
     character(len=19) :: nchp19
     character(len=24) :: ncncin, nrepe, lismai, malist, nomobj, valk(3)
+    integer, pointer :: celd(:) => null()
+    integer, pointer :: entier(:) => null()
     data nbvari /100/
 !**********************************************************************
 !
@@ -230,7 +232,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !
                 call jecreo('&&RVOUEX.LISTE.ENTIER', 'V V I')
                 call jeecra('&&RVOUEX.LISTE.ENTIER', 'LONMAX', nbtma)
-                call jeveuo('&&RVOUEX.LISTE.ENTIER', 'E', aliste)
+                call jeveuo('&&RVOUEX.LISTE.ENTIER', 'E', vi=entier)
 !
                 libre = 1
                 call jeveuo(jexatr(ncncin, 'LONCUM'), 'L', adrvlc)
@@ -241,17 +243,17 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                     nbm = zi(adrvlc + n+1-1) - zi(adrvlc + n-1)
                     adr = zi(adrvlc + n-1)
 !
-                    call i2trgi(zi(aliste), zi(acncin + adr-1), nbm, libre)
+                    call i2trgi(entier, zi(acncin + adr-1), nbm, libre)
 !
                 end do
 !
                 nbmac = libre - 1
                 libre = 1
 !
-                call jeveuo(nchp19//'.CELD', 'L', jceld)
+                call jeveuo(nchp19//'.CELD', 'L', vi=celd)
 !
                 do i = 1, nbmac, 1
-                    m = zi(aliste + i-1)
+                    m = entier(i)
                     if (nbtrou .ne. 0) then
                         do ii = 1, nbtrou
                             if (m .eq. zi(jmmail+ii-1)) goto 114
@@ -268,9 +270,9 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 404                         continue
                         endif
                         igrel = zi(arepe + 2*(m-1))
-                        imolo=zi(jceld-1+zi(jceld-1+4+igrel) +2)
+                        imolo=celd(celd(4+igrel) +2)
                         if (igrel .ne. 0 .and. imolo .gt. 0) then
-                            zi(aliste + libre-1) = zi(aliste + i-1)
+                            entier(libre) = entier(i)
                             libre = libre + 1
                         endif
                     endif
@@ -284,7 +286,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                     call wkvect(lstmac, 'V V I', nbmac, alsmac)
 !
                     do i = 1, nbmac, 1
-                        zi(alsmac + i-1) = zi(aliste + i-1)
+                        zi(alsmac + i-1) = entier(i)
                     end do
 !
                 else

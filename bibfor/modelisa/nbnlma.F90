@@ -56,15 +56,16 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
 !      &&NBNLMA.NBN  : NOMBRES D'OCCURENCES DES NOEUDS
 !-----------------------------------------------------------------------
     integer :: iatyma, iret, it, itrou, j, jln, jnbn, jtyp, m, mi, n, nbna, nbnm
-    integer :: nn, numtyp, p1, p2
+    integer :: nn, numtyp,  p2
     character(len=8) :: mk, valk
+    integer, pointer :: connex(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', p2)
-    call jeveuo(noma//'.CONNEX', 'L', p1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
 !
 ! --- SI ON SOUHAITE CONTROLEE LE TYPE DE MAILLE DE LIMANU:
     if (nbtyp .ne. 0) then
@@ -129,7 +130,7 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
 !           ON INCREMENTE A LA PLACE J DANS LE TABLEAU &&NBNLMA.NBN
 !
             do 24 j = 1, nbna
-                if (zi(p1+zi(p2+mi-1)-1+n-1) .eq. zi(jln-1+j)) then
+                if (connex(1+zi(p2+mi-1)-1+n-1) .eq. zi(jln-1+j)) then
                     zi(jnbn-1+j) = zi(jnbn-1+j)+1
                     itrou = 1
                 endif
@@ -141,7 +142,7 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
 !
             if (itrou .eq. 0) then
                 nbna = nbna + 1
-                zi( jln-1+nbna) = zi(p1+zi(p2+mi-1)-1+n-1)
+                zi( jln-1+nbna) = connex(1+zi(p2+mi-1)-1+n-1)
                 zi(jnbn-1+nbna) = 1
                 call jeecra('&&NBNLMA.LN', 'LONUTI', nbna)
                 call jeecra('&&NBNLMA.NBN', 'LONUTI', nbna)

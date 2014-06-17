@@ -66,9 +66,10 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
     integer :: j_cesd, j_cesl, j_cesv
     integer ::  iret, irett, ielem
     integer :: iad
-    integer :: j_repe, j_grel, j_elem_affe
+    integer ::  j_grel, j_elem_affe
     integer :: nb_elem_mesh, nb_elem, nb_elem_grel
     integer :: nume_elem, nume_grel
+    integer, pointer :: repe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,7 +78,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 ! - Access to model and mesh
 !
     ligrmo = model//'.MODELE'
-    call jeveuo(ligrmo(1:19)//'.REPE', 'L', j_repe)
+    call jeveuo(ligrmo(1:19)//'.REPE', 'L', vi=repe)
     call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
 !
 ! - Access to <CHELEM_S> of FULL_MECA option
@@ -117,7 +118,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
 ! --------- Access to element type
 !
-            nume_grel = zi(j_repe-1+2*(nume_elem-1)+1)
+            nume_grel = repe(2*(nume_elem-1)+1)
             call jeveuo(jexnum(ligrmo(1:19)//'.LIEL', nume_grel), 'L', j_grel)
             call jelira(jexnum(ligrmo(1:19)//'.LIEL', nume_grel), 'LONMAX', nb_elem_grel)
             nutyel = zi(j_grel-1+nb_elem_grel)

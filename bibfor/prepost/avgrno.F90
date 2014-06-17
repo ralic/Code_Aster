@@ -83,7 +83,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
     integer :: i
-    integer :: jcnrd, jcnrl, jcnrv, iret, icesd, icesl, icesv
+    integer :: jcnrd, jcnrl,  iret, icesd, icesl, icesv
     integer :: tneces, tdisp2(1), n, k
     integer :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
     integer :: l, cnbno, ibidno, kwork, somnow, inop
@@ -106,6 +106,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     real(kind=8), pointer :: vect_norma(:) => null()
     real(kind=8), pointer :: vect_tangu(:) => null()
     real(kind=8), pointer :: vect_tangv(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 !
 !
 !-----------------------------------------------------------------------
@@ -139,7 +140,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     if (.not. post) then
         call jeveuo(cnsr//'.CNSD', 'L', jcnrd)
         call jeveuo(cnsr//'.CNSL', 'E', jcnrl)
-        call jeveuo(cnsr//'.CNSV', 'E', jcnrv)
+        call jeveuo(cnsr//'.CNSV', 'E', vr=cnsv)
 !
 ! RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 !
@@ -314,7 +315,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
             do icmp = 1, 24
                 jad = 24*(nunoe-1) + icmp
                 zl(jcnrl - 1 + jad) = .true.
-                zr(jcnrv - 1 + jad) = vresu(icmp)
+                cnsv(jad) = vresu(icmp)
             end do
 !
         endif

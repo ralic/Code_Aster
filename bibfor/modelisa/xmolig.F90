@@ -85,8 +85,9 @@ subroutine xmolig(liel1, trav)
     integer :: ntaq4(7), ntat3(7), ntf4(7), ntf3(7), ntpf2(7), ntax2(7)
 !
     integer :: jtab, ngr1, igr1, j1, n1, nbelt, itypel, iel, ima, jj
-    integer :: jnbsp, nfiss, i
+    integer ::  nfiss, i
     character(len=16) :: notype
+    integer, pointer :: nbsp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -468,7 +469,7 @@ subroutine xmolig(liel1, trav)
 !
 ! --- RECUPERATION DU NOMBRE DE SOUS POINT (NBRE DE FISSURES VUES)
 !
-    call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
+    call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
 !
 !     REMPLISSAGE DE LA 5EME COLONNE DU TABLEAU AVEC LE TYPE D'ELEMENT
     call jelira(liel1, 'NMAXOC', ngr1)
@@ -487,7 +488,7 @@ subroutine xmolig(liel1, trav)
             endif
 !
             jj=jtab-1+5*(ima-1)
-            nfiss = zi(jnbsp-1+ima)
+            nfiss = nbsp(ima)
             if (zi(jj+4) .eq. 0) then
 ! --- ELEMENTS X-FEM MECANIQUES
                 if (notype .eq. 'MECA_HEXA8') then

@@ -57,16 +57,27 @@ subroutine xconno(mox, chfis, base, opt, param,&
 !
 !
     integer :: nfis, ifis, jj, ino, ii, kk, iret
-    integer :: ima, icmp, nbnom, jmacnx, jlcnx
-    integer :: ibid, jg, nmaenr, i, jxc
-    integer :: jnfis, jcnsd, jcnsc, jcnsv, jcnsk, jcnsl, jcnsv2, jcnsl2
-    integer :: ncmp1, jmofis, jcesd, jcesv, jcesl, iad, jnbsp, nncp
-    integer :: jcesd2, jcesv2, jcesl2, jtypma, jtmdim, itypma, ndime, ndim
+    integer :: ima, icmp, nbnom,  jlcnx
+    integer :: ibid, jg, nmaenr, i
+    integer ::    jcnsv,  jcnsl,  jcnsl2
+    integer :: ncmp1, jmofis, jcesd, jcesv, jcesl, iad,  nncp
+    integer :: jcesd2,  jcesl2,   itypma, ndime, ndim
     character(len=3) :: tsca
     character(len=19) :: ces, cns, ligrel, cns2, ces2
     character(len=24) :: grp(3)
     logical :: lstno
     character(len=8) :: ma, nomgd, nomfis, licmp(2)
+    integer, pointer :: nbsp(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    integer, pointer :: vnfis(:) => null()
+    integer, pointer :: typmail(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
+    integer, pointer :: cnsv2(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    character(len=8), pointer :: cesv2(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -77,41 +88,41 @@ subroutine xconno(mox, chfis, base, opt, param,&
 !
 !     1.RECUPERATION D'INFORMATIONS DANS MOX
 !
-    call jeveuo(mox//'.NFIS', 'L', jnfis)
-    nfis = zi(jnfis)
+    call jeveuo(mox//'.NFIS', 'L', vi=vnfis)
+    nfis = vnfis(1)
 !
     call jeveuo(mox//'.FISS', 'L', jmofis)
     nomfis = zk8(jmofis)
 !
     call cnocns(nomfis//chfis, 'V', cns)
 !
-    call jeveuo(cns//'.CNSK', 'L', jcnsk)
-    call jeveuo(cns//'.CNSD', 'L', jcnsd)
-    call jeveuo(cns//'.CNSC', 'L', jcnsc)
+    call jeveuo(cns//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cns//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(cns//'.CNSC', 'L', vk8=cnsc)
     call jeveuo(cns//'.CNSV', 'L', jcnsv)
     call jeveuo(cns//'.CNSL', 'L', jcnsl)
 !
-    ma = zk8(jcnsk-1+1)
-    nomgd = zk8(jcnsk-1+2)
+    ma = cnsk(1)
+    nomgd = cnsk(2)
 !      NBNOM = ZI(JCNSD-1+1)
-    ncmp1 = zi(jcnsd-1+2)
+    ncmp1 = cnsd(2)
 !
-    call jeveuo(ma//'.CONNEX', 'L', jmacnx)
+    call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
     call dismoi('DIM_GEOM', ma, 'MAILLAGE', repi=ndim)
-    call jeveuo(ma//'.TYPMAIL', 'L', jtypma)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo(ma//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
 ! --- RECUPERATION DU NOMBRE DE SOUS POINT (NBRE DE FISSURES VUES)
 !
-    call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
+    call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
 !
 ! --- CREATION DE LA SD ELNO
 !
     call cescre('V', ces, 'ELNO', ma, nomgd,&
-                ncmp1, zk8(jcnsc), [ibid], zi(jnbsp), [-ncmp1])
+                ncmp1, cnsc, [ibid], nbsp, [-ncmp1])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESV', 'E', jcesv)
@@ -125,14 +136,14 @@ subroutine xconno(mox, chfis, base, opt, param,&
         licmp(2) = 'X2'
         call cnscre(ma, 'NEUT_I', 2, licmp, 'V',&
                     cns2)
-        call jeveuo(cns2//'.CNSV', 'E', jcnsv2)
+        call jeveuo(cns2//'.CNSV', 'E', vi=cnsv2)
         call jeveuo(cns2//'.CNSL', 'E', jcnsl2)
 ! --- ON CREE AUSSI UN CHAMP ELEM QUI CONTIENT LE NOM DES FISS
         ces2 = '&&XCONNO.CES2'
         call cescre('V', ces2, 'ELEM', ma, 'NEUT_K8',&
-                    1, ['Z1'], [ibid], zi( jnbsp), [-1])
+                    1, ['Z1'], [ibid], nbsp, [-1])
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
-        call jeveuo(ces2//'.CESV', 'E', jcesv2)
+        call jeveuo(ces2//'.CESV', 'E', vk8=cesv2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
     endif
 !
@@ -159,15 +170,15 @@ subroutine xconno(mox, chfis, base, opt, param,&
                 do i = 1, nmaenr
                     ima = zi(jg-1+i)
                     nbnom = zi(jlcnx+ima)-zi(jlcnx-1+ima)
-                    itypma=zi(jtypma-1+ima)
-                    ndime= zi(jtmdim-1+itypma)
+                    itypma=typmail(ima)
+                    ndime= tmdim(itypma)
                     do jj = 1, nbnom
-                        ino = zi(jmacnx + zi(jlcnx-1+ima)-2+jj)
+                        ino = connex(1+ zi(jlcnx-1+ima)-2+jj)
                         do icmp = 1, ncmp1
 !
 !                 POUR CHAQUE TYPE 'R', I', 'L', 'K8', SI LE CHAM_NO
 !                 A DEJE ETE REMPLI, ON INCREMENTE LE SOUS POINT
-                            do kk = 1, zi(jnbsp-1+ima)
+                            do kk = 1, nbsp(ima)
                                 call cesexi('S', jcesd, jcesl, ima, jj,&
                                             kk, icmp, iad)
                                 if (iad .lt. 0) goto 110
@@ -187,9 +198,9 @@ subroutine xconno(mox, chfis, base, opt, param,&
                                         .true.
                                         zl(jcnsl2-1+(ino-1)*2+2) =&
                                         .true.
-                                        zi(jcnsv2-1+(ino-1)*2+1) =&
+                                        cnsv2((ino-1)*2+1) =&
                                         ima
-                                        zi(jcnsv2-1+(ino-1)*2+2) = jj
+                                        cnsv2((ino-1)*2+2) = jj
                                     endif
                                 endif
                             else if (tsca.eq.'L') then
@@ -206,12 +217,12 @@ subroutine xconno(mox, chfis, base, opt, param,&
                         end do
                     end do
                     if (lstno) then
-                        do kk = 1, zi(jnbsp-1+ima)
+                        do kk = 1, nbsp(ima)
                             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                                         kk, 1, iad)
                             if (iad .lt. 0) then
                                 zl(jcesl2-1-iad) = .true.
-                                zk8(jcesv2-1-iad) = nomfis
+                                cesv2(1-1-iad) = nomfis
                                 goto 120
                             endif
                         end do
@@ -233,8 +244,8 @@ subroutine xconno(mox, chfis, base, opt, param,&
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM POUR MODELE.MAFIS
 !
     if (lstno) then
-        call jeveuo(mox//'.XFEM_CONT', 'L', jxc)
-        if (zi(jxc) .gt. 0) then
+        call jeveuo(mox//'.XFEM_CONT', 'L', vi=xfem_cont)
+        if (xfem_cont(1) .gt. 0) then
             call cescel(ces2, ligrel, 'GEOM_FAC', 'NOMFIS', 'NON',&
                         nncp, base, mox//'.XMAFIS', 'F', ibid)
         endif

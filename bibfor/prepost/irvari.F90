@@ -75,11 +75,11 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
 !       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 ! -------------------------------------------------------------------
 !
-    integer :: nbmax, jcdesc, inum, nbre, iret, jvale, nbcomp
+    integer :: nbmax,  inum, nbre, iret,  nbcomp
     integer :: lon3, numlc, nbvari, ntvari, mxnbva, jnovar, jmnova
     integer :: nredva, inum2, inum3, jcorva, jcesd, posit, nbvar2
     integer :: jconi1, jconi2, typaff, nbzone, nbmail, ima2, jnocmp
-    integer :: jcesl, jcesv, jcesdb, jceslb, jcesvb, ima, ipt, icmp
+    integer :: jcesl,  jcesdb, jceslb,  ima, ipt, icmp
     integer :: nbcmpc, isp, nbpt, nbsp, iad, iad2, icmp2, nbma2, jnocm2
 !
     character(len=7) :: saux07
@@ -94,20 +94,24 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
     parameter ( chabis = '&&IRVARI.CH_EL_S_BI' )
     parameter ( chater = '&&IRVARI.CH_EL_S_TE' )
     character(len=64) :: nomres
+    real(kind=8), pointer :: cesvb(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=16), pointer :: vale(:) => null()
+    integer, pointer :: desc(:) => null()
 !
     call jemarq()
 !
 !   RECHERCHE DE LA CARTE DE COMPORTEMENT
     call rsexch('F', noresu, 'COMPORTEMENT', numord, noch19,&
                 iret)
-    call jeveuo(noch19//'.DESC', 'L', jcdesc)
-    call jeveuo(noch19//'.VALE', 'L', jvale)
+    call jeveuo(noch19//'.DESC', 'L', vi=desc)
+    call jeveuo(noch19//'.VALE', 'L', vk16=vale)
     call jelira(noch19//'.VALE', 'LONMAX', lon3)
     ligrel=modele//'.MODELE'
 !
 !   NOMBRE DE COMPORTEMENT
-    nbre=zi(jcdesc-1+3)
-    nbmax=zi(jcdesc-1+2)
+    nbre=desc(3)
+    nbmax=desc(2)
     nbcomp=lon3/nbmax
 !
     call jeveuo(jexnum(noch19//'.LIMA', 1), 'L', jconi1)
@@ -121,10 +125,10 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
     do inum = 2,nbre
 !
 !       NOM DU COMPORTEMENT
-        compor=zk16(jvale+nbcomp*(inum-1))
+        compor=vale(1+nbcomp*(inum-1))
         if (compor .eq. 'ELAS') goto 10
 !
-        nomtmp=zk16(jvale+nbcomp*(inum-1)+1)
+        nomtmp=vale(1+nbcomp*(inum-1)+1)
         read(nomtmp,'(I16)') nbvari
         ntvari=ntvari+nbvari
         mxnbva=max(mxnbva,nbvari)
@@ -136,15 +140,15 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
 !   ON TRI LES COMPOSANTES POUR LES REUNIR
     do inum = 2,nbre
 !
-        compor=zk16(jvale+nbcomp*(inum-1))
+        compor=vale(1+nbcomp*(inum-1))
         if (compor .eq. 'ELAS') goto 20
 !
         call lcinfo(compor, numlc, nbvari)
-        nomtmp=zk16(jvale+nbcomp*(inum-1)+1)
+        nomtmp=vale(1+nbcomp*(inum-1)+1)
         read(nomtmp,'(I16)') nbvar2
         if (nbvari .ne. nbvar2) then
             lcompo(1)=compor
-            lcompo(2)=zk16(jvale+nbcomp*(inum-1)+2)
+            lcompo(2)=vale(1+nbcomp*(inum-1)+2)
             call lccree(2, lcompo, comco2)
             call lcinfo(comco2, numlc, nbvari)
             if (nbvari .ne. nbvar2) then
@@ -176,7 +180,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
     call celces(chanom, 'V', chamns)
     call jeveuo(chamns//'.CESD', 'L', jcesd)
     call jeveuo(chamns//'.CESL', 'L', jcesl)
-    call jeveuo(chamns//'.CESV', 'L', jcesv)
+    call jeveuo(chamns//'.CESV', 'L', vr=cesv)
     nbma2 = zi(jcesd)
 !
     noetcm=base//'.NOCMP'
@@ -192,22 +196,22 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
                 zk8(jnocmp), chamns)
     call jeveuo(chabis//'.CESD', 'L', jcesdb)
     call jeveuo(chabis//'.CESL', 'L', jceslb)
-    call jeveuo(chabis//'.CESV', 'L', jcesvb)
+    call jeveuo(chabis//'.CESV', 'L', vr=cesvb)
 !
 !   CREATION DU CHAMP A IMPRIMER
     do 60, inum = 2,nbre
-        typaff=zi(jcdesc+3+(inum-1)*2)
-        nbzone=zi(jcdesc+4+(inum-1)*2)
+        typaff=desc(1+3+(inum-1)*2)
+        nbzone=desc(1+4+(inum-1)*2)
 !
-        compor=zk16(jvale+nbcomp*(inum-1))
+        compor=vale(1+nbcomp*(inum-1))
         if (compor .eq. 'ELAS') goto 60
 !
         call lcinfo(compor, numlc, nbvari)
-        nomtmp=zk16(jvale+nbcomp*(inum-1)+1)
+        nomtmp=vale(1+nbcomp*(inum-1)+1)
         read(nomtmp,'(I16)') nbvar2
         if (nbvari .ne. nbvar2) then
             lcompo(1)=compor
-            lcompo(2)=zk16(jvale+nbcomp*(inum-1)+2)
+            lcompo(2)=vale(1+nbcomp*(inum-1)+2)
             call lccree(2, lcompo, comco2)
             call lcinfo(comco2, numlc, nbvari)
 !
@@ -249,7 +253,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
                             call cesexi('C', jcesdb, jceslb, ima2, ipt,&
                                         isp, icmp2, iad2)
                             ASSERT(iad2.lt.0)
-                            zr(jcesvb-1-iad2)=zr(jcesv-1+iad)
+                            cesvb(1-1-iad2)=cesv(iad)
                             zl(jceslb-1-iad2)=.true.
                         endif
                     end do

@@ -82,11 +82,12 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     integer :: ibid, iddl1, iddl2, ier, ierd, ierr1
     integer :: ierr2, ii, inoeud, iordr, ip1, ip2, iposit
     integer :: iret, ivari, jinst, jlir8, l1, l2, lfon
-    integer :: lg1, lg2, lpro, lval1, lval2, lvar
+    integer :: lg1, lg2, lpro, lval1,  lvar
     integer :: n1, n2, n3, n4, nbinst, nbordr, npoint
     integer :: nusp, vali1, vali2
     real(kind=8) :: r1, r2, rbase, rval, valr1, valr2
     logical, pointer :: lexi(:) => null()
+    real(kind=8), pointer :: nlval2(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -288,9 +289,9 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             endif
 !
             call jeveuo(ch1//'.VALE', 'L', lval1)
-            call jeveuo(ch2//'.VALE', 'L', lval2)
+            call jeveuo(ch2//'.VALE', 'L', vr=nlval2)
             zr(lvar+iordr) = rval
-            zr(lfon+iordr) = r1*zr(lval1+iddl1-1) + r2*zr(lval2+iddl2- 1)
+            zr(lfon+iordr) = r1*zr(lval1+iddl1-1) + r2*nlval2(iddl2)
 !
             iddl1 = iddl2
  22         continue

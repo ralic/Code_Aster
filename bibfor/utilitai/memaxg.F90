@@ -60,7 +60,7 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
 !
 !
     integer :: i, j, ibid, nbprup, nbpar, ncomb, nfreq
-    integer :: ig, ind, indold, iprov, iq, k, igq, ipa, inopr, itypr
+    integer ::  ind, indold, iprov, iq, k, igq, ipa, inopr, itypr
 !
     real(kind=8) :: gmax, s
     complex(kind=8) :: cbid
@@ -68,6 +68,7 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
     character(len=3) :: chnu
     character(len=8) :: k8bid, tabgma
     character(len=24) :: collec
+    real(kind=8), pointer :: g(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -159,11 +160,11 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
 !
     call tbexve(tabgma, 'G', '&&MEMAXG.G', 'V', ncomb,&
                 k8bid)
-    call jeveuo('&&MEMAXG.G', 'L', ig)
+    call jeveuo('&&MEMAXG.G', 'L', vr=g)
 !
     do 220 k = 1, ncomb
 !
-        if (zr(ig+k-1) .eq. gmax) then
+        if (g(k) .eq. gmax) then
             call jeveuo(jexnum(collec, k), 'L', iq)
             do 230 i = 1, lonvec
                 zr(ipa+i-1) = zr(iq+i-1)

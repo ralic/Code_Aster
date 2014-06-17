@@ -50,7 +50,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
 !      FONREE : FONC OU REEL
 !-----------------------------------------------------------------------
-    integer :: ibid, npres, ncmp, jvalv, jncmp, iocc, np, nc, nbtou, nbma
+    integer :: ibid, npres, ncmp, jvalv,  iocc, np, nc, nbtou, nbma
     integer :: jma, nfiss, nfismx
     parameter    (nfismx=100)
     character(len=8) :: k8b, typmcl(2), fiss(nfismx)
@@ -59,6 +59,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
     character(len=24) :: mesmai, lismai
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
+    character(len=8), pointer :: vncmp(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -75,14 +76,14 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
         ASSERT(.false.)
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
 ! --- STOCKAGE DE FORCES NULLES SUR TOUT LE MAILLAGE
 !
     ncmp = 2
-    zk8(jncmp) = 'PRES'
-    zk8(jncmp+1) = 'CISA'
+    vncmp(1) = 'PRES'
+    vncmp(2) = 'CISA'
 !
     if (fonree .eq. 'REEL') then
         zr(jvalv) = 0.d0

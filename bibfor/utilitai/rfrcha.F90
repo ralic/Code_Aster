@@ -42,7 +42,7 @@ subroutine rfrcha()
 #include "asterfort/utcmp1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
-    integer :: lvale, lg1, lg2, iddl, inoeud, nch
+    integer ::  lg1, lg2, iddl, inoeud, nch
     integer :: n1, iret, ivari
     integer :: nm, ngm, npoint, np, nn
     integer :: ngn, nc, ifm, niv, nusp
@@ -57,6 +57,7 @@ subroutine rfrcha()
     character(len=19) :: nomfon, cham19
     character(len=24) :: nogno, nogma
     integer :: vali
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
@@ -117,8 +118,8 @@ subroutine rfrcha()
                 valk(2) = noeud(1:lg1)
                 call utmess('F', 'UTILITAI_93', nk=2, valk=valk)
             endif
-            call jeveuo(cham19//'.VALE', 'L', lvale)
-            call focste(nomfon, cmp, zr(lvale+iddl-1), 'G')
+            call jeveuo(cham19//'.VALE', 'L', vr=vale)
+            call focste(nomfon, cmp, vale(iddl), 'G')
             goto 10
         else if (typcha(1:9).eq.'CHAM_ELEM') then
 !     -----------------------------------

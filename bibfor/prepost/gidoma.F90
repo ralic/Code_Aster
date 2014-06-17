@@ -48,14 +48,15 @@ subroutine gidoma(nbnoto)
 !
 !     -- RECUPERATION DU NOMBRE DE MAILLES TOTAL (AVANT COMPACTAGE):
 !-----------------------------------------------------------------------
-    integer :: iacnx2, ianema, iawk1, iawk2, iawk3, ico, ilcnx2
+    integer ::  ianema, iawk1, iawk2, iawk3, ico, ilcnx2
     integer :: ima, imaj, imak, ino, ipos, j, k
     integer :: l, nbma, nbmato, nbnoj, nbnok, nuno1, nunoj
     integer :: nunok
+    integer, pointer :: connex2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jelira('&&GILIRE.CONNEX2', 'NMAXOC', nbmato)
-    call jeveuo('&&GILIRE.CONNEX2', 'L', iacnx2)
+    call jeveuo('&&GILIRE.CONNEX2', 'L', vi=connex2)
     call jeveuo(jexatr('&&GILIRE.CONNEX2', 'LONCUM'), 'L', ilcnx2)
 !
 !     -- CREATION DE L'OBJET .NUMANEW QUI CONTIENDRA POUR CHAQ. MAILLE:
@@ -67,7 +68,7 @@ subroutine gidoma(nbnoto)
 !        ONT UNE CONNECTIVITE QUI COMMENCE PAR CE NOEUD:
     call wkvect('&&GILIRE.OBJET_WK1', 'V V I', nbnoto, iawk1)
     do 20 ima = 1, nbmato
-        nuno1= zi(iacnx2-1+zi(ilcnx2-1+ima)-1+1 )
+        nuno1= connex2(zi(ilcnx2-1+ima)-1+1 )
         zi(iawk1-1+nuno1) =zi(iawk1-1+nuno1) +1
 20  end do
 !
@@ -93,7 +94,7 @@ subroutine gidoma(nbnoto)
 !
 !     -- CALCUL DE OBJET_WK2: (ON MODIFIE _WK3 A CHAQUE MAILLE TRAITEE)
     do 22 ima = 1, nbmato
-        nuno1= zi(iacnx2-1+zi(ilcnx2-1+ima)-1+1 )
+        nuno1= connex2(zi(ilcnx2-1+ima)-1+1 )
         ipos = zi(iawk3-1+nuno1)
         ASSERT(ipos.ne.0)
         ASSERT(zi(iawk2-1+ipos).eq.0)
@@ -115,8 +116,8 @@ subroutine gidoma(nbnoto)
                 nbnok=zi(ilcnx2-1+imak+1)-zi(ilcnx2-1+imak)
                 if (nbnoj .ne. nbnok) goto 3
                 do 4 l = 1, nbnoj
-                    nunoj= zi(iacnx2-1+zi(ilcnx2-1+imaj)-1+l )
-                    nunok= zi(iacnx2-1+zi(ilcnx2-1+imak)-1+l )
+                    nunoj= connex2(zi(ilcnx2-1+imaj)-1+l )
+                    nunok= connex2(zi(ilcnx2-1+imak)-1+l )
                     if (nunoj .ne. nunok) goto 3
                     if (l .eq. nbnoj) then
                         iden=.true.

@@ -39,12 +39,14 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 !       NGFON  : NOMBRE TOTAL DE FOND DE FISSURES
 !     =================================================================
 !     ------------------------------------------------------------------
-    integer :: jnom, jtail, jnfond, jbnfmu
+    integer :: jnom,  jnfond
     integer :: iret, ifiss, ifon
     integer :: ndim, nfiss, nfond, nbnol
     character(len=8) :: fiss, mo, malini
     character(len=19) :: nomta1, nomta2
     character(len=24) :: nom
+    integer, pointer :: tbnp(:) => null()
+    integer, pointer :: fondmult(:) => null()
 !
 !
 !     INITIALISATIONS
@@ -90,18 +92,18 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
             call jeexin(fiss//'.FONDFISS', iret)
             if (iret .ne. 0) then
 !
-                call jeveuo(fiss//'.FONDMULT', 'L', jbnfmu)
+                call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
 !
                 call ltnotb(fiss, 'NB_FOND_FISS', nomta1)
                 call jeveuo(nomta1//'.0001', 'L', jnfond)
 !
                 call ltnotb(fiss, 'FOND_FISS', nomta2)
-                call jeveuo(nomta2//'.TBNP', 'L', jtail)
+                call jeveuo(nomta2//'.TBNP', 'L', vi=tbnp)
 !
                 nfond = zi(jnfond)
                 ngfon = ngfon + nfond
                 do ifon = 1, nfond
-                    nbnol = zi(jbnfmu + 2*ifon -1) - zi(jbnfmu + 2* ifon -2)
+                    nbnol = fondmult(1+ 2*ifon -1) - fondmult(1+ 2* ifon -2)
                     if (nbnol .ne. 0) then
                         mftot = mftot + nbnol
                         nfcomf = nfcomf + 2*nbnol
@@ -111,7 +113,7 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
                         nfcomf = nfcomf + 1
                     endif
                 end do
-                nftot = nftot + zi(jtail + 1)
+                nftot = nftot + tbnp(2)
 !
             endif
         end do

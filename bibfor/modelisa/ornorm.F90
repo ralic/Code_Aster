@@ -49,7 +49,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: idtyma, nutyma,     iliste
+    integer ::  nutyma,     iliste
     integer :: ima, numail, numa, norieg, lliste
     integer :: im1, im2, ico, ibid(1)
     integer :: p1, p2, ifm, niv,  p3, p4
@@ -66,6 +66,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
     integer, pointer :: ori3(:) => null()
     integer, pointer :: ori4(:) => null()
     character(len=8), pointer :: ori5(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 #define pasori(ima) ori1(ima).eq.0
 !
@@ -83,7 +84,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !
 ! --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
 !     ---------------------------------------
-    call jeveuo(noma//'.TYPMAIL', 'L', idtyma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
 ! --- APPEL A LA CONNECTIVITE :
 !     -----------------------
@@ -112,7 +113,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien)
 !
 ! ---   TYPE DE LA MAILLE COURANTE :
 !       --------------------------
-        nutyma = zi(idtyma+numa-1)
+        nutyma = typmail(numa)
         call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
         ori5(ima) = typel
 !

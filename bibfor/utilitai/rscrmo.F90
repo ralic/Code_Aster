@@ -39,13 +39,14 @@ subroutine rscrmo(iocc, nomsd, nomjv)
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: ibid, nbnosy, jnume, i, im, isy, nbordt
-    integer :: jnosy, iacelk, iret, jmodl, np, nc, n22
+    integer :: jnosy,  iret, jmodl, np, nc, n22
     integer :: nbmodl, nbmmod
     real(kind=8) :: prec
     character(len=8) ::  docu, crit
     character(len=16) :: nomsym
     character(len=19) :: nomd2, noch19
     character(len=24) :: knum
+    character(len=24), pointer :: celk(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -101,9 +102,9 @@ subroutine rscrmo(iocc, nomsd, nomjv)
                 endif
 !
                 if (docu(1:4) .eq. 'CHML') then
-                    call jeveuo(noch19//'.CELK', 'L', iacelk)
+                    call jeveuo(noch19//'.CELK', 'L', vk24=celk)
                     do 26 im = 1, nbmodl
-                        if (zk24(jmodl+im-1) .eq. zk24(iacelk)) goto 28
+                        if (zk24(jmodl+im-1) .eq. celk(1)) goto 28
 26                  continue
                     nbmodl = nbmodl + 1
                     if (nbmodl .gt. nbmmod) then
@@ -111,7 +112,7 @@ subroutine rscrmo(iocc, nomsd, nomjv)
                         call juveca(nomjv, nbmmod)
                         call jeveuo(nomjv, 'E', jmodl)
                     endif
-                    zk24(jmodl+nbmodl-1) = zk24(iacelk)
+                    zk24(jmodl+nbmodl-1) = celk(1)
                     call jeecra(nomjv, 'LONUTI', nbmodl)
 28                  continue
                 endif

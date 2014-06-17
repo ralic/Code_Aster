@@ -88,12 +88,12 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ino, inoa, inob, ima, ifm, niv, nbnog, nbmag, jconx1
+    integer :: ino, inoa, inob, ima, ifm, niv, nbnog, nbmag
     integer :: jconx2, ndim, jzero, jmaco, nbmaco, nbnoma, jmai, nunoa, nunob
-    integer :: jnomco, nbnoco, nuno, nmaabs, nptint, ntri, itypma, itri, jcoor
+    integer :: jnomco, nbnoco, nuno, nmaabs, nptint, ntri, itypma, itri
     integer :: jnosom, nbnozo, ia, ib, ic, cptzo, jlsno, jltno, jnouls, jnoult
     integer :: ar(12, 3), nbar, iar, na, nb, ibid, ipt, nblsn0, ibid2(12, 3)
-    integer :: ifq, nbf, fa(6, 4), nbsom, jtmdim, ndime, i
+    integer :: ifq, nbf, fa(6, 4), nbsom,  ndime, i
     real(kind=8) :: p(3), x(7), y(7), z(7), xa, ya, za, xb, yb, zb, s, a(3)
     real(kind=8) :: b(3), c(3), eps(3), m(3), d, vn(3), lsna, lsnb, lsta, lstb
     real(kind=8) :: lstc, lst(6), bestd, bestdi, lsn, bestlt, bestli, dist
@@ -117,6 +117,9 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     character(len=19) :: pproj
     integer :: ipproj
     real(kind=8), pointer :: vpoifis(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 !        ---------------------
 !        |  I | TRIANGLE | N |
@@ -194,13 +197,13 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
 !     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
     call jelira(eletor, 'LONMAX', nbma)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     mai = noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jmai)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 !   RECUPERATION DE L'ADRESSE DES VALEURS DES LS
     if (levset .eq. 'LN') then
@@ -255,14 +258,14 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
 !   VERIFICATION DU TYPE DE MAILLE
 !         NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-        ndime = zi(jtmdim-1+zi(jmai-1+elem))
+        ndime = tmdim(zi(jmai-1+elem))
         if (ndime .ne. ndim) goto 100
         nbnoma = zi(jconx2+elem) - zi(jconx2+elem-1)
 !
 !  ON COMPTE D'ABORD LE NOMBRE DE NOEUDS DE LA MAILLE QUI S'ANNULENT
         cptzo=0
         do inoa = 1, nbnoma
-            nunoa=zi(jconx1-1+zi(jconx2+elem-1)+inoa-1)
+            nunoa=connex(zi(jconx2+elem-1)+inoa-1)
             lsna = zr(jlsno-1+nunoa)
             if (abs(lsna) .lt. toll .and. zl(jnosom-1+nunoa)) cptzo = cptzo+1
         end do
@@ -281,8 +284,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
         do iar = 1, nbar
             na=ar(iar,1)
             nb=ar(iar,2)
-            nunoa=zi(jconx1-1+zi(jconx2+elem-1)+na-1)
-            nunob=zi(jconx1-1+zi(jconx2+elem-1)+nb-1)
+            nunoa=connex(zi(jconx2+elem-1)+na-1)
+            nunob=connex(zi(jconx2+elem-1)+nb-1)
             lsna = zr(jlsno-1+nunoa)
             lsnb = zr(jlsno-1+nunob)
 !  SI UNE ARETE EST COUPEE,LA MAILLE L'EST FORCEMENT
@@ -343,7 +346,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                 nbnoma = zi(jconx2+nmaabs)-zi(jconx2+nmaabs-1)
 !  BOUCLE SUR LES NOEUDS DE LA MAILLE
                 do inob = 1, nbnoma
-                    nunob = zi(jconx1-1+zi(jconx2+nmaabs-1)+inob-1)
+                    nunob = connex(zi(jconx2+nmaabs-1)+inob-1)
                     if (nunob .eq. node) then
                         nbnoco = nbnoco+1
                         zi(jnomco-1+nbnoco) = node
@@ -395,15 +398,15 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !  ON CHERCHE SI LE NOEUD(NUNO) APPARTIENT A LA MAILLE(NMAABS)
             noemai=.false.
             do i = 1, nbnoma
-                if (zi(jconx1-1+zi(jconx2+nmaabs-1)+i-1) .eq. nuno) noemai=.true.
+                if (connex(zi(jconx2+nmaabs-1)+i-1) .eq. nuno) noemai=.true.
             end do
 !
 !  SI LE NOEUD APPARTIENT A LA MAILLE
             if (noemai) then
 !
-                p(1)=zr(jcoor-1+3*(nuno-1)+1)
-                p(2)=zr(jcoor-1+3*(nuno-1)+2)
-                if (ndim .eq. 3) p(3)=zr(jcoor-1+3*(nuno-1)+3)
+                p(1)=vale(3*(nuno-1)+1)
+                p(2)=vale(3*(nuno-1)+2)
+                if (ndim .eq. 3) p(3)=vale(3*(nuno-1)+3)
                 if (ndim .eq. 2) p(3)=0.d0
 !
 !
@@ -420,15 +423,15 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
 !  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
                 do inoa = 1, nbnoma
-                    nunoa = zi(jconx1-1+zi(jconx2+nmaabs-1)+inoa-1)
+                    nunoa = connex(zi(jconx2+nmaabs-1)+inoa-1)
                     if (.not.zl(jnosom-1+nunoa)) goto 340
                     lsna = zr(jlsno-1+nunoa)
                     if (abs(lsna) .lt. r8prem()) then
                         nptint = nptint+1
-                        x(nptint) = zr(jcoor-1+3*(nunoa-1)+1)
-                        y(nptint) = zr(jcoor-1+3*(nunoa-1)+2)
+                        x(nptint) = vale(3*(nunoa-1)+1)
+                        y(nptint) = vale(3*(nunoa-1)+2)
                         if (ndim .eq. 3) then
-                            z(nptint) = zr(jcoor-1+3*(nunoa-1)+3)
+                            z(nptint) = vale(3*(nunoa-1)+3)
                         else if (ndim.eq.2) then
                             z(nptint) = 0.d0
                         endif
@@ -461,10 +464,10 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                 do ifq = 1, nbf
                     nblsn0 = 0
                     na=fa(ifq,1)
-                    nunoa=zi(jconx1-1+zi(jconx2+nmaabs-1)+na-1)
+                    nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
                     lsna=zr(jlsno-1+(nunoa-1)+1)
                     do i = 2, nbsom
-                        nunob=zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,&
+                        nunob=connex(zi(jconx2+nmaabs-1)+fa(ifq,&
                         i)-1)
                         lsnb=zr(jlsno-1+(nunob-1)+1)
                         if ((lsna*lsnb.lt.0.d0) .and. (abs(lsna) .gt.r8prem()) .and.&
@@ -494,11 +497,11 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                 do iar = 1, nbar
                     na=ar(iar,1)
                     nb=ar(iar,2)
-                    nunoa=zi(jconx1-1+zi(jconx2+nmaabs-1)+na-1)
-                    nunob=zi(jconx1-1+zi(jconx2+nmaabs-1)+nb-1)
+                    nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
+                    nunob=connex(zi(jconx2+nmaabs-1)+nb-1)
                     do i = 1, ndim
-                        a(i)= zr(jcoor-1+3*(nunoa-1)+i)
-                        b(i)= zr(jcoor-1+3*(nunob-1)+i)
+                        a(i)= vale(3*(nunoa-1)+i)
+                        b(i)= vale(3*(nunob-1)+i)
                     end do
                     longar=padist(ndim,a,b)
                     if (longar .gt. longmx) longmx = longar
@@ -507,8 +510,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     na=ar(iar,1)
                     nb=ar(iar,2)
 !
-                    nunoa=zi(jconx1-1+zi(jconx2+nmaabs-1)+na-1)
-                    nunob=zi(jconx1-1+zi(jconx2+nmaabs-1)+nb-1)
+                    nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
+                    nunob=connex(zi(jconx2+nmaabs-1)+nb-1)
                     lsna = zr(jlsno-1+nunoa)
                     lsnb = zr(jlsno-1+nunob)
 !
@@ -517,13 +520,13 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !  UN POINT D'INTERSECTION SE SITUE ENTRE LES NOEUDS (NUNOA) ET (NUNOB)
 !  Incrementation commente par julien pour verifier la validite du point
 !                     NPTINT = NPTINT+1
-                        xa = zr(jcoor-1+3*(nunoa-1)+1)
-                        ya = zr(jcoor-1+3*(nunoa-1)+2)
-                        if (ndim .eq. 3) za = zr(jcoor-1+3*(nunoa-1)+3)
+                        xa = vale(3*(nunoa-1)+1)
+                        ya = vale(3*(nunoa-1)+2)
+                        if (ndim .eq. 3) za = vale(3*(nunoa-1)+3)
                         if (ndim .eq. 2) za = 0.d0
-                        xb = zr(jcoor-1+3*(nunob-1)+1)
-                        yb = zr(jcoor-1+3*(nunob-1)+2)
-                        if (ndim .eq. 3) zb = zr(jcoor-1+3*(nunob-1)+3)
+                        xb = vale(3*(nunob-1)+1)
+                        yb = vale(3*(nunob-1)+2)
+                        if (ndim .eq. 3) zb = vale(3*(nunob-1)+3)
                         if (ndim .eq. 2) zb = 0.d0
                         s = abs(lsna) / ( abs(lsna) + abs(lsnb) )
                         x(nptint+1) = xa + s*(xb-xa)
@@ -772,9 +775,9 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !        CALCULATE THE LEVEL SETS BY PROJECTION AT ALL THE NODES WHICH
 !        HAVEN'T A PROJECTION INSIDE A TRIANGLE
         if (zl(jzero-1+nuno) .and. zl(ipproj-1+ino)) then
-            p(1)=zr(jcoor-1+3*(nuno-1)+1)
-            p(2)=zr(jcoor-1+3*(nuno-1)+2)
-            if (ndim .eq. 3) p(3)=zr(jcoor-1+3*(nuno-1)+3)
+            p(1)=vale(3*(nuno-1)+1)
+            p(2)=vale(3*(nuno-1)+2)
+            if (ndim .eq. 3) p(3)=vale(3*(nuno-1)+3)
             if (ndim .eq. 2) p(3)=0.d0
             lsnp = zr(jlsno-1+nuno)
             if (lsnp .ne. 0.d0) then

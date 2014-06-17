@@ -59,19 +59,28 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !
 !
-    integer :: i, j, ndim, nbcmp, jcnsd1, jcnsc1, jcnsv1, jcnsv2, jcnsl2
-    integer :: jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2, iad1, iad2
-    integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2
+    integer :: i, j, ndim, nbcmp,    jcnsv2, jcnsl2
+    integer ::  jcesd1, jcesl1,  jcesd2, jcesl2, iad1, iad2
+    integer ::  jcvid1, jcvil1,  jcvid2, jcvil2
     integer :: ima, npg1, ncmp1, npg2, ncmp2, ipg, icmp, ima2, npgv1, npgv2
     integer :: ncmv1, ncmv2, ndimc, idecv2, idecl2
     logical :: lmeca, pre1
     character(len=16) :: tysd
     integer :: iviex, iret
 !
-    integer :: jresd1, jresv1, jresl1, iadr1
-    integer :: jresd2, jresv2, jresl2, iadr2
+    integer :: jresd1,  jresl1, iadr1
+    integer :: jresd2,  jresl2, iadr2
     integer :: jcnsl1
     logical :: exist(nbno, 7)
+    real(kind=8), pointer :: cnsv1(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    real(kind=8), pointer :: cesv1(:) => null()
+    real(kind=8), pointer :: cesv2(:) => null()
+    real(kind=8), pointer :: cviv1(:) => null()
+    real(kind=8), pointer :: cviv2(:) => null()
+    character(len=16), pointer :: resv1(:) => null()
+    character(len=16), pointer :: resv2(:) => null()
+    integer, pointer :: cnsd(:) => null()
 !
 !
     call jemarq()
@@ -80,20 +89,20 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !     ------------------------------------------------------------------
 !                    1.     DEPLACEMENT
 !     ------------------------------------------------------------------
-    call jeveuo(cns1//'.CNSV', 'L', jcnsv1)
-    call jeveuo(cns1//'.CNSD', 'L', jcnsd1)
-    call jeveuo(cns1//'.CNSC', 'L', jcnsc1)
+    call jeveuo(cns1//'.CNSV', 'L', vr=cnsv1)
+    call jeveuo(cns1//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(cns1//'.CNSC', 'L', vk8=cnsc)
     call jeveuo(cns2//'.CNSV', 'E', jcnsv2)
     call jeveuo(cns2//'.CNSL', 'E', jcnsl2)
 !
     call jeveuo(cns1//'.CNSL', 'L', jcnsl1)
 !
 !     NBCMP : NBRE DE CMP MAX PAR NOEUDS DU CHAM_NO_S CNS1
-    nbcmp = zi(jcnsd1-1+2)
+    nbcmp = cnsd(2)
 !
 !     VERIF QUE LES 2 PREMIERES COMPOSANTES DU CHAMP DEP1 ou DEP4
 !     SONT DX DY OU QUE LA PREMIERE COMPOSANTES DE CE CHAMP EST TEMP
-      ASSERT((zk8(jcnsc1-1+1).eq.'DX'.and.zk8(jcnsc1-1+2).eq.'DY') .or. (zk8(jcnsc1-1+1).eq.'TEMP'))
+      ASSERT((cnsc(1).eq.'DX'.and.cnsc(2).eq.'DY') .or. (cnsc(1).eq.'TEMP'))
 !
     lmeca = xismec()
 !     RQ : "NDIMC" CORRESPOND AU NOMBRE DE COMPOSANTE VECTORIELLE DU
@@ -119,17 +128,17 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                 idecv2 = jcnsv2-1+(ndimc+1)*(dirno(i)-1)
                 idecl2 = jcnsl2-1+(ndimc+1)*(dirno(i)-1)
                 do j = 1, ndimc
-                    zr(idecv2+j)= zr(jcnsv1-1+nbcmp*(i-1)+j)
+                    zr(idecv2+j)= cnsv1(nbcmp*(i-1)+j)
                     zl(idecl2+j)=.true.
                 end do
                 if (ndim .eq. 2) then
                   if (exist(i,3)) then
-                    zr(idecv2+3)= zr(jcnsv1-1+nbcmp*(i-1)+3)
+                    zr(idecv2+3)= cnsv1(nbcmp*(i-1)+3)
                     zl(idecl2+3)=.true.
                   endif
                 else if (ndim .eq. 3) then
                   if (exist(i,4)) then
-                    zr(idecv2+4)= zr(jcnsv1-1+nbcmp*(i-1)+4)
+                    zr(idecv2+4)= cnsv1(nbcmp*(i-1)+4)
                     zl(idecl2+4)=.true.
                   endif
                 endif
@@ -146,7 +155,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                     idecl2 = jcnsl2-1+ndimc*(dirno(i)-1)
                 endif
                 do j = 1, ndimc
-                    zr(idecv2+j)= zr(jcnsv1-1+nbcmp*(i-1)+j)
+                    zr(idecv2+j)= cnsv1(nbcmp*(i-1)+j)
                     zl(idecl2+j)=.true.
                 end do
             endif
@@ -159,16 +168,16 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !     ------------------------------------------------------------------
 !                    2.      CONTRAINTES
 !     ------------------------------------------------------------------
-        call jeveuo(ces1//'.CESV', 'L', jcesv1)
+        call jeveuo(ces1//'.CESV', 'L', vr=cesv1)
         call jeveuo(ces1//'.CESD', 'L', jcesd1)
         call jeveuo(ces1//'.CESL', 'L', jcesl1)
-        call jeveuo(ces2//'.CESV', 'E', jcesv2)
+        call jeveuo(ces2//'.CESV', 'E', vr=cesv2)
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
 !
         call jeexin(cesvi1//'.CESV', iret)
         if (iret .ne. 0) then
-            call jeveuo(cesvi1//'.CESV', 'L', jcviv1)
+            call jeveuo(cesvi1//'.CESV', 'L', vr=cviv1)
             call jeveuo(cesvi1//'.CESD', 'L', jcvid1)
             call jeveuo(cesvi1//'.CESL', 'L', jcvil1)
         endif
@@ -176,7 +185,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
         call jeexin(cesvi2//'.CESV', iret)
         if (iret .ne. 0) then
-            call jeveuo(cesvi2//'.CESV', 'E', jcviv2)
+            call jeveuo(cesvi2//'.CESV', 'E', vr=cviv2)
             call jeveuo(cesvi2//'.CESD', 'L', jcvid2)
             call jeveuo(cesvi2//'.CESL', 'E', jcvil2)
         endif
@@ -214,7 +223,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                                 1, icmp, iad2)
                     ASSERT(iad2.gt.0)
                     zl(jcesl2-1+iad2) = .true.
-                    zr(jcesv2-1+iad2) = zr(jcesv1-1+iad1)
+                    cesv2(iad2) = cesv1(iad1)
                 end do
                 if (iviex .ne. 0) then
                     do icmp = 1, ncmv1
@@ -226,7 +235,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                         ASSERT(iad2.lt.0)
                         iad2 = -iad2
                         zl(jcvil2-1+iad2) = .true.
-                        zr(jcviv2-1+iad2) = zr(jcviv1-1+iad1)
+                        cviv2(iad2) = cviv1(iad1)
                     end do
                 endif
             end do
@@ -247,7 +256,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !       RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN ENTREE
         call jeveuo(comps1//'.CESD', 'L', jresd1)
-        call jeveuo(comps1//'.CESV', 'L', jresv1)
+        call jeveuo(comps1//'.CESV', 'L', vk16=resv1)
         call jeveuo(comps1//'.CESL', 'L', jresl1)
 !
 !       NB CMP
@@ -259,7 +268,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !       RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN SORTIE
         call jeveuo(comps2//'.CESD', 'L', jresd2)
-        call jeveuo(comps2//'.CESV', 'E', jresv2)
+        call jeveuo(comps2//'.CESV', 'E', vk16=resv2)
         call jeveuo(comps2//'.CESL', 'E', jresl2)
 !
         do ima = 1, nbma
@@ -278,7 +287,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
                 if (iadr1 .gt. 0) then
                     ASSERT(iadr2.lt.0)
-                    zk16(jresv2-1-iadr2) = zk16(jresv1-1+iadr1)
+                    resv2(1-1-iadr2) = resv1(iadr1)
                     zl(jresl2-1-iadr2) = .true.
                 endif
 !

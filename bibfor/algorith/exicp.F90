@@ -52,9 +52,10 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_elem, nb_elem_mesh, iret, ielem, nume_elem, nutyel
-    integer :: j_elem_affe, j_mail
+    integer :: j_elem_affe
     character(len=8) :: mesh, dmo, dma
     character(len=16) :: notype, typmod
+    integer, pointer :: maille(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +65,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
 ! - Access to model and mesh
 !
-    call jeveuo(model//'.MAILLE', 'L', j_mail)
+    call jeveuo(model//'.MAILLE', 'L', vi=maille)
     call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !
@@ -91,7 +92,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
 ! ----- Access to element type
 !
-        nutyel = zi(j_mail-1+nume_elem)
+        nutyel = maille(nume_elem)
 !
         if (nutyel .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)

@@ -59,7 +59,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
 !-----------------------------------------------------------------------
     integer :: i,     ii
-    integer :: ij, im, in, inoe, iret,  jcoor
+    integer :: ij, im, in, inoe, iret
     integer :: ldgm, ldgn, ldnm, ltyp, nb, nbma, ncg
     integer :: nfg, ngn, nm, nn, nno, noemax, ntopo
     integer :: numa
@@ -72,6 +72,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     character(len=8), pointer :: fongro(:) => null()
     integer, pointer :: parno(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -93,7 +94,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
 !
 !     --- DESCRIPTION NOEUDS STRUCTURE ---
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !       RECUPERATION DU CENTRE
 !
@@ -112,18 +113,18 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
         call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc,&
                     iarg, 1, nomnoe, nno)
         call jenonu(jexnom(manono, nomnoe), inoe)
-        xg = zr(jcoor+3*(inoe-1)+1-1)
-        yg = zr(jcoor+3*(inoe-1)+2-1)
-        zg = zr(jcoor+3*(inoe-1)+3-1)
+        xg = vale(1+3*(inoe-1)+1-1)
+        yg = vale(1+3*(inoe-1)+2-1)
+        zg = vale(1+3*(inoe-1)+3-1)
     else if (ngn.ne.0) then
         call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc,&
                     iarg, 1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
         call jenuno(jexnum(manono, inoe), nomnoe)
-        xg = zr(jcoor+3*(inoe-1)+1-1)
-        yg = zr(jcoor+3*(inoe-1)+2-1)
-        zg = zr(jcoor+3*(inoe-1)+3-1)
+        xg = vale(1+3*(inoe-1)+1-1)
+        yg = vale(1+3*(inoe-1)+2-1)
+        zg = vale(1+3*(inoe-1)+3-1)
     endif
 !
 !       RECUPERATION DES COEFS OU FONCTIONS DE GROUPE
@@ -205,9 +206,9 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
             do nn = 1, nm
                 inoe = zi(ldnm+nn-1)
                 parno(inoe) = parno(inoe) + 1
-                x(nn) = zr(jcoor+3*(inoe-1)+1-1)
-                y(nn) = zr(jcoor+3*(inoe-1)+2-1)
-                z(nn) = zr(jcoor+3*(inoe-1)+3-1)
+                x(nn) = vale(1+3*(inoe-1)+1-1)
+                y(nn) = vale(1+3*(inoe-1)+2-1)
+                z(nn) = vale(1+3*(inoe-1)+3-1)
                 xc = xc + x(nn)
                 yc = yc + y(nn)
                 hc = hc + z(nn)
@@ -296,9 +297,9 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     do ij = 1, noemax
         if (parno(ij) .eq. 0) goto 50
         ii = ii + 1
-        xx = zr(jcoor+3*(ij-1)+1-1) - xg
-        yy = zr(jcoor+3*(ij-1)+2-1) - yg
-        zz = zr(jcoor+3*(ij-1)+3-1) - zg
+        xx = vale(1+3*(ij-1)+1-1) - xg
+        yy = vale(1+3*(ij-1)+2-1) - yg
+        zz = vale(1+3*(ij-1)+3-1) - zg
         if (ndim .eq. 3) then
             rig4 = rig4 + (rigi(2)*zz**2+rigi(3)*yy**2)*coeno(ij)
             rig5 = rig5 + (rigi(1)*zz**2+rigi(3)*xx**2)*coeno(ij)

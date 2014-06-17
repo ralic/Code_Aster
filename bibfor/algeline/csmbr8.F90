@@ -48,27 +48,32 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: jccva, jccid, nelim, ielim, ieq, j, jrefa, jnulg, ieqg
-    integer :: deciel, kterm, nterm, imatd, jnugl
+    integer ::   nelim, ielim, ieq, j,   ieqg
+    integer :: deciel, kterm, nterm, imatd
     real(kind=8) :: coef
     character(len=14) :: nu
     character(len=19) :: mat
+    integer, pointer :: ccid(:) => null()
+    integer, pointer :: nugl(:) => null()
+    real(kind=8), pointer :: ccva(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: nulg(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT
     call jemarq()
 !-----------------------------------------------------------------------
     mat = nommat
 !
-    call jeveuo(mat//'.CCVA', 'L', jccva)
+    call jeveuo(mat//'.CCVA', 'L', vr=ccva)
     call jelira(mat//'.CCLL', 'LONMAX', nelim)
     nelim=nelim/3
 !
-    call jeveuo(mat//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
+    call jeveuo(mat//'.REFA', 'L', vk24=refa)
+    if (refa(11) .eq. 'MATR_DISTR') then
         imatd = 1
-        nu = zk24(jrefa-1+2)(1:14)
-        call jeveuo(nu//'.NUML.NULG', 'L', jnulg)
-        call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
+        nu = refa(2)(1:14)
+        call jeveuo(nu//'.NUML.NULG', 'L', vi=nulg)
+        call jeveuo(nu//'.NUML.NUGL', 'L', vi=nugl)
     else
         imatd = 0
     endif
@@ -81,7 +86,7 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
         if (imatd .eq. 0) then
             ieqg = ieq
         else
-            ieqg = zi(jnulg-1+ieq)
+            ieqg = nulg(ieq)
         endif
         coef = vcine(ieqg)
 !
@@ -90,9 +95,9 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
                 if (imatd .eq. 0) then
                     j=ccii(deciel+kterm)
                 else
-                    j=zi(jnulg-1+ccii(deciel+kterm))
+                    j=nulg(ccii(deciel+kterm))
                 endif
-                vsmb(j) = vsmb(j) - coef*zr(jccva-1+deciel+kterm)
+                vsmb(j) = vsmb(j) - coef*ccva(deciel+kterm)
 10          continue
         endif
 !
@@ -101,14 +106,14 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
 !
     if (imatd .ne. 0) then
         do 40 ieq = 1, neq
-            if (zi(jnugl+ieq-1) .eq. 0) vcine(ieq) = 0.d0
+            if (nugl(ieq) .eq. 0) vcine(ieq) = 0.d0
 40      continue
     endif
 !
 !
-    call jeveuo(mat//'.CCID', 'L', jccid)
+    call jeveuo(mat//'.CCID', 'L', vi=ccid)
     do 30 ieq = 1, neq
-        if (zi(jccid-1+ieq) .eq. 1) then
+        if (ccid(ieq) .eq. 1) then
             vsmb(ieq) = vcine(ieq)
         else
             if (vcine(ieq) .ne. 0.d0) then

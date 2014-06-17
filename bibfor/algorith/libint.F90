@@ -71,18 +71,20 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
     character(len=19) :: imped, nume91
     character(len=24) :: indin1
     integer :: j1, k1, l1, m1, n1, nbeq1, llint1, nbddl1, lintf, nbint, lklibr
-    integer :: lnume, lag1, lag2, ind, lsmhc, ldelg
+    integer ::  lag1, lag2, ind, lsmhc
     real(kind=8) :: abs
     character(len=24) :: lisint
+    integer, pointer :: smdi(:) => null()
+    integer, pointer :: delg(:) => null()
 !
     call jeveuo(lisint, 'L', lintf)
 !-- RECUPERATION DE LA MATRICE DE RAIDEUR
     call jeveuo(jexnum(imped(1:19)//'.VALM', 1), 'E', lklibr)
 !
 !-- RECUPERATION DES INFOS DU NUME_DDL
-    call jeveuo(nume91(1:14)//'.SMOS.SMDI', 'L', lnume)
+    call jeveuo(nume91(1:14)//'.SMOS.SMDI', 'L', vi=smdi)
     call jeveuo(nume91(1:14)//'.SMOS.SMHC', 'L', lsmhc)
-    call jeveuo(nume91(1:14)//'.NUME.DELG', 'L', ldelg)
+    call jeveuo(nume91(1:14)//'.NUME.DELG', 'L', vi=delg)
 !
 !
     do 180 k1 = 1, nbint
@@ -96,15 +98,15 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
                 call ddllag(nume91, zi(llint1+m1-1), nbeq1, lag1, lag2)
 !-- SUPRESSION DES COUPLAGES L1 / L2
                 if (lag1 .gt. 1) then
-                    l1=zi(lnume+lag1-1)-zi(lnume+lag1-2)-1
-                    ind=zi(lnume+lag1-2)
+                    l1=smdi(lag1)-smdi(1+lag1-2)-1
+                    ind=smdi(1+lag1-2)
                     do 230 n1 = 1, l1
                         zr(lklibr+ind+n1-1)=0.d0
 230                  continue
                 endif
                 if (lag2 .gt. 1) then
-                    l1=zi(lnume+lag2-1)-zi(lnume+lag2-2)-1
-                    ind=zi(lnume+lag2-2)
+                    l1=smdi(lag2)-smdi(1+lag2-2)-1
+                    ind=smdi(1+lag2-2)
                     do 240 n1 = 1, l1
                         zr(lklibr+ind+n1-1)=0.d0
 240                  continue
@@ -112,20 +114,20 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
 !
 !-- SUPPRESSION DES COUPLAGES EQ / L1
                 if (zi(llint1+m1-1) .gt. 1) then
-                    l1=zi(lnume+zi(llint1+m1-1)-1)- zi(lnume+zi(&
+                    l1=smdi(1+zi(llint1+m1-1)-1)- smdi(1+zi(&
                     llint1+m1-1)-2)-1
-                    ind=zi(lnume+zi(llint1+m1-1)-2)
+                    ind=smdi(1+zi(llint1+m1-1)-2)
                     do 250 j1 = 1, l1
 !-- ON TESTE DANS LE NUME.DELG SI LA VALEUR EST NEGATIVE
-                        if (zi(ldelg+zi4(lsmhc+ind+j1-1)-1) .lt. 0) then
+                        if (delg(1+zi4(lsmhc+ind+j1-1)-1) .lt. 0) then
                             zr(lklibr+ind+j1-1)=0.d0
                         endif
 250                  continue
                 endif
 !-- ON REND LA DIAGONALE POSITIVE
-                zr(lklibr+zi(lnume+lag1-1)-1)= abs(zr(lklibr+zi(lnume+&
+                zr(lklibr+smdi(lag1)-1)= abs(zr(lklibr+smdi(1+&
                 lag1-1)-1))
-                zr(lklibr+zi(lnume+lag2-1)-1)= abs(zr(lklibr+zi(lnume+&
+                zr(lklibr+smdi(lag2)-1)= abs(zr(lklibr+smdi(1+&
                 lag2-1)-1))
             endif
 !

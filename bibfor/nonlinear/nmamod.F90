@@ -53,11 +53,13 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
 !
 !
 !
-    integer :: jvitp, jvitkm, jmoda
+    integer ::   jmoda
     character(len=24) :: valmod, basmod
     character(len=19) :: sdammo
     logical :: nreavi
     integer :: neq
+    real(kind=8), pointer :: vitkm(:) => null()
+    real(kind=8), pointer :: vitp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,18 +75,18 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
 !
 ! --- ACCES OBJETS JEVEUX
 !
-    call jeveuo(vitplu(1:19)//'.VALE', 'L', jvitp)
-    call jeveuo(vitkm1(1:19)//'.VALE', 'L', jvitkm)
+    call jeveuo(vitplu(1:19)//'.VALE', 'L', vr=vitp)
+    call jeveuo(vitkm1(1:19)//'.VALE', 'L', vr=vitkm)
     call jeveuo(cnamom(1:19)//'.VALE', 'E', jmoda)
 !
 ! --- CALCUL FORCES MODALES
 !
     if (phase .eq. 'PRED') then
-        call fmodam(neq, zr(jvitkm), valmod, basmod, zr(jmoda))
+        call fmodam(neq, vitkm, valmod, basmod, zr(jmoda))
     else if (phase.eq.'CORR') then
-        call fmodam(neq, zr(jvitp), valmod, basmod, zr(jmoda))
+        call fmodam(neq, vitp, valmod, basmod, zr(jmoda))
         if (nreavi) then
-            call fmodam(neq, zr(jvitp), valmod, basmod, zr(jmoda))
+            call fmodam(neq, vitp, valmod, basmod, zr(jmoda))
         endif
     else
         ASSERT(.false.)

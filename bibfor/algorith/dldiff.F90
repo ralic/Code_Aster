@@ -105,7 +105,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     integer :: iwk0, iwk1, iwk2
     integer :: ifm, niv, ne
     integer :: ieq, iexcl
-    integer :: idepl1, ivite1, ivite2, iacce1, iarchi
+    integer ::  ivite1, ivite2, iacce1, iarchi
     integer :: ibid
     integer :: alarm, archiv
     integer :: ipepa, igrpa
@@ -126,6 +126,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     integer :: vali(2)
     real(kind=8) :: valr(2)
     logical :: ener
+    real(kind=8), pointer :: vale(:) => null()
 !
 !
 !     -----------------------------------------------------------------
@@ -149,7 +150,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     call wkvect('&&DLDIFF.F1', 'V V R', neq, iwk1)
     call wkvect('&&DLDIFF.F2', 'V V R', neq, iwk2)
     call vtcreb('&&DLDIFF.DEPL1', numedd, 'V', 'R', neq)
-    call jeveuo('&&DLDIFF.DEPL1     '//'.VALE', 'E', idepl1)
+    call jeveuo('&&DLDIFF.DEPL1     '//'.VALE', 'E', vr=vale)
     call wkvect('&&DLDIFF.VITE1', 'V V R', neq, ivite1)
     call wkvect('&&DLDIFF.VITE2', 'V V R', neq, ivite2)
     call wkvect('&&DLDIFF.ACCE1', 'V V R', neq, iacce1)
@@ -318,7 +319,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
     call dldif0(result, force1, neq, istoc, iarchi,&
                 ifm, lamort, imat, masse, rigid,&
-                amort, dep0, vit0, acc0, zr(idepl1),&
+                amort, dep0, vit0, acc0, vale,&
                 zr(ivite1), zr(iacce1), zr(ivite2), fexte(1), famor(1),&
                 fliai(1), nchar, nveca, liad, lifo,&
                 modele, ener, solveu, mate, carele,&
@@ -373,7 +374,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
         call dlarch(result, neq, istoc, iarchi, ' ',&
                     alarm, ifm, temps, nbexcl, typear,&
-                    masse, zr(idepl1), zr(ivite1), zr( iacce1), fexte(1+neq),&
+                    masse, vale, zr(ivite1), zr( iacce1), fexte(1+neq),&
                     famor(1+neq), fliai(1+neq))
 !
     endif

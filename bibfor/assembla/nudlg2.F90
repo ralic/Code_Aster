@@ -52,17 +52,19 @@ subroutine nudlg2(nu)
 !
     integer :: neq, ili, nbligr, iexi, jprno, jdlg2
     integer :: ima, nn, n1, n2, n3, n4
-    integer :: j1nema, j2nema, nbma
-    integer :: ieq2, ieq3, nueq2, nueq3, nec, jnueq
+    integer ::  j2nema, nbma
+    integer :: ieq2, ieq3, nueq2, nueq3, nec
     character(len=19) :: ligr19
     character(len=14) :: nu14
     character(len=8) :: nogd
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: nema(:) => null()
 !
 !     -- ZZNSUP : NOMBRE DE NOEUDS DE LA MAILLE TARDIVE
 #define zznsup(ili,ima) zi(j2nema+ima) - zi(j2nema+ima-1) - 1
 !
 !     -- ZZNEMA : NUMERO DES NOEUDS DE LA MAILLE TARDIVE
-#define zznema(ili,ima,j) zi(j1nema-1+ zi(j2nema+ima-1)+j-1)
+#define zznema(ili,ima,j) nema(zi(j2nema+ima-1)+j-1)
 !
 !
 !
@@ -76,7 +78,7 @@ subroutine nudlg2(nu)
     call dismoi('NOM_GD', nu14, 'NUME_DDL', repk=nogd)
     call dismoi('NB_EC', nogd, 'GRANDEUR', repi=nec)
     call jelira(nu14//'.NUME.PRNO', 'NMAXOC', nbligr)
-    call jeveuo(nu14//'.NUME.NUEQ', 'L', jnueq)
+    call jeveuo(nu14//'.NUME.NUEQ', 'L', vi=nueq)
 !
 !
 !     - ALLOCATION ET CALCUL DE .DLG2:
@@ -88,7 +90,7 @@ subroutine nudlg2(nu)
         call jeexin(ligr19//'.LGNS', iexi)
         if (iexi .eq. 0) goto 31
 !
-        call jeveuo(ligr19//'.NEMA', 'L', j1nema)
+        call jeveuo(ligr19//'.NEMA', 'L', vi=nema)
         call jelira(ligr19//'.NEMA', 'NUTIOC', nbma)
         call jeveuo(jexatr(ligr19//'.NEMA', 'LONCUM'), 'L', j2nema)
 !
@@ -106,8 +108,8 @@ subroutine nudlg2(nu)
 !             N2 ET N3 SONT 2 LAGRANGES APPARIES
                     ieq2=zi(jprno-1+(-n2-1)*(nec+2)+1)
                     ieq3=zi(jprno-1+(-n3-1)*(nec+2)+1)
-                    nueq2 = zi(jnueq-1+ieq2)
-                    nueq3 = zi(jnueq-1+ieq3)
+                    nueq2 = nueq(ieq2)
+                    nueq3 = nueq(ieq3)
                     zi(jdlg2-1+nueq2)=nueq3
                     zi(jdlg2-1+nueq3)=nueq2
                 endif

@@ -52,15 +52,21 @@ subroutine cmtref(chmat, nomail)
     logical :: dbg
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, jdcm1, jvcm1, jlcm1, jdtrf, jvtrf, jltrf
+    integer :: iret,   jlcm1,   jltrf
     integer :: nbcm1, nbtrf, kcm1, ktrf, codcm1, codtrf, igd
-    integer :: nccm1, nctrf, jncmp, jvalv, nucm1, nutrf, kk
+    integer :: nccm1, nctrf,   nucm1, nutrf, kk
     integer :: ico, nm, nbma, ninter, codint,  ncm1, ntrf
     real(kind=8) :: tref, valr(2)
     character(len=8) :: mater, nocp
     character(len=8) :: ktref, nomgd
     character(len=19) :: carcm1, carcm2, cartrf
     integer, pointer :: lismail(:) => null()
+    character(len=8), pointer :: valv(:) => null()
+    integer, pointer :: dcm1(:) => null()
+    integer, pointer :: dtrf(:) => null()
+    character(len=8), pointer :: ncmp(:) => null()
+    character(len=8), pointer :: vcm1(:) => null()
+    real(kind=8), pointer :: vtrf(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -79,19 +85,19 @@ subroutine cmtref(chmat, nomail)
 !
 !     2) MISE EN MEMOIRE DES OBJETS DE CARCM1 ET CARTRF :
 !     ---------------------------------------------------------------
-    call jeveuo(carcm1//'.DESC', 'L', jdcm1)
-    call jeveuo(carcm1//'.VALE', 'L', jvcm1)
-    nbcm1 = zi(jdcm1-1+3)
-    igd = zi(jdcm1-1+1)
+    call jeveuo(carcm1//'.DESC', 'L', vi=dcm1)
+    call jeveuo(carcm1//'.VALE', 'L', vk8=vcm1)
+    nbcm1 = dcm1(3)
+    igd = dcm1(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
     ASSERT(nomgd.eq.'NOMMATER')
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nccm1)
     ASSERT(nccm1.ge.30)
 !
-    call jeveuo(cartrf//'.DESC', 'L', jdtrf)
-    call jeveuo(cartrf//'.VALE', 'L', jvtrf)
-    nbtrf = zi(jdtrf-1+3)
-    igd = zi(jdtrf-1+1)
+    call jeveuo(cartrf//'.DESC', 'L', vi=dtrf)
+    call jeveuo(cartrf//'.VALE', 'L', vr=vtrf)
+    nbtrf = dtrf(3)
+    igd = dtrf(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
     ASSERT(nomgd.eq.'NEUT_R')
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nctrf)
@@ -99,32 +105,32 @@ subroutine cmtref(chmat, nomail)
 !     3) ALLOCATION DE CARCM2 :
 !     ---------------------------------------------------------------
     call alcart('V', carcm2, nomail, 'NOMMATER')
-    call jeveuo(carcm2//'.NCMP', 'E', jncmp)
-    call jeveuo(carcm2//'.VALV', 'E', jvalv)
+    call jeveuo(carcm2//'.NCMP', 'E', vk8=ncmp)
+    call jeveuo(carcm2//'.VALV', 'E', vk8=valv)
 !
 !     4) REMPLISSAGE DE CARCM2 :
 !     ---------------------------------------------------------------
     do kcm1 = 1, nbcm1
-        codcm1 = zi(jdcm1-1+3+2* (kcm1-1)+1)
+        codcm1 = dcm1(3+2* (kcm1-1)+1)
         ASSERT(codcm1.eq.1 .or. codcm1.eq.3)
-        nucm1 = zi(jdcm1-1+3+2* (kcm1-1)+2)
+        nucm1 = dcm1(3+2* (kcm1-1)+2)
 !        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (28 MAX) :
         ico = 0
         nocp='MATXX'
         do kk = 1, 28
-            mater = zk8(jvcm1-1+nccm1* (kcm1-1)+kk)
+            mater = vcm1(nccm1* (kcm1-1)+kk)
             if (mater .eq. ' ') goto 20
             ico = ico + 1
-            zk8(jvalv-1+ico) = mater
+            valv(ico) = mater
             call codent(ico, 'G', nocp(4:5))
-            zk8(jncmp+ico-1) = nocp
+            ncmp(ico) = nocp
  20         continue
         end do
         nm = ico
         ASSERT(nm.gt.0 .and. nm.le.28)
-        zk8(jncmp-1+nm+1) = 'LREF'
-        zk8(jvalv-1+nm+1) = 'TREF=>'
-        zk8(jncmp-1+nm+2) = 'VREF'
+        ncmp(nm+1) = 'LREF'
+        valv(nm+1) = 'TREF=>'
+        ncmp(nm+2) = 'VREF'
 !
 !        -- LISTE DES MAILLES CONCERNEES PAR KCM1 :
         if (codcm1 .eq. 3) then
@@ -136,7 +142,7 @@ subroutine cmtref(chmat, nomail)
         endif
 !       -- POUR NE PAS PERDRE LES MAILLES QUI NE SONT
 !          CONCERNEES PAR AUCUN KTRF :
-        zk8(jvalv-1+nm+2) = 'NAN'
+        valv(nm+2) = 'NAN'
         if (codcm1 .eq. 1) then
             call nocart(carcm2, 1, nm+2)
 !
@@ -146,10 +152,10 @@ subroutine cmtref(chmat, nomail)
         endif
 !
         do ktrf = 1, nbtrf
-            codtrf = zi(jdtrf-1+3+2* (ktrf-1)+1)
+            codtrf = dtrf(3+2* (ktrf-1)+1)
             ASSERT(codtrf.eq.1 .or. codtrf.eq.3)
-            nutrf = zi(jdtrf-1+3+2* (ktrf-1)+2)
-            tref = zr(jvtrf-1+nctrf* (ktrf-1)+1)
+            nutrf = dtrf(3+2* (ktrf-1)+2)
+            tref = vtrf(nctrf* (ktrf-1)+1)
             if (tref .eq. r8vide()) then
                 ktref='NAN'
             else
@@ -160,7 +166,7 @@ subroutine cmtref(chmat, nomail)
                 endif
                 write (ktref,'(F8.2)') tref
             endif
-            zk8(jvalv-1+nm+2) = ktref
+            valv(nm+2) = ktref
 !           -- LISTE DES MAILLES CONCERNEES PAR KTRF :
             if (codtrf .eq. 3) then
                 call jeveuo(jexnum(cartrf//'.LIMA', nutrf), 'L', jltrf)

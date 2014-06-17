@@ -48,11 +48,12 @@ subroutine comp_comp_read(list_vale)
     character(len=16) :: keywordfact
     integer :: iocc, nocc, nbgmax, i, jdecal, idummy
     character(len=8) :: sdcomp, k8dummy
-    integer :: j_cprci, j_cprck
     integer :: j_lvali, j_lvalk
     character(len=16) :: comp_code
     character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, mult_comp
     integer :: nb_vari, nume_comp, nb_vari_exte, unit_comp
+    character(len=24), pointer :: cprk(:) => null()
+    integer, pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,9 +73,9 @@ subroutine comp_comp_read(list_vale)
 ! ----- Get SD COMPOR from DEFI_COMPOR
 !
         call getvid(keywordfact, 'COMPOR', iocc = iocc , scal = sdcomp)
-        call jeveuo(sdcomp//'.CPRI', 'L', j_cprci)
-        call jeveuo(sdcomp//'.CPRK', 'L', j_cprck)
-        ASSERT(zi(j_cprci).eq.3)
+        call jeveuo(sdcomp//'.CPRI', 'L', vi=cpri)
+        call jeveuo(sdcomp//'.CPRK', 'L', vk24=cprk)
+        ASSERT(cpri(1).eq.3)
 !
 ! ----- First none-void COMPOR in fiber
 !
@@ -82,19 +83,19 @@ subroutine comp_comp_read(list_vale)
         nbgmax = (nbgmax-1)/6
         do i = 1, nbgmax
             jdecal = 6*(i-1)-1
-            if (zk24(j_cprck+jdecal+2) .ne. 'VIDE') goto 25
+            if (cprk(1+jdecal+2) .ne. 'VIDE') goto 25
         enddo
         call utmess('F', 'COMPOR1_85')
 25      continue
 !
 ! ----- Save options in list
 !
-        rela_comp = zk24(j_cprck+jdecal+3)(1:16)
-        defo_comp = zk24(j_cprck+jdecal+5)(1:16)
+        rela_comp = cprk(1+jdecal+3)(1:16)
+        defo_comp = cprk(1+jdecal+5)(1:16)
         type_comp = 'COMP_INCR'
-        type_cpla = zk24(j_cprck+jdecal+4)(1:16)
+        type_cpla = cprk(1+jdecal+4)(1:16)
         mult_comp = sdcomp//'.CPRK'
-        nb_vari   = zi(j_cprci+1)
+        nb_vari   = cpri(2)
         call lccree(1, rela_comp, comp_code)
         call lcinfo(comp_code, nume_comp, idummy)
 !

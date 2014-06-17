@@ -98,11 +98,11 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !     CHARACTERISTICS OF THE MESHES
 !
 !     PROJECTION LEVEL SETS MESH
-    integer :: nbelpr, jefrom, jcnlnv, jcnltv, jcnlnl, jcnltl
+    integer :: nbelpr, jefrom,   jcnlnl, jcnltl
 !
 !     PROJECTION PHYSICAL MESH
     character(len=19) :: tmplsn, tmplst
-    integer :: jnto, nunopr, jtmplt, jtmpln
+    integer :: jnto, nunopr
 !
 !     PROJECTION CODE
     logical :: ldmax
@@ -114,6 +114,10 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !     GENERAL PURPOSE
     integer :: i, ibid
     integer :: ifm, niv
+    real(kind=8), pointer :: cnlnv(:) => null()
+    real(kind=8), pointer :: cnltv(:) => null()
+    real(kind=8), pointer :: tmpln(:) => null()
+    real(kind=8), pointer :: tmplt(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -175,17 +179,17 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
     call jedetr(corres)
 !
 !        RETREIVE THE EXISTING NORMAL LEVEL SET FIELD
-    call jeveuo(cnsln//'.CNSV', 'E', jcnlnv)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=cnlnv)
     call jeveuo(cnsln//'.CNSL', 'E', jcnlnl)
 !
 !        RETREIVE THE EXISTING TANGENTIAL LEVEL SET FIELD
-    call jeveuo(cnslt//'.CNSV', 'E', jcnltv)
+    call jeveuo(cnslt//'.CNSV', 'E', vr=cnltv)
     call jeveuo(cnslt//'.CNSL', 'E', jcnltl)
 !
 !        RETREIVE THE TEMPORARY FIELDS WHERE THE PROJECTED VALUES OF THE
 !        LEVEL SET HAVE BEEN STORED
-    call jeveuo(tmplsn//'.CNSV', 'L', jtmpln)
-    call jeveuo(tmplst//'.CNSV', 'L', jtmplt)
+    call jeveuo(tmplsn//'.CNSV', 'L', vr=tmpln)
+    call jeveuo(tmplst//'.CNSV', 'L', vr=tmplt)
 !
 !        SUBSTITUTE THE PROJECTED VALUES OF THE LEVEL SETS INTO THE
 !        EXISTING LEVEL SET FIELDS ONLY FOR THE NODES IN THE PHYSICAL
@@ -194,12 +198,12 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !
 !           SUBSTITUTE THE PROJECTED VALUES OF THE NORMAL LEVEL SET INTO
 !           THE EXISTING NORMAL LEVEL SET OF THE PHYSICAL MESH
-        zr(jcnlnv-1+zi(jnto-1+i)) = zr(jtmpln-1+zi(jnto-1+i))
+        cnlnv(zi(jnto-1+i)) = tmpln(zi(jnto-1+i))
         zl(jcnlnl-1+zi(jnto-1+i)) = .true.
 !
 !           SUBSTITUTE THE PROJECTED VALUES OF THE TANGENTIAL LEVEL SET
 !           INTO THE EXISTING TANGENTIAL LEVEL SET OF THE PHYSICAL MESH
-        zr(jcnltv-1+zi(jnto-1+i)) = zr(jtmplt-1+zi(jnto-1+i))
+        cnltv(zi(jnto-1+i)) = tmplt(zi(jnto-1+i))
         zl(jcnltl-1+zi(jnto-1+i)) = .true.
 !
 3000  continue

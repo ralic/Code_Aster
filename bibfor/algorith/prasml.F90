@@ -96,11 +96,15 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !-----------------------------------------------------------------------
     integer :: iad, ibid, iblc, ieqc, ieql, inuc, inul
     integer :: ivc, ivl, j, k, l, lc, ll
-    integer :: lladia, lldefl, lliabl, llnueq, llorl, llors, llprl
-    integer :: llprof, llprs, ltadbl, ltinbl, ltnobl, nbcol, nblig
+    integer ::  lldefl,   llorl, llors, llprl
+    integer ::  llprs, ltadbl, ltinbl, ltnobl, nbcol, nblig
     integer :: nbsst, ntail, ntprno, nuant, nublo, nulia, nusst
     integer :: nutars
     real(kind=8) :: sconl
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: lipr(:) => null()
+    integer, pointer :: scib(:) => null()
+    integer, pointer :: scdi(:) => null()
 !-----------------------------------------------------------------------
     data rigopt,ricopt/'RIGI_GENE','RIGI_GENE_C'/
     data zero / 0.0d+00 /
@@ -126,9 +130,9 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !
 !---------------------REMPLISSAGE DES OBJETS DE TRAVAIL-----------------
 !
-    call jeveuo(prgene//'.NUEQ', 'L', llnueq)
-    call jeveuo(stolci//'.SCDI', 'L', lladia)
-    call jeveuo(stolci//'.SCIB', 'L', lliabl)
+    call jeveuo(prgene//'.NUEQ', 'L', vi=nueq)
+    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
+    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
 !
     call jenonu(jexnom('&&ASSGEN.REP.NOM.PROF', nomprn), ibid)
     call jeveuo(jexnum(tminbl, ibid), 'L', ltinbl)
@@ -143,7 +147,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
     call jeveuo(jexnum(prgene//'.PRNO', ibid), 'L', llprl)
     call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
     call jeveuo(jexnum(prgene//'.PRNO', ibid), 'L', llprs)
-    call jeveuo(modgen//'      .MODG.LIPR', 'L', llprof)
+    call jeveuo(modgen//'      .MODG.LIPR', 'L', vi=lipr)
 !
     nomlia=modgen//'      .MODG.LIMA'
 !
@@ -178,7 +182,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
             call jenonu(jexnom(modgen//'      .MODG.SSNO', sst(k)), nusst)
 !  ECRITURE NOM DU BLOC
             knombl(iblc)=nomlia
-            nublo=zi(llprof+(nulia-1)*9+(k-1)*3+2)
+            nublo=lipr(1+(nulia-1)*9+(k-1)*3+2)
             inumbl(iblc)=nublo
 !   RECUPERATION DU NUMERO TARDIF DE LA SOUS-STRUCTURE
             do 30 l = 1, nbsst
@@ -200,21 +204,21 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !     BOUCLE SUR LES TERMES DU BLOC ELEMENTAIRE
             do 40 ll = 1, nblig
 !  NUMERO D'EQUATION LIGNE
-                ieql=zi(llnueq+(inul-1)+(ll-1))
+                ieql=nueq(1+(inul-1)+(ll-1))
                 conleq(ieql)=max(conleq(ieql),sconl)
                 conlbl(iblc)=max(conlbl(iblc),sconl)
                 do 50 lc = 1, nbcol
 !  ADRESSE DU TERME DANS LE BLOC ELEMENTAIRE
                     iad=nblig*(lc-1)+ll
 !  NUMERO D'EQUATION COLONNE
-                    ieqc=zi(llnueq+(inuc-1)+(lc-1))
+                    ieqc=nueq(1+(inuc-1)+(lc-1))
 !
 ! QUI DU TERME OU DE SON TRANSPOSE ARRIVE DANS LE TRIANGLE SUP ?
                     ivl=min(ieql,ieqc)
                     ivc=max(ieql,ieqc)
 !
-                    zi(ltnobl+iad-1)=zi(lliabl+ivc-1)
-                    zi(ltadbl+iad-1)=zi(lladia+ivc-1)-(ivc-ivl)
+                    zi(ltnobl+iad-1)=scib(ivc)
+                    zi(ltadbl+iad-1)=scdi(ivc)-(ivc-ivl)
 50              continue
 40          continue
             call jelibe(jexnum(tmadbl, iblc))
@@ -230,7 +234,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 60      continue
         iblc=ibl(3)
         knombl(iblc)=nomlia
-        nublo=zi(llprof+(nulia-1)*9+6+2)
+        nublo=lipr(1+(nulia-1)*9+6+2)
         inumbl(iblc)=nublo
 ! DETERMINATION MAX DU BLOC
         sconl=zero
@@ -243,20 +247,20 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
         call jeecra(jexnum(tmadbl, iblc), 'LONMAX', nblig*2)
         call jeveuo(jexnum(tmadbl, iblc), 'E', ltadbl)
         do 70 k = 1, nblig
-            ieql=zi(llnueq+(inul-1)+(k-1))
+            ieql=nueq(1+(inul-1)+(k-1))
             inuc=zi(llprl+(nuant-1)*2)
-            ieqc=zi(llnueq+(inuc-1)+(k-1))
+            ieqc=nueq(1+(inuc-1)+(k-1))
             conleq(ieql)=max(conleq(ieql),sconl)
             iad=k
-            zi(ltnobl+iad-1)=zi(lliabl+ieql-1)
-            zi(ltadbl+iad-1)=zi(lladia+ieql-1)
+            zi(ltnobl+iad-1)=scib(ieql)
+            zi(ltadbl+iad-1)=scdi(ieql)
 ! QUI DU TERME OU DE SON TRANSPOSE ARRIVE DANS LE TRIANGLE SUP ?
             ivl=min(ieql,ieqc)
             ivc=max(ieql,ieqc)
 !
             iad=nblig+k
-            zi(ltnobl+iad-1)=zi(lliabl+ivc-1)
-            zi(ltadbl+iad-1)=zi(lladia+ivc-1)-(ivc-ivl)
+            zi(ltnobl+iad-1)=scib(ivc)
+            zi(ltadbl+iad-1)=scdi(ivc)-(ivc-ivl)
 70      continue
         call jelibe(jexnum(tmadbl, iblc))
         call jelibe(jexnum(tmnobl, iblc))

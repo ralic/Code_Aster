@@ -92,7 +92,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
     integer :: lobj2, iadrt1, iadrt2, iadrt3, itheta, jvect
     integer :: in2, iadrco, jmin, ielinf, iadnum, iocc, jnorm
     integer :: num, indic, ierd, iadrtt, nec
-    integer :: iret, numa, ienorm, nbdir, idirth, ideeq
+    integer :: iret, numa, ienorm, nbdir, idirth
     integer :: irefe, nbnoff, iebas
 !
     real(kind=8) :: dirx, diry, dirz, xi1, yi1, zi1, xj1, yj1, zj1
@@ -107,6 +107,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !-----------------------------------------------------------------------
     integer :: i, iaextr, iaorig, idesc, idiri, idirs, ielsup
     integer :: itanex, itanor, j, lndir, nbel
+    integer, pointer :: deeq(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -211,7 +212,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
         call jelira(dirth, 'LONMAX', lndir)
         dirth(20:24) = '.REFE'
         call jeveuo(dirth, 'L', irefe)
-        call jeveuo(zk24(irefe+1)(1:19)//'.DEEQ', 'L', ideeq)
+        call jeveuo(zk24(irefe+1)(1:19)//'.DEEQ', 'L', vi=deeq)
         ASSERT(lndir.eq.(3*lobj2))
         do i = 1, lobj2
             dirx = zr(idirth+(i-1)*3+1-1)
@@ -220,7 +221,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
             norme = sqrt(dirx*dirx + diry*diry + dirz*dirz)
             suiv = .false.
             do j = 1, lobj2
-                if (zi(iadnum+j-1) .eq. zi(ideeq+6*(i-1)+1-1)) then
+                if (zi(iadnum+j-1) .eq. deeq(1+6*(i-1)+1-1)) then
                     zr(in2+(j-1)*3+1-1) = dirx/norme
                     zr(in2+(j-1)*3+2-1) = diry/norme
                     zr(in2+(j-1)*3+3-1) = dirz/norme

@@ -50,13 +50,14 @@ subroutine rcmfmc(chmatz, chmacz)
     integer :: nbcvrc, jvcnom
     common /caii14/nbcvrc,jvcnom
 !
-    integer :: nbval, jchev, iret, jvale, igd, jdesc, kk
+    integer :: nbval,  iret, jvale, igd, jdesc, kk
     integer :: nbgrp, i, icompt, igrp, ingrp, nbcmp, j, k, nbmat
     integer :: inbmat
     character(len=4) :: knumat
     character(len=8) :: chmat, nomgd
     character(len=19) :: codi
     character(len=19) :: chemat, chmace
+    character(len=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -67,7 +68,7 @@ subroutine rcmfmc(chmatz, chmacz)
     chmace=chmat//'.MATE_CODE'
 !
     call jelira(chemat//'.VALE', 'LONMAX', nbval)
-    call jeveuo(chemat//'.VALE', 'L', jchev)
+    call jeveuo(chemat//'.VALE', 'L', vk8=vale)
 !
 !
 !     -- SI CHMACE EXISTE, C'EST QUE L'ON A DEJA APPELE
@@ -110,7 +111,7 @@ subroutine rcmfmc(chmatz, chmacz)
 !     -------------------------------------------------
     icompt=0
     do i = 1, nbval
-        if (zk8(jchev-1+i) .ne. ' ') icompt=icompt+1
+        if (vale(i) .ne. ' ') icompt=icompt+1
     end do
     ASSERT(icompt.gt.0)
 !
@@ -125,9 +126,9 @@ subroutine rcmfmc(chmatz, chmacz)
 !        -- IL NE PEUT PAS Y AVOIR PLUS DE 28 MATERIAUX
         do j = 1, 28
             k=(i-1)*nbcmp+j
-            if (zk8(jchev-1+k) .eq. 'TREF=>') goto 30
-            if (zk8(jchev-1+k) .ne. ' ') then
-                zk8(igrp+icompt)=zk8(jchev-1+k)
+            if (vale(k) .eq. 'TREF=>') goto 30
+            if (vale(k) .ne. ' ') then
+                zk8(igrp+icompt)=vale(k)
                 icompt=icompt+1
                 inbmat=inbmat+1
             endif

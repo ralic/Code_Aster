@@ -36,7 +36,7 @@ subroutine coeneu(imod, nbnode)
 #include "asterfort/jjmmaa.h"
     integer :: imod, nbnode
 ! -----  VARIABLES LOCALES
-    integer :: jinfo, jdetr, jcoor, inode, node
+    integer ::    inode, node
     character(len=1) :: prfnoe
     character(len=4) :: ct(3)
     character(len=8) :: chnode
@@ -44,6 +44,9 @@ subroutine coeneu(imod, nbnode)
     character(len=80) :: chfone
     logical :: dim3d
     real(kind=8) :: zcte, x, y, z
+    real(kind=8), pointer :: coor(:) => null()
+    integer, pointer :: detr(:) => null()
+    integer, pointer :: info(:) => null()
 !
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -63,18 +66,18 @@ subroutine coeneu(imod, nbnode)
 !
 ! --- RECUPERATION DES VECTEURS DE TRAVAIL :
 !     ------------------------------------
-    call jeveuo('&&PRECOU.INFO.NOEUDS', 'L', jinfo)
-    call jeveuo('&&PRECOU.DETR.NOEUDS', 'L', jdetr)
-    call jeveuo('&&PRECOU.COOR.NOEUDS', 'L', jcoor)
+    call jeveuo('&&PRECOU.INFO.NOEUDS', 'L', vi=info)
+    call jeveuo('&&PRECOU.DETR.NOEUDS', 'L', vi=detr)
+    call jeveuo('&&PRECOU.COOR.NOEUDS', 'L', vr=coor)
 !
     call codnop(chnode, prfnoe, 1, 1)
 !
 ! --- TEST SI MAILLAGE 2D OU 3D :
 !     ------------------------------------------------------
     dim3d = .false.
-    zcte = zr(jcoor-1+3)
+    zcte = coor(3)
     do 10 inode = 2, nbnode
-        if (zr(jcoor-1+3*(inode-1)+3) .ne. zcte) then
+        if (coor(3*(inode-1)+3) .ne. zcte) then
             dim3d=.true.
             goto 10
         endif
@@ -93,14 +96,14 @@ subroutine coeneu(imod, nbnode)
 ! --- ECRITURE DES NUMEROS DE NOEUDS ET DE LEURS COORDONNEES :
 !     ------------------------------------------------------
     do 20 inode = 1, nbnode
-        node = zi(jinfo+inode-1)
+        node = info(inode)
 !
 !      ON N'ECRIT PAS LES NOEUDS ORPHELINS
-        if (zi(jdetr+node) .eq. 0) goto 20
+        if (detr(node+1) .eq. 0) goto 20
 !
-        x = zr(jcoor-1+3*(inode-1)+1)
-        y = zr(jcoor-1+3*(inode-1)+2)
-        z = zr(jcoor-1+3*(inode-1)+3)
+        x = coor(3*(inode-1)+1)
+        y = coor(3*(inode-1)+2)
+        z = coor(3*(inode-1)+3)
 !
         call codent(node, 'G', chnode(2:8))
         if (dim3d) then

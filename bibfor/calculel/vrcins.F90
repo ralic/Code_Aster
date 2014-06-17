@@ -53,10 +53,10 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iret, ichs, nbchs, jlissd, jlisch, jcesd, jcesv, jcesl
-    integer :: jcvcmp, jcesc, nbcmp, kcmp, kcvrc
+    integer :: iret, ichs, nbchs,   jcesd,  jcesl
+    integer ::   nbcmp, kcmp, kcvrc
     integer :: nbma, ima, nbpt, nbsp, ipt, isp, iad, iad1
-    integer ::  jce1d, jce1l, jce1v, jcesvi, nncp, n1, k
+    integer ::  jce1d, jce1l,   nncp, n1, k
     real(kind=8) :: valeur, rundef
     character(len=19) :: chvars, ligrmo, chs
     character(len=8) :: valk(4)
@@ -64,6 +64,13 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     integer :: ibid, nbcvrc
     character(len=8) :: modele, chmat, carele, varc1, varc2, nocmp1, nocmp2
     character(len=8), pointer :: cvrcvarc(:) => null()
+    character(len=24), pointer :: liste_ch(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
+    character(len=16), pointer :: liste_sd(:) => null()
+    character(len=8), pointer :: cvrccmp(:) => null()
+    integer, pointer :: cesvi(:) => null()
+    real(kind=8), pointer :: ce1v(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -104,40 +111,40 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !
 !     3. CONCATENATION DES CHAMPS DE .LISTE_CH  DANS CHVARS :
 !     -----------------------------------------------------
-    call jeveuo(chmat//'.LISTE_CH', 'L', jlisch)
+    call jeveuo(chmat//'.LISTE_CH', 'L', vk24=liste_ch)
     call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs)
-    call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
+    call jeveuo(chmat//'.LISTE_SD', 'L', vk16=liste_sd)
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
-    call jeveuo(chmat//'.CVRCCMP', 'L', jcvcmp)
+    call jeveuo(chmat//'.CVRCCMP', 'L', vk8=cvrccmp)
     call jelira(chmat//'.CVRCCMP', 'LONMAX', nbcvrc)
 !
     call jeveuo(chvars//'.CESD', 'L', jce1d)
     call jeveuo(chvars//'.CESL', 'E', jce1l)
-    call jeveuo(chmat//'.CESVI', 'L', jcesvi)
+    call jeveuo(chmat//'.CESVI', 'L', vi=cesvi)
 !     -- IL FAUT REMETTRE CESV A NAN:
     rundef=r8nnem()
-    call jeveuo(chvars//'.CESV', 'E', jce1v)
+    call jeveuo(chvars//'.CESV', 'E', vr=ce1v)
     call jelira(chvars//'.CESV', 'LONMAX', n1)
     do 5, k=1,n1
-    zr(jce1v-1+k)=rundef
+    ce1v(k)=rundef
     5 end do
 !
     do 1, ichs=1,nbchs
-    chs=zk24(jlisch-1+ichs)(1:19)
-    varc1=zk16(jlissd-1+7*(ichs-1)+4)(1:8)
+    chs=liste_ch(ichs)(1:19)
+    varc1=liste_sd(7*(ichs-1)+4)(1:8)
     call jeveuo(chs//'.CESD', 'L', jcesd)
     call jeveuo(chs//'.CESL', 'L', jcesl)
-    call jeveuo(chs//'.CESV', 'L', jcesv)
-    call jeveuo(chs//'.CESC', 'L', jcesc)
+    call jeveuo(chs//'.CESV', 'L', vr=cesv)
+    call jeveuo(chs//'.CESC', 'L', vk8=cesc)
     call jelira(chs//'.CESC', 'LONMAX', nbcmp)
 !
     do 2,kcmp=1,nbcmp
-    nocmp1=zk8(jcesc-1+kcmp)
+    nocmp1=cesc(kcmp)
 !
 !         -- CALCUL DE KCVRC :
     do 3,kcvrc=1,nbcvrc
     varc2=cvrcvarc(kcvrc)
-    nocmp2=zk8(jcvcmp-1+kcvrc)
+    nocmp2=cvrccmp(kcvrc)
     if ((varc1.eq.varc2) .and. (nocmp1.eq.nocmp2)) goto 4
  3  continue
     goto 2
@@ -184,10 +191,10 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
         call cesexi('C', jce1d, jce1l, ima, ipt,&
                     isp, kcvrc, iad1)
         ASSERT(iad1.gt.0)
-        if (zi(jcesvi-1+iad1) .eq. ichs) then
-            valeur=zr(jcesv-1+iad)
+        if (cesvi(iad1) .eq. ichs) then
+            valeur=cesv(iad)
             zl(jce1l-1+iad1)=.true.
-            zr(jce1v-1+iad1)=valeur
+            ce1v(iad1)=valeur
         endif
     endif
 50  continue

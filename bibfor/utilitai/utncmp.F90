@@ -44,13 +44,15 @@ subroutine utncmp(cham19, ncmp, nomobj)
 !     ------------------------------------------------------------------
 !
     integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
-    integer ::  iad, kcmp, igr, mode, nnoe, jceld, nbgrel, irepe, nbel
-    integer :: jmod, imodel, ilong, idescr, jdesc, nb
+    integer ::  iad, kcmp, igr, mode, nnoe,  nbgrel, irepe, nbel
+    integer :: jmod, imodel, ilong, idescr,  nb
     character(len=4) :: tych
     character(len=24) :: valk(2)
     character(len=8) :: noma
     character(len=19) :: ch19, prno, noligr
     integer, pointer :: vicmp(:) => null()
+    integer, pointer :: celd(:) => null()
+    integer, pointer :: desc(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -76,10 +78,10 @@ subroutine utncmp(cham19, ncmp, nomobj)
         call dismoi('PROF_CHNO', ch19, 'CHAM_NO', repk=prno)
         if (prno .eq. ' ') then
 !AS OU LE CHAMP EST A PROFIL CONSTANT (CHAMP DE GEOMETRIE)
-            call jeveuo(ch19//'.DESC', 'L', jdesc)
-            ncmp = - zi(jdesc+1)
+            call jeveuo(ch19//'.DESC', 'L', vi=desc)
+            ncmp = - desc(2)
             do iec = 1, nec
-                tabec(iec)= zi(jdesc+1+iec)
+                tabec(iec)= desc(1+1+iec)
             end do
             nb = 0
             do icmp = 1, ncmpmx
@@ -118,12 +120,12 @@ subroutine utncmp(cham19, ncmp, nomobj)
         call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbel)
         call dismoi('NOM_LIGREL', ch19, 'CHAMP', repk=noligr)
         call dismoi('NB_GREL', noligr, 'LIGREL', repi=nbgrel)
-        call jeveuo(ch19//'.CELD', 'L', jceld)
+        call jeveuo(ch19//'.CELD', 'L', vi=celd)
         call jeveuo(noligr//'.REPE', 'L', irepe)
         call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
         call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
         do igr = 1, nbgrel
-            mode=zi(jceld-1+zi(jceld-1+4+igr) +2)
+            mode=celd(celd(4+igr) +2)
             if (mode .eq. 0) goto 20
             jmod = imodel+zi(ilong-1+mode)-1
             nec = nbec( zi(jmod-1+2))

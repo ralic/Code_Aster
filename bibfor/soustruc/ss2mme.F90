@@ -63,10 +63,13 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
     character(len=8) :: noma, k8bid, nosma, nomcas, nomacr
     integer :: nbssa, nbsma, n1, n2, nboc
-    integer :: iarefr,  ialsch, imas, iasssa, iamacr
+    integer ::   ialsch, imas
     integer :: ier0, ioc, i, iret
     character(len=16) :: motfac, valk(2)
     character(len=8), pointer :: lmai(:) => null()
+    character(len=24), pointer :: rerr(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: sssa(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,11 +89,11 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
         call utmess('F', 'SOUSTRUC_24')
     endif
 !
-    call jeveuo(nomo//'.MODELE    .SSSA', 'L', iasssa)
-    call jeveuo(noma//'.NOMACR', 'L', iamacr)
+    call jeveuo(nomo//'.MODELE    .SSSA', 'L', vi=sssa)
+    call jeveuo(noma//'.NOMACR', 'L', vk8=vnomacr)
 !
-    call jeveuo(vesstr(1:19)//'.RERR', 'E', iarefr)
-    zk24(iarefr-1+3)='OUI_SOUS_STRUC'
+    call jeveuo(vesstr(1:19)//'.RERR', 'E', vk24=rerr)
+    rerr(3)='OUI_SOUS_STRUC'
 !
     call jecrec(vesstr(1:19)//'.RELC', base//' V I', 'NO', 'CONTIG', 'CONSTANT',&
                 nboc)
@@ -112,7 +115,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
         call getvtx(motfac, 'TOUT', iocc=ioc, scal=k8bid, nbret=n1)
         if (n1 .eq. 1) then
             do i = 1, nbsma
-                if (zi(iasssa-1+i) .eq. 1) zi(ialsch-1+i)=1
+                if (sssa(i) .eq. 1) zi(ialsch-1+i)=1
             end do
             goto 5
         endif
@@ -144,11 +147,11 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
         do i = 1, nbsma
             if (zi(ialsch-1+i) .ne. 0) then
                 call jenuno(jexnum(noma//'.SUPMAIL', i), nosma)
-                if (zi(iasssa-1+i) .ne. 1) then
+                if (sssa(i) .ne. 1) then
                     call utmess('F', 'SOUSTRUC_27', sk=nosma)
                 endif
 !
-                nomacr = zk8(iamacr-1+i)
+                nomacr = vnomacr(i)
                 call jeexin(jexnom(nomacr//'.LICA', nomcas), iret)
                 if (iret .eq. 0) then
                     ier0 = 1

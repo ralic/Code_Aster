@@ -107,15 +107,23 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
 ! --- DEBUT ------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad, iad1, iadlie, iadnem, ianueq
-    integer :: ianulo,  iconx1, iconx2, iddesc, idlres, idnequ
-    integer :: idprn1, idprn2, idveds, idverf, idvref, iel
+    integer :: i, i1, iad, iad1,  iadnem
+    integer :: ianulo,   iconx2,   idnequ
+    integer :: idprn1, idprn2, idveds, idverf,  iel
     integer :: igr, il, ilim, ilimnu, ilinu, ilive
-    integer :: ilivec, imat, iresu, jnumsd, jprtk, jresl, jvale
+    integer :: ilivec, imat, iresu,   jresl, jvale
     integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp
     integer :: ncmpel, nddl1, nel, nequa, nm, nmxcmp, nnoe
     integer :: nugd, numa
     integer, pointer :: posddl(:) => null()
+    integer, pointer :: desc(:) => null()
+    character(len=24), pointer :: relr(:) => null()
+    integer, pointer :: connex(:) => null()
+    character(len=24), pointer :: prtk(:) => null()
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: maille(:) => null()
+    integer, pointer :: adli(:) => null()
+    character(len=24), pointer :: refe(:) => null()
     mpi_int :: mrank, msize
 !-----------------------------------------------------------------------
     call jemarq()
@@ -148,13 +156,13 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     call parti0(nbvec, tlivec, partit)
     if (partit .ne. ' ') then
         ldist=.true.
-        call jeveuo(partit//'.PRTK', 'L', jprtk)
-        ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
+        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+        ldgrel=prtk(1).eq.'GROUP_ELEM'
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
+            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
         endif
     endif
 !
@@ -188,11 +196,11 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                 kmaila, vecas, gd, ma, nec,&
                 ncmp, ilim, nlili, nbelm)
 !
-    call jeveuo(vecas(1:19)//'.ADLI', 'E', iadlie)
+    call jeveuo(vecas(1:19)//'.ADLI', 'E', vi=adli)
     call jeveuo(vecas(1:19)//'.ADNE', 'E', iadnem)
     call jeexin(ma(1:8)//'.CONNEX', iret)
     if (iret .gt. 0) then
-        call jeveuo(ma(1:8)//'.CONNEX', 'L', iconx1)
+        call jeveuo(ma(1:8)//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(ma(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
     endif
 !
@@ -206,14 +214,14 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     nudev=nu
     if (nudev(1:1) .eq. ' ') then
         vprof=vecpro
-        call jeveuo(vprof//'.REFE', 'L', idvref)
-        nudev=zk24(idvref-1+2)(1:14)
+        call jeveuo(vprof//'.REFE', 'L', vk24=refe)
+        nudev=refe(2)(1:14)
     endif
 !
     knequa=nudev//'.NUME.NEQU'
     k24prn=nudev//'.NUME.PRNO'
     knulil=nudev//'.NUME.LILI'
-    call jeveuo(nudev//'.NUME.NUEQ', 'L', ianueq)
+    call jeveuo(nudev//'.NUME.NUEQ', 'L', vi=nueq)
 !
     call dismoi('NOM_MODELE', nudev, 'NUME_DDL', repk=mo)
     call dismoi('NOM_MAILLA', nudev, 'NUME_DDL', repk=ma)
@@ -276,47 +284,47 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
         call jeexin(vecel//'.RELR', iret)
         if (iret .eq. 0) goto 90
 !
-        call jeveuo(vecel//'.RELR', 'L', idlres)
+        call jeveuo(vecel//'.RELR', 'L', vk24=relr)
         call jelira(vecel//'.RELR', 'LONUTI', nbresu)
         do iresu = 1, nbresu
-            resu=zk24(idlres+iresu-1)(1:19)
+            resu=relr(iresu)(1:19)
             call jeveuo(resu//'.NOLI', 'L', iad)
             nomli=zk24(iad)
 !
             call jenonu(jexnom(kvelil, nomli), ilive)
             call jenonu(jexnom(knulil, nomli), ilinu)
 !
-            do igr = 1, zi(iadlie+3*(ilive-1))
+            do igr = 1, adli(1+3*(ilive-1))
                 if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 70
 !
 !             -- IL SE PEUT QUE LE GREL IGR SOIT VIDE :
                 call jaexin(jexnum(resu//'.RESL', igr), iexi)
                 if (iexi .eq. 0) goto 70
 !
-                call jeveuo(resu//'.DESC', 'L', iddesc)
-                mode=zi(iddesc+igr+1)
+                call jeveuo(resu//'.DESC', 'L', vi=desc)
+                mode=desc(1+igr+1)
                 if (mode .gt. 0) then
                     nnoe=nbno(mode)
-                    nel=zi(zi(iadlie+3*(ilive-1)+2)+igr)- &
-                        zi(zi(iadlie+3*(ilive-1)+2)+igr-1)-1
+                    nel=zi(adli(1+3*(ilive-1)+2)+igr)- &
+                        zi(adli(1+3*(ilive-1)+2)+igr-1)-1
                     call jeveuo(jexnum(resu//'.RESL', igr), 'L', jresl)
                     ncmpel=digdel(mode)
 !
                     do iel = 1, nel
-                        numa=zi(zi(iadlie+3*(ilive-1)+1)-1+ &
-                             zi(zi(iadlie+3*(ilive-1)+2)+igr-1)+iel-1)
+                        numa=zi(adli(1+3*(ilive-1)+1)-1+ &
+                             zi(adli(1+3*(ilive-1)+2)+igr-1)+iel-1)
                         r=rcoef
 !
                         if (ldist .and. .not.ldgrel) then
                             if (numa .gt. 0) then
-                                if (zi(jnumsd-1+numa) .ne. rang) goto 60
+                                if (maille(numa) .ne. rang) goto 60
                             endif
                         endif
 !
                         if (numa .gt. 0) then
                             il=0
                             do k1 = 1, nnoe
-                                n1=zi(iconx1-1+zi(iconx2+numa-1)+k1-1)
+                                n1=connex(zi(iconx2+numa-1)+k1-1)
                                 iad1=zi(idprn1-1+zi(idprn2+ilimnu-1)+&
                                 (n1-1)*(nec+2)+1-1)
                                 call corddl(admodl, lcmodl, idprn1, idprn2, ilimnu,&
@@ -350,9 +358,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                                 if (type .eq. 1) then
                                     do i1 = 1, nddl1
                                         il=il+1
-                                        zr(jvale-1+zi(ianueq-1+iad1+&
+                                        zr(jvale-1+nueq(iad1+&
                                         posddl(i1)- 1))=min(zr(&
-                                        jvale-1+zi(ianueq-1+iad1+&
+                                        jvale-1+nueq(iad1+&
                                         posddl(i1)-1)), zr(jresl+&
                                         (iel-1)*ncmpel+il-1)*r)
                                     end do

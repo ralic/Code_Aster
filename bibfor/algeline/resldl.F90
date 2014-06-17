@@ -60,7 +60,8 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
     character(len=16) :: metres
     character(len=19) :: vci19, solveu
     complex(kind=8) :: cbid
-    integer :: k, kdeb, idvalc, lmat, neq, nimpo, islvk
+    integer :: k, kdeb, idvalc, lmat, neq, nimpo
+    character(len=24), pointer :: slvk(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !     ------------------------------------------------------------------
 !
@@ -68,8 +69,8 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
     vci19=vcine
     nomma2=nommat
 !
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
-    metres=zk24(islvk)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    metres=slvk(1)
 !
     call mtdscr(nomma2)
     call jeveuo(nomma2(1:19)//'.&INT', 'E', lmat)

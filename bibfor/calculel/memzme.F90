@@ -39,7 +39,7 @@ subroutine memzme(modele, matel)
     character(len=24) :: ligrmo, lchin(1), lchout(1), option, chgeom
 !
 !-----------------------------------------------------------------------
-    integer :: iarefe
+    character(len=24), pointer :: rerr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     if (modele(1:1) .eq. ' ') then
@@ -50,8 +50,8 @@ subroutine memzme(modele, matel)
 !
     call memare('V', matel, modele, ' ', ' ',&
                 'MASS_ZZ1')
-    call jeveuo(matel//'.RERR', 'E', iarefe)
-    zk24(iarefe-1+3) (1:3) = 'OUI'
+    call jeveuo(matel//'.RERR', 'E', vk24=rerr)
+    rerr(3) (1:3) = 'OUI'
 !
     call jedetr(matel//'.RELR')
 !

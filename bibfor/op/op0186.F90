@@ -64,7 +64,7 @@ subroutine op0186()
     logical :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
     logical :: force, lnonl
     integer :: parmei(2), parcri(3), numins, k, icoret, nbcham, iterho
-    integer :: itmax, ifm, niv, neq, iterat, jtempp, jtempm, jtemp, jcrr
+    integer :: itmax, ifm, niv, neq, iterat, jtempp,  jtemp
     integer :: itab(2)
     real(kind=8) :: parmer(2), tpsthe(6), deltat, timet, timtdt, tps1(4)
     real(kind=8) :: tps2(4), tps3(4), tpex, parcrr(2), theta, khi, rho, testr
@@ -84,6 +84,8 @@ subroutine op0186()
     character(len=24) :: sdieto, tpscvt
     character(len=76) :: fmt2, fmt3, fmt4
     character(len=85) :: fmt1
+    real(kind=8), pointer :: crtr(:) => null()
+    real(kind=8), pointer :: tempm(:) => null()
 !
 ! ----------------------------------------------------------------------
     data lischa/'&&OP0186.LISCHA'/
@@ -368,12 +370,12 @@ subroutine op0186()
             rho = 1.d0
         endif
         call jeveuo(vtempp(1:19)//'.VALE', 'L', jtempp)
-        call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
+        call jeveuo(vtempm(1:19)//'.VALE', 'E', vr=tempm)
         call jeveuo(vtemp(1:19)//'.VALE', 'L', jtemp)
 !
 ! SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
         do k = 1, neq
-            zr(jtempm+k-1) = zr(jtempm+k-1) + rho*zr(jtempp+k-1)
+            tempm(k) = tempm(k) + rho*zr(jtempp+k-1)
         end do
     endif
 !
@@ -433,12 +435,12 @@ subroutine op0186()
 ! -- PREPARATION DES PARAMETRES ARCHIVES  ------------------------------
 ! ======================================================================
     if (conver) then
-        call jeveuo(sdcrit(1:19)//'.CRTR', 'E', jcrr)
-        zr(jcrr+0) = iterat
-        zr(jcrr+1) = iterho
-        zr(jcrr+2) = testr
-        zr(jcrr+3) = testm
-        zr(jcrr+4) = rho
+        call jeveuo(sdcrit(1:19)//'.CRTR', 'E', vr=crtr)
+        crtr(1) = iterat
+        crtr(2) = iterho
+        crtr(3) = testr
+        crtr(4) = testm
+        crtr(5) = rho
     endif
 !
     finpas = didern(sddisc, numins)

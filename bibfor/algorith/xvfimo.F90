@@ -38,7 +38,8 @@ function xvfimo(modele, fiss)
 !     FISS   : NOM DE LA SD_FISS_XFEM
 ! ======================================================================
 !
-    integer :: ier, nfiss, jfiss, i
+    integer :: ier, nfiss,  i
+    character(len=8), pointer :: vfiss(:) => null()
 !
     call jemarq()
 !
@@ -49,12 +50,12 @@ function xvfimo(modele, fiss)
     call dismoi('NB_FISS_XFEM', modele, 'MODELE', repi=nfiss)
 !
 !     RECUPERATION DE LA LISTE DES FISSURES ASSOCIEES AU MODELE
-    call jeveuo(modele//'.FISS', 'L', jfiss)
+    call jeveuo(modele//'.FISS', 'L', vk8=vfiss)
 !
     xvfimo=.false.
 !
     do i = 1, nfiss
-        if (fiss .eq. zk8(jfiss-1+i)) xvfimo=.true.
+        if (fiss .eq. vfiss(i)) xvfimo=.true.
     end do
 !
     call jedema()

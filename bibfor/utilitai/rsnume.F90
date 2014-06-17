@@ -31,11 +31,12 @@ subroutine rsnume(resu, nomsy, nu)
 ! OUT  K14  NU      : NOM DU NUME_DDL  TROUVE (OU ' ' SINON)
 ! ----------------------------------------------------------------------
 !
-    integer :: dernie(1), ibid, icode, iret, luti, iret2, iarefe
+    integer :: dernie(1), ibid, icode, iret, luti, iret2
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8bid
     character(len=19) :: chamno, resu2
+    character(len=24), pointer :: refe(:) => null()
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -53,9 +54,9 @@ subroutine rsnume(resu, nomsy, nu)
                     icode)
 !
         if (icode .eq. 0) then
-            call jeveuo(chamno//'.REFE', 'L', iarefe)
-            call jeexin(zk24(iarefe+1)(1:19)//'.NEQU', iret2)
-            if (iret2 .gt. 0) nu=zk24(iarefe+1)(1:14)
+            call jeveuo(chamno//'.REFE', 'L', vk24=refe)
+            call jeexin(refe(2)(1:19)//'.NEQU', iret2)
+            if (iret2 .gt. 0) nu=refe(2)(1:14)
         endif
     endif
 9999  continue

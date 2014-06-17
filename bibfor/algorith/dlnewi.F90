@@ -130,7 +130,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: ibmat, iddeeq, ierr
     integer :: igrel, iexci, iexcl
     integer :: ifimpe
-    integer :: idepl1, idepla
+    integer ::  idepla
     integer :: ivite1, ivitea, ivita1
     integer :: iacce1, iaccea
     integer :: ialiel, iarchi
@@ -140,9 +140,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: ifm, niv
     integer :: ifonde, imtres
     integer :: ipas, istop, itypel, istoc, jstoc
-    integer :: jbint, jfammo, jlpas, jmltap, jnbpa
+    integer :: jbint,  jlpas, jmltap, jnbpa
     integer :: jnoacc, jnodep, jnovit, jpsdel
-    integer :: jvien, jvite, jrefs
+    integer ::   jrefs
     integer :: n1, na, nbexci, nbexcl, nbgrel, nbgrpa, nbmat, nbordr
     integer :: nbptpa, nbv, nd, nel, nmodam, npatot, nv
     character(len=3) :: repk
@@ -173,6 +173,10 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: vali(2)
     real(kind=8) :: valr(2)
     logical :: gasymr, gsyrie, ener
+    real(kind=8), pointer :: epl1(:) => null()
+    real(kind=8), pointer :: fammo(:) => null()
+    real(kind=8), pointer :: vien(:) => null()
+    real(kind=8), pointer :: vite(:) => null()
 !
     data nomddl/'        '/
     data vitini/'&&VITINI'/
@@ -247,13 +251,13 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 ! 1.5. ==> CREATION D'UN CHAMP_NO POUR LA VITESSE INITIALE
 !
     call vtcreb(vitini, numedd, 'V', 'R', neq)
-    call jeveuo(vitini(1:19)//'.VALE', 'E', jvite)
+    call jeveuo(vitini(1:19)//'.VALE', 'E', vr=vite)
     call vtcreb(vitent, numedd, 'V', 'R', neq)
-    call jeveuo(vitent(1:19)//'.VALE', 'E', jvien)
+    call jeveuo(vitent(1:19)//'.VALE', 'E', vr=vien)
 !
 ! 1.6. ==> CREATION D'UN CHAMP_NO POUR L'AMORTISSEMENT MODAL
     call vtcreb(famomo, numedd, 'V', 'R', neq)
-    call jeveuo(famomo(1:19)//'.VALE', 'E', jfammo)
+    call jeveuo(famomo(1:19)//'.VALE', 'E', vr=fammo)
 !
 ! 1.7. ==> VECTEURS DE TRAVAIL SUR BASE VOLATILE ---
 !                  1234567890123456789
@@ -261,7 +265,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     call wkvect('&&'//nompro//'.F2', 'V V R', neq, iwk2)
     call wkvect('&&'//nompro//'.FORCE2', 'V V R', neq, iforc2)
     call vtcreb('&&'//nompro//'.DEPL1', numedd, 'V', 'R', neq)
-    call jeveuo('&&'//nompro//'.DEPL1     '//'.VALE', 'E', idepl1)
+    call jeveuo('&&'//nompro//'.DEPL1     '//'.VALE', 'E', vr=epl1)
     call wkvect('&&'//nompro//'.VITE1', 'V V R', neq, ivite1)
     call wkvect('&&'//nompro//'.ACCE1', 'V V R', neq, iacce1)
     veanec = '&&VEANEC           '
@@ -541,9 +545,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
                     liad, lifo, modele, mate, carele,&
                     charge, infoch, fomult, numedd, zr(idepla),&
                     zr(ivitea), zr(iaccea), dep0, vit0, acc0,&
-                    fexte, famor, fliai, zr(idepl1), zr(ivite1),&
-                    zr( iacce1), zr(jpsdel), zr(jfammo), zr(ifimpe), zr(ifonde),&
-                    zr(jvien), zr(jvite), zr(ivita1), zi(jmltap), a0,&
+                    fexte, famor, fliai, epl1, zr(ivite1),&
+                    zr( iacce1), zr(jpsdel), fammo, zr(ifimpe), zr(ifonde),&
+                    vien, vite, zr(ivita1), zi(jmltap), a0,&
                     a2, a3, a4, a5, a6,&
                     a7, a8, c0, c1, c2,&
                     c3, c4, c5, zk8(jnodep), zk8(jnovit),&

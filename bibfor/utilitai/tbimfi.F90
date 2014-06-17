@@ -37,7 +37,7 @@ subroutine tbimfi(nparfi, table, newtab, iret)
 !     OPERATEUR  IMPR_TABLE , TRAITEMENT DU MOT CLE FACTEUR "FILTRE"
 !     ------------------------------------------------------------------
 !
-    integer ::  ltitr, jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
+    integer ::   jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
     integer ::         l, l1, l2
     integer :: l3, l4, irt
     character(len=80) :: montit
@@ -49,17 +49,18 @@ subroutine tbimfi(nparfi, table, newtab, iret)
     integer, pointer :: vale_i(:) => null()
     character(len=80), pointer :: vale_k(:) => null()
     real(kind=8), pointer :: vale_r(:) => null()
+    character(len=80), pointer :: titr(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
     call jeexin(table//'.TITR', irt)
     if (irt .ne. 0) then
-        call jeveuo(table//'.TITR', 'L', ltitr)
+        call jeveuo(table//'.TITR', 'L', vk80=titr)
         call jelira(table//'.TITR', 'LONMAX', lonma1)
         lonmax = lonma1 + nparfi
         call wkvect(newtab//'.TITR', 'V V K80', lonmax, jtitr)
         do 10 ititr = 1, lonma1
-            zk80(jtitr+ititr-1) = zk80(ltitr+ititr-1)
+            zk80(jtitr+ititr-1) = titr(ititr)
 10      continue
     else
         lonma1 = 0

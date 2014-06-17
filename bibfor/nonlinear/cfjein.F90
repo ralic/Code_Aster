@@ -55,7 +55,6 @@ subroutine cfjein(noma, defico, resoco, depdel)
     integer :: nbddl, jdecal
     integer :: iliai, ialarm
     character(len=19) :: ddepl0
-    integer :: jddep0, jdepde
     character(len=24) :: jeuite, jeux
     integer :: jjeuit, jjeux
     character(len=24) :: apddl, apcoef, appoin
@@ -70,6 +69,8 @@ subroutine cfjein(noma, defico, resoco, depdel)
     real(kind=8) :: aljeu
     real(kind=8) :: jeuold, jeuini, jexini, jeyini
     real(kind=8) :: val1, val2, val
+    real(kind=8), pointer :: ddep0(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -127,11 +128,11 @@ subroutine cfjein(noma, defico, resoco, depdel)
 ! --- DDEPL0: INCREMENT DE SOLUTION SANS CORRECTION DU CONTACT
 !
     ddepl0 = resoco(1:14)//'.DEL0'
-    call jeveuo(ddepl0(1:19)//'.VALE', 'L', jddep0)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
 !
 ! --- INCREMENT DE DEPLACEMENT DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
 !
 ! --- ON CALCULE LE NOUVEAU JEU : AJEU+ = AJEU/I/N - A.DDEPLA
 !
@@ -144,7 +145,7 @@ subroutine cfjein(noma, defico, resoco, depdel)
 !
 ! ----- INCR. DE JEU SANS CORRECTION [A].{DDEPL0}
 !
-        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jddep0),&
+        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), ddep0,&
                     val)
 !
 ! ----- JEU AVANT L'ITERATION DE NEWTON {JEU(DEPTOT)}
@@ -165,12 +166,12 @@ subroutine cfjein(noma, defico, resoco, depdel)
 !
 ! ------- INCR. JEUX TANGENTS SANS CORRECTION
 !
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr(jddep0),&
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), ddep0,&
                         val1)
 !
 ! ------- INCR. JEUX TANGENTS DEPUIS LE DEBUT DU PAS DE TEMPS
 !
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr(jdepde),&
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), depde,&
                         val2)
 !
 ! ------- INCR. DE JEU DEPUIS LE DEBUT DU PAS DE TEMPS SANS CORR.
@@ -188,12 +189,12 @@ subroutine cfjein(noma, defico, resoco, depdel)
 ! --------- INCR. DE JEU SANS CORRECTION
 !
                 call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi( japddl+jdecal),&
-                            zr(jddep0), val1)
+                            ddep0, val1)
 !
 ! --------- INCR. DE JEU DEPUIS LE DEBUT DU PAS DE TEMPS
 !
                 call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi( japddl+jdecal),&
-                            zr(jdepde), val2)
+                            depde, val2)
 !
 ! --------- INCR. DE JEU DEPUIS LE DEBUT DU PAS DE TEMPS SANS CORR.
 !

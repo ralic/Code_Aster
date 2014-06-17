@@ -63,11 +63,12 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 !
     integer :: nbmala, i, j, jmala, jco, iacnx, ilcnx, ii, nbmc
     integer ::  nbno, nno, jlmas, idlist, ima, n1
-    integer :: ityp, jnnma, nuno, j1, k, nbnot
+    integer ::  jnnma, nuno, j1, k, nbnot
     character(len=8) :: noma, motcle(2), tymocl(2), typma
     character(len=16) :: motfac, typapp
     character(len=24) :: listrv, lismai, mesnoe, lismas, lnnma
     integer, pointer :: noeuds(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 !     -----------------------------------------------------------------
 !
@@ -129,11 +130,11 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 !
     if (typapp .eq. 'SOMMET') then
 !     --  ON DETERMINE LE NOMBRE DE NOEUDS 'SOMMET' POUR CHAQUE MAILLE
-        call jeveuo(noma//'.TYPMAIL', 'L', ityp)
+        call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
         do i = 1, nbmala
             ima=zi(jmala+i-1)
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp+ima-1)), typma)
+            call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typma)
 !
             if (typma(1:3) .eq. 'POI') then
                 zi(jnnma+i-1)=1

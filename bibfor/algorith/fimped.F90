@@ -29,13 +29,15 @@ subroutine fimped(modele, mate, numedd, neq, vitini,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
 #include "asterfort/reajre.h"
-    integer :: i, ibid, jnoma, jreane, jvaanc, neq, npain
+    integer :: i, ibid,   jvaanc, neq, npain
     character(len=8) :: lpain(5), lpaout(1)
     character(len=24) :: modele, mate, numedd, vitini, veccor
     character(len=24) :: vitent, chinst
     character(len=24) :: veanec, vaanec, lchin(5), lchout(1)
     character(len=24) :: chgeom, ligrel
     real(kind=8) :: foimpe(neq), temps
+    character(len=8), pointer :: lgrf(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -46,8 +48,8 @@ subroutine fimped(modele, mate, numedd, neq, vitini,&
     call jedetr(veanec(1:19)//'.RELR')
 !
     ligrel = modele(1:8)//'.MODELE'
-    call jeveuo(ligrel(1:19)//'.LGRF', 'L', jnoma)
-    chgeom = zk8(jnoma)//'.COORDO'
+    call jeveuo(ligrel(1:19)//'.LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     lpain(2) = 'PMATERC'
@@ -75,10 +77,10 @@ subroutine fimped(modele, mate, numedd, neq, vitini,&
     call asasve(veanec, numedd, 'R', vaanec)
 !
     call jeveuo(vaanec, 'L', jvaanc)
-    call jeveuo(zk24(jvaanc) (1:19)//'.VALE', 'L', jreane)
+    call jeveuo(zk24(jvaanc) (1:19)//'.VALE', 'L', vr=vale)
 !
     do 10 i = 1, neq
-        foimpe(i) = zr(jreane+i-1)
+        foimpe(i) = vale(i)
 10  end do
     call detrsd('CHAMP_GD', zk24(jvaanc) (1:19))
 !

@@ -49,13 +49,14 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
     character(len=24) :: coint, noddli, ddlsst
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: i1, j1, k1, n1, l1, lindno,  lconnc
+    integer :: i1, j1, k1, n1, l1,   lconnc
     integer ::  nz0, nz1, lindin, decal, nbno, nbvois, no, lnddli
     real(kind=8), pointer :: defi_ss_lib(:) => null()
     integer, pointer :: numero_noeuds(:) => null()
     integer, pointer :: vect_ind_mat(:) => null()
     integer, pointer :: vect_indsst(:) => null()
     real(kind=8), pointer :: vect_temp(:) => null()
+    integer, pointer :: ind_noeud(:) => null()
 !
 !-----------C
 !--       --C
@@ -67,7 +68,7 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 !
 !-- CONSTRUCTION DE LA CONNECTIVITE REDUITE
 !
-    call jeveuo('&&MOIN93.IND_NOEUD', 'L', lindno)
+    call jeveuo('&&MOIN93.IND_NOEUD', 'L', vi=ind_noeud)
     AS_ALLOCATE(vr=defi_ss_lib, size=nnoint**2)
     call jeveuo(coint, 'L', lconnc)
 !
@@ -75,7 +76,7 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
         nbvois=zi(lconnc+i1-1)
         do 20 k1 = 1, nbvois
             no=zi(lconnc+nnoint*k1+i1-1)
-            j1=zi(lindno+no-1)
+            j1=ind_noeud(no)
             defi_ss_lib(1+(j1-1)*nnoint+i1-1)=1.d0
             defi_ss_lib(1+(j1-1)*nnoint+j1-1)=1.d0
             defi_ss_lib(1+(i1-1)*nnoint+i1-1)=1.d0

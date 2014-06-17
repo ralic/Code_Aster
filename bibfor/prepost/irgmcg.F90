@@ -84,7 +84,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
     integer :: ior, i, j, k, ine, inoe, ima, listno(8), ix, nbno
     integer :: iq
     integer :: nbcmp, ipoin, iret, jcesc, jcesl
-    integer ::     jcesk, jcesd, jtype
+    integer ::      jcesd, jtype
     integer :: icmp,  ipt, isp, nbpt, nbsp, jnumol
     integer :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
     logical :: iwri
@@ -97,6 +97,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
     integer, pointer :: cesl(:) => null()
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: vnocmp(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -129,20 +130,20 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
         call codent(ior, 'D0', k8b)
         champs = '&&IRGMCG.CH'//k8b
         call celces(noch19, 'V', champs)
-        call jeveuo(champs//'.CESK', 'L', jcesk)
+        call jeveuo(champs//'.CESK', 'L', vk8=cesk)
         call jeveuo(champs//'.CESD', 'L', cesd(ior))
         call jeveuo(champs//'.CESC', 'L', cesc(ior))
         call jeveuo(champs//'.CESV', 'L', cesv(ior))
         call jeveuo(champs//'.CESL', 'L', cesl(ior))
         call jelira(champs//'.CESV', 'TYPE', cval=zk8(jtype+ior-1))
 !
-        nomgd = zk8(jcesk-1+2)
+        nomgd = cesk(2)
         call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
         if (tsca .ne. 'R') then
             call utmess('F', 'ALGORITH2_63')
         endif
 !
-        type = zk8(jcesk-1+3)
+        type = cesk(3)
         if (type(1:4) .ne. 'ELGA' .and. type(1:4) .ne. 'ELEM') then
             call utmess('F', 'PREPOST2_56')
         endif

@@ -56,14 +56,14 @@ subroutine xoripe(modele)
 !
     real(kind=8) :: gbo(3), gpr(3), next(3), norme, lsn
     real(kind=8) :: co(3, 3), ab(3), ac(3), n2d(3), a(3), b(3), c(3)
-    integer :: ima, nbma, j, kk, i, jmofis, ifis, jnfis, nfis, iad2
-    integer :: jmail, nbmail, iret, jcoor, jm3d, ibid, jvecno
+    integer :: ima, nbma, j, kk, i,  ifis,  nfis, iad2
+    integer :: jmail, nbmail, iret,  jm3d, ibid, jvecno
     integer :: numapr, numab, nbnopr, nbnobo, nbnose, nbnott(3)
     integer :: nbnos, id4, id6
-    integer :: jconx1, jconx2, ino, nuno, jtypma, jtmdim
+    integer ::  jconx2, ino, nuno
     integer :: ich, jcesd(5), jcesv(5), jcesl(5), iad, nse, ise, in
     integer :: ndime, icmp, ndim, id(3), intemp, nseori, ifm, niv, nncp
-    integer :: s1, s2, jgrp, nmaenr, jlsnv, jlsnd, jlsnl
+    integer :: s1, s2, jgrp, nmaenr,  jlsnd, jlsnl
     integer :: nsignp, nsignm, nsignz, ihe, he, itypma
     integer :: ifiss, nfiss, mailvo(1)
     character(len=8) :: noma, typbo, fiss
@@ -73,6 +73,13 @@ subroutine xoripe(modele)
     character(len=19) :: pintto, cnseto, loncha, heav
     logical :: quadratique
     integer :: itypbo
+    integer, pointer :: vnfis(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: connex(:) => null()
+    character(len=8), pointer :: vfiss(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,25 +93,25 @@ subroutine xoripe(modele)
 !
 !     1.RECUPERATION D'INFORMATIONS DANS MODELE
 !
-    call jeveuo(modele//'.NFIS', 'L', jnfis)
-    nfis = zi(jnfis)
-    call jeveuo(modele//'.FISS', 'L', jmofis)
+    call jeveuo(modele//'.NFIS', 'L', vi=vnfis)
+    nfis = vnfis(1)
+    call jeveuo(modele//'.FISS', 'L', vk8=vfiss)
 !
 !     RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
-    call jeveuo(noma//'.TYPMAIL', 'L', jtypma)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
     chlsn = '&&XORIPE.CHLSN'
     call celces(modele//'.LNNO', 'V', chlsn)
     call jeveuo(chlsn//'.CESL', 'L', jlsnl)
     call jeveuo(chlsn//'.CESD', 'L', jlsnd)
-    call jeveuo(chlsn//'.CESV', 'L', jlsnv)
+    call jeveuo(chlsn//'.CESV', 'L', vr=cesv)
 !
 !     ------------------------------------------------------------------
 !     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU ENRICHIES
@@ -118,7 +125,7 @@ subroutine xoripe(modele)
 !
     do ifis = 1, nfis
 !
-        fiss = zk8(jmofis-1 + ifis)
+        fiss = vfiss(ifis)
 !
 !       REMPLISSAGE DE LA LISTE
         grp(1) = fiss//'.MAILFISS.HEAV'
@@ -137,7 +144,7 @@ subroutine xoripe(modele)
                 do i = 1, nmaenr
                     ima = zi(jgrp-1+i)
 !             NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-                    ndime= zi(jtmdim-1+zi(jtypma-1+ima))
+                    ndime= tmdim(typmail(ima))
                     if (ndim .eq. ndime+1) then
                         nbmail=nbmail+1
                         zi(jmail-1+nbmail)=ima
@@ -160,7 +167,7 @@ subroutine xoripe(modele)
     nomob = '&&XORIPE.NU_MAILLE_3D'
 !
     call utmasu(noma, kdim, nbmail, zi(jmail), nomob,&
-                zr(jcoor), 0, mailvo, .false.)
+                vale, 0, mailvo, .false.)
     call jeveuo(nomob, 'L', jm3d)
 !
 !     ------------------------------------------------------------------
@@ -182,18 +189,18 @@ subroutine xoripe(modele)
 !       GBO : CENTRE DE GRAVITÉ DE LA MAILLE DE BORD
         call vecini(3, 0.d0, gbo)
         do ino = 1, nbnobo
-            nuno=zi(jconx1-1+zi(jconx2+numab-1)+ino-1)
+            nuno=connex(zi(jconx2+numab-1)+ino-1)
             do j = 1, ndim
-                gbo(j)=gbo(j)+zr(jcoor-1+3*(nuno-1)+j)/nbnobo
+                gbo(j)=gbo(j)+vale(3*(nuno-1)+j)/nbnobo
             end do
         end do
 !
 !     GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
         call vecini(3, 0.d0, gpr)
         do ino = 1, nbnopr
-            nuno=zi(jconx1-1+zi(jconx2+numapr-1)+ino-1)
+            nuno=connex(zi(jconx2+numapr-1)+ino-1)
             do j = 1, ndim
-                gpr(j)=gpr(j)+zr(jcoor-1+3*(nuno-1)+j)/nbnopr
+                gpr(j)=gpr(j)+vale(3*(nuno-1)+j)/nbnopr
             end do
         end do
 !
@@ -244,22 +251,22 @@ subroutine xoripe(modele)
         numab =zi(jmail-1+ima)
 ! --- CA NE SERT A RIEN DE RECUPERER NDIME CAR ON A SELECTIONNÉ NUMAB
 ! --- TEL QUE NDIME = NDIM-1 (BOUCLE 120)
-        ndime= zi(jtmdim-1+zi(jtypma-1+numab))
+        ndime= tmdim(typmail(numab))
         nfiss = zi(jcesd(4)-1+5+4*(numab-1)+2)
         numapr=zi(jm3d-1+ima)
         nbnopr=zi(jconx2+numapr) - zi(jconx2+numapr-1)
 !
-        itypma=zi(jtypma-1+numapr)
+        itypma=typmail(numapr)
         call panbno(itypma, nbnott)
         quadratique=.false.
         if (ndim .eq. 2) then
-            itypbo=zi(jtypma-1+numab)
+            itypbo=typmail(numab)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypbo), typbo)
             nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
             nbnose=nbnobo
             nbnos=nbnobo
         else
-            itypbo=zi(jtypma-1+numab)
+            itypbo=typmail(numab)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypbo), typbo)
             nbnobo=zi(jconx2+numab) - zi(jconx2+numab-1)
             if (nbnobo.gt.4) then 
@@ -288,10 +295,10 @@ subroutine xoripe(modele)
                             1, icmp, id( in))
                 ino=zi(jcesv(2)-1+id(in))
                 if (ino .lt. 1000) then
-                    nuno=zi(jconx1-1+zi(jconx2+numab-1)+ino-1)
+                    nuno=connex(zi(jconx2+numab-1)+ino-1)
 !
                     do j = 1, ndim
-                        co(j,in)=zr(jcoor-1+3*(nuno-1)+j)
+                        co(j,in)=vale(3*(nuno-1)+j)
                     end do
                 else if (ino.gt.1000 .and. ino.lt.2000) then
                     do j = 1, ndim
@@ -376,7 +383,7 @@ subroutine xoripe(modele)
                         call cesexi('S', jlsnd, jlsnl, numapr, ino,&
                                     ifiss, 1, iad2)
 !                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
-                        lsn = zr(jlsnv-1+iad2)
+                        lsn = cesv(iad2)
                         if (lsn .gt. 0.d0) nsignp = nsignp +1
                         if (lsn .eq. 0.d0) nsignz = nsignz +1
                         if (lsn .lt. 0.d0) nsignm = nsignm +1

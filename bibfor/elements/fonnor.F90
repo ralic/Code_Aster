@@ -55,7 +55,7 @@ subroutine fonnor(resu, noma, cnxinv)
 !        CNXINV : CONNECTIVITE INVERSE
 !-----------------------------------------------------------------------
 !
-    integer :: j, jnoe1, jbasno, jtyp, jbasse, jtail, k
+    integer :: j, jnoe1, jbasno,  jbasse, jtail, k
     integer :: jborl, jdirol, jnvdir
     integer :: i, ina, inb, iseg, iret, nbnose, nbnoff, inc, ilev
     integer :: na, nb, nret, ndim, nbnoel, nseg, nbmax, nbmac, inoext
@@ -66,6 +66,7 @@ subroutine fonnor(resu, noma, cnxinv)
     character(len=8) :: typfon, noeua
     character(len=16) :: casfon
     character(len=19) :: basnof, basseg, macofo
+    character(len=8), pointer :: type(:) => null()
     parameter    (nompro='FONNOR')
 !     -----------------------------------------------------------------
 !
@@ -111,8 +112,8 @@ subroutine fonnor(resu, noma, cnxinv)
 !
 !     RECUPERATION DU TYPE DE MAILLE EN FOND DE FISSURE EN 3D
     if (ndim .eq. 3) then
-        call jeveuo(resu//'.FOND.TYPE', 'L', jtyp)
-        typfon = zk8(jtyp)
+        call jeveuo(resu//'.FOND.TYPE', 'L', vk8=type)
+        typfon = type(1)
 !       SUIVANT LE CAS QUADRATIQUE/LINEAIRE EN 3D DEUX MAILLES SONT
 !       CONNECTEES SI ELLES ONT AU MOINS NBMAX NOEUDS EN COMMUN
 !       NBNOSE : NOMBRE DE NOEUDS PAR "SEGMENT" DE FOND DE FISSURE

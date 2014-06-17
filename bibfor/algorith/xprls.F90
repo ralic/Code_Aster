@@ -76,7 +76,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifm, niv, nbno, jltno, jlnno, jgrtno, jgrnno, ndim, j
+    integer :: i, ifm, niv, nbno, jltno,  jgrtno, jgrnno, ndim, j
     integer :: jelcal, jnodto, node, nbnoma, ier
     integer :: ibid, neleto, jdelta
     character(len=8) :: lpain(2), lpaout(1)
@@ -87,9 +87,14 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     real(kind=8) :: vnscgn, vtscgt
     character(len=8) :: typcmp(3)
     character(len=19) :: cnsvvt, cnsvvn
-    integer :: jvtv, jvtl, jvnv, jvnl, jcnsvn, jcnsvt
+    integer ::  jvtl,  jvnl
 !
-    integer :: jbl
+    real(kind=8), pointer :: bl(:) => null()
+    real(kind=8), pointer :: vcnsvn(:) => null()
+    real(kind=8), pointer :: vcnsvt(:) => null()
+    real(kind=8), pointer :: lnno(:) => null()
+    real(kind=8), pointer :: vnv(:) => null()
+    real(kind=8), pointer :: vtv(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -100,7 +105,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     call infniv(ifm, niv)
 !
 !     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE IN THE MESH
-    call jeveuo(cnsbl//'.CNSV', 'E', jbl)
+    call jeveuo(cnsbl//'.CNSV', 'E', vr=bl)
 !
 !     RECUPERATION DE CARACTERISTIQUES DU MAILLAGE
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
@@ -142,9 +147,9 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     call cnscre(noma, 'NEUT_R', ndim, typcmp, 'V',&
                 cnsvvn)
 !
-    call jeveuo(cnsvvt//'.CNSV', 'E', jvtv)
+    call jeveuo(cnsvvt//'.CNSV', 'E', vr=vtv)
     call jeveuo(cnsvvt//'.CNSL', 'E', jvtl)
-    call jeveuo(cnsvvn//'.CNSV', 'E', jvnv)
+    call jeveuo(cnsvvn//'.CNSV', 'E', vr=vnv)
     call jeveuo(cnsvvn//'.CNSL', 'E', jvnl)
 !
 !     RETRIEVE THE GRADIENT OF THE TWO LEVEL SETS
@@ -154,8 +159,8 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !     RETRIEVE THE NORMAL AND TANGENTIAL PROPAGATION SPEEDS (SCALAR
 !     VALUE). THESE VALUES WILL BE USED BELOW TO CALCULATE THE
 !     PROPAGATION SPEED VECTORS FOR EACH NODE
-    call jeveuo(cnsvn//'.CNSV', 'L', jcnsvn)
-    call jeveuo(cnsvt//'.CNSV', 'L', jcnsvt)
+    call jeveuo(cnsvn//'.CNSV', 'L', vr=vcnsvn)
+    call jeveuo(cnsvt//'.CNSV', 'L', vr=vcnsvt)
 !
 !     ELABORATE EACH NODE IN THE TORE
     do i = 1, nbno
@@ -197,17 +202,17 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !              REFERENCE SYSTEM.
             do j = 1, ndim
                 if (normgn .gt. r8prem()) then
-                    zr(jvnv-1+ndim*(node-1)+j) = zr(jcnsvn-1+node)* zr(jgrnno-1+ndim*(node-1)+j)/&
+                    vnv(ndim*(node-1)+j) = vcnsvn(node)* zr(jgrnno-1+ndim*(node-1)+j)/&
                                                  &normgn
                 else
-                    zr(jvnv-1+ndim*(node-1)+j) = 0.d0
+                    vnv(ndim*(node-1)+j) = 0.d0
                 endif
 !
                 if (normgt .gt. r8prem()) then
-                    zr(jvtv-1+ndim*(node-1)+j) = zr(jcnsvt-1+node)* zr(jgrtno-1+ndim*(node-1)+j)/&
+                    vtv(ndim*(node-1)+j) = vcnsvt(node)* zr(jgrtno-1+ndim*(node-1)+j)/&
                                                  &normgt
                 else
-                    zr(jvtv-1+ndim*(node-1)+j) = 0.d0
+                    vtv(ndim*(node-1)+j) = 0.d0
                 endif
             end do
 !
@@ -217,8 +222,8 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !              REFERENCE SYSTEM CALCULATED PREVIOUSLY FROM THE
 !              INFORMATIONS ON THE CRACK FRONT CAN BE USED
             do j = 1, ndim
-                zr(jvnv-1+ndim*(node-1)+j) = zr(jcnsvn-1+node)* zr(jbl-1+2*ndim*(node-1)+j)
-                zr(jvtv-1+ndim*(node-1)+j) = zr(jcnsvt-1+node)* zr(jbl-1+2*ndim*(node-1)+ndim+j)
+                vnv(ndim*(node-1)+j) = vcnsvn(node)* bl(2*ndim*(node-1)+j)
+                vtv(ndim*(node-1)+j) = vcnsvt(node)* bl(2*ndim*(node-1)+ndim+j)
             end do
 !
         endif
@@ -238,7 +243,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !
 !     RECUPERATION DE L'ADRESSE DES VALEURS DE LT, LN ET LEURS GRADIENTS
     call jeveuo(cnslt//'.CNSV', 'E', jltno)
-    call jeveuo(cnsln//'.CNSV', 'E', jlnno)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=lnno)
     call jeveuo(grlt//'.CNSV', 'E', jgrtno)
     call jeveuo(grln//'.CNSV', 'E', jgrnno)
 !
@@ -255,11 +260,11 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !
 !            SCALAR PRODUCT BETWEEN THE NORMAL PROPAGATION SPEED
 !            VECTOR AND THE NORMAL GRADIENT
-            vnscgn = vnscgn + zr( jvnv-1+ndim*(node-1)+j)*zr(jgrnno-1+ ndim*(node-1)+j)
+            vnscgn = vnscgn + vnv(ndim*(node-1)+j)*zr(jgrnno-1+ ndim*(node-1)+j)
 !
 !            SCALAR PRODUCT BETWEEN THE TANGENTIAL PROPAGATION SPEED
 !            VECTOR AND  THE TANGENTIAL GRADIENT
-            vtscgt = vtscgt + zr( jvtv-1+ndim*(node-1)+j)*zr(jgrtno-1+ ndim*(node-1)+j)
+            vtscgt = vtscgt + vtv(ndim*(node-1)+j)*zr(jgrtno-1+ ndim*(node-1)+j)
 !
 !
 !
@@ -267,10 +272,10 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
 !
 !         UPDATE THE LEVEL SETS
         if (zr(jltno-1+node) .gt. r8prem()) then
-            zr(jlnno-1+node)=zr(jlnno-1+node)-deltat*vnscgn+ zr(&
+            lnno(node)=lnno(node)-deltat*vnscgn+ zr(&
             jdelta+2*(node-1))
         else
-            zr(jlnno-1+node)=zr(jlnno-1+node)-deltat*vnscgn
+            lnno(node)=lnno(node)-deltat*vnscgn
         endif
         zr(jltno-1+node)=zr(jltno-1+node)-deltat*vtscgt +zr(jdelta+2*(&
         node-1)+1)

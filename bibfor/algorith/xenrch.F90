@@ -78,7 +78,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     integer :: jfono, jbaso, jtailo
     integer :: jcoor, jstano, jfonmu
     integer :: jensv, jensl, nbma
-    integer :: jensvr, jenslr, jcaraf
+    integer ::  jenslr, jcaraf
     integer :: i, nmafis
     integer :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
     integer :: nbfond, numfon
@@ -90,6 +90,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     real(kind=8) :: q(4)
     real(kind=8) :: rayon
     logical :: orient
+    real(kind=8), pointer :: ensvr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -213,10 +214,10 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !     ENREGISTREMENT DU CHAM_NO SIMPLE REEL (POUR VISUALISATION)
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
                 cnsenr)
-    call jeveuo(cnsenr//'.CNSV', 'E', jensvr)
+    call jeveuo(cnsenr//'.CNSV', 'E', vr=ensvr)
     call jeveuo(cnsenr//'.CNSL', 'E', jenslr)
     do ino = 1, nbno
-        zr(jensvr-1+(ino-1)+1)=zi(jstano-1+(ino-1)+1)
+        ensvr((ino-1)+1)=zi(jstano-1+(ino-1)+1)
         zl(jenslr-1+(ino-1)+1)=.true.
     end do
 !

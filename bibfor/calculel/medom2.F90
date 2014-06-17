@@ -66,10 +66,11 @@ subroutine medom2(modele, mate, cara, kcha, ncha,&
     parameter (nbmxba=2)
 !
     integer :: nbordr, npass, nbligr, i, kmod, nbmaal
-    integer :: iligrs, imodls, ibases, jlisma, n1, n2, n3
+    integer :: iligrs, imodls, ibases,  n1, n2, n3
 !
     character(len=1) :: baslig
     character(len=24) :: ligrel, ligr1, noojb
+    integer, pointer :: liste_mailles(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -126,12 +127,12 @@ subroutine medom2(modele, mate, cara, kcha, ncha,&
             call exlima(' ', 0, base, modele, ligr1)
         else
             call utmamo(modele, nbmaal, '&&MEDOM2.LISTE_MAILLES')
-            call jeveuo('&&MEDOM2.LISTE_MAILLES', 'L', jlisma)
+            call jeveuo('&&MEDOM2.LISTE_MAILLES', 'L', vi=liste_mailles)
             noojb='12345678.LIGR000000.LIEL'
             call gnomsd(result, noojb, 14, 19)
             ligr1=noojb(1:19)
             ASSERT(ligr1.ne.' ')
-            call exlim1(zi(jlisma), nbmaal, modele, base, ligr1)
+            call exlim1(liste_mailles, nbmaal, modele, base, ligr1)
             call jedetr('&&MEDOM2.LISTE_MAILLES')
         endif
         nbligr=nbligr+1

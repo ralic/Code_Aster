@@ -78,15 +78,18 @@ subroutine op0197()
     character(len=24) :: collec, mate, noobj
     integer :: nbresu, ifm, n1, niv, itemp, ichmat, iresu, imod, nbins, iinst
     integer :: itabw, nbite, nitmax, isig, i, ibid, nbmtcm, nbmtrc, nbcal, nbval
-    integer :: itps, it, iseg, nchar, jcha, itabr, vali(nbparr), inur, ix, iy
+    integer ::  it, iseg, nchar, jcha, itabr, vali(nbparr),  ix, iy
     integer :: nrupt, iweik, iweir, ipro, irent, isigk, isigkp, isigi, ntemp
     integer :: itpsi, itpre, ntpsi, ipth, inopa, itypa, ivapa, ikval, ikvak, imc
-    integer :: iainst, preor, deror, nbold, ichco, anomm1, anomm2, tord(1)
+    integer :: iainst, preor, deror, nbold,  anomm1, anomm2, tord(1)
     real(kind=8) :: mini, minip, vini, epsi, mk, mkp, sigint, r8bid
     real(kind=8) :: valr(nbparr), test, proint, maxcs, tpsmin, tpsmax
     real(kind=8) :: valrr(3)
     complex(kind=8) :: c16b
     logical :: calm, cals, impr, dept, recm, recs
+    integer, pointer :: nom_nures(:) => null()
+    real(kind=8), pointer :: nom_inssig(:) => null()
+    character(len=8), pointer :: vale(:) => null()
 !
     data noparr / 'NURES', 'INST','SIGMA_WEIBULL','PROBA_WEIBULL'/
     data typarr / 'I','R','R','R' /
@@ -388,11 +391,11 @@ subroutine op0197()
 !       DUPLICATION DE LA SD CHAM_MATER POUR LA SURCHARGE
 !
         call copisd(' ', 'V', zk8(ichmat-1+iresu), chcop1)
-        call jeveuo(chcop1//'.CHAMP_MAT .VALE', 'E', ichco)
+        call jeveuo(chcop1//'.CHAMP_MAT .VALE', 'E', vk8=vale)
         do 301 i = 1, nbmtcm
-            if (zk8(ichco+i-1) .eq. zk8(anomm2)) then
+            if (vale(i) .eq. zk8(anomm2)) then
                 call copisd(' ', 'V', zk8(anomm2), chcop2)
-                zk8(ichco+i-1) = chcop2
+                vale(i) = chcop2
             endif
 301      continue
 !
@@ -471,7 +474,7 @@ subroutine op0197()
 306          continue
         endif
 !
-        call jeveuo('&&OP0197.NOM_INSSIG', 'L', itps)
+        call jeveuo('&&OP0197.NOM_INSSIG', 'L', vr=nom_inssig)
 !
         call tbcrsd(zk16(itabr-1+iresu), 'V')
         call tbajpa(zk16(itabr-1+iresu), nbparr, noparr, typarr)
@@ -479,9 +482,9 @@ subroutine op0197()
         if (impr) write(ifm,*) 'ETAPE 2 > INTERPOLATION SIGMA WEIBULL'
         do 310 it = 1, nbins
             if (impr) write(ifm, *) 'INTERPOLATION NO ', it, ' / TEMPS = ', zr(iinst+it-1)
-            call interp(zr(itps), zr(isig), nbval, zr(iinst+it-1), sigint,&
+            call interp(nom_inssig, zr(isig), nbval, zr(iinst+it-1), sigint,&
                         iseg)
-            call interp(zr(itps), zr(ipro), nbval, zr(iinst+it-1), proint,&
+            call interp(nom_inssig, zr(ipro), nbval, zr(iinst+it-1), proint,&
                         iseg)
             vali(1) = iresu
             valr(1) = zr(iinst+it-1)
@@ -513,7 +516,7 @@ subroutine op0197()
                 'CR', 0.d0, 'ABSOLU  ')
     call tbexve(tabtri, 'NURES', '&&OP0197.NOM_NURES', 'V', nrupt,&
                 k8bid)
-    call jeveuo('&&OP0197.NOM_NURES', 'L', inur)
+    call jeveuo('&&OP0197.NOM_NURES', 'L', vi=nom_nures)
     call tbexve(tabtri, 'SIGMA_WEIBULL', '&&OP0197.NOM_VECSIG', 'V', nrupt,&
                 k8bid)
     call jeveuo('&&OP0197.NOM_VECSIG', 'L', isig)
@@ -535,7 +538,7 @@ subroutine op0197()
 !        DES DEUX METHODES DE RECALAGE
 !
     call optimw(method, nrupt, zr(ix), zr(iy), zr(ipth),&
-                zr(isig), zi(irent), zi(inur), nbresu, calm,&
+                zr(isig), zi(irent), nom_nures, nbresu, calm,&
                 cals, mk, zr(isigk), mkp, zr(isigkp),&
                 impr, ifm, dept, zi(itpre), ntpsi)
 !

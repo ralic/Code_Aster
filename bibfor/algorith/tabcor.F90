@@ -52,7 +52,7 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !---------------------------------------------------------------------
     integer :: nbvale, nbrefe, nbdesc, ibid, neq, nbno1
     integer :: ino1, ino2, icor(2), itb1, itb2, ncmp2, nbno2, ichnul
-    integer :: nec2, igeom1, igeom2, iprn2, inueq2, nbid
+    integer :: nec2,   iprn2, inueq2, nbid
     integer :: ndble, nbptr
     real(kind=8) :: epsi, x1, y1, z1, x2, y2, z2
     real(kind=8) :: tailmi, dista2, tailm2
@@ -61,6 +61,8 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
     character(len=14) :: num
     character(len=19) :: chnul, cn2, pchno2
     character(len=24) :: prchno
+    real(kind=8), pointer :: geom1(:) => null()
+    real(kind=8), pointer :: geom2(:) => null()
 ! -----------------------------------------------------------------
     data epsi    /1.d-2/
 !---------------------------------------------------------------------
@@ -130,8 +132,8 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !
 ! RECUPERATION DES COORDONNEES DU MAILLAGE
 !
-    call jeveuo(ma2//'.COORDO    .VALE', 'L', igeom2)
-    call jeveuo(ma1//'.COORDO    .VALE', 'L', igeom1)
+    call jeveuo(ma2//'.COORDO    .VALE', 'L', vr=geom2)
+    call jeveuo(ma1//'.COORDO    .VALE', 'L', vr=geom1)
 !
 ! PARCOURS SUR LES NOEUDS DU MAILLAGE STRUCTURE
 ! ON REPERE LES NOEUDS COINCIDENTS GEOMETRIQUEMENT
@@ -139,10 +141,10 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !
     do ino1 = 1, nbno1
 !
-        x1 = zr(igeom1 -1 + (ino1 -1)*3 +1)
-        y1 = zr(igeom1 -1 + (ino1 -1)*3 +2)
+        x1 = geom1((ino1 -1)*3 +1)
+        y1 = geom1((ino1 -1)*3 +2)
         if (model .eq. '3D') then
-            z1 = zr(igeom1 -1 + (ino1 -1)*3 +3)
+            z1 = geom1((ino1 -1)*3 +3)
         endif
 !
 ! PARCOURS SUR LES NOEUDS DU MAILLAGE FLUIDE
@@ -158,10 +160,10 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !
 ! CRITERE GEOMETRIQUE DE PROXIMITE
 !
-            x2 = zr(igeom2 -1 + (ino2 -1)*3 +1)
-            y2 = zr(igeom2 -1 + (ino2 -1)*3 +2)
+            x2 = geom2((ino2 -1)*3 +1)
+            y2 = geom2((ino2 -1)*3 +2)
             if (model .eq. '3D') then
-                z2 = zr(igeom2 -1 + (ino2 -1)*3 +3)
+                z2 = geom2((ino2 -1)*3 +3)
                 dista2 = (x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2
             else
                 dista2 = (x1-x2)**2 + (y1-y2)**2

@@ -74,10 +74,14 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     character(len=10) :: phenom
     character(len=16) :: typres, nomcmd
     character(len=19) :: chwork
-    integer :: nummat, ncmp, jnomrc, idvale, idvalw, i, nbpts, imate
-    integer :: nbec, k, ec1, kk, igd, ngdmax, jdesc, jvale, jprol
+    integer :: nummat, ncmp, jnomrc,   i, nbpts, imate
+    integer :: nbec, k, ec1, kk, igd, ngdmax,  jvale
     real(kind=8) :: prec, undemi, tref, alfref(1), alphai, ti, tim1, tip1
     real(kind=8) :: alfim1, alfip1, dalref, tdef
+    character(len=24), pointer :: prol(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: valw(:) => null()
+    integer, pointer :: desc(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -96,16 +100,16 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !     ---------------------------------------------------
 !
 !     -- NOUVELLE SYNTAXE : AFFE_MATERIAU/AFFE_VARC/TEMP
-    call jeveuo(chmat//'.CHAMP_MAT .DESC', 'L', jdesc)
+    call jeveuo(chmat//'.CHAMP_MAT .DESC', 'L', vi=desc)
     call jeveuo(chmat//'.CHAMP_MAT .VALE', 'L', jvale)
-    igd = zi(jdesc-1+1)
+    igd = desc(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
     ASSERT(nomgd.eq.'NOMMATER')
     call jelira(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'LONMAX', ncmp)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-    ngdmax=zi(jdesc-1+2)
+    ngdmax=desc(2)
 !     TREF EST SUR LE 1ER ENTIER CODE :
-    ec1=zi(jdesc-1+3+2*ngdmax+nbec*(imate-1)+1)
+    ec1=desc(3+2*ngdmax+nbec*(imate-1)+1)
     k=0
     do kk = 1, 30
         if (exisdg([ec1],kk)) k=k+1
@@ -147,9 +151,9 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !
 !     -- SI LA FONCTION N'A QU'UN POINT :
     if (nbpts .eq. 1) then
-        call jeveuo(chwork(1:19)//'.PROL', 'L', jprol)
+        call jeveuo(chwork(1:19)//'.PROL', 'L', vk24=prol)
 !        -- SI LA FONCTION EST UNE CONSTANTE, ON NE FAIT RIEN :
-        if (zk24(jprol-1+1) .eq. 'CONSTANT') then
+        if (prol(1) .eq. 'CONSTANT') then
             goto 999
 !        -- SI TREF ET TDEF SONT PROCHES (1 DEGRE), ON NE FAIT RIEN :
         else if (abs(tref-tdef).lt.1.d0) then
@@ -166,24 +170,24 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 !
 ! --- RECUPERATION DU .VALE DE LA FONCTION DESTINEE A CONTENIR LES
 ! --- VALEURS DE ALPHA INTERPOLEES :
-    call jeveuo(chwork(1:19)//'.VALE', 'E', idvalw)
+    call jeveuo(chwork(1:19)//'.VALE', 'E', vr=valw)
 !
 ! --- RECUPERATION DU .VALE DE LA FONCTION CONTENANT LES
 ! --- VALEURS INITIALES DE ALPHA  :
-    call jeveuo(ch19(1:19)//'.VALE', 'L', idvale)
+    call jeveuo(ch19(1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- CALCUL DES ALPHA INTERPOLES :
     do i = 1, nbpts
 !
-        alphai = zr(idvale+i+nbpts-1)
-        ti = zr(idvale+i-1)
+        alphai = vale(1+i+nbpts-1)
+        ti = vale(i)
 !
 ! --- DANS LE CAS OU ABS(TI-TREF) > PREC :
 ! --- ALPHA_NEW(TI) = (ALPHA(TI)*(TI-TDEF) - ALPHA(TREF)*(TREF-TDEF))
 ! ---                 /(TI-TREF)   :
         if (abs(ti-tref) .ge. prec) then
 !
-            zr(idvalw+i+nbpts-1) = ( alphai*(ti-tdef)- alfref(1)*(tref- tdef)) /(ti-tref )
+            valw(1+i+nbpts-1) = ( alphai*(ti-tdef)- alfref(1)*(tref- tdef)) /(ti-tref )
 ! --- DANS LE CAS OU ABS(TI-TREF) < PREC :
 ! --- IL FAUT D'ABORD CALCULER LA DERIVEE DE ALPHA PAR RAPPORT
 ! --- A LA TEMPERATURE EN TREF : D(ALPHA)/DT( TREF) :
@@ -193,10 +197,10 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 ! ---                            +(ALPHA(TREF)-ALPHA(TI-1))/(TREF-TI-1))
             if (i .gt. 1 .and. i .lt. nbpts) then
 !
-                tim1 = zr(idvale+i-1-1)
-                tip1 = zr(idvale+i+1-1)
-                alfim1 = zr(idvale+i+nbpts-1-1)
-                alfip1 = zr(idvale+i+nbpts+1-1)
+                tim1 = vale(1+i-1-1)
+                tip1 = vale(1+i+1-1)
+                alfim1 = vale(1+i+nbpts-1-1)
+                alfip1 = vale(1+i+nbpts+1-1)
                 if (tip1 .eq. tref) then
                     call utmess('F', 'MODELISA2_2')
                 endif
@@ -210,8 +214,8 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 ! ---   D(ALPHA)/DT( TREF) = (ALPHA(TREF)-ALPHA(TI-1))/(TREF-TI-1) :
             else if (i.eq.nbpts) then
 !
-                tim1 = zr(idvale+i-1-1)
-                alfim1 = zr(idvale+i+nbpts-1-1)
+                tim1 = vale(1+i-1-1)
+                alfim1 = vale(1+i+nbpts-1-1)
                 if (tim1 .eq. tref) then
                     call utmess('F', 'MODELISA2_2')
                 endif
@@ -222,8 +226,8 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 ! ---   D(ALPHA)/DT( TREF) = (ALPHA(TI+1)-ALPHA(TREF))/(TI+1-TREF) :
             else if (i.eq.1) then
 !
-                tip1 = zr(idvale+i+1-1)
-                alfip1 = zr(idvale+i+nbpts+1-1)
+                tip1 = vale(1+i+1-1)
+                alfip1 = vale(1+i+nbpts+1-1)
                 if (tip1 .eq. tref) then
                     call utmess('F', 'MODELISA2_2')
                 endif
@@ -234,7 +238,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
 ! ---   DANS CE CAS OU ABS(TI-TREF) < PREC , ON A :
 ! ---   ALPHA_NEW(TI) = ALPHA_NEW(TREF)
 ! ---   ET ALPHA_NEW(TREF) = D(ALPHA)/DT (TREF)*(TREF-TDEF)+ALPHA(TREF):
-            zr(idvalw+i+nbpts-1) = dalref*(tref-tdef) + alfref(1)
+            valw(1+i+nbpts-1) = dalref*(tref-tdef) + alfref(1)
 !
         endif
 !

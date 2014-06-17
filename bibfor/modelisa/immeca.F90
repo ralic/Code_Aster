@@ -100,7 +100,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     integer :: nselec
     parameter     (nselec=5)
     integer :: ideca, immer, inob1, inob2, inobe, inoca, ipara, itetra, jcoor
-    integer ::   jnoca,  jnunob, jtblp, jtbnp, jxca
+    integer ::   jnoca,  jnunob,   jxca
     integer :: jyca, jzca, nbcnx, nblign, nbno, nbpara, nnomax, noe
     integer :: noebe(nselec), numail, nbval, nbval2, iret, ibid, noebec
     real(kind=8) :: d2, d2min(nselec), dx, dy, dz, rbid, x3dca(3)
@@ -121,6 +121,8 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     real(kind=8), pointer :: d2_min_max(:) => null()
     integer, pointer :: no_min_max(:) => null()
     real(kind=8), pointer :: xyz_noemai(:) => null()
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
     data          param /'MAILLE_BETON_VOISINE    ',&
      &                     'NOEUD_BETON_VOISIN      ',&
      &                     'INDICE_IMMERSION        '/
@@ -213,14 +215,14 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !
 !.... NOMS DES NOEUDS
 !
-    call jeveuo(tablca//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp)
-    nblign = zi(jtbnp+1)
+    call jeveuo(tablca//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     ideca = nblign - nbno
-    call jeveuo(tablca//'.TBLP', 'L', jtblp)
+    call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
     do 10 ipara = 1, nbpara
-        if (zk24(jtblp+4*(ipara-1)) .eq. parcr) then
-            nonoca = zk24(jtblp+4*(ipara-1)+2)
+        if (tblp(1+4*(ipara-1)) .eq. parcr) then
+            nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 11
         endif

@@ -40,7 +40,8 @@ subroutine lctel2()
     character(len=24) :: nomolo
     character(len=16) :: nomte
     integer :: nbte, nbop, nbgd, iatamx, nbmolo, imolo, jnblig, iamolo
-    integer :: n, ioptte, iop, ite, joptte, joptt2
+    integer :: n, ioptte, iop, ite, joptte
+    integer, pointer :: optt2(:) => null()
 !
     call jemarq()
 !
@@ -79,12 +80,12 @@ subroutine lctel2()
 !
 !     OBJET .OPTTE :
 !     -------------------
-    call jeveuo('&CATA.TE.OPTT2', 'L', joptt2)
+    call jeveuo('&CATA.TE.OPTT2', 'L', vi=optt2)
     call jelira('&CATA.TE.OPTT2', 'LONMAX', n)
     call wkvect('&CATA.TE.OPTTE', 'G V I', nbte*nbop, joptte)
     do 2,ioptte=1,n/2
-    iop=zi(joptt2-1+2*(ioptte-1)+1)
-    ite=zi(joptt2-1+2*(ioptte-1)+2)
+    iop=optt2(2*(ioptte-1)+1)
+    ite=optt2(2*(ioptte-1)+2)
     if (iop .eq. 0 .or. ite .eq. 0) goto 2
     zi(joptte-1+(ite-1)*nbop+iop)=ioptte
     2 end do

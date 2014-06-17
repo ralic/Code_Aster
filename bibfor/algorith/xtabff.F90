@@ -55,13 +55,14 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
 !
     integer :: ifm, niv, i
     integer :: npara, nfonl, nfondl, vali(2)
-    integer :: jmult, jfon
     real(kind=8) :: vale(4), r8bid
     character(len=1) :: typar2(3), typar3(6)
     character(len=8) :: k8bid
     character(len=12) :: nopar2(3), nopar3(6)
     character(len=19) :: tabcoo, tabnb
     complex(kind=8) :: c16b
+    integer, pointer :: fondmult(:) => null()
+    real(kind=8), pointer :: fondfiss(:) => null()
     data nopar2 /'NUME_FOND','COOR_X','COOR_Y'/
     data typar2 /'I'        ,'R'     ,'R'/
     data nopar3 /'NUME_FOND','NUM_PT','ABSC_CURV',&
@@ -79,8 +80,8 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
 !     S'IL N'Y A PAS DE FOND DE FISSURE ON SORT
     if (nbfond .eq. 0) goto 999
 !
-    call jeveuo(fiss//'.FONDMULT', 'L', jmult)
-    call jeveuo(fiss//'.FONDFISS', 'L', jfon)
+    call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
+    call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
 !
     call ltcrsd(fiss, 'G')
 !
@@ -96,8 +97,8 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
         call tbajpa(tabcoo, npara, nopar2, typar2)
         do 100 i = 1, nbfond
             vali(1)=i
-            vale(1)=zr(jfon-1+4*(i-1)+1)
-            vale(2)=zr(jfon-1+4*(i-1)+2)
+            vale(1)=fondfiss(4*(i-1)+1)
+            vale(2)=fondfiss(4*(i-1)+2)
             call tbajli(tabcoo, npara, nopar2, vali, vale,&
                         [c16b], k8bid, 0)
 100      continue
@@ -107,7 +108,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
         nfonl = 1
         nfondl = 0
         do 200 i = 1, nfon
-            if (zi(jmult-1+2*nfondl+1) .eq. i) then
+            if (fondmult(2*nfondl+1) .eq. i) then
                 nfondl = nfondl + 1
                 nfonl = 1
             else
@@ -115,10 +116,10 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
             endif
             vali(1)=nfondl
             vali(2)=nfonl
-            vale(1)=zr(jfon-1+4*(i-1)+4)
-            vale(2)=zr(jfon-1+4*(i-1)+1)
-            vale(3)=zr(jfon-1+4*(i-1)+2)
-            vale(4)=zr(jfon-1+4*(i-1)+3)
+            vale(1)=fondfiss(4*(i-1)+4)
+            vale(2)=fondfiss(4*(i-1)+1)
+            vale(3)=fondfiss(4*(i-1)+2)
+            vale(4)=fondfiss(4*(i-1)+3)
             call tbajli(tabcoo, npara, nopar3, vali, vale,&
                         [c16b], k8bid, 0)
 200      continue

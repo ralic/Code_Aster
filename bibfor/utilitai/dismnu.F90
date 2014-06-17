@@ -56,7 +56,8 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
 !         CE N'EST PAS LE NOM D'UN LIGREL
 !
 !-----------------------------------------------------------------------
-    integer :: ianequ, iarefe, iret, jnslv, jslvk
+    integer ::  iarefe, iret, jnslv, jslvk
+    integer, pointer :: nequ(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -75,8 +76,8 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
         call dismgd(questi, zk24(iarefe+1) (1:8), repi, repk, ierd)
 !
     else if (questi.eq.'NB_EQUA') then
-        call jeveuo(nomob//'.NUME.NEQU', 'L', ianequ)
-        repi = zi(ianequ)
+        call jeveuo(nomob//'.NUME.NEQU', 'L', vi=nequ)
+        repi = nequ(1)
 !
     else if (questi.eq.'PROF_CHNO') then
         repk = nomob//'.NUME'

@@ -48,10 +48,16 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
     integer :: neu2(32), ier, i, ij, nte, ima, ityp, nbno, inum, nbnoas
     integer :: idiv, ino, irest, k, l, maxmai, numgro, jgrmai, jgr, ima1
     integer :: indmax, vali(2)
-    integer :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym, jindma
     character(len=1) :: prfnoe, prfmai
     character(len=8) :: chgrou, chtab(32), chmail, k8bid
     character(len=12) :: chenti
+    integer, pointer :: nbnma(:) => null()
+    integer, pointer :: nbtym(:) => null()
+    integer, pointer :: noma(:) => null()
+    integer, pointer :: numa(:) => null()
+    integer, pointer :: typma(:) => null()
+    integer, pointer :: indma(:) => null()
+    integer, pointer :: nbmag(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,20 +78,20 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
 ! --- RECUPERATION DES OBJETS DE TRAVAIL :
 !     ----------------------------------
-    call jeveuo('&&PREGMS.NUMERO.MAILLES', 'L', jnuma)
-    call jeveuo('&&PREGMS.TYPE.MAILLES', 'L', jtypma)
-    call jeveuo('&&PREGMS.NBNO.MAILLES', 'L', jnbnma)
-    call jeveuo('&&PREGMS.CONNEC.MAILLES', 'L', jnoma)
-    call jeveuo('&&PREGMS.NBMA.GROUP_MA', 'L', jnbmag)
-    call jeveuo('&&PREGMS.NBTYP.MAILLES', 'L', jnbtym)
-    call jeveuo('&&PREGMS.INDICE.GROUP_MA', 'L', jindma)
+    call jeveuo('&&PREGMS.NUMERO.MAILLES', 'L', vi=numa)
+    call jeveuo('&&PREGMS.TYPE.MAILLES', 'L', vi=typma)
+    call jeveuo('&&PREGMS.NBNO.MAILLES', 'L', vi=nbnma)
+    call jeveuo('&&PREGMS.CONNEC.MAILLES', 'L', vi=noma)
+    call jeveuo('&&PREGMS.NBMA.GROUP_MA', 'L', vi=nbmag)
+    call jeveuo('&&PREGMS.NBTYP.MAILLES', 'L', vi=nbtym)
+    call jeveuo('&&PREGMS.INDICE.GROUP_MA', 'L', vi=indma)
 !
 ! --- ECRITURE DES MAILLES :
 !     --------------------
     do 20 nte = 1, nbtyma
 !
-        if (zi(jnbtym+nte-1) .eq. 0) goto 20
-        call codent(zi(jnbtym+nte-1), 'G', chenti(7:12))
+        if (nbtym(nte) .eq. 0) goto 20
+        call codent(nbtym(nte), 'G', chenti(7:12))
 !
 ! ---   ECRITURE DE LA DATE :
 !       -------------------
@@ -105,17 +111,17 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 ! ---   BOUCLE SUR LES MAILLES :
 !       ----------------------
         do 30 ima = 1, nbmail
-            ityp = zi(jtypma+ima-1)
-            nbno = zi(jnbnma+ima-1)
+            ityp = typma(ima)
+            nbno = nbnma(ima)
             if (ityp .eq. nte) then
-                inum = zi(jnuma+ima-1)
+                inum = numa(ima)
                 call codnop(chmail, prfmai, 1, 1)
                 call codent(inum, 'G', chmail(2:8))
 !
                 nbnoas = nbnoma(nte)
 !
                 do 40 ino = 1, nbnoas
-                    neu2(ino) = zi(jnoma+ij+nuconn(nte,ino)-1)
+                    neu2(ino) = noma(1+ij+nuconn(nte,ino)-1)
                     call codnop(chtab(ino), prfnoe, 1, 1)
                     call codent(neu2(ino), 'G', chtab(ino)(2:8))
 40              continue
@@ -155,7 +161,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
     maxmai = 0
     do 50 i = 1, indmax
-        maxmai = max(maxmai,zi(jnbmag+i-1))
+        maxmai = max(maxmai,nbmag(i))
 50  end do
 !
 ! --- SI IL N Y A AU MOINS UN GROUPE :
@@ -169,7 +175,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 ! --- BOUCLE SUR LES GROUPES DE MAILLES :
 !     ---------------------------------
         do 60 i = 1, indmax
-            numgro = zi(jindma+i-1)
+            numgro = indma(i)
             if (numgro .ge. 1000000) then
                 ier = ier + 1
                 vali (1) = numgro
@@ -180,7 +186,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
             call codent(numgro, 'G', chgrou(3:8))
             write(imod,'(A,4X,2A)') 'GROUP_MA','NOM=',chgrou
             call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'E', jgr)
-            do 70 k = 1, zi(jnbmag+i-1)
+            do 70 k = 1, nbmag(i)
                 call codnop(chmail, prfmai, 1, 1)
                 call codent(zi(jgr+k-1), 'G', chmail(2:8))
                 zk8(jgrmai+k-1) = chmail
@@ -188,7 +194,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
 ! ---   ECRITURE DES MAILLES DU GROUPE DE MAILLES COURANT :
 !       -------------------------------------------------
-            write(imod,'(8(2X,A))') (zk8(jgrmai+k-1),k=1,zi(jnbmag+i-&
+            write(imod,'(8(2X,A))') (zk8(jgrmai+k-1),k=1,nbmag(1+i-&
             1))
 !
             write(imod,'(A)') 'FINSF'
@@ -197,18 +203,18 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 ! --- DANS LE CAS D'UN POINT ECRITURE D'UN GROUPNO
 ! ---  LE GROUPE DE MAILLE CONTIENT ALORS UNE SEULE MAILLE POI1
 !
-            if (zi(jnbmag+i-1) .eq. 1) then
+            if (nbmag(i) .eq. 1) then
                 call jeveuo(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'E', jgr)
                 ima1=zi(jgr)
                 ij=0
                 do 80 ima = 1, nbmail
-                    inum = zi(jnuma+ima-1)
-                    nbno = zi(jnbnma+ima-1)
+                    inum = numa(ima)
+                    nbno = nbnma(ima)
                     if (inum .eq. ima1) then
                         if (nbno .eq. 1) then
                             write(imod,'(A,4X,2A)') 'GROUP_NO','NOM=',&
                             chgrou
-                            neu2(ino) = zi(jnoma+ij)
+                            neu2(ino) = noma(ij+1)
                             call codnop(chtab(ino), prfnoe, 1, 1)
                             call codent(neu2(ino), 'G', chtab(ino)(2:8))
                             write(imod,'((2X,A))') chtab(ino)

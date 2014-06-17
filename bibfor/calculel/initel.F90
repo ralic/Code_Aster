@@ -59,7 +59,7 @@ subroutine initel(ligrel, l_calc_rigi)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: igr, ngr, nmaxob, nbobj, nbprin
-    integer :: nbno,  jnoma, jliel, jlliel, iconx1, iconx2
+    integer :: nbno,    jlliel,  iconx2
     integer :: nute, nbel, iel, numa, nbnoma, ino, nuno
     parameter (nmaxob=30)
     integer :: adobj(nmaxob)
@@ -68,6 +68,9 @@ subroutine initel(ligrel, l_calc_rigi)
     character(len=8) :: exiele, ma, prin, nomail
     character(len=16) :: nomte
     integer, pointer :: vprin(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: liel(:) => null()
 ! ----------------------------------------------------------------------
 !
 ! DEB-------------------------------------------------------------------
@@ -103,11 +106,11 @@ subroutine initel(ligrel, l_calc_rigi)
 !     ------------------------------------------------------------
     if ((exiele(1:3).ne.'OUI') .or. (.not.present(l_calc_rigi))) goto 90
 !
-    call jeveuo(ligrel//'.LGRF', 'L', jnoma)
-    call jeveuo(ligrel//'.LIEL', 'L', jliel)
+    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+    call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', jlliel)
-    ma = zk8(jnoma)
-    call jeveuo(ma//'.CONNEX', 'L', iconx1)
+    ma = lgrf(1)
+    call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', iconx2)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !
@@ -120,11 +123,11 @@ subroutine initel(ligrel, l_calc_rigi)
         if (prin .ne. 'OUI') goto 50
         nbel = nbelem(ligrel,igr)
         do iel = 1, nbel
-            numa = zi(jliel-1+zi(jlliel+igr-1)+iel-1)
+            numa = liel(zi(jlliel+igr-1)+iel-1)
             if (numa .lt. 0) goto 40
             nbnoma = zi(iconx2+numa) - zi(iconx2+numa-1)
             do ino = 1, nbnoma
-                nuno = zi(iconx1-1+zi(iconx2+numa-1)+ino-1)
+                nuno = connex(zi(iconx2+numa-1)+ino-1)
                 vprin(nuno) = 1
             end do
  40         continue
@@ -144,11 +147,11 @@ subroutine initel(ligrel, l_calc_rigi)
             goto 80
         endif
         do iel = 1, nbel
-            numa = zi(jliel-1+zi(jlliel+igr-1)+iel-1)
+            numa = liel(zi(jlliel+igr-1)+iel-1)
             if (numa .lt. 0) goto 70
             nbnoma = zi(iconx2+numa) - zi(iconx2+numa-1)
             do ino = 1, nbnoma
-                nuno = zi(iconx1-1+zi(iconx2+numa-1)+ino-1)
+                nuno = connex(zi(iconx2+numa-1)+ino-1)
                 if (vprin(nuno) .ne. 1) then
                     call jenuno(jexnum(ma//'.NOMMAI', numa), nomail)
                     call utmess('A', 'MODELE1_63', sk=nomail)

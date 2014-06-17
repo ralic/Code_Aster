@@ -41,7 +41,7 @@ subroutine op0179()
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, n1, n2, n4, nbmode, jscde
+    integer :: ibid, n1, n2, n4, nbmode
     real(kind=8) :: partr, parti, coef, dpi
     character(len=8) :: nomres, basemo, numgen
     character(len=16) :: typres, nomcom, typbas, k16nom, tissf
@@ -62,6 +62,7 @@ subroutine op0179()
     integer :: nbmodd, nbmods, nbmodt, nc, nf, nfr, nfreq
     integer :: nsau0, nsaut
     real(kind=8) :: freq
+    integer, pointer :: scde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -187,7 +188,7 @@ subroutine op0179()
 ! ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
 !
-    call jeveuo(nomsto//'.SCDE', 'L', jscde)
+    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
 !
     resu = ' '
     resu(1:8) = nomres
@@ -208,7 +209,7 @@ subroutine op0179()
     zi(iadesc+1) = nbmodt
 !   ON TESTE LA HAUTEUR MAXIMALE DES COLONNES DE LA MATRICE
 !   SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
-    if (zi(jscde-1+4) .eq. 1) then
+    if (scde(4) .eq. 1) then
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2

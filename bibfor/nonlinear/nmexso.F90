@@ -66,8 +66,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
     integer :: jrig, jmas, jamo
     integer :: gd, aprno
     real(kind=8) :: pasa, pasm, pas, ainst, rinst
-    integer :: iamacr, idno
-    integer :: jdveis
+    integer ::  idno
     integer :: ibid
     integer :: ifreq, i1, i2, inoe, ino, ima, iddl, icmp
     character(len=24) :: uniamo, unirig, unimas, unifor
@@ -77,6 +76,8 @@ subroutine nmexso(noma, result, sddyna, numedd)
     integer :: nbmode, nbmod2, nbno, nddint, ncmp, nec, neq
     character(len=24) :: nchsol
     integer :: jchsol
+    character(len=8), pointer :: vnomacr(:) => null()
+    character(len=24), pointer :: veiss(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -108,14 +109,14 @@ subroutine nmexso(noma, result, sddyna, numedd)
     nchsol = sdexso(1:15)//'.CHAR'
     call jeveuo(nchsol, 'L', jchsol)
     cnfsol = zk8(jchsol)
-    call jeveuo(cnfsol//'.CHME.VEISS', 'L', jdveis)
+    call jeveuo(cnfsol//'.CHME.VEISS', 'L', vk24=veiss)
 !
 ! --- NOMS FICHIERS
 !
-    unirig = zk24(jdveis-1+1)
-    unimas = zk24(jdveis-1+2)
-    uniamo = zk24(jdveis-1+3)
-    unifor = zk24(jdveis-1+4)
+    unirig = veiss(1)
+    unimas = veiss(2)
+    uniamo = veiss(3)
+    unifor = veiss(4)
     uniter = 0
     unitem = 0
     unitea = 0
@@ -123,12 +124,12 @@ subroutine nmexso(noma, result, sddyna, numedd)
 !
 ! --- GROUP_NO_INTERF
 !
-    gnintf = zk24(jdveis-1+5)
+    gnintf = veiss(5)
     if (gnintf .eq. ' ') then
-        maille = zk24(jdveis-1+6)
-        call jeveuo(noma//'.NOMACR', 'L', iamacr)
+        maille = veiss(6)
+        call jeveuo(noma//'.NOMACR', 'L', vk8=vnomacr)
         call jenonu(jexnom(noma//'.SUPMAIL', maille), ima)
-        nomacr = zk8(iamacr-1+ima)
+        nomacr = vnomacr(ima)
         call jelira(nomacr//'.LINO', 'LONMAX', ival=nbno)
         call jeveuo(nomacr//'.LINO', 'L', idno)
     else

@@ -64,8 +64,9 @@ subroutine cazocx(char, nomo, motfac, izone)
     real(kind=8) :: algocr, algofr
     real(kind=8) :: coefff, reacsi, coef, tolj
     character(len=16) :: valk(2)
-    integer :: iret, jxc
+    integer :: iret
     logical :: lfrot
+    integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -108,8 +109,8 @@ subroutine cazocx(char, nomo, motfac, izone)
         valk(1) = nomo
         call utmess('F', 'XFEM2_8', sk=valk(1))
     else
-        call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
-        if (zi(jxc) .eq. 0) then
+        call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
+        if (xfem_cont(1) .eq. 0) then
             valk(1) = nomo
             call utmess('F', 'XFEM2_9', sk=valk(1))
         endif

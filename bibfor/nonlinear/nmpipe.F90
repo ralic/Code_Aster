@@ -91,7 +91,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: nbma, nbpt, icmp, ma, pt, npg, nbgmax
-    integer :: jcesd, jcesl, jcesv, ja0a1, ja0, ja1, ja2, ja3, jtrav
+    integer :: jcesd, jcesl,  ja0a1, ja0, ja1, ja2, ja3, jtrav
     integer :: iret, ja4
     real(kind=8) :: result
     character(len=8) :: cpar
@@ -106,6 +106,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     character(len=19) :: faclon, baseco, xcohes, depplu
     logical :: lcontx
     integer :: ier
+    real(kind=8), pointer :: cesv(:) => null()
 !
     data copilo, copils  /'&&NMPIPE.COPILO','&&NMPIPE.COPILS'/
     data ctau            /'&&NMPIPE.CTAU'/
@@ -253,7 +254,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     call celces(copilo, 'V', copils)
     call jeveuo(copils//'.CESD', 'L', jcesd)
     call jeveuo(copils//'.CESL', 'L', jcesl)
-    call jeveuo(copils//'.CESV', 'L', jcesv)
+    call jeveuo(copils//'.CESV', 'L', vr=cesv)
     nbma = zi(jcesd-1 + 1)
     nbpt = zi(jcesd-1 + 3)
     nbgmax = nbma*nbpt
@@ -290,7 +291,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
             if (lcontx) then
 ! - XFEM : SI PAS DE SOL AU PT DE GAUSS, ON N AJOUTE PAS DE DROITE
                 result = abs(&
-                         zr(jcesv-1+ja0))+abs(zr(jcesv-1+ja1))+ abs(zr(jcesv-1+ja2))+abs(zr(jcesv&
+                         cesv(ja0))+abs(cesv(ja1))+ abs(cesv(ja2))+abs(cesv(1&
                          &-1+ja3)&
                          )
                 if (result .eq. 0) then
@@ -301,7 +302,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 ! ---     LECTURE DU CODE RETOUR
 !
             if (ja4 .ne. 0) then
-                if (zr(jcesv-1 + ja4) .ne. r8vide()) then
+                if (cesv(ja4) .ne. r8vide()) then
 ! ---         A T ON REMPLI CODE-RETOUR ? OUI -> PAS DE SOLUTION
                     pilcvg = 1
                     goto 999
@@ -311,13 +312,13 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 ! ---     COEFFICIENTS DE LA OU DES DROITES
 !
             if (ja0.ne.0) then
-                if (zr(jcesv-1 + ja0).ne.r8vide()) then
-                    zr(ja0a1 + icmp    ) = zr(jcesv-1 + ja0)
-                    zr(ja0a1 + icmp + 1) = zr(jcesv-1 + ja1)
+                if (cesv(ja0).ne.r8vide()) then
+                    zr(ja0a1 + icmp    ) = cesv(ja0)
+                    zr(ja0a1 + icmp + 1) = cesv(ja1)
                     icmp = icmp+2
-                    if (zr(jcesv-1 + ja2).ne.r8vide()) then
-                        zr(ja0a1 + icmp )    = zr(jcesv-1 + ja2)
-                        zr(ja0a1 + icmp + 1) = zr(jcesv-1 + ja3)
+                    if (cesv(ja2).ne.r8vide()) then
+                        zr(ja0a1 + icmp )    = cesv(ja2)
+                        zr(ja0a1 + icmp + 1) = cesv(ja3)
                         icmp = icmp+2
                     endif
                 endif

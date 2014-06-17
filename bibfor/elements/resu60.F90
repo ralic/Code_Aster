@@ -53,9 +53,19 @@ subroutine resu60(resu1, resu2)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: jacce, jacce1, jacce2, jvite, jvite1, jvite2
-    integer :: jdepl, jdepl1, jdepl2, jdesc
-    integer :: jfreq, jfreq1, jfreq2, jordr, jordr1, jordr2
+    integer :: jacce,   jvite
+    integer :: jdepl,   jdesc
+    integer :: jfreq,   jordr
+    complex(kind=8), pointer :: acce1(:) => null()
+    complex(kind=8), pointer :: acce2(:) => null()
+    complex(kind=8), pointer :: depl1(:) => null()
+    complex(kind=8), pointer :: depl2(:) => null()
+    complex(kind=8), pointer :: vite1(:) => null()
+    complex(kind=8), pointer :: vite2(:) => null()
+    real(kind=8), pointer :: freq1(:) => null()
+    real(kind=8), pointer :: freq2(:) => null()
+    integer, pointer :: ordr1(:) => null()
+    integer, pointer :: ordr2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     resu = '88888'
@@ -96,55 +106,55 @@ subroutine resu60(resu1, resu2)
 !
 !     --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
     if (flagd1 .ne. 0) then
-        call jeveuo(resu1//'           .DEPL', 'E', jdepl1)
-        call jeveuo(resu2//'           .DEPL', 'E', jdepl2)
+        call jeveuo(resu1//'           .DEPL', 'E', vc=depl1)
+        call jeveuo(resu2//'           .DEPL', 'E', vc=depl2)
         call wkvect(resu //'           .DEPL', 'G V C', nbstoc, jdepl)
-        call zcopy(nbsto1, zc(jdepl1), 1, zc(jdepl), 1)
-        call zcopy(nbsto2, zc(jdepl2), 1, zc(jdepl+nbsto1), 1)
+        call zcopy(nbsto1, depl1, 1, zc(jdepl), 1)
+        call zcopy(nbsto2, depl2, 1, zc(jdepl+nbsto1), 1)
     endif
 !                         ^
 !                         |______________
 !       --- VALEURS COMPLEXES = COPIER |2| FOIS PLUS DE REELS
 !
     if (flagv1 .ne. 0) then
-        call jeveuo(resu1//'           .VITE', 'E', jvite1)
-        call jeveuo(resu2//'           .VITE', 'E', jvite2)
+        call jeveuo(resu1//'           .VITE', 'E', vc=vite1)
+        call jeveuo(resu2//'           .VITE', 'E', vc=vite2)
         call wkvect(resu //'           .VITE', 'G V C', nbstoc, jvite)
-        call zcopy(nbsto1, zc(jvite1), 1, zc(jvite), 1)
-        call zcopy(nbsto2, zc(jvite2), 1, zc(jvite+nbsto1), 1)
+        call zcopy(nbsto1, vite1, 1, zc(jvite), 1)
+        call zcopy(nbsto2, vite2, 1, zc(jvite+nbsto1), 1)
     endif
 !
     if (flaga1 .ne. 0) then
-        call jeveuo(resu1//'           .ACCE', 'E', jacce1)
-        call jeveuo(resu2//'           .ACCE', 'E', jacce2)
+        call jeveuo(resu1//'           .ACCE', 'E', vc=acce1)
+        call jeveuo(resu2//'           .ACCE', 'E', vc=acce2)
         call wkvect(resu //'           .ACCE', 'G V C', nbstoc, jacce)
-        call zcopy(nbsto1, zc(jacce1), 1, zc(jacce), 1)
-        call zcopy(nbsto2, zc(jacce2), 1, zc(jacce+nbsto1), 1)
+        call zcopy(nbsto1, acce1, 1, zc(jacce), 1)
+        call zcopy(nbsto2, acce2, 1, zc(jacce+nbsto1), 1)
     endif
 !
 !     --- RECUPERATION DES CHAMPS ORDR
 !
-    call jeveuo(resu1//'           .ORDR', 'E', jordr1)
+    call jeveuo(resu1//'           .ORDR', 'E', vi=ordr1)
     call jelira(resu1//'           .ORDR', 'LONUTI', nbsau1)
 !
-    call jeveuo(resu2//'           .ORDR', 'E', jordr2)
+    call jeveuo(resu2//'           .ORDR', 'E', vi=ordr2)
     call jelira(resu2//'           .ORDR', 'LONUTI', nbsau2)
 !     --- CUMULER LES NUMEROS D'ORDRE POUR CONSERVER LA MONOTONIE
     do 20 i = 0, nbsau2-1
-        zi(jordr2+i) = zi(jordr2+i) + zi(jordr1+nbsau1-1) + 1
+        ordr2(1+i) = ordr2(1+i) + ordr1(nbsau1) + 1
 20  continue
 !
     nbsauv = nbsau1 + nbsau2
 !
     call wkvect(resu//'           .ORDR', 'G V I', nbsauv, jordr)
-    call copvis(nbsau1, zi(jordr1), zi(jordr))
-    call copvis(nbsau2, zi(jordr2), zi(jordr+nbsau1))
+    call copvis(nbsau1, ordr1, zi(jordr))
+    call copvis(nbsau2, ordr2, zi(jordr+nbsau1))
 !
-    call jeveuo(resu1//'           .DISC', 'E', jfreq1)
-    call jeveuo(resu2//'           .DISC', 'E', jfreq2)
+    call jeveuo(resu1//'           .DISC', 'E', vr=freq1)
+    call jeveuo(resu2//'           .DISC', 'E', vr=freq2)
     call wkvect(resu//'           .DISC', 'G V R', nbsauv, jfreq)
-    call dcopy(nbsau1, zr(jfreq1), 1, zr(jfreq), 1)
-    call dcopy(nbsau2, zr(jfreq2), 1, zr(jfreq+nbsau1), 1)
+    call dcopy(nbsau1, freq1, 1, zr(jfreq), 1)
+    call dcopy(nbsau2, freq2, 1, zr(jfreq+nbsau1), 1)
 !
 !     --- DUPLICATION ---
 !

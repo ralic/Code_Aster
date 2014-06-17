@@ -38,12 +38,13 @@ subroutine op0175()
 #include "asterfort/rsutnu.h"
 #include "asterfort/w175af.h"
 #include "asterfort/w175ca.h"
-    integer :: ifm, niv, n0, nuord, jordr
+    integer :: ifm, niv, n0, nuord
     integer :: iret, jpara, ie, nbordr, i, nuordr
     character(len=8) :: resu, modele, cara, k8b
     character(len=16) :: crit
     character(len=19) :: chfer1, chfer2, chefge, resu19
     real(kind=8) :: prec
+    integer, pointer :: nume_ordre(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -63,12 +64,12 @@ subroutine op0175()
                 prec, crit, iret)
     ASSERT(iret.eq.0)
     ASSERT(nbordr.gt.0)
-    call jeveuo('&&OP0175.NUME_ORDRE', 'L', jordr)
+    call jeveuo('&&OP0175.NUME_ORDRE', 'L', vi=nume_ordre)
 !
 !
 !     -- ON PREND LE MODELE POUR LE 1ER INSTANT :
 !     --------------------------------------------
-    nuord = zi(jordr-1+1)
+    nuord = nume_ordre(1)
 !
     call rsadpa(resu, 'L', 1, 'MODELE', nuord,&
                 0, sjv=jpara, styp=k8b)
@@ -92,7 +93,7 @@ subroutine op0175()
 !     -- 2. ON APPELLE L'OPTION FERRAILLAGE :
 !     -------------------------------------------
     do 20,i = 1,nbordr
-    nuordr = zi(jordr+i-1)
+    nuordr = nume_ordre(i)
     call rsexch('F', resu19, 'EFGE_ELNO', nuordr, chefge,&
                 iret)
     call rsexch(' ', resu19, 'FERRAILLAGE', nuordr, chfer2,&

@@ -77,8 +77,8 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !                situation de passage
 !     ------------------------------------------------------------------
 !
-    integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi, jpresa
-    integer :: jpresb, jnbocc, im, jnumgr, npass, ifm, niv, iocs, jseigr, jresu
+    integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi
+    integer ::   im,  npass, ifm, niv, iocs,  jresu
     integer ::  nsitup, nsituq, iret, i1, jfact, i, j, jreas, jress
     integer :: jreca, jrecs, ndim, nbp12, nbp23, nbp13
     real(kind=8) :: ppi, ppj, snmax, spmax, samax, utot, saltij(2), typeke, ug
@@ -90,6 +90,11 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
     character(len=4) :: lieu(2)
     character(len=24) :: k24as, k24ss, k24ca, k24cs, k24fu
     integer, pointer :: situ_numero(:) => null()
+    real(kind=8), pointer :: situ_pres_a(:) => null()
+    integer, pointer :: situ_nb_occur(:) => null()
+    real(kind=8), pointer :: situ_pres_b(:) => null()
+    integer, pointer :: situ_seisme(:) => null()
+    integer, pointer :: situ_nume_group(:) => null()
 !
     data lieu / 'ORIG' , 'EXTR' /
 ! DEB ------------------------------------------------------------------
@@ -99,13 +104,13 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
     call jeveuo('&&RC3200.SITU_NUMERO', 'L', vi=situ_numero)
     call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
-    call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
-    call jeveuo('&&RC3200.SITU_SEISME', 'L', jseigr)
+    call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', vi=situ_nume_group)
+    call jeveuo('&&RC3200.SITU_SEISME', 'L', vi=situ_seisme)
 !
     call jeveuo('&&RC3200.SITU_COMBINABLE', 'L', jcombi)
-    call jeveuo('&&RC3200.SITU_PRES_A', 'L', jpresa)
-    call jeveuo('&&RC3200.SITU_PRES_B', 'L', jpresb)
-    call jeveuo('&&RC3200.SITU_NB_OCCUR', 'L', jnbocc)
+    call jeveuo('&&RC3200.SITU_PRES_A', 'L', vr=situ_pres_a)
+    call jeveuo('&&RC3200.SITU_PRES_B', 'L', vr=situ_pres_b)
+    call jeveuo('&&RC3200.SITU_NB_OCCUR', 'L', vi=situ_nb_occur)
 !
     call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12)
     call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23)
@@ -191,10 +196,10 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
         do 100 ig = 1, nbgr
 !
-            numgr = zi(jnumgr+ig-1)
+            numgr = situ_nume_group(ig)
             if (numgr .lt. 0) goto 100
 !
-            iocs = zi(jseigr+ig-1)
+            iocs = situ_seisme(ig)
 !
             call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr)
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
@@ -263,7 +268,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
         cfait = .false.
         do 200 ig = 1, nbgr
 !
-            numgr = zi(jnumgr+ig-1)
+            numgr = situ_nume_group(ig)
             if (numgr .lt. 0) goto 200
 !
             call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr)
@@ -302,13 +307,13 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
                 nsitup = situ_numero(ioc1)
 !
-                nocc = zi(jnbocc+2*ioc1-2)
+                nocc = situ_nb_occur(1+2*ioc1-2)
 !
-                ppi = zr(jpresa+ioc1-1)
+                ppi = situ_pres_a(ioc1)
                 call rcmo02('A', nsitup, mpi)
                 call rcma02('A', ioc1, matpi)
 !
-                ppj = zr(jpresb+ioc1-1)
+                ppj = situ_pres_b(ioc1)
                 call rcmo02('B', nsitup, mpj)
                 call rcma02('B', ioc1, matpj)
 !
@@ -427,10 +432,10 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
         do 310 ig = 1, nbgr
 !
-            numgr = zi(jnumgr+ig-1)
+            numgr = situ_nume_group(ig)
             if (numgr .ge. 0) goto 310
             numgr = -numgr
-            iocs = zi(jseigr+ig-1)
+            iocs = situ_seisme(ig)
             if (iocs .eq. 0) then
                 seisme = .false.
             else

@@ -60,7 +60,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, iran(1), j, lldeeq, lldes
+    integer :: i, inoe, iran(1), j,  lldes
     integer :: llnoe, nbcmp, nbcpmx, nbddl, nbdif, nbec
     integer :: nbnoe, nbnot, neq, numint, nunoe
 !-----------------------------------------------------------------------
@@ -71,6 +71,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
     character(len=24) :: valk(2)
     integer :: ivddl(nbddl), idec(nbcpmx)
     integer :: vali
+    integer, pointer :: deeq(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -143,7 +144,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
-    call jeveuo(numddl//'.DEEQ', 'L', lldeeq)
+    call jeveuo(numddl//'.DEEQ', 'L', vi=deeq)
 !
 !------RECUPERATION DES NUMERO ORDRE DEFORMEES (COLONNES)---------------
 !-----ET RANGS DES DDL D'INTERFACE (LIGNES) DANS VECTEUR ASSEMBLE-------
@@ -158,7 +159,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
             if (idec(j) .gt. 0) then
                 nbdif=nbdif-1
                 if (nbdif .ge. 0) then
-                    call cheddl(zi(lldeeq), neq, nunoe, j, iran,&
+                    call cheddl(deeq, neq, nunoe, j, iran,&
                                 1)
                     ivddl(nbddl-nbdif)=iran(1)
                 endif

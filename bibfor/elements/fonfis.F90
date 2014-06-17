@@ -48,15 +48,16 @@ subroutine fonfis(noma, nbnoff, fonoeu, fondfi)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifon, jcoor, jnoe, ni, nj
+    integer :: i, ifon,  jnoe, ni, nj
     real(kind=8) :: absci, coori(3), coorj(3), norm, xij, yij, zij
+    real(kind=8), pointer :: vale(:) => null()
 !
 !
 !
     call jemarq()
 !
 !     ADRESSES DES COORDONNEES DES NOEUDS DU MAILLAGE
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     ALLOCATION DU VECTEUR DES COORDONNEES ET DES ABSCISSES CURVILIGNES
 !     DES NOEUDS DU FOND
@@ -67,9 +68,9 @@ subroutine fonfis(noma, nbnoff, fonoeu, fondfi)
 !
 !     RECUPERATION DES COORDONNNES DE NI
     call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe)), ni)
-    coori(1) = zr(jcoor-1 + (ni-1)*3 + 1)
-    coori(2) = zr(jcoor-1 + (ni-1)*3 + 2)
-    coori(3) = zr(jcoor-1 + (ni-1)*3 + 3)
+    coori(1) = vale((ni-1)*3 + 1)
+    coori(2) = vale((ni-1)*3 + 2)
+    coori(3) = vale((ni-1)*3 + 3)
 !
 !     REMPLISSAGE DE .FONDFISS DANS LA SD_FOND_FISS :
 !     DONNEES DU CAS 2D OU DU PREMIER NOEUD POUR LE CAS 3D
@@ -87,13 +88,13 @@ subroutine fonfis(noma, nbnoff, fonoeu, fondfi)
             call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe-1+i)), nj)
 !
 !         COORDONNEES DES NOEUDS I ET J
-            coori(1) = zr(jcoor-1 + (ni-1)*3 + 1)
-            coori(2) = zr(jcoor-1 + (ni-1)*3 + 2)
-            coori(3) = zr(jcoor-1 + (ni-1)*3 + 3)
+            coori(1) = vale((ni-1)*3 + 1)
+            coori(2) = vale((ni-1)*3 + 2)
+            coori(3) = vale((ni-1)*3 + 3)
 !
-            coorj(1) = zr(jcoor-1 + (nj-1)*3 + 1)
-            coorj(2) = zr(jcoor-1 + (nj-1)*3 + 2)
-            coorj(3) = zr(jcoor-1 + (nj-1)*3 + 3)
+            coorj(1) = vale((nj-1)*3 + 1)
+            coorj(2) = vale((nj-1)*3 + 2)
+            coorj(3) = vale((nj-1)*3 + 3)
 !
 !         CALCUL DES ABSCISSES CURVILIGNES
             zr(ifon-1 + 4*(i-1) + 1) = coorj(1)

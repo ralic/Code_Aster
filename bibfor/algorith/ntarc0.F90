@@ -59,7 +59,8 @@ subroutine ntarc0(result, modele, mate, carele, sdcrit,&
 !
 !
     character(len=8) :: k8bid
-    integer :: jpara, jcrr, jcrk, jinst
+    integer :: jpara,  jcrk, jinst
+    real(kind=8), pointer :: crtr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,20 +84,20 @@ subroutine ntarc0(result, modele, mate, carele, sdcrit,&
 ! --- ARCHIVAGE DES CRITERES DE CONVERGENCE
 !
     if (lnonl) then
-        call jeveuo(sdcrit(1:19)//'.CRTR', 'L', jcrr)
+        call jeveuo(sdcrit(1:19)//'.CRTR', 'L', vr=crtr)
         call jeveuo(sdcrit(1:19)//'.CRDE', 'L', jcrk)
         call rsadpa(result, 'E', 1, zk16(jcrk), numarc,&
                     0, sjv=jpara, styp=k8bid)
-        zi(jpara) = nint(zr(jcrr))
+        zi(jpara) = nint(crtr(1))
         call rsadpa(result, 'E', 1, zk16(jcrk+1), numarc,&
                     0, sjv=jpara, styp=k8bid)
-        zi(jpara) = nint(zr(jcrr+1))
+        zi(jpara) = nint(crtr(2))
         call rsadpa(result, 'E', 1, zk16(jcrk+2), numarc,&
                     0, sjv=jpara, styp=k8bid)
-        zr(jpara) = zr(jcrr+2)
+        zr(jpara) = crtr(3)
         call rsadpa(result, 'E', 1, zk16(jcrk+3), numarc,&
                     0, sjv=jpara, styp=k8bid)
-        zr(jpara) = zr(jcrr+3)
+        zr(jpara) = crtr(4)
     endif
 !
 ! --- ARCHIVAGE DU MODELE, MATERIAU, CARA_ELEM ET DE LA SD CHARGE

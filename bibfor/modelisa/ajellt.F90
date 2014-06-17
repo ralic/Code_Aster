@@ -69,8 +69,8 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
     character(len=*) :: ligrez, nomaz, typelz, phenoz, modelz, limaz, linoz
 ! ----- VARIABLES LOCALES -------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idapma, idapno, idlima, idlino, idlity, idmata
-    integer :: idmode, idnbma, idnoma, idphen, idpoma, idpono, imodl
+    integer :: i,   idlima, idlino, idlity
+    integer ::     idpoma, idpono, imodl
     integer :: iret, iret1, iret2, ityp, jdlima, jdlino, jdpm
     integer :: jdtm, lolima, lolimx, lolino, lolinx, lopomx, loponx
     integer :: matard, nbma, nbmadi, nbmail, nbmax, nbno, nbnodi
@@ -82,6 +82,13 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
     character(len=16) :: pheno, modeli, typel
     character(len=19) :: ligret
     character(len=24) :: lima, lino, typmai
+    integer, pointer :: apma(:) => null()
+    character(len=16), pointer :: phen(:) => null()
+    integer, pointer :: apno(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: vnbma(:) => null()
+    integer, pointer :: mata(:) => null()
+    character(len=16), pointer :: mode(:) => null()
 ! ====================== DEBUT DU CODE EXECUTABLE ======================
 !
     call jemarq()
@@ -117,11 +124,11 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! --- NOM DE LA MODELISATION :
 !     ----------------------
-    call jeveuo(ligret//'.MODE', 'E', idmode)
+    call jeveuo(ligret//'.MODE', 'E', vk16=mode)
 !
 ! --- NOM DU PHENOMENE :
 !     ----------------
-    call jeveuo(ligret//'.PHEN', 'E', idphen)
+    call jeveuo(ligret//'.PHEN', 'E', vk16=phen)
 !
 ! --- TABLEAU DE POINTEURS DANS LA LISTE DES MAILLES :
 !     ----------------------------------------------
@@ -133,11 +140,11 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! --- NOM DU MAILLAGE :
 !     ---------------
-    call jeveuo(ligret//'.LGRF', 'E', idnoma)
+    call jeveuo(ligret//'.LGRF', 'E', vk8=lgrf)
 !
 ! --- NOMBRE DE MAILLES TARDIVES :
 !     --------------------------
-    call jeveuo(ligret//'.MATA', 'E', idmata)
+    call jeveuo(ligret//'.MATA', 'E', vi=mata)
 !
 ! --- VECTEUR DE LA LISTE DES NOEUDS CUMULES DU LIGRET :
 !     ------------------------------------------------
@@ -145,22 +152,22 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! --- NOMBRE D'AFFECTATIONS DE MAILLES :
 !     --------------------------------
-    call jeveuo(ligret//'.APMA', 'E', idapma)
+    call jeveuo(ligret//'.APMA', 'E', vi=apma)
 !
 ! --- NOMBRE D'AFFECTATIONS DE NOEUDS :
 !     -------------------------------
-    call jeveuo(ligret//'.APNO', 'E', idapno)
+    call jeveuo(ligret//'.APNO', 'E', vi=apno)
 !
 ! --- NOMBRE D'AFFECTATIONS DE MAILLES :
 !     --------------------------------
-    call jeveuo(ligret//'.NBMA', 'E', idnbma)
+    call jeveuo(ligret//'.NBMA', 'E', vi=vnbma)
 !
-    zi(idnbma) = zi(idnbma) + nbma
+    vnbma(1) = vnbma(1) + nbma
 !
 ! --- ON AFFECTE UNE FOIS POUR TOUTES LE NOM DU MAILLAGE :
 !     --------------------------------------------------
     if (iret .eq. 0) then
-        zk8(idnoma) = noma
+        lgrf(1) = noma
     endif
 !
 ! --- RECUPERATION DE LA LISTE DES MAILLES A AFFECTER :
@@ -219,7 +226,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   NOMBRE D'AFFECTATIONS DE MAILLES :
 !       --------------------------------
-        zi(idapma) = zi(idapma) + 1
+        apma(1) = apma(1) + 1
 !
 ! ---   LONGUEUR DU VECTEUR LIGRET.POMA :
 !       -------------------------------
@@ -227,7 +234,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   REAJUSTEMENT EVENTUEL DU VECTEUR POMA :
 !       -------------------------------------
-        if (zi(idapma) .ge. lopomx) then
+        if (apma(1) .ge. lopomx) then
             call juveca(ligret//'.POMA', 2*lopomx)
             call jeveuo(ligret//'.POMA', 'E', idpoma)
         endif
@@ -266,7 +273,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   NOMBRE D'AFFECTATIONS DE NOEUDS :
 !       -------------------------------
-        zi(idapno) = zi(idapno) + 1
+        apno(1) = apno(1) + 1
 !
 ! ---   LONGUEUR DU VECTEUR LIGRET.PONO :
 !       -------------------------------
@@ -274,7 +281,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   REAJUSTEMENT EVENTUEL DU VECTEUR PONO :
 !       -------------------------------------
-        if (zi(idapno) .gt. loponx) then
+        if (apno(1) .gt. loponx) then
             call juveca(ligret//'.PONO', 2*loponx)
             call jeveuo(ligret//'.PONO', 'E', idpono)
         endif
@@ -287,7 +294,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   ON INCREMENTE LE NOMBRE DE MAILLES TARDIVES :
 !       -------------------------------------------
-        zi(idmata) = zi(idmata) + 1
+        mata(1) = mata(1) + 1
         matard = matard + 1
 !
 ! ---   AFFECTATION DU VECTEUR DES NOEUDS DU LIGRET :
@@ -318,7 +325,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 ! ---   AFFECTATION DE LA LISTE DES MAILLES CUMULEES :
 !       --------------------------------------------
         do 20 i = 1, nbma
-            zi(idlima+zi(idpoma+zi(idapma)-1)+i-1) = zi(jdlima+i-1)
+            zi(idlima+zi(idpoma+apma(1)-1)+i-1) = zi(jdlima+i-1)
             if (typel .eq. ' ') then
                 numail = zi(jdlima+i-1)
                 nutypm = zi(jdtm+numail-1)
@@ -327,26 +334,26 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
                 call jenonu(jexnom('&CATA.TE.NOMTE', typel), ityp)
             endif
 !
-            zi(idlity+zi(idpoma+zi(idapma)-1)+i-1) = ityp
+            zi(idlity+zi(idpoma+apma(1)-1)+i-1) = ityp
 20      continue
 !
-        zi(idnbma) = zi(idnbma) + nbma
+        vnbma(1) = vnbma(1) + nbma
 !
 ! ---   VECTEUR DE POINTEURS DANS LE VECTEUR DES MAILLES :
 !       ------------------------------------------------
-        zi(idpoma+zi(idapma)) = zi(idpoma+zi(idapma)-1) + nbma
+        zi(idpoma+apma(1)) = zi(idpoma+apma(1)-1) + nbma
 !
-        call jeecra(ligret//'.LIMA', 'LONUTI', zi(idpoma+zi(idapma)))
+        call jeecra(ligret//'.LIMA', 'LONUTI', zi(idpoma+apma(1)))
 !
     endif
 !
 ! --- AFFECTATION DE LA MODELISATION AU LIGRET :
 !     ----------------------------------------
-    zk16(idmode) = modeli
+    mode(1) = modeli
 !
 ! --- AFFECTATION DU PHENOMENE AU LIGRET :
 !     ----------------------------------
-    zk16(idphen) = pheno
+    phen(1) = pheno
 !
     call jedema()
 !

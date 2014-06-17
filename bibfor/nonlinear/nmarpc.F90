@@ -51,12 +51,13 @@ subroutine nmarpc(result, sdener, numrep, instan)
     character(len=10) :: nompar(nbpar)
 ! ----------------------------------------------------------------------
     integer :: ifm, niv
-    integer :: jener, iparar
+    integer ::  iparar
     character(len=19) :: tablpc
     integer :: vali
     character(len=8) :: k8bid
     complex(kind=8) :: c16bid
     real(kind=8) :: valr(7)
+    real(kind=8), pointer :: vale(:) => null()
 !
     data         nompar / 'NUME_REUSE','INST'      ,'TRAV_EXT  ',&
      &                      'ENER_CIN'  ,'ENER_TOT'  ,'TRAV_AMOR ',&
@@ -75,10 +76,10 @@ subroutine nmarpc(result, sdener, numrep, instan)
 !
 ! --- CONSTRUCTION DES LISTES DES PARAMETRES
 !
-    call jeveuo(sdener//'.VALE', 'L', jener)
+    call jeveuo(sdener//'.VALE', 'L', vr=vale)
     valr(1) = instan
     do 10 iparar = 1, 6
-        valr(1+iparar) = zr(jener-1+iparar)
+        valr(1+iparar) = vale(iparar)
 10  end do
     vali = numrep
 !

@@ -106,7 +106,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     integer :: n1, n2
     integer :: jpa, jopt, jcha
     integer :: nbac, nbpa, nbpara
-    integer :: jdim, jcoor, jtype, ltymo
+    integer ::  jcoor,  ltymo
     integer :: nnoem, nelem, ndim, nncp
 !
     character(len=4) :: type
@@ -131,6 +131,8 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
     real(kind=8) :: tbgrca(3)
 !
     character(len=24) :: valkm(2)
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: dime(:) => null()
 !
 !
     call jemarq()
@@ -341,13 +343,13 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
             call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 !
-            call jeveuo(noma//'.DIME', 'L', jdim)
+            call jeveuo(noma//'.DIME', 'L', vi=dime)
             call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-            call jeveuo(noma//'.TYPMAIL', 'L', jtype)
+            call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
-            nnoem=zi(jdim)
-            nelem=zi(jdim+2)
-            ndim=zi(jdim+5)
+            nnoem=dime(1)
+            nelem=dime(3)
+            ndim=dime(6)
 !
 ! 2 - CREATION D OBJETS TEMPORAIRES UTILES POUR LA SUITE
 ! '&&SINGUM.DIME' (DIM=3) CONTIENT
@@ -368,7 +370,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !                 EF UTILE = EF SURF EN 2D ET VOL EN 3D
 !   CONNECTIVITE INVERSE NOEUD N
 !
-            call singum(noma, ndim, nnoem, nelem, zi(jtype),&
+            call singum(noma, ndim, nnoem, nelem, typmail,&
                         zr(jcoor))
 !
 ! 3 - BOUCLE SUR LES INSTANTS DEMANDES

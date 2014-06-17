@@ -59,11 +59,13 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
     real(kind=8) :: instap
     real(kind=8) :: coef1, coef2, coef3
     character(len=19) :: depent, vitent, accent
-    integer :: jdepen, jviten, jaccen
     character(len=19) :: mafdep, mafvit, mafacc, mamula, mapsid
     integer :: jnodep, jnovit, jnoacc, jmltap, jpsdel
     integer :: nbexci
     integer :: ifm, niv
+    real(kind=8), pointer :: accen(:) => null()
+    real(kind=8), pointer :: depen(:) => null()
+    real(kind=8), pointer :: viten(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,15 +103,15 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
     call ndynkk(sddyna, 'DEPENT', depent)
     call ndynkk(sddyna, 'VITENT', vitent)
     call ndynkk(sddyna, 'ACCENT', accent)
-    call jeveuo(depent(1:19)//'.VALE', 'E', jdepen)
-    call jeveuo(vitent(1:19)//'.VALE', 'E', jviten)
-    call jeveuo(accent(1:19)//'.VALE', 'E', jaccen)
+    call jeveuo(depent(1:19)//'.VALE', 'E', vr=depen)
+    call jeveuo(vitent(1:19)//'.VALE', 'E', vr=viten)
+    call jeveuo(accent(1:19)//'.VALE', 'E', vr=accen)
 !
 ! --- EVALUATION DEPL/VITE/ACCE ENTRAINEMENT
 !
-    call r8inir(neq, zero, zr(jdepen), 1)
-    call r8inir(neq, zero, zr(jviten), 1)
-    call r8inir(neq, zero, zr(jaccen), 1)
+    call r8inir(neq, zero, depen, 1)
+    call r8inir(neq, zero, viten, 1)
+    call r8inir(neq, zero, accen, 1)
 !
     do iex = 1, nbexci
         if (zi(jmltap+iex-1) .eq. 1) then
@@ -125,9 +127,9 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
             coef3 = zero
         endif
         do ie = 1, neq
-            zr(jdepen+ie-1) = zr(jdepen+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef1
-            zr(jviten+ie-1) = zr(jviten+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef2
-            zr(jaccen+ie-1) = zr(jaccen+ie-1)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef3
+            depen(ie) = depen(ie)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef1
+            viten(ie) = viten(ie)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef2
+            accen(ie) = accen(ie)+ zr(jpsdel+(iex-1)*neq+ ie-1)*coef3
         end do
     end do
 !

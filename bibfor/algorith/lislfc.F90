@@ -52,7 +52,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 !
 !
 !
-    integer :: jfcha2, jinfc2, jlcha2
+    integer ::  jinfc2, jlcha2
     character(len=24) :: k24bid
     integer :: nfcplx, nfreel
     integer :: nccplx, ncreel
@@ -62,6 +62,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
     real(kind=8) :: rcoef, icoef
     character(len=19) :: nomf19
     integer :: iret
+    character(len=24), pointer :: fcha(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,7 +73,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
     if (iexcit .eq. 0) then
         call jeveuo(excit(1:19)//'.INFC', 'L', jinfc2)
         call jeveuo(excit(1:19)//'.LCHA', 'L', jlcha2)
-        call jeveuo(excit(1:19)//'.FCHA', 'L', jfcha2)
+        call jeveuo(excit(1:19)//'.FCHA', 'L', vk24=fcha)
     endif
 !
 ! -------- FONCTIONS MULTIPLICATIVES DES CHARGES
@@ -100,7 +101,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 !
     else
         if (iexcit .eq. 0) then
-            if (zk24(jfcha2+ichar-1)(1:1) .eq. '&') then
+            if (fcha(ichar)(1:1) .eq. '&') then
                 nfreel = 0
             else
                 nfreel = 1
@@ -131,7 +132,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
         else
             if (nfreel .ne. 0) then
                 if (iexcit .eq. 0) then
-                    nomfct = zk24(jfcha2+ichar-1)(1:8)
+                    nomfct = fcha(ichar)(1:8)
                 else if (nexci.ne.0) then
                     call getvid('EXCIT', 'FONC_MULT', iocc=indic, scal=nomfct, nbret=nfreel)
                 endif

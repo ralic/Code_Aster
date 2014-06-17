@@ -78,8 +78,8 @@ subroutine op0100()
 #include "asterfort/xcourb.h"
     integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, nbpara
     integer :: lnoff, jinst, ndeg, nbropt, iadrco, iadrno, j, ipuls, iord0
-    integer :: iord1, iord2, nborn, nbco, ibor, ig, lnoeu, labscu, nbval
-    integer :: ndimte, ier, ndim, jordr, jopt
+    integer :: iord1, iord2, nborn, nbco, ibor, ig,   nbval
+    integer :: ndimte, ier, ndim,  jopt
     integer :: nxpara
     parameter (nxpara = 11)
 !
@@ -102,6 +102,9 @@ subroutine op0100()
 !
     logical :: exitim, thlagr, connex, glagr, milieu, direc
     logical :: thlag2, pair, lncas, lmelas, incr, lmoda
+    real(kind=8), pointer :: abscur(:) => null()
+    character(len=8), pointer :: vnoeud(:) => null()
+    integer, pointer :: ordr(:) => null()
 !
 !     ==============
 !     1. PREALABLES
@@ -438,13 +441,13 @@ subroutine op0100()
                     call jeveuo('&&'//nompro//'.GBILIN', 'L', ig)
                     call tbexve(table, 'NOEUD', '&&'//nompro//'.NOEUD', 'V', nbval,&
                                 k8bid)
-                    call jeveuo('&&'//nompro//'.NOEUD', 'L', lnoeu)
+                    call jeveuo('&&'//nompro//'.NOEUD', 'L', vk8=vnoeud)
                     call tbexve(table, 'ABSC_CURV', '&&'//nompro// '.ABSCUR', 'V', nbval,&
                                 k8bid)
-                    call jeveuo('&&'//nompro//'.ABSCUR', 'L', labscu)
+                    call jeveuo('&&'//nompro//'.ABSCUR', 'L', vr=abscur)
 !
                     call detrsd('TABLE', table)
-                    call mmaxgl(nbco, zr(ibor), zr(ig), zk8(lnoeu), zr(labscu),&
+                    call mmaxgl(nbco, zr(ibor), zr(ig), vnoeud, abscur,&
                                 nbord, lnoff, table)
                 else
                     call tbexve(table, 'G_BILIN', '&&'//nompro// '.GBILIN', 'V', nbval,&
@@ -618,8 +621,8 @@ subroutine op0100()
         if (incr) then
             call jeexin(resuc2//'           .ORDR', iret)
             if (iret .ne. 0) then
-                call jeveuo(resuc2//'           .ORDR', 'L', jordr)
-                call rsrusd(resuc2, zi(jordr))
+                call jeveuo(resuc2//'           .ORDR', 'L', vi=ordr)
+                call rsrusd(resuc2, ordr(1))
                 call detrsd('RESULTAT', resuc2)
             endif
 !

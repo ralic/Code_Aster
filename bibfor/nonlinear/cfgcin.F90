@@ -58,10 +58,11 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
     character(len=24) :: secmbr, cncin0
     integer :: jsecmb
     character(len=19) :: ddeplc, ddelt
-    integer :: jddepc, jddelt
     complex(kind=8) :: c16bid
     character(len=19) :: k19bla
     integer :: iret
+    real(kind=8), pointer :: vddelt(:) => null()
+    real(kind=8), pointer :: ddepc(:) => null()
     c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
@@ -88,7 +89,7 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
     ddelt = resoco(1:14)//'.DDEL'
     cncin0 = resoco(1:14)//'.CIN0'
     secmbr = resoco(1:14)//'.SECM'
-    call jeveuo(ddeplc(1:19)//'.VALE', 'E', jddepc)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
     call jeveuo(secmbr(1:19)//'.VALE', 'E', jsecmb)
 !
 ! --- INITIALISATION A PARTIR DU CHAMP DE MULTIPLICATEURS INITIAL MU
@@ -116,8 +117,8 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 !
 ! ----- U = U + (-DELTA)
 !
-        call jeveuo(ddelt(1:19) //'.VALE', 'L', jddelt)
-        call daxpy(neq, -1.d0, zr(jddelt), 1, zr(jddepc),&
+        call jeveuo(ddelt(1:19) //'.VALE', 'L', vr=vddelt)
+        call daxpy(neq, -1.d0, vddelt, 1, ddepc,&
                    1)
     endif
 !

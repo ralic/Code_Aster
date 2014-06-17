@@ -118,7 +118,6 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     logical :: lgrot, lendo
     character(len=19) :: cnfins(2), cndirs(2), k19bla
     character(len=19) :: depplu, sigplu, varplu, complu
-    integer :: jddepl
     character(len=19) :: sigplt, varplt, depplt
     character(len=24) :: codere
     character(len=19) :: vefint, vediri
@@ -127,6 +126,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     character(len=19) :: solalt(zsolal), valint(zvalin, 2)
     logical :: echec
     integer :: ifm, niv
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -184,7 +184,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
 !
 ! --- ACCES VARIABLES
 !
-    call jeveuo(ddepla(1:19)//'.VALE', 'E', jddepl)
+    call jeveuo(ddepla(1:19)//'.VALE', 'E', vr=vale)
 !
 ! --- PREPARATION DES ZONES TEMPORAIRES POUR ITERATION COURANTE
 !
@@ -361,7 +361,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
 !
 ! --- AJUSTEMENT DE LA DIRECTION DE DESCENTE
 !
-    call daxpy(neq, rhoopt-1.d0, zr(jddepl), 1, zr(jddepl),&
+    call daxpy(neq, rhoopt-1.d0, vale, 1, vale,&
                1)
 !
 ! --- RECUPERATION DES VARIABLES EN T+ SI NECESSAIRE

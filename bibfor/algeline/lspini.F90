@@ -32,20 +32,21 @@ subroutine lspini(solveu)
 !
 !
 !
-    integer :: jslvk, jslvi
     character(len=8) :: precon
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: slvi(:) => null()
 !
 !------------------------------------------------------------------
     call jemarq()
 !
 ! --- LECTURES PARAMETRES DU SOLVEUR
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    precon = zk24(jslvk-1+2)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    precon = slvk(2)
 !
 ! --- REMISE A ZERO
     if (precon .eq. 'LDLT_SP') then
-        call jeveuo(solveu//'.SLVI', 'E', jslvi)
-        zi(jslvi-1+5)=0
+        call jeveuo(solveu//'.SLVI', 'E', vi=slvi)
+        slvi(5)=0
     endif
 !
     call jedema()

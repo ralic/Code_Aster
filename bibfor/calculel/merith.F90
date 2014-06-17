@@ -74,8 +74,11 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
 !     VARIABLES LOCALES:
 !     ------------------
 !-----------------------------------------------------------------------
-    integer :: i, iret, jlire1, jlire2, jlire3, long1, long2
+    integer :: i, iret,    long1, long2
     integer :: long3, nh, numor3
+    character(len=24), pointer :: lire1(:) => null()
+    character(len=24), pointer :: lire2(:) => null()
+    character(len=24), pointer :: lire3(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     modele = modelz
@@ -92,7 +95,7 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
     long1=0
     if (iret .ne. 0) then
         call jelira('&MERITH1           .RELR', 'LONUTI', long1)
-        call jeveuo('&MERITH1           .RELR', 'L', jlire1)
+        call jeveuo('&MERITH1           .RELR', 'L', vk24=lire1)
     endif
 !
 !     -- RIGIDITE CORRESPONDANT AUX ELEMENTS D'ECHANGE:
@@ -102,7 +105,7 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
     long2=0
     if (iret .ne. 0) then
         call jelira('&MERITH2           .RELR', 'LONUTI', long2)
-        call jeveuo('&MERITH2           .RELR', 'L', jlire2)
+        call jeveuo('&MERITH2           .RELR', 'L', vk24=lire2)
     endif
 !
 !     -- OPERATEUR ELEMENTAIRE DE CONVECTION NATURELLE:
@@ -113,7 +116,7 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
     long3=0
     if (iret .ne. 0) then
         call jelira('&MERITH3           .RELR', 'LONUTI', long3)
-        call jeveuo('&MERITH3           .RELR', 'L', jlire3)
+        call jeveuo('&MERITH3           .RELR', 'L', vk24=lire3)
     endif
 !
 !
@@ -127,13 +130,13 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
                 'RIGI_THER')
 !
     do 1,i = 1,long1
-    call reajre(matel, zk24(jlire1-1+i), base)
+    call reajre(matel, lire1(i), base)
     1 end do
     do 2,i = 1,long2
-    call reajre(matel, zk24(jlire2-1+i), base)
+    call reajre(matel, lire2(i), base)
     2 end do
     do 3,i = 1,long3
-    call reajre(matel, zk24(jlire3-1+i), base)
+    call reajre(matel, lire3(i), base)
     3 end do
 !
 ! --- MENAGE

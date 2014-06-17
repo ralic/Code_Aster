@@ -44,12 +44,14 @@ subroutine calapl(char, ligrmo, noma)
 !      LIGRMO : NOM DU LIGREL DE MODELE
 !      NOMA   : NOM DU MAILLAGE
 ! ----------------------------------------------------------------------
-    integer :: ima, nbflp, jvalv, jncmp, iocc, into, jtran, jno, nbtou, nbma
+    integer :: ima, nbflp,   iocc, into, jtran, jno, nbtou, nbma
     integer :: jma, nbma2, jma2, ntra, nsym, jnuma
     character(len=8) :: k8b, typmcl(2), typmc2(2)
     character(len=16) :: motclf, motcle(2), motcl2(2), listma, ltrans
     character(len=19) :: carte
     character(len=24) :: mesmai, mesma2, connex
+    character(len=8), pointer :: ncmp(:) => null()
+    character(len=16), pointer :: valv(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -83,15 +85,15 @@ subroutine calapl(char, ligrmo, noma)
 !
         call alcart('G', carte, noma, 'LISTMA')
 !
-        call jeveuo(carte//'.NCMP', 'E', jncmp)
-        call jeveuo(carte//'.VALV', 'E', jvalv)
+        call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
+        call jeveuo(carte//'.VALV', 'E', vk16=valv)
 !
 !        STOCKAGE DE VALEURS NULLES SUR TOUT LE MAILLAGE
 !
-        zk8(jncmp) = 'LISTMA'
-        zk8(jncmp+1) = 'TRANS'
-        zk16(jvalv) = ' '
-        zk16(jvalv+1) = ' '
+        ncmp(1) = 'LISTMA'
+        ncmp(2) = 'TRANS'
+        valv(1) = ' '
+        valv(2) = ' '
         call nocart(carte, 1, 2)
 !
         call wkvect(ltrans, 'G V R', 6, jtran)
@@ -102,10 +104,10 @@ subroutine calapl(char, ligrmo, noma)
         zr(jtran+4) = 0.d0
         zr(jtran+5) = 0.d0
 !
-        zk8(jncmp) = 'LISTMA'
-        zk8(jncmp+1) = 'TRANS'
-        zk16(jvalv) = listma
-        zk16(jvalv+1) = ltrans
+        ncmp(1) = 'LISTMA'
+        ncmp(2) = 'TRANS'
+        valv(1) = listma
+        valv(2) = ltrans
 !
         call getvr8(motclf, 'TRANS', iocc=iocc, nbval=0, nbret=ntra)
         call getvr8(motclf, 'SYME', iocc=iocc, nbval=0, nbret=nsym)

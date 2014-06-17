@@ -50,13 +50,17 @@ subroutine asmasu(ma1, ma2, mag)
     character(len=24) :: nogma, nogmab, nogno, nognob
     integer :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
     integer :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv
-    integer :: iadim1, iadim2, iadime
+    integer ::   iadime
     integer :: iagma1, iagma2, iagmax
     integer :: iacon1, iacon2, iaconx
     integer :: iagno1, iagno2, iagnox
     integer :: iatyp1, iatyp2, iatypx
     integer :: nbgno, nbgn1, nbgn2, ii, igeomr, iadesc, ibid, iarefe
-    integer :: iatyma, iacoo1, iacoo2, iavale, iret, iret1, iret2
+    integer :: iatyma,   iavale, iret, iret1, iret2
+    real(kind=8), pointer :: coo1(:) => null()
+    real(kind=8), pointer :: coo2(:) => null()
+    integer, pointer :: dim1(:) => null()
+    integer, pointer :: dim2(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -65,8 +69,8 @@ subroutine asmasu(ma1, ma2, mag)
 !
 !     --OBJET .DIME :
 !     ---------------
-    call jeveuo(ma1//'.DIME', 'L', iadim1)
-    call jeveuo(ma2//'.DIME', 'L', iadim2)
+    call jeveuo(ma1//'.DIME', 'L', vi=dim1)
+    call jeveuo(ma2//'.DIME', 'L', vi=dim2)
     call wkvect(mag//'.DIME', 'G V I', 6, iadime)
 !CC SOMME POUR : 1 LE NB DE NOEUDS,
 !CC              2       DE NOEUDS LAGRANGES,
@@ -74,19 +78,19 @@ subroutine asmasu(ma1, ma2, mag)
 !CC              4       DE SUPER MAILLES
 !CC              5       DU MAJORANT DE SUPER MAILLES
     do 10,i=1,5
-    zi(iadime-1+i)=zi(iadim1-1+i)+zi(iadim2-1+i)
+    zi(iadime-1+i)=dim1(i)+dim2(i)
     10 end do
 !
-    ncoor=max(zi(iadim1-1+6),zi(iadim2-1+6))
+    ncoor=max(dim1(6),dim2(6))
     zi(iadime-1+6)=ncoor
 !
     nbma=zi(iadime-1+3)
-    nbm1=zi(iadim1-1+3)
-    nbm2=zi(iadim2-1+3)
+    nbm1=dim1(3)
+    nbm2=dim2(3)
 !
     nbno=zi(iadime-1+1)
-    nbn1=zi(iadim1-1+1)
-    nbn2=zi(iadim2-1+1)
+    nbn1=dim1(1)
+    nbn2=dim2(1)
 !
 !     --OBJET .NOMMAI:
 !     ----------------
@@ -170,18 +174,18 @@ subroutine asmasu(ma1, ma2, mag)
 !
     call wkvect(coordo//'.REFE', 'G V K24', 4, iarefe)
     zk24(iarefe-1+1)= mag
-    call jeveuo(ma1//'.COORDO    .VALE', 'L', iacoo1)
-    call jeveuo(ma2//'.COORDO    .VALE', 'L', iacoo2)
+    call jeveuo(ma1//'.COORDO    .VALE', 'L', vr=coo1)
+    call jeveuo(ma2//'.COORDO    .VALE', 'L', vr=coo2)
     call wkvect(coordo//'.VALE', 'G V R', 3*nbno, iavale)
 !     -- COORDONNEES DES NOEUDS :
     do 51 , ino=1, nbn1
     do 511, k=1,3
-    zr(iavale-1+3*(ino-1)+k)=zr(iacoo1-1+3*(ino-1)+k)
+    zr(iavale-1+3*(ino-1)+k)=coo1(3*(ino-1)+k)
 511  continue
     51 end do
     do 52 , ino=1, nbn2
     do 521, k=1,3
-    zr(iavale-1+3*(nbn1+ino-1)+k)=zr(iacoo2-1+3*(ino-1)+k)
+    zr(iavale-1+3*(nbn1+ino-1)+k)=coo2(3*(ino-1)+k)
 521  continue
     52 end do
 !

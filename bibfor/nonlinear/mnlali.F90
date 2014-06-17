@@ -85,8 +85,15 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
     real(kind=8) :: omega, lambda, ampref, alpha, eta, jeu
     integer :: ivect, neq, neqv, nbmode, nbpari, nbparr, nbpark, ilnm, ifreq
     integer :: iadim, i, j, k, icdl
-    integer :: neqs, iraid, ijeu, ijmax, ityp, nddlx, inddl, nddly, iorig
-    integer :: ineqs, ireg, nt, nddl, ht, idep1, idep2, itemp
+    integer :: neqs,   ijmax,  nddlx,  nddly
+    integer ::   nt, nddl, ht, idep1, idep2, itemp
+    real(kind=8), pointer :: raid(:) => null()
+    real(kind=8), pointer :: reg(:) => null()
+    character(len=8), pointer :: type(:) => null()
+    integer, pointer :: vneqs(:) => null()
+    real(kind=8), pointer :: vjeu(:) => null()
+    real(kind=8), pointer :: orig(:) => null()
+    integer, pointer :: vnddl(:) => null()
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -102,14 +109,14 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
     lambda = 0.d0
     call jeveuo(adime, 'L', iadim)
     call jeveuo(xcdl, 'L', icdl)
-    call jeveuo(parcho//'.NDDL', 'L', inddl)
-    call jeveuo(parcho//'.REG', 'L', ireg)
-    call jeveuo(parcho//'.JEU', 'L', ijeu)
+    call jeveuo(parcho//'.NDDL', 'L', vi=vnddl)
+    call jeveuo(parcho//'.REG', 'L', vr=reg)
+    call jeveuo(parcho//'.JEU', 'L', vr=vjeu)
     call jeveuo(parcho//'.JEUMAX', 'L', ijmax)
-    call jeveuo(parcho//'.TYPE', 'L', ityp)
-    call jeveuo(parcho//'.RAID', 'L', iraid)
-    call jeveuo(parcho//'.NEQS', 'L', ineqs)
-    call jeveuo(parcho//'.ORIG', 'L', iorig)
+    call jeveuo(parcho//'.TYPE', 'L', vk8=type)
+    call jeveuo(parcho//'.RAID', 'L', vr=raid)
+    call jeveuo(parcho//'.NEQS', 'L', vi=vneqs)
+    call jeveuo(parcho//'.ORIG', 'L', vr=orig)
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION ET MISE A ZERO DU VECTEUR D'INITIALISATION
 ! ----------------------------------------------------------------------
@@ -203,39 +210,39 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, adime,&
     neqs=0
     do 20 i = 1, nchoc
 ! ---   ON RECUPERE LES PARAMETRES DE CHOCS
-        alpha=zr(iraid-1+i)/zr(iadim)
-        eta=zr(ireg-1+i)
-        jeu=zr(ijeu-1+i)/zr(ijmax)
-        if (zk8(ityp-1+i)(1:7) .eq. 'BI_PLAN') then
-            nddl=zi(inddl-1+6*(i-1)+1)
+        alpha=raid(i)/zr(iadim)
+        eta=reg(i)
+        jeu=vjeu(i)/zr(ijmax)
+        if (type(i)(1:7) .eq. 'BI_PLAN') then
+            nddl=vnddl(6*(i-1)+1)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
             call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1),&
                        1)
             call mnlbil(zr(idep1), omega, alpha, eta, h,&
                         hf, nt, zr(ivect+ nd*(2*h+1)+neqs*(2*hf+1)))
-        else if (zk8(ityp-1+i)(1:6).eq.'CERCLE') then
-            nddlx=zi(inddl-1+6*(i-1)+1)
-            nddly=zi(inddl-1+6*(i-1)+2)
+        else if (type(i)(1:6).eq.'CERCLE') then
+            nddlx=vnddl(6*(i-1)+1)
+            nddly=vnddl(6*(i-1)+2)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
             call dscal(2*h+1, 0.d0, zr(idep2), 1)
             call dcopy(2*h+1, zr(ivect-1+nddlx), nd, zr(idep1), 1)
-            zr(idep1)=zr(idep1)-zr(iorig-1+3*(i-1)+1)
+            zr(idep1)=zr(idep1)-orig(3*(i-1)+1)
             call dscal(2*h+1, 1.d0/jeu, zr(idep1), 1)
             call dcopy(2*h+1, zr(ivect-1+nddly), nd, zr(idep2), 1)
-            zr(idep2)=zr(idep2)-zr(iorig-1+3*(i-1)+2)
+            zr(idep2)=zr(idep2)-orig(3*(i-1)+2)
             call dscal(2*h+1, 1.d0/jeu, zr(idep2), 1)
             call mnlcir(xdep1, xdep2, omega, alpha, eta,&
                         h, hf, nt, xtemp)
             call dcopy(4*(2*hf+1), zr(itemp), 1, zr(ivect+nd*(2*h+1)+ neqs*(2*hf+1)), 1)
-        else if (zk8(ityp-1+i)(1:4).eq.'PLAN') then
-            nddl=zi(inddl-1+6*(i-1)+1)
+        else if (type(i)(1:4).eq.'PLAN') then
+            nddl=vnddl(6*(i-1)+1)
             call dscal(2*h+1, 0.d0, zr(idep1), 1)
             call daxpy(2*h+1, 1.d0/jeu, zr(ivect-1+nddl), nd, zr(idep1),&
                        1)
             call mnluil(zr(idep1), omega, alpha, eta, h,&
                         hf, nt, zr(ivect+ nd*(2*h+1)+neqs*(2*hf+1)))
         endif
-        neqs=neqs+zi(ineqs-1+i)
+        neqs=neqs+vneqs(i)
 20  continue
 !
 ! ----------------------------------------------------------------------

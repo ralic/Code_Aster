@@ -77,13 +77,17 @@ subroutine retrec(nomres, resgen, nomsst)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad, iarchi, ibid, ich, idinsg
+    integer :: i, i1, iad, iarchi, ibid, ich
     integer :: idresu, idvecg, ieq, ier, ire1, ire2, ire3
     integer :: iretou, j, jinst, jnume, k, k1, ldnew
-    integer :: linst, llchab, llnequ, llnueq, llors, llprs
-    integer :: llref2, lmapro, lmoet, lsilia, lsst
+    integer :: linst, llchab,   llors, llprs
+    integer ::  lmapro, lmoet, lsilia, lsst
     integer :: n1, nbcham, nbddg, nbinsg, nbinst, nbsst, neq
     integer :: neqet, neqgen, neqred, nusst, nutars
+    real(kind=8), pointer :: disc(:) => null()
+    integer, pointer :: nllnequ(:) => null()
+    integer, pointer :: nueq(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     data soutr  /'&SOUSSTR'/
 !-----------------------------------------------------------------------
@@ -150,11 +154,11 @@ subroutine retrec(nomres, resgen, nomsst)
 !
     call dismoi('NUME_DDL', trange, 'RESU_DYNA', repk=numgen)
     numgen(15:19) = '.NUME'
-    call jeveuo(numgen//'.REFN', 'L', llref2)
-    modgen = zk24(llref2)(1:8)
+    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
+    modgen = refn(1)(1:8)
     call jelibe(numgen//'.REFN')
-    call jeveuo(numgen//'.NEQU', 'L', llnequ)
-    neqgen = zi(llnequ)
+    call jeveuo(numgen//'.NEQU', 'L', vi=nllnequ)
+    neqgen = nllnequ(1)
     call jelibe(numgen//'.NEQU')
 !
 !
@@ -263,11 +267,11 @@ subroutine retrec(nomres, resgen, nomsst)
 ! --- RESTITUTION SUR BASE PHYSIQUE ---
 ! -------------------------------------
 !
-    call jeveuo(numgen//'.NUEQ', 'L', llnueq)
+    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
 !
     iarchi = 0
     if (interp(1:3) .ne. 'NON') then
-        call jeveuo(trange//'.DISC', 'L', idinsg)
+        call jeveuo(trange//'.DISC', 'L', vr=disc)
         call jelira(trange//'.DISC', 'LONMAX', nbinsg)
 !
         if (elim .eq. 0) then
@@ -292,7 +296,7 @@ subroutine retrec(nomres, resgen, nomsst)
                 endif
                 chamno(20:24) = '.VALE'
                 call jeveuo(chamno, 'E', ldnew)
-                call extrac(interp, epsi, crit, nbinsg, zr(idinsg),&
+                call extrac(interp, epsi, crit, nbinsg, disc,&
                             zr(jinst+i), zr(idresu), neqgen, zr(idvecg), ier)
 !
                 if (elim .ne. 0) then
@@ -314,7 +318,7 @@ subroutine retrec(nomres, resgen, nomsst)
                     if (elim .ne. 0) then
                         iad=lmoet+ieq+j-1
                     else
-                        iad=idvecg+zi(llnueq+ieq+j-2)-1
+                        iad=idvecg+nueq(1+ieq+j-2)-1
                     endif
 !
 ! --- BOUCLE SUR LES EQUATIONS PHYSIQUES
@@ -376,7 +380,7 @@ subroutine retrec(nomres, resgen, nomsst)
                     if (elim .ne. 0) then
                         iad=lmoet+ieq+j-1
                     else
-                        iad=idresu+(zi(jnume+i)-1)*neqgen+ zi(llnueq+&
+                        iad=idresu+(zi(jnume+i)-1)*neqgen+ nueq(1+&
                         ieq+j-2)-1
                     endif
 !

@@ -60,8 +60,8 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 !                = 20 , PAS DE LIGNES POUR LE PARAMETRE DONNE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: irt, nbpara, nblign, jtbnp, nbpu
-    integer :: jtblp, i, j, k, n, jvale, itrouv,  itrou2
+    integer :: irt, nbpara, nblign,  nbpu
+    integer ::  i, j, k, n, jvale, itrouv,  itrou2
     integer :: ki, kr, kc, kk, jvall,  nbp
     integer ::     imax, imin
     real(kind=8) :: prec, refr, rmax, rmin
@@ -79,6 +79,8 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
     integer, pointer :: vale_i(:) => null()
     character(len=80), pointer :: vale_k(:) => null()
     real(kind=8), pointer :: vale_r(:) => null()
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -98,9 +100,9 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
         call utmess('F', 'UTILITAI4_64')
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -110,11 +112,11 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     do 10 i = 1, npacri
         inpar = lipacr(i)
         do 12 j = 1, nbpara
-            jnpar = zk24(jtblp+4*(j-1))
+            jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) goto 10
 12      continue
         iret = 10
@@ -136,11 +138,11 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
         inpar = lipacr(i)
         rela = lcrpa(i)
         do 22 j = 1, nbpara
-            jnpar = zk24(jtblp+4*(j-1))
+            jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) then
-                type = zk24(jtblp+4*(j-1)+1)
-                nomjv = zk24(jtblp+4*(j-1)+2)
-                nomjvl = zk24(jtblp+4*(j-1)+3)
+                type = tblp(1+4*(j-1)+1)
+                nomjv = tblp(1+4*(j-1)+2)
+                nomjvl = tblp(1+4*(j-1)+3)
                 call jeveuo(nomjv, 'L', jvale)
                 call jeveuo(nomjvl, 'L', jvall)
                 if (rela .eq. 'VIDE') then
@@ -524,8 +526,8 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
     AS_ALLOCATE(vk8=type_r, size=nbpara)
     AS_ALLOCATE(vk24=para_r, size=nbpara)
     do 38 i = 1, nbpara
-        para_r(i) = zk24(jtblp+4*(i-1))
-        type_r(i) = zk24(jtblp+4*(i-1)+1)
+        para_r(i) = tblp(1+4*(i-1))
+        type_r(i) = tblp(1+4*(i-1)+1)
 38  end do
 !
 !     --- CREATION DE LA TABLE ---
@@ -544,10 +546,10 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
         n = numero(k)
         nbp = 0
         do 42 j = 1, nbpara
-            jnpar = zk24(jtblp+4*(j-1) )
-            type = zk24(jtblp+4*(j-1)+1)
-            nomjv = zk24(jtblp+4*(j-1)+2)
-            nomjvl = zk24(jtblp+4*(j-1)+3)
+            jnpar = tblp(1+4*(j-1) )
+            type = tblp(1+4*(j-1)+1)
+            nomjv = tblp(1+4*(j-1)+2)
+            nomjvl = tblp(1+4*(j-1)+3)
             call jeveuo(nomjv, 'L', jvale)
             call jeveuo(nomjvl, 'L', jvall)
             if (zi(jvall+n-1) .eq. 0) goto 42

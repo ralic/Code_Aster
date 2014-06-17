@@ -65,12 +65,13 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nnof, i, j, k, nne, ino, iret, jconx1, jconx2, numnoa, numnob
+    integer :: nnof, i, j, k, nne, ino, iret,  jconx2, numnoa, numnob
     real(kind=8) :: coorma(8), prec, mp(2), epsi(2), ff(nno), lsta, lsna, lstb
     real(kind=8) :: lsnb, solsn, a(ndim), b(ndim), mem(3), memo, normab, coeffk
     real(kind=8) :: prec2, length(12)
     character(len=8) :: alias
     logical :: chgsgn
+    integer, pointer :: connex(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -96,7 +97,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     lsnb=0.d0
 !
 !     RECUPERATION DES DONNEES SUR LE MAILLAGE
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !     NOMBRE DE SOMMETS DE LA FACE
@@ -143,7 +144,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
         if ((lsna.eq.0.d0) .and. (lsta.eq.0.d0)) then
             chgsgn = .true.
             indptf(1)=1
-            indptf(2)=zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
+            indptf(2)=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
             goto 220
 !
         endif
@@ -153,8 +154,8 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
         if (((lsna.eq.0.d0).and.(lsnb.eq.0.d0)) .and. ((lsta*lstb) .lt.r8prem())) then
             chgsgn = .true.
             indptf(1)=2
-            indptf(2)=zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
-            indptf(3)=zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,j)-1)
+            indptf(2)=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
+            indptf(3)=connex(zi(jconx2+nmaabs-1)+fa(ifq,j)-1)
             goto 220
 !
         endif
@@ -232,7 +233,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
                 memo=memo+(a(j)-m(j))**2
 556          continue
             length(3*(i-1)+1)=sqrt(memo)
-            length(3*(i-1)+2)= zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,&
+            length(3*(i-1)+2)= connex(zi(jconx2+nmaabs-1)+fa(ifq,&
             i)-1)
             length(3*(i-1)+3)= 0
 555      continue
@@ -267,17 +268,17 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
             do 105 j = 1, ndim
                 a(j)=zr(igeom-1+ndim*(fa(ifq,i)-1)+j)
 105          continue
-            numnoa=zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
+            numnoa=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
             if (i .eq. nnof) then
                 do 106 j = 1, ndim
                     b(j)=zr(igeom-1+ndim*(fa(ifq,1)-1)+j)
 106              continue
-                numnob=zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,1)-1)
+                numnob=connex(zi(jconx2+nmaabs-1)+fa(ifq,1)-1)
             else
                 do 107 j = 1, ndim
                     b(j)=zr(igeom-1+ndim*(fa(ifq,i+1)-1)+j)
 107              continue
-                numnob=zi(jconx1-1+zi(jconx2+nmaabs-1)+fa(ifq,i+1)-1)
+                numnob=connex(zi(jconx2+nmaabs-1)+fa(ifq,i+1)-1)
             endif
             normab=0.d0
             coeffk=0.d0

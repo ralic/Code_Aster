@@ -62,12 +62,14 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
 !
 !
 !
-    integer :: jcesc, jcesd, jcesl, jcesv, iad1, iad2, iad3
+    integer ::  jcesd, jcesl,  iad1, iad2, iad3
     integer :: nbcmp, ncmp1, ncmp2, ncmp3
     integer :: icmp, inel, nncp, ibid
     character(len=8) ::  nompaz, licmp(3)
     character(len=16) :: opti
     character(len=19) :: chsing
+    character(len=8), pointer :: cesc(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 !
     call jemarq()
 !
@@ -83,16 +85,16 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
 !
 ! 2 - STOCKAGE DANS CHSING DE ALPHA ET RE
 !
-    call jeveuo(chsing//'.CESC', 'L', jcesc)
+    call jeveuo(chsing//'.CESC', 'L', vk8=cesc)
     call jelira(chsing//'.CESC', 'LONMAX', nbcmp)
     call jeveuo(chsing//'.CESD', 'L', jcesd)
     call jeveuo(chsing//'.CESL', 'E', jcesl)
-    call jeveuo(chsing//'.CESV', 'E', jcesv)
+    call jeveuo(chsing//'.CESV', 'E', vr=cesv)
 !
     do 10 icmp = 1, nbcmp
-        if (zk8(jcesc+icmp-1)(1:5) .eq. 'DEGRE') ncmp1=icmp
-        if (zk8(jcesc+icmp-1)(1:7) .eq. 'RAPPORT') ncmp2=icmp
-        if (zk8(jcesc+icmp-1)(1:6) .eq. 'TAILLE') ncmp3=icmp
+        if (cesc(icmp)(1:5) .eq. 'DEGRE') ncmp1=icmp
+        if (cesc(icmp)(1:7) .eq. 'RAPPORT') ncmp2=icmp
+        if (cesc(icmp)(1:6) .eq. 'TAILLE') ncmp3=icmp
 10  end do
 !
     do 20 inel = 1, nelem
@@ -104,15 +106,15 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
                     1, ncmp3, iad3)
         if ((-iad1) .gt. 0) then
             zl(jcesl-iad1-1)=.true.
-            zr(jcesv-iad1-1)= alpha(inel)
+            cesv(1-iad1-1)= alpha(inel)
         endif
         if ((-iad2) .gt. 0) then
             zl(jcesl-iad2-1)=.true.
-            zr(jcesv-iad2-1)= 1.d0/re(inel)
+            cesv(1-iad2-1)= 1.d0/re(inel)
         endif
         if ((-iad3) .gt. 0) then
             zl(jcesl-iad3-1)=.true.
-            zr(jcesv-iad3-1)= he(inel)
+            cesv(1-iad3-1)= he(inel)
         endif
 20  end do
 !

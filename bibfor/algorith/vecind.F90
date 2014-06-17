@@ -60,7 +60,6 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     integer :: lvec, nbl, nbc, nindep, lwork,  lmat, ltrav1
     integer ::   i1, k1, l1, iret, lcopy, force, indnz
     integer(kind=4) :: info
-    integer :: ideeq
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
     character(len=19) :: mat, nume
@@ -69,6 +68,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     real(kind=8), pointer :: trav2_u(:) => null()
     real(kind=8), pointer :: trav3_v(:) => null()
     integer, pointer :: vec_ind_nz(:) => null()
+    integer, pointer :: deeq(:) => null()
 !
     AS_ALLOCATE(vr=new_stat, size=nbc*nbc)
     call wkvect('&&VECIND.TRAV1', 'V V R', nbl, ltrav1)
@@ -77,7 +77,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     if (mat .ne. ' ') then
         call jeveuo(mat//'.&INT', 'L', lmat)
         call dismoi('NOM_NUME_DDL', mat(1:8), 'MATR_ASSE', repk=nume)
-        call jeveuo(nume(1:8)//'      .NUME.DEEQ', 'L', ideeq)
+        call jeveuo(nume(1:8)//'      .NUME.DEEQ', 'L', vi=deeq)
     endif
 !
 !-- NORMER LES MODES DANS L2 AVANT DE CONSTRUIRE LA MATRICE
@@ -88,10 +88,10 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
     do i1 = 1, nbc
         if (mat .ne. ' ') then
-            call zerlag(nbl, zi(ideeq), vectr=zr(lvec+nbl*(i1-1)))
+            call zerlag(nbl, deeq, vectr=zr(lvec+nbl*(i1-1)))
             call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1,&
                         .true.)
-            call zerlag(nbl, zi(ideeq), vectr=zr(ltrav1))
+            call zerlag(nbl, deeq, vectr=zr(ltrav1))
             norme=ddot(nbl,zr(ltrav1),1,zr(lvec+nbl*(i1-1)),1)
 !
         else

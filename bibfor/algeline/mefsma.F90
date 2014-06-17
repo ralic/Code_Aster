@@ -28,10 +28,12 @@ subroutine mefsma(matm, mata, matr, nugene, masgen,&
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
-    integer :: jscde, ldref, nbmode, nterm, nbloc
+    integer ::   nbmode, nterm, nbloc
     character(len=1) :: base
     character(len=14) :: nugene
     character(len=19) :: nomnum, nomsto
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: scde(:) => null()
 ! DEB------------------------------------------------------------------
 !
     call jemarq()
@@ -39,13 +41,13 @@ subroutine mefsma(matm, mata, matr, nugene, masgen,&
     nomnum = nugene//'.NUME'
     nomsto = nugene//'.SLCS'
 !
-    call jeveuo(nomsto//'.SCDE', 'L', jscde)
-    nbmode = zi(jscde-1+1)
-    nterm = zi(jscde-1+2)
-    nbloc = zi(jscde-1+3)
+    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
+    nbmode = scde(1)
+    nterm = scde(2)
+    nbloc = scde(3)
 !
-    call jeveuo(nomnum//'.REFN', 'L', ldref)
-    base = zk24(ldref)
+    call jeveuo(nomnum//'.REFN', 'L', vk24=refn)
+    base = refn(1)
 !
     call mefsm1(matm, masgen, base, nomnum, nomsto,&
                 nbmode, nbloc, nterm)

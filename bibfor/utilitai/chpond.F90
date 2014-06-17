@@ -57,10 +57,9 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !                     + OBJET .PDSM (POIDS DES MAILLES)
 !     ------------------------------------------------------------------
 !
-    integer :: iret, nbchin, nbma, nbpt, nbsp, nbcmp, joutv, joutl, joutd
-    integer :: iad1, iad2, iad3, isp, ima, icmp, ipt, jchsv, jchsl, jchsd, iexi
-    integer :: jpoiv, jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
-    integer :: indma
+    integer :: iret, nbchin, nbma, nbpt, nbsp, nbcmp,  joutl, joutd
+    integer :: iad1, iad2, iad3, isp, ima, icmp, ipt,  jchsl, jchsd, iexi
+    integer ::  jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
     real(kind=8) :: poids
     parameter(nbchin=2)
     character(len=8) :: lpain(nbchin), lpaout(1), noma, valk
@@ -68,6 +67,10 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
     character(len=24) :: ligrel, chgeom, lchin(nbchin), lchout(2), vefch1
     character(len=24) :: vefch2
     logical :: peecal, ltest, cond
+    integer, pointer :: maille(:) => null()
+    real(kind=8), pointer :: chsv(:) => null()
+    real(kind=8), pointer :: outv(:) => null()
+    real(kind=8), pointer :: poiv(:) => null()
 !
     call jemarq()
 !
@@ -80,7 +83,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
         peecal=.false.
     else
         peecal=.true.
-        call jeveuo('&&PEECAL.IND.MAILLE', 'L', indma)
+        call jeveuo('&&PEECAL.IND.MAILLE', 'L', vi=maille)
     endif
 !
 !
@@ -118,7 +121,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !           -- IL NE FAUT VERIFIER QUE LES MAILLES POSTRAITEES:
                 ltest = .false.
                 if (peecal) then
-                    if (zi(indma+ima-1) .eq. 1) ltest=.true.
+                    if (maille(ima) .eq. 1) ltest=.true.
                 endif
                 if ((.not.peecal) .or. ltest) then
 !           -- SI LE CHAMP COOR_ELGA N'EST PAS CALCULE ON S'ARRETE:
@@ -144,14 +147,14 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !
 ! --- CREATION ET RECUPERATION DES POINTEURS
 !
-    call jeveuo(cespoi//'.CESV', 'L', jpoiv)
+    call jeveuo(cespoi//'.CESV', 'L', vr=poiv)
     call jeveuo(cespoi//'.CESL', 'L', jpoil)
     call jeveuo(cespoi//'.CESD', 'L', jpoid)
     call jeveuo(cespoi//'.CESC', 'L', jpoic)
 !
     chins='&&CHPOND.CHINS'
     call celces(chin, 'V', chins)
-    call jeveuo(chins//'.CESV', 'L', jchsv)
+    call jeveuo(chins//'.CESV', 'L', vr=chsv)
     call jeveuo(chins//'.CESL', 'L', jchsl)
     call jeveuo(chins//'.CESD', 'L', jchsd)
 !
@@ -159,7 +162,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !
     call copisd('CHAM_ELEM_S', 'V', chins, cesout)
 !
-    call jeveuo(cesout//'.CESV', 'E', joutv)
+    call jeveuo(cesout//'.CESV', 'E', vr=outv)
     call jeveuo(cesout//'.CESL', 'E', joutl)
     call jeveuo(cesout//'.CESD', 'E', joutd)
 !
@@ -172,7 +175,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
             do ima = 1, nbma
                 ltest = .false.
                 if (peecal) then
-                    if (zi(indma+ima-1) .eq. 1) ltest=.true.
+                    if (maille(ima) .eq. 1) ltest=.true.
                 endif
                 if ((.not.peecal) .or. ltest) then
                     nbpt=zi(jpoid-1+5+4*(ima-1)+1)
@@ -180,7 +183,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                         call cesexi('C', jpoid, jpoil, ima, ipt,&
                                     1, 1, iad2)
                         ASSERT(iad2.gt.0)
-                        zr(jpdsm-1+ima)=zr(jpdsm-1+ima)+zr(jpoiv-1+&
+                        zr(jpdsm-1+ima)=zr(jpdsm-1+ima)+poiv(&
                         iad2)
                     end do
                 endif
@@ -196,7 +199,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
         if (.not.peecal) then
             cond=.true.
         else
-            if (zi(indma+ima-1).eq.1) then
+            if (maille(ima).eq.1) then
                 cond=.true.
             else
                 cond=.false.
@@ -211,7 +214,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                     call cesexi('S', jpoid, jpoil, ima, ipt,&
                                 1, 1, iad2)
                     ASSERT(iad2.gt.0)
-                    poids=zr(jpoiv-1+iad2)
+                    poids=poiv(iad2)
                 else if (tych.eq.'ELEM') then
                     ASSERT(nbpt.eq.1)
                     if (dejain .eq. 'NON') then
@@ -236,7 +239,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                             goto 40
                         else
                             ASSERT(iad3.gt.0)
-                            zr(joutv-1+iad3)=zr(jchsv-1+iad1)*poids
+                            outv(iad3)=chsv(iad1)*poids
                         endif
  40                     continue
                     end do

@@ -61,15 +61,19 @@ subroutine assgcy(nomres, nugene)
     character(len=14) :: nugene
     character(len=19) :: stolci, resu
 !
-    integer :: iblo, ldlim, neq, ntbloc, nbloc, iaconl, jrefa, iadesc, iscdi
-    integer :: iscbl, ischc, ldblo, n1bloc, n2bloc, i, j, llref
+    integer :: iblo, ldlim, neq, ntbloc, nbloc, iaconl, jrefa, iadesc
+    integer ::   ldblo, n1bloc, n2bloc, i, j
 !
 !-----------------------------------------------------------------------
 !
 !--------------------------CREATION DU .REFA----------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: jscde
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: scdi(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: schc(:) => null()
+    integer, pointer :: scde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -78,8 +82,8 @@ subroutine assgcy(nomres, nugene)
 !
 !--------------------RECUPERATION DU MODE_GENE AMONT--------------------
 !
-    call jeveuo(nugene//'.NUME.REFN', 'L', llref)
-    modgen=zk24(llref)(1:8)
+    call jeveuo(nugene//'.NUME.REFN', 'L', vk24=refn)
+    modgen=refn(1)(1:8)
 !
 !--------------------------CREATION DU .LIME----------------------------
 !   POUR L'INSTANT ON DONNE LE NOM DU MODELE GENERALISE
@@ -89,10 +93,10 @@ subroutine assgcy(nomres, nugene)
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
 !
-    call jeveuo(stolci//'.SCDE', 'L', jscde)
-    neq=zi(jscde-1+1)
-    ntbloc=zi(jscde-1+2)
-    nbloc=zi(jscde-1+3)
+    call jeveuo(stolci//'.SCDE', 'L', vi=scde)
+    neq=scde(1)
+    ntbloc=scde(2)
+    nbloc=scde(3)
 !
     call jelibe(stolci//'.SCDE')
 !
@@ -120,9 +124,9 @@ subroutine assgcy(nomres, nugene)
 !
 ! --- RECUPERATION DE LA STRUCTURE DE LA MATR_ASSE_GENE
 !
-    call jeveuo(stolci//'.SCDI', 'L', iscdi)
-    call jeveuo(stolci//'.SCBL', 'L', iscbl)
-    call jeveuo(stolci//'.SCHC', 'L', ischc)
+    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
+    call jeveuo(stolci//'.SCBL', 'L', vi=scbl)
+    call jeveuo(stolci//'.SCHC', 'L', vi=schc)
 !
     do iblo = 1, nbloc
 !
@@ -131,12 +135,12 @@ subroutine assgcy(nomres, nugene)
 !
 !        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-        n1bloc = zi(iscbl+iblo-1)+1
-        n2bloc = zi(iscbl+iblo)
+        n1bloc = scbl(iblo)+1
+        n2bloc = scbl(iblo+1)
 !    INITIALISATION DE LA MATRICE GENERALISEE
         do i = n1bloc, n2bloc
-            do j = (i-zi(ischc+i-1)+1), i
-                zr(ldblo+zi(iscdi+i-1)+j-i-1) = 0.d0
+            do j = (i-schc(i)+1), i
+                zr(ldblo+scdi(i)+j-i-1) = 0.d0
             end do
         end do
 !

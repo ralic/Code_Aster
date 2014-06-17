@@ -43,11 +43,12 @@ subroutine carayo(char, ligrmo, noma, fonree)
 !      NOMA   : NOM DU MAILLAGE
 !      FONREE : FONC OU REEL
 !-----------------------------------------------------------------------
-    integer :: nrayo, jvalv, jncmp, ncmp, n, iocc, nbtou, nbma, jma
+    integer :: nrayo, jvalv,  ncmp, n, iocc, nbtou, nbma, jma
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
+    character(len=8), pointer :: vncmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -64,15 +65,15 @@ subroutine carayo(char, ligrmo, noma, fonree)
         call utmess('F', 'MODELISA2_37', sk=fonree)
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
 ! --- STOCKAGE DE FLUX NULS SUR TOUT LE MAILLAGE
 !
     ncmp = 3
-    zk8(jncmp-1+1) = 'SIGMA'
-    zk8(jncmp-1+2) = 'EPSIL'
-    zk8(jncmp-1+3) = 'TPINF'
+    vncmp(1) = 'SIGMA'
+    vncmp(2) = 'EPSIL'
+    vncmp(3) = 'TPINF'
     if (fonree .eq. 'REEL') then
         zr(jvalv-1+1) = 0.d0
         zr(jvalv-1+2) = 0.d0

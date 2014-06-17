@@ -70,12 +70,16 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
     character(len=19) :: sdcour
     character(len=10) :: iden
     character(len=4) :: docu
-    integer :: aabsc, arefe, adesc, aasgt, absgt, acarc, asarc, ararc, acoor
+    integer :: aabsc, arefe, adesc, aasgt,     acoor
     integer :: ansdl, acnxo, acnxe, adr, achm, aosgt, aesgt, anumnd, anume
     integer :: nbsd, nbsgt, nbarc, isd, nbpt, ipt, ideb, ifin, ioc, nbm, nboc
-    integer :: asds
     logical :: sgtarc, okcrb, sgt3d
     real(kind=8) :: a, b, c, d, e, f, s, l, zero
+    real(kind=8), pointer :: xsarc(:) => null()
+    real(kind=8), pointer :: xybsgt(:) => null()
+    real(kind=8), pointer :: xrarc(:) => null()
+    real(kind=8), pointer :: xycarc(:) => null()
+    character(len=24), pointer :: nsds(:) => null()
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
@@ -95,10 +99,10 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
                 call jelira(courbe//'.XYASGT', 'LONMAX', nbsgt)
                 call jelira(courbe//'.XYCARC', 'LONMAX', nbarc)
                 call jeveuo(courbe//'.XYASGT', 'L', aasgt)
-                call jeveuo(courbe//'.XYBSGT', 'L', absgt)
-                call jeveuo(courbe//'.XYCARC', 'L', acarc)
-                call jeveuo(courbe//'.XRARC', 'L', ararc)
-                call jeveuo(courbe//'.XSARC', 'L', asarc)
+                call jeveuo(courbe//'.XYBSGT', 'L', vr=xybsgt)
+                call jeveuo(courbe//'.XYCARC', 'L', vr=xycarc)
+                call jeveuo(courbe//'.XRARC', 'L', vr=xrarc)
+                call jeveuo(courbe//'.XSARC', 'L', vr=xsarc)
                 nbsgt = (nbsgt/2) - 1
                 nbarc = (nbarc/2) - 1
                 nbsd = nbarc + nbsgt
@@ -111,7 +115,7 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
             endif
         else
             call jelira(courbe//'.NSDS', 'LONMAX', nbsd)
-            call jeveuo(courbe//'.NSDS', 'L', asds)
+            call jeveuo(courbe//'.NSDS', 'L', vk24=nsds)
             sgt3d = .true.
         endif
     else
@@ -147,8 +151,8 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
             call wkvect(ndesc, 'V V R', 4, adesc)
             a = zr(aasgt + 2*isd + 1-1)
             b = zr(aasgt + 2*isd + 2-1)
-            c = zr(absgt + 2*isd + 1-1)
-            d = zr(absgt + 2*isd + 2-1)
+            c = xybsgt(1+ 2*isd + 1-1)
+            d = xybsgt(1+ 2*isd + 2-1)
             zr(adesc + 1-1) = a
             zr(adesc + 2-1) = b
             zr(adesc + 3-1) = c
@@ -182,11 +186,11 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
         else
             docu = 'ARCC'
             call wkvect(ndesc, 'V V R', 5, adesc)
-            a = zr(acarc + 2*(isd-nbsgt) + 1-1)
-            b = zr(acarc + 2*(isd-nbsgt) + 2-1)
-            c = zr(ararc + (isd-nbsgt) + 1-1)
-            d = zr(asarc + 2*(isd-nbsgt) + 1-1)
-            e = zr(asarc + 2*(isd-nbsgt) + 2-1)
+            a = xycarc(1+ 2*(isd-nbsgt) + 1-1)
+            b = xycarc(1+ 2*(isd-nbsgt) + 2-1)
+            c = xrarc(1+ (isd-nbsgt) + 1-1)
+            d = xsarc(1+ 2*(isd-nbsgt) + 1-1)
+            e = xsarc(1+ 2*(isd-nbsgt) + 2-1)
             zr(adesc + 1-1) = a
             zr(adesc + 2-1) = b
             zr(adesc + 3-1) = c
@@ -217,7 +221,7 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
 111          continue
         endif
     else if (okcrb .and. sgt3d) then
-        ncrb3d = zk24(asds + isd-1)
+        ncrb3d = nsds(isd)
         docu = 'SGT3'
         zk8(arefe) = courbe
         call jelira(ncrb3d(1:13)//'.CONEX.ORIG', 'LONMAX', nboc)

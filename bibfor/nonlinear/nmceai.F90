@@ -57,12 +57,18 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
 !
 !
     real(kind=8) :: sca, nodup, coef, nodup1, nodup2
-    integer :: jdepde, jdu0, jdu1, jdepol
+    integer ::   jdu1
     integer :: neq, i, j
     character(len=19) :: profch, chapil, chapic, selpil
-    integer :: jcoee, jcoef, ideeq, jplsl
     real(kind=8) :: dn, dc, dp, da
     logical :: isxfe
+    real(kind=8), pointer :: coee(:) => null()
+    real(kind=8), pointer :: vcoef(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
+    real(kind=8), pointer :: depol(:) => null()
+    real(kind=8), pointer :: du0(:) => null()
+    real(kind=8), pointer :: plsl(:) => null()
+    integer, pointer :: deeq(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,15 +76,15 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
 !
     if (isxfe) then
         chapil = sdpilo(1:14)//'.PLCR'
-        call jeveuo(chapil(1:19)//'.VALE', 'L', jcoef)
+        call jeveuo(chapil(1:19)//'.VALE', 'L', vr=vcoef)
         chapic = sdpilo(1:14)//'.PLCI'
-        call jeveuo(chapic(1:19)//'.VALE', 'L', jcoee)
+        call jeveuo(chapic(1:19)//'.VALE', 'L', vr=coee)
     else
 !
 ! --- ACCES VECTEUR DE SELCTION CMP DX/DY/DZ
 !
         selpil = sdpilo(1:14)//'.PLSL'
-        call jeveuo(selpil(1:19)//'.VALE', 'L', jplsl)
+        call jeveuo(selpil(1:19)//'.VALE', 'L', vr=plsl)
     endif
 !
 !
@@ -91,38 +97,38 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
     f = 0.d0
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=profch)
-    call jeveuo(profch(1:19)//'.DEEQ', 'L', ideeq)
+    call jeveuo(profch(1:19)//'.DEEQ', 'L', vi=deeq)
 !
 ! --- ACCES AUX VECTEURS SOLUTIONS
 !
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
-    call jeveuo(deppr1(1:19)//'.VALE', 'L', jdu0)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
+    call jeveuo(deppr1(1:19)//'.VALE', 'L', vr=du0)
     call jeveuo(deppr2(1:19)//'.VALE', 'L', jdu1)
-    call jeveuo(depold(1:19)//'.VALE', 'L', jdepol)
+    call jeveuo(depold(1:19)//'.VALE', 'L', vr=depol)
 !
 !
 ! --- CALCUL DE L'ANGLE
 !
     if (isxfe) then
         do i = 1, neq
-            if (zi(ideeq-1+2*i) .gt. 0) then
-                if (zr(jcoee+i-1) .eq. 0.d0) then
-                    sca = sca + zr(jdepol+i-1)* zr(jcoef+i-1)**2*(zr( jdepde+i-1) + rho*zr(jdu0+i&
+            if (deeq(2*i) .gt. 0) then
+                if (coee(i) .eq. 0.d0) then
+                    sca = sca + depol(i)* vcoef(i)**2*(depde(i) + rho*du0(1+i&
                           &-1) + eta*zr(jdu1+i-1))
-                    nodup1 = nodup1 + zr(jcoef+i-1)**2*(zr(jdepde+i-1) + rho*zr(jdu0+i-1) + eta*z&
+                    nodup1 = nodup1 + vcoef(i)**2*(depde(i) + rho*du0(i) + eta*z&
                              &r(jdu1+i-1))**2
-                    nodup2 = nodup2 + zr(jcoef+i-1)**2*zr(jdepol+i-1) **2
+                    nodup2 = nodup2 + vcoef(i)**2*depol(i) **2
                 else
                     da = 0.d0
                     dn = 0.d0
                     dc = 0.d0
                     dp = 0.d0
                     do j = i+1, neq
-                        if (zr(jcoee+i-1) .eq. zr(jcoee+j-1)) then
-                            da = da + zr(jcoef+i-1)*zr(jdepol+i-1)+ zr(jcoef+j-1)*zr(jdepol+j-1)
-                            dn = dn + zr(jcoef+i-1)*zr(jdepde+i-1)+ zr(jcoef+j-1)*zr(jdepde+j-1)
-                            dc = dc + zr(jcoef+i-1)*zr(jdu0-1+i)+ zr(jcoef+j-1)*zr(jdu0-1+j)
-                            dp = dp + zr(jcoef+i-1)*zr(jdu1-1+i)+ zr(jcoef+j-1)*zr(jdu1-1+j)
+                        if (coee(i) .eq. coee(j)) then
+                            da = da + vcoef(i)*depol(i)+ vcoef(j)*depol(j)
+                            dn = dn + vcoef(i)*depde(i)+ vcoef(j)*depde(j)
+                            dc = dc + vcoef(i)*du0(i)+ vcoef(j)*du0(j)
+                            dp = dp + vcoef(i)*zr(jdu1-1+i)+ vcoef(j)*zr(jdu1-1+j)
                         endif
                     end do
                     sca = sca + da*(dn+rho*dc+eta*dp)
@@ -134,10 +140,10 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
         nodup = nodup1*nodup2
     else
         do i = 1, neq
-            coef = zr(jplsl-1+i)
-            sca = sca + (zr(jdepol+i-1)*(zr(jdepde+i-1) + rho*zr(jdu0+ i-1) + eta*zr(jdu1+i-1))&
+            coef = plsl(i)
+            sca = sca + (depol(i)*(depde(i) + rho*du0(i) + eta*zr(jdu1+i-1))&
                   )*coef
-            nodup = nodup + ( zr(jdepde+i-1) + rho*zr(jdu0+i-1) + eta*zr(jdu1+i-1))**2
+            nodup = nodup + ( depde(i) + rho*du0(i) + eta*zr(jdu1+i-1))**2
         end do
     endif
 !

@@ -81,7 +81,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer ::    nbvecm
-    integer :: jcerd, jcerl, jcerv, iret, icesd, icesl, icesv, ibid
+    integer :: jcerd, jcerl,  iret, icesd, icesl, icesv, ibid
     integer :: tneces, tdisp2(1), jvecpg, n, k
     integer :: ideb, dim, j, ngam, tab2(18), ifin
     integer :: l, nbpg, nbpgp, kwork, sompgw, imap
@@ -100,6 +100,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     real(kind=8), pointer :: vect_norma(:) => null()
     real(kind=8), pointer :: vect_tangu(:) => null()
     real(kind=8), pointer :: vect_tangv(:) => null()
+    real(kind=8), pointer :: cerv(:) => null()
 !
 !
 !-----------------------------------------------------------------------
@@ -132,7 +133,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
     call jeveuo(cesr//'.CESD', 'L', jcerd)
     call jeveuo(cesr//'.CESL', 'E', jcerl)
-    call jeveuo(cesr//'.CESV', 'E', jcerv)
+    call jeveuo(cesr//'.CESV', 'E', vr=cerv)
 !
 ! RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 !
@@ -262,7 +263,7 @@ vect_tangv)
                 ASSERT(jad .ne. 0)
                 jad = abs(jad)
                 zl(jcerl - 1 + jad) = .true.
-                zr(jcerv - 1 + jad) = vresu(icmp)
+                cerv(jad) = vresu(icmp)
 !
 610          continue
 !

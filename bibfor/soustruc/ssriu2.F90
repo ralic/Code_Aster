@@ -66,11 +66,16 @@ subroutine ssriu2(nomu)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iakpee, iaphi0, iaphie, iascbl, iascdi, iaschc, iascib
+    integer :: iakpee, iaphi0, iaphie, iascbl, iascdi
     integer :: iblold, iblph, ier, ii, iiblph, isingu, j
-    integer :: jdesm, jrefa, jualf, jvarm, k, kk, lgblph
+    integer ::   jualf,  k, kk, lgblph
     integer :: lmat, nbbloc, nblph, nddle, nddli, ndeci, nlblph
     integer :: npvneg
+    integer, pointer :: scib(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: desm(:) => null()
+    real(kind=8), pointer :: varm(:) => null()
+    integer, pointer :: vschc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nu = nomu
@@ -82,12 +87,12 @@ subroutine ssriu2(nomu)
     call dismoi('NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', repk=promes)
     if (promes .eq. ' ') modif = .false.
 !
-    call jeveuo(nomu//'.VARM', 'E', jvarm)
-    rtbloc=zr(jvarm-1+1)
-    call jeveuo(nomu//'.DESM', 'E', jdesm)
-    nddle = zi(jdesm-1+4)
+    call jeveuo(nomu//'.VARM', 'E', vr=varm)
+    rtbloc=varm(1)
+    call jeveuo(nomu//'.DESM', 'E', vi=desm)
+    nddle = desm(4)
 !     NDDLE = 50
-    nddli = zi(jdesm-1+5)
+    nddli = desm(5)
 !
 !     -- FACTORISATION PARTIELLE DE LA MATRICE DE RIGIDITE:
 !     -----------------------------------------------------
@@ -105,11 +110,11 @@ subroutine ssriu2(nomu)
 !     -------------------------------------------------------
 !
     call mtdsc2(zk24(zi(lmat+1)), 'SCDI', 'L', iascdi)
-    call jeveuo(zk24(zi(lmat+1)) (1:19)//'.REFA', 'L', jrefa)
-    call jeveuo(zk24(jrefa-1+2)(1:14)//'.SLCS.SCHC', 'L', iaschc)
+    call jeveuo(zk24(zi(lmat+1)) (1:19)//'.REFA', 'L', vk24=refa)
+    call jeveuo(refa(2)(1:14)//'.SLCS.SCHC', 'L', vi=vschc)
     call mtdsc2(zk24(zi(lmat+1)), 'SCBL', 'L', iascbl)
     call jelira(matas//'.UALF', 'NMAXOC', nbbloc)
-    call jeveuo(stock//'.SCIB', 'L', iascib)
+    call jeveuo(stock//'.SCIB', 'L', vi=scib)
 !
 !     NLBLPH : NOMBRE DE LIGNES DE PHI_IE QUE L'ON PEUT REGROUPER
 !              DANS UN BLOC DE LONGUEUR 5*RTBLOC
@@ -137,9 +142,9 @@ subroutine ssriu2(nomu)
             j = j + 1
             if (j .gt. nddle) goto 40
             iaphie = iaphi0 + (iiblph-1)*nddli
-            iblo = zi(iascib-1+nddli+j)
+            iblo = scib(nddli+j)
             scdi = zi(iascdi-1+nddli+j)
-            schc = zi(iaschc-1+nddli+j)
+            schc = vschc(nddli+j)
             if (iblo .ne. iblold) then
                 if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
@@ -180,7 +185,7 @@ subroutine ssriu2(nomu)
     else
         do iblph = 1, nblph
             call jeveuo(jexnum(nomu//'.PHI_IE', iblph), 'E', iaphi0)
-            call rldlr8(zk24(zi(lmat+1)), zi(iaschc), zi(iascdi), zi( iascbl), nddli,&
+            call rldlr8(zk24(zi(lmat+1)), vschc, zi(iascdi), zi( iascbl), nddli,&
                         nbbloc, zr(iaphi0), nlblph)
             call jelibe(jexnum(nomu//'.PHI_IE', iblph))
         end do
@@ -194,9 +199,9 @@ subroutine ssriu2(nomu)
     else
         iblold = 0
         do j = 1, nddle
-            iblo = zi(iascib-1+nddli+j)
+            iblo = scib(nddli+j)
             scdi = zi(iascdi-1+nddli+j)
-            schc = zi(iaschc-1+nddli+j)
+            schc = vschc(nddli+j)
             if (iblo .ne. iblold) then
                 if (iblold .gt. 0) call jelibe(jexnum(matas//'.UALF', iblold))
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
@@ -230,7 +235,7 @@ subroutine ssriu2(nomu)
     endif
 !
 !
-    call jelibe(zk24(jrefa-1+2)(1:14)//'.SLCS.SCHC')
+    call jelibe(refa(2)(1:14)//'.SLCS.SCHC')
 !
     call jedema()
 end subroutine

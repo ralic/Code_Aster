@@ -72,7 +72,7 @@ subroutine op0056()
 #include "asterfort/utctab.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ifr, nbcou, icou, n, iadr, jepor, jrela, k, lonobj, jmate, jobme
+    integer :: ifr, nbcou, icou, n,  jepor, jrela, k, lonobj, jmate, jobme
     integer :: jobmc, i, nimpr, impr, nbres, j, nobj, jobth, jobtc, nbad, iret
     integer :: nv, n1
     real(kind=8) :: laml, lamt, lamn, cp, qt(31), valres(9)
@@ -101,6 +101,7 @@ subroutine op0056()
     character(len=8) :: k8b, multic, mater, nomres(9)
     character(len=16) :: type, nomcmd, fichie
     logical :: elas, ther
+    character(len=16), pointer :: nomrc(:) => null()
     parameter (nv=83)
 !
     r8bid = 0.d0
@@ -118,12 +119,12 @@ subroutine op0056()
     ther = .false.
     do 20 icou = 1, nbcou
         call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
-        call jeveuo(mater//'.MATERIAU.NOMRC ', 'L', iadr)
+        call jeveuo(mater//'.MATERIAU.NOMRC ', 'L', vk16=nomrc)
         call jelira(mater//'.MATERIAU.NOMRC ', 'LONMAX', nbad)
         do 10 i = 1, nbad
-            if (zk16(iadr+i-1) .eq. 'ELAS_ORTH       ') then
+            if (nomrc(i) .eq. 'ELAS_ORTH       ') then
                 elas = .true.
-            else if (zk16(iadr+i-1).eq.'THER_ORTH       ') then
+            else if (nomrc(i).eq.'THER_ORTH       ') then
                 ther = .true.
             else
                 valk (1) = mater

@@ -71,12 +71,14 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !     TYPE : XC V I ACCES(NUMEROTE) LONG(VARIABLE)
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, nare, numa, nbno, nbmat, ino, nuno, p1, p2
+    integer :: ibid, nare, numa, nbno, nbmat, ino, nuno,  p2
     integer :: i, j, k, jmail, nbman, adrvlc, acncin, ima, ii
-    integer :: adra, iad, jtr1(1000),  idtyma, nutyma, iexinv
+    integer :: adra, iad, jtr1(1000),   nutyma, iexinv
     character(len=8) :: type
     character(len=24) :: nom, ncninv
     integer, pointer :: trav2(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: connex(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -101,9 +103,9 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 ! --- APPEL A LA CONNECTIVITE
 !
     call jeveuo(jexatr(mail//'.CONNEX', 'LONCUM'), 'L', p2)
-    call jeveuo(mail//'.CONNEX', 'L', p1)
+    call jeveuo(mail//'.CONNEX', 'L', vi=connex)
 !
-    call jeveuo(mail//'.TYPMAIL', 'L', idtyma)
+    call jeveuo(mail//'.TYPMAIL', 'L', vi=typmail)
 !
 ! --- DIMENSIONNEMENT DE LA SD
 !
@@ -115,7 +117,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
         iad = zi(p2+numa-1)
         nbmat = 0
         do 110 ino = 1, nbno
-            nuno = zi(p1+iad-1+ino-1)
+            nuno = connex(1+iad-1+ino-1)
             nbman = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
             adra = zi(adrvlc+nuno-1)
             do 120 j = 1, nbman
@@ -132,7 +134,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
                     ima=mailvo(ii)
                 endif
                 if (ima .eq. numa) goto 120
-                nutyma = zi(idtyma+ima-1)
+                nutyma = typmail(ima)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), type)
                 if (type(1:4) .eq. 'HEXA') then
                     if (kdim .eq. '2D' .or. kdim .eq. '1D') goto 120
@@ -189,7 +191,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !
         nbmat = 0
         do 210 ino = 1, nbno
-            nuno = zi(p1+iad-1+ino-1)
+            nuno = connex(1+iad-1+ino-1)
             nbman = zi(adrvlc+nuno+1-1) - zi(adrvlc+nuno-1)
             adra = zi(adrvlc+nuno-1)
             do 220 j = 1, nbman
@@ -202,7 +204,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
                     ima=mailvo(ii)
                 endif
                 if (ima .eq. numa) goto 220
-                nutyma = zi(idtyma+ima-1)
+                nutyma = typmail(ima)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), type)
                 if (type(1:4) .eq. 'HEXA') then
                     if (kdim .eq. '2D') goto 220

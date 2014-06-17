@@ -34,10 +34,9 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: indice, imodeg
-    integer :: jrefa, i, iscbl, iaconl, iadesc
+    integer :: indice
+    integer :: jrefa, i,  iaconl, iadesc
     integer :: ialime, iblo
-    integer :: ischc
     integer :: somme
     integer :: jscde, n1bloc, n2bloc
     integer :: nbid, nbloc, ntbloc, nueq, nhmax
@@ -46,6 +45,9 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
     character(len=8) :: modgen
     character(len=14) :: num14, nugene
     character(len=19) :: nomsto
+    integer, pointer :: schc(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: scbl(:) => null()
 ! -----------------------------------------------------------------
 !
 !        CAS NUME_DDL_GENE  PRESENT
@@ -77,8 +79,8 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
 ! CALCUL DU NOMBRE DE TERME PAR BLOC ET TOTAL
 !
-        call jeveuo(nomsto//'.SCBL', 'L', iscbl)
-        call jeveuo(nomsto//'.SCHC', 'L', ischc)
+        call jeveuo(nomsto//'.SCBL', 'L', vi=scbl)
+        call jeveuo(nomsto//'.SCHC', 'L', vi=schc)
 !
         somme = 0
 !
@@ -88,12 +90,12 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
 !         BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-            n1bloc = zi(iscbl+iblo-1) + 1
-            n2bloc = zi(iscbl+iblo)
+            n1bloc = scbl(iblo) + 1
+            n2bloc = scbl(iblo+1)
 !
 !
             do i = n1bloc, n2bloc
-                somme = somme + zi(ischc+i-1)
+                somme = somme + schc(i)
             end do
         end do
 !
@@ -145,8 +147,8 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
     else if (indice.eq.1) then
         call getvid(' ', 'NUME_DDL_GENE', scal=nummod, nbret=nbid)
         num14 = nummod
-        call jeveuo(num14//'.NUME.REFN', 'L', imodeg)
-        zk24(jrefa-1+1) = zk24(imodeg)
+        call jeveuo(num14//'.NUME.REFN', 'L', vk24=refn)
+        zk24(jrefa-1+1) = refn(1)
 !
     else
         zk24(jrefa-1+1) = modmec

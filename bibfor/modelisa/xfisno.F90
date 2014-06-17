@@ -46,12 +46,18 @@ subroutine xfisno(noma, modelx)
 !
 !
 !
-    integer :: jlcnx, jnbsp, jnbsp2, jcesfd, jcesfl, jcesfv, jcesd, jcesl, jcesv
-    integer :: jcesd2, jcesv2, jcesl2, jxc
+    integer :: jlcnx,   jcesfd, jcesfl,  jcesd, jcesl
+    integer :: jcesd2,  jcesl2
     integer :: nbma, ima, nbno, ino, nheav, iheav, nfiss, ifiss
     integer :: ibid, iad, nncp
     character(len=19) :: fissno, ces, cesf, ligrel, ces2, heavno
     logical :: lcont
+    integer, pointer :: xfem_cont(:) => null()
+    integer, pointer :: cesfv(:) => null()
+    integer, pointer :: cesv2(:) => null()
+    integer, pointer :: cesv(:) => null()
+    integer, pointer :: nbsp2(:) => null()
+    integer, pointer :: nbsp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -65,9 +71,9 @@ subroutine xfisno(noma, modelx)
 !
 ! --- LE CONTACT EST-IL DÉCLARÉ
 !
-    call jeveuo(modelx(1:8)//'.XFEM_CONT', 'L', jxc)
-    ASSERT(zi(jxc).le.1)
-    lcont = zi(jxc).eq.1
+    call jeveuo(modelx(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
+    ASSERT(xfem_cont(1).le.1)
+    lcont = xfem_cont(1).eq.1
     if (lcont) then
         heavno = modelx(1:8)//'.HEAVNO'
         ces2 = '&&XFISNO.HEAVNO'
@@ -78,35 +84,35 @@ subroutine xfisno(noma, modelx)
     call celces(modelx(1:8)//'.STNO', 'V', cesf)
 !
     call jeveuo(cesf//'.CESD', 'L', jcesfd)
-    call jeveuo(cesf//'.CESV', 'L', jcesfv)
+    call jeveuo(cesf//'.CESV', 'L', vi=cesfv)
     call jeveuo(cesf//'.CESL', 'L', jcesfl)
 !
 ! --- RECUPERATION DU NOMBRE DE FISSURES VUES
 !
-    call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
+    call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
 !
 !
 ! --- RECUPERATION DU NOMBRE DE FONCTIONS HEAVISIDES
 !
-    call jeveuo('&&XTYELE.NBSP2', 'L', jnbsp2)
+    call jeveuo('&&XTYELE.NBSP2', 'L', vi=nbsp2)
 !
 ! --- CREATION DE LA SD ELNO FISSNO
 !
     call cescre('V', ces, 'ELNO', noma, 'NEUT_I',&
-                1, 'X1', [ibid], zi(jnbsp2), [-1])
+                1, 'X1', [ibid], nbsp2, [-1])
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
-    call jeveuo(ces//'.CESV', 'E', jcesv)
+    call jeveuo(ces//'.CESV', 'E', vi=cesv)
     call jeveuo(ces//'.CESL', 'E', jcesl)
 !
 ! --- SI CONTACT, CREATION DE LA SD ELNO HEAVNO
 !
     if (lcont) then
         call cescre('V', ces2, 'ELNO', noma, 'NEUT_I',&
-                    1, 'X1', [ibid], zi( jnbsp), [-1])
+                    1, 'X1', [ibid], nbsp, [-1])
 !
         call jeveuo(ces2//'.CESD', 'L', jcesd2)
-        call jeveuo(ces2//'.CESV', 'E', jcesv2)
+        call jeveuo(ces2//'.CESV', 'E', vi=cesv2)
         call jeveuo(ces2//'.CESL', 'E', jcesl2)
     endif
 !
@@ -116,8 +122,8 @@ subroutine xfisno(noma, modelx)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
 !
     do ima = 1, nbma
-        nfiss = zi(jnbsp-1+ima)
-        nheav = zi(jnbsp2-1+ima)
+        nfiss = nbsp(ima)
+        nheav = nbsp2(ima)
         if (nfiss .ge. 2) then
             nbno = zi(jlcnx+ima)-zi(jlcnx-1+ima)
             do ino = 1, nbno
@@ -128,19 +134,19 @@ subroutine xfisno(noma, modelx)
                     call cesexi('S', jcesfd, jcesfl, ima, ino,&
                                 ifiss, 1, iad)
                     ASSERT(iad.gt.0)
-                    if (zi(jcesfv-1+iad) .eq. 1) then
+                    if (cesfv(iad) .eq. 1) then
                         do iheav = 1, nheav
                             call cesexi('S', jcesd, jcesl, ima, ino,&
                                         iheav, 1, iad)
                             if (iad .lt. 0) then
                                 zl(jcesl-1-iad) = .true.
-                                zi(jcesv-1-iad) = ifiss
+                                cesv(1-1-iad) = ifiss
                                 if (lcont) then
                                     call cesexi('S', jcesd2, jcesl2, ima, ino,&
                                                 ifiss, 1, iad)
                                     ASSERT(iad.lt.0)
                                     zl(jcesl2-1-iad) = .true.
-                                    zi(jcesv2-1-iad) = iheav
+                                    cesv2(1-1-iad) = iheav
                                 endif
                                 goto 30
                             endif
@@ -155,19 +161,19 @@ subroutine xfisno(noma, modelx)
                     call cesexi('S', jcesfd, jcesfl, ima, ino,&
                                 ifiss, 1, iad)
                     ASSERT(iad.gt.0)
-                    if (zi(jcesfv-1+iad) .eq. 0) then
+                    if (cesfv(iad) .eq. 0) then
                         do iheav = 1, nheav
                             call cesexi('S', jcesd, jcesl, ima, ino,&
                                         iheav, 1, iad)
                             if (iad .lt. 0) then
                                 zl(jcesl-1-iad) = .true.
-                                zi(jcesv-1-iad) = ifiss
+                                cesv(1-1-iad) = ifiss
                                 if (lcont) then
                                     call cesexi('S', jcesd2, jcesl2, ima, ino,&
                                                 ifiss, 1, iad)
                                     ASSERT(iad.lt.0)
                                     zl(jcesl2-1-iad) = .true.
-                                    zi(jcesv2-1-iad) = iheav
+                                    cesv2(1-1-iad) = iheav
                                 endif
                                 goto 50
                             endif

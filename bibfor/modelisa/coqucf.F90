@@ -48,15 +48,19 @@ subroutine coqucf(nomu)
 !
 !
     integer :: ifm, niv, iret, ibid, ii, jj, kk
-    integer :: jcesdf, jcesdo, jcescf, jcesco, nbmail, adrm, iad
+    integer :: jcesdf, jcesdo,   nbmail, adrm, iad
     integer :: nbcmpf, nbcmpo, icompo, inoeu, nbno, nunoe, igeom
-    integer :: jceslf, jceslo, jcesvf, jcesvo
+    integer :: jceslf, jceslo
     integer :: jconne, iadr1, iadr2, jtabco
     real(kind=8) :: valr(3), fresu
     character(len=8) :: nomma, nmcmpf, nomval(3), nomfct
     character(len=19) :: cartco, cartcf, celsco, celscf, connex
     character(len=24) :: k24bid
     logical :: lcoor
+    character(len=8), pointer :: cesvf(:) => null()
+    real(kind=8), pointer :: cesvo(:) => null()
+    character(len=8), pointer :: cescf(:) => null()
+    character(len=8), pointer :: cesco(:) => null()
 !
     data   nomval  /'X','Y','Z'/
 ! ----------------------------------------------------------------------
@@ -98,22 +102,22 @@ subroutine coqucf(nomu)
     nbcmpf = zi(jcesdf+1)
     nbcmpo = zi(jcesdo+1)
 !     ADRESSE DES NOMS DES COMPOSANTES
-    call jeveuo(celscf//'.CESC', 'L', jcescf)
-    call jeveuo(celsco//'.CESC', 'L', jcesco)
+    call jeveuo(celscf//'.CESC', 'L', vk8=cescf)
+    call jeveuo(celsco//'.CESC', 'L', vk8=cesco)
     85 format('(',i3,'A9)')
     if (niv .ge. 2) then
         write(ifm,'(A,I3)') 'COMPOSANTES DE <'//cartco//'> ',nbcmpo
         write(k24bid,85) nbcmpo
-        write(ifm,k24bid) (zk8(jcesco+jj),jj=0, nbcmpo-1)
+        write(ifm,k24bid) (cesco(jj+1),jj=0, nbcmpo-1)
         write(ifm,'(A,I3)') 'COMPOSANTES DE <'//cartcf//'> ',nbcmpf
         write(k24bid,85) nbcmpf
-        write(ifm,k24bid) (zk8(jcescf+jj),jj=0, nbcmpf-1)
+        write(ifm,k24bid) (cescf(jj+1),jj=0, nbcmpf-1)
     endif
 !
     iret = 0
     do ii = 1, nbcmpf
-        nmcmpf = zk8(jcescf+ii-1)
-        jj = indik8( zk8(jcesco) , nmcmpf, 1 , nbcmpo )
+        nmcmpf = cescf(ii)
+        jj = indik8( cesco, nmcmpf, 1 , nbcmpo )
         if (jj .ne. 0) then
             if (niv .ge. 2) then
                 write(ifm,'(A)') 'COMPOSANTE <'//nmcmpf//'>'
@@ -138,8 +142,8 @@ subroutine coqucf(nomu)
 !
     call jeveuo(celscf//'.CESL', 'L', jceslf)
     call jeveuo(celsco//'.CESL', 'L', jceslo)
-    call jeveuo(celscf//'.CESV', 'L', jcesvf)
-    call jeveuo(celsco//'.CESV', 'E', jcesvo)
+    call jeveuo(celscf//'.CESV', 'L', vk8=cesvf)
+    call jeveuo(celsco//'.CESV', 'E', vr=cesvo)
 ! --- TRAITEMENT
 !        BOUCLE SUR TOUTES LES MAILLES
 !           BOUCLE SUR LES COMPOSANTES AVEC FONCTIONS DE CELSCF
@@ -154,11 +158,11 @@ subroutine coqucf(nomu)
     do ii = 1, nbmail
         lcoor = .false.
         do jj = 1, nbcmpf
-            nmcmpf = zk8(jcescf+jj-1)
+            nmcmpf = cescf(jj)
             call cesexi('C', jcesdf, jceslf, ii, 1,&
                         1, jj, iad)
             if (iad .gt. 0) then
-                nomfct = zk8(jcesvf-1+iad)
+                nomfct = cesvf(iad)
                 if (nomfct(1:2) .ne. '&&') then
                     if (.not. lcoor) then
                         lcoor = .true.
@@ -183,10 +187,10 @@ subroutine coqucf(nomu)
                         nomfct,fresu
                     endif
 !                 ON RECHERCHE DANS CELSCO LA COMPOSANTE CORRESPONDANTE
-                    kk = indik8( zk8(jcesco) , nmcmpf, 1 , nbcmpo )
+                    kk = indik8( cesco, nmcmpf, 1 , nbcmpo )
                     call cesexi('S', jcesdo, jceslo, ii, 1,&
                                 1, kk, iad)
-                    zr(jcesvo-1+iad) = fresu
+                    cesvo(iad) = fresu
                 endif
             endif
         end do

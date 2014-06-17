@@ -52,9 +52,9 @@ subroutine sfifj(nomres)
 #include "asterfort/as_allocate.h"
 !
     integer :: nfinit, nfin, nbm, nbpoin, nbid
-    integer :: npoin, iff, ivare, lvale, ibid, in
-    integer :: im1, im2, ivate,    nvecx, nvecy
-    integer :: nveco, ier, ncham, jpara, jordr
+    integer :: npoin, iff,  lvale, ibid, in
+    integer :: im1, im2,     nvecx, nvecy
+    integer :: nveco, ier, ncham, jpara
     integer :: lnumi, lnumj, lfreq, mxval, nbabs, ij
     real(kind=8) :: fmin, fmax, finit, ffin, df, f, prs
     real(kind=8) :: kste, uflui, dhyd, rho, jc, fcoupu, fmodel
@@ -70,6 +70,9 @@ subroutine sfifj(nomres)
     real(kind=8), pointer :: vecx(:) => null()
     real(kind=8), pointer :: vecy(:) => null()
     real(kind=8), pointer :: vecz(:) => null()
+    integer, pointer :: ordr(:) => null()
+    character(len=16), pointer :: vate(:) => null()
+    real(kind=8), pointer :: vare(:) => null()
 !
     data         deuxpi/6.28318530718d0/,yang/.false./
 !
@@ -84,15 +87,15 @@ subroutine sfifj(nomres)
 ! RECUPERATION DE LA BASE MODALE
         call getvid(' ', 'MODE_MECA', scal=base, nbret=ibid)
 !
-        call jeveuo(base//'.ORDR', 'L', jordr)
+        call jeveuo(base//'.ORDR', 'L', vi=ordr)
         call jelira(base//'.ORDR', 'LONUTI', nbm)
 !
 ! RECUPERATION DE LA FREQUENCE MINIMALE ET MAX DES MODES
 !
-        call rsadpa(base, 'L', 1, 'FREQ', zi(jordr-1+1),&
+        call rsadpa(base, 'L', 1, 'FREQ', ordr(1),&
                     0, sjv=jpara, styp=k8b)
         fmin = zr(jpara)
-        call rsadpa(base, 'L', 1, 'FREQ', zi(jordr-1+nbm),&
+        call rsadpa(base, 'L', 1, 'FREQ', ordr(nbm),&
                     0, sjv=jpara, styp=k8b)
         fmax = zr(jpara)
     else
@@ -140,25 +143,25 @@ subroutine sfifj(nomres)
 ! CALCUL DE L'ACCEPTANCE
 !
     call getvid(' ', 'SPEC_TURB', scal=spectr, nbret=ibid)
-    call jeveuo(spectr//'           .VARE', 'L', ivare)
-    call jeveuo(spectr//'           .VATE', 'L', ivate)
+    call jeveuo(spectr//'           .VARE', 'L', vr=vare)
+    call jeveuo(spectr//'           .VATE', 'L', vk16=vate)
 !
 ! RECUPERATION DES CONSTANTES DU SPECTRES DU
 ! MODELE 5 : CONSTANT PUIS NUL POUR FR > 10
 !
-    if (zk16(ivate) .eq. 'SPEC_CORR_CONV_1') then
-        uflui = zr(ivare+2)
-        rho = zr(ivare+3)
-        fcoupu = zr(ivare+4)
-        kste = zr(ivare+5)
-        dhyd = zr(ivare+6)
+    if (vate(1) .eq. 'SPEC_CORR_CONV_1') then
+        uflui = vare(3)
+        rho = vare(4)
+        fcoupu = vare(5)
+        kste = vare(6)
+        dhyd = vare(7)
 ! LONGUEURS DE CORRELATION
-        long1=zr(ivare)
-        long2=zr(ivare+1)
+        long1=vare(1)
+        long2=vare(2)
 ! VITESSE CONVECTIVE RADIALE (METHODE AU-YANG)
-        uc=zr(ivare+7)*uflui
+        uc=vare(8)*uflui
 ! VITESSE CONVECTIVE ORTHORADIALE (METHODE AU-YANG)
-        ut=zr(ivare+8)*uflui
+        ut=vare(9)*uflui
 !
 ! CALCUL DE LA FREQUENCE DE COUPURE PRONE PAR LE MODELE
 ! ET COMPARAISON AVEC LA FREQUENCE DE COUPURE DONNEE PAR
@@ -184,14 +187,14 @@ subroutine sfifj(nomres)
 ! RECUPERATION DE LA METHOD DE LA FONCTION
 ! DE COHERENCE
 !
-        method = zk16(ivate+10)(1:8)
-    else if (zk16(ivate).eq.'SPEC_CORR_CONV_2') then
-        uflui=zr(ivare)
-        fcoup=zr(ivare+1)
-        method=zk16(ivate+4)(1:8)
-        fonct =zk16(ivate+1)
-    else if (zk16(ivate).eq.'SPEC_CORR_CONV_3') then
-        fonct =zk16(ivate+1)
+        method = vate(11)(1:8)
+    else if (vate(1).eq.'SPEC_CORR_CONV_2') then
+        uflui=vare(1)
+        fcoup=vare(2)
+        method=vate(5)(1:8)
+        fonct =vate(2)
+    else if (vate(1).eq.'SPEC_CORR_CONV_3') then
+        fonct =vate(2)
         goto 10
     endif
 !
@@ -244,7 +247,7 @@ subroutine sfifj(nomres)
 ! VALEURS NON DEPENDANTES DE LA FREQUENCE
 !
 10  continue
-    if (zk16(ivate) .eq. 'SPEC_CORR_CONV_3') then
+    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
         call accep2(base(1:8), nbm, pg, phi, sphi)
     else
         call accep1(base(1:8), ligrmo, nbm, dir, yang)
@@ -269,9 +272,9 @@ subroutine sfifj(nomres)
 310  end do
 !
 !  POUR LE CAS SPEC_CORR_CONV_3
-    if (zk16(ivate) .eq. 'SPEC_CORR_CONV_3') then
+    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
 ! TABLE CONTENANT LES FONCTIONS DE FORME
-        is=zk16(ivate+1)
+        is=vate(2)
         do 320 iff = 0, nbpoin-1
             f=finit+iff*df
             zr(lfreq+iff) = f
@@ -307,7 +310,7 @@ subroutine sfifj(nomres)
                     f=finit+iff*df
                     if (f .gt. fcoup) then
                         prs = 0.d0
-                    else if (zk16(ivate).eq.'SPEC_CORR_CONV_2') then
+                    else if (vate(1).eq.'SPEC_CORR_CONV_2') then
                         puls = deuxpi*f
                         call fointe('F', fonct, 1, ['PULS'], [puls],&
                                     prs, ier)
@@ -338,7 +341,7 @@ subroutine sfifj(nomres)
     AS_DEALLOCATE(vr=vecy)
     AS_DEALLOCATE(vr=vecz)
 
-    if (zk16(ivate) .eq. 'SPEC_CORR_CONV_3') then
+    if (vate(1) .eq. 'SPEC_CORR_CONV_3') then
     else
         call jedetc('V', '&&329', 1)
         call jedetc('V', '&&V.M', 1)

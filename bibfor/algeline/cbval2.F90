@@ -62,10 +62,14 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     character(len=14) :: numr, numi
     character(len=19) :: matres, mati
     character(len=24) :: valmi, valmr
-    integer :: neq, mxddl, lddl, jrefai, jrefar, jsmhcr, jsmdir
-    integer :: iconst, imat, jsmhci, jsmdii, jvlmi1, jvlmr1, k
+    integer :: neq, mxddl, lddl,   jsmhcr
+    integer :: iconst, imat, jsmhci,  jvlmi1, jvlmr1, k
     integer :: jvlmi2, jvlmr2
     real(kind=8) :: zero
+    character(len=24), pointer :: refai(:) => null()
+    character(len=24), pointer :: refar(:) => null()
+    integer, pointer :: smdii(:) => null()
+    integer, pointer :: smdir(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -77,9 +81,9 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     valmr = matres//'.VALM'
     lgbloc = zi(lres+14)
     call jelira(matres//'.REFA', 'CLAS', cval=clas)
-    call jeveuo(matres//'.REFA', 'L', jrefar)
-    ASSERT(zk24(jrefar-1+9) (1:1).eq.'M')
-    symr = zk24(jrefar-1+9) .eq. 'MS'
+    call jeveuo(matres//'.REFA', 'L', vk24=refar)
+    ASSERT(refar(9) (1:1).eq.'M')
+    symr = refar(9) .eq. 'MS'
 !
     mxddl = 1
     call dismoi('NOM_NUME_DDL', matres, 'MATR_ASSE', repk=numr)
@@ -89,7 +93,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
 !
 !
     call jeveuo(numr//'.SMOS.SMHC', 'L', jsmhcr)
-    call jeveuo(numr//'.SMOS.SMDI', 'L', jsmdir)
+    call jeveuo(numr//'.SMOS.SMDI', 'L', vi=smdir)
     call jeveuo(jexnum(valmr, 1), 'E', jvlmr1)
     if (typres(1:1) .eq. 'R') then
         do k = 1, lgbloc
@@ -115,10 +119,10 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
         mati = zk24(zi(lmat(imat)+1))
         call dismoi('NOM_NUME_DDL', mati, 'MATR_ASSE', repk=numi)
         call jeveuo(numi//'.SMOS.SMHC', 'L', jsmhci)
-        call jeveuo(numi//'.SMOS.SMDI', 'L', jsmdii)
-        call jeveuo(mati//'.REFA', 'L', jrefai)
+        call jeveuo(numi//'.SMOS.SMDI', 'L', vi=smdii)
+        call jeveuo(mati//'.REFA', 'L', vk24=refai)
         valmi = mati//'.VALM'
-        symi = zk24(jrefai-1+9) .eq. 'MS'
+        symi = refai(9) .eq. 'MS'
         if (.not.symi) ASSERT(.not.symr)
         call jelira(valmi, 'TYPE', cval=typmat)
         call jeveuo(jexnum(valmi, 1), 'L', jvlmi1)
@@ -127,15 +131,15 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
 !
         if (typres(1:1) .eq. 'R') then
             if (typmat .eq. 'R') then
-                call rrssm2(neq, zi4(jsmhcr), zi4(jsmhci), zi(jsmdir), zi(jsmdii),&
+                call rrssm2(neq, zi4(jsmhcr), zi4(jsmhci), smdir, smdii,&
                             zi(lddl), const(iconst), zr(jvlmi1), zr( jvlmr1))
                 if (.not.symr) then
                     if (.not.symi) then
-                        call rrssm2(neq, zi4(jsmhcr), zi4(jsmhci), zi( jsmdir), zi(jsmdii),&
+                        call rrssm2(neq, zi4(jsmhcr), zi4(jsmhci), smdir, smdii,&
                                     zi(lddl), const(iconst), zr(jvlmi2), zr(jvlmr2))
 !
                     else
-                        call rrssm2(neq, zi4(jsmhcr), zi4(jsmhci), zi( jsmdir), zi(jsmdii),&
+                        call rrssm2(neq, zi4(jsmhcr), zi4(jsmhci), smdir, smdii,&
                                     zi(lddl), const(iconst), zr(jvlmi1), zr(jvlmr2))
                     endif
                 endif

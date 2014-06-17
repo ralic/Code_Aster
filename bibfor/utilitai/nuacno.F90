@@ -49,21 +49,25 @@ subroutine nuacno(nuage, lno, chno)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad,  ianueq, iaprno, ibid, icmp
+    integer :: i, iad,   iaprno, ibid, icmp
     integer :: icompt, iec, ieq, ino, itype, ival
-    integer :: j, jdesc, jlno, jnuai, jnuav, jrefe, k
+    integer :: j,  jlno,  jnuav,  k
     integer :: kcomp, kvale, nc, ncmp, ncmpmx, nec, np
     integer :: num
     integer, pointer :: ent_cod(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: nuai(:) => null()
+    integer, pointer :: nueq(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     knuage = nuage
     klno = lno
     kchno = chno
 !
-    call jeveuo(kchno//'.DESC', 'L', jdesc)
-    gd = zi(jdesc-1+1)
-    num = zi(jdesc-1+2)
+    call jeveuo(kchno//'.DESC', 'L', vi=desc)
+    gd = desc(1)
+    num = desc(2)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
@@ -71,9 +75,9 @@ subroutine nuacno(nuage, lno, chno)
     call wkvect('&&NUACNO.NOMCMP', 'V V I', ncmpmx, kcomp)
     AS_ALLOCATE(vi=ent_cod, size=nec)
 !
-    call jeveuo(kchno//'.REFE', 'L', jrefe)
-    noma = zk24(jrefe-1+1) (1:8)
-    nonu = zk24(jrefe-1+2) (1:19)
+    call jeveuo(kchno//'.REFE', 'L', vk24=refe)
+    noma = refe(1) (1:8)
+    nonu = refe(2) (1:19)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=np)
 !
     if (klno .ne. ' ') then
@@ -97,15 +101,15 @@ subroutine nuacno(nuage, lno, chno)
     endif
 !
     call jeveuo(knuage//'.NUAV', 'L', jnuav)
-    call jeveuo(knuage//'.NUAI', 'L', jnuai)
-    nc = zi(jnuai+2)
+    call jeveuo(knuage//'.NUAI', 'L', vi=nuai)
+    nc = nuai(3)
 !
 !     --SI LE CHAMP EST A REPRESENTATION CONSTANTE ---
 !
     if (num .lt. 0) then
         ncmp = -num
         do iec = 1, nec
-            ent_cod(iec) = zi(jdesc-1+2+iec)
+            ent_cod(iec) = desc(2+iec)
         end do
         do j = 1, np
             ino = zi(jlno+j-1)
@@ -127,7 +131,7 @@ subroutine nuacno(nuage, lno, chno)
 !
 !     --- SI LE CHAMP EST DECRIT PAR 1 "PRNO" ---
 !
-        call jeveuo(nonu//'.NUEQ', 'L', ianueq)
+        call jeveuo(nonu//'.NUEQ', 'L', vi=nueq)
         call jenonu(jexnom(nonu//'.LILI', '&MAILLA'), ibid)
         call jeveuo(jexnum(nonu//'.PRNO', ibid), 'L', iaprno)
         do j = 1, np
@@ -142,7 +146,7 @@ subroutine nuacno(nuage, lno, chno)
             do icmp = 1, ncmpmx
                 if (exisdg(ent_cod, icmp )) then
                     icompt = icompt + 1
-                    ieq = zi(ianueq-1+ival-1+icompt)
+                    ieq = nueq(ival-1+icompt)
                     k = nc*(j-1) + icompt
                     if (itype .eq. 1) then
                         zr(kvale-1+ieq) = zr(jnuav+k-1)

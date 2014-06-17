@@ -45,23 +45,26 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: iff, ifomul, numfon, ibid, idepfi, iarrfi, ifon, ibas
+    integer ::   numfon, ibid, idepfi, iarrfi, ifon, ibas
 !
-    integer :: i, j, k, nfonu, jfonu, ibasff, jbasu
+    integer :: i, j, k, nfonu, jfonu,  jbasu
     real(kind=8) :: smax, s, s1, s2, xyz1, xyz2
     character(len=24) :: fontmp, bastmp
+    integer, pointer :: fondmult(:) => null()
+    real(kind=8), pointer :: fondfiss(:) => null()
+    real(kind=8), pointer :: basefond(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
 !     LISTE DES POINTS DES FONDS DE FISSURES
-    call jeveuo(fiss//'.FONDFISS', 'L', iff)
+    call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
 !
 !     LISTE DES FONDS MULTIPLES
-    call jeveuo(fiss//'.FONDMULT', 'L', ifomul)
+    call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
 !
 !     BASE LOCALE EN FOND DE FISSURE
-    call jeveuo(fiss//'.BASEFOND', 'L', ibasff)
+    call jeveuo(fiss//'.BASEFOND', 'L', vr=basefond)
 !
 !     ------------------------------------------------------------------
 !     TRAITEMENT DU MOT-CLE NUME_FOND :
@@ -71,8 +74,8 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
 !     NUMERO DU FOND A TRAITER
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
 !
-    idepfi=zi(ifomul-1+2*(numfon-1)+1)
-    iarrfi=zi(ifomul-1+2*(numfon-1)+2)
+    idepfi=fondmult(2*(numfon-1)+1)
+    iarrfi=fondmult(2*(numfon-1)+2)
     lnoff=iarrfi-idepfi+1
 !
 !     CREATION D'UN FOND TEMPORAIRE RESTREINT AU NUMFON
@@ -80,7 +83,7 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
     call wkvect(fontmp, 'V V R', lnoff*4, ifon)
     do 15 i = 1, lnoff
         do 16 j = 1, 4
-            zr(ifon-1+4*(i-1)+j)=zr(iff-1+4*(i+(idepfi-1)-1)+j)
+            zr(ifon-1+4*(i-1)+j)=fondfiss(4*(i+(idepfi-1)-1)+j)
 16      continue
 15  continue
 !
@@ -89,7 +92,7 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
     call wkvect(bastmp, 'V V R', lnoff*6, ibas)
     do 17 i = 1, lnoff
         do 18 j = 1, 6
-            zr(ibas-1+6*(i-1)+j)=zr(ibasff-1+6*(i+(idepfi-1)-1)+j)
+            zr(ibas-1+6*(i-1)+j)=basefond(6*(i+(idepfi-1)-1)+j)
 18      continue
 17  continue
 !

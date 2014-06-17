@@ -49,7 +49,7 @@ subroutine cfmajc(resoco, neq, nbliac)
     character(len=19) :: mu, cm1a, liac
     integer :: jmu, jcm1a, jliac
     character(len=19) :: ddelt
-    integer :: jddelt
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,14 +66,14 @@ subroutine cfmajc(resoco, neq, nbliac)
 ! --- ACCES AUX CHAMPS DE TRAVAIL
 !
     ddelt = resoco(1:14)//'.DDEL'
-    call jeveuo(ddelt(1:19)//'.VALE', 'E', jddelt)
+    call jeveuo(ddelt(1:19)//'.VALE', 'E', vr=vale)
 !
 ! --- AJOUT DES LIAISONS DE CONTACT ACTIVES
 !
     do 10 iliac = 1, nbliac
         iliai = zi(jliac-1+iliac)
         call jeveuo(jexnum(cm1a, iliai), 'L', jcm1a)
-        call daxpy(neq, -zr(jmu-1+iliac), zr(jcm1a), 1, zr(jddelt),&
+        call daxpy(neq, -zr(jmu-1+iliac), zr(jcm1a), 1, vale,&
                    1)
         call jelibe(jexnum(cm1a, iliai))
 10  end do

@@ -68,11 +68,11 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !
 !
 !
-    integer :: iarefm, iret, nbnoe, lldef, iaconx
+    integer :: iarefm, iret, nbnoe,  iaconx
     integer :: nbmtot, nbmdef, ier
     integer :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie
-    integer :: iacon1, iadesc, iadesm, ialica, ialich, iaprno, icas
-    integer :: igex, instdy, iocc, ival, ldgn, ldgn0, lnocmp
+    integer :: iacon1,  iadesm, ialica, ialich, iaprno, icas
+    integer :: igex, instdy, iocc,  ldgn, ldgn0, lnocmp
     integer :: n1, nbndef, nbno, nbno2, nbnot, ncmpmx, nocc, nueq, nunot
 !
     real(kind=8) :: rbndyn, rbndef
@@ -84,6 +84,9 @@ subroutine comp81(nomres, basmod, raidf, noma)
     character(len=19) :: nu
 !
     logical :: lredu
+    integer, pointer :: idc_defo(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: mael_mass_desc(:) => null()
 !
     data blanc         /'        '/
 !
@@ -115,18 +118,18 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! ON RECUPERE LE NBRE DE NOEUDS PRESENTS DANS INTERF_DYNA
         call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
 ! ON RECUPERE LE LISTE DES NOEUDS PRESENTS DANS INTERF_DYNA
-        call jeveuo(lintf//'.IDC_DEFO', 'L', lldef)
+        call jeveuo(lintf//'.IDC_DEFO', 'L', vi=idc_defo)
     else
         nbnoe=0
     endif
-    call jeveuo(nomres//'.MAEL_MASS_DESC', 'L', iadesc)
+    call jeveuo(nomres//'.MAEL_MASS_DESC', 'L', vi=mael_mass_desc)
     call dismoi('NB_MODES_TOT', basmod, 'RESULTAT', repi=nbmtot)
     if (nbmtot .eq. 0) ASSERT(.false.)
     call dismoi('NB_MODES_STA', basmod, 'RESULTAT', repi=nbmdef)
     nbmdyn=nbmtot-nbmdef
     if (nbmdyn .lt. 0) ASSERT(.false.)
 !
-    if (nbmtot .ne. zi(iadesc+1)) then
+    if (nbmtot .ne. mael_mass_desc(2)) then
         call utmess('I', 'ALGORITH_52')
     endif
 !
@@ -169,7 +172,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
         if (nbno2 .ne. 0) then
             call wkvect('&&COMP81.NEUEXC', 'V V I', nbno2, ldgn)
             do j = 1, nbno2
-                zi(ldgn+j-1)=zi(lldef+j-1)
+                zi(ldgn+j-1)=idc_defo(j)
             end do
         else
             call wkvect('&&COMP81.NEUEXC', 'V V I', 1, ldgn)
@@ -247,7 +250,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
         if (nbnoe .ne. 0) then
             call wkvect('&&COMP81.NOSTDY', 'V V I', nbnoe, instdy)
             do j = 1, nbnoe
-                zi(instdy+j-1)=zi(lldef+j-1)
+                zi(instdy+j-1)=idc_defo(j)
             end do
         else
             call wkvect('&&COMP81.NOSTDY', 'V V I', 1, instdy)
@@ -287,7 +290,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! METTRE ICI LE NBRE DE NOEUDS INTERNES
     zi(iadesm-1+3)=nbno
 ! METTRE ICI LE NBRE DE DDL EXTERIEUR
-    zi(iadesm-1+4)=zi(iadesc+1)
+    zi(iadesm-1+4)=mael_mass_desc(2)
 ! METTRE ICI LE NBRE DE DDL INTERIEUR (OU TOTAL)
     zi(iadesm-1+5)=0
 ! METTRE ICI LE NBRE DE CHARGEMENT
@@ -356,10 +359,10 @@ subroutine comp81(nomres, basmod, raidf, noma)
             call jenonu(jexnom(nomres//'.LICA', nomcas), icas)
             call jeveuo(jexnum(nomres//'.LICA', icas), 'E', ialica)
             call jeveuo(jexnum(nomres//'.LICH', icas), 'E', ialich)
-            call jeveuo(vectas//'           .VALE', 'L', ival)
+            call jeveuo(vectas//'           .VALE', 'L', vr=vale)
             do ie = 1, nbmtot
-                zr(ialica+ie-1) = zr(ival+ie-1)
-                zr(ialica+nbmtot+ie-1) = zr(ival+ie-1)
+                zr(ialica+ie-1) = vale(ie)
+                zr(ialica+nbmtot+ie-1) = vale(ie)
             end do
             zk8(ialich)='NON_SUIV'
             zk8(ialich+1)=vectas

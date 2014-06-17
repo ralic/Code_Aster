@@ -77,10 +77,13 @@ subroutine rehaec(nomres, resgen, nomsst)
     integer :: i, i1, iad, iarchi, ibid, ich
     integer :: idresu, ieq, ire1, ire2, ire3
     integer :: iretou, j, jfreq, jnume, k, k1, ldnew
-    integer :: lfreq, llchab, llnequ, llnueq, llors, llprs
-    integer :: llref2, lmapro, lmoet, lsilia, lsst
+    integer :: lfreq, llchab,   llors, llprs
+    integer ::  lmapro, lmoet, lsilia, lsst
     integer :: n1, nbcham, nbddg, nbfreq, nbsst, neq
     integer :: neqet, neqgen, neqred, nusst, nutars
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: nllnequ(:) => null()
 !-----------------------------------------------------------------------
     data soutr  /'&SOUSSTR'/
 !-----------------------------------------------------------------------
@@ -178,11 +181,11 @@ subroutine rehaec(nomres, resgen, nomsst)
 !
     call dismoi('NUME_DDL', harmge, 'RESU_DYNA', repk=numgen(1:14))
     numgen(15:19) = '.NUME'
-    call jeveuo(numgen//'.REFN', 'L', llref2)
-    modgen = zk24(llref2)(1:8)
+    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
+    modgen = refn(1)(1:8)
     call jelibe(numgen//'.REFN')
-    call jeveuo(numgen//'.NEQU', 'L', llnequ)
-    neqgen = zi(llnequ)
+    call jeveuo(numgen//'.NEQU', 'L', vi=nllnequ)
+    neqgen = nllnequ(1)
     call jelibe(numgen//'.NEQU')
 !
 ! --- RECUPERATION NUMERO DE LA SOUS-STRUCTURE
@@ -288,7 +291,7 @@ subroutine rehaec(nomres, resgen, nomsst)
 ! --- RESTITUTION SUR BASE PHYSIQUE ---
 ! -------------------------------------
 !
-    call jeveuo(numgen//'.NUEQ', 'L', llnueq)
+    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
 !
     iarchi = 0
     if (interp(1:3) .ne. 'NON') then
@@ -336,7 +339,7 @@ subroutine rehaec(nomres, resgen, nomsst)
                     if (elim .ne. 0) then
                         iad=lmoet+ieq+j-1
                     else
-                        iad=idresu+(zi(jnume+i)-1)*neqgen+ zi(llnueq+&
+                        iad=idresu+(zi(jnume+i)-1)*neqgen+ nueq(1+&
                         ieq+j-2)-1
                     endif
 !

@@ -38,12 +38,14 @@ subroutine pjnout(modele)
 !     ------------------------------------------------------------------
 !
     character(len=8) :: noma
-    integer :: nbnoeu, jnout, ima, nbno, j, jmaill, nbmail
+    integer :: nbnoeu, jnout, ima, nbno, j,  nbmail
 !     ------------------------------------------------------------------
 !
 !     FONCTIONS "FORMULES" POUR ACCEDER RAPIDEMENT A LA CONNECTIVITE :
-    integer :: iconx1, iconx2
-#define zzconx(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
+    integer ::  iconx2
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: maille(:) => null()
+#define zzconx(imail,j) connex(zi(iconx2+imail-1)+j-1)
 #define zznbne(imail) zi(iconx2+imail) - zi(iconx2+imail-1)
 !     ------------------------------------------------------------------
 !
@@ -58,12 +60,12 @@ subroutine pjnout(modele)
     call dismoi('NB_MA_MAILLA', modele, 'MODELE', repi=nbmail)
     if (nbmail .eq. 0) goto 290
 !
-    call jeveuo(noma//'.CONNEX', 'L', iconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', iconx2)
-    call jeveuo(modele//'.MAILLE', 'L', jmaill)
+    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
 !
     do ima = 1, nbmail
-        if (zi(jmaill+ima-1) .eq. 0) goto 280
+        if (maille(ima) .eq. 0) goto 280
         nbno = zznbne(ima)
         do j = 1, nbno
             zi(jnout-1+zzconx(ima,j)) = 1

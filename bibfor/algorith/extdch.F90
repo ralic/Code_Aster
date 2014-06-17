@@ -59,9 +59,9 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 !
 !
 !
-    integer :: jcnsv, jcnsl, jcnsd
+    integer ::  jcnsl
     integer :: nbno, ino
-    integer :: jcesd, jcesl, jcesv
+    integer :: jcesd, jcesl
     integer :: nbma, ima, ipt, isp, icmp, nbpt, nbsp, nbcmp, iad
     real(kind=8) :: valeur
     character(len=6) :: nompro
@@ -69,6 +69,9 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
     character(len=19) :: dch, dchs, chplu, chmoi
     parameter   (nompro = 'EXTDCH')
     logical :: bool
+    real(kind=8), pointer :: cnsv(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 !
 !      REAL*8  TMP
 !
@@ -121,7 +124,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
                     'V', dchs)
         call jeveuo(dchs//'.CESD', 'L', jcesd)
         call jeveuo(dchs//'.CESL', 'L', jcesl)
-        call jeveuo(dchs//'.CESV', 'L', jcesv)
+        call jeveuo(dchs//'.CESV', 'L', vr=cesv)
         nbma = zi(jcesd-1+1)
         do 40,ima = 1,nbma
         nbpt = zi(jcesd-1+5+4*(ima-1)+1)
@@ -133,7 +136,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         call cesexi('C', jcesd, jcesl, ima, ipt,&
                     isp, icmp, iad)
         if (iad .gt. 0) then
-            valeur = zr(jcesv-1+iad)
+            valeur = cesv(iad)
 !
 !
             if (typext(5:7) .eq. 'ABS') valeur = abs( valeur)
@@ -165,13 +168,13 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         call cnocns(dch, 'V', dchs)
         call cnsred(dchs, 0, [0], 1, nocmp,&
                     'V', dchs)
-        call jeveuo(dchs//'.CNSV', 'L', jcnsv)
+        call jeveuo(dchs//'.CNSV', 'L', vr=cnsv)
         call jeveuo(dchs//'.CNSL', 'L', jcnsl)
-        call jeveuo(dchs//'.CNSD', 'L', jcnsd)
-        nbno = zi(jcnsd-1+1)
+        call jeveuo(dchs//'.CNSD', 'L', vi=cnsd)
+        nbno = cnsd(1)
         do 60,ino=1,nbno
         if (zl(jcnsl-1+ino)) then
-            valeur = abs(zr(jcnsv-1+ino))
+            valeur = abs(cnsv(ino))
             if (typext(5:7) .eq. 'ABS') valeur = abs(valeur)
             if (typext(1:3) .eq. 'MIN') then
                 dval = min(dval,valeur)

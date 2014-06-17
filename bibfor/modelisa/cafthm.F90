@@ -47,12 +47,13 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 !      FONREE : FONC OU REEL
 ! ======================================================================
 ! ======================================================================
-    integer :: n1, n2, n3, nflux, jvalv, jncmp, iocc
+    integer :: n1, n2, n3, nflux, jvalv,  iocc
     integer :: nbtou, nbma, jma, ncmp
     character(len=8) :: k8b, mod, typmcl(2)
     character(len=16) :: motclf, motcle(2), modeli
     character(len=19) :: carte
     character(len=24) :: mesmai
+    character(len=8), pointer :: vncmp(:) => null()
 ! ======================================================================
     call jemarq()
 !
@@ -73,15 +74,15 @@ subroutine cafthm(char, noma, ligrmo, fonree)
         ASSERT(.false.)
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
 ! --- STOCKAGE DE FORCES NULLES SUR TOUT LE MAILLAGE
 !
     ncmp = 3
-    zk8(jncmp) = 'PFLU1'
-    zk8(jncmp+1) = 'PFLU2'
-    zk8(jncmp+2) = 'PTHER'
+    vncmp(1) = 'PFLU1'
+    vncmp(2) = 'PFLU2'
+    vncmp(3) = 'PTHER'
 !
     if (fonree .eq. 'REEL') then
         zr(jvalv) = 0.d0

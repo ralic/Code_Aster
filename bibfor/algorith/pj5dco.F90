@@ -54,7 +54,7 @@ subroutine pj5dco(mo1, mo2, corres)
 !
     integer :: nbmail, nbdim, nno1, nno2, nbno
     integer :: llin1, llin2, inode, nbtr, lno1, lno2, lco1, lco2, idecal
-    integer :: out1, out2, jcoo1, jcoo2, iacnx1, ilcnx1, numnoe
+    integer :: out1, out2, jcoo1, jcoo2,  ilcnx1, numnoe
     integer :: i, nbmano, ima, imail, ino, j2xxk1, i2conb, i2conu, i2cocf
     parameter (nbmail=10)
     parameter (nbdim=3)
@@ -65,6 +65,7 @@ subroutine pj5dco(mo1, mo2, corres)
     character(len=16) :: lisin1, lisin2, lisou1, lisou2
     character(len=16) :: noeud1, noeud2, cobar1, cobar2
     character(len=24) :: coormo, coorme
+    integer, pointer :: connex(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -139,7 +140,7 @@ subroutine pj5dco(mo1, mo2, corres)
     call jeveuo(lisou1, 'L', out1)
     call jeveuo(lisou2, 'L', out2)
 !
-    call jeveuo(m1//'.CONNEX', 'L', iacnx1)
+    call jeveuo(m1//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
 !     2. RECHECHE DE LA MAILLE LE PLUS PROCHE DU NOEUD MESURE
@@ -161,7 +162,7 @@ subroutine pj5dco(mo1, mo2, corres)
             nbno=zi(ilcnx1-1 +imail+1)-zi(ilcnx1-1 +imail)
 !     THEORIQUEMENT NBNO = 2 (POUR SEG2)
             do ino = 1, nbno
-                nunoe(ino)=zi(iacnx1-1 +zi(ilcnx1-1 +imail)-1+ino)
+                nunoe(ino)=connex(zi(ilcnx1-1 +imail)-1+ino)
             end do
             do i = 1, nbdim
                 a(i) = zr(jcoo1-1 +(nunoe(1)-1)*nbdim+i)

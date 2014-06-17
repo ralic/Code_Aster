@@ -79,9 +79,13 @@ subroutine mtdscr(nommat)
 !
 !
 !-----------------------------------------------------------------------
-    integer ::  ier, iret, jccid, jnequ, jrefa
-    integer :: jscde, jsmde, k, lccid, lmat, lnom, nb1
+    integer ::  ier, iret,  jnequ
+    integer ::   k, lccid, lmat, lnom, nb1
     integer :: nb2
+    integer, pointer :: ccid(:) => null()
+    integer, pointer :: scde(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     mat19 = nommat
@@ -117,13 +121,13 @@ subroutine mtdscr(nommat)
     ASSERT(ier.ne.0)
 !
 !
-    call jeveuo(mat19//'.REFA', 'L', jrefa)
-    nu = zk24(jrefa-1+2)
+    call jeveuo(mat19//'.REFA', 'L', vk24=refa)
+    nu = refa(2)
     nomsto = nu//'.SMOS'
 !
 !     -- LMAT+2 ET +5 :
 !     ------------
-    call jeveuo(nomsto//'.SMDE', 'L', jsmde)
+    call jeveuo(nomsto//'.SMDE', 'L', vi=smde)
     call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
     zi(lmat+2) = zi(jnequ-1+1)
     call jeexin(nu//'.NUML.NULG', imatd)
@@ -155,7 +159,7 @@ subroutine mtdscr(nommat)
     call jeexin(mat19//'.VALM', iret)
 !     -- POUR TRAITER LE CAS OU ON A DETRUIT VOLONTAIREMENT LE .VALM
     if (iret .gt. 0) then
-        tyma = zk24(jrefa-1+9)
+        tyma = refa(9)
         if (tyma .eq. 'MS') then
             zi(lmat+4) = 1
 !
@@ -168,8 +172,8 @@ subroutine mtdscr(nommat)
 !
     else
         call jelira(mat19//'.UALF', 'NMAXOC', nb1)
-        call jeveuo(nu//'.SLCS.SCDE', 'L', jscde)
-        nb2 = zi(jscde-1+3)
+        call jeveuo(nu//'.SLCS.SCDE', 'L', vi=scde)
+        nb2 = scde(3)
         if (nb1 .eq. nb2) then
             zi(lmat+4) = 1
 !
@@ -187,9 +191,9 @@ subroutine mtdscr(nommat)
 !     -------------------------------------------------
     call jeexin(mat19//'.CCID', ier)
     if (ier .ne. 0) then
-        call jeveuo(mat19//'.CCID', 'L', jccid)
+        call jeveuo(mat19//'.CCID', 'L', vi=ccid)
         call jelira(mat19//'.CCID', 'LONMAX', lccid)
-        zi(lmat+7) = zi(jccid-1+lccid+1)
+        zi(lmat+7) = ccid(lccid+1)
     else
         zi(lmat+7) = 0
     endif
@@ -197,7 +201,7 @@ subroutine mtdscr(nommat)
 !
 !     -- LMAT+14
 !     ----------
-    zi(lmat+14) = zi(jsmde-1+2)
+    zi(lmat+14) = smde(2)
 !
 !
     call jedema()

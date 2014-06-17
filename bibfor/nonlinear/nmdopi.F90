@@ -92,7 +92,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     integer :: nbno, numequ, nddl, nbnoma
     integer :: ino, iddl
     integer :: jvale
-    integer :: jplir, jpltk, jplsl
+    integer :: jplir, jpltk
     integer :: ibid, n1, n2, neq, ndim
     real(kind=8) :: coef, lm(2)
     character(len=8) :: noma, lborn(2), nomcmp
@@ -108,12 +108,14 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     character(len=16) :: limocl(2), tymocl(2)
     integer :: ifm, niv
     integer :: jlino1, jlino2, nbnom, noeu1, noeu2
-    integer :: ivale, jeq2, ierm
+    integer ::  jeq2, ierm
     character(len=8) :: compo
     character(len=19) :: grln, cnsln, grlt
     character(len=24) :: liseq2, lisno1, lisno2
     real(kind=8) :: coef1, coef2, coefi, vect(3)
     logical :: isxfe, selxfe, selfem
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: plsl(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -344,7 +346,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         call wkvect(liseq2, 'V V I', nbno, jeq2)
         chapic = sdpilo(1:14)//'.PLCI'
         call vtcreb(chapic, numedd, 'V', 'R', neq)
-        call jeveuo(chapic(1:19)//'.VALE', 'E', ivale)
+        call jeveuo(chapic(1:19)//'.VALE', 'E', vr=vale)
     endif
 !
     if (selfem .or. selxfe) then
@@ -383,10 +385,10 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
                                 coef2, coefi)
                     numequ = zi(jequ-1+ino)
                     zr(jvale-1+numequ) = coef1
-                    zr(ivale-1+numequ) = coefi
+                    vale(numequ) = coefi
                     numequ = zi(jeq2-1+ino)
                     zr(jvale-1+numequ) = coef2
-                    zr(ivale-1+numequ) = coefi
+                    vale(numequ) = coefi
                 else if (selfem) then
                     numequ = zi(jequ-1+ino)
                     zr(jvale-1+numequ) = coef
@@ -412,7 +414,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     if (typpil .eq. 'LONG_ARC') then
         selpil = sdpilo(1:14)//'.PLSL'
         call vtcreb(selpil, numedd, 'V', 'R', neq)
-        call jeveuo(selpil(1:19)//'.VALE', 'E', jplsl)
+        call jeveuo(selpil(1:19)//'.VALE', 'E', vr=plsl)
 !
         nddl = 3
         call wkvect(liscmp, 'V V K8', nddl, jlicmp)
@@ -438,7 +440,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
                 numequ = zi(jequ-1+ino)
                 ASSERT(numequ.le.neq)
                 if (numequ .ne. 0) then
-                    zr(jplsl-1+numequ) = 1.d0
+                    plsl(numequ) = 1.d0
                 endif
             end do
         end do

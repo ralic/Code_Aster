@@ -64,11 +64,11 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !
     integer :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad
     integer :: jcnxma(ntymax), ima, nbsect, nbfibr, nbcouc
-    integer :: nbmail, jtypma, jpoin, jconx, nmatyp(ntymax), icmpse
-    integer :: jattma(ntymax), jccesv, jccesl, jccesd, jccesc
-    integer :: edfuin, edelst, ednoda, jocesv, jocesl, jocesd
-    integer :: jocesc, jorima(ntymax), icmpor, jpcesv, jpcesl, jpcesd
-    integer :: jpcesc, icmpr1, icmpep, jrmin(ntymax), jrmax(ntymax)
+    integer :: nbmail,  jpoin,  nmatyp(ntymax), icmpse
+    integer :: jattma(ntymax),  jccesl, jccesd
+    integer :: edfuin, edelst, ednoda,  jocesl, jocesd
+    integer ::  jorima(ntymax), icmpor,  jpcesl, jpcesd
+    integer ::  icmpr1, icmpep, jrmin(ntymax), jrmax(ntymax)
     parameter   (edfuin=0)
     parameter   (edelst=5)
     parameter   (ednoda=0)
@@ -81,35 +81,43 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     parameter   (atrmax = 'RAYON MAX')
 !
     logical :: exicoq, exituy, exipmf
+    real(kind=8), pointer :: ccesv(:) => null()
+    real(kind=8), pointer :: ocesv(:) => null()
+    real(kind=8), pointer :: pcesv(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: typmail(:) => null()
+    character(len=8), pointer :: ccesc(:) => null()
+    character(len=8), pointer :: ocesc(:) => null()
+    character(len=8), pointer :: pcesc(:) => null()
 !
-    call jeveuo(nomaas//'.TYPMAIL', 'L', jtypma)
+    call jeveuo(nomaas//'.TYPMAIL', 'L', vi=typmail)
     call jelira(nomaas//'.NOMMAI', 'NOMUTI', nbmail)
     call jeveuo(jexatr(nomaas//'.CONNEX', 'LONCUM'), 'L', jpoin)
-    call jeveuo(nomaas//'.CONNEX', 'L', jconx)
+    call jeveuo(nomaas//'.CONNEX', 'L', vi=connex)
 !
     exicoq = .false.
     call exisd('CHAM_ELEM_S', sdcarm//'.CARCOQUE', iret)
     if (iret .ne. 0) then
         exicoq = .true.
-        call jeveuo(sdcarm//'.CARCOQUE  .CESV', 'L', jccesv)
+        call jeveuo(sdcarm//'.CARCOQUE  .CESV', 'L', vr=ccesv)
         call jeveuo(sdcarm//'.CARCOQUE  .CESL', 'L', jccesl)
         call jeveuo(sdcarm//'.CARCOQUE  .CESD', 'L', jccesd)
-        call jeveuo(sdcarm//'.CARCOQUE  .CESC', 'L', jccesc)
+        call jeveuo(sdcarm//'.CARCOQUE  .CESC', 'L', vk8=ccesc)
         nbcmp = zi(jccesd+1)
-        icmpse = indik8(zk8(jccesc),'EP',1,nbcmp)
+        icmpse = indik8(ccesc,'EP',1,nbcmp)
     endif
 !
     exituy = .false.
     call exisd('CHAM_ELEM_S', sdcarm//'.CARGEOPO', iret)
     if (iret .ne. 0) then
         exituy = .true.
-        call jeveuo(sdcarm//'.CARGEOPO  .CESV', 'L', jpcesv)
+        call jeveuo(sdcarm//'.CARGEOPO  .CESV', 'L', vr=pcesv)
         call jeveuo(sdcarm//'.CARGEOPO  .CESL', 'L', jpcesl)
         call jeveuo(sdcarm//'.CARGEOPO  .CESD', 'L', jpcesd)
-        call jeveuo(sdcarm//'.CARGEOPO  .CESC', 'L', jpcesc)
+        call jeveuo(sdcarm//'.CARGEOPO  .CESC', 'L', vk8=pcesc)
         nbcmp = zi(jpcesd+1)
-        icmpr1 = indik8(zk8(jpcesc),'R1',1,nbcmp)
-        icmpep = indik8(zk8(jpcesc),'EP1',1,nbcmp)
+        icmpr1 = indik8(pcesc,'R1',1,nbcmp)
+        icmpep = indik8(pcesc,'EP1',1,nbcmp)
         if (icmpr1 .eq. 0 .or. icmpep .eq. 0) exituy = .false.
     endif
 !
@@ -120,12 +128,12 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     endif
 !
     if (exituy .or. exipmf) then
-        call jeveuo(sdcarm//'.CARORIEN  .CESV', 'L', jocesv)
+        call jeveuo(sdcarm//'.CARORIEN  .CESV', 'L', vr=ocesv)
         call jeveuo(sdcarm//'.CARORIEN  .CESL', 'L', jocesl)
         call jeveuo(sdcarm//'.CARORIEN  .CESD', 'L', jocesd)
-        call jeveuo(sdcarm//'.CARORIEN  .CESC', 'L', jocesc)
+        call jeveuo(sdcarm//'.CARORIEN  .CESC', 'L', vk8=ocesc)
         nbcmp = zi(jocesd+1)
-        icmpor = indik8(zk8(jocesc),'GAMMA',1,nbcmp)
+        icmpor = indik8(ocesc,'GAMMA',1,nbcmp)
     endif
 !
 !     -- DECOMPTE DU NOMBRE DE MAILLES PAR TYPE
@@ -134,7 +142,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     211 end do
 !
     do 212 , ima = 1, nbmail
-    nmatyp(zi(jtypma-1+ima)) = nmatyp(zi(jtypma-1+ima)) + 1
+    nmatyp(typmail(ima)) = nmatyp(typmail(ima)) + 1
     212 end do
 !
 !     -- CREATION D'UN VECTEURS PAR TYPE DE MAILLE PRESENT CONTENANT
@@ -170,7 +178,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
 !
     do 242 , ima = 1, nbmail
 !
-    ityp = zi(jtypma-1+ima)
+    ityp = typmail(ima)
 !
     ipoin = zi(jpoin-1+ima)
     nmatyp(ityp) = nmatyp(ityp) + 1
@@ -179,7 +187,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
         call cesexi('C', jccesd, jccesl, ima, 1,&
                     1, icmpse, iad)
         if (iad .gt. 0) then
-            zr(jattma(ityp)+nmatyp(ityp)-1) = zr(jccesv-1+iad)
+            zr(jattma(ityp)+nmatyp(ityp)-1) = ccesv(iad)
         else
             zr(jattma(ityp)+nmatyp(ityp)-1) = 0.d0
         endif
@@ -188,7 +196,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
         call cesexi('C', jocesd, jocesl, ima, 1,&
                     1, icmpor, iad)
         if (iad .gt. 0) then
-            zr(jorima(ityp)+nmatyp(ityp)-1) = zr(jocesv-1+iad)
+            zr(jorima(ityp)+nmatyp(ityp)-1) = ocesv(iad)
         else
             zr(jorima(ityp)+nmatyp(ityp)-1) = 0.d0
         endif
@@ -197,14 +205,14 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
         call cesexi('C', jpcesd, jpcesl, ima, 1,&
                     1, icmpr1, iad)
         if (iad .gt. 0) then
-            zr(jrmin(ityp)+nmatyp(ityp)-1) = zr(jpcesv-1+iad)
+            zr(jrmin(ityp)+nmatyp(ityp)-1) = pcesv(iad)
         else
             zr(jrmin(ityp)+nmatyp(ityp)-1) = 0.d0
         endif
         call cesexi('C', jpcesd, jpcesl, ima, 1,&
                     1, icmpep, iad)
         if (iad .gt. 0) then
-            zr(jrmax(ityp)+nmatyp(ityp)-1) = zr( jrmin(ityp)+ nmatyp(ityp)-1)+zr(jpcesv-1+iad )
+            zr(jrmax(ityp)+nmatyp(ityp)-1) = zr( jrmin(ityp)+ nmatyp(ityp)-1)+pcesv(iad )
         else
             zr(jrmax(ityp)+nmatyp(ityp)-1) = 0.d0
         endif
@@ -215,14 +223,14 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     if (modnum(ityp) .eq. 0) then
         do 2421 , ino = 1, nnotyp(ityp)
         zi(jcnxma(ityp)-1+(nmatyp(ityp)-1)*nnotyp(ityp)+ino) =&
-                zi(jconx-1+ipoin-1+ino)
+                connex(ipoin-1+ino)
 2421      continue
 !       II) POUR LES TYPES DE MAILLE DONT LA NUMEROTATION DES NOEUDS
 !          ENTRE ASTER ET MED EST DIFFERENTE (CF LRMTYP):
     else
         do 2422 , ino = 1, nnotyp(ityp)
         zi(jcnxma(ityp)-1+(nmatyp(ityp)-1)*nnotyp(ityp)+ino) =&
-                zi(jconx-1+ipoin-1+nuanom(ityp,ino))
+                connex(ipoin-1+nuanom(ityp,ino))
 2422      continue
     endif
 !

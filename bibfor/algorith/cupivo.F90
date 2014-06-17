@@ -71,14 +71,17 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
 !
     character(len=1) :: typesp
     character(len=19) :: liac, liot, matr, stoc, ouvert
-    integer :: jliac, jliot, jvale, jva, jscde, jouv
+    integer :: jliac, jliot, jvale, jva,  jouv
     integer :: nbbloc
     real(kind=8) :: copmax
     integer :: kk1, kk2, kk1f, kk2f
     integer :: nbote, pivot, nbliai, lliac, ii
     integer :: niv, ifm
-    integer :: bloc, iscib, jscbl, dercol
+    integer :: bloc,   dercol
     integer :: nnocu
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: scib(:) => null()
+    integer, pointer :: scde(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,9 +97,9 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
 !
     call jeveuo(liac, 'E', jliac)
     call jeveuo(liot, 'E', jliot)
-    call jeveuo(stoc//'.SCIB', 'L', iscib)
-    call jeveuo(stoc//'.SCBL', 'L', jscbl)
-    call jeveuo(stoc//'.SCDE', 'L', jscde)
+    call jeveuo(stoc//'.SCIB', 'L', vi=scib)
+    call jeveuo(stoc//'.SCBL', 'L', vi=scbl)
+    call jeveuo(stoc//'.SCDE', 'L', vi=scde)
 ! ======================================================================
 ! --- INITIALISATION DES VARIABLES
 ! ======================================================================
@@ -105,7 +108,7 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
     typesp = 'S'
     copmax = xjvmax * 1.0d-08
     pivot = 0
-    nbbloc=zi(jscde-1+3)
+    nbbloc=scde(3)
     ouvert='&&ELPIV2.TRAV'
     call wkvect(ouvert, 'V V L', nbbloc, jouv)
 !
@@ -118,8 +121,8 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
                 kk1f = kk1
                 kk2f = kk2
             endif
-            ii = zi(iscib-1+kk1f)
-            dercol = zi(jscbl+ii-1)
+            ii = scib(kk1f)
+            dercol = scbl(ii)
             bloc = dercol*(dercol+1)/2
             if (.not.zl(jouv-1+ii)) then
                 if ((ii.gt.1) .and. (kk1f.ne.(spavan+1))) then

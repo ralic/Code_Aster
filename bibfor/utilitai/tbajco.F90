@@ -51,11 +51,13 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
 !                 SI PREMIERE VALEUR =-1, ON AJOUTE SANS DECALAGE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, iret, jtblp, jtbnp, nbpara, jvale, jlogq, nblign, iind
+    integer :: i, iret,   nbpara, jvale, jlogq, nblign, iind
     character(len=1) :: actioz
     character(len=3) :: typez, typev
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, paraz, indic
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -82,11 +84,11 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
         call tbajpa(nomtab, 1, para, typez)
     endif
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
 !
-    nbpara=zi(jtbnp)
-    nblign=zi(jtbnp+1)
+    nbpara=tbnp(1)
+    nblign=tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -114,10 +116,10 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
 !  --- RECHERCHE DES NOMS JEVEUX DU PARAMETRE
     iret=0
     do 40 i = 1, nbpara
-        if (paraz .eq. zk24(jtblp+(4*(i-1)))) then
-            nomjv=zk24(jtblp+(4*(i-1)+2))
-            nomjvl=zk24(jtblp+(4*(i-1)+3))
-            typev=zk24(jtblp+(4*(i-1)+1))
+        if (paraz .eq. tblp(1+(4*(i-1)))) then
+            nomjv=tblp(1+(4*(i-1)+2))
+            nomjvl=tblp(1+(4*(i-1)+3))
+            typev=tblp(1+(4*(i-1)+1))
             iret=1
         endif
 40  end do

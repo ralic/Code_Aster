@@ -69,17 +69,23 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
 !
 !
-    integer :: jcsd1, jcsl1, jcsv1, jcsd2, jcsl2, jcsv2, jconx1, jconx2
-    integer :: jlis1, ima, jma, pin, iad, iret, ninter, ifiss
+    integer :: jcsd1, jcsl1,  jcsd2, jcsl2,   jconx2
+    integer :: jlis1, ima,  pin, iad, iret, ninter, ifiss
     integer :: ar(12, 3), i, ia, nbar, nloc(2), nglo(2), nuno(2), neq, no
     character(len=24) :: grp(3)
     character(len=19) :: nliseq
     character(len=8) :: typma
     integer :: zxain, in, jn, iac, ier, ncta, ncte
-    integer :: jcntan, jcntes, jcnte2,  narcon, jnbpt
+    integer ::  jcntes, jcnte2,  narcon
     logical :: lmulti, lconne
     integer :: kk, jgrp, ienr, nmaenr
     integer, pointer :: arcon(:) => null()
+    integer, pointer :: connectant(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: nbsp(:) => null()
+    integer, pointer :: csv1(:) => null()
+    real(kind=8), pointer :: csv2(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -99,7 +105,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
         ifiss = 1
     else
         lmulti = .true.
-        call jeveuo('&&XCONTA.NBSP', 'L', jnbpt)
+        call jeveuo('&&XCONTA.NBSP', 'L', vi=nbsp)
     endif
 !
 ! --- ON RECUPERE LA LISTE DES RELATIONS D'EGALITÉS
@@ -121,25 +127,25 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
         ncta = 0
     else
         lconne = .true.
-        call jeveuo(fiss(1:8)//'.CONNECTANT', 'L', jcntan)
+        call jeveuo(fiss(1:8)//'.CONNECTANT', 'L', vi=connectant)
         call jelira(fiss(1:8)//'.CONNECTANT', 'LONMAX', ncta)
         call jeveuo(fiss(1:8)//'.CONNECTES ', 'L', jcntes)
     endif
 !
 ! --- ON RECUPERE DES INFOS GLOBALES SUR LE MAILLAGE
 !
-    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', jma)
-    call jeveuo(noma(1:8)//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(noma(1:8)//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 ! --- ACCES AUX CHAM_ELEM_S
 !
     call jeveuo(faclon//'.CESD', 'L', jcsd1)
-    call jeveuo(faclon//'.CESV', 'L', jcsv1)
+    call jeveuo(faclon//'.CESV', 'L', vi=csv1)
     call jeveuo(faclon//'.CESL', 'L', jcsl1)
     call jeveuo(ainter//'.CESD', 'L', jcsd2)
     call jeveuo(ainter//'.CESL', 'E', jcsl2)
-    call jeveuo(ainter//'.CESV', 'E', jcsv2)
+    call jeveuo(ainter//'.CESV', 'E', vr=csv2)
 !
 ! --- RECUPERATION DES GROUPES
 !
@@ -163,16 +169,16 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
         do 11 ienr = 1, nmaenr
             ima = zi(jgrp-1+ienr)
-            if (lmulti) ifiss = zi(jnbpt-1+ima)
+            if (lmulti) ifiss = nbsp(ima)
             if (ifiss .eq. 0) goto 11
             call cesexi('C', jcsd1, jcsl1, ima, 1,&
                         ifiss, 1, iad)
             if (iad .eq. 0) goto 11
             ASSERT(iad.gt.0)
-            ninter = zi(jcsv1-1+iad)
+            ninter = csv1(iad)
             if (ninter .eq. 0) goto 11
             ASSERT(ninter.gt.0)
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
+            call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typma)
             call conare(typma, ar, nbar)
             do 21 pin = 1, ninter
 !
@@ -181,7 +187,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 1, iad)
                 ASSERT(iad.gt.0)
-                ia=nint(zr(jcsv2-1+iad))
+                ia=nint(csv2(iad))
                 if (ia .eq. 0) goto 21
                 ASSERT(ia.gt.0)
 !
@@ -189,16 +195,16 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
                 do 31 i = 1, 2
                     nloc(i) = ar(ia,i)
-                    nglo(i) = zi(jconx1-1+zi(jconx2+ima-1)+nloc(i)-1)
+                    nglo(i) = connex(zi(jconx2+ima-1)+nloc(i)-1)
 31              continue
 !
 ! --- COMPARAISON AVEC LES NOEUDS DE LA LISTE DE NOEUDS CONNECTANTS
 !
                 do 51 in = 1, ncta/3
-                    nuno(1) = zi(jcntan-1+3*(in-1)+1)
+                    nuno(1) = connectant(3*(in-1)+1)
                     if (nuno(1) .eq. nglo(1) .or. nuno(1) .eq. nglo(2)) then
-                        ncte = zi(jcntan-1+3*(in-1)+2)
-                        jcnte2 = zi(jcntan-1+3*(in-1)+3)
+                        ncte = connectant(3*(in-1)+2)
+                        jcnte2 = connectant(3*(in-1)+3)
                         do 61 jn = 1, ncte
                             nuno(2) = zi(jcntes-1 + jcnte2 + jn)
                             if (nuno(2) .eq. nglo(1) .or. nuno(2) .eq. nglo( 2)) then
@@ -228,16 +234,16 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
         do 10 ienr = 1, nmaenr
             ima = zi(jgrp-1+ienr)
-            if (lmulti) ifiss = zi(jnbpt-1+ima)
+            if (lmulti) ifiss = nbsp(ima)
             if (ifiss .eq. 0) goto 10
             call cesexi('C', jcsd1, jcsl1, ima, 1,&
                         ifiss, 1, iad)
             if (iad .eq. 0) goto 10
             ASSERT(iad.gt.0)
-            ninter = zi(jcsv1-1+iad)
+            ninter = csv1(iad)
             if (ninter .eq. 0) goto 10
             ASSERT(ninter.gt.0)
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
+            call jenuno(jexnum('&CATA.TM.NOMTM', typmail(ima)), typma)
             call conare(typma, ar, nbar)
             do 20 pin = 1, ninter
 !
@@ -246,11 +252,11 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 1, iad)
                 ASSERT(iad.gt.0)
-                ia=nint(zr(jcsv2-1+iad))
+                ia=nint(csv2(iad))
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 2, iad)
                 ASSERT(iad.gt.0)
-                no=nint(zr(jcsv2-1+iad))
+                no=nint(csv2(iad))
                 ASSERT(no.ge.0)
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 5, iad)
@@ -259,7 +265,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 ! --- S IL S'AGIT D'UN NOEUD, ALORS IL EST VITAL
 !
                 if (no .gt. 0) then
-                    zr(jcsv2-1+iad)=1
+                    csv2(iad)=1
                     zl(jcsl2-1+iad)=.true.
                 endif
                 if (ia .gt. 0) then
@@ -268,7 +274,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
                     do 30 i = 1, 2
                         nloc(i) = ar(ia,i)
-                        nglo(i) = zi(jconx1-1+zi(jconx2+ima-1)+nloc(i) -1)
+                        nglo(i) = connex(zi(jconx2+ima-1)+nloc(i) -1)
 30                  continue
 !
 ! --- COMPARAISON AVEC LES COUPLES DE NO DE LA LISTE DE RELAT D'EGALITÉS
@@ -281,19 +287,19 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
 ! --- SI C EGAL, ON EST SUR UNE ARETE VITALE, ON MET LE STATUT À 1
 !
-                            zr(jcsv2-1+iad)=1
+                            csv2(iad)=1
                             zl(jcsl2-1+iad)=.true.
 !
 ! --- COMPARAISON AVEC LES NOEUDS DE LA LISTE DE NOEUDS CONNECTANTS
 !
                             do 60 in = 1, ncta/3
-                                nuno(1) = zi(jcntan-1+3*(in-1)+1)
+                                nuno(1) = connectant(3*(in-1)+1)
                                 if (nuno(1) .eq. nglo(1) .or. nuno(1) .eq. nglo(2)) then
 !
 ! --- SI C EGALE, ON RECUPERE LA LISTE DES NOEUDS CONNECTES
 !
-                                    ncte = zi(jcntan-1+3*(in-1)+2)
-                                    jcnte2 = zi(jcntan-1+3*(in-1)+3)
+                                    ncte = connectant(3*(in-1)+2)
+                                    jcnte2 = connectant(3*(in-1)+3)
                                     do 70 jn = 1, ncte
 !
 ! --- ON COMPARE LES NUMEROS DE CETTE LISTE À CELLE DE L'ARETE
@@ -318,7 +324,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 60                          continue
                             goto 20
                         else
-                            zr(jcsv2-1+iad)=0
+                            csv2(iad)=0
                             zl(jcsl2-1+iad)=.true.
                         endif
 !

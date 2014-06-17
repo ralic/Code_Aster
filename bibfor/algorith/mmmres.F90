@@ -75,7 +75,6 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
     integer :: iptc
     integer :: izone, imae, iptm
     integer :: ndd1, nptm, nbmae
-    integer :: jcont, jfrot
     integer :: iacnx1, ilcnx1
     integer :: nzoco
     integer :: jdepde, jdeplu
@@ -105,7 +104,11 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
     integer :: ifm, niv
     logical :: lfrot, lveri, lnoeu
     logical :: lcolli, laffle
-    integer :: jcnsvr, jcnslr, jcnsvp, jcnslp
+    integer ::  jcnslr,  jcnslp
+    real(kind=8), pointer :: cnsvp(:) => null()
+    real(kind=8), pointer :: cnsvr(:) => null()
+    real(kind=8), pointer :: vcont(:) => null()
+    real(kind=8), pointer :: frot(:) => null()
     parameter (eps=1.d-6)
 ! ----------------------------------------------------------------------
     data licnt3&
@@ -191,13 +194,13 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! --- ACCES AU CHAM_NO_S POUR LE CONTACT
 !
-    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', jcnsvr)
+    call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=cnsvr)
     call jeveuo(cnsinr(1:19)//'.CNSL', 'E', jcnslr)
 !
 ! --- ACCES AU CHAM_NO_S POUR LES PERCUSSIONS
 ! --- ON NE REMET PAS A ZERO D'UN PAS A L'AUTRE
 !
-    call jeveuo(cnsper(1:19)//'.CNSV', 'E', jcnsvp)
+    call jeveuo(cnsper(1:19)//'.CNSV', 'E', vr=cnsvp)
     call jeveuo(cnsper(1:19)//'.CNSL', 'E', jcnslp)
 !
 ! --- FORCES NODALES DE CONTACT
@@ -206,7 +209,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
     call cnocns(fcont, 'V', fconts)
     call cnsred(fconts, 0, [0], ndimg, licnt3,&
                 'V', fctcn)
-    call jeveuo(fctcn//'.CNSV', 'L', jcont)
+    call jeveuo(fctcn//'.CNSV', 'L', vr=vcont)
 !
 ! --- FORCES NODALES DE FROTTEMENT
 !
@@ -215,7 +218,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
         call cnocns(ffrot, 'V', ffrots)
         call cnsred(ffrots, 0, [0], ndimg, licnt3,&
                     'V', ffrocn)
-        call jeveuo(ffrocn//'.CNSV', 'L', jfrot)
+        call jeveuo(ffrocn//'.CNSV', 'L', vr=frot)
     endif
 !
 ! --- BOUCLE SUR LES ZONES
@@ -280,13 +283,13 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
                 if (cont .ge. 1.d0) then
                     if (ndimg .eq. 3) then
-                        rnx = zr(jcont-1+3*(numnoe-1)+1)
-                        rny = zr(jcont-1+3*(numnoe-1)+2)
-                        rnz = zr(jcont-1+3*(numnoe-1)+3)
+                        rnx = vcont(3*(numnoe-1)+1)
+                        rny = vcont(3*(numnoe-1)+2)
+                        rnz = vcont(3*(numnoe-1)+3)
                         rn = sqrt(rnx**2+rny**2+rnz**2)
                     else if (ndimg.eq.2) then
-                        rnx = zr(jcont-1+2*(numnoe-1)+1)
-                        rny = zr(jcont-1+2*(numnoe-1)+2)
+                        rnx = vcont(2*(numnoe-1)+1)
+                        rny = vcont(2*(numnoe-1)+2)
                         rn = sqrt(rnx**2+rny**2)
                     else
                         ASSERT(.false.)
@@ -338,13 +341,13 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
                             if (ndimg .eq. 3) then
                                 cont = 2.d0
-                                rtgx = zr(jfrot-1+3*(numnoe-1)+1)
-                                rtgy = zr(jfrot-1+3*(numnoe-1)+2)
-                                rtgz = zr(jfrot-1+3*(numnoe-1)+3)
+                                rtgx = frot(3*(numnoe-1)+1)
+                                rtgy = frot(3*(numnoe-1)+2)
+                                rtgz = frot(3*(numnoe-1)+3)
                             else if (ndimg.eq.2) then
                                 cont = 2.d0
-                                rtgx = zr(jfrot-1+2*(numnoe-1)+1)
-                                rtgy = zr(jfrot-1+2*(numnoe-1)+2)
+                                rtgx = frot(2*(numnoe-1)+1)
+                                rtgy = frot(2*(numnoe-1)+2)
                             else
                                 ASSERT(.false.)
                             endif
@@ -353,12 +356,12 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 ! --------------- ADHERENT
 !
                             if (ndimg .eq. 3) then
-                                rtax = zr(jfrot-1+3*(numnoe-1)+1)
-                                rtay = zr(jfrot-1+3*(numnoe-1)+2)
-                                rtaz = zr(jfrot-1+3*(numnoe-1)+3)
+                                rtax = frot(3*(numnoe-1)+1)
+                                rtay = frot(3*(numnoe-1)+2)
+                                rtaz = frot(3*(numnoe-1)+3)
                             else if (ndimg.eq.2) then
-                                rtax = zr(jfrot-1+2*(numnoe-1)+1)
-                                rtay = zr(jfrot-1+2*(numnoe-1)+2)
+                                rtax = frot(2*(numnoe-1)+1)
+                                rtay = frot(2*(numnoe-1)+2)
                             else
                                 ASSERT(.false.)
                             endif
@@ -384,10 +387,10 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                     impy = 0.d0
                     impz = 0.d0
                 else
-                    imp = zr(jcnsvp+zperc*(numnoe-1)+1-1) + r*deltat
-                    impx = zr(jcnsvp+zperc*(numnoe-1)+2-1) + rx* deltat
-                    impy = zr(jcnsvp+zperc*(numnoe-1)+3-1) + ry* deltat
-                    impz = zr(jcnsvp+zperc*(numnoe-1)+4-1) + rz* deltat
+                    imp = cnsvp(1+zperc*(numnoe-1)+1-1) + r*deltat
+                    impx = cnsvp(1+zperc*(numnoe-1)+2-1) + rx* deltat
+                    impy = cnsvp(1+zperc*(numnoe-1)+3-1) + ry* deltat
+                    impz = cnsvp(1+zperc*(numnoe-1)+4-1) + rz* deltat
                 endif
 !
 ! --------- COORDONNNES DE LA PROJECTION
@@ -400,35 +403,35 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! --------- ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S VALE_CONT
 !
-                zr(jcnsvr+zresu*(numnoe-1)+1 -1) = cont
-                zr(jcnsvr+zresu*(numnoe-1)+2 -1) = -zr(japjeu+iptc-1)
+                cnsvr(1+zresu*(numnoe-1)+1 -1) = cont
+                cnsvr(1+zresu*(numnoe-1)+2 -1) = -zr(japjeu+iptc-1)
                 zl(jcnslr+zresu*(numnoe-1)+1 -1) = .true.
                 zl(jcnslr+zresu*(numnoe-1)+2 -1) = .true.
                 if (ndimg .eq. 3) then
-                    zr(jcnsvr+zresu*(numnoe-1)+3 -1) = rn
-                    zr(jcnsvr+zresu*(numnoe-1)+4 -1) = rnx
-                    zr(jcnsvr+zresu*(numnoe-1)+5 -1) = rny
-                    zr(jcnsvr+zresu*(numnoe-1)+6 -1) = rnz
-                    zr(jcnsvr+zresu*(numnoe-1)+7 -1) = gli1
-                    zr(jcnsvr+zresu*(numnoe-1)+8 -1) = gli2
-                    zr(jcnsvr+zresu*(numnoe-1)+9 -1) = gli
-                    zr(jcnsvr+zresu*(numnoe-1)+10-1) = rtax
-                    zr(jcnsvr+zresu*(numnoe-1)+11-1) = rtay
-                    zr(jcnsvr+zresu*(numnoe-1)+12-1) = rtaz
-                    zr(jcnsvr+zresu*(numnoe-1)+13-1) = rtgx
-                    zr(jcnsvr+zresu*(numnoe-1)+14-1) = rtgy
-                    zr(jcnsvr+zresu*(numnoe-1)+15-1) = rtgz
-                    zr(jcnsvr+zresu*(numnoe-1)+16-1) = rx
-                    zr(jcnsvr+zresu*(numnoe-1)+17-1) = ry
-                    zr(jcnsvr+zresu*(numnoe-1)+18-1) = rz
-                    zr(jcnsvr+zresu*(numnoe-1)+19-1) = r
-                    zr(jcnsvr+zresu*(numnoe-1)+21-1) = imp
-                    zr(jcnsvr+zresu*(numnoe-1)+22-1) = impx
-                    zr(jcnsvr+zresu*(numnoe-1)+23-1) = impy
-                    zr(jcnsvr+zresu*(numnoe-1)+24-1) = impz
-                    zr(jcnsvr+zresu*(numnoe-1)+28-1) = proj(1)
-                    zr(jcnsvr+zresu*(numnoe-1)+29-1) = proj(2)
-                    zr(jcnsvr+zresu*(numnoe-1)+30-1) = proj(3)
+                    cnsvr(1+zresu*(numnoe-1)+3 -1) = rn
+                    cnsvr(1+zresu*(numnoe-1)+4 -1) = rnx
+                    cnsvr(1+zresu*(numnoe-1)+5 -1) = rny
+                    cnsvr(1+zresu*(numnoe-1)+6 -1) = rnz
+                    cnsvr(1+zresu*(numnoe-1)+7 -1) = gli1
+                    cnsvr(1+zresu*(numnoe-1)+8 -1) = gli2
+                    cnsvr(1+zresu*(numnoe-1)+9 -1) = gli
+                    cnsvr(1+zresu*(numnoe-1)+10-1) = rtax
+                    cnsvr(1+zresu*(numnoe-1)+11-1) = rtay
+                    cnsvr(1+zresu*(numnoe-1)+12-1) = rtaz
+                    cnsvr(1+zresu*(numnoe-1)+13-1) = rtgx
+                    cnsvr(1+zresu*(numnoe-1)+14-1) = rtgy
+                    cnsvr(1+zresu*(numnoe-1)+15-1) = rtgz
+                    cnsvr(1+zresu*(numnoe-1)+16-1) = rx
+                    cnsvr(1+zresu*(numnoe-1)+17-1) = ry
+                    cnsvr(1+zresu*(numnoe-1)+18-1) = rz
+                    cnsvr(1+zresu*(numnoe-1)+19-1) = r
+                    cnsvr(1+zresu*(numnoe-1)+21-1) = imp
+                    cnsvr(1+zresu*(numnoe-1)+22-1) = impx
+                    cnsvr(1+zresu*(numnoe-1)+23-1) = impy
+                    cnsvr(1+zresu*(numnoe-1)+24-1) = impz
+                    cnsvr(1+zresu*(numnoe-1)+28-1) = proj(1)
+                    cnsvr(1+zresu*(numnoe-1)+29-1) = proj(2)
+                    cnsvr(1+zresu*(numnoe-1)+30-1) = proj(3)
                     zl(jcnslr+zresu*(numnoe-1)+3 -1) = .true.
                     zl(jcnslr+zresu*(numnoe-1)+4 -1) = .true.
                     zl(jcnslr+zresu*(numnoe-1)+5 -1) = .true.
@@ -454,23 +457,23 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                     zl(jcnslr+zresu*(numnoe-1)+29-1) = .true.
                     zl(jcnslr+zresu*(numnoe-1)+30-1) = .true.
                 else if (ndimg.eq.2) then
-                    zr(jcnsvr+zresu*(numnoe-1)+3 -1) = rn
-                    zr(jcnsvr+zresu*(numnoe-1)+4 -1) = rnx
-                    zr(jcnsvr+zresu*(numnoe-1)+5 -1) = rny
-                    zr(jcnsvr+zresu*(numnoe-1)+7 -1) = gli1
-                    zr(jcnsvr+zresu*(numnoe-1)+9 -1) = gli
-                    zr(jcnsvr+zresu*(numnoe-1)+10-1) = rtax
-                    zr(jcnsvr+zresu*(numnoe-1)+11-1) = rtay
-                    zr(jcnsvr+zresu*(numnoe-1)+13-1) = rtgx
-                    zr(jcnsvr+zresu*(numnoe-1)+14-1) = rtgy
-                    zr(jcnsvr+zresu*(numnoe-1)+16-1) = rx
-                    zr(jcnsvr+zresu*(numnoe-1)+17-1) = ry
-                    zr(jcnsvr+zresu*(numnoe-1)+19-1) = r
-                    zr(jcnsvr+zresu*(numnoe-1)+21-1) = imp
-                    zr(jcnsvr+zresu*(numnoe-1)+22-1) = impx
-                    zr(jcnsvr+zresu*(numnoe-1)+23-1) = impy
-                    zr(jcnsvr+zresu*(numnoe-1)+28-1) = proj(1)
-                    zr(jcnsvr+zresu*(numnoe-1)+29-1) = proj(2)
+                    cnsvr(1+zresu*(numnoe-1)+3 -1) = rn
+                    cnsvr(1+zresu*(numnoe-1)+4 -1) = rnx
+                    cnsvr(1+zresu*(numnoe-1)+5 -1) = rny
+                    cnsvr(1+zresu*(numnoe-1)+7 -1) = gli1
+                    cnsvr(1+zresu*(numnoe-1)+9 -1) = gli
+                    cnsvr(1+zresu*(numnoe-1)+10-1) = rtax
+                    cnsvr(1+zresu*(numnoe-1)+11-1) = rtay
+                    cnsvr(1+zresu*(numnoe-1)+13-1) = rtgx
+                    cnsvr(1+zresu*(numnoe-1)+14-1) = rtgy
+                    cnsvr(1+zresu*(numnoe-1)+16-1) = rx
+                    cnsvr(1+zresu*(numnoe-1)+17-1) = ry
+                    cnsvr(1+zresu*(numnoe-1)+19-1) = r
+                    cnsvr(1+zresu*(numnoe-1)+21-1) = imp
+                    cnsvr(1+zresu*(numnoe-1)+22-1) = impx
+                    cnsvr(1+zresu*(numnoe-1)+23-1) = impy
+                    cnsvr(1+zresu*(numnoe-1)+28-1) = proj(1)
+                    cnsvr(1+zresu*(numnoe-1)+29-1) = proj(2)
                     zl(jcnslr+zresu*(numnoe-1)+3 -1) = .true.
                     zl(jcnslr+zresu*(numnoe-1)+4 -1) = .true.
                     zl(jcnslr+zresu*(numnoe-1)+5 -1) = .true.
@@ -494,15 +497,15 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! --------- ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S VALE_PERC
 !
-                zr(jcnsvp+zperc*(numnoe-1)+1-1) = imp
-                zr(jcnsvp+zperc*(numnoe-1)+2-1) = impx
-                zr(jcnsvp+zperc*(numnoe-1)+3-1) = impy
+                cnsvp(1+zperc*(numnoe-1)+1-1) = imp
+                cnsvp(1+zperc*(numnoe-1)+2-1) = impx
+                cnsvp(1+zperc*(numnoe-1)+3-1) = impy
                 zl(jcnslp+zperc*(numnoe-1)+1-1) = .true.
                 zl(jcnslp+zperc*(numnoe-1)+2-1) = .true.
                 zl(jcnslp+zperc*(numnoe-1)+3-1) = .true.
 !
                 if (ndimg .eq. 3) then
-                    zr(jcnsvp+zperc*(numnoe-1)+4-1) = impz
+                    cnsvp(1+zperc*(numnoe-1)+4-1) = impz
                     zl(jcnslp+zperc*(numnoe-1)+4-1) = .true.
                 endif
 99              continue

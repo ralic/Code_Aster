@@ -41,34 +41,41 @@ subroutine pochpv(trange, nbbloc, tdebut, tfin, offset,&
 !
 !     --- RECUPERATION DES VECTEURS CONTENANT LES RESULTATS ---
 !-----------------------------------------------------------------------
-    integer :: iddesc, iddloc, idfcho, idiadh, idinst, idncho, idnint
-    integer :: idvgli, idvint, idwk1, idwk2, idwk3, idwk4, nbbloc
+    integer ::  idvint, idwk1, idwk2, idwk3, idwk4, nbbloc
     integer :: nbchoc, nbclas, nbpt
     real(kind=8) :: offset, tdebut, tfin, tmax, tmin, trepos
+    real(kind=8), pointer :: vcho(:) => null()
+    real(kind=8), pointer :: fcho(:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: dloc(:) => null()
+    character(len=8), pointer :: inti(:) => null()
+    integer, pointer :: icho(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
+    character(len=8), pointer :: ncho(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nomk19='                   '
     nomk19(1:8)=trange
 !
-    call jeveuo(nomk19//'.DESC', 'L', iddesc)
-    nbchoc = zi(iddesc+2)
+    call jeveuo(nomk19//'.DESC', 'L', vi=desc)
+    nbchoc = desc(3)
 !
-    call jeveuo(nomk19//'.DISC', 'L', idinst)
+    call jeveuo(nomk19//'.DISC', 'L', vr=disc)
     call jelira(nomk19//'.DISC', 'LONMAX', nbpt)
-    tmax = zr(idinst+nbpt-1)
-    tmin = zr(idinst)
+    tmax = disc(nbpt)
+    tmin = disc(1)
     if (tfin .gt. tmax) tfin = tmax
     if (tdebut .lt. tmin) tdebut = tmin
     if (tdebut .ge. tfin) then
         call utmess('F', 'PREPOST4_47')
     endif
 !
-    call jeveuo(nomk19//'.FCHO', 'L', idfcho)
-    call jeveuo(nomk19//'.DLOC', 'L', iddloc)
-    call jeveuo(nomk19//'.VCHO', 'L', idvgli)
-    call jeveuo(nomk19//'.ICHO', 'L', idiadh)
-    call jeveuo(nomk19//'.NCHO', 'L', idncho)
-    call jeveuo(nomk19//'.INTI', 'L', idnint)
+    call jeveuo(nomk19//'.FCHO', 'L', vr=fcho)
+    call jeveuo(nomk19//'.DLOC', 'L', vr=dloc)
+    call jeveuo(nomk19//'.VCHO', 'L', vr=vcho)
+    call jeveuo(nomk19//'.ICHO', 'L', vi=icho)
+    call jeveuo(nomk19//'.NCHO', 'L', vk8=ncho)
+    call jeveuo(nomk19//'.INTI', 'L', vk8=inti)
     call jeveuo(nomk19//'.VINT', 'L', idvint)
 !
     call wkvect('&&OP0130.WK1', 'V V R', nbpt, idwk1)
@@ -77,15 +84,15 @@ subroutine pochpv(trange, nbbloc, tdebut, tfin, offset,&
     call wkvect('&&OP0130.IWK4', 'V V I', nbpt, idwk4)
 !
     if (loptio) then
-        call stchpv(nbchoc, nbpt, zr(idinst), zr(iddloc), zr(idfcho),&
-                    zr( idvgli), zi(idiadh), zr(idwk1), zr(idwk2), zr(idwk3),&
+        call stchpv(nbchoc, nbpt, disc, dloc, fcho,&
+                    vcho, icho, zr(idwk1), zr(idwk2), zr(idwk3),&
                     zi(idwk4), tdebut, tfin, nbbloc, offset,&
-                    zk8(idncho), zk8(idnint), nomres)
+                    ncho, inti, nomres)
     else
-        call statim(nbchoc, nbpt, zr(idinst), zr(idfcho), zr(idvgli),&
+        call statim(nbchoc, nbpt, disc, fcho, vcho,&
                     zr( idvint), zr(idwk1), zr(idwk2), zr(idwk3), tdebut,&
                     tfin, nbbloc, offset, trepos, nbclas,&
-                    zk8(idncho), zk8(idnint), nomres)
+                    ncho, inti, nomres)
     endif
 !
     call jedetr('&&OP0130.WK1')

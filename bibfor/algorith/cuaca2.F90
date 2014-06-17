@@ -60,13 +60,16 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
 !
     integer :: jdecal
     integer :: nbddl, jva, jvale, jpoi, neq
-    integer :: iliac, jj, lliac, lljac, jscib, ii, dercol, bloc
-    integer :: jscbl, jouv, jscde, nbbloc
+    integer :: iliac, jj, lliac, lljac,  ii, dercol, bloc
+    integer ::  jouv,  nbbloc
     real(kind=8) :: val
     character(len=19) :: liac, cm1a, matr, stoc, ouvert
     integer :: jliac, jcm1a
     character(len=24) :: apddl, apcoef, poinoe
     integer :: japddl, japcoe
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: scde(:) => null()
+    integer, pointer :: scib(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,14 +86,14 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
     call jeveuo(liac, 'L', jliac)
     call jeveuo(apcoef, 'L', japcoe)
     call jeveuo(poinoe, 'L', jpoi)
-    call jeveuo(stoc//'.SCIB', 'L', jscib)
-    call jeveuo(stoc//'.SCBL', 'L', jscbl)
-    call jeveuo(stoc//'.SCDE', 'L', jscde)
+    call jeveuo(stoc//'.SCIB', 'L', vi=scib)
+    call jeveuo(stoc//'.SCBL', 'L', vi=scbl)
+    call jeveuo(stoc//'.SCDE', 'L', vi=scde)
 !
 ! --- INITIALISATIONS
 !
     neq = zi(lmat+2)
-    nbbloc = zi(jscde-1+3)
+    nbbloc = scde(3)
     ouvert = '&CFACA2.TRAV'
     call wkvect(ouvert, 'V V L', nbbloc, jouv)
 !
@@ -103,8 +106,8 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac,&
         lliac = zi(jliac-1+iliac)
 !
         call jeveuo(jexnum(cm1a, lliac), 'L', jcm1a)
-        ii = zi(jscib-1+iliac)
-        dercol = zi(jscbl+ii-1)
+        ii = scib(iliac)
+        dercol = scbl(ii)
         bloc = dercol*(dercol+1)/2
         if (.not.zl(jouv-1+ii)) then
             if (ii .gt. 1) then

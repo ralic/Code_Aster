@@ -51,10 +51,12 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
 !
     integer :: comp
     integer :: iamase, iatyma, ifon, ilev, inn, inn2, inp, iret, ityp, itypma
-    integer :: jcoor, jconx, jfon, jmale
+    integer ::  jconx, jfon
     integer :: nblev, nn, nn2, nbnott(3)
     real(kind=8) :: xg, yg, zg
     character(len=8) :: type
+    character(len=8), pointer :: mail(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !     -----------------------------------------------------------------
 !
@@ -62,9 +64,9 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
 !
 !     RECUPERATION DES DONNES SUR LE MAILLAGE
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
-    call jeveuo(resu//'.LEVRESUP.MAIL', 'L', jmale)
+    call jeveuo(resu//'.LEVRESUP.MAIL', 'L', vk8=mail)
     call jelira(resu//'.LEVRESUP.MAIL', 'LONUTI', nblev)
 !
 !
@@ -81,7 +83,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
 !
         do ilev = 1, nblev
             comp = 0
-            call jenonu(jexnom(noma//'.NOMMAI', zk8(jmale-1+ilev)), iret)
+            call jenonu(jexnom(noma//'.NOMMAI', mail(ilev)), iret)
             call jeveuo(jexnum(noma//'.CONNEX', iret), 'L', iamase)
             ityp = iatyma-1+iret
 !
@@ -108,9 +110,9 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
     yg=0
     zg=0
     do inn2 = 1, nbnott(1)
-        xg=xg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 1)
-        yg=yg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 2)
-        zg=zg+zr(jcoor-1 + (zi(jconx-1+inn2)-1)*3 + 3)
+        xg=xg+vale((zi(jconx-1+inn2)-1)*3 + 1)
+        yg=yg+vale((zi(jconx-1+inn2)-1)*3 + 2)
+        zg=zg+vale((zi(jconx-1+inn2)-1)*3 + 3)
     end do
 !
     call jeexin(resu//'.FOND.NOEU', ifon)
@@ -121,9 +123,9 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
     endif
     call jenonu(jexnom(noma//'.NOMNOE', zk8(jfon)), iret)
 !
-    vect(1) = xg/nbnott(1) - zr(jcoor-1 + (iret-1)*3 + 1)
-    vect(2) = yg/nbnott(1) - zr(jcoor-1 + (iret-1)*3 + 2)
-    vect(3) = zg/nbnott(1) - zr(jcoor-1 + (iret-1)*3 + 3)
+    vect(1) = xg/nbnott(1) - vale((iret-1)*3 + 1)
+    vect(2) = yg/nbnott(1) - vale((iret-1)*3 + 2)
+    vect(3) = zg/nbnott(1) - vale((iret-1)*3 + 3)
 !
     call jedema()
 end subroutine

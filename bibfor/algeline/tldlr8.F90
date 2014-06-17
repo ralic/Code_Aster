@@ -97,8 +97,7 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
     integer :: imini, iequa, i, jblmin, jbloc, jl1, jl2
     integer :: iab, ilong, iadia, ide, idl
     integer :: jnmini, jequa, jlong, jadia, jde, jdl, ibcl1
-    integer :: lm, ica, icb, icd, jrefa
-    integer :: iadigs
+    integer :: lm, ica, icb, icd
 !
 !     ----- CNJ --------------------------------------------------------
 !     ----- CNJ --------------------------------------------------------
@@ -106,6 +105,8 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
     real(kind=8) :: val
     character(len=19) :: noma19
     character(len=24) :: nomdia, ualf, nomtra
+    character(len=24), pointer :: refa(:) => null()
+    real(kind=8), pointer :: digs(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -127,7 +128,7 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
     nomtra(1:19) = nommat
 !
     npivot = 0
-    call jeveuo(noma19//'.DIGS', 'E', iadigs)
+    call jeveuo(noma19//'.DIGS', 'E', vr=digs)
 !
 !     --- CREATION D'UN TABLEAU POUR STOCKER LA DIAGONALE
 !
@@ -286,7 +287,7 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
                 val = val - zr(ica+i)*zr(ltrav+i)
 140          continue
             zr(iadia) = val
-            zr(iadigs-1+neq+iequa) = zr(iadia)
+            digs(neq+iequa) = zr(iadia)
             zr(ldiag+iequa-1) = val
 !
 !           --- LE PIVOT EST-IL NUL ? ----------------------------------
@@ -311,11 +312,11 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
 170  continue
 9999  continue
 !
-    call jeveuo(noma19//'.REFA', 'E', jrefa)
+    call jeveuo(noma19//'.REFA', 'E', vk24=refa)
     if (ilfin .eq. neq) then
-        zk24(jrefa-1+8)='DECT'
+        refa(8)='DECT'
     else
-        zk24(jrefa-1+8)='DECP'
+        refa(8)='DECP'
     endif
     call jedetr(nomdia)
     call jedetr(nomtra)

@@ -52,8 +52,11 @@ subroutine dismca(questi, nomobz, repi, repkz, ierd)
     character(len=8) ::  typfon, nompf(10), type, nogd
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, iexi, iret, jdesc, jnoma, jprol
+    integer ::  iexi, iret, jdesc
     integer :: jvale, k, l, long, ltyp, nbpf
+    integer, pointer :: desc(:) => null()
+    character(len=24), pointer :: prol(:) => null()
+    character(len=8), pointer :: noma(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -71,15 +74,15 @@ subroutine dismca(questi, nomobz, repi, repkz, ierd)
 !
 !
     if (questi .eq. 'NOM_MAILLA') then
-        call jeveuo(nomob//'.NOMA', 'L', jnoma)
-        repk = zk8(jnoma-1+1)
+        call jeveuo(nomob//'.NOMA', 'L', vk8=noma)
+        repk = noma(1)
 !
     else if (questi.eq.'TYPE_CHAMP') then
         repk = 'CART'
 !
     else if (questi.eq.'TYPE_SUPERVIS') then
-        call jeveuo(nomob//'.DESC', 'L', iadesc)
-        call jenuno(jexnum('&CATA.GD.NOMGD', zi(iadesc)), nogd)
+        call jeveuo(nomob//'.DESC', 'L', vi=desc)
+        call jenuno(jexnum('&CATA.GD.NOMGD', desc(1)), nogd)
         repk='CART_'//nogd
 !
     else if (questl(1:7).eq.'NOM_GD ') then
@@ -107,8 +110,8 @@ subroutine dismca(questi, nomobz, repi, repkz, ierd)
                 if (nomfon(1:8) .ne. '        ') then
                     call jeexin(nomfon//'.PROL', iret)
                     if (iret .gt. 0) then
-                        call jeveuo(nomfon//'.PROL', 'L', jprol)
-                        call fonbpa(nomfon, zk24(jprol), typfon, 10, nbpf,&
+                        call jeveuo(nomfon//'.PROL', 'L', vk24=prol)
+                        call fonbpa(nomfon, prol, typfon, 10, nbpf,&
                                     nompf)
                         do 101 l = 1, nbpf
                             if (nompf(l)(1:4) .eq. 'INST') then

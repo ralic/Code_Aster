@@ -45,8 +45,11 @@ subroutine gmeneu(imod, nbnode)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !-----------------------------------------------------------------------
-    integer :: inode, jcoor, jdetr, jinfo, node
+    integer :: inode,    node
     real(kind=8) :: x, y, z
+    real(kind=8), pointer :: coor(:) => null()
+    integer, pointer :: detr(:) => null()
+    integer, pointer :: info(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -64,9 +67,9 @@ subroutine gmeneu(imod, nbnode)
 !
 ! --- RECUPERATION DES VECTEURS DE TRAVAIL :
 !     ------------------------------------
-    call jeveuo('&&PREGMS.INFO.NOEUDS', 'L', jinfo)
-    call jeveuo('&&PREGMS.DETR.NOEUDS', 'L', jdetr)
-    call jeveuo('&&PREGMS.COOR.NOEUDS', 'L', jcoor)
+    call jeveuo('&&PREGMS.INFO.NOEUDS', 'L', vi=info)
+    call jeveuo('&&PREGMS.DETR.NOEUDS', 'L', vi=detr)
+    call jeveuo('&&PREGMS.COOR.NOEUDS', 'L', vr=coor)
 !
     call codnop(chnode, prfnoe, 1, 1)
 !
@@ -76,14 +79,14 @@ subroutine gmeneu(imod, nbnode)
 ! --- ECRITURE DES NUMEROS DE NOEUDS ET DE LEURS COORDONNEES :
 !     ------------------------------------------------------
     do 20 inode = 1, nbnode
-        node = zi(jinfo+inode-1)
+        node = info(inode)
 !
 !      ON N'ECRIT PAS LES NOEUDS ORPHELINS
-        if (zi(jdetr+node) .eq. 0) goto 20
+        if (detr(node+1) .eq. 0) goto 20
 !
-        x = zr(jcoor-1+3*(inode-1)+1)
-        y = zr(jcoor-1+3*(inode-1)+2)
-        z = zr(jcoor-1+3*(inode-1)+3)
+        x = coor(3*(inode-1)+1)
+        y = coor(3*(inode-1)+2)
+        z = coor(3*(inode-1)+3)
 !
         call codent(node, 'G', chnode(2:8))
         write(imod,'(2X,A,2X,3(1PE21.14),1X)') chnode,x,y,z

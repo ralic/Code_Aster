@@ -55,17 +55,19 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !        NBNOFF     : NOMBRE DE NOEUDS EN FOND DE FISSURE
 !-----------------------------------------------------------------------
 !
-    integer :: nbma, jlima, im, n1, igeom, nbnoe, iret, jsup, jnols, inols
+    integer :: nbma, jlima, im, n1,  nbnoe, iret, jsup, jnols, inols
     integer :: idlino, nbnols, jcoors, in, nbnoft, inoff, ifm, niv, jnofo
     integer :: nuno, jints, nbtrls, iera
     integer :: numfin, isym, inoli, jinf, jnoli, nbnoli, jcoori, jinti
     integer :: nbtrli, ino, inos, nbs, numun, jts, jti, nbi, inoi
-    integer :: jnofos, irlev, jbaslo, ndim
+    integer :: jnofos, irlev,  ndim
     real(kind=8) :: x0(3), x1, x2, y1, y2, z1, z2, d, vplan(3), dmin
     real(kind=8) :: dmax, prec, preco, ps, vectan(3), precn
     character(len=6) :: nompro
     character(len=8) :: critn
     character(len=24) :: msup, minf, fonnoe, nomnoe
+    real(kind=8), pointer :: basefond(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! DEB-------------------------------------------------------------------
 !
@@ -82,7 +84,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !
     call getvr8(' ', 'PREC_NORM', scal=precn, nbret=n1)
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', igeom)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoe)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     nomnoe = noma//'.NOMNOE'
@@ -98,7 +100,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     endif
 !
 !     BASE LOCALE EN FOND DE FISSURE
-    call jeveuo(resu//'.BASEFOND', 'L', jbaslo)
+    call jeveuo(resu//'.BASEFOND', 'L', vr=basefond)
 !
 !     ------------------------------------------------------------------
 !                  VECTEUR RESULTAT
@@ -130,9 +132,9 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !
     call wkvect('&&PKFOND_COOR_LEV_SUP', 'V V R', 3*nbnols, jcoors)
     do in = 1, nbnols
-        zr(jcoors-1+3*(in-1)+1) = zr(igeom-1+3*(zi(jnols-1+in)-1)+1)
-        zr(jcoors-1+3*(in-1)+2) = zr(igeom-1+3*(zi(jnols-1+in)-1)+2)
-        zr(jcoors-1+3*(in-1)+3) = zr(igeom-1+3*(zi(jnols-1+in)-1)+3)
+        zr(jcoors-1+3*(in-1)+1) = vale(3*(zi(jnols-1+in)-1)+1)
+        zr(jcoors-1+3*(in-1)+2) = vale(3*(zi(jnols-1+in)-1)+2)
+        zr(jcoors-1+3*(in-1)+3) = vale(3*(zi(jnols-1+in)-1)+3)
     end do
 !
     call jedetr('&&'//nompro//'_TRAV')
@@ -156,9 +158,9 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !
         call wkvect('&&PKFOND_COOR_LEV_INF', 'V V R', 3*nbnoli, jcoori)
         do in = 1, nbnoli
-            zr(jcoori-1+3*(in-1)+1) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 1)
-            zr(jcoori-1+3*(in-1)+2) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 2)
-            zr(jcoori-1+3*(in-1)+3) = zr(igeom-1+3*(zi(jnoli-1+in)-1)+ 3)
+            zr(jcoori-1+3*(in-1)+1) = vale(3*(zi(jnoli-1+in)-1)+ 1)
+            zr(jcoori-1+3*(in-1)+2) = vale(3*(zi(jnoli-1+in)-1)+ 2)
+            zr(jcoori-1+3*(in-1)+3) = vale(3*(zi(jnoli-1+in)-1)+ 3)
         end do
         call jedetr('&&'//nompro//'_TRAV')
     endif
@@ -184,16 +186,16 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !
         call jenonu(jexnom(nomnoe, zk8(jnofo-1+inoff)), nuno)
 !
-        x0(1) = zr(igeom-1+3*(nuno-1)+1)
-        x0(2) = zr(igeom-1+3*(nuno-1)+2)
-        x0(3) = zr(igeom-1+3*(nuno-1)+3)
+        x0(1) = vale(3*(nuno-1)+1)
+        x0(2) = vale(3*(nuno-1)+2)
+        x0(3) = vale(3*(nuno-1)+3)
 !
 !        VPLAN = VECTEUR ORTHOGONAL AU PLAN RECHERCHE
-        call dfftan(ndim, zr(jbaslo), inoff, vplan)
+        call dfftan(ndim, basefond, inoff, vplan)
 !
 !        D = LONGUEUR DU SEGMENT DU FOND DE FISSURE
         if (ndim .eq. 3) then
-            call dfflon(zr(igeom), zk8(jnofo), nomnoe, inoff, nbnoff,&
+            call dfflon(vale, zk8(jnofo), nomnoe, inoff, nbnoff,&
                         typfon, d)
         else if (ndim.eq.2) then
 !          D N'A PAS DE SENS EN 2D, ON PREND ALORS UNE VALEUR CARACT
@@ -223,18 +225,18 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
             nbi = 1
             inoi = 1
             zi(jti-1 + inoi) = nuno
-            x1 = zr(igeom-1+3*(nuno-1)+1)
-            y1 = zr(igeom-1+3*(nuno-1)+2)
-            z1 = zr(igeom-1+3*(nuno-1)+3)
+            x1 = vale(3*(nuno-1)+1)
+            y1 = vale(3*(nuno-1)+2)
+            z1 = vale(3*(nuno-1)+3)
 !
 ! identification noeuds sur bon cote de la levre (cas fond ferme)
 ! a partir du noeud le plus proche du fond
             do in = 1, nbtrli
                 ino = jnoli+zi(jinti-1 + in)-1
                 if (zi(ino) .eq. nuno) goto 310
-                x2 = zr(igeom-1+3*(zi(ino)-1)+1)
-                y2 = zr(igeom-1+3*(zi(ino)-1)+2)
-                z2 = zr(igeom-1+3*(zi(ino)-1)+3)
+                x2 = vale(3*(zi(ino)-1)+1)
+                y2 = vale(3*(zi(ino)-1)+2)
+                z2 = vale(3*(zi(ino)-1)+3)
                 d = sqrt( (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2 )
                 if (d .lt. dmin) then
                     dmin = d
@@ -243,16 +245,16 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 310             continue
             end do
 !
-            vectan(1) = zr(igeom-1+3*(numun-1)+1)-x1
-            vectan(2) = zr(igeom-1+3*(numun-1)+2)-y1
-            vectan(3) = zr(igeom-1+3*(numun-1)+3)-z1
+            vectan(1) = vale(3*(numun-1)+1)-x1
+            vectan(2) = vale(3*(numun-1)+2)-y1
+            vectan(3) = vale(3*(numun-1)+3)-z1
 !
             do in = 1, nbtrli
                 ino = jnoli+zi(jinti-1 + in)-1
                 if (zi(ino) .eq. nuno) goto 320
-                x2 = zr(igeom-1+3*(zi(ino)-1)+1)
-                y2 = zr(igeom-1+3*(zi(ino)-1)+2)
-                z2 = zr(igeom-1+3*(zi(ino)-1)+3)
+                x2 = vale(3*(zi(ino)-1)+1)
+                y2 = vale(3*(zi(ino)-1)+2)
+                z2 = vale(3*(zi(ino)-1)+3)
                 d = sqrt( (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2 )
                 ps=(x2-x1)*vectan(1)+(y2-y1)*vectan(2)+(z2-z1)*vectan(&
                 3)
@@ -270,7 +272,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !
             preco = prec*10
             call oreino(noma, zi(jti), nbi, nuno, numfin,&
-                        zr(igeom), critn, preco, iera, iret)
+                        vale, critn, preco, iera, iret)
 !
             do in = 1, min(nbi, 20)
                 call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli-1 + 20*(inoff-1)+in))
@@ -302,18 +304,18 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
         nbs = 1
         inos = 1
         zi(jts-1 + inos) = nuno
-        x1 = zr(igeom-1+3*(nuno-1)+1)
-        y1 = zr(igeom-1+3*(nuno-1)+2)
-        z1 = zr(igeom-1+3*(nuno-1)+3)
+        x1 = vale(3*(nuno-1)+1)
+        y1 = vale(3*(nuno-1)+2)
+        z1 = vale(3*(nuno-1)+3)
 !
 ! identification noeuds sur bon cote de la levre (cas fond ferme)
 ! a partir du noeud le plus proche du fond
         do in = 1, nbtrls
             ino = jnols+zi(jints-1 + in)-1
             if (zi(ino) .eq. nuno) goto 210
-            x2 = zr(igeom-1+3*(zi(ino)-1)+1)
-            y2 = zr(igeom-1+3*(zi(ino)-1)+2)
-            z2 = zr(igeom-1+3*(zi(ino)-1)+3)
+            x2 = vale(3*(zi(ino)-1)+1)
+            y2 = vale(3*(zi(ino)-1)+2)
+            z2 = vale(3*(zi(ino)-1)+3)
             d = sqrt( (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2 )
             if (d .lt. dmin) then
                 dmin = d
@@ -322,16 +324,16 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 210         continue
         end do
 !
-        vectan(1) = zr(igeom-1+3*(numun-1)+1)-x1
-        vectan(2) = zr(igeom-1+3*(numun-1)+2)-y1
-        vectan(3) = zr(igeom-1+3*(numun-1)+3)-z1
+        vectan(1) = vale(3*(numun-1)+1)-x1
+        vectan(2) = vale(3*(numun-1)+2)-y1
+        vectan(3) = vale(3*(numun-1)+3)-z1
 !
         do in = 1, nbtrls
             ino = jnols+zi(jints-1 +in)-1
             if (zi(ino) .eq. nuno) goto 220
-            x2 = zr(igeom-1+3*(zi(ino)-1)+1)
-            y2 = zr(igeom-1+3*(zi(ino)-1)+2)
-            z2 = zr(igeom-1+3*(zi(ino)-1)+3)
+            x2 = vale(3*(zi(ino)-1)+1)
+            y2 = vale(3*(zi(ino)-1)+2)
+            z2 = vale(3*(zi(ino)-1)+3)
             d = sqrt( (x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2 )
             ps=(x2-x1)*vectan(1)+(y2-y1)*vectan(2)+(z2-z1)*vectan(3)
             if (ps .ge. 0.d0) then
@@ -347,7 +349,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
         end do
         preco = prec*10
         call oreino(noma, zi(jts), nbs, nuno, numfin,&
-                    zr(igeom), critn, preco, iera, iret)
+                    vale, critn, preco, iera, iret)
 !
         do in = 1, min(nbs, 20)
             call jenuno(jexnum(nomnoe, zi(jts-1 + in)), zk8(inols-1 + 20*(inoff-1)+in))

@@ -50,7 +50,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcesk, jcesd, jcesv, jcesl, jcesc, nbma, ncmp, nbm
+    integer ::  jcesd,  jcesl,  nbma, ncmp, nbm
     integer :: ibid, nbmail, idmail, nbc, nbcmp
     integer :: i100, i110, icp, imai, nbpt, nbsp, ipt, isp, iad
     integer :: imamax, iptmax, imamin, iptmin, jcone
@@ -61,6 +61,9 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     character(len=19) :: chams1
     character(len=24) :: mesmai
     character(len=8), pointer :: nom_cmp(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_MA'
@@ -72,12 +75,12 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     chams1 = '&&PREXEL.CHAMS1'
     call celces(champ, 'V', chams1)
 !
-    call jeveuo(chams1//'.CESK', 'L', jcesk)
+    call jeveuo(chams1//'.CESK', 'L', vk8=cesk)
     call jeveuo(chams1//'.CESD', 'L', jcesd)
-    call jeveuo(chams1//'.CESV', 'L', jcesv)
+    call jeveuo(chams1//'.CESV', 'L', vr=cesv)
     call jeveuo(chams1//'.CESL', 'L', jcesl)
-    call jeveuo(chams1//'.CESC', 'L', jcesc)
-    ma = zk8(jcesk-1+1)
+    call jeveuo(chams1//'.CESC', 'L', vk8=cesc)
+    ma = cesk(1)
     nbma = zi(jcesd-1+1)
     ncmp = zi(jcesd-1+2)
 !
@@ -127,11 +130,11 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     do 100 i100 = 1, nbcmp
         if (nbc .ne. 0) then
             nocmp = nom_cmp(i100)
-            icp = indik8( zk8(jcesc), nocmp, 1, ncmp )
+            icp = indik8( cesc, nocmp, 1, ncmp )
             if (icp .eq. 0) goto 100
         else
             icp = i100
-            nocmp = zk8(jcesc+i100-1)
+            nocmp = cesc(i100)
         endif
 !
         do 110 i110 = 1, nbmail
@@ -148,7 +151,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
             call cesexi('C', jcesd, jcesl, imai, ipt,&
                         isp, icp, iad)
             if (iad .gt. 0) then
-                x = zr(jcesv-1+iad)
+                x = cesv(iad)
                 if (x .gt. valmax) then
                     imamax = imai
                     iptmax = zi(jcone+ipt-1)

@@ -83,7 +83,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 !
 !-----------------------------------------------------------------------
     integer :: i, idw, ier, iisec, iivar, ioc, isec
-    integer :: itabl, itblp, itbnp, ivar, ivect, ixma, j
+    integer :: itabl,   ivar, ivect, ixma, j
     integer ::   jdcge, jdcpo, jdcpof, jdge, jdgef
     integer :: jdgm,  jdme, jdvge, jdvpo, jdvpof
     integer :: jj,      k
@@ -101,6 +101,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
     character(len=8), pointer :: tabpou(:) => null()
     character(len=16), pointer :: typ_sect(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getres(nomu, concep, cmd)
@@ -175,17 +177,17 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
             call getvtx('POUTRE', 'NOM_SEC', iocc=ioc, scal=nomsec, nbret=nnosec)
             ASSERT(nnosec.eq.1)
 !
-            call jeveuo(tabcar//'.TBNP', 'L', itbnp)
+            call jeveuo(tabcar//'.TBNP', 'L', vi=tbnp)
 !            NOMBRE DE COLONNES
-            nbcolo = zi(itbnp)
+            nbcolo = tbnp(1)
 !            ON RECHERCHE NOMSEC DANS LA 1ER COLONNE
-            call jeveuo(tabcar//'.TBLP', 'L', itblp)
-            typca=zk24(itblp+1)
+            call jeveuo(tabcar//'.TBLP', 'L', vk24=tblp)
+            typca=tblp(2)
             if (typca(1:2) .ne. 'K8' .and. typca(1:3) .ne. 'K24') then
                 call utmess('F', 'MODELISA8_17', sk=tabcar)
             endif
-            call jeveuo(zk24(itblp+2), 'L', itabl)
-            nblign = zi(itbnp+1)
+            call jeveuo(tblp(3), 'L', itabl)
+            nblign = tbnp(2)
             if (typca .eq. 'K8') then
                 do 95 i = 1, nblign
                     if (zk8(itabl-1+i) .eq. nomsec) then
@@ -207,15 +209,15 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 97          continue
             jj=0
             do 96 i = 1, nbcolo-1
-                if (zk24(itblp+4*i+1) .ne. 'R') goto 96
+                if (tblp(1+4*i+1) .ne. 'R') goto 96
                 do 102 k = 1, nbo
-                    if (zk24(itblp+4*i) .eq. exppou(k)) goto 103
+                    if (tblp(1+4*i) .eq. exppou(k)) goto 103
 102              continue
                 goto 96
 103              continue
                 jj=jj+1
-                cara(jj) = zk24(itblp+4*i)(1:8)
-                call jeveuo(zk24(itblp+4*i+2), 'L', ivect)
+                cara(jj) = tblp(1+4*i)(1:8)
+                call jeveuo(tblp(1+4*i+2), 'L', ivect)
                 vale(jj)=zr(ivect-1+iisec)
 96          continue
             ncarac=jj

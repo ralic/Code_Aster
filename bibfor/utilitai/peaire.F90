@@ -40,7 +40,7 @@ subroutine peaire(resu, modele, nbocc)
 !     TRAITEMENT DU MOT CLE-FACTEUR "AIRE_INTERNE"
 !     ------------------------------------------------------------------
 !
-    integer :: nbparr, ibid, iret, iocc, ng, jnoma, ngb, jgb, igb, nbb
+    integer :: nbparr, ibid, iret, iocc, ng,  ngb, jgb, igb, nbb
     integer :: ifm, niv, iadgma
     parameter    ( nbparr = 3 )
     real(kind=8) :: valpar(nbparr), aire, long
@@ -50,6 +50,7 @@ subroutine peaire(resu, modele, nbocc)
     character(len=24) :: grpma
     complex(kind=8) :: c16b
     integer :: iarg
+    character(len=8), pointer :: lgrf(:) => null()
 !     ------------------------------------------------------------------
     data noparr / 'GROUP_MA' , 'AIRE' , 'LONGUEUR' /
     data typarr / 'K24' , 'R' , 'R' /
@@ -62,8 +63,8 @@ subroutine peaire(resu, modele, nbocc)
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infniv(ifm, niv)
 !
-    call jeveuo(modele(1:8)//'.MODELE    .LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(modele(1:8)//'.MODELE    .LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
     grpma = noma//'.GROUPEMA'
 !
 !     --- CREATION DE LA TABLE ---

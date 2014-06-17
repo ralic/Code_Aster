@@ -48,11 +48,12 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, idcoor, jnoeu, numori, numext, n1, iera
+    integer :: iret,  jnoeu, numori, numext, n1, iera
     real(kind=8) :: tole
     character(len=8) :: noma, crit, nom1
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=24) :: lisnoe, nomnoe
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -68,7 +69,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DES NOEUDS A ORDONNER :
 !     ----------------------------------
@@ -99,7 +100,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 ! --- ON ORDONNE :
 !     ----------
     call oreino(noma, zi(jnoeu), nbno, numori, numext,&
-                zr(idcoor), crit, tole, iera, iret)
+                vale, crit, tole, iera, iret)
     ASSERT(iret.eq.0)
 !
     call jedema()

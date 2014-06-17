@@ -35,22 +35,24 @@ subroutine gverfo(cartei, ier)
 !
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer :: ival, nbvale, in, iprol
+    integer ::  nbvale, in
     character(len=19) :: nch19
+    character(len=24), pointer :: prol(:) => null()
+    character(len=8), pointer :: vale(:) => null()
 !
     call jemarq()
 !
-    call jeveuo(cartei//'.VALE', 'L', ival)
+    call jeveuo(cartei//'.VALE', 'L', vk8=vale)
     call jelira(cartei//'.VALE', 'LONMAX', nbvale)
 !
     ier=0
     do 10 in = 1, nbvale
-        if (zk8(ival+in-1)(1:7) .ne. '&FOZERO' .and. zk8(ival+in-1)(1:7) .ne. '       '&
-            .and. zk8(ival+in-1)(1:6) .ne. 'GLOBAL') then
-            nch19=zk8(ival+in-1)
+        if (vale(in)(1:7) .ne. '&FOZERO' .and. vale(in)(1:7) .ne. '       '&
+            .and. vale(in)(1:6) .ne. 'GLOBAL') then
+            nch19=vale(in)
 
-            call jeveuo(nch19//'.PROL', 'L', iprol)
-            if (zk24(iprol)(1:8) .eq. 'INTERPRE') then
+            call jeveuo(nch19//'.PROL', 'L', vk24=prol)
+            if (prol(1)(1:8) .eq. 'INTERPRE') then
                 ier=1
                 goto 999
             endif

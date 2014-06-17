@@ -68,7 +68,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     character(len=16) :: option
     character(len=8) :: licmp(4), ma, nomgd, tsca
     character(len=8) :: nompar
-    integer :: iret, nbellg, nbma, numa, jcesd, jcesv, jcesl
+    integer :: iret, nbellg, nbma, numa, jcesd,  jcesl
     integer :: nbpt, ksp1, ksp2, kcmp, iad
     integer :: jlima, ncmp, ncdyn1, ncdyn2, ncdyn, ncmp1
     integer :: jce2l, jce2d, jce2v ,jce5l, jce5d, jce5v, nbspmx
@@ -84,6 +84,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     integer, pointer :: lliel2(:) => null()
     integer, pointer :: igriel1(:) => null()
     logical :: same_ligrel
+    integer, pointer :: cesv(:) => null()
 
 #define numail2(igr,iel) liel2(lliel2(igr)+iel-1)
 #define numail1(igr,iel) liel1(lliel1(igr)+iel-1)
@@ -188,7 +189,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 
         call jeveuo(dcel//'.CESD', 'E', jcesd)
         call jeveuo(dcel//'.CESL', 'E', jcesl)
-        call jeveuo(dcel//'.CESV', 'E', jcesv)
+        call jeveuo(dcel//'.CESV', 'E', vi=cesv)
 
         do igr1 = 1, nbgr1
             debugr1 = celd1(4+igr1)
@@ -202,10 +203,10 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 
                 ncdyn = celd1(debugr1+4+4* (iel1-1)+2)
                 call cesexi('C', jcesd, jcesl, numa, 1,1, 1, iad)
-                zi(jcesv-1-iad)=0
+                cesv(1-1-iad)=0
                 zl(jcesl-1-iad)=.true.
                 call cesexi('C', jcesd, jcesl, numa, 1,1, 2, iad)
-                zi(jcesv-1-iad)=ncdyn
+                cesv(1-1-iad)=ncdyn
                 zl(jcesl-1-iad)=.true.
 141             continue
             end do

@@ -77,31 +77,34 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 !
 !
 !
-    integer :: jdime, jmesu, jconn, jcinv
     integer :: jcesc, jcesd, jcesl, jcesv, iad
     integer :: nsommx, nelcom, degre
     integer :: nbcmp, ncmp
     integer :: icmp, inel, nbr(nelem), nalpha
     real(kind=8) :: erreur(nelem), taille(nelem), energi(nelem)
     real(kind=8) :: alpha(nelem), re(nelem), he(nelem)
+    integer, pointer :: dime(:) => null()
+    integer, pointer :: conn(:) => null()
+    real(kind=8), pointer :: mesu(:) => null()
+    integer, pointer :: cinv(:) => null()
 !
     call jemarq()
 !
 ! 1 - RECUPERATION DES ADRESSES DES OBJETS CREES DANS SINGUM
 !
-    call jeveuo('&&SINGUM.DIME           ', 'L', jdime)
-    call jeveuo('&&SINGUM.MESU           ', 'L', jmesu)
-    call jeveuo('&&SINGUM.CONN           ', 'L', jconn)
-    call jeveuo('&&SINGUM.CINV           ', 'L', jcinv)
+    call jeveuo('&&SINGUM.DIME           ', 'L', vi=dime)
+    call jeveuo('&&SINGUM.MESU           ', 'L', vr=mesu)
+    call jeveuo('&&SINGUM.CONN           ', 'L', vi=conn)
+    call jeveuo('&&SINGUM.CINV           ', 'L', vi=cinv)
 !
 ! 2 - NSOMMX = NBRE MAX DE NOEUDS SOMMETS CONNECTES AUX EF
 !     NELCOM = NBRE MAX D EFS SURF EN 2D OU VOL EN 3D
 !              CONNECTES AUX NOEUDS
 !     DEGRE  = 1 EF LINEAIRE - 2 EF QUADRATIQUE
 !
-    nsommx=zi(jdime+1-1)
-    nelcom=zi(jdime+2-1)
-    degre =zi(jdime+3-1)
+    nsommx=dime(1)
+    nelcom=dime(2)
+    degre =dime(3)
 !
 ! 3 - RECUPERATION DE L'ERREUR EN CHAQUE EF ERREUR(EF)
 !       ET DE LA TAILLE EN CHAQUE EF TAILLE(EF)
@@ -175,8 +178,8 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 ! 5 - CALCUL DU DEGRE DE LA SINGULARITE ALPHA(NELEM) PAR EF
 !
     call dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
-                degre, zi(jconn), zi(jcinv), xy, erreur,&
-                energi, zr(jmesu), alpha, nalpha)
+                degre, conn, cinv, xy, erreur,&
+                energi, mesu, alpha, nalpha)
 !
 ! 6 - CALCUL DU RAPPORT DE TAILLE DES EF RE=HE*/HE
 !     HE TAILLE DE L EF ACTUEL - HE* TAILLE DU NOUVEL EF

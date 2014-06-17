@@ -61,10 +61,13 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, icage, icoef, idecgr, iel, im
-    integer :: j, jceld, jgr, jligr, k, lcelk, lvale
+    integer :: j,  jgr, jligr, k
     integer :: nbgr, nbvec, nel, nitjac
     real(kind=8) :: dx, dy, dz, epsi, pgx, pgy, pgz
     real(kind=8) :: rddg
+    character(len=24), pointer :: celk(:) => null()
+    integer, pointer :: celd(:) => null()
+    real(kind=8), pointer :: celv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     champ2 = champ
@@ -80,24 +83,24 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
     if (docu .ne. 'CHML') then
         call utmess('F', 'CALCULEL3_52')
     endif
-    call jeveuo(champ2//'.CELK', 'L', lcelk)
-    ligrel = zk24(lcelk)(1:19)
+    call jeveuo(champ2//'.CELK', 'L', vk24=celk)
+    ligrel = celk(1)(1:19)
 !
-    call jeveuo(champ2//'.CELD', 'L', jceld)
+    call jeveuo(champ2//'.CELD', 'L', vi=celd)
 !
 !     --- TYPE DE LA GRANDEUR ---
-    scal = scalai(zi(jceld))
+    scal = scalai(celd(1))
 !
 !     -- ON VERIFIE LES LONGUEURS:
     ASSERT(long.ge.16)
     first = .true.
     nbgr = nbgrel(ligrel)
     do 10, j = 1,nbgr
-    mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+    mode=celd(celd(4+j) +2)
     if (mode .ne. 0) then
 !           --- NOMBRE D'ELEMENTS DANS LE MODE LOCAL ---
         long2 = digdel(mode)
-        icoef=max(1,zi(jceld-1+4))
+        icoef=max(1,celd(4))
         long2=long2*icoef
         if (first) then
             longt=long2
@@ -116,23 +119,23 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         call utmess('F', 'CALCULEL3_74', sk=scal)
     endif
 !
-    call jeveuo(champ2//'.CELV', 'L', lvale)
+    call jeveuo(champ2//'.CELV', 'L', vr=celv)
     if (nbmail .le. 0) then
         do 102, j = 1,nbgr
-        mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+        mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 102
         nel = nbelem(ligrel,j)
-        idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+        idecgr=celd(celd(4+j)+8)
         do 104, k = 1,nel
 !
 !              -- MASSE DE LA STRUCTURE ----
         i = 1
-        masse = zr(lvale-1+idecgr+(k-1)*longt+i-1)
+        masse = celv(idecgr+(k-1)*longt+i-1)
         vr(1) = vr(1)+ masse
 !
 !              -- CENTRE DE GRAVITE DE LA STRUCTURE ----
         do 106, i = 2,4
-        vr(i)=vr(i)+zr(lvale-1+idecgr+(k-1)*longt+i-1)*&
+        vr(i)=vr(i)+celv(idecgr+(k-1)*longt+i-1)*&
                     masse
 106      continue
 104      continue
@@ -141,23 +144,23 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         call jeveuo(ligrel//'.LIEL', 'L', jligr)
         do 110, im = 1,nbmail
         do 112, j = 1,nbgr
-        mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+        mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 112
         call jeveuo(jexnum(ligrel//'.LIEL', j), 'L', jgr)
         nel = nbelem(ligrel,j)
-        idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+        idecgr=celd(celd(4+j)+8)
         do 114, k = 1,nel
         iel = zi(jgr+k-1)
         if (iel .ne. nummai(im)) goto 114
 !
 !                 -- MASSE DE LA STRUCTURE ----
         i = 1
-        masse = zr(lvale-1+idecgr+(k-1)*longt+i-1)
+        masse = celv(idecgr+(k-1)*longt+i-1)
         vr(1) = vr(1)+ masse
 !
 !                 -- CENTRE DE GRAVITE DE LA STRUCTURE ----
         do 116, i = 2,4
-        vr(i)=vr(i)+zr(lvale-1+idecgr+(k-1)*longt+i-1)&
+        vr(i)=vr(i)+celv(idecgr+(k-1)*longt+i-1)&
                         *masse
 116      continue
         goto 110
@@ -189,25 +192,25 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
 !
     if (nbmail .le. 0) then
         do 202, j = 1,nbgr
-        mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+        mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 202
         nel = nbelem(ligrel,j)
-        idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+        idecgr=celd(celd(4+j)+8)
         do 204, k = 1,nel
 !
-        masse = zr(lvale-1+idecgr+(k-1)*longt)
+        masse = celv(idecgr+(k-1)*longt)
 !
-        dx = zr(lvale-1+idecgr+(k-1)*longt+1) - vr(2)
-        dy = zr(lvale-1+idecgr+(k-1)*longt+2) - vr(3)
-        dz = zr(lvale-1+idecgr+(k-1)*longt+3) - vr(4)
+        dx = celv(idecgr+(k-1)*longt+1) - vr(2)
+        dy = celv(idecgr+(k-1)*longt+2) - vr(3)
+        dz = celv(idecgr+(k-1)*longt+3) - vr(4)
 !
 !              --- INERTIES DE LA STRUCTURE ---
-        ixx = zr(lvale-1+idecgr+(k-1)*longt+4)
-        iyy = zr(lvale-1+idecgr+(k-1)*longt+5)
-        izz = zr(lvale-1+idecgr+(k-1)*longt+6)
-        ixy = zr(lvale-1+idecgr+(k-1)*longt+7)
-        ixz = zr(lvale-1+idecgr+(k-1)*longt+8)
-        iyz = zr(lvale-1+idecgr+(k-1)*longt+9)
+        ixx = celv(idecgr+(k-1)*longt+4)
+        iyy = celv(idecgr+(k-1)*longt+5)
+        izz = celv(idecgr+(k-1)*longt+6)
+        ixy = celv(idecgr+(k-1)*longt+7)
+        ixz = celv(idecgr+(k-1)*longt+8)
+        iyz = celv(idecgr+(k-1)*longt+9)
         vr(5) = vr(5) + ixx + masse*(dy*dy + dz*dz)
         vr(6) = vr(6) + iyy + masse*(dx*dx + dz*dz)
         vr(7) = vr(7) + izz + masse*(dx*dx + dy*dy)
@@ -215,8 +218,8 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         vr(9) = vr(9) + ixz + masse*dx*dz
         vr(10) = vr(10) + iyz + masse*dy*dz
         if (icage .ne. 0) then
-            ixpr2 = zr(lvale-1+idecgr+(k-1)*longt+10)
-            iypr2 = zr(lvale-1+idecgr+(k-1)*longt+11)
+            ixpr2 = celv(idecgr+(k-1)*longt+10)
+            iypr2 = celv(idecgr+(k-1)*longt+11)
             ASSERT(long.ge.27)
             vr(26) = vr(26) + ixpr2 + dy*(3.0d0*ixx+iyy) + masse*dy*(dx*dx+dy*dy) + 2.0d0*dx*ixy
             vr(27) = vr(27) + iypr2 + dx*(3.0d0*iyy+ixx) + masse*dx*(dx*dx+dy*dy) + 2.0d0*dy*ixy
@@ -228,28 +231,28 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         call jeveuo(ligrel//'.LIEL', 'L', jligr)
         do 210, im = 1,nbmail
         do 212, j = 1,nbgr
-        mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+        mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 212
         call jeveuo(jexnum(ligrel//'.LIEL', j), 'L', jgr)
         nel = nbelem(ligrel,j)
-        idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+        idecgr=celd(celd(4+j)+8)
         do 214, k = 1,nel
         iel = zi(jgr+k-1)
         if (iel .ne. nummai(im)) goto 214
 !
-        masse = zr(lvale-1+idecgr+(k-1)*longt)
+        masse = celv(idecgr+(k-1)*longt)
 !
-        dx = zr(lvale-1+idecgr+(k-1)*longt+1) - vr(2)
-        dy = zr(lvale-1+idecgr+(k-1)*longt+2) - vr(3)
-        dz = zr(lvale-1+idecgr+(k-1)*longt+3) - vr(4)
+        dx = celv(idecgr+(k-1)*longt+1) - vr(2)
+        dy = celv(idecgr+(k-1)*longt+2) - vr(3)
+        dz = celv(idecgr+(k-1)*longt+3) - vr(4)
 !
 !                 --- INERTIES DE LA STRUCTURE ---
-        ixx = zr(lvale-1+idecgr+(k-1)*longt+4)
-        iyy = zr(lvale-1+idecgr+(k-1)*longt+5)
-        izz = zr(lvale-1+idecgr+(k-1)*longt+6)
-        ixy = zr(lvale-1+idecgr+(k-1)*longt+7)
-        ixz = zr(lvale-1+idecgr+(k-1)*longt+8)
-        iyz = zr(lvale-1+idecgr+(k-1)*longt+9)
+        ixx = celv(idecgr+(k-1)*longt+4)
+        iyy = celv(idecgr+(k-1)*longt+5)
+        izz = celv(idecgr+(k-1)*longt+6)
+        ixy = celv(idecgr+(k-1)*longt+7)
+        ixz = celv(idecgr+(k-1)*longt+8)
+        iyz = celv(idecgr+(k-1)*longt+9)
         vr(5) = vr(5) + ixx + masse*(dy*dy + dz*dz)
         vr(6) = vr(6) + iyy + masse*(dx*dx + dz*dz)
         vr(7) = vr(7) + izz + masse*(dx*dx + dy*dy)
@@ -257,8 +260,8 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         vr(9) = vr(9) + ixz + masse*dx*dz
         vr(10) = vr(10) + iyz + masse*dy*dz
         if (icage .ne. 0) then
-            ixpr2 = zr(lvale-1+idecgr+(k-1)*longt+10)
-            iypr2 = zr(lvale-1+idecgr+(k-1)*longt+11)
+            ixpr2 = celv(idecgr+(k-1)*longt+10)
+            iypr2 = celv(idecgr+(k-1)*longt+11)
             ASSERT(long.ge.27)
             vr(26) = vr(26) + ixpr2 + dy*(3.0d0*ixx+iyy) + masse*dy*(dx*dx+dy*dy) + 2.0d0*dx*ixy
             vr(27) = vr(27) + iypr2 + dx*(3.0d0*iyy+ixx) + masse*dx*(dx*dx+dy*dy) + 2.0d0*dy*ixy

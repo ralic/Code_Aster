@@ -49,7 +49,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
 ! ----------------------------------------------------------------------
     real(kind=8) :: depi, vrmin, vrmax, vred
     real(kind=8) :: mcf0, kaj1, kaj2
-    integer :: jvired, jcompt, jextr, jvrzo, jzone, jalarm, iret
+    integer :: jvired, jcompt, jextr, jvrzo,  jalarm, iret
     integer :: izone, nzone, n1, n2
     complex(kind=8) :: bii, biie, poids, z
     character(len=24) :: fsic, fsvi, fsvr, nom1, nom2, nom3, nom4, nom5
@@ -63,6 +63,7 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
     real(kind=8) :: aire, caj1, caj2, cd, cf0, ck, cocaj1
     real(kind=8) :: cocaj2, cokaj1, cokaj2, de, hmoy, p1, p2
     real(kind=8) :: phie, rug, val1, val2, visc, vr
+    integer, pointer :: tempo(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     depi = r8depi()
@@ -106,8 +107,8 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
         call jeveuo(fsvi, 'L', lfsvi)
         ipas = zi(lfsvi)
 !
-        call jeveuo('&&MDCONF.TEMPO', 'L', jzone)
-        nzone = zi(jzone+0)
+        call jeveuo('&&MDCONF.TEMPO', 'L', vi=tempo)
+        nzone = tempo(1)
 !
 ! ---   REINITIALISATION DES TABLEAUX :
 !       NOM2 : NB POINTS HORS PLAGE (MIN, TOT, MAX), PAR ZONE
@@ -146,8 +147,8 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
 ! ---     DETERMINATION S'IL Y EN A UNE DE LA ZONE CONTENANT LE POINT I
             izone = 0
             do 11 j = 1, nzone
-                n1 = zi(jzone+2*(j-1)+1)
-                n2 = zi(jzone+2*(j-1)+2)
+                n1 = tempo(1+2*(j-1)+1)
+                n2 = tempo(1+2*(j-1)+2)
                 if ((i.ge.n1) .and. (i.le.n2)) then
                     izone = j
                     goto 12

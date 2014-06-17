@@ -44,33 +44,35 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iad, ib, ifi, im, imode
-    integer :: ir, istru, j, jdeeq, jdesc, jfreq, jnume
-    integer :: jordr, jpara, jrefe, jvale, nbcmpg, nbmode
+    integer :: ir, istru, j,  jdesc, jfreq, jnume
+    integer :: jordr, jpara,  jvale, nbcmpg, nbmode
 !
     real(kind=8) :: ximag, xreal
+    integer, pointer :: deeq(:) => null()
+    character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     blan = ' '
     gene = genein
 !
     call jeveuo(gene//'.DESC', 'L', jdesc)
-    call jeveuo(gene//'.REFE', 'L', jrefe)
+    call jeveuo(gene//'.REFE', 'L', vk24=refe)
     call jeveuo(gene//'.VALE', 'L', jvale)
     call jelira(gene//'.VALE', 'TYPE', cval=typval)
 !
-    mode = zk24(jrefe)(1:8)
+    mode = refe(1)(1:8)
     typrem = ' '
     if (mode .ne. blan) call gettco(mode, typrem)
 !
 !        --- CALCUL PAR SOUS-STRUCTURATION ---
 !
     if ((mode .eq. blan) .or. (typrem .eq. 'MODELE_GENE')) then
-        nugene = zk24(jrefe+1)(1:14)
+        nugene = refe(2)(1:14)
         call jeveuo(nugene//'.NUME.REFN', 'L', jnume)
         mogene = zk24(jnume)(1:8)
         call jeveuo(nugene//'.NUME.NEQU', 'L', jnume)
         nbmode = zi(jnume)
-        call jeveuo(nugene//'.NUME.DEEQ', 'L', jdeeq)
+        call jeveuo(nugene//'.NUME.DEEQ', 'L', vi=deeq)
         if (lhist) then
             if (typval(1:1) .eq. 'R') then
                 write(ifi,1010)
@@ -87,8 +89,8 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
         ir = 0
         im = 0
         do i = 1, nbmode
-            imode = zi(jdeeq+2*(i-1)+1-1)
-            istru = zi(jdeeq+2*(i-1)+2-1)
+            imode = deeq(1+2*(i-1)+1-1)
+            istru = deeq(1+2*(i-1)+2-1)
             if (istru .lt. 0) goto 10
             im = im + 1
             if (nbcmpg .gt. 0) then

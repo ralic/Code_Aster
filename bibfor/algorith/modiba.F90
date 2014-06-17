@@ -71,9 +71,9 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 ! IN  : NBMFL  : NOMBRE DE MODES PERTURBES PAR LE COUPLAGE
 !
 !
-    integer :: iddl(6), ifrfl, imafl, ifafl, neq, nbmode, j, i
-    integer :: lmod, iret, ideeq, ivit, numod, imas
-    integer :: ifac, ifre, ieq, k, icm, iprec, ivale
+    integer :: iddl(6),    neq, nbmode, j, i
+    integer :: lmod, iret,  ivit, numod, imas
+    integer :: ifac, ifre, ieq, k, icm, iprec
     integer :: lmat(2), lddl, lvali, lvalr, lvalk
     integer :: npari, nparr, npark
     integer :: nbpari, nbparr, nbpark, nbpara
@@ -88,6 +88,11 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     character(len=24) :: kvali, kvalr, kvalk
     logical :: lmasin, lnorm
     real(kind=8), pointer :: coef_mode(:) => null()
+    real(kind=8), pointer :: fact(:) => null()
+    integer, pointer :: deeq(:) => null()
+    real(kind=8), pointer :: vmasg(:) => null()
+    real(kind=8), pointer :: freq(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
     data iddl  / 1, 2, 3, 4, 5, 6 /
     data  nopara /&
@@ -118,9 +123,9 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
 !
 !     --- PARAMETRES SOUS ECOULEMENT ---
 !
-    call jeveuo(basefl//'.FREQ', 'L', ifrfl)
-    call jeveuo(basefl//'.MASG', 'L', imafl)
-    call jeveuo(basefl//'.FACT', 'L', ifafl)
+    call jeveuo(basefl//'.FREQ', 'L', vr=freq)
+    call jeveuo(basefl//'.MASG', 'L', vr=vmasg)
+    call jeveuo(basefl//'.FACT', 'L', vr=fact)
 !
     typmod = 'R'
     kvec = '&&MODIBA.VECT'
@@ -144,7 +149,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
     call rsexch('F', basemo, 'DEPL', nuor(1), nomcha,&
                 iret)
     call dismoi('PROF_CHNO', nomcha, 'CHAM_NO', repk=prchno)
-    call jeveuo(prchno//'.DEEQ', 'L', ideeq)
+    call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
 !
 !     --- CAS DU COUPLAGE ---
 !
@@ -160,14 +165,14 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                 imas = nbmfl*(ivit-1) + j
                 ifac = nbmfl*(ivit-1) + 3*(j-1)
                 ifre = 2*nbmfl*(numvit-1) + 2*(j-1)
-                frequ = zr(ifrfl+ifre)
-                amort = zr(ifrfl+ifre+1)
+                frequ = freq(ifre+1)
+                amort = freq(1+ifre+1)
                 omeg2 = ( depi * frequ ) ** 2
-                masg = zr(imafl-1+imas)
+                masg = vmasg(imas)
                 rigg = omeg2 * masg
-                factx = zr(ifafl-1+ifac+1)
-                facty = zr(ifafl-1+ifac+2)
-                factz = zr(ifafl-1+ifac+3)
+                factx = fact(ifac+1)
+                facty = fact(ifac+2)
+                factz = fact(ifac+3)
                 if (amort .le. 0.d0) amort = 1.d-06
 !
 !           --- FREQUENCE ---
@@ -192,13 +197,13 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                     lnorm = .true.
                     zk24(lvalk+i-1) = 'SANS_CMP: LAGR'
                     write(chamfl(14:19),'(2I3.3)') numod,numvit
-                    call jeveuo(chamfl(1:19)//'.VALE', 'L', ivale)
+                    call jeveuo(chamfl(1:19)//'.VALE', 'L', vr=vale)
                     icm = 0
                     do ieq = 1, neq
                         do k = 1, 6
-                            if (zi(ideeq+(2*ieq)-1) .eq. iddl(k)) then
+                            if (deeq(1+(2*ieq)-1) .eq. iddl(k)) then
                                 icm = icm + 1
-                                zr(lmod+neq*(i-1)+ieq-1) = zr(ivale+ icm-1)
+                                zr(lmod+neq*(i-1)+ieq-1) = vale(icm)
                                 goto 30
                             endif
                         end do

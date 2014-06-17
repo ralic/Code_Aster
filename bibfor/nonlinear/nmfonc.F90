@@ -95,7 +95,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nocc, iret, nbss, nbsst
-    integer :: nbfonc, iform, jslvk
+    integer :: nbfonc, iform
     logical :: lbors, lfrot, lchoc, lallv
     logical :: lboucg, lboucf, lboucc
     integer :: ixfem, ichar, iflamb, imvibr, istab, nmatdi
@@ -109,6 +109,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     logical :: lexpl
     integer :: ifm, niv
     integer :: nsta
+    character(len=24), pointer :: slvk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,8 +135,8 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     ldyna = nomcmd(1:4).eq.'DYNA'
     lexpl = ndynlo(sddyna,'EXPLICITE')
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    metres=zk24(jslvk)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    metres=slvk(1)
 !
 ! --- ELEMENTS EN GRANDES ROTATIONS
 !
@@ -420,7 +421,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! --- PRECONDITIONNEUR LDLT_SP?
 !
     if (metres .eq. 'PETSC' .or. metres .eq. 'GCPC') then
-        precon=zk24(jslvk-1+2)
+        precon=slvk(2)
         if (precon .eq. 'LDLT_SP') fonact(46) = 1
     endif
 !

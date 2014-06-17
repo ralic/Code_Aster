@@ -62,7 +62,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     integer :: ibid
     integer :: n1, ifiss, nfiss
     integer :: ino, valeno, nbnot
-    integer :: idlist,   jstno, jlst, jlsn
+    integer :: idlist,   jstno
     character(len=8) :: noma, nomnoe, fiss, nomofi, nomafi, nomogr
     character(len=8) :: nomagr, valk(2), ma
     character(len=16) :: motfac, typgrp
@@ -73,6 +73,8 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     real(kind=8) :: rayon, dist
     character(len=8), pointer :: vfiss(:) => null()
     integer, pointer :: noeu(:) => null()
+    real(kind=8), pointer :: lsn(:) => null()
+    real(kind=8), pointer :: lst(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -227,11 +229,11 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                     call cnocns(fiss//'.LTNO', 'V', cnslt)
                     call cnocns(fiss//'.LNNO', 'V', cnsln)
                 endif
-                call jeveuo(cnslt//'.CNSV', 'L', jlst)
-                call jeveuo(cnsln//'.CNSV', 'L', jlsn)
+                call jeveuo(cnslt//'.CNSV', 'L', vr=lst)
+                call jeveuo(cnsln//'.CNSV', 'L', vr=lsn)
 !
                 do ino = 1, nbnot
-                    dist=zr(jlst-1+ino)**2+zr(jlsn-1+ino)**2
+                    dist=lst(ino)**2+lsn(ino)**2
                     if (dist .le. rayon) then
                         nbno = nbno + 1
                         noeu(nbno) = ino

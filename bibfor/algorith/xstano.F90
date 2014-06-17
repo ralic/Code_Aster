@@ -70,8 +70,8 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     integer :: in, ar(12, 3), ia, i, j, k, nbnoe, nbnott(3)
     integer :: ino, ima, nuno, nrien, nbar, na
     integer :: nb, nunoa, nunob, enr, enr1, enr2, jdlino, jma, jstano
-    integer :: jconx1, jconx2, jltsv, jlnsv, jcoor, itypma, ndim
-    integer :: jljsd, jljsv, nfiss, ifiss
+    integer ::  jconx2,    itypma, ndim
+    integer ::   nfiss, ifiss
     integer :: nbma, jlmaf, nmasup, jmasup, isup, iret
     real(kind=8) :: minlsn, minlst, maxlsn, maxlst, lsna, lsnb, lsta, lstb
     real(kind=8) :: minlsj(10, 2), maxlsj(10), lsja(10, 2), lsjb(10, 2)
@@ -81,11 +81,17 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     character(len=8) :: typma
     character(len=19) :: mai, lmafis
     logical :: ljonc
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: ljsv(:) => null()
+    real(kind=8), pointer :: lnsv(:) => null()
+    real(kind=8), pointer :: ltsv(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: cnsd(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
     call jelira(lisno, 'LONMAX', nbnoe)
@@ -93,17 +99,17 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 !
     call jeveuo(stano, 'E', jstano)
 !
-    call jeveuo(cnslt//'.CNSV', 'L', jltsv)
-    call jeveuo(cnsln//'.CNSV', 'L', jlnsv)
+    call jeveuo(cnslt//'.CNSV', 'L', vr=ltsv)
+    call jeveuo(cnsln//'.CNSV', 'L', vr=lnsv)
     call jeexin(cnslj//'.CNSD', iret)
     ljonc = .false.
     if (iret .ne. 0) then
         ljonc = .true.
-        call jeveuo(cnslj//'.CNSD', 'L', jljsd)
-        nfiss = zi(jljsd-1+2)/2
-        call jeveuo(cnslj//'.CNSV', 'L', jljsv)
+        call jeveuo(cnslj//'.CNSD', 'L', vi=cnsd)
+        nfiss = cnsd(2)/2
+        call jeveuo(cnslj//'.CNSV', 'L', vr=ljsv)
     endif
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
@@ -160,21 +166,21 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
             do ia = 1, nbar
                 na=ar(ia,1)
                 nb=ar(ia,2)
-                nunoa=zi(jconx1-1+zi(jconx2+ima-1)+na-1)
-                nunob=zi(jconx1-1+zi(jconx2+ima-1)+nb-1)
-                lsna=zr(jlnsv-1+(nunoa-1)+1)
-                lsnb=zr(jlnsv-1+(nunob-1)+1)
-                lsta=zr(jltsv-1+(nunoa-1)+1)
-                lstb=zr(jltsv-1+(nunob-1)+1)
+                nunoa=connex(zi(jconx2+ima-1)+na-1)
+                nunob=connex(zi(jconx2+ima-1)+nb-1)
+                lsna=lnsv((nunoa-1)+1)
+                lsnb=lnsv((nunob-1)+1)
+                lsta=ltsv((nunoa-1)+1)
+                lstb=ltsv((nunob-1)+1)
                 if (ljonc) then
                     do ifiss = 1, nfiss
-                        lsja(ifiss,1)=zr(jljsv-1+2*nfiss*(nunoa-1)+2*(&
+                        lsja(ifiss,1)=ljsv(2*nfiss*(nunoa-1)+2*(&
                         ifiss-1)+1)
-                        lsjb(ifiss,1)=zr(jljsv-1+2*nfiss*(nunob-1)+2*(&
+                        lsjb(ifiss,1)=ljsv(2*nfiss*(nunob-1)+2*(&
                         ifiss-1)+1)
-                        lsja(ifiss,2)=zr(jljsv-1+2*nfiss*(nunoa-1)+2*(&
+                        lsja(ifiss,2)=ljsv(2*nfiss*(nunoa-1)+2*(&
                         ifiss-1)+2)
-                        lsjb(ifiss,2)=zr(jljsv-1+2*nfiss*(nunob-1)+2*(&
+                        lsjb(ifiss,2)=ljsv(2*nfiss*(nunob-1)+2*(&
                         ifiss-1)+2)
                     end do
                 endif
@@ -199,8 +205,8 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 !            CA VEUT DIRE QUE LSN S'ANNULE SUR L'ARETE AU PT C
 !            (RETENU) ET ACTUALISATION DE MIN ET MAX POUR LST EN CE PT
                     do k = 1, ndim
-                        a(k)=zr(jcoor-1+3*(nunoa-1)+k)
-                        b(k)=zr(jcoor-1+3*(nunob-1)+k)
+                        a(k)=vale(3*(nunoa-1)+k)
+                        b(k)=vale(3*(nunob-1)+k)
                         ab(k)=b(k)-a(k)
 !               INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
                         c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
@@ -232,8 +238,8 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
             call panbno(itypma, nbnott)
 !         BOUCLE SUR LES NOEUDS SOMMET DE LA MAILLE COURANTE
             do in = 1, nbnott(1)
-                nuno=zi(jconx1-1+zi(jconx2+ima-1)+in-1)
-                lsn=zr(jlnsv-1+(nuno-1)+1)
+                nuno=connex(zi(jconx2+ima-1)+in-1)
+                lsn=lnsv((nuno-1)+1)
                 if (lsn .lt. minlsn) minlsn=lsn
                 if (lsn .gt. maxlsn) maxlsn=lsn
             end do
@@ -268,8 +274,8 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 !
 !       SI ON DEFINIT UN RAYON POUR LA ZONE D'ENRICHISSEMENT SINGULIER
         if (rayon .gt. 0.d0) then
-            lsn=zr(jlnsv-1+(ino-1)+1)
-            lst=zr(jltsv-1+(ino-1)+1)
+            lsn=lnsv((ino-1)+1)
+            lst=ltsv((ino-1)+1)
             if (sqrt(lsn**2+lst**2) .le. rayon) enr2=2
         endif
 !

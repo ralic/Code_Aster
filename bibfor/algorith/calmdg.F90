@@ -90,7 +90,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
 !-----------------------------------------------------------------------
     integer :: iadirg,   iadrz, iadx, iady, iadz
-    integer :: ibamo, icompt, idelat, igeo, ilires, ilmax
+    integer ::  icompt,  igeo, ilires, ilmax
     integer :: imacl, imodg, ind, ior, iprs, irang, iret
     integer :: irot,  itzsto, k, nbmo, nbmod, nbmodg
     integer :: nbsst, nn
@@ -98,6 +98,8 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     integer, pointer :: tabl_adrx(:) => null()
     integer, pointer :: tabl_adry(:) => null()
     integer, pointer :: tabl_mode(:) => null()
+    integer, pointer :: indic(:) => null()
+    character(len=24), pointer :: mael_refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -111,7 +113,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
     call getvtx(' ', 'AVEC_MODE_STAT', scal=repon, nbret=nn)
     if (repon(1:3) .eq. 'NON') then
         call delat(modgen, nbsst, nbmo)
-        call jeveuo('&&DELAT.INDIC', 'L', idelat)
+        call jeveuo('&&DELAT.INDIC', 'L', vi=indic)
     endif
 !
 ! CREATION DE TABLEAUX D ADRESSES PAR SOUS-STRUCTURES POUR LES
@@ -132,8 +134,8 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
         call jeveuo(jexnum(modgen//'      .MODG.SSME', isst), 'L', imacl)
         macel=zk8(imacl)
 !
-        call jeveuo(macel//'.MAEL_REFE', 'L', ibamo)
-        bamo = zk24(ibamo)(1:8)
+        call jeveuo(macel//'.MAEL_REFE', 'L', vk24=mael_refe)
+        bamo = mael_refe(1)(1:8)
 !
 ! TEST POUR DETERMINER SI FLUIDE ET STRUCTURE S APPUIENT SUR
 ! DES MAILLAGES COMMUNS
@@ -233,7 +235,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
             icompt=icompt+1
 !
             if (repon(1:3) .eq. 'NON') then
-                if (zi(idelat+icompt-1) .ne. 1) goto 2
+                if (indic(icompt) .ne. 1) goto 2
             endif
 !
             call trprot(model, bamo, tgeom, imodg, iadx,&

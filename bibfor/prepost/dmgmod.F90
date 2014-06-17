@@ -69,14 +69,16 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     real(kind=8) :: valr(3), r8b, dmin, smax, coeff, r8min
 !
     integer :: ipt, iord, icmp, nbr, nbk, nbc, nbf
-    integer :: ivch, ivord, ivpt, ibid, ivalk
+    integer :: ivch,  ivpt, ibid, ivalk
     integer :: numsym, ivch2, ivord2(nbordr), numord
     logical :: crit
 !
 ! ---   VECTEURS DE TRAVAIL
 !
 !-----------------------------------------------------------------------
-    integer :: ik, ivalf
+    integer :: ik
+    real(kind=8), pointer :: celv(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     r8b = 0.d0
     call jemarq()
@@ -125,8 +127,8 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     do 50 ik = 1, nbf
         if (zk8(ivalk-1+nbr+nbc+ik) .eq. 'WOHLER') then
             nomfon = zk8(ivalk-1+nbr+nbc+nbf+ik)
-            call jeveuo(nomfon//'           .VALE', 'L', ivalf)
-            salt0=zr(ivalf)
+            call jeveuo(nomfon//'           .VALE', 'L', vr=vale)
+            salt0=vale(1)
         endif
 50  end do
 !
@@ -149,7 +151,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
         valk(3) = nomsd
         call utmess('F', 'PREPOST_52', nk=3, valk=valk)
     endif
-    call jeveuo(chequi//'.CELV', 'L', ivord)
+    call jeveuo(chequi//'.CELV', 'L', vr=celv)
 !
     do 11 iord = 1, nbordr
         numord = zi(jordr+iord-1)
@@ -167,7 +169,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !
     do 10 ipt = 1, nbpt
 ! -    STOCKAGE CONTRAINTES
-        zr(ivpt) = zr(ivord+(ipt-1)*ntcmp+numcmp(icmp)-1)
+        zr(ivpt) = celv(1+(ipt-1)*ntcmp+numcmp(icmp)-1)
         zr(ivpt+1) = 0.d0
         do 12 iord = 1, nbordr
             coeff = zr(jcoef+iord-1)

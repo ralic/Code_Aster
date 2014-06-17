@@ -84,7 +84,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !
 !
     integer :: i, ino, ima, ifm, niv, jglsno, iret, iret2, nbno, jnosom, jnresi
-    integer :: nbma, jcoor, jconx1, jconx2, jlnno, jltno, nbmaff, nnores, jmaiff
+    integer :: nbma,   jconx2,   nbmaff, nnores, jmaiff
     integer :: nbnoma, inoa, inob, nunoa, nunob, ibid
     character(len=8) :: lpain(4), lpaout(2), method, nomno
     character(len=19) :: celmt, maiff
@@ -92,6 +92,10 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     real(kind=8) :: p(3), ff(3), dist, lsna, lsnb, lsta, lstb, rayon
     logical :: coupln, couplt
     real(kind=8) :: damax
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: lnno(:) => null()
+    real(kind=8), pointer :: ltno(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -104,8 +108,8 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     ligrel = model//'.MODELE'
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
 !   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
@@ -132,8 +136,8 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     call getvr8(' ', 'DA_MAX', scal=damax, nbret=iret)
 !
 !   RECUPERATION DES VALEURS DES LS ET DU GRADIENT DE LS
-    call jeveuo(cnsln//'.CNSV', 'E', jlnno)
-    call jeveuo(cnslt//'.CNSV', 'E', jltno)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=lnno)
+    call jeveuo(cnslt//'.CNSV', 'E', vr=ltno)
     call jeveuo(cnsgls//'.CNSV', 'E', jglsno)
 !
 !-----------------------------------------------------------------------
@@ -200,18 +204,18 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
         nbnoma = zi(jconx2+ima) - zi(jconx2+ima-1)
 !  ON PARCOURS LES ARETES DE L'ELEMENT
         do inoa = 1, nbnoma-1
-            nunoa = zi(jconx1-1+zi(jconx2+ima-1)+inoa-1)
+            nunoa = connex(zi(jconx2+ima-1)+inoa-1)
 !  ON ECARTE LES NOEUDS MILIEUX
             if (.not.zl(jnosom-1+nunoa)) goto 210
-            lsna = zr(jlnno-1+nunoa)
-            lsta = zr(jltno-1+nunoa)
+            lsna = lnno(nunoa)
+            lsta = ltno(nunoa)
 !
             do inob = inoa+1, nbnoma
-                nunob = zi(jconx1-1+zi(jconx2+ima-1)+inob-1)
+                nunob = connex(zi(jconx2+ima-1)+inob-1)
 !  ON ECARTE LES NOEUDS MILIEUX
                 if (.not.zl(jnosom-1+nunob)) goto 220
-                lsnb = zr(jlnno-1+nunob)
-                lstb = zr(jltno-1+nunob)
+                lsnb = lnno(nunob)
+                lstb = ltno(nunob)
 !
                 if ((lsna*lsnb) .le. 0.d0) coupln=.true.
                 if ((lsta*lstb) .le. 0.d0) couplt=.true.
@@ -230,10 +234,10 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                 zr(jmaiff-1+3*(nbmaff-1)+i) = 0.d0
             end do
             do inoa = 1, nbnoma
-                nunoa = zi(jconx1-1+zi(jconx2+ima-1)+inoa-1)
+                nunoa = connex(zi(jconx2+ima-1)+inoa-1)
                 do i = 1, 3
                     zr(jmaiff-1+3*(nbmaff-1)+i) = zr(&
-                                                  jmaiff-1+3*( nbmaff-1)+i) + zr(jcoor-1+3*(nunoa&
+                                                  jmaiff-1+3*( nbmaff-1)+i) + vale(3*(nunoa&
                                                   &-1)+i&
                                                   ) / nbnoma
                 end do
@@ -249,7 +253,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !  ON ECARTE LES NOEUDS MILIEUX
         if (.not.zl(jnosom-1+ino)) goto 250
         do i = 1, 3
-            p(i) = zr(jcoor-1+3*(ino-1)+i)
+            p(i) = vale(3*(ino-1)+i)
         end do
 !
         do ima = 1, nbmaff

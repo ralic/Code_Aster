@@ -102,12 +102,12 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     real(kind=8) :: jacaux(3), tol, toldyn
     integer :: tcoe, tcoq, tnde, tndq
 !
-    integer :: asgtu
     real(kind=8), pointer :: vv1x(:) => null()
     real(kind=8), pointer :: vv1y(:) => null()
     real(kind=8), pointer :: vv2x(:) => null()
     real(kind=8), pointer :: vv2y(:) => null()
-#define sgtu(i) zr(asgtu+i-1)
+    real(kind=8), pointer :: desc(:) => null()
+#define sgtu(i) desc(i)
 !     FORME BILINEAIRE ASSOCIEE AU TENSEUR
 #define vtv(vax,vay,vaz,vbx,vby,vbz) (vax) * ((vbx)*txx+(vby)*txy+(vbz)*txz) + \
     (vay) * ((vbx)*txy+(vby)*tyy+(vbz)*tyz) + (vaz) * ((vbx)*txz+(vby)*tyz+(vbz)*tzz)
@@ -765,7 +765,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     else if (repere(1:1).eq.'L' .and. tridim) then
 !               -------------------------------
         call wkvect(nnocpq, 'V V K8', nbcpcd, anocpq)
-        call jeveuo(courbe//'S1   '//'.DESC', 'L', asgtu)
+        call jeveuo(courbe//'S1   '//'.DESC', 'L', vr=desc)
         do 340,i = 1,nbcpcd,1
         zk8(anocpq+i-1) = nomcp(i)
 340      continue

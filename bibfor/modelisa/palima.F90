@@ -47,11 +47,12 @@ subroutine palima(nomaz, mcfact, mcgrma, mcma, iocc,&
     character(len=8) :: noma
     character(len=16) :: mcf, tymocl(2), limocl(2)
     character(len=24) :: liste1
-    integer :: jtyma, k, n1, j1, j2, ima
+    integer ::  k, n1, j1, j2, ima
+    integer, pointer :: typmail(:) => null()
 !
     call jemarq()
     noma = nomaz
-    call jeveuo(noma//'.TYPMAIL', 'L', jtyma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
     mcf = mcfact
     tymocl(1)='GROUP_MA'
     limocl(1)= mcgrma
@@ -70,7 +71,7 @@ subroutine palima(nomaz, mcfact, mcgrma, mcma, iocc,&
         do 1, k=1,n1
         ima=zi(j1-1+k)
         zi(j2+2*(k-1)+1)=ima
-        zi(j2+2*(k-1)+2)=zi(jtyma-1+ima)
+        zi(j2+2*(k-1)+2)=typmail(ima)
  1      continue
     endif
 !

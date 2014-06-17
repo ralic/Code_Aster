@@ -79,13 +79,14 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: iatyma, ibid, idcoor, idlima, idnoeu, ima
+    integer :: iatyma, ibid,  idlima, idnoeu, ima
     integer :: ino1, ino2, ino3, iocc, ityp, jtyp, nangle
     integer :: nb, nbang, nbma, nbmai, nbno, nbo, nboui
     integer :: ndim, ndim1, nv, nvect
     real(kind=8) :: a, ang, angpre, b, c, eps, psca
     real(kind=8) :: un, undemi, xnorel, xnorm
     real(kind=8) :: xnorm2, zero
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -246,7 +247,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- PARCOURS DES MAILLES DU MAILLAGE :
 !     --------------------------------
@@ -281,10 +282,10 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
             ino1 = zi(idnoeu+1-1)
             ino2 = zi(idnoeu+2-1)
 !
-            coor(1,1)=zr(idcoor-1+3*(ino1-1)+1)
-            coor(2,1)=zr(idcoor-1+3*(ino1-1)+2)
-            coor(1,2)=zr(idcoor-1+3*(ino2-1)+1)
-            coor(2,2)=zr(idcoor-1+3*(ino2-1)+2)
+            coor(1,1)=vale(3*(ino1-1)+1)
+            coor(2,1)=vale(3*(ino1-1)+2)
+            coor(1,2)=vale(3*(ino2-1)+1)
+            coor(2,2)=vale(3*(ino2-1)+2)
 !
 ! ---         CALCUL DES COMPOSANTES A ET B DU VECTEUR NORMAL
 ! ---         A L'ELEMENT :
@@ -301,17 +302,17 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
             ino2 = zi(idnoeu+2-1)
             ino3 = zi(idnoeu+3-1)
 !
-            coor(1,1)=zr(idcoor-1+3*(ino1-1)+1)
-            coor(2,1)=zr(idcoor-1+3*(ino1-1)+2)
-            coor(3,1)=zr(idcoor-1+3*(ino1-1)+3)
+            coor(1,1)=vale(3*(ino1-1)+1)
+            coor(2,1)=vale(3*(ino1-1)+2)
+            coor(3,1)=vale(3*(ino1-1)+3)
 !
-            coor(1,2)=zr(idcoor-1+3*(ino2-1)+1)
-            coor(2,2)=zr(idcoor-1+3*(ino2-1)+2)
-            coor(3,2)=zr(idcoor-1+3*(ino2-1)+3)
+            coor(1,2)=vale(3*(ino2-1)+1)
+            coor(2,2)=vale(3*(ino2-1)+2)
+            coor(3,2)=vale(3*(ino2-1)+3)
 !
-            coor(1,3)=zr(idcoor-1+3*(ino3-1)+1)
-            coor(2,3)=zr(idcoor-1+3*(ino3-1)+2)
-            coor(3,3)=zr(idcoor-1+3*(ino3-1)+3)
+            coor(1,3)=vale(3*(ino3-1)+1)
+            coor(2,3)=vale(3*(ino3-1)+2)
+            coor(3,3)=vale(3*(ino3-1)+3)
 !
 ! ---         CALCUL DES COMPOSANTES A, B ET C DU VECTEUR NORMAL
 ! ---         A L'ELEMENT :

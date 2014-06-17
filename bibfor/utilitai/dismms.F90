@@ -49,12 +49,16 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     character(len=32) :: repk
     character(len=24) :: p1, p2, k24
     character(len=19) :: nomob, solveu, prno
-    integer :: jrefa, jslvk, jprno, jdeeq
+    integer ::   jprno
     character(len=8) :: kbid, nomgd
     character(len=2) :: typmat
 !-----------------------------------------------------------------------
     integer :: i, ibid, ier, nec, ieq, neq
-    integer :: ialime, nblime, nbddl, nbddlc, numno, icmp 
+    integer ::  nblime, nbddl, nbddlc, numno, icmp 
+    character(len=24), pointer :: lime(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: deeq(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '
@@ -62,16 +66,16 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     ierd = 0
 !
     nomob = nomobz
-    call jeveuo(nomob//'.REFA', 'L', jrefa)
+    call jeveuo(nomob//'.REFA', 'L', vk24=refa)
 !
 !
     if (questi(1:9) .eq. 'NUM_GD_SI') then
-        call dismnu(questi, zk24(jrefa-1+2)(1:14), repi, repk, ierd)
+        call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
     else if (questi(1:9).eq.'NOM_GD_SI') then
-        call dismnu('NOM_GD', zk24(jrefa-1+2)(1:14), repi, repk, ierd)
+        call dismnu('NOM_GD', refa(2)(1:14), repi, repk, ierd)
 !
     else if (questi.eq.'TYPE_MATRICE') then
-        typmat=zk24(jrefa-1+9)(1:2)
+        typmat=refa(9)(1:2)
         if (typmat .eq. 'MS') then
             repk='SYMETRI'
         else if (typmat.eq.'MR') then
@@ -81,16 +85,16 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         endif
 !
     else if (questi.eq.'NB_EQUA') then
-        call dismnu(questi, zk24(jrefa-1+2)(1:14), repi, repk, ierd)
+        call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
 !
     else if (questi.eq.'NOM_MODELE') then
-        call dismnu(questi, zk24(jrefa-1+2)(1:14), repi, repk, ierd)
+        call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
 !
     else if (questi.eq.'NOM_MAILLA') then
-        repk= zk24(jrefa-1+1)(1:8)
+        repk= refa(1)(1:8)
 !
     else if (questi.eq.'NOM_NUME_DDL') then
-        repk= zk24(jrefa-1+2)(1:14)
+        repk= refa(2)(1:14)
 !
     else if (questi.eq.'EXIS_LAGR') then
         call jeexin(nomob//'.CONL', ier)
@@ -101,21 +105,21 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         endif
 !
     else if (questi.eq.'NB_DDL_NOEUD') then
-        prno = zk24(jrefa-1+2)(1:14)//'.NUME'
+        prno = refa(2)(1:14)//'.NUME'
         call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
-        call jeveuo(prno//'.DEEQ', 'L', jdeeq)
+        call jeveuo(prno//'.DEEQ', 'L', vi=deeq)
 !
-        call dismnu('NOM_GD', zk24(jrefa-1+2)(1:14), ibid, nomgd, ierd)
+        call dismnu('NOM_GD', refa(2)(1:14), ibid, nomgd, ierd)
         if (ierd .ne. 0) goto 999
         call dismgd('NB_EC', nomgd, nec, kbid, ierd)
         if (ierd .ne. 0) goto 999
-        call dismnu('NB_EQUA', zk24(jrefa-1+2)(1:14), neq, kbid, ierd)
+        call dismnu('NB_EQUA', refa(2)(1:14), neq, kbid, ierd)
         if (ierd .ne. 0) goto 999
 ! 
        nbddl = zi(jprno-1+2)
         do ieq = 2, neq
-            numno = zi(jdeeq-1+(ieq -1)* 2 +1)
-            icmp  = zi(jdeeq-1+(ieq -1)* 2 +2)
+            numno = deeq((ieq -1)* 2 +1)
+            icmp  = deeq((ieq -1)* 2 +2)
             if ((numno .le. 0) .or. (icmp .le. 0)) then
                 repi = -1
                 goto 200
@@ -130,39 +134,39 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 200     continue
 !
     else if (questi.eq.'SOLVEUR') then
-        if (zk24(jrefa-1+7) .ne. ' ') then
-            repk=zk24(jrefa-1+7)
+        if (refa(7) .ne. ' ') then
+            repk=refa(7)
         else
-            call dismnu(questi, zk24(jrefa-1+2)(1:14), repi, repk, ierd)
+            call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
         endif
 !
     else if (questi.eq.'METH_RESO'.or.questi.eq.'RENUM_RESO') then
-        if (zk24(jrefa-1+7) .ne. ' ') then
-            solveu=zk24(jrefa-1+7)(1:19)
-            call jeveuo(solveu//'.SLVK', 'L', jslvk)
+        if (refa(7) .ne. ' ') then
+            solveu=refa(7)(1:19)
+            call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
             if (questi .eq. 'METH_RESO') then
-                repk=zk24(jslvk-1+1)
+                repk=slvk(1)
             else
-                repk=zk24(jslvk-1+4)
+                repk=slvk(4)
             endif
         else
-            call dismnu(questi, zk24(jrefa-1+2)(1:14), repi, repk, ierd)
+            call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
         endif
 !
     else if (questi.eq.'PROF_CHNO') then
-        repk= zk24(jrefa-1+2)(1:14)//'.NUME'
+        repk= refa(2)(1:14)//'.NUME'
 !
     else if (questi.eq.'NUME_EQUA') then
-        repk= zk24(jrefa-1+2)(1:14)//'.NUME'
+        repk= refa(2)(1:14)//'.NUME'
 !
     else if (questi.eq.'PHENOMENE') then
-        call dismnu(questi, zk24(jrefa-1+2)(1:14), repi, repk, ierd)
+        call dismnu(questi, refa(2)(1:14), repi, repk, ierd)
 !
     else if (questi.eq.'SUR_OPTION') then
-        repk= zk24(jrefa-1+4)(1:16)
+        repk= refa(4)(1:16)
 !
     else if (questi.eq. 'MPI_COMPLET') then
-        k24 = zk24(jrefa-1+11)
+        k24 = refa(11)
         ASSERT((k24.eq.'MPI_COMPLET') .or. ( k24.eq.'MPI_INCOMPLET') .or. (k24.eq.'MATR_DISTR'))
         if (k24 .eq. 'MPI_COMPLET') then
             repk='OUI'
@@ -171,7 +175,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         endif
 !
     else if (questi.eq. 'MATR_DISTR') then
-        k24 = zk24(jrefa-1+11)
+        k24 = refa(11)
         ASSERT((k24.eq.'MPI_COMPLET') .or. ( k24.eq.'MPI_INCOMPLET') .or. (k24.eq.'MATR_DISTR'))
         if (k24 .eq. 'MATR_DISTR') then
             repk='OUI'
@@ -181,14 +185,14 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !
         else if((questi.eq.'CHAM_MATER').or. (questi.eq.'CARA_ELEM'))&
     then
-        call jeveuo(nomob//'.LIME', 'L', ialime)
+        call jeveuo(nomob//'.LIME', 'L', vk24=lime)
         call jelira(nomob//'.LIME', 'LONMAX', nblime)
         p1=' '
         p2=' '
         ier=0
         do i = 1, nblime
-            if (zk24(ialime-1+i) .eq. ' ') goto 1
-            call dismme(questi, zk24(ialime-1+i)(1:19), ibid, p1, ierd)
+            if (lime(i) .eq. ' ') goto 1
+            call dismme(questi, lime(i)(1:19), ibid, p1, ierd)
             if (p1 .ne. ' ') then
                 if (p2 .eq. ' ') then
                     p2=p1

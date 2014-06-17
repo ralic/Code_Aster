@@ -47,8 +47,8 @@ subroutine dfllli(lisins, dtmin, nbinst)
 !
 !
     integer :: i
-    integer :: jinst
     real(kind=8) :: deltat
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ subroutine dfllli(lisins, dtmin, nbinst)
 !
 ! --- RECUPERATION DE LA LISTE D'INSTANTS FOURNIE
 !
-    call jeveuo(lisins//'.VALE', 'L', jinst)
+    call jeveuo(lisins//'.VALE', 'L', vr=vale)
     call jelira(lisins//'.VALE', 'LONMAX', nbinst)
 !
 ! --- VERIFICATION IL Y A AU MOINS UN INSTANT DE CALCUL
@@ -72,7 +72,7 @@ subroutine dfllli(lisins, dtmin, nbinst)
 ! --- INTERVALLE DE TEMPS MINIMAL : DTMIN
 !
     do 30 i = 1, nbinst-1
-        deltat = zr(jinst+i) - zr(jinst+i-1)
+        deltat = vale(1+i) - vale(i)
         dtmin = min(deltat,dtmin)
 30  end do
 !

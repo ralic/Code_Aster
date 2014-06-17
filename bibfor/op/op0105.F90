@@ -39,7 +39,9 @@ subroutine op0105()
     character(len=8) :: mag, dm(2)
     character(len=16) :: kbi1, kbi2
     character(len=8) :: oper
-    integer :: n1, iadim1, iadim2, ibid
+    integer :: n1,   ibid
+    integer, pointer :: dim1(:) => null()
+    integer, pointer :: dim2(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -64,9 +66,9 @@ subroutine op0105()
         call asmael(dm(1), dm(2), mag)
     else
 !
-        call jeveuo(dm(1)//'.DIME', 'L', iadim1)
-        call jeveuo(dm(2)//'.DIME', 'L', iadim2)
-        if ((zi(iadim1-1+4).ne.0) .or. (zi(iadim2-1+4).ne.0)) then
+        call jeveuo(dm(1)//'.DIME', 'L', vi=dim1)
+        call jeveuo(dm(2)//'.DIME', 'L', vi=dim2)
+        if ((dim1(4).ne.0) .or. (dim2(4).ne.0)) then
             call utmess('F', 'SOUSTRUC_16')
         endif
         if (oper(1:7) .eq. 'COLLAGE') then

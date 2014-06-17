@@ -54,7 +54,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
 !
-    integer :: jzcar1, nbma, p1, p2, nmazo, jdes1, jdes2, jdes
+    integer :: jzcar1, nbma, p1, p2, nmazo,   jdes
     integer :: nbzo1, ima, izo, numa, nbzo2, jzcar2, izo1, izo2, ii, nbzo, nuzo1
     integer :: nuzo2, jzcar, jma, jval, ncmpmx, jk24, ilim, jmazo, jnumz, nuzo
     integer :: k, jval1, icmp, jval2, kk
@@ -62,6 +62,8 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     character(len=19) :: charg1, charg2
     character(len=40) :: acces
     logical :: s2f
+    integer, pointer :: des1(:) => null()
+    integer, pointer :: des2(:) => null()
 !
     call jemarq()
 !
@@ -99,9 +101,9 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
         charg2=char2
     endif
 !
-    call jeveuo(charg1//'.DESC', 'L', jdes1)
-    call jeveuo(charg2//'.DESC', 'L', jdes2)
-    ASSERT(zi(jdes1).eq.zi(jdes2))
+    call jeveuo(charg1//'.DESC', 'L', vi=des1)
+    call jeveuo(charg2//'.DESC', 'L', vi=des2)
+    ASSERT(des1(1).eq.des2(1))
 !
 ! --  1.2 TABLEAUX : MAILLES -> NUM_ZONE D'AFFECTATION (CARTE_1)
 !                    MAILLES -> NUM_ZONE D'AFFECTATION (CARTE_2)
@@ -118,7 +120,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     call jelira(charg1//'.LIMA', 'ACCES', cval=acces)
     ASSERT(acces(1:2).eq.'NU')
 !
-    nbzo1=zi(jdes1+3-1)
+    nbzo1=des1(3)
     do izo = 1, nbzo1
         nmazo=zi(p2+izo)-zi(p2+izo-1)
         do ima = 1, nmazo
@@ -133,7 +135,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     call jelira(charg2//'.LIMA', 'ACCES', cval=acces)
     ASSERT(acces(1:2).eq.'NU')
 !
-    nbzo2=zi(jdes2+3-1)
+    nbzo2=des2(3)
     do izo = 1, nbzo2
         nmazo=zi(p2+izo)-zi(p2+izo-1)
         do ima = 1, nmazo
@@ -195,23 +197,23 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !     ALLOCATION DE DESC:
     call wkvect(charg//'.DESC', 'V V I', 3+nbzo*3, jdes)
     call jeecra(charg//'.DESC', 'DOCU', cval='CART')
-    zi(jdes-1+1) = zi(jdes1-1+1)
+    zi(jdes-1+1) = des1(1)
     zi(jdes-1+2) = nbzo
     zi(jdes-1+3) = nbzo
     do izo = 1, nbzo
         zi(jdes-1+3+2*izo-1)= 3
         zi(jdes-1+3+2*izo) = izo
-        zi(jdes-1+3+2*nbzo+izo)= zi(jdes1-1+3+2*nbzo1+1)
+        zi(jdes-1+3+2*nbzo+izo)= des1(3+2*nbzo1+1)
     end do
 !
 !     ALLOCATION DE VALE:
-    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'LONMAX', ncmpmx)
+    call jelira(jexnum('&CATA.GD.NOMCMP', des1(1)), 'LONMAX', ncmpmx)
     if (.not.fonc1 .and. .not.fonc2) then
         call wkvect(charg//'.VALE', 'V V R', nbzo*ncmpmx, jval)
     else if (fonc1) then
         call wkvect(charg//'.VALE', 'V V K8', nbzo*ncmpmx, jval)
     else if (fonc2) then
-        call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes2)), 'LONMAX', ncmpmx)
+        call jelira(jexnum('&CATA.GD.NOMCMP', des2(1)), 'LONMAX', ncmpmx)
         call wkvect(charg//'.VALE', 'V V K8', nbzo*ncmpmx, jval)
     endif
 !

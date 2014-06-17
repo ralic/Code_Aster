@@ -65,8 +65,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: jordr, iret, iordr, i, jinfc, nbchar, ic, jref
     integer :: iachar, ichar, ii, nuord, nh, jnmo, nbddl, lmat, iad, ind
-    integer :: neq, jnoch, jfo, jfono, lonch, jchmp, jreno
-    integer :: jcgmp, jfpip, ldepl, lonc2, ltrav, j, inume, jddl, jddr, lacce
+    integer :: neq,  jfo,  lonch
+    integer ::    lonc2, ltrav, j, inume, jddl, jddr, lacce
     integer :: cret
     real(kind=8) :: etan, time, partps(3), omega2, coef(3)
     character(len=1) :: stop
@@ -84,6 +84,13 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=24) :: strx, raide
     character(len=24) :: bidon, chacce, k24b, modele, kstr
     logical :: exitim, lbid, lstr, lstr2
+    real(kind=8), pointer :: cgmp(:) => null()
+    real(kind=8), pointer :: chmp(:) => null()
+    real(kind=8), pointer :: fono(:) => null()
+    real(kind=8), pointer :: fpip(:) => null()
+    real(kind=8), pointer :: noch(:) => null()
+    real(kind=8), pointer :: reno(:) => null()
+    real(kind=8), pointer :: nldepl(:) => null()
     parameter(nompro='CCFNRN')
     data chvarc/'&&CCFNRN.CHVARC'/
     data infcha/'&&INFCHA.INFCHA'/
@@ -303,17 +310,17 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call detrsd('CHAM_NO', chamno(1:19))
         endif
         call vtcreb(chamno, nume, 'G', 'R', neq)
-        call jeveuo(chamno(1:19)//'.VALE', 'E', jnoch)
+        call jeveuo(chamno(1:19)//'.VALE', 'E', vr=noch)
 !
 !       --- REMPLISSAGE DE L'OBJET .VALE DU CHAM_NO ---
         call jeveuo(vafono, 'L', jfo)
-        call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', jfono)
+        call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', vr=fono)
         call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch)
 !
 !       --- STOCKAGE DES FORCES NODALES ---
         if (option .eq. 'FORC_NODA') then
             do j = 0, lonch-1
-                zr(jnoch+j)=zr(jfono+j)
+                noch(1+j)=fono(1+j)
             end do
             goto 270
         endif
@@ -359,21 +366,21 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !
 ! --- CALCUL DU CHAMNO DE REACTION PAR DIFFERENCE DES FORCES NODALES
 ! --- ET DES FORCES EXTERIEURES MECANIQUES NON SUIVEUSES
-            call jeveuo(cnchmp(1:19)//'.VALE', 'L', jchmp)
-            call jeveuo(cncgmp(1:19)//'.VALE', 'L', jcgmp)
+            call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=chmp)
+            call jeveuo(cncgmp(1:19)//'.VALE', 'L', vr=cgmp)
             do j = 0, lonch-1
-                zr(jnoch+j)=zr(jfono+j)-zr(jchmp+j)-zr(jcgmp+j)
+                noch(1+j)=fono(1+j)-chmp(1+j)-cgmp(1+j)
             end do
             if ((typesd.eq.'EVOL_NOLI') .and. (etan.ne.0.d0)) then
-                call jeveuo(cnfpip(1:19)//'.VALE', 'L', jfpip)
+                call jeveuo(cnfpip(1:19)//'.VALE', 'L', vr=fpip)
                 do j = 0, lonch-1
-                    zr(jnoch+j)=zr(jnoch+j)-etan*zr(jfpip+j)
+                    noch(1+j)=noch(1+j)-etan*fpip(1+j)
                 end do
             endif
         else
 !         --- CALCUL DU CHAMNO DE REACTION PAR RECOPIE DE FORC_NODA
             do j = 0, lonch-1
-                zr(jnoch+j)=zr(jfono+j)
+                noch(1+j)=fono(1+j)
             end do
         endif
 !
@@ -382,16 +389,16 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call rsadpa(resuin, 'L', 1, 'OMEGA2', iordr,&
                         0, sjv=iad, styp=ctyp)
             omega2=zr(iad)
-            call jeveuo(chdepl(1:19)//'.VALE', 'L', ldepl)
+            call jeveuo(chdepl(1:19)//'.VALE', 'L', vr=nldepl)
             call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
             call wkvect('&&'//nompro//'.TRAV', 'V V R', lonc2, ltrav)
             if (lmat .eq. 0) then
                 call utmess('F', 'PREPOST3_81')
             endif
-            call mrmult('ZERO', lmat, zr(ldepl), zr(ltrav), 1,&
+            call mrmult('ZERO', lmat, nldepl, zr(ltrav), 1,&
                         .true.)
             do j = 0, lonch-1
-                zr(jnoch+j)=zr(jnoch+j)-omega2*zr(ltrav+j)
+                noch(1+j)=noch(1+j)-omega2*zr(ltrav+j)
             end do
             call jedetr('&&'//nompro//'.TRAV')
 !
@@ -404,7 +411,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call rsadpa(resuin, 'L', 1, 'NUME_DDL', iordr,&
                             0, sjv=iad, styp=ctyp)
                 inume=zi(iad)
-                zr(jnoch+inume-1)=zr(jnoch+inume-1)-1.d0
+                noch(inume)=noch(inume)-1.d0
             else if (zk16(iad)(1:9).eq.'ACCE_IMPO') then
                 call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
                 call rsadpa(resuin, 'L', 1, 'COEF_X', iordr,&
@@ -433,7 +440,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call mrmult('ZERO', lmat, zr(jddr), zr(ltrav), 1,&
                             .true.)
                 do j = 0, lonch-1
-                    zr(jnoch+j)=zr(jnoch+j)-zr(ltrav+j)
+                    noch(1+j)=noch(1+j)-zr(ltrav+j)
                 end do
                 call jedetr('&&'//nompro//'.POSI_DDR')
                 call jedetr('&&'//nompro//'.POSI_DDL')
@@ -453,7 +460,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call mrmult('ZERO', lmat, zr(lacce), zr(ltrav), 1,&
                             .true.)
                 do j = 0, lonch-1
-                    zr(jnoch+j)=zr(jnoch+j)+zr(ltrav+j)
+                    noch(1+j)=noch(1+j)+zr(ltrav+j)
                 end do
                 call jedetr('&&'//nompro//'.TRAV')
             else
@@ -473,7 +480,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call mcmult('ZERO', lmat, zc(lacce), zc(ltrav), 1,&
                             .true.)
                 do j = 0, lonch-1
-                    zr(jnoch+j)=zr(jnoch+j)+dble(zc(ltrav+j))
+                    noch(1+j)=noch(1+j)+dble(zc(ltrav+j))
                 end do
                 call jedetr('&&'//nompro//'.TRAV')
             else
@@ -495,9 +502,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !           --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
                 call asasve(vreno, nume, 'R', vareno)
                 call jeveuo(vareno, 'L', jref)
-                call jeveuo(zk24(jref)(1:19)//'.VALE', 'L', jreno)
+                call jeveuo(zk24(jref)(1:19)//'.VALE', 'L', vr=reno)
                 do j = 0, lonch-1
-                    zr(jnoch+j)=zr(jnoch+j)+zr(jreno+j)
+                    noch(1+j)=noch(1+j)+reno(1+j)
                 end do
             endif
         endif

@@ -54,10 +54,11 @@ subroutine mcopco(noma, newgeo, ndim, nummai, ksi1,&
 !
 !
 !
-    integer :: jcoor, jdes
+    integer ::  jdes
     integer :: nno, ino, no(9), icmp, ibid
     real(kind=8) :: coor(27)
     character(len=8) :: alias
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -65,7 +66,7 @@ subroutine mcopco(noma, newgeo, ndim, nummai, ksi1,&
 !
 ! --- ACCES AUX CHAMPS
 !
-    call jeveuo(newgeo(1:19)//'.VALE', 'L', jcoor)
+    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=vale)
     call jeveuo(jexnum(noma//'.CONNEX', nummai), 'L', jdes)
 !
 ! --- INITIALISATIONS
@@ -87,9 +88,9 @@ subroutine mcopco(noma, newgeo, ndim, nummai, ksi1,&
 ! --- COORDONNEES DES NOEUDS DE LA MAILLE
 !
     do 20 ino = 1, nno
-        coor(3*(ino-1)+1) = zr(jcoor+3*(no(ino)-1))
-        coor(3*(ino-1)+2) = zr(jcoor+3*(no(ino)-1)+1)
-        coor(3*(ino-1)+3) = zr(jcoor+3*(no(ino)-1)+2)
+        coor(3*(ino-1)+1) = vale(1+3*(no(ino)-1))
+        coor(3*(ino-1)+2) = vale(1+3*(no(ino)-1)+1)
+        coor(3*(ino-1)+3) = vale(1+3*(no(ino)-1)+2)
 20  end do
 !
 ! --- CALCUL DES COORDONNEES

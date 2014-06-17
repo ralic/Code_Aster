@@ -46,12 +46,13 @@ subroutine orishb(noma)
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
     integer :: iocc, ng, jjj, ngr, igr, niv, ifm, ima, numa, ino, jgro, jdes
-    integer :: nbmail, nbno, nutyma, idtyma, jcoor, nuno(20)
+    integer :: nbmail, nbno, nutyma,  jcoor, nuno(20)
     real(kind=8) :: coor(60), ps
     character(len=8) :: k8b, typel
     character(len=16) :: motfac
     character(len=24) :: grmama, connex, gmat
     integer :: iarg
+    integer, pointer :: typmail(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -60,7 +61,7 @@ subroutine orishb(noma)
 !
     grmama = noma//'.GROUPEMA'
     connex = noma//'.CONNEX'
-    call jeveuo(noma//'.TYPMAIL', 'L', idtyma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     motfac='ORIE_SHB'
     iocc=1
@@ -84,7 +85,7 @@ subroutine orishb(noma)
 !
             do 50 ima = 1, nbmail
                 numa = zi(jgro-1+ima)
-                nutyma = zi(idtyma+numa-1)
+                nutyma = typmail(numa)
                 call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
 !
                 if (typel(1:5) .eq. 'HEXA8') then

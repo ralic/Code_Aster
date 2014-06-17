@@ -69,9 +69,9 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     character(len=19) :: nomlig
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacoin, iaconx, iaexi1, iagrel,  ialiel
-    integer :: iamail,  ianbno, ianema,  ianewn
-    integer :: iaoldn,  iasssa, ico, icol, icumul
+    integer :: i, iacoin, iaconx,  iagrel,  ialiel
+    integer :: iamail,   ianema
+    integer ::    ico, icol, icumul
     integer :: iel, ifm, igrel, iinew, iino, iio1
     integer :: iio2, ilconx, ili, illiel, ilnema, ima, ino
     integer :: irempl, iret, j, jjno, jno, jrang, k
@@ -84,6 +84,11 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     integer, pointer :: new1(:) => null()
     integer, pointer :: old1(:) => null()
     integer, pointer :: ordo(:) => null()
+    integer, pointer :: oldn(:) => null()
+    integer, pointer :: newn(:) => null()
+    integer, pointer :: nbno(:) => null()
+    integer, pointer :: sssa(:) => null()
+    integer, pointer :: exi1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -126,7 +131,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !        REMPLISSAGE DU "POINTEUR DE LONGUEUR" .LCOI
 !     -----------------------------------------------------------------
 !
-    call jeveuo(nu//'.EXI1', 'L', iaexi1)
+    call jeveuo(nu//'.EXI1', 'L', vi=exi1)
 !
     icumul=0
 !     -- NBNTRE EST LE NOMBRE TOTAL DE NOEUDS A RENUMEROTER
@@ -134,13 +139,13 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !
     lcoi(1)= 1
     do 5  , ino=1,nbntt-1
-    icumul= icumul+zi(iaexi1+ino)
-    lcoi(ino+1)= lcoi(ino)+zi(iaexi1+ino)
-    if (zi(iaexi1+ino) .gt. 0) nbntre= nbntre+1
+    icumul= icumul+exi1(ino+1)
+    lcoi(ino+1)= lcoi(ino)+exi1(ino+1)
+    if (exi1(ino+1) .gt. 0) nbntre= nbntre+1
     5 end do
 !
-    icumul= icumul+zi(iaexi1+nbntt)
-    if (zi(iaexi1+nbntt) .gt. 0) nbntre= nbntre+1
+    icumul= icumul+exi1(nbntt+1)
+    if (exi1(nbntt+1) .gt. 0) nbntre= nbntre+1
 !
     call wkvect('&&RERCMK.COIN', 'V V I', icumul, iacoin)
 !
@@ -161,13 +166,13 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
     call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
     if (nbssa .gt. 0) then
-        call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
+        call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
     else
         goto 12
     endif
 !
     do ima = 1, nbsma
-        if (zi(iasssa-1+ima) .eq. 1) then
+        if (sssa(ima) .eq. 1) then
             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
             call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
             do i = 1, nbnm
@@ -264,8 +269,8 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
         end do
     end do
 !
-    call jeveuo(nomlig//'.NBNO', 'L', ianbno)
-    nbnot= nbnot+zi(ianbno)
+    call jeveuo(nomlig//'.NBNO', 'L', vi=nbno)
+    nbnot= nbnot+nbno(1)
     30 end do
 !
 !
@@ -286,7 +291,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !     ----------------------------------------------------------------
     i=0
     do k = 1, nbntt
-        if (zi(iaexi1+k) .eq. 0) goto 51
+        if (exi1(1+k) .eq. 0) goto 51
         if (new1(k) .ne. 0) goto 51
         if (i .eq. 0) then
             i=k
@@ -328,8 +333,8 @@ new1)
 !     -- ON COMPACTE .OLD1 DANS .NEWN ET .OLDN
 !     POUR NE CONSERVER QUE LES NOEUDS PHYSIQUES :
 !     --------------------------------------------
-    call jeveuo(nu//'.OLDN', 'E', iaoldn)
-    call jeveuo(nu//'.NEWN', 'E', ianewn)
+    call jeveuo(nu//'.OLDN', 'E', vi=oldn)
+    call jeveuo(nu//'.NEWN', 'E', vi=newn)
 !
     icol=0
     do i = 1, nbntt
@@ -345,7 +350,7 @@ new1)
             if ((iio2.lt.1) .or. (iio2.gt.nm)) then
                 call utmess('F', 'ASSEMBLA_38')
             endif
-            zi(ianewn-1+iio1)=i-icol
+            newn(iio1)=i-icol
         endif
     end do
   3 continue
@@ -355,10 +360,10 @@ new1)
 !     -- ON FINIT EN "REVERSANT" LE TOUT :
 !     ------------------------------------
     do i = 1, nm
-        if (zi(ianewn-1+i) .eq. 0) goto 300
-        newnno = nbnmre+1-zi(ianewn-1+i)
-        zi(ianewn-1+i)= newnno
-        zi(iaoldn-1+newnno)= i
+        if (newn(i) .eq. 0) goto 300
+        newnno = nbnmre+1-newn(i)
+        newn(i)= newnno
+        oldn(newnno)= i
 300     continue
     end do
 !
@@ -375,7 +380,7 @@ new1)
     ll1=0
     ll2=0
     do i = 1, nm
-        if (zi(iaexi1+i) .eq. 0) goto 600
+        if (exi1(1+i) .eq. 0) goto 600
         nbi= nbi+1
         nbco= vnbco(i)
         l1=1
@@ -386,8 +391,8 @@ new1)
             if (n1j .gt. nm) goto 601
             l1= max(l1,(n1i-n1j)+1)
 !
-            n2i= zi(ianewn-1+n1i)
-            n2j= zi(ianewn-1+n1j)
+            n2i= newn(n1i)
+            n2j= newn(n1j)
             l2= max(l2,(n2i-n2j)+1)
 601         continue
         end do

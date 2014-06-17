@@ -68,33 +68,40 @@ subroutine ssdmte(mag)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i2coex, iacoex, iaconx, iacoo2, iadesc, iadim2
-    integer :: iadime, iagno, iancnf, ianeno, ianmcr, ianon2, iarefe
+    integer :: i, i2coex, iacoex,   iadesc
+    integer ::  iagno,  ianeno,   iarefe
     integer :: iasupm, iatypl, iavale, ibid, ico, igeomr, igno
     integer :: ilcoex, ima, ino, iret, isma, jno, k
     integer :: kno, nbgno, nbma, nbno, nbnoco, nbnoe, nbnoet
     integer :: nbnogn, nbnol, nbnola, nbnop2, nbnoph, nbnot2, nbsma
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: noeud_conf(:) => null()
+    integer, pointer :: conx(:) => null()
+    character(len=8), pointer :: nomnoe_2(:) => null()
+    real(kind=8), pointer :: coordo_2(:) => null()
+    integer, pointer :: dime(:) => null()
+    integer, pointer :: dime_2(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
-    call jeveuo(mag//'.DIME', 'E', iadime)
-    nbnoph= zi(iadime-1+1)
-    nbnola= zi(iadime-1+2)
-    nbma = zi(iadime-1+3)
-    nbsma= zi(iadime-1+4)
-    call jeveuo(mag//'.COORDO_2', 'L', iacoo2)
-    call jeveuo(mag//'.NOEUD_CONF', 'E', iancnf)
-    call jeveuo(mag//'.NOMNOE_2', 'L', ianon2)
+    call jeveuo(mag//'.DIME', 'E', vi=dime)
+    nbnoph= dime(1)
+    nbnola= dime(2)
+    nbma = dime(3)
+    nbsma= dime(4)
+    call jeveuo(mag//'.COORDO_2', 'L', vr=coordo_2)
+    call jeveuo(mag//'.NOEUD_CONF', 'E', vi=noeud_conf)
+    call jeveuo(mag//'.NOMNOE_2', 'L', vk8=nomnoe_2)
 !
-    if (nbsma .gt. 0) call jeveuo(mag//'.DIME_2', 'L', iadim2)
-    if (nbsma .gt. 0) call jeveuo(mag//'.NOMACR', 'L', ianmcr)
+    if (nbsma .gt. 0) call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
+    if (nbsma .gt. 0) call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
 !
 !
 !     -- ON COMPTE LES NOEUDS PHYSIQUES REELLEMENT CONSERVES :
 !     -------------------------------------------------------
     ico=0
     do 1, ino=1,nbnoph
-    if (zi(iancnf-1+ino) .eq. ino) ico=ico+1
+    if (noeud_conf(ino) .eq. ino) ico=ico+1
     1 end do
     nbnop2=ico
     nbnot2= nbnop2+nbnola
@@ -109,16 +116,16 @@ subroutine ssdmte(mag)
     if (nbnola .gt. 0) then
         call wkvect(mag//'.TYPL', 'G V I', nbnola, iatypl)
         do 2 ,isma=1,nbsma
-        nomacr= zk8(ianmcr-1+isma)
-        call jeveuo(nomacr//'.CONX', 'L', iaconx)
+        nomacr= vnomacr(isma)
+        call jeveuo(nomacr//'.CONX', 'L', vi=conx)
         call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupm)
-        nbnoe=zi(iadim2-1+4*(isma-1)+1)
-        nbnol=zi(iadim2-1+4*(isma-1)+2)
+        nbnoe=dime_2(4*(isma-1)+1)
+        nbnol=dime_2(4*(isma-1)+2)
         nbnoet= nbnoe+nbnol
         do 21, i=1,nbnoet
         ino=zi(iasupm-1+i)
         if (ino .gt. nbnoph) then
-            zi(iatypl-1+ino-nbnoph)= zi(iaconx-1+3*(i-1)+3)
+            zi(iatypl-1+ino-nbnoph)= conx(3*(i-1)+3)
         endif
 21      continue
  2      continue
@@ -144,18 +151,18 @@ subroutine ssdmte(mag)
 !     -- NOM DES NOEUDS PHYSIQUES (ET LEUR COORDONNEES) :
     ico=0
     do 3 , ino=1, nbnoph
-    jno=zi(iancnf-1+ino)
+    jno=noeud_conf(ino)
     if (ino .ne. jno) goto 3
     ico= ico+1
-    if (zk8(ianon2-1+ino) .ne. ' ') then
-        nomnoe=zk8(ianon2-1+ino)
+    if (nomnoe_2(ino) .ne. ' ') then
+        nomnoe=nomnoe_2(ino)
     else
         nomnoe='N?'
         call codent(ico, 'G', nomnoe(2:8))
     endif
     call jecroc(jexnom(mag//'.NOMNOE', nomnoe))
     do 31, k=1,3
-    zr(iavale-1+3*(ico-1)+k)=zr(iacoo2-1+3*(ino-1)+k)
+    zr(iavale-1+3*(ico-1)+k)=coordo_2(3*(ino-1)+k)
 31  continue
     3 end do
 !     -- NOM DES NOEUDS DE LAGRANGE :
@@ -171,12 +178,12 @@ subroutine ssdmte(mag)
  5  continue
     recom=.false.
     do 6 ,ino=1,nbnoph
-    jno=zi(iancnf-1+ino)
+    jno=noeud_conf(ino)
     if (jno .ne. ino) then
         ASSERT(jno.le.ino)
-        kno=zi(iancnf-1+jno)
+        kno=noeud_conf(jno)
         if (kno .ne. jno) then
-            zi(iancnf-1+ino)= kno
+            noeud_conf(ino)= kno
             recom= .true.
         endif
     endif
@@ -189,7 +196,7 @@ subroutine ssdmte(mag)
     call wkvect(mag//'.NENO', 'V V I', nbnoph, ianeno)
     ico = 0
     do 7 ,ino=1,nbnoph
-    jno=zi(iancnf-1+ino)
+    jno=noeud_conf(ino)
     if (jno .eq. ino) then
         ico= ico+1
         zi(ianeno-1+ino)=ico
@@ -212,7 +219,7 @@ subroutine ssdmte(mag)
     do 811, i=1,nbno
     ino=zi(i2coex-1+i)
     if (ino .le. nbnoph) then
-        jno=zi(ianeno-1+ zi(iancnf-1+ino))
+        jno=zi(ianeno-1+ noeud_conf(ino))
         zi(i2coex-1+i)=jno
     else
         zi(i2coex-1+i)=ino-nbnoco
@@ -224,13 +231,13 @@ subroutine ssdmte(mag)
 !     ----------------------------
     do 82,isma=1,nbsma
     call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'E', iasupm)
-    nbnoe=zi(iadim2-1+4*(isma-1)+1)
-    nbnol=zi(iadim2-1+4*(isma-1)+2)
+    nbnoe=dime_2(4*(isma-1)+1)
+    nbnol=dime_2(4*(isma-1)+2)
     nbnoet= nbnoe+nbnol
     do 821, i=1,nbnoet
     ino=zi(iasupm-1+i)
     if (ino .le. nbnoph) then
-        jno=zi(ianeno-1+ zi(iancnf-1+ino))
+        jno=zi(ianeno-1+ noeud_conf(ino))
         zi(iasupm-1+i)=jno
     else
         zi(iasupm-1+i)=ino-nbnoco
@@ -248,7 +255,7 @@ subroutine ssdmte(mag)
         call jelira(jexnum(mag//'.GROUPENO', igno), 'LONUTI', nbnogn)
         do 91, i=1,nbnogn
         ino=zi(iagno-1+i)
-        jno=zi(ianeno-1+ zi(iancnf-1+ino))
+        jno=zi(ianeno-1+ noeud_conf(ino))
         zi(iagno-1+i)=jno
 91      continue
  9      continue
@@ -257,7 +264,7 @@ subroutine ssdmte(mag)
 !
 !     -- REMISE A JOUR DEFINITIVE DU NOMBRE DE NOEUDS PHYSIQUES:
 !     ----------------------------------------------------------
-    zi(iadime-1+1)=nbnop2
+    dime(1)=nbnop2
 !
 !
     call jedema()

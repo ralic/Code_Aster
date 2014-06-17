@@ -65,35 +65,38 @@ subroutine sschge(nomacr)
     character(len=19) :: vecas, vecel
 !
 !-----------------------------------------------------------------------
-    integer :: iadesm, ialica, ialich, iarefm, iavale, icas, iocc
+    integer ::  ialica, ialich,   icas, iocc
     integer :: kk, n1, n2, nch, nddle, nddli, nddlt
     integer :: nocc
     real(kind=8) :: time
+    character(len=8), pointer :: refm(:) => null()
+    integer, pointer :: desm(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
     base = 'V'
-    call jeveuo(nomacr//'.REFM', 'L', iarefm)
-    nomo= zk8(iarefm-1+1)
-    materi = zk8(iarefm-1+3)
+    call jeveuo(nomacr//'.REFM', 'L', vk8=refm)
+    nomo= refm(1)
+    materi = refm(3)
     if (materi .ne. '        ') then
         call rcmfmc(materi, mate)
     else
         mate = ' '
     endif
-    cara = zk8(iarefm-1+4)
-    nu= zk8(iarefm-1+5)
+    cara = refm(4)
+    nu= refm(5)
     if (nu(1:8) .ne. nomacr) ASSERT(.false.)
 !
     vecel = '&&VECEL            '
     vecas = nomacr//'.CHARMECA'
 !
-    call jeveuo(nomacr//'.DESM', 'E', iadesm)
+    call jeveuo(nomacr//'.DESM', 'E', vi=desm)
     call jelira(nomacr//'.LICH', 'LONMAX', nch)
     nch= nch-1
     vprof= ' '
-    nddle= zi(iadesm-1+4)
-    nddli= zi(iadesm-1+5)
+    nddle= desm(4)
+    nddli= desm(5)
     nddlt= nddle+nddli
 !
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
@@ -139,16 +142,16 @@ subroutine sschge(nomacr)
                     nu, vprof, 'ZERO', 1)
 !
 !       -- RECOPIE DE VECAS.VALE DANS .LICA(1:NDDLT) :
-        call jeveuo(vecas//'.VALE', 'L', iavale)
+        call jeveuo(vecas//'.VALE', 'L', vr=vale)
         do kk = 1, nddlt
-            zr(ialica-1+kk)=zr(iavale-1+kk)
+            zr(ialica-1+kk)=vale(kk)
         end do
 !
 !       -- CONDENSATION DE .LICA(1:NDDLT) DANS .LICA(NDDLT+1,2*NDDLT) :
         call ssvau1(nomacr, ialica, ialica+nddlt)
 !
 !       -- ON COMPTE LES CAS DE CHARGE EFFECTIVEMENT CALCULES:
-        zi(iadesm-1+7) = icas
+        desm(7) = icas
 !
         call detrsd('VECT_ELEM', vecel)
         call detrsd('CHAMP_GD', vecas)

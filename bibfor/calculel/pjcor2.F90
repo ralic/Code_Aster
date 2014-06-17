@@ -49,16 +49,21 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
     character(len=19) :: cns1, ces2, cel2
     character(len=19) :: dcel
     character(len=24) :: valk(5)
-    integer :: jpo, ipo
-    integer :: jce2c, jce2l, jce2v, jce2d, jce2k
+    integer ::  ipo
+    integer :: jce2c, jce2l,  jce2d, jce2k
 !
 !
-    integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d
+    integer :: jcns1c, jcns1l
     integer :: nbno1, ncmp1
     integer :: iad2
     integer :: icmp, icmp1
 !
     integer :: ima, ipt, isp, jlgrf
+    real(kind=8), pointer :: cnsv(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
+    integer, pointer :: pjef_sp(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -72,15 +77,15 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 !
 !     1- RECUPERATION D'INFORMATIONS DANS CNS1 :
 !     ------------------------------------------
-    call jeveuo(cns1//'.CNSK', 'L', jcns1k)
-    call jeveuo(cns1//'.CNSD', 'L', jcns1d)
+    call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cns1//'.CNSD', 'L', vi=cnsd)
     call jeveuo(cns1//'.CNSC', 'L', jcns1c)
-    call jeveuo(cns1//'.CNSV', 'L', jcns1v)
+    call jeveuo(cns1//'.CNSV', 'L', vr=cnsv)
     call jeveuo(cns1//'.CNSL', 'L', jcns1l)
     call jelira(cns1//'.CNSC', 'LONMAX', ncmp1)
 !
-    nomgd = zk8(jcns1k-1+2)
-    nbno1 = zi(jcns1d-1+1)
+    nomgd = cnsk(2)
+    nbno1 = cnsd(1)
 !
 !
 !
@@ -125,7 +130,7 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 !
     call jeveuo(ces2//'.CESD', 'L', jce2d)
     call jeveuo(ces2//'.CESC', 'L', jce2c)
-    call jeveuo(ces2//'.CESV', 'E', jce2v)
+    call jeveuo(ces2//'.CESV', 'E', vr=cesv)
     call jeveuo(ces2//'.CESL', 'E', jce2l)
     call jeveuo(ces2//'.CESK', 'L', jce2k)
 !
@@ -137,7 +142,7 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 !     -------------------------------
 !
 !
-    call jeveuo(corres//'.PJEF_SP', 'L', jpo)
+    call jeveuo(corres//'.PJEF_SP', 'L', vi=pjef_sp)
 !
 ! NBNO1 EST LE NOMBRE DE PSEUDO-NOEUDS DU MAILLAGE 2
 !
@@ -145,14 +150,14 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
         icmp=icmp1
 !
         do 98 ipo = 1, nbno1
-            ima= zi(jpo+3*(ipo-1))
-            ipt= zi(jpo+3*(ipo-1)+1)
-            isp= zi(jpo+3*(ipo-1)+2)
+            ima= pjef_sp(1+3*(ipo-1))
+            ipt= pjef_sp(1+3*(ipo-1)+1)
+            isp= pjef_sp(1+3*(ipo-1)+2)
 !
             call cesexi('C', jce2d, jce2l, ima, ipt,&
                         isp, icmp, iad2)
             if (iad2 .le. 0) goto 98
-            zr(jce2v-1+iad2)=zr(jcns1v+(ipo-1)*ncmp1+icmp-1)
+            cesv(iad2)=cnsv(1+(ipo-1)*ncmp1+icmp-1)
 !
 98      continue
 92  end do

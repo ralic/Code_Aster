@@ -39,11 +39,12 @@ subroutine ssdmrc(mag)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadime, iancnf, nnnoe
+    integer :: i,  iancnf, nnnoe
+    integer, pointer :: dime(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    call jeveuo(mag//'.DIME', 'L', iadime)
-    nnnoe=zi(iadime-1+1)
+    call jeveuo(mag//'.DIME', 'L', vi=dime)
+    nnnoe=dime(1)
     call wkvect(mag//'.NOEUD_CONF', 'V V I', nnnoe, iancnf)
     do 1, i=1,nnnoe
     zi(iancnf-1+i)=i

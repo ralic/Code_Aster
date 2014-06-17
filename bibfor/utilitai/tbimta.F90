@@ -42,11 +42,11 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 ! IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: jtblp, i, j, k, ipar, jvale, jlogq, ideb, ifin
+    integer ::  i, j, k, ipar, jvale, jlogq, ideb, ifin
     integer :: itc, itl, lgt, jcol, jlig, ifinc, il, ic
     integer :: lgl, vi(2), vali, iret, i1, i2, i3, i4, itc1, itc2
     integer :: ilon, id, if, ir, nbpara,  npara, icf
-    integer :: nblign, jtbnp
+    integer :: nblign
     real(kind=8) :: vr(2), valr, prec(2)
     complex(kind=8) :: vc(2), valc
     logical :: erreur
@@ -60,6 +60,8 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     character(len=80) :: vk(2), valk
     character(len=2000) :: chaine, chainc
     integer, pointer :: nom_para(:) => null()
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -90,11 +92,11 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
         ir = 12
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !
 !     --- ON STOCKE LES POINTEURS POUR NE PLUS FAIRE DE JEVEUO ---
 !
@@ -104,7 +106,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     do 10 i = 1, nparim
         inpar = lipaim(i)
         do 12 j = 1, nbpara
-            knpar = zk24(jtblp+4*(j-1) )
+            knpar = tblp(1+4*(j-1) )
             if (inpar .eq. knpar) then
                 npara = npara + 1
                 nom_para(npara) = j
@@ -123,7 +125,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     endif
 !
     ipar = nom_para(3)
-    typec = zk24(jtblp+4*(ipar-1)+1)
+    typec = tblp(1+4*(ipar-1)+1)
     if (typec(1:1) .eq. 'I') then
         itc1 = 12
     else if (typec(1:1) .eq. 'R') then
@@ -143,10 +145,10 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     endif
 !
     ipar = nom_para(1)
-    lipacr(2) = zk24(jtblp+4*(ipar-1) )
-    typec = zk24(jtblp+4*(ipar-1)+1)
-    nomjv = zk24(jtblp+4*(ipar-1)+2)
-    nomjvl = zk24(jtblp+4*(ipar-1)+3)
+    lipacr(2) = tblp(1+4*(ipar-1) )
+    typec = tblp(1+4*(ipar-1)+1)
+    nomjv = tblp(1+4*(ipar-1)+2)
+    nomjvl = tblp(1+4*(ipar-1)+3)
     call jeveuo(nomjv, 'L', jvale)
     call jeveuo(nomjvl, 'L', jlogq)
     if (typec(1:1) .eq. 'I') then
@@ -231,10 +233,10 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 100  end do
 !
     ipar = nom_para(2)
-    lipacr(1) = zk24(jtblp+4*(ipar-1) )
-    typel = zk24(jtblp+4*(ipar-1)+1)
-    nomjv = zk24(jtblp+4*(ipar-1)+2)
-    nomjvl = zk24(jtblp+4*(ipar-1)+3)
+    lipacr(1) = tblp(1+4*(ipar-1) )
+    typel = tblp(1+4*(ipar-1)+1)
+    nomjv = tblp(1+4*(ipar-1)+2)
+    nomjvl = tblp(1+4*(ipar-1)+3)
     lgl = lxlgut( lipacr(1) )
     call jeveuo(nomjv, 'L', jvale)
     call jeveuo(nomjvl, 'L', jlogq)
@@ -358,9 +360,9 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     formd = '('//kfin//'(''-''))'
 !
     ipar = nom_para(3)
-    inpar = zk24(jtblp+4*(ipar-1) )
-    nomjv = zk24(jtblp+4*(ipar-1)+2)
-    nomjvl = zk24(jtblp+4*(ipar-1)+3)
+    inpar = tblp(1+4*(ipar-1) )
+    nomjv = tblp(1+4*(ipar-1)+2)
+    nomjvl = tblp(1+4*(ipar-1)+3)
     chaine = ' '
     chaine(1:lgt) = inpar
     ifin = lgt + 3 + 24

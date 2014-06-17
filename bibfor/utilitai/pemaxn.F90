@@ -65,8 +65,8 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 !     IN  INST    : INSTANT
 !     ------------------------------------------------------------------
 !
-    integer :: nbma, i, jcesv, jcesl, jcesd
-    integer :: jcesk, jcmpgd, ncmpm, jcesc
+    integer :: nbma, i,  jcesl
+    integer ::  jcmpgd, ncmpm
     integer :: icmp, nbpara, nbno
     integer :: ino, nmin, nmax, npara, nbcmpm
     real(kind=8) :: vmin, vmax, inst
@@ -78,6 +78,10 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=16) :: nompar(4*nbcmp+5), nomax(2*nbcmp+3)
+    integer, pointer :: cnsd(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
 !
     call jemarq()
     cbid=(0.d0,0.d0)
@@ -108,15 +112,15 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 ! --- CALCULS DES CHAMPS SIMPLES:
     cesout='&&PEMAXC_CESOUT'
     call cnocns(chpost, 'V', cesout)
-    call jeveuo(cesout//'.CNSV', 'L', jcesv)
+    call jeveuo(cesout//'.CNSV', 'L', vr=cnsv)
     call jeveuo(cesout//'.CNSL', 'L', jcesl)
-    call jeveuo(cesout//'.CNSD', 'L', jcesd)
-    call jeveuo(cesout//'.CNSK', 'L', jcesk)
-    call jeveuo(cesout//'.CNSC', 'L', jcesc)
+    call jeveuo(cesout//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(cesout//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(cesout//'.CNSC', 'L', vk8=cesc)
 !
 ! --- RECUPERATION DE LA LISTE DES CMPS DU CATALOGUE :
 !     (POUR LA GRANDEUR VARI_* , IL FAUT CONSTITUER :(V1,V2,...,VN))
-    nomgd = zk8(jcesk-1+2)
+    nomgd = cnsk(2)
     call jelira(cesout//'.CNSC', 'LONMAX', ncmpm)
     if (nomgd(1:5) .ne. 'VARI_') then
         call jeveuo(cesout//'.CNSC', 'L', jcmpgd)
@@ -130,21 +134,21 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
     endif
 !
     npara=4*nbcmp
-    nbcmpm=zi(jcesd+1)
+    nbcmpm=cnsd(2)
 !
     do i = 1, nbcmp
         vmin=r8maem()
         vmax=-r8maem()
-        icmp=indik8(zk8(jcesc),nomcmp(i),1,nbcmpm)
+        icmp=indik8(cesc,nomcmp(i),1,nbcmpm)
         ASSERT(icmp.ge.0)
         do ino = 1, nbno
             if (zl(jcesl+(ino-1)*nbcmpm+icmp-1)) then
-                if (vmax .lt. zr(jcesv+(ino-1)*nbcmpm+icmp-1)) then
-                    vmax=zr(jcesv+(ino-1)*nbcmpm+icmp-1)
+                if (vmax .lt. cnsv(1+(ino-1)*nbcmpm+icmp-1)) then
+                    vmax=cnsv(1+(ino-1)*nbcmpm+icmp-1)
                     nmax=ino
                 endif
-                if (vmin .gt. zr(jcesv+(ino-1)*nbcmpm+icmp-1)) then
-                    vmin=zr(jcesv+(ino-1)*nbcmpm+icmp-1)
+                if (vmin .gt. cnsv(1+(ino-1)*nbcmpm+icmp-1)) then
+                    vmin=cnsv(1+(ino-1)*nbcmpm+icmp-1)
                     nmin=ino
                 endif
             endif

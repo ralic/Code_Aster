@@ -116,11 +116,14 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 !
 !
 !
-    integer :: jnum
-    integer :: jdep1, jdep2, jsol1, jsol2
     integer :: neq, i
     character(len=19) :: depso1, depso2, cncine
     character(len=19) :: solu1, solu2, cndonn, cnpilo, cncind
+    real(kind=8), pointer :: dep1(:) => null()
+    real(kind=8), pointer :: dep2(:) => null()
+    real(kind=8), pointer :: sol1(:) => null()
+    real(kind=8), pointer :: sol2(:) => null()
+    integer, pointer :: delg(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -186,18 +189,18 @@ subroutine nmprca(modele, numedd, numfix, mate, carele,&
 ! --- CORRECTION DU DEPLACEMENT DONNE POUR LE RENDRE
 ! --- CINEMATIQUEMENT ADMISSIBLE
 !
-    call jeveuo(numedd(1:14)// '.NUME.DELG', 'L', jnum)
-    call jeveuo(solu1 (1:19)//'.VALE', 'L', jsol1)
-    call jeveuo(solu2 (1:19)//'.VALE', 'L', jsol2)
-    call jeveuo(depso1(1:19)//'.VALE', 'E', jdep1)
-    call jeveuo(depso2(1:19)//'.VALE', 'E', jdep2)
+    call jeveuo(numedd(1:14)// '.NUME.DELG', 'L', vi=delg)
+    call jeveuo(solu1 (1:19)//'.VALE', 'L', vr=sol1)
+    call jeveuo(solu2 (1:19)//'.VALE', 'L', vr=sol2)
+    call jeveuo(depso1(1:19)//'.VALE', 'E', vr=dep1)
+    call jeveuo(depso2(1:19)//'.VALE', 'E', vr=dep2)
 !
 ! --- LES LAGRANGES NE SONT PAS MODIFIES
 !
     do i = 1, neq
-        if (zi(jnum+i-1) .eq. 0) then
-            zr(jdep1+i-1) = zr(jdep1+i-1)+zr(jsol1+i-1)
-            zr(jdep2+i-1) = zr(jsol2+i-1)
+        if (delg(i) .eq. 0) then
+            dep1(i) = dep1(i)+sol1(i)
+            dep2(i) = sol2(i)
         endif
     end do
 !

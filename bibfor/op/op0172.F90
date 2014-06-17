@@ -75,7 +75,7 @@ subroutine op0172()
     integer :: i, iadmo1, iamomo, ic, idam, iddeeq, idepmo
     integer :: idga, idgm, idgn, idn2, idno, ienemo, ienmot
     integer :: ifr, ii, ij, im, imod, in, ino
-    integer :: inoe, ire, iret, irigno, jbor, jcoor
+    integer :: inoe, ire, iret, irigno, jbor
     integer :: jfreq, jnbp, jnume, jnuor, jpas, jval
     integer :: ldgm, ldgn, ldnm, nb, nba, nbb
     integer :: nben, nbg, nbga, nbgr, nbmd, nbmod2, nbno
@@ -84,6 +84,7 @@ subroutine op0172()
     integer :: nmt, nn, nno, nrp
     real(kind=8) :: alfa, amoge, beta, enesol, f, omega, pi
     real(kind=8) :: xg, yg, zg, zrig
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -172,7 +173,7 @@ subroutine op0172()
     call jeveuo(deeq, 'L', iddeeq)
 !
 !     --- ECRITURE DESCRIPTION NOEUDS STRUCTURE ---
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     nprno = nume//'.NUME.PRNO'
     call jenonu(jexnom(nprno(1:19)//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(nprno, ibid), 'L', aprno)
@@ -295,18 +296,18 @@ subroutine op0172()
         call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
                     iarg, 1, nomnoe, nno)
         call jenonu(jexnom(manono, nomnoe), inoe)
-        xg = zr(jcoor+3*(inoe-1)+1-1)
-        yg = zr(jcoor+3*(inoe-1)+2-1)
-        zg = zr(jcoor+3*(inoe-1)+3-1)
+        xg = vale(1+3*(inoe-1)+1-1)
+        yg = vale(1+3*(inoe-1)+2-1)
+        zg = vale(1+3*(inoe-1)+3-1)
     else if (ngn.ne.0) then
         call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
                     iarg, 1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
 !        CALL JENUNO(JEXNUM(MANONO,INOE),NOMNOE)
-        xg = zr(jcoor+3*(inoe-1)+1-1)
-        yg = zr(jcoor+3*(inoe-1)+2-1)
-        zg = zr(jcoor+3*(inoe-1)+3-1)
+        xg = vale(1+3*(inoe-1)+1-1)
+        yg = vale(1+3*(inoe-1)+2-1)
+        zg = vale(1+3*(inoe-1)+3-1)
     endif
 !
 113 continue
@@ -348,9 +349,9 @@ subroutine op0172()
                     valr(ic) = zr(iadmo1+iddl+ic-1)*zr(irigno+6*(ino- 1)+ic-1)
                     zr(idepmo+(ic-1)*nbmode+i-1) = zr( idepmo+(ic-1)* nbmode+i-1 ) + valr(ic )
                 end do
-                a(1) = zr(jcoor+3*(inoe-1)+1-1) - xg
-                a(2) = zr(jcoor+3*(inoe-1)+2-1) - yg
-                a(3) = zr(jcoor+3*(inoe-1)+3-1) - zg
+                a(1) = vale(1+3*(inoe-1)+1-1) - xg
+                a(2) = vale(1+3*(inoe-1)+2-1) - yg
+                a(3) = vale(1+3*(inoe-1)+3-1) - zg
                 do ic = 1, 3
                     b(ic) = valr(ic)
                 end do

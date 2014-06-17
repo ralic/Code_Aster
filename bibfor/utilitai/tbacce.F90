@@ -44,12 +44,14 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
 ! IN/OUT : VK     : VALEUR POUR LE PARAMETRE "K"
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, jtblp, j, jvale, jvall
+    integer :: iret, nbpara, nblign,   j, jvale, jvall
     character(len=1) :: modacc
     character(len=4) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar
     character(len=24) :: valk
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -67,9 +69,9 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
         call utmess('F', 'UTILITAI4_64')
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -80,21 +82,21 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
         call utmess('F', 'UTILITAI4_67')
     endif
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !
 !     --- VERIFICATION QUE LE PARAMETRE EXISTE DANS LA TABLE ---
 !
     inpar = para
     do 10 j = 1, nbpara
-        if (inpar .eq. zk24(jtblp+4*(j-1))) goto 12
+        if (inpar .eq. tblp(1+4*(j-1))) goto 12
 10  end do
     valk = inpar
     call utmess('F', 'UTILITAI6_89', sk=valk)
 12  continue
 !
-    type = zk24(jtblp+4*(j-1)+1)
-    nomjv = zk24(jtblp+4*(j-1)+2)
-    nomjvl = zk24(jtblp+4*(j-1)+3)
+    type = tblp(1+4*(j-1)+1)
+    nomjv = tblp(1+4*(j-1)+2)
+    nomjvl = tblp(1+4*(j-1)+3)
 !
     call jeveuo(nomjv, modacc, jvale)
     call jeveuo(nomjvl, modacc, jvall)

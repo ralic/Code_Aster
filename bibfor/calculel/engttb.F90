@@ -41,13 +41,14 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 ! IN  : FORMR  : FORMAT D'IMPRESSION DU CHAMP VALE REEL
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpara, nblign, vali, ipar, lg, lg1, lg2, i, jvale, jvall, jtblp
-    integer :: jtbnp
+    integer :: nbpara, nblign, vali, ipar, lg, lg1, lg2, i, jvale, jvall
     real(kind=8) :: valr
     logical :: exist
     character(len=3) :: type
     character(len=16) :: nomsym
     character(len=90) :: form1, form2, form3
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -58,20 +59,20 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
             //formr(1:lg1)//', '' )'')'
     form2 = '( '' TYPE_TEST= '''''//typtes(1:lg2)// ''''', VALE_CALC_I = '', I9, '' )'' )'
 !
-    call jeveuo(nomsd//'.TBLP', 'L', jtblp)
-    call jeveuo(nomsd//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomsd//'.TBLP', 'L', vk24=tblp)
+    call jeveuo(nomsd//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
 !
     do 400 ipar = 1, nbpara
 !
-        nomsym = zk24(jtblp+4*(ipar-1))
+        nomsym = tblp(1+4*(ipar-1))
         call tbexip(nomsd, nomsym, exist, type)
         if (.not. exist) goto 400
 !
         lg = lxlgut( nomsym )
-        call jeveuo(zk24(jtblp+4*(ipar-1)+2), 'L', jvale)
-        call jeveuo(zk24(jtblp+4*(ipar-1)+3), 'L', jvall)
+        call jeveuo(tblp(1+4*(ipar-1)+2), 'L', jvale)
+        call jeveuo(tblp(1+4*(ipar-1)+3), 'L', jvall)
 !
         form3 = '( ''TEST_TABLE(TABLE= '',A8,'', NOM_PARA= '''''// nomsym(1:lg )//''''', '' )'
 !

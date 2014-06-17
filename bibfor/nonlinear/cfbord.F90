@@ -46,9 +46,11 @@ subroutine cfbord(char, noma)
 !
 !
     character(len=24) :: defico, contma
-    integer :: iatyma, jmaco, jtmdim
+    integer ::  jmaco
     integer :: ndimg, nmaco, vali(2)
     integer :: ima, nummai, nutyp, ndimma
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: tmdim(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,9 +63,9 @@ subroutine cfbord(char, noma)
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES
 !
-    call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
     call jeveuo(contma, 'L', jmaco)
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 ! --- INFO SUR LE CONTACT
 !
@@ -74,8 +76,8 @@ subroutine cfbord(char, noma)
 !
     do 10 ima = 1, nmaco
         nummai = zi(jmaco -1 + ima)
-        nutyp = zi(iatyma -1 + nummai)
-        ndimma = zi(jtmdim -1 + nutyp)
+        nutyp = typmail(nummai)
+        ndimma = tmdim(nutyp)
         if (ndimma .gt. (ndimg-1)) then
             vali(1) = ndimma
             vali(2) = ndimg

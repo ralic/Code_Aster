@@ -65,9 +65,9 @@ subroutine phi199(model, mate, ma, nu, num,&
 !                                 : 2 : AMORTISSEMENT ET RAIDEUR
 ! IN : K* : SOLVEZ : METHODE DE RESOLUTION 'MULT_FRONT','LDLT' OU 'GCPC'
 !---------------------------------------------------------------------
-    integer :: ibid, nbvale, nbrefe, nbdesc, iret, nbno, idno, id, ier
+    integer :: ibid, nbvale, nbrefe, nbdesc, iret, nbno,  id, ier
     integer :: ilires, jref, neq, nbd, nbdir, i, jvec,  in, nbsta
-    integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou, idmst, tmod(1)
+    integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou,  tmod(1)
     real(kind=8) :: rbid, xnorm, xd, depl(6), epsi
     complex(kind=8) :: c16b, cbid
     character(len=2) :: model
@@ -79,6 +79,8 @@ subroutine phi199(model, mate, ma, nu, num,&
     character(len=24) :: nomcha, nocham, criter
     character(len=24) :: valk(3)
     integer, pointer :: ddl(:) => null()
+    real(kind=8), pointer :: mst(:) => null()
+    character(len=8), pointer :: noeud(:) => null()
 !
     data maprec   /'&&OP0199.MAPREC'/
     data chsol    /'&&OP0199.SOLUTION'/
@@ -191,7 +193,7 @@ ddl)
         typmcl(2) = 'GROUP_NO'
         call reliem(' ', mailla, 'NO_NOEUD', ' ', 1,&
                     2, motcle, typmcl, '&&PHI199.NOEUD', nbno)
-        call jeveuo('&&PHI199.NOEUD', 'L', idno)
+        call jeveuo('&&PHI199.NOEUD', 'L', vk8=noeud)
 !
 !     --- ON BOUCLE SUR LES NOEUDS ---
 !
@@ -199,7 +201,7 @@ ddl)
             xd = depl(id)
             if (abs(xd) .gt. epsi) then
                 do in = 1, nbno
-                    acces(1:8 ) = zk8(idno+in-1)
+                    acces(1:8 ) = noeud(in)
                     acces(9:16) = tabcmp(id)
 !
 !              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
@@ -226,10 +228,10 @@ ddl)
                     endif
                     call rsexch('F', modsta, 'DEPL', iordr, chamno,&
                                 iret)
-                    call jeveuo(chamno//'.VALE', 'L', idmst)
+                    call jeveuo(chamno//'.VALE', 'L', vr=mst)
 !
                     do i = 0, neq-1
-                        zr(jvec+i) = zr(jvec+i) - ddl(1+(id-1)*neq+ i)*xd*zr(idmst+i)
+                        zr(jvec+i) = zr(jvec+i) - ddl(1+(id-1)*neq+ i)*xd*mst(1+i)
                     end do
                     call jelibe(chamno//'.VALE')
  26                 continue

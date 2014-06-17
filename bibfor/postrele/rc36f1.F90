@@ -41,20 +41,21 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: jsigr, ig1, ig2, nbsips, jnpass, i, k, i1, nsitu, numg1, numg2
+    integer ::  ig1, ig2, nbsips, jnpass, i, k, i1, nsitu, numg1, numg2
     integer :: sipass, npass, ioc1, ioc2
     real(kind=8) :: salmia, salmib, salt1, salt2, salt3, salt4, saltam, saltbm
     logical :: chemin
+    integer, pointer :: situ_group(:) => null()
 !     ------------------------------------------------------------------
 !
-    call jeveuo('&&RC32SI.SITU_GROUP', 'L', jsigr)
+    call jeveuo('&&RC32SI.SITU_GROUP', 'L', vi=situ_group)
 !
     ioc1 = sigr(isk)
     ioc2 = sigr(isl)
-    numg1 = zi(jsigr+2*ioc1-2)
-    ig1 = zi(jsigr+2*ioc1-1)
-    numg2 = zi(jsigr+2*ioc2-2)
-    ig2 = zi(jsigr+2*ioc2-1)
+    numg1 = situ_group(1+2*ioc1-2)
+    ig1 = situ_group(1+2*ioc1-1)
+    numg2 = situ_group(1+2*ioc2-2)
+    ig2 = situ_group(1+2*ioc2-1)
 !
     yapass = .false.
     typass = '?_?'

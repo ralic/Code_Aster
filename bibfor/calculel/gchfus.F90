@@ -33,9 +33,10 @@ subroutine gchfus(fonct1, fonct2, fonct3)
 !
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer :: nptf1, nptf2, jprol, jvale, iret, jval, nptf, i
+    integer :: nptf1, nptf2, jprol,  iret, jval, nptf, i
     real(kind=8) :: y
     character(len=19) :: fo1, fo2, fo3, fotmp1, fotmp2
+    real(kind=8), pointer :: vale(:) => null()
 !
     call jemarq()
 !
@@ -63,12 +64,12 @@ subroutine gchfus(fonct1, fonct2, fonct3)
 !
     call jeveuo(fotmp1//'.PROL', 'L', jprol)
     call jeveuo(fotmp2//'.VALE', 'L', jval)
-    call jeveuo(fo3//'.VALE', 'E', jvale)
+    call jeveuo(fo3//'.VALE', 'E', vr=vale)
 !
     do 10 i = 1, nptf
         call fointe('A', fotmp1, 1, zk24(jprol+3-1), zr(jval+i-1),&
                     y, iret)
-        zr(jvale+nptf+i-1)=zr(jval+nptf+i-1)+y
+        vale(1+nptf+i-1)=zr(jval+nptf+i-1)+y
 10  end do
 !
     call jedema()

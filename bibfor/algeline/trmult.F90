@@ -70,11 +70,12 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id,  idmst, idno, ii, in
+    integer :: i, id,   idno, ii, in
     integer :: iret, ldgn, nb, nbd, nbdir, nbgr, nbno
     integer :: nbtrou, nbv
     real(kind=8) :: xd
     character(len=24), pointer :: group_no(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     data cmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 !     ------------------------------------------------------------------
@@ -177,11 +178,11 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                 endif
                 call rsexch('F', modsta, 'DEPL', iordr(1), chamno,&
                             iret)
-                call jeveuo(chamno//'.VALE', 'L', idmst)
+                call jeveuo(chamno//'.VALE', 'L', vr=vale)
 !
 !              --- ON EFFECTUE LE PRODUIT  MODE_STAT * DIR ---
                 do 42 i = 1, neq
-                    pside(i) = pside(i)+ xd * zr(idmst+i-1)
+                    pside(i) = pside(i)+ xd * vale(i)
 42              continue
                 call jelibe(chamno//'.VALE')
 40          continue

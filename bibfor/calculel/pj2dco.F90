@@ -77,9 +77,9 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
 !
     integer :: ifm, niv, nno1, nno2, nma1, nma2, k
     integer :: ima, ino2, ico
-    integer :: iatr3, iacoo1, iacoo2, iabtdi, iabtvr, iabtnb, iabtlc
+    integer :: iatr3, iacoo1, iacoo2
     integer :: iabtco, jxxk1, iaconu, iacocf, iacotr
-    integer :: ialim1, ialin1, iacnx1, ilcnx1, ialin2, iatym1
+    integer :: ialim1, ialin1,  ilcnx1, ialin2
     integer :: iaconb, itypm, idecal, itr3, nbtrou
 !
     logical :: dbg, ldmax, loin, lraff
@@ -89,6 +89,12 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
     parameter (nbmax=5)
     integer :: tino2m(nbmax), nbnod, nbnodm
     real(kind=8) :: tdmin2(nbmax)
+    integer, pointer :: bt2dlc(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: bt2ddi(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: bt2dnb(:) => null()
+    real(kind=8), pointer :: bt2dvr(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -120,11 +126,11 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
 !           V(1+4(I-1)+2) : NUMERO DU 2EME NOEUD DU IEME TRIA3
 !           V(1+4(I-1)+3) : NUMERO DU 3EME NOEUD DU IEME TRIA3
 !           V(1+4(I-1)+4) : NUMERO DE LA MAILLE MERE DU IEME TRIA3
-    call jeveuo(m1//'.TYPMAIL', 'L', iatym1)
+    call jeveuo(m1//'.TYPMAIL', 'L', vi=typmail)
     ico=0
     do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 51
-        itypm=zi(iatym1-1+ima)
+        itypm=typmail(ima)
         if (itypm .eq. nutm(1)) then
             ico=ico+1
         else if (itypm.eq.nutm(2)) then
@@ -148,32 +154,32 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
         call utmess('F', 'CALCULEL4_55')
     endif
 !
-    call jeveuo(m1//'.CONNEX', 'L', iacnx1)
+    call jeveuo(m1//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
     do ima = 1, nma1
         if (zi(ialim1-1+ima) .eq. 0) goto 52
-        itypm=zi(iatym1-1+ima)
+        itypm=typmail(ima)
 !       -- CAS DES TRIANGLES :
         if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
             ico=ico+1
             zi(iatr3+(ico-1)*4+4)=ima
-            zi(iatr3+(ico-1)*4+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*4+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
-            zi(iatr3+(ico-1)*4+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*4+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*4+2)=connex(1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*4+3)=connex(1+ zi(ilcnx1-1+ima)-2+3)
 !       -- CAS DES QUADRANGLES :
             else if ((itypm.eq.nutm(4)).or.(itypm.eq.nutm(5)) .or.(&
         itypm.eq.nutm(6))) then
             ico=ico+1
             zi(iatr3+(ico-1)*4+4)=ima
-            zi(iatr3+(ico-1)*4+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*4+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+2)
-            zi(iatr3+(ico-1)*4+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*4+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*4+2)=connex(1+ zi(ilcnx1-1+ima)-2+2)
+            zi(iatr3+(ico-1)*4+3)=connex(1+ zi(ilcnx1-1+ima)-2+3)
             ico=ico+1
             zi(iatr3+(ico-1)*4+4)=ima
-            zi(iatr3+(ico-1)*4+1)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+1)
-            zi(iatr3+(ico-1)*4+2)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+3)
-            zi(iatr3+(ico-1)*4+3)=zi(iacnx1+ zi(ilcnx1-1+ima)-2+4)
+            zi(iatr3+(ico-1)*4+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
+            zi(iatr3+(ico-1)*4+2)=connex(1+ zi(ilcnx1-1+ima)-2+3)
+            zi(iatr3+(ico-1)*4+3)=connex(1+ zi(ilcnx1-1+ima)-2+4)
         endif
  52     continue
     end do
@@ -194,10 +200,10 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
 !
     boite='&&PJ2DCO.BOITE'
     call pj2dfb(boite, zi(iatr3), zr(iacoo1), zr(iacoo2))
-    call jeveuo(boite//'.BT2DDI', 'L', iabtdi)
-    call jeveuo(boite//'.BT2DVR', 'L', iabtvr)
-    call jeveuo(boite//'.BT2DNB', 'L', iabtnb)
-    call jeveuo(boite//'.BT2DLC', 'L', iabtlc)
+    call jeveuo(boite//'.BT2DDI', 'L', vi=bt2ddi)
+    call jeveuo(boite//'.BT2DVR', 'L', vr=bt2dvr)
+    call jeveuo(boite//'.BT2DNB', 'L', vi=bt2dnb)
+    call jeveuo(boite//'.BT2DLC', 'L', vi=bt2dlc)
     call jeveuo(boite//'.BT2DCO', 'L', iabtco)
 !
 !     DESCRIPTION DE LA SD BOITE_2D :
@@ -261,8 +267,8 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
     do ino2 = 1, nno2
         if (zi(ialin2-1+ino2) .eq. 0) goto 6
         call pj2dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
-                    cobary, itr3, nbtrou, zi(iabtdi), zr(iabtvr),&
-                    zi(iabtnb), zi(iabtlc), zi( iabtco), ifm, niv,&
+                    cobary, itr3, nbtrou, bt2ddi, bt2dvr,&
+                    bt2dnb, bt2dlc, zi( iabtco), ifm, niv,&
                     ldmax, distma, loin, dmin)
         if (loin) then
             nbnodm = nbnodm + 1

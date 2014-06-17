@@ -53,7 +53,8 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
     character(len=24) :: k24bid
     real(kind=8) :: freqr0, prec, r8bid, minmat, maxmat
     character(len=16) :: optrig, sign
-    integer :: jrefa, ibid
+    integer ::  ibid
+    character(len=24), pointer :: refa(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,8 +79,8 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
 ! --- DETECTION INSTABILITE
 !
     if (optrig .eq. 'RIGI_GEOM_NON') then
-        call jeveuo(matass//'.REFA', 'L', jrefa)
-        if (zk24(jrefa-1+11)(1:11) .ne. 'MPI_COMPLET') then
+        call jeveuo(matass//'.REFA', 'L', vk24=refa)
+        if (refa(11)(1:11) .ne. 'MPI_COMPLET') then
             call utmess('F', 'MECANONLINE6_13')
         endif
         ldist = .false.

@@ -55,12 +55,17 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
 !
 !
 !
-    integer :: jfint, jfext, jdiri, jbudi, jdipi, jdfdo
+    integer ::     jdipi
     character(len=19) :: cnfext, cnfint, cndiri, cnbudi, cndipi, cndfdo
-    integer :: jccid
     integer :: ieq, neq
     integer :: ifm, niv
     logical :: lcine
+    integer, pointer :: ccid(:) => null()
+    real(kind=8), pointer :: budi(:) => null()
+    real(kind=8), pointer :: dfdo(:) => null()
+    real(kind=8), pointer :: diri(:) => null()
+    real(kind=8), pointer :: fext(:) => null()
+    real(kind=8), pointer :: fint(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,18 +87,18 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
 !
 ! --- INITIALISATIONS
 !
-    call jeveuo(cnfint(1:19)//'.VALE', 'L', jfint)
-    call jeveuo(cndiri(1:19)//'.VALE', 'L', jdiri)
-    call jeveuo(cnfext(1:19)//'.VALE', 'L', jfext)
-    call jeveuo(cnbudi(1:19)//'.VALE', 'L', jbudi)
+    call jeveuo(cnfint(1:19)//'.VALE', 'L', vr=fint)
+    call jeveuo(cndiri(1:19)//'.VALE', 'L', vr=diri)
+    call jeveuo(cnfext(1:19)//'.VALE', 'L', vr=fext)
+    call jeveuo(cnbudi(1:19)//'.VALE', 'L', vr=budi)
     call jeveuo(cndipi(1:19)//'.VALE', 'L', jdipi)
-    call jeveuo(cndfdo(1:19)//'.VALE', 'L', jdfdo)
+    call jeveuo(cndfdo(1:19)//'.VALE', 'L', vr=dfdo)
 !
 ! --- POINTEUR SUR LES DDLS ELIMINES PAR AFFE_CHAR_CINE
 !
     if (lcine) then
         call nmpcin(matass)
-        call jeveuo(matass(1:19)//'.CCID', 'L', jccid)
+        call jeveuo(matass(1:19)//'.CCID', 'L', vi=ccid)
     endif
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
@@ -106,14 +111,14 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
 ! ----- SI CHARGEMENT CINEMATIQUE: ON IGNORE LA VALEUR DU RESIDU
 !
         if (lcine) then
-            if (zi(jccid+ieq-1) .eq. 1) then
+            if (ccid(ieq) .eq. 1) then
                 goto 15
             endif
         endif
         residu = max(&
                  residu,&
                  abs(&
-                 zr(jfint+ieq-1)+ zr(jdiri+ieq-1)- zr(jfext+ieq-1)+ zr(jbudi+ieq-1)- zr(jdfdo+ieq&
+                 fint(ieq)+ diri(ieq)- fext(ieq)+ budi(ieq)- dfdo(1+ieq&
                  &-1)- eta*zr( jdipi+ieq-1)&
                  )&
                  )

@@ -92,7 +92,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     integer :: ipas, iaux2
     integer :: j
     integer :: mfich, jinst, itps
-    integer :: ifm, nivinf, jrefe, jnuom
+    integer :: ifm, nivinf,  jnuom
     integer :: nbma, jnbpgm, jnbpmm, ordins
     real(kind=8) :: epsi
     character(len=3) :: prolz
@@ -140,6 +140,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     character(len=64) :: k64b
 !
     logical :: existm, logaux
+    character(len=24), pointer :: refe(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -316,8 +317,8 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
                 call gnomsd(' ', nomprn, 15, 19)
                 call copisd('PROF_CHNO', 'G', pchn1, nomprn)
             endif
-            call jeveuo(chanom//'.REFE', 'E', jrefe)
-            zk24(jrefe+1) = nomprn(1:19)
+            call jeveuo(chanom//'.REFE', 'E', vk24=refe)
+            refe(2) = nomprn(1:19)
             call detrsd('PROF_CHNO', pchn1)
         endif
         if (numord .eq. ednono) then

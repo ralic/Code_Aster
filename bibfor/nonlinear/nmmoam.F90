@@ -76,10 +76,12 @@ subroutine nmmoam(sdammz, nbmoda)
     integer :: iret, iam, imode, vali(3)
     integer :: na, nb, n, nm
     integer :: nbmd, neq, nbmax, nbamor
-    integer :: iddeeq, lmat, iamor
-    integer :: jvalmo, jbasmo, jamor, jval, jamo2, jmasg, jfreq
+    integer :: iddeeq, lmat
+    integer :: jvalmo, jbasmo, jamor,  jamo2, jmasg, jfreq
     integer :: exiam
     real(kind=8), pointer :: vect1(:) => null()
+    real(kind=8), pointer :: mor(:) => null()
+    real(kind=8), pointer :: val(:) => null()
 !
 ! ---------------------------------------------------------------------
 !
@@ -147,9 +149,9 @@ subroutine nmmoam(sdammz, nbmoda)
         else
             call getvid('AMOR_MODAL', 'LIST_AMOR', iocc=1, scal=listam, nbret=n)
             call jelira(listam//'           .VALE', 'LONMAX', ival=nbamor)
-            call jeveuo(listam//'           .VALE', 'L', iamor)
+            call jeveuo(listam//'           .VALE', 'L', vr=mor)
             do iam = 1, nbmoda
-                zr(jamor+iam-1) = zr(iamor+iam-1)
+                zr(jamor+iam-1) = mor(iam)
             end do
         endif
 !
@@ -192,8 +194,8 @@ subroutine nmmoam(sdammz, nbmoda)
     do imode = 1, nbmoda
         call rsexch('F', modmec, 'DEPL', imode, nomcha,&
                     iret)
-        call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
-        call dcopy(neq, zr(jval), 1, vect1, 1)
+        call jeveuo(nomcha(1:19)//'.VALE', 'L', vr=val)
+        call dcopy(neq, val, 1, vect1, 1)
         call zerlag(neq, zi(iddeeq), vectr=vect1)
         call mrmult('ZERO', lmat, vect1, zr(jbasmo+(imode-1)*neq), 1,&
                     .true.)

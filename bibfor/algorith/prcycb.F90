@@ -87,12 +87,12 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iddeeq, ier1, ier2, iord
+    integer :: i, ibid,  ier1, ier2, iord
     integer :: j, k, ktrian, ldk0aa, ldk0aj, ldk0ia, ldk0ii
     integer :: ldk0ij, ldk0jj, ldkpaa, ldkpaj, ldkpia, ldkpij, ldkpja
     integer :: ldkpjj, ldm0aa, ldm0aj, ldm0ia, ldm0ii, ldm0ij, ldm0jj
     integer :: ldmpaa, ldmpaj, ldmpia, ldmpij, ldmpja, ldmpjj, llcham
-    integer :: lldesc, llnin, llnoa, llnod, llnog, llnoms, llref1
+    integer ::   llnoa, llnod, llnog
     integer :: lmatk, lmatm, ltetax, ltetgd, ltkaa, ltkag
     integer :: ltkdg, ltkgg, ltkia, ltkig, ltmaa, ltmag, ltmdg
     integer :: ltmgg, ltmia, ltmig, ltora, ltord, ltorg, ltvec1
@@ -100,6 +100,11 @@ subroutine prcycb(nomres, soumat, repmat)
     integer :: nbdga, nbmod, nbnoa, nbnod, nbnog, nbsec, nbsma
     integer :: neq, ntail, ntrian, numa, numd, numg
     real(kind=8) :: xprod
+    integer, pointer :: cycl_nuin(:) => null()
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: cycl_desc(:) => null()
+    character(len=24), pointer :: cycl_refe(:) => null()
+    integer, pointer :: cycl_nbsc(:) => null()
 !-----------------------------------------------------------------------
     data pgc /'PRCYCB'/
 !-----------------------------------------------------------------------
@@ -107,28 +112,28 @@ subroutine prcycb(nomres, soumat, repmat)
 ! --- RECUPERATION DES CONCEPTS AMONT
 !
     call jemarq()
-    call jeveuo(nomres//'.CYCL_REFE', 'L', llref1)
-    intf  =zk24(llref1+1)
-    basmod=zk24(llref1+2)
+    call jeveuo(nomres//'.CYCL_REFE', 'L', vk24=cycl_refe)
+    intf  =cycl_refe(2)
+    basmod=cycl_refe(3)
     call jelibe(nomres//'.CYCL_REFE')
     call dismoi('REF_RIGI_PREM', basmod, 'RESU_DYNA', repk=raid)
     call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass)
 !
 ! --- RECUPERATION DES DIMENSIONS DU PROBLEME GENERALISE
 !
-    call jeveuo(nomres//'.CYCL_DESC', 'L', lldesc)
-    nbmod=zi(lldesc)
-    nbddr=zi(lldesc+1)
+    call jeveuo(nomres//'.CYCL_DESC', 'L', vi=cycl_desc)
+    nbmod=cycl_desc(1)
+    nbddr=cycl_desc(2)
     nbdga=nbddr
-    nbdax=zi(lldesc+2)
+    nbdax=cycl_desc(3)
     call jelibe(nomres//'.CYCL_DESC')
 !
 ! --- RECUPERATION DES NUMEROS INTERFACE DROITE ET GAUCHE
 !
-    call jeveuo(nomres//'.CYCL_NUIN', 'L', llnin)
-    numd=zi(llnin)
-    numg=zi(llnin+1)
-    numa=zi(llnin+2)
+    call jeveuo(nomres//'.CYCL_NUIN', 'L', vi=cycl_nuin)
+    numd=cycl_nuin(1)
+    numg=cycl_nuin(2)
+    numa=cycl_nuin(3)
 !
 ! --- ALLOCATION DU REPERTOIRE DES NOMS DES SOUS-MATRICES
 !
@@ -272,7 +277,7 @@ subroutine prcycb(nomres, soumat, repmat)
 !
     call dismoi('NB_EQUA', raid, 'MATR_ASSE', repi=neq)
     call dismoi('NOM_NUME_DDL', raid, 'MATR_ASSE', repk=num)
-    call jeveuo(num//'.NUME.DEEQ', 'L', iddeeq)
+    call jeveuo(num//'.NUME.DEEQ', 'L', vi=deeq)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DES INTERFACES
 !
@@ -291,8 +296,8 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 ! --- RECUPERATION DU NOMBRE DE SECTEURS
 !
-    call jeveuo(nomres//'.CYCL_NBSC', 'L', llnoms)
-    nbsec=zi(llnoms)
+    call jeveuo(nomres//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+    nbsec=cycl_nbsc(1)
     call jelibe(nomres//'.CYCL_NBSC')
 !
 ! --- RECUPERATION DES NUMEROS D'ORDRE DES DEFORMEES
@@ -344,7 +349,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltveca+(i-1)*neq), 1)
         call jelibe(chamva)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltveca+(i-1)*neq))
+        call zerlag(neq, deeq, vectr=zr(ltveca+(i-1)*neq))
     end do
     do i = 1, nbddr
         iord=zi(ltord+i-1)
@@ -352,7 +357,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvecb+(i-1)*neq), 1)
         call jelibe(chamva)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvecb+(i-1)*neq))
+        call zerlag(neq, deeq, vectr=zr(ltvecb+(i-1)*neq))
     end do
     do i = 1, nbddr
         iord=zi(ltorg+i-1)
@@ -360,7 +365,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvecc+(i-1)*neq), 1)
         call jelibe(chamva)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvecc+(i-1)*neq))
+        call zerlag(neq, deeq, vectr=zr(ltvecc+(i-1)*neq))
     end do
     if (nbdax .gt. 0) then
         do i = 1, nbdax
@@ -369,7 +374,7 @@ subroutine prcycb(nomres, soumat, repmat)
             call jeveuo(chamva, 'L', llcham)
             call dcopy(neq, zr(llcham), 1, zr(ltvecd+(i-1)*neq), 1)
             call jelibe(chamva)
-            call zerlag(neq, zi(iddeeq), vectr=zr(ltvecd+(i-1)*neq))
+            call zerlag(neq, deeq, vectr=zr(ltvecd+(i-1)*neq))
         end do
     endif
 !
@@ -421,8 +426,8 @@ subroutine prcycb(nomres, soumat, repmat)
                     .false.)
         call mrmult('ZERO', lmatm, zr(ltveca+(i-1)*neq), zr(ltvec3), 1,&
                     .false.)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec3))
+        call zerlag(neq, deeq, vectr=zr(ltvec1))
+        call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
 ! ----- PRODUIT AVEC MODES
 !
@@ -486,8 +491,8 @@ subroutine prcycb(nomres, soumat, repmat)
                     .false.)
         call mrmult('ZERO', lmatm, zr(ltvecb+(i-1)*neq), zr(ltvec3), 1,&
                     .false.)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec3))
+        call zerlag(neq, deeq, vectr=zr(ltvec1))
+        call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
 ! ----- CALCUL TERME DIAGONAL
 !
@@ -572,8 +577,8 @@ subroutine prcycb(nomres, soumat, repmat)
                     .false.)
         call mrmult('ZERO', lmatm, zr(ltvecc+(i-1)*neq), zr(ltvec3), 1,&
                     .false.)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec3))
+        call zerlag(neq, deeq, vectr=zr(ltvec1))
+        call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
 ! ----- CALCUL TERME DIAGONAL
 !
@@ -760,8 +765,8 @@ subroutine prcycb(nomres, soumat, repmat)
                         .false.)
             call mrmult('ZERO', lmatm, zr(ltvecd+(i-1)*neq), zr(ltvec3), 1,&
                         .false.)
-            call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
-            call zerlag(neq, zi(iddeeq), vectr=zr(ltvec3))
+            call zerlag(neq, deeq, vectr=zr(ltvec1))
+            call zerlag(neq, deeq, vectr=zr(ltvec3))
 !
 ! ------- MULTIPLICATION PAR MODES PROPRES
 !

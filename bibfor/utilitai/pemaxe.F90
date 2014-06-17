@@ -68,8 +68,8 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
 !     IN  IOCC    : NUMERO DE L'OCCURENCE
 !     ------------------------------------------------------------------
 !
-    integer :: nbma, nbmai, i, jcesv, jcesl, jcesd
-    integer :: nucmp, jcesk, jcmpgd, ncmpm, iad, indma
+    integer :: nbma, nbmai, i,  jcesl, jcesd
+    integer :: nucmp,  jcmpgd, ncmpm, iad, indma
     integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara, nbno
     integer :: nmin, nmax, npara, pmax, pmin
     real(kind=8) :: vmin, vmax, inst
@@ -83,6 +83,8 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=16) :: nompar(6*nbcmp+5), mamax(2*nbcmp+3)
     integer :: ptmax(1+2*nbcmp)
+    character(len=8), pointer :: cesk(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
 !
     call jemarq()
 !
@@ -133,15 +135,15 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
     cesout='&&PEMAXC_CESOUT'
 !
     call celces(chpost, 'V', cesout)
-    call jeveuo(cesout//'.CESV', 'L', jcesv)
+    call jeveuo(cesout//'.CESV', 'L', vr=cesv)
     call jeveuo(cesout//'.CESL', 'L', jcesl)
     call jeveuo(cesout//'.CESD', 'L', jcesd)
-    call jeveuo(cesout//'.CESK', 'L', jcesk)
+    call jeveuo(cesout//'.CESK', 'L', vk8=cesk)
 !
 !
 ! --- RECUPERATION DE LA LISTE DES CMPS DU CATALOGUE :
 !     (POUR LA GRANDEUR VARI_* , IL FAUT CONSTITUER :(V1,V2,...,VN))
-    nomgd = zk8(jcesk-1+2)
+    nomgd = cesk(2)
     call jelira(cesout//'.CESC', 'LONMAX', ncmpm)
     if (nomgd(1:5) .ne. 'VARI_') then
         call jeveuo(cesout//'.CESC', 'L', jcmpgd)
@@ -168,13 +170,13 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
                 call cesexi('C', jcesd, jcesl, ima, ipt,&
                             1, nucmp, iad)
                 if (iad .gt. 0) then
-                    if (vmax .lt. zr(jcesv-1+iad)) then
-                        vmax=zr(jcesv-1+iad)
+                    if (vmax .lt. cesv(iad)) then
+                        vmax=cesv(iad)
                         nmax=ima
                         pmax=ipt
                     endif
-                    if (vmin .gt. zr(jcesv-1+iad)) then
-                        vmin=zr(jcesv-1+iad)
+                    if (vmin .gt. cesv(iad)) then
+                        vmin=cesv(iad)
                         nmin=ima
                         pmin=ipt
                     endif

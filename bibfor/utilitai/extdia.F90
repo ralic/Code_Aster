@@ -57,17 +57,19 @@ subroutine extdia(matr, numddl, icode, diag)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: idia, j, jadia, jbloc, jsmde,  k
+    integer :: idia, j,  jbloc,   k
     integer :: l, lmat, nbacti, nbbloq, nblagr, nbliai, neq
     integer, pointer :: vtypddl(:) => null()
+    integer, pointer :: smdi(:) => null()
+    integer, pointer :: smde(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
     call mtdscr(matr)
     call jeveuo(matr//'           .&INT', 'L', lmat)
 !
-    call jeveuo(numddl(1:8)//'      .SMOS.SMDE', 'L', jsmde)
-    neq = zi(jsmde-1+1)
+    call jeveuo(numddl(1:8)//'      .SMOS.SMDE', 'L', vi=smde)
+    neq = smde(1)
 !
     AS_ALLOCATE(vi=vtypddl, size=neq)
     call typddl('ACTI', numddl(1:8), neq, vtypddl, nbacti,&
@@ -78,14 +80,14 @@ subroutine extdia(matr, numddl, icode, diag)
         endif
     endif
 !
-    call jeveuo(numddl(1:8)//'      .SMOS.SMDI', 'L', jadia)
+    call jeveuo(numddl(1:8)//'      .SMOS.SMDI', 'L', vi=smdi)
     k = 0
     l = 0
     call jeveuo(jexnum(matr//'           .VALM', 1), 'L', jbloc)
     do 40 j = 1, neq
         k = k + 1
         if (vtypddl(k) .ne. 0) then
-            idia=zi(jadia+k-1)
+            idia=smdi(k)
             l=l+1
             diag(l)=zr(jbloc-1+idia)
         else if (icode.eq.0.or.icode.eq.2) then

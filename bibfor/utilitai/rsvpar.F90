@@ -42,19 +42,20 @@ subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
 !              : = 100  LA VALEUR DU PARAMETRE EST CORRECT.
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ipa, nbpar, nbacc, jnpa
+    integer :: ipa, nbpar, nbacc
     character(len=3) :: ctype
 !
 !-----------------------------------------------------------------------
     integer :: jadr
+    character(len=16), pointer :: noms_para(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
 !
     call rsnopa(nomsd, 1, '&&RSVPAR.NOMS_PARA', nbacc, nbpar)
-    call jeveuo('&&RSVPAR.NOMS_PARA', 'L', jnpa)
+    call jeveuo('&&RSVPAR.NOMS_PARA', 'L', vk16=noms_para)
     do 10 ipa = 1, nbpar
-        if (nompar .eq. zk16(jnpa-1+ipa)) goto 12
+        if (nompar .eq. noms_para(ipa)) goto 12
 10  end do
     goto 9999
 !

@@ -98,7 +98,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! DECLARATION VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     integer :: iaux, neq, nbcol, long
-    integer :: jdeeq,  icvmoz, iener
+    integer :: jdeeq,  icvmoz
     integer :: imasse, iamort, irigid
     integer :: iumoy, iupmum, iumoyz, iupmuz
     integer :: ivmoy, ivpmvm
@@ -114,6 +114,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     real(kind=8), pointer :: mumoyz(:) => null()
     real(kind=8), pointer :: vmoyz(:) => null()
     real(kind=8), pointer :: vpmvmz(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
@@ -326,18 +327,18 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! MISE A JOUR DES ENERGIES
 ! - ORDRE : WEXT - ECIN - WINT - AMOR - LIAI - WSCH
 ! --------------------------------------------------------------------
-    call jeveuo(sdener//'.VALE', 'E', iener)
+    call jeveuo(sdener//'.VALE', 'E', vr=vale)
     nbcol=4
-    zr(iener-1+1)=zr(iener-1+1)+wext
-    zr(iener-1+3)=zr(iener-1+3)+wint
-    zr(iener-1+6)=zr(iener-1+6)+wsch
+    vale(1)=vale(1)+wext
+    vale(3)=vale(3)+wint
+    vale(6)=vale(6)+wsch
     if (ldyna) then
-        zr(iener-1+2)=zr(iener-1+2)+ecin
-        zr(iener-1+4)=zr(iener-1+4)+amor
+        vale(2)=vale(2)+ecin
+        vale(4)=vale(4)+amor
         nbcol=nbcol+2
     endif
-    zr(iener-1+5)=zr(iener-1+5)+liai
-    if ((zr(iener-1+5).ne.0.d0) .or. (liai.ne.0.d0)) then
+    vale(5)=vale(5)+liai
+    if ((vale(5).ne.0.d0) .or. (liai.ne.0.d0)) then
         nbcol=nbcol+1
     endif
 ! --------------------------------------------------------------------
@@ -357,26 +358,26 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
      &                 '  ENER_TOT   ','|','  DISS_SCH   ','|'
         write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,&
      &                 '|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',zr(iener-1+1),&
-     &                 '|',zr(iener-1+3),'|',zr(iener-1+6),'|'
+        write(6,formc) '|','     TOTAL     ','|',vale(1),&
+     &                 '|',vale(3),'|',vale(6),'|'
     else if (nbcol.eq.5) then
         write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
      &                 '  ENER_TOT   ','|','  TRAV_LIAI  ','|',&
      &                 '  DISS_SCH   ','|'
         write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',liai,&
      &                 '|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',zr(iener-1+1),&
-     &                 '|',zr(iener-1+3),'|',zr(iener-1+5),&
-     &                 '|',zr(iener-1+6),'|'
+        write(6,formc) '|','     TOTAL     ','|',vale(1),&
+     &                 '|',vale(3),'|',vale(5),&
+     &                 '|',vale(6),'|'
     else if (nbcol.eq.6) then
         write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
      &                 '  ENER_TOT   ','|','  ENER_CIN   ','|',&
      &                 '  TRAV_AMOR  ','|','  DISS_SCH   ','|'
         write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',ecin,&
      &                 '|',amor,'|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',zr(iener-1+1),&
-     &                 '|',zr(iener-1+3),'|',zr(iener-1+2),&
-     &                 '|',zr(iener-1+4),'|',zr(iener-1+6),'|'
+        write(6,formc) '|','     TOTAL     ','|',vale(1),&
+     &                 '|',vale(3),'|',vale(2),&
+     &                 '|',vale(4),'|',vale(6),'|'
     else if (nbcol.eq.7) then
         write(6,formb) '|','BILAN D''ENERGIE','|','  TRAV_EXT   ','|',&
      &                 '  ENER_TOT   ','|','  ENER_CIN   ','|',&
@@ -384,10 +385,10 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
      &                 '  DISS_SCH   ','|'
         write(6,formc) '|','  PAS COURANT  ','|',wext,'|',wint,'|',ecin,&
      &                 '|',amor,'|',liai,'|',wsch,'|'
-        write(6,formc) '|','     TOTAL     ','|',zr(iener-1+1),&
-     &                 '|',zr(iener-1+3),'|',zr(iener-1+2),&
-     &                 '|',zr(iener-1+4),'|',zr(iener-1+5),&
-     &                 '|',zr(iener-1+6),'|'
+        write(6,formc) '|','     TOTAL     ','|',vale(1),&
+     &                 '|',vale(3),'|',vale(2),&
+     &                 '|',vale(4),'|',vale(5),&
+     &                 '|',vale(6),'|'
     endif
     write(6,forma) ('-',iaux=1,long)
 !

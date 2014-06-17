@@ -48,22 +48,29 @@ subroutine asmael(ma1, ma2, mag)
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i1noe, i1nol, iacon1, iacon2, iaconx
-    integer :: iacoo2, iacoor, iadesm, iadim1, iadim2, iadime, iadimp
+    integer :: iacoo2, iacoor,    iadime, iadimp
     integer :: iagma1, iagma2, iagmax, iagno1, iagno2, iagnox, iancnf
-    integer :: ianmc1, ianmc2, ianmcr, ianon2, iapar1, iapar2, iaparr
+    integer ::   ianmcr, ianon2,   iaparr
     integer :: iasup1, iasup2, iasupm, iatyma, iatyp1, iatyp2, iatypx
     integer :: ibid, ico, icompt, ii, iret, iret1, iret2
     integer :: itrou, j, l1, l2, l3, n, nbgm1
     integer :: nbgm2, nbgma, nbgn1, nbgn2, nbgno, nbl1, nbm1
     integer :: nbm2, nbma, nbn1, nbn2, nbno, nbnoe, nbnol
     integer :: nbsm1, nbsm2, nbsma, ncoor
+    integer, pointer :: dim1(:) => null()
+    integer, pointer :: dim2(:) => null()
+    real(kind=8), pointer :: par1(:) => null()
+    real(kind=8), pointer :: par2(:) => null()
+    integer, pointer :: desm(:) => null()
+    character(len=8), pointer :: nmc1(:) => null()
+    character(len=8), pointer :: nmc2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
 !     --OBJET .DIME :
 !     ---------------
-    call jeveuo(ma1//'.DIME', 'L', iadim1)
-    call jeveuo(ma2//'.DIME', 'L', iadim2)
+    call jeveuo(ma1//'.DIME', 'L', vi=dim1)
+    call jeveuo(ma2//'.DIME', 'L', vi=dim2)
     call wkvect(mag//'.DIME', 'G V I', 6, iadime)
 !CC SOMME POUR : 1 LE NB DE NOEUDS,
 !CC              2       DE NOEUDS LAGRANGES,
@@ -71,41 +78,41 @@ subroutine asmael(ma1, ma2, mag)
 !CC              4       DE SUPER MAILLES
 !CC              5       DU MAJORANT DE SUPER MAILLES
     do 11,i=1,5
-    zi(iadime-1+i)=zi(iadim1-1+i)+zi(iadim2-1+i)
+    zi(iadime-1+i)=dim1(i)+dim2(i)
     11 end do
-    if (zi(iadim1-1+6) .ne. zi(iadim2-1+6)) then
+    if (dim1(6) .ne. dim2(6)) then
         call utmess('A', 'SOUSTRUC_1')
     endif
 !
-    ncoor=zi(iadim1-1+6)
+    ncoor=dim1(6)
     zi(iadime-1+6)=ncoor
 !
     nbsma=zi(iadime-1+4)
-    nbsm1=zi(iadim1-1+4)
-    nbsm2=zi(iadim2-1+4)
+    nbsm1=dim1(4)
+    nbsm2=dim2(4)
 !
     nbma=zi(iadime-1+3)
-    nbm1=zi(iadim1-1+3)
-    nbm2=zi(iadim2-1+3)
+    nbm1=dim1(3)
+    nbm2=dim2(3)
 !
     nbno=zi(iadime-1+1)
-    nbn1=zi(iadim1-1+1)
-    nbn2=zi(iadim2-1+1)
+    nbn1=dim1(1)
+    nbn2=dim2(1)
 !
-    nbl1=zi(iadim1-1+2)
+    nbl1=dim1(2)
 !
 !
 !     --OBJET .NOMACR :
 !     -----------------
     if (nbsma .gt. 0) then
         call wkvect(mag//'.NOMACR', 'G V K8', nbsma, ianmcr)
-        if (nbsm1 .gt. 0) call jeveuo(ma1//'.NOMACR', 'L', ianmc1)
-        if (nbsm2 .gt. 0) call jeveuo(ma2//'.NOMACR', 'L', ianmc2)
+        if (nbsm1 .gt. 0) call jeveuo(ma1//'.NOMACR', 'L', vk8=nmc1)
+        if (nbsm2 .gt. 0) call jeveuo(ma2//'.NOMACR', 'L', vk8=nmc2)
         do 12,i=1,nbsm1
-        zk8(ianmcr-1+i)=zk8(ianmc1-1+i)
+        zk8(ianmcr-1+i)=nmc1(i)
 12      continue
         do 13,i=1,nbsm2
-        zk8(ianmcr-1+nbsm1+i)=zk8(ianmc2-1+i)
+        zk8(ianmcr-1+nbsm1+i)=nmc2(i)
 13      continue
     endif
 !
@@ -118,9 +125,9 @@ subroutine asmael(ma1, ma2, mag)
         i1nol= 0
         do 14,i=1,nbsma
         nomacr=zk8(ianmcr-1+i)
-        call jeveuo(nomacr//'.DESM', 'L', iadesm)
-        nbnoe= zi(iadesm-1+2)
-        nbnol= zi(iadesm-1+8)+zi(iadesm-1+9)
+        call jeveuo(nomacr//'.DESM', 'L', vi=desm)
+        nbnoe= desm(2)
+        nbnol= desm(8)+desm(9)
         zi(iadimp-1+4*(i-1)+1)=nbnoe
         zi(iadimp-1+4*(i-1)+2)=nbnol
         zi(iadimp-1+4*(i-1)+3)=i1noe
@@ -135,13 +142,13 @@ subroutine asmael(ma1, ma2, mag)
 !     -----------------
     if (nbsma .gt. 0) then
         call wkvect(mag//'.PARA_R', 'G V R', 14*nbsma, iaparr)
-        if (nbsm1 .gt. 0) call jeveuo(ma1//'.PARA_R', 'L', iapar1)
-        if (nbsm2 .gt. 0) call jeveuo(ma2//'.PARA_R', 'L', iapar2)
+        if (nbsm1 .gt. 0) call jeveuo(ma1//'.PARA_R', 'L', vr=par1)
+        if (nbsm2 .gt. 0) call jeveuo(ma2//'.PARA_R', 'L', vr=par2)
         do 16,i=1,14*nbsm1
-        zr(iaparr-1+i)=zr(iapar1-1+i)
+        zr(iaparr-1+i)=par1(i)
 16      continue
         do 17,i=1,14*nbsm2
-        zr(iaparr-1+nbsm1+i)=zr(iapar2-1+i)
+        zr(iaparr-1+nbsm1+i)=par2(i)
 17      continue
     endif
 !

@@ -73,10 +73,11 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
     integer :: i, iad, iadr,  ibid, ic, icm
     integer :: icmc, icmcca, icmp, icompt, iec, inno, ino
     integer ::  inum, iret, irval, iun, ival, ivari
-    integer :: izero, jlast, ncmp
+    integer :: izero,  ncmp
     integer, pointer :: bid(:) => null()
     logical, pointer :: ltabl(:) => null()
     character(len=8), pointer :: nom(:) => null()
+    integer, pointer :: last(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -84,8 +85,8 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
     AS_ALLOCATE(vl=ltabl, size=ncmpmx)
 !
     if (.not.lresu) then
-        call jeveuo('&&OP0039.LAST', 'E', jlast)
-        inum = zi(jlast-1+4) + 1
+        call jeveuo('&&OP0039.LAST', 'E', vi=last)
+        inum = last(4) + 1
     else
         inum = 0
     endif
@@ -276,7 +277,7 @@ subroutine irdeca(ifi, nbno, prno, nueq, nec,&
  12     continue
     end do
     write(ifi,'(3(1X,E21.13E3))') (zr(irval-1+i),i=1,nbcmp*nbno)
-    if (.not.lresu) zi(jlast-1+4)=inum
+    if (.not.lresu) last(4)=inum
     call jedetr('&&IRDECA.VALE')
     AS_DEALLOCATE(vi=bid)
     AS_DEALLOCATE(vk8=nom)

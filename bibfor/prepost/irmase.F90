@@ -52,8 +52,8 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
 !
 !
     integer :: idfimd, nbpoin, ipoint, jcoopt, nbrayo, icouch, irayon
-    integer :: edleaj, postmp, codret, edcart, jmasup, jcesc, jcesd
-    integer :: edfuin, ndim, nbmasu, imasup, edcar2, jcesv, jcesl
+    integer :: edleaj, postmp, codret, edcart, jmasup,  jcesd
+    integer :: edfuin, ndim, nbmasu, imasup, edcar2,  jcesl
     integer :: nbcmp, isp, icmp, iad
     parameter    (edleaj = 1)
     parameter    (edcart = 0)
@@ -67,6 +67,8 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     real(kind=8) :: xmin, xmax, delta, rmin, rmax, theta, dtheta
 !
     logical :: lmstro
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 !
     data nocoor  /'X               ',&
      &              'Y               ',&
@@ -157,9 +159,9 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     else if (typsec.eq.'PMF') then
 !
         ndim = 2
-        call jeveuo(sdcarm//'.CAFIBR    .CESC', 'L', jcesc)
+        call jeveuo(sdcarm//'.CAFIBR    .CESC', 'L', vk8=cesc)
         call jeveuo(sdcarm//'.CAFIBR    .CESD', 'L', jcesd)
-        call jeveuo(sdcarm//'.CAFIBR    .CESV', 'L', jcesv)
+        call jeveuo(sdcarm//'.CAFIBR    .CESV', 'L', vr=cesv)
         call jeveuo(sdcarm//'.CAFIBR    .CESL', 'L', jcesl)
 !
         ASSERT(zi(jcesd+5+4*(nummai-1)).eq.1)
@@ -167,14 +169,14 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
         call wkvect('&&IRMASE.COOR_PTS', 'V V R', 2*nbpoin, jcoopt)
         nbcmp = zi(jcesd+5+4*(nummai-1)+2)
         ASSERT(nbcmp.eq.3)
-        ASSERT(zk8(jcesc).eq.'XG      '.and. zk8(jcesc+1).eq.'YG      ')
+        ASSERT(cesc(1).eq.'XG      '.and. cesc(2).eq.'YG      ')
 !
         postmp = 0
         do 50, isp = 1,nbpoin
         do 60, icmp = 1,2
         call cesexi('S', jcesd, jcesl, nummai, 1,&
                     isp, icmp, iad)
-        zr(jcoopt+postmp) = zr(jcesv-1+iad)
+        zr(jcoopt+postmp) = cesv(iad)
         postmp = postmp+1
 60      continue
 50      continue

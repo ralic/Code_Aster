@@ -56,12 +56,13 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps
     real(kind=8) :: lsnbc
     integer :: in, inh, i, j, ar(12, 3), nbar, ise, ndim
-    integer :: a1, a2, a3, a4, a, b, c, iadzi, iazk24, ndime, jdim, n(18)
+    integer :: a1, a2, a3, a4, a, b, c, iadzi, iazk24, ndime,  n(18)
     integer :: d, e, f, g, h, l, ia, ip1
     integer :: nnop
     integer :: zxain
     character(len=8) :: typma, noma, elrese(3)
     logical :: cut
+    integer, pointer :: dime(:) => null()
 !
     data            elrese /'SEG3','TRIA6','TETRA10'/
 ! --------------------------------------------------------------------
@@ -71,8 +72,8 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
     zxain = xxmmvd('ZXAIN')
     call tecael(iadzi, iazk24)
     noma=zk24(iazk24)
-    call jeveuo(noma//'.DIME', 'L', jdim)
-    ndim=zi(jdim-1+6)
+    call jeveuo(noma//'.DIME', 'L', vi=dime)
+    ndim=dime(6)
     nse=0
     do 10 in = 1, 6
         do 20 j = 1, 10

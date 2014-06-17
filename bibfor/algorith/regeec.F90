@@ -61,9 +61,9 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 !
 !
-    integer :: i, iad, ibid, ieq, ier, iord, j, jbid, k, ldnew, llchab
-    integer :: llchol, llnueq, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
-    integer :: neq, nno, numo, nusst, nutars, iadpar(6), llref2, llref3
+    integer :: i, iad, ibid, ieq, ier, iord, j, jbid, k,  llchab
+    integer :: llchol,  llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
+    integer :: neq, nno, numo, nusst, nutars, iadpar(6)
     integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
     real(kind=8) :: freq, genek, genem, omeg2, rbid
     character(len=8) :: kbid, basmod, mailla, lint, modgen, soutr
@@ -72,6 +72,10 @@ subroutine regeec(nomres, resgen, nomsst)
     character(len=24) :: crefe(2), chamol, chamba
     character(len=24) :: valk(2), seliai, sizlia, sst
     complex(kind=8) :: cbid
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: nueq(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
@@ -87,13 +91,13 @@ subroutine regeec(nomres, resgen, nomsst)
 !
     call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
-    call jeveuo(raid//'.REFA', 'L', llref2)
-    numgen(1:14) = zk24(llref2+1)
+    call jeveuo(raid//'.REFA', 'L', vk24=refa)
+    numgen(1:14) = refa(2)
     numgen(15:19) = '.NUME'
     call jelibe(raid//'.REFA')
 !
-    call jeveuo(numgen//'.REFN', 'L', llref3)
-    modgen = zk24(llref3)
+    call jeveuo(numgen//'.REFN', 'L', vk24=refn)
+    modgen = refn(1)
     call jelibe(numgen//'.REFN')
 !
 ! --- RECUPERATION NUMERO DE SOUS-STRUCTURE
@@ -225,7 +229,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 ! --- RESTITUTION PROPREMENT DITE
 !
-    call jeveuo(numgen//'.NUEQ', 'L', llnueq)
+    call jeveuo(numgen//'.NUEQ', 'L', vi=nueq)
 !
 ! --- BOUCLE SUR LES MODES A RESTITUER
     do i = 1, nbmod(1)
@@ -250,7 +254,7 @@ subroutine regeec(nomres, resgen, nomsst)
         call rsexch(' ', nomres, depl, i, chamne,&
                     ier)
         call vtcrea(chamne, crefe, 'G', 'R', neq)
-        call jeveuo(chamne//'.VALE', 'E', ldnew)
+        call jeveuo(chamne//'.VALE', 'E', vr=vale)
 !
         call rsadpa(resgen, 'L', 5, nompar, iord,&
                     0, tjv=iadpar, styp=kbid)
@@ -275,9 +279,9 @@ subroutine regeec(nomres, resgen, nomsst)
                 if (elim .ne. 0) then
                     iad=llchol+ieq+j-1
                 else
-                    iad=llchol+zi(llnueq+ieq+j-2)-1
+                    iad=llchol+nueq(1+ieq+j-2)-1
                 endif
-                zr(ldnew+k-1) = zr(ldnew+k-1) + zr(llchab+k-1)*zr(iad)
+                vale(k) = vale(k) + zr(llchab+k-1)*zr(iad)
             end do
             call jelibe(chamba)
         end do

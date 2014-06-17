@@ -76,7 +76,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
     character(len=6) :: nompro
     parameter    (nompro = 'MESTAT')
-    integer :: nbval, ibid, jval, itps, itps0, iret, ninstc, neq
+    integer :: nbval, ibid,  itps, itps0, iret, ninstc, neq
     integer :: vali
     real(kind=8) :: time, instf, tps1(4), tps2(4), tps3(4), tcpu, partps(3)
     real(kind=8) :: valr(3)
@@ -89,6 +89,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     character(len=24) :: fomult, noojb
     logical :: matcst, assmat
     logical :: lbid, ltemp, lhydr, lsech, lptot
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! DEB------------------------------------------------------------------
 !====
@@ -160,7 +161,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     call uttcpu('CPU.OP0046.2', 'INIT', ' ')
     call uttcpu('CPU.OP0046.3', 'INIT', ' ')
 !
-    call jeveuo(ltps//'           .VALE', 'L', jval)
+    call jeveuo(ltps//'           .VALE', 'L', vr=vale)
     instf=r8maem()
     call getvr8(' ', 'INST_FIN', scal=instf, nbret=ibid)
 !
@@ -180,7 +181,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
 ! 2.1. ==> L'INSTANT
         itps0 = itps
-        time = zr(jval-1+itps)
+        time = vale(itps)
 !
 !       -- SI ON A DEPASSE INSTF, ON SORT :
         if (time .gt. instf) goto 999

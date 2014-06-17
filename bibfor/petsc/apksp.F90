@@ -38,7 +38,6 @@ subroutine apksp(kptsc)
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: jslvk, jslvr, jslvi
     integer :: nmaxit, ifm, niv
 !
     character(len=24) :: algo
@@ -46,6 +45,9 @@ subroutine apksp(kptsc)
     character(len=14) :: nonu
 !
     real(kind=8) :: resire
+    real(kind=8), pointer :: slvr(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: slvi(:) => null()
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -66,12 +68,12 @@ subroutine apksp(kptsc)
     a = ap(kptsc)
     ksp = kp(kptsc)
 !
-    call jeveuo(nosolv//'.SLVK', 'L', jslvk)
-    call jeveuo(nosolv//'.SLVR', 'L', jslvr)
-    call jeveuo(nosolv//'.SLVI', 'L', jslvi)
-    algo = zk24(jslvk-1+6)
-    resire = zr(jslvr-1+2)
-    nmaxit = zi(jslvi-1+2)
+    call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+    call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
+    call jeveuo(nosolv//'.SLVI', 'L', vi=slvi)
+    algo = slvk(6)
+    resire = slvr(2)
+    nmaxit = slvi(2)
 !
 !     -- choix de l'algo KSP :
 !     ------------------------

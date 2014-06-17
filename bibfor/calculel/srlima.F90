@@ -57,13 +57,14 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: jma2d, jcoor, jma3d
+    integer :: jma2d,  jma3d
     integer :: ima,iret,jcesd,jcesl,iad1, numa2d, numa3d
     integer :: nbma, nbmamo, jlima, nbmat, jmato
 !
     character(len=8) :: ma, limocl(3), tymocl(3)
     character(len=24) :: mesmai, limamo
     character(len=19) :: ces,cel
+    real(kind=8), pointer :: vale(:) => null()
 !
     data limocl/'TOUT','MAILLE','GROUP_MA'/
     data tymocl/'TOUT','MAILLE','GROUP_MA'/
@@ -118,9 +119,9 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 
 !   -- on recherche les mailles 3d associees aux mailles de peau :
 !   ---------------------------------------------------------------
-    call jeveuo(ma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
     call utmasu(ma, '3D', nbma2d, zi(jma2d), mail3d,&
-                zr(jcoor), nbmamo, zi(jlima), .true.)
+                vale, nbmamo, zi(jlima), .true.)
     call jeveuo(mail3d, 'L', jma3d)
 !
     call wkvect(mailto, 'V V I', nbma2d*2, jmato)

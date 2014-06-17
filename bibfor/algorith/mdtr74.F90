@@ -115,19 +115,19 @@ subroutine mdtr74(nomres)
     integer :: i, iam, iamog, ibid, icoupl, idiff
     integer :: ier, ifimp, ifm, ig, iindic, im
     integer :: indic, ioc, iparch, iptcho, iret, irfimp
-    integer :: ng1, ng2, nng1, nng0, nng2, jrefag, jscdeg, jgyog, jrgyg
+    integer :: ng1, ng2, nng1, nng0, nng2,  jscdeg, jgyog, jrgyg
     integer :: isoupl, itrans, itrloc, ivchoc, iveci1, ivecr1
     integer :: ivecr2, ivecr3, ivecr4, ivecr5, jabsc, jaccs, jamo1
     integer :: jamo2, jamog, jarch, jbase, jbasf, jcodim, jcoefm
-    integer :: jdcho, jdep0, jdepl, jdeps, jdesc, jdfk
+    integer :: jdcho, jdep0, jdepl, jdeps,  jdfk
     integer :: jfcho, jfk, jfond, jfonv, jiadve, jicho
     integer :: jidesc, jinst, jinti, jinumo, jlocf, jmasg, jnoacc
     integer :: jnodep, jnoec, jnomfo, jnovit, jordr, jparc, jpard
     integer :: jpass, jphie, jpoids, jpsdel, jpsid, jpuls
-    integer :: jraig, jranc, jredc, jredd, jrede, jrefa, jrefac
+    integer :: jraig, jranc, jredc, jredd, jrede, jrefa
     integer :: jrevc, jrevv
-    integer :: jrefak, jrefam, jrevi, jrhoe, jscdek, jscdem, jvcho
-    integer :: jvit0, jvits, lamre, lires, llnequ, lmat, lnoe
+    integer ::   jrevi, jrhoe,   jvcho
+    integer :: jvit0, jvits, lamre, lires,  lmat, lnoe
     integer :: lprofv, lprol, n, n1, n2, na, nbamor
     integer :: nbcho1, nbchoc, nbexit, nbf, nbflam, nbfv, nbm0
     integer :: nbmd, nbmg, nbmod2, nbmode, nbmp, nbnli, nbpas
@@ -138,6 +138,14 @@ subroutine mdtr74(nomres)
     real(kind=8) :: seuil, tfexm, tfin, tinit, ts, vgap
     character(len=24), pointer :: group_ma(:) => null()
     real(kind=8), pointer :: pulsat2(:) => null()
+    integer, pointer :: scdek(:) => null()
+    integer, pointer :: scdem(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: nequ(:) => null()
+    character(len=24), pointer :: refac(:) => null()
+    character(len=24), pointer :: refag(:) => null()
+    character(len=24), pointer :: refak(:) => null()
+    character(len=24), pointer :: refam(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -208,22 +216,22 @@ subroutine mdtr74(nomres)
     if (na .eq. 0) lamor = .true.
 !
 !   RECUPERATION DE LA NUMEROTATION GENERALISEE DE M, K
-    call jeveuo(masgen//'           .REFA', 'L', jrefam)
-    numgem = zk24(jrefam-1+2)(1:14)
+    call jeveuo(masgen//'           .REFA', 'L', vk24=refam)
+    numgem = refam(2)(1:14)
     nomstm = numgem//'.SLCS'
-    call jeveuo(nomstm//'.SCDE', 'L', jscdem)
-    nbstom = zi(jscdem-1+1)*zi(jscdem-1+4)
+    call jeveuo(nomstm//'.SCDE', 'L', vi=scdem)
+    nbstom = scdem(1)*scdem(4)
 !
-    call jeveuo(riggen//'           .REFA', 'L', jrefak)
-    numgek = zk24(jrefak-1+2)(1:14)
+    call jeveuo(riggen//'           .REFA', 'L', vk24=refak)
+    numgek = refak(2)(1:14)
     nomstk = numgek//'.SLCS'
-    call jeveuo(nomstk//'.SCDE', 'L', jscdek)
-    nbstok = zi(jscdek-1+1)*zi(jscdek-1+4)
+    call jeveuo(nomstk//'.SCDE', 'L', vi=scdek)
+    nbstok = scdek(1)*scdek(4)
 !
 !   RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES
-    call jeveuo(masgen//'           .DESC', 'L', jdesc)
-    nbmode = zi(jdesc+1)
-    basemo = zk24(jrefam-1+1)(1:8)
+    call jeveuo(masgen//'           .DESC', 'L', vi=desc)
+    nbmode = desc(2)
+    basemo = refam(1)(1:8)
     call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=rigass)
 !
 !   on recupere le type de base modale
@@ -274,8 +282,8 @@ subroutine mdtr74(nomres)
         call jeveuo(matass//'           .REFA', 'L', jrefa)
         numddl = zk24(jrefa-1+2)(1:14)
         call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=mailla)
-        call jeveuo(numddl//'.NUME.NEQU', 'L', llnequ)
-        neq = zi(llnequ)
+        call jeveuo(numddl//'.NUME.NEQU', 'L', vi=nequ)
+        neq = nequ(1)
         nbmod2 = nbmode
     else
         call utmess('F', 'ALGORITH5_65')
@@ -388,8 +396,8 @@ subroutine mdtr74(nomres)
 !   RECUPERATION D'UNE MATRICE D'AMORTISSEMENTS DIMENSIONNELS
     if (.not.lamor) then
 !       RECUP NUMEROTATION GENE DE MATRICE AMORTISSEMENT
-        call jeveuo(amogen//'           .REFA', 'L', jrefac)
-        numgec = zk24(jrefac-1+2)(1:14)
+        call jeveuo(amogen//'           .REFA', 'L', vk24=refac)
+        numgec = refac(2)(1:14)
         numc24(1:14) = numgec
         call extdia(amogen, numc24, 0, zr(jamo1))
         do i = 1, nbmod2
@@ -418,8 +426,8 @@ subroutine mdtr74(nomres)
         call getvid(' ', 'ACCE_ROTA', scal=fonca, nbret=nng2)
         call getvid(' ', 'MATR_GYRO', scal=gyogen, nbret=ng1)
         call getvid(' ', 'MATR_RIGY', scal=rgygen, nbret=ng2)
-        call jeveuo(gyogen//'           .REFA', 'L', jrefag)
-        numgeg = zk24(jrefag-1+2)(1:14)
+        call jeveuo(gyogen//'           .REFA', 'L', vk24=refag)
+        numgeg = refag(2)(1:14)
         nomstg = numgeg//'.SLCS'
         call jeveuo(nomstg//'.SCDE', 'L', jscdeg)
         call copmat(gyogen, numgeg, zr(jgyog))

@@ -145,9 +145,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     character(len=6) :: nompro
     parameter ( nompro = 'DLNEW0' )
 !
-    integer :: iforc0, iforc1
-    integer :: lresu, lcrre, nbexre, item2(1), iret, lvale, ibid, i
-    integer :: lval1, lval2, ltps0, ltps1, nbinst, ifnobi, ifcibi, alarm
+    integer ::  iforc1
+    integer ::   nbexre, item2(1), iret, lvale, ibid, i
+    integer ::   ltps0, ltps1, nbinst, ifnobi, ifcibi, alarm
     integer :: iexci, ieq, iresu
 !
     real(kind=8) :: coefd, coefv, coefa, prec, eps0, alpha
@@ -158,6 +158,11 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     character(len=19) :: masse1, amort1, rigid1
     character(len=24) :: cine, veccor, vecond
     complex(kind=8) :: cbid
+    character(len=8), pointer :: listresu(:) => null()
+    real(kind=8), pointer :: coef_rre(:) => null()
+    real(kind=8), pointer :: forc0(:) => null()
+    real(kind=8), pointer :: nlval1(:) => null()
+    real(kind=8), pointer :: nlval2(:) => null()
 !     -----------------------------------------------------------------
 !
 !
@@ -244,7 +249,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !====
 ! 4. CALCUL DU SECOND MEMBRE F*
 !====
-    call jeveuo(force0(1:19)//'.VALE', 'E', iforc0)
+    call jeveuo(force0(1:19)//'.VALE', 'E', vr=forc0)
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
 !
     call dlfext(nveca, nchar, temps, neq, liad,&
@@ -292,39 +297,39 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !
     call getfac('EXCIT_RESU', nbexre)
     if (nbexre .ne. 0) then
-        call jeveuo('&&OP0048.COEF_RRE', 'L', lcrre)
-        call jeveuo('&&OP0048.LISTRESU', 'L', lresu)
+        call jeveuo('&&OP0048.COEF_RRE', 'L', vr=coef_rre)
+        call jeveuo('&&OP0048.LISTRESU', 'L', vk8=listresu)
         prec=1.d-9
         eps0 =1.d-12
         do iresu = 1, nbexre
             if (abs(temps) .gt. eps0) then
-                call rsorac(zk8(lresu+iresu-1), 'INST', 0, temps, k8bid,&
+                call rsorac(listresu(iresu), 'INST', 0, temps, k8bid,&
                             cbid, prec, 'RELATIF', item2, 1,&
                             ibid)
             else
-                call rsorac(zk8(lresu+iresu-1), 'INST', 0, temps, k8bid,&
+                call rsorac(listresu(iresu), 'INST', 0, temps, k8bid,&
                             cbid, eps0, 'ABSOLU', item2, 1,&
                             ibid)
             endif
             if (ibid .gt. 0) then
-                call rsexch('F', zk8(lresu+iresu-1), 'DEPL', item2(1), cham19,&
+                call rsexch('F', listresu(iresu), 'DEPL', item2(1), cham19,&
                             iret)
                 call vtcopy(cham19, chamno, 'F', iret)
                 call jeveuo(chamno//'.VALE', 'L', lvale)
 !
             else
                 call wkvect('&&DLNEW0.XTRAC', 'V V R8', neq, lvale)
-                call jelira(zk8(lresu+iresu-1)//'           .ORDR', 'LONUTI', nbinst)
+                call jelira(listresu(iresu)//'           .ORDR', 'LONUTI', nbinst)
 !
 !        --- INTERPOLATION LINEAIRE ---
                 do i = 1, nbinst-1
 !
-                    call rsadpa(zk8(lresu+iresu-1), 'L', 1, 'INST', i,&
+                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i,&
                                 0, sjv=ltps0, styp=k8bid)
-                    call rsadpa(zk8(lresu+iresu-1), 'L', 1, 'INST', i+1,&
+                    call rsadpa(listresu(iresu), 'L', 1, 'INST', i+1,&
                                 0, sjv=ltps1, styp=k8bid)
                     if (i .eq. 1 .and. temps .lt. zr(ltps0)) then
-                        call rsexch('F', zk8(lresu+iresu-1), 'DEPL', i, cham19,&
+                        call rsexch('F', listresu(iresu), 'DEPL', i, cham19,&
                                     iret)
                         call vtcopy(cham19, chamno, 'F', iret)
                         call jeveuo(chamno//'.VALE', 'L', lvale)
@@ -332,22 +337,22 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                     endif
                     if (temps .ge. zr(ltps0) .and. temps .lt. zr(ltps1)) then
                         alpha = (temps - zr(ltps0)) / (zr(ltps1) - zr( ltps0))
-                        call rsexch('F', zk8(lresu+iresu-1), 'DEPL', i, cham19,&
+                        call rsexch('F', listresu(iresu), 'DEPL', i, cham19,&
                                     iret)
                         call vtcopy(cham19, chamno, 'F', iret)
-                        call jeveuo(chamno//'.VALE', 'L', lval1)
-                        call rsexch('F', zk8(lresu+iresu-1), 'DEPL', i+1, cham19,&
+                        call jeveuo(chamno//'.VALE', 'L', vr=nlval1)
+                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19,&
                                     iret)
                         call vtcopy(cham19, chamn2, 'F', iret)
-                        call jeveuo(chamn2//'.VALE', 'L', lval2)
-                        call dcopy(neq, zr(lval1), 1, zr(lvale), 1)
+                        call jeveuo(chamn2//'.VALE', 'L', vr=nlval2)
+                        call dcopy(neq, nlval1, 1, zr(lvale), 1)
                         call dscal(neq, (1.d0-alpha), zr(lvale), 1)
-                        call daxpy(neq, alpha, zr(lval2), 1, zr(lvale),&
+                        call daxpy(neq, alpha, nlval2, 1, zr(lvale),&
                                    1)
                         goto 213
                     endif
                     if (i .eq. nbinst-1 .and. temps .ge. zr(ltps1)) then
-                        call rsexch('F', zk8(lresu+iresu-1), 'DEPL', i+1, cham19,&
+                        call rsexch('F', listresu(iresu), 'DEPL', i+1, cham19,&
                                     iret)
                         call vtcopy(cham19, chamno, 'F', iret)
                         call jeveuo(chamno//'.VALE', 'L', lvale)
@@ -357,8 +362,8 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 213             continue
             endif
             do ieq = 1, neq
-                zr(iforc2+ieq-1) = zr(lvale+ieq-1)*zr(lcrre+iresu-1)
-                zr(iforc1+ieq-1) = zr(iforc1+ieq-1) + zr(lvale+ieq-1)* zr(lcrre+iresu-1)
+                zr(iforc2+ieq-1) = zr(lvale+ieq-1)*coef_rre(iresu)
+                zr(iforc1+ieq-1) = zr(iforc1+ieq-1) + zr(lvale+ieq-1)* coef_rre(iresu)
             end do
             if (ibid .gt. 0) then
                 call jelibe(cham19//'.VALE')
@@ -376,7 +381,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !
     if (iinteg .eq. 2) then
         call dcopy(neq, zr(iforc1), 1, zr(iforc2), 1)
-        call fteta(theta, neq, zr(iforc0), zr(iforc1))
+        call fteta(theta, neq, forc0, zr(iforc1))
     endif
 !
 !====
@@ -448,9 +453,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     call dcopy(neq, acce1, 1, acc0, 1)
 !
     if (iinteg .eq. 2) then
-        call dcopy(neq, zr(iforc2), 1, zr(iforc0), 1)
+        call dcopy(neq, zr(iforc2), 1, forc0, 1)
     else
-        call dcopy(neq, zr(iforc1), 1, zr(iforc0), 1)
+        call dcopy(neq, zr(iforc1), 1, forc0, 1)
     endif
 !
 !

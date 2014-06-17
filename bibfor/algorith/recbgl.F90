@@ -83,13 +83,20 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
     integer :: i, iad, ibid, icomp, iddi, idi, idiam
     integer :: idicou, ieqf, ieqi, ier, ii, inum, iorc
     integer :: iormo, j, jj, k, ldfreq, ldkge, ldmge
-    integer :: ldom2, ldomo, ldotm, ldtyd, llcham, lldesc, lldiam
-    integer :: llfreq, llinsk, llmoc, llnsec, llnumi, llref, lmass
+    integer :: ldom2, ldomo, ldotm, ldtyd, llcham
+    integer ::   llmoc,    lmass
     integer :: ltetgd, ltinds, ltora, ltord, ltorf, ltorg, ltorto
     integer ::  ltveco, ltvere, ltvezt, mdiapa, nbcmp, nbdax
     integer :: nbddg, nbddr, nbdia, nbmoc, nbmod, nbnot, nborc
     integer :: nbsec, nddcou, neq, neqsec, numa, numd, numg
     real(kind=8), pointer :: teta_secteur(:) => null()
+    integer, pointer :: cycl_nbsc(:) => null()
+    real(kind=8), pointer :: cycl_freq(:) => null()
+    integer, pointer :: skeleton(:) => null()
+    integer, pointer :: cycl_desc(:) => null()
+    integer, pointer :: cycl_diam(:) => null()
+    character(len=24), pointer :: cycl_refe(:) => null()
+    integer, pointer :: cycl_nuin(:) => null()
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
@@ -116,25 +123,25 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DE LA BASE MODALE AMONT------------------------------
 !
-    call jeveuo(modcyc//'.CYCL_REFE', 'L', llref)
-    basmod = zk24(llref+2)
+    call jeveuo(modcyc//'.CYCL_REFE', 'L', vk24=cycl_refe)
+    basmod = cycl_refe(3)
 !
 !-----RECUPERATION DU .DESC---------------------------------------------
 !
-    call jeveuo(modcyc//'.CYCL_DESC', 'L', lldesc)
-    nbmod = zi(lldesc)
-    nbddr = zi(lldesc+1)
-    nbdax = zi(lldesc+2)
+    call jeveuo(modcyc//'.CYCL_DESC', 'L', vi=cycl_desc)
+    nbmod = cycl_desc(1)
+    nbddr = cycl_desc(2)
+    nbdax = cycl_desc(3)
 !
 !-----RECUPERATION DU NOMBRE DE SECTEURS--------------------------------
 !
-    call jeveuo(modcyc//'.CYCL_NBSC', 'L', llnsec)
-    nbsec = zi(llnsec)
+    call jeveuo(modcyc//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+    nbsec = cycl_nbsc(1)
     mdiapa = int(nbsec/2)*int(1-nbsec+(2*int(nbsec/2)))
 !
 !-----RECUPERATION DES NOMBRES DE DIAMETRES NODAUX----------------------
 !
-    call jeveuo(modcyc//'.CYCL_DIAM', 'L', lldiam)
+    call jeveuo(modcyc//'.CYCL_DIAM', 'L', vi=cycl_diam)
     call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia)
     nbdia = nbdia / 2
 !
@@ -152,7 +159,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DES FREQUENCES---------------------------------------
 !
-    call jeveuo(modcyc//'.CYCL_FREQ', 'L', llfreq)
+    call jeveuo(modcyc//'.CYCL_FREQ', 'L', vr=cycl_freq)
 !
 !-----RECUPERATION MATRICE DE MASSE-------------------------------------
 !
@@ -173,10 +180,10 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DES NUMEROS D'INTERFACE------------------------------
 !
-    call jeveuo(modcyc//'.CYCL_NUIN', 'L', llnumi)
-    numd = zi(llnumi)
-    numg = zi(llnumi+1)
-    numa = zi(llnumi+2)
+    call jeveuo(modcyc//'.CYCL_NUIN', 'L', vi=cycl_nuin)
+    numd = cycl_nuin(1)
+    numg = cycl_nuin(2)
+    numa = cycl_nuin(3)
 !
 !-----RECUPERATION DU NUMERO D'ORDRE DES DEFORMEES----------------------
 !
@@ -204,23 +211,23 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
     nbmoc = 0
     do iddi = 1, nbdia
-        nbmoc = nbmoc + zi(lldiam+nbdia+iddi-1)
+        nbmoc = nbmoc + cycl_diam(1+nbdia+iddi-1)
     end do
     call wkvect('&&RECBGL.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&RECBGL.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
-    call ordr8(zr(llfreq), nbmoc, zi(ltorto))
+    call ordr8(cycl_freq, nbmoc, zi(ltorto))
     nborc = 0
     do ii = 1, nbmoc
         iormo = zi(ltorto+ii-1)
         icomp = 0
         idicou = 0
         do jj = 1, nbdia
-            icomp = icomp + zi(lldiam+nbdia+jj-1)
+            icomp = icomp + cycl_diam(1+nbdia+jj-1)
             if (icomp .ge. iormo .and. idicou .eq. 0) idicou = jj
         end do
         nborc = nborc + 1
         zi(ltorf+iormo-1) = nborc
-        idiam = zi(lldiam+idicou-1)
+        idiam = cycl_diam(idicou)
         if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
     end do
     call jedetr('&&RECBGL.ORDRE.TMPO')
@@ -246,7 +253,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DE L'INDIRECTION SQUELETTE---------------------------
 !
-    call jeveuo(mailsk//'.INV.SKELETON', 'L', llinsk)
+    call jeveuo(mailsk//'.INV.SKELETON', 'L', vi=skeleton)
     call dismoi('NB_NO_MAILLA', mailsk, 'MAILLAGE', repi=nbnot)
 !
 !***********************************************************************
@@ -263,13 +270,13 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  CALCUL DU DEPHASAGE INTER-SECTEUR
 !
-        idiam = zi(lldiam+idi-1)
+        idiam = cycl_diam(idi)
         beta = (depi/nbsec)*idiam
         dephc = dcmplx(cos(beta),sin(beta))
 !
 !  BOUCLE SUR LES MODES PROPRES DU DIAMETRE COURANT
 !
-        do i = 1, zi(lldiam+nbdia+idi-1)
+        do i = 1, cycl_diam(1+nbdia+idi-1)
             icomp = icomp + 1
             inum = inum + 1
             iorc = zi(ltorf+icomp-1)
@@ -311,8 +318,8 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
             call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum,&
                         0, sjv=ldotm, styp=k8b)
             fact = 1.d0 / (para(1)**0.5d0)
-            genek = (zr(llfreq+icomp-1)*depi)**2
-            zr(ldfreq) = zr(llfreq+icomp-1)
+            genek = (cycl_freq(icomp)*depi)**2
+            zr(ldfreq) = cycl_freq(icomp)
             zr(ldkge) = genek
             zr(ldmge) = 1.d0
             zr(ldom2) = genek
@@ -349,7 +356,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-            call rotchm(profno, zr(llcham), teta_secteur, nbsec, zi(llinsk),&
+            call rotchm(profno, zr(llcham), teta_secteur, nbsec, skeleton,&
                         nbnot, nbcmp, 3)
 !
 !***********************************************************************
@@ -392,8 +399,8 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
                 call rsadpa(nomres, 'E', 1, 'TYPE_MODE', inum,&
                             0, sjv=ldotm, styp=k8b)
                 fact = 1.d0 / (para(2)**0.5d0)
-                genek = (zr(llfreq+icomp-1)*depi)**2
-                zr(ldfreq) = zr(llfreq+icomp-1)
+                genek = (cycl_freq(icomp)*depi)**2
+                zr(ldfreq) = cycl_freq(icomp)
                 zr(ldkge) = genek
                 zr(ldmge) = 1.d0
                 zr(ldom2) = genek
@@ -430,7 +437,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 !
-                call rotchm(profno, zr(llcham), teta_secteur, nbsec, zi( llinsk),&
+                call rotchm(profno, zr(llcham), teta_secteur, nbsec, skeleton,&
                             nbnot, nbcmp, 3)
 !
             endif

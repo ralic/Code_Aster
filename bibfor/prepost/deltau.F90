@@ -78,7 +78,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer :: kwork, jcerd, jcerl, jcerv, jad
+    integer :: kwork, jcerd, jcerl,  jad
     integer :: iret, imap, icesd, icesl, icesv, ibid
     integer :: ipg
     integer :: nbpg, sompgw, nbpgp, l
@@ -88,6 +88,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio
     character(len=19) :: chmat, cesmat
+    real(kind=8), pointer :: cerv(:) => null()
 !
 !
 !-----------------------------------------------------------------------
@@ -103,7 +104,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !
     call jeveuo(cesr//'.CESD', 'L', jcerd)
     call jeveuo(cesr//'.CESL', 'E', jcerl)
-    call jeveuo(cesr//'.CESV', 'E', jcerv)
+    call jeveuo(cesr//'.CESV', 'E', vr=cerv)
 ! !
 ! !
 ! RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
@@ -184,7 +185,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
                 endif
                 jad = abs(jad)
                 zl(jcerl - 1 + jad) = .true.
-                zr(jcerv - 1 + jad) = vresu2(icmp)
+                cerv(jad) = vresu2(icmp)
 !
 550          continue
 !

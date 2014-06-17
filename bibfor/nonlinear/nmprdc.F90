@@ -60,10 +60,13 @@ subroutine nmprdc(method, numedd, depmoi, sddisc, numins,&
 !
 !
     integer :: ifm, niv
-    integer :: jdepes, jdepm, jinces, neq
+    integer ::    neq
     integer :: iret, ibid
     real(kind=8) :: instan
     character(len=19) :: deplu
+    real(kind=8), pointer :: depes(:) => null()
+    real(kind=8), pointer :: depm(:) => null()
+    real(kind=8), pointer :: inces(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,14 +104,14 @@ subroutine nmprdc(method, numedd, depmoi, sddisc, numins,&
         call copisd('CHAMP_GD', 'V', deplu, depest)
     endif
 !
-    call jeveuo(depest(1:19)//'.VALE', 'L', jdepes)
-    call jeveuo(depmoi(1:19)//'.VALE', 'L', jdepm)
+    call jeveuo(depest(1:19)//'.VALE', 'L', vr=depes)
+    call jeveuo(depmoi(1:19)//'.VALE', 'L', vr=depm)
 !
 ! --- INITIALISATION DE L'INCREMENT: INCEST = DEPEST - DEPMOI
 !
-    call jeveuo(incest(1:19)// '.VALE', 'E', jinces)
-    call dcopy(neq, zr(jdepes), 1, zr(jinces), 1)
-    call daxpy(neq, -1.d0, zr(jdepm), 1, zr(jinces),&
+    call jeveuo(incest(1:19)// '.VALE', 'E', vr=inces)
+    call dcopy(neq, depes, 1, inces, 1)
+    call daxpy(neq, -1.d0, depm, 1, inces,&
                1)
 !
     call jedema()

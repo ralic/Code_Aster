@@ -50,8 +50,9 @@ subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iret, ltitr, ndeb, nfin, nimpr
+    integer :: iret,  ndeb, nfin, nimpr
     real(kind=8) :: debut, fin
+    character(len=80), pointer :: titr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ifr = iunifi('RESULTAT')
@@ -75,10 +76,10 @@ subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
     call titre()
     call jeexin(nomres//'           .TITR', iret)
     if (iret .ne. 0) then
-        call jeveuo(nomres//'           .TITR', 'L', ltitr)
+        call jeveuo(nomres//'           .TITR', 'L', vk80=titr)
         call jelira(nomres//'           .TITR', 'LONMAX', nbtitr)
         do 2 i = 1, nbtitr
-            if (nimpr .ne. 0) write(ifr,1010) zk80(ltitr+i-1)
+            if (nimpr .ne. 0) write(ifr,1010) titr(i)
  2      continue
     endif
     if (nimpr .ne. 0) write(ifr,1010) ' ***** RESULTATS DE CHOC ***** '

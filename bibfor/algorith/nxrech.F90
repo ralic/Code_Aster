@@ -47,13 +47,16 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
 !
 !
     integer :: i
-    integer :: jtempm, jtempp, jtempr, j2nd, jvare, jbtla
+    integer ::    j2nd, jvare, jbtla
     real(kind=8) :: rho0, rhot, f0, f1, rhomin, rhomax
     real(kind=8) :: rhof, ffinal
     real(kind=8) :: testm, r8bid
     character(len=24) :: vebtla, veresi, varesi, bidon, vabtla
     character(len=1) :: typres
     integer :: itrmax, k, iterho
+    real(kind=8), pointer :: tempm(:) => null()
+    real(kind=8), pointer :: tempp(:) => null()
+    real(kind=8), pointer :: tempr(:) => null()
     parameter (rhomin = -2.d0, rhomax = 2.d0)
     data typres        /'R'/
     data bidon         /'&&FOMULT.BIDON'/
@@ -67,9 +70,9 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
 !
 ! --- RECUPERATION D'ADRESSES JEVEUX
 !
-    call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
-    call jeveuo(vtempp(1:19)//'.VALE', 'E', jtempp)
-    call jeveuo(vtempr(1:19)//'.VALE', 'E', jtempr)
+    call jeveuo(vtempm(1:19)//'.VALE', 'E', vr=tempm)
+    call jeveuo(vtempp(1:19)//'.VALE', 'E', vr=tempp)
+    call jeveuo(vtempr(1:19)//'.VALE', 'E', vr=tempr)
     call jeveuo(vec2nd(1:19)//'.VALE', 'L', j2nd)
     call jeveuo(cnresi(1:19)//'.VALE', 'L', jvare)
     call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)
@@ -78,7 +81,7 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
 !
     f0 = 0.d0
     do 330 i = 1, lonch
-        f0 = f0 + zr(jtempp+i-1)*( zr(j2nd+i-1) - zr(jvare+i-1) - zr( jbtla+i-1) )
+        f0 = f0 + tempp(i)*( zr(j2nd+i-1) - zr(jvare+i-1) - zr( jbtla+i-1) )
 330  end do
 !
     rho0 = 0.d0
@@ -86,7 +89,7 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
     itrmax = parmei(2)+1
     do 20 iterho = 1, itrmax
         do 345 i = 1, lonch
-            zr(jtempr+i-1) = zr(jtempm+i-1) + rho * zr(jtempp+i-1)
+            tempr(i) = tempm(i) + rho * tempp(i)
 345      continue
 !
 ! --- VECTEURS RESIDUS ELEMENTAIRES - CALCUL ET ASSEMBLAGE
@@ -110,7 +113,7 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
 !
         f1 = 0.d0
         do 360 i = 1, lonch
-            f1 = f1 + zr(jtempp+i-1) * ( zr(j2nd+i-1) - zr(jvare+i-1) - zr(jbtla+i-1) )
+            f1 = f1 + tempp(i) * ( zr(j2nd+i-1) - zr(jvare+i-1) - zr(jbtla+i-1) )
 360      continue
         testm = 0.d0
         do 100 k = 1, lonch

@@ -63,11 +63,13 @@ subroutine cuprep(mailla, neq, deficu, resocu, deptot,&
     character(len=24) :: cmpgcu, coegcu, coedcu
     integer :: jcmpg, jcoefg, jcoefd
     character(len=24) :: apcoef, apjeu, poinoe, apddl, noeucu
-    integer :: japcoe, japjeu, jpoi, japddl, jnoeu, jdepp
+    integer :: japcoe, japjeu, jpoi, japddl, jnoeu
     integer :: nnocu, ncmpg, inoe, nbddl, jdecal
-    integer :: ifm, niv, numnoe, jcoor
+    integer :: ifm, niv, numnoe
     character(len=8) :: lispar(4)
     real(kind=8) :: valpar(4)
+    real(kind=8), pointer :: coor(:) => null()
+    real(kind=8), pointer :: depp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,7 +96,7 @@ subroutine cuprep(mailla, neq, deficu, resocu, deptot,&
 !
     coedcu = deficu(1:16)//'.COEFD'
     call jeveuo(coedcu, 'L', jcoefd)
-    call jeveuo(mailla//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(mailla//'.COORDO    .VALE', 'L', vr=coor)
     lispar(1) = 'INST'
     lispar(2) = 'X'
     lispar(3) = 'Y'
@@ -102,9 +104,9 @@ subroutine cuprep(mailla, neq, deficu, resocu, deptot,&
     do 10 inoe = 1, nnocu
         numnoe = zi(jnoeu-1+inoe)
         valpar(1) = inst
-        valpar(2) = zr(jcoor+3*(numnoe-1))
-        valpar(3) = zr(jcoor+3*(numnoe-1)+1)
-        valpar(4) = zr(jcoor+3*(numnoe-1)+2)
+        valpar(2) = coor(1+3*(numnoe-1))
+        valpar(3) = coor(1+3*(numnoe-1)+1)
+        valpar(4) = coor(1+3*(numnoe-1)+2)
         call fointe('F', zk8(jcoefd-1+inoe), 4, lispar, valpar,&
                     coef, iret)
         zr(japjeu+inoe-1) = coef
@@ -128,12 +130,12 @@ subroutine cuprep(mailla, neq, deficu, resocu, deptot,&
 !
     poinoe = deficu(1:16)//'.POINOE'
     call jeveuo(poinoe, 'L', jpoi)
-    call jeveuo(deptot(1:19)//'.VALE', 'E', jdepp)
+    call jeveuo(deptot(1:19)//'.VALE', 'E', vr=depp)
 !
     do 30 inoe = 1, nnocu
         jdecal = zi(jpoi+inoe-1)
         nbddl = zi(jpoi+inoe) - zi(jpoi+inoe-1)
-        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jdepp),&
+        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), depp,&
                     val)
         zr(japjeu+inoe-1) = zr(japjeu+inoe-1) - val
 30  end do

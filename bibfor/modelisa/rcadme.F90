@@ -40,11 +40,13 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
 !       ICODRE : 0 SI ON A TROUVE, 1 SINON
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, ivalk, nbr, nbc, nbk, nbco, ik, iadtrc, nbcb1, nbcb2, nblb2
+    integer :: iret,  nbr, nbc, nbk, nbco, ik,  nbcb1, nbcb2, nblb2
     integer :: nbhist, nbtrc
     character(len=8) :: nommat
     character(len=10) :: nomphe
     character(len=19) :: ch19, listr
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=8), pointer :: valk(:) => null()
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
@@ -72,23 +74,23 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
         icodre = 1
         goto 9999
     else
-        call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
+        call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', vk8=valk)
         call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
     endif
 !
     nbco = ( nbk - nbr - nbc ) / 2
     do 150 ik = 1, nbk
-        if (nomres .eq. zk8(ivalk+ik-1)) then
+        if (nomres .eq. valk(ik)) then
             icodre = 0
-            ch19 = zk8(ivalk+nbco+ik-1)
+            ch19 = valk(1+nbco+ik-1)
             listr = '&&RCADME.LR8'
             call tbexlr(ch19, listr, 'V')
-            call jeveuo(listr//'.VALE', 'L', iadtrc)
-            nbcb1 = nint( zr(iadtrc+1) )
-            nbhist = nint( zr(iadtrc+2) )
-            nbcb2 = nint( zr(iadtrc+1+2+nbcb1*nbhist) )
-            nblb2 = nint( zr(iadtrc+1+2+nbcb1*nbhist+1) )
-            nbtrc =nint(zr(iadtrc+1+2+nbcb1*nbhist+2+nbcb2*nblb2+1))
+            call jeveuo(listr//'.VALE', 'L', vr=vale)
+            nbcb1 = nint( vale(2) )
+            nbhist = nint( vale(3) )
+            nbcb2 = nint( vale(1+1+2+nbcb1*nbhist) )
+            nblb2 = nint( vale(1+1+2+nbcb1*nbhist+1) )
+            nbtrc =nint(vale(1+1+2+nbcb1*nbhist+2+nbcb2*nblb2+1))
 ! --- NBHIST
             valres(1) = nbhist
 ! --- NBTRC

@@ -76,9 +76,13 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !
 !-----------------------------------------------------------------------
-    integer :: iaval1, iaval2, ibid, ieq1, ieq2, ino2
-    integer :: inueq1, inueq2, iprn1, iprn2, ival1, ival2, nbcn1
+    integer ::   ibid, ieq1, ieq2, ino2
+    integer ::   iprn1, iprn2, ival1, ival2, nbcn1
     integer :: nbnaff, nbno, nbnrcp, ncmp1, ncmp2, nec
+    real(kind=8), pointer :: val1(:) => null()
+    real(kind=8), pointer :: val2(:) => null()
+    integer, pointer :: nueq1(:) => null()
+    integer, pointer :: nueq2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     cn1 = chno1
@@ -95,19 +99,19 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
 !
 !
-    call jeveuo(cn1//'.VALE', 'L', iaval1)
+    call jeveuo(cn1//'.VALE', 'L', vr=val1)
     call jelira(cn1//'.VALE', 'LONMAX', nbcn1)
 !
 !
-    call jeveuo(cn2//'.VALE', 'E', iaval2)
+    call jeveuo(cn2//'.VALE', 'E', vr=val2)
 !
 !
     call jenonu(jexnom(pchno1//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno1//'.PRNO', ibid), 'L', iprn1)
     call jenonu(jexnom(pchno2//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(pchno2//'.PRNO', ibid), 'L', iprn2)
-    call jeveuo(pchno1//'.NUEQ', 'L', inueq1)
-    call jeveuo(pchno2//'.NUEQ', 'L', inueq2)
+    call jeveuo(pchno1//'.NUEQ', 'L', vi=nueq1)
+    call jeveuo(pchno2//'.NUEQ', 'L', vi=nueq2)
 !
     call dismoi('NOM_MAILLA', cn1, 'CHAM_NO', repk=ma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
@@ -121,8 +125,8 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
         ncmp1= zi(iprn1-1+ (ino1-1)* (nec+2)+2)
         if (ncmp1 .eq. 0) goto 10
         ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
-        ieq1 = zi(inueq1-1+ival1-1+1)
-        val = zr(iaval1-1+ieq1)
+        ieq1 = nueq1(ival1-1+1)
+        val = val1(ieq1)
         if (abs(val) .lt. tmin) nbnaff=nbnaff+1
  10     continue
     end do
@@ -134,7 +138,7 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
         ival2 = zi(iprn2-1+ (ino2-1)* (nec+2)+1)
         ncmp2 = zi(iprn2-1+ (ino2-1)* (nec+2)+2)
-        ieq2 = zi(inueq2-1+ival2-1+1)
+        ieq2 = nueq2(ival2-1+1)
 !
         if (ncmp2 .eq. 0) goto 1
 !
@@ -151,7 +155,7 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
             if (nbante .eq. 0) then
 !
 !
-                zr(iaval2-1+ieq2)=0.0d0
+                val2(ieq2)=0.0d0
 !
 !
             else
@@ -161,14 +165,14 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
                     ival1 = zi(iprn1-1+ (ino1-1)* (nec+2)+1)
                     ncmp1 = zi(iprn1-1+ (ino1-1)* (nec+2)+2)
-                    ieq1 = zi(inueq1-1+ival1-1+1)
-                    val = zr(iaval1-1+ieq1)
+                    ieq1 = nueq1(ival1-1+1)
+                    val = val1(ieq1)
 !
                     if (abs(val) .gt. tmin) then
-                        zr(iaval2-1+ieq2)=val
+                        val2(ieq2)=val
                         nbnrcp = nbnrcp+1
                     else
-                        zr(iaval2-1+ieq2)=0.0d0
+                        val2(ieq2)=0.0d0
                     endif
 !
 !

@@ -53,9 +53,9 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 ! IN  : CRIT   : RELATIF / ABSOLU
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jnume,  ii, jj, ktblp
-    integer :: jtblp, i, j, k, n, m, ideb, ifin, nbuti, ndim
-    integer :: jvall, kvall, jvale, kvale, jtbnp, ktbnp, ktbba
+    integer :: iret, nbpara, nblign, jnume,  ii, jj
+    integer ::  i, j, k, n, m, ideb, ifin, nbuti, ndim
+    integer :: jvall, kvall, jvale, kvale,  ktbnp, ktbba
     character(len=1) :: base
     character(len=4) :: type, knume
     character(len=19) :: nomtab, nomta2
@@ -63,6 +63,9 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
     character(len=24) :: valk
     logical :: lok
     integer, pointer :: tri2(:) => null()
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    character(len=24), pointer :: nktblp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -82,9 +85,9 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
         call utmess('F', 'UTILITAI4_64')
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -94,13 +97,13 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
     do 10 i = 1, npara
         inpar = lipara(i)
         do 12 j = 1, nbpara
-            jnpar = zk24(jtblp+4*(j-1))
+            jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) then
-                type = zk24(jtblp+4*(j-1)+1)
+                type = tblp(1+4*(j-1)+1)
                 if (type(1:1) .eq. 'C') then
                     valk = inpar
                     call utmess('F', 'UTILITAI7_2', sk=valk)
@@ -138,11 +141,11 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
     i = 1
     inpar = lipara(i)
     do 102 j = 1, nbpara
-        jnpar = zk24(jtblp+4*(j-1))
+        jnpar = tblp(1+4*(j-1))
         if (inpar .eq. jnpar) then
-            type = zk24(jtblp+4*(j-1)+1)
-            nomjv = zk24(jtblp+4*(j-1)+2)
-            nomjvl = zk24(jtblp+4*(j-1)+3)
+            type = tblp(1+4*(j-1)+1)
+            nomjv = tblp(1+4*(j-1)+2)
+            nomjvl = tblp(1+4*(j-1)+3)
             call jeveuo(nomjv, 'L', jvale)
             call jeveuo(nomjvl, 'L', jvall)
             ii = 0
@@ -242,28 +245,28 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
     call jecreo(nomta2//'.TBLP', base//' V K24')
     call jeecra(nomta2//'.TBLP', 'LONMAX', ndim)
     call jeecra(nomta2//'.TBLP', 'LONUTI', ndim)
-    call jeveuo(nomta2//'.TBLP', 'E', ktblp)
+    call jeveuo(nomta2//'.TBLP', 'E', vk24=nktblp)
     do 300 i = 1, nbpara
-        zk24(ktblp+4*(i-1) ) = zk24(jtblp+4*(i-1) )
-        zk24(ktblp+4*(i-1)+1) = zk24(jtblp+4*(i-1)+1)
+        nktblp(1+4*(i-1) ) = tblp(1+4*(i-1) )
+        nktblp(1+4*(i-1)+1) = tblp(1+4*(i-1)+1)
 !
         call codent(i, 'D0', knume)
         nomjv = nomta2//'.'//knume
-        zk24(ktblp+4*(i-1)+2) = nomjv
-        type = zk24(jtblp+4*(i-1)+1)
+        nktblp(1+4*(i-1)+2) = nomjv
+        type = tblp(1+4*(i-1)+1)
         call jecreo(nomjv, base//' V '//type)
         call jeecra(nomjv, 'LONMAX', nblign)
         call jeecra(nomjv, 'LONUTI', nblign)
         call jeveuo(nomjv, 'E', kvale)
 !
         nomjv = nomta2(1:17)//'LG.'//knume
-        zk24(ktblp+4*(i-1)+3) = nomjv
+        nktblp(1+4*(i-1)+3) = nomjv
         call jecreo(nomjv, base//' V I')
         call jeecra(nomjv, 'LONMAX', nblign)
         call jeveuo(nomjv, 'E', kvall)
 !
-        nojv2 = zk24(jtblp+4*(i-1)+2)
-        nojvl2 = zk24(jtblp+4*(i-1)+3)
+        nojv2 = tblp(1+4*(i-1)+2)
+        nojvl2 = tblp(1+4*(i-1)+3)
         call jeveuo(nojv2, 'L', jvale)
         call jeveuo(nojvl2, 'L', jvall)
 !

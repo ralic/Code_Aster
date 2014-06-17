@@ -62,20 +62,21 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i, iacnx1, ilcnx1, jco,  j, ino, nbnoma, jcoor
-    integer ::  k, ino1, ino2, ino3, jtyp, i1, jtang
+    integer ::  k, ino1, ino2, ino3,  i1, jtang
     real(kind=8) :: vale1(3), vale2(3), vale3(3), vale(3), valu(3), valv(3)
     real(kind=8) :: norm
     character(len=8) :: ntyp
     integer, pointer :: noeu_mail(:) => null()
     real(kind=8), pointer :: tang_mail(:) => null()
     real(kind=8), pointer :: tang_noeu(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
-    call jeveuo(noma//'.TYPMAIL', 'L', jtyp)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
@@ -100,7 +101,7 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 !
     do i = 1, nbma
 !
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyp+listma(i)-1)), ntyp)
+        call jenuno(jexnum('&CATA.TM.NOMTM', typmail(1+listma(i)-1)), ntyp)
         if (ntyp(1:3) .ne. 'SEG') ASSERT(.false.)
 !
         jco=iacnx1-1+zi(ilcnx1+listma(i)-1)

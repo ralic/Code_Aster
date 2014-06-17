@@ -51,11 +51,16 @@ subroutine ualfcr(mataz, basz)
     character(len=4) :: kmpic
     character(len=14) :: nu
     character(len=19) :: stomor, stolci, matas
-    integer :: jscde, neq, nbloc, nblocm
-    integer :: jsmhc, jsmdi, jscdi, jschc
+    integer ::  neq, nbloc, nblocm
+    integer :: jsmhc,   jschc
     integer :: itbloc, ieq, ibloc, jualf, jvalm, kterm, nbterm, ilig
-    integer :: ismdi, ismdi0, ibloav, iscdi, jrefa, jscib, kblocm, iret
+    integer :: ismdi, ismdi0, ibloav, iscdi,   kblocm, iret
     real(kind=8) :: rtbloc
+    integer, pointer :: smdi(:) => null()
+    integer, pointer :: scde(:) => null()
+    integer, pointer :: scib(:) => null()
+    integer, pointer :: scdi(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
 !
 !
@@ -72,8 +77,8 @@ subroutine ualfcr(mataz, basz)
 !     -- ON DETRUIT .UALF S'IL EXISTE DEJA :
     call jedetr(matas//'.UALF')
 !
-    call jeveuo(matas//'.REFA', 'L', jrefa)
-    nu=zk24(jrefa-1+2)(1:14)
+    call jeveuo(matas//'.REFA', 'L', vk24=refa)
+    nu=refa(2)(1:14)
     stomor=nu//'.SMOS'
     stolci=nu//'.SLCS'
 !
@@ -85,16 +90,16 @@ subroutine ualfcr(mataz, basz)
         call smosli(stomor, stolci, basto, rtbloc)
     endif
 !
-    call jeveuo(stomor//'.SMDI', 'L', jsmdi)
+    call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
     call jeveuo(stomor//'.SMHC', 'L', jsmhc)
 !
-    call jeveuo(stolci//'.SCDE', 'L', jscde)
-    call jeveuo(stolci//'.SCDI', 'L', jscdi)
+    call jeveuo(stolci//'.SCDE', 'L', vi=scde)
+    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
     call jeveuo(stolci//'.SCHC', 'L', jschc)
-    call jeveuo(stolci//'.SCIB', 'L', jscib)
-    neq=zi(jscde-1+1)
-    itbloc= zi(jscde-1+2)
-    nbloc= zi(jscde-1+3)
+    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
+    neq=scde(1)
+    itbloc= scde(2)
+    nbloc= scde(3)
 !
     call jelira(matas//'.VALM', 'NMAXOC', nblocm)
     ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
@@ -122,8 +127,8 @@ subroutine ualfcr(mataz, basz)
         ibloav=0+nbloc*(kblocm-1)
         ismdi0=0
         do ieq = 1, neq
-            iscdi=zi(jscdi-1+ieq)
-            ibloc=zi(jscib-1+ieq)+nbloc*(kblocm-1)
+            iscdi=scdi(ieq)
+            ibloc=scib(ieq)+nbloc*(kblocm-1)
 !
 !          -- ON RAMENE LE BLOC EN MEMOIRE SI NECESSAIRE:
             if (ibloc .ne. ibloav) then
@@ -134,7 +139,7 @@ subroutine ualfcr(mataz, basz)
                 ibloav=ibloc
             endif
 !
-            ismdi=zi(jsmdi-1+ieq)
+            ismdi=smdi(ieq)
             nbterm=ismdi-ismdi0
 !
             do kterm = 1, nbterm

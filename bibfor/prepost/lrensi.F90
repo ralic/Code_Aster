@@ -85,7 +85,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
     integer :: i, io, nscal, nvect, nflag
     integer :: ipas, i1, i2, nbno, inopr, ncarlu
     integer :: i21, nlig, ipres, nbgr, nfacha
-    integer :: idec, jceld, nbelgr, iel, ima, liel
+    integer :: idec,  nbelgr, iel, ima, liel
     integer :: ino, nno, ii, iadno, iad, jcelv
     integer :: ibid, nstar, j, irest
     integer :: te, igr
@@ -100,6 +100,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
     character(len=24) :: noliel
     character(len=80) :: k80b, fires, fipres, figeom, fic80b
     character(len=24) :: chgeom, option, connex
+    integer, pointer :: celd(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -186,7 +187,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
     call celver(chpres, 'NBVARI_CST', 'STOP', ibid)
     call celver(chpres, 'NBSPT_1', 'STOP', ibid)
 !
-    call jeveuo(chpres//'.CELD', 'L', jceld)
+    call jeveuo(chpres//'.CELD', 'L', vi=celd)
     call jeveuo(chpres//'.CELV', 'E', jcelv)
 !
 !  BOUCLE SUR LES PAS DE TEMPS ET LECTURE DES PRESSIONS
@@ -224,7 +225,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
         if (ndim .ge. 3) then
             nfacha = 0
             do 411 igr = 1, nbgr
-                idec = zi(jceld-1+zi(jceld-1+4+igr)+8)
+                idec = celd(celd(4+igr)+8)
                 te = typele(ligrmo,igr)
                 call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !
@@ -270,7 +271,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
 !
         if (ndim .eq. 2 .or. (ndim.ge.3.and.nfacha.eq.0)) then
             do 417 igr = 1, nbgr
-                idec = zi(jceld-1+zi(jceld-1+4+igr)+8)
+                idec = celd(celd(4+igr)+8)
                 te = typele(ligrmo,igr)
                 call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !

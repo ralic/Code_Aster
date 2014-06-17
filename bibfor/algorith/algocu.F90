@@ -81,7 +81,6 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
     logical :: trouac, delpos, lelpiv
     integer :: ier, ifm, niv, ndeci, isingu, npvneg
     integer :: ii, kk, iter, iliac, neqmax
-    integer :: jresu
     integer :: indic, kkmin, llmin
     integer :: lliac, jdecal, posnbl
     integer :: indfac, ajliai, spliai, posit, spavan
@@ -97,6 +96,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
     character(len=19) :: liac, mu, delt0, delta, cm1a, atmu
     integer :: jliac, jmu, jdelt0, jdelta, jcm1a, jatmu
     integer :: itemax, compts
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -137,7 +137,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
     call jeveuo(delt0, 'E', jdelt0)
     call jeveuo(delta, 'E', jdelta)
     call jeveuo(coco, 'E', jcoco)
-    call jeveuo(resu(1:19)//'.VALE', 'E', jresu)
+    call jeveuo(resu(1:19)//'.VALE', 'E', vr=vale)
 ! ======================================================================
 ! --- INITIALISATION DE VARIABLES
 ! --- NBLIAI : NOMBRE DE LIAISONS
@@ -176,8 +176,8 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 ! --- CREATION DE DELTA0 = C-1B
 !
     do 10 kk = 1, neq
-        zr(jdelt0-1+kk) = zr(jresu-1+kk)
-        zr(jresu-1+kk) = 0.0d0
+        zr(jdelt0-1+kk) = vale(kk)
+        vale(kk) = 0.0d0
 10  end do
 ! ======================================================================
 ! --- DETECTION DES COUPLES DE NOEUDS ACTIVES
@@ -234,7 +234,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !
     if (nbliac .eq. 0) then
         do 50 kk = 1, neq
-            zr(jdelta+kk-1) = zr(jdelt0+kk-1) - zr(jresu-1+kk)
+            zr(jdelta+kk-1) = zr(jdelt0+kk-1) - vale(kk)
 50      continue
     endif
 !
@@ -307,7 +307,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 ! --- CALCUL DE DELTA = DELT0 - C-1.AT.MU
 !
         do 70 kk = 1, neq
-            zr(jdelta-1+kk) = zr(jdelt0-1+kk) - zr(jresu-1+kk)
+            zr(jdelta-1+kk) = zr(jdelt0-1+kk) - vale(kk)
 70      continue
 !
 ! --- MISE A JOUR DU VECTEUR DEPLACEMENT <DU> CORRIGE
@@ -373,7 +373,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
                         goto 112
                     endif
                     delpos = .true.
-                    call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), zr(jresu),&
+                    call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+ jdecal), vale,&
                                 val)
 !
                     ajeu = zr(japjeu+ii-1) - val
@@ -399,7 +399,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
     rhorho = min(rho,x1)
 !
     do 120 kk = 1, neq
-        zr(jresu-1+kk) = zr(jresu-1+kk) + rhorho*zr(jdelta-1+kk)
+        vale(kk) = vale(kk) + rhorho*zr(jdelta-1+kk)
 120  end do
 !
 ! -- SI RHO < 1 (AU MOINS UNE LIAISON SUPPOSEE NON ACTIVE EST VIOLEE) :
@@ -499,7 +499,7 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
     do 162 iliac = 1, nbliai
         jdecal = zi(jpoi+iliac-1)
         nbddl = zi(jpoi+iliac) - zi(jpoi+iliac-1)
-        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), zr(jresu),&
+        call caladu(neq, nbddl, zr(japcoe+jdecal), zi(japddl+jdecal), vale,&
                     val)
         zr(japjeu+iliac-1) = zr(japjeu+iliac-1) - val
 162  end do

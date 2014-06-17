@@ -55,13 +55,16 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: idecma, idecno, imail, ipara, jnumac, jtblp, jtbnp, jtens, jvalv, nblign, nbmaca
+    integer :: idecma, idecno, imail, ipara, jnumac,   jtens,  nblign, nbmaca
     integer :: nbno, nbpara, numail, nbma, mma
     character(len=24) :: tens
     real(kind=8) :: rtens
     logical :: trouve
 !
     character(len=24) :: parcr
+    real(kind=8), pointer :: valv(:) => null()
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
     data          parcr /'TENSION                 '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -76,15 +79,15 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
 !
 ! 1.1 RECUPERATION DE LA TENSION LE LONG DES CABLES
 ! ---
-    call jeveuo(tablca//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp)
-    nblign = zi(jtbnp+1)
-    call jeveuo(tablca//'.TBLP', 'L', jtblp)
+    call jeveuo(tablca//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
+    call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
     trouve = .false.
     do ipara = 1, nbpara
-        if (zk24(jtblp+4*(ipara-1)) .eq. parcr) then
+        if (tblp(1+4*(ipara-1)) .eq. parcr) then
             trouve = .true.
-            tens = zk24(jtblp+4*(ipara-1)+2)
+            tens = tblp(1+4*(ipara-1)+2)
             call jeveuo(tens, 'L', jtens)
         endif
         if (trouve) goto 11
@@ -113,13 +116,13 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
 !
 !.... BOUCLE SUR LE NOMBRE DE MAILLES DU CABLE COURANT
 !
-    call jeveuo(carsig//'.VALV', 'E', jvalv)
+    call jeveuo(carsig//'.VALV', 'E', vr=valv)
     do imail = 1, nbma
         numail = zi(jnumac+idecma+imail-1)
         rtens = ( zr(jtens+idecno+mma*imail-mma) + zr(jtens+idecno+ mma*imail) ) / 2.0d0
-        zr(jvalv)=rtens
-        zr(jvalv+1)=0.d0
-        zr(jvalv+2)=0.d0
+        valv(1)=rtens
+        valv(2)=0.d0
+        valv(3)=0.d0
         call nocart(carsig, 3, 3, mode='NUM', nma=1,&
                     limanu=[numail])
     end do

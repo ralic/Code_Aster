@@ -62,8 +62,8 @@ subroutine op0183()
     integer :: ibid
     integer :: i, iachar, iad, ichar
     integer :: iordr, iret, iret2, j
-    integer :: jfo, jfono, jinfc
-    integer :: jnoch, jordr
+    integer :: jfo,  jinfc
+    integer ::  jordr
     integer :: lonch, lvafon, n0, n2, nbchar
     integer :: nbddl, nbordr, nc, neq, nh, np
     integer :: ii, ltps, ltps2
@@ -87,6 +87,8 @@ subroutine op0183()
 !     ------------------------------------------------------------------
 !
     logical :: exitim
+    real(kind=8), pointer :: fono(:) => null()
+    real(kind=8), pointer :: noch(:) => null()
 !
 !     ------------------------------------------------------------------
     data infcha/'&&INFCHA.INFCHA'/
@@ -311,15 +313,15 @@ subroutine op0183()
             call detrsd('CHAM_NO', chamno(1:19))
         endif
         call vtcreb(chamno, nume, 'G', 'R', neq)
-        call jeveuo(chamno(1:19)//'.VALE', 'E', jnoch)
+        call jeveuo(chamno(1:19)//'.VALE', 'E', vr=noch)
 !
         call jeveuo(vafono, 'L', jfo)
-        call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', jfono)
+        call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', vr=fono)
         call jelira(zk24(jfo)(1:19)//'.VALE', 'LONMAX', lvafon)
         call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch)
 !
         do j = 0, lonch-1
-            zr(jnoch+j)=zr(jfono+j)
+            noch(1+j)=fono(1+j)
         end do
 !
         call rsnoch(resuc1, 'DEPL', iordr)

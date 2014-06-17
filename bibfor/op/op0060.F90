@@ -92,15 +92,14 @@ subroutine op0060()
     integer :: nbsym, i, n1, n2
     integer :: lamor1, lamor, limpe, lfreq, nbfreq
     integer :: neq, nbmat
-    integer :: jrefa
     integer :: ifreq, ieq, inom, ier
-    integer :: lsecmb, jsecmb, jsolut, jvezer
+    integer :: lsecmb,   jvezer
     integer :: icoef, icode
-    integer :: lvale, linst, iret, ladpa, jord, lmasse
+    integer ::  linst, iret, ladpa
     integer :: ldgec, lvgec, lagec, jordr, jfreq
     integer :: jdepl, jvite, jacce
     integer :: lmat(4), nbord, icomb
-    integer :: jpomr, jrefe
+    integer :: jpomr
     logical :: newcal, calgen
     real(kind=8) :: depi, freq, omega
     real(kind=8) :: rval, coef(6), tps1(4), rtab(2)
@@ -117,6 +116,13 @@ subroutine op0060()
     character(len=24) :: nomat(4), basemo
     character(len=24) :: exreco, exresu
     integer :: nbexre, tmod(1)
+    integer, pointer :: ordr(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    character(len=24), pointer :: nlmasse(:) => null()
+    complex(kind=8), pointer :: secmb(:) => null()
+    complex(kind=8), pointer :: solut(:) => null()
+    complex(kind=8), pointer :: nlvale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -265,8 +271,8 @@ subroutine op0060()
     if (calgen) then
 !     --- SI LE CALCUL EST SUR BASE GENERALISEE (NOUVEAU/REPRISE)
 !       - RECUPERER LA BASE MODALE DE PROJECTION
-        call jeveuo(masse(1:19)//'.REFA', 'L', lmasse)
-        basemo = zk24(lmasse)
+        call jeveuo(masse(1:19)//'.REFA', 'L', vk24=nlmasse)
+        basemo = nlmasse(1)
 !
         call jeveuo(nomat(1), 'L', ibid)
         neq = zi(ibid+2)
@@ -340,8 +346,8 @@ subroutine op0060()
     do icomb = 1, nbmat
 !        ON RECHERCHE UNE EVENTUELLE MATRICE NON SYMETRIQUE
         nomi =nomat(icomb)(1:19)
-        call jeveuo(nomi//'.REFA', 'L', jrefe)
-        if (zk24(jrefe-1+9) .eq. 'MR') then
+        call jeveuo(nomi//'.REFA', 'L', vk24=refe)
+        if (refe(9) .eq. 'MR') then
             jpomr=icomb
         endif
     end do
@@ -367,7 +373,7 @@ subroutine op0060()
     secmbr = '&&OP0060.SECMBR'
     call vtcrem(secmbr, dynam, 'V', typres)
     call copisd('CHAMP_GD', 'V', secmbr, vezero)
-    call jeveuo(secmbr(1:19)//'.VALE', 'E', jsecmb)
+    call jeveuo(secmbr(1:19)//'.VALE', 'E', vc=secmb)
     call jeveuo(vezero(1:19)//'.VALE', 'E', jvezer)
     call vecinc(neq, czero, zc(jvezer))
 !
@@ -415,9 +421,9 @@ subroutine op0060()
 !
         call mtcmbl(nbmat, typcst, coef, nomat, dynam,&
                     ' ', ' ', 'ELIM=')
-        call jeveuo(dynam(1:19)//'.REFA', 'E', jrefa)
-        zk24(jrefa-1+7) = solveu
-        zk24(jrefa-1+8) = ' '
+        call jeveuo(dynam(1:19)//'.REFA', 'E', vk24=refa)
+        refa(7) = solveu
+        refa(8) = ' '
 !
 ! ----- FACTORISATION DE LA MATRICE DYNAMIQUE
 !
@@ -429,12 +435,12 @@ subroutine op0060()
 !
 ! ----- RESOLUTION DU SYSTEME, CELUI DU CHARGEMENT STANDARD
 !
-        call zcopy(neq, zc(lsecmb), 1, zc(jsecmb), 1)
+        call zcopy(neq, zc(lsecmb), 1, secmb, 1)
         call resoud(dynam, maprec, solveu, vezero, 0,&
                     secmbr, soluti, 'V', [0.d0], [c16bid],&
                     crgc, .true., 0, iret)
-        call jeveuo(soluti(1:19)//'.VALE', 'L', jsolut)
-        call zcopy(neq, zc(jsolut), 1, zc(lsecmb), 1)
+        call jeveuo(soluti(1:19)//'.VALE', 'L', vc=solut)
+        call zcopy(neq, solut, 1, zc(lsecmb), 1)
         call jedetr(soluti)
 !
 ! ----------------------------------------------------------------
@@ -468,20 +474,20 @@ subroutine op0060()
                 endif
 !
 !           --- RECOPIE DANS L'OBJET RESULTAT
-                call jeveuo(chamno//'.VALE', 'E', lvale)
+                call jeveuo(chamno//'.VALE', 'E', vc=nlvale)
                 if ((nomsym(inom) .eq. 'DEPL' ) .or. ( nomsym(inom) .eq. 'PRES' )) then
                     do ieq = 0, neq-1
-                        zc(lvale+ieq) = zc(lsecmb+ieq)
+                        nlvale(ieq+1) = zc(lsecmb+ieq)
                     end do
                 else if (nomsym(inom) .eq. 'VITE') then
                     cval = dcmplx(0.d0,depi*freq)
                     do ieq = 0, neq-1
-                        zc(lvale+ieq) = cval * zc(lsecmb+ieq)
+                        nlvale(ieq+1) = cval * zc(lsecmb+ieq)
                     end do
                 else if (nomsym(inom) .eq. 'ACCE') then
                     rval = coef(2)
                     do ieq = 0, neq-1
-                        zc(lvale+ieq) = rval * zc(lsecmb+ieq)
+                        nlvale(ieq+1) = rval * zc(lsecmb+ieq)
                     end do
                 endif
                 call rsnoch(result, nomsym(inom), ifreq+nbold)
@@ -554,16 +560,16 @@ subroutine op0060()
         call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=nomo)
         call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=mate)
         call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carele)
-        call jeveuo(result//'           .ORDR', 'L', jord)
+        call jeveuo(result//'           .ORDR', 'L', vi=ordr)
         call jelira(result//'           .ORDR', 'LONUTI', nbord)
         do i = 1, nbord
-            call rsadpa(result, 'E', 1, 'MODELE', zi(jord+i-1),&
+            call rsadpa(result, 'E', 1, 'MODELE', ordr(i),&
                         0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = nomo
-            call rsadpa(result, 'E', 1, 'CHAMPMAT', zi(jord+i-1),&
+            call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(i),&
                         0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = mate(1:8)
-            call rsadpa(result, 'E', 1, 'CARAELEM', zi(jord+i-1),&
+            call rsadpa(result, 'E', 1, 'CARAELEM', ordr(i),&
                         0, sjv=ladpa, styp=k8bid)
             zk8(ladpa) = carele(1:8)
         end do

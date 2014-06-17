@@ -61,8 +61,8 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     complex(kind=8) :: cbid
 !
 !
-    integer :: k, jvare, j2nd, jtempp, ibid
-    integer :: jbtla, jmed, jmer, nbmat, ierr
+    integer :: k,  j2nd,  ibid
+    integer ::  jmed, jmer, nbmat, ierr
     real(kind=8) :: r8bid
     character(len=1) :: typres
     character(len=19) :: chsol
@@ -70,6 +70,9 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     character(len=24) :: tlimat(2), mediri, merigi, cnvabt
     real(kind=8) :: testr, testm, vnorm
     integer :: iret
+    real(kind=8), pointer :: btla(:) => null()
+    real(kind=8), pointer :: tempp(:) => null()
+    real(kind=8), pointer :: vare(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
     data typres        /'R'/
@@ -100,7 +103,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     call asasve(veresi, numedd, typres, varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid,&
                 typres, cnresi)
-    call jeveuo(cnresi(1:19)//'.VALE', 'L', jvare)
+    call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=vare)
 !
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
@@ -109,22 +112,22 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     call asasve(vebtla, numedd, typres, vabtla)
     call ascova('D', vabtla, bidon, 'INST', r8bid,&
                 typres, cnvabt)
-    call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)
+    call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr=btla)
 !
 !==========================================================
 ! --- CALCUL DU RESIDU ET
 !     DU CRITERE DE CONVERGENCE DES ITERATIONS (NORME SUP)
 !==========================================================
 !
-    call jeveuo(vtempp(1:19)//'.VALE', 'E', jtempp)
+    call jeveuo(vtempp(1:19)//'.VALE', 'E', vr=tempp)
     testr = 0.d0
     testm = 0.d0
     vnorm = 0.d0
     do k = 1, lonch
-        zr(jtempp+k-1) = zr(j2nd+k-1) - zr(jvare+k-1) - zr(jbtla+k-1)
-        testr = testr + ( zr(jtempp+k-1) )**2
-        vnorm = vnorm + ( zr(j2nd+k-1) - zr(jbtla+k-1) )**2
-        testm = max( testm,abs( zr(jtempp+k-1) ) )
+        tempp(k) = zr(j2nd+k-1) - vare(k) - btla(k)
+        testr = testr + ( tempp(k) )**2
+        vnorm = vnorm + ( zr(j2nd+k-1) - btla(k) )**2
+        testm = max( testm,abs( tempp(k) ) )
     end do
     if (vnorm .gt. 0d0) then
         testr = sqrt( testr / vnorm )

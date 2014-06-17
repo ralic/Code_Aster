@@ -53,7 +53,9 @@ subroutine recyec(nmresz, mdcycz, numsec, typsdz)
 !-----------------ECRITURE DU TITRE-------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: llref, lltyp, numsec
+    integer ::   numsec
+    character(len=24), pointer :: cycl_refe(:) => null()
+    character(len=8), pointer :: cycl_type(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nomres = nmresz
@@ -64,14 +66,14 @@ subroutine recyec(nmresz, mdcycz, numsec, typsdz)
 !
 !-------------------RECUPERATION DE LA BASE MODALE----------------------
 !
-    call jeveuo(modcyc//'.CYCL_REFE', 'L', llref)
-    basmod=zk24(llref+2)
+    call jeveuo(modcyc//'.CYCL_REFE', 'L', vk24=cycl_refe)
+    basmod=cycl_refe(3)
 !
 !-----------------------RECUPERATION DU TYPE INTERFACE------------------
 !
 !
-    call jeveuo(modcyc//'.CYCL_TYPE', 'L', lltyp)
-    typint=zk8(lltyp)
+    call jeveuo(modcyc//'.CYCL_TYPE', 'L', vk8=cycl_type)
+    typint=cycl_type(1)
 !
 !
 !------------------------------RESTITUTION -----------------------------

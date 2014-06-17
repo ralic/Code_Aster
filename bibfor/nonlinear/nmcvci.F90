@@ -44,12 +44,13 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     character(len=24) :: l2cnci(2), cncinm, cncinp
     character(len=8) :: char1
     real(kind=8) :: instap, coefr(2)
-    integer ::  neq, ieq, neq2,  iret, j1, jinfc, ichar
+    integer ::  neq, ieq, neq2,  iret,  jinfc, ichar
     integer :: nbchar, jlchar
     character(len=1) :: typch(2)
     logical :: lvcine
     integer, pointer :: dlci(:) => null()
     real(kind=8), pointer :: cncim(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !----------------------------------------------------------------------
 !
     call jemarq()
@@ -61,9 +62,9 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     call jelira(cncine(1:19)//'.VALE', 'LONMAX', ival=neq)
     call jelira(depmoi(1:19)//'.VALE', 'LONMAX', ival=neq2)
     ASSERT(neq.eq.neq2)
-    call jeveuo(cncine(1:19)//'.VALE', 'E', j1)
+    call jeveuo(cncine(1:19)//'.VALE', 'E', vr=vale)
     do 2, ieq=1,neq
-    zr(j1-1+ieq)=0.d0
+    vale(ieq)=0.d0
     2 end do
 !
 !

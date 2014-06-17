@@ -78,8 +78,9 @@ subroutine mesomm(champ, long, vi, vr, vc,&
     character(len=8) :: scal
     character(len=19) :: champ2, ligrel
     logical :: first
-    integer :: i, iacelk, iavale, ibid, icoef, idecgr, iel, ier1, ier2
+    integer :: i,  iavale, ibid, icoef, idecgr, iel, ier1, ier2
     integer :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi, nbmail
+    character(len=24), pointer :: celk(:) => null()
 !
     call jemarq()
 !
@@ -113,8 +114,8 @@ subroutine mesomm(champ, long, vi, vr, vc,&
         call jeveuo(champ2//'.DESC', 'L', jceld)
     endif
 !
-    call jeveuo(champ2//'.CELK', 'L', iacelk)
-    ligrel = zk24(iacelk-1+1) (1:19)
+    call jeveuo(champ2//'.CELK', 'L', vk24=celk)
+    ligrel = celk(1) (1:19)
 !
     igd = zi(jceld-1+1)
     scal = scalai(igd)

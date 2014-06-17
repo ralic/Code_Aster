@@ -43,7 +43,9 @@ subroutine nmhyst(amort, vitplu, cnhyst)
 !
 !
 !
-    integer :: jvitp, jamor, jhyst
+    integer ::  jamor
+    real(kind=8), pointer :: hyst(:) => null()
+    real(kind=8), pointer :: vitp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,13 +53,13 @@ subroutine nmhyst(amort, vitplu, cnhyst)
 !
 ! --- ACCES OBJETS JEVEUX
 !
-    call jeveuo(vitplu(1:19)//'.VALE', 'L', jvitp)
+    call jeveuo(vitplu(1:19)//'.VALE', 'L', vr=vitp)
     call jeveuo(amort(1:19) //'.&INT', 'L', jamor)
-    call jeveuo(cnhyst(1:19)//'.VALE', 'E', jhyst)
+    call jeveuo(cnhyst(1:19)//'.VALE', 'E', vr=hyst)
 !
 ! --- CALCUL FORCES AMORTISSEMENT
 !
-    call mrmult('ZERO', jamor, zr(jvitp), zr(jhyst), 1,&
+    call mrmult('ZERO', jamor, vitp, hyst, 1,&
                 .true.)
 !
     call jedema()

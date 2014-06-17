@@ -65,13 +65,15 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
 ! ------------------------------------------------------------------
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ifi, longt, long2, mode, j, ibid, nbgr, iacelk, icoef, nel
-    integer :: idecgr, k, iad, iavale, nbel, jceld
+    integer :: ifi, longt, long2, mode, j, ibid, nbgr,  icoef, nel
+    integer :: idecgr, k, iad, iavale, nbel
     real(kind=8) :: termvo, termsa, termfl, termec, ovfl, terms1, termf1, terme1
     real(kind=8) :: termv1, termv2, terms2, termf2, terme2, err0, nors, nu0
     character(len=4) :: docu
     character(len=19) :: champ2, ligrel
     logical :: first
+    integer, pointer :: celd(:) => null()
+    character(len=24), pointer :: celk(:) => null()
 !
 ! INIT.
     call jemarq()
@@ -87,19 +89,19 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     if (docu .ne. 'CHML') then
         call utmess('F', 'CALCULEL5_44')
     endif
-    call jeveuo(champ2//'.CELK', 'L', iacelk)
-    ligrel = zk24(iacelk-1+1)(1:19)
+    call jeveuo(champ2//'.CELK', 'L', vk24=celk)
+    ligrel = celk(1)(1:19)
 !
-    call jeveuo(champ2//'.CELD', 'L', jceld)
+    call jeveuo(champ2//'.CELD', 'L', vi=celd)
 !
 !     -- ON VERIFIE LES LONGUEURS:
     first = .true.
     nbgr = nbgrel(ligrel)
     do 1 j = 1, nbgr
-        mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+        mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 1
         long2 = digdel(mode)
-        icoef=max(1,zi(jceld-1+4))
+        icoef=max(1,celd(4))
         long2 = long2 * icoef
         if (first) then
             longt = long2
@@ -133,10 +135,10 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     endif
 !
     do 2 j = 1, nbgr
-        mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+        mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 2
         nel = nbelem(ligrel,j)
-        idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+        idecgr=celd(celd(4+j)+8)
         do 3 k = 1, nel
             iad = iavale-1+idecgr+(k-1)*longt
             err0 = err0 + zr(iad)**2

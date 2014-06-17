@@ -71,7 +71,8 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
     character(len=24) :: ligrmo, ligrch
 !
 !-----------------------------------------------------------------------
-    integer :: icha, ilires, iret, jnomo
+    integer :: icha, ilires, iret
+    character(len=8), pointer :: nomo(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -102,8 +103,8 @@ subroutine me2mac(modele, nchar, lchar, mate, vecel)
         if (modele .ne. '        ') then
             ligrmo = modele//'.MODELE'
         else
-            call jeveuo(lchar(1)//'.CHAC      .NOMO', 'L', jnomo)
-            ligrmo = zk8(jnomo)//'.MODELE'
+            call jeveuo(lchar(1)//'.CHAC      .NOMO', 'L', vk8=nomo)
+            ligrmo = nomo(1)//'.MODELE'
         endif
         do icha = 1, nchar
             call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=k8bid)

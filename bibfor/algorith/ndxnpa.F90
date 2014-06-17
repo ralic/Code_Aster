@@ -75,9 +75,10 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
     character(len=19) :: depplu, varplu, vitplu, accplu
     character(len=19) :: complu, depdel
     real(kind=8) :: instap
-    integer :: jdepp, jdepde
+    integer ::  jdepde
     integer :: indro
     character(len=2) :: codret
+    real(kind=8), pointer :: depp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -128,8 +129,8 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 ! --- INITIALISATION DE L'INCREMENT DE DEPLACEMENT DEPDEL
 !
     call jeveuo(depdel//'.VALE', 'E', jdepde)
-    call jeveuo(depplu//'.VALE', 'L', jdepp)
-    call initia(neq, lgrot, zi(indro), zr(jdepp), zr(jdepde))
+    call jeveuo(depplu//'.VALE', 'L', vr=depp)
+    call initia(neq, lgrot, zi(indro), depp, zr(jdepde))
 !
 ! --- INITIALISATIONS EN DYNAMIQUE
 !

@@ -63,14 +63,19 @@ subroutine rec110(nomres, nomsqu, modgen)
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iadres, ibid, igr, in
     integer :: incr, inew, iocc, iold, iposi, ireco
-    integer :: istac, jltns, jn, jncr, jposi, jstac, lconn
-    integer :: lcoord, lcorr, lcort, ldime, lintd, linver, ljntd
-    integer :: lrefe, lsk, lsk2, lstac, ltabi, ltabj, lvnew
-    integer :: lvold, nbcoor, nbec, nbfuse, nbma, nbmoin, nbn
+    integer :: istac,  jn, jncr, jposi, jstac, lconn
+    integer ::  lcorr, lcort, ldime, lintd, linver, ljntd
+    integer ::  lsk, lsk2,  ltabi, ltabj, lvnew
+    integer ::  nbcoor, nbec, nbfuse, nbma, nbmoin, nbn
     integer :: nbnd, nbnd2, nbnew, nbni, nbnj, nbocc, nbreco
     integer :: nbstac, ndist, nnodes, nr, numero
     real(kind=8) :: dist, distij, prec, xii, xj, yii, yj
     real(kind=8) :: zii, zj
+    character(len=24), pointer :: ltns(:) => null()
+    character(len=8), pointer :: vnomsst(:) => null()
+    real(kind=8), pointer :: nlcoord(:) => null()
+    real(kind=8), pointer :: nlvold(:) => null()
+    character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     data tt      /'&&REC110'/
 !-----------------------------------------------------------------------
@@ -80,12 +85,12 @@ subroutine rec110(nomres, nomsqu, modgen)
 ! --- RECOPIE DE DES OBJETS SQUELETTE DANS LE NOUVEAU SQUELETTE ---
     call copisd('SQUELETTE', 'G', nomsqu, nomres)
 !     IL FAUT MODIFIER .LTNS(1) :
-    call jeveuo(nomres//'           .LTNS', 'E', jltns)
-    zk24(jltns-1+1)(1:8)=nomres
+    call jeveuo(nomres//'           .LTNS', 'E', vk24=ltns)
+    ltns(1)(1:8)=nomres
 !
     call jelira(nomres//'         .NOMSST', 'LONUTI', nbstac)
-    call jeveuo(nomres//'         .NOMSST', 'L', lstac)
-    call jeveuo(nomres//'.COORDO    .VALE', 'E', lcoord)
+    call jeveuo(nomres//'         .NOMSST', 'L', vk8=vnomsst)
+    call jeveuo(nomres//'.COORDO    .VALE', 'E', vr=nlcoord)
     call jelira(nomres//'.COORDO    .VALE', 'LONUTI', nbcoor)
     call jelira(nomres//'.INV.SKELETON   ', 'LONUTI', nbnd2)
     call jeveuo(nomres//'.INV.SKELETON   ', 'E', lsk)
@@ -129,7 +134,7 @@ subroutine rec110(nomres, nomsqu, modgen)
         nbfuse = 0
         nbmoin = 0
         do istac = 1, nbstac
-            nomsst = zk8(lstac-1+istac)
+            nomsst = vnomsst(istac)
             call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                         lintf)
             call jelira(lintf//'.IDC_DEFO', 'LONUTI', nnodes)
@@ -167,7 +172,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 !        ---
             jncr = incr
             do jstac = istac+1, nbstac
-                nomsst = zk8(lstac-1+jstac)
+                nomsst = vnomsst(jstac)
                 call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                             ljntf)
                 call jelira(ljntf//'.IDC_DEFO', 'LONUTI', nnodes)
@@ -204,15 +209,15 @@ subroutine rec110(nomres, nomsqu, modgen)
 !           ---- FUSION DES NOEUDS ---
                 do in = 1, nbni
                     iposi = (zi(ltabi-1+in)-1)*3
-                    xii = zr(lcoord+iposi)
-                    yii = zr(lcoord+iposi+1)
-                    zii = zr(lcoord+iposi+2)
+                    xii = nlcoord(iposi+1)
+                    yii = nlcoord(1+iposi+1)
+                    zii = nlcoord(1+iposi+2)
                     do jn = 1, nbnj
                         fusion = .true.
                         jposi = (zi(ltabj-1+jn)-1)*3
-                        xj = zr(lcoord+jposi)
-                        yj = zr(lcoord+jposi+1)
-                        zj = zr(lcoord+jposi+2)
+                        xj = nlcoord(jposi+1)
+                        yj = nlcoord(1+jposi+1)
+                        zj = nlcoord(1+jposi+2)
                         distij = (xii-xj)**2+(yii-yj)**2+(zii-zj)**2
                         distij = sqrt(abs(distij))
                         if (crit .eq. 'RELATIF') then
@@ -260,7 +265,7 @@ subroutine rec110(nomres, nomsqu, modgen)
  90         continue
             istac = istac + 1
             if (istac .le. nbstac) then
-                if (zk8(lstac-1+istac) .ne. nomsst) goto 90
+                if (vnomsst(istac) .ne. nomsst) goto 90
             endif
             if (istac .gt. nbstac) then
                 valk (1) = nomsst
@@ -298,7 +303,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 120         continue
             jstac = jstac + 1
             if (jstac .le. nbstac) then
-                if (zk8(lstac-1+jstac) .ne. nomsst) goto 120
+                if (vnomsst(jstac) .ne. nomsst) goto 120
             endif
             if (jstac .gt. nbstac) then
                 valk (1) = nomsst
@@ -333,15 +338,15 @@ subroutine rec110(nomres, nomsqu, modgen)
 !           ---- FUSION DES NOEUDS ---
             do in = 1, nbni
                 iposi = (zi(ltabi-1+in)-1)*3
-                xii = zr(lcoord+iposi)
-                yii = zr(lcoord+iposi+1)
-                zii = zr(lcoord+iposi+2)
+                xii = nlcoord(iposi+1)
+                yii = nlcoord(1+iposi+1)
+                zii = nlcoord(1+iposi+2)
                 do jn = 1, nbnj
                     fusion = .true.
                     jposi = (zi(ltabj-1+jn)-1)*3
-                    xj = zr(lcoord+jposi)
-                    yj = zr(lcoord+jposi+1)
-                    zj = zr(lcoord+jposi+2)
+                    xj = nlcoord(jposi+1)
+                    yj = nlcoord(1+jposi+1)
+                    zj = nlcoord(1+jposi+2)
                     distij = (xii-xj)**2+(yii-yj)**2+(zii-zj)**2
                     distij = sqrt(abs(distij))
                     if (crit .eq. 'RELATIF') then
@@ -426,8 +431,8 @@ subroutine rec110(nomres, nomsqu, modgen)
     end do
 !
 ! --- OBJET  .REFE
-    call jeveuo(nomres//'.COORDO    .REFE', 'E', lrefe)
-    zk24(lrefe) = nomres
+    call jeveuo(nomres//'.COORDO    .REFE', 'E', vk24=refe)
+    refe(1) = nomres
 !
 ! --- OBJET  .DIME
     call jeveuo(nomres//'.DIME', 'E', ldime)
@@ -436,12 +441,12 @@ subroutine rec110(nomres, nomsqu, modgen)
 ! --- OBJET  .VALE
     call jedetr(nomres//'.COORDO    .VALE')
     call wkvect(nomres//'.COORDO    .VALE', 'G V R', nbnew*3, lvnew)
-    call jeveuo(nomsqu//'.COORDO    .VALE', 'L', lvold)
+    call jeveuo(nomsqu//'.COORDO    .VALE', 'L', vr=nlvold)
     do i = 1, nbnew
         iold = zi(lcorr-1+i)
-        zr(lvnew-1+(i-1)*3+1) = zr(lvold-1+(iold-1)*3+1)
-        zr(lvnew-1+(i-1)*3+2) = zr(lvold-1+(iold-1)*3+2)
-        zr(lvnew-1+(i-1)*3+3) = zr(lvold-1+(iold-1)*3+3)
+        zr(lvnew-1+(i-1)*3+1) = nlvold((iold-1)*3+1)
+        zr(lvnew-1+(i-1)*3+2) = nlvold((iold-1)*3+2)
+        zr(lvnew-1+(i-1)*3+3) = nlvold((iold-1)*3+3)
     end do
 !
 ! --- OBJET .NOMNOE

@@ -73,13 +73,15 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
     character(len=19) :: nomtab
     logical :: l_new_table, l_copy_table, l_repl_object
     integer :: i_repl_object
-    integer :: jtbnp, jtblp, jnobj, jnosd, jnuor, jtobj, jrins, jlins
+    integer ::   jnobj, jnosd, jnuor, jtobj, jrins, jlins
     integer :: nboldp, nblign
     integer :: ipara, ilign, iobje, iobja, ibid
     character(len=24) :: vk(3)
     character(len=16) :: k16bid, oldobj, newtyp
     real(kind=8) :: r8bid, oldins
     complex(kind=8) :: c16bid
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 !
 ! - Parameters of table
 !
@@ -141,15 +143,15 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
 ! - Check old table
 !
     if (.not.l_new_table) then
-        call jeveuo(nomtab//'.tbnp', 'L', jtbnp)
-        call jeveuo(nomtab//'.tblp', 'L', jtblp)
-        nboldp = zi(jtbnp-1+1)
+        call jeveuo(nomtab//'.tbnp', 'L', vi=tbnp)
+        call jeveuo(nomtab//'.tblp', 'L', vk24=tblp)
+        nboldp = tbnp(1)
         if (nboldp .ne. nbpara) then
             call utmess('F', 'CALCUL1_1')
         endif
-        nblign = zi(jtbnp-1+2)
+        nblign = tbnp(2)
         do ipara = 1, nbpara
-            if (zk24(jtblp+(ipara-1)*4) .eq. nompar(ipara)) then
+            if (tblp(1+(ipara-1)*4) .eq. nompar(ipara)) then
                 prepar(ipara) = ipara
             endif
         enddo
@@ -163,12 +165,12 @@ subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
 ! - Memory pointer on old table
 !
     if (.not.l_new_table) then
-        call jeveuo(zk24(jtblp+(prepar(5)-1)*4+3), 'L', jlins)
-        call jeveuo(zk24(jtblp+(prepar(1)-1)*4+2), 'L', jnobj)
-        call jeveuo(zk24(jtblp+(prepar(2)-1)*4+2), 'L', jtobj)
-        call jeveuo(zk24(jtblp+(prepar(3)-1)*4+2), 'E', jnosd)
-        call jeveuo(zk24(jtblp+(prepar(4)-1)*4+2), 'E', jnuor)
-        call jeveuo(zk24(jtblp+(prepar(5)-1)*4+2), 'E', jrins)
+        call jeveuo(tblp(1+(prepar(5)-1)*4+3), 'L', jlins)
+        call jeveuo(tblp(1+(prepar(1)-1)*4+2), 'L', jnobj)
+        call jeveuo(tblp(1+(prepar(2)-1)*4+2), 'L', jtobj)
+        call jeveuo(tblp(1+(prepar(3)-1)*4+2), 'E', jnosd)
+        call jeveuo(tblp(1+(prepar(4)-1)*4+2), 'E', jnuor)
+        call jeveuo(tblp(1+(prepar(5)-1)*4+2), 'E', jrins)
     endif
 !
 ! - Loop on objects to add new one or replace old one

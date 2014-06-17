@@ -65,9 +65,7 @@ subroutine iredsu(macr, form, ifc, versio)
     integer :: iero, ifor, im, imat
     integer :: in, ind, inoe, inoeu, iord, iret, is, is2, ityp, i2
     integer :: j, k, m2, nbordr, nstat
-    integer ::    jordr, jnoeu
-    integer :: jrefe
-    integer ::  kmass, krigi
+    integer ::     jnoeu
     integer :: nbnoeu, nbmodt, nbmode, nbmods
 !
     real(kind=8) :: zero
@@ -88,6 +86,10 @@ subroutine iredsu(macr, form, ifc, versio)
     real(kind=8), pointer :: part_supe(:) => null()
     real(kind=8), pointer :: rigi_gene(:) => null()
     real(kind=8), pointer :: rigi_jonc(:) => null()
+    real(kind=8), pointer :: mael_raid_vale(:) => null()
+    character(len=24), pointer :: mael_refe(:) => null()
+    integer, pointer :: ordr(:) => null()
+    real(kind=8), pointer :: mael_mass_vale(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -102,9 +104,9 @@ subroutine iredsu(macr, form, ifc, versio)
     formar = '1PE12.5'
     nive = 3
 !
-    call jeveuo(macrel//'.MAEL_REFE', 'L', jrefe)
-    basemo = zk24(jrefe)
-    noma = zk24(jrefe+1)
+    call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
+    basemo = mael_refe(1)
+    noma = mael_refe(2)
     manono = noma//'.NOMNOE'
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
     call rslipa(basemo, 'NOEUD_CMP', '&&IREDSU.LINOEU', jnoeu, nbmodt)
@@ -186,12 +188,12 @@ subroutine iredsu(macr, form, ifc, versio)
 !
 !     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     nomsym = 'DEPL'
-    call jeveuo(basemo//'.ORDR', 'L', jordr)
+    call jeveuo(basemo//'.ORDR', 'L', vi=ordr)
     call jelira(basemo//'.ORDR', 'LONMAX', nbordr)
     AS_ALLOCATE(vk24=mode_stat, size=nbordr)
     nstat = 0
     do i = 1, nbordr
-        iord = zi(jordr+i-1)
+        iord = ordr(i)
         if (zk16(jnoeu+i-1) .ne. ' ') then
             call rsexch(' ', basemo, 'DEPL', iord, noch19,&
                         iret)
@@ -238,32 +240,32 @@ subroutine iredsu(macr, form, ifc, versio)
         AS_ALLOCATE(vr=part_infe, size=nbmode*nbmods)
     endif
 !
-    call jeveuo(macrel//'.MAEL_MASS_VALE', 'L', kmass)
-    call jeveuo(macrel//'.MAEL_RAID_VALE', 'L', krigi)
+    call jeveuo(macrel//'.MAEL_MASS_VALE', 'L', vr=mael_mass_vale)
+    call jeveuo(macrel//'.MAEL_RAID_VALE', 'L', vr=mael_raid_vale)
     do im = 1, nbmode
         do i = 1, im
             k =im*(im-1)/2 + i
-            mass_gene(1+i-1+(im-1)*nbmode) = zr(kmass+k-1)
-            mass_gene(1+im-1+(i-1)*nbmode) = zr(kmass+k-1)
-            rigi_gene(1+i-1+(im-1)*nbmode) = zr(krigi+k-1)
-            rigi_gene(1+im-1+(i-1)*nbmode) = zr(krigi+k-1)
+            mass_gene(1+i-1+(im-1)*nbmode) = mael_mass_vale(k)
+            mass_gene(1+im-1+(i-1)*nbmode) = mael_mass_vale(k)
+            rigi_gene(1+i-1+(im-1)*nbmode) = mael_raid_vale(k)
+            rigi_gene(1+im-1+(i-1)*nbmode) = mael_raid_vale(k)
         end do
     end do
     do is = nbmode+1, nbmodt
         do im = 1, nbmode
             k = is*(is-1)/2 + im
             is2 = is - nbmode
-            part_supe(1+is2-1+(im-1)*nbmods) = zr(kmass+k-1)
-            part_infe(1+is2-1+(im-1)*nbmods) = zr(kmass+k-1)
+            part_supe(1+is2-1+(im-1)*nbmods) = mael_mass_vale(k)
+            part_infe(1+is2-1+(im-1)*nbmods) = mael_mass_vale(k)
         end do
         do i = nbmode+1, is
             k = is*(is-1)/2 + i
             i2 = i - nbmode
             is2 = is - nbmode
-            mass_jonc(1+i2-1+(is2-1)*nbmods) = zr(kmass+k-1)
-            mass_jonc(1+is2-1+(i2-1)*nbmods) = zr(kmass+k-1)
-            rigi_jonc(1+i2-1+(is2-1)*nbmods) = zr(krigi+k-1)
-            rigi_jonc(1+is2-1+(i2-1)*nbmods) = zr(krigi+k-1)
+            mass_jonc(1+i2-1+(is2-1)*nbmods) = mael_mass_vale(k)
+            mass_jonc(1+is2-1+(i2-1)*nbmods) = mael_mass_vale(k)
+            rigi_jonc(1+i2-1+(is2-1)*nbmods) = mael_raid_vale(k)
+            rigi_jonc(1+is2-1+(i2-1)*nbmods) = mael_raid_vale(k)
         end do
     end do
 !

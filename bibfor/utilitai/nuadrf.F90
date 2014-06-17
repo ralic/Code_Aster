@@ -49,31 +49,35 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 ! OU       DREF    : VECTEUR QUI CONTIENDRA LES DISTANCE**2 CHERCHEES
 !                    DIMENSION : NP2 = NOMBRE DE POINTS DE NUAG2
 ! VARIABLES LOCALES :
-    integer :: inuai1, inuai2, inual1, inual2, inuax1, inuax2
+    integer ::   inual1, inual2
     integer :: np1, np2, nx1, nx2, nc1, nc2, ip1, ip2, im1, im2, im3, im4
     real(kind=8) :: x2, y2, z2, x1, y1, z1, xm1, ym1, zm1
     real(kind=8) :: d, dm0, dm, l2, s, s2, v, l
     real(kind=8) :: m1m2(3), m1m3(3), m1p1(3), n2(3), n(3), epsabs
     real(kind=8), pointer :: vdm0(:) => null()
+    real(kind=8), pointer :: nuax1(:) => null()
+    real(kind=8), pointer :: nuax2(:) => null()
+    integer, pointer :: nuai1(:) => null()
+    integer, pointer :: nuai2(:) => null()
 !
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !
     epsabs=sqrt(1.d0/r8gaem())
 !
-    call jeveuo(nuag1//'.NUAI', 'L', inuai1)
-    call jeveuo(nuag2//'.NUAI', 'L', inuai2)
-    call jeveuo(nuag1//'.NUAX', 'L', inuax1)
-    call jeveuo(nuag2//'.NUAX', 'L', inuax2)
+    call jeveuo(nuag1//'.NUAI', 'L', vi=nuai1)
+    call jeveuo(nuag2//'.NUAI', 'L', vi=nuai2)
+    call jeveuo(nuag1//'.NUAX', 'L', vr=nuax1)
+    call jeveuo(nuag2//'.NUAX', 'L', vr=nuax2)
     call jeveuo(nuag1//'.NUAL', 'L', inual1)
     call jeveuo(nuag2//'.NUAL', 'L', inual2)
 !
-    np1 = zi(inuai1-1+1)
-    np2 = zi(inuai2-1+1)
-    nx1 = zi(inuai1-1+2)
-    nx2 = zi(inuai2-1+2)
-    nc1 = zi(inuai1-1+3)
-    nc2 = zi(inuai2-1+3)
+    np1 = nuai1(1)
+    np2 = nuai2(1)
+    nx1 = nuai1(2)
+    nx2 = nuai2(2)
+    nc1 = nuai1(3)
+    nc2 = nuai2(3)
 !
 !
 !     RECHERCHE DE LA PLUS GRANDE DISTANCE**2 ENTRE CHAQUE IP2
@@ -88,30 +92,30 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
     dm0 = 0.d0
 !
     if (nx1 .eq. 1) then
-        x2 = zr(inuax2-1+ (ip2-1)*nx2+1)
+        x2 = nuax2((ip2-1)*nx2+1)
         do 2,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 2
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
+        x1 = nuax1((ip1-1)*nx1+1)
         dm0 = max(dm0,(x2-x1)**2)
  2      continue
     else if (nx1.eq.2) then
-        x2 = zr(inuax2-1+ (ip2-1)*nx2+1)
-        y2 = zr(inuax2-1+ (ip2-1)*nx2+2)
+        x2 = nuax2((ip2-1)*nx2+1)
+        y2 = nuax2((ip2-1)*nx2+2)
         do 3,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 3
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
         dm0 = max(dm0,(x2-x1)**2+(y2-y1)**2)
  3      continue
     else if (nx1.eq.3) then
-        x2 = zr(inuax2-1+ (ip2-1)*nx2+1)
-        y2 = zr(inuax2-1+ (ip2-1)*nx2+2)
-        z2 = zr(inuax2-1+ (ip2-1)*nx2+3)
+        x2 = nuax2((ip2-1)*nx2+1)
+        y2 = nuax2((ip2-1)*nx2+2)
+        z2 = nuax2((ip2-1)*nx2+3)
         do 4,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 4
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
-        z1 = zr(inuax1-1+ (ip1-1)*nx1+3)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
+        z1 = nuax1((ip1-1)*nx1+3)
         dm0 = max(dm0,(x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
  4      continue
     endif
@@ -125,14 +129,14 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !     ------------
         do 10,ip2 = 1,np2
         if (.not.zl(inual2-1+ (ip2-1)*nc2+ic2)) goto 10
-        x2 = zr(inuax2-1+ (ip2-1)*nx2+1)
+        x2 = nuax2((ip2-1)*nx2+1)
 !
 !         -- IM1 EST L'INDICE DU POINT LE + PROCHE DE IP2
         im1 = 0
         dm = vdm0(ip2)
         do 12,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 12
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
+        x1 = nuax1((ip1-1)*nx1+1)
         d = (x1-x2)**2
         if (d .le. dm) then
             dm = d
@@ -140,7 +144,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         endif
 12      continue
         if (im1 .eq. 0) goto 9995
-        xm1=zr(inuax1-1+ (im1-1)*nx1+1)
+        xm1=nuax1((im1-1)*nx1+1)
 !
 !         -- IM2 EST L'INDICE DU POINT LE + PROCHE DE IP2
 !            ET DIFFERENT DE IM1
@@ -148,7 +152,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         dm = vdm0(ip2)
         do 13,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 13
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
+        x1 = nuax1((ip1-1)*nx1+1)
         if ((x1-xm1)**2 .lt. epsabs) goto 13
         d = (x1-x2)**2
         if (d .le. dm) then
@@ -166,8 +170,8 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !     ------------------
         do 20,ip2 = 1,np2
         if (.not.zl(inual2-1+ (ip2-1)*nc2+ic2)) goto 20
-        x2 = zr(inuax2-1+ (ip2-1)*nx2+1)
-        y2 = zr(inuax2-1+ (ip2-1)*nx2+2)
+        x2 = nuax2((ip2-1)*nx2+1)
+        y2 = nuax2((ip2-1)*nx2+2)
 !
 !
 !         -- IM1 EST L'INDICE DU POINT LE + PROCHE DE IP2
@@ -175,8 +179,8 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         dm = vdm0(ip2)
         do 22,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 22
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
         d = (x2-x1)**2+(y2-y1)**2
         if (d .le. dm) then
             dm = d
@@ -184,8 +188,8 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         endif
 22      continue
         if (im1 .eq. 0) goto 9995
-        xm1=zr(inuax1-1+ (im1-1)*nx1+1)
-        ym1=zr(inuax1-1+ (im1-1)*nx1+2)
+        xm1=nuax1((im1-1)*nx1+1)
+        ym1=nuax1((im1-1)*nx1+2)
 !
 !         -- IM2 EST L'INDICE DU POINT LE + PROCHE DE IP2
 !            ET DIFFERENT DE IM1
@@ -193,8 +197,8 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         dm = vdm0(ip2)
         do 23,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 23
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
         if ((x1-xm1)**2+(y1-ym1)**2 .le. epsabs) goto 23
         d = (x2-x1)**2+(y2-y1)**2
         if (d .le. dm) then
@@ -205,9 +209,9 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         if (im2 .eq. 0) goto 9996
 !
 !         VECTEUR M1M2 :
-        m1m2(1)=zr(inuax1-1+(im1-1)*nx1+1)-zr(inuax1-1+(im2-1)*&
+        m1m2(1)=nuax1((im1-1)*nx1+1)-nuax1((im2-1)*&
             nx1+1)
-        m1m2(2)=zr(inuax1-1+(im1-1)*nx1+2)-zr(inuax1-1+(im2-1)*&
+        m1m2(2)=nuax1((im1-1)*nx1+2)-nuax1((im2-1)*&
             nx1+2)
         l2=m1m2(1)**2+m1m2(2)**2
 !
@@ -218,12 +222,12 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         do 24,ip1 = 1,np1
 !           IF ((IP1.EQ.IM1).OR.(IP1.EQ.IM2)) GOTO 24
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 24
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
 !
 !           SI LES POINTS M1 M2 ET P1 NE FORMENT PAS UN PLAN GOTO 24
-        m1p1(1)=zr(inuax1-1+(im1-1)*nx1+1)-x1
-        m1p1(2)=zr(inuax1-1+(im1-1)*nx1+2)-y1
+        m1p1(1)=nuax1((im1-1)*nx1+1)-x1
+        m1p1(2)=nuax1((im1-1)*nx1+2)-y1
         s=abs(m1m2(1)*m1p1(2)-m1m2(2)*m1p1(1))
         if (s .le. (1.d-3*l2)) goto 24
         d = (x2-x1)**2+(y2-y1)**2
@@ -242,9 +246,9 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 !     ------------------
         do 30,ip2 = 1,np2
         if (.not.zl(inual2-1+ (ip2-1)*nc2+ic2)) goto 30
-        x2 = zr(inuax2-1+ (ip2-1)*nx2+1)
-        y2 = zr(inuax2-1+ (ip2-1)*nx2+2)
-        z2 = zr(inuax2-1+ (ip2-1)*nx2+3)
+        x2 = nuax2((ip2-1)*nx2+1)
+        y2 = nuax2((ip2-1)*nx2+2)
+        z2 = nuax2((ip2-1)*nx2+3)
 !
 !
 !         -- IM1 EST L'INDICE DU POINT LE + PROCHE DE IP2
@@ -252,9 +256,9 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         dm = vdm0(ip2)
         do 32,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 32
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
-        z1 = zr(inuax1-1+ (ip1-1)*nx1+3)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
+        z1 = nuax1((ip1-1)*nx1+3)
         d = (x2-x1)**2+(y2-y1)**2+(z2-z1)**2
         if (d .le. dm) then
             dm = d
@@ -262,9 +266,9 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         endif
 32      continue
         if (im1 .eq. 0) goto 9995
-        xm1=zr(inuax1-1+ (im1-1)*nx1+1)
-        ym1=zr(inuax1-1+ (im1-1)*nx1+2)
-        zm1=zr(inuax1-1+ (im1-1)*nx1+3)
+        xm1=nuax1((im1-1)*nx1+1)
+        ym1=nuax1((im1-1)*nx1+2)
+        zm1=nuax1((im1-1)*nx1+3)
 !
 !         -- IM2 EST L'INDICE DU POINT LE + PROCHE DE IP2
 !            ET DIFFERENT DE IM1
@@ -272,9 +276,9 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         dm = vdm0(ip2)
         do 33,ip1 = 1,np1
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 33
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
-        z1 = zr(inuax1-1+ (ip1-1)*nx1+3)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
+        z1 = nuax1((ip1-1)*nx1+3)
         if ((x1-xm1)**2+(y1-ym1)**2+(z1-zm1)**2 .le. epsabs) goto 33
         d = (x2-x1)**2+(y2-y1)**2+(z2-z1)**2
         if (d .le. dm) then
@@ -285,11 +289,11 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         if (im2 .eq. 0) goto 9996
 !
 !         -- VECTEUR M1M2 :
-        m1m2(1)=zr(inuax1-1+(im2-1)*nx1+1)-zr(inuax1-1+(im1-1)*&
+        m1m2(1)=nuax1((im2-1)*nx1+1)-nuax1((im1-1)*&
             nx1+1)
-        m1m2(2)=zr(inuax1-1+(im2-1)*nx1+2)-zr(inuax1-1+(im1-1)*&
+        m1m2(2)=nuax1((im2-1)*nx1+2)-nuax1((im1-1)*&
             nx1+2)
-        m1m2(3)=zr(inuax1-1+(im2-1)*nx1+3)-zr(inuax1-1+(im1-1)*&
+        m1m2(3)=nuax1((im2-1)*nx1+3)-nuax1((im1-1)*&
             nx1+3)
         l2=m1m2(1)**2+m1m2(2)**2+m1m2(3)**2
         l=sqrt(l2)
@@ -301,14 +305,14 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         do 34,ip1 = 1,np1
 !           IF ((IP1.EQ.IM1).OR.(IP1.EQ.IM2)) GOTO 34
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 34
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
-        z1 = zr(inuax1-1+ (ip1-1)*nx1+3)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
+        z1 = nuax1((ip1-1)*nx1+3)
 !
 !           SI LES POINTS M1 M2 ET P1 NE FORMENT PAS UN PLAN GOTO 34
-        m1p1(1)=zr(inuax1-1+(im1-1)*nx1+1)-x1
-        m1p1(2)=zr(inuax1-1+(im1-1)*nx1+2)-y1
-        m1p1(3)=zr(inuax1-1+(im1-1)*nx1+3)-z1
+        m1p1(1)=nuax1((im1-1)*nx1+1)-x1
+        m1p1(2)=nuax1((im1-1)*nx1+2)-y1
+        m1p1(3)=nuax1((im1-1)*nx1+3)-z1
         n2(1)=m1m2(2)*m1p1(3)-m1m2(3)*m1p1(2)
         n2(2)=m1m2(3)*m1p1(1)-m1m2(1)*m1p1(3)
         n2(3)=m1m2(1)*m1p1(2)-m1m2(2)*m1p1(1)
@@ -324,11 +328,11 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         if (im3 .eq. 0) goto 9997
 !
 !         -- VECTEUR M1M3 :
-        m1m3(1)=zr(inuax1-1+(im3-1)*nx1+1)-zr(inuax1-1+(im1-1)*&
+        m1m3(1)=nuax1((im3-1)*nx1+1)-nuax1((im1-1)*&
             nx1+1)
-        m1m3(2)=zr(inuax1-1+(im3-1)*nx1+2)-zr(inuax1-1+(im1-1)*&
+        m1m3(2)=nuax1((im3-1)*nx1+2)-nuax1((im1-1)*&
             nx1+2)
-        m1m3(3)=zr(inuax1-1+(im3-1)*nx1+3)-zr(inuax1-1+(im1-1)*&
+        m1m3(3)=nuax1((im3-1)*nx1+3)-nuax1((im1-1)*&
             nx1+3)
 !
 !         -- N = M1M2 X M1M3 :
@@ -346,15 +350,15 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
         do 35,ip1 = 1,np1
 !           IF ((IP1.EQ.IM1).OR.(IP1.EQ.IM2).OR.(IP1.EQ.IM3)) GOTO 35
         if (.not.zl(inual1-1+ (ip1-1)*nc1+ic1)) goto 35
-        x1 = zr(inuax1-1+ (ip1-1)*nx1+1)
-        y1 = zr(inuax1-1+ (ip1-1)*nx1+2)
-        z1 = zr(inuax1-1+ (ip1-1)*nx1+3)
+        x1 = nuax1((ip1-1)*nx1+1)
+        y1 = nuax1((ip1-1)*nx1+2)
+        z1 = nuax1((ip1-1)*nx1+3)
 !
 !           SI LES POINTS M1 M2 M3 ET P1 NE FORMENT PAS
 !           UN VOLUME GOTO 35
-        m1p1(1)=zr(inuax1-1+(im1-1)*nx1+1)-x1
-        m1p1(2)=zr(inuax1-1+(im1-1)*nx1+2)-y1
-        m1p1(3)=zr(inuax1-1+(im1-1)*nx1+3)-z1
+        m1p1(1)=nuax1((im1-1)*nx1+1)-x1
+        m1p1(2)=nuax1((im1-1)*nx1+2)-y1
+        m1p1(3)=nuax1((im1-1)*nx1+3)-z1
 !
         v=abs(m1p1(1)*n(1)+m1p1(2)*n(2)+m1p1(3)*n(3))
         if (v .le. (1.d-3*s*l)) goto 35

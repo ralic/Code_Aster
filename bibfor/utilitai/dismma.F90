@@ -53,9 +53,11 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     character(len=19) :: table
     character(len=1) :: k1bid
     real(kind=8) :: zmax, zmin
-    integer :: jdime, ibid, ier, ilmaco, ism, k, nbma, nbno
-    integer :: nbsm, nno, typv, jtypma
+    integer ::  ibid, ier, ilmaco, ism, k, nbma, nbno
+    integer :: nbsm, nno, typv
     character(len=8) ::  typma
+    integer, pointer :: dime(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 !
 !
@@ -65,32 +67,32 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     ierd = 0
 !
     nomob = nomobz
-    call jeveuo(nomob//'.DIME', 'L', jdime)
+    call jeveuo(nomob//'.DIME', 'L', vi=dime)
 !
 !
     if (questi .eq. 'NB_MA_MAILLA') then
 !     ---------------------------------
-        repi = zi(jdime-1+3)
+        repi = dime(3)
 !
 !
     else if (questi.eq.'NB_SM_MAILLA') then
 !     ---------------------------------
-        repi = zi(jdime-1+4)
+        repi = dime(4)
 !
 !
     else if (questi.eq.'NB_NO_MAILLA') then
 !     ---------------------------------
-        repi = zi(jdime-1+1)
+        repi = dime(1)
 !
 !
     else if (questi.eq.'NB_NL_MAILLA') then
 !     ---------------------------------
-        repi = zi(jdime-1+2)
+        repi = dime(2)
 !
 !
     else if (questi.eq.'NB_NO_SS_MAX') then
 !     ---------------------------------
-        nbsm = zi(jdime-1+4)
+        nbsm = dime(4)
         repi = 0
         do 10,ism = 1,nbsm
         call jelira(jexnum(nomob//'.SUPMAIL', ism), 'LONMAX', nno)
@@ -137,7 +139,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
 !
         if (questi .eq. 'DIM_GEOM') then
 !     ----------------------------------------
-            repi = zi(jdime-1+6)
+            repi = dime(6)
 !          -- ON RETOURNE 2 SI Z=0. PARTOUT :
             if ((repi.eq.3) .and. (repk.eq.'OUI')) then
                 repi=2
@@ -148,13 +150,13 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'DIM_GEOM_B') then
 !     ----------------------------------------
-        repi = zi(jdime-1+6)
+        repi = dime(6)
         repk='???'
 !
 !
     else if (questi.eq.'NB_NO_MA_MAX') then
 !     ----------------------------------------
-        nbma = zi(jdime-1+3)
+        nbma = dime(3)
         call jeveuo(jexatr(nomob//'.CONNEX', 'LONCUM'), 'L', ilmaco)
         repi = 0
         do 40,k = 1,nbma
@@ -196,10 +198,10 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         ASSERT(typv.gt.0)
 !
         repk = 'NON'
-        nbma = zi(jdime-1+3)
-        call jeveuo(nomob//'.TYPMAIL', 'L', jtypma)
+        nbma = dime(3)
+        call jeveuo(nomob//'.TYPMAIL', 'L', vi=typmail)
         do 50,k = 1,nbma
-        if (zi(jtypma-1+k) .eq. typv) goto 51
+        if (typmail(k) .eq. typv) goto 51
 50      continue
         goto 52
 51      continue

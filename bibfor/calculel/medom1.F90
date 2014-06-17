@@ -53,12 +53,15 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
 ! ----------------------------------------------------------------------
     integer :: iret
     integer :: iexcit, i, icha, ie, ikf, in
-    integer :: jfcha, jinfc, jlcha, n, n1, n2, n3, n5
+    integer ::    n, n1, n2, n3, n5
 !-----------------------------------------------------------------------
     character(len=8) :: k8b, nomo, materi
     character(len=8) :: blan8
     character(len=16) :: concep, nomcmd, phenom
     character(len=19) :: excit
+    integer, pointer :: infc(:) => null()
+    character(len=24), pointer :: fcha(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
 !
     call jemarq()
 !              12345678
@@ -164,10 +167,10 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
 !
     else
 !
-        call jeveuo(excit//'.INFC', 'L', jinfc)
-        call jeveuo(excit//'.LCHA', 'L', jlcha)
-        call jeveuo(excit//'.FCHA', 'L', jfcha)
-        ncha=zi(jinfc)
+        call jeveuo(excit//'.INFC', 'L', vi=infc)
+        call jeveuo(excit//'.LCHA', 'L', vk24=lcha)
+        call jeveuo(excit//'.FCHA', 'L', vk24=fcha)
+        ncha=infc(1)
 !
         call jeexin(kcha//'.LCHA', iret)
         if (iret .ne. 0) then
@@ -181,11 +184,11 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
         in=0
         do i = 1, ncha
 !           ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
-            call dismoi('TYPE_CHARGE', zk24(jlcha+i-1), 'CHARGE', repk=k8b, arret='C',&
+            call dismoi('TYPE_CHARGE', lcha(i), 'CHARGE', repk=k8b, arret='C',&
                         ier=ie)
             if ((ie.eq.0) .and. (ctyp.eq.k8b(1:4))) then
-                zk8(icha+in)= zk24(jlcha+i-1)(1:8)
-                zk8(ikf+in) = zk24(jfcha+i-1)(1:8)
+                zk8(icha+in)= lcha(i)(1:8)
+                zk8(ikf+in) = fcha(i)(1:8)
                 in=in+1
             endif
         end do

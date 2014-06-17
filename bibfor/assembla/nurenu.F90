@@ -49,14 +49,18 @@ subroutine nurenu(nu, base)
 !                    (SAUF LE PROF_CHNO)
 !                BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 !
-    integer :: rang, nbproc, jpddl, jnequl, neql, iddl, nbrddl, jnbddl
-    integer :: iproc, nbddpr, jnequg, neqg, jnulg, decals, decald, iaux
-    integer :: jordjo, njoint, numpro, nbddlj, jjoint,  numddl
+    integer :: rang, nbproc,   neql, iddl, nbrddl, jnbddl
+    integer :: iproc, nbddpr,  neqg, jnulg, decals, decald, iaux
+    integer ::  njoint, numpro, nbddlj, jjoint,  numddl
     integer :: num
 !
     character(len=4) :: chnbjo
     character(len=24) ::  nonbdd, nojoin
     integer, pointer :: tmp(:) => null()
+    integer, pointer :: pddl(:) => null()
+    integer, pointer :: nequg(:) => null()
+    integer, pointer :: nequl(:) => null()
+    integer, pointer :: join(:) => null()
     mpi_int :: mrank, msize
     parameter    (nonbdd='&&NUPODD.NBDDL')
 !
@@ -66,15 +70,15 @@ subroutine nurenu(nu, base)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-    call jeveuo(nu//'.NUML.PDDL', 'L', jpddl)
-    call jeveuo(nu//'.NUML.NEQU', 'L', jnequl)
-    call jeveuo(nu//'.NUME.NEQU', 'L', jnequg)
-    neql=zi(jnequl)
-    neqg=zi(jnequg)
+    call jeveuo(nu//'.NUML.PDDL', 'L', vi=pddl)
+    call jeveuo(nu//'.NUML.NEQU', 'L', vi=nequl)
+    call jeveuo(nu//'.NUME.NEQU', 'L', vi=nequg)
+    neql=nequl(1)
+    neqg=nequg(1)
 !
     nbrddl=0
     do 10 iddl = 0, neql-1
-        if (zi(jpddl+iddl) .eq. rang) nbrddl=nbrddl+1
+        if (pddl(iddl+1) .eq. rang) nbrddl=nbrddl+1
 10  end do
     if ( nbrddl .eq. 0 ) call utmess('F', 'PETSC_17')
 !
@@ -95,17 +99,17 @@ subroutine nurenu(nu, base)
 !
     decald=1
     do 30 iddl = 0, neql-1
-        if (zi(jpddl+iddl) .eq. rang) then
+        if (pddl(iddl+1) .eq. rang) then
             zi(jnulg+iddl)=decals+decald
             decald=decald+1
         endif
 30  end do
 !
-    call jeveuo(nu//'.NUML.JOIN', 'L', jordjo)
+    call jeveuo(nu//'.NUML.JOIN', 'L', vi=join)
     call jelira(nu//'.NUML.JOIN', 'LONMAX', njoint)
 !
     do 40, iaux=0,njoint-1
-    numpro=zi(jordjo+iaux)
+    numpro=join(iaux+1)
     if (numpro .eq. -1) goto 40
 !
     num=iaux+1

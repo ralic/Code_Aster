@@ -40,14 +40,15 @@ subroutine mtdsc2(matas, objet, eoul, adress)
     character(len=19) :: mat
     character(len=14) :: nu
     character(len=4) :: obj
-    integer :: i1, i2, jrefa
+    integer :: i1, i2
+    character(len=24), pointer :: refa(:) => null()
 !
     mat=matas
     obj=objet
     ASSERT(obj(3:4).eq.'BL' .or. obj(3:4).eq.'DI' .or. obj(3:4).eq.'HC')
 !
-    call jeveuo(mat//'.REFA', eoul, jrefa)
-    nu=zk24(jrefa-1+2)
+    call jeveuo(mat//'.REFA', eoul, vk24=refa)
+    nu=refa(2)
 !
     call jeexin(nu//'.SMOS.SMDI', i1)
     call jeexin(nu//'.SLCS.SCDI', i2)

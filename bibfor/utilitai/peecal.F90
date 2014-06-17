@@ -75,10 +75,10 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !     IN  IOCC    : NUMERO DE L'OCCURENCE DE INTEGRALE
 !     ------------------------------------------------------------------
 !
-    integer :: iret, nbma, nbmai, i, jcesv, jcesl, jcesd, jpoiv, jpoil, jpoid
-    integer :: nucmp, jcesk, jcmpgd, ncmpm, iad, jintr, jintk, indma
+    integer :: iret, nbma, nbmai, i,  jcesl, jcesd,  jpoil, jpoid
+    integer :: nucmp,  jcmpgd, ncmpm, iad, jintr, jintk, indma
     integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara
-    integer :: jpdsm, ico, ind1, ind2, ifm, niv
+    integer ::  ico, ind1, ind2, ifm, niv
     real(kind=8) :: vol, val, inst, volpt
     complex(kind=8) :: cbid
     character(len=8) :: noma, k8b, typmcl(2), nomgd, nomva
@@ -87,6 +87,10 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     character(len=19) :: ligrel, cesout, cespoi
     character(len=24) :: mesmai, valk(3)
     logical :: exist
+    real(kind=8), pointer :: pdsm(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    real(kind=8), pointer :: poiv(:) => null()
 !
     call jemarq()
     cbid=(0.d0,0.d0)
@@ -166,19 +170,19 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     cespoi='&&PEECAL_POIDS_'//nomcha(1:4)
     call chpond(tych, dejain, chpost, cesout, cespoi,&
                 modele)
-    call jeveuo(cesout//'.CESV', 'L', jcesv)
+    call jeveuo(cesout//'.CESV', 'L', vr=cesv)
     call jeveuo(cesout//'.CESL', 'L', jcesl)
     call jeveuo(cesout//'.CESD', 'L', jcesd)
-    call jeveuo(cesout//'.CESK', 'L', jcesk)
-    call jeveuo(cespoi//'.CESV', 'L', jpoiv)
+    call jeveuo(cesout//'.CESK', 'L', vk8=cesk)
+    call jeveuo(cespoi//'.CESV', 'L', vr=poiv)
     call jeveuo(cespoi//'.CESL', 'L', jpoil)
     call jeveuo(cespoi//'.CESD', 'L', jpoid)
-    if (tych .ne. 'ELGA') call jeveuo(cespoi//'.PDSM', 'L', jpdsm)
+    if (tych .ne. 'ELGA') call jeveuo(cespoi//'.PDSM', 'L', vr=pdsm)
 !
 !
 ! --- RECUPERATION DE LA LISTE DES CMPS DU CATALOGUE :
 !     (POUR LA GRANDEUR VARI_* , IL FAUT CONSTITUER :(V1,V2,...,VN))
-    nomgd = zk8(jcesk-1+2)
+    nomgd = cesk(2)
     call jelira(cesout//'.CESC', 'LONMAX', ncmpm)
     if (nomgd(1:5) .ne. 'VARI_') then
         call jeveuo(cesout//'.CESC', 'L', jcmpgd)
@@ -217,19 +221,19 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
                 ASSERT(iad.ge.0)
                 if (iad .eq. 0) goto 35
 !
-                val=val+zr(jcesv-1+iad)
+                val=val+cesv(iad)
 !
                 if (tych .eq. 'ELGA') then
                     call cesexi('C', jpoid, jpoil, ima, ipt,&
                                 1, 1, iad)
                     ASSERT(iad.gt.0)
-                    volpt=zr(jpoiv-1+iad)
+                    volpt=poiv(iad)
                 else if (tych.eq.'ELEM') then
                     ASSERT(nbpt.eq.1)
-                    volpt=zr(jpdsm-1+ima)
+                    volpt=pdsm(ima)
                 else if (tych.eq.'ELNO') then
                     ASSERT(nbpt.ge.1)
-                    volpt=zr(jpdsm-1+ima)/nbpt
+                    volpt=pdsm(ima)/nbpt
                 endif
                 ico=ico+1
                 vol=vol+volpt

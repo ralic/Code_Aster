@@ -53,13 +53,15 @@ subroutine xtopoc(modele)
     character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: jnoma
     character(len=19) :: ligrel, chgeom
     character(len=19) :: lnno, grlnno, ltno, grltno, fissco, champ(7)
     logical :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
-    integer :: jcesd, jcesv, jcesl, iad, i, nbma, ima, jnbsp
+    integer :: jcesd,  jcesl, iad, i, nbma, ima
+    integer, pointer :: cesv(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: nbsp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,8 +71,8 @@ subroutine xtopoc(modele)
 ! --- INITIALISATIONS
 !
     ligrel = modele//'.MODELE'
-    call jeveuo(modele//'.MODELE    .LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
     chgeom = noma//'.COORDO'
     if (nivdbg .ge. 2) then
         debug = .true.
@@ -102,7 +104,7 @@ subroutine xtopoc(modele)
 ! --- POUR LE MULTI-HEAVISIDE, TOUS LES CHAMPS DE SORTIE SONT
 ! --- DUPLIQUÉS PAR LE NOMBRE DE FISSURES VUES
 !
-    call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
+    call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     licmp(1) = 'NPG_DYN'
     licmp(2) = 'NCMP_DYN'
@@ -111,7 +113,7 @@ subroutine xtopoc(modele)
         call cescre('V', champ(i), 'ELEM', noma, 'DCEL_I',&
                     2, licmp, [0], [-1], [-2])
         call jeveuo(champ(i)//'.CESD', 'L', jcesd)
-        call jeveuo(champ(i)//'.CESV', 'E', jcesv)
+        call jeveuo(champ(i)//'.CESV', 'E', vi=cesv)
         call jeveuo(champ(i)//'.CESL', 'E', jcesl)
 !
 ! --- REMPLISSAGE DES SOUS-POINTS DE CHAMP(I)
@@ -120,8 +122,8 @@ subroutine xtopoc(modele)
             call cesexi('S', jcesd, jcesl, ima, 1,&
                         1, 1, iad)
             zl(jcesl-1-iad) = .true.
-            zi(jcesv-1-iad) = zi(jnbsp-1+ima)
-            if (i .eq. 7) zi(jcesv-1-iad) = zi(jnbsp-1+ima)**2
+            cesv(1-1-iad) = nbsp(ima)
+            if (i .eq. 7) cesv(1-1-iad) = nbsp(ima)**2
         end do
 !
     end do

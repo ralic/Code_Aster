@@ -56,7 +56,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
 !     VARIABLES LOCALES:
 !-----------------------------------------------------------------------
-    integer :: i, iacnex, iacorr, ianema, iaptin, ibvec, icoj
+    integer :: i,  iacorr,   ibvec, icoj
     integer :: icok, ii, itymai, ivect, j, k, l
     integer :: maili, maille, nbelem, nbfois, nbrest, nmtot, numno
 !
@@ -69,6 +69,9 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !     COGIAS EST UN TAMPON POUR ECRIRE LA CONNECTIVITE DES MAILLES
 !        DANS L'ORDRE ASTER . (27 EST LE MAX DE NOEUDS POSSIBLE).
     integer :: cogias(27)
+    integer, pointer :: indirect(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: numanew(:) => null()
     data tymaas/    'POI1    ','SEG2    ','SEG3    ','TRIA3   ',&
      &     'TRIA6   ','QUAD4   ','QUAD8   ','QUAD9   ','TETRA4  ',&
      &     'TETRA10 ','PENTA6  ','PENTA15 ','HEXA8   ','HEXA20  ',&
@@ -84,14 +87,14 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
         call utmess('F', 'PREPOST_54')
     endif
 !
-    call jeveuo('&&GILIRE'//nomobj//'.CONNEX', 'L', iacnex)
-    call jeveuo('&&GILIRE.NUMANEW', 'E', ianema)
+    call jeveuo('&&GILIRE'//nomobj//'.CONNEX', 'L', vi=connex)
+    call jeveuo('&&GILIRE.NUMANEW', 'E', vi=numanew)
     call jelira('&&GILIRE.NUMANEW', 'LONUTI', nmtot)
     call jeexin('&&GILIRE.INDIRECT', ibid)
     if (ibid .eq. 0) then
         call utmess('F', 'PREPOST_55')
     endif
-    call jeveuo('&&GILIRE.INDIRECT', 'L', iaptin)
+    call jeveuo('&&GILIRE.INDIRECT', 'L', vi=indirect)
 !
     call jeexin('&&GILIRE.VECT', ibvec)
     if (ibvec .eq. 0) then
@@ -125,7 +128,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
 !
         icoma = icoma + 1
-        maille = zi(ianema-1+icoma)
+        maille = numanew(icoma)
 !
 !        -- SI LA MAILLE N'A PAS SON NUMERO INITIAL
 !           ET SI ELLE EST DEJA ECRITE ON SORT
@@ -137,10 +140,10 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
         if ((maille.ne.icoma) .and. (.not.(ecrma(maille)))) then
             if (zi(ivect+maille-1) .eq. 0) zi(ivect+maille-1) = icoma
             do 11 ii = 1, nmtot
-                maili = zi(ianema-1+ii)
+                maili = numanew(ii)
                 if (maili .eq. maille) then
-                    zi(ianema-1+ii)= zi(ivect+maille-1)
-                    ecrma(zi(ianema-1+ii))=.true.
+                    numanew(ii)= zi(ivect+maille-1)
+                    ecrma(numanew(ii))=.true.
                 endif
 11          continue
         endif
@@ -153,8 +156,8 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
 !        -- REMPLISSAGE DE COGIAS:
         do 10 j = 1, nbno
-            numno = zi(iacnex-1+nbno* (i-1)+j)
-            cogias(j) = zi(iaptin+numno-1)
+            numno = connex(nbno* (i-1)+j)
+            cogias(j) = indirect(numno)
 10      continue
 !
         nbfois = nbno/7

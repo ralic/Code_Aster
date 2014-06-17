@@ -68,10 +68,10 @@ subroutine macr78(nomres, trange, typres)
     logical :: lredu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iaconx, iadref, iaprno, iarc0, iarch
+    integer :: i,   iaprno, iarc0, iarch
     integer :: ibid, icmp,  iddl, im
     integer :: inoe, inu0, inum, iret, iretou, ivale, j
-    integer :: jinst,  jnume, jordr,  k, ldnew
+    integer :: jinst,  jnume,   k, ldnew
     integer :: linst, lnocm2, lnocmp, lpa2, lpar, n0
     integer :: n1, nbcham, nbec, nbinst, nbmdef, nbmdyn, nbmode
     integer :: nbndef, nbndyn, nbnoe, nbntot, nbtdyn, nec, neq
@@ -80,6 +80,9 @@ subroutine macr78(nomres, trange, typres)
     real(kind=8), pointer :: base(:) => null()
     character(len=8), pointer :: noecmp(:) => null()
     real(kind=8), pointer :: restr(:) => null()
+    integer, pointer :: lino(:) => null()
+    integer, pointer :: ordr(:) => null()
+    character(len=24), pointer :: mael_refe(:) => null()
 !-----------------------------------------------------------------------
     data nomcmp   /'DX      ','DY      ','DZ      ',&
      &               'DRX     ','DRY     ','DRZ     '/
@@ -97,8 +100,8 @@ subroutine macr78(nomres, trange, typres)
 !      CALL GETVTX ( ' ', 'REDUC' , 1,IARG,1, TREDU, N2 )
 !      IF (TREDU.EQ.'OUI') LREDU = .TRUE.
     call getvid(' ', 'MACR_ELEM_DYNA', scal=macrel, nbret=nmc)
-    call jeveuo(macrel//'.MAEL_REFE', 'L', iadref)
-    basemo = zk24(iadref)
+    call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
+    basemo = mael_refe(1)
     call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
                 cbid, rbid, k8b, tmod, 1,&
                 ibid)
@@ -152,7 +155,7 @@ subroutine macr78(nomres, trange, typres)
     endif
 !       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
     AS_ALLOCATE(vk8=noecmp, size=2*nbmode)
-    call jeveuo(macrel//'.LINO', 'L', iaconx)
+    call jeveuo(macrel//'.LINO', 'L', vi=lino)
     if (lredu) then
         nbtdyn = nbntot
     else
@@ -166,7 +169,7 @@ subroutine macr78(nomres, trange, typres)
     endif
 !
     do i = 1, nbtdyn
-        call jenuno(jexnum(mailla//'.NOMNOE', zi(iaconx+i-1)), nomnol)
+        call jenuno(jexnum(mailla//'.NOMNOE', lino(i)), nomnol)
         do j = 1, nec
             noecmp(1+2*nec*(i-1)+2*j-2) = nomnol
             noecmp(1+2*nec*(i-1)+2*j-1) = nomcmp(j)
@@ -212,7 +215,7 @@ subroutine macr78(nomres, trange, typres)
 !
     call jeexin(trange//'.ORDR', iret)
     if (iret .ne. 0) then
-        call jeveuo(trange//'.ORDR', 'L', jordr)
+        call jeveuo(trange//'.ORDR', 'L', vi=ordr)
 !
     endif
 !
@@ -235,7 +238,7 @@ subroutine macr78(nomres, trange, typres)
     do i = 1, nbcham
         do iarc0 = 1, nbinst
             inu0 = zi(jnume+iarc0-1)
-            inum = zi(jordr+inu0-1)
+            inum = ordr(inu0)
             iarch = iarc0-1
             call rsexch('F', nomin, champ(i)(1:4), inum, nomcha,&
                         iret)

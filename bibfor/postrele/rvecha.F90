@@ -77,13 +77,15 @@ subroutine rvecha(dim, epsi, ssch19, nbcp, nbco,&
     character(len=24) :: ntabf, ntabr
     character(len=4) :: docu
 !
-    integer :: atabf, atabr, apnco, apnsp, apnbn
+    integer :: atabf, atabr,   apnbn
     integer :: m, i, adr, nbpara, nbpt
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
 !-----------------------------------------------------------------------
     integer :: nbcm, nbco, nbsm, nbsp
+    integer, pointer :: pnco(:) => null()
+    integer, pointer :: pnsp(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ntabf = '&&RVECHD.NUM.FACE'
@@ -134,8 +136,8 @@ subroutine rvecha(dim, epsi, ssch19, nbcp, nbco,&
 !
     else
 !
-        call jeveuo(ssch19//'.PNCO', 'L', apnco)
-        call jeveuo(ssch19//'.PNSP', 'L', apnsp)
+        call jeveuo(ssch19//'.PNCO', 'L', vi=pnco)
+        call jeveuo(ssch19//'.PNSP', 'L', vi=pnsp)
         call jeveuo(ssch19//'.PNBN', 'L', apnbn)
 !
         do 200, i = 1, n, 1
@@ -146,8 +148,8 @@ subroutine rvecha(dim, epsi, ssch19, nbcp, nbco,&
         zr(atabr + 1-1) = ror(i)
         zr(atabr + 2-1) = rex(i)
 !
-        nbcm = zi(apnco + m-1)
-        nbsm = zi(apnsp + m-1)
+        nbcm = pnco(m)
+        nbsm = pnsp(m)
 !
         call rvchlo(epsi, ssch19, nbcp, nbco, nbsp,&
                     nbcm, nbsm, m, zi(atabf), nbpt,&

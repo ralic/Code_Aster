@@ -51,8 +51,14 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: alpha, eta, jeu
-    integer :: iadim, icst, iraid, ireg, ineqs, ityp, neqs, i, iorig
-    integer :: ijeu, ijmax
+    integer :: iadim, icst,     neqs, i
+    real(kind=8), pointer :: jeumax(:) => null()
+    real(kind=8), pointer :: raid(:) => null()
+    character(len=8), pointer :: type(:) => null()
+    real(kind=8), pointer :: orig(:) => null()
+    real(kind=8), pointer :: vjeu(:) => null()
+    integer, pointer :: vneqs(:) => null()
+    real(kind=8), pointer :: reg(:) => null()
 !
     call jemarq()
 ! ----------------------------------------------------------------------
@@ -68,29 +74,29 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc,&
 ! ----------------------------------------------------------------------
 ! --- EQUATION SUPPLEMENTAIRE POUR DEFINIR LA FORCE NON-LINEAIRE
 ! ----------------------------------------------------------------------
-    call jeveuo(parcho//'.RAID', 'L', iraid)
-    call jeveuo(parcho//'.REG', 'L', ireg)
-    call jeveuo(parcho//'.NEQS', 'L', ineqs)
-    call jeveuo(parcho//'.TYPE', 'L', ityp)
-    call jeveuo(parcho//'.ORIG', 'L', iorig)
-    call jeveuo(parcho//'.JEU', 'L', ijeu)
-    call jeveuo(parcho//'.JEUMAX', 'L', ijmax)
+    call jeveuo(parcho//'.RAID', 'L', vr=raid)
+    call jeveuo(parcho//'.REG', 'L', vr=reg)
+    call jeveuo(parcho//'.NEQS', 'L', vi=vneqs)
+    call jeveuo(parcho//'.TYPE', 'L', vk8=type)
+    call jeveuo(parcho//'.ORIG', 'L', vr=orig)
+    call jeveuo(parcho//'.JEU', 'L', vr=vjeu)
+    call jeveuo(parcho//'.JEUMAX', 'L', vr=jeumax)
     neqs=0
     do 110 i = 1, nchoc
-        alpha=zr(iraid-1+i)/zr(iadim)
-        eta=zr(ireg-1+i)
-        jeu=zr(ijeu-1+i)/zr(ijmax)
-        if (zk8(ityp-1+i)(1:7) .eq. 'CERCLE') then
+        alpha=raid(i)/zr(iadim)
+        eta=reg(i)
+        jeu=vjeu(i)/jeumax(1)
+        if (type(i)(1:7) .eq. 'CERCLE') then
 ! ---     -ORIG1^2 - ORIG2^2
-            zr(icst+nd*(2*h+1)+(neqs+2)*(2*hf+1))= -(zr(iorig+3*(i-1))&
-            /jeu)**2-(zr(iorig+3*(i-1)+1)/jeu)**2
+            zr(icst+nd*(2*h+1)+(neqs+2)*(2*hf+1))= -(orig(1+3*(i-1))&
+            /jeu)**2-(orig(1+3*(i-1)+1)/jeu)**2
 ! ---     ETA
             zr(icst+nd*(2*h+1)+(neqs+3)*(2*hf+1))=-eta
-        else if (zk8(ityp-1+i)(1:6).eq.'PLAN') then
+        else if (type(i)(1:6).eq.'PLAN') then
 ! ---     ETA
             zr(icst+nd*(2*h+1)+neqs*(2*hf+1))=-eta
         endif
-        neqs=neqs+zi(ineqs-1+i)
+        neqs=neqs+vneqs(i)
 110  continue
 ! ----------------------------------------------------------------------
 ! --- AUTRES EQUATIONS

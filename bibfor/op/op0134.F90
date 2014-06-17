@@ -40,12 +40,13 @@ subroutine op0134()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf, lnova, nbnova, lprol
+    integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf,  nbnova, lprol
     logical :: compl
     character(len=8) :: nopn, nopf
     character(len=16) :: nomcmd, typres
     character(len=19) :: nomfon, nomfin, listp, listf, typco
     character(len=24) :: noparp, noparf, valk(3)
+    character(len=8), pointer :: nova(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -77,12 +78,12 @@ subroutine op0134()
     if (typco(1:7) .eq. 'FORMULE') then
         if (typco(1:9) .eq. 'FORMULE_C') compl = .true.
         call jelira(nomfin//'.NOVA', 'LONUTI', nbnova)
-        call jeveuo(nomfin//'.NOVA', 'L', lnova)
+        call jeveuo(nomfin//'.NOVA', 'L', vk8=nova)
         if (nbnova .eq. 1) then
-            noparp = zk8(lnova)
+            noparp = nova(1)
         else if (nbnova .eq. 2) then
-            noparp = zk8(lnova)
-            noparf = zk8(lnova+1)
+            noparp = nova(1)
+            noparf = nova(2)
         endif
 !
     else if (typco(1:8).eq.'FONCTION') then

@@ -102,21 +102,35 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     character(len=24) :: kmaila, k24prn, knueq
     character(len=24) :: knulil, kvelil, kveref, kvedsc, nomli, kvale
     logical :: ldist, ldgrel, dbg
-    integer :: i, i1, iaconx, iad, iad1, iadlie, iadnem, ialcha
-    integer :: iamail, iancmp, ianmcr, ianueq, ianulo, iaprol, iapsdl, iasssa
-    integer :: ichar, icmp, iconx1, iconx2, iddesc, idlres
-    integer :: idprn1, idprn2, jresl, idveds, idverf, idvref, iec, iel
+    integer :: i, i1,  iad, iad1,   ialcha
+    integer :: iamail, iancmp,  ianueq, ianulo, iaprol, iapsdl
+    integer :: ichar, icmp,  iconx2
+    integer :: idprn1, idprn2, jresl, idveds, idverf,  iec, iel
     integer :: igr, il, ilim, ilimnu
     integer :: ilinu, ilive, ilivec, ima, imat, inold
-    integer :: iresu, iret, j, jec, jnumsd, jvale, k1
+    integer :: iresu, iret, j, jec,  jvale, k1
     integer :: lgncmp, mode, n1, nbchar, nbelm, nbnoss
     integer :: nbresu, nbsma, nbssa, ncmp, ncmpel, nddl1, nel, nequa
-    integer :: nm, nmxcmp, nnoe, nugd, numa, iexi, jrelr, k, jvale1, jvale2
+    integer :: nm, nmxcmp, nnoe, nugd, numa, iexi,  k, jvale1
     integer :: icodla(nbecmx), icodge(nbecmx), lshift
-    integer :: admodl, lcmodl, ifm, niv, rang, nbproc, jprti, jprtk
+    integer :: admodl, lcmodl, ifm, niv, rang, nbproc
 !
     real(kind=8) :: temps(6)
     integer :: vali(4)
+    character(len=24), pointer :: refe(:) => null()
+    character(len=24), pointer :: prtk(:) => null()
+    integer, pointer :: adli(:) => null()
+    integer, pointer :: conx(:) => null()
+    character(len=24), pointer :: lres(:) => null()
+    character(len=24), pointer :: relr(:) => null()
+    integer, pointer :: maille(:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: adne(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: sssa(:) => null()
+    character(len=8), pointer :: vnomacr(:) => null()
+    integer, pointer :: prti(:) => null()
     mpi_int :: mrank, msize
 !
 ! --- DEBUT ------------------------------------------------------------
@@ -157,8 +171,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     nudev=nu
     if (nudev(1:1) .eq. ' ') then
         vprof=vecpro
-        call jeveuo(vprof//'.REFE', 'L', idvref)
-        nudev=zk24(idvref-1+2)(1:14)
+        call jeveuo(vprof//'.REFE', 'L', vk24=refe)
+        nudev=refe(2)(1:14)
     endif
 !
 !
@@ -179,11 +193,11 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     endif
 !
 !
-    call jeveuo(vecas(1:19)//'.ADLI', 'E', iadlie)
-    call jeveuo(vecas(1:19)//'.ADNE', 'E', iadnem)
+    call jeveuo(vecas(1:19)//'.ADLI', 'E', vi=adli)
+    call jeveuo(vecas(1:19)//'.ADNE', 'E', vi=adne)
     call jeexin(ma(1:8)//'.CONNEX', iret)
     if (iret .gt. 0) then
-        call jeveuo(ma(1:8)//'.CONNEX', 'L', iconx1)
+        call jeveuo(ma(1:8)//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(ma(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
     endif
 !
@@ -231,17 +245,17 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-        call jeveuo(partit//'.PRTI', 'L', jprti)
-        if (zi(jprti) .ne. nbproc) then
-            vali(1)=zi(jprti)
+        call jeveuo(partit//'.PRTI', 'L', vi=prti)
+        if (prti(1) .ne. nbproc) then
+            vali(1)=prti(1)
             vali(2)=nbproc
             call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
         endif
 !
-        call jeveuo(partit//'.PRTK', 'L', jprtk)
-        ldgrel=zk24(jprtk-1+1) .eq. 'GROUP_ELEM'
+        call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+        ldgrel=prtk(1) .eq. 'GROUP_ELEM'
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
+            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
         endif
     endif
 !
@@ -275,7 +289,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
     call jeexin(ma//'.NOMACR', iret)
     if (iret .gt. 0) then
-        call jeveuo(ma//'.NOMACR', 'L', ianmcr)
+        call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
         call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
         icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
@@ -351,7 +365,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
             nomcas=' '
             call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
             call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
-            call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
+            call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
             call ssvalv('DEBUT', nomcas, mo, ma, 0,&
                         jresl, ncmpel)
             call jelira(vecel//'.RELC', 'NUTIOC', nbchar)
@@ -362,15 +376,15 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
                 do ima = 1, nbsma
 !             -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
-                    if (zi(iasssa-1+ima) .eq. 0) goto 80
+                    if (sssa(ima) .eq. 0) goto 80
                     if (zi(ialcha-1+ima) .eq. 0) goto 80
                     call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
                     call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
                     call ssvalv(' ', nomcas, mo, ma, ima,&
                                 jresl, ncmpel)
-                    nomacr=zk8(ianmcr-1+ima)
+                    nomacr=vnomacr(ima)
                     call dismoi('NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', repk=num2)
-                    call jeveuo(nomacr//'.CONX', 'L', iaconx)
+                    call jeveuo(nomacr//'.CONX', 'L', vi=conx)
                     call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprol)
                     il=0
                     do k1 = 1, nnoe
@@ -380,7 +394,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                 icodge(iec)=icodla(iec)
                             end do
                         else
-                            inold=zi(iaconx-1+3*(k1-1)+2)
+                            inold=conx(3*(k1-1)+2)
                             do iec = 1, nec
                                 icodge(iec)=zi(iaprol-1+(nec+&
                                         2)*(inold-1)+2+iec)
@@ -430,9 +444,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !            BOUCLE SUR LES RESU_ELEM
 !           ==========================
             call jelira(vecel//'.RELR', 'LONUTI', nbresu)
-            if (nbresu .gt. 0) call jeveuo(vecel//'.RELR', 'L', idlres)
+            if (nbresu .gt. 0) call jeveuo(vecel//'.RELR', 'L', vk24=lres)
             do iresu = 1, nbresu
-                resu=zk24(idlres+iresu-1)(1:19)
+                resu=lres(iresu)(1:19)
                 call jeexin(resu//'.NOLI', iexi)
                 if (iexi .eq. 0) goto 230
                 call jeveuo(resu//'.NOLI', 'L', iad)
@@ -444,21 +458,21 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !               ==========================
 !               BOUCLE SUR LES GRELS DU LIGREL
 !               ==========================
-                do igr = 1, zi(iadlie+3*(ilive-1))
+                do igr = 1, adli(1+3*(ilive-1))
                     if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 220
 !
 !               -- IL SE PEUT QUE LE GREL IGR SOIT VIDE :
                     call jaexin(jexnum(resu//'.RESL', igr), iexi)
                     if (iexi .eq. 0) goto 220
 !
-                    call jeveuo(resu//'.DESC', 'L', iddesc)
-                    mode=zi(iddesc+igr+1)
+                    call jeveuo(resu//'.DESC', 'L', vi=desc)
+                    mode=desc(1+igr+1)
 !
                     if (mode .gt. 0) then
                         nnoe=nbno(mode)
 !                       -- nel : nombre d'elements du grel igr
-                        nel=zi(zi(iadlie+3*(ilive-1)+2)+igr)-&
-                                zi(zi(iadlie+3*(ilive-1)+2)+igr-1)-1
+                        nel=zi(adli(1+3*(ilive-1)+2)+igr)-&
+                                zi(adli(1+3*(ilive-1)+2)+igr-1)-1
                         call jeveuo(jexnum(resu//'.RESL', igr), 'L', jresl)
                         ncmpel=digdel(mode)
 !
@@ -467,14 +481,14 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !                       =========================
                         do iel = 1, nel
 !                           NUMA : NUMERO DE LA MAILLE
-                            numa=zi(zi(iadlie+3*(ilive-1)+1)-&
-                                    1+ zi(zi(iadlie+3*(ilive-1)+2)+&
+                            numa=zi(adli(1+3*(ilive-1)+1)-&
+                                    1+ zi(adli(1+3*(ilive-1)+2)+&
                                     igr-1)+iel-1)
                             r=rcoef
 !
                             if (ldist .and. .not.ldgrel) then
                                 if (numa .gt. 0) then
-                                    if (zi(jnumsd-1+numa) .ne. rang) goto 210
+                                    if (maille(numa) .ne. rang) goto 210
                                 else
                                     if (rang .ne. 0) goto 210
                                 endif
@@ -483,7 +497,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                             if (numa .gt. 0) then
                                 il=0
                                 do k1 = 1, nnoe
-                                    n1=zi(iconx1-1+zi(iconx2+numa-&
+                                    n1=connex(zi(iconx2+numa-&
                                         1)+k1-1)
                                     iad1=zi(idprn1-1+zi(idprn2+&
                                         ilimnu-1)+ (n1-1)*(nec+2)+1-1)
@@ -546,8 +560,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                 numa=-numa
 !
 !                               -- N1 : NBRE DE NOEUDS DE LA MAILLE NUMA
-                                n1=zi(zi(iadnem+3*(ilive-1)+2)&
-                                        +numa)- zi(zi(iadnem+3*(&
+                                n1=zi(adne(1+3*(ilive-1)+2)&
+                                        +numa)- zi(adne(1+3*(&
                                         ilive-1)+2)+numa-1)-1
                                 if (nnoe .ne. n1) then
                                     valk(1)=vecel
@@ -563,8 +577,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                 il=0
                                 do k1 = 1, nnoe
 ! n1 : indice du noeuds ds le .nema du ligrel de charge
-                                    n1=zi(zi(iadnem+3*(ilive-1)+1)&
-                                        -1+ zi(zi(iadnem+3*(ilive-1)+&
+                                    n1=zi(adne(1+3*(ilive-1)+1)&
+                                        -1+ zi(adne(1+3*(ilive-1)+&
                                         2)+numa-1)+k1-1)
                                     if (n1 .lt. 0) then
 ! NOEUD TARDIF
@@ -685,10 +699,10 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         a19=tlivec(i)
         call jeexin(a19//'.RELR', iexi)
         if (iexi .eq. 0) goto 300
-        call jeveuo(a19//'.RELR', 'L', jrelr)
+        call jeveuo(a19//'.RELR', 'L', vk24=relr)
         call jelira(a19//'.RELR', 'LONUTI', n1)
         do k = 1, n1
-            b19=zk24(jrelr-1+k)(1:19)
+            b19=relr(k)(1:19)
             call jeexin(b19//'.VALE', iexi)
             if (iexi .gt. 0) then
                 call jeveuo(kvale, 'E', jvale1)
@@ -699,9 +713,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 call vtcreb(c19, nu, 'V', ktyp, nequa)
 !
                 call vtcopy(b19, c19, 'F', iret)
-                call jeveuo(c19//'.VALE', 'L', jvale2)
+                call jeveuo(c19//'.VALE', 'L', vr=vale)
                 do j = 1, nequa
-                    zr(jvale1-1+j)=zr(jvale1-1+j)+zr(jvale2-1+j)
+                    zr(jvale1-1+j)=zr(jvale1-1+j)+vale(j)
                 end do
                 call detrsd('CHAM_NO', c19)
             endif

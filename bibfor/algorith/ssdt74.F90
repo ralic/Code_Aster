@@ -86,17 +86,19 @@ subroutine ssdt74(nomres, nomcmd)
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifm, info, iparch, iret
     integer :: j1, jaccs, jadcho, jamog, jarch
-    integer :: jcoefm, jconl, jdcho, jdepl, jdeps, jfcho, jfond
+    integer :: jcoefm,  jdcho, jdepl, jdeps, jfcho, jfond
     integer :: jfonv, jiadve, jidesc, jinst, jinti, jinumo, jmasg
     integer :: jnoacc, jnodep, jnoec, jnomfo, jnovit, jordr, jparc
     integer :: jpard, jpass, jpsdel, jpsid, jpul2, jpuls, jraig
-    integer :: jranc, jredc, jredd, jrede, jrefa, jrevi, jscde
+    integer :: jranc, jredc, jredd, jrede, jrefa, jrevi
     integer :: jrevc, jrevv
     integer :: jvcho, jvec, jvecr, jvits, k, n1, namor
     integer :: nbbas, nbchoc, nbmode, nbmodi, nbmody, nbmost, nbpas
     integer :: nbrede, nbrevi, nbsauv, nbsst, neq, neqgen, nm
     integer :: nr, nv
     real(kind=8) :: deux, dtarch, omeg2, tfin, tinit
+    integer, pointer :: scde(:) => null()
+    real(kind=8), pointer :: conl(:) => null()
 !-----------------------------------------------------------------------
     data k8b/'        '/
     data mastem/'MASSTEMP'/
@@ -192,8 +194,8 @@ subroutine ssdt74(nomres, nomcmd)
         nbmody = nbmody + nbbas
     end do
     nbmost = nbmode - nbmody
-    call jeveuo(numgen//'.SLCS.SCDE', 'L', jscde)
-    neqgen = zi(jscde-1+1)
+    call jeveuo(numgen//'.SLCS.SCDE', 'L', vi=scde)
+    neqgen = scde(1)
 !
 !     --- RECOPIE DES GRANDEURS GENERALISEES ---
 !
@@ -316,9 +318,9 @@ subroutine ssdt74(nomres, nomcmd)
 ! ----- ON MODIFIE LE CONDITIONNEMENT POUR RENDRE CRITIQUE
 ! ----- L'AMORTISSEMENT ASSOCIE AUX "LAGRANGE"
 !
-        call jeveuo(amotem//'           .CONL', 'E', jconl)
+        call jeveuo(amotem//'           .CONL', 'E', vr=conl)
         do i = 1, neqgen
-            zr(jconl-1+i) = zr(jconl-1+i)/deux
+            conl(i) = conl(i)/deux
         end do
     endif
 !

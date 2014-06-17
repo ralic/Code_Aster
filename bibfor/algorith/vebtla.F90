@@ -69,11 +69,12 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
     character(len=16) :: option
     character(len=24) :: ligrch
     integer :: iret, nchar, ndir, icha
-    integer :: jchar, jinf
     character(len=8) :: modele
     character(len=19) :: depla, vecele
     integer :: ifmdbg, nivdbg
     logical :: debug
+    integer, pointer :: infc(:) => null()
+    character(len=24), pointer :: lcha(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,8 +104,8 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
     call jeexin(lischa(1:19)//'.LCHA', iret)
     if (iret .eq. 0) goto 9999
     call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
-    call jeveuo(lischa(1:19)//'.LCHA', 'L', jchar)
-    call jeveuo(lischa(1:19)//'.INFC', 'L', jinf)
+    call jeveuo(lischa(1:19)//'.LCHA', 'L', vk24=lcha)
+    call jeveuo(lischa(1:19)//'.INFC', 'L', vi=infc)
 !
 ! --- ALLOCATION DU VECT_ELEM RESULTAT :
 !
@@ -121,8 +122,8 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
 !
     ndir = 0
     do 10 icha = 1, nchar
-        if (zi(jinf+icha) .gt. 0) then
-            nomcha = zk24(jchar+icha-1)(1:8)
+        if (infc(icha+1) .gt. 0) then
+            nomcha = lcha(icha)(1:8)
             ligrch = nomcha // '.CHME.LIGRE'
             ndir = ndir + 1
             call codent(ndir, 'D0', masque(4:6))

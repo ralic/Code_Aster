@@ -51,10 +51,14 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
 ! IN  : VECASS : NOMS DES VECTEURS ASSEM  APPUIS
 !-----------------------------------------------------------------------
 !
-    integer :: iadpim, itrav1, iad, iadrmg, ilamod, iret, ilamst, i, ibid
-    integer :: idlre1, iad1, i4, i3, i2, i1
+    integer :: iadpim, itrav1, iad,   iret,  i, ibid
+    integer :: idlre1,  i4, i3, i2, i1
     real(kind=8) :: valfi
     character(len=8) :: veass1
+    integer, pointer :: listadrmodsta(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: massegene(:) => null()
+    integer, pointer :: listadrmode(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -62,10 +66,10 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
     call wkvect('&&OP0131.PIM', 'V V R8', napexc*nbmode, iadpim)
     call wkvect('&&OP0131.TRAV1', 'V V R8', nbddl, itrav1)
 !
-    call jeveuo('&&OP0131.MASSEGENE', 'E', iadrmg)
-    call jeveuo('&&OP0131.LISTADRMODE', 'E', ilamod)
+    call jeveuo('&&OP0131.MASSEGENE', 'E', vr=massegene)
+    call jeveuo('&&OP0131.LISTADRMODE', 'E', vi=listadrmode)
     call jeexin('&&OP0131.LISTADRMODSTA', iret)
-    if (iret .gt. 0) call jeveuo('&&OP0131.LISTADRMODSTA', 'E', ilamst)
+    if (iret .gt. 0) call jeveuo('&&OP0131.LISTADRMODSTA', 'E', vi=listadrmodsta)
 !
     call mtdscr(mtrmas)
     call jeveuo(mtrmas//'           .&INT', 'E', iad)
@@ -75,7 +79,7 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
 !
     if (excmod .eq. 'OUI') then
         do 12 i = 1, nbmode
-            zr(iadpim+(i-1)*nbmode+i-1) = 1.d0 / zr(iadrmg+i-1)
+            zr(iadpim+(i-1)*nbmode+i-1) = 1.d0 / massegene(i)
 12      continue
         goto 9999
     endif
@@ -83,7 +87,7 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
     do 233 i1 = 1, napexc
 !
         if (graexc .eq. 'DEPL_R') then
-            call mrmult('ZERO', iad, zr(zi(ilamst+i1-1)), zr(itrav1), 1,&
+            call mrmult('ZERO', iad, zr(listadrmodsta(i1)), zr(itrav1), 1,&
                         .true.)
         else if (nvasex .eq. 0) then
             call posddl('NUME_DDL', numer, noexit(i1), cpexit(i1), ibid,&
@@ -91,9 +95,9 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
             zr(itrav1-1+idlre1)=1
         else
             veass1 = vecass(i1)
-            call jeveuo(veass1//'           .VALE', 'L', iad1)
+            call jeveuo(veass1//'           .VALE', 'L', vr=vale)
             do 237 i4 = 1, nbddl
-                zr(itrav1-1+i4)=zr(iad1-1+i4)
+                zr(itrav1-1+i4)=vale(i4)
 237          continue
         endif
 !
@@ -103,21 +107,21 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
             if ((graexc.eq.'DEPL_R') .or. (nvasex.ne.0)) then
                 do 235,i3=1,nbddl
                 if (tymmec .eq. 'R') then
-                    valfi = zr(zi(ilamod+i2-1)+i3-1)
+                    valfi = zr(listadrmode(i2)+i3-1)
                 else if (tymmec .eq. 'C') then
-                    valfi = dble(zc(zi(ilamod+i2-1)+i3-1))
+                    valfi = dble(zc(listadrmode(i2)+i3-1))
                 endif
                 zr(ibid) = zr(ibid) + zr(itrav1+i3-1)*valfi
 235              continue
             else
                 if (tymmec .eq. 'R') then
-                    valfi = zr(zi(ilamod+i2-1)+idlre1-1)
+                    valfi = zr(listadrmode(i2)+idlre1-1)
                 else if (tymmec .eq. 'C') then
-                    valfi = dble(zc(zi(ilamod+i2-1)+idlre1-1))
+                    valfi = dble(zc(listadrmode(i2)+idlre1-1))
                 endif
                 zr(ibid) = valfi
             endif
-            zr(ibid) = zr(ibid) / zr(iadrmg+i2-1)
+            zr(ibid) = zr(ibid) / massegene(i2)
 234      continue
 233  end do
 !

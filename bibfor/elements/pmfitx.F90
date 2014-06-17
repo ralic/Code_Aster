@@ -37,7 +37,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !     OUT : GTO : G DE MATER TORSION SI ISW=1
 !     ------------------------------------------------------------------
 !
-    integer :: ncarfi, jacf, isicom
+    integer :: ncarfi, jacf
     real(kind=8) :: casec1(6)
     real(kind=8) :: zero, un, deux
     parameter (zero=0.0d+0,un=1.0d0,deux=2.d0)
@@ -48,6 +48,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
     character(len=8) :: materi, nomre4(4)
     integer :: codres(4)
     character(len=2) :: nomres(2)
+    integer, pointer :: cpri(:) => null()
 !     ------------------------------------------------------------------
     data nomre4/'RHO','RHO_F_IN','RHO_F_EX','CM'/
 !     ------------------------------------------------------------------
@@ -124,8 +125,8 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 ! ---  SI ITO=1 ON RECUPERE LE MATERIAU DE TORSION
     if (isw .eq. 1) then
 !
-        call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', isicom)
-        nbgfmx=zi(isicom+2)
+        call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
+        nbgfmx=cpri(3)
         materi=zk24(isdcom-1+nbgfmx*6+1)
         nomres(1) = 'E'
         nomres(2) = 'NU'

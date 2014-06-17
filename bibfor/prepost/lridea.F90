@@ -84,10 +84,9 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     real(kind=8) :: zero
     character(len=24) :: noojb
     real(kind=8) :: rbid, val(1000), iouf, masgen, amrge
-    integer :: lfinom, lfinum, lfipar, lfiloc, lfinbc, lficmp
     integer :: vali, nbval, iaux, ichamp
-    integer :: jcnsd, jcnsv, jcnsl, jcesd, jcesv, jcesl
-    integer :: nbrec, numdat, numch, jperm, iast, isup, jtypm, itype
+    integer ::  jcnsv, jcnsl, jcesd,  jcesl
+    integer :: nbrec, numdat, numch,  iast, isup,  itype
     integer :: inoide, inoast, ielast, ielide, knoide, knoast
     integer :: nbcmp, nbcmid, ich, icmp, nbcmp1, maxnod, lon1, versio
     integer :: irec, valatt, ifield, iord, ibid, ilu1
@@ -102,6 +101,16 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     character(len=16) :: nomch, noidea, concep, nomc2, nomcha
     character(len=19) :: chs, listr8, listis, ligrel, prchnd, prchn2, prchn3
     character(len=80) :: rec(20)
+    character(len=16), pointer :: fid_nom(:) => null()
+    character(len=8), pointer :: fid_cmp(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    integer, pointer :: typmail(:) => null()
+    integer, pointer :: fid_loc(:) => null()
+    integer, pointer :: fid_par(:) => null()
+    integer, pointer :: permuta(:) => null()
+    integer, pointer :: fid_nbc(:) => null()
+    integer, pointer :: fid_num(:) => null()
 !
     parameter (nbfiel=40,versio=5)
 ! ---------------------------------------------------------------------
@@ -122,13 +131,13 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbelem)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
 !
-    call jeveuo(noma//'.TYPMAIL', 'L', jtypm)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
 !- TABLEAU DE PERMUTATION POUR LES CONNECTIVITES DES MAILLES :
     call iradhs(versio)
-    call jeveuo('&&IRADHS.PERMUTA', 'L', jperm)
+    call jeveuo('&&IRADHS.PERMUTA', 'L', vi=permuta)
     call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1)
-    maxnod=zi(jperm-1+lon1)
+    maxnod=permuta(lon1)
 !
 !- CREATION DE LA STRUCTURE DE DONNEES FORMAT_IDEAS ---
 !
@@ -137,12 +146,12 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
 !- OUVERTURE EN LECTURE DES OBJETS COMPOSANTS LA SD FORMAT_IDEAS
 !
-    call jeveuo(noidea//'.FID_NOM', 'L', lfinom)
-    call jeveuo(noidea//'.FID_NUM', 'L', lfinum)
-    call jeveuo(noidea//'.FID_PAR', 'L', lfipar)
-    call jeveuo(noidea//'.FID_LOC', 'L', lfiloc)
-    call jeveuo(noidea//'.FID_CMP', 'L', lficmp)
-    call jeveuo(noidea//'.FID_NBC', 'L', lfinbc)
+    call jeveuo(noidea//'.FID_NOM', 'L', vk16=fid_nom)
+    call jeveuo(noidea//'.FID_NUM', 'L', vi=fid_num)
+    call jeveuo(noidea//'.FID_PAR', 'L', vi=fid_par)
+    call jeveuo(noidea//'.FID_LOC', 'L', vi=fid_loc)
+    call jeveuo(noidea//'.FID_CMP', 'L', vk8=fid_cmp)
+    call jeveuo(noidea//'.FID_NBC', 'L', vi=fid_nbc)
 !
 !- CREATION DE L'OBJET .REFD DANS LES MODE_MECA
 !- S'IL N'Y PAS DE PROFIL DE STOCKAGE PREDEFINI IL FAUT EN CREER UN
@@ -185,7 +194,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 ! CONFORME A CELUI PRESENT DANS LA SD FORMAT_IDEAS
 !
     do ich = 1, nbnoch
-        if (zi(lfinum-1+ich) .eq. numdat) goto 40
+        if (fid_num(ich) .eq. numdat) goto 40
     end do
     goto 10
 !
@@ -207,7 +216,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     chamok = .false.
     do ich = 1, nbnoch
         if (.not.chamok) then
-            valatt = zi(lfipar-1+ (ich-1)*800+(irec-1)*40+4)
+            valatt = fid_par((ich-1)*800+(irec-1)*40+4)
             if (valatt .eq. 9999) then
                 if (ichamp .eq. 0) nomcha='VARI_ELNO'
                 if (ichamp .eq. 2) nomcha='SIEF_ELNO'
@@ -217,15 +226,15 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 if (ichamp .eq. 11) nomcha='VITE'
                 if (ichamp .eq. 12) nomcha='ACCE'
                 if (ichamp .eq. 15) nomcha='PRES'
-                if (nomcha(1:3) .eq. zk16(lfinom-1+ich)(1:3)) then
-                    nomch = zk16(lfinom-1+ich)
+                if (nomcha(1:3) .eq. fid_nom(ich)(1:3)) then
+                    nomch = fid_nom(ich)
                     numch = ich
                     chamok = .true.
                 endif
             else
                 do irec = 1, nbrec
                     do ifield = 1, nbfiel
-                        valatt = zi(lfipar-1+ (ich-1)*800+ (irec-1)* 40+ifield)
+                        valatt = fid_par((ich-1)*800+ (irec-1)* 40+ifield)
                         if (valatt .ne. 9999) then
                             call decod1(rec, irec, ifield, valatt, trouve)
                             if (.not.trouve) goto 70
@@ -242,8 +251,8 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     if (.not.chamok) goto 10
 !
 !- TRAITEMENT DU NUMERO D'ORDRE, DE L'INSTANT OU DE LA FREQUENCE
-    irec = zi(lfiloc-1+ (numch-1)*12+1)
-    ifield = zi(lfiloc-1+ (numch-1)*12+2)
+    irec = fid_loc((numch-1)*12+1)
+    ifield = fid_loc((numch-1)*12+2)
     call decod2(rec, irec, ifield, 0, iord,&
                 rbid, trouve)
     if (.not.trouve) then
@@ -251,8 +260,8 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     endif
 !
     if (acces .eq. 'INST' .or. acces .eq. 'LIST_INST' .or. acce2 .eq. 'INST') then
-        irec = zi(lfiloc-1+ (numch-1)*12+3)
-        ifield = zi(lfiloc-1+ (numch-1)*12+4)
+        irec = fid_loc((numch-1)*12+3)
+        ifield = fid_loc((numch-1)*12+4)
         call decod2(rec, irec, ifield, 1, ibid,&
                     iouf, trouve)
         if (.not.trouve) then
@@ -261,8 +270,8 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     endif
 !
     if (acces .eq. 'FREQ' .or. acces .eq. 'LIST_FREQ' .or. acce2 .eq. 'FREQ') then
-        irec = zi(lfiloc-1+ (numch-1)*12+5)
-        ifield = zi(lfiloc-1+ (numch-1)*12+6)
+        irec = fid_loc((numch-1)*12+5)
+        ifield = fid_loc((numch-1)*12+6)
         call decod2(rec, irec, ifield, 1, ibid,&
                     iouf, trouve)
         if (.not.trouve) then
@@ -274,18 +283,18 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
     masgen=0.d0
     amrge=0.d0
 !---  NUME_MODE :
-    irec = zi(lfiloc-1+ (numch-1)*12+7)
-    ifield = zi(lfiloc-1+ (numch-1)*12+8)
+    irec = fid_loc((numch-1)*12+7)
+    ifield = fid_loc((numch-1)*12+8)
     call decod2(rec, irec, ifield, 0, numode,&
                 rbid, trouve)
 !---  MASS_GENE :
-    irec = zi(lfiloc-1+ (numch-1)*12+9)
-    ifield = zi(lfiloc-1+ (numch-1)*12+10)
+    irec = fid_loc((numch-1)*12+9)
+    ifield = fid_loc((numch-1)*12+10)
     call decod2(rec, irec, ifield, 1, ibid,&
                 masgen, trouve)
 !---  AMOR_GENE :
-    irec = zi(lfiloc-1+ (numch-1)*12+11)
-    ifield = zi(lfiloc-1+ (numch-1)*12+12)
+    irec = fid_loc((numch-1)*12+11)
+    ifield = fid_loc((numch-1)*12+12)
     call decod2(rec, irec, ifield, 2, ibid,&
                 amrge, trouve)
 !
@@ -371,13 +380,13 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
 !- CREATION DES CHAMPS SIMPLES NOEUDS ET ELEMENTS
 !
-        nbcmp = zi(lfinbc-1+numch)
+        nbcmp = fid_nbc(numch)
 !
         nbcmp1 = 0
         do icmp = 1, nbcmp
-            if (zk8(lficmp-1+ (numch-1)*1000+icmp) .ne. 'XXX') then
+            if (fid_cmp((numch-1)*1000+icmp) .ne. 'XXX') then
                 nbcmp1 = nbcmp1 + 1
-                licmp(nbcmp1) = zk8(lficmp-1+ (numch-1)*1000+icmp)
+                licmp(nbcmp1) = fid_cmp((numch-1)*1000+icmp)
             endif
         end do
 !
@@ -403,7 +412,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 ! --- LECTURE DU CHAMP NOEUDS
 !
         if (tychid .eq. 'NOEU') then
-            call jeveuo(chs//'.CNSD', 'E', jcnsd)
+            call jeveuo(chs//'.CNSD', 'E', vi=cnsd)
             call jeveuo(chs//'.CNSV', 'E', jcnsv)
             call jeveuo(chs//'.CNSL', 'E', jcnsl)
 !
@@ -449,13 +458,13 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 call utmess('F', 'PREPOST5_45', si=vali)
             endif
 !
-            idecal = (inoast-1)*zi(jcnsd-1+2)
+            idecal = (inoast-1)*cnsd(2)
             if (zcmplx) then
                 read (mfich,'(6E13.5)',end=160) (val(i),i=1,2*nbcmid)
                 icmp1 = 0
                 do icmp = 1, nbcmp
                     icmp2 = icmp*2
-                    if (zk8(lficmp-1+ (numch-1)*1000+icmp) .ne. 'XXX') then
+                    if (fid_cmp((numch-1)*1000+icmp) .ne. 'XXX') then
                         icmp1 = icmp1 + 1
                         zc(jcnsv-1+idecal+icmp1) = dcmplx( val(icmp2-1) , val(icmp2))
                         zl(jcnsl-1+idecal+icmp1) = .true.
@@ -465,7 +474,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 read (mfich,'(6E13.5)',end=160) (val(i),i=1,nbcmid)
                 icmp1 = 0
                 do icmp = 1, nbcmp
-                    if (zk8(lficmp-1+ (numch-1)*1000+icmp) .ne. 'XXX') then
+                    if (fid_cmp((numch-1)*1000+icmp) .ne. 'XXX') then
                         icmp1 = icmp1 + 1
                         zr(jcnsv-1+idecal+icmp1) = val(icmp)
                         zl(jcnsl-1+idecal+icmp1) = .true.
@@ -477,7 +486,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !
         else if (tychid.eq.'ELNO') then
             call jeveuo(chs//'.CESD', 'L', jcesd)
-            call jeveuo(chs//'.CESV', 'E', jcesv)
+            call jeveuo(chs//'.CESV', 'E', vr=cesv)
             call jeveuo(chs//'.CESL', 'E', jcesl)
 !
 120         continue
@@ -496,13 +505,13 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 vali = ielast
                 call utmess('F', 'PREPOST5_46', si=vali)
             endif
-            itype=zi(jtypm-1+ielast)
+            itype=typmail(ielast)
 !
             do knoide = 1, nbnoe
 !
 !           -- CALCUL DE KNOAST :
                 do iast = 1, nbnoe
-                    isup=zi(jperm-1+maxnod*(itype-1)+iast)
+                    isup=permuta(maxnod*(itype-1)+iast)
                     if (isup .eq. knoide) goto 142
                 end do
                 call utmess('F', 'PREPOST3_40')
@@ -512,11 +521,11 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 read (mfich,'(6E13.5)',end=160) (val(i),i=1,nbcmid)
                 icmp1 = 0
                 do icmp = 1, nbcmp
-                    if (zk8(lficmp-1+ (numch-1)*1000+icmp) .ne. 'XXX') then
+                    if (fid_cmp((numch-1)*1000+icmp) .ne. 'XXX') then
                         icmp1 = icmp1 + 1
                         call cesexi('S', jcesd, jcesl, ielast, knoast,&
                                     1, icmp1, kk)
-                        zr(jcesv-1+abs(kk)) = val(icmp)
+                        cesv(abs(kk)) = val(icmp)
                         zl(jcesl-1+abs(kk)) = .true.
                     endif
                 end do

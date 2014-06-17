@@ -37,9 +37,11 @@ subroutine peenc2(champ, rcoef)
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: ibid, nbgr, i, j, k, indic
-    integer :: lcelk, jceld, lvale, mode, longt, nel, idecgr, icoef
+    integer ::   lvale, mode, longt, nel, idecgr, icoef
     character(len=4) :: docu
     character(len=19) :: champ2, ligrel
+    integer, pointer :: celd(:) => null()
+    character(len=24), pointer :: celk(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     champ2 = champ
@@ -54,10 +56,10 @@ subroutine peenc2(champ, rcoef)
     if (docu .ne. 'CHML') then
         call utmess('F', 'CALCULEL3_52')
     endif
-    call jeveuo(champ2//'.CELK', 'L', lcelk)
-    ligrel = zk24(lcelk)(1:19)
+    call jeveuo(champ2//'.CELK', 'L', vk24=celk)
+    ligrel = celk(1)(1:19)
 !
-    call jeveuo(champ2//'.CELD', 'L', jceld)
+    call jeveuo(champ2//'.CELD', 'L', vi=celd)
 !
 !     --- ON NE VERIFIE PAS LES LONGUEURS, CAR ELLES SONT DIFFERENTES
 !         SUIVANT LE TYPE D'ELEMENT.
@@ -66,12 +68,12 @@ subroutine peenc2(champ, rcoef)
 !
     call jeveuo(champ2//'.CELV', 'E', lvale)
     do 30 j = 1, nbgr
-        mode=zi(jceld-1+zi(jceld-1+4+j) +2)
+        mode=celd(celd(4+j) +2)
         if (mode .eq. 0) goto 30
-        icoef=max(1,zi(jceld-1+4))
+        icoef=max(1,celd(4))
         longt = digdel(mode) * icoef
         nel = nbelem( ligrel, j )
-        idecgr=zi(jceld-1+zi(jceld-1+4+j)+8)
+        idecgr=celd(celd(4+j)+8)
         do 32 k = 1, nel
 !
 !            --- TOTALE ---

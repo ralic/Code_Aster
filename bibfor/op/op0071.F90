@@ -36,7 +36,7 @@ subroutine op0071()
 #include "asterfort/projmr.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
-    integer :: ibid, n1, n2, n3, n4, nbmode(1), neq, jsmde
+    integer :: ibid, n1, n2, n3, n4, nbmode(1), neq
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typmat
@@ -45,6 +45,7 @@ subroutine op0071()
     character(len=16) :: typres, nomcom, typbas
     character(len=14) :: nugene
     character(len=24) :: matric
+    integer, pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -75,8 +76,8 @@ subroutine op0071()
 !
 ! RECUPERATION DU NOMBRE DE MODES REDUIT,
 ! NB_VECT DONNE PAR NUME_DDL_GENE
-    call jeveuo(nugene//'.SMOS.SMDE', 'L', jsmde)
-    nbmode(1) = zi(jsmde-1+1)
+    call jeveuo(nugene//'.SMOS.SMDE', 'L', vi=smde)
+    nbmode(1) = smde(1)
 !
 !
     call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdd1)

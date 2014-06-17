@@ -53,18 +53,20 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
     integer :: vali(2)
     character(len=24) :: valk
 !
-    integer :: jcesv, jcesd, jcesl, nbcmp, decma, decmb, icmp, iad, in, imb
+    integer ::   jcesl, nbcmp, decma, decmb, icmp, iad, in, imb
     real(kind=8) :: ec, e, nu, alpha, ea, alphaa, eb, alphab
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: cesd(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
 ! --- LE CHAMP MATERIAU
 !
-    call jeveuo(chmate(1:19)//'.CESV', 'L', jcesv)
-    call jeveuo(chmate(1:19)//'.CESD', 'L', jcesd)
+    call jeveuo(chmate(1:19)//'.CESV', 'L', vr=cesv)
+    call jeveuo(chmate(1:19)//'.CESD', 'L', vi=cesd)
     call jeveuo(chmate(1:19)//'.CESL', 'L', jcesl)
-    nbcmp = zi(jcesd-1+2)
-    decma = zi(jcesd-1+5+4*(ima-1)+4)
+    nbcmp = cesd(2)
+    decma = cesd(5+4*(ima-1)+4)
 !
 ! --- LE MATERIAU : E   TEMPERATURE CALCUL
 !
@@ -76,7 +78,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'E CALCUL'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    ec = zr(jcesv-1+iad)
+    ec = cesv(iad)
 !
 ! --- LE MATERIAU : E   TEMPERATURE AMBIANTE
 !
@@ -88,7 +90,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'E AMBIANT'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    e = zr(jcesv-1+iad)
+    e = cesv(iad)
 !
 ! --- LE MATERIAU : NU
 !
@@ -100,7 +102,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'NU'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    nu = zr(jcesv-1+iad)
+    nu = cesv(iad)
 !
 ! --- LE MATERIAU : ALPHA
 !
@@ -112,7 +114,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'ALPHA'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    alpha = zr(jcesv-1+iad)
+    alpha = cesv(iad)
 !
 ! --- TRAITEMENT DE LA DISCONTINUITE, A GAUCHE ET A DROITE DU NOEUD
 !
@@ -137,7 +139,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
 104      continue
         call utmess('F', 'POSTRCCM_19')
 106      continue
-        decmb = zi(jcesd-1+5+4*(imb-1)+4)
+        decmb = cesd(5+4*(imb-1)+4)
         icmp = 2
         iad = decmb + (ipt-1)*nbcmp + icmp
         if (.not. zl(jcesl-1+iad)) then
@@ -146,7 +148,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
             valk = 'E_B'
             call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
         endif
-        eb = zr(jcesv-1+iad)
+        eb = cesv(iad)
         icmp = 4
         iad = decmb + (ipt-1)*nbcmp + icmp
         if (.not. zl(jcesl-1+iad)) then
@@ -155,7 +157,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
             valk = 'ALPHA_B'
             call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
         endif
-        alphab = zr(jcesv-1+iad)
+        alphab = cesv(iad)
     endif
 !
     vale(1) = ec
@@ -178,7 +180,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'E_REFE'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    vale(10) = zr(jcesv-1+iad)
+    vale(10) = cesv(iad)
 !
 ! --- LE MATERIAU : SM
 !
@@ -190,7 +192,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'SM'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    vale(11) = zr(jcesv-1+iad)
+    vale(11) = cesv(iad)
 !
 ! --- LE MATERIAU : M
 !
@@ -202,7 +204,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'M'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    vale(12) = zr(jcesv-1+iad)
+    vale(12) = cesv(iad)
 !
 ! --- LE MATERIAU : N
 !
@@ -214,7 +216,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'N'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    vale(13) = zr(jcesv-1+iad)
+    vale(13) = cesv(iad)
 !
 !
 ! --- TYPE DE KE
@@ -227,7 +229,7 @@ subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
         valk = 'TYPEKE'
         call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
     endif
-    vale(14) = zr(jcesv-1+iad)
+    vale(14) = cesv(iad)
 !
     call jedema()
 end subroutine

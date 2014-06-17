@@ -51,13 +51,16 @@ subroutine gverlc(resu, compor, iord0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, jresv, jresd, jresl, jresk, jcalv, jcald, jcall, jcalk
+    integer :: iret,  jresd, jresl, jresk,  jcald, jcall
     integer :: nbma, iadr, iadc, ima, cldc, celasto, cdefdiffat, cdefnook,cdefdifal
     character(len=8) :: noma, nomail
     character(len=6) :: lcham(3)
     character(len=16) :: valk(3),option
     character(len=19) :: chresu, chcalc, chtmp
     character(len=19) :: compor_resu
+    character(len=16), pointer :: calv(:) => null()
+    character(len=16), pointer :: resv(:) => null()
+    character(len=8), pointer :: calk(:) => null()
 !
     data  lcham/ 'RELCOM', 'DEFORM', 'INCELA'/
 !
@@ -89,11 +92,11 @@ subroutine gverlc(resu, compor, iord0)
     call detrsd('CHAM_ELEM_S', chtmp)
 !
     call jeveuo(chcalc//'.CESD', 'L', jcald)
-    call jeveuo(chcalc//'.CESV', 'L', jcalv)
+    call jeveuo(chcalc//'.CESV', 'L', vk16=calv)
     call jeveuo(chcalc//'.CESL', 'L', jcall)
-    call jeveuo(chcalc//'.CESK', 'L', jcalk)
+    call jeveuo(chcalc//'.CESK', 'L', vk8=calk)
 !
-    noma = zk8(jcalk-1+1)
+    noma = calk(1)
     nbma = zi(jcald-1+1)
 !
 ! - COMPOR <CARTE> in result
@@ -107,7 +110,7 @@ subroutine gverlc(resu, compor, iord0)
                     'V', chresu)
         call detrsd('CHAM_ELEM_S', chtmp)
         call jeveuo(chresu//'.CESD', 'L', jresd)
-        call jeveuo(chresu//'.CESV', 'L', jresv)
+        call jeveuo(chresu//'.CESV', 'L', vk16=resv)
         call jeveuo(chresu//'.CESL', 'L', jresl)
         call jeveuo(chresu//'.CESK', 'L', jresk)
     endif
@@ -128,12 +131,12 @@ subroutine gverlc(resu, compor, iord0)
             call cesexi('C', jcald, jcall, ima, 1,&
                         1, 1, iadc)
             if (iadc .gt. 0) then
-                if (zk16(jcalv+iadc-1) .eq. 'ELAS') then
+                if (calv(iadc) .eq. 'ELAS') then
                     goto 10
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
                     valk(1) = 'ELAS'
-                    valk(2) = zk16(jcalv+iadc-1)
+                    valk(2) = calv(iadc)
                     valk(3) = nomail
                     if (cldc .eq. 0) then
                         call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
@@ -166,21 +169,21 @@ subroutine gverlc(resu, compor, iord0)
 !
 ! SI LA LDC DANS SNL EST COMP_INC, ON EMMET UNE ALAMRE
         if (iadr .gt. 0) then
-!!            if (zk16(jresv+iadr-1+2)(1:9) .eq. 'COMP_INCR') then
-                if (zk16(jresv+iadr-1)(1:4) .eq. 'VMIS') then
+!!            if (resv(1+iadr-1+2)(1:9) .eq. 'COMP_INCR') then
+                if (resv(iadr)(1:4) .eq. 'VMIS') then
                     if ((celasto .eq. 0).and.(option.ne.'CALC_GTP')) then
                       call utmess('A', 'RUPTURE1_47')
                       celasto=1
                     end if
                 else
-                    if ((zk16(jresv+iadr-1)(1:4) .ne. 'ELAS') .and. &
+                    if ((resv(iadr)(1:4) .ne. 'ELAS') .and. &
                          (celasto .eq. 0).and.(option.ne.'CALC_GTP')) then
                        call utmess('F', 'RUPTURE1_47')
                        celasto=1
                     endif
 !                    Si option= GTP et resolution en ELAS_XXX ---> Erreur Fatal
-                    if ((option.eq.'CALC_GTP').and.(zk16(jresv+iadr-1)(1:4) .eq. 'ELAS'))then
-                        valk(1)= zk16(jresv+iadr-1)
+                    if ((option.eq.'CALC_GTP').and.(resv(iadr)(1:4) .eq. 'ELAS'))then
+                        valk(1)= resv(iadr)
                         call utmess('F', 'RUPTURE1_40', nk=1,valk=valk)
                     end if
                 endif
@@ -189,17 +192,17 @@ subroutine gverlc(resu, compor, iord0)
 !
             if (iadc .gt. 0 .and. iadr .gt. 0) then
 !
-                if (zk16(jresv+iadr-1) .eq. zk16(jcalv+iadc-1)) then
+                if (resv(iadr) .eq. calv(iadc)) then
 !-------------If same deformation -> check validity
 !
-                    if (zk16(jresv+iadr-1+1) .eq. zk16(jcalv+iadc-1+1)) then
-                        if  (zk16(jcalv+iadc-1+1)(1:5) .eq.'PETIT') then
+                    if (resv(1+iadr-1+1) .eq. calv(1+iadc-1+1)) then
+                        if  (calv(1+iadc-1+1)(1:5) .eq.'PETIT') then
 !--------------------Validity OK
                            goto 20
                         else
 !--------------------Validity NOOK-> Fatal Error
                            call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-                           valk(1)=zk16(jresv+iadr-1+1)
+                           valk(1)=resv(1+iadr-1+1)
                            valk(2)=nomail
                            if (cdefnook .eq. 0) then
                                call  utmess('F', 'RUPTURE1_3', nk=2, valk=valk)
@@ -209,10 +212,10 @@ subroutine gverlc(resu, compor, iord0)
                     else
 !--------------If not same deformation
                         call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-                        valk(1)=zk16(jresv+iadr-1+1)
-                        valk(2)=zk16(jcalv+iadc-1+1)
+                        valk(1)=resv(1+iadr-1+1)
+                        valk(2)=calv(1+iadc-1+1)
                         valk(3)=nomail
-                        if (zk16(jcalv+iadc-1+1) .eq.'PETIT') then
+                        if (calv(1+iadc-1+1) .eq.'PETIT') then
 !---------------deformation set to PETIT in order to compute G
 !---------------could be licite -> Alarm
                             if (cdefdifal .eq. 0) then 
@@ -234,8 +237,8 @@ subroutine gverlc(resu, compor, iord0)
 ! ----------------- If not same comportment -> Alarm and check deformation validity
 !
                     call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-                    valk(1)=zk16(jresv+iadr-1)
-                    valk(2)=zk16(jcalv+iadc-1)
+                    valk(1)=resv(iadr)
+                    valk(2)=calv(iadc)
                     valk(3)=nomail
                     if (cldc .eq. 0) then
                        call utmess('A', 'RUPTURE1_42', nk=3, valk=valk)
@@ -244,11 +247,11 @@ subroutine gverlc(resu, compor, iord0)
                     if ((option.eq.'CALC_G').and.(valk(2)(1:4).ne.'ELAS'))then
                         call utmess('F', 'RUPTURE1_49', nk=2, valk=valk)
                     endif
-                    if (zk16(jresv+iadr-1+1) .eq. zk16(jcalv+iadc-1+1)) then
-                        if  (zk16(jcalv+iadc-1+1)(1:5) .ne.'PETIT') then
+                    if (resv(1+iadr-1+1) .eq. calv(1+iadc-1+1)) then
+                        if  (calv(1+iadc-1+1)(1:5) .ne.'PETIT') then
 ! ------------------Same non licite deformation -> Fatal Error
                            call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-                           valk(1)=zk16(jresv+iadr-1+1)
+                           valk(1)=resv(1+iadr-1+1)
                            valk(2)=nomail
                            if (cdefnook .eq. 0) then
                               call  utmess('F', 'RUPTURE1_3', nk=2, valk=valk)
@@ -258,10 +261,10 @@ subroutine gverlc(resu, compor, iord0)
                     else
 ! ----------Non same deformation -> Check validity
                       call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
-                      valk(1)=zk16(jresv+iadr-1+1)
-                      valk(2)=zk16(jcalv+iadc-1+1)
+                      valk(1)=resv(1+iadr-1+1)
+                      valk(2)=calv(1+iadc-1+1)
                       valk(3)=nomail
-                      if (zk16(jcalv+iadc-1+1) .eq.'PETIT') then
+                      if (calv(1+iadc-1+1) .eq.'PETIT') then
 !----------Deformation set to PETIT in order to compute G
 !----------Could be licite -> Alarm
                         if (cdefdifal .eq. 0) then 

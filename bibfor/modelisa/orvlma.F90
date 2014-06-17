@@ -52,7 +52,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
 !    NOEUD          IN    I       NOEUD D'ORIENTATION
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: idtyma, nutyma, lori, jori, nori, kori, iliste
+    integer ::  nutyma, lori, jori, nori, kori, iliste
     integer :: ima, numail, numa, norieg, lliste, zero, ibid(1)
     integer :: im1, im2, ico
     integer :: p1, p2, ifm, niv, p3, p4
@@ -64,6 +64,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
     character(len=8) :: typel, nomail
     character(len=24) :: mailma, nomavo
     character(len=24) :: valk(2)
+    integer, pointer :: typmail(:) => null()
 !
 #define pasori(ima) zi(lori-1+ima).eq.0
 !
@@ -78,7 +79,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
 !
 ! --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
 !     ---------------------------------------
-    call jeveuo(noma//'.TYPMAIL', 'L', idtyma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
 ! --- COORDONNEES DES NOEUDS DU MAILLAGE :
 !     ----------------------------------
@@ -111,7 +112,7 @@ subroutine orvlma(noma, listma, nbmail, norien, vect,&
 !
 ! ---   TYPE DE LA MAILLE COURANTE :
 !       --------------------------
-        nutyma = zi(idtyma+numa-1)
+        nutyma = typmail(numa)
         call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
 !
         if (typel(1:4) .eq. 'QUAD') then

@@ -68,7 +68,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !     ------------------------------------------------------------------
     integer :: ior, ich, iret, nbma, i
     integer :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
-    integer :: jcoor, jconx, jpoin, jpara, iad
+    integer ::   jpoin, jpara, iad
     character(len=8) :: tych, noma, k8b, nomaou, valk(2)
     character(len=16) :: valk2(2)
     character(len=19) :: noch19, noco19
@@ -79,6 +79,8 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
     integer :: nbel(ntyele)
     character(len=24) :: nobj(ntyele)
+    integer, pointer :: connex(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -166,8 +168,8 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
     call irgmma(noma, nomaou, nbmat, nummai, 'V',&
                 nobj, nbel, versio)
 !
-    call jeveuo(nomaou//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(nomaou//'.CONNEX', 'L', jconx)
+    call jeveuo(nomaou//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(nomaou//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(nomaou//'.CONNEX', 'LONCUM'), 'L', jpoin)
 !
 !
@@ -194,7 +196,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
 !
         if (tych(1:4) .eq. 'NOEU') then
             call irgmcn(cham(ich), partie, ifi, nomcon, ordr,&
-                        nbordr, zr(jcoor), zi(jconx), zi(jpoin), nobj,&
+                        nbordr, vale, connex, zi(jpoin), nobj,&
                         nbel, nbcmp, nomcmp, lresu, zr(jpara),&
                         versio, tycha)
 !
@@ -208,7 +210,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                 tycha='SCALAIRE'
             endif
             call irgmce(cham(ich), partie, ifi, nomcon, ordr,&
-                        nbordr, zr(jcoor), zi(jconx), zi(jpoin), nobj,&
+                        nbordr, vale, connex, zi(jpoin), nobj,&
                         nbel, nbcmp, nomcmp, lresu, zr(jpara),&
                         nomaou, noma, versio, tycha)
 !
@@ -222,7 +224,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
                 call utmess('A', 'PREPOST6_35', nk=2, valk=valk)
             endif
             call irgmcg(cham(ich), partie, ifi, nomcon, ordr,&
-                        nbordr, zr(jcoor), zi(jconx), zi(jpoin), nobj,&
+                        nbordr, vale, connex, zi(jpoin), nobj,&
                         nbel, nbcmp, nomcmp, lresu, zr(jpara),&
                         nomaou, versio)
 !

@@ -71,9 +71,12 @@ subroutine nurota(numedd, compor, sdnuro)
     integer :: nlili, nbno, nequa, nbnoc
     integer :: iret, ico
     integer :: ima, igd, ino, idebgd, idrz, i, k, inoc, ival, iadg
-    integer :: itrav, idesc, ivale, iptma, iconex
+    integer :: itrav,    iconex
     integer :: indro, iancmp, ianueq, iaprno
     integer :: ifm, niv, nbgr, igr, te, nbelgr, liel, iel
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: ptma(:) => null()
+    character(len=16), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -120,8 +123,8 @@ subroutine nurota(numedd, compor, sdnuro)
 ! --- RECUPERATION DE LA GRANDEUR (ICI COMPOR)
 ! --- REFERENCEE PAR LA CARTE COMPOR
 !
-    call jeveuo(compor(1:19)//'.DESC', 'L', idesc)
-    ngdmax = zi(idesc+2-1)
+    call jeveuo(compor(1:19)//'.DESC', 'L', vi=desc)
+    ngdmax = desc(2)
 !
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR
 !
@@ -130,12 +133,12 @@ subroutine nurota(numedd, compor, sdnuro)
 ! --- TABLEAU DE VALEURS DE LA CARTE COMPOR
 ! --- (CONTENANT LES VALEURS DU COMPORTEMENT)
 !
-    call jeveuo(compor(1:19)//'.VALE', 'L', ivale)
+    call jeveuo(compor(1:19)//'.VALE', 'L', vk16=vale)
 !
 ! --- RECUPERATION DU VECTEUR D'ADRESSAGE DANS LA CARTE
 ! --- CREE PAR ETENCA
 !
-    call jeveuo(compor(1:19)//'.PTMA', 'L', iptma)
+    call jeveuo(compor(1:19)//'.PTMA', 'L', vi=ptma)
 !
 ! --- AFFECTATION DU TABLEAU DES NOEUDS EN GRANDES ROTATIONS
 !
@@ -150,17 +153,17 @@ subroutine nurota(numedd, compor, sdnuro)
             call jeveuo(jexnum(noliel, igr), 'L', liel)
             do iel = 1, nbelgr
                 ima = zi(liel-1+iel)
-                if (zi(iptma+ima-1) .ne. 0) then
-                    igd = zi(iptma+ima-1)
+                if (ptma(ima) .ne. 0) then
+                    igd = ptma(ima)
                     idebgd = (igd-1)*ncmpmx
-                    dg = zi(idesc+3+2*ngdmax+zi(iptma+ima-1)-1)
+                    dg = desc(1+3+2*ngdmax+ptma(ima)-1)
 !
 ! ---     ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 ! ---     QUI EST RELCOM A BIEN ETE AFFECTEE
 !
                     ASSERT(exisdg([dg], 1))
 ! ---     RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
-                    compt = zk16(ivale+idebgd+3-1)
+                    compt = vale(1+idebgd+3-1)
                     if (compt .ne. deform) goto 130
 ! ---     RECUPERATION DES NUMEROS DES NOEUDS DE LA MAILLE
                     call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)

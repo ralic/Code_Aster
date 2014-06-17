@@ -63,7 +63,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
     integer :: ichar, nbchar
     integer :: nbveas, nbveag, nbtot, iret, ieq
     integer :: genrec
-    integer :: jresu, jvale
+    integer ::  jvale
     character(len=16) :: typfct
     character(len=8) :: nomfct, charge, typech
     real(kind=8) :: valre, valim
@@ -72,6 +72,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
     integer :: npuis
     logical :: lveas, lveag
     character(len=24) :: chamno
+    complex(kind=8), pointer :: resu(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,9 +82,9 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !
     ASSERT(typres.eq.'C')
     omega = r8depi()*valpar
-    call jeveuo(cnvass(1:19)//'.VALE', 'E', jresu)
+    call jeveuo(cnvass(1:19)//'.VALE', 'E', vc=resu)
     do 5 ieq = 1, neq
-        zc(jresu-1+ieq) = dcmplx(0.d0,0.d0)
+        resu(ieq) = dcmplx(0.d0,0.d0)
  5  continue
 !
 ! --- NOMBRE DE CHARGEMENTS
@@ -144,11 +145,11 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
             call jeveuo(chamno(1:19)//'.VALE', 'L', jvale)
             if (typech .eq. 'COMP') then
                 do 122 ieq = 1, neq
-                    zc(jresu-1+ieq) = zc(jresu-1+ieq) + calpha*zc( jvale-1+ieq)
+                    resu(ieq) = resu(ieq) + calpha*zc( jvale-1+ieq)
 122              continue
             else
                 do 123 ieq = 1, neq
-                    zc(jresu-1+ieq) = zc(jresu-1+ieq) + calpha*zr( jvale-1+ieq)
+                    resu(ieq) = resu(ieq) + calpha*zr( jvale-1+ieq)
 123              continue
             endif
         endif

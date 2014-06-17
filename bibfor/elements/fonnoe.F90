@@ -56,7 +56,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
 !
 !
     integer :: jdrvlc, jcncin, jnoe1, jnoe2, jadr
-    integer :: iatyma, jtyp
+    integer :: iatyma
     integer :: k, ityp, j
     integer :: numa, numb
     integer :: jjj, ino, it, nbnoff, nbma, nbmb, na, nb, adra, adrb
@@ -67,6 +67,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
     character(len=24) :: noeord, trav
     character(len=24) :: entree, obtrav
     logical :: lfon, test
+    character(len=8), pointer :: vtype(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
     nompro = 'FONNOE'
@@ -200,8 +201,8 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
         call wkvect(resu//'.FOND.TYPE', 'G V K8', 1, jnoe2)
         zk8(jnoe2) = typmp
     else
-        call jeveuo(resu//'.FOND.TYPE', 'L', jtyp)
-        typm=zk8(jtyp)
+        call jeveuo(resu//'.FOND.TYPE', 'L', vk8=vtype)
+        typm=vtype(1)
         if (typmp .ne. typm) then
             valk(1) = typmp
             valk(2) = typm

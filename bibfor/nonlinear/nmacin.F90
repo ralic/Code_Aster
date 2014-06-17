@@ -47,8 +47,11 @@ subroutine nmacin(fonact, matass, deppla, cncind)
 !
 !
 !
-    integer :: jccid, neq, jcind, jdepla, i
+    integer ::  neq,   i
     logical :: lcine
+    integer, pointer :: ccid(:) => null()
+    real(kind=8), pointer :: cind(:) => null()
+    real(kind=8), pointer :: depla(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,16 +64,16 @@ subroutine nmacin(fonact, matass, deppla, cncind)
     if (lcine) then
         call jelira(cncind(1:19)//'.VALE', 'LONMAX', ival=neq)
         call nmpcin(matass)
-        call jeveuo(matass(1:19)//'.CCID', 'L', jccid)
-        call jeveuo(deppla(1:19)//'.VALE', 'L', jdepla)
-        call jeveuo(cncind(1:19)//'.VALE', 'E', jcind)
+        call jeveuo(matass(1:19)//'.CCID', 'L', vi=ccid)
+        call jeveuo(deppla(1:19)//'.VALE', 'L', vr=depla)
+        call jeveuo(cncind(1:19)//'.VALE', 'E', vr=cind)
 !
 ! ---   CONSTRUCTION DU CHAMP CNCINE QUI RENDRA
 ! ---   DEPPLA CINEMATIQUEMENT ADMISSIBLE
 !
         do 10 i = 1, neq
-            if (zi(jccid+i-1) .eq. 1) then
-                zr(jcind-1+i) = zr(jcind-1+i)-zr(jdepla-1+i)
+            if (ccid(i) .eq. 1) then
+                cind(i) = cind(i)-depla(i)
             endif
 10      continue
 !

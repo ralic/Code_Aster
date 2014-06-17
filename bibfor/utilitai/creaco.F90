@@ -56,9 +56,10 @@ subroutine creaco(nbmato, ma, nblien)
     character(len=8) :: ma
     integer :: nbmano, idcoi, id1, typma, idno, nbno, idnoeu, nbnoeu, ima, i, j
     integer :: mail, ino, id, nbre, id2, temp, temp1, maxi, ifm, niv, coi
-    integer :: numno, nutyma, nbnoto
+    integer :: numno,  nbnoto
     real(kind=8) :: tmps(6)
     character(len=8) :: nom, typma1, typma2
+    integer, pointer :: typmail(:) => null()
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -89,11 +90,11 @@ subroutine creaco(nbmato, ma, nblien)
 ! ------- REMPLISSAGE DES TABLEAUX NBNO ET IDNOEU --------------------
 ! ------- LINEARISATION DES ELEMENTS ---------------------------------
 !
-    call jeveuo(ma//'.TYPMAIL', 'L', nutyma)
+    call jeveuo(ma//'.TYPMAIL', 'L', vi=typmail)
 !
     do ima = 1, nbmato
         mail=zi(renum-1+ima)
-        nbre=zi(nutyma-1+mail)
+        nbre=typmail(mail)
         call jenuno(jexnum('&CATA.TM.NOMTM', nbre), nom)
         call jeveuo(jexnum(ma//'.CONNEX', mail), 'L', idnoeu)
         call jelira(jexnum(ma//'.CONNEX', mail), 'LONMAX', nbnoeu)

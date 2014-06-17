@@ -78,9 +78,9 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: ijmax, idmax, inddl, iraid, ijeu, ireg, iind, k, ier, pddl, ind, ldgn
-    integer :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i, ityp, iorig
-    integer :: ineqs, incmp, inoe, icmp, icmp1, icmp2, iorigx, iorigy, iorigz
+    integer ::       iind, k, ier, pddl, ind, ldgn
+    integer :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i,  iorig
+    integer ::    icmp, icmp1, icmp2, iorigx, iorigy, iorigz
     character(len=19) :: matk, matm, nomcmp1, nomcmp2, origx, origy, origz
     character(len=8) :: tchoc, kvide, typval, mailla
     character(len=8) :: noeud(2)
@@ -89,6 +89,16 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     real(kind=8) :: orig(3)
     complex(kind=8) :: cbid
     real(kind=8), pointer :: ei2(:) => null()
+    real(kind=8), pointer :: reg(:) => null()
+    character(len=8), pointer :: noeu(:) => null()
+    real(kind=8), pointer :: raid(:) => null()
+    real(kind=8), pointer :: jeu(:) => null()
+    real(kind=8), pointer :: jeumax(:) => null()
+    character(len=8), pointer :: type(:) => null()
+    integer, pointer :: neqs(:) => null()
+    integer, pointer :: indmax(:) => null()
+    integer, pointer :: nddl(:) => null()
+    integer, pointer :: ncmp(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
     call jemarq()
@@ -133,18 +143,18 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES CHAMPS DE PARCHO A REMPLIR
 ! ----------------------------------------------------------------------
-    call jeveuo(parcho//'.JEUMAX', 'E', ijmax)
-    call jeveuo(parcho//'.INDMAX', 'E', idmax)
-    call jeveuo(parcho//'.NDDL', 'E', inddl)
-    call jeveuo(parcho//'.NEQS', 'E', ineqs)
-    call jeveuo(parcho//'.NCMP', 'E', incmp)
+    call jeveuo(parcho//'.JEUMAX', 'E', vr=jeumax)
+    call jeveuo(parcho//'.INDMAX', 'E', vi=indmax)
+    call jeveuo(parcho//'.NDDL', 'E', vi=nddl)
+    call jeveuo(parcho//'.NEQS', 'E', vi=neqs)
+    call jeveuo(parcho//'.NCMP', 'E', vi=ncmp)
     call jeveuo(parcho//'.CMP', 'E', icmp)
     call jeveuo(parcho//'.ORIG', 'E', iorig)
-    call jeveuo(parcho//'.TYPE', 'E', ityp)
-    call jeveuo(parcho//'.NOEU', 'E', inoe)
-    call jeveuo(parcho//'.RAID', 'E', iraid)
-    call jeveuo(parcho//'.REG', 'E', ireg)
-    call jeveuo(parcho//'.JEU', 'E', ijeu)
+    call jeveuo(parcho//'.TYPE', 'E', vk8=type)
+    call jeveuo(parcho//'.NOEU', 'E', vk8=noeu)
+    call jeveuo(parcho//'.RAID', 'E', vr=raid)
+    call jeveuo(parcho//'.REG', 'E', vr=reg)
+    call jeveuo(parcho//'.JEU', 'E', vr=jeu)
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION : NOM DE LA MATRICE DE RAIDEUR ET DU VECTEUR D'INDICE
 ! ----------------------------------------------------------------------
@@ -157,21 +167,21 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     do k = 1, nchoc
 ! --- RECUPERATION DU TYPE DE CHOC DU NOEUD
         if (reprise) then
-            tchoc = zk8(ityp-1+k)
+            tchoc = type(k)
         else
             call getvtx('CHOC', 'OBSTACLE', iocc=k, scal=tchoc)
         endif
-        zk8(ityp-1+k)=tchoc
+        type(k)=tchoc
 ! --- RECUPERATION DU NBRE D EQ SUPP ET DE COMPOSANTE POUR CHAQUE NOEUD
         if (tchoc(1:7) .eq. 'BI_PLAN') then
-            zi(incmp-1+k)=1
-            zi(ineqs-1+k)=2
+            ncmp(k)=1
+            neqs(k)=2
         else if (tchoc(1:4).eq.'PLAN') then
-            zi(incmp-1+k)=1
-            zi(ineqs-1+k)=1
+            ncmp(k)=1
+            neqs(k)=1
         else if (tchoc(1:6).eq.'CERCLE') then
-            zi(incmp-1+k)=2
-            zi(ineqs-1+k)=4
+            ncmp(k)=2
+            neqs(k)=4
             orig=0.d0
             if (reprise) then
                 orig(1) = zr(iorigx-1+k)
@@ -182,11 +192,11 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
             endif
         endif
 ! --- ACTUALISATION DU NOMBRE TOTAL D'INCONNUE DU SYSTEME
-        ninc=ninc+zi(ineqs-1+k)*(2*hf+1)
+        ninc=ninc+neqs(k)*(2*hf+1)
 !
 ! --- RECUPERATION DU NOM DU NOEUD
         if (reprise) then
-            noeud(1) = zk8(inoe-1+k)
+            noeud(1) = noeu(k)
         else
             call getvtx('CHOC', 'GROUP_NO', iocc=k, scal=grno, nbret=ier)
             if (ier .eq. 1) then
@@ -200,7 +210,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
                 call getvtx('CHOC', 'NOEUD', iocc=k, scal=noeud(1))
             endif
         endif
-        zk8(inoe-1+k)=noeud(1)
+        noeu(k)=noeud(1)
 ! --- RECUPERATION DU NOM DE LA COMPOSANTE DU NOEUD
         if (reprise) then
             if (tchoc(1:6) .eq. 'CERCLE') then
@@ -212,14 +222,14 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
                 cmp(1) = zk8(icmp1-1+k)
             endif
         else
-            call getvtx('CHOC', 'NOM_CMP', iocc=k, nbval=zi(incmp-1+k), vect=cmp,&
+            call getvtx('CHOC', 'NOM_CMP', iocc=k, nbval=ncmp(k), vect=cmp,&
                         nbret=ier)
         endif
         do i = 1, ier
             zk8(icmp-1+2*(k-1)+i) = cmp(i)
         end do
 !
-        do i = 1, zi(incmp-1+k)
+        do i = 1, ncmp(k)
             if (tchoc(1:7) .eq. 'CERCLE') then
                 if (cmp(i) .eq. 'DX') then
                     zr(iorig-1+3*(k-1)+i)=orig(1)
@@ -239,20 +249,20 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
                     ind=ind+1
                 endif
             end do
-            zi(inddl-1+6*(k-1)+i)=ind
+            nddl(6*(k-1)+i)=ind
         end do
         if (.not. reprise) then
 ! --- JE RECUPERE LA VALEUR DU JEU ENTRE LE NOEUD ET LA BUTEE
-            call getvr8('CHOC', 'JEU', iocc=k, scal=zr(ijeu-1+k))
+            call getvr8('CHOC', 'JEU', iocc=k, scal=jeu(k))
 ! --- JE RECUPERE LA VALEUR DE LA RAIDEUR DE BUTEE
-            call getvr8('CHOC', 'RIGI_NOR', iocc=k, scal=zr(iraid-1+k))
+            call getvr8('CHOC', 'RIGI_NOR', iocc=k, scal=raid(k))
 ! --- JE RECUPERE LA VALEUR DU PARAMETRE DE REGULARISATION DE BUTEE
-            call getvr8('CHOC', 'PARA_REGUL', iocc=k, scal=zr(ireg-1+k))
+            call getvr8('CHOC', 'PARA_REGUL', iocc=k, scal=reg(k))
         endif
 ! --- JE RECUPERE LES VALEURS MAXIMALES POUR L'ADIMENSIONNEMENT
-        if (zr(ijeu-1+k) .gt. zr(ijmax)) then
-            zr(ijmax)=zr(ijeu-1+k)
-            zi(idmax)=zi(inddl-1+k)
+        if (jeu(k) .gt. jeumax(1)) then
+            jeumax(1)=jeu(k)
+            indmax(1)=nddl(k)
             pdlmax=pddl
         endif
     end do

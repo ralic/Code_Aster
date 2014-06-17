@@ -40,16 +40,21 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: debugr
-    integer :: jceld, gd, iad, ncmpmx, nec, tabec(10), iavale, iacelk
-    integer :: irepe, im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
+    integer ::  gd, iad, ncmpmx, nec, tabec(10), iavale
+    integer ::  im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
     integer :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
     integer :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, jlongr
-    integer :: jligr, jpnt, ipoin, ianoma, imodel, ilong
+    integer ::  jpnt, ipoin,  imodel, ilong
     real(kind=8) :: sg(6), sl(6)
     character(len=8) :: nomcmp, nomma
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: celd(:) => null()
+    integer, pointer :: liel(:) => null()
+    character(len=24), pointer :: celk(:) => null()
+    integer, pointer :: repe(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -58,8 +63,8 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 !
-    call jeveuo(chelm//'.CELD', 'L', jceld)
-    gd = zi(jceld-1+1)
+    call jeveuo(chelm//'.CELD', 'L', vi=celd)
+    gd = celd(1)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
@@ -89,32 +94,32 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     call jedupo(chelm//'.CELV', 'V', nomjv, .false.)
     call jeveuo(nomjv, 'E', iavale)
 !
-    call jeveuo(chelm//'.CELK', 'L', iacelk)
-    noligr = zk24(iacelk)(1:19)
-    call jeveuo(noligr//'.REPE', 'L', irepe)
-    call jeveuo(noligr//'.LIEL', 'L', jligr)
+    call jeveuo(chelm//'.CELK', 'L', vk24=celk)
+    noligr = celk(1)(1:19)
+    call jeveuo(noligr//'.REPE', 'L', vi=repe)
+    call jeveuo(noligr//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(noligr//'.LIEL', 'LONCUM'), 'L', jlongr)
     call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel)
-    call jeveuo(noligr//'.LGRF', 'L', ianoma)
-    nomma = zk8(ianoma)
+    call jeveuo(noligr//'.LGRF', 'L', vk8=lgrf)
+    nomma = lgrf(1)
     call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpnt)
 !
     do im = 1, nbel
         imail = numail(im)
-        igrel = zi(irepe-1+2*(imail-1)+1)
-        ielg = zi(irepe-1+2*(imail-1)+2)
+        igrel = repe(2*(imail-1)+1)
+        ielg = repe(2*(imail-1)+2)
         if (igrel .eq. 0) goto 20
-        mode=zi(jceld-1+zi(jceld-1+4+igrel) +2)
+        mode=celd(celd(4+igrel) +2)
         if (mode .eq. 0) goto 20
         call dgmode(mode, imodel, ilong, nec, tabec)
         nscal = digdel( mode )
-        icoef=max(1,zi(jceld-1+4))
+        icoef=max(1,celd(4))
         if (icoef .gt. 1) then
             call utmess('F', 'POSTRELE_15')
         endif
         nsca = nscal*icoef
         ipoin = zi(jlongr-1+igrel)
-        iel = zi(jligr-1+ipoin+ielg-1)
+        iel = liel(ipoin+ielg-1)
         nnoe = zi(jpnt-1+iel+1) - zi(jpnt-1+iel)
         ncmpp = 0
         do icmp = 1, ncmpmx
@@ -124,7 +129,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
         end do
         npcalc = nscal / ncmpp
         ncou = npcalc / nnoe
-        debugr=zi(jceld-1+zi(jceld-1+4+igrel)+8)
+        debugr=celd(celd(4+igrel)+8)
         iachml = debugr + nsca*(ielg-1)
         do icou = 1, ncou
             do ino = 1, nnoe

@@ -46,11 +46,12 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !
     logical :: oktref
     integer :: corent(6), ibid, jref, intyre, nbrefs, inddeb, indfin, senpar, numocc
-    integer :: indcha, ir, jind, index, l1, l2, l3, nbcham
+    integer :: indcha, ir,  index, l1, l2, l3, nbcham
     character(len=4) :: accref(6), typref, indref
     character(len=8) :: resdyn, numcha, intf, k8bid
     character(len=24) :: numddl, cortre(6), questl, typcon, nomcha, nomgd
     character(len=32) :: repk
+    integer, pointer :: indi(:) => null()
 !
 !     --- TYPE DE REFERENCES QUE NOUS POUVONS RECUPERER [REF_XXXX_****]
     data  accref /  'RIGI'    ,   'MASS'    ,   'AMOR'    ,    'INTD'    ,    'INTS'    ,  'MESU' /
@@ -187,21 +188,21 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !                                 /K8/ --> CALL CODENT(INDI,'D0',INDIK8)
 !     --- EXEMPLES : 'NUME_CHAM_00000001', 'NUME_CHAM_00003842', ...
     else if (questl(1:9).eq.'NUME_CHAM') then
-        call jeveuo(resdyn//'           .INDI', 'L', jind)
+        call jeveuo(resdyn//'           .INDI', 'L', vi=indi)
         call jelira(resdyn//'           .INDI', 'LONUTI', nbrefs, k8bid)
         numcha = questl(11:18)
         indcha = 1
         read(numcha,'(i8)') indcha
         index = 0
         do ibid = 1, nbrefs
-            if (indcha .le. zi(jind+ibid-1)) then
+            if (indcha .le. indi(ibid)) then
                 index = ibid
                 goto 41
             endif
         end do
  41     continue
 !       --- SI LE NUMERO DU CHAMP N'EST PAS VALIDE PAR RAPPORT AU .INDI
-        if ((index .eq. 0) .and. (zi(jind) .eq. -1)) then
+        if ((index .eq. 0) .and. (indi(1) .eq. -1)) then
             index = 1
         else if (index.eq.0) then
             goto 99

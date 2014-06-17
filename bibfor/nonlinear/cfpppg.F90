@@ -60,9 +60,9 @@ subroutine cfpppg(resoco, ndim, neq, nesmax, nbliac,&
     character(len=24) :: jeuite
     integer :: jjeuit
     character(len=19) :: deplc
-    integer :: jdepc
     integer :: nbddl, jdecal
     real(kind=8) :: glis
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -91,7 +91,7 @@ subroutine cfpppg(resoco, ndim, neq, nesmax, nbliac,&
 ! ---         DU PAS DE TEMPS AVEC CORRECTION DU CONTACT
 !
     deplc = resoco(1:14)//'.DEPC'
-    call jeveuo(deplc (1:19)//'.VALE', 'L', jdepc)
+    call jeveuo(deplc (1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- CALCUL DES GLISSEMENTS
 !
@@ -112,10 +112,10 @@ subroutine cfpppg(resoco, ndim, neq, nesmax, nbliac,&
 !
         jexinc = 0.d0
         jeyinc = 0.d0
-        call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr( jdepc),&
+        call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), vale,&
                     jexinc)
         if (ndim .eq. 3) then
-            call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), zr(jdepc),&
+            call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal), vale,&
                         jeyinc)
         endif
 !

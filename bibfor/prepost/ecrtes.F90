@@ -73,7 +73,8 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iad, iret, istmax, itimax
-    integer :: jpar, jtitr, nbac, nbcmp, nbpa
+    integer ::  jtitr, nbac, nbcmp, nbpa
+    character(len=16), pointer :: nom_acc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     itype = ityp
@@ -122,18 +123,18 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
     else
         call rsnopa(nomsd, 0, '&&ECRTES.NOM_ACC', nbac, nbpa)
         call jeexin('&&ECRTES.NOM_ACC', iret)
-        if (iret .gt. 0) call jeveuo('&&ECRTES.NOM_ACC', 'E', jpar)
+        if (iret .gt. 0) call jeveuo('&&ECRTES.NOM_ACC', 'E', vk16=nom_acc)
         if (nbac .eq. 0) then
             anatyp = 1
         else
             do i = 1, nbac
-                if (zk16(jpar-1+i) .eq. 'INST') then
+                if (nom_acc(i) .eq. 'INST') then
                     anatyp = 4
                     goto 21
-                else if (zk16(jpar-1+i).eq.'NUME_MODE') then
+                else if (nom_acc(i).eq.'NUME_MODE') then
                     anatyp = 2
                     goto 21
-                else if (zk16(jpar-1+i).eq.'FREQ') then
+                else if (nom_acc(i).eq.'FREQ') then
                     anatyp = 5
                 endif
             end do

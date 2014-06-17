@@ -59,8 +59,10 @@ subroutine vtcre1(champ, numedd, classe, type, neq)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: jchamp, jrefn, jneq, lchp
+    integer :: jchamp,   lchp
     character(len=24) :: vale, refe, desc
+    integer, pointer :: nequ(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !
     data vale/'                   .VALE'/
     data refe/'                   .REFE'/
@@ -70,11 +72,11 @@ subroutine vtcre1(champ, numedd, classe, type, neq)
     call jemarq()
 !
 ! ------------------------------- REFE --------------------------------
-    call jeveuo(numedd(1:14)//'.NUME.REFN', 'L', jrefn)
+    call jeveuo(numedd(1:14)//'.NUME.REFN', 'L', vk24=refn)
     refe(1:19) = champ
 !
     call wkvect(refe, classe//' V K24', 4, jchamp)
-    zk24(jchamp) = zk24(jrefn)
+    zk24(jchamp) = refn(1)
     zk24(jchamp+1) = numedd(1:14)//'.NUME'
 !
 ! ------------------------------- DESC --------------------------------
@@ -90,8 +92,8 @@ subroutine vtcre1(champ, numedd, classe, type, neq)
 ! --- CREATION DE L'OBJET SIMPLE DES VALEURS
 ! --- TYPE DES VALEURS, LONGUEUR D'UN VECTEUR
 !
-    call jeveuo(numedd(1:14)//'.NUME.NEQU', 'L', jneq)
-    neq = zi(jneq)
+    call jeveuo(numedd(1:14)//'.NUME.NEQU', 'L', vi=nequ)
+    neq = nequ(1)
     vale(1:19) = champ
     call jecreo(vale, classe//' V '//type)
     call jeecra(vale, 'LONMAX', neq)

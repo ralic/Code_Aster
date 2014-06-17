@@ -84,9 +84,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 ! ---------------------------------------------------------------------
     !
     integer :: i, ii, ino, iad, ipt, isp
-    integer :: jcesd, jcesv, jcesl, nbpt, axyzm, ncmp
-    integer :: jconx1, jconx2, nbsp, inel,  npain
-    integer :: ibid, nbma, jcesk, iret, inbno
+    integer :: jcesd, jcesv, jcesl, nbpt,  ncmp
+    integer ::  jconx2, nbsp, inel,  npain
+    integer :: ibid, nbma,  iret, inbno
     integer :: ndim, nbm, idmail, nbmail, imai
     integer :: inoeu, iret0, iret1, nbgno, igno, nncp
     integer :: ierk, mnogav, iadr, ipaxe, ipaxe2
@@ -112,6 +112,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     character(len=24) :: mesmai, chgeom, lchin(5), chaout
     character(len=24) :: valk(3), chcara(18)
     character(len=8), pointer :: nom_cmp(:) => null()
+    character(len=8), pointer :: cesk(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: connex(:) => null()
     !
     call jemarq()
     ipaxe = 0
@@ -143,10 +146,10 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     call cesred(chams0, 0, [0], nbcmp, nom_cmp,&
                 'V', chams1)
     call detrsd('CHAM_ELEM_S', chams0)
-    call jeveuo(chams1//'.CESK', 'L', jcesk)
+    call jeveuo(chams1//'.CESK', 'L', vk8=cesk)
     call jeveuo(chams1//'.CESD', 'L', jcesd)
-    ma = zk8(jcesk-1+1)
-    nomgd = zk8(jcesk-1+2)
+    ma = cesk(1)
+    nomgd = cesk(2)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
     !
 !     ON EXCLUT LES MOT-CLES 'NOEUD' ET 'GROUP_NO'
@@ -201,7 +204,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     !
     call jeexin(ma//'.CONNEX', iret)
     ASSERT(iret.ne.0)
-    call jeveuo(ma//'.CONNEX', 'L', jconx1)
+    call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call jeveuo(chams1//'.CESV', 'E', jcesv)
     call jeveuo(chams1//'.CESL', 'L', jcesl)
@@ -322,7 +325,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         endif
         xnormr = 0.0d0
         call normev(axez, xnormr)
-        call jeveuo(ma//'.COORDO    .VALE', 'L', axyzm)
+        call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
         !
         manoga='&&CHRPEL.MANOGA'
         !
@@ -385,11 +388,11 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 ! 
             xno(:,:) = 0.d0
             do ino = 1, nbno
-                nuno = zi(jconx1-1+zi(jconx2+imai-1)+ino-1)
-                xno(1,ino) = zr(axyzm+3*(nuno-1)-1+1)
-                xno(2,ino) = zr(axyzm+3*(nuno-1)-1+2)
+                nuno = connex(zi(jconx2+imai-1)+ino-1)
+                xno(1,ino) = vale(1+3*(nuno-1)-1+1)
+                xno(2,ino) = vale(1+3*(nuno-1)-1+2)
                 if (ndim == 3) then
-                    xno(3,ino) = zr(axyzm+3*(nuno-1)-1+3)
+                    xno(3,ino) = vale(1+3*(nuno-1)-1+3)
                 endif 
             end do
             !

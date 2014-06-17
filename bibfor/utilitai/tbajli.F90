@@ -48,11 +48,13 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
 !                > 0 : ON SURCHARGE UNE LIGNE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, nbpm, nbpu
-    integer :: ndim, jtblp, i, j, jvale, jlogq, ki, kr, kc, kk
+    integer :: iret, nbpara, nblign,  nbpm, nbpu
+    integer :: ndim,  i, j, jvale, jlogq, ki, kr, kc, kk
     character(len=3) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -67,9 +69,9 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
         call utmess('F', 'UTILITAI4_68')
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -80,8 +82,8 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
         call utmess('F', 'UTILITAI4_74')
     endif
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
-    nomjv = zk24(jtblp+2)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
+    nomjv = tblp(3)
     call jelira(nomjv, 'LONMAX', nbpm)
     call jelira(nomjv, 'LONUTI', nbpu)
 !
@@ -89,19 +91,19 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
     if (ndim .gt. nbpm) then
         ndim = nint((ndim*3.d0)/2.d0)
         do 10 i = 1, nbpara
-            nomjv = zk24(jtblp+4*(i-1)+2)
+            nomjv = tblp(1+4*(i-1)+2)
             call juveca(nomjv, ndim)
-            nomjv = zk24(jtblp+4*(i-1)+3)
+            nomjv = tblp(1+4*(i-1)+3)
             call juveca(nomjv, ndim)
 10      continue
     endif
 !
     if (nume .eq. 0) then
         nblign = nblign + 1
-        zi(jtbnp+1) = nblign
+        tbnp(2) = nblign
 !
         do 20 i = 1, nbpara
-            nomjv = zk24(jtblp+4*(i-1)+2)
+            nomjv = tblp(1+4*(i-1)+2)
             call jeecra(nomjv, 'LONUTI', nblign)
 20      continue
 !
@@ -112,11 +114,11 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
         do 30 j = 1, nbpar
             jnpar = nompar(j)
             do 32 i = 1, nbpara
-                inpar = zk24(jtblp+4*(i-1) )
+                inpar = tblp(1+4*(i-1) )
                 if (jnpar .eq. inpar) then
-                    type = zk24(jtblp+4*(i-1)+1)
-                    nomjv = zk24(jtblp+4*(i-1)+2)
-                    nomjvl = zk24(jtblp+4*(i-1)+3)
+                    type = tblp(1+4*(i-1)+1)
+                    nomjv = tblp(1+4*(i-1)+2)
+                    nomjvl = tblp(1+4*(i-1)+3)
                     call jeveuo(nomjv, 'E', jvale)
                     call jeveuo(nomjvl, 'E', jlogq)
                     if (type(1:1) .eq. 'I') then
@@ -199,11 +201,11 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
         do 40 j = 1, nbpar
             jnpar = nompar(j)
             do 42 i = 1, nbpara
-                inpar = zk24(jtblp+4*(i-1) )
+                inpar = tblp(1+4*(i-1) )
                 if (jnpar .eq. inpar) then
-                    type = zk24(jtblp+4*(i-1)+1)
-                    nomjv = zk24(jtblp+4*(i-1)+2)
-                    nomjvl = zk24(jtblp+4*(i-1)+3)
+                    type = tblp(1+4*(i-1)+1)
+                    nomjv = tblp(1+4*(i-1)+2)
+                    nomjvl = tblp(1+4*(i-1)+3)
                     call jeveuo(nomjv, 'E', jvale)
                     call jeveuo(nomjvl, 'E', jlogq)
                     if (type(1:1) .eq. 'I') then

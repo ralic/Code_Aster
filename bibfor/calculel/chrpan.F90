@@ -43,14 +43,17 @@ subroutine chrpan(modele, carte, option, chelem)
 !     ------------------------------------------------------------------
 !
     integer :: ibid, ioc, n1, n2, na, nvec, iret, nrep, nbma, nbmail, jmail
-    integer :: ialpha, ibeta, iad1, iad2, ima, numma, ncmax, icesk, icesl, icesv
+    integer :: ialpha, ibeta, iad1, iad2, ima, numma, ncmax,  icesl
     integer :: iaxe(3), io(3), iad(3), ii
-    integer :: icesc, icesd, nncp
+    integer ::  icesd, nncp
     real(kind=8) :: ang(2), vect(3), axez(3), orig(3)
     logical :: ltout
     character(len=8) :: k8b, noma, motcls(2), typmcl(2)
     character(len=19) :: chelms
     character(len=24) :: mesmai, ligrmo
+    character(len=8), pointer :: cesk(:) => null()
+    real(kind=8), pointer :: cesv(:) => null()
+    character(len=8), pointer :: cesc(:) => null()
 ! --- ------------------------------------------------------------------
     call getfac('AFFE', nrep)
     if (nrep .eq. 0) goto 999
@@ -61,25 +64,25 @@ subroutine chrpan(modele, carte, option, chelem)
     call carces(carte, 'ELEM', k8b, 'V', chelms,&
                 'A', iret)
 !
-    call jeveuo(chelms//'.CESK', 'L', icesk)
-    call jeveuo(chelms//'.CESC', 'L', icesc)
+    call jeveuo(chelms//'.CESK', 'L', vk8=cesk)
+    call jeveuo(chelms//'.CESC', 'L', vk8=cesc)
     call jeveuo(chelms//'.CESD', 'L', icesd)
     call jeveuo(chelms//'.CESL', 'E', icesl)
-    call jeveuo(chelms//'.CESV', 'E', icesv)
+    call jeveuo(chelms//'.CESV', 'E', vr=cesv)
 !
-    noma = zk8(icesk)
+    noma = cesk(1)
     nbmail = zi(icesd)
     ncmax = zi(icesd+1)
 ! --- ------------------------------------------------------------------
 ! --- INDICE DE 'ALPHA' ET 'BETA' DANS LA CARTE
-    ialpha = indik8 ( zk8(icesc), 'ALPHA   ', 1, ncmax )
-    ibeta = indik8 ( zk8(icesc), 'BETA    ', 1, ncmax )
-    iaxe(1) = indik8 ( zk8(icesc), 'AXE_X   ', 1, ncmax )
-    iaxe(2) = indik8 ( zk8(icesc), 'AXE_Y   ', 1, ncmax )
-    iaxe(3) = indik8 ( zk8(icesc), 'AXE_Z   ', 1, ncmax )
-    io(1) = indik8 ( zk8(icesc), 'O_X     ', 1, ncmax )
-    io(2) = indik8 ( zk8(icesc), 'O_Y     ', 1, ncmax )
-    io(3) = indik8 ( zk8(icesc), 'O_Z     ', 1, ncmax )
+    ialpha = indik8 ( cesc, 'ALPHA   ', 1, ncmax )
+    ibeta = indik8 ( cesc, 'BETA    ', 1, ncmax )
+    iaxe(1) = indik8 ( cesc, 'AXE_X   ', 1, ncmax )
+    iaxe(2) = indik8 ( cesc, 'AXE_Y   ', 1, ncmax )
+    iaxe(3) = indik8 ( cesc, 'AXE_Z   ', 1, ncmax )
+    io(1) = indik8 ( cesc, 'O_X     ', 1, ncmax )
+    io(2) = indik8 ( cesc, 'O_Y     ', 1, ncmax )
+    io(3) = indik8 ( cesc, 'O_Z     ', 1, ncmax )
     ASSERT(ialpha.eq.1.and.ibeta.eq.2)
 !
     motcls(1) = 'GROUP_MA'
@@ -141,7 +144,7 @@ subroutine chrpan(modele, carte, option, chelem)
                 iad1 = -iad1
                 zl(icesl-1+iad1) = .true.
             endif 
-            zr(icesv-1+iad1) = ang(1)
+            cesv(iad1) = ang(1)
 ! BETA
             call cesexi('C', icesd, icesl, numma, 1,&
                         1, ibeta, iad2)
@@ -149,7 +152,7 @@ subroutine chrpan(modele, carte, option, chelem)
                 iad2 = -iad2
                 zl(icesl-1+iad2) = .true.
             endif 
-            zr(icesv-1+iad2) = ang(2)
+            cesv(iad2) = ang(2)
 ! AXE (3 coordonnées)
             do ii = 1, 3
                 call cesexi('C', icesd, icesl, numma, 1,&
@@ -158,7 +161,7 @@ subroutine chrpan(modele, carte, option, chelem)
                     iad(ii) = -iad(ii)
                     zl(icesl-1+iad(ii)) = .true.
                 endif 
-                zr(icesv-1+iad(ii)) = axez(ii)
+                cesv(iad(ii)) = axez(ii)
             enddo
 ! ORIG (3 coordonnées)
             do ii = 1, 3
@@ -168,7 +171,7 @@ subroutine chrpan(modele, carte, option, chelem)
                     iad(ii) = -iad(ii)
                     zl( icesl-1+iad(ii) ) = .true.
                 endif 
-                zr(icesv-1+iad(ii)) = orig(ii)
+                cesv(iad(ii)) = orig(ii)
             enddo
 !
         end do

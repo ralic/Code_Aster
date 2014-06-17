@@ -92,10 +92,11 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
     character(len=1) :: typc
     logical :: modnum, exnume, chnoeud
     integer :: i, iret, neq, nbmode
-    integer :: jref, jdeeq, jval
+    integer ::  jdeeq, jval
     character(len=16) :: champ2
     character(len=19) :: numer1, numer2
     character(len=24) :: maill1, maill2, valk(4), crefe(2), valcha, nomcha, tmpcha
+    character(len=24), pointer :: refe(:) => null()
 !
 !     0.3 - ACTUALISATION DE LA VALEUR DE LA MARQUE COURANTE
 !
@@ -171,12 +172,12 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
     if (iret .eq. 0) call rsexch('F', base, 'DEPL', 1, nomcha,&
                                  iret)
 !
-    call jeveuo(nomcha(1:19)//'.REFE', 'L', jref)
+    call jeveuo(nomcha(1:19)//'.REFE', 'L', vk24=refe)
 !
 !     1.2 - EXTRAIRE LE NOM DE MAILLAGE .REFE[1] ET DU NUME_DDL .REFE[2]
 !
-    maill1 = zk24(jref)(1:8)
-    numer1 = zk24(jref+1)(1:19)
+    maill1 = refe(1)(1:8)
+    numer1 = refe(2)(1:19)
 !
 !     1.3 - TRAITEMENT DES CAS AVEC UN PROF_CHNO ET NON PAS UN NUME_DDL
 !           COMPLET.

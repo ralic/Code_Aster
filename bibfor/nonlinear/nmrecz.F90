@@ -50,7 +50,10 @@ subroutine nmrecz(numedd, cndiri, cnfint, cnfext, ddepla,&
 !
 !
     integer :: ieq, neq
-    integer :: jfext, jfint, jdiri, jddepl
+    real(kind=8), pointer :: ddepl(:) => null()
+    real(kind=8), pointer :: diri(:) => null()
+    real(kind=8), pointer :: fext(:) => null()
+    real(kind=8), pointer :: fint(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,14 +65,14 @@ subroutine nmrecz(numedd, cndiri, cnfint, cnfext, ddepla,&
 !
 ! --- ACCES OBJETS
 !
-    call jeveuo(cnfext(1:19)//'.VALE', 'L', jfext)
-    call jeveuo(cnfint(1:19)//'.VALE', 'L', jfint)
-    call jeveuo(cndiri(1:19)//'.VALE', 'L', jdiri)
-    call jeveuo(ddepla(1:19)//'.VALE', 'L', jddepl)
+    call jeveuo(cnfext(1:19)//'.VALE', 'L', vr=fext)
+    call jeveuo(cnfint(1:19)//'.VALE', 'L', vr=fint)
+    call jeveuo(cndiri(1:19)//'.VALE', 'L', vr=diri)
+    call jeveuo(ddepla(1:19)//'.VALE', 'L', vr=ddepl)
 !
     fonc = 0.d0
     do ieq = 1, neq
-        fonc = fonc + zr(jddepl+ieq-1) * (zr(jfint+ieq-1)+ zr(jdiri+ ieq-1)- zr(jfext+ieq-1))
+        fonc = fonc + ddepl(ieq) * (fint(ieq)+ diri(ieq)- fext(ieq))
     end do
 !
     call jedema()

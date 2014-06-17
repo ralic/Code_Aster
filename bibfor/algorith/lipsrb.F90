@@ -81,7 +81,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !
 !-- VARIABLES DE LA ROUTINE
     integer :: ibid, i1, j1, k1, l1, lrot1, lrot2, ltran1, ltran2, nbno1, nbno2
-    integer :: lnoma1, lnoma2, lcoor1, lcoor2, numno, lno1, lno2, dima
+    integer ::   lcoor1, lcoor2, numno, lno1, lno2, dima
     integer :: nbmast, nbslav, lnomas, lnosla,  indmin
     integer :: ltramo, lprojt, decal, lmats,  lmatv, lmsm1u
     integer :: lindma, lindsl, lwork,  possla, posmas, indsla
@@ -99,6 +99,8 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     real(kind=8), pointer :: mat_svd_work(:) => null()
     real(kind=8), pointer :: mat_u(:) => null()
     real(kind=8), pointer :: mat_vxsm1xut(:) => null()
+    real(kind=8), pointer :: nlnoma1(:) => null()
+    real(kind=8), pointer :: nlnoma2(:) => null()
 !
 !-----------C
 !--       --C
@@ -142,7 +144,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- NOEUDS DE LA SOUS STRUCTURE 1
     call mgutdm(nomres, sst1, ibid, 'NOM_MAILLAGE', ibid,&
                 mail1)
-    call jeveuo(mail1//'.COORDO    .VALE', 'L', lnoma1)
+    call jeveuo(mail1//'.COORDO    .VALE', 'L', vr=nlnoma1)
 !-- NOMBRE DE NOEUDS DE L'INTERFACE 1
     int1=kbid//'.IDC_LINO'
     call jenonu(jexnom(int1(1:13)//'NOMS', intf1), ibid)
@@ -159,7 +161,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- NOEUDS DE LA SOUS STRUCTURE 2
     call mgutdm(nomres, sst2, ibid, 'NOM_MAILLAGE', ibid,&
                 mail2)
-    call jeveuo(mail2//'.COORDO    .VALE', 'L', lnoma2)
+    call jeveuo(mail2//'.COORDO    .VALE', 'L', vr=nlnoma2)
     call jeveuo(lino2, 'L', lno2)
 !
 !---------------------------------------------------------------C
@@ -176,18 +178,18 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
     do i1 = 1, nbno1
         numno=zi(lno1+(i1-1))
         do j1 = 1, 3
-            zr(lcoor1+(i1-1)*3+j1-1)=tr1(j1)+ rot1(j1,1)*zr(lnoma1+(&
-            numno-1)*3)+ rot1(j1,2)*zr(lnoma1+(numno-1)*3+1)+ rot1(j1,&
-            3)*zr(lnoma1+(numno-1)*3+2)
+            zr(lcoor1+(i1-1)*3+j1-1)=tr1(j1)+ rot1(j1,1)*nlnoma1(1+(&
+            numno-1)*3)+ rot1(j1,2)*nlnoma1(1+(numno-1)*3+1)+ rot1(j1,&
+            3)*nlnoma1(1+(numno-1)*3+2)
         end do
     end do
 !
     do i1 = 1, nbno2
         numno=zi(lno2+(i1-1))
         do j1 = 1, 3
-            zr(lcoor2+(i1-1)*3+j1-1)=tr2(j1)+ rot2(j1,1)*zr(lnoma2+(&
-            numno-1)*3)+ rot2(j1,2)*zr(lnoma2+(numno-1)*3+1)+ rot2(j1,&
-            3)*zr(lnoma2+(numno-1)*3+2)
+            zr(lcoor2+(i1-1)*3+j1-1)=tr2(j1)+ rot2(j1,1)*nlnoma2(1+(&
+            numno-1)*3)+ rot2(j1,2)*nlnoma2(1+(numno-1)*3+1)+ rot2(j1,&
+            3)*nlnoma2(1+(numno-1)*3+2)
         end do
     end do
 !

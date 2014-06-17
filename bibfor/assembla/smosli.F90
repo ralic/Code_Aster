@@ -41,9 +41,11 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 !     VARIABLES LOCALES
     character(len=1) :: base
     character(len=19) :: stomor, stolci
-    integer :: jsmde, jscde, neq, nbloc
-    integer :: jsmhc, jsmdi, jscdi, jschc, jscbl, jscib, hcc
+    integer ::  jscde, neq, nbloc
+    integer :: jsmhc,  jscdi, jschc, jscbl, jscib, hcc
     integer :: hc, hcmax, itbloc, ieq, ibloc, tcumu, idiag, idiag1, imin, imax
+    integer, pointer :: smde(:) => null()
+    integer, pointer :: smdi(:) => null()
 !     ------------------------------------------------------------------
 !
 !
@@ -59,8 +61,8 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 !
 !     -- OBJET .SCDE : C'EST FACILE MAIS INCOMPLET:
     call wkvect(stolci//'.SCDE', base//' V I', 6, jscde)
-    call jeveuo(stomor//'.SMDE', 'L', jsmde)
-    neq=zi(jsmde-1+1)
+    call jeveuo(stomor//'.SMDE', 'L', vi=smde)
+    neq=smde(1)
     zi(jscde-1+1)=neq
 !
 !     -- CALCUL DE ITBLOC :
@@ -76,7 +78,7 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 !     1. REMPLISSAGE DE .SCHC .SCDI ET .SCIB
 !        CALCUL DE HCMAX, NBLOC:
 !     -------------------------------------------------------------
-    call jeveuo(stomor//'.SMDI', 'L', jsmdi)
+    call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
     call jeveuo(stomor//'.SMHC', 'L', jsmhc)
 !
 !     1.1  INITIALISATIONS :
@@ -97,8 +99,8 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 !     1.3  EQUATIONS 2, ..., NEQ :
     do 1, ieq=2,neq
 !        -- CALCUL DE HC : HAUTEUR DE LA COLONNE IEQ :
-    idiag=zi(jsmdi-1+ieq)
-    idiag1=zi(jsmdi-1+ieq-1)
+    idiag=smdi(ieq)
+    idiag1=smdi(ieq-1)
     imin=zi4(jsmhc-1+ idiag1+1)
     imax=zi4(jsmhc-1+ idiag)
     hc=imax-imin+1

@@ -49,10 +49,19 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
 ! ----------------------------------------------------------------------
     real(kind=8) :: jeu, eta, alpha
     integer :: il, itemp1, itemp2
-    integer :: deb, ddl, j, i, nddl, ireg, inddl, ijmax
-    integer :: ijeu, icdl, iadim, itemp, k, incmp, ineqs
-    integer :: ityp, ncmp, hind, hfind, iraid, iorig, nddlx, nddly
+    integer :: deb, ddl, j, i, nddl
+    integer ::  icdl, iadim, itemp, k
+    integer ::  ncmp, hind, hfind,   nddlx, nddly
     logical :: stp
+    integer, pointer :: vnddl(:) => null()
+    integer, pointer :: neqs(:) => null()
+    real(kind=8), pointer :: vjeu(:) => null()
+    integer, pointer :: vncmp(:) => null()
+    real(kind=8), pointer :: raid(:) => null()
+    real(kind=8), pointer :: reg(:) => null()
+    real(kind=8), pointer :: jeumax(:) => null()
+    character(len=8), pointer :: type(:) => null()
+    real(kind=8), pointer :: orig(:) => null()
 !
     call jemarq()
 !
@@ -61,15 +70,15 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
     call wkvect('&&mnlldr.temp2', 'V V R', neq, itemp2)
     stp=.true.
 !
-    call jeveuo(parcho//'.RAID', 'L', iraid)
-    call jeveuo(parcho//'.REG', 'L', ireg)
-    call jeveuo(parcho//'.NDDL', 'L', inddl)
-    call jeveuo(parcho//'.JEU', 'L', ijeu)
-    call jeveuo(parcho//'.JEUMAX', 'L', ijmax)
-    call jeveuo(parcho//'.NCMP', 'L', incmp)
-    call jeveuo(parcho//'.NEQS', 'L', ineqs)
-    call jeveuo(parcho//'.TYPE', 'L', ityp)
-    call jeveuo(parcho//'.ORIG', 'L', iorig)
+    call jeveuo(parcho//'.RAID', 'L', vr=raid)
+    call jeveuo(parcho//'.REG', 'L', vr=reg)
+    call jeveuo(parcho//'.NDDL', 'L', vi=vnddl)
+    call jeveuo(parcho//'.JEU', 'L', vr=vjeu)
+    call jeveuo(parcho//'.JEUMAX', 'L', vr=jeumax)
+    call jeveuo(parcho//'.NCMP', 'L', vi=vncmp)
+    call jeveuo(parcho//'.NEQS', 'L', vi=neqs)
+    call jeveuo(parcho//'.TYPE', 'L', vk8=type)
+    call jeveuo(parcho//'.ORIG', 'L', vr=orig)
     call jeveuo(xcdl, 'L', icdl)
     call jeveuo(adime, 'L', iadim)
     call jeveuo(xtemp, 'E', itemp)
@@ -102,10 +111,10 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
     else if (ind.le.(ninc-4)) then
         deb=nd*(2*h+1)
         do 30 i = 1, nchoc
-            jeu=zr(ijeu-1+i)/zr(ijmax)
-            ncmp=zi(incmp-1+i)
+            jeu=vjeu(i)/jeumax(1)
+            ncmp=vncmp(i)
             do 31 j = 1, ncmp
-                nddl=zi(inddl-1+6*(i-1)+j)
+                nddl=vnddl(6*(i-1)+j)
                 if (ind .gt. deb+(j-1)*(2*hf+1) .and. ind .le. deb+j*(2* hf+1)) then
                     hfind=ind-deb-(j-1)*(2*hf+1)-1
                     if (hfind .le. h) then
@@ -115,7 +124,7 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
                     endif
                 endif
 31          continue
-            deb=deb+zi(ineqs-1+i)*(2*hf+1)
+            deb=deb+neqs(i)*(2*hf+1)
 30      continue
     endif
 ! ----------------------------------------------------------------------
@@ -123,11 +132,11 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
 ! ----------------------------------------------------------------------
     deb=nd*(2*h+1)
     do 110 i = 1, nchoc
-        alpha=zr(iraid-1+i)/zr(iadim-1+1)
-        eta=zr(ireg-1+i)
-        jeu=zr(ijeu-1+i)/zr(ijmax)
-        if (zk8(ityp-1+i)(1:7) .eq. 'BI_PLAN') then
-            nddl=zi(inddl-1+6*(i-1)+1)
+        alpha=raid(i)/zr(iadim-1+1)
+        eta=reg(i)
+        jeu=vjeu(i)/jeumax(1)
+        if (type(i)(1:7) .eq. 'BI_PLAN') then
+            nddl=vnddl(6*(i-1)+1)
             if (ind .le. nd*(2*h+1)) then
                 if (ddl .eq. nddl) then
                     if (hind .le. h) then
@@ -139,40 +148,40 @@ subroutine mnlldr(ind, imat, neq, ninc, nd,&
             else if ((ind.gt.deb).and.(ind.le.(deb+2*(2*hf+1)))) then
                 zr(il-1+ind)=1.d0
             endif
-        else if (zk8(ityp-1+i)(1:6).eq.'CERCLE') then
-            nddlx=zi(inddl-1+6*(i-1)+1)
-            nddly=zi(inddl-1+6*(i-1)+2)
+        else if (type(i)(1:6).eq.'CERCLE') then
+            nddlx=vnddl(6*(i-1)+1)
+            nddly=vnddl(6*(i-1)+2)
 ! ---     +2*ORIG1*UX + 2*ORIG2*UY
             if (ind .le. nd*(2*h+1)) then
                 if (hind .le. h) then
                     if (ddl .eq. nddlx) then
-                        zr(il-1+deb+2*(2*hf+1)+hind+1)=2*zr(iorig+3*(i-1))/jeu**2
+                        zr(il-1+deb+2*(2*hf+1)+hind+1)=2*orig(1+3*(i-1))/jeu**2
                     else if (ddl.eq.nddly) then
-                        zr(il-1+deb+2*(2*hf+1)+hind+1)=2*zr(iorig+3*(i-1)+1)/jeu**2
+                        zr(il-1+deb+2*(2*hf+1)+hind+1)=2*orig(1+3*(i-1)+1)/jeu**2
                     endif
                 else
                     if (ddl .eq. nddlx) then
-                        zr(il-1+deb+2*(2*hf+1)+(hf+1)+(hind-h))= 2*zr(iorig+3*(i-1))/jeu**2
+                        zr(il-1+deb+2*(2*hf+1)+(hf+1)+(hind-h))= 2*orig(1+3*(i-1))/jeu**2
                     else if (ddl.eq.nddly) then
-                        zr(il-1+deb+2*(2*hf+1)+(hf+1)+(hind-h))= 2*zr(iorig+3*(i-1)+1)/jeu**2
+                        zr(il-1+deb+2*(2*hf+1)+(hf+1)+(hind-h))= 2*orig(1+3*(i-1)+1)/jeu**2
                     endif
                 endif
             endif
             if (ind .gt. (deb+3*(2*hf+1)) .and. ind .le. (deb+4*(2*hf+1))) then
 ! ---     +ORIG1*FN
-                zr(il-1+deb+(ind-deb-3*(2*hf+1)))=zr(iorig+3*(i-1))/jeu
+                zr(il-1+deb+(ind-deb-3*(2*hf+1)))=orig(1+3*(i-1))/jeu
 ! ---     +ORIG2*FN
-                zr(il-1+deb+(2*hf+1)+(ind-deb-3*(2*hf+1)))=zr(iorig+3*(i-1)+1)/jeu
+                zr(il-1+deb+(2*hf+1)+(ind-deb-3*(2*hf+1)))=orig(1+3*(i-1)+1)/jeu
 ! ---     FN
                 zr(il-1+ind)=1.d0
             endif
-        else if (zk8(ityp-1+i)(1:4).eq.'PLAN') then
+        else if (type(i)(1:4).eq.'PLAN') then
 ! ---     F
             if (ind .gt. deb .and. ind .le. (deb+(2*hf+1))) then
                 zr(il-1+ind)=1.d0
             endif
         endif
-        deb=deb+zi(ineqs-1+i)*(2*hf+1)
+        deb=deb+neqs(i)*(2*hf+1)
 110  continue
 ! ----------------------------------------------------------------------
 ! --- AUTRES EQUATIONS

@@ -66,8 +66,9 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !                 SI DONNEE BASE MODALE OU INTERF_DYNA
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, lldes, llint, nbdif, nbeffi
+    integer :: i, inoe,  llint, nbdif, nbeffi
     integer :: nbnoe, numcou, numint
+    integer, pointer :: idc_defo(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     intf = intfz
@@ -116,7 +117,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !------------RECUPERATION DU DESCRIPTEUR DE DEFORMEES-------------------
 !
 !
-    call jeveuo(intf//'.IDC_DEFO', 'L', lldes)
+    call jeveuo(intf//'.IDC_DEFO', 'L', vi=idc_defo)
 !
 !------------------------COMPTAGE DES DDL-------------------------------
 !
@@ -125,7 +126,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
     do i = 1, nbeffi
         inoe=zi(llint+i-1)
-        numcou=zi(lldes+inoe-1)
+        numcou=idc_defo(inoe)
         nbdif=nbdif-1
         if (nbdif .ge. 0) numnoe(nbnoi-nbdif)=numcou
     end do

@@ -40,11 +40,19 @@ subroutine pjfuc2(c1, c2, base, c3)
 !
 !
     integer :: ii, ino, ilengt, ideca1, ideca2
-    integer :: jno1, nbno1, jnb1, jm11, jcf1, jnu1
-    integer :: jno2, nbno2, jnb2, jm12, jcf2, jnu2
+    integer :: jno1, nbno1
+    integer :: jno2, nbno2
     integer :: jnb3, jm13, jcf3, jnu3
     character(len=8) :: ma1, ma2
     character(len=24) :: valk(2)
+    integer, pointer :: nu1(:) => null()
+    integer, pointer :: nu2(:) => null()
+    integer, pointer :: nb1(:) => null()
+    integer, pointer :: nb2(:) => null()
+    integer, pointer :: m11(:) => null()
+    integer, pointer :: m12(:) => null()
+    real(kind=8), pointer :: cf1(:) => null()
+    real(kind=8), pointer :: cf2(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -73,14 +81,14 @@ subroutine pjfuc2(c1, c2, base, c3)
 !     -----------------------------
     call jelira(c1//'.PJEF_NB', 'LONMAX', nbno1)
     call jelira(c2//'.PJEF_NB', 'LONMAX', nbno2)
-    call jeveuo(c1//'.PJEF_NB', 'L', jnb1)
-    call jeveuo(c2//'.PJEF_NB', 'L', jnb2)
-    call jeveuo(c1//'.PJEF_M1', 'L', jm11)
-    call jeveuo(c2//'.PJEF_M1', 'L', jm12)
-    call jeveuo(c1//'.PJEF_CF', 'L', jcf1)
-    call jeveuo(c2//'.PJEF_CF', 'L', jcf2)
-    call jeveuo(c1//'.PJEF_NU', 'L', jnu1)
-    call jeveuo(c2//'.PJEF_NU', 'L', jnu2)
+    call jeveuo(c1//'.PJEF_NB', 'L', vi=nb1)
+    call jeveuo(c2//'.PJEF_NB', 'L', vi=nb2)
+    call jeveuo(c1//'.PJEF_M1', 'L', vi=m11)
+    call jeveuo(c2//'.PJEF_M1', 'L', vi=m12)
+    call jeveuo(c1//'.PJEF_CF', 'L', vr=cf1)
+    call jeveuo(c2//'.PJEF_CF', 'L', vr=cf2)
+    call jeveuo(c1//'.PJEF_NU', 'L', vi=nu1)
+    call jeveuo(c2//'.PJEF_NU', 'L', vi=nu2)
 !
 !     3- AFFECTATION DE PJEF_NB ET PJEF_M1
 !     ------------------------------------
@@ -89,14 +97,14 @@ subroutine pjfuc2(c1, c2, base, c3)
 !
     ilengt = 0
     do 20 ino = 1, nbno1
-        zi(jnb3-1+ino) = zi(jnb1-1+ino)
-        zi(jm13-1+ino) = zi(jm11-1+ino)
-        ilengt = ilengt + zi(jnb1-1+ino)
+        zi(jnb3-1+ino) = nb1(ino)
+        zi(jm13-1+ino) = m11(ino)
+        ilengt = ilengt + nb1(ino)
 20  end do
     do 30 ino = 1, nbno2
-        zi(jnb3-1+nbno1+ino) = zi(jnb2-1+ino)
-        zi(jm13-1+nbno1+ino) = zi(jm12-1+ino)
-        ilengt = ilengt + zi(jnb2-1+ino)
+        zi(jnb3-1+nbno1+ino) = nb2(ino)
+        zi(jm13-1+nbno1+ino) = m12(ino)
+        ilengt = ilengt + nb2(ino)
 30  end do
 !
 !     4 - AFFECTATION DE PJEF_CF ET PJEF_NU
@@ -106,20 +114,20 @@ subroutine pjfuc2(c1, c2, base, c3)
 !
     ideca1 = 0
     do 40 ino = 1, nbno1
-        do 50 ii = 1, zi(jnb1-1+ino)
-            zr(jcf3-1+ideca1+ii) = zr(jcf1-1+ideca1+ii)
-            zi(jnu3-1+ideca1+ii) = zi(jnu1-1+ideca1+ii)
+        do 50 ii = 1, nb1(ino)
+            zr(jcf3-1+ideca1+ii) = cf1(ideca1+ii)
+            zi(jnu3-1+ideca1+ii) = nu1(ideca1+ii)
 50      continue
-        ideca1 = ideca1 + zi(jnb1-1+ino)
+        ideca1 = ideca1 + nb1(ino)
 40  end do
     ideca2 = 0
     do 60 ino = 1, nbno2
-        do 70 ii = 1, zi(jnb2-1+ino)
-            zr(jcf3-1+ideca1+ii) = zr(jcf2-1+ideca2+ii)
-            zi(jnu3-1+ideca1+ii) = zi(jnu2-1+ideca2+ii)
+        do 70 ii = 1, nb2(ino)
+            zr(jcf3-1+ideca1+ii) = cf2(ideca2+ii)
+            zi(jnu3-1+ideca1+ii) = nu2(ideca2+ii)
 70      continue
-        ideca1 = ideca1 + zi(jnb2-1+ino)
-        ideca2 = ideca2 + zi(jnb2-1+ino)
+        ideca1 = ideca1 + nb2(ino)
+        ideca2 = ideca2 + nb2(ino)
 60  end do
 !
 !     5 - LIBERATION DE LA MEMOIRE

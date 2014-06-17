@@ -63,8 +63,8 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     real(kind=8) :: ff(nbnomx), cooele(3*nbnomx)
     character(len=8) :: elrefa, m1, m2, fapg(nbfamx), alarme
     character(len=16) :: k16bid, nomcmd
-    integer :: j1xxk1, i1conb, i1conu, i1cocf, i1cotr, nno1, nno2
-    integer :: nma1, nma2, ialim1, ialin1, ialin2, iatr3, iacnx1, ilcnx1, iatyma
+    integer ::  i1conb, i1conu,   nno1, nno2
+    integer :: nma1, nma2, ialim1, ialin1, ialin2,   ilcnx1
     integer :: j2xxk1, i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu
     integer :: i2cocf, i2coco, ideca1, itypm, nutm, ityp, ndim, nno, kdim
     integer :: nnos, nbfpg, kk, ino, nuno, iret, ibid
@@ -75,6 +75,12 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     real(kind=8) :: tdmin2(nbmax), umessr(4), disprj, distv
     character(len=8) :: nono2
     logical :: loin2
+    integer, pointer :: typmail(:) => null()
+    character(len=24), pointer :: pjxx_k1(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    integer, pointer :: tetr4(:) => null()
+    integer, pointer :: pjef_tr(:) => null()
+    integer, pointer :: connex(:) => null()
 ! --- DEB --------------------------------------------------------------
 !
     call jemarq()
@@ -152,14 +158,14 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !
 !     1. RECUPERATION DES INFORMATIONS GENERALES :
 !     -----------------------------------------------
-    call jeveuo(cortr3//'.PJXX_K1', 'L', j1xxk1)
+    call jeveuo(cortr3//'.PJXX_K1', 'L', vk24=pjxx_k1)
     call jeveuo(cortr3//'.PJEF_NB', 'L', i1conb)
     call jeveuo(cortr3//'.PJEF_NU', 'L', i1conu)
-    call jeveuo(cortr3//'.PJEF_CF', 'L', i1cocf)
-    call jeveuo(cortr3//'.PJEF_TR', 'L', i1cotr)
+    call jeveuo(cortr3//'.PJEF_CF', 'L', vr=pjef_cf)
+    call jeveuo(cortr3//'.PJEF_TR', 'L', vi=pjef_tr)
 !
-    m1=zk24(j1xxk1-1+1)(1:8)
-    m2=zk24(j1xxk1-1+2)(1:8)
+    m1=pjxx_k1(1)(1:8)
+    m2=pjxx_k1(2)(1:8)
     call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
     call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
     call dismoi('NB_MA_MAILLA', m1, 'MAILLAGE', repi=nma1)
@@ -168,11 +174,11 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     call jeveuo('&&PJXXCO.LIMA1', 'L', ialim1)
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
     call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
-    call jeveuo('&&PJXXCO.TETR4', 'L', iatr3)
+    call jeveuo('&&PJXXCO.TETR4', 'L', vi=tetr4)
 !
-    call jeveuo(m1//'.CONNEX', 'L', iacnx1)
+    call jeveuo(m1//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
-    call jeveuo(m1//'.TYPMAIL', 'L', iatyma)
+    call jeveuo(m1//'.TYPMAIL', 'L', vi=typmail)
 !
 !
 !     2. ALLOCATION DE CORRES :
@@ -189,10 +195,10 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     ideca2=0
     do ino2 = 1, nno2
 !       ITR : TETR4 ASSOCIE A INO2
-        itr=zi(i1cotr-1+ino2)
+        itr=pjef_tr(ino2)
         if (itr .eq. 0) goto 10
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
-        ima1=zi(iatr3+6*(itr-1)+5)
+        ima1=tetr4(1+6*(itr-1)+5)
         nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
         zi(i2conb-1+ino2)=nbno
         zi(i2com1-1+ino2)=ima1
@@ -218,15 +224,15 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     ideca2=0
     do ino2 = 1, nno2
 !       ITR : TETR4 ASSOCIE A INO2
-        itr = zi(i1cotr-1+ino2)
+        itr = pjef_tr(ino2)
         if (itr .eq. 0) goto 20
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
-        ima1 = zi(iatr3+6*(itr-1)+5)
+        ima1 = tetr4(1+6*(itr-1)+5)
 !       ITYPM : TYPE DE LA MAILLE IMA1
-        itypm = zi(iatyma-1+ima1)
+        itypm = typmail(ima1)
         nutm = indiis(nutm3d,itypm,1,10)
         elrefa = elrf3d(nutm)
-        ityp = zi(iatr3+6*(itr-1)+6)
+        ityp = tetr4(1+6*(itr-1)+6)
         nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
 !
         call elraca(elrefa, ndim, nno, nnos, nbfpg,&
@@ -246,9 +252,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 x1 = crrefe(ndim*(cntetr(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cntetr(kk,ityp)-1)+2)
                 x3 = crrefe(ndim*(cntetr(kk,ityp)-1)+3)
-                ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-                eta = eta + zr(i1cocf-1+ideca1+kk)*x2
-                dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
+                ksi = ksi + pjef_cf(ideca1+kk)*x1
+                eta = eta + pjef_cf(ideca1+kk)*x2
+                dzeta = dzeta + pjef_cf(ideca1+kk)*x3
             enddo
 !
             elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or.&
@@ -257,9 +263,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 x1 = crrefe(ndim*(cnpent(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnpent(kk,ityp)-1)+2)
                 x3 = crrefe(ndim*(cnpent(kk,ityp)-1)+3)
-                ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-                eta = eta + zr(i1cocf-1+ideca1+kk)*x2
-                dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
+                ksi = ksi + pjef_cf(ideca1+kk)*x1
+                eta = eta + pjef_cf(ideca1+kk)*x2
+                dzeta = dzeta + pjef_cf(ideca1+kk)*x3
             enddo
 !
             elseif (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or.&
@@ -268,9 +274,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 x1 = crrefe(ndim*(cnhexa(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnhexa(kk,ityp)-1)+2)
                 x3 = crrefe(ndim*(cnhexa(kk,ityp)-1)+3)
-                ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-                eta = eta + zr(i1cocf-1+ideca1+kk)*x2
-                dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
+                ksi = ksi + pjef_cf(ideca1+kk)*x1
+                eta = eta + pjef_cf(ideca1+kk)*x2
+                dzeta = dzeta + pjef_cf(ideca1+kk)*x3
             enddo
 !
         else if (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
@@ -278,9 +284,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 x1 = crrefe(ndim*(cnpyra(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnpyra(kk,ityp)-1)+2)
                 x3 = crrefe(ndim*(cnpyra(kk,ityp)-1)+3)
-                ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-                eta = eta + zr(i1cocf-1+ideca1+kk)*x2
-                dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
+                ksi = ksi + pjef_cf(ideca1+kk)*x1
+                eta = eta + pjef_cf(ideca1+kk)*x2
+                dzeta = dzeta + pjef_cf(ideca1+kk)*x3
             enddo
 !
         else
@@ -293,7 +299,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !
 !       -- on essaye d'ameliorer la precision de xr1(*) en utilisant reereg :
         do ino = 1, nbno
-            nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
+            nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
             do kdim = 1, ndim
                 cooele(ndim*(ino-1)+kdim)=geom1(3*(nuno-1)+kdim)
             enddo
@@ -327,7 +333,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
         call elrfvf(elrefa, xr3, 27, ff, nno)
 !
         do ino = 1, nbno
-            nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
+            nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno
             zr(i2cocf-1+ideca2+ino) = ff(ino)
         enddo

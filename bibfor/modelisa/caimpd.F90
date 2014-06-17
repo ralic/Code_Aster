@@ -42,11 +42,12 @@ subroutine caimpd(char, ligrmo, noma, fonree)
 !      NOMA   : NOM DU MAILLAGE
 !      FONREE : FONC OU REEL
 ! ----------------------------------------------------------------------
-    integer :: iocc, n, nimpe, jvalv, jncmp, nbma, jma
+    integer :: iocc, n, nimpe, jvalv,  nbma, jma
     character(len=8) ::  typmcl(2)
     character(len=16) :: motclf, motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
+    character(len=8), pointer :: ncmp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -64,12 +65,12 @@ subroutine caimpd(char, ligrmo, noma, fonree)
         call utmess('F', 'MODELISA2_37', sk=fonree)
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=ncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
 ! --- STOCKAGE DES PRESSIONS  NULLES SUR TOUT LE MAILLAGE
 !
-    zk8(jncmp) = 'IMPE'
+    ncmp(1) = 'IMPE'
     if (fonree .eq. 'REEL') then
         zr(jvalv) = 0.d0
     else

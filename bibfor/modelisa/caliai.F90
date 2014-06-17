@@ -71,7 +71,7 @@ subroutine caliai(fonree, charge)
     integer :: iarg
 !-----------------------------------------------------------------------
     integer :: i, ier, igr, in, indnoe, ino
-    integer :: iocc, iret, j,    jcoor
+    integer :: iocc, iret, j
     integer :: jddl,   jgr0, jjj
     integer :: k, n, n1, n2, n3, nb, nbgt
     integer :: nbno, ndim1, ndim2, nent, ng, ngr, nliai
@@ -84,6 +84,7 @@ subroutine caliai(fonree, charge)
     real(kind=8), pointer :: direct(:) => null()
     character(len=24), pointer :: liste1(:) => null()
     character(len=8), pointer :: liste2(:) => null()
+    real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
     data nompar /'X','Y','Z'/
 ! ----------------------------------------------------------------------
@@ -108,7 +109,7 @@ subroutine caliai(fonree, charge)
     noeuma = noma//'.NOMNOE'
     grouno = noma//'.GROUPENO'
     coordo = noma//'.COORDO'
-    call jeveuo(coordo//'    .VALE', 'L', jcoor)
+    call jeveuo(coordo//'    .VALE', 'L', vr=vvale)
 !
 !     -- CALCUL DE NDIM1 : NBRE DE TERMES MAXI D'UNE LISTE
 !        DE GROUP_NO OU DE NOEUD
@@ -240,9 +241,9 @@ subroutine caliai(fonree, charge)
                     call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
                     liste2(indnoe) = nomnoe
                     if (typco2 .eq. 'FONC') then
-                        valpar(1) = zr(jcoor-1+3*(in-1)+1)
-                        valpar(2) = zr(jcoor-1+3*(in-1)+2)
-                        valpar(3) = zr(jcoor-1+3*(in-1)+3)
+                        valpar(1) = vvale(3*(in-1)+1)
+                        valpar(2) = vvale(3*(in-1)+2)
+                        valpar(3) = vvale(3*(in-1)+3)
                         call fointe('F', coemuf(indnoe), 3, nompar, valpar,&
                                     vale, ier)
                         coemur(indnoe)=vale
@@ -278,9 +279,9 @@ subroutine caliai(fonree, charge)
                 if (typco2 .eq. 'FONC') then
                     do k = 1, n
                         call jenonu(jexnom(noma//'.NOMNOE', liste2(k)), in)
-                        valpar(1) = zr(jcoor-1+3*(in-1)+1)
-                        valpar(2) = zr(jcoor-1+3*(in-1)+2)
-                        valpar(3) = zr(jcoor-1+3*(in-1)+3)
+                        valpar(1) = vvale(3*(in-1)+1)
+                        valpar(2) = vvale(3*(in-1)+2)
+                        valpar(3) = vvale(3*(in-1)+3)
                         call fointe('F', coemuf(k), 3, nompar, valpar,&
                                     vale, ier)
                         coemur(k)=vale

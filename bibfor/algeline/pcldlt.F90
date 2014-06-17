@@ -66,7 +66,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !----------------------------------------------------------------------
     logical :: complt
     character(len=1) :: base
-    integer :: iret, jsmdi, jsmhc, jsmde, nequ, ncoef, nblc
+    integer :: iret,  jsmhc,  nequ, ncoef, nblc
     integer :: jvalm,  i, nzmax,   niremp
     integer ::   jsmhc1, ier, k, jsmdif, jsmhcf, jvalf
     integer :: jrefa, jrefaf
@@ -82,6 +82,8 @@ subroutine pcldlt(matf, mat, niremp, bas)
     integer, pointer :: smdif(:) => null()
     real(kind=8), pointer :: vect(:) => null()
     real(kind=8), pointer :: vtravail(:) => null()
+    integer, pointer :: smde(:) => null()
+    integer, pointer :: smdi(:) => null()
 !----------------------------------------------------------------------
 !     DEBUT DES INSTRUCTIONS
     call jemarq()
@@ -112,13 +114,13 @@ subroutine pcldlt(matf, mat, niremp, bas)
         call utmess('F', 'ALGELINE3_21', sk=matas)
     endif
 !
-    call jeveuo(nu//'.SMOS.SMDI', 'L', jsmdi)
+    call jeveuo(nu//'.SMOS.SMDI', 'L', vi=smdi)
     call jeveuo(nu//'.SMOS.SMHC', 'L', jsmhc)
-    call jeveuo(nu//'.SMOS.SMDE', 'L', jsmde)
-    nequ = zi(jsmde-1+1)
-    ncoef = zi(jsmde-1+2)
+    call jeveuo(nu//'.SMOS.SMDE', 'L', vi=smde)
+    nequ = smde(1)
+    ncoef = smde(2)
 !
-    nblc = zi(jsmde-1+3)
+    nblc = smde(3)
     if (nblc .ne. 1) then
         call utmess('F', 'ALGELINE3_22')
     endif
@@ -157,7 +159,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
     AS_ALLOCATE(vr=vtravail, size=nequ)
     dnorm = 0.d0
     do i = 1, nequ
-        dnorm = max(abs(zr(jvalm-1+zi(jsmdi-1+i))),dnorm)
+        dnorm = max(abs(zr(jvalm-1+smdi(i))),dnorm)
     end do
     epsi = 1.d-16*dnorm
     call jelibe(jexnum(matas//'.VALM', 1))
@@ -176,7 +178,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
         call wkvect('&&PCLDLT.SMHCF', 'V V S', 2*nzmax, jsmhc1)
         AS_ALLOCATE(vi=icpcx, size=nzmax)
 !
-        call pcstru(nequ, zi(jsmdi), zi4(jsmhc), smdif, zi4(jsmhc1),&
+        call pcstru(nequ, smdi, zi4(jsmhc), smdif, zi4(jsmhc1),&
                     icpd, icpcx, icplx, niremp, complt,&
                     nzmax, 0, ier)
 !
@@ -220,7 +222,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !     ------------------------------------------------
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', jvalm)
     call jeveuo(jexnum(matfac//'.VALM', 1), 'E', jvalf)
-    call pccoef(nequ, zi(jsmdi), zi4(jsmhc), zr(jvalm), zi(jsmdif),&
+    call pccoef(nequ, smdi, zi4(jsmhc), zr(jvalm), zi(jsmdif),&
                 zi4(jsmhcf), zr(jvalf),vtravail)
     call jelibe(jexnum(matas//'.VALM', 1))
 !

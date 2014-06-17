@@ -39,18 +39,20 @@ subroutine rcmo01(chmome, ima, ipt, vale)
 !     ------------------------------------------------------------------
     character(len=24) :: valk
 !
-    integer :: jcesv, jcesd, jcesl, nbcmp, decal, icmp, iad
+    integer ::   jcesl, nbcmp, decal, icmp, iad
     integer :: vali(2)
+    real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: cesd(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
 ! --- LE CHAMP MOMENT
 !
-    call jeveuo(chmome(1:19)//'.CESV', 'L', jcesv)
-    call jeveuo(chmome(1:19)//'.CESD', 'L', jcesd)
+    call jeveuo(chmome(1:19)//'.CESV', 'L', vr=cesv)
+    call jeveuo(chmome(1:19)//'.CESD', 'L', vi=cesd)
     call jeveuo(chmome(1:19)//'.CESL', 'L', jcesl)
-    nbcmp = zi(jcesd-1+2)
-    decal = zi(jcesd-1+5+4*(ima-1)+4)
+    nbcmp = cesd(2)
+    decal = cesd(5+4*(ima-1)+4)
 !
 ! --- LES VALEURS DES COMPOSANTES
 !
@@ -62,7 +64,7 @@ subroutine rcmo01(chmome, ima, ipt, vale)
             valk = 'MOMENT'
             call utmess('F', 'POSTRCCM_18', sk=valk, ni=2, vali=vali)
         endif
-        vale(icmp) = zr(jcesv-1+iad)
+        vale(icmp) = cesv(iad)
 10  end do
 !
     call jedema()

@@ -57,7 +57,7 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     character(len=6) :: nompro
 !-----------------------------------------------------------------------
     integer :: i, ie, ier, ierd, in, inuord
-    integer :: iordr, jinfc, jlcha, jordr, n1, n2, n3
+    integer :: iordr,   jordr, n1, n2, n3
     integer :: n4, nbordr, nc, np, nuord
     real(kind=8) :: prec
 !-----------------------------------------------------------------------
@@ -67,6 +67,8 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
     character(len=19) :: excit, knum
     character(len=8) :: crit
     logical :: lpost
+    character(len=24), pointer :: lcha(:) => null()
+    integer, pointer :: infc(:) => null()
     call jemarq()
 !
 !              12345678
@@ -201,9 +203,9 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
 !
 !   SI IEXCIT=0 ON PREND LE CHARGEMENT DONNE PAR LA SD RESULTAT
 !
-        call jeveuo(excit//'.INFC', 'L', jinfc)
-        ncha=zi(jinfc)
-        call jeveuo(excit//'.LCHA', 'L', jlcha)
+        call jeveuo(excit//'.INFC', 'L', vi=infc)
+        ncha=infc(1)
+        call jeveuo(excit//'.LCHA', 'L', vk24=lcha)
         call jedetr(kcha)
         call wkvect(kcha, 'V V K8', ncha, icha)
         call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom, arret='C',&
@@ -211,13 +213,13 @@ subroutine medome(modele, mate, cara, kcha, ncha,&
         ctyp=phenom(1:4)
         in=0
         do i = 1, ncha
-            call jeexin(zk24(jlcha+i-1)(1:8)//'.TYPE', ie)
+            call jeexin(lcha(i)(1:8)//'.TYPE', ie)
 !          ON TESTE SI LA CHARGE EST NON VIDE
             if (ie .ne. 0) then
-                call dismoi('TYPE_CHARGE', zk24(jlcha+i-1)(1:8), 'CHARGE', repk=k8b)
+                call dismoi('TYPE_CHARGE', lcha(i)(1:8), 'CHARGE', repk=k8b)
 !          ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
                 if (ctyp .eq. k8b(1:4)) then
-                    zk8(icha+in)=zk24(jlcha+i-1)(1:8)
+                    zk8(icha+in)=lcha(i)(1:8)
                     in=in+1
                 endif
             endif

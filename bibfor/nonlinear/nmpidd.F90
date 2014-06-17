@@ -61,10 +61,13 @@ subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0,&
 !
 !
     real(kind=8) :: du, rn, rd
-    integer :: jcoef, jdepde, jdep0, jdep1
     integer :: neq
     character(len=19) :: chapil
     integer :: ifm, niv
+    real(kind=8), pointer :: coef(:) => null()
+    real(kind=8), pointer :: dep0(:) => null()
+    real(kind=8), pointer :: dep1(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,17 +87,17 @@ subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0,&
 !
 ! --- ACCES OBJETS JEVEUX
 !
-    call jeveuo(ddepl0(1:19)//'.VALE', 'L', jdep0)
-    call jeveuo(ddepl1(1:19)//'.VALE', 'L', jdep1)
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=dep0)
+    call jeveuo(ddepl1(1:19)//'.VALE', 'L', vr=dep1)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
     chapil = sdpilo(1:14)//'.PLCR'
-    call jeveuo(chapil(1:19)//'.VALE', 'L', jcoef)
+    call jeveuo(chapil(1:19)//'.VALE', 'L', vr=coef)
 !
 ! --- RESOLUTION DE L'EQUATION
 !
-    rn = ddot(neq,zr(jdep0) ,1,zr(jcoef),1)
-    rd = ddot(neq,zr(jdep1) ,1,zr(jcoef),1)
-    du = ddot(neq,zr(jdepde),1,zr(jcoef),1)
+    rn = ddot(neq,dep0,1,coef,1)
+    rd = ddot(neq,dep1,1,coef,1)
+    du = ddot(neq,depde,1,coef,1)
     if (rd .eq. 0.d0) then
         pilcvg = 1
     else

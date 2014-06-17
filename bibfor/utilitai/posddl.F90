@@ -46,10 +46,11 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
 ! OUT NUNOE  : NUMERO LOCAL DU NOEUD
 ! OUT NUDDL  : NUMERO DU DDL ASSOCIE AU NOEUD DE COMPOSANTE CMP
 !     ------------------------------------------------------------------
-    integer :: ibid, gd, iec, nec, ncmpmx, icmpre, icmp, jprno, jnueq, iad
+    integer :: ibid, gd, iec, nec, ncmpmx, icmpre, icmp, jprno,  iad
     integer :: tabec(10)
     character(len=8) :: nomma, nomcmp, ncmp
     character(len=19) :: prno
+    integer, pointer :: nueq(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -76,7 +77,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
 !
     call jenonu(jexnom(prno//'.LILI', '&MAILLA'), ibid)
     call jeveuo(jexnum(prno//'.PRNO', ibid), 'L', jprno)
-    call jeveuo(prno//'.NUEQ', 'L', jnueq)
+    call jeveuo(prno//'.NUEQ', 'L', vi=nueq)
 !
     nec = nbec( gd )
     ASSERT(nec .le. 10)
@@ -92,7 +93,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
             icmpre = icmpre + 1
             nomcmp = zk8(iad-1+icmp)
             if (nomcmp .eq. ncmp) then
-                nuddl = zi(jnueq+zi(jprno+(nec+2)*(nunoe-1))-1)+ icmpre-1
+                nuddl = nueq(1+zi(jprno+(nec+2)*(nunoe-1))-1)+ icmpre-1
                 goto 22
             endif
         endif

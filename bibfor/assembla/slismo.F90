@@ -43,8 +43,10 @@ subroutine slismo(stolcz, stomoz, basz)
 !     VARIABLES LOCALES
     character(len=1) :: base
     character(len=19) :: stomor, stolci
-    integer :: jsmde, jscde, neq, ieq, ilig
-    integer :: jsmhc, jsmdi, jschc, hcol, nterm, kterm
+    integer :: jsmde,  neq, ieq, ilig
+    integer :: jsmhc, jsmdi,  hcol, nterm, kterm
+    integer, pointer :: scde(:) => null()
+    integer, pointer :: schc(:) => null()
 !     ------------------------------------------------------------------
 !
 !
@@ -58,15 +60,15 @@ subroutine slismo(stolcz, stomoz, basz)
     call detrsd('STOC_MORSE', stomor)
 !
 !
-    call jeveuo(stolci//'.SCDE', 'L', jscde)
-    call jeveuo(stolci//'.SCHC', 'L', jschc)
+    call jeveuo(stolci//'.SCDE', 'L', vi=scde)
+    call jeveuo(stolci//'.SCHC', 'L', vi=schc)
 !
-    neq=zi(jscde-1+1)
+    neq=scde(1)
 !
 !     -- CALCUL DE NTERM :
     nterm=0
     do 1, ieq=1,neq
-    hcol=zi(jschc-1+ieq)
+    hcol=schc(ieq)
     nterm=nterm+hcol
     1 end do
 !
@@ -82,7 +84,7 @@ subroutine slismo(stolcz, stomoz, basz)
     call wkvect(stomor//'.SMDI', base//' V I', neq, jsmdi)
     nterm=0
     do 2, ieq=1,neq
-    hcol=zi(jschc-1+ieq)
+    hcol=schc(ieq)
     nterm=nterm+hcol
     zi(jsmdi-1+ieq)=nterm
     2 end do
@@ -92,7 +94,7 @@ subroutine slismo(stolcz, stomoz, basz)
     call wkvect(stomor//'.SMHC', base//' V S', nterm, jsmhc)
     kterm=0
     do 3, ieq=1,neq
-    hcol=zi(jschc-1+ieq)
+    hcol=schc(ieq)
     ASSERT(hcol.le.ieq)
     do 4, ilig=ieq-hcol+1,ieq
     kterm=kterm+1

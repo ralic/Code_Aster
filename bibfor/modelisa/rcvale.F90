@@ -70,7 +70,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !
 !
     integer :: nbmx, nbresp, ires, ier, nbr, nbc, nbk, iret
-    integer :: ivalr, ivalk, nbobj, nbf, ir, ik
+    integer ::   nbobj, nbf, ir, ik
     parameter        ( nbmx=30 )
     integer :: nbfp
     real(kind=8) :: valrep(nbmx)
@@ -81,6 +81,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     character(len=8) :: matpre, nomrep(nbmx), nomfop(nbmx)
     character(len=10) :: nomphe
     character(len=8) :: nommat
+    real(kind=8), pointer :: valr(:) => null()
+    character(len=8), pointer :: valk(:) => null()
     save  matpre,phepre,nbfp,nbresp,nomrep,valrep,icodr2,nomfop
 !
     call jemarq()
@@ -133,10 +135,10 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             goto 999
         endif
 !
-        call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', ivalr)
+        call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', vr=valr)
         call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
         call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
-        call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
+        call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', vk8=valk)
         call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
         do 130 ires = 1, nbres
             icodre(ires) = 1
@@ -145,8 +147,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
         nbobj = 0
         do 150 ir = 1, nbr
             do 140 ires = 1, nbres
-                if (nomres(ires) .eq. zk8(ivalk-1+ir)) then
-                    valres(ires) = zr(ivalr-1+ir)
+                if (nomres(ires) .eq. valk(ir)) then
+                    valres(ires) = valr(ir)
                     icodre(ires) = 0
                     nbobj = nbobj + 1
                 endif
@@ -156,8 +158,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             nbf = (nbk-nbr-nbc)/2
             do 170 ires = 1, nbres
                 do 160 ik = 1, nbf
-                    if (nomres(ires) .eq. zk8(ivalk-1+nbr+nbc+ik)) then
-                        nomfop(ires) = zk8(ivalk-1+nbr+nbc+nbf+ik)
+                    if (nomres(ires) .eq. valk(nbr+nbc+ik)) then
+                        nomfop(ires) = valk(nbr+nbc+nbf+ik)
                         call fointe(kstop, nomfop(ires), nbpar, nompar, valpar,&
                                     valres(ires), ier)
                         ASSERT(ier.eq.0)

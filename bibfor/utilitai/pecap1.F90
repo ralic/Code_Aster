@@ -111,12 +111,17 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i, ianueq, iaprno, ibid, idcoor, iddesc, idnoma
-    integer :: idvale, igr, iret, iret1, iret2, ival
+    integer :: i,  iaprno, ibid
+    integer ::  igr, iret, iret1, iret2, ival
     integer :: jdes, jgro, m, nbmail, nbno, nbordr, nec
     integer :: numa, numail
     real(kind=8) :: ct, deux, prec, r8b, strap, temp, undemi
     real(kind=8) :: x1, x2, xmin, y1, y2, ymin, zero
+    real(kind=8), pointer :: coor(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: desc(:) => null()
 !
 !-----------------------------------------------------------------------
     r8b=0.d0
@@ -193,12 +198,12 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! ---   RECUPERATION DU NOM DU MAILLAGE :
 !       -------------------------------
-        call jeveuo(ligrth//'.LGRF', 'L', idnoma)
-        noma = zk8(idnoma)
+        call jeveuo(ligrth//'.LGRF', 'L', vk8=lgrf)
+        noma = lgrf(1)
 !
 ! ---   RECUPERATION DES COORDONNEES DES NOEUDS DU MAILLAGE :
 !       ---------------------------------------------------
-        call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+        call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coor)
 !
 ! ---   RECUPERATION DES COORDONNEES X_MIN ET Y_MIN DU MAILLAGE :
 !       -------------------------------------------------------
@@ -228,15 +233,15 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! ---   RECUPERATION DU TABLEAU DES VALEURS DU CHAMP DE TEMPERATURES :
 !       ------------------------------------------------------------
-        call jeveuo(chtemp(1:19)//'.VALE', 'L', idvale)
+        call jeveuo(chtemp(1:19)//'.VALE', 'L', vr=vale)
 !
 ! ---   RECUPERATION DU DESCRIPTEUR DU CHAMP DE TEMPERATURES :
 !       ----------------------------------------------------
-        call jeveuo(chtemp(1:19)//'.DESC', 'L', iddesc)
+        call jeveuo(chtemp(1:19)//'.DESC', 'L', vi=desc)
 !
 ! ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMP (C'EST TEMP_R) :
 !       ------------------------------------------------------------
-        gd = zi(iddesc+1-1)
+        gd = desc(1)
 !
 ! ---   NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR :
 !       --------------------------------------------
@@ -250,7 +255,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! ---   RECUPERATION DU TABLEAU DES NUMEROS D'EQUATION :
 !       ----------------------------------------------
-        call jeveuo(prchno//'.NUEQ', 'L', ianueq)
+        call jeveuo(prchno//'.NUEQ', 'L', vi=nueq)
 !
 ! ---   CALCUL POUR CHAQUE TROU DE SA SURFACE S
 ! ---   LA CONSTANTE DE TORSION CALCULEE PRECEDEMENT VA ETRE
@@ -291,7 +296,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---   TEMPERATURE AU PREMIER NOEUD DE LA PREMIERE MAILLE DU CONTOUR
 ! ---   INTERIEUR COURANT :
 !       -----------------
-            temp = zr(idvale-1+zi(ianueq-1+ival))
+            temp = vale(nueq(ival))
 !
 ! ---   BOUCLE SUR LES MAILLES (SEG2 OU SEG3) CONSTITUANT LE CONTOUR
 ! ---   INTERIEUR COURANT :
@@ -323,10 +328,10 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---     SANS ERREUR LA FORMULE DONNANT LA SURFACE DETERMINEE
 ! ---     PAR LE SEGMENT ET SA PROJECTION SUR L'AXE Y :
 !         -------------------------------------------
-                x1 = zr(idcoor+3* (zi(jdes)-1)+1-1) - xmin
-                y1 = zr(idcoor+3* (zi(jdes)-1)+2-1) - ymin
-                x2 = zr(idcoor+3* (zi(jdes+1)-1)+1-1) - xmin
-                y2 = zr(idcoor+3* (zi(jdes+1)-1)+2-1) - ymin
+                x1 = coor(1+3* (zi(jdes)-1)+1-1) - xmin
+                y1 = coor(1+3* (zi(jdes)-1)+2-1) - ymin
+                x2 = coor(1+3* (zi(jdes+1)-1)+1-1) - xmin
+                y2 = coor(1+3* (zi(jdes+1)-1)+2-1) - ymin
 !
 ! ---    AIRE DU TRAPEZE DETERMINE PAR L'ELEMENT SEGMENT COURANT
 ! ---    ET PAR SA PROJECTION SUR L'AXE Y :

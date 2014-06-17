@@ -58,8 +58,9 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu,&
     real(kind=8) :: prec, eps0
     integer :: ieq, neq, iresu, ibid, ifreq(1), iret
     character(len=8) :: k8bid
-    integer :: jlccre, jlresu, jlvale
+    integer :: jlccre, jlresu
     complex(kind=8) :: c16bid
+    complex(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,9 +86,9 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu,&
         call rsexch('F', zk8(jlresu+iresu-1), 'DEPL', ifreq(1), chamno,&
                     iret)
         call vtcopy(chamno, chamn2, 'F', ibid)
-        call jeveuo(chamn2//'.VALE', 'L', jlvale)
+        call jeveuo(chamn2//'.VALE', 'L', vc=vale)
         do 20 ieq = 1, neq
-            zc(j2nd-1+ieq) = zc(j2nd-1+ieq) + zc(jlvale-1+ieq)*zc( jlccre-1+iresu)
+            zc(j2nd-1+ieq) = zc(j2nd-1+ieq) + vale(ieq)*zc( jlccre-1+iresu)
 20      continue
 10  end do
 !

@@ -59,7 +59,9 @@ subroutine ssmage(nomu, option)
     character(len=19) :: matas
     character(len=24) :: mate, compor
 !-----------------------------------------------------------------------
-    integer :: iarefm, jdesm, jvarm
+    integer :: iarefm
+    integer, pointer :: desm(:) => null()
+    real(kind=8), pointer :: varm(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -88,12 +90,12 @@ subroutine ssmage(nomu, option)
         ASSERT(.false.)
     endif
 !
-    call jeveuo(nomu//'.DESM', 'L', jdesm)
-    nchaci = zi(jdesm-1+6)
+    call jeveuo(nomu//'.DESM', 'L', vi=desm)
+    nchaci = desm(6)
 !
 !
-    call jeveuo(nomu//'.VARM', 'L', jvarm)
-    time = zr(jvarm-1+2)
+    call jeveuo(nomu//'.VARM', 'L', vr=varm)
+    time = varm(2)
 !
 !     -- CALCULS MATRICES ELEMENTAIRES DE MASSE (OU AMORTISSEMENT):
     if (option .eq. 'MASS_MECA') then

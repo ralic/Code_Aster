@@ -59,9 +59,7 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 !
 !
     character(len=19) :: depmoi, depplu, vitplu, accplu
-    integer :: jdepm, jdepp, jvitp, jaccp
     character(len=19) :: depkm1, vitkm1, acckm1, romk, romkm1
-    integer :: jdepkm, jvitkm, jacckm, jromk, jromkm
     integer :: ic
     real(kind=8) :: quapro(4), quarot(4), delqua(4)
     real(kind=8) :: qim(3), qikm1(3), qik(3), omkm1(3), ompkm1(3), delrot(3)
@@ -69,7 +67,16 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
     real(kind=8) :: rotkm(3, 3), rotk(3, 3), rotmt(3, 3), rotkmt(3, 3)
     real(kind=8) :: coevit, coeacc
     character(len=19) :: depdel
-    integer :: jdepde
+    real(kind=8), pointer :: acckm(:) => null()
+    real(kind=8), pointer :: accp(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
+    real(kind=8), pointer :: depkm(:) => null()
+    real(kind=8), pointer :: depm(:) => null()
+    real(kind=8), pointer :: depp(:) => null()
+    real(kind=8), pointer :: romkm(:) => null()
+    real(kind=8), pointer :: vromk(:) => null()
+    real(kind=8), pointer :: vitkm(:) => null()
+    real(kind=8), pointer :: vitp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,16 +102,16 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 !
 ! --- RECUPERATION DES ADRESSES
 !
-    call jeveuo(depmoi(1:19)//'.VALE', 'L', jdepm)
-    call jeveuo(depplu(1:19)//'.VALE', 'E', jdepp)
-    call jeveuo(depdel(1:19)//'.VALE', 'E', jdepde)
-    call jeveuo(vitplu(1:19)//'.VALE', 'E', jvitp)
-    call jeveuo(accplu(1:19)//'.VALE', 'E', jaccp)
-    call jeveuo(depkm1(1:19)//'.VALE', 'L', jdepkm)
-    call jeveuo(vitkm1(1:19)//'.VALE', 'L', jvitkm)
-    call jeveuo(acckm1(1:19)//'.VALE', 'L', jacckm)
-    call jeveuo(romkm1(1:19)//'.VALE', 'L', jromkm)
-    call jeveuo(romk(1:19) //'.VALE', 'E', jromk)
+    call jeveuo(depmoi(1:19)//'.VALE', 'L', vr=depm)
+    call jeveuo(depplu(1:19)//'.VALE', 'E', vr=depp)
+    call jeveuo(depdel(1:19)//'.VALE', 'E', vr=depde)
+    call jeveuo(vitplu(1:19)//'.VALE', 'E', vr=vitp)
+    call jeveuo(accplu(1:19)//'.VALE', 'E', vr=accp)
+    call jeveuo(depkm1(1:19)//'.VALE', 'L', vr=depkm)
+    call jeveuo(vitkm1(1:19)//'.VALE', 'L', vr=vitkm)
+    call jeveuo(acckm1(1:19)//'.VALE', 'L', vr=acckm)
+    call jeveuo(romkm1(1:19)//'.VALE', 'L', vr=romkm)
+    call jeveuo(romk(1:19) //'.VALE', 'E', vr=vromk)
 !
 ! --- QUATERNION DE L'INCREMENT DE ROTATION
 !
@@ -122,8 +129,8 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 ! --- MISE A JOUR DES DEPLACEMENTS
 !
     do 14 ic = 1, 3
-        zr(jdepp+iran(ic) -1) = theta1(ic)
-        zr(jdepde+iran(ic)-1) = theta1(ic)
+        depp(1+iran(ic) -1) = theta1(ic)
+        depde(1+iran(ic)-1) = theta1(ic)
 14  end do
 !
 ! --- QUATERNION DE LA ROTATION PRECEDENTE
@@ -138,23 +145,23 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 ! --- MISE A JOUR DE LA ROTATION
 !
     do 15 ic = 1, 3
-        zr(jromk+iran(ic) -1) = theta2(ic)
+        vromk(1+iran(ic) -1) = theta2(ic)
 15  end do
 !
 ! --- CALCUL DES INCREMENTS DE ROTATION
 !
     do 16 ic = 1, 3
-        qim (ic) = zr(jdepm+iran(ic) -1)
-        qikm1 (ic) = zr(jdepkm+iran(ic)-1)
-        qik (ic) = zr(jdepp+iran(ic) -1)
-        omkm1 (ic) = zr(jvitkm+iran(ic)-1)
-        ompkm1(ic) = zr(jacckm+iran(ic)-1)
+        qim (ic) = depm(1+iran(ic) -1)
+        qikm1 (ic) = depkm(1+iran(ic)-1)
+        qik (ic) = depp(1+iran(ic) -1)
+        omkm1 (ic) = vitkm(1+iran(ic)-1)
+        ompkm1(ic) = acckm(1+iran(ic)-1)
 16  end do
 !
 ! --- CALCUL DE L'INCREMENT DE ROTATION TOTALE
 !
     do 17 ic = 1, 3
-        delrot(ic) = zr(jromk+iran(ic) -1) - zr(jromkm+iran(ic)-1)
+        delrot(ic) = vromk(1+iran(ic) -1) - romkm(1+iran(ic)-1)
 17  end do
 !
 ! --- CALCUL DES MATRICES DE ROTATION
@@ -178,7 +185,7 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
     call promat(rotk, 3, 3, 3, vect3,&
                 3, 3, 1, vect1)
     do 18 ic = 1, 3
-        zr(jvitp+iran(ic)-1) = vect1(ic) + coevit*vect2(ic)
+        vitp(1+iran(ic)-1) = vect1(ic) + coevit*vect2(ic)
 18  end do
 !
 ! --- CALCUL DE L'ACCELERATION ANGULAIRE
@@ -188,7 +195,7 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
     call promat(rotk, 3, 3, 3, vect4,&
                 3, 3, 1, vect3)
     do 19 ic = 1, 3
-        zr(jaccp+iran(ic)-1) = vect3(ic) + coeacc*vect2(ic)
+        accp(1+iran(ic)-1) = vect3(ic) + coeacc*vect2(ic)
 19  end do
 !
     call jedema()

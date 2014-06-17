@@ -66,7 +66,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 !
 !
-    integer :: jnom, jnoma, jprnm, jexis
+    integer :: jnom,  jprnm, jexis
     integer :: i, icmp, ino
     integer :: nbcmp, nmocl, nbec
     parameter    (nmocl=300)
@@ -75,6 +75,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
     character(len=19) :: ligrmo
     character(len=24) :: nomnoe
     character(len=8) :: nomgd
+    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -138,8 +139,8 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 ! --- MAILLAGE DU MODELE
 !
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
+    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
+    noma = lgrf(1)
     nomnoe = noma//'.NOMNOE'
 !
 ! --- POUR CHAQUE NOEUD, ON VERIFIE SI LE DDL EST DESSUS

@@ -84,7 +84,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
     character(len=6) :: kiord
 !
     integer :: lnoff, iadrt1, iadrt2, iadrt3, itheta, iadrco, jmin
-    integer :: imodu, nbre, iret, numa, ndimte, jgt
+    integer :: imodu, nbre, iret, numa, ndimte
     integer :: nbno, ifon, i, idesc, irefe, j, jresu, k, jgtl
 !
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1
@@ -98,6 +98,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !-----------------------------------------------------------------------
     integer :: iadrtt, jbas, kno
     real(kind=8) :: s0, s1
+    real(kind=8), pointer :: cnsv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -121,7 +122,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !     RÉCUPÉRATION DES GRADIENTS DE LST
     cnsgt='&&GCOUR3.CNSGT'
     call cnocns(grlt, 'V', cnsgt)
-    call jeveuo(cnsgt//'.CNSV', 'L', jgt)
+    call jeveuo(cnsgt//'.CNSV', 'L', vr=cnsv)
     call jeveuo(cnsgt//'.CNSL', 'L', jgtl)
 !
 ! ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
@@ -286,9 +287,9 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                 else
                     if (zl(jgtl-1+(i-1)*3+1)) then
                         imodu = iadrt3+(k-1)*lnoff+jmin-1
-                        grtx=zr(jgt-1+(i-1)*3+1)
-                        grty=zr(jgt-1+(i-1)*3+2)
-                        grtz=zr(jgt-1+(i-1)*3+3)
+                        grtx=cnsv((i-1)*3+1)
+                        grty=cnsv((i-1)*3+2)
+                        grtz=cnsv((i-1)*3+3)
                         valx =((1-smin) * zr(imodu) + smin * zr(imodu+&
                         1))*grtx
                         valy =((1-smin) * zr(imodu) + smin * zr(imodu+&

@@ -40,9 +40,10 @@ subroutine op0040()
 #include "asterfort/ulopen.h"
 !
     integer :: ifm, niv, ibid, ncmp1, ncmpmx, icmp, jatach, nbcham
-    integer :: jnocmp, isy, iord, ifi, n2
+    integer ::  isy, iord, ifi, n2
     character(len=16) :: nomsym, nomfi
     character(len=19) :: resuin, nomcha
+    character(len=8), pointer :: nocmp(:) => null()
 !
     call infniv(ifm, niv)
 !
@@ -76,9 +77,9 @@ subroutine op0040()
             nomcha = zk24(jatach-1+iord)
             call cmpcha(nomcha, '&&OP0040.NOCMP', '&&OP0040.CORR1', '&&OP0040.CORR2', ncmp1,&
                         ncmpmx)
-            call jeveuo('&&OP0040.NOCMP', 'L', jnocmp)
+            call jeveuo('&&OP0040.NOCMP', 'L', vk8=nocmp)
             do 30,icmp = 1,ncmp1
-            write(ifi,*) '      * ',zk8(jnocmp-1+icmp)
+            write(ifi,*) '      * ',nocmp(icmp)
 30          continue
             call jedetr('&&OP0040.NOCMP')
             call jedetr('&&OP0040.CORR1')

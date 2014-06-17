@@ -43,8 +43,8 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 ! IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: jtblp, i, j, ipar, jvale, jlogq, ideb, ifin
-    integer :: nblign, jtbnp, ilon, ilm, id, if, ir, ilmp, iaj, nbpara, npara
+    integer ::  i, j, ipar, jvale, jlogq, ideb, ifin
+    integer :: nblign,  ilon, ilm, id, if, ir, ilmp, iaj, nbpara, npara
     integer :: nparaf
     logical :: erreur
     character(len=1) :: bacs
@@ -59,6 +59,8 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     integer, pointer :: log_para(:) => null()
     integer, pointer :: nom_para(:) => null()
     integer, pointer :: val_para(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
+    integer, pointer :: tbnp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -87,11 +89,11 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
         ir = 12
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !
 !     --- ON RECHERCHE LA LONGUEUR LA PLUS LONGUE ---
 !     --- ON STOCKE LES POINTEURS POUR NE PLUS FAIRE DE JEVEUO ---
@@ -105,9 +107,9 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     do 10 i = 1, nparim
         inpar = lipaim(i)
         do 12 j = 1, nbpara
-            knpar = zk24(jtblp+4*(j-1) )
-            nomjv = zk24(jtblp+4*(j-1)+2)
-            nomjvl = zk24(jtblp+4*(j-1)+3)
+            knpar = tblp(1+4*(j-1) )
+            nomjv = tblp(1+4*(j-1)+2)
+            nomjvl = tblp(1+4*(j-1)+3)
             if (inpar .eq. knpar) then
                 npara = npara + 1
                 nom_para(npara) = j
@@ -132,8 +134,8 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
     ideb = 2
     do 20 i = 1, npara
         ipar = nom_para(i)
-        type = zk24(jtblp+4*(ipar-1)+1)
-        ilon = lxlgut( zk24(jtblp+4*(ipar-1)) )
+        type = tblp(1+4*(ipar-1)+1)
+        ilon = lxlgut( tblp(1+4*(ipar-1)) )
         if (type(1:3) .eq. 'K80') then
             iaj = ( 80 - ilon ) / 2
             ifin = ideb + 80 - 1
@@ -142,7 +144,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 nparaf = i - 1
                 goto 22
             endif
-            chaine(ideb+iaj:ifin) = zk24(jtblp+4*(ipar-1))
+            chaine(ideb+iaj:ifin) = tblp(1+4*(ipar-1))
             chain2(ideb+iaj:ifin) = type
             if (format .eq. 'AGRAF') ifin = ifin + 1
         else if (type(1:1) .eq. 'I') then
@@ -154,7 +156,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 nparaf = i - 1
                 goto 22
             endif
-            chaine(ideb+iaj:ifin) = zk24(jtblp+4*(ipar-1))
+            chaine(ideb+iaj:ifin) = tblp(1+4*(ipar-1))
             chain2(ideb+iaj:ifin) = type
         else if (type(1:1) .eq. 'R') then
             ilm = max ( ir , ilmp )
@@ -165,7 +167,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 nparaf = i - 1
                 goto 22
             endif
-            chaine(ideb+iaj:ifin) = zk24(jtblp+4*(ipar-1))
+            chaine(ideb+iaj:ifin) = tblp(1+4*(ipar-1))
             chain2(ideb+iaj:ifin) = type
         else if (type(1:1) .eq. 'C') then
             ilm = 2 * ir + 1
@@ -177,7 +179,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 nparaf = i - 1
                 goto 22
             endif
-            chaine(ideb+iaj+8:ifin) = zk24(jtblp+4*(ipar-1))
+            chaine(ideb+iaj+8:ifin) = tblp(1+4*(ipar-1))
             chain2(ideb+iaj:ifin) = type
         else if (type(1:2) .eq. 'K8') then
             ilm = max ( 8 , ilmp )
@@ -188,7 +190,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 nparaf = i - 1
                 goto 22
             endif
-            chaine(ideb+iaj:ifin) = zk24(jtblp+4*(ipar-1))
+            chaine(ideb+iaj:ifin) = tblp(1+4*(ipar-1))
             chain2(ideb+iaj:ifin) = type
             if (format .eq. 'AGRAF') ifin = ifin + 1
         else if (type(1:3) .eq. 'K16') then
@@ -200,7 +202,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 nparaf = i - 1
                 goto 22
             endif
-            chaine(ideb+iaj:ifin) = zk24(jtblp+4*(ipar-1))
+            chaine(ideb+iaj:ifin) = tblp(1+4*(ipar-1))
             chain2(ideb+iaj:ifin) = type
             if (format .eq. 'AGRAF') ifin = ifin + 1
         else if (type(1:3) .eq. 'K24') then
@@ -211,7 +213,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 nparaf = i - 1
                 goto 22
             endif
-            chaine(ideb+iaj:ifin) = zk24(jtblp+4*(ipar-1))
+            chaine(ideb+iaj:ifin) = tblp(1+4*(ipar-1))
             chain2(ideb+iaj:ifin) = type
             if (format .eq. 'AGRAF') ifin = ifin + 1
         else if (type(1:3) .eq. 'K32') then
@@ -222,7 +224,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                 nparaf = i - 1
                 goto 22
             endif
-            chaine(ideb+iaj:ifin) = zk24(jtblp+4*(ipar-1))
+            chaine(ideb+iaj:ifin) = tblp(1+4*(ipar-1))
             chain2(ideb+iaj:ifin) = type
             if (format .eq. 'AGRAF') ifin = ifin + 1
         endif
@@ -246,7 +248,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
         ideb = 2
         do 32 j = 1, nparaf
             ipar = nom_para(j)
-            type = zk24(jtblp+4*(ipar-1)+1)
+            type = tblp(1+4*(ipar-1)+1)
             jvale = val_para(j)
             jlogq = log_para(j)
             if (zi(jlogq+i-1) .eq. 1) then

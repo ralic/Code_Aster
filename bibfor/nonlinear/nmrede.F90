@@ -64,7 +64,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
 !
 !
-    integer :: jccid, jfint, jdiri, jfext, jvcfo, jiner
+    integer :: jccid
     integer :: ifm, niv
     logical :: ldyna, lcine
     character(len=19) :: cndiri, cnvcfo
@@ -72,6 +72,11 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
     real(kind=8) :: val2, val3, appui, fext
     character(len=24) :: sdnuco
     integer :: jnuco
+    real(kind=8), pointer :: diri(:) => null()
+    real(kind=8), pointer :: vfext(:) => null()
+    real(kind=8), pointer :: fint(:) => null()
+    real(kind=8), pointer :: iner(:) => null()
+    real(kind=8), pointer :: vcfo(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -108,13 +113,13 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 !
 ! --- ACCES AUX CHAM_NO
 !
-    call jeveuo(cnfint(1:19)//'.VALE', 'L', jfint)
-    call jeveuo(cndiri(1:19)//'.VALE', 'L', jdiri)
-    call jeveuo(cnfext(1:19)//'.VALE', 'L', jfext)
-    call jeveuo(cnvcfo(1:19)//'.VALE', 'L', jvcfo)
+    call jeveuo(cnfint(1:19)//'.VALE', 'L', vr=fint)
+    call jeveuo(cndiri(1:19)//'.VALE', 'L', vr=diri)
+    call jeveuo(cnfext(1:19)//'.VALE', 'L', vr=vfext)
+    call jeveuo(cnvcfo(1:19)//'.VALE', 'L', vr=vcfo)
 !
     if (ldyna) then
-        call jeveuo(foiner(1:19)//'.VALE', 'L', jiner)
+        call jeveuo(foiner(1:19)//'.VALE', 'L', vr=iner)
     endif
 !
 ! --- CALCUL DES RESIDUS
@@ -127,18 +132,18 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
         fext = 0.d0
         if (lcine) then
             if (zi(jccid+ieq-1) .eq. 1) then
-                appui = - zr(jfint+ieq-1)
+                appui = - fint(ieq)
                 fext = 0.d0
             else
-                appui = zr(jdiri+ieq-1)
-                fext = zr(jfext+ieq-1)
+                appui = diri(ieq)
+                fext = vfext(ieq)
             endif
         else
-            appui = zr(jdiri+ieq-1)
-            fext = zr(jfext+ieq-1)
+            appui = diri(ieq)
+            fext = vfext(ieq)
         endif
 !
-        val2 = abs(appui-fext)+abs(zr(jvcfo+ieq-1))
+        val2 = abs(appui-fext)+abs(vcfo(ieq))
 !
 ! ----- SI LAGRANGIEN DE CONTACT/FROT: ON IGNORE LA VALEUR DU RESIDU
 !
@@ -156,7 +161,7 @@ subroutine nmrede(numedd, sdnume, fonact, sddyna, matass,&
 ! ----- VCHAR: MAX CHARGEMENT EXTERIEUR EN DYNAMIQUE
 !
         if (ldyna) then
-            val3 = abs(zr(jiner+ieq-1))
+            val3 = abs(iner(ieq))
             if (vchar .le. val3) then
                 vchar = val3
                 ichar = ieq

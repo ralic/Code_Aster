@@ -55,10 +55,13 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
     character(len=24) :: atmu, afmu
     integer :: jatmu, jafmu
     character(len=19) :: ddeplc, ddepl0, ddelt
-    integer :: jddepc, jddep0, jddelt
     character(len=19) :: depl0
-    integer :: jdepl0, jdepde
     logical :: lgcp, lctfd
+    real(kind=8), pointer :: vddelt(:) => null()
+    real(kind=8), pointer :: ddep0(:) => null()
+    real(kind=8), pointer :: ddepc(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
+    real(kind=8), pointer :: vdepl0(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -90,8 +93,8 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
     ddepl0 = resoco(1:14)//'.DEL0'
     ddeplc = resoco(1:14)//'.DELC'
     ddelt = resoco(1:14)//'.DDEL'
-    call jeveuo(ddeplc(1:19)//'.VALE', 'E', jddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'E', jddelt)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
+    call jeveuo(ddelt (1:19)//'.VALE', 'E', vr=vddelt)
 !
 ! --- RECOPIE DANS DDEPL0 DU CHAMP DE DEPLACEMENTS OBTENU SANS
 ! --- TRAITER LE CONTACT (LE DDEPLA DONNE PAR STAT_NON_LINE)
@@ -101,14 +104,14 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
 !
 ! --- INITIALISATION INCREMENT SOLUTIONS ITERATION DE CONTACT
 !
-    call r8inir(neq, 0.d0, zr(jddelt), 1)
+    call r8inir(neq, 0.d0, vddelt, 1)
 !
 ! --- INITIALISATION INCREMENT SOLUTION APRES CORRECTION DU CONTACT
 !
     if (lgcp) then
         call copisd('CHAMP_GD', 'V', ddepla, ddeplc)
     else
-        call r8inir(neq, 0.d0, zr(jddepc), 1)
+        call r8inir(neq, 0.d0, ddepc, 1)
     endif
 !
 ! --- CALCUL INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT
@@ -117,11 +120,11 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
     if (lctfd) then
         depl0 = resoco(1:14)//'.DEP0'
         ddepl0 = resoco(1:14)//'.DEL0'
-        call jeveuo(depl0 (1:19)//'.VALE', 'E', jdepl0)
-        call jeveuo(ddepl0(1:19)//'.VALE', 'L', jddep0)
-        call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
+        call jeveuo(depl0 (1:19)//'.VALE', 'E', vr=vdepl0)
+        call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
+        call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
         do 10 ieq = 1, neq
-            zr(jdepl0+ieq-1) = zr(jddep0+ieq-1)+zr(jdepde+ieq-1)
+            vdepl0(ieq) = ddep0(ieq)+depde(ieq)
 10      continue
     endif
 !

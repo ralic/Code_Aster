@@ -36,7 +36,7 @@ subroutine calci(phib24, phi1j, bj, cij1)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
-    integer :: ibarre, iphi1, imade, nphi1
+    integer ::   imade, nphi1
     real(kind=8) :: cij1
     character(len=19) :: phib24, phi1j, bj
 !--------------------------------------------------------------------
@@ -44,10 +44,12 @@ subroutine calci(phib24, phi1j, bj, cij1)
 !-----------------------------------------------------------------------
 
     real(kind=8), pointer :: produit(:) => null()
+    real(kind=8), pointer :: barre(:) => null()
+    real(kind=8), pointer :: phi1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    call jeveuo(phi1j//'.VALE', 'L', iphi1)
-    call jeveuo(phib24//'.VALE', 'L', ibarre)
+    call jeveuo(phi1j//'.VALE', 'L', vr=phi1)
+    call jeveuo(phib24//'.VALE', 'L', vr=barre)
     call jelira(phi1j//'.VALE', 'LONMAX', nphi1)
 !
     AS_ALLOCATE(vr=produit, size=nphi1)
@@ -59,13 +61,13 @@ subroutine calci(phib24, phi1j, bj, cij1)
 !
 ! ---PRODUIT MATRICE BJ ET LE VECTEUR POTENTIEL PHI1J
 !
-    call mrmult('ZERO', imade, zr(iphi1), produit, 1,&
+    call mrmult('ZERO', imade, phi1, produit, 1,&
                 .true.)
 !
 !
 !--PRODUITS SCALAIRES VECTEURS  PHI1J PAR LE VECTEUR RESULTAT PRECEDENT
 !
-    cij1= ddot(nphi1,zr(ibarre), 1,produit, 1)
+    cij1= ddot(nphi1,barre, 1,produit, 1)
 !
 !---------------- MENAGE SUR LA VOLATILE ---------------------------
 !

@@ -49,8 +49,9 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
     character(len=24) :: nomst, nuddl, basemo
     logical :: lordr
     integer :: iocc, ifi, nbnosy, nbcmpg, nbpara, nbordr, i, im, iord, ibid
-    integer :: iret, isy, itresu, jdesc, jordr, jpara, jtitr, kdesc
+    integer :: iret, isy, itresu,  jordr, jpara, jtitr, kdesc
     integer :: krefe, kvale, nbmode, nbtitr, npara, itcal, nbdisc
+    integer, pointer :: desc(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     nomst = '&&IRGENE.SOUS_TITRE.TITR'
@@ -119,13 +120,13 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
             call jeveuo(gene//'.ORDR', 'L', jordr)
             lordr = .true.
         endif
-        call jeveuo(gene//'.DESC', 'L', jdesc)
-        nbmode = zi(jdesc+1)
+        call jeveuo(gene//'.DESC', 'L', vi=desc)
+        nbmode = desc(2)
         noch19 = '&&IRGENE_VECTEUR'
         call wkvect(noch19//'.DESC', 'V V I', 2, kdesc)
         call wkvect(noch19//'.REFE', 'V V K24', 2, krefe)
 !
-        if (zi(jdesc) .eq. 4) then
+        if (desc(1) .eq. 4) then
             itcal = 1
         else
             itcal = 0

@@ -43,13 +43,15 @@ subroutine cnonor(nomo, gran, base, cno)
 ! ----------------------------------------------------------------------
     integer :: nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
     integer :: ndim, nbno, nbnoeu, idim, nn, nbma, nbcomp, nbtyp, lonval, icomp
-    integer :: ic, iec, iand, jlma, jnunoe, jnorm, jnno, jval, jnbca, jdesc
+    integer :: ic, iec, iand, jlma,   jnno, jval, jnbca, jdesc
     real(kind=8) :: valr(3)
     character(len=2) :: typval
     character(len=8) :: k8b, resu, noma, typmcl(4), nocmp(3), listyp(10)
     character(len=16) :: motclf, motcle(2)
     character(len=24) :: nomnoe, mesmai
     character(len=24) :: valk(2)
+    real(kind=8), pointer :: normale(:) => null()
+    integer, pointer :: ln(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -125,14 +127,14 @@ subroutine cnonor(nomo, gran, base, cno)
 !
     call nbnlma(noma, nbma, zi(jlma), nbtyp, listyp,&
                 nbno)
-    call jeveuo('&&NBNLMA.LN', 'L', jnunoe)
+    call jeveuo('&&NBNLMA.LN', 'L', vi=ln)
 !
 ! --- DETERMINATION DES NORMALES
 !
     call canort(noma, nbma, zi(jlma), ndim, nbno,&
-                zi(jnunoe), 1)
+                ln, 1)
 !
-    call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
+    call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
 !
 !-----------------------------------------------------------------------
 !
@@ -151,11 +153,11 @@ subroutine cnonor(nomo, gran, base, cno)
     call wkvect('&&CNONOR.DESC_NOEUD', 'V V I', nec*nbnoeu, jdesc)
 !
     do ii = 1, nbno
-        ino = zi(jnunoe-1+ii)
+        ino = ln(ii)
         call jenuno(jexnum(nomnoe, ino ), zk8(jnno+ino-1))
 !
         do idim = 1, ndim
-            valr(idim) = zr(jnorm-1+ndim*(ii-1)+idim)
+            valr(idim) = normale(ndim*(ii-1)+idim)
         enddo
 !
         call affeno(1, ino, nocmp, nbcomp, zk8(iacmp),&

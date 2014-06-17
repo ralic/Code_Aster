@@ -79,14 +79,20 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
     character(len=8) :: matprj, nonob, nonoa, nomg, modgen, ssta, sstb
     character(len=16) :: tymocl(2), motcle(2), motfac, corres
     character(len=24) :: inta, intb, fpliao, fplibo, toto, geoma, geomb
-    integer :: ibid, nbnoa, nbnob, llinta, llintb, nbmaa, iagmaa, ndim
-    integer :: iaconb, iaconu, iacocf, nbnob2, idecal, inoa, inob, nbterm
+    integer :: ibid, nbnoa, nbnob, llinta, llintb, nbmaa,  ndim
+    integer ::    nbnob2, idecal, inoa, inob, nbterm
     integer :: itemcm, itemtm, nnoa, nunoa, nunob, nunoa2, nunoai, nunobi, i, j
     integer :: iinob, llplia, llplib, icompa, icompb, iadoa, iadob, nbec
-    integer :: numlis, iada(3), iadb(3), nbcmpm, ldesca, ldescb, ifm, niv
+    integer :: numlis, iada(3), iadb(3), nbcmpm,   ifm, niv
     parameter      (nbcmpm=10)
     integer :: idecoa(nbcmpm), idecob(nbcmpm)
     real(kind=8) :: rbid, beta, coefa
+    integer, pointer :: pjef_nb(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    integer, pointer :: limanua(:) => null()
+    integer, pointer :: nldesca(:) => null()
+    integer, pointer :: nldescb(:) => null()
+    integer, pointer :: pjef_nu(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -112,18 +118,18 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 !--------------LES LISTES DES NUMEROS DES NOEUDS DES INTERFACES
     call jenonu(jexnom(linta //'.IDC_NOMS', intfa), ibid)
     call jeveuo(jexnum(linta //'.IDC_LINO', ibid), 'L', llinta)
-    call jeveuo(linta//'.IDC_DEFO', 'L', ldesca)
+    call jeveuo(linta//'.IDC_DEFO', 'L', vi=nldesca)
 !
     call jenonu(jexnom(lintb //'.IDC_NOMS', intfb), ibid)
     call jeveuo(jexnum(lintb //'.IDC_LINO', ibid), 'L', llintb)
-    call jeveuo(lintb//'.IDC_DEFO', 'L', ldescb)
+    call jeveuo(lintb//'.IDC_DEFO', 'L', vi=nldescb)
 !
 !
 !--------------LE NOMBRE DES MAILLES DE L'INTERFACE MAITRE
     call reliem(moda, maa, 'NU_MAILLE', motfac, 1,&
                 2, motcle, tymocl, '&&PRJLIS.LIMANUA', nbmaa)
 !--------------LA LISTE DES NUMEROS DES MAILLES DE L'INTERFACE MAITRE
-    call jeveuo('&&PRJLIS.LIMANUA', 'L', iagmaa)
+    call jeveuo('&&PRJLIS.LIMANUA', 'L', vi=limanua)
 !
 !---ON FAIT LA PROJECTION
     ndim = 3
@@ -141,18 +147,18 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 !--------------CALCUL DE CORRES
 !
     if (ndim .eq. 2) then
-        call pj2dco('PARTIE', moda, modb, nbmaa, zi(iagmaa),&
-                    nbnob, zi(ldescb), geoma, geomb, corres,&
+        call pj2dco('PARTIE', moda, modb, nbmaa, limanua,&
+                    nbnob, nldescb, geoma, geomb, corres,&
                     .false., rbid)
     else if (ndim.eq.3) then
-        call pj3dco('PARTIE', moda, modb, nbmaa, zi(iagmaa),&
-                    nbnob, zi(ldescb), geoma, geomb, corres,&
+        call pj3dco('PARTIE', moda, modb, nbmaa, limanua,&
+                    nbnob, nldescb, geoma, geomb, corres,&
                     .false., rbid)
     endif
 !
-    call jeveuo(corres//'.PJEF_NB', 'L', iaconb)
-    call jeveuo(corres//'.PJEF_NU', 'L', iaconu)
-    call jeveuo(corres//'.PJEF_CF', 'L', iacocf)
+    call jeveuo(corres//'.PJEF_NB', 'L', vi=pjef_nb)
+    call jeveuo(corres//'.PJEF_NU', 'L', vi=pjef_nu)
+    call jeveuo(corres//'.PJEF_CF', 'L', vr=pjef_cf)
     call jelira(corres//'.PJEF_NB', 'LONMAX', nbnob2)
 !
 !      CALL UTIMSD(6,2,.TRUE.,.TRUE.,'&&PRJLIS.CORRES',1,' ')
@@ -177,12 +183,12 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 ! boucle sur l'ensemble des noeuds du modele maitre
     do inob = 1, nbnob2
 ! on recupere le nombre de noeuds maitre lie au noeud esclave courant
-        nnoa = zi(iaconb+inob-1)
+        nnoa = pjef_nb(inob)
         nbterm=nnoa+1
 ! si le nbre de noeud maitre lie au noeud esclave courant est > 0
         if (nnoa .gt. 0) then
             nunob=zi(llintb+iinob-1)
-            nunobi=zi(ldescb+nunob-1)
+            nunobi=nldescb(nunob)
             call jenuno(jexnum(mab//'.NOMNOE', nunobi), nonob)
             if (niv .eq. 2) then
                 write (ifm,*) ' '
@@ -193,15 +199,15 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
             endif
 ! boucle sur le nombre de noeud maitre lie au noeud esclave courant
             do inoa = 1, nnoa
-                nunoa = zi(iaconu+idecal-1+inoa)
-                coefa = zr(iacocf+idecal-1+inoa)
+                nunoa = pjef_nu(1+idecal-1+inoa)
+                coefa = pjef_cf(1+idecal-1+inoa)
                 call jenuno(jexnum(maa//'.NOMNOE', nunoa), nonoa)
 ! boucle sur le nombre de noeud maitre present dans l'interface
                 do j = 1, nbnoa
 ! si le noeud maitre courant est present dans la liste des noeuds
 ! maitres d'interface on stocke la valeur du coefficient
                     nunoa2=zi(llinta+j-1)
-                    nunoai=zi(ldesca+nunoa2-1)
+                    nunoai=nldesca(nunoa2)
                     if (nunoa .eq. nunoai) then
 ! On stocke la valeur du coefficient dans la matrice d'observation
 ! le stockage est donc C(Nbre Noeud esclave,Nbre Noeud maitre)

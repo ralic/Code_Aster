@@ -68,13 +68,19 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     character(len=19) :: vcin19, matas, matfac, smbr
     character(len=4) :: type
     character(len=24) :: precon
-    integer :: ifm, niv, ier, idvalc, idin, idip, jsmde, neq, nblc, islvk
+    integer :: ifm, niv, ier,   idip,  neq, nblc
     integer :: idac, idinpc, idippc, idacpc
-    integer :: jrefa, jrefaf, k, lmat, kdeb, ieq,  ismbr
+    integer ::   k, lmat, kdeb, ieq,  ismbr
     real(kind=8), pointer :: w1(:) => null()
     real(kind=8), pointer :: w2(:) => null()
     real(kind=8), pointer :: w3(:) => null()
     real(kind=8), pointer :: w4(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: smde(:) => null()
+    character(len=24), pointer :: refaf(:) => null()
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: in(:) => null()
 !
 !----------------------------------------------------------------------
 !     DEBUT
@@ -87,8 +93,8 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     matas=mat
     matfac=matf
 !
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
-    precon=zk24(islvk-1+2)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    precon=slvk(2)
 !
 !
 !     1- MATRICE :
@@ -106,10 +112,10 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
         if (ier .eq. 0) then
             call utmess('F', 'ALGELINE3_34', sk=vcin19)
         endif
-        call jeveuo(vcin19//'.VALE', 'L', idvalc)
+        call jeveuo(vcin19//'.VALE', 'L', vr=vale)
         do 10,k=1,nsecm
         kdeb=(k-1)*neq+1
-        call csmbgg(lmat, rsolu(kdeb), zr(idvalc), [cbid], [cbid], 'R')
+        call csmbgg(lmat, rsolu(kdeb), vale, [cbid], [cbid], 'R')
 10      continue
     endif
 !
@@ -122,18 +128,18 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !
 !     5- RECUPERATION DE LA MATRICE ASSEMBLEE :
 !     ------------------------------------------------
-    call jeveuo(matas//'.REFA', 'L', jrefa)
-    kstoc=zk24(jrefa-1+2)(1:14)//'.SMOS'
+    call jeveuo(matas//'.REFA', 'L', vk24=refa)
+    kstoc=refa(2)(1:14)//'.SMOS'
     call jeexin(kstoc//'.SMDI', ier)
     if (ier .eq. 0) then
         call utmess('F', 'ALGELINE3_21', sk=matas)
     endif
-    call jeveuo(kstoc//'.SMDI', 'L', idin)
+    call jeveuo(kstoc//'.SMDI', 'L', vi=in)
     call jeveuo(kstoc//'.SMHC', 'L', idip)
-    call jeveuo(kstoc//'.SMDE', 'L', jsmde)
-    neq=zi(jsmde-1+1)
+    call jeveuo(kstoc//'.SMDE', 'L', vi=smde)
+    neq=smde(1)
     if (niter .eq. 0) niter=max(10,neq/2)
-    nblc=zi(jsmde-1+3)
+    nblc=smde(3)
     if (nblc .ne. 1) then
         call utmess('F', 'ALGELINE3_22')
     endif
@@ -153,8 +159,8 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
             call utmess('F', 'ALGELINE3_38')
         endif
 !
-        call jeveuo(matfac//'.REFA', 'L', jrefaf)
-        kstocf=zk24(jrefaf-1+2)(1:14)//'.SMOS'
+        call jeveuo(matfac//'.REFA', 'L', vk24=refaf)
+        kstocf=refaf(2)(1:14)//'.SMOS'
         call jeveuo(kstocf//'.SMDI', 'L', idinpc)
         call jeveuo(kstocf//'.SMHC', 'L', idippc)
         call jeveuo(jexnum(matfac//'.VALM', 1), 'L', idacpc)
@@ -183,7 +189,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     call wkvect(smbr//'.VALE', 'V V R', neq, ismbr)
 !
     kdeb=(k-1)*neq+1
-    call gcpc(neq, zi(idin), zi4(idip), zr(idac), zi(idinpc),&
+    call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc),&
               zi4(idippc), zr(idacpc), rsolu(kdeb), w4, w1,&
               w2, w3, 0, niter, epsi,&
               criter, solveu, matas, smbr, istop,&

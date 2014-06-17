@@ -53,14 +53,15 @@ subroutine mcomce(noma, newgeo, nummai, coor, alias,&
 !
 !
 !
-    integer :: jcoor, jdes
+    integer ::  jdes
     integer :: ino, no(9), i, ibid
+    real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jeveuo(newgeo(1:19)//'.VALE', 'L', jcoor)
+    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=vale)
     call jeveuo(jexnum(noma//'.CONNEX', nummai), 'L', jdes)
 !
 ! --- INITIALISATIONS
@@ -82,9 +83,9 @@ subroutine mcomce(noma, newgeo, nummai, coor, alias,&
 ! --- COORDONNEES DES NOEUDS DE LA MAILLE
 !
     do 20 ino = 1, nno
-        coor(3*(ino-1)+1) = zr(jcoor+3*(no(ino)-1))
-        coor(3*(ino-1)+2) = zr(jcoor+3*(no(ino)-1)+1)
-        coor(3*(ino-1)+3) = zr(jcoor+3*(no(ino)-1)+2)
+        coor(3*(ino-1)+1) = vale(1+3*(no(ino)-1))
+        coor(3*(ino-1)+2) = vale(1+3*(no(ino)-1)+1)
+        coor(3*(ino-1)+3) = vale(1+3*(no(ino)-1)+2)
 20  end do
 !
     call jedema()

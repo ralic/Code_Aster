@@ -55,7 +55,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MEMBRANE
 ! ----------------------------------------------------------------------
     integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, iret, jdls2
-    integer :: i, axyzm, nbmat, nbma
+    integer :: i,  nbmat, nbma
     integer :: ima, nbno,  adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3, iarg
     real(kind=8) :: ang(2)
@@ -65,10 +65,11 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     character(len=24) :: tmpngr, tmpvgr, nomagr, nomama, connex
     character(len=32) :: kjexn
     integer, pointer :: nume_ma(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call jeveuo(noma//'.COORDO    .VALE', 'L', axyzm)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat0)
     AS_ALLOCATE(vi=nume_ma, size=nbmat0)
     nomagr = noma//'.GROUPEMA'
@@ -159,8 +160,8 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                 noe2 = zi(adrm+2-1)
                 noe3 = zi(adrm+3-1)
                 do i = 1, 3
-                    vn1n2(i) = zr( axyzm+3*(noe2-1)+i-1) - zr(axyzm+3*( noe1-1)+i-1 )
-                    vn1n3(i) = zr( axyzm+3*(noe3-1)+i-1) - zr(axyzm+3*( noe1-1)+i-1 )
+                    vn1n2(i) = vale(1+3*(noe2-1)+i-1) - vale(1+3*( noe1-1)+i-1 )
+                    vn1n3(i) = vale(1+3*(noe3-1)+i-1) - vale(1+3*( noe1-1)+i-1 )
                 end do
                 vecnor(1) = vn1n2(2)*vn1n3(3) - vn1n2(3)*vn1n3(2)
                 vecnor(2) = vn1n2(3)*vn1n3(1) - vn1n2(1)*vn1n3(3)

@@ -65,7 +65,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
 !  OUTPUT:
 !        F        : VECTEUR FORCE EXTERIEURE (NEQ)
 ! ----------------------------------------------------------------------
-    integer :: jinf, lonch, if1, if2
+    integer :: jinf, lonch
     integer :: iret, ieq
     integer :: n1
     real(kind=8) :: partps(3)
@@ -73,6 +73,8 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
     character(len=16) :: method
     character(len=19) :: ligrmo, lischa
     character(len=24) :: vechmp, vachmp, cnchmp, k24bid
+    real(kind=8), pointer :: f1(:) => null()
+    real(kind=8), pointer :: f2(:) => null()
 !
     data vechmp,vachmp,cnchmp/3*' '/
     data k24bid/' '/
@@ -121,9 +123,9 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
         call ascova('D', vachmp, fomult, 'INST', temps,&
                     typmat, cnchmp)
         call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
-        call jeveuo(cnchmp(1:19)//'.VALE', 'E', if1)
+        call jeveuo(cnchmp(1:19)//'.VALE', 'E', vr=f1)
 !
-        call dcopy(neq, zr(if1), 1, f, 1)
+        call dcopy(neq, f1, 1, f, 1)
 !
 ! 2.2.2. ==> -- LES DIRICHLETS
 !
@@ -133,19 +135,19 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
         call ascova('D', vachmp, fomult, para, temps,&
                     typmat, cnchmp)
         call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
-        call jeveuo(cnchmp(1:19)//'.VALE', 'L', if2)
+        call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=f2)
 !
 ! -- TEST DE PRESENCE DE CHARGEMENT DIRICHLET (DEPL IMPOSE NON NUL)
         iret = 0
         do ieq = 1, lonch
-            if (abs(zr(if2+ieq-1)) .gt. r8prem()) iret = 1
+            if (abs(f2(ieq)) .gt. r8prem()) iret = 1
         enddo
         if ((iret.eq.1) .and. (method.ne.'NEWMARK')) then
             call utmess('F', 'ALGORITH3_20')
         endif
 !
         do ieq = 1, lonch
-            f(ieq) = f(ieq) + zr(if2+ieq-1)
+            f(ieq) = f(ieq) + f2(ieq)
         enddo
 !
     else

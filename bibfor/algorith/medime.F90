@@ -68,10 +68,12 @@ subroutine medime(base, cumul, modele, lischa, mediri)
     character(len=8) :: nomcha
     character(len=16) :: option
     character(len=19) :: ligrch
-    integer :: iret, jchar, jinf, icha, ilires
+    integer :: iret,   icha, ilires
     integer :: nchar, nluti
     integer :: ifmdbg, nivdbg
     logical :: debug
+    character(len=24), pointer :: lcha(:) => null()
+    integer, pointer :: infc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -100,8 +102,8 @@ subroutine medime(base, cumul, modele, lischa, mediri)
         goto 20
     else
         call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
-        call jeveuo(lischa(1:19)//'.LCHA', 'L', jchar)
-        call jeveuo(lischa(1:19)//'.INFC', 'L', jinf)
+        call jeveuo(lischa(1:19)//'.LCHA', 'L', vk24=lcha)
+        call jeveuo(lischa(1:19)//'.INFC', 'L', vi=infc)
     endif
 !
 ! --- PREPARATION DES MATR_ELEM
@@ -130,8 +132,8 @@ subroutine medime(base, cumul, modele, lischa, mediri)
 !
     ilires = nluti-1
     do 10 icha = 1, nchar
-        if (zi(jinf+icha) .ne. 0) then
-            nomcha = zk24(jchar+icha-1) (1:8)
+        if (infc(icha+1) .ne. 0) then
+            nomcha = lcha(icha) (1:8)
             ligrch = nomcha(1:8)//'.CHME.LIGRE'
             call jeexin(ligrch(1:19)//'.LIEL', iret)
             if (iret .le. 0) goto 10

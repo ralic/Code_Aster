@@ -73,10 +73,11 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: jdeeq, ncmpmx, nec, jnueq, nbligr, n1, jprno, i2
+    integer :: jdeeq, ncmpmx, nec,  nbligr, n1, jprno, i2
     integer :: nbno, j, iddl, iadg, k, ieq
 !
     character(len=1) :: base
+    integer, pointer :: nueq(:) => null()
 !
 !
     call jemarq()
@@ -94,7 +95,7 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
         call utmess('F', 'ASSEMBLA_25')
     endif
 !
-    call jeveuo(prchno(1:19)//'.NUEQ', 'L', jnueq)
+    call jeveuo(prchno(1:19)//'.NUEQ', 'L', vi=nueq)
     call jelira(prchno(1:19)//'.PRNO', 'NMAXOC', nbligr)
     if (nbligr .ne. 1) then
         call utmess('F', 'ASSEMBLA_33')
@@ -114,7 +115,7 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
             k = corr2(i2)
             if (exisdg(zi(iadg),k)) then
                 iddl = iddl + 1
-                ieq = zi(jnueq-1+iddl)
+                ieq = nueq(iddl)
                 zi(jdeeq-1+2* (ieq-1)+1) = j
                 zi(jdeeq-1+2* (ieq-1)+2) = k
             endif

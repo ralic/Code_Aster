@@ -44,12 +44,18 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     character(len=19) :: trange, kforn, kvgli
 !
 !-----------------------------------------------------------------------
-    integer :: i, ichoc, idebut, idiadh, idwk4, ifin, ifires
-    integer :: impr, j, jdesc, jfcho, jfn, jinst
-    integer :: jncho, jvg, jvgli, jwk1, jwk2, jwk3, lg
+    integer :: i, ichoc, idebut,  idwk4, ifin, ifires
+    integer :: impr, j,   jfn
+    integer ::  jvg,  jwk1, jwk2, jwk3, lg
     integer :: n1, n2, n3, n4, nbchoc, nbloc
     integer :: nbpas, nbpt, nbval, nt
     real(kind=8) :: puusur, tdebut, tfin, tmax, tmin
+    character(len=8), pointer :: ncho(:) => null()
+    integer, pointer :: icho(:) => null()
+    real(kind=8), pointer :: fcho(:) => null()
+    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: vcho(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ifires = iunifi('RESULTAT')
@@ -64,29 +70,29 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 !
     call getvid(' ', 'RESU_GENE', scal=trange, nbret=nt)
     if (nt .ne. 0) then
-        call jeveuo(trange//'.DESC', 'L', jdesc)
-        if (zi(jdesc) .eq. 2 .or. zi(jdesc) .eq. 3) then
-            nbchoc = zi(jdesc+2)
+        call jeveuo(trange//'.DESC', 'L', vi=desc)
+        if (desc(1) .eq. 2 .or. desc(1) .eq. 3) then
+            nbchoc = desc(3)
             call getvis(' ', 'NB_BLOC', scal=nbloc, nbret=n1)
             if (n1 .eq. 0) nbloc = 1
             call getvr8(' ', 'INST_INIT', scal=tdebut, nbret=n2)
             call getvr8(' ', 'INST_FIN', scal=tfin, nbret=n3)
             call getvtx(' ', 'NOEUD', scal=noeu, nbret=n4)
 !
-            call jeveuo(trange//'.NCHO', 'L', jncho)
+            call jeveuo(trange//'.NCHO', 'L', vk8=ncho)
 !           --- RECHERCHE DU NOEUD DE CHOC ---
             do 10 ichoc = 1, nbchoc
-                if (zk8(jncho+ichoc-1) .eq. noeu) goto 12
+                if (ncho(ichoc) .eq. noeu) goto 12
 10          continue
             lg = max(1,lxlgut(noeu))
             call utmess('F', 'UTILITAI_87', sk=noeu(1:lg))
             goto 9999
 12          continue
 !
-            call jeveuo(trange//'.DISC', 'L', jinst)
+            call jeveuo(trange//'.DISC', 'L', vr=disc)
             call jelira(trange//'.DISC', 'LONMAX', nbpt)
-            tmax = zr(jinst+nbpt-1)
-            tmin = zr(jinst)
+            tmax = disc(nbpt)
+            tmin = disc(1)
             if (n2 .eq. 0) then
                 tdebut = tmin
             else
@@ -101,14 +107,14 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
                 call utmess('F', 'PREPOST4_47')
             endif
             do 14 j = 1, nbpt
-                if (zr(jinst+j-1) .ge. tdebut) then
+                if (disc(j) .ge. tdebut) then
                     idebut = j
                     goto 15
                 endif
 14          continue
 15          continue
             do 16 j = 1, nbpt
-                if (zr(jinst+j-1) .ge. tfin) then
+                if (disc(j) .ge. tfin) then
                     ifin = j
                     goto 17
                 endif
@@ -118,17 +124,17 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
             if (nbloc .eq. 0) nbloc = 1
             nbval = nbpas / nbloc
 !
-            call jeveuo(trange//'.FCHO', 'L', jfcho)
-            call jeveuo(trange//'.VCHO', 'L', jvgli)
-            call jeveuo(trange//'.ICHO', 'L', idiadh)
+            call jeveuo(trange//'.FCHO', 'L', vr=fcho)
+            call jeveuo(trange//'.VCHO', 'L', vr=vcho)
+            call jeveuo(trange//'.ICHO', 'L', vi=icho)
 !
             call wkvect('&&USURPU.WK1', 'V V R', nbpt, jwk1)
             call wkvect('&&USURPU.WK2', 'V V R', nbpt, jwk2)
             call wkvect('&&USURPU.WK3', 'V V R', nbpt, jwk3)
             call wkvect('&&USURPU.IWK4', 'V V I', nbpt, idwk4)
 !
-            call statpu(nbchoc, nbpt, zr(jinst), zr(jfcho), zr(jvgli),&
-                        zi(idiadh), zr(jwk1), zr(jwk2), zr(jwk3), zi(idwk4),&
+            call statpu(nbchoc, nbpt, disc, fcho, vcho,&
+                        icho, zr(jwk1), zr(jwk2), zr(jwk3), zi(idwk4),&
                         idebut, nbloc, nbval, ifires, ichoc,&
                         impr, puusur)
 !

@@ -55,11 +55,13 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jvalin, jvalou, jvalf, jprol
+    integer :: jvalin, jvalou
     integer :: nbvale, iret, in, k, i, nb, npt
     real(kind=8) :: const
     character(len=8) :: charge
     character(len=19) :: nch19
+    character(len=24), pointer :: prol(:) => null()
+    real(kind=8), pointer :: valf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,13 +97,13 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time,&
                 call codent(k, 'D0', newfct(8:8))
                 call copisd('FONCTION', 'V', zk8(jvalin+in-1), newfct)
                 nch19 = newfct
-                call jeveuo(nch19//'.PROL', 'L', jprol)
-                if (zk24(jprol)(1:8) .ne. 'INTERPRE') then
-                    call jeveuo(nch19//'.VALE', 'E', jvalf)
+                call jeveuo(nch19//'.PROL', 'L', vk24=prol)
+                if (prol(1)(1:8) .ne. 'INTERPRE') then
+                    call jeveuo(nch19//'.VALE', 'E', vr=valf)
                     call jelira(nch19//'.VALE', 'LONMAX', nb)
                     npt=nb/2
                     do 30 i = 1, npt
-                        zr(jvalf+npt+i-1)=const*zr(jvalf+npt+i-1)
+                        valf(1+npt+i-1)=const*valf(1+npt+i-1)
 30                  continue
                     zk8(jvalou+in-1) = newfct
                 else

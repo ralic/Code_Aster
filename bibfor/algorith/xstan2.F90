@@ -74,14 +74,23 @@ subroutine xstan2(crimax, noma, modele)
     character(len=8) :: typma, lirefe(10), elrefp
     character(len=2) :: ch2
     real(kind=8) :: crit, vmoin, vplus, vtot
-    integer :: jtypma, jcesd(7), jcesl(7), jcesv(7), iad
-    integer :: jnoxfl, jnoxfv, jxc, itypma, nncp, ibid, ier
-    integer :: ifm, niv, jnbsp, jnbsp2, jpint, jcoor, jcnse
-    integer :: jconx1, jconx2, adrma, jtmdim, ndime, ndim, nbno
+    integer ::  jcesd(7), jcesl(7), jcesv(7), iad
+    integer :: jnoxfl,   itypma, nncp, ibid, ier
+    integer :: ifm, niv,   jpint,  jcnse
+    integer ::  jconx2, adrma,  ndime, ndim, nbno
     integer :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
-    integer :: jmail, itypel, nbelr, igeom, nuno2, inoloc, cpt
+    integer ::  itypel, nbelr, igeom, nuno2, inoloc, cpt
     integer :: i, j, nheav, iheav, nfiss, ifiss, nse, nnose, nnot(3)
     logical :: lelim, ancien
+    integer, pointer :: xfem_cont(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: cnsv(:) => null()
+    integer, pointer :: nbsp(:) => null()
+    integer, pointer :: maille(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: nbsp2(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -93,14 +102,14 @@ subroutine xstan2(crimax, noma, modele)
 !
 !     RECUPERATION DES DONNEES SUR LE MAILLAGE
 !
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
-    call jeveuo(noma//'.TYPMAIL', 'L', jtypma)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-    call jeveuo(modele//'.MAILLE', 'L', jmail)
+    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
 !     CONNECTIVITE INVERSEE
     cnxinv = '&&XSTAN2.CNCINV'
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
@@ -110,14 +119,14 @@ subroutine xstan2(crimax, noma, modele)
     geom = '&&XSTAN2.GEOM'
 !      CALL CNOCNS(MODELE//'.NOXFEM','V',NOXFEM)
     call jeveuo(cns2//'.CNSL', 'E', jnoxfl)
-    call jeveuo(cns2//'.CNSV', 'E', jnoxfv)
-    call jeveuo(modele//'.XFEM_CONT', 'L', jxc)
-    ancien = zi(jxc).eq.2
+    call jeveuo(cns2//'.CNSV', 'E', vi=cnsv)
+    call jeveuo(modele//'.XFEM_CONT', 'L', vi=xfem_cont)
+    ancien = xfem_cont(1).eq.2
 !
 !     RECUPERATION DES DONNEES ELEMENTAIRES XFEM
 !
-    call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
-    call jeveuo('&&XTYELE.NBSP2', 'L', jnbsp2)
+    call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
+    call jeveuo('&&XTYELE.NBSP2', 'L', vi=nbsp2)
     cel(1) = modele//'.TOPOSE.LON'
     cel(2) = modele//'.STNO'
     cel(3) = modele//'.TOPOSE.HEA'
@@ -142,11 +151,11 @@ subroutine xstan2(crimax, noma, modele)
     do nuno = 1, nbno
         if (.not.zl(jnoxfl-1+2*nuno)) goto 20
 ! --- RECUP DU NUMERO LOCAL INO DU NOEUD NUNO DANS LA MAILLE X-FEM NUMA
-        numa = zi(jnoxfv-1+2*(nuno-1)+1)
-        ino = zi(jnoxfv-1+2*(nuno-1)+2)
-        nfiss = zi(jnbsp-1+numa)
+        numa = cnsv(2*(nuno-1)+1)
+        ino = cnsv(2*(nuno-1)+2)
+        nfiss = nbsp(numa)
         ASSERT(nfiss.ge.1)
-        nheav = max(1,zi(jnbsp2-1+numa))
+        nheav = max(1,nbsp2(numa))
 !
 !       RECUPERATION DES MAILLES CONTENANT LE NOEUD
         call jelira(jexnum(cnxinv, nuno), 'LONMAX', nbmano)
@@ -172,9 +181,9 @@ subroutine xstan2(crimax, noma, modele)
 !         BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
             do ima = 1, nbmano
                 numa2 = zi(adrma-1 + ima)
-                ndime = zi(jtmdim-1+zi(jtypma-1+numa2))
+                ndime = tmdim(typmail(numa2))
                 if (ndime .lt. ndim) goto 50
-                itypma = zi(jtypma-1+numa2)
+                itypma = typmail(numa2)
                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                 if ((.not.ancien) .and. (.not.ismali(typma) )) then
                   if (ndim .eq. 2) then
@@ -187,7 +196,7 @@ subroutine xstan2(crimax, noma, modele)
                 endif
 !
 !         1ER ELEMENT DE REFERENCE ASSOCIE A LA MAILLE
-                itypel = zi(jmail-1+numa2)
+                itypel = maille(numa2)
                 call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)
                 call elref2(notype, 10, lirefe, nbelr)
                 elrefp = lirefe(1)
@@ -201,14 +210,14 @@ subroutine xstan2(crimax, noma, modele)
 !           RECUP DU NUM DE FISS CORRESPONDANT À IHEAV DE NUNO DS NUMA2
 !           ET DU NUMERO LOCALE INOLOC DANS LA MAILLE
                 do ino2 = 1, nbnoma
-                    if (zi(jconx1-1+zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
+                    if (connex(zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
                         inoloc = ino2
                         goto 200
                     endif
                 end do
                 ASSERT(.false.)
 200             continue
-                if (zi(jnbsp-1+numa2) .eq. 1) then
+                if (nbsp(numa2) .eq. 1) then
                     ifiss = 1
                 else
                     call cesexi('S', jcesd(7), jcesl(7), numa2, inoloc,&
@@ -219,9 +228,9 @@ subroutine xstan2(crimax, noma, modele)
 !           AVEC DES VALEURS CONTIGUES
                 call wkvect(geom, 'V V R', ndim*nbnoma, igeom)
                 do ino2 = 1, nbnoma
-                    nuno2=zi(jconx1-1+zi(jconx2+numa2-1)+ino2-1)
+                    nuno2=connex(zi(jconx2+numa2-1)+ino2-1)
                     do j = 1, ndim
-                        zr(igeom-1+ndim*(ino2-1)+j)=zr(jcoor-1+3*(&
+                        zr(igeom-1+ndim*(ino2-1)+j)=vale(3*(&
                         nuno2-1)+j)
                     end do
                 end do
@@ -255,10 +264,10 @@ subroutine xstan2(crimax, noma, modele)
 !             MISE À ZÉRO DU STATUT DANS TOUS LES ÉLÉMENTS DU SUPPORT
                     nbnoma = zi(jconx2+numa2) - zi(jconx2+numa2-1)
                     do ino2 = 1, nbnoma
-                        if (zi(jconx1-1+zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
-                            if (zi(jnbsp-1+numa2) .eq. 1) then
+                        if (connex(zi(jconx2+numa2-1)+ino2-1) .eq. nuno) then
+                            if (nbsp(numa2) .eq. 1) then
                                 ifiss = 1
-                            else if (zi(jnbsp-1+numa2).eq.0) then
+                            else if (nbsp(numa2).eq.0) then
                                 goto 150
                             else
                                 call cesexi('S', jcesd(7), jcesl(7), numa2, ino2,&

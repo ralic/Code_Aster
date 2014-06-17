@@ -66,12 +66,14 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
     character(len=19) :: direct
     integer :: jdirec
     character(len=19) :: ddeplc, ddepl0, ddelt
-    integer :: jddepc, jddep0, jddelt
     character(len=24) :: secmbr, cncin0
     integer :: jsecmb
     character(len=19) :: mu
     integer :: jmu
     integer :: iret
+    real(kind=8), pointer :: vddelt(:) => null()
+    real(kind=8), pointer :: ddep0(:) => null()
+    real(kind=8), pointer :: ddepc(:) => null()
     c16bid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------
@@ -102,9 +104,9 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
     ddepl0 = resoco(1:14)//'.DEL0'
     ddeplc = resoco(1:14)//'.DELC'
     ddelt = resoco(1:14)//'.DDEL'
-    call jeveuo(ddepl0(1:19)//'.VALE', 'L', jddep0)
-    call jeveuo(ddeplc(1:19)//'.VALE', 'E', jddepc)
-    call jeveuo(ddelt (1:19)//'.VALE', 'E', jddelt)
+    call jeveuo(ddepl0(1:19)//'.VALE', 'L', vr=ddep0)
+    call jeveuo(ddeplc(1:19)//'.VALE', 'E', vr=ddepc)
+    call jeveuo(ddelt (1:19)//'.VALE', 'E', vr=vddelt)
 !
 ! --- ACCES AUX CHAMPS DE TRAVAIL
 !
@@ -145,7 +147,7 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
     if (search .eq. 'NON_ADMISSIBLE') then
 !
         call r8inir(neq, 0.d0, zr(jsecmb), 1)
-        call r8inir(neq, 0.d0, zr(jddelt), 1)
+        call r8inir(neq, 0.d0, vddelt, 1)
 !
 ! ----- SECOND MEMBRE: [A]T.{MU}
 !
@@ -164,7 +166,7 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai,&
 !
 ! ----- RECOPIE DE LA SPOLUTION SANS CONTACT
 !
-        call dcopy(neq, zr(jddep0), 1, zr(jddepc), 1)
+        call dcopy(neq, ddep0, 1, ddepc, 1)
         alpha = 1.d0
     endif
 !

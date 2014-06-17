@@ -48,13 +48,19 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
     character(len=8) :: m1, m2, elrefa, fapg(nbfamx)
-    integer :: nbpg(nbfamx), i1conb, i1conu, i1cocf, i1cotr, nno1, nno2
+    integer :: nbpg(nbfamx), i1conb, i1conu,   nno1, nno2
     integer :: nma1
-    integer :: nma2, ialim1, ialin1, iatr3, iacnx1, ilcnx1, iatyma, j2xxk1
+    integer :: nma2, ialim1, ialin1,   ilcnx1,  j2xxk1
     integer :: i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu, i2cocf
     integer :: ideca1, itypm, nutm, ndim, nno, nnos, nbfpg, kk, ino
-    integer :: nuno, j1xxk1, ialin2, i2coco
+    integer :: nuno,  ialin2, i2coco
     real(kind=8) :: crrefe(3*nbnomx), ksi, x(1), ff(nbnomx), vol, x1
+    integer, pointer :: seg2(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: pjef_tr(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    integer, pointer :: typmail(:) => null()
+    character(len=24), pointer :: pjxx_k1(:) => null()
 ! --- DEB --------------------------------------------------------------
 !
     call jemarq()
@@ -62,14 +68,14 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
 !
 !     1. RECUPERATION DES INFORMATIONS GENERALES :
 !     -----------------------------------------------
-    call jeveuo(cortr3//'.PJXX_K1', 'L', j1xxk1)
+    call jeveuo(cortr3//'.PJXX_K1', 'L', vk24=pjxx_k1)
     call jeveuo(cortr3//'.PJEF_NB', 'L', i1conb)
     call jeveuo(cortr3//'.PJEF_NU', 'L', i1conu)
-    call jeveuo(cortr3//'.PJEF_CF', 'L', i1cocf)
-    call jeveuo(cortr3//'.PJEF_TR', 'L', i1cotr)
+    call jeveuo(cortr3//'.PJEF_CF', 'L', vr=pjef_cf)
+    call jeveuo(cortr3//'.PJEF_TR', 'L', vi=pjef_tr)
 !
-    m1=zk24(j1xxk1-1+1)
-    m2=zk24(j1xxk1-1+2)
+    m1=pjxx_k1(1)
+    m2=pjxx_k1(2)
     call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
     call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
     call dismoi('NB_MA_MAILLA', m1, 'MAILLAGE', repi=nma1)
@@ -78,11 +84,11 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     call jeveuo('&&PJXXCO.LIMA1', 'L', ialim1)
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
     call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
-    call jeveuo('&&PJXXCO.SEG2', 'L', iatr3)
+    call jeveuo('&&PJXXCO.SEG2', 'L', vi=seg2)
 !
-    call jeveuo(m1//'.CONNEX', 'L', iacnx1)
+    call jeveuo(m1//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
-    call jeveuo(m1//'.TYPMAIL', 'L', iatyma)
+    call jeveuo(m1//'.TYPMAIL', 'L', vi=typmail)
 !
 !
 !     2. ALLOCATION DE CORRES :
@@ -100,10 +106,10 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     ideca2=0
     do ino2 = 1, nno2
 !       ITR : SEG2 ASSOCIE A INO2
-        itr=zi(i1cotr-1+ino2)
+        itr=pjef_tr(ino2)
         if (itr .eq. 0) goto 10
 !       IMA1 : MAILLE DE M1 ASSOCIEE AU SEG2 ITR
-        ima1=zi(iatr3+3*(itr-1)+3)
+        ima1=seg2(1+3*(itr-1)+3)
         nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
         zi(i2conb-1+ino2)=nbno
         zi(i2com1-1+ino2)=ima1
@@ -124,12 +130,12 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     ideca2=0
     do ino2 = 1, nno2
 !       ITR : SEG2 ASSOCIE A INO2
-        itr = zi(i1cotr-1+ino2)
+        itr = pjef_tr(ino2)
         if (itr .eq. 0) goto 20
 !       IMA1 : MAILLE DE M1 ASSOCIE AU SEG2 ITR
-        ima1= zi(iatr3+3*(itr-1)+3)
+        ima1= seg2(1+3*(itr-1)+3)
 !       ITYPM : TYPE DE LA MAILLE IMA1
-        itypm = zi(iatyma-1+ima1)
+        itypm = typmail(ima1)
         nutm = indiis(nutm1d,itypm,1,3)
         elrefa = elrf1d(nutm)
         nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
@@ -145,7 +151,7 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
         ksi=0.d0
         do kk = 1, 2
             x1 = crrefe(ndim*(kk-1)+1)
-            ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
+            ksi = ksi + pjef_cf(ideca1+kk)*x1
         end do
         x(1) = ksi
         zr(i2coco-1+3*(ino2-1)+1)=x(1)
@@ -156,7 +162,7 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
 !       -------------------------------------------------------
         call elrfvf(elrefa, x, 27, ff, nno)
         do ino = 1, nbno
-            nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
+            nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno
             zr(i2cocf-1+ideca2+ino) = ff(ino)
         end do

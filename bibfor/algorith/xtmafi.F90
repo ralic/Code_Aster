@@ -63,11 +63,13 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 !
 !
     integer :: ifiss, kk, jgrp, nmaenr, i, ima,  cpt, iret
-    integer :: jtmdim, jtypma, ndime, jmad,  mxstac
+    integer ::   ndime, jmad,  mxstac
     character(len=8) :: nomail
     character(len=24) :: nommai, grp(nfiss, 3)
     integer, pointer :: temi(:) => null()
     character(len=8), pointer :: temp(:) => null()
+    integer, pointer :: tmdim(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
     parameter (mxstac=100)
 !
@@ -80,8 +82,8 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
     ASSERT(nfiss.le.mxstac)
 !
     nommai = noma//'.NOMMAI'
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
-    call jeveuo(noma//'.TYPMAIL', 'L', jtypma)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
 !     DIMENTIONNEMENT GROSSIER DE LA LISTE
     cpt = 0
@@ -119,7 +121,7 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
                 do 120 i = 1, nmaenr
                     ima = zi(jgrp-1+i)
 !             NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-                    ndime= zi(jtmdim-1+zi(jtypma-1+ima))
+                    ndime= tmdim(typmail(ima))
                     if ((ndim.eq.ndime) .or. (ndim.eq.0)) then
                         call jenuno(jexnum(nommai, ima), nomail)
                         nbma =nbma + 1

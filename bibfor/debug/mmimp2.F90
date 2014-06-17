@@ -52,12 +52,14 @@ subroutine mmimp2(ifm, noma, ligrcf, jtabf)
 !
 !
     integer :: ztabf
-    integer :: jtymai, iacnx1, ilcnx1
+    integer ::   ilcnx1
     integer :: nbnoe, nbnom, nummae, nummam, itymae, itymam, ityctc
     character(len=8) ::  ntymae, ntymam, ntyctc, nommae, nommam
     character(len=8) :: nomnoe, nomnom
     integer :: numnoe, numnom, inoe, inom
     integer :: nbel, nndel, jad, iel
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -65,8 +67,8 @@ subroutine mmimp2(ifm, noma, ligrcf, jtabf)
     call jemarq()
 !
     ztabf = cfmmvd('ZTABF')
-    call jeveuo(noma//'.TYPMAIL', 'L', jtymai)
-    call jeveuo(noma//'.CONNEX', 'L', iacnx1)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
 ! --- NOMBRE D'ELEMENTS DE CONTACT
@@ -92,7 +94,7 @@ subroutine mmimp2(ifm, noma, ligrcf, jtabf)
 !       -- INFOS SUR MAILLE ESCLAVE
         nummae = nint(zr(jtabf+ztabf*(iel-1)+1))
         call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
-        itymae = zi(jtymai-1+nummae)
+        itymae = typmail(nummae)
         call jenuno(jexnum('&CATA.TM.NOMTM', itymae), ntymae)
         nbnoe = zi(ilcnx1+nummae) - zi(ilcnx1-1+nummae)
 !
@@ -100,7 +102,7 @@ subroutine mmimp2(ifm, noma, ligrcf, jtabf)
         write(ifm,1060) nommae,ntymae,nbnoe
 !
         do 21 inoe = 1, nbnoe
-            numnoe = zi(iacnx1+zi(ilcnx1-1+nummae)-2+inoe)
+            numnoe = connex(1+zi(ilcnx1-1+nummae)-2+inoe)
             call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
             write (ifm,1001) nomnoe
 21      continue
@@ -109,14 +111,14 @@ subroutine mmimp2(ifm, noma, ligrcf, jtabf)
 !       -- INFOS SUR MAILLE MAITRE
         nummam = nint(zr(jtabf+ztabf*(iel-1)+2))
         call jenuno(jexnum(noma//'.NOMMAI', nummam), nommam)
-        itymam = zi(jtymai-1+nummam)
+        itymam = typmail(nummam)
         call jenuno(jexnum('&CATA.TM.NOMTM', itymam), ntymam)
         nbnom = zi(ilcnx1+nummam) - zi(ilcnx1-1+nummam)
 !
 !       -- IMPRESSION POUR MAILLE MAITRE
         write(ifm,1070) nommam,ntymam,nbnom
         do 31 inom = 1, nbnom
-            numnom = zi(iacnx1+zi(ilcnx1-1+nummam)-2+inom)
+            numnom = connex(1+zi(ilcnx1-1+nummam)-2+inom)
             call jenuno(jexnum(noma//'.NOMNOE', numnom), nomnom)
             write (ifm,1001) nomnom
 31      continue

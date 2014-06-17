@@ -83,8 +83,9 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
     character(len=8) :: modele, carele
     character(len=19) :: matele, ligrmo, ligrch
     character(len=1) :: base
-    integer :: iarefe, icha, icode, ilires, iret
+    integer ::  icha, icode, ilires, iret
     logical :: lxfem
+    character(len=24), pointer :: rerr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -134,8 +135,8 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
     call memare(base, matele, modele, mate, carele,&
                 option)
 !     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
-    call jeveuo(matele//'.RERR', 'E', iarefe)
-    zk24(iarefe-1+3) (1:3) = 'OUI'
+    call jeveuo(matele//'.RERR', 'E', vk24=rerr)
+    rerr(3) (1:3) = 'OUI'
 !
     call jeexin(matele//'.RELR', iret)
     if (iret .gt. 0) call jedetr(matele//'.RELR')

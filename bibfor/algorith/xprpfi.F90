@@ -79,7 +79,7 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !
 !     UPWIND INTEGRATION
     integer :: jtri, jpoi, elcut, ntri, itri, ia, ib, ic, nptint, pa, pb, pc
-    integer :: psx, pdx, pter, nelcou, np, jfonf, jfmult, numpon
+    integer :: psx, pdx, pter, nelcou, np,  jfmult, numpon
     real(kind=8) :: a(3), b(3), c(3), lsta, lstb, lstc, m(3), d, vn(3), eps(3)
     real(kind=8) :: bestd, mp(3), v(3), vnele(3), vin(3), pm(3), pmp(3), toll
     real(kind=8) :: d1
@@ -87,6 +87,7 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !
 !  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
     integer :: iatri(20), ibtri(20), ictri(20)
+    real(kind=8), pointer :: fondfiss(:) => null()
 !        ---------------------
 !        |  I | TRIANGLE | N |
 !        --------------------
@@ -434,7 +435,7 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
             kink = .false.
 !
 !             RETREIVE THE COORDINATES OF THE POINT OF THE CRACK FRONT
-            call jeveuo(fiss//'.FONDFISS', 'L', jfonf)
+            call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
 !
 !             RETREIVE THE END POINTS OF EACH PART OF THE CRACK FRONT
             call jeveuo(fiss//'.FONDMULT', 'L', jfmult)
@@ -445,9 +446,9 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
             do 1500 i = 1, numpon
 !
 !                RETREIVE THE COORDINATES OF THE POINT
-                a(1) = zr(jfonf-1+4*(i-1)+1)
-                a(2) = zr(jfonf-1+4*(i-1)+2)
-                a(3) = zr(jfonf-1+4*(i-1)+3)
+                a(1) = fondfiss(4*(i-1)+1)
+                a(2) = fondfiss(4*(i-1)+2)
+                a(3) = fondfiss(4*(i-1)+3)
 !
 !                CALCULATE THE DISTANCE
                 d = sqrt((a(1)-b(1))**2+(a(2)-b(2))**2+(a(3)-b(3))**2)

@@ -90,10 +90,13 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: iad, ibid, ibl1, ieqc, inuc, inul, iret
-    integer :: j, lc, ll, llnueq, llors, llprs, llscdi
-    integer :: llscib, ltadbl, ltinbl, ltnobl, nbcol, nblig, nbsst
+    integer :: j, lc, ll,  llors, llprs
+    integer ::  ltadbl, ltinbl, ltnobl, nbcol, nblig, nbsst
     integer :: ntail, ntprno, nusst
     real(kind=8) :: ssmax
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: scib(:) => null()
+    integer, pointer :: scdi(:) => null()
 !-----------------------------------------------------------------------
     data rigopt,ricopt,masopt,amoopt/'RIGI_GENE','RIGI_GENE_C',&
      &                                 'MASS_GENE','AMOR_GENE'/
@@ -127,9 +130,9 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !---------------------REMPLISSAGE DES OBJETS DE TRAVAIL-----------------
 !
 !
-    call jeveuo(prgene//'.NUEQ', 'L', llnueq)
-    call jeveuo(stolci//'.SCDI', 'L', llscdi)
-    call jeveuo(stolci//'.SCIB', 'L', llscib)
+    call jeveuo(prgene//'.NUEQ', 'L', vi=nueq)
+    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
+    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
 !
     call jenonu(jexnom('&&ASSGEN.REP.NOM.PROF', nomprn), ibid)
     call jeveuo(jexnum(tminbl, ibid), 'L', ltinbl)
@@ -201,10 +204,10 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !    ADRESSE DANS BLOC ELEMENTAIRE
                 iad=(lc-1)*lc/2+ll
 !    NUMERO D'EQUATION DU TERME COURANT
-                ieqc=zi(llnueq+(inuc-1)+(lc-1))
+                ieqc=nueq(1+(inuc-1)+(lc-1))
 !
-                zi(ltnobl+iad-1)=zi(llscib+ieqc-1)
-                zi(ltadbl+iad-1)=zi(llscdi+ieqc-1)-(lc-ll)
+                zi(ltnobl+iad-1)=scib(ieqc)
+                zi(ltadbl+iad-1)=scdi(ieqc)-(lc-ll)
 30          continue
 20      continue
         call jelibe(jexnum(tmnobl, ibl1))

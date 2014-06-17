@@ -60,13 +60,14 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
 !
     integer :: iageo2, iageo1, igeom2, nbno2, ino2, nuno2, nno2, igeom1, nbno1
     integer :: ino1, nuno1, nno1, iagma1, nmga1, nma1, i, k, kk, ibid
-    integer :: nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, llint2, lnuno2
+    integer :: nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, llint2
     integer :: ialino
     real(kind=8) :: tra1(3), angl1(3), centr1(3), tra2(3), angl2(3), centr2(3)
     real(kind=8) :: coor1(3), coor2(3), zero, un, rot1(3, 3), rot2(3, 3)
     character(len=8) :: modgen, lint2, sst1, sst2, intf1, intf2, mail1, mail2
     character(len=24) :: repnom, int2, toto, geom2, geom1
     character(len=*) :: limail
+    integer, pointer :: idc_defo(:) => null()
 !
 !-----------------------------------------------------------------------
 !
@@ -161,7 +162,7 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
     call jelira(jexnum(int2, ibid), 'LONMAX', nbno2)
     call jeveuo(jexnum(lint2 //'.IDC_LINO', ibid), 'L', llint2)
-    call jeveuo(lint2//'.IDC_DEFO', 'L', lnuno2)
+    call jeveuo(lint2//'.IDC_DEFO', 'L', vi=idc_defo)
 !
     call dismoi('NB_NO_MAILLA', mail2, 'MAILLAGE', repi=nno2)
     call wkvect(geom2, 'V V R', 3*nno2, igeom2)
@@ -171,7 +172,7 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     call jenonu(jexnom(lint2 //'.IDC_NOMS', intf2), ibid)
 !
     do ino2 = 1, nbno2
-        nuno2 = zi(lnuno2+ino2-1)
+        nuno2 = idc_defo(ino2)
         call parotr(mail2, iageo2, nuno2, 0, centr2,&
                     rot2, tra2, coor2)
         do k = 1, 3

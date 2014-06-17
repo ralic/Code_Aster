@@ -18,10 +18,14 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: dim, nbtrou, nbma
-    integer :: tabmai(nbma), tatrou(nbma)
-    character(len=8) :: mailla
-    character(len=*) :: typmai
+    character(len=8), intent(in) :: mailla
+    integer, intent(in) :: nbma
+    integer, intent(in) :: tabmai(nbma)
+    integer, intent(in) :: dim
+    character(len=*), intent(in) :: typmai
+    integer, intent(out) :: nbtrou
+    integer, intent(out) :: tatrou(nbma)
+
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,11 +75,11 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
 !
     integer :: nbtyp, i, ii, itrou, itych
-    integer ::   jtypma
     integer, pointer :: dime_topo(:) => null()
     integer, pointer :: liste_m_temp(:) => null()
     integer, pointer :: liste_typmai(:) => null()
     character(len=8), pointer :: type_maille(:) => null()
+    integer, pointer :: typmail(:) => null()
 !
 !
 ! ----------------------------------------------------------------------
@@ -110,7 +114,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
 ! ----RECUPERATION DE LA LISTE DES TYPES DE MAILLE DU MAILLAGE
 !
-    call jeveuo(mailla//'.TYPMAIL        ', 'L', jtypma)
+    call jeveuo(mailla//'.TYPMAIL        ', 'L', vi=typmail)
 !
     AS_ALLOCATE(vi=liste_m_temp, size=nbma)
 !
@@ -124,7 +128,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
 ! --------SI LA DIMENSION TOPOLOGIQUE EST LA BONNE ON GARDE LA MAILLE
 !
-            liste_typmai(i) = zi(jtypma-1+tabmai(i))
+            liste_typmai(i) = typmail(tabmai(i))
             if (dime_topo(liste_typmai(i)) .eq. dim) then
                 liste_m_temp(ii) = tabmai(i)
                 nbtrou = nbtrou + 1
@@ -134,7 +138,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 !
 ! --------TRI SUR LE TYPE DE LA MAILLE :
 !
-            if (zi(jtypma-1+tabmai(i)) .eq. itych) then
+            if (typmail(tabmai(i)) .eq. itych) then
                 liste_m_temp(ii) = tabmai(i)
                 nbtrou = nbtrou + 1
                 ii = ii + 1

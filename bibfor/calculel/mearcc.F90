@@ -57,7 +57,7 @@ subroutine mearcc(option, mo, chin, chout)
     parameter   (nbcmp=6,nbnomx=9)
 !
     integer :: nbma, ibid, jma2d, jma3d, ndim
-    integer :: jcesv3, jcesd3, jcesk3, jcesl3, jcesc3, jcesv2, jcesd2, ima
+    integer ::  jcesd3, jcesk3, jcesl3,   jcesd2, ima
     integer :: jcesk2, jcesl2, jcesc2, jlcnx, jcnx, ipt, icp, ino2, ino3
     integer :: jco3, jco2, npt3, npt2, ipt2, ipt3,  k, npt
     integer :: iad3, iad2, nucmp, numasu, numavo
@@ -66,6 +66,9 @@ subroutine mearcc(option, mo, chin, chout)
     character(len=19) :: chous, chins
     character(len=24) :: mail2d, mail3d, mailto, ligrmo
     integer, pointer :: pt3d(:) => null()
+    real(kind=8), pointer :: cesv2(:) => null()
+    real(kind=8), pointer :: cesv3(:) => null()
+    character(len=8), pointer :: cesc3(:) => null()
 !
     data comp/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
 !--------------------------------------------------------------------------
@@ -93,18 +96,18 @@ subroutine mearcc(option, mo, chin, chout)
 !     TRANSFORMATION DU CHAMP 3D (IN) EN CHAMP SIMPLE
     chins='&&MEARCC.CHIN_S'
     call celces(chin, 'V', chins)
-    call jeveuo(chins//'.CESV', 'L', jcesv3)
+    call jeveuo(chins//'.CESV', 'L', vr=cesv3)
     call jeveuo(chins//'.CESD', 'L', jcesd3)
     call jeveuo(chins//'.CESK', 'L', jcesk3)
     call jeveuo(chins//'.CESL', 'L', jcesl3)
-    call jeveuo(chins//'.CESC', 'L', jcesc3)
+    call jeveuo(chins//'.CESC', 'L', vk8=cesc3)
 !
 !     CREATION DU CHAMP 2D (OUT) SIMPLE
     chous='&&MEARCC.CHOUT_S'
     call cescre('V', chous, 'ELNO', ma, 'SIEF_R',&
                 nbcmp, comp, [-1], [-1], [-nbcmp])
 !
-    call jeveuo(chous//'.CESV', 'E', jcesv2)
+    call jeveuo(chous//'.CESV', 'E', vr=cesv2)
     call jeveuo(chous//'.CESD', 'E', jcesd2)
     call jeveuo(chous//'.CESK', 'E', jcesk2)
     call jeveuo(chous//'.CESL', 'E', jcesl2)
@@ -151,7 +154,7 @@ subroutine mearcc(option, mo, chin, chout)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma3d+ima-1)), k8b)
         do ipt = 1, npt
             do icp = 1, nbcmp
-                nucmp=indik8( zk8(jcesc3), comp(icp), 1, zi(jcesd3+1)&
+                nucmp=indik8( cesc3, comp(icp), 1, zi(jcesd3+1)&
                 )
 !
                 call cesexi('C', jcesd3, jcesl3, zi(jma3d+ima-1), pt3d(1+nbnomx*(ima-1)+ipt-1),&
@@ -167,7 +170,7 @@ subroutine mearcc(option, mo, chin, chout)
                 endif
                 call cesexi('S', jcesd2, jcesl2, zi(jma2d+ima-1), ipt,&
                             1, nucmp, iad2)
-                zr(jcesv2-iad2-1)=zr(jcesv3+iad3-1)
+                cesv2(1-iad2-1)=cesv3(iad3)
                 zl(jcesl2-iad2-1)=.true.
             end do
         end do

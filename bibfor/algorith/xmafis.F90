@@ -46,11 +46,13 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
 !       NMAFIS   :  NOMBRE DE MAILLES DE LA ZONE FISSURE
 !     ------------------------------------------------------------------
 !
-    integer :: jdlima, jconx1, jconx2, jlnsv, jmafis
+    integer :: jdlima,  jconx2,  jmafis
     integer :: i, imae, in, jma, itypma, nbnott(3)
     integer :: nmaabs, nuno, nbmae, nnos
     real(kind=8) :: lsnp, lsn
     character(len=19) :: mai
+    real(kind=8), pointer :: cnsv(:) => null()
+    integer, pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,14 +61,14 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
     call jelira(lisma, 'LONMAX', nbmae)
     call jeveuo(lisma, 'L', jdlima)
 !
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
 !
 !     RÉCUPÉRATION DES LEVEL-SETS
-    call jeveuo(cnsln//'.CNSV', 'L', jlnsv)
+    call jeveuo(cnsln//'.CNSV', 'L', vr=cnsv)
 !
     call jeveuo(mafis, 'E', jmafis)
 !
@@ -75,16 +77,16 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
     do 100 imae = 1, nbmae
         nmaabs=zi(jdlima-1+(imae-1)+1)
         in=1
-        nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+in-1)
-        lsnp=zr(jlnsv-1+(nuno-1)+1)
+        nuno=connex(zi(jconx2+nmaabs-1)+in-1)
+        lsnp=cnsv((nuno-1)+1)
 !
         itypma=zi(jma-1+nmaabs)
         call panbno(itypma, nbnott)
         nnos=nbnott(1)
 !
         do 101 in = 2, nnos
-            nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+in-1)
-            lsn=zr(jlnsv-1+(nuno-1)+1)
+            nuno=connex(zi(jconx2+nmaabs-1)+in-1)
+            lsn=cnsv((nuno-1)+1)
             if ((lsnp*lsn) .le. 0.d0) then
 !           LSN A CHANGÉ DE SIGNE DONC ON STOCKE LA MAILLE DANS MAFIS
                 i=i+1

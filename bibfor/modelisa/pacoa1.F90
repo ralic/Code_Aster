@@ -61,7 +61,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 ! OUT  LISO1Z     K24 : NOM DE LA 1ERE LISTE TRIEE
 ! OUT  LISO2Z     K24 : NOM DE LA 2EME LISTE TRIEE
 !
-    integer :: iageom, iret, idlou1, idlou2,    i1, i2
+    integer ::  iret, idlou1, idlou2,    i1, i2
     integer :: ino1, nuno1, ino2, nuno2, j1, j2, i, j, iexcor, trouv1, trouv2
     integer :: jfac1, jfac2, jfond, im, nbfa, nbfo
     real(kind=8) :: dmin, d, x1(3), x2(3)
@@ -73,6 +73,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
     integer, pointer :: lisinv(:) => null()
     integer, pointer :: lisou3(:) => null()
     integer, pointer :: lisou4(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -82,7 +83,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 !
     nomnoe = noma//'.NOMNOE         '
     grpnoe = noma//'.GROUPENO       '
-    call jeveuo(noma//'.COORDO    .VALE', 'L', iageom)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
     call jeexin(jexnom(grpnoe, 'FACE1'), iret)
     if (iret .eq. 0) then
@@ -122,9 +123,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 !
     do 10 i1 = 1, lonlis
         nuno1 = noeud1(i1)
-        x1(1) = zr(iageom-1+3*(nuno1-1)+1)
-        x1(2) = zr(iageom-1+3*(nuno1-1)+2)
-        x1(3) = zr(iageom-1+3*(nuno1-1)+3)
+        x1(1) = vale(3*(nuno1-1)+1)
+        x1(2) = vale(3*(nuno1-1)+2)
+        x1(3) = vale(3*(nuno1-1)+3)
         dmin = r8gaem()
         j2 = 0
 !
@@ -146,9 +147,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 13      continue
         do 20 i2 = 1, lonlis
             ino2 = noeud2(i2)
-            x2(1) = zr(iageom-1+3*(ino2-1)+1)
-            x2(2) = zr(iageom-1+3*(ino2-1)+2)
-            x2(3) = zr(iageom-1+3*(ino2-1)+3)
+            x2(1) = vale(3*(ino2-1)+1)
+            x2(2) = vale(3*(ino2-1)+2)
+            x2(3) = vale(3*(ino2-1)+3)
             d = padist( 3, x1, x2 )
 !
             trouv2 = 0
@@ -206,9 +207,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 !
     do 40 i2 = 1, lonlis
         nuno2 = noeud2(i2)
-        x2(1) = zr(iageom-1+3*(nuno2-1)+1)
-        x2(2) = zr(iageom-1+3*(nuno2-1)+2)
-        x2(3) = zr(iageom-1+3*(nuno2-1)+3)
+        x2(1) = vale(3*(nuno2-1)+1)
+        x2(2) = vale(3*(nuno2-1)+2)
+        x2(3) = vale(3*(nuno2-1)+3)
         dmin = r8gaem()
         j1 = 0
 !
@@ -230,9 +231,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
 43      continue
         do 50 i1 = 1, lonlis
             ino1 = noeud1(i1)
-            x1(1) = zr(iageom-1+3*(ino1-1)+1)
-            x1(2) = zr(iageom-1+3*(ino1-1)+2)
-            x1(3) = zr(iageom-1+3*(ino1-1)+3)
+            x1(1) = vale(3*(ino1-1)+1)
+            x1(2) = vale(3*(ino1-1)+2)
+            x1(3) = vale(3*(ino1-1)+3)
             d = padist( 3, x1, x2 )
 !
             trouv1 = 0

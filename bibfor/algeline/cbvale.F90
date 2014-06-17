@@ -69,10 +69,11 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     character(len=14) :: nume
     character(len=19) :: noma
     character(len=2) :: rouc
-    integer :: neq, mxddl, lddl, jsmdi, jrefa, jsmhc
+    integer :: neq, mxddl, lddl, jsmdi,  jsmhc
     integer :: iconst, imat, jvamr1, jvamr2, jvami1, jvami2
     real(kind=8) :: zero, r8cst, rbid
     complex(kind=8) :: czero, c8cst, cbid
+    character(len=24), pointer :: refa(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
     zero = 0.d0
@@ -110,8 +111,8 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
 !
 !
     call mtdsc2(zk24(zi(lres+1)), 'SMDI', 'L', jsmdi)
-    call jeveuo(zk24(zi(lres+1)) (1:19)//'.REFA', 'L', jrefa)
-    call jeveuo(zk24(jrefa-1+2) (1:14)//'.SMOS.SMHC', 'L', jsmhc)
+    call jeveuo(zk24(zi(lres+1)) (1:19)//'.REFA', 'L', vk24=refa)
+    call jeveuo(refa(2) (1:14)//'.SMOS.SMHC', 'L', jsmhc)
 !
 !
     call jeveuo(jexnum(valmr, 1), 'E', jvamr1)

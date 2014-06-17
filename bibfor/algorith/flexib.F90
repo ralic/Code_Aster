@@ -73,12 +73,14 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iddeeq, iord, iran, j
+    integer :: i, ibid,  iord, iran, j
     integer :: jj, k, kk, ldkge, ldmge, llcham, lldes
-    integer :: llnoc, llnol, lltyp, ltextc, ltextl, ltorc
+    integer :: llnoc, llnol,  ltextc, ltextl, ltorc
     integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, neq
     integer :: numc, numl
     real(kind=8) :: toto, xkgen, xx
+    integer, pointer :: deeq(:) => null()
+    character(len=8), pointer :: idc_type(:) => null()
 !-----------------------------------------------------------------------
     data pgc /'FLEXIB'/
 !-----------------------------------------------------------------------
@@ -102,8 +104,8 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 ! --- TEST SUR LE TYPE D'INTERFACE
 !
-    call jeveuo(intf//'.IDC_TYPE', 'L', lltyp)
-    typint=zk8(lltyp+numc-1)
+    call jeveuo(intf//'.IDC_TYPE', 'L', vk8=idc_type)
+    typint=idc_type(numc)
     call jelibe(intf//'.IDC_TYPE')
     if (typint .eq. 'AUCUN   ') goto 999
 !
@@ -118,7 +120,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
 !----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
     numddl(15:19)='.NUME'
-    call jeveuo(numddl//'.DEEQ', 'L', iddeeq)
+    call jeveuo(numddl//'.DEEQ', 'L', vi=deeq)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DES INTERFACES
 !
@@ -176,7 +178,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
         call dcapno(basmod, 'DEPL    ', iord, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
+        call zerlag(neq, deeq, vectr=zr(ltvec))
 !
         do j = 1, nl
 !
@@ -204,7 +206,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
         call jeveuo(chamva, 'L', llcham)
         call wkvect('&&'//pgc//'.VECT', 'V V R', neq, ltvec)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
+        call zerlag(neq, deeq, vectr=zr(ltvec))
 !
         do j = 1, nc
             do k = 1, nl

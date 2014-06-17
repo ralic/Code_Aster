@@ -69,12 +69,13 @@ subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
 !
     integer :: ino, ima, ipi, ispi, nummai
     integer :: nbnor, nbmar
-    integer :: ivalcp, jcesd, jma
+    integer :: ivalcp,  jma
     real(kind=8) :: valr
     integer :: nvalcp
     integer :: npi, nspi, nmapt, nmaspt, nbpir, nbspir
     integer :: jnoeu, jelga
     character(len=19) :: cheles
+    integer, pointer :: cesd(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +90,7 @@ subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
     if (typcha .eq. 'ELGA') then
         call sdmpic('CHAM_ELEM', champ)
         call celces(champ, 'V', cheles)
-        call jeveuo(cheles(1:19)//'.CESD', 'L', jcesd)
+        call jeveuo(cheles(1:19)//'.CESD', 'L', vi=cesd)
     endif
 !
 ! --- NOMBRE DE NOEUDS POUR LA BOUCLE
@@ -160,8 +161,8 @@ subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
 !
 ! ------- NOMBRE EFFECTIF DE POINTS/SOUS-POINTS SUR LA MAILLE
 !
-            nmapt = zi(jcesd+5+4*(nummai-1))
-            nmaspt = zi(jcesd+5+4*(nummai-1)+1)
+            nmapt = cesd(1+5+4*(nummai-1))
+            nmaspt = cesd(1+5+4*(nummai-1)+1)
 !
 ! ------- PLAFONNEMENT
 !

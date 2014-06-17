@@ -60,11 +60,13 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 !
 !
     integer :: ibid, k, iret, ierr, nbmat, jmet
-    integer :: jmer, jmed, j2nd, jdirp, jchtp, lonch
+    integer :: jmer, jmed, j2nd,   lonch
     character(len=1) :: typres
     character(len=8) :: nomcmp(6)
     character(len=24) :: ligrmo, merigi, mediri, tlimat(3)
     character(len=24) :: vediri, vechtp, vadirp, vachtp, metrnl
+    real(kind=8), pointer :: chtp(:) => null()
+    real(kind=8), pointer :: dirp(:) => null()
 !
     data typres /'R'/
     data nomcmp /'INST    ','DELTAT  ','THETA   ','KHI     ',&
@@ -111,7 +113,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
         call asasve(vediri, numedd, typres, vadirp)
         call ascova('D', vadirp, fomult, 'INST', tpsthe(1),&
                     typres, cndirp)
-        call jeveuo(cndirp(1:19)//'.VALE', 'E', jdirp)
+        call jeveuo(cndirp(1:19)//'.VALE', 'E', vr=dirp)
 !
 ! --- CHARGES CINEMATIQUES                                   ---> CNCHCI
 !
@@ -128,14 +130,14 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
         call asasve(vechtp, numedd, typres, vachtp)
         call ascova('D', vachtp, fomult, 'INST', tpsthe(1),&
                     typres, cnchtp)
-        call jeveuo(cnchtp(1:19)//'.VALE', 'E', jchtp)
+        call jeveuo(cnchtp(1:19)//'.VALE', 'E', vr=chtp)
         call jelira(cnchtp(1:19)//'.VALE', 'LONMAX', lonch)
 !
 ! --- SECOND MEMBRE COMPLET                                  ---> VEC2ND
 !
         call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
         do 120 k = 1, lonch
-            zr(j2nd+k-1) = zr(jchtp+k-1) + zr(jdirp+k-1)
+            zr(j2nd+k-1) = chtp(k) + dirp(k)
 120      continue
 !
     endif

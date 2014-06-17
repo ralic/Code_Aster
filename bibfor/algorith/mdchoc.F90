@@ -158,7 +158,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! OUT : IER    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    integer :: imode, iamor, im, i, j, lrefe, nbparcho, nblogcho
+    integer :: imode, iamor, im, i, j,  nbparcho, nblogcho
     integer :: vali
     real(kind=8) :: dpiloc(6), dpiglo(6), ddpilo(3), origob(3), un
     real(kind=8) :: valr(10)
@@ -169,6 +169,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     character(len=24) :: valk
     integer, pointer :: ddlcho(:) => null()
     real(kind=8), pointer :: dplcho(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -374,8 +375,8 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     else if (typnum(1:13).eq.'NUME_DDL_GENE') then
 !             -------------------------------
         numero(1:14) = numddl
-        call jeveuo(numddl//'.NUME.REFN', 'L', lrefe)
-        mdgene = zk24(lrefe)
+        call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
+        mdgene = refn(1)
         do i = 1, nbnli - nbpal
             AS_ALLOCATE(vr=dplcho, size=nbmode*6)
             noeud(1) = noecho(i,1)

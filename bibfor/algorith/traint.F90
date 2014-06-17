@@ -63,34 +63,42 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     character(len=8) :: rest2, mraid
     character(len=19) :: nume91
     character(len=24) :: indin1, indin2
-    integer :: i1, ibid, nbsst, llipr, j1, k1, l1, imast1, nbeq, lmast, imast2
-    integer :: nbeq1, nbeq2, numlia, lefi1, lefi2, nbmod, lnosst, lnusst, isst1
+    integer :: i1, ibid, nbsst,  j1, k1, l1, imast1, nbeq, lmast, imast2
+    integer :: nbeq1, nbeq2, numlia, lefi1, lefi2, nbmod,  lnusst, isst1
     integer :: isst2, llint1, lobs2, lobs1, llint2, nbddl1, nbddl2, tach1
-    integer :: lmaobs, nc, tach2, lomeg, lmod1, lmod2, lmass, lbid, lag1, lag2
-    integer :: lesc, lraid, leff1, leff2, ltrain, ideeq, nbddl, llint, lslast
-    integer :: lcopy1, lcopy2, unit, lmasst, ldepma, ldepsl, nl
+    integer ::  nc, tach2, lomeg, lmod1, lmod2,  lbid, lag1, lag2
+    integer :: lesc,  leff1, leff2,  ideeq, nbddl, llint
+    integer :: lcopy1, lcopy2, unit,  ldepma, ldepsl, nl
     real(kind=8) :: travm, travk, trvint
+    integer, pointer :: num_sst_maitre(:) => null()
+    real(kind=8), pointer :: trav_interf(:) => null()
+    integer, pointer :: num_sst_esclave(:) => null()
+    character(len=8), pointer :: nom_sst(:) => null()
+    integer, pointer :: lipr(:) => null()
+    integer, pointer :: matrice_mass(:) => null()
+    real(kind=8), pointer :: tr_mod_mast_pro(:) => null()
+    integer, pointer :: matrice_raid(:) => null()
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)
     i1=numlia
 !
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
 !
-    call jeveuo('&&OP0091.NOM_SST', 'E', lnosst)
+    call jeveuo('&&OP0091.NOM_SST', 'E', vk8=nom_sst)
     call jeveuo('&&OP0091.NUME_SST', 'E', lnusst)
-    call jeveuo('&&OP0091.MATRICE_MASS', 'E', lmass)
-    call jeveuo('&&OP0091.MATRICE_RAID', 'E', lraid)
-    call jeveuo('&&OP0091.TRAV_INTERF', 'E', ltrain)
-    call jeveuo('&&OP0091.NUM_SST_ESCLAVE', 'E', lslast)
-    call jeveuo('&&OP0091.NUM_SST_MAITRE', 'E', lmasst)
+    call jeveuo('&&OP0091.MATRICE_MASS', 'E', vi=matrice_mass)
+    call jeveuo('&&OP0091.MATRICE_RAID', 'E', vi=matrice_raid)
+    call jeveuo('&&OP0091.TRAV_INTERF', 'E', vr=trav_interf)
+    call jeveuo('&&OP0091.NUM_SST_ESCLAVE', 'E', vi=num_sst_esclave)
+    call jeveuo('&&OP0091.NUM_SST_MAITRE', 'E', vi=num_sst_maitre)
     call jeveuo('&&OP0091.PULSA_PROPRES', 'L', lomeg)
 !
-    call jeveuo(modgen//'      .MODG.LIPR', 'L', llipr)
+    call jeveuo(modgen//'      .MODG.LIPR', 'L', vi=lipr)
 !
 !-- RECHERCHE DE LA SOUS STRUCTURE ESCLAVE DE LA LIAISON
 !-- EN CHERCHANT LE FACTEUR MULTIPLICATEUR DANS LA MATRICE DE
 !-- LIAISON LAGRANGE / LAGRANGE
-    call jeveuo(jexnum(modgen//'      .MODG.LIMA', zi(llipr+(i1-1)*9+8)), 'L', ibid)
+    call jeveuo(jexnum(modgen//'      .MODG.LIMA', lipr(1+(i1-1)*9+8)), 'L', ibid)
 !
 !-- L'INTERFACE MAITRE EST CELLE DONT LE NUMERO EST NEGATIF
     if (int(zr(ibid)) .eq. -2) then
@@ -103,16 +111,16 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !
 !-- SOUS STRUCTURE 1
     indin1='&&VEC_DDL_INTF_'//intf1
-    nbeq1=zi(llipr+(i1-1)*9+1)
+    nbeq1=lipr(1+(i1-1)*9+1)
 !-- SOUS STRUCTURE 2
     indin2='&&VEC_DDL_INTF_'//intf2
-    nbeq2=zi(llipr+(i1-1)*9+4)
+    nbeq2=lipr(1+(i1-1)*9+4)
 !
 !-- RESTITUTION DES MODES SUR LES DIFFERENTES SOUS STRUCTURES
 !
     if (i1 .eq. 1) then
-        zk8(lnosst)=sst1
-        zk8(lnosst+1)=sst2
+        nom_sst(1)=sst1
+        nom_sst(2)=sst2
         zi(lnusst)=2
         zi(lnusst+1)=1
         zi(lnusst+2)=2
@@ -127,13 +135,13 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         isst1=0
         isst2=0
         do j1 = 1, ibid
-            if (sst1 .eq. zk8(lnosst+j1-1)) isst1=j1
-            if (sst2 .eq. zk8(lnosst+j1-1)) isst2=j1
+            if (sst1 .eq. nom_sst(j1)) isst1=j1
+            if (sst2 .eq. nom_sst(j1)) isst2=j1
         end do
         if (isst1 .eq. 0) then
             zi(lnusst)=zi(lnusst)+1
             zi(lnusst+zi(lnusst))=zi(lnusst)
-            zk8(lnosst+zi(lnusst)-1)=sst1
+            nom_sst(1+zi(lnusst)-1)=sst1
             call codent(zi(lnusst), 'D0', k4bid)
             rest1='&&91'//k4bid
             call regeec(rest1, resgen, sst1)
@@ -145,7 +153,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         if (isst2 .eq. 0) then
             zi(lnusst)=zi(lnusst)+1
             zi(lnusst+zi(lnusst))=zi(lnusst)
-            zk8(lnosst+zi(lnusst)-1)=sst2
+            nom_sst(1+zi(lnusst)-1)=sst2
             call codent(zi(lnusst), 'D0', k4bid)
             rest2='&&91'//k4bid
             call regeec(rest2, resgen, sst2)
@@ -159,26 +167,26 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !-- RECUPERATION DE LA SST ESCLAVE EN FONCTION DU NUMERO DE LA LIAISON
     do j1 = 1, zi(lnusst)
         if (imast1 .eq. 1) then
-            if (sst1 .eq. zk8(lnosst+j1-1)) then
-                zi(lslast+i1-1)=zi(lnusst+j1)
+            if (sst1 .eq. nom_sst(j1)) then
+                num_sst_esclave(i1)=zi(lnusst+j1)
             endif
-            if (sst2 .eq. zk8(lnosst+j1-1)) then
-                zi(lmasst+i1-1)=zi(lnusst+j1)
+            if (sst2 .eq. nom_sst(j1)) then
+                num_sst_maitre(i1)=zi(lnusst+j1)
             endif
         endif
         if (imast2 .eq. 2) then
-            if (sst2 .eq. zk8(lnosst+j1-1)) then
-                zi(lslast+i1-1)=zi(lnusst+j1)
+            if (sst2 .eq. nom_sst(j1)) then
+                num_sst_esclave(i1)=zi(lnusst+j1)
             endif
-            if (sst1 .eq. zk8(lnosst+j1-1)) then
-                zi(lmasst+i1-1)=zi(lnusst+j1)
+            if (sst1 .eq. nom_sst(j1)) then
+                num_sst_maitre(i1)=zi(lnusst+j1)
             endif
         endif
     end do
 !
 !-- OBSERVATION DE L'INTERFACE MAITRE
 !
-    call jeveuo('&&LIPSRB.TR_MOD_MAST_PRO', 'L', lmaobs)
+    call jeveuo('&&LIPSRB.TR_MOD_MAST_PRO', 'L', vr=tr_mod_mast_pro)
 !
 !-- RECUPERATION D'INFOS (TAILLES, DDL INTERF, MODES RESTITUES, ETC.)
     call jelira(indin1, 'LONMAX', nbddl1)
@@ -251,18 +259,18 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst1), 'L', ibid)
     call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
     call mtdscr(zk24(lbid+1)(1:19))
-    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', zi(lraid+isst1-1))
+    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', matrice_raid(isst1))
     call jeveuo(zk8(ibid)//'.MAEL_MASS_REFE', 'L', lbid)
     call mtdscr(zk24(lbid+1)(1:19))
-    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', zi(lmass+isst1-1))
+    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', matrice_mass(isst1))
 !-- SST2
     call jeveuo(jexnum(modgen//'      .MODG.SSME', isst2), 'L', ibid)
     call jeveuo(zk8(ibid)//'.MAEL_RAID_REFE', 'L', lbid)
     call mtdscr(zk24(lbid+1)(1:19))
-    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', zi(lraid+isst2-1))
+    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', matrice_raid(isst2))
     call jeveuo(zk8(ibid)//'.MAEL_MASS_REFE', 'L', lbid)
     call mtdscr(zk24(lbid+1)(1:19))
-    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', zi(lmass+isst2-1))
+    call jeveuo(zk24(lbid+1)(1:19)//'.&INT', 'L', matrice_mass(isst2))
 !
 !
 !--
@@ -297,11 +305,11 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         end do
 !
 !-- CALCUL DU TRAVAIL
-        call mrmult('ZERO', zi(lmass+isst1-1), zr(lcopy1), zr(leff1), 1,&
+        call mrmult('ZERO', matrice_mass(isst1), zr(lcopy1), zr(leff1), 1,&
                     .true.)
         call lceqvn(nbeq1, zr(leff1), zr(lefi1))
         travm=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
-        call mrmult('ZERO', zi(lraid+isst1-1), zr(lcopy1), zr(leff1), 1,&
+        call mrmult('ZERO', matrice_raid(isst1), zr(lcopy1), zr(leff1), 1,&
                     .true.)
         travk=ddot(nbeq1,zr(lmod1),1,zr(leff1),1)
         trvint=travk-(zr(lomeg+j1-1)**2)*travm
@@ -335,19 +343,19 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !--
 !-- CALCUL DE L'EFFORT RESIDUEL
 !--
-        call mrmult('ZERO', zi(lmass+isst2-1), zr(lcopy2), zr(leff2), 1,&
+        call mrmult('ZERO', matrice_mass(isst2), zr(lcopy2), zr(leff2), 1,&
                     .true.)
         call lceqvn(nbeq2, zr(leff2), zr(lefi2))
         travm=ddot(nbeq2,zr(lmod2),1,zr(leff2),1)
 !
-        call mrmult('ZERO', zi(lraid+isst2-1), zr(lcopy2), zr(leff2), 1,&
+        call mrmult('ZERO', matrice_raid(isst2), zr(lcopy2), zr(leff2), 1,&
                     .true.)
         travk=ddot(nbeq2,zr(lmod2),1,zr(leff2),1)
 !
         trvint=trvint+travk-(zr(lomeg+j1-1)**2)*travm
         if (zr(lomeg+j1-1) .gt. 1) trvint=trvint/zr(lomeg+j1-1)
 !
-        zr(ltrain+nbmod*(i1-1)+j1-1)=trvint
+        trav_interf(1+nbmod*(i1-1)+j1-1)=trvint
         write(unit,*)'MODE ',j1,' - TRAVAIL INTERFACE =',trvint
 !
 !--
@@ -365,7 +373,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !-- STOCKAGE DE LA PROJECTION DES MVTS MAITRES SUR L'INT. ESCLAVE
             do l1 = 1, nc
                 zr(lesc+(k1-1)+(j1-1)*nl)=zr(lesc+(k1-1)+(j1-1)*nl)+&
-                zr(lmaobs+(k1-1)+(l1-1)*nl)*zr(lbid+l1-1)
+                tr_mod_mast_pro(1+(k1-1)+(l1-1)*nl)*zr(lbid+l1-1)
             end do
 !-- STOCKAGE DES MVTS DE L'INT. ESCLAVE POUR EXPANSION
             zr(lmast+(k1-1)+(j1-1)*nl)=zr(ibid+k1-1)

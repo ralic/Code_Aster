@@ -95,7 +95,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !
 !     CHARACTERISTICS OF THE MESHES
-    integer :: dnbno, dnbma, jtmdim
+    integer :: dnbno, dnbma
 !
 !     DOMAINE LEVEL SETS MESH (AUXILIARY GRID)
     real(kind=8) :: rayon
@@ -103,8 +103,8 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     integer :: jecons, jdisfr, nbelno, jelno, nbelpr, jefrom, nodadj
 !
 !     DOMAINE PHYSICAL MESH
-    integer :: jfonf, nbptff, nbno, jcoor, jnto, nunopr, jnofla, jdist, node
-    integer :: numelm, jmai, itypma, jconx1, jconx2, ndim, jaux, jnofl1, jdmai
+    integer ::  nbptff, nbno,  jnto, nunopr, jnofla, jdist, node
+    integer :: numelm,  itypma, jconx1, jconx2, ndim, jaux, jnofl1
     integer :: eldim
     real(kind=8) :: eps, xm, ym, zm, xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij
     real(kind=8) :: xim, yim, zim, s, norm2, xn, yn, zn, d, dmin
@@ -115,7 +115,13 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     integer :: ifm, niv
 !
 !     MULTIPLE CRACK FRONTS
-    integer :: jfmult, numfon, fon
+    integer ::  numfon, fon
+    integer, pointer :: tmdim(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: fondmult(:) => null()
+    real(kind=8), pointer :: fondfiss(:) => null()
+    integer, pointer :: dmai(:) => null()
+    integer, pointer :: mai(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -139,10 +145,10 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
 !
 !     RETRIEVE THE TYPE OF EACH ELEMENT IN THE MESH
-    call jeveuo(noma//'.TYPMAIL', 'L', jmai)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=mai)
 !
 !     RETRIEVE THE DIMENSIONS OF THE EXISTING ELEMENTS
-    call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
+    call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
 !
 !     RETRIEVE THE DEFINITION OF THE ELEMENTS IN TERMS OF NODES
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
@@ -152,14 +158,14 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
 !     RETRIEVE THE COORDINATES OF THE NODES
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 !     RETRIEVE THE POINTS ON THE CRACK FRONT
-    call jeveuo(fiss//'.FONDFISS', 'L', jfonf)
+    call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
     call dismoi('NB_POINT_FOND', fiss, 'FISS_XFEM', repi=nbptff)
 !
 !     RETRIEVE THE DIFFERENT PIECES OF THE CRACK FRONT
-    call jeveuo(fiss//'.FONDMULT', 'L', jfmult)
+    call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
     call dismoi('NB_FOND', fiss, 'FISS_XFEM', repi=numfon)
 !
 !     CREATE A TEMPORARY LOGICAL VECTOR TO MARK THE NODES THAT HAVE
@@ -173,9 +179,9 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     distno='&&XPRDOM.DISTNO'
     call wkvect(distno, 'V V R8', nbno, jdist)
 !
-    xi1 = zr(jfonf-1+4*(1-1)+1)
-    yi1 = zr(jfonf-1+4*(1-1)+2)
-    zi1 = zr(jfonf-1+4*(1-1)+3)
+    xi1 = fondfiss(4*(1-1)+1)
+    yi1 = fondfiss(4*(1-1)+2)
+    zi1 = fondfiss(4*(1-1)+3)
 !
 !     COUNTER FOR THE NODES THAT HAVE BEEN SELECTED
     nunopr = 0
@@ -185,9 +191,9 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     do i = 1, nbno
 !
 !        COORDINATES OF NODE M
-        xm=zr(jcoor-1+(i-1)*3+1)
-        ym=zr(jcoor-1+(i-1)*3+2)
-        zm=zr(jcoor-1+(i-1)*3+3)
+        xm=vale((i-1)*3+1)
+        ym=vale((i-1)*3+2)
+        zm=vale((i-1)*3+3)
 !
 !        THE PROJECTION IS NEEDED ONLY FOR THE 3D CASE
         if (ndim .eq. 3) then
@@ -200,16 +206,16 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !            MODEL (ONLY IF THERE ARE MORE THAN ONE PIECE FORMING THE
 !            FRONT)
                 do fon = 1, numfon
-                    if (j .eq. zi(jfmult-1+2*fon)) goto 2100
+                    if (j .eq. fondmult(2*fon)) goto 2100
                 end do
 !
 !            COORD PT I, AND J
-                xi1 = zr(jfonf-1+4*(j-1)+1)
-                yi1 = zr(jfonf-1+4*(j-1)+2)
-                zi1 = zr(jfonf-1+4*(j-1)+3)
-                xj1 = zr(jfonf-1+4*(j-1+1)+1)
-                yj1 = zr(jfonf-1+4*(j-1+1)+2)
-                zj1 = zr(jfonf-1+4*(j-1+1)+3)
+                xi1 = fondfiss(4*(j-1)+1)
+                yi1 = fondfiss(4*(j-1)+2)
+                zi1 = fondfiss(4*(j-1)+3)
+                xj1 = fondfiss(4*(j-1+1)+1)
+                yj1 = fondfiss(4*(j-1+1)+2)
+                zj1 = fondfiss(4*(j-1+1)+3)
 !            VECTORS IJ AND IM
                 xij = xj1-xi1
                 yij = yj1-yi1
@@ -245,9 +251,9 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !            2D CASE - ONLY ONE POINT AT THE CRACK TIP!
             do j = 1, nbptff
 !
-                xi1 = zr(jfonf-1+4*(j-1)+1)
-                yi1 = zr(jfonf-1+4*(j-1)+2)
-                zi1 = zr(jfonf-1+4*(j-1)+3)
+                xi1 = fondfiss(4*(j-1)+1)
+                yi1 = fondfiss(4*(j-1)+2)
+                zi1 = fondfiss(4*(j-1)+3)
 !
 !               SAVE CPU TIME: THE SQUARE OF THE DISTANCE IS EVALUATED!
                 d = (xi1-xm)*(xi1-xm)+(yi1-ym)*(yi1-ym)+ (zi1-zm)*( zi1-zm)
@@ -291,8 +297,8 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !           ONLY THE ELEMENTS OF THE SAME DIMENSION OF THE MODEL ARE
 !           CONSIDERED
-                itypma=zi(jmai-1+numelm)
-                eldim=zi(jtmdim-1+itypma)
+                itypma=mai(numelm)
+                eldim=tmdim(itypma)
 !
                 if (eldim .eq. ndim) then
 !
@@ -360,7 +366,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
     call dismoi('NB_MA_MAILLA', dnoma, 'MAILLAGE', repi=dnbma)
 !
 !     RETRIEVE THE TYPE OF EACH ELEMENT IN THE MESH
-    call jeveuo(dnoma//'.TYPMAIL', 'L', jdmai)
+    call jeveuo(dnoma//'.TYPMAIL', 'L', vi=dmai)
 !
 !     RETRIEVE THE DEFINITION OF THE ELEMENTS IN TERMS OF NODES
     call jeveuo(dnoma//'.CONNEX', 'L', jconx1)
@@ -394,8 +400,8 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !              ONLY THE ELEMENTS OF THE SAME DIMENSION OF THE MODEL ARE
 !              CONSIDERED
-                itypma = zi(jdmai-1+numelm)
-                eldim = zi(jtmdim-1+itypma)
+                itypma = dmai(numelm)
+                eldim = tmdim(itypma)
 !
 !              MARK THE SELECTED ELEMENT
                 if (eldim .eq. ndim) zl(jecons-1+numelm) = .true.

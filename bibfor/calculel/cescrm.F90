@@ -50,12 +50,14 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: i, ima, nbma
-    integer :: j1, j2, jchsd, jchsk, jcmps
+    integer :: j1, j2,   jcmps
     character(len=1) :: base
     character(len=4) :: cnum
     character(len=4) :: typces
     character(len=8) :: nomgd
     character(len=19) :: ces, cesm, wk1, wk2, cmps
+    character(len=8), pointer :: cesk(:) => null()
+    integer, pointer :: cesd(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -68,16 +70,16 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
     wk2 = '&&CESCRM.WK2'
     cmps = '&&CESCRM.LICMP'
 !
-    call jeveuo(cesm//'.CESD', 'L', jchsd)
-    call jeveuo(cesm//'.CESK', 'L', jchsk)
+    call jeveuo(cesm//'.CESD', 'L', vi=cesd)
+    call jeveuo(cesm//'.CESK', 'L', vk8=cesk)
 !
 ! --- RECUPERE LA TOPOLOGIE DU CHAM_ELEM_S MODELE
-    nbma = zi(jchsd-1+1)
+    nbma = cesd(1)
     call wkvect(wk1, 'V V I', nbma, j1)
     call wkvect(wk2, 'V V I', nbma, j2)
     do 10 ima = 1, nbma
-        zi(j1-1+ima) = zi(jchsd-1+5+4*(ima-1)+1)
-        zi(j2-1+ima) = zi(jchsd-1+5+4*(ima-1)+2)
+        zi(j1-1+ima) = cesd(5+4*(ima-1)+1)
+        zi(j2-1+ima) = cesd(5+4*(ima-1)+2)
 10  end do
 !
 ! --- VECTEUR DES COMPOSANTES
@@ -95,7 +97,7 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
     endif
 !
 ! --- APPEL A CESCRE
-    call cescre(base, ces, typces, zk8(jchsk-1+1), nomgd,&
+    call cescre(base, ces, typces, cesk(1), nomgd,&
                 ncmpg, zk8(jcmps), zi(j1), zi(j2), [-ncmpg])
 !
 ! --- MENAGE

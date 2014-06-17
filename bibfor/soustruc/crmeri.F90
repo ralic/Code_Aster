@@ -63,16 +63,22 @@ subroutine crmeri(promes, iakpee)
     character(len=24) :: vnoeud, vrange, basepr, noeums, baseit, vsu, mesint
     character(len=24) :: modid, mestit, vref, refms
 !
-    integer :: nbmesu, nbvecb, nbord, iadesm, isol, affici(2)
-    integer :: lord, lred, lrange, lint, ier, iposi, ipuls, ltitp, lmasg
+    integer :: nbmesu, nbvecb, nbord,  isol, affici(2)
+    integer ::  lred, lrange, lint, ier, iposi, ipuls, ltitp, lmasg
     integer :: imod, jmod, iret, llncmp, iddl, lmesu, jddl, iexist, lomeg2
     integer :: iposj, ino, nddle, nddli, ico, ipos, ifres
-    integer :: lnoeud, ltrav, lredi, lwks, iadeeq, lrefms, lref
-    integer :: jcnsd, jcnsc, jcnsv, jcnsk
+    integer :: lnoeud, ltrav, lredi, lwks,  lrefms, lref
+    integer ::  jcnsc
     integer :: ibid, nbcmpi, numgd, lmaelr
     integer :: lu, lvals, lv, lvsu
 !
     real(kind=8) :: omega2, masg, eps, eps1
+    integer, pointer :: desm(:) => null()
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: ordr(:) => null()
+    integer, pointer :: cnsd(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,9 +107,9 @@ subroutine crmeri(promes, iakpee)
 ! RECUPERATION DES ELEMENTS RELATIFS AU MACRO ELEMENT
     noresu = nomres
     nu = noresu(1:14)//'.NUME'
-    call jeveuo(nomres//'.DESM', 'L', iadesm)
-    nddle = zi(iadesm-1+4)
-    nddli = zi(iadesm-1+5)
+    call jeveuo(nomres//'.DESM', 'L', vi=desm)
+    nddle = desm(4)
+    nddli = desm(5)
 !
     baseit = nomres//'.PROJM    .PJMBP'
     vsu = nomres//'.PROJM    .PJMIG'
@@ -147,11 +153,11 @@ subroutine crmeri(promes, iakpee)
         call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
 !
         call wkvect(baseit, 'G V R', nddle*nbvecb, lredi)
-        call jeveuo(basemo//'           .ORDR', 'L', lord)
+        call jeveuo(basemo//'           .ORDR', 'L', vi=ordr)
         ch1s='&BASEIT.CH1S'
 !
         do imod = 1, nbvecb
-            call rsexch('F', basemo, nomchp, zi(lord-1+imod), chamno,&
+            call rsexch('F', basemo, nomchp, ordr(imod), chamno,&
                         iret)
 !
 ! TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CH1S
@@ -159,13 +165,13 @@ subroutine crmeri(promes, iakpee)
             call cnocns(chamno, 'V', ch1s)
 !
 ! RECUPERATION DU CHAMP AU NOEUD
-            call jeveuo(ch1s//'.CNSK', 'L', jcnsk)
-            call jeveuo(ch1s//'.CNSD', 'L', jcnsd)
+            call jeveuo(ch1s//'.CNSK', 'L', vk8=cnsk)
+            call jeveuo(ch1s//'.CNSD', 'L', vi=cnsd)
             call jeveuo(ch1s//'.CNSC', 'L', jcnsc)
-            call jeveuo(ch1s//'.CNSV', 'L', jcnsv)
+            call jeveuo(ch1s//'.CNSV', 'L', vr=cnsv)
 !
-            nbcmpi = zi(jcnsd-1 + 2)
-            nomgd = zk8(jcnsk-1 + 2)
+            nbcmpi = cnsd(2)
+            nomgd = cnsk(2)
 !
             call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), numgd)
             call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', llncmp)
@@ -180,18 +186,18 @@ subroutine crmeri(promes, iakpee)
 !
 ! RECUPERATION DE LA NUMEROTATION DES DDL EXTERIEUR
 !
-            call jeveuo(nu//'.DEEQ', 'L', iadeeq)
+            call jeveuo(nu//'.DEEQ', 'L', vi=deeq)
 !
             do iddl = 1, nddle
-                ino=zi(iadeeq-1+nddli*2+(iddl-1)*2+1)
-                ico=zi(iadeeq-1+nddli*2+(iddl-1)*2+2)
+                ino=deeq(nddli*2+(iddl-1)*2+1)
+                ico=deeq(nddli*2+(iddl-1)*2+2)
                 if (imod .eq. 1) then
                     typ=zk8(llncmp-1+ico)
                     zi(lnoeud-1+iddl) = ino
                     zk8(lrange-1+iddl) = typ
                 endif
                 ipos = (imod-1)*nddle + iddl
-                zr(lredi-1 +ipos) = zr(jcnsv-1 +(ino-1)*nbcmpi+ico)
+                zr(lredi-1 +ipos) = cnsv((ino-1)*nbcmpi+ico)
             end do
 !
         end do

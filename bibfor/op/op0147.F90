@@ -47,8 +47,9 @@ subroutine op0147()
     character(len=16) :: concep, cmd
     character(len=19) :: base
     character(len=24) :: freq, masg, vite, numo, nomobj, chnumi
-    integer :: lnumi, lrefe, lrefes
+    integer :: lnumi,  lrefes
     real(kind=8) :: epsi, val, vitef
+    character(len=16), pointer :: refe(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -129,8 +130,8 @@ subroutine op0147()
     call getvtx(' ', 'OPTION', scal=option)
     if (option(1:4) .eq. 'DIAG') casint = .false.
 !
-    call jeveuo(table//'.REFE', 'L', lrefe)
-    if (zk16(lrefe+1)(1:4) .eq. 'DIAG' .and. casint) then
+    call jeveuo(table//'.REFE', 'L', vk16=refe)
+    if (refe(2)(1:4) .eq. 'DIAG' .and. casint) then
         call utmess('F', 'MODELISA5_79')
     endif
 !

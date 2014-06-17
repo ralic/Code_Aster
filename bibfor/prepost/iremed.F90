@@ -76,11 +76,12 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
     character(len=64) :: nommed, nochmd
 !
     integer :: numord, isy, iordr, iret, ibid, codret, nbcham
-    integer :: lnochm, i, cresav, nbcmdu, jnosym, ierd, jcelk
+    integer :: lnochm, i, cresav, nbcmdu, jnosym, ierd
     integer :: jnocha, jliord, nbordr, nbrcmp, jnocmp
 !
     logical :: lfirst
     integer, pointer :: numcmp(:) => null()
+    character(len=24), pointer :: celk(:) => null()
     parameter   (cesnsp = '&&IREMED.CANBSP')
     parameter   (cescoq = '&&IREMED.CARCOQUE')
     parameter   (cesfib = '&&IREMED.CAFIBR')
@@ -253,8 +254,8 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !         -- TRAITEMENT SPECIFIQUE POUR LES CHAMPS ISSUE DE PROJ_CHAMP
 !            METHODE='SOUS_POINT'
             if (typech .eq. 'ELGA') then
-                call jeveuo(cham19//'.CELK', 'L', jcelk)
-                if (zk24(jcelk+1) .eq. 'INI_SP_MATER') then
+                call jeveuo(cham19//'.CELK', 'L', vk24=celk)
+                if (celk(2) .eq. 'INI_SP_MATER') then
                     call utmess('A', 'MED2_9', sk=nosy16)
                     codret = 0
                     goto 999

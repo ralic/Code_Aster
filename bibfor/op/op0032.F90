@@ -62,10 +62,10 @@ subroutine op0032()
 #include "asterfort/wkvect.h"
     mpi_int :: mpicow, mpicou, mrang, mnbproc
     integer :: rang, nbproc
-    integer :: islvk, islvi, jrefa, itest, nmultc, lamor, jlmod, jlmoe, pivot1
+    integer ::  islvi, jrefa, itest, nmultc, lamor, jlmod, jlmoe, pivot1
     integer :: pivot2, mxddl, nbrss, ierd, ii, ifapm, k, nbmod, nblagr, nbcine
     integer :: neqact, neq, niterc, npivot(2), l, lmasse, lraide, lddl
-    integer :: ldynam, nk, nbrow, lprod, iret, nbfreq, krefa, idet(2), jstu
+    integer :: ldynam, nk, nbrow, lprod, iret, nbfreq,  idet(2), jstu
     integer :: vali(4), ifm, niv, nbtetc, nbtet0, nbtet1, typeco
     integer :: nbtet2, nbev0, nbev1, nbev2, miterc, ibid, k1, k2
     integer :: jkpar, l1, l2, l3, l11, l21, frecou, izero
@@ -83,6 +83,8 @@ subroutine op0032()
     character(len=19) :: masse, raide, dynam, solveu, amor, matref
     character(len=24) :: valk(4), metres, k24rc, kbid, k24mod, k24stu, k24moe
     character(len=24) :: k24par
+    character(len=24), pointer :: slvk(:) => null()
+    character(len=24), pointer :: nkrefa(:) => null()
     parameter   ( mxddl=1,miterc=10000,nmultc=2)
 !     ------------------------------------------------------------------
 !
@@ -207,9 +209,9 @@ subroutine op0032()
     call jeveuo(raide//'.REFA', 'L', jrefa)
     solveu='&&OP0032.SOLVEUR'
     call cresol(solveu)
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     call jeveuo(solveu//'.SLVI', 'L', islvi)
-    metres=zk24(islvk)
+    metres=slvk(1)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
         (metres(1:5).ne.'MUMPS')) then
         call utmess('F', 'ALGELINE5_71')
@@ -405,8 +407,8 @@ subroutine op0032()
 !     --- IF APM TEST, DYNAM'TYPE IS ALWAYS COMPLEX.            ---
             call mtdefs(dynam, matref, 'V', 'C')
         endif
-        call jeveuo(dynam(1:19)//'.REFA', 'E', krefa)
-        zk24(krefa-1+7)=solveu
+        call jeveuo(dynam(1:19)//'.REFA', 'E', vk24=nkrefa)
+        nkrefa(7)=solveu
         call mtdscr(dynam)
         call jeveuo(dynam(1:19)//'.&INT', 'E', ldynam)
     endif

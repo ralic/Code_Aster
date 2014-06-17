@@ -69,9 +69,13 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 ! TESTS PRELIMINAIRES : NUMERO DE COMPOSANTE A TRAITER
 !
 !-----------------------------------------------------------------------
-    integer :: iadg1, iaval1, iaval2, ieq1, ieq2, igeom1
-    integer :: igeom2, inueq1, inueq2, iprn1, iprn2, ival1, ival2
+    integer :: iadg1,   ieq1, ieq2, igeom1
+    integer :: igeom2,   iprn1, iprn2, ival1, ival2
     integer :: nbid, nbno1, nbno2, ncmp2, nec1, nec2, neq
+    real(kind=8), pointer :: val1(:) => null()
+    real(kind=8), pointer :: val2(:) => null()
+    integer, pointer :: nueq1(:) => null()
+    integer, pointer :: nueq2(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -123,11 +127,11 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
     call dismoi('NB_EC', gd1, 'GRANDEUR', repi=nec1)
     call dismoi('NB_EC', gd2, 'GRANDEUR', repi=nec2)
 !
-    call jeveuo(pchno1//'.NUEQ', 'L', inueq1)
-    call jeveuo(pchno2//'.NUEQ', 'L', inueq2)
+    call jeveuo(pchno1//'.NUEQ', 'L', vi=nueq1)
+    call jeveuo(pchno2//'.NUEQ', 'L', vi=nueq2)
 !
-    call jeveuo(cn1//'.VALE', 'L', iaval1)
-    call jeveuo(cn2//'.VALE', 'E', iaval2)
+    call jeveuo(cn1//'.VALE', 'L', vr=val1)
+    call jeveuo(cn2//'.VALE', 'E', vr=val2)
 !
 !
     call jeveuo(ma2//'.COORDO    .VALE', 'L', igeom2)
@@ -145,7 +149,7 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
         if (ncmp2 .eq. 0) goto 20
 !
         ival2 = zi(iprn2-1+(zi(icor(1)+ino1-1)-1)* (nec2+2)+1)
-        ieq2 = zi(inueq2-1+ival2-1+1)
+        ieq2 = nueq2(ival2-1+1)
 !
         ival1 = zi(iprn1-1+ (ino1-1)* (nec1+2)+1)
         iadg1 = iprn1 - 1 + (ino1-1)* (nec1+2) + 3
@@ -158,13 +162,13 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !
         if (test) then
 !
-            ieq1 = zi(inueq1-1+ival1-1+nocmp)
+            ieq1 = nueq1(ival1-1+nocmp)
 !
 ! RECOPIE DE LA VALEUR DE DX, DY
 ! OU DZ DANS LA CMP DE TEMP DE CN2 DU NOEUD
 ! GEOMETRIQUEMENT COINCIDENT
 !
-            zr(iaval2-1+ieq2) = zr(iaval1-1+ieq1)
+            val2(ieq2) = val1(ieq1)
             goto 20
 !
         endif
@@ -180,7 +184,7 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
             if (ncmp2 .eq. 0) goto 10
 !
             ival2 = zi(iprn2-1+(zi(icor(2)+ino1-1)-1)* (nec2+2)+1)
-            ieq2 = zi(inueq2-1+ival2-1+1)
+            ieq2 = nueq2(ival2-1+1)
 !
             ival1 = zi(iprn1-1+ (ino1-1)* (nec1+2)+1)
             iadg1 = iprn1 - 1 + (ino1-1)* (nec1+2) + 3
@@ -193,13 +197,13 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !
             if (test) then
 !
-                ieq1 = zi(inueq1-1+ival1-1+nocmp)
+                ieq1 = nueq1(ival1-1+nocmp)
 !
 ! RECOPIE DE LA VALEUR DE DX, DY
 ! OU DZ DANS LA CMP DE TEMP DE CN2 DU NOEUD
 ! GEOMETRIQUEMENT COINCIDENT
 !
-                zr(iaval2-1+ieq2) = zr(iaval1-1+ieq1)
+                val2(ieq2) = val1(ieq1)
                 goto 10
 !
             endif

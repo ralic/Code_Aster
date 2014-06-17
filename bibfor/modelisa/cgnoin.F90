@@ -52,7 +52,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 ! -------------------------------------------------------
 !
     integer :: nbmc, nbno1, jma1, nbno2, jno2
-    integer :: n1,  jpjnb
+    integer :: n1
     integer :: ino2, jlisno, i, ibid, iret
     complex(kind=8) :: c16b
     character(len=8) :: noma2, k8bid, ncas, noma1
@@ -64,6 +64,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     logical :: ldmax
     real(kind=8) :: distma, armin, r8b
     integer, pointer :: litrav(:) => null()
+    integer, pointer :: pjef_nb(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -146,12 +147,12 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !     --------------------------------------------------------
     call dismoi('NB_NO_MAILLA', noma2, 'MAILLAGE', repi=nbno2)
     AS_ALLOCATE(vi=litrav, size=nbno2)
-    call jeveuo(corres//'.PJEF_NB', 'L', jpjnb)
+    call jeveuo(corres//'.PJEF_NB', 'L', vi=pjef_nb)
 !
 !
     nbno=0
     do ino2 = 1, nbno2
-        if (zi(jpjnb-1+ino2) .gt. 0) then
+        if (pjef_nb(ino2) .gt. 0) then
             nbno=nbno+1
             litrav(nbno)=ino2
         endif

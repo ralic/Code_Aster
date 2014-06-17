@@ -72,13 +72,18 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
     integer :: i, iad, ibid, icomp, iddi, idi, idia
     integer :: idiam, idicou, ier, ii, inum, iorc, iormo
     integer :: j, jj, ldfre, ldkge, ldmge, ldom2, ldomo
-    integer :: ldotm, ldtyd, llcham, lldesc, lldiam, llfreq, llmoc
-    integer :: llnsec, llnumi, lmass, ltetgd, ltora, ltord
+    integer :: ldotm, ldtyd, llcham,    llmoc
+    integer ::   lmass, ltetgd, ltora, ltord
     integer :: ltorf, ltorg, ltorto, ltveco, ltvere, ltvezt, mdiapa
     integer :: nbdax, nbddg, nbddr, nbdia, nbmoc, nbmod, nbmor
     integer :: nborc, nbsec, nbtmp, neq, numa, numd, numg
     integer :: numsec
     real(kind=8) :: aaa, bbb, betsec
+    integer, pointer :: cycl_diam(:) => null()
+    integer, pointer :: cycl_nuin(:) => null()
+    integer, pointer :: cycl_desc(:) => null()
+    integer, pointer :: cycl_nbsc(:) => null()
+    real(kind=8), pointer :: cycl_freq(:) => null()
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
     data typsup /'MODE_MECA       '/
@@ -99,20 +104,20 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
 !
 !--------------------------RECUPERATION DU .DESC------------------------
 !
-    call jeveuo(modcyc//'.CYCL_DESC', 'L', lldesc)
-    nbmod = zi(lldesc)
-    nbddr = zi(lldesc+1)
-    nbdax = zi(lldesc+2)
+    call jeveuo(modcyc//'.CYCL_DESC', 'L', vi=cycl_desc)
+    nbmod = cycl_desc(1)
+    nbddr = cycl_desc(2)
+    nbdax = cycl_desc(3)
 !
 !-------------------RECUPERATION DU NOMBRE DE SECTEUR-------------------
 !
-    call jeveuo(modcyc//'.CYCL_NBSC', 'L', llnsec)
-    nbsec = zi(llnsec)
+    call jeveuo(modcyc//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+    nbsec = cycl_nbsc(1)
     mdiapa = int(nbsec/2)*(1-nbsec+(2*int(nbsec/2)))
 !
 !------------------RECUPERATION DES NOMBRES DE DIAMETRES MODAUX---------
 !
-    call jeveuo(modcyc//'.CYCL_DIAM', 'L', lldiam)
+    call jeveuo(modcyc//'.CYCL_DIAM', 'L', vi=cycl_diam)
     call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia)
     nbdia = nbdia / 2
 !
@@ -124,7 +129,7 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
 !
 !-------------RECUPERATION DES FREQUENCES-------------------------------
 !
-    call jeveuo(modcyc//'.CYCL_FREQ', 'L', llfreq)
+    call jeveuo(modcyc//'.CYCL_FREQ', 'L', vr=cycl_freq)
 !
 !----------------RECUPERATION MATRICE DE MASSE--------------------------
 !
@@ -145,10 +150,10 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
 !
 !-----------------RECUPERATION DES NUMERO D'INTERFACE-------------------
 !
-    call jeveuo(modcyc//'.CYCL_NUIN', 'L', llnumi)
-    numd = zi(llnumi)
-    numg = zi(llnumi+1)
-    numa = zi(llnumi+2)
+    call jeveuo(modcyc//'.CYCL_NUIN', 'L', vi=cycl_nuin)
+    numd = cycl_nuin(1)
+    numg = cycl_nuin(2)
+    numa = cycl_nuin(3)
 !
 !---------------RECUPERATION DU NUMERO ORDRE DES DEFORMEES--------------
 !
@@ -177,9 +182,9 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
     nbmoc = 0
     nbmor = 0
     do iddi = 1, nbdia
-        nbtmp = zi(lldiam+nbdia+iddi-1)
+        nbtmp = cycl_diam(1+nbdia+iddi-1)
         nbmoc = nbmoc + nbtmp
-        idia = zi(lldiam+iddi-1)
+        idia = cycl_diam(iddi)
         if (idia .eq. 0 .or. idia .eq. mdiapa) then
             nbmor = nbmor + nbtmp
         else
@@ -188,7 +193,7 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
     end do
     call wkvect('&&RECBEC.ORDRE.FREQ', 'V V I', nbmoc, ltorf)
     call wkvect('&&RECBEC.ORDRE.TMPO', 'V V I', nbmoc, ltorto)
-    call ordr8(zr(llfreq), nbmoc, zi(ltorto))
+    call ordr8(cycl_freq, nbmoc, zi(ltorto))
 !
 !
 !-----------------ALLOCATION STRUCTURE DE DONNEES-----------------------
@@ -203,12 +208,12 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
         icomp = 0
         idicou = 0
         do jj = 1, nbdia
-            icomp = icomp + zi(lldiam+nbdia+jj-1)
+            icomp = icomp + cycl_diam(1+nbdia+jj-1)
             if (icomp .ge. iormo .and. idicou .eq. 0) idicou = jj
         end do
         nborc = nborc + 1
         zi(ltorf+iormo-1) = nborc
-        idiam = zi(lldiam+idicou-1)
+        idiam = cycl_diam(idicou)
         if (idiam .ne. 0 .and. idiam .ne. mdiapa) nborc = nborc + 1
     end do
     call jedetr('&&RECBEC.ORDRE.TMPO')
@@ -236,7 +241,7 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
 !
 ! ----- CALCUL DU DEPHASAGE DU SECTEUR DEMANDE
 !
-        idiam = zi(lldiam+idi-1)
+        idiam = cycl_diam(idi)
         beta = (depi/nbsec)*idiam
         betsec = (numsec-1)*beta
         aaa = cos(betsec)
@@ -245,7 +250,7 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
 !
 ! ----- BOUCLE SUR LES MODE DU DIAMETRE COURANT
 !
-        do i = 1, zi(lldiam+nbdia+idi-1)
+        do i = 1, cycl_diam(1+nbdia+idi-1)
 !
             icomp = icomp + 1
             inum = inum + 1
@@ -294,10 +299,10 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
                         0, sjv=ldotm, styp=k8b)
 !
             fact = 1.d0 / (para(1)**0.5d0)
-            genek = (zr(llfreq+icomp-1)*depi)**2
+            genek = (cycl_freq(icomp)*depi)**2
             call daxpy(neq, fact, zr(ltvere), 1, zr(llcham),&
                        1)
-            zr(ldfre) = zr(llfreq+icomp-1)
+            zr(ldfre) = cycl_freq(icomp)
             zr(ldkge) = genek
             zr(ldmge) = 1.d0
             zr(ldom2) = genek
@@ -341,10 +346,10 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
                             0, sjv=ldotm, styp=k8b)
 !
                 fact = 1.d0 / (para(2)**0.5d0)
-                genek = (zr(llfreq+icomp-1)*depi)**2
+                genek = (cycl_freq(icomp)*depi)**2
                 call daxpy(neq, fact, zr(ltvere), 1, zr(llcham),&
                            1)
-                zr(ldfre) = zr(llfreq+icomp-1)
+                zr(ldfre) = cycl_freq(icomp)
                 zr(ldkge) = genek
                 zr(ldmge) = 1.d0
                 zr(ldom2) = genek

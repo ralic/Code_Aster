@@ -51,9 +51,9 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: j_vari_name, j_vari_link
+    integer :: j_vari_name
     character(len=19) :: compor_s
-    integer :: j_comp_d, j_comp_v, j_comp_l, iadc
+    integer :: j_comp_d,  j_comp_l, iadc
     integer :: nbocc, nume_elem, iocc, ivari, idummy, iret
     integer :: nb_vari, jdecal
     integer :: nb_vari_thmc, nb_vari_hydr, nb_vari_meca, nb_vari_ther
@@ -65,6 +65,8 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
     character(len=16) :: rela_thmc, rela_hydr, rela_meca, rela_ther
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
     character(len=16) :: rela_cg(2)
+    character(len=16), pointer :: cesv(:) => null()
+    integer, pointer :: link(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +84,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
         call carces(compor_cart, 'ELEM', ' ', 'V', compor_s, &
                     'A', idummy)
         call jeveuo(compor_s//'.CESD', 'L', j_comp_d)
-        call jeveuo(compor_s//'.CESV', 'L', j_comp_v)
+        call jeveuo(compor_s//'.CESV', 'L', vk16=cesv)
         call jeveuo(compor_s//'.CESL', 'L', j_comp_l)
     endif
 !
@@ -92,7 +94,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
     if (iret.eq.0) then
         nbocc = 0
     else
-        call jeveuo(list_vari_name(1:19)//'.LINK', 'L', j_vari_link)
+        call jeveuo(list_vari_name(1:19)//'.LINK', 'L', vi=link)
         call jelira(list_vari_name(1:19)//'.LINK', 'LONMAX', nbocc)
     endif
 !
@@ -102,7 +104,7 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
 !
 ! ----- Get reference element
 !
-        nume_elem = zi(j_vari_link-1+iocc)
+        nume_elem = link(iocc)
 !
 ! ----- No reference element (no affectation or external comportment) -> exit
 !
@@ -117,18 +119,18 @@ subroutine imvari(list_vari_name, compor_cart, compor_list)
             call cesexi('C', j_comp_d, j_comp_l, nume_elem, 1,&
                         1, 1, iadc)
             if (iadc .gt. 0) then
-                rela_comp = zk16(j_comp_v+iadc-2+1)
-                defo_comp = zk16(j_comp_v+iadc-2+3)
-                type_comp = zk16(j_comp_v+iadc-2+4)
-                type_cpla = zk16(j_comp_v+iadc-2+5)
-                read (zk16(j_comp_v+iadc-2+17),'(I16)') nb_vari_comp(1)
-                read (zk16(j_comp_v+iadc-2+18),'(I16)') nb_vari_comp(2)
-                read (zk16(j_comp_v+iadc-2+19),'(I16)') nb_vari_comp(3)
-                read (zk16(j_comp_v+iadc-2+20),'(I16)') nb_vari_comp(4)
-                kit_comp(1)  = zk16(j_comp_v+iadc-2+8)
-                kit_comp(2)  = zk16(j_comp_v+iadc-2+9)
-                kit_comp(3)  = zk16(j_comp_v+iadc-2+10)
-                kit_comp(4)  = zk16(j_comp_v+iadc-2+11)
+                rela_comp = cesv(1+iadc-2+1)
+                defo_comp = cesv(1+iadc-2+3)
+                type_comp = cesv(1+iadc-2+4)
+                type_cpla = cesv(1+iadc-2+5)
+                read (cesv(1+iadc-2+17),'(I16)') nb_vari_comp(1)
+                read (cesv(1+iadc-2+18),'(I16)') nb_vari_comp(2)
+                read (cesv(1+iadc-2+19),'(I16)') nb_vari_comp(3)
+                read (cesv(1+iadc-2+20),'(I16)') nb_vari_comp(4)
+                kit_comp(1)  = cesv(1+iadc-2+8)
+                kit_comp(2)  = cesv(1+iadc-2+9)
+                kit_comp(3)  = cesv(1+iadc-2+10)
+                kit_comp(4)  = cesv(1+iadc-2+11)
             endif
         elseif (present(compor_list)) then
             rela_comp = compor_list(1)

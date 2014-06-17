@@ -34,30 +34,33 @@ subroutine csmbmd(nommat, neq, vsmb)
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: jccid, ieq, jrefa, jnugl, iccid
+    integer ::  ieq,   iccid
     character(len=14) :: nu
     character(len=19) :: mat
+    character(len=24), pointer :: refa(:) => null()
+    integer, pointer :: ccid(:) => null()
+    integer, pointer :: nugl(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT
     call jemarq()
 !-----------------------------------------------------------------------
     mat = nommat
 !
-    call jeveuo(mat//'.REFA', 'L', jrefa)
-    if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
-        nu = zk24(jrefa-1+2)(1:14)
-        call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
+    call jeveuo(mat//'.REFA', 'L', vk24=refa)
+    if (refa(11) .eq. 'MATR_DISTR') then
+        nu = refa(2)(1:14)
+        call jeveuo(nu//'.NUML.NUGL', 'L', vi=nugl)
 !
         call jeexin(mat//'.CCID', iccid)
 !
         if (iccid .ne. 0) then
-            call jeveuo(mat//'.CCID', 'L', jccid)
+            call jeveuo(mat//'.CCID', 'L', vi=ccid)
             do 10 ieq = 1, neq
 !         SI LE DDL N'APPARTIENT PAS AU PROC COURANT ET QU'IL Y A
 !         UNE CHARGE CINEMATIQUE DESSUS, ON MET LE SECOND MEMBRE A ZERO
 !         SUR LE PROC COURANT POUR EVITER DES INTERFERENCES AVEC
 !         LE PROC QUI POSSEDE EFFECTIVEMENT LE DDL BLOQUE
-                if ((zi(jnugl+ieq-1).eq.0) .and. (zi(jccid-1+ieq).eq.1)) then
+                if ((nugl(ieq).eq.0) .and. (ccid(ieq).eq.1)) then
                     vsmb(ieq) = 0.d0
                 endif
 10          continue

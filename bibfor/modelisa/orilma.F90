@@ -67,7 +67,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
     integer :: ifm, niv, ima, numa, nutyma, nbnmai, numa3d, noriem, norieg
-    integer :: jtyma, jcoor, p1, p2,     jm3d, jdesm, jdes3d
+    integer ::   p1, p2,     jm3d, jdesm, jdes3d
     logical :: dime1, dime2
     character(len=2) :: kdim
     character(len=8) :: tpmail, nomail, typ3d
@@ -77,6 +77,8 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
     integer, pointer :: ori2(:) => null()
     character(len=8), pointer :: ori3(:) => null()
     character(len=8), pointer :: ori4(:) => null()
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -90,11 +92,11 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
 ! --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
 !     ---------------------------------------
-    call jeveuo(noma//'.TYPMAIL        ', 'L', jtyma)
+    call jeveuo(noma//'.TYPMAIL        ', 'L', vi=typmail)
 !
 ! --- COORDONNEES DES NOEUDS DU MAILLAGE :
 !     ----------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DE LA CONNECTIVITE DES MAILLES :
 !     -------------------------------------------
@@ -122,7 +124,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !
 ! ---   TYPE DE LA MAILLE COURANTE :
 !       --------------------------
-        nutyma = zi(jtyma+numa-1)
+        nutyma = typmail(numa)
         call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), tpmail)
         ori4(ima) = tpmail
 !
@@ -151,7 +153,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
     ASSERT(kdim.ne.' ')
     nomob1 = '&&ORILMA.MAILLE_3D'
     call utmasu(noma, kdim, nbmail, listma, nomob1,&
-                zr(jcoor), nbmavo, mailvo, .false.)
+                vale, nbmavo, mailvo, .false.)
     call jeveuo(nomob1, 'L', jm3d)
 !
     norieg = 0
@@ -169,10 +171,10 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
             goto 100
         endif
         jdes3d = zi(p2+numa3d-1)
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyma+numa3d-1)), typ3d)
+        call jenuno(jexnum('&CATA.TM.NOMTM', typmail(numa3d)), typ3d)
 !
         call oriema(nomail, tpmail, nbnmai, zi(p1+jdesm-1), typ3d,&
-                    zi(p1+jdes3d-1), ndim, zr(jcoor), reorie, noriem,&
+                    zi(p1+jdes3d-1), ndim, vale, reorie, noriem,&
                     ifm, niv)
 !
         norieg = norieg + noriem

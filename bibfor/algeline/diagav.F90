@@ -25,6 +25,10 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
 !     OUT : EPS    : 'EPSILON' TEL QU'UN TERME DIAGONAL APRES
 !                    FACTORISATION SERA CONSIDERE COMME NUL
 !     ------------------------------------------------------------------
+
+! C9991 : a cause du compilo gfortran 4.4.5 qui se plante
+! aslint: disable=C9991
+
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8maem.h"
@@ -47,8 +51,11 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     character(len=1) :: base
     character(len=4) :: kmpic
     real(kind=8) :: eps, diamax, diamin, vabs
-    integer :: neq, ilfin, typvar, ifm, niv, iret, iadigs, jrefa
-    integer :: jsxdi, jscbl, jscib, nbbloc, ibloc, iavale, idern, iprem, i
+    integer :: neq, ilfin, typvar, ifm, niv, iret, iadigs
+    integer :: jsxdi,   nbbloc, ibloc, iavale, idern, iprem, i
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: scib(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
 !
 !
@@ -59,9 +66,9 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     if (kmpic .ne. 'OUI') then
         call utmess('F', 'CALCULEL6_54')
     endif
-    call jeveuo(noma19//'.REFA', 'L', jrefa)
+    call jeveuo(noma19//'.REFA', 'L', vk24=refa)
     call jelira(noma19//'.REFA', 'CLAS', cval=base)
-    ASSERT(zk24(jrefa-1+3).ne.'ELIML')
+    ASSERT(refa(3).ne.'ELIML')
 !
 !
 !     -- ALLOCATION ET CALCUL DE L'OBJET .DIGS :
@@ -103,14 +110,14 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
 !     ---------------------------------------------
     ASSERT((noma19.eq.'&&OP0070.RESOC.MATC') .or. (noma19.eq.'&&OP0070.RESUC.MATC'))
     call jeveuo(nu//'.SLCS.SCDI', 'L', jsxdi)
-    call jeveuo(nu//'.SLCS.SCBL', 'L', jscbl)
-    call jeveuo(nu//'.SLCS.SCIB', 'L', jscib)
-    nbbloc = zi(jscib-1+ilfin)
+    call jeveuo(nu//'.SLCS.SCBL', 'L', vi=scbl)
+    call jeveuo(nu//'.SLCS.SCIB', 'L', vi=scib)
+    nbbloc = scib(ilfin)
     do ibloc = 1, nbbloc
         call jeveuo(jexnum(noma19//'.UALF', ibloc), 'L', iavale)
-        idern = zi(jscbl-1+ibloc+1)
+        idern = scbl(ibloc+1)
         ASSERT(idern.le.neq)
-        iprem = zi(jscbl-1+ibloc) + 1
+        iprem = scbl(ibloc) + 1
         if (typvar .eq. 1) then
             do i = iprem, idern
                 zr(iadigs-1+i) = zr(iavale-1+zi(jsxdi+i-1))

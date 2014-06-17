@@ -59,8 +59,8 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 !                            3 : PLUSIEURS LIGNES TROUVEES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, nbpu
-    integer :: jtblp, i, j, k, n, jvale, itrouv
+    integer :: iret, nbpara, nblign,  nbpu
+    integer ::  i, j, k, n, jvale, itrouv
     integer :: ki, kr, kc, k8, jvall
     real(kind=8) :: refr, xr, epsi
     complex(kind=8) :: refc, xc
@@ -69,6 +69,8 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     logical :: lok
     integer, pointer :: numero(:) => null()
+    integer, pointer :: tbnp(:) => null()
+    character(len=24), pointer :: tblp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -87,9 +89,9 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
         call utmess('F', 'UTILITAI4_64')
     endif
 !
-    call jeveuo(nomtab//'.TBNP', 'E', jtbnp)
-    nbpara = zi(jtbnp )
-    nblign = zi(jtbnp+1)
+    call jeveuo(nomtab//'.TBNP', 'E', vi=tbnp)
+    nbpara = tbnp(1)
+    nblign = tbnp(2)
     if (nbpara .eq. 0) then
         call utmess('F', 'UTILITAI4_65')
     endif
@@ -97,14 +99,14 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
         call utmess('F', 'UTILITAI4_66')
     endif
 !
-    call jeveuo(nomtab//'.TBLP', 'L', jtblp)
+    call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
 !
 !     --- VERIFICATION QUE LES PARAMETRES EXISTENT DANS LA TABLE ---
 !
     do 10 i = 1, npacri
         inpar = lipacr(i)
         do 12 j = 1, nbpara
-            jnpar = zk24(jtblp+4*(j-1))
+            jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) goto 10
 12      continue
         ier = 1
@@ -112,14 +114,14 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 10  end do
     inpar = para
     do 14 j = 1, nbpara
-        jnpar = zk24(jtblp+4*(j-1))
+        jnpar = tblp(1+4*(j-1))
         if (inpar .eq. jnpar) goto 16
 14  end do
     ier = 1
     goto 9999
 16  continue
 !
-    nomjv = zk24(jtblp+2)
+    nomjv = tblp(3)
     call jelira(nomjv, 'LONUTI', nbpu)
     AS_ALLOCATE(vi=numero, size=nbpu)
     do 18 i = 1, nbpu
@@ -134,11 +136,11 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
         itrouv = 0
         inpar = lipacr(i)
         do 22 j = 1, nbpara
-            jnpar = zk24(jtblp+4*(j-1))
+            jnpar = tblp(1+4*(j-1))
             if (inpar .eq. jnpar) then
-                type = zk24(jtblp+4*(j-1)+1)
-                nomjv = zk24(jtblp+4*(j-1)+2)
-                nomjvl = zk24(jtblp+4*(j-1)+3)
+                type = tblp(1+4*(j-1)+1)
+                nomjv = tblp(1+4*(j-1)+2)
+                nomjvl = tblp(1+4*(j-1)+3)
                 call jeveuo(nomjv, 'L', jvale)
                 call jeveuo(nomjvl, 'L', jvall)
                 if (type(1:1) .eq. 'I') then
@@ -254,11 +256,11 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
     itrouv = 0
     inpar = para
     do 40 j = 1, nbpara
-        jnpar = zk24(jtblp+4*(j-1))
+        jnpar = tblp(1+4*(j-1))
         if (inpar .eq. jnpar) then
-            type = zk24(jtblp+4*(j-1)+1)
-            nomjv = zk24(jtblp+4*(j-1)+2)
-            nomjvl = zk24(jtblp+4*(j-1)+3)
+            type = tblp(1+4*(j-1)+1)
+            nomjv = tblp(1+4*(j-1)+2)
+            nomjvl = tblp(1+4*(j-1)+3)
             call jeveuo(nomjv, 'L', jvale)
             call jeveuo(nomjvl, 'L', jvall)
             if (type(1:1) .eq. 'I') then

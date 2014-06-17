@@ -54,7 +54,7 @@ subroutine speph0(nomu, table)
     integer ::  nbmail, i,   inoeud, iddl, nupo, ivari, napex1
     integer :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
     integer :: isip, icham, nbn1, nbn2, tmod(1)
-    integer :: i1, lnumi, lnumj, mxval, lrefe, lfreq, lrefes, lfreqs
+    integer :: i1, lnumi, lnumj, mxval,  lfreq, lrefes, lfreqs
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
     logical :: intmod, intphy, intdon
@@ -71,6 +71,7 @@ subroutine speph0(nomu, table)
     character(len=8), pointer :: nocmp_rep(:) => null()
     character(len=8), pointer :: noeud_rep(:) => null()
     integer, pointer :: nume_ddl(:) => null()
+    character(len=16), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -163,7 +164,7 @@ subroutine speph0(nomu, table)
     call jeveuo(chnumj, 'L', lnumj)
     call jeveuo(chfreq, 'L', lfreq)
     call jelira(chnumi, 'LONMAX', mxval)
-    call jeveuo(table//'.REFE', 'L', lrefe)
+    call jeveuo(table//'.REFE', 'L', vk16=refe)
     idim0 = 0
     do i1 = 1, mxval
         if (zi(lnumi-1+i1) .ge. idim0) then
@@ -181,7 +182,7 @@ subroutine speph0(nomu, table)
 !
 !     --- VERIFICATION DES DONNEES INTERSPECTRE ---
 !
-    nocham = zk16(lrefe)
+    nocham = refe(1)
 !
     if (nocham .eq. 'ACCE_GENE') then
         if (optcha(1:4) .eq. 'ACCE') then
@@ -284,7 +285,7 @@ subroutine speph0(nomu, table)
 ! --- CARACTERISATION DU CONTENU DE LA TABLE   ---
 ! --- INTERSPECTRES OU AUTOSPECTRES UNIQUEMENT ---
 !
-    option = zk16(lrefe+1)
+    option = refe(2)
 !
     intdon = .true.
     if (option(1:4) .eq. 'DIAG') intdon = .false.

@@ -79,12 +79,14 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     character(len=24) :: objve3, objve4
     logical :: tousno, leffor, prems
     integer :: inocmp, inoecp, inumno, inuddl
-    integer :: j, jc, i, iadesc, iarchi, ich
+    integer :: j, jc, i,  iarchi, ich
     integer ::  idvecg, iret, iretou, jfreq
     integer :: jnume, lfreq, llcha, lvale, nbcham, nbinsg
-    integer :: n1, n2, n3, n4, j3refe, idec, idefm, idinsg, idresu
+    integer :: n1, n2, n3, n4,  idec, idefm, idinsg, idresu
     integer :: nbfreq, neq, nbnoeu, ncmp
     real(kind=8), pointer :: base(:) => null()
+    character(len=24), pointer :: refn(:) => null()
+    integer, pointer :: desc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ------------------------------------------------------------------
     data chamno   /'&&HARM75.CHAMNO'/
@@ -139,9 +141,9 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !     --- RECUPERATION DE LA BASE MODALE ---
 ! ON SUPPOSE QU ELLE EST ISSUE D UN MODE_MECA
 !
-    call jeveuo(hrange//'.DESC', 'L', iadesc)
+    call jeveuo(hrange//'.DESC', 'L', vi=desc)
 !
-    nbmode = zi(iadesc+1)
+    nbmode = desc(2)
 !
     if (mode .eq. ' ') then
 !
@@ -171,8 +173,8 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                 numddl = matric(1:8)
             endif
             prchno=numddl//'.NUME'
-            call jeveuo(numddl//'.NUME.REFN', 'L', j3refe)
-            matric = zk24(j3refe)
+            call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
+            matric = refn(1)
             mailla = matric(1:8)
             call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
             if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)

@@ -60,7 +60,8 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
     character(len=24) :: ligrmo, ligrch, lchin(15), lchout(10)
     character(len=24) :: chgeom, chcara(18), chharm
 !-----------------------------------------------------------------------
-    integer :: iarefe, icha, icode, ilires, iret, iret1
+    integer ::  icha, icode, ilires, iret, iret1
+    character(len=24), pointer :: rerr(:) => null()
 !-----------------------------------------------------------------------
     data chvarc /'&&MERIFS.CHVARC'/
 !
@@ -75,8 +76,8 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
     call memare('G', matel, modele, mate, cara,&
                 option)
 !     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
-    call jeveuo(matel//'.RERR', 'E', iarefe)
-    zk24(iarefe-1+3) (1:3) = 'OUI'
+    call jeveuo(matel//'.RERR', 'E', vk24=rerr)
+    rerr(3) (1:3) = 'OUI'
 !
     call jeexin(matel//'.RELR', iret1)
     if (iret1 .gt. 0) call jedetr(matel//'.RELR')

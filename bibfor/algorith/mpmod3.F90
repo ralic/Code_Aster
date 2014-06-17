@@ -71,8 +71,8 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     integer :: lord, lori, lrange, lref
     integer :: imesu, ii, imode, iret, nbord, tmod(1)
     integer :: icmp, ino, inomes, inocap
-    integer :: lnoeud, idesc, gd, nbnoeu, nbcmp
-    integer :: jcnsd, jcnsc, jcnsv, jcnsl, jcnsk
+    integer :: lnoeud,  gd, nbnoeu, nbcmp
+    integer :: jcnsd, jcnsc, jcnsv, jcnsl
     integer :: ibid, indice, nbcham, lch, ich, lcham
 !
     logical :: zcmplx, orien, dcapt
@@ -80,6 +80,8 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     real(kind=8) :: val, rbid
 !
     complex(kind=8) :: cbid
+    integer, pointer :: desc(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -162,8 +164,8 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
         call rsexch('F', nommes, nomcha, zi(lord), chamno,&
                     iret)
 !
-        call jeveuo(chamno//'.DESC', 'L', idesc)
-        gd = zi(idesc-1 +1)
+        call jeveuo(chamno//'.DESC', 'L', vi=desc)
+        gd = desc(1)
         scal = scalai(gd)
         typval = scal(1:1)
         if (typval .eq. 'C') then
@@ -174,7 +176,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
 ! TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS
         call cnocns(chamno, 'V', chs)
-        call jeveuo(chs//'.CNSK', 'L', jcnsk)
+        call jeveuo(chs//'.CNSK', 'L', vk8=cnsk)
         call jeveuo(chs//'.CNSD', 'L', jcnsd)
         call jeveuo(chs//'.CNSC', 'L', jcnsc)
         call jeveuo(chs//'.CNSV', 'L', jcnsv)
@@ -182,7 +184,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
 !
         nbnoeu = zi(jcnsd-1 + 1)
         nbcmp = zi(jcnsd-1 + 2)
-        nomgd = zk8(jcnsk-1 +2)
+        nomgd = cnsk(2)
 !
         if (nomgd(1:4) .eq. 'DEPL') then
 ! RECUPERATION DE L ORIENTATION

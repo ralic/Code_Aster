@@ -78,7 +78,7 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
 !
     logical :: l_macr_elem 
     logical :: matrix, vector, codint, conext
-    integer :: ires, iarefe, iret, nbin, nbout
+    integer :: ires,  iret, nbin, nbout
     character(len=24) :: caco3d
     character(len=24) :: ligrmo
     character(len=19) :: sigext, sigplu, varplu, strplu
@@ -86,6 +86,7 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
     logical :: debug
     integer :: ifmdbg, nivdbg
     integer :: ich_matrixs, ich_matrixn, ich_vector, ich_codret
+    character(len=24), pointer :: rerr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -182,8 +183,8 @@ subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
                             'RIGI_MECA')
             endif
             if (l_macr_elem) then
-                call jeveuo(merigi//'.RERR', 'E', iarefe)
-                zk24(iarefe-1+3) = 'OUI_SOUS_STRUC'
+                call jeveuo(merigi//'.RERR', 'E', vk24=rerr)
+                rerr(3) = 'OUI_SOUS_STRUC'
             endif
         endif
         call jedetr(merigi//'.RELR')

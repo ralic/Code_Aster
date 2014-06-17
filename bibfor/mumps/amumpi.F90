@@ -54,8 +54,8 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     type (cmumps_struc) , pointer :: cmpsk => null()
     type (dmumps_struc) , pointer :: dmpsk => null()
     type (zmumps_struc) , pointer :: zmpsk => null()
-    integer :: ifm, niv, i, jrefa, isymm, jslvk, isymv, isym
-    integer :: jslvi, nprec, ibid
+    integer :: ifm, niv, i,  isymm,  isymv, isym
+    integer ::  nprec, ibid
     mumps_int :: i4, icntl(nicntl)
     real(kind=8) :: cntl(ncntl), rr4max
     logical :: lbid
@@ -64,6 +64,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: kvers
+    character(len=24), pointer :: refa(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: slvi(:) => null()
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
@@ -90,10 +93,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     nosolv=nosols(kxmps)
     nonu=nonus(kxmps)
     etam=etams(kxmps)
-    call jeveuo(nomat//'.REFA', 'L', jrefa)
-    call jeveuo(nosolv//'.SLVK', 'L', jslvk)
-    call jeveuo(nosolv//'.SLVI', 'L', jslvi)
-    nprec=zi(jslvi)
+    call jeveuo(nomat//'.REFA', 'L', vk24=refa)
+    call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+    call jeveuo(nosolv//'.SLVI', 'L', vi=slvi)
+    nprec=slvi(1)
 !
 !       -----------------------------------------------------
 !        INITIALISATION SYM, PAR ET JOB POUR MUMPS (CREATION)
@@ -116,7 +119,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 ! ---     ISYM = 1 => SYMETRIQUE DEFINIE POSITIVE
 ! ---     ISYM = 2 => SYMETRIQUE  GENERAL
 ! ---     ISYMM DEDUIT DE LA MATRICE : NONSYM OU SYMGEN
-        typm=zk24(jrefa-1+9)(1:4)
+        typm=refa(9)(1:4)
         if (typm .eq. 'MR') then
             isymm=0
         else if (typm.eq.'MS') then
@@ -127,13 +130,13 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 !
 ! ---     PRISE EN COMPTE DE LA VOLONTE DE L'UTILISATEUR
 ! ---     => ISYMV
-        if (zk24(jslvk-1+3) .eq. 'NONSYM') then
+        if (slvk(3) .eq. 'NONSYM') then
             isymv=0
-        else if (zk24(jslvk-1+3).eq.'SYMDEF') then
+        else if (slvk(3).eq.'SYMDEF') then
             isymv=1
-        else if (zk24(jslvk-1+3).eq.'SYMGEN') then
+        else if (slvk(3).eq.'SYMGEN') then
             isymv=2
-        else if (zk24(jslvk-1+3).eq.'AUTO') then
+        else if (slvk(3).eq.'AUTO') then
             isymv=-1
         else
             ASSERT(.false.)
@@ -148,7 +151,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             isym=isymv
         else
             if (isymm .eq. 0) then
-                call utmess('F', 'FACTOR_56', sk=zk24(jslvk-1+3))
+                call utmess('F', 'FACTOR_56', sk=slvk(3))
             else
                 isym=isymv
             endif
@@ -205,11 +208,11 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 ! ---     FORMAT MATRICE
         icntl(5) = 0
 ! ---     PRETRAITEMENTS (SCALING/PERMUTATION)
-        if (zk24(jslvk-1+2) .eq. 'SANS') then
+        if (slvk(2) .eq. 'SANS') then
             icntl(6) = 0
             icntl(8) = 0
             icntl(12) = 1
-        else if (zk24(jslvk-1+2).eq.'AUTO') then
+        else if (slvk(2).eq.'AUTO') then
             icntl(6) = 7
             icntl(8) = 77
             icntl(12) = 0
@@ -218,19 +221,19 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         endif
 !
 ! ---     RENUMEROTATION
-        if (zk24(jslvk-1+4) .eq. 'AMD') then
+        if (slvk(4) .eq. 'AMD') then
             icntl(7) = 0
-        else if (zk24(jslvk-1+4).eq.'AMF') then
+        else if (slvk(4).eq.'AMF') then
             icntl(7) = 2
-        else if (zk24(jslvk-1+4).eq.'SCOTCH') then
+        else if (slvk(4).eq.'SCOTCH') then
             icntl(7) = 3
-        else if (zk24(jslvk-1+4).eq.'PORD') then
+        else if (slvk(4).eq.'PORD') then
             icntl(7) = 4
-        else if (zk24(jslvk-1+4).eq.'METIS') then
+        else if (slvk(4).eq.'METIS') then
             icntl(7) = 5
-        else if (zk24(jslvk-1+4).eq.'QAMD') then
+        else if (slvk(4).eq.'QAMD') then
             icntl(7) = 6
-        else if (zk24(jslvk-1+4).eq.'AUTO') then
+        else if (slvk(4).eq.'AUTO') then
             icntl(7) = 7
         else
             ASSERT(.false.)
@@ -253,7 +256,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         icntl(13) = 0
 !
 ! ---     MEMOIRE SUPPL. POUR PIVOTAGE (DEFAUT:20)
-        icntl(14) = to_mumps_int(zi(jslvi-1+2))
+        icntl(14) = to_mumps_int(slvi(2))
 !
 ! ---     PAS UTILISES
         icntl(15)=0
@@ -408,11 +411,11 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         icntl(11)=0
         cntl(2)=0.d0
         if (lquali) then
-            if (zk24(jslvk-1+11) .eq. 'SANS') then
-            else if (zk24(jslvk-1+11).eq.'AUTO') then
+            if (slvk(11) .eq. 'SANS') then
+            else if (slvk(11).eq.'AUTO') then
                 icntl(10)=4
                 cntl(2)=1.d-14
-            else if (zk24(jslvk-1+11).eq.'FORCE') then
+            else if (slvk(11).eq.'FORCE') then
                 icntl(10)=10
                 cntl(2)=10.d-50
                 if (type .eq. 'S' .or. type .eq. 'C') then

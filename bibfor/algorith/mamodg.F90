@@ -57,10 +57,10 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
-    integer :: nbpres, imatx, imaty, itxsto, itysto, itzsto, idelat
-    integer ::   itpx, itpy, ipres, iprsto, iadia, ihcol, imatz
-    integer :: iablo, irang, jrang, i, j, iblo, ldblo,  itpz, iadirg
-    integer :: iblodi, ldiabl, nbloc, n1bloc, n2bloc, nbmo, nn
+    integer :: nbpres, imatx, imaty, itxsto, itysto, itzsto
+    integer ::      iprsto,   imatz
+    integer ::  irang, jrang, i, j, iblo, ldblo,   iadirg
+    integer :: iblodi,  nbloc, n1bloc, n2bloc, nbmo, nn
     integer :: ifm, niv, iret1
     real(kind=8) :: mij, rx, ry, rz
     character(len=2) :: model
@@ -70,6 +70,15 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     real(kind=8), pointer :: vectx(:) => null()
     real(kind=8), pointer :: vecty(:) => null()
     real(kind=8), pointer :: vectz(:) => null()
+    integer, pointer :: scdi(:) => null()
+    integer, pointer :: scbl(:) => null()
+    integer, pointer :: indic(:) => null()
+    integer, pointer :: scib(:) => null()
+    integer, pointer :: schc(:) => null()
+    real(kind=8), pointer :: pres(:) => null()
+    real(kind=8), pointer :: tpx(:) => null()
+    real(kind=8), pointer :: tpy(:) => null()
+    real(kind=8), pointer :: tpz(:) => null()
 ! ------------------------------------------------------------------
 !----- ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE ---
 !
@@ -77,14 +86,14 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
     call infniv(ifm, niv)
     call getvtx(' ', 'AVEC_MODE_STAT', scal=repon, nbret=nn)
-    if (repon(1:3) .eq. 'NON') call jeveuo('&&DELAT.INDIC', 'L', idelat)
+    if (repon(1:3) .eq. 'NON') call jeveuo('&&DELAT.INDIC', 'L', vi=indic)
 !
     call jeexin(stolci//'.SCHC', iret1)
     ASSERT(iret1.gt.0)
-    call jeveuo(stolci//'.SCHC', 'L', ihcol)
-    call jeveuo(stolci//'.SCDI', 'L', iadia)
-    call jeveuo(stolci//'.SCBL', 'L', iablo)
-    call jeveuo(stolci//'.SCIB', 'L', ldiabl)
+    call jeveuo(stolci//'.SCHC', 'L', vi=schc)
+    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
+    call jeveuo(stolci//'.SCBL', 'L', vi=scbl)
+    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
 !
     call jelira(zk24(iprsto)(1:19)//'.VALE', 'LONMAX', nbpres)
     AS_ALLOCATE(vr=vectx, size=nbpres)
@@ -113,36 +122,36 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
 !         BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-        n1bloc=zi(iablo+iblo-1)+1
-        n2bloc=zi(iablo+iblo)
+        n1bloc=scbl(iblo)+1
+        n2bloc=scbl(iblo+1)
 !
 !
         do 10 i = n1bloc, n2bloc
             if (i .gt. nbmo) goto 10
             if (repon(1:3) .eq. 'NON') then
-                if (zi(idelat+i-1) .ne. 1) goto 10
+                if (indic(i) .ne. 1) goto 10
             endif
-            call jeveuo(zk24(itxsto+i-1)(1:19)//'.VALE', 'L', itpx)
-            call jeveuo(zk24(itysto+i-1)(1:19)//'.VALE', 'L', itpy)
+            call jeveuo(zk24(itxsto+i-1)(1:19)//'.VALE', 'L', vr=tpx)
+            call jeveuo(zk24(itysto+i-1)(1:19)//'.VALE', 'L', vr=tpy)
             if (model .eq. '3D') then
-                call jeveuo(zk24(itzsto+i-1)(1:19)//'.VALE', 'L', itpz)
-                call mrmult('ZERO', imatz, zr(itpz), vectz, 1,&
+                call jeveuo(zk24(itzsto+i-1)(1:19)//'.VALE', 'L', vr=tpz)
+                call mrmult('ZERO', imatz, tpz, vectz, 1,&
                             .true.)
             endif
 !
 !------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 !----------ET MATRICE MAY * CHAMNO MODY------------------------------
 !
-            call mrmult('ZERO', imatx, zr(itpx), vectx, 1,&
+            call mrmult('ZERO', imatx, tpx, vectx, 1,&
                         .true.)
-            call mrmult('ZERO', imaty, zr(itpy), vecty, 1,&
+            call mrmult('ZERO', imaty, tpy, vecty, 1,&
                         .true.)
 !
 ! RANG GENERALISE DU TERME DE MASSE CALCULEE : LIGNE
 !
             irang=zi(iadirg+i-1)
 !
-            do 30 j = (i-zi(ihcol+i-1)+1), i
+            do 30 j = (i-schc(i)+1), i
 !
 !----------------------------------------------------------------
 ! ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE
@@ -150,29 +159,29 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !-----------STOCKAGE DANS LA MATR_ASSE_GENE  ------
 !
                 if (repon(1:3) .eq. 'NON') then
-                    if (zi(idelat+j-1) .ne. 1) goto 50
+                    if (indic(j) .ne. 1) goto 50
                 endif
 !
-                call jeveuo(zk24(iprsto+j-1)(1:19)//'.VALE', 'L', ipres)
+                call jeveuo(zk24(iprsto+j-1)(1:19)//'.VALE', 'L', vr=pres)
 !
-                rx= ddot(nbpres,zr(ipres), 1,vectx,1)
-                ry= ddot(nbpres,zr(ipres), 1,vecty,1)
+                rx= ddot(nbpres,pres, 1,vectx,1)
+                ry= ddot(nbpres,pres, 1,vecty,1)
 !
                 if (model .eq. '3D') then
-                    rz= ddot(nbpres,zr(ipres), 1,vectz,1)
+                    rz= ddot(nbpres,pres, 1,vectz,1)
                     mij = rx+ry+rz
                 else
                     mij = rx+ry
                 endif
 50              continue
                 if (repon(1:3) .eq. 'NON') then
-                    if (zi(idelat+j-1) .ne. 1) mij=0.d0
+                    if (indic(j) .ne. 1) mij=0.d0
                 endif
 !
 ! RANG GENERALISE DU TERME DE MASSE: COLONNE
 !
                 jrang=zi(iadirg+j-1)
-                iblodi = zi(ldiabl+irang-1)
+                iblodi = scib(irang)
 !
                 if (iblodi .ne. iblo) then
 !
@@ -180,7 +189,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
                     call jelibe(jexnum(nomres//'           .UALF', iblo))
                     call jeveuo(jexnum(nomres//'           .UALF', iblodi), 'E', ldblo)
-                    zr(ldblo+zi(iadia+irang-1)+jrang-irang-1) = mij
+                    zr(ldblo+scdi(irang)+jrang-irang-1) = mij
                     if (niv .eq. 2) then
                         write(ifm,350) irang,jrang,mij
                     endif
@@ -188,7 +197,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
                     call jeveuo(jexnum(nomres//'           .UALF', iblo), 'E', ldblo)
 !
                 else
-                    zr(ldblo+zi(iadia+irang-1)+jrang-irang-1) = mij
+                    zr(ldblo+scdi(irang)+jrang-irang-1) = mij
                     if (niv .eq. 2) then
                         write(ifm,350) irang,jrang,mij
                     endif

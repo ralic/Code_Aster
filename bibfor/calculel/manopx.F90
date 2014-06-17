@@ -77,12 +77,14 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 !
     integer :: iopt, iopt1, nute, numc, igr, nbgrel
     integer :: jecono, imolo, jmolo, nec, kfpg
-    integer :: igd, jpnlfp, nblfpg, jnolfp, nbfam, jfpgl
+    integer :: igd,  nblfpg,  nbfam, jfpgl
     integer :: k, nuflpg, nufgpg
     character(len=8) :: nomgd, elrefe, ma, mo
     character(len=16) :: nofpg, nomte
     character(len=24) :: chgeom
     character(len=32) :: noflpg
+    character(len=32), pointer :: pnlocfpg(:) => null()
+    integer, pointer :: nolocfpg(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -90,9 +92,9 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=mo)
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
 !
-    call jeveuo('&CATA.TE.PNLOCFPG', 'L', jpnlfp)
+    call jeveuo('&CATA.TE.PNLOCFPG', 'L', vk32=pnlocfpg)
     call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg)
-    call jeveuo('&CATA.TE.NOLOCFPG', 'L', jnolfp)
+    call jeveuo('&CATA.TE.NOLOCFPG', 'L', vi=nolocfpg)
 !
 !
 !     1. CALCUL DE KECONO ET EXIXFM :
@@ -130,8 +132,8 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
             elrefe=zk8(jfpgl-1+nbfam+1)
             do k = 1, nbfam
                 noflpg = nomte//elrefe//zk8(jfpgl-1+k)
-                nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
-                nufgpg = zi(jnolfp-1+nuflpg)
+                nuflpg = indk32(pnlocfpg,noflpg,1,nblfpg)
+                nufgpg = nolocfpg(nuflpg)
                 call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
                 if (nofpg(9:12) .eq. 'XFEM') then
                     exixfm='OUI'

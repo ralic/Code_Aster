@@ -60,13 +60,14 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix,&
     integer :: nbtyma, ityp, jnoeu
     parameter    ( nbtyma = 27 )
     integer :: jnomim, jnomip, jmilie, jdim, nbno, mxar
-    integer :: nbnomi, nbtot, no, jcoor, nbnomx, nbmato, jtypma, jrefe
+    integer :: nbnomi, nbtot, no, jcoor, nbnomx, nbmato, jtypma
     integer :: defare(2, 0:12, nbtyma), reftyp(nbtyma), nbref(nbtyma)
     integer :: impmai(nbtyma)
     character(len=8) :: nomnd, kbid, nomast(nbtyma)
     character(len=19) :: coordo
     character(len=24) :: nomima, milieu, nomipe, nomnoe, nomnoi
     character(len=24) :: typema, connei, conneo
+    character(len=24), pointer :: refe(:) => null()
 !
 !     MAILLES TRAITEES PAR LA COMMANDE :
 !
@@ -200,8 +201,8 @@ subroutine cmlqlq(main, maout, nbma, lima, prefix,&
 !
     coordo = maout // '.COORDO'
     call copisd('CHAMP_GD', 'G', main//'.COORDO', coordo)
-    call jeveuo(coordo//'.REFE', 'E', jrefe)
-    zk24(jrefe) = maout
+    call jeveuo(coordo//'.REFE', 'E', vk24=refe)
+    refe(1) = maout
     call juveca(coordo//'.VALE', nbtot*3)
 !
 ! --- MISE A JOUR DES NOUVEAUX NOEUDS (NOM ET COORDONNEES)

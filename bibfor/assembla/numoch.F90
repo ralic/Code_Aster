@@ -53,8 +53,9 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad, ideja, idiml, idlres, ili
+    integer ::  ideja, idiml, idlres, ili
     integer :: ilmoch, imat, iresu, iret, n1, nbresu, nlmoch
+    character(len=24), pointer :: noli(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -103,8 +104,8 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
             resu = zk24(idlres+iresu-1)
             call jeexin(resu//'.NOLI', iret)
             if (iret .eq. 0) goto 120
-            call jeveuo(resu//'.NOLI', 'L', iad)
-            nomli = zk24(iad)
+            call jeveuo(resu//'.NOLI', 'L', vk24=noli)
+            nomli = noli(1)
             ideja =0
             do ili = 1, nlmoch
                 if (nomli .eq. zk24(ilmoch-1+ili)) ideja = 1

@@ -36,11 +36,12 @@ subroutine op0130()
 #include "asterfort/pochpv.h"
 #include "asterfort/porefd.h"
 #include "asterfort/titre.h"
-    integer :: nbbloc, nbclas, n1, n2, i, jdesc, nbind
+    integer :: nbbloc, nbclas, n1, n2, i,  nbind
     real(kind=8) :: tdebut, tfin, offset, trepos
     character(len=8) :: trange, noeu, cmp, nomres
     character(len=16) :: nomcmd, concep, koptio
     logical :: loptio
+    integer, pointer :: desc(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -49,7 +50,7 @@ subroutine op0130()
     call infmaj()
 !
     call getvid(' ', 'RESU_GENE', scal=trange, nbret=n1)
-    call jeveuo(trange//'           .DESC', 'L', jdesc)
+    call jeveuo(trange//'           .DESC', 'L', vi=desc)
 !
     call getfac('CHOC', nbind)
     if (nbind .ne. 0) then
@@ -66,10 +67,10 @@ subroutine op0130()
             else
                 loptio = .false.
             endif
-            if (zi(jdesc) .eq. 2) then
+            if (desc(1) .eq. 2) then
                 call pochoc(trange, nbbloc, tdebut, tfin, offset,&
                             trepos, nbclas, nomres, loptio)
-            else if (zi(jdesc) .eq. 3) then
+            else if (desc(1) .eq. 3) then
                 call pochpv(trange, nbbloc, tdebut, tfin, offset,&
                             trepos, nbclas, nomres, loptio)
             endif
@@ -77,7 +78,7 @@ subroutine op0130()
     endif
 !
     call getfac('RELA_EFFO_DEPL', nbind)
-    if (nbind .ne. 0 .and. zi(jdesc+3) .ne. 0) then
+    if (nbind .ne. 0 .and. desc(4) .ne. 0) then
         do 20 i = 1, nbind
             call getvtx('RELA_EFFO_DEPL', 'NOEUD', iocc=i, scal=noeu, nbret=n2)
             call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', iocc=i, scal=cmp, nbret=n2)

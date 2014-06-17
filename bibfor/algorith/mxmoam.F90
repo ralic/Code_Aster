@@ -61,7 +61,6 @@ subroutine mxmoam(sddyna, nbmodp)
     integer :: nbmd, nbmg, neq, nbmax, nbrg, nbag
     integer :: nbgene
     integer :: iddeeq, jval
-    integer ::  jfge
     integer :: ldblo, ldblo1, ldblo2
     integer :: imode, ifonc, imode2
     integer :: iret, ibid, nf, lpar, vali(3)
@@ -83,6 +82,7 @@ subroutine mxmoam(sddyna, nbmodp)
     character(len=24) :: deeq
     character(len=24) :: nomcha
     character(len=24), pointer :: lifoge(:) => null()
+    real(kind=8), pointer :: fge(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -262,9 +262,9 @@ subroutine mxmoam(sddyna, nbmodp)
                             nbret=nf)
                 call getvid('EXCIT_GENE', 'VECT_GENE', iocc=ifonc, scal=lifoge(ifonc),&
                             nbret=nf)
-                call jeveuo(lifoge(ifonc)(1:19)//'.VALE', 'L', jfge)
+                call jeveuo(lifoge(ifonc)(1:19)//'.VALE', 'L', vr=fge)
                 do 12 imode = 1, nbmodp
-                    zr(jforge+(ifonc-1)*nbmodp+imode-1) = zr(jfge+ imode-1)
+                    zr(jforge+(ifonc-1)*nbmodp+imode-1) = fge(imode)
 12              continue
 11          continue
         endif

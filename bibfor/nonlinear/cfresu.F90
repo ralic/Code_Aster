@@ -98,12 +98,15 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
     character(len=24) :: jeuite
     integer :: jjeuit
     integer :: jcnsvr, jcnslr
-    integer :: jdeplu, jdepde, jddepl
+    integer :: jdeplu
     logical :: lpenac, lctfd, lpenaf
     logical :: lag2d, lcolli, laffle
     real(kind=8) :: imp, impx, impy, impz
     real(kind=8) :: eps, valras
-    integer :: jcnsvp, jcnslp
+    integer ::  jcnslp
+    real(kind=8), pointer :: cnsvp(:) => null()
+    real(kind=8), pointer :: ddepl(:) => null()
+    real(kind=8), pointer :: depde(:) => null()
     parameter    (eps=1.d-6)
 !
 ! ----------------------------------------------------------------------
@@ -185,8 +188,8 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! --- ACCES AUX CHAM_NO POUR LES DEPLACEMENTS
 !
     call jeveuo(depplu(1:19)//'.VALE', 'L', jdeplu)
-    call jeveuo(ddepla(1:19)//'.VALE', 'L', jddepl)
-    call jeveuo(depdel(1:19)//'.VALE', 'L', jdepde)
+    call jeveuo(ddepla(1:19)//'.VALE', 'L', vr=ddepl)
+    call jeveuo(depdel(1:19)//'.VALE', 'L', vr=depde)
 !
 ! --- ACCES AU CHAM_NO_S POUR LE CONTACT
 !
@@ -195,7 +198,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 !
 ! --- ACCES AU CHAM_NO_S POUR LES PERCUSSIONS
 !
-    call jeveuo(cnsper(1:19)//'.CNSV', 'E', jcnsvp)
+    call jeveuo(cnsper(1:19)//'.CNSV', 'E', vr=cnsvp)
     call jeveuo(cnsper(1:19)//'.CNSL', 'E', jcnslp)
 !
 ! --- INITIALISATIONS DES CHAM_NO_S: NOEUDS ACTIFS
@@ -208,7 +211,7 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 11      continue
         do 12 icmp = 1, zperc
             zl(jcnslp-1+zperc*(numnoe-1)+icmp) = .true.
-            zr(jcnsvp-1+zperc*(numnoe-1)+icmp) = 0.d0
+            cnsvp(zperc*(numnoe-1)+icmp) = 0.d0
 12      continue
 !
 ! ----- JEU
@@ -284,18 +287,18 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 !
 ! --- CALCUL DES GLISSEMENTS
 !
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr(jdepde),&
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), depde,&
                         val1)
-            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), zr(jddepl),&
+            call caladu(neq, nbddl, zr(japcof+jdecal), zi(japddl+jdecal), ddepl,&
                         val2)
             glix = val1 + val2
             gliy = 0.d0
 !
             if (ndimg .eq. 3) then
                 call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jdepde), val1)
+                            depde, val1)
                 call caladu(neq, nbddl, zr(japcof+jdecal+30*nesmax), zi(japddl+jdecal),&
-                            zr(jddepl), val2)
+                            ddepl, val2)
                 gliy = val1 + val2
             endif
 !
@@ -423,24 +426,24 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
             impx = 0.d0
             impy = 0.d0
             impz = 0.d0
-            zr(jcnsvp-1+zperc*(numnoe-1)+1) = 0.d0
-            zr(jcnsvp-1+zperc*(numnoe-1)+2) = 0.d0
-            zr(jcnsvp-1+zperc*(numnoe-1)+3) = 0.d0
-            zr(jcnsvp-1+zperc*(numnoe-1)+4) = 0.d0
+            cnsvp(zperc*(numnoe-1)+1) = 0.d0
+            cnsvp(zperc*(numnoe-1)+2) = 0.d0
+            cnsvp(zperc*(numnoe-1)+3) = 0.d0
+            cnsvp(zperc*(numnoe-1)+4) = 0.d0
 !
         else
 !
-            imp = zr(jcnsvp-1+zperc*(numnoe-1)+1) + r*deltat
-            zr(jcnsvp-1+zperc*(numnoe-1)+1) = imp
+            imp = cnsvp(zperc*(numnoe-1)+1) + r*deltat
+            cnsvp(zperc*(numnoe-1)+1) = imp
 !
-            impx = zr(jcnsvp-1+zperc*(numnoe-1)+2) + rx*deltat
-            zr(jcnsvp-1+zperc*(numnoe-1)+2) = impx
+            impx = cnsvp(zperc*(numnoe-1)+2) + rx*deltat
+            cnsvp(zperc*(numnoe-1)+2) = impx
 !
-            impy = zr(jcnsvp-1+zperc*(numnoe-1)+3) + ry*deltat
-            zr(jcnsvp-1+zperc*(numnoe-1)+3) = impy
+            impy = cnsvp(zperc*(numnoe-1)+3) + ry*deltat
+            cnsvp(zperc*(numnoe-1)+3) = impy
 !
-            impz = zr(jcnsvp-1+zperc*(numnoe-1)+4) + rz*deltat
-            zr(jcnsvp-1+zperc*(numnoe-1)+4) = impz
+            impz = cnsvp(zperc*(numnoe-1)+4) + rz*deltat
+            cnsvp(zperc*(numnoe-1)+4) = impz
 !
         endif
 !

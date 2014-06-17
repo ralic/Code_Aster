@@ -66,7 +66,7 @@ subroutine op0046()
 !
     integer :: ibid, nh, nbchre, n1, n4, n5, n7
     integer :: iordr, nbmax, nchar, jchar
-    integer :: iocc, nfon, iainst, iret, i, jordr, nbuti
+    integer :: iocc, nfon,  iret, i,  nbuti
     integer :: ifm, niv, ier
 !
     real(kind=8) :: temps, time, alpha
@@ -91,6 +91,8 @@ subroutine op0046()
     logical :: exipou
 !
     complex(kind=8) :: calpha
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: ordr(:) => null()
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
@@ -190,7 +192,7 @@ subroutine op0046()
         endif
     endif
 !
-    call jeveuo(listps//'           .VALE', 'L', iainst)
+    call jeveuo(listps//'           .VALE', 'L', vr=vale)
     do iordr = 1, nbmax
         call rsexch(' ', result, 'DEPL', iordr, chamgd,&
                     iret)
@@ -199,7 +201,7 @@ subroutine op0046()
         call mecham(nosy, nomode, carele, nh, chgeom,&
                     chcara, chharm, iret)
         if (iret .ne. 0) goto 13
-        time = zr(iainst-1+iordr)
+        time = vale(iordr)
         call mechti(chgeom(1:8), time, rundf, rundf, chtime)
         call vrcins(modele, mate, carele, time, chvarc(1:19),&
                     codret)
@@ -261,9 +263,9 @@ subroutine op0046()
     call gnomsd(' ', noobj, 10, 13)
     lisch2 = noobj(1:19)
     call dismoi('NB_CHAMP_UTI', result, 'RESULTAT', repi=nbuti)
-    call jeveuo(result//'           .ORDR', 'L', jordr)
+    call jeveuo(result//'           .ORDR', 'L', vi=ordr)
     do i = 1, nbuti
-        iordr=zi(jordr+i-1)
+        iordr=ordr(i)
         call rssepa(result, iordr, modele(1:8), mate(1:8), carele(1:8),&
                     lisch2(1:19))
     end do

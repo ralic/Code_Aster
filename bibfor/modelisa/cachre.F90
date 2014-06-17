@@ -54,7 +54,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 !      PARAM  : NOM DU TROISIEME "CHAMP" DE LA CARTE (F3D3D F2D3D ...)
 !      MOTCL  : MOT-CLE FACTEUR
 ! ----------------------------------------------------------------------
-    integer :: i, n, nchre, nrep, ncmp, jvalv, jncmp, iocc, nfx, nfy, nfz
+    integer :: i, n, nchre, nrep, ncmp, jvalv,  iocc, nfx, nfy, nfz
     integer :: nmx, nmy, nmz, nplan
     real(kind=8) :: fx, fy, fz, mx, my, mz, vpre
     complex(kind=8) :: cfx, cfy, cfz, cmx, cmy, cmz, cvpre
@@ -63,6 +63,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
     character(len=19) :: carte
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
+    character(len=8), pointer :: vncmp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -82,20 +83,20 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
         ASSERT(.false.)
     endif
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
+    call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
 ! --- STOCKAGE DE FORCES NULLES SUR TOUT LE MAILLAGE
 !     ET REPERE = 0.(SI 'REEL'),REPERE = 'GLOBAL' (SI FONC) ---
 !
-    zk8(jncmp-1+1) = 'FX'
-    zk8(jncmp-1+2) = 'FY'
-    zk8(jncmp-1+3) = 'FZ'
-    zk8(jncmp-1+4) = 'MX'
-    zk8(jncmp-1+5) = 'MY'
-    zk8(jncmp-1+6) = 'MZ'
-    zk8(jncmp-1+7) = 'REP'
-    zk8(jncmp-1+8) = 'PLAN'
+    vncmp(1) = 'FX'
+    vncmp(2) = 'FY'
+    vncmp(3) = 'FZ'
+    vncmp(4) = 'MX'
+    vncmp(5) = 'MY'
+    vncmp(6) = 'MZ'
+    vncmp(7) = 'REP'
+    vncmp(8) = 'PLAN'
     if (fonree(1:4) .eq. 'REEL') then
         do i = 1, 8
             zr(jvalv-1+i) = 0.d0
@@ -169,37 +170,37 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             endif
             if (nfx .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FX'
+                vncmp(ncmp) = 'FX'
                 zc(jvalv-1+ncmp) = cfx
             endif
             if (nfy .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FY'
+                vncmp(ncmp) = 'FY'
                 zc(jvalv-1+ncmp) = cfy
             endif
             if (nfz .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FZ'
+                vncmp(ncmp) = 'FZ'
                 zc(jvalv-1+ncmp) = cfz
             endif
             if (nmx .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MX'
+                vncmp(ncmp) = 'MX'
                 zc(jvalv-1+ncmp) = cmx
             endif
             if (nmy .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MY'
+                vncmp(ncmp) = 'MY'
                 zc(jvalv-1+ncmp) = cmy
             endif
             if (nmz .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MZ'
+                vncmp(ncmp) = 'MZ'
                 zc(jvalv-1+ncmp) = cmz
             endif
             if (nrep .ge. 1) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'REP'
+                vncmp(ncmp) = 'REP'
                 if (nrep .eq. 1) zc(jvalv-1+ncmp) = dcmplx(1.d0,1.d0)
                 if (nrep .eq. 2) zc(jvalv-1+ncmp) = dcmplx(2.d0,2.d0)
                 if (nrep .eq. 1) zc(jvalv-1+ncmp) = 1.d0
@@ -249,37 +250,37 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             endif
             if (nfx .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FX'
+                vncmp(ncmp) = 'FX'
                 zr(jvalv-1+ncmp) = fx
             endif
             if (nfy .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FY'
+                vncmp(ncmp) = 'FY'
                 zr(jvalv-1+ncmp) = fy
             endif
             if (nfz .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FZ'
+                vncmp(ncmp) = 'FZ'
                 zr(jvalv-1+ncmp) = fz
             endif
             if (nmx .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MX'
+                vncmp(ncmp) = 'MX'
                 zr(jvalv-1+ncmp) = mx
             endif
             if (nmy .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MY'
+                vncmp(ncmp) = 'MY'
                 zr(jvalv-1+ncmp) = my
             endif
             if (nmz .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MZ'
+                vncmp(ncmp) = 'MZ'
                 zr(jvalv-1+ncmp) = mz
             endif
             if (nrep .ge. 1) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'REP'
+                vncmp(ncmp) = 'REP'
                 if (nrep .eq. 1) zr(jvalv-1+ncmp) = 1.d0
                 if (nrep .eq. 2) zr(jvalv-1+ncmp) = 2.d0
             endif
@@ -327,37 +328,37 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             endif
             if (nfx .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FX'
+                vncmp(ncmp) = 'FX'
                 zk8(jvalv-1+ncmp) = kfx
             endif
             if (nfy .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FY'
+                vncmp(ncmp) = 'FY'
                 zk8(jvalv-1+ncmp) = kfy
             endif
             if (nfz .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'FZ'
+                vncmp(ncmp) = 'FZ'
                 zk8(jvalv-1+ncmp) = kfz
             endif
             if (nmx .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MX'
+                vncmp(ncmp) = 'MX'
                 zk8(jvalv-1+ncmp) = kmx
             endif
             if (nmy .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MY'
+                vncmp(ncmp) = 'MY'
                 zk8(jvalv-1+ncmp) = kmy
             endif
             if (nmz .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'MZ'
+                vncmp(ncmp) = 'MZ'
                 zk8(jvalv-1+ncmp) = kmz
             endif
             if (nrep .ge. 1) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'REP'
+                vncmp(ncmp) = 'REP'
                 if (nrep .eq. 1) zk8(jvalv-1+ncmp) = 'LOCAL'
                 if (nrep .eq. 2) zk8(jvalv-1+ncmp) = 'VENT'
                 if (nrep .eq. 3) zk8(jvalv-1+ncmp) = 'LOCAL_PR'
@@ -371,7 +372,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             call getvtx(motclf, 'PLAN', iocc=iocc, scal=plan, nbret=nplan)
             if (nplan .ne. 0) then
                 ncmp = ncmp + 1
-                zk8(jncmp-1+ncmp) = 'PLAN'
+                vncmp(ncmp) = 'PLAN'
                 if (fonree .eq. 'REEL') then
                     if (plan .eq. 'MAIL') then
                         zr(jvalv-1+ncmp) = dble(0)

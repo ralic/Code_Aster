@@ -69,7 +69,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     integer :: iexist
     character(len=19) :: ligrel, celmod
     character(len=19) :: field_in_s, field_neut_s, field_neut, field_neut_mod
-    integer :: jchsd, jchsc
+    integer ::  jchsc
     integer :: nb_elem, nb_cmp, nb_cmp_act
     character(len=24) :: list_cmp, list_cmp_neut, valk(3)
     integer :: j_liscmp_in, j_liscmp_ne
@@ -80,6 +80,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     integer :: icmp, nncp, iret, ibid
     character(len=16) :: option
     character(len=8) :: nopar
+    integer, pointer :: cesd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,10 +107,10 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
 ! - Create <CHAM_ELEM_S> from input field
 !
     call celces(field_in, 'V', field_in_s)
-    call jeveuo(field_in_s//'.CESD', 'L', jchsd)
+    call jeveuo(field_in_s//'.CESD', 'L', vi=cesd)
     call jeveuo(field_in_s//'.CESC', 'L', jchsc)
-    nb_elem = zi(jchsd-1+1)
-    nb_cmp = zi(jchsd-1+2)
+    nb_elem = cesd(1)
+    nb_cmp = cesd(2)
     list_cmp = field_in_s//'.CESC'
 !
 ! - <NEUT_R> components

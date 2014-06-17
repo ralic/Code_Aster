@@ -45,17 +45,19 @@ subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
 !
 !
 !
-    integer :: jgrnno, jlsn, jgrtno, i
+    integer ::   jgrtno, i
     real(kind=8) :: norm(3), tang(3), normn
     real(kind=8) :: tang2(3), normt
     real(kind=8) :: lsn1, lsn2, eps
+    real(kind=8), pointer :: grnno(:) => null()
+    real(kind=8), pointer :: lsn(:) => null()
 !
 !
-    call jeveuo(cnsln//'.CNSV', 'E', jlsn)
-    call jeveuo(grln//'.CNSV', 'E', jgrnno)
+    call jeveuo(cnsln//'.CNSV', 'E', vr=lsn)
+    call jeveuo(grln//'.CNSV', 'E', vr=grnno)
     call jeveuo(grlt//'.CNSV', 'E', jgrtno)
-    lsn1 = zr(jlsn-1+noeu1)
-    lsn2 = zr(jlsn-1+noeu2)
+    lsn1 = lsn(noeu1)
+    lsn2 = lsn(noeu2)
     eps=r8prem()
     norm(1)=0.d0
     norm(2)=0.d0
@@ -66,11 +68,11 @@ subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
 !
     if ((abs(lsn1).le.eps) .and. (abs(lsn2).le.eps)) then
         do 95 i = 1, ndim
-            norm(i) = norm(i)+ zr(jgrnno-1+ndim*(noeu1-1)+i)
+            norm(i) = norm(i)+ grnno(ndim*(noeu1-1)+i)
 95      continue
     else
         do 91 i = 1, ndim
-            norm(i) = norm(i)+ abs(lsn1)*zr(jgrnno-1+ndim*(noeu2-1)+i) + abs(lsn2)*zr(jgrnno-1+nd&
+            norm(i) = norm(i)+ abs(lsn1)*grnno(ndim*(noeu2-1)+i) + abs(lsn2)*grnno(nd&
                       &im*(noeu1-1)+i)
 91      continue
     endif

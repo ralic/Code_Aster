@@ -79,7 +79,7 @@ subroutine op0150()
     integer :: ibid, nbv, nbtrou
     integer :: nfic
     integer :: mfich, n1, precis, jinst
-    integer :: lnoma, ifm, nivinf
+    integer ::  ifm, nivinf
     real(kind=8) :: epsi
     character(len=3) :: prolz
     character(len=4) :: acce
@@ -114,6 +114,7 @@ subroutine op0150()
 !
 !
     logical :: lprem
+    character(len=8), pointer :: lgrf(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -171,8 +172,8 @@ subroutine op0150()
     call getvid(' ', 'MODELE', scal=nomo, nbret=nbv)
     if (nbv .ne. 0) then
         ligrel = nomo//'.MODELE'
-        call jeveuo(ligrel//'.LGRF', 'L', lnoma)
-        noma = zk8(lnoma)
+        call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+        noma = lgrf(1)
     endif
 !
 !     --- QUELS SONT LES INSTANTS A RELIRE ---

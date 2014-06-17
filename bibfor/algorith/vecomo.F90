@@ -73,8 +73,8 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     logical :: saut, ordre
     integer :: nbno, icrit, nliais, ldlid, llint3, llint4, iret, nbec, nbcmpm
     integer :: ival, nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, i, j, k, l
-    integer :: ibid, nbno1, nbno2, llint1, llint2, ldesc1, ldesc2, llcoo1
-    integer :: llcoo2,  llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
+    integer :: ibid, nbno1, nbno2, llint1, llint2
+    integer ::   llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
     integer :: nuno, ldac2
     parameter   (nbcmpm=10)
     character(len=4) :: nliai
@@ -89,6 +89,10 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
     real(kind=8) :: mattmp(nbcmpm, nbcmpm), difmax, lcara1, lcara2
     real(kind=8) :: matro1(nbcmpm, nbcmpm), matro2(nbcmpm, nbcmpm), seuil, dxrij
     integer, pointer :: lista(:) => null()
+    real(kind=8), pointer :: nllcoo1(:) => null()
+    real(kind=8), pointer :: nllcoo2(:) => null()
+    integer, pointer :: nldesc1(:) => null()
+    integer, pointer :: nldesc2(:) => null()
 !
 !-----------------------------------------------------------------------
     data zero /0.0d+00/
@@ -193,13 +197,13 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
     call jenonu(jexnom(lint1 //'.IDC_NOMS', intf1), ibid)
     call jeveuo(jexnum(lint1 //'.IDC_LINO', ibid), 'L', llint1)
-    call jeveuo(lint1//'.IDC_DEFO', 'L', ldesc1)
-    call jeveuo(mail1//'.COORDO    .VALE', 'L', llcoo1)
+    call jeveuo(lint1//'.IDC_DEFO', 'L', vi=nldesc1)
+    call jeveuo(mail1//'.COORDO    .VALE', 'L', vr=nllcoo1)
 !
     call jenonu(jexnom(lint2//'.IDC_NOMS', intf2), ibid)
     call jeveuo(jexnum(lint2//'.IDC_LINO', ibid), 'L', llint2)
-    call jeveuo(lint2//'.IDC_DEFO', 'L', ldesc2)
-    call jeveuo(mail2//'.COORDO    .VALE', 'L', llcoo2)
+    call jeveuo(lint2//'.IDC_DEFO', 'L', vi=nldesc2)
+    call jeveuo(mail2//'.COORDO    .VALE', 'L', vr=nllcoo2)
 !
 !     --- CONSTITUTION DE LISTA ET LISTB :
 !         LE IEME NOEUD DE L'INTERFACE DROITE A POUR VIS-A-VIS
@@ -217,10 +221,10 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !     ---RECUPERATION DES COORDONNEES DES NOEUDS DE L'INTERFACE DROITE
 !
         inu1=zi(llint1-1+i)
-        nuno1=zi(ldesc1+inu1-1)
+        nuno1=nldesc1(inu1)
 !
         do k = 1, 3
-            x1(k)=zr(llcoo1+(nuno1-1)*3+k-1)
+            x1(k)=nllcoo1(1+(nuno1-1)*3+k-1)
         end do
         do k = 1, 3
             xr1(k)=0.d0
@@ -235,11 +239,11 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !       ---RECUPERATION DES COORDONNEES DES NOEUDS DE L'INTERFACE GAUCHE
 !
             inu2=zi(llint2-1+j)
-            nuno2=zi(ldesc2+inu2-1)
+            nuno2=nldesc2(inu2)
 !
             saut = .false.
             do k = 1, 3
-                x2(k)=zr(llcoo2+(nuno2-1)*3+k-1)
+                x2(k)=nllcoo2(1+(nuno2-1)*3+k-1)
             end do
             do k = 1, 3
                 xr2(k)=0.d0
@@ -299,13 +303,13 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !        --- CAS OU JNODE EST DEJA UN VIS-A-VIS ---
             ip = zi(llistb-1+jnode)
             inu = zi(llint1-1+i)
-            nuno = zi(ldesc1-1+inu)
+            nuno = nldesc1(inu)
             call jenuno(jexnum(mail1//'.NOMNOE', nuno), nomnoi)
             inu = zi(llint2-1+jnode)
-            nuno = zi(ldesc2-1+inu)
+            nuno = nldesc2(inu)
             call jenuno(jexnum(mail2//'.NOMNOE', nuno), nomnoj)
             inu = zi(llint1-1+ip)
-            nuno = zi(ldesc1-1+inu)
+            nuno = nldesc1(inu)
             call jenuno(jexnum(mail1//'.NOMNOE', nuno), nomnop)
             valk (1) = nomnoj
             valk (2) = nomnop

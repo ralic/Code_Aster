@@ -83,7 +83,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     complex(kind=8) :: cbid
     character(len=8) :: k8bid, model, answer
     integer :: n1, iocc, iret, ibid
-    integer :: nbrela, jdnbre
+    integer :: nbrela
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
     character(len=2) :: lagr_type
     character(len=8) :: cmp_name
@@ -109,6 +109,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     character(len=24) :: name_ancr, name_anc1, name_anc2
     integer :: nume_cabl, nume_cabl0
     integer :: jlces, jll, jlr, nbchs
+    integer, pointer :: rlnr(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -224,8 +225,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
 ! ------------- Get old linear relations
 !
-                call jeveuo(list_rela_old//'.RLNR', 'L', jdnbre)
-                nbrela = zi(jdnbre)
+                call jeveuo(list_rela_old//'.RLNR', 'L', vi=rlnr)
+                nbrela = rlnr(1)
                 call jelibe(list_rela_old//'.RLNR')
                 if (nbrela .gt. 0) then
                     call copisd(' ', 'V', list_rela_old, list_rela_tmp)

@@ -62,10 +62,9 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !
     integer :: ifi, igm, ign
     integer :: ima, ino, iret
-    integer :: jcod1, jcod2, jcodd, jconx
-    integer :: jcoor, jnogm, jnogn
-    integer :: jnomai, jnonoe, jperm, jpoin
-    integer :: jtitr, jtypl, jtypm
+    integer ::  jnogm, jnogn
+    integer :: jnomai, jnonoe,  jpoin
+    integer :: jtitr, jtypl
 !
     integer :: lon1, maxnod, nbgrm, nbgrn
     integer :: nbmai, nbnoe, nbtitr, ndim
@@ -73,6 +72,13 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
     logical :: lmasu, lgmsh
 !
     character(len=80) :: titmai
+    real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: codegra(:) => null()
+    integer, pointer :: codephd(:) => null()
+    integer, pointer :: codephy(:) => null()
+    integer, pointer :: permuta(:) => null()
+    integer, pointer :: typmail(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -90,10 +96,10 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !                      DU  VECTEUR DES CONNECTIVITES
 !                      DU  POINTEUR SUR LES CONNECTIVITES
 !                      DU  POINTEUR SUR LES TYPES DE MAILLE
-    call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.CONNEX', 'L', jconx)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jpoin)
-    call jeveuo(noma//'.TYPMAIL        ', 'L', jtypm)
+    call jeveuo(noma//'.TYPMAIL        ', 'L', vi=typmail)
 !
 !     --- CONSTITUTION DU TITRE (SUR PLUSIEURS LIGNES EVENTUELLEMENT)
     call jeexin(noma//'           .TITR', iret)
@@ -167,29 +173,29 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !
     if (form .eq. 'RESULTAT') then
 !       - TRAITEMENT DU FORMAT 'RESULTAT'
-        call irmare(ifi, ndim, nbnoe, zr(jcoor), nbmai,&
-                    zi(jconx), zi(jpoin), noma, zi(jtypm), zi(jtypl),&
+        call irmare(ifi, ndim, nbnoe, vale, nbmai,&
+                    connex, zi(jpoin), noma, typmail, zi(jtypl),&
                     lmod, zk80(jtitr), nbtitr, nbgrn, nbgrm,&
                     zk8(jnomai), zk8(jnonoe), formar)
 !
     else if (form.eq.'ASTER') then
 !       - TRAITEMENT DU FORMAT 'ASTER'
-        call irmare(ifi, ndim, nbnoe, zr(jcoor), nbmai,&
-                    zi(jconx), zi(jpoin), noma, zi(jtypm), zi(jtypl),&
+        call irmare(ifi, ndim, nbnoe, vale, nbmai,&
+                    connex, zi(jpoin), noma, typmail, zi(jtypl),&
                     lmod, zk80(jtitr), nbtitr, nbgrn, nbgrm,&
                     zk8(jnomai), zk8(jnonoe), formar)
 !
     else if (form.eq.'MED') then
 !       - TRAITEMENT DU FORMAT ECHANGE DE DONNEES 'MED'
-        call irmhdf(ifi, ndim, nbnoe, zr(jcoor), nbmai,&
-                    zi(jconx), zi(jpoin), noma, zi(jtypm), zk80(jtitr),&
+        call irmhdf(ifi, ndim, nbnoe, vale, nbmai,&
+                    connex, zi(jpoin), noma, typmail, zk80(jtitr),&
                     nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
                     zk8(jnomai), zk8(jnonoe), infmai)
 !
     else if (form.eq.'CASTEM') then
 !       - TRAITEMENT DU FORMAT 'CASTEM'
-        call irmaca(ifi, ndim, nbnoe, zr(jcoor), nbmai,&
-                    zi(jconx), zi(jpoin), noma, zi(jtypm), lmod,&
+        call irmaca(ifi, ndim, nbnoe, vale, nbmai,&
+                    connex, zi(jpoin), noma, typmail, lmod,&
                     nbgrn, zk24(jnogn), nbgrm, zk24(jnogm), nive)
 !
     else if (form.eq.'GMSH') then
@@ -227,15 +233,15 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
         endif
 !       - SOUS PROGRAMME : TRAITER LES ADHERENCES SUPERTAB
         call iradhs(versio)
-        call jeveuo('&&IRADHS.CODEGRA', 'L', jcod1)
-        call jeveuo('&&IRADHS.CODEPHY', 'L', jcod2)
-        call jeveuo('&&IRADHS.CODEPHD', 'L', jcodd)
-        call jeveuo('&&IRADHS.PERMUTA', 'L', jperm)
+        call jeveuo('&&IRADHS.CODEGRA', 'L', vi=codegra)
+        call jeveuo('&&IRADHS.CODEPHY', 'L', vi=codephy)
+        call jeveuo('&&IRADHS.CODEPHD', 'L', vi=codephd)
+        call jeveuo('&&IRADHS.PERMUTA', 'L', vi=permuta)
         call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1)
-        maxnod=zi(jperm-1+lon1)
-        call irmasu(ifi, ndim, nbnoe, zr(jcoor), nbmai,&
-                    zi(jconx), zi(jpoin), zi(jtypm), zi(jtypl), zi(jcod1),&
-                    zi(jcod2), zi(jcodd), zi(jperm), maxnod, lmod,&
+        maxnod=permuta(lon1)
+        call irmasu(ifi, ndim, nbnoe, vale, nbmai,&
+                    connex, zi(jpoin), typmail, zi(jtypl), codegra,&
+                    codephy, codephd, permuta, maxnod, lmod,&
                     noma, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
                     lmasu, zk8(jnomai), zk8(jnonoe), versio)
 !       - DESTRUCTION ZONE ALLOUEE POUR GPES DE NOEUDS SI ELLE EXISTE

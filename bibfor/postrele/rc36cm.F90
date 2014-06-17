@@ -50,7 +50,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 ! OUT : CHNOME : TORSEUR RESULTAT
 !     ------------------------------------------------------------------
 !
-    integer :: jnume, jcham, nbresu, nbcmp, icha, ir
+    integer ::   nbresu, nbcmp, icha, ir
     integer :: vali(2)
     logical :: seisme, autre
     character(len=8) :: nocmp(3)
@@ -59,11 +59,13 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     character(len=24), pointer :: lich(:) => null()
     logical, pointer :: licm(:) => null()
     real(kind=8), pointer :: licr(:) => null()
+    character(len=24), pointer :: champ(:) => null()
+    integer, pointer :: nume_char(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-    call jeveuo('&&RC3600.NUME_CHAR', 'L', jnume)
-    call jeveuo('&&RC3600.CHAMP', 'L', jcham)
+    call jeveuo('&&RC3600.NUME_CHAR', 'L', vi=nume_char)
+    call jeveuo('&&RC3600.CHAMP', 'L', vk24=champ)
     call jelira('&&RC3600.NUME_CHAR', 'LONMAX', nbresu)
 !
     nbcmp = 3
@@ -80,7 +82,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 !
     do 110, icha = 1, nbchar, 1
     do 112, ir = 1, nbresu, 1
-    if (lichar(icha) .eq. zi(jnume+ir-1)) goto 114
+    if (lichar(icha) .eq. nume_char(ir)) goto 114
 112  continue
     vali (1) = iocc
     vali (2) = lichar(icha)
@@ -91,7 +93,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     else
         autre = .true.
     endif
-    lich(icha) = zk24(jcham+ir-1)
+    lich(icha) = champ(ir)
     licm(icha) = .true.
     licr(icha) = 1.d0
     110 end do

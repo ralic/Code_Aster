@@ -45,16 +45,21 @@ subroutine cnonua(nx, chno, lno, nuage)
 ! IN  LNO    : LISTE DES NOEUDS A PRENDRE EN COMPTE
 ! OUT NUAGE  : SD NUAGE PRODUITE
 !     ------------------------------------------------------------------
-    integer :: gd, jdesc, num, ncmpmx, iad, nec
-    integer ::  jrefe, np, kcoor, jlno, i, ibid, kvale, itype
+    integer :: gd,  num, ncmpmx, iad, nec
+    integer ::   np,  jlno, i, ibid, kvale, itype
     integer :: nc, iec, icmp, ianueq, iaprno, j, ino, ncmp, icompt
-    integer :: jnuai, jnuax, jnuav, jnual, ival, k, ieq
+    integer ::   jnuav, jnual, ival, k, ieq
     character(len=4) :: type
     character(len=8) :: noma, nomgd
     character(len=19) :: kchno, klno, knuage, nonu
     logical :: lnual, prem
     integer, pointer :: ent_cod(:) => null()
     integer, pointer :: nomcmp(:) => null()
+    real(kind=8), pointer :: nuax(:) => null()
+    integer, pointer :: desc(:) => null()
+    integer, pointer :: nuai(:) => null()
+    real(kind=8), pointer :: nkcoor(:) => null()
+    character(len=24), pointer :: refe(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -63,9 +68,9 @@ subroutine cnonua(nx, chno, lno, nuage)
     knuage = nuage
     lnual = .false.
 !
-    call jeveuo(kchno//'.DESC', 'L', jdesc)
-    gd = zi(jdesc-1+1)
-    num = zi(jdesc-1+2)
+    call jeveuo(kchno//'.DESC', 'L', vi=desc)
+    gd = desc(1)
+    num = desc(2)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
@@ -73,11 +78,11 @@ subroutine cnonua(nx, chno, lno, nuage)
     AS_ALLOCATE(vi=nomcmp, size=ncmpmx)
     AS_ALLOCATE(vi=ent_cod, size=nec)
 !
-    call jeveuo(kchno//'.REFE', 'L', jrefe)
-    noma = zk24(jrefe-1+1) (1:8)
-    nonu = zk24(jrefe-1+2) (1:19)
+    call jeveuo(kchno//'.REFE', 'L', vk24=refe)
+    noma = refe(1) (1:8)
+    nonu = refe(2) (1:19)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=np)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', kcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=nkcoor)
 !
     if (klno .ne. ' ') then
         call jelira(klno, 'LONUTI', np)
@@ -105,7 +110,7 @@ subroutine cnonua(nx, chno, lno, nuage)
     if (num .lt. 0) then
         nc = -num
         do iec = 1, nec
-            ent_cod(iec) = zi(jdesc-1+2+iec)
+            ent_cod(iec) = desc(2+iec)
         end do
         do icmp = 1, ncmpmx
             if (exisdg(ent_cod, icmp )) nomcmp(icmp) = icmp
@@ -151,26 +156,26 @@ subroutine cnonua(nx, chno, lno, nuage)
 !
 !     --- .NUAI ---
 !
-    call jeveuo(knuage//'.NUAI', 'E', jnuai)
-    zi(jnuai ) = np
-    zi(jnuai+1) = nx
-    zi(jnuai+2) = nc
-    zi(jnuai+3) = gd
-    zi(jnuai+4) = itype
+    call jeveuo(knuage//'.NUAI', 'E', vi=nuai)
+    nuai(1) = np
+    nuai(2) = nx
+    nuai(3) = nc
+    nuai(4) = gd
+    nuai(5) = itype
     icmp = 0
     do i = 1, ncmpmx
         if (nomcmp(i) .ne. 0) then
             icmp = icmp + 1
-            zi(jnuai+5+icmp-1) = nomcmp(i)
+            nuai(1+5+icmp-1) = nomcmp(i)
         endif
     end do
 !
 !     --- .NUAX ---
 !
-    call jeveuo(knuage//'.NUAX', 'E', jnuax)
+    call jeveuo(knuage//'.NUAX', 'E', vr=nuax)
     do i = 1, np
         do j = 1, nx
-            zr(jnuax-1+nx*(i-1)+j) = zr(kcoor-1+3*(i-1)+j)
+            nuax(nx*(i-1)+j) = nkcoor(3*(i-1)+j)
         end do
     end do
 !

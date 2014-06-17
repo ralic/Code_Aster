@@ -53,12 +53,12 @@ subroutine mecgm2(lischa, instan, mesuiv)
 !
     integer :: nbchme, nchar
     integer :: iret, ichar, icha, ier
-    integer :: jmec
     logical :: fct
     character(len=24) :: licoef, fomult
     integer :: jlicoe, jfonct
     real(kind=8) :: valres
     logical :: bidon
+    character(len=24), pointer :: relr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,8 +78,8 @@ subroutine mecgm2(lischa, instan, mesuiv)
         if (nbchme .eq. 0) then
             bidon = .true.
         else
-            call jeveuo(mesuiv(1:19)//'.RELR', 'L', jmec)
-            if (zk24(jmec)(7:8) .eq. '00') then
+            call jeveuo(mesuiv(1:19)//'.RELR', 'L', vk24=relr)
+            if (relr(1)(7:8) .eq. '00') then
                 bidon = .true.
             endif
         endif
@@ -114,7 +114,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
 ! ------- ON RECUPERE LE NUMERO DE LA CHARGE ICHA STOCKEE DANS LE NOM
 ! ------- DU VECTEUR ASSEMBLE
 !
-            call lxliis(zk24(jmec+ichar-1)(7:8), icha, ier)
+            call lxliis(relr(ichar)(7:8), icha, ier)
             if (icha .gt. 0) then
                 call fointe('F ', zk24(jfonct+icha-1)(1:8), 1, ['INST'], [instan],&
                             valres, ier)

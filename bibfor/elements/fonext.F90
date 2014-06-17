@@ -72,13 +72,15 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !-----------------------------------------------------------------------
 !
     integer :: ibid, ifa, ima, ino, itypma
-    integer :: jconx1, jconx2, jcoor, jma, jmanoe
+    integer ::  jconx2, jcoor,  jmanoe
     integer :: nbf, nbfacb, nbno, ndime, nmaext, nmanoe, nuno
     integer :: nunoa, nunob, nunoc, numpt
     integer :: ibid3(12, 3), inobor(2), fa(6, 4)
     real(kind=8) :: coorg(3), vectn(12), norme, vect(3), proj
     character(len=8) :: typma
     logical :: fabord, nofac
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: typmail(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()
@@ -87,10 +89,10 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !
 !     RECUPERATION DES INFORMATIONS RELATIVES AU MAILLAGE
 !
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
-    call jeveuo(noma//'.TYPMAIL', 'L', jma)
+    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
 !     RECUPERATION DES MAILLES CONTENANT LE NOEUD EXTREMITE DU FOND
     call jelira(jexnum(cnxinv, inoext), 'LONMAX', nmanoe)
@@ -100,7 +102,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
     do ima = 1, nmanoe
         nmaext=zi(jmanoe-1+(ima-1)+1)
 !
-        itypma=zi(jma-1+nmaext)
+        itypma=typmail(nmaext)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
 !
         call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndime)
@@ -120,16 +122,16 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
             nofac=.false.
 !         BOUCLE SUR LE NOMBRE DE NOEUDS DE LA FACE
             do ino = 1, nbno
-                nuno = zi(jconx1-1+zi(jconx2+nmaext-1)+fa(ifa,ino)-1)
+                nuno = connex(zi(jconx2+nmaext-1)+fa(ifa,ino)-1)
                 if (nuno .eq. inoseg) goto 1100
                 if (nuno .eq. inoext) nofac=.true.
 !         FIN BOUCLE SUR LES NOEUDS
             end do
 !
             if (nofac) then
-                nunoa = zi(jconx1-1+zi(jconx2+nmaext-1)+fa(ifa,1)-1)
-                nunob = zi(jconx1-1+zi(jconx2+nmaext-1)+fa(ifa,2)-1)
-                nunoc = zi(jconx1-1+zi(jconx2+nmaext-1)+fa(ifa,3)-1)
+                nunoa = connex(zi(jconx2+nmaext-1)+fa(ifa,1)-1)
+                nunob = connex(zi(jconx2+nmaext-1)+fa(ifa,2)-1)
+                nunoc = connex(zi(jconx2+nmaext-1)+fa(ifa,3)-1)
 !
 !           ON VERIFIE SI LA FACE COURANTE EST UNE FACE DE BORD
                 call xfabor(noma, cnxinv, nunoa, nunob, nunoc,&

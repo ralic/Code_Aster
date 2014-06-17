@@ -57,7 +57,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !
 !-----------------------------------------------------------------------
     integer :: i, ier, ik, ino, inord
-    integer :: j, lldeeq, lldes, llncmp, llnoin, lltyp, ltddl
+    integer :: j, lldeeq, lldes, llncmp, llnoin,  ltddl
     integer :: ltpar, nbatta, nbcmp, nbcpmx, nbdeb, nbec, nbfin
     integer :: nbint, nbmn, nbnoe, nbnot, neq, ntail, numgd
 !
@@ -70,6 +70,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
     character(len=16) :: typdef
     character(len=24) :: desdef, deeq, temddl, tempar
     integer :: idec(nbcpmx)
+    character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------
     data pgc /'CAMOAT'/
@@ -114,7 +115,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !------------REQUETTE ADRESSE DEFINITION INTERFACE ET TYPE--------------
 !
     call jelira(intf//'.IDC_LINO', 'NMAXOC', nbint)
-    call jeveuo(intf//'.IDC_TYPE', 'L', lltyp)
+    call jeveuo(intf//'.IDC_TYPE', 'L', vk8=idc_type)
 !
 !-----------COMPTAGE DU NOMBRE DE NOEUDS MAC NEAL-----------------------
 !
@@ -123,7 +124,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl,&
 !
     do j = 1, nbint
         call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe)
-        typcou=zk8(lltyp+j-1)
+        typcou=idc_type(j)
         if (typcou .eq. 'MNEAL   ') then
             call jeveuo(jexnum(intf//'.IDC_LINO', j), 'L', llnoin)
             do i = 1, nbnoe

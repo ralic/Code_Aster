@@ -86,7 +86,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     parameter (mxddl=1)
     integer :: indf, imet, i, ieq, iret, ier1, ibid, ierd, ifreq
     integer ::   lamor, lmasse, lresur, lworkd, laux, lraide
-    integer :: lworkl, islvk,  lworkv, lprod,  lddl, eddl, eddl2
+    integer :: lworkl,   lworkv, lprod,  lddl, eddl, eddl2
     integer :: lmatra, lonwl, ityp, iordre, nbvec2, icoef, jexx, jest
     integer :: npivot, nbvect, priram(8), maxitr, neqact, mfreq, nparr, nbcine
     integer :: nbrss, mxresf, nblagr, nconv, npiv2(2)
@@ -108,6 +108,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
     logical, pointer :: select(:) => null()
     real(kind=8), pointer :: vect_propre(:) => null()
     real(kind=8), pointer :: vect_stabil(:) => null()
+    character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------
     data  nopara /&
      &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,&
@@ -208,8 +209,8 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
          solveu='&&OP0070.SOLVEUR'
     endif
 ! --- VERIF SOLVEUR LINEAIRE
-    call jeveuo(solveu//'.SLVK', 'L', islvk)
-    metres = zk24(islvk)
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    metres = slvk(1)
     if ((metres(1:4).ne.'LDLT') .and. (metres(1:10).ne.'MULT_FRONT') .and.&
         (metres(1:5).ne.'MUMPS')) then
         call utmess('F', 'ALGELINE5_71')

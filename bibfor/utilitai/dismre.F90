@@ -45,11 +45,12 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  iret, gd, iadesc, jnoli, l
+    integer ::  iret, gd,  jnoli, l
     character(len=8) :: k8bid, nogd
     character(len=19) :: nomob
     character(len=24) :: questl, k24
     character(len=32) :: repk
+    integer, pointer :: desc(:) => null()
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
@@ -65,8 +66,8 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
         goto 9999
     endif
 !
-    call jeveuo(nomob//'.DESC', 'L', iadesc)
-    gd = zi(iadesc)
+    call jeveuo(nomob//'.DESC', 'L', vi=desc)
+    gd = desc(1)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nogd)
 !
     if (questi .eq. 'TYPE_CHAMP') then

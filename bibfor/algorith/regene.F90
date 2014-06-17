@@ -65,9 +65,9 @@ subroutine regene(nomres, resgen, profno)
 !
 !
 !
-    integer :: i, j, iadref, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
+    integer :: i, j,  iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
     integer :: jbid, ldnew, llchol, llinsk, llnueq, nbmod, nbnot, neq
-    integer :: nno, iadpar(13), iadpas(13), nbmo2, llref2, llref3, llref4, llref5, tmod(1)
+    integer :: nno, iadpar(13), iadpas(13), nbmo2,     tmod(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typsca
@@ -78,6 +78,11 @@ subroutine regene(nomres, resgen, profno)
     character(len=24) :: chamol, indirf, crefe(2), numedd, basmo2
     character(len=24) :: valk, matric(3)
     logical :: zcmplx
+    character(len=24), pointer :: nllref3(:) => null()
+    character(len=24), pointer :: nllref5(:) => null()
+    character(len=24), pointer :: refe(:) => null()
+    character(len=24), pointer :: nllref2(:) => null()
+    character(len=24), pointer :: nllref4(:) => null()
 !
 !-----------------------------------------------------------------------
     data depl   /'DEPL            '/
@@ -130,8 +135,8 @@ subroutine regene(nomres, resgen, profno)
     call jeveuo(jexnum(resgen//'           .TACH', 1), 'L', iarefe)
     kint = zk24(iarefe)(1:19)
     call jeveuo(kint//'.VALE', 'L', itresu)
-    call jeveuo(kint//'.REFE', 'L', iadref)
-    basmod = zk24(iadref)(1:8)
+    call jeveuo(kint//'.REFE', 'L', vk24=refe)
+    basmod = refe(1)(1:8)
 !
     basmo2 = basmod
     call gettco(basmo2, typrep)
@@ -153,24 +158,24 @@ subroutine regene(nomres, resgen, profno)
 !
         call dismoi('REF_RIGI_PREM', resgen, 'RESU_DYNA', repk=raid)
 !
-        call jeveuo(raid//'.REFA', 'L', llref2)
-        numgen(1:14)=zk24(llref2+1)
+        call jeveuo(raid//'.REFA', 'L', vk24=nllref2)
+        numgen(1:14)=nllref2(2)
         numgen(15:19)='.NUME'
         call jelibe(raid//'.REFA')
 !
-        call jeveuo(numgen//'.REFN', 'L', llref3)
-        respro=zk24(llref3)
+        call jeveuo(numgen//'.REFN', 'L', vk24=nllref3)
+        respro=nllref3(1)
         call jelibe(numgen//'.REFN')
 !
         call dismoi('REF_RIGI_PREM', respro, 'RESU_DYNA', repk=raid)
 !
-        call jeveuo(raid//'.REFA', 'L', llref4)
-        numgen(1:14)=zk24(llref4+1)
+        call jeveuo(raid//'.REFA', 'L', vk24=nllref4)
+        numgen(1:14)=nllref4(2)
         numgen(15:19)='.NUME'
         call jelibe(raid//'.REFA')
 !
-        call jeveuo(numgen//'.REFN', 'L', llref5)
-        modgen=zk24(llref5)
+        call jeveuo(numgen//'.REFN', 'L', vk24=nllref5)
+        modgen=nllref5(1)
         call jelibe(numgen//'.REFN')
 !
 ! ------ CREATION DU PROF-CHAMNO

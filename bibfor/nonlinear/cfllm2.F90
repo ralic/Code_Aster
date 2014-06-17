@@ -76,9 +76,9 @@ subroutine cfllm2(resoco, resigr, neq, nesmax, nbliai,&
     logical :: lelpiv, lelpi1, lelpi2
     real(kind=8) :: ajeufx, ajeufy, glis
     character(len=19) :: deplc
-    integer :: jdepc
     integer :: nbddl, jdecal, btotal
     integer :: compt0
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -120,7 +120,7 @@ subroutine cfllm2(resoco, resigr, neq, nesmax, nbliai,&
 ! ---         DU PAS DE TEMPS AVEC CORRECTION DU CONTACT
 !
     deplc = resoco(1:14)//'.DEPC'
-    call jeveuo(deplc (1:19)//'.VALE', 'L', jdepc)
+    call jeveuo(deplc (1:19)//'.VALE', 'L', vr=vale)
 !
 ! --- CALCUL DE LA MATRICE
 !
@@ -176,12 +176,12 @@ subroutine cfllm2(resoco, resigr, neq, nesmax, nbliai,&
                 ajeufx = 0.d0
                 ajeufy = 0.d0
                 if (.not.lelpi1) then
-                    call caladu(neq, nbddl, zr(japcof+jdecal), zi( japddl+jdecal), zr(jdepc),&
+                    call caladu(neq, nbddl, zr(japcof+jdecal), zi( japddl+jdecal), vale,&
                                 ajeufx)
                 endif
                 if (.not.lelpi2) then
                     call caladu(neq, nbddl, zr(japcof+jdecal+ndlmax* nesmax), zi(japddl+jdecal),&
-                                zr(jdepc), ajeufy)
+                                vale, ajeufy)
                 endif
                 glis = sqrt( ajeufx**2 + ajeufy**2 )
 !

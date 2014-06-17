@@ -68,7 +68,7 @@ subroutine xmligr(noma, nomo, resoco)
     integer :: nbtyp
     parameter (nbtyp=30)
     integer :: ico, jco, nbgrel, ipc, nbpc, k, ino
-    integer :: jlgrf, jtymai, jmail, iacnx1, ilcnx1
+    integer :: jlgrf, jtymai, jmail,  ilcnx1
     integer :: nummam, nummae, jnbno, long, jad, ityte
     integer :: nndel, numtyp, compt(nbtyp), jtabf, ztabf
     integer :: jnosdc, ifm, niv
@@ -81,6 +81,7 @@ subroutine xmligr(noma, nomo, resoco)
     character(len=2) :: mail(2, 8)
     character(len=1) :: attr(7)
     integer, pointer :: typnema(:) => null()
+    integer, pointer :: connex(:) => null()
 !
     data (mode(k),k=1,3) /'MECP','MEDP','ME3D'/
     data (attr(k),k=1,7) /'H','C','T','2','3','4','H'/
@@ -137,7 +138,7 @@ subroutine xmligr(noma, nomo, resoco)
     call wkvect(ligrxf//'.LGRF', 'V V K8', 2, jlgrf)
     zk8(jlgrf-1+1) = noma
     zk8(jlgrf-1+2) = nomo
-    call jeveuo(noma//'.CONNEX', 'L', iacnx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
 ! --- ON COMPTE LE NOMBRE DE NOEUDS A STOCKER AU TOTAL
@@ -189,13 +190,13 @@ subroutine xmligr(noma, nomo, resoco)
 ! ----- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE ESCLAVE
 !
         do ino = 1, nno(1)
-            zi(jad-1+ino) = zi(iacnx1+zi(ilcnx1-1+nummae)-2+ino)
+            zi(jad-1+ino) = connex(1+zi(ilcnx1-1+nummae)-2+ino)
         end do
 !
 ! ----- RECOPIE DES NUMEROS DE NOEUDS DE LA MAILLE MAITRE
 !
         do ino = 1, nno(2)
-            zi(jad-1+nno(1)+ino) = zi(iacnx1+zi(ilcnx1-1+nummam)-2+ ino)
+            zi(jad-1+nno(1)+ino) = connex(1+zi(ilcnx1-1+nummam)-2+ ino)
         end do
 !
 ! --- TYPE D'ÉLÉMENT TARDIF

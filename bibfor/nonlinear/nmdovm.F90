@@ -64,12 +64,14 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
     character(len=16) :: notype, texte(2), type_elem, comp_rela_elem
     character(len=8) :: mesh, name_elem
     integer :: nutyel
-    integer :: j_cesd, j_cesl, j_cesv
+    integer :: j_cesd, j_cesl
     integer ::  iret, irett, ielem
     integer :: iad
-    integer :: j_mail, j_elem_affe
+    integer ::  j_elem_affe
     integer :: nb_elem_mesh, nb_elem
     integer :: nume_elem
+    character(len=16), pointer :: cesv(:) => null()
+    integer, pointer :: maille(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,14 +83,14 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
 ! - Access to model and mesh
 !
-    call jeveuo(model//'.MAILLE', 'L', j_mail)
+    call jeveuo(model//'.MAILLE', 'L', vi=maille)
     call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
 !
 ! - Access to <CHELEM_S> of FULL_MECA option
 !
     call jeveuo(full_elem_s//'.CESD', 'L', j_cesd)
     call jeveuo(full_elem_s//'.CESL', 'L', j_cesl)
-    call jeveuo(full_elem_s//'.CESV', 'L', j_cesv)
+    call jeveuo(full_elem_s//'.CESV', 'L', vk16=cesv)
     nb_elem_mesh = zi(j_cesd-1+1)
 !
 ! - Mesh affectation
@@ -120,7 +122,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
 ! --------- Comportment on element
 !
-            comp_rela_elem = zk16(j_cesv-1+iad)
+            comp_rela_elem = cesv(iad)
             if (comp_rela_elem .eq. ' ') then
                 call jenuno(jexnum(mesh(1:8)//'.NOMMAI', nume_elem), name_elem)
                 call utmess('I', 'COMPOR1_50', nk=1, valk=name_elem)
@@ -128,7 +130,7 @@ subroutine nmdovm(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
 ! --------- Access to element type
 !
-            nutyel = zi(j_mail-1+nume_elem)
+            nutyel = maille(nume_elem)
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
 !
 ! --------- Type of modelization

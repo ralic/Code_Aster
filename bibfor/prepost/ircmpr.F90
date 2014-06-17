@@ -104,9 +104,9 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 !
     integer :: ifm, nivinf, j, i
     integer :: iaux, ima, nbno, nbma, ipe18, ipe15
-    integer :: nbmail, iadcnx, ilcnx, iadtyp
+    integer :: nbmail, iadcnx, ilcnx
     integer :: codret,  jco
-    integer :: adtypm, adefma
+    integer ::  adefma
     integer :: adcaii, adcaik
     integer :: adproa, adprom, adexic, adpror
     integer :: adnucm
@@ -116,6 +116,8 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     character(len=24) :: ntauxi
     character(len=80) :: caimpk(3)
     integer, pointer :: noeu_centr(:) => null()
+    integer, pointer :: nadtypm(:) => null()
+    integer, pointer :: dtyp(:) => null()
 !
 !====
 ! 1. PREALABLES
@@ -165,7 +167,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 !       CENTRE (APPARTENANT AUX MAILLES DE TYPE TRIA7,QUAD9,PENTA18 OU
 !       HEXA27)
 !
-        call jeveuo(nomaas//'.TYPMAIL', 'L', iadtyp)
+        call jeveuo(nomaas//'.TYPMAIL', 'L', vi=dtyp)
         call jeveuo(nomaas//'.CONNEX', 'L', iadcnx)
         call jeveuo(jexatr(nomaas//'.CONNEX', 'LONCUM'), 'L', ilcnx)
         call dismoi('NB_NO_MAILLA', nomaas, 'MAILLAGE', repi=nbno)
@@ -176,7 +178,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
         end do
 !
         do i = 1, nbma
-            if (zi(iadtyp+i-1) .eq. ipe18) then
+            if (dtyp(i) .eq. ipe18) then
                 jco=iadcnx+zi(ilcnx+i-1)-1
                 do j = 1, 3
                     noeu_centr(1+zi(jco+15+j-1)-1)=1
@@ -188,14 +190,14 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 !
     else if (typech(1:2).eq.'EL') then
 !
-        call jeveuo(nomaas//'.TYPMAIL', 'L', adtypm)
+        call jeveuo(nomaas//'.TYPMAIL', 'L', vi=nadtypm)
         call jelira(nomaas//'.TYPMAIL', 'LONMAX', nbmail)
         call wkvect('&&IRCMPR.TYPMA', 'V V I', nbmail, adtyp2)
         do ima = 1, nbmail
-            if (zi(adtypm+ima-1) .eq. ipe18) then
+            if (nadtypm(ima) .eq. ipe18) then
                 zi(adtyp2+ima-1)=ipe15
             else
-                zi(adtyp2+ima-1)=zi(adtypm+ima-1)
+                zi(adtyp2+ima-1)=nadtypm(ima)
             endif
         end do
         if (typech(1:4) .eq. 'ELGA') then

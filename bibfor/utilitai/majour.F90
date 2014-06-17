@@ -60,11 +60,12 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 !
 !
 !
-    integer :: iran(3), i, icomp, indro, endo
+    integer :: iran(3), i, icomp,  endo
     real(kind=8) :: theta(3), deldet(3)
     integer :: ptdo, indic1, indic2
     real(kind=8) :: stok
     real(kind=8) :: zero
+    integer, pointer :: ndro(:) => null()
     parameter   (zero = 0.0d+0)
 !
 ! ----------------------------------------------------------------------
@@ -76,7 +77,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
     call jemarq()
 !
     if (lgrot) then
-        call jeveuo(sdnume//'.NDRO', 'L', indro)
+        call jeveuo(sdnume//'.NDRO', 'L', vi=ndro)
     endif
 !
     if (lendo) then
@@ -130,9 +131,9 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
     else
         icomp = 0
         do 30 i = 1, neq
-            if (zi(indro+i-1) .eq. 0) then
+            if (ndro(i) .eq. 0) then
                 chamaj(i) = chaini(i) + coef*chadel(i)
-            else if (zi(indro+i-1).eq.1) then
+            else if (ndro(i).eq.1) then
                 icomp = icomp + 1
                 iran(icomp) = i
                 theta(icomp) = chaini(i)

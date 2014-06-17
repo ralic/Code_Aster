@@ -84,11 +84,13 @@ subroutine assgen(nomres, option, nugene)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, iblel, iblo, icomp, j, jrefa, iadesc
-    integer :: jscde, ldblo, ldconl, ldlim, llorl, llprof, llref
+    integer ::  ldblo, ldconl, ldlim, llorl, llprof
     integer :: ltadbl, ltconl, ltinbl, ltnobl, ltnomb, ltnumb, nbblel
     integer :: nblia, nbloc, nbprno, nbsst, nbterm, neq, ntbloc
     integer :: ntprno, numblo
     real(kind=8) :: epsi, ssconl, ssmax, xcon, xmaxbl
+    integer, pointer :: scde(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     data rigopt,ricopt/'RIGI_GENE','RIGI_GENE_C'/
     data ksst /'&SOUSSTR'/
@@ -114,8 +116,8 @@ subroutine assgen(nomres, option, nugene)
 !
 !--------------------RECUPERATION DU MODE_GENE AMONT--------------------
 !
-    call jeveuo(prgene//'.REFN', 'L', llref)
-    modgen=zk24(llref)(1:8)
+    call jeveuo(prgene//'.REFN', 'L', vk24=refn)
+    modgen=refn(1)(1:8)
 !
 !--
 !-- VERIFICATION QU'IL S'AGIT BIEN D'UN MODELE GENERALIE, PAS D'UN MODE
@@ -152,10 +154,10 @@ subroutine assgen(nomres, option, nugene)
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
 !
-    call jeveuo(stolci//'.SCDE', 'L', jscde)
-    neq=zi(jscde-1+1)
-    ntbloc=zi(jscde-1+2)
-    nbloc=zi(jscde-1+3)
+    call jeveuo(stolci//'.SCDE', 'L', vi=scde)
+    neq=scde(1)
+    ntbloc=scde(2)
+    nbloc=scde(3)
     call jelibe(stolci//'.SCDE')
     if (option .eq. ricopt) then
         call jecrec(nomres//'           .UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&

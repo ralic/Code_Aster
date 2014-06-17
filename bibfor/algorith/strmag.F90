@@ -59,19 +59,22 @@ subroutine strmag(nugene, typrof)
     integer :: i, iad1, iad1c, iad1l, iad2l, iadc, iadcou
     integer :: iadl, ibid, ifimes, j, jscbl, jscde
     integer :: jscdi, jschc, jscib, k, l, lc, lcolmx
-    integer :: lcomoy, lh, ll, lldefl, llnequ, llnueq, llorl
-    integer :: llors, llprl, llprs, llref, nbcol, nblig, nbloc
+    integer :: lcomoy, lh, ll, lldefl,   llorl
+    integer :: llors, llprl, llprs,  nbcol, nblig, nbloc
     integer :: nbprno, nbsst, neq, nsstar, ntbloc, nterbl, nterm
     integer :: ntermx, ntprno, nuant, nulia, nusst
     real(kind=8) :: rtbloc
+    integer, pointer :: nueq(:) => null()
+    integer, pointer :: nequ(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ifimes=iunifi('MESSAGE')
     stomor=nugene//'.SMOS'
     stolci=nugene//'.SLCS'
     prgene=nugene//'.NUME'
-    call jeveuo(prgene//'.NEQU', 'L', llnequ)
-    neq=zi(llnequ)
+    call jeveuo(prgene//'.NEQU', 'L', vi=nequ)
+    neq=nequ(1)
 !
 !
     if (typrof .eq. 'PLEIN' .or. typrof .eq. 'DIAG') then
@@ -90,15 +93,15 @@ subroutine strmag(nugene, typrof)
 !
 !----------------RECUPERATION DU MODELE GENERALISE----------------------
 !          ET NOMBRE DE SOUS-STRUCTURE
-    call jeveuo(prgene//'.REFN', 'L', llref)
-    modgen=zk24(llref)(1:8)
+    call jeveuo(prgene//'.REFN', 'L', vk24=refn)
+    modgen=refn(1)(1:8)
     call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
 !
 !
 !---------------DETERMINATION DU PROFIL(LIGNE DE CIEL)------------------
     call wkvect(stolci//'.SCHC', 'G V I', neq, jschc)
 !
-    call jeveuo(prgene//'.NUEQ', 'L', llnueq)
+    call jeveuo(prgene//'.NUEQ', 'L', vi=nueq)
     call jelira(prgene//'.PRNO', 'NMAXOC', nbprno)
     if (typrof .eq. 'LIGN_CIEL') then
 !
@@ -117,7 +120,7 @@ subroutine strmag(nugene, typrof)
 !
 !   BOUCLE SUR LES COLONNES DE LA MATRICE PROJETEE
                     do 30 k = 1, nblig
-                        iadcou=zi(llnueq+iad1-1+k-1)
+                        iadcou=nueq(1+iad1-1+k-1)
                         lh=jschc+iadcou-1
                         zi(lh)=max(zi(lh),k)
 30                  continue
@@ -150,9 +153,9 @@ subroutine strmag(nugene, typrof)
                         iad1c=zi(llprs+(nsstar-1)*2)
                         nbcol=zi(llprs+(nsstar-1)*2+1)
                         do 70 ll = 1, nblig
-                            iadl=zi(llnueq+(iad1l-1)+(ll-1))
+                            iadl=nueq(1+(iad1l-1)+(ll-1))
                             do 80 lc = 1, nbcol
-                                iadc=zi(llnueq+(iad1c-1)+(lc-1))
+                                iadc=nueq(1+(iad1c-1)+(lc-1))
                                 lh=jschc+max(iadc,iadl)-1
                                 zi(lh)=max(zi(lh),abs(iadc-iadl)+1)
 80                          continue
@@ -167,8 +170,8 @@ subroutine strmag(nugene, typrof)
 90                  continue
                     iad2l=zi(llprl+(nuant-1)*2)
                     do 95 ll = 1, nblig
-                        iadl=zi(llnueq+(iad1l-1)+(ll-1))
-                        iadc=zi(llnueq+(iad2l-1)+(ll-1))
+                        iadl=nueq(1+(iad1l-1)+(ll-1))
+                        iadc=nueq(1+(iad2l-1)+(ll-1))
 ! TERME CROISE LAGRANGE LAGRANGE
                         lh=jschc+max(iadc,iadl)-1
                         zi(lh)=max(zi(lh),abs(iadc-iadl)+1)

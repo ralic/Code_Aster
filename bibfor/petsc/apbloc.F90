@@ -41,8 +41,8 @@ subroutine apbloc(matass, solveu, tbloc)
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
     character(len=24) :: precon
-    integer :: jslvk
     logical :: leliml
+    character(len=24), pointer :: slvk(:) => null()
 !
 !----------------------------------------------------------------
     call jemarq()
@@ -50,9 +50,9 @@ subroutine apbloc(matass, solveu, tbloc)
     call dismoi('NB_DDL_NOEUD', matass, 'MATR_ASSE', repi=tbloc)
 !
 !     -- PRECONDITIONNEUR UTILISE
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    precon = zk24(jslvk-1+2)
-    leliml = zk24(jslvk-1+13)(1:3).eq.'OUI'
+    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    precon = slvk(2)
+    leliml = slvk(13)(1:3).eq.'OUI'
 !
     if ((precon.ne.'ML') .and. (precon.ne.'BOOMER') .and. (precon.ne.'GAMG') ) then
         tbloc = 1

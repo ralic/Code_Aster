@@ -61,8 +61,10 @@ subroutine mtdsc3(nommat)
 !
 !
 !-----------------------------------------------------------------------
-    integer ::  ier, jrefa, jscde, k, lmat
+    integer ::  ier,   k, lmat
     integer :: lnom
+    integer, pointer :: scde(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     mat19 = nommat
@@ -94,15 +96,15 @@ subroutine mtdsc3(nommat)
     zi(lmat+1) = lnom
 !
 !
-    call jeveuo(mat19//'.REFA', 'L', jrefa)
-    nu = zk24(jrefa-1+2)
+    call jeveuo(mat19//'.REFA', 'L', vk24=refa)
+    nu = refa(2)
     nomsto = nu//'.SLCS'
 !
 !
 !     -- LMAT+2 :
 !     ------------
-    call jeveuo(nomsto//'.SCDE', 'L', jscde)
-    zi(lmat+2) = zi(jscde-1+1)
+    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
+    zi(lmat+2) = scde(1)
 !
 !
 !     -- LMAT+3 :
@@ -119,7 +121,7 @@ subroutine mtdsc3(nommat)
 !
 !     -- LMAT+14
 !     ----------
-    zi(lmat+14) = zi(jscde-1+2)
+    zi(lmat+14) = scde(2)
 !
 !
 !     -- LMAT+7 ET LMAT+18  (SI CHARGES CINEMATIQUES) :

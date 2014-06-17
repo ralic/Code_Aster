@@ -51,8 +51,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 !     ------------------------------------------------------------------
 !
     integer :: nbreth, nbcmp, iths, ith, iret, n1, n2, iocc, ino, iad, in
-    integer :: ima, im, jmail, jnoeu, nbmail, nbmat, nbtou, nbnoeu, jcesd, jcesl
-    integer :: jcesv, nbpt, decal, i, ipt, jconx1, jconx2, icmp, it1, vali(4)
+    integer :: ima, im, jmail, jnoeu, nbmail, nbmat, nbtou, nbnoeu,  jcesl
+    integer ::  nbpt, decal, i, ipt,  jconx2, icmp, it1, vali(4)
     integer :: jinst, jther, jmoye, jabsc, nbabsc, nbinst, ibid
     parameter   ( nbcmp = 2 )
     real(kind=8) :: inst, epsi, vmoy, ta, tint, text, vale(2), prec(2)
@@ -63,6 +63,9 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
     character(len=16) :: nopara(2)
     character(len=19) :: chams0
     character(len=24) :: instan, abscur, mesmai, mesnoe, nojvth, nojvmy, valk(7)
+    integer, pointer :: connex(:) => null()
+    character(len=24), pointer :: cesv(:) => null()
+    integer, pointer :: cesd(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -107,12 +110,12 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
         call utmess('F', 'POSTRCCM_19')
     endif
 !
-    call jeveuo(chams0//'.CESD', 'L', jcesd)
+    call jeveuo(chams0//'.CESD', 'L', vi=cesd)
     call jeveuo(chams0//'.CESL', 'E', jcesl)
-    call jeveuo(chams0//'.CESV', 'E', jcesv)
+    call jeveuo(chams0//'.CESV', 'E', vk24=cesv)
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat)
-    call jeveuo(noma//'.CONNEX', 'L', jconx1)
+    call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
     do it1 = 1, nbths, 1
@@ -275,14 +278,14 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
         if (nbnoeu .eq. 0) then
             do im = 1, nbmail
                 ima = zi(jmail+im-1)
-                nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-                decal= zi(jcesd-1+5+4*(ima-1)+4)
+                nbpt = cesd(5+4*(ima-1)+1)
+                decal= cesd(5+4*(ima-1)+4)
                 do ipt = 1, nbpt
                     icmp = 1
                     iad = decal + (ipt-1)*nbcmp + icmp
                     if (.not.zl(jcesl-1+iad)) then
                         zl (jcesl-1+iad) = .true.
-                        zk24(jcesv-1+iad) = nojvth
+                        cesv(iad) = nojvth
                     else
                         vali(1) = iocs
                         vali(2) = ima
@@ -291,23 +294,23 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
                     icmp = 2
                     iad = decal + (ipt-1)*nbcmp + icmp
                     zl (jcesl-1+iad) = .true.
-                    zk24(jcesv-1+iad) = nojvmy
+                    cesv(iad) = nojvmy
                 end do
             end do
         else
             do im = 1, nbmail
                 ima = zi(jmail+im-1)
-                nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-                decal= zi(jcesd-1+5+4*(ima-1)+4)
+                nbpt = cesd(5+4*(ima-1)+1)
+                decal= cesd(5+4*(ima-1)+4)
                 do ipt = 1, nbpt
-                    ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
+                    ino = connex(zi(jconx2+ima-1)+ipt-1)
                     do in = 1, nbnoeu
                         if (zi(jnoeu+in-1) .eq. ino) then
                             icmp = 1
                             iad = decal + (ipt-1)*nbcmp + icmp
                             if (.not.zl(jcesl-1+iad)) then
                                 zl (jcesl-1+iad) = .true.
-                                zk24(jcesv-1+iad) = nojvth
+                                cesv(iad) = nojvth
                             else
                                 vali(1) = iocs
                                 vali(2) = ima
@@ -317,7 +320,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
                             icmp = 2
                             iad = decal + (ipt-1)*nbcmp + icmp
                             zl (jcesl-1+iad) = .true.
-                            zk24(jcesv-1+iad) = nojvmy
+                            cesv(iad) = nojvmy
                             goto 210
                         endif
                     end do
@@ -337,8 +340,8 @@ subroutine rc36th(noma, nbma, listma, chth, iocs,&
 !
     do im = 1, nbma
         ima = listma(im)
-        nbpt = zi(jcesd-1+5+4*(ima-1)+1)
-        decal= zi(jcesd-1+5+4*(ima-1)+4)
+        nbpt = cesd(5+4*(ima-1)+1)
+        decal= cesd(5+4*(ima-1)+4)
         do ipt = 1, nbpt
             do icmp = 1, 2
                 iad = decal + (ipt-1)*nbcmp + icmp

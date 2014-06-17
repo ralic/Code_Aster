@@ -67,7 +67,7 @@ subroutine carbe3(charge)
     integer :: idxrbe, idxlig, idxcol, idxvec, idxnoe, idxgro, idxter
     integer :: idxddl
     integer :: posesc, posmai, cntlig, cntddl, cntnoe, inilig
-    integer :: jcoor, jlises, jcofes, jddles, jcescl, jcoore
+    integer ::  jlises, jcofes, jddles, jcescl, jcoore
     integer :: jnorel, jddl, jcmur, jcmuc, jcmuf, jdirec, jdime
     integer :: jnogro, jnoesc,  jnzddl, jnznor
     integer :: nbrbe3, nbdles, nbcfes, nbddl, nblign, nbcol, nbgrou, nbent
@@ -79,6 +79,7 @@ subroutine carbe3(charge)
     real(kind=8), pointer :: s(:) => null()
     real(kind=8), pointer :: w(:) => null()
     real(kind=8), pointer :: xab(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 ! ----------------------------------------------------------------------
 !
     motfac = 'LIAISON_RBE3    '
@@ -119,7 +120,7 @@ subroutine carbe3(charge)
     noeuma = noma//'.NOMNOE'
     grouno = noma//'.GROUPENO'
     coordo = noma//'.COORDO'
-    call jeveuo(coordo//'    .VALE', 'L', jcoor)
+    call jeveuo(coordo//'    .VALE', 'L', vr=vale)
 !
 !     -- CALCUL DE MAXLES : NBRE DE TERMES MAXI D'UNE LISTE
 !        DE GROUP_NO_ESCL OU DE NOEUD_ESCL
@@ -218,9 +219,9 @@ subroutine carbe3(charge)
         endif
 !
         call jenonu(jexnom(noma//'.NOMNOE', noemai), posmai)
-        coomai(1) = zr(jcoor-1+3*(posmai-1)+1)
-        coomai(2) = zr(jcoor-1+3*(posmai-1)+2)
-        coomai(3) = zr(jcoor-1+3*(posmai-1)+3)
+        coomai(1) = vale(3*(posmai-1)+1)
+        coomai(2) = vale(3*(posmai-1)+2)
+        coomai(3) = vale(3*(posmai-1)+3)
         if (niv .eq. 2) then
             write(ifm,*) 'COORDS : ',coomai, ' DU NOEUD MAITRE : ',&
             noemai
@@ -357,9 +358,9 @@ subroutine carbe3(charge)
         lc = 0
         do idxnoe = 1, nbnoeu
             call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoesc-1+idxnoe)), posesc)
-            cooesc(1) = zr(jcoor-1+3*(posesc-1)+1)
-            cooesc(2) = zr(jcoor-1+3*(posesc-1)+2)
-            cooesc(3) = zr(jcoor-1+3*(posesc-1)+3)
+            cooesc(1) = vale(3*(posesc-1)+1)
+            cooesc(2) = vale(3*(posesc-1)+2)
+            cooesc(3) = vale(3*(posesc-1)+3)
             zr(jcoore-1+3*(idxnoe-1)+1) = cooesc(1) - coomai(1)
             zr(jcoore-1+3*(idxnoe-1)+2) = cooesc(2) - coomai(2)
             zr(jcoore-1+3*(idxnoe-1)+3) = cooesc(3) - coomai(3)

@@ -62,12 +62,13 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: idcoor, idlino, ino, iocc, iret, nangle
+    integer ::  idlino, ino, iocc, iret, nangle
     integer :: nb, nbno, nbnoe, ndim, nprec, nrayon, nv
     integer :: nvect
     real(kind=8) :: ang, d2, dist, eps, prec, psca
     real(kind=8) :: rayon, un, xnorm, xnorm2, xnoxx0
     real(kind=8) :: xnoxx2, zero
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -109,7 +110,7 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DU POINT SITUE SUR L'AXE DU CYLINDRE :
 !     -------------------------------------------------
@@ -203,9 +204,9 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! ---     COORDONNEES DU NOEUD :
 !         --------------------
-        x(1) = zr(idcoor-1+3*(ino-1)+1)
-        x(2) = zr(idcoor-1+3*(ino-1)+2)
-        x(3) = zr(idcoor-1+3*(ino-1)+3)
+        x(1) = vale(3*(ino-1)+1)
+        x(2) = vale(3*(ino-1)+2)
+        x(3) = vale(3*(ino-1)+3)
 !
         xx0(1) = x(1) - x0(1)
         xx0(2) = x(2) - x0(2)

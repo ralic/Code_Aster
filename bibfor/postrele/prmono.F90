@@ -37,7 +37,7 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     character(len=8) :: nocmp(1)
     character(len=*) :: champ
 !
-    integer :: jcnsk, jcnsd, jcnsv, jcnsl, jcnsc, nbno, ncmp, nbn
+    integer ::    jcnsl,  nbno, ncmp, nbn
     integer :: ibid, nbnoeu, idnoeu, nbc
     integer :: i100, i110, icp, ino
     real(kind=8) :: x
@@ -46,6 +46,10 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     character(len=19) :: chams1
     character(len=24) :: mesnoe
     character(len=8), pointer :: nom_cmp(:) => null()
+    character(len=8), pointer :: cnsc(:) => null()
+    character(len=8), pointer :: cnsk(:) => null()
+    real(kind=8), pointer :: cnsv(:) => null()
+    integer, pointer :: cnsd(:) => null()
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_NO'
@@ -61,14 +65,14 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     chams1 = '&&PRMONO.CHAMS1'
     call cnocns(champ, 'V', chams1)
 !
-    call jeveuo(chams1//'.CNSK', 'L', jcnsk)
-    call jeveuo(chams1//'.CNSD', 'L', jcnsd)
-    call jeveuo(chams1//'.CNSC', 'L', jcnsc)
-    call jeveuo(chams1//'.CNSV', 'L', jcnsv)
+    call jeveuo(chams1//'.CNSK', 'L', vk8=cnsk)
+    call jeveuo(chams1//'.CNSD', 'L', vi=cnsd)
+    call jeveuo(chams1//'.CNSC', 'L', vk8=cnsc)
+    call jeveuo(chams1//'.CNSV', 'L', vr=cnsv)
     call jeveuo(chams1//'.CNSL', 'L', jcnsl)
-    ma = zk8(jcnsk-1+1)
-    nbno = zi(jcnsd-1+1)
-    ncmp = zi(jcnsd-1+2)
+    ma = cnsk(1)
+    nbno = cnsd(1)
+    ncmp = cnsd(2)
 !
     call reliem(' ', ma, 'NU_NOEUD', 'ACTION', ioc,&
                 4, motcle, typmcl, mesnoe, nbn)
@@ -92,11 +96,11 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     do 100 i100 = 1, nbcmp
         if (nbc .ne. 0) then
             nocmp(i100) = nom_cmp(i100)
-            icp = indik8( zk8(jcnsc), nocmp(i100), 1, ncmp )
+            icp = indik8( cnsc, nocmp(i100), 1, ncmp )
             if (icp .eq. 0) goto 100
         else
             icp = i100
-            nocmp(i100) = zk8(jcnsc+i100-1)
+            nocmp(i100) = cnsc(i100)
         endif
         som(i100) = 0.d0
 !
@@ -109,7 +113,7 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 !
             if (zl(jcnsl-1+(ino-1)*ncmp+icp)) then
 !
-                x = zr(jcnsv-1+(ino-1)*ncmp+icp)
+                x = cnsv((ino-1)*ncmp+icp)
                 som(i100) = som(i100) + x
 !
             endif

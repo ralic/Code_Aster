@@ -54,15 +54,23 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 !                 EST DANS UN CAS  DE REPRISE)
 ! OUT : IER    : CODE RETOUR
 ! --------------------------------------------------------------------------------------------------
-    integer :: im, jdepi, jviti, ic
+    integer :: im,   ic
     character(len=19) :: nomdep, nomvit
     character(len=8) :: tran, crit, inter
 ! --------------------------------------------------------------------------------------------------
-    integer :: jdeplt, jdesc, jinst, jrefe, jvint, jvitet, jaccet, n1, jinti, jncho
+    integer ::  jdesc,  jrefe, jvint,   n1
     integer :: nbinst, nc, ni, np, nt, nbvint, nbchoc0
     real(kind=8) :: prec
     integer :: vmessi(2)
     character(len=8) :: vmessk(6)
+    real(kind=8), pointer :: acce(:) => null()
+    real(kind=8), pointer :: disc(:) => null()
+    real(kind=8), pointer :: depl(:) => null()
+    real(kind=8), pointer :: vite(:) => null()
+    real(kind=8), pointer :: depi(:) => null()
+    real(kind=8), pointer :: viti(:) => null()
+    character(len=8), pointer :: ncho(:) => null()
+    character(len=8), pointer :: inti(:) => null()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     ier = 0
@@ -71,7 +79,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 !     --- DEPLACEMENT ---
     call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=nomdep, nbret=n1)
     if (n1 .ne. 0) then
-        call jeveuo(nomdep//'.VALE', 'L', jdepi)
+        call jeveuo(nomdep//'.VALE', 'L', vr=depi)
 !
 !        --- VERIF COMPATIBILITE DES BASES DE PROJECTION
         call jeveuo(nomdep//'.REFE', 'L', jrefe)
@@ -85,14 +93,14 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
             call utmess('E', 'ALGORITH5_43')
         endif
         do im = 1, nbmode
-            depgen(im) = zr(jdepi+im-1)
+            depgen(im) = depi(im)
         enddo
     endif
 !
 !     --- VITESSE ---
     call getvid('ETAT_INIT', 'VITE', iocc=1, scal=nomvit, nbret=n1)
     if (n1 .ne. 0) then
-        call jeveuo(nomvit//'.VALE', 'L', jviti)
+        call jeveuo(nomvit//'.VALE', 'L', vr=viti)
 !
 !        --- VERIF COMPATIBILITE DES BASES DE PROJECTION
         call jeveuo(nomvit//'.REFE', 'L', jrefe)
@@ -106,7 +114,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
             call utmess('E', 'ALGORITH5_43')
         endif
         do im = 1, nbmode
-            vitgen(im) = zr(jviti+im-1)
+            vitgen(im) = viti(im)
         enddo
     endif
 !
@@ -124,17 +132,17 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
         if ( nbchoc .ne. 0 ) then
             ASSERT( present(intitu) .and. present(noecho) )
 !           récupération des données sur les dipositifs de choc (cf mdallo)
-            call jeveuo(tran//'           .INTI', 'L', jinti)
-            call jeveuo(tran//'           .NCHO', 'L', jncho)
+            call jeveuo(tran//'           .INTI', 'L', vk8=inti)
+            call jeveuo(tran//'           .NCHO', 'L', vk8=ncho)
             do ic = 1 , nbchoc
-                if ( (zk8(jinti+ic-1).ne.intitu(ic)).or. &
-                     (zk8(jncho+ic-1).ne.noecho(ic,1)).or. &
-                     (zk8(jncho+nbchoc+ic-1).ne.noecho(ic,5)) ) then
-                    vmessk(1)=zk8(jinti+ic-1)
+                if ( (inti(ic).ne.intitu(ic)).or. &
+                     (ncho(ic).ne.noecho(ic,1)).or. &
+                     (ncho(1+nbchoc+ic-1).ne.noecho(ic,5)) ) then
+                    vmessk(1)=inti(ic)
                     vmessk(2)=intitu(ic)
-                    vmessk(3)=zk8(jncho+ic-1)
+                    vmessk(3)=ncho(ic)
                     vmessk(4)=noecho(ic,1)
-                    vmessk(5)=zk8(jncho+nbchoc+ic-1)
+                    vmessk(5)=ncho(1+nbchoc+ic-1)
                     vmessk(6)=noecho(ic,5)
                     call utmess('F', 'ALGORITH5_83',nk=6,valk=vmessk)
                 endif
@@ -145,31 +153,31 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
         call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
         call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
         call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=ni)
-        call jeveuo(tran//'           .DISC', 'E', jinst)
+        call jeveuo(tran//'           .DISC', 'E', vr=disc)
         call jelira(tran//'           .DISC', 'LONUTI', nbinst)
-        if (ni .eq. 0) tinit = zr(jinst+nbinst-1)
+        if (ni .eq. 0) tinit = disc(nbinst)
 !       Déplacement
         inter = 'NON'
-        call jeveuo(tran//'           .DEPL', 'E', jdeplt)
-        call extrac(inter, prec, crit, nbinst, zr(jinst),&
-                    tinit, zr(jdeplt), nbmode, depgen, ier)
+        call jeveuo(tran//'           .DEPL', 'E', vr=depl)
+        call extrac(inter, prec, crit, nbinst, disc,&
+                    tinit, depl, nbmode, depgen, ier)
         if (ier .ne. 0) then
             call utmess('F', 'ALGORITH5_46')
         endif
 !       Vitesse
-        call jeveuo(tran//'           .VITE', 'E', jvitet)
+        call jeveuo(tran//'           .VITE', 'E', vr=vite)
         inter = 'NON'
-        call extrac(inter, prec, crit, nbinst, zr(jinst),&
-                    tinit, zr(jvitet), nbmode, vitgen, ier)
+        call extrac(inter, prec, crit, nbinst, disc,&
+                    tinit, vite, nbmode, vitgen, ier)
         if (ier .ne. 0) then
             call utmess('F', 'ALGORITH5_47')
         endif
 !       Accelération
         if ( present(accgen) ) then
-            call jeveuo(tran//'           .ACCE', 'E', jaccet)
+            call jeveuo(tran//'           .ACCE', 'E', vr=acce)
             inter = 'NON'
-            call extrac(inter, prec, crit, nbinst, zr(jinst),&
-                        tinit, zr(jaccet), nbmode, accgen, ier)
+            call extrac(inter, prec, crit, nbinst, disc,&
+                        tinit, acce, nbmode, accgen, ier)
             if (ier .ne. 0) then
                 call utmess('F', 'ALGORITH5_47')
             endif
@@ -179,7 +187,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
             call jeveuo(tran//'           .VINT', 'E', jvint)
             inter = 'NON'
             nbvint = nbchoc*mdtr74grd('MAXVINT')
-            call extrac(inter, prec, crit, nbinst, zr(jinst),&
+            call extrac(inter, prec, crit, nbinst, disc,&
                         tinit, zr(jvint), nbvint, vint, ier)
             if (ier .ne. 0) then
                 call utmess('F', 'ALGORITH5_48')

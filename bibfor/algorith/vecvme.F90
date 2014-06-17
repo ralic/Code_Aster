@@ -68,7 +68,9 @@ subroutine vecvme(optio2, modelz, carelz, mate, compor,&
     character(len=24) :: ligrmo, lchin(13), lchout(1)
     character(len=24) :: vechvp, cnchvp, vrcplu, modele, carele
     character(len=19) :: vecel, chvref
-    integer :: i, ibid, iret, jlve, jchtp, jchvp, jtp, jyp, lonch
+    integer :: i, ibid, iret, jlve,   jtp, jyp, lonch
+    real(kind=8), pointer :: chtp(:) => null()
+    real(kind=8), pointer :: chvp(:) => null()
     data cnchvp/' '/
     data typres/'R'/
 !
@@ -150,11 +152,11 @@ subroutine vecvme(optio2, modelz, carelz, mate, compor,&
     else
         call jeveuo(cnchtp, 'L', jtp)
         call jelira(zk24(jtp) (1:19)//'.VALE', 'LONMAX', lonch)
-        call jeveuo(zk24(jtp) (1:19)//'.VALE', 'E', jchtp)
+        call jeveuo(zk24(jtp) (1:19)//'.VALE', 'E', vr=chtp)
         call jeveuo(cnchvp, 'L', jyp)
-        call jeveuo(zk24(jyp) (1:19)//'.VALE', 'E', jchvp)
+        call jeveuo(zk24(jyp) (1:19)//'.VALE', 'E', vr=chvp)
         do 10 i = 1, lonch
-            zr(jchtp+i-1) = zr(jchtp+i-1) + zr(jchvp+i-1)
+            chtp(i) = chtp(i) + chvp(i)
 10      continue
     endif
 !

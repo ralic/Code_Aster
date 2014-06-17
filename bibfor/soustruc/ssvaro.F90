@@ -90,13 +90,15 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !     ------------------
     integer :: long
     character(len=2) :: sens2
-    integer :: i, i1, iacagd, iadeeq, iadesm, iaiino, icmp
+    integer :: i, i1, iacagd,   iaiino, icmp
     integer :: icmpp, icumul, ieq, ieqdeb, ieqp, ier
     integer :: ii, ino, iret, j, j1, jj, k
     integer :: n1, nbno, nddle, nddli, nddlt, nulag, nuno
     integer :: nunold, nunop
     integer :: di, dj, dmi, dmj
     real(kind=8) :: p1(10, 10), p2(10, 10), l2(6, 6), li(10, 10), lj(10, 10)
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: desm(:) => null()
 !-----------------------------------------------------------------------
 !
 !     P1 ET P2 MATRICES DE TRAVAIL.
@@ -154,10 +156,10 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
 !     -3 2CALCUL DE NDDLI, NDDLE, NDDLT ET LONG :
 !     --------------------------------
-    call jeveuo(nomacr//'.DESM', 'L', iadesm)
-    call jeveuo(nomacr//'      .NUME.DEEQ', 'L', iadeeq)
-    nddle=zi(iadesm-1+4)
-    nddli=zi(iadesm-1+5)
+    call jeveuo(nomacr//'.DESM', 'L', vi=desm)
+    call jeveuo(nomacr//'      .NUME.DEEQ', 'L', vi=deeq)
+    nddle=desm(4)
+    nddli=desm(5)
     nddlt= nddli+nddle
     if (matrix) then
         long= nddle*(nddle+1)/2
@@ -204,8 +206,8 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
     nunold=0
     ino=0
     do ieq = ieqdeb, nddlt
-        nuno =zi(iadeeq-1+2*(ieq-1)+1)
-        icmp=zi(iadeeq-1+2*(ieq-1)+2)
+        nuno =deeq(2*(ieq-1)+1)
+        icmp=deeq(2*(ieq-1)+2)
         if ((icmp.le.0) .or. (icmp.eq.nulag)) then
 !         --NOEUD DE LAGRANGE:
             ino= ino+1
@@ -227,9 +229,9 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
         dmi=0
         do ieqp = ieq+1, nddlt
-            nunop =zi(iadeeq-1+2*(ieqp-1)+1)
+            nunop =deeq(2*(ieqp-1)+1)
             if (nunop .ne. nuno) goto 22
-            icmpp=zi(iadeeq-1+2*(ieqp-1)+2)
+            icmpp=deeq(2*(ieqp-1)+2)
             icumul=icumul+icmpp
 !
 !         -- CAS "2D"

@@ -43,7 +43,7 @@ subroutine cfcorn(newgeo, numno, coorno)
 !
 !
 !
-    integer :: jcoor
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,10 +57,10 @@ subroutine cfcorn(newgeo, numno, coorno)
 !
 ! --- COORDONNEES DU NOEUD
 !
-    call jeveuo(newgeo(1:19)//'.VALE', 'L', jcoor)
-    coorno(1) = zr(jcoor+3*(numno -1))
-    coorno(2) = zr(jcoor+3*(numno -1)+1)
-    coorno(3) = zr(jcoor+3*(numno -1)+2)
+    call jeveuo(newgeo(1:19)//'.VALE', 'L', vr=vale)
+    coorno(1) = vale(1+3*(numno -1))
+    coorno(2) = vale(1+3*(numno -1)+1)
+    coorno(3) = vale(1+3*(numno -1)+2)
 !
     call jedema()
 !

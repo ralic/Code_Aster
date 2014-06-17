@@ -70,16 +70,21 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iddeeq, iran, j, k
+    integer :: i, ibid,  iran, j, k
     integer :: ldk0aa, ldk0ai, ldk0aj, ldk0ii, ldk0ji, ldk0jj, ldkpaa
     integer :: ldkpai, ldkpaj, ldkpja, ldkpji, ldkpjj, ldm0ii, llcham
-    integer :: lldesc, llkge, llmge, llnin, llnoa, llnod, llnog
-    integer :: llnoms, llref1, ltcap, ltcdp, ltcgp, ltetax
+    integer ::  llkge, llmge,  llnoa, llnod, llnog
+    integer ::   ltcap, ltcdp, ltcgp, ltetax
     integer :: ltetgd, ltexa, ltexd, ltexg, ltflex, ltmat, ltvec
     integer :: nbdax, nbddr, nbmod, nbnoa, nbnod, nbnog, nbsec
     integer :: nbsma, nbv, neq, ntail, ntrian, numa, numd
     integer :: numg
     real(kind=8) :: xx
+    integer, pointer :: deeq(:) => null()
+    integer, pointer :: cycl_nuin(:) => null()
+    character(len=24), pointer :: cycl_refe(:) => null()
+    integer, pointer :: cycl_desc(:) => null()
+    integer, pointer :: cycl_nbsc(:) => null()
 !-----------------------------------------------------------------------
     data pgc /'PRCYMN'/
 !-----------------------------------------------------------------------
@@ -87,9 +92,9 @@ subroutine prcymn(nomres, soumat, repmat)
 ! --- RECUPERATION DES CONCEPTS AMONT
 !
     call jemarq()
-    call jeveuo(nomres//'.CYCL_REFE', 'L', llref1)
-    intf  =zk24(llref1+1)
-    basmod=zk24(llref1+2)
+    call jeveuo(nomres//'.CYCL_REFE', 'L', vk24=cycl_refe)
+    intf  =cycl_refe(2)
+    basmod=cycl_refe(3)
     call jelibe(nomres//'.CYCL_REFE')
 !
 !
@@ -101,10 +106,10 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 ! --- RECUPERATION DES DIMENSIONS DU PROBLEME GENERALISE
 !
-    call jeveuo(nomres//'.CYCL_DESC', 'L', lldesc)
-    nbmod=zi(lldesc)
-    nbddr=zi(lldesc+1)
-    nbdax=zi(lldesc+2)
+    call jeveuo(nomres//'.CYCL_DESC', 'L', vi=cycl_desc)
+    nbmod=cycl_desc(1)
+    nbddr=cycl_desc(2)
+    nbdax=cycl_desc(3)
     call jelibe(nomres//'.CYCL_DESC')
 !
 ! --- ALLOCATION DU REPERTOIRE DES NOMS DES SOUS-MATRICES
@@ -211,14 +216,14 @@ subroutine prcymn(nomres, soumat, repmat)
 ! --- RECUPERATION NB EQUATIONS
 !
     call dismoi('NB_EQUA', raid, 'MATR_ASSE', repi=neq)
-    call jeveuo(numddl//'.DEEQ', 'L', iddeeq)
+    call jeveuo(numddl//'.DEEQ', 'L', vi=deeq)
 !
 ! --- RECUPERATION DES NUMEROS D'INTERFACE DROITE ET GAUCHE
 !
-    call jeveuo(nomres//'.CYCL_NUIN', 'L', llnin)
-    numd=zi(llnin)
-    numg=zi(llnin+1)
-    numa=zi(llnin+2)
+    call jeveuo(nomres//'.CYCL_NUIN', 'L', vi=cycl_nuin)
+    numd=cycl_nuin(1)
+    numg=cycl_nuin(2)
+    numa=cycl_nuin(3)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS DES INTERFACES
 !
@@ -237,8 +242,8 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 ! --- RECUPERATION DU NOMBRE DE SECTEURS
 !
-    call jeveuo(nomres//'.CYCL_NBSC', 'L', llnoms)
-    nbsec=zi(llnoms)
+    call jeveuo(nomres//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+    nbsec=cycl_nbsc(1)
     call jelibe(nomres//'.CYCL_NBSC')
 !
 ! --- RECUPERATION RANGS DDL INTERFACE DANS VECTEUR ASSEMBLE
@@ -291,7 +296,7 @@ subroutine prcymn(nomres, soumat, repmat)
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
+        call zerlag(neq, deeq, vectr=zr(ltvec))
 !
         do j = 1, nbddr
 !
@@ -319,7 +324,7 @@ subroutine prcymn(nomres, soumat, repmat)
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
+        call zerlag(neq, deeq, vectr=zr(ltvec))
 !
         do j = 1, nbddr
 !
@@ -353,7 +358,7 @@ subroutine prcymn(nomres, soumat, repmat)
             call dcapno(basmod, 'DEPL    ', i, chamva)
             call jeveuo(chamva, 'L', llcham)
             call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-            call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
+            call zerlag(neq, deeq, vectr=zr(ltvec))
 !
             do j = 1, nbdax
 !

@@ -62,10 +62,11 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: idcoor, idlino, iocc, iret, nangle
+    integer ::  idlino, iocc, iret, nangle
     integer :: nb, nbno, nbnoe, ndim, ndim1, nprec, nv
     integer :: nvect
     real(kind=8) :: prec, xnorm, xnorm2, zero
+    real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -93,7 +94,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 ! --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
 !     --------------------------------------------------
-    call jeveuo(noma//'.COORDO    .VALE', 'L', idcoor)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
 !
 ! --- RECUPERATION DU POINT SITUE SUR LE PLAN OU LA DROITE :
 !     ----------------------------------------------------
@@ -178,7 +179,7 @@ subroutine cgnopl(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ----------------------
     call wkvect(lisnoe, 'V V I', nbnoe, idlino)
 !
-    call cgnop0(nbnoe, zr(idcoor), x0, vecnor, prec,&
+    call cgnop0(nbnoe, vale, x0, vecnor, prec,&
                 nbno, zi(idlino))
 !
     call jedema()

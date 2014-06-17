@@ -43,11 +43,12 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 ! IN  : BASE   : BASE OU L'ON CREE LA FONCTION
 ! OUT : IER    : CODE RETOUR, = 0 : OK
 !     ------------------------------------------------------------------
-    integer :: nbordr, iret, kordr, lpro, lfon, lvar, iordr, lacce, nbacc, nbpar
+    integer :: nbordr, iret, kordr, lpro, lfon, lvar, iordr,  nbacc, nbpar
     integer :: iad1, iad2
     character(len=8) :: type
     character(len=16) :: nomacc
     character(len=19) :: knume
+    character(len=16), pointer :: acces(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -65,8 +66,8 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
     call rsnopa(resu, 0, '&&FOCRR3.VAR.ACCES', nbacc, nbpar)
     call jeexin('&&FOCRR3.VAR.ACCES', iret)
     if (iret .gt. 0) then
-        call jeveuo('&&FOCRR3.VAR.ACCES', 'L', lacce)
-        nomacc = zk16(lacce)
+        call jeveuo('&&FOCRR3.VAR.ACCES', 'L', vk16=acces)
+        nomacc = acces(1)
     else
         call utmess('F', 'UTILITAI2_4')
     endif

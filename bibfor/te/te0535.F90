@@ -64,7 +64,7 @@ subroutine te0535(option, nomte)
 ! --- ------------------------------------------------------------------
     integer :: igeom, icompo, imate, isect, iorien, nd, nk, iret
     integer :: icarcr, icontm, ideplm, ideplp, imatuu
-    integer :: ivectu, icontp, nno, nc, ivarim, ivarip, i, isicom
+    integer :: ivectu, icontp, nno, nc, ivarim, ivarip, i
     parameter  (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
     real(kind=8) :: e, nu, g, xl, xjx, gxjx, epsm
     integer :: lx
@@ -88,6 +88,7 @@ subroutine te0535(option, nomte)
     character(len=24) :: valk(2)
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
+    integer, pointer :: cpri(:) => null()
     parameter  (zero=0.0d+0)
 !
 ! --- ------------------------------------------------------------------
@@ -225,8 +226,8 @@ subroutine te0535(option, nomte)
 !
 ! --- CARACTERISTIQUES ELASTIQUES (PAS DE TEMPERATURE POUR L'INSTANT)
 !     ON PREND LE E ET NU DU MATERIAU TORSION (VOIR OP0059)
-    call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', isicom)
-    nbgfmx = zi(isicom+2)
+    call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
+    nbgfmx = cpri(3)
     mator = zk24(isdcom-1+nbgfmx*6+1)(1:8)
     call matela(zi(imate), mator, 0, 0.d0, e,&
                 nu)
