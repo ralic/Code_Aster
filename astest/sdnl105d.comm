@@ -129,11 +129,16 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUM)
 
 #
-MODES=MODE_ITER_INV(     MATR_RIGI=K_ASSE,
-                                 MATR_MASS=M_ASSE,
-          CALC_FREQ=_F( NMAX_FREQ = 15, OPTION = 'AJUSTE', FREQ = (2., 40.,),
-                     NMAX_ITER_AJUSTE = 100,PREC_AJUSTE=1.E-14),
-          CALC_MODE=_F( NMAX_ITER = 100, PREC=1.E-14))
+MODES=CALC_MODES( MATR_RIGI=K_ASSE,
+                  MATR_MASS=M_ASSE,
+                  OPTION='AJUSTE',
+                  CALC_FREQ=_F( NMAX_FREQ = 15,
+                                FREQ = (2., 40.), ),
+                  SOLVEUR_MODAL=_F( NMAX_ITER_AJUSTE = 100,
+                                    PREC_AJUSTE = 1.E-14,
+                                    NMAX_ITER_INV = 100,
+                                    PREC_INV = 1.E-14 ),
+                 )
 
 
 

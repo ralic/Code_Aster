@@ -96,11 +96,10 @@ ASSEMBLAGE ( MODELE = MO,
                    _F( MATRICE= CO('RIGSTA'), OPTION= 'RIGI_MECA'),
                    _F( MATRICE= CO('MASSTA'), OPTION= 'MASS_MECA'),),);
 #
-MODED=MODE_ITER_SIMULT(MATR_RIGI=RIGSTA,
-                       MATR_MASS=MASSTA,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=95,),
-                       VERI_MODE=_F(STOP_ERREUR='NON',),);
+MODED=CALC_MODES( MATR_RIGI=RIGSTA,
+                  MATR_MASS=MASSTA,
+                  CALC_FREQ=_F( NMAX_FREQ=95 ),
+                  VERI_MODE=_F( STOP_ERREUR='NON' ),);
 #
 # Calcul des modes sur le modele souple
 #
@@ -113,11 +112,11 @@ ASSEMBLAGE ( MODELE = MO,
                    _F( MATRICE= CO('RIGST2'), OPTION= 'RIGI_MECA'),
                    _F( MATRICE= CO('MASST2'), OPTION= 'MASS_MECA'),),);
 #
-MODE2=MODE_ITER_SIMULT(MATR_RIGI=RIGST2,
-                       MATR_MASS=MASST2,
-                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=95,),
-                       VERI_MODE=_F(STOP_ERREUR='NON',));
+MODE2=CALC_MODES( MATR_RIGI=RIGST2,
+                  MATR_MASS=MASST2,
+                  OPTION='PLUS_PETITE',
+                  CALC_FREQ=_F( NMAX_FREQ=95 ),
+                  VERI_MODE=_F( STOP_ERREUR='NON' ),);
 #
 # CALCUL AVEC SOLVEUR LINEAIRE MULT_FRONT
 REPONSE=STAT_NON_LINE(MODELE=MO,
@@ -301,7 +300,7 @@ REPONSEM=DYNA_NON_LINE( reuse=REPONSEM,
              );
 #
 #  Frequence du premier mode pour le materiau elastique raide
-#  Valeur venant de MODE_ITER_SIMULT
+#  Valeur venant de CALC_MODES
 #
 freqel = 3.58128E-01
 #

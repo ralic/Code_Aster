@@ -187,15 +187,15 @@ IMPR_TABLE(TABLE=mass_bar);
 #
 #
 #
-mode_rig =MACRO_MODE_MECA(MATR_RIGI= MATRIGI,
-                       MATR_MASS= MATMASS,
-                       CALC_FREQ=_F(FREQ=(0.1, 
-                                          10.,
-                                          ),
-                                  ),
-                       VERI_MODE=_F(STOP_ERREUR='NON',),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+mode_rig =CALC_MODES( MATR_RIGI= MATRIGI,
+                      MATR_MASS= MATMASS,
+                      OPTION   ='BANDE',
+                      CALC_FREQ=_F( FREQ=(0.1, 10.) ),
+                      VERI_MODE=_F( STOP_ERREUR='NON' ),
+                      NORM_MODE=_F(),
+                      FILTRE_MODE=_F( SEUIL=0.0003 ),
+                      IMPRESSION=_F()
+                     );
                        
 TEST_RESU(RESU=(
     _F(   RESULTAT = mode_rig,        PARA = 'FREQ',

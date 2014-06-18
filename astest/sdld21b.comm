@@ -58,9 +58,11 @@ ASSEMBLAGE(  MODELE=MO,     CHARGE=CH,      CARA_ELEM=CARELEM,
 
 # --------------------------------------------------------------------
 
-MODES=MODE_ITER_INV(   MATR_RIGI=MATASSR,  MATR_MASS=MATASSM,
-                          CALC_FREQ=_F( OPTION = 'AJUSTE',
-                         FREQ = (5.,10.,15.,20.,24.,27.,30.,32.,))  )
+MODES=CALC_MODES( OPTION='AJUSTE',
+                  MATR_RIGI=MATASSR,
+                  MATR_MASS=MATASSM,
+                  CALC_FREQ=_F( FREQ = (5.,10.,15.,20.,24.,27.,30.,32.) )
+                 )
 
 PROJ_BASE( BASE=MODES,
            STOCKAGE = 'PLEIN',

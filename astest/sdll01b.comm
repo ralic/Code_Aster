@@ -120,10 +120,11 @@ MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
 #                      CALCUL MODAL
 #--------------------------------------------------------------------
 
-MODE1=MODE_ITER_INV(  MATR_RIGI=MATASSR1,
-                        MATR_MASS=MATASSM1,
-              CALC_FREQ=_F(  OPTION = 'AJUSTE',
-                          FREQ = ( 430.,     4500.,  ))   )
+MODE1=CALC_MODES( OPTION='AJUSTE',
+                  MATR_RIGI=MATASSR1,
+                  MATR_MASS=MATASSM1,
+                  CALC_FREQ=_F( FREQ = ( 430., 4500.) )
+                 )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

@@ -871,13 +871,14 @@ MATASR=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NU, SYME='OUI',);
 IMPR_CO(CHAINE='MATASR             .LIME');
 
 # Calcul des modes propres
-MODET=MACRO_MODE_MECA(MATR_RIGI=MATASR,
-                      MATR_MASS=MATASM,
-                      NMAX_ITER_SOREN=80,
-                      CALC_FREQ=_F(FREQ=(-0.1,15.,40.,68.,),
-                                   DIM_SOUS_ESPACE=78,),
-                      VERI_MODE=_F(STOP_ERREUR='NON'),
-                      IMPRESSION=_F(),);
+MODET=CALC_MODES( MATR_RIGI=MATASR,
+                  MATR_MASS=MATASM,
+                  OPTION='BANDE',
+                  SOLVEUR_MODAL=_F( NMAX_ITER_SOREN=80,
+                                    DIM_SOUS_ESPACE=78 ),
+                  CALC_FREQ=_F( FREQ=(-0.1, 15., 40., 68.) ),
+                  VERI_MODE=_F( STOP_ERREUR='NON' ),
+                  IMPRESSION=_F(),);
 
 
 BAMODA=DEFI_BASE_MODALE(RITZ=_F(MODE_MECA = MODET), NUME_REF=NU);
@@ -892,10 +893,12 @@ MASSGEN=PROJ_MATR_BASE(BASE=BAMODA,
                        NUME_DDL_GENE=NDDLGENE,
                        MATR_ASSE=MATASM,);
 
-modgen=MODE_ITER_SIMULT(MATR_RIGI=RIGIGEN, MATR_MASS=MASSGEN,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(-0.1,215.,),),
-                       VERI_MODE=_F(STOP_ERREUR='NON',),);
+modgen=CALC_MODES( OPTION='BANDE',
+                   MATR_RIGI=RIGIGEN,
+                   MATR_MASS=MASSGEN,
+                   CALC_FREQ=_F( FREQ=(-0.1,215.) ),
+                   VERI_MODE=_F( STOP_ERREUR='NON' ),
+                  );
 
 RESPHY=REST_GENE_PHYS(RESU_GENE=modgen,NOM_CHAM='DEPL',);
 

@@ -174,10 +174,11 @@ MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE,
 #
 # MODE MECANIQUE
 
-MODE=MACRO_MODE_MECA(MATR_RIGI=RIGIDITE,
-                     MATR_MASS=MASSE,
-                     CALC_FREQ=_F(FREQ=(1.0,600.0,),),
-                     IMPRESSION=_F(),)
+MODE=CALC_MODES( MATR_RIGI=RIGIDITE,
+                 MATR_MASS=MASSE,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F( FREQ=(1.,600.) ),
+                 IMPRESSION=_F(),)
 
 
 INTERDYN=DEFI_INTERF_DYNA(NUME_DDL=NUMEDDL,

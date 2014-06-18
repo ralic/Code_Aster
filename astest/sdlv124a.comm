@@ -117,12 +117,12 @@ CASS=ASSE_MATRICE(MATR_ELEM=CELEM,
 FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
                   NUME_DDL=NUME,);
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=KASS,
-                       MATR_MASS=MASS,
-                       CALC_FREQ=_F(
-                       NMAX_FREQ=15,),
-                       VERI_MODE=_F(STOP_ERREUR='OUI',
-                                    STURM='OUI',),);
+MODES=CALC_MODES( OPTION='PLUS_PETITE',
+                  MATR_RIGI=KASS,
+                  MATR_MASS=MASS,
+                  CALC_FREQ=_F(NMAX_FREQ=15),
+                  VERI_MODE=_F(STOP_ERREUR='OUI',
+                               STURM='OUI'),);
 
 
 

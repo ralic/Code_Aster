@@ -342,17 +342,17 @@ ASSEMBLAGE(MODELE=MODELE1,
                               OPTION='CHAR_MECA',
                               CHARGE=CHPE12),),);
 
-# MODE1=MODE_ITER_SIMULT(  MATR_RIGI=MATR1,   MATR_MASS=MATM1,
+# MODE1=CALC_MODES( MATR_RIGI=MATR1,   MATR_MASS=MATM1,
 #                            CALC_FREQ=_F(
 #                                         NMAX_FREQ=120,
 #                                        ),
 #                            VERI_MODE=_F(  STOP_ERREUR='NON')
 #                          );
-MODE1=MACRO_MODE_MECA(MATR_RIGI=MATR1,
-                        MATR_MASS=MATM1,
-                        CALC_FREQ=_F(FREQ=(3.,20.,31.,41.,),
-                                    ),
-                        )
+MODE1=CALC_MODES( OPTION='BANDE',
+                  MATR_RIGI=MATR1,
+                  MATR_MASS=MATM1,
+                  CALC_FREQ=_F( FREQ=(3., 20., 31., 41.), ),
+                 )
 
 MODSTA1=MODE_STATIQUE(MATR_RIGI=MATR1,
                       MATR_MASS=MATM1,
@@ -737,7 +737,7 @@ EVOLMV=DYNA_NON_LINE(MODELE=MODELB,
                                      ITER_GLOB_MAXI=10,
         ),);
  #
-#  Frequence du premier mode valeur venant de MODE_ITER_SIMULT
+#  Frequence du premier mode valeur venant de CALC_MODES
 #
 freqel = 2.981
 

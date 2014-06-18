@@ -139,10 +139,10 @@ ASSEMBLAGE(MODELE=MODELE,
                       _F(MATRICE=CO('MATASSM'),
                          OPTION='MASS_MECA',),),);
 
-FREQ=MODE_ITER_SIMULT(MATR_RIGI=MATASSR,
-                      MATR_MASS=MATASSM,
-                      CALC_FREQ=_F( NMAX_FREQ=7 ),
-                     );
+FREQ=CALC_MODES( MATR_RIGI=MATASSR,
+                 MATR_MASS=MATASSM,
+                 CALC_FREQ=_F( NMAX_FREQ=7 ),
+                );
 
 #
 
@@ -161,12 +161,10 @@ NUMDDL=NUME_DDL(MATR_RIGI=RIGI,)
 RIGAS=ASSE_MATRICE(MATR_ELEM=RIGI,NUME_DDL=NUMDDL)
 MASAS=ASSE_MATRICE(MATR_ELEM=MASS,NUME_DDL=NUMDDL)
 
-FREQ_DIA=MODE_ITER_SIMULT(MATR_RIGI  =RIGAS,
-                            MATR_MASS  =MASAS,
-                            CALC_FREQ=_F(
-                                       NMAX_FREQ=7,),
-
-                         )
+FREQ_DIA=CALC_MODES( MATR_RIGI  =RIGAS,
+                     MATR_MASS  =MASAS,
+                     CALC_FREQ=_F( NMAX_FREQ=7 ),
+                    )
 
 TEST_RESU(RESU=(_F(
                     NUME_ORDRE = 1,

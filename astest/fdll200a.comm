@@ -112,10 +112,11 @@ MATM=ASSE_MATRICE(MATR_ELEM=MM,
 #
 
 
-MODES=MODE_ITER_SIMULT(MATR_RIGI=MATK,
-                       MATR_MASS=MATM,
-                       CALC_FREQ=_F(OPTION='BANDE',
-                                    FREQ=(10.0,300.0,),),);
+MODES=CALC_MODES( OPTION='BANDE',
+                  MATR_RIGI=MATK,
+                  MATR_MASS=MATM,
+                  CALC_FREQ=_F( FREQ=(10.,300.) ,),
+                 );
 
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,

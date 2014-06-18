@@ -18,7 +18,7 @@
 # person_in_charge: emmanuel.boyere at edf.fr
 #-------------------------------------------------------------------
 #                 CORRIGE TP ANALYSE MODAL N3 
-#                            MACRO_MODE_MECA
+#                            CALC_MODES MULTI-BANDES
 
 #
 #-------------------------------------------------------------------
@@ -138,31 +138,36 @@ IMPR_RESU(FORMAT='CASTEM',
 #FIN();
 
 # QUESTION 2: ON REALISE LES TROIS OPERATIONS EN UNE 
-# (EN COUPANT EN 2 INTERVALLES) VIA MACRO_MODE_MECA
+# (EN COUPANT EN 2 INTERVALLES) VIA CALC_MODES
 
 
-MODES2=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
-                       MATR_MASS=M_ASSE,
-                       CALC_FREQ=_F(FREQ=(0.0,2.0,4.0),STOP_BANDE_VIDE='OUI',),
-                       NORM_MODE=_F( NORME='TRAN_ROTA',),
-                       FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
-                       IMPRESSION=_F(CUMUL='OUI',),);
+MODES2=CALC_MODES( MATR_RIGI=K_ASSE,
+                   MATR_MASS=M_ASSE,
+                   OPTION='BANDE',
+                   STOP_BANDE_VIDE='OUI',
+                   CALC_FREQ=_F( FREQ=(0., 2., 4.) ),
+                   NORM_MODE=_F( NORME='TRAN_ROTA' ),
+                   FILTRE_MODE=_F (CRIT_EXTR='MASS_EFFE_UN' ),
+                   IMPRESSION=_F( CUMUL='OUI' ),
+                  );
 
 
 # FIN DE LA QUESTION 2.
 #FIN();
 
 # QUESTION 3: ON REALISE LES TROIS OPERATIONS EN UNE
-# (EN COUPANT EN 4 INTERVALLES) VIA MACRO_MODE_MECA
+# (EN COUPANT EN 4 INTERVALLES) VIA CALC_MODES
 
 
-MODES4=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
-                       MATR_MASS=M_ASSE,
-                       SOLVEUR=_F(METHODE='MULT_FRONT'),
-                       CALC_FREQ=_F(FREQ=(0.0,1.0,2.0,3.0,4.0),),
-                       NORM_MODE=_F( NORME='TRAN_ROTA',),
-                       FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
-                       IMPRESSION=_F(CUMUL='OUI',),);
+MODES4=CALC_MODES( MATR_RIGI=K_ASSE,
+                   MATR_MASS=M_ASSE,
+                   OPTION='BANDE',
+                   SOLVEUR=_F( METHODE='MULT_FRONT' ),
+                   CALC_FREQ=_F( FREQ=(0., 1., 2., 3., 4.) ),
+                   NORM_MODE=_F( NORME='TRAN_ROTA' ),
+                   FILTRE_MODE=_F( CRIT_EXTR='MASS_EFFE_UN' ),
+                   IMPRESSION=_F( CUMUL='OUI' ),
+                  );
 
 
 # FIN DE LA QUESTION 3.
@@ -170,17 +175,16 @@ MODES4=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
 
 # QUESTION 4: IDEM VIA LANCZOS
 
-MODEL4=MACRO_MODE_MECA(MATR_RIGI=K_ASSE,
-                       MATR_MASS=M_ASSE,
-                       METHODE='TRI_DIAG',
-                       VERI_MODE=_F(SEUIL=1e-05,),
-                       CALC_FREQ=_F(
-                                    FREQ=(0.0,1.0,2.0,3.0,4.0),
-                                    DIM_SOUS_ESPACE = 180 ,  
-                                   ),
-                       NORM_MODE=_F( NORME='TRAN_ROTA',),
-                       FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
-                       IMPRESSION=_F(CUMUL='OUI',),);
-
+MODEL4=CALC_MODES( MATR_RIGI=K_ASSE,
+                   MATR_MASS=M_ASSE,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F( FREQ=(0., 1., 2., 3., 4.) ),
+                   SOLVEUR_MODAL=_F( METHODE='TRI_DIAG',
+                                     DIM_SOUS_ESPACE = 180 ),
+                   VERI_MODE=_F( SEUIL=1e-05 ),
+                   NORM_MODE=_F( NORME='TRAN_ROTA' ),
+                   FILTRE_MODE=_F( CRIT_EXTR='MASS_EFFE_UN' ),
+                   IMPRESSION=_F( CUMUL='OUI' ),
+                  );
 
 FIN();

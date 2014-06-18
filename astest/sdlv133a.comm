@@ -89,15 +89,14 @@ masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
 # IMPR_TABLE(TABLE=MASSTOT,);
 
 
-mode =MACRO_MODE_MECA(MATR_RIGI=rigidite,
-                      MATR_MASS=masse,
-                      CALC_FREQ=_F(FREQ=(0.1,70.,100.,125.,150.,
-                                         170., 185., 
-                                          ),
-                                  ),
-                      FILTRE_MODE=_F(SEUIL=0.0003,),
-                      IMPRESSION=_F(),);
-
+mode =CALC_MODES( MATR_RIGI=rigidite,
+                  MATR_MASS=masse,
+                  OPTION='BANDE',
+                  CALC_FREQ=_F( FREQ=(0.1,70.,100.,125.,150.,170., 185.),),
+                  NORM_MODE=_F(),
+                  FILTRE_MODE=_F( SEUIL=0.0003 ),
+                  IMPRESSION=_F(),
+                 );
 
 
 #

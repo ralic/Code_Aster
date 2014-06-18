@@ -358,21 +358,21 @@ MOD_4=MODE_ITER_SIMULT(   MATR_RIGI=RIGAS,
                             DIM_SOUS_ESPACE = 20,   )
                           )
 
-MOD_5=MODE_ITER_INV(   MATR_RIGI=RIGAS,
-                              MATR_RIGI_GEOM=RIGASG_4,
-                              TYPE_RESU='MODE_FLAMB',
-                            CALC_CHAR_CRIT=_F(  CHAR_CRIT = (-1.5E8, 1.7E8,), )
-
-                          )
+MOD_5=CALC_MODES( MATR_RIGI=RIGAS,
+                  MATR_RIGI_GEOM=RIGASG_4,
+                  TYPE_RESU='MODE_FLAMB',
+                  OPTION='AJUSTE',
+                  CALC_CHAR_CRIT=_F( CHAR_CRIT = (-1.5E8, 1.7E8), )
+                 )
 
 #
 
-MOD_6=MODE_ITER_INV(   MATR_A=RIGAS,
-                              MATR_B=RIGASG_4,
-                              TYPE_RESU='GENERAL',
-                            CALC_CHAR_CRIT=_F(  CHAR_CRIT = (-1.5E8, 1.7E8,), )
-
-                          )
+MOD_6=CALC_MODES( MATR_A=RIGAS,
+                  MATR_B=RIGASG_4,
+                  TYPE_RESU='GENERAL',
+                  OPTION='AJUSTE',
+                  CALC_CHAR_CRIT=_F( CHAR_CRIT = (-1.5E8, 1.7E8), )
+                 )
 
 TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   NUME_MODE=3,

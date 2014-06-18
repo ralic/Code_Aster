@@ -1,4 +1,4 @@
-# TITRE VALIDATION DU PARALLELISME MULTI-NIVEAUX DE MACRO_MODE_MECA
+# TITRE VALIDATION DU PARALLELISME MULTI-NIVEAUX DE CALC_MODES EN MULTI-BANDES
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,7 +19,8 @@
 # CAS TEST EST CALQUE SUR LA PREMIERE PARTIE DE FDLV112B.
 # IL EST A LANCER SUR  PROCESSUS MPI.
 # IL EST DEDIE A LA VALIDATION INFORMATIQUE ET FONCTIONELLE DES DIFFERENTS
-# SCENARIOS DE PARALLELISME UTILISABLE AVEC MACRO_MODE_MECA ET INFO_MODE:
+# SCENARIOS DE PARALLELISME UTILISABLE AVEC CALC_MODES (EN MULTI-BANDES)
+# ET INFO_MODE:
 # - EN PARALLELISANT LA DISTRIBUTION EN FREQUENCE, LE SOLVEUR LINEAIRE OU LES 2.
 # - EN JOUANT SUR LA REPARTITION DES PROCESSEURS SUR CES DIFFERENTS NIVEAUX.
 # - EN JOUANT SUR LE CRITERE DE STURM DE POST-VERIFICATION (COM SUPPLEMENTAIRE).
@@ -140,26 +141,37 @@ nbmd41=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=1,
                    FREQ=(0.1,10.,20.,30.,40.,),SOLVEUR=_F(METHODE='MUMPS'),
                    NIVEAU_PARALLELISME='COMPLET',)
 IMPR_TABLE(TABLE=nbmd41,UNITE=6)
-mode41=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=1,
-                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),),
-                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE',),
-                       NIVEAU_PARALLELISME='COMPLET',
-                       VERI_MODE=_F(STURM=para_sturm),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+mode41=CALC_MODES( MATR_RIGI=MATRIGI,
+                   MATR_MASS=MATMASS,
+                   INFO=1,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.) ),
+                   SOLVEUR=_F( METHODE='MUMPS',
+                               RENUM='QAMD',
+                               GESTION_MEMOIRE='IN_CORE' ),
+                   NIVEAU_PARALLELISME='COMPLET',
+                   VERI_MODE=_F( STURM=para_sturm ),
+                   FILTRE_MODE=_F( SEUIL=0.0003 ),
+                   IMPRESSION=_F(),
+                   );
 
 # PARALLELISME 1x4 (PARALLELISME UNIQUEMENT SUR MUMPS, 4 PROCS)
 nbmd14=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=1,
                    FREQ=(0.1,10.,20.,30.,40.,),SOLVEUR=_F(METHODE='MUMPS'),
                    NIVEAU_PARALLELISME='PARTIEL',)
 IMPR_TABLE(TABLE=nbmd14,UNITE=6)
-mode14=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
-                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),),              
-                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
-                       NIVEAU_PARALLELISME='PARTIEL',
-                       VERI_MODE=_F(STURM=para_sturm),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+mode14=CALC_MODES( MATR_RIGI=MATRIGI,
+                   MATR_MASS=MATMASS,
+                   INFO=1,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.) ),
+                   SOLVEUR=_F( METHODE='MUMPS',
+                               RENUM='QAMD',
+                               GESTION_MEMOIRE='IN_CORE' ),
+                   NIVEAU_PARALLELISME='PARTIEL',
+                   VERI_MODE=_F( STURM=para_sturm ),
+                   FILTRE_MODE=_F( SEUIL=0.0003 ),
+                   IMPRESSION=_F(),);
 
 para_sturm='LOCAL'
 # PARALLELISME 2x2 (1 PROC POUR 2 BANDES x 2 PROCS POUR MUMPS)
@@ -167,26 +179,34 @@ nbmd22=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=1,
                    FREQ=(0.1,20.,40.,),SOLVEUR=_F(METHODE='MUMPS'),
                    NIVEAU_PARALLELISME='COMPLET',)
 IMPR_TABLE(TABLE=nbmd22,UNITE=6)
-mode22=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
-                       CALC_FREQ=_F(FREQ=(0.1, 20.,40.,),),              
-                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
-                       NIVEAU_PARALLELISME='COMPLET',
-                       VERI_MODE=_F(STURM=para_sturm),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+mode22=CALC_MODES( MATR_RIGI=MATRIGI,
+                   MATR_MASS=MATMASS,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F( FREQ=(0.1, 20., 40.) ),
+                   SOLVEUR=_F( METHODE='MUMPS',
+                               RENUM='QAMD',
+                               GESTION_MEMOIRE='IN_CORE' ),
+                   NIVEAU_PARALLELISME='COMPLET',
+                   VERI_MODE=_F( STURM=para_sturm ),
+                   FILTRE_MODE=_F( SEUIL=0.0003 ),
+                   IMPRESSION=_F(),);
 para_sturm='NON'
 # PARALLELISME AVEC DESEQUILIBRAGE: 1x2 POUR LA PREMIERE SOUS-BANDE, 1x1 POUR LES AUTRES
 nbmd211=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=1,
                    FREQ=(0.1,20.,30.,40.,),SOLVEUR=_F(METHODE='MUMPS'),
                    NIVEAU_PARALLELISME='COMPLET',)
 IMPR_TABLE(TABLE=nbmd211,UNITE=6)
-mode211=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
-                       CALC_FREQ=_F(FREQ=(0.1, 20.,30.,40.,),),          
-                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
-                       NIVEAU_PARALLELISME='COMPLET',
-                       VERI_MODE=_F(STURM=para_sturm),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+mode211=CALC_MODES( MATR_RIGI=MATRIGI,
+                    MATR_MASS=MATMASS,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.) ),
+                    SOLVEUR=_F( METHODE='MUMPS',
+                                RENUM='QAMD',
+                                GESTION_MEMOIRE='IN_CORE' ),
+                    NIVEAU_PARALLELISME='COMPLET',
+                    VERI_MODE=_F( STURM=para_sturm ),
+                    FILTRE_MODE=_F( SEUIL=0.0003 ),
+                    IMPRESSION=_F(),);
 
 # FIN DE TEST INFO_MODE PARALLELE EN CHANGEANT DE SOLVEUR LINEAIRE
 #-----------------------------------------------------------------
@@ -201,32 +221,42 @@ IMPR_TABLE(TABLE=nbmdLDLT,UNITE=6)
 #------------------------------------------------------------------------
 para_sturm='GLOBAL'
 # PARALLELISME 4x1 (SORENSEN + MULT_FRONT)
-modeSM=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
-                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),),              
-                       METHODE='SORENSEN',SOLVEUR=_F(METHODE='MULT_FRONT'),
-                       NIVEAU_PARALLELISME='COMPLET',
-                       VERI_MODE=_F(STURM=para_sturm),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+modeSM=CALC_MODES( MATR_RIGI=MATRIGI,
+                   MATR_MASS=MATMASS,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40. ) ),
+                   SOLVEUR_MODAL=_F( METHODE='SORENSEN' ),
+                   SOLVEUR=_F( METHODE='MULT_FRONT' ),
+                   NIVEAU_PARALLELISME='COMPLET',
+                   VERI_MODE=_F( STURM=para_sturm ),
+                   FILTRE_MODE=_F( SEUIL=0.0003 ),
+                   IMPRESSION=_F(),);
 para_sturm='LOCAL'
 # PARALLELISME 4x1 (TRI_DIAG + MULT_FRONT)
-modeLM=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
-                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),COEF_DIM_ESPACE=8),
-                       METHODE='TRI_DIAG',SOLVEUR=_F(METHODE='MULT_FRONT'),              
-                       NIVEAU_PARALLELISME='COMPLET',
-                       VERI_MODE=_F(STURM=para_sturm),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+modeLM=CALC_MODES( MATR_RIGI=MATRIGI,
+                   MATR_MASS=MATMASS,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40. ) ),
+                   SOLVEUR_MODAL=_F( METHODE='TRI_DIAG',
+                                     COEF_DIM_ESPACE=8 ),
+                   SOLVEUR=_F( METHODE='MULT_FRONT' ),
+                   NIVEAU_PARALLELISME='COMPLET',
+                   VERI_MODE=_F( STURM=para_sturm ),
+                   FILTRE_MODE=_F( SEUIL=0.0003 ),
+                   IMPRESSION=_F(),);
 
 para_sturm='NON'
 # PARALLELISME 4x1 (JACOBI + MULT_FRONT)
-modeJM=MACRO_MODE_MECA(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,
-                       CALC_FREQ=_F(FREQ=(0.1, 10.,20.,30.,40.,),),
-                       METHODE='JACOBI',SOLVEUR=_F(METHODE='MULT_FRONT'),
-                       NIVEAU_PARALLELISME='COMPLET',
-                       VERI_MODE=_F(STURM=para_sturm),
-                       FILTRE_MODE=_F(SEUIL=0.0003,),
-                       IMPRESSION=_F(),);
+modeJM=CALC_MODES( MATR_RIGI=MATRIGI,
+                   MATR_MASS=MATMASS,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40. ) ),
+                   SOLVEUR_MODAL=_F( METHODE='JACOBI' ),
+                   SOLVEUR=_F( METHODE='MULT_FRONT' ),
+                   NIVEAU_PARALLELISME='COMPLET',
+                   VERI_MODE=_F( STURM=para_sturm ),
+                   FILTRE_MODE=_F( SEUIL=0.0003 ),
+                   IMPRESSION=_F(),);
 
 
 # TEST_RESU SUR QUELQUES FREQS ET COMPOSANTES DE VECTEURS PROPRES

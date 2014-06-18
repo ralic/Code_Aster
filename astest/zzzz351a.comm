@@ -19,7 +19,7 @@
 # Interet du test :
 #-------------------
 # Ce test calcule les premieres frequences propres d'une plaque modelisee en 3D
-# On compare les resultats obtenus avec MODE_ITER_SIMULT
+# On compare les resultats obtenus avec CALC_MODES
 # selon que l'on utilise (ou non) la commande ELIM_LAGR.
 # ======================================================================
 
@@ -57,9 +57,12 @@ ASSEMBLAGE (    MODELE=MODELE,
 # 1. Calcul de reference avec les matrices "completes" :
 #--------------------------------------------------------
 if 1 :
-    MODE1=MODE_ITER_SIMULT(MATR_RIGI=K1, MATR_MASS=M1,
-                       CALC_FREQ=_F(OPTION='BANDE', FREQ=(10.0, 250.0,)),
-                       VERI_MODE=_F(SEUIL=1e-03,))
+    MODE1=CALC_MODES( OPTION='BANDE',
+                      MATR_RIGI=K1,
+                      MATR_MASS=M1,
+                      CALC_FREQ=_F( FREQ=(10., 250.) ),
+                      VERI_MODE=_F( SEUIL=1e-03 )
+                     )
 
     TEST_RESU(RESU=_F(RESULTAT=MODE1, NUME_MODE=2, PARA='FREQ', VALE_CALC= 85.631015163879, ))
 
@@ -70,9 +73,12 @@ if 1 :
     K2=ELIM_LAGR(MATR_RIGI=K1)
     M2=ELIM_LAGR(MATR_ASSE=M1, MATR_RIGI=K1)
 
-    MODE2=MODE_ITER_SIMULT(MATR_RIGI=K2, MATR_MASS=M2,
-                       CALC_FREQ=_F(OPTION='BANDE', FREQ=(10.0, 250.0,)),
-                       VERI_MODE=_F(SEUIL=1e-03,))
+    MODE2=CALC_MODES( OPTION='BANDE',
+                      MATR_RIGI=K2,
+                      MATR_MASS=M2,
+                      CALC_FREQ=_F( FREQ=(10., 250.) ),
+                      VERI_MODE=_F( SEUIL=1e-03 )
+                     )
 
     TEST_RESU(RESU=_F(RESULTAT=MODE2, NUME_MODE=2, PARA='FREQ', VALE_CALC= 85.631015163879, ))
 

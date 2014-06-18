@@ -180,12 +180,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-# Test de MACRO_MODE_MECA avec des matrices généralisées
-MODHUMIM = MACRO_MODE_MECA(
-                          MATR_RIGI = RIGGEN,
-                          MATR_MASS = MASTOT,
-                          CALC_FREQ =_F( FREQ = (1., 2., 5.) ),
-                         )
+# Test de CALC_MODES multi-bandes avec des matrices généralisées
+MODHUMIM = CALC_MODES( MATR_RIGI = RIGGEN,
+                       MATR_MASS = MASTOT,
+                       OPTION    ='BANDE',
+                       CALC_FREQ =_F( FREQ = (1., 2., 5.) ),
+                      )
 
 MODEAU=REST_GENE_PHYS(RESU_GENE=MODHUMIM,
                       MODE_MECA=MODES,

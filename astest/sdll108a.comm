@@ -90,14 +90,16 @@ MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EF
 MODE_STA=CALC_CHAMP(reuse=MODE_STA,  RESULTAT=MODE_STA,
                    FORCE='REAC_NODA',)
 
-MODE_MEC=MODE_ITER_INV(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                  CALC_FREQ=_F(  OPTION = 'PROCHE',
-                              FREQ = ( 110.91,   115.53,   136.01,
-                                      213.71,   417.76,   435.23,
-                                      464.56,   557.86,   822.59,
-                                      847.91,   979.29,   992.80,
-                                     1022.58,  1041.03,  1057.81,
-                                     1089.93,  1093.98,  1108.82, )) )
+MODE_MEC=CALC_MODES( OPTION='PROCHE',
+                     MATR_RIGI=RIGIDITE,
+                     MATR_MASS=MASSE,
+                     CALC_FREQ=_F( FREQ = ( 110.91,   115.53,   136.01,
+                                            213.71,   417.76,   435.23,
+                                            464.56,   557.86,   822.59,
+                                            847.91,   979.29,   992.80,
+                                           1022.58,  1041.03,  1057.81,
+                                           1089.93,  1093.98,  1108.82 ) )
+                    )
 
 
 IMPR_RESU(RESU=_F(RESULTAT=MODE_MEC))

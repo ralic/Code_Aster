@@ -404,9 +404,10 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL );
 # CALCUL DES MODES :
 #---------------------------------------------
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
-                           CALC_FREQ=_F(  NMAX_FREQ = 10),
-                         );
+MODE=CALC_MODES( MATR_RIGI=RIGIDITE,
+                 MATR_MASS=MASSE,
+                 CALC_FREQ=_F( NMAX_FREQ = 10 ),
+                );
 
 #
 # CALCUL DU MACRO-ELEMENT DYNAMIQUE :
@@ -785,10 +786,11 @@ ASSEMBLAGE(MODELE=STICKMOD,
 # CALCUL DES MODES :
 #---------------------------------------------
 
-MODE2=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGI,   MATR_MASS=MATRMASS,
-                           CALC_FREQ=_F(  NMAX_FREQ = 10),
-                           #VERI_MODE=_F(  STOP_ERREUR='NON')
-                         );
+MODE2=CALC_MODES( MATR_RIGI=MATRRIGI,
+                  MATR_MASS=MATRMASS,
+                  CALC_FREQ=_F( NMAX_FREQ = 10 ),
+                 #VERI_MODE=_F(  STOP_ERREUR='NON')
+                 );
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -1123,10 +1125,12 @@ ASSEMBLAGE(MODELE=STICKMOD,
 # CALCUL DES MODES :
 #---------------------------------------------
 
-MODE3=MODE_ITER_SIMULT(  MATR_RIGI=MATRRIGB,   MATR_MASS=MATRMASB,
-                           CALC_FREQ=_F(  NMAX_FREQ = 10),
-                           #VERI_MODE=_F(  STOP_ERREUR='NON')
-                         );
+MODE3=CALC_MODES( MATR_RIGI=MATRRIGB,
+                  MATR_MASS=MATRMASB,
+                  CALC_FREQ=_F( NMAX_FREQ = 10 ),
+                  #VERI_MODE=_F(  STOP_ERREUR='NON')
+                 );
+                  
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

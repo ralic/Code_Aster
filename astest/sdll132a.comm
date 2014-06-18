@@ -653,15 +653,18 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 
 
-# TESTE LA MACRO_COMMANDE : MACRO_MODE_MECA
+# TESTE LA MACRO_COMMANDE : CALC_MODES EN MULTI-BANDES
 
-MODMECA = MACRO_MODE_MECA(
-  MATR_RIGI      = MASRI, MATR_MASS= MASMA,
-  CALC_FREQ   =_F( FREQ = ( 0.0, 20.0, 40.0 )),
-  NORM_MODE   =_F( NORME = 'MASS_GENE'),
-  FILTRE_MODE =_F( CRIT_EXTR='MASS_EFFE_UN', SEUIL=5.0E-4 ),
-  IMPRESSION  =_F( CUMUL='OUI', CRIT_EXTR='MASS_EFFE_UN')
-)
+MODMECA = CALC_MODES( MATR_RIGI = MASRI,
+                      MATR_MASS = MASMA,
+                      OPTION = 'BANDE',
+                      CALC_FREQ =_F( FREQ = (0., 20., 40.) ),
+                      NORM_MODE =_F( NORME = 'MASS_GENE' ),
+                      FILTRE_MODE = _F( CRIT_EXTR='MASS_EFFE_UN',
+                                        SEUIL=5.0E-4 ),
+                      IMPRESSION =_F( CUMUL='OUI',
+                                      CRIT_EXTR='MASS_EFFE_UN'),
+                     )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',

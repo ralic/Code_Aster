@@ -65,10 +65,11 @@ MATASK=ASSE_MATRICE(MATR_ELEM=MATELE_K,NUME_DDL=NUM)
 
 MATASM=ASSE_MATRICE(MATR_ELEM=MATELE_M,NUME_DDL=NUM)
 
-MODES=MODE_ITER_INV( MATR_RIGI=MATASK,  MATR_MASS=MATASM,
-                             CALC_FREQ=_F( OPTION = 'AJUSTE',
-                                        FREQ = (10., 20.,))
-                            )
+MODES=CALC_MODES( OPTION='AJUSTE',
+                  MATR_RIGI=MATASK,
+                  MATR_MASS=MATASM,
+                  CALC_FREQ=_F( FREQ = (10., 20.) )
+                 )
 
 
 MASSES=POST_ELEM( MODELE=COLONNE,

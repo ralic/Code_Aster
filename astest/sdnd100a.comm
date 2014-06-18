@@ -99,10 +99,12 @@ MATRMASS=ASSE_MATRICE(MATR_ELEM=MASSELEM,NUME_DDL=NUMEROTA)
 VECTASS=ASSE_VECTEUR(   VECT_ELEM=VECTEL1,  NUME_DDL=NUMEROTA)
 
 #
-MODES=MODE_ITER_INV(   MATR_RIGI=MATRRIGI,  MATR_MASS=MATRMASS,
-                         CALC_FREQ=_F( OPTION = 'PROCHE',
-                        NMAX_FREQ = 1,
-                        FREQ = ( 15., )))
+MODES=CALC_MODES( MATR_RIGI=MATRRIGI,
+                  MATR_MASS=MATRMASS,
+                  OPTION='PROCHE',
+                  CALC_FREQ=_F( FREQ = (15.,),
+                                NMAX_FREQ = 1 )
+                 )
 
 
 #

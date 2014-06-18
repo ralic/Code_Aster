@@ -103,42 +103,42 @@ MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,
 # ANALYSE MODALE
 # QUESTION 1: CALCUL SUR LES 10 OU 11 PLUS PETITES FREQUENCES
 
-# CALCUL DES MODES AVEC MODE_ITER_SIMULT
+# CALCUL DES MODES AVEC CALC_MODES
 
 #------- ON TESTE LA METHODE TRI_DIAG ------------------------------------
 
-FREQ_0=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                        MATR_MASS=MATASSM1,
-                        METHODE='TRI_DIAG',
-#                       METHODE='SORENSEN',
-                        INFO=2,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=11,),
-                        );
+FREQ_0=CALC_MODES( OPTION='PLUS_PETITE',
+                   MATR_RIGI=MATASSR1,
+                   MATR_MASS=MATASSM1,
+                   SOLVEUR_MODAL=_F( METHODE='TRI_DIAG' ),
+                   INFO=2,
+                   CALC_FREQ=_F( NMAX_FREQ=11 ),
+                  );
 
 #------- ON TESTE LA METHODE QZ ------------------------------------
 
-FREQ_01=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                        MATR_MASS=MATASSM1,
-                        METHODE='QZ',
-                        INFO=2,
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=11),
-                        );
+FREQ_01=CALC_MODES( OPTION='PLUS_PETITE',
+                    MATR_RIGI=MATASSR1,
+                    MATR_MASS=MATASSM1,
+                    SOLVEUR_MODAL=_F( METHODE='QZ' ),
+                    INFO=2,
+                    CALC_FREQ=_F( NMAX_FREQ=11 ),
+                   );
 
-FREQ_02=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                        MATR_MASS=MATASSM1,
-                        METHODE='QZ',
-                        INFO=2,
-                        CALC_FREQ=_F(OPTION='CENTRE',
-                                     FREQ=2.59704E+03,
-                                     NMAX_FREQ=11),
-                        );
+FREQ_02=CALC_MODES( OPTION='CENTRE',
+                    MATR_RIGI=MATASSR1,
+                    MATR_MASS=MATASSM1,
+                    SOLVEUR_MODAL=_F( METHODE='QZ' ),
+                    INFO=2,
+                    CALC_FREQ=_F( FREQ=2.59704E+03,
+                                  NMAX_FREQ=11 ),
+                   );
 
-FREQ_03=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                        MATR_MASS=MATASSM1,
-                        METHODE='QZ',
-                        CALC_FREQ=_F(OPTION='TOUT',),);
+FREQ_03=CALC_MODES( OPTION='TOUT', 
+                    MATR_RIGI=MATASSR1,
+                    MATR_MASS=MATASSM1,
+                    SOLVEUR_MODAL=_F( METHODE='QZ' ),
+                   );
 
 # Vérification des résultats
 
@@ -170,45 +170,47 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #FIN();
 
 # QUESTION 2: CALCUL BANDE AVEC LES QUATRES METHODES
-FREQ_SOR=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                         MATR_MASS=MATASSM1,
-                         METHODE='SORENSEN',
-                         CALC_FREQ=_F(OPTION='BANDE',
-                                      FREQ=(0.0,6000.0,),),
-                         TITRE='METHODE DE SORENSEN',);
+FREQ_SOR=CALC_MODES( OPTION='BANDE',
+                     MATR_RIGI=MATASSR1,
+                     MATR_MASS=MATASSM1,
+                     SOLVEUR_MODAL=_F( METHODE='SORENSEN' ),
+                     CALC_FREQ=_F( FREQ=(0.,6000.), ),
+                     TITRE='METHODE DE SORENSEN'
+                    );
 
 FREQ_SOR=NORM_MODE(reuse=FREQ_SOR,MODE=FREQ_SOR,NORME='EUCL',);
 IMPR_RESU(RESU=_F(RESULTAT=FREQ_SOR,TOUT_PARA= 'OUI',TOUT_CHAM= 'NON'),);
 
-FREQ_LAN=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                         MATR_MASS=MATASSM1,
-                         METHODE='TRI_DIAG',
-                         CALC_FREQ=_F(OPTION='BANDE',
-                                      FREQ=(0.0,6000.0,),),
-                         TITRE='METHODE DE LANCZOS',);
+FREQ_LAN=CALC_MODES( OPTION='BANDE',
+                     MATR_RIGI=MATASSR1,
+                     MATR_MASS=MATASSM1,
+                     SOLVEUR_MODAL=_F( METHODE='TRI_DIAG' ),
+                     CALC_FREQ=_F( FREQ=(0.,6000.), ),
+                     TITRE='METHODE DE LANCZOS'
+                    );
 
 FREQ_LAN=NORM_MODE(reuse=FREQ_LAN,MODE=FREQ_LAN,NORME='EUCL',);
 IMPR_RESU(RESU=_F(RESULTAT=FREQ_LAN,TOUT_PARA= 'OUI',TOUT_CHAM= 'NON'),);
 
-FREQ_JAC=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                         MATR_MASS=MATASSM1,
-                         METHODE='JACOBI',
-                         OPTION='SANS',
-                         VERI_MODE=_F(SEUIL=1e-05,),
-                         CALC_FREQ=_F(OPTION='BANDE',
-                                      FREQ=(0.0,6000.0,),),
-                         TITRE='METHODE DE BATHE',);
-
+FREQ_JAC=CALC_MODES( OPTION='BANDE',
+                     MATR_RIGI=MATASSR1,
+                     MATR_MASS=MATASSM1,
+                     SOLVEUR_MODAL=_F( METHODE='JACOBI' ),
+                     VERI_MODE=_F( SEUIL=1e-05,),
+                     CALC_FREQ=_F( FREQ=(0.,6000.), ),
+                     TITRE='METHODE DE BATHE'
+                    );
 FREQ_JAC=NORM_MODE(reuse=FREQ_JAC,MODE=FREQ_JAC,NORME='EUCL',);
 IMPR_RESU(RESU=_F(RESULTAT=FREQ_JAC,TOUT_PARA= 'OUI',TOUT_CHAM= 'NON'),);
 
-FREQ_QZ=MODE_ITER_SIMULT(MATR_RIGI=MATASSR1,
-                         MATR_MASS=MATASSM1,
-                         METHODE='QZ',
-                         VERI_MODE=_F(SEUIL=1e-05,),
-                         CALC_FREQ=_F(OPTION='BANDE',
-                                      FREQ=(0.0,6000.0,),),
-                         TITRE='METHODE QZ',);
+FREQ_QZ=CALC_MODES( OPTION='BANDE',
+                    MATR_RIGI=MATASSR1,
+                    MATR_MASS=MATASSM1,
+                    SOLVEUR_MODAL=_F( METHODE='QZ' ),
+                    VERI_MODE=_F( SEUIL=1e-05,),
+                    CALC_FREQ=_F( FREQ=(0.,6000.) ,),
+                    TITRE='METHODE QZ'
+                  );
 
 FREQ_QZ=NORM_MODE(reuse=FREQ_QZ,MODE=FREQ_QZ,NORME='EUCL',);
 IMPR_RESU(RESU=_F(RESULTAT=FREQ_QZ,TOUT_PARA= 'OUI',TOUT_CHAM= 'NON'),);
@@ -245,11 +247,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=11,
                   ),
           )
 
-FREQ_INV=MODE_ITER_INV(MATR_RIGI=MATASSR1,
-                       MATR_MASS=MATASSM1,
-                       CALC_FREQ=_F(OPTION='AJUSTE',
-                                    FREQ=(0.0,6000.0,),),
-                       TITRE='METHODE INVERSE',);
+FREQ_INV=CALC_MODES( OPTION='AJUSTE',
+                     MATR_RIGI=MATASSR1,
+                     MATR_MASS=MATASSM1,
+                     CALC_FREQ=_F( FREQ=(0.,6000.) ,),
+                     TITRE='METHODE INVERSE'
+                    );
 
 FREQ_INV=NORM_MODE(reuse =FREQ_INV,MODE=FREQ_INV,NORME='EUCL',);
 IMPR_RESU(RESU=_F(RESULTAT=FREQ_INV,TOUT_CHAM='NON',TOUT_PARA='OUI',),);

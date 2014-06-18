@@ -195,9 +195,9 @@ V_ASSE1=ASSE_VECTEUR(   VECT_ELEM=V_ELEM1,
                             NUME_DDL=NUM1)
 
 #
-MODES1=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE1,
-                                 MATR_MASS=M_ASSE1,
-                             CALC_FREQ=_F( NMAX_FREQ = 20))
+MODES1=CALC_MODES( MATR_RIGI=K_ASSE1,
+                   MATR_MASS=M_ASSE1,
+                   CALC_FREQ=_F( NMAX_FREQ = 20 ))
 
 
 #
@@ -348,9 +348,9 @@ V_ASSE2=ASSE_VECTEUR(   VECT_ELEM=V_ELEM2,
                             NUME_DDL=NUM2 )
 
 #
-MODES2=MODE_ITER_SIMULT(     MATR_RIGI=K_ASSE2,
-                                 MATR_MASS=M_ASSE2,
-                             CALC_FREQ=_F( NMAX_FREQ = 20))
+MODES2=CALC_MODES( MATR_RIGI=K_ASSE2,
+                   MATR_MASS=M_ASSE2,
+                   CALC_FREQ=_F( NMAX_FREQ = 20 ))
 
 
 #

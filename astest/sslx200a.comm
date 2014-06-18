@@ -114,11 +114,10 @@ MATASS=ASSE_MATRICE(    MATR_ELEM=MATRR,
 MATASM=ASSE_MATRICE(    MATR_ELEM=MATRM,
                               NUME_DDL=NU   )
 
-MODES=MODE_ITER_SIMULT(   MATR_RIGI=MATASS,
-                          MATR_MASS=MATASM,
-                          SOLVEUR=_F(METHODE='MUMPS'),
-###CDURAND###     CALC_FREQ=_F( FREQ = (0., 2.,))
-                       )
+MODES=CALC_MODES( MATR_RIGI=MATASS,
+                  MATR_MASS=MATASM,
+                  SOLVEUR=_F( METHODE='MUMPS' ),
+                 )
 
 
 RESU=MECA_STATIQUE(MODELE=MOD,  SOLVEUR=_F(METHODE='MUMPS'),

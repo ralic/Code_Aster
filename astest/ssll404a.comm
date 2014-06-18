@@ -162,15 +162,13 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
                 ),
           )
 
-MODE2=MODE_ITER_INV(       MATR_RIGI=K_ASSE,
-                                MATR_RIGI_GEOM=KS_ASSE,
-                             TYPE_RESU='MODE_FLAMB',
-                            CALC_CHAR_CRIT=_F(  OPTION = 'PROCHE',
-                                        CHAR_CRIT = ( -13.7, -8.35,
-                                            -2.88, 8.35, 13.7,),
-                                       ),
-                            CALC_MODE=_F(  OPTION = 'RAYLEIGH',     )
-                         )
+MODE2=CALC_MODES( MATR_RIGI=K_ASSE,
+                  MATR_RIGI_GEOM=KS_ASSE,
+                  TYPE_RESU='MODE_FLAMB',
+                  OPTION='PROCHE',
+                  CALC_CHAR_CRIT=_F( CHAR_CRIT = (-13.7, -8.35, -2.88, 8.35, 13.7) ),
+                  SOLVEUR_MODAL=_F( OPTION_INV = 'RAYLEIGH' ),
+                 )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -216,15 +214,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-MODE3=MODE_ITER_INV(       MATR_RIGI=K_ASSE,
-                                MATR_RIGI_GEOM=KS_ASSE,
-                             TYPE_RESU='MODE_FLAMB',
-                            CALC_CHAR_CRIT=_F(  OPTION = 'SEPARE',
-                                        CHAR_CRIT = ( -16., -10.,
-                                            -5., 2., 10.,15.),
-                                       ),
-                            CALC_MODE=_F(  OPTION = 'RAYLEIGH',     )
-                         )
+MODE3=CALC_MODES( MATR_RIGI=K_ASSE,
+                  MATR_RIGI_GEOM=KS_ASSE,
+                  TYPE_RESU='MODE_FLAMB',
+                  OPTION='SEPARE',
+                  CALC_CHAR_CRIT=_F( CHAR_CRIT = (-16., -10., -5., 2., 10.,15.) ),
+                  SOLVEUR_MODAL=_F( OPTION_INV = 'RAYLEIGH' ),
+                 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='CHAR_CRIT',
@@ -269,15 +265,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-MODE4=MODE_ITER_INV(       MATR_RIGI=K_ASSE,
-                                MATR_RIGI_GEOM=KS_ASSE,
-                             TYPE_RESU='MODE_FLAMB',
-                            CALC_CHAR_CRIT=_F(  OPTION = 'AJUSTE',
-                                        CHAR_CRIT = ( -16., -10.,
-                                            -5., 2., 10.,15.),
-                                       ),
-                            CALC_MODE=_F(  OPTION = 'RAYLEIGH',     )
-                         )
+MODE4=CALC_MODES( MATR_RIGI=K_ASSE,
+                  MATR_RIGI_GEOM=KS_ASSE,
+                  TYPE_RESU='MODE_FLAMB',
+                  OPTION='AJUSTE',
+                  CALC_CHAR_CRIT=_F( CHAR_CRIT = (-16., -10., -5., 2., 10.,15.) ),
+                  SOLVEUR_MODAL=_F( OPTION_INV = 'RAYLEIGH' ),
+                 )
                          
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='CHAR_CRIT',

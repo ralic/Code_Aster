@@ -98,9 +98,11 @@ MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
 # --------------------------------------------------------------------
 
 
-FREQ=MODE_ITER_SIMULT(   MATR_RIGI=MATASSR,      MATR_MASS=MATASSM,
-          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 8)
-                                                          )
+FREQ=CALC_MODES( OPTION='PLUS_PETITE',
+                 MATR_RIGI=MATASSR,
+                 MATR_MASS=MATASSM,
+                 CALC_FREQ=_F( NMAX_FREQ = 8)
+                )
 
 
 FREQ=NORM_MODE( reuse=FREQ,    MODE=FREQ,
@@ -110,9 +112,11 @@ FREQ=NORM_MODE( reuse=FREQ,    MODE=FREQ,
                                  SIGNE = 'POSITIF')   )
 
 # test de l'option 'PLUS_GRANDE'
-FREQPG=MODE_ITER_SIMULT(   MATR_RIGI=MATASSR,      MATR_MASS=MATASSM,
-          CALC_FREQ=_F(  OPTION = 'PLUS_GRANDE',  NMAX_FREQ = 8)
-                                                          )
+FREQPG=CALC_MODES( OPTION='PLUS_GRANDE',
+                   MATR_RIGI=MATASSR,
+                   MATR_MASS=MATASSM,
+                   CALC_FREQ=_F( NMAX_FREQ = 8)
+                  )
 
 FREQPG=NORM_MODE( reuse=FREQPG,    MODE=FREQPG,
                       NORME='TRAN_ROTA',

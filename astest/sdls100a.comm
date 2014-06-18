@@ -77,10 +77,11 @@ MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
 
 #               CALCUL MODAL
 
-MODE=MODE_ITER_SIMULT(  MATR_RIGI=MATASSR,       MATR_MASS=MATASSM,
-             METHODE='TRI_DIAG',
-             CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                         NMAX_FREQ = 12)  )
+MODE=CALC_MODES( OPTION='PLUS_PETITE',
+                 MATR_RIGI=MATASSR,
+                 MATR_MASS=MATASSM,
+                 SOLVEUR_MODAL=_F( METHODE='TRI_DIAG' ),
+                 CALC_FREQ=_F( NMAX_FREQ = 12)  )
 
 
 # --------------------------------------------------------------------

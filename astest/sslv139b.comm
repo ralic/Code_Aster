@@ -100,22 +100,21 @@ MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
 MASMA=ASSE_MATRICE(MATR_ELEM=MAT_MAS,
                    NUME_DDL=NUM,);
 
-RESULT=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
-                        MATR_RIGI_GEOM=MAS_RI_G,
-                        METHODE='SORENSEN',
-                        NMAX_ITER_SOREN=20,
-                        TYPE_RESU='MODE_FLAMB',
-                        CALC_CHAR_CRIT=_F(
-                        OPTION='PLUS_PETITE',
-                        NMAX_CHAR_CRIT=10,),
-                        VERI_MODE=_F(SEUIL=0.0001,),);
+RESULT=CALC_MODES( OPTION='PLUS_PETITE',
+                   MATR_RIGI=MAS_RI_M,
+                   MATR_RIGI_GEOM=MAS_RI_G,
+                   SOLVEUR_MODAL=_F( METHODE='SORENSEN',
+                                     NMAX_ITER_SOREN=20 ),
+                   TYPE_RESU='MODE_FLAMB',
+                   CALC_CHAR_CRIT=_F( NMAX_CHAR_CRIT=10 ),
+                   VERI_MODE=_F( SEUIL=0.0001 ),);
 
 
-MODE=MODE_ITER_SIMULT(MATR_RIGI=MAS_RI_M,
-                      MATR_MASS=MASMA,
-                      METHODE='SORENSEN',
-                      NMAX_ITER_SOREN=20,
-                      VERI_MODE=_F(SEUIL=0.0001,),);
+MODE=CALC_MODES( MATR_RIGI=MAS_RI_M,
+                 MATR_MASS=MASMA,
+                 SOLVEUR_MODAL=_F( METHODE='SORENSEN',
+                                   NMAX_ITER_SOREN=20 ),
+                 VERI_MODE=_F( SEUIL=0.0001 ),);
 
 
 MODE=CALC_CHAMP(reuse=MODE,RESULTAT=MODE,CONTRAINTE=('SIEF_ELGA'),ENERGIE=('ETOT_ELGA','ETOT_ELNO','ETOT_ELEM'))

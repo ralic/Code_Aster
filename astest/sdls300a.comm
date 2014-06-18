@@ -99,14 +99,15 @@ TABL_MAS=POST_ELEM(        MODELE=STRUC,
                           MASS_INER=_F(  TOUT = 'OUI')
                       )
 
-MODE1=MACRO_MODE_MECA(    MATR_RIGI=K_ASSE,
-                          MATR_MASS=M_ASSE,
-                          CALC_FREQ=_F(  FREQ=(1.,2.,3.,4.,5.,6.,7.),
-                                         COEF_DIM_ESPACE = 3,),
-                          NORM_MODE=_F(  NORME = 'TRAN_ROTA',),
-                          FILTRE_MODE=_F(  CRIT_EXTR = 'MASS_EFFE_UN'),
-                          IMPRESSION=_F(  CUMUL = 'OUI')
-                       )
+MODE1=CALC_MODES( MATR_RIGI=K_ASSE,
+                  MATR_MASS=M_ASSE,
+                  OPTION='BANDE',
+                  CALC_FREQ=_F( FREQ=(1.,2.,3.,4.,5.,6.,7.) ),
+                  SOLVEUR_MODAL=_F( COEF_DIM_ESPACE = 3 ),
+                  NORM_MODE=_F( NORME = 'TRAN_ROTA' ),
+                  FILTRE_MODE=_F( CRIT_EXTR = 'MASS_EFFE_UN' ),
+                  IMPRESSION=_F( CUMUL = 'OUI' )
+                 )
 
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
