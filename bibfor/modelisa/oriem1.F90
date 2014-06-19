@@ -131,6 +131,5 @@ subroutine oriem1(ma,kdim,numa2d,numa3d)
        numa3d=0
     endif
 
-999 continue
     call jedema()
 end subroutine

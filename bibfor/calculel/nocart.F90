@@ -1,7 +1,8 @@
 subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
                   limano, limanu, ligrel,&
-                  jdesc,jnoma,jncmp,jnoli,jvale,&
-                  jvalv,jnocmp,ncmpmx,nec, ctype,jlclima,lontav)
+                  rapide,jdesc,jnoma,jncmp,jnoli,jvale,&
+                  jvalv,jnocmp,ncmpmx,nec, ctype,&
+                  jlima0,jlimac,lontav)
 
     implicit none
 ! ======================================================================
@@ -37,6 +38,11 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
 #include "asterfort/jexnum.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/nbec.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/jeimpa.h"
+#include "asterfort/jeimpo.h"
+#include "asterfort/utimsd.h"
+#include "asterc/cheksd.h"
 
     character(len=*), intent(in) :: carte
     integer, intent(in) :: code
@@ -48,6 +54,9 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     integer, intent(in), optional :: limanu(*)
     character(len=*), intent(in), optional ::  ligrel
 
+
+!   -- arguments optionnels pour gagner du CPU :
+    character(len=3), intent(in), optional ::  rapide
     integer, intent(inout), optional ::  jdesc
     integer, intent(inout), optional ::  jnoma
     integer, intent(inout), optional ::  jncmp
@@ -58,7 +67,8 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     integer, intent(in)   , optional ::  ncmpmx
     integer, intent(in)   , optional ::  nec
     character(len=8), intent(in), optional ::  ctype
-    integer, intent(inout), optional ::  jlclima
+    integer, intent(inout), optional ::  jlima0
+    integer, intent(inout), optional ::  jlimac
     integer, intent(inout), optional ::  lontav
 ! ----------------------------------------------------------------------
 !     entrees:
@@ -104,12 +114,18 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
 !     cas ou la routine nocart est appelee de (trop) nombreuses fois.
 !     Exemple d'utilisation : aflrch.F90
 !
+!     rapide: 'OUI' / 'NON'
 !     jdesc : adresse de l'objet chin.DESC
 !     jnoma : adresse de l'objet chin.NOMA
 !     jnoli : adresse de l'objet chin.NOLI
 !     jvale : adresse de l'objet chin.VALE
 !     jvalv : adresse de l'objet chin.VALV
-!     + jncmp, jnocmp, ncmpmx, nec, ctype, jlclima, lontav
+!     jlima0, jlimac : adresses pour l'objet l'objet chin.LIMA
+!     + jncmp, jnocmp, ncmpmx, nec, ctype, lontav
+!
+!     Attention : si rapide='OUI', il faut que l'appelant fasse appel a
+!                 jeecra / NUTIOC apres le denier appel a nocart
+!                 (objet .LIMA)
 
 !     sorties:
 !        on enrichit le contenu de la carte chin
@@ -119,83 +135,71 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     character(len=19) :: chin, nomlig
     character(len=8) :: nomail
     integer :: nedit, ngdmx, iaddg, gr, dim, i, numero, gd
-    integer :: jlima, ldim,jdesc2,jnoma2,jncmp2,jnoli2,jvale2,jvalv2
+    integer :: jlima02, jlimac2, jlima
+    integer :: ldim,jdesc2,jnoma2,jncmp2,jnoli2,jvale2,jvalv2
     integer :: jnocmp2,ncmpmx2,nec2
     character(len=8) :: ma, base,mode2,ctype2
-    character(len=24) :: clima, trav
-    logical :: laggr
-    integer ::  jlclima2, lontap, lontav2
+    character(len=24) :: lima, trav
+    logical :: laggr,lrapid
+    integer :: lontap, lontav2, jbid
 !-----------------------------------------------------------------------
     chin = carte
+    lima=chin//'.LIMA'
+
     laggr=.false.
     nomlig=' '
     groupe=' '
 
+    lrapid=.false.
+    if (present(rapide)) then
+        if (rapide.eq.'OUI') lrapid=.true.
+    endif
+
 
 !   -- gestion des derniers arguments facultatifs (pour gains CPU) :
 !   ----------------------------------------------------------------
-    if (.not.present(jdesc)) then
+    if (.not.lrapid) then
         call jeveuo(chin//'.DESC', 'E', jdesc2)
-    else
-        jdesc2=jdesc
-    endif
-    gd = zi(jdesc2-1+1)
-
-    if (.not.present(jnoma)) then
         call jeveuo(chin//'.NOMA', 'E', jnoma2)
-    else
-        jnoma2=jnoma
-    endif
-    if (.not.present(jncmp)) then
         call jeveuo(chin//'.NCMP', 'E', jncmp2)
-    else
-        jncmp2=jncmp
-    endif
-    if (.not.present(jnoli)) then
         call jeveuo(chin//'.NOLI', 'E', jnoli2)
-    else
-        jnoli2=jnoli
-    endif
-    if (.not.present(jvale)) then
         call jeveuo(chin//'.VALE', 'E', jvale2)
-    else
-        jvale2=jvale
-    endif
-    if (.not.present(jvalv)) then
         call jeveuo(chin//'.VALV', 'E', jvalv2)
-    else
-        jvalv2=jvalv
-    endif
-    if (.not.present(ctype)) then
         call jelira(chin//'.VALV', 'TYPELONG', cval=ctype2)
-    else
-        ctype2=ctype
-    endif
-    if (.not.present(lontav)) then
+        call jeveuo(chin//'.LIMA','E', jlima02)
         call jelira(chin//'.LIMA', 'LONT', lontav2)
-    else
-        lontav2=lontav
-    endif
-
-    if (.not.present(jnocmp)) then
+        call jeveuo(jexatr(chin//'.LIMA', 'LONCUM'), 'E', jlimac2)
+        gd = zi(jdesc2-1+1)
+        nec2 = nbec(gd)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jnocmp2)
-    else
-        jnocmp2=jnocmp
-    endif
-    if (.not.present(ncmpmx)) then
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx2)
     else
+        ASSERT(present(jdesc))
+        ASSERT(present(jnoma))
+        ASSERT(present(jncmp))
+        ASSERT(present(jnoli))
+        ASSERT(present(jvale))
+        ASSERT(present(jvalv))
+        ASSERT(present(ctype))
+        ASSERT(present(lontav))
+        ASSERT(present(jnocmp))
+        ASSERT(present(ncmpmx))
+        ASSERT(present(nec))
+        ASSERT(present(jlima0))
+        ASSERT(present(jlimac))
+        jdesc2=jdesc
+        jnoma2=jnoma
+        jncmp2=jncmp
+        jnoli2=jnoli
+        jvale2=jvale
+        jvalv2=jvalv
+        ctype2=ctype
+        jlima02=jlima0
+        jlimac2=jlimac
+        lontav2=lontav
+        jnocmp2=jnocmp
         ncmpmx2=ncmpmx
-    endif
-    if (.not.present(nec)) then
-        nec2 = nbec(gd)
-    else
         nec2=nec
-    endif
-    if (.not.present(jlclima)) then
-        call jeveuo(jexatr(chin//'.LIMA', 'LONCUM'), 'L', jlclima2)
-    else
-        jlclima2=jlclima
     endif
 
 
@@ -235,6 +239,8 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     ngdmx = zi(jdesc2-1+2)
     nedit = zi(jdesc2-1+3) + 1
 
+    if (lrapid .and. nedit.eq.1)  zi(jlimac2)=1
+
 
 !   -- faut-il agrandir la carte ?
 !   -------------------------------
@@ -262,15 +268,14 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     iaddg = 3 + 2*ngdmx + (nedit-1)*nec2 + 1
     call editgd(ncmp,nedit,zi(jdesc2-1+iaddg),ncmpmx2,&
                 ctype2,jnocmp2,jncmp2,jvalv2,jvale2)
-!
-!
+
+
 !   -- mise a jour de .desc :
 !   --------------------------
     zi(jdesc2-1+3+2*nedit-1) = code
     dim = 0
     if (abs(code) .eq. 1) then
-!        -- ON NOTE LE NUMERO D'ENTITE CONVENTIONNEL RELATIF
-!        -- A "TOUT":   9999
+!        -- on note le numero d'entite conventionnel relatif a "TOUT":   9999
         zi(jdesc2-1+3+2*nedit) = 9999
     else if (code.eq.2) then
         call jenonu(jexnom(ma//'.GROUPEMA', groupma), gr)
@@ -281,36 +286,56 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     else
         ASSERT(.false.)
     endif
-!
-!
+
+
 !   -- mise a jour de lima :
 !   ------------------------
-!
+
 !   -- faut-il agrandir .lima ?
-   !call jelira(chin//'.LIMA', 'LONT', lontav)
-    lontap=zi(jlclima2-1+nedit)+max(dim,1)
+    lontap=zi(jlimac2-1+nedit)+max(dim,1)
     if (lontap .gt. lontav2) then
         laggr=.true.
         lontap=max(2*lontav2,lontap)
     endif
     if (laggr) then
-        clima=chin//'.LIMA'
         trav=chin//'.TRAV'
-        call jedupo(clima, 'V', trav, .false.)
-        call jelira(clima, 'CLAS', cval=base)
-        call jedetr(chin//'.LIMA')
-        call jeagco(trav, clima, ngdmx, lontap, base)
+    call jeveuo(jexatr(lima,'LONCUM'), 'E',jbid)
+        call jedupo(lima, 'V', trav, .false.)
+    call jeveuo(jexatr(trav,'LONCUM'), 'E',jbid)
+        call jelira(lima, 'CLAS', cval=base)
+        call jedetr(lima)
+        call jeagco(trav, lima, ngdmx, lontap, base)
+    call jeveuo(jexatr(lima,'LONCUM'), 'E',jbid)
         call jedetr(trav)
-        call jeveuo(jexatr(chin//'.LIMA', 'LONCUM'), 'L', jlclima2)
-        if (present(jlclima)) jlclima=jlclima2
-        call jelira(chin//'.LIMA', 'LONT', lontav2)
+        call jeveuo(lima, 'E', jlima02)
+        if (present(jlima0)) jlima0=jlima02
+        call jeveuo(jexatr(lima, 'LONCUM'), 'E', jlimac2)
+        if (present(jlimac)) jlimac=jlimac2
+        call jelira(lima, 'LONT', lontav2)
         if (present(lontav)) lontav=lontav2
     endif
-!
-    call jecroc(jexnum(chin//'.LIMA', nedit))
+
+
+    ! -- mise a jour des longueurs cumulees pour lima :
     ldim = max(dim,1)
-    call jeecra(jexnum(chin//'.LIMA', nedit), 'LONMAX', ldim)
-    call jeveuo(jexnum(chin//'.LIMA', nedit), 'E', jlima)
+    if (.not.lrapid) then
+        call jeecra(jexnum(lima,nedit),'LONMAX',ival= ldim)
+    else
+        zi(jlimac2-1+nedit+1)=zi(jlimac2-1+nedit)+ldim
+    endif
+
+    ! -- on "cree" un nouvel objet dans la collection lima :
+    if (.not.lrapid) then
+        call jecroc(jexnum(lima,nedit))
+    else
+        ! le cout du jeecra est trop important, il ne faut le
+        ! faire qu'une seule fois quand la carte est terminee
+        ! call jeecra(lima,'NUTIOC',ival= nedit)
+    endif
+
+
+    ! -- on remplit lima :
+    jlima=jlima02-1+zi(jlimac2-1+nedit)
     do i = 1, dim
         if (mode2.eq.'NUM') then
 !           --  mailles numerotees ( du maillage (>0) ou tardives(<0) )
@@ -324,5 +349,7 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
             ASSERT(.false.)
         endif
     end do
-!
+
+
+
 end subroutine

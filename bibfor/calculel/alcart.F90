@@ -20,12 +20,15 @@ subroutine alcart(base, chinz, maz, nomgdz)
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeimpa.h"
+#include "asterfort/jeimpo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/nbec.h"
 #include "asterfort/scalai.h"
 #include "asterfort/utmess.h"
@@ -121,6 +124,8 @@ subroutine alcart(base, chinz, maz, nomgdz)
     call jeecra(chin//'.LIMA', 'LONT', nmamx+ngdmx, ' ')
 ! -- ON FAIT MONTER LA COLLECTION EN MEMOIRE
     call jeveuo(chin//'.LIMA', 'E', jbid)
+    call jeveuo(jexatr(chin//'.LIMA','LONCUM'), 'E',jbid)
+    zi(jbid)=1
 !
 !     ALLOCATION DES OBJETS DE TRAVAIL NECESSAIRES A NOCART:
     call wkvect(chin//'.NCMP', 'V V K8', ncmpmx, j1)

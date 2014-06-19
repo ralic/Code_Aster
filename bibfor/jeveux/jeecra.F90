@@ -25,6 +25,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
 #include "asterfort/jjprem.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/utmess.h"
+#include "asterfort/assert.h"
     character(len=*), intent(in) :: nomlu
     character(len=*), intent(in) :: catr
     integer, intent(in), optional :: ival
@@ -45,12 +46,12 @@ subroutine jeecra(nomlu, catr, ival, cval)
     common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadmi, iadyn, iblong, iblono, ibluti, ic, id
-    integer :: il0, il1, ixlono, ixluti, jcara, jdate, jdocu
+    integer :: iadmi, iadyn, iblong, iblono, ibluti, ic, id , ibnum
+    integer :: il0, il1, ixlono, ixluti, jcara, jdate, jdocu, ixnum
     integer :: jgenr, jhcod, jiadd, jiadm, jitab, jlong
     integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
     integer :: longi, longj, lonoi, lonoj, lonok, lont, lonti
-    integer :: ltypi, n, nbl, nhc, nmaxi
+    integer :: ltypi, n, nbl, nhc, nmaxi, nbv
 !-----------------------------------------------------------------------
     parameter  ( n = 5 )
     common /jiatje/  jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -66,12 +67,12 @@ subroutine jeecra(nomlu, catr, ival, cval)
     character(len=8) :: catrlu
     logical :: lconst, lconti, llong, lluti
     integer :: icre, iret, itab(1), jtab, irt
-    integer :: ibacol, ixiadd, ixdeso, ixlong
+    integer :: ibacol, ixiadd, ixdeso, ixlong, ii
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idlong, idlono, idluti
+    integer :: ivnmax, iddeso, idiadd, idlong, idlono, idluti, idnum
     parameter    ( ivnmax = 0 , iddeso = 1 ,idiadd = 2 ,&
      &               idlong = 7 ,&
-     &               idlono = 8 , idluti = 9 )
+     &               idlono = 8 , idluti = 9 , idnum  = 10)
     integer :: ilorep, ideno, ilnom, ilmax, iluti, idehc
     parameter      ( ilorep=1,ideno=2,ilnom=3,ilmax=4,iluti=5,idehc=6)
 ! DEB ------------------------------------------------------------------
@@ -110,6 +111,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
         ixlong = iszon ( jiszon + ibacol + idlong )
         ixlono = iszon ( jiszon + ibacol + idlono )
         ixluti = iszon ( jiszon + ibacol + idluti )
+        ixnum  = iszon ( jiszon + ibacol + idnum  )
         lconst = (ixlong .eq. 0 )
         nmaxi = iszon (jiszon + ibacol + ivnmax )
     endif
@@ -124,7 +126,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
             lluti = .false.
         endif
     else if (catrlu .eq. 'LONMAX' .or. catrlu .eq. 'NOMMAX' .or. catrlu .eq. 'LONUTI' .or.&
-             catrlu .eq. 'DOCU'   .or. catrlu .eq. 'DATE')  then
+             catrlu .eq. 'DOCU'   .or. catrlu .eq. 'DATE'   .or. catrlu .eq. 'NUTIOC')   then
         llong = ( catrlu(4:6) .eq. 'MAX' )
         lluti = ( catrlu(4:6) .eq. 'UTI' )
         if ((genri .ne. 'N' .and. catrlu(1:3).eq. 'NOM') .or.&
@@ -132,8 +134,8 @@ subroutine jeecra(nomlu, catr, ival, cval)
             (genri .ne. 'V' .and. catrlu(1:4).eq. 'LONU')) then
             call utmess('F', 'JEVEUX_99', sk=genri)
         endif
-    else 
-       call utmess('F', 'JEVEUX1_23', sk=catrlu)    
+    else
+       call utmess('F', 'JEVEUX1_23', sk=catrlu)
     endif
 !
     if (catrlu .eq. 'LONT    ' .and. lconti) then
@@ -143,6 +145,22 @@ subroutine jeecra(nomlu, catr, ival, cval)
         date ( jdate(ic) + id ) = ival
     else if (catrlu .eq. 'DOCU    ') then
         docu ( jdocu(ic) + id ) = cval
+    else if (catrlu .eq. 'NUTIOC') then
+       if ( iret .eq. 2 .and. lconti ) then
+          ibnum = iadm ( jiadm(ic) + 2*ixnum-1 )
+          nbv = iszon ( jiszon + ibnum )
+          ASSERT( ival .le. nbv )
+          iszon ( jiszon + ibnum - 1 + 2 ) = ival
+          if (.not. lconst) then
+            iblong = iadm ( jiadm(ic) + 2*ixlong-1 )
+            iblono = iadm ( jiadm(ic) + 2*ixlono-1 )
+            do ii=1,ival
+               iszon(jiszon+iblong-1+ii) = (iszon(jiszon+iblono+ii)-iszon(jiszon+iblono-1+ii))
+            enddo
+          endif
+       else
+          ASSERT(.false.)
+       endif
     else if (lconst) then
         if (llong) then
             lonoi = lono ( jlono(ic) + id )

@@ -29,6 +29,7 @@ subroutine aflrch(lisrez, chargz, elim)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -94,9 +95,12 @@ subroutine aflrch(lisrez, chargz, elim)
     integer :: jrlcof, jrldd,  jrlno, idnoeu,   jrlpo
     integer ::    jvale1, jvale2, jvalv1, jvalv2, kddl, nec1,nec2
     integer ::    ncmpmx1, ncmpmx2, jnocmp1, jnocmp2, jnoma1,jnoma2
-    integer ::    jnoli1, jnoli2, jdesc1, jdesc2, jncmp1,jncmp2
-    integer ::    jlclima1, jlclima2,lontav1,lontav2
+    integer ::    jnoli1, jnoli2, jdesc1, jdesc2, jncmp1,jncmp2,nedit
+    integer ::    jlima01, jlima02,jlimac1, jlimac2,lontav1,lontav2
     integer :: nbcmp, nec, nbnema, nbrela, nbteli, nbterm, nddla
+    integer :: jliel0, jlielc, jnema0, jnemac
+    character(len=3) :: rapide='OUI'
+
     integer :: niv, numel, nunewm, iexi, jlgns
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: rlnr(:) => null()
@@ -230,7 +234,8 @@ subroutine aflrch(lisrez, chargz, elim)
     call jeveuo(ca1//'.NCMP', 'E', jncmp1)
     call jeveuo(ca1//'.VALV', 'E', jvalv1)
     call jelira(ca1//'.VALV', 'TYPELONG', cval=ctype1)
-    call jeveuo(jexatr(ca1//'.LIMA', 'LONCUM'), 'L', jlclima1)
+    call jeveuo(ca1//'.LIMA', 'E', jlima01)
+    call jeveuo(jexatr(ca1//'.LIMA', 'LONCUM'), 'E', jlimac1)
     call jelira(ca1//'.LIMA', 'LONT', lontav1)
     gd1 = zi(jdesc1-1+1)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd1), 'L', jnocmp1)
@@ -244,7 +249,8 @@ subroutine aflrch(lisrez, chargz, elim)
     call jeveuo(ca2//'.NCMP', 'E', jncmp2)
     call jeveuo(ca2//'.VALV', 'E', jvalv2)
     call jelira(ca2//'.VALV', 'TYPELONG', cval=ctype2)
-    call jeveuo(jexatr(ca2//'.LIMA', 'LONCUM'), 'L', jlclima2)
+    call jeveuo(ca2//'.LIMA', 'E', jlima02)
+    call jeveuo(jexatr(ca2//'.LIMA', 'LONCUM'), 'E', jlimac2)
     call jelira(ca2//'.LIMA', 'LONT', lontav2)
     gd2 = zi(jdesc2-1+1)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd2), 'L', jnocmp2)
@@ -273,8 +279,13 @@ subroutine aflrch(lisrez, chargz, elim)
     else
         jlgns=1
     endif
-!
-!
+
+    call jeveuo(ligrch//'.LIEL','E',jliel0)
+    call jeveuo(jexatr(ligrch//'.LIEL','LONCUM'),'E',jlielc)
+    call jeveuo(ligrch//'.NEMA','E',jnema0)
+    call jeveuo(jexatr(ligrch//'.NEMA','LONCUM'),'E',jnemac)
+
+
     do irela = 1, nbrela
         indsur=rlsu(irela)
         if (indsur .ne. 0) goto 60
@@ -323,7 +334,9 @@ subroutine aflrch(lisrez, chargz, elim)
                 igrel=igrel+1
                 call noligr(noma, ligrch, igrel, numel, 1, [in],&
                             [' '], 3, 1, inema, nbno,&
-                            rlla(irela),jlgns)
+                            rlla(irela),jlgns,&
+                            rapide=rapide,jliel0=jliel0,jlielc=jlielc,&
+                            jnema0=jnema0,jnemac=jnemac)
             else
                 call utmess('F', 'CHARGES2_33', sk=nomnoe)
             endif
@@ -344,10 +357,11 @@ subroutine aflrch(lisrez, chargz, elim)
             endif
             nunewm=-(inema0+j)
             call nocart(ca1, -3, 1, ligrel=ligrch, nma=1,limanu=[nunewm],&
-                        jdesc=jdesc1,jnoma=jnoma1,jncmp=jncmp1,jnoli=jnoli1,&
+                        rapide=rapide,jdesc=jdesc1,jnoma=jnoma1,&
+                        jncmp=jncmp1,jnoli=jnoli1,&
                         jvale=jvale1,jvalv=jvalv1,jnocmp=jnocmp1,&
                         ncmpmx=ncmpmx1,nec=nec1,ctype=ctype1,&
-                        jlclima=jlclima1,lontav=lontav1)
+                        jlima0=jlima01,jlimac=jlimac1,lontav=lontav1)
             if (j .lt. nbnema) then
                 if (typval .eq. 'REEL') then
                     zr(jvalv2)=0.d0
@@ -370,22 +384,34 @@ subroutine aflrch(lisrez, chargz, elim)
                 endif
             endif
             call nocart(ca2, -3, 1, ligrel=ligrch, nma=1,limanu=[nunewm],&
-                        jdesc=jdesc2,jnoma=jnoma2,jncmp=jncmp2,jnoli=jnoli2,&
+                        rapide=rapide,jdesc=jdesc2,jnoma=jnoma2,&
+                        jncmp=jncmp2,jnoli=jnoli2,&
                         jvale=jvale2,jvalv=jvalv2,jnocmp=jnocmp2,&
                         ncmpmx=ncmpmx2,nec=nec2,ctype=ctype2,&
-                        jlclima=jlclima2,lontav=lontav2)
+                        jlima0=jlima02,jlimac=jlimac2,lontav=lontav2)
         enddo
  60     continue
     end do
-!
-!
+
+!   -- A cause de l'argument rapide='OUI' pour les routines nocart et noligr,
+!      Il faut faire des appels a jeecra('NUTIOC') :
+    if (rapide.eq.'OUI') then
+        nedit = zi(jdesc1-1+3)
+        ASSERT(nedit.eq.zi(jdesc2-1+3))
+        call jeecra(ca1//'.LIMA','NUTIOC',ival= nedit)
+        call jeecra(ca2//'.LIMA','NUTIOC',ival= nedit)
+
+        call jeecra(ligrch//'.LIEL','NUTIOC',ival= igrel)
+        call jeecra(ligrch//'.NEMA','NUTIOC',ival= inema)
+    endif
+
+
 !
 !   -- impression des relations redondantes et donc supprimees :
 !   ------------------------------------------------------------
     if (niv.ge.2) then
-!
         call utmess('I', 'CHARGES2_34')
-!
+
         do irela = 1, nbrela
             indsur=rlsu(irela)
             if (indsur .eq. 1) then

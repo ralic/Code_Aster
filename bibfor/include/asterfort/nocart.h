@@ -18,8 +18,9 @@
 interface
 subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
                   limano, limanu, ligrel,&
-                  jdesc,jnoma,jncmp,jnoli,jvale,&
-                  jvalv,jnocmp,ncmpmx,nec, ctype,jlclima,lontav)
+                  rapide,jdesc,jnoma,jncmp,jnoli,jvale,&
+                  jvalv,jnocmp,ncmpmx,nec, ctype,&
+                  jlima0,jlimac,lontav)
 
     character(len=*), intent(in) :: carte
     integer, intent(in) :: code
@@ -31,6 +32,8 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     integer, intent(in), optional :: limanu(*)
     character(len=*), intent(in), optional ::  ligrel
 
+!   -- arguments optionnels pour gagner du CPU :
+    character(len=3), intent(in), optional ::  rapide
     integer, intent(inout), optional ::  jdesc
     integer, intent(inout), optional ::  jnoma
     integer, intent(inout), optional ::  jncmp
@@ -41,7 +44,9 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
     integer, intent(in)   , optional ::  ncmpmx
     integer, intent(in)   , optional ::  nec
     character(len=8), intent(in), optional ::  ctype
-    integer, intent(inout), optional ::  jlclima
+    integer, intent(inout), optional ::  jlima0
+    integer, intent(inout), optional ::  jlimac
     integer, intent(inout), optional ::  lontav
+
 end subroutine nocart
 end interface

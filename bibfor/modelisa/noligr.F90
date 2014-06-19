@@ -1,14 +1,18 @@
 subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
                   lk, code, irepe, inema, nbno,&
-                  typlaz,jlgns)
+                  typlaz,jlgns,&
+                  rapide, jliel0, jlielc, jnema0, jnemac)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jecroc.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jeimpo.h"
 #include "asterfort/poslag.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
@@ -26,6 +30,15 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
     integer,intent(inout) :: nbno(*)
     character(len=*),intent(in) :: typlaz
     integer,intent(in) :: jlgns
+
+!   -- arguments optionnels pour gagner du CPU :
+    character(len=3), intent(in), optional ::  rapide
+    integer, intent(in), optional ::  jliel0
+    integer, intent(in), optional ::  jlielc
+    integer, intent(in), optional ::  jnema0
+    integer, intent(in), optional ::  jnemac
+
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,56 +56,75 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     BUT: REMPLIR LIGR
-!      1.  ADJONCTION DU GREL DANS LE LIGR
-!      2.  STOCKAGE DES MAILLES ET NOEUDS SUPPLEMENTAIRES:
-!        2.1 STOCKAGE DES MAILLES SUPPLEMENTAIRES DANS .NEMA
-!        2.2 STOCKAGE DES NUMEROS DES MAILLES SUPPLEMENTAIRES DANS .LIEL
+! but: remplir le ligrel ligr
+!  1.  adjonction du grel dans le ligrel
+!  2.  stockage des mailles et noeuds supplementaires:
+!    2.1 stockage des mailles supplementaires dans .nema
+!    2.2 stockage des numeros des mailles supplementaires dans .liel
 !
-! ARGUMENTS D'ENTREE:
-!      LIGR : NOM DU LIGREL
-!      IGREL: NUMERO DU GREL
-!      NUMEL:NUMERO DU TYPE_ELEMENT
-!      NB   :NOMBRE DE NOEUDS DE LA LISTE
-!      LI   :LISTE DE NUMEROS DE NOEUDS (AU NOMBRE DE NB)
-!      LK   :LISTE DE NOMS DE NOEUDS (AU NOMBRE DE -NB)
-!      CODE : 1 ==> UNE MAILLE "POI1" PAR NOEUD
-!                   (TYPIQUEMENT: FORCE_NODALE)
-!           : 2 ==> UNE MAILLE "SEG2" ET UN NOEUD TARDIF PAR NOEUD
-!                   (TYPIQUEMENT: DDL_IMPO    )
-!           : 3 ==> UNE MAILLE "SEG2" PAR NOEUD, ET UN SEUL NOEUD TARDIF
-!                   SON NUMERO EST INCREMENTE PAR LA ROUTINE APPELANTE
-!                   (TYPIQUEMENT: LIAISON_DDL )
-!   ALTERATION : 2 DDL DE LAGRANGE =>
-!           : 2 ==> UNE MAILLE "SEG3" ET 2 NOEUDS TARDIFS PAR NOEUD
-!                   (TYPIQUEMENT: DDL_IMPO    )
-!           : 3 ==> UNE MAILLE "SEG3" PAR NOEUD, ET 2 NOEUDS TARDIFS
-!                   PAR LIAISON
-!                   SON NUMERO EST INCREMENTE PAR LA ROUTINE APPELANTE
-!                   (TYPIQUEMENT: LIAISON_DDL )
-!           : 4 ==> UNE MAILLE "SEG3" PAR NOEUD, ET 2 NOEUDS TARDIFS
-!                   PAR LIAISON SUR NB LIAISONS DU MEME TYPE
-!                   LES NUMERO DES NOEUDS TARDIFS SONT GERES PAR LA
-!                   ROUTINE APPELANTE ( POUR RELATION I NOEUD TARDIF 1
-!                   DE NUM : -NBNO(I)+1 ET NOEUD TARDIF 2 -NBNO(I) )
-!                   (TYPIQUEMENT: LIAISON_DDL_GROUP )
-!      IREPE:NOMBRE DE REPETITIONS DE LA BOUCLE PAR NOEUD
-!      INEMA:NUMERO  DE LA DERNIERE MAILLE TARDIVE DANS LIGR
-!      NBNO :NUMERO  DU  DERNIER NOEUD TARDIF DANS LIGR OU LISTE DE NUME
-!            RO DE NOEUDS TARDIFS(CODE 4)
-!      TYPLAG:TYPE DES MULTIPLICATEURS DE LAGRANGE ASSOCIES A LA
-!             RELATION
-!          : '12'  ==>  LE PREMIER LAGRANGE EST AVANT LE NOEUD PHYSIQUE
-!                       LE SECOND LAGRANGE EST APRES
-!          : '22'  ==>  LE PREMIER LAGRANGE EST APRES LE NOEUD PHYSIQUE
-!                       LE SECOND LAGRANGE EST APRES
+! arguments d'entree:
+!      ligr : nom du ligrel
+!      igrel: numero du grel
+!      numel:numero du type_element
+!      nb   :nombre de noeuds de la liste
+!      li   :liste de numeros de noeuds (au nombre de nb)
+!      lk   :liste de noms de noeuds (au nombre de -nb)
+!      code : 1 ==> une maille "poi1" par noeud
+!                   (typiquement: force_nodale)
+!           : 2 ==> une maille "seg2" et un noeud tardif par noeud
+!                   (typiquement: ddl_impo    )
+!           : 3 ==> une maille "seg2" par noeud, et un seul noeud tardif
+!                   son numero est incremente par la routine appelante
+!                   (typiquement: liaison_ddl )
+!   alteration : 2 ddl de lagrange =>
+!           : 2 ==> une maille "seg3" et 2 noeuds tardifs par noeud
+!                   (typiquement: ddl_impo    )
+!           : 3 ==> une maille "seg3" par noeud, et 2 noeuds tardifs
+!                   par liaison
+!                   son numero est incremente par la routine appelante
+!                   (typiquement: liaison_ddl )
+!           : 4 ==> une maille "seg3" par noeud, et 2 noeuds tardifs
+!                   par liaison sur nb liaisons du meme type
+!                   les numero des noeuds tardifs sont geres par la
+!                   routine appelante ( pour relation i noeud tardif 1
+!                   de num : -nbno(i)+1 et noeud tardif 2 -nbno(i) )
+!                   (typiquement: liaison_ddl_group )
+!      irepe:nombre de repetitions de la boucle par noeud
+!      inema:numero  de la derniere maille tardive dans ligr
+!      nbno :numero  du  dernier noeud tardif dans ligr ou liste de nume
+!            ro de noeuds tardifs(code 4)
+!      typlag:type des multiplicateurs de lagrange associes a la
+!             relation
+!          : '12'  ==>  le premier lagrange est avant le noeud physique
+!                       le second lagrange est apres
+!          : '22'  ==>  le premier lagrange est apres le noeud physique
+!                       le second lagrange est apres
+!
+!     Les arguments suivants sont facultatifs :
+!     ---------------------------------------------
+!     Ils ne sont pas documentes. Il ne doivent etre renseignes que dans le
+!     cas ou la routine noligr est appelee de (trop) nombreuses fois.
+!     Exemple d'utilisation : aflrch.F90
+!
+!     rapide: 'OUI' / 'NON'
+!     jliel0, jlielc : adresses pour l'objet l'objet ligrel.LIEL
+!     jnema0, jnemac : adresses pour l'objet l'objet ligrel.NEMA
+!
+!     Attention : si rapide='OUI', il faut que l'appelant fasse appel a
+!                 jeecra / NUTIOC apres le denier appel a noligr
+!                 (objets .LIEL et .NEMA)
+
+!     sorties:
+!        on enrichit le contenu de la carte chin
 !------------------------------------------------------------------------
     character(len=8) :: typlag
     character(len=19) :: ligr
     integer :: absnb
     character(len=24) :: liel, nema
-    integer :: ic, ilag1, ilag2,jligr, jnema
-    integer :: k, kligr, lonigr, nunoeu
+    integer :: ic, ilag1, ilag2,jnema, jnema02, jnemac2
+    integer :: jliel, jliel02, jlielc2
+    integer :: k, kligr, lonigr, nunoeu, lgnema
+    logical :: lrapid
     integer, save :: iprem=0 , numpoi, numse3
 !-----------------------------------------------------------------------
     iprem=iprem+1
@@ -103,74 +135,111 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
 
     typlag = typlaz
     call poslag(typlag, ilag1, ilag2)
+
     ligr=ligrz
     liel=ligr//'.LIEL'
     nema=ligr//'.NEMA'
+
+
+!   -- gestion des derniers arguments facultatifs (pour gains CPU) :
+!   ----------------------------------------------------------------
+    lrapid=.false.
+    if (present(rapide)) then
+        if (rapide.eq.'OUI') lrapid=.true.
+    endif
+
+    if (.not.lrapid) then
+        call jeveuo(liel, 'E', jliel02)
+        call jeveuo(jexatr(liel, 'LONCUM'), 'E', jlielc2)
+        call jeveuo(nema, 'E', jnema02)
+        call jeveuo(jexatr(nema, 'LONCUM'), 'E', jnemac2)
+    else
+        ASSERT(present(jliel0))
+        ASSERT(present(jlielc))
+        ASSERT(present(jnema0))
+        ASSERT(present(jnemac))
+        jliel02=jliel0
+        jlielc2=jlielc
+        jnema02=jnema0
+        jnemac2=jnemac
+    endif
+
     absnb=abs(nb)
     ASSERT(code.ge.1 .and. code.le.4)
 
+!   -- lgnema : longueur d'un objet de la collection .NEMA :
+    if (code .eq. 1) then
+        lgnema=2
+    else
+        lgnema=4
+    endif
+
+
     lonigr = absnb*irepe + 1
-    call jecroc(jexnum(liel, igrel))
-    call jeecra(jexnum(liel, igrel), 'LONMAX', lonigr)
-    call jeveuo(jexnum(liel, igrel), 'E', jligr)
+    if (.not.lrapid) then
+        call jeecra(jexnum(liel,igrel), 'LONMAX', ival=lonigr)
+        call jecroc(jexnum(liel,igrel))
+    else
+        if (igrel.eq.1) zi(jlielc2)=1
+        if (inema.eq.1) zi(jnemac2)=1
+        zi(jlielc2-1+igrel+1)=zi(jlielc2-1+igrel)+lonigr
+    endif
+
 
     kligr = 0
+    jliel=jliel02-1+zi(jlielc2-1+igrel)
     do 130 ic = 1, irepe
         do 110 k = 1, absnb
+            kligr = kligr + 1
+            inema = inema + 1
+            zi(jliel-1+kligr) = -inema
+
             if (nb .lt. 0) then
                 call jenonu(jexnom(noma//'.NOMNOE', lk(k)), nunoeu)
             else
                 nunoeu=li(k)
             endif
+
+            jnema=jnema02-1+zi(jnemac2-1+inema)
+            if (.not.lrapid) then
+                call jeecra(jexnum(nema,inema), 'LONMAX', ival=lgnema)
+                call jecroc(jexnum(nema,inema))
+            else
+                zi(jnemac2-1+inema+1)=zi(jnemac2-1+inema)+lgnema
+            endif
+
             if (code .eq. 1) then
-                inema = inema + 1
-                call jecroc(jexnum(nema, inema))
-                call jeecra(jexnum(nema, inema), 'LONMAX', 2)
-                call jeveuo(jexnum(nema, inema), 'E', jnema)
                 zi(jnema-1+1) = nunoeu
                 zi(jnema-1+2) = numpoi
-                kligr = kligr + 1
-                zi(jligr-1+kligr) = -inema
+
             else if (code.eq.2) then
-                inema = inema + 1
-                call jecroc(jexnum(nema, inema))
-                call jeecra(jexnum(nema, inema), 'LONMAX', 4)
-                call jeveuo(jexnum(nema, inema), 'E', jnema)
                 zi(jnema-1+1) = nunoeu
                 nbno(1) = nbno(1) + 1
                 zi(jnema-1+2) = -nbno(1)
                 nbno(1) = nbno(1) + 1
                 zi(jnema-1+3) = -nbno(1)
                 zi(jnema-1+4) = numse3
-                kligr = kligr + 1
-                zi(jligr-1+kligr) = -inema
+
             else if (code.eq.3) then
-                inema = inema + 1
-                call jecroc(jexnum(nema, inema))
-                call jeecra(jexnum(nema, inema), 'LONMAX', 4)
-                call jeveuo(jexnum(nema, inema), 'E', jnema)
                 zi(jnema-1+1) = nunoeu
                 zi(jnema-1+2) = -nbno(1)+1
                 zi(jnema-1+3) = -nbno(1)
                 zi(jnema-1+4) = numse3
-                kligr = kligr + 1
-                zi(jligr-1+kligr) = -inema
                 ASSERT(jlgns.ne.1)
                 zi(jlgns+nbno(1)-2) = ilag1
                 zi(jlgns+nbno(1)-1) = ilag2
+
             else if (code.eq.4) then
-                inema = inema + 1
-                call jecroc(jexnum(nema, inema))
-                call jeecra(jexnum(nema, inema), 'LONMAX', 4)
-                call jeveuo(jexnum(nema, inema), 'E', jnema)
                 zi(jnema-1+1) = nunoeu
                 zi(jnema-1+2) = -nbno(k)+1
                 zi(jnema-1+3) = -nbno(k)
                 zi(jnema-1+4) = numse3
-                kligr = kligr + 1
-                zi(jligr-1+kligr) = -inema
+
+            else
+                ASSERT(.false.)
             endif
 110      continue
 130  end do
-    zi(jligr-1+kligr+1) = numel
+     zi(jliel-1+kligr+1) = numel
+
 end subroutine

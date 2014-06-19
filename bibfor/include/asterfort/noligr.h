@@ -18,7 +18,8 @@
 interface
 subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
                   lk, code, irepe, inema, nbno,&
-                  typlaz,jlgns)
+                  typlaz,jlgns,&
+                  rapide, jliel0, jlielc, jnema0, jnemac)
     character(len=8),intent(in) :: noma
     character(len=*),intent(in) :: ligrz
     integer,intent(in) :: igrel
@@ -32,5 +33,13 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
     integer,intent(inout) :: nbno(*)
     character(len=*),intent(in) :: typlaz
     integer,intent(in) :: jlgns
+
+!   -- arguments optionnels pour gagner du CPU :
+    character(len=3), intent(in), optional ::  rapide
+    integer, intent(in), optional ::  jliel0
+    integer, intent(in), optional ::  jlielc
+    integer, intent(in), optional ::  jnema0
+    integer, intent(in), optional ::  jnemac
+
 end subroutine noligr
 end interface
