@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
+    subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc,&
                       nvtot, nvoima, nscoma, touvoi)
         integer :: nscoma
         integer :: nvoima
-        integer :: dim
+        integer, intent(in) :: dim
         integer :: adcom0
         integer :: iatyma
-        character(len=24) :: connex
+        integer, intent(in) :: jconnex0
+        integer, intent(in) :: jconnexc
         integer :: vgeloc(*)
         integer :: nvtot
         integer :: touvoi(1:nvoima, 1:nscoma+2)

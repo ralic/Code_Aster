@@ -1,4 +1,4 @@
-subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
+subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc,&
                   nvtot, nvoima, nscoma, touvoi)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,21 +26,27 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/nbsomm.h"
 #include "asterfort/somloc.h"
+#include "asterfort/assert.h"
 !
     integer :: adcom0, iatyma, nvtot, nvoima, nscoma
     integer :: touvoi(1:nvoima, 1:nscoma+2)
-    integer :: dim
     integer :: vgeloc(*)
+    integer, intent(in) :: dim
+    integer, intent(in) :: jconnex0
+    integer, intent(in) :: jconnexc
 !
     integer :: ptvois, mv, adcomv, nbnomv, nbsomv, nsco, is, iv, tyvoi
     integer :: nusglo, nuslo0, nuslov
     character(len=8) :: typemv
-    character(len=24) :: connex
+    integer :: tymas=0, nbsomvs
+    save tymas, nbsomvs
+
 !
 !
-!   IATYME  ADRESSE JEVEUX DES YEPES DE MAILLE
+!  IATYME  ADRESSE JEVEUX DES TYPES DE MAILLE
 !  NSCO NOMBE DE SOMMETS COMMUNS
 !  MV   MAILLE VOISINE
 !  PTVOIS POITEUR SUR LES DONNEES DE VOISINAGE
@@ -55,7 +61,8 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
 !        2D PAR SOMMET  : S2 : 7
 !        1D PAR SOMMET  : S1 : 8
 !        0D PAR SOMMET  : S0 : 9
-!
+!----------------------------------------------------------------------------------
+
     vgeloc(1)=nvtot
     if (nvtot .ge. 1) then
         vgeloc(2)=2+nvtot
@@ -63,38 +70,45 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
             ptvois=vgeloc(iv+1)
             mv=touvoi(iv,1)
 !
-! RECUPERAION DONNEES DE LA MAILLE MV
+!           -- RECUPERAION DONNEES DE LA MAILLE MV :
 !
-! SA CONECTIVITE
-            call jeveuo(jexnum(connex, mv), 'L', adcomv)
-!  SON TYPE
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+mv)), typemv)
-!  SON NOMBRE DE NOEUDS
-            call dismoi('NBNO_TYPMAIL', typemv, 'TYPE_MAILLE', repi=nbnomv)
-!  SON NOMBRE DE SOMMETS
-            call nbsomm(typemv, nbsomv)
+!           -- SA CONNECTIVITE
+            adcomv=jconnex0-1+zi(jconnexc-1+mv)
+!           -- SON TYPE
+!           -- SON NOMBRE DE NOEUDS
+            nbnomv=zi(jconnexc-1+mv+1)-zi(jconnexc-1+mv)
+!           -- SON NOMBRE DE SOMMETS
+!              On cherche a economiser du CPU :
+            if (zi(iatyma-1+mv).ne.tymas) then
+                call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+mv)), typemv)
+                call nbsomm(typemv, nbsomv)
+                tymas=zi(iatyma-1+mv)
+                nbsomvs=nbsomv
+            else
+                nbsomv=nbsomvs
+            endif
 !
             nsco=touvoi(iv,2)
 !
-!  DETERMINATION DU TYPE DE VOISINAGE
+!           -- DETERMINATION DU TYPE DE VOISINAGE
 !
             if (dim .eq. 3) then
                 if (nsco .gt. 2) then
-! VOISIN 3D PAR FACE
+!                   -- VOISIN 3D PAR FACE
                     tyvoi=1
                 else if (nsco.eq.2) then
-! VOISIN 3D PAR ARETE
+!                   -- VOISIN 3D PAR ARETE
                     tyvoi=3
                 else if (nsco.eq.1) then
-! VOISIN 3D PAR SOMMET
+!                   -- VOISIN 3D PAR SOMMET
                     tyvoi=6
                 endif
             else
                 if (nsco .eq. 2) then
-! VOISIN 2D PAR ARETE
+!                   -- VOISIN 2D PAR ARETE
                     tyvoi=4
                 else if (nsco.eq.1) then
-! VOISIN 2D PAR SOMMET
+!                   -- VOISIN 2D PAR SOMMET
                     tyvoi=7
                 endif
             endif
