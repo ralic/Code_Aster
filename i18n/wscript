@@ -56,25 +56,73 @@ Build steps
 
 import os
 import os.path as osp
+from glob import glob
+
 from waflib import Configure, TaskGen, Task, Errors, Logs
 
 def options(self):
     group = self.get_option_group('Code_Aster options')
     group.add_option('--install-i18n', dest='install_i18n',
                     action='store_true', default=None,
-                    help='install the i18n files')
+                    help='If the option is enabled, configure fails if a tool '
+                         'is missing to install or build the i18n files')
 
 def configure(self):
-    self.check_gettext_tools_inst()
-    self.check_gettext_tools_dvp()
+    self.env['do_i18n_gettext'] = \
+        self.check_i18n_tool('msgfmt', 'MSGFMT') and \
+        self.check_i18n_tool('xgettext', 'XGETTEXT') and \
+        self.check_i18n_tool('msgmerge', 'MSGMERGE')
+    self.env['do_i18n_qtlinguist'] = \
+        self.check_i18n_tool('lrelease', 'LRELEASE') and \
+        self.check_i18n_tool('pylupdate4', 'PYLUPDATE')
 
 def build(self):
     self(
-        features = 'i18n_compile',
+        features = 'gettext_compile',
     install_path = self.env.ASTERLOCALEDIR,
+    )
+    # the .qm files are used by eficas, so they are installed near cata.py
+    self(
+        features = 'qtlinguist_compile',
+    install_path = osp.join(self.env.ASTERLIBDIR, 'Cata'),
     )
 
 def update_i18n(self):
+    update_gettext(self)
+    update_qtlinguist(self)
+
+###############################################################################
+@Configure.conf
+def check_i18n_tool(self, program, varname):
+    """Check a tool for a i18n program and store it using varname"""
+    self.start_msg('Check for {} programs'.format(program))
+    try:
+        self.find_program(program, var=varname)
+    except Errors.ConfigurationError:
+        self.end_msg('not found', 'YELLOW')
+        if self.options.install_i18n is True:
+            raise
+    else:
+        self.end_msg(self.env[varname])
+        return True
+
+class CaptureTask(Task.Task):
+    """Capture stderr/stdout and logs them only in case of failure"""
+
+    def exec_command(self, cmd, **kw):
+        try:
+            self.generator.bld.cmd_and_log(cmd, quiet=0, **kw)
+        except Errors.WafError, err:
+            if hasattr(err, 'stdout'):
+                Logs.warn('stdout: %s' % err.stdout)
+                Logs.warn('stderr: %s' % err.stderr)
+            raise
+
+###############################################################################
+def update_gettext(self):
+    if not self.env['do_i18n_gettext']:
+        raise Errors.WafError('Required tools missing. Run `waf configure` '
+            'with the option `--install-i18n` to check what is missing.')
     get_srcs = self.path.get_src().parent.ant_glob
     pysrc = get_srcs('bibpyt/**/*.py')
     pot = self.path.get_bld().make_node('aster_messages.pot')
@@ -92,47 +140,6 @@ def update_i18n(self):
              use = ['i18n_pot'],
     )
 
-###############################################################################
-@Configure.conf
-def check_gettext_tools_inst(self):
-    """Detect the programs to compile the `.po` files to binary format"""
-    self.start_msg('Check for i18n programs')
-    try:
-        self.find_program('msgfmt', var='MSGFMT')
-    except Errors.ConfigurationError:
-        self.end_msg('not found', 'YELLOW')
-        if self.options.install_i18n is True:
-            raise
-    else:
-        self.env.enable_i18n = 1
-        self.end_msg(self.env.MSGFMT)
-
-@Configure.conf
-def check_gettext_tools_dvp(self):
-    """Detect the programs to update the `.po` files"""
-    self.start_msg('Check for i18n programs (devel)')
-    try:
-        self.find_program('xgettext', var='XGETTEXT')
-        self.find_program('msgmerge', var='MSGMERGE')
-    except Errors.ConfigurationError:
-        self.end_msg('not found', 'YELLOW')
-    else:
-        self.env.update_i18n = 1
-        tools = ', '.join([self.env[i] for i in ('XGETTEXT', 'MSGMERGE')])
-        self.end_msg(tools)
-
-class CaptureTask(Task.Task):
-    """Capture stderr/stdout and logs them only in case of failure"""
-
-    def exec_command(self, cmd, **kw):
-        try:
-            self.generator.bld.cmd_and_log(cmd, quiet=0, **kw)
-        except Errors.WafError, err:
-            if hasattr(err, 'stdout'):
-                Logs.warn('stdout: %s' % err.stdout)
-                Logs.warn('stderr: %s' % err.stderr)
-            raise
-
 class xgettext(CaptureTask):
     """Build the .pot file from a list of source files"""
     run_str = '${XGETTEXT} -o ${TGT[0].abspath()} --package-name=Code_Aster --package-version=default ${I18NFILES}'
@@ -149,14 +156,14 @@ class compile_po(CaptureTask):
     color   = 'BLUE'
 
 
-@TaskGen.feature('i18n_compile')
-def run_i18n(self):
+@TaskGen.feature('gettext_compile')
+def run_gettext_compile(self):
     """compile .po files into .mo and install them.
 
 	:param install_path: installation directory
 	:type install_path: string
     """
-    if not self.env.enable_i18n:
+    if not self.env['do_i18n_gettext']:
         return
     inst = getattr(self, 'install_path')
     for subd in self.path.listdir():
@@ -202,3 +209,42 @@ def update_po(self):
             output = podir.make_node(tail)
             output.parent.mkdir()
             task = self.create_task('merge_po', [node.get_src(), pot], output)
+    Logs.warn('<i18n> update the source tree by copying the new `.po` files:')
+    Logs.warn('       cp -r {}/* i18n/'.format(podir.abspath()))
+
+###############################################################################
+class update_ts(CaptureTask):
+    """Update a .ts file from source"""
+    run_str = '${PYLUPDATE} -q -o ${TGT[0].abspath()} ${SRC[0].abspath()} ${SRC[1].abspath()}'
+    color   = 'BLUE'
+
+class compile_ts(CaptureTask):
+    """Compile .ts file into .qm file"""
+    run_str = '${LRELEASE} ${SRC[0].abspath()} -qm ${TGT[0].abspath()}'
+    color   = 'BLUE'
+
+def update_qtlinguist(self):
+    if not self.env['do_i18n_qtlinguist']:
+        raise Errors.WafError('Required tools missing. Run `waf configure` '
+            'with the option `--install-i18n` to check what is missing.')
+
+@TaskGen.feature('qtlinguist_compile')
+def run_qtlinguist_compile(self):
+    """compile .ts files into .qm and install them.
+
+	:param install_path: installation directory
+	:type install_path: string
+    """
+    if not self.env['do_i18n_qtlinguist']:
+        return
+    inst = getattr(self, 'install_path')
+    for tsfile in glob(osp.join(self.path.abspath(), '*.ts')):
+        tsfile = osp.basename(tsfile)
+        node = self.path.find_resource(tsfile)
+        if node:
+            tgt = node.change_ext('.qm').get_bld()
+            task = self.create_task('compile_ts', node.get_src(), tgt)
+            if inst:
+                lang = task.outputs[0].srcpath().split(os.sep)[-2]
+                self.bld.install_files(inst, task.outputs[0])
+
