@@ -22,6 +22,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, mxresf, neqact,&
 ! ROUTINE EFFECTUANT LE CALCUL MODAL PARAMETRE DANS EIGSOL PAR LA METHODE QZ
 ! -------------------------------------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
+! aslint: disable=W1304
     implicit none
 
 #include "jeveux.h"
