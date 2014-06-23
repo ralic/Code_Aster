@@ -50,15 +50,16 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !   arguments :
 !   -----------
 !     mail (in)  : nom du maillage
-!     kdim (in)  : / '3d' recherche les mailles 3d voisines
-!                  / '2d' recherche les mailles 2d voisines
+!     kdim (in)  : / '3D' recherche les mailles 3d voisines
+!                  / '2D' recherche les mailles 2d voisines
 !     nlima (in)  : nombre de mailles de lima
 !     lima  (in)  : liste des numeros des mailles de peau
 
 !     nomob1 (in/jxout) : nom de l' ojb a creer (vecteur d'entiers)
-!       ce vecteur est de longueur nlima :
-!       pour chaque maille de peau, il contient une maille qui
+!       Ce vecteur est de longueur nlima.
+!       Pour chaque maille de peau, il contient une maille qui
 !       "borde" cette maille de peau.
+!       0 : si la maille de peau n'a pas de maille qui la borde.
 
 !     nbmavo (in) : / nb de mailles de mailvo
 !                   / 0

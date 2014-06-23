@@ -43,7 +43,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 !
 ! Pour determiner la disposition relative des mailles :
 !        On NE se sert PAS de l'orientation des faces des mailles
-!        volumiques (qui pourraient etre "retounees").
+!        volumiques (qui pourraient etre "retournees").
 !        On se sert de la postion geometrique des noeuds.
 !        Si les mailles volumiques sont degenerees (sans volume), l'algorithme
 !        echoue et l'on retourne indmai=-1/-2
@@ -52,7 +52,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 ! in  : type   : type de la maille de peau (tria3, quad4, seg2, ...)
 ! in  : lino1  : liste des noeuds de la maille 1 (3d ou 2d)
 ! in  : nbno1  : nb de noeuds de lino1
-! in  : lino2  : liste des noeuds de la maille 2  (3d ou 2d)
+! in  : lino2  : liste des noeuds de la maille 2 (3d ou 2d)
 ! in  : nbno2  : nb de noeuds de lino2
 ! in  : lino3  : liste des noeuds de la maille de peau (2.5d ou 1.5d)
 ! in  : nbno3  : nb de noeuds de de la maille de peau

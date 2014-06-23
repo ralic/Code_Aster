@@ -212,6 +212,18 @@ La MATR_ASSE et le CHAM_NO ont des numérotations différentes (%(k1)s et %(k2)s
 Si la MATR_ASSE contient des ddls LAGR, ceux-ci sont mis à zéro.
 """),
 
+47 : _(u"""
+Alarme utilisateur pour le calcul de SIRO_ELEM :
+  La maille volumique %(k1)s qui borde la maille de peau %(k2)s
+  est dégénérée ou bien elle n'est pas du côté "-" de la maille de peau.
+  On ne fera donc pas le calcul de SIRO_ELEM sur la maille de peau.
+
+Conseil :
+  Le problème vient peut-être du fait que la peau du maillage est mal
+  orientée. On peut réorienter les mailles de peau avec la commande
+  MODI_MAILLAGE / ORIE_PEAU_3D.
+"""),
+
 
 50 : _(u"""
  La commande a besoin d'un nom de modèle.

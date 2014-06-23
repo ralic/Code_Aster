@@ -12,6 +12,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
+#include "asterfort/oriem1.h"
 #include "asterfort/utflmd.h"
 #include "asterfort/utmamo.h"
 #include "asterfort/utmasu.h"
@@ -38,23 +39,26 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     BUT: CONSTRUIRE 3 LISTES DE MAILLES A PARTIR DES DONNEES
-!          UTILISATEUR :
-!          LISTE DES MAILLES 2D
-!          LISTE DES MAILLES 3D SOUS-JACENTES
-!          LISTE DE L'ENSEMBLE DES MAILLES 2D + MAILLES 3D SOUS-JACENTES
+!  But: construire 3 listes de mailles a partir des donnees
+!       utilisateur :
+!       liste des mailles 2d
+!       liste des mailles 3d sous-jacentes
+!       liste de l'ensemble des mailles 2d + mailles 3d sous-jacentes
 !
-!     IN  MO     : NOM DU MODELE
-!     IN  MAIL2D : NOM OBJET JEVEUX CONTENANT LA LISTE DES MAILLES 2D
-!     IN  MAIL3D : NOM OBJET JEVEUX CONTENANT LA LISTE DES MAILLES 2D
-!     IN  MAILTO : NOM OBJET JEVEUX CONTENANT LA LISTE DES MAILLES 2D+3D
-!     OUT NBMA2D : NOMBRE DE MAILLES 2D TROUVEES == NB MAILLES 3D
+!  in  mo     : nom du modele
+!  in/jxout  mail2d : nom objet jeveux contenant la liste des mailles 2d
+!  in/jxout  mail3d : nom objet jeveux contenant la liste des mailles 2d
+!  in/jxout  mailto : nom objet jeveux contenant la liste des mailles 2d+3d
+!  out nbma2d : nombre de mailles 2d trouvees == nb mailles 3d
+!
+!  Remarque : si une maille 2d n'a pas de maille sous-jacente, le numero
+!             de la maille 3d est 0.
 !
 ! ----------------------------------------------------------------------
 !
 !
     integer :: jma2d, jcoor, jma3d
-    integer :: ima,iret,jcesd,jcesl,iad1
+    integer :: ima,iret,jcesd,jcesl,iad1, numa2d, numa3d
     integer :: nbma, nbmamo, jlima, nbmat, jmato
 !
     character(len=8) :: ma, limocl(3), tymocl(3)
@@ -121,10 +125,18 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
     call wkvect(mailto, 'V V I', nbma2d*2, jmato)
 !
-    do ima = 1, nbma2d
-        zi(jmato-1+ima) = zi(jma2d-1+ima)
-        zi(jmato-1+nbma2d+ima) = zi(jma3d-1+ima)
-    end do
+    do 1, ima = 1, nbma2d
+        numa2d = zi(jma2d-1+ima)
+        numa3d = zi(jma3d-1+ima)
+        if (numa3d.eq.0) goto 1
+
+!       -- si la maille 3d n'est pas du cote "-", on la met a zero (issue22570) :
+        call oriem1(ma,'3D',numa2d,numa3d)
+
+        zi(jmato-1+ima) = numa2d
+        zi(jmato-1+nbma2d+ima) = numa3d
+        zi(jma3d-1+ima) = numa3d
+1   continue
 !
     call jedetr(mesmai)
     call jedetr(limamo)

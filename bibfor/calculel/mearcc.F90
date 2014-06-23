@@ -68,12 +68,13 @@ subroutine mearcc(option, mo, chin, chout)
     integer, pointer :: pt3d(:) => null()
 !
     data comp/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
+!--------------------------------------------------------------------------
 !
+    call jemarq()
+
     mail2d='&&MEARCC.MAILLE_FACE'
     mail3d='&&MEARCC.MAILLE_3D_SUPP'
     mailto='&&MEARCC.MAILLE_2D_3D'
-!
-    call jemarq()
 !
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     call dismoi('DIM_GEOM', ma, 'MAILLAGE', repi=ndim)
@@ -108,14 +109,18 @@ subroutine mearcc(option, mo, chin, chout)
     call jeveuo(chous//'.CESK', 'E', jcesk2)
     call jeveuo(chous//'.CESL', 'E', jcesl2)
     call jeveuo(chous//'.CESC', 'E', jcesc2)
-!
-!     CORRESPONDANCE PT_MAILLE 2D / PT_MAILLE 3D: ZI(JPT3D)
-!     POUR CHAQUE POINT DE LA MAILLE 2D, ON CHERCHE LE
-!     POINT DE LA MAILLE 3D CORRESPONDANT
+
+
+!   -- correspondance maille 2d / maille 3d: zi(jpt3d)
+!      pour chaque point de la maille 2d, on cherche le
+!      point de la maille 3d correspondant
+!   ---------------------------------------------------------
     AS_ALLOCATE(vi=pt3d, size=nbma*nbnomx)
     call jeveuo(ma//'.CONNEX', 'L', jcnx)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
-    do ima = 1, nbma
+    do 2, ima = 1, nbma
+        if (zi(jma3d+ima-1).eq.0) goto 2
+
         jco3=jcnx+zi(jlcnx-1+zi(jma3d+ima-1))-1
         jco2=jcnx+zi(jlcnx-1+zi(jma2d+ima-1))-1
         npt3=zi(jcesd3-1+5+4*(zi(jma3d+ima-1)-1)+1)
@@ -133,11 +138,14 @@ subroutine mearcc(option, mo, chin, chout)
             end do
 110         continue
         end do
-    end do
-!
-!
-!     REMPLISSAGE DU CHAMP SIMPLE 3D
-    do ima = 1, nbma
+2   continue
+
+
+!   -- remplissage du champ simple 3d
+!   ----------------------------------
+    do 1, ima = 1, nbma
+        if (zi(jma3d+ima-1).eq.0) goto 1
+
         npt=zi(jcesd2-1+5+4*(zi(jma2d+ima-1)-1)+1)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma2d+ima-1)), k8b)
         call jenuno(jexnum(ma//'.NOMMAI', zi(jma3d+ima-1)), k8b)
@@ -163,8 +171,8 @@ subroutine mearcc(option, mo, chin, chout)
                 zl(jcesl2-iad2-1)=.true.
             end do
         end do
-    end do
-!
+1   continue
+
     call cesred(chous, nbma, zi(jma2d), 0, [k8b],&
                 'V', chous)
 !
