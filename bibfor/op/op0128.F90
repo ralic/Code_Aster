@@ -22,11 +22,15 @@ subroutine op0128()
 !-----------------------------------------------------------------------
 !  BUT: ASSEMBLER UNE MATRICE ISSUE D'UN MODELE GENERALISE
 !
-!     CONCEPT CREE: MATR_ASSE_GEN
+!     CONCEPT CREE: MATR_ASSE_GENE
 !
 !-----------------------------------------------------------------------
 !
+#include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jelira.h"
 #include "asterfort/asgeel.h"
 #include "asterfort/assgcy.h"
 #include "asterfort/assgen.h"
@@ -34,13 +38,13 @@ subroutine op0128()
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jeexin.h"
-    integer :: iret
+    integer :: iret,jdesc,n1,n2
     character(len=8) :: nomres, numeg
     character(len=9) :: method
     character(len=11) :: option
     character(len=14) :: nugene
     character(len=16) :: nomcon, nomope
-!-----------------------------------------------------------------------
+    character(len=19) :: nomr19
 !-----------------------------------------------------------------------
     integer :: ibid, iopt
 !-----------------------------------------------------------------------
@@ -61,7 +65,7 @@ subroutine op0128()
 !
     call getvtx(' ', 'METHODE', scal=method, nbret=iopt)
 !
-!-- ON TESTE SI LES OBJETS POUR L'ELIMINATION EXISTENT
+!-- on teste si les objets pour l'elimination existent
     call jeexin(nugene//'.ELIM.BASE', iret)
 !
     if (method .eq. 'CLASSIQUE') then
@@ -77,5 +81,23 @@ subroutine op0128()
             call assgcy(nomres, nugene)
         endif
     endif
-!
+
+
+!   -- on corrige l'objet .DESC :
+!   ------------------------------------------------------------------------------
+    nomr19=nomres
+    call jelira(nomr19//'.CONL','LONMAX',n1)
+    call jelira(jexnum(nomr19//'.VALM',1),'LONMAX',n2)
+    call jeveuo(nomr19//'.DESC','E',jdesc)
+    zi(jdesc)=2
+    zi(jdesc+1)=n1
+    if (n2.eq.n1) then
+        zi(jdesc+2)=1
+    elseif (n2.eq.n1*(n1+1)/2) then
+        zi(jdesc+2)=2
+    else
+        zi(jdesc+2)=3
+    endif
+
+
 end subroutine

@@ -43,6 +43,10 @@ class sd_matr_asse_com(sd_titre):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
         return self.REFA.exists
 
+    def check_VALM(self, checker):
+        nbloc=self.VALM.nmaxoc
+        assert nbloc in (1,2), nbloc
+
     def check_REFA(self, checker):
         if not self.exists() : return
         refa=self.REFA.get_stripped()

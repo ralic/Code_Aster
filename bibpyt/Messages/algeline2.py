@@ -131,7 +131,7 @@ Erreur d'utilisation pour AFFE_CHAR_CINE :
 
 23 : _(u"""
  On a rencontré un problème à la lecture de la table %(k1)s.
- 
+
  --> Conseil:
  Vérifiez que cette carte a bien été générée précédemment par un appel à INFO_MODE.
 """),
@@ -140,11 +140,11 @@ Erreur d'utilisation pour AFFE_CHAR_CINE :
  On a rencontré un problème à la lecture de la table %(k1)s. Elle ne comporte aucune ligne
  dont les bornes sont strictement comprises entre les valeurs de la bande de test:
                                     [ %(r1)f , %(r2)f ]
- 
+
  --> Conseil:
  Vérifiez le contenu de la table via un IMPR_TABLE et modifiez les bornes de l'option BANDE
  en conséquence.
-  
+
  Au pire, relancez votre calcul sans spécifier de nom de table. L'opérateur effectuera alors
  l'étape complète de prétraitement de manière transparente.
  Mais le calcul sera un peu plus coûteux puisqu'il ne mutualisera pas cette étape commune avec
@@ -155,7 +155,7 @@ Erreur d'utilisation pour AFFE_CHAR_CINE :
  On a rencontré un problème à la lecture de la table %(k1)s. Elle comporte des trous ou des
  recouvrements par  rapport aux bornes choisies. Le solveur modal risque donc de pas calculer
  strictement tous les modes requis.
- 
+
  --> Conseil:
  Vérifiez le contenu de la table via un IMPR_TABLE.
 
@@ -184,6 +184,12 @@ Erreur d'utilisation pour AFFE_CHAR_CINE :
 
 28 : _(u"""
  les "MATR_ASSE" %(k1)s "  et  " %(k2)s "  ne sont pas combinables.
+"""),
+
+29 : _(u"""
+Erreur utilisateur dans COMB_MATR_ASSE:
+ On cherche à combiner des matrices généralisées qui n'ont pas
+ les mêmes dimensions.
 """),
 
 
@@ -277,7 +283,7 @@ Erreur d'utilisation pour AFFE_CHAR_CINE :
 
 58 : _(u"""
  Les matrices "%(k1)s" et "%(k2)s" ne sont pas compatibles entre elles.
- 
+
  --> Conseil : vérifier la manière dont elles sont construites
  (elles doivent notamment reposer sur le même maillage, être calculées avec les mêmes conditions aux limites,
  avoir la même numérotation de DDL, avoir les mêmes propriétés de (non) symétrie, ...).
@@ -307,7 +313,7 @@ Erreur d'utilisation pour AFFE_CHAR_CINE :
 66 : _(u"""
  L'option 'BANDE' n'est pas autorisée pour un problème avec amortissement
  (%(k1)s complexe et/ou présence du mot-clé %(k2)s).
- 
+
  -> Conseil :
  utiliser l'option 'CENTRE'.
 """),
@@ -352,7 +358,7 @@ Erreur d'utilisation pour AFFE_CHAR_CINE :
 
 74 : _(u"""
  Erreur de vérification des modes calculés : au moins un des critères de validation renseignés sous le mot-clé facteur VERI_MODE n'est pas respecté.
- 
+
  Conseils :
  Si vous voulez tout de même utiliser les modes calculés (à vos risques et périls !), relancez le calcul en modifiant les mots-clés situés sous le mot-clé facteur VERI_MODE,
    - soit en utilisant des valeurs moins contraignantes sur les critères de qualité,
