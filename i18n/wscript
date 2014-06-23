@@ -40,7 +40,9 @@ Build steps
 
   - extract the ``aster_messages*`` files::
 
-      cd i18n ; unzip -u /tmp/code-aster.zip '*/aster_messages*' -x 'fr*'
+      cd i18n
+      unzip -u /tmp/code-aster.zip '*/aster_messages*' -x 'fr*'
+      cd ..
 
   - extract all the strings from the source files and update the ``.po`` files::
 
@@ -49,8 +51,10 @@ Build steps
   - update the 'src' tree by running::
 
       cp -r build/release/i18n_updated/* i18n/
+      hg add i18n/*/*.po
+      hg ci -m '[i18n] update translations from Crowdin Code_Aster project' i18n
 
-  - pushed to crowdin the ``aster_messages.po`` files
+  - pushed to crowdin the ``aster_messages.pot`` file
 
 """
 
@@ -90,6 +94,8 @@ def build(self):
 def update_i18n(self):
     update_gettext(self)
     update_qtlinguist(self)
+    Logs.warn('<i18n> update the source tree by copying the new `.po/.ts` files:')
+    Logs.warn('       cp -r {}_updated/* i18n/'.format(self.path.get_bld().abspath()))
 
 ###############################################################################
 @Configure.conf
@@ -208,14 +214,12 @@ def update_po(self):
             tail = node.get_src().abspath().split(os.sep)[-2:]
             output = podir.make_node(tail)
             output.parent.mkdir()
-            task = self.create_task('merge_po', [node.get_src(), pot], output)
-    Logs.warn('<i18n> update the source tree by copying the new `.po` files:')
-    Logs.warn('       cp -r {}/* i18n/'.format(podir.abspath()))
+            self.create_task('merge_po', [node.get_src(), pot], output)
 
 ###############################################################################
 class update_ts(CaptureTask):
-    """Update a .ts file from source"""
-    run_str = '${PYLUPDATE} -q -o ${TGT[0].abspath()} ${SRC[0].abspath()} ${SRC[1].abspath()}'
+    """Update .ts files using a .pro definition"""
+    run_str = '${PYLUPDATE} ${SRC[0].abspath()}'
     color   = 'BLUE'
 
 class compile_ts(CaptureTask):
@@ -223,11 +227,37 @@ class compile_ts(CaptureTask):
     run_str = '${LRELEASE} ${SRC[0].abspath()} -qm ${TGT[0].abspath()}'
     color   = 'BLUE'
 
+class copy(CaptureTask):
+    """Copy a file"""
+    run_str = 'cp ${SRC[0].abspath()} ${TGT[0].abspath()}'
+
 def update_qtlinguist(self):
     if not self.env['do_i18n_qtlinguist']:
         raise Errors.WafError('Required tools missing. Run `waf configure` '
             'with the option `--install-i18n` to check what is missing.')
-
+    catapy = self.bldnode.find_node('cata.py')
+    # create a catapy.pro file
+    pro = self.path.get_bld().make_node('catapy.pro')
+    translations = ["TRANSLATIONS += {}".format(osp.basename(i)) \
+                    for i in glob(osp.join(self.path.abspath(), '*.ts'))]
+    self(
+        features = 'subst',
+            name = 'i18n_pro_file',
+          source = 'catapy.pro.tmpl',
+          target = pro,
+     catapy_path = catapy.get_bld().abspath(),
+    translations = os.linesep.join(translations),
+    )
+    # copy .ts files in build and update them using cata.py
+    self(
+        features = 'update_all_ts',
+            name = 'update_all_ts',
+          source = catapy,
+             pro = pro,
+           tsdir = 'i18n_updated',
+          always = True,
+    )
+    
 @TaskGen.feature('qtlinguist_compile')
 def run_qtlinguist_compile(self):
     """compile .ts files into .qm and install them.
@@ -245,6 +275,18 @@ def run_qtlinguist_compile(self):
             tgt = node.change_ext('.qm').get_bld()
             task = self.create_task('compile_ts', node.get_src(), tgt)
             if inst:
-                lang = task.outputs[0].srcpath().split(os.sep)[-2]
                 self.bld.install_files(inst, task.outputs[0])
 
+@TaskGen.feature('update_all_ts')
+def make_all_ts(self):
+    """Create task to create the working .ts files"""
+    tsdir = self.path.parent.get_bld().make_node(self.tsdir)
+    newts = []
+    for tsfile in glob(osp.join(self.path.abspath(), '*.ts')):
+        tsfile = osp.basename(tsfile)
+        node = self.path.find_resource(tsfile)
+        if node:
+            wrkts = tsdir.make_node(tsfile)
+            self.create_task('copy', node.get_src(), wrkts)
+            newts.append(wrkts)
+    self.create_task('update_ts', [self.pro] + newts)
