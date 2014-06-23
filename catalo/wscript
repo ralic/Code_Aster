@@ -49,8 +49,9 @@ class surchcata(Task.Task):
         try:
             self.generator.bld.cmd_and_log(cmd, quiet=0, **kw)
         except Errors.WafError, err:
-            Logs.warn('stdout: %s' % err.stdout)
-            Logs.warn('stderr: %s' % err.stderr)
+            if hasattr(err, 'stdout'):
+                Logs.warn('stdout: %s' % err.stdout)
+                Logs.warn('stderr: %s' % err.stderr)
             raise
 
 class picklecata(surchcata):

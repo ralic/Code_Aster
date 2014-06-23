@@ -13,79 +13,113 @@ Content of src/i18n
 
     msginit -i build/release/i18n/aster_messages.pot --locale=$LANG --no-translator
 
+  or by adding a new language on crowdin and download a fresh package.
+
+
+Configure step
+~~~~~~~~~~~~~~
+
+* search the tool to extract the messages from the source files (xgettext),
+  to merge ``.po`` and new ``.pot`` files (msgmerge), and to compile
+  a ``.po`` file into a ``.mo`` file (msgfmt).
+
+* if ``--install-i18n`` option is set, the configuration fails if the tool
+  required at installation is missing.
+
+
 Build steps
 ~~~~~~~~~~~
 
-* ``waf install --install_i18n`` will write several files
+* ``waf build`` compiles the ``.po`` files from ``src/i18n/``.
 
-  - ``build/release/i18n/aster_messages.pot`` : the new extracted messages
-  
-  - for each language (in ``build/release/i18n/$LANG/``):
+* ``waf install`` installs the ``.mo`` files into ``share/locale/aster/...``.
 
-    - ``aster_messages_updated.po``: merge of ``src/i18n/$LANG/aster_messages.po``
-      and ``aster_messages.pot``
+* workflow with the crowdin project (https://crowdin.net/project/code-aster)
 
-    - ``aster_messages.mo``: compilation of ``aster_messages_updated.po``
+  - download already translated strings from crowdin (ex. ``/tmp/code-aster.zip``)
 
-Workflow with the project http://crowdin.net/project/codeaster
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  - extract the ``aster_messages*`` files::
 
-- one file per named branch: for example aster_default.pot
-- contributors and translators work on this(these) file(s)
-- downloaded into src/i18n/LANG.po
-- updated and installed by 'waf install --install-i18n'
-- pushed to crowdin for the new messages
+      cd i18n ; unzip -u /tmp/code-aster.zip '*/aster_messages*' -x 'fr*'
+
+  - extract all the strings from the source files and update the ``.po`` files::
+
+      waf i18n
+
+  - update the 'src' tree by running::
+
+      cp -r build/release/i18n_updated/* i18n/
+
+  - pushed to crowdin the ``aster_messages.po`` files
+
 """
 
-
+import os
 import os.path as osp
 from waflib import Configure, TaskGen, Task, Errors, Logs
 
 def options(self):
     group = self.get_option_group('Code_Aster options')
     group.add_option('--install-i18n', dest='install_i18n',
-                    action='store_true', default=False,
-                    help='install the i18n files. This option must be used '
-                         'during the "install" step.')
+                    action='store_true', default=None,
+                    help='install the i18n files')
 
 def configure(self):
-    self.start_msg('Check for i18n programs')
-    try:
-        self.check_gettext_tools()
-    except Errors.ConfigurationError:
-        self.end_msg('not found', 'YELLOW')
-    else:
-        self.env.enable_i18n = 1
-        tools = ', '.join([self.env[i] for i in ('XGETTEXT', 'MSGMERGE', 'MSGFMT')])
-        self.end_msg('done (%s)' % tools)
+    self.check_gettext_tools_inst()
+    self.check_gettext_tools_dvp()
 
 def build(self):
-    src = self.path.get_src().parent
-    if self.options.install_i18n and self.env.enable_i18n:
-        # search language files ??/aster_messages.po
-        langs = [i for i in self.path.listdir() \
-                   if osp.isfile(osp.join(self.path.abspath(), i, 'aster_messages.po'))]
-        self(
-            features = 'i18n_pot',
-                name = 'i18n_pot',
-              target = 'aster_messages.pot',
-        )
-        for lang in langs:
-            self(
-                features = 'i18n_mo',
-                    name = 'i18n_' + lang,
-                    path = self.path,
-                    lang = lang,
-            install_path = self.env.ASTERLOCALEDIR,
-            )
+    self(
+        features = 'i18n_compile',
+    install_path = self.env.ASTERLOCALEDIR,
+    )
+
+def update_i18n(self):
+    get_srcs = self.path.get_src().parent.ant_glob
+    pysrc = get_srcs('bibpyt/**/*.py')
+    pot = self.path.get_bld().make_node('aster_messages.pot')
+    self(
+        features = 'i18n_pot',
+            name = 'i18n_pot',
+            deps = pysrc,
+          target = pot,
+    )
+    self(
+        features = 'i18n_update',
+            name = 'i18n_update',
+             pot = pot,
+           podir = 'i18n_updated',
+             use = ['i18n_pot'],
+    )
 
 ###############################################################################
 @Configure.conf
-def check_gettext_tools(self):
-    """Detect the program *xgettext* and set *conf.env.XGETTEXT*"""
-    self.find_program('xgettext', var='XGETTEXT')
-    self.find_program('msgmerge', var='MSGMERGE')
-    self.find_program('msgfmt', var='MSGFMT')
+def check_gettext_tools_inst(self):
+    """Detect the programs to compile the `.po` files to binary format"""
+    self.start_msg('Check for i18n programs')
+    try:
+        self.find_program('msgfmt', var='MSGFMT')
+    except Errors.ConfigurationError:
+        self.end_msg('not found', 'YELLOW')
+        if self.options.install_i18n is True:
+            raise
+    else:
+        self.env.enable_i18n = 1
+        self.end_msg(self.env.MSGFMT)
+
+@Configure.conf
+def check_gettext_tools_dvp(self):
+    """Detect the programs to update the `.po` files"""
+    self.start_msg('Check for i18n programs (devel)')
+    try:
+        self.find_program('xgettext', var='XGETTEXT')
+        self.find_program('msgmerge', var='MSGMERGE')
+    except Errors.ConfigurationError:
+        self.end_msg('not found', 'YELLOW')
+    else:
+        self.env.update_i18n = 1
+        tools = ', '.join([self.env[i] for i in ('XGETTEXT', 'MSGMERGE')])
+        self.end_msg(tools)
 
 class CaptureTask(Task.Task):
     """Capture stderr/stdout and logs them only in case of failure"""
@@ -94,8 +128,9 @@ class CaptureTask(Task.Task):
         try:
             self.generator.bld.cmd_and_log(cmd, quiet=0, **kw)
         except Errors.WafError, err:
-            Logs.warn('stdout: %s' % err.stdout)
-            Logs.warn('stderr: %s' % err.stderr)
+            if hasattr(err, 'stdout'):
+                Logs.warn('stdout: %s' % err.stdout)
+                Logs.warn('stderr: %s' % err.stderr)
             raise
 
 class xgettext(CaptureTask):
@@ -113,38 +148,57 @@ class compile_po(CaptureTask):
     run_str = '${MSGFMT} -o ${TGT[0].abspath()} ${SRC[0].abspath()}'
     color   = 'BLUE'
 
+
+@TaskGen.feature('i18n_compile')
+def run_i18n(self):
+    """compile .po files into .mo and install them.
+
+	:param install_path: installation directory
+	:type install_path: string
+    """
+    if not self.env.enable_i18n:
+        return
+    inst = getattr(self, 'install_path')
+    for subd in self.path.listdir():
+        node = self.path.find_resource(osp.join(subd, 'aster_messages.po'))
+        if node:
+            task = self.create_task('compile_po', node.get_src(), node.change_ext('.mo'))
+            if inst:
+                lang = task.outputs[0].srcpath().split(os.sep)[-2]
+                path = osp.join(inst, lang, 'LC_MESSAGES')
+                self.bld.install_files(path, task.outputs[0])
+
 @TaskGen.feature('i18n_pot')
 def make_pot(self):
-    """Create task to build the pot file"""
-    i18n = self.path.get_bld()
-    i18n.mkdir()
-    target = i18n.make_node(self.target)
-    deps = self.bld.srcnode.ant_glob('bibpyt/**/*.py')
+    """Create task to build the pot file
+    
+    :param deps: list of the python files to run xgettext on
+    :type deps: nodes
+    :param target: name of the ``.pot`` file
+    :type target: string
+    """
+    target = self.target
+    deps = getattr(self, 'deps', [])
     self.env.I18NFILES = []
     for node in deps:
         self.env.append_value('I18NFILES', node.abspath())
-
+    target.parent.mkdir()
     self.create_task('xgettext', deps, target)
 
-@TaskGen.feature('i18n_mo')
+@TaskGen.feature('i18n_update')
 @TaskGen.after('i18n_pot')
-def apply_i18n(self):
-    """Create task to build the pot file"""
-    langpath = osp.join(self.path.get_bld().relpath(), self.lang)
-    msg = 'aster_messages'
-    submsg = osp.join(langpath, msg)
-    inpo = self.path.get_src().find_resource(osp.join(self.lang, msg + '.po'))
-    pot = self.path.get_bld().find_resource(msg + '.pot')
-    make_node = self.bld.bldnode.make_node
-    outpo = make_node(submsg + '_updated' + '.po')
-    mof = make_node(submsg + '.mo')
-    mof.parent.mkdir()
-
-    self.create_task('merge_po', src=[inpo, pot], tgt=outpo)
-    self.create_task('compile_po', src=outpo, tgt=mof)
-
-    inst = getattr(self, 'install_path', '${ASTERLOCALEDIR}')
-    if inst:
-        path = osp.join(inst, self.lang, 'LC_MESSAGES')
-        self.bld.install_files(path, mof)
-
+def update_po(self):
+    """Create task to update the po files
+    
+    :param pot: updated .pot file
+    :type pot: string
+    """
+    pot = self.pot
+    podir = self.path.parent.get_bld().make_node(self.podir)
+    for subd in self.path.listdir():
+        node = self.path.find_resource(osp.join(subd, 'aster_messages.po'))
+        if node:
+            tail = node.get_src().abspath().split(os.sep)[-2:]
+            output = podir.make_node(tail)
+            output.parent.mkdir()
+            task = self.create_task('merge_po', [node.get_src(), pot], output)

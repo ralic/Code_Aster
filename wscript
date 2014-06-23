@@ -190,7 +190,7 @@ def build_elements(self):
 
 def init(self):
     from waflib.Build import BuildContext, CleanContext, InstallContext, UninstallContext
-    _all = (BuildContext, CleanContext, InstallContext, UninstallContext, TestContext)
+    _all = (BuildContext, CleanContext, InstallContext, UninstallContext, TestContext, I18NContext)
     for x in ['debug', 'release']:
         for y in _all:
             name = y.__name__.replace('Context','').lower()
@@ -216,13 +216,21 @@ def runtest(self):
     self.load('runtest', tooldir='waftools')
 
 class TestContext(Build.BuildContext):
-    """Facility to execute a testcase"""
+    """facility to execute a testcase"""
     cmd = 'test'
     fun = 'runtest'
 
+def update_i18n(self):
+    self.recurse('i18n')
+
+class I18NContext(Build.BuildContext):
+    """build the i18n files"""
+    cmd = 'i18n'
+    fun = 'update_i18n'
+
 @Configure.conf
 def set_installdirs(self):
-    """Set the installation subdirectories"""
+    # set the installation subdirectories
     vers = self.options.astervers
     if vers is None:
         try:
