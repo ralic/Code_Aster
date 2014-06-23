@@ -295,7 +295,6 @@ SIGEPS=SIMU_POINT_MAT(INFO=2,
                              PREDICTION='EXTRAPOLE',
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  RESI_GLOB_RELA=1.E-5
                                      ),
                    MATER      = ACIERDD,
 
@@ -328,7 +327,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=764.159684393,
+           VALE_CALC=764.162054861,
            NOM_PARA='SIZZ',
            TABLE=SIGEPS,
            FILTRE=_F(NOM_PARA='INST',
