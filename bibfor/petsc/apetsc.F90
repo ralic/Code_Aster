@@ -141,6 +141,10 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         ASSERT(kind(vbid).eq.kind(np))
         ASSERT(kind(offbid).eq.kind(np))
 !
+! Tous les codes de retour non-nuls de PETSc feront planter le code 
+!
+       call PetscPushErrorHandler(PetscAbortErrorHandler,                   &
+     &                           PETSC_NULL_INTEGER, ierr)
         call PetscInitialize(PETSC_NULL_CHARACTER, ierr)
         if (ierr .ne. 0) call utmess('F', 'PETSC_1')
         call PetscInitializeFortran(ierr)

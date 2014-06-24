@@ -1,6 +1,5 @@
 subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     implicit none
-! aslint: disable=W1304
 !
 ! person_in_charge: mathieu.corus at edf.fr
 ! ======================================================================
@@ -28,7 +27,6 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 # include "asterfort/jedetr.h"
 # include "asterfort/jeveuo.h"
 # include "asterfort/wkvect.h"
-# include "asterf_types.h"
 # include "blas/dgemv.h"
 !
 #ifdef _HAVE_PETSC
@@ -45,10 +43,17 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !
     PetscInt :: ierr, nbeq, nlag, nbnzc
     PetscInt :: one = 1 
-    Vec :: c_temp, v_temp
-    integer :: i1, ldelg, nnzt, contr, j1, nzrow, valrow, k1, indnz, iscons, numcon, nblib, nbcont
+    Vec :: c_temp, v_temp, c_elim,  v
+    Mat :: t_elim_elim 
+    IS :: is_elim
+    PetscInt :: n1,n2
+    PetscInt :: nn_is(1)
+    PetscOffset :: xx_i, nn_i
+    ! Mimics a C pointer
+    PetscScalar, dimension(1) :: xx_v
+    integer :: i1, ldelg, nnzt, contr, j1, nzrow, valrow, k1, indnz, iscons, numcon, nblib, nelim
     integer :: nbnz, indcon, indlib, icol, lwork1, imax, ctemp, ltlib, lccon, lclib,nzmax
-    integer :: nvcont, ifm, niv, nblibt,posind,compnd
+    integer :: nvcont, ifm, niv, posind,compnd
     real(kind=8) :: eps, norm, cmax, normc
     logical :: info2
     mpi_int :: mpicomm
@@ -74,7 +79,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     call jeveuo('&&APELIM.CONTR_NON_VERIF', 'E', nvcont)
     call jeveuo('&&APELIM.LIGNE_C_TEMP   ', 'E', ctemp)
 !
-!   nlag : nombre de ddls Lagrange 
+!   clag1 : nombre de ddls Lagrange 1 
 !   nbeq : nombre de ddls "physiques" (i.e. non-Lagrange)
 !   La matrice des contraintes C est de taille nlag x nbeq 
     call MatGetSize(c, nlag, nbeq, ierr)
@@ -82,6 +87,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     if (info2) then 
        write(6,*),'C est de taille nlag= ', nlag,' x neq= ', nbeq
     endif
+
 !
 !--
 !-- Reinitialisation de CONTR et initialisation de diag. de T
@@ -112,8 +118,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     call wkvect('&&ELG_REMPLT.T_LIB.CON', 'V V R', nworkt, ltlib)
     call wkvect('&&ELG_REMPLT.COMP_IND', 'V V S', to_aster_int(nbeq), compnd)
     posind=0
-    call VecCreateSeq(mpicomm, nbeq, c_temp, ierr)
-    call VecCreateSeq(mpicomm, nbeq, v_temp, ierr)
+    call VecCreateSeq(mpicomm, to_petsc_int(nbeq) , c_temp, ierr)
+    call VecCreateSeq(mpicomm, to_petsc_int(nbeq), v_temp, ierr)
 !
 !--------------------------------!
 !--                            --!
@@ -172,15 +178,10 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !--
 !-- Comptage des DDL impliques dans d'autres contraintes
 !--
-        nbcont=0
         nblib=0
-        nblibt=0
         cmax=0.d0
         imax=0
         if (nbnz .gt. 1) then
-            do j1 = 1, nbnz
-                if (zi4(contr + numcon) .eq. 0) nblibt=nblibt+1
-            end do
             do j1 = 1, nbnz
                 numcon=zi4(nzrow+zi4(indnz+j1-1))
                 iscons=zi4(contr + numcon)
@@ -193,17 +194,15 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         imax=nblib-1
                     endif
                 else
-                    if (nblibt .gt. 0) then 
-                      zi4(indcon+nbcont)=numcon
-                      zr(lccon+nbcont)=zr(ctemp+j1-1)
-                    endif
-                    nbcont=nbcont+1
+                      zi4(indcon+nelim)=numcon
+                      zr(lccon+nelim)=zr(ctemp+j1-1)
+                    nelim=nelim+1
                 endif
             end do
             !write(6,*),'  imax=',imax
             !write(6,*),'  cmax=',cmax
 !
-            if (nbcont .eq. 0) then
+            if (nelim .eq. 0) then
 !--------------------------------------------------------------------------!
 !--                                                                      --!
 !-- Construction d'une base du noyau de toute la contrainte - elg_nllspc --!
@@ -238,7 +237,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !--    => voir note cas NBLIB < NBNZ
 !-- mais ca coute pas cher a prevoir
 !--
-                    if (info2) write(ifm,*),'CAS NBCONT = 0'
+                    if (info2) write(ifm,*),'CAS nelim = 0'
                     if (info2) write(ifm,*),'CONTRAINTE MAL ELIMINEE - ', norm
                     zi4(nvcont+nbnvco)=i1-1
                     nbnvco=nbnvco+1
@@ -270,8 +269,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                         numcon=zi4(indlib+j1-1)
                         zi4(compnd+posind+j1-1)=numcon
                      end do
-                     posind=posind+nbnz   
-                    if (info2) write(ifm,*),'CAS NBCONT = 0'
+                     posind=posind+nblib
+                    if (info2) write(ifm,*),'CAS nelim = 0'
                     if (info2) write(ifm,*),'CONTRAINTE BIEN ELIMINEE - ', norm
                 endif
 !
@@ -285,52 +284,50 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !--
 !-- Partie T(lib,con) = -C(i1,lib) \ (C(i1,con) * T(con,con)) ;
 !--
-!--
-!--   Pour les perf : faire ca en creux en extrayant les sous blocs
-!--    des matrices! Pas la peine defaire la recopie en plein
-!--
+!
+               ! Nombre de degrés de liberté intervenant dans les contraintes 
+               ! précédemment éliminées.   
 
-                nbcont=posind
-! zr(ltcon) et zr(ltlib) ne sont jamais utilises ensemble => pas besoin de 2 tableaux
-!              call MatGetValues(t, nbcont, zi4(compnd), nbcont, zi4(compnd),&
-!                zr(ltcon), ierr)
-                call MatGetValues(t, to_petsc_int(nbcont), zi4(compnd), &
-                                  to_petsc_int(nbcont), zi4(compnd),&
-                                  zr(ltlib), ierr)
-!--         Retourne la matrice stockee en ligne
-!                call dgemv('N', nbcont, nbcont, 1.d0, zr(ltcon),&
-!                           nbcont, zr(lccon), 1, 0.d0, zr(lwork1),&
-!                           1)
-
-!  Suite changement des indices, on re affecte la partir de C pour le produit 
-!  et on renorme la ligne de C               
-                call MatGetValues(c, one,[to_petsc_int(i1-1)], to_petsc_int(nbcont), zi4(compnd),&
-                                  zr(lccon), ierr)
-                do j1 = 1, nbcont
-                  zr(lccon+j1-1)=zr(lccon+j1-1)/normc
-                end do                  
-                call dgemv('N', nbcont, nbcont, 1.d0, zr(ltlib),&
-                           nbcont, zr(lccon), 1, 0.d0, zr(lwork1),&
-                           1)
-                numcon=zi4(indlib+imax)
-!
-!
-!
-                if (cmax .lt. 1.d-10) then
+                nelim=posind
+               ! is_elim = index set désignant les indices colonnes de C qui sont impliqués dans 
+               ! une contrainte déjà éliminée. 
+               ! Ces indices ont été stockés dans zi4(compnd:compnd-1+nelim)
+               call ISCreateGeneral(mpicomm, to_petsc_int(nelim), zi4(compnd), PETSC_USE_POINTER, &
+                    is_elim, ierr)
+               ! Tri de is_elim  
+               call ISSort(is_elim, ierr)
+               ! On extrait de la contrainte courante le vecteur correspondant à is_elim 
+               call VecGetSubVector(c_temp, is_elim, c_elim, ierr)
+               ! Et de la matrice T la sous-matrice T_elim_elim correspondant à is_elim x is_elim 
+               call MatGetSubMatrix(t, is_elim, is_elim, MAT_INITIAL_MATRIX, t_elim_elim, ierr )
+               ! Calcul de v = c_elim * t_elim_elim
+               call MatGetVecs( t_elim_elim, PETSC_NULL_OBJECT, v, ierr )
+               call MatMultTranspose(t_elim_elim, c_elim, v, ierr )
+               call MatDestroy(t_elim_elim, ierr)
+               call VecDestroy(c_elim,ierr)
+               ! 
+               if (cmax .lt. 1.d-10) then
 !--
-!-- On ne peut eliminer correctement la contrainte -> On sort
+!-- On ne peut pas eliminer correctement la contrainte -> On sort
 !--
                     zi4(nvcont+nbnvco)=i1-1
                     nbnvco=nbnvco+1
                     goto 123
                 endif
-                !
-                do j1 = 1, nbcont
-                    icol=zi4(compnd+j1-1)
-                    call MatSetValues(t, one, [to_petsc_int(numcon)], one, [to_petsc_int(icol)],&
-                                      [-zr(lwork1+ j1-1)/zr(lclib+imax)], INSERT_VALUES, ierr)
-                end do
-!
+                ! Le bloc T_free_elim doit satisfaire le pb sous-déterminé
+                ! c_free * T_free_elim = -v
+                ! Soit imax l'indice colonne du plus grand terme de c_free 
+                ! T_free_elim(imax,:) = -v / c(i1,imax) 
+                call VecScale(v,-1./zr(lclib+imax) ,ierr)
+                ! Insertion des valeurs de v à la ligne imax de T 
+                call VecGetArray(v,xx_v,xx_i,ierr)
+                call ISGetIndices(is_elim, nn_is, nn_i, ierr)
+                call MatSetValues(t, one, zi4(indlib+imax), to_petsc_int(nelim), nn_is(nn_i+1), &
+                                  xx_v(xx_i+1), INSERT_VALUES, ierr)
+                call ISRestoreIndices(is_elim,nn_is,nn_i,ierr)
+                call ISDestroy(is_elim, ierr)
+                call VecRestoreArray(v,xx_v, xx_i, ierr)
+                call VecDestroy(v,ierr)
 !
 !--
 !-- Partie elg_nllspc lib-lib
@@ -373,7 +370,7 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
                     nbnvco=nbnvco+1
 !
                     numcon=zi4(indlib+imax)
-                    do j1 = 1, nbcont
+                    do j1 = 1, nelim
                         icol=zi4(indcon+j1-1)
                         call MatSetValues(t, one, [to_petsc_int(numcon)], one, &
                                           [to_petsc_int(icol)],&
@@ -467,6 +464,8 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
     call jedetr('&&ELG_REMPLT.T_CON.CON')
     call jedetr('&&ELG_REMPLT.T_LIB.CON')
     call jedetr('&&ELG_REMPLT.COMP_IND')
+    call VecDestroy(c_temp, ierr)
+    call VecDestroy(v_temp, ierr)
 !
 #else
     integer :: c, t

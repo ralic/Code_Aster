@@ -18,6 +18,7 @@ subroutine elg_calcxl(x1, vlag)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 # include "jeveux.h"
+# include "asterc/asmpi_comm.h"
 # include "asterfort/assert.h"
 # include "asterfort/jedema.h"
 # include "asterfort/jemarq.h"
@@ -27,6 +28,11 @@ subroutine elg_calcxl(x1, vlag)
 !
 !     OUT : Vec VLAG  (solution sur les dds Lagrange "1")
 !
+!     On utilise la méthode des moindres carrés (LSQR dans PETSc)
+!     Rq: La méthode originale utilise une factorisation QR 
+!     préalable de A. Le calcul des multiplicateurs s'effectue alors
+!     par des descentes remontées:
+!    
 !     Les coefficients de Lagrange (1 et 2) sont
 !     calculés par :
 !       L = (R'*R) \ A*(b - B*x)
@@ -34,34 +40,33 @@ subroutine elg_calcxl(x1, vlag)
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-# include "asterfort/elg_allocvr.h"
-# include "asterfort/elg_resodr.h"
+#include "asterfort/elg_allocvr.h"
+#include "asterfort/elg_resodr.h"
 !
     Vec :: x1, vlag
-    mpi_int :: mpicou 
+    mpi_int :: mpicomm 
     KSP :: ksp
     PC :: pc
 !
 !================================================================
     PetscInt :: n1, n2, n3
     PetscInt :: ierr
-    PetscScalar :: xx(1), m1
+    PetscScalar :: neg_one
     PetscOffset :: xidxay, xidxl
-    Vec :: bx, y, ay, xtmp
+    Mat :: cct 
+    Vec :: bx, y, ay, xtmp, xlag
     PetscInt :: its
-    real*8 :: norm
-    PetscScalar neg_one
-!----------------------------------------------------------------
-    neg_one = -1.
+    real(kind=8) :: norm
+    logical :: info 
 !----------------------------------------------------------------
     call jemarq()
+    info =.true. 
 !
 !     -- dimensions :
 !       n1 : # ddls physiques
 !       n2 : # lagranges "1"
 !     ----------------------------------------------------------
     call MatGetSize(melim(ke)%ctrans, n1, n2, ierr)
-    print*, "CTRANS: n1=", n1," n2=",n2 
 !
 !     -- vérifs :
     call VecGetSize(x1, n3, ierr)
@@ -76,57 +81,62 @@ subroutine elg_calcxl(x1, vlag)
 !
 !
 !     -- calcul de Y = b - B*x :
-    m1=-1.d0
     call VecDuplicate(melim(ke)%vecb, y, ierr)
     call VecCopy(melim(ke)%vecb, y, ierr)
-    call VecAXPY(y, m1, bx, ierr)
+    call VecAXPY(y, neg_one, bx, ierr)
 !
 !     -- calcul de AY = A*Y
     call elg_allocvr(ay, int(n2))
     call MatMultTranspose(melim(ke)%ctrans, y, ay, ierr)
 !
-!
 !     -- résolution : z = (R*R') \ AY :
 !
-    call asmpi_comm('GET', mpicou)
+    call asmpi_comm('GET', mpicomm)
 !
 !   Initialisation du solveur PETSc : on utilise LSQR
 !   qui calcule la solution aux moindres carrés d'un système linéaire sur-déterminé
 !   C^T Vlag = AY
 !   ksp = solver context 
-    call KSPCreate(mpicou, ksp, ierr)
-    ASSERT(ierr.eq.0)
+    call KSPCreate(mpicomm, ksp, ierr)
+!    
+!   Calcul de C C^T (utilisée pour construire le préconditionneur) 
+#ifdef ASTER_PETSC_VERSION_32
+    call MatMatMultTranspose(melim(ke)%ctrans, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
+         PETSC_DEFAULT_DOUBLE_PRECISION, cct, ierr)
+    ASSERT( ierr==0 )
+#else
+    call MatTransposeMatMult(melim(ke)%ctrans, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
+         PETSC_DEFAULT_DOUBLE_PRECISION, cct, ierr)
+     ASSERT( ierr==0 )
+#endif
 !   Set linear solver : LSQR
     call KSPSetType(ksp, KSPLSQR, ierr)
-    ASSERT(ierr.eq.0)
 !   Set linear system 
-    call KSPSetOperators(ksp, melim(ke)%ctrans, melim(ke)%ctrans, DIFFERENT_NONZERO_PATTERN, ierr)
-!   No Precond : matrix ctrans is rectangular and PETSc default preconditioner won't work !
-    call KSPGetPC(ksp,pc,ierr)
-    call PCSetType(pc,PCNONE, ierr)
-    ASSERT(ierr.eq.0)
+    call KSPSetOperators(ksp, melim(ke)%ctrans, cct, SAME_PRECONDITIONER, ierr)
 !   Solve linear system  C^T * Vlag = AY 
-    call VecGetSize( y, n1, ierr )
-    write(6,*) " Rhs:", n1
-      call VecGetSize( vlag, n1, ierr )
-          write(6,*) " vlag", n1
     call KSPSolve( ksp, y, vlag, ierr)
-    ASSERT(ierr.eq.0)
-    if (.true.) then
+    if (info) then
       call VecDuplicate(y, xtmp , ierr)
       call MatMult(melim(ke)%ctrans, vlag, xtmp, ierr)
       call VecAXPY(xtmp,neg_one,y ,ierr)
-      call VecNorm(xtmp,NORM_2,norm,ierr)
+      call VecNorm(xtmp,norm_2,norm,ierr)
       call KSPGetIterationNumber(ksp,its,ierr)
+      call VecDuplicate(vlag, xlag , ierr)
+      call MatMultTranspose(melim(ke)%ctrans, xtmp, xlag, ierr)
+      call VecNorm(xlag,norm_2,norm,ierr)
+       
       write(6,100) norm,its
   100 format('CALCXL: Norm of error = ',e11.4,',  Number of iterations = ',i5)
       call VecDestroy(xtmp, ierr)
+      call VecDestroy(xlag, ierr)
     endif
 !
 !     -- ménage :
     call VecDestroy(bx, ierr)
     call VecDestroy(y, ierr)
     call VecDestroy(ay, ierr)
+    call KSPDestroy(ksp, ierr)
+    call MatDestroy(cct, ierr)
 !
     call jedema()
 !

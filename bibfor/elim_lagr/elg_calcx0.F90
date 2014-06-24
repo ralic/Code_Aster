@@ -21,12 +21,18 @@ subroutine elg_calcx0()
 # include "asterfort/assert.h"
 # include "asterfort/jedema.h"
 # include "asterfort/jemarq.h"
+# include "asterc/asmpi_comm.h"
 !----------------------------------------------------------------
 !
-!     Resolution de x0 = A \ c par :
+!     Résolution de x0 = A \ c par la méthode des moindres carrés.
+!     (appel d'une méthode native de PETSc) 
+!  
+!     Rq: La méthode originale de résolution est basée sur une 
+!         factorisation QR préalable de A. La solution x0 
+!         est obtenue par:   
 !       z   = (L'*L) \  c  (par descente / remontée)
 !       x0  = A' * z
-!
+!       avec : 
 !     * Mat A'  : matrice des contraintes linéaires
 !       A' utilisée est ELIMLG/Ctrans
 !     * Mat L'  : matrice triangulaire supérieure
@@ -47,7 +53,7 @@ subroutine elg_calcx0()
     PC  :: pc
     mpi_int :: mpicomm
     PetscInt :: its, ierr
-    real*8 :: norm
+    real(kind=8) :: norm
     PetscScalar ::  neg_one
     logical :: info 
 !----------------------------------------------------------------
@@ -63,19 +69,15 @@ subroutine elg_calcx0()
 !   Résolution de C Vx0 = Vec C (PETSc, solveur "least square" LSQR)
 !   Init solver context : ksp 
     call KSPCreate(mpicomm, ksp, ierr)
-    ASSERT(ierr.eq.0)
 !   Choose LSQR solver
     call KSPSetType(ksp, KSPLSQR, ierr)
-    ASSERT(ierr.eq.0)
 !   Set the linear system matrix 
     call KSPSetOperators(ksp, c, c, SAME_PRECONDITIONER, ierr)
 !   No precond : c is rectangular, Petsc default preconditioner ILU won't work
     call KSPGetPC(ksp,pc,ierr)
     call PCSetType(pc,PCNONE, ierr)
-    ASSERT(ierr.eq.0)
 !   Solve 
     call KSPSolve( ksp, melim(ke)%vecc, melim(ke)%vx0, ierr)
-    ASSERT(ierr.eq.0)
 !
 !     -- Calcul de ||A*x0 - c||
 !     ---------------------------
@@ -83,7 +85,7 @@ subroutine elg_calcx0()
       call VecDuplicate(melim(ke)%vecc, vbid1, ierr)
       call MatMult(c, melim(ke)%vx0, vbid1, ierr)
       call VecAXPY(vbid1,neg_one,melim(ke)%vecc ,ierr)
-      call VecNorm(vbid1,NORM_2,norm,ierr)
+      call VecNorm(vbid1,norm_2,norm,ierr)
       call KSPGetIterationNumber(ksp,its,ierr)
       write(6,100) norm,its
   100 format('CALCX0: Norm of error = ',e11.4,',  Number of iterations = ',i5)
@@ -91,9 +93,7 @@ subroutine elg_calcx0()
     endif
 !
     call MatDestroy( c, ierr )
-    ASSERT( ierr == 0 ) 
     call KSPDestroy( ksp, ierr)
-    ASSERT( ierr == 0 ) 
 
 !
     call jedema()

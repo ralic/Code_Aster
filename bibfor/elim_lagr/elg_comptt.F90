@@ -88,7 +88,6 @@ subroutine elg_comptt(c, t, nworkt)
 !   nbeq : nombre de ddls "physiques" (i.e. non-Lagrange)
 !   La matrice des contraintes C est de taille nlag x nbeq 
     call MatGetSize(c, nlag, nbeq, ierr)
-    ASSERT(ierr == 0 ) 
     if (info2) then 
        write(6,*),'C est de taille nlag= ', nlag,' x neq= ', nbeq
     endif
@@ -229,7 +228,6 @@ subroutine elg_comptt(c, t, nworkt)
                     icol=zi4(indlib+k1-1)  
                     call MatSetValues(t, one, [to_petsc_int(numcon)], one, [to_petsc_int(icol)],&
                                     [valt], INSERT_VALUES, ierr)
-                    ASSERT(ierr == 0 ) 
                   end do
                 endif
                !
@@ -263,7 +261,6 @@ subroutine elg_comptt(c, t, nworkt)
                   if ( iscons == 1 ) then  
                     call MatSetValues(t, one, [to_petsc_int(numcon)], one, [to_petsc_int(icol-1)],&
                                     [valt], INSERT_VALUES, ierr)
-                    ASSERT(ierr == 0 ) 
                   endif                   
                 end do
               endif
@@ -280,7 +277,6 @@ subroutine elg_comptt(c, t, nworkt)
         !
         call MatRestoreRow(c, to_petsc_int(i1-1), nbnzc, zi4(nzrow), zr(valrow),&
                            ierr)
-        ASSERT(ierr == 0 ) 
     end do
 !
 !
@@ -296,13 +292,11 @@ subroutine elg_comptt(c, t, nworkt)
     if (pass == 1) then 
        call MatCreateSeqAIJ(mpicomm, nbeq, nbeq, PETSC_NULL_INTEGER, zi4(nnzt),&
                          t, ierr)
-       ASSERT( ierr == 0 ) 
  
     !   Initialisation à l'identité 
     do i1 = 1, nbeq
         call MatSetValues(t, one, [to_petsc_int(i1-1)], one, [to_petsc_int(i1-1)],&
                           [valt], INSERT_VALUES, ierr)
-        ASSERT( ierr == 0 ) 
     end do
     endif
 !
@@ -318,9 +312,7 @@ subroutine elg_comptt(c, t, nworkt)
 !-- Assemblage de T avec le bon profil
 !--
     call MatAssemblyBegin(t, MAT_FINAL_ASSEMBLY, ierr)
-    ASSERT(ierr == 0 ) 
     call MatAssemblyEnd(t, MAT_FINAL_ASSEMBLY, ierr)
-    ASSERT(ierr == 0 ) 
 !
  if (info2) then 
     write(6,*) "Fin de elg_comptt "

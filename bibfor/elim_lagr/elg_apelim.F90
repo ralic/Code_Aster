@@ -68,7 +68,7 @@ subroutine elg_apelim(kptsc, lqr)
     logical :: lmd, info2
     PetscInt :: ierr
     PetscInt :: one = 1
-    Mat :: c, ct,c2, t, t2, mtemp
+    Mat :: c, ct, c2, t, t2, mtemp
     IS :: isfull, islag1, isphys, isred
     IS :: isnvco, istout
     integer :: clag1, clag2, cphys, nbphys, nblag, i1, j1, nbelig
@@ -217,6 +217,7 @@ subroutine elg_apelim(kptsc, lqr)
 !   -- On extrait la matrice C transposée
     call MatGetSubMatrix(ap(kptscr), isfull, islag1, MAT_INITIAL_MATRIX, melim(ke)%ctrans,&
                          ierr)
+    call ISDestroy(islag1,ierr)
 !
 !
 !   --On annule les lignes associées a ILAG1 et ILAG2
@@ -317,6 +318,8 @@ subroutine elg_apelim(kptsc, lqr)
         call MatGetSubMatrix(ct, isnvco, isfull, MAT_INITIAL_MATRIX, c,&
                              ierr)
         call MatDestroy(ct, ierr)
+        call ISDestroy(isfull, ierr) 
+        call ISDestroy(isnvco, ierr)
 ! T2 = TFinal 
         call MatDuplicate(melim(ke)%tfinal, MAT_COPY_VALUES, t2, ierr)
         call MatDestroy(melim(ke)%tfinal, ierr)
@@ -348,7 +351,7 @@ subroutine elg_apelim(kptsc, lqr)
     call MatDestroy(melim(ke)%tfinal, ierr)
     call MatMatMult(t2, t, MAT_INITIAL_MATRIX, PETSC_DEFAULT_DOUBLE_PRECISION, melim(ke)%tfinal,&
                     ierr)
-    ASSERT(ierr.eq.0)
+    call MatDestroy(t2,ierr)
 !
 !
 !   -- Verif de la qualite de la base
@@ -376,6 +379,8 @@ subroutine elg_apelim(kptsc, lqr)
         if (info2) write(ifm, '(A11,I3,A3,E11.4)') 'CONTRAINTE ', i1, ' : ',&
                    zr(ctemp+i1-1)/zr(valrow+i1-1)
     end do
+    
+    call MatDestroy(c2,ierr)
 !
 !
 !   -- on "retasse" les matrices Ctrans, Tfinal :
@@ -428,7 +433,7 @@ subroutine elg_apelim(kptsc, lqr)
 !     -- on revient aux indices FORTRAN :
     melim(ke)%indred(:)=melim(ke)%indred(:)+1
     call MatDestroy(mtemp, ierr)
-    call ISDestroy(istout, ierr)
+    call ISDestroy(isred,ierr)
 !
 !
 !
@@ -436,6 +441,7 @@ subroutine elg_apelim(kptsc, lqr)
 !   -----------------------------------------
     call MatGetSubMatrix(ap(kptsc), isphys, isphys, MAT_INITIAL_MATRIX, melim(ke)%matb,&
                          ierr)
+    call ISDestroy(isphys,ierr)
 !
 !
 !   -- Projection T'*(MatB*T) :
@@ -476,7 +482,7 @@ subroutine elg_apelim(kptsc, lqr)
 !-- factorisation QR, sans assembler Q  => RCt
 !--
 !
-   lqr = .false. 
+    lqr = .false. 
     if (lqr) then
         call elg_matrqr(melim(ke)%ctrans, melim(ke)%rct, nbphys, nblag)
         melim(ke)%lqr=.true.

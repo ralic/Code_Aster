@@ -48,6 +48,29 @@ interface
         IS is ! IS
         PETSC_INT_SCAL_OUT ierr
     end subroutine
+
+! -------------
+!
+    subroutine ISGetIndices( is, is_array, i_is, ierr )
+       IS             is
+       PetscInt       is_array(1)
+       PetscOffset    i_is
+       PetscInt       ierr
+    end subroutine
+! -------------
+!
+    subroutine ISRestoreIndices( is, is_array, i_is, ierr )
+       IS          is
+       PetscInt    is_array(1)
+       PetscOffset i_is
+       PetscInt    ierr
+    end subroutine
+! -------------
+!
+    subroutine ISSort( is, ierr )
+       IS          is
+       PetscInt    ierr
+    end subroutine
 ! -------------
 !
     subroutine KSPCreate(comm, inksp, ierr)
@@ -261,6 +284,13 @@ interface
         PetscScalar v (*) 
         PETSC_INT_SCAL_OUT ierr
     end subroutine
+! -------------
+!
+    subroutine MatGetVecs( mat, right, left, ierr )
+        Mat mat 
+        Vec  right, left
+        PetscInt  ierr
+    end subroutine MatGetVecs 
 ! -------------
 !
     subroutine MatMatMult(A, B, scall, fill, C,&
@@ -540,6 +570,13 @@ interface
     end subroutine
 ! -------------
 !
+    subroutine PetscPushErrorHandler(handler, ctx, ierr) 
+      external handler    
+      PetscInt ctx
+      PetscInt ierr
+    end subroutine
+! -------------
+!
     subroutine VecAssemblyBegin(vec, ierr)
         Vec vec 
         PETSC_INT_SCAL_OUT ierr
@@ -635,6 +672,14 @@ interface
     end subroutine
 ! -------------
 !
+   subroutine VecGetSubVector( x, is, y, ierr )
+        Vec x
+        IS is
+        Vec y
+        PetscInt ierr
+   end subroutine 
+! -------------
+!
     subroutine VecNorm(x, type, val, ierr)
         Vec x 
         NormType type 
@@ -648,6 +693,13 @@ interface
         PetscScalar x_array(*)
         PetscOffset i_x
         PETSC_INT_SCAL_OUT ierr
+    end subroutine
+! -------------
+!
+    subroutine VecScale( x, alpha, ierr )
+      Vec x
+      PetscScalar alpha
+      PetscInt ierr 
     end subroutine
 ! -------------
 !
