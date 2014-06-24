@@ -17,14 +17,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('MECANONLINE5_21',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('COMPOR4_62',),);
 
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-# IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-3 suffit pour une bonne precision
-# comparaison : resi_inte_rela  CPU total (calibre7)   RESU
-#                1.E-4           98s                   OK
-#                1.E-3           51s                   OK
+# IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-4 suffit pour une bonne precision
 
 from numpy.linalg import norm
 from numpy import *
@@ -150,7 +147,7 @@ SOLNL=SIMU_POINT_MAT(INFO=2,
                              REAC_ITER=0
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  RESI_GLOB_RELA=1.E-4,
+                                  RESI_GLOB_RELA=1.E-5,
                                      ),
                    MATER      = ACIERDD,
 
@@ -192,7 +189,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10000000,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=815.5439588316,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=815.4568495137,
                         VALE_PARA=333.33333333333337,
                         NOM_PARA='INST',
                         FONCTION=F_SI,
