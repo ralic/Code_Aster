@@ -17,7 +17,7 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 PROD_MATR_CHAM=OPER(nom="PROD_MATR_CHAM",op= 156,sd_prod=cham_no_sdaster,
-                    fr="Effectuer le produit d'une matrice par un vecteur",
+                    fr=tr("Effectuer le produit d'une matrice par un vecteur"),
                     reentrant='n',
             UIinfo={"groupes":("Post-traitements","Matrices et vecteurs",)},
          MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,matr_asse_pres_c ) ),

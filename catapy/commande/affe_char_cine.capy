@@ -31,7 +31,7 @@ def affe_char_cine_prod(MECA_IMPO,THER_IMPO,ACOU_IMPO,EVOL_IMPO,**args):
 
 
 AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
-                    ,fr="Affectation de conditions aux limites cinématiques (U=U0) pour un traitement sans dualisation",
+                    ,fr=tr("Affectation de conditions aux limites cinématiques (U=U0) pour un traitement sans dualisation"),
                      reentrant='n',
             UIinfo={"groupes":("Chargements","Mécanique",)},
          regles=(UN_PARMI('MECA_IMPO','THER_IMPO','ACOU_IMPO','EVOL_IMPO'),
@@ -161,7 +161,7 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
            PRES            =SIMP(statut='o',typ='C' ),
          ),
 
-         EVOL_IMPO  =SIMP(statut='f',typ=(evol_noli,evol_elas,evol_ther),fr="Pour imposer les ddls d'un evol_xxx"),
+         EVOL_IMPO  =SIMP(statut='f',typ=(evol_noli,evol_elas,evol_ther),fr=tr("Pour imposer les ddls d'un evol_xxx")),
          b_evol_impo = BLOC ( condition = "EVOL_IMPO != None",
            NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',), # pour n'imposer que certaines CMPS (par défaut : toutes)
          ),

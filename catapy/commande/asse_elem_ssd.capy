@@ -34,7 +34,7 @@ ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD",
                     op=OPS('Macro.asse_elem_ssd_ops.asse_elem_ssd_ops'),
                     sd_prod=asse_elem_ssd_prod,
                     reentrant='n',
-                    fr="Enchainer les commandes DEFI_MODELE_GENE, NUME_DDL_GENE et ASSE_MATR_GENE",
+                    fr=tr("Enchainer les commandes DEFI_MODELE_GENE, NUME_DDL_GENE et ASSE_MATR_GENE"),
                     UIinfo={"groupes":("Matrices/vecteurs",)},
 
 # pour les concepts de sortie

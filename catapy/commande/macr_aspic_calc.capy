@@ -28,8 +28,8 @@ def macr_aspic_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS_1,FOND_FISS_
 MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",
                       op=OPS('Macro.macr_aspic_calc_ops.macr_aspic_calc_ops'),
                       sd_prod=macr_aspic_calc_prod,
-                      fr="Réalise un calcul prédéfini de piquages sains ou fissurés " \
-                         "ainsi que les post-traitements associés ",
+                      fr=tr("Réalise un calcul prédéfini de piquages sains ou fissurés "
+                           "ainsi que les post-traitements associés "),
                       UIinfo={"groupes":("Résolution","Outils-métier",)},
                       reentrant='n',
 
@@ -135,16 +135,16 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
                                  into=("RESULTAT","ASTER","CASTEM","IDEAS")),
 
-           b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr="version Ideas",
+           b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr=tr("version Ideas"),
              VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),
            ),
 
-           b_format_castem =BLOC(condition="FORMAT=='CASTEM'",fr="version Castem",
+           b_format_castem =BLOC(condition="FORMAT=='CASTEM'",fr=tr("version Castem"),
              NIVE_GIBI       =SIMP(statut='f',typ='I',defaut=10,into=(3,10)),
            ),
 
            b_extrac        =BLOC(condition="((FORMAT=='IDEAS')or(FORMAT=='CASTEM'))",
-                                 fr="extraction d un champ de grandeur",
+                                 fr=tr("extraction d un champ de grandeur"),
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST'),),
              NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,into=("DEPL","SIEQ_ELNO","TEMP")),
 

@@ -58,4 +58,3 @@ def C_ETAT_INIT( COMMAND, statut ) :  #COMMUN#
                  )
 
     return mcfact
-

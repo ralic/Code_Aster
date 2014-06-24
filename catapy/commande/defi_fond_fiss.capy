@@ -20,7 +20,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                     op=55,
                     sd_prod=fond_fiss,
                     reentrant='n',
-                    UIinfo={"groupes":("Modélisation",)},fr="Définition de lèvres et d'un fond de fissure",
+                    UIinfo={"groupes":("Modélisation",)},fr=tr("Définition de lèvres et d'un fond de fissure"),
 
     MAILLAGE  = SIMP(statut='o',typ=maillage_sdaster ),
     INFO      =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
@@ -101,4 +101,4 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
 
     PREC_NORM    = SIMP(statut='f',typ='R',defaut=0.1),
 
-)  
+)

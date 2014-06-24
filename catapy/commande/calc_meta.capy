@@ -17,7 +17,7 @@
 # person_in_charge: renaud.bargellini at edf.fr
 CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,reentrant='o',
             UIinfo={"groupes":("Post-traitements","Thermique",)},
-               fr="Calcule l'évolution métallurgique à partir du résultat d'un calcul thermique",
+               fr=tr("Calcule l'évolution métallurgique à partir du résultat d'un calcul thermique"),
 
      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
 
@@ -29,9 +29,9 @@ CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,reentrant='o',
 
      TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
      GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                           fr="le calcul ne sera effectué que sur ces mailles là"),
+                           fr=tr("le calcul ne sera effectué que sur ces mailles là")),
      MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
-                           fr="le calcul ne sera effectué que sur ces mailles là"),
+                           fr=tr("le calcul ne sera effectué que sur ces mailles là")),
 
      b_meta =BLOC(condition= "au_moins_un(OPTION, ('META_ELNO','META_NOEU'))",
        ETAT_INIT       =FACT(statut='o',

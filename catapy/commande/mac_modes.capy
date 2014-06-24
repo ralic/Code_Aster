@@ -17,7 +17,7 @@
 # person_in_charge: harinaivo.andriambololona at edf.fr
 
 MAC_MODES=OPER(nom="MAC_MODES",op=  141,sd_prod=table_sdaster,
-               fr="Critere orthogonalite de modes propres",
+               fr=tr("Critere orthogonalite de modes propres"),
                reentrant='n',
                UIinfo={"groupes":("Résolution","Dynamique",)},
                regles=(PRESENT_PRESENT('IERI','MATR_ASSE'),),

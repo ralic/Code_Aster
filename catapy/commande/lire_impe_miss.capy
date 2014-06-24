@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: Georges-cc.devesa at edf.fr
 LIRE_IMPE_MISS=OPER(nom="LIRE_IMPE_MISS",op= 164,sd_prod=matr_asse_gene_c,
-                    fr="Création d une matrice assemblée à partir de base modale",
+                    fr=tr("Création d une matrice assemblée à partir de base modale"),
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs","Outils-métier",)},           
          BASE            =SIMP(statut='o',typ=mode_meca ),

@@ -31,7 +31,7 @@ POST_ENDO_FISS=MACRO(nom="POST_ENDO_FISS",
                      sd_prod=post_endo_fiss_prod,
                      reentrant='n',
                      UIinfo={"groupes":("Post-traitements","Outils-métier",)},
-                     fr="Individuation du trace d'une fissure a partir d'un champ scalaire pertinant",
+                     fr=tr("Individuation du trace d'une fissure a partir d'un champ scalaire pertinant"),
 
             TABLE  = SIMP(statut = 'o', typ = CO,),
 
@@ -50,7 +50,7 @@ POST_ENDO_FISS=MACRO(nom="POST_ENDO_FISS",
             RESULTAT        = SIMP(statut = 'f',typ = (evol_noli)),
             NOM_CMP         = SIMP(statut = 'o',typ='TXM',),
             NOM_CHAM        = SIMP(statut = 'o', typ = 'TXM',
-                                   fr = "nom du champ a post-traiter",),
+                                   fr = tr("nom du champ a post-traiter"),),
 
             RECHERCHE = FACT(statut = 'o',min=1,max='**',
                              regles = (

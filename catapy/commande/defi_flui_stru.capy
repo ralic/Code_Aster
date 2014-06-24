@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: andre.adobes at edf.fr
 DEFI_FLUI_STRU=OPER(nom="DEFI_FLUI_STRU",op= 143,sd_prod=type_flui_stru,
-                    reentrant='n',fr="Définit les caractéristiques nécessaires à l'étude dynamique d'une structure sous écoulement",
+                    reentrant='n',fr=tr("Définit les caractéristiques nécessaires à l'étude dynamique d'une structure sous écoulement"),
             UIinfo={"groupes":("Modélisation",)},
          regles=(  UN_PARMI('FAISCEAU_TRANS','GRAPPE','FAISCEAU_AXIAL','COQUE_COAX',),),
          FAISCEAU_TRANS  =FACT(statut='f',max='**',

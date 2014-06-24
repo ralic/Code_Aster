@@ -17,8 +17,8 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 RESOUDRE=OPER(nom="RESOUDRE",op=15,sd_prod=cham_no_sdaster,reentrant='f',
-               fr="Résolution par méthode directe un système d'équations linéaires préalablement factorisé par FACT_LDLT"+
-                  "ou Résolution d'un système linéaire par la méthode du gradient conjugué préconditionné",
+               fr=tr("Résolution par méthode directe un système d'équations linéaires préalablement factorisé par FACT_LDLT"
+                  "ou Résolution d'un système linéaire par la méthode du gradient conjugué préconditionné"),
                UIinfo={"groupes":("Résolution",)},
          MATR           =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),

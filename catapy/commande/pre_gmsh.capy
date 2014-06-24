@@ -18,7 +18,7 @@
 
 PRE_GMSH=PROC(nom="PRE_GMSH",op=47,
             UIinfo={"groupes":("Gestion du travail",)},
-               fr="Conversion d'un fichier de maillage GMSH au format Aster",
+               fr=tr("Conversion d'un fichier de maillage GMSH au format Aster"),
          UNITE_GMSH      =SIMP(statut='f',typ='I',defaut=19),  
          UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=20),  
 )  ;

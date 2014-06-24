@@ -49,8 +49,8 @@ def macr_adap_mail_prod(self, MAJ_CHAM, ADD_CHAM, ADAPTATION, **args):
 MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                      op=OPS('Macro.macr_adap_mail_ops.macr_adap_mail_ops'),
                      sd_prod=macr_adap_mail_prod,
-                     fr="Adapter un maillage avec le logiciel HOMARD.",
-                     ang="Mesh adaptation with the HOMARD software.",
+                     fr=tr("Adapter un maillage avec le logiciel HOMARD."),
+                     
                      UIinfo={"groupes":("Maillage",)},
 #
 # 1. Le niveau d'information
@@ -61,27 +61,27 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 2.1. Quel que soit le type de traitement, il faut donner le concept du maillage initial (entree)
 #
   MAILLAGE_N   = SIMP(statut='o',typ=maillage_sdaster,
-                      fr="Maillage avant adaptation",
-                      ang="Mesh before adaptation" ),
+                      fr=tr("Maillage avant adaptation"),
+                      ),
 #
 # 2.2. Si ce n'est pas une simple lecture :
 #
   b_maillage = BLOC( condition = " (ADAPTATION != 'LECTURE') " ,
-                          fr="Lectures de champs aux points de Gauss ou aux noeuds par element.",
-                          ang="Readings of the fields over the Gauss points.",
+                          fr=tr("Lectures de champs aux points de Gauss ou aux noeuds par element."),
+                          
 #
 # 2.2.1. Le concept du maillage final (sortie)
 #
     MAILLAGE_NP1 = SIMP(statut='o',typ=CO,
-                        fr="Maillage après adaptation",
-                        ang="Mesh after adaptation" ),
+                        fr=tr("Maillage après adaptation"),
+                        ),
 #
 # 2.2.2. Eventuellement, on peut produire un maillage annexe
 #      Actuellement, c'est le maillage n+1, mais de degré différent.
 #
     MAILLAGE_NP1_ANNEXE = SIMP(statut='f',typ=CO,
-                              fr="Maillage annexe après adaptation",
-                              ang="Additional mesh after adaptation" ),
+                              fr=tr("Maillage annexe après adaptation"),
+                              ),
 #
   ) ,
 #
@@ -99,16 +99,16 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                     into=("RAFF_DERA", "RAFFINEMENT", "DERAFFINEMENT", "RAFF_DERA_ZONE", \
                           "RAFFINEMENT_UNIFORME", "DERAFFINEMENT_UNIFORME", \
                           "MODIFICATION", "LECTURE", "RIEN"),
-                    fr="Pilotage de l'adaptation : selon un champ ou uniforme.",
-                    ang="Adaptation control: either among an field or uniform" ),
+                    fr=tr("Pilotage de l'adaptation : selon un champ ou uniforme."),
+                    ),
 #
 # 4. Pour de l'adaptation libre, il faut un champ d'indicateur
 #
   b_champ = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
                                 (ADAPTATION == 'RAFFINEMENT') or \
                                 (ADAPTATION == 'DERAFFINEMENT') " ,
-                  fr="Pour une adaptation libre, choix du champ définissant la région à raffiner/déraffiner",
-                  ang="For a free adaptation, selection of the field that defines the area for refinment/unrefinement",
+                  fr=tr("Pour une adaptation libre, choix du champ définissant la région à raffiner/déraffiner"),
+                  
 #
     regles=(UN_PARMI('CHAM_GD','RESULTAT_N')),
 #
@@ -117,64 +117,64 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 4.1.1. Sous forme de champ de grandeur
 #
     CHAM_GD    = SIMP(statut='f',typ=cham_gd_sdaster,
-                      fr="Champ de grandeur Code_Aster pilotant l'adaptation",
-                      ang="Code_Aster 'champ de grandeur' governing the adapatation" ),
+                      fr=tr("Champ de grandeur Code_Aster pilotant l'adaptation"),
+                      ),
 #
 # 4.1.2. Sous forme de concept resultat_sdaster
 #
     RESULTAT_N = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ,
-                      fr="Concept résultat Code_Aster contenant le champ",
-                      ang="The Code_Aster result with the field" ),
+                      fr=tr("Concept résultat Code_Aster contenant le champ"),
+                      ),
 #
     b_champ_adaptation = BLOC(condition="(RESULTAT_N != None)",
       NOM_CHAM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),
-                        fr="Champ dans le résultat",
-                        ang="The field in the result structure" ),
+                        fr=tr("Champ dans le résultat"),
+                        ),
     ),
 #
 # 4.1.4. La ou les composantes retenues
 #
     NOM_CMP = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                          fr="Liste des composante(s) retenue(s) pour le champ.",
-                          ang="List of the selected component(s) for the field." ),
+                          fr=tr("Liste des composante(s) retenue(s) pour le champ."),
+                          ),
 #
 # 4.1.5. Le paramètre temporel pour le champ
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT_N != None)",
-                                fr="Choix éventuel du paramètre temporel pour le champ",
-                                ang="Time selection for the field (option)",
+                                fr=tr("Choix éventuel du paramètre temporel pour le champ"),
+                                
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
 # 4.1.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
-                        fr="Numéro d ordre",
-                        ang="Rank" ),
+                        fr=tr("Numéro d ordre"),
+                        ),
 #
 # 4.1.5.2. Soit l'instant
 # 4.1.5.2.1. Sa valeur
 #
       INST       = SIMP(statut='f',typ='R',
-                        fr="Instant associé",
-                        ang="Instant" ),
+                        fr=tr("Instant associé"),
+                        ),
 #
 # 4.1.5.2.2. La précision du choix de l'instant
 #
       b_precision = BLOC(condition="(INST != None)",
-                         fr="Choix de la précision du choix de l'instant",
-                         ang="Precision for the choice of the instant",
+                         fr=tr("Choix de la précision du choix de l'instant"),
+                         
         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF", "ABSOLU",),
-                         fr="Critère de précision sur le choix de l'instant associé",
-                         ang="Accuracy criterium over the choice of the instant"),
+                         fr=tr("Critère de précision sur le choix de l'instant associé"),
+                         ),
         b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,
-                             fr="Précision relative sur le choix de l'instant associé",
-                             ang="Relative accuracy over the choice of the instant"),),
+                             fr=tr("Précision relative sur le choix de l'instant associé"),
+                             ),),
         b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
             PRECISION       =SIMP(statut='o',typ='R',
-                             fr="Précision absolue sur le choix de l'instant associé",
-                             ang="Absolute accuracy over the choice of the instant"),),
+                             fr=tr("Précision absolue sur le choix de l'instant associé"),
+                             ),),
       ),
 #
     ),
@@ -183,20 +183,20 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
     USAGE_CMP = SIMP(statut='f',typ='TXM',defaut="NORME_L2",
                       into=("ABSOLU", "NORME_L2", "NORME_INFINIE", "RELATIF"),
-                      fr="Valeur absolue de la composante, ou norme du champ, ou valeur relative de la composante",
-                      ang="Absolute value of the component, or norm of the field, or relative value of the component" ),
+                      fr=tr("Valeur absolue de la composante, ou norme du champ, ou valeur relative de la composante"),
+                      ),
 #
 # 4.1.7. Usage du champ : la valeur par maille ou le max du saut entre mailles
 #
     USAGE_CHAMP = SIMP(statut='f',typ='TXM',defaut="MAILLE",into=("MAILLE", "SAUT"),
-                        fr="Usage du champ : la valeur par maille ou le saut entre mailles voisines",
-                        ang="Use of the field: value over every mesh or jump between the neighbours" ),
+                        fr=tr("Usage du champ : la valeur par maille ou le saut entre mailles voisines"),
+                        ),
 #
 # 4.1.8. Initialisation de l'adaptation : raffinement ou déraffinement
 #
     ADAP_INIT = SIMP(statut='f',typ='TXM',defaut="GARDER",into=("GARDER", "DERAFFINER"),
-                        fr="Initialisation de l'adaptation dans les régions sans indicateur : garder ou déraffiner",
-                        ang="Initialization of the adaptation in the areas without indicator: keep or unrefine" ),
+                        fr=tr("Initialisation de l'adaptation dans les régions sans indicateur : garder ou déraffiner"),
+                        ),
 #
   ) ,
 #
@@ -206,69 +206,69 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
   b_critere_de_raffinement = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
                                                  (ADAPTATION == 'RAFFINEMENT') " ,
-                                fr="Critère de raffinement.",
-                                ang="Refinement threshold.",
+                                fr=tr("Critère de raffinement."),
+                                
 #
     regles=(UN_PARMI ( 'CRIT_RAFF_ABS', 'CRIT_RAFF_REL', 'CRIT_RAFF_PE', 'CRIT_RAFF_MS' ),),
 #
     CRIT_RAFF_ABS = SIMP(statut='f',typ='R',
-                         fr="Critère absolu",
-                         ang="Absolute threshold" ),
+                         fr=tr("Critère absolu"),
+                         ),
     CRIT_RAFF_REL = SIMP(statut='f',typ='R',val_min=0.0,val_max=1.0,
-                         fr="Critère relatif : fraction réelle entre 0. et 1.",
-                         ang="Relative threshold : ratio between 0. and 1." ),
+                         fr=tr("Critère relatif : fraction réelle entre 0. et 1."),
+                         ),
     CRIT_RAFF_PE  = SIMP(statut='f',typ='R',val_min=0.0,val_max=1.0,
-                         fr="Pourcentage de mailles : fraction réelle entre 0. et 1.",
-                         ang="Percentage of meshes: ratio between 0. and 1." ),
+                         fr=tr("Pourcentage de mailles : fraction réelle entre 0. et 1."),
+                         ),
     CRIT_RAFF_MS  = SIMP(statut='f',typ='R',
-                         fr="Critère absolu valant moyenne + n*sigma, n étant > 0",
-                         ang="Absolute threshold: mean + n*sigma, with n > 0" ),
+                         fr=tr("Critère absolu valant moyenne + n*sigma, n étant > 0"),
+                         ),
   ) ,
 #
 # 5.2. Pour le deraffinement :
 #
   b_critere_de_deraffinement = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
                                                    (ADAPTATION == 'DERAFFINEMENT') " ,
-                                     fr="Critère de déraffinement.",
-                                     ang="Unrefinement threshold.",
+                                     fr=tr("Critère de déraffinement."),
+                                     
 #
     regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE', 'CRIT_DERA_MS' ),),
 #
     CRIT_DERA_ABS = SIMP(statut='f',typ='R' ,
-                         fr="Critère absolu",
-                         ang="Absolute threshold" ),
+                         fr=tr("Critère absolu"),
+                         ),
     CRIT_DERA_REL = SIMP(statut='f',typ='R',val_min=0.0,val_max=1.0,
-                         fr="Critère relatif : fraction réelle entre 0. et 1.",
-                         ang="Relative threshold: ratio between 0. and 1." ),
+                         fr=tr("Critère relatif : fraction réelle entre 0. et 1."),
+                         ),
     CRIT_DERA_PE  = SIMP(statut='f',typ='R',val_min=0.0,val_max=1.0,
-                         fr="Pourcentage de mailles : fraction réelle entre 0. et 1.",
-                         ang="Percentage of meshes: ratio between 0. and 1." ),
+                         fr=tr("Pourcentage de mailles : fraction réelle entre 0. et 1."),
+                         ),
     CRIT_DERA_MS  = SIMP(statut='f',typ='R',
-                         fr="Critère absolu valant moyenne - n*sigma, n étant > 0",
-                         ang="Absolute threshold: mean - n*sigma, with n > 0" ),
+                         fr=tr("Critère absolu valant moyenne - n*sigma, n étant > 0"),
+                         ),
   ) ,
 #
 # 6. Pour de l'adaptation par zone, définitions des zones
 #
   b_zone = BLOC( condition = " (ADAPTATION == 'RAFF_DERA_ZONE') " ,
-                 fr="Pour une adaptation selon une zone à raffiner",
-                 ang="For adaptation among a zone",
+                 fr=tr("Pour une adaptation selon une zone à raffiner"),
+                 
 #
     ZONE = FACT(statut='o',min=1,max='**',
-                fr="Définition de zones à raffiner.",
-                ang="Refined zone definition.",
+                fr=tr("Définition de zones à raffiner."),
+                
 #
 # 6.1. Type de la zone
 #
       TYPE = SIMP(statut='o',typ='TXM',into=("RECTANGLE", "BOITE", "DISQUE", "SPHERE", "CYLINDRE", "DISQUE_PERCE", "TUYAU"),
-                  fr="Type de la zone",
-                  ang="Type of the zone" ),
+                  fr=tr("Type de la zone"),
+                  ),
 #
 # 6.2. Usage de la zone
 #
       USAGE = SIMP(statut='f',typ='TXM',into=("RAFFINEMENT","DERAFFINEMENT"),defaut="RAFFINEMENT",
-                   fr="Zone pour raffiner",
-                   ang="Zone: refinement" ),
+                   fr=tr("Zone pour raffiner"),
+                   ),
 #
 # Ne sachant pas exploiter les blocs, je mets des regles
 #
@@ -285,108 +285,108 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 6.3.1. Incontournables
 #
 ##gn      b_z_boiteXY = BLOC( condition = " (TYPE == 'RECTANGLE') or (TYPE == 'BOITE') " ,
-##gn                          fr="X et Y mini/maxi pour un rectangle ou un parallelepipede.",
-##gn                          ang="X and Y min/max for a rectangle or a parallelepipedic box",
+##gn                          fr=tr("X et Y mini/maxi pour un rectangle ou un parallelepipede."),
+##gn                          
       X_MINI = SIMP(statut='f',typ='R',
-                    fr="Abscisse minimum de la boite",
-                    ang="Minimum X for the box"),
+                    fr=tr("Abscisse minimum de la boite"),
+                    ),
       X_MAXI = SIMP(statut='f',typ='R',
-                    fr="Abscisse maximum de la boite",
-                    ang="Maximum X for the box"),
+                    fr=tr("Abscisse maximum de la boite"),
+                    ),
       Y_MINI = SIMP(statut='f',typ='R',
-                    fr="Ordonnée minimum de la boite",
-                    ang="Minimum Y for the box"),
+                    fr=tr("Ordonnée minimum de la boite"),
+                    ),
       Y_MAXI = SIMP(statut='f',typ='R',
-                      fr="Abscisse maximum de la boite",
-                      ang="Maximum Y for the box"),
+                      fr=tr("Abscisse maximum de la boite"),
+                      ),
 ##gn      ) ,
 #
 # 6.3.2. Complement pour une boite parallelepipedique
 #
 ##gn      b_z_boiteZ = BLOC( condition = " (TYPE == 'BOITE') " ,
-##gn                         fr="Z mini/maxi pour un parallelepipede.",
-##gn                         ang="Z min/max for a parallelepipedic box",
+##gn                         fr=tr("Z mini/maxi pour un parallelepipede."),
+##gn                         
       Z_MINI = SIMP(statut='f',typ='R',
-                    fr="Cote minimum de la boite",
-                    ang="Minimum Z for the box"),
+                    fr=tr("Cote minimum de la boite"),
+                    ),
       Z_MAXI = SIMP(statut='f',typ='R',
-                    fr="Cote maximum de la boite",
-                    ang="Maximum Z for the box"),
+                    fr=tr("Cote maximum de la boite"),
+                    ),
 ##gn      ) ,
 #
 # 6.4. Rayon pour un disque, une sphere ou un cylindre
 #
 ##gn      b_z_rayon = BLOC( condition = " (TYPE == 'DISQUE') or (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') " ,
-##gn                        fr="Le rayon d'un disque, d'une sphere ou d'un cylindre.",
-##gn                        ang="The radius of a disk or of a sphere or of a cylinder.",
+##gn                        fr=tr("Le rayon d'un disque, d'une sphere ou d'un cylindre."),
+##gn                        
       RAYON = SIMP(statut='f',typ='R',
-                   fr="Rayon",
-                   ang="Radius"),
+                   fr=tr("Rayon"),
+                   ),
 ##gn      ) ,
 #
 # 6.5. Pour un disque plein ou perce, une sphere
 # 6.5.1. Incontournables
 #
 ##gn      b_z_di_sp_XY = BLOC( condition = " (TYPE == 'DISQUE') or (TYPE == 'SPHERE') or (TYPE == 'DISQUE_PERCE') " ,
-##gn                           fr="X et Y du centre d'un disque plein ou perce, d'une sphere.",
-##gn                           ang="X and Y of the centre of a disk or of a sphere.",
+##gn                           fr=tr("X et Y du centre d'un disque plein ou perce, d'une sphere."),
+##gn                           
       X_CENTRE = SIMP(statut='f',typ='R',
-                      fr="Abscisse du centre du disque ou de la sphère",
-                      ang="X for the center of the disk or of the sphere"),
+                      fr=tr("Abscisse du centre du disque ou de la sphère"),
+                      ),
       Y_CENTRE = SIMP(statut='f',typ='R',
-                      fr="Ordonnée du centre du disque ou de la sphère",
-                      ang="Y for the center of the disk or of the sphere"),
+                      fr=tr("Ordonnée du centre du disque ou de la sphère"),
+                      ),
 ##gn      ) ,
 #
 # 6.5.2. Complement pour une sphere
 #
 ##gn      b_z_sp_Z = BLOC( condition = " (TYPE == 'SPHERE') " ,
-##gn                       fr="Cote du centre de la sphere.",
-##gn                       ang="Z for the center of the sphere.",
+##gn                       fr=tr("Cote du centre de la sphere."),
+##gn                       
        Z_CENTRE = SIMP(statut='f',typ='R',
-                       fr="Cote du centre de la sphère",
-                       ang="Z for the center of the sphere"),
+                       fr=tr("Cote du centre de la sphère"),
+                       ),
 ##gn      ) ,
 #
 # 6.6. Rayons interieur et exterieur pour un disque perce ou un tuyau
 #
 ##gn      b_z_rayon_int_ext = BLOC( condition = " (TYPE == 'DISQUE_PERCE') or (TYPE == 'TUYAU') " ,
-##gn                                fr="Le rayon d'un disque perce ou d'un tuyau.",
-##gn                                ang="The radius of a holed disk or of a pipe.",
+##gn                                fr=tr("Le rayon d'un disque perce ou d'un tuyau."),
+##gn                                
       RAYON_INT = SIMP(statut='f',typ='R',
-                       fr="Rayon intérieur",
-                       ang="Internal radius"),
+                       fr=tr("Rayon intérieur"),
+                       ),
       RAYON_EXT = SIMP(statut='f',typ='R',
-                       fr="Rayon extérieur",
-                       ang="External radius"),
+                       fr=tr("Rayon extérieur"),
+                       ),
 ##gn      ) ,
 #
 # 6.7. Un cylindre ou un tuyau
 #
 ##gn      b_z_cylindre_tuyau = BLOC( condition = " (TYPE == 'CYLINDRE') or (TYPE == 'TUYAU') " ,
-##gn                                 fr="Pour un cylindre ou un tuyau.",
-##gn                                 ang="For a cylinder or a pipe.",
+##gn                                 fr=tr("Pour un cylindre ou un tuyau."),
+##gn                                 
       X_AXE = SIMP(statut='f',typ='R',
-                   fr="Abscisse du vecteur directeur de l'axe",
-                   ang="X for the axial vector"),
+                   fr=tr("Abscisse du vecteur directeur de l'axe"),
+                   ),
       Y_AXE = SIMP(statut='f',typ='R',
-                   fr="Ordonnée du vecteur directeur de l'axe",
-                   ang="Y for the axial vector"),
+                   fr=tr("Ordonnée du vecteur directeur de l'axe"),
+                   ),
       Z_AXE = SIMP(statut='f',typ='R',
-                   fr="Cote du vecteur directeur de l'axe",
-                   ang="Z for the axial vector"),
+                   fr=tr("Cote du vecteur directeur de l'axe"),
+                   ),
       X_BASE = SIMP(statut='f',typ='R',
-                    fr="Abscisse d'un point de la base, sur l'axe",
-                    ang="X for the basis, on the axis"),
+                    fr=tr("Abscisse d'un point de la base, sur l'axe"),
+                    ),
       Y_BASE = SIMP(statut='f',typ='R',
-                    fr="Ordonnée d'un point de la base, sur l'axe",
-                    ang="Y for the basis, on the axis"),
+                    fr=tr("Ordonnée d'un point de la base, sur l'axe"),
+                    ),
       Z_BASE = SIMP(statut='f',typ='R',
-                    fr="Cote d'un point de la base, sur l'axe",
-                    ang="Z for the basis, on the axis"),
+                    fr=tr("Cote d'un point de la base, sur l'axe"),
+                    ),
       HAUTEUR = SIMP(statut='f',typ='R',
-                     fr="Hauteur",
-                     ang="Height"),
+                     fr=tr("Hauteur"),
+                     ),
 ##gn     ) ,
 #
     ) ,
@@ -400,16 +400,16 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                                          (ADAPTATION == 'RAFFINEMENT') or \
                                          (ADAPTATION == 'RAFFINEMENT_UNIFORME') or \
                                          (ADAPTATION == 'RAFF_DERA_ZONE') " ,
-                           fr="Profondeur maximale de raffinement",
-                           ang="Maximum depth for the refinement",
+                           fr=tr("Profondeur maximale de raffinement"),
+                           
 #
     NIVE_MAX = SIMP(statut='f',typ='I',
-                    fr="Niveau maximum de profondeur de raffinement",
-                    ang="Maximum level for the refinement"),
+                    fr=tr("Niveau maximum de profondeur de raffinement"),
+                    ),
 #
     DIAM_MIN = SIMP(statut='f',typ='R',
-                    fr="Diamètre minimal des mailles",
-                    ang="Minimal diameter for the meshes" ),
+                    fr=tr("Diamètre minimal des mailles"),
+                    ),
 #
   ) ,
 #
@@ -418,11 +418,11 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
   b_niveau_minimum = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
                                          (ADAPTATION == 'DERAFFINEMENT') or \
                                          (ADAPTATION == 'DERAFFINEMENT_UNIFORME') " ,
-                           fr="Niveau minimum de profondeur de déraffinement",
-                           ang="Minimum level for the unrefinement",
+                           fr=tr("Niveau minimum de profondeur de déraffinement"),
+                           
     NIVE_MIN = SIMP(statut='f',typ='I',
-                    fr="Niveau minimum de profondeur de déraffinement",
-                    ang="Minimum level for the unrefinement"),
+                    fr=tr("Niveau minimum de profondeur de déraffinement"),
+                    ),
   ) ,
 #
 # 8. Filtrage de l'adaptation par des groupes
@@ -433,16 +433,16 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
                                                    (ADAPTATION == 'RAFF_DERA_ZONE') or \
                                                    (ADAPTATION == 'DERAFFINEMENT') or \
                                                    (ADAPTATION == 'DERAFFINEMENT_UNIFORME') " ,
-                                fr="Filtrage de l'adaptation par des groupes.",
-                                ang="Filtering of adaptation by the groups.",
+                                fr=tr("Filtrage de l'adaptation par des groupes."),
+                                
 #
     GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                    fr="Liste des groupes de mailles pour le filtrage de l'adaptation.",
-                    ang="List of the groups of meshes for filtering of the adaptation." ),
+                    fr=tr("Liste des groupes de mailles pour le filtrage de l'adaptation."),
+                    ),
 #
     GROUP_NO = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**',
-                    fr="Liste des groupes de noeuds pour le filtrage de l'adaptation.",
-                    ang="List of the groups of nodes for filtering of the adaptation." ),
+                    fr=tr("Liste des groupes de noeuds pour le filtrage de l'adaptation."),
+                    ),
   ) ,
 #
 # 9. Suivi d'une frontière
@@ -450,97 +450,97 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 9.1. Definition d'une frontière par un maillage (valable seulement pour des frontières 1D)
 #
   MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
-                           fr="Maillage de la frontière discrète à suivre",
-                           ang="Discrete boundary mesh" ),
+                           fr=tr("Maillage de la frontière discrète à suivre"),
+                           ),
 #
   b_FRONTIERE = BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
-                      fr="Information complémentaire sur la frontière discrète",
-                      ang="Further information about discrete boundary",
+                      fr=tr("Information complémentaire sur la frontière discrète"),
+                      
 #
     GROUP_MA_FRONT = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                          fr="Liste des groupes de mailles définissant la frontière discrète",
-                          ang="Mesh groups which define the discrete boundary" ),
+                          fr=tr("Liste des groupes de mailles définissant la frontière discrète"),
+                          ),
 #
   ) ,
 #
 # 9.2. Definition analytique d'une frontière
 #
   FRONTIERE_ANALYTIQUE = FACT(statut='f',max='**',
-                              fr="Definition analytique de frontières a suivre.",
-                              ang="Analytical definition of a boundary.",
+                              fr=tr("Definition analytique de frontières a suivre."),
+                              
 #
 # 9.2.1. Nom de la frontière
 #
     NOM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
-               fr="Nom de la frontière analytique",
-               ang="Name of the analytic boundary" ),
+               fr=tr("Nom de la frontière analytique"),
+               ),
 #
 # 9.2.2. Type de la frontière
 #
     TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE"),
-                fr="Type de la frontière analytique",
-                ang="Type of the analytic boundary" ),
+                fr=tr("Type de la frontière analytique"),
+                ),
 #
 # 9.2.3. Pour une sphere, un cylindre par ses rayons : rayon et centre
 #
     b_fr_rayon = BLOC( condition = " (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') " ,
-                       fr="Le rayon et le centre d'une sphère ou d'un cylindre.",
-                       ang="The radius and the centre of a sphere or of a cylinder.",
+                       fr=tr("Le rayon et le centre d'une sphère ou d'un cylindre."),
+                       
       RAYON = SIMP(statut='o',typ='R',
-                   fr="Rayon",
-                   ang="Radius"),
+                   fr=tr("Rayon"),
+                   ),
       X_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Abscisse du centre",
-                      ang="X for the center"),
+                      fr=tr("Abscisse du centre"),
+                      ),
       Y_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Ordonnée du centre",
-                      ang="Y for the center"),
+                      fr=tr("Ordonnée du centre"),
+                      ),
       Z_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Cote du centre",
-                      ang="Z for the center"),
+                      fr=tr("Cote du centre"),
+                      ),
     ) ,
 #
 # 9.2.4. Pour un cylindre defini par axe et angle : axe
 #
     b_fr_cylindre = BLOC( condition = " (TYPE == 'CYLINDRE') " ,
-                          fr="Pour un cylindre.",
-                          ang="For a cylinder.",
+                          fr=tr("Pour un cylindre."),
+                          
       X_AXE = SIMP(statut='o',typ='R',
-                   fr="Abscisse du vecteur directeur de l'axe",
-                   ang="X for the axial vector"),
+                   fr=tr("Abscisse du vecteur directeur de l'axe"),
+                   ),
       Y_AXE = SIMP(statut='o',typ='R',
-                   fr="Ordonnée du vecteur directeur de l'axe",
-                   ang="Y for the axial vector"),
+                   fr=tr("Ordonnée du vecteur directeur de l'axe"),
+                   ),
       Z_AXE = SIMP(statut='o',typ='R',
-                   fr="Cote du vecteur directeur de l'axe",
-                   ang="Z for the axial vector"),
+                   fr=tr("Cote du vecteur directeur de l'axe"),
+                   ),
     ) ,
 #
 # 9.2.7. Groupe(s) lie(s) a la frontière
 #
     GROUP_MA = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
-                    fr="Liste des groupes de mailles placées sur la frontière",
-                    ang="Groups of meshes which are located on the boundary" ),
+                    fr=tr("Liste des groupes de mailles placées sur la frontière"),
+                    ),
 #
   ) ,
 #
 # 10. mise à jour de champs sur le nouveau maillage
 #
   MAJ_CHAM = FACT(statut='f',max='**',
-                  fr="Mise à jour de champs sur le nouveau maillage.",
-                  ang="Updating of the fields over the new mesh.",
+                  fr=tr("Mise à jour de champs sur le nouveau maillage."),
+                  
 #
 # 10.1. Le nom du champ de grandeur qui contiendra le resultat de la mise a jour
 #
     CHAM_MAJ = SIMP(statut='o',typ=CO,
-                    fr="Nom du champ de grandeur qui contiendra le champ mis à jour",
-                    ang="Name of the field for the updated field"),
+                    fr=tr("Nom du champ de grandeur qui contiendra le champ mis à jour"),
+                    ),
 #
 # 10.2. Le type du champ qui contiendra le resultat de la mise a jour
 #
     TYPE_CHAM = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO( ('NOEU', 'ELEM', 'ELNO', 'ELGA') ),
-                     fr="Type du champ qui contiendra le champ mis à jour",
-                     ang="Type of the field for the updated field" ),
+                     fr=tr("Type du champ qui contiendra le champ mis à jour"),
+                     ),
 #
 # 10.3. Le champ a interpoler
 #
@@ -549,69 +549,69 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 10.3.1. Sous forme de champ de grandeur
 #
     CHAM_GD = SIMP(statut='f',typ=cham_gd_sdaster,
-                   fr="Champ de grandeur Code_Aster contenant le champ à mettre à jour",
-                   ang="Champ de grandeur with the field to be updated" ),
+                   fr=tr("Champ de grandeur Code_Aster contenant le champ à mettre à jour"),
+                   ),
 #
 # 10.3.2. Sous forme de champ dans un resultat
 #
     RESULTAT = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther),
-                    fr="Résultat contenant le champ à mettre à jour",
-                    ang="Result with the field to be updated" ),
+                    fr=tr("Résultat contenant le champ à mettre à jour"),
+                    ),
 #
     b_nom_du_champ = BLOC(condition="(RESULTAT != None)",
-                          fr="Choix éventuel du nom du champ à interpoler",
-                          ang="Selection for the name of the field (option)",
+                          fr=tr("Choix éventuel du nom du champ à interpoler"),
+                          
 #
       NOM_CHAM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),
-                      fr="Nom du champ à mettre à jour",
-                      ang="Name of the field to be updated" ),
+                      fr=tr("Nom du champ à mettre à jour"),
+                      ),
 #
     ),
 #
 # 10.4. Les composantes
 #
     NOM_CMP = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                   fr="Liste des composante(s) retenue(s) pour le champ.",
-                   ang="List of the selected component(s) for the field." ),
+                   fr=tr("Liste des composante(s) retenue(s) pour le champ."),
+                   ),
 #
 # 10.5. Le paramètre temporel pour le champ a interpoler
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT != None)",
-                                fr="Choix éventuel du paramètre temporel pour le champ à interpoler",
-                                ang="Time selection for the field (option)",
+                                fr=tr("Choix éventuel du paramètre temporel pour le champ à interpoler"),
+                                
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
 # 10.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
-                        fr="Numéro d ordre du champ à mettre à jour",
-                        ang="Rank of the field to be updated" ),
+                        fr=tr("Numéro d ordre du champ à mettre à jour"),
+                        ),
 #
 # 10.5.2. Soit l'instant
 # 10.5.2.1. Sa valeur
 #
       INST = SIMP(statut='f',typ='R',
-                  fr="Instant associé",
-                  ang="Instant" ),
+                  fr=tr("Instant associé"),
+                  ),
 #
 # 10.5.2.2. La précision du choix de l'instant
 #
       b_precision = BLOC(condition="(INST != None)",
-                         fr="Choix de la précision du choix de l'instant",
-                         ang="Selection for the choice of the instant",
+                         fr=tr("Choix de la précision du choix de l'instant"),
+                         
 #
         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF", "ABSOLU",),
-                         fr="Critère de précision sur le choix de l'instant associé",
-                         ang="Accuracy criterium over the choice of the instant"),
+                         fr=tr("Critère de précision sur le choix de l'instant associé"),
+                         ),
         b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,
-                             fr="Précision relative sur le choix de l'instant associé",
-                             ang="Relative accuracy over the choice of the instant"),),
+                             fr=tr("Précision relative sur le choix de l'instant associé"),
+                             ),),
         b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
             PRECISION       =SIMP(statut='o',typ='R',
-                             fr="Précision absolue sur le choix de l'instant associé",
-                             ang="Absolute accuracy over the choice of the instant"),),
+                             fr=tr("Précision absolue sur le choix de l'instant associé"),
+                             ),),
 #
       ),
 #
@@ -621,105 +621,105 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
     TYPE_MAJ = SIMP(statut='f',typ='TXM',defaut="AUTO",
                     into=("AUTO", "ISOP2"),
-                    fr="Type de mise à jour : automatique ou iso-P2",
-                    ang="Type of the updating" ),
+                    fr=tr("Type de mise à jour : automatique ou iso-P2"),
+                    ),
   ),
 #
 # 11. Les modifications
 #
   b_modifications = BLOC( condition = " (ADAPTATION == 'MODIFICATION') " ,
-                          fr="Modification de maillage.",
-                          ang="Modification of the mesh.",
+                          fr=tr("Modification de maillage."),
+                          
 #
       #regles=(AU_MOINS_UN('DEGRE','JOINT'),),
 #
 # 11.1. Changement de degre
 #
       DEGRE         = SIMP(statut='o',typ='TXM',into=("OUI",),
-                          fr="Changement de degré du maillage",
-                          ang="Modification of the degree of the mesh" ),
+                          fr=tr("Changement de degré du maillage"),
+                          ),
 #
   ) ,
 #
 # 12. Le modele pour les lectures de champs aux points de Gauss ou aux noeuds par element
 #
   b_lectures = BLOC( condition = " (ADAPTATION == 'LECTURE') " ,
-                          fr="Lectures de champs aux points de Gauss.",
-                          ang="Readings of the fields over the Gauss points.",
+                          fr=tr("Lectures de champs aux points de Gauss."),
+                          
 #
       MODELE        = SIMP(statut='o',typ=modele_sdaster,
-                          fr="Modèle",
-                          ang="Model" ),
+                          fr=tr("Modèle"),
+                          ),
 #
   ) ,
 #
 # 13. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres
 #
   b_analyses = BLOC( condition = " (ADAPTATION != 'LECTURE') " ,
-                     fr="Analyse du maillage.",
-                     ang="Analysis of the mesh.",
+                     fr=tr("Analyse du maillage."),
+                     
 #
 # 13.1. Nombre de noeuds et mailles
 #
     NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                          fr="Nombre de noeuds et de mailles du maillage",
-                          ang="Number of nodes and meshes in the mesh" ),
+                          fr=tr("Nombre de noeuds et de mailles du maillage"),
+                          ),
 #
 # 13.2. Determination de la qualité des mailles du maillage
 #
     QUALITE        = SIMP(statut='f',typ='TXM',into=("OUI",),
-                          fr="Qualité du maillage",
-                          ang="Quality of the mesh" ),
+                          fr=tr("Qualité du maillage"),
+                          ),
 #
 # 13.3. Connexite du maillage
 #
     CONNEXITE      = SIMP(statut='f',typ='TXM',into=("OUI",),
-                          fr="Connexité du maillage.",
-                          ang="Connexity of the mesh." ),
+                          fr=tr("Connexité du maillage."),
+                          ),
 #
 # 13.4. Taille des sous-domaines du maillage
 #
     TAILLE         = SIMP(statut='f',typ='TXM',into=("OUI",),
-                          fr="Tailles des sous-domaines du maillage.",
-                          ang="Sizes of mesh sub-domains." ),
+                          fr=tr("Tailles des sous-domaines du maillage."),
+                          ),
 #
 # 13.5. Controle de la non-interpenetration des mailles
 #
     INTERPENETRATION=SIMP(statut='f',typ='TXM',into=("OUI",),
-                          fr="Controle de la non interpénétration des mailles.",
-                          ang="Overlapping checking." ),
+                          fr=tr("Controle de la non interpénétration des mailles."),
+                          ),
 #
 # 13.6. Propriétés du maillage de calcul
 #
     PROP_CALCUL    = SIMP(statut='f',typ='TXM',into=("OUI",),
-                          fr="Propriétés du maillage de calcul.",
-                          ang="Properties of the calculation mesh." ),
+                          fr=tr("Propriétés du maillage de calcul."),
+                          ),
 #
 # 13.7. Determination des diametres des mailles du maillage
 #
     DIAMETRE       = SIMP(statut='f',typ='TXM',into=("OUI",),
-                          fr="Diamètre du maillage",
-                          ang="Diameters of the mesh" ),
+                          fr=tr("Diamètre du maillage"),
+                          ),
 #
   ) ,
 #
 # 14. champs supplementaires sur le nouveau maillage
 #
   ADD_CHAM = FACT(statut='f',max='**',
-                  fr="Champs supplementaires sur le nouveau maillage.",
-                  ang="Additional fields over the new mesh.",
+                  fr=tr("Champs supplementaires sur le nouveau maillage."),
+                  
 #
 # 14.1. Le nom du champ de grandeur qui contiendra le nouveau champ
 #
     CHAM_GD = SIMP(statut='o',typ=CO,
-                  fr="Nom du champ de grandeur qui contiendra le champ supplementaire",
-                  ang="Name of the field for the additional field"),
+                  fr=tr("Nom du champ de grandeur qui contiendra le champ supplementaire"),
+                  ),
 #
 # 14.2. La categorie du champ supplementaire
 #
     CHAM_CAT = SIMP(statut='o',typ='TXM',into=("NIVEAU", "DIAMETRE"),
-                    fr="Categorie du champ supplementaire : niveau ou diametre",
-                    ang="Category of the additional field: level or diameter" ),
+                    fr=tr("Categorie du champ supplementaire : niveau ou diametre"),
+                    ),
 #
   ) ,
 #
@@ -728,20 +728,20 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
   LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",
                 into=("FRANCAIS", "FRENCH", "ANGLAIS", "ENGLISH",),
-                fr="Langue des messages issus de HOMARD.",
-                ang="Language for HOMARD messages." ),
+                fr=tr("Langue des messages issus de HOMARD."),
+                ),
 #
 # 15.2. Gestion des mailles acceptees dans le maillage initial
 #       "HOMARD" : exclusivement les mailles pouvant etre decoupees (defaut)
 #       "IGNORE_PYRA" : elles sont ignorées
 #
   b_autres_mailles = BLOC( condition = " (ADAPTATION != 'LECTURE') " ,
-                           fr="Gestion des pyramides.",
-                           ang="Pyramids.",
+                           fr=tr("Gestion des pyramides."),
+                           
 #
     ELEMENTS_ACCEPTES = SIMP(statut='f',typ='TXM',defaut="HOMARD",into=("HOMARD", "IGNORE_PYRA"),
-                             fr="Acceptation des mailles dans le maillage initial",
-                             ang="Elements in the very first mesh" ),
+                             fr=tr("Acceptation des mailles dans le maillage initial"),
+                             ),
 #
   ) ,
 #
@@ -749,25 +749,25 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
   VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_6",
                         into=("V10_6", "V10_N", "V10_N_PERSO"),
-                        fr="Version de HOMARD",
-                        ang="HOMARD release"),
+                        fr=tr("Version de HOMARD"),
+                        ),
 #
 # 15.4. Exécutable pilotant HOMARD
 #
   LOGICIEL = SIMP(statut='f',typ='TXM',
-                  fr="Logiciel pilotant HOMARD",
-                  ang="HOMARD software"),
+                  fr=tr("Logiciel pilotant HOMARD"),
+                  ),
 #
 # 15.5. Unite logique d'un fichier à ajouter a HOMARD.Configuration
 #
   b_unite = BLOC( condition = " (VERSION_HOMARD == 'V10_N') or \
                                 (VERSION_HOMARD == 'V10_N_PERSO') " ,
-                                fr="Fichier supplementaire.",
-                                ang="Additional file.",
+                                fr=tr("Fichier supplementaire."),
+                                
 #
   UNITE = SIMP(statut='f',typ='I',
-               fr="Unite logique a ajouter a HOMARD.Configuration",
-               ang="Additional file to HOMARD.Configuration" ),
+               fr=tr("Unite logique a ajouter a HOMARD.Configuration"),
+               ),
 #
   ) ,
 #

@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: mickael.abbas at edf.fr
 AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
-                    ,fr="Affectation de charges et conditions aux limites thermiques constantes",
+                    ,fr=tr("Affectation de charges et conditions aux limites thermiques constantes"),
                     reentrant='n',
             UIinfo={"groupes":("Chargements","Thermique",)},
       regles=(AU_MOINS_UN('TEMP_IMPO','SOURCE','FLUX_REP','ECHANGE',
@@ -57,7 +57,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
 
 
          RAYONNEMENT     =FACT(statut='f',max='**',
-           fr="Attention, exprimer les températures en Celsius si rayonnement",
+           fr=tr("Attention, exprimer les températures en Celsius si rayonnement"),
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                    PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

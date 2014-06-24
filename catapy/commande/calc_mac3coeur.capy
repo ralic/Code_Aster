@@ -27,12 +27,12 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
          MAILLAGE_N   = SIMP(statut='f',typ=maillage_sdaster),        # MAILLAGE EN ATTENDANT MIEUX ???
 
          LAME = FACT(statut='f',max=1,
-                     fr="Estimation des lames d'eau entre AC",
+                     fr=tr("Estimation des lames d'eau entre AC"),
                TABLE_NP1    = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N+1
                MAILLAGE_NP1 = SIMP(statut='o',typ=maillage_sdaster),),        # MAILLAGE EN ATTENDANT MIEUX ???
 
          DEFORMATION  = FACT(statut='f',max=1,
-                      fr="Estimation des deformations des AC",
+                      fr=tr("Estimation des deformations des AC"),
                RESU_INIT    = SIMP(statut='f',typ=resultat_sdaster),
                NIVE_FLUENCE = SIMP(statut='o',typ='R',validators=NoRepeat(),max=1), # FLUENCE MAXIMALE DANS LE COEUR
                UNITE_THYC      = SIMP(statut='o',typ='I', max=1),
@@ -43,7 +43,7 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                     TYPE_MAINTIEN = SIMP(statut='o',typ='TXM',into=("FORCE","DEPL_PSC"), ),
                     
                     b_maintien_mono_force = BLOC(condition = "TYPE_MAINTIEN == 'FORCE'",
-                                 fr="valeur de l'effort de maintien imposée",
+                                 fr=tr("valeur de l'effort de maintien imposée"),
                                  FORCE_MAINTIEN           =SIMP(statut='o',typ='R', max=1),),
                      
                                        ),

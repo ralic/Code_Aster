@@ -16,16 +16,16 @@
 # ======================================================================
 # person_in_charge: jacques.pellet at edf.fr
 LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
-                   fr="Crée un maillage par lecture d'un fichier au format Aster ou Med",
-                   ang="Readings of a mesh file",
+                   fr=tr("Crée un maillage par lecture d'un fichier au format Aster ou Med"),
+                   
                    reentrant='n',
             UIinfo={"groupes":("Lecture","Maillage",)},
 
          UNITE           =SIMP(statut='f',typ='I',defaut= 20 ),
 
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="ASTER",into=("ASTER","MED"),
-                            fr="Format du fichier : ASTER ou MED.",
-                            ang="Format of the file : ASTER or MED.",),
+                            fr=tr("Format du fichier : ASTER ou MED."),
+                            ),
 
          VERI_MAIL       =FACT(statut='d',
                VERIF         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
@@ -33,22 +33,22 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
          ),
 
          b_format_med =BLOC( condition = " ( FORMAT == 'MED' ) " ,
-                             fr="Informations complémentaires pour la lecture MED.",
-                             ang="Further information for MED readings.",
+                             fr=tr("Informations complémentaires pour la lecture MED."),
+                             
 
 # Pour une lecture dans un fichier MED, on peut préciser le nom sous lequel
 # le maillage y a été enregistré. Par défaut, on va le chercher sous le nom du concept à créer.
             NOM_MED    = SIMP(statut='f',typ='TXM',
-                              fr="Nom du maillage dans le fichier MED.",
-                              ang="Name of the mesh into the MED file.",),
+                              fr=tr("Nom du maillage dans le fichier MED."),
+                              ),
             INFO_MED   = SIMP(statut='f',typ='I',defaut= 1,into=(1,2,3) ),
 
             RENOMME = FACT(statut='f', max='**',
-                                 fr="Renommer un nom de groupe MED",
+                                 fr=tr("Renommer un nom de groupe MED"),
                  NOM_MED     = SIMP(statut='o', typ='TXM', validators=LongStr(1, 64),
-                                    fr="Nom du groupe dans le fichier MED"),
+                                    fr=tr("Nom du groupe dans le fichier MED")),
                  NOM         = SIMP(statut='o', typ=grma,
-                                    fr="Nom du groupe dans le maillage ASTER"),
+                                    fr=tr("Nom du groupe dans le maillage ASTER")),
             ),
          ),
 

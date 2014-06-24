@@ -60,5 +60,3 @@ class evol_elas(evol_sdaster): pass
 class evol_noli(evol_sdaster): pass
 class evol_ther(evol_sdaster): pass
 class evol_varc(evol_sdaster): pass
-
-

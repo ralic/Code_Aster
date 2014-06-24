@@ -33,7 +33,7 @@ def extr_resu_prod(RESULTAT,**args):
 
 EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
-            fr="Extraire des champs au sein d'une SD Résultat",
+            fr=tr("Extraire des champs au sein d'une SD Résultat"),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
                                                mode_acou,evol_ther,evol_noli,evol_varc,
                                                mult_elas,fourier_elas,fourier_ther ) ),
@@ -65,7 +65,7 @@ EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
                                ),
 
          RESTREINT   =FACT(statut='f', max=1,
-            fr="Pour réduire une ou plusieurs sd_resultat sur un maillage ou un modèle réduit",
+            fr=tr("Pour réduire une ou plusieurs sd_resultat sur un maillage ou un modèle réduit"),
             regles=(UN_PARMI('MAILLAGE','MODELE'),),
             MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
             MODELE          =SIMP(statut='f',typ=modele_sdaster),

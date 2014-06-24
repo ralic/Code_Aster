@@ -28,7 +28,7 @@ PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
                      sd_prod=proj_mesu_modal_prod,
                      reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
-                     fr="Calcul des coordonnees généralisees de mesure experimentale relatives a une base de projection",
+                     fr=tr("Calcul des coordonnees généralisees de mesure experimentale relatives a une base de projection"),
 
          MODELE_CALCUL   =FACT(statut='o',
            MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
@@ -61,4 +61,4 @@ PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
                         ),
              ),
 
-          ); 
+          );

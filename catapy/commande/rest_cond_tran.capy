@@ -25,9 +25,9 @@ def rest_cond_tran_prod(RESULTAT,TYPE_RESU,**args ):
   raise AsException("type de concept resultat non prevu")
 
 REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
-                    fr="Restituer dans la base physique des résultats issus d'un calcul" 
-                        +"non-lineaire avec projection modale ou d'un calcul transitoire linear"
-                        +"avec condensation dynamique",
+                    fr=tr("Restituer dans la base physique des résultats issus d'un calcul" 
+                         "non-lineaire avec projection modale ou d'un calcul transitoire linear"
+                         "avec condensation dynamique"),
                     reentrant='f',
             UIinfo={"groupes":("Matrices et vecteurs",)},
         regles=(

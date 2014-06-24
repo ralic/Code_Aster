@@ -17,7 +17,7 @@
 # person_in_charge: van-xuan.tran at edf.fr
 POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
-                  fr="Calculer en un point, le dommage de fatigue subi par une structure soumise à une histoire de chargement",
+                  fr=tr("Calculer en un point, le dommage de fatigue subi par une structure soumise à une histoire de chargement"),
 
          CHARGEMENT = SIMP(statut='o',typ='TXM',into=("UNIAXIAL","MULTIAXIAL","QUELCONQUE")),
 

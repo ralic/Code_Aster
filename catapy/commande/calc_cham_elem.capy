@@ -17,7 +17,7 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
-                    fr="Calculer un champ élémentaire en thermique et en accoustique à partir de champs déjà calculés",
+                    fr=tr("Calculer un champ élémentaire en thermique et en accoustique à partir de champs déjà calculés"),
                     reentrant='n',
             UIinfo={"groupes":("Résultats et champs","Post-traitements",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster),

@@ -23,32 +23,32 @@ def defi_fonction_prod(VALE,VALE_PARA,VALE_C,NOEUD_PARA,ABSCISSE,**args):
   if NOEUD_PARA != None  : return fonction_sdaster
   raise AsException("type de concept resultat non prevu")
 
-DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod
-                    ,fr="Définit une fonction réelle ou complexe d'une variable réelle",
-                     reentrant='n',
+DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod,
+                   fr=tr("Définit une fonction réelle ou complexe d'une variable réelle"),
+                   reentrant='n',
             UIinfo={"groupes":("Fonctions",)},
          regles=(UN_PARMI('VALE','VALE_C','VALE_PARA','NOEUD_PARA','ABSCISSE'),),
          NOM_PARA        =SIMP(statut='o',typ='TXM',into=C_PARA_FONCTION() ),
          NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),
          VALE            =SIMP(statut='f',typ='R',min=2,max='**',
-                               fr ="Fonction réelle définie par une liste de couples "
-                                   "(abscisse,ordonnée)"),
+                               fr =tr("Fonction réelle définie par une liste de couples "
+                                     "(abscisse,ordonnée)")),
          ABSCISSE        =SIMP(statut='f',typ='R',min=2,max='**',
-                               fr ="Liste d abscisses d une fonction réelle"),
+                               fr =tr("Liste d abscisses d une fonction réelle")),
          VALE_C          =SIMP(statut='f',typ='R',min=2,max='**',
-                               fr ="Fonction complexe définie par une liste de triplets "
-                                   "(absc, partie réelle, partie imaginaire)"),
+                               fr =tr("Fonction complexe définie par une liste de triplets "
+                                     "(absc, partie réelle, partie imaginaire)")),
          VALE_PARA       =SIMP(statut='f',typ=listr8_sdaster,
-                               fr ="Fonction réelle définie par deux concepts de type listr8" ),
+                               fr =tr("Fonction réelle définie par deux concepts de type listr8") ),
          b_vale_para     =BLOC(condition = "VALE_PARA != None",
            VALE_FONC       =SIMP(statut='o',typ=listr8_sdaster ),
          ),
          b_abscisse      =BLOC(condition = "ABSCISSE != None",
            ORDONNEE        =SIMP(statut='o',typ='R',min=2,max='**',
-                               fr ="Liste d ordonnées d une fonction réelle"),
+                               fr =tr("Liste d ordonnées d une fonction réelle")),
          ),
          NOEUD_PARA      =SIMP(statut='f',typ=no,max='**',
-                               fr ="Fonction réelle définie par une liste de noeuds et un maillage"),
+                               fr =tr("Fonction réelle définie par une liste de noeuds et un maillage")),
          b_noeud_para    =BLOC(condition = "NOEUD_PARA != None",
            MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
            VALE_Y          =SIMP(statut='o',typ='R',max='**'),

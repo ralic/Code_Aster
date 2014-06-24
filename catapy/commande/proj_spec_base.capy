@@ -17,7 +17,7 @@
 # person_in_charge: andre.adobes at edf.fr
 PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=interspectre,reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
-            fr="Projecter un ou plusieurs spectres de turbulence sur une (ou plusieurs) base(s) modale(s) ",
+            fr=tr("Projecter un ou plusieurs spectres de turbulence sur une (ou plusieurs) base(s) modale(s) "),
       regles=(UN_PARMI('BASE_ELAS_FLUI','MODE_MECA','CHAM_NO'),
               UN_PARMI('TOUT','GROUP_MA','MAILLE'),
               PRESENT_PRESENT('CHAM_NO','MODELE_INTERFACE'),),

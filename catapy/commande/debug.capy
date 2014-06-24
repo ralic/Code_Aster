@@ -18,14 +18,14 @@
 
 DEBUG=PROC(nom="DEBUG",op=137,
             UIinfo={"groupes":("Utilitaires",)},
-               fr="Permettre de changer entre 2 commandes quelques variables globales de debug",
+               fr=tr("Permettre de changer entre 2 commandes quelques variables globales de debug"),
 
-     SDVERI          =SIMP(fr="vérifie la conformité des SD produites par les commandes",
+     SDVERI          =SIMP(fr=tr("vérifie la conformité des SD produites par les commandes"),
                            statut='f',typ='TXM',into=('OUI','NON')),
-     JXVERI          =SIMP(fr="vérifie l intégrité de la segmentation mémoire",
+     JXVERI          =SIMP(fr=tr("vérifie l intégrité de la segmentation mémoire"),
                            statut='f',typ='TXM',into=('OUI','NON')),
-     JEVEUX          =SIMP(fr="force les déchargement sur disque",
+     JEVEUX          =SIMP(fr=tr("force les déchargement sur disque"),
                            statut='f',typ='TXM',into=('OUI','NON')),
-     IMPR_MACRO      =SIMP(fr="affichage des sous-commandes produites par les macros dans le fichier mess",
+     IMPR_MACRO      =SIMP(fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),
                            statut='f',typ='TXM',into=("OUI","NON")),
  );

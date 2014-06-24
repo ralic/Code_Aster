@@ -19,7 +19,7 @@
 IMPR_OAR =MACRO(nom="IMPR_OAR",
                 op=OPS('Macro.impr_oar_ops.impr_oar_ops'),
                 sd_prod=None,
-                fr="Impression au format OAR",
+                fr=tr("Impression au format OAR"),
                 UIinfo={"groupes":("Impression","Outils-métier",)},
    TYPE_CALC = SIMP(statut='o', typ='TXM',into=('COMPOSANT', 'MEF', 'TUYAUTERIE')),
    b_composant =BLOC(condition = "TYPE_CALC == 'COMPOSANT' ",

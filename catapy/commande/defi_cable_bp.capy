@@ -20,8 +20,8 @@
 DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",
                     op=OPS('Macro.defi_cable_bp_ops.defi_cable_bp_ops'),
                     sd_prod=cabl_precont,
-                    fr="Calculer les profils initiaux de tension le long des cables " \
-                       "de précontrainte d'une structure en béton",
+                    fr=tr("Calculer les profils initiaux de tension le long des cables "
+                         "de précontrainte d'une structure en béton"),
                     reentrant='n',UIinfo={"groupes":("Modélisation",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),

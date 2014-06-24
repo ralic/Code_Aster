@@ -26,7 +26,7 @@ def appl_cine_matr_prod(MATR_ASSE,**args):
   raise AsException("type de concept resultat non prevu")
 
 APPL_CINE_MATR=OPER(nom="APPL_CINE_MATR",op=158,sd_prod=appl_cine_matr_prod,
-               fr="Appliquer les C.L. cinématiques sur la matrice",
+               fr=tr("Appliquer les C.L. cinématiques sur la matrice"),
                reentrant='f', UIinfo={"groupes":("Résolution",)},
          MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),

@@ -28,7 +28,7 @@ def crea_champ_prod(TYPE_CHAM,**args):
 
 
 CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
-                fr="Création d'un champ ",reentrant='f',
+                fr=tr("Création d'un champ "),reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
 
        # TYPE_CHAM doit etre de la forme : CART_xx, NOEU_xx, ELEM_xx, ELGA_xx ou ELNO_xx
@@ -119,7 +119,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                              ),
 #        ------------------------------------------------------------------
          b_comb          =BLOC(condition = "OPERATION == 'COMB'",
-                               fr="Pour faire une combinaison linéaire de cham_no ayant meme profil",
+                               fr=tr("Pour faire une combinaison linéaire de cham_no ayant meme profil"),
              COMB            =FACT(statut='o',max='**',
                 CHAM_GD         =SIMP(statut='o',typ=cham_no_sdaster),
                 COEF_R          =SIMP(statut='o',typ='R'),

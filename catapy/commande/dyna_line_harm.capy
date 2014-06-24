@@ -24,7 +24,7 @@ def dyna_line_harm_prod(MATR_RIGI,**args):
    raise AsException("type de concept resultat non prevu")
 
 DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
-                    fr="Calcul de la réponse dynamique complexe d'un système à une excitation harmonique",
+                    fr=tr("Calcul de la réponse dynamique complexe d'un système à une excitation harmonique"),
                     reentrant='f',
             UIinfo={"groupes":("Résolution","Dynamique",)},
          regles=(PRESENT_ABSENT('MATR_AMOR','AMOR_MODAL'),
@@ -45,7 +45,7 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
          LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
          TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",)),
          NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,into=("DEPL","VITE","ACCE") ),
-         b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : RESULTAT obligatoire",
+         b_reuse =BLOC(condition = "reuse",fr=tr("en mode concept reentrant : RESULTAT obligatoire"),
              RESULTAT      =SIMP(statut='o',typ=(dyna_harmo,harm_gene)),
          ),
          EXCIT           =FACT(statut='o',max='**',
@@ -75,12 +75,12 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR
          b_matr_gene =BLOC(condition = "AsType(MATR_MASS) in (matr_asse_gene_r,)",
-                           fr="Methode de resolution matrice generalisee",
+                           fr=tr("Methode de resolution matrice generalisee"),
           SOLVEUR         =C_SOLVEUR('DYNA_LINE_HARM','GENE'),
          ),
 
          b_matr_phys =BLOC(condition = "AsType(MATR_MASS) in (matr_asse_depl_r,matr_asse_pres_c,)",
-                           fr="Methode de resolution matrice sur ddl physique",
+                           fr=tr("Methode de resolution matrice sur ddl physique"),
           SOLVEUR         =C_SOLVEUR('DYNA_LINE_HARM','PHYS'),
          ),
 #-------------------------------------------------------------------

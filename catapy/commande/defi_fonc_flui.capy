@@ -17,7 +17,7 @@
 # person_in_charge: andre.adobes at edf.fr
 DEFI_FONC_FLUI=OPER(nom="DEFI_FONC_FLUI",op= 142,sd_prod=fonction_sdaster,
                     reentrant='n',
-            fr="Définit un profil de vitesse d'écoulement fluide le long d'une poutre",
+            fr=tr("Définit un profil de vitesse d'écoulement fluide le long d'une poutre"),
             UIinfo={"groupes":("Modélisation","Fonctions",)},
          MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster) ),
          NOEUD_INIT      =SIMP(statut='o',typ=no),

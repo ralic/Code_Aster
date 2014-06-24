@@ -393,45 +393,45 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    mcfact = FACT(statut='d',
                  b_mult_front = BLOC(condition = "METHODE == 'MULT_FRONT' ",
-                                     fr="Paramètres de la méthode multi frontale",
+                                     fr=tr("Paramètres de la méthode multi frontale"),
                                      **_BlocMF
                                      ),
                  b_ldlt       = BLOC(condition = "METHODE == 'LDLT' ",
-                                     fr="Paramètres de la méthode LDLT",
+                                     fr=tr("Paramètres de la méthode LDLT"),
                                      **_BlocLD
                                      ),
                  b_mumps      = BLOC(condition = "METHODE == 'MUMPS' ",
-                                     fr="Paramètres de la méthode MUMPS",
+                                     fr=tr("Paramètres de la méthode MUMPS"),
                                      **_BlocMU
                                      ),
                  b_gcpc       = BLOC(condition = "METHODE == 'GCPC' ",
-                                      fr="Paramètres de la méthode du gradient conjugué",
+                                      fr=tr("Paramètres de la méthode du gradient conjugué"),
                                      b_ldltinc    = BLOC(condition = "PRE_COND == 'LDLT_INC' ",
-                                                         fr="Paramètres de la factorisation incomplète",
+                                                         fr=tr("Paramètres de la factorisation incomplète"),
                                                          **_BlocGC_INC
                                                          ),
                                      b_simple     = BLOC(condition = "PRE_COND == 'LDLT_SP' ",
-                                                         fr="Paramètres de la factorisation simple précision",
+                                                         fr=tr("Paramètres de la factorisation simple précision"),
                                                          **_BlocXX_SP
                                                          ),
                                      **_BlocGC
                                      ),
                  b_petsc      = BLOC(condition = "METHODE == 'PETSC' ",
-                                     fr="Paramètres de la méthode PETSC",
+                                     fr=tr("Paramètres de la méthode PETSC"),
                                      b_ldltinc    = BLOC(condition = "PRE_COND == 'LDLT_INC' ",
-                                                         fr="Paramètres de la factorisation incomplète",
+                                                         fr=tr("Paramètres de la factorisation incomplète"),
                                                          **_BlocPE_INC
                                                          ),
                                      b_simple     = BLOC(condition = "PRE_COND == 'LDLT_SP' ",
-                                                         fr="Paramètres de la factorisation simple précision",
+                                                         fr=tr("Paramètres de la factorisation simple précision"),
                                                          **_BlocXX_SP
                                                          ),
                                      b_ml         = BLOC(condition = "PRE_COND == 'ML' ",
-                                                         fr="Paramètres du multigrille algébrique ML",
+                                                         fr=tr("Paramètres du multigrille algébrique ML"),
                                                          **_BlocPE_ML
                                                          ),
                                      b_boomer        = BLOC(condition = "PRE_COND == 'BOOMER' ",
-                                                         fr="Paramètres du multigrille algébrique HYPRE",
+                                                         fr=tr("Paramètres du multigrille algébrique HYPRE"),
                                                          **_BlocPE_BOOMER
                                                          ),
                                      b_autres     = BLOC(condition = "PRE_COND == 'JACOBI' or \

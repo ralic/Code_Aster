@@ -18,7 +18,7 @@
 DETRUIRE=MACRO(nom="DETRUIRE",
                op=OPS("Cata.ops.DETRUIRE"),
                UIinfo={"groupes":("Gestion du travail",)},
-               fr="Détruit des concepts utilisateurs dans la base GLOBALE ou des objets JEVEUX",
+               fr=tr("Détruit des concepts utilisateurs dans la base GLOBALE ou des objets JEVEUX"),
                op_init=ops.build_detruire,
     regles=(UN_PARMI('CONCEPT', 'OBJET',),),
 

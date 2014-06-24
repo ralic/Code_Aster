@@ -17,7 +17,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 TEST_TABLE=PROC(nom="TEST_TABLE",op= 177,
                 UIinfo={"groupes":("Tables","Utilitaires",)},
-                fr="Tester une cellule ou une colonne d'une table",
+                fr=tr("Tester une cellule ou une colonne d'une table"),
 #  concept table_sdaster à tester
          TABLE           =SIMP(statut='o',typ=table_sdaster),
          FILTRE          =FACT(statut='f',max='**',

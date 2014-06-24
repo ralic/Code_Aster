@@ -23,7 +23,7 @@ def asse_matrice_prod(MATR_ELEM,**args):
   raise AsException("type de concept resultat non prevu")
 
 ASSE_MATRICE=OPER(nom="ASSE_MATRICE",op=12,sd_prod=asse_matrice_prod,
-                  fr="Construction d'une matrice assemblée",reentrant='n',
+                  fr=tr("Construction d'une matrice assemblée"),reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          MATR_ELEM       =SIMP(statut='o',
                                typ=(matr_elem_depl_r,matr_elem_depl_c,matr_elem_temp_r,matr_elem_pres_c) ),

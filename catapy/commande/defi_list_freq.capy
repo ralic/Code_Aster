@@ -18,7 +18,7 @@
 DEFI_LIST_FREQ=MACRO(nom="DEFI_LIST_FREQ",
                     op=OPS('Macro.defi_list_freq_ops.defi_list_freq_ops'),
                     sd_prod=listr8_sdaster,
-                    fr="Définir une liste de fréquences strictement croissante",
+                    fr=tr("Définir une liste de fréquences strictement croissante"),
                     reentrant='n',
             UIinfo={"groupes":("Fonctions",)},
          regles=(UN_PARMI('VALE','DEBUT',),

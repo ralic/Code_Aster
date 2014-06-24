@@ -19,8 +19,8 @@
 MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
                      op=OPS('Macro.macr_adap_mail_ops.macr_adap_mail_ops'),
                      docu="U7.03.02",UIinfo={"groupes":("Maillage",)},
-                     fr="Donner des informations sur un maillage.",
-                     ang="To give information about a mesh.",
+                     fr=tr("Donner des informations sur un maillage."),
+                     
 #
 # 1. Le niveau d'information
 #
@@ -29,22 +29,22 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 # 2. Le nom du maillage a analyser
 #
   MAILLAGE = SIMP(statut='o',typ=maillage_sdaster,
-                  fr="Maillage à analyser.",
-                  ang="Mesh to be checked." ),
+                  fr=tr("Maillage à analyser."),
+                  ),
 #
 # 3. Suivi d'une frontiere
 #
   MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
-                           fr="Maillage de la frontiere à suivre",
-                           ang="Boundary mesh" ),
+                           fr=tr("Maillage de la frontiere à suivre"),
+                           ),
 #
   b_frontiere = BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
-                      fr="Information complémentaire sur la frontière",
-                      ang="Further information about boundary",
+                      fr=tr("Information complémentaire sur la frontière"),
+                      
 #
     GROUP_MA_FRONT = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                          fr="Groupes de mailles définissant la frontière",
-                          ang="Mesh groups which define the boundary" ),
+                          fr=tr("Groupes de mailles définissant la frontière"),
+                          ),
 #
                     ) ,
 #
@@ -52,84 +52,84 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 # 4.1. Nombre de noeuds et mailles
 #
   NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                        fr="Nombre de noeuds et de mailles du maillage",
-                        ang="Number of nodes and meshes in the mesh" ),
+                        fr=tr("Nombre de noeuds et de mailles du maillage"),
+                        ),
 #
 # 4.2. Determination de la qualite des mailles du maillage
 #
   QUALITE        = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                        fr="Qualité du maillage",
-                        ang="Quality of the mesh" ),
+                        fr=tr("Qualité du maillage"),
+                        ),
 #
 # 4.3. Connexite du maillage
 #
   CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                        fr="Connexité du maillage.",
-                        ang="Connexity of the mesh." ),
+                        fr=tr("Connexité du maillage."),
+                        ),
 #
 # 4.4. Taille des sous-domaines du maillage
 #
   TAILLE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                        fr="Tailles des sous-domaines du maillage.",
-                        ang="Sizes of mesh sub-domains." ),
+                        fr=tr("Tailles des sous-domaines du maillage."),
+                        ),
 #
 # 4.5. Controle de la non-interpénétration des mailles
 #
   INTERPENETRATION=SIMP(statut='f',typ='TXM',into=("OUI",),
-                        fr="Controle de la non interpénétration des mailles.",
-                        ang="Overlapping checking." ),
+                        fr=tr("Controle de la non interpénétration des mailles."),
+                        ),
 #
 # 4.6. Propriétés du maillage de calcul
 #
   PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                        fr="Propriétés du maillage de calcul.",
-                        ang="Properties of the calculation mesh." ),
+                        fr=tr("Propriétés du maillage de calcul."),
+                        ),
 #
 # 4.7. Determination des diametres des mailles du maillage
 #
   DIAMETRE       = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                        fr="Diamètre du maillage",
-                        ang="Diameters of the mesh" ),
+                        fr=tr("Diamètre du maillage"),
+                        ),
 #
 # 5. Les options avancées
 # 5.1. Langue des messages issus de HOMARD
 #
   LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",
                 into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
-                fr="Langue des messages issus de HOMARD.",
-                ang="Language for HOMARD messages." ),
+                fr=tr("Langue des messages issus de HOMARD."),
+                ),
 #
 # 5.2. Gestion des mailles acceptees dans le maillage initial
 #       "HOMARD" : exclusivement les mailles pouvant etre decoupees (defaut)
 #       "IGNORE_PYRA" : elles sont ignorées
 #
   ELEMENTS_ACCEPTES = SIMP(statut='f',typ='TXM',defaut="HOMARD",into=("HOMARD", "IGNORE_PYRA"),
-                            fr="Acceptation des mailles dans le maillage initial",
-                            ang="Elements in the very first mesh" ),
+                            fr=tr("Acceptation des mailles dans le maillage initial"),
+                            ),
 #
 # 5.3. Version de HOMARD
 #
   VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_6",
                         into=("V10_6", "V10_N", "V10_N_PERSO"),
-                        fr="Version de HOMARD",
-                        ang="HOMARD release"),
+                        fr=tr("Version de HOMARD"),
+                        ),
 #
 # 5.4. Exécutable pilotant HOMARD
 #
   LOGICIEL = SIMP(statut='f',typ='TXM',
-                  fr="Logiciel pilotant HOMARD",
-                  ang="HOMARD software"),
+                  fr=tr("Logiciel pilotant HOMARD"),
+                  ),
 #
 # 5.5. Unite logique d'un fichier à ajouter a HOMARD.Configuration
 #
   b_unite = BLOC( condition = " (VERSION_HOMARD == 'V10_N') or \
                                 (VERSION_HOMARD == 'V10_N_PERSO') " ,
-                                fr="Fichier supplementaire.",
-                                ang="Additional file.",
+                                fr=tr("Fichier supplementaire."),
+                                
 #
   UNITE = SIMP(statut='f',typ='I',
-               fr="Unite logique a ajouter a HOMARD.Configuration",
-               ang="Additional file to HOMARD.Configuration" ),
+               fr=tr("Unite logique a ajouter a HOMARD.Configuration"),
+               ),
 #
   ) ,
 #

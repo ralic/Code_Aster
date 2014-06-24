@@ -32,7 +32,7 @@ def calc_fonc_interp_prod(FONCTION, NOM_PARA_FONC, **args):
 
 CALC_FONC_INTERP=OPER(nom="CALC_FONC_INTERP",op= 134,sd_prod=calc_fonc_interp_prod,
                       docu="U4.32.01",reentrant='n',
-           fr="Définit une fonction (ou une nappe) à partir d'une fonction FORMULE à 1 ou 2 variables",
+           fr=tr("Définit une fonction (ou une nappe) à partir d'une fonction FORMULE à 1 ou 2 variables"),
            UIinfo={"groupes":("Fonctions",)},
          regles=(UN_PARMI('VALE_PARA','LIST_PARA'),),
          FONCTION        =SIMP(statut='o',typ=(formule,fonction_sdaster,nappe_sdaster,fonction_c) ),

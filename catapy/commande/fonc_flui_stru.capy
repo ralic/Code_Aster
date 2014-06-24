@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: andre.adobes at edf.fr
 FONC_FLUI_STRU=OPER(nom="FONC_FLUI_STRU",op= 169,sd_prod=fonction_sdaster,
-                    reentrant='n',fr="Crée une fonction constante paramétrée par l'abscisse curviligne",
+                    reentrant='n',fr=tr("Crée une fonction constante paramétrée par l'abscisse curviligne"),
             UIinfo={"groupes":("Fonctions",)},
          TYPE_FLUI_STRU  =SIMP(statut='o',typ=(type_flui_stru) ),
 )  ;

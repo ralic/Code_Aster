@@ -20,7 +20,7 @@ def modi_repere_prod(RESULTAT,**args):
 
 MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f',
             UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
-                    fr="Calcule des résultats dans le repère cylindrique",
+                    fr=tr("Calcule des résultats dans le repère cylindrique"),
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
 
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
@@ -57,7 +57,7 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
            b_coque_gene    =BLOC(condition = "TYPE_CHAM=='COQUE_GENE'",
               NOM_CMP         =SIMP(statut='o',typ='TXM',min=8,max=8 ),),
          ),
-         b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : COQUE_INTR_UTIL ou COQUE_UTIL_INTR autorise",
+         b_reuse =BLOC(condition = "reuse",fr=tr("en mode concept reentrant : COQUE_INTR_UTIL ou COQUE_UTIL_INTR autorise"),
            REPERE          =SIMP(statut='o',typ='TXM',position='global',
                                  into=("COQUE_INTR_UTIL","COQUE_UTIL_INTR","COQUE_UTIL_CYL"),),
            AFFE     =FACT(statut='o',max='**',
@@ -66,7 +66,7 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
            ),
           ),
 
-         b_not_reuse =BLOC(condition = "not reuse",fr="en mode concept non reentrant ",
+         b_not_reuse =BLOC(condition = "not reuse",fr=tr("en mode concept non reentrant "),
            REPERE          =SIMP(statut='f',typ='TXM',defaut="UTILISATEUR",position='global',
                                  into=("UTILISATEUR","CYLINDRIQUE","COQUE",
                                        "COQUE_INTR_UTIL","COQUE_UTIL_INTR","COQUE_UTIL_CYL"),),

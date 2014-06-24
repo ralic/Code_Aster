@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: mathieu.corus at edf.fr
 ASSE_VECT_GENE=OPER(nom="ASSE_VECT_GENE",op= 140,sd_prod=vect_asse_gene,
-                    fr="Projection des chargements sur la base modale d'une sous structure",
+                    fr=tr("Projection des chargements sur la base modale d'une sous structure"),
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),

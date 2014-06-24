@@ -17,7 +17,7 @@
 # person_in_charge: alexei.mikchevitch at edf.fr
 PRE_IDEAS=PROC(nom="PRE_IDEAS",op=47,
             UIinfo={"groupes":("Gestion du travail",)},
-               fr="Conversion d'un fichier universel IDEAS-SUPERTAB au format Aster",
+               fr=tr("Conversion d'un fichier universel IDEAS-SUPERTAB au format Aster"),
          UNITE_IDEAS     =SIMP(statut='f',typ='I',defaut=19),  
          UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=20),  
          CREA_GROUP_COUL =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),

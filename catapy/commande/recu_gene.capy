@@ -17,8 +17,8 @@
 # person_in_charge: emmanuel.boyere at edf.fr
 RECU_GENE=OPER(nom="RECU_GENE",op=  76,sd_prod=vect_asse_gene,reentrant='n',
                UIinfo={"groupes":("Résultats et champs",)},
-               fr="Extraire d'un champ de grandeur (déplacements, vitesses ou accélérations) à partir de résultats"
-                  +" en coordonnées généralisées",
+               fr=tr("Extraire d'un champ de grandeur (déplacements, vitesses ou accélérations) à partir de résultats"
+                   " en coordonnées généralisées"),
                regles=(UN_PARMI('FREQ','INST',),),
          RESU_GENE       =SIMP(statut='o',typ=(tran_gene,harm_gene),),
          INST            =SIMP(statut='f',typ='R',),

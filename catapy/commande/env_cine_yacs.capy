@@ -21,7 +21,7 @@
 ENV_CINE_YACS=PROC(nom             = "ENV_CINE_YACS",
                    op              = 111,
                    UIinfo          = {"groupes":("Résultats et champs",)},
-                   fr              = "Envoi des champs de deplacement et vitesse via YACS pour Couplage de Code_Aster et Saturne",
+                   fr              = tr("Envoi des champs de deplacement et vitesse via YACS pour Couplage de Code_Aster et Saturne"),
                    regles          = (EXCLUS('ETAT_INIT','RESULTAT',),),
                    MATR_PROJECTION = SIMP(statut='o', typ=corresp_2_mailla,),
                    VIS_A_VIS = FACT(statut='o', max='**',

@@ -21,7 +21,7 @@ def asse_matr_gene_prod(METHODE,**args):
     else : return matr_asse_gene_r
 
 ASSE_MATR_GENE=OPER(nom="ASSE_MATR_GENE",op= 128,sd_prod=asse_matr_gene_prod,
-                    fr="Assemblage des matrices généralisées de macro éléments pour construction de la matrice globale généralisée",
+                    fr=tr("Assemblage des matrices généralisées de macro éléments pour construction de la matrice globale généralisée"),
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),

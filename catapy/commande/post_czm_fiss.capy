@@ -39,7 +39,7 @@ POST_CZM_FISS=MACRO(
   sd_prod=post_czm_fiss_prod,
   reentrant='n',
   UIinfo={"groupes":("Rupture",)},
-  fr="Post-Traiement scpécifiques aux modèles CZM",
+  fr=tr("Post-Traiement scpécifiques aux modèles CZM"),
 
   OPTION = SIMP(statut='o',typ='TXM',max=1,into=("LONGUEUR","TRIAXIALITE"),),
 

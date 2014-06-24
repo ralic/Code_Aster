@@ -45,33 +45,33 @@ CHAINAGE_THM=MACRO(nom="CHAINAGE_THM",
                    reentrant='n',
                    UIinfo={"groupes":("Résultats et champs",)},
                    docu="Ux.xx.xx",
-                   fr="Calcul des variables de commande pour le chaînage THM",
+                   fr=tr("Calcul des variables de commande pour le chaînage THM"),
 
          TYPE_CHAINAGE  = SIMP(statut='o',typ='TXM',
                                into=("HYDR_MECA","MECA_HYDR","INIT",),
-                               fr="Sens du chaînage ou initialisation des matrices de projection"),
+                               fr=tr("Sens du chaînage ou initialisation des matrices de projection")),
 
          # Cas HYDR_MECA :
 
-         b_hydr_meca    = BLOC(condition = "TYPE_CHAINAGE == 'HYDR_MECA'",fr="Chaînage hydraulique vers mécanique",
+         b_hydr_meca    = BLOC(condition = "TYPE_CHAINAGE == 'HYDR_MECA'",fr=tr("Chaînage hydraulique vers mécanique"),
 
-             RESU_HYDR       = SIMP(statut='o',typ=resultat_sdaster,fr="Résultat hydraulique à chaîner" ),
-             MODELE_MECA     = SIMP(statut='o',typ=modele_sdaster  ,fr="Modèle d'arrivée mécanique"),
+             RESU_HYDR       = SIMP(statut='o',typ=resultat_sdaster,fr=tr("Résultat hydraulique à chaîner") ),
+             MODELE_MECA     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle d'arrivée mécanique")),
              TYPE_RESU       = SIMP(statut='f',typ='TXM',into=("EVOL_VARC","CHAM_NO"),defaut="EVOL_VARC", ),
              MATR_HM1        = SIMP(statut='o',typ=corresp_2_mailla,),
              MATR_HM2        = SIMP(statut='o',typ=corresp_2_mailla,),
 
-             b_type_resu     = BLOC(condition = "TYPE_RESU == 'EVOL_VARC'",fr="Instant obligatoire si TYPE_RESU=EVOL_VARC",
+             b_type_resu     = BLOC(condition = "TYPE_RESU == 'EVOL_VARC'",fr=tr("Instant obligatoire si TYPE_RESU=EVOL_VARC"),
                                    INST = SIMP(statut='o',typ='R',validators=NoRepeat(),min=1,max=1),
 
            ),),
 
          # Cas MECA_HYDR :
 
-         b_meca_hydr    = BLOC(condition = "TYPE_CHAINAGE == 'MECA_HYDR'",fr="Chaînage mécanique vers hydraulique",
+         b_meca_hydr    = BLOC(condition = "TYPE_CHAINAGE == 'MECA_HYDR'",fr=tr("Chaînage mécanique vers hydraulique"),
 
-             RESU_MECA       = SIMP(statut='o',typ=resultat_sdaster,fr="Résultat mécanique à chaîner" ),
-             MODELE_HYDR     = SIMP(statut='o',typ=modele_sdaster  ,fr="Modèle d'arrivée hydraulique"),
+             RESU_MECA       = SIMP(statut='o',typ=resultat_sdaster,fr=tr("Résultat mécanique à chaîner") ),
+             MODELE_HYDR     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle d'arrivée hydraulique")),
 
              MATR_MH         = SIMP(statut='o',typ=corresp_2_mailla,),
              INST            = SIMP(statut='o',typ='R',validators=NoRepeat(),min=1,max=1),
@@ -79,10 +79,10 @@ CHAINAGE_THM=MACRO(nom="CHAINAGE_THM",
 
          # Cas INIT :
 
-         b_init    = BLOC(condition = "TYPE_CHAINAGE == 'INIT'",fr="Calcul des matrices de projection",
+         b_init    = BLOC(condition = "TYPE_CHAINAGE == 'INIT'",fr=tr("Calcul des matrices de projection"),
 
-             MODELE_MECA     = SIMP(statut='o',typ=modele_sdaster  ,fr="Modèle mécanique"),
-             MODELE_HYDR     = SIMP(statut='o',typ=modele_sdaster  ,fr="Modèle hydraulique"),
+             MODELE_MECA     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle mécanique")),
+             MODELE_HYDR     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle hydraulique")),
 
              MATR_MH         = SIMP(statut='o',typ=CO,),
              MATR_HM1        = SIMP(statut='o',typ=CO,),

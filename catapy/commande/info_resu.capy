@@ -17,7 +17,7 @@
 # person_in_charge: nicolas.sellenet at edf.fr
 INFO_RESU=PROC(nom="INFO_RESU",op=40,
                UIinfo={"groupes":("Impression","Utilitaires",)},
-               fr="Imprimer tous les champs présents dans une structure de données résultat",
+               fr=tr("Imprimer tous les champs présents dans une structure de données résultat"),
                RESULTAT=SIMP(statut='f',typ=resultat_sdaster),
                UNITE=SIMP(statut='f',typ='I',defaut=6),
 );

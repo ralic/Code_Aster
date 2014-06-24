@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: andre.adobes at edf.fr
 DYNA_SPEC_MODAL=OPER(nom="DYNA_SPEC_MODAL",op= 147,sd_prod=interspectre,
-                     fr="Calcul de la réponse par recombinaison modale d'une structure linéaire pour une excitation aléatoire",
+                     fr=tr("Calcul de la réponse par recombinaison modale d'une structure linéaire pour une excitation aléatoire"),
                      reentrant='n',
             UIinfo={"groupes":("Résolution","Dynamique",)},
          BASE_ELAS_FLUI  =SIMP(statut='o',typ=melasflu_sdaster ),

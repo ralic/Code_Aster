@@ -17,7 +17,7 @@
 # person_in_charge: Georges-cc.devesa at edf.fr
 
 CALC_FORC_NONL=OPER(nom="CALC_FORC_NONL",op= 183,sd_prod=dyna_trans,reentrant='n',
-            fr="Créer un dyna_trans contenant des champs nommés 'DEPL' correspondant à 'FONL_NOEU' ",
+            fr=tr("Créer un dyna_trans contenant des champs nommés 'DEPL' correspondant à 'FONL_NOEU' "),
             UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
 

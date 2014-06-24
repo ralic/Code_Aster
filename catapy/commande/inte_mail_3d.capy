@@ -17,7 +17,7 @@
 # person_in_charge: xavier.desroches at edf.fr
 INTE_MAIL_3D=OPER(nom="INTE_MAIL_3D",op=96,sd_prod=surface_sdaster,
             UIinfo={"groupes":("Post-traitements",)},
-                  fr="Définir un chemin de type segment de droite dans un maillage 3D",reentrant='n',
+                  fr=tr("Définir un chemin de type segment de droite dans un maillage 3D"),reentrant='n',
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

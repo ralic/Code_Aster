@@ -18,7 +18,7 @@
 
 
 DEFI_PARTITION=OPER(nom="DEFI_PARTITION",op=21,sd_prod=sd_partit,
-                    fr="Creation partitionnement en sous-domaines",
+                    fr=tr("Creation partitionnement en sous-domaines"),
                     docu="U4.23.05",reentrant='n',UIinfo={"groupes":("Modélisation",)},
 
          NB_PART         =SIMP(statut='o',typ='I',val_min=2),

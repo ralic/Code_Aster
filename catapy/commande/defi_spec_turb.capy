@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: andre.adobes at edf.fr
 DEFI_SPEC_TURB=OPER(nom="DEFI_SPEC_TURB",op= 145,sd_prod=spectre_sdaster,
-                    fr="Definition d'un spectre d'excitation turbulente",
+                    fr=tr("Definition d'un spectre d'excitation turbulente"),
                     reentrant='n',
             UIinfo={"groupes":("Modelisation","Outils-metier",)},
          regles=(UN_PARMI('SPEC_LONG_COR_1','SPEC_LONG_COR_2','SPEC_LONG_COR_3',

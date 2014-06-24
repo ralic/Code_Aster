@@ -21,7 +21,7 @@
 RECU_PARA_YACS=OPER(nom="RECU_PARA_YACS",op=114,sd_prod=listr8_sdaster,
                    reentrant = 'n',
                     UIinfo={"groupes":("Fonction",)},
-                   fr        = "Gestion des scalaires via YACS pour le coupleur IFS",
+                   fr        = tr("Gestion des scalaires via YACS pour le coupleur IFS"),
           DONNEES = SIMP(statut='o',typ='TXM',into=("INITIALISATION","CONVERGENCE","FIN","PAS",) ),
           b_init   = BLOC(condition= "DONNEES=='INITIALISATION'",
                      PAS             = SIMP(statut='o',typ='R', ),),

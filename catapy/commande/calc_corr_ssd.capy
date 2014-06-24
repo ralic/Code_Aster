@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: mathieu.corus at edf.fr
 CALC_CORR_SSD=OPER(nom="CALC_CORR_SSD",op=  91,sd_prod=table_container,
-                    fr="Qualite d'un modele reduit en dynamique",
+                    fr=tr("Qualite d'un modele reduit en dynamique"),
                     reentrant='n',
             UIinfo={"groupes":("Dynamique",)},
          MODELE_GENE    =SIMP(statut='o',typ=modele_gene),

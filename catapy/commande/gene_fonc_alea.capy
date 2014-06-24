@@ -16,13 +16,13 @@
 # ======================================================================
 # person_in_charge: irmela.zentner at edf.fr
 GENE_FONC_ALEA=OPER(nom="GENE_FONC_ALEA",op= 118,sd_prod=interspectre,
-                    fr="Génération de la fonction temporelle à partir d une matrice interspectrale",
+                    fr=tr("Génération de la fonction temporelle à partir d une matrice interspectrale"),
                     reentrant='n',
             UIinfo={"groupes":("Fonctions",)},
          INTE_SPEC       =SIMP(statut='o',typ=interspectre),
          NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
          INTERPOL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),
-         b_interpol_oui    =BLOC(condition = "INTERPOL == 'OUI' ",fr="Parametres cas interpolation autorisee",
+         b_interpol_oui    =BLOC(condition = "INTERPOL == 'OUI' ",fr=tr("Parametres cas interpolation autorisee"),
            DUREE_TIRAGE    =SIMP(statut='f',typ='R' ),
            FREQ_INIT       =SIMP(statut='f',typ='R' ),
            FREQ_FIN        =SIMP(statut='f',typ='R' ),

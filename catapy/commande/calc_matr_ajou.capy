@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: nicolas.greffet at edf.fr
 CALC_MATR_AJOU=OPER(nom="CALC_MATR_AJOU",op= 152,sd_prod=matr_asse_gene_r,
-                    fr="Calcul des matrices de masse, d'amortissement ou de rigidité ajoutés",
+                    fr=tr("Calcul des matrices de masse, d'amortissement ou de rigidité ajoutés"),
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(EXCLUS('MODE_MECA','CHAM_NO','MODELE_GENE'),

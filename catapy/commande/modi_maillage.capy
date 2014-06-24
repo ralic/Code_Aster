@@ -16,8 +16,8 @@
 # ======================================================================
 # person_in_charge: jacques.pellet at edf.fr
 MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
-                   fr="Effectuer des modifications sur un maillage existant: réorienter des mailles servant,"
-                      +" à l'application d'une pression, à la modélisation du contact,...",
+                   fr=tr("Effectuer des modifications sur un maillage existant: réorienter des mailles servant,"
+                      " à l'application d'une pression, à la modélisation du contact,..."),
                    reentrant='o',
             UIinfo={"groupes":("Maillage",)},
       regles=(AU_MOINS_UN('ORIE_FISSURE','DEFORME','EQUE_PIQUA','ORIE_PEAU_2D',
@@ -142,13 +142,13 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
            DIR              =SIMP(statut='f',typ='R',min=2,max=3),
          ),
          SYMETRIE        =FACT(statut='f',max='**',
-                          fr = "Symétrie du maillage par rapport à un plan en 3D ou à une droite en 2D.",
+                          fr = tr("Symétrie du maillage par rapport à un plan en 3D ou à une droite en 2D."),
            POINT           =SIMP(statut='o',typ='R',min=2,max=3,
-                            fr="Point appartenant à la droite ou au plan."),
+                            fr=tr("Point appartenant à la droite ou au plan.")),
            AXE_1           =SIMP(statut='o',typ='R',min=2,max=3,
-                            fr="Vecteur directeur de la droite ou 1er vecteur appartenant au plan."),
+                            fr=tr("Vecteur directeur de la droite ou 1er vecteur appartenant au plan.")),
            AXE_2           =SIMP(statut='f',typ='R',min=3,max=3,
-                            fr="2nd vecteur appartenant du plan."),
+                            fr=tr("2nd vecteur appartenant du plan.")),
          ),
          ABSC_CURV       =FACT(statut='f',max=1,
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE',),

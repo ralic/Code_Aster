@@ -21,7 +21,7 @@ def elim_lagr_prod(MATR_RIGI,**args):
   raise AsException("type de concept resultat non prevu")
 
 ELIM_LAGR=OPER(nom="ELIM_LAGR",op=69,sd_prod=elim_lagr_prod,
-               fr="Créer une matrice en ayant éliminé les condition cinématiques dualisées.",
+               fr=tr("Créer une matrice en ayant éliminé les condition cinématiques dualisées."),
                reentrant='f', UIinfo={"groupes":("Résolution",)},
 
          # Matrice de "rigidité" (celle qui contient les équations dualisées) :

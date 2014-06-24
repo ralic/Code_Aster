@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: xavier.desroches at edf.fr
 COMB_FOURIER=OPER(nom="COMB_FOURIER",op= 161,sd_prod=comb_fourier,
-                  reentrant='n',fr="Recombiner les modes de Fourier d'une SD Résultat dans des directions particulières",
+                  reentrant='n',fr=tr("Recombiner les modes de Fourier d'une SD Résultat dans des directions particulières"),
             UIinfo={"groupes":("Post-traitements",)},
          RESULTAT        =SIMP(statut='o',typ=(fourier_elas,fourier_ther),),
          ANGLE           =SIMP(statut='o',typ='R',max='**'),

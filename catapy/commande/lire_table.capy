@@ -20,7 +20,7 @@
 LIRE_TABLE=MACRO(nom="LIRE_TABLE",
                  op=OPS('Macro.lire_table_ops.lire_table_ops'),
                  sd_prod=table_sdaster,
-                 fr="Lecture d'un fichier contenant une table",
+                 fr=tr("Lecture d'un fichier contenant une table"),
                  UIinfo={"groupes":("Lecture","Tables",)},
          UNITE           = SIMP(statut='o', typ='I' ),
          FORMAT          = SIMP(statut='f', typ='TXM', into=("ASTER", "LIBRE", "TABLEAU"), defaut="TABLEAU"),

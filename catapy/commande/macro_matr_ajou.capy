@@ -31,8 +31,8 @@ MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",
                       op=OPS('Macro.macro_matr_ajou_ops.macro_matr_ajou_ops'),
                       sd_prod=macro_matr_ajou_prod,
                       UIinfo={"groupes":("Résolution","Matrices et vecteurs",)},
-                      fr="Calculer de facon plus condensée qu'avec CALC_MATR_AJOU des " \
-                         "matrices de masse, d'amortissement ou de rigidité ajoutés",
+                      fr=tr("Calculer de facon plus condensée qu'avec CALC_MATR_AJOU des "
+                           "matrices de masse, d'amortissement ou de rigidité ajoutés"),
       regles=(AU_MOINS_UN('MODE_MECA','DEPL_IMPO','MODELE_GENE'),
               AU_MOINS_UN('MATR_MASS_AJOU','MATR_AMOR_AJOU','MATR_RIGI_AJOU'),
               EXCLUS('MODE_MECA','DEPL_IMPO','MODELE_GENE'),

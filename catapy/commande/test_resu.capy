@@ -19,7 +19,7 @@
 # person_in_charge: j-pierre.lefebvre at edf.fr
 TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Résultats et champs","Utilitaires",)},
-         fr="Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence",
+         fr=tr("Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence"),
          regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','CARTE','RESU','GENE','OBJET','TEST_NAN',)),
 
          CHAM_NO         =FACT(statut='f',max='**',

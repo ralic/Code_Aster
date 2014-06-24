@@ -18,6 +18,6 @@
 INIT_COMPO=PROC(nom="INIT_COMPO",
                 op=  117,
                 UIinfo={"groupes":("Gestion du travail",)},
-                fr="Initialiser adresse component YACS",
+                fr=tr("Initialiser adresse component YACS"),
            COMPO           =SIMP(statut='o',typ='I',),
 )  ;

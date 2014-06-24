@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: Georges-cc.devesa at edf.fr
 LIRE_FORC_MISS=OPER(nom="LIRE_FORC_MISS",op= 179,sd_prod=vect_asse_gene,
-                    fr="Création d'un vecteur assemblé à partir d'une base modale",
+                    fr=tr("Création d'un vecteur assemblé à partir d'une base modale"),
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs","Outils-métier",)},           
          BASE            =SIMP(statut='o',typ=mode_meca),

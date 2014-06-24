@@ -19,10 +19,10 @@
 TEST_FICHIER=MACRO(nom="TEST_FICHIER",
                    op=OPS('Macro.test_fichier_ops.test_fichier_ops'),
                    UIinfo={"groupes":("Utilitaires",)},
-                   fr="Tester la non régression de fichiers produits par des commandes aster",
+                   fr=tr("Tester la non régression de fichiers produits par des commandes aster"),
    FICHIER          =SIMP(statut='o',typ=('Fichier','','Sauvegarde'),validators=LongStr(1,255)),
    EXPR_IGNORE      =SIMP(statut='f',typ='TXM',max='**',
-                          fr="Liste d'expressions régulières permettant d'ignorer certaines lignes"),
+                          fr=tr("Liste d'expressions régulières permettant d'ignorer certaines lignes")),
    NB_VALE         =SIMP(statut='o',typ='I',),
 
    INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

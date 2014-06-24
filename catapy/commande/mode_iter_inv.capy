@@ -36,22 +36,22 @@ def mode_iter_inv_prod(TYPE_RESU,**args ):
   raise AsException("type de concept resultat non prevu")
 
 MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
-                    ,fr="Calcul des modes propres par itérations inverses ; valeurs propres et modes réels ou complexes",
+                    ,fr=tr("Calcul des modes propres par itérations inverses ; valeurs propres et modes réels ou complexes"),
                      reentrant='n',
             UIinfo={"groupes":("Résolution","Dynamique",)},
 
          TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",
                                into=("MODE_FLAMB","DYNAMIQUE","GENERAL"),
-                               fr="Type d analyse" ),
+                               fr=tr("Type d analyse") ),
 
          b_dynam         =BLOC(condition = "TYPE_RESU == 'DYNAMIQUE'",
            MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
            MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
            MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r ),
-           CALC_FREQ       =FACT(statut='o',fr="Choix des paramètres pour le calcul des valeurs propres",
+           CALC_FREQ       =FACT(statut='o',fr=tr("Choix des paramètres pour le calcul des valeurs propres"),
 
              OPTION          =SIMP(statut='f',typ='TXM',defaut="AJUSTE",into=("SEPARE","AJUSTE","PROCHE"),
-                                   fr="Choix de l option pour estimer les valeurs propres"  ),
+                                   fr=tr("Choix de l option pour estimer les valeurs propres")  ),
              FREQ            =SIMP(statut='o',typ='R',max='**',
                                    validators=AndVal((OrdList('croissant'), NoRepeat())),),
              AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
@@ -77,10 +77,10 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
            ),
 
          b_flamb_general =BLOC(condition = "(TYPE_RESU == 'MODE_FLAMB') or (TYPE_RESU == 'GENERAL')",
-           CALC_CHAR_CRIT  =FACT(statut='o',fr="Choix des paramètres pour le calcul des valeurs propres",
+           CALC_CHAR_CRIT  =FACT(statut='o',fr=tr("Choix des paramètres pour le calcul des valeurs propres"),
 
              OPTION          =SIMP(statut='f',typ='TXM',defaut="AJUSTE",into=("SEPARE","AJUSTE","PROCHE"),
-                                 fr="Choix de l option pour estimer les valeurs propres"  ),
+                                 fr=tr("Choix de l option pour estimer les valeurs propres")  ),
              CHAR_CRIT       =SIMP(statut='o',typ='R',max='**',
                                    validators=AndVal((OrdList('croissant'), NoRepeat())),),
              NMAX_CHAR_CRIT  =SIMP(statut='f',typ='I',defaut= 0,val_min=0 ),
@@ -100,15 +100,15 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
          SOLVEUR         =C_SOLVEUR('MODE_ITER_INV'),
 #-------------------------------------------------------------------
 
-         CALC_MODE       =FACT(statut='d',min=0,fr="Choix des paramètres pour le calcul des vecteurs propres",
+         CALC_MODE       =FACT(statut='d',min=0,fr=tr("Choix des paramètres pour le calcul des vecteurs propres"),
            OPTION          =SIMP(statut='f',typ='TXM',defaut="DIRECT",into=("DIRECT","RAYLEIGH") ),
-           PREC            =SIMP(statut='f',typ='R',defaut= 1.E-5,val_min=1.E-70,fr="Précision de convergence" ),
+           PREC            =SIMP(statut='f',typ='R',defaut= 1.E-5,val_min=1.E-70,fr=tr("Précision de convergence") ),
            NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 30,val_min=1 ),
          ),
          VERI_MODE       =FACT(statut='d',min=0,
            STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            SEUIL           =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0,
-                                 fr="Valeur limite admise pour l ereur a posteriori des modes"  ),
+                                 fr=tr("Valeur limite admise pour l ereur a posteriori des modes")  ),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
          TITRE           =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),

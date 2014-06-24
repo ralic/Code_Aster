@@ -22,7 +22,7 @@ RAFF_XFEM_ZONE=OPER(nom="RAFF_XFEM_ZONE",
                     op=188,
 #                    sd_prod=cham_elem,
                     sd_prod=carte_sdaster,
-                    fr="Calcul d'un indicateur binaire pour le raffinement",
+                    fr=tr("Calcul d'un indicateur binaire pour le raffinement"),
                     reentrant='n',
                     UIinfo={"groupes":("Résultats et champs","Rupture",)},
 

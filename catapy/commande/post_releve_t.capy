@@ -16,8 +16,8 @@
 # ======================================================================
 # person_in_charge: xavier.desroches at edf.fr
 POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f',
-            fr="Extraire des valeurs de composantes de champs de grandeurs pour y effectuer des calculs (moyenne,invariants,..)"
-               +" ou pour les exprimer dans d'autres repères",
+            fr=tr("Extraire des valeurs de composantes de champs de grandeurs pour y effectuer des calculs (moyenne,invariants,..)"
+               " ou pour les exprimer dans d'autres repères"),
             docu="U4.81.21",UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
 
          ACTION          =FACT(statut='o',max='**',
@@ -31,7 +31,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
                                                  cham_elem,),),
            RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
 
-           b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des résultats",
+           b_extrac        =BLOC(condition = "RESULTAT != None",fr=tr("extraction des résultats"),
                                  regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','NUME_MODE','LIST_MODE',
                                                 'INST','LIST_INST','FREQ','LIST_FREQ','NOEUD_CMP','NOM_CAS'), ),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),),
@@ -54,7 +54,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
            ),
 
            b_extrema   =BLOC(condition="au_moins_un(OPERATION, 'EXTREMA')",
-                             fr="recherche de MIN MAX",
+                             fr=tr("recherche de MIN MAX"),
                              regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
               GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -66,7 +66,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
            ),
 
            b_MOYENNE_ARITH   =BLOC(condition="au_moins_un(OPERATION, 'MOYENNE_ARITH')",
-                             fr="moyenne sur des groupes",
+                             fr=tr("moyenne sur des groupes"),
                              regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
               GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -78,7 +78,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
            ),
 
            b_autre   =BLOC(condition="aucun(OPERATION, ('EXTREMA', 'MOYENNE_ARITH'))",
-                           fr="extraction et moyenne",
+                           fr=tr("extraction et moyenne"),
                            regles=(AU_MOINS_UN('CHEMIN','GROUP_NO','NOEUD'),
                                    EXCLUS('CHEMIN','GROUP_NO'),
                                    EXCLUS('CHEMIN','NOEUD'),

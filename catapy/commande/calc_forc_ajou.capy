@@ -16,8 +16,8 @@
 # ======================================================================
 # person_in_charge: nicolas.greffet at edf.fr
 CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
-                   fr="Calculer l'effet de surpression hydrodynamique due au mouvement d'entrainement de la structure"
-                       +" en analyse sismique",
+                   fr=tr("Calculer l'effet de surpression hydrodynamique due au mouvement d'entrainement de la structure"
+                         " en analyse sismique"),
                    reentrant ='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
 

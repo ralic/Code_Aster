@@ -21,8 +21,7 @@ def rest_mode_nonl_prod(TYPE_RESU,**args):
 
 REST_MODE_NONL=OPER(nom="REST_MODE_NONL", op=63,
          sd_prod=rest_mode_nonl_prod, reentrant='n',
-         fr="Post traitement de mode_non_line : \
-             recuperation resultats ",
+         fr=tr("Post traitement de mode_non_line : récuperation résultats"),
          UIinfo={"groupes":("Post-traitements",)},
 
          MODE_NON_LINE    =SIMP(statut='o',typ=table_container,max=1),
@@ -33,5 +32,3 @@ REST_MODE_NONL=OPER(nom="REST_MODE_NONL", op=63,
          INFO          =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 
 )  ;
-
-

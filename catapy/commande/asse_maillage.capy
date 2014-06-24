@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: jacques.pellet at edf.fr
 ASSE_MAILLAGE=OPER(nom="ASSE_MAILLAGE",op= 105,sd_prod=maillage_sdaster,
-                   fr="Assembler deux maillages pour en former un nouveau",
+                   fr=tr("Assembler deux maillages pour en former un nouveau"),
                    reentrant='n',
                    UIinfo={"groupes":("Maillage",)},
          MAILLAGE_1 =  SIMP(statut='o',typ=maillage_sdaster,),

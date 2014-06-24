@@ -24,7 +24,7 @@ def defi_group_prod(MAILLAGE,GRILLE,**args):
   raise AsException("type de concept resultat non prevu")
 
 DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
-                fr="Définition de nouveaux groupes de noeuds et/ou de mailles dans un concept maillage",
+                fr=tr("Définition de nouveaux groupes de noeuds et/ou de mailles dans un concept maillage"),
                 reentrant='o',
             UIinfo={"groupes":("Maillage",)},
          regles=(AU_MOINS_UN('CREA_GROUP_MA','CREA_GROUP_NO','DETR_GROUP_NO','DETR_GROUP_MA'),
@@ -232,8 +232,8 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
              LONGUEUR        =SIMP(statut='f',typ='R'),
            ),
            b_inclusion         =BLOC(condition = "OPTION == 'INCLUSION'",
-             fr="""crée le groupe des noeuds des mailles de GROUP_MA inclus géométriquement
-                   dans les mailles de GROUP_MA_INCL""",
+             fr=tr("crée le groupe des noeuds des mailles de GROUP_MA inclus géométriquement"
+                  "dans les mailles de GROUP_MA_INCL"),
              NOM             =SIMP(statut='o',typ=grma),
              CAS_FIGURE      =SIMP(statut='o',typ='TXM',into=("2D","3D","2.5D",)),
              DISTANCE_MAX    =SIMP(statut='f',typ='R',),

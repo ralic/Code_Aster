@@ -17,7 +17,7 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 #
 DEFI_GEOM_FIBRE=OPER(nom="DEFI_GEOM_FIBRE",op=  119, sd_prod=gfibre_sdaster,
-                    fr="Definition des groupes de fibres pour les elements multifibres",
+                    fr=tr("Definition des groupes de fibres pour les elements multifibres"),
                     reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('SECTION','FIBRE'),),

@@ -16,7 +16,7 @@
 # ======================================================================
 CALC_STABILITE=MACRO(nom="CALC_STABILITE",sd_prod=table_container,
                op=OPS('Macro.calc_stabilite_ops.calc_stabilite_ops'),
-               fr="post-traitement modes non-linéaires : filtre resultats et calcul de stabilité",
+               fr=tr("post-traitement modes non-linéaires : filtre resultats et calcul de stabilité"),
                reentrant='f',
                UIinfo={"groupes":("Résolution","Dynamique",)},
 
@@ -43,6 +43,3 @@ CALC_STABILITE=MACRO(nom="CALC_STABILITE",sd_prod=table_container,
                INFO = SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 
 )  ;
-
-
-

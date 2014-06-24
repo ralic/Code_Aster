@@ -17,7 +17,7 @@
 # person_in_charge: jacques.pellet at edf.fr
 AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
             UIinfo={"groupes":("Modélisation",)},
-                 fr="Définir le phénomène physique modélisé et le type d'éléments finis sur le maillage",reentrant='n',
+                 fr=tr("Définir le phénomène physique modélisé et le type d'éléments finis sur le maillage"),reentrant='n',
          regles=(AU_MOINS_UN('AFFE','AFFE_SOUS_STRUC'),UN_PARMI('MAILLAGE','GRILLE')),
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
          GRILLE          =SIMP(statut='f',typ=grille_sdaster),
@@ -28,18 +28,18 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
 #====
 #
          GRANDEUR_CARA =FACT(statut='f',max=1,
-         fr="Grandeurs caractéristiques pour l'adimensionnement des indicateurs d'erreur HM",
-         ang="Characteristic data for HM error estimators adimensionalisation",
+         fr=tr("Grandeurs caractéristiques pour l'adimensionnement des indicateurs d'erreur HM"),
+         
 #
             LONGUEUR      =SIMP(statut='f',typ='R',val_min=0,
-                                fr ="Longueur caractéristique",
-                                ang="Characteristic length",),
+                                fr =tr("Longueur caractéristique"),
+                                ),
             PRESSION      =SIMP(statut='f',typ='R',val_min=0,
-                                fr ="Pression caractéristique",
-                                ang="Characteristic pressure",),
+                                fr =tr("Pression caractéristique"),
+                                ),
             TEMPERATURE   =SIMP(statut='f',typ='R',val_min=0,
-                                fr ="Température caractéristique",
-                                ang="Characteristic temperature",),),
+                                fr =tr("Température caractéristique"),
+                                ),),
 #
          AFFE_SOUS_STRUC =FACT(statut='f',
            regles=(UN_PARMI('TOUT','SUPER_MAILLE'),),
@@ -57,7 +57,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
            PHENOMENE       =SIMP(statut='o',typ='TXM',
                                  into=("MECANIQUE","THERMIQUE","ACOUSTIQUE") ),
                 b_mecanique     =BLOC( condition = "PHENOMENE=='MECANIQUE'",
-                                        fr="modélisations mécaniques",
+                                        fr=tr("modélisations mécaniques"),
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
                                   "2D_DIS_T",        # RESP. : FLEJOU J.L.FLEJOU
                                   "2D_DIS_TR",       # RESP. : FLEJOU J.L.FLEJOU
@@ -239,7 +239,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       )  )  ),
 
                 b_thermique     =BLOC( condition = "PHENOMENE=='THERMIQUE'",
-                                        fr="modélisations thermiques",
+                                        fr=tr("modélisations thermiques"),
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
                                   "3D",              # RESP. : DURAND C.DURAND
                                   "3D_DIAG",         # RESP. : DURAND C.DURAND
@@ -254,7 +254,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       ),),),
 
                 b_acoustique    =BLOC( condition = "PHENOMENE=='ACOUSTIQUE'",
-                                        fr="modélisations acoustiques",
+                                        fr=tr("modélisations acoustiques"),
                      MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
                                   "3D",              # RESP. : None
                                   "PLAN"             # RESP. : None
@@ -271,5 +271,5 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
          ),
 
          VERI_JACOBIEN  =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI',
-                              fr ="Vérification de la forme des mailles (jacobiens tous de meme signe).",),
+                              fr =tr("Vérification de la forme des mailles (jacobiens tous de meme signe)."),),
 ) ;

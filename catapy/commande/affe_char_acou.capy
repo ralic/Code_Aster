@@ -16,7 +16,7 @@
 # ======================================================================
 #
 AFFE_CHAR_ACOU=OPER(nom="AFFE_CHAR_ACOU",op=  68,sd_prod=char_acou,
-                    fr="Affectation de charges et conditions aux limites acoustiques constantes",
+                    fr=tr("Affectation de charges et conditions aux limites acoustiques constantes"),
                     reentrant='n',
             UIinfo={"groupes":("Chargements","Acoustique",)},
          regles=(AU_MOINS_UN('PRES_IMPO','VITE_FACE','IMPE_FACE','LIAISON_UNIF' ),),

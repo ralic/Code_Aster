@@ -21,8 +21,8 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
                      op=OPS('Macro.simu_point_mat_ops.simu_point_mat_ops'),
                      sd_prod=table_sdaster,
                      UIinfo={"groupes":("Résolution",)},
-                     fr="Calcul de l'évolution mécanique, en quasi-statique," \
-                        " d'un point matériel en non linéaire",
+                     fr=tr("Calcul de l'évolution mécanique, en quasi-statique, "
+                          "d'un point matériel en non linéaire"),
 
    COMPORTEMENT       =C_COMPORTEMENT(),
 
@@ -43,7 +43,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
 
    SUPPORT= SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",),defaut=("POINT"),),
 
-   b_PM = BLOC(condition="SUPPORT ==  'POINT'",fr="Simulation sans élément fini",
+   b_PM = BLOC(condition="SUPPORT ==  'POINT'",fr=tr("Simulation sans élément fini"),
 
           FORMAT_TABLE  =SIMP(statut='f',typ='TXM',max=1,into=("CMP_COLONNE","CMP_LIGNE",),defaut=("CMP_COLONNE"),),
 
@@ -114,7 +114,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
                                     ),
    ),
 
-   b_EF = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="Simulation sur un élément fini",
+   b_EF = BLOC(condition="SUPPORT ==  'ELEMENT'",fr=tr("Simulation sur un élément fini"),
           MODELISATION  =SIMP(statut='f',typ='TXM',max=1,into=("3D","C_PLAN","D_PLAN",)),
           RECH_LINEAIRE   =C_RECH_LINEAIRE(),
           ARCHIVAGE       =C_ARCHIVAGE(),

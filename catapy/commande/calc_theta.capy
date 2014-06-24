@@ -18,8 +18,8 @@
 
 CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,reentrant='n',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
-                fr="Définir un champ theta pour le calcul du taux de restitution d'énergie"
-                    +" ou des facteurs d'intensité de contraintes",
+                fr=tr("Définir un champ theta pour le calcul du taux de restitution d'énergie"
+                     " ou des facteurs d'intensité de contraintes"),
          regles=(UN_PARMI('THETA_2D','THETA_3D'),
                  PRESENT_ABSENT('THETA_2D','DIRE_THETA'),
                  EXCLUS('DIRECTION','DIRE_THETA'),),

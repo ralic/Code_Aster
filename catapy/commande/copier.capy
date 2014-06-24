@@ -36,7 +36,7 @@ copier_ltyp=(
 
 COPIER=OPER(nom="COPIER",op= 185,sd_prod=copier_prod,reentrant='f',
             UIinfo={"groupes":("Gestion du travail",)},
-            fr="Copier un concept utilisateur sous un autre nom",
+            fr=tr("Copier un concept utilisateur sous un autre nom"),
 
             CONCEPT = SIMP(statut='o',typ=copier_ltyp,),
             INFO   = SIMP(statut='f', typ='I', into=(1, 2), defaut=1, ),

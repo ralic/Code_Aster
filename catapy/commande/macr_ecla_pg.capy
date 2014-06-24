@@ -28,21 +28,21 @@ MACR_ECLA_PG=MACRO(nom="MACR_ECLA_PG",
                    sd_prod=macr_ecla_pg_prod,
                    reentrant='n',
                    UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
-                   fr="Permettre la visualisation des champs aux points de Gauss d'une " \
-                      "SD_RESULTAT sans lissage ni interpolation",
+                   fr=tr("Permettre la visualisation des champs aux points de Gauss d'une "
+                        "SD_RESULTAT sans lissage ni interpolation"),
 
              # SD résultat ,modèle et champs à "éclater" :
-             RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster,fr="RESULTAT à éclater",),
-             MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster,fr="MODELE à éclater"),
+             RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster,fr=tr("RESULTAT à éclater"),),
+             MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster,fr=tr("MODELE à éclater")),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO('ELGA'),),
 
              # paramètres numériques de la commande :
-             SHRINK          =SIMP(statut='f',typ='R',defaut= 0.9, fr="Facteur de réduction" ),
-             TAILLE_MIN      =SIMP(statut='f',typ='R',defaut= 0.0, fr="Taille minimale d'un coté" ),
+             SHRINK          =SIMP(statut='f',typ='R',defaut= 0.9, fr=tr("Facteur de réduction") ),
+             TAILLE_MIN      =SIMP(statut='f',typ='R',defaut= 0.0, fr=tr("Taille minimale d'un coté") ),
 
              # concepts produits par la commande :
-             RESULTAT        =SIMP(statut='o',typ=CO,fr="SD_RESULTAT résultat de la commande"),
-             MAILLAGE        =SIMP(statut='o',typ=CO,fr="MAILLAGE associé aux cham_no de la SD_RESULTAT"),
+             RESULTAT        =SIMP(statut='o',typ=CO,fr=tr("SD_RESULTAT résultat de la commande")),
+             MAILLAGE        =SIMP(statut='o',typ=CO,fr=tr("MAILLAGE associé aux cham_no de la SD_RESULTAT")),
 
              # Sélection éventuelle d'un sous-ensemble des éléments à visualiser :
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

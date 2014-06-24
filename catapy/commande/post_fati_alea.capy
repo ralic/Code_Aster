@@ -17,7 +17,7 @@
 # person_in_charge: irmela.zentner at edf.fr
 POST_FATI_ALEA=OPER(nom="POST_FATI_ALEA",op=170,sd_prod=table_sdaster,reentrant='n',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
-                    fr="Calculer le dommage de fatigue subi par une structure soumise à une sollicitation de type aléatoire",
+                    fr=tr("Calculer le dommage de fatigue subi par une structure soumise à une sollicitation de type aléatoire"),
          regles=(ENSEMBLE('MOMENT_SPEC_0','MOMENT_SPEC_2'),
                  PRESENT_PRESENT( 'MOMENT_SPEC_4','MOMENT_SPEC_0'),
                  UN_PARMI('TABL_POST_ALEA','MOMENT_SPEC_0'), ),

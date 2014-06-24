@@ -37,7 +37,7 @@ def calc_matr_elem_prod(OPTION,**args):
   raise AsException("type de concept resultat non prevu")
 
 CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
-                    ,fr="Calcul des matrices élémentaires",reentrant='n',
+                    ,fr=tr("Calcul des matrices élémentaires"),reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
 
          OPTION          =SIMP(statut='o',typ='TXM',

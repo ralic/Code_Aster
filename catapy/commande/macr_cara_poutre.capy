@@ -22,67 +22,67 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
                        sd_prod=table_sdaster,
                        reentrant='n',
                        UIinfo={"groupes":("Modélisation",)},
-                       fr="Calculer les caractéristiques d'une section transversale de " \
-                          "poutre à partir d'un maillage 2D de la section",
+                       fr=tr("Calculer les caractéristiques d'une section transversale de "
+                            "poutre à partir d'un maillage 2D de la section"),
          regles=(
             EXCLUS('SYME_Y','GROUP_MA_BORD'),
             EXCLUS('SYME_Z','GROUP_MA_BORD'),
          ),
 
-         MAILLAGE    =SIMP(statut='f',typ=maillage_sdaster, fr="Nom du concept maillage"),
+         MAILLAGE    =SIMP(statut='f',typ=maillage_sdaster, fr=tr("Nom du concept maillage")),
          b_maillage  =BLOC(
             condition = "MAILLAGE == None",
             regles=( PRESENT_PRESENT('FORMAT','UNITE') ),
             FORMAT   =SIMP(statut='f',typ='TXM',defaut="ASTER",into=("ASTER","MED"),
-                           fr="Format du fichier"),
+                           fr=tr("Format du fichier")),
             UNITE    =SIMP(statut='f',typ='I',defaut= 20,
-                           fr="Unite correspondant au format du fichier maillage"),
+                           fr=tr("Unite correspondant au format du fichier maillage")),
          ),
 
          ORIG_INER      =SIMP(statut='f',typ='R',max=3,defaut=(0.E+0,0.E+0),
-                              fr="Point par rapport auquel sont calculées les inerties"),
+                              fr=tr("Point par rapport auquel sont calculées les inerties")),
          INFO           =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 
          TABLE_CARA     =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",),
 
-         SYME_Y         =SIMP(statut='f',typ='TXM',into=("OUI",), fr="demi maillage par rapport a y=0"),
-         SYME_Z         =SIMP(statut='f',typ='TXM',into=("OUI",), fr="demi maillage par rapport a z=0"),
+         SYME_Y         =SIMP(statut='f',typ='TXM',into=("OUI",), fr=tr("demi maillage par rapport a y=0")),
+         SYME_Z         =SIMP(statut='f',typ='TXM',into=("OUI",), fr=tr("demi maillage par rapport a z=0")),
 
          GROUP_MA       =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                              fr="Calcul des caractéristiques équivalentes à plusieurs sections disjointes"),
+                              fr=tr("Calcul des caractéristiques équivalentes à plusieurs sections disjointes")),
 
          GROUP_MA_BORD  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                              fr="Groupe(s) de mailles linéiques, bord(s) de(s) section(s)"),
+                              fr=tr("Groupe(s) de mailles linéiques, bord(s) de(s) section(s)")),
 
          b_nom =BLOC(
             condition = """(TABLE_CARA == 'OUI') and (GROUP_MA == None)""",
             NOM   =SIMP(statut='f',typ='TXM',max=1,validators=LongStr(1,8),
-                        fr="Nom de la section, 8 caractères maximum.")
+                        fr=tr("Nom de la section, 8 caractères maximum."))
          ),
 
          b_gma_bord  =BLOC(
             condition = "GROUP_MA_BORD != None",
-            fr=" calcul des carac. mecaniques",
+            fr=tr(" calcul des carac. mecaniques"),
             regles=(UN_PARMI('NOEUD','GROUP_NO')),
             NOEUD          =SIMP(statut='f',typ=no,max='**',
-                                 fr="Simplement pour empecher des pivots nuls le cas echeant. "
-                                    "Fournir un noeud quelconque"),
+                                 fr=tr("Simplement pour empecher des pivots nuls le cas echeant. "
+                                      "Fournir un noeud quelconque")),
             GROUP_NO       =SIMP(statut='f',typ=grno,max='**',
-                                 fr="Simplement pour empecher des pivots nuls le cas echeant. "
-                                    "Fournir un noeud quelconque par GROUP_MA"),
+                                 fr=tr("Simplement pour empecher des pivots nuls le cas echeant. "
+                                      "Fournir un noeud quelconque par GROUP_MA")),
             GROUP_MA_INTE  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                                 fr="groupes de mailles linéiques bordant des trous dans la section"),
+                                 fr=tr("groupes de mailles linéiques bordant des trous dans la section")),
           ),
 
          b_reseau = BLOC(
             condition ="""(GROUP_MA_BORD != None) and (GROUP_MA != None)""",
-            fr=" calcul des coef de cisaillement équivalents a un reseau de poutres",
+            fr=tr(" calcul des coef de cisaillement équivalents a un reseau de poutres"),
             regles=(ENSEMBLE('LONGUEUR','LIAISON','MATERIAU') ,),
             LONGUEUR =SIMP(statut='f',typ='R',
-                           fr="Longueur du réseau de poutres"),
+                           fr=tr("Longueur du réseau de poutres")),
             MATERIAU =SIMP(statut='f',typ=mater_sdaster,
-                           fr="Materiau elastique lineaire du reseau"),
+                           fr=tr("Materiau elastique lineaire du reseau")),
             LIAISON  =SIMP(statut='f',typ='TXM',into=("ROTULE","ENCASTREMENT"),
-                           fr="type de conditions aux limites sur le plancher supérieur" ),
+                           fr=tr("type de conditions aux limites sur le plancher supérieur") ),
          ),
 )

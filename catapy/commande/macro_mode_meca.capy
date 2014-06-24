@@ -29,7 +29,7 @@ def macro_mode_meca_prod( self, MATR_RIGI,MATR_MASS, **args) :
 MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
                      op=OPS('Macro.macro_mode_meca_ops.macro_mode_meca_ops'),
                      sd_prod=macro_mode_meca_prod,
-                     reentrant='n',fr="Lancer une succession de calculs de modes propres réels",
+                     reentrant='n',fr=tr("Lancer une succession de calculs de modes propres réels"),
             UIinfo={"groupes":("Résolution","Dynamique",)},
          MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r, matr_asse_gene_r) ),
          MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r, matr_asse_gene_r) ),

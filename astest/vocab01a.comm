@@ -63,6 +63,7 @@ for cmd in commands:
     for entity in objs:
         if entity.ang:
             lang[id(entity)] = (entity.fr, entity.ang)
+assert len(lang) == 0, "'ang' is deprecated and not used anymore, please remove it"
 
 from Execution.strfunc import convert
 phrase_book_tmpl = """

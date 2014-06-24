@@ -26,8 +26,8 @@ def factoriser_prod(MATR_ASSE,**args):
   raise AsException("type de concept resultat non prevu")
 
 FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
-               fr="Factoriser une matrice assemblée en un produit de deux matrices triangulaires"+
-                  "ou construire une matrice de préconditionnement pour une résolution par gradient conjugué",
+               fr=tr("Factoriser une matrice assemblée en un produit de deux matrices triangulaires"
+                  "ou construire une matrice de préconditionnement pour une résolution par gradient conjugué"),
                reentrant='f', UIinfo={"groupes":("Résolution",)},
          regles=(EXCLUS('BLOC_DEBUT','DDL_DEBUT'),
                  EXCLUS('BLOC_FIN','DDL_FIN'),),
@@ -57,11 +57,11 @@ FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
            NIVE_REMPLISSAGE = SIMP(statut='f',typ='I',defaut= 0 ),
            REMPLISSAGE      = SIMP(statut='f',typ='R',defaut= 1.0),
          ),
-         b_ldlt_sp      =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
+         b_ldlt_sp      =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr=tr("Paramètres de la factorisation simple précision"),
            REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=30, ),
          ),
          b_jacobi_sor   =BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'",
-                                                                         fr="Paramètres des préconditionneurs JACOBI et SOR",
+                                                                         fr=tr("Paramètres des préconditionneurs JACOBI et SOR"),
            RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
          ),
 

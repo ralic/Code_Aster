@@ -17,7 +17,7 @@
 # person_in_charge: aurore.parrot at edf.fr
 #
 POST_K_BETA=OPER(nom="POST_K_BETA",op=198,sd_prod=table_sdaster,
-                   fr="Calcul des facteurs d'intensité de contraintes par la méthode K_BETA",
+                   fr=tr("Calcul des facteurs d'intensité de contraintes par la méthode K_BETA"),
                    reentrant='n',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
          MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),

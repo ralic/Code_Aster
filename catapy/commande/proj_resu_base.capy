@@ -17,7 +17,7 @@
 # person_in_charge: albert.alarcon at edf.fr
 
 PROJ_RESU_BASE=OPER(nom="PROJ_RESU_BASE",op=  79,sd_prod=tran_gene,
-                    fr="Projection d'une sd resultat assemblee sur une base (modale ou de RITZ)",
+                    fr=tr("Projection d'une sd resultat assemblee sur une base (modale ou de RITZ)"),
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          BASE            =SIMP(statut='o',typ=(mode_meca,mode_gene) ),

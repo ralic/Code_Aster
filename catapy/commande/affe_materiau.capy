@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: jacques.pellet at edf.fr
 AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
-                   fr="Affecter des matériaux à des zones géométriques d'un maillage",
+                   fr=tr("Affecter des matériaux à des zones géométriques d'un maillage"),
                          reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('MAILLAGE','MODELE',),),

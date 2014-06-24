@@ -17,8 +17,8 @@
 # person_in_charge: sylvie.michel-ponnelle at edf.fr
 
 DEFI_CABLE_OP=OPER(nom="DEFI_CABLE_OP",op= 180,sd_prod=cabl_precont,reentrant='n',
-            fr="Définit les profils initiaux de tension d'une structure en béton le long des cables de précontrainte"
-               +" (utilisée par la macro DEFI_CABLE_BP)",
+            fr=tr("Définit les profils initiaux de tension d'une structure en béton le long des cables de précontrainte"
+                " (utilisée par la macro DEFI_CABLE_BP)"),
             UIinfo={"groupes":("Modélisation",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),

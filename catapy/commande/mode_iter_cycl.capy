@@ -16,8 +16,8 @@
 # ======================================================================
 # person_in_charge: mathieu.corus at edf.fr
 MODE_ITER_CYCL=OPER(nom="MODE_ITER_CYCL",op=  80,sd_prod=mode_cycl,
-                    fr="Calcul des modes propres d'une structure à répétitivité cyclique à partir"
-                        +" d'une base de modes propres réels",
+                    fr=tr("Calcul des modes propres d'une structure à répétitivité cyclique à partir"
+                        " d'une base de modes propres réels"),
                     reentrant='n',
             UIinfo={"groupes":("Résolution","Dynamique",)},
          BASE_MODALE     =SIMP(statut='o',typ=mode_meca ),

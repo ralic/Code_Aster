@@ -19,7 +19,7 @@
 DEFI_INTE_SPEC=OPER(nom="DEFI_INTE_SPEC",op= 115,
                     sd_prod=interspectre,
                     reentrant='n',
-                    fr="Définit une matrice interspectrale",
+                    fr=tr("Définit une matrice interspectrale"),
                     UIinfo={"groupes":("Fonctions",)},
 
          DIMENSION       =SIMP(statut='f',typ='I',defaut= 1 ),

@@ -17,7 +17,7 @@
 # person_in_charge: georges-cc.devesa at edf.fr
 
 MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
-                   fr="Calcul de déformées statiques pour un déplacement, une force ou une accélération unitaire imposé",
+                   fr=tr("Calcul de déformées statiques pour un déplacement, une force ou une accélération unitaire imposé"),
                    reentrant='n',
             UIinfo={"groupes":("Résolution","Dynamique",)},
 

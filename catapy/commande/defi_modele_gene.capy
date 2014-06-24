@@ -17,7 +17,7 @@
 # person_in_charge: mathieu.corus at edf.fr
 DEFI_MODELE_GENE=OPER(nom="DEFI_MODELE_GENE",op= 126,sd_prod=modele_gene,
                       reentrant='n',
-            fr="Créer la structure globale à partir des sous-structures en sous-structuration dynamique", 
+            fr=tr("Créer la structure globale à partir des sous-structures en sous-structuration dynamique"), 
             UIinfo={"groupes":("Matrices et vecteurs",)},
          SOUS_STRUC      =FACT(statut='o',max='**',
            NOM             =SIMP(statut='o',typ='TXM' ),

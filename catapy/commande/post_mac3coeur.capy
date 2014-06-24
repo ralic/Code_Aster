@@ -24,30 +24,30 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
            INST         = SIMP(statut='o',typ='R', max=1),                            # INSTANT
            
            LAME    = FACT(statut='f',max='**',
-                          fr="Post-traitement des lames d'eau, par grille ou valeurs min/max",
+                          fr=tr("Post-traitement des lames d'eau, par grille ou valeurs min/max"),
 
                  FORMAT       = SIMP(statut='o',typ='TXM',into=("GRACE","TABLE")),
                  UNITE        = SIMP(statut='o',typ='I', max=1),                   # NUMERO DE L'UNITE LOGIQUE POUR LE POST
 
-                 b_lame_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr="Paramètres pour le format GRACE",
+                 b_lame_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr=tr("Paramètres pour le format GRACE"),
                        regles = UN_PARMI('NUME_GRILLE','TYPE_RESU',),
                        NUME_GRILLE  = SIMP(statut='f',typ='I', max=1),                      # NUMERO DE LA GRILLE A POST-TRAITER
                        TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI")),      # EXTREMA POUR LE POST
                                    ),
 
-                 b_lame_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr="Paramètres pour le format TABLE",
+                 b_lame_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr=tr("Paramètres pour le format TABLE"),
                                    ),
 
 
            ),
 
            DEFORMATION = FACT(statut='f',max='**',
-                              fr="Post-traitement des deformations, par grille ou valeurs min/max",
+                              fr=tr("Post-traitement des deformations, par grille ou valeurs min/max"),
        
                  UNITE        = SIMP(statut='o',typ='I', max=1),   
                  FORMAT       = SIMP(statut='o',typ='TXM',into=("GRACE","TABLE")),
                  
-                 b_def_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr="Paramètres pour le format GRACE",
+                 b_def_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr=tr("Paramètres pour le format GRACE"),
                        regles=UN_PARMI('NUME_GRILLE','TYPE_RESU','POSITION'),
                        TYPE_VISU    = SIMP(statut='o',typ='TXM',into=("AMPLITUDE","MODULE","VECTEUR","DEFORME")),
                        TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI")),
@@ -56,7 +56,7 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                        CONCEPTION   = SIMP(statut='f',typ='TXM', max=1),
                                    ),
                  
-                 b_def_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr="Paramètres pour le format TABLE",
+                 b_def_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr=tr("Paramètres pour le format TABLE"),
                                    ),
                  
 

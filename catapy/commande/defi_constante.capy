@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 DEFI_CONSTANTE=OPER(nom="DEFI_CONSTANTE",op=   2,sd_prod=fonction_sdaster,
-                    fr="Définir la valeur d'une grandeur invariante",
+                    fr=tr("Définir la valeur d'une grandeur invariante"),
                     reentrant='n',
             UIinfo={"groupes":("Fonctions",)},
          NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),

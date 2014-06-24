@@ -16,8 +16,8 @@
 # ======================================================================
 # person_in_charge: jessica.haelewyn at edf.fr
 THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
-                     fr="Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
-                        +" stationnaire avec chargement mobile",
+                     fr=tr("Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
+                        " stationnaire avec chargement mobile"),
                      reentrant='n',
             UIinfo={"groupes":("Résolution","Thermique",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),

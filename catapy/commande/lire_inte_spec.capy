@@ -20,8 +20,8 @@
 LIRE_INTE_SPEC=MACRO(nom="LIRE_INTE_SPEC",
                      op=OPS('Macro.lire_inte_spec_ops.lire_inte_spec_ops'),
                      sd_prod=interspectre,
-                     fr="Lecture sur un fichier externe de fonctions complexes pour " \
-                        "créer une matrice interspectrale",
+                     fr=tr("Lecture sur un fichier externe de fonctions complexes pour "
+                          "créer une matrice interspectrale"),
                      reentrant='n',
             UIinfo={"groupes":("Lecture","Fonctions",)},
          UNITE           =SIMP(statut='o',typ='I' ),

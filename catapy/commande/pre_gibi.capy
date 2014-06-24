@@ -18,7 +18,7 @@
 
 PRE_GIBI=PROC(nom="PRE_GIBI",op=49,
             UIinfo={"groupes":("Gestion du travail",)},
-              fr="Conversion d'un fichier de maillage GIBI au format Aster",
+              fr=tr("Conversion d'un fichier de maillage GIBI au format Aster"),
          UNITE_GIBI      =SIMP(statut='f',typ='I',defaut=19),  
          UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=20),  
 )  ;
