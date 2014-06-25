@@ -98,7 +98,7 @@ subroutine op0045()
     call vpinis(eigsol)
 
 ! --  ETAPE 0.4: VERIFICATION DE LA COHERENCE DE LA SD EIGENSOLVER ET DES OBJETS SOUS-JACENTS
-    call vpvers(eigsol, modes)
+    call vpvers(eigsol, modes, .true.)
 
 ! --------------------------------------------------------------------------------------------------
 ! --- ETAPES 1: PREPARATION DU CALCUL MODAL

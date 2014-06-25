@@ -1,4 +1,4 @@
-subroutine vpvers(eigsol, modes)
+subroutine vpvers(eigsol, modes, checksd)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,7 @@ subroutine vpvers(eigsol, modes)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
 
+#include "asterc/cheksd.h"
 #include "asterc/r8prem.h"
 #include "asterfort/ajlagr.h"
 #include "asterfort/assert.h"
@@ -43,6 +44,7 @@ subroutine vpvers(eigsol, modes)
 !
     character(len=8)  , intent(in) :: modes
     character(len=19) , intent(in) :: eigsol
+    logical           , intent(in) :: checksd
 !
 ! --- OUTPUT
 ! None
@@ -184,6 +186,10 @@ subroutine vpvers(eigsol, modes)
         endif
     endif
 
+    if (checksd) then
+        call cheksd(eigsol, 'SD_EIGENSOLVER', iret)
+        ASSERT(iret.eq.0)
+    endif
 !
 !     FIN DE VPVERS
 !

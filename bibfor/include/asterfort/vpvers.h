@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vpvers(eigsol, modes)
+    subroutine vpvers(eigsol, modes, checksd)
         character(len=19) , intent(in) :: eigsol
         character(len=8)  , intent(in) :: modes
+        logical           , intent(in) :: checksd
     end subroutine vpvers
 end interface
