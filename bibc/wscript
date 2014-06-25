@@ -5,7 +5,7 @@ import os.path as osp
 from waflib import Configure, Logs, Utils
 
 def options(self):
-    self.load('python_cfg', tooldir='waftools')
+    self.load('compiler_c')
     group = self.get_option_group("Code_Aster options")
     group.add_option('-e', '--build-executable', dest='embed_aster',
                     default=False, action='store_true',
@@ -19,15 +19,8 @@ def options(self):
 
 def configure(self):
     opts = self.options
-    # C config
-    self.add_os_flags('CFLAGS', 'CFLAGS')
-    self.add_os_flags('CLINKFLAGS', 'LINKFLAGS')
-    self.add_os_flags('CINCLUDES', 'INCLUDES')
-    self.add_os_flags('CDEFINES', 'DEFINES')
-
     # preserve symbols in the dyn table for stdcalls
     self.env.append_unique('LINKFLAGS', ['-Wl,--export-dynamic'])
-    self.load('python_cfg', tooldir='waftools')
 
     self.env.append_unique('INCLUDES', ['include/'])
     if opts.embed_all or opts.embed_aster:

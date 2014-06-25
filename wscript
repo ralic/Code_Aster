@@ -23,6 +23,7 @@ from functools import partial
 from itertools import chain
 from waflib import Configure, Logs, Utils, Build
 
+
 def options(self):
     ori_get_usage = self.parser.get_usage
     def _usage():
@@ -34,8 +35,7 @@ def options(self):
         '  CXX            : C++ compiler',
         '  INCLUDES       : extra include paths',
         '  DEFINES        : extra preprocessor defines',
-        '  LINKFLAGS      : extra C linker options',
-        '  FCLINKFLAGS    : extra Fortran linker options',
+        '  LINKFLAGS      : extra linker options',
         '  LIBPATH        : extra paths where to find libraries',
         '  LIB            : extra libraries to link with',
         '  STLIB          : extra static libraries to link with',
@@ -64,6 +64,7 @@ def options(self):
     group = self.add_option_group('Code_Aster options')
 
     self.load('parallel', tooldir='waftools')
+    self.load('python_cfg', tooldir='waftools')
     self.load('mathematics', tooldir='waftools')
     self.load('med', tooldir='waftools')
     self.load('metis', tooldir='waftools')
@@ -98,17 +99,18 @@ def configure(self):
 
     self.env.ASTER_EMBEDS = []
 
-    self.add_os_flags('FLAGS')
+    # add environment variables into `self.env`
     self.add_os_flags('CFLAGS')
+    self.add_os_flags('CXXFLAGS')
     self.add_os_flags('FCFLAGS')
     self.add_os_flags('LINKFLAGS')
-    self.add_os_flags('FCLINKFLAGS')
     self.add_os_flags('LIB')
     self.add_os_flags('LIBPATH')
     self.add_os_flags('STLIB')
     self.add_os_flags('STLIBPATH')
     self.add_os_flags('INCLUDES')
     self.add_os_flags('DEFINES')
+    self.add_os_flags('OPTLIB_FLAGS')
 
     # Add *LIBPATH paths to LD_LIBRARY_PATH
     libpaths = list(chain(*[Utils.to_list(self.env[key]) for key in self.env.table
@@ -120,6 +122,7 @@ def configure(self):
     self.load('scm_aster', tooldir='waftools')
     self.set_installdirs()
     self.load('parallel', tooldir='waftools')
+    self.load('python_cfg', tooldir='waftools')
     self.check_platform()
 
     self.load('mathematics', tooldir='waftools')
@@ -172,6 +175,7 @@ def build(self):
             for i in [i.abspath() for i in files]:
                 os.remove(i)
 
+    self.load('ext_aster', tooldir='waftools')
     self.recurse('bibfor')
     self.recurse('bibc')
     self.recurse('bibpyt')
