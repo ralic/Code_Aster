@@ -44,6 +44,7 @@ class sd_matr_asse_com(sd_titre):
         return self.REFA.exists
 
     def check_VALM(self, checker):
+        if not self.exists() : return
         nbloc=self.VALM.nmaxoc
         assert nbloc in (1,2), nbloc
 
