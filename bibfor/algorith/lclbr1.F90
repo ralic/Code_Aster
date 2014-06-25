@@ -18,6 +18,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterc/r8prem.h"
 #include "asterfort/diago2.h"
 #include "asterfort/lclbr2.h"
 #include "asterfort/r8inir.h"
@@ -48,7 +49,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 ! OUT DSIDEP  : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-    logical :: rigi, resi, coup, plan
+    logical :: rigi, resi, coup, plan, seca
     integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
     real(kind=8) :: eps(6), kron(6)
     real(kind=8) :: rac2, e
@@ -67,6 +68,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
     resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
     coup = (option(6:9).eq.'COUP')
     plan = ((typmod(1) .eq. 'C_PLAN').or.(typmod(1) .eq. 'D_PLAN'))
+    seca = (option(10:14).eq.'_ELAS')
     if (.not.plan) then
         call utmess('F', 'ALGORITH4_62')
     endif
@@ -130,6 +132,13 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
                 deumud(i)=0.d0
             else
                 sigp(i)=sigmt-e/gamma*(epsp(i)-sigmt/e)
+                deumud(i)=sigp(i)/epsp(i)
+            endif
+        endif
+        if (seca) then
+            if (epsp(i).le.r8prem()) then 
+                deumud(i) = e
+            else
                 deumud(i)=sigp(i)/epsp(i)
             endif
         endif

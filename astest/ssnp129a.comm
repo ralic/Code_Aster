@@ -152,5 +152,83 @@ TEST_RESU(RESU=_F(INST=10.0,
                   CRITERE='RELATIF',
                   PRECISION=9.9999999999999995E-07,),
           )
+# même calcul en matrice sécante
+# cet ajout n'est volontairement pas décrit dans la doc
+
+RESU_SEC=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=MATER,
+                   CARA_ELEM=CAEL,
+                   EXCIT=(_F(CHARGE=CHAR0,),
+                          _F(CHARGE=CHAR,
+                             FONC_MULT=RAMPE1,),),
+                   COMPORTEMENT=_F(RELATION='BETON_REGLE_PR',
+                                MAILLE='M1',),
+                   INCREMENT=_F(LIST_INST=INST,),
+                   NEWTON=_F(REAC_ITER_ELAS=1, PAS_MINI_ELAS=100),)
+
+RESU_SEC=CALC_CHAMP(reuse =RESU_SEC,
+
+
+
+               RESULTAT=RESU_SEC,
+               TOUT_ORDRE='OUI',
+               TOUT='OUI',
+                CONTRAINTE=('EFGE_ELNO'),)
+
+RESU_SEC=CALC_CHAMP(reuse =RESU_SEC,
+             RESULTAT=RESU_SEC,
+             FORCE=('FORC_NODA','REAC_NODA'),
+
+
+             )
+
+TEST_RESU(RESU=_F(INST=4.5999999999999996,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU_SEC,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N4',
+                  NOM_CMP='DX',
+                  VALE_CALC= 1.29000000E+06,
+                  VALE_REFE=1.290000E6,
+                  CRITERE='RELATIF',
+                  PRECISION=9.9999999999999995E-07,),
+          )
+
+TEST_RESU(RESU=_F(INST=4.5999999999999996,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU_SEC,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N2',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.47060000E+07,
+                  VALE_REFE=-1.4706000E7,
+                  CRITERE='RELATIF',
+                  PRECISION=9.9999999999999995E-07,),
+          )
+
+TEST_RESU(RESU=_F(INST=10.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU_SEC,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N4',
+                  NOM_CMP='DX',
+                  VALE_CALC= 1.00000000E+06,
+                  VALE_REFE=1.E6,
+                  CRITERE='RELATIF',
+                  PRECISION=9.9999999999999995E-07,),
+          )
+
+TEST_RESU(RESU=_F(INST=10.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=RESU_SEC,
+                  NOM_CHAM='FORC_NODA',
+                  NOEUD='N2',
+                  NOM_CMP='DY',
+                  VALE_CALC=-1.50000000E+07,
+                  VALE_REFE=-1.5000000E7,
+                  CRITERE='RELATIF',
+                  PRECISION=9.9999999999999995E-07,),
+          )
+
 
 FIN()
