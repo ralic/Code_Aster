@@ -29,7 +29,122 @@ MASEC1=LIRE_MAILLAGE(UNITE=21,);
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
                   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),);
 
-#exc=0.
+# LES MATERIAUX
+BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10,
+                            NU=0.25,
+                            RHO=9167.0,),);
+
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
+                        DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,  DRX=0.0, DRY = 0.0, DRZ=0.0,),
+                                  ),)
+
+CHARGT=AFFE_CHAR_MECA(MODELE=MOPOU,
+                      FORCE_NODALE=_F(GROUP_NO='B', FZ=1.E4,),);
+
+# SOLUTION DE REFERENCE : L'axe de la poutre est confondu avec le centre de gravité de la section
+exc_ref=0.023148148
+
+GF_REF=DEFI_GEOM_FIBRE(
+           SECTION = (_F ( GROUP_FIBRE='SEC1',
+                            MAILLAGE_SECT = MASEC1 , TOUT_SECT = 'OUI',
+                            COOR_AXE_POUTRE = (0.,exc_ref)),
+            )
+            )
+
+POUC_REF=AFFE_CARA_ELEM(MODELE=MOPOU,
+# caracteristiques des sections, orientations et rigidite de torsion
+           POUTRE=_F(GROUP_MA=('POUTRE'),
+                     SECTION='GENERALE',
+                     CARA=('A','IY','IZ','JX'),
+                    VALE=(4.50e-2,4.61625E-04,1.60375E-04,9.77e-5),
+
+                     ),
+           ORIENTATION=_F(GROUP_MA=('POUTRE'),
+                          CARA='ANGL_VRIL', VALE=0.0,),
+
+           GEOM_FIBRE=GF_REF,
+           MULTIFIBRE = (_F ( MAILLE = 'M1',GROUP_FIBRE=('SEC1',),PREC_AIRE    = 1.E6,
+                     PREC_INERTIE = 1.E6,),
+                        _F ( MAILLE = 'M2',GROUP_FIBRE=('SEC1',),PREC_AIRE    = 1.E6,
+                     PREC_INERTIE = 1.E6,),
+                        )
+                  )
+# relation ELAS par defaut
+COMP_REF=DEFI_COMPOR(GEOM_FIBRE=GF_REF,MATER_SECT=BETON,
+                  MULTIFIBRE=(_F(GROUP_FIBRE='SEC1',MATER=BETON),
+                              ))
+
+
+# LES CHAMPS DE MATERIAUX
+CHMA_REF=AFFE_MATERIAU(MAILLAGE=MAPOU,
+                    AFFE=_F(TOUT='OUI', MATER=(BETON)),
+                    AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=COMP_REF),
+                         );
+
+
+
+# RESOLUTION DU PROBLEME ELASTIQUE
+U1_REF=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMA_REF, CARA_ELEM=POUC_REF,
+             #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
+                  EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
+
+
+MASSELR=CALC_MATR_ELEM(CARA_ELEM=POUC_REF,
+                            INST=0.0,
+                            OPTION='MASS_MECA',
+                            MODELE=MOPOU,
+                            CHAM_MATER=CHMA_REF,
+                            CHARGE = BLOQUAGE,
+                            );
+        #  -------------                  -----------------
+RIGIELR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                            MODE_FOURIER=0,
+                            INST=0.0,
+                            CARA_ELEM=POUC_REF,
+                            MODELE=MOPOU,
+                            CHAM_MATER=CHMA_REF,
+                            CHARGE = BLOQUAGE,
+                            );
+        #  -------------                  -----------------
+NUMREF=NUME_DDL(#RENUM='METIS',
+                   MATR_RIGI=RIGIELR,
+                     );
+        #  -------------                  -----------------
+MASSREF=ASSE_MATRICE(NUME_DDL=NUMREF,
+                          MATR_ELEM=MASSELR,
+                          );
+        #  -------------                  -----------------
+KASSREF=ASSE_MATRICE(NUME_DDL=NUMREF,
+                          MATR_ELEM=RIGIELR,
+                          );
+
+
+MODE_REF = MODE_ITER_SIMULT(MATR_RIGI=KASSREF,
+                         MATR_MASS=MASSREF,
+                         CALC_FREQ=_F(NMAX_FREQ=10,),
+                              );
+MODE_REF=NORM_MODE(reuse =MODE_REF,
+               MODE=MODE_REF,
+               NORME='MASS_GENE',)
+
+
+TEST_RESU(RESU=(
+# Frequence
+_F( RESULTAT=MODE_REF,NUME_ORDRE=1,PARA='FREQ',VALE_CALC=1.9740586420219,
+),
+# deplacement Y
+_F( RESULTAT=MODE_REF,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DY',VALE_CALC=0.044067411231561,
+),
+# Frequence
+_F( RESULTAT=MODE_REF,NUME_ORDRE=2,PARA='FREQ',VALE_CALC=3.3155178878428,
+),
+# deplacement Y
+_F( RESULTAT=MODE_REF,NUME_ORDRE=2,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DZ',VALE_CALC=0.044043066332150,
+),
+))
+
+
+# CAS EXCENTRE
 exc=0.5
 GF=DEFI_GEOM_FIBRE(
            SECTION = (_F ( GROUP_FIBRE='SEC1',
@@ -57,10 +172,7 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
                         )
                   )
 
-# LES MATERIAUX
-BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10,
-                            NU=0.25,
-                            RHO=9167.0,),);
+
 
 # relation ELAS par defaut
 COMP1=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=BETON,
@@ -74,37 +186,11 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
                     AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=COMP1),
                          );
 
-BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
-                        DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,  DRX=0.0, DRY = 0.0, DRZ=0.0,),
-                                  ),)
-
-CHARGT=AFFE_CHAR_MECA(MODELE=MOPOU,
-                      FORCE_NODALE=_F(GROUP_NO='B', FZ=1.E4,),);
 
 # RESOLUTION DU PROBLEME ELASTIQUE
 U1=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
              #    SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',STOP_SINGULIER='OUI',),
                   EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
-
-
-# TEST
-#IMPR_RESU(RESU=_F(RESULTAT=U1))
-
-#if exc==0. :
-  #refdx=1.9164724641236E-04
-#elif exc==0.5 :
-  #refdx=-6.70765E-03
-
-TEST_RESU(RESU=(
-# Fleche
-_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DZ',VALE_REFE=0.045995339138967,
-    REFERENCE='AUTRE_ASTER',VALE_CALC=0.045995339138967,
-),
-#deplacement axial (couplage)
-# inutile de tester car il est bon même sans les corrections
-#_F( RESULTAT=U1,NUME_ORDRE=1,NOM_CHAM='DEPL',GROUP_NO='B',NOM_CMP='DX',VALE_CALC=refdx,
-#),
-))
 
 
 MASSELE=CALC_MATR_ELEM(CARA_ELEM=POUCA,

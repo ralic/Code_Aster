@@ -73,6 +73,7 @@ subroutine te0038(option, nomte)
 !     ------------------------------------------------------------------
     prec = r8prem()
     zero = 0.0d0
+    r8b = 0.0d0
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 !
@@ -266,21 +267,27 @@ subroutine te0038(option, nomte)
 !           -------- MASSE
             if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
                 call pmfitx(zi(lmater), 2, casect, rbid)
-!               correction excentricite
-                yg=casect(2)/casect(1)
-                zg=casect(3)/casect(1)
-                p1gl(1)=xl/2.d0
-                p1gl(2)=yg
-                p1gl(3)=zg
-                call utpvlg(1,3,pgl,p1gl,p1gg)
-                iy1=casect(5)-casect(1)*zg*zg
-                iz1=casect(4)-casect(1)*yg*yg
-!
                 zr(lcastr) = casect(1)*xl
-!               CDG
-                zr(lcastr+1) =  zr(lx+1)+p1gg(1)
-                zr(lcastr+2) =  zr(lx+2)+p1gg(2)
-                zr(lcastr+3) =  zr(lx+3)+p1gg(3)
+!               correction excentricite
+                if (casect(1).gt.prec)then
+                    yg=casect(2)/casect(1)
+                    zg=casect(3)/casect(1)
+                    p1gl(1)=xl/2.d0
+                    p1gl(2)=yg
+                    p1gl(3)=zg
+                    call utpvlg(1,3,pgl,p1gl,p1gg)
+                    iy1=casect(5)-casect(1)*zg*zg
+                    iz1=casect(4)-casect(1)*yg*yg
+!                   CDG
+                    zr(lcastr+1) =  zr(lx+1)+p1gg(1)
+                    zr(lcastr+2) =  zr(lx+2)+p1gg(2)
+                    zr(lcastr+3) =  zr(lx+3)+p1gg(3)
+                else
+!                   CDG
+                    zr(lcastr+1) = (zr(lx+4)+zr(lx+1))/2.d0
+                    zr(lcastr+2) = (zr(lx+5)+zr(lx+2))/2.d0
+                    zr(lcastr+3) = (zr(lx+6)+zr(lx+3))/2.d0
+                endif
 !               INERTIE
                 matinl(1) = (iy1+iz1)*xl
                 matinl(2) = 0.d0
