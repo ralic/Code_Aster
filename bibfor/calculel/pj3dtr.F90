@@ -70,7 +70,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     integer :: i2cocf, i2coco, ideca1, itypm, nutm, ityp, ndim, nno, kdim
     integer :: nnos, nbfpg, kk, ino, nuno, iret, ibid
 !
-    integer :: nbmax
+    integer :: nbmax,umessi(2)
     parameter  (nbmax=5)
     integer :: tino2m(nbmax), nbnod, nbnodm, ii, ino2m
     real(kind=8) :: tdmin2(nbmax), umessr(4), disprj, distv
@@ -197,14 +197,13 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     do ino2 = 1, nno2
 !       ITR : TETR4 ASSOCIE A INO2
         itr=pjef_tr(ino2)
-        if (itr .eq. 0) goto 10
+        if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
         ima1=tetr4(1+6*(itr-1)+5)
         nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
         zi(i2conb-1+ino2)=nbno
         zi(i2com1-1+ino2)=ima1
         ideca2=ideca2+nbno
- 10     continue
     enddo
     if (ideca2 .eq. 0) then
         call utmess('F', 'CALCULEL3_97')
@@ -226,7 +225,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     do ino2 = 1, nno2
 !       ITR : TETR4 ASSOCIE A INO2
         itr = pjef_tr(ino2)
-        if (itr .eq. 0) goto 20
+        if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
         ima1 = tetr4(1+6*(itr-1)+5)
 !       ITYPM : TYPE DE LA MAILLE IMA1
@@ -258,8 +257,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 dzeta = dzeta + pjef_cf(ideca1+kk)*x3
             enddo
 !
-            elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or.&
-                                     elrefa.eq.'P18' ) then
+        else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or. elrefa.eq.'P18' ) then
             do kk = 1, 4
                 x1 = crrefe(ndim*(cnpent(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnpent(kk,ityp)-1)+2)
@@ -269,8 +267,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 dzeta = dzeta + pjef_cf(ideca1+kk)*x3
             enddo
 !
-            elseif (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or.&
-                                     elrefa.eq.'H27' ) then
+        else if (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or. elrefa.eq.'H27' ) then
             do kk = 1, 4
                 x1 = crrefe(ndim*(cnhexa(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnhexa(kk,ityp)-1)+2)
@@ -321,8 +318,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
         else if (disprj .gt. 1.0d-01) then
             loin2=.true.
             nbnodm = nbnodm + 1
-            call inslri(nbmax, nbnod, tdmin2, tino2m, distv,&
-                        ino2)
+            call inslri(nbmax, nbnod, tdmin2, tino2m, distv,ino2)
         endif
 !
         zr(i2coco-1+3*(ino2-1)+1)=xr3(1)
@@ -342,12 +338,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 !
         ideca1=ideca1+4
         ideca2=ideca2+nbno
- 20     continue
     enddo
 !
-!
-!   -- emission d'un eventuel message d'alarme:
-!   --------------------------------------------
+!   emission d'un eventuel message d'alarme:
     if (loin2) then
         alarme='OUI'
         call getres(k16bid, k16bid, nomcmd)
@@ -364,7 +357,9 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 umessr(4) = tdmin2(ii)
                 call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
             enddo
-            call utmess('A', 'CALCULEL5_48', si=nbnodm)
+            umessi(1) = nbnodm
+            umessi(2) = nbnod
+            call utmess('A', 'CALCULEL5_48',ni=2,vali=umessi)
         endif
     endif
 !

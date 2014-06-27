@@ -91,7 +91,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     real(kind=8) :: distma, dmin
     real(kind=8) :: cobary(2)
 !
-    integer :: nbmax
+    integer :: nbmax,umessi(2)
     parameter (nbmax=5)
     integer :: tino2m(nbmax), nbnod, nbnodm, ii
     real(kind=8) :: tdmin2(nbmax), umessr(4)
@@ -132,7 +132,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     call jeveuo(m1//'.TYPMAIL', 'L', vi=typmail)
     ico=0
     do ima = 1, nma1
-        if (zi(ialim1-1+ima) .eq. 0) goto 51
+        if (zi(ialim1-1+ima) .eq. 0) cycle
         itypm=typmail(ima)
         if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
             ico=ico+1
@@ -142,8 +142,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
                 call utmess('F', 'CALCULEL4_55')
             endif
         endif
- 51     continue
-    end do
+    enddo
     call wkvect('&&PJXXCO.SEG2', 'V V I', 1+3*ico, iatr3)
     zi(iatr3-1+1)=ico
 !
@@ -151,7 +150,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
     do ima = 1, nma1
-        if (zi(ialim1-1+ima) .eq. 0) goto 52
+        if (zi(ialim1-1+ima) .eq. 0) cycle
         itypm=typmail(ima)
 !       -- CAS DES SEGMENTS :
         if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
@@ -160,8 +159,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
             zi(iatr3+(ico-1)*3+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
             zi(iatr3+(ico-1)*3+2)=connex(1+ zi(ilcnx1-1+ima)-2+2)
         endif
- 52     continue
-    end do
+    enddo
 !
 !
 !     3. ON MET LES SEG2 EN BOITES :
@@ -250,7 +248,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     nbnod = 0
     nbnodm = 0
     do ino2 = 1, nno2
-        if (zi(ialin2-1+ino2) .eq. 0) goto 6
+        if (zi(ialin2-1+ino2) .eq. 0) cycle
         call pj6dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
                     cobary, itr3, nbtrou, bt3ddi, bt3dvr,&
                     bt3dnb, bt3dlc, zi( iabtco), ifm, niv,&
@@ -259,12 +257,11 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
             loin2=.true.
             nbnodm = nbnodm + 1
         endif
-        call inslri(nbmax, nbnod, tdmin2, tino2m, dmin,&
-                    ino2)
+        call inslri(nbmax, nbnod, tdmin2, tino2m, dmin, ino2)
         if (ldmax .and. (nbtrou.eq.0)) then
             zi(iaconb-1+ino2)=2
             zi(iacotr-1+ino2)=0
-            goto 6
+            cycle
         endif
         if (nbtrou .eq. 0) then
             call jenuno(jexnum(m2//'.NOMNOE', ino2), nono2)
@@ -275,10 +272,9 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
         do k = 1, 2
             zi(iaconu-1+idecal+k)= zi(iatr3+3*(itr3-1)+k)
             zr(iacocf-1+idecal+k)= cobary(k)
-        end do
+        enddo
         idecal=idecal+zi(iaconb-1+ino2)
-  6     continue
-    end do
+    enddo
 !
 !     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
     if (loin2) then
@@ -297,9 +293,10 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
                 umessr(3) = zr(iacoo2+3*(ino2m-1)+2)
                 umessr(4) = tdmin2(ii)
                 call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
-            end do
-            call jenuno(jexnum(m2//'.NOMNOE', tino2m(1)), nono2)
-            call utmess('A', 'CALCULEL5_48', sk=nono2, si=nbnodm, sr=tdmin2(1))
+            enddo
+            umessi(1) = nbnodm
+            umessi(2) = nbnod
+            call utmess('A', 'CALCULEL5_48',ni=2,vali=umessi)
         endif
 !
     endif
@@ -309,14 +306,10 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     call pj1dtr(cortr3, corres, nutm, elrf)
     dbg=.false.
     if (dbg) then
-        call utimsd(ifm, 2, .false._1, .true._1, '&&PJ6DCO',&
-                    1, ' ')
-        call utimsd(ifm, 2, .false._1, .true._1, corres,&
-                    1, ' ')
+        call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, '&&PJ6DCO', 1, ' ')
+        call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, corres, 1, ' ')
     endif
     call detrsd('CORRESP_2_MAILLA', cortr3)
-!
-!
 !
     call jedetr(boite//'.BT3DDI')
     call jedetr(boite//'.BT3DVR')

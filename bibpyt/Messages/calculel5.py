@@ -31,6 +31,9 @@ Conseils :
   la commande PROJ_CHAMP.
 """),
 
+
+
+
 3 : _(u"""
  Erreur d'utilisation de POST_CHAMP :
    Dans la structure de données %(k2)s,
@@ -47,9 +50,6 @@ Erreur utilisateur :
  Vous utilisez le mot clé NOM_CMP, mais l'une (au moins) des composantes indiquées
  n'appartient pas à la grandeur : %(k1)s
 """),
-
-
-
 
 
 
@@ -94,6 +94,18 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
  le GROUP_MA  %(k1)s  contient  %(k2)s  mailles
 """),
 
+
+
+28 : _(u"""
+PROJ_CHAMP :
+  La méthode SOUS_POINT accepte uniquement des évolutions de type TEMP HYDR NEUT
+  pour définir des évolutions de variables de commandes EVOL_VARC"""),
+
+29 : _(u"""
+PROJ_CHAMP :
+  La méthode SOUS_POINT accepte uniquement des champs de type TEMP HYDR NEUT SIEF
+  Un champ de type %(k1)s n'est actuellement pas géré."""),
+
 30 : _(u"""
 PROJ_CHAMP :
   La méthode SOUS_POINT accepte uniquement les résultats de type
@@ -101,7 +113,7 @@ PROJ_CHAMP :
 
 31 : _(u"""
 PROJ_CHAMP :
-  Le mot-clé facteur VIS_A_VIS est interdit avec la méthode SOUS_POINT."""),
+  Le mot-clé %(k1)s est interdit avec la méthode SOUS_POINT."""),
 
 32 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
@@ -112,8 +124,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
   La méthode %(k1)s est incompatible avec les champs par élément de type %(k2)s."""),
 
 34 : _(u"""
-   Maillage quadratique obligatoire avec terme source non nul.
-"""),
+   Maillage quadratique obligatoire avec terme source non nul."""),
 
 35 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
@@ -141,7 +152,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 40 : _(u"""
 PROJ_CHAMP  :
   Vous utilisez la méthode SOUS_POINT.
-  Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
+  Pour cela, il vous faut renseigner le mot-clé  %(k1)s."""),
 
 43 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
@@ -162,12 +173,11 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 48 : _(u"""
  Vous utilisez la commande PROJ_CHAMP ou un mot clé nécessitant de "projeter"
  des noeuds sur des mailles (par exemple LIAISON_MAIL).
- Un certain nombre de noeuds (%(i1)d) ont été projetés sur des mailles distantes.
- (Pour ces noeuds, la distance à la maille est supérieure à 1/10ème du diamètre
-  de cette maille)
- Les 5 noeuds les "pires" ont été imprimés ci-dessus.
+ Il y a %(i1)d noeuds qui ont été projetés sur des mailles distantes.
+ Pour ces noeuds, la distance à la maille la plus proche est supérieure à 1/10ème
+ du diamètre de cette maille.
+ Les %(i2)d noeuds les plus éloignés ont été imprimés ci-dessus.
 """),
-
 
 49 : _(u"""
  LIAISON_MAIL :

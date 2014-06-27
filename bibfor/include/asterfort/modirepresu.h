@@ -15,17 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine pjspco(moa1, moa2, corres, base, noca,&
-                      method, isole)
-        character(len=8) :: moa1
-        character(len=8) :: moa2
-        character(len=16) :: corres
-        character(len=1) :: base
-        character(len=8) :: noca
-        character(len=19) :: method
-        aster_logical :: isole
-    end subroutine pjspco
+    subroutine modirepresu(resuou, resuin )
+        character(len=19) :: resuou
+        character(len=19) :: resuin
+    end subroutine modirepresu
 end interface

@@ -1,0 +1,365 @@
+# TITRE Vérification du passage d'un SIEF_R(3D) vers SIEF_R(DKT)
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: jean-luc.flejou at edf.fr
+#
+# --------------------------------------------------------------------------------------------------
+#
+#   Vérification de :
+#       - la projection aux sous-point d'un champ de contrainte (3D vers DKT muti-couches)
+#       - le passage du repère GLOBAL vers le repère UTILISATEUR du champ de contrainte
+#
+# --------------------------------------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'))
+
+import numpy as NP
+#
+# True : si impressions dans le REPE_OUT
+ImprRepeOut = False
+#
+maill = LIRE_MAILLAGE(FORMAT='ASTER')
+# Orientation de la normale des coques
+maill = MODI_MAILLAGE(reuse=maill,
+    MAILLAGE=maill,
+    ORIE_NORM_COQUE=_F(GROUP_MA='COQUE',VECT_NORM=(0.0 , 0.0 , 1.0), NOEUD='CA1', ),
+)
+# Rotation autour de Z0 puis Y1 puis X2
+Alpha = 60.0 ; Beta  = -30.0 ; Gamma = 45.0
+# Translation
+Translation = (0.50, 1.00, -0.25)
+#
+AlphaRd = Alpha*pi/180.0; BetaRd = Beta*pi/180.0; GammaRd = Gamma*pi/180.0
+#
+Poin1 = (0.0, 0.0, 0.0);
+DirZ0 = (0.0, 0.0, 1.0)
+DirY1 = (-sin(AlphaRd), cos(AlphaRd), 0.0)
+DirX2 = ( cos(BetaRd)*cos(AlphaRd) , cos(BetaRd)*sin(AlphaRd), -sin(BetaRd) )
+#
+maill = MODI_MAILLAGE(reuse=maill,
+    MAILLAGE=maill,
+    ROTATION =(
+        _F( POIN_1= Poin1, DIR = DirZ0, ANGLE = Alpha,),
+        _F( POIN_1= Poin1, DIR = DirY1, ANGLE = Beta,),
+        _F( POIN_1= Poin1, DIR = DirX2, ANGLE = Gamma,),
+    ),
+)
+# Translation
+maill = MODI_MAILLAGE(reuse=maill,
+    MAILLAGE=maill,
+    TRANSLATION = Translation,
+)
+#
+# Impression au format MED du fichier de maillage après modification
+if ( ImprRepeOut ):
+    unit2=DEFI_FICHIER(ACTION='ASSOCIER', ACCES='NEW',TYPE='LIBRE',
+        FICHIER='./REPE_OUT/maill_modi.med',)
+    IMPR_RESU(UNITE=unit2,FORMAT='MED',RESU=_F(MAILLAGE=maill,),)
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=unit2,)
+    DETRUIRE(CONCEPT=_F(NOM=unit2),INFO=1,)
+#
+# Fonctions de contraintes LINEAIRE en espace.
+# Les fonctions d'interpolations sont linéaires sur les éléments.
+#   ==> on ne doit donc pas avoir d'erreur d'interpolation.
+def SIXXp(x,y,z):
+    a0 =  5.0 ; ax = -2.0 ; ay =  5.0 ; az =  2.0
+    return (a0 + ax*x + ay*y + az*z)*1.0E+6
+
+def SIYYp(x,y,z):
+    a0 =  2.0 ; ax = -1.0 ; ay = -3.0 ; az =  1.0
+    return (a0 + ax*x + ay*y + az*z)*1.0E+6
+
+def SIZZp(x,y,z):
+    a0 = -3.0 ; ax =  4.0 ; ay =  0.5 ; az =  8.0
+    return (a0 + ax*x + ay*y + az*z)*1.0E+6
+
+def SIXYp(x,y,z):
+    a0 =  0.0 ; ax =  2.5 ; ay =  1.5 ; az = -2.0
+    return (a0 + ax*x + ay*y + az*z)*1.0E+6
+
+def SIXZp(x,y,z):
+    a0 =  1.0 ; ax =  1.5 ; ay =  0.8 ; az = -0.5
+    return (a0 + ax*x + ay*y + az*z)*1.0E+6
+
+def SIYZp(x,y,z):
+    a0 =  0.5 ; ax =  2.0 ; ay =  1.8 ; az = -0.7
+    return (a0 + ax*x + ay*y + az*z)*1.0E+6
+#
+# Matrice de rotation 3D
+Ma = NP.matrix( [  [cos(AlphaRd), -sin(AlphaRd), 0.0 ],
+                   [sin(AlphaRd),  cos(AlphaRd), 0.0 ],
+                   [     0.0,          0.0,      1.0 ] ] )
+#
+Mb = NP.matrix( [  [  cos(BetaRd),  0.0 ,  sin(BetaRd) ],
+                   [     0.0,       1.0 ,      0.0   ],
+                   [ -sin(BetaRd),  0.0 ,  cos(BetaRd) ] ] )
+#
+Mg = NP.matrix( [  [  1.0 ,    0.0,         0.0     ],
+                   [  0.0 , cos(GammaRd), -sin(GammaRd) ],
+                   [  0.0 , sin(GammaRd),  cos(GammaRd) ] ] )
+# Matrice de Passage
+Pabg = Ma*Mb*Mg
+#
+def SIxxp(x,y,z):
+    Sigma0 = NP.matrix( [   [SIXXp(x,y,z) , SIXYp(x,y,z) , SIXZp(x,y,z)],
+                            [SIXYp(x,y,z) , SIYYp(x,y,z) , SIYZp(x,y,z)],
+                            [SIXZp(x,y,z) , SIYZp(x,y,z) , SIZZp(x,y,z)] ] )
+    sigma = Pabg.transpose()*(Sigma0*Pabg)
+    return sigma[0,0]
+
+def SIxyp(x,y,z):
+    Sigma0 = NP.matrix( [   [SIXXp(x,y,z) , SIXYp(x,y,z) , SIXZp(x,y,z)],
+                            [SIXYp(x,y,z) , SIYYp(x,y,z) , SIYZp(x,y,z)],
+                            [SIXZp(x,y,z) , SIYZp(x,y,z) , SIZZp(x,y,z)] ] )
+    sigma = Pabg.transpose()*(Sigma0*Pabg)
+    return sigma[0,1]
+
+def SIxzp(x,y,z):
+    Sigma0 = NP.matrix( [   [SIXXp(x,y,z) , SIXYp(x,y,z) , SIXZp(x,y,z)],
+                            [SIXYp(x,y,z) , SIYYp(x,y,z) , SIYZp(x,y,z)],
+                            [SIXZp(x,y,z) , SIYZp(x,y,z) , SIZZp(x,y,z)] ] )
+    sigma = Pabg.transpose()*(Sigma0*Pabg)
+    return sigma[0,2]
+
+def SIyyp(x,y,z):
+    Sigma0 = NP.matrix( [   [SIXXp(x,y,z) , SIXYp(x,y,z) , SIXZp(x,y,z)],
+                            [SIXYp(x,y,z) , SIYYp(x,y,z) , SIYZp(x,y,z)],
+                            [SIXZp(x,y,z) , SIYZp(x,y,z) , SIZZp(x,y,z)] ] )
+    sigma = Pabg.transpose()*(Sigma0*Pabg)
+    return sigma[1,1]
+
+def SIyzp(x,y,z):
+    Sigma0 = NP.matrix( [   [SIXXp(x,y,z) , SIXYp(x,y,z) , SIXZp(x,y,z)],
+                            [SIXYp(x,y,z) , SIYYp(x,y,z) , SIYZp(x,y,z)],
+                            [SIXZp(x,y,z) , SIYZp(x,y,z) , SIZZp(x,y,z)] ] )
+    sigma = Pabg.transpose()*(Sigma0*Pabg)
+    return sigma[1,2]
+
+def SIzzp(x,y,z):
+    Sigma0 = NP.matrix( [   [SIXXp(x,y,z) , SIXYp(x,y,z) , SIXZp(x,y,z)],
+                            [SIXYp(x,y,z) , SIYYp(x,y,z) , SIYZp(x,y,z)],
+                            [SIXZp(x,y,z) , SIYZp(x,y,z) , SIZZp(x,y,z)] ] )
+    sigma = Pabg.transpose()*(Sigma0*Pabg)
+    return sigma[2,2]
+#
+# Les fonctions contraintes dans le repère global
+SIXX = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIXXp(X,Y,Z)" )
+SIYY = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIYYp(X,Y,Z)" )
+SIZZ = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIZZp(X,Y,Z)" )
+SIXY = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIXYp(X,Y,Z)" )
+SIXZ = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIXZp(X,Y,Z)" )
+SIYZ = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIYZp(X,Y,Z)" )
+#
+# Les fonctions contraintes dans le repère local
+SIxx = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIxxp(X,Y,Z)" )
+SIxy = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIxyp(X,Y,Z)" )
+SIxz = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIxzp(X,Y,Z)" )
+SIyy = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIyyp(X,Y,Z)" )
+SIyz = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIyzp(X,Y,Z)" )
+SIzz = FORMULE(NOM_PARA=('X','Y','Z',), VALE="SIzzp(X,Y,Z)" )
+#
+DIFF = FORMULE(NOM_PARA=('A','B',), VALE="abs(A-B)" )
+#
+# --------------------------------------------------------------------------------------------------
+#
+#                                       MODELISATION 3D
+#
+#   - Fabrication des champs aux NOEUDS
+#
+model3d = AFFE_MODELE(
+    MAILLAGE=maill,
+    AFFE=_F(GROUP_MA='VOLU3D', MODELISATION='3D', PHENOMENE='MECANIQUE'),
+)
+#
+# Création d'un champ de fonctions aux NOEU
+CHNEUTFN = CREA_CHAMP(
+    OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_F', MODELE=model3d,
+    AFFE=_F(
+        GROUP_MA='VOLU3D',
+        VALE_F =(SIXX,SIYY,SIZZ,SIXY,SIXZ,SIYZ,),
+        NOM_CMP=('X1','X2','X3','X4','X5','X6',),),
+)
+# Création d'un champ de la géométrie, aux NOEU
+CHGEOMN = CREA_CHAMP(
+    OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R', MAILLAGE=maill,
+    NOM_CHAM='GEOMETRIE',
+)
+# Évaluaton du champ NEUT_F aux NOEU sur la GÉOMÉTRIE aux NOEU
+CHNEUTRN = CREA_CHAMP(
+    OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R',
+    CHAM_F=CHNEUTFN,  CHAM_PARA=( CHGEOMN,)
+)
+# Transformation du champ NEUT_R aux NOEU en SIEF_R aux NOEU
+CHSIEFN = CREA_CHAMP(
+    OPERATION='ASSE', TYPE_CHAM='NOEU_SIEF_R', MODELE=model3d,
+    ASSE=_F(GROUP_MA='VOLU3D', CHAM_GD = CHNEUTRN,
+            NOM_CMP      = ('X1',  'X2',  'X3',  'X4',  'X5',  'X6',),
+            NOM_CMP_RESU = ('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+)
+#
+if ( ImprRepeOut ):
+    IMPR_RESU(FORMAT='RESULTAT',RESU=_F(CHAM_GD=CHSIEFN,GROUP_MA='VOLU3D',),)
+#
+# --------------------------------------------------------------------------------------------------
+#
+#                                       MODELISATION 2D
+#
+#   - Projection du modèle 3D sur modèle 2D aux SOUS_POINTS
+#
+model2D = AFFE_MODELE(
+    MAILLAGE=maill,
+    AFFE=_F(GROUP_MA='COQUE', MODELISATION='DKT', PHENOMENE='MECANIQUE'),
+)
+#
+carelem = AFFE_CARA_ELEM(
+    MODELE = model2D,
+    COQUE=_F(GROUP_MA='COQUE',EPAIS=1.0, COQUE_NCOU=8, ANGL_REP = (Alpha, Beta), ),
+)
+#
+if ( ImprRepeOut ):
+    PJSIEFN=PROJ_CHAMP(
+        PROJECTION   ='OUI', METHODE='SOUS_POINT',
+        MODELE_1     = model3d,
+        MODELE_2     = model2D,
+        CHAM_GD      = CHSIEFN,
+        CARA_ELEM    = carelem,
+        INFO=2,
+    )
+else:
+    PJSIEFN=PROJ_CHAMP(
+        PROJECTION   ='OUI', METHODE='SOUS_POINT',
+        MODELE_1     = model3d,
+        MODELE_2     = model2D,
+        CHAM_GD      = CHSIEFN,
+        CARA_ELEM    = carelem,
+        INFO=2,
+    )
+#
+if ( ImprRepeOut ):
+    IMPR_RESU(FORMAT='RESULTAT',RESU=_F(CHAM_GD=PJSIEFN,),)
+#
+# Résultat dans le repère global
+TPJSIEFN = CREA_TABLE(
+    RESU=_F(CHAM_GD=PJSIEFN, CARA_ELEM=carelem, TOUT='OUI', TOUT_CMP='OUI',),
+)
+#
+if ( ImprRepeOut ):
+    fichier="./REPE_OUT/ResuPJ.table"
+    unite2=DEFI_FICHIER(ACTION='ASSOCIER',FICHIER=fichier ,ACCES='NEW')
+    IMPR_TABLE(FORMAT='ASTER',TABLE=TPJSIEFN,UNITE=unite2,)
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=unite2,)
+    DETRUIRE(CONCEPT=_F(NOM=unite2),INFO=1,)
+#
+#
+TPJSIEFN = CALC_TABLE(reuse=TPJSIEFN,
+    TABLE=TPJSIEFN,
+    ACTION=(
+        _F(OPERATION='RENOMME',NOM_PARA=('COOR_X','X',),),
+        _F(OPERATION='RENOMME',NOM_PARA=('COOR_Y','Y',),),
+        _F(OPERATION='RENOMME',NOM_PARA=('COOR_Z','Z',),),
+        _F(OPERATION='OPER',NOM_PARA='CSIXX',FORMULE=SIXX,),
+        _F(OPERATION='OPER',NOM_PARA='CSIYY',FORMULE=SIYY,),
+        _F(OPERATION='OPER',NOM_PARA='CSIZZ',FORMULE=SIZZ,),
+        _F(OPERATION='OPER',NOM_PARA='CSIXY',FORMULE=SIXY,),
+        _F(OPERATION='OPER',NOM_PARA='CSIXZ',FORMULE=SIXZ,),
+        _F(OPERATION='OPER',NOM_PARA='CSIYZ',FORMULE=SIYZ,),
+        _F(OPERATION='OPER',NOM_PARA='DSIXX',FORMULE=DIFF,NOM_COLONNE=('SIXX','CSIXX'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIYY',FORMULE=DIFF,NOM_COLONNE=('SIYY','CSIYY'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIZZ',FORMULE=DIFF,NOM_COLONNE=('SIZZ','CSIZZ'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIXY',FORMULE=DIFF,NOM_COLONNE=('SIXY','CSIXY'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIXZ',FORMULE=DIFF,NOM_COLONNE=('SIXZ','CSIXZ'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIYZ',FORMULE=DIFF,NOM_COLONNE=('SIYZ','CSIYZ'),),
+
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIXX','CSIXX'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIYY','CSIYY'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIZZ','CSIZZ'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIXY','CSIXY'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIXZ','CSIXZ'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIYZ','CSIYZ'),),
+    ),
+)
+for para in ['DSIXX','DSIYY','DSIZZ','DSIXY','DSIXZ','DSIYZ',]:
+    TEST_TABLE(
+        TABLE= TPJSIEFN,
+        FILTRE=(_F(NOM_PARA=para,CRIT_COMP='MAXI'), ),
+        NOM_PARA=para,CRITERE='ABSOLU',
+        VALE_REFE=0.0, PRECISION=1.0E-06, REFERENCE='ANALYTIQUE',
+        VALE_CALC=0.0, ORDRE_GRANDEUR= 1.0,
+    )
+#
+# --------------------------------------------------------------------------------------------------
+#
+#                                       Modification du repère ==>> repère local des coques
+#
+RESUCQ=MODI_REPERE(
+    CHAM_GD   = PJSIEFN,
+    REPERE    ='GLOBAL_UTIL',
+    CARA_ELEM = carelem,
+)
+#
+TRESUCQ = CREA_TABLE(
+    RESU=_F(CHAM_GD=RESUCQ, CARA_ELEM=carelem, TOUT='OUI', TOUT_CMP='OUI',),
+)
+#
+if ( ImprRepeOut ):
+    fichier="./REPE_OUT/ResuCQ.table"
+    unite2=DEFI_FICHIER(ACTION='ASSOCIER',FICHIER=fichier ,ACCES='NEW')
+    IMPR_TABLE(FORMAT='ASTER',TABLE=TRESUCQ,UNITE=unite2,)
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=unite2,)
+    DETRUIRE(CONCEPT=_F(NOM=unite2),INFO=1,)
+#
+TRESUCQ = CALC_TABLE(reuse=TRESUCQ,
+    TABLE=TRESUCQ,
+    ACTION=(
+        _F(OPERATION='RENOMME',NOM_PARA=('COOR_X','X',),),
+        _F(OPERATION='RENOMME',NOM_PARA=('COOR_Y','Y',),),
+        _F(OPERATION='RENOMME',NOM_PARA=('COOR_Z','Z',),),
+        _F(OPERATION='OPER',NOM_PARA='CSIXX',FORMULE=SIxx,),
+        _F(OPERATION='OPER',NOM_PARA='CSIYY',FORMULE=SIyy,),
+        _F(OPERATION='OPER',NOM_PARA='CSIZZ',FORMULE=SIzz,),
+        _F(OPERATION='OPER',NOM_PARA='CSIXY',FORMULE=SIxy,),
+        _F(OPERATION='OPER',NOM_PARA='CSIXZ',FORMULE=SIxz,),
+        _F(OPERATION='OPER',NOM_PARA='CSIYZ',FORMULE=SIyz,),
+        _F(OPERATION='OPER',NOM_PARA='DSIXX',FORMULE=DIFF,NOM_COLONNE=('SIXX','CSIXX'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIYY',FORMULE=DIFF,NOM_COLONNE=('SIYY','CSIYY'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIZZ',FORMULE=DIFF,NOM_COLONNE=('SIZZ','CSIZZ'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIXY',FORMULE=DIFF,NOM_COLONNE=('SIXY','CSIXY'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIXZ',FORMULE=DIFF,NOM_COLONNE=('SIXZ','CSIXZ'),),
+        _F(OPERATION='OPER',NOM_PARA='DSIYZ',FORMULE=DIFF,NOM_COLONNE=('SIYZ','CSIYZ'),),
+
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIXX','CSIXX'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIYY','CSIYY'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIZZ','CSIZZ'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIXY','CSIXY'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIXZ','CSIXZ'),),
+        _F(OPERATION='SUPPRIME',NOM_PARA=('SIYZ','CSIYZ'),),
+    ),
+)
+#
+for para in ['DSIXX','DSIYY','DSIZZ','DSIXY','DSIXZ','DSIYZ',]:
+    TEST_TABLE(
+        TABLE= TRESUCQ,
+        FILTRE=(_F(NOM_PARA=para,CRIT_COMP='MAXI'), ),
+        NOM_PARA=para,CRITERE='ABSOLU',
+        VALE_REFE=0.0, PRECISION=1.0E-06, REFERENCE='ANALYTIQUE',
+        VALE_CALC=0.0, ORDRE_GRANDEUR= 1.0,
+    )
+
+FIN()
+

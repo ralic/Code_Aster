@@ -1,0 +1,56 @@
+TITRE
+% Maillage fait à la main
+%  3 HEXA8 superposés
+%  2 éléments de COQUE
+%         Z        Y        X
+FINSF
+COOR_3D
+NA1       0.000    0.000    0.000
+NA2       0.000    0.000    1.000
+NA3       0.000    1.000    1.000
+NA4       0.000    1.000    0.000
+
+NB1       0.700    0.000    0.000
+NB2       0.700    0.000    1.000
+NB3       0.700    1.000    1.000
+NB4       0.700    1.000    0.000
+
+NC1       1.400    0.000    0.000
+NC2       1.400    0.000    1.000
+NC3       1.400    1.000    1.000
+NC4       1.400    1.000    0.000
+
+ND1       2.100    0.000    0.000
+ND2       2.100    0.000    1.000
+ND3       2.100    1.000    1.000
+ND4       2.100    1.000    0.000
+
+CA1       0.000    0.000    0.500
+CA2       0.000    1.000    0.500
+CB1       1.050    0.000    0.500
+CB2       1.050    1.000    0.500
+CC1       2.100    0.000    0.500
+CC2       2.100    1.000    0.500
+FINSF
+
+HEXA8
+  HEX1   NA1  NA2  NA3  NA4  NB1  NB2  NB3  NB4
+  HEX2   NB1  NB2  NB3  NB4  NC1  NC2  NC3  NC4
+  HEX3   NC1  NC2  NC3  NC4  ND1  ND2  ND3  ND4
+FINSF
+
+QUAD4
+  COQ1   CA1  CA2  CB2  CB1
+  COQ2   CB1  CB2  CC2  CC1
+FINSF
+
+
+GROUP_MA
+    VOLU3D HEX1 HEX2 HEX3
+FINSF
+
+GROUP_MA
+    COQUE COQ1 COQ2
+FINSF
+
+FIN

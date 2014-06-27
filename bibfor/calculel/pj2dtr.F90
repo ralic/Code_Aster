@@ -77,7 +77,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     integer :: iret, itr, itypm, kdim, kk, nbfpg, nbno, ndim, nma1, nma2, nno
     integer :: nno1, nno2, nnos, nuno, nuno2, nutm, ibid
 !
-    integer :: nbmax
+    integer :: nbmax,umessi(2)
     parameter  (nbmax=5)
     integer :: tino2m(nbmax), nbnod, nbnodm, ii, ino2m
     real(kind=8) :: tdmin2(nbmax), umessr(4), disprj, distv
@@ -145,14 +145,13 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     do ino2 = 1, nno2
 !       ITR : TRIA3 ASSOCIE A INO2
         itr=pjef_tr(ino2)
-        if (itr .eq. 0) goto 10
+        if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TRIA3 ITR
         ima1=tria3(1+4*(itr-1)+4)
         nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
         zi(i2conb-1+ino2)=nbno
         zi(i2com1-1+ino2)=ima1
         ideca2=ideca2+nbno
- 10     continue
     enddo
     if (ideca2 .eq. 0) then
         call utmess('F', 'CALCULEL3_97')
@@ -172,7 +171,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     do ino2 = 1, nno2
 !       ITR : TRIA3 ASSOCIE A INO2
         itr = pjef_tr(ino2)
-        if (itr .eq. 0) goto 20
+        if (itr .eq. 0)  cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TRIA3 ITR
         ima1= tria3(1+4*(itr-1)+4)
 !       ITYPM : TYPE DE LA MAILLE IMA1
@@ -205,10 +204,9 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                 eta = eta + pjef_cf(ideca1+kk)*x2
             enddo
 !
-            elseif (elrefa.eq.'QU4' .or. elrefa.eq.'QU8' .or.&
-                                     elrefa.eq.'QU9' ) then
+        else if (elrefa.eq.'QU4' .or. elrefa.eq.'QU8' .or. elrefa.eq.'QU9' ) then
             if (nuno2 .eq. tria3(1+4*(itr-1)+2)) then
-!         -- SI 1ER TRIANGLE :
+!               SI 1ER TRIANGLE :
                 do kk = 1, 3
                     x1 = crrefe(ndim*(cnquad(kk,1)-1)+1)
                     x2 = crrefe(ndim*(cnquad(kk,1)-1)+2)
@@ -216,7 +214,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                     eta = eta + pjef_cf(ideca1+kk)*x2
                 enddo
             else
-!         -- SI 2EME TRIANGLE :
+!               SI 2EME TRIANGLE :
                 do kk = 1, 3
                     x1 = crrefe(ndim*(cnquad(kk,2)-1)+1)
                     x2 = crrefe(ndim*(cnquad(kk,2)-1)+2)
@@ -224,7 +222,6 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                     eta = eta + pjef_cf(ideca1+kk)*x2
                 enddo
             endif
-!
         else
             call utmess('F', 'ELEMENTS_55', sk=elrefa)
         endif
@@ -256,10 +253,8 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
             else if (disprj .gt. 1.0d-01) then
                 loin2=.true.
                 nbnodm = nbnodm + 1
-                call inslri(nbmax, nbnod, tdmin2, tino2m, distv,&
-                            ino2)
+                call inslri(nbmax, nbnod, tdmin2, tino2m, distv,ino2)
             endif
-!
         else
             xr3(1)=xr1(1)
             xr3(2)=xr1(2)
@@ -280,8 +275,6 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 !
         ideca1=ideca1+3
         ideca2=ideca2+nbno
-!
- 20     continue
     enddo
 !
 !   -- emission d'un eventuel message d'alarme:
@@ -302,7 +295,9 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                 umessr(4) = tdmin2(ii)
                 call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
             enddo
-            call utmess('A', 'CALCULEL5_48', si=nbnodm)
+            umessi(1) = nbnodm
+            umessi(2) = nbnod
+            call utmess('A', 'CALCULEL5_48',ni=2,vali=umessi)
         endif
     endif
 !

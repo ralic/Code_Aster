@@ -1,5 +1,6 @@
 subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
-                  nompaz, iret)
+                  nompaz, option, iret)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +18,24 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! --------------------------------------------------------------------------------------------------
+!
+!                   Commande PROJ_CHAMP
+!
+!   Recopie les valeurs projetées aux NOEUDS du maillage "SOUS_POINT"
+!   sur les sous-points du maillage 2
+!   Utilisation de la sd corres (tableau auxiliaire .PJEF_SP)
+!
+! --------------------------------------------------------------------------------------------------
 !
     implicit none
+    character(len=*) :: cns1z, ces2z
+    character(len=8) :: noca, nompaz
+    character(len=16) :: option
+    character(len=16) :: corres
+    character(len=19) :: ligrel
+    integer :: iret
+!
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -32,51 +49,33 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-    character(len=*) :: cns1z, ces2z
-    character(len=8) :: noca, nompaz
-    character(len=16) :: corres, option
-    character(len=19) :: ligrel
-    integer :: iret
+! --------------------------------------------------------------------------------------------------
 !
-! COMMANDE PROJ_CHAMP
-!   RECOPIE DES VALEURS PROJETEES AUX NOEUDS DU MAILLAGE "SOUS-POINT"
-!     SUR LES SOUS-POINTS DU MAILLAGE 2
-!   UTILISATION DE LA SD CORRES (TABLEAU AUXILIAIRE .PJEF_SP)
-!     ------------------------------------------------------------------
-!     VARIABLES LOCALES:
-!     ------------------
-    character(len=8) :: nomgd, nompar
-    character(len=19) :: cns1, ces2, cel2
-    character(len=19) :: dcel
+    character(len= 8) :: nomgd, nompar
+    character(len=19) :: cns1, ces2, cel2, dcel
     character(len=24) :: valk(5)
-    integer ::  ipo
-    integer :: jce2c, jce2l,  jce2d, jce2k
-!
-!
+    integer :: ipo
+    integer :: jce2c, jce2l, jce2d, jce2k
     integer :: jcns1c, jcns1l
     integer :: nbno1, ncmp1
-    integer :: iad2
-    integer :: icmp, icmp1
+    integer :: iad2, icmp, ima, ipt, isp, jlgrf
+!    integer :: ima, ipt, isp, jlgrf
 !
-    integer :: ima, ipt, isp, jlgrf
     real(kind=8), pointer :: cnsv(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     integer, pointer :: pjef_sp(:) => null()
-!
-!     ------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
     call jemarq()
     iret = 0
     cns1 = cns1z
     ces2 = ces2z
 !
-!
     cel2 = '&&PJCOR2.CEL2'
 !
-!     1- RECUPERATION D'INFORMATIONS DANS CNS1 :
-!     ------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!   Récupération d'informations dans cns1
     call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk)
     call jeveuo(cns1//'.CNSD', 'L', vi=cnsd)
     call jeveuo(cns1//'.CNSC', 'L', jcns1c)
@@ -87,25 +86,24 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
     nomgd = cnsk(2)
     nbno1 = cnsd(1)
 !
-!
-!
-    option = 'INI_SP_MATER'
-!
     if (nomgd .eq. 'TEMP_R') then
+        option = 'INI_SP_MATER'
         nompar = 'PTEMMAT'
     else if (nomgd.eq.'HYDR_R') then
+        option = 'INI_SP_MATER'
         nompar = 'PHYDMAT'
     else if (nomgd.eq.'NEUT_R') then
+        option = 'INI_SP_MATER'
         nompar = 'PNEUMAT'
+    else if (nomgd.eq.'SIEF_R') then
+        option = 'INI_SP_RIGI'
+        nompar = 'PCONTPR'
     else
         ASSERT(.false.)
     endif
 !
-!------------------------------------------------------------------
-!     2- ALLOCATION DE CES2 (ELGA):
-!
-!
-!     -----------------------------
+! --------------------------------------------------------------------------------------------------
+!   Allocation de ces2 (ELGA):
     call detrsd('CHAM_ELEM_S', ces2)
 !
     dcel='&&PJCOR2'
@@ -116,7 +114,6 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
                 iret, dcel)
 !
     nompaz=nompar
-!
     if (iret .eq. 1) then
         valk(1) = nompar
         valk(2) = option
@@ -134,34 +131,22 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
     call jeveuo(ces2//'.CESL', 'E', jce2l)
     call jeveuo(ces2//'.CESK', 'L', jce2k)
 !
-!
-!
-!
-!------------------------------------------------------------------
-!     3- REMPLISSAGE DES VALEURS DE CES2 :
-!     -------------------------------
-!
-!
+! --------------------------------------------------------------------------------------------------
+!   Remplissage des valeurs de ces2
     call jeveuo(corres//'.PJEF_SP', 'L', vi=pjef_sp)
-!
-! NBNO1 EST LE NOMBRE DE PSEUDO-NOEUDS DU MAILLAGE 2
-!
-    do 92 icmp1 = 1, ncmp1
-        icmp=icmp1
-!
-        do 98 ipo = 1, nbno1
-            ima= pjef_sp(1+3*(ipo-1))
-            ipt= pjef_sp(1+3*(ipo-1)+1)
-            isp= pjef_sp(1+3*(ipo-1)+2)
-!
+!   nbno1 est le nombre de pseudo-noeuds du maillage 2
+    do ipo = 1, nbno1
+            ima= pjef_sp(3*(ipo-1)+1)
+            ipt= pjef_sp(3*(ipo-1)+2)
+            isp= pjef_sp(3*(ipo-1)+3)
+        do icmp = 1, ncmp1
             call cesexi('C', jce2d, jce2l, ima, ipt,&
                         isp, icmp, iad2)
-            if (iad2 .le. 0) goto 98
-            cesv(iad2)=cnsv(1+(ipo-1)*ncmp1+icmp-1)
-!
-98      continue
-92  end do
-!
+            if (iad2 .gt. 0) then
+                cesv(iad2)=cnsv((ipo-1)*ncmp1+icmp)
+            endif
+        enddo
+    enddo
 !
     call jedema()
 end subroutine

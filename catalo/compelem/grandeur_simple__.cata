@@ -1317,6 +1317,15 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     MATE_F   = K8   MATE
 
+<< CHGREPER  Type:R  Sert a definir les parametres des changements de repere
+    NATCHG  : Nature du changement de repere
+                0.5 : passage GLOBAL vers LOCAL, matrice constante par elements
+    CMAT[9] : Matrice de passage 3x3 pour le changement de repere.
+    En sortie de l'option REPERE_LOCAL
+    En entree de l'option MODI_REPERE
+>>
+    CHGREPER = R   NATCHG  CMAT[9]
+
 %   COMPOSANTES CARACTERISTIQUES DES ELEMENTS A SOUS-POINTS
 <<  NBSP_I Type:I Caracteristiques des elements de structure a sous-points
        COQ_NCOU : nombre de couches (COQUE)

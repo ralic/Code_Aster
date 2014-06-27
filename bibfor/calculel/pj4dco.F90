@@ -1,7 +1,58 @@
 subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
                   nbno2, lino2, geom1, geom2, corres,&
                   ldmax, distma, alarm2)
-    implicit none
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
+! BUT :
+!   CREER UNE SD CORRESP_2_MAILLA
+!   DONNANT LA CORRESPONDANCE ENTRE LES NOEUDS DE MOA2 ET LES MAILLES DE
+!   MOA1 DANS LE CAS OU MOA1 EST 2.5D (SURFACE EN 3D)
+! ======================================================================
+!
+!  POUR LES ARGUMENTS : MOCLE, MOA1, MOA2, NBMA1, LIMA1, NBNO2, LINO2
+!  VOIR LE CARTOUCHE DE PJXXUT.F
+!
+!  IN/JXIN   GEOM1    I   : OBJET JEVEUX CONTENANT LA GEOMETRIE DES
+!                           NOEUDS DU MAILLAGE 1 (OU ' ')
+!  IN/JXIN   GEOM2    I   : OBJET JEVEUX CONTENANT LA GEOMETRIE DES
+!                           NOEUDS DU MAILLAGE 2 (OU ' ')
+!                REMARQUE:  LES OBJETS GEOM1 ET GEOM2 NE SONT UTILES
+!                           QUE LORSQUE L'ON VEUT TRUANDER LA GEOMETRIE
+!                           DES MAILLAGES
+!  IN   ALARM2  K3   : /' '/'OUI'/'NON' :
+!                       POUR "FORCER" L'EMMISSION (OU NON) DES ALARMES
+!
+!  IN/JXOUT  CORRES  K16 : NOM DE LA SD CORRESP_2_MAILLA
+!
+! --------------------------------------------------------------------------------------------------
+!
+implicit none
+!
+    integer :: nbma1, lima1(*), nbno2, lino2(*), ino2m
+    real(kind=8) :: distma
+    character(len=16) :: corres, k16bid, nomcmd
+    character(len=*) :: geom1, geom2
+    character(len=8) :: moa1, moa2
+    character(len=*) :: mocle, alarm2
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -26,51 +77,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=16) :: corres, k16bid, nomcmd
-    character(len=*) :: geom1, geom2
-    character(len=8) :: moa1, moa2
-    character(len=*) :: mocle, alarm2
-    integer :: nbma1, lima1(*), nbno2, lino2(*), ino2m
-! ----------------------------------------------------------------------
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! BUT :
-!   CREER UNE SD CORRESP_2_MAILLA
-!   DONNANT LA CORRESPONDANCE ENTRE LES NOEUDS DE MOA2 ET LES MAILLES DE
-!   MOA1 DANS LE CAS OU MOA1 EST 2.5D (SURFACE EN 3D)
-! ======================================================================
-!
-!  POUR LES ARGUMENTS : MOCLE, MOA1, MOA2, NBMA1, LIMA1, NBNO2, LINO2
-!  VOIR LE CARTOUCHE DE PJXXUT.F
-!
-!  IN/JXIN   GEOM1    I   : OBJET JEVEUX CONTENANT LA GEOMETRIE DES
-!                           NOEUDS DU MAILLAGE 1 (OU ' ')
-!  IN/JXIN   GEOM2    I   : OBJET JEVEUX CONTENANT LA GEOMETRIE DES
-!                           NOEUDS DU MAILLAGE 2 (OU ' ')
-!                REMARQUE:  LES OBJETS GEOM1 ET GEOM2 NE SONT UTILES
-!                           QUE LORSQUE L'ON VEUT TRUANDER LA GEOMETRIE
-!                           DES MAILLAGES
-!  IN   ALARM2  K3   : /' '/'OUI'/'NON' :
-!                       POUR "FORCER" L'EMMISSION (OU NON) DES ALARMES
-!
-!  IN/JXOUT  CORRES  K16 : NOM DE LA SD CORRESP_2_MAILLA
-! ----------------------------------------------------------------------
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: m1, m2, nono2, alarme
     character(len=14) :: boite
@@ -88,9 +95,9 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     integer :: iaconb, itypm, idecal, itr3, nbtrou
 !
     aster_logical :: dbg, ldmax, loin, loin2, lraff
-    real(kind=8) :: distma, dmin, cobary(3)
+    real(kind=8) :: dmin, cobary(3)
 !
-    integer :: nbmax
+    integer :: nbmax,umessi(2)
     parameter (nbmax=5)
     integer :: tino2m(nbmax), nbnod, nbnodm, ii
     real(kind=8) :: tdmin2(nbmax), umessr(4)
@@ -101,7 +108,8 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     integer, pointer :: bt3ddi(:) => null()
     integer, pointer :: typmail(:) => null()
 !
-! DEB ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
     call infniv(ifm, niv)
 !
@@ -132,7 +140,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     call jeveuo(m1//'.TYPMAIL', 'L', vi=typmail)
     ico=0
     do ima = 1, nma1
-        if (zi(ialim1-1+ima) .eq. 0) goto 51
+        if (zi(ialim1-1+ima) .eq. 0) cycle
         itypm=typmail(ima)
         if (itypm .eq. nutm(1)) then
             ico=ico+1
@@ -152,26 +160,24 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
                 call utmess('F', 'CALCULEL4_55')
             endif
         endif
- 51     continue
-    end do
+    enddo
     call wkvect('&&PJXXCO.TRIA3', 'V V I', 1+4*ico, iatr3)
     zi(iatr3-1+1)=ico
     call jeveuo(m1//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     ico=0
     do ima = 1, nma1
-        if (zi(ialim1-1+ima) .eq. 0) goto 52
+        if (zi(ialim1-1+ima) .eq. 0) cycle
         itypm=typmail(ima)
-!       -- CAS DES TRIANGLES :
+!       CAS DES TRIANGLES :
         if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
             ico=ico+1
             zi(iatr3+(ico-1)*4+4)=ima
             zi(iatr3+(ico-1)*4+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
             zi(iatr3+(ico-1)*4+2)=connex(1+ zi(ilcnx1-1+ima)-2+2)
             zi(iatr3+(ico-1)*4+3)=connex(1+ zi(ilcnx1-1+ima)-2+3)
-!       -- CAS DES QUADRANGLES :
-            else if ((itypm.eq.nutm(4)).or.(itypm.eq.nutm(5)) .or.(&
-        itypm.eq.nutm(6))) then
+!       CAS DES QUADRANGLES :
+        else if ((itypm.eq.nutm(4)).or.(itypm.eq.nutm(5)) .or.(itypm.eq.nutm(6))) then
             ico=ico+1
             zi(iatr3+(ico-1)*4+4)=ima
             zi(iatr3+(ico-1)*4+1)=connex(1+ zi(ilcnx1-1+ima)-2+1)
@@ -183,9 +189,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
             zi(iatr3+(ico-1)*4+2)=connex(1+ zi(ilcnx1-1+ima)-2+3)
             zi(iatr3+(ico-1)*4+3)=connex(1+ zi(ilcnx1-1+ima)-2+4)
         endif
- 52     continue
-    end do
-!
+    enddo
 !
 !     3. ON MET LES TRIA3 EN BOITES :
 !     ---------------------------------------------------
@@ -273,7 +277,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     nbnod = 0
     nbnodm = 0
     do ino2 = 1, nno2
-        if (zi(ialin2-1+ino2) .eq. 0) goto 6
+        if (zi(ialin2-1+ino2) .eq. 0) cycle
         call pj4dap(ino2, zr(iacoo2), m2, zr(iacoo1), zi(iatr3),&
                     cobary, itr3, nbtrou, bt3ddi, bt3dvr,&
                     bt3dnb, bt3dlc, zi( iabtco), ifm, niv,&
@@ -287,7 +291,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
         if (ldmax .and. (nbtrou.eq.0)) then
             zi(iaconb-1+ino2)=3
             zi(iacotr-1+ino2)=0
-            goto 6
+            cycle
         endif
         if (nbtrou .eq. 0) then
             call jenuno(jexnum(m2//'.NOMNOE', ino2), nono2)
@@ -299,14 +303,11 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
         do k = 1, 3
             zi(iaconu-1+idecal+k)= zi(iatr3+4*(itr3-1)+k)
             zr(iacocf-1+idecal+k)= cobary(k)
-        end do
+        enddo
         idecal=idecal+zi(iaconb-1+ino2)
-  6     continue
-    end do
+    enddo
 !
-!
-!
-!     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
+!   EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
     if (loin2) then
         alarme='OUI'
         call getres(k16bid, k16bid, nomcmd)
@@ -324,9 +325,10 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
                 umessr(3) = zr(iacoo2+3*(ino2m-1)+2)
                 umessr(4) = tdmin2(ii)
                 call utmess('I', 'CALCULEL5_43', sk=nono2, nr=4, valr=umessr)
-            end do
-            call jenuno(jexnum(m2//'.NOMNOE', tino2m(1)), nono2)
-            call utmess('A', 'CALCULEL5_48', sk=nono2, si=nbnodm, sr=tdmin2(1))
+            enddo
+            umessi(1) = nbnodm
+            umessi(2) = nbnod
+            call utmess('A', 'CALCULEL5_48',ni=2,vali=umessi)
         endif
     endif
 !
@@ -334,18 +336,13 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
 !  5. ON TRANSFORME CORTR3 EN CORRES (RETOUR AUX VRAIES MAILLES)
 !     ----------------------------------------------------------
     lraff=.false.
-    call pj2dtr(cortr3, corres, nutm, elrf, zr(iacoo1),&
-                zr(iacoo2), lraff)
+    call pj2dtr(cortr3, corres, nutm, elrf, zr(iacoo1), zr(iacoo2), lraff)
     dbg=.false.
     if (dbg) then
-        call utimsd(ifm, 2, .false._1, .true._1, '&&PJ4DCO',&
-                    1, ' ')
-        call utimsd(ifm, 2, .false._1, .true._1, corres,&
-                    1, ' ')
+        call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, '&&PJ4DCO', 1, ' ')
+        call utimsd(ifm, 2, ASTER_FALSE, ASTER_TRUE, corres, 1, ' ')
     endif
     call detrsd('CORRESP_2_MAILLA', cortr3)
-!
-!
 !
     call jedetr(boite//'.BT3DDI')
     call jedetr(boite//'.BT3DVR')

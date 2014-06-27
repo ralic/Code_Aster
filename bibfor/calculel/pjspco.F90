@@ -1,5 +1,6 @@
-subroutine pjspco(moa1, moa2, corres, base, noca)
-    implicit   none
+subroutine pjspco(moa1, moa2, corres, base, noca, &
+                  method, isole )
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,38 +17,59 @@ subroutine pjspco(moa1, moa2, corres, base, noca)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ----------------------------------------------------------------------
-!     COMMANDE:  PROJ_CHAMP /  METHODE='SOUS_POINT'
-! BUT : CALCULER LA STRUCTURE DE DONNEE CORRESP_2_MAILLA
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   Commande :  PROJ_CHAMP /  METHOD = SOUS_POINT_MATER | SOUS_POINT_RIGI
+!
+!       Calculer la structure de donnee corresp_2_mailla
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
+#include "asterf_types.h"
+!
+    aster_logical :: isole
+    character(len=1) :: base
+    character(len=8) :: moa1, moa2, noca, masp
+    character(len=16) :: corres
+    character(len=19) :: method
+!
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/pjefco.h"
 #include "asterfort/pjmasp.h"
-    character(len=8) :: moa1, moa2, noca
-    character(len=16) :: corres
-    character(len=1) :: base
-    character(len=8) :: masp
-!     ----------------------------------------------
+#include "asterfort/pjrisp.h"
+#include "asterfort/utmess.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
     ASSERT(base.eq.'V')
 !
+!   Création du maillage "sous-point" (masp) et remplissage du .PJEF_SP dans la sd corres
+!   qui est un tableau référencant, pour chaque noeud du maillage :
+!       les numéros de maille des points de gauss
+!       les numéros de maille des sous-points
+!   auxquels il correspond dans moa2
 !
-!     CREATION DU MAILLAGE "SOUS-POINT" (MASP) ET
-!     REMPLISSAGE DU .PJEF_SP DANS LA SD CORRES
-!     QUI EST UN TABLEAU REFERENCANT, POUR CHAQUE NOEUD DE MASP,
-!     LES NUMEROS DE MAILLE DE POINTS DE GAUSS ET DE SOUS-POINTS
-!     AUXQUELS IL CORRESPOND DANS MOA2
-!     ----------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+    if ( .not.isole .and. (method.eq.'SOUS_POINT_RIGI') ) then
+        call utmess('F', 'CALCULEL5_28')
+    endif
     masp='&&PJSPCO'
-    call pjmasp(moa2, masp, corres, noca)
-!       CALL CARGEO(MASP)
+    if ( method.eq.'SOUS_POINT_MATER' ) then
+        call pjmasp(moa2, masp, corres, noca)
+    else if ( method.eq.'SOUS_POINT_RIGI' ) then
+        call pjrisp(moa2, masp, corres, noca)
+    else
+        ASSERT( .false. )
+    endif
 !
-!     -- APPEL A LA ROUTINE "USUELLE" PJEFCO
-!
-!     ----------------------------------------------
+!   Appel à la routine "usuelle" pjefco
     call pjefco(moa1, masp, corres, 'V')
     call jedema()
 end subroutine

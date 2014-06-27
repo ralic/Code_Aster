@@ -1,5 +1,6 @@
 subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                   base, noca, method)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,8 +18,8 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    implicit none
-! ---------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 ! BUT :
 !  PROJETER LES CHAMPS CONTENUS DANS LA SD RESU1
 !  SUR LE MODELE (OU MAILLAGE) MOA2
@@ -33,9 +34,13 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !  RESTRICTIONS :
 !   1- ON TRAITE SYSTEMATIQUEMENT TOUS LES NUMEROS D'ORDRE
 !   2- ON NE TRAITE CORRECTEMENT QUE LES EVOL_XXX (INST)
-!  -----------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! 0.1. ==> ARGUMENTS
+    implicit none
+    character(len=1) :: base
+    character(len=8) :: resu1, resu2, moa1, moa2, noca
+    character(len=16) :: corres
+    character(len=19) :: method
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -69,46 +74,31 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=1) :: base
-    character(len=8) :: resu1, resu2, moa1, moa2, noca
-    character(len=16) :: corres, typres
-    character(len=19) :: method
-!
-!
-! 0.2. ==> COMMUNS
-!
-    character(len=24) :: noojb
-!
-!
-! 0.3. ==> VARIABLES LOCALES
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ibid, ie, iret, jordr, nbordr, i, iordr, tmod(1)
     integer :: iains1, iains2, nbsym, isym, ico, ind, nbmax
+    integer :: iexi, jpara, ier, inume
     parameter (nbmax=50)
     integer :: ipar, ipar1, ipar2
     aster_logical :: acceno
-    character(len=4) :: tychv
-    character(len=8) :: kb, ma1, ma2, nume, prol0, k8b, typ1, typ2, crit, mo2
-    character(len=16) :: nomsym(200), k16b, nomcmd
-    character(len=19) :: ch1, ch2, prfchn, ligrel, prfch2
-    character(len=19) :: noms2, kpar(nbmax)
-    character(len=24) :: valk(3)
-    character(len=1) :: typerr
-    integer :: iexi, jpara, ier, inume
     real(kind=8) :: r8b, prec
     complex(kind=8) :: c16b
+    character(len= 1) :: typerr
+    character(len= 4) :: tychv
+    character(len= 8) :: kb, ma1, ma2, nume, prol0, k8b, typ1, typ2, crit, mo2
+    character(len=16) :: nomsym(200), k16b, nomcmd, typres
+    character(len=19) :: ch1, ch2, prfchn, ligrel, prfch2, noms2, kpar(nbmax)
+    character(len=24) :: valk(3), noojb
+!
     character(len=24), pointer :: pjxx_k1(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
-! DEB -----------------------------------------------------------------
     call jemarq()
     k8b = ' '
     tychv = ' '
     call getres(k8b, k16b, nomcmd)
-!
-!
 !     -- CALCUL DE MA1, MA2, LIGREL :
     call jeexin(moa1//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
@@ -153,12 +143,15 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
     else
         call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
-        if (method .ne. 'SOUS_POINT') then
+        if (method(1:10) .ne. 'SOUS_POINT') then
             if (pjxx_k1(2) .ne. ma2) then
                 call utmess('F', 'CALCULEL4_60')
             endif
+        else
+            if ( method.eq.'SOUS_POINT_RIGI' ) then
+                call utmess('F', 'CALCULEL5_28')
         endif
-!
+        endif
 !
         call rsutc4(resu1, ' ', 1, 200, nomsym,&
                     nbsym, acceno)
@@ -190,8 +183,8 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         call rscrsd(base, resu2, typres, nbordr)
     endif
 !
-!     DANS LE CAS DES CONCEPTS TYPE MODE_MECA ON TESTE LA PRESENCE
-!     DES MATRICES AFIN DE RECUPERER LA NUMEROTATION SOUS-JACENTE
+!   DANS LE CAS DES CONCEPTS TYPE MODE_MECA ON TESTE LA PRESENCE
+!   DES MATRICES AFIN DE RECUPERER LA NUMEROTATION SOUS-JACENTE
     prfch2 = '12345678.00000.NUME'
     if (nomcmd .eq. 'DEPL_INTERNE') then
 !
@@ -203,34 +196,30 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         endif
     endif
 !
-!
-!
-!     2- ON CALCULE LES CHAMPS RESULTATS :
-!     ------------------------------------
+!   2- ON CALCULE LES CHAMPS RESULTATS :
+!   ------------------------------------
     ico = 0
-    do isym = 1, nbsym
+    do isym = 1,nbsym
 !
         if (prfch2 .ne. '12345678.00000.NUME') then
-!         ON PREND LA NUMEROTATION IMPOSEE
+!           ON PREND LA NUMEROTATION IMPOSEE
             prfchn = prfch2
-!
         else
-!         ON DEFINIT UNE NUMEROTATION 'BIDON"
+!           ON DEFINIT UNE NUMEROTATION 'BIDON"
             noojb = '12345678.00000.NUME.PRNO'
             call gnomsd(' ', noojb, 10, 14)
             prfchn = noojb(1:19)
         endif
 !
-        do i = 1, nbordr
+        do i = 1,nbordr
             iordr = zi(jordr+i-1)
             call rsexch(' ', resu1, nomsym(isym), iordr, ch1,&
                         iret)
             if (iret .gt. 0) goto 20
-!
-!       -- PROJECTION DU CHAMP SI POSSIBLE :
+!           PROJECTION DU CHAMP SI POSSIBLE :
             call rsexch(' ', resu2, nomsym(isym), iordr, ch2,&
                         iret)
-            if (method .eq. 'SOUS_POINT') then
+            if (method(1:10) .eq. 'SOUS_POINT') then
                 call pjspma(corres, ch1, ch2, prol0, ligrel,&
                             noca, base, iret)
             else
@@ -238,17 +227,16 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                             prol0, ligrel, base, iret)
             endif
             ASSERT(iret.eq.0.or.iret.eq.1.or.iret.eq.10)
-!         -- ELGA ET CART : ON NE FAIT RIEN :
+!           ELGA ET CART : ON NE FAIT RIEN :
             if (iret .eq. 10) goto 20
 !
             if (iret .gt. 0) then
                 if (acceno) then
-!             -- L'UTILISATEUR A DEMANDE EXPLICITEMENT LA PROJECTION :
+!                   L'UTILISATEUR A DEMANDE EXPLICITEMENT LA PROJECTION :
                     typerr = 'F'
-!
                 else
-!             -- L'UTILISATEUR N'A PAS DEMANDE EXPLICITEMENT
-!                LA PROJECTION, ON SE CONTENTE D'UNE ALARME  :
+!                   L'UTILISATEUR N'A PAS DEMANDE EXPLICITEMENT
+!                   LA PROJECTION, ON SE CONTENTE D'UNE ALARME  :
                     typerr = 'A'
                 endif
                 valk(1) = nomsym(isym)
@@ -256,12 +244,11 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                 valk(3) = resu2
                 call utmess(typerr, 'CALCULEL4_63', nk=3, valk=valk, si=iordr)
                 goto 20
-!
             endif
             call rsnoch(resu2, nomsym(isym), iordr)
 !
-!       -- ATTRIBUTION DES ATTRIBUTS DU CONCEPT RESULTAT
-!         EXTRACTION DES PARAMETRES MODAUX
+!           ATTRIBUTION DES ATTRIBUTS DU CONCEPT RESULTAT
+!           EXTRACTION DES PARAMETRES MODAUX
             if ((typres(1:9).eq.'MODE_MECA') .or. (typres(1:4) .eq.'BASE')) then
                 call vpcrea(0, resu2, ' ', ' ', ' ',&
                             prfch2(1:8), ier)
@@ -271,7 +258,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                             0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
 !
-!           RECOPIE DE NUME_MODE S'IL EXISTE:
+!               RECOPIE DE NUME_MODE S'IL EXISTE:
                 call jenonu(jexnom(resu1//'           .NOVA', 'NUME_MODE'), inume)
                 if (inume .ne. 0) then
                     call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr,&
@@ -297,23 +284,19 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                             0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
 !
-                elseif ((typres(1:4).eq.'EVOL') .or. (typres(1:4)&
-            .eq.'DYNA')) then
+            else if ((typres(1:4).eq.'EVOL') .or. (typres(1:4).eq.'DYNA')) then
                 call rsadpa(resu1, 'L', 1, 'INST', iordr,&
                             0, sjv=iains1, styp=kb)
                 call rsadpa(resu2, 'E', 1, 'INST', iordr,&
                             0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
 !
-            else
-!            ON NE FAIT RIEN
             endif
 !
             if (nomcmd .eq. 'DEPL_INTERNE') then
                 ipar = 0
-!
             else
-!           REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
+!               REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
                 call getvtx(' ', 'NOM_PARA', nbval=nbmax, vect=kpar, nbret=ipar)
             endif
 !
@@ -338,21 +321,18 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                 else if (typ1(1:3).eq.'K32') then
                     zk32(ipar2) = zk32(ipar1)
 !
-                else
-!               ON NE FAIT RIEN
                 endif
-            end do
+            enddo
             ico = ico + 1
 !
- 20         continue
-        end do
-    end do
+20      continue
+        enddo
+    enddo
 !
     if (ico .eq. 0) then
         call utmess('F', 'CALCULEL4_64')
     endif
     call jedetr('&&PJXXPR.NUME_ORDRE')
-!
 !
     if (mo2 .ne. ' ') then
         call jeveuo(resu2//'           .ORDR', 'L', jordr)
@@ -361,10 +341,9 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
             call rsadpa(resu2, 'E', 1, 'MODELE', zi(jordr-1+i),&
                         0, sjv=jpara, styp=k8b)
             zk8(jpara)=mo2
-        end do
+        enddo
     endif
-!
-!     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
+!   CREATION DE L'OBJET .REFD SI NECESSAIRE:
     call jeexin(resu1//'           .REFD', iret)
     if (iret .gt. 0) then
         call jeexin(resu2//'           .REFD', iret)

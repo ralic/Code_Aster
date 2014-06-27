@@ -19,6 +19,32 @@
 
 cata_msg={
 
+1: _(u"""
+MODI_REPERE / CHAMP_GD
+    Seuls les champs de contraintes à sous-points issus d'une projection sont traités.
+"""),
+
+
+4: _(u"""
+MODI_REPERE / CHAMP_GD
+    Le CARA_ELEM <%(k1)s> doit avoir des caractéristiques de coques, du type :
+        %(k2)s
+"""),
+
+5: _(u"""
+MODI_REPERE / CHAMP_GD
+    Les maillages doivent être identique :
+        Le CHAMP     est bâti sur le maillage %(k1)s.
+        Le CARA_ELEM est bâti sur le maillage %(k2)s.
+"""),
+
+6: _(u"""
+MODI_REPERE / CHAMP_GD
+    Les modèles doivent être identique :
+        Le CHAMP     est bâti sur le modèle %(k1)s.
+        Le CARA_ELEM est bâti sur le modèle %(k2)s.
+"""),
+
 
 
 8: _(u"""

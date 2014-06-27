@@ -15,17 +15,12 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
-% person_in_charge: jacques.pellet at edf.fr
-REPERE_LOCAL
-       << CALCUL DU REPERE LOCAL >>
+% person_in_charge: jean-luc.flejou at edf.fr
+MODI_REPERE
+    << CHANGEMENT DE REPERE DU CHAMP EN ENTREE >>
 OPTION__
-   IN__
-        PGEOMER  GEOM_R                  << COORDONNEES INITIALES DES NOEUDS >>
-        PCAORIE  CAORIE 'CARA!.CARORIEN' << PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  >>
-        PCACOQU  CACOQU 'CARA!.CARCOQUE' << PCACOQU : CARACTERISTIQUE DE COQUE  >>
-        PCAMASS  CAMASS 'CARA!.CARMASSI' << PCAMASS : CARACTERISTIQUE DE MASSIF  >>
+    IN__
+        PSIEFR   SIEF_R                     << PSIEFR   : CONTRAINTES  INITIALES >>
+        PMATPASS CHGREPER                   << PMATPASS : NATURE DU CHANGEMENT, MATRICE DE PASSAGE  >>
     OUT__
-        PREPLO1  GEOM_R     ELEM__
-        PREPLO2  GEOM_R     ELEM__
-        PREPLO3  GEOM_R     ELEM__
-        PMATPASS CHGREPER   ELEM__
+        PCONTPR  SIEF_R ELGA__              << CONTRAINTES DANS LE NOUVEAU REPERE >>

@@ -24,6 +24,8 @@ from SD.sd_carte import sd_carte
 class sd_cara_elem(AsBase):
 #--------------------------
     nomj = SDNom(fin=8)
+    MODELE = AsVK8(lonmax=1,)
+    #
     CARGENBA = Facultatif(sd_carte())
     CAFIBR   = Facultatif(sd_cham_elem())
     CARMASSI = Facultatif(sd_carte())
