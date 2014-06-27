@@ -39,6 +39,7 @@ subroutine te0096(option, nomte)
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/tecael.h"
 #include "asterc/r8prem.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -65,6 +66,7 @@ subroutine te0096(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nompar(3), typmod(2), famil, poum
     character(len=16) :: compor(4), oprupt, phenom
+    character(len=24) :: valk
 !
     real(kind=8) :: epsref(6), e(1), mu
     real(kind=8) :: epsi, rac2, crit(13)
@@ -86,6 +88,7 @@ subroutine te0096(option, nomte)
     integer :: nno, nnos, ncmp, jgano
     integer :: i, j, k, kk, l, m, kp, ndim, compt, nbvari
     integer :: ij, ij1, matcod, i1, iret, iret1, npg1
+    integer :: iadzi, iazk24
 !
     aster_logical :: grand, axi, cp, fonc, incr, epsini
 !
@@ -142,7 +145,7 @@ subroutine te0096(option, nomte)
             thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
   2     continue
         if (thet .lt. epsi) compt = compt+1
-  3 end do
+  3  continue
     if (compt .eq. nno) goto 9999
 !
 ! =====================================================================
@@ -156,7 +159,7 @@ subroutine te0096(option, nomte)
     matcod = zi(imate)
     do 10 i = 1, 4
         compor(i)= zk16(icomp+i-1)
- 10 end do
+ 10  continue
 !
 ! RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
 ! CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
@@ -178,7 +181,7 @@ subroutine te0096(option, nomte)
     endif
 !
 !
-! LOI DE COMPORTEMENT
+!   LOI DE COMPORTEMENT
     grand = compor(3).eq.'GROT_GDEP'
     incr = compor(4)(1:9).eq.'COMP_INCR'
     read(zk16(icomp+1),'(I16)') nbvari
@@ -190,11 +193,6 @@ subroutine te0096(option, nomte)
     call tecach('ONN', 'PPESANR', 'L', iret, iad=ipesa)
     call tecach('ONN', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONN', 'PSIGINR', 'L', iret, iad=isigi)
-!      WRITE(6,*)'ISIGI',ISIGI
-!      WRITE(6,*)'IDEPI',IDEPI
-!      WRITE(6,*)'EPSINI',EPSINI
-!      WRITE(6,*)'IEPSF',IEPSF
-!      WRITE(6,*)'IEPSR',IEPSR
     if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F' .or. option .eq. 'CALC_GTP_F' .or.&
         option .eq. 'CALC_GTP') then
         call tecach('ONN', 'PVITESS', 'L', iret, iad=ivites)
@@ -203,7 +201,7 @@ subroutine te0096(option, nomte)
 !
     do 20 i = 1, ncmp*nno
         epsino(i) = 0.d0
- 20 end do
+ 20  continue
 !
 ! =====================================================================
 ! MESSAGES D'ERREURS
@@ -308,7 +306,7 @@ subroutine te0096(option, nomte)
         call rcvarc(' ', 'TEMP', '+', 'NOEU', kp,&
                     1, tn(kp), iret1)
 !
-645 end do
+ 645  continue
 !
 ! ======================================================================
 ! BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
@@ -340,7 +338,7 @@ subroutine te0096(option, nomte)
             sigin(i) = 0.d0
             epsin(i) = 0.d0
             epsp(i) = 0.d0
-            eps (i) = 0.d0
+            eps(i) = 0.d0
             epsref(i)= 0.d0
             do 230 j = 1, 3
                 dsigin(i,j) = 0.d0
@@ -561,7 +559,7 @@ subroutine te0096(option, nomte)
             do 463 i = 4, ncmp
                 sigin(i) = sigin(i)*rac2
                 do 462 j = 1, ndim
-                    dsigin(i,j) = dsigin(4,1)*rac2
+                    dsigin(i,j) = dsigin(i,j)*rac2
 462             continue
 463         continue
 !
@@ -720,18 +718,24 @@ subroutine te0096(option, nomte)
 671             continue
             endif
             tini = tini + (prod1+prod2)*poids
-!
+
         endif
-!
+
 ! ==================================================================
 ! FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 ! ==================================================================
-800 end do
+800  continue
 !
 ! EXIT EN CAS DE THETA FISSURE NUL PARTOUT
 9999 continue
 !
 ! ASSEMBLAGE FINAL DES TERMES DE G OU DG
+    call tecael(iadzi, iazk24)
+    valk=zk24(iazk24-1+3)
+    
     zr(igthet) = tthe + tcla + tfor + tplas + tini
+    
+    
+    
     call jedema()
 end subroutine

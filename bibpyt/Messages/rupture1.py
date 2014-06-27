@@ -102,7 +102,9 @@ Veuillez le renseigner.
 """),
 
 12: _(u"""
-Le champ de contrainte initiale n'est ni de type ELNO, ni NOEU, ni ELGA.
+Le champ de contrainte initiale n'est pas du bon type.
+En FEM (fissure représentée dans le maillage), il doit être de type ELNO, NOEU, ou ELGA.
+En X-FEM (fissure non représentée dans le maillage), il doit être de type ELGA.
 """),
 
 13: _(u"""

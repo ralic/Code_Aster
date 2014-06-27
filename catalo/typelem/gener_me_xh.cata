@@ -113,6 +113,7 @@ MODE_LOCAL__
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTSE  = N1920R   ELEM__         (X[1920]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
@@ -158,8 +159,8 @@ OPTION__
                                 NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  E3NEUTI  PLONGCO  
                                 N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR  
                                 E21NEUTR PPINTER  E33NEUTR PPINTTO  EPRESNO  PPRESSR  CROTATR  PROTATR  
-                                DDL_MECC PTHETAR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ECONTNO  PSIGINR
-                                E195NEUT PPMILTO
+                                DDL_MECC PTHETAR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  E195NEUT PPMILTO
+                                ECONTSE  PSIGISE  ECONTPG  PCONTRR
                           OUT__ EGTHETA  PGTHETA
     CALC_G_F         288  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  N9NEUT_R PBASLOR  E15NEUTI PCFACE   
                                 E320NEUI PCNSETO  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPLAR  
@@ -167,16 +168,15 @@ OPTION__
                                 E3NEUTI  PLONGCO  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
                                 CPESANR  PPESANR  E21NEUTR PPINTER  E33NEUTR PPINTTO  CPRESSF  PPRESSF  
                                 CROTATR  PROTATR  CTEMPSR  PTEMPSR  DDL_MECC PTHETAR  ZVARCPG  PVARCPR  
-                                ZVARCPG  PVARCRR 
-                                E195NEUT PPMILTO
+                                ZVARCPG  PVARCRR  E195NEUT PPMILTO  ECONTSE  PSIGISE  ECONTPG  PCONTRR
                           OUT__ EGTHETA  PGTHETA
     CALC_GTP         288  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  N9NEUT_R PBASLOR  E15NEUTI PCFACE   
                                 E320NEUI PCNSETO  CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU  
                                 NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  E3NEUTI  PLONGCO  
                                 N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR  
                                 E21NEUTR PPINTER  E33NEUTR PPINTTO  EPRESNO  PPRESSR  CROTATR  PROTATR  
-                                DDL_MECC PTHETAR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ECONTNO  PSIGINR
-                                E195NEUT PPMILTO
+                                DDL_MECC PTHETAR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  E195NEUT PPMILTO
+                                ECONTSE  PSIGISE
                           OUT__ EGTHETA  PGTHETA
     CALC_GTP_F       288  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  N9NEUT_R PBASLOR  E15NEUTI PCFACE   
                                 E320NEUI PCNSETO  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPLAR  
@@ -184,8 +184,7 @@ OPTION__
                                 E3NEUTI  PLONGCO  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
                                 CPESANR  PPESANR  E21NEUTR PPINTER  E33NEUTR PPINTTO  CPRESSF  PPRESSF  
                                 CROTATR  PROTATR  CTEMPSR  PTEMPSR  DDL_MECC PTHETAR  ZVARCPG  PVARCPR  
-                                ZVARCPG  PVARCRR 
-                                E195NEUT PPMILTO
+                                ZVARCPG  PVARCRR  E195NEUT PPMILTO  ECONTSE  PSIGISE
                           OUT__ EGTHETA  PGTHETA                            
     CALC_K_G         297  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  N9NEUT_R PBASLOR  E15NEUTI PCFACE   
                                 E320NEUI PCNSETO  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPLAR  
@@ -193,8 +192,7 @@ OPTION__
                                 E3NEUTI  PLONGCO  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
                                 CPESANR  PPESANR  E21NEUTR PPINTER  E33NEUTR PPINTTO  EPRESNO  PPRESSR  
                                 CFREQR   PPULPRO  CROTATR  PROTATR  DDL_MECC PTHETAR  ZVARCPG  PVARCPR  
-                                ZVARCPG  PVARCRR  
-                                E195NEUT PPMILTO
+                                ZVARCPG  PVARCRR  E195NEUT PPMILTO  ECONTSE  PSIGISE
                           OUT__ EKTHETA  PGTHETA  
     CALC_K_G_F       297  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  N9NEUT_R PBASLOR  E15NEUTI PCFACE   
                                 E320NEUI PCNSETO  CCOMPOR  PCOMPOR  G27NEUTR PCOURB   DDL_MECA PDEPLAR  
@@ -202,8 +200,7 @@ OPTION__
                                 E3NEUTI  PLONGCO  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
                                 CPESANR  PPESANR  E21NEUTR PPINTER  E33NEUTR PPINTTO  CPRESSF  PPRESSF  
                                 CFREQR   PPULPRO  CROTATR  PROTATR  CTEMPSR  PTEMPSR  DDL_MECC PTHETAR  
-                                ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
-                                E195NEUT PPMILTO
+                                ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  E195NEUT PPMILTO  ECONTSE  PSIGISE
                           OUT__ EKTHETA  PGTHETA  
     CARA_GEOM         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
@@ -341,14 +338,18 @@ OPTION__
                                 ZVARCPG  PVARCRR  
                                 E195NEUT PPMILTO
                           OUT__ ECONTPG  PCONTRR  
+    SIEF_ELNO        289  IN__  E320NEUI PCNSETO  ECONTPG  PCONTRR  E10NEUTI PLONCHA  ZVARCPG  PVARCPR
+                          OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
     SIEQ_ELGA         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     SIEQ_ELNO         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     SIGM_ELGA        546  IN__  ECONTPG  PSIEFR   
                           OUT__ ECONTPC  PSIGMC   ECONTPG  PSIGMR   
-    SIGM_ELNO         -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
+    SIGM_ELNO        289  IN__  E320NEUI PCNSETO  ECONTPG  PCONTRR  E10NEUTI PLONCHA
+                          OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
+    SISE_ELNO        289  IN__  ECONTPG  PCONTRR  E10NEUTI  PLONCHA
+                          OUT__ ECONTSE  PCONTSER
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N3NEUT_R PGRADLN  N3NEUT_R PGRADLT  N1NEUT_R PLSN     
                                 N1NEUT_R PLST     
                           OUT__ E35NEUTR PAINTER  E63NEUTR PBASECO  E15NEUTI PCFACE   E21NEUTR PGESCLA  

@@ -1,0 +1,883 @@
+# TITRE  FISSURE CIRCULAIRE EN MILIEU 3D AVEC ETAT_INITIAL
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# MODELISATION A : FEM
+
+# parametres utiles
+#------------------
+
+
+# rayon de la fissure
+a = 2
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                TRAVAIL SUR LE MAILLAGE, MODELE
+#-----------------------------------------------------------------------------------------------------------------------------
+
+MA=LIRE_MAILLAGE(FORMAT='MED')
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                               NOM='NFF3',
+                               GROUP_MA='LFF1',
+                               GROUP_NO_ORIG='NFF1',
+                               GROUP_NO_EXTR='NFF2',),);
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM='EXTERIEUR',
+                               UNION=('FACE_INF','FACE_LAD','FACE_LAG','FACE_SUP',),
+                               ),
+               )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(NOM='EXTE1',
+                               GROUP_MA=('EXTERIEUR',),
+                               ),
+               )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(NOM='FACE_AV',
+                               GROUP_MA=('FACE_AV',),
+                               ),
+               )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(NOM='EXTERIEUR',
+                               UNION=('EXTE1','FACE_AR'),
+                               ),
+               )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(NOM='LEVINF1',
+                               DIFFE=('LEVINF','LEVSUP'),
+                               ),
+                             _F(NOM='LEVSUP1',
+                               DIFFE=('LEVSUP','LEVINF'),
+                               ),
+                             _F(NOM='FACE_AV1',
+                               DIFFE=('FACE_AV','LEVSUP','LEVINF','EXTE1'),
+                               ),
+                            ),
+               )
+# Barsoum
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                GROUP_NO_FOND='NFF3'))
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_3D=_F(GROUP_MA=('FACE_AV','FACE_SUP','FACE_INF','FACE_LAD','FACE_LAG',),),);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                CREATION DES CHAMPS THERMIQUES
+#-----------------------------------------------------------------------------------------------------------------------------
+#Temperature variable spatialement pour ouvrir la fissure
+TEMPVARX=DEFI_FONCTION(NOM_PARA='Z',VALE=(-10,250,
+                                           -1,130,
+                                           2,80,
+                                           10,250),);
+
+CHP_TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
+                     MAILLAGE=MA,
+                     AFFE=_F(TOUT = 'OUI',
+                     NOM_CMP = 'TEMP',
+                     VALE_F = TEMPVARX))
+
+#Temperature constante initiale avant refroidissement
+CTE250=DEFI_FONCTION(NOM_PARA='Z',
+                     VALE=(-10,250,
+                            10,250),);
+
+CHTEMP0=CREA_CHAMP( OPERATION='AFFE',
+                    TYPE_CHAM='NOEU_TEMP_F',
+                    MAILLAGE=MA,
+                    AFFE=_F(TOUT = 'OUI',
+                            NOM_CMP = 'TEMP',
+                            VALE_F = CTE250))
+
+#Calcul thermique
+LIST1=DEFI_LIST_REEL(DEBUT=0,
+                     INTERVALLE=_F(JUSQU_A=2,NOMBRE=2,),);
+
+RESUTHER=CREA_RESU(OPERATION='AFFE',
+                   TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=(_F(INST = -1,
+                            CHAM_GD = CHTEMP0),
+                         _F(LIST_INST = LIST1,
+                            CHAM_GD = CHP_TEMP),)
+                   )
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                CHAMP MATERIAU
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#Materiau, avec temperature comme variable de commande
+E=2.E11
+nu = 0.3
+alpha=1E-5
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,
+                          NU=nu,
+                          ALPHA=alpha,),)
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),
+                     AFFE_VARC=_F(TOUT='OUI',
+                                  NOM_VARC='TEMP',
+                                  EVOL = RESUTHER,
+                                  VALE_REF=250,),);
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                CHARGEMENTS POSSIBLES
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Fissure fermee
+BLOCFISS=AFFE_CHAR_MECA(MODELE=MO,
+                        LIAISON_GROUP=(_F(GROUP_NO_1='LEVINF1',
+                                          GROUP_NO_2='LEVSUP1',
+                                          DDL_1='DX',
+                                          COEF_MULT_1=1,
+                                          DDL_2='DX',
+                                          COEF_MULT_2=-1,
+                                          COEF_IMPO=0,),
+                                       _F(GROUP_NO_1='LEVINF1',
+                                          GROUP_NO_2='LEVSUP1',
+                                          DDL_1='DY',
+                                          COEF_MULT_1=1,
+                                          DDL_2='DY',
+                                          COEF_MULT_2=-1,
+                                          COEF_IMPO=0,),
+                                       _F(GROUP_NO_1='LEVINF1',
+                                          GROUP_NO_2='LEVSUP1',
+                                          DDL_1='DZ',
+                                          COEF_MULT_1=1,
+                                          DDL_2='DZ',
+                                          COEF_MULT_2=-1,
+                                          COEF_IMPO=0,),
+                                         ),);
+
+# Symetrie
+SYME=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(GROUP_NO='FACE_AV1',
+                                   DY=0.,),);
+
+#ENCASTREMENT
+ENCAS=AFFE_CHAR_MECA(MODELE=MO,
+#                     FACE_IMPO=_F(GROUP_MA=('ENCASTRE'),
+#                                  DX=0,
+#                                  DY=0,
+#                                  DZ=0,),
+                     DDL_IMPO=_F(GROUP_NO='EXTERIEUR',
+                                  DX=0,
+                                  DY=0,
+                                  DZ=0,),
+                     )                      
+#-----------------------------------------------------------------------------------------------------------------------------
+#                               RESOLUTION DU PROBLEME THERMO-MECANIQUE A FISSURE FERMEE
+#                                RESUMECA, POUR CREATION CONTRAINTE INITIALE
+#-----------------------------------------------------------------------------------------------------------------------------
+
+INSTMECA=DEFI_LIST_REEL(DEBUT=-1,
+                        INTERVALLE=(_F(JUSQU_A=0,PAS=1,),
+                                    _F(JUSQU_A=1,PAS=1,),),);
+
+RESUMECA=STAT_NON_LINE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F(CHARGE=ENCAS,),
+                              _F(CHARGE=BLOCFISS,),
+                              _F(CHARGE=SYME),),
+                       COMPORTEMENT=_F(RELATION='ELAS',),
+                       INCREMENT=_F(LIST_INST=INSTMECA,),);
+
+RESUMECA=CALC_CHAMP(reuse=RESUMECA,
+                    RESULTAT=RESUMECA,
+                    CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),
+                    DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+#                    VARI_INTERNE=('VARI_ELNO',),
+                    );
+##Extraction des contraintes au noeuds et points de Gauss
+SIEFELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESUMECA,
+                    NOM_CHAM='SIEF_ELGA',
+                    INST=1,);
+
+SIEFELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESUMECA,
+                    NOM_CHAM='SIEF_ELNO',
+                    INST=1,);
+                    
+SIEFNOEU=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESUMECA,
+                    NOM_CHAM='SIEF_NOEU',
+                    INST=1,);
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                               RESOLUTION DU PROBLEME THERMO-MECANIQUE A FISSURE OUVERTE
+#                                RESOUVFI, POUR VALEUR DE REFERENCE
+#-----------------------------------------------------------------------------------------------------------------------------
+RESOUVFI=STAT_NON_LINE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F(CHARGE=ENCAS,),
+                              _F(CHARGE=SYME,),
+                             ),
+                       COMPORTEMENT=_F(RELATION='ELAS',),
+                       INCREMENT=_F(LIST_INST=INSTMECA,),);
+
+RESOUVFI=CALC_CHAMP(reuse=RESOUVFI,
+                    RESULTAT=RESOUVFI,
+                    CONTRAINTE=('SIEF_ELNO',),
+                    DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+#                    VARI_INTERNE=('VARI_ELNO',),
+                    );
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                               RESOLUTION DU PROBLEME THERMO-MECANIQUE A FISSURE FERMEE
+#                                RESVERI, POUR VERIFIER QUE LA CONTRAINTE EST AUTO-EQUILIBREE
+#-----------------------------------------------------------------------------------------------------------------------------
+## Definition de la liste d'instants
+LIST3=DEFI_LIST_REEL(DEBUT=2,
+                     INTERVALLE=_F(JUSQU_A=3,PAS=1,),);
+## Affectation du materiau mecanique (sans chargement thermique)
+MATMECA=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',MATER=MAT,),);
+
+## Resolution ouverture de la fissure en presence d'un champ de contrainte residuelle
+RESVERI=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=MATMECA,
+                      EXCIT=(_F(CHARGE=ENCAS,),
+                             _F(CHARGE=SYME,),
+                             _F(CHARGE=BLOCFISS),
+                            ),
+                      COMPORTEMENT=_F(RELATION='ELAS',),
+                      ETAT_INIT=_F(SIGM=SIEFELGA,),
+#                      CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-10),
+                      INCREMENT=_F(LIST_INST=LIST3),);
+
+SIEFVERI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESVERI,
+                    NOM_CHAM='SIEF_ELGA',
+                    INST=3,);
+
+DIFSIEF=CREA_CHAMP(OPERATION='ASSE',
+                   MODELE=MO,
+                   TYPE_CHAM='ELGA_SIEF_R',
+                   ASSE=(_F(CHAM_GD=SIEFELGA, TOUT='OUI',CUMUL='OUI',COEF_R=1.),
+                         _F(CHAM_GD=SIEFVERI, TOUT='OUI',CUMUL='OUI',COEF_R=-1.),
+                         ),
+                   )
+MOYDIF=POST_ELEM(CHAM_GD=DIFSIEF,
+                  MODELE=MO,
+                  CHAM_MATER=MATMECA,
+                  INTEGRALE=(_F(TOUT='OUI',
+                              TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIXX',),
+                             _F(TOUT='OUI',
+                             TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIYY',),
+                             _F(TOUT='OUI',
+                             TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIZZ',),                              
+                             _F(TOUT='OUI',
+                             TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIXY',), 
+                              _F(TOUT='OUI',
+                              TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIXZ',),
+                              _F(TOUT='OUI',
+                              TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIYZ',), 
+                             ),
+                  )
+MOYENNE=POST_ELEM(CHAM_GD=SIEFVERI,
+                  MODELE=MO,
+                  CHAM_MATER=MATMECA,
+                  INTEGRALE=(_F(TOUT='OUI',
+                              TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIXX',),
+                             _F(TOUT='OUI',
+                             TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIYY',),
+                             _F(TOUT='OUI',
+                             TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIZZ',),                              
+                             _F(TOUT='OUI',
+                             TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIXY',), 
+                              _F(TOUT='OUI',
+                              TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIXZ',),
+                              _F(TOUT='OUI',
+                              TYPE_MAILLE='3D',
+                              NOM_CHAM='SIEF_ELGA',
+                              NOM_CMP='SIYZ',), 
+                             ),
+                  )
+
+IMPR_TABLE(TABLE=MOYENNE, UNITE=19)
+IMPR_TABLE(TABLE=MOYDIF, UNITE=19)                  
+                  
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=RESVERI),
+          )
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                               RESOLUTION DU PROBLEME MECANIQUE A FISSURE OUVERTE ET ETAT_INIT
+#                                RESUINI, POUR CONTROLE DES VALEURS
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+
+## Resolution ouverture de la fissure en presence d'un champ de contrainte residuelle
+RESUINI=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=MATMECA,
+                      EXCIT=(_F(CHARGE=ENCAS,),
+                             _F(CHARGE=SYME,),
+                            ),
+                      COMPORTEMENT=_F(RELATION='ELAS',),
+                      ETAT_INIT=_F(SIGM=SIEFELGA,),
+                      INCREMENT=_F(LIST_INST=LIST3),);
+
+## Calcul postraitement
+RESUINI=CALC_CHAMP(reuse=RESUINI,
+                   RESULTAT=RESUINI,
+                   DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+                   VARI_INTERNE=('VARI_ELNO',),
+                 );
+IMPR_RESU(FORMAT='MED',
+          UNITE=81,
+          RESU=_F(RESULTAT=RESUINI),
+          )
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                 POST-TRAITEMENT
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Definition du fond de fissure
+FISS=DEFI_FOND_FISS(MAILLAGE=MA,
+                    FOND_FISS=_F(GROUP_NO='NFF3'),
+                    LEVRE_SUP=_F(GROUP_MA='LEVSUP'),
+                    LEVRE_INF=_F(GROUP_MA='LEVINF'),
+                    )
+
+RSUP = 0.528
+RINF = 0.12
+#CALCULS DE REFERENCE, A PARTIR DE RESOUVFI
+# Methode G-theta
+GREF=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=RINF,
+                   R_SUP=RSUP),
+          RESULTAT=RESOUVFI,
+          INST=1,
+          OPTION='CALC_G')
+
+GIRREF=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=RINF,
+                   R_SUP=RSUP),
+          RESULTAT=RESOUVFI,
+          INST=1,
+          OPTION='CALC_K_G')
+# Extrapolation des sauts de deplacements
+KREF=POST_K1_K2_K3(MODELISATION='3D',
+                 FOND_FISS=FISS,
+                 MATER=MAT,
+                 RESULTAT=RESOUVFI,
+                 INST=1,
+                )
+#CALCULS AVEC ETAT INITIAL, A PARTIR DE RESUINI
+GINI=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=RINF,
+                   R_SUP=RSUP),
+          RESULTAT=RESUINI,
+          ETAT_INIT=_F(SIGM=SIEFELGA,), 
+          INST=3,
+          OPTION='CALC_G')
+GINI2=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=.5*RINF,
+                   R_SUP=.5*RSUP),
+          RESULTAT=RESUINI,
+          ETAT_INIT=_F(SIGM=SIEFELGA,), 
+          INST=3,
+          OPTION='CALC_G')          
+GINI3=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=1.5*RINF,
+                   R_SUP=1.5*RSUP),
+          RESULTAT=RESUINI,
+          ETAT_INIT=_F(SIGM=SIEFELGA,), 
+          INST=3,
+          OPTION='CALC_G')
+GINI4=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=RINF,
+                   R_SUP=RSUP),
+          RESULTAT=RESUINI,
+          ETAT_INIT=_F(SIGM=SIEFELNO,), 
+          INST=3,
+          OPTION='CALC_G')
+GINI5=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=.5*RINF,
+                   R_SUP=.5*RSUP),
+          RESULTAT=RESUINI,
+          ETAT_INIT=_F(SIGM=SIEFELNO,), 
+          INST=3,
+          OPTION='CALC_G')          
+GINI6=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=1.5*RINF,
+                   R_SUP=1.5*RSUP),
+          RESULTAT=RESUINI,
+          ETAT_INIT=_F(SIGM=SIEFELNO,), 
+          INST=3,
+          OPTION='CALC_G')          
+          
+
+GIRINI=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=RINF,
+                   R_SUP=RSUP),
+          RESULTAT=RESUINI, 
+          ETAT_INIT=_F(SIGM=SIEFELGA,),
+          INST=3,
+          OPTION='CALC_K_G')
+GIRINI2=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=0.5*RINF,
+                   R_SUP=0.5*RSUP),
+          RESULTAT=RESUINI, 
+          ETAT_INIT=_F(SIGM=SIEFELGA,),
+          INST=3,
+          OPTION='CALC_K_G')
+GIRINI3=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=1.5*RINF,
+                   R_SUP=1.5*RSUP),
+          RESULTAT=RESUINI, 
+          ETAT_INIT=_F(SIGM=SIEFELGA,),
+          INST=3,
+          OPTION='CALC_K_G')
+GIRINI4=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=RINF,
+                   R_SUP=RSUP),
+          RESULTAT=RESUINI, 
+          ETAT_INIT=_F(SIGM=SIEFELNO,),
+          INST=3,
+          OPTION='CALC_K_G')
+GIRINI5=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=0.5*RINF,
+                   R_SUP=0.5*RSUP),
+          RESULTAT=RESUINI, 
+          ETAT_INIT=_F(SIGM=SIEFELNO,),
+          INST=3,
+          OPTION='CALC_K_G')
+GIRINI6=CALC_G(THETA=_F(FOND_FISS=FISS,
+                   R_INF=1.5*RINF,
+                   R_SUP=1.5*RSUP),
+          RESULTAT=RESUINI, 
+          ETAT_INIT=_F(SIGM=SIEFELNO,),
+          INST=3,
+          OPTION='CALC_K_G')
+          
+# Extrapolation des sauts de deplacements
+KINI=POST_K1_K2_K3(MODELISATION='3D',
+                 FOND_FISS=FISS,
+                 MATER=MAT,
+                 RESULTAT=RESUINI,
+                 INST=3,
+                 )                
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                 CONFRONTATION DES RESULTATS SOUS FORME DE COURBE
+#-----------------------------------------------------------------------------------------------------------------------------
+# formule pour le calcul de l'angle en degre
+ANGLE=FORMULE(NOM_PARA=('ABSC_CURV'),VALE='ABSC_CURV/a * 180./pi')
+#
+# ajout des colonnes 'angle'
+GREF=CALC_TABLE(TABLE=GREF,
+              reuse=GREF,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )
+GIRREF=CALC_TABLE(TABLE=GIRREF,
+              reuse=GIRREF,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )
+GINI=CALC_TABLE(TABLE=GINI,
+              reuse=GINI,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )
+GIRINI=CALC_TABLE(TABLE=GIRINI,
+              reuse=GIRINI,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )
+GIRINI2=CALC_TABLE(TABLE=GIRINI2,
+              reuse=GIRINI2,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )
+GIRINI3=CALC_TABLE(TABLE=GIRINI3,
+              reuse=GIRINI3,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )
+GIRINI4=CALC_TABLE(TABLE=GIRINI4,
+              reuse=GIRINI4,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )
+GIRINI5=CALC_TABLE(TABLE=GIRINI5,
+              reuse=GIRINI5,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )
+GIRINI6=CALC_TABLE(TABLE=GIRINI6,
+              reuse=GIRINI6,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+              )                            
+KREF=CALC_TABLE(TABLE=KREF,
+              reuse=KREF,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+               )
+KINI=CALC_TABLE(TABLE=KINI,
+              reuse=KINI,
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      )
+               )
+# impression de chaque table
+IMPR_TABLE(TABLE=GREF, UNITE=9)
+IMPR_TABLE(TABLE=GIRREF, UNITE=9)
+IMPR_TABLE(TABLE=GINI, UNITE=9)
+IMPR_TABLE(TABLE=GIRINI, UNITE=9)
+IMPR_TABLE(TABLE=KREF, UNITE=9)
+IMPR_TABLE(TABLE=KINI, UNITE=9)
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                 TRACE DES COURBES
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# courbe de G
+C_GREF=RECU_FONCTION(TABLE=GREF,
+                      PARA_X='ANGLE',
+                      PARA_Y='G',)
+
+C_GINI=RECU_FONCTION(TABLE=GINI,
+                     PARA_X='ANGLE',
+                     PARA_Y='G',)
+
+C_KREF=RECU_FONCTION(TABLE=KREF,
+                     PARA_X='ANGLE',
+                     PARA_Y='G',)
+
+C_KGINI=RECU_FONCTION(TABLE=GIRINI,
+                      PARA_X='ANGLE',
+                      PARA_Y='G',)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=30,
+              COURBE=(_F(FONCTION=C_GREF,
+                         LEGENDE='G reference',
+                         MARQUEUR=0,
+                         COULEUR=1),
+                      _F(FONCTION=C_GINI,
+                         LEGENDE='G CALC_G',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                      _F(FONCTION=C_KREF,
+                         LEGENDE='GREF POST_K1_K2_K3',
+                         MARQUEUR=0,
+                         COULEUR=3),
+                      _F(FONCTION=C_KGINI,
+                         LEGENDE='G CALC_K_G',
+                         MARQUEUR=1,
+                         COULEUR=4,),
+                       ),
+              TITRE='Taux de restitution d energie',
+              BORNE_X=(0.0,180,),
+              BORNE_Y=(0.0,2E6,),
+
+              LEGENDE_X='angle (degre)',
+              LEGENDE_Y='G (J.m\S-2\N)',);
+
+
+# courbe de K1
+C1KREF=RECU_FONCTION(TABLE=KREF,
+                       PARA_X='ANGLE',
+                       PARA_Y='K1',)
+
+C1KINI=RECU_FONCTION(TABLE=KINI,
+                      PARA_X='ANGLE',
+                      PARA_Y='K1',)
+
+C1GIRINI=RECU_FONCTION(TABLE=GIRINI,
+                      PARA_X='ANGLE',
+                      PARA_Y='K1',)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=31,
+              COURBE=(_F(FONCTION=C1KREF,
+                         LEGENDE='K1 reference',
+                         MARQUEUR=0,
+                         COULEUR=1),
+                      _F(FONCTION=C1KINI,
+                         LEGENDE='K1 POST_K1_K2_K3',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                      _F(FONCTION=C1GIRINI,
+                         LEGENDE='K1 CALC_K_G',
+                         MARQUEUR=0,
+                         COULEUR=3),
+                       ),
+              TITRE='K1',
+              BORNE_X=(0.0,180,),
+              BORNE_Y=(0.0,7E8,),
+
+              LEGENDE_X='angle (degre)',
+              LEGENDE_Y='KI (Pa.m\S-1/2\N)',)
+# 
+# TESTS
+#---------------
+
+# test de G initial par CALC_G et CALC_K_G sur tout le fond de fissure
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_CALC=1.91937E6,
+           VALE_REFE=1.91937E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GREF,)
+           
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_CALC=1.91937E6,
+           VALE_REFE=1.91937E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GIRREF,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_CALC=1.92013E6,
+           VALE_REFE=1.91937E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GINI,)           
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC=1.954586E6,
+           VALE_REFE=1.920130E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GINI2,)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_CALC=1.934713E6,
+           VALE_REFE=1.920130E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GINI3,)           
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_CALC=1.920131E6,
+           VALE_REFE=1.920130E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GINI4,)           
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC=1.954586E6,
+           VALE_REFE=1.920130E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GINI5,)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_CALC=1.934713E6,
+           VALE_REFE=1.920130E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GINI6,)             
+           
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.015,
+           VALE_CALC=1.943339E+06,
+           VALE_REFE=1.92013E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GIRINI,)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.015,
+           VALE_CALC=1.952410E+06,
+           VALE_REFE=1.954586E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GIRINI2,)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.015,
+           VALE_CALC=1.944954E+06,
+           VALE_REFE=1.934713E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GIRINI3,)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.015,
+           VALE_CALC=1.943339E+06,
+           VALE_REFE=1.920131E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GIRINI4,)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.015,
+           VALE_CALC=1.952410E+06,
+           VALE_REFE=1.954586E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GIRINI5,)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.015,
+           VALE_CALC=1.944954E+06,
+           VALE_REFE=1.934713E6,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GIRINI6,)
+           
+# test de K1 au milieu du fond (angle = 0) par CALC_KG (vale_ref de post_k1_k2_k3)
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.05,
+           VALE_CALC=6.387673E+08,
+           VALE_REFE=6.387673E+08,
+           NOM_PARA='K1',
+           TABLE=KREF,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=89.8555,),
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.05,
+           VALE_CALC=6.387673E+08,
+           VALE_REFE=6.387673E+08,
+           NOM_PARA='K1',
+           TABLE=KINI,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=89.8555,),
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.1,
+           VALE_CALC=6.793670E+08,
+           VALE_REFE=6.38767E+08,
+           NOM_PARA='K1',
+           TABLE=GIRINI,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=89.8555,),
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.1,
+           VALE_CALC=6.77110634E+08,
+           VALE_REFE=6.38767E+08,
+           NOM_PARA='K1',
+           TABLE=GIRINI2,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=89.8555,),
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.1,
+           VALE_CALC=6.886229E+08,
+           VALE_REFE=6.38767E+08,
+           NOM_PARA='K1',
+           TABLE=GIRINI3,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=89.8555,),
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.1,
+           VALE_CALC=6.79367054E+08,
+           VALE_REFE=6.38767E+08,
+           NOM_PARA='K1',
+           TABLE=GIRINI4,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=89.8555,),
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.1,
+           VALE_CALC=6.77110634E+08,
+           VALE_REFE=6.38767E+08,
+           NOM_PARA='K1',
+           TABLE=GIRINI5,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=89.8555,),
+           )
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.1,
+           VALE_CALC=6.88622909E+08,
+           VALE_REFE=6.38767E+08,
+           NOM_PARA='K1',
+           TABLE=GIRINI6,
+           FILTRE=_F(NOM_PARA='ANGLE',
+                     VALE=89.8555,),
+           )
+FIN()

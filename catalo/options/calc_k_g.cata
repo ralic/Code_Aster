@@ -33,7 +33,6 @@ OPTION__
         PROTATR  ROTA_R
         PEPSINR  EPSI_R
         PCOMPOR  COMPOR
-        PSIGINR  SIEF_R
         PDEPINR  DEPL_R
         PFISSR   FISS_R
         PBASLOR  NEUT_R
@@ -51,5 +50,7 @@ OPTION__
         PLONGCO  N120_I
         PPMILTO  N480_R
         PBASECO  N120_R
+        PSIGINR  SIEF_R
+        PSIGISE  N1920R
    OUT__
 PGTHETA G ELEM__

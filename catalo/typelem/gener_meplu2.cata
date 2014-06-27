@@ -150,12 +150,13 @@ OPTION__
                           OUT__ EGTHETA  PGTHETA                            
     CALC_K_G         299  IN__  CCOMPOR  PCOMPOR  NDEPLAR  PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CFREQR   PPULPRO  
-                                CROTATR  PROTATR  NDEPLAR  PTHETAR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
+                                CROTATR  PROTATR  NDEPLAR  PTHETAR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                ESIGMNO  PSIGINR  
                           OUT__ EKTHETA  PGTHETA  
     CALC_K_G_F       299  IN__  CCOMPOR  PCOMPOR  NDEPLAR  PDEPLAR  CFORCEF  PFFVOLU  CFISSR   PFISSR   
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CFREQR   PPULPRO  
                                 CROTATR  PROTATR  CTEMPSR  PTEMPSR  NDEPLAR  PTHETAR  ZVARCPG  PVARCPR  
-                                ZVARCPG  PVARCRR  
+                                ZVARCPG  PVARCRR  ESIGMNO  PSIGINR
                           OUT__ EKTHETA  PGTHETA
     CARA_GEOM         -1  IN__  
                           OUT__ XXXXXX   XXXXXX

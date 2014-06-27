@@ -67,7 +67,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
     integer :: ifm, niv, nbgr, jceld, nec, jcmpgd, jnocmp
     integer :: jcorr1, igr, imolo, jmolo, gd, nbpt, ipt, k, iadg, icmp
     integer :: jdesc, long, jprno, jnueq, nbno, ino, ncmpp, jcorr2
-    integer :: ngrmx, nbedit, igd, ient, debgd, dg(50), ior, kpt, kcmp
+    integer :: ngrmx, nbedit, igd, ient, debgd, dg(100), ior, kpt, kcmp
     aster_logical :: diff
     character(len=8) :: nomgd, ma
     character(len=16) :: typsd
@@ -100,8 +100,8 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 !           UN DESCRIPTEUR_GRANDEUR (DG) "ENVELOPPE" DE TOUS LES
 !           POINTS DU CHAMP.
 !     ----------------------------------------------------------------
-    ASSERT(nec.le.50)
-    do k = 1, 50
+    ASSERT(nec.le.100)
+    do k = 1, 100
         dg(k)=0
     end do
 !

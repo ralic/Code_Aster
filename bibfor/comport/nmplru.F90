@@ -40,6 +40,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !             LIBRE PAR RAPPORT A LA TEMPERATURE (POUR LE CALCUL DE G)
 !             EN PLASTICITE
 !
+
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  IMATE   : NATURE DU MATERIAU

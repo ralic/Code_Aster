@@ -4,6 +4,7 @@ subroutine te0289(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
@@ -47,13 +48,14 @@ subroutine te0289(option, nomte)
 !
 !
     integer :: mxval
-    parameter (mxval=6*3*4)
+    parameter (mxval=32*10*6)
 !     EN 2D :
-!     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)
+!     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)-> en lineaire
+!     MXVAL =  6 (NBSE MAX) * 6 (NBNOSE MAX) * 4 (NBCMP MAX)-> en quadratique
 !     EN 3D :
-!     MXVAL = 32 (NBSE MAX) * 4 (NBNOSE MAX) * 6 (NBCMP MAX)
-!
-    integer :: ibid, ndim, nnop, nno, npg, ivf, jgano
+!     MXVAL = 32 (NBSE MAX) * 4 (NBNOSE MAX) * 6 (NBCMP MAX)-> en lineaire
+!     MXVAL = 32 (NBSE MAX) * 10(NBNOSE MAX) * 6 (NBCMP MAX)-> en quadratique
+    integer :: ibid, ndim, nnop, nno, npg, ivf, jgano,irese
     integer :: nfh, nfe, singu, ddlc, nbsig
     integer :: jcnset, jlonch, jsigpg
     integer :: jout1, jout2
@@ -62,52 +64,60 @@ subroutine te0289(option, nomte)
 !
     real(kind=8) :: siseno(mxval)
 !
-    character(len=8) :: elrefp, elrese(3), fami(3)
+    character(len=8) :: elrefp, elrese(6), fami(6)
 !
-    data    elrese /'SE2','TR3','TE4'/
-    data    fami   /'BID','XINT','XINT'/
-!
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
+    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
 !-----------------------------------------------------------------------
-!     INITIALISATIONS
+!   INITIALISATIONS
 !-----------------------------------------------------------------------
 !
-!     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM ET NNOP
+!   ELEMENT DE REFERENCE PARENT : RECUP DE NDIM ET NNOP
     call elref1(elrefp)
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
     ASSERT(nnop.le.27)
 !
 !
-!     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG, IVF ET JGANO
-    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),nno=nno,&
-  npg=npg,jvf=ivf,jgano=jgano)
+!   SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG, IVF ET JGANO
+    if (.not.iselli(elrefp)) then
+        irese=3
+    else
+        irese=0
+    endif
+    call elrefe_info(elrefe=elrese(ndim+irese),&
+                     fami=fami(ndim+irese),&
+                     nno=nno,&
+                     npg=npg,&
+                     jvf=ivf,&
+                     jgano=jgano)
 !
     ASSERT(npg.le.15)
 !
-!     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
+!   INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
                 ibid, ibid, ibid, ibid, ibid,&
                 ibid)
 !
-!     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
+!   NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
     ASSERT(nbsig.le.6)
 !
 !-----------------------------------------------------------------------
-!     RECUPERATION DES ENTREES / SORTIE
+!   RECUPERATION DES ENTREES / SORTIE
 !-----------------------------------------------------------------------
 !
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PCONTRR', 'L', jsigpg)
 !
-!     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+!   RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
 !
 !-----------------------------------------------------------------------
-!     OPTION SISE_ELNO
+!   OPTION SISE_ELNO
 !-----------------------------------------------------------------------
 !
     if (option .eq. 'SISE_ELNO') then
@@ -116,25 +126,21 @@ subroutine te0289(option, nomte)
         call jevech('PCONTSER', 'E', jout1)
 !
 !       CALCUL DES CONTRAINTES PAR SOUS-ELEMENTS AUX NOEUDS (SENO)
-        call xsseno(nno, nbsig, nse, npg, jgano,&
-                    jsigpg, zr(jout1))
+        call xsseno(nno, nbsig, nse, npg, jgano, jsigpg, zr(jout1))
 !
 !-----------------------------------------------------------------------
-!     OPTION SIEF_ELNO ET SIGM_ELNO
+!       OPTION SIEF_ELNO ET SIGM_ELNO
 !-----------------------------------------------------------------------
 !
-        else if ((option.eq.'SIEF_ELNO').or. (option.eq.'SIGM_ELNO'))&
-    then
+    else if ((option.eq.'SIEF_ELNO').or. (option.eq.'SIGM_ELNO')) then
 !
 !       RECUPERATION DES ENTREES / SORTIE
         call jevech('PCNSETO', 'L', jcnset)
         call jevech('PSIEFNOR', 'E', jout2)
 !
 !       CALCUL DES CONTRAINTES PAR ELEMENTS AUX NOEUDS (ELNO)
-        call xsseno(nno, nbsig, nse, npg, jgano,&
-                    jsigpg, siseno)
-        call xselno(nno, nnop, nbsig, nse, ndim,&
-                    jcnset, siseno, jout2)
+        call xsseno(nno, nbsig, nse, npg, jgano, jsigpg, siseno)
+        call xselno(nno, nnop, nbsig, nse, ndim, jcnset, siseno, jout2)
 !
 !-----------------------------------------------------------------------
 !     OPTION NON PREVUE

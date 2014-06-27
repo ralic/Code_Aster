@@ -1,5 +1,6 @@
 subroutine gbilin(fami, kp, imate, dudm, dvdm,&
-                  dtdm, dfdm, tgdm, poids, c1,&
+                  dtdm, dfdm, tgdm, poids, sigin,&
+                  dsigin, epsref, c1,&
                   c2, c3, cs, th, coef,&
                   rho, puls, axi, g)
 ! ======================================================================
@@ -29,10 +30,14 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 ! IN  DFDM   :
 ! IN  TGDM   :
 ! IN  POIDS  :
+! IN  SIGIN  : CONTRAINTE INITIALE
+! IN  DSIGIN : GRADIENT DE CONTRAINTE INITIALE
+! IN  EPSREF : DEFORMATION ASSOCIEE A LA CONTRAINTE INITIALE
+!
 ! IN  C1     : COEFFICIENT MATERIAUX (VOIR DOC R)
 ! IN  C2     : COEFFICIENT MATERIAUX (VOIR DOC R)
 ! IN  C3     : COEFFICIENT MATERIAUX (VOIR DOC R)
-! IN  CS     : COEFFICNET DE SINGULARITÉ POUR LES FORCES VOLUMIQUES
+! IN  CS     : COEFFICNET DE SINGULARITE POUR LES FORCES VOLUMIQUES
 !              (CS=1 SI CALCUL DE G, CS=0.5 SI CALCUL DE K1 OU K2)
 ! IN  TH     : COEFFICIENT DU TERME CLASSIQUE DU A LA THERMIQUE
 ! IN  COEF   : COEFFICIENT PERMETTANT DE DOUBLER LES TERMES
@@ -51,7 +56,8 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 #include "asterfort/verift.h"
     character(len=*) :: fami
     integer :: kp, imate
-    real(kind=8) :: dudm(3, 4), dvdm(3, 4), dtdm(3, 4), dfdm(3, 4), tgdm(2)
+    real(kind=8) :: dudm(3, 4), dvdm(3, 4), dtdm(3, 4), dfdm(3, 4), tgdm(2), temp1(4)
+    real(kind=8) :: sigin(6), dsigin(6,3), epsref(6), epsu(4),epsv(4),rac2,temp2(4)
     real(kind=8) :: c1, c2, c3, cs, th, poids, g, bil(3, 3, 3, 3), coef
     aster_logical :: axi
 !
@@ -68,10 +74,28 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     real(kind=8) :: valres(3)
     real(kind=8) :: vect(7), s11, s12, s13, s21, s22, s23, s1, s2, puls, rho
     real(kind=8) :: tcla, tfor, tthe, tdyn, divt, divv, s1th, s2th, prod, epsthe
-    real(kind=8) :: e, nu, alpha
+    real(kind=8) :: e, nu, alpha, tini1, tini2, tini3
+        
+    rac2 = sqrt(2.d0)
+! INITIALISATION DES TENSEURS DE DEFORMATION TOTALE
+    epsu(1)=dudm(1,1)
+    epsu(2)=dudm(2,2)
+    epsu(3)=dudm(3,3)
+    epsu(4)=0.5d0*(dudm(1,2)+dudm(2,1))*rac2
+
+    epsv(1)=dvdm(1,1)
+    epsv(2)=dvdm(2,2)
+    epsv(3)=dvdm(3,3)
+    epsv(4)=0.5d0*(dvdm(1,2)+dvdm(2,1))*rac2
+!INITIALISATION DE TEMP1 et TEMP2
+    do 600 i=1,4
+      temp1(i)=0.d0
+      temp2(i)=0.d0
+600 continue
+
 !
 !
-! DEB-------------------------------------------------------------------
+! DEBUT : PARAMETRES MATERIAU-------------------------------------------
 !
 !
     nomres(1) = 'E'
@@ -225,6 +249,71 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     end do
     tdyn = -0.5d0*rho*(puls**2)*prod*poids
 !
-    g = tcla+tthe+tfor+tdyn
+!
+! - TERMES LIES A LA CONTRAINTE INITIALE
+!
+!   TINI1 : TERME DE CONTRAINTES INITIALES SEULES -(EPS-EPSTHE*Id2-EPSREF):GRAD(SIGIN).THETA
+!si cs =1, on calcule G
+!si cs =0.5, on calcule K
+    tini1 =0
+    do 601 j=1,4
+       do 602 i=1,2
+          temp1(j)=temp1(j)+dsigin(j,i)*dtdm(i,4)
+602    continue
+601 continue
+
+    if (cs.gt.0.9) then
+       
+       do 501 i=1,3
+          tini1 =tini1-(epsu(i)-epsthe-epsref(i))*temp1(i)
+501    continue
+! Le terme thermique n'apparait pas hors diagonale
+          tini1 =tini1-(epsu(4)-epsref(4))*temp1(4)
+    
+    else if (cs.lt.0.6) then
+       do 503 i=1,4
+             tini1 =tini1-0.5d0*(epsv(i))*temp1(i)
+503    continue
+    end if
+    tini1=tini1*poids       
+!
+!   TINI2 : TERME DU A LA MODIFICATION DE LA CONTRAINTE SIGIN: GRAD(U).GRAD(THETA)
+    tini2 =0
+! ce terme ne s'exprime pas en notation de Voigt, on doit le calculer terme a terme (trop cool)
+    if (cs.gt.0.9) then
+        temp2(1)=dudm(1,1)*dtdm(1,1)+dudm(1,2)*dtdm(2,1)
+        temp2(2)=dudm(2,1)*dtdm(1,2)+dudm(2,2)*dtdm(2,2)
+        temp2(3)=dudm(3,1)*dtdm(1,3)+dudm(3,2)*dtdm(2,3)
+        temp2(4)=(dudm(1,1)*dtdm(1,2)+dudm(1,2)*dtdm(2,2)+dudm(2,1)*dtdm(1,1)+dudm(2,2)*dtdm(2,1))&
+        /rac2
+    else if (cs.lt.0.6) then
+        temp2(1)=dvdm(1,1)*dtdm(1,1)+dvdm(1,2)*dtdm(2,1)
+        temp2(2)=dvdm(2,1)*dtdm(1,2)+dvdm(2,2)*dtdm(2,2)
+        temp2(3)=0.d0
+        temp2(4)=(dvdm(1,1)*dtdm(1,2)+dvdm(1,2)*dtdm(2,2)+dvdm(2,1)*dtdm(1,1)+dvdm(2,2)*dtdm(2,1))&
+        /rac2
+    endif
+    do 504 i=1,4
+        tini2=tini2+sigin(i)*temp2(i)
+504 continue 
+    tini2=cs*tini2*poids
+!
+!   TINI3:TERME DU A LA MODIFICATION DE L'ENERGIE LIBRE:-1/2*(2*(EPS-EPSTH)-EPSREF):SIGIN divTheta
+    tini3 =0
+    if (cs.gt.0.9) then
+       do 505 i=1,3
+             tini3=tini3-(epsu(i)-epsthe-0.5d0*epsref(i))*sigin(i)*divt
+505    continue   
+       tini3=tini3-(epsu(4)-0.5d0*epsref(4))*sigin(4)*divt
+       
+    else if (cs.lt.0.6) then
+       do 506 i=1,4
+             tini3=tini3-0.5d0*epsv(i)*sigin(i)*divt
+506    continue   
+    endif
+    tini3=tini3*poids
+
+    g = tcla+tthe+tfor+tdyn+tini2+tini3+tini1
+
 !
 end subroutine

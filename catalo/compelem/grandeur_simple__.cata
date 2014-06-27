@@ -1457,6 +1457,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        X(480) : composante 480
 >>
     N480_R   = R    X[480]
+    N1920R   = R    X[1920]
 
 %
 %

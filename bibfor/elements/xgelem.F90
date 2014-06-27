@@ -1,8 +1,7 @@
 subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                   ise, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, idepl, lsn, lst,&
-                  igthet, fno, nfiss, jfisno, isig,&
-                  incr)
+                  igthet, fno, nfiss, jfisno, incr)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,6 +24,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/nmplru.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
@@ -53,7 +53,6 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop)
     real(kind=8) :: fno(ndim*nnop), coorse(*)
 !
-    integer :: isig
     aster_logical :: incr
 !
 !    - FONCTION REALISEE:  CALCUL DU TAUX DE RESTITUTION D'ENERGIE
@@ -79,9 +78,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 ! OUT IGTHET  : G
 !
 !
-    integer :: ithet, imate, icomp, igthet, jtab(2), ncomp, idecpg
-    integer :: ipoids, jcoopg, ivf, idfde, jdfd2, jgano
-    integer :: i, j, k, kpg, n, ino, iret, cpt, ig, in, mxstac
+    integer :: ithet, imate, icomp, igthet, jtab(2), ncomp, idecpg, idebs
+    integer :: ipoids, jcoopg, ivf, idfde, jdfd2, jgano, jsigse
+    integer :: i, j, k, kpg, n, ino, iret, cpt, ig, in, mxstac, isigi, isigm
     integer :: ndimb, nno, nnos, npgbis, ddld, ddls, matcod, m, irett
     real(kind=8) :: xg(ndim), fe(4), he(nfiss)
     real(kind=8) :: dgdgl(4, 3), xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
@@ -91,20 +90,20 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: grad(ndim, ndim), dudm(3, 4), poids
     real(kind=8) :: dtdm(3, 4), lsng, lstg
     real(kind=8) :: rbid
-    real(kind=8) :: tthe, r
+    real(kind=8) :: tthe, r, rp, ppg
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref
-    real(kind=8) :: crit(13), dfdm(3, 4)
+    real(kind=8) :: crit(13), dfdm(3, 4), dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: energi(2), sigl(6), prod, prod2, rac2, sr(3, 3), tcla, divt
-    real(kind=8) :: tfor, dsidep(6, 6)
+    real(kind=8) :: tfor, dsidep(6, 6),sigse(6*27)
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
     aster_logical :: grdepl, cp, axi
     integer :: irese, ddli, nnoi, indeni, nnops, fisno(nnop, nfiss), ifiss
 !
 !
-    real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6)
+    real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6), epsp(6)
     real(kind=8) :: mu, nu(1), e(1)
-    integer :: ij, l, i1, icodre(1), ncmp
+    integer ::  icodre(1), ncmp
     character(len=16) :: phenom
 !
 !
@@ -130,7 +129,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     else
         irese=0
     endif
-!
+!    
     typmod(2) = ' '
     cp = .false.
     oprupt = 'RUPTURE'
@@ -147,23 +146,23 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         typmod(1) = 'D_PLAN'
     endif
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
+!   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
     ddld=ndim*(1+nfh+nfe)
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
+!   NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
     ddls=ddld+ddlc
 !
-!     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
+!   NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
     call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
                 itab=jtab)
     ncomp = jtab(2)
 !
-!     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
+!   ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
     call elrefe_info(fami='RIGI', nnos=nnops)
 !
     axi = lteatt('AXIS','OUI')
 !
-!     NOMBRE DE COMPOSANTES DES TENSEURS
+!   NOMBRE DE COMPOSANTES DES TENSEURS
     ncmp = 2*ndim
 !
     call jevech('PTHETAR', 'L', ithet)
@@ -174,67 +173,101 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         compor(i)= zk16(icomp+i-1)
     end do
 !
-!     SOUS-ELEMENT DE REFERENCE
-    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), ndim=ndimb, nno=nno,&
-                     nnos=nnos, npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf,&
-                     jdfde=idfde, jdfd2=jdfd2, jgano=jgano)
+!   SOUS-ELEMENT DE REFERENCE
+    call elrefe_info(elrefe=elrese(ndim+irese),&
+                     fami=fami(ndim+irese),&
+                     ndim=ndimb,&
+                     nno=nno,&
+                     nnos=nnos,&
+                     npg=npgbis,&
+                     jpoids=ipoids,&
+                     jcoopg=jcoopg,&
+                     jvf=ivf,&
+                     jdfde=idfde,&
+                     jdfd2=jdfd2,&
+                     jgano=jgano)
+
     ASSERT(ndim.eq.ndimb)
+
+    if (incr) then
+        call jevech('PCONTRR', 'L', isigm)
+    endif
+    
+!   Recuperation de la contrainte initiale aux noeuds des sous-elts
+    call tecach('ONN', 'PSIGISE', 'L', iret, iad=jsigse)
+    
+!   Indicateur de contrainte initiale
+    isigi=0
+    if (jsigse.ne.0) isigi=1
+    
+    if (isigi.ne.0) then
+!       Passage de la contrainte initiale aux noeuds des sous-elts
+!       dans un tableau local au sous-elt
+        do 100 i = 1, nno
+            do 110 j = 1, ncmp
+                sigse(ncmp*(i-1)+j) = &
+                        zr(jsigse-1 + ncmp*nno*(ise-1) + ncmp*(i-1) + j)
+110         continue
+100     continue
+
+    endif
 !
-!     TEMPERATURE DE REF
+!   TEMPERATURE DE REF
     call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
                 1, tref, irett)
     if (irett .ne. 0) tref = 0.d0
 !
-!     TEMPERATURE AUX NOEUDS PARENT
+!   TEMPERATURE AUX NOEUDS PARENT
     do ino = 1, nnop
         call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
                     1, tpn(ino), iret)
         if (iret .ne. 0) tpn(ino) = 0.d0
     end do
 !
-!     FONCTION HEAVYSIDE CSTE SUR LE SS-ÉLT ET PAR FISSURE
-!
+!   FONCTION HEAVYSIDE CSTE SUR LE SS-ELT ET PAR FISSURE
     do ifiss = 1, nfiss
         he(ifiss) = zi(jheavt-1+ncomp*(ifiss-1)+ise)
     end do
 !
-!     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
-!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
+!   RECUPERATION DE LA CONNECTIVITE FISSURE - DDL HEAVISIDES
+!   ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNE
     if (nfiss .eq. 1) then
         do ino = 1, nnop
             fisno(ino,1) = 1
         end do
     else
         do ig = 1, nfh
-!    ON REMPLIT JUSQU'A NFH <= NFISS
+!           ON REMPLIT JUSQU'A NFH <= NFISS
             do ino = 1, nnop
                 fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
             end do
         end do
     endif
+
 !     ------------------------------------------------------------------
-!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
+!     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TETRA
 !     ------------------------------------------------------------------
 !
-!
+!   indice de decalage pour les champs ELGA
     idecpg = (ise-1)*npgbis
+    idebs = ncmp * idecpg
 !
     do kpg = 1, npgbis
-        l = (kpg-1)*nno
 !
 !       INITIALISATIONS
         call vecini(12, 0.d0, dtdm)
         call vecini(12, 0.d0, dudm)
-        do 12 i = 1, ncmp
+        do 12 i = 1, 6
             sigin(i) = 0.d0
             epsref(i)= 0.d0
+            epsp(i)= 0.d0
             do 13 j = 1, 3
                 dsigin(i,j) = 0.d0
- 13         continue
- 12     continue
+13          continue
+12      continue
 !
 !
-!       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+!       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
         call vecini(ndim, 0.d0, xg)
         do i = 1, ndim
             do n = 1, nno
@@ -247,11 +280,12 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     xe, ff)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
+!       AINSI QUE LES DERIVEES DES FONCTIONS DE FORMES DU SS-ELT
 !       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
         if (ndim .eq. 3) call dfdm3d(nno, kpg, ipoids, idfde, coorse,&
-                                     poids)
+                                     poids, dfdx, dfdy, dfdz)
         if (ndim .eq. 2) call dfdm2d(nno, kpg, ipoids, idfde, coorse,&
-                                     poids)
+                                     poids, dfdx, dfdy)
 !
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
@@ -448,56 +482,77 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !       5) CALCUL DE LA CONTRAINTE ET DE L ENERGIE
 !       --------------------------------------------------
 !
-        crit(1) = 300
-        crit(2) = 0.d0
-        crit(3) = 1.d-3
-        crit(9) = 300
-        crit(8) = 1.d-3
-!
-        call nmelnl('XFEM', kpg, 1, idecpg, '+',&
-                    ndim, typmod, matcod, compor, crit,&
-                    oprupt, eps, sigl, rbid, dsidep,&
-                    energi)
-!
-!       --------------------------------------------------
-!       6)   CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM DE CALC_G)
-!       --------------------------------------------------
-!
         if (incr) then
-            do 460 i = 1, nnop
-                i1 = i-1
+
+!           plasticite (en fait juste elasticite + comp_incr pour l'etat initial)
+
+            ppg=0.d0
+!           bizarre, pas d'argument  idecpg comme pour nmelnl
+            call nmplru('XFEM', kpg+idecpg, 1, '+', ndim,&
+                        typmod, matcod, compor, ppg, eps,&
+                        epsp, rp, energi)
+                        
+            do 435 i = 1, 3
+                sigl(i)= zr(isigm+idebs-1 + ncmp*(kpg-1) + i)
+435         continue
+            sigl(4) = zr(isigm+idebs-1 + ncmp*(kpg-1) + 4) * rac2
+            if (ndim .eq. 3) then
+                sigl(5) = zr(isigm+idebs-1 + ncmp*(kpg-1) + 5) * rac2
+                sigl(6) = zr(isigm+idebs-1 + ncmp*(kpg-1) + 6) * rac2
+            endif
+
+        else
+            crit(1) = 300
+            crit(2) = 0.d0
+            crit(3) = 1.d-3
+            crit(9) = 300
+            crit(8) = 1.d-3
+
+            call nmelnl('XFEM', kpg+idecpg, 1, 0, '+', ndim,&
+                        typmod, matcod, compor, crit, oprupt,&
+                        eps, sigl, rbid, dsidep, energi) 
+
+        endif
+
 !
-!           CALCUL DE SIGMA INITIAL
-                ij = isig+ncmp*i1-1
+!       --------------------------------------------------
+!       6)   CORRECTIONS LIEES A LA CONTRAINTE INITIALE 
+!       --------------------------------------------------
+!
+        if (isigi .ne. 0) then
+
+!           Calcul de la contrainte initiale (somme sur les noeuds du ss-elt)
+            do 430 i = 1, nno
                 do 440 j = 1, ncmp
-                    sigin(j) = sigin(j)+ zr(ij+j)*zr(ivf+l+i1)
+                    sigin(j) = sigin(j) + &
+                         sigse(ncmp*(i-1)+j) * zr(ivf-1+nno*(kpg-1)+i)
 440             continue
-!
-!           CALCUL DU GRADIENT DE SIGMA INITIAL
+430         continue
+                        
+!           Calcul du gradient de sigma initial (somme sur les noeuds du ss-elt)
+            do 460 i = 1, nno
                 do 455 j = 1, ncmp
-                    do 450 k = 1, ndim
-                        dsigin(j,k)=dsigin(j,k)+zr(ij+j)*dfdi(i,k)
-450                 continue
+                    dsigin(j,1) = dsigin(j,1) + sigse(ncmp*(i-1)+j) * dfdx(i)
+                    dsigin(j,2) = dsigin(j,2) + sigse(ncmp*(i-1)+j) * dfdy(i)
+                    if (ndim .eq. 3) &
+                      dsigin(j,3) = dsigin(j,3) + sigse(ncmp*(i-1)+j) * dfdz(i)
 455             continue
 460         continue
-!
-!
-!         TRAITEMENTS PARTICULIERS DES TERMES CROISES
+
+!           Traitements particuliers des termes croises
             do 463 i = 4, ncmp
                 sigin(i) = sigin(i)*rac2
                 do 462 j = 1, ndim
-                    dsigin(i,j) = dsigin(4,1)*rac2
+                    dsigin(i,j) = dsigin(i,j)*rac2
 462             continue
 463         continue
 !
-!         CALCUL DE LA DEFORMATION DE REFERENCE
+!           Calcul de la deformation de reference
             call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        [rbid], 1, 'NU', nu(1), icodre(1),&
-                        1)
+                        [rbid], 1, 'NU', nu(1), icodre(1), 1)
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        [rbid], 1, 'E', e(1), icodre(1),&
-                        1)
+                        [rbid], 1, 'E', e(1), icodre(1), 1)
 !
             mu = e(1)/(2.d0*(1.d0+nu(1)))
 !
@@ -505,13 +560,16 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
             epsref(2)=-(1.d0/e(1))*(sigin(2)-(nu(1)*(sigin(3)+sigin(1))))
             epsref(3)=-(1.d0/e(1))*(sigin(3)-(nu(1)*(sigin(1)+sigin(2))))
             epsref(4)=-(1.d0/mu)*sigin(4)
-            epsref(5)=-(1.d0/mu)*sigin(5)
-            epsref(6)=-(1.d0/mu)*sigin(6)
+            if (ndim .eq. 3) then
+                epsref(5)=-(1.d0/mu)*sigin(5)
+                epsref(6)=-(1.d0/mu)*sigin(6)
+            endif
 !
-!         ENERGIE ELASTIQUE (expression WADIER)
+!           Energie elastique (expression wadier)
             do 465 i = 1, ncmp
                 energi(1) = energi(1) + (eps(i)-0.5d0*epsref(i))* sigin(i)
 465         continue
+
         endif
 !
 !       -----------------------------------------------------------
@@ -595,12 +653,10 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !       TERME CONTRAINTE INITIALE SIGIN
 !       =======================================================
 !
-        if (incr) then
+        if (isigi.ne.0) then
             prod1=0.d0
             do 670 i = 1, ncmp
                 do 660 j = 1, ndim
-!                     prod1=prod1-(eps(i)-epsref(i))*dsigin(i,j)*theta(&
-!                     j)
                     prod1=prod1-(eps(i)-epsref(i))*dsigin(i,j)*dtdm(j,4)
 660             continue
 670         continue
@@ -608,12 +664,13 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         endif
     end do
 !
-!     ------------------------------------------------------------------
-!     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
-!     ------------------------------------------------------------------
+!   ------------------------------------------------------------------
+!   FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TETRA
+!   ------------------------------------------------------------------
 !
     zr(igthet) = zr(igthet) + tcla + tthe + tfor + tini
-!
+
+
 !
     call jedema()
 end subroutine

@@ -1,5 +1,6 @@
-subroutine impfic(vale, nomnoe, rcmp, unit, ixfem)
+subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
     implicit  none
+#include "asterf_types.h"
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,14 +30,16 @@ subroutine impfic(vale, nomnoe, rcmp, unit, ixfem)
 !    NOMNOE     --> ADRESSE DU NOM DU NOEUD DE FOND DE FISSURE
 !    RCMP       --> COORDONNEES DU NOEUD DE FOND DE FISSURE
 !                     ET DE LA NORMALE A LA FISSURE
-!    IXFEM       --> SI =0, ON EST DANS UN CALCUL CLASSIQUE
+!    LXFEM       --> FALSE SI ON EST DANS UN CALCUL CLASSIQUE (FEM)
+!                    TRUE SI ON EST DANS UN CALCUL X-FEM
 ! ......................................................................
 !
-    integer :: i, k1phi, k2phi, gphi, unit, ixfem
+    integer :: i, k1phi, k2phi, gphi, unit
     real(kind=8) :: g, fic1, fic2, k1, k2, girwin, rcmp(4), vale(5)
     real(kind=8) :: k11(10), k21(10), k12(10), k22(10), k1max, k1min
     real(kind=8) :: k2min, k2sup, gmax, k1dev, k2dev, gdev, fic1d, fic2d
     character(len=8) :: nomnoe
+    aster_logical ::lxfem
 ! ......................................................................
 !
     g = vale(1)
@@ -122,7 +125,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, ixfem)
             gphi =10*(i-1)
             gmax = gdev
         endif
-100  end do
+100 continue
     do 200 i = 2, 10
         k1dev= k11(i)*k1-k12(i)*k2
         k2dev= -k21(i)*k1+k22(i)*k2
@@ -143,13 +146,13 @@ subroutine impfic(vale, nomnoe, rcmp, unit, ixfem)
             gphi=-10*(i-1)
             gmax = gdev
         endif
-200  end do
+200  continue
 !
     write(unit,*)
     write(unit,555)
     write(unit,*)
 !
-    if (ixfem .eq. 0) then
+    if (.not.lxfem) then
         write(unit,*) 'NOEUD DE FOND DE FISSURE : ',nomnoe
     endif
     write(unit,*)

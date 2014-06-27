@@ -14,13 +14,14 @@
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#include "asterf_types.h"
 !
 interface
-    subroutine impfic(vale, nomnoe, rcmp, unit, ixfem)
+    subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
         real(kind=8) :: vale(5)
         character(len=8) :: nomnoe
         real(kind=8) :: rcmp(4)
         integer :: unit
-        integer :: ixfem
+        aster_logical :: lxfem
     end subroutine impfic
 end interface

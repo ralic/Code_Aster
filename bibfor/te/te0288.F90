@@ -3,6 +3,7 @@ subroutine te0288(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -17,6 +18,7 @@ subroutine te0288(option, nomte)
 #include "asterfort/xsifle.h"
 #include "asterfort/xteini.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/tecael.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -60,12 +62,12 @@ subroutine te0288(option, nomte)
     integer :: ninter, nface, cface(5, 3), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
-    integer :: icodre(3)
+    integer :: icodre(3),iadzi, iazk24
     character(len=8) :: elrefp, elrese(6), fami(6), nomres(3), nompar(4), enr
     character(len=16) :: compor(4)
     aster_logical :: grand, incr
 !
-    integer :: isig
+
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
@@ -75,6 +77,7 @@ subroutine te0288(option, nomte)
     call elref1(elrefp)
     call jevech('PTHETAR', 'L', ithet)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
+    call tecael(iadzi, iazk24)
 !
 !     SI LA VALEUR DE THETA EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
@@ -84,7 +87,7 @@ subroutine te0288(option, nomte)
             thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
  11     continue
         if (thet .lt. r8prem()) compt = compt + 1
- 10 end do
+ 10  continue
     if (compt .eq. nnop) goto 9999
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
@@ -109,7 +112,7 @@ subroutine te0288(option, nomte)
 !
     do 50 i = 1, 4
         compor(i) = zk16(icomp+i-1)
- 50 end do
+ 50  continue
 !
     incr = compor(4).eq.'COMP_INCR'
     grand = compor(3).eq.'GROT_GDEP'
@@ -121,9 +124,6 @@ subroutine te0288(option, nomte)
         call utmess('F', 'XFEM_49')
     endif
 !
-!
-!     RECUPERATION CONTRAINTE INITIALE
-    if (incr) call jevech('PSIGING', 'L', isig)
 !
 !     ------------------------------------------------------------------
 !              CALCUL DE G SUR L'ELEMENT MASSIF
@@ -177,11 +177,10 @@ subroutine te0288(option, nomte)
         call xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     ise, nfh, ddlc, ddlm, nfe,&
                     zr(jbaslo), nnop, idepl, zr(jlsn), zr(jlst),&
-                    igthet, fno, nfiss, jfisno, isig,&
-                    incr)
+                    igthet, fno, nfiss, jfisno, incr)
 !
 !
-110 end do
+110  continue
 !
 !     ------------------------------------------------------------------
 !              CALCUL DE G SUR LES LEVRES
@@ -216,7 +215,7 @@ subroutine te0288(option, nomte)
         if (option .eq. 'CALC_G' .or. option .eq. 'CALC_GTP') pres = abs(zr(ipres-1+i))
         if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_GTP_F') pres = abs(presn(i))
         if (pres .lt. r8prem()) compt = compt + 1
- 90 end do
+ 90  continue
     if (compt .eq. nnop) goto 9999
 !
 !     PARAMETRES PROPRES A X-FEM
@@ -235,8 +234,8 @@ subroutine te0288(option, nomte)
     do 20 i = 1, nface
         do 21 j = 1, nptf
             cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
- 21     continue
- 20 end do
+ 21      continue
+ 20  continue
 !
 !     RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS DE
 !     DE L'ELEMENT PARENT !!
@@ -260,7 +259,7 @@ subroutine te0288(option, nomte)
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
                     nompar, presn, option, igthet, jbasec)
-200 end do
+200  continue
 !
 !
 9999 continue

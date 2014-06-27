@@ -40,12 +40,14 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: mxval
-    parameter (mxval=6*3*4)
+    parameter (mxval=32*10*6)
 !     EN 2D :
-!     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)
+!     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)-> en lineaire
+!     MXVAL =  6 (NBSE MAX) * 6 (NBNOSE MAX) * 4 (NBCMP MAX)-> en quadratique
 !     EN 3D :
-!     MXVAL = 32 (NBSE MAX) * 4 (NBNOSE MAX) * 6 (NBCMP MAX)
-!
+!     MXVAL = 32 (NBSE MAX) * 4 (NBNOSE MAX) * 6 (NBCMP MAX)-> en lineaire
+!     MXVAL = 32 (NBSE MAX) * 10(NBNOSE MAX) * 6 (NBCMP MAX)-> en quadratique
+
     integer :: ndim, nnop, nno
     integer :: nbsig, nbseco(27)
     integer :: jcnset
@@ -66,12 +68,12 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
         do 445 j = 1, nbsig
             somsig(i,j)=0
 445      continue
-444  end do
+444  continue
 !
 !     TABLEAUX DU NOMBRE DE SOUS-ELEMENTS CONNECTES AUX NOEUDS
     do 446 i = 1, nnop
         nbseco(i)=0
-446  end do
+446  continue
 !
 !       BOUCLE SUR LES NSE SOUS-ÉLÉMENTS
     do 210 ise = 1, nse
@@ -88,7 +90,7 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
             endif
 211      continue
 !
-210  end do
+210  continue
 !
 !     MOYENNES DES CONTRAINTES AUX NOEUDS DE L'ELEMENT PARENT
     do 300 ino = 1, nnop
@@ -96,7 +98,7 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
         do 310 ic = 1, nbsig
             zr(jout2-1+nbsig*(ino-1)+ic) = somsig(ino,ic) / nbseco( ino)
 310      continue
-300  end do
+300  continue
 !
     call jedema()
 !

@@ -56,7 +56,7 @@ subroutine te0095(option, nomte)
     real(kind=8) :: dudm(3, 4), dvdm(3, 4)
     real(kind=8) :: dfudm(3, 4), dfvdm(3, 4), der(4), dtdm(3, 4)
     real(kind=8) :: rbid, e, nu, alpha, tref, ttrgu, ttrgv, k3a
-    real(kind=8) :: thet, tgu, tgv
+    real(kind=8) :: thet, tgu, tgv,sigin(6), dsigin(6,3),epsref(6)
     real(kind=8) :: xg, yg
     real(kind=8) :: c1, c2, c3, tgm, tgp
     real(kind=8) :: valres(3), devres(3), valrsv(3), devrsv(3)
@@ -93,7 +93,7 @@ subroutine te0095(option, nomte)
             thet = thet + abs(zr(ithet+ndim* (i-1)+j-1))
  20     continue
         if (thet .lt. epsi) compt = compt + 1
- 30 end do
+ 30  continue
     if (compt .eq. nno) goto 100
 !
 ! RECUPERATION CHARGE, MATER...
@@ -140,7 +140,7 @@ subroutine te0095(option, nomte)
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
 !
-! - RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES ----------------
+! - RECUPERATION DES CHARGES ET PRE DEFORMATIONS ----------------
 !
     if (fonc) then
         do 150 i = 1, nno
@@ -341,12 +341,24 @@ subroutine te0095(option, nomte)
         puls = 0.d0
         rho(1) = 0.d0
         coef = 2.d0
+! 
+!DANS CETTE OPTION, LA PRISE EN COMPTE D'UNE CONTRAINTE INITIALE N'EST PAS PREVUE ACTUELLEMENT
+!
+        do 112 i = 1, 6
+            sigin(i) = 0.d0
+            epsref(i)= 0.d0
+            do 113 j = 1, 3
+                dsigin(i,j) = 0.d0
+113         continue
+112     continue
+        
         call gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
-                    tgudm, tgvdm, ttrgu, ttrgv, poids,&
+                    tgudm, tgvdm, ttrgu, ttrgv, poids,sigin,&
+                    dsigin,epsref,&
                     c1, c2, c3, k3a, alpha,&
                     coef, rho(1), puls, gelem)
         guv3 = guv3 + gelem
- 90 end do
+ 90  continue
 !
     g = guv3
 !

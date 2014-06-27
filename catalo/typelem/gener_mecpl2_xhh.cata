@@ -242,12 +242,6 @@ OPTION__
                           OUT__ XXXXXX   XXXXXX   
     EPOT_ELEM         -1  IN__  ZVARCPG  PVARCPR  
                           OUT__ XXXXXX   XXXXXX   
-    ERME_ELEM        382  IN__  E72NEUI  PCNSETO  ECONTNO  PCONTNO  ECONTSE  PCONTSER E18NEUI  PCVOISX  
-                                CFORCEF  PFFVOLU  CREFERI  PFORCE   EFORCER  PFRVOLU  NGEOMER  PGEOMER  
-                                E9NEUTI  PLONCHA  CMATERC  PMATERC  CPESANR  PPESANR  E24NEUTR PPINTTO  
-                                E22NEUTR PPMILTO  CREFERI  PPRESS   CROTATR  PROTATR  CTEMPSR  PTEMPSR  
-                                EVOISIN  PVOISIN  
-                          OUT__ EERREUR  PERREUR  
     FORC_NODA        542  IN__  N6NEUT_R PBASLOR  E72NEUI  PCNSETO  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  
                                 DDL_MECA PDEPLMR  FISNO_I  PFISNO   NGEOMER  PGEOMER  E24NEUI  PHEAVTO  
                                 E9NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E24NEUTR PPINTTO  
@@ -310,18 +304,12 @@ OPTION__
                                 E24NEUTR PPINTTO  E22NEUTR PPMILTO  STANO_I  PSTANO   ZVARCPG  PVARCPR  
                                 ZVARCPG  PVARCRR  
                           OUT__ ECONTPG  PCONTRR  
-    SIEF_ELNO        289  IN__  E72NEUI  PCNSETO  ECONTPG  PCONTRR  E9NEUTI  PLONCHA  ZVARCPG  PVARCPR  
-                          OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR 
     SIEQ_ELGA         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     SIEQ_ELNO         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     SIGM_ELGA        546  IN__  ECONTPG  PSIEFR   
                           OUT__ ECONTPC  PSIGMC   ECONTPG  PSIGMR   
-    SIGM_ELNO        289  IN__  E72NEUI  PCNSETO  ECONTPG  PCONTRR  E9NEUTI  PLONCHA  
-                          OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR 
-    SISE_ELNO        289  IN__  ECONTPG  PCONTRR  E9NEUTI  PLONCHA  
-                          OUT__ ECONTSE  PCONTSER 
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN     
                                 N1NEUT_R PLST     
                           OUT__ E15NEUTR PAINTER  E12NEUTR PBASECO  E3NEUTI  PCFACE   E6NEUTR  PGESCLA  

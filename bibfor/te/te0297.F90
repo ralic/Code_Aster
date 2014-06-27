@@ -66,11 +66,12 @@ subroutine te0297(option, nomte)
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/
     data    nomres /'E','NU','ALPHA'/
 !
+    
     call elref1(elrefp)
     call jevech('PTHETAR', 'L', ithet)
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)
 !
-!     SI LA VALEUR DE THETA EST NULLE SUR L'ÉLÉMENT, ON SORT
+!   SI LA VALEUR DE THETA EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
     do 10 i = 1, nnop
         thet = 0.d0
@@ -78,19 +79,21 @@ subroutine te0297(option, nomte)
             thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
 11      continue
         if (thet .lt. r8prem()) compt = compt + 1
-10  end do
+10  continue
     if (compt .eq. nnop) goto 9999
 !
-!     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
+!   SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
     if (.not.iselli(elrefp)) then
         irese=3
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
-  npg=npg)
+    call elrefe_info(elrefe=elrese(ndim+irese),&
+                     fami=fami(ndim+irese),&
+                     nno=nno,&
+                     npg=npg)
 !
-!     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
+!   INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
                 ibid, ibid, ibid, ddlm, nfiss,&
                 ibid)
@@ -99,19 +102,21 @@ subroutine te0297(option, nomte)
 !              CALCUL DE G, K1, K2, K3 SUR L'ELEMENT MASSIF
 !     ------------------------------------------------------------------
 !
-!     PARAMÈTRES PROPRES À X-FEM
+!   Parametres propres a X-FEM
     call jevech('PPINTTO', 'L', jpintt)
     call jevech('PCNSETO', 'L', jcnset)
     call jevech('PHEAVTO', 'L', jheavt)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PBASLOR', 'L', jbaslo)
-    call jevech('PLSN', 'L', jlsn)
-    call jevech('PLST', 'L', jlst)
+    call jevech('PLSN'   , 'L', jlsn)
+    call jevech('PLST'   , 'L', jlst)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
     call jevech('PGTHETA', 'E', igthet)
-!     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
+    call jevech('PGTHETA', 'E', igthet)
+
+!   Propre aux elements 1d et 2d (quadratiques)
     call teattr('S', 'XFEM', enr, ier)
     if ((ier.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHC'.or.enr.eq.'XHT'.or.enr.eq.'XT')&
@@ -119,10 +124,10 @@ subroutine te0297(option, nomte)
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
-!     VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
+!   VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
     if ( .not. cgverho(imate) ) call utmess('F', 'RUPTURE1_26')
 !
-!     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
+!   CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
     call xcgfvo(option, ndim, nnop, fno)
 !
 ! --- RECUPERATION DE LA PULSATION
@@ -136,13 +141,13 @@ subroutine te0297(option, nomte)
         puls = 0.d0
     endif
 !
-!     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+!   Recuperation de la subdivision de l'element en nse sous element
     nse=zi(jlonch-1+1)
 !
-!       BOUCLE SUR LES NSE SOUS-ELEMENTS
+!   Boucle sur les nse sous-elements
     do 110 ise = 1, nse
 !
-!       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
+!       Boucle sur les sommets du sous-tria (du sous-seg)
         do 111 in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
             do 112 j = 1, ndim
@@ -169,7 +174,7 @@ subroutine te0297(option, nomte)
                     idepl, zr(jlsn), zr( jlst), idecpg, igthet,&
                     fno, nfiss, jfisno)
 !
-110  end do
+110  continue
 !
 !     ------------------------------------------------------------------
 !              CALCUL DE G, K1, K2, K3 SUR LES LEVRES
@@ -198,23 +203,23 @@ subroutine te0297(option, nomte)
 70      continue
     endif
 !
-!     SI LA VALEUR DE LA PRESSION EST NULLE SUR L'ÉLÉMENT, ON SORT
+!   SI LA VALEUR DE LA PRESSION EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
     do 90 i = 1, nnop
         if (option .eq. 'CALC_K_G') pres = abs(zr(ipres-1+i))
         if (option .eq. 'CALC_K_G_F') pres = abs(presn(i))
         if (pres .lt. r8prem()) compt = compt + 1
-90  end do
+90  continue
     if (compt .eq. nnop) goto 9999
 !
-!     PARAMETRES PROPRES A X-FEM
+!   PARAMETRES PROPRES A X-FEM
     call jevech('PPINTER', 'L', jptint)
     call jevech('PAINTER', 'L', jaint)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlongc)
     call jevech('PBASECO', 'L', jbasec)
 !
-!     RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
+!   RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
     ninter=zi(jlongc-1+1)
     nface=zi(jlongc-1+2)
     nptf=zi(jlongc-1+3)
@@ -224,17 +229,17 @@ subroutine te0297(option, nomte)
         do 41 j = 1, 3
             cface(i,j)=0
 41      continue
-40  end do
+40  continue
 !
     do 20 i = 1, nface
         do 21 j = 1, nptf
             cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
 21      continue
-20  end do
+20  continue
 !
-!     RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS DE
-!     DE L'ELEMENT PARENT !!
-!     LE MATÉRIAU DOIT ETRE HOMOGENE DANS TOUT L'ELEMENT
+!   RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS DE
+!   DE L'ELEMENT PARENT !!
+!   LE MATÉRIAU DOIT ETRE HOMOGENE DANS TOUT L'ELEMENT
     call rcvad2('RIGI', 1, 1, '+', zi(imate),&
                 'ELAS', 3, nomres, valres, devres,&
                 icodre)
@@ -246,14 +251,14 @@ subroutine te0297(option, nomte)
         devres(3) = 0.d0
     endif
 !
-!     BOUCLE SUR LES FACETTES
+!   BOUCLE SUR LES FACETTES
     do 200 ifa = 1, nface
         call xsifle(ndim, ifa, jptint, jaint, cface,&
                     igeom, nfh, singu, nfe, ddlc,&
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
                     nompar, presn, option, igthet, jbasec)
-200  end do
+200  continue
 !
 !
 9999  continue

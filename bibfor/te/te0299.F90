@@ -35,6 +35,7 @@ subroutine te0299(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/tecael.h"
 #include "asterfort/cgverho.h"
 #include "asterfort/chauxi.h"
 #include "asterfort/elrefe_info.h"
@@ -52,17 +53,18 @@ subroutine te0299(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 !
-    integer :: icodre(3)
+    integer :: icodre(3),matcod,ncmp, i1, ij
     integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos, jgano, icomp
-    integer :: igeom, ithet, irota, ipesa, ificg, idepl, iret, ipuls
+    integer :: igeom, ithet, irota, ipesa, ificg, idepl, iret, ipuls, isigi
     integer :: imate, iforc, iforf, ifond, itemps, k, i, j, kk, l, ndim, jtab(7)
     integer :: ino
+    integer :: iadzi, iazk24
 !
-    real(kind=8) :: dfdi(18), f(3, 3), eps(6), fno(18)
+    real(kind=8) :: dfdi(18), f(3, 3), eps(6), fno(18), sigin(6), dsigin(6,3)
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4)
-    real(kind=8) :: du1dm(3, 4), du2dm(3, 4)
+    real(kind=8) :: du1dm(3, 4), du2dm(3, 4), epsref(6)
     real(kind=8) :: rhocst, rho, om, omo, rbid=0.d0, e, nu, rbid2(3, 3, 3)
-    real(kind=8) :: thet, tno(20), tgdm(3)
+    real(kind=8) :: thet, tno(20), tgdm(3),rac2
     real(kind=8) :: xag, yag, xg, yg, xa, ya, norm, a, b
     real(kind=8) :: c1, c2, c3, cs, u1(2), u2(2)
     real(kind=8) :: e1(3), e2(3), e3(3), p(3, 3), invp(3, 3), rg, phig
@@ -74,6 +76,7 @@ subroutine te0299(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nomres(3), nompar(4)
     character(len=16) :: phenom, compor(4)
+    character(len=24) :: valk
 !
     aster_logical :: lcour, fonc, lpesa, lrota
     aster_logical :: axi
@@ -81,7 +84,9 @@ subroutine te0299(option, nomte)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+
 !
+
     fami = 'RIGI'
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
@@ -94,7 +99,10 @@ subroutine te0299(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCOMPOR', 'L', icomp)
     call jevech('PFISSR', 'L', ifond)
+    matcod = zi(imate)
 !
+! NOMBRE DE COMPOSANTES DES TENSEURS
+    ncmp = 2*ndim
 !
 ! --- RECUPERATION DU CHAMP OUT
 !
@@ -106,6 +114,7 @@ subroutine te0299(option, nomte)
     g = 0.d0
     k1 = 0.d0
     k2 = 0.d0
+    rac2 = sqrt(2.d0)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
@@ -164,15 +173,19 @@ subroutine te0299(option, nomte)
         lrota = .true.
     endif
 !
-! --- VERFICATION DU COMPORTEMENT
-!
+! --- VERFICATION DU COMPORTEMENT : ELASTICITE INCREMENTALE AUTORISEE
+!  
     do i = 1, 4
         compor(i) = zk16(icomp+i-1)
     end do
 !
-    if ((compor(1).ne.'ELAS' ) .or. (compor(3).eq.'GROT_GDEP') .or.&
-        (compor(4).eq.'COMP_INCR')) then
+    if (compor(3).eq.'GROT_GDEP') then
         call utmess('F', 'RUPTURE1_24')
+    end if
+    if ((compor(1).ne.'ELAS' ) .or.  (compor(4).eq.'COMP_INCR')) then
+        if (compor(1).ne.'ELAS' ) then
+            call utmess('F', 'RUPTURE1_24')
+        end if
     endif
 !
 ! --- RECUPERATION DE LA PULSATION
@@ -210,8 +223,8 @@ subroutine te0299(option, nomte)
 ! --- RECUPERATION DE LA PESANTEUR ET DE LA ROTATION
 !
     if (lpesa .or. lrota) then
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-        call rcvalb('RIGI', 1, 1, '+', zi(imate),&
+        call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
+        call rcvalb('RIGI', 1, 1, '+', matcod,&
                     ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', val, icodre, 1)
         rhocst = val(1)
@@ -248,6 +261,10 @@ subroutine te0299(option, nomte)
         if (iret .ne. 0) tno(ino) = 0.d0
     end do
 !
+! --- RECUPERATION DE LA CONTRAINTE INITIALE
+    call tecach('ONN', 'PSIGINR', 'L', iret, iad=isigi)
+    
+    
 ! ----------------------------------------------------------------------
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
@@ -255,7 +272,7 @@ subroutine te0299(option, nomte)
 ! ----------------------------------------------------------------------
 !
     do kp = 1, npg
-!
+!INITIALISATIONS
         l = (kp-1) * nno
         xg = 0.d0
         yg = 0.d0
@@ -269,6 +286,13 @@ subroutine te0299(option, nomte)
                 dfdm(i,j) = 0.d0
             end do
         end do
+        do i = 1, 6
+            sigin(i) = 0.d0
+            epsref(i)= 0.d0
+            do j = 1, 3
+                dsigin(i,j) = 0.d0
+            end do
+         end do
 !
 ! ----- CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E)
 !       EN UN PT DE GAUSS
@@ -312,11 +336,13 @@ subroutine te0299(option, nomte)
             dfdm(3,3)= dfdm(1,4)/ray
         endif
 !
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
+        call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
+       
+
 !
 ! ----- RECUPERATION DE E, NU
 !
-        call rcvalb(fami, kp, 1, '+', zi(imate),&
+        call rcvalb(fami, kp, 1, '+', matcod,&
                     ' ', phenom, 0, ' ', [0.d0],&
                     3, nomres, valres, icodre, 0)
         ASSERT(icodre(1)+icodre(2).eq.0)
@@ -343,6 +369,47 @@ subroutine te0299(option, nomte)
             c2 = nu*c1
             th = (1.d0-2.d0*nu)/(1.d0-nu)
             coefk = e
+        endif
+!
+! ---- DETERMINATION DES GRANDEURS UTILES A LA PRISE EN COMPTE DE LA CONTRAINTE INITIALE
+! ---- CONTRAINTE INITIALE, SA DERIVEE ET LA DEFORMATION ASSOCIEE EPSREF
+!
+        if (isigi .ne. 0) then
+            do i = 1, nno
+                i1 = i-1
+                der(1) = dfdi(i)
+                der(2) = dfdi(i+nno)
+                der(3) = 0.d0
+                der(4) = zr(ivf+l+i1)
+
+! CALCUL DE SIGMA INITIAL
+                ij = isigi+ncmp*i1-1
+                do j = 1, ncmp
+                    sigin(j) = sigin(j)+ zr(ij+j)*der(4)
+                end do
+!
+! CALCUL DU GRADIENT DE SIGMA INITIAL
+                do j = 1, ncmp
+                    do k = 1, ndim
+                        dsigin(j,k)=dsigin(j,k)+zr(ij+j)*der(k)
+                    end do
+                end do
+            end do
+!
+! TRAITEMENTS PARTICULIERS DES TERMES CROISES
+            do  i = 4, ncmp
+                sigin(i) = sigin(i)*rac2
+                do j = 1, ndim
+                    dsigin(i,j) = dsigin(i,j)*rac2
+                end do
+            end do
+!
+! CALCUL DE LA DEFORMATION DE REFERENCE
+!
+            epsref(1)=-(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
+            epsref(2)=-(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
+            epsref(3)=-(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
+            epsref(4)=-(1.d0/mu)*sigin(4)  
         endif
 !
 !
@@ -431,35 +498,52 @@ subroutine te0299(option, nomte)
 !       CALCUL DE G, K1, K2 AU POINT DE GAUSS
 !-----------------------------------------------------------------------
 !
-        guv = 0.d0
+
+          guv = 0.d0
+
         cs = 1.d0
         call gbilin(fami, kp, zi(imate), dudm, dudm,&
-                    dtdm, dfdm, tgdm, poids, c1,&
+                    dtdm, dfdm, tgdm, poids, sigin,&
+                    dsigin, epsref, c1,&
                     c2, c3, cs, th, 2.d0,&
                     rho, puls, axi, guv)
-        g = g + guv
+
+          g = g + guv
 !
-        guv1 = 0.d0
+
+          guv1 = 0.d0
+
         cs = 0.5d0
         call gbilin(fami, kp, zi(imate), dudm, du1dm,&
-                    dtdm, dfdm, tgdm, poids, c1,&
+                    dtdm, dfdm, tgdm, poids, sigin,&
+                    dsigin, epsref, c1,&
                     c2, c3, cs, th, 1.d0,&
                     rho, puls, axi, guv1)
         k1 = k1 + guv1
 !
-        guv2 = 0.d0
+
+          guv2 = 0.d0
+
         cs = 0.5d0
+        
         call gbilin(fami, kp, zi(imate), dudm, du2dm,&
-                    dtdm, dfdm, tgdm, poids, c1,&
+                    dtdm, dfdm, tgdm, poids, sigin,&
+                    dsigin, epsref, c1,&
                     c2, c3, cs, th, 1.d0,&
                     rho, puls, axi, guv2)
         k2 = k2 + guv2
+
 !
     end do
 !
     k1 = k1 * coefk
     k2 = k2 * coefk
 !
+    call tecael(iadzi, iazk24)
+    valk=zk24(iazk24-1+3)
+
+
+
     zr(ificg) = g
     zr(ificg+1) = k1 / sqrt(coefk)
     zr(ificg+2) = k2 / sqrt(coefk)

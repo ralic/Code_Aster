@@ -16,17 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xselno(nno, nnop, nbsig, nse, ndim,&
-                      jcnset, siseno, jout2)
-        integer :: mxval
-        parameter (mxval=32*10*6)
-        integer :: nno
-        integer :: nnop
-        integer :: nbsig
-        integer :: nse
-        integer :: ndim
-        integer :: jcnset
-        real(kind=8) :: siseno(mxval)
-        integer :: jout2
-    end subroutine xselno
+    subroutine xelgano(modele,sigelga,sigseno)
+        character(len=8)  :: modele
+        character(len=24) :: sigelga
+        character(len=24) :: sigseno
+    end subroutine xelgano
 end interface

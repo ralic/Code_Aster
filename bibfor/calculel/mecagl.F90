@@ -186,7 +186,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                 call detrsd('CHAMP', celmod)
                 call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
                             iret, ' ')
-                call chpchd(chsigi, 'ELNO', celmod, 'NON', 'V',&
+                call chpchd(chsigi, 'ELNO', celmod, 'OUI', 'V',&
                             sigout)
                 call chpver('C', sigout, 'ELNO', 'SIEF_R', ino1)
             endif

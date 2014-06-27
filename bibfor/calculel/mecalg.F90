@@ -50,6 +50,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
+#include "asterfort/xelgano.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chpchd.h"
@@ -93,7 +94,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     parameter (nbmxpa = 20)
 !
     integer :: ibid, iret, nres, numfon, livi(nbmxpa)
-    integer :: nchin, nsig, ino1, ino2, inga
+    integer :: nchin, nsig, ino1, ino2, inga, pbtype
     real(kind=8) :: g(1), livr(nbmxpa)
     complex(kind=8) :: livc(nbmxpa)
     aster_logical :: lfonc, lxfem
@@ -106,7 +107,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     character(len=19) :: pmilto
     character(len=19) :: pinter, ainter, cface, longco, baseco
     character(len=24) :: ligrmo, chgeom, lchin(50), lchout(2)
-    character(len=24) :: chtime, celmod, sigout
+    character(len=24) :: chtime, celmod, sigelno, sigseno
     character(len=24) :: pavolu, pa1d2d, pa2d3d, papres, pepsin
     character(len=24) :: chsig, chepsp, chvari, chsigi, livk(nbmxpa)
     parameter (resuco = '&&MECALG')
@@ -116,6 +117,8 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     call jemarq()
     chtime = ' '
     option = optioz
+    write(6,*)' hello mecalg'
+    write(6,*)' hello incr ',incr
 !
 !     INITIALISATIONS
     g = 0.d0
@@ -131,15 +134,20 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     chvolu = '&&MECALG.VOLU'
     chsigi = '&&MECALG.CHSIGI'
     celmod = '&&MECALG.CELMOD'
-    sigout = '&&MECALG.SIGOUT'
+    sigelno= '&&MECALG.SIGELNO'
+    sigseno= '&&MECALG.SIGSENO'
 !
+!   cas FEM ou X-FEM
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.
 !
-!- RECUPERATION DU CHAMP GEOMETRIQUE
-!
+!   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
+
+!   Recuperation du LIGREL
+    ligrmo = modele//'.MODELE'
+
 !
 !- RECUPERATION DU COMPORTEMENT
 !
@@ -153,28 +161,55 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
                     iret)
     endif
 !
-!- RECUPERATION DE L'ETAT INITIAL
+!   Recuperation de l'etat initial
+!   ------------------------------
+
     if (incr) then
+
         call getvid('ETAT_INIT', 'SIGM', iocc=1, scal=chsigi, nbret=nsig)
-!- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
+
+!       Verification du type de champ + transfo, si necessaire en champ elno
         if (nsig .ne. 0) then
+
+!           chpver renvoit 0 si OK et 1 si PB
             call chpver('C', chsigi(1:19), 'ELNO', 'SIEF_R', ino1)
             call chpver('C', chsigi(1:19), 'NOEU', 'SIEF_R', ino2)
             call chpver('C', chsigi(1:19), 'ELGA', 'SIEF_R', inga)
-            if ((ino1.eq.1) .and. (ino2.eq.1) .and. (inga.eq.1)) then
-                call utmess('F', 'RUPTURE1_12')
-            else if (inga.eq.0) then
-                ligrmo = modele//'.MODELE'
+
+!           Verification du type de champ
+            pbtype=0
+            if (.not.lxfem) then
+!             cas FEM : verif que le champ est soit ELNO, soit NOEU, soit ELGA
+              if (ino1.eq.1 .and. ino2.eq.1 .and. inga.eq.1) pbtype=1
+            elseif (lxfem) then
+!             cas X-FEM : verif que le champ est ELGA (seul cas autorise)
+              if (inga.eq.1) pbtype=1
+            endif            
+            if (pbtype.eq.1) call utmess('F', 'RUPTURE1_12')
+            
+!           transformation si champ ELGA
+            if (inga.eq.0) then
+
+!               traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
                 call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
                             iret, ' ')
-                call chpchd(chsigi(1:19), 'ELNO', celmod, 'NON', 'V',&
-                            sigout)
-                call chpver('C', sigout(1:19), 'ELNO', 'SIEF_R', ino1)
+                call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
+                            sigelno)
+                call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
+
+!               calcul d'un champ supplementaire aux noeuds des sous-elements si X-FEM
+                if (lxfem) call xelgano(modele,chsigi,sigseno)
+!                call imprsd('CHAMP',chsigi,6,'chsigi')
+
             endif
+
         endif
+
     else
+
         nsig=0
+
     endif
 !
 !- RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
@@ -329,18 +364,25 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
 !       CHAMP DE CONTRAINTE INITIALE
         if (nsig .ne. 0) then
-            if (inga .eq. 0) then
-                lpain(nchin+1) = 'PSIGINR'
-                lchin(nchin+1)=sigout
-                nchin = nchin + 1
-                lpain(nchin+1) = 'PSIGING'
-                lchin(nchin+1)= chsigi
-                nchin = nchin + 1
-            else
-                lpain(nchin+1) = 'PSIGINR'
-                lchin(nchin+1) = chsigi
+          if (inga .eq. 0) then
+!           champ de contrainte initiale transforme en ELNO
+            lpain(nchin+1) = 'PSIGINR'
+            lchin(nchin+1) = sigelno
+            nchin = nchin + 1
+
+!           si X-FEM : champ de contrainte initiale transforme en SE-ELNO
+            if (lxfem) then
+                lpain(nchin+1) = 'PSIGISE'
+                lchin(nchin+1) = sigseno
                 nchin = nchin + 1
             endif
+
+          else
+!           champ de contrainte initiale donne par l'utilisateur (NOEUD ou ELNO)
+            lpain(nchin+1) = 'PSIGINR'
+            lchin(nchin+1) = chsigi
+            nchin = nchin + 1
+          endif
         endif
     endif
 !
@@ -400,6 +442,6 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     call detrsd('CHAMP_GD', chrota)
     call detrsd('CHAMP_GD', chtime)
     call detrsd('CHAMP_GD', chvolu)
-!
+
     call jedema()
 end subroutine

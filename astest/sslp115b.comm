@@ -1,4 +1,4 @@
-# TITRE DISQUE FISSURE EN PRESENCE DE CONTRAINTES INITIALES AVEC X-FEM
+# TITRE Calcul du taux de restitution d'énergie d'un disque fissuré en présence de contraintes initiales
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,9 +17,12 @@
 # ======================================================================
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-#################################################################
-###########                  CALCUL THERMIQUE
-#################################################################
+
+#####################
+##CALCUL THERMIQUE
+#####################
+
+#Maillage mecanique
 MAILMECA=LIRE_MAILLAGE(UNITE=20,
                        FORMAT='MED',
                         );
@@ -28,6 +31,7 @@ TEMPVARX=DEFI_FONCTION(NOM_PARA='X',VALE=(-100,260,
                                            0,130,
                                            22,100,
                                            100,200),);
+
 CHP_TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                      MAILLAGE=MAILMECA,
                      AFFE=_F(TOUT = 'OUI',
@@ -59,7 +63,7 @@ RESUTHER=CREA_RESU(OPERATION='AFFE',
                    )
 
 ##CALCUL MECANIQUE AVEC TEMPERATURE, FISSURE FERMEE => RESUMECA, pour champs
-#de contrainte initiale 
+#de contrainte initiale
 
 MO=AFFE_MODELE(MAILLAGE=MAILMECA,
                AFFE=_F(GROUP_MA='Tout',
@@ -67,12 +71,13 @@ MO=AFFE_MODELE(MAILLAGE=MAILMECA,
                        MODELISATION='D_PLAN',),);
 
 a0=23
-LN = FORMULE(NOM_PARA=('Y'),VALE='Y')
-LT = FORMULE(NOM_PARA=('X'),VALE='abs(X-a0/2)-a0/2')
-
+#LN = FORMULE(NOM_PARA=('Y'),VALE='Y')
+#LT = FORMULE(NOM_PARA=('X'),VALE='abs(X-a0/2)-a0/2')
 FISS=DEFI_FISS_XFEM(MODELE=MO,
-                      DEFI_FISS=_F(FONC_LT=LT,
-                                   FONC_LN=LN,),),
+                    DEFI_FISS=_F(FORM_FISS='SEGMENT',
+                                 PFON_ORIG  = (0. , 0., 0.),
+                                 PFON_EXTR  = (a0 , 0., 0.),),
+                    )
 
 ##Materiau dependant de la temperature
 MAMEC=DEFI_MATERIAU(ELAS=_F(E=210000,
@@ -102,7 +107,7 @@ ENCASTRE=AFFE_CHAR_MECA(MODELE=ModX,
                                     DY=0,),);
                          
 # Desactiver les ddl enrichis pour considere une fissure fermed
-DESXFEM=AFFE_CHAR_MECA(MODELE=ModX,
+BLOCFISS=AFFE_CHAR_MECA(MODELE=ModX,
                        DDL_IMPO=_F(TOUT ='OUI',
                                    H1X = 0,
                                    H1Y = 0,
@@ -120,8 +125,7 @@ DESXFEM=AFFE_CHAR_MECA(MODELE=ModX,
 RESUMECA=STAT_NON_LINE(MODELE=ModX,
                        CHAM_MATER=MAMECA,
                        EXCIT=(_F(CHARGE=ENCASTRE,),
-                              _F(CHARGE=DESXFEM,),
-                               ),
+                              _F(CHARGE=BLOCFISS,),),
                        COMPORTEMENT=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=INSTMECA,),);
 
@@ -129,41 +133,73 @@ RESUMECA=CALC_CHAMP(reuse=RESUMECA,
                     RESULTAT=RESUMECA,
                     CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+#                    CRITERES=('SIEQ_ELGA',),
                     VARI_INTERNE=('VARI_ELNO',),);
 
 ##Extraction des contraintes au noeuds et points de Gauss
+# en fait, aux noeuds, c'est impossible car avec X-FEM SIEF_ELNO est trop pauvre
 SIEFELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUMECA,
                     NOM_CHAM='SIEF_ELGA',
-                    INST=1,
-                    INFO=1,);
+                    INST=1,);
 
 ##Calcul thermomecanique sans etat init ouverture de la fissure
 RESOUVFI=STAT_NON_LINE(MODELE=ModX,
                        CHAM_MATER=MAMECA,
                        EXCIT=(_F(CHARGE=ENCASTRE,),),
                        COMPORTEMENT=_F(RELATION='ELAS',),
-                       INCREMENT=_F(LIST_INST=INSTMECA,), );
+                       INCREMENT=_F(LIST_INST=INSTMECA,),);
 
 RESOUVFI=CALC_CHAMP(reuse=RESOUVFI,
                     RESULTAT=RESOUVFI,
                     CONTRAINTE=('SIEF_ELNO',),
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+#                    CRITERES=('SIEQ_ELGA',),
                     VARI_INTERNE=('VARI_ELNO',),);
 
 ##Definition du fond de fissure et des couronnes pour reutilisation dans resuini
 # Définit par CALC_G avec ce maillahe
-Rinf=1.2
-Rsup=2.4
 
-THETA1=CALC_G(RESULTAT=RESOUVFI,
-             OPTION='CALC_G',
-             THETA=_F( FISSURE=FISS,),);
-IMPR_TABLE(TABLE = THETA1)
+# defintion de 3 couronnes pour le champ theta
+#---------------------------------------------
+
+h = 0.6
+
+# valeurs automatiquement calculees (C1 = 2h - 4h)
+Rinf1 = 1.2
+Rsup1 = 2.4
+
+# valeurs automatiquement calculees (C2 = 4h - 8h)
+Rinf2 = 2.4
+Rsup2 = 4.8
+
+# meme valeurs que sslp115a (soit ici C3 = 7h - 15h)
+Rinf3 = 4.228
+Rsup3 = 9.0
+GTHER3=CALC_G(THETA=_F(FISSURE=FISS,
+                       NUME_FOND = 2,
+                       R_INF=Rinf3,
+                       R_SUP=Rsup3,),
+              RESULTAT=RESOUVFI,
+              INST=1.,
+              OPTION='CALC_G')
+
+IMPR_TABLE(TABLE = GTHER3, UNITE=9)
+
+PKTHER=POST_K1_K2_K3(MODELISATION='D_PLAN',
+                     NUME_FOND = 2,
+                     MATER = MAMEC,
+                     FISSURE=FISS,
+                     RESULTAT=RESOUVFI)
+
+IMPR_TABLE(TABLE = PKTHER, UNITE=9)
+
 #################################################################
-########## Calcul de G en presence du champ de contrainte residuelle genere par le calcul thermique)
+# Calcul de G en presence du champ de contrainte residuelle 
+# genere par le calcul thermique)
 ##################################################################
+
 ## Definition de la liste d'instants
 LIST3=DEFI_LIST_REEL(DEBUT=2,
                      INTERVALLE=_F(JUSQU_A=3,PAS=1,),);
@@ -171,8 +207,8 @@ LIST3=DEFI_LIST_REEL(DEBUT=2,
 ## Affectation du materiau mecanique (sans chargement thermique)
 MAMECA2=AFFE_MATERIAU(MAILLAGE=MAILMECA,
                       AFFE=_F(TOUT='OUI',MATER=MAMEC,),);
-## Resolution ouverture de la fissure en presence d'un champ de contrainte residuelle
 
+## Resolution ouverture de la fissure en presence d'un champ de contrainte residuelle
 RESUINI=STAT_NON_LINE(MODELE=ModX,
                       CHAM_MATER=MAMECA2,
                       EXCIT=(_F(CHARGE=ENCASTRE,),),
@@ -185,91 +221,180 @@ RESUINI=STAT_NON_LINE(MODELE=ModX,
 RESUINI=CALC_CHAMP(reuse=RESUINI,
                    RESULTAT=RESUINI,
                    DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+#                   CRITERES=('SIEQ_ELGA',), # pas possble 
                    VARI_INTERNE=('VARI_ELNO',),);
 
 
-## Calcul de G en utilisant les couronnes precedemment definies (dans le calcul thermique)
-# et les differentes possibilites de l'etat initial.                             
-GINGA=CALC_G(THETA=_F( FISSURE=FISS, 
-                         NUME_FOND = 2,
-                ),
-             RESULTAT=RESUINI,
-             INST=3,
-             ETAT_INIT =_F(SIGM=SIEFELGA),
-             OPTION='CALC_G')
+# Calcul de G pour les 3 couronnes, a partir de SIEF_ELGA
+#--------------------------------------------------------
 
-GINGA2=CALC_G(THETA=_F( FISSURE=FISS,
-                         NUME_FOND = 2,
-                         R_INF = Rinf,
-                         R_SUP = 2*Rsup,
-                ),
+GINGA1=CALC_G(THETA=_F(FISSURE=FISS, 
+                       NUME_FOND = 2,
+                       R_INF = Rinf1,
+                       R_SUP = Rsup1),
+              RESULTAT=RESUINI,
+              INST=3,
+              ETAT_INIT =_F(SIGM=SIEFELGA),
+              OPTION='CALC_G')
+
+GINGA2=CALC_G(THETA=_F(FISSURE=FISS,
+                       NUME_FOND = 2,
+                       R_INF = Rinf2,
+                       R_SUP = Rsup2),
              RESULTAT=RESUINI,
              INST=3,
              ETAT_INIT =_F(SIGM=SIEFELGA),
              OPTION='CALC_G')
              
-GINGA3=CALC_G(THETA=_F( FISSURE=FISS,
-                     NUME_FOND = 2,
-                     R_INF = Rinf,
-                     R_SUP = 4*Rsup,
-                ),
+GINGA3=CALC_G(THETA=_F(FISSURE=FISS,
+                       NUME_FOND = 2,
+                       R_INF = Rinf3,
+                       R_SUP = Rsup3),
              RESULTAT=RESUINI,
              INST=3,
              ETAT_INIT =_F(SIGM=SIEFELGA),
              OPTION='CALC_G')
 
-GTHER=CALC_G(THETA=_F( FISSURE=FISS,
-                         NUME_FOND = 2
-                ),
-             RESULTAT=RESOUVFI,
-             INST=1,
-             OPTION='CALC_G')
-IMPR_TABLE(TABLE=GTHER)
+IMPR_TABLE(TABLE=GINGA1,UNITE=11)
+IMPR_TABLE(TABLE=GINGA2,UNITE=11)
+IMPR_TABLE(TABLE=GINGA3,UNITE=11)
 
-GKTHER=CALC_G(THETA=_F( FISSURE=FISS,
-                         NUME_FOND = 2
-                ),
-             RESULTAT=RESOUVFI,
-             INST=1,
-             OPTION='CALC_K_G')
-IMPR_TABLE(TABLE=GKTHER)
+# Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELGA
+#-------------------------------------------------------------
 
-## Impression des resultats
-TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=54.243555023161,
-           VALE_REFE=55.102982584654,
-           REFERENCE='SOURCE_EXTERNE',
+GINGAK1=CALC_G(THETA=_F(FISSURE=FISS, 
+                       NUME_FOND = 2,
+                       R_INF = Rinf1,
+                       R_SUP = Rsup1),
+               RESULTAT=RESUINI,
+               INST=3,
+               ETAT_INIT =_F(SIGM=SIEFELGA),
+               OPTION='CALC_K_G')
+
+GINGAK2=CALC_G(THETA=_F(FISSURE=FISS,
+                       NUME_FOND = 2,
+                       R_INF = Rinf2,
+                       R_SUP = Rsup2),
+               RESULTAT=RESUINI,
+               INST=3,
+               ETAT_INIT =_F(SIGM=SIEFELGA),
+               OPTION='CALC_K_G')   
+
+GINGAK3=CALC_G(THETA=_F(FISSURE=FISS,
+                        NUME_FOND = 2,
+                        R_INF = Rinf3,
+                        R_SUP = Rsup3),
+               RESULTAT=RESUINI,
+               INST=3,
+               ETAT_INIT =_F(SIGM=SIEFELGA),
+               OPTION='CALC_K_G')             
+
+IMPR_TABLE(TABLE=GINGAK1,UNITE=11)
+IMPR_TABLE(TABLE=GINGAK2,UNITE=11)
+IMPR_TABLE(TABLE=GINGAK3,UNITE=11)
+
+PKMECA=POST_K1_K2_K3(MODELISATION='D_PLAN',
+                     INST=3,
+                     NUME_FOND = 2,
+                     MATER = MAMEC,
+                     FISSURE=FISS,
+                     RESULTAT=RESUINI)          
+
+IMPR_TABLE(TABLE=PKMECA, UNITE=9)
+
+# -------------------------------------------------------------------
+#                       Tests des tables
+# -------------------------------------------------------------------
+
+# Gref provient de la modelisation A : CALC_G a partir du calcul thermique
+Gref = 55.36
+
+# KIref =  sqrt( E * Gref / (1 - nu^2)) = 3574.396129741035
+KIref = 3574.39612
+
+
+# 1) le G de CALC_G
+TEST_TABLE(PRECISION=0.021,
+           VALE_CALC=54.9057366145,
+           VALE_REFE=Gref,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
-           TABLE=GINGA,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3,),
-           )
+           TABLE=GINGA1)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=54.611545963686,
-           VALE_REFE=55.102982584654,
-           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=54.5166405674,
+           VALE_REFE=Gref,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
-           TABLE=GINGA2,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3,),
-           )
+           TABLE=GINGA2)
+
+TEST_TABLE(PRECISION=0.035,
+           VALE_CALC=53.4298213805,
+           VALE_REFE=Gref,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='G',
+           TABLE=GINGA3)
+
+# 2) le G de CALC_K_G
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=55.0309001195,
+           VALE_REFE=Gref,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='G',
+           TABLE=GINGAK1,)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=54.124067771622,
-           VALE_REFE=55.102982584654,
-           REFERENCE='SOURCE_EXTERNE',
+           VALE_CALC=54.6483565339,
+           VALE_REFE=Gref,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
-           TABLE=GINGA3,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3,),
-           )
+           TABLE=GINGAK2,)
+
+TEST_TABLE(PRECISION=0.035,
+           VALE_CALC=53.5677970912,
+           VALE_REFE=Gref,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='G',
+           TABLE=GINGAK3,)
            
-TEST_TABLE(VALE_CALC=55.102982584654,
+# 3) le K de CALC_K_G
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=3571.21045922,
+           VALE_REFE=KIref,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='K1',
+           TABLE=GINGAK1,)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=3561.07057244,
+           VALE_REFE=KIref,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='K1',
+           TABLE=GINGAK2,)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=3539.8265489,
+           VALE_REFE=KIref,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='K1',
+           TABLE=GINGAK3,)
+
+# 4) le K avec POST_K1_K2_K3 : 5% d'ecart, c'est bizarre
+TEST_TABLE(PRECISION=0.05,
+           VALE_CALC=3735.03567957,
+           VALE_REFE=KIref,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='K1',
+           TABLE=PKMECA,)
+
+# 5) le G suite au calcul thermique
+TEST_TABLE(VALE_CALC=55.1469005895,
            NOM_PARA='G',
-           TABLE=GTHER,
+           TABLE=GTHER3,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1,),
            )
-FIN();
 
+
+
+FIN()

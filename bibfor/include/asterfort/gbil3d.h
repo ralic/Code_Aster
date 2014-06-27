@@ -17,7 +17,8 @@
 !
 interface
     subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
-                      tgudm, tgvdm, ttrgu, ttrgv, poids,&
+                      tgudm, tgvdm, ttrgu, ttrgv, poids,sigin,&
+                      dsigin,epsref,&
                       c1, c2, c3, k3a, alpha, coef, rho,&
                       puls, g)
         real(kind=8) :: dudm(3, 4)
@@ -27,6 +28,9 @@ interface
         real(kind=8) :: dfvdm(3, 4)
         real(kind=8) :: tgudm(3)
         real(kind=8) :: tgvdm(3)
+        real(kind=8) :: sigin(6)
+        real(kind=8) :: dsigin(6,3)
+        real(kind=8) :: epsref(6)
         real(kind=8) :: ttrgu
         real(kind=8) :: ttrgv
         real(kind=8) :: poids

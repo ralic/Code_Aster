@@ -32,11 +32,11 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
 #include "asterfort/jemarq.h"
 #include "asterfort/ppgan2.h"
     integer :: mxval
-    parameter (mxval=6*3*4)
+    parameter (mxval=32*10*6)
 !     EN 2D :
-!     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)
+!     MXVAL =  6 (NBSE MAX) * 6 (NBNOSE MAX) * 4 (NBCMP MAX)
 !     EN 3D :
-!     MXVAL = 32 (NBSE MAX) * 4 (NBNOSE MAX) * 6 (NBCMP MAX)
+!     MXVAL = 32 (NBSE MAX) * 10 (NBNOSE MAX) * 6 (NBCMP MAX)
 !
     integer :: nno, npg, jgano
     integer :: nbsig
@@ -57,7 +57,7 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
 !     CALCUL DES CONTRAINTES PAR SOUS-ELEMENTS AUX NOEUDS (SENO)
 !-----------------------------------------------------------------------
 !
-!     BOUCLE SUR LES NSE SOUS-ELEMENTS
+!   BOUCLE SUR LES NSE SOUS-ELEMENTS
     do 110 ise = 1, nse
 !
 !       DEBUT DE LA ZONE MEMOIRE DE SIG  CORRESPONDANTE

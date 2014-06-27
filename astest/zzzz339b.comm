@@ -1,0 +1,184 @@
+# person_in_charge: renaud.bargellini at edf.fr
+# TITRE VALIDATION DE CALC_G EN 3D AVEC CONTRAINTES INITIALES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+# Modelisation B : X-FEM
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MA=LIRE_MAILLAGE(FORMAT='MED')
+
+lx=1.
+ly=1.
+lz=0.3
+
+hx=lx/9
+hy=ly/9
+
+eps=1e-6
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(
+                             _F(NOM='ASUP',OPTION='ENV_SPHERE',POINT=(0.  ,ly/2 + hy/2, lz),PRECISION=eps,RAYON=eps),
+                             _F(NOM='AINF',OPTION='ENV_SPHERE',POINT=(0.  ,ly/2 - hy/2, lz),PRECISION=eps,RAYON=eps),
+                             _F(NOM='BSUP',OPTION='ENV_SPHERE',POINT=(0.  ,ly/2 + hy/2, 0.),PRECISION=eps,RAYON=eps),
+                             _F(NOM='BINF',OPTION='ENV_SPHERE',POINT=(0.  ,ly/2 - hy/2, 0.),PRECISION=eps,RAYON=eps),
+                             _F(NOM='CSUP',OPTION='ENV_SPHERE',POINT=(hx   ,ly/2 + hy/2, lz),PRECISION=eps,RAYON=eps),
+                             _F(NOM='CINF',OPTION='ENV_SPHERE',POINT=(hx   ,ly/2 - hy/2, lz),PRECISION=eps,RAYON=eps),
+                            ),
+              INFO=2,);
+
+MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU_3D=_F(GROUP_MA=('face_haut','face_bas')))
+
+MO_SAIN=AFFE_MODELE(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),)
+
+FISS=DEFI_FISS_XFEM(MODELE=MO_SAIN,
+                    DEFI_FISS=_F(FORM_FISS = 'DEMI_PLAN',
+                                 PFON      =(0.5 , 0.5 , 0.),
+                                 NORMALE   =(0. , 1. , 0.),
+                                 DTAN      =(1. ,0. , 0.)),);
+                   
+MO=MODI_MODELE_XFEM(MODELE_IN=MO_SAIN,FISSURE=FISS)
+
+MAT_TEST=DEFI_MATERIAU(ELAS=_F(E=1,
+                               NU=0,),);
+
+CH_MAT=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MAT_TEST,),);
+
+f_sig=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-Y',)
+
+CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
+                OPERATION='EXTR',
+                MAILLAGE=MA,
+                NOM_CHAM='GEOMETRIE');
+
+CHXG=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R',
+                OPERATION='DISC',
+                MODELE=MO,
+                CHAM_GD=CHXN);
+
+SIEFINI1=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F',
+                    OPERATION='AFFE',
+                    MODELE=MO,
+                    PROL_ZERO='OUI',
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP=('X1',),
+                            VALE_F=(f_sig,)));
+
+SIEFINI2=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R',
+                    OPERATION='EVAL',
+                    CHAM_F=SIEFINI1,
+                    CHAM_PARA=CHXG);
+
+S_INIT=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                  OPERATION='ASSE',
+                  MODELE=MO,
+                  PROL_ZERO='OUI',
+                  ASSE=_F(TOUT='OUI',
+                          CHAM_GD=SIEFINI2,
+                          NOM_CMP=('X1',),
+                          NOM_CMP_RESU=('SIYY')));
+
+LIMIT=AFFE_CHAR_MECA(MODELE=MO,
+                     LIAISON_DDL=(
+                                  _F(GROUP_NO=('ASUP','AINF','ASUP','AINF'),DDL=('DX','DX','H1X','H1X'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                  _F(GROUP_NO=('ASUP','AINF','ASUP','AINF'),DDL=('DY','DY','H1Y','H1Y'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                  _F(GROUP_NO=('ASUP','AINF','ASUP','AINF'),DDL=('DZ','DZ','H1Z','H1Z'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                  _F(GROUP_NO=('BSUP','BINF','BSUP','BINF'),DDL=('DX','DX','H1X','H1X'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                  _F(GROUP_NO=('BSUP','BINF','BSUP','BINF'),DDL=('DY','DY','H1Y','H1Y'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                  _F(GROUP_NO=('BSUP','BINF','BSUP','BINF'),DDL=('DZ','DZ','H1Z','H1Z'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                  _F(GROUP_NO=('CSUP','CINF','CSUP','CINF'),DDL=('DX','DX','H1X','H1X'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                  _F(GROUP_NO=('CSUP','CINF','CSUP','CINF'),DDL=('DY','DY','H1Y','H1Y'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                  _F(GROUP_NO=('CSUP','CINF','CSUP','CINF'),DDL=('DZ','DZ','H1Z','H1Z'),COEF_MULT=(0.5,0.5,-0.5,-0.5),COEF_IMPO=0.,),
+                                 ),
+                     )
+
+LIST_R=DEFI_LIST_REEL(DEBUT=0,
+                      INTERVALLE=_F(JUSQU_A=1,
+                                    NOMBRE=1,),);
+
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST_R,),);
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CH_MAT,
+                   ETAT_INIT=_F(SIGM=S_INIT),
+                   EXCIT=_F(CHARGE=LIMIT),
+                   COMPORTEMENT=_F(RELATION='ELAS',
+                                   TOUT='OUI',),
+                   INCREMENT=_F(LIST_INST=L_INST,),);
+
+MA_XFEM=POST_MAIL_XFEM(MODELE = MO)
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=(_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),),
+                    );  
+
+RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
+                      RESULTAT    = RESU)
+
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1))
+
+
+RESU=CALC_CHAMP(reuse=RESU,
+                    RESULTAT=RESU,
+                    DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+                   VARI_INTERNE=('VARI_ELNO',)
+               );
+
+G_INIT=CALC_G(THETA=_F(FISSURE=FISS,
+                       R_INF=0.1,
+                       R_SUP=0.4,),
+              RESULTAT=RESU,
+              INST=1.,
+             LISSAGE=_F(DEGRE=0),
+              ETAT_INIT=_F(SIGM=S_INIT,),
+              OPTION='CALC_G')
+G_INIT2=CALC_G(THETA=_F(FISSURE=FISS,
+                       R_INF=0.1,
+                       R_SUP=0.4,),
+              RESULTAT=RESU,
+              INST=1.,
+             LISSAGE=_F(DEGRE=0),
+              ETAT_INIT=_F(SIGM=S_INIT,),
+              OPTION='CALC_K_G')
+#CALCUL DE K PAR POST_K1_K2_K3
+KMECA=POST_K1_K2_K3(MODELISATION='3D',
+                    MATER = MAT_TEST,
+                    FISSURE=FISS,
+                    RESULTAT=RESU) 
+IMPR_TABLE(TABLE=G_INIT)
+IMPR_TABLE(TABLE=G_INIT2)
+IMPR_TABLE(TABLE=KMECA)
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=1.70693575059E-04,
+           NOM_PARA='G',
+           TABLE=G_INIT2,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=1,),
+                  ),
+          )
+
+FIN()

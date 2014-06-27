@@ -10,6 +10,10 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/chpver.h"
+#include "asterfort/chpchd.h"
+#include "asterfort/alchml.h"
+#include "asterfort/xelgano.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -106,22 +110,24 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
 !
     integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
-    integer :: nnoff, num, incr, nres
-    integer :: ndeg, init, livi(nbmxpa)
+    integer :: nnoff, num, ino1, ino2, inga
+!     integer :: incr, nres
+    integer :: ndeg, nsig, livi(nbmxpa),pbtype
     integer :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa), diff2g, difrel
     complex(kind=8) :: livc(nbmxpa)
-    aster_logical :: lfonc
+    aster_logical :: lfonc,lxfem
     character(len=2) :: codret
-    character(len=8) :: resu
-    character(len=16) :: opti, valk
+!    character(len=8) :: resu
+!    character(len=24) :: chsig, chepsp, chvari, type
+    character(len=16) :: opti
     character(len=19) :: chrota, chpesa, chvolu, ch1d2d, chepsi, ch2d3d, chpres
     character(len=19) :: chvarc, chvref
     character(len=24) :: ligrmo, chgeom, chgthi
-    character(len=24) :: chsigi
+    character(len=24) :: chsigi, celmod, sigelno, sigseno
     character(len=24) :: chthet, chtime
     character(len=24) :: abscur, pavolu, papres, pa2d3d
-    character(len=24) :: chsig, chepsp, chvari, type, pepsin, livk(nbmxpa)
+    character(len=24) :: pepsin, livk(nbmxpa)
     character(len=19) :: pintto, cnseto, heavto, loncha, lnno, ltno, pmilto
 !
 ! ----------------------------------------------------------------------
@@ -133,43 +139,94 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
+
+!   cas FEM ou X-FEM
+    call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
+    lxfem = .false.
+    if (ibid .ne. 0) lxfem = .true.
 !
-!     RECUPERATION DU CHAMP GEOMETRIQUE
+!   RECUPERATION DU CHAMP GEOMETRIQUE
     call megeom(modele, chgeom)
+    
+
+!   Recuperation du LIGREL
+    ligrmo = modele//'.MODELE'    
 !
     chvarc='&&CAKG3D.VARC'
     chvref='&&CAKG3D.VARC.REF'
 !
-!     RECUPERATION DU COMPORTEMENT
-    call getfac('COMPORTEMENT', incr)
-    if (incr .ne. 0) then
-        call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
-        call dismoi('TYPE_RESU', resu, 'RESULTAT', repk=type)
-        if (type .ne. 'EVOL_NOLI') then
-            call utmess('F', 'RUPTURE1_15')
+!   RECUPERATION DU COMPORTEMENT (dans cakg2d, on recupere pas incr
+!    call getfac('COMPORTEMENT', incr)
+!    if (incr .ne. 0) then
+!        call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
+!        call dismoi('TYPE_RESU', resu, 'RESULTAT', repk=type)
+!        if (type .ne. 'EVOL_NOLI') then
+!            call utmess('F', 'RUPTURE1_15')
+!        endif
+!        call rsexch('F', resu, 'SIEF_ELGA', iord, chsig,&
+!                    iret)
+!        call rsexch('F', resu, 'EPSP_ELNO', iord, chepsp,&
+!                    iret)
+!        call rsexch('F', resu, 'VARI_ELNO', iord, chvari,&
+!                    iret)
+!    endif
+!
+!
+!   Recuperation de l'etat initial
+!   ------------------------------
+
+    chsigi = '&&CAKG3D.CHSIGI'
+    celmod = '&&CAKG3D.CELMOD'
+    sigelno= '&&CAKG3D.SIGELNO'
+    sigseno= '&&CAKG3D.SIGSENO'
+
+    call getvid('ETAT_INIT', 'SIGM', iocc=1, scal=chsigi, nbret=nsig)
+
+!   Verification du type de champ + transfo, si necessaire en champ elno
+    if (nsig .ne. 0) then
+
+!       chpver renvoit 0 si OK et 1 si PB
+        call chpver('C', chsigi(1:19), 'ELNO', 'SIEF_R', ino1)
+        call chpver('C', chsigi(1:19), 'NOEU', 'SIEF_R', ino2)
+        call chpver('C', chsigi(1:19), 'ELGA', 'SIEF_R', inga)
+
+!       Verification du type de champ
+        pbtype=0
+        if (.not.lxfem) then
+!         cas FEM : verif que le champ est soit ELNO, soit NOEU, soit ELGA
+          if (ino1.eq.1 .and. ino2.eq.1 .and. inga.eq.1) pbtype=1
+        elseif (lxfem) then
+!         cas X-FEM : verif que le champ est ELGA (seul cas autorise)
+          if (inga.eq.1) pbtype=1
+        endif            
+        if (pbtype.eq.1) call utmess('F', 'RUPTURE1_12')
+
+!       transformation si champ ELGA
+        if (inga.eq.0) then
+
+!           traitement du champ pour les elements finis classiques
+            call detrsd('CHAMP',celmod)
+            call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
+                        iret, ' ')
+            call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
+                        sigelno)
+            call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
+
+!           calcul d'un champ supplementaire aux noeuds des sous-elements si X-FEM
+            if (lxfem) call xelgano(modele,chsigi,sigseno)
+!            call imprsd('CHAMP',chsigi,6,'chsigi')
+
         endif
-        call rsexch('F', resu, 'SIEF_ELGA', iord, chsig,&
-                    iret)
-        call rsexch('F', resu, 'EPSP_ELNO', iord, chepsp,&
-                    iret)
-        call rsexch('F', resu, 'VARI_ELNO', iord, chvari,&
-                    iret)
     endif
-!
-!     RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
-    call getvid('ETAT_INIT', 'SIGM', iocc=1, scal=chsigi, nbret=init)
-    if (init .ne. 0) then
-        valk='CALC_K_G'
-        call utmess('F', 'RUPTURE1_13', sk=valk)
-    endif
-!
-!     RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
+
+
+!   RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
     call vrcins(modele, mate, ' ', time, chvarc,&
                 codret)
 !
     call vrcref(modele, mate(1:8), '        ', chvref(1:19))
 !
-!     TRAITEMENT DES CHARGES
+!   TRAITEMENT DES CHARGES
     chvolu = '&&CAKG3D.VOLU'
     ch1d2d = '&&CAKG3D.1D2D'
     ch2d3d = '&&CAKG3D.2D3D'
@@ -214,7 +271,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     NDIMTE = NNOFF  SI TH-LAGRANGE
 !     NDIMTE = NDEG+1 SI TH-LEGENDRE
 !
-!     pourquoi modifier NDIMTE (argument d'entree)
+!   pourquoi modifier NDIMTE (argument d'entree)
     if (thlag2) then
         ndimte = ndimte
     else if (thlagr) then
@@ -228,7 +285,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
 !
 !
-!     BOUCLE SUR LES DIFFERENTS CHAMPS THETA
+!   BOUCLE SUR LES DIFFERENTS CHAMPS THETA
     do i = 1, ndimte
 !
         chthet = zk24(jresu+i-1)
@@ -296,7 +353,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
         nchin = 27
 !
-        ligrmo = modele//'.MODELE'
+
 !
         chtime = '&&CAKG3D.CH_INST_R'
         if (opti .eq. 'CALC_K_G_F') then
@@ -315,8 +372,32 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             lpain(nchin) = 'PPULPRO'
             lchin(nchin) = chpuls
         endif
-!
+
+!       CHAMP DE CONTRAINTE INITIALE
+        if (nsig .ne. 0) then
+          if (inga .eq. 0) then
+!           champ de contrainte initiale transforme en ELNO
+            lpain(nchin+1) = 'PSIGINR'
+            lchin(nchin+1)=sigelno
+            nchin = nchin + 1
+
+!           si X-FEM : champ de contrainte initiale transforme en SE-ELNO
+            if (lxfem) then
+                lpain(nchin+1) = 'PSIGISE'
+                lchin(nchin+1) = sigseno
+                nchin = nchin + 1
+            endif
+
+          else
+!           champ de contrainte initiale donne par l'uutilisateur (NOEUD ou ELNO)
+            lpain(nchin+1) = 'PSIGINR'
+            lchin(nchin+1) = chsigi
+            nchin = nchin + 1
+          endif
+        endif
+
         ASSERT(nchin.le.nbinmx)
+
         call calcul('S', opti, ligrmo, nchin, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')

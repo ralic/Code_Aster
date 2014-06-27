@@ -119,7 +119,7 @@ subroutine te0027(option, nomte)
             thet = thet + abs(zr(ithet+ndim* (i-1)+j-1))
  30     continue
         if (thet .lt. epsi) compt = compt + 1
- 40 end do
+40  continue
 !
     if (compt .eq. nno) goto 9999
 !
@@ -155,7 +155,7 @@ subroutine te0027(option, nomte)
 ! LOI DE COMPORTEMENT
     do 50 i = 1, 4
         compor(i) = zk16(icomp+i-1)
- 50 end do
+50  continue
     grand = compor(3).eq. 'GROT_GDEP'
     incr = compor(4) (1:9) .eq. 'COMP_INCR'
     read (zk16(icomp+1),'(I16)') nbvari
@@ -176,7 +176,7 @@ subroutine te0027(option, nomte)
 !
     do 60 i = 1, ncmp*nno
         epsino(i) = 0.d0
- 60 end do
+60  continue
 !
 ! =====================================================================
 ! MESSAGES D'ERREURS
@@ -269,7 +269,7 @@ subroutine te0027(option, nomte)
         call rcvarc(' ', 'TEMP', '+', 'NOEU', kp,&
                     1, tgd(kp), ireth)
         if (ireth .eq. 1) tgd(kp) = 0.d0
-645 end do
+645  continue
 !
 !
 ! ======================================================================
@@ -473,7 +473,7 @@ subroutine te0027(option, nomte)
             do 490 i = 4, ncmp
                 sigin(i) = sigin(i)*rac2
                 do 480 j = 1, ndim
-                    dsigin(i,j) = dsigin(4,1)*rac2
+                    dsigin(i,j) = dsigin(i,j)*rac2
 480             continue
 490         continue
 !
@@ -613,10 +613,18 @@ subroutine te0027(option, nomte)
             endif
             tini = tini + (prod1+prod2)*poids
         endif
+! POUR VERIFIER QUE SIGL EST EGAL A E*DUDM+SIGIN (TEST A NU=0)
+!        write(6,*)'sigin',sigin(1)
+!        write(6,*)'dudm',dudm(1,1
+!        write(6,*)'sigl',sigl(1)
+!        write(6,*)'E',e(1)
+!        write(6,*)'******************'
+
+
 ! ==================================================================
 ! FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 ! ==================================================================
-800 end do
+800  continue
 ! EXIT EN CAS DE THETA FISSURE NUL PARTOUT
 9999 continue
 ! ASSEMBLAGE FINAL DES TERMES DE G OU DG

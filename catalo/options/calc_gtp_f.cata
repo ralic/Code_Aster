@@ -36,7 +36,6 @@ OPTION__
         PCONTRR  SIEF_R
         PDEFOPL  EPSI_R
         PVARIPR  VARI_R
-        PSIGINR  SIEF_R
         PDEPINR  DEPL_R
         PEPSINF  EPSI_F
         PVITESS  DEPL_R
@@ -56,5 +55,7 @@ OPTION__
         PLONGCO  N120_I
         PPMILTO  N480_R
         PBASECO  N120_R
+        PSIGINR  SIEF_R
+        PSIGISE  N1920R
    OUT__
 PGTHETA G ELEM__

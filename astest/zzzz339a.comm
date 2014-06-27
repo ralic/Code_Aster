@@ -16,6 +16,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+
+# Modelisation A : FEM
+
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED');
@@ -99,19 +102,35 @@ RESU=CALC_CHAMP(reuse=RESU,
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
                    VARI_INTERNE=('VARI_ELNO',)
                );
-
+#CALCUL DE G DIRECT
 G_INIT=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.1,
                        R_SUP=0.5,),
               RESULTAT=RESU,
               INST=1,
-              COMPORTEMENT=_F(RELATION='ELAS'),
+              LISSAGE=_F(DEGRE=0),
               ETAT_INIT=_F(SIGM=S_INIT,),
               OPTION='CALC_G',);
+              
+#CALCUL DE K PAR POST_K1_K2_K3
+KMECA=POST_K1_K2_K3(MODELISATION='3D',
+                    MATER = MAT_TEST,
+                    FOND_FISS=FOND,
+                    RESULTAT=RESU) 
 
+#CALCUL DES G et K par CALC_K_G
+G_INIT2=CALC_G(THETA=_F(FOND_FISS=FOND,
+                       R_INF=0.1,
+                       R_SUP=0.5,),
+              RESULTAT=RESU,
+              INST=1,
+              LISSAGE=_F(DEGRE=0),
+              ETAT_INIT=_F(SIGM=S_INIT,),
+              OPTION='CALC_K_G',);
 
+                    
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=2.46432454941E-05,
+           VALE_CALC=2.8898004233E-5,
            NOM_PARA='G',
            TABLE=G_INIT,
            FILTRE=(_F(NOM_PARA='NOEUD',
@@ -119,6 +138,10 @@ TEST_TABLE(CRITERE='RELATIF',
                   ),
            )
 
-IMPR_TABLE(TABLE=G_INIT)
+IMPR_TABLE(TABLE=G_INIT,UNITE=9)
+IMPR_TABLE(TABLE=G_INIT2,UNITE=9)
+IMPR_TABLE(TABLE=KMECA,UNITE=8)
+
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU))
 
 FIN(FORMAT_HDF='NON',);
