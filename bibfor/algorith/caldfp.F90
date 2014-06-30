@@ -145,7 +145,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         call lcdetf(3, b, detb)
 !
         if (detb .gt. r8prem()) then
-            expo=1.d0/3.d0
+            expo=-1.d0/3.d0
             coef=detb**expo
         else
             iret=1
@@ -162,7 +162,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         call dcopy(9, b, 1, dfpmdg, 1)
 !
-        call dscal(9, 1.d0/3.d0, dfpmdg, 1)
+        call dscal(9, -1.d0/3.d0, dfpmdg, 1)
 !
         call daxpy(9, 1.d0, msns, 1, dfpmdg,&
                    1)

@@ -113,7 +113,7 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
         call lcdetf(3, dfpm, det)
 !
         if (det .gt. r8prem()) then
-            expo=1.d0/3.d0
+            expo=-1.d0/3.d0
             coef=det**expo
             call dscal(9, coef, dfpm, 1)
         else

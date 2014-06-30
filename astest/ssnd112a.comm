@@ -479,7 +479,7 @@ DEFI_FICHIER(UNITE = 31,
 
 tdep=0.02
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02024023,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02024023269020,
                         VALE_REFE=0.0202331,
                         VALE_PARA=0.02,
                         REFERENCE='AUTRE_ASTER',
@@ -488,7 +488,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02024023,
                         FONCTION=epsDIR,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=115.2274,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=115.2292856735,
                         VALE_REFE=114.125,
                         VALE_PARA=0.02,
                         REFERENCE='AUTRE_ASTER',
@@ -497,7 +497,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=115.2274,
                         FONCTION=sigDIR,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.796405E-07,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.797004669567E-07,
                         VALE_REFE=9.8085199999999995E-07,
                         VALE_PARA=0.02,
                         REFERENCE='AUTRE_ASTER',
@@ -506,7 +506,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=9.796405E-07,
                         FONCTION=rho_1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03863743,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03864011492080,
                         VALE_REFE=0.0385454,
                         VALE_PARA=0.02,
                         REFERENCE='AUTRE_ASTER',
@@ -515,7 +515,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03863743,
                         FONCTION=gamma_1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.333775E-08,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.334290953850E-08,
                         VALE_REFE=1.07407E-07,
                         VALE_PARA=0.02,
                         REFERENCE='AUTRE_ASTER',
@@ -524,7 +524,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=9.333775E-08,
                         FONCTION=rho_9,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.101374E-04,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.102478026514E-04,
                         VALE_REFE=1.04944E-3,
                         VALE_PARA=0.02,
                         REFERENCE='AUTRE_ASTER',
@@ -533,7 +533,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=7.101374E-04,
                         FONCTION=gamma_9,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.333775E-08,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.334290953850E-08,
                         VALE_REFE=9.334E-08,
                         VALE_PARA=0.02,
                         REFERENCE='AUTRE_ASTER',
@@ -543,7 +543,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=9.333775E-08,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.101374E-04,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.102478026514E-04,
                         VALE_REFE=7.101E-4,
                         VALE_PARA=0.02,
                         REFERENCE='AUTRE_ASTER',
@@ -556,7 +556,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=7.101374E-04,
 # Comparaison avec la modelisation B : ROTA_RESEAU
 # instant ou les deformations sont grandes
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22364521,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22364646536609,
                         VALE_REFE=0.22364999999999999,
                         VALE_PARA=0.2,
                         REFERENCE='AUTRE_ASTER',
@@ -567,7 +567,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22364521,
 
 # ecart du aux differences de formulation
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=293.0448,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=293.3106488512,
                         VALE_REFE=320.15300000000002,
                         VALE_PARA=0.2,
                         REFERENCE='AUTRE_ASTER',
@@ -576,7 +576,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=293.0448,
                         FONCTION=sigDIR,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.424902E-05,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.426899803911E-05,
                         VALE_REFE=1.7310230000000001E-05,
                         VALE_PARA=0.2,
                         REFERENCE='AUTRE_ASTER',
@@ -585,7 +585,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.424902E-05,
                         FONCTION=rho_1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.29705893,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.29717808877422,
                         VALE_REFE=0.31346,
                         VALE_PARA=0.2,
                         REFERENCE='AUTRE_ASTER',
@@ -596,7 +596,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.29705893,
 
 # ce systeme n'evolue plus
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.868645E-07,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.868719914876E-07,
                         VALE_REFE=8.37E-07,
                         VALE_PARA=0.2,
                         REFERENCE='AUTRE_ASTER',
@@ -605,7 +605,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=7.868645E-07,
                         FONCTION=rho_9,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.783646E-03,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.783649775568E-03,
                         VALE_REFE=0.01041,
                         VALE_PARA=0.2,
                         REFERENCE='AUTRE_ASTER',
@@ -616,7 +616,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=9.783646E-03,
 
 # systeme 12 active seulement en GDEF ou ROTA_RESEAU
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.307348E-05,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.309624971762E-05,
                         VALE_REFE=1.719314E-05,
                         VALE_PARA=0.2,
                         REFERENCE='AUTRE_ASTER',
@@ -625,7 +625,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.307348E-05,
                         FONCTION=rho_12,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.08839498,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.08852079553306,
                         VALE_REFE=0.11118,
                         VALE_PARA=0.2,
                         REFERENCE='AUTRE_ASTER',
@@ -636,35 +636,35 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.08839498,
 
 # non regression
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=293.0448,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=293.3106488512,
                         VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=sigDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.424902E-05,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.426899803911E-05,
                         VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.29705893,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.29717808877422,
                         VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=gamma_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.868645E-07,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.868719914876E-07,
                         VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho_9,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.783646E-03,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.783649775568E-03,
                         VALE_REFE=9.811E-3,
                         VALE_PARA=0.2,
                         REFERENCE='NON_DEFINI',
@@ -674,14 +674,14 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=9.783646E-03,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.307348E-05,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.309624971762E-05,
                         VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho_12,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.08839498,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.08852079553306,
                         VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=gamma_12,
@@ -727,7 +727,7 @@ epsDIRN=RECU_FONCTION(RESULTAT=SOLIMPN,
                    POINT=numpg,
                    INTERPOL='LIN');
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.001250E-04,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.001250000000E-04,
                         VALE_REFE=5.0012500000000003E-4,
                         VALE_PARA=5.0E-4,
                         REFERENCE='AUTRE_ASTER',
@@ -736,7 +736,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.001250E-04,
                         FONCTION=epsDIRE,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=86.59088,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=86.59087741594,
                         VALE_REFE=86.551696000000007,
                         VALE_PARA=5.0000000000000001E-4,
                         REFERENCE='AUTRE_ASTER',
@@ -745,7 +745,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=86.59088,
                         FONCTION=sigDIRE,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.001250E-04,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.001250000042E-04,
                         VALE_REFE=5.0012500000000003E-4,
                         VALE_PARA=5.0E-4,
                         REFERENCE='AUTRE_ASTER',
@@ -754,7 +754,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.001250E-04,
                         FONCTION=epsDIRN,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=86.55169,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=86.55169472435,
                         VALE_REFE=86.551696000000007,
                         VALE_PARA=5.0E-4,
                         REFERENCE='AUTRE_ASTER',

@@ -89,7 +89,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: sigm(6), stress(6), sse, spd, scd, time(2)
     real(kind=8) :: vim(*), statev(nvi)
     real(kind=8) :: predef(npred), dpred(npred)
-    real(kind=8) :: ddsdde(36), dfgrd0(3, 3), dfgrd1(3, 3)
+    real(kind=8) :: ddsdde(54), dfgrd0(3, 3), dfgrd1(3, 3)
     real(kind=8) :: ddsddt(6), drplde(6), celent, stran(9), dsidep(6, 6)
     real(kind=8) :: dtime, temp, dtemp, coords(3), rpl, pnewdt, drpldt
     real(kind=8) :: depsth(6), epsth(6), rac2, usrac2, drott(3, 3),detf
@@ -320,30 +320,35 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-        call r8inir(36, 0.d0, dsidep, 1)
-!       cas des CZM
-        if (czm.eq.1) then
-            do i=1,3
-               do j=1,3
-                  dsidep(i,j)=ddsdde(3*(i-1)+j)
+    
+       if (compor(3) .eq. 'SIMO_MIEHE') then
+           call dcopy(54, ddsdde, 1, dsidep, 1)
+       else 
+           call r8inir(36, 0.d0, dsidep, 1)
+!          cas des CZM
+           if (czm.eq.1) then
+               do i=1,3
+                  do j=1,3
+                     dsidep(i,j)=ddsdde(3*(i-1)+j)
+                  enddo
                enddo
-            enddo
-        else
-            call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
-            do 40 i = 1, 6
-                do 40 j = 4, 6
-                    dsidep(i,j) = dsidep(i,j)*rac2
+           else
+               call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
+               do 40 i = 1, 6
+                   do 40 j = 4, 6
+                       dsidep(i,j) = dsidep(i,j)*rac2
     40         continue
-            do 50 i = 4, 6
-                do 50 j = 1, 6
-                    dsidep(i,j) = dsidep(i,j)*rac2
+               do 50 i = 4, 6
+                   do 50 j = 1, 6
+                       dsidep(i,j) = dsidep(i,j)*rac2
     50         continue
-        endif 
-        if ((niv.ge.2) .and. (idbg.eq.1)) then
-            write(ifm,*)'APRES APPEL UMAT,OPERATEUR TANGENT DSIDEP='
-            do 60 i = 1, 6
-                write(ifm,'(6(1X,E11.4))') (dsidep(i,j),j=1,6)
- 60         continue
+           endif 
+           if ((niv.ge.2) .and. (idbg.eq.1)) then
+               write(ifm,*)'APRES APPEL UMAT,OPERATEUR TANGENT DSIDEP='
+               do 60 i = 1, 6
+                   write(ifm,'(6(1X,E11.4))') (dsidep(i,j),j=1,6)
+ 60            continue
+           endif           
         endif
     endif
 !
