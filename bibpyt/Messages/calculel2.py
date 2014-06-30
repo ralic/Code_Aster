@@ -160,8 +160,17 @@ Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
 
 24: _(u"""
 Erreur utilisateur dans la commande MACR_ECLA_PG
- Le CHAM_ELEM (ELGA) %(k1)s ne peut pas être alloué sur le modèle.
- On ne sait pas où sont ses points de Gauss.
+  On ne sait pas où sont situés les points de Gauss du CHAM_ELEM (ELGA) %(k1)s.
+  Cela arrive par exemple pour les champs correspondants à 
+  NOM_CHAM= ('VARI_ELGA', 'UT01_ELGA',...) 
+  car il n'existe pas d'option de calcul pour ces NOM_CHAM.
+
+Conseil :
+  Pour pouvoir post-traiter ce CHAM_ELEM, il faut lui associer
+  un champ qui ne pose pas problème et qui partage la même localisation de ses
+  points de Gauss. 
+  Par exemple, pour post-traiter VARI_ELGA, on fera :
+  MACR_ECLA_PG(... NOM_CHAM=('SIEF_ELGA', 'VARI_ELGA'), 
 """),
 
 25: _(u"""
