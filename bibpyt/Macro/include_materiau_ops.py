@@ -34,6 +34,8 @@ Définition des mots-clés et fonctions utilisables dans les catalogues :
     l'unité
       - en m : retourne 1.
       - en mm : retourne 10^expo
+  - prol : dictionnaire qui renvoie le type de prolongement :
+      prol['droite'], prol['gauche']
   - defi_motscles : fonction qui définit tous les mots-clés, filtrés
     ensuite en fonction de EXTRACTION.
   - motscles : objet résultat de DEFI_MOTSCLES contenant les mots-clés
@@ -51,6 +53,7 @@ import aster_core
 EXTR = 'extraction'
 FTEMP = 'temp_eval'
 FCOEF = 'coef_unit'
+DPROL = 'prol'
 DEFI_MOTSCLES = 'defi_motscles'
 MOTSCLES = 'motscles'
 COMMANDES = [
@@ -59,7 +62,7 @@ COMMANDES = [
     'DETRUIRE',
 ]
 
-def build_context(unite, temp):
+def build_context(unite, temp, prol):
     """Construit le contexte pour exécuter un catalogue matériau."""
     # définition du coefficient multiplicatif selon l'unité.
     unite = unite.lower()
@@ -81,6 +84,7 @@ def build_context(unite, temp):
 
     context = {
         FCOEF : coef_unit,
+        DPROL : prol,
         FTEMP : func_temp,
         DEFI_MOTSCLES : defi_motscles,
     }
@@ -88,7 +92,8 @@ def build_context(unite, temp):
 
 
 def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
-                         EXTRACTION, UNITE_LONGUEUR, INFO, **args):
+                         EXTRACTION, UNITE_LONGUEUR, INFO,
+                         PROL_GAUCHE, PROL_DROITE, **args):
     """Macro INCLUDE_MATERIAU"""
     import aster
     from Accas import _F
@@ -114,7 +119,13 @@ def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
         TEMP_EVAL = None
         keep_compor = lambda compor : True
 
-    context = build_context(UNITE_LONGUEUR, TEMP_EVAL)
+    # définition du prolongement des fonctions
+    dict_prol = {
+        'droite' : PROL_DROITE,
+        'gauche' : PROL_GAUCHE,
+    }
+
+    context = build_context(UNITE_LONGUEUR, TEMP_EVAL, dict_prol)
     # ajout des commandes autorisées
     commandes = dict([(cmd, self.get_cmd(cmd)) for cmd in COMMANDES])
     context.update(commandes)

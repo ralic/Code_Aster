@@ -86,7 +86,9 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
 MAT_THER=INCLUDE_MATERIAU(NOM_AFNOR=material,
                           TYPE_MODELE='REF',
                           VARIANTE='A',
-                          TYPE_VALE='NOMI')
+                          TYPE_VALE='NOMI',
+                          PROL_GAUCHE='CONSTANT',
+                          PROL_DROITE='CONSTANT')
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
