@@ -1,0 +1,109 @@
+# coding=utf-8
+# TITRE Test de non régression de l'outil métier ORT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: mathieu.courtois@edf.fr
+
+POURSUITE(CODE='OUI')
+
+import numpy
+G_output = numpy.load('fort.26')
+
+matr_out = numpy.matrix(G_output.reshape((number_of_sensors, number_of_timesteps))).T
+valcal = numpy.array(matr_out[-1, :]).ravel()
+valref = numpy.array([  81.63620792,   97.97739701,  101.68123443,  114.92603388,
+          128.03021042,  134.63592376,  141.52752606,  164.82806922,
+          174.28725418])
+diff = abs(valcal - valref)
+
+ttest = CREA_TABLE(LISTE=(
+                       _F(PARA='SENSOR',
+                          LISTE_I=range(1, number_of_sensors + 1),),
+                       _F(PARA='REFE',
+                          LISTE_R=tuple(valref.tolist()),),
+                       _F(PARA='CALC',
+                          LISTE_R=tuple(valcal.tolist()),),
+                       _F(PARA='DIFF',
+                          LISTE_R=tuple(diff.tolist()),),
+                          ))
+IMPR_TABLE(TABLE=ttest)
+
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=1),
+    VALE_CALC=81.63620792,
+    )
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=2),
+    VALE_CALC=97.97739701,
+    )
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=3),
+    VALE_CALC=101.68123443,
+    )
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=4),
+    VALE_CALC=114.92603388,
+    )
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=5),
+    VALE_CALC=128.03021042,
+    )
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=6),
+    VALE_CALC=134.63592376,
+    )
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=7),
+    VALE_CALC=141.52752606,
+    )
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=8),
+    VALE_CALC=164.82806922,
+    )
+TEST_TABLE(
+    TABLE=ttest,
+    NOM_PARA='CALC',
+    FILTRE=_F(NOM_PARA='SENSOR',
+              VALE_I=9),
+    VALE_CALC=174.28725418,
+    )
+
+FIN()

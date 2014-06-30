@@ -1,0 +1,189 @@
+# coding=utf-8
+# TITRE Test de non régression de l'outil métier ORT
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: mathieu.courtois@edf.fr
+
+# Note: the list of times has been limited.
+
+# required: data attributes
+
+import math
+import numpy
+# because some parameters may be 'repr'esented as `array` or `matrix`
+from numpy import array, matrix
+
+# --- Parameters
+material = u'Z2CND1712'
+sensor_angle = array([-90., -54., -48., -24.,   0.,  12.,  24.,  66.,  90.])
+number_of_sensors = 9
+number_of_timesteps = 10     # orig: 122 - 1 + 0 + 0
+timestep = 10.000000
+R_i = 0.146000
+R_e = 0.177800
+
+
+DEBUT(PAR_LOT='NON',
+      CODE=_F(NIV_PUB_WEB='INTERNET'),
+      IGNORE_ALARM='SUPERVIS_1',)
+
+# --- List of timesteps
+times = numpy.arange(number_of_timesteps) * timestep
+
+LS=DEFI_LIST_REEL(VALE=times)
+
+# --- Read the internal temperature
+vect_input = numpy.load('fort.25')
+# lines: T on sensors, columns: time
+G_input = vect_input.reshape((number_of_sensors, -1))
+# limit list of times
+G_input = G_input[:, :number_of_timesteps]
+
+assert G_input.shape == (number_of_sensors, len(times)), \
+    (G_input.shape, '!=', (number_of_sensors, len(times)))
+
+# --- Mesh
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+
+MO_THER=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='PLAN',),);
+
+# --- Thermal properties at t=0
+# The thermal properties must be defined at TEMP=0 for THER_NON_LINE / ETAT_INIT
+# and STATIONNAIRE='OUI', cf. R5.02.02.
+# So we use constant properties evaluated à TEMP=mean(Tint(t=0)) with THER_LINEAIRE
+temp_moy0 = G_input[:, 0].mean()
+print 'Température moyenne à t=0 :', temp_moy0
+
+MAT_TH0=INCLUDE_MATERIAU(NOM_AFNOR=material,
+                         TYPE_MODELE='REF',
+                         VARIANTE='A',
+                         TYPE_VALE='NOMI',
+                         EXTRACTION=_F(COMPOR='THER',
+                                       TEMP_EVAL=temp_moy0),)
+
+CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MAT_TH0,),);
+
+# --- Thermal properties depending on TEMP
+MAT_THER=INCLUDE_MATERIAU(NOM_AFNOR=material,
+                          TYPE_MODELE='REF',
+                          VARIANTE='A',
+                          TYPE_VALE='NOMI')
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT_THER,),);
+
+# --- Post-treatment lines
+def Absc(R, theta):
+    """fonction pour connaitre l'abscisse en fonction de theta"""
+    return R * cos(math.radians(theta))
+
+def Ordo(R, theta):
+    """fonction pour connaitre l'ordonnee en fonction de theta"""
+    return R * sin(math.radians(theta))
+
+COUPE = [None] * number_of_sensors
+for i, theta in enumerate(sensor_angle):
+    COUPE[i]=INTE_MAIL_2D(MAILLAGE=MAIL,
+                          DEFI_SEGMENT=_F(ORIGINE=(Absc(R_i, theta), Ordo(R_i, theta),),
+                                          EXTREMITE=(Absc(R_e, theta), Ordo(R_e, theta),),),)
+
+y_int = [Ordo(R_i, sensor_angle[i]) for i in range(number_of_sensors)]
+
+x_ext = [Absc(R_e, sensor_angle[i]) for i in range(number_of_sensors)]
+y_ext = [Ordo(R_e, sensor_angle[i]) for i in range(number_of_sensors)]
+
+# --- Define internal temperatures
+TP_G = [None] * number_of_sensors
+for i in range(number_of_sensors):
+    TP_G[i]=DEFI_FONCTION(NOM_PARA='INST',
+                          ABSCISSE=times,
+                          ORDONNEE=G_input[i])
+
+# --- Initial thermal load
+L0int=DEFI_FONCTION(NOM_PARA='Y',
+                    ABSCISSE=y_int,
+                    ORDONNEE=G_input[:, 0],
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE')
+
+CHAR_TH0=AFFE_CHAR_THER_F(MODELE=MO_THER,
+                         TEMP_IMPO=_F(GROUP_MA='int',
+                                      TEMP=L0int,),);
+
+# --- Solve the stationnary analysis
+RESU_TH0=THER_LINEAIRE(MODELE=MO_THER,
+                       CHAM_MATER=CHMAT0,
+                       EXCIT=_F(CHARGE=CHAR_TH0,),
+                       ETAT_INIT=_F(STATIONNAIRE='OUI',),);
+
+TEMP_0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                  OPERATION='EXTR',
+                  RESULTAT=RESU_TH0,
+                  NOM_CHAM='TEMP',);
+
+
+# --- Internal thermal load
+TR1sf=DEFI_NAPPE(NOM_PARA='Y',
+                 PARA=y_int,
+                 FONCTION=tuple(TP_G),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE')
+
+CH_TH1sf=AFFE_CHAR_THER_F(MODELE=MO_THER,
+                          TEMP_IMPO=_F(GROUP_MA='int',
+                                       TEMP=TR1sf,),);
+
+# --- Solve the transient evolution
+TH1sf=THER_NON_LINE(MODELE=MO_THER,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=_F(CHARGE=CH_TH1sf,),
+                    INCREMENT=_F(LIST_INST=LS,),
+                    ETAT_INIT=_F(CHAM_NO=TEMP_0,),);
+
+# --- Extract the temperature on the sensors
+T_out = []
+TAB = [None] * number_of_sensors
+eps = 1.e-8
+for i, ch in enumerate(COUPE):
+    TAB[i]=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                   INTITULE='LIGNE',
+                                   RESULTAT=TH1sf,
+                                   NOM_CHAM='TEMP',
+                                   CHEMIN=ch,
+                                   TOUT_CMP='OUI',),);
+    tab = TAB[i].EXTR_TABLE()['COOR_X', 'COOR_Y', 'TEMP']
+    #text = tab.COOR_Y == y_ext[i]
+    #text = (tab.COOR_Y > (y_ext[i] - eps)).COOR_Y < (y_ext[i] + eps)
+    text = (tab.COOR_Y > (y_ext[i] - eps)) & (tab.COOR_Y < (y_ext[i] + eps)) \
+         & (tab.COOR_X > (x_ext[i] - eps)) & (tab.COOR_X < (x_ext[i] + eps))
+    temp = text.TEMP.values()
+    assert len(temp) == number_of_timesteps, len(temp)
+    T_out.extend(temp)
+
+# --- Save the output
+G_output = numpy.array(T_out)
+numpy.save('G_output.npy', G_output)
+os.rename('G_output.npy', 'fort.26')
+
+del ch
+FIN()
