@@ -32,15 +32,16 @@ subroutine liglma(ligrel, nbma, linuma, linute)
     integer :: nbma
 !
 ! ----------------------------------------------------------------------
-! BUT : EXTRACTION D'UN LIGREL LA LISTE DES NUMEROS DE MAILLES ET LA
-!       LISTE DES NUMERO DE TYPE_ELEMENT
+! but : extraction d'un ligrel de la liste des numeros de mailles et
+!       de la liste des numeros de type_element
 !
-! IN/JXIN  LIGREL  : LIGREL
-! OUT      NBMA    : NOMBRE DE MAILLES AFFECTEES DANS LE LIGREL
-! IN/JXOUT LINUMA  : OBJET (V I) QUI CONTIENDRA LES NUMEROS DES MAILLES
-!                    ASSOCIEES AUX ELEMENTS DU LIGREL
-! IN/JXOUT LINUTE  : OBJET (V I) QUI CONTIENDRA LES NUMEROS DES
-!                    TYPE_ELEMENT ASSOCIES AUX ELEMENTS DU LIGREL
+! in/jxin  ligrel  : ligrel
+! out      nbma    : nombre de mailles affectees dans le ligrel
+!                    = dimension des objets linuma et linute
+! in/jxout linuma  : objet (v i) qui contiendra les numeros des mailles
+!                    associees aux elements du ligrel
+! in/jxout linute  : objet (v i) qui contiendra les numeros des
+!                    type_element associes aux elements du ligrel
 ! ----------------------------------------------------------------------
     integer :: nbgrel, igrel, iel, numa, nute, n1, nbel
     integer :: jnuma, jnute, ico, jliel
@@ -49,33 +50,34 @@ subroutine liglma(ligrel, nbma, linuma, linute)
     call jemarq()
 !
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
-!
-!     -- CALCUL DE NBMA :
+
+!   -- calcul de nbma :
     nbma=0
-    do 10,igrel=1,nbgrel
-    call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
-    nbel=n1-1
-    nbma=nbma+nbel
-    10 end do
+    do igrel=1,nbgrel
+        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
+        nbel=n1-1
+        nbma=nbma+nbel
+    end do
     ASSERT(nbma.gt.0)
-!
-!     -- CALCUL DE LINUMA ET LINUTE :
+
+
+!    -- calcul de linuma et linute :
     call wkvect(linuma, 'V V I', nbma, jnuma)
     call wkvect(linute, 'V V I', nbma, jnute)
-!
+
     ico=0
-    do 30,igrel=1,nbgrel
-    call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
-    call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
-    nbel=n1-1
-    nute=zi(jliel-1+nbel)
-    do 20,iel=1,nbel
-    ico=ico+1
-    numa=zi(jliel-1+iel)
-    zi(jnuma-1+ico)=numa
-    zi(jnute-1+ico)=nute
-20  continue
-    30 end do
-!
+    do igrel=1,nbgrel
+        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
+        call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
+        nbel=n1-1
+        nute=zi(jliel-1+n1)
+        do iel=1,nbel
+            ico=ico+1
+            numa=zi(jliel-1+iel)
+            zi(jnuma-1+ico)=numa
+            zi(jnute-1+ico)=nute
+        enddo
+    end do
+
     call jedema()
 end subroutine
